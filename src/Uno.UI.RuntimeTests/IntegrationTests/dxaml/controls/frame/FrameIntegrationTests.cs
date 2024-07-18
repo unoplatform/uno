@@ -1,7 +1,9 @@
 ﻿using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Xaml.Tests.Enterprise;
+using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 using Uno.UI.RemoteControl.HotReload.Messages;
 
@@ -9,7 +11,7 @@ namespace Uno.UI.RuntimeTests.IntegrationTests;
 
 [TestClass]
 [RequiresFullWindow]
-public class FrameIntegrationTests
+public class FrameIntegrationTests : MUXApiTestBase
 {
 	[TestMethod]
 	public void CanInstantiate()
@@ -41,16 +43,16 @@ public class FrameIntegrationTests
 
 		wxaml_interop.TypeName pageType = { "Microsoft.UI.Xaml.Controls.Page", wxaml_interop.TypeKind.Primitive };
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			frame = new Frame();
-			frameNavigatingEventRegistration.Attach(frame, new xaml_navigation.NavigatingCancelEventHandler([&](Platform.Object ^, xaml_navigation.NavigatingCancelEventArgs ^)
+			frameNavigatingEventRegistration.Attach(frame, new NavigatingCancelEventHandler([&](Platform.Object ^, NavigatingCancelEventArgs ^)
 
 			{
 				frameNavigatingEvent.Set();
 			}));
-			frameNavigatedEventRegistration.Attach(frame, new xaml_navigation.NavigatedEventHandler([&](Platform.Object ^, xaml_navigation.NavigationEventArgs ^)
+			frameNavigatedEventRegistration.Attach(frame, new NavigatedEventHandler([&](Platform.Object ^, NavigationEventArgs ^)
 
 			{
 				frameNavigatedEvent.Set();
@@ -59,9 +61,9 @@ public class FrameIntegrationTests
 			TestServices.WindowHelper.WindowContent = frame;
 		});
 
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			frame.Navigate(pageType);
@@ -77,78 +79,78 @@ public class FrameIntegrationTests
 		Frame ^ frame = null;
 		wxaml_interop.TypeName pageType = { "Microsoft.UI.Xaml.Controls.Page", wxaml_interop.TypeKind.Primitive };
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			frame = new Frame();
 			TestServices.WindowHelper.WindowContent = frame;
 		});
 
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			frame.Navigate(pageType, "Page 1");
 		});
 
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			ValidateFrameStack(frame, 0, 0.0;
 			frame.Navigate(pageType, "Page 2");
 		});
 
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			ValidateFrameStack(frame, 1, 0.0;
 			frame.Navigate(pageType, "Page 3");
 		});
 
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			ValidateFrameStack(frame, 2, 0.0;
 			frame.GoBack();
 		});
 
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			ValidateFrameStack(frame, 1, 1);
 			frame.GoBack();
 		});
 
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			ValidateFrameStack(frame, 0, 2);
 			frame.GoForward();
 		});
 
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			ValidateFrameStack(frame, 1, 1);
 			frame.GoForward();
 		});
 
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			ValidateFrameStack(frame, 2, 0.0;
@@ -163,7 +165,7 @@ public class FrameIntegrationTests
 		wxaml_interop.TypeName pageType = { "Microsoft.UI.Xaml.Controls.Page", wxaml_interop.TypeKind.Primitive };
 		Microsoft.UI.Xaml.Navigation.FrameNavigationOptions ^ navOptions = null;
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			frame = new Frame();
@@ -172,26 +174,26 @@ public class FrameIntegrationTests
 			navOptions.IsNavigationStackEnabled = false;
 		});
 
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			frame.NavigateToType(pageType, "Page 1", navOptions);
 		});
 
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			ValidateFrameStack(frame, 0, 0.0;
 			frame.NavigateToType(pageType, "Page 2", navOptions);
 		});
 
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			ValidateFrameStack(frame, 0, 0.0;
@@ -199,18 +201,18 @@ public class FrameIntegrationTests
 			frame.NavigateToType(pageType, "Page 3", navOptions); // This becomes frame 0
 		});
 
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			ValidateFrameStack(frame, 0, 0.0;
 			frame.NavigateToType(pageType, "Page 2", navOptions); // now it has a back
 		});
 
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			ValidateFrameStack(frame, 1, 0.0;
@@ -218,18 +220,18 @@ public class FrameIntegrationTests
 
 		});
 
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			ValidateFrameStack(frame, 2, 0.0;
 			frame.GoBack();
 		});
 
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			ValidateFrameStack(frame, 1, 1);
@@ -243,7 +245,7 @@ public class FrameIntegrationTests
 		Frame ^ frame = null;
 		wxaml_interop.TypeName pageType = { "Microsoft.UI.Xaml.Controls.Page", wxaml_interop.TypeKind.Primitive };
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			frame = new Frame();
@@ -251,26 +253,26 @@ public class FrameIntegrationTests
 			TestServices.WindowHelper.WindowContent = frame;
 		});
 
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			frame.Navigate(pageType, "Page 1");
 		});
 
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			ValidateFrameStack(frame, 0, 0.0;
 			frame.Navigate(pageType, "Page 2");
 		});
 
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			ValidateFrameStack(frame, 0, 0.0;
@@ -278,27 +280,27 @@ public class FrameIntegrationTests
 			frame.Navigate(pageType, "Page 3"); // This becomes frame 0
 		});
 
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			ValidateFrameStack(frame, 0, 0.0;
 			frame.Navigate(pageType, "Page 1"); // Now it has a back
 		});
 
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			ValidateFrameStack(frame, 1, 0.0;
 			frame.GoBack();
 		});
 
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			ValidateFrameStack(frame, 0, 1);
@@ -323,7 +325,7 @@ public class FrameIntegrationTests
 
 		wxaml_interop.TypeName pageType = { "Microsoft.UI.Xaml.Controls.Page", wxaml_interop.TypeKind.Primitive };
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			slideNTI = new Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo();
@@ -333,32 +335,32 @@ public class FrameIntegrationTests
 			TestServices.WindowHelper.WindowContent = frame;
 		});
 
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			frame.Navigate(pageType, "Page 1", slideNTI);
 		});
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			ValidateFrameStack(frame, 0, 0.0;
 			frame.Navigate(pageType, "Page 2", slideNTI);
 		});
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			ValidateFrameStack(frame, 1, 0.0;
 			frame.Navigate(pageType, "Page 3", slideNTI);
 		});
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			LOG_OUTPUT("CanNavigateWithNavigationTransitionInfo: BackStack size=%d", frame.BackStack.Size);
@@ -369,9 +371,9 @@ public class FrameIntegrationTests
 			// Go back to the previous page with CommonNavigationTransitionInfo
 			frame.GoBack(commonNTI);
 		});
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			LOG_OUTPUT("CanNavigateWithNavigationTransitionInfo: ForwardStack size=%d", frame.ForwardStack.Size);
@@ -391,11 +393,11 @@ public class FrameIntegrationTests
 
 		wxaml_interop.TypeName pageType = { "Microsoft.UI.Xaml.Controls.Page", wxaml_interop.TypeKind.Primitive };
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			frame = new Frame();
-			frameNavigatedEventRegistration.Attach(frame, new xaml_navigation.NavigatedEventHandler([&](Platform.Object ^, xaml_navigation.NavigationEventArgs ^)
+			frameNavigatedEventRegistration.Attach(frame, new NavigatedEventHandler([&](Platform.Object ^, NavigationEventArgs ^)
 
 			{
 				frameNavigatedEvent.Set();
@@ -406,18 +408,18 @@ public class FrameIntegrationTests
 			TestServices.WindowHelper.WindowContent = frame;
 		});
 
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			frame.Navigate(pageType, "Page 1");
 		});
 
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 		frameNavigatedEvent.WaitForDefault();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			ValidateFrameStack(frame, 0, 0.0;
@@ -426,10 +428,10 @@ public class FrameIntegrationTests
 
 		frameNavigatedEvent.Reset();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
-			frameNavigatedEventRegistration.Attach(frame, new xaml_navigation.NavigatedEventHandler([&](Platform.Object ^, xaml_navigation.NavigationEventArgs ^)
+			frameNavigatedEventRegistration.Attach(frame, new NavigatedEventHandler([&](Platform.Object ^, NavigationEventArgs ^)
 
 			{
 				frameNavigatedEvent.Set();
@@ -438,18 +440,18 @@ public class FrameIntegrationTests
 			}));
 		});
 
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			frame.Navigate(pageType, "Page 2");
 		});
 
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 		frameNavigatedEvent.WaitForDefault();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			ValidateFrameStack(frame, 1, 0.0;
@@ -458,10 +460,10 @@ public class FrameIntegrationTests
 
 		frameNavigatedEvent.Reset();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
-			frameNavigatedEventRegistration.Attach(frame, new xaml_navigation.NavigatedEventHandler([&](Platform.Object ^, xaml_navigation.NavigationEventArgs ^)
+			frameNavigatedEventRegistration.Attach(frame, new NavigatedEventHandler([&](Platform.Object ^, NavigationEventArgs ^)
 
 			{
 				frameNavigatedEvent.Set();
@@ -470,18 +472,18 @@ public class FrameIntegrationTests
 			}));
 		});
 
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			frame.GoBack();
 		});
 
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 		frameNavigatedEvent.WaitForDefault();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			ValidateFrameStack(frame, 0, 1);
@@ -497,7 +499,7 @@ public class FrameIntegrationTests
 		Platform.String ^ navigation = L"1,3,2,31,Microsoft.UI.Xaml.Controls.Page,12,6,Page 1,0,31,Microsoft.UI.Xaml.Controls.Page,12,6,Page 2,0,31,Microsoft.UI.Xaml.Controls.Page,12,6,Page 3,0.0;
 
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			frame = new Frame();
@@ -505,9 +507,9 @@ public class FrameIntegrationTests
 			TestServices.WindowHelper.WindowContent = frame;
 		});
 
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			frame.SetNavigationState(navigation, true);
@@ -534,17 +536,17 @@ public class FrameIntegrationTests
 		var frameNavigatingEvent = std.new Event();
 		var frameNavigatedEvent = std.new Event();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			frame = new Frame();
 
-			frameNavigatingEventRegistration.Attach(frame, new xaml_navigation.NavigatingCancelEventHandler([&](Platform.Object ^, xaml_navigation.NavigatingCancelEventArgs ^)
+			frameNavigatingEventRegistration.Attach(frame, new NavigatingCancelEventHandler([&](Platform.Object ^, NavigatingCancelEventArgs ^)
 
 			{
 				frameNavigatingEvent.Set();
 			}));
-			frameNavigatedEventRegistration.Attach(frame, new xaml_navigation.NavigatedEventHandler([&](Platform.Object ^, xaml_navigation.NavigationEventArgs ^)
+			frameNavigatedEventRegistration.Attach(frame, new NavigatedEventHandler([&](Platform.Object ^, NavigationEventArgs ^)
 
 			{
 				frameNavigatedEvent.Set();
@@ -553,9 +555,9 @@ public class FrameIntegrationTests
 			TestServices.WindowHelper.WindowContent = frame;
 		});
 
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			frame.SetNavigationState(navigation1, true);
@@ -575,45 +577,45 @@ public class FrameIntegrationTests
 	{
 		// Validate GoBack doesn't add items to the forward stack when current page is null
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			ValidateFrameStack(frame, 3, 0.0;
 			frame.GoBack();
 		});
 
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			ValidateFrameStack(frame, 2, 0.0;
 			frame.GoBack();
 		});
 
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			ValidateFrameStack(frame, 1, 1);
 			frame.SetNavigationState(navigationHistory, true);
 		});
 
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
 		// Validate GoBack doesn't add items to the forward stack when current page is null and forward stack is not empty
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			ValidateFrameStack(frame, 2, 1);
 			frame.GoBack();
 		});
 
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			ValidateFrameStack(frame, 1, 1);
@@ -624,24 +626,24 @@ public class FrameIntegrationTests
 	{
 		// Validate GoForward doesn't add items to the back stack when current page is null
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			frame.SetNavigationState(navigationHistory, true);
 		});
 
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			ValidateFrameStack(frame, 2, 1);
 			frame.GoForward();
 		});
 
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			ValidateFrameStack(frame, 2, 0.0;
@@ -654,24 +656,24 @@ public class FrameIntegrationTests
 
 		wxaml_interop.TypeName pageType = { "Microsoft.UI.Xaml.Controls.Page", wxaml_interop.TypeKind.Primitive };
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			frame.SetNavigationState(navigationHistory, true);
 		});
 
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			ValidateFrameStack(frame, 2, 1);
 			frame.Navigate(pageType);
 		});
 
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			ValidateFrameStack(frame, 2, 0.0;
@@ -680,17 +682,17 @@ public class FrameIntegrationTests
 
 	void CacheModeDisabled()
 	{
-		VerifyCachePageNavigationHelper(xaml_navigation.NavigationCacheMode.Disabled, new int[7] { 1, 10, 2, 11, 20, 12, 3 });
+		VerifyCachePageNavigationHelper(NavigationCacheMode.Disabled, new int[7] { 1, 10, 2, 11, 20, 12, 3 });
 	}
 
 	void CacheModeEnabled()
 	{
-		VerifyCachePageNavigationHelper(xaml_navigation.NavigationCacheMode.Enabled, new int[7] { 1, 10, 1, 10, 20, 10, 3 });
+		VerifyCachePageNavigationHelper(NavigationCacheMode.Enabled, new int[7] { 1, 10, 1, 10, 20, 10, 3 });
 	}
 
 	void CacheModeRequired()
 	{
-		VerifyCachePageNavigationHelper(xaml_navigation.NavigationCacheMode.Required, new int[7] { 1, 10, 1, 10, 20, 10, 1 });
+		VerifyCachePageNavigationHelper(NavigationCacheMode.Required, new int[7] { 1, 10, 1, 10, 20, 10, 1 });
 	}
 
 	void CanceledNavigation()
@@ -705,17 +707,17 @@ public class FrameIntegrationTests
 
 		wxaml_interop.TypeName pageType = { "Microsoft.UI.Xaml.Controls.Page", wxaml_interop.TypeKind.Primitive };
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			frame = new Frame();
-			frameNavigatingEventRegistration.Attach(frame, new xaml_navigation.NavigatingCancelEventHandler([&](Platform.Object ^, xaml_navigation.NavigatingCancelEventArgs ^ args)
+			frameNavigatingEventRegistration.Attach(frame, new NavigatingCancelEventHandler([&](Platform.Object ^, NavigatingCancelEventArgs ^ args)
 
 			{
 				args.Cancel = true;
 				frameNavigatingEvent.Set();
 			}));
-			frameStoppedEventRegistration.Attach(frame, new xaml_navigation.NavigationStoppedEventHandler([&](Platform.Object ^, xaml_navigation.NavigationEventArgs ^)
+			frameStoppedEventRegistration.Attach(frame, new NavigationStoppedEventHandler([&](Platform.Object ^, NavigationEventArgs ^)
 
 			{
 				frameStoppedEvent.Set();
@@ -724,9 +726,9 @@ public class FrameIntegrationTests
 			TestServices.WindowHelper.WindowContent = frame;
 		});
 
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			frame.Navigate(pageType);
@@ -736,13 +738,13 @@ public class FrameIntegrationTests
 		frameStoppedEvent.WaitForDefault();
 	}
 
-	void VerifyCachePageNavigationHelper(xaml_navigation.NavigationCacheMode cacheMode, int expectedValues[])
+	public async Task VerifyCachePageNavigationHelper(NavigationCacheMode cacheMode, int expectedValues[])
 	{
 		TestCleanupWrapper cleanup;
 
 		Frame ^ frame = null;
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			frame = new Frame();
@@ -750,12 +752,12 @@ public class FrameIntegrationTests
 			TestServices.WindowHelper.WindowContent = frame;
 		});
 
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
 		// When NavigationCacheMode is Disabled all InstanceCounter will pick the latest Counter value
 		// When NavigationCacheMode is Required all InstanceCounter will always use the initial Counter value
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			FirstTestPage.Counter = 1;
@@ -767,9 +769,9 @@ public class FrameIntegrationTests
 			frame.Navigate(FirstTestPage.typeid, "Page 1");
 		});
 
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			var page = FirstTestPage ^> (frame.Content);
@@ -779,9 +781,9 @@ public class FrameIntegrationTests
 			frame.Navigate(SecondTestPage.typeid, "Page 2");
 		});
 
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			var page = SecondTestPage ^> (frame.Content);
@@ -790,9 +792,9 @@ public class FrameIntegrationTests
 			frame.GoBack();
 		});
 
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			var page = FirstTestPage ^> (frame.Content);
@@ -804,9 +806,9 @@ public class FrameIntegrationTests
 			frame.GoForward();
 		});
 
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			var page = SecondTestPage ^> (frame.Content);
@@ -817,9 +819,9 @@ public class FrameIntegrationTests
 			frame.Navigate(ThirdTestPage.typeid, "Page 3");
 		});
 
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			var page = ThirdTestPage ^> (frame.Content);
@@ -831,9 +833,9 @@ public class FrameIntegrationTests
 			frame.GoBack();
 		});
 
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			var page = SecondTestPage ^> (frame.Content);
@@ -845,9 +847,9 @@ public class FrameIntegrationTests
 			frame.GoBack();
 		});
 
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 
-		RunOnUIThread([&]()
+		await TestServices.RunOnUIThread(() =>
 
 		{
 			var page = FirstTestPage ^> (frame.Content);
@@ -856,6 +858,6 @@ public class FrameIntegrationTests
 			VERIFY_ARE_EQUAL(expectedValues[6], page.InstanceCounter);
 		});
 
-		TestServices.WindowHelper.WaitForIdle();
+		await TestServices.WindowHelper.WaitForIdle();
 	}
 }
