@@ -15,9 +15,7 @@ partial class Frame
 	/// <summary>
 	/// Initializes a new instance of the Frame class.
 	/// </summary>
-	public Frame()
-	{
-	}
+	public Frame() => Initialize();
 
 	// TODO:MZ: Avoid destructor
 	~Frame()
