@@ -25,28 +25,28 @@ internal partial class NavigationCache
 
 	public static NavigationCache Create(Frame frame, int transientCacheSize)
 	{
-		//	object* pobject = null;
-		//	NavigationCache* pNavigationCache = null;
+		object* pobject = null;
+		NavigationCache* pNavigationCache = null;
 
-		//	IFCPTR(ppNavigationCache);
-		//	*ppNavigationCache = null;
+		IFCPTR(ppNavigationCache);
+		*ppNavigationCache = null;
 
-		//	IFCPTR(pIFrame);
+		IFCPTR(pIFrame);
 
-		//	pNavigationCache = new public NavigationCache();
+		pNavigationCache = new public NavigationCache();
 
-		//	pNavigationCache.m_transientCacheSize = transientCacheSize;
-		//	pNavigationCache.m_pIFrame = pIFrame;
+		pNavigationCache.m_transientCacheSize = transientCacheSize;
+		pNavigationCache.m_pIFrame = pIFrame;
 
-		//	*ppNavigationCache = pNavigationCache;
+		*ppNavigationCache = pNavigationCache;
 
-		//Cleanup:
-		//	ReleaseInterface(pobject);
+	Cleanup:
+		ReleaseInterface(pobject);
 
 
-		//	pNavigationCache = null;
+		pNavigationCache = null;
 
-		//	RRETURN(hr);
+		RRETURN(hr);
 	}
 
 	private object GetContent(PageStackEntry pPageStackEntry)
@@ -92,34 +92,12 @@ internal partial class NavigationCache
 		pobject = null;
 
 		TraceNavigationCacheGetContentInfo(WindowsGetStringRawBuffer(strDescriptor, null), found);
-
-	Cleanup:
-		ReleaseInterface(pIPage);
-		ReleaseInterface(pobject);
-
-		RRETURN(hr);
 	}
 
-	private void LoadContent(
-		 string descriptor,
-		out object* ppInstance)
+	private object LoadContent(string descriptor)
 	{
-
-		CClassInfo* pType = null;
-
-		IFCPTR(descriptor);
-
-		IFCPTR(ppInstance);
-		*ppInstance = null;
-
-		(MetadataAPI.GetClassInfoByFullName(
-			XSTRING_PTR_EPHEMERAL_FROM_string(descriptor),
-			&pType));
-
-		ActivationAPI.ActivateInstance(pType, ppInstance);
-
-	Cleanup:
-		RRETURN(hr);
+		var type = Type.GetType(descriptor);
+		return Activator.CreateInstance(type);
 	}
 
 	private void GetCachedContent(
