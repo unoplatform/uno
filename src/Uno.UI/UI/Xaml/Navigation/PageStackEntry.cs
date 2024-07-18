@@ -4,47 +4,46 @@ using System.Text;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Animation;
 
-namespace Microsoft.UI.Xaml.Navigation
+namespace Microsoft.UI.Xaml.Navigation;
+
+public sealed partial class PageStackEntry : DependencyObject
 {
-	public sealed partial class PageStackEntry : DependencyObject
+	public PageStackEntry(Type sourcePageType, object parameter, NavigationTransitionInfo navigationTransitionInfo)
 	{
-		public PageStackEntry(Type sourcePageType, object parameter, NavigationTransitionInfo navigationTransitionInfo)
-		{
-			InitializeBinder();
+		InitializeBinder();
 
-			NavigationTransitionInfo = navigationTransitionInfo;
-			SourcePageType = sourcePageType;
-			Parameter = parameter;
-		}
-
-		#region SourcePageType DependencyProperty
-
-		public Type SourcePageType
-		{
-			get { return (Type)this.GetValue(SourcePageTypeProperty); }
-			set { this.SetValue(SourcePageTypeProperty, value); }
-		}
-
-		// Using a DependencyProperty as the backing store for SourcePageType.  This enables animation, styling, binding, etc...
-		public static DependencyProperty SourcePageTypeProperty { get; } =
-			DependencyProperty.Register(
-				"SourcePageType",
-				typeof(Type),
-				typeof(PageStackEntry),
-				new FrameworkPropertyMetadata(null, (s, e) => ((PageStackEntry)s)?.OnSourcePageTypeChanged(e))
-			);
-
-		private void OnSourcePageTypeChanged(DependencyPropertyChangedEventArgs e)
-		{
-
-		}
-
-		#endregion
-
-		public NavigationTransitionInfo NavigationTransitionInfo { get; internal set; }
-
-		public object Parameter { get; }
-
-		internal Page Instance { get; set; }
+		NavigationTransitionInfo = navigationTransitionInfo;
+		SourcePageType = sourcePageType;
+		Parameter = parameter;
 	}
+
+	#region SourcePageType DependencyProperty
+
+	public Type SourcePageType
+	{
+		get { return (Type)this.GetValue(SourcePageTypeProperty); }
+		set { this.SetValue(SourcePageTypeProperty, value); }
+	}
+
+	// Using a DependencyProperty as the backing store for SourcePageType.  This enables animation, styling, binding, etc...
+	public static DependencyProperty SourcePageTypeProperty { get; } =
+		DependencyProperty.Register(
+			"SourcePageType",
+			typeof(Type),
+			typeof(PageStackEntry),
+			new FrameworkPropertyMetadata(null, (s, e) => ((PageStackEntry)s)?.OnSourcePageTypeChanged(e))
+		);
+
+	private void OnSourcePageTypeChanged(DependencyPropertyChangedEventArgs e)
+	{
+
+	}
+
+	#endregion
+
+	public NavigationTransitionInfo NavigationTransitionInfo { get; internal set; }
+
+	public object Parameter { get; }
+
+	internal Page Instance { get; set; }
 }
