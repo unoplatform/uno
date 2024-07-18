@@ -19,45 +19,44 @@ using Microsoft.UI.Xaml;
 
 namespace Uno.WinUI.Runtime.Skia.AppleUIKit.Controls;
 
-public partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleTextBoxView
+internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleTextBoxView
 {
-	private SinglelineInvisibleTextBoxDelegate _delegate;
-	private readonly WeakReference<TextBoxView> _textBoxView;
-	private Action _foregroundChanged;
+	private SinglelineInvisibleTextBoxDelegate? _delegate;
+	private readonly WeakReference<InvisibleTextBoxViewExtension> _textBoxViewExtension;
 
-	public SinglelineInvisibleTextBoxView(TextBoxView textBoxView)
+	public SinglelineInvisibleTextBoxView(InvisibleTextBoxViewExtension textBoxView)
 	{
 		if (textBoxView is null)
 		{
 			throw new ArgumentNullException(nameof(textBoxView));
 		}
 
-		_textBoxView = new WeakReference<TextBoxView>(textBoxView);
+		_textBoxViewExtension = new WeakReference<InvisibleTextBoxViewExtension>(textBoxView);
 
 		Initialize();
 	}
 
-	public override void Paste(NSObject sender) => HandlePaste(() => base.Paste(sender));
+	public override void Paste(NSObject? sender) => HandlePaste(() => base.Paste(sender));
 
-	public override void PasteAndGo(NSObject sender) => HandlePaste(() => base.PasteAndGo(sender));
+	public override void PasteAndGo(NSObject? sender) => HandlePaste(() => base.PasteAndGo(sender));
 
-	public override void PasteAndMatchStyle(NSObject sender) => HandlePaste(() => base.PasteAndMatchStyle(sender));
+	public override void PasteAndMatchStyle(NSObject? sender) => HandlePaste(() => base.PasteAndMatchStyle(sender));
 
-	public override void PasteAndSearch(NSObject sender) => HandlePaste(() => base.PasteAndSearch(sender));
+	public override void PasteAndSearch(NSObject? sender) => HandlePaste(() => base.PasteAndSearch(sender));
 
 	public override void Paste(NSItemProvider[] itemProviders) => HandlePaste(() => base.Paste(itemProviders));
 
 	private void HandlePaste(Action baseAction)
 	{
 		var args = new TextControlPasteEventArgs();
-		TextBox?.RaisePaste(args);
+		TextBoxViewExtension?.Owner.TextBox?.RaisePaste(args);
 		if (!args.Handled)
 		{
 			baseAction.Invoke();
 		}
 	}
 
-	internal TextBoxView TextBox => _textBoxView.GetTarget();
+	internal InvisibleTextBoxViewExtension TextBoxViewExtension => _textBoxViewExtension.GetTarget();
 
 	public override string? Text
 	{
@@ -74,18 +73,16 @@ public partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleTex
 		}
 	}
 
-	private void OnEditingChanged(object sender, EventArgs e)
+	private void OnEditingChanged(object? sender, EventArgs e)
 	{
 		OnTextChanged();
 	}
 
 	private void OnTextChanged()
 	{
-		var textBoxView = _textBoxView?.GetTarget();
-		if (textBoxView != null)
+		if (_textBoxViewExtension?.GetTarget() is { } textBoxView)
 		{
-			var text = textBoxView.ProcessTextInput(Text);
-			SetTextNative(text);
+			textBoxView.ProcessNativeTextInput(Text);
 		}
 	}
 
@@ -96,19 +93,19 @@ public partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleTex
 		//Set native VerticalAlignment to top-aligned (default is center) to match Windows text placement
 		base.VerticalAlignment = UIControlContentVerticalAlignment.Top;
 
-		Delegate = _delegate = new SinglelineInvisibleTextBoxDelegate(_textBoxView)
+		Delegate = _delegate = new SinglelineInvisibleTextBoxDelegate(_textBoxViewExtension)
 		{
 			IsKeyboardHiddenOnEnter = true
 		};
 	}
 
-	partial void OnLoadedPartial()
+	private void StartEditing()
 	{
 		this.EditingChanged += OnEditingChanged;
 		this.EditingDidEnd += OnEditingChanged;
 	}
 
-	partial void OnUnloadedPartial()
+	private void EndEditing()
 	{
 		this.EditingChanged -= OnEditingChanged;
 		this.EditingDidEnd -= OnEditingChanged;
@@ -126,6 +123,17 @@ public partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleTex
 			InsertText(text ?? "");
 		}
 
+		StartEditing();
+
+		return result;
+	}
+
+	public override bool ResignFirstResponder()
+	{
+		var result = base.ResignFirstResponder();
+
+		EndEditing();
+
 		return result;
 	}
 
@@ -140,6 +148,7 @@ public partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleTex
 
 	[DllImport(Constants.ObjectiveCLibrary, EntryPoint = "objc_msgSendSuper")]
 	static internal extern void void_objc_msgSendSuper(IntPtr receiver, IntPtr selector, IntPtr arg);
+	public bool IsCompatible(Microsoft.UI.Xaml.Controls.TextBox textBox) => !textBox.AcceptsReturn;
 
 	[Export("selectedTextRange")]
 	public new IntPtr SelectedTextRange
@@ -150,12 +159,12 @@ public partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleTex
 		}
 		set
 		{
-			var textBox = TextBox;
+			var textBoxView = TextBoxViewExtension;
 
-			if (textBox != null && SelectedTextRange != value)
+			if (textBoxView != null && SelectedTextRange != value)
 			{
 				void_objc_msgSendSuper(SuperHandle, Selector.GetHandle("setSelectedTextRange:"), value);
-				textBox.OnSelectionChanged();
+				textBoxView.Owner.TextBox?.OnSelectionChanged();
 			}
 		}
 	}

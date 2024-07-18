@@ -22,6 +22,7 @@ internal class RootViewController : UINavigationController, IRotationAwareViewCo
 {
 	private SKCanvasView? _skCanvasView;
 	private XamlRoot? _xamlRoot;
+	private UIView? _textInputLayer;
 
 	public RootViewController()
 	{
@@ -54,11 +55,13 @@ internal class RootViewController : UINavigationController, IRotationAwareViewCo
 
 	public void Initialize()
 	{
+		_textInputLayer = new UIView();
 		_skCanvasView = new SKCanvasView();
 		_skCanvasView.BackgroundColor = UIColor.Red;
 		_skCanvasView.Frame = View!.Bounds;
 		_skCanvasView.AutoresizingMask = UIViewAutoresizing.All;
 		_skCanvasView.PaintSurface += OnPaintSurface;
+		View!.AddSubview(_textInputLayer);
 		View!.AddSubview(_skCanvasView);
 
 		// TODO Uno: When we support multi-window, this should close popups for the appropriate XamlRoot #13847.
@@ -104,6 +107,7 @@ internal class RootViewController : UINavigationController, IRotationAwareViewCo
 
 	public UIElement? RootElement => _xamlRoot?.VisualTree.RootElement;
 
+	public UIView TextInputLayer => _textInputLayer!;
 
 	// This will handle when the status bar is showed / hidden by the system on iPhones
 	public override void ViewSafeAreaInsetsDidChange()

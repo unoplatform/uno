@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using UIKit;
+using Uno.UI.Extensions;
 using Uno.UI.Runtime.Skia.AppleUIKit;
 using Uno.UI.Xaml.Controls.Extensions;
-using Uno.UI.Xaml.Core;
 using Uno.WinUI.Runtime.Skia.AppleUIKit.Controls;
 
 namespace Uno.WinUI.Runtime.Skia.AppleUIKit;
@@ -19,6 +20,8 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 		_owner = view;
 	}
 
+	internal TextBoxView Owner => _owner;
+
 	public bool IsOverlayLayerInitialized(XamlRoot xamlRoot) => true;
 
 	public void StartEntry()
@@ -26,36 +29,33 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 		// StartEntry can be called twice without any EndEntry.
 		// So,  do nothing if we already have non-null _nativeEditText.
 		// This happens when the managed TextBox receives Focus with two different `FocusState`s (e.g, Programmatic and Keyboard/Pointer)
-		if (_nativeInput is not null)
+		if (_textBoxView is not null)
 		{
 			return;
 		}
 
 		var textBox = _owner.TextBox;
+		if (textBox is null || textBox.XamlRoot is null)
+		{
+			return;
+		}
 
-		_nativeInput = new SinglelineInvisibleTextBoxView(_owner);
-		//var relativeLayout = ApplicationActivity.Instance.RelativeLayout;
-		//relativeLayout.AddView(_nativeInput);
-		//_nativeInput.RequestFocus();
+		EnsureTextBoxView(textBox);
+		AddViewToTextInputLayer(textBox.XamlRoot);
 
-		//var start = textBox?.SelectionStart ?? 0;
-		//var length = textBox?.SelectionLength ?? 0;
-		//_nativeInput.SetSelection(start, start + length);
-		//InvalidateLayout();
+		_textBoxView.BecomeFirstResponder();
 
-		//InputMethodManager imm = (InputMethodManager)ContextHelper.Current.GetSystemService(Context.InputMethodService)!;
-		//imm.ShowSoftInput(_nativeEditText, ShowFlags.Implicit);
+		var start = textBox?.SelectionStart ?? 0;
+		var length = textBox?.SelectionLength ?? 0;
+		_textBoxView.Select(start, length);
 	}
 
 	public void EndEntry()
 	{
 		if (_textBoxView is not null)
 		{
-			//InputMethodManager imm = (InputMethodManager)ContextHelper.Current.GetSystemService(Context.InputMethodService)!;
-			//imm.HideSoftInputFromWindow(_nativeInput.WindowToken, HideSoftInputFlags.None);
-
-			//ApplicationActivity.Instance.RelativeLayout.RemoveView(_nativeInput);
-			//_nativeInput = null;
+			RemoveViewFromTextInputLayer();
+			_textBoxView = null;
 		}
 	}
 
@@ -88,23 +88,48 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 		{
 			try
 			{
-				_textBoxView.SuspendSelectionChange();
+				//_textBoxView.SuspendSelectionChange();
 				_textBoxView.Text = text;
 			}
 			finally
 			{
-				_textBoxView.ResumeSelectionChange();
+				//_textBoxView.ResumeSelectionChange();
 			}
 		}
 	}
 
-	public int GetSelectionLength() => throw new NotImplementedException();
-	public int GetSelectionLengthBeforeKeyDown() => throw new NotImplementedException();
-	public int GetSelectionStart() => throw new NotImplementedException();
-	public int GetSelectionStartBeforeKeyDown() => throw new NotImplementedException();
-	public void Select(int start, int length)
+	public int GetSelectionLength()
 	{
+		if (_textBoxView?.SelectedTextRange == null)
+		{
+			return 0;
+		}
+
+		return (int)_textBoxView.GetOffsetFromPosition(
+			_textBoxView.SelectedTextRange.Start,
+			_textBoxView.SelectedTextRange.End
+		);
 	}
+
+	public int GetSelectionLengthBeforeKeyDown() => GetSelectionLength();
+
+	public int GetSelectionStart()
+	{
+		if (_textBoxView?.SelectedTextRange == null || _textBoxView?.BeginningOfDocument == null)
+		{
+			return 0;
+		}
+
+		return (int)_textBoxView.GetOffsetFromPosition(
+			_textBoxView.BeginningOfDocument,
+			_textBoxView.SelectedTextRange.Start
+		);
+	}
+
+	public int GetSelectionStartBeforeKeyDown() => GetSelectionStart();
+
+	public void Select(int start, int length) => _textBoxView?.Select(start, length);
+
 	public void SetPasswordRevealState(PasswordRevealState passwordRevealState) { }
 
 	public void UpdateNativeView()
@@ -117,6 +142,7 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 	public void UpdateProperties() { }
 
+	[MemberNotNull(nameof(_textBoxView))]
 	private void EnsureTextBoxView(TextBox textBox)
 	{
 		if (_textBoxView is null ||
@@ -127,6 +153,23 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 			var inputText = GetNativeText() ?? textBox.Text;
 			_textBoxView = CreateNativeView(textBox);
 			SetNativeText(inputText ?? string.Empty);
+		}
+	}
+
+	internal void ProcessNativeTextInput(string? text)
+	{
+		if (_owner?.TextBox is { } textBox)
+		{
+			var selectionStart = textBox.SelectionStart;
+			var selectionLength = textBox.SelectionLength;
+
+			var newSelectionStart = GetSelectionStart();
+			textBox.SetPendingSelection(newSelectionStart, 0);
+			var updatedText = textBox.ProcessTextInput(text);
+			if (text != updatedText)
+			{
+				SetNativeText(updatedText);
+			}
 		}
 	}
 
@@ -145,29 +188,34 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 		}
 	}
 
-	private IInvisibleTextBoxView CreateNativeView(TextBox textBox) =>
-		!textBox.AcceptsReturn ?
-			new SinglelineInvisibleTextBoxView(_owner) :
-			new MultilineInvisibleTextBoxView(_owner);
+	private IInvisibleTextBoxView CreateNativeView(TextBox textBox) => new SinglelineInvisibleTextBoxView(this);
 
-	public void AddToTextInputLayer(XamlRoot xamlRoot)
+	public void AddViewToTextInputLayer(XamlRoot xamlRoot)
 	{
-		if (GetOverlayLayer(xamlRoot) is { } layer && RootElement.Parent != layer)
+		if (_textBoxView is not UIView nativeView)
 		{
-			layer.Children.Add(RootElement);
-			DataObject.AddPastingHandler(RootElement, PasteHandler);
+			return;
+		}
+
+		if (GetOverlayLayer(xamlRoot) is { } layer && nativeView.Superview != layer)
+		{
+			layer.AddSubview(nativeView);
 		}
 	}
 
-	public void RemoveFromTextInputLayer()
+	public void RemoveViewFromTextInputLayer()
 	{
-		if (RootElement.Parent is WpfCanvas layer)
+		if (_textBoxView is not UIView nativeView)
 		{
-			layer.Children.Remove(RootElement);
-			DataObject.RemovePastingHandler(RootElement, PasteHandler);
+			return;
+		}
+
+		if (nativeView.Superview is not null)
+		{
+			nativeView.RemoveFromSuperview();
 		}
 	}
 
 	internal static UIView? GetOverlayLayer(XamlRoot xamlRoot) =>
-		AppManager.XamlRootMap.GetHostForRoot(xamlRoot)?.NativeOverlayLayer;
+		AppManager.XamlRootMap.GetHostForRoot(xamlRoot)?.TextInputLayer;
 }

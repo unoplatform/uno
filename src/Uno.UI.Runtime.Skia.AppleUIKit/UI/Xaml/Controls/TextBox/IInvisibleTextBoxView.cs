@@ -8,7 +8,7 @@ namespace Uno.WinUI.Runtime.Skia.AppleUIKit.Controls;
 //we use this interface to abstract properties that we need to modify in TextBox
 public interface IInvisibleTextBoxView : ITextInput
 {
-	string Text { get; set; }
+	string? Text { get; set; }
 
 	bool IsCompatible(TextBox textBox);
 

@@ -6,16 +6,17 @@ using UIKit;
 using Windows.UI.Core;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
 
 namespace Uno.WinUI.Runtime.Skia.AppleUIKit.Controls;
 
-public partial class SinglelineInvisibleTextBoxDelegate : UITextFieldDelegate
+internal partial class SinglelineInvisibleTextBoxDelegate : UITextFieldDelegate
 {
-	private readonly WeakReference<TextBoxView> _textBoxView;
+	private readonly WeakReference<InvisibleTextBoxViewExtension> _textBoxViewExtension;
 
-	public SinglelineInvisibleTextBoxDelegate(WeakReference<TextBoxView> textBoxView)
+	public SinglelineInvisibleTextBoxDelegate(WeakReference<InvisibleTextBoxViewExtension> textBoxViewExtension)
 	{
-		_textBoxView = textBoxView;
+		_textBoxViewExtension = textBoxViewExtension ?? throw new ArgumentNullException(nameof(textBoxViewExtension));
 	}
 
 	public bool IsKeyboardHiddenOnEnter
@@ -28,7 +29,7 @@ public partial class SinglelineInvisibleTextBoxDelegate : UITextFieldDelegate
 	{
 		if (textField is SinglelineInvisibleTextBoxView textBoxView)
 		{
-			if (_textBoxView.GetTarget() is not TextBox textBox)
+			if (_textBoxViewExtension.GetTarget()?.Owner.TextBox is not TextBox textBox)
 			{
 				return false;
 			}
@@ -39,17 +40,18 @@ public partial class SinglelineInvisibleTextBoxDelegate : UITextFieldDelegate
 				return false;
 			}
 
-			if (textBox.OnKey(replacementString.FirstOrDefault()))
-			{
-				return false;
-			}
+			// TODO:MZ:
+			//if (textBox.OnKey(replacementString.FirstOrDefault()))
+			//{
+			//	return false;
+			//}
 
 			if (textBox.MaxLength > 0)
 			{
 				// When replacing text from pasting (multiple characters at once)
 				// we should only allow it (return true) when the new text length
 				// is lower or equal to the allowed length (TextBox.MaxLength)
-				var newLength = textBoxView.Text.Length + replacementString.Length - range.Length;
+				var newLength = (textBoxView.Text?.Length ?? 0) + replacementString.Length - range.Length;
 				return newLength <= textBox.MaxLength;
 			};
 		}
@@ -73,10 +75,11 @@ public partial class SinglelineInvisibleTextBoxDelegate : UITextFieldDelegate
 		var textBox = textField as SinglelineInvisibleTextBoxView;
 		if (textBox != null)
 		{
-			if (_textBoxView.GetTarget()?.OnKey('\n') ?? false)
-			{
-				return false;
-			}
+			// TODO:MZ:
+			//if (_textBoxView.GetTarget()?.OnKey('\n') ?? false)
+			//{
+			//	return false;
+			//}
 		}
 
 		return true;
@@ -87,7 +90,7 @@ public partial class SinglelineInvisibleTextBoxDelegate : UITextFieldDelegate
 	/// </summary>
 	public override void EditingStarted(UITextField textField)
 	{
-		if (_textBoxView.GetTarget() is TextBox textBox && textBox.FocusState == FocusState.Unfocused)
+		if (_textBoxViewExtension.GetTarget()?.Owner.TextBox is TextBox textBox && textBox.FocusState == FocusState.Unfocused)
 		{
 			textBox.Focus(FocusState.Pointer);
 		}
@@ -98,7 +101,7 @@ public partial class SinglelineInvisibleTextBoxDelegate : UITextFieldDelegate
 	/// </summary>
 	public override void EditingEnded(UITextField textField)
 	{
-		if (_textBoxView.GetTarget() is TextBox { FocusState: not FocusState.Unfocused, IsKeepingFocusOnEndEditing: false } textBox)
+		if (_textBoxViewExtension.GetTarget()?.Owner.TextBox is TextBox { FocusState: not FocusState.Unfocused } textBox)
 		{
 			textBox.Unfocus();
 		}
