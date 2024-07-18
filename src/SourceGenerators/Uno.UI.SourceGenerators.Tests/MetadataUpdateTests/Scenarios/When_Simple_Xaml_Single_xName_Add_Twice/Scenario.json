@@ -34,12 +34,23 @@
 			"IsMono": false,
 			"PassResults": [
 				{
-					"MetadataUpdates": 1,
-					"Diagnostics": []
+					"MetadataUpdates": 0,
+					"Diagnostics": [
+						// MainPage_e249a1283df7035b4d61c8549853c03e.cs(75,138): error ENC0053: Changing the parameters of lambda requires restarting the application.
+						{ "Id": "ENC0053" },
+						{ "Id": "ENC0053" },
+						{ "Id": "ENC0053" }
+					]
 				},
 				{
-					"MetadataUpdates": 1,
-					"Diagnostics": []
+					"MetadataUpdates": 0,
+					"Diagnostics": [
+						// MainPage_e249a1283df7035b4d61c8549853c03e.cs(75,138): error ENC0053: Changing the parameters of lambda requires restarting the application.
+						{ "Id": "ENC0053" },
+						{ "Id": "ENC0053" },
+						{ "Id": "ENC0053" },
+						{ "Id": "ENC0053" }
+					]
 				}
 			]
 		},
@@ -48,12 +59,23 @@
 			"IsMono": true,
 			"PassResults": [
 				{
-					"MetadataUpdates": 1,
-					"Diagnostics": []
+					"MetadataUpdates": 0,
+					"Diagnostics": [
+						// MainPage_e249a1283df7035b4d61c8549853c03e.cs(75,138): error ENC0053: Changing the parameters of lambda requires restarting the application.
+						{ "Id": "ENC0053" },
+						{ "Id": "ENC0053" },
+						{ "Id": "ENC0053" }
+					]
 				},
 				{
-					"MetadataUpdates": 1,
-					"Diagnostics": []
+					"MetadataUpdates": 0,
+					"Diagnostics": [
+						// MainPage_e249a1283df7035b4d61c8549853c03e.cs(75,138): error ENC0053: Changing the parameters of lambda requires restarting the application.
+						{ "Id": "ENC0053" },
+						{ "Id": "ENC0053" },
+						{ "Id": "ENC0053" },
+						{ "Id": "ENC0053" }
+					]
 				}
 			]
 		}
