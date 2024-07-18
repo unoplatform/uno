@@ -53,7 +53,189 @@ Hot Reload features vary between platforms and IDE, you can check below the list
 > [!IMPORTANT]
 > Using [.NET 8](https://dotnet.microsoft.com/download/dotnet/8.0) or later (`net8.0` in the `TargetFrameworks` property) is required for Hot Reload to be available when your solution contains iOS, Android, Mac Catalyst, or WebAssembly project heads. On Windows, [Visual Studio 17.8](https://visualstudio.microsoft.com/vs) or later is required.
 
-## Supported features
+## Supported features per OS
+
+Legend:
+
+- ✅ Supported
+- 🐞 Supported with the debugger
+- ⌛ Upcoming support
+- ❌ Not working
+- ⭕ Not supported by the environment/IDE
+
+### [**Windows**](#tab/windows)
+
+<table>
+    <thead>
+        <tr>
+            <th></th>
+            <th colspan="2">Visual Studio</th>
+            <th colspan="2">VS Code</th>
+            <th colspan="2">Rider</th>
+        </tr>
+        <tr>
+            <th>Target</th>
+            <th>C#</th>
+            <th>XAML</th>
+            <th>C#</th>
+            <th>XAML</th>
+            <th>C#</th>
+            <th>XAML</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Desktop Windows</td>
+            <td>✅🐞</td><td>✅🐞</td>
+            <td>✅🐞</td><td>✅🐞</td>
+            <td>✅</td><td>✅</td>
+        </tr>
+        <tr>
+            <td>Desktop/WSL</td>
+            <td>⌛(1)</td><td>⌛(1)</td>
+            <td>✅</td><td>✅</td>
+            <td>⭕(2)</td><td>⭕(2)</td>
+        </tr>
+        <tr>
+            <td>iOS</td>
+            <td>❌(3)</td><td>✅(4)</td>
+            <td>❌(3)</td><td>✅(4)</td>
+            <td>❌(3)</td><td>✅(4)</td>
+        </tr>
+        <tr>
+            <td>Android</td>
+            <td>❌(5)</td><td>✅(4)</td>
+            <td>❌(5)</td><td>✅(4)</td>
+            <td>❌(5)</td><td>✅(4)</td>
+        </tr>
+        </tr>
+        <tr>
+            <td>Catalyst</td>
+            <td>⭕</td><td>⭕</td>
+            <td>⭕</td><td>⭕</td>
+            <td>⭕</td><td>⭕</td>
+        </tr>
+        <tr>
+            <td>WinAppSDK</td>
+            <td>✅🐞</td><td>✅🐞</td>
+            <td>⭕</td><td>⭕</td>
+            <td>⭕</td><td>⭕</td>
+        </tr>
+        <tr>
+            <td>WebAssembly</td>
+            <td>✅🐞</td><td>✅🐞</td>
+            <td>✅</td><td>✅</td>
+            <td>✅</td><td>✅</td>
+        </tr>
+    </tbody>
+</table>
+
+### [**macOS **](#tab/macOS)
+
+<table>
+    <thead>
+        <tr>
+            <th></th>
+            <th colspan="2">VS Code</th>
+            <th colspan="2">Rider</th>
+        </tr>
+        <tr>
+            <th>Target</th>
+            <th>C#</th>
+            <th>XAML</th>
+            <th>C#</th>
+            <th>XAML</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Desktop macOS</td>
+            <td>✅</td><td>✅</td>
+            <td>✅</td><td>✅</td>
+        </tr>
+        <tr>
+            <td>iOS</td>
+            <td>❌(3)</td><td>✅(4)</td>
+            <td>❌(3)</td><td>✅(4)</td>
+        </tr>
+        <tr>
+            <td>Android</td>
+            <td>❌(5)</td><td>✅(4)</td>
+            <td>❌(5)</td><td>✅(4)</td>
+        </tr>
+        </tr>
+        <tr>
+            <td>Catalyst</td>
+            <td>❌(3)</td><td>✅(4)</td>
+            <td>❌(3)</td><td>✅(4)</td>
+        </tr>
+        <tr>
+            <td>WinAppSDK</td>
+            <td>⭕</td><td>⭕</td>
+            <td>⭕</td><td>⭕</td>
+        </tr>
+        <tr>
+            <td>WebAssembly</td>
+            <td>✅</td><td>✅</td>
+            <td>✅</td><td>✅</td>
+        </tr>
+    </tbody>
+</table>
+
+### [**Linux**](#tab/linux)
+
+<table>
+    <thead>
+        <tr>
+            <th></th>
+            <th colspan="2">VS Code</th>
+            <th colspan="2">Rider</th>
+        </tr>
+        <tr>
+            <th>Target</th>
+            <th>C#</th>
+            <th>XAML</th>
+            <th>C#</th>
+            <th>XAML</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Desktop macOS</td>
+            <td>✅</td><td>✅</td>
+            <td>✅</td><td>✅</td>
+        </tr>
+        <tr>
+            <td>Android</td>
+            <td>❌(5)</td><td>✅(4)</td>
+            <td>❌(5)</td><td>✅(4)</td>
+        </tr>
+        <tr>
+            <td>WebAssembly</td>
+            <td>✅</td><td>✅</td>
+            <td>✅</td><td>✅</td>
+        </tr>
+        <tr>
+            <td>iOS</td>
+            <td>⭕</td><td>⭕</td>
+            <td>⭕</td><td>⭕</td>
+        </tr>
+        <tr>
+            <td>Catalyst</td>
+            <td>⭕</td><td>⭕</td>
+            <td>⭕</td><td>⭕</td>
+        </tr>
+        <tr>
+            <td>WinAppSDK</td>
+            <td>⭕</td><td>⭕</td>
+            <td>⭕</td><td>⭕</td>
+        </tr>
+    </tbody>
+</table>
+
+---
+
+## Supported features per Platform
 
 ### [**Desktop**](#tab/skia-desktop)
 
