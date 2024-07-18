@@ -133,7 +133,14 @@ public class GenerateSkiaDesktopMacOSBundle_v0 : SdkTask
 				continue;
 			}
 
-			source[kvp.Key!] = kvp.Value;
+			if (kvp.Value is PObject pObject)
+			{
+				source[kvp.Key!] = pObject.Clone();
+			}
+			else
+			{
+				source[kvp.Key!] = kvp.Value;
+			}
 		}
 	}
 }
