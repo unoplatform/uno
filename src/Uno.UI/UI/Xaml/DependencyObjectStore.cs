@@ -229,10 +229,6 @@ namespace Microsoft.UI.Xaml
 		/// </remarks>
 		public bool IsAutoPropertyInheritanceEnabled { get; set; } = true;
 
-
-		// todo@xy: to verify https://github.com/unoplatform/uno/pull/15732; disabled for using deleted code
-		//internal bool IsTemplatedParentFrozen { get; set; }
-
 		/// <summary>
 		/// Gets a unique identifier for the current DependencyObject.
 		/// </summary>
@@ -454,12 +450,6 @@ namespace Microsoft.UI.Xaml
 
 		private void InnerSetValue(DependencyProperty property, object? value, DependencyPropertyValuePrecedences precedence, DependencyPropertyDetails? propertyDetails, bool isPersistentResourceBinding)
 		{
-			// fixme@xy: IsTemplatedParentFrozen
-			//if (IsTemplatedParentFrozen && property == FrameworkElement.TemplatedParentProperty)
-			//{
-			//	return;
-			//}
-
 			if (precedence == DependencyPropertyValuePrecedences.Coercion)
 			{
 				throw new ArgumentException("SetValue must not be called with precedence DependencyPropertyValuePrecedences.Coercion, as it expects a non-coerced value to function properly.");
@@ -1235,11 +1225,6 @@ namespace Microsoft.UI.Xaml
 
 
 					SetValue(_dataContextProperty!, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
-					// fixme@xy: IsTemplatedParentFrozen
-					// if (!IsTemplatedParentFrozen)
-					// {
-					// 	SetValue(_templatedParentProperty!, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
-					// }
 				}
 			}
 			finally
