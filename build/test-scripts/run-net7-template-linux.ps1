@@ -98,5 +98,5 @@ for($i = 0; $i -lt $projects.Length; $i++)
     popd
 
     # show disk space
-    dh -h
+    df -h
 }
