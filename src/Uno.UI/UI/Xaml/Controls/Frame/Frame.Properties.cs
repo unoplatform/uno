@@ -12,7 +12,7 @@ partial class Frame
 	public IList<PageStackEntry> BackStack
 	{
 		get => (IList<PageStackEntry>)GetValue(BackStackProperty);
-		set => SetValue(BackStackProperty, value);
+		private set => SetValue(BackStackProperty, value);
 	}
 
 	/// <summary>

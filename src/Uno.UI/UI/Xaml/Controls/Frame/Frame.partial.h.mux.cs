@@ -30,7 +30,7 @@ partial class Frame
 
 	private readonly SerialDisposable m_nextClick = new();
 
-	private readonly SerialDisposable m_previousClick;
+	private readonly SerialDisposable m_previousClick = new();
 
 	private NavigationCache m_upNavigationCache;
 

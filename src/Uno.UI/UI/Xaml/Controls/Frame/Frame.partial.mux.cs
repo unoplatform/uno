@@ -30,6 +30,8 @@ partial class Frame
 
 		var spNavigationHistory = NavigationHistory.Create(this);
 		m_tpNavigationHistory = spNavigationHistory;
+		BackStack = m_tpNavigationHistory.GetBackStack();
+		ForwardStack = m_tpNavigationHistory.GetForwardStack();
 
 		var pNavigationCache = NavigationCache.Create(this, InitialTransientCacheSize);
 		m_upNavigationCache = pNavigationCache;
@@ -247,7 +249,7 @@ partial class Frame
 
 		m_isNavigationFromMethod = true;
 
-		var strDescriptor = sourcePageType.FullName;
+		var strDescriptor = sourcePageType.AssemblyQualifiedName;
 
 		m_tpNavigationTransitionInfo = navigationTransitionInfo;
 		m_tpNavigationHistory.NavigateNew(strDescriptor, parameter, navigationTransitionInfo);

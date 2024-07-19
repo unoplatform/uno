@@ -89,4 +89,25 @@ public partial class Frame : ContentControl
 	/// <param name="navigationState">The serialization string that supplies the restore point for navigation history.</param>
 	/// <param name="suppressNavigate">True to restore navigation history without navigating to the current page; otherwise, false.</param>
 	public void SetNavigationState(string navigationState, bool suppressNavigate) => SetNavigationStateWithNavigationControlImpl(navigationState, suppressNavigate);
+
+	internal static Page CreatePageInstance(Type sourcePageType)
+	{
+		if (Uno.UI.DataBinding.BindingPropertyHelper.BindableMetadataProvider != null)
+		{
+			var bindableType = Uno.UI.DataBinding.BindingPropertyHelper.BindableMetadataProvider.GetBindableTypeByType(sourcePageType);
+
+			if (bindableType != null)
+			{
+				return bindableType.CreateInstance()() as Page;
+			}
+		}
+
+		return Activator.CreateInstance(sourcePageType) as Page;
+	}
+
+#if __CROSSRUNTIME__
+	internal PageStackEntry GetCurrentPageStackEntry() => m_tpNavigationHistory.GetCurrentPageStackEntry();
+
+	internal Page EnsurePageInitialized(PageStackEntry entry) => entry.Instance;
+#endif
 }

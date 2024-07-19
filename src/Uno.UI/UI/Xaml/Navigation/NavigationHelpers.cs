@@ -73,52 +73,51 @@ internal static class NavigationHelpers
 		out uint pValue,
 		out int pNextPosition)
 	{
+		//VARIANT src;
+		//VARIANT dest;
+		//string subString;
+		//BSTR bstrValue = null;
 
-		VARIANT src;
-		VARIANT dest;
-		string subString;
-		BSTR bstrValue = null;
+		//VariantInit(&src);
+		//VariantInit(&dest);
 
-		VariantInit(&src);
-		VariantInit(&dest);
-
-		*pValue = 0;
+		//*pValue = 0;
 
 		// Read next substring 
-		ReadNextSubString(buffer, currentPosition, subString, pNextPosition);
+		ReadNextSubString(buffer, currentPosition, out var subString, out pNextPosition);
 
 		// Convert substring to uint
-		bstrValue = SysAllocString(subString.c_str());
-		IFCOOMFAILFAST(bstrValue);
-		V_VT(&src) = VT_BSTR;
-		V_BSTR(&src) = bstrValue;
-		bstrValue = null;
-		VariantChangeType(&dest, &src, 0, VT_UI4);
-		*pValue = V_UI4(&dest);
+		pValue = uint.Parse(subString, CultureInfo.InvariantCulture);
+
+		//bstrValue = SysAllocString(subString.c_str());
+		//IFCOOMFAILFAST(bstrValue);
+		//V_VT(&src) = VT_BSTR;
+		//V_BSTR(&src) = bstrValue;
+		//bstrValue = null;
+		//VariantChangeType(&dest, &src, 0, VT_UI4);
+		//*pValue = V_UI4(&dest);
 	}
 
 	internal static void WriteHSTRINGToString(
 		 string hstr,
 		 StringBuilder buffer)
 	{
-		string psz = null;
-		uint length = 0;
-
 		// Write <length>,<string>, if a string was provided
 		// Write 0, if string is empty or null. Empty strings are read back as null.
-		if (hstr)
+		if (hstr is not null)
 		{
-			psz = HStringUtil.GetRawBuffer(hstr, &length);
-			NavigationHelpers.WriteuintToString(length, buffer);
+			var psz = hstr;
+			var length = psz.Length;
+			NavigationHelpers.WriteUINT32ToString((uint)length, buffer);
 			if (length > 0)
 			{
-				buffer.append(psz);
-				buffer.append(",");
+				buffer.Append(psz);
+				buffer.Append(',');
 			}
 		}
 		else
 		{
-			NavigationHelpers.WriteUintToString(0, buffer);
+			NavigationHelpers.WriteUINT32ToString(0, buffer);
 		}
 	}
 
@@ -140,19 +139,19 @@ internal static class NavigationHelpers
 		out bool pIsParameterTypeSupported)
 	{
 
-		string strPropertyValue;
+		string strPropertyValue = null;
 		PropertyType propertyType = PropertyType.Empty;
 		bool isParameterTypeSupported = false;
 
 		pIsParameterTypeSupported = false;
 
-		if (pNavigationParameter)
+		if (pNavigationParameter is not null)
 		{
-			(ConvertNavigationParameterToHSTRING(
+			ConvertNavigationParameterToHSTRING(
 				pNavigationParameter,
-				strPropertyValue.GetAddressOf(),
-				&propertyType,
-				&isParameterTypeSupported));
+				out strPropertyValue,
+				out propertyType,
+				out isParameterTypeSupported);
 
 			if (!isParameterTypeSupported)
 			{
@@ -168,7 +167,7 @@ internal static class NavigationHelpers
 
 		// Write property type. PropertyType.Empty will be written if 
 		// property value was not provided or parameted serialization is not supported
-		NavigationHelpers.WriteuintToString(propertyType, buffer);
+		NavigationHelpers.WriteUINT32ToString((uint)(int)propertyType, buffer);
 
 		// Write property value as a string. 
 		if (propertyType != PropertyType.Empty)
@@ -176,7 +175,7 @@ internal static class NavigationHelpers
 			WriteHSTRINGToString(strPropertyValue, buffer);
 		}
 
-		*pIsParameterTypeSupported = isParameterTypeSupported;
+		pIsParameterTypeSupported = isParameterTypeSupported;
 	}
 
 	//------------------------------------------------------------------------
@@ -204,50 +203,48 @@ internal static class NavigationHelpers
 		uint value = 0;
 		bool isParameterTypeSupported = false;
 
-		*ppNavigationParameter = null;
+		ppNavigationParameter = null;
 
 		// Read parameter's property type
-		(NavigationHelpers.ReaduintFromString(buffer, currentPosition,
-				&value, pNextPosition));
-		currentPosition = *pNextPosition;
+		NavigationHelpers.ReadUINT32FromString(buffer, currentPosition, out value, out pNextPosition);
+		currentPosition = pNextPosition;
 		propertyType = (PropertyType)(value);
 
 		if (propertyType == PropertyType.Empty)
 		{
 			// null parameter or parameter serialization is not supported
-			goto Cleanup;
+			return;
 		}
 
 		// Read parameter's serialized property value 
-		(ReadstringFromString(
+		ReadHSTRINGFromString(
 			buffer,
 			currentPosition,
-			strPropertyValue.GetAddressOf(),
-			pNextPosition));
-		currentPosition = *pNextPosition;
+			out strPropertyValue,
+			out pNextPosition);
+		currentPosition = pNextPosition;
 
 		// Create NavigationParameter from serialized state in string
-		ConvertstringToNavigationParameter(strPropertyValue, propertyType, &pNavigationParameter, &isParameterTypeSupported);
-		IFCCHECK(isParameterTypeSupported);
+		ConvertHSTRINGToNavigationParameter(strPropertyValue, propertyType, out pNavigationParameter, out isParameterTypeSupported);
+		if (!isParameterTypeSupported)
+		{
+			throw new InvalidOperationException("Invalid parameter type");
+		}
 
-		*ppNavigationParameter = pNavigationParameter;
+		ppNavigationParameter = pNavigationParameter;
 		pNavigationParameter = null;
-
-	Cleanup:
-		ReleaseInterface(pNavigationParameter);
-		RRETURN(hr);
 	}
 
 	//------------------------------------------------------------------------
 	//
-	//  Method: NavigationHelpers.ReadstringFromString
+	//  Method: NavigationHelpers.ReadHSTRINGFromString
 	//
 	//  Synopsis:    
 	//     Return string. Can return null if null or empty string was stored.
 	//
 	//------------------------------------------------------------------------
 
-	internal static void ReadStringFromString(
+	internal static void ReadHSTRINGFromString(
 		string buffer,
 		int currentPosition,
 		out string phstr,
@@ -269,8 +266,8 @@ internal static class NavigationHelpers
 		{
 			ReadNextSubString(buffer, currentPosition, subStringLength, out subString, out nextPosition);
 			currentPosition = nextPosition;
-        
-        .WindowsCreateString(subString.c_str(), subString.length(), phstr);
+
+			phstr = subString;
 		}
 
 		pNextPosition = nextPosition;
@@ -298,22 +295,29 @@ internal static class NavigationHelpers
 		int delimiterPosition = 0;
 
 		// Reached end of string?
-		IFCCHECK(currentPosition != string.npos);
+		//IFCCHECK(currentPosition != string.npos);
 
-		bufferLength = buffer.length();
-		IFCCHECK((bufferLength > 0) && (currentPosition < bufferLength));
+		bufferLength = buffer.Length;
+		if ((bufferLength <= 0) || (currentPosition >= bufferLength))
+		{
+			throw new InvalidOperationException("Invalid buffer");
+		}
 
 		// Find ',' delimiter after the substring to be read
-		delimiterPosition = buffer.find(",", currentPosition);
-		if (delimiterPosition == string.npos)
+		delimiterPosition = buffer.IndexOf(',', currentPosition);
+		if (delimiterPosition == -1)
 		{
 			// Delimiter not found. Use string's terminator as delimiter.
 			delimiterPosition = bufferLength;
 		}
-		IFCCHECK(delimiterPosition > currentPosition);
+
+		if (delimiterPosition <= currentPosition)
+		{
+			throw new InvalidOperationException("Invalid delimiter position");
+		}
 
 		// Get substring
-		ReadNextSubString(buffer, currentPosition, delimiterPosition - currentPosition, subString, pNextPosition);
+		ReadNextSubString(buffer, currentPosition, (uint)(delimiterPosition - currentPosition), out subString, out pNextPosition);
 	}
 
 	//------------------------------------------------------------------------
@@ -330,33 +334,36 @@ internal static class NavigationHelpers
 		string buffer,
 		int currentPosition,
 		uint subStringLength,
-		string subString,
+		out string subString,
 		out int pNextPosition)
 	{
 
 		int bufferLength = 0;
-		int nextPosition = string.npos;
+		int nextPosition = -1;
 
 		// Reached end of string?
-		MUX_ASSERT(currentPosition != string.npos);
-		IFCCHECK(currentPosition != string.npos);
+		MUX_ASSERT(currentPosition != -1);
+		//IFCCHECK(currentPosition != string.npos);
 
-		bufferLength = buffer.length();
-		IFCCHECK((bufferLength > 0) && ((currentPosition + subStringLength) <= bufferLength));
+		bufferLength = buffer.Length;
+		if ((bufferLength <= 0) || ((currentPosition + subStringLength) > bufferLength))
+		{
+			throw new InvalidOperationException("Invalid position in buffer");
+		}
 
 		// Get substring 
-		subString = buffer.substr(currentPosition, subStringLength);
+		subString = buffer.Substring(currentPosition, (int)subStringLength);
 
 		// Skip over delimiter, and adjust for length of string
-		nextPosition = currentPosition + subStringLength + 1;
+		nextPosition = currentPosition + (int)subStringLength + 1;
 		if (nextPosition >= bufferLength)
 		{
 			// End of string
-			*pNextPosition = string.npos;
+			pNextPosition = int.MaxValue; //TODO:MZ: or -1???
 		}
 		else
 		{
-			*pNextPosition = nextPosition;
+			pNextPosition = nextPosition;
 		}
 	}
 

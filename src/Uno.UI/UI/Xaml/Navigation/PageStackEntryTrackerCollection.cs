@@ -31,7 +31,7 @@ internal class PageStackEntryTrackerCollection : TrackerCollection<PageStackEntr
 				throw new ArgumentOutOfRangeException(nameof(index));
 			}
 
-			OnVectorChanging(CollectionChange.ItemChanged, index, item);
+			OnVectorChanging(CollectionChange.ItemChanged, index, value);
 			base[index] = value;
 			OnVectorChanged(CollectionChange.ItemInserted, index);
 		}

@@ -27,11 +27,11 @@ partial class NavigationCache
 
 	// List of items in the transient cache, sorted by Most Recently Used. MRU cached 
 	// item is at the end. Items are flushed out when m_transientCacheSize is exceeded.
-	LinkedList<string> m_transientCacheMruList;
+	private readonly LinkedList<string> m_transientCacheMruList = new();
 
 	// Transient cache. Items are flushed out when m_transientCacheSize is exceeded.
-	PropertySet m_transientMap;
+	private readonly PropertySet m_transientMap = new();
 
 	// Permanent cache. Items are not flushed out.
-	PropertySet m_permanentMap;
+	private readonly PropertySet m_permanentMap = new();
 }

@@ -140,7 +140,7 @@ public partial class Page
 		}
 
 
-		NavigationEventArgs spINavigationEventArgs = NavigationHelpers.CreateINavigationEventArgs(pContentIInspectable, pParameterIInspectable, pTransitionInfo, descriptor, navigationMode);
+		NavigationEventArgs spINavigationEventArgs = NavigationHelpers.CreateINavigationEventArgs(contentObject, parameterObject, pTransitionInfo, descriptor, navigationMode);
 		OnNavigatedTo(spINavigationEventArgs);
 
 		// Set Automation Page Navigation complete event.

@@ -465,21 +465,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private static Page CreatePageInstanceCached(Type sourcePageType) => _pool.DequeuePage(sourcePageType);
 
-		internal static Page CreatePageInstance(Type sourcePageType)
-		{
-			if (Uno.UI.DataBinding.BindingPropertyHelper.BindableMetadataProvider != null)
-			{
-				var bindableType = Uno.UI.DataBinding.BindingPropertyHelper.BindableMetadataProvider.GetBindableTypeByType(sourcePageType);
-
-				if (bindableType != null)
-				{
-					return bindableType.CreateInstance()() as Page;
-				}
-			}
-
-			return Activator.CreateInstance(sourcePageType) as Page;
-		}
-
 		private void OnNavigationStopped(PageStackEntry entry, NavigationMode mode)
 		{
 			NavigationStopped?.Invoke(this, new NavigationEventArgs(

@@ -845,7 +845,7 @@ internal partial class NavigationHistory
 		NavigationTransitionInfo spTransitionInfo = null;
 
 		// Read descriptor
-		NavigationHelpers.ReadStringFromString(
+		NavigationHelpers.ReadHSTRINGFromString(
 			buffer,
 			currentPosition,
 			out strDescriptor,
@@ -864,7 +864,7 @@ internal partial class NavigationHistory
 		var succeeded = true;
 		try
 		{
-			NavigationHelpers.ReadStringFromString(
+			NavigationHelpers.ReadHSTRINGFromString(
 				buffer,
 				currentPosition,
 				out strTransitionInfoType,
@@ -885,7 +885,7 @@ internal partial class NavigationHistory
 				spTransitionInfo = (NavigationTransitionInfo)Activator.CreateInstance(pTransitionInfoTypeInfo);
 
 				// Read NavigationTransitionInfo.
-				NavigationHelpers.ReadStringFromString(
+				NavigationHelpers.ReadHSTRINGFromString(
 					buffer,
 					currentPosition,
 					out strTransitionInfo,
