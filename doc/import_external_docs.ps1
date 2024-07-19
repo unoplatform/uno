@@ -7,7 +7,7 @@ Set-PSDebug -Trace 1
 
 $external_docs = @{
     # use either commit, or branch name to use its latest commit
-    "uno.wasm.bootstrap" = "82541e4ab6d797ea0a42d36e41ed226fc573b0c7" #latest main commit
+    "uno.wasm.bootstrap" = "9c669e555a05d05465a6c9c894bc0c5b86b76577" #latest main commit
     "uno.themes"         = "7ce3b5215bf5802927d2c65f0e2044cacae8c311" #latest release branch commit
     "uno.toolkit.ui"     = "a8a382ded333547580b7a4086dc1415d9e8cab04" #latest release branch commit
     "uno.check"          = "73c3b7960601d16e81e425412755385298edad0d" #latest main commit
