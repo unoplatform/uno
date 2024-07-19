@@ -21,8 +21,8 @@ namespace Uno.WinUI.Runtime.Skia.AppleUIKit.Controls;
 
 internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleTextBoxView
 {
-	private SinglelineInvisibleTextBoxDelegate? _delegate;
 	private readonly WeakReference<InvisibleTextBoxViewExtension> _textBoxViewExtension;
+	private SinglelineInvisibleTextBoxDelegate? _delegate;
 
 	public SinglelineInvisibleTextBoxView(InvisibleTextBoxViewExtension textBoxView)
 	{
@@ -35,6 +35,19 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 
 		Initialize();
 	}
+
+	private void Initialize()
+	{
+		//Set native VerticalAlignment to top-aligned (default is center) to match Windows text placement
+		base.VerticalAlignment = UIControlContentVerticalAlignment.Top;
+
+		Delegate = _delegate = new SinglelineInvisibleTextBoxDelegate(_textBoxViewExtension)
+		{
+			IsKeyboardHiddenOnEnter = true
+		};
+	}
+
+	public bool IsCompatible(Microsoft.UI.Xaml.Controls.TextBox textBox) => !textBox.AcceptsReturn;
 
 	public override void Paste(NSObject? sender) => HandlePaste(() => base.Paste(sender));
 
@@ -88,17 +101,6 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 
 	public void SetTextNative(string text) => Text = text;
 
-	private void Initialize()
-	{
-		//Set native VerticalAlignment to top-aligned (default is center) to match Windows text placement
-		base.VerticalAlignment = UIControlContentVerticalAlignment.Top;
-
-		Delegate = _delegate = new SinglelineInvisibleTextBoxDelegate(_textBoxViewExtension)
-		{
-			IsKeyboardHiddenOnEnter = true
-		};
-	}
-
 	private void StartEditing()
 	{
 		this.EditingChanged += OnEditingChanged;
@@ -148,7 +150,6 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 
 	[DllImport(Constants.ObjectiveCLibrary, EntryPoint = "objc_msgSendSuper")]
 	static internal extern void void_objc_msgSendSuper(IntPtr receiver, IntPtr selector, IntPtr arg);
-	public bool IsCompatible(Microsoft.UI.Xaml.Controls.TextBox textBox) => !textBox.AcceptsReturn;
 
 	[Export("selectedTextRange")]
 	public new IntPtr SelectedTextRange

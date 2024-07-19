@@ -1,113 +1,113 @@
-﻿//using System;
-//using CoreGraphics;
-//using Foundation;
-//using Microsoft.UI.Xaml;
-//using Microsoft.UI.Xaml.Controls;
-//using Microsoft.UI.Xaml.Media;
-//using ObjCRuntime;
-//using UIKit;
-//using Uno.Extensions;
-//using Uno.UI.Extensions;
-//using Windows.UI.Core;
+﻿using System;
+using Foundation;
+using Microsoft.UI.Xaml.Controls;
+using ObjCRuntime;
+using UIKit;
+using Uno.Extensions;
 
-//namespace Uno.WinUI.Runtime.Skia.AppleUIKit.Controls;
+namespace Uno.WinUI.Runtime.Skia.AppleUIKit.Controls;
 
-//public partial class MultilineInvisibleTextBoxView : UITextView, IInvisibleTextBoxView
-//{
-//	private MultilineInvisibleTextBoxDelegate _delegate;
-//	private readonly WeakReference<TextBoxView> _textBoxView;
-//	private WeakReference<Uno.UI.Controls.Window> _window;
+internal partial class MultilineInvisibleTextBoxView : UITextView, IInvisibleTextBoxView
+{
+	private readonly WeakReference<InvisibleTextBoxViewExtension> _textBoxViewExtension;
+	private MultilineInvisibleTextBoxDelegate? _delegate;
 
-//	public MultilineInvisibleTextBoxView(TextBoxView textBoxView)
-//	{
-//		_textBoxView = new WeakReference<TextBox>(textBoxView);
-//		_window = new WeakReference<Uno.UI.Controls.Window>(textBox.FindFirstParent<Uno.UI.Controls.Window>());
-//		Initialize();
-//	}
+	public MultilineInvisibleTextBoxView(InvisibleTextBoxViewExtension textBoxView)
+	{
+		if (textBoxView is null)
+		{
+			throw new ArgumentNullException(nameof(textBoxView));
+		}
 
-//	public override void Paste(NSObject sender) => HandlePaste(() => base.Paste(sender));
+		_textBoxViewExtension = new WeakReference<InvisibleTextBoxViewExtension>(textBoxView);
 
-//	public override void PasteAndGo(NSObject sender) => HandlePaste(() => base.PasteAndGo(sender));
+		Initialize();
+	}
 
-//	public override void PasteAndMatchStyle(NSObject sender) => HandlePaste(() => base.PasteAndMatchStyle(sender));
+	private void Initialize()
+	{
+		Delegate = _delegate = new MultilineInvisibleTextBoxDelegate(_textBoxViewExtension);
+		BackgroundColor = UIColor.Clear;
+		TextContainer.LineFragmentPadding = 0;
 
-//	public override void PasteAndSearch(NSObject sender) => HandlePaste(() => base.PasteAndSearch(sender));
+		// Reset the default margin of 8px at the top
+		TextContainerInset = new UIEdgeInsets();
+	}
 
-//	public override void Paste(NSItemProvider[] itemProviders) => HandlePaste(() => base.Paste(itemProviders));
+	public bool IsCompatible(Microsoft.UI.Xaml.Controls.TextBox textBox) => textBox.AcceptsReturn;
 
-//	private void HandlePaste(Action baseAction)
-//	{
-//		var args = new TextControlPasteEventArgs();
-//		var textBox = _textBoxView.GetTarget();
-//		textBox?.RaisePaste(args);
-//		if (!args.Handled)
-//		{
-//			baseAction.Invoke();
-//		}
-//	}
+	public override void Paste(NSObject? sender) => HandlePaste(() => base.Paste(sender));
 
-//	private void Initialize()
-//	{
-//		Delegate = _delegate = new MultilineInvisibleTextBoxDelegate(_textBoxView);
-//		BackgroundColor = UIColor.Clear;
-//		TextContainer.LineFragmentPadding = 0;
+	public override void PasteAndGo(NSObject? sender) => HandlePaste(() => base.PasteAndGo(sender));
 
-//		// Reset the default margin of 8px at the top
-//		TextContainerInset = new UIEdgeInsets();
-//	}
+	public override void PasteAndMatchStyle(NSObject? sender) => HandlePaste(() => base.PasteAndMatchStyle(sender));
 
-//	public override string Text
-//	{
-//		get
-//		{
-//			return base.Text;
-//		}
-//		set
-//		{
-//			// The native control will ignore a value of null and retain an empty string. We coalesce the null to prevent a spurious empty string getting bounced back via two-way binding.
-//			value = value ?? string.Empty;
-//			if (base.Text != value)
-//			{
-//				base.Text = value;
-//				OnTextChanged();
-//			}
-//		}
-//	}
+	public override void PasteAndSearch(NSObject? sender) => HandlePaste(() => base.PasteAndSearch(sender));
 
-//	public void SetTextNative(string text) => Text = text;
+	public override void Paste(NSItemProvider[] itemProviders) => HandlePaste(() => base.Paste(itemProviders));
 
-//	internal void OnTextChanged()
-//	{
-//		var textBox = _textBoxView?.GetTarget();
-//		if (textBox != null)
-//		{
-//			var text = textBox.ProcessTextInput(Text);
-//			SetTextNative(text);
-//		}
+	private void HandlePaste(Action baseAction)
+	{
+		var args = new TextControlPasteEventArgs();
+		TextBoxViewExtension?.Owner.TextBox?.RaisePaste(args);
+		if (!args.Handled)
+		{
+			baseAction.Invoke();
+		}
+	}
 
-//		SetNeedsLayout();
-//	}
+	internal InvisibleTextBoxViewExtension TextBoxViewExtension => _textBoxViewExtension.GetTarget();
 
-//	/// <summary>
-//	/// Workaround for https://github.com/unoplatform/uno/issues/9430
-//	/// </summary>
-//	[Export("selectedTextRange")]
-//	public new IntPtr SelectedTextRange
-//	{
-//		get
-//		{
-//			return SinglelineInvisibleTextBoxView.IntPtr_objc_msgSendSuper(SuperHandle, Selector.GetHandle("selectedTextRange"));
-//		}
-//		set
-//		{
-//			if (SelectedTextRange != value)
-//			{
-//				SinglelineInvisibleTextBoxView.void_objc_msgSendSuper(SuperHandle, Selector.GetHandle("setSelectedTextRange:"), value);
-//				_textBoxView.GetTarget()?.OnSelectionChanged();
-//			}
-//		}
-//	}
+	public override string? Text
+	{
+		get
+		{
+			return base.Text;
+		}
+		set
+		{
+			// The native control will ignore a value of null and retain an empty string. We coalesce the null to prevent a spurious empty string getting bounced back via two-way binding.
+			value = value ?? string.Empty;
+			if (base.Text != value)
+			{
+				base.Text = value;
+				OnTextChanged();
+			}
+		}
+	}
 
-//	public void Select(int start, int length)
-//		=> SelectedTextRange = this.GetTextRange(start: start, end: start + length).GetHandle();
-//}
+	public void SetTextNative(string text) => Text = text;
+
+	internal void OnTextChanged()
+	{
+		if (_textBoxViewExtension?.GetTarget() is { } textBoxView)
+		{
+			textBoxView.ProcessNativeTextInput(Text);
+		}
+	}
+
+	public void Select(int start, int length)
+		=> SelectedTextRange = this.GetTextRange(start: start, end: start + length).GetHandle();
+
+	/// <summary>
+	/// Workaround for https://github.com/unoplatform/uno/issues/9430
+	/// </summary>
+	[Export("selectedTextRange")]
+	public new IntPtr SelectedTextRange
+	{
+		get
+		{
+			return SinglelineInvisibleTextBoxView.IntPtr_objc_msgSendSuper(SuperHandle, Selector.GetHandle("selectedTextRange"));
+		}
+		set
+		{
+			var textBoxView = TextBoxViewExtension;
+
+			if (textBoxView != null && SelectedTextRange != value)
+			{
+				SinglelineInvisibleTextBoxView.void_objc_msgSendSuper(SuperHandle, Selector.GetHandle("setSelectedTextRange:"), value);
+				textBoxView.Owner.TextBox?.OnSelectionChanged();
+			}
+		}
+	}
+}
