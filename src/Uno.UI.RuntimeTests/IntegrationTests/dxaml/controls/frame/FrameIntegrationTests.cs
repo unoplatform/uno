@@ -14,6 +14,7 @@ namespace Uno.UI.RuntimeTests.IntegrationTests;
 public class FrameIntegrationTests : BaseDxamlTestClass
 {
 	[TestMethod]
+	[RunsOnUIThread]
 	public async Task CanInstantiate()
 	{
 		var act = () => new Microsoft.UI.Xaml.Controls.Frame();
@@ -21,6 +22,7 @@ public class FrameIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
+	[RunsOnUIThread]
 	public async Task CanEnterAndLeaveLiveTree()
 	{
 		var frame = new Microsoft.UI.Xaml.Controls.Frame();

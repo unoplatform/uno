@@ -16,7 +16,11 @@ partial class Frame
 	/// <summary>
 	/// Initializes a new instance of the Frame class.
 	/// </summary>
-	public Frame() => Initialize();
+	public Frame()
+	{
+		DefaultStyleKey = typeof(Frame);
+		Initialize();
+	}
 
 	// TODO:MZ: Avoid destructor
 	~Frame()
