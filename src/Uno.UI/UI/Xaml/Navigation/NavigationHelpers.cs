@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Globalization;
+using System.Text;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
 using Uno.UI.Helpers.WinUI;
+using Windows.Foundation;
 
 namespace DirectUI;
 
@@ -54,37 +57,20 @@ internal static class NavigationHelpers
 		return spNavigatingCancelEventArgs;
 	}
 
-	private void WriteuintToString(
+	private static void WriteUintToString(
 		 uint value,
-		 string &buffer)
+		 StringBuilder buffer)
 	{
-
-		VARIANT src;
-		VARIANT dest;
-
-		VariantInit(&src);
-		VariantInit(&dest);
-
-		// Convert uint to String
-		V_VT(&src) = VT_UI4;
-		V_UI4(&src) = value;
-		VariantChangeType(&dest, &src, 0, VT_BSTR);
-
 		// Format: <uint>,
-		buffer.append(V_BSTR(&dest));
-		buffer.append(",");
-
-	Cleanup:
-		VariantClear(&src);
-		VariantClear(&dest);
-		RRETURN(hr);
+		buffer.Append(value.ToString(CultureInfo.InvariantCulture));
+		buffer.Append(',');
 	}
 
-	private void ReaduintFromString(
-		 string &buffer,
+	private static void ReadUintFromString(
+		string buffer,
 		int currentPosition,
-		out uint* pValue,
-		out int* pNextPosition)
+		out uint pValue,
+		out int pNextPosition)
 	{
 
 		VARIANT src;
@@ -108,17 +94,11 @@ internal static class NavigationHelpers
 		bstrValue = null;
 		VariantChangeType(&dest, &src, 0, VT_UI4);
 		*pValue = V_UI4(&dest);
-
-	Cleanup:
-		VariantClear(&src);
-		VariantClear(&dest);
-		SysFreeString(bstrValue);
-		RRETURN(hr);
 	}
 
-	private void WritestringToString(
+	private static void WriteStringToString(
 		 string hstr,
-		 string &buffer)
+		 StringBuilder buffer)
 	{
 		string psz = null;
 		uint length = 0;
@@ -137,7 +117,7 @@ internal static class NavigationHelpers
 		}
 		else
 		{
-			NavigationHelpers.WriteuintToString(0, buffer);
+			NavigationHelpers.WriteUintToString(0, buffer);
 		}
 	}
 
@@ -148,19 +128,19 @@ internal static class NavigationHelpers
 	//  Synopsis:    
 	//     Serialize NavigationParameter into string if conversion is supported
 	//  Serialization Format: 
-	//      null param or parameter type not supported: <wf.PropertyType_Empty>,
-	//      Non-null param: <parameter type (wf.PropertyType)>,<length of serialized parameter>,<serialized parameter>,
+	//      null param or parameter type not supported: <PropertyType.Empty>,
+	//      Non-null param: <parameter type (PropertyType)>,<length of serialized parameter>,<serialized parameter>,
 	//
 	//------------------------------------------------------------------------
 
-	private void WriteNavigationParameterToString(
+	private static void WriteNavigationParameterToString(
 		 object pNavigationParameter,
 		 string &buffer,
 		out bool* pIsParameterTypeSupported)
 	{
 
 		string strPropertyValue;
-		wf.PropertyType propertyType = wf.PropertyType_Empty;
+		PropertyType propertyType = PropertyType.Empty;
 		bool isParameterTypeSupported = false;
 
 		*pIsParameterTypeSupported = false;
@@ -175,22 +155,22 @@ internal static class NavigationHelpers
 
 			if (!isParameterTypeSupported)
 			{
-				propertyType = wf.PropertyType_Empty;
+				propertyType = PropertyType.Empty;
 			}
 		}
 		else
 		{
 			// null parameters are supported
 			isParameterTypeSupported = true;
-			propertyType = wf.PropertyType_Empty;
+			propertyType = PropertyType.Empty;
 		}
 
-		// Write property type. wf.PropertyType_Empty will be written if 
+		// Write property type. PropertyType.Empty will be written if 
 		// property value was not provided or parameted serialization is not supported
 		NavigationHelpers.WriteuintToString(propertyType, buffer);
 
 		// Write property value as a string. 
-		if (propertyType != wf.PropertyType_Empty)
+		if (propertyType != PropertyType.Empty)
 		{
 			WritestringToString(strPropertyValue, buffer);
 		}
@@ -205,20 +185,20 @@ internal static class NavigationHelpers
 	//  Synopsis:    
 	//     Create NavigationParameter from serialized string
 	//  Serialization Format: 
-	//      null param or parameter type not supported: <wf.PropertyType_Empty>,
-	//      Non-null param: <parameter type (wf.PropertyType)>,<length of serialized parameter>,<serialized parameter>,
+	//      null param or parameter type not supported: <PropertyType.Empty>,
+	//      Non-null param: <parameter type (PropertyType)>,<length of serialized parameter>,<serialized parameter>,
 	//
 	//------------------------------------------------------------------------
 
-	private void ReadNavigationParameterFromString(
-		 string &buffer,
+	private static void ReadNavigationParameterFromString(
+		string buffer,
 		int currentPosition,
-		out object* ppNavigationParameter,
-		out int* pNextPosition)
+		out object ppNavigationParameter,
+		out int pNextPosition)
 	{
 
 		string strPropertyValue;
-		wf.PropertyType propertyType = wf.PropertyType_Empty;
+		PropertyType propertyType = PropertyType.Empty;
 		object pNavigationParameter = null;
 		uint value = 0;
 		bool isParameterTypeSupported = false;
@@ -229,9 +209,9 @@ internal static class NavigationHelpers
 		(NavigationHelpers.ReaduintFromString(buffer, currentPosition,
 				&value, pNextPosition));
 		currentPosition = *pNextPosition;
-		propertyType = (wf.PropertyType)(value);
+		propertyType = (PropertyType)(value);
 
-		if (propertyType == wf.PropertyType_Empty)
+		if (propertyType == PropertyType.Empty)
 		{
 			// null parameter or parameter serialization is not supported
 			goto Cleanup;
@@ -266,11 +246,11 @@ internal static class NavigationHelpers
 	//
 	//------------------------------------------------------------------------
 
-	private void ReadstringFromString(
-		 string &buffer,
+	private static void ReadStringFromString(
+		string buffer,
 		int currentPosition,
-		out string* phstr,
-		out int* pNextPosition)
+		out string phstr,
+		out int pNextPosition)
 	{
 
 		int nextPosition = string.npos;
@@ -306,11 +286,11 @@ internal static class NavigationHelpers
 	//
 	//------------------------------------------------------------------------
 
-	private void ReadNextSubString(
-		 string &buffer,
+	private static void ReadNextSubString(
+		string buffer,
 		int currentPosition,
-		 string &subString,
-		out int* pNextPosition)
+		string subString,
+		out int pNextPosition)
 	{
 
 		int bufferLength = 0;
@@ -345,12 +325,12 @@ internal static class NavigationHelpers
 	//
 	//------------------------------------------------------------------------
 
-	private void ReadNextSubString(
-		 string &buffer,
+	private static void ReadNextSubString(
+		string buffer,
 		int currentPosition,
 		int subStringLength,
-		 string &subString,
-		out int* pNextPosition)
+		string subString,
+		out int pNextPosition)
 	{
 
 		int bufferLength = 0;
@@ -391,19 +371,19 @@ internal static class NavigationHelpers
 	//
 	//------------------------------------------------------------------------
 
-	private void ConvertNavigationParameterTostring(
-		 object* pNavigationParameter,
-		out string* phstr,
-		out wf.PropertyType* pParameterType,
-		out bool* pIsConversionSupported)
+	private static void ConvertNavigationParameterTostring(
+		object pNavigationParameter,
+		out string phstr,
+		out PropertyType pParameterType,
+		out bool pIsConversionSupported)
 	{
 
-		wf.PropertyType propertyType = wf.PropertyType_Empty;
+		PropertyType propertyType = PropertyType.Empty;
 		bool supportedType = true;
 		string strValue;
-		wf.IPropertyValue* pPropertyValue = null;
+		PropertyValue pPropertyValue = null;
 
-		*pParameterType = wf.PropertyType_Empty;
+		*pParameterType = PropertyType.Empty;
 		*pIsConversionSupported = false;
 		*phstr = null;
 
@@ -428,10 +408,6 @@ internal static class NavigationHelpers
 		*pIsConversionSupported = supportedType;
 		*pParameterType = propertyType;
 		*phstr = strValue.Detach();
-
-	Cleanup:
-		ReleaseInterface(pPropertyValue);
-		RRETURN(hr);
 	}
 
 	//------------------------------------------------------------------------
@@ -445,9 +421,9 @@ internal static class NavigationHelpers
 	//
 	//------------------------------------------------------------------------
 
-	private void ConvertstringToNavigationParameter(
-		 string hstr,
-		 wf.PropertyType parameterType,
+	private static void ConvertstringToNavigationParameter(
+		string hstr,
+		PropertyType parameterType,
 		out object* ppNavigationParameter,
 		out bool* pIsConversionSupported)
 	{
@@ -460,19 +436,19 @@ internal static class NavigationHelpers
 
 		switch (parameterType)
 		{
-			case wf.PropertyType_UInt8:
-			case wf.PropertyType_Int16:
-			case wf.PropertyType_UInt16:
-			case wf.PropertyType_Int32:
-			case wf.PropertyType_UInt32:
-			case wf.PropertyType_Int64:
-			case wf.PropertyType_UInt64:
-			case wf.PropertyType_Single:
-			case wf.PropertyType_Double:
-			case wf.PropertyType_Char16:
-			case wf.PropertyType_Boolean:
-			case wf.PropertyType_String:
-			case wf.PropertyType_Guid:
+			case PropertyType.UInt8:
+			case PropertyType.Int16:
+			case PropertyType.UInt16:
+			case PropertyType.Int32:
+			case PropertyType.UInt32:
+			case PropertyType.Int64:
+			case PropertyType.UInt64:
+			case PropertyType.Single:
+			case PropertyType.Double:
+			case PropertyType.Char16:
+			case PropertyType.Boolean:
+			case PropertyType.String:
+			case PropertyType.Guid:
 				{
 					ValueConversionHelpers.ConvertStringToValue(hstr, parameterType, &pNavigationParameter);
 					break;
@@ -488,9 +464,5 @@ internal static class NavigationHelpers
 		*pIsConversionSupported = supportedType;
 		*ppNavigationParameter = pNavigationParameter;
 		pNavigationParameter = null;
-
-	Cleanup:
-		ReleaseInterface(pNavigationParameter);
-		RRETURN(hr);
 	}
 }

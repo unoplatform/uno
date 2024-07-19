@@ -384,7 +384,7 @@ internal partial class NavigationHistory
 	//
 	//------------------------------------------------------------------------
 
-	private void OnPageStackChanging(
+	internal void OnPageStackChanging(
 				 bool isBackStack,
 				 CollectionChange action,
 				 uint index,
@@ -465,7 +465,7 @@ internal partial class NavigationHistory
 	//
 	//------------------------------------------------------------------------
 
-	private void OnPageStackChanged(
+	internal void OnPageStackChanged(
 		 bool isBackStack,
 		 CollectionChange action,
 		 uint index)

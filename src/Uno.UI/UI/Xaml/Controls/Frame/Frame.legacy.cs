@@ -449,7 +449,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		public void SetNavigationState(string navigationState) => _navigationState = navigationState;
+		private void SetNavigationStateImpl(string navigationState) => _navigationState = navigationState;
 
 		internal Page EnsurePageInitialized(PageStackEntry entry)
 		{
