@@ -236,6 +236,7 @@ Legend:
 - 🔳 Not supported by the environment/IDE
 
 ### Notes
+
 <a href="hr-footnotes"/>
 
 - [1]: Support is [pending support](https://github.com/dotnet/sdk/pull/40725) in the .NET SDK.
