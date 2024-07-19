@@ -60,8 +60,8 @@ Legend:
 - ✅ Supported
 - 🐞 Supported with the debugger
 - ⌛ Upcoming support
-- ❌ Not working
-- ⭕ Not supported by the environment/IDE
+- ⚠️ Degraded
+- 🔳 Not supported by the environment/IDE
 
 ### [**Windows**](#tab/windows)
 
@@ -94,38 +94,38 @@ Legend:
             <td>Desktop/WSL</td>
             <td>⌛(1)</td><td>⌛(1)</td>
             <td>✅</td><td>✅</td>
-            <td>⭕(2)</td><td>⭕(2)</td>
+            <td>🔳(2)</td><td>🔳(2)</td>
         </tr>
         <tr>
             <td>iOS</td>
-            <td>❌(3)</td><td>✅(4)</td>
-            <td>❌(3)</td><td>✅(4)</td>
-            <td>❌(3)</td><td>✅(4)</td>
+            <td>⚠️(3)</td><td>✅(4)</td>
+            <td>⚠️(3)</td><td>✅(4)</td>
+            <td>⚠️(3)</td><td>✅(4)</td>
         </tr>
         <tr>
             <td>Android</td>
-            <td>❌(5)</td><td>✅(4)</td>
-            <td>❌(5)</td><td>✅(4)</td>
-            <td>❌(5)</td><td>✅(4)</td>
+            <td>⚠️(5)</td><td>✅(4)</td>
+            <td>⚠️(5)</td><td>✅(4)</td>
+            <td>⚠️(5)</td><td>✅(4)</td>
         </tr>
-        </tr>
-        <tr>
-            <td>Catalyst</td>
-            <td>⭕</td><td>⭕</td>
-            <td>⭕</td><td>⭕</td>
-            <td>⭕</td><td>⭕</td>
         </tr>
         <tr>
             <td>WinAppSDK</td>
             <td>✅🐞</td><td>✅🐞</td>
-            <td>⭕</td><td>⭕</td>
-            <td>⭕</td><td>⭕</td>
+            <td>🔳</td><td>🔳</td>
+            <td>🔳</td><td>🔳</td>
         </tr>
         <tr>
             <td>WebAssembly</td>
             <td>✅🐞</td><td>✅🐞</td>
             <td>✅</td><td>✅</td>
             <td>✅</td><td>✅</td>
+        </tr>
+        <tr>
+            <td>Catalyst</td>
+            <td>🔳</td><td>🔳</td>
+            <td>🔳</td><td>🔳</td>
+            <td>🔳</td><td>🔳</td>
         </tr>
     </tbody>
 </table>
@@ -155,24 +155,24 @@ Legend:
         </tr>
         <tr>
             <td>iOS</td>
-            <td>❌(3)</td><td>✅(4)</td>
-            <td>❌(3)</td><td>✅(4)</td>
+            <td>⚠️(3)</td><td>✅(4)</td>
+            <td>⚠️(3)</td><td>✅(4)</td>
         </tr>
         <tr>
             <td>Android</td>
-            <td>❌(5)</td><td>✅(4)</td>
-            <td>❌(5)</td><td>✅(4)</td>
+            <td>⚠️(5)</td><td>✅(4)</td>
+            <td>⚠️(5)</td><td>✅(4)</td>
         </tr>
         </tr>
         <tr>
             <td>Catalyst</td>
-            <td>❌(3)</td><td>✅(4)</td>
-            <td>❌(3)</td><td>✅(4)</td>
+            <td>⚠️(3)</td><td>✅(4)</td>
+            <td>⚠️(3)</td><td>✅(4)</td>
         </tr>
         <tr>
             <td>WinAppSDK</td>
-            <td>⭕</td><td>⭕</td>
-            <td>⭕</td><td>⭕</td>
+            <td>🔳</td><td>🔳</td>
+            <td>🔳</td><td>🔳</td>
         </tr>
         <tr>
             <td>WebAssembly</td>
@@ -201,14 +201,14 @@ Legend:
     </thead>
     <tbody>
         <tr>
-            <td>Desktop macOS</td>
+            <td>Desktop Linux</td>
             <td>✅</td><td>✅</td>
             <td>✅</td><td>✅</td>
         </tr>
         <tr>
             <td>Android</td>
-            <td>❌(5)</td><td>✅(4)</td>
-            <td>❌(5)</td><td>✅(4)</td>
+            <td>⚠️(5)</td><td>✅(4)</td>
+            <td>⚠️(5)</td><td>✅(4)</td>
         </tr>
         <tr>
             <td>WebAssembly</td>
@@ -217,18 +217,18 @@ Legend:
         </tr>
         <tr>
             <td>iOS</td>
-            <td>⭕</td><td>⭕</td>
-            <td>⭕</td><td>⭕</td>
+            <td>🔳</td><td>🔳</td>
+            <td>🔳</td><td>🔳</td>
         </tr>
         <tr>
             <td>Catalyst</td>
-            <td>⭕</td><td>⭕</td>
-            <td>⭕</td><td>⭕</td>
+            <td>🔳</td><td>🔳</td>
+            <td>🔳</td><td>🔳</td>
         </tr>
         <tr>
             <td>WinAppSDK</td>
-            <td>⭕</td><td>⭕</td>
-            <td>⭕</td><td>⭕</td>
+            <td>🔳</td><td>🔳</td>
+            <td>🔳</td><td>🔳</td>
         </tr>
     </tbody>
 </table>
