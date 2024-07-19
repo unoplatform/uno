@@ -164,9 +164,9 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 		}
 	}
 
-	void INativeWebView.SetOwner(CoreWebView2 coreWebView)
+	void INativeWebView.SetOwner(object coreWebView2)
 	{
-		_coreWebView = coreWebView;
+		_coreWebView = (CoreWebView2)coreWebView2;
 
 		this.Configuration.Preferences.JavaScriptCanOpenWindowsAutomatically = true;
 		this.Configuration.Preferences.JavaScriptEnabled = true;
