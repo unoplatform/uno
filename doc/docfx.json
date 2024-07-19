@@ -39,9 +39,13 @@
         "postProcessors": ["ExtractSearchIndex"],
         "markdownEngineName": "markdig",
         "markdownEngineProperties": {
-          "markdigExtensions": [
-              "Footnotes"
-          ]
+            "markdigExtensions": [
+                "abbreviations",
+                "definitionlists",
+                "tasklists",
+                "footnotes",
+                "diagrams"
+            ]
         },
         "noLangKeyword": false,
         "keepFileLink": false,
