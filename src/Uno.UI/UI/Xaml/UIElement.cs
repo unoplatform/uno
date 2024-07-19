@@ -744,7 +744,7 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
-			var root = XamlRoot?.VisualTree.RootElement;
+			var root = XamlRoot?.VisualTree.RootElement ?? this.GetContext().MainVisualTree?.RootElement;
 			if (root is null)
 			{
 				return;
