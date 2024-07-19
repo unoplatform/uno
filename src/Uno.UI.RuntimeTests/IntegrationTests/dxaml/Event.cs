@@ -27,6 +27,21 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 			return await tcs.Task;
 		}
 
+
+		public async Task<bool> WaitForNoThrow(int timeoutValueMs, bool enforceUnderDebugger = true)
+		{
+			// Event timeouts can be frustrating when trying to debug tests. 
+			// When under the debugger we disable all timeouts.
+			//if (IsDebuggerPresent() && !enforceUnderDebugger)
+			//{
+			//	timeoutValueMs = INFINITE;
+			//}
+
+			// TODO:MZ: Is this ok?
+			return await WaitFor(timeoutValueMs);
+			//return WaitForSingleObject(m_handle, timeoutValueMs) == WAIT_OBJECT_0;
+		}
+
 		private TaskCompletionSource<bool> EnsureTcs()
 		{
 			var newTcs = new TaskCompletionSource<bool>();
