@@ -55,15 +55,6 @@ Hot Reload features vary between platforms and IDE, you can check below the list
 
 ## Supported features per OS
 
-Legend:
-
-- ✅ Supported
-- 🐞 Supported with the debugger
-- ⌛ Upcoming support
-- ⚠️ Degraded
-- 🛜 Support through [SSH to a mac](xref:Uno.GettingStarted.CreateAnApp.VSCode#debug-the-app)
-- 🔳 Not supported by the environment/IDE
-
 ### [**Windows**](#tab/windows)
 
 <table>
@@ -100,7 +91,7 @@ Legend:
         <tr>
             <td>iOS</td>
             <td>⚠️[^3]</td><td>✅[^4]</td>
-            <td>🛜⚠️[^3]</td><td>🛜✅[^4]</td>
+            <td>⚠️[^3]🛜</td><td>✅[^4]🛜</td>
             <td>🔳</td><td>🔳</td>
         </tr>
         <tr>
@@ -125,13 +116,13 @@ Legend:
         <tr>
             <td>Catalyst</td>
             <td>🔳</td><td>🔳</td>
-            <td>🛜⚠️[^3]</td><td>🛜✅[^4]</td>
+            <td>⚠️[^3]🛜</td><td>✅[^4]🛜</td>
             <td>🔳</td><td>🔳</td>
         </tr>
     </tbody>
 </table>
 
-### [**macOS **](#tab/macOS)
+### [**macOS**](#tab/macOS)
 
 <table>
     <thead>
@@ -218,12 +209,12 @@ Legend:
         </tr>
         <tr>
             <td>iOS</td>
-            <td>🛜⚠️[^3]</td><td>🛜✅[^4]</td>
+            <td>⚠️[^3]🛜</td><td>✅[^4]🛜</td>
             <td>🔳</td><td>🔳</td>
         </tr>
         <tr>
             <td>Catalyst</td>
-            <td>🛜⚠️[^3]</td><td>🛜✅[^4]</td>
+            <td>⚠️[^3]🛜</td><td>✅[^4]🛜</td>
             <td>🔳</td><td>🔳</td>
         </tr>
         <tr>
@@ -235,6 +226,15 @@ Legend:
 </table>
 
 ---
+
+Legend:
+
+- ✅ Supported
+- 🐞 Supported with the debugger
+- ⌛ Upcoming support
+- ⚠️ Degraded
+- 🛜 Support through [SSH to a mac](xref:Uno.GettingStarted.CreateAnApp.VSCode#debug-the-app)
+- 🔳 Not supported by the environment/IDE
 
 [^1]: Support is [pending support](https://github.com/dotnet/sdk/pull/40725) in the .NET SDK.
 [^2]: Support is [not available](https://youtrack.jetbrains.com/issue/RIDER-53302/launchSettings.json-WSL2-command-support).
@@ -326,7 +326,7 @@ Here's a summary of what icons and statuses you can expect:
 
 ## Troubleshooting
 
-### Common issues
+### [**Common issues**](#tab/common-issues)
 
 - Observe the application logs, you should see diagnostics messages in the app when a XAML file is reloaded.
 - WinAppSDK on Windows-specific issues
@@ -370,7 +370,7 @@ Here's a summary of what icons and statuses you can expect:
     #endif
     ```
 
-### Visual Studio 2022
+### [**Visual Studio 2022**](#tab/vswin)
 
 - Make sure that **C# Hot Reload** is not disabled in Visual Studio
   - Open Tools / Options
@@ -380,10 +380,10 @@ The output window in Visual Studio has an output named `Uno Platform` in its dro
 - When a file is reloaded, XAML parsing errors will appear in the application's logs, on the device or in the browser.
 - If there are multiple versions of the Uno.WinUI Package present in the solution, the newest will be used, regardless of the started application
 - For `net8.0-windows10.xx`:
+  - Ensure that the `net8.0-windows10.xxx` target framework **is selected in the top-left dropdown list of the XAML editor**. Any other selected platform will break hot reload.
   - [A VS issue for WinUI may be hit](https://developercommunity.visualstudio.com/t/net80-windows10-needs-to-be-first-for-W/10643724). If XAML hot reload does not work, ensure that the `Uno Platform` output window exists, and that it mentions that the extension has successfully loaded. To do so, try closing and reopening the solution, and make sure that the [Visual Studio extension is installed](xref:Uno.GetStarted.vs2022).
-  - Ensure that the `net8.0-windows10.xxx` target framework is selected in the top-left dropdown list of the XAML editor. Any other selected platform will break hot reload.
 
-### VS Code
+### [**Visual Studio Code**](#tab/vscode)
 
 - Hot Reload **is not supported for WebAssembly and Skia Desktop** when using the debugger. Start your app using `Ctrl+F5`.
 - The output window in Code has an output named **Uno Platform - Hot Reload** in its drop-down. Diagnostics messages from the extension appear there.
@@ -395,13 +395,15 @@ The output window in Visual Studio has an output named `Uno Platform` in its dro
 - When working on Skia Desktop apps, make sure to start the app without the debugger, and make sure that in the debugger tab, the `Uno Platform Desktop (Debug)` target is selected.
 - The TCP port number used by the app to connect back to the IDE is located in the `obj/Debug/net8.0-XXX/RemoteControl.config` file. If the port number does not match with the one found in the **Uno Platform - Hot Reload** output window, restart Code or use `Developer: Reload Window` in the command palette.
 
-### Rider
+### [**Rider**](#tab/rider)
 
 - Hot Reload **is not supported** when using the debugger. Start your app without the debugger.
 - The output window in Rider has an output named **Uno Platform** in its sidebar. Diagnostics messages from the extension appear there.
 - Depending on your machine's performance, the hot reload engine may take a few moments to initialize and take your project modifications into account.
 - If Hot Reload does not function properly, you can try closing and reopening the solution.
 - The TCP port number used by the app to connect back to the IDE is located in the `obj/Debug/net8.0-XXX/RemoteControl.config` file. If the port number does not match with the one found in the **Uno Platform** output window, close and reopen the solution.
+
+---
 
 ## Next Steps
 
