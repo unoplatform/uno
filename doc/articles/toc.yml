@@ -127,10 +127,10 @@
 
 - name: Overview
   items:
+    - name: Intro
+      href: xref:Uno.Documentation.Intro
     - name: Architecture
       items:
-        - name: Intro
-          href: xref:Uno.Documentation.Intro
         - name: Supported Platforms
           href: getting-started/requirements.md
           items:

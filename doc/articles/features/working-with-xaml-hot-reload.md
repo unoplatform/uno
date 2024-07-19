@@ -53,7 +53,198 @@ Hot Reload features vary between platforms and IDE, you can check below the list
 > [!IMPORTANT]
 > Using [.NET 8](https://dotnet.microsoft.com/download/dotnet/8.0) or later (`net8.0` in the `TargetFrameworks` property) is required for Hot Reload to be available when your solution contains iOS, Android, Mac Catalyst, or WebAssembly project heads. On Windows, [Visual Studio 17.8](https://visualstudio.microsoft.com/vs) or later is required.
 
-## Supported features
+## Supported features per OS
+
+### [**Windows**](#tab/windows)
+
+<table>
+    <thead>
+        <tr>
+            <th></th>
+            <th colspan="2">Visual Studio</th>
+            <th colspan="2">VS Code</th>
+            <th colspan="2">Rider</th>
+        </tr>
+        <tr>
+            <th>Target</th>
+            <th>C#</th>
+            <th>XAML</th>
+            <th>C#</th>
+            <th>XAML</th>
+            <th>C#</th>
+            <th>XAML</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Desktop Windows</td>
+            <td>✅🐞</td><td>✅🐞</td>
+            <td>✅🐞</td><td>✅🐞</td>
+            <td>✅</td><td>✅</td>
+        </tr>
+        <tr>
+            <td>Desktop/WSL</td>
+            <td>⌛<sup><a href="#hr-footnotes">[1]</a></sup> </td><td>⌛<sup><a href="#hr-footnotes">[1]</a></sup></td>
+            <td>✅</td><td>✅</td>
+            <td>🔳<sup><a href="#hr-footnotes">[2]</a></sup></td><td>🔳<sup><a href="#hr-footnotes">[2]</a></sup></td>
+        </tr>
+        <tr>
+            <td>iOS</td>
+            <td>⌛<sup><a href="#hr-footnotes">[3]</a></sup></td><td>✅<sup><a href="#hr-footnotes">[4]</a></sup></td>
+            <td>⌛<sup><a href="#hr-footnotes">[3]</a></sup>🛜</td><td>✅<sup><a href="#hr-footnotes">[4]</a></sup>🛜</td>
+            <td>🔳</td><td>🔳</td>
+        </tr>
+        <tr>
+            <td>Android</td>
+            <td>⌛<sup><a href="#hr-footnotes">[3]</a></sup></td><td>✅<sup><a href="#hr-footnotes">[4]</a></sup></td>
+            <td>⌛<sup><a href="#hr-footnotes">[3]</a></sup></td><td>✅<sup><a href="#hr-footnotes">[4]</a></sup></td>
+            <td>⌛<sup><a href="#hr-footnotes">[3]</a></sup></td><td>✅<sup><a href="#hr-footnotes">[4]</a></sup></td>
+        </tr>
+        </tr>
+        <tr>
+            <td>WinAppSDK</td>
+            <td>✅🐞</td><td>✅🐞</td>
+            <td>🔳</td><td>🔳</td>
+            <td>🔳</td><td>🔳</td>
+        </tr>
+        <tr>
+            <td>WebAssembly</td>
+            <td>✅🐞</td><td>✅🐞</td>
+            <td>✅</td><td>✅</td>
+            <td>✅</td><td>✅</td>
+        </tr>
+        <tr>
+            <td>Catalyst</td>
+            <td>🔳</td><td>🔳</td>
+            <td>⌛<sup><a href="#hr-footnotes">[3]</a></sup>🛜</td><td>✅<sup><a href="#hr-footnotes">[4]</a></sup>🛜</td>
+            <td>🔳</td><td>🔳</td>
+        </tr>
+    </tbody>
+</table>
+
+### [**macOS**](#tab/macOS)
+
+<table>
+    <thead>
+        <tr>
+            <th></th>
+            <th colspan="2">VS Code</th>
+            <th colspan="2">Rider</th>
+        </tr>
+        <tr>
+            <th>Target</th>
+            <th>C#</th>
+            <th>XAML</th>
+            <th>C#</th>
+            <th>XAML</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Desktop macOS</td>
+            <td>✅</td><td>✅</td>
+            <td>✅</td><td>✅</td>
+        </tr>
+        <tr>
+            <td>iOS</td>
+            <td>⌛<sup><a href="#hr-footnotes">[3]</a></sup></td><td>✅<sup><a href="#hr-footnotes">[4]</a></sup></td>
+            <td>⌛<sup><a href="#hr-footnotes">[3]</a></sup></td><td>✅<sup><a href="#hr-footnotes">[4]</a></sup></td>
+        </tr>
+        <tr>
+            <td>Android</td>
+            <td>⌛<sup><a href="#hr-footnotes">[3]</a></sup></td><td>✅<sup><a href="#hr-footnotes">[4]</a></sup></td>
+            <td>⌛<sup><a href="#hr-footnotes">[3]</a></sup></td><td>✅<sup><a href="#hr-footnotes">[4]</a></sup></td>
+        </tr>
+        </tr>
+        <tr>
+            <td>Catalyst</td>
+            <td>⌛<sup><a href="#hr-footnotes">[3]</a></sup></td><td>✅<sup><a href="#hr-footnotes">[4]</a></sup></td>
+            <td>⌛<sup><a href="#hr-footnotes">[3]</a></sup></td><td>✅<sup><a href="#hr-footnotes">[4]</a></sup></td>
+        </tr>
+        <tr>
+            <td>WinAppSDK</td>
+            <td>🔳</td><td>🔳</td>
+            <td>🔳</td><td>🔳</td>
+        </tr>
+        <tr>
+            <td>WebAssembly</td>
+            <td>✅</td><td>✅</td>
+            <td>✅</td><td>✅</td>
+        </tr>
+    </tbody>
+</table>
+
+### [**Linux**](#tab/linux)
+
+<table>
+    <thead>
+        <tr>
+            <th></th>
+            <th colspan="2">VS Code</th>
+            <th colspan="2">Rider</th>
+        </tr>
+        <tr>
+            <th>Target</th>
+            <th>C#</th>
+            <th>XAML</th>
+            <th>C#</th>
+            <th>XAML</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Desktop Linux</td>
+            <td>✅</td><td>✅</td>
+            <td>✅</td><td>✅</td>
+        </tr>
+        <tr>
+            <td>Android</td>
+            <td>⌛<sup><a href="#hr-footnotes">[3]</a></sup></td><td>✅<sup><a href="#hr-footnotes">[4]</a></sup></td>
+            <td>⌛<sup><a href="#hr-footnotes">[3]</a></sup></td><td>✅<sup><a href="#hr-footnotes">[4]</a></sup></td>
+        </tr>
+        <tr>
+            <td>WebAssembly</td>
+            <td>✅</td><td>✅</td>
+            <td>✅</td><td>✅</td>
+        </tr>
+        <tr>
+            <td>iOS</td>
+            <td>⌛<sup><a href="#hr-footnotes">[3]</a></sup>🛜</td><td>✅<sup><a href="#hr-footnotes">[4]</a></sup>🛜</td>
+            <td>🔳</td><td>🔳</td>
+        </tr>
+        <tr>
+            <td>Catalyst</td>
+            <td>⌛<sup><a href="#hr-footnotes">[3]</a></sup>🛜</td><td>✅<sup><a href="#hr-footnotes">[4]</a></sup>🛜</td>
+            <td>🔳</td><td>🔳</td>
+        </tr>
+        <tr>
+            <td>WinAppSDK</td>
+            <td>🔳</td><td>🔳</td>
+            <td>🔳</td><td>🔳</td>
+        </tr>
+    </tbody>
+</table>
+
+---
+
+Legend:
+
+- ✅ Supported
+- 🐞 Supported with the debugger
+- ⌛ Upcoming support
+- 🛜 Supported through [SSH to a Mac](xref:Uno.GettingStarted.CreateAnApp.VSCode#debug-the-app)
+- 🔳 Not supported by the environment/IDE
+
+### Notes
+
+<a href="hr-footnotes"/>
+
+- [1]: Support is [pending support](https://github.com/dotnet/sdk/pull/40725) in the .NET SDK.
+- [2]: Support is [not available](https://youtrack.jetbrains.com/issue/RIDER-53302/launchSettings.json-WSL2-command-support).
+- [3]: C# Hot Reload is affected by a [.NET Runtime issue](https://github.com/dotnet/android/issues/9120).
+- [4]: XAML Hot Reload is using the XAML Reader, [pending C# Hot Reload update](https://github.com/unoplatform/uno/issues/15918) and a [VS/VS Code update](https://developercommunity.visualstudio.com/t/net70-iosnet70-android-MetadataUpd/10279604).
+
+## Supported features per Platform
 
 ### [**Desktop**](#tab/skia-desktop)
 
@@ -82,17 +273,14 @@ WebAssembly is currently providing both full and partial Hot Reload support, dep
   - Adding new C# or XAML files to the project is not yet supported
   - Hot Reload is not supported when using the debugger
 - In Visual Studio for Windows:
-  - Hot Reload is sensitive to Web Workers caching, which can cause errors like [this Visual Studio issue](https://developercommunity.visualstudio.com/t/BrowserLink-WebSocket-is-disconnecting-a/10500228), with a `BrowserConnectionException` error. In order to fix this:
-    - Update to Uno.Wasm.Bootstrap 8.0.3 or later
-    - Unregister any Web Worker associated with your app (Chrome or Edge) by **Developer tools (F12)** -> **Application** -> **Service worker** and **unregister**.
-  - [`MetadataUpdateHandlers`](https://learn.microsoft.com/dotnet/api/system.reflection.metadata.metadataupdatehandlerattribute) are invoked without the list of changed types, which means that some hot reload features may not be available.
+  - [`MetadataUpdateHandlers`](https://learn.microsoft.com/dotnet/api/system.reflection.metadata.metadataupdatehandlerattribute) are invoked without the list of changed types, which means that some hot reload features may not be available. This feature is slated to be available for .NET 9.
 
 ### [**iOS, Android, and Catalyst**](#tab/mobile)
 
-Mobile targets are currently using a limited version of XAML Hot Reload and do not support C# Hot Reload until [this dotnet runtime](https://github.com/dotnet/runtime/issues/93860) issue is fixed.
+Mobile targets are currently using a limited version of XAML Hot Reload and do not support C# Hot Reload until [this dotnet runtime](https://github.com/dotnet/android/issues/9120) issue is fixed.
 
 - In Visual Studio, the "Hot Reload on File Save" feature must be disabled to avoid crashing the app. You can find this feature by clicking on the down arrow next to the red flame in the Visual Studio toolbar.
-- In VS, VS Code, and Rider, [C# Hot Reload is not yet supported](https://developercommunity.visualstudio.com/t/net70-iosnet70-android-MetadataUpd/10279604#T-ND10384434)
+- In VS, VS Code, and Rider, [C# Hot Reload is not yet fully supported](https://developercommunity.visualstudio.com/t/net70-iosnet70-android-MetadataUpd/10279604#T-ND10384434)
 - XAML `x:Bind` hot reload is limited to simple expressions and events
 
 ### [**WinAppSDK**](#tab/winappsdk)
@@ -141,7 +329,7 @@ Here's a summary of what icons and statuses you can expect:
 
 ## Troubleshooting
 
-### Common issues
+### [**Common issues**](#tab/common-issues)
 
 - Observe the application logs, you should see diagnostics messages in the app when a XAML file is reloaded.
 - WinAppSDK on Windows-specific issues
@@ -185,7 +373,7 @@ Here's a summary of what icons and statuses you can expect:
     #endif
     ```
 
-### Visual Studio 2022
+### [**Visual Studio 2022**](#tab/vswin)
 
 - Make sure that **C# Hot Reload** is not disabled in Visual Studio
   - Open Tools / Options
@@ -195,10 +383,10 @@ The output window in Visual Studio has an output named `Uno Platform` in its dro
 - When a file is reloaded, XAML parsing errors will appear in the application's logs, on the device or in the browser.
 - If there are multiple versions of the Uno.WinUI Package present in the solution, the newest will be used, regardless of the started application
 - For `net8.0-windows10.xx`:
+  - Ensure that the `net8.0-windows10.xxx` target framework **is selected in the top-left dropdown list of the XAML editor**. Selecting any other platform will break hot reload.
   - [A VS issue for WinUI may be hit](https://developercommunity.visualstudio.com/t/net80-windows10-needs-to-be-first-for-W/10643724). If XAML hot reload does not work, ensure that the `Uno Platform` output window exists, and that it mentions that the extension has successfully loaded. To do so, try closing and reopening the solution, and make sure that the [Visual Studio extension is installed](xref:Uno.GetStarted.vs2022).
-  - Ensure that the `net8.0-windows10.xxx` target framework is selected in the top-left dropdown list of the XAML editor. Any other selected platform will break hot reload.
 
-### VS Code
+### [**Visual Studio Code**](#tab/vscode)
 
 - Hot Reload **is not supported for WebAssembly and Skia Desktop** when using the debugger. Start your app using `Ctrl+F5`.
 - The output window in Code has an output named **Uno Platform - Hot Reload** in its drop-down. Diagnostics messages from the extension appear there.
@@ -210,13 +398,15 @@ The output window in Visual Studio has an output named `Uno Platform` in its dro
 - When working on Skia Desktop apps, make sure to start the app without the debugger, and make sure that in the debugger tab, the `Uno Platform Desktop (Debug)` target is selected.
 - The TCP port number used by the app to connect back to the IDE is located in the `obj/Debug/net8.0-XXX/RemoteControl.config` file. If the port number does not match with the one found in the **Uno Platform - Hot Reload** output window, restart Code or use `Developer: Reload Window` in the command palette.
 
-### Rider
+### [**Rider**](#tab/rider)
 
 - Hot Reload **is not supported** when using the debugger. Start your app without the debugger.
 - The output window in Rider has an output named **Uno Platform** in its sidebar. Diagnostics messages from the extension appear there.
 - Depending on your machine's performance, the hot reload engine may take a few moments to initialize and take your project modifications into account.
 - If Hot Reload does not function properly, you can try closing and reopening the solution.
 - The TCP port number used by the app to connect back to the IDE is located in the `obj/Debug/net8.0-XXX/RemoteControl.config` file. If the port number does not match with the one found in the **Uno Platform** output window, close and reopen the solution.
+
+---
 
 ## Next Steps
 
