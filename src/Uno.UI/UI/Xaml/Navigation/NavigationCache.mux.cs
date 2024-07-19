@@ -79,7 +79,7 @@ internal partial class NavigationCache
 	private object LoadContent(string descriptor)
 	{
 		var type = Type.GetType(descriptor);
-		return Activator.CreateInstance(type);
+		return Frame.CreatePageInstance(type);
 	}
 
 	private void GetCachedContent(

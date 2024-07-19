@@ -90,7 +90,7 @@ public partial class Frame : ContentControl
 	/// <param name="suppressNavigate">True to restore navigation history without navigating to the current page; otherwise, false.</param>
 	public void SetNavigationState(string navigationState, bool suppressNavigate) => SetNavigationStateWithNavigationControlImpl(navigationState, suppressNavigate);
 
-	internal static Page CreatePageInstance(Type sourcePageType)
+	internal static object CreatePageInstance(Type sourcePageType)
 	{
 		if (Uno.UI.DataBinding.BindingPropertyHelper.BindableMetadataProvider != null)
 		{
@@ -98,11 +98,11 @@ public partial class Frame : ContentControl
 
 			if (bindableType != null)
 			{
-				return bindableType.CreateInstance()() as Page;
+				return bindableType.CreateInstance()();
 			}
 		}
 
-		return Activator.CreateInstance(sourcePageType) as Page;
+		return Activator.CreateInstance(sourcePageType);
 	}
 
 #if __CROSSRUNTIME__
