@@ -180,7 +180,7 @@ public partial class ClientHotReloadProcessor
 
 		public HotReloadSource Source { get; }
 
-		public Type[] Types { get; }
+		public Type[] Types { get; private set; }
 
 		internal string[] CuratedTypes => _curatedTypes ??= GetCuratedTypes();
 
@@ -225,6 +225,18 @@ public partial class ClientHotReloadProcessor
 		public ImmutableList<Exception> Exceptions => _exceptions;
 
 		public string? IgnoreReason { get; private set; }
+
+		internal void AddType(Type type)
+		{
+			if (Types.Contains(type))
+			{
+				return;
+			}
+
+			_curatedTypes = null;
+			Types = Types.Append(type).ToArray();
+			_onUpdated();
+		}
 
 		internal void ReportError(MethodInfo source, Exception error)
 			=> ReportError(error); // For now we just ignore the source
