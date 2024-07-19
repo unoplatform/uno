@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Text;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
@@ -12,7 +12,7 @@ namespace DirectUI;
 
 internal partial class NavigationHistory
 {
-	static int c_versionNumber = 1;
+	static uint c_versionNumber = 1;
 
 	public NavigationHistory()
 	{
@@ -467,7 +467,6 @@ internal partial class NavigationHistory
 		 int index)
 	{
 		Frame pFrame = null;
-		PageStackEntry pIEntry = null;
 		IList<PageStackEntry> spPageStack;
 
 		if (m_pIFrame is null)
@@ -500,7 +499,6 @@ internal partial class NavigationHistory
 					var pIEntry = spPageStack[index];
 					PageStackEntry pPageStackEntry = (PageStackEntry)(pIEntry);
 					pPageStackEntry.SetFrame(m_pIFrame);
-					ReleaseInterface(pIEntry);
 					if (isBackStack)
 					{
 						pFrame.CanGoBack = true;
@@ -539,13 +537,8 @@ internal partial class NavigationHistory
 					break;
 				}
 			default:
-				IFCEXPECT_MUX_ASSERT(false);
-				break;
+				throw new InvalidOperationException("Invalid collection change");
 		}
-
-	Cleanup:
-		pFrame = null;
-		RRETURN(hr);
 	}
 
 	//------------------------------------------------------------------------
@@ -572,10 +565,10 @@ internal partial class NavigationHistory
 
 	internal string GetNavigationState()
 	{
-		string buffer;
+		StringBuilder buffer = new();
 
 		// Write version number, to handle format changes
-		NavigationHelpers.WriteuintToString(c_versionNumber, buffer);
+		NavigationHelpers.WriteUINT32ToString(c_versionNumber, buffer);
 
 		// Supported parameter types
 		//
@@ -583,20 +576,20 @@ internal partial class NavigationHistory
 		// public. If any of these values ever changes, the version number
 		// of the string returned by GetNavigationState will need to be changed and
 		// back compat handled.
-		MUX_ASSERT(PropertyType.Empty == 0);
-		MUX_ASSERT(PropertyType.UInt8 == 1);
-		MUX_ASSERT(PropertyType.Int16 == 2);
-		MUX_ASSERT(PropertyType.UInt16 == 3);
-		MUX_ASSERT(PropertyType.Int32 == 4);
-		MUX_ASSERT(PropertyType.UInt32 == 5);
-		MUX_ASSERT(PropertyType.Int64 == 6);
-		MUX_ASSERT(PropertyType.UInt64 == 7);
-		MUX_ASSERT(PropertyType.Single == 8);
-		MUX_ASSERT(PropertyType.Double == 9);
-		MUX_ASSERT(PropertyType.Char16 == 10.0;
-		MUX_ASSERT(PropertyType.Boolean == 11);
-		MUX_ASSERT(PropertyType.String == 12);
-		MUX_ASSERT(PropertyType.Guid == 16);
+		MUX_ASSERT((int)PropertyType.Empty == 0);
+		MUX_ASSERT((int)PropertyType.UInt8 == 1);
+		MUX_ASSERT((int)PropertyType.Int16 == 2);
+		MUX_ASSERT((int)PropertyType.UInt16 == 3);
+		MUX_ASSERT((int)PropertyType.Int32 == 4);
+		MUX_ASSERT((int)PropertyType.UInt32 == 5);
+		MUX_ASSERT((int)PropertyType.Int64 == 6);
+		MUX_ASSERT((int)PropertyType.UInt64 == 7);
+		MUX_ASSERT((int)PropertyType.Single == 8);
+		MUX_ASSERT((int)PropertyType.Double == 9);
+		MUX_ASSERT((int)PropertyType.Char16 == 10);
+		MUX_ASSERT((int)PropertyType.Boolean == 11);
+		MUX_ASSERT((int)PropertyType.String == 12);
+		MUX_ASSERT((int)PropertyType.Guid == 16);
 
 		int nextSize = 0;
 		int previousSize = 0;
@@ -621,60 +614,57 @@ internal partial class NavigationHistory
 		}
 
 		// Write number of entries in history.
-		NavigationHelpers.WriteuintToString(totalSize, buffer);
+		NavigationHelpers.WriteUINT32ToString((uint)totalSize, buffer);
 
 		if (totalSize > 0)
 		{
 			PageStackEntry pIEntry;
-			PageStackEntry tempCurrentIEntry;
+			PageStackEntry tempCurrentIEntry = null;
 
 			// If the current page is null consider the top element in BackStack as current and don't add it to the serialized BackStack.
-			if (!m_tpCurrentPageStackEntry)
+			if (m_tpCurrentPageStackEntry is null)
 			{
-				MUX_ASSERT(previousSize > 0.0;
+				MUX_ASSERT(previousSize > 0);
 
-				m_tpBackStack.GetAt(previousSize - 1, &tempCurrentIEntry);
+				tempCurrentIEntry = m_tpBackStack[previousSize - 1];
 				previousSize--;
 			}
 
 			// Write index of current entry
-			NavigationHelpers.WriteuintToString(previousSize, buffer);
+			NavigationHelpers.WriteUINT32ToString((uint)previousSize, buffer);
 
 			// Write previous entries
-			for (uint i = 0; i < previousSize; ++i)
+			for (int i = 0; i < previousSize; ++i)
 			{
-				m_tpBackStack.GetAt(i, &pIEntry);
-				WritePageStackEntryToString(pIEntry.Cast<PageStackEntry>(), buffer);
+				pIEntry = m_tpBackStack[i];
+				WritePageStackEntryToString(pIEntry, buffer);
 			}
 
 			// Write current entry
-			if (tempCurrentIEntry)
+			if (tempCurrentIEntry is not null)
 			{
-				WritePageStackEntryToString(tempCurrentIEntry.Cast<PageStackEntry>(), buffer);
+				WritePageStackEntryToString(tempCurrentIEntry, buffer);
 			}
 			else
 			{
-				WritePageStackEntryToString(m_tpCurrentPageStackEntry.Cast<PageStackEntry>(), buffer);
+				WritePageStackEntryToString(m_tpCurrentPageStackEntry, buffer);
 			}
 
 			// Write subsequent entries
 			for (int i = 0; i < nextSize; ++i)
 			{
-				m_tpForwardStack.GetAt(i, &pIEntry);
-				WritePageStackEntryToString(pIEntry.Cast<PageStackEntry>(), buffer);
+				pIEntry = m_tpForwardStack[i];
+				WritePageStackEntryToString(pIEntry, buffer);
 			}
 		}
 
-		int position;
-
 		// Remove last ',' delimiter
-		position = buffer.rfind(',');
-		buffer.erase(position, 1);
+		if (buffer[buffer.Length - 1] == ',')
+		{
+			buffer.Remove(buffer.Length - 1, 1);
+		}
 
-    // Return string with navigation state
-    .WindowsCreateString(buffer.c_str(), buffer.length(), pNavigationState);
-
-		return S_OK;
+		return buffer.ToString();
 	}
 
 	//------------------------------------------------------------------------
@@ -690,37 +680,39 @@ internal partial class NavigationHistory
 
 	internal void SetNavigationState(string navigationState, bool suppressNavigate)
 	{
-		int versionNumber = 0;
-		int contentCount = 0;
 		int currentPosition = 0;
-		int nextPosition = string.npos;
-		string buffer;
-
-		buffer.append(HStringUtil.GetRawBuffer(navigationState, null));
+		int nextPosition = 0;
+		string buffer = navigationState;
 
 		// Read version number
-		NavigationHelpers.ReaduintFromString(buffer, currentPosition, &versionNumber, &nextPosition);
+		NavigationHelpers.ReadUINT32FromString(buffer, currentPosition, out var versionNumber, out nextPosition);
 		currentPosition = nextPosition;
-		IFCCHECK_RETURN(versionNumber == c_versionNumber);
+		if (versionNumber != c_versionNumber)
+		{
+			throw new InvalidOperationException("Navigation state format version mismatch.");
+		}
 
 		// Read number of entries in history. Previous entries + Current entry + Next entries
-		NavigationHelpers.ReaduintFromString(buffer, currentPosition, &contentCount, &nextPosition);
+		NavigationHelpers.ReadUINT32FromString(buffer, currentPosition, out var contentCount, out nextPosition);
 		currentPosition = nextPosition;
 
 		// Clear Navigation history, because new history is going to be read
-		Clearpublic NavigationHistory();
+		ClearNavigationHistory();
 
 		if (contentCount > 0)
 		{
-			int nextSize = 0;
-			int previousSize = 0;
-			int contentIndex = 0;
+			uint nextSize = 0;
+			uint previousSize = 0;
+			uint contentIndex = 0;
 			PageStackEntry pPageStackEntry;
 
 			// Read index of current entry
-			NavigationHelpers.ReadintFromString(buffer, currentPosition, &contentIndex, &nextPosition);
+			NavigationHelpers.ReadUINT32FromString(buffer, currentPosition, out contentIndex, out nextPosition);
 			currentPosition = nextPosition;
-			IFCCHECK_RETURN(contentIndex < contentCount);
+			if (contentIndex >= contentCount)
+			{
+				throw new InvalidOperationException("Invalid current page index.");
+			}
 
 			previousSize = contentIndex;
 			nextSize = contentCount - previousSize - 1;
@@ -728,19 +720,19 @@ internal partial class NavigationHistory
 			// Read previous entries
 			for (int i = 0; i < previousSize; ++i)
 			{
-				ReadPageStackEntryFromString(buffer, currentPosition, &pPageStackEntry, &nextPosition);
+				ReadPageStackEntryFromString(buffer, currentPosition, out pPageStackEntry, out nextPosition);
 				currentPosition = nextPosition;
-				m_tpBackStack.AppendInternal(pPageStackEntry);
+				m_tpBackStack.AddInternal(pPageStackEntry);
 			}
 
 			// Read current entry
-			ReadPageStackEntryFromString(buffer, currentPosition, &pPageStackEntry, &nextPosition);
+			ReadPageStackEntryFromString(buffer, currentPosition, out pPageStackEntry, out nextPosition);
 			currentPosition = nextPosition;
 
 			if (suppressNavigate)
 			{
-				m_tpBackStack.AppendInternal(pPageStackEntry);
-				m_tpCurrentPageStackEntry.Clear();
+				m_tpBackStack.AddInternal(pPageStackEntry);
+				m_tpCurrentPageStackEntry = null;
 			}
 			else
 			{
@@ -750,15 +742,18 @@ internal partial class NavigationHistory
 			// Read next entries
 			for (int i = 0; i < nextSize; ++i)
 			{
-				ReadPageStackEntryFromString(buffer, currentPosition, &pPageStackEntry, &nextPosition);
+				ReadPageStackEntryFromString(buffer, currentPosition, out pPageStackEntry, out nextPosition);
 				currentPosition = nextPosition;
-				m_tpForwardStack.AppendInternal(pPageStackEntry);
+				m_tpForwardStack.AddInternal(pPageStackEntry);
 			}
 		}
 
 		int nCount = 0;
 
-		IFCPTR_RETURN(m_pIFrame);
+		if (m_pIFrame is null)
+		{
+			throw new InvalidOperationException("Frame is null.");
+		}
 
 		// Navigation can be set without navigating to the current page so we need to update BackStackDepth here because CommitNavigation could not be called.
 		nCount = m_tpBackStack.Count;
@@ -779,47 +774,42 @@ internal partial class NavigationHistory
 	//
 	//------------------------------------------------------------------------
 
-	private void WritePageStackEntryToString(PageStackEntry pPageStackEntry, string &buffer)
+	private void WritePageStackEntryToString(PageStackEntry pPageStackEntry, StringBuilder buffer)
 	{
-
-		string strDescriptor;
-		string strTransitionInfoType;
-		string strTransitionInfoTypePromoted;
 		string strTransitionInfo;
-		object* pParameterobject = null;
-		NavigationTransitionInfo spTransitionInfo;
-		NavigationTransitionInfo spTransitionInfoAsI;
+		object pParameterobject = null;
 		bool isParameterTypeSupported = false;
 
 		// Write descriptor
-		pPageStackEntry.GetDescriptor(strDescriptor.GetAddressOf());
-		IFCPTR(strDescriptor);
-		NavigationHelpers.WritestringToString(strDescriptor, buffer);
+		var strDescriptor = pPageStackEntry.GetDescriptor();
+		if (strDescriptor is null)
+		{
+			throw new InvalidOperationException("Descriptor should not be null");
+		}
+
+		NavigationHelpers.WriteHSTRINGToString(strDescriptor, buffer);
 
 		// Write parameter
 		pParameterobject = pPageStackEntry.Parameter;
-		(NavigationHelpers.WriteNavigationParameterToString(pParameterobject,
-				buffer, &isParameterTypeSupported));
+		NavigationHelpers.WriteNavigationParameterToString(pParameterobject, buffer, out isParameterTypeSupported));
 
 		// Get the NavigationTransitionInfo.
-		spTransitionInfo.As(&spTransitionInfoAsI);
-		spTransitionInfoAsI = pPageStackEntry.NavigationTransitionInfo;
+		var spTransitionInfoAsI = pPageStackEntry.NavigationTransitionInfo;
+		var spTransitionInfo = spTransitionInfoAsI;
 
-		if (spTransitionInfo)
+		if (spTransitionInfo is not null)
 		{
 			// Write NavigationTransitionInfo type.
-			MetadataAPI.GetRuntimeClassName(spTransitionInfoAsI, &strTransitionInfoType);
-			strTransitionInfoType.Promote(&strTransitionInfoTypePromoted);
-			NavigationHelpers.WritestringToString(strTransitionInfoTypePromoted.Getstring(), buffer);
+			NavigationHelpers.WriteHSTRINGToString(spTransitionInfo.GetType().FullName, buffer);
 
 			// Write NavigationTransitionInfo.
-			spTransitionInfo.GetNavigationStateCoreProtected(strTransitionInfo.GetAddressOf());
-			NavigationHelpers.WritestringToString(strTransitionInfo, buffer);
+			strTransitionInfo = spTransitionInfo.GetNavigationStateCore();
+			NavigationHelpers.WriteHSTRINGToString(strTransitionInfo, buffer);
 		}
 		else
 		{
 			// Placeholder for type.
-			NavigationHelpers.WritestringToString(null, buffer);
+			NavigationHelpers.WriteHSTRINGToString(null, buffer);
 
 			// Only write the serialization of the type if we need to.
 		}
@@ -828,8 +818,7 @@ internal partial class NavigationHistory
 		{
 			// Throw exception saying that a parameter type is not supported for
 			// serialization
-			(ErrorHelper.OriginateErrorUsingResourceID(E_FAIL,
-					ERROR_NAVIGATION_UNSUPPORTED_PARAM_TYPE_FOR_SERIALIZATION));
+			throw new InvalidOperationException("Unsupported parameter type for serialization.");
 		}
 	}
 
@@ -850,11 +839,10 @@ internal partial class NavigationHistory
 	{
 
 		string strDescriptor;
-		string strTransitionInfoType;
-		string strTransitionInfo;
+		string strTransitionInfoType = null;
+		string strTransitionInfo = null;
 		object spParameterobject;
-		CClassInfo* pTransitionInfoTypeInfo = null;
-		NavigationTransitionInfo spTransitionInfo;
+		NavigationTransitionInfo spTransitionInfo = null;
 
 		// Read descriptor
 		NavigationHelpers.ReadStringFromString(
@@ -870,35 +858,43 @@ internal partial class NavigationHistory
 
 		// Read parameter
 		NavigationHelpers.ReadNavigationParameterFromString(buffer, currentPosition, out spParameterobject, out pNextPosition);
-		currentPosition = *pNextPosition;
+		currentPosition = pNextPosition;
 
 		// Create NavigationTransitionInfo
-		hr = NavigationHelpers.ReadStringFromString(
-			buffer,
-			currentPosition,
-			strTransitionInfoType.GetAddressOf(),
-			pNextPosition);
-
-		if (SUCCEEDED(hr))
+		var succeeded = true;
+		try
 		{
-			currentPosition = *pNextPosition;
+			NavigationHelpers.ReadStringFromString(
+				buffer,
+				currentPosition,
+				out strTransitionInfoType,
+				out pNextPosition);
+		}
+		catch
+		{
+			succeeded = false;
+		}
 
-			if (strTransitionInfoType)
+		if (succeeded)
+		{
+			currentPosition = pNextPosition;
+
+			if (strTransitionInfoType is not null)
 			{
-				MetadataAPI.GetClassInfoByFullName(XSTRING_PTR_EPHEMERAL_FROM_string(strTransitionInfoType), &pTransitionInfoTypeInfo);
-				ActivationAPI.ActivateInstance(pTransitionInfoTypeInfo, &spTransitionInfo);
+				var pTransitionInfoTypeInfo = Type.GetType(strTransitionInfoType);
+				spTransitionInfo = (NavigationTransitionInfo)Activator.CreateInstance(pTransitionInfoTypeInfo);
 
 				// Read NavigationTransitionInfo.
 				NavigationHelpers.ReadStringFromString(
 					buffer,
 					currentPosition,
-					strTransitionInfo.GetAddressOf(),
-					pNextPosition));
-				currentPosition = *pNextPosition;
+					out strTransitionInfo,
+					out pNextPosition);
+				currentPosition = pNextPosition;
 
 				if (strTransitionInfo != null)
 				{
-					spTransitionInfo.SetNavigationStateCoreProtected(strTransitionInfo);
+					spTransitionInfo.SetNavigationStateCore(strTransitionInfo);
 				}
 			}
 		}
@@ -912,8 +908,6 @@ internal partial class NavigationHistory
         IFCEXPECT(swprintf_s(szTrace, 256, "==== NavigationTransitionInfo not present while parsing navigation state.") >= 0.0;
         Trace(szTrace);
 #endif
-
-			hr = S_OK;
 		}
 
 		// Create PageStackEntry

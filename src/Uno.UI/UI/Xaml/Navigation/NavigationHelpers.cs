@@ -57,7 +57,7 @@ internal static class NavigationHelpers
 		return spNavigatingCancelEventArgs;
 	}
 
-	private static void WriteUintToString(
+	internal static void WriteUINT32ToString(
 		 uint value,
 		 StringBuilder buffer)
 	{
@@ -66,7 +66,7 @@ internal static class NavigationHelpers
 		buffer.Append(',');
 	}
 
-	private static void ReadUintFromString(
+	internal static void ReadUINT32FromString(
 		string buffer,
 		int currentPosition,
 		out uint pValue,
@@ -96,7 +96,7 @@ internal static class NavigationHelpers
 		*pValue = V_UI4(&dest);
 	}
 
-	private static void WriteStringToString(
+	internal static void WriteHSTRINGToString(
 		 string hstr,
 		 StringBuilder buffer)
 	{
@@ -133,17 +133,17 @@ internal static class NavigationHelpers
 	//
 	//------------------------------------------------------------------------
 
-	private static void WriteNavigationParameterToString(
-		 object pNavigationParameter,
-		 string &buffer,
-		out bool* pIsParameterTypeSupported)
+	internal static void WriteNavigationParameterToString(
+		object pNavigationParameter,
+		StringBuilder buffer,
+		out bool pIsParameterTypeSupported)
 	{
 
 		string strPropertyValue;
 		PropertyType propertyType = PropertyType.Empty;
 		bool isParameterTypeSupported = false;
 
-		*pIsParameterTypeSupported = false;
+		pIsParameterTypeSupported = false;
 
 		if (pNavigationParameter)
 		{
@@ -172,7 +172,7 @@ internal static class NavigationHelpers
 		// Write property value as a string. 
 		if (propertyType != PropertyType.Empty)
 		{
-			WritestringToString(strPropertyValue, buffer);
+			WriteHSTRINGToString(strPropertyValue, buffer);
 		}
 
 		*pIsParameterTypeSupported = isParameterTypeSupported;
@@ -190,7 +190,7 @@ internal static class NavigationHelpers
 	//
 	//------------------------------------------------------------------------
 
-	private static void ReadNavigationParameterFromString(
+	internal static void ReadNavigationParameterFromString(
 		string buffer,
 		int currentPosition,
 		out object ppNavigationParameter,
@@ -246,7 +246,7 @@ internal static class NavigationHelpers
 	//
 	//------------------------------------------------------------------------
 
-	private static void ReadStringFromString(
+	internal static void ReadStringFromString(
 		string buffer,
 		int currentPosition,
 		out string phstr,

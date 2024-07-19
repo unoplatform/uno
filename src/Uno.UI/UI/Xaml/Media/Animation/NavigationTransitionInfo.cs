@@ -13,12 +13,12 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			InitializeBinder();
 		}
 
-		protected virtual string GetNavigationStateCore()
+		protected internal virtual string GetNavigationStateCore()
 		{
 			return _navigationState;
 		}
 
-		protected virtual void SetNavigationStateCore(string navigationState)
+		protected internal virtual void SetNavigationStateCore(string navigationState)
 		{
 			_navigationState = navigationState;
 		}
