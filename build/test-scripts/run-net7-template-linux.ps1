@@ -10,7 +10,7 @@ function Assert-ExitCodeIsZero()
     }
 }
 
-$default = @('-v', 'n', "-p:RestoreConfigFile=$env:NUGET_CI_CONFIG", '-p:EnableWindowsTargeting=true')
+$default = @('-v', 'n', "-p:RestoreConfigFile=$env:NUGET_CI_CONFIG", '-p:EnableWindowsTargeting=true', '/nr:false')
 
 $debug = $default + '-c' + 'Debug'
 $release = $default + '-c' + 'Release'
@@ -32,25 +32,26 @@ Get-ChildItem -Recurse -Filter global.json | ForEach-Object {
 
 $projects =
 @(
-    # 5.0 and earlier
-    @("UnoAppWinUILinuxValidation/UnoAppWinUILinuxValidation.Wasm/UnoAppWinUILinuxValidation.Wasm.csproj", ""),
-    @("UnoAppWinUILinuxValidation/UnoAppWinUILinuxValidation.Skia.Gtk/UnoAppWinUILinuxValidation.Skia.Gtk.csproj", ""),
-    @("UnoAppWinUILinuxValidation/UnoAppWinUILinuxValidation.Skia.Linux.FrameBuffer/UnoAppWinUILinuxValidation.Skia.Linux.FrameBuffer.csproj", ""),
+    # Disabled for disk space reason, still active on master.
+    # # 5.0 and earlier
+    # @("UnoAppWinUILinuxValidation/UnoAppWinUILinuxValidation.Wasm/UnoAppWinUILinuxValidation.Wasm.csproj", ""),
+    # @("UnoAppWinUILinuxValidation/UnoAppWinUILinuxValidation.Skia.Gtk/UnoAppWinUILinuxValidation.Skia.Gtk.csproj", ""),
+    # @("UnoAppWinUILinuxValidation/UnoAppWinUILinuxValidation.Skia.Linux.FrameBuffer/UnoAppWinUILinuxValidation.Skia.Linux.FrameBuffer.csproj", ""),
 
-    # 5.1 Blank
-    @("5.1/uno51blank/uno51blank.Skia.Gtk/uno51blank.Skia.Gtk.csproj", ""),
-    @("5.1/uno51blank/uno51blank.Skia.Linux.FrameBuffer/uno51blank.Skia.Linux.FrameBuffer.csproj", ""),
-    @("5.1/uno51blank/uno51blank.Skia.WPF/uno51blank.Skia.WPF.csproj", ""),
-    @("5.1/uno51blank/uno51blank.Wasm/uno51blank.Wasm.csproj", ""),
+    # # 5.1 Blank
+    # @("5.1/uno51blank/uno51blank.Skia.Gtk/uno51blank.Skia.Gtk.csproj", ""),
+    # @("5.1/uno51blank/uno51blank.Skia.Linux.FrameBuffer/uno51blank.Skia.Linux.FrameBuffer.csproj", ""),
+    # @("5.1/uno51blank/uno51blank.Skia.WPF/uno51blank.Skia.WPF.csproj", ""),
+    # @("5.1/uno51blank/uno51blank.Wasm/uno51blank.Wasm.csproj", ""),
 
-    # 5.1 Recommended
-    @("5.1/uno51recommended/uno51recommended.Skia.Gtk/uno51recommended.Skia.Gtk.csproj", ""),
-    @("5.1/uno51recommended/uno51recommended.Skia.Linux.FrameBuffer/uno51recommended.Skia.Linux.FrameBuffer.csproj", ""),
-    @("5.1/uno51recommended/uno51recommended.Skia.WPF/uno51recommended.Skia.WPF.csproj", ""),
-    @("5.1/uno51recommended/uno51recommended.Wasm/uno51recommended.Wasm.csproj", ""),
-    @("5.1/uno51recommended/uno51recommended.Server/uno51recommended.Server.csproj", ""),
-    @("5.1/uno51recommended/uno51recommended.Tests/uno51recommended.Tests.csproj", ""),
-    @("5.1/uno51recommended/uno51recommended.UITests/uno51recommended.UITests.csproj", ""),
+    # # 5.1 Recommended
+    # @("5.1/uno51recommended/uno51recommended.Skia.Gtk/uno51recommended.Skia.Gtk.csproj", ""),
+    # @("5.1/uno51recommended/uno51recommended.Skia.Linux.FrameBuffer/uno51recommended.Skia.Linux.FrameBuffer.csproj", ""),
+    # @("5.1/uno51recommended/uno51recommended.Skia.WPF/uno51recommended.Skia.WPF.csproj", ""),
+    # @("5.1/uno51recommended/uno51recommended.Wasm/uno51recommended.Wasm.csproj", ""),
+    # @("5.1/uno51recommended/uno51recommended.Server/uno51recommended.Server.csproj", ""),
+    # @("5.1/uno51recommended/uno51recommended.Tests/uno51recommended.Tests.csproj", ""),
+    # @("5.1/uno51recommended/uno51recommended.UITests/uno51recommended.UITests.csproj", ""),
 
     # 5.2 Blank
     @("5.2/uno52blank/uno52blank/uno52blank.csproj", ""),
@@ -91,5 +92,11 @@ for($i = 0; $i -lt $projects.Length; $i++)
     dotnet build $release "$projectPath" $projectOptions -bl:binlogs/$projectPath/release.binlog
     Assert-ExitCodeIsZero
 
-    dotnet clean $release "$projectPath"
+    $projectFolder=Split-Path -parent "$projectPath"
+    pushd $projectFolder
+    git clean -fdx
+    popd
+
+    # show disk space
+    df -h
 }

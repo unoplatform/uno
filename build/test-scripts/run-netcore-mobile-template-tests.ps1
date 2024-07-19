@@ -188,11 +188,11 @@ CleanupTree
 ## Tests Per versions of uno
 if ($IsWindows)
 {
-    $default = @('-v:m', '-p:EnableWindowsTargeting=true')
+    $default = @('-v:m', '-p:EnableWindowsTargeting=true', '/nr:false')
 }
 else
 {
-    $default = @('-v:m', '-p:AotAssemblies=false')
+    $default = @('-v:m', '-p:AotAssemblies=false', '/nr:false')
 }
 
 $debug = $default + '-p:Configuration=Debug'
@@ -340,8 +340,6 @@ for($i = 0; $i -lt $projects.Length; $i++)
         Write-Host "NetCore Building Release $projectPath with $projectOptions"
         dotnet build $release "$projectPath" $projectOptions -bl:binlogs/$projectPath/$i/release/msbuild.binlog
         Assert-ExitCodeIsZero
- 
-        dotnet clean $release "$projectPath"
     }
     else
     {
@@ -356,8 +354,11 @@ for($i = 0; $i -lt $projects.Length; $i++)
             Write-Host "MSBuild Building Release $projectPath with $projectOptions"
             & $msbuild $release /r "$projectPath" $projectOptions
             Assert-ExitCodeIsZero
-
-            & $msbuild $release /r /t:Clean "$projectPath"
         }
     }
+
+    $projectFolder=Split-Path -parent "$projectPath"
+    pushd $projectFolder
+    git clean -fdx
+    popd
 }
