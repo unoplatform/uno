@@ -218,7 +218,7 @@ internal partial class NavigationCache
 		}
 	}
 
-	private void ChangeTransientCacheSize(int transientCacheSize)
+	internal void ChangeTransientCacheSize(int transientCacheSize)
 	{
 		int itemsToUncache = 0;
 

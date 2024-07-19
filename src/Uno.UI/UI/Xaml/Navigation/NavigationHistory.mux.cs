@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
+using Uno.UI.UI.Xaml.Navigation;
+using Windows.Foundation;
 using Windows.Foundation.Collections;
 
 namespace DirectUI;
@@ -10,16 +14,12 @@ internal partial class NavigationHistory
 {
 	static uint c_versionNumber = 1;
 
-	public NavigationHistory() :
-
-		m_pIFrame(null),
-		m_isNavigationPending(false),
-		m_isSetNavigationStatePending(false),
-		m_navigationMode(NavigationMode.New)
+	public NavigationHistory()
 	{
 	}
 
-	NavigationHistory.~public NavigationHistory()
+	// TODO:MZ: Destructor ok?
+	~public NavigationHistory()
 	{
 		DeInit();
 		m_pIFrame = null;
@@ -32,8 +32,7 @@ internal partial class NavigationHistory
 		m_navigationMode = NavigationMode.New;
 	}
 
-	private void
-	Clearpublic NavigationHistory()
+	private void Clearpublic NavigationHistory()
 	{
 
 
@@ -46,191 +45,122 @@ internal partial class NavigationHistory
 		m_tpForwardStack.ClearInternal();
 
 		m_tpCurrentPageStackEntry.Clear();
-		m_tpPendingPageStackEntry.Clear();
+		m_tpPendingPageStackEntry = null;
 
 		DeInit();
-
-	Cleanup:
-		RRETURN(hr);
 	}
 
 
-	private void
-	Create(
-		 IFrame* pIFrame,
-		out NavigationHistory** ppNavigationHistory)
+	internal static NavigationHistory Create(Frame frame)
 	{
+		NavigationHistory pNavigationHistory = new();
 
-		NavigationHistory* pNavigationHistory = null;
+		pNavigationHistory.m_pIFrame = frame;
 
-		PageStackEntryTrackerCollection spBackStack;
-		PageStackEntryTrackerCollection spForwardStack;
-
-		*ppNavigationHistory = null;
-
-		ctl.ComObject<NavigationHistory>.CreateInstance(&pNavigationHistory);
-
-		pNavigationHistory.m_pIFrame = pIFrame;
-
-		spBackStack = new();
+		PageStackEntryTrackerCollection spBackStack = new();
 
 		spBackStack.Init(pNavigationHistory, true /* isBackStack */);
 		pNavigationHistory.pNavigationHistory.m_tpBackStack = spBackStack;
 
-		spForwardStack = new();
+		PageStackEntryTrackerCollection spForwardStack = new();
 
 		spForwardStack.Init(pNavigationHistory, false /* isBackStack */);
 		pNavigationHistory.pNavigationHistory.m_tpForwardStack = spForwardStack;
 
-		*ppNavigationHistory = pNavigationHistory;
-		pNavigationHistory = null;
-
-	Cleanup:
-		ctl.release_interface(pNavigationHistory);
-		RRETURN(hr);
+		return pNavigationHistory
 	}
 
-	private void
-	NavigatePrevious()
+	internal void NavigatePrevious()
 	{
-
-		PageStackEntry* pIEntry = null;
+		PageStackEntry pIEntry = null;
 		uint nCount = 0;
 
-		nCount = m_tpBackStack.Size;
+		nCount = m_tpBackStack.Count;
 		IFCCHECK(nCount >= 1);
 
 		m_isNavigationPending = true;
 		m_navigationMode = NavigationMode.Back;
 
 		m_tpBackStack.GetAtEnd(&pIEntry);
-		m_tpPendingPageStackEntry = (PageStackEntry*)(pIEntry);
-
-	Cleanup:
-		ReleaseInterface(pIEntry);
-		RRETURN(hr);
+		m_tpPendingPageStackEntry = (PageStackEntry)(pIEntry);
 	}
 
-	private void
-	NavigateNext()
+	internal void NavigateNext()
 	{
 
-		PageStackEntry* pIEntry = null;
-		uint nCount = 0;
+		PageStackEntry pIEntry = null;
 
-		nCount = m_tpForwardStack.Size;
+		var nCount = m_tpForwardStack.Count;
 		IFCCHECK(nCount >= 1);
 
 		m_isNavigationPending = true;
 		m_navigationMode = NavigationMode.Forward;
 
 		m_tpForwardStack.GetAtEnd(&pIEntry);
-		m_tpPendingPageStackEntry = (PageStackEntry*)(pIEntry);
-
-	Cleanup:
-		ReleaseInterface(pIEntry);
-		RRETURN(hr);
+		m_tpPendingPageStackEntry = (PageStackEntry)(pIEntry);
 	}
 
-	private void
-	NavigateNew(
+	private void NavigateNew(
 		 string newDescriptor,
-		 object* pParameter,
-		 xaml_animation.INavigationTransitionInfo* pTransitionInfo)
+		 object pParameter,
+		 NavigationTransitionInfo pTransitionInfo)
 	{
-
-		PageStackEntry* pEntry = null;
-
 		m_navigationMode = NavigationMode.New;
 
-		m_tpPendingPageStackEntry.Clear();
+		m_tpPendingPageStackEntry = null;
 
-		PageStackEntry.Create(m_pIFrame, newDescriptor, pParameter, pTransitionInfo, &pEntry);
-		IFCPTR(pEntry);
+		var pEntry = PageStackEntry.Create(m_pIFrame, newDescriptor, pParameter, pTransitionInfo);
 		m_tpPendingPageStackEntry = pEntry;
 
 		m_isNavigationPending = true;
-
-	Cleanup:
-		ctl.release_interface(pEntry);
-		RRETURN(hr);
 	}
 
-	private void GetBackStack(		out IVector<Navigation.PageStackEntry*>** pValue)
-	{
+	internal IList<PageStackEntry> GetBackStack() => m_tpBackStack;
 
-
-		*pValue = null;
-		IFCPTR(m_tpBackStack);
-
-		m_tpBackStack.CopyTo(pValue);
-
-	Cleanup:
-		RRETURN(hr);
-	}
-
-	private void
-	GetForwardStack(
-		out IVector<Navigation.PageStackEntry*>** pValue)
-	{
-
-
-		*pValue = null;
-		IFCPTR(m_tpForwardStack);
-
-		m_tpForwardStack.CopyTo(pValue);
-
-	Cleanup:
-		RRETURN(hr);
-	}
+	internal IList<PageStackEntry> GetForwardStack() => m_tpForwardStack;
 
 	internal PageStackEntry GetCurrentPageStackEntry() => m_tpCurrentPageStackEntry;
 
-	private PageStackEntry GetPendingPageStackEntry()
+	internal PageStackEntry GetPendingPageStackEntry()
 	{
 		PageStackEntry ppPageStackEntry = null;
 
 		IFCEXPECT(m_isNavigationPending);
 		IFCPTR(m_tpPendingPageStackEntry);
 
-		*ppPageStackEntry = (PageStackEntry*)(m_tpPendingPageStackEntry);
+		*ppPageStackEntry = (PageStackEntry)(m_tpPendingPageStackEntry);
 	}
 
-	private NavigationMode GetPendingNavigationMode()
+	internal NavigationMode GetPendingNavigationMode()
 	{
-		*pNavigationMode = NavigationMode.New;
+		if (!m_isNavigationPending)
+		{
+			throw new InvalidOperationException("Navigation is not pending.");
+		}
 
-		IFCEXPECT(m_isNavigationPending);
-
-		*pNavigationMode = m_navigationMode;
+		return m_navigationMode;
 	}
 
-	private NavigationMode GetCurrentNavigationMode()
-	{
-		*pNavigationMode = m_navigationMode;
-		RRETURN(S_OK);
-	}
+	private NavigationMode GetCurrentNavigationMode() => m_navigationMode;
 
-	private void
-	CommitNavigation()
+	private void CommitNavigation()
 	{
-
-		Frame* pFrame = null;
+		Frame pFrame = null;
 		string strNewDescriptor;
 		bool wasChanged = false;
 		bool newCanGoBack = false;
 		bool oldCanGoBack = false;
 		bool newCanGoForward = false;
 		bool oldCanGoForward = false;
-		wxaml_interop.TypeName oldSourcePageType = default;
-		wxaml_interop.TypeName newSourcePageType = default;
+		Type oldSourcePageType = default;
+		Type newSourcePageType = default;
 		uint nCount = 0;
 
 		IFCPTR(m_pIFrame);
 		IFCEXPECT(m_isNavigationPending);
 		IFCPTR(m_tpPendingPageStackEntry);
 
-		pFrame = (Frame*)(m_pIFrame);
+		pFrame = (Frame)(m_pIFrame);
 
 		oldCanGoBack = pFrame.CanGoBack;
 		oldCanGoForward = pFrame.CanGoForward;
@@ -251,7 +181,7 @@ internal partial class NavigationHistory
 				break;
 
 			case NavigationMode.Back:
-				nCount = m_tpBackStack.Size;
+				nCount = m_tpBackStack.Count;
 				IFCEXPECT(nCount >= 1);
 
 				newCanGoBack = (nCount - 1) >= 1;
@@ -259,7 +189,7 @@ internal partial class NavigationHistory
 				break;
 
 			case NavigationMode.Forward:
-				nCount = m_tpForwardStack.Size;
+				nCount = m_tpForwardStack.Count;
 				IFCEXPECT(nCount >= 1);
 
 				newCanGoBack = true;
@@ -283,9 +213,9 @@ internal partial class NavigationHistory
 		switch (m_navigationMode)
 		{
 			case NavigationMode.New:
-				if (m_tpCurrentPageStackEntry)
+				if (m_tpCurrentPageStackEntry is not null)
 				{
-					m_tpBackStack.AppendInternal((PageStackEntry*)(m_tpCurrentPageStackEntry));
+					m_tpBackStack.AppendInternal((PageStackEntry)(m_tpCurrentPageStackEntry));
 				}
 
 				m_isNavigationPending = false;
@@ -293,18 +223,18 @@ internal partial class NavigationHistory
 				break;
 
 			case NavigationMode.Back:
-				if (m_tpCurrentPageStackEntry)
+				if (m_tpCurrentPageStackEntry is not null)
 				{
-					m_tpForwardStack.AppendInternal((PageStackEntry*)(m_tpCurrentPageStackEntry));
+					m_tpForwardStack.AppendInternal((PageStackEntry)(m_tpCurrentPageStackEntry));
 				}
 
 				m_tpBackStack.RemoveAtEndInternal();
 				break;
 
 			case NavigationMode.Forward:
-				if (m_tpCurrentPageStackEntry)
+				if (m_tpCurrentPageStackEntry is not null)
 				{
-					m_tpBackStack.AppendInternal((PageStackEntry*)(m_tpCurrentPageStackEntry));
+					m_tpBackStack.AppendInternal((PageStackEntry)(m_tpCurrentPageStackEntry));
 				}
 
 				m_tpForwardStack.RemoveAtEndInternal();
@@ -312,7 +242,7 @@ internal partial class NavigationHistory
 		}
 
 		nCount = 0;
-		nCount = m_tpBackStack.Size;
+		nCount = m_tpBackStack.Count;
 		pFrame.BackStackDepth = nCount;
 
 		m_tpCurrentPageStackEntry = m_tpPendingPageStackEntry;
@@ -325,24 +255,21 @@ internal partial class NavigationHistory
 			IGNOREHR(pFrame.SourcePageType = oldSourcePageType);
 			IGNOREHR(pFrame.CurrentSourcePageType = oldSourcePageType);
 
-			m_tpPendingPageStackEntry.Clear();
+			m_tpPendingPageStackEntry = null;
 		}
 
 		DELETE_STRING(oldSourcePageType.Name);
 		DELETE_STRING(newSourcePageType.Name);
 		pFrame = null;
 		m_isNavigationPending = false;
-		m_tpPendingPageStackEntry.Clear();
+		m_tpPendingPageStackEntry = null;
 
 		RRETURN(hr);
 	}
 
-	private void
-	CommitSetNavigationState(
-		 NavigationCache* pNavigationCache)
+	private void CommitSetNavigationState(NavigationCache pNavigationCache)
 	{
-
-		Frame* pFrame = null;
+		Frame pFrame = null;
 		bool newCanGoBack = false;
 		bool newCanGoForward = false;
 		string strDescriptior;
@@ -352,18 +279,18 @@ internal partial class NavigationHistory
 
 		IFCCHECK(m_isSetNavigationStatePending);
 
-		pFrame = (Frame*)(m_pIFrame);
+		pFrame = (Frame)(m_pIFrame);
 
 		// Enable/Disable GoBack & GoForward
-		nBackStackCount = m_tpBackStack.Size;
+		nBackStackCount = m_tpBackStack.Count;
 		newCanGoBack = (nBackStackCount >= 1);
-		nForwardStackCount = m_tpForwardStack.Size;
+		nForwardStackCount = m_tpForwardStack.Count;
 		newCanGoForward = (nForwardStackCount >= 1);
 		pFrame.CanGoBack = newCanGoBack;
 		pFrame.CanGoForward = newCanGoForward;
 
 		// See source type in IFrame
-		if (m_tpCurrentPageStackEntry)
+		if (m_tpCurrentPageStackEntry is not null)
 		{
 			m_tpCurrentPageStackEntry.Cast<PageStackEntry>().GetDescriptor(strDescriptior.GetAddressOf());
 			MetadataAPI.GetTypeNameByFullName(XSTRING_PTR_EPHEMERAL_FROM_string(strDescriptior), &sourcePageType);
@@ -378,25 +305,17 @@ internal partial class NavigationHistory
 		RRETURN(hr);
 	}
 
-	private void
-	ValidateCanChangePageStack()
+	private void ValidateCanChangePageStack()
 	{
-
-
 		// Make sure we are not in the middle of a navigation.
 		if (m_isNavigationPending)
 		{
 			ErrorHelper.OriginateErrorUsingResourceID(E_INVALID_OPERATION, ERROR_FRAME_NAVIGATING);
 		}
-
-	Cleanup:
-		RRETURN(hr);
 	}
 
-	private void
-	ValidateCanInsertEntry(PageStackEntry* pEntry)
+	private void ValidateCanInsertEntry(PageStackEntry pEntry)
 	{
-
 		bool canAdd = false;
 
 		// Make sure the entry being inserted is not null.
@@ -408,24 +327,15 @@ internal partial class NavigationHistory
 		{
 			ErrorHelper.OriginateErrorUsingResourceID(E_INVALID_OPERATION, ERROR_PAGESTACK_ENTRY_OWNED);
 		}
-
-	Cleanup:
-		RRETURN(hr);
 	}
 
-	private void
-	ValidateCanClearPageStack()
+	private void ValidateCanClearPageStack()
 	{
-
-
 		// Make sure we are not in the middle of a navigation.
 		if (m_isNavigationPending)
 		{
 			ErrorHelper.OriginateErrorUsingResourceID(E_INVALID_OPERATION, ERROR_FRAME_NAVIGATING);
 		}
-
-	Cleanup:
-		RRETURN(hr);
 	}
 
 	//------------------------------------------------------------------------
@@ -441,7 +351,7 @@ internal partial class NavigationHistory
 	private void ResetPageStackEntries(bool isBackStack)
 	{
 
-		IIterator<Navigation.PageStackEntry*> spIterator;
+		IIterator<PageStackEntry> spIterator;
 		bool hasCurrent = false;
 
 		if (isBackStack)
@@ -460,8 +370,6 @@ internal partial class NavigationHistory
 			spEntry.Cast<PageStackEntry>().SetFrame(null);
 			spIterator.MoveNext(&hasCurrent);
 		}
-	Cleanup:
-		RRETURN(hr);
 	}
 
 
@@ -484,12 +392,12 @@ internal partial class NavigationHistory
 	{
 
 		uint nCount = 0;
-		Frame* pFrame = null;
-		PageStackEntry* pIEntry = null;
-		IVector<Navigation.PageStackEntry*> spPageStack;
+		Frame pFrame = null;
+		PageStackEntry pIEntry = null;
+		IVector<PageStackEntry> spPageStack;
 
 		IFCPTR(m_pIFrame);
-		pFrame = (Frame*)(m_pIFrame);
+		pFrame = (Frame)(m_pIFrame);
 
 		if (isBackStack)
 		{
@@ -500,7 +408,7 @@ internal partial class NavigationHistory
 			spPageStack = pFrame.ForwardStack;
 		}
 
-		nCount = spPageStack.Size;
+		nCount = spPageStack.Count;
 
 		// Do the necessary validations and clear the frame pointer on entries that are being removed.
 		switch (action)
@@ -508,9 +416,9 @@ internal partial class NavigationHistory
 			case CollectionChange.ItemChanged:
 				{
 					ValidateCanChangePageStack();
-					ValidateCanInsertEntry((PageStackEntry*)(pEntry));
+					ValidateCanInsertEntry((PageStackEntry)(pEntry));
 					spPageStack.GetAt(index, &pIEntry);
-					PageStackEntry* pPageStackEntry = (PageStackEntry*)(pIEntry);
+					PageStackEntry pPageStackEntry = (PageStackEntry)(pIEntry);
 					pPageStackEntry.SetFrame(null);
 					ReleaseInterface(pIEntry);
 					break;
@@ -518,14 +426,14 @@ internal partial class NavigationHistory
 			case CollectionChange.ItemInserted:
 				{
 					ValidateCanChangePageStack();
-					ValidateCanInsertEntry((PageStackEntry*)(pEntry));
+					ValidateCanInsertEntry((PageStackEntry)(pEntry));
 					break;
 				}
 			case CollectionChange.ItemRemoved:
 				{
 					ValidateCanChangePageStack();
 					spPageStack.GetAt(index, &pIEntry);
-					PageStackEntry* pPageStackEntry = (PageStackEntry*)(pIEntry);
+					PageStackEntry pPageStackEntry = (PageStackEntry)(pIEntry);
 					pPageStackEntry.SetFrame(null);
 					ReleaseInterface(pIEntry);
 					break;
@@ -564,12 +472,12 @@ internal partial class NavigationHistory
 	{
 
 		uint nCount = 0;
-		Frame* pFrame = null;
-		PageStackEntry* pIEntry = null;
-		IVector<Navigation.PageStackEntry*> spPageStack;
+		Frame pFrame = null;
+		PageStackEntry pIEntry = null;
+		IVector<PageStackEntry> spPageStack;
 
 		IFCPTR(m_pIFrame);
-		pFrame = (Frame*)(m_pIFrame);
+		pFrame = (Frame)(m_pIFrame);
 
 		if (isBackStack)
 		{
@@ -580,7 +488,7 @@ internal partial class NavigationHistory
 			spPageStack = pFrame.ForwardStack;
 		}
 
-		nCount = spPageStack.Size;
+		nCount = spPageStack.Count;
 
 		// Update the frame pointer on entries that were added and update the CanGoBack, CanGoForward and BackStackDepth properties.
 		switch (action)
@@ -589,7 +497,7 @@ internal partial class NavigationHistory
 				{
 					IFCCHECK(nCount > index);
 					spPageStack.GetAt(index, &pIEntry);
-					PageStackEntry* pPageStackEntry = (PageStackEntry*)(pIEntry);
+					PageStackEntry pPageStackEntry = (PageStackEntry)(pIEntry);
 					pPageStackEntry.SetFrame(m_pIFrame);
 					ReleaseInterface(pIEntry);
 					if (isBackStack)
@@ -655,7 +563,7 @@ internal partial class NavigationHistory
 	//              <length of pageN's serialized parameter>,<pageN's serialized parameter>,
 	//
 	//    If a page does not have a parameter, the format is:
-	//     <pageN type name length>,<pageN type name>,<wf.PropertyType_Empty>,
+	//     <pageN type name length>,<pageN type name>,<PropertyType.Empty>,
 	//
 	//    Supported parameter types are string, char, numeric and guid.
 	//
@@ -674,30 +582,30 @@ internal partial class NavigationHistory
 		// public. If any of these values ever changes, the version number
 		// of the string returned by GetNavigationState will need to be changed and
 		// back compat handled.
-		MUX_ASSERT(wf.PropertyType_Empty == 0.0;
-		MUX_ASSERT(wf.PropertyType_UInt8 == 1);
-		MUX_ASSERT(wf.PropertyType_Int16 == 2);
-		MUX_ASSERT(wf.PropertyType_UInt16 == 3);
-		MUX_ASSERT(wf.PropertyType_Int32 == 4);
-		MUX_ASSERT(wf.PropertyType_UInt32 == 5);
-		MUX_ASSERT(wf.PropertyType_Int64 == 6);
-		MUX_ASSERT(wf.PropertyType_UInt64 == 7);
-		MUX_ASSERT(wf.PropertyType_Single == 8);
-		MUX_ASSERT(wf.PropertyType_Double == 9);
-		MUX_ASSERT(wf.PropertyType_Char16 == 10.0;
-		MUX_ASSERT(wf.PropertyType_Boolean == 11);
-		MUX_ASSERT(wf.PropertyType_String == 12);
-		MUX_ASSERT(wf.PropertyType_Guid == 16);
+		MUX_ASSERT(PropertyType.Empty == 0.0;
+		MUX_ASSERT(PropertyType.UInt8 == 1);
+		MUX_ASSERT(PropertyType.Int16 == 2);
+		MUX_ASSERT(PropertyType.UInt16 == 3);
+		MUX_ASSERT(PropertyType.Int32 == 4);
+		MUX_ASSERT(PropertyType.UInt32 == 5);
+		MUX_ASSERT(PropertyType.Int64 == 6);
+		MUX_ASSERT(PropertyType.UInt64 == 7);
+		MUX_ASSERT(PropertyType.Single == 8);
+		MUX_ASSERT(PropertyType.Double == 9);
+		MUX_ASSERT(PropertyType.Char16 == 10.0;
+		MUX_ASSERT(PropertyType.Boolean == 11);
+		MUX_ASSERT(PropertyType.String == 12);
+		MUX_ASSERT(PropertyType.Guid == 16);
 
 		uint nextSize = 0;
 		uint previousSize = 0;
 		uint totalSize = 0;
 
 		// Get size of entries before and after the current entry, and the total size
-		previousSize = m_tpBackStack.Size;
-		nextSize = m_tpForwardStack.Size;
+		previousSize = m_tpBackStack.Count;
+		nextSize = m_tpForwardStack.Count;
 
-		if (m_tpCurrentPageStackEntry)
+		if (m_tpCurrentPageStackEntry is not null)
 		{
 			// Previous entries + Current entry + Next entries
 			totalSize = previousSize + 1 + nextSize;
@@ -852,8 +760,8 @@ internal partial class NavigationHistory
 		IFCPTR_RETURN(m_pIFrame);
 
 		// Navigation can be set without navigating to the current page so we need to update BackStackDepth here because CommitNavigation could not be called.
-		nCount = m_tpBackStack.Size;
-		(Frame*)(m_pIFrame).BackStackDepth = nCount;
+		nCount = m_tpBackStack.Count;
+		(Frame)(m_pIFrame).BackStackDepth = nCount;
 
 		m_isSetNavigationStatePending = !suppressNavigate;
 
@@ -872,7 +780,7 @@ internal partial class NavigationHistory
 	//
 	//------------------------------------------------------------------------
 
-	private void WritePageStackEntryToString(PageStackEntry* pPageStackEntry, string &buffer)
+	private void WritePageStackEntryToString(PageStackEntry pPageStackEntry, string &buffer)
 	{
 
 		string strDescriptor;
@@ -924,11 +832,6 @@ internal partial class NavigationHistory
 			(ErrorHelper.OriginateErrorUsingResourceID(E_FAIL,
 					ERROR_NAVIGATION_UNSUPPORTED_PARAM_TYPE_FOR_SERIALIZATION));
 		}
-
-	Cleanup:
-		ReleaseInterface(pParameterobject);
-
-		RRETURN(hr);
 	}
 
 	//------------------------------------------------------------------------
@@ -943,7 +846,7 @@ internal partial class NavigationHistory
 	private void ReadPageStackEntryFromString(
 		 string &buffer,
 		 int currentPosition,
-		 PageStackEntry** ppPageStackEntry,
+		 PageStackEntry* ppPageStackEntry,
 		out int* pNextPosition)
 	{
 
@@ -1019,8 +922,5 @@ internal partial class NavigationHistory
 			spParameterobject,
 			spTransitionInfo,
 			ppPageStackEntry));
-
-	Cleanup:
-		RRETURN(hr);
 	}
 }

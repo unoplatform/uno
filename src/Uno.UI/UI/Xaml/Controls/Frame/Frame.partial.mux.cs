@@ -79,7 +79,6 @@ partial class Frame
 	internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 	{
 		uint transientCacheSize = 0;
-		bool canNavigate = false;
 
 		base.OnPropertyChanged2(args);
 
@@ -92,7 +91,7 @@ partial class Frame
 			else
 			{
 				var sourcePageTypeName = SourcePageType;
-				Navigate(sourcePageTypeName, null, canNavigate);
+				Navigate(sourcePageTypeName, null);
 			}
 		}
 		else if (args.Property == Frame.CacheSizeProperty)
@@ -113,13 +112,11 @@ partial class Frame
 
 		if (m_tpNavigationHistory is not null)
 		{
-			wrl.ComPtr<IVector<Navigation.PageStackEntry*>> backstack;
-			m_tpNavigationHistory.GetBackStack(&backstack);
-			uint count = 0;
-			if (backstack)
+			var backstack = m_tpNavigationHistory.GetBackStack();
+			if (backstack is not null)
 			{
-				count = backstack.Size;
-				*isInitialPage = count == 0;
+				var count = backstack.Count;
+				isInitialPage = count == 0;
 			}
 		}
 	}
@@ -145,7 +142,7 @@ partial class Frame
 	{
 		bool reentrancyDetected = false;
 
-		// // CheckThread();
+		// CheckThread();
 
 		// Prevent reentrancy caused by app navigating while being
 		// notified of a previous navigate
@@ -156,7 +153,10 @@ partial class Frame
 		}
 		m_isInNavigate = true;
 
-		IFCPTR(m_tpNavigationHistory);
+		if (m_tpNavigationHistory is null)
+		{
+			throw new InvalidOperationException("Navigation history is null");
+		}
 
 		m_isNavigationFromMethod = true;
 
@@ -197,7 +197,10 @@ partial class Frame
 		}
 		m_isInNavigate = true;
 
-		IFCPTR(m_tpNavigationHistory);
+		if (m_tpNavigationHistory is null)
+		{
+			throw new InvalidOperationException("Navigation history is null");
+		}
 
 		m_isNavigationFromMethod = true;
 
@@ -290,12 +293,15 @@ partial class Frame
 		Page spIPage;
 		object spPageobject;
 		object spParameterobject;
-		INavigationTransitionInfo spNavigationTransitionInfo;
+		NavigationTransitionInfo spNavigationTransitionInfo;
 		string strDescriptor;
-		PageStackEntry* pPageStackEntry = null;
+		PageStackEntry pPageStackEntry = null;
 		Navigation.NavigationMode navigationMode = Navigation.NavigationMode_New;
 
-		IFCPTR(m_tpNavigationHistory);
+		if (m_tpNavigationHistory is null)
+		{
+			throw new InvalidOperationException("Navigation history is null");
+		}
 
 		m_tpNavigationHistory.GetPendingNavigationMode(&navigationMode);
 		m_tpNavigationHistory.GetPendingPageStackEntry(&pPageStackEntry);
@@ -336,8 +342,8 @@ partial class Frame
 		object spOldobject;
 		object spNewobject;
 		object spParameterobject;
-		INavigationTransitionInfo spNavigationTransitionInfo;
-		PageStackEntry* pPageStackEntry = null;
+		NavigationTransitionInfo spNavigationTransitionInfo;
+		PageStackEntry pPageStackEntry = null;
 
 		if (m_isCanceled)
 		{
@@ -394,12 +400,12 @@ partial class Frame
 		object spContentobject;
 		IPage spIPage;
 		object spParameterobject;
-		xaml_animation.INavigationTransitionInfo spNavigationTransitionInfo;
+		NavigationTransitionInfo spNavigationTransitionInfo;
 		string strDescriptor;
-		PageStackEntry* pPageStackEntry = null;
+		PageStackEntry pPageStackEntry = null;
 
 		// Get current navigation entry
-		if (!m_tpNavigationHistory)
+		if (m_tpNavigationHistory is null)
 		{
 			goto Cleanup;
 		}
@@ -436,7 +442,7 @@ partial class Frame
 		}
 	}
 
-	private void ChangeContent(object oldContent, object newContent, object parameter, INavigationTransitionInfo transitionInfo)
+	private void ChangeContent(object oldContent, object newContent, object parameter, NavigationTransitionInfo transitionInfo)
 	{
 		Page spOldIPage;
 		Page spNewIPage;
@@ -463,8 +469,8 @@ partial class Frame
 		m_isLastNavigationBack = false;
 		if (navigationMode == Navigation.NavigationMode_Back)
 		{
-			PageStackEntry* pCurrentPageStackEntry = null;
-			xaml_animation.INavigationTransitionInfo spNavigationTransitionInfo;
+			PageStackEntry pCurrentPageStackEntry = null;
+			NavigationTransitionInfo spNavigationTransitionInfo;
 
 			m_tpNavigationHistory.GetCurrentPageStackEntry(&pCurrentPageStackEntry);
 
@@ -517,14 +523,14 @@ partial class Frame
 
 	private void RaiseUnhandledException(int errorCode, int resourceStringId)
 	{
-		xstring_ptr strMessage;
-		HRESULT hrToReport;
-		bool fIsHandled = false;
+		//xstring_ptr strMessage;
+		//HRESULT hrToReport;
+		//bool fIsHandled = false;
 
-		ErrorHelper.MapHresult(errorCode, &hrToReport);
-		ErrorHelper.GetNonLocalizedErrorString(resourceStringID, &strMessage);
+		//ErrorHelper.MapHresult(errorCode, &hrToReport);
+		//ErrorHelper.GetNonLocalizedErrorString(resourceStringID, &strMessage);
 
-		ErrorHelper.RaiseUnhandledExceptionEvent(hrToReport, strMessage, &fIsHandled);
+		//ErrorHelper.RaiseUnhandledExceptionEvent(hrToReport, strMessage, &fIsHandled);
 	}
 
 	private string GetNavigationStateImpl()
@@ -548,7 +554,7 @@ partial class Frame
 		else
 		{
 			object spContentobject;
-			PageStackEntry* pPageStackEntry = null;
+			PageStackEntry pPageStackEntry = null;
 
 			// Create or get page corresponding to current navigation entry and set it as
 			// frame's content. NavigationCache.GetContent will create the current page.

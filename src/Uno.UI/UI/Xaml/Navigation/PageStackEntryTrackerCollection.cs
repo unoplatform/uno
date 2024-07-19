@@ -5,10 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using DirectUI;
 using Microsoft.UI.Xaml.Navigation;
+using Windows.Foundation.Collections;
 
-namespace Uno.UI.UI.Xaml.Navigation;
+namespace DirectUI;
 
-internal class PageStackEntryTrackerCollection : TrackerCollection<PageStackEntry>
+internal class PageStackEntryTrackerCollection : ObservableVector<PageStackEntry>
 {
 	//TODO:MZ: Includes NavigationHistory interaction code
 }
