@@ -61,6 +61,7 @@ Legend:
 - 🐞 Supported with the debugger
 - ⌛ Upcoming support
 - ⚠️ Degraded
+- 🛜 Support through [SSH to a mac](xref:Uno.GettingStarted.CreateAnApp.VSCode#debug-the-app)
 - 🔳 Not supported by the environment/IDE
 
 ### [**Windows**](#tab/windows)
@@ -92,21 +93,21 @@ Legend:
         </tr>
         <tr>
             <td>Desktop/WSL</td>
-            <td>⌛(1)</td><td>⌛(1)</td>
+            <td>⌛[^1]</td><td>⌛[^1]</td>
             <td>✅</td><td>✅</td>
-            <td>🔳(2)</td><td>🔳(2)</td>
+            <td>🔳[^2]</td><td>🔳[^2]</td>
         </tr>
         <tr>
             <td>iOS</td>
-            <td>⚠️(3)</td><td>✅(4)</td>
-            <td>⚠️(3)</td><td>✅(4)</td>
-            <td>⚠️(3)</td><td>✅(4)</td>
+            <td>⚠️[^3]</td><td>✅[^4]</td>
+            <td>🛜⚠️[^3]</td><td>🛜✅[^4]</td>
+            <td>🔳</td><td>🔳</td>
         </tr>
         <tr>
             <td>Android</td>
-            <td>⚠️(5)</td><td>✅(4)</td>
-            <td>⚠️(5)</td><td>✅(4)</td>
-            <td>⚠️(5)</td><td>✅(4)</td>
+            <td>⚠️[^3]</td><td>✅[^4]</td>
+            <td>⚠️[^3]</td><td>✅[^4]</td>
+            <td>⚠️[^3]</td><td>✅[^4]</td>
         </tr>
         </tr>
         <tr>
@@ -124,7 +125,7 @@ Legend:
         <tr>
             <td>Catalyst</td>
             <td>🔳</td><td>🔳</td>
-            <td>🔳</td><td>🔳</td>
+            <td>🛜⚠️[^3]</td><td>🛜✅[^4]</td>
             <td>🔳</td><td>🔳</td>
         </tr>
     </tbody>
@@ -155,19 +156,19 @@ Legend:
         </tr>
         <tr>
             <td>iOS</td>
-            <td>⚠️(3)</td><td>✅(4)</td>
-            <td>⚠️(3)</td><td>✅(4)</td>
+            <td>⚠️[^3]</td><td>✅[^4]</td>
+            <td>⚠️[^3]</td><td>✅[^4]</td>
         </tr>
         <tr>
             <td>Android</td>
-            <td>⚠️(5)</td><td>✅(4)</td>
-            <td>⚠️(5)</td><td>✅(4)</td>
+            <td>⚠️[^3]</td><td>✅[^4]</td>
+            <td>⚠️[^3]</td><td>✅[^4]</td>
         </tr>
         </tr>
         <tr>
             <td>Catalyst</td>
-            <td>⚠️(3)</td><td>✅(4)</td>
-            <td>⚠️(3)</td><td>✅(4)</td>
+            <td>⚠️[^3]</td><td>✅[^4]</td>
+            <td>⚠️[^3]</td><td>✅[^4]</td>
         </tr>
         <tr>
             <td>WinAppSDK</td>
@@ -207,8 +208,8 @@ Legend:
         </tr>
         <tr>
             <td>Android</td>
-            <td>⚠️(5)</td><td>✅(4)</td>
-            <td>⚠️(5)</td><td>✅(4)</td>
+            <td>⚠️[^3]</td><td>✅[^4]</td>
+            <td>⚠️[^3]</td><td>✅[^4]</td>
         </tr>
         <tr>
             <td>WebAssembly</td>
@@ -217,12 +218,12 @@ Legend:
         </tr>
         <tr>
             <td>iOS</td>
-            <td>🔳</td><td>🔳</td>
+            <td>🛜⚠️[^3]</td><td>🛜✅[^4]</td>
             <td>🔳</td><td>🔳</td>
         </tr>
         <tr>
             <td>Catalyst</td>
-            <td>🔳</td><td>🔳</td>
+            <td>🛜⚠️[^3]</td><td>🛜✅[^4]</td>
             <td>🔳</td><td>🔳</td>
         </tr>
         <tr>
@@ -234,6 +235,11 @@ Legend:
 </table>
 
 ---
+
+[^1]: Support is [pending support](https://github.com/dotnet/sdk/pull/40725) in the .NET SDK.
+[^2]: Support is [not available](https://youtrack.jetbrains.com/issue/RIDER-53302/launchSettings.json-WSL2-command-support).
+[^3]: C# Hot Reload is affected by a [.NET Runtime issue](https://github.com/dotnet/android/issues/9120).
+[^4]: XAML Hot Reload is using the XAML Reader, [pending C# Hot Reload update](https://github.com/unoplatform/uno/issues/15918).
 
 ## Supported features per Platform
 
@@ -264,17 +270,14 @@ WebAssembly is currently providing both full and partial Hot Reload support, dep
   - Adding new C# or XAML files to the project is not yet supported
   - Hot Reload is not supported when using the debugger
 - In Visual Studio for Windows:
-  - Hot Reload is sensitive to Web Workers caching, which can cause errors like [this Visual Studio issue](https://developercommunity.visualstudio.com/t/BrowserLink-WebSocket-is-disconnecting-a/10500228), with a `BrowserConnectionException` error. In order to fix this:
-    - Update to Uno.Wasm.Bootstrap 8.0.3 or later
-    - Unregister any Web Worker associated with your app (Chrome or Edge) by **Developer tools (F12)** -> **Application** -> **Service worker** and **unregister**.
-  - [`MetadataUpdateHandlers`](https://learn.microsoft.com/dotnet/api/system.reflection.metadata.metadataupdatehandlerattribute) are invoked without the list of changed types, which means that some hot reload features may not be available.
+  - [`MetadataUpdateHandlers`](https://learn.microsoft.com/dotnet/api/system.reflection.metadata.metadataupdatehandlerattribute) are invoked without the list of changed types, which means that some hot reload features may not be available. This feature is slated to be available for .NET 9.
 
 ### [**iOS, Android, and Catalyst**](#tab/mobile)
 
-Mobile targets are currently using a limited version of XAML Hot Reload and do not support C# Hot Reload until [this dotnet runtime](https://github.com/dotnet/runtime/issues/93860) issue is fixed.
+Mobile targets are currently using a limited version of XAML Hot Reload and do not support C# Hot Reload until [this dotnet runtime](https://github.com/dotnet/android/issues/9120) issue is fixed.
 
 - In Visual Studio, the "Hot Reload on File Save" feature must be disabled to avoid crashing the app. You can find this feature by clicking on the down arrow next to the red flame in the Visual Studio toolbar.
-- In VS, VS Code, and Rider, [C# Hot Reload is not yet supported](https://developercommunity.visualstudio.com/t/net70-iosnet70-android-MetadataUpd/10279604#T-ND10384434)
+- In VS, VS Code, and Rider, [C# Hot Reload is fully not yet supported](https://developercommunity.visualstudio.com/t/net70-iosnet70-android-MetadataUpd/10279604#T-ND10384434)
 - XAML `x:Bind` hot reload is limited to simple expressions and events
 
 ### [**WinAppSDK**](#tab/winappsdk)

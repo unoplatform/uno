@@ -38,6 +38,10 @@
         "template": ["default", "templates/uno"],
         "postProcessors": ["ExtractSearchIndex"],
         "markdownEngineName": "markdig",
+        "markdownEngineProperties": {
+          "enableTaskLists": true,
+          "enableDefinitionLists": true
+        },
         "noLangKeyword": false,
         "keepFileLink": false,
         "cleanupCacheHistory": false,
