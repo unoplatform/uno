@@ -84,21 +84,21 @@ Hot Reload features vary between platforms and IDE, you can check below the list
         </tr>
         <tr>
             <td>Desktop/WSL</td>
-            <td>⌛[^1]</td><td>⌛[^1]</td>
+            <td>⌛<sup><a href="#hr-footnotes">[1]</a></sup> </td><td>⌛<sup><a href="#hr-footnotes">[1]</a></sup></td>
             <td>✅</td><td>✅</td>
-            <td>🔳[^2]</td><td>🔳[^2]</td>
+            <td>🔳<sup><a href="#hr-footnotes">[2]</a></sup></td><td>🔳<sup><a href="#hr-footnotes">[2]</a></sup></td>
         </tr>
         <tr>
             <td>iOS</td>
-            <td>⚠️[^3]</td><td>✅[^4]</td>
-            <td>⚠️[^3]🛜</td><td>✅[^4]🛜</td>
+            <td>⌛<sup><a href="#hr-footnotes">[3]</a></sup></td><td>✅<sup><a href="#hr-footnotes">[4]</a></sup></td>
+            <td>⌛<sup><a href="#hr-footnotes">[3]</a></sup>🛜</td><td>✅<sup><a href="#hr-footnotes">[4]</a></sup>🛜</td>
             <td>🔳</td><td>🔳</td>
         </tr>
         <tr>
             <td>Android</td>
-            <td>⚠️[^3]</td><td>✅[^4]</td>
-            <td>⚠️[^3]</td><td>✅[^4]</td>
-            <td>⚠️[^3]</td><td>✅[^4]</td>
+            <td>⌛<sup><a href="#hr-footnotes">[3]</a></sup></td><td>✅<sup><a href="#hr-footnotes">[4]</a></sup></td>
+            <td>⌛<sup><a href="#hr-footnotes">[3]</a></sup></td><td>✅<sup><a href="#hr-footnotes">[4]</a></sup></td>
+            <td>⌛<sup><a href="#hr-footnotes">[3]</a></sup></td><td>✅<sup><a href="#hr-footnotes">[4]</a></sup></td>
         </tr>
         </tr>
         <tr>
@@ -116,7 +116,7 @@ Hot Reload features vary between platforms and IDE, you can check below the list
         <tr>
             <td>Catalyst</td>
             <td>🔳</td><td>🔳</td>
-            <td>⚠️[^3]🛜</td><td>✅[^4]🛜</td>
+            <td>⌛<sup><a href="#hr-footnotes">[3]</a></sup>🛜</td><td>✅<sup><a href="#hr-footnotes">[4]</a></sup>🛜</td>
             <td>🔳</td><td>🔳</td>
         </tr>
     </tbody>
@@ -147,19 +147,19 @@ Hot Reload features vary between platforms and IDE, you can check below the list
         </tr>
         <tr>
             <td>iOS</td>
-            <td>⚠️[^3]</td><td>✅[^4]</td>
-            <td>⚠️[^3]</td><td>✅[^4]</td>
+            <td>⌛<sup><a href="#hr-footnotes">[3]</a></sup></td><td>✅<sup><a href="#hr-footnotes">[4]</a></sup></td>
+            <td>⌛<sup><a href="#hr-footnotes">[3]</a></sup></td><td>✅<sup><a href="#hr-footnotes">[4]</a></sup></td>
         </tr>
         <tr>
             <td>Android</td>
-            <td>⚠️[^3]</td><td>✅[^4]</td>
-            <td>⚠️[^3]</td><td>✅[^4]</td>
+            <td>⌛<sup><a href="#hr-footnotes">[3]</a></sup></td><td>✅<sup><a href="#hr-footnotes">[4]</a></sup></td>
+            <td>⌛<sup><a href="#hr-footnotes">[3]</a></sup></td><td>✅<sup><a href="#hr-footnotes">[4]</a></sup></td>
         </tr>
         </tr>
         <tr>
             <td>Catalyst</td>
-            <td>⚠️[^3]</td><td>✅[^4]</td>
-            <td>⚠️[^3]</td><td>✅[^4]</td>
+            <td>⌛<sup><a href="#hr-footnotes">[3]</a></sup></td><td>✅<sup><a href="#hr-footnotes">[4]</a></sup></td>
+            <td>⌛<sup><a href="#hr-footnotes">[3]</a></sup></td><td>✅<sup><a href="#hr-footnotes">[4]</a></sup></td>
         </tr>
         <tr>
             <td>WinAppSDK</td>
@@ -199,8 +199,8 @@ Hot Reload features vary between platforms and IDE, you can check below the list
         </tr>
         <tr>
             <td>Android</td>
-            <td>⚠️[^3]</td><td>✅[^4]</td>
-            <td>⚠️[^3]</td><td>✅[^4]</td>
+            <td>⌛<sup><a href="#hr-footnotes">[3]</a></sup></td><td>✅<sup><a href="#hr-footnotes">[4]</a></sup></td>
+            <td>⌛<sup><a href="#hr-footnotes">[3]</a></sup></td><td>✅<sup><a href="#hr-footnotes">[4]</a></sup></td>
         </tr>
         <tr>
             <td>WebAssembly</td>
@@ -209,12 +209,12 @@ Hot Reload features vary between platforms and IDE, you can check below the list
         </tr>
         <tr>
             <td>iOS</td>
-            <td>⚠️[^3]🛜</td><td>✅[^4]🛜</td>
+            <td>⌛<sup><a href="#hr-footnotes">[3]</a></sup>🛜</td><td>✅<sup><a href="#hr-footnotes">[4]</a></sup>🛜</td>
             <td>🔳</td><td>🔳</td>
         </tr>
         <tr>
             <td>Catalyst</td>
-            <td>⚠️[^3]🛜</td><td>✅[^4]🛜</td>
+            <td>⌛<sup><a href="#hr-footnotes">[3]</a></sup>🛜</td><td>✅<sup><a href="#hr-footnotes">[4]</a></sup>🛜</td>
             <td>🔳</td><td>🔳</td>
         </tr>
         <tr>
@@ -232,14 +232,16 @@ Legend:
 - ✅ Supported
 - 🐞 Supported with the debugger
 - ⌛ Upcoming support
-- ⚠️ Degraded
-- 🛜 Support through [SSH to a mac](xref:Uno.GettingStarted.CreateAnApp.VSCode#debug-the-app)
+- 🛜 Supported through [SSH to a mac](xref:Uno.GettingStarted.CreateAnApp.VSCode#debug-the-app)
 - 🔳 Not supported by the environment/IDE
 
-[^1]: Support is [pending support](https://github.com/dotnet/sdk/pull/40725) in the .NET SDK.
-[^2]: Support is [not available](https://youtrack.jetbrains.com/issue/RIDER-53302/launchSettings.json-WSL2-command-support).
-[^3]: C# Hot Reload is affected by a [.NET Runtime issue](https://github.com/dotnet/android/issues/9120).
-[^4]: XAML Hot Reload is using the XAML Reader, [pending C# Hot Reload update](https://github.com/unoplatform/uno/issues/15918).
+### Notes
+<a href="hr-footnotes"/>
+
+- [1]: Support is [pending support](https://github.com/dotnet/sdk/pull/40725) in the .NET SDK.
+- [2]: Support is [not available](https://youtrack.jetbrains.com/issue/RIDER-53302/launchSettings.json-WSL2-command-support).
+- [3]: C# Hot Reload is affected by a [.NET Runtime issue](https://github.com/dotnet/android/issues/9120).
+- [4]: XAML Hot Reload is using the XAML Reader, [pending C# Hot Reload update](https://github.com/unoplatform/uno/issues/15918) and a [VS/VS Code update](https://developercommunity.visualstudio.com/t/net70-iosnet70-android-MetadataUpd/10279604).
 
 ## Supported features per Platform
 
