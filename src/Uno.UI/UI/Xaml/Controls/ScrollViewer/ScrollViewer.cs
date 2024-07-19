@@ -188,8 +188,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(
 					ScrollBarVisibility.Disabled,
-					propertyChangedCallback: OnHorizontalScrollabilityPropertyChanged,
-					options: FrameworkPropertyMetadataOptions.Inherits
+					propertyChangedCallback: OnHorizontalScrollabilityPropertyChanged
 				)
 			);
 		#endregion
@@ -214,8 +213,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(
 					ScrollBarVisibility.Auto,
-					propertyChangedCallback: OnVerticalScrollabilityPropertyChanged,
-					options: FrameworkPropertyMetadataOptions.Inherits
+					propertyChangedCallback: OnVerticalScrollabilityPropertyChanged
 				)
 			);
 		#endregion
@@ -240,8 +238,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(
 					ScrollMode.Enabled,
-					propertyChangedCallback: OnHorizontalScrollabilityPropertyChanged,
-					options: FrameworkPropertyMetadataOptions.Inherits
+					propertyChangedCallback: OnHorizontalScrollabilityPropertyChanged
 				)
 			);
 		#endregion
@@ -268,8 +265,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(
 					ScrollMode.Enabled,
-					propertyChangedCallback: OnVerticalScrollabilityPropertyChanged,
-					options: FrameworkPropertyMetadataOptions.Inherits
+					propertyChangedCallback: OnVerticalScrollabilityPropertyChanged
 				)
 			);
 		#endregion
@@ -303,8 +299,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(
 					true,
-					propertyChangedCallback: OnBringIntoViewOnFocusChangeChanged,
-					options: FrameworkPropertyMetadataOptions.Inherits));
+					propertyChangedCallback: OnBringIntoViewOnFocusChangeChanged));
 
 		private static void OnBringIntoViewOnFocusChangeChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
@@ -336,8 +331,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(
 					ZoomMode.Disabled,
-					propertyChangedCallback: (o, e) => ((ScrollViewer)o).OnZoomModeChanged((ZoomMode)e.NewValue),
-					options: FrameworkPropertyMetadataOptions.Inherits
+					propertyChangedCallback: (o, e) => ((ScrollViewer)o).OnZoomModeChanged((ZoomMode)e.NewValue)
 				)
 			);
 
@@ -518,7 +512,7 @@ namespace Microsoft.UI.Xaml.Controls
 				"ComputedHorizontalScrollBarVisibility",
 				typeof(Visibility),
 				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(Visibility.Collapsed)); // This has to be collapsed by default to allow deferred loading of the template
+				new FrameworkPropertyMetadata(Visibility.Visible));
 
 		public Visibility ComputedHorizontalScrollBarVisibility
 		{
@@ -533,7 +527,7 @@ namespace Microsoft.UI.Xaml.Controls
 				"ComputedVerticalScrollBarVisibility",
 				typeof(Visibility),
 				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(Visibility.Collapsed)); // This has to be collapsed by default to allow deferred loading of the template
+				new FrameworkPropertyMetadata(Visibility.Visible));
 
 		public Visibility ComputedVerticalScrollBarVisibility
 		{
@@ -611,7 +605,7 @@ namespace Microsoft.UI.Xaml.Controls
 			);
 		#endregion
 
-		private readonly SerialDisposable _sizeChangedSubscription = new SerialDisposable();
+		//private readonly SerialDisposable _sizeChangedSubscription = new SerialDisposable();
 
 #pragma warning disable 649 // unused member for Unit tests
 		private _ScrollContentPresenter? _presenter;
@@ -676,8 +670,9 @@ namespace Microsoft.UI.Xaml.Controls
 		protected override Size MeasureOverride(Size availableSize)
 		{
 			ViewportMeasureSize = availableSize;
-
-			return base.MeasureOverride(availableSize);
+			var size = base.MeasureOverride(availableSize);
+			UpdateDimensionProperties();
+			return size;
 		}
 
 		protected override Size ArrangeOverride(Size finalSize)
@@ -702,7 +697,6 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.OnLayoutUpdated();
 #endif
-			UpdateDimensionProperties();
 			UpdateZoomedContentAlignment();
 		}
 
@@ -1055,7 +1049,7 @@ namespace Microsoft.UI.Xaml.Controls
 				ApplyScrollContentPresenterContent(newValue);
 			}
 
-			UpdateSizeChangedSubscription();
+			//UpdateSizeChangedSubscription();
 
 			_snapPointsInfo = newValue as IScrollSnapPointsInfo;
 		}
@@ -1069,23 +1063,23 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void UpdateSizeChangedSubscription(bool isCleanupRequired = false)
-		{
-			// TODO HERE
-			if (!isCleanupRequired
-				&& Content is IFrameworkElement element)
-			{
-				_sizeChangedSubscription.Disposable = Disposable.Create(() => element.SizeChanged -= OnElementSizeChanged);
-				element.SizeChanged += OnElementSizeChanged;
-			}
-			else
-			{
-				_sizeChangedSubscription.Disposable = null;
-			}
+		//private void UpdateSizeChangedSubscription(bool isCleanupRequired = false)
+		//{
+		//	// TODO HERE
+		//	if (!isCleanupRequired
+		//		&& Content is IFrameworkElement element)
+		//	{
+		//		_sizeChangedSubscription.Disposable = Disposable.Create(() => element.SizeChanged -= OnElementSizeChanged);
+		//		element.SizeChanged += OnElementSizeChanged;
+		//	}
+		//	else
+		//	{
+		//		_sizeChangedSubscription.Disposable = null;
+		//	}
 
-			void OnElementSizeChanged(object sender, SizeChangedEventArgs args)
-				=> UpdateDimensionProperties();
-		}
+		//	void OnElementSizeChanged(object sender, SizeChangedEventArgs args)
+		//		=> UpdateDimensionProperties();
+		//}
 		#endregion
 
 		#region Managed scroll bars support

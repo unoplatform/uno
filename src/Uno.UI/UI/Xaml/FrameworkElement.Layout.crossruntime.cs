@@ -161,6 +161,104 @@ namespace Microsoft.UI.Xaml
 
 		}
 
+		// WinUI overrides this in CalendarViewBaseItemChrome, ListViewBaseItemChrome, and MediaPlayerElement.
+		private protected virtual bool HasTemplateChild()
+		{
+			return GetFirstChild() is not null;
+		}
+
+		private UIElement? GetFirstChild()
+		{
+			var children = GetChildren();
+			if (children is not null && children.Count > 0)
+			{
+				return children[0];
+			}
+
+			return null;
+		}
+
+		private protected virtual void ApplyTemplate(out bool addedVisuals)
+		{
+			addedVisuals = false;
+
+			// Applying the template will not delete existing visuals. This will be done conditionally
+			// when the template is invalidated.
+			if (!HasTemplateChild())
+			{
+				var template = GetTemplate();
+				if (template is not null)
+				{
+					//SetIsUpdatingBindings(true);
+					var child = ((IFrameworkTemplateInternal)template).LoadContent(this);
+
+					// BEGIN Uno-specific
+					if (this is Control control)
+					{
+						control.TemplatedRoot = child;
+					}
+					// END Uno-specific
+
+					//SetIsUpdatingBindings(false);
+					if (child is null)
+					{
+						return;
+					}
+
+					addedVisuals = true;
+					AddChild(child);
+				}
+			}
+		}
+
+		private protected virtual FrameworkTemplate? GetTemplate()
+		{
+			return null;
+		}
+
+		internal void InvokeApplyTemplate(out bool addedVisuals)
+		{
+			ApplyTemplate(out addedVisuals);
+
+			//if (auto visualTree = VisualTree::GetForElementNoRef(pControl))
+			// {
+			//	// Create VisualState StateTriggers and perform evaulation to determine initial state,
+			//	// if we're in the visual tree (since we need it to get our qualifier context).
+			//	// If we're not in the visual tree, we'll do this when we enter it.
+			//	IFC(CVisualStateManager2::InitializeStateTriggers(this));
+			//}
+
+			//var control = this as Control;
+
+			if (addedVisuals)
+			{
+				// UNO TODO:
+				//if (control is not null)
+				{
+					// Run all of the bindings that were created and set the
+					// properties to the values from this control
+					//IFC(control.RefreshTemplateBindings(TemplateBindingsRefreshType.All));
+				}
+				// If the object has a managed peer that is a custom type, then it might have
+				// an overloaded OnApplyTemplate. Reverse P/Invoke to get that overload, if any.
+				// If there's no overload, the default Control.OnApplyTemplate will be invoked,
+				// which will just P/Invoke back to the native CControl::OnApplyTemplate.
+				OnApplyTemplate();
+			}
+
+			// UNO TODO:
+			// Update template bindings of realized element in the template.
+			// This will update if element was realized after template was applied (no visuals added, hence it would not be updated earlier)
+			// and if element was realized in OnApplyTemplate.
+			// We should not refresh all of controls template bindings, as it could potentially overwrite values set by other ways (e.g. VSM)
+			//if (control is not null &&
+			//	control.NeedsTemplateBindingRefresh())
+			//{
+			//	control.RefreshTemplateBindings(TemplateBindingsRefreshType.WithoutInitialUpdate);
+			//}
+
+		}
+
 		private void InnerMeasureCore(Size availableSize)
 		{
 			if (_traceLayoutCycle && this.Log().IsEnabled(LogLevel.Warning))
@@ -191,13 +289,11 @@ namespace Microsoft.UI.Xaml
 			//if (!bInLayoutTransition)
 			{
 				// Templates should be applied here.
-				//bTemplateApplied = InvokeApplyTemplate();
+				InvokeApplyTemplate(out _);
 
 				// TODO: BEGIN Uno specific
 				if (this is Control thisAsControl)
 				{
-					thisAsControl.ApplyTemplate();
-
 					// Update bindings to ensure resources defined
 					// in visual parents get applied.
 					this.UpdateResourceBindings();

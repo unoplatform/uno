@@ -192,7 +192,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else if (CanCreateTemplateWithoutParent)
 			{
-				SetUpdateControlTemplate();
+				ApplyTemplate();
 			}
 		}
 

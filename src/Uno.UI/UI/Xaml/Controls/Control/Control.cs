@@ -38,7 +38,6 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		private bool _suspendStateChanges;
 		private View _templatedRoot;
-		private bool _updateTemplate;
 		private bool _suppressIsEnabled;
 
 		private void InitializeControl()
@@ -87,11 +86,6 @@ namespace Microsoft.UI.Xaml.Controls
 		private protected virtual void ChangeVisualState(bool useTransitions)
 		{
 		}
-
-		/// <summary>
-		/// Will be set to Template when it is applied
-		/// </summary>
-		private ControlTemplate _controlTemplateUsedLastUpdate;
 
 		partial void UnregisterSubView();
 		partial void RegisterSubView(View child);
@@ -206,35 +200,17 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// Using a DependencyProperty as the backing store for Template.  This enables animation, styling, binding, etc...
 		public static DependencyProperty TemplateProperty { get; } =
-			DependencyProperty.Register("Template", typeof(ControlTemplate), typeof(Control), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext, (s, e) => ((Control)s)?.OnTemplateChanged(e)));
+			DependencyProperty.Register("Template", typeof(ControlTemplate), typeof(Control), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.AffectsMeasure, (s, e) => ((Control)s)?.OnTemplateChanged(e)));
 
-		private void OnTemplateChanged(DependencyPropertyChangedEventArgs e)
+		private protected virtual void OnTemplateChanged(DependencyPropertyChangedEventArgs e)
 		{
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 			_updateTemplate = true;
 			SetUpdateControlTemplate();
+#endif
 		}
 
 		#endregion
-
-		/// <summary>
-		/// Defines a method that will request the update of the control's template and request layout update.
-		/// </summary>
-		/// <param name="forceUpdate">If true, forces an update even if the control has no parent.</param>
-		internal void SetUpdateControlTemplate(bool forceUpdate = false)
-		{
-			if (
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-				!FeatureConfiguration.Control.UseLegacyLazyApplyTemplate ||
-#endif
-				forceUpdate ||
-				this.HasParent() ||
-				CanCreateTemplateWithoutParent
-			)
-			{
-				UpdateTemplate();
-				this.InvalidateMeasure();
-			}
-		}
 
 		/// <summary>
 		/// Represents the single child that is the result of the control template application.
@@ -251,10 +227,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 				CleanupView(_templatedRoot);
 
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 				UnregisterSubView();
+#endif
 
 				_templatedRoot = value;
-
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 				if (value != null)
 				{
 					RegisterSubView(value);
@@ -264,9 +242,6 @@ namespace Microsoft.UI.Xaml.Controls
 						RegisterContentTemplateRoot();
 
 						if (
-#if __CROSSRUNTIME__
-							!IsLoading &&
-#endif
 							!IsLoaded && FeatureConfiguration.Control.UseDeferredOnApplyTemplate)
 						{
 							// It's too soon the call the ".OnApplyTemplate" method: it should be invoked after the "Loading" event.
@@ -291,10 +266,9 @@ namespace Microsoft.UI.Xaml.Controls
 						}
 					}
 				}
+#endif
 			}
 		}
-
-		private bool _applyTemplateShouldBeInvoked;
 
 #if __ANDROID__ || __IOS__ || __MACOS__ || IS_UNIT_TESTS
 		private protected override void OnPostLoading()
@@ -308,15 +282,6 @@ namespace Microsoft.UI.Xaml.Controls
 			this.UpdateResourceBindings();
 		}
 #endif
-
-		internal void TryCallOnApplyTemplate()
-		{
-			if (_applyTemplateShouldBeInvoked)
-			{
-				_applyTemplateShouldBeInvoked = false;
-				OnApplyTemplate();
-			}
-		}
 
 		private void SubscribeToOverridenRoutedEvents()
 		{
@@ -456,10 +421,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private protected override void OnLoaded()
 		{
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 			SetUpdateControlTemplate();
+#endif
 
 			base.OnLoaded();
-
 		}
 
 		protected override Size MeasureOverride(Size availableSize)
@@ -482,20 +448,19 @@ namespace Microsoft.UI.Xaml.Controls
 		protected override Size ArrangeOverride(Size finalSize)
 			=> ArrangeFirstChild(finalSize);
 
+#if UNO_HAS_ENHANCED_LIFECYCLE
 		/// <summary>
 		/// Loads the relevant control template so that its parts can be referenced.
 		/// </summary>
 		/// <returns>A value that indicates whether the visual tree was rebuilt by this call. True if the tree was rebuilt; false if the previous visual tree was retained.</returns>
 		public bool ApplyTemplate()
 		{
-			var currentTemplateRoot = _templatedRoot;
-			SetUpdateControlTemplate(forceUpdate: true);
-
-			// When .ApplyTemplate is called manually, we should not defer the call to OnApplyTemplate
-			TryCallOnApplyTemplate();
-
-			return currentTemplateRoot != _templatedRoot;
+			InvokeApplyTemplate(out var addedVisuals);
+			return addedVisuals;
 		}
+#endif
+
+		private protected override FrameworkTemplate GetTemplate() => Template;
 
 		/// <summary>
 		/// Applies default Style and implicit/explicit Style if not applied already, and materializes template.
@@ -566,40 +531,14 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.OnVisibilityChanged(oldValue, newValue);
 
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 			if (oldValue == Visibility.Collapsed && newValue == Visibility.Visible)
 			{
 				SetUpdateControlTemplate();
 			}
+#endif
 
 			OnIsFocusableChanged();
-		}
-
-		private void UpdateTemplate()
-		{
-			// If TemplatedRoot is null, it must be updated even if the templates haven't changed
-			if (TemplatedRoot == null)
-			{
-				_controlTemplateUsedLastUpdate = null;
-			}
-
-			if (_updateTemplate && !object.Equals(Template, _controlTemplateUsedLastUpdate))
-			{
-				_controlTemplateUsedLastUpdate = Template;
-
-				if (Template != null)
-				{
-					TemplatedRoot = null;
-					UnregisterSubView();
-
-					TemplatedRoot = Template.LoadContentCached(this);
-				}
-				else
-				{
-					TemplatedRoot = null;
-				}
-
-				_updateTemplate = false;
-			}
 		}
 
 		partial void RegisterContentTemplateRoot();
