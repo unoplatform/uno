@@ -39,8 +39,9 @@
         "postProcessors": ["ExtractSearchIndex"],
         "markdownEngineName": "markdig",
         "markdownEngineProperties": {
-          "enableTaskLists": true,
-          "enableDefinitionLists": true
+          "markdigExtensions": [
+              "Footnotes"
+          ]
         },
         "noLangKeyword": false,
         "keepFileLink": false,
