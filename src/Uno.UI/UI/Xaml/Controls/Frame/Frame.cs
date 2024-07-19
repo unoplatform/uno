@@ -105,7 +105,7 @@ public partial class Frame : ContentControl
 		return Activator.CreateInstance(sourcePageType);
 	}
 
-#if __CROSSRUNTIME__
+#if __SKIA__
 	internal PageStackEntry GetCurrentPageStackEntry() => m_tpNavigationHistory.GetCurrentPageStackEntry();
 
 	internal Page EnsurePageInitialized(PageStackEntry entry) => entry.Instance;

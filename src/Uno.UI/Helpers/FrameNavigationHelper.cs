@@ -19,7 +19,7 @@ namespace Uno.UI.Helpers
 		/// <param name="frame">The frame used for navigation</param>
 		/// /// <returns><see cref="PageStackEntry"/></returns>
 		public static PageStackEntry? GetCurrentEntry(Frame? frame) =>
-#if __CROSSRUNTIME__
+#if __SKIA__
 			frame?.GetCurrentPageStackEntry();
 #else
 			frame?.CurrentEntry;

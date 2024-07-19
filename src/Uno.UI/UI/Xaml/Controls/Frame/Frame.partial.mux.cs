@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if __SKIA__
+using System;
 using System.Collections.Generic;
 using DirectUI;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -702,3 +703,4 @@ partial class Frame
 
 	private NavigationMode GetCurrentNavigationMode() => m_tpNavigationHistory.GetCurrentNavigationMode();
 }
+#endif

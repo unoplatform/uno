@@ -1,4 +1,4 @@
-﻿#if !__CROSSRUNTIME__
+﻿#if !__SKIA__
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
