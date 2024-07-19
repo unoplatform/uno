@@ -2,6 +2,52 @@
 uid: Uno.GetStarted
 ---
 
+## Quick Start
+
+Download the Uno Platform extension for your IDE.
+
+<!-- markdownlint-disable MD001 -->
+
+<div class="row">
+
+<!-- Visual Studio -->
+<div class="col-md-4 col-xs-12 ">
+<a href="https://aka.platform.uno/vs-extension-marketplace">
+<div class="alert alert-info alert-hover">
+
+#### Visual Studio 2022
+
+Get the VSIX from the marketplace
+</div>
+</a>
+</div>
+
+<!-- Code -->
+<div class="col-md-4 col-xs-12 ">
+<a href="https://aka.platform.uno/vscode-extension-marketplace">
+<div class="alert alert-info alert-hover">
+
+#### Visual Studio Code
+
+Install the VSIX from the marketplace
+</div>
+</a>
+</div>
+
+<!-- Rider -->
+<div class="col-md-4 col-xs-12 ">
+<a href="https://aka.platform.uno/rider-extension-marketplace">
+<div class="alert alert-info alert-hover">
+
+#### JetBrains Rider
+
+Get the extension from the marketplace
+</div>
+</a>
+</div>
+
+</div> <!-- row -->
+
 ## Get Started
 
 Uno Platform allows you to create single-codebase, cross-platform applications that run on iOS, Android, Web, macOS, Linux and Windows. You'll be creating cross-platform .NET applications with XAML and/or C# in no time.
