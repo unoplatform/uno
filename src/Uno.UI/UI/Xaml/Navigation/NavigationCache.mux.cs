@@ -25,60 +25,43 @@ internal partial class NavigationCache
 
 	public static NavigationCache Create(Frame frame, int transientCacheSize)
 	{
-		object* pobject = null;
-		NavigationCache* pNavigationCache = null;
-
-		IFCPTR(ppNavigationCache);
-		*ppNavigationCache = null;
-
-		IFCPTR(pIFrame);
-
-		pNavigationCache = new public NavigationCache();
+		var pNavigationCache = new NavigationCache();
 
 		pNavigationCache.m_transientCacheSize = transientCacheSize;
-		pNavigationCache.m_pIFrame = pIFrame;
+		pNavigationCache.m_pIFrame = frame;
 
-		*ppNavigationCache = pNavigationCache;
-
-	Cleanup:
-		ReleaseInterface(pobject);
-
-
-		pNavigationCache = null;
-
-		RRETURN(hr);
+		return pNavigationCache;
 	}
 
 	internal object GetContent(PageStackEntry pPageStackEntry)
 	{
-		Page pIPage = null;
 		bool shouldCache = false;
 		bool found = false;
-		string strDescriptor;
-		object* pobject = null;
-		N.NavigationCacheMode navigationCacheMode = N.NavigationCacheMode_Disabled;
+		object pobject = null;
+		NavigationCacheMode navigationCacheMode = NavigationCacheMode.Disabled;
 
-		IFCPTR(ppobject);
-		*ppobject = null;
-
-		IFCPTR(pPageStackEntry);
+		if (pPageStackEntry is null)
+		{
+			throw new ArgumentNullException(nameof(pPageStackEntry));
+		}
 
 		var strDescriptor = pPageStackEntry.GetDescriptor();
-		GetCachedContent(strDescriptor, &pobject, &found);
+		GetCachedContent(strDescriptor, out pobject, out found);
 
 		if (!found)
 		{
-			LoadContent(strDescriptor, &pobject);
-			IFCPTR(pobject);
+			pobject = LoadContent(strDescriptor);
+			if (pobject is null)
+			{
+				throw new InvalidOperationException("Content not found");
+			}
 
-			pIPage = ctl.query_interface<IPage>(pobject);
-
-			if (pIPage)
+			if (pobject is Page pIPage)
 			{
 				navigationCacheMode = pIPage.NavigationCacheMode;
 			}
 
-			shouldCache = m_transientCacheSize >= 1 && navigationCacheMode != N.NavigationCacheMode_Disabled;
+			shouldCache = m_transientCacheSize >= 1 && navigationCacheMode != NavigationCacheMode.Disabled;
 
 			if (shouldCache)
 			{
@@ -88,10 +71,9 @@ internal partial class NavigationCache
 
 		pPageStackEntry.PrepareContent(pobject);
 
-		*ppobject = pobject;
-		pobject = null;
+		return pobject;
 
-		TraceNavigationCacheGetContentInfo(WindowsGetStringRawBuffer(strDescriptor, null), found);
+		//TraceNavigationCacheGetContentInfo(WindowsGetStringRawBuffer(strDescriptor, null), found);
 	}
 
 	private object LoadContent(string descriptor)
@@ -101,50 +83,38 @@ internal partial class NavigationCache
 	}
 
 	private void GetCachedContent(
-		 string descriptor,
+		string descriptor,
 		out object ppobject,
 		out bool pFound)
 	{
+		if (descriptor is null)
+		{
+			throw new ArgumentNullException(nameof(descriptor));
+		}
 
-		bool found = false;
-		object* pobject = null;
-		StringListType.iterator listIterator;
-
-		*ppobject = null;
-		*pFound = false;
-
-		IFCPTR(descriptor);
-
-		m_permanentMap.HasKey(descriptor, &found);
+		var found = m_permanentMap.ContainsKey(descriptor);
+		object pobject = null;
 
 		if (found)
 		{
-			m_permanentMap.Lookup(descriptor, &pobject);
+			pobject = m_permanentMap[descriptor];
 		}
 		else
 		{
-			m_transientMap.HasKey(descriptor, &found);
+			found = m_transientMap.ContainsKey(descriptor);
 
 			if (found)
 			{
-				m_transientMap.Lookup(descriptor, &pobject);
+				pobject = m_transientMap[descriptor];
 
 				// Make the descriptor the most recently used.
-				for (listIterator = m_transientCacheMruList.begin(); listIterator != m_transientCacheMruList.end(); ++listIterator)
-				{
-					if (descriptor == *listIterator)
-					{
-						m_transientCacheMruList.splice(m_transientCacheMruList.end(), m_transientCacheMruList, listIterator);
-						break;
-					}
-				}
+				m_transientCacheMruList.Remove(descriptor);
+				m_transientCacheMruList.AddLast(descriptor);
 			}
 		}
 
-		*ppobject = pobject;
-		pobject = null;
-
-		*pFound = found;
+		ppobject = pobject;
+		pFound = found;
 	}
 
 	private void CacheContent(

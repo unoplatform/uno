@@ -69,7 +69,7 @@ public sealed partial class PageStackEntry : DependencyObject
 	//------------------------------------------------------------------------
 
 
-	private void PrepareContent(object contentObject)
+	internal void PrepareContent(object contentObject)
 	{
 		var page = (Page)contentObject;
 
