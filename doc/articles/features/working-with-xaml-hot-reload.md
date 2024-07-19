@@ -232,7 +232,7 @@ Legend:
 - ✅ Supported
 - 🐞 Supported with the debugger
 - ⌛ Upcoming support
-- 🛜 Supported through [SSH to a mac](xref:Uno.GettingStarted.CreateAnApp.VSCode#debug-the-app)
+- 🛜 Supported through [SSH to a Mac](xref:Uno.GettingStarted.CreateAnApp.VSCode#debug-the-app)
 - 🔳 Not supported by the environment/IDE
 
 ### Notes
@@ -279,7 +279,7 @@ WebAssembly is currently providing both full and partial Hot Reload support, dep
 Mobile targets are currently using a limited version of XAML Hot Reload and do not support C# Hot Reload until [this dotnet runtime](https://github.com/dotnet/android/issues/9120) issue is fixed.
 
 - In Visual Studio, the "Hot Reload on File Save" feature must be disabled to avoid crashing the app. You can find this feature by clicking on the down arrow next to the red flame in the Visual Studio toolbar.
-- In VS, VS Code, and Rider, [C# Hot Reload is fully not yet supported](https://developercommunity.visualstudio.com/t/net70-iosnet70-android-MetadataUpd/10279604#T-ND10384434)
+- In VS, VS Code, and Rider, [C# Hot Reload is not yet fully supported](https://developercommunity.visualstudio.com/t/net70-iosnet70-android-MetadataUpd/10279604#T-ND10384434)
 - XAML `x:Bind` hot reload is limited to simple expressions and events
 
 ### [**WinAppSDK**](#tab/winappsdk)
@@ -382,7 +382,7 @@ The output window in Visual Studio has an output named `Uno Platform` in its dro
 - When a file is reloaded, XAML parsing errors will appear in the application's logs, on the device or in the browser.
 - If there are multiple versions of the Uno.WinUI Package present in the solution, the newest will be used, regardless of the started application
 - For `net8.0-windows10.xx`:
-  - Ensure that the `net8.0-windows10.xxx` target framework **is selected in the top-left dropdown list of the XAML editor**. Any other selected platform will break hot reload.
+  - Ensure that the `net8.0-windows10.xxx` target framework **is selected in the top-left dropdown list of the XAML editor**. Selecting any other platform will break hot reload.
   - [A VS issue for WinUI may be hit](https://developercommunity.visualstudio.com/t/net80-windows10-needs-to-be-first-for-W/10643724). If XAML hot reload does not work, ensure that the `Uno Platform` output window exists, and that it mentions that the extension has successfully loaded. To do so, try closing and reopening the solution, and make sure that the [Visual Studio extension is installed](xref:Uno.GetStarted.vs2022).
 
 ### [**Visual Studio Code**](#tab/vscode)
