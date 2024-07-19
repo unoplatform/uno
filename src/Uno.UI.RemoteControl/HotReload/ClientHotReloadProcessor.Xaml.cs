@@ -39,7 +39,6 @@ namespace Uno.UI.RemoteControl.HotReload
 {
 	partial class ClientHotReloadProcessor
 	{
-		private string? _lastUpdatedFilePath;
 		private bool _supportsXamlReader;
 
 #if __IOS__ || __CATALYST__ || __ANDROID__
@@ -146,19 +145,19 @@ namespace Uno.UI.RemoteControl.HotReload
 				return;
 			}
 
-			_lastUpdatedFilePath = fileReload.FilePath;
+			var op = _status.ReportLocalStarting([]);
 
 			_ = Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher.RunAsync(
 				Windows.UI.Core.CoreDispatcherPriority.Normal,
 				async () =>
 				{
-					await ReloadWithFileAndContent(fileReload.FilePath, fileReload.Content);
+					await ReloadWithFileAndContent(op, fileReload.FilePath, fileReload.Content);
 
 					RemoteControlClient.Instance?.NotifyOfEvent(nameof(FileReload), fileReload.FilePath);
 				});
 		}
 
-		private async Task ReloadWithFileAndContent(string filePath, string fileContent)
+		private async Task ReloadWithFileAndContent(HotReloadClientOperation op, string filePath, string fileContent)
 		{
 			try
 			{
@@ -192,6 +191,7 @@ namespace Uno.UI.RemoteControl.HotReload
 						if (XamlReader.LoadUsingXClass(fileContent, uri.ToString()) is FrameworkElement newContent)
 						{
 							SwapViews(instance, newContent);
+							op.AddType(newContent.GetType());
 						}
 					}
 				}
@@ -201,6 +201,15 @@ namespace Uno.UI.RemoteControl.HotReload
 					var replacementDictionary = (ResourceDictionary)XamlReader.Load(fileContent);
 					targetDictionary.CopyFrom(replacementDictionary);
 					Application.Current.UpdateResourceBindingsForHotReload();
+				}
+
+				if (op.Types.Length is 0)
+				{
+					op.ReportIgnored("No instances found");
+				}
+				else
+				{
+					op.ReportCompleted();
 				}
 			}
 			catch (Exception e)
@@ -221,6 +230,8 @@ namespace Uno.UI.RemoteControl.HotReload
 						exceptionType: e.GetType().ToString(),
 						message: e.Message,
 						stackTrace: e.StackTrace));
+
+				op.ReportError(e);
 			}
 		}
 
