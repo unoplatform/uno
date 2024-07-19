@@ -95,7 +95,7 @@ public sealed partial class PageStackEntry : DependencyObject
 
 	private void SetDescriptor(string descriptor) => m_descriptor = descriptor;
 
-	private void SetFrame(Frame frame)
+	internal void SetFrame(Frame frame)
 	{
 		m_wrFrame = null;
 		if (frame is not null)
@@ -115,7 +115,7 @@ public sealed partial class PageStackEntry : DependencyObject
 	//
 	//------------------------------------------------------------------------
 
-	private bool CanBeAddedToFrame(Frame parameterFrame)
+	internal bool CanBeAddedToFrame(Frame parameterFrame)
 	{
 		var canAdd = false;
 

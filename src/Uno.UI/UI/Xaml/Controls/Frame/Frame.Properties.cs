@@ -31,7 +31,7 @@ partial class Frame
 	public int BackStackDepth
 	{
 		get => (int)GetValue(BackStackDepthProperty);
-		private set => SetValue(BackStackDepthProperty, value);
+		internal set => SetValue(BackStackDepthProperty, value);
 	}
 
 	/// <summary>
@@ -78,7 +78,7 @@ partial class Frame
 	public bool CanGoBack
 	{
 		get => (bool)GetValue(CanGoBackProperty);
-		private set => SetValue(CanGoBackProperty, value);
+		internal set => SetValue(CanGoBackProperty, value);
 	}
 
 	/// <summary>
@@ -97,7 +97,7 @@ partial class Frame
 	public bool CanGoForward
 	{
 		get => (bool)GetValue(CanGoForwardProperty);
-		private set => SetValue(CanGoForwardProperty, value);
+		internal set => SetValue(CanGoForwardProperty, value);
 	}
 
 	/// <summary>
@@ -113,7 +113,11 @@ partial class Frame
 	/// <summary>
 	/// Gets a type reference for the content that is currently displayed.
 	/// </summary>
-	public Type CurrentSourcePageType => (Type)GetValue(CurrentSourcePageTypeProperty);
+	public Type CurrentSourcePageType
+	{
+		get => (Type)GetValue(CurrentSourcePageTypeProperty);
+		internal set => SetValue(CurrentSourcePageTypeProperty, value);
+	}
 
 	/// <summary>
 	/// Identifies the CurrentSourcePageType dependency property.
