@@ -38,8 +38,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 			//}
 
 			// TODO:MZ: Is this ok?
-			await WaitFor(TimeSpan.FromMilliseconds(timeoutValueMs));
-			return true;
+			return !await WaitForDefault(timeoutValueMs);
 			//return WaitForSingleObject(m_handle, timeoutValueMs) == WAIT_OBJECT_0;
 		}
 

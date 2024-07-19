@@ -65,7 +65,7 @@ partial class Frame
 			nameof(CacheSize),
 			typeof(int),
 			typeof(Frame),
-			new FrameworkPropertyMetadata(0));
+			new FrameworkPropertyMetadata(InitialTransientCacheSize));
 
 
 	private void OnCacheSizeChanged(DependencyPropertyChangedEventArgs e)
