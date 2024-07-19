@@ -791,7 +791,7 @@ internal partial class NavigationHistory
 
 		// Write parameter
 		pParameterobject = pPageStackEntry.Parameter;
-		NavigationHelpers.WriteNavigationParameterToString(pParameterobject, buffer, out isParameterTypeSupported));
+		NavigationHelpers.WriteNavigationParameterToString(pParameterobject, buffer, out isParameterTypeSupported);
 
 		// Get the NavigationTransitionInfo.
 		var spTransitionInfoAsI = pPageStackEntry.NavigationTransitionInfo;

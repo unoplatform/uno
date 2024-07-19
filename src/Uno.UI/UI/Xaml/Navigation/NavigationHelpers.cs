@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
 namespace DirectUI;
 
@@ -147,7 +148,7 @@ internal static class NavigationHelpers
 
 		if (pNavigationParameter)
 		{
-			(ConvertNavigationParameterTostring(
+			(ConvertNavigationParameterToHSTRING(
 				pNavigationParameter,
 				strPropertyValue.GetAddressOf(),
 				&propertyType,
@@ -253,26 +254,26 @@ internal static class NavigationHelpers
 		out int pNextPosition)
 	{
 
-		int nextPosition = string.npos;
+		int nextPosition = 0;
 		uint subStringLength = 0;
 		string subString;
 
-		*phstr = null;
+		phstr = null;
 
 		// Read length 
-		NavigationHelpers.ReaduintFromString(buffer, currentPosition, &subStringLength, &nextPosition);
+		NavigationHelpers.ReadUINT32FromString(buffer, currentPosition, out subStringLength, out nextPosition);
 		currentPosition = nextPosition;
 
 		// Read sub string if it is not a null string
-		if (subStringLength)
+		if (subStringLength != 0)
 		{
-			ReadNextSubString(buffer, currentPosition, subStringLength, subString, &nextPosition);
+			ReadNextSubString(buffer, currentPosition, subStringLength, out subString, out nextPosition);
 			currentPosition = nextPosition;
         
         .WindowsCreateString(subString.c_str(), subString.length(), phstr);
 		}
 
-		*pNextPosition = nextPosition;
+		pNextPosition = nextPosition;
 	}
 
 	//------------------------------------------------------------------------
@@ -289,7 +290,7 @@ internal static class NavigationHelpers
 	private static void ReadNextSubString(
 		string buffer,
 		int currentPosition,
-		string subString,
+		out string subString,
 		out int pNextPosition)
 	{
 
@@ -328,7 +329,7 @@ internal static class NavigationHelpers
 	private static void ReadNextSubString(
 		string buffer,
 		int currentPosition,
-		int subStringLength,
+		uint subStringLength,
 		string subString,
 		out int pNextPosition)
 	{
@@ -361,7 +362,7 @@ internal static class NavigationHelpers
 
 	//------------------------------------------------------------------------
 	//
-	//  Method: NavigationHelpers.ConvertNavigationParameterTostring
+	//  Method: NavigationHelpers.ConvertNavigationParameterToHSTRING
 	//
 	//  Synopsis:    
 	//     Convert NavigationParameter to a string. String, char, numeric and
@@ -371,7 +372,7 @@ internal static class NavigationHelpers
 	//
 	//------------------------------------------------------------------------
 
-	private static void ConvertNavigationParameterTostring(
+	private static void ConvertNavigationParameterToHSTRING(
 		object pNavigationParameter,
 		out string phstr,
 		out PropertyType pParameterType,
@@ -380,34 +381,27 @@ internal static class NavigationHelpers
 
 		PropertyType propertyType = PropertyType.Empty;
 		bool supportedType = true;
-		string strValue;
-		PropertyValue pPropertyValue = null;
+		string strValue = null;
 
-		*pParameterType = PropertyType.Empty;
-		*pIsConversionSupported = false;
-		*phstr = null;
+		pParameterType = PropertyType.Empty;
+		pIsConversionSupported = false;
+		phstr = null;
 
+		var type = pNavigationParameter?.GetType();
+		propertyType = ValueConversionHelpers.GetPropertyType(type);
 		// Only Navigation Parameter which is a IPropertyValue can be converted
-		pPropertyValue = ctl.get_property_value(pNavigationParameter);
-		if (!pPropertyValue)
+		if (ValueConversionHelpers.CanConvertValueToString(type))
 		{
-			goto Cleanup;
-		}
-
-		propertyType = pPropertyValue.Type;
-
-		if (ValueConversionHelpers.CanConvertValueToString(propertyType))
-		{
-			ValueConversionHelpers.ConvertValueToString(pPropertyValue, propertyType, strValue.GetAddressOf());
+			strValue = ValueConversionHelpers.ConvertValueToString(pNavigationParameter, type);
 		}
 		else
 		{
 			supportedType = false;
 		}
 
-		*pIsConversionSupported = supportedType;
-		*pParameterType = propertyType;
-		*phstr = strValue.Detach();
+		pIsConversionSupported = supportedType;
+		pParameterType = propertyType;
+		phstr = strValue;
 	}
 
 	//------------------------------------------------------------------------
@@ -421,18 +415,18 @@ internal static class NavigationHelpers
 	//
 	//------------------------------------------------------------------------
 
-	private static void ConvertstringToNavigationParameter(
+	private static void ConvertHSTRINGToNavigationParameter(
 		string hstr,
 		PropertyType parameterType,
-		out object* ppNavigationParameter,
-		out bool* pIsConversionSupported)
+		out object ppNavigationParameter,
+		out bool pIsConversionSupported)
 	{
 
 		bool supportedType = true;
 		object pNavigationParameter = null;
 
-		*pIsConversionSupported = false;
-		*ppNavigationParameter = null;
+		pIsConversionSupported = false;
+		ppNavigationParameter = null;
 
 		switch (parameterType)
 		{
@@ -450,7 +444,7 @@ internal static class NavigationHelpers
 			case PropertyType.String:
 			case PropertyType.Guid:
 				{
-					ValueConversionHelpers.ConvertStringToValue(hstr, parameterType, &pNavigationParameter);
+					pNavigationParameter = ValueConversionHelpers.ConvertStringToValue(hstr, parameterType);
 					break;
 				}
 
@@ -461,8 +455,8 @@ internal static class NavigationHelpers
 				}
 		}
 
-		*pIsConversionSupported = supportedType;
-		*ppNavigationParameter = pNavigationParameter;
+		pIsConversionSupported = supportedType;
+		ppNavigationParameter = pNavigationParameter;
 		pNavigationParameter = null;
 	}
 }
