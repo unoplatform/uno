@@ -36,4 +36,4 @@
 
 ## Other examples
 
-* [Uno.Samples](../uno-samples.md)
+* [Uno.Samples](../external/uno.samples/doc/samples.md)
