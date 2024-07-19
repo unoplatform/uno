@@ -100,7 +100,7 @@ internal partial class NavigationHistory
 		m_tpPendingPageStackEntry = (PageStackEntry)(pIEntry);
 	}
 
-	private void NavigateNew(
+	internal void NavigateNew(
 		 string newDescriptor,
 		 object pParameter,
 		 NavigationTransitionInfo pTransitionInfo)
@@ -141,9 +141,9 @@ internal partial class NavigationHistory
 		return m_navigationMode;
 	}
 
-	private NavigationMode GetCurrentNavigationMode() => m_navigationMode;
+	internal NavigationMode GetCurrentNavigationMode() => m_navigationMode;
 
-	private void CommitNavigation()
+	internal void CommitNavigation()
 	{
 		Frame pFrame = null;
 		string strNewDescriptor;
@@ -267,7 +267,7 @@ internal partial class NavigationHistory
 		RRETURN(hr);
 	}
 
-	private void CommitSetNavigationState(NavigationCache pNavigationCache)
+	internal void CommitSetNavigationState(NavigationCache pNavigationCache)
 	{
 		Frame pFrame = null;
 		bool newCanGoBack = false;
@@ -569,7 +569,7 @@ internal partial class NavigationHistory
 	//
 	//------------------------------------------------------------------------
 
-	private void GetNavigationState(out string* pNavigationState)
+	internal string GetNavigationState()
 	{
 		string buffer;
 

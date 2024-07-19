@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlTypes;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
 using Uno.UI.Helpers.WinUI;
 
@@ -11,71 +7,51 @@ namespace DirectUI;
 
 internal static class NavigationHelpers
 {
-	private void CreateINavigationEventArgs(
-	 object* pContentobject,
-	 object* pParameterobject,
-	 xaml_animation.INavigationTransitionInfo* pTransitionInfo,
-	 string descriptor,
-	 Navigation.NavigationMode navigationMode,
-	out Navigation.INavigationEventArgs** ppINavigationEventArgs)
+	internal static NavigationEventArgs CreateINavigationEventArgs(
+		object content,
+		object parameter,
+		NavigationTransitionInfo pTransitionInfo,
+		string descriptor,
+		NavigationMode navigationMode)
 	{
+		if (descriptor is null)
+		{
+			throw new ArgumentNullException(nameof(descriptor));
+		}
 
-		NavigationEventArgs spNavigationEventArgs;
-		wxaml_interop.TypeName sourcePageType = default;
-
-		IFCPTR(ppINavigationEventArgs);
-		*ppINavigationEventArgs = null;
-
-		IFCPTR(descriptor);
-
-		spNavigationEventArgs = new();
-		MetadataAPI.GetTypeNameByFullName(XSTRING_PTR_EPHEMERAL_FROM_string(descriptor), &sourcePageType);
+		var sourcePageType = Type.GetType(descriptor);
 
 		// All properties can be null.
-		spNavigationEventArgs.SourcePageType = sourcePageType;
-		spNavigationEventArgs.Content = pContentobject;
-		spNavigationEventArgs.NavigationMode = navigationMode;
-		spNavigationEventArgs.Parameter = pParameterobject;
-		spNavigationEventArgs.NavigationTransitionInfo = pTransitionInfo;
-
-		*ppINavigationEventArgs = spNavigationEventArgs.Detach();
-
-	Cleanup:
-		DELETE_STRING(sourcePageType.Name);
-		RRETURN(hr);
+		NavigationEventArgs spNavigationEventArgs = new(
+			content,
+			navigationMode,
+			pTransitionInfo,
+			parameter,
+			sourcePageType,
+			null);
+		return spNavigationEventArgs;
 	}
 
-	private void CreateINavigatingCancelEventArgs(
-		 object* pParameterobject,
-		 xaml_animation.INavigationTransitionInfo* pTransitionInfo,
+	internal static NavigatingCancelEventArgs CreateINavigatingCancelEventArgs(
+		 object parameter,
+		 NavigationTransitionInfo pTransitionInfo,
 		 string descriptor,
-		 Navigation.NavigationMode navigationMode,
-		out Navigation.INavigatingCancelEventArgs** ppINavigatingCancelEventArgs)
+		 NavigationMode navigationMode)
 	{
+		if (descriptor is null)
+		{
+			throw new ArgumentNullException(nameof(descriptor));
+		}
 
-		NavigatingCancelEventArgs spNavigatingCancelEventArgs;
-		wxaml_interop.TypeName sourcePageType = default;
-
-		IFCPTR(ppINavigatingCancelEventArgs);
-		*ppINavigatingCancelEventArgs = null;
-
-		IFCPTR(descriptor);
-
-		spNavigatingCancelEventArgs = new();
-
-		MetadataAPI.GetTypeNameByFullName(XSTRING_PTR_EPHEMERAL_FROM_string(descriptor), &sourcePageType);
+		var sourcePageType = Type.GetType(descriptor);
 
 		// All properties can be null.
-		spNavigatingCancelEventArgs.SourcePageType = sourcePageType;
-		spNavigatingCancelEventArgs.NavigationMode = navigationMode;
-		spNavigatingCancelEventArgs.Parameter = pParameterobject;
-		spNavigatingCancelEventArgs.NavigationTransitionInfo = pTransitionInfo;
-
-		*ppINavigatingCancelEventArgs = spNavigatingCancelEventArgs.Detach();
-
-	Cleanup:
-		DELETE_STRING(sourcePageType.Name);
-		RRETURN(hr);
+		NavigatingCancelEventArgs spNavigatingCancelEventArgs = new(
+			navigationMode,
+			pTransitionInfo,
+			parameter,
+			sourcePageType);
+		return spNavigatingCancelEventArgs;
 	}
 
 	private void WriteuintToString(

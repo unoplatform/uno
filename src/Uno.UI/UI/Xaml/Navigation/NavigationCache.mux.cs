@@ -49,7 +49,7 @@ internal partial class NavigationCache
 		RRETURN(hr);
 	}
 
-	private object GetContent(PageStackEntry pPageStackEntry)
+	internal object GetContent(PageStackEntry pPageStackEntry)
 	{
 		Page pIPage = null;
 		bool shouldCache = false;
@@ -204,7 +204,7 @@ internal partial class NavigationCache
 		m_transientMap.Remove(strDescriptor);
 	}
 
-	private void UncachePageContent(string descriptor)
+	internal void UncachePageContent(string descriptor)
 	{
 		var found = m_permanentMap.ContainsKey(descriptor);
 		if (found)

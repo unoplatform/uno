@@ -6,13 +6,14 @@
 
 using System;
 using System.Runtime.CompilerServices;
-
-using Uno.Extensions;
+using DirectUI;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Navigation;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Automation.Peers;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -97,5 +98,73 @@ public partial class Page
 	internal void SetDescriptor(string descriptor)
 	{
 		m_descriptor = descriptor;
+	}
+
+
+	internal void InvokeOnNavigatedFrom(
+		object contentObject,
+		object parameterObject,
+		NavigationTransitionInfo pTransitionInfo,
+		string descriptor,
+		NavigationMode navigationMode)
+	{
+		if (descriptor == null)
+		{
+			throw new ArgumentNullException(nameof(descriptor));
+		}
+
+		if (contentObject is null)
+		{
+			throw new ArgumentNullException(nameof(contentObject));
+		}
+
+		var spINavigationEventArgs = NavigationHelpers.CreateINavigationEventArgs(contentObject, parameterObject, pTransitionInfo, descriptor, navigationMode);
+		OnNavigatedFrom(spINavigationEventArgs);
+	}
+
+	internal void InvokeOnNavigatedTo(
+		object contentObject,
+		object parameterObject,
+		NavigationTransitionInfo pTransitionInfo,
+		string descriptor,
+		NavigationMode navigationMode)
+	{
+		if (descriptor == null)
+		{
+			throw new ArgumentNullException(nameof(descriptor));
+		}
+
+		if (contentObject is null)
+		{
+			throw new ArgumentNullException(nameof(contentObject));
+		}
+
+
+		NavigationEventArgs spINavigationEventArgs = NavigationHelpers.CreateINavigationEventArgs(pContentIInspectable, pParameterIInspectable, pTransitionInfo, descriptor, navigationMode);
+		OnNavigatedTo(spINavigationEventArgs);
+
+		// Set Automation Page Navigation complete event.
+		// TODO:MZ: Implement this
+		//if (DXamlCore.Current.HasPageNavigationCompleteEvent())
+		//{
+		//	DXamlCore.Current.SetPageNavigationCompleteEvent();
+		//}
+	}
+
+	internal void InvokeOnNavigatingFrom(
+		object parameterObject,
+		NavigationTransitionInfo transitionInfo,
+		string descriptor,
+		NavigationMode navigationMode,
+		out bool isCanceled)
+	{
+		if (descriptor == null)
+		{
+			throw new ArgumentNullException(nameof(descriptor));
+		}
+
+		var spINavigatingCancelEventArgs = NavigationHelpers.CreateINavigatingCancelEventArgs(parameterObject, transitionInfo, descriptor, navigationMode);
+		OnNavigatingFrom(spINavigatingCancelEventArgs);
+		isCanceled = spINavigatingCancelEventArgs.Cancel;
 	}
 }

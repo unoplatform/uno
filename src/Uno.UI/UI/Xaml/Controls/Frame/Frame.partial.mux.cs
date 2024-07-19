@@ -21,7 +21,7 @@ partial class Frame
 	// TODO:MZ: Avoid destructor
 	~Frame()
 	{
-		m_tpNavigationHistory.Clear();
+		m_tpNavigationHistory = null;
 	}
 
 	private void Initialize()
@@ -78,8 +78,6 @@ partial class Frame
 
 	internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 	{
-		uint transientCacheSize = 0;
-
 		base.OnPropertyChanged2(args);
 
 		if (args.Property == Frame.SourcePageTypeProperty)
@@ -96,7 +94,7 @@ partial class Frame
 		}
 		else if (args.Property == Frame.CacheSizeProperty)
 		{
-			transientCacheSize = (uint)(args.NewValue);    // We use AsEnum for all uint egers
+			var transientCacheSize = (int)args.NewValue;
 			m_upNavigationCache.ChangeTransientCacheSize(transientCacheSize);
 		}
 	}
@@ -138,7 +136,7 @@ partial class Frame
 
 	private void GoBackImpl() => GoBack(null);
 
-	private void GoBackWithTransitionInfoImpl(NavigationThemeTransition transitionDefinition)
+	private void GoBackWithTransitionInfoImpl(NavigationTransitionInfo transitionDefinition)
 	{
 		bool reentrancyDetected = false;
 
@@ -220,16 +218,13 @@ partial class Frame
 
 	private bool NavigateImpl(Type sourcePageType, object parameter) => NavigateWithTransitionInfoImpl(sourcePageType, parameter, null);
 
-	private bool NavigateWithTransitionInfoImpl(Type sourcePageType, object parameter, NavigationTransitionInfo infoOverride)
+	private bool NavigateWithTransitionInfoImpl(Type sourcePageType, object parameter, NavigationTransitionInfo navigationTransitionInfo)
 	{
-		xruntime_string_ptr strDescriptor;
 		bool reentrancyDetected = false;
-		CClassInfo* pType = null;
 
 		// CheckThread();
 
-		IFCPTR(pCanNavigate);
-		*pCanNavigate = false;
+		var pCanNavigate = false;
 
 		// Prevent reentrancy caused by app navigating while being
 		// notified of a previous navigate
@@ -240,18 +235,31 @@ partial class Frame
 		}
 		m_isInNavigate = true;
 
-		IFCPTR(sourcePageType.Name);
-		IFCPTR(m_tpNavigationHistory);
+		if (sourcePageType is null)
+		{
+			throw new ArgumentNullException(nameof(sourcePageType));
+		}
+
+		if (m_tpNavigationHistory is null)
+		{
+			throw new InvalidOperationException("Navigation history is null");
+		}
 
 		m_isNavigationFromMethod = true;
 
-		MetadataAPI.GetClassInfoByTypeName(sourcePageType, &pType);
-		pType.GetFullName().Promote(&strDescriptor);
+		var strDescriptor = sourcePageType.FullName;
 
-		SetPtrValueWithQI(m_tpNavigationTransitionInfo, navigationTransitionInfo);
-		m_tpNavigationHistory.NavigateNew(strDescriptor.Getstring(), pobject, navigationTransitionInfo);
-		hr = StartNavigation();
-		*pCanNavigate = ((SUCCEEDED(hr)) ? true : false);
+		m_tpNavigationTransitionInfo = navigationTransitionInfo;
+		m_tpNavigationHistory.NavigateNew(strDescriptor, parameter, navigationTransitionInfo);
+		try
+		{
+			StartNavigation();
+			pCanNavigate = true;
+		}
+		catch
+		{
+			pCanNavigate = false;
+		}
 
 	Cleanup:
 		if (!reentrancyDetected)
@@ -259,14 +267,15 @@ partial class Frame
 			m_isNavigationFromMethod = false;
 			m_isInNavigate = false;
 		}
-		RRETURN(hr);
+
+		return pCanNavigate;
 	}
 
 	private bool NavigateToTypeImpl(Type sourcePageType, object parameter, FrameNavigationOptions frameNavigationOptions)
 	{
 		using var cleanup = Disposable.Create(() => m_isNavigationStackEnabledForPage = true); // reseting it for the next navigation because the default is true if the user used the unspecified implementation.
 
-		NavigationTransitionInfo transitionInfoOverride;
+		NavigationTransitionInfo transitionInfoOverride = null;
 
 		if (frameNavigationOptions is not null)
 		{
@@ -274,8 +283,7 @@ partial class Frame
 			transitionInfoOverride = frameNavigationOptions.TransitionInfoOverride;
 		}
 
-		NavigateWithTransitionInfoImpl(sourcePageType, pobject, transitionInfoOverride, pCanNavigate);
-
+		return NavigateWithTransitionInfoImpl(sourcePageType, parameter, transitionInfoOverride);
 	}
 
 	private void StartNavigation()
@@ -290,28 +298,28 @@ partial class Frame
 
 	private void NotifyNavigation()
 	{
-		Page spIPage;
-		object spPageobject;
-		object spParameterobject;
-		NavigationTransitionInfo spNavigationTransitionInfo;
-		string strDescriptor;
-		PageStackEntry pPageStackEntry = null;
-		Navigation.NavigationMode navigationMode = Navigation.NavigationMode_New;
-
 		if (m_tpNavigationHistory is null)
 		{
 			throw new InvalidOperationException("Navigation history is null");
 		}
 
-		m_tpNavigationHistory.GetPendingNavigationMode(&navigationMode);
-		m_tpNavigationHistory.GetPendingPageStackEntry(&pPageStackEntry);
-		IFCPTR(pPageStackEntry);
-		pPageStackEntry.GetDescriptor(strDescriptor.GetAddressOf());
-		IFCPTR(strDescriptor);
-		spParameterobject = pPageStackEntry.Parameter;
-		spNavigationTransitionInfo = pPageStackEntry.NavigationTransitionInfo;
+		var navigationMode = m_tpNavigationHistory.GetPendingNavigationMode();
+		var pPageStackEntry = m_tpNavigationHistory.GetPendingPageStackEntry();
+		if (pPageStackEntry is null)
+		{
+			throw new InvalidOperationException("Pending page stack entry is null");
+		}
 
-		RaiseNavigating(spParameterobject, spNavigationTransitionInfo, strDescriptor, navigationMode, &m_isCanceled);
+		var strDescriptor = pPageStackEntry.GetDescriptor();
+		if (strDescriptor is null)
+		{
+			throw new InvalidOperationException("Descriptor is null");
+		}
+
+		var spParameterobject = pPageStackEntry.Parameter;
+		var spNavigationTransitionInfo = pPageStackEntry.NavigationTransitionInfo;
+
+		RaiseNavigating(spParameterobject, spNavigationTransitionInfo, strDescriptor, navigationMode, out m_isCanceled);
 
 		if (m_isCanceled)
 		{
@@ -319,13 +327,11 @@ partial class Frame
 			goto Cleanup;
 		}
 
-		get_Content(&spPageobject);
+		var spPageobject = Content;
 
-		spIPage = spPageobject.AsOrNull<IPage>();
-
-		if (spIPage)
+		if (spPageobject is Page spIPage)
 		{
-			spIPage.Cast<Page>().InvokeOnNavigatingFrom(spParameterobject, spNavigationTransitionInfo, strDescriptor, navigationMode, &m_isCanceled);
+			spIPage.InvokeOnNavigatingFrom(spParameterobject, spNavigationTransitionInfo, strDescriptor, navigationMode, out m_isCanceled);
 
 			if (m_isCanceled)
 			{
@@ -339,26 +345,26 @@ partial class Frame
 
 	private void PerformNavigation()
 	{
-		object spOldobject;
-		object spNewobject;
-		object spParameterobject;
-		NavigationTransitionInfo spNavigationTransitionInfo;
-		PageStackEntry pPageStackEntry = null;
-
 		if (m_isCanceled)
 		{
 			goto Cleanup;
 		}
 
-		IFCPTR(m_tpNavigationHistory);
+		if (m_tpNavigationHistory is null)
+		{
+			throw new InvalidOperationException("Navigation history is null");
+		}
 
-		m_tpNavigationHistory.GetPendingPageStackEntry(&pPageStackEntry);
-		IFCPTR(pPageStackEntry);
+		var pPageStackEntry = m_tpNavigationHistory.GetPendingPageStackEntry();
+		if (pPageStackEntry is null)
+		{
+			throw new InvalidOperationException("Pending page stack entry is null");
+		}
 
-		get_Content(&spOldobject);
-		m_upNavigationCache.GetContent(pPageStackEntry, &spNewobject);
-		spParameterobject = pPageStackEntry.Parameter;
-		spNavigationTransitionInfo = pPageStackEntry.NavigationTransitionInfo;
+		var spOldobject = Content;
+		var spNewobject = m_upNavigationCache.GetContent(pPageStackEntry);
+		var spParameterobject = pPageStackEntry.Parameter;
+		var spNavigationTransitionInfo = pPageStackEntry.NavigationTransitionInfo;
 
 		ChangeContent(spOldobject, spNewobject, spParameterobject, spNavigationTransitionInfo);
 
@@ -397,131 +403,136 @@ partial class Frame
 
 	private void NotifyGetOrSetNavigationState(NavigationStateOperation navigationStateOperation)
 	{
-		object spContentobject;
-		IPage spIPage;
-		object spParameterobject;
-		NavigationTransitionInfo spNavigationTransitionInfo;
-		string strDescriptor;
-		PageStackEntry pPageStackEntry = null;
-
 		// Get current navigation entry
 		if (m_tpNavigationHistory is null)
 		{
-			goto Cleanup;
+			return;
 		}
-		m_tpNavigationHistory.GetCurrentPageStackEntry(&pPageStackEntry);
-		if (!pPageStackEntry)
+		var pPageStackEntry = m_tpNavigationHistory.GetCurrentPageStackEntry();
+		if (pPageStackEntry is null)
 		{
-			goto Cleanup;
+			return;
 		}
 
 		// Get current page, param and page type
-		get_Content(&spContentobject);
-		spParameterobject = pPageStackEntry.Parameter;
-		spNavigationTransitionInfo = pPageStackEntry.NavigationTransitionInfo;
-		pPageStackEntry.GetDescriptor(strDescriptor.GetAddressOf());
+		var spContentobject = Content;
+		var spParameterobject = pPageStackEntry.Parameter;
+		var spNavigationTransitionInfo = pPageStackEntry.NavigationTransitionInfo;
+		var strDescriptor = pPageStackEntry.GetDescriptor();
 
-		spIPage = spContentobject.AsOrNull<IPage>();
-		IFCPTR(spIPage);
+		var spIPage = spContentobject as Page;
+		if (spIPage is null)
+		{
+			throw new InvalidOperationException("Content is not a Page");
+		}
 
-		if (navigationStateOperation == NavigationStateOperation_Get)
+		if (navigationStateOperation == NavigationStateOperation.Get)
 		{
 			// Call Page.OnNavigatedFrom. Use Forward as navigation mode, which
 			// is the best fit among available modes -- we are going forward from
 			// the page to App's suspend mode.
-			(spIPage.Cast<Page>().InvokeOnNavigatedFrom(spIPage, spParameterobject, spNavigationTransitionInfo, strDescriptor,
-							Navigation.NavigationMode_Forward));
+			spIPage.InvokeOnNavigatedFrom(spIPage, spParameterobject, spNavigationTransitionInfo, strDescriptor, NavigationMode.Forward);
 		}
 		else
 		{
 			// Call Page.OnNavigatedTo. Use Back as navigation mode,which
 			// is the best fit among available modes -- we are going back to the
 			// page on App Resume.
-			(spIPage.Cast<Page>().InvokeOnNavigatedTo(spIPage, spParameterobject, spNavigationTransitionInfo, strDescriptor,
-							Navigation.NavigationMode_Back));
+			spIPage.InvokeOnNavigatedTo(spIPage, spParameterobject, spNavigationTransitionInfo, strDescriptor, NavigationMode.Back);
 		}
 	}
 
-	private void ChangeContent(object oldContent, object newContent, object parameter, NavigationTransitionInfo transitionInfo)
+	private void ChangeContent(object oldObject, object newObject, object parameter, NavigationTransitionInfo transitionInfo)
 	{
-		Page spOldIPage;
-		Page spNewIPage;
-		string strDescriptor;
-		bool isHandled = false;
 		bool wasContentChanged = false;
-		PageStackEntry pPageStackEntry = null;
-		NavigationMode navigationMode = Navigation.NavigationMode_New;
-
-		bool isNavigationStackEnabled = IsNavigationStackEnabled;
-
-		IFCPTR(pNewobject);
-		IFCPTR(m_tpNavigationHistory);
-
-		navigationMode = m_tpNavigationHistory.GetPendingNavigationMode();
-		pPageStackEntry = m_tpNavigationHistory.GetPendingPageStackEntry();
-		IFCPTR(pPageStackEntry);
-		strDescriptor = pPageStackEntry.GetDescriptor();
-		IFCPTR(strDescriptor);
-
-		// If this is a back navigation, cache the navigation mode
-		// and override the NavigationTransitionInfo with the
-		// transition that took place upon navigation from that page.
-		m_isLastNavigationBack = false;
-		if (navigationMode == Navigation.NavigationMode_Back)
+		string strDescriptor = null;
+		try
 		{
-			PageStackEntry pCurrentPageStackEntry = null;
-			NavigationTransitionInfo spNavigationTransitionInfo;
+			bool isNavigationStackEnabled = IsNavigationStackEnabled;
 
-			m_tpNavigationHistory.GetCurrentPageStackEntry(&pCurrentPageStackEntry);
-
-			if (pCurrentPageStackEntry)
+			if (newObject is null)
 			{
-				spNavigationTransitionInfo = pCurrentPageStackEntry.NavigationTransitionInfo;
-
-				m_isLastNavigationBack = true;
-				SetPtrValueWithQI(m_tpNavigationTransitionInfo, spNavigationTransitionInfo);
+				throw new InvalidOperationException("New content is null");
 			}
+
+			if (m_tpNavigationHistory is null)
+			{
+				throw new InvalidOperationException("Navigation history is null");
+			}
+
+			var navigationMode = m_tpNavigationHistory.GetPendingNavigationMode();
+			var pPageStackEntry = m_tpNavigationHistory.GetPendingPageStackEntry();
+			if (pPageStackEntry is null)
+			{
+				throw new InvalidOperationException("Pending page stack entry is null");
+			}
+			strDescriptor = pPageStackEntry.GetDescriptor();
+			if (strDescriptor is null)
+			{
+				throw new InvalidOperationException("Descriptor is null");
+			}
+
+			// If this is a back navigation, cache the navigation mode
+			// and override the NavigationTransitionInfo with the
+			// transition that took place upon navigation from that page.
+			m_isLastNavigationBack = false;
+			if (navigationMode == NavigationMode.Back)
+			{
+				PageStackEntry pCurrentPageStackEntry = null;
+				NavigationTransitionInfo spNavigationTransitionInfo;
+
+				pCurrentPageStackEntry = m_tpNavigationHistory.GetCurrentPageStackEntry();
+
+				if (pCurrentPageStackEntry is not null)
+				{
+					spNavigationTransitionInfo = pCurrentPageStackEntry.NavigationTransitionInfo;
+
+					m_isLastNavigationBack = true;
+					m_tpNavigationTransitionInfo = spNavigationTransitionInfo;
+				}
+			}
+
+			var spOldIPage = oldObject as Page;
+			var spNewIPage = newObject as Page;
+			if (spNewIPage is null)
+			{
+				throw new InvalidOperationException("New content is not a Page");
+			}
+
+			Content = newObject;
+			wasContentChanged = true;
+
+			if (isNavigationStackEnabled && m_isNavigationStackEnabledForPage)
+			{
+				m_tpNavigationHistory.CommitNavigation();
+			}
+
+			RaiseNavigated(spNewIPage, parameter, transitionInfo, strDescriptor, navigationMode);
+
+			if (spOldIPage is not null)
+			{
+				spOldIPage.InvokeOnNavigatedFrom(spNewIPage, parameter, transitionInfo, strDescriptor, navigationMode);
+			}
+
+			spNewIPage.InvokeOnNavigatedTo(spNewIPage, parameter, transitionInfo, strDescriptor, navigationMode);
 		}
-
-		spOldIPage = ctl.query_interface_cast<IPage>(pOldobject);
-		spNewIPage = ctl.query_interface_cast<IPage>(pNewobject);
-		IFCPTR(spNewIPage);
-
-		put_Content(pNewobject);
-		wasContentChanged = true;
-
-		if (isNavigationStackEnabled && m_isNavigationStackEnabledForPage)
+		catch (Exception ex)
 		{
-			m_tpNavigationHistory.CommitNavigation();
-		}
-
-		RaiseNavigated(spNewIPage, pParameterobject, pTransitionInfo, strDescriptor, navigationMode);
-
-		if (spOldIPage)
-		{
-			spOldIPage.Cast<Page>().InvokeOnNavigatedFrom(spNewIPage, pParameterobject, pTransitionInfo, strDescriptor, navigationMode);
-		}
-
-		spNewIPage.Cast<Page>().InvokeOnNavigatedTo(spNewIPage, pParameterobject, pTransitionInfo, strDescriptor, navigationMode);
-
-	Cleanup:
-		if (/*FAILED*/(hr))
-		{
-			IGNOREHR(RaiseNavigationFailed(strDescriptor, hr, &isHandled));
+			RaiseNavigationFailed(strDescriptor, ex, out var isHandled);
 
 			if (!isHandled)
 			{
-				IGNOREHR(RaiseUnhandledException(E_UNEXPECTED, TEXT_FRAME_NAVIGATION_FAILED_UNHANDLED));
+				RaiseUnhandledException(ex);
 			}
 
 			if (wasContentChanged)
 			{
-				IGNOREHR(put_Content(pOldobject));
+				Content = oldObject;
 			}
 		}
 	}
 
-	private void RaiseUnhandledException(int errorCode, int resourceStringId)
+	private void RaiseUnhandledException(Exception ex)
 	{
 		//xstring_ptr strMessage;
 		//HRESULT hrToReport;
@@ -531,14 +542,20 @@ partial class Frame
 		//ErrorHelper.GetNonLocalizedErrorString(resourceStringID, &strMessage);
 
 		//ErrorHelper.RaiseUnhandledExceptionEvent(hrToReport, strMessage, &fIsHandled);
+
+		Application.Current.RaiseRecoverableUnhandledException(ex);
 	}
 
 	private string GetNavigationStateImpl()
 	{
 		NotifyGetOrSetNavigationState(NavigationStateOperation.Get);
 
-		IFCPTR(m_tpNavigationHistory);
-		m_tpNavigationHistory.GetNavigationState(pNavigationState);
+		if (m_tpNavigationHistory is null)
+		{
+			throw new InvalidOperationException("Navigation history is null");
+		}
+
+		return m_tpNavigationHistory.GetNavigationState();
 	}
 
 	private void SetNavigationStateImpl(string navigationState) => SetNavigationStateWithNavigationControlImpl(navigationState, false);
@@ -553,18 +570,15 @@ partial class Frame
 		}
 		else
 		{
-			object spContentobject;
-			PageStackEntry pPageStackEntry = null;
-
 			// Create or get page corresponding to current navigation entry and set it as
 			// frame's content. NavigationCache.GetContent will create the current page.
-			m_tpNavigationHistory.GetCurrentPageStackEntry(&pPageStackEntry);
-			if (pPageStackEntry)
+			var pPageStackEntry = m_tpNavigationHistory.GetCurrentPageStackEntry();
+			if (pPageStackEntry is not null)
 			{
 				m_isNavigationFromMethod = true;
 
-				m_upNavigationCache.GetContent(pPageStackEntry, &spContentobject);
-				put_Content(spContentobject);
+				var spContentobject = m_upNavigationCache.GetContent(pPageStackEntry);
+				Content = spContentobject;
 			}
 
 			// Commit SetNavigationState of navigation history
@@ -595,19 +609,21 @@ partial class Frame
 		string descriptor,
 		NavigationMode navigationMode)
 	{
-		NavigatedEventSourceType* pEventSource = null;
-		INavigationEventArgs spINavigationEventArgs;
+		if (descriptor is null)
+		{
+			throw new ArgumentNullException(nameof(descriptor));
+		}
 
-		IFCPTR(descriptor);
-		IFCPTR(pContentobject);
+		if (pContentobject is null)
+		{
+			throw new ArgumentNullException(nameof(pContentobject));
+		}
 
-		NavigationHelpers.CreateINavigationEventArgs(pContentobject, pParameterobject, pTransitionInfo, descriptor, navigationMode, &spINavigationEventArgs);
-		IFCPTR(spINavigationEventArgs);
+		var spINavigationEventArgs = NavigationHelpers.CreateINavigationEventArgs(pContentobject, pParameterobject, pTransitionInfo, descriptor, navigationMode);
 
-		GetNavigatedEventSourceNoRef(&pEventSource);
-		pEventSource.Raise(ctl.as_iinspectable(this), spINavigationEventArgs);
+		Navigated?.Invoke(this, spINavigationEventArgs);
 
-		TraceFrameNavigatedInfo(WindowsGetStringRawBuffer(descriptor, null), (unsigned char)(navigationMode));
+		//TraceFrameNavigatedInfo(WindowsGetStringRawBuffer(descriptor, null), (unsigned char)(navigationMode));
 	}
 
 	private void RaiseNavigating(
@@ -617,51 +633,33 @@ partial class Frame
 		NavigationMode navigationMode,
 		out bool isCanceled)
 	{
-		NavigatingEventSourceType* pEventSource = null;
-		INavigatingCancelEventArgs spINavigatingCancelEventArgs;
+		if (descriptor is null)
+		{
+			throw new ArgumentNullException(nameof(descriptor));
+		}
 
-		IFCPTR(pIsCanceled);
-		*pIsCanceled = null;
+		var spINavigatingCancelEventArgs = NavigationHelpers.CreateINavigatingCancelEventArgs(pParameterobject, pTransitionInfo, descriptor, navigationMode);
 
-		IFCPTR(descriptor);
+		Navigating?.Invoke(this, spINavigatingCancelEventArgs);
 
-		NavigationHelpers.CreateINavigatingCancelEventArgs(pParameterobject, pTransitionInfo, descriptor, navigationMode, &spINavigatingCancelEventArgs);
-		IFCPTR(spINavigatingCancelEventArgs);
+		isCanceled = spINavigatingCancelEventArgs.Cancel;
 
-		GetNavigatingEventSourceNoRef(&pEventSource);
-		pEventSource.Raise(ctl.as_iinspectable(this), spINavigatingCancelEventArgs);
-
-		spINavigatingCancelEventArgs.get_Cancel(pIsCanceled);
-
-		TraceFrameNavigatingInfo(WindowsGetStringRawBuffer(descriptor, null), (unsigned char)(navigationMode));
+		//TraceFrameNavigatingInfo(WindowsGetStringRawBuffer(descriptor, null), (unsigned char)(navigationMode));
 	}
 
 	private void RaiseNavigationFailed(string descriptor, Exception errorResult, out bool isCanceled)
 	{
-		NavigationFailedEventSourceType* pEventSource = null;
-		NavigationFailedEventArgs spNavigationFailedEventArgs;
-		wxaml_interop.TypeName sourcePageType = default;
+		if (descriptor is null)
+		{
+			throw new ArgumentNullException(nameof(descriptor));
+		}
 
-		IFCPTR(pIsCanceled);
-		*pIsCanceled = null;
+		var sourcePageType = Type.GetType(descriptor);
+		var spNavigationFailedEventArgs = new NavigationFailedEventArgs(sourcePageType, errorResult);
 
-		IFCPTR(descriptor);
+		NavigationFailed?.Invoke(this, spNavigationFailedEventArgs);
 
-		spNavigationFailedEventArgs = new NavigationFailedEventArgs();
-		IFCPTR(spNavigationFailedEventArgs);
-
-		MetadataAPI.GetTypeNameByFullName(XSTRING_PTR_EPHEMERAL_FROM_string(descriptor), &sourcePageType);
-		spNavigationFailedEventArgs.SourcePageType = sourcePageType;
-		spNavigationFailedEventArgs.Exception = errorResult;
-
-		GetNavigationFailedEventSourceNoRef(&pEventSource);
-
-		pEventSource.Raise(ctl.as_iinspectable(this), spNavigationFailedEventArgs);
-
-		spNavigationFailedEventArgs.get_Handled(pIsCanceled);
-
-	Cleanup:
-		DELETE_STRING(sourcePageType.Name);
+		isCanceled = spNavigationFailedEventArgs.Handled;
 	}
 
 	private void RaiseNavigationStopped(
@@ -671,16 +669,14 @@ partial class Frame
 		string descriptor,
 		NavigationMode navigationMode)
 	{
-		NavigationStoppedEventSourceType* pEventSource = null;
-		INavigationEventArgs spINavigationEventArgs;
+		if (descriptor is null)
+		{
+			throw new ArgumentNullException(nameof(descriptor));
+		}
 
-		IFCPTR(descriptor);
+		var spINavigationEventArgs = NavigationHelpers.CreateINavigationEventArgs(pContentobject, pParameterobject, pTransitionInfo, descriptor, navigationMode);
 
-		NavigationHelpers.CreateINavigationEventArgs(pContentobject, pParameterobject, pTransitionInfo, descriptor, navigationMode, &spINavigationEventArgs);
-		IFCPTR(spINavigationEventArgs);
-
-		GetNavigationStoppedEventSourceNoRef(&pEventSource);
-		pEventSource.Raise(ctl.as_iinspectable(this), spINavigationEventArgs);
+		NavigationStopped?.Invoke(this, spINavigationEventArgs);
 	}
 
 	//private void OnReferenceTrackerWalk(INT walkType) // override
@@ -698,5 +694,5 @@ partial class Frame
 	//	FrameGenerated.OnReferenceTrackerWalk(walkType);
 	//}
 
-	private NavigationMode GetCurrentNavigationMode() => m_tpNavigationHistory.GetCurrentNavigationMode(pNavigationMode);
+	private NavigationMode GetCurrentNavigationMode() => m_tpNavigationHistory.GetCurrentNavigationMode();
 }
