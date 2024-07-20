@@ -92,6 +92,7 @@ public class Given_DependencyObjectGenerator
 	 // </auto-generated>
 
 	 #pragma warning disable 1591 // Ignore missing XML comment warnings
+
 	 using System;
 	 using System.Linq;
 	 using System.Collections.Generic;
