@@ -137,6 +137,8 @@ namespace Microsoft.UI.Xaml.Documents
 
 						if (symbolTypeface is null)
 						{
+							symbolTypeface = oldTypeface;
+
 							// Under some Linux systems, the symbol may not be found
 							// in the default font and
 							// we have to skip the character and continue segments
