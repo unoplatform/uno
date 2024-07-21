@@ -56,7 +56,7 @@ public partial class Frame : ContentControl
 		}
 		else
 		{
-			GetNavigationStateLegacy();
+			GoBackLegacy();
 		}
 	}
 

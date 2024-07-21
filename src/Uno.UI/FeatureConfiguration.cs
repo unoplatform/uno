@@ -467,7 +467,7 @@ namespace Uno.UI
 			{
 				if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_Frame_Available)
 				{
-					SetUWPDefaultStylesOverride<Frame>(useUWPDefaultStyle: false);
+					SetUWPDefaultStylesOverride<Microsoft.UI.Xaml.Controls.Frame>(useUWPDefaultStyle: false);
 				}
 
 				if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_CommandBar_Available)
