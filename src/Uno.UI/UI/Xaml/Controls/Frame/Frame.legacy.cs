@@ -27,7 +27,7 @@ public partial class Frame : ContentControl
 
 	private static readonly PagePool _pool = new PagePool();
 
-	public void CtorLegacy()
+	private void CtorLegacy()
 	{
 		var backStack = new ObservableCollection<PageStackEntry>();
 		var forwardStack = new ObservableCollection<PageStackEntry>();
@@ -161,7 +161,7 @@ public partial class Frame : ContentControl
 	/// can be significantly slower than other methods as a result on WebAssembly.
 	/// See https://github.com/dotnet/runtime/issues/56309
 	/// </remarks>
-	[MethodLegacy(MethodLegacyOptions.AggressiveInlining)]
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private bool InnerNavigateUnsafe(PageStackEntry entry, NavigationMode mode)
 	{
 		// Navigating

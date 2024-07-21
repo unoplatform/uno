@@ -13,7 +13,7 @@ partial class Frame
 {
 	private const int InitialTransientCacheSize = 10;
 
-	partial void CtorWinUI()
+	private void CtorWinUI()
 	{
 		DefaultStyleKey = typeof(Frame);
 		Initialize();
@@ -719,5 +719,4 @@ partial class Frame
 	//}
 
 	// private NavigationMode GetCurrentNavigationMode() => m_tpNavigationHistory.GetCurrentNavigationMode();
-#endif
 }
