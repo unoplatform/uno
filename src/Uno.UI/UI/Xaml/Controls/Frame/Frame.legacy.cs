@@ -1,5 +1,4 @@
-﻿#if !__SKIA__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -18,361 +17,359 @@ using Uno.UI.Xaml.Core;
 using Uno.UI.Helpers;
 using Uno.Foundation.Logging;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls;
+
+public partial class Frame : ContentControl
 {
-	public partial class Frame : ContentControl
+	private bool _isNavigating;
+
+	private string _navigationState;
+
+	private static readonly PagePool _pool = new PagePool();
+
+	public void CtorLegacy()
 	{
-		private bool _isNavigating;
+		var backStack = new ObservableCollection<PageStackEntry>();
+		var forwardStack = new ObservableCollection<PageStackEntry>();
 
-		private string _navigationState;
-
-		private static readonly PagePool _pool = new PagePool();
-
-		public Frame()
+		backStack.CollectionChanged += (s, e) =>
 		{
-			var backStack = new ObservableCollection<PageStackEntry>();
-			var forwardStack = new ObservableCollection<PageStackEntry>();
+			CanGoBack = BackStack.Any();
+			BackStackDepth = BackStack.Count;
+		};
 
-			backStack.CollectionChanged += (s, e) =>
-			{
-				CanGoBack = BackStack.Any();
-				BackStackDepth = BackStack.Count;
-			};
+		forwardStack.CollectionChanged += (s, e) => CanGoForward = ForwardStack.Any();
 
-			forwardStack.CollectionChanged += (s, e) => CanGoForward = ForwardStack.Any();
+		BackStack = backStack;
+		ForwardStack = forwardStack;
 
-			BackStack = backStack;
-			ForwardStack = forwardStack;
+		DefaultStyleKey = typeof(Frame);
+	}
 
-			DefaultStyleKey = typeof(Frame);
+	internal PageStackEntry CurrentEntry { get; set; }
+
+	protected override void OnContentChanged(object oldValue, object newValue)
+	{
+		base.OnContentChanged(oldValue, newValue);
+
+		// Make sure we void CurrentEntry when someone sets Frame.Content = null;
+		if (newValue == null)
+		{
+			CurrentEntry = null;
 		}
-
-		internal PageStackEntry CurrentEntry { get; set; }
-
-		protected override void OnContentChanged(object oldValue, object newValue)
+		else if (CurrentEntry is not null)
 		{
-			base.OnContentChanged(oldValue, newValue);
+			// This is to support hot reload scenarios - the PageStackEntry 
+			// is used when navigating back to this page as it's maintained in the BackStack
+			CurrentEntry.Instance = newValue as Page;
+			CurrentEntry.SourcePageType = newValue.GetType();
+		}
+	}
 
-			// Make sure we void CurrentEntry when someone sets Frame.Content = null;
-			if (newValue == null)
+	private string GetNavigationStateLegacy() => _navigationState;
+
+	private void GoBackLegacy() => GoBackWithTransitionInfoLegacy(null);
+
+	private void GoBackWithTransitionInfoLegacy(NavigationTransitionInfo transitionInfoOverride)
+	{
+		if (CanGoBack)
+		{
+
+			var entry = BackStack.Last();
+			if (transitionInfoOverride != null)
 			{
-				CurrentEntry = null;
+				entry.NavigationTransitionInfo = transitionInfoOverride;
 			}
-			else if (CurrentEntry is not null)
+			else
 			{
-				// This is to support hot reload scenarios - the PageStackEntry 
-				// is used when navigating back to this page as it's maintained in the BackStack
-				CurrentEntry.Instance = newValue as Page;
-				CurrentEntry.SourcePageType = newValue.GetType();
-			}
-		}
-
-		private string GetNavigationStateImpl() => _navigationState;
-
-		private void GoBackImpl() => GoBackWithTransitionInfoImpl(null);
-
-		private void GoBackWithTransitionInfoImpl(NavigationTransitionInfo transitionInfoOverride)
-		{
-			if (CanGoBack)
-			{
-
-				var entry = BackStack.Last();
-				if (transitionInfoOverride != null)
-				{
-					entry.NavigationTransitionInfo = transitionInfoOverride;
-				}
-				else
-				{
-					// Fallback to the page forward navigation transition info
-					entry.NavigationTransitionInfo = CurrentEntry.NavigationTransitionInfo;
-				}
-
-				InnerNavigate(entry, NavigationMode.Back);
-			}
-		}
-
-		private void GoForwardImpl()
-		{
-			if (CanGoForward)
-			{
-				InnerNavigate(ForwardStack.Last(), NavigationMode.Forward);
-			}
-		}
-
-		private bool NavigateImpl(Type sourcePageType) => Navigate(sourcePageType, null, null);
-
-		private bool NavigateImpl(Type sourcePageType, object parameter) => Navigate(sourcePageType, parameter, null);
-
-		private bool NavigateWithTransitionInfoImpl(Type sourcePageType, object parameter, NavigationTransitionInfo infoOverride)
-		{
-			var entry = new PageStackEntry(sourcePageType.GetReplacementType(), parameter, infoOverride);
-			return InnerNavigate(entry, NavigationMode.New);
-		}
-
-		private bool NavigateToTypeImpl(Type sourcePageType, object parameter, FrameNavigationOptions frameNavigationOptions)
-		{
-			NavigationTransitionInfo transitionInfoOverride = null;
-
-			if (frameNavigationOptions is not null)
-			{
-				transitionInfoOverride = frameNavigationOptions.TransitionInfoOverride;
+				// Fallback to the page forward navigation transition info
+				entry.NavigationTransitionInfo = CurrentEntry.NavigationTransitionInfo;
 			}
 
-			return NavigateWithTransitionInfoImpl(sourcePageType, parameter, transitionInfoOverride);
+			InnerNavigate(entry, NavigationMode.Back);
+		}
+	}
+
+	private void GoForwardLegacy()
+	{
+		if (CanGoForward)
+		{
+			InnerNavigate(ForwardStack.Last(), NavigationMode.Forward);
+		}
+	}
+
+	private bool NavigateLegacy(Type sourcePageType) => Navigate(sourcePageType, null, null);
+
+	private bool NavigateLegacy(Type sourcePageType, object parameter) => Navigate(sourcePageType, parameter, null);
+
+	private bool NavigateWithTransitionInfoLegacy(Type sourcePageType, object parameter, NavigationTransitionInfo infoOverride)
+	{
+		var entry = new PageStackEntry(sourcePageType.GetReplacementType(), parameter, infoOverride);
+		return InnerNavigate(entry, NavigationMode.New);
+	}
+
+	private bool NavigateToTypeLegacy(Type sourcePageType, object parameter, FrameNavigationOptions frameNavigationOptions)
+	{
+		NavigationTransitionInfo transitionInfoOverride = null;
+
+		if (frameNavigationOptions is not null)
+		{
+			transitionInfoOverride = frameNavigationOptions.TransitionInfoOverride;
 		}
 
-		private bool InnerNavigate(PageStackEntry entry, NavigationMode mode)
+		return NavigateWithTransitionInfoLegacy(sourcePageType, parameter, transitionInfoOverride);
+	}
+
+	private bool InnerNavigate(PageStackEntry entry, NavigationMode mode)
+	{
+		if (_isNavigating)
 		{
-			if (_isNavigating)
+			if (this.Log().IsEnabled(LogLevel.Warning))
 			{
-				if (this.Log().IsEnabled(LogLevel.Warning))
-				{
-					this.Log().LogWarning(
-						"Frame is already navigating, ignoring the navigation request." +
-						"Please delay the navigation with await Task.Yield().");
-				}
+				this.Log().LogWarning(
+					"Frame is already navigating, ignoring the navigation request." +
+					"Please delay the navigation with await Task.Yield().");
+			}
+			return false;
+		}
+
+		try
+		{
+			_isNavigating = true;
+
+			return InnerNavigateUnsafe(entry, mode);
+		}
+		catch (Exception exception)
+		{
+			NavigationFailed?.Invoke(this, new NavigationFailedEventArgs(entry.SourcePageType, exception));
+
+			if (NavigationFailed == null)
+			{
+				Application.Current.RaiseRecoverableUnhandledException(new InvalidOperationException("Navigation failed", exception));
+			}
+
+			return false;
+		}
+		finally
+		{
+			_isNavigating = false;
+		}
+	}
+
+	/// <remarks>
+	/// This method contains or is called by a try/catch containing method and
+	/// can be significantly slower than other methods as a result on WebAssembly.
+	/// See https://github.com/dotnet/runtime/issues/56309
+	/// </remarks>
+	[MethodLegacy(MethodLegacyOptions.AggressiveInlining)]
+	private bool InnerNavigateUnsafe(PageStackEntry entry, NavigationMode mode)
+	{
+		// Navigating
+		var navigatingFromArgs = new NavigatingCancelEventArgs(
+			mode,
+			entry.NavigationTransitionInfo,
+			entry.Parameter,
+			entry.SourcePageType
+		);
+
+		Navigating?.Invoke(this, navigatingFromArgs);
+
+		if (navigatingFromArgs.Cancel)
+		{
+			// Frame canceled
+			OnNavigationStopped(entry, mode);
+			return false;
+		}
+
+		CurrentEntry?.Instance?.OnNavigatingFrom(navigatingFromArgs);
+
+		if (navigatingFromArgs.Cancel)
+		{
+			// Page canceled
+			OnNavigationStopped(entry, mode);
+			return false;
+		}
+
+		// Navigate
+		var previousEntry = CurrentEntry;
+		CurrentEntry = entry;
+
+		if (mode == NavigationMode.New)
+		{
+			// Doing this first allows CurrentEntry to reuse existing page if pooling is enabled
+			ReleasePages(ForwardStack);
+		}
+
+		if (CurrentEntry.Instance == null)
+		{
+			if (EnsurePageInitialized(entry) is not { } page)
+			{
 				return false;
 			}
 
-			try
-			{
-				_isNavigating = true;
-
-				return InnerNavigateUnsafe(entry, mode);
-			}
-			catch (Exception exception)
-			{
-				NavigationFailed?.Invoke(this, new NavigationFailedEventArgs(entry.SourcePageType, exception));
-
-				if (NavigationFailed == null)
-				{
-					Application.Current.RaiseRecoverableUnhandledException(new InvalidOperationException("Navigation failed", exception));
-				}
-
-				return false;
-			}
-			finally
-			{
-				_isNavigating = false;
-			}
+			CurrentEntry.Instance = page;
 		}
 
-		/// <remarks>
-		/// This method contains or is called by a try/catch containing method and
-		/// can be significantly slower than other methods as a result on WebAssembly.
-		/// See https://github.com/dotnet/runtime/issues/56309
-		/// </remarks>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private bool InnerNavigateUnsafe(PageStackEntry entry, NavigationMode mode)
+		MoveFocusFromCurrentContent();
+
+		Content = CurrentEntry.Instance;
+
+		if (IsNavigationStackEnabled)
 		{
-			// Navigating
-			var navigatingFromArgs = new NavigatingCancelEventArgs(
-				mode,
-				entry.NavigationTransitionInfo,
-				entry.Parameter,
-				entry.SourcePageType
-			);
-
-			Navigating?.Invoke(this, navigatingFromArgs);
-
-			if (navigatingFromArgs.Cancel)
+			switch (mode)
 			{
-				// Frame canceled
-				OnNavigationStopped(entry, mode);
-				return false;
-			}
-
-			CurrentEntry?.Instance?.OnNavigatingFrom(navigatingFromArgs);
-
-			if (navigatingFromArgs.Cancel)
-			{
-				// Page canceled
-				OnNavigationStopped(entry, mode);
-				return false;
-			}
-
-			// Navigate
-			var previousEntry = CurrentEntry;
-			CurrentEntry = entry;
-
-			if (mode == NavigationMode.New)
-			{
-				// Doing this first allows CurrentEntry to reuse existing page if pooling is enabled
-				ReleasePages(ForwardStack);
-			}
-
-			if (CurrentEntry.Instance == null)
-			{
-				if (EnsurePageInitialized(entry) is not { } page)
-				{
-					return false;
-				}
-
-				CurrentEntry.Instance = page;
-			}
-
-			MoveFocusFromCurrentContent();
-
-			Content = CurrentEntry.Instance;
-
-			if (IsNavigationStackEnabled)
-			{
-				switch (mode)
-				{
-					case NavigationMode.New:
-						ForwardStack.Clear();
-						if (previousEntry != null)
-						{
-							BackStack.Add(previousEntry);
-						}
-						break;
-					case NavigationMode.Back:
-						ForwardStack.Add(previousEntry);
-						BackStack.Remove(CurrentEntry);
-						break;
-					case NavigationMode.Forward:
+				case NavigationMode.New:
+					ForwardStack.Clear();
+					if (previousEntry != null)
+					{
 						BackStack.Add(previousEntry);
-						ForwardStack.Remove(CurrentEntry);
-						break;
-					case NavigationMode.Refresh:
-						break;
-				}
-			}
-
-			// Navigated
-			var navigationEvent = new NavigationEventArgs(
-				CurrentEntry.Instance,
-				mode,
-				entry.NavigationTransitionInfo,
-				entry.Parameter,
-				entry.SourcePageType,
-				null
-			);
-
-			SetValue(SourcePageTypeProperty, entry.SourcePageType);
-			SetValue(CurrentSourcePageTypeProperty, entry.SourcePageType);
-
-			Navigated?.Invoke(this, navigationEvent);
-
-			previousEntry?.Instance.OnNavigatedFrom(navigationEvent);
-			CurrentEntry.Instance.OnNavigatedTo(navigationEvent);
-
-			return true;
-		}
-
-		/// <summary>
-		/// Return pages removed from the stack to the pool, if enabled.
-		/// </summary>
-		private void ReleasePages(IList<PageStackEntry> pageStackEntries)
-		{
-			foreach (var entry in pageStackEntries)
-			{
-				entry.Instance.Frame = null;
-			}
-
-			if (!FeatureConfiguration.Page.IsPoolingEnabled)
-			{
-				return;
-			}
-
-			foreach (var entry in pageStackEntries)
-			{
-				if (entry.Instance != null)
-				{
-					_pool.EnqueuePage(entry.SourcePageType, entry.Instance);
-				}
+					}
+					break;
+				case NavigationMode.Back:
+					ForwardStack.Add(previousEntry);
+					BackStack.Remove(CurrentEntry);
+					break;
+				case NavigationMode.Forward:
+					BackStack.Add(previousEntry);
+					ForwardStack.Remove(CurrentEntry);
+					break;
+				case NavigationMode.Refresh:
+					break;
 			}
 		}
 
-		private void SetNavigationStateImpl(string navigationState) => _navigationState = navigationState;
+		// Navigated
+		var navigationEvent = new NavigationEventArgs(
+			CurrentEntry.Instance,
+			mode,
+			entry.NavigationTransitionInfo,
+			entry.Parameter,
+			entry.SourcePageType,
+			null
+		);
 
-		public void SetNavigationStateWithNavigationControlImpl(string navigationState, bool suppressNavigate) => _navigationState = navigationState;
+		SetValue(SourcePageTypeProperty, entry.SourcePageType);
+		SetValue(CurrentSourcePageTypeProperty, entry.SourcePageType);
 
-		internal Page EnsurePageInitialized(PageStackEntry entry)
+		Navigated?.Invoke(this, navigationEvent);
+
+		previousEntry?.Instance.OnNavigatedFrom(navigationEvent);
+		CurrentEntry.Instance.OnNavigatedTo(navigationEvent);
+
+		return true;
+	}
+
+	/// <summary>
+	/// Return pages removed from the stack to the pool, if enabled.
+	/// </summary>
+	private void ReleasePages(IList<PageStackEntry> pageStackEntries)
+	{
+		foreach (var entry in pageStackEntries)
 		{
-			if (entry is { Instance: null } &&
-				CreatePageInstanceCached(entry.SourcePageType) is { } page)
-			{
-				page.Frame = this;
-				entry.Instance = page;
-			}
-
-			return entry?.Instance;
+			entry.Instance.Frame = null;
 		}
 
-		private static Page CreatePageInstanceCached(Type sourcePageType) => _pool.DequeuePage(sourcePageType);
-
-		private void OnNavigationStopped(PageStackEntry entry, NavigationMode mode)
+		if (!FeatureConfiguration.Page.IsPoolingEnabled)
 		{
-			NavigationStopped?.Invoke(this, new NavigationEventArgs(
-						entry.Instance,
-						mode,
-						entry.NavigationTransitionInfo,
-						entry.Parameter,
-						entry.SourcePageType,
-						null
-					));
+			return;
 		}
 
-		/// <summary>
-		/// In case the current page contains a focused element,
-		/// we need to move the focus out of the page.
-		/// </summary>
-		/// <remarks>
-		/// In UWP this is done automatically as the elements are unloaded,
-		/// but due to the control lifecycle differences in Uno the focus move multiple times
-		/// as controls are unloaded in "layers" and it could also not move outside this Frame,
-		/// as the Parent would already be unassigned during the OnUnloaded execution.
-		/// </remarks>
-		private void MoveFocusFromCurrentContent()
+		foreach (var entry in pageStackEntries)
 		{
-			if (Content is not UIElement uiElement)
+			if (entry.Instance != null)
 			{
-				return;
-			}
-			uiElement.IsLeavingFrame = true;
-			try
-			{
-				var focusManager = VisualTree.GetFocusManagerForElement(this);
-				if (focusManager?.FocusedElement is not { } focusedElement)
-				{
-					return;
-				}
-
-				var parent = VisualTreeHelper.GetParent(focusedElement);
-				while (parent is not null && parent != this)
-				{
-					parent = VisualTreeHelper.GetParent(parent);
-				}
-
-				var inCurrentPage = parent == this;
-
-				if (inCurrentPage)
-				{
-					// Set the focus on the next focusable element.
-					focusManager.SetFocusOnNextFocusableElement(FocusState.Programmatic, true);
-
-					(focusedElement as Control)?.UpdateFocusState(FocusState.Unfocused);
-				}
-			}
-			finally
-			{
-				uiElement.IsLeavingFrame = false;
-			}
-		}
-
-		partial void OnSourcePageTypeChangedPartial(DependencyPropertyChangedEventArgs e)
-		{
-			if (!_isNavigating)
-			{
-				if (e.NewValue == null)
-				{
-					throw new InvalidOperationException(
-						"SourcePageType cannot be set to null. Set Content to null instead.");
-				}
-				Navigate((Type)e.NewValue);
+				_pool.EnqueuePage(entry.SourcePageType, entry.Instance);
 			}
 		}
 	}
+
+	private void SetNavigationStateLegacy(string navigationState) => _navigationState = navigationState;
+
+	public void SetNavigationStateWithNavigationControlLegacy(string navigationState, bool suppressNavigate) => _navigationState = navigationState;
+
+	internal Page EnsurePageInitializedLegacy(PageStackEntry entry)
+	{
+		if (entry is { Instance: null } &&
+			CreatePageInstanceCached(entry.SourcePageType) is { } page)
+		{
+			page.Frame = this;
+			entry.Instance = page;
+		}
+
+		return entry?.Instance;
+	}
+
+	private static Page CreatePageInstanceCached(Type sourcePageType) => _pool.DequeuePage(sourcePageType);
+
+	private void OnNavigationStopped(PageStackEntry entry, NavigationMode mode)
+	{
+		NavigationStopped?.Invoke(this, new NavigationEventArgs(
+					entry.Instance,
+					mode,
+					entry.NavigationTransitionInfo,
+					entry.Parameter,
+					entry.SourcePageType,
+					null
+				));
+	}
+
+	/// <summary>
+	/// In case the current page contains a focused element,
+	/// we need to move the focus out of the page.
+	/// </summary>
+	/// <remarks>
+	/// In UWP this is done automatically as the elements are unloaded,
+	/// but due to the control lifecycle differences in Uno the focus move multiple times
+	/// as controls are unloaded in "layers" and it could also not move outside this Frame,
+	/// as the Parent would already be unassigned during the OnUnloaded execution.
+	/// </remarks>
+	private void MoveFocusFromCurrentContent()
+	{
+		if (Content is not UIElement uiElement)
+		{
+			return;
+		}
+		uiElement.IsLeavingFrame = true;
+		try
+		{
+			var focusManager = VisualTree.GetFocusManagerForElement(this);
+			if (focusManager?.FocusedElement is not { } focusedElement)
+			{
+				return;
+			}
+
+			var parent = VisualTreeHelper.GetParent(focusedElement);
+			while (parent is not null && parent != this)
+			{
+				parent = VisualTreeHelper.GetParent(parent);
+			}
+
+			var inCurrentPage = parent == this;
+
+			if (inCurrentPage)
+			{
+				// Set the focus on the next focusable element.
+				focusManager.SetFocusOnNextFocusableElement(FocusState.Programmatic, true);
+
+				(focusedElement as Control)?.UpdateFocusState(FocusState.Unfocused);
+			}
+		}
+		finally
+		{
+			uiElement.IsLeavingFrame = false;
+		}
+	}
+
+	partial void OnSourcePageTypeChangedPartial(DependencyPropertyChangedEventArgs e)
+	{
+		if (!_isNavigating)
+		{
+			if (e.NewValue == null)
+			{
+				throw new InvalidOperationException(
+					"SourcePageType cannot be set to null. Set Content to null instead.");
+			}
+			Navigate((Type)e.NewValue);
+		}
+	}
 }
-#endif

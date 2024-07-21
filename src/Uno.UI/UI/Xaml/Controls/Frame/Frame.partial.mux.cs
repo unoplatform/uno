@@ -13,11 +13,7 @@ partial class Frame
 {
 	private const int InitialTransientCacheSize = 10;
 
-#if __SKIA__
-	/// <summary>
-	/// Initializes a new instance of the Frame class.
-	/// </summary>
-	public Frame()
+	partial void CtorWinUI()
 	{
 		DefaultStyleKey = typeof(Frame);
 		Initialize();
@@ -146,78 +142,90 @@ partial class Frame
 	private void GoBackWithTransitionInfoImpl(NavigationTransitionInfo transitionDefinition)
 	{
 		bool reentrancyDetected = false;
-
-		// CheckThread();
-
-		// Prevent reentrancy caused by app navigating while being
-		// notified of a previous navigate
-		if (m_isInNavigate)
+		try
 		{
-			reentrancyDetected = true;
-			goto Cleanup;
+
+			// CheckThread();
+
+			// Prevent reentrancy caused by app navigating while being
+			// notified of a previous navigate
+			if (m_isInNavigate)
+			{
+				reentrancyDetected = true;
+				goto Cleanup;
+			}
+			m_isInNavigate = true;
+
+			if (m_tpNavigationHistory is null)
+			{
+				throw new InvalidOperationException("Navigation history is null");
+			}
+
+			m_isNavigationFromMethod = true;
+
+			// Update the NavigationTransitionInfo
+			if (transitionDefinition is not null)
+			{
+				m_tpNavigationTransitionInfo = null;
+				m_tpNavigationTransitionInfo = transitionDefinition;
+				SetNavigationTransitionInfoOverride(transitionDefinition);
+			}
+
+			m_tpNavigationHistory.NavigatePrevious();
+
+			StartNavigation();
+
+			ElementSoundPlayerService.RequestInteractionSoundForElementStatic(ElementSoundKind.GoBack, this);
+		Cleanup:
+			;
 		}
-		m_isInNavigate = true;
-
-		if (m_tpNavigationHistory is null)
+		finally
 		{
-			throw new InvalidOperationException("Navigation history is null");
-		}
-
-		m_isNavigationFromMethod = true;
-
-		// Update the NavigationTransitionInfo
-		if (transitionDefinition is not null)
-		{
-			m_tpNavigationTransitionInfo = null;
-			m_tpNavigationTransitionInfo = transitionDefinition;
-			SetNavigationTransitionInfoOverride(transitionDefinition);
-		}
-
-		m_tpNavigationHistory.NavigatePrevious();
-
-		StartNavigation();
-
-		ElementSoundPlayerService.RequestInteractionSoundForElementStatic(ElementSoundKind.GoBack, this);
-
-	Cleanup:
-		if (!reentrancyDetected)
-		{
-			m_isNavigationFromMethod = false;
-			m_isInNavigate = false;
+			if (!reentrancyDetected)
+			{
+				m_isNavigationFromMethod = false;
+				m_isInNavigate = false;
+			}
 		}
 	}
 
 	private void GoForwardImpl()
 	{
 		bool reentrancyDetected = false;
-
-		// CheckThread();
-
-		// Prevent reentrancy caused by app navigating while being
-		// notified of a previous navigate
-		if (m_isInNavigate)
+		try
 		{
-			reentrancyDetected = true;
-			goto Cleanup;
+			// CheckThread();
+
+			// Prevent reentrancy caused by app navigating while being
+			// notified of a previous navigate
+			if (m_isInNavigate)
+			{
+				reentrancyDetected = true;
+				goto Cleanup;
+			}
+			m_isInNavigate = true;
+
+			if (m_tpNavigationHistory is null)
+			{
+				throw new InvalidOperationException("Navigation history is null");
+			}
+
+			m_isNavigationFromMethod = true;
+
+			m_tpNavigationHistory.NavigateNext();
+
+			StartNavigation();
+
+		Cleanup:
+			;
 		}
-		m_isInNavigate = true;
-
-		if (m_tpNavigationHistory is null)
+		finally
 		{
-			throw new InvalidOperationException("Navigation history is null");
-		}
-
-		m_isNavigationFromMethod = true;
-
-		m_tpNavigationHistory.NavigateNext();
-
-		StartNavigation();
-
-	Cleanup:
-		if (!reentrancyDetected)
-		{
-			m_isNavigationFromMethod = false;
-			m_isInNavigate = false;
+			if (!reentrancyDetected)
+			{
+				m_isNavigationFromMethod = false;
+				m_isInNavigate = false;
+			}
 		}
 	}
 
@@ -228,51 +236,57 @@ partial class Frame
 	private bool NavigateWithTransitionInfoImpl(Type sourcePageType, object parameter, NavigationTransitionInfo navigationTransitionInfo)
 	{
 		bool reentrancyDetected = false;
-
-		// CheckThread();
-
 		var pCanNavigate = false;
 
-		// Prevent reentrancy caused by app navigating while being
-		// notified of a previous navigate
-		if (m_isInNavigate)
-		{
-			reentrancyDetected = true;
-			goto Cleanup;
-		}
-		m_isInNavigate = true;
-
-		if (sourcePageType is null)
-		{
-			throw new ArgumentNullException(nameof(sourcePageType));
-		}
-
-		if (m_tpNavigationHistory is null)
-		{
-			throw new InvalidOperationException("Navigation history is null");
-		}
-
-		m_isNavigationFromMethod = true;
-
-		var strDescriptor = sourcePageType.AssemblyQualifiedName;
-
-		m_tpNavigationTransitionInfo = navigationTransitionInfo;
-		m_tpNavigationHistory.NavigateNew(strDescriptor, parameter, navigationTransitionInfo);
 		try
 		{
-			StartNavigation();
-			pCanNavigate = true;
-		}
-		catch
-		{
-			pCanNavigate = false;
-		}
+			// CheckThread();
 
-	Cleanup:
-		if (!reentrancyDetected)
+
+			// Prevent reentrancy caused by app navigating while being
+			// notified of a previous navigate
+			if (m_isInNavigate)
+			{
+				reentrancyDetected = true;
+				goto Cleanup;
+			}
+			m_isInNavigate = true;
+
+			if (sourcePageType is null)
+			{
+				throw new ArgumentNullException(nameof(sourcePageType));
+			}
+
+			if (m_tpNavigationHistory is null)
+			{
+				throw new InvalidOperationException("Navigation history is null");
+			}
+
+			m_isNavigationFromMethod = true;
+
+			var strDescriptor = sourcePageType.AssemblyQualifiedName;
+
+			m_tpNavigationTransitionInfo = navigationTransitionInfo;
+			m_tpNavigationHistory.NavigateNew(strDescriptor, parameter, navigationTransitionInfo);
+			try
+			{
+				StartNavigation();
+				pCanNavigate = true;
+			}
+			catch
+			{
+				pCanNavigate = false;
+			}
+		Cleanup:
+			;
+		}
+		finally
 		{
-			m_isNavigationFromMethod = false;
-			m_isInNavigate = false;
+			if (!reentrancyDetected)
+			{
+				m_isNavigationFromMethod = false;
+				m_isInNavigate = false;
+			}
 		}
 
 		return pCanNavigate;
@@ -331,7 +345,7 @@ partial class Frame
 		if (m_isCanceled)
 		{
 			RaiseNavigationStopped(null, spParameterobject, spNavigationTransitionInfo, strDescriptor, navigationMode);
-			goto Cleanup;
+			return;
 		}
 
 		var spPageobject = Content;
@@ -345,39 +359,42 @@ partial class Frame
 				RaiseNavigationStopped(null, spParameterobject, spNavigationTransitionInfo, strDescriptor, navigationMode);
 			}
 		}
-
-	Cleanup:
-		pPageStackEntry = null;
 	}
 
 	private void PerformNavigation()
 	{
-		if (m_isCanceled)
+		try
 		{
-			goto Cleanup;
-		}
+			if (m_isCanceled)
+			{
+				goto Cleanup;
+			}
 
-		if (m_tpNavigationHistory is null)
+			if (m_tpNavigationHistory is null)
+			{
+				throw new InvalidOperationException("Navigation history is null");
+			}
+
+			var pPageStackEntry = m_tpNavigationHistory.GetPendingPageStackEntry();
+			if (pPageStackEntry is null)
+			{
+				throw new InvalidOperationException("Pending page stack entry is null");
+			}
+
+			var spOldobject = Content;
+			var spNewobject = m_upNavigationCache.GetContent(pPageStackEntry);
+			var spParameterobject = pPageStackEntry.Parameter;
+			var spNavigationTransitionInfo = pPageStackEntry.NavigationTransitionInfo;
+
+			ChangeContent(spOldobject, spNewobject, spParameterobject, spNavigationTransitionInfo);
+
+		Cleanup:
+			;
+		}
+		finally
 		{
-			throw new InvalidOperationException("Navigation history is null");
+			m_isNavigationFromMethod = false;
 		}
-
-		var pPageStackEntry = m_tpNavigationHistory.GetPendingPageStackEntry();
-		if (pPageStackEntry is null)
-		{
-			throw new InvalidOperationException("Pending page stack entry is null");
-		}
-
-		var spOldobject = Content;
-		var spNewobject = m_upNavigationCache.GetContent(pPageStackEntry);
-		var spParameterobject = pPageStackEntry.Parameter;
-		var spNavigationTransitionInfo = pPageStackEntry.NavigationTransitionInfo;
-
-		ChangeContent(spOldobject, spNewobject, spParameterobject, spNavigationTransitionInfo);
-
-	Cleanup:
-		pPageStackEntry = null;
-		m_isNavigationFromMethod = false;
 	}
 
 	internal void RemovePageFromCache(string descriptor)

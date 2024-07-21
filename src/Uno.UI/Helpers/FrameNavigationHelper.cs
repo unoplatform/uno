@@ -18,12 +18,7 @@ namespace Uno.UI.Helpers
 		/// </summary>
 		/// <param name="frame">The frame used for navigation</param>
 		/// /// <returns><see cref="PageStackEntry"/></returns>
-		public static PageStackEntry? GetCurrentEntry(Frame? frame) =>
-#if __SKIA__
-			frame?.GetCurrentPageStackEntry();
-#else
-			frame?.CurrentEntry;
-#endif
+		public static PageStackEntry? GetCurrentEntry(Frame? frame) => frame?.GetCurrentPageStackEntry();
 
 		/// <summary>
 		/// Returns the actual <see cref="Page"/> instance of the given <paramref name="entry"/>.
