@@ -35,8 +35,8 @@ partial class Frame
 
 		var spNavigationHistory = NavigationHistory.Create(this);
 		m_tpNavigationHistory = spNavigationHistory;
-		BackStack = m_tpNavigationHistory.GetBackStack();
-		ForwardStack = m_tpNavigationHistory.GetForwardStack();
+		BackStack = GetBackStack();
+		ForwardStack = GetForwardStack();
 
 		var pNavigationCache = NavigationCache.Create(this, InitialTransientCacheSize);
 		m_upNavigationCache = pNavigationCache;
@@ -106,7 +106,7 @@ partial class Frame
 		}
 	}
 
-	private void GetNavigationTransitionInfoOverride(
+	internal void GetNavigationTransitionInfoOverride(
 		out NavigationTransitionInfo definitionOverride,
 		out bool isBackNavigation,
 		out bool isInitialPage)
@@ -126,7 +126,7 @@ partial class Frame
 		}
 	}
 
-	private void SetNavigationTransitionInfoOverride(NavigationTransitionInfo definitionOverride)
+	internal void SetNavigationTransitionInfoOverride(NavigationTransitionInfo definitionOverride)
 	{
 		var pageStackEntry = m_tpNavigationHistory.GetCurrentPageStackEntry();
 		if (pageStackEntry is null)
@@ -380,7 +380,7 @@ partial class Frame
 		m_isNavigationFromMethod = false;
 	}
 
-	private void RemovePageFromCache(string descriptor)
+	internal void RemovePageFromCache(string descriptor)
 	{
 		m_upNavigationCache.UncachePageContent(descriptor);
 	}
@@ -701,6 +701,6 @@ partial class Frame
 	//	FrameGenerated.OnReferenceTrackerWalk(walkType);
 	//}
 
-	private NavigationMode GetCurrentNavigationMode() => m_tpNavigationHistory.GetCurrentNavigationMode();
+	// private NavigationMode GetCurrentNavigationMode() => m_tpNavigationHistory.GetCurrentNavigationMode();
 #endif
 }
