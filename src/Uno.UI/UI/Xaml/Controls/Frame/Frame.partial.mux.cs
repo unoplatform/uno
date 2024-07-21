@@ -90,7 +90,7 @@ partial class Frame
 		}
 #endif
 
-		if (args.Property == Frame.SourcePageTypeProperty)
+		if (args.Property == SourcePageTypeProperty)
 		{
 			if (m_isNavigationFromMethod)
 			{
@@ -102,7 +102,7 @@ partial class Frame
 				Navigate(sourcePageTypeName, null);
 			}
 		}
-		else if (args.Property == Frame.CacheSizeProperty)
+		else if (args.Property == CacheSizeProperty)
 		{
 			var transientCacheSize = (int)args.NewValue;
 			m_upNavigationCache.ChangeTransientCacheSize(transientCacheSize);

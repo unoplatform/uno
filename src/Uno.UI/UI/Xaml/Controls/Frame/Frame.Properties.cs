@@ -185,11 +185,9 @@ partial class Frame
 	{
 		if (!_useWinUIBehavior)
 		{
-			OnSourcePageTypeChangedPartial(e);
+			OnSourcePageTypeChangedLegacy(e);
 		}
 	}
-
-	partial void OnSourcePageTypeChangedPartial(DependencyPropertyChangedEventArgs e);
 
 	/// <summary>
 	/// Occurs when the content that is being navigated to has been found and is available

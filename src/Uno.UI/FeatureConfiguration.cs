@@ -403,11 +403,9 @@ namespace Uno.UI
 			/// On non-Skia targets, Frame pools page instances to improve performance by default.
 			/// To follow the WinUI behavior, set this to true. Skia uses WinUI behavior by default.
 			/// </summary>
-			public static bool UseWinUIBehavior { get; set; } =
+			public static bool UseWinUIBehavior { get; set; }
 #if __SKIA__
-				true;
-#else
-				false;
+				= true;
 #endif
 		}
 
