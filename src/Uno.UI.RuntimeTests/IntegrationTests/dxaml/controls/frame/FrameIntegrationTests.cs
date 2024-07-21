@@ -14,16 +14,19 @@ namespace Uno.UI.RuntimeTests.IntegrationTests;
 [RequiresFullWindow]
 public class FrameIntegrationTests : BaseDxamlTestClass
 {
+	private bool _originalFrameMode;
+
 	[TestInitialize]
 	public void Init()
 	{
+		_originalFrameMode = FeatureConfiguration.Frame.UseWinUIBehavior;
 		FeatureConfiguration.Frame.UseWinUIBehavior = true;
 	}
 
 	[TestCleanup]
 	public void Cleanup()
 	{
-		FeatureConfiguration.Frame.UseWinUIBehavior = false;
+		FeatureConfiguration.Frame.UseWinUIBehavior = _originalFrameMode;
 	}
 
 	[TestMethod]
