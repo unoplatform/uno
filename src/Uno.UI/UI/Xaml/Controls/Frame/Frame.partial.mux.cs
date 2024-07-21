@@ -1,5 +1,4 @@
-﻿#if __SKIA__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using DirectUI;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -14,6 +13,7 @@ partial class Frame
 {
 	private const int InitialTransientCacheSize = 10;
 
+#if __SKIA__
 	/// <summary>
 	/// Initializes a new instance of the Frame class.
 	/// </summary>
@@ -702,5 +702,5 @@ partial class Frame
 	//}
 
 	private NavigationMode GetCurrentNavigationMode() => m_tpNavigationHistory.GetCurrentNavigationMode();
-}
 #endif
+}

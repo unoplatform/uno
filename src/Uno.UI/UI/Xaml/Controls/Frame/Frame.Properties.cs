@@ -67,11 +67,6 @@ partial class Frame
 			typeof(Frame),
 			new FrameworkPropertyMetadata(InitialTransientCacheSize));
 
-
-	private void OnCacheSizeChanged(DependencyPropertyChangedEventArgs e)
-	{
-	}
-
 	/// <summary>
 	/// Gets a value that indicates whether there is at least one entry in back navigation history.
 	/// </summary>
