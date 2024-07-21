@@ -167,4 +167,33 @@ public partial class Page
 		OnNavigatingFrom(spINavigatingCancelEventArgs);
 		isCanceled = spINavigatingCancelEventArgs.Cancel;
 	}
+
+	internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
+	{
+		base.OnPropertyChanged2(args);
+
+		if (args.Property == NavigationCacheModeProperty)
+		{
+			Frame pFrame = Frame;
+			if (pFrame is not null)
+			{
+				NavigationCacheMode navigationCacheMode = NavigationCacheMode;
+
+				// Remove the page from Cache if the NavigationCacheMode is set to Disabled.
+				// We don't handle the transition from Disabled to Enabled/Required since we
+				// do not have any scenarios that need it. The Caching (if NavigationCacheMode
+				// is Enabled/Required) that is done as a part navigation when content is loaded
+				// covers all the scenarios.
+				if (navigationCacheMode == NavigationCacheMode.Disabled)
+				{
+					// If there is more than one page of the same type (descriptor) in the PageStack,
+					// it will be uncached even if one of the pages disables the CacheMode, even if the
+					// other pages of the same type have the CacheMode set to Enabled/Required.
+					// This is because content is cached per type and any number of pages with the
+					// same type will have only one entry in the Cache.
+					pFrame.RemovePageFromCache(m_descriptor);
+				}
+			}
+		}
+	}
 }

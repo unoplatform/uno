@@ -406,6 +406,13 @@ partial class Frame
 
 	internal void RemovePageFromCache(string descriptor)
 	{
+#if HAS_UNO // Do not use this method when legacy behavior is preferred
+		if (!_useWinUIBehavior)
+		{
+			return;
+		}
+#endif
+
 		m_upNavigationCache.UncachePageContent(descriptor);
 	}
 
