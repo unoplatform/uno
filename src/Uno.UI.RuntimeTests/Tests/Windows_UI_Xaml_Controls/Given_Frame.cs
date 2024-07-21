@@ -465,7 +465,11 @@ internal partial class DisallowNavigatingFromPage : Page
 {
 	public static bool NavigatingFromCalled = false;
 
-	protected internal override void OnNavigatingFrom(NavigatingCancelEventArgs e)
+	protected
+#if HAS_UNO
+	internal
+#endif
+	override void OnNavigatingFrom(NavigatingCancelEventArgs e)
 	{
 		NavigatingFromCalled = true;
 	}
@@ -473,19 +477,31 @@ internal partial class DisallowNavigatingFromPage : Page
 
 internal abstract partial class SourceTypePage : Page
 {
-	protected internal override void OnNavigatedFrom(NavigationEventArgs e)
+	protected
+#if HAS_UNO
+	internal
+#endif
+	override void OnNavigatedFrom(NavigationEventArgs e)
 	{
 		base.OnNavigatedFrom(e);
 		PageNavigatedFrom?.Invoke(this, null);
 	}
 
-	protected internal override void OnNavigatedTo(NavigationEventArgs e)
+	protected
+#if HAS_UNO
+	internal
+#endif
+	override void OnNavigatedTo(NavigationEventArgs e)
 	{
 		base.OnNavigatedTo(e);
 		PageNavigatedTo?.Invoke(this, null);
 	}
 
-	protected internal override void OnNavigatingFrom(NavigatingCancelEventArgs e)
+	protected
+#if HAS_UNO
+	internal
+#endif
+	override void OnNavigatingFrom(NavigatingCancelEventArgs e)
 	{
 		base.OnNavigatingFrom(e);
 		PageNavigatingFrom?.Invoke(this, null);
@@ -541,13 +557,21 @@ internal class NavigateOrderTracker
 
 internal partial class NavigationTrackingPage : Page
 {
-	protected internal override void OnNavigatedTo(NavigationEventArgs e)
+	protected
+#if HAS_UNO
+	internal
+#endif
+	override void OnNavigatedTo(NavigationEventArgs e)
 	{
 		base.OnNavigatedTo(e);
 		Given_Frame._navigateOrderTracker?.OnPageNavigatedTo();
 	}
 
-	protected internal override void OnNavigatedFrom(NavigationEventArgs e)
+	protected
+#if HAS_UNO
+	internal
+#endif
+	override void OnNavigatedFrom(NavigationEventArgs e)
 	{
 		base.OnNavigatedFrom(e);
 		Given_Frame._navigateOrderTracker?.OnPageNavigatedFrom();
