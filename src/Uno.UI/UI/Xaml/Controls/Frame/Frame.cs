@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
 using Uno.Disposables;
+using Uno.UI.Helpers;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -92,9 +93,10 @@ public partial class Frame : ContentControl
 
 	internal static object CreatePageInstance(Type sourcePageType)
 	{
+		var replacementType = sourcePageType.GetReplacementType(); // Get latest replacement type to handle Hot Reload.
 		if (Uno.UI.DataBinding.BindingPropertyHelper.BindableMetadataProvider != null)
 		{
-			var bindableType = Uno.UI.DataBinding.BindingPropertyHelper.BindableMetadataProvider.GetBindableTypeByType(sourcePageType);
+			var bindableType = Uno.UI.DataBinding.BindingPropertyHelper.BindableMetadataProvider.GetBindableTypeByType(replacementType);
 
 			if (bindableType != null)
 			{
@@ -102,7 +104,7 @@ public partial class Frame : ContentControl
 			}
 		}
 
-		return Activator.CreateInstance(sourcePageType);
+		return Activator.CreateInstance(replacementType);
 	}
 
 #if __SKIA__

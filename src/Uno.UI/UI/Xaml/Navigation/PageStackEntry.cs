@@ -2,6 +2,7 @@
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Animation;
 using Uno.UI.DataBinding;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml.Navigation;
 
@@ -26,13 +27,11 @@ public sealed partial class PageStackEntry : DependencyObject
 	{
 		InitializeBinder();
 
-		var pageStackEntry = new PageStackEntry();
+		SourcePageType = sourcePageType;
+		SetDescriptor(sourcePageType.FullName);
 
-		pageStackEntry.SourcePageType = sourcePageType;
-		pageStackEntry.SetDescriptor(sourcePageType.FullName);
-
-		pageStackEntry.Parameter = parameter;
-		pageStackEntry.NavigationTransitionInfo = navigationTransitionInfo;
+		Parameter = parameter;
+		NavigationTransitionInfo = navigationTransitionInfo;
 	}
 
 	private PageStackEntry()
