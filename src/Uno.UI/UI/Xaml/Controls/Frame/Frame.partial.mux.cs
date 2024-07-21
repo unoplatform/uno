@@ -83,6 +83,13 @@ partial class Frame
 	{
 		base.OnPropertyChanged2(args);
 
+#if HAS_UNO // Make sure we don't overrule legacy behavior if required
+		if (!_useWinUIBehavior)
+		{
+			return;
+		}
+#endif
+
 		if (args.Property == Frame.SourcePageTypeProperty)
 		{
 			if (m_isNavigationFromMethod)

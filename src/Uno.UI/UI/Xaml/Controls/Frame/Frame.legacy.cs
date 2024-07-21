@@ -360,13 +360,13 @@ public partial class Frame : ContentControl
 		}
 	}
 
-	partial void OnSourcePageTypeChangedPartial(DependencyPropertyChangedEventArgs e)
+	private void OnSourcePageTypeChangedLegacy(DependencyPropertyChangedEventArgs e)
 	{
 		if (!_isNavigating)
 		{
 			if (e.NewValue == null)
 			{
-				throw new InvalidOperationException(
+				throw new ArgumentNullException(
 					"SourcePageType cannot be set to null. Set Content to null instead.");
 			}
 			Navigate((Type)e.NewValue);

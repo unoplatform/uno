@@ -181,8 +181,13 @@ partial class Frame
 			typeof(Frame),
 			new FrameworkPropertyMetadata(null, (s, e) => ((Frame)s)?.OnSourcePageTypeChanged(e)));
 
-	private void OnSourcePageTypeChanged(DependencyPropertyChangedEventArgs e) =>
-		OnSourcePageTypeChangedPartial(e);
+	private void OnSourcePageTypeChanged(DependencyPropertyChangedEventArgs e)
+	{
+		if (!_useWinUIBehavior)
+		{
+			OnSourcePageTypeChangedPartial(e);
+		}
+	}
 
 	partial void OnSourcePageTypeChangedPartial(DependencyPropertyChangedEventArgs e);
 
