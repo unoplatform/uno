@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using FluentAssertions;
+using HarfBuzzSharp;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
@@ -13,6 +14,18 @@ namespace Uno.UI.RuntimeTests.IntegrationTests;
 [RequiresFullWindow]
 public class FrameIntegrationTests : BaseDxamlTestClass
 {
+	[TestInitialize]
+	public void Init()
+	{
+		FeatureConfiguration.Frame.UseWinUIBehavior = true;
+	}
+
+	[TestCleanup]
+	public void Cleanup()
+	{
+		FeatureConfiguration.Frame.UseWinUIBehavior = false;
+	}
+
 	[TestMethod]
 	[RunsOnUIThread]
 	public async Task CanInstantiate()
