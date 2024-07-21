@@ -120,10 +120,10 @@ partial class Frame
 
 		if (m_tpNavigationHistory is not null)
 		{
-			var backstack = m_tpNavigationHistory.GetBackStack();
-			if (backstack is not null)
+			var backStack = m_tpNavigationHistory.GetBackStack();
+			if (backStack is not null)
 			{
-				var count = backstack.Count;
+				var count = backStack.Count;
 				isInitialPage = count == 0;
 			}
 		}

@@ -25,10 +25,12 @@ public partial class Frame : ContentControl
 
 	private string _navigationState;
 
-	private static readonly PagePool _pool = new PagePool();
+	private static PagePool _pool;
 
 	private void CtorLegacy()
 	{
+		_pool = new PagePool();
+
 		var backStack = new ObservableCollection<PageStackEntry>();
 		var forwardStack = new ObservableCollection<PageStackEntry>();
 
@@ -285,7 +287,7 @@ public partial class Frame : ContentControl
 
 	private void SetNavigationStateLegacy(string navigationState) => _navigationState = navigationState;
 
-	public void SetNavigationStateWithNavigationControlLegacy(string navigationState, bool suppressNavigate) => _navigationState = navigationState;
+	private void SetNavigationStateWithNavigationControlLegacy(string navigationState, bool suppressNavigate) => _navigationState = navigationState;
 
 	internal Page EnsurePageInitializedLegacy(PageStackEntry entry)
 	{
