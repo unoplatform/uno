@@ -83,10 +83,12 @@
 
 		private onPointerEventReceived(evt: PointerEvent): void {
 			let id = (evt.target as HTMLElement)?.id;
-			if (id != "uno-canvas" && !id.startsWith("uno-semantics-")) {
+			if (id != "uno-canvas" && !id.startsWith("uno-semantics-") && !id.startsWith("uno-mpe-")) {
 				// We have a div to enable accessibility (see enableA11y in WebAssemblyWindowWrapper).
 				// Pressing space on keyboard to click it will trigger pointer event which we want to ignore.
 				// So, we only care about events that come from uno-canvas.
+				// Additionally, we need to receive pointer events from the <video /> element of MPE so that
+				// we can show MTC on hover.
 				return;
 			}
 
