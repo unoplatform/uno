@@ -149,7 +149,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 				writer.AppendLineIndented("#pragma warning disable XAOBS001 // Ignore obsolete Android members");
 				writer.AppendLineIndented("#pragma warning disable Uno0001 // Ignore not implemented members");
 				writer.AppendLineIndented("#pragma warning disable Uno0007 // An assembly required for a component is missing");
-				AnalyzerSuppressionsGenerator.GenerateCSharpPragmaSupressions(writer, AnalyzerSuppressions);
+				AnalyzerSuppressionsGenerator.Generate(writer, AnalyzerSuppressions);
 				writer.AppendLineIndented("using System;");
 				writer.AppendLineIndented("using System.Linq;");
 				writer.AppendLineIndented("using System.Diagnostics;");
@@ -173,9 +173,6 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 			private void GenerateProviderTable(IndentedStringBuilder writer)
 			{
 				writer.AppendLineIndented("[System.Runtime.CompilerServices.CompilerGeneratedAttribute]");
-				writer.AppendLineIndented("[System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Maintainability\", \"CA1502:AvoidExcessiveComplexity\", Justification=\"Must be ignored even if generated code is checked.\")]");
-				writer.AppendLineIndented("[System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Maintainability\", \"CA1506:AvoidExcessiveClassCoupling\", Justification = \"Must be ignored even if generated code is checked.\")]");
-				AnalyzerSuppressionsGenerator.Generate(writer, AnalyzerSuppressions);
 				using (writer.BlockInvariant("public class BindableMetadataProvider : global::Uno.UI.DataBinding.IBindableMetadataProvider"))
 				{
 					GenerateTypeTable(writer);
@@ -289,9 +286,6 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 				writer.AppendLineInvariantIndented("/// Builder for {0}", ownerType.GetFullyQualifiedTypeExcludingGlobal());
 				writer.AppendLineIndented("/// </summary>");
 				writer.AppendLineIndented("[System.Runtime.CompilerServices.CompilerGeneratedAttribute]");
-				writer.AppendLineIndented("[System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Maintainability\", \"CA1502:AvoidExcessiveComplexity\", Justification=\"Must be ignored even if generated code is checked.\")]");
-				writer.AppendLineIndented("[System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Maintainability\", \"CA1506:AvoidExcessiveClassCoupling\", Justification = \"Must be ignored even if generated code is checked.\")]");
-				AnalyzerSuppressionsGenerator.Generate(writer, AnalyzerSuppressions);
 				using (writer.BlockInvariant("static class MetadataBuilder_{0:000}", typeInfo.Index))
 				{
 					var postWriter = new IndentedStringBuilder();
