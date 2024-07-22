@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.Collections.Concurrent;
 using System.Runtime.InteropServices.JavaScript;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Controls;
@@ -9,39 +10,35 @@ namespace Uno.UI.Runtime.Skia;
 
 internal partial class BrowserMediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 {
+	private static readonly ConcurrentDictionary<string, BrowserMediaPlayerPresenterExtension> _elementIdToMediaPlayerPresenter = new();
+
 	private readonly MediaPlayerPresenter _presenter;
 	private SkiaWasmHtmlElement? _htmlElement;
 
 	public BrowserMediaPlayerPresenterExtension(MediaPlayerPresenter presenter)
 	{
+		NativeMethods.BuildImports();
 		_presenter = presenter;
+	}
+
+	~BrowserMediaPlayerPresenterExtension()
+	{
+		if (_htmlElement is { })
+		{
+			_elementIdToMediaPlayerPresenter.TryRemove(_htmlElement.ElementId, out _);
+		}
 	}
 
 	public void MediaPlayerChanged()
 	{
 		if (BrowserMediaPlayerExtension.GetByMediaPlayer(_presenter.MediaPlayer) is { } extension)
 		{
-			_presenter.Child = new MyClass
+			_presenter.Child = new ContentPresenter
 			{
 				Content = _htmlElement = extension.HtmlElement
 			};
-		}
-	}
-	
-	private class MyClass : ContentControl
-	{
-		protected override Size MeasureOverride(Size availableSize)
-		{
-			var @out = base.MeasureOverride(availableSize);
-			Console.WriteLine($"ramez MeasureOverride {availableSize} {@out}");
-			return @out;
-		}
-
-		protected override Size ArrangeOverride(Size finalSize)
-		{
-			var @out = base.ArrangeOverride(finalSize);
-			Console.WriteLine($"ramez ArrangeOverride {finalSize} {@out}");
-			return @out;
+			NativeMethods.SetupEvents(_htmlElement.ElementId);
+			_elementIdToMediaPlayerPresenter.TryAdd(_htmlElement.ElementId, this);
 		}
 	}
 
@@ -84,6 +81,18 @@ internal partial class BrowserMediaPlayerPresenterExtension : IMediaPlayerPresen
 			NativeMethods.ExitPictureInPicture(_htmlElement.ElementId);
 		}
 	}
+	
+	[JSExport]
+	private static void OnExitFullscreen(string id)
+	{
+		if (_elementIdToMediaPlayerPresenter.TryGetValue(id, out var @this))
+		{
+			if (@this._presenter.TemplatedParent is MediaPlayerElement mpe)
+			{
+				mpe.IsFullWindow = false;
+			}
+		}
+	}
 
 	public uint NaturalVideoHeight => _htmlElement is { } ? (uint)NativeMethods.GetVideoNaturalHeight(_htmlElement.ElementId) : 0;
 
@@ -105,5 +114,9 @@ internal partial class BrowserMediaPlayerPresenterExtension : IMediaPlayerPresen
 		public static partial void ExitPictureInPicture(string elementId);
 		[JSImport($"globalThis.Uno.UI.Runtime.Skia.{nameof(BrowserMediaPlayerPresenterExtension)}.updateStretch")]
 		public static partial void UpdateStretch(string elementId, string stretch);
+		[JSImport($"globalThis.Uno.UI.Runtime.Skia.{nameof(BrowserMediaPlayerPresenterExtension)}.setupEvents")]
+		public static partial void SetupEvents(string elementId);
+		[JSImport($"globalThis.Uno.UI.Runtime.Skia.{nameof(BrowserMediaPlayerPresenterExtension)}.buildImports")]
+		public static partial void BuildImports();
 	}
 }

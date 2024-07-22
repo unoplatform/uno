@@ -1,5 +1,14 @@
 namespace Uno.UI.Runtime.Skia {
 	export class BrowserMediaPlayerPresenterExtension {
+		static unoExports: any;
+
+		public static buildImports() {
+			(<any>window.Module).getAssemblyExports("Uno.UI.Runtime.Skia.WebAssembly.Browser")
+				.then((e: any) => {
+					BrowserMediaPlayerPresenterExtension.unoExports = e.Uno.UI.Runtime.Skia.BrowserMediaPlayerPresenterExtension;
+				});
+		}
+		
 		public static getVideoNaturalHeight(elementId: string): number {
 			const videoElement = document.getElementById(elementId) as HTMLVideoElement;
 			if (videoElement) {
@@ -23,6 +32,13 @@ namespace Uno.UI.Runtime.Skia {
 			}
 		}
 
+		public static exitFullscreen(elementId: string) {
+			const videoElement = document.getElementById(elementId) as HTMLVideoElement;
+			if (videoElement && document.fullscreenElement === videoElement) {
+				document.exitFullscreen();
+			}
+		}
+
 		public static requestPictureInPicture(elementId: string) {
 			const videoElement = document.getElementById(elementId) as HTMLVideoElement;
 			if (videoElement) {
@@ -31,7 +47,7 @@ namespace Uno.UI.Runtime.Skia {
 			}
 		}
 
-		public static exitFullscreen(elementId: string) {
+		public static exitPictureInPicture(elementId: string) {
 			const videoElement = document.getElementById(elementId) as HTMLVideoElement;
 			if (videoElement && document.fullscreenElement === videoElement) {
 				// The cast is here because tsc complains about exitPictureInPicture not being present in Document
@@ -56,6 +72,17 @@ namespace Uno.UI.Runtime.Skia {
 						videoElement.style.objectFit = "cover";
 						break;
 				}
+			}
+		}
+		
+		public static setupEvents(elementId: string) {
+			const videoElement = document.getElementById(elementId) as HTMLVideoElement;
+			if (videoElement) {
+				videoElement.onfullscreenchange = e => {
+					if (!document.fullscreenElement) {
+						BrowserMediaPlayerPresenterExtension.unoExports.OnExitFullscreen(elementId);
+					}
+				};
 			}
 		}
 	}
