@@ -73,8 +73,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public MediaTransportControls()
 		{
-			Visual.SetAsPopupVisual(true);
-
 			DefaultStyleKey = typeof(MediaTransportControls);
 
 			m_tpHideControlPanelTimer = new() { Interval = TimeSpan.FromSeconds(ControlPanelDisplayTimeoutInSecs) };
@@ -141,6 +139,11 @@ namespace Microsoft.UI.Xaml.Controls
 		// template child setup
 		private void HookupPartsAndHandlers()
 		{
+#if __SKIA__
+			(GetTemplateChild("MediaTransportControls_Timeline_Border") as UIElement)?.Visual.SetAsPopupVisual(true);
+			(GetTemplateChild("LeftSidePlayBorder") as UIElement)?.Visual.SetAsPopupVisual(true);
+			(GetTemplateChild("MediaTransportControls_Command_Border") as UIElement)?.Visual.SetAsPopupVisual(true);
+#endif
 			InitializeTemplateChild(TemplateParts.RootGrid, null, out _rootGrid);
 			InitializeTemplateChild(TemplateParts.ControlPanelGrid, null, out m_tpControlPanelGrid);
 
