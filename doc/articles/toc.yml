@@ -657,6 +657,10 @@
         href: xref:Uno.GetStarted.vscode.DevKit
       - name: Omnisharp Support
         href: xref:Uno.GetStarted.vscode.OmniSharp
+    - name: Rider
+      items:
+      - name: License Agreement
+        href: xref:Uno.Rider.EULA
     - name: Templates
       items:
       - name: Visual Studio Wizard
