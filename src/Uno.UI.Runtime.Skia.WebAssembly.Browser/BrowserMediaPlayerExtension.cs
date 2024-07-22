@@ -45,6 +45,7 @@ internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 		{
 			if (_uri != value)
 			{
+				IsVideo = null;
 				_uri = value;
 				Events?.RaiseSourceChanged();
 				// We don't return here since setting the uri to itself should reload (e.g. looping playlist of a single element)
@@ -90,13 +91,28 @@ internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 		}
 	}
 
+	private bool? _isVideo;
+	internal event EventHandler<bool?>? IsVideoChanged;
+	public bool? IsVideo
+	{
+		get => _isVideo;
+		private set
+		{
+			if (_isVideo != value)
+			{
+				IsVideoChanged?.Invoke(this, value);
+			}
+			_isVideo = value;
+		}
+	}
+
 	public BrowserMediaPlayerExtension(MediaPlayer player)
 	{
 		NativeMethods.BuildImports();
 		_player = player;
 		_mediaPlayerToExtension.TryAdd(player, this);
 		
-		HtmlElement = SkiaWasmHtmlElement.CreateHtmlElement("MPE-" + new string(Random.Shared.GetItems("abcdefghijklmnopqrstuvwxyz".ToCharArray(), 10)), "video");
+		HtmlElement = SkiaWasmHtmlElement.CreateHtmlElement("uno-mpe-" + new string(Random.Shared.GetItems("abcdefghijklmnopqrstuvwxyz".ToCharArray(), 10)), "video");
 		_elementIdToMediaPlayer.TryAdd(HtmlElement.ElementId, this);
 		
 		NativeMethods.SetupEvents(HtmlElement.ElementId);
@@ -166,11 +182,7 @@ internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 		}
 	}
 
-	// TODO: The HTMLMediaElement.videoTracks API is not available on chrome or firefox
-	// https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/videoTracks
-	public bool? IsVideo => true;
-
-	// TODO
+	// not applicable, we use the managed uno MTC
 	public void SetTransportControlsBounds(Rect bounds) { }
 
 	public void Initialize() { }
@@ -207,7 +219,7 @@ internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 	public void SetStreamSource(IRandomAccessStream stream) => throw new NotImplementedException();
 	public void SetMediaSource(IMediaSource source) => throw new NotImplementedException();
 	
-	// TODO
+	// Web APIs don't support this.
 	public void StepForwardOneFrame() => throw new NotImplementedException();
 	public void StepBackwardOneFrame() => throw new NotImplementedException();
 	
@@ -231,6 +243,7 @@ internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 		if (_playlist != null && _playlistIndex > 0)
 		{
 			Uri = _playlist.Items[--_playlistIndex].Source.Uri;
+			Play();
 		}
 	}
 
@@ -239,6 +252,7 @@ internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 		if (_playlist != null && _playlist.Items.Count > 0 && _playlistIndex + 1 < _playlist.Items.Count)
 		{
 			Uri = _playlist.Items[++_playlistIndex].Source.Uri;
+			Play();
 		}
 	}
 
@@ -260,13 +274,14 @@ internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 	}
 
 	[JSExport]
-	private static void OnLoadedMetadata(string id)
+	private static void OnLoadedMetadata(string id, bool isVideo)
 	{
 		if (_elementIdToMediaPlayer.TryGetValue(id, out var @this))
 		{
 			@this.Events?.RaiseNaturalVideoDimensionChanged();
 			@this.Events?.RaiseMediaOpened();
 			@this._player.PlaybackSession.PlaybackState = MediaPlaybackState.None;
+			@this.IsVideo = isVideo;
 		}
 	}
 	
@@ -319,6 +334,7 @@ internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 				{
 					@this._playlistIndex = (@this._playlistIndex + 1) % @this._playlist.Items.Count;
 					@this.Uri = @this._playlist.Items[@this._playlistIndex]?.Source.Uri;
+					@this.Play();
 				}
 			}
 		}
@@ -364,7 +380,7 @@ internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 	[JSExport]
 	private static void OnTimeUpdate(string id)
 	{
-		if (_elementIdToMediaPlayer.TryGetValue(id, out var @this) && @this._player.PlaybackSession.PlaybackState == MediaPlaybackState.Playing)
+		if (_elementIdToMediaPlayer.TryGetValue(id, out var @this))
 		{
 			@this._updatingPositionFromNative = true; // RaisePositionChanged will set Position, so we need a way to flag this so we can ignore it
 			@this.Events?.RaisePositionChanged();

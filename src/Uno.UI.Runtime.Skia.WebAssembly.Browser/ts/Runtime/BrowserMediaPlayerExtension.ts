@@ -109,7 +109,7 @@ namespace Uno.UI.Runtime.Skia {
 		public static setupEvents(elementId: string) {
 			const videoElement = document.getElementById(elementId) as HTMLVideoElement;
 			if (videoElement) {
-				videoElement.onloadedmetadata = e => BrowserMediaPlayerExtension.unoExports.OnLoadedMetadata(elementId);
+				videoElement.onloadedmetadata = e => BrowserMediaPlayerExtension.unoExports.OnLoadedMetadata(elementId, videoElement.videoWidth !== 0);
 				videoElement.onstalled = e => BrowserMediaPlayerExtension.unoExports.OnStalled(elementId);
 				videoElement.onratechange = e => BrowserMediaPlayerExtension.unoExports.OnRateChange(elementId);
 				videoElement.ondurationchange = e => BrowserMediaPlayerExtension.unoExports.OnDurationChange(elementId);

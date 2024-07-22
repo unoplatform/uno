@@ -4,6 +4,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Runtime.InteropServices.JavaScript;
 using Windows.Foundation;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Runtime.Skia;
@@ -14,6 +15,7 @@ internal partial class BrowserMediaPlayerPresenterExtension : IMediaPlayerPresen
 
 	private readonly MediaPlayerPresenter _presenter;
 	private SkiaWasmHtmlElement? _htmlElement;
+	private BrowserMediaPlayerExtension? _playerExtension;
 
 	public BrowserMediaPlayerPresenterExtension(MediaPlayerPresenter presenter)
 	{
@@ -33,13 +35,27 @@ internal partial class BrowserMediaPlayerPresenterExtension : IMediaPlayerPresen
 	{
 		if (BrowserMediaPlayerExtension.GetByMediaPlayer(_presenter.MediaPlayer) is { } extension)
 		{
+			if (_playerExtension is { })
+			{
+				_playerExtension.IsVideoChanged -= OnExtensionOnIsVideoChanged;
+			}
+			_playerExtension = extension;
+			extension.IsVideoChanged += OnExtensionOnIsVideoChanged;
+			
 			_presenter.Child = new ContentPresenter
 			{
 				Content = _htmlElement = extension.HtmlElement
 			};
+			
 			NativeMethods.SetupEvents(_htmlElement.ElementId);
+			
 			_elementIdToMediaPlayerPresenter.TryAdd(_htmlElement.ElementId, this);
 		}
+	}
+
+	private void OnExtensionOnIsVideoChanged(object? sender, bool? args)
+	{
+		_presenter.Child.Visibility = args ?? false ? Visibility.Visible : Visibility.Collapsed;
 	}
 
 	public void StretchChanged()
