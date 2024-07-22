@@ -502,14 +502,13 @@ public class FrameIntegrationTests : BaseDxamlTestClass
 		});
 	}
 
+#if HAS_UNO_WINUI // The navigation string tests rely on "Microsoft" namespace, which has different length than "Windows"
 	[TestMethod]
 	public async Task CanGetNavigationStateWithCurrentPageNull()
 	{
 		Frame frame = null;
 
 		string navigation = "1,3,2,31,Microsoft.UI.Xaml.Controls.Page,12,6,Page 1,0,31,Microsoft.UI.Xaml.Controls.Page,12,6,Page 2,0,31,Microsoft.UI.Xaml.Controls.Page,12,6,Page 3,0";
-
-
 
 		await TestServices.RunOnUIThread(() =>
 
@@ -577,6 +576,7 @@ public class FrameIntegrationTests : BaseDxamlTestClass
 		await ValidateGoForwardBehaviorWhenCurrentIsNull(frame, navigation2);
 		await ValidateNavigateBehaviorWhenCurrentIsNull(frame, navigation2);
 	}
+#endif
 
 	private async Task ValidateGoBackBehaviorWhenCurrentIsNull(Frame frame, string navigationHistory)
 	{
