@@ -36,4 +36,4 @@
 
 ## Other examples
 
-* [Uno.Samples](../uno-samples.md)
+* [Uno.Samples](xref:Uno.Samples)
