@@ -334,7 +334,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			// For Subclass build functionality
 			writer.AppendLineIndented("");
-			writer.AppendLineIndented("#if __ANDROID__");
+			writer.AppendLineIndented("#if HAS_UNO_SKIA");
+			writer.AppendLineIndented("using _View = Microsoft.UI.Xaml.UIElement;");
+			writer.AppendLineIndented("#elif __ANDROID__");
 			writer.AppendLineIndented("using _View = Android.Views.View;");
 			writer.AppendLineIndented("#elif __IOS__");
 			writer.AppendLineIndented("using _View = UIKit.UIView;");
