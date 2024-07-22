@@ -1,10 +1,11 @@
-﻿#if __ANDROID__
+﻿#nullable disable
+
+#if __ANDROID__
 using System;
 using System.Collections.Generic;
 using System.Text;
 using Android.App;
 using Java.Interop;
-using Uno.UI.Services;
 using Windows.ApplicationModel.Activation;
 using Windows.UI.StartScreen;
 using Android.Content;
@@ -20,7 +21,7 @@ namespace Microsoft.UI.Xaml
 {
 	public class NativeApplication : Android.App.Application
 	{
-		private readonly Application _app;
+		private Application _app;
 		private Intent _lastHandledIntent;
 
 		private bool _isRunning;
@@ -43,7 +44,12 @@ namespace Microsoft.UI.Xaml
 			// Delay create the Microsoft.UI.Xaml.Application in order to get the
 			// Android.App.Application.Context to be populated properly. This enables
 			// APIs such as Windows.Storage.ApplicationData.Current.LocalSettings to function properly.
+#if ANDROID_SKIA
+			new Uno.UI.Runtime.Skia.Android.AndroidSkiaHost(() => _app = appBuilder()).Run();
+#else
 			_app = appBuilder();
+#endif
+
 		}
 
 		public override void OnCreate()
