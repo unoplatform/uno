@@ -1,7 +1,9 @@
 ﻿#nullable enable
 using System;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Microsoft.UI.Xaml;
+using Uno.Collections;
 
 namespace Uno.Diagnostics.UI;
 
@@ -15,6 +17,7 @@ namespace Uno.Diagnostics.UI;
 internal class DiagnosticViewManager<TView, TState>(Func<IDiagnosticViewContext, TView> factory, Action<IDiagnosticViewContext, TView, TState> update)
 	where TView : FrameworkElement
 {
+	private ConditionalWeakTable<IDiagnosticViewContext, TView> _views = new();
 	private event EventHandler<TState>? _changed;
 	private bool _hasState;
 	private TState? _state;
@@ -31,9 +34,9 @@ internal class DiagnosticViewManager<TView, TState>(Func<IDiagnosticViewContext,
 		_changed?.Invoke(this, state);
 	}
 
-	public UIElement GetView(IDiagnosticViewContext context)
+	public TView GetView(IDiagnosticViewContext context)
 	{
-		var view = factory(context);
+		var view = _views.GetValue(context, ctx => factory(ctx));
 		EventHandler<TState> requestUpdate = (_, state) => context.Schedule(() => update(context, view, state));
 
 		view.Loaded += (snd, e) =>

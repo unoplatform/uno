@@ -15,7 +15,7 @@ internal class DiagnosticView<TView, TState>(
 	string name,
 	Func<IDiagnosticViewContext, TView> factory,
 	Action<TView, TState> update,
-	Func<IDiagnosticViewContext, TState, CancellationToken, ValueTask<object?>>? details = null)
+	Func<IDiagnosticViewContext, TView, TState, CancellationToken, ValueTask<object?>>? details = null)
 	: IDiagnosticView
 	where TView : FrameworkElement
 {
@@ -43,5 +43,5 @@ internal class DiagnosticView<TView, TState>(
 
 	/// <inheritdoc />
 	async ValueTask<object?> IDiagnosticView.GetDetailsAsync(IDiagnosticViewContext context, CancellationToken ct)
-		=> _hasState && details is not null ? await details(context, _state!, ct) : null;
+		=> _hasState && details is not null ? await details(context, _elementsManager.GetView(context), _state!, ct) : null;
 }

@@ -3,6 +3,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Microsoft.UI.Xaml;
 
 namespace Uno.Diagnostics.UI;
@@ -16,6 +17,7 @@ namespace Uno.Diagnostics.UI;
 internal class DiagnosticViewManager<TView>(Func<IDiagnosticViewContext, TView> factory, Action<IDiagnosticViewContext, TView> update)
 	where TView : FrameworkElement
 {
+	private ConditionalWeakTable<IDiagnosticViewContext, TView> _views = new();
 	private event EventHandler? _changed;
 
 	public DiagnosticViewManager(Func<TView> factory, Action<TView> update)
@@ -30,7 +32,7 @@ internal class DiagnosticViewManager<TView>(Func<IDiagnosticViewContext, TView> 
 
 	public UIElement GetView(IDiagnosticViewContext context)
 	{
-		var view = factory(context);
+		var view = _views.GetValue(context, ctx => factory(ctx));
 		EventHandler requestUpdate = (_, __) => context.Schedule(() => update(context, view));
 
 		view.Loaded += (snd, e) =>

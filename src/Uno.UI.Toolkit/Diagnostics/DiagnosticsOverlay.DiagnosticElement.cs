@@ -5,6 +5,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -14,8 +15,9 @@ namespace Uno.Diagnostics.UI;
 
 public sealed partial class DiagnosticsOverlay
 {
-	private record DiagnosticElement(DiagnosticsOverlay Overlay, IDiagnosticView View, IDiagnosticViewContext Context) : IDisposable
+	private record DiagnosticElement(DiagnosticsOverlay Overlay, IDiagnosticView View, DispatcherQueue Dispatcher) : IDisposable
 	{
+		private ViewContext? _context;
 		private UIElement? _value;
 		private CancellationTokenSource? _details;
 
@@ -25,7 +27,9 @@ public sealed partial class DiagnosticsOverlay
 		{
 			try
 			{
-				var preview = View.GetElement(Context);
+				_context ??= new ViewContext(Overlay, Dispatcher, this);
+
+				var preview = View.GetElement(_context);
 				var element = preview as UIElement ?? DiagnosticViewHelper.CreateText(preview.ToString());
 
 				if (ToolTipService.GetToolTip(element) is null)
@@ -50,7 +54,7 @@ public sealed partial class DiagnosticsOverlay
 			}
 		}
 
-		private void ShowDetails()
+		public void ShowDetails()
 		{
 			_ = Do();
 
@@ -64,10 +68,20 @@ public sealed partial class DiagnosticsOverlay
 						await previous.CancelAsync();
 					}
 
-					var details = await View.GetDetailsAsync(Context, ct.Token);
+					_context ??= new ViewContext(Overlay, Dispatcher, this);
+
+					var details = await View.GetDetailsAsync(_context, ct.Token);
 					switch (details)
 					{
 						case null:
+							break;
+
+						case Task task:
+							await task;
+							break;
+
+						case ValueTask valueTask:
+							await valueTask;
 							break;
 
 						case ContentDialog dialog:

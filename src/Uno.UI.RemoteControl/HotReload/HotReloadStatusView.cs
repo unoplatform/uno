@@ -5,13 +5,17 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Uno.Diagnostics.UI;
 using static Uno.UI.RemoteControl.HotReload.ClientHotReloadProcessor;
 
 namespace Uno.UI.RemoteControl.HotReload;
 
+[TemplatePart(Name = DetailsPartName, Type = typeof(Flyout))]
 [TemplateVisualState(GroupName = "Status", Name = StatusUnknownVisualStateName)]
 [TemplateVisualState(GroupName = "Status", Name = StatusInitializingVisualStateName)]
 [TemplateVisualState(GroupName = "Status", Name = StatusReadyVisualStateName)]
@@ -20,8 +24,10 @@ namespace Uno.UI.RemoteControl.HotReload;
 [TemplateVisualState(GroupName = "Result", Name = ResultNoneVisualStateName)]
 [TemplateVisualState(GroupName = "Result", Name = ResultSuccessVisualStateName)]
 [TemplateVisualState(GroupName = "Result", Name = ResultFailedVisualStateName)]
-internal sealed partial class HotReloadStatusView : Control
+internal sealed partial class HotReloadStatusView : Control, IDiagnosticViewElement<Status>
 {
+	private const string DetailsPartName = "PART_Details";
+
 	private const string StatusUnknownVisualStateName = "Unknown";
 	private const string StatusInitializingVisualStateName = "Initializing";
 	private const string StatusReadyVisualStateName = "Ready";
@@ -103,13 +109,14 @@ internal sealed partial class HotReloadStatusView : Control
 	#endregion
 
 	private readonly IDiagnosticViewContext _ctx;
-	private (string state, HotReloadLogEntry? entry) _result = (ResultNoneVisualStateName, null);
+	private readonly Dictionary<long, ServerEntry> _serverHrEntries = new();
+	private readonly Dictionary<long, ApplicationEntry> _appHrEntries = new();
+
+	private Flyout? _details;
 
 	private Status? _hotReloadStatus;
 	private RemoteControlStatus? _devServerStatus;
-
-	private readonly Dictionary<long, ServerEntry> _serverHrEntries = new();
-	private readonly Dictionary<long, ApplicationEntry> _appHrEntries = new();
+	private (string state, HotReloadLogEntry? entry) _result = (ResultNoneVisualStateName, null);
 
 	public HotReloadStatusView(IDiagnosticViewContext ctx)
 	{
@@ -142,6 +149,13 @@ internal sealed partial class HotReloadStatusView : Control
 		};
 	}
 
+	/// <inheritdoc />
+	protected override void OnApplyTemplate()
+	{
+		base.OnApplyTemplate();
+
+		_details = GetTemplateChild(DetailsPartName) as Flyout;
+	}
 	private void OnDevServerStatusChanged(object? sender, RemoteControlStatus devServerStatus)
 	{
 		var oldStatus = _devServerStatus;
@@ -155,7 +169,10 @@ internal sealed partial class HotReloadStatusView : Control
 		});
 	}
 
-	public void OnHotReloadStatusChanged(Status status)
+	/// <inheritdoc />
+	void IDiagnosticViewElement<Status>.Update(Status status)
+		=> OnHotReloadStatusChanged(status);
+	private void OnHotReloadStatusChanged(Status status)
 	{
 		var oldStatus = _hotReloadStatus;
 		_hotReloadStatus = status;
@@ -272,6 +289,26 @@ internal sealed partial class HotReloadStatusView : Control
 				}
 
 				_ctx.Notify(notif);
+			}
+		}
+	}
+
+	/// <inheritdoc />
+	public async ValueTask ShowDetails(CancellationToken ct)
+	{
+		if (_details is not null)
+		{
+			var closed = new TaskCompletionSource();
+			ct.Register(_details.Close);
+			_details.Closed += OnClosed;
+			_details.ShowAt(VisualTreeHelper.GetParent(_details) as FrameworkElement ?? this);
+
+			await closed.Task;
+
+			void OnClosed(object? sender, object e)
+			{
+				_details.Closed -= OnClosed;
+				closed.TrySetResult();
 			}
 		}
 	}

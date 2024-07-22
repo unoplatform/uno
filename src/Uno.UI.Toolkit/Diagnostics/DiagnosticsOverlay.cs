@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
+using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -60,7 +61,7 @@ public sealed partial class DiagnosticsOverlay : Control
 	private readonly Dictionary<IDiagnosticView, DiagnosticElement> _elements = new();
 	private readonly Dictionary<string, bool> _configuredElementVisibilities = new();
 
-	private ViewContext? _context;
+	private DispatcherQueue? _dispatcher;
 	private Popup? _overlayHost;
 	private bool _isVisible;
 	private bool _isExpanded = true;
@@ -84,17 +85,17 @@ public sealed partial class DiagnosticsOverlay : Control
 	private DiagnosticsOverlay(XamlRoot root)
 	{
 		_root = root;
-		_context = ViewContext.TryCreate(this);
+		_dispatcher = _root.Content?.DispatcherQueue;
 
 		root.Changed += static (snd, e) =>
 		{
 			var overlay = Get(snd);
-			var context = ViewContext.TryCreate(overlay);
-			if (context != overlay._context) // I.e. dispatcher changed ... is this even possible ???
+			var dispatcher = overlay._root.Content?.DispatcherQueue;
+			if (dispatcher != overlay._dispatcher) // I.e. dispatcher changed ... is this even possible ???
 			{
 				lock (overlay._updateGate)
 				{
-					overlay._context = context;
+					overlay._dispatcher = dispatcher;
 
 					// Clean all dispatcher bound states
 					overlay._overlayHost = null;
@@ -271,16 +272,16 @@ public sealed partial class DiagnosticsOverlay : Control
 
 	private void EnqueueUpdate(bool forceUpdate = false)
 	{
-		var context = _context;
+		var dispatcher = _dispatcher;
 		var isHidden = !_isVisible;
 		if ((isHidden && !forceUpdate)
-			|| context is null
+			|| dispatcher is null
 			|| Interlocked.CompareExchange(ref _updateEnqueued, 1, 0) is not 0)
 		{
 			return;
 		}
 
-		context.Schedule(() =>
+		dispatcher.TryEnqueue(() =>
 		{
 			_updateEnqueued = 0;
 
@@ -324,7 +325,7 @@ public sealed partial class DiagnosticsOverlay : Control
 					ref var element = ref CollectionsMarshal.GetValueRefOrAddDefault(_elements, view, out var hasElement);
 					if (!hasElement)
 					{
-						element = new DiagnosticElement(this, view, _context!);
+						element = new DiagnosticElement(this, view, _dispatcher!);
 						_elementsPanel.Children.Add(element.Value);
 					}
 				}

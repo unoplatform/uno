@@ -14,7 +14,10 @@ public sealed partial class DiagnosticsOverlay
 
 	private void OnNotificationTapped(object sender, TappedRoutedEventArgs e)
 	{
-		HideNotification();
+		if (sender is FrameworkElement { Tag: DiagnosticElement element })
+		{
+			element.ShowDetails();
+		}
 	}
 
 #pragma warning disable IDE0051 // Not used on windows UWP
@@ -45,6 +48,7 @@ public sealed partial class DiagnosticsOverlay
 				return;
 			}
 
+			presenter.Tag = context.Element;
 			presenter.Content = notif.Content;
 			presenter.ContentTemplate = notif.ContentTemplate as DataTemplate;
 			VisualStateManager.GoToState(this, NotificationVisibleStateName, true);
