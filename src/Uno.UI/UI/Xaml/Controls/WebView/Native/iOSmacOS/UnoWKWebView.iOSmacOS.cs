@@ -1,4 +1,6 @@
-﻿using CoreGraphics;
+﻿#nullable enable
+
+using CoreGraphics;
 using Foundation;
 using System;
 using WebKit;
@@ -30,6 +32,8 @@ using AppKit;
 using Uno.UI;
 #endif
 
+#pragma warning disable CA1422 // TODO Uno: Deprecated APIs in iOS 17
+
 namespace Microsoft.UI.Xaml.Controls;
 
 public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageHandler
@@ -37,7 +41,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 	, IHasSizeThatFits
 #endif
 {
-	private CoreWebView2 _coreWebView;
+	private CoreWebView2? _coreWebView;
 	private bool _isCancelling;
 
 	private const string WebMessageHandlerName = "unoWebView";
@@ -48,6 +52,12 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 	private readonly string CancelString;
 
 	private bool _isHistoryChangeQueued;
+
+	/// <summary>
+	/// Url of the last navigation ; is null if the last web page was displayed by other means,
+	/// such as raw HTML
+	/// </summary>
+	internal object? _lastNavigationData;
 
 	public UnoWKWebView() : base(CGRect.Empty, new WebKit.WKWebViewConfiguration())
 	{
@@ -102,13 +112,13 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 
 	void INativeWebView.ProcessNavigation(HttpRequestMessage requestMessage)
 	{
-		if (requestMessage == null)
+		if (requestMessage is null)
 		{
 			this.Log().Warn("HttpRequestMessage is null. Please make sure the http request is complete.");
 			return;
 		}
 
-		var urlRequest = new NSMutableUrlRequest(requestMessage.RequestUri);
+		var urlRequest = new NSMutableUrlRequest(requestMessage.RequestUri!);
 		var headerDictionnary = new NSMutableDictionary();
 
 		foreach (var header in requestMessage.Headers)
@@ -128,7 +138,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 			this.Log().Debug($"LoadHtmlString: {html}");
 		}
 
-		LoadHtmlString(html, null);
+		LoadHtmlString(html, null!);
 
 		_lastNavigationData = html;
 	}
@@ -143,7 +153,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 			return;
 		}
 
-		if (_coreWebView.HostToFolderMap.TryGetValue(uri.Host.ToLowerInvariant(), out var folderName))
+		if (_coreWebView?.HostToFolderMap.TryGetValue(uri.Host.ToLowerInvariant(), out var folderName) == true)
 		{
 			// Load Url with folder
 			var relativePath = uri.PathAndQuery;
@@ -169,7 +179,10 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 		_coreWebView = (CoreWebView2)coreWebView2;
 
 		this.Configuration.Preferences.JavaScriptCanOpenWindowsAutomatically = true;
-		this.Configuration.Preferences.JavaScriptEnabled = true;
+		if (this.Configuration.DefaultWebpagePreferences is not null)
+		{
+			this.Configuration.DefaultWebpagePreferences.AllowsContentJavaScript = true;
+		}
 
 		NavigationDelegate = new WebViewNavigationDelegate(this);
 
@@ -184,27 +197,27 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 
 	internal bool OnUnsupportedUriSchemeIdentified(Uri targetUri)
 	{
+		bool handled = false;
 		if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 		{
 			this.Log().Debug($"OnUnsupportedUriSchemeIdentified: {targetUri}");
 		}
 
-		_coreWebView.RaiseUnsupportedUriSchemeIdentified(targetUri, out var handled);
+		_coreWebView?.RaiseUnsupportedUriSchemeIdentified(targetUri, out handled);
 
 		return handled;
 	}
 
-	/// <summary>
-	/// Url of the last navigation ; is null if the last web page was displayed by other means,
-	/// such as raw HTML
-	/// </summary>
-	internal object _lastNavigationData;
-
-	internal void OnNavigationFinished(Uri destinationUrl)
+	internal void OnNavigationFinished(Uri? destinationUrl)
 	{
 		if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 		{
 			this.Log().DebugFormat("OnNavigationFinished: {0}", destinationUrl);
+		}
+
+		if (_coreWebView is null)
+		{
+			return;
 		}
 
 		_coreWebView.DocumentTitle = Title;
@@ -212,9 +225,9 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 		_lastNavigationData = destinationUrl;
 	}
 
-	private WKWebView OnCreateWebView(WKWebView owner, WKWebViewConfiguration configuration, WKNavigationAction action, WKWindowFeatures windowFeatures)
+	private WKWebView? OnCreateWebView(WKWebView owner, WKWebViewConfiguration configuration, WKNavigationAction? action, WKWindowFeatures windowFeatures)
 	{
-		Uri target;
+		Uri? target;
 
 		if (action?.TargetFrame != null)
 		{
@@ -222,14 +235,16 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 		}
 		else
 		{
-			target = action.Request.Url.ToUri();
+			target = action?.Request.Url.ToUri();
 		}
 		var targetString = target?.ToString();
 
-		_coreWebView.RaiseNewWindowRequested(
-			targetString,
-			action.SourceFrame?.Request?.Url?.ToUri(),
-			out var handled);
+		bool handled = false;
+
+		_coreWebView?.RaiseNewWindowRequested(
+			targetString!,
+			action?.SourceFrame?.Request?.Url?.ToUri()!,
+			out handled);
 
 		if (handled)
 		{
@@ -237,7 +252,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 		}
 		else
 		{
-			RaiseNavigationStarting(target, out var cancel);
+			RaiseNavigationStarting(target!, out var cancel);
 
 			if (!cancel)
 			{
@@ -247,12 +262,12 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 				if (target != null && NSWorkspace.SharedWorkspace.UrlForApplication(new NSUrl(target.AbsoluteUri)) != null)
 #endif
 				{
-					OpenUrl(targetString);
-					RaiseNavigationCompleted(target, true, 200, CoreWebView2WebErrorStatus.Unknown);
+					OpenUrl(targetString!);
+					RaiseNavigationCompleted(target!, true, 200, CoreWebView2WebErrorStatus.Unknown);
 				}
 				else
 				{
-					RaiseNavigationCompleted(target, false, 400, CoreWebView2WebErrorStatus.Unknown);
+					RaiseNavigationCompleted(target!, false, 400, CoreWebView2WebErrorStatus.Unknown);
 				}
 			}
 		}
@@ -265,7 +280,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 		var nsUrl = new NSUrl(url);
 		//Opens the specified URL, launching the app that's registered to handle the scheme.
 #if __IOS__
-		UIApplication.SharedApplication.OpenUrl(nsUrl);
+		UIApplication.SharedApplication.OpenUrl(nsUrl, new UIApplicationOpenUrlOptions(), null);
 #else
 		NSWorkspace.SharedWorkspace.OpenUrl(nsUrl);
 #endif
@@ -317,7 +332,6 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 		 */
 		var controller = webview.FindViewController();
 
-#if __IOS__
 		var alert = UIKit.UIAlertController.Create(string.Empty, message, UIKit.UIAlertControllerStyle.Alert);
 		alert.AddAction(UIKit.UIAlertAction.Create(OkString, UIKit.UIAlertActionStyle.Default,
 			okAction => completionHandler(true)));
@@ -326,32 +340,17 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 			cancelAction => completionHandler(false)));
 
 		controller?.PresentViewController(alert, true, null);
-#else
-		var alert = new NSAlert()
-		{
-			AlertStyle = NSAlertStyle.Informational,
-			InformativeText = message,
-		};
-		alert.AddButton(OkString);
-		alert.AddButton(CancelString);
-		alert.BeginSheetForResponse(webview.Window, (result) =>
-		{
-			var okButtonClicked = result == 1000;
-			completionHandler(okButtonClicked);
-		});
-#endif
 	}
 
-	private void OnRunJavaScriptTextInputPanel(WKWebView webview, string prompt, string defaultText, WKFrameInfo frame, Action<string> completionHandler)
+	private void OnRunJavaScriptTextInputPanel(WKWebView webview, string prompt, string? defaultText, WKFrameInfo frame, Action<string> completionHandler)
 	{
 		if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 		{
 			this.Log().Debug($"OnRunJavaScriptTextInputPanel: {prompt}, {defaultText}");
 		}
 
-#if __IOS__
 		var alert = UIKit.UIAlertController.Create(string.Empty, prompt, UIKit.UIAlertControllerStyle.Alert);
-		UITextField alertTextField = null;
+		UITextField? alertTextField = null;
 
 		alert.AddTextField((textField) =>
 		{
@@ -360,32 +359,13 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 		});
 
 		alert.AddAction(UIKit.UIAlertAction.Create(OkString, UIKit.UIAlertActionStyle.Default,
-			okAction => completionHandler(alertTextField.Text)));
+			okAction => completionHandler(alertTextField?.Text ?? "")));
 
 		alert.AddAction(UIKit.UIAlertAction.Create(CancelString, UIKit.UIAlertActionStyle.Cancel,
-			cancelAction => completionHandler(null)));
+			cancelAction => completionHandler("")));
 
 		var controller = webview.FindViewController();
 		controller?.PresentViewController(alert, true, null);
-#else
-		var alert = new NSAlert()
-		{
-			AlertStyle = NSAlertStyle.Informational,
-			InformativeText = prompt,
-		};
-		var textField = new NSTextField(new CGRect(0, 0, 300, 20))
-		{
-			PlaceholderString = defaultText,
-		};
-		alert.AccessoryView = textField;
-		alert.AddButton(OkString);
-		alert.AddButton(CancelString);
-		alert.BeginSheetForResponse(webview.Window, (result) =>
-		{
-			var okButtonClicked = result == 1000;
-			completionHandler(okButtonClicked ? textField.StringValue : null);
-		});
-#endif
 	}
 
 	/// <summary>
@@ -396,7 +376,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 	/// This parameter should be false when the <see cref="WKWebView"/> is not actually loading a request (like for anchors navigation).
 	/// </param>
 	/// <returns>True if the user cancelled the navigation, false otherwise.</returns>
-	internal bool OnStarted(Uri targetUrl, bool stopLoadingOnCanceled = true)
+	internal bool OnStarted(Uri? targetUrl, bool stopLoadingOnCanceled = true)
 	{
 		if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 		{
@@ -405,7 +385,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 
 		_isCancelling = false;
 
-		RaiseNavigationStarting(targetUrl ?? _lastNavigationData, out var cancel); //TODO:MZ: For HTML content
+		RaiseNavigationStarting(targetUrl ?? _lastNavigationData!, out var cancel); //TODO:MZ: For HTML content
 
 		if (cancel)
 		{
@@ -421,6 +401,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 
 	private void RaiseNavigationStarting(object navigationData, out bool cancel)
 	{
+		cancel = false;
 		if (navigationData is null)
 		{
 			// This ase should not happen when navigating normally using http requests.
@@ -440,15 +421,15 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 			return;
 		}
 
-		_coreWebView.SetHistoryProperties(CanGoBack, CanGoForward);
-		_coreWebView.RaiseNavigationStarting(navigationData, out cancel);
+		_coreWebView?.SetHistoryProperties(CanGoBack, CanGoForward);
+		_coreWebView?.RaiseNavigationStarting(navigationData, out cancel);
 	}
 
-	private void RaiseNavigationCompleted(Uri uri, bool isSuccess, int httpStatusCode, CoreWebView2WebErrorStatus errorStatus)
+	private void RaiseNavigationCompleted(Uri? uri, bool isSuccess, int httpStatusCode, CoreWebView2WebErrorStatus errorStatus)
 	{
-		_coreWebView.SetHistoryProperties(CanGoBack, CanGoForward);
+		_coreWebView?.SetHistoryProperties(CanGoBack, CanGoForward);
 		QueueHistoryChange();
-		_coreWebView.RaiseNavigationCompleted(uri, isSuccess, httpStatusCode, errorStatus);
+		_coreWebView?.RaiseNavigationCompleted(uri, isSuccess, httpStatusCode, errorStatus);
 	}
 
 	private void QueueHistoryChange()
@@ -456,13 +437,13 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 		if (!_isHistoryChangeQueued)
 		{
 			_isHistoryChangeQueued = true;
-			_ = _coreWebView.Owner.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, RaiseQueuedHistoryChange);
+			_ = _coreWebView?.Owner.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, RaiseQueuedHistoryChange);
 		}
 	}
 
 	private void RaiseQueuedHistoryChange()
 	{
-		_coreWebView.RaiseHistoryChanged();
+		_coreWebView?.RaiseHistoryChanged();
 		_isHistoryChangeQueued = false;
 	}
 
@@ -534,7 +515,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 #if !__MACOS__ && !__MACCATALYST__
 	async
 #endif
-	Task LaunchMailto(CancellationToken ct, string subject = null, string body = null, string[] to = null, string[] cc = null, string[] bcc = null)
+	Task LaunchMailto(CancellationToken ct, string? subject = null, string? body = null, string[]? to = null, string[]? cc = null, string[]? bcc = null)
 	{
 #if !__MACOS__ && !__MACCATALYST__  // catalyst https://github.com/xamarin/xamarin-macios/issues/13935
 		if (!MFMailComposeViewController.CanSendMail)
@@ -545,8 +526,8 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 		var mailController = new MFMailComposeViewController();
 
 		mailController.SetToRecipients(to);
-		mailController.SetSubject(subject);
-		mailController.SetMessageBody(body, false);
+		mailController.SetSubject(subject!);
+		mailController.SetMessageBody(body!, false);
 		mailController.SetCcRecipients(cc);
 		mailController.SetBccRecipients(bcc);
 
@@ -556,7 +537,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 		try
 		{
 			mailController.Finished += handler;
-			UIApplication.SharedApplication.KeyWindow.RootViewController.PresentViewController(mailController, true, null);
+			UIApplication.SharedApplication.KeyWindow?.RootViewController?.PresentViewController(mailController, true, null);
 
 			using (ct.Register(() => finished.TrySetCanceled()))
 			{
@@ -594,7 +575,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 		// We use the _isCancelling flag because the NSError caused by the StopLoading() doesn't always translate to WebErrorStatus.OperationCanceled.
 		if (status != CoreWebView2WebErrorStatus.OperationCanceled && !_isCancelling)
 		{
-			Uri uri;
+			Uri? uri;
 			//If the url which failed to load is available in the user info, use it because with the WKWebView the 
 			//field webView.Url is equal to last successfully loaded URL and not to the failed URL
 			var failedUrl = error.UserInfo.UnoGetValueOrDefault(new NSString("NSErrorFailingURLStringKey")) as NSString;
@@ -604,7 +585,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 			}
 			else
 			{
-				uri = webView.Url?.ToUri() ?? new Uri(_coreWebView.Source); // TODO:MZ: What if Source is invalid URI?
+				uri = webView.Url?.ToUri() ?? (_coreWebView is not null ? new Uri(_coreWebView.Source) : null); // TODO:MZ: What if Source is invalid URI?
 			}
 
 			RaiseNavigationCompleted(uri, false, 0, status); // TODO:MZ: What HTTP Status code?
@@ -616,6 +597,11 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 	public override void DidChangeValue(string forKey)
 	{
 		base.DidChangeValue(forKey);
+
+		if (_coreWebView is null)
+		{
+			return;
+		}
 
 		if (forKey.Equals(nameof(Title), StringComparison.OrdinalIgnoreCase))
 		{
@@ -642,7 +628,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 			this.Log().Debug($"GoBack");
 		}
 
-		GoTo(GetNearestValidHistoryItem(direction: -1));
+		GoTo(GetNearestValidHistoryItem(direction: -1)!);
 	}
 
 	void INativeWebView.GoForward()
@@ -652,10 +638,10 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 			this.Log().Debug($"GoForward");
 		}
 
-		GoTo(GetNearestValidHistoryItem(direction: 1));
+		GoTo(GetNearestValidHistoryItem(direction: 1)!);
 	}
 
-	async Task<string> INativeWebView.ExecuteScriptAsync(string script, CancellationToken token)
+	async Task<string?> INativeWebView.ExecuteScriptAsync(string script, CancellationToken token)
 	{
 		var executedScript = string.Format(CultureInfo.InvariantCulture, "javascript:{0}", script);
 
@@ -664,7 +650,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 			this.Log().Debug($"ExecuteScriptAsync: {executedScript}");
 		}
 
-		var tcs = new TaskCompletionSource<string>();
+		var tcs = new TaskCompletionSource<string?>();
 
 		using var _ = token.Register(() => tcs.TrySetCanceled());
 
@@ -685,7 +671,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 					}
 					else
 					{
-						tcs.TrySetResult(NSString.FromData(serializedData, NSStringEncoding.UTF8).ToString());
+						tcs.TrySetResult(NSString.FromData(serializedData, NSStringEncoding.UTF8)?.ToString());
 					}
 				}
 				else if (result is NSString resultString)
@@ -704,7 +690,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 		return await tcs.Task;
 	}
 
-	async Task<string> INativeWebView.InvokeScriptAsync(string script, string[] arguments, CancellationToken ct)
+	async Task<string?> INativeWebView.InvokeScriptAsync(string script, string[]? arguments, CancellationToken ct)
 	{
 		var argumentString = Microsoft.UI.Xaml.Controls.WebView.ConcatenateJavascriptArguments(arguments);
 		var javascript = string.Format(CultureInfo.InvariantCulture, "javascript:{0}(\"{1}\")", script, argumentString);
@@ -776,12 +762,12 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 #endif
 		var readAccessFolderPath = GetBestFolderPath(uri);
 
-		Uri readAccessUri;
+		Uri? readAccessUri;
 
 		if (Uri.TryCreate("file://" + readAccessFolderPath, UriKind.Absolute, out readAccessUri))
 		{
 			// LoadFileUrl will always fail on physical devices if readAccessUri changes for the same WebView instance.
-			LoadFileUrl(uri, readAccessUri);
+			LoadFileUrl(uri!, readAccessUri!);
 		}
 		else
 		{
@@ -809,10 +795,10 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 #endif
 	}
 
-	private WKBackForwardListItem GetNearestValidHistoryItem(int direction)
+	private WKBackForwardListItem? GetNearestValidHistoryItem(int direction)
 	{
 		var navList = direction == 1 ? BackForwardList.ForwardList : BackForwardList.BackList.Reverse();
-		return navList.FirstOrDefault(item => CoreWebView2.GetIsHistoryEntryValid(item.InitialUrl.AbsoluteString));
+		return navList?.FirstOrDefault(item => CoreWebView2.GetIsHistoryEntryValid(item.InitialUrl.AbsoluteString!));
 	}
 
 	private static string GetBestFolderPath(Uri fileUri)
@@ -821,7 +807,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 		// because navigating to a subsequent file in a different folder branch will fail.
 		// To do that, we try to target the first folder after the app sandbox.
 
-		var directFileParentPath = Path.GetDirectoryName(fileUri.LocalPath);
+		var directFileParentPath = Path.GetDirectoryName(fileUri.LocalPath)!;
 		var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 		var appRootPath = directFileParentPath.Substring(0, documentsPath.LastIndexOf('/'));
 
@@ -850,7 +836,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 	{
 		if (message.Name == WebMessageHandlerName)
 		{
-			_coreWebView.RaiseWebMessageReceived((message.Body as NSString)?.ToString());
+			_coreWebView?.RaiseWebMessageReceived((message.Body as NSString)?.ToString()!);
 		}
 	}
 }
