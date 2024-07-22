@@ -2,7 +2,7 @@
 
 namespace Uno.UI.Helpers;
 
-internal static class SkiaTargetHelper
+internal static class DeviceTargetHelper
 {
 	internal static bool IsNonDesktop() =>
 		OperatingSystem.IsBrowser() ||

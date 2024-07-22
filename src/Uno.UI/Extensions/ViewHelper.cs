@@ -47,7 +47,7 @@ namespace Uno.UI
 		internal static double PhysicalToLogicalPixels(double value)
 		{
 			// TODO: Platform check here is very unfortunate. Try to refactor this into Uno.UWP
-			if (Uno.UI.Helpers.SkiaTargetHelper.IsMobile())
+			if (Uno.UI.Helpers.DeviceTargetHelper.IsMobile())
 			{
 				return value / _cachedDensity;
 			}
@@ -58,7 +58,7 @@ namespace Uno.UI
 		internal static double LogicalToPhysicalPixels(double value)
 		{
 			// TODO: Platform check here is very unfortunate. Try to refactor this into Uno.UWP
-			if (Uno.UI.Helpers.SkiaTargetHelper.IsMobile()) // TODO:MZ: Verify logic for Apple UIKit
+			if (Uno.UI.Helpers.DeviceTargetHelper.IsMobile()) // TODO:MZ: Verify logic for Apple UIKit
 			{
 				if (double.IsNaN(value))
 				{
