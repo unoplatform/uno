@@ -74,8 +74,7 @@ internal partial class InputManager
 			{
 				if (this.Log().IsEnabled(LogLevel.Error))
 				{
-					this.Log().Error(
-						"Failed to initialize the PointerManager: cannot resolve the IUnoCorePointerInputSource.");
+					this.Log().Error("Failed to initialize the PointerManager: cannot resolve the IUnoCorePointerInputSource.");
 				}
 				return;
 			}

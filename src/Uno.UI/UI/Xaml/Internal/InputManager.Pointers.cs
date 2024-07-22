@@ -71,7 +71,7 @@ partial class InputManager
 				UIElement.PointerReleasedEvent,
 				new PointerEventHandler((snd, args) => ProcessPointerUp(args, false)),
 				handledEventsToo: true);
-#if __WASM__
+#if __WASM__ && !UNO_HAS_MANAGED_POINTERS
 			rootElement.AddHandler(
 				UIElement.PointerCanceledEvent,
 				new PointerEventHandler((snd, args) => ProcessPointerCancelled(args)),

@@ -42,12 +42,11 @@ namespace Microsoft.UI.Xaml.Shapes
 			UpdateStrokeDashArray();
 		}
 
-
-		private protected override void OnHitTestVisibilityChanged(HitTestability oldValue, HitTestability newValue)
-		{
-			// We don't invoke the base, so we stay at the default "pointer-events: none" defined in Uno.UI.css in class svg.uno-uielement.
-			// This is required to avoid this SVG element (which is actually only a collection) to stoll pointer events.
-		}
+		//private protected override void OnHitTestVisibilityChanged(HitTestability oldValue, HitTestability newValue)
+		//{
+		//	// We don't invoke the base, so we stay at the default "pointer-events: none" defined in Uno.UI.css in class svg.uno-uielement.
+		//	// This is required to avoid this SVG element (which is actually only a collection) to stoll pointer events.
+		//}
 
 		private void OnFillBrushChanged()
 		{

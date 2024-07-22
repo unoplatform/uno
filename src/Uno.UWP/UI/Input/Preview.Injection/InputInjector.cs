@@ -24,7 +24,7 @@ public partial class InputInjector
 		_inputManager ??= manager; // Set only once per thread.
 	}
 
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__", "__MACOS__")]
 	public static InputInjector? TryCreate()
 		=> _inputManager is not null ? new InputInjector(_inputManager) : null;
 

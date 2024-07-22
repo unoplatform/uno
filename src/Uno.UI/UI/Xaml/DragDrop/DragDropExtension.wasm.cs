@@ -32,6 +32,7 @@ using System.Diagnostics.CodeAnalysis;
 
 using NativeMethods = __Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension.NativeMethods;
 using System.Runtime.InteropServices.JavaScript;
+using Uno.UI.Runtime;
 
 // As IDragDropExtension is internal, the generated registration cannot be used.
 // [assembly: ApiExtension(typeof(Windows.ApplicationModel.DataTransfer.DragDrop.Core.IDragDropExtension), typeof(Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension))]
@@ -381,7 +382,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 			public long Id => _args.id;
 
 			/// <inheritdoc />
-			public uint FrameId => PointerRoutedEventArgs.ToFrameId(_args.timestamp);
+			public uint FrameId => BrowserPointerInputSource.ToFrameId(_args.timestamp);
 
 			/// <inheritdoc />
 			public (Point location, DragDropModifiers modifier) GetState()
