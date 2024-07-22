@@ -25,7 +25,7 @@ internal partial class MultilineInvisibleTextBoxDelegate : UITextViewDelegate
 
 	public override bool ShouldChangeText(UITextView textView, NSRange range, string replacementString)
 	{
-		if (textView is MultilineInvisibleTextBoxView bindableTextView)
+		if (textView is MultilineInvisibleTextBoxView textBoxView)
 		{
 			if (_textBoxViewExtension.GetTarget()?.Owner.TextBox is not TextBox textBox)
 			{

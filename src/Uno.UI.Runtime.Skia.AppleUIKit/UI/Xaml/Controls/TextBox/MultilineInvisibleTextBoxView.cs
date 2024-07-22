@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 using ObjCRuntime;
 using UIKit;
 using Uno.Extensions;
+using Uno.UI.Extensions;
 
 namespace Uno.WinUI.Runtime.Skia.AppleUIKit.Controls;
 
