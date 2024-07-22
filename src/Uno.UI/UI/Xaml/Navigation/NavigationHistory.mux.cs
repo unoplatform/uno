@@ -803,7 +803,7 @@ internal partial class NavigationHistory
 			NavigationHelpers.WriteHSTRINGToString(spTransitionInfo.GetType().FullName, buffer);
 
 			// Write NavigationTransitionInfo.
-			strTransitionInfo = spTransitionInfo.GetNavigationStateCore();
+			strTransitionInfo = spTransitionInfo.GetNavigationStateCoreInternal();
 			NavigationHelpers.WriteHSTRINGToString(strTransitionInfo, buffer);
 		}
 		else
@@ -894,7 +894,7 @@ internal partial class NavigationHistory
 
 				if (strTransitionInfo != null)
 				{
-					spTransitionInfo.SetNavigationStateCore(strTransitionInfo);
+					spTransitionInfo.SetNavigationStateCoreInternal(strTransitionInfo);
 				}
 			}
 		}

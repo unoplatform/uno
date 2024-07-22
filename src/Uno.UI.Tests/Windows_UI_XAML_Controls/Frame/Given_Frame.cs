@@ -274,7 +274,7 @@ namespace Uno.UI.Tests.FrameTests
 		{
 			var SUT = new Frame();
 			SUT.Navigate(typeof(MyPage));
-			Assert.ThrowsException<InvalidOperationException>(
+			Assert.ThrowsException<ArgumentNullException>(
 				() => SUT.SourcePageType = null);
 		}
 
