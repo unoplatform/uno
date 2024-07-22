@@ -537,7 +537,7 @@ partial class Frame
 				throw new InvalidOperationException("New content is not a Page");
 			}
 
-			Content = newObject;
+			SetContent(newObject);
 			wasContentChanged = true;
 
 			if (isNavigationStackEnabled && m_isNavigationStackEnabledForPage)
@@ -604,7 +604,7 @@ partial class Frame
 
 		if (suppressNavigate)
 		{
-			Content = null;
+			SetContent(null);
 		}
 		else
 		{
@@ -616,7 +616,7 @@ partial class Frame
 				m_isNavigationFromMethod = true;
 
 				var spContentobject = m_upNavigationCache.GetContent(pPageStackEntry);
-				Content = spContentobject;
+				SetContent(spContentobject);
 			}
 
 			// Commit SetNavigationState of navigation history

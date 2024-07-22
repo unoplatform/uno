@@ -5,11 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
 using Uno.Disposables;
 using Uno.UI;
 using Uno.UI.Helpers;
+using Uno.UI.Xaml.Core;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -180,4 +182,59 @@ public partial class Frame : ContentControl
 	internal PageStackEntry GetCurrentPageStackEntry() => _useWinUIBehavior ? m_tpNavigationHistory.GetCurrentPageStackEntry() : CurrentEntry;
 
 	internal Page EnsurePageInitialized(PageStackEntry entry) => _useWinUIBehavior ? entry.Instance : EnsurePageInitializedLegacy(entry);
+
+	internal void SetContent(object content)
+	{
+#if HAS_UNO // This workaround is currently needed to handle focus in line with WinUI (and is required even for enhanced lifecycle targets for now).
+		MoveFocusFromCurrentContent();
+#endif
+		Content = content;
+	}
+
+	/// <summary>
+	/// In case the current page contains a focused element,
+	/// we need to move the focus out of the page.
+	/// </summary>
+	/// <remarks>
+	/// In UWP this is done automatically as the elements are unloaded,
+	/// but due to the control lifecycle differences in Uno the focus move multiple times
+	/// as controls are unloaded in "layers" and it could also not move outside this Frame,
+	/// as the Parent would already be unassigned during the OnUnloaded execution.
+	/// </remarks>
+	private void MoveFocusFromCurrentContent()
+	{
+		if (Content is not UIElement uiElement)
+		{
+			return;
+		}
+		uiElement.IsLeavingFrame = true;
+		try
+		{
+			var focusManager = VisualTree.GetFocusManagerForElement(this);
+			if (focusManager?.FocusedElement is not { } focusedElement)
+			{
+				return;
+			}
+
+			var parent = VisualTreeHelper.GetParent(focusedElement);
+			while (parent is not null && parent != this)
+			{
+				parent = VisualTreeHelper.GetParent(parent);
+			}
+
+			var inCurrentPage = parent == this;
+
+			if (inCurrentPage)
+			{
+				// Set the focus on the next focusable element.
+				focusManager.SetFocusOnNextFocusableElement(FocusState.Programmatic, true);
+
+				(focusedElement as Control)?.UpdateFocusState(FocusState.Unfocused);
+			}
+		}
+		finally
+		{
+			uiElement.IsLeavingFrame = false;
+		}
+	}
 }
