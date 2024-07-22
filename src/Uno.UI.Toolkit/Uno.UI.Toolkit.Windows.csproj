@@ -61,6 +61,7 @@
 		<Compile Include="..\Uno.UI\Diagnostics\DiagnosticViewHelper.cs" Link="Uno.UI\Diagnostics\DiagnosticViewHelper.cs" />
 		<Compile Include="..\Uno.UI\Diagnostics\DiagnosticViewManager.TView.cs" Link="Uno.UI\Diagnostics\DiagnosticViewManager.TView.cs" />
 		<Compile Include="..\Uno.UI\Diagnostics\DiagnosticViewManager.TView.TState.cs" Link="Uno.UI\Diagnostics\DiagnosticViewManager.TView.TState.cs" />
+		<Compile Include="..\Uno.UI\Diagnostics\IDiagnosticViewElement.cs" Link="Uno.UI\Diagnostics\IDiagnosticViewElement.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

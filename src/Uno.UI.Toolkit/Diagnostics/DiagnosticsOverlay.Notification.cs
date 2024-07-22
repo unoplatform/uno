@@ -18,6 +18,7 @@ public sealed partial class DiagnosticsOverlay
 		{
 			element.ShowDetails();
 		}
+		HideNotification();
 	}
 
 #pragma warning disable IDE0051 // Not used on windows UWP

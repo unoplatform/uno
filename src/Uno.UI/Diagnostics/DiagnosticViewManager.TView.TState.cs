@@ -3,7 +3,6 @@ using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Microsoft.UI.Xaml;
-using Uno.Collections;
 
 namespace Uno.Diagnostics.UI;
 
