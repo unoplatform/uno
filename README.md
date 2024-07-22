@@ -54,12 +54,12 @@ For a larger example and features demo:
 * UWP/WinUI Code Support:
     * [Windows Community Toolkit](https://github.com/CommunityToolkit/Windows)
     * [Windows Community Toolkit (Uno Fork)](https://github.com/unoplatform/uno.WindowsCommunityToolkit)
+    * [Community Toolkit MVVM](https://learn.microsoft.com/en-us/dotnet/communitytoolkit/mvvm/)
     * [MVVM Light Toolkit](https://github.com/unoplatform/uno.mvvmlight)
     * [Microsoft XAML Behaviors](https://github.com/unoplatform/uno.XamlBehaviors)
     * [Prism](https://github.com/prismlibrary/prism)
     * [SkiaSharp](https://github.com/mono/SkiaSharp)
     * [SkiaSharp.Extended](https://github.com/mono/SkiaSharp.Extended)
-    * [MVVMCross](https://www.mvvmcross.com/) (soon)
     * [ReactiveUI Official](https://github.com/reactiveui/ReactiveUI/pull/2067)
     * [WindowsStateTriggers](https://github.com/unoplatform/uno.WindowsStateTriggers)
     * [Xamarin.Forms for UWP](https://github.com/unoplatform/uno.Xamarin.Forms), [NuGet](https://www.nuget.org/packages/ReactiveUI.Uno)
