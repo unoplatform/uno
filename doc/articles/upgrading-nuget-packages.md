@@ -16,7 +16,6 @@ The latest version of the Uno.Sdk is [![NuGet](https://img.shields.io/nuget/v/un
 
 To upgrade the Uno.Sdk, you'll need to open the `global.json` file located at the root of solution, which typically looks like this:
 
-
 ```json
 {
   "msbuild-sdks": {
