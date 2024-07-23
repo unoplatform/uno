@@ -122,6 +122,7 @@ internal partial class BrowserPointerInputSource : IUnoCorePointerInputSource
 				case HtmlPointerEvent.pointerup:
 					//case HtmlPointerEvent.lostpointercapture: // if pointer is captured, we don't get a up, just a capture lost (with skia for wasm)
 					that.PointerReleased?.Invoke(that, args);
+					_PointerIdentifierPool.ReleaseManaged(pointerIdentifier);
 					break;
 
 				case HtmlPointerEvent.pointermove:
@@ -147,6 +148,7 @@ internal partial class BrowserPointerInputSource : IUnoCorePointerInputSource
 
 				case HtmlPointerEvent.pointercancel:
 					that.PointerCancelled?.Invoke(that, args);
+					_PointerIdentifierPool.ReleaseManaged(pointerIdentifier);
 					break;
 
 				default:

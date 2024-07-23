@@ -71,12 +71,6 @@ partial class InputManager
 				UIElement.PointerReleasedEvent,
 				new PointerEventHandler((snd, args) => ProcessPointerUp(args, false)),
 				handledEventsToo: true);
-#if __WASM__ && !UNO_HAS_MANAGED_POINTERS
-			rootElement.AddHandler(
-				UIElement.PointerCanceledEvent,
-				new PointerEventHandler((snd, args) => ProcessPointerCancelled(args)),
-				handledEventsToo: true);
-#endif
 		}
 
 		#region Re-routing (Flyout.OverlayInputPassThroughElement)
@@ -206,20 +200,11 @@ partial class InputManager
 
 			ReleaseCaptures(args.Reset(canBubbleNatively: false));
 
-#if __WASM__
-			PointerIdentifierPool.ReleaseManaged(args.Pointer.UniqueId);
-#endif
-
 			// At the end of our "up" processing, we reset the flag to make sure that the native handler (iOS, Android and WASM)
 			// won't try to sent it to us again (if not already the case ^^).
 			// (This could be the case if the args was flagged as handled in the ReleaseCaptures call above, like in RatingControl).
 			args.Handled = isAfterHandledUp;
 		}
-
-#if __WASM__
-		private static void ProcessPointerCancelled(PointerRoutedEventArgs args)
-			=> PointerIdentifierPool.ReleaseManaged(args.Pointer.UniqueId);
-#endif
 
 		// As focus event are either async or cancellable,
 		// the FocusManager will explicitly notify us instead of listing to its events
