@@ -40,6 +40,7 @@ using Microsoft.UI.Xaml.Hosting;
 using Uno.Extensions;
 using Windows.UI.Input.Preview.Injection;
 using Uno.UI.Toolkit.Extensions;
+using SamplesApp.UITests;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
@@ -47,6 +48,19 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	[TestClass]
 	public partial class Given_UIElement
 	{
+		private partial class ButtonChangingClipDuringArrange : Button
+		{
+			protected override Size ArrangeOverride(Size finalSize)
+			{
+				Clip = new RectangleGeometry()
+				{
+					Rect = new Rect(0, 0, 100, 10),
+					Transform = new TranslateTransform(),
+				};
+				return base.ArrangeOverride(finalSize);
+			}
+		}
+
 		[TestMethod]
 		[RunsOnUIThread]
 		[DataRow(200)]
@@ -159,6 +173,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.AreEqual(new Rect(0, 0, 99, 99), chartreuseBounds);
 			Assert.AreEqual(new Rect(25, 25, 49, 49), deepPinkBounds);
 			Assert.AreEqual(new Rect(65, 25, 4, 24), deepSkyBlueBounds);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[UnoWorkItem("https://github.com/unoplatform/uno/issues/17642")]
+		public async Task When_Clipping_Changes_During_Arrange()
+		{
+			await UITestHelper.Load(new ButtonChangingClipDuringArrange() { Content = "Hello" });
 		}
 
 #if HAS_UNO // Tests use IsArrangeDirty, which is an internal property
