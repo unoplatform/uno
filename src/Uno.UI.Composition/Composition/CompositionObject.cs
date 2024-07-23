@@ -58,7 +58,7 @@ namespace Microsoft.UI.Composition
 
 		public void StartAnimation(string propertyName, CompositionAnimation animation)
 		{
-#if __IOS__
+#if __APPLE_UIKIT__
 			if (StartAnimationCore(propertyName, animation))
 			{
 				return;
@@ -151,7 +151,7 @@ namespace Microsoft.UI.Composition
 		{
 		}
 
-#if __IOS__
+#if __APPLE_UIKIT__
 		internal virtual bool StartAnimationCore(string propertyName, CompositionAnimation animation)
 			=> false;
 #endif

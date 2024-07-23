@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Threading;
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
 #else
 using AppKit;
