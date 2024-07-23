@@ -14,7 +14,7 @@ Choose one of the sections below depending on your situation.
 
 The latest version of the Uno.Sdk is [![NuGet](https://img.shields.io/nuget/v/uno.sdk.svg)](https://www.nuget.org/packages/uno.sdk/).
 
-To upgrade the Uno.Sdk, you'll need to open the `global.json` file located at the root of solution, which typically looks like this:
+To upgrade the Uno.Sdk, you'll need to open the `global.json` file located at the root of the solution, which typically looks like this:
 
 ```json
 {
