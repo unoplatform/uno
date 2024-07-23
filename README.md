@@ -5,11 +5,12 @@
 
 ## Pixel-Perfect. Multi-Platform. C# & Windows XAML. Today.
 
+[![NuGet](https://img.shields.io/nuget/v/uno.sdk.svg)](https://www.nuget.org/packages/uno.sdk/)
 [![Open Uno in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/unoplatform/uno) 
 [![Azure DevOps](https://img.shields.io/azure-devops/build/uno-platform/1dd81cbd-cb35-41de-a570-b0df3571a196/5/master?label=master)](https://uno-platform.visualstudio.com/Uno%20Platform/_build?definitionId=5)
 [![Twitter Followers](https://img.shields.io/twitter/follow/unoplatform?label=follow%20%40unoplatform&style=flat)](https://twitter.com/unoplatform)
 [![GitHub Stars](https://img.shields.io/github/stars/unoplatform/uno?label=github%20stars)](https://github.com/unoplatform/uno/stargazers/)
-[![NuGet Downloads](https://img.shields.io/nuget/dt/uno.ui.svg)](https://www.nuget.org/packages/uno.ui)
+[![NuGet Downloads](https://img.shields.io/nuget/dt/uno.winui.svg)](https://www.nuget.org/packages/uno.winui)
 [![All Contributors](https://img.shields.io/github/contributors/unoplatform/uno.svg)](https://GitHub.com/unoplatform/uno/graphs/contributors)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/unoplatform/uno/blob/master/CONTRIBUTING.md)
 
