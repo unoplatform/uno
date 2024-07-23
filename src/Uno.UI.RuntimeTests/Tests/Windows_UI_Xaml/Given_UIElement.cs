@@ -24,6 +24,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
+using SamplesApp.UITests;
 using Uno.UI.RuntimeTests.Helpers;
 using Point = System.Drawing.Point;
 
@@ -39,7 +40,6 @@ using Microsoft.UI.Xaml.Hosting;
 using Uno.Extensions;
 using Windows.UI.Input.Preview.Injection;
 using Uno.UI.Toolkit.Extensions;
-using SamplesApp.UITests;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
