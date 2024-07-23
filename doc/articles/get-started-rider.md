@@ -5,7 +5,7 @@ uid: Uno.GetStarted.Rider
 # Get Started on JetBrains Rider
 
 > [!IMPORTANT]
-> Project templates from Uno Platform 5.3 or later are needed to use Rider. See our [migration guide](Uno.Development.MigratingFromPreviousReleases) to upgrade.
+> Project templates from Uno Platform 5.3 or later are needed to use Rider. See our [migration guide](xref:Uno.Development.MigratingFromPreviousReleases) to upgrade.
 
 ## Prerequisites
 
