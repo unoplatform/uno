@@ -24,7 +24,7 @@ To upgrade the Uno.Sdk, you'll need to open the `global.json` file located at th
 }
 ```
 
-Update the `xx.yy.zz` property to the latest Uno.SDK version, then save the file.
+Update the `xx.yy.zz` property to the latest Uno.Sdk version, then save the file.
 
 > [!IMPORTANT]
 > In Visual Studio 2022, once the Uno Version is updated, a banner will ask to restart the IDE. Once the solution is reopened the changes will take effect.
