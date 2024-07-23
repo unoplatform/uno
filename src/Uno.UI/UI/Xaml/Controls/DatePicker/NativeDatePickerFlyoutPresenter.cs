@@ -4,7 +4,7 @@ using NotImplementedException = System.NotImplementedException;
 
 using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 namespace Microsoft.UI.Xaml.Controls
 {
 	partial class NativeDatePickerFlyoutPresenter : FlyoutPresenter, IDatePickerFlyoutPresenter
@@ -26,7 +26,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		DateTime IDatePickerFlyoutPresenter.GetDate()
 		{
-#if __IOS__
+#if __APPLE_UIKIT__
 			if (Content is DatePickerSelector selector)
 			{
 				selector.SaveValue();

@@ -15,7 +15,7 @@ using Microsoft.UI.Xaml.Media;
 using Android.Widget;
 using Android.Views;
 using _ViewGroup = Android.Views.ViewGroup;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using Microsoft.UI.Xaml.Media;
 using UIKit;
 using _ViewGroup = UIKit.UIView;
@@ -33,7 +33,7 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// TODO: support for Header/Footer when inside a ListViewBase
 		private bool HeaderFooterEnabled =>
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 			GetTemplatedParent() is not ListViewBase;
 #else
 			true;
@@ -44,7 +44,7 @@ namespace Microsoft.UI.Xaml.Controls
 		internal ContentControl HeaderContentControl { get; private set; }
 
 		private Orientation Orientation =>
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 			_itemsPanel is NativeListViewBase nlvb ? nlvb.NativeLayout.Orientation :
 #endif
 				(Panel as Panel)?.PhysicalOrientation ?? Orientation.Horizontal;
@@ -227,7 +227,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// for controls which delegate to a native implementation (eg <see cref="ListViewBase"/>).
 		/// </summary>
 		private bool IsWithinScrollableArea =>
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 			!(_itemsPanel is NativeListViewBase);
 #else
 			true;
@@ -322,7 +322,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void PropagateLayoutValues()
 		{
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 			var asListViewBase = _itemsPanel as NativeListViewBase;
 			if (asListViewBase != null)
 			{

@@ -8,7 +8,7 @@ using Microsoft.UI.Xaml.Input;
 using Windows.System;
 #if __ANDROID__
 using Android.Views;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using View = UIKit.UIView;
 #elif __MACOS__
 using View = AppKit.NSView;
@@ -78,7 +78,7 @@ namespace Uno.UI.Behaviors
 				var nextControl = GetNextControl(textBox) as View;
 #if __ANDROID__
 				nextControl?.RequestFocus();
-#elif __IOS__ || __MACOS__
+#elif __APPLE_UIKIT__ || __MACOS__
 				nextControl?.BecomeFirstResponder();
 #endif
 				e.Handled = true;

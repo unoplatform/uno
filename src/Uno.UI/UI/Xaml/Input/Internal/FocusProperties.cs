@@ -39,7 +39,7 @@ namespace Uno.UI.Xaml.Input
 				var children = VisualTreeHelper.GetChildren(textBlock);
 				return children as IReadOnlyList<DependencyObject> ?? children.ToList();
 			}
-#if __ANDROID__ || __IOS__ // TODO Uno specific: NativeScrollContentPresenter does not return its children
+#if __ANDROID__ || __APPLE_UIKIT__ // TODO Uno specific: NativeScrollContentPresenter does not return its children
 			else if (dependencyObject is NativeScrollContentPresenter scrollContentPresenter)
 			{
 				if (scrollContentPresenter.Content is DependencyObject child)

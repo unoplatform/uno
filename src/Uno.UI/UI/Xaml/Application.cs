@@ -38,7 +38,7 @@ using Font = Android.Graphics.Typeface;
 using Android.Graphics;
 using DependencyObject = System.Object;
 using Microsoft.UI.Xaml.Controls;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using View = UIKit.UIView;
 using ViewGroup = UIKit.UIView;
 using UIKit;
@@ -249,7 +249,7 @@ namespace Microsoft.UI.Xaml
 		public event UnhandledExceptionEventHandler UnhandledException;
 
 #if !__ANDROID__ && !__MACOS__ && !__SKIA__
-		[NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
+		[NotImplemented("__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public void Exit()
 		{
 			if (this.Log().IsEnabled(LogLevel.Warning))
@@ -410,7 +410,7 @@ namespace Microsoft.UI.Xaml
 			CoreApplication.RaiseSuspending(suspendingEventArgs);
 			var completedSynchronously = suspendingOperation.DeferralManager.EventRaiseCompleted();
 
-#if !__IOS__ && !__ANDROID__
+#if !__APPLE_UIKIT__ && !__ANDROID__
 			// Asynchronous suspension is not supported on all targets, warn the user
 			if (!completedSynchronously && this.Log().IsEnabled(LogLevel.Warning))
 			{
@@ -421,7 +421,7 @@ namespace Microsoft.UI.Xaml
 #endif
 		}
 
-#if !__IOS__ && !__ANDROID__
+#if !__APPLE_UIKIT__ && !__ANDROID__
 		/// <summary>
 		/// On platforms which don't support asynchronous suspension we indicate that with immediate
 		/// deadline and warning in logs.

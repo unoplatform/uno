@@ -9,7 +9,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using View = UIKit.UIView;
 #elif __ANDROID__
 using Android.Views;

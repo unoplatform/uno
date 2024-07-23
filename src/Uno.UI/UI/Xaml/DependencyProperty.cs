@@ -22,7 +22,7 @@ using Uno.UI.Xaml.Media;
 
 #if __ANDROID__
 using _View = Android.Views.View;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using _View = UIKit.UIView;
 #else
 using _View = Microsoft.UI.Xaml.UIElement;

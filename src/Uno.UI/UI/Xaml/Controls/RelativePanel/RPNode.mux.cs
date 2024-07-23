@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 
 #if __ANDROID__
 using View = Android.Views.View;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using View = UIKit.UIView;
 #elif __MACOS__
 using View = AppKit.NSView;

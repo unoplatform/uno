@@ -13,7 +13,7 @@ using Windows.Foundation;
 
 #if __ANDROID__
 using View = Android.Views.View;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using UIKit;
 using View = UIKit.UIView;
 using ObjCRuntime;

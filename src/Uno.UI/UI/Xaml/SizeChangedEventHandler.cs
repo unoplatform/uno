@@ -3,7 +3,7 @@ using System.Linq;
 
 #if __ANDROID__
 using _Size = Windows.Foundation.Size;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using _Size = Windows.Foundation.Size;
 #else
 using _Size = Windows.Foundation.Size;

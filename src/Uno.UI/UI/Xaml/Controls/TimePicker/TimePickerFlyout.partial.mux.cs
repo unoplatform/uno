@@ -120,7 +120,7 @@ partial class TimePickerFlyout
 
 	private void OnOpening(object pSender, object pArgs)
 	{
-#if __IOS__ || __ANDROID__ // Avoid OnOpening initialization for native flyouts.
+#if __APPLE_UIKIT__ || __ANDROID__ // Avoid OnOpening initialization for native flyouts.
 		if (this is NativeTimePickerFlyout)
 		{
 			return;
@@ -146,7 +146,7 @@ partial class TimePickerFlyout
 
 	private void OnOpened(object pSender, object pArgs)
 	{
-#if __IOS__ || __ANDROID__ // Avoid OnOpened initialization for native flyouts.
+#if __APPLE_UIKIT__ || __ANDROID__ // Avoid OnOpened initialization for native flyouts.
 		if (this is NativeTimePickerFlyout)
 		{
 			return;

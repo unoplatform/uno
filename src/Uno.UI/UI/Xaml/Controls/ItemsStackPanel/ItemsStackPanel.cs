@@ -60,7 +60,7 @@ namespace Microsoft.UI.Xaml.Controls
 				_layout.BindToEquivalentProperty(this, nameof(AreStickyGroupHeadersEnabled));
 				_layout.BindToEquivalentProperty(this, nameof(GroupHeaderPlacement));
 				_layout.BindToEquivalentProperty(this, nameof(GroupPadding));
-#if !__IOS__
+#if !__APPLE_UIKIT__
 				_layout.BindToEquivalentProperty(this, nameof(CacheLength));
 #endif
 			}

@@ -23,7 +23,7 @@ using static Uno.UI.LayoutHelper;
 using Android.Views;
 using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using View = UIKit.UIView;
 using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
@@ -566,7 +566,7 @@ namespace Microsoft.UI.Xaml.Controls
 			ArrangeChildOverride(view, finalFrame);
 		}
 
-#if __ANDROID__ || __IOS__ || __MACOS__
+#if __ANDROID__ || __APPLE_UIKIT__ || __MACOS__
 		private void LogArrange(View view, Rect frame)
 		{
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))

@@ -5,7 +5,7 @@ using System.Text;
 using Uno.UI.DataBinding;
 using Windows.Foundation;
 
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 namespace Uno.UI.Controls
 {
 	public partial class ManagedItemsStackPanel

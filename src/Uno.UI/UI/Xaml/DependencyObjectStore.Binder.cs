@@ -28,7 +28,7 @@ using Uno.UI.DataBinding;
 using Uno.UI.Controls;
 #endif
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
 #endif
 

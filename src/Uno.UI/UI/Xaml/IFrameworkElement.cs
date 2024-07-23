@@ -28,7 +28,7 @@ using NMath = System.Math;
 using CGSize = Windows.Foundation.Size;
 using _Size = Windows.Foundation.Size;
 using Point = Windows.Foundation.Point;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using View = UIKit.UIView;
 using ViewGroup = UIKit.UIView;
 using Color = UIKit.UIColor;
@@ -135,7 +135,7 @@ namespace Microsoft.UI.Xaml
 		// void SetNeedsLayout ();
 		// void SetSuperviewNeedsLayout ();
 
-#if __IOS__ || __MACOS__
+#if __APPLE_UIKIT__ || __MACOS__
 
 		/// <summary>
 		/// The frame applied to this child when last arranged by its parent. This may differ from the current UIView.Frame if a RenderTransform is set.
@@ -157,7 +157,7 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		public static void Initialize(IFrameworkElement e)
 		{
-#if __IOS__
+#if __APPLE_UIKIT__
 			if (e is UIElement uiElement)
 			{
 				uiElement.ClipsToBounds = false;
@@ -222,7 +222,7 @@ namespace Microsoft.UI.Xaml
 						parent = parent.Parent;
 					}
 
-#elif __IOS__
+#elif __APPLE_UIKIT__
 					view.SetNeedsLayout();
 #elif __MACOS__
 					view.NeedsLayout = true;
@@ -312,7 +312,7 @@ namespace Microsoft.UI.Xaml
 
 		public static CGSize Measure(this IFrameworkElement element, _Size availableSize)
 		{
-#if __IOS__ || __MACOS__
+#if __APPLE_UIKIT__ || __MACOS__
 			return ((View)element).SizeThatFits(new CoreGraphics.CGSize(availableSize.Width, availableSize.Height));
 #elif __ANDROID__
 			var widthSpec = ViewHelper.SpecFromLogicalSize(availableSize.Width);

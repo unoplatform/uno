@@ -1,4 +1,4 @@
-﻿#if __WASM__ || __IOS__ || __MACOS__
+﻿#if __WASM__ || __APPLE_UIKIT__ || __MACOS__
 #nullable enable
 
 using System;
@@ -20,7 +20,7 @@ public partial class LinearGradientBrush
 	{
 #if __WASM__ // On WASM, linear gradient borders work only if there is no CornerRadius applied to the control
 		return cornerRadius == CornerRadius.None;
-#elif __IOS__ || __MACOS__ // On iOS and macOS, we can apply linear gradient borders reliably only when there is no RelativeTransform applied
+#elif __APPLE_UIKIT__ || __MACOS__ // On iOS and macOS, we can apply linear gradient borders reliably only when there is no RelativeTransform applied
 		return RelativeTransform == null;
 #else
 		throw new NotSupportedException("This target does not have a LinearGradientBrush.CanApplyToBorder check yet.");

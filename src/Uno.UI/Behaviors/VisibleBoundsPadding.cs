@@ -13,7 +13,7 @@ using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
 #elif __MACOS__
 using AppKit;
@@ -175,7 +175,7 @@ namespace Uno.UI.Toolkit
 
 				_visibleBoundsChanged = (s2, e2) => UpdatePadding();
 
-#if __IOS__
+#if __APPLE_UIKIT__
 				// For iOS, it's required to react on SizeChanged to prevent weird alignment
 				// problems with Text using the LayoutManager (NSTextContainer).
 				// https://github.com/unoplatform/uno/issues/2836

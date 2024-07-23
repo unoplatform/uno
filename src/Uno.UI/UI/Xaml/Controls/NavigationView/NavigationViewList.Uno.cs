@@ -3,7 +3,7 @@ using Windows.System;
 using Uno.UI;
 using Windows.UI.Xaml.Controls.Primitives;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
 #elif __MACOS__
 using AppKit;

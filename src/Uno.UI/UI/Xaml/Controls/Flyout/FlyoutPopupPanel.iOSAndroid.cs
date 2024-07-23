@@ -1,8 +1,8 @@
-﻿#if __IOS__ || __ANDROID__
+﻿#if __APPLE_UIKIT__ || __ANDROID__
 using System;
 using System.Collections.Generic;
 using System.Text;
-#if __IOS__
+#if __APPLE_UIKIT__
 using View = UIKit.UIView;
 #else
 using Android.Views;

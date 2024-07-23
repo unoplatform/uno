@@ -19,7 +19,7 @@ using Microsoft.UI.Xaml.Shapes;
 using Windows.Foundation;
 using Uno.Extensions;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
 using _View = UIKit.UIView;
 #elif __MACOS__
@@ -130,7 +130,7 @@ static partial class ViewExtensions
 			{
 				yield return $"LTRB={v.Left},{v.Top},{v.Right},{v.Bottom}";
 			}
-#elif __IOS__
+#elif __APPLE_UIKIT__
 			if (x is _View view && view.Superview is { })
 			{
 				var abs = view.Superview.ConvertPointToView(view.Frame.Location, toView: null);
@@ -328,7 +328,7 @@ static partial class ViewExtensions
 
 	// note: methods for retrieving children/ancestors exist with varying signatures.
 	// re-implementing them with unified & more inclusive signature for convenience.
-#if __IOS__ || __MACOS__
+#if __APPLE_UIKIT__ || __MACOS__
 	internal static IEnumerable<_View> EnumerateAncestors(this _View? o)
 	{
 		if (o is null) yield break;
