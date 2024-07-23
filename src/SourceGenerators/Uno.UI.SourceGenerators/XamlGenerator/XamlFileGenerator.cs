@@ -3042,7 +3042,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 
 					var isInsideFrameworkTemplate = IsMemberInsideFrameworkTemplate(objectDefinition).isInside;
-					if (isInsideFrameworkTemplate && isFrameworkElement)
+					var isDependencyObject = IsType(objectDefinitionType, Generation.DependencyObjectSymbol.Value);
+					if (isInsideFrameworkTemplate && isDependencyObject)
 					{
 						writer.AppendLineIndented($"{closureName}.SetTemplatedParent(__settings?.TemplatedParent);");
 						writer.AppendLineIndented($"__settings?.TemplateMemberCreatedCallback?.Invoke({closureName});");

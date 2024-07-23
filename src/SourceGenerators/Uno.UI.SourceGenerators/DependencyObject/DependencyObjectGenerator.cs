@@ -175,8 +175,14 @@ using AppKit;
 						}
 					};
 
-					var internalDependencyObject = _isUnoSolution && !typeSymbol.IsSealed ? ", IDependencyObjectInternal" : "";
-					using (typeSymbol.AddToIndentedStringBuilder(builder, beforeClassHeaderAction, afterClassHeader: $" : IDependencyObjectStoreProvider, IWeakReferenceProvider{internalDependencyObject}"))
+					var implementations = new string?[]
+					{
+						"IDependencyObjectStoreProvider",
+						_isUnoSolution && !typeSymbol.IsSealed ? "IDependencyObjectInternal" : null,
+						"ITemplatedParentProvider",
+						"IWeakReferenceProvider",
+					}.Where(x => x is not null);
+					using (typeSymbol.AddToIndentedStringBuilder(builder, beforeClassHeaderAction, afterClassHeader: " : " + string.Join(", ", implementations)))
 					{
 						GenerateDependencyObjectImplementation(typeSymbol, builder, hasDispatcherQueue: _dependencyObjectSymbol!.GetMembers("DispatcherQueue").Any());
 						GenerateIBinderImplementation(typeSymbol, builder);
@@ -775,33 +781,33 @@ public override bool Equals(object other)
 					}
 				}
 
-				//builder.AppendLineIndented("[EditorBrowsable(EditorBrowsableState.Never)]");
-				//using (builder.BlockInvariant($"DependencyObject IDependencyObjectInternal.TemplatedParent"))
-				//{
-				//	builder.AppendLineIndented("get => GetTemplatedParent();");
-				//	builder.AppendLineIndented("set => SetTemplatedParent(value);");
-				//}
+				var unoBrowsableOnly = _isUnoSolution ? null : "[EditorBrowsable(EditorBrowsableState.Never)]";
 
-				builder.AppendLineIndented($"public {(typeSymbol.IsSealed ? "" : "virtual")} DependencyObject GetTemplatedParent() => null;");
+				builder.AppendLine();
+				builder.AppendMultiLineIndented($$"""
+					{{unoBrowsableOnly}}private ManagedWeakReference _templatedParentWeakRef;
+					{{unoBrowsableOnly}}public ManagedWeakReference GetTemplatedParentWeakRef() => _templatedParentWeakRef;
 
-				builder.AppendMultiLineIndented("""
-					[EditorBrowsable(EditorBrowsableState.Never)]
-					public void SetTemplatedParent(DependencyObject parent)
+					{{unoBrowsableOnly}}public DependencyObject GetTemplatedParent() => _templatedParentWeakRef?.Target as DependencyObject;
+					{{unoBrowsableOnly}}public void SetTemplatedParent(DependencyObject parent)
 					{
-						if (parent != null)
-						{
-							//global::System.Diagnostics.Debug.Assert(parent
-							//	is global::Windows.UI.Xaml.Controls.Control
-							//	or global::Windows.UI.Xaml.Controls.ContentPresenter
-							//	or global::Windows.UI.Xaml.Controls.ItemsPresenter);
-							//global::System.Diagnostics.Debug.Assert(GetTemplatedParent() == null);
-						}
-					
+						//if (parent != null)
+						//{
+						//	global::System.Diagnostics.Debug.Assert(parent
+						//		is global::Windows.UI.Xaml.Controls.Control
+						//		or global::Windows.UI.Xaml.Controls.ContentPresenter
+						//		or global::Windows.UI.Xaml.Controls.ItemsPresenter);
+						//	global::System.Diagnostics.Debug.Assert(GetTemplatedParent() == null);
+						//}
+
 						SetTemplatedParentImpl(parent);
 					}
-					""");
-
-				builder.AppendLineIndented($"{(typeSymbol.IsSealed ? "private" : "private protected virtual")} void SetTemplatedParentImpl(DependencyObject parent) {{ }}");
+					{{unoBrowsableOnly}}{{(typeSymbol.IsSealed ? "private" : "private protected virtual")}} void SetTemplatedParentImpl(DependencyObject parent)
+					{
+						_templatedParentWeakRef = (parent as IWeakReferenceProvider)?.WeakReference;
+					}
+					"""
+				);
 			}
 		}
 	}

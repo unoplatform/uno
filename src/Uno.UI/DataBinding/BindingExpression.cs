@@ -54,7 +54,7 @@ namespace Microsoft.UI.Xaml.Data
 			{
 				if (ParentBinding.IsTemplateBinding)
 				{
-					return (_view?.Target as FrameworkElement)?.GetTemplatedParent();
+					return (_view?.Target as ITemplatedParentProvider)?.GetTemplatedParent();
 				}
 				if (_isElementNameSource || ExplicitSource != null)
 				{
@@ -149,7 +149,7 @@ namespace Microsoft.UI.Xaml.Data
 			ApplyElementName();
 		}
 
-		private ManagedWeakReference GetWeakTemplatedParent() => (_view?.Target as FrameworkElement)?.GetTemplatedParentWeakRef();
+		private ManagedWeakReference GetWeakTemplatedParent() => (_view?.Target as ITemplatedParentProvider)?.GetTemplatedParentWeakRef();
 
 		private ManagedWeakReference GetWeakDataContext()
 		{

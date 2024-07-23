@@ -109,10 +109,10 @@ namespace Microsoft.UI.Xaml
 					FrameworkTemplatePool.Instance.TrackMaterializedTemplate(this, view, members);
 				}
 
-				if (view is FrameworkElement fe)
-				{
-					fe.IsTemplateRoot = true;
-				}
+				//if (view is FrameworkElement fe)
+				//{
+				//	fe.IsTemplateRoot = true;
+				//}
 
 				return view;
 			}
