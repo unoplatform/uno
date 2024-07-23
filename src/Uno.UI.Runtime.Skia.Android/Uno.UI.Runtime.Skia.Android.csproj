@@ -36,6 +36,7 @@
 		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\Android\InternalWebClient.Android.cs" />
 		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\Android\InternalWebChromeClient.Android.cs" />
 		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\Android\UnoWebViewHandler.Android.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Window\Native\NativeWindowWrapper.Android.cs" />
 		<Compile Include="..\Uno.UI\DelegateActivity.Android.cs" />
 		<Compile Include="..\Uno.UI\OnActivityResultArgs.Android.cs" />
 	</ItemGroup>

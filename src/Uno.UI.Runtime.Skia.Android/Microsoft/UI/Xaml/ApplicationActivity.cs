@@ -326,7 +326,7 @@ namespace Microsoft.UI.Xaml
 		{
 			NativeWindowWrapper.Instance.RaiseNativeSizeChanged();
 			//ViewHelper.RefreshFontScale();
-			//DisplayInformation.GetForCurrentView().HandleConfigurationChange();
+			DisplayInformation.GetForCurrentView().HandleConfigurationChange();
 			SystemThemeHelper.RefreshSystemTheme();
 		}
 
