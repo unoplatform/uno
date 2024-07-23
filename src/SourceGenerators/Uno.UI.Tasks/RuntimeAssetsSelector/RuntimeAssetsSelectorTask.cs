@@ -79,6 +79,19 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 			}
 		}
 
+		private string? GetTargetFrameworkDirectoryName(string path, string targetFramework)
+		{
+			foreach (var dir in new DirectoryInfo(path).GetDirectories())
+			{
+				if (dir.Name.StartsWith(targetFramework, StringComparison.Ordinal))
+				{
+					return dir.Name;
+				}
+			}
+
+			return null;
+		}
+
 		private (ITaskItem[] assemblies, ITaskItem[] debugSymbols) EnumerateRuntimeFiles(
 			string unoRuntimeIdentifier
 			, string[]? includeFiles = null
@@ -102,13 +115,11 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 				{
 					searchPaths.Add(Path.Combine(packageBasePath, "uno-runtime", "net9.0", unoRuntimeIdentifier));
 					searchPaths.Add(Path.Combine(packageBasePath, "..", "uno-runtime", "net9.0", unoRuntimeIdentifier));
-					if (unoRuntimeIdentifier == "android")
+					var lib = Path.Combine(packageBasePath, "lib");
+					if (unoRuntimeIdentifier is "android" or "ios" &&
+						GetTargetFrameworkDirectoryName(lib, $"net9.0-{unoRuntimeIdentifier}") is { } tfm)
 					{
-						searchPaths.Add(Path.Combine(packageBasePath, "lib", "net9.0-android30.0"));
-					}
-					else if (unoRuntimeIdentifier == "ios")
-					{
-						searchPaths.Add(Path.Combine(packageBasePath, "lib", "net9.0-ios17.2"));
+						searchPaths.Add(Path.Combine(lib, tfm));
 					}
 				}
 
@@ -117,13 +128,11 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 					searchPaths.Add(Path.Combine(packageBasePath, "uno-runtime", "net8.0", unoRuntimeIdentifier));
 					searchPaths.Add(Path.Combine(packageBasePath, "..", "uno-runtime", "net8.0", unoRuntimeIdentifier));
 					searchPaths.Add(packageBasePath);
-					if (unoRuntimeIdentifier == "android")
+					var lib = Path.Combine(packageBasePath, "lib");
+					if (unoRuntimeIdentifier is "android" or "ios" &&
+						GetTargetFrameworkDirectoryName(lib, $"net8.0-{unoRuntimeIdentifier}") is { } tfm)
 					{
-						searchPaths.Add(Path.Combine(packageBasePath, "lib", "net8.0-android30.0"));
-					}
-					else if (unoRuntimeIdentifier == "ios")
-					{
-						searchPaths.Add(Path.Combine(packageBasePath, "lib", "net8.0-ios17.0"));
+						searchPaths.Add(Path.Combine(lib, tfm));
 					}
 				}
 
