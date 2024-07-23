@@ -6,6 +6,7 @@
 		<UnoWinRTRuntimeIdentifier Condition=" '$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework)))' == 'tvos' ">tvOS</UnoWinRTRuntimeIdentifier>
 		<UnoWinRTRuntimeIdentifier Condition=" '$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework)))' == 'maccatalyst' ">MacCatalyst</UnoWinRTRuntimeIdentifier>
 		<UnoUIRuntimeIdentifier>Skia</UnoUIRuntimeIdentifier>
+		<DefineConstants>$(DefineConstants);UNO_REFERENCE_API;HAS_UNO_SKIA;HAS_UNO_SKIA_APPLE_UIKIT</DefineConstants>
 	</PropertyGroup>
 
 </Project>
