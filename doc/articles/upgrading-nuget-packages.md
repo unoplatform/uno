@@ -12,45 +12,27 @@ Choose one of the sections below depending on your situation.
 
 ## Projects using the Uno.Sdk
 
-Starting from Uno Platform 5.1 and using the new [Uno.Sdk](https://www.nuget.org/packages/uno.sdk), upgrading NuGet packages starting with `Uno.WinUI.` requires updating the `global.json` file at the root of your solution.
+The latest version of the Uno.Sdk is [![NuGet](https://img.shields.io/nuget/v/uno.sdk.svg)](https://www.nuget.org/packages/uno.sdk/).
 
-It typically looks similar to this:
+To upgrade the Uno.Sdk, you'll need to open the `global.json` file located at the root of solution, which typically looks like this:
+
 
 ```json
 {
   "msbuild-sdks": {
-    "Uno.Sdk": "5.1.0",
-    "Microsoft.Build.NoTargets": "3.7.56"
+    "Uno.Sdk": "xx.yy.zz",
   }
 }
 ```
 
+Update the `xx.yy.zz` property to the latest Uno.SDK version, then save the file.
+
 > [!IMPORTANT]
-> In Visual Studio 2022, once the Uno Version is updated, you'll need to close and reopen the solution or restart Visual Studio for the change to take effect.
+> In Visual Studio 2022, once the Uno Version is updated, a banner will ask to restart the IDE. Once the solution is reopened the changes will take effect.
 >
 > At this time, the NuGet package Manager does not parse or manage Sdks provided by NuGet. If you would like to see this feature added, please be sure to provide your [feedback or upvote this issue](https://github.com/NuGet/Home/issues/13127).
 
-To find the version to update to, pick the latest stable build from the [Uno.WinUI](https://www.nuget.org/packages/Uno.WinUI) package with either:
-
-- When using Visual Studio 2022, use the NuGet Package Manager
-- Use [`dotnet outdated`](https://github.com/dotnet-outdated/dotnet-outdated):
-  - Install the tool using:
-
-    ```dotnetcli
-    dotnet tool install --global dotnet-outdated-tool
-    ```
-
-  - Then, at the root of the solution, run the tool with:
-
-    ```dotnetcli
-    dotnet outdated
-    ```
-
-  - When available, the tool will provide the versions which can be updated.
-- [Uno.WinUI in Nuget Package Explorer](https://nuget.info/packages/Uno.WinUI)
-- [Uno.WinUI in nuget.org](https://www.nuget.org/packages/Uno.WinUI)
-
-Once the version has been chosen, change the `global.json` line with `"Uno.Sdk"` to use the newer version of Uno Platform. If you're running Visual Studio 2022, make sure to close/reopen the solution or restart the IDE.
+You can also browse the available versions of the Uno.Sdk using [Nuget Package Explorer](https://nuget.info).
 
 ## Projects without the Uno.Sdk
 
