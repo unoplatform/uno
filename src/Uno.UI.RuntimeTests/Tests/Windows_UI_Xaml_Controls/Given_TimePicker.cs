@@ -46,6 +46,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if HAS_UNO
 		// Validates the workaround for missing support of MonochromaticOverlayPresenter in Uno
 		[TestMethod]
+		[RunsOnUIThread]
 		public async Task When_MonochromaticOverlayPresenter_Workaround()
 		{
 			using var fluent = StyleHelper.UseFluentStyles();
