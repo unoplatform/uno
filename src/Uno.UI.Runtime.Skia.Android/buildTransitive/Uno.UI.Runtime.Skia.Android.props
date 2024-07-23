@@ -4,6 +4,8 @@
 	<PropertyGroup>
 		<UnoWinRTRuntimeIdentifier>Android</UnoWinRTRuntimeIdentifier>
 		<UnoUIRuntimeIdentifier>Skia</UnoUIRuntimeIdentifier>
+
+		<DefineConstants>$(DefineConstants);UNO_REFERENCE_API;HAS_UNO_SKIA;HAS_UNO_SKIA_ANDROID</DefineConstants>
 	</PropertyGroup>
 
 </Project>
