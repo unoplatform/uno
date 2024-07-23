@@ -77,8 +77,8 @@ internal sealed class AndroidCorePointerInputSource : IUnoCorePointerInputSource
 			var isInContact = PointerHelpers.IsInContact(e, pointerType, nativePointerAction, nativePointerButtons);
 			var isInRange = true; // TODO: ?
 			var keyModifiers = e.MetaState.ToVirtualKeyModifiers();
-			var x = e.RawX;
-			var y = e.RawY;
+			var x = e.GetX();
+			var y = e.GetY();
 			var position = new Point((int)x - correction[0], (int)y - correction[1]).PhysicalToLogicalPixels();
 
 			var properties = PointerHelpers.GetProperties(e, pointerIndex, nativePointerType, nativePointerAction, nativePointerButtons, isInRange, isInContact);
