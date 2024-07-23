@@ -48,6 +48,7 @@ Here's what to look for:
 
       ```csharp
       builder.AddFilter("Windows.UI.Xaml.Media.Animation", LogLevel.Debug);
+      builder.AddFilter("Microsoft.UI.Xaml.Media.Animation", LogLevel.Debug);
       ```
 
       The logger will provide all the changes done to animated properties, with element names.
