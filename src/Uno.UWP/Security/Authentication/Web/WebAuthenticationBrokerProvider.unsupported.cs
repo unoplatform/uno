@@ -1,4 +1,5 @@
-﻿#nullable enable
+﻿#if !__ANDROID__ && !__IOS__ && !__MACOS__ && !__SKIA__ && !__WASM__
+#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -24,3 +25,4 @@ namespace Uno.AuthenticationBroker
 		}
 	}
 }
+#endif
