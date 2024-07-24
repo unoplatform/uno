@@ -143,7 +143,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				{
 					var contentOwner = unknownContent;
 
-					return LoadObject(contentOwner?.Objects.FirstOrDefault(), rootInstance: rootInstance, settings: settings) as _View;
+					return LoadObject(contentOwner?.Objects.FirstOrDefault(), rootInstance: rootInstance, settings: s) as _View;
 				};
 
 				var created = Activator.CreateInstance(type, /* owner: */null, /* factory: */builder);
