@@ -17,7 +17,6 @@
 			"Uno.WinUI.Runtime.Skia.Wpf",
 			"Uno.WinUI.Runtime.Skia.X11",
 			"Uno.WinUI.Svg",
-			"Uno.WinUI.WebAssembly",
 			"Uno.WinUI.Runtime.WebAssembly",
 			"Uno.WinUI.MediaPlayer.WebAssembly"
 		]
