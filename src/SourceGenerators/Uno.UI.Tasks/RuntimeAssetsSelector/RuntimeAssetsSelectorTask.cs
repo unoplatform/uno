@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
@@ -45,7 +46,6 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 		[Output]
 		public Microsoft.Build.Framework.ITaskItem[]? ResolvedCompileFileDefinitionsOutput { get; set; }
 
-
 		[Output]
 		public Microsoft.Build.Framework.ITaskItem[]? DebugSymbols { get; set; }
 
@@ -68,36 +68,25 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 
 					List<string> searchPaths = new();
 
-					if (targetFrameworkVersion >= new Version(9, 0))
+					// Even if Uno does not support nte7.0 explicitly anymore, dependencies
+					// may still be providing net7.0 runtime support files (e.g. SkiaSharp)
+					for (int i = 9; i >= 7; i--)
 					{
-						searchPaths.Add(Path.Combine(packageBasePath, "uno-runtime", "net9.0", UnoRuntimeIdentifier));
-						searchPaths.Add(Path.Combine(packageBasePath, "..", "uno-runtime", "net9.0", UnoRuntimeIdentifier));
+						var versionAsString = i.ToString(CultureInfo.InvariantCulture);
+						if (targetFrameworkVersion >= new Version(i, 0))
+						{
+							searchPaths.Add(Path.Combine(packageBasePath, "uno-runtime", $"net{versionAsString}.0", UnoRuntimeIdentifier));
+							searchPaths.Add(Path.Combine(packageBasePath, "..", "uno-runtime", $"net{versionAsString}.0", UnoRuntimeIdentifier));
+						}
 					}
 
-					if (targetFrameworkVersion >= new Version(8, 0))
-					{
-						searchPaths.Add(Path.Combine(packageBasePath, "uno-runtime", "net8.0", UnoRuntimeIdentifier));
-						searchPaths.Add(Path.Combine(packageBasePath, "..", "uno-runtime", "net8.0", UnoRuntimeIdentifier));
-					}
-
-					if (targetFrameworkVersion >= new Version(7, 0))
-					{
-						// Even if Uno does not support nte7.0 explicitly anymore, dependencies
-						// may still be providing net7.0 runtime support files (e.g. SkiaSharp)
-						searchPaths.Add(Path.Combine(packageBasePath, "uno-runtime", "net7.0", UnoRuntimeIdentifier));
-						searchPaths.Add(Path.Combine(packageBasePath, "..", "uno-runtime", "net7.0", UnoRuntimeIdentifier));
-					}
-
-					if (targetFrameworkVersion >= new Version(2, 0))
-					{
-						searchPaths.Add(Path.Combine(packageBasePath, "uno-runtime", "netstandard2.0", UnoRuntimeIdentifier));
-						searchPaths.Add(Path.Combine(packageBasePath, "..", "uno-runtime", "netstandard2.0", UnoRuntimeIdentifier));
-					}
+					searchPaths.Add(Path.Combine(packageBasePath, "uno-runtime", "netstandard2.0", UnoRuntimeIdentifier));
+					searchPaths.Add(Path.Combine(packageBasePath, "..", "uno-runtime", "netstandard2.0", UnoRuntimeIdentifier));
 
 					if (searchPaths.FirstOrDefault(Directory.Exists) is { } topMostDirectory)
 					{
 						var packageIdentity = package.GetMetadata("Identity");
-
+						var pathInPackagePrefix = topMostDirectory.Substring(topMostDirectory.LastIndexOf("uno-runtime", StringComparison.Ordinal)).Replace('\\', '/');
 						foreach (var assembly in Directory.EnumerateFiles(topMostDirectory, "*.dll"))
 						{
 							assemblies.Add(new TaskItem(
@@ -105,7 +94,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 								new Dictionary<string, string>
 								{
 									["NuGetPackageId"] = packageIdentity,
-									["PathInPackage"] = $"uno-runtime/{Path.GetFileName(Path.GetDirectoryName(topMostDirectory))}/{UnoRuntimeIdentifier}/{Path.GetFileName(assembly)}"
+									["PathInPackage"] = $"{pathInPackagePrefix}/{Path.GetFileName(assembly)}",
 								}));
 
 							var existing = ResolvedCompileFileDefinitionsInput.First(item => item.GetMetadata("NuGetPackageId") == packageIdentity);
@@ -119,7 +108,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 									["Private"] = existing.GetMetadata("Private"),
 									["ExternallyResolved"] = existing.GetMetadata("ExternallyResolved"),
 									["NuGetPackageId"] = packageIdentity,
-									["PathInPackage"] = $"uno-runtime/{Path.GetFileName(Path.GetDirectoryName(topMostDirectory))}/{UnoRuntimeIdentifier}/{Path.GetFileName(assembly)}",
+									["PathInPackage"] = $"{pathInPackagePrefix}/{Path.GetFileName(assembly)}",
 									["NuGetSourceType"] = existing.GetMetadata("NuGetSourceType"),
 								}));
 						}
