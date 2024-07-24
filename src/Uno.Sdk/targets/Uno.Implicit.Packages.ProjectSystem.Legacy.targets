@@ -1,6 +1,6 @@
 <Project>
 	<ItemGroup Condition="$(MSBuildProjectName.EndsWith('Skia.WPF'))">
-		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Skia.Wpf" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.Skia.Wpf" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="SkiaSharp.NativeAssets.Win32" ProjectSystem="true" />
 	</ItemGroup>
 	<ItemGroup Condition="$(MSBuildProjectName.EndsWith('Skia.Linux.FrameBuffer'))">
