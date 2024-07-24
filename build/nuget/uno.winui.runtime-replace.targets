@@ -4,7 +4,7 @@
 	<!-- Target used to override the uno-runtime targets -->
 	<Target Name="ReplaceUnoRuntime"
 				Condition="'$(UnoRuntimeIdentifier)'!=''"
-				BeforeTargets="_ComputeResolvedCopyLocalPublishAssets;ResolveLockFileCopyLocalFiles;ComputeFilesToPublish;GeneratePublishDependencyFile">
+				BeforeTargets="_ComputeResolvedCopyLocalPublishAssets;ResolveLockFileCopyLocalFiles;ComputeFilesToPublish;GeneratePublishDependencyFile;ResolveLockFileReferences">
 
 		<ItemGroup>
 
