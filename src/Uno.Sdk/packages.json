@@ -15,7 +15,7 @@
 			"Uno.WinUI.Skia.Linux.FrameBuffer",
 			"Uno.WinUI.Skia.MacOS",
 			"Uno.WinUI.Skia.Wpf",
-			"Uno.WinUI.Skia.X11",
+			"Uno.WinUI.Runtime.Skia.X11",
 			"Uno.WinUI.Svg",
 			"Uno.WinUI.WebAssembly",
 			"Uno.WinUI.Runtime.WebAssembly",
