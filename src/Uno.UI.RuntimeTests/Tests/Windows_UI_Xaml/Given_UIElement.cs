@@ -1320,7 +1320,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		}
 #endif
 
-#if __SKIA__ || WINAPPSDK
+#if HAS_INPUT_INJECTOR || WINAPPSDK
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
@@ -1335,7 +1335,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			var rect = await UITestHelper.Load(sut);
 
-#if __SKIA__
+#if HAS_UNO
 			var (element, _) = VisualTreeHelper.HitTest(rect.GetCenter(), sut.XamlRoot);
 			Assert.IsTrue(sut.IsAncestorOf(element));
 #endif
@@ -1371,7 +1371,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.AreEqual(rect.Height * 2, matrix4.OffsetY - matrix1.OffsetY);
 #endif
 
-#if __SKIA__
+#if HAS_UNO
 			var (element2, _) = VisualTreeHelper.HitTest(rect.GetCenter(), sut.XamlRoot);
 			Assert.IsFalse(sut.IsAncestorOf(element2));
 

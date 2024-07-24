@@ -1,4 +1,4 @@
-﻿#if __SKIA__
+﻿#if HAS_INPUT_INJECTOR
 
 using System;
 using System.Collections.Generic;

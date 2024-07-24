@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Uno.Helpers;
 using Uno.UI.RuntimeTests.Helpers;
@@ -20,13 +21,14 @@ using Point = Windows.Foundation.Point;
 using Size = Windows.Foundation.Size;
 
 #if __SKIA__
-using System;
+using SkiaSharp;
+using Microsoft.UI.Xaml.Documents.TextFormatting;
+#endif
+#if HAS_INPUT_INJECTOR
+using Microsoft.UI.Xaml.Input;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.System;
 using Windows.UI.Input.Preview.Injection;
-using SkiaSharp;
-using Microsoft.UI.Xaml.Documents.TextFormatting;
-using Microsoft.UI.Xaml.Input;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -903,7 +905,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if HAS_UNO // GetMouse is not available on WinUI
 		#region IsTextSelectionEnabled
 
-#if __SKIA__ // enable this region when InputInjector and IsTextSelectionEnabled are supported on more platforms
+#if HAS_INPUT_INJECTOR
 		[TestMethod]
 		public async Task When_IsTextSelectionEnabled_PointerDrag()
 		{
