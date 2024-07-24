@@ -15,6 +15,8 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using FluentAssertions;
+using Microsoft.UI.Xaml.Markup;
+using Uno.UI.Helpers;
 
 namespace Uno.UI.Tests.ListViewBaseTests
 {
@@ -690,20 +692,20 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			var SUT = new ListView()
 			{
 				Style = null,
-				ItemsPanel = new ItemsPanelTemplate(() => new StackPanel()),
+				ItemsPanel = XamlHelper.LoadXaml<ItemsPanelTemplate>("<ItemsPanelTemplate><StackPanel /></ItemsPanelTemplate>"),
 				ItemContainerStyle = BuildBasicContainerStyle(),
 				ItemTemplate = null,
 				ItemTemplateSelector = null,
-				Template = new ControlTemplate(() => new ItemsPresenter()),
+				Template = XamlHelper.LoadXaml<ControlTemplate>("<ControlTemplate><ItemsPresenter /></ControlTemplate>"),
 			};
-
 			SUT.ForceLoaded();
 
 			var source = new[] {
 				"Item 1"
 			};
-
 			SUT.ItemsSource = source;
+
+			var tree = SUT.TreeGraph();
 
 			var si = SUT.ContainerFromItem(source[0]) as ListViewItem;
 			Assert.IsNotNull(si);
@@ -759,43 +761,43 @@ namespace Uno.UI.Tests.ListViewBaseTests
 		{
 			var count = 0;
 			var containerCount = 0;
+			using var dispose1 = SelfCountingGrid.HookCtor(() => count++);
+			using var dispose2 = SelfCountingGrid2.HookCtor(() => containerCount++);
+
 			var panel = new StackPanel();
 			panel.ForceLoaded();
 
 			var source = new ObservableVector<string>() { "1", "2", "3" };
 
-			Style BuildContainerStyle() =>
-			new Style(typeof(Microsoft.UI.Xaml.Controls.ListViewItem))
+			var xmlnses = new Dictionary<string, string>
 			{
-				Setters =  {
-					new Setter<ContentControl>("Template", t =>
-						t.Template = Funcs.Create(() => {
-							containerCount++;
-							return new Grid
-							{
-								Children = {
-									new ContentPresenter()
-										.Apply(p => {
-											p.SetBinding(ContentPresenter.ContentTemplateProperty, new Binding(){ Path = "ContentTemplate", RelativeSource = RelativeSource.TemplatedParent });
-											p.SetBinding(ContentPresenter.ContentProperty, new Binding(){ Path = "Content", RelativeSource = RelativeSource.TemplatedParent });
-										})
-								}
-							};
-						})
-					)
-				}
+				[string.Empty] = "http://schemas.microsoft.com/winfx/2006/xaml/presentation",
+				["x"] = "http://schemas.microsoft.com/winfx/2006/xaml",
+				["local"] = $"using:{typeof(SelfCountingGrid).Namespace}",
 			};
+			Style BuildContainerStyle() => XamlHelper.LoadXaml<Style>($$"""
+				<Style TargetType="ListViewItem">
+					<Setter Property="Template">
+						<Setter.Value>
+							<ControlTemplate>
+								<local:SelfCountingGrid2>
+									<ContentPresenter
+										ContentTemplate="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ContentTemplate}"
+										Content="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}"
+										/>
+								</local:SelfCountingGrid2>
+							</ControlTemplate>
+						</Setter.Value>
+					</Setter>
+				</Style>
+			""", xmlnses);
 
 			var SUT = new ListView()
 			{
 				ItemsPanelRoot = panel,
 				InternalItemsPanelRoot = panel,
 				ItemContainerStyle = BuildContainerStyle(),
-				ItemTemplate = new DataTemplate(() =>
-				{
-					count++;
-					return new Border();
-				})
+				ItemTemplate = XamlHelper.LoadXaml<DataTemplate>("<DataTemplate><local:SelfCountingGrid /></DataTemplate>", xmlnses),
 			};
 
 			Assert.AreEqual(0, count);
@@ -824,26 +826,22 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			Assert.AreEqual(5, containerCount);
 		}
 
-		private Style BuildBasicContainerStyle() =>
-		new Style(typeof(Microsoft.UI.Xaml.Controls.ListViewItem))
-		{
-			Setters =  {
-				new Setter<ListViewItem>("Template", t =>
-					t.Template = Funcs.Create(() =>
-						new Grid
-						{
-							Children = {
-								new ContentPresenter()
-									.Apply(p => {
-										p.SetBinding(ContentPresenter.ContentTemplateProperty, new Binding(){ Path = "ContentTemplate", RelativeSource = RelativeSource.TemplatedParent });
-										p.SetBinding(ContentPresenter.ContentProperty, new Binding(){ Path = "Content", RelativeSource = RelativeSource.TemplatedParent });
-									})
-							}
-						}
-					)
-				)
-			}
-		};
+		private Style BuildBasicContainerStyle() => XamlHelper.LoadXaml<Style>("""
+			<Style TargetType="ListViewItem">
+				<Setter Property="Template">
+					<Setter.Value>
+						<ControlTemplate>
+							<Grid>
+								<ContentPresenter
+									ContentTemplate="{Binding Path=ContentTemplate, RelativeSource={RelativeSource TemplatedParent}}"
+									Content="{Binding Path=Content, RelativeSource={RelativeSource TemplatedParent}}"
+									/>
+							</Grid>
+						</ControlTemplate>
+					</Setter.Value>
+				</Setter>
+			</Style>
+		""");
 	}
 
 	public class MyModel
@@ -864,6 +862,43 @@ namespace Uno.UI.Tests.ListViewBaseTests
 		{
 			OnItemsChangedCallCount++;
 			base.OnItemsChanged(e);
+		}
+	}
+
+	public class SelfCountingGrid : Grid
+	{
+		public static int Count { get; private set; }
+		public static Action CtorCallback = null;
+
+		public SelfCountingGrid()
+		{
+			Count++;
+			CtorCallback?.Invoke();
+		}
+
+		public static IDisposable RestartCounter() => HookCtor(null);
+		public static IDisposable HookCtor(Action callback)
+		{
+			(Count, CtorCallback) = (0, callback);
+			return new DisposableAction(() => (Count, CtorCallback) = (0, null));
+		}
+	}
+	public class SelfCountingGrid2 : Grid
+	{
+		public static int Count { get; private set; }
+		public static Action CtorCallback = null;
+
+		public SelfCountingGrid2()
+		{
+			Count++;
+			CtorCallback?.Invoke();
+		}
+
+		public static IDisposable RestartCounter() => HookCtor(null);
+		public static IDisposable HookCtor(Action callback)
+		{
+			(Count, CtorCallback) = (0, callback);
+			return new DisposableAction(() => (Count, CtorCallback) = (0, null));
 		}
 	}
 }

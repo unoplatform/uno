@@ -79,84 +79,6 @@ namespace Uno.UI.Tests.BinderTests.ManualPropagation
 		}
 
 		[TestMethod]
-		public void When_IsAutoPropertyInheritance_Disabled_TemplatedParent()
-		{
-			var SUT = new MyObject();
-			var inner = new SubObject();
-
-			SUT.SubObject = inner;
-
-			Assert.IsNull(inner.LastDataContextChangedValue);
-
-			var parent = new Grid();
-			SUT.TemplatedParent = parent;
-
-			Assert.IsNull(inner.LastTemplatedParentChangedValue);
-
-			Assert.AreEqual(parent, inner.TemplatedParent);
-			Assert.AreEqual(parent, inner.LastTemplatedParentChangedValue);
-		}
-
-		[TestMethod]
-		public void When_IsAutoPropertyInheritance_Disabled_TemplatedParent_Binding()
-		{
-			var SUT = new MyObject();
-			var inner = new SubObject();
-
-			SUT.SubObject = inner;
-
-			Assert.IsNull(inner.LastDataContextChangedValue);
-
-			var parent = new Grid() { Tag = 42 };
-			SUT.TemplatedParent = parent;
-
-			Assert.IsNull(inner.LastTemplatedParentChangedValue);
-
-			inner.SetBinding(
-				SubObject.DataContextProperty,
-				new Binding()
-				{
-					Path = "Tag",
-					RelativeSource = RelativeSource.TemplatedParent
-				}
-			);
-
-			Assert.AreEqual(parent, inner.LastTemplatedParentChangedValue);
-			Assert.AreEqual(42, inner.DataContext);
-		}
-
-		[TestMethod]
-		public void When_IsAutoPropertyInheritance_Multi_Disabled()
-		{
-			var SUT = new MyObject();
-			var inner = new SubObject();
-			var inner2 = new SubObject();
-
-			SUT.SubObject = inner;
-			inner.Inner = inner2;
-
-			Assert.IsNull(inner.LastDataContextChangedValue);
-
-			SUT.DataContext = 42;
-
-			Assert.IsNull(inner.LastDataContextChangedValue);
-			Assert.AreEqual("", inner.MyStringProperty);
-			Assert.AreEqual("", inner2.MyStringProperty);
-
-			inner2.SetBinding(
-				SubObject.MyStringPropertyProperty,
-				new Binding()
-				{
-				}
-			);
-
-			Assert.AreEqual(42, inner.LastDataContextChangedValue);
-			Assert.AreEqual(42, inner2.LastDataContextChangedValue);
-			Assert.AreEqual("", inner.MyStringProperty);
-			Assert.AreEqual("42", inner2.MyStringProperty);
-		}
-
-		[TestMethod]
 		public void When_IsAutoPropertyInheritance_Multi_DataContext_Read_Top()
 		{
 			var SUT = new MyObject();
@@ -448,16 +370,9 @@ namespace Uno.UI.Tests.BinderTests.ManualPropagation
 
 		public object LastDataContextChangedValue { get; private set; }
 
-		public object LastTemplatedParentChangedValue { get; private set; }
-
 		partial void OnDataContextChangedPartial(DependencyPropertyChangedEventArgs e)
 		{
 			LastDataContextChangedValue = e.NewValue;
-		}
-
-		partial void OnTemplatedParentChangedPartial(DependencyPropertyChangedEventArgs e)
-		{
-			LastTemplatedParentChangedValue = e.NewValue;
 		}
 
 		public int MyProperty

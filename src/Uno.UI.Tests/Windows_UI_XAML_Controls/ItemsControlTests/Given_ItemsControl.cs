@@ -89,7 +89,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 			{
 				Setters =  {
 					new Setter<ItemsControl>("Template", t =>
-						t.Template = Funcs.Create(() => itemsPresenter)
+						t.Template = new ControlTemplate(() => itemsPresenter)
 					)
 				}
 			};

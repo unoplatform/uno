@@ -73,7 +73,7 @@ namespace Uno.UI.Tests
 			var child = new MyObject(12);
 			var parent = new MyObject(144);
 
-			var store = new DependencyObjectStore(child, MyObject.DataContextProperty, MyObject.TemplatedParentProperty);
+			var store = new DependencyObjectStore(child, MyObject.DataContextProperty);
 			store.Parent = parent;
 			Assert.AreEqual(parent, store.Parent);
 
@@ -87,7 +87,7 @@ namespace Uno.UI.Tests
 			var child = new MyObject(12);
 			var parent = new MyProvider();
 
-			var store = new DependencyObjectStore(child, MyObject.DataContextProperty, MyObject.TemplatedParentProperty);
+			var store = new DependencyObjectStore(child, MyObject.DataContextProperty);
 			store.Parent = parent;
 			Assert.AreEqual(parent, store.Parent);
 
