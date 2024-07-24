@@ -12,6 +12,12 @@ Uno Platform 5.3 contains an improved template and Uno.SDK versioning, new defau
 
 The support for .NET 7 has been removed, since it was a Standard Term Support (STS) release which [ended in May 2024](https://dotnet.microsoft.com/en-us/platform/support/policy/dotnet-core). You can [upgrade your project to .NET 8](xref:Uno.Development.MigratingFromNet7ToNet8) using our guide.
 
+Make sure to [re-run Uno.Check](xref:UnoCheck.UsingUnoCheck) to get all the latest dependencies.
+
+### Visual Studio
+
+Make sure to update your [Uno Platform extension](https://aka.platform.uno/vs-extension-marketplace) in VS 2022 to 5.3.x or later. Earlier versions may automatically update to an incorrect version of the Uno.SDK.
+
 ### Single Project updates
 
 Similar to version 5.2, using the new project template is entirely optional and previous project structures are fully supported.
