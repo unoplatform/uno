@@ -264,7 +264,12 @@ embed.uno-frameworkelement.uno-unarranged {
 
 textarea {
   resize: none;
-  overflow: hidden; /* Scrolling is handled by the parent ScrollViewer */
+  scrollbar-width: none;
+}
+
+textarea::-webkit-scrollbar {
+  width: 0;
+  background: transparent;
 }
 
 input::-ms-reveal,
