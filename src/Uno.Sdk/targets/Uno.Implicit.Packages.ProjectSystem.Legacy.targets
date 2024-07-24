@@ -4,7 +4,7 @@
 		<_UnoProjectSystemPackageReference Include="SkiaSharp.NativeAssets.Win32" ProjectSystem="true" />
 	</ItemGroup>
 	<ItemGroup Condition="$(MSBuildProjectName.EndsWith('Skia.Linux.FrameBuffer'))">
-		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Skia.Linux.FrameBuffer" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.Skia.Linux.FrameBuffer" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="SkiaSharp.NativeAssets.Linux" ProjectSystem="true" />
 	</ItemGroup>
 	<ItemGroup Condition="$(MSBuildProjectName.EndsWith('Skia.Gtk'))">
