@@ -150,9 +150,6 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 				writer.AppendLineIndented("#pragma warning disable Uno0001 // Ignore not implemented members");
 				writer.AppendLineIndented("#pragma warning disable Uno0007 // An assembly required for a component is missing");
 				AnalyzerSuppressionsGenerator.Generate(writer, AnalyzerSuppressions);
-				writer.AppendLineIndented("using System;");
-				writer.AppendLineIndented("using System.Linq;");
-				writer.AppendLineIndented("using System.Diagnostics;");
 
 				using (writer.BlockInvariant("namespace {0}", _defaultNamespace))
 				{
@@ -172,7 +169,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 
 			private void GenerateProviderTable(IndentedStringBuilder writer)
 			{
-				writer.AppendLineIndented("[System.Runtime.CompilerServices.CompilerGeneratedAttribute]");
+				writer.AppendLineIndented("[global::System.Runtime.CompilerServices.CompilerGeneratedAttribute]");
 				using (writer.BlockInvariant("public class BindableMetadataProvider : global::Uno.UI.DataBinding.IBindableMetadataProvider"))
 				{
 					GenerateTypeTable(writer);
@@ -285,24 +282,24 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 				writer.AppendLineIndented("/// <summary>");
 				writer.AppendLineInvariantIndented("/// Builder for {0}", ownerType.GetFullyQualifiedTypeExcludingGlobal());
 				writer.AppendLineIndented("/// </summary>");
-				writer.AppendLineIndented("[System.Runtime.CompilerServices.CompilerGeneratedAttribute]");
+				writer.AppendLineIndented("[global::System.Runtime.CompilerServices.CompilerGeneratedAttribute]");
 				using (writer.BlockInvariant("static class MetadataBuilder_{0:000}", typeInfo.Index))
 				{
 					var postWriter = new IndentedStringBuilder();
 					postWriter.Indent(writer.CurrentLevel);
 
 					// Generate a parameter-less build to avoid generating a lambda during registration (avoids creating a caching backing field)
-					writer.AppendLineIndented("[System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Maintainability\", \"CA1502:AvoidExcessiveComplexity\", Justification=\"Must be ignored even if generated code is checked.\")]");
-					writer.AppendLineIndented("[System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Maintainability\", \"CA1506:AvoidExcessiveClassCoupling\", Justification = \"Must be ignored even if generated code is checked.\")]");
-					writer.AppendLineIndented("[System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Maintainability\", \"CA1505:AvoidUnmaintainableCode\", Justification = \"Must be ignored even if generated code is checked.\")]");
+					writer.AppendLineIndented("[global::System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Maintainability\", \"CA1502:AvoidExcessiveComplexity\", Justification=\"Must be ignored even if generated code is checked.\")]");
+					writer.AppendLineIndented("[global::System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Maintainability\", \"CA1506:AvoidExcessiveClassCoupling\", Justification = \"Must be ignored even if generated code is checked.\")]");
+					writer.AppendLineIndented("[global::System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Maintainability\", \"CA1505:AvoidUnmaintainableCode\", Justification = \"Must be ignored even if generated code is checked.\")]");
 					using (writer.BlockInvariant("internal static global::Uno.UI.DataBinding.IBindableType Build()"))
 					{
 						writer.AppendLineIndented("return Build(null);");
 					}
 
-					writer.AppendLineIndented("[System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Maintainability\", \"CA1502:AvoidExcessiveComplexity\", Justification=\"Must be ignored even if generated code is checked.\")]");
-					writer.AppendLineIndented("[System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Maintainability\", \"CA1506:AvoidExcessiveClassCoupling\", Justification = \"Must be ignored even if generated code is checked.\")]");
-					writer.AppendLineIndented("[System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Maintainability\", \"CA1505:AvoidUnmaintainableCode\", Justification = \"Must be ignored even if generated code is checked.\")]");
+					writer.AppendLineIndented("[global::System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Maintainability\", \"CA1502:AvoidExcessiveComplexity\", Justification=\"Must be ignored even if generated code is checked.\")]");
+					writer.AppendLineIndented("[global::System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Maintainability\", \"CA1506:AvoidExcessiveClassCoupling\", Justification = \"Must be ignored even if generated code is checked.\")]");
+					writer.AppendLineIndented("[global::System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Maintainability\", \"CA1505:AvoidUnmaintainableCode\", Justification = \"Must be ignored even if generated code is checked.\")]");
 					using (writer.BlockInvariant("internal static global::Uno.UI.DataBinding.IBindableType Build(global::Uno.UI.DataBinding.BindableType parent)"))
 					{
 						RegisterHintMethod($"MetadataBuilder_{typeInfo.Index:000}", ownerType, "Uno.UI.DataBinding.IBindableType Build(Uno.UI.DataBinding.BindableType)");
