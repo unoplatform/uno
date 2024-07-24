@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Uno.UITest.Helpers.Queries;
 
-internal static class SkiaAppExtensions
+internal static class RuntimeTestsAppExtensions
 {
 	// This class contains compatibility method to match the Uno.UITest.IApp contract.
 	// Those methods are directly on the IApp interface but are not expected to be imported on the refreshed

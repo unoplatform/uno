@@ -14,19 +14,20 @@ using Windows.Web.Http;
 using Private.Infrastructure;
 using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests;
+using Uno.UI.RuntimeTests.Helpers;
 using Uno.UITest.Helpers.Queries;
 
 namespace Uno.UITest;
 
-public partial class SkiaApp : IApp
+public partial class RuntimeTestsApp : IApp
 {
-	private static SkiaApp? _current; // Make sure to not create multiple instances of the app (with a single InputInjector instance)!
-	internal static SkiaApp Current => _current ??= new();
+	private static RuntimeTestsApp? _current; // Make sure to not create multiple instances of the app (with a single InputInjector instance)!
+	internal static RuntimeTestsApp Current => _current ??= new();
 
 	private readonly InputInjector _input;
 	private MouseHelper Mouse { get; }
 
-	private SkiaApp()
+	private RuntimeTestsApp()
 	{
 		_input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Cannot create input injector");
 		Mouse = new MouseHelper(_input);
@@ -46,7 +47,11 @@ public partial class SkiaApp : IApp
 
 	public async Task RunAsync(string metadataName)
 	{
+#if __SKIA__
 		var assemblyName = "SamplesApp.Skia";
+#elif __WASM__
+		var assemblyName = "SamplesApp.Wasm";
+#endif
 		if (TestServices.WindowHelper.IsXamlIsland)
 		{
 			assemblyName = "UnoIslands" + assemblyName;
@@ -256,4 +261,13 @@ public partial class SkiaApp : IApp
 
 	private Exception NotSupported([CallerMemberName] string operation = "")
 		=> new NotSupportedException($"'{operation}' with type '{CurrentPointerType}' is not supported yet on this platform. Feel free to contribute!");
+
+	public async ValueTask<RawBitmap> TakeScreenshotAsync(string name)
+	{
+		var screenshot = await UITestHelper.ScreenShot((FrameworkElement)TestServices.WindowHelper.CurrentTestWindow.Content!);
+#if false
+		UITestHelper.Save(screenshot, name);
+#endif
+		return screenshot;
+	}
 }
