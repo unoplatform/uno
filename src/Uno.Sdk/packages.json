@@ -13,7 +13,7 @@
 			"Uno.WinUI.DevServer",
 			"Uno.WinUI.Skia.Gtk",
 			"Uno.WinUI.Skia.Linux.FrameBuffer",
-			"Uno.WinUI.Skia.MacOS",
+			"Uno.WinUI.Runtime.Skia.MacOS",
 			"Uno.WinUI.Runtime.Skia.Wpf",
 			"Uno.WinUI.Runtime.Skia.X11",
 			"Uno.WinUI.Svg",
