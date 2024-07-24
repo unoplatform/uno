@@ -144,26 +144,7 @@ namespace Uno.UI.Xaml
 			NativeMethods.SetPointerEvents(htmlId, enabled);
 		}
 
-		[TSInteropMessage]
-		[StructLayout(LayoutKind.Sequential, Pack = 4)]
-		private struct WindowManagerSetPointerEventsParams
-		{
-			public IntPtr HtmlId;
-
-			public bool Enabled;
-		}
-
 		#endregion
-
-		internal static void SetPointerCapture(IntPtr htmlId, uint pointerId)
-		{
-			NativeMethods.SetPointerCapture(htmlId, pointerId);
-		}
-
-		internal static void ReleasePointerCapture(IntPtr htmlId, uint pointerId)
-		{
-			NativeMethods.ReleasePointerCapture(htmlId, pointerId);
-		}
 
 		#region MeasureView
 		internal static Size MeasureView(IntPtr htmlId, Size availableSize, bool measureContent)
@@ -775,25 +756,6 @@ namespace Uno.UI.Xaml
 		}
 		#endregion
 
-		#region registerPointerEventsOnView
-		internal static void RegisterPointerEventsOnView(IntPtr htmlId)
-		{
-			var parms = new WindowManagerRegisterPointerEventsOnViewParams()
-			{
-				HtmlId = htmlId,
-			};
-
-			TSInteropMarshaller.InvokeJS("Uno:registerPointerEventsOnView", parms);
-		}
-
-		[TSInteropMessage]
-		[StructLayout(LayoutKind.Sequential, Pack = 4)]
-		private struct WindowManagerRegisterPointerEventsOnViewParams
-		{
-			public IntPtr HtmlId;
-		}
-		#endregion
-
 		#region GetBBox
 
 		internal static Rect GetBBox(IntPtr htmlId)
@@ -1061,33 +1023,6 @@ namespace Uno.UI.Xaml
 		internal static void SetIsFocusable(IntPtr htmlId, bool isFocusable)
 			=> NativeMethods.SetIsFocusable(htmlId, isFocusable);
 
-		#region Pointers
-		[Flags]
-		internal enum HtmlPointerButtonsState
-		{
-			// https://developer.mozilla.org/en-US/docs/Web/API/Pointer_events#Determining_button_states
-
-			None = 0,
-			Left = 1,
-			Middle = 4,
-			Right = 2,
-			X1 = 8,
-			X2 = 16,
-			Eraser = 32,
-		}
-
-		internal enum HtmlPointerButtonUpdate
-		{
-			None = -1,
-			Left = 0,
-			Middle = 1,
-			Right = 2,
-			X1 = 3,
-			X2 = 4,
-			Eraser = 5
-		}
-		#endregion
-
 		internal static partial class NativeMethods
 		{
 			[JSImport("globalThis.Uno.UI.WindowManager.current.arrangeElementNativeFast")]
@@ -1145,9 +1080,6 @@ namespace Uno.UI.Xaml
 			[JSImport("globalThis.Uno.UI.WindowManager.current.rawPixelsToBase64EncodeImage")]
 			internal static partial string RawPixelsToBase64EncodeImage(IntPtr data, int width, int height);
 
-			[JSImport("globalThis.Uno.UI.WindowManager.current.releasePointerCapture")]
-			internal static partial void ReleasePointerCapture(IntPtr htmlId, double pointerId);
-
 			[JSImport("globalThis.Uno.UI.WindowManager.current.selectInputRange")]
 			internal static partial void SelectInputRange(IntPtr htmlId, int start, int length);
 
@@ -1163,10 +1095,7 @@ namespace Uno.UI.Xaml
 			[JSImport("globalThis.Uno.UI.WindowManager.current.setCornerRadius")]
 			internal static partial void SetCornerRadius(IntPtr htmlId, float topLeftX, float topLeftY, float topRightX, float topRightY, float bottomRightX, float bottomRightY, float bottomLeftX, float bottomLeftY);
 
-			[JSImport("globalThis.Uno.UI.WindowManager.current.setPointerCapture")]
-			internal static partial void SetPointerCapture(IntPtr htmlId, double pointerId);
-
-			[JSImport("globalThis.Uno.UI.WindowManager.current.setPointerEventsNativeFast")]
+			[JSImport("globalThis.Uno.UI.WindowManager.current.setPointerEvents")]
 			internal static partial void SetPointerEvents(IntPtr htmlId, bool enabled);
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.setPropertyNativeFast")]

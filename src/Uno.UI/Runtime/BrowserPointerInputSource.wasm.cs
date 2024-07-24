@@ -349,7 +349,7 @@ internal partial class BrowserPointerInputSource : IUnoCorePointerInputSource
 	}
 
 	[Flags]
-	private enum HtmlPointerButtonsState
+	internal enum HtmlPointerButtonsState
 	{
 		// https://developer.mozilla.org/en-US/docs/Web/API/Pointer_events#Determining_button_states
 

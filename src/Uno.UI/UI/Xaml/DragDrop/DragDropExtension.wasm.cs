@@ -33,6 +33,7 @@ using System.Diagnostics.CodeAnalysis;
 using NativeMethods = __Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension.NativeMethods;
 using System.Runtime.InteropServices.JavaScript;
 using Uno.UI.Runtime;
+using _HtmlPointerButtonsState = Uno.UI.Runtime.BrowserPointerInputSource.HtmlPointerButtonsState;
 
 // As IDragDropExtension is internal, the generated registration cannot be used.
 // [assembly: ApiExtension(typeof(Windows.ApplicationModel.DataTransfer.DragDrop.Core.IDragDropExtension), typeof(Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension))]
@@ -390,16 +391,16 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 				var position = new Point(_args.x, _args.y);
 				var modifier = DragDropModifiers.None;
 
-				var buttons = (WindowManagerInterop.HtmlPointerButtonsState)_args.buttons;
-				if (buttons.HasFlag(WindowManagerInterop.HtmlPointerButtonsState.Left))
+				var buttons = (_HtmlPointerButtonsState)_args.buttons;
+				if (buttons.HasFlag(_HtmlPointerButtonsState.Left))
 				{
 					modifier |= DragDropModifiers.LeftButton;
 				}
-				if (buttons.HasFlag(WindowManagerInterop.HtmlPointerButtonsState.Middle))
+				if (buttons.HasFlag(_HtmlPointerButtonsState.Middle))
 				{
 					modifier |= DragDropModifiers.MiddleButton;
 				}
-				if (buttons.HasFlag(WindowManagerInterop.HtmlPointerButtonsState.Right))
+				if (buttons.HasFlag(_HtmlPointerButtonsState.Right))
 				{
 					modifier |= DragDropModifiers.RightButton;
 				}
@@ -466,7 +467,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 			public override string ToString()
 			{
 				return $"[{eventName}] {timestamp:F0} @({x:F2},{y:F2})"
-					+ $" | buttons: {(WindowManagerInterop.HtmlPointerButtonsState)buttons}"
+					+ $" | buttons: {(_HtmlPointerButtonsState)buttons}"
 					+ $" | modifiers: {string.Join(", ", GetModifiers(this))}"
 					+ $" | allowed: {allowedOperations} ({ToDataPackageOperation(allowedOperations)})"
 					+ $" | accepted: {acceptedOperation}"

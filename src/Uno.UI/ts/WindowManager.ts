@@ -832,19 +832,7 @@ namespace Uno.UI {
 			this.setAsArranged(element);
 		}
 
-		private setPointerEvents(htmlId: number, enabled: boolean) {
-			const element = this.getView(htmlId);
-			element.style.pointerEvents = enabled ? "auto" : "none";
-		}
-
-		public setPointerEventsNative(pParams: number): boolean {
-			const params = WindowManagerSetPointerEventsParams.unmarshal(pParams);
-			this.setPointerEvents(params.HtmlId, params.Enabled);
-
-			return true;
-		}
-
-		public setPointerEventsNativeFast(htmlId: number, enabled: boolean) {
+		public setPointerEvents(htmlId: number, enabled: boolean) {
 			this.getView(htmlId).style.pointerEvents = enabled ? "auto" : "none";
 		}
 
@@ -1463,14 +1451,6 @@ namespace Uno.UI {
 			const element = this.getView(viewId);
 			element.style.borderRadius = `${topLeftX}px ${topRightX}px ${bottomRightX}px ${bottomLeftX}px / ${topLeftY}px ${topRightY}px ${bottomRightY}px ${bottomLeftY}px`;
 			element.style.overflow = "hidden"; // overflow: hidden is required here because the clipping can't do its job when it's non-rectangular.
-		}
-
-		public setPointerCapture(viewId: number, pointerId: number): void {
-			this.getView(viewId).setPointerCapture(pointerId);
-		}
-
-		public releasePointerCapture(viewId: number, pointerId: number): void {
-			this.getView(viewId).releasePointerCapture(pointerId);
 		}
 
 		public focusView(elementId: number): void {
