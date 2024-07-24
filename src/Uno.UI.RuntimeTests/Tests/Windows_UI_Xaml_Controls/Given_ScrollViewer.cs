@@ -748,6 +748,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
+		[RequiresFullWindow]
 #if !__SKIA__
 		[Ignore("InputInjector is only supported on skia")]
 #endif
@@ -755,15 +756,28 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			var ts = new ToggleSwitch();
 			var tb = new TextBox { Width = 300 };
+			var button = new Button() { Content = "Test" };
+			var rect = new Rectangle { Width = 300, Height = 300, Fill = new SolidColorBrush(Colors.Red) };
+
 			var SUT = new ScrollViewer
 			{
+				Height = 300,
 				Content = new StackPanel
 				{
 					Children =
 					{
 						tb,
-						ts
+						ts,
+						rect,
 					}
+				}
+			};
+			var outer = new StackPanel()
+			{
+				Children =
+				{
+					SUT,
+					button,
 				}
 			};
 
@@ -779,12 +793,23 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// The ScrollViewer should NOT grab focus here.
 			Assert.AreEqual(ts, FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 
-			mouse.Press(tb.GetAbsoluteBounds().GetCenter() + new Point(0, 20)); // click somewhere empty inside the ScrollViewer
+			mouse.Press(rect.GetAbsoluteBounds().GetCenter()); // click somewhere empty inside the ScrollViewer
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
 
-			// This time, since no element inside handled PointerPressed, ScrollViewer should focus the first element inside.
+			// Because the focused element is inside the scrollviewer already, keep the focus there.
+			Assert.AreEqual(ts, FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
+
+			button.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			mouse.Press(rect.GetAbsoluteBounds().GetCenter()); // click somewhere empty inside the ScrollViewer
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			// The ScrollViewer should grab focus here and set it to the first element.
 			Assert.AreEqual(tb, FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
+
 		}
 #endif
 
