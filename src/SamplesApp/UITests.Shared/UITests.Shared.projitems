@@ -1834,6 +1834,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBox\TextBox_VerticalAlignment.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBox\TextBox_Visibility.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -6712,6 +6716,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\Simple_Text_Arabic.xaml.cs">
       <DependentUpon>Simple_Text_Arabic.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBox\TextBox_VerticalAlignment.xaml.cs">
+      <DependentUpon>TextBox_VerticalAlignment.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBox\TextBox_Visibility.xaml.cs">
       <DependentUpon>TextBox_Visibility.xaml</DependentUpon>

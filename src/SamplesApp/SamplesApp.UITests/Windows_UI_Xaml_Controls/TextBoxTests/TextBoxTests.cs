@@ -954,6 +954,22 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 
 		[Test]
 		[AutoRetry]
+		public void TextBox_VerticalAlignment()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.TextBox.TextBox_VerticalAlignment", skipInitialScreenshot: true);
+			var textBoxRect = ToPhysicalRect(_app.WaitForElement("MyTextBox")[0].Rect).ToRectangle();
+
+			using var screenshot = TakeScreenshot("TextBox_VerticalAlignment");
+
+			var rectNotContainingRed = new Rectangle(textBoxRect.X, textBoxRect.Y + 30, textBoxRect.Width, textBoxRect.Height - 30);
+			ImageAssert.DoesNotHaveColorInRectangle(screenshot, rectNotContainingRed, Color.Red, tolerance: 20);
+
+			var rectContainingRed = new Rectangle(textBoxRect.X, textBoxRect.Y, textBoxRect.Width, 30);
+			ImageAssert.HasColorInRectangle(screenshot, rectContainingRed, Color.Red, tolerance: 20);
+		}
+
+		[Test]
+		[AutoRetry]
 		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		public void TextBox_Selection_IsReadOnly()
 		{
