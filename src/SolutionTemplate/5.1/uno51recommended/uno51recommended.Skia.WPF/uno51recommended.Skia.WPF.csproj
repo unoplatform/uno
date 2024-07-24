@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Uno.WinUI.Skia.Wpf" />
+    <PackageReference Include="Uno.WinUI.Runtime.Skia.Wpf" />
     <PackageReference Include="Uno.Extensions.Configuration" />
     <PackageReference Include="Uno.Extensions.Http" />
     <PackageReference Include="Uno.Extensions.Http.Refit" />

@@ -9,7 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Uno.WinUI.Skia.Linux.FrameBuffer" />
+    <PackageReference Include="Uno.WinUI.Runtime.Skia.Linux.FrameBuffer" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" />
     <PackageReference Include="SkiaSharp.NativeAssets.Linux" />
     <PackageReference Include="SkiaSharp.Views.Uno.WinUI" />

@@ -47,7 +47,7 @@
 		<PackageReference Include="Microsoft.Windows.Compatibility" Version="5.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
 		<PackageReference Include="Uno.Extensions.Logging.WebAssembly.Console" Version="1.4.0" />
-		<PackageReference Include="Uno.UI.WebAssembly" Version="$(GITVERSION_SemVer)" />
+		<PackageReference Include="Uno.UI.Runtime.WebAssembly" Version="$(GITVERSION_SemVer)" />
 		<PackageReference Include="Uno.UI.RemoteControl" Version="$(GITVERSION_SemVer)" Condition="'$(Configuration)'=='Debug'" />
 		<PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="$(GITVERSION_SemVer)" />
 		<PackageReference Include="Uno.Wasm.Bootstrap" Version="9.0.0-dev.86" />
