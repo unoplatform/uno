@@ -5157,6 +5157,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				return $"global::{XamlConstants.Types.FontWeights}.{fontWeight}";
 			}
+			else if (ushort.TryParse(memberValue, out var numericWeightValue))
+			{
+				return $"new global::{XamlConstants.Types.FontWeight}() {{ Weight = {numericWeightValue.ToStringInvariant()} }}";
+			}
 			else
 			{
 				return $"global::{XamlConstants.Types.FontWeights}.Normal /* Warning {memberValue} is not supported on this platform */";
