@@ -155,11 +155,9 @@ public abstract class PropertyListFormat
 			protected override byte[] ReadData()
 			{
 				var bytes = new byte[_currentLength];
-#if NET7_0_OR_GREATER
-				_stream.ReadExactly(bytes, 0, _currentLength);
-#else
+
 				_stream.Read(bytes, 0, _currentLength);
-#endif
+
 				return bytes;
 			}
 
@@ -170,19 +168,15 @@ public abstract class PropertyListFormat
 				{
 					case PlistType.@string: // ASCII
 						bytes = new byte[_currentLength];
-#if NET7_0_OR_GREATER
-						_stream.ReadExactly(bytes, 0, bytes.Length);
-#else
+
 						_stream.Read(bytes, 0, bytes.Length);
-#endif
+
 						return Encoding.ASCII.GetString(bytes);
 					case PlistType.wideString: //CFBinaryPList.c: Unicode string...big-endian 2-byte uint16_t
 						bytes = new byte[_currentLength * 2];
-#if NET7_0_OR_GREATER
-						_stream.ReadExactly(bytes, 0, bytes.Length);
-#else
+
 						_stream.Read(bytes, 0, bytes.Length);
-#endif
+
 						return Encoding.BigEndianUnicode.GetString(bytes);
 				}
 
@@ -258,11 +252,9 @@ public abstract class PropertyListFormat
 			byte[] ReadBigEndianBytes(int count)
 			{
 				var bytes = new byte[count];
-#if NET7_0_OR_GREATER
-				_stream.ReadExactly(bytes, 0, count);
-#else
+
 				_stream.Read(bytes, 0, count);
-#endif
+
 				if (BitConverter.IsLittleEndian)
 				{
 					Array.Reverse(bytes);
