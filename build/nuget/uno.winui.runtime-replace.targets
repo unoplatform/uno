@@ -12,6 +12,9 @@
 			<_RuntimeCopyLocalItemsToRemove Include="@(RuntimeCopyLocalItems)" EnabledIdentity="%(UnoRuntimeEnabledPackage.Identity)" />
 			<_RuntimeCopyLocalItemsToRemove Remove="@(_RuntimeCopyLocalItemsToRemove)" Condition="'%(_RuntimeCopyLocalItemsToRemove.NuGetPackageId)' != '%(_RuntimeCopyLocalItemsToRemove.EnabledIdentity)'" />
 
+			<_ResolvedCompileFileDefinitionsToRemove Include="@(ResolvedCompileFileDefinitions)" EnabledIdentity="%(UnoRuntimeEnabledPackage.Identity)" />
+			<_ResolvedCompileFileDefinitionsToRemove Remove="@(_ResolvedCompileFileDefinitionsToRemove)" Condition="'%(_ResolvedCompileFileDefinitionsToRemove.NuGetPackageId)' != '%(_ResolvedCompileFileDefinitionsToRemove.EnabledIdentity)'" />
+
 			<!-- Remove them from the files to be copied to the output -->
 			<RuntimeCopyLocalItems Remove="@(_RuntimeCopyLocalItemsToRemove)" />
 
@@ -50,9 +53,10 @@
 		<RuntimeAssetsSelectorTask_v0
 			UnoRuntimeEnabledPackage="@(UnoRuntimeEnabledPackage)"
 			UnoRuntimeIdentifier="$(UnoRuntimeIdentifier.ToLowerInvariant())"
+			ResolvedCompileFileDefinitionsInput="@(ResolvedCompileFileDefinitions)"
 			TargetFrameworkVersion="$(TargetFrameworkVersion)">
 			<Output TaskParameter="Assemblies" ItemName="RuntimeCopyLocalItemsMerged2" />
-				
+			<Output TaskParameter="ResolvedCompileFileDefinitionsOutput" ItemName="ResolvedCompileFileDefinitionsOutput" />
 			<!-- Publish PDB files-->
 			<Output TaskParameter="DebugSymbols" ItemName="ReferenceCopyLocalPaths" />
 		</RuntimeAssetsSelectorTask_v0>
@@ -69,6 +73,9 @@
 
 			<RuntimeCopyLocalItems
 				Include="@(RuntimeCopyLocalItemsToUpdate)"/>
+
+			<ResolvedCompileFileDefinitions Remove="@(_ResolvedCompileFileDefinitionsToRemove)" />
+			<ResolvedCompileFileDefinitions Include="@(ResolvedCompileFileDefinitionsOutput)" />
 		</ItemGroup>
 
 		<Error

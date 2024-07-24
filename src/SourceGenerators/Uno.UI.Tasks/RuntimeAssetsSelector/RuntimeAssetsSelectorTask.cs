@@ -28,6 +28,9 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 		public Microsoft.Build.Framework.ITaskItem[]? UnoRuntimeEnabledPackage { get; set; }
 
 		[Required]
+		public Microsoft.Build.Framework.ITaskItem[]? ResolvedCompileFileDefinitionsInput { get; set; }
+
+		[Required]
 		public string UnoRuntimeIdentifier { get; set; } = "";
 
 		/// <remarks>
@@ -40,6 +43,10 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 		public Microsoft.Build.Framework.ITaskItem[]? Assemblies { get; set; }
 
 		[Output]
+		public Microsoft.Build.Framework.ITaskItem[]? ResolvedCompileFileDefinitionsOutput { get; set; }
+
+
+		[Output]
 		public Microsoft.Build.Framework.ITaskItem[]? DebugSymbols { get; set; }
 
 		public override bool Execute()
@@ -47,6 +54,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 			try
 			{
 				List<ITaskItem> assemblies = new();
+				List<ITaskItem> resolvedCompileFileDefinitions = new();
 				List<ITaskItem> debugSymbols = new();
 
 				foreach (var package in UnoRuntimeEnabledPackage ?? Array.Empty<ITaskItem>())
@@ -88,14 +96,31 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 
 					if (searchPaths.FirstOrDefault(Directory.Exists) is { } topMostDirectory)
 					{
+						var packageIdentity = package.GetMetadata("Identity");
+
 						foreach (var assembly in Directory.EnumerateFiles(topMostDirectory, "*.dll"))
 						{
 							assemblies.Add(new TaskItem(
 								assembly,
 								new Dictionary<string, string>
 								{
-									["NuGetPackageId"] = package.GetMetadata("Identity"),
+									["NuGetPackageId"] = packageIdentity,
 									["PathInPackage"] = $"uno-runtime/{Path.GetFileName(Path.GetDirectoryName(topMostDirectory))}/{UnoRuntimeIdentifier}/{Path.GetFileName(assembly)}"
+								}));
+
+							var existing = ResolvedCompileFileDefinitionsInput.First(item => item.GetMetadata("NuGetPackageId") == packageIdentity);
+
+							resolvedCompileFileDefinitions.Add(new TaskItem(
+								assembly,
+								new Dictionary<string, string>
+								{
+									["HintPath"] = assembly,
+									["NuGetPackageVersion"] = existing.GetMetadata("NuGetPackageVersion"),
+									["Private"] = existing.GetMetadata("Private"),
+									["ExternallyResolved"] = existing.GetMetadata("ExternallyResolved"),
+									["NuGetPackageId"] = packageIdentity,
+									["PathInPackage"] = $"uno-runtime/{Path.GetFileName(Path.GetDirectoryName(topMostDirectory))}/{UnoRuntimeIdentifier}/{Path.GetFileName(assembly)}",
+									["NuGetSourceType"] = existing.GetMetadata("NuGetSourceType"),
 								}));
 						}
 
@@ -105,7 +130,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 								debugSymbol,
 								new Dictionary<string, string>
 								{
-									["NuGetPackageId"] = package.GetMetadata("Identity")
+									["NuGetPackageId"] = packageIdentity,
 								}));
 						}
 					}
@@ -113,7 +138,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 
 				Assemblies = assemblies.ToArray();
 				DebugSymbols = debugSymbols.ToArray();
-
+				ResolvedCompileFileDefinitionsOutput = resolvedCompileFileDefinitions.ToArray();
 				return true;
 			}
 			catch (Exception e)
