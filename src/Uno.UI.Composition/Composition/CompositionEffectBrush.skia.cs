@@ -1619,4 +1619,6 @@ $$"""
 	{
 		_filter?.Dispose();
 	}
+
+	internal override bool CanPaint() => _effect is not null;
 }

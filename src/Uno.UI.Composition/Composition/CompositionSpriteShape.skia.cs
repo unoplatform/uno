@@ -13,6 +13,8 @@ namespace Microsoft.UI.Composition
 		private SKPaint? _fillPaint;
 		private SKPath? _geometryWithTransformations;
 
+		internal override bool CanPaint => (FillBrush?.CanPaint() ?? false) || (StrokeBrush?.CanPaint() ?? false);
+
 		internal override void Paint(in Visual.PaintingSession session)
 		{
 			if (_geometryWithTransformations is { } geometryWithTransformations)

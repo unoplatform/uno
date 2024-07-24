@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using Windows.Foundation;
@@ -24,14 +25,12 @@ public partial class ShapeVisual
 
 	internal WeakReference? Owner { get; set; }
 
-	private protected override void ApplyPrePaintingClipping(in SKCanvas canvas)
-	{
-		base.ApplyPrePaintingClipping(in canvas);
-		if (GetViewBoxPathInElementCoordinateSpace() is { } path)
-		{
-			canvas.ClipPath(path, antialias: true);
-		}
-	}
+	internal override SKPath? GetPrePaintingClipping()
+		=> GetViewBoxPathInElementCoordinateSpace() is { } path
+			? base.GetPrePaintingClipping() is { } baseClip
+				? path.Op(baseClip, SKPathOp.Intersect)
+				: path
+			: base.GetPrePaintingClipping();
 
 	/// <inheritdoc />
 	internal override void Paint(in PaintingSession session)
@@ -70,6 +69,8 @@ public partial class ShapeVisual
 
 		return shape;
 	}
+
+	internal override bool CanPaint => base.CanPaint || (_shapes?.Any(s => s.CanPaint) ?? false);
 
 	/// <remarks>This does NOT take the clipping into account.</remarks>
 	internal virtual bool HitTest(Point point)

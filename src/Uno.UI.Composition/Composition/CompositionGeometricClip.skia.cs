@@ -26,7 +26,7 @@ partial class CompositionGeometricClip
 		}
 	}
 
-	internal override void Apply(SKCanvas canvas, Visual visual)
+	internal override SKPath? GetClipPath(Visual visual)
 	{
 		switch (Geometry)
 		{
@@ -39,15 +39,13 @@ partial class CompositionGeometricClip
 					path = transformedPath;
 				}
 
-				canvas.ClipPath(path, antialias: true);
-				break;
-
+				return path;
 			case CompositionPathGeometry cpg:
 				throw new InvalidOperationException($"Clipping with source {cpg.Path?.GeometrySource} is not supported");
 
 			case null:
 				// null is nop
-				break;
+				return null;
 
 			default:
 				throw new InvalidOperationException($"Clipping with {Geometry} is not supported");

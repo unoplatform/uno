@@ -14,9 +14,11 @@ partial class InsetClip
 			height: visual.Size.Y - TopInset - BottomInset);
 	}
 
-	internal override void Apply(SKCanvas canvas, Visual visual)
+	internal override SKPath GetClipPath(Visual visual)
 	{
+		var path = new SKPath();
 		var rect = GetBounds(visual).Value.ToSKRect();
-		canvas.ClipRect(rect, SKClipOperation.Intersect, true);
+		path.AddRect(rect);
+		return path;
 	}
 }

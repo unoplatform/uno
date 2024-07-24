@@ -74,5 +74,7 @@ public partial class CompositionShape
 	{
 	}
 
+	internal virtual bool CanPaint => false;
+
 	internal virtual bool HitTest(Point point) => false;
 }

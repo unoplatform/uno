@@ -54,7 +54,7 @@ partial class ContentPresenter
 		if (_nativeElementHostingExtension.Value?.IsNativeElement(newValue) ?? false)
 		{
 			IsNativeHost = true;
-			Visual.IsNativeHostVisual = true;
+			Visual.SetAsNativeHostVisual(true);
 
 			if (ContentTemplate is not null)
 			{
@@ -74,7 +74,7 @@ partial class ContentPresenter
 		else
 		{
 			IsNativeHost = false;
-			Visual.IsNativeHostVisual = false;
+			Visual.SetAsNativeHostVisual(null);
 		}
 	}
 

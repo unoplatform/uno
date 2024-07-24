@@ -25,13 +25,24 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 	private VisualFlags _flags = VisualFlags.MatrixDirty;
 
-	internal bool IsPopupVisual => (_flags & VisualFlags.IsPopupVisualSet) != 0 ? (_flags & VisualFlags.IsPopupVisual) != 0 : (_flags & VisualFlags.IsPopupVisualInherited) != 0;
-	internal bool IsNativeHostVisual
+	internal bool IsNativeHostVisual => (_flags & VisualFlags.IsNativeHostVisualSet) != 0 ? (_flags & VisualFlags.IsNativeHostVisual) != 0 : (_flags & VisualFlags.IsNativeHostVisualInherited) != 0;
+
+	/// <summary>A visual is a NativeHost visual if it's directly set by SetAsNativeHostVisual or is a child of a NativeHost visual</summary>
+	/// <remarks>call with a null <paramref name="isNativeHostVisual"/> to unset.</remarks>
+	internal void SetAsNativeHostVisual(bool? isNativeHostVisual) => SetAsNativeHostVisual(isNativeHostVisual, false);
+	private void SetAsNativeHostVisual(bool? isNativeHostVisual, bool inherited)
 	{
-		get => (_flags & VisualFlags.IsNativeHostVisual) != 0;
-		set
+		Debug.Assert(!inherited || isNativeHostVisual is { }, "Only non-null values should be inherited.");
+		var oldValue = IsNativeHostVisual;
+
+		if (inherited)
 		{
-			if (value)
+			_flags |= (isNativeHostVisual!.Value ? VisualFlags.IsNativeHostVisualInherited : 0);
+		}
+		else if (isNativeHostVisual is { })
+		{
+			_flags |= VisualFlags.IsNativeHostVisualSet;
+			if (isNativeHostVisual.Value)
 			{
 				_flags |= VisualFlags.IsNativeHostVisual;
 			}
@@ -40,38 +51,23 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				_flags &= ~VisualFlags.IsNativeHostVisual;
 			}
 		}
-	}
-
-	/// <summary>A visual is a popup visual if it's directly set by SetAsFlyoutVisual or is a child of a flyout visual</summary>
-	/// <remarks>call with a null <paramref name="isPopupVisual"/> to unset.</remarks>
-	internal void SetAsPopupVisual(bool? isPopupVisual, bool inherited = false)
-	{
-		Debug.Assert(!inherited || isPopupVisual is { }, "Only non-null values should be inherited.");
-		var oldValue = IsPopupVisual;
-
-		if (inherited)
-		{
-			_flags |= (isPopupVisual!.Value ? VisualFlags.IsPopupVisualInherited : 0);
-		}
-		else if (isPopupVisual is { })
-		{
-			_flags |= (isPopupVisual.Value ? VisualFlags.IsPopupVisual : 0);
-			_flags |= VisualFlags.IsPopupVisualSet;
-		}
 		else
 		{
-			_flags &= ~VisualFlags.IsPopupVisualSet;
+			_flags &= ~VisualFlags.IsNativeHostVisualSet;
 		}
 
-		var newValue = IsPopupVisual;
+		var newValue = IsNativeHostVisual;
 		if (oldValue != newValue)
 		{
 			foreach (var child in GetChildrenInRenderOrder())
 			{
-				child.SetAsPopupVisual(newValue, true);
+				child.SetAsNativeHostVisual(newValue, true);
 			}
 		}
 	}
+
+	/// <summary>Whether or not this Visual that something to draw.</summary>
+	internal virtual bool CanPaint => false;
 
 	/// <returns>true if wasn't dirty</returns>
 	internal virtual bool SetMatrixDirty()
@@ -267,7 +263,10 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		{
 			var canvas = session.Canvas;
 
-			ApplyPrePaintingClipping(canvas);
+			if (GetPrePaintingClipping() is { } preClip)
+			{
+				canvas.ClipPath(preClip);
+			}
 
 			// Rendering shouldn't depend on matrix or clip adjustments happening in a visual's Paint. That should
 			// be specific to that visual and should not affect the rendering of any other visual.
@@ -281,7 +280,10 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 			postRenderAction?.Invoke(session, this);
 
-			ApplyPostPaintingClipping(canvas);
+			if (GetPostPaintingClipping() is { } postClip)
+			{
+				canvas.ClipPath(postClip);
+			}
 
 			foreach (var child in GetChildrenInRenderOrder())
 			{
@@ -307,16 +309,16 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	}
 
 	/// <remarks>The canvas' TotalMatrix is assumed to already be set up to the local coordinates of the visual.</remarks>
-	private protected virtual void ApplyPrePaintingClipping(in SKCanvas canvas)
+	internal virtual SKPath? GetPrePaintingClipping()
 	{
-		// Apply the clipping defined on the element
+		// The clipping defined on the element
 		// (Only the Clip property, clipping applied by parent for layout constraints reason it's managed by the ShapeVisual through the ViewBox)
 		// Note: The Clip is applied after the transformation matrix, so it's also transformed.
-		Clip?.Apply(canvas, this);
+		return Clip?.GetClipPath(this);
 	}
 
 	/// <summary>This clipping won't affect the visual itself, but its children.</summary>
-	private protected virtual void ApplyPostPaintingClipping(in SKCanvas canvas) { }
+	private protected virtual SKPath? GetPostPaintingClipping() => null;
 
 	/// <remarks>You should NOT mutate the list returned by this method.</remarks>
 	// NOTE: Returning List<Visual> so that enumerating doesn't cause boxing.
@@ -358,10 +360,9 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	[Flags]
 	internal enum VisualFlags : byte
 	{
-		IsPopupVisualSet = 1,
-		IsPopupVisual = 2,
-		IsPopupVisualInherited = 4,
-		IsNativeHostVisual = 8,
+		IsNativeHostVisualSet = 1, // Is the IsNativeHostVisual bit valid?
+		IsNativeHostVisual = 2,
+		IsNativeHostVisualInherited = 4,
 		MatrixDirty = 16
 	}
 }

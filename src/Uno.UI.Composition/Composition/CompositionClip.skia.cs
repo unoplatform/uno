@@ -30,7 +30,5 @@ partial class CompositionClip
 	private protected virtual Rect? GetBoundsCore(Visual visual)
 		=> null;
 
-	internal virtual void Apply(SKCanvas canvas, Visual visual)
-	{
-	}
+	internal virtual SKPath? GetClipPath(Visual visual) => null;
 }

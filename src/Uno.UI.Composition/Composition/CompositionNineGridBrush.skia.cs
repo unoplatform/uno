@@ -138,6 +138,8 @@ namespace Microsoft.UI.Composition
 			}
 		}
 
+		internal override bool CanPaint() => Source?.CanPaint() ?? false;
+
 		private protected override void DisposeInternal()
 		{
 			base.Dispose();

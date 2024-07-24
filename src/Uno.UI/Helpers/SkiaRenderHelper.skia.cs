@@ -1,10 +1,8 @@
 #nullable enable
 
-using Windows.Foundation;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Controls;
 using SkiaSharp;
-using Uno.Extensions;
 
 namespace Uno.UI.Helpers;
 
@@ -66,18 +64,27 @@ internal static class SkiaRenderHelper
 					mainPath.AddRect(canvas.TotalMatrix.MapRect(new SKRect(0, 0, width, height)));
 				}
 
-				// minus the native-element areas
-				// plus the popups
-				if (visual.IsNativeHostVisual || visual.IsPopupVisual)
+				if (visual is { CanPaint: false, IsNativeHostVisual: false })
 				{
-					_clipPath.Reset();
-					_clipPath.AddRect(canvas.DeviceClipBounds);
-					_visualPath.Reset();
-					_visualPath.AddRect(canvas.TotalMatrix.MapRect(new SKRect(0, 0, visual.Size.X, visual.Size.Y)));
-					mainPath = mainPath!.Op(
-						_clipPath.Op(_visualPath, SKPathOp.Intersect),
-						visual.IsNativeHostVisual ? SKPathOp.Difference : SKPathOp.Union);
+					return;
 				}
+
+				_clipPath.Reset();
+				_clipPath.AddRect(canvas.LocalClipBounds);
+				_visualPath.Reset();
+				_visualPath.AddRect(new SKRect(0, 0, visual.Size.X, visual.Size.Y));
+
+				var finalVisualPath = _clipPath.Op(_visualPath, SKPathOp.Intersect);
+				if (visual.GetPrePaintingClipping() is { } preClip)
+				{
+					finalVisualPath = finalVisualPath.Op(preClip, SKPathOp.Intersect);
+				}
+
+				finalVisualPath.Transform(canvas.TotalMatrix);
+
+				mainPath = mainPath!.Op(
+					finalVisualPath,
+					visual.IsNativeHostVisual ? SKPathOp.Difference : SKPathOp.Union);
 			});
 
 			return mainPath;

@@ -77,6 +77,8 @@ namespace Microsoft.UI.Composition
 			return false;
 		}
 
+		internal override bool CanPaint() => TryGetSkiaCompositionSurface(Surface, out _) || (Surface as ISkiaSurface)?.Surface is not null;
+
 		internal override void UpdatePaint(SKPaint fillPaint, SKRect bounds)
 		{
 			if (TryGetSkiaCompositionSurface(Surface, out var scs))

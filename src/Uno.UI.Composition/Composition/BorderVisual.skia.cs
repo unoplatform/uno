@@ -25,6 +25,7 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 	private CompositionSpriteShape? _backgroundShape;
 	private CompositionSpriteShape? _borderShape;
 	private CompositionClip? _backgroundClip;
+	private SKRoundRect? _borderPathOuterRect;
 	// state set here but affects children
 	private RectangleClip? _childClipCausedByCornerRadius;
 
@@ -129,7 +130,10 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 			session.Canvas.Save();
 			// it's necessary to clip the background because not all backgrounds are simple rounded rectangles with a solid color.
 			// E.g. effect brushes will draw outside the intended area if they're not clipped.
-			_backgroundClip?.Apply(session.Canvas, this);
+			if (_backgroundClip?.GetClipPath(this) is { } bgClip)
+			{
+				session.Canvas.ClipPath(bgClip);
+			}
 			backgroundShape.Render(in session);
 			session.Canvas.Restore();
 		}
@@ -139,8 +143,33 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 		_borderShape?.Render(in session);
 	}
 
-	private protected override void ApplyPostPaintingClipping(in SKCanvas canvas)
-		=> _childClipCausedByCornerRadius?.Apply(canvas, this);
+	internal override SKPath? GetPrePaintingClipping()
+	{
+		if (_borderPathOuterRect is { } rect)
+		{
+			var path = new SKPath();
+			path.AddRoundRect(rect);
+			if (base.GetPrePaintingClipping() is { } baseClip)
+			{
+				return path.Op(baseClip, SKPathOp.Intersect);
+			}
+			else
+			{
+				return path;
+			}
+		}
+		else
+		{
+			return base.GetPrePaintingClipping();
+		}
+	}
+
+	private protected override SKPath? GetPostPaintingClipping()
+		=> _childClipCausedByCornerRadius?.GetClipPath(this) is { } path
+			? base.GetPostPaintingClipping() is { } baseClip
+				? path.Op(baseClip, SKPathOp.Intersect)
+				: path
+			: base.GetPostPaintingClipping();
 
 	private void UpdatePathsAndCornerClip()
 	{
@@ -279,6 +308,7 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 		{
 			var outerRect = new SKRoundRect();
 			UnoSkiaApi.sk_rrect_set_rect_radii(outerRect.Handle, &outerArea, outerRadii);
+			_borderPathOuterRect = outerRect;
 			borderPath.AddRoundRect(outerRect);
 			borderPath.Close();
 		}
@@ -292,6 +322,11 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 		// Unfortunately, this will cause an unnecessary render invalidation
 		((CompositionPathGeometry)_borderShape!.Geometry!).Path = new CompositionPath(new SkiaGeometrySource2D(borderPath));
 	}
+
+	internal override bool CanPaint =>
+		(BackgroundBrush?.CanPaint() ?? false) ||
+		(BorderBrush?.CanPaint() ?? false) ||
+		base.CanPaint;
 
 	internal override bool HitTest(Point point)
 	{

@@ -150,7 +150,7 @@ namespace Microsoft.UI.Composition
 			{
 				_parent = value;
 #if __SKIA__
-				SetAsPopupVisual(value?.IsPopupVisual ?? false, inherited: true);
+				SetAsNativeHostVisual(value?.IsNativeHostVisual ?? false, inherited: true);
 #endif
 			}
 		}

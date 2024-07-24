@@ -34,6 +34,8 @@ namespace Microsoft.UI.Composition
 			paint.Shader = SKShader.CreateCompose(_sourcePaint.Shader, _maskPaint.Shader, SKBlendMode.DstIn);
 		}
 
+		internal override bool CanPaint() => (Source?.CanPaint() ?? false) || (Mask?.CanPaint() ?? false);
+
 		void IOnlineBrush.Paint(in Visual.PaintingSession session, SKRect bounds)
 		{
 			_resultPaint ??= new SKPaint() { IsAntialias = true };

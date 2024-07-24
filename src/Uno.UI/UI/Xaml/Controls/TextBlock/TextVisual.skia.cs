@@ -34,5 +34,7 @@ namespace Microsoft.UI.Composition
 				owner.Inlines.Draw(in session);
 			}
 		}
+
+		internal override bool CanPaint => true;
 	}
 }
