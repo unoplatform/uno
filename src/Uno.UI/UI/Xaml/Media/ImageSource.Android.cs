@@ -496,15 +496,7 @@ namespace Microsoft.UI.Xaml.Media
 		{
 			if (_imageData.Bitmap is not null)
 			{
-				if (_imageData.Bitmap.Handle != IntPtr.Zero)
-				{
-					_imageData.Bitmap.Recycle();
-				}
-				else if (this.Log().IsEnabled(LogLevel.Warning))
-				{
-					this.Log().Warn($"Attempting to dispose {nameof(_imageData)} when the native bitmap has already been collected.");
-				}
-				_imageData.Bitmap.Dispose();
+				_imageData = ImageData.Empty;
 			}
 		}
 
