@@ -152,13 +152,13 @@ internal partial class BrowserRenderer
 				if (path is { })
 				{
 					// we clip the "negative" of what was drawn
-                    var negativePath = new SKPath();
-                    if (path is { })
-                    {
-                    	negativePath.AddRect(new SKRect(0, 0, _renderTarget.Width, _renderTarget.Height));
-                    	negativePath = negativePath.Op(path, SKPathOp.Difference);
-                    }
-                    BrowserNativeElementHostingExtension.SetSvgClipPathForNativeElementHost(negativePath.ToSvgPathData());
+					var negativePath = new SKPath();
+					if (path is { })
+					{
+						negativePath.AddRect(new SKRect(0, 0, _renderTarget.Width, _renderTarget.Height));
+						negativePath = negativePath.Op(path, SKPathOp.Difference);
+					}
+					BrowserNativeElementHostingExtension.SetSvgClipPathForNativeElementHost(negativePath.ToSvgPathData());
 				}
 				else
 				{
