@@ -40,7 +40,6 @@ using Microsoft.UI.Xaml.Hosting;
 using Uno.Extensions;
 using Windows.UI.Input.Preview.Injection;
 using Uno.UI.Toolkit.Extensions;
-using SamplesApp.UITests;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
