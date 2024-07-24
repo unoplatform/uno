@@ -1844,7 +1844,6 @@
 	</IgnoreSet>
 	<IgnoreSet baseVersion="5.2">
 		<Types>
-			<Member fullName="Microsoft.UI.Xaml.Controls.Primitives.ColorPickerSliderAutomationPeer" reason="Fixed namespace" />
 		</Types>
 
 		<Events>
@@ -1866,6 +1865,7 @@
 			<Member fullName="Uno.Foundation.Logging" reason="Already pulled transitively"/>
 		</Assemblies>
 		<Types>
+			<Member fullName="Microsoft.UI.Xaml.Controls.Primitives.ColorPickerSliderAutomationPeer" reason="Fixed namespace" />
 		</Types>
 
 		<Events>
