@@ -30,10 +30,6 @@
 		</PropertyGroup>
 		
 		<ItemGroup>
-			<!-- This shouldn't happen but we want to prevent non-MacOS runtimes from being included. -->
-			<PublishExclude Include="$(PublishDir)/**/runtimes/win*/**" />
-			<PublishExclude Include="$(PublishDir)/**/runtimes/linux*/**" />
-			<PublishExclude Include="$(PublishDir)/**/runtimes/unix*/**" />
 			<PublishExclude Include="$(PublishDir)/**/*.ico" />
 			<_UnoPublishedFiles Include="$(PublishDir)/**" Exclude="@(PublishExclude)" PublishDir="$(_UnoAppBundleTempMacOSDir)%(RecursiveDir)%(Filename)%(Extension)"/>
 			<_PublishedIcon Include="$(_UnoIntermediateImages)Assets.xcassets/*.appiconset/Contents.json" />
