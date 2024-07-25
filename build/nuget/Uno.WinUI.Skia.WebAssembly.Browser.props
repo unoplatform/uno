@@ -6,6 +6,7 @@
 		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
 		<UnoWinRTIdentifier>WebAssembly</UnoWinRTIdentifier>
 		<UnoIsSkiaWebAssemblyBrowserHead>true</UnoIsSkiaWebAssemblyBrowserHead>
+		<SupportsFontManifest>true</SupportsFontManifest>
 	</PropertyGroup>
 
 </Project>
