@@ -45,6 +45,7 @@ public partial class EntryPoint : IDisposable
 	private Action<string>? _errorAction;
 	private int _msBuildLogLevel;
 	private System.Diagnostics.Process? _process;
+	private SemaphoreSlim _processGate = new(1);
 
 	private int RemoteControlServerPort;
 	private bool _closing;
@@ -213,27 +214,7 @@ public partial class EntryPoint : IDisposable
 	{
 		try
 		{
-			StartServer();
-			var portString = RemoteControlServerPort.ToString(CultureInfo.InvariantCulture);
-			foreach (var p in await _dte.GetProjectsAsync())
-			{
-				var filename = string.Empty;
-				try
-				{
-					filename = p.FileName;
-				}
-				catch (Exception ex)
-				{
-					_debugAction?.Invoke($"Exception on retrieving {p.UniqueName} details. Err: {ex}.");
-					_warningAction?.Invoke($"Cannot read {p.UniqueName} project details (It may be unloaded).");
-				}
-				if (string.IsNullOrWhiteSpace(filename) == false
-					&& GetMsbuildProject(filename) is Microsoft.Build.Evaluation.Project msbProject
-					&& IsApplication(msbProject))
-				{
-					SetGlobalProperty(filename, RemoteControlServerPortProperty, portString);
-				}
-			}
+			await StartServerAsync();
 		}
 		catch (Exception e)
 		{
@@ -243,7 +224,7 @@ public partial class EntryPoint : IDisposable
 
 	private void BuildEvents_OnBuildDone(vsBuildScope Scope, vsBuildAction Action)
 	{
-		StartServer();
+		_ = StartServerAsync();
 	}
 
 	private void SolutionEvents_BeforeClosing()
@@ -297,53 +278,101 @@ public partial class EntryPoint : IDisposable
 		throw new InvalidOperationException($"Unable to detect current dotnet version (\"dotnet --version\" returned \"{result.output}\")");
 	}
 
-	private void StartServer()
+	private async Task StartServerAsync()
 	{
-		if (_process?.HasExited ?? true)
+		await _processGate.WaitAsync();
+		try
 		{
-			RemoteControlServerPort = GetTcpPort();
+			_debugAction?.Invoke($"Starting server (tid:{Environment.CurrentManagedThreadId})");
 
-			var version = GetDotnetMajorVersion();
-			if (version < 7)
+			if (_process?.HasExited ?? true)
 			{
-				throw new InvalidOperationException($"Unsupported dotnet version ({version}) detected");
+				RemoteControlServerPort = GetTcpPort();
+
+				_debugAction?.Invoke($"Using available port {RemoteControlServerPort}");
+
+				var version = GetDotnetMajorVersion();
+				if (version < 7)
+				{
+					throw new InvalidOperationException($"Unsupported dotnet version ({version}) detected");
+				}
+				var runtimeVersionPath = $"net{version}.0";
+
+				var pipeGuid = Guid.NewGuid();
+
+				var hostBinPath = Path.Combine(_toolsPath, "host", runtimeVersionPath, "Uno.UI.RemoteControl.Host.dll");
+				var arguments = $"\"{hostBinPath}\" --httpPort {RemoteControlServerPort} --ppid {System.Diagnostics.Process.GetCurrentProcess().Id} --ideChannel \"{pipeGuid}\"";
+				var pi = new ProcessStartInfo("dotnet", arguments)
+				{
+					UseShellExecute = false,
+					CreateNoWindow = true,
+					WindowStyle = ProcessWindowStyle.Hidden,
+					WorkingDirectory = Path.Combine(_toolsPath, "host"),
+
+					// redirect the output
+					RedirectStandardOutput = true,
+					RedirectStandardError = true
+				};
+
+				_process = new System.Diagnostics.Process();
+
+				// hookup the event handlers to capture the data that is received
+				_process.OutputDataReceived += (sender, args) => _debugAction?.Invoke(args.Data);
+				_process.ErrorDataReceived += (sender, args) => _errorAction?.Invoke(args.Data);
+
+				_process.StartInfo = pi;
+
+				if (_process.Start())
+				{
+					// start our event pumps
+					_process.BeginOutputReadLine();
+					_process.BeginErrorReadLine();
+
+					_ideChannelClient = new IdeChannelClient(pipeGuid, new Logger(this));
+					_ideChannelClient.ForceHotReloadRequested += OnForceHotReloadRequestedAsync;
+					_ideChannelClient.ConnectToHost();
+
+					_ = _globalPropertiesChanged();
+
+					var portString = RemoteControlServerPort.ToString(CultureInfo.InvariantCulture);
+					foreach (var p in await _dte.GetProjectsAsync())
+					{
+						var filename = string.Empty;
+						try
+						{
+							filename = p.FileName;
+						}
+						catch (Exception ex)
+						{
+							_debugAction?.Invoke($"Exception on retrieving {p.UniqueName} details. Err: {ex}.");
+							_warningAction?.Invoke($"Cannot read {p.UniqueName} project details (It may be unloaded).");
+						}
+						if (string.IsNullOrWhiteSpace(filename) == false
+							&& GetMsbuildProject(filename) is Microsoft.Build.Evaluation.Project msbProject
+							&& IsApplication(msbProject))
+						{
+							SetGlobalProperty(filename, RemoteControlServerPortProperty, portString);
+						}
+					}
+				}
+				else
+				{
+					_process = null;
+					RemoteControlServerPort = 0;
+				}
 			}
-			var runtimeVersionPath = $"net{version}.0";
-
-			var pipeGuid = Guid.NewGuid();
-
-			var hostBinPath = Path.Combine(_toolsPath, "host", runtimeVersionPath, "Uno.UI.RemoteControl.Host.dll");
-			var arguments = $"\"{hostBinPath}\" --httpPort {RemoteControlServerPort} --ppid {System.Diagnostics.Process.GetCurrentProcess().Id} --ideChannel \"{pipeGuid}\"";
-			var pi = new ProcessStartInfo("dotnet", arguments)
+			else
 			{
-				UseShellExecute = false,
-				CreateNoWindow = true,
-				WindowStyle = ProcessWindowStyle.Hidden,
-				WorkingDirectory = Path.Combine(_toolsPath, "host"),
-
-				// redirect the output
-				RedirectStandardOutput = true,
-				RedirectStandardError = true
-			};
-
-			_process = new System.Diagnostics.Process();
-
-			// hookup the event handlers to capture the data that is received
-			_process.OutputDataReceived += (sender, args) => _debugAction?.Invoke(args.Data);
-			_process.ErrorDataReceived += (sender, args) => _errorAction?.Invoke(args.Data);
-
-			_process.StartInfo = pi;
-			_process.Start();
-
-			// start our event pumps
-			_process.BeginOutputReadLine();
-			_process.BeginErrorReadLine();
-
-			_ideChannelClient = new IdeChannelClient(pipeGuid, new Logger(this));
-			_ideChannelClient.ForceHotReloadRequested += OnForceHotReloadRequestedAsync;
-			_ideChannelClient.ConnectToHost();
-
-			_ = _globalPropertiesChanged();
+				_debugAction?.Invoke($"Server already started");
+			}
+		}
+		catch (Exception e)
+		{
+			_errorAction?.Invoke($"Failed to start server: {e}");
+		}
+		finally
+		{
+			_processGate.Release();
 		}
 	}
 
