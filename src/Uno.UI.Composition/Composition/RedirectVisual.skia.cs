@@ -13,9 +13,7 @@ namespace Microsoft.UI.Composition
 
 			if (Source is not null && session.Canvas is not null)
 			{
-				int save = session.Canvas.Save();
 				Source.RenderRootVisual(session.Surface, default, null);
-				session.Canvas.RestoreToCount(save);
 			}
 		}
 	}
