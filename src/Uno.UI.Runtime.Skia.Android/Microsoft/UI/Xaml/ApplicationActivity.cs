@@ -233,7 +233,7 @@ namespace Microsoft.UI.Xaml
 			if (Microsoft.UI.Xaml.Window.CurrentSafe is { RootElement: { } root } window)
 			{
 				var canvas = e.Surface.Canvas;
-				canvas.Clear(SKColors.Red);
+				canvas.Clear(SKColors.Transparent);
 				var scale = _cachedDisplayInformation!.RawPixelsPerViewPixel;
 				canvas.Scale((float)scale);
 				var negativePath = new SKPath();

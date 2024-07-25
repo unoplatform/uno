@@ -153,7 +153,7 @@ internal partial class BrowserRenderer
 
 		using (new SKAutoCanvasRestore(_canvas, true))
 		{
-			_surface.Canvas.Clear(SKColors.Red);
+			_surface.Canvas.Clear(SKColors.Transparent);
 			_surface.Canvas.Scale((float)scale);
 			if (_host.RootElement?.Visual is { } rootVisual)
 			{
