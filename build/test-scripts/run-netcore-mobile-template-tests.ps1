@@ -361,3 +361,14 @@ for($i = 0; $i -lt $projects.Length; $i++)
         }
     }
 }
+
+CleanupTree
+
+# Publish Tests
+
+if ($IsMacOS)
+{
+    $projectPath = "5.2/uno52blank/uno52blank/uno52blank.csproj"
+    dotnet publish $projectPath -f net8.0-desktop -bl:binlogs/$projectPath/publish/msbuild.binlog
+    Assert-ExitCodeIsZero
+}
