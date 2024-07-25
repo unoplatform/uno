@@ -1861,6 +1861,9 @@
 		</Methods>
 	</IgnoreSet>
 	<IgnoreSet baseVersion="5.3">
+		<Assemblies>
+			<Member fullName="Uno.Foundation.Logging" reason="Already pulled transitively"/>
+		</Assemblies>
 		<Types>
 		</Types>
 
