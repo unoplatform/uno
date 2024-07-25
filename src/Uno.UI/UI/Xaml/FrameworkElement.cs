@@ -417,6 +417,10 @@ namespace Microsoft.UI.Xaml
 
 			// Apply active style and default style when we enter the visual tree, if they haven't been applied already.
 			ApplyStyles();
+
+			// This is replicating the UpdateAllThemeReferences call in Enter in WinUI.
+			// Updates theme references to account for new ancestor theme dictionaries.
+			this.UpdateResourceBindings();
 		}
 
 		partial void OnUnloadedPartial()
