@@ -573,7 +573,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 							using (writer.BlockInvariant(@"if(!_knownMissingTypes.Contains(type) && !type.IsGenericType && !type.IsAbstract)"))
 							{
 								writer.AppendLineIndented(@"_knownMissingTypes.Add(type);");
-								writer.AppendLineIndented(@"Debug.WriteLine($""The Bindable attribute is missing and the type [{{type.FullName}}] is not known by the MetadataProvider. Reflection was used instead of the binding engine and generated static metadata. Add the Bindable attribute to prevent this message and performance issues."");");
+								writer.AppendLineIndented(@"global::System.Diagnostics.Debug.WriteLine($""The Bindable attribute is missing and the type [{{type.FullName}}] is not known by the MetadataProvider. Reflection was used instead of the binding engine and generated static metadata. Add the Bindable attribute to prevent this message and performance issues."");");
 							}
 						}
 					}
@@ -659,7 +659,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 						using (writer.BlockInvariant(@"lock(_knownMissingTypes)"))
 						using (writer.BlockInvariant(@"if (_knownMissingTypes.Add(type))"))
 						{
-							writer.AppendLineIndented(@"Debug.WriteLine($""The Bindable attribute is missing and the type [{type.FullName}] is not known by the MetadataProvider. Reflection was used instead of the binding engine and generated static metadata. Add the Bindable attribute to prevent this message and performance issues."");");
+							writer.AppendLineIndented(@"global::System.Diagnostics.Debug.WriteLine($""The Bindable attribute is missing and the type [{type.FullName}] is not known by the MetadataProvider. Reflection was used instead of the binding engine and generated static metadata. Add the Bindable attribute to prevent this message and performance issues."");");
 						}
 					}
 					writer.AppendLineIndented(@"#endif");
