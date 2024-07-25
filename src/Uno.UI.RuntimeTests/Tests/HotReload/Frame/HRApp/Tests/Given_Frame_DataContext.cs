@@ -1,5 +1,6 @@
 ﻿#nullable disable
 #pragma warning disable IDE0051 // Members used for testing by reflection
+#pragma warning disable CS1998
 
 using System;
 using System.Formats.Asn1;
@@ -191,5 +192,41 @@ public class Given_Frame_DataContext : BaseTestClass
 
 		// Check that the text is still the original value
 		await frame.ValidateTextOnChildTextBlock(vm.TitleText, 1);
+	}
+
+	[TestMethod]
+	public async Task Check_Preserved_IfNotChanged()
+	{
+		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token;
+
+		var frame = new Microsoft.UI.Xaml.Controls.Frame();
+		UnitTestsUIContentHelper.Content = frame;
+
+		frame.Navigate(typeof(HR_Frame_Pages_DataContext));
+
+		var vm = (frame.Content as Page).DataContext;
+
+		await HotReloadHelper.UpdateServerFileAndRevert<HR_Frame_Pages_Page1>(
+			"** HR_Frame_Pages_DataContext Original **",
+			"** HR_Frame_Pages_DataContext Updated **",
+			async () => Assert.AreSame(vm, (frame.Content as Page)?.DataContext),
+			ct);
+	}
+
+	[TestMethod]
+	public async Task Check_Replaced_IfUpdated()
+	{
+		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token;
+
+		var frame = new Microsoft.UI.Xaml.Controls.Frame();
+		UnitTestsUIContentHelper.Content = frame;
+
+		frame.Navigate(typeof(HR_Frame_Pages_DataContext));
+
+		await HotReloadHelper.UpdateServerFileAndRevert<HR_Frame_Pages_Page1>(
+			"<local:HR_Frame_Pages_DataContext_VM />",
+			"<local:HR_Frame_Pages_DataContext_VM_2 />",
+			async () => Assert.IsTrue(frame.Content is Page { IsLoaded: true, DataContext: HR_Frame_Pages_DataContext_VM_2 }),
+			ct);
 	}
 }
