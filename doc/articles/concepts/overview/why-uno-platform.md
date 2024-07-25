@@ -162,7 +162,7 @@ The Uno Platform provides access to SkiaSharp as a render canvas for your app, e
 
 ## Animations: Beyond storyboards, access to Lottie and Rive
 
-Based on SkiaSharp support, Uno Platform provides AnimatedVisualPlayer to give the ability to render rich Lottie files directly in your app, for all target platforms.
+Based on SkiaSharp support, Uno Platform provides AnimatedVisualPlayer to give the ability to render rich [Lottie files](https://airbnb.io/lottie/#/) directly in your app, for all target platforms.
 
 ## Performance and app size with AOT/Jiterpreter
 
