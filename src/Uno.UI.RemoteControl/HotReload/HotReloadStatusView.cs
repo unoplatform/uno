@@ -172,6 +172,7 @@ internal sealed partial class HotReloadStatusView : Control, IDiagnosticViewElem
 	/// <inheritdoc />
 	void IDiagnosticViewElement<Status>.Update(Status status)
 		=> OnHotReloadStatusChanged(status);
+
 	private void OnHotReloadStatusChanged(Status status)
 	{
 		var oldStatus = _hotReloadStatus;
