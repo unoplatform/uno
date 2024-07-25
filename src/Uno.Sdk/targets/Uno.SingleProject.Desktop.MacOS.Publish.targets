@@ -62,9 +62,9 @@
 		</ItemGroup>
 
 		<Copy SourceFiles="@(_UnoAppBundleFiles)"
-			DestinationFiles="@(_UnoAppBundleFiles->'$(UnoAppPackagePublishDir)$(ApplicationTitle).app/%(RecursiveDir)%(Filename)%(Extension)')"
+			DestinationFiles="@(_UnoAppBundleFiles->'$(_UnoAppPackagePublishDir)$(ApplicationTitle).app/%(RecursiveDir)%(Filename)%(Extension)')"
 			SkipUnchangedFiles="true" />
 
-		<Message Text="$(AssemblyName) -&gt; $(_UnoPublishDir)$(ApplicationTitle).app" Importance="High" />
+		<Message Text="$(AssemblyName) -&gt; $(_UnoAppPackagePublishDir)$(ApplicationTitle).app" Importance="High" />
 	</Target>
 </Project>
