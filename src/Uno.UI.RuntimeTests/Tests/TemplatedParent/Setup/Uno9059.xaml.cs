@@ -25,7 +25,7 @@ public class Uno9059_VM
 
 	public Uno9059_RelayCommand CustomCommand { get; set; }
 }
-public class Uno9059_CustomControl : Control
+public partial class Uno9059_CustomControl : Control
 {
 	#region DependencyProperty: Action1
 

@@ -25,7 +25,7 @@ namespace Microsoft.UI.Xaml.Controls.Maps.Presenters
 		{
 			_ownerSubscription.Disposable = null;
 
-			_owner = TemplatedParent as MapControl;
+			_owner = GetTemplatedParent() as MapControl;
 
 			if (_owner != null)
 			{

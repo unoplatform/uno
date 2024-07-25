@@ -250,7 +250,7 @@ public sealed partial class DiagnosticsOverlay : Control
 		static void OnToolBarSizeChanged(object sender, SizeChangedEventArgs args)
 		{
 			// Patches pointer event dispatch on a 0x0 Canvas
-			if (sender is UIElement { TemplatedParent: DiagnosticsOverlay { TemplatedRoot: Canvas canvas } })
+			if (sender is UIElement uie && uie.GetTemplatedParent() is DiagnosticsOverlay { TemplatedRoot: Canvas canvas })
 			{
 				canvas.Width = args.NewSize.Width;
 			}

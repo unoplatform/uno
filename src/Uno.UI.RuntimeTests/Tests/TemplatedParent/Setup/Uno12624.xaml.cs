@@ -21,7 +21,11 @@ public partial class Uno12624_LeftRightControl : Control
 		typeof(Uno12624_LeftRightControl),
 		new PropertyMetadata(default(object)));
 
+#if !__ANDROID__
 	public object Left
+#else
+	public new object Left
+#endif
 	{
 		get => (object)GetValue(LeftProperty);
 		set => SetValue(LeftProperty, value);
@@ -36,7 +40,11 @@ public partial class Uno12624_LeftRightControl : Control
 		typeof(Uno12624_LeftRightControl),
 		new PropertyMetadata(default(object)));
 
+#if !__ANDROID__
 	public object Right
+#else
+	public new object Right
+#endif
 	{
 		get => (object)GetValue(RightProperty);
 		set => SetValue(RightProperty, value);

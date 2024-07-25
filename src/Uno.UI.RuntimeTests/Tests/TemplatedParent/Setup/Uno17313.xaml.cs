@@ -11,7 +11,7 @@ public sealed partial class Uno17313 : Page
 	}
 }
 
-public class Uno17313_HeaderedCC : ContentControl
+public partial class Uno17313_HeaderedCC : ContentControl
 {
 	#region DependencyProperty: Header
 
@@ -45,6 +45,6 @@ public class Uno17313_HeaderedCC : ContentControl
 	#endregion
 }
 
-public class Uno17313_Expander : Uno17313_HeaderedCC { }
-public class Uno17313_SettingsExpander : Uno17313_HeaderedCC { }
-public class Uno17313_SettingsCard : Uno17313_HeaderedCC { }
+public partial class Uno17313_Expander : Uno17313_HeaderedCC { }
+public partial class Uno17313_SettingsExpander : Uno17313_HeaderedCC { }
+public partial class Uno17313_SettingsCard : Uno17313_HeaderedCC { }

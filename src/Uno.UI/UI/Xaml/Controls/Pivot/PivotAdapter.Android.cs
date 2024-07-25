@@ -37,7 +37,6 @@ namespace Microsoft.UI.Xaml.Controls
 			foreach (var fragment in _fragments)
 			{
 				fragment.DataContext = _pivot.DataContext;
-				fragment.TemplatedParent = (IFrameworkElement)_pivot.GetTemplatedParent();
 			}
 		}
 
@@ -84,7 +83,6 @@ namespace Microsoft.UI.Xaml.Controls
 					var fragment = new PivotItemFragment(pivotItem)
 					{
 						DataContext = _pivot.DataContext,
-						TemplatedParent = (IFrameworkElement)_pivot.GetTemplatedParent()
 					};
 					return fragment;
 				})
