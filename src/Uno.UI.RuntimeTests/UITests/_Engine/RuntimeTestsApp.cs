@@ -51,6 +51,9 @@ public partial class RuntimeTestsApp : IApp
 		var assemblyName = "SamplesApp.Skia";
 #elif __WASM__
 		var assemblyName = "SamplesApp.Wasm";
+#else
+		throw new PlatformNotSupportedException();
+#pragma warning disable CS0162
 #endif
 		if (TestServices.WindowHelper.IsXamlIsland)
 		{
@@ -78,6 +81,7 @@ public partial class RuntimeTestsApp : IApp
 		{
 			throw new InvalidOperationException($"Failed to run sample '{metadataName}'");
 		}
+#pragma warning restore CS0162
 	}
 
 	QueryResult[] IApp.Query(string marked) => Query(marked);
@@ -264,7 +268,7 @@ public partial class RuntimeTestsApp : IApp
 
 	public async ValueTask<RawBitmap> TakeScreenshotAsync(string name)
 	{
-		var screenshot = await UITestHelper.ScreenShot((FrameworkElement)TestServices.WindowHelper.CurrentTestWindow.Content!);
+		var screenshot = await UITestHelper.ScreenShot((FrameworkElement)TestServices.WindowHelper.XamlRoot.Content!);
 #if false
 		UITestHelper.Save(screenshot, name);
 #endif

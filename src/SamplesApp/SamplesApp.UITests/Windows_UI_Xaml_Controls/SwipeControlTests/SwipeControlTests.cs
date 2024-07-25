@@ -70,6 +70,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.SwipeControlTests
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.iOS, Platform.Android)]
+#if __SKIA__
+		[Ignore("Invalid layout of items")]
+#endif
 		public Task When_InListView()
 			=> When_InScrollableContainer("UITests.Windows_UI_Xaml_Controls.SwipeControlTests.SwipeControl_ListView");
 
