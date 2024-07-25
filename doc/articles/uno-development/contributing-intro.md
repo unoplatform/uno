@@ -22,7 +22,7 @@ For the prerequisites you'll need, as well as useful tips like using [solution f
 
 If you're doing development for Uno's macOS support, you'll need to build and run Uno using Visual Studio for Mac. [There's a separate guide for that here](building-uno-macos.md).
 
-You can contribute to Uno directly from your browser using GitPod. [Find out how.](../features/working-with-gitpod.md)
+You can contribute to Uno directly from your browser using GitPod, [find out how](../features/working-with-gitpod.md).
 
 Whether you're fixing a bug or working on a new feature, [inspecting the visual tree of a running app](debugging-inspect-visual-tree.md) is often a key step.
 
@@ -32,7 +32,7 @@ See [Uno's code conventions and common patterns here](../contributing/guidelines
 
 ## Implementing a new feature
 
-See how to implement a new [feature here](../contributing/guidelines/implementing-a-new%20winui-winrt-feature.md).
+See how to implement a new [feature here](xref:Uno.Contributing.ImplementWinUIWinRTAPI).
 
 ## Experimenting with Samples App
 
@@ -52,7 +52,10 @@ See the [Guidelines for creating tests](../contributing/guidelines/creating-test
 
 ## Creating a Pull Request
 
-Uno uses [Git](https://git-scm.com/) for version control, and GitHub to host the [main repository](https://github.com/unoplatform/uno). You'll need to know the basics of Git to submit changes to Uno, but never fear, there are plenty of [great](https://git-scm.com/book/en/v2) [guides](https://guides.github.com/introduction/git-handbook/) [available](https://www.atlassian.com/git/tutorials).
+Uno uses [Git](https://git-scm.com/) for version control, and GitHub to host the [main repository](https://github.com/unoplatform/uno). You'll need to know the basics of Git to submit changes to Uno, but never fear, there are plenty of great guides available:
+[Pro Git book | git-scm](https://git-scm.com/book/en/v2)
+[About Git | GitHub](https://guides.github.com/introduction/git-handbook/)
+[Tutorials | Atlassian](https://www.atlassian.com/git/tutorials)
 
 > [!IMPORTANT]
 > Before you commit your code, take a minute to familiarize yourself with the [Conventional Commits format](git-conventional-commits.md) Uno uses.
