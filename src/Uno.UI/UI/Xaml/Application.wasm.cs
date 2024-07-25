@@ -41,11 +41,6 @@ namespace Microsoft.UI.Xaml
 
 		partial void InitializePartial()
 		{
-			if (!_startInvoked)
-			{
-				throw new InvalidOperationException("The application must be started using Application.Start first, e.g. Microsoft.UI.Xaml.Application.Start(_ => new App());");
-			}
-
 			global::Uno.Foundation.Extensibility.ApiExtensibility.Register(
 				typeof(global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.IDragDropExtension),
 				o => global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension.GetForCurrentView());
@@ -79,27 +74,15 @@ namespace Microsoft.UI.Xaml
 
 		static async partial void StartPartial(ApplicationInitializationCallback callback)
 		{
-			try
-			{
-				_startInvoked = true;
+			_startInvoked = true;
 
-				SynchronizationContext.SetSynchronizationContext(
-					new NativeDispatcherSynchronizationContext(NativeDispatcher.Main, NativeDispatcherPriority.Normal)
-				);
+			SynchronizationContext.SetSynchronizationContext(
+				new NativeDispatcherSynchronizationContext(NativeDispatcher.Main, NativeDispatcherPriority.Normal)
+			);
 
-				await WindowManagerInterop.InitAsync();
+			await WindowManagerInterop.InitAsync();
 
-				global::Windows.Storage.ApplicationData.Init();
-
-				callback(new ApplicationInitializationCallbackParams());
-			}
-			catch (Exception exception)
-			{
-				if (typeof(Application).Log().IsEnabled(LogLevel.Error))
-				{
-					typeof(Application).Log().LogError("Application initialization failed.", exception);
-				}
-			}
+			global::Windows.Storage.ApplicationData.Init();
 		}
 
 		private void Initialize()

@@ -56,6 +56,7 @@ namespace Microsoft.UI.Xaml
 	/// </summary>
 	public partial class Application
 	{
+		private static bool _startInvoked;
 		private bool _initializationComplete;
 		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 		private ApplicationTheme _requestedTheme = ApplicationTheme.Dark;
@@ -79,8 +80,6 @@ namespace Microsoft.UI.Xaml
 			});
 
 			RegisterExtensions();
-
-			InitializePartialStatic();
 		}
 
 		/// <summary>
@@ -95,6 +94,11 @@ namespace Microsoft.UI.Xaml
 			ApplicationLanguages.ApplyCulture();
 			InitializeSystemTheme();
 
+			if (!_startInvoked)
+			{
+				throw new InvalidOperationException("The application must be started using Application.Start first, e.g. Microsoft.UI.Xaml.Application.Start(_ => new App());");
+			}
+
 			InitializePartial();
 		}
 
@@ -106,8 +110,6 @@ namespace Microsoft.UI.Xaml
 		{
 			ApiExtensibility.Register<MessageDialog>(typeof(IMessageDialogExtension), dialog => new MessageDialogExtension(dialog));
 		}
-
-		static partial void InitializePartialStatic();
 
 		[Preserve]
 		public static class TraceProvider
@@ -258,10 +260,21 @@ namespace Microsoft.UI.Xaml
 
 		public static void Start(global::Microsoft.UI.Xaml.ApplicationInitializationCallback callback)
 		{
-			StartPartial(callback);
+			try
+			{
+				StartPartial();
+				callback(new ApplicationInitializationCallbackParams());
+			}
+			catch (Exception ex)
+			{
+				if (typeof(Application).Log().IsEnabled(LogLevel.Error))
+				{
+					typeof(Application).Log().LogError("Application initialization failed.", ex);
+				}
+			}
 		}
 
-		static partial void StartPartial(ApplicationInitializationCallback callback);
+		static partial void StartPartial();
 
 		protected internal virtual void OnActivated(IActivatedEventArgs args) { }
 

@@ -29,13 +29,10 @@ namespace Microsoft.UI.Xaml
 	{
 		private NSUrl[] _launchUrls;
 
-		static partial void InitializePartialStatic()
-		{
-			ApiExtensibility.Register(typeof(IUnoCorePointerInputSource), host => new MacOSPointerInputSource((Uno.UI.Controls.Window)NativeWindowWrapper.Instance.NativeWindow));
-		}
-
 		partial void InitializePartial()
 		{
+			ApiExtensibility.Register(typeof(IUnoCorePointerInputSource), host => new MacOSPointerInputSource((Uno.UI.Controls.Window)NativeWindowWrapper.Instance.NativeWindow));
+
 			SetCurrentLanguage();
 
 			SubscribeBackgroundNotifications();
@@ -43,15 +40,9 @@ namespace Microsoft.UI.Xaml
 
 		public Application(NativeHandle handle) : base(handle)
 		{
-
 		}
 
 		public override bool ApplicationShouldTerminateAfterLastWindowClosed(NSApplication sender) => true;
-
-		static partial void StartPartial(ApplicationInitializationCallback callback)
-		{
-			callback(new ApplicationInitializationCallbackParams());
-		}
 
 		public override void OpenUrls(NSApplication application, NSUrl[] urls)
 		{
