@@ -37,8 +37,6 @@ namespace Microsoft.UI.Xaml
 {
 	public partial class Application
 	{
-		private static bool _startInvoked;
-
 		partial void InitializePartial()
 		{
 			global::Uno.Foundation.Extensibility.ApiExtensibility.Register(
@@ -74,8 +72,6 @@ namespace Microsoft.UI.Xaml
 
 		static async partial void StartPartial(ApplicationInitializationCallback callback)
 		{
-			_startInvoked = true;
-
 			SynchronizationContext.SetSynchronizationContext(
 				new NativeDispatcherSynchronizationContext(NativeDispatcher.Main, NativeDispatcherPriority.Normal)
 			);

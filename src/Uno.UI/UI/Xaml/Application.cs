@@ -262,6 +262,7 @@ namespace Microsoft.UI.Xaml
 		{
 			try
 			{
+				_startInvoked = true;
 				StartPartial();
 				callback(new ApplicationInitializationCallbackParams());
 			}
