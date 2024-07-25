@@ -10,8 +10,6 @@ using Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
 using System.Threading;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.RuntimeTests.Helpers;
-using static Microsoft.UI.Xaml.Controls.CollectionChangedOperation;
-
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
