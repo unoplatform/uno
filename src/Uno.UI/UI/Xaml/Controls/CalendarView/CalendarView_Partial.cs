@@ -1645,17 +1645,45 @@ namespace Microsoft.UI.Xaml.Controls
 			CalendarViewGeneratorHost pHost,
 			DateTime date)
 		{
-			int index = 0;
-
-			index = pHost.CalculateOffsetFromMinDate(date);
+			int index = pHost.CalculateOffsetFromMinDate(date);
 			global::System.Diagnostics.Debug.Assert(index >= 0);
 			global::System.Diagnostics.Debug.Assert(pHost.Panel is { });
+
+#if __SKIA__ || __WASM__
+			if (pHost is CalendarViewGeneratorDecadeViewHost)
+			{
+				var rowsToMax = (MaxDate.Year - date.Year) / m_colsInYearDecadeView;
+
+				if (rowsToMax <= m_rowsInYearDecadeView / 2)
+				{
+					index -= m_rowsInYearDecadeView - rowsToMax;
+
+					int maxItemsInView = m_rowsInYearDecadeView * m_colsInYearDecadeView;
+
+					// when the last displayed date year is near the MaxDate.Year the index is offset too much
+					if (m_lastDisplayedDate.Year >= MaxDate.AddYears(-maxItemsInView).Year)
+					{
+						index -= m_rowsInYearDecadeView;
+					}
+				}
+			}
+
+			if (pHost is CalendarViewGeneratorYearViewHost && date.Year == MaxDate.Year)
+			{
+				var rowsToMax = (MaxDate.Month - date.Month) / m_colsInYearDecadeView;
+
+				if (rowsToMax <= m_rowsInYearDecadeView / 2)
+				{
+					index -= m_rowsInYearDecadeView - rowsToMax;
+				}
+			}
+#endif
+
 			pHost.Panel.ScrollItemIntoView(
 				index,
 				ScrollIntoViewAlignment.Leading,
 				0.0 /* offset */,
 				true /* forceSynchronous */);
-
 		}
 
 		// Bring a item into view with animation.
