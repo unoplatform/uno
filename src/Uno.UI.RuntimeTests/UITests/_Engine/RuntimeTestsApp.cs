@@ -60,6 +60,7 @@ public partial class RuntimeTestsApp : IApp
 		{
 			assemblyName = "UnoIslands" + assemblyName;
 		}
+
 		if (Type.GetType($"{metadataName}, {assemblyName}") is { } sampleType
 			&& Activator.CreateInstance(sampleType) is FrameworkElement sample)
 		{

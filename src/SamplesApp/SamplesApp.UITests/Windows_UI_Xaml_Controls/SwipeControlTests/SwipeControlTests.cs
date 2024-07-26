@@ -72,6 +72,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.SwipeControlTests
 		[ActivePlatforms(Platform.iOS, Platform.Android)]
 #if __SKIA__
 		[Ignore("Invalid layout of items")]
+#elif !HAS_RENDER_TARGET_BITMAP
+		[Ignore("Test relies on screenshots which is not available on this platform.")]
 #endif
 		public Task When_InListView()
 			=> When_InScrollableContainer("UITests.Windows_UI_Xaml_Controls.SwipeControlTests.SwipeControl_ListView");
@@ -79,6 +81,11 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.SwipeControlTests
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.iOS, Platform.Android)]
+#if __SKIA__
+		[Ignore("Invalid layout of items")]
+#elif !HAS_RENDER_TARGET_BITMAP
+		[Ignore("Test relies on screenshots which is not available on this platform.")]
+#endif
 		public Task When_InScrollViewer()
 			=> When_InScrollableContainer("UITests.Windows_UI_Xaml_Controls.SwipeControlTests.SwipeControl_ScrollViewer");
 
