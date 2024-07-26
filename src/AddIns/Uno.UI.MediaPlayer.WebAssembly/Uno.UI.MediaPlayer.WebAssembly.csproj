@@ -9,10 +9,10 @@
 		<Deterministic>true</Deterministic>
 		<AssemblyName>Uno.UI.MediaPlayer.WebAssembly</AssemblyName>
 		<RootNamespace>Uno.UI.Media</RootNamespace>
-		<IsPackable>false</IsPackable>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
 		<PackageId Condition="'$(UNO_UWP_BUILD)'=='false'">Uno.WinUI.MediaPlayer.WebAssembly</PackageId>
+		<Description>This package provides support for MediaPlayerElement for WebAssembly</Description>
 	</PropertyGroup>
 
 	<PropertyGroup>

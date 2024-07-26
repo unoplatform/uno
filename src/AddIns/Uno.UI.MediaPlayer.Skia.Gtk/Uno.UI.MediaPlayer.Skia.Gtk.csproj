@@ -9,10 +9,12 @@
 		<Deterministic>true</Deterministic>
 		<AssemblyName>Uno.UI.MediaPlayer.Skia.Gtk</AssemblyName>
 		<RootNamespace>Uno.UI.MediaPlayer.Skia.Gtk</RootNamespace>
-		<IsPackable>false</IsPackable>
 
 		<!-- Don't install GTK at this step, let the app head do it -->
 		<SkipGtkInstall>true</SkipGtkInstall>
+
+		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
+		<Description>This package provides support for MediaPlayerElement for Uno Platform Skia+Gtk apps</Description>
 	</PropertyGroup>
 
 	<PropertyGroup>
