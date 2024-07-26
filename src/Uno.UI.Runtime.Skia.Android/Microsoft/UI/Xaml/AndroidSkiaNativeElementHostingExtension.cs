@@ -2,16 +2,15 @@
 using Android.Widget;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Windows.Foundation;
 using Android.App;
 using Rect = Windows.Foundation.Rect;
+using Size = Windows.Foundation.Size;
 
 namespace Uno.UI.Runtime.Skia.Android;
 
 internal sealed class AndroidSkiaNativeElementHostingExtension : ContentPresenter.INativeElementHostingExtension
 {
 	private readonly ContentPresenter _owner;
-	private Rect? _physicalRect;
 
 	public AndroidSkiaNativeElementHostingExtension(ContentPresenter owner)
 	{
@@ -23,12 +22,13 @@ internal sealed class AndroidSkiaNativeElementHostingExtension : ContentPresente
 		if (content is View view)
 		{
 			var physicalRect = arrangeRect.LogicalToPhysicalPixels();
-			view.Layout(
-				(int)physicalRect.Left,
-				(int)physicalRect.Top,
-				(int)physicalRect.Right,
-				(int)physicalRect.Bottom);
-			_physicalRect = physicalRect;
+			var lp = new RelativeLayout.LayoutParams((int)physicalRect.Width, (int)physicalRect.Height)
+			{
+				LeftMargin = (int)physicalRect.Left,
+				TopMargin = (int)physicalRect.Top,
+				AlignWithParent = true
+			};
+			view.LayoutParameters = lp;
 		}
 	}
 
@@ -36,16 +36,7 @@ internal sealed class AndroidSkiaNativeElementHostingExtension : ContentPresente
 	{
 		if (content is View view)
 		{
-			ApplicationActivity.Instance.NativeLayerHost.AddView(view);
-
-			if (_physicalRect is { } physicalRect)
-			{
-				view.Layout(
-					(int)physicalRect.Left,
-					(int)physicalRect.Top,
-					(int)physicalRect.Right,
-					(int)physicalRect.Bottom);
-			}
+			ApplicationActivity.Instance.NativeLayerHost!.AddView(view);
 		}
 	}
 
