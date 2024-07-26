@@ -96,7 +96,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 		var windowInsets = GetWindowInsets(activity);
 
-		var insetsTypes = WindowInsetsCompat.Type.SystemBars(); // == WindowInsets.Type.StatusBars() | WindowInsets.Type.NavigationBars() | WindowInsets.Type.CaptionBar();
+		var insetsTypes = WindowInsetsCompat.Type.SystemBars() | WindowInsetsCompat.Type.DisplayCutout(); // == WindowInsets.Type.StatusBars() | WindowInsets.Type.NavigationBars() | WindowInsets.Type.CaptionBar();
 
 		var opaqueInsetsTypes = insetsTypes;
 		if (IsStatusBarTranslucent())
@@ -135,12 +135,6 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	private WindowInsetsCompat GetWindowInsets(Activity activity)
 	{
-		var decorView = activity.Window.DecorView;
-		if (decorView.IsAttachedToWindow)
-		{
-			return ViewCompat.GetRootWindowInsets(decorView);
-		}
-
 		if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.R)
 		{
 			return WindowInsetsCompat.ToWindowInsetsCompat(activity.WindowManager?.CurrentWindowMetrics.WindowInsets);
