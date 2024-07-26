@@ -4,7 +4,7 @@ uid: Uno.GetStarted
 
 ## Quick Start
 
-1. Run [Uno-Check](xref:UnoCheck.UsingUnoCheck#install-and-run-uno-check) to install all the pre-requisites
+1. Run <a href="https://aka.platform.uno/uno-check#install-and-run-uno-check" target="_blank">Uno.Check</a> to install all the pre-requisites
 2. Download the Uno Platform extension for your IDE:
 
 <!-- markdownlint-disable MD001 -->
