@@ -234,14 +234,21 @@ namespace Microsoft.UI.Xaml
 		{
 			base.OnStart();
 
-			_cachedDisplayInformation = DisplayInformation.GetForCurrentView();
+			// OnStart gets fired either after onCreate (first launch) or after onRestart
+			// (go out of app then back again). We only want to do this once, hence
+			// the flag.
+			if (!_started)
+			{
+				_started = true;
 
-			_skCanvasView = new UnoSKCanvasView(this, Microsoft.UI.Xaml.Window.CurrentSafe!.RootElement!);
-			_skCanvasView.LayoutParameters = new ViewGroup.LayoutParams(
-				ViewGroup.LayoutParams.MatchParent,
-				ViewGroup.LayoutParams.MatchParent);
-			_skCanvasView.PaintSurface += OnPaintSurface;
-			RelativeLayout.AddView(_skCanvasView);
+				_cachedDisplayInformation = DisplayInformation.GetForCurrentView();
+
+                _skCanvasView = new UnoSKCanvasView(this, Microsoft.UI.Xaml.Window.CurrentSafe!.RootElement!);
+                _skCanvasView.LayoutParameters = new ViewGroup.LayoutParams(
+                	ViewGroup.LayoutParams.MatchParent,
+                	ViewGroup.LayoutParams.MatchParent);
+                _skCanvasView.PaintSurface += OnPaintSurface;
+                RelativeLayout.AddView(_skCanvasView);
 
 				_nativeLayerHost = new ClippedRelativeLayout(this);
 				_nativeLayerHost.LayoutParameters = new ViewGroup.LayoutParams(
