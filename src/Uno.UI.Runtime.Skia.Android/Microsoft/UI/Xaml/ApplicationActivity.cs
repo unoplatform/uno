@@ -269,9 +269,9 @@ namespace Microsoft.UI.Xaml
 				var scale = _cachedDisplayInformation!.RawPixelsPerViewPixel;
 				canvas.Scale((float)scale);
 				var negativePath = new SKPath();
-				negativePath.AddRect(new SKRect(0, 0, (int)(window.Bounds.Width * scale), (int)(window.Bounds.Height * scale)));
 				if (SkiaRenderHelper.RenderRootVisualAndReturnPath((int)window.Bounds.Width, (int)window.Bounds.Height, root.Visual, e.Surface) is { } path)
 				{
+					negativePath.AddRect(new SKRect(0, 0, (int)(window.Bounds.Width * scale), (int)(window.Bounds.Height * scale)));
 					negativePath = negativePath.Op(path, SKPathOp.Difference);
 				}
 				if (_nativeLayerHost is { })
