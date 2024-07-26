@@ -94,11 +94,6 @@ namespace Microsoft.UI.Xaml
 			ApplicationLanguages.ApplyCulture();
 			InitializeSystemTheme();
 
-			if (!_startInvoked)
-			{
-				throw new InvalidOperationException("The application must be started using Application.Start first, e.g. Microsoft.UI.Xaml.Application.Start(_ => new App());");
-			}
-
 			InitializePartial();
 		}
 

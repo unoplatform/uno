@@ -39,6 +39,11 @@ namespace Microsoft.UI.Xaml
 	{
 		partial void InitializePartial()
 		{
+			if (!_startInvoked)
+			{
+				throw new InvalidOperationException("The application must be started using Application.Start first, e.g. Microsoft.UI.Xaml.Application.Start(_ => new App());");
+			}
+
 			global::Uno.Foundation.Extensibility.ApiExtensibility.Register(
 				typeof(global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.IDragDropExtension),
 				o => global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension.GetForCurrentView());
