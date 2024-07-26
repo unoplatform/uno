@@ -5,7 +5,7 @@ IFS=$'\n\t'
 
 cd $BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries
 
-npm i chromedriver@119.0.0
+npm i chromedriver@127.0.0
 npm i puppeteer@22.14.0
 
 # Download chromium explicitly
@@ -25,7 +25,7 @@ export MSBUILDENSURESTDOUTFORTASKPROCESSES=1
 
 export UNO_UITEST_TARGETURI=http://localhost:8000
 export UNO_UITEST_DRIVERPATH_CHROME=$BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/node_modules/chromedriver/lib/chromedriver
-export UNO_UITEST_CHROME_BINARY_PATH=~/.cache/puppeteer/chrome/linux-119.0.6045.105/chrome-linux64/chrome
+export UNO_UITEST_CHROME_BINARY_PATH=~/.cache/puppeteer/chrome/linux-127.0.6533.72
 export UITEST_RUNTIME_TEST_GROUP=${UITEST_RUNTIME_TEST_GROUP=automated}
 export UNO_UITEST_SCREENSHOT_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/wasm-automated-$SITE_SUFFIX-$UITEST_AUTOMATED_GROUP-$UITEST_RUNTIME_TEST_GROUP
 export UNO_UITEST_PLATFORM=Browser
