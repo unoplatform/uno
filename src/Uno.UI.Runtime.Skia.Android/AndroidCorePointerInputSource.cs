@@ -60,7 +60,7 @@ internal sealed class AndroidCorePointerInputSource : IUnoCorePointerInputSource
 	{
 	}
 
-	internal void OnNativeMotionEvent(MotionEvent e, int[] correction)
+	internal bool OnNativeMotionEvent(MotionEvent e, int[] correction, bool nativelyHandled)
 	{
 		try
 		{
@@ -84,7 +84,10 @@ internal sealed class AndroidCorePointerInputSource : IUnoCorePointerInputSource
 			var properties = PointerHelpers.GetProperties(e, pointerIndex, nativePointerType, nativePointerAction, nativePointerButtons, isInRange, isInContact);
 
 			var point = new PointerPoint(frameId, ts, pointerDevice, pointerIdentifier.Id, position, position, isInContact, new PointerPointProperties(properties));
-			var args = new PointerEventArgs(point, keyModifiers);
+			var args = new PointerEventArgs(point, keyModifiers)
+			{
+				Handled = nativelyHandled
+			};
 
 			switch (nativePointerAction)
 			{
@@ -136,6 +139,8 @@ internal sealed class AndroidCorePointerInputSource : IUnoCorePointerInputSource
 				default:
 					throw new ArgumentOutOfRangeException(nameof(e), $"Unknown event ({e}-{nativePointerAction}).");
 			}
+
+			return args.Handled;
 		}
 		catch (Exception error)
 		{
@@ -143,6 +148,8 @@ internal sealed class AndroidCorePointerInputSource : IUnoCorePointerInputSource
 			{
 				this.Log().Error($"Failed to dispatch native pointer event: {error}");
 			}
+
+			return false;
 		}
 	}
 }

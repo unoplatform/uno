@@ -45,6 +45,7 @@ namespace Microsoft.UI.Xaml.Input
 			FrameId = pointerEventArgs.CurrentPoint.FrameId;
 			Pointer = GetPointer(pointerEventArgs);
 			KeyModifiers = pointerEventArgs.KeyModifiers;
+			Handled = pointerEventArgs.Handled;
 			OriginalSource = source;
 		}
 

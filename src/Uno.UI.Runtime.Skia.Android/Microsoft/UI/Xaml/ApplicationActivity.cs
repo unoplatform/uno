@@ -37,6 +37,12 @@ namespace Microsoft.UI.Xaml
 	{
 		private DisplayInformation? _cachedDisplayInformation;
 		private UnoSKCanvasView? _skCanvasView;
+		private ClippedRelativeLayout? _nativeLayerHost;
+
+		private InputPane _inputPane;
+		//private Android.Views.Window? _window;
+
+		private bool _started;
 
 		/// <summary>
 		/// The windows model implies only one managed activity.
@@ -47,10 +53,7 @@ namespace Microsoft.UI.Xaml
 
 		internal LayoutProvider LayoutProvider { get; private set; } = null!;
 
-		internal RelativeLayout NativeLayerHost { get; private set; } = null!;
-
-		private InputPane _inputPane;
-		//private Android.Views.Window? _window;
+		internal RelativeLayout? NativeLayerHost => _nativeLayerHost;
 
 		public ApplicationActivity(IntPtr ptr, Android.Runtime.JniHandleOwnership owner) : base(ptr, owner)
 		{
@@ -134,11 +137,20 @@ namespace Microsoft.UI.Xaml
 				return base.DispatchGenericMotionEvent(ev);
 			}
 
+			var nativelyHandled = false;
+			if (_nativeLayerHost?.Path is { } p && p.Contains(ev.GetX(), ev.GetY()))
+			{
+				// We don't call the base method if NativeLayerHost.Path doesn't contain (X, Y).
+				// This is due to the way Android handles hit-testing with Canvas.ClipPath, where even if the ClipPath
+				// doesn't contain the coordinates of a touch event, it will still hit-test positively as if its clip
+				// path contains the coordinates. So, we have to do our own hit-testing step where we prevent dispatching
+				// the event altogether if it's not within the clip path of the native layer.
+				nativelyHandled = base.DispatchTouchEvent(ev);
+			}
+
 			var correction = new int[2];
 			_skCanvasView?.GetLocationInWindow(correction);
-			AndroidCorePointerInputSource.Instance.OnNativeMotionEvent(ev, correction);
-
-			return base.DispatchGenericMotionEvent(ev);
+			return AndroidCorePointerInputSource.Instance.OnNativeMotionEvent(ev, correction, nativelyHandled);
 		}
 
 		public override bool DispatchTouchEvent(MotionEvent? ev)
@@ -149,11 +161,20 @@ namespace Microsoft.UI.Xaml
 				return base.DispatchTouchEvent(ev);
 			}
 
+			var nativelyHandled = false;
+			if (_nativeLayerHost?.Path is { } p && p.Contains(ev.GetX(), ev.GetY()))
+			{
+				// We don't call the base method if NativeLayerHost.Path doesn't contain (X, Y).
+                // This is due to the way Android handles hit-testing with Canvas.ClipPath, where even if the ClipPath
+                // doesn't contain the coordinates of a touch event, it will still hit-test positively as if its clip
+                // path contains the coordinates. So, we have to do our own hit-testing step where we prevent dispatching
+                // the event altogether if it's not within the clip path of the native layer.
+				nativelyHandled = base.DispatchTouchEvent(ev);
+			}
+
 			var correction = new int[2];
 			_skCanvasView?.GetLocationInWindow(correction);
-			AndroidCorePointerInputSource.Instance.OnNativeMotionEvent(ev, correction);
-
-			return base.DispatchTouchEvent(ev);
+			return AndroidCorePointerInputSource.Instance.OnNativeMotionEvent(ev, correction, nativelyHandled);
 		}
 
 		public void DismissKeyboard()
@@ -222,17 +243,20 @@ namespace Microsoft.UI.Xaml
 			_skCanvasView.PaintSurface += OnPaintSurface;
 			RelativeLayout.AddView(_skCanvasView);
 
-			NativeLayerHost = new ClippedRelativeLayout(this);
-			NativeLayerHost.LayoutParameters = new ViewGroup.LayoutParams(
-				ViewGroup.LayoutParams.MatchParent,
-				ViewGroup.LayoutParams.MatchParent);
-			RelativeLayout.AddView(NativeLayerHost);
+				_nativeLayerHost = new ClippedRelativeLayout(this);
+				_nativeLayerHost.LayoutParameters = new ViewGroup.LayoutParams(
+                	ViewGroup.LayoutParams.MatchParent,
+                	ViewGroup.LayoutParams.MatchParent);
+                RelativeLayout.AddView(NativeLayerHost);
+			}
 		}
 
 		private void OnPaintSurface(object? sender, SKPaintSurfaceEventArgs e)
 		{
 			if (Microsoft.UI.Xaml.Window.CurrentSafe is { RootElement: { } root } window)
 			{
+				_skCanvasView!.ExploreByTouchHelper.InvalidateRoot();
+
 				var canvas = e.Surface.Canvas;
 				canvas.Clear(SKColors.Transparent);
 				var scale = _cachedDisplayInformation!.RawPixelsPerViewPixel;
@@ -243,9 +267,11 @@ namespace Microsoft.UI.Xaml
 				{
 					negativePath = negativePath.Op(path, SKPathOp.Difference);
 				}
-				((ClippedRelativeLayout)NativeLayerHost).Path = negativePath;
-				_skCanvasView!.ExploreByTouchHelper.InvalidateRoot();
-				NativeLayerHost.Invalidate();
+				if (_nativeLayerHost is { })
+				{
+					_nativeLayerHost.Path = negativePath;
+					_nativeLayerHost.Invalidate();
+				}
 			}
 		}
 

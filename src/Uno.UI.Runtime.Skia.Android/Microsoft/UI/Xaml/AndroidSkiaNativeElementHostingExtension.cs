@@ -53,7 +53,7 @@ internal sealed class AndroidSkiaNativeElementHostingExtension : ContentPresente
 	{
 		if (content is View view)
 		{
-			ApplicationActivity.Instance.NativeLayerHost.RemoveView(view);
+			ApplicationActivity.Instance.NativeLayerHost!.RemoveView(view);
 		}
 	}
 
@@ -75,7 +75,7 @@ internal sealed class AndroidSkiaNativeElementHostingExtension : ContentPresente
 
 	public object CreateSampleComponent(string text)
 	{
-		var btn = new global::Android.Widget.Button(ApplicationActivity.Instance.NativeLayerHost.Context)
+		var btn = new global::Android.Widget.Button(ApplicationActivity.Instance.NativeLayerHost!.Context)
 		{
 			Text = text
 		};
