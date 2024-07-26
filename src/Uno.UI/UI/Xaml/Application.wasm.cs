@@ -70,7 +70,7 @@ namespace Microsoft.UI.Xaml
 			return 0;
 		}
 
-		static async partial void StartPartial(ApplicationInitializationCallback callback)
+		static async partial void StartPartial()
 		{
 			SynchronizationContext.SetSynchronizationContext(
 				new NativeDispatcherSynchronizationContext(NativeDispatcher.Main, NativeDispatcherPriority.Normal)
