@@ -56,7 +56,6 @@ namespace Microsoft.UI.Xaml
 	/// </summary>
 	public partial class Application
 	{
-		private static bool _startInvoked;
 		private bool _initializationComplete;
 		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 		private ApplicationTheme _requestedTheme = ApplicationTheme.Dark;

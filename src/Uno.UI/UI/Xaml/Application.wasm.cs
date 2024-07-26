@@ -37,6 +37,8 @@ namespace Microsoft.UI.Xaml
 {
 	public partial class Application
 	{
+		private static bool _startInvoked;
+		
 		partial void InitializePartial()
 		{
 			if (!_startInvoked)
