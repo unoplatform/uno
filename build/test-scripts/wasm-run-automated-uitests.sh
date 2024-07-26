@@ -6,7 +6,7 @@ IFS=$'\n\t'
 cd $BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries
 
 npm i chromedriver@119.0.0
-npm i puppeteer@21.6.1
+npm i puppeteer@22.14.0
 
 # Download chromium explicitly
 pushd ./node_modules/puppeteer
