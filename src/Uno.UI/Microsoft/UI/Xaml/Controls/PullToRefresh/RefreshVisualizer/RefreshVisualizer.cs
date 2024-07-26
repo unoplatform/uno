@@ -513,6 +513,23 @@ public partial class RefreshVisualizer : Control, IRefreshVisualizerPrivate
 		}
 	}
 
+	// BEGIN Uno-specific: We are unsure if it's an issue from original RefreshContainer, or if we are missing some cleanup for composition animation
+	private void StopExecutingRotationAnimation()
+	{
+		if (m_content != null)
+		{
+			Visual contentVisual = ElementCompositionPreview.GetElementVisual(m_content);
+			contentVisual.StopAnimation("RotationAngle");
+		}
+	}
+
+	private protected override void OnUnloaded()
+	{
+		base.OnUnloaded();
+		StopExecutingRotationAnimation();
+	}
+	// END Uno-specific
+
 	private void UpdateRefreshState(RefreshVisualizerState newState)
 	{
 		//PTR_TRACE_INFO(null, TRACE_MSG_METH_INT, METH_NAME, this, newState);
