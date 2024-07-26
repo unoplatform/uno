@@ -19,6 +19,7 @@ using Windows.Foundation.Metadata;
 using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
 using Windows.UI.ViewManagement;
+using Uno.UI.Toolkit.Extensions;
 using static Private.Infrastructure.TestServices;
 using Disposable = Uno.Disposables.Disposable;
 
