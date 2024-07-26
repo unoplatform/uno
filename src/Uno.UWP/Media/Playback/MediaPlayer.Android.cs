@@ -545,5 +545,11 @@ namespace Windows.Media.Playback
 			Application.Context.UnregisterReceiver(_noisyAudioStreamReceiver);
 			base.Dispose(disposing);
 		}
+
+		// This is necessary for the Android-Skia target, specifically for code that
+		// compiles against the reference API (which has IsLoopingAllEnabled) such as
+		// MediaTransportControls.UpdateRepeatStates().
+		[NotImplemented]
+		public bool IsLoopingAllEnabled { get; set; }
 	}
 }

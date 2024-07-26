@@ -39,6 +39,7 @@ public class AndroidSkiaHost : ISkiaApplicationHost
 			ApiExtensibility.Register<CoreWebView2>(typeof(INativeWebViewProvider), o => new AndroidNativeWebViewProvider(o));
 			ApiExtensibility.Register(typeof(ISkiaNativeDatePickerProviderExtension), _ => new AndroidSkiaDatePickerProvider());
 			ApiExtensibility.Register(typeof(ISkiaNativeTimePickerProviderExtension), _ => new AndroidSkiaTimePickerProvider());
+			ApiExtensibility.Register<MediaPlayerPresenter>(typeof(IMediaPlayerPresenterExtension), o => new AndroidSkiaMediaPlayerPresenterExtension(o));
 
 			Application.Start(_ => _appBuilder());
 		}
