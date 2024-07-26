@@ -1,4 +1,4 @@
-﻿#if HAS_INPUT_INJECTOR
+﻿#if HAS_INPUT_INJECTOR && !WINAPPSDK
 using System;
 using System.Collections.Generic;
 using System.Reflection;

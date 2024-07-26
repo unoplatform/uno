@@ -54,6 +54,7 @@ public partial class RuntimeTestsApp : IApp
 #else
 		throw new PlatformNotSupportedException();
 #pragma warning disable CS0162
+		var assemblyName = "";
 #endif
 		if (TestServices.WindowHelper.IsXamlIsland)
 		{
