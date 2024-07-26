@@ -24,14 +24,14 @@
 	},
 	{
 		"group": "WasmBootstrap",
-		"version": "8.0.17",
+		"version": "8.0.20",
 		"packages": [
 			"Uno.Wasm.Bootstrap",
 			"Uno.Wasm.Bootstrap.DevServer",
 			"Uno.Wasm.Bootstrap.Server"
 		],
 		"versionOverride": {
-			"net9.0": "9.0.0-dev.96"
+			"net9.0": "9.0.0-dev.104"
 		}
 	},
 	{
@@ -44,7 +44,7 @@
 	},
 	{
 		"group": "CoreLogging",
-		"version": "4.0.1",
+		"version": "4.1.1",
 		"packages": [
 			"Uno.Core.Extensions.Logging.Singleton"
 		]
@@ -58,14 +58,14 @@
 	},
 	{
 		"group": "Dsp",
-		"version": "1.3.2",
+		"version": "1.4.0-dev.12",
 		"packages": [
 			"Uno.Dsp.Tasks"
 		]
 	},
 	{
 		"group": "Resizetizer",
-		"version": "1.5.0-dev.87",
+		"version": "1.6.0-dev.22",
 		"packages": [
 			"Uno.Resizetizer"
 		]
@@ -84,14 +84,14 @@
 	},
 	{
 		"group": "SvgSkia",
-		"version": "1.0.0.18",
+		"version": "1.0.0.19",
 		"packages": [
 			"Svg.Skia"
 		]
 	},
 	{
 		"group": "WinAppSdk",
-		"version": "1.5.240428000",
+		"version": "1.5.240627000",
 		"packages": [
 			"Microsoft.WindowsAppSDK"
 		]
@@ -110,17 +110,17 @@
 			"Microsoft.Extensions.Logging.Console"
 		],
 		"versionOverride": {
-			"net9.0": "9.0.0-preview.4.24266.19"
+			"net9.0": "9.0.0-preview.6.24327.7"
 		}
 	},
 	{
 		"group": "WindowsCompatibility",
-		"version": "8.0.6",
+		"version": "8.0.7",
 		"packages": [
 			"Microsoft.Windows.Compatibility"
 		],
 		"versionOverride": {
-			"net9.0": "9.0.0-preview.4.24267.11"
+			"net9.0": "9.0.0-preview.6.24327.6"
 		}
 	},
 	{
@@ -225,19 +225,19 @@
 	},
 	{
 		"group": "Maui",
-		"version": "8.0.40",
+		"version": "8.0.70",
 		"packages": [
 			"Microsoft.Maui.Controls",
 			"Microsoft.Maui.Controls.Compatibility",
 			"Microsoft.Maui.Graphics"
 		],
 		"versionOverride": {
-			"net9.0": "9.0.0-preview.4.10690"
+			"net9.0": "9.0.0-preview.6.24327.7"
 		}
 	},
 	{
 		"group": "CSharpMarkup",
-		"version": "",
+		"version": "5.4.0-dev.35",
 		"packages": [
 			"Uno.WinUI.Markup",
 			"Uno.Extensions.Markup.Generators"
@@ -245,7 +245,7 @@
 	},
 	{
 		"group": "Extensions",
-		"version": "",
+		"version": "4.3.0-dev.12",
 		"packages": [
 			"Uno.Extensions.Authentication.WinUI",
 			"Uno.Extensions.Authentication.MSAL.WinUI",
@@ -273,7 +273,7 @@
 	},
 	{
 		"group": "Toolkit",
-		"version": "",
+		"version": "6.2.0-dev.12",
 		"packages": [
 			"Uno.Toolkit.WinUI",
 			"Uno.Toolkit.WinUI.Cupertino",
@@ -285,7 +285,7 @@
 	},
 	{
 		"group": "Themes",
-		"version": "",
+		"version": "5.2.0-dev.13",
 		"packages": [
 			"Uno.Material.WinUI",
 			"Uno.Material.WinUI.Markup",
