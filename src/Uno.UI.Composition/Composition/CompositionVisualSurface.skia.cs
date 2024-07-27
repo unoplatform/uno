@@ -16,6 +16,7 @@ namespace Microsoft.UI.Composition
 	public partial class CompositionVisualSurface : CompositionObject, ICompositionSurface, ISkiaSurface
 	{
 		private SKSurface? _surface;
+		private DisplayInformation? _displayInformation;
 
 		SKSurface? ISkiaSurface.Surface { get => _surface; }
 
@@ -36,9 +37,19 @@ namespace Microsoft.UI.Composition
 					}
 				};
 
+				if (_displayInformation is null)
+				{
+					_displayInformation = DisplayInformation.GetForCurrentViewSafe();
+					_displayInformation.DpiChanged += DpiChanged;
+				}
+
+				var scale = _displayInformation.LogicalDpi / DisplayInformation.BaseDpi;
+				size *= scale;
+
 				var info = new SKImageInfo((int)size.X, (int)size.Y, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
 				_surface = SKSurface.Create(info);
 				canvas = _surface.Canvas;
+				canvas.Scale(scale, scale);
 			}
 
 			canvas ??= _surface.Canvas;
@@ -51,6 +62,14 @@ namespace Microsoft.UI.Composition
 				Compositor.IsSoftwareRenderer = true;
 				SourceVisual.RenderRootVisual(_surface, SourceOffset, null);
 				Compositor.IsSoftwareRenderer = previousCompMode;
+			}
+		}
+
+		private void DpiChanged(DisplayInformation sender, object args)
+		{
+			if (_surface is not null)
+			{
+				((ISkiaSurface)this).UpdateSurface(true);
 			}
 		}
 
@@ -77,6 +96,11 @@ namespace Microsoft.UI.Composition
 			base.Dispose();
 
 			_surface?.Dispose();
+
+			if (_displayInformation is not null)
+			{
+				_displayInformation.DpiChanged -= DpiChanged;
+			}
 		}
 
 		partial void OnSourceVisualChangedPartial(Visual? sourceVisual) => ((ISkiaSurface)this).UpdateSurface(SourceSize == default && sourceVisual?.Size != default);
