@@ -266,7 +266,7 @@ namespace Uno.UI.Xaml.Input
 
 		internal static bool HasFocusedElement(DependencyObject element)
 		{
-			//if (element->IsActive())
+			if (element is UIElement { IsInLiveTree: true })
 			{
 				var focusManager = VisualTree.GetFocusManagerForElement(element);
 
