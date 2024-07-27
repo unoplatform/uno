@@ -430,7 +430,7 @@
 			<_diffPackage Include="$(PackageNamePrefix).XamlHost.Skia.Wpf" Other="$(PackageNamePrefix).XamlHost.Skia.Wpf.$(GITVERSION_SemVer).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).WebAssembly" Other="$(PackageNamePrefix).WebAssembly.$(GITVERSION_SemVer).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).Runtime.WebAssembly" Other="..\..\..\NugetPackages-Artifacts-wasm-$(ArtifactsPlatformName)\vslatest-wasm\$(PackageNamePrefix).Runtime.WebAssembly.$(GITVERSION_SemVer).nupkg" />
-			<_diffPackage Include="Uno.Foundation.Logging" Other="Uno.Foundation.Logging.$(GITVERSION_SemVer).nupkg" />
+			<_diffPackage Include="Uno.Foundation.Logging" Other="..\..\..\NugetPackages-Artifacts-skia-$(ArtifactsPlatformName)\vslatest-skia\Uno.Foundation.Logging.$(GITVERSION_SemVer).nupkg" />
 			<_diffPackage Include="Uno.Foundation.Runtime.WebAssembly" Other="..\..\..\NugetPackages-Artifacts-wasm-$(ArtifactsPlatformName)\vslatest-wasm\Uno.Foundation.Runtime.WebAssembly.$(GITVERSION_SemVer).nupkg" />
 			<_diffPackage Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Other="Uno.UI.Adapter.Microsoft.Extensions.Logging.$(GITVERSION_SemVer).nupkg" />
 		</ItemGroup>
