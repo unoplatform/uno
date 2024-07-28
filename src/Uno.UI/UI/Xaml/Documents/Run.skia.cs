@@ -46,6 +46,12 @@ namespace Microsoft.UI.Xaml.Documents
 			while (i < text.Length && char.IsWhiteSpace(text[i]) && !Unicode.IsLineBreak(text[i]) && text[i] != '\t')
 			{
 				leadingSpaces++;
+				// The leading spaces should use the originally specified font.
+				// This is very important for two scenarios:
+				// 1. A fallback font that may be calculated later in this method may have different AdvanceX value for space character
+				// 2. The specified font could actually contain actual drawing for the space character. This is extremely uncommon and is currently
+				//    not supported by the drawing logic, where we just advance x-coordinate to emulate space characters.
+				segmentTypeface = fontInfo.SKFont.Typeface;
 				i++;
 			}
 
@@ -69,6 +75,13 @@ namespace Microsoft.UI.Xaml.Documents
 				{
 					if (char.IsWhiteSpace(text[i]))
 					{
+						if (segmentTypeface is not null && segmentTypeface != fontInfo.SKFont.Typeface)
+						{
+							// Don't include the trailing space in the current segment if it doesn't use the originally specified font.
+							// The reasons are the same as explained for leading spaces in the beginning of this method.
+							break;
+						}
+
 						trailingSpaces++;
 					}
 
@@ -80,6 +93,13 @@ namespace Microsoft.UI.Xaml.Documents
 				{
 					if (char.IsWhiteSpace(text[i]))
 					{
+						if (segmentTypeface is not null && segmentTypeface != fontInfo.SKFont.Typeface)
+						{
+							// Don't include the trailing space in the current segment if it doesn't use the originally specified font.
+							// The reasons are the same as explained for leading spaces in the beginning of this method.
+							break;
+						}
+
 						trailingSpaces++;
 					}
 
@@ -129,6 +149,13 @@ namespace Microsoft.UI.Xaml.Documents
 
 					if (char.IsWhiteSpace(text[i]) && text[i] != '\t')
 					{
+						if (segmentTypeface is not null && segmentTypeface != fontInfo.SKFont.Typeface)
+						{
+							// Don't include the trailing space in the current segment if it doesn't use the originally specified font.
+							// The reasons are the same as explained for leading spaces in the beginning of this method.
+							break;
+						}
+
 						trailingSpaces++;
 						i++;
 					}
@@ -221,6 +248,15 @@ namespace Microsoft.UI.Xaml.Documents
 					// Guess the above properties for now before shaping:
 					buffer.GuessSegmentProperties();
 					var direction = buffer.Direction == Direction.LeftToRight ? FlowDirection.LeftToRight : FlowDirection.RightToLeft;
+					if (direction == FlowDirection.LeftToRight &&
+						segments.Count > 0 && segments[segments.Count - 1].Direction == FlowDirection.RightToLeft &&
+						trailingSpaces + leadingSpaces == length)
+					{
+						// If the current segment consists of spaces only, it will be considered LeftToRight.
+						// But if the previous segment was RightToLeft, we want the current segment to also be RTL.
+						// This is quite hacky, it feels like GetRenderOrderedSegmentSpans is buggy and a real fix needs to go there.
+						direction = FlowDirection.RightToLeft;
+					}
 
 					// We don't support ligatures for now since they can cause buggy behaviour in TextBox
 					// where multiple chars in a TextBox are turned into a single glyph.
