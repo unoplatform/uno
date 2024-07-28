@@ -11,7 +11,7 @@ using Uno.Extensions;
 using Buffer = HarfBuzzSharp.Buffer;
 using GlyphInfo = Microsoft.UI.Xaml.Documents.TextFormatting.GlyphInfo;
 
-using SegmentInfo = (int LeadingSpaces, int TrailingSpaces, int LineBreakLength, bool WordBreakAfter, SkiaSharp.SKTypeface? Typeface, int NextStartingIndex);
+using SegmentInfo = (int LeadingSpaces, int TrailingSpaces, int LineBreakLength, SkiaSharp.SKTypeface? Typeface, int NextStartingIndex);
 
 namespace Microsoft.UI.Xaml.Documents
 {
@@ -39,7 +39,6 @@ namespace Microsoft.UI.Xaml.Documents
 			int leadingSpaces = 0;
 			int trailingSpaces = 0;
 			int lineBreakLength = 0;
-			bool wordBreakAfter = false;
 			var fontInfo = FontInfo;
 			SKTypeface? segmentTypeface = null;
 
@@ -62,7 +61,6 @@ namespace Microsoft.UI.Xaml.Documents
 				// Also, we don't consider tabs "spaces" since they don't get the general space treatment.
 				if (text[i] == '\t')
 				{
-					wordBreakAfter = true;
 					i++;
 					break;
 				}
@@ -73,7 +71,7 @@ namespace Microsoft.UI.Xaml.Documents
 					{
 						trailingSpaces++;
 					}
-					wordBreakAfter = true;
+
 					i++;
 					break;
 				}
@@ -84,7 +82,7 @@ namespace Microsoft.UI.Xaml.Documents
 					{
 						trailingSpaces++;
 					}
-					wordBreakAfter = true;
+
 					i++;
 					break;
 				}
@@ -141,7 +139,7 @@ namespace Microsoft.UI.Xaml.Documents
 				}
 			}
 
-			return (leadingSpaces, trailingSpaces, lineBreakLength, wordBreakAfter, segmentTypeface, i);
+			return (leadingSpaces, trailingSpaces, lineBreakLength, segmentTypeface, i);
 		}
 
 		private List<Segment> GetSegments()
@@ -166,7 +164,7 @@ namespace Microsoft.UI.Xaml.Documents
 
 			while (i < text.Length)
 			{
-				var (leadingSpaces, trailingSpaces, lineBreakLength, wordBreakAfter, typeface, nextStartingIndex) = GetSegmentStartingFrom(i, text);
+				var (leadingSpaces, trailingSpaces, lineBreakLength, typeface, nextStartingIndex) = GetSegmentStartingFrom(i, text);
 
 				int length = nextStartingIndex - i;
 				FontDetails? fallbackFont = null;
@@ -244,7 +242,7 @@ namespace Microsoft.UI.Xaml.Documents
 						glyphs[0] = glyphs[0] with { GlyphId = _getSpaceGlyph(fontInfo.Font) };
 					}
 
-					var segment = new Segment(this, direction, i, length, leadingSpaces, trailingSpaces, lineBreakLength, wordBreakAfter, glyphs, fallbackFont);
+					var segment = new Segment(this, direction, i, length, leadingSpaces, trailingSpaces, lineBreakLength, glyphs, fallbackFont);
 
 					segments.Add(segment);
 					buffer.ClearContents();
