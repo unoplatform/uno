@@ -48,7 +48,9 @@ public class Given_Hyperlink
 #if HAS_UNO
 	[TestMethod]
 	[RunsOnUIThread]
-#if !HAS_INPUT_INJECTOR
+#if __WASM__
+	[Ignore("Visual states/Colors are handled by browser.")]
+#elif !HAS_INPUT_INJECTOR
 	[Ignore("InputInjector is not supported on this platform.")]
 #endif
 	[DataRow(true, false, "#FF0078D7", "#99FFFFFF")]

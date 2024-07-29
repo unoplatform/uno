@@ -123,6 +123,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow(typeof(Button))]
 		[DataRow(typeof(ToggleButton))]
 		[DataRow(typeof(RepeatButton))]
+#if !HAS_RENDER_TARGET_BITMAP
+		[Ignore("Cannot take screenshot on this platform.")]
+#endif
 		public async Task When_BorderThickness_Zero(Type type)
 		{
 			using var fluent = StyleHelper.UseFluentStyles();

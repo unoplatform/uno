@@ -1327,6 +1327,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
+#elif !__SKIA__
+		[Ignore("The context menu is only implemented on skia.")]
 #endif
 		public async Task When_IsTextSelectionEnabled_ContextMenu_Copy()
 		{

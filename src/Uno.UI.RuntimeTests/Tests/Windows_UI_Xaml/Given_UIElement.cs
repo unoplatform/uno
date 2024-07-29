@@ -1384,7 +1384,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
-#if !HAS_INPUT_INJECTOR
+#if !HAS_COMPOSITION_API
+		[Ignore("Composition APIs are not supported on this platform.")]
+#elif !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		public async Task When_Visual_Offset_Changes_InjectedPointer()
