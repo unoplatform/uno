@@ -306,7 +306,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		{
 			return CreateCoreAnimation(view, "opacity", value => new NSNumber(value));
 		}
-		private UnoCoreAnimation InitializeTranslateCoreAnimation(TranslateTransform transform, IBindingItem animatedItem)
+		private UnoCoreAnimation? InitializeTranslateCoreAnimation(TranslateTransform transform, IBindingItem animatedItem)
 		{
 			if (animatedItem.PropertyName.Equals("X")
 				|| animatedItem.PropertyName.Equals(TranslateTransformX)
@@ -326,7 +326,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 		}
 
-		private UnoCoreAnimation InitializeRotateCoreAnimation(RotateTransform transform, IBindingItem animatedItem)
+		private UnoCoreAnimation? InitializeRotateCoreAnimation(RotateTransform transform, IBindingItem animatedItem)
 		{
 			if (animatedItem.PropertyName.Equals("Angle")
 				|| animatedItem.PropertyName.Equals(RotateTransformAngle)
@@ -340,7 +340,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 		}
 
-		private UnoCoreAnimation InitializeScaleCoreAnimation(ScaleTransform transform, IBindingItem animatedItem)
+		private UnoCoreAnimation? InitializeScaleCoreAnimation(ScaleTransform transform, IBindingItem animatedItem)
 		{
 			if (animatedItem.PropertyName.Equals("ScaleX")
 				|| animatedItem.PropertyName.Equals(ScaleTransformX)
@@ -360,7 +360,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 		}
 
-		private UnoCoreAnimation InitializeSkewCoreAnimation(SkewTransform transform, IBindingItem animatedItem)
+		private UnoCoreAnimation? InitializeSkewCoreAnimation(SkewTransform transform, IBindingItem animatedItem)
 		{
 			// We need to review this.  This won't play along if other transforms are happening at the same time since we are animating the whole transform
 			if (transform.View is not _View view)
@@ -370,7 +370,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 					this.Log().Warn("The View property of the SkewTransform is null.");
 				}
 
-				throw new InvalidOperationException("The View property of the SkewTransform is null.");
+				return null;
 			}
 
 			if (animatedItem.PropertyName.Equals("AngleX")
@@ -391,7 +391,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 		}
 
-		private UnoCoreAnimation InitializeCompositeCoreAnimation(CompositeTransform transform, IBindingItem animatedItem)
+		private UnoCoreAnimation? InitializeCompositeCoreAnimation(CompositeTransform transform, IBindingItem animatedItem)
 		{
 			switch (animatedItem.PropertyName)
 			{
@@ -439,7 +439,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 		#endregion
 
-		private UnoCoreAnimation CreateTransformCoreAnimation(
+		private UnoCoreAnimation? CreateTransformCoreAnimation(
 			Transform transform,
 			Func<float, NSValue> nsValueConversion)
 		{
@@ -450,13 +450,13 @@ namespace Microsoft.UI.Xaml.Media.Animation
 					this.Log().Warn("The View property of the Transform is null.");
 				}
 
-				throw new InvalidOperationException("The View property of the Transform is null.");
+				return null;
 			}
 
 			return CreateCoreAnimation(transform.View, "transform", nsValueConversion);
 		}
 
-		private UnoCoreAnimation CreateCoreAnimation(
+		private UnoCoreAnimation? CreateCoreAnimation(
 			Transform transform,
 			string property,
 			Func<float, NSValue> nsValueConversion)
@@ -468,7 +468,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 					this.Log().Warn("The View property of the Transform is null.");
 				}
 
-				throw new InvalidOperationException("The View property of the Transform is null.");
+				return null;
 			}
 
 			return CreateCoreAnimation(transform.View, property, nsValueConversion, transform.StartAnimation, transform.EndAnimation);
