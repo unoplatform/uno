@@ -404,7 +404,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			var tv = sp.FindFirstDescendant<TreeView>();
 			var screenshot = await UITestHelper.ScreenShot(tv);
 			var tvi = sp.FindFirstDescendant<TreeViewItem>();
-			var x = tvi.TransformToVisual(tv).TransformPoint(new Point()).X + tvi.ActualWidth / 2; // midX of tvi in tv coordinates
+			var x = 40d; // roughly the midX of tvi in tv coordinates
 			x /= screenshot.ImplicitScaling; // HasColorAt takes screenshot coordinates, not managed coordinates
 			ImageAssert.HasColorAt(screenshot, new Point(x, screenshot.Height / 4), Microsoft.UI.Colors.Red);
 			ImageAssert.HasColorAt(screenshot, new Point(x, screenshot.Height * 3 / 4), Microsoft.UI.Colors.Red);
