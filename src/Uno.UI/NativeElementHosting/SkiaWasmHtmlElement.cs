@@ -1,3 +1,4 @@
+#if UNO_REFERENCE_API
 #nullable enable
 
 using System;
@@ -59,3 +60,4 @@ public partial class SkiaWasmHtmlElement : IDisposable
 
 	public void Dispose() => DisposeHtmlElement(ElementId);
 }
+#endif
