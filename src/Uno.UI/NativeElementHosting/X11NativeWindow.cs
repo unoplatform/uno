@@ -1,3 +1,4 @@
+using System;
 namespace Uno.UI.Runtime.Skia;
 
 public sealed class X11NativeWindow
