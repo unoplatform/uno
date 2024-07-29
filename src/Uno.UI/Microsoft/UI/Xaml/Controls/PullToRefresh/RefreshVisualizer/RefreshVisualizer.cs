@@ -1,4 +1,6 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿#nullable enable
+
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference RefreshVisualizer.cpp, commit de78834
 
@@ -22,18 +24,14 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 /// </summary>
 public partial class RefreshVisualizer : Control, IRefreshVisualizerPrivate
 {
-#if !HAS_UNO
 	//The Opacity of the progress indicator in the non-pending non-executing states
 	private const float MINIMUM_INDICATOR_OPACITY = 0.4f;
-#endif
 
 	//The size of the default progress indicator
 	private const int DEFAULT_INDICATOR_SIZE = 30;
 
-#if !HAS_UNO
 	//The position the progress indicator parallax animation places the indicator during manipulation
 	private const float PARALLAX_POSITION_RATIO = 0.5f;
-#endif
 
 	~RefreshVisualizer()
 	{
@@ -175,8 +173,8 @@ public partial class RefreshVisualizer : Control, IRefreshVisualizerPrivate
 		}
 		else
 		{
-			m_RefreshInfoProvider_InteractingForRefreshChangedToken = default;
-			m_RefreshInfoProvider_InteractionRatioChangedToken = default;
+			m_RefreshInfoProvider_InteractingForRefreshChangedToken.Disposable = null;
+			m_RefreshInfoProvider_InteractionRatioChangedToken.Disposable = null;
 
 			m_executionRatio = 1.0f;
 		}
@@ -288,7 +286,6 @@ public partial class RefreshVisualizer : Control, IRefreshVisualizerPrivate
 		//PTR_TRACE_INFO(null, TRACE_MSG_METH, METH_NAME, this);
 		if (m_content != null)
 		{
-#if !HAS_UNO
 			Visual contentVisual = ElementCompositionPreview.GetElementVisual(m_content);
 
 			Size contentSize = m_content.RenderSize;
@@ -368,97 +365,9 @@ public partial class RefreshVisualizer : Control, IRefreshVisualizerPrivate
 					MUX_ASSERT(false);
 					break;
 			}
-#else
-			Size contentSize = m_content.RenderSize;
-
-			m_content.RenderTransformOrigin = new Point(0.5, 0.5);
-			if (m_content.RenderTransform is not MatrixTransform matrixTransform)
-			{
-				matrixTransform = new MatrixTransform();
-				m_content.RenderTransform = matrixTransform;
-			}
-#endif
-
-#if !HAS_UNO
-			switch (m_state)
-			{
-				case RefreshVisualizerState.Idle:
-					m_content.Opacity = MINIMUM_INDICATOR_OPACITY;
-					matrixTransform.Matrix = new Matrix(Matrix3x2.CreateRotation(m_startingRotationAngle));
-					//On RS2 and above we achieve the parallax animation using the Translation property, so we set the appropriate field here.
-					if (SharedHelpers.IsRS2OrHigher())
-					{
-						contentVisual.Properties.InsertVector3("Translation", new Vector3(0.0f, 0.0f, 0.0f));
-					}
-					else
-					{
-						contentVisual.Offset = new Vector3(0.0f, 0.0f, 0.0f);
-					}
-
-					break;
-				case RefreshVisualizerState.Peeking:
-					m_content.Opacity = 1.0f;
-					contentVisual.RotationAngle = m_startingRotationAngle;
-					break;
-				case RefreshVisualizerState.Interacting:
-					m_content.Opacity = MINIMUM_INDICATOR_OPACITY;
-					ExecuteInteractingAnimations();
-					break;
-				case RefreshVisualizerState.Pending:
-					ExecuteScaleUpAnimation();
-					m_content.Opacity = 1.0f;
-					contentVisual.RotationAngle = m_startingRotationAngle;
-					break;
-				case RefreshVisualizerState.Refreshing:
-					ExecuteExecutingRotationAnimation();
-					m_content.Opacity = 1.0f;
-					if (m_root != null)
-					{
-						float GetTranslationRatio()
-						{
-							if (m_refreshInfoProvider is { } refreshInfoProvider)
-							{
-								return (1.0f - (float)(refreshInfoProvider.ExecutionRatio)) * PARALLAX_POSITION_RATIO;
-							}
-							return 1.0f;
-						}
-						float translationRatio = GetTranslationRatio();
-						translationRatio = IsPullDirectionFar() ? -1.0f * translationRatio : translationRatio;
-						//On RS2 and above we achieve the parallax animation using the Translation property, so we set the appropriate field here.
-						if (SharedHelpers.IsRS2OrHigher())
-						{
-							if (IsPullDirectionVertical())
-							{
-								contentVisual.Properties.InsertVector3("Translation", new Vector3(0.0f, translationRatio * (float)m_root.ActualHeight, 0.0f));
-							}
-							else
-							{
-								contentVisual.Properties.InsertVector3("Translation", new Vector3(translationRatio * (float)m_root.ActualWidth, 0.0f, 0.0f));
-							}
-						}
-						else
-						{
-							if (IsPullDirectionVertical())
-							{
-								contentVisual.Offset = new Vector3(0.0f, translationRatio * (float)m_root.ActualHeight, 0.0f);
-							}
-							else
-							{
-								contentVisual.Offset = new Vector3(translationRatio * (float)m_root.ActualHeight, 0.0f, 0.0f);
-							}
-						}
-					}
-
-					break;
-				default:
-					MUX_ASSERT(false);
-					break;
-			}
-#endif
 		}
 	}
 
-#if !HAS_UNO
 	private void ExecuteInteractingAnimations()
 	{
 		//PTR_TRACE_INFO(null, TRACE_MSG_METH, METH_NAME, this);
@@ -591,8 +500,9 @@ public partial class RefreshVisualizer : Control, IRefreshVisualizerPrivate
 			}
 
 			ScalarKeyFrameAnimation contentExecutionRotationAnimation = m_compositor.CreateScalarKeyFrameAnimation();
-			contentExecutionRotationAnimation.InsertKeyFrame(0.0f, m_startingRotationAngle, m_compositor.CreateLinearEasingFunction());
-			contentExecutionRotationAnimation.InsertKeyFrame(1.0f, m_startingRotationAngle + (float)(2.0f * Math.PI), m_compositor.CreateLinearEasingFunction());
+			// Uno specific: CreateLinearEasingFunction is not supported.
+			contentExecutionRotationAnimation.InsertKeyFrame(0.0f, m_startingRotationAngle/*, m_compositor.CreateLinearEasingFunction()*/);
+			contentExecutionRotationAnimation.InsertKeyFrame(1.0f, m_startingRotationAngle + (float)(2.0f * Math.PI)/*, m_compositor.CreateLinearEasingFunction()*/);
 			contentExecutionRotationAnimation.Duration = TimeSpan.FromMilliseconds(500);
 			contentExecutionRotationAnimation.IterationBehavior = AnimationIterationBehavior.Forever;
 
@@ -602,7 +512,23 @@ public partial class RefreshVisualizer : Control, IRefreshVisualizerPrivate
 			contentVisual.StartAnimation("RotationAngle", contentExecutionRotationAnimation);
 		}
 	}
-#endif
+
+	// BEGIN Uno-specific: We are unsure if it's an issue from original RefreshContainer, or if we are missing some cleanup for composition animation
+	private void StopExecutingRotationAnimation()
+	{
+		if (m_content != null)
+		{
+			Visual contentVisual = ElementCompositionPreview.GetElementVisual(m_content);
+			contentVisual.StopAnimation("RotationAngle");
+		}
+	}
+
+	private protected override void OnUnloaded()
+	{
+		base.OnUnloaded();
+		StopExecutingRotationAnimation();
+	}
+	// END Uno-specific
 
 	private void UpdateRefreshState(RefreshVisualizerState newState)
 	{
@@ -745,7 +671,6 @@ public partial class RefreshVisualizer : Control, IRefreshVisualizerPrivate
 		}
 	}
 
-#if !HAS_UNO
 	private bool IsPullDirectionVertical()
 	{
 		return m_pullDirection == RefreshPullDirection.TopToBottom || m_pullDirection == RefreshPullDirection.BottomToTop;
@@ -755,5 +680,4 @@ public partial class RefreshVisualizer : Control, IRefreshVisualizerPrivate
 	{
 		return m_pullDirection == RefreshPullDirection.BottomToTop || m_pullDirection == RefreshPullDirection.RightToLeft;
 	}
-#endif
 }
