@@ -21,10 +21,10 @@ public interface IDiagnosticViewElement<in TState>
 	/// <param name="state">The new state to be applied to the element.</param>
 	public void Update(TState state);
 
-    /// <summary>
-    /// Requests the element to display its details.
-    /// </summary>
-    /// <param name="ct">A cancellation token that is canceled when the details should no longer be visible.</param>
-    /// <returns>A task that represents the asynchronous operation.</returns>
+	/// <summary>
+	/// Requests the element to display its details.
+	/// </summary>
+	/// <param name="ct">A cancellation token that is canceled when the details should no longer be visible.</param>
+	/// <returns>A task that represents the asynchronous operation.</returns>
 	public ValueTask ShowDetails(CancellationToken ct);
 }
