@@ -112,7 +112,8 @@
 	"webapps",
 	"Haptics",
 	"autoplay",
-	"Xcodes"
+	"Xcodes",
+	"Raygun"
   ],
   "ignoreWords": [
 	"ADAL",
