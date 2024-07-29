@@ -177,7 +177,7 @@ public partial class Given_InteractionTracker
 	[TestMethod]
 	[RequiresFullWindow]
 #if !HAS_INPUT_INJECTOR
-	[Ignore("InputInjector is only supported on skia")]
+	[Ignore("InputInjector is not supported on this platform.")]
 #elif !HAS_UNO
 	[Ignore("Test fails on Windows. For some reason, Drag isn't doing what we expect it to for an unknown reason.")]
 #endif
@@ -268,7 +268,7 @@ public partial class Given_InteractionTracker
 	[TestMethod]
 	[RequiresFullWindow]
 #if !HAS_INPUT_INJECTOR
-	[Ignore("InputInjector is only supported on skia")]
+	[Ignore("InputInjector is not supported on this platform.")]
 #endif
 	public async Task When_MouseWheel()
 	{

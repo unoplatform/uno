@@ -55,6 +55,8 @@
   - UNO_HAS_MANAGED_POINTERS: Determines if the pointer events are dispatched by uno instead of the system (if any).
   - HAS_NATIVE_IMPLICIT_POINTER_CAPTURE: Indicate if the OS once a pointer is pressed, OS will send all pointer event to the same target (a.k.a. OriginalSource)
   - HAS_RENDER_TARGET_BITMAP : Determines if the render target bitmap is implemented (and can be used to take screenshot in runtime tests)
+  - UNO_HAS_BORDER_VISUAL: Determine if borders are rendered using compostion APIs by Uno (or using native promitives)
+  - HAS_COMPOSITION_API : Determines if teh composition APIs (i.e. UIElement.Visual) are supported or not.
 
   - Constants for Xamarin backends and SDK versions: https://docs.microsoft.com/en-us/xamarin/cross-platform/app-fundamentals/building-cross-platform-applications/platform-divergence-abstraction-divergent-implementation#conditional-compilation
   -->
@@ -68,8 +70,10 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(UnoRuntimeIdentifier)'=='Skia'">
-		<DefineConstants>$(DefineConstants);__SKIA__;UNO_HAS_ENHANCED_HIT_TEST_PROPERTY;UNO_HAS_MANAGED_SCROLL_PRESENTER;UNO_HAS_MANAGED_POINTERS;SUPPORTS_RTL;UNO_HAS_ENHANCED_LIFECYCLE;UNO_HAS_BORDER_VISUAL</DefineConstants>
-		<DefineConstants>$(DefineConstants);UNO_SUPPORTS_NATIVEHOST;HAS_INPUT_INJECTOR;HAS_RENDER_TARGET_BITMAP</DefineConstants>
+		<DefineConstants>$(DefineConstants);__SKIA__;SUPPORTS_RTL;UNO_SUPPORTS_NATIVEHOST;UNO_HAS_ENHANCED_LIFECYCLE</DefineConstants>
+		<DefineConstants>$(DefineConstants);UNO_HAS_MANAGED_POINTERS;UNO_HAS_ENHANCED_HIT_TEST_PROPERTY;UNO_HAS_MANAGED_SCROLL_PRESENTER;HAS_INPUT_INJECTOR</DefineConstants>
+		<DefineConstants>$(DefineConstants);HAS_COMPOSITION_API;UNO_HAS_BORDER_VISUAL</DefineConstants>
+		<DefineConstants>$(DefineConstants);HAS_RENDER_TARGET_BITMAP</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(UnoRuntimeIdentifier)'=='Reference'">
@@ -109,13 +113,13 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(TargetFramework)'=='net8.0-windows10.0.19041.0'">
-		<DefineConstants>$(DefineConstants);HAS_INPUT_INJECTOR;WINDOWS_WINUI;HAS_RENDER_TARGET_BITMAP</DefineConstants>
+		<DefineConstants>$(DefineConstants);HAS_INPUT_INJECTOR;WINDOWS_WINUI;HAS_RENDER_TARGET_BITMAP;HAS_COMPOSITION_API</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition=" '$(TargetFramework)' == 'uap10.0.19041' ">
 		<TargetPlatformVersion>10.0.19041.0</TargetPlatformVersion>
 		<TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
-		<DefineConstants>$(DefineConstants);NETFX_CORE;HAS_INPUT_INJECTOR;HAS_RENDER_TARGET_BITMAP</DefineConstants>
+		<DefineConstants>$(DefineConstants);NETFX_CORE;HAS_INPUT_INJECTOR;HAS_RENDER_TARGET_BITMAP;HAS_COMPOSITION_API</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(CI_Build)'!='' OR '$(TF_BUILD)' == 'true'">

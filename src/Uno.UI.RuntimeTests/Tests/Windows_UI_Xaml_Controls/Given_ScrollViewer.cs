@@ -322,7 +322,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 #if !HAS_INPUT_INJECTOR
-		[Ignore("InputInjector is only supported on skia")]
+		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		public async Task When_ScrollViewer_Pressed()
 		{
@@ -598,7 +598,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if HAS_UNO
 		[TestMethod]
 #if !HAS_INPUT_INJECTOR
-		[Ignore("InputInjector is only supported on skia")]
+		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		public async Task When_WheelChanged_OnlyHorizontallyScrollable()
 		{
@@ -651,7 +651,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 #if !HAS_INPUT_INJECTOR
-		[Ignore("InputInjector is only supported on skia")]
+		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		public async Task When_Nested_ScrollViewers_WheelChanged()
 		{
@@ -751,7 +751,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 		[RequiresFullWindow]
 #if !__SKIA__
-		[Ignore("InputInjector is only supported on skia")]
+		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		public async Task When_Pointer_Clicks_Inside_ScrollViewer()
 		{
@@ -1262,8 +1262,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if !HAS_INPUT_INJECTOR
-		[Ignore("Pointer injection supported only on skia for now.")]
+#if __WASM__
+		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		public async Task When_TouchScroll_Then_NestedElementReceivePointerEvents()
 		{
@@ -1307,7 +1309,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RunsOnUIThread]
 #if !HAS_INPUT_INJECTOR
-		[Ignore("Pointer injection supported only on skia for now.")]
+		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		public async Task When_TouchTap_Then_NestedElementReceivePointerEvents()
 		{
@@ -1348,8 +1350,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if !HAS_INPUT_INJECTOR
-		[Ignore("Pointer injection supported only on skia for now.")]
+#if __WASM__
+		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		public async Task When_ReversedMouseWheel_Then_ScrollInReversedDirection()
 		{

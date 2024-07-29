@@ -235,7 +235,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if HAS_UNO
 		[TestMethod]
 #if !HAS_INPUT_INJECTOR
-		[Ignore("InputInjector is only supported on skia")]
+		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		public async Task When_PointerWheel()
 		{
@@ -1058,7 +1058,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RequiresFullWindow]
 		[RunsOnUIThread]
 #if !HAS_INPUT_INJECTOR
-		[Ignore("Pointer injection supported only on skia for now.")]
+		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		public async Task When_Mouse_Opened_And_Closed()
 		{
@@ -1129,7 +1129,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RequiresFullWindow]
 		[RunsOnUIThread]
 #if !HAS_INPUT_INJECTOR
-		[Ignore("Pointer injection supported only on skia for now.")]
+		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		public async Task When_Mouse_Opened_And_Closed_Fluent()
 		{

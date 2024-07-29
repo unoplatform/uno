@@ -28,7 +28,7 @@ public class Given_InputManager
 {
 	[TestMethod]
 #if !HAS_INPUT_INJECTOR
-	[Ignore("Pointer injection supported only on skia for now.")]
+	[Ignore("InputInjector is not supported on this platform.")]
 #endif
 	public async Task When_VisibilityChangesWhileDispatching_Then_RecomputeOriginalSource()
 	{
@@ -69,7 +69,7 @@ public class Given_InputManager
 
 	[TestMethod]
 #if !HAS_INPUT_INJECTOR
-	[Ignore("Pointer injection supported only on skia for now.")]
+	[Ignore("InputInjector is not supported on this platform.")]
 #endif
 	public async Task When_LeaveElementWhileManipulating_Then_CaptureNotLost()
 	{
@@ -124,7 +124,7 @@ public class Given_InputManager
 
 	[TestMethod]
 #if !HAS_INPUT_INJECTOR
-	[Ignore("Pointer injection supported only on skia for now.")]
+	[Ignore("InputInjector is not supported on this platform.")]
 #endif
 	public async Task When_Hover_No_Delay_For_VisualState_Update()
 	{
@@ -147,7 +147,7 @@ public class Given_InputManager
 
 	[TestMethod]
 #if !HAS_INPUT_INJECTOR
-	[Ignore("Pointer injection supported only on skia for now.")]
+	[Ignore("InputInjector is not supported on this platform.")]
 #endif
 	public async Task When_Scroll_No_Delay_For_VisualState_Update()
 	{
