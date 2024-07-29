@@ -9,8 +9,11 @@ using NUnit.Framework;
 using SamplesApp.UITests.Extensions;
 using SamplesApp.UITests.TestFramework;
 using Uno.Testing;
-using Uno.UI.RuntimeTests.Helpers;
 using Uno.UITest.Helpers.Queries;
+
+#if IS_RUNTIME_UI_TESTS
+using Uno.UI.RuntimeTests.Helpers;
+#endif
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.SwipeControlTests
 {
