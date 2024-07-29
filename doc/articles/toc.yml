@@ -431,6 +431,8 @@
               href: controls/DatePicker.md
             - name: Flyout
               href: controls/Flyout.md
+            - name: Flyout
+              href: controls/Frame.md
             - name: Image
               href: xref:Uno.Features.Image
             - name: ListView and GridView
