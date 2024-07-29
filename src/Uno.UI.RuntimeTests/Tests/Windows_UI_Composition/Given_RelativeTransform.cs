@@ -48,7 +48,7 @@ public class Given_RelativeTransform
 		await UITestHelper.Load(sp);
 		await ImageAssert.AreSimilarAsync(await UITestHelper.ScreenShot((FrameworkElement)sp.Children[1]), await UITestHelper.ScreenShot((FrameworkElement)sp.Children[0]));
 	}
-	
+
 	[TestMethod]
 	public async Task When_ScaleTransform()
 	{
