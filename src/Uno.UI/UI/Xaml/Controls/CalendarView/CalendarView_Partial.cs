@@ -1649,7 +1649,6 @@ namespace Microsoft.UI.Xaml.Controls
 			global::System.Diagnostics.Debug.Assert(index >= 0);
 			global::System.Diagnostics.Debug.Assert(pHost.Panel is { });
 
-#if __SKIA__ || __WASM__
 			if (pHost is CalendarViewGeneratorDecadeViewHost)
 			{
 				var rowsToMax = (MaxDate.Year - date.Year) / m_colsInYearDecadeView;
@@ -1677,7 +1676,6 @@ namespace Microsoft.UI.Xaml.Controls
 					index -= m_rowsInYearDecadeView - rowsToMax;
 				}
 			}
-#endif
 
 			pHost.Panel.ScrollItemIntoView(
 				index,
