@@ -17,7 +17,7 @@ namespace Uno.Diagnostics.UI;
 internal class DiagnosticViewManager<TView>(Func<IDiagnosticViewContext, TView> factory, Action<IDiagnosticViewContext, TView> update)
 	where TView : FrameworkElement
 {
-	private ConditionalWeakTable<IDiagnosticViewContext, TView> _views = new();
+	private readonly ConditionalWeakTable<IDiagnosticViewContext, TView> _views = new();
 	private event EventHandler? _changed;
 
 	public DiagnosticViewManager(Func<TView> factory, Action<TView> update)

@@ -7,22 +7,24 @@ using System.Threading.Tasks;
 namespace Uno.Diagnostics.UI;
 
 /// <summary>
-/// Interface that a diagnostic element can implement to enhance support for the diagnostic overlay.
+/// Defines an interface for diagnostic elements to enhance support for the diagnostic overlay.
 /// </summary>
-/// <remarks>Type that implements this interface expected to inherit from Control</remarks>
-/// <typeparam name="TState">Type of the state exposed by this element.</typeparam>
+/// <remarks>
+/// Implementing types are expected to inherit from the <see cref="Control"/> class.
+/// </remarks>
+/// <typeparam name="TState">The type of state exposed by this element.</typeparam>
 public interface IDiagnosticViewElement<in TState>
 {
 	/// <summary>
 	/// Update the state of the diagnostic element.
 	/// </summary>
-	/// <param name="state"></param>
+	/// <param name="state">The new state to be applied to the element.</param>
 	public void Update(TState state);
 
-	/// <summary>
-	/// Request to the element to show its details.
-	/// </summary>
-	/// <param name="ct">Cancellation token which is cancelled once the details should no longer be visible.</param>
-	/// <returns></returns>
+    /// <summary>
+    /// Requests the element to display its details.
+    /// </summary>
+    /// <param name="ct">A cancellation token that is canceled when the details should no longer be visible.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
 	public ValueTask ShowDetails(CancellationToken ct);
 }
