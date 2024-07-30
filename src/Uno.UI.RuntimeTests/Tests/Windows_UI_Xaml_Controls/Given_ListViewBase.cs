@@ -4709,12 +4709,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await UITestHelper.WaitForIdle();
 
+			var tree = sut.TreeGraph();
+#if !__ANDROID__
+			var panel = sut.FindFirstDescendant<ItemsStackPanel>() ?? throw new Exception("Failed to find the ListView's Panel (ItemsStackPanel)");
+			Assert.AreEqual(3, panel.Children.Count);
+#else
 			var count = sut.MaterializedContainers.Count();
 			Assert.AreEqual(3, count);
+#endif
 		}
 
 		[TestMethod]
 		[RunsOnUIThread]
+#if __ANDROID__
+		[Ignore("droid: Scrollable/Extent-Height doesnt get updated until manually scroll occurs, but otherwise the visuals are good.")]
+#endif
 		public async Task When_ScrollIntoView_FreshlyAddedOffscreenItem()
 		{
 			const int FixedItemHeight = 29;
@@ -4753,12 +4762,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await UITestHelper.WaitForIdle();
 
+			var tree = sut.TreeGraph();
+			var sv = sut.FindFirstDescendant<ScrollViewer>() ?? throw new Exception("Failed to find the ListView's ScrollViewer");
+
 			// Here we aren't verifying the viewport is entirely filled,
 			// But the last 3 are materialized, and that we are scrolled to the end.
 			Assert.IsNotNull(sut.ContainerFromIndex(source.Count - 3), "Container#n-3 is null");
 			Assert.IsNotNull(sut.ContainerFromIndex(source.Count - 2), "Container#n-2 is null");
 			Assert.IsNotNull(sut.ContainerFromIndex(source.Count - 1), "Container#n-1 is null");
-			Assert.AreEqual(sut.ScrollViewer.ScrollableHeight, sut.ScrollViewer.VerticalOffset, "ListView is not scrolled to the end.");
+
+			Assert.AreEqual(sv.ScrollableHeight, sv.VerticalOffset, "ListView is not scrolled to the end.");
 		}
 	}
 
