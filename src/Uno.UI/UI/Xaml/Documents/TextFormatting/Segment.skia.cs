@@ -68,11 +68,6 @@ namespace Microsoft.UI.Xaml.Documents.TextFormatting
 		/// </summary>
 		public int LineBreakLength { get; }
 
-		/// <summary>
-		/// Returns a value indicating whether the end of this segment is a word break opportunity.
-		/// </summary>
-		public bool WordBreakAfter { get; }
-
 		public bool IsTab => Text.Length == 1 && Text[0] == '\t';
 
 		/// <summary>
@@ -88,7 +83,7 @@ namespace Microsoft.UI.Xaml.Documents.TextFormatting
 
 		private string DebugText => Inline is Run ? Text.ToString() : "{LineBreak}";
 
-		public Segment(Run run, FlowDirection direction, int start, int length, int leadingSpaceCount, int trailingSpaceCount, int lineBreakLength, bool wordBreakAfter, List<GlyphInfo> glyphs, FontDetails? fallbackFont)
+		public Segment(Run run, FlowDirection direction, int start, int length, int leadingSpaceCount, int trailingSpaceCount, int lineBreakLength, List<GlyphInfo> glyphs, FontDetails? fallbackFont)
 		{
 			Inline = run;
 			Direction = direction;
@@ -98,7 +93,6 @@ namespace Microsoft.UI.Xaml.Documents.TextFormatting
 			TrailingSpaces = trailingSpaceCount;
 			LineBreakLength = lineBreakLength;
 			LineBreakAfter = lineBreakLength > 0;
-			WordBreakAfter = wordBreakAfter;
 			_glyphs = glyphs;
 			_fallbackFont = fallbackFont;
 			_text = run.Text;
