@@ -14,21 +14,10 @@
 		<PropertyGroup>
 			<!-- Compatibility with the single-layer runtime replace -->
 			<_LibraryUnoRuntimeIdentifier>$(UnoRuntimeIdentifier)</_LibraryUnoRuntimeIdentifier>
-			<_LibraryUnoRuntimeIdentifier Condition=" '$(_LibraryUnoRuntimeIdentifier)' == '' ">$(UnoWinRTRuntimeIdentifier)</_LibraryUnoRuntimeIdentifier>
+			<_LibraryUnoRuntimeIdentifier Condition=" '$(_LibraryUnoRuntimeIdentifier)' == '' ">$(UnoUIRuntimeIdentifier)</_LibraryUnoRuntimeIdentifier>
 		</PropertyGroup>
 
 		<ItemGroup>
-
-			<!-- Create a list of all copy local items that are part of the UnoRuntimeEnabledPackage items -->
-			<_RuntimeCopyLocalItemsToRemove Include="@(RuntimeCopyLocalItems)" EnabledIdentity="%(UnoRuntimeEnabledPackage.Identity)" />
-			<_RuntimeCopyLocalItemsToRemove Remove="@(_RuntimeCopyLocalItemsToRemove)" Condition="'%(_RuntimeCopyLocalItemsToRemove.NuGetPackageId)' != '%(_RuntimeCopyLocalItemsToRemove.EnabledIdentity)'" />
-
-			<_ResolvedCompileFileDefinitionsToRemove Include="@(ResolvedCompileFileDefinitions)" EnabledIdentity="%(UnoRuntimeEnabledPackage.Identity)" />
-			<_ResolvedCompileFileDefinitionsToRemove Remove="@(_ResolvedCompileFileDefinitionsToRemove)" Condition="'%(_ResolvedCompileFileDefinitionsToRemove.NuGetPackageId)' != '%(_ResolvedCompileFileDefinitionsToRemove.EnabledIdentity)'" />
-
-			<!-- Remove them from the files to be copied to the output -->
-			<RuntimeCopyLocalItems Remove="@(_RuntimeCopyLocalItemsToRemove)" />
-
 			<_UnoRuntimeEnabledPackage_EmptyPackageBasePath
 				Include="@(UnoRuntimeEnabledPackage)"
 				Condition="'%(UnoRuntimeEnabledPackage.PackageBasePath)'==''" />
@@ -67,10 +56,13 @@
 			UnoWinRTRuntimeIdentifier="$(UnoWinRTRuntimeIdentifier.ToLowerInvariant())"
 			UnoUIRuntimeIdentifier="$(UnoUIRuntimeIdentifier.ToLowerInvariant())"
 			ResolvedCompileFileDefinitionsInput="@(ResolvedCompileFileDefinitions)"
+			RuntimeCopyLocalItemsInput="@(RuntimeCopyLocalItems)"
 			NuGetPackageRoot="$(NuGetPackageRoot)"
 			TargetFrameworkVersion="$(TargetFrameworkVersion)">
-			<Output TaskParameter="Assemblies" ItemName="RuntimeCopyLocalItemsMerged2" />
-			<Output TaskParameter="ResolvedCompileFileDefinitionsOutput" ItemName="ResolvedCompileFileDefinitionsOutput" />
+			<Output TaskParameter="RuntimeCopyLocalItemsToAdd" ItemName="RuntimeCopyLocalItemsMerged2" />
+			<Output TaskParameter="RuntimeCopyLocalItemsToRemove" ItemName="_RuntimeCopyLocalItemsToRemove" />
+			<Output TaskParameter="ResolvedCompileFileDefinitionsToAdd" ItemName="_ResolvedCompileFileDefinitionsToAdd" />
+			<Output TaskParameter="ResolvedCompileFileDefinitionsToRemove" ItemName="_ResolvedCompileFileDefinitionsToRemove" />
 			<!-- Publish PDB files-->
 			<Output TaskParameter="DebugSymbols" ItemName="ReferenceCopyLocalPaths" />
 		</RuntimeAssetsSelectorTask_v0>
@@ -85,13 +77,10 @@
 				CopyToPublishDirectory="true"
 				PathInPackage="%(PathInPackage)" />
 
-			<RuntimeCopyLocalItems
-				Include="@(RuntimeCopyLocalItemsToUpdate)"/>
-		</ItemGroup>
-
-		<ItemGroup Condition="'$(UnoUIRuntimeIdentifier)'=='Skia'">
 			<ResolvedCompileFileDefinitions Remove="@(_ResolvedCompileFileDefinitionsToRemove)" />
-			<ResolvedCompileFileDefinitions Include="@(ResolvedCompileFileDefinitionsOutput)" />
+			<ResolvedCompileFileDefinitions Include="@(_ResolvedCompileFileDefinitionsToAdd)" />
+			<RuntimeCopyLocalItems Remove="@(_RuntimeCopyLocalItemsToRemove)" />
+			<RuntimeCopyLocalItems Include="@(RuntimeCopyLocalItemsToUpdate)"/>
 		</ItemGroup>
 
 		<Error
@@ -100,7 +89,7 @@
 	</Target>
 
 	<!-- Force a rebuild on runtime files changes -->
-	<ItemGroup Condition="'$(UnoRuntimeIdentifier)'!=''">
+	<ItemGroup Condition="'$(UnoRuntimeIdentifier)'!='' OR '$(UnoUIRuntimeIdentifier)'!='' OR '$(UnoWinRTRuntimeIdentifier)'!=''">
 		<UpToDateCheckInput Include="$(MSBuildThisFileDirectory)/../uno-runtime/*" />
 	</ItemGroup>
 
