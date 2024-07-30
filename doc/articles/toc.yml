@@ -272,6 +272,8 @@
           href: features/upri-trimming.md
         - name: Working with XAML Trimming
           href: features/resources-trimming.md
+        - name: Error Monitoring & Crash Reporting with Raygun
+          href: xref:Monitoring.Raygun
 
     - name: Contributing
       items:
