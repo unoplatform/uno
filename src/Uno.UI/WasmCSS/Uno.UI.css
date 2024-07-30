@@ -156,6 +156,9 @@ embed.uno-frameworkelement.uno-unarranged {
   outline: none;
   border: none;
   background-color: transparent;
+  /* Redundant, but actually fixes rendering bug on Safari for a multiline textbox with fixed height where vertical scrolling breaks weirdly */
+  /* https://stackoverflow.com/a/57215893 */
+  transform: translate3d(0, 0, 0);
 }
 
 .uno-textbox {
@@ -264,7 +267,12 @@ embed.uno-frameworkelement.uno-unarranged {
 
 textarea {
   resize: none;
-  overflow: hidden; /* Scrolling is handled by the parent ScrollViewer */
+  scrollbar-width: none;
+}
+
+textarea::-webkit-scrollbar {
+  width: 0;
+  background: transparent;
 }
 
 input::-ms-reveal,

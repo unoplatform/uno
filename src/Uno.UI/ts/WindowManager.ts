@@ -183,6 +183,17 @@ namespace Uno.UI {
 			document.body.style.cursor = value;
 		}
 
+		static setSingleLine(htmlId: number): void {
+			const element = this.current.getView(htmlId);
+			if (element instanceof HTMLTextAreaElement) {
+				element.addEventListener("keydown", e => {
+					if (e.key === "Enter") {
+						e.preventDefault();
+					}
+				})
+			}
+		}
+
 		/**
 			* Reads the window's search parameters
 			* 
