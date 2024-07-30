@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
@@ -12,7 +11,6 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml.Controls;
-using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 using Windows.Foundation;
 using Windows.System;
@@ -31,7 +29,6 @@ using _View = Microsoft.UI.Xaml.FrameworkElement;
 #endif
 
 #if HAS_UNO_WINUI
-using WindowSizeChangedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.WindowSizeChangedEventArgs;
 #else
 using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
 #endif
@@ -49,7 +46,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private Border? _popupBorder;
 		private ContentPresenter? _contentPresenter;
 		private TextBlock? _placeholderTextBlock;
-		private TextBox? _editableText;
+		private TextBox? m_tpEditableTextPart;
 		private ContentPresenter? _headerContentPresenter;
 
 		private DateTime m_timeSinceLastCharacterReceived;
@@ -106,7 +103,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (IsEditable)
 			{
-				_editableText = this.GetTemplateChild("EditableText") as TextBox;
+				m_tpEditableTextPart = this.GetTemplateChild("EditableText") as TextBox;
 			}
 
 			if (_popup is Popup popup)
@@ -802,12 +799,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (IsEditable)
 			{
-				if (_editableText is null)
+				if (m_tpEditableTextPart is null)
 				{
 					return;
 				}
 
-				string textBoxText = _editableText.Text;
+				string textBoxText = m_tpEditableTextPart.Text;
 
 				// Don't process search if new text is equal to previous searched text.
 				if (textBoxText.Equals(m_searchString))
@@ -881,9 +878,9 @@ namespace Microsoft.UI.Xaml.Controls
 			// Editable ComboBox uses the text in the TextBox to search for values, Non-Editable ComboBox appends received characters to the current search string
 			if (IsEditable)
 			{
-				if (_editableText is not null)
+				if (m_tpEditableTextPart is not null)
 				{
-					m_searchString = _editableText.Text;
+					m_searchString = m_tpEditableTextPart.Text;
 				}
 			}
 			else
@@ -1309,6 +1306,32 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private protected override void ChangeVisualState(bool useTransitions)
 		{
+			// Ingores pressed visual over the entire control when pointer is over the DropDown button used for Editable Mode.
+			bool ignorePressedVisual = false;
+
+			// EditableModeStates VisualStateGroup.
+			if (IsEditable)
+			{
+				bool editableTextHasFocus = EditableTextHasFocus();
+
+				if (m_IsPointerOverDropDownOverlay is not null)
+				{
+					if (IsPointerPressed)
+					{
+						ignorePressedVisual = true;
+						GoToState(useTransitions, editableTextHasFocus ? "TextBoxFocusedOverlayPressed" : "TextBoxOverlayPressed");
+					}
+					else
+					{
+						GoToState(useTransitions, editableTextHasFocus ? "TextBoxFocusedOverlayPointerOver" : "TextBoxOverlayPointerOver");
+					}
+				}
+				else
+				{
+					GoToState(useTransitions, editableTextHasFocus ? "TextBoxFocused" : "TextBoxUnfocused");
+				}
+			}
+
 			if (!IsEnabled)
 			{
 				GoToState(useTransitions, "Disabled");
@@ -1317,7 +1340,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				GoToState(useTransitions, "Highlighted");
 			}
-			else if (IsPointerPressed)
+			else if (IsPointerPressed && !ignorePressedVisual)
 			{
 				GoToState(useTransitions, "Pressed");
 			}
