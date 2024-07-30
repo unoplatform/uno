@@ -11,6 +11,10 @@ partial class ComboBox
 {
 	private bool m_isEditModeConfigured;
 
+	// Setting Editable Mode configures several event listeners, we use this variable to prevent configuring Editable mode twice.
+	// Editable ComboBox is designed to set the focus on TextBox when ComboBox is focused, there are some cases when we don't want
+	// this behavior eg(Shift+Tab).
+	private bool m_shouldMoveFocusToTextBox;
 
 	private readonly SerialDisposable m_spEditableTextPreviewKeyDownHandler = new();
 	private readonly SerialDisposable m_spEditableTextKeyDownHandler = new();

@@ -42,11 +42,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private bool _areItemTemplatesForwarded;
 
+		private TextBox? m_tpEditableTextPart;
+		private ContentPresenter? m_tpContentPresenterPart;
+
 		private IPopup? _popup;
 		private Border? _popupBorder;
 		private ContentPresenter? _contentPresenter;
 		private TextBlock? _placeholderTextBlock;
-		private TextBox? m_tpEditableTextPart;
 		private ContentPresenter? _headerContentPresenter;
 
 		private DateTime m_timeSinceLastCharacterReceived;
@@ -99,6 +101,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_popup = this.GetTemplateChild("Popup") as IPopup;
 			_popupBorder = this.GetTemplateChild("PopupBorder") as Border;
 			_contentPresenter = this.GetTemplateChild("ContentPresenter") as ContentPresenter;
+			m_tpContentPresenterPart = _contentPresenter;
 			_placeholderTextBlock = this.GetTemplateChild("PlaceholderTextBlock") as TextBlock;
 
 			if (IsEditable)
