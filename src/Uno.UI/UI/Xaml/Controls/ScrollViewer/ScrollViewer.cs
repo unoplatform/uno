@@ -838,7 +838,8 @@ namespace Microsoft.UI.Xaml.Controls
 			TrimOverscroll(Orientation.Vertical);
 			TrimOverscroll(Orientation.Horizontal);
 
-			if (new Size(ExtentWidth, ExtentWidth) is { } newSize && oldSize != newSize)
+			var newSize = new Size(ExtentWidth, ExtentWidth);
+			if (oldSize != newSize)
 			{
 				ExtentSizeChanged?.Invoke(this, new(this, oldSize, newSize));
 			}

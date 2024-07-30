@@ -296,7 +296,7 @@ namespace Microsoft.UI.Xaml.Controls
 				// Set the seed start to use the approximate position of
 				// the line based on the average line height.
 				var index = (int)(ScrollOffset / _averageLineHeight);
-				UpdateDynamicSeed(Uno.UI.IndexPath.FromRowSection(index - 1, 0), index * _averageLineHeight);
+				SetDynamicSeed(Uno.UI.IndexPath.FromRowSection(index - 1, 0), index * _averageLineHeight);
 			}
 
 			while (unappliedDelta > 0)
@@ -462,7 +462,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			UnfillLayout(extentAdjustment ?? 0);
 			FillLayout(extentAdjustment ?? 0);
-			UpdateDynamicSeed(null, null);
+			SetDynamicSeed(null, null);
 
 			CorrectForEstimationErrors();
 
@@ -499,8 +499,8 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <param name="extentAdjustment">Adjustment to apply when calculating fillable area.</param>
 		private void FillLayout(double extentAdjustment)
 		{
-			 // Don't fill backward if we're doing a light rebuild (since we are starting from nearest previously-visible item)
-			if (!_dynamicSeed.Start.HasValue)
+			// Don't fill backward if we're doing a light rebuild (since we are starting from nearest previously-visible item)
+			if (!_dynamicSeedStart.HasValue)
 			{
 				FillBackward();
 			}
@@ -651,7 +651,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var updated = CollectionChangedOperation.Offset(dynamicSeedIndex, _pendingCollectionChanges);
 				if (updated is Uno.UI.IndexPath updatedValue)
 				{
-					UpdateDynamicSeed(updated, _dynamicSeedStart);
+					SetDynamicSeed(updated, _dynamicSeedStart);
 
 					var itemOffset = updatedValue.Row - dynamicSeedIndex.Row; // TODO: This will need to change when grouping is supported
 					var scrollAdjustment = itemOffset * _averageLineHeight; // TODO: not appropriate for ItemsWrapGrid
@@ -673,7 +673,7 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			UpdateDynamicSeed(_dynamicSeedIndex, _dynamicSeedStart + scrollAdjustment);
+			SetDynamicSeed(_dynamicSeedIndex, _dynamicSeedStart + scrollAdjustment);
 
 			if ((scrollAdjustment < 0 && IsScrolledToStart()) ||
 				(scrollAdjustment > 0 && IsScrolledToEnd())
@@ -888,7 +888,7 @@ namespace Microsoft.UI.Xaml.Controls
 				firstVisibleItem = _materializedLines.SelectMany(line => line.Items).Skip(1).FirstOrDefault().index;
 			}
 
-			UpdateDynamicSeed(GetDynamicSeedIndex(firstVisibleItem), GetContentStart());
+			SetDynamicSeed(GetDynamicSeedIndex(firstVisibleItem), GetContentStart());
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
@@ -1236,6 +1236,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			ScrollIntoViewCore(index, alignment);
 		}
+
 		internal void ScrollIntoViewCore(int index, ScrollIntoViewAlignment alignment = ScrollIntoViewAlignment.Default)
 		{
 			if (index == -1) { return; }
@@ -1266,7 +1267,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				// skip to an estimate offset of where the target could be
 				adjustedOffset = index * _averageLineHeight;
-				UpdateDynamicSeed(Uno.UI.IndexPath.FromRowSection(index - 1, 0), adjustedOffset);
+				SetDynamicSeed(Uno.UI.IndexPath.FromRowSection(index - 1, 0), adjustedOffset);
 				UpdateLayout(adjustedOffset - initialOffset, isScroll: true);
 
 				// scroll forward or backward as needed
@@ -1344,7 +1345,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return null;
 		}
 
-		private void UpdateDynamicSeed(Uno.UI.IndexPath? index, double? start)
+		private void SetDynamicSeed(Uno.UI.IndexPath? index, double? start)
 		{
 			_dynamicSeedIndex = index;
 			_dynamicSeedStart = start;
