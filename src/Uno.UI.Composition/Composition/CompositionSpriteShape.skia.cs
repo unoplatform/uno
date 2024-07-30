@@ -1,12 +1,9 @@
 ﻿#nullable enable
 
-using System;
-using System.Linq;
 using Windows.Foundation;
 using SkiaSharp;
 using Uno;
 using Uno.Extensions;
-using Uno.UI.Composition;
 
 namespace Microsoft.UI.Composition
 {
@@ -16,19 +13,14 @@ namespace Microsoft.UI.Composition
 		private SKPaint? _fillPaint;
 		private SKPath? _geometryWithTransformations;
 
-		internal SKPath? LastDrawnStrokePath { get; private set; }
-		internal SKPath? LastDrawnFillPath { get; private set; }
-
 		internal override void Paint(in Visual.PaintingSession session)
 		{
-			LastDrawnStrokePath = null;
-			LastDrawnFillPath = null;
-
 			if (_geometryWithTransformations is { } geometryWithTransformations)
 			{
 				if (FillBrush is { } fill)
 				{
-					var fillPaint = TryCreateAndClearFillPaint(in session);
+					var fillPaint = TryCreateAndClearFillPaint();
+					fillPaint.ColorFilter = session.Filters.OpacityColorFilter;
 
 					if (Compositor.TryGetEffectiveBackgroundColor(this, out var colorFromTransition))
 					{
@@ -38,8 +30,6 @@ namespace Microsoft.UI.Composition
 					{
 						fill.UpdatePaint(fillPaint, geometryWithTransformations.Bounds);
 					}
-
-					LastDrawnFillPath = geometryWithTransformations;
 
 					if (fill is CompositionBrushWrapper wrapper)
 					{
@@ -63,8 +53,10 @@ namespace Microsoft.UI.Composition
 
 				if (StrokeBrush is { } stroke && StrokeThickness > 0)
 				{
-					var fillPaint = TryCreateAndClearFillPaint(in session);
-					var strokePaint = TryCreateAndClearStrokePaint(in session);
+					var fillPaint = TryCreateAndClearFillPaint();
+					var strokePaint = TryCreateAndClearStrokePaint();
+					fillPaint.ColorFilter = session.Filters.OpacityColorFilter;
+					strokePaint.ColorFilter = session.Filters.OpacityColorFilter;
 
 					// Set stroke thickness
 					strokePaint.StrokeWidth = StrokeThickness;
@@ -94,19 +86,18 @@ namespace Microsoft.UI.Composition
 
 					stroke.UpdatePaint(fillPaint, strokeGeometry.Bounds);
 
-					LastDrawnStrokePath = strokeGeometry;
 					session.Canvas.DrawPath(strokeGeometry, fillPaint);
 				}
 			}
 		}
 
-		private SKPaint TryCreateAndClearStrokePaint(in Visual.PaintingSession session)
-			=> TryCreateAndClearPaint(in session, ref _strokePaint, true, CompositionConfiguration.UseBrushAntialiasing);
+		private SKPaint TryCreateAndClearStrokePaint()
+			=> TryCreateAndClearPaint(ref _strokePaint, true, CompositionConfiguration.UseBrushAntialiasing);
 
-		private SKPaint TryCreateAndClearFillPaint(in Visual.PaintingSession session)
-			=> TryCreateAndClearPaint(in session, ref _fillPaint, false, CompositionConfiguration.UseBrushAntialiasing);
+		private SKPaint TryCreateAndClearFillPaint()
+			=> TryCreateAndClearPaint(ref _fillPaint, false, CompositionConfiguration.UseBrushAntialiasing);
 
-		private static SKPaint TryCreateAndClearPaint(in Visual.PaintingSession session, ref SKPaint? paint, bool isStroke, bool isHighQuality = false)
+		private static SKPaint TryCreateAndClearPaint(ref SKPaint? paint, bool isStroke, bool isHighQuality = false)
 		{
 			if (paint == null)
 			{
@@ -139,8 +130,6 @@ namespace Microsoft.UI.Composition
 					paint.PathEffect = null;
 				}
 			}
-
-			paint.ColorFilter = session.Filters.OpacityColorFilter;
 
 			return paint;
 		}
@@ -178,8 +167,27 @@ namespace Microsoft.UI.Composition
 
 		internal override bool HitTest(Point point)
 		{
-			return (LastDrawnStrokePath?.Contains((float)point.X, (float)point.Y) ?? false)
-				|| (LastDrawnFillPath?.Contains((float)point.X, (float)point.Y) ?? false);
+			point = CombinedTransformMatrix.Inverse().Transform(point);
+
+			if (_geometryWithTransformations is { } geometryWithTransformations)
+			{
+				if (FillBrush is { } && geometryWithTransformations.Contains((float)point.X, (float)point.Y))
+				{
+					return true;
+				}
+			
+				if (StrokeBrush is { } stroke && StrokeThickness > 0)
+				{
+					var strokePaint = TryCreateAndClearStrokePaint();
+					strokePaint.StrokeWidth = StrokeThickness;
+					var strokeGeometry = strokePaint.GetFillPath(geometryWithTransformations);
+					if (strokeGeometry.Contains((float)point.X, (float)point.Y))
+					{
+						return true;
+					}
+				}
+			}
+			return false;
 		}
 	}
 }
