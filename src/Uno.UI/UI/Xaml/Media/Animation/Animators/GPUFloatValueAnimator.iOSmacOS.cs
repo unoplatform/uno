@@ -481,6 +481,16 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			Action? prepareAnimation = null,
 			Action? endAnimation = null)
 		{
+			if (view.Layer is null)
+			{
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Warning))
+				{
+					this.Log().Warn("The Layer property of the View is null.");
+				}
+
+				throw new InvalidOperationException("The Layer property of the View is null.");
+			}
+
 			var timingFunction = _easingFunction == null ?
 				CAMediaTimingFunction.FromName(CAMediaTimingFunction.Linear) :
 				_easingFunction.GetTimingFunction();
