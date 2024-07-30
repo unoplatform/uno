@@ -4,21 +4,24 @@ uid: uno.publishing.windows.sideload.unpackaged.unsigned
 
 # Publish an unpackaged app
 
-This guide will show how to create an unpackaged app using Windows App SDK.
+This guide will show you how to create an unpackaged app using Windows App SDK.
+
 
 > [!IMPORTANT]
 > Building your app requires using the msbuild command (`dotnet build` is not compatible as of WinAppSDK 1.5).
 > [!NOTE]
-> Uno Platform also supports building apps for using the `net8.0-desktop` target framework, using Uno Platorm's own Skia Desktop implementation.
+> Uno Platform also supports building apps for using the `net8.0-desktop` target framework, using Uno Platform's own Skia Desktop implementation.
+
 
 ## Build the app for publishing
 
-Packaging the app without a code signature allows for installing the app on a machine without having to install the signer's certificate. This portion of the guide is derived from the [official Windows App SDK documentation](https://learn.microsoft.com/en-us/windows/msix/package/unsigned-package).
+Packaging the app without a code signature allows the app to be installed on a machine without installing the signer's certificate. This guide portion is derived from the [official Windows App SDK documentation](https://learn.microsoft.com/en-us/windows/msix/package/unsigned-package).
 
 To publish your app:
 
 - Navigate to the folder of the app's `.csproj` (Building at the solution level is not supported)
 - Build your app using the following command:
+
 
     ```pwsh
     msbuild /r /t:publish /p:TargetFramework=net8.0-windows10.0.19041 /p:Configuration=Release /p:Platform=x64 /p:PublishDir=c:\temp\myoutput
