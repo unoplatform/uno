@@ -62,7 +62,11 @@
 
 	<PropertyGroup>
 		<SkiaSharpVersion>2.88.7</SkiaSharpVersion>
-		 <SkiaSharpVersion Condition="'$(IsTestProject)' == 'true' or '$(IsSampleProject)' == 'true'">3.0.0-preview.4.1</SkiaSharpVersion> 
+
+		<!-- SkiaSharp is no longer supporting SkiaSharp.Views.Uno, so there is no 3.x of this particular package. -->
+		<SkiaSharpViewsUnoVersion>$(SkiaSharpVersion)</SkiaSharpViewsUnoVersion>
+
+		<SkiaSharpVersion Condition="'$(IsTestProject)' == 'true' or '$(IsSampleProject)' == 'true'">3.0.0-preview.4.1</SkiaSharpVersion>
 	</PropertyGroup>
 	
 	<ItemGroup>
@@ -97,7 +101,7 @@
 		<PackageReference Update="System.Numerics.Vectors" Version="4.5.0" />
 
 		<PackageReference Update="SkiaSharp.Views" Version="$(SkiaSharpVersion)" />
-		<PackageReference Update="SkiaSharp.Views.Uno" Version="$(SkiaSharpVersion)" />
+		<PackageReference Update="SkiaSharp.Views.Uno" Version="$(SkiaSharpViewsUnoVersion)" />
 		<PackageReference Update="SkiaSharp.Views.Uno.WinUI" Version="$(SkiaSharpVersion)" />
 		<PackageReference Update="SkiaSharp.Views.WPF" Version="$(SkiaSharpVersion)"  />
 		<PackageReference Update="SkiaSharp" Version="$(SkiaSharpVersion)"  />
@@ -108,11 +112,11 @@
 		<PackageReference Update="SkiaSharp.NativeAssets.iOS" Version="$(SkiaSharpVersion)" />
 		<PackageReference Update="SkiaSharp.NativeAssets.MacCatalyst" Version="$(SkiaSharpVersion)" />
 		<PackageReference Update="SkiaSharp.NativeAssets.macos" Version="$(SkiaSharpVersion)" />
-		
+		<PackageReference Update="SkiaSharp.HarfBuzz" Version="$(SkiaSharpVersion)" />
+
 		<PackageReference Update="HarfBuzzSharp.NativeAssets.macOS" Version="7.3.0.1" />
 		<PackageReference Update="HarfBuzzSharp.NativeAssets.Linux" Version="7.3.0.1" />
 		<PackageReference Update="harfbuzzsharp.nativeassets.ios" Version="7.3.0.1" />
-		<PackageReference Update="SkiaSharp.HarfBuzz" Version="$(SkiaSharpVersion)" />
 
 		<PackageReference Update="Svg.Skia" Version="1.0.0.1" />
 		<PackageReference Update="GtkSharp" Version="3.24.24.38" />
