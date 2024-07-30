@@ -14,7 +14,7 @@ namespace Microsoft.UI.Composition
 	{
 		private SKPaint? _strokePaint;
 		private SKPaint? _fillPaint;
-		
+
 		internal SKPath? LastDrawnStrokePath { get; private set; }
 		internal SKPath? LastDrawnFillPath { get; private set; }
 
@@ -40,7 +40,7 @@ namespace Microsoft.UI.Composition
 				if (FillBrush is { } fill)
 				{
 					var fillPaint = TryCreateAndClearFillPaint(in session);
-					
+
 					if (Compositor.TryGetEffectiveBackgroundColor(this, out var colorFromTransition))
 					{
 						fillPaint.Color = colorFromTransition.ToSKColor();
@@ -49,7 +49,7 @@ namespace Microsoft.UI.Composition
 					{
 						fill.UpdatePaint(fillPaint, geometryWithTransformations.Bounds);
 					}
-					
+
 					LastDrawnFillPath = geometryWithTransformations;
 
 					if (fill is CompositionBrushWrapper wrapper)
