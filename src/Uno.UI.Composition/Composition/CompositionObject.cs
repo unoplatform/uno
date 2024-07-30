@@ -303,7 +303,7 @@ namespace Microsoft.UI.Composition
 			// Is this valid even for non-composition objects like interface?
 			var fieldCO = field as CompositionObject;
 			var valueCO = value as CompositionObject;
-			if (fieldCO != null || value != null)
+			if (fieldCO != null || valueCO != null)
 			{
 				OnCompositionPropertyChanged(fieldCO, valueCO, propertyName);
 			}
