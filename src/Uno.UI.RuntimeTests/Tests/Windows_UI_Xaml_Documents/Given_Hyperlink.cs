@@ -104,7 +104,7 @@ public class Given_Hyperlink
 #if __WASM__
 	[Ignore("Visual states/Colors are handled by browser.")]
 #elif !HAS_INPUT_INJECTOR
-	[Ignore("Test needs InputInjector which is not supported on this platform.")]
+	[Ignore("InputInjector is not supported on this platform.")]
 #endif
 	[DataRow(true, false, "#FF0078D7", "#99FFFFFF", "#66FFFFFF")]
 	[DataRow(false, false, "#FF0078D7", "#99000000", "#66000000")]
