@@ -19,8 +19,9 @@ Packaging the app without a code signature allows the app to be installed on a m
 
 To publish your app:
 
-- Navigate to the folder of the app's `.csproj` (Building at the solution level is not supported)
-- Build your app using the following command:
+1. Navigate to the folder of the app's `.csproj` (Building at the solution level is not supported)
+2. Build your app using the following command:
+
 
 
     ```pwsh
