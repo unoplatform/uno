@@ -11,7 +11,7 @@ namespace Microsoft.UI.Composition;
 
 public partial class CompositionShape
 {
-	private Matrix3x2 _combinedTransformMatrix;
+	private Matrix3x2 _combinedTransformMatrix = Matrix3x2.Identity;
 
 	protected Matrix3x2 CombinedTransformMatrix
 	{
