@@ -762,6 +762,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				RegisterAndBuildResources(writer, topLevelControl, isInInitializer: false);
 				BuildProperties(writer, topLevelControl, isInline: false, useBase: true);
+				BuildInlineLocalizedProperties(writer, topLevelControl, topLevelControlType, isInInitializer: false);
 
 				writer.AppendLineIndented(";");
 
@@ -3730,7 +3731,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <summary>
 		/// Build localized properties which have not been set in the xaml.
 		/// </summary>
-		private void BuildInlineLocalizedProperties(IIndentedStringBuilder writer, XamlObjectDefinition objectDefinition, INamedTypeSymbol? objectDefinitionType)
+		private void BuildInlineLocalizedProperties(IIndentedStringBuilder writer, XamlObjectDefinition objectDefinition, INamedTypeSymbol? objectDefinitionType, bool isInInitializer = true)
 		{
 			TryAnnotateWithGeneratorSource(writer);
 			var objectUid = GetObjectUid(objectDefinition);
@@ -3744,7 +3745,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					var localizedValue = BuildLocalizedResourceValue(null, prop, objectUid);
 					if (localizedValue != null)
 					{
-						writer.AppendLineInvariantIndented("{0} = {1},", prop, localizedValue);
+						if (isInInitializer)
+						{
+							writer.AppendLineInvariantIndented("{0} = {1},", prop, localizedValue);
+						}
+						else
+						{
+							writer.AppendLineInvariantIndented("{0} = {1};", prop, localizedValue);
+						}
 					}
 				}
 			}
