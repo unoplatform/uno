@@ -2,6 +2,7 @@
 
 using System;
 using System.Numerics;
+using Windows.Foundation;
 using SkiaSharp;
 using Uno.UI.Composition;
 
@@ -290,4 +291,6 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 			_borderPath.Close();
 		}
 	}
+
+	internal override bool HitTest(Point point) => (_borderShape?.HitTest(point) ?? false) || (_backgroundShape?.HitTest(point) ?? false) || base.HitTest(point);
 }

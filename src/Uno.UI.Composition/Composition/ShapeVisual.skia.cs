@@ -57,7 +57,7 @@ public partial class ShapeVisual
 	}
 
 	/// <remarks>This does NOT take the clipping into account.</remarks>
-	internal bool HitTest(Point point)
+	internal virtual bool HitTest(Point point)
 	{
 		if (_shapes is null)
 		{
