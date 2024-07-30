@@ -251,6 +251,8 @@
               href: xref:uno.publishing.windows.sideload.packaged.unsigned
             - name: Build Packaged Signed Apps
               href: xref:uno.publishing.windows.sideload.packaged.signed
+            - name: Build Unpackaged Apps
+              href: xref:uno.publishing.windows.sideload.unpackaged.unsigned
         - name: Publishing for iOS
           href: xref:uno.publishing.ios
         - name: Publishing for Android
