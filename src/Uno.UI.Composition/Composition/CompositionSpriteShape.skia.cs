@@ -14,6 +14,7 @@ namespace Microsoft.UI.Composition
 	{
 		private SKPaint? _strokePaint;
 		private SKPaint? _fillPaint;
+		private SKPath? _geometryWithTransformations;
 
 		internal SKPath? LastDrawnStrokePath { get; private set; }
 		internal SKPath? LastDrawnFillPath { get; private set; }
@@ -23,20 +24,8 @@ namespace Microsoft.UI.Composition
 			LastDrawnStrokePath = null;
 			LastDrawnFillPath = null;
 
-			if (Geometry?.BuildGeometry() is SkiaGeometrySource2D { Geometry: { } geometry })
+			if (_geometryWithTransformations is { } geometryWithTransformations)
 			{
-				var transform = CombinedTransformMatrix;
-				SKPath geometryWithTransformations;
-				if (transform.IsIdentity)
-				{
-					geometryWithTransformations = geometry;
-				}
-				else
-				{
-					geometryWithTransformations = new SKPath();
-					geometry.Transform(transform.ToSKMatrix(), geometryWithTransformations);
-				}
-
 				if (FillBrush is { } fill)
 				{
 					var fillPaint = TryCreateAndClearFillPaint(in session);
@@ -154,6 +143,37 @@ namespace Microsoft.UI.Composition
 			paint.ColorFilter = session.Filters.OpacityColorFilter;
 
 			return paint;
+		}
+
+		private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
+		{
+			base.OnPropertyChangedCore(propertyName, isSubPropertyChange);
+
+			switch (propertyName)
+			{
+				case nameof(Geometry) or nameof(CombinedTransformMatrix):
+					if (Geometry?.BuildGeometry() is SkiaGeometrySource2D { Geometry: { } geometry })
+					{
+						var transform = CombinedTransformMatrix;
+						SKPath geometryWithTransformations;
+						if (transform.IsIdentity)
+						{
+							geometryWithTransformations = geometry;
+						}
+						else
+						{
+							geometryWithTransformations = new SKPath();
+							geometry.Transform(transform.ToSKMatrix(), geometryWithTransformations);
+						}
+
+						_geometryWithTransformations = geometryWithTransformations;
+					}
+					else
+					{
+						_geometryWithTransformations = null;
+					}
+					break;
+			}
 		}
 
 		internal override bool HitTest(Point point)
