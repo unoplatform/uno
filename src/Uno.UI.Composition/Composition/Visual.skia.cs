@@ -113,7 +113,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				matrix = offsetMatrix * matrix;
 
 				// Apply the rending transformation matrix (i.e. change coordinates system to the "rendering" one)
-				if (this.GetTransform() is { IsIdentity: false } transform)
+				if (GetTransform() is { IsIdentity: false } transform)
 				{
 					matrix = transform * matrix;
 				}
@@ -123,6 +123,33 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			}
 
 			return _totalMatrix;
+			
+			Matrix4x4 GetTransform()
+			{
+				var transform = TransformMatrix;
+
+				var scale = Scale;
+				if (scale != Vector3.One)
+				{
+					transform *= Matrix4x4.CreateScale(scale, CenterPoint);
+				}
+
+				var orientation = Orientation;
+				if (orientation != Quaternion.Identity)
+				{
+					transform *= Matrix4x4.CreateFromQuaternion(orientation);
+				}
+
+				var rotation = RotationAngle;
+				if (rotation is not 0)
+				{
+					transform *= Matrix4x4.CreateTranslation(-CenterPoint);
+					transform *= Matrix4x4.CreateFromAxisAngle(RotationAxis, rotation);
+					transform *= Matrix4x4.CreateTranslation(CenterPoint);
+				}
+
+				return transform;
+			}
 		}
 	}
 

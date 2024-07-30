@@ -10,7 +10,7 @@ using static Microsoft.UI.Composition.SubPropertyHelpers;
 
 namespace Microsoft.UI.Composition
 {
-	public partial class Visual : CompositionObject, I3DTransformableObject
+	public partial class Visual : CompositionObject
 	{
 		private Vector2 _size;
 		private Vector3 _offset;
