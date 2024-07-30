@@ -25,7 +25,7 @@ namespace Microsoft.UI.Composition
 
 			if (Geometry?.BuildGeometry() is SkiaGeometrySource2D { Geometry: { } geometry })
 			{
-				var transform = this.GetTransform();
+				var transform = CombinedTransformMatrix;
 				SKPath geometryWithTransformations;
 				if (transform.IsIdentity)
 				{

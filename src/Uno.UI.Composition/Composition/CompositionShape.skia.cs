@@ -11,10 +11,42 @@ namespace Microsoft.UI.Composition;
 
 public partial class CompositionShape
 {
+	private Matrix3x2 _combinedTransformMatrix;
+
+	protected Matrix3x2 CombinedTransformMatrix
+	{
+		get => _combinedTransformMatrix;
+		private set => SetProperty(ref _combinedTransformMatrix, value);
+	}
+	
+	private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
+	{
+		base.OnPropertyChangedCore(propertyName, isSubPropertyChange);
+
+		switch (propertyName)
+		{
+			case nameof(TransformMatrix) or nameof(Scale) or nameof(RotationAngle) or nameof(CenterPoint):
+				var transform = TransformMatrix;
+
+				if (Scale != Vector2.One)
+				{
+					transform *= Matrix3x2.CreateScale(Scale, CenterPoint);
+				}
+
+				if (RotationAngle is not 0)
+				{
+					transform *= Matrix3x2.CreateRotation(RotationAngle, CenterPoint);
+				}
+
+				CombinedTransformMatrix = transform;
+				break;
+		}
+	}
+
 	internal virtual void Render(in Visual.PaintingSession session)
 	{
 		var offset = Offset;
-		var transform = this.GetTransform();
+		var transform = CombinedTransformMatrix;
 
 		if (offset != Vector2.Zero || transform is not { IsIdentity: true })
 		{
