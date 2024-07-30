@@ -1,7 +1,10 @@
 ﻿using System.Linq;
+using DirectUI;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 using Uno.Disposables;
 using Uno.UI.Xaml.Core;
+using Windows.System;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -175,6 +178,79 @@ partial class ComboBox
 		else
 		{
 			return false;
+		}
+	}
+
+	private void EnsureTextBoxIsEnabled(bool moveFocusToTextBox)
+	{
+		if (m_tpEditableTextPart is not null)
+		{
+			m_tpEditableTextPart.Width = DoubleUtil.NaN;
+			m_tpEditableTextPart.Height = DoubleUtil.NaN;
+			m_tpContentPresenterPart.Visibility = Visibility.Collapsed;
+
+			if (moveFocusToTextBox)
+			{
+				var isSuccessful = m_tpEditableTextPart.Focus(FocusState.Programmatic);
+
+				m_shouldMoveFocusToTextBox = false;
+			}
+		}
+	}
+
+	private void OnKeyDownPrivate(object pSender, KeyRoutedEventArgs pArgs)
+	{
+		base.OnKeyDown(pArgs);
+
+		var key = pArgs.Key;
+		var originalKey = pArgs.OriginalKey;
+
+		//Key maps to both gamepad B and Escape key
+		if (m_ignoreCancelKeyDowns && key == VirtualKey.Escape)
+		{
+			pArgs.Handled = true;
+			return;
+		}
+
+		var eventHandled = pArgs.Handled;
+
+		if (eventHandled)
+		{
+			return;
+		}
+
+		var isEnabled = IsEnabled;
+
+		if (!isEnabled)
+		{
+			return;
+		}
+
+		BOOLEAN bIsDropDownOpen = FALSE;
+		IFC_RETURN(get_IsDropDownOpen(&bIsDropDownOpen));
+		if (bIsDropDownOpen)
+		{
+			IFC_RETURN(PopupKeyDown(pArgs));
+		}
+		else
+		{
+			IFC_RETURN(MainKeyDown(pArgs));
+		}
+
+		IFC_RETURN(pArgs->get_Handled(&eventHandled));
+		m_handledGamepadOrRemoteKeyDown = eventHandled && XboxUtility::IsGamepadNavigationInput(originalKey);
+
+		return S_OK;
+	}
+
+	private void OnTextBoxPreviewKeyDown(object pSender, KeyRoutedEventArgs pArgs)
+	{
+		VirtualKey keyObject = pArgs.Key;
+
+		if (keyObject == VirtualKey.Up || keyObject == VirtualKey.Down)
+		{
+			OnKeyDownPrivate(pSender, pArgs);
+			pArgs.Handled = true;
 		}
 	}
 }
