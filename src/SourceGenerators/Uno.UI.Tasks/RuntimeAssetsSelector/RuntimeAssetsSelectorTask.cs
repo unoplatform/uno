@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -30,6 +31,9 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 
 		[Required]
 		public Microsoft.Build.Framework.ITaskItem[]? ResolvedCompileFileDefinitionsInput { get; set; }
+
+		[Required]
+		public string NuGetPackageRoot { get; set; } = "";
 
 		public string UnoRuntimeIdentifier { get; set; } = "";
 
@@ -243,6 +247,75 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 							{
 								["NuGetPackageId"] = packageIdentity
 							}));
+					}
+				}
+			}
+
+			// For Android Skia and iOS Skia, we want to resolve netX.0 instead of netX.0-[android|ios] for non-RuntimeEnabled packages.
+			// The idea here is that we loop over ResolvedCompileFileDefinitionsInput, look for dlls from NuGet package cache,
+			// and then try to find the right dll.
+			if (UnoUIRuntimeIdentifier == "skia" && UnoWinRTRuntimeIdentifier is "android" or "ios")
+			{
+				var nugetCacheRoot = NuGetPackageRoot.Replace('\\', '/');
+				if (!nugetCacheRoot.EndsWith("/", StringComparison.Ordinal))
+				{
+					nugetCacheRoot += "/";
+				}
+
+				var runtimeEnabledPackages = UnoRuntimeEnabledPackage.Select(p => p.GetMetadata("Identity")).ToImmutableHashSet(StringComparer.OrdinalIgnoreCase);
+				if (ResolvedCompileFileDefinitionsInput is not null)
+				{
+					foreach (var compileFileDefinition in ResolvedCompileFileDefinitionsInput)
+					{
+						// identityNormalized is expected to be on the form:
+						// <NuGetPackageRoot>/<PackageName>/<PackageVersion>/lib/<TargetFramework>/<AssemblyName>.dll
+						var identityNormalized = compileFileDefinition.GetMetadata("Identity").Replace('\\', '/');
+
+						// OrdinalIgnoreCase is not correct for a case-sensitive OS (e.g, Linux), but not a big deal.
+						if (identityNormalized.StartsWith(nugetCacheRoot, StringComparison.Ordinal))
+						{
+							var relativePath = identityNormalized.Substring(nugetCacheRoot.Length);
+							var split = relativePath.Split('/');
+							if (split.Length == 5 && split[2] == "lib")
+							{
+								var packageName = split[0];
+								if (!runtimeEnabledPackages.Contains(packageName))
+								{
+									var targetFramework = split[3];
+									if (targetFramework.Contains("-android") ||
+										targetFramework.Contains("-ios"))
+									{
+										var packageVersion = split[1];
+										var adjustedTargetFramework = targetFramework.Substring(0, targetFramework.IndexOf('-'));
+										var dllFileName = split[4];
+										var adjustedPath = $"{nugetCacheRoot}{packageName}/{packageVersion}/lib/{adjustedTargetFramework}/{dllFileName}";
+										if (File.Exists(adjustedPath))
+										{
+											assemblies.Add(new TaskItem(
+												Path.GetFullPath(adjustedPath),
+												new Dictionary<string, string>
+												{
+													["NuGetPackageId"] = packageName,
+													["PathInPackage"] = $"lib/{adjustedTargetFramework}/{dllFileName}",
+												}));
+
+											resolvedCompileFileDefinitions.Add(new TaskItem(
+												Path.GetFullPath(adjustedPath),
+												new Dictionary<string, string>
+												{
+													["HintPath"] = Path.GetFullPath(adjustedPath),
+													["NuGetPackageVersion"] = packageVersion,
+													["Private"] = compileFileDefinition.GetMetadata("Private"),
+													["ExternallyResolved"] = compileFileDefinition.GetMetadata("ExternallyResolved"),
+													["NuGetPackageId"] = packageName,
+													["PathInPackage"] = $"lib/{adjustedTargetFramework}/{dllFileName}",
+													["NuGetSourceType"] = compileFileDefinition.GetMetadata("NuGetSourceType"),
+												}));
+										}
+									}
+								}
+							}
+						}
 					}
 				}
 			}

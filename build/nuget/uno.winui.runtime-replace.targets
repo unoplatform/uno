@@ -67,6 +67,7 @@
 			UnoWinRTRuntimeIdentifier="$(UnoWinRTRuntimeIdentifier.ToLowerInvariant())"
 			UnoUIRuntimeIdentifier="$(UnoUIRuntimeIdentifier.ToLowerInvariant())"
 			ResolvedCompileFileDefinitionsInput="@(ResolvedCompileFileDefinitions)"
+			NuGetPackageRoot="$(NuGetPackageRoot)"
 			TargetFrameworkVersion="$(TargetFrameworkVersion)">
 			<Output TaskParameter="Assemblies" ItemName="RuntimeCopyLocalItemsMerged2" />
 			<Output TaskParameter="ResolvedCompileFileDefinitionsOutput" ItemName="ResolvedCompileFileDefinitionsOutput" />
