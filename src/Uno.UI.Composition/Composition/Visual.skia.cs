@@ -66,7 +66,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		}
 	}
 
-	/// <summary>Whether or not this Visual that something to draw.</summary>
+	/// <summary>Whether or not this Visual has something to draw.</summary>
 	internal virtual bool CanPaint => false;
 
 	/// <returns>true if wasn't dirty</returns>
