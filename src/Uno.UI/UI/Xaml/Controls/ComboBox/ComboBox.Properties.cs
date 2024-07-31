@@ -1,4 +1,5 @@
 ﻿using Microsoft.UI.Xaml.Media;
+using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -104,4 +105,9 @@ partial class ComboBox
 			typeof(bool),
 			typeof(ComboBox),
 			new FrameworkPropertyMetadata(true));
+
+	/// <summary>
+	/// Occurs when the user submits some text that does not correspond to an item in the ComboBox dropdown list.
+	/// </summary>
+	public event TypedEventHandler<ComboBox, ComboBoxTextSubmittedEventArgs> TextSubmitted;
 }

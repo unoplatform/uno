@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System.Diagnostics.Tracing;
+using System;
+using System.Linq;
 using DirectUI;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
@@ -6,6 +8,8 @@ using Uno.Disposables;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 using Windows.System;
+using static System.Net.Mime.MediaTypeNames;
+using static Uno.UI.FeatureConfiguration;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -21,7 +25,7 @@ partial class ComboBox
 		}
 
 		var selectedItem = SelectedItem;
-		UpdateEditableTextBox(selectedItem, false /*selectText*/, false /*selectAll*/));
+		UpdateEditableTextBox(selectedItem, false /*selectText*/, false /*selectAll*/);
 
 		var pEditableTextPartAsTextBox = m_tpEditableTextPart;
 
@@ -106,9 +110,9 @@ partial class ComboBox
 			return;
 		}
 
-		if (m_tpPopupPart)
+		if (m_tpPopupPart is not null)
 		{
-			m_tpPopupPart.Cast<Popup>()->put_OverlayInputPassThroughElement(null));
+			m_tpPopupPart.OverlayInputPassThroughElement = null;
 		}
 
 		var pEditableTextPartAsTextBox = m_tpEditableTextPart;
@@ -118,21 +122,21 @@ partial class ComboBox
 		pEditableTextPartAsTextBox.Width = 0.0f;
 		pEditableTextPartAsTextBox.Height = 0.0f;
 
-		m_spEditableTextPreviewKeyDownHandler.DetachEventHandler(pEditableTextPartAsI));
-		m_spEditableTextKeyDownHandler.DetachEventHandler(pEditableTextPartAsI));
-		m_spEditableTextTextChangedHandler.DetachEventHandler(pEditableTextPartAsI));
-		m_spEditableTextPointerPressedHandler.DetachEventHandler(pEditableTextPartAsI));
-		m_spEditableTextCandidateWindowBoundsChangedEventHandler.DetachEventHandler(pEditableTextPartAsI));
-		m_spEditableTextSizeChangedHandler.DetachEventHandler(pEditableTextPartAsI));
+		m_spEditableTextPreviewKeyDownHandler.Disposable = null;
+		m_spEditableTextKeyDownHandler.Disposable = null;
+		m_spEditableTextTextChangedHandler.Disposable = null;
+		m_spEditableTextPointerPressedHandler.Disposable = null;
+		m_spEditableTextCandidateWindowBoundsChangedEventHandler.Disposable = null;
+		m_spEditableTextSizeChangedHandler.Disposable = null;
 
-		if (m_tpDropDownOverlayPart)
+		if (m_tpDropDownOverlayPart is not null)
 		{
-			auto pDropDownOverlayPartAsI = iinspectable_cast(m_tpDropDownOverlayPart.Cast<Border>());
+			var pDropDownOverlayPartAsI = iinspectable_cast(m_tpDropDownOverlayPart.Cast<Border>());
 
 			m_spDropDownOverlayPointerEnteredHandler.DetachEventHandler(pDropDownOverlayPartAsI));
 			m_spDropDownOverlayPointerExitedHandler.DetachEventHandler(pDropDownOverlayPartAsI));
 
-			m_tpDropDownOverlayPart.Cast<Border>()->put_Visibility(xaml::Visibility_Collapsed));
+			m_tpDropDownOverlayPart.Visibility = Visibility.Collapsed;
 		}
 
 		PointerPressedEventSourceType* pPointerPressedEventSource = null;
@@ -156,7 +160,7 @@ partial class ComboBox
 		if (m_customValueRef)
 		{
 			m_customValueRef.Reset();
-			SetContentPresenter(-1));
+			SetContentPresenter(-1);
 			SelectedItem = null;
 		}
 
@@ -353,7 +357,7 @@ partial class ComboBox
 			if (EditableTextHasFocus())
 			{
 				m_shouldMoveFocusToTextBox = false;
-				EnsureTextBoxIsEnabled(false /* moveFocusToTextBox */));
+				EnsureTextBoxIsEnabled(false /* moveFocusToTextBox */);
 			}
 			else
 			{
@@ -366,7 +370,7 @@ partial class ComboBox
 				var editableTextPartWidth = m_tpEditableTextPart.Width;
 				var editableTextPartHeight = m_tpEditableTextPart.Height;
 
-				if ((editableTextPartWidth == 0 && editableTextPartHeight == 0) || ShouldMoveFocusToTextBox())
+				if ((editableTextPartWidth == 0 && editableTextPartHeight == 0) || ShouldMoveFocusToTextBox)
 				{
 					EnsureTextBoxIsEnabled(true /* moveFocusToTextBox */);
 				}
@@ -415,7 +419,7 @@ partial class ComboBox
 		var hasFocus = HasFocus();
 		FocusChanged(hasFocus);
 
-		m_SelectAllOnTouch = false;
+		m_selectAllOnTouch = false;
 
 		if (IsEditable)
 		{
@@ -444,7 +448,7 @@ partial class ComboBox
 			return;
 		}
 
-		EnsurePropertyPathListener());
+		EnsurePropertyPathListener();
 		TryGetStringValue(item, m_spPropertyPathListener.Get(), itemString.GetAddressOf()));
 		UpdateEditableContentPresenterTextBlock(itemString);
 	}
@@ -705,6 +709,18 @@ partial class ComboBox
 			pArgs.Handled = true;
 		}
 	}
+
+	private bool RaiseTextSubmittedEvent(string text)
+	{
+		// Create and set event args
+		ComboBoxTextSubmittedEventArgs eventArgs = new(text);
+
+		// Raise TextSubmitted event
+		TextSubmitted?.Invoke(this, eventArgs);
+
+		return eventArgs.Handled;
+	}
+
 
 	private bool IsSearchStringValid(string str)
 	{
