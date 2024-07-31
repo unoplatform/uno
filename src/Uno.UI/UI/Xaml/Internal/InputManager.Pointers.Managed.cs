@@ -352,6 +352,12 @@ internal partial class InputManager
 
 		private void OnPointerPressed(Windows.UI.Core.PointerEventArgs args)
 		{
+			// If 2+ mouse buttons are pressed, we only respond to the first.
+			if (args.CurrentPoint.PointerDeviceType == PointerDeviceType.Mouse && _pressedElements.Count != 0)
+			{
+				return;
+			}
+			
 			if (TryRedirectPointerPress(args))
 			{
 				return;
@@ -387,6 +393,13 @@ internal partial class InputManager
 
 		private void OnPointerReleased(Windows.UI.Core.PointerEventArgs args)
 		{
+			// When multiple mouse buttons are pressed and then released, we only respond to the last OnPointerReleased
+			// (i.e when no more buttons are still pressed).
+			if (args.CurrentPoint.PointerDeviceType == PointerDeviceType.Mouse && args.CurrentPoint.IsInContact)
+			{
+				return;
+			}
+
 			if (TryRedirectPointerRelease(args))
 			{
 				return;
