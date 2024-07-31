@@ -91,6 +91,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override void OnApplyTemplate()
 		{
+			if (IsEditable)
+			{
+				DisableEditableMode();
+			}
+
 			base.OnApplyTemplate();
 
 			if (_popup is Popup oldPopup)
@@ -156,9 +161,15 @@ namespace Microsoft.UI.Xaml.Controls
 						}
 					}
 				};
-
-				UpdateVisualState(true);
 			}
+
+			if (IsEditable)
+			{
+				SetupEditableMode();
+				CreateEditableContentPresenterTextBlock();
+			}
+
+			ChangeVisualState(false);
 		}
 
 		protected override void OnPointerWheelChanged(PointerRoutedEventArgs e)
@@ -1302,10 +1313,6 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			return new ComboBoxAutomationPeer(this);
 		}
-
-		protected override void OnGotFocus(RoutedEventArgs e) => UpdateVisualState();
-
-		protected override void OnLostFocus(RoutedEventArgs e) => UpdateVisualState();
 
 		private protected override void ChangeVisualState(bool useTransitions)
 		{
