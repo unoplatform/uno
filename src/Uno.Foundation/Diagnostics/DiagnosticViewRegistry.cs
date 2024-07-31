@@ -23,12 +23,13 @@ internal static class DiagnosticViewRegistry
 	/// Register a global diagnostic view that can be displayed on any window.
 	/// </summary>
 	/// <param name="view">A diagnostic view to display.</param>
-	public static void Register(IDiagnosticView view)
+	/// <param name="mode">Defines when the registered diagnostic view should be displayed.</param>
+	public static void Register(IDiagnosticView view, DiagnosticViewRegistrationMode mode = default)
 	{
 		ImmutableInterlocked.Update(
 			ref _registrations,
 			static (providers, provider) => providers.Add(provider),
-			new DiagnosticViewRegistration(DiagnosticViewRegistrationMode.One, view));
+			new DiagnosticViewRegistration(mode, view));
 
 		Added?.Invoke(null, _registrations);
 	}
@@ -39,15 +40,15 @@ internal record DiagnosticViewRegistration(DiagnosticViewRegistrationMode Mode, 
 internal enum DiagnosticViewRegistrationMode
 {
 	/// <summary>
-	/// Diagnostic is being rendered as overlay on each window.
-	/// </summary>
-	All,
-
-	/// <summary>
 	/// Diagnostic is being display on at least one window.
 	/// I.e. only the main/first opened but move to the next one if the current window is closed.
 	/// </summary>
 	One,
+
+	/// <summary>
+	/// Diagnostic is being rendered as overlay on each window.
+	/// </summary>
+	All,
 
 	/// <summary>
 	/// Only registers the diagnostic provider but does not display it.
