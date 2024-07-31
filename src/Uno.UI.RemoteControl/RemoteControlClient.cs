@@ -65,7 +65,34 @@ public partial class RemoteControlClient : IRemoteControlClient
 	private Timer? _keepAliveTimer;
 	private KeepAliveMessage _ping = new();
 
-	private record Connection(Uri EndPoint, Stopwatch Since, WebSocket? Socket);
+	private record Connection(RemoteControlClient Owner, Uri EndPoint, Stopwatch Since, WebSocket? Socket) : IAsyncDisposable
+	{
+		private static class States
+		{
+			public const int Ready = 0;
+			public const int Active = 1;
+			public const int Disposed = 255;
+		}
+
+		private readonly CancellationTokenSource _ct = new();
+		private int _state = Socket is null ? States.Disposed : States.Ready;
+
+		public void EnsureActive()
+		{
+			if (Interlocked.CompareExchange(ref _state, States.Active, States.Ready) is States.Ready)
+			{
+				DevServerDiagnostics.Current = Owner._status;
+				_ = Owner.ProcessMessages(Socket!, _ct.Token);
+			}
+		}
+
+		/// <inheritdoc />
+		public async ValueTask DisposeAsync()
+		{
+			_state = States.Disposed;
+			await _ct.CancelAsync();
+		}
+	}
 
 	private RemoteControlClient(Type appType, ServerEndpointAttribute[]? endpoints = null)
 	{
@@ -148,7 +175,7 @@ public partial class RemoteControlClient : IRemoteControlClient
 	{
 		var connectionTask = _connection;
 		var connection = await connectionTask;
-		if (connection is { Socket.State: not WebSocketState.Open } and { Since.ElapsedMilliseconds: >= _connectionRetryInterval })
+		if (connection is ({ Socket: null } or { Socket.State: not WebSocketState.Open }) and { Since.ElapsedMilliseconds: >= _connectionRetryInterval })
 		{
 			// We have a socket (and uri) but we lost the connection, try to reconnect (only if more than 5 sec since last attempt)
 			lock (_connectionGate)
@@ -157,11 +184,12 @@ public partial class RemoteControlClient : IRemoteControlClient
 
 				if (connectionTask == _connection)
 				{
-					_connection = Connect(connection.EndPoint, CancellationToken.None);
+					_connection = Connect(connection.EndPoint, CancellationToken.None)!;
 				}
 			}
 
 			connection = await _connection;
+			connection?.EnsureActive();
 		}
 
 		_status.ReportActiveConnection(connection);
@@ -199,7 +227,7 @@ public partial class RemoteControlClient : IRemoteControlClient
 					var cts = new CancellationTokenSource();
 					var task = Connect(s.endpoint, s.port, isHttps, cts.Token);
 
-					return (task: task, cts: cts);
+					return (task, cts);
 				})
 				.ToDictionary(c => c.task as Task);
 			var timeout = Task.Delay(30000);
@@ -230,7 +258,7 @@ public partial class RemoteControlClient : IRemoteControlClient
 
 				// If the connection is successful, break the loop
 				if (completed.IsCompleted
-					&& ((Task<Connection>)completed).Result is { Socket: not null } successfulConnection)
+					&& ((Task<Connection?>)completed).Result is { Socket: not null } successfulConnection)
 				{
 					connected = successfulConnection;
 					break;
@@ -258,8 +286,7 @@ public partial class RemoteControlClient : IRemoteControlClient
 					this.Log().LogDebug($"Connected to {connected!.EndPoint}");
 				}
 
-				DevServerDiagnostics.Current = _status;
-				_ = ProcessMessages(connected!.Socket!);
+				connected.EnsureActive();
 
 				return connected;
 			}
@@ -345,7 +372,7 @@ public partial class RemoteControlClient : IRemoteControlClient
 		}
 	}
 
-	private async Task<Connection?> Connect(Uri serverUri, CancellationToken ct)
+	private async Task<Connection> Connect(Uri serverUri, CancellationToken ct)
 	{
 		// Note: This method **MUST NOT** throw any exception as it being used for re-connection
 
@@ -361,7 +388,7 @@ public partial class RemoteControlClient : IRemoteControlClient
 
 			await client.ConnectAsync(serverUri, ct);
 
-			return new(serverUri, watch, client);
+			return new(this, serverUri, watch, client);
 		}
 		catch (Exception e)
 		{
@@ -370,7 +397,7 @@ public partial class RemoteControlClient : IRemoteControlClient
 				this.Log().Trace($"Connecting to [{serverUri}] failed: {e.Message}");
 			}
 
-			return new(serverUri, watch, null);
+			return new(this, serverUri, watch, null);
 		}
 	}
 
@@ -393,7 +420,7 @@ public partial class RemoteControlClient : IRemoteControlClient
 			}
 		});
 
-	private async Task ProcessMessages(WebSocket socket)
+	private async Task ProcessMessages(WebSocket socket, CancellationToken ct)
 	{
 		_ = InitializeServerProcessors();
 
@@ -404,7 +431,7 @@ public partial class RemoteControlClient : IRemoteControlClient
 
 		StartKeepAliveTimer();
 
-		while (await WebSocketHelper.ReadFrame(socket, CancellationToken.None) is HotReload.Messages.Frame frame)
+		while (await WebSocketHelper.ReadFrame(socket, ct) is HotReload.Messages.Frame frame)
 		{
 			if (frame.Scope == WellKnownScopes.DevServerChannel)
 			{
