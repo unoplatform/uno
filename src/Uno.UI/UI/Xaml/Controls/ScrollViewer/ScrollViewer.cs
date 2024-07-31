@@ -197,7 +197,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(
 					ScrollBarVisibility.Disabled,
-					propertyChangedCallback: OnHorizontalScrollabilityPropertyChanged,
+					propertyChangedCallback: OnHorizontalScrollabilityPropertyChanged
 				)
 			);
 		#endregion
@@ -222,7 +222,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(
 					ScrollBarVisibility.Auto,
-					propertyChangedCallback: OnVerticalScrollabilityPropertyChanged,
+					propertyChangedCallback: OnVerticalScrollabilityPropertyChanged
 				)
 			);
 		#endregion
@@ -247,7 +247,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(
 					ScrollMode.Enabled,
-					propertyChangedCallback: OnHorizontalScrollabilityPropertyChanged,
+					propertyChangedCallback: OnHorizontalScrollabilityPropertyChanged
 				)
 			);
 		#endregion
@@ -274,7 +274,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(
 					ScrollMode.Enabled,
-					propertyChangedCallback: OnVerticalScrollabilityPropertyChanged,
+					propertyChangedCallback: OnVerticalScrollabilityPropertyChanged
 				)
 			);
 		#endregion
