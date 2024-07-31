@@ -18,6 +18,7 @@ using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.System;
 using Windows.UI.Core;
+using Windows.UI.Input.Preview.Injection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -25,6 +26,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using SamplesApp.UITests;
+using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Point = System.Drawing.Point;
 
@@ -37,8 +39,6 @@ using Uno.UI;
 using Windows.UI;
 using Windows.ApplicationModel.Appointments;
 using Microsoft.UI.Xaml.Hosting;
-using Uno.Extensions;
-using Windows.UI.Input.Preview.Injection;
 using Uno.UI.Toolkit.Extensions;
 #endif
 

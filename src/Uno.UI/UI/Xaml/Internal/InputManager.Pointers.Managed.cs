@@ -357,7 +357,7 @@ internal partial class InputManager
 			{
 				return;
 			}
-			
+
 			if (TryRedirectPointerPress(args))
 			{
 				return;
