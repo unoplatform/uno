@@ -68,7 +68,7 @@ internal static class SkiaCompat
 			return Legacy();
 		}
 
-		return SKImageFilter_CreateOffset(null, dx, dy, input, cropRect)
+		return SKImageFilter_CreateOffset(null, dx, dy, input, cropRect);
 	}
 
 	[UnsafeAccessor(UnsafeAccessorKind.StaticMethod, Name = "CreateOffset")]
@@ -172,7 +172,7 @@ internal static class SkiaCompat
 			return Legacy(filters);
 		}
 
-		return SKImageFilter_CreateMerge(null, filters, cropRect)
+		return SKImageFilter_CreateMerge(null, filters, cropRect);
 	}
 
 	[UnsafeAccessor(UnsafeAccessorKind.StaticMethod, Name = "CreateMerge")]
