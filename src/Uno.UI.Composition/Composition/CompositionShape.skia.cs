@@ -18,7 +18,7 @@ public partial class CompositionShape
 		get => _combinedTransformMatrix;
 		private set => SetProperty(ref _combinedTransformMatrix, value);
 	}
-	
+
 	private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
 	{
 		base.OnPropertyChangedCore(propertyName, isSubPropertyChange);

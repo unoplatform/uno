@@ -87,7 +87,7 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 					// we need this to get notified on brush updates
 					// (BorderBrush internals change -> BorderShape is notified through FillBrush -> render invalidation)
 					BorderShape = Compositor.CreateSpriteShape();
-					
+
 					_borderShape!.Geometry = Compositor.CreatePathGeometry();
 #if DEBUG
 					_borderShape!.Comment = "#borderShape";
@@ -105,7 +105,7 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 					// we need this to get notified on brush updates.
 					// (BackgroundBrush internals change -> BackgroundShape is notified through FillBrush -> render invalidation)
 					BackgroundShape = Compositor.CreateSpriteShape();
-					
+
 					_backgroundShape!.Geometry = Compositor.CreatePathGeometry();
 #if DEBUG
 					_backgroundShape!.Comment = "#backgroundShape";
@@ -264,7 +264,7 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 			useInnerBorderBoundsAsAreaForBackground ? innerRadii : outerRadii);
 		backgroundPath.AddRoundRect(roundRect);
 		backgroundPath.Close();
-		
+
 		// Unfortunately, this will cause an unnecessary render invalidation
 		((CompositionPathGeometry)_backgroundShape!.Geometry!).Path = new CompositionPath(new SkiaGeometrySource2D(backgroundPath));
 	}
@@ -296,8 +296,6 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 	internal override bool HitTest(Point point)
 	{
 		UpdatePathsAndCornerClip();
-		return (_borderShape?.HitTest(point) ?? false) ||
-		       (_backgroundShape?.HitTest(point) ?? false) ||
-		       base.HitTest(point);
+		return (_borderShape?.HitTest(point) ?? false) || (_backgroundShape?.HitTest(point) ?? false) || base.HitTest(point);
 	}
 }

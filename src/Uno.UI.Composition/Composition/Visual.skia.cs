@@ -123,7 +123,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			}
 
 			return _totalMatrix;
-			
+
 			Matrix4x4 GetTransform()
 			{
 				var transform = TransformMatrix;

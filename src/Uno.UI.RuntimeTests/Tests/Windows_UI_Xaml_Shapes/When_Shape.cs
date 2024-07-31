@@ -271,7 +271,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 			await UITestHelper.Load(root);
 
 			// points are relative to root
-			var pointToTarget = new Dictionary<Point,string>
+			var pointToTarget = new Dictionary<Point, string>
 			{
 				{ new(48, 32), "RectangleFilled" },
 				{ new(31, 27), "RectangleFilled" },

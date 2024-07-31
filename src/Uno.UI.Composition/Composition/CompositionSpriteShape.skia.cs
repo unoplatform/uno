@@ -175,7 +175,7 @@ namespace Microsoft.UI.Composition
 				{
 					return true;
 				}
-			
+
 				if (StrokeBrush is { } stroke && StrokeThickness > 0)
 				{
 					var strokePaint = TryCreateAndClearStrokePaint();
