@@ -15,7 +15,7 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 	[ThreadStatic] // this should be tied to the compositor
 	private static CompositionPathGeometry? _sharedPathGeometry;
 
-	// state received from BorderLayerRenderer
+	// state set from outside and used inside the class
 	private CornerRadius _cornerRadius;
 	private Thickness _borderThickness;
 	private bool _useInnerBorderBoundsAsAreaForBackground = true;
@@ -174,7 +174,49 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 			if (_backgroundBrush is { } && !_backgroundPathValid)
 			{
 				_backgroundPathValid = true;
-				UpdateBackgroundPath(_useInnerBorderBoundsAsAreaForBackground, innerArea, outerArea, outerRadii, innerRadii);
+				// We don't pass down <inner|outer>Area directly, since it contains the thickness offsets.
+				// Instead, we only pass the Size (without the X and Y offsets).
+				// The offsets shouldn't be part of the background path calculations, but should be done
+				// at the point of rendering by translation the final output by the thickness.
+				// This matters because if the path is for an image with a scaling RelativeTransform.
+				// In that case, if you factor the thickness in the path itself (i.e. include it in SKPath.Bounds),
+				// the shader will sample from the image after the offset is applied.
+				// E.g., if we have a border with a 20px border thickness and 100x100 background area for an ImageBrush with a
+				// RelativeTransform = ScaleTransform { ScaleX = 3, ScaleY = 3, CenterX = 0.5, CenterY = 0.5 }, here's what we want:
+				// |-----------------300px---------------------|
+				// |                                           |
+				// |<-100px->                        <-100px-> |
+				// |         |---------100px--------|          |
+				// |         |                      |<---------/---- what we want the shader to sample.
+				// |         |      final           |          | <-- image scaled to 100*3 x 100*3
+				// |         |      drawing         |          |
+				// 300px   100px    area          100px      300px
+				// |         |                      |          |
+				// |         |                      |          |
+				// |         |                      |          |
+				// |         |---------100px--------|          |
+				// |                                           |
+				// |                                           |
+				// |-----------------300px---------------------|
+
+				// Here's what we don't want:
+				//    |-----------------300px---------------------|
+				//    |                                           |
+				//    |<80px>                         <--120px--> |
+				//    |      |---------100px--------|             |
+				//    |      |                      |<------------/---- same exact final drawing area (in absolute window coordinates)
+				//    |      |      final           |             | <-- but outer image shifted by 20px to the right
+				//    |      |      drawing         |             |
+				// 300px   100px    area          100px         300px
+				//    |      |                      |             |
+				//    |      |                      |             |
+				//    |      |                      |             |
+				//    |      |---------100px--------|             |
+				//    |                                           |
+				//    |                                           |
+				//    |-----------------300px---------------------|
+				UpdateBackgroundPath(_useInnerBorderBoundsAsAreaForBackground, innerArea.Size, outerArea.Size, outerRadii, innerRadii);
+				_backgroundShape!.Offset = _useInnerBorderBoundsAsAreaForBackground ? new Vector2((float)_borderThickness.Left, (float)_borderThickness.Top) : Vector2.Zero;
 			}
 			if (_borderBrush is { } && !_borderPathValid)
 			{
@@ -210,14 +252,17 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 		}
 	}
 
-	private unsafe void UpdateBackgroundPath(bool useInnerBorderBoundsAsAreaForBackground, SKRect innerArea, SKRect outerArea, SKPoint* outerRadii, SKPoint* innerRadii)
+	private unsafe void UpdateBackgroundPath(bool useInnerBorderBoundsAsAreaForBackground, SKSize innerArea, SKSize outerArea, SKPoint* outerRadii, SKPoint* innerRadii)
 	{
 		_backgroundPath ??= new SKPath();
 		_backgroundPath.Reset();
 		var roundRect = new SKRoundRect();
+		var rect = useInnerBorderBoundsAsAreaForBackground
+			? new SKRect(0, 0, innerArea.Width, innerArea.Height)
+			: new SKRect(0, 0, outerArea.Width, outerArea.Height);
 		UnoSkiaApi.sk_rrect_set_rect_radii(
 			roundRect.Handle,
-			useInnerBorderBoundsAsAreaForBackground ? &innerArea : &outerArea,
+			&rect,
 			useInnerBorderBoundsAsAreaForBackground ? innerRadii : outerRadii);
 		_backgroundPath.AddRoundRect(roundRect);
 		_backgroundPath.Close();
