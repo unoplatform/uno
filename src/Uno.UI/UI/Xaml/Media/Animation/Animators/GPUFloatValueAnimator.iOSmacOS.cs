@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -38,9 +39,9 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		private float _from;
 		private long _duration;
 		private IEnumerable<IBindingItem> _bindingPath;
-		private FloatValueAnimator _valueAnimator;
-		private UnoCoreAnimation _coreAnimation;
-		private IEasingFunction _easingFunction;
+		private FloatValueAnimator? _valueAnimator;
+		private UnoCoreAnimation? _coreAnimation;
+		private IEasingFunction? _easingFunction;
 		private bool _isDisposed;
 		private bool _isPausedInBackground; // flag the animation to be resumed once foregrounded
 		private bool _coreStoppedNotFinished; // the animation came to an abrupt end; used by OnCoreWindowVisibilityChanged to confirm paused by backgrounding
@@ -109,6 +110,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		public GPUFloatValueAnimator(float from, float to, IEnumerable<IBindingItem> bindingPath)
 		{
+			if (bindingPath is null)
+			{
+				throw new ArgumentNullException("The bindingpath cannot be null");
+			}
+
 			_to = to;
 			_from = from;
 			_bindingPath = bindingPath;
@@ -119,7 +125,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			_coreAnimation = null;
 		}
 
-		private void OnInnerAnimatorUpdate(object sender, EventArgs e)
+		private void OnInnerAnimatorUpdate(object? sender, EventArgs e)
 		{
 			Update?.Invoke(this, e);
 		}
@@ -136,7 +142,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
-				this.Log().DebugFormat("Starting GPU Float value animator on property {0}.", _bindingPath.LastOrDefault().PropertyName);
+				this.Log().DebugFormat("Starting GPU Float value animator on property {0}.", _bindingPath.LastOrDefault()?.PropertyName);
 			}
 
 			ResetBackgroundPauseTrackingStates();
@@ -175,7 +181,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		private void InitializeCoreAnimation()
 		{
-			var animatedItem = _bindingPath.LastOrDefault();
+			var animatedItem = (_bindingPath.LastOrDefault()) ?? throw new InvalidOperationException("The binding path is empty.");
 			switch (animatedItem.DataContext)
 			{
 				case _View view when animatedItem.PropertyName.EndsWith("Opacity", StringComparison.Ordinal):
@@ -247,41 +253,52 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		public long StartDelay
 		{
-			get => _valueAnimator.StartDelay;
-
-			set => _valueAnimator.StartDelay = value;
+			get => _valueAnimator?.StartDelay ?? 0L;
+			set
+			{
+				if (_valueAnimator is not null)
+				{
+					_valueAnimator.StartDelay = value;
+				}
+			}
 		}
 
-		public object AnimatedValue => _valueAnimator.AnimatedValue;
+		public object? AnimatedValue => _valueAnimator?.AnimatedValue;
 
 		public long CurrentPlayTime
 		{
-			get => _valueAnimator.CurrentPlayTime;
-			set => _valueAnimator.CurrentPlayTime = value;
+			get => _valueAnimator?.CurrentPlayTime ?? 0L;
+			set
+			{
+				if (_valueAnimator is not null)
+				{
+					_valueAnimator.CurrentPlayTime = value;
+				}
+			}
 		}
 
 		public long Duration => _duration;
 
-		public event EventHandler Update;
+		public event EventHandler? Update;
 
-		public event EventHandler AnimationPause;
+		public event EventHandler? AnimationPause;
 
-		public event EventHandler AnimationEnd;
+		public event EventHandler? AnimationEnd;
 
-		public event EventHandler AnimationCancel;
+		public event EventHandler? AnimationCancel;
 
-		public event EventHandler AnimationFailed;
+		public event EventHandler? AnimationFailed;
 
 		public void SetDuration(long duration)
 		{
 			_duration = duration;
-			_valueAnimator.SetDuration(duration);
+			_valueAnimator?.SetDuration(duration);
 		}
 
 		public void SetEasingFunction(IEasingFunction easingFunction)
 		{
 			_easingFunction = easingFunction;
-			_valueAnimator.SetEasingFunction(easingFunction);
+			_valueAnimator?.SetEasingFunction(easingFunction);
 		}
 
 		#region coreAnimationInitializers
@@ -289,7 +306,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		{
 			return CreateCoreAnimation(view, "opacity", value => new NSNumber(value));
 		}
-		private UnoCoreAnimation InitializeTranslateCoreAnimation(TranslateTransform transform, IBindingItem animatedItem)
+		private UnoCoreAnimation? InitializeTranslateCoreAnimation(TranslateTransform transform, IBindingItem animatedItem)
 		{
 			if (animatedItem.PropertyName.Equals("X")
 				|| animatedItem.PropertyName.Equals(TranslateTransformX)
@@ -309,7 +326,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 		}
 
-		private UnoCoreAnimation InitializeRotateCoreAnimation(RotateTransform transform, IBindingItem animatedItem)
+		private UnoCoreAnimation? InitializeRotateCoreAnimation(RotateTransform transform, IBindingItem animatedItem)
 		{
 			if (animatedItem.PropertyName.Equals("Angle")
 				|| animatedItem.PropertyName.Equals(RotateTransformAngle)
@@ -323,7 +340,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 		}
 
-		private UnoCoreAnimation InitializeScaleCoreAnimation(ScaleTransform transform, IBindingItem animatedItem)
+		private UnoCoreAnimation? InitializeScaleCoreAnimation(ScaleTransform transform, IBindingItem animatedItem)
 		{
 			if (animatedItem.PropertyName.Equals("ScaleX")
 				|| animatedItem.PropertyName.Equals(ScaleTransformX)
@@ -343,10 +360,18 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 		}
 
-		private UnoCoreAnimation InitializeSkewCoreAnimation(SkewTransform transform, IBindingItem animatedItem)
+		private UnoCoreAnimation? InitializeSkewCoreAnimation(SkewTransform transform, IBindingItem animatedItem)
 		{
 			// We need to review this.  This won't play along if other transforms are happening at the same time since we are animating the whole transform
-			_View view = transform.View;
+			if (transform.View is not _View view)
+			{
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Warning))
+				{
+					this.Log().Warn("The View property of the SkewTransform is null.");
+				}
+
+				return null;
+			}
 
 			if (animatedItem.PropertyName.Equals("AngleX")
 				|| animatedItem.PropertyName.Equals(SkewTransformAngleX)
@@ -366,7 +391,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 		}
 
-		private UnoCoreAnimation InitializeCompositeCoreAnimation(CompositeTransform transform, IBindingItem animatedItem)
+		private UnoCoreAnimation? InitializeCompositeCoreAnimation(CompositeTransform transform, IBindingItem animatedItem)
 		{
 			switch (animatedItem.PropertyName)
 			{
@@ -403,30 +428,69 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				case CompositeTransformSkewX:
 				case CompositeTransformSkewXWithNamespace:
 				case "SkewX":
-					return CreateCoreAnimation(transform.View, "transform", value => ToCASkewTransform(value, 0));
+					return CreateTransformCoreAnimation(transform, value => ToCASkewTransform(value, 0));
 				case CompositeTransformSkewY:
 				case CompositeTransformSkewYWithNamespace:
 				case "SkewY":
-					return CreateCoreAnimation(transform.View, "transform", value => ToCASkewTransform(0, value));
+					return CreateTransformCoreAnimation(transform, value => ToCASkewTransform(0, value));
 				default:
 					throw new NotSupportedException(__notSupportedProperty);
 			}
 		}
 		#endregion
 
-		private UnoCoreAnimation CreateCoreAnimation(
+		private UnoCoreAnimation? CreateTransformCoreAnimation(
+			Transform transform,
+			Func<float, NSValue> nsValueConversion)
+		{
+			if (transform.View is null)
+			{
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Warning))
+				{
+					this.Log().Warn("The View property of the Transform is null.");
+				}
+
+				return null;
+			}
+
+			return CreateCoreAnimation(transform.View, "transform", nsValueConversion);
+		}
+
+		private UnoCoreAnimation? CreateCoreAnimation(
 			Transform transform,
 			string property,
 			Func<float, NSValue> nsValueConversion)
-			=> CreateCoreAnimation(transform.View, property, nsValueConversion, transform.StartAnimation, transform.EndAnimation);
+		{
+			if (transform.View is null)
+			{
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Warning))
+				{
+					this.Log().Warn("The View property of the Transform is null.");
+				}
+
+				return null;
+			}
+
+			return CreateCoreAnimation(transform.View, property, nsValueConversion, transform.StartAnimation, transform.EndAnimation);
+		}
 
 		private UnoCoreAnimation CreateCoreAnimation(
 			_View view,
 			string property,
 			Func<float, NSValue> nsValueConversion,
-			Action prepareAnimation = null,
-			Action endAnimation = null)
+			Action? prepareAnimation = null,
+			Action? endAnimation = null)
 		{
+			if (view.Layer is null)
+			{
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Warning))
+				{
+					this.Log().Warn("The Layer property of the View is null.");
+				}
+
+				throw new InvalidOperationException("The Layer property of the View is null.");
+			}
+
 			var timingFunction = _easingFunction == null ?
 				CAMediaTimingFunction.FromName(CAMediaTimingFunction.Linear) :
 				_easingFunction.GetTimingFunction();
@@ -503,13 +567,13 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		{
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
-				this.Log().DebugFormat("Finalizing animation for GPU Float value animator on property {0}.", _bindingPath.LastOrDefault().PropertyName);
+				this.Log().DebugFormat("Finalizing animation for GPU Float value animator on property {0}.", _bindingPath.LastOrDefault()?.PropertyName);
 			}
 
 			var wasRunning = _valueAnimator?.IsRunning ?? false;
 			if (wasRunning)
 			{
-				_valueAnimator.Cancel();
+				_valueAnimator?.Cancel();
 			}
 
 			switch (completedInfo)
@@ -554,9 +618,9 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		{
 			if (!_isDisposed)
 			{
-				_bindingPath = null;
+				_bindingPath = null!;
 
-				_valueAnimator.Dispose();
+				_valueAnimator?.Dispose();
 				_valueAnimator = null;
 
 				_coreAnimation?.Dispose();
