@@ -177,7 +177,7 @@ namespace Microsoft.UI.Xaml.Controls
 			=> (obj as ScrollViewer)?.UpdateComputedVerticalScrollability(invalidate: true);
 		#endregion
 
-		#region HorizontalScrollBarVisibility (Attached DP - inherited)
+		#region HorizontalScrollBarVisibility (Attached DP)
 		public static ScrollBarVisibility GetHorizontalScrollBarVisibility(DependencyObject element)
 			=> (ScrollBarVisibility)element.GetValue(HorizontalScrollBarVisibilityProperty);
 
@@ -198,12 +198,11 @@ namespace Microsoft.UI.Xaml.Controls
 				new FrameworkPropertyMetadata(
 					ScrollBarVisibility.Disabled,
 					propertyChangedCallback: OnHorizontalScrollabilityPropertyChanged,
-					options: FrameworkPropertyMetadataOptions.Inherits
 				)
 			);
 		#endregion
 
-		#region VerticalScrollBarVisibility (Attached DP - inherited)
+		#region VerticalScrollBarVisibility (Attached DP)
 		public static ScrollBarVisibility GetVerticalScrollBarVisibility(DependencyObject element)
 			=> (ScrollBarVisibility)element.GetValue(VerticalScrollBarVisibilityProperty);
 
@@ -224,12 +223,11 @@ namespace Microsoft.UI.Xaml.Controls
 				new FrameworkPropertyMetadata(
 					ScrollBarVisibility.Auto,
 					propertyChangedCallback: OnVerticalScrollabilityPropertyChanged,
-					options: FrameworkPropertyMetadataOptions.Inherits
 				)
 			);
 		#endregion
 
-		#region HorizontalScrollMode (Attached DP - inherited)
+		#region HorizontalScrollMode (Attached DP)
 		public static ScrollMode GetHorizontalScrollMode(DependencyObject element)
 			=> (ScrollMode)element.GetValue(HorizontalScrollModeProperty);
 
@@ -250,12 +248,11 @@ namespace Microsoft.UI.Xaml.Controls
 				new FrameworkPropertyMetadata(
 					ScrollMode.Enabled,
 					propertyChangedCallback: OnHorizontalScrollabilityPropertyChanged,
-					options: FrameworkPropertyMetadataOptions.Inherits
 				)
 			);
 		#endregion
 
-		#region VerticalScrollMode (Attached DP - inherited)
+		#region VerticalScrollMode (Attached DP)
 
 		public static ScrollMode GetVerticalScrollMode(DependencyObject element)
 			=> (ScrollMode)element.GetValue(VerticalScrollModeProperty);
@@ -278,12 +275,11 @@ namespace Microsoft.UI.Xaml.Controls
 				new FrameworkPropertyMetadata(
 					ScrollMode.Enabled,
 					propertyChangedCallback: OnVerticalScrollabilityPropertyChanged,
-					options: FrameworkPropertyMetadataOptions.Inherits
 				)
 			);
 		#endregion
 
-		#region BringIntoViewOnFocusChange (Attached DP - inherited)
+		#region BringIntoViewOnFocusChange (Attached DP)
 #if __IOS__
 		[global::Uno.NotImplemented]
 #endif
@@ -312,8 +308,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(
 					true,
-					propertyChangedCallback: OnBringIntoViewOnFocusChangeChanged,
-					options: FrameworkPropertyMetadataOptions.Inherits));
+					propertyChangedCallback: OnBringIntoViewOnFocusChangeChanged));
 
 		private static void OnBringIntoViewOnFocusChangeChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
@@ -325,7 +320,7 @@ namespace Microsoft.UI.Xaml.Controls
 		partial void OnBringIntoViewOnFocusChangeChangedPartial(bool newValue);
 		#endregion
 
-		#region ZoomMode (Attached DP - inherited)
+		#region ZoomMode (Attached DP)
 		public static ZoomMode GetZoomMode(DependencyObject element)
 			=> (ZoomMode)element.GetValue(ZoomModeProperty);
 
@@ -345,8 +340,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(
 					ZoomMode.Disabled,
-					propertyChangedCallback: (o, e) => ((ScrollViewer)o).OnZoomModeChanged((ZoomMode)e.NewValue),
-					options: FrameworkPropertyMetadataOptions.Inherits
+					propertyChangedCallback: (o, e) => ((ScrollViewer)o).OnZoomModeChanged((ZoomMode)e.NewValue)
 				)
 			);
 
