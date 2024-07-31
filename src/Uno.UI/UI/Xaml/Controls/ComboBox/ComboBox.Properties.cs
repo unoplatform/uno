@@ -80,4 +80,28 @@ partial class ComboBox
 			typeof(bool),
 			typeof(ComboBox),
 			new FrameworkPropertyMetadata(false));
+
+	/// <summary>
+	/// Gets whether the SelectionBoxItem is highlighted.
+	/// </summary>
+	public bool IsSelectionBoxHighlighted { get; private set; }
+
+	/// <summary>
+	/// Gets or sets a value that specifies whether a user can jump to a value by typing.
+	/// </summary>
+	public bool IsTextSearchEnabled
+	{
+		get => (bool)GetValue(IsTextSearchEnabledProperty);
+		set => SetValue(IsTextSearchEnabledProperty, value);
+	}
+
+	/// <summary>
+	/// Identifies the IsTextSearchEnabled dependency property.
+	/// </summary>
+	public static DependencyProperty IsTextSearchEnabledProperty { get; } =
+		DependencyProperty.Register(
+			nameof(IsTextSearchEnabled),
+			typeof(bool),
+			typeof(ComboBox),
+			new FrameworkPropertyMetadata(true));
 }

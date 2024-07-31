@@ -292,6 +292,8 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		private protected int GetItemCount() => NumberOfItems;
+
 		internal bool HasItems
 		{
 			get

@@ -46,13 +46,13 @@ namespace Microsoft.UI.Xaml.Controls
 		private ContentPresenter? m_tpContentPresenterPart;
 
 		private IPopup? _popup;
+		private Popup? m_tpPopupPart;
 		private Border? _popupBorder;
 		private ContentPresenter? _contentPresenter;
 		private TextBlock? _placeholderTextBlock;
 		private ContentPresenter? _headerContentPresenter;
 
 		private DateTime m_timeSinceLastCharacterReceived;
-		private bool m_isInSearchingMode;
 		private string m_searchString = "";
 		private bool m_searchResultIndexSet;
 		private int m_searchResultIndex = -1;
@@ -104,6 +104,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			_popup = this.GetTemplateChild("Popup") as IPopup;
+			m_tpPopupPart = _popup as Popup;
 			_popupBorder = this.GetTemplateChild("PopupBorder") as Border;
 			_contentPresenter = this.GetTemplateChild("ContentPresenter") as ContentPresenter;
 			m_tpContentPresenterPart = _contentPresenter;
@@ -439,19 +440,6 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				descriptionPresenter.Visibility = Description != null ? Visibility.Visible : Visibility.Collapsed;
 			}
-		}
-
-		public static DependencyProperty IsTextSearchEnabledProperty { get; } =
-			DependencyProperty.Register(
-				nameof(IsTextSearchEnabled),
-				typeof(bool),
-				typeof(ComboBox),
-				new FrameworkPropertyMetadata(true));
-
-		public bool IsTextSearchEnabled
-		{
-			get => (bool)this.GetValue(IsTextSearchEnabledProperty);
-			set => this.SetValue(IsTextSearchEnabledProperty, value);
 		}
 
 		internal override void OnSelectedItemChanged(object oldSelectedItem, object selectedItem, bool updateItemSelectedState)
@@ -994,15 +982,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			return foundIndex;
-		}
-
-		private bool IsInSearchingMode()
-		{
-			if (HasSearchStringTimedOut())
-			{
-				m_isInSearchingMode = false;
-			}
-			return IsTextSearchEnabled && m_isInSearchingMode;
 		}
 
 		private string TryGetStringValue(object @object/*, PropertyPathListener pathListener*/)
