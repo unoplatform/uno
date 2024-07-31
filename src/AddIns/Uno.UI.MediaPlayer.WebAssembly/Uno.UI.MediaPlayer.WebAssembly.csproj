@@ -6,6 +6,7 @@
 	<Import Project="../../targetframework-override.props" />
 
 	<PropertyGroup>
+		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
 		<Deterministic>true</Deterministic>
 		<AssemblyName>Uno.UI.MediaPlayer.WebAssembly</AssemblyName>
 		<RootNamespace>Uno.UI.Media</RootNamespace>
