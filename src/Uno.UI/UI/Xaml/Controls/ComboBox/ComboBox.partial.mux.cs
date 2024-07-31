@@ -11,6 +11,8 @@ namespace Microsoft.UI.Xaml.Controls;
 
 partial class ComboBox
 {
+	private const int s_itemCountThreashold = 5;
+
 	private void SetupEditableMode()
 	{
 		if (m_isEditModeConfigured || m_tpEditableTextPart is null)
@@ -222,6 +224,15 @@ partial class ComboBox
 			}
 		}
 	}
+
+	private void UpdateSelectionBoxHighlighted()
+	{
+		bool isDropDownOpen = IsDropDownOpen;
+		var hasFocus = HasFocus();
+		var value = isDropDownOpen && hasFocus;
+		IsSelectionBoxHighlighted = value;
+	}
+
 
 	private void FocusChanged(bool hasFocus)
 	{
@@ -451,7 +462,7 @@ partial class ComboBox
 		m_tpEditableContentPresenterTextBlock.Text = text;
 		m_tpContentPresenterPart.Content = m_tpEditableContentPresenterTextBlock;
 
-		InvokeValidationCommand(this, text.Get()));
+		InvokeValidationCommand(this, text);
 	}
 
 	private void CommitRevertEditableSearch(bool restoreValue)
@@ -473,7 +484,7 @@ partial class ComboBox
 				{
 					// If m_indexToRestoreOnCancel is -1 this means we need to either restore to a custom value or to -1
 					// check if we are holding a reference to a custom value.
-					if (m_customValueRef)
+					if (m_customValueRef is not null)
 					{
 						SelectedItem = m_customValueRef;
 					}
@@ -491,27 +502,26 @@ partial class ComboBox
 			// changed programatically.
 			if (!IsSearchResultIndexSet())
 			{
-				ProcessSearch(L' '));
+				ProcessSearch(' ');
 			}
 
 			// If search has a match within the Data Source select the item.
 			if (m_searchResultIndex > -1)
 			{
-				put_SelectedIndex(m_searchResultIndex));
-				m_customValueRef.Reset();
+				SelectedIndex = m_searchResultIndex;
+				m_customValueRef = null;
 			}
 			// If searched value is not in the Data Source it means we are trying to commit a value outside the Data Source. Raise a CommitRequest with the new value.
 			else
 			{
-				wrl_wrappers::HString searchString;
-				m_tpEditableTextPart->get_Text(searchString.GetAddressOf()));
+				var searchString = m_tpEditableTextPart.Text;
 
 				// Ensure searchString is not empty or contains only spaces.
 				if (IsSearchStringValid(searchString))
 				{
 					bool sendEvent = true;
 
-					if (m_customValueRef)
+					if (m_customValueRef is not null)
 					{
 						wrl_wrappers::HString storedString;
 						IValueBoxer::UnboxValue(m_customValueRef.Get(), storedString.GetAddressOf());
@@ -532,7 +542,7 @@ partial class ComboBox
 						if (!isHandled)
 						{
 							int foundIndex = -1;
-							SearchItemSourceIndex(L' ', false /*startSearchFromCurrentIndex*/, true /*searchExactMatch*/, foundIndex));
+							SearchItemSourceIndex(" ", false /*startSearchFromCurrentIndex*/, true /*searchExactMatch*/, foundIndex));
 
 							if (foundIndex != -1)
 							{
@@ -612,6 +622,37 @@ partial class ComboBox
 
 	}
 
+	protected override void OnItemsChanged(object e)
+	{
+		var oldIsInline = IsInline;
+		m_itemCount = GetItemCount();
+		var isDropDownOpen = IsDropDownOpen;
+
+		base.OnItemsChanged(e);
+
+		if (IsSmallFormFactor)
+		{
+			if (isDropDownOpen)
+			{
+				IsDropDownOpen = false;
+			}
+			else if (IsInline != oldIsInline)
+			{
+				if (oldIsInline)
+				{
+					var selectedIndex = SelectedIndex;
+					EnsurePresenterReadyForFullMode();
+					SetContentPresenter(selectedIndex);
+				}
+				else
+				{
+					EnsurePresenterReadyForInlineMode();
+					ForceApplyInlineLayoutUpdate();
+				}
+			}
+		}
+	}
+
 	private void OnKeyDownPrivate(object pSender, KeyRoutedEventArgs pArgs)
 	{
 		base.OnKeyDown(pArgs);
@@ -663,6 +704,27 @@ partial class ComboBox
 			OnKeyDownPrivate(pSender, pArgs);
 			pArgs.Handled = true;
 		}
+	}
+
+	private bool IsSearchStringValid(string str)
+	{
+		if (string.IsNullOrEmpty(str))
+		{
+			return false;
+		}
+
+		var trimmedStr = str.TrimStart(' ');
+
+		return !string.IsNullOrEmpty(trimmedStr);
+	}
+
+	private bool IsInSearchingMode()
+	{
+		if (HasSearchStringTimedOut())
+		{
+			m_isInSearchingMode = false;
+		}
+		return IsTextSearchEnabled && m_isInSearchingMode;
 	}
 
 	private void CreateEditableContentPresenterTextBlock()
