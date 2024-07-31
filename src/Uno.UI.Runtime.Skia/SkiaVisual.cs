@@ -8,7 +8,7 @@ namespace Microsoft.UI.Composition;
 /// </summary>
 public abstract class SkiaVisual(Compositor compositor) : Visual(compositor)
 {
-	internal override void Draw(in DrawingSession session) => RenderOverride(session.Canvas);
+	internal override void Paint(in PaintingSession session) => RenderOverride(session.Canvas);
 
 	/// <summary>
 	/// Queue a rendering cycle that will call <see cref="RenderOverride"/>.

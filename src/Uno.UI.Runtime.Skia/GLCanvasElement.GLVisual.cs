@@ -10,7 +10,7 @@ public abstract partial class GLCanvasElement
 	{
 		private readonly SKPixmap _pixmap = new SKPixmap(new SKImageInfo((int)owner._width, (int)owner._height, SKColorType.Bgra8888), owner._pixels);
 
-		internal override void Draw(in DrawingSession session)
+		internal override void Paint(in PaintingSession session)
 		{
 			// we clear the drawing area here because in some cases when unloading the GLCanvasElement, the
 			// drawing isn't cleared for some reason (a possible hypothesis is timing problems between raw GL and skia).

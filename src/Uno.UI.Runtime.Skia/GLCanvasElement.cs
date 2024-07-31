@@ -14,7 +14,7 @@ public abstract partial class GLCanvasElement : FrameworkElement
 	private readonly uint _width;
 	private readonly uint _height;
 	private readonly IntPtr _pixels;
-	private readonly GLVisual _visual;
+	private readonly GLVisual _glVisual;
 
 	private bool _firstLoad = true;
 
@@ -29,8 +29,8 @@ public abstract partial class GLCanvasElement : FrameworkElement
 		_height = (uint)resolution.Height;
 		_pixels = Marshal.AllocHGlobal((int)(_width * _height * BytesPerPixel));
 
-		_visual = new GLVisual(this, Visual.Compositor);
-		Visual.Children.InsertAtTop(_visual);
+		_glVisual = new GLVisual(this, Visual.Compositor);
+		Visual.Children.InsertAtTop(_glVisual);
 	}
 
 	~GLCanvasElement()
@@ -49,7 +49,7 @@ public abstract partial class GLCanvasElement : FrameworkElement
 	protected abstract void OnDestroy(GL gl);
 	protected abstract void RenderOverride(GL gl);
 
-	public void Invalidate() => _visual.Compositor.InvalidateRender(_visual);
+	public void Invalidate() => _glVisual.Compositor.InvalidateRender(_glVisual);
 
 	private unsafe protected override void OnLoaded()
 	{
