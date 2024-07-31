@@ -114,6 +114,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 				var runtimeCopyLocalItemsToRemove = new List<ITaskItem>();
 				var compileFileDefinitionsToAdd = new List<ITaskItem>();
 				var compileFileDefinitionsToRemove = new List<ITaskItem>();
+				var pdbFilesToAdd = new List<ITaskItem>();
 
 				var isSingleLayer = !string.IsNullOrWhiteSpace(UnoRuntimeIdentifier);
 				if (isSingleLayer && UnoRuntimeIdentifier is not ("skia" or "webassembly"))
@@ -136,20 +137,19 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 
 				foreach (var package in UnoRuntimeEnabledPackage ?? Array.Empty<ITaskItem>())
 				{
-					HandleForRuntimeEnabled(package, runtimeCopyLocalItemsToAdd, runtimeCopyLocalItemsToRemove, compileFileDefinitionsToAdd, compileFileDefinitionsToRemove, isTwoLayer);
+					HandleForRuntimeEnabled(package, runtimeCopyLocalItemsToAdd, runtimeCopyLocalItemsToRemove, compileFileDefinitionsToAdd, compileFileDefinitionsToRemove, pdbFilesToAdd, isTwoLayer);
 				}
 
 				if (isTwoLayer)
 				{
-					HandleSkiaMobileForNonRuntimeEnabledPackages(runtimeCopyLocalItemsToAdd, runtimeCopyLocalItemsToRemove, compileFileDefinitionsToAdd, compileFileDefinitionsToRemove);
+					HandleSkiaMobileForNonRuntimeEnabledPackages(runtimeCopyLocalItemsToAdd, runtimeCopyLocalItemsToRemove, compileFileDefinitionsToAdd, compileFileDefinitionsToRemove, pdbFilesToAdd);
 				}
 
 				RuntimeCopyLocalItemsToAdd = runtimeCopyLocalItemsToAdd.ToArray();
 				RuntimeCopyLocalItemsToRemove = runtimeCopyLocalItemsToRemove.ToArray();
 				ResolvedCompileFileDefinitionsToAdd = compileFileDefinitionsToAdd.ToArray();
 				ResolvedCompileFileDefinitionsToRemove = compileFileDefinitionsToRemove.ToArray();
-
-				// TODO: DebugSymbols
+				DebugSymbols = pdbFilesToAdd.ToArray();
 
 				return true;
 			}
@@ -312,6 +312,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 			List<ITaskItem> runtimeCopyLocalItemsToRemove,
 			List<ITaskItem> compileFileDefinitionsToAdd,
 			List<ITaskItem> compileFileDefinitionsToRemove,
+			List<ITaskItem> pdbFilesToAdd,
 			bool isTwoLayer)
 		{
 			var packageIdentity = package.GetMetadata("Identity");
@@ -360,6 +361,17 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 						["NuGetPackageId"] = packageIdentity,
 						["PathInPackage"] = GetPathInPackage(adjustedAssembly, runtimeDirectory),
 					}));
+
+				var pdbFile = adjustedAssembly.Substring(0, adjustedAssembly.Length - 3) + "pdb";
+				if (File.Exists(pdbFile))
+				{
+					pdbFilesToAdd.Add(new TaskItem(
+						pdbFile,
+						new Dictionary<string, string>
+						{
+							["NuGetPackageId"] = packageIdentity,
+						}));
+				}
 
 				if (isTwoLayer && UnoWinRTRuntimeIdentifier is "android" or "ios")
 				{
@@ -421,7 +433,8 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 			List<ITaskItem> runtimeCopyLocalItemsToAdd,
 			List<ITaskItem> runtimeCopyLocalItemsToRemove,
 			List<ITaskItem> compileFileDefinitionsToAdd,
-			List<ITaskItem> compileFileDefinitionsToRemove)
+			List<ITaskItem> compileFileDefinitionsToRemove,
+			List<ITaskItem> pdbFilesToAdd)
 		{
 			// For Android Skia and iOS Skia, we want to resolve netX.0 instead of netX.0-[android|ios] for non-RuntimeEnabled packages.
 			// The idea here is that we loop over ResolvedCompileFileDefinitionsInput, look for dlls from NuGet package cache,
@@ -464,13 +477,25 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 									var adjustedPath = $"{nugetCacheRoot}{packageName}/{packageVersion}/lib/{adjustedTargetFramework}/{dllFileName}";
 									if (File.Exists(adjustedPath))
 									{
+										var fullAdjustedPath = Path.GetFullPath(adjustedPath);
 										runtimeCopyLocalItemsToAdd.Add(new TaskItem(
-											Path.GetFullPath(adjustedPath),
+											fullAdjustedPath,
 											new Dictionary<string, string>
 											{
 												["NuGetPackageId"] = packageName,
 												["PathInPackage"] = $"lib/{adjustedTargetFramework}/{dllFileName}",
 											}));
+
+										var pdbFile = fullAdjustedPath.Substring(0, fullAdjustedPath.Length - 3) + "pdb";
+										if (File.Exists(pdbFile))
+										{
+											pdbFilesToAdd.Add(new TaskItem(
+												pdbFile,
+												new Dictionary<string, string>
+												{
+													["NuGetPackageId"] = packageName,
+												}));
+										}
 
 										compileFileDefinitionsToAdd.Add(new TaskItem(
 											Path.GetFullPath(adjustedPath),
