@@ -214,7 +214,7 @@ public partial class EntryPoint : IDisposable
 			return "Unknown";
 		}
 	}
-	
+
 	private async Task UpdateProjectsAsync()
 	{
 		try
