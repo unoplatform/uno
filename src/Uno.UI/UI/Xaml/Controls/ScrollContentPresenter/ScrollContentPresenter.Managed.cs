@@ -65,15 +65,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			_strategy.Initialize(this);
 
-			// Mouse wheel support
-			PointerWheelChanged += PointerWheelScroll;
-
-			// Touch scroll support
 			ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY; // Updated in PrepareTouchScroll!
-			ManipulationStarting += PrepareTouchScroll;
-			ManipulationStarted += TouchScrollStarted;
-			ManipulationDelta += UpdateTouchScroll;
-			ManipulationCompleted += CompleteTouchScroll;
 		}
 
 		/// <inheritdoc />

@@ -1012,10 +1012,23 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 #endif
 
+#if UNO_HAS_MANAGED_SCROLL_PRESENTER
+			Presenter?.UnhookScrollEvents(this);
+#endif
 			if (scpTemplatePart is ScrollContentPresenter presenter)
 			{
 				presenter.ScrollOwner = this;
 				Presenter = presenter;
+
+				// Note: the way WinUI does scrolling is very different, and doesn't use
+				// PointerWheelChanged changes, etc.
+				// We can either subscribe on the ScrollViewer or the SCP directly, but due to
+				// the way hit-testing works (see #16201), the SCP will not receive any pointer
+				// events. On WinUI, this is also the case: pointer presses are received on the SV,
+				// not on the SCP.
+#if UNO_HAS_MANAGED_SCROLL_PRESENTER
+				presenter.HookScrollEvents(this);
+#endif
 			}
 			else
 			{
