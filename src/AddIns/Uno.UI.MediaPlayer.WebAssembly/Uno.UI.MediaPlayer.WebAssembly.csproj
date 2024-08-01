@@ -22,6 +22,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<None Include="..\..\Common\uno.png" Pack="true" PackagePath="\" Visible="false" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<EmbeddedResource Include="WasmScripts\**\*.js" />
 		<UpToDateCheckInput Remove="WasmScripts\*.js" />
 		<UpToDateCheckInput Include="ts\**\*" />
