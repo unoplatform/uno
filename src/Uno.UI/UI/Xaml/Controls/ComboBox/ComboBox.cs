@@ -1,7 +1,6 @@
 ﻿#nullable enable
 
 using System;
-using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
@@ -36,7 +35,6 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ComboBox : Selector
 	{
-
 		private bool _areItemTemplatesForwarded;
 
 		private TextBox? m_tpEditableTextPart;
@@ -48,6 +46,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private ContentPresenter? _contentPresenter;
 		private TextBlock? _placeholderTextBlock;
 		private ContentPresenter? m_tpHeaderContentPresenterPart;
+		private Border? m_tpDropDownOverlayPart;
 
 		private DateTime m_timeSinceLastCharacterReceived;
 		private string m_searchString = "";
@@ -105,11 +104,8 @@ namespace Microsoft.UI.Xaml.Controls
 			_contentPresenter = this.GetTemplateChild("ContentPresenter") as ContentPresenter;
 			m_tpContentPresenterPart = _contentPresenter;
 			_placeholderTextBlock = this.GetTemplateChild("PlaceholderTextBlock") as TextBlock;
-
-			if (IsEditable)
-			{
-				m_tpEditableTextPart = this.GetTemplateChild("EditableText") as TextBox;
-			}
+			m_tpDropDownOverlayPart = this.GetTemplateChild("DropDownOverlay") as Border;
+			m_tpEditableTextPart = this.GetTemplateChild("EditableText") as TextBox;
 
 			if (_popup is Popup popup)
 			{
@@ -174,72 +170,6 @@ namespace Microsoft.UI.Xaml.Controls
 			//}
 
 			ChangeVisualState(false);
-		}
-
-
-		// Selects the next item in the list.
-		private void SelectNext(ref int index)
-		{
-			var count = Items.Count;
-			if (count > 0)
-			{
-				int internalSelectedIndex = index + 1;
-				if (internalSelectedIndex <= count - 1)
-				{
-					SelectItemHelper(ref internalSelectedIndex, 1);
-					if (internalSelectedIndex != -1)
-					{
-						index = internalSelectedIndex;
-					}
-				}
-			}
-		}
-
-		// Selects the previous item in the list.
-		private void SelectPrev(ref int index)
-		{
-			var count = Items.Count;
-			if (count > 0)
-			{
-				int internalSelectedIndex = index - 1;
-				if (internalSelectedIndex >= 0)
-				{
-					SelectItemHelper(ref internalSelectedIndex, -1);
-					if (internalSelectedIndex != -1)
-					{
-						index = internalSelectedIndex;
-					}
-				}
-			}
-		}
-
-		// Given a direction, searches through list for next available item to select.
-		private void SelectItemHelper(ref int index, int increment)
-		{
-			var items = Items;
-			var count = items.Count;
-			bool isSelectable = false;
-
-			for (; index > -1 && index < count; index += increment)
-			{
-				var item = items[index];
-				isSelectable = IsSelectableHelper(item);
-				if (isSelectable)
-				{
-					var container = ContainerFromIndex(index);
-					isSelectable = IsSelectableHelper(container);
-					if (isSelectable)
-					{
-						break;
-					}
-				}
-			}
-
-			if (!isSelectable)
-			{
-				// If no selectable item was found, set index to -1 so selection will not be updated.
-				index = -1;
-			}
 		}
 
 		private protected override void OnLoaded()

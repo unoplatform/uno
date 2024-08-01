@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using DirectUI;
 using Microsoft.UI.Input;
-using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
@@ -70,15 +69,13 @@ partial class ComboBox
 
 		if (m_tpDropDownOverlayPart is not null)
 		{
-			m_spDropDownOverlayPointerEnteredHandler.AttachEventHandler(
-				m_tpDropDownOverlayPart.Cast<Border>(),
-				std::bind(&ComboBox::OnDropDownOverlayPointerEntered, this, _1, _2)));
+			m_tpDropDownOverlayPart.PointerEntered += OnDropDownOverlayPointerEntered;
+			m_spDropDownOverlayPointerEnteredHandler.Disposable = Disposable.Create(() => m_tpContentPresenterPart.PointerEntered -= OnDropDownOverlayPointerEntered);
 
-			m_spDropDownOverlayPointerExitedHandler.AttachEventHandler(
-				m_tpDropDownOverlayPart.Cast<Border>(),
-				std::bind(&ComboBox::OnDropDownOverlayPointerExited, this, _1, _2)));
+			m_tpDropDownOverlayPart.PointerExited += OnDropDownOverlayPointerExited;
+			m_spDropDownOverlayPointerExitedHandler.Disposable = Disposable.Create(() => m_tpContentPresenterPart.PointerExited -= OnDropDownOverlayPointerExited);
 
-			m_tpDropDownOverlayPart.Cast<Border>()->put_Visibility(xaml::Visibility_Visible));
+			m_tpDropDownOverlayPart.Visibility = Visibility.Visible;
 		}
 
 		// Tells the selector to allow Custom Values.
@@ -168,11 +165,11 @@ partial class ComboBox
 
 	private protected override void ChangeVisualState(bool useTransitions)
 	{
-		bool isPointerOver = m_isPointerOverMain || m_isPointerOverPopup;
+		bool isPointerOver = m_IsPointerOverMain || m_IsPointerOverPopup;
 		bool isEnabled = IsEnabled;
 		bool isSelectionActive = IsSelectionActive;
 		bool isDropDownOpen = IsDropDownOpen;
-		bool selectedIndex = SelectedIndex;
+		int selectedIndex = SelectedIndex;
 
 		var focusManager = VisualTree.GetFocusManagerForElement(this);
 
@@ -184,7 +181,7 @@ partial class ComboBox
 		{
 			bool editableTextHasFocus = EditableTextHasFocus();
 
-			if (m_IsPointerOverDropDownOverlay is not null)
+			if (m_IsPointerOverDropDownOverlay)
 			{
 				if (m_bIsPressed)
 				{
@@ -342,7 +339,7 @@ partial class ComboBox
 		}
 	}
 
-	private void UpdateEditableTextBox(object item, bool selectText, bool selectAll)
+	private void UpdateEditableTextBox(object? item, bool selectText, bool selectAll)
 	{
 		if (item is null)
 		{
@@ -1173,6 +1170,19 @@ partial class ComboBox
 			pArgs.Handled = true;
 		}
 	}
+
+	private void OnDropDownOverlayPointerEntered(object sender, PointerRoutedEventArgs args)
+	{
+		m_IsPointerOverDropDownOverlay = true;
+		UpdateVisualState();
+	}
+
+	private void OnDropDownOverlayPointerExited(object sender, PointerRoutedEventArgs args)
+	{
+		m_IsPointerOverDropDownOverlay = false;
+		UpdateVisualState();
+	}
+
 	private void OnTextBoxSizeChanged(object sender, SizeChangedEventArgs args) => ArrangePopup(false);
 
 	private void OnTextBoxCandidateWindowBoundsChanged(TextBox sender, CandidateWindowBoundsChangedEventArgs args)
