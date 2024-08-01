@@ -1,9 +1,12 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using DirectUI;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Uno.Disposables;
 using Uno.UI.Xaml.Core;
@@ -155,11 +158,130 @@ partial class ComboBox
 		m_isEditModeConfigured = false;
 	}
 
+	private protected override void ChangeVisualState(bool useTransitions)
+	{
+		bool isPointerOver = m_isPointerOverMain || m_isPointerOverPopup;
+		bool isEnabled = IsEnabled;
+		bool isSelectionActive = IsSelectionActive;
+		bool isDropDownOpen = IsDropDownOpen;
+		bool selectedIndex = SelectedIndex;
+
+		var focusManager = VisualTree.GetFocusManagerForElement(this);
+
+		// Ingores pressed visual over the entire control when pointer is over the DropDown button used for Editable Mode.
+		bool ignorePressedVisual = false;
+
+		// EditableModeStates VisualStateGroup.
+		if (IsEditable)
+		{
+			bool editableTextHasFocus = EditableTextHasFocus();
+
+			if (m_IsPointerOverDropDownOverlay is not null)
+			{
+				if (m_bIsPressed)
+				{
+					ignorePressedVisual = true;
+					GoToState(useTransitions, editableTextHasFocus ? "TextBoxFocusedOverlayPressed" : "TextBoxOverlayPressed");
+				}
+				else
+				{
+					GoToState(useTransitions, editableTextHasFocus ? "TextBoxFocusedOverlayPointerOver" : "TextBoxOverlayPointerOver");
+				}
+			}
+			else
+			{
+				GoToState(useTransitions, editableTextHasFocus ? "TextBoxFocused" : "TextBoxUnfocused");
+			}
+		}
+
+		if (!isEnabled)
+		{
+			GoToState(useTransitions, "Disabled");
+		}
+		else if (IsInline && isDropDownOpen)
+		{
+			GoToState(useTransitions, "Highlighted");
+		}
+		else if (m_bIsPressed && !ignorePressedVisual)
+		{
+			GoToState(useTransitions, "Pressed");
+		}
+		else if (isPointerOver)
+		{
+			GoToState(useTransitions, "PointerOver");
+		}
+		else
+		{
+			GoToState(useTransitions, "Normal");
+		}
+
+		// FocusStates VisualStateGroup.
+		if (!isSelectionActive || !isEnabled || (focusManager?.IsPluginFocused() == false))
+		{
+			GoToState(useTransitions, "Unfocused");
+		}
+		else if (isDropDownOpen)
+		{
+			GoToState(useTransitions, "FocusedDropDown");
+		}
+		else
+		{
+			var focusVisualState = FocusState switch
+			{
+				FocusState.Unfocused => "Unfocused",
+				FocusState.Pointer => "PointerFocused",
+				_ when m_bIsPressed => "FocusedPressed",
+				_ => "Focused",
+			};
+
+			GoToState(useTransitions, focusVisualState);
+		}
+
+		// PresenterStates VisualStateGroup.
+		if (!IsInline)
+		{
+			// Either inline mode is not supported based on the template parts available,
+			// or the number of items is too large for use of inline mode.
+			GoToState(useTransitions, "Full");
+		}
+		else if (m_bIsPressed || isDropDownOpen || m_isDropDownClosing || selectedIndex >= 0)
+		{
+			GoToState(useTransitions, "InlineNormal");
+		}
+		else
+		{
+			// drop-down is fully closed and nothing is selected
+			GoToState(useTransitions, "InlinePlaceholder");
+		}
+
+		// DropDownStates VisualStateGroup.
+		if (!IsFullMode())
+		{
+			if (m_isDropDownClosing)
+			{
+				GoToState(useTransitions, "Closed");
+			}
+			else if (isDropDownOpen && (IsSmallFormFactor || m_bPopupHasBeenArrangedOnce))
+			{
+				// Note: The non-small-form-factor combo box uses a popup to display it's
+				// items. We can't transition to the Opened state until the popup has been
+				// laid out.
+				GoToState(useTransitions, "Opened");
+			}
+		}
+
+		EnsureValidationVisuals();
+	}
+
 	internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 	{
 		base.OnPropertyChanged2(args);
 
 		// TODO Uno: Only IsEditable logic for now.
+		if (args.Property == HeaderProperty || args.Property == HeaderTemplateProperty)
+		{
+			UpdateHeaderPresenterVisibility();
+		}
 		if (args.Property == TextProperty)
 		{
 			if (m_tpEditableTextPart is not null && IsEditable)
@@ -723,6 +845,111 @@ partial class ComboBox
 	{
 		//DEAD_CODE_REMOVAL
 	}
+
+	protected override void OnPointerWheelChanged(PointerRoutedEventArgs e)
+	{
+		if (!IsEnabled)
+		{
+			return;
+		}
+
+		if (HasFocus())
+		{
+			if (!IsDropDownOpen)
+			{
+				var point = e.GetCurrentPoint(this);
+				var properties = point.Properties;
+				var delta = properties.MouseWheelDelta;
+				var selectedIndex = SelectedIndex;
+				if (delta < 0)
+				{
+					SelectNext(ref selectedIndex);
+				}
+				else
+				{
+					SelectPrev(ref selectedIndex);
+				}
+
+				SelectedIndex = selectedIndex;
+			}
+
+			e.Handled = true;
+		}
+
+		base.OnPointerWheelChanged(e);
+	}
+
+	protected override void OnPointerEntered(PointerRoutedEventArgs e)
+	{
+		base.OnPointerEntered(e);
+
+		var args = e;
+		var isEventSourceTarget = IsEventSourceTarget(args);
+
+		if (isEventSourceTarget)
+		{
+			m_isPointerOverMain = true;
+			m_bIsPressed = false;
+			UpdateVisualState();
+		}
+	}
+
+	protected override void OnPointerMoved(PointerRoutedEventArgs e)
+	{
+		base.OnPointerMoved(e);
+
+		var args = e;
+		var isEventSourceTarget = IsEventSourceTarget(args);
+
+		if (isEventSourceTarget)
+		{
+			if (!m_IsPointerOverMain)
+			{
+				// The pointer just entered the target area of the ComboBox
+				m_IsPointerOverMain = true;
+				UpdateVisualState();
+			}
+		}
+		else if (m_IsPointerOverMain)
+		{
+			// The pointer just left the target area of the ComboBox
+			m_IsPointerOverMain = false;
+			m_bIsPressed = false;
+			UpdateVisualState();
+		}
+	}
+
+	protected override void OnPointerExited(PointerRoutedEventArgs e)
+	{
+		base.OnPointerExited(e);
+
+		m_IsPointerOverMain = false;
+		m_bIsPressed = false;
+		UpdateVisualState();
+	}
+
+	protected override void OnPointerCaptureLost(PointerRoutedEventArgs e)
+	{
+		base.OnPointerCaptureLost(e);
+
+		var pointer = e.Pointer;
+
+		// For touch, we can clear PointerOver when receiving PointerCaptureLost, which we get when the finger is lifted
+		// or from cancellation, e.g. pinch-zoom gesture in ScrollViewer.
+		// For mouse, we need to wait for PointerExited because the mouse may still be above the ButtonBase when
+		// PointerCaptureLost is received from clicking.
+		var pointerPoint = e.GetCurrentPoint(null);
+
+		var pointerDeviceType = pointerPoint.PointerDeviceType;
+		if (pointerDeviceType == PointerDeviceType.Touch)
+		{
+			m_IsPointerOverMain = false;
+		}
+
+		m_bIsPressed = false;
+		UpdateVisualState();
+	}
+
 	protected override void OnItemsChanged(object e)
 	{
 		var oldIsInline = IsInline;
@@ -820,17 +1047,6 @@ partial class ComboBox
 
 		m_candidateWindowBoundsRect = candidateWindowBounds;
 		ArrangePopup(false);
-	}
-
-	private bool RaiseTextSubmittedEvent(string text)
-	{
-		// Create and set event args
-		ComboBoxTextSubmittedEventArgs eventArgs = new(text);
-
-		// Raise TextSubmitted event
-		TextSubmitted?.Invoke(this, eventArgs);
-
-		return eventArgs.Handled;
 	}
 
 	private void ProcessSearch(char keyCode)
@@ -1086,6 +1302,227 @@ partial class ComboBox
 	private void ResetSearchString()
 	{
 		m_searchString = "";
+	}
+
+	private bool RaiseTextSubmittedEvent(string text)
+	{
+		// Create and set event args
+		ComboBoxTextSubmittedEventArgs eventArgs = new(text);
+
+		// Raise TextSubmitted event
+		TextSubmitted?.Invoke(this, eventArgs);
+
+		return eventArgs.Handled;
+	}
+
+	private void UpdateHeaderPresenterVisibility()
+	{
+		var headerTemplate = HeaderTemplate;
+		var header = Header;
+
+		ConditionallyGetTemplatePartAndUpdateVisibility(
+			"HeaderContentPresenter",
+			header is not null || headerTemplate is not null,
+			ref m_tpHeaderContentPresenterPart);
+
+		// TODO Uno: Input validation support #4839
+		//ConditionallyGetTemplatePartAndUpdateVisibility(
+		//	"RequiredHeaderPresenter",
+		//	(header is not null || headerTemplate is not null) && IsValueRequired(this),
+		//	m_requiredHeaderContentPresenterPart);
+
+#if HAS_UNO // TODO:MZ: Validate if this is still needed!
+		if (m_tpHeaderContentPresenterPart is not null)
+		{
+			// On Windows, all interactions involving the HeaderContentPresenter don't seem to affect the ComboBox.
+			// For example, hovering/pressing doesn't trigger the PointOver/Pressed visual states. Tapping on it doesn't open the drop down.
+			// This is true even if the Background of the root of ComboBox's template (which contains the HeaderContentPresenter) is set.
+			// Interaction with any other part of the control (including the root) triggers the corresponding visual states and actions.
+			// It doesn't seem like the HeaderContentPresenter consumes (Handled = true) events because they are properly routed to the ComboBox.
+
+			// My guess is that ComboBox checks whether the OriginalSource of Pointer events is a child of HeaderContentPresenter.
+
+			// Because routed events are not implemented yet, the easy workaround is to prevent HeaderContentPresenter from being hit.
+			// This only works if the background of the root of ComboBox's template is null (which is the case by default).
+			m_tpHeaderContentPresenterPart.IsHitTestVisible = false;
+		}
+#endif
+	}
+
+	private bool IsEventSourceTarget(RoutedEventArgs args)
+	{
+		var originalSource = args.OriginalSource;
+		return IsChildOfTarget(originalSource as DependencyObject, false, true);
+	}
+
+	// Used to determine if DropDown arrow was hit on Editable mode
+	private bool IsDropDownOverlay(RoutedEventArgs args)
+	{
+		if (m_tpDropDownOverlayPart is null)
+		{
+			return false;
+		}
+
+		var originalSource = args.OriginalSource;
+
+		var templatePart = m_tpDropDownOverlayPart;
+
+		return (originalSource is not null && templatePart is not null && originalSource == templatePart);
+	}
+
+	private DependencyObject? pMostRecentSearchChildNoRef;
+	private bool mostRecentResult;
+
+	// Used in hit-testing for the ComboBox target area, which must exclude the header
+	private bool IsChildOfTarget(
+		DependencyObject? pChild,
+		bool doSearchLogicalParents,
+		bool doCacheResult)
+	{
+		// Simple perf optimization: most pointer events have the same source as the previous
+		// event, so we'll cache the most recent result and reuse it whenever possible.
+
+		bool result = mostRecentResult;
+		DependencyObject? spHeaderPresenterAsDO;
+		DependencyObject? spCurrentDO = pChild;
+		DependencyObject spParentDO;
+		DependencyObject pThisAsDONoRef = this;
+		bool isFound = false;
+
+		if (pChild is null)
+		{
+			return false;
+		}
+
+		spHeaderPresenterAsDO = m_tpHeaderContentPresenterPart as DependencyObject;
+
+		while (spCurrentDO is not null && !isFound)
+		{
+			if (spCurrentDO == pMostRecentSearchChildNoRef)
+			{
+				// use the cached result
+				isFound = true;
+			}
+
+			else if (spCurrentDO == pThisAsDONoRef)
+			{
+				result = true;
+				isFound = true;
+			}
+			else if (spHeaderPresenterAsDO is not null && spCurrentDO == spHeaderPresenterAsDO)
+			{
+				result = false;
+				isFound = true;
+			}
+			else
+			{
+				ctl::ComPtr<PopupRoot> spPopup;
+				IFC(VisualTreeHelper::GetParentStatic(spCurrentDO.Get(), &spParentDO));
+
+				if (doSearchLogicalParents && SUCCEEDED(spParentDO.As(&spPopup)) && spPopup)
+				{
+					// Try the logical parent. This lets us look through popup boxes
+					ctl::ComPtr<IFrameworkElement> spCurrentAsFE = spCurrentDO.AsOrNull<IFrameworkElement>();
+					if (spCurrentAsFE)
+					{
+						IFC(spCurrentAsFE->get_Parent(&spParentDO));
+					}
+				}
+
+				// refcounting note: Attach releases the previously stored ptr, and does not
+				// addref the new one.
+				spCurrentDO.Attach(spParentDO.Detach());
+			}
+		}
+
+		if (!isFound)
+		{
+			result = false;
+		}
+
+		if (doCacheResult)
+		{
+			pMostRecentSearchChildNoRef = pChild;
+			mostRecentResult = result;
+		}
+
+		return result;
+	}
+
+	private InputDeviceType GetInputDeviceTypeUsedToOpen() => m_inputDeviceTypeUsedToOpen;
+
+	private void OverrideSelectedIndexForVisualStates(int selectedIndexOverride)
+	{
+		//Debug.Assert(!CanSelectMultiple);
+
+		ClearSelectedIndexOverrideForVisualStates();
+
+		// We only need to override the selected visual if the specified item is not
+		// also the selected item.
+		int selectedIndex = SelectedIndex;
+		if (selectedIndexOverride != selectedIndex)
+		{
+			DependencyObject container;
+			ComboBoxItem? comboBoxItem;
+
+			// Force the specified override  item to appear selected.
+			if (selectedIndexOverride != -1)
+			{
+				container = ContainerFromIndex(selectedIndexOverride);
+				comboBoxItem = container as ComboBoxItem;
+				if (comboBoxItem is not null)
+				{
+					comboBoxItem.OverrideSelectedVisualState(true /* appearSelected */);
+				}
+			}
+
+			m_indexForcedToSelectedVisual = selectedIndexOverride;
+
+			if (selectedIndex != -1)
+			{
+				// Force the actual selected item to appear unselected.
+				container = ContainerFromIndex(selectedIndex);
+				comboBoxItem = container as ComboBoxItem;
+				if (comboBoxItem is not null)
+				{
+					comboBoxItem.OverrideSelectedVisualState(false /* appearSelected */);
+				}
+
+				m_indexForcedToUnselectedVisual = selectedIndex;
+			}
+		}
+	}
+
+	private void ClearSelectedIndexOverrideForVisualStates()
+	{
+		//Debug.Assert(!CanSelectMultiple);
+
+		DependencyObject? container;
+		ComboBoxItem? comboBoxItem;
+
+		if (m_indexForcedToUnselectedVisual != -1)
+		{
+			container = ContainerFromIndex(m_indexForcedToUnselectedVisual);
+			comboBoxItem = container as ComboBoxItem;
+			if (comboBoxItem is not null)
+			{
+				comboBoxItem.ClearSelectedVisualState();
+			}
+
+			m_indexForcedToUnselectedVisual = -1;
+		}
+
+		if (m_indexForcedToSelectedVisual != -1)
+		{
+			container = ContainerFromIndex(m_indexForcedToSelectedVisual);
+			comboBoxItem = container as ComboBoxItem;
+			if (comboBoxItem is not null)
+			{
+				comboBoxItem.ClearSelectedVisualState();
+			}
+
+			m_indexForcedToSelectedVisual = -1;
+		}
 	}
 
 	private void EnsurePropertyPathListener()

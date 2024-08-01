@@ -16,6 +16,9 @@ partial class ComboBox
 	private bool m_ignoreCancelKeyDowns;
 	private bool m_isEditModeConfigured;
 
+	private bool m_IsPointerOverMain;
+	private bool m_IsPointerOverPopup;
+	private bool m_bIsPressed;
 	// Used to determine when to open the popup based on touch, we open the popup when TextBox gains
 	// focus due to a pointer event.
 	private bool m_openPopupOnTouch;

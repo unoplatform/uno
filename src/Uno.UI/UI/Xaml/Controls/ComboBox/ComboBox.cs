@@ -1,7 +1,7 @@
 ﻿#nullable enable
 
 using System;
-using System.Collections.Generic;
+using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
@@ -11,7 +11,6 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml.Controls;
-using Uno.UI.Xaml.Input;
 using Windows.Foundation;
 using Windows.System;
 
@@ -50,7 +49,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private Border? _popupBorder;
 		private ContentPresenter? _contentPresenter;
 		private TextBlock? _placeholderTextBlock;
-		private ContentPresenter? _headerContentPresenter;
+		private ContentPresenter? m_tpHeaderContentPresenterPart;
 
 		private DateTime m_timeSinceLastCharacterReceived;
 		private string m_searchString = "";
@@ -172,38 +171,6 @@ namespace Microsoft.UI.Xaml.Controls
 			ChangeVisualState(false);
 		}
 
-		protected override void OnPointerWheelChanged(PointerRoutedEventArgs e)
-		{
-			if (!IsEnabled)
-			{
-				return;
-			}
-
-			if (HasFocus())
-			{
-				if (!IsDropDownOpen)
-				{
-					var point = e.GetCurrentPoint(this);
-					var properties = point.Properties;
-					var delta = properties.MouseWheelDelta;
-					var selectedIndex = SelectedIndex;
-					if (delta < 0)
-					{
-						SelectNext(ref selectedIndex);
-					}
-					else
-					{
-						SelectPrev(ref selectedIndex);
-					}
-
-					SelectedIndex = selectedIndex;
-				}
-
-				e.Handled = true;
-			}
-
-			base.OnPointerWheelChanged(e);
-		}
 
 		// Selects the next item in the list.
 		private void SelectNext(ref int index)
@@ -331,101 +298,6 @@ namespace Microsoft.UI.Xaml.Controls
 			IsDropDownOpen = false;
 		}
 
-
-		public object Header
-		{
-			get { return (object)this.GetValue(HeaderProperty); }
-			set { this.SetValue(HeaderProperty, value); }
-		}
-
-		public static DependencyProperty HeaderProperty { get; } =
-			DependencyProperty.Register(
-				"Header",
-				typeof(object),
-				typeof(ComboBox),
-				new FrameworkPropertyMetadata(
-					defaultValue: null,
-					options: FrameworkPropertyMetadataOptions.None,
-					propertyChangedCallback: (s, e) => ((ComboBox)s)?.OnHeaderChanged((object)e.OldValue, (object)e.NewValue)
-				)
-			);
-
-		private void OnHeaderChanged(object oldHeader, object newHeader)
-		{
-			UpdateHeaderVisibility();
-		}
-
-
-		public DataTemplate HeaderTemplate
-		{
-			get { return (DataTemplate)this.GetValue(HeaderTemplateProperty); }
-			set { this.SetValue(HeaderTemplateProperty, value); }
-		}
-
-		public static DependencyProperty HeaderTemplateProperty { get; } =
-			DependencyProperty.Register(
-				"HeaderTemplate",
-				typeof(DataTemplate),
-				typeof(ComboBox),
-				new FrameworkPropertyMetadata(
-					defaultValue: (DataTemplate?)null,
-					options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
-					propertyChangedCallback: (s, e) => ((ComboBox)s)?.OnHeaderTemplateChanged((DataTemplate)e.OldValue, (DataTemplate)e.NewValue)
-				)
-			);
-
-		private void OnHeaderTemplateChanged(DataTemplate oldHeaderTemplate, DataTemplate newHeaderTemplate)
-		{
-			UpdateHeaderVisibility();
-		}
-
-		private void UpdateHeaderVisibility()
-		{
-			var headerVisibility = (Header != null || HeaderTemplate != null)
-					? Visibility.Visible
-					: Visibility.Collapsed;
-
-			if (headerVisibility == Visibility.Visible && _headerContentPresenter == null)
-			{
-				_headerContentPresenter = this.GetTemplateChild("HeaderContentPresenter") as ContentPresenter;
-				if (_headerContentPresenter != null)
-				{
-					// On Windows, all interactions involving the HeaderContentPresenter don't seem to affect the ComboBox.
-					// For example, hovering/pressing doesn't trigger the PointOver/Pressed visual states. Tapping on it doesn't open the drop down.
-					// This is true even if the Background of the root of ComboBox's template (which contains the HeaderContentPresenter) is set.
-					// Interaction with any other part of the control (including the root) triggers the corresponding visual states and actions.
-					// It doesn't seem like the HeaderContentPresenter consumes (Handled = true) events because they are properly routed to the ComboBox.
-
-					// My guess is that ComboBox checks whether the OriginalSource of Pointer events is a child of HeaderContentPresenter.
-
-					// Because routed events are not implemented yet, the easy workaround is to prevent HeaderContentPresenter from being hit.
-					// This only works if the background of the root of ComboBox's template is null (which is the case by default).
-					_headerContentPresenter.IsHitTestVisible = false;
-				}
-			}
-
-			if (_headerContentPresenter != null)
-			{
-				_headerContentPresenter.Visibility = headerVisibility;
-			}
-		}
-
-		public
-#if __IOS__ || __MACOS__
-		new
-#endif
-			object Description
-		{
-			get => this.GetValue(DescriptionProperty);
-			set => this.SetValue(DescriptionProperty, value);
-		}
-
-		public static DependencyProperty DescriptionProperty { get; } =
-			DependencyProperty.Register(
-				nameof(Description), typeof(object),
-				typeof(ComboBox),
-				new FrameworkPropertyMetadata(default(object), propertyChangedCallback: (s, e) => (s as ComboBox)?.UpdateDescriptionVisibility(false)));
-
 		private void UpdateDescriptionVisibility(bool initialization)
 		{
 			if (initialization && Description == null)
@@ -463,33 +335,11 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		protected override void OnPointerEntered(PointerRoutedEventArgs e)
-		{
-			base.OnPointerEntered(e);
-
-			UpdateVisualState();
-		}
-
-		protected override void OnPointerExited(PointerRoutedEventArgs e)
-		{
-			base.OnPointerExited(e);
-			_wasPointerPressed = false;
-
-			UpdateVisualState();
-		}
-
 		protected override void OnPointerCanceled(PointerRoutedEventArgs e)
 		{
 			base.OnPointerCanceled(e);
-			_wasPointerPressed = false;
-
-			UpdateVisualState();
-		}
-
-		protected override void OnPointerCaptureLost(PointerRoutedEventArgs e)
-		{
-			base.OnPointerCaptureLost(e);
-			_wasPointerPressed = false;
+			m_bIsPressed = false;
+			m_IsPointerOverMain = false;
 
 			UpdateVisualState();
 		}
@@ -661,6 +511,55 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateVisualState(true);
 			// On UWP ComboBox does handle the pressed event ... but does not capture it!
 			args.Handled = true;
+
+
+			base.OnPointerPressed(args);
+
+			bool isHandled = args.Handled;
+			if (isHandled)
+			{
+				return;
+			}
+
+			var isEnabled = IsEnabled;
+			if (!isEnabled)
+			{
+				return;
+			}
+
+			IFC_RETURN(ctl::do_query_interface(spRoutedArgs, pArgs));
+			IFC_RETURN(IsEventSourceTarget(spRoutedArgs.Get(), &isEventSourceTarget));
+
+			if (isEventSourceTarget)
+			{
+				IFC_RETURN(IsLeftButtonPressed(pArgs, &bIsLeftButtonPressed, NULL));
+
+				if (bIsLeftButtonPressed)
+				{
+					IFC_RETURN(pArgs->put_Handled(TRUE));
+
+					m_bIsPressed = true;
+
+					// for "Pressed" visual state to render
+					UpdateVisualState();
+				}
+			}
+
+			var pointerPoint = args.GetCurrentPoint(null);
+			var pointerDeviceType = pointerPoint.PointerDeviceType;
+
+			bool popupIsOpen = true;
+
+			if (m_tpPopupPart is not null)
+			{
+				popupIsOpen = m_tpPopupPart.IsOpen;
+			}
+
+			if (!popupIsOpen && pointerDeviceType == PointerDeviceType.Touch)
+			{
+				// Open popup after ComboBox is focused due to the PointerPressed event.
+				m_openPopupOnTouch = true;
+			}
 		}
 
 		protected override void OnPointerReleased(PointerRoutedEventArgs args)
@@ -794,7 +693,6 @@ namespace Microsoft.UI.Xaml.Controls
 			return (now - m_timeSinceLastCharacterReceived).TotalMilliseconds > timeOutInMilliseconds;
 		}
 
-		
 		private string TryGetStringValue(object @object/*, PropertyPathListener pathListener*/)
 		{
 			object spBoxedValue;
@@ -840,108 +738,6 @@ namespace Microsoft.UI.Xaml.Controls
 				// If we haven't found a BoxedObject and it's not Stringable, try one last time to get a string out.
 				return @object.ToString()!;
 			}
-		}
-
-		private void OverrideSelectedIndexForVisualStates(int selectedIndexOverride)
-		{
-			//Debug.Assert(!CanSelectMultiple);
-
-			ClearSelectedIndexOverrideForVisualStates();
-
-			// We only need to override the selected visual if the specified item is not
-			// also the selected item.
-			int selectedIndex = SelectedIndex;
-			if (selectedIndexOverride != selectedIndex)
-			{
-				DependencyObject container;
-				ComboBoxItem? comboBoxItem;
-
-				// Force the specified override  item to appear selected.
-				if (selectedIndexOverride != -1)
-				{
-					container = ContainerFromIndex(selectedIndexOverride);
-					comboBoxItem = container as ComboBoxItem;
-					if (comboBoxItem is not null)
-					{
-						comboBoxItem.OverrideSelectedVisualState(true /* appearSelected */);
-					}
-				}
-
-				m_indexForcedToSelectedVisual = selectedIndexOverride;
-
-				if (selectedIndex != -1)
-				{
-					// Force the actual selected item to appear unselected.
-					container = ContainerFromIndex(selectedIndex);
-					comboBoxItem = container as ComboBoxItem;
-					if (comboBoxItem is not null)
-					{
-						comboBoxItem.OverrideSelectedVisualState(false /* appearSelected */);
-					}
-
-					m_indexForcedToUnselectedVisual = selectedIndex;
-				}
-			}
-		}
-
-		private void ClearSelectedIndexOverrideForVisualStates()
-		{
-			//Debug.Assert(!CanSelectMultiple);
-
-			DependencyObject container;
-			ComboBoxItem? comboBoxItem;
-
-			if (m_indexForcedToUnselectedVisual != -1)
-			{
-				container = ContainerFromIndex(m_indexForcedToUnselectedVisual);
-				comboBoxItem = container as ComboBoxItem;
-				if (comboBoxItem is not null)
-				{
-					comboBoxItem.ClearSelectedVisualState();
-				}
-
-				m_indexForcedToUnselectedVisual = -1;
-			}
-
-			if (m_indexForcedToSelectedVisual != -1)
-			{
-				container = ContainerFromIndex(m_indexForcedToSelectedVisual);
-				comboBoxItem = container as ComboBoxItem;
-				if (comboBoxItem is not null)
-				{
-					comboBoxItem.ClearSelectedVisualState();
-				}
-
-				m_indexForcedToSelectedVisual = -1;
-			}
-		}
-
-		//private void EnsurePropertyPathListener()
-		//{
-		//	if (_propertyPathListener is null)
-		//	{
-		//		string strDisplayMemberPath = DisplayMemberPath;
-
-		//		if (!string.IsNullOrEmpty(strDisplayMemberPath))
-		//		{
-		//			// If we don't have one cached, create the property path listener
-		//			// If strDisplayMemberPath contains something (a path), then use that to inform our PropertyPathListener.
-		//			var propertyPathParser = new PropertyPathParser();
-
-		//			propertyPathParser.SetSource(strDisplayMemberPath, false);
-
-		//			_propertyPathListener = new PropertyPathListener(null, propertyPathParser, , false /*fListenToChanges*/, false /*fUseWeakReferenceForSource*/);
-		//		}
-		//	}
-		//}
-
-		
-
-		internal InputDeviceType GetInputDeviceTypeUsedToOpen()
-		{
-			//return m_inputDeviceTypeUsedToOpen;
-			// UNO TODO:
-			return InputDeviceType.None;
 		}
 
 		private bool TryMoveKeyboardFocus(int offset, ComboBoxItem? focusedContainer)
@@ -993,77 +789,6 @@ namespace Microsoft.UI.Xaml.Controls
 		protected override AutomationPeer OnCreateAutomationPeer()
 		{
 			return new ComboBoxAutomationPeer(this);
-		}
-
-		private protected override void ChangeVisualState(bool useTransitions)
-		{
-			// Ingores pressed visual over the entire control when pointer is over the DropDown button used for Editable Mode.
-			bool ignorePressedVisual = false;
-
-			// EditableModeStates VisualStateGroup.
-			if (IsEditable)
-			{
-				bool editableTextHasFocus = EditableTextHasFocus();
-
-				if (m_IsPointerOverDropDownOverlay is not null)
-				{
-					if (IsPointerPressed)
-					{
-						ignorePressedVisual = true;
-						GoToState(useTransitions, editableTextHasFocus ? "TextBoxFocusedOverlayPressed" : "TextBoxOverlayPressed");
-					}
-					else
-					{
-						GoToState(useTransitions, editableTextHasFocus ? "TextBoxFocusedOverlayPointerOver" : "TextBoxOverlayPointerOver");
-					}
-				}
-				else
-				{
-					GoToState(useTransitions, editableTextHasFocus ? "TextBoxFocused" : "TextBoxUnfocused");
-				}
-			}
-
-			if (!IsEnabled)
-			{
-				GoToState(useTransitions, "Disabled");
-			}
-			else if (IsDropDownOpen)
-			{
-				GoToState(useTransitions, "Highlighted");
-			}
-			else if (IsPointerPressed && !ignorePressedVisual)
-			{
-				GoToState(useTransitions, "Pressed");
-			}
-			else if (IsPointerOver)
-			{
-				GoToState(useTransitions, "PointerOver");
-			}
-			else
-			{
-				GoToState(useTransitions, "Normal");
-			}
-
-			// FocusStates VisualStateGroup.
-			if (!IsEnabled)
-			{
-				GoToState(useTransitions, "Unfocused");
-			}
-			else if (IsDropDownOpen)
-			{
-				GoToState(useTransitions, "FocusedDropDown");
-			}
-			else
-			{
-				var focusVisualState = FocusState switch
-				{
-					FocusState.Unfocused => "Unfocused",
-					FocusState.Pointer => "PointerFocused",
-					_ => IsPointerPressed ? "FocusedPressed" : "Focused",
-				};
-
-				GoToState(useTransitions, focusVisualState);
-			}
 		}
 
 		public LightDismissOverlayMode LightDismissOverlayMode
