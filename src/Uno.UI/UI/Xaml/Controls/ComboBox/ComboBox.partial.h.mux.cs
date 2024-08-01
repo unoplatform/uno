@@ -16,6 +16,10 @@ partial class ComboBox
 	private bool m_ignoreCancelKeyDowns;
 	private bool m_isEditModeConfigured;
 
+	// On pointer released we perform some actions depending on control. We decide to whether to perform them
+	// depending on some parameters including but not limited to whether released is followed by a pressed, which
+	// mouse button is pressed, what type of pointer is it etc. This BOOLEAN keeps our decision.
+	private bool m_shouldPerformActions;
 	private bool m_IsPointerOverMain;
 	private bool m_IsPointerOverPopup;
 	private bool m_bIsPressed;

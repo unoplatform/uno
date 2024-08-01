@@ -8,6 +8,7 @@ using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using Uno.Disposables;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
@@ -19,6 +20,13 @@ namespace Microsoft.UI.Xaml.Controls;
 partial class ComboBox
 {
 	private const int s_itemCountThreashold = 5;
+
+	private void PrepareState()
+	{
+		//base.PrepareState();
+		TemplateSettings = new();
+		TemplateSettings.SelectedItemDirection = AnimationDirection.Top;
+	}
 
 	private void SetupEditableMode()
 	{
@@ -436,7 +444,7 @@ partial class ComboBox
 		if (m_tpEditableTextPart is not null)
 		{
 			var focusManager = VisualTree.GetFocusManagerForElement(this);
-			return (m_tpEditableTextPart == focusManager.FocusedElement);
+			return (m_tpEditableTextPart == focusManager?.FocusedElement);
 		}
 		else
 		{
@@ -450,7 +458,11 @@ partial class ComboBox
 		{
 			m_tpEditableTextPart.Width = DoubleUtil.NaN;
 			m_tpEditableTextPart.Height = DoubleUtil.NaN;
-			m_tpContentPresenterPart.Visibility = Visibility.Collapsed;
+
+			if (m_tpContentPresenterPart is not null)
+			{
+				m_tpContentPresenterPart.Visibility = Visibility.Collapsed;
+			}
 
 			if (moveFocusToTextBox)
 			{
@@ -462,12 +474,12 @@ partial class ComboBox
 	}
 
 	internal override TabStopProcessingResult ProcessTabStopOverride(
-		DependencyObject focusedElement,
-		DependencyObject candidateTabStopElement,
+		DependencyObject? focusedElement,
+		DependencyObject? candidateTabStopElement,
 		bool isBackward,
 		bool didCycleFocusAtRootVisualScope)
 	{
-		DependencyObject ppNewTabStop = null;
+		DependencyObject? ppNewTabStop = null;
 		bool pIsTabStopOverridden = false;
 		// An editable ComboBox has special tab behavior. We want to be able to Tab a single time
 		// directly into the TextBox and to Shift + Tab a single time to move focus outside to a
@@ -481,13 +493,13 @@ partial class ComboBox
 		// the ComboBox.
 		if (IsEditable && m_tpEditableTextPart is not null && isBackward)
 		{
-			ContentRoot contentRoot = VisualTree.GetContentRootForElement(this);
-			var lastInputDeviceType = contentRoot.InputManager.LastInputDeviceType;
-			DependencyObject newTabStop;
+			var contentRoot = VisualTree.GetContentRootForElement(this);
+			var lastInputDeviceType = contentRoot?.InputManager.LastInputDeviceType;
+			DependencyObject? newTabStop;
 
 			if (lastInputDeviceType == InputDeviceType.Keyboard)
 			{
-				newTabStop = contentRoot.FocusManager.GetPreviousTabStop(this);
+				newTabStop = contentRoot?.FocusManager.GetPreviousTabStop(this);
 
 				// If we found a candidate, then query its corresponding peer.
 				if (newTabStop is not null)
@@ -510,8 +522,8 @@ partial class ComboBox
 
 		if (IsEditable && m_tpEditableTextPart is not null)
 		{
-			ContentRoot contentRoot = VisualTree.GetContentRootForElement(this);
-			var lastPointerType = contentRoot.InputManager.LastInputDeviceType;
+			var contentRoot = VisualTree.GetContentRootForElement(this);
+			var lastPointerType = contentRoot?.InputManager.LastInputDeviceType;
 
 			// If EditableText is not focused, make the control visible, focus and return. Next time we receive OnGotFocus we will setup the control.
 			if (EditableTextHasFocus())
@@ -592,7 +604,10 @@ partial class ComboBox
 				{
 					m_tpEditableTextPart.Width = 0.0f;
 					m_tpEditableTextPart.Height = 0.0f;
-					m_tpContentPresenterPart.Visibility = Visibility.Visible;
+					if (m_tpContentPresenterPart is not null)
+					{
+						m_tpContentPresenterPart.Visibility = Visibility.Visible;
+					}
 				}
 
 				// When ComboBox loses focus, ensure to move the focus over to the TextBox next time ComboBox is focused.
@@ -609,7 +624,7 @@ partial class ComboBox
 		}
 
 		EnsurePropertyPathListener();
-		TryGetStringValue(item, m_spPropertyPathListener.Get(), itemString.GetAddressOf()));
+		var itemString = TryGetStringValue(item) //, m_spPropertyPathListener); TODO Uno: Missing PropertyPathListener support
 		UpdateEditableContentPresenterTextBlock(itemString);
 	}
 
@@ -699,63 +714,56 @@ partial class ComboBox
 						ctl::ComPtr<IInspectable> spInspectable;
 						PropertyValue::CreateFromString(searchString, &spInspectable));
 
-						bool isHandled;
-						RaiseTextSubmittedEvent(searchString, &isHandled));
+						bool isHandled = RaiseTextSubmittedEvent(searchString);
 
 						// If event was not handled we assume we want to keep the current value as active.
 						if (!isHandled)
 						{
-							int foundIndex = -1;
-							SearchItemSourceIndex(" ", false /*startSearchFromCurrentIndex*/, true /*searchExactMatch*/, foundIndex));
+							int foundIndex = SearchItemSourceIndex(' ', false /*startSearchFromCurrentIndex*/, true /*searchExactMatch*/);
 
 							if (foundIndex != -1)
 							{
-								m_customValueRef.Reset();
-								HRESULT hr = put_SelectedIndex(foundIndex);
-
-								// After the TextSubmittedEvent we try to match the current Custom Value with a value in our ItemSource in case the value was
-								// inserted during the event. In order to select this item, it needs to exist in our ItemContainer. This will not be the case when
-								// ItemSource is a List and not an ObservableCollection. Using ObservableCollection is required for this to work as our ItemContainerGenerator
-								// relies on INotifyPropertyChanged to update values when the ItemSource has changed.
-								// We improve the error message here to match what managed code returns when trying to set the SelectedIndex under the same conditions.
-								if (hr == E_INVALIDARG)
+								m_customValueRef = null;
+								try
 								{
-									ErrorHelper::OriginateErrorUsingResourceID(E_INVALIDARG, ERROR_DEPENDENCYOBJECTCOLLECTION_OUTOFRANGE));
+									SelectedIndex = foundIndex;
 								}
-								else
+								catch (Exception ex)
 								{
-									hr);
+									// After the TextSubmittedEvent we try to match the current Custom Value with a value in our ItemSource in case the value was
+									// inserted during the event. In order to select this item, it needs to exist in our ItemContainer. This will not be the case when
+									// ItemSource is a List and not an ObservableCollection. Using ObservableCollection is required for this to work as our ItemContainerGenerator
+									// relies on INotifyPropertyChanged to update values when the ItemSource has changed.
+									// We improve the error message here to match what managed code returns when trying to set the SelectedIndex under the same conditions.
+									throw new IndexOutOfRangeException("Index was out of range.", ex);
 								}
 							}
 							else
 							{
-								put_SelectedItem(spInspectable.Get()));
+								SelectedItem = spInspectable;
 							}
 						}
 					}
 					else
 					{
-						INT selectedIndex = -1;
-						get_SelectedIndex(&selectedIndex));
+						int selectedIndex = SelectedIndex;
 
 						// Ensure SelectedIndex is -1, this means the Custom Value is still active.
 						if (selectedIndex != -1)
 						{
-							ctl::ComPtr<IInspectable> spInspectable;
-							PropertyValue::CreateFromString(searchString, &spInspectable));
+							var spInspectable = searchString;
 
-							put_SelectedItem(spInspectable.Get()));
+							SelectedItem = spInspectable;
 						}
 					}
 				}
 			}
 		}
 
-		ctl::ComPtr<IInspectable> spSelectedItem;
-		get_SelectedItem(&spSelectedItem));
+		var spSelectedItem = SelectedItem;
 
 		// Update ContentPresenter.
-		if (spSelectedItem)
+		if (spSelectedItem is not null)
 		{
 			var selectedIndex = SelectedIndex;
 
@@ -950,34 +958,61 @@ partial class ComboBox
 		UpdateVisualState();
 	}
 
-	protected override void OnItemsChanged(object e)
+	private void IsLeftButtonPressed(PointerRoutedEventArgs args, out bool isLeftButtonPressed, out PointerDeviceType pointerDeviceType)
 	{
-		var oldIsInline = IsInline;
-		m_itemCount = GetItemCount();
-		var isDropDownOpen = IsDropDownOpen;
+		var pointerPoint = args.GetCurrentPoint(this);
+		var pointerProperties = pointerPoint.Properties;
+		isLeftButtonPressed = pointerProperties.IsLeftButtonPressed;
+		pointerDeviceType = pointerPoint.PointerDeviceType;
+	}
 
-		base.OnItemsChanged(e);
+	protected override void OnPointerPressed(PointerRoutedEventArgs args)
+	{
+		base.OnPointerPressed(args);
 
-		if (IsSmallFormFactor)
+		bool isHandled = args.Handled;
+		if (isHandled)
 		{
-			if (isDropDownOpen)
+			return;
+		}
+
+		var isEnabled = IsEnabled;
+		if (!isEnabled)
+		{
+			return;
+		}
+
+		var isEventSourceTarget = IsEventSourceTarget(args);
+
+		if (isEventSourceTarget)
+		{
+			IsLeftButtonPressed(args, out var bIsLeftButtonPressed, out var _);
+
+			if (bIsLeftButtonPressed)
 			{
-				IsDropDownOpen = false;
+				args.Handled = true;
+
+				m_bIsPressed = true;
+
+				// for "Pressed" visual state to render
+				UpdateVisualState();
 			}
-			else if (IsInline != oldIsInline)
-			{
-				if (oldIsInline)
-				{
-					var selectedIndex = SelectedIndex;
-					EnsurePresenterReadyForFullMode();
-					SetContentPresenter(selectedIndex);
-				}
-				else
-				{
-					EnsurePresenterReadyForInlineMode();
-					ForceApplyInlineLayoutUpdate();
-				}
-			}
+		}
+
+		var pointerPoint = args.GetCurrentPoint(null);
+		var pointerDeviceType = pointerPoint.PointerDeviceType;
+
+		bool popupIsOpen = true;
+
+		if (m_tpPopupPart is not null)
+		{
+			popupIsOpen = m_tpPopupPart.IsOpen;
+		}
+
+		if (!popupIsOpen && pointerDeviceType == PointerDeviceType.Touch)
+		{
+			// Open popup after ComboBox is focused due to the PointerPressed event.
+			m_openPopupOnTouch = true;
 		}
 	}
 
@@ -1023,6 +1058,111 @@ partial class ComboBox
 		args.Handled = true;
 	}
 
+	protected override void OnPointerReleased(PointerRoutedEventArgs args)
+	{
+		base.OnPointerReleased(args);
+
+		var isHandled = args.Handled;
+		if (isHandled)
+		{
+			return;
+		}
+
+		var isEnabled = IsEnabled;
+		if (!isEnabled)
+		{
+			return;
+		}
+
+		var isEventSourceTarget = IsEventSourceTarget(args);
+		if (isEventSourceTarget)
+		{
+			IsLeftButtonPressed(args, out var bIsLeftButtonPressed, out var pointerDeviceType);
+			m_shouldPerformActions = (m_bIsPressed && !bIsLeftButtonPressed);
+
+			if (m_shouldPerformActions)
+			{
+				m_bIsPressed = false;
+				if (pointerDeviceType == PointerDeviceType.Touch)
+				{
+					m_inputDeviceTypeUsedToOpen = InputDeviceType.Touch;
+				}
+				else
+				{
+					m_inputDeviceTypeUsedToOpen = InputDeviceType.Mouse;
+				}
+			}
+
+			var gestureFollowing = args.GestureFollowing;
+			if (gestureFollowing == GestureModes.RightTapped)
+			{
+				// We will get a right tapped event for every time we visit here, and
+				// we will visit before each time we receive a right tapped event
+				return;
+			}
+
+			if (m_shouldPerformActions)
+			{
+				// Note that we are intentionally NOT handling the args
+				// if we do not fall through here because basically we are no_opting in that case.
+				args.Handled = true;
+				m_bIsPressed = false;
+				if (pointerDeviceType == PointerDeviceType.Touch)
+				{
+					m_inputDeviceTypeUsedToOpen = InputDeviceType.Touch;
+				}
+				else
+				{
+					m_inputDeviceTypeUsedToOpen = InputDeviceType.Mouse;
+				}
+
+				PerformPointerUpAction(IsDropDownOverlay(args));
+			}
+		}
+	}
+
+	private protected override void OnRightTappedUnhandled(RightTappedRoutedEventArgs e)
+	{
+		base.OnRightTappedUnhandled(e);
+
+		var isHandled = e.Handled;
+		if (isHandled)
+		{
+			return;
+		}
+
+		var isEventSourceTarget = IsEventSourceTarget(e);
+
+		if (isEventSourceTarget)
+		{
+			PerformPointerUpAction(false /*isDropDownOverlay*/);
+		}
+	}
+
+	private void PerformPointerUpAction(bool isDropDownOverlay)
+	{
+		if (m_shouldPerformActions)
+		{
+			m_shouldPerformActions = false;
+
+			Focus(FocusState.Pointer);
+
+			// No need to test bFocused - it is possible no focusable element is present if IsTabStop = FALSE for ComboBox
+			// We use isDropDownOverlay to determine if dropdown arrow was clicked on Editable mode.
+			if (!IsEditable)
+			{
+				IsDropDownOpen = true;
+			}
+			else if (isDropDownOverlay)
+			{
+				bool isDropDownOpen = IsDropDownOpen;
+
+				// Open/Close the DropDown when clicking the DropDownOverlay for Editable Mode.
+				IsDropDownOpen = !isDropDownOpen;
+			}
+		}
+	}
+
 	private void OnTextBoxPreviewKeyDown(object pSender, KeyRoutedEventArgs pArgs)
 	{
 		VirtualKey keyObject = pArgs.Key;
@@ -1040,13 +1180,44 @@ partial class ComboBox
 		Rect candidateWindowBounds = args.Bounds;
 
 		// Do nothing if the candidate windows bound did not change
-		if (RectUtil.AreEqual(m_candidateWindowBoundsRect, candidateWindowBounds)
-				{
+		if (RectUtil.AreEqual(m_candidateWindowBoundsRect, candidateWindowBounds))
+		{
 			return;
 		}
 
 		m_candidateWindowBoundsRect = candidateWindowBounds;
 		ArrangePopup(false);
+	}
+
+	protected override void OnItemsChanged(object e)
+	{
+		var oldIsInline = IsInline;
+		m_itemCount = GetItemCount();
+		var isDropDownOpen = IsDropDownOpen;
+
+		base.OnItemsChanged(e);
+
+		if (IsSmallFormFactor)
+		{
+			if (isDropDownOpen)
+			{
+				IsDropDownOpen = false;
+			}
+			else if (IsInline != oldIsInline)
+			{
+				if (oldIsInline)
+				{
+					var selectedIndex = SelectedIndex;
+					EnsurePresenterReadyForFullMode();
+					SetContentPresenter(selectedIndex);
+				}
+				else
+				{
+					EnsurePresenterReadyForInlineMode();
+					ForceApplyInlineLayoutUpdate();
+				}
+			}
+		}
 	}
 
 	private void ProcessSearch(char keyCode)
@@ -1385,7 +1556,6 @@ partial class ComboBox
 		bool result = mostRecentResult;
 		DependencyObject? spHeaderPresenterAsDO;
 		DependencyObject? spCurrentDO = pChild;
-		DependencyObject spParentDO;
 		DependencyObject pThisAsDONoRef = this;
 		bool isFound = false;
 
@@ -1416,22 +1586,21 @@ partial class ComboBox
 			}
 			else
 			{
-				ctl::ComPtr<PopupRoot> spPopup;
-				IFC(VisualTreeHelper::GetParentStatic(spCurrentDO.Get(), &spParentDO));
+				var spParentDO = VisualTreeHelper.GetParent(spCurrentDO);
 
-				if (doSearchLogicalParents && SUCCEEDED(spParentDO.As(&spPopup)) && spPopup)
+				if (doSearchLogicalParents && spParentDO is PopupRoot spPopup)
 				{
 					// Try the logical parent. This lets us look through popup boxes
-					ctl::ComPtr<IFrameworkElement> spCurrentAsFE = spCurrentDO.AsOrNull<IFrameworkElement>();
-					if (spCurrentAsFE)
+					var spCurrentAsFE = spCurrentDO as FrameworkElement;
+					if (spCurrentAsFE is not null)
 					{
-						IFC(spCurrentAsFE->get_Parent(&spParentDO));
+						spParentDO = spCurrentAsFE.Parent;
 					}
 				}
 
 				// refcounting note: Attach releases the previously stored ptr, and does not
 				// addref the new one.
-				spCurrentDO.Attach(spParentDO.Detach());
+				spCurrentDO = spParentDO;
 			}
 		}
 

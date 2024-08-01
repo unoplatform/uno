@@ -1,4 +1,6 @@
-﻿using Microsoft.UI.Xaml.Media;
+﻿using System;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
 using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -140,6 +142,22 @@ partial class ComboBox
 			new FrameworkPropertyMetadata(null));
 
 	/// <summary>
+	/// Gets the item shown when the ComboBox is closed.
+	/// </summary>
+	public object SelectionBoxItem { get; private set; }
+
+	/// <summary>
+	/// Gets the template applied to the selection box content.
+	/// </summary>
+	public DataTemplate SelectionBoxItemTemplate { get; private set; }
+
+	/// <summary>
+	/// Gets an object that provides calculated values that can be referenced
+	/// as TemplateBinding sources when defining templates for a ComboBox control.
+	/// </summary>
+	public ComboBoxTemplateSettings TemplateSettings { get; private set; }
+
+	/// <summary>
 	/// Gets or sets the text in the ComboBox.
 	/// </summary>
 	public string Text
@@ -181,4 +199,14 @@ partial class ComboBox
 	/// Occurs when the user submits some text that does not correspond to an item in the ComboBox dropdown list.
 	/// </summary>
 	public event TypedEventHandler<ComboBox, ComboBoxTextSubmittedEventArgs> TextSubmitted;
+
+	/// <summary>
+	/// Occurs when the drop-down portion of the ComboBox closes.
+	/// </summary>
+	public event EventHandler<object> DropDownClosed;
+
+	/// <summary>
+	/// Occurs when the drop-down portion of the ComboBox opens.
+	/// </summary>
+	public event EventHandler<object> DropDownOpened;
 }
