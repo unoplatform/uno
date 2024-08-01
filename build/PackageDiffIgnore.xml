@@ -1871,6 +1871,16 @@
 		</Fields>
 
 		<Properties>
+			<!-- BEGIN templated-parent rework -->
+
+			<!-- DependencyObject (codegen for all descendants) -->
+			<Member fullName=".*DependencyObject .*::TemplatedParent" reason="Not in UWP" isRegex="true" />
+			<Member fullName=".*DependencyProperty .*::TemplatedParentProperty" reason="Not in UWP" isRegex="true" />
+
+			<!-- HorizontalGridView -->
+			<Member fullName="System\.Func`1&lt;Android\.Views\.View&gt; Uno\.UI\.Controls\.HorizontalGridView::(Item|Header|Footer)Template\(\)" reason="Not in UWP" isRegex="true" />
+
+			<!-- END templated-parent rework -->
 		</Properties>
 
 		<Methods>
@@ -1887,6 +1897,33 @@
 			<Member fullName="Microsoft.UI.Xaml.IXamlServiceProvider Uno.UI.Helpers.MarkupHelper.CreateParserContext(System.Object target, Microsoft.UI.Xaml.Markup.ProvideValueTargetProperty property)" reason="Not in WinUI; refactored out" />
 			<Member fullName="Windows.UI.Xaml.IXamlServiceProvider Uno.UI.Helpers.MarkupHelper.CreateParserContext(System.Object target, Windows.UI.Xaml.Markup.ProvideValueTargetProperty property)" reason="Not in WinUI; refactored out" />
 
+			<!-- BEGIN templated-parent rework -->
+
+			<!-- DependencyObjectStore -->
+			<Member fullName="System.Void Microsoft.UI.Xaml.DependencyObjectStore..ctor(System.Object originalObject, Microsoft.UI.Xaml.DependencyProperty dataContextProperty, Microsoft.UI.Xaml.DependencyProperty templatedParentProperty)" reason="Not in UWP" />
+			<Member fullName="System.Void Windows.UI.Xaml.DependencyObjectStore..ctor(System.Object originalObject, Windows.UI.Xaml.DependencyProperty dataContextProperty, Windows.UI.Xaml.DependencyProperty templatedParentProperty)" reason="Not in UWP" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.DependencyObjectStore.SetTemplatedParent(Microsoft.UI.Xaml.FrameworkElement templatedParent)" reason="Not in UWP" />
+			<Member fullName="System.Void Windows.UI.Xaml.DependencyObjectStore.SetTemplatedParent(Windows.UI.Xaml.FrameworkElement templatedParent)" reason="Not in UWP" />
+			
+			<!-- DependencyObject (codegen for all descendants) -->
+			<Member fullName=".*DependencyProperty .*\.get_TemplatedParentProperty\(\)" reason="Not in UWP" isRegex="true" />
+			<Member fullName=".*DependencyObject .*\.get_TemplatedParent\(\)" reason="Not in UWP" isRegex="true" />
+			<Member fullName="System\.Void .*\.set_TemplatedParent\((Microsoft|Windows)\.UI\.Xaml\.DependencyObject value\)" reason="Not in UWP" isRegex="true" />
+
+			<!-- FrameworkTemplateBuilder -->
+			<Member fullName=".* (Microsoft|Windows)\.UI\.Xaml\.FrameworkTemplateBuilder\.Invoke\(System.Object owner\)" reason="Not in UWP" isRegex="true" />
+			<Member fullName="System.IAsyncResult Microsoft.UI.Xaml.FrameworkTemplateBuilder.BeginInvoke(System.Object owner, System.AsyncCallback callback, System.Object object)" reason="Not in UWP" />
+			<Member fullName="System.IAsyncResult Windows.UI.Xaml.FrameworkTemplateBuilder.BeginInvoke(System.Object owner, System.AsyncCallback callback, System.Object object)" reason="Not in UWP" />
+
+			<!-- templates: FrameworkTemplate, DataTemplate, ControlTemplate, ItemsPanelTemplate -->
+			<Member fullName="(?&lt;ReturnType&gt;(Microsoft|Windows)\.UI\.Xaml\.(DataTemplate|Controls\.(ControlTemplate|ItemsPanelTemplate))) \k&lt;ReturnType&gt;\.op_Implicit\(System\.Func`1&lt;.*&gt; obj\)" reason="Not in UWP" isRegex="true" />
+			<Member fullName="System\.Func`1&lt;.*&gt; (?&lt;DeclaringType&gt;(Microsoft|Windows)\.UI\.Xaml\.(FrameworkTemplate|DataTemplate|Controls\.(ControlTemplate|ItemsPanelTemplate)))\.op_Implicit\(\k&lt;DeclaringType&gt; obj\)" reason="Not in UWP" isRegex="true" />
+
+			<!-- HorizontalGridView -->
+			<Member fullName="System\.Func`1&lt;Android\.Views\.View&gt; Uno\.UI\.Controls\.HorizontalGridView\.get_(Item|Header|Footer)Template\(\)" reason="Not in UWP" isRegex="true" />
+			<Member fullName="System\.Void Uno\.UI\.Controls\.HorizontalGridView\.set_(Item|Header|Footer)Template\(System\.Func`1&lt;Android\.Views\.View&gt; value\)" reason="Not in UWP" isRegex="true" />
+			
+			<!-- END templated-parent rework -->
 		</Methods>
 	</IgnoreSet>
 	<![CDATA[
