@@ -24,7 +24,7 @@ namespace Windows.Storage.Pickers
 		private const string VideoWildcard = "video/*";
 		private Action<Intent>? _intentAction;
 
-		internal static bool TryHandleIntent(Intent intent, Result resultCode)
+		internal static bool TryHandleIntent(Intent? intent, Result resultCode)
 		{
 			if (_currentFileOpenPickerRequest == null)
 			{

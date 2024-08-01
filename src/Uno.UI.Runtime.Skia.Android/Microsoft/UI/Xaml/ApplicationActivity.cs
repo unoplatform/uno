@@ -27,6 +27,7 @@ using Windows.UI.ViewManagement;
 using AndroidX.Core.Graphics;
 using Uno.UI.Helpers;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
+using Windows.Storage.Pickers;
 
 
 namespace Microsoft.UI.Xaml
@@ -363,19 +364,19 @@ namespace Microsoft.UI.Xaml
 
 				// In case this activity is in SingleTask mode, we try to handle
 				// the intent (for protocol activation scenarios).
-				//var handled = (Application as NativeApplication)?.TryHandleIntent(intent) ?? false;
+				var handled = (Application as NativeApplication)?.TryHandleIntent(intent) ?? false;
 
-				//if (this.Log().IsEnabled(LogLevel.Debug))
-				//{
-				//	if (handled)
-				//	{
-				//		this.Log().LogDebug($"Native application handled the intent.");
-				//	}
-				//	else
-				//	{
-				//		this.Log().LogDebug($"Native application did not handle the intent.");
-				//	}
-				//}
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					if (handled)
+					{
+						this.Log().LogDebug($"Native application handled the intent.");
+					}
+					else
+					{
+						this.Log().LogDebug($"Native application did not handle the intent.");
+					}
+				}
 			}
 		}
 
@@ -383,15 +384,15 @@ namespace Microsoft.UI.Xaml
 		{
 			base.OnActivityResult(requestCode, resultCode, data);
 
-			//switch (requestCode)
-			//{
-			//	case FolderPicker.RequestCode:
-			//		FolderPicker.TryHandleIntent(data, resultCode);
-			//		break;
-			//	case FileOpenPicker.RequestCode:
-			//		FileOpenPicker.TryHandleIntent(data, resultCode);
-			//		break;
-			//}
+			switch (requestCode)
+			{
+				case FolderPicker.RequestCode:
+					FolderPicker.TryHandleIntent(data, resultCode);
+					break;
+				case FileOpenPicker.RequestCode:
+					FileOpenPicker.TryHandleIntent(data, resultCode);
+					break;
+			}
 		}
 
 		/// <summary>
