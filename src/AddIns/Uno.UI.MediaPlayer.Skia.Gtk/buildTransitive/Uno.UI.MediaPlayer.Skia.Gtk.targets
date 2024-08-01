@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<Target Name="_AdjustVlcFilesToCopyWindows"
+			BeforeTargets="CollectVlcFilesToCopyWindows"
+			Condition="'$(IsUnoHead)'=='true' and '$(RuntimeIdentifier)'!=''">
+
+		<PropertyGroup>
+			<VlcWindowsX64Enabled Condition="'$(VlcWindowsX64Enabled)'=='true' and '$(RuntimeIdentifier)'!='win-x64'">false</VlcWindowsX64Enabled>
+			<VlcWindowsX86Enabled Condition="'$(VlcWindowsX86Enabled)'=='true' and '$(RuntimeIdentifier)'!='win-x86'">false</VlcWindowsX86Enabled>
+		</PropertyGroup>
+
+	</Target>
+</Project>
