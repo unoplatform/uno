@@ -244,9 +244,9 @@ namespace Microsoft.UI.Xaml.Controls
 			sv.ManipulationStarting += PrepareTouchScroll;
 			sv.ManipulationStarted += TouchScrollStarted;
 			sv.ManipulationDelta += UpdateTouchScroll;
-			sv.ManipulationCompleted += CompleteTouchScroll;						
+			sv.ManipulationCompleted += CompleteTouchScroll;
 		}
-		
+
 		internal void UnhookScrollEvents(ScrollViewer sv)
 		{
 			// Mouse wheel support
@@ -256,7 +256,7 @@ namespace Microsoft.UI.Xaml.Controls
 			sv.ManipulationStarting -= PrepareTouchScroll;
 			sv.ManipulationStarted -= TouchScrollStarted;
 			sv.ManipulationDelta -= UpdateTouchScroll;
-			sv.ManipulationCompleted -= CompleteTouchScroll;						
+			sv.ManipulationCompleted -= CompleteTouchScroll;
 		}
 
 		private void PointerWheelScroll(object sender, Input.PointerRoutedEventArgs e)
