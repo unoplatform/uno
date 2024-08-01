@@ -5,7 +5,7 @@ uid: Uno.Controls.Frame
 # Frame
 
 > [!TIP]
-> This article covers Uno-specific information for Frame. For a full description of the feature and instructions on using it, see [Link text](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.frame?view=windows-app-sdk-1.5)
+> This article covers Uno-specific information for the `Frame` class. For a full description of the feature and instructions on using it, see [Frame class](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.frame)
 
 * Displays Page instances, supports navigation to new pages, and maintains a navigation history to support forward and backward navigation.
 
