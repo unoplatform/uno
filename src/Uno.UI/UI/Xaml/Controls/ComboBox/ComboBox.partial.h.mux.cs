@@ -23,6 +23,8 @@ partial class ComboBox
 	private bool m_IsPointerOverMain;
 	private bool m_IsPointerOverPopup;
 	private bool m_bIsPressed;
+	private bool m_isDropDownClosing;
+	private bool m_bPopupHasBeenArrangedOnce;
 	// Used to determine when to open the popup based on touch, we open the popup when TextBox gains
 	// focus due to a pointer event.
 	private bool m_openPopupOnTouch;
@@ -39,15 +41,19 @@ partial class ComboBox
 	private bool m_isClosingDueToCancel;
 	private bool m_restoreIndexSet;
 
+	private bool m_IsPointerOverDropDownOverlay;
+
 	private InputDeviceType m_inputDeviceTypeUsedToOpen;
 
-	private readonly SerialDisposable m_spEditableTextPreviewKeyDownHandler = new();
+	private readonly SerialDisposable m_spEditableTextPointerPressedEventHandler = new();
+	private readonly SerialDisposable m_spEditableTextTappedEventHandler = new();
 	private readonly SerialDisposable m_spEditableTextKeyDownHandler = new();
+	private readonly SerialDisposable m_spEditableTextPreviewKeyDownHandler = new();
 	private readonly SerialDisposable m_spEditableTextTextChangedHandler = new();
 	private readonly SerialDisposable m_spEditableTextCandidateWindowBoundsChangedEventHandler = new();
 	private readonly SerialDisposable m_spEditableTextSizeChangedHandler = new();
-	private readonly SerialDisposable m_spEditableTextPointerPressedEventHandler = new();
-	private readonly SerialDisposable m_spEditableTextTappedEventHandler = new();
+	private readonly SerialDisposable m_spDropDownOverlayPointerEnteredHandler = new();
+	private readonly SerialDisposable m_spDropDownOverlayPointerExitedHandler = new();
 
 	private TextBlock m_tpEditableContentPresenterTextBlock;
 
