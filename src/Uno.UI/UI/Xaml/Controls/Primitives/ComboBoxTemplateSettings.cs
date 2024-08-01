@@ -35,14 +35,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		}
 
 		[global::Uno.NotImplemented]
-		public global::Microsoft.UI.Xaml.Controls.Primitives.AnimationDirection SelectedItemDirection
-		{
-			get
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Primitives.ComboBoxTemplateSettings", "ComboBoxTemplateSettings.SelectedItemDirection");
-				return 0;
-			}
-		}
+		public global::Microsoft.UI.Xaml.Controls.Primitives.AnimationDirection SelectedItemDirection { get; internal set; }
 
 		[global::Uno.NotImplemented]
 		public double DropDownContentMinWidth

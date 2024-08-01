@@ -36,8 +36,6 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ComboBox : Selector
 	{
-		public event EventHandler<object>? DropDownClosed;
-		public event EventHandler<object>? DropDownOpened;
 
 		private bool _areItemTemplatesForwarded;
 
@@ -69,6 +67,8 @@ namespace Microsoft.UI.Xaml.Controls
 			ResourceResolver.ApplyResource(this, LightDismissOverlayBackgroundProperty, "ComboBoxLightDismissOverlayBackground", isThemeResourceExtension: true, isHotReloadSupported: true);
 
 			DefaultStyleKey = typeof(ComboBox);
+
+			PrepareState();
 		}
 
 		internal bool IsSearchResultIndexSet()
@@ -80,8 +80,6 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			return m_searchResultIndex;
 		}
-
-		public global::Microsoft.UI.Xaml.Controls.Primitives.ComboBoxTemplateSettings TemplateSettings { get; } = new Primitives.ComboBoxTemplateSettings();
 
 		protected override DependencyObject GetContainerForItemOverride() => new ComboBoxItem { IsGeneratedContainer = true };
 
@@ -131,7 +129,9 @@ namespace Microsoft.UI.Xaml.Controls
 				popup.BindToEquivalentProperty(this, nameof(LightDismissOverlayBackground));
 			}
 
-			UpdateHeaderVisibility();
+			//Initialize header visibility
+			UpdateHeaderPresenterVisibility();
+
 			UpdateContentPresenter();
 			UpdateDescriptionVisibility(true);
 
@@ -167,6 +167,11 @@ namespace Microsoft.UI.Xaml.Controls
 				SetupEditableMode();
 				CreateEditableContentPresenterTextBlock();
 			}
+
+			//if (IsInline)
+			//{
+			//	ForceApplyInlineLayoutUpdate();
+			//}
 
 			ChangeVisualState(false);
 		}
@@ -500,87 +505,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 			UpdateDropDownState();
 			ChangeVisualState(true);
-		}
-
-		protected override void OnPointerPressed(PointerRoutedEventArgs args)
-		{
-			base.OnPointerPressed(args);
-
-			_wasPointerPressed = true;
-
-			UpdateVisualState(true);
-			// On UWP ComboBox does handle the pressed event ... but does not capture it!
-			args.Handled = true;
-
-
-			base.OnPointerPressed(args);
-
-			bool isHandled = args.Handled;
-			if (isHandled)
-			{
-				return;
-			}
-
-			var isEnabled = IsEnabled;
-			if (!isEnabled)
-			{
-				return;
-			}
-
-			IFC_RETURN(ctl::do_query_interface(spRoutedArgs, pArgs));
-			IFC_RETURN(IsEventSourceTarget(spRoutedArgs.Get(), &isEventSourceTarget));
-
-			if (isEventSourceTarget)
-			{
-				IFC_RETURN(IsLeftButtonPressed(pArgs, &bIsLeftButtonPressed, NULL));
-
-				if (bIsLeftButtonPressed)
-				{
-					IFC_RETURN(pArgs->put_Handled(TRUE));
-
-					m_bIsPressed = true;
-
-					// for "Pressed" visual state to render
-					UpdateVisualState();
-				}
-			}
-
-			var pointerPoint = args.GetCurrentPoint(null);
-			var pointerDeviceType = pointerPoint.PointerDeviceType;
-
-			bool popupIsOpen = true;
-
-			if (m_tpPopupPart is not null)
-			{
-				popupIsOpen = m_tpPopupPart.IsOpen;
-			}
-
-			if (!popupIsOpen && pointerDeviceType == PointerDeviceType.Touch)
-			{
-				// Open popup after ComboBox is focused due to the PointerPressed event.
-				m_openPopupOnTouch = true;
-			}
-		}
-
-		protected override void OnPointerReleased(PointerRoutedEventArgs args)
-		{
-			base.OnPointerReleased(args);
-
-			if (!_wasPointerPressed)
-			{
-				// The dropdown should open only if the pointer was pressed and released on the ComboBox.
-				return;
-			}
-
-			_wasPointerPressed = false;
-
-			Focus(FocusState.Programmatic);
-			IsDropDownOpen = true;
-
-			UpdateVisualState(true);
-
-			// On UWP ComboBox does handle the released event.
-			args.Handled = true;
 		}
 
 		protected override void OnKeyDown(KeyRoutedEventArgs args)
