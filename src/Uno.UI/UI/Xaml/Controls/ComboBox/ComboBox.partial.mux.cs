@@ -1,15 +1,15 @@
-﻿using System.Diagnostics.Tracing;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using DirectUI;
+using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Uno.Disposables;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
+using Windows.Foundation;
 using Windows.System;
-using static System.Net.Mime.MediaTypeNames;
-using static Uno.UI.FeatureConfiguration;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -49,21 +49,13 @@ partial class ComboBox
 		pEditableTextPartAsTextBox.SizeChanged += OnTextBoxSizeChanged;
 		m_spEditableTextSizeChangedHandler.Disposable = Disposable.Create(() => pEditableTextPartAsTextBox.SizeChanged -= OnTextBoxSizeChanged);
 
-		this.PointerPressed += OnTextBoxPointerPressedPrivate; // TODO:MZ: Should be on this on the textbox?
-		m_spEditableTextPointerPressedEventHandler.Disposable = Disposable.Create(() => this.PointerPressed -= OnTextBoxPointerPressedPrivate);
+		var pointerPressedHandler = new PointerEventHandler(OnTextBoxPointerPressedPrivate);
+		pEditableTextPartAsTextBox.AddHandler(PointerPressedEvent, pointerPressedHandler, true /* handledEventsToo */);
+		m_spEditableTextPointerPressedEventHandler.Disposable = Disposable.Create(() => pEditableTextPartAsTextBox.RemoveHandler(PointerPressedEvent, pointerPressedHandler));
 
-		this.Tapped += OnTextBoxTapped; // TODO:MZ: Should be on this on the textbox?
-		m_spEditableTextTappedEventHandler.Disposable = Disposable.Create(() => this.Tapped -= OnTextBoxTapped);
-
-		PointerPressedEventSourceType* pPointerPressedEventSource = null;
-
-		EditableTextPartAsTextBox->GetPointerPressedEventSourceNoRef(&pPointerPressedEventSource));
-		PointerPressedEventSource->AddHandler(m_spEditableTextPointerPressedEventHandler.Get(), true /* handledEventsToo */));
-
-		TappedEventSourceType* pTappedEventSource = null;
-
-		pEditableTextPartAsTextBox->GetTappedEventSourceNoRef(&pTappedEventSource));
-		pTappedEventSource->AddHandler(m_spEditableTextTappedEventHandler.Get(), true /* handledEventsToo */));
+		var tappedHandler = new TappedEventHandler(OnTextBoxTapped);
+		pEditableTextPartAsTextBox.AddHandler(TappedEvent, tappedHandler, true /* handledEventsToo */);
+		m_spEditableTextTappedEventHandler.Disposable = Disposable.Create(() => pEditableTextPartAsTextBox.RemoveHandler(TappedEvent, tappedHandler));
 
 		if (m_tpDropDownOverlayPart is not null)
 		{
@@ -94,10 +86,9 @@ partial class ComboBox
 		get_ValidationCommand(&command));
 		pEditableTextPartAsTextBox->put_ValidationCommand(command.Get()));
 
-		if (m_tpPopupPart)
-
+		if (m_tpPopupPart is not null)
 		{
-			m_tpPopupPart.Cast<Popup>()->put_OverlayInputPassThroughElement(this));
+			m_tpPopupPart.OverlayInputPassThroughElement = this;
 		}
 
 		m_isEditModeConfigured = true;
@@ -125,7 +116,6 @@ partial class ComboBox
 		m_spEditableTextPreviewKeyDownHandler.Disposable = null;
 		m_spEditableTextKeyDownHandler.Disposable = null;
 		m_spEditableTextTextChangedHandler.Disposable = null;
-		m_spEditableTextPointerPressedHandler.Disposable = null;
 		m_spEditableTextCandidateWindowBoundsChangedEventHandler.Disposable = null;
 		m_spEditableTextSizeChangedHandler.Disposable = null;
 
@@ -139,15 +129,8 @@ partial class ComboBox
 			m_tpDropDownOverlayPart.Visibility = Visibility.Collapsed;
 		}
 
-		PointerPressedEventSourceType* pPointerPressedEventSource = null;
-
-		pEditableTextPartAsTextBox->GetPointerPressedEventSourceNoRef(&pPointerPressedEventSource));
-		pPointerPressedEventSource->RemoveHandler(m_spEditableTextPointerPressedEventHandler.Get()));
-
-		TappedEventSourceType* pTappedEventSource = null;
-
-		pEditableTextPartAsTextBox->GetTappedEventSourceNoRef(&pTappedEventSource));
-		pTappedEventSource->RemoveHandler(m_spEditableTextTappedEventHandler.Get()));
+		m_spEditableTextPointerPressedEventHandler.Disposable = null;
+		m_spEditableTextTappedEventHandler.Disposable = null;
 
 		ResetSearch();
 		ResetSearchString();
@@ -157,9 +140,9 @@ partial class ComboBox
 		m_restoreIndexSet = false;
 		m_indexToRestoreOnCancel = -1;
 
-		if (m_customValueRef)
+		if (m_customValueRef is not null)
 		{
-			m_customValueRef.Reset();
+			m_customValueRef = null;
 			SetContentPresenter(-1);
 			SelectedItem = null;
 		}
@@ -224,6 +207,61 @@ partial class ComboBox
 				if ((m_searchResultIndex > -1) && !isDropDownOpen)
 				{
 					CommitRevertEditableSearch(false /* restoreValue */);
+				}
+			}
+		}
+	}
+
+	private void UpdateEditableTextBox(object item, bool selectText, bool selectAll)
+	{
+		if (item is null)
+		{
+			return;
+		}
+
+		EnsurePropertyPathListener();
+		var strItem = TryGetStringValue(item/*, m_spPropertyPathListener.Get()*/);
+
+		UpdateEditableTextBox(strItem, selectText, selectAll);
+	}
+
+	private void UpdateEditableTextBox(string str, bool selectText, bool selectAll)
+	{
+		if (str is null)
+		{
+			return;
+		}
+
+		if (m_tpEditableTextPart is not null)
+		{
+			string textBoxText = m_tpEditableTextPart.Text;
+
+			if (AreStringsEqual(str, textBoxText))
+			{
+				return;
+			}
+
+			m_searchString = str;
+
+			if (selectAll)
+			{
+				// Selects all the text.
+				m_tpEditableTextPart.Text = m_searchString;
+
+				if (selectText)
+				{
+					m_tpEditableTextPart.SelectAll();
+				}
+			}
+			else
+			{
+				// Selects auto-completed text for quick replacement.
+				int selectionStart = m_tpEditableTextPart.SelectionStart;
+				m_tpEditableTextPart.Text = m_searchString;
+
+				if (selectText)
+				{
+					m_tpEditableTextPart.Select(selectionStart, str.Length - selectionStart);
 				}
 			}
 		}
@@ -626,35 +664,16 @@ partial class ComboBox
 
 	}
 
-	protected override void OnItemsChanged(object e)
+	private void ResetSearch()
 	{
-		var oldIsInline = IsInline;
-		m_itemCount = GetItemCount();
-		var isDropDownOpen = IsDropDownOpen;
+		m_searchResultIndexSet = false;
+		m_searchResultIndex = -1;
+	}
 
-		base.OnItemsChanged(e);
-
-		if (IsSmallFormFactor)
-		{
-			if (isDropDownOpen)
-			{
-				IsDropDownOpen = false;
-			}
-			else if (IsInline != oldIsInline)
-			{
-				if (oldIsInline)
-				{
-					var selectedIndex = SelectedIndex;
-					EnsurePresenterReadyForFullMode();
-					SetContentPresenter(selectedIndex);
-				}
-				else
-				{
-					EnsurePresenterReadyForInlineMode();
-					ForceApplyInlineLayoutUpdate();
-				}
-			}
-		}
+	private void SetSearchResultIndex(int index)
+	{
+		m_searchResultIndexSet = true;
+		m_searchResultIndex = index;
 	}
 
 	private void OnKeyDownPrivate(object pSender, KeyRoutedEventArgs pArgs)
@@ -699,6 +718,84 @@ partial class ComboBox
 		m_handledGamepadOrRemoteKeyDown = eventHandled && XboxUtility.IsGamepadNavigationInput(originalKey);
 	}
 
+
+	private void OnTextBoxTextChanged(object sender, TextChangedEventArgs args)
+	{
+		//DEAD_CODE_REMOVAL
+	}
+	protected override void OnItemsChanged(object e)
+	{
+		var oldIsInline = IsInline;
+		m_itemCount = GetItemCount();
+		var isDropDownOpen = IsDropDownOpen;
+
+		base.OnItemsChanged(e);
+
+		if (IsSmallFormFactor)
+		{
+			if (isDropDownOpen)
+			{
+				IsDropDownOpen = false;
+			}
+			else if (IsInline != oldIsInline)
+			{
+				if (oldIsInline)
+				{
+					var selectedIndex = SelectedIndex;
+					EnsurePresenterReadyForFullMode();
+					SetContentPresenter(selectedIndex);
+				}
+				else
+				{
+					EnsurePresenterReadyForInlineMode();
+					ForceApplyInlineLayoutUpdate();
+				}
+			}
+		}
+	}
+
+	private void OnTextBoxPointerPressedPrivate(object sender, PointerRoutedEventArgs args)
+	{
+		var spPointerPoint = args.GetCurrentPoint(null);
+		if (spPointerPoint is null)
+		{
+			throw new InvalidOperationException("PointerPoint is null");
+		}
+
+		var pointerDeviceType = spPointerPoint.PointerDeviceType;
+
+		var popupIsOpen = true;
+
+		if (m_tpPopupPart is not null)
+		{
+			popupIsOpen = m_tpPopupPart.IsOpen;
+		}
+
+		// On Touch open DropDown when getting focus.
+		if (!popupIsOpen && pointerDeviceType == PointerDeviceType.Touch)
+		{
+			m_inputDeviceTypeUsedToOpen = InputDeviceType.Touch;
+			IsDropDownOpen = true;
+		}
+
+		args.Handled = true;
+	}
+
+	private void OnTextBoxTapped(object sender, TappedRoutedEventArgs args)
+	{
+		var pointerDeviceType = args.PointerDeviceType;
+
+		if (m_selectAllOnTouch && pointerDeviceType == PointerDeviceType.Touch && m_tpEditableTextPart is not null)
+		{
+			m_tpEditableTextPart.SelectAll();
+		}
+
+		// Reset this flag even on mouse click
+		m_selectAllOnTouch = false;
+
+		args.Handled = true;
+	}
+
 	private void OnTextBoxPreviewKeyDown(object pSender, KeyRoutedEventArgs pArgs)
 	{
 		VirtualKey keyObject = pArgs.Key;
@@ -708,6 +805,21 @@ partial class ComboBox
 			OnKeyDownPrivate(pSender, pArgs);
 			pArgs.Handled = true;
 		}
+	}
+	private void OnTextBoxSizeChanged(object sender, SizeChangedEventArgs args) => ArrangePopup(false);
+
+	private void OnTextBoxCandidateWindowBoundsChanged(TextBox sender, CandidateWindowBoundsChangedEventArgs args)
+	{
+		Rect candidateWindowBounds = args.Bounds;
+
+		// Do nothing if the candidate windows bound did not change
+		if (RectUtil.AreEqual(m_candidateWindowBoundsRect, candidateWindowBounds)
+				{
+			return;
+		}
+
+		m_candidateWindowBoundsRect = candidateWindowBounds;
+		ArrangePopup(false);
 	}
 
 	private bool RaiseTextSubmittedEvent(string text)
@@ -721,6 +833,211 @@ partial class ComboBox
 		return eventArgs.Handled;
 	}
 
+	private void ProcessSearch(char keyCode)
+	{
+		int foundIndex = -1;
+
+		if (IsEditable)
+		{
+			if (m_tpEditableTextPart is null)
+			{
+				return;
+			}
+
+			string textBoxText = m_tpEditableTextPart.Text;
+
+			// Don't process search if new text is equal to previous searched text.
+			if (string.Equals(textBoxText, m_searchString))
+			{
+				return;
+			}
+
+			if (textBoxText.Length != 0)
+			{
+				foundIndex = SearchItemSourceIndex(keyCode, false /*startSearchFromCurrentIndex*/, false /*searchExactMatch*/);
+			}
+			else
+			{
+				m_searchString = "";
+			}
+
+			SetSearchResultIndex(foundIndex);
+
+			var selectionChangedTrigger = SelectionChangedTrigger;
+
+			if (selectionChangedTrigger == ComboBoxSelectionChangedTrigger.Always && foundIndex > -1)
+			{
+				SelectedIndex = foundIndex;
+			}
+
+			bool isDropDownOpen = IsDropDownOpen;
+
+			// Override selected visuals only if popup is open
+			if (isDropDownOpen)
+			{
+				OverrideSelectedIndexForVisualStates(foundIndex);
+			}
+
+			if (foundIndex >= 0)
+			{
+				if (isDropDownOpen)
+				{
+					// UNO TODO:
+					//ScrollIntoView(
+					//	foundIndex,
+					//	false /*isGroupItemIndex*/,
+					//	false /*isHeader*/,
+					//	false /*isFooter*/,
+					//	false /*isFromPublicAPI*/,
+					//	true  /*ensureContainerRealized*/,
+					//	false /*animateIfBringIntoView*/,
+					//	ScrollIntoViewAlignment.Default);
+				}
+			}
+		}
+		else
+		{
+			foundIndex = SearchItemSourceIndex(keyCode, true /*startSearchFromCurrentIndex*/, false /*searchExactMatch*/);
+			if (foundIndex >= 0)
+			{
+				SelectedIndex = foundIndex;
+			}
+		}
+	}
+
+	private int SearchItemSourceIndex(char keyCode, bool startSearchFromCurrentIndex, bool searchExactMatch)
+	{
+		// Get all of the ComboBox items; we'll try to convert them to strings later.
+		var itemsVector = Items as IList<object>;
+		int itemCount = GetItemCount();
+
+		int searchIndex = -1;
+
+		bool newStringCreated = false;
+
+		// Editable ComboBox uses the text in the TextBox to search for values, Non-Editable ComboBox appends received characters to the current search string
+		if (IsEditable)
+		{
+			if (m_tpEditableTextPart is not null)
+			{
+				m_searchString = m_tpEditableTextPart.Text;
+			}
+		}
+		else
+		{
+			newStringCreated = AppendCharToSearchString(keyCode);
+		}
+
+		if (startSearchFromCurrentIndex)
+		{
+			int currentSelectedIndex = SelectedIndex;
+			searchIndex = currentSelectedIndex;
+
+			if (newStringCreated)
+			{
+				// If we've created a new search string, then we shouldn't search at i, but rather at i+1.
+				if (searchIndex < itemCount - 1)
+				{
+					// We have at least one more item after this one to start searching at.
+					searchIndex++;
+				}
+				else
+				{
+					// We are at the end of the list. Loop the search.
+					searchIndex = 0;
+				}
+			}
+			else
+			{
+				// If we just appended to the search string, then ensure that the search index is valid (>= 0)
+				searchIndex = (searchIndex >= 0) ? searchIndex : 0;
+			}
+		}
+		else
+		{
+			searchIndex = 0;
+		}
+
+		global::System.Diagnostics.Debug.Assert(searchIndex >= 0);
+
+		object item;
+		string strItem;
+		int foundIndex = -1;
+
+		EnsurePropertyPathListener();
+
+		// Iterate through all of the items. Try to get a string out of the item; if it matches, break. If not, keep looking.
+		// TODO: [https://task.ms/6720676] Use CoreDispatcher/BuildTree to slice TypeAhead search logic
+		for (int i = 0; i < itemCount; i++)
+		{
+			item = itemsVector![searchIndex];
+
+			if (item is not null)
+			{
+				strItem = TryGetStringValue(item/*, _propertyPathListener*/);
+
+				if (strItem is null)
+				{
+					// We couldn't get the string representing this item; it doesn't make sense to continue searching because
+					// we're probably not going to be able to get strings from more items in this collection.
+					break;
+				}
+
+				// Trim leading spaces on the item before comparing.
+				strItem = strItem.TrimStart(' ');
+
+				// On Editable mode Backspace should only search for exact matches. This prevents auto-complete from stopping backspacing.
+				if (searchExactMatch || IsEditable && keyCode == (char)8)
+				{
+					if (AreStringsEqual(strItem, m_searchString))
+					{
+						foundIndex = searchIndex;
+
+						break;
+					}
+				}
+				else if (StartsWithIgnoreLinguisticSemantics(strItem, m_searchString))
+				{
+					foundIndex = searchIndex;
+
+					// If matching item was found auto-complete word.
+					if (IsEditable)
+					{
+						UpdateEditableTextBox(item, true /*selectText*/, false /*selectAll*/);
+					}
+
+					break;
+				}
+			}
+
+			searchIndex++;
+
+			// If we've gotten to the end of the list, loop the search.
+			if (searchIndex == itemCount)
+			{
+				searchIndex = 0;
+			}
+		}
+
+		return foundIndex;
+	}
+
+	private bool StartsWithIgnoreLinguisticSemantics(string strSource, string strPrefix)
+	{
+		// The goal of this method is to return true if strPrefix is found at the start of strSource regardless of linguistic semantics.
+		// For example, if we've got strSource = "wAsHINGton" and strPrefix = "Wa", we should return true from this method.
+		// FindNLSStringEx will return a 0-based index into the source string if it's successful; it will return < 0 if it failed to find a match.
+		// We pass in a number of flags to achieve this behavior:
+		// FIND_STARTSWITH : Test to find out if the strPrefix value is the first value in the Source string.
+		// NORM_IGNORECASE: Ignore case (broader than LINGUISTIC_IGNORECASE)
+		// NORM_IGNOREKANATYPE: Do not differentiate between hiragana and katakana characters (corresponding chars compare as equal)
+		// NORM_IGNOREWIDTH: Used in Japanese and Chinese scripts, this flag ignores the difference between half- and full-width characters
+		// NORM_LINGUISTIC_CASING: Use linguistic rules for casing instead of file system rules
+		// LINGUISTIC_IGNOREDIACRITIC: Ignore diacritics (Dotless Turkish i maps to dotted i).
+		return strSource.StartsWith(strPrefix, StringComparison.InvariantCultureIgnoreCase);
+	}
+
+	private bool AreStringsEqual(string str1, string str2) => string.Equals(str1, str2, StringComparison.OrdinalIgnoreCase);
 
 	private bool IsSearchStringValid(string str)
 	{
@@ -741,6 +1058,57 @@ partial class ComboBox
 			m_isInSearchingMode = false;
 		}
 		return IsTextSearchEnabled && m_isInSearchingMode;
+	}
+
+	private bool AppendCharToSearchString(char ch)
+	{
+		var createdNewString = false;
+		if (HasSearchStringTimedOut())
+		{
+			ResetSearchString();
+			createdNewString = true;
+		}
+
+		m_timeSinceLastCharacterReceived = DateTime.UtcNow;
+
+		const int maxNumCharacters = 256;
+
+		// Only append a new character if we're less than the max string length.
+		if (m_searchString.Length <= maxNumCharacters)
+		{
+			m_searchString += ch;
+		}
+		m_isInSearchingMode = true;
+
+		return createdNewString;
+	}
+
+	private void ResetSearchString()
+	{
+		m_searchString = "";
+	}
+
+	private void EnsurePropertyPathListener()
+	{
+		// TODO Uno: Property path listener is not implemented yet
+		//if (!m_spPropertyPathListener)
+		//{
+		//	wrl_wrappers::HString strDisplayMemberPath;
+		//	IFC_RETURN(get_DisplayMemberPath(strDisplayMemberPath.GetAddressOf()));
+
+		//	if (!strDisplayMemberPath.IsEmpty())
+		//	{
+		//		// If we don't have one cached, create the property path listener
+		//		// If strDisplayMemberPath contains something (a path), then use that to inform our PropertyPathListener.
+		//		auto pPropertyPathParser = std::make_unique<PropertyPathParser>();
+
+		//		IFC_RETURN(pPropertyPathParser->SetSource(WindowsGetStringRawBuffer(strDisplayMemberPath.Get(), nullptr), FALSE));
+
+		//		IFC_RETURN(ctl::make<PropertyPathListener>(nullptr, pPropertyPathParser.get(), false /*fListenToChanges*/, false /*fUseWeakReferenceForSource*/, &m_spPropertyPathListener));
+		//	}
+		//}
+
+		//return S_OK;
 	}
 
 	private void CreateEditableContentPresenterTextBlock()
