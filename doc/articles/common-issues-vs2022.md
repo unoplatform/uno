@@ -8,6 +8,12 @@ uid: Uno.UI.CommonIssues.vs2022
 
 A [Visual Studio issue](https://developercommunity.visualstudio.com/t/WinAppSDK-Unpackaged-profile-cannot-be-s/10643735) is preventing the Unpackaged profile if iOS/Android target frameworks are present in the project. In order for the unpackaged profile to be selected, you'll need to edit the `Properties/launchSettings.json` file to remove the `MyApp (Packaged WinAppSDK)` entry. Once it is removed, select the `MyApp (Unpackaged WinAppSDK)` then start the debugging of your app.
 
+## An iOS fails to run with `No class inheriting from a valid Application Delegate found`
+
+When using iOS Hot Restart on Visual Studio 2022, a [limitation of the environment](https://developercommunity.visualstudio.com/t/iOS-Hot-Restart-does-not-work-for-non-MA/10714660) prevents an Uno Platform app from starting properly when MAUI Embeddeding is referenced.
+
+A workaround is to disabled MAUI Embedding in the [`UnoFeatures` of your project](xref:Uno.Features.Uno.Sdk#uno-platform-features).
+
 ## App builds in Visual Studio 2022 are taking a long time
 
 Take a [look at our article](xref:Build.Solution.TargetFramework-override) in order to ensure that your solution is building and showing intellisense as fast as possible, and to avoid [this Visual Studio issue](https://developercommunity.visualstudio.com/t/Building-a-cross-targeted-project-with-m/651372?space=8&q=building-a-cross-targeted-project-with-many-target) (help the community by upvoting it!) where multi-targeted project libraries always build their full set of targets.
