@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Documents;
 using Uno.Disposables;
 using Uno.UI.Xaml.Input;
+using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -44,6 +45,7 @@ partial class ComboBox
 	private TextBlock m_tpEditableContentPresenterTextBlock;
 
 	private object m_customValueRef;
+	private Rect m_candidateWindowBoundsRect;
 
 	private bool ShouldMoveFocusToTextBox => m_shouldMoveFocusToTextBox;
 
