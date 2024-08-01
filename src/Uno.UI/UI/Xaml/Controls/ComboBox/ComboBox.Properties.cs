@@ -49,10 +49,7 @@ partial class ComboBox
 			typeof(ComboBox),
 			new FrameworkPropertyMetadata(
 				defaultValue: null,
-				options: FrameworkPropertyMetadataOptions.None,
-				propertyChangedCallback: (s, e) => ((ComboBox)s)?.UpdateHeaderVisibility()
-			)
-		);
+				options: FrameworkPropertyMetadataOptions.None));
 
 	/// <summary>
 	/// Gets or sets the DataTemplate used to display the content of the control's header.
@@ -73,10 +70,7 @@ partial class ComboBox
 			typeof(ComboBox),
 			new FrameworkPropertyMetadata(
 				defaultValue: null,
-				options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
-				propertyChangedCallback: (s, e) => ((ComboBox)s)?.UpdateHeaderVisibility()
-			)
-		);
+				options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
 	/// <summary>
 	/// Gets or sets a value that indicates whether the user can

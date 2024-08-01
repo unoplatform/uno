@@ -54,8 +54,6 @@ namespace Microsoft.UI.Xaml.Controls
 		private int m_indexForcedToUnselectedVisual = -1;
 		private int m_indexForcedToSelectedVisual = -1;
 
-		private bool _wasPointerPressed;
-
 		/// <summary>
 		/// The 'inline' parent view of the selected item within the dropdown list. This is only set if SelectedItem is a view type.
 		/// </summary>

@@ -12,9 +12,12 @@ namespace Microsoft.UI.Xaml.Controls;
 
 partial class ComboBox
 {
-	private bool m_isInSearchingMode;
+#pragma warning disable CS0649 // never assigned to, and will always have its default value false
+#pragma warning disable CS0414 // never assigned to, and will always have its default value false
+	private bool m_handledGamepadOrRemoteKeyDown;
 	private bool m_ignoreCancelKeyDowns;
 	private bool m_isEditModeConfigured;
+	private bool m_isInSearchingMode;
 
 	// On pointer released we perform some actions depending on control. We decide to whether to perform them
 	// depending on some parameters including but not limited to whether released is followed by a pressed, which

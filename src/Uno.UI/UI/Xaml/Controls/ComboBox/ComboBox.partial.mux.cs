@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using DirectUI;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -70,10 +69,10 @@ partial class ComboBox
 		if (m_tpDropDownOverlayPart is not null)
 		{
 			m_tpDropDownOverlayPart.PointerEntered += OnDropDownOverlayPointerEntered;
-			m_spDropDownOverlayPointerEnteredHandler.Disposable = Disposable.Create(() => m_tpContentPresenterPart.PointerEntered -= OnDropDownOverlayPointerEntered);
+			m_spDropDownOverlayPointerEnteredHandler.Disposable = Disposable.Create(() => m_tpDropDownOverlayPart.PointerEntered -= OnDropDownOverlayPointerEntered);
 
 			m_tpDropDownOverlayPart.PointerExited += OnDropDownOverlayPointerExited;
-			m_spDropDownOverlayPointerExitedHandler.Disposable = Disposable.Create(() => m_tpContentPresenterPart.PointerExited -= OnDropDownOverlayPointerExited);
+			m_spDropDownOverlayPointerExitedHandler.Disposable = Disposable.Create(() => m_tpDropDownOverlayPart.PointerExited -= OnDropDownOverlayPointerExited);
 
 			m_tpDropDownOverlayPart.Visibility = Visibility.Visible;
 		}
@@ -86,13 +85,14 @@ partial class ComboBox
 		ResetSearch();
 		ResetSearchString();
 
-		wrl::ComPtr<xaml_controls::IInputValidationContext> context;
-		get_ValidationContext(&context));
-		pEditableTextPartAsTextBox.ValidationContext(context.Get()));
+		// TODO Uno: Input validation support #4839
+		//wrl::ComPtr<xaml_controls::IInputValidationContext> context;
+		//get_ValidationContext(&context));
+		//pEditableTextPartAsTextBox.ValidationContext(context.Get()));
 
-		wrl::ComPtr<xaml_controls::IInputValidationCommand> command;
-		get_ValidationCommand(&command));
-		pEditableTextPartAsTextBox->put_ValidationCommand(command.Get()));
+		//wrl::ComPtr<xaml_controls::IInputValidationCommand> command;
+		//get_ValidationCommand(&command));
+		//pEditableTextPartAsTextBox->put_ValidationCommand(command.Get()));
 
 		if (m_tpPopupPart is not null)
 		{
@@ -129,10 +129,8 @@ partial class ComboBox
 
 		if (m_tpDropDownOverlayPart is not null)
 		{
-			var pDropDownOverlayPartAsI = iinspectable_cast(m_tpDropDownOverlayPart.Cast<Border>());
-
-			m_spDropDownOverlayPointerEnteredHandler.DetachEventHandler(pDropDownOverlayPartAsI));
-			m_spDropDownOverlayPointerExitedHandler.DetachEventHandler(pDropDownOverlayPartAsI));
+			m_spDropDownOverlayPointerEnteredHandler.Disposable = null;
+			m_spDropDownOverlayPointerExitedHandler.Disposable = null;
 
 			m_tpDropDownOverlayPart.Visibility = Visibility.Collapsed;
 		}
@@ -621,7 +619,7 @@ partial class ComboBox
 		}
 
 		EnsurePropertyPathListener();
-		var itemString = TryGetStringValue(item) //, m_spPropertyPathListener); TODO Uno: Missing PropertyPathListener support
+		var itemString = TryGetStringValue(item); //, m_spPropertyPathListener); TODO Uno: Missing PropertyPathListener support
 		UpdateEditableContentPresenterTextBlock(itemString);
 	}
 
@@ -699,8 +697,7 @@ partial class ComboBox
 
 					if (m_customValueRef is not null)
 					{
-						wrl_wrappers::HString storedString;
-						IValueBoxer::UnboxValue(m_customValueRef.Get(), storedString.GetAddressOf());
+						var storedString = m_customValueRef as string;
 
 						// Prevent sending the event if the custom value is the same.
 						sendEvent = !AreStringsEqual(storedString, searchString);
@@ -708,8 +705,7 @@ partial class ComboBox
 
 					if (sendEvent)
 					{
-						ctl::ComPtr<IInspectable> spInspectable;
-						PropertyValue::CreateFromString(searchString, &spInspectable));
+						var spInspectable = searchString;
 
 						bool isHandled = RaiseTextSubmittedEvent(searchString);
 
@@ -845,7 +841,6 @@ partial class ComboBox
 		m_handledGamepadOrRemoteKeyDown = eventHandled && XboxUtility.IsGamepadNavigationInput(originalKey);
 	}
 
-
 	private void OnTextBoxTextChanged(object sender, TextChangedEventArgs args)
 	{
 		//DEAD_CODE_REMOVAL
@@ -893,7 +888,7 @@ partial class ComboBox
 
 		if (isEventSourceTarget)
 		{
-			m_isPointerOverMain = true;
+			m_IsPointerOverMain = true;
 			m_bIsPressed = false;
 			UpdateVisualState();
 		}
@@ -1434,7 +1429,7 @@ partial class ComboBox
 		return strSource.StartsWith(strPrefix, StringComparison.InvariantCultureIgnoreCase);
 	}
 
-	private bool AreStringsEqual(string str1, string str2) => string.Equals(str1, str2, StringComparison.OrdinalIgnoreCase);
+	private bool AreStringsEqual(string? str1, string? str2) => string.Equals(str1, str2, StringComparison.OrdinalIgnoreCase);
 
 	private bool IsSearchStringValid(string str)
 	{
@@ -1628,7 +1623,7 @@ partial class ComboBox
 		return result;
 	}
 
-	private InputDeviceType GetInputDeviceTypeUsedToOpen() => m_inputDeviceTypeUsedToOpen;
+	internal InputDeviceType GetInputDeviceTypeUsedToOpen() => m_inputDeviceTypeUsedToOpen;
 
 	private void OverrideSelectedIndexForVisualStates(int selectedIndexOverride)
 	{
@@ -1736,4 +1731,21 @@ partial class ComboBox
 			m_tpEditableContentPresenterTextBlock = spTextBlock;
 		}
 	}
+
+
+#if HAS_UNO // Not ported yet
+	private void SetContentPresenter(int value) { }
+
+	private void PopupKeyDown(KeyRoutedEventArgs args) { }
+
+	private void MainKeyDown(KeyRoutedEventArgs args) { }
+
+	private void ArrangePopup(bool value) { }
+
+	private void EnsurePresenterReadyForFullMode() { }
+
+	private void EnsurePresenterReadyForInlineMode() { }
+
+	private void ForceApplyInlineLayoutUpdate() { }
+#endif
 }
