@@ -295,17 +295,15 @@ public partial class Popup
 	/// </summary>
 	private Brush GetPanelBackground()
 	{
+		// In all cases, we need the background to not be null so that it can receive pointer events, or else it
+		// will fail hit-testing.
 		if (ShouldShowLightDismissOverlay)
 		{
-			return LightDismissOverlayBackground;
-		}
-		else if (IsLightDismissEnabled)
-		{
-			return SolidColorBrushHelper.Transparent;
+			return LightDismissOverlayBackground ?? SolidColorBrushHelper.Transparent;
 		}
 		else
 		{
-			return null;
+			return SolidColorBrushHelper.Transparent;
 		}
 	}
 
