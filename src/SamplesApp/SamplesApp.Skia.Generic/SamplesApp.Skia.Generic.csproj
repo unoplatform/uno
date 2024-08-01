@@ -64,8 +64,8 @@
 		<Compile Update="Program.cs" />
 	</ItemGroup>
 
-	<Import Project="..\..\..\build\nuget\*.Skia.Gtk.props" />
-	<Import Project="..\..\..\build\nuget\*.Skia.Gtk.targets" />
+	<Import Project="..\..\Uno.UI.Runtime.Skia.Gtk\buildTransitive\*.Skia.Gtk.props" />
+	<Import Project="..\..\Uno.UI.Runtime.Skia.Gtk\buildTransitive\*.Skia.Gtk.targets" />
 
 	<PropertyGroup>
 		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
