@@ -353,7 +353,16 @@ internal partial class InputManager
 		private void OnPointerPressed(Windows.UI.Core.PointerEventArgs args)
 		{
 			// If 2+ mouse buttons are pressed, we only respond to the first.
-			if (args.CurrentPoint.PointerDeviceType == PointerDeviceType.Mouse && _pressedElements.Count != 0)
+			var buttonsPressed = 0;
+			var properties = args.CurrentPoint.Properties;
+			if (properties.IsLeftButtonPressed) { buttonsPressed++; }
+			if (properties.IsRightButtonPressed) { buttonsPressed++; }
+			if (properties.IsMiddleButtonPressed) { buttonsPressed++; }
+			if (properties.IsXButton1Pressed) { buttonsPressed++; }
+			if (properties.IsXButton2Pressed) { buttonsPressed++; }
+			if (properties.IsBarrelButtonPressed) { buttonsPressed++; }
+
+			if (args.CurrentPoint.PointerDeviceType == PointerDeviceType.Mouse && buttonsPressed > 1)
 			{
 				return;
 			}
