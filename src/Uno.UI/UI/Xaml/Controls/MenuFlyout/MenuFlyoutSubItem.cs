@@ -732,7 +732,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return null;
 		}
 
-		private protected override string GetPlainText() => Text;
+		internal override string GetPlainText() => Text;
 
 		bool ISubMenuOwner.IsSubMenuOpen => IsOpen;
 

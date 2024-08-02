@@ -10,7 +10,7 @@ namespace Microsoft.UI.Xaml
 {
 	public partial class FrameworkElement
 	{
-		private protected virtual string GetPlainText() => "";
+		internal virtual string GetPlainText() => "";
 
 		internal protected static string GetStringFromObject(object pObject)
 		{

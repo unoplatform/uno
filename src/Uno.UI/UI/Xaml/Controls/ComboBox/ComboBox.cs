@@ -587,14 +587,14 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 				else
 				{
-					return spBoxedValue.ToString()!;
+					return FrameworkElement.GetStringFromObject(spBoxedValue);
 					// We've set a BoxedValue, but we can't directly ToString it. Try to get a string out of it.
 				}
 			}
 			else
 			{
 				// If we haven't found a BoxedObject and it's not Stringable, try one last time to get a string out.
-				return @object.ToString()!;
+				return FrameworkElement.GetStringFromObject(@object);
 			}
 		}
 
