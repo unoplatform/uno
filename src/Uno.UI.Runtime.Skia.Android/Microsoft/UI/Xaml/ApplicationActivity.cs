@@ -165,10 +165,10 @@ namespace Microsoft.UI.Xaml
 			if (_nativeLayerHost?.Path is { } p && p.Contains(ev.GetX(), ev.GetY()))
 			{
 				// We don't call the base method if NativeLayerHost.Path doesn't contain (X, Y).
-                // This is due to the way Android handles hit-testing with Canvas.ClipPath, where even if the ClipPath
-                // doesn't contain the coordinates of a touch event, it will still hit-test positively as if its clip
-                // path contains the coordinates. So, we have to do our own hit-testing step where we prevent dispatching
-                // the event altogether if it's not within the clip path of the native layer.
+				// This is due to the way Android handles hit-testing with Canvas.ClipPath, where even if the ClipPath
+				// doesn't contain the coordinates of a touch event, it will still hit-test positively as if its clip
+				// path contains the coordinates. So, we have to do our own hit-testing step where we prevent dispatching
+				// the event altogether if it's not within the clip path of the native layer.
 				nativelyHandled = base.DispatchTouchEvent(ev);
 			}
 
@@ -243,18 +243,18 @@ namespace Microsoft.UI.Xaml
 
 				_cachedDisplayInformation = DisplayInformation.GetForCurrentView();
 
-                _skCanvasView = new UnoSKCanvasView(this, Microsoft.UI.Xaml.Window.CurrentSafe!.RootElement!);
-                _skCanvasView.LayoutParameters = new ViewGroup.LayoutParams(
-                	ViewGroup.LayoutParams.MatchParent,
-                	ViewGroup.LayoutParams.MatchParent);
-                _skCanvasView.PaintSurface += OnPaintSurface;
-                RelativeLayout.AddView(_skCanvasView);
+				_skCanvasView = new UnoSKCanvasView(this, Microsoft.UI.Xaml.Window.CurrentSafe!.RootElement!);
+				_skCanvasView.LayoutParameters = new ViewGroup.LayoutParams(
+					ViewGroup.LayoutParams.MatchParent,
+					ViewGroup.LayoutParams.MatchParent);
+				_skCanvasView.PaintSurface += OnPaintSurface;
+				RelativeLayout.AddView(_skCanvasView);
 
 				_nativeLayerHost = new ClippedRelativeLayout(this);
 				_nativeLayerHost.LayoutParameters = new ViewGroup.LayoutParams(
-                	ViewGroup.LayoutParams.MatchParent,
-                	ViewGroup.LayoutParams.MatchParent);
-                RelativeLayout.AddView(NativeLayerHost);
+					ViewGroup.LayoutParams.MatchParent,
+					ViewGroup.LayoutParams.MatchParent);
+				RelativeLayout.AddView(NativeLayerHost);
 			}
 		}
 

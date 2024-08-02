@@ -41,14 +41,14 @@ internal partial class BrowserMediaPlayerPresenterExtension : IMediaPlayerPresen
 			}
 			_playerExtension = extension;
 			extension.IsVideoChanged += OnExtensionOnIsVideoChanged;
-			
+
 			_presenter.Child = new ContentPresenter
 			{
 				Content = _htmlElement = extension.HtmlElement
 			};
-			
+
 			NativeMethods.SetupEvents(_htmlElement.ElementId);
-			
+
 			_elementIdToMediaPlayerPresenter.TryAdd(_htmlElement.ElementId, this);
 		}
 	}
@@ -97,7 +97,7 @@ internal partial class BrowserMediaPlayerPresenterExtension : IMediaPlayerPresen
 			NativeMethods.ExitPictureInPicture(_htmlElement.ElementId);
 		}
 	}
-	
+
 	[JSExport]
 	private static void OnExitFullscreen(string id)
 	{

@@ -24,15 +24,15 @@ internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 	private const string MsAppXScheme = "ms-appx";
 	private static readonly ConcurrentDictionary<MediaPlayer, BrowserMediaPlayerExtension> _mediaPlayerToExtension = new();
 	private static readonly ConcurrentDictionary<string, BrowserMediaPlayerExtension> _elementIdToMediaPlayer = new();
-	
+
 	private readonly MediaPlayer _player;
 	private readonly DispatcherTimer _onTimeUpdateTimer;
-	
+
 	private bool _updatingPositionFromNative;
 
 	private int _playlistIndex = -1; // -1 if no playlist or empty playlist, otherwise the 0-based index of the current track in the playlist
 	private MediaPlaybackList? _playlist; // only set and used if the current _player.Source is a playlist
-	
+
 	public SkiaWasmHtmlElement HtmlElement { get; }
 
 	// the current effective url (e.g. current video in playlist) that is set natively
@@ -50,9 +50,9 @@ internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 				Events?.RaiseSourceChanged();
 				// We don't return here since setting the uri to itself should reload (e.g. looping playlist of a single element)
 			}
-			
+
 			_player.PlaybackSession.PlaybackState = MediaPlaybackState.Opening;
-			
+
 			if (value is null)
 			{
 				NativeMethods.SetSource(HtmlElement.ElementId, "");
@@ -111,17 +111,17 @@ internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 		NativeMethods.BuildImports();
 		_player = player;
 		_mediaPlayerToExtension.TryAdd(player, this);
-		
+
 		HtmlElement = SkiaWasmHtmlElement.CreateHtmlElement("uno-mpe-" + new string(Random.Shared.GetItems("abcdefghijklmnopqrstuvwxyz".ToCharArray(), 10)), "video");
 		_elementIdToMediaPlayer.TryAdd(HtmlElement.ElementId, this);
-		
+
 		NativeMethods.SetupEvents(HtmlElement.ElementId);
 
 		// using the native timeupdate fires way too frequently (probably every frame) and chokes
 		// the event loop, so we limit this to 60 times a second.
 		_onTimeUpdateTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(16) };
 		_onTimeUpdateTimer.Tick += (_, _) => OnTimeUpdate(HtmlElement.ElementId);
-		_onTimeUpdateTimer.Start();;
+		_onTimeUpdateTimer.Start();
 	}
 
 	internal static BrowserMediaPlayerExtension? GetByMediaPlayer(MediaPlayer player) => _mediaPlayerToExtension.GetValueOrDefault(player);
@@ -218,14 +218,14 @@ internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 	public void SetFileSource(IStorageFile file) => throw new NotImplementedException();
 	public void SetStreamSource(IRandomAccessStream stream) => throw new NotImplementedException();
 	public void SetMediaSource(IMediaSource source) => throw new NotImplementedException();
-	
+
 	// Web APIs don't support this.
 	public void StepForwardOneFrame() => throw new NotImplementedException();
 	public void StepBackwardOneFrame() => throw new NotImplementedException();
-	
+
 	// Not applicable on WASM
 	public void SetSurfaceSize(Size size) => throw new NotImplementedException();
-	
+
 	public void Play() => NativeMethods.Play(HtmlElement.ElementId);
 
 	public void Pause() => NativeMethods.Pause(HtmlElement.ElementId);
@@ -237,7 +237,7 @@ internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 	public void OnVolumeChanged() => NativeMethods.SetVolume(HtmlElement.ElementId, _player.Volume / 100);
 
 	public void OnOptionChanged(string name, object value) { }
-	
+
 	public void PreviousTrack()
 	{
 		if (_playlist != null && _playlistIndex > 0)
@@ -284,7 +284,7 @@ internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 			@this.IsVideo = isVideo;
 		}
 	}
-	
+
 	[JSExport]
 	private static void OnStalled(string id)
 	{
@@ -293,7 +293,7 @@ internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 			@this._player.PlaybackSession.PlaybackState = MediaPlaybackState.Buffering;
 		}
 	}
-	
+
 	[JSExport]
 	private static void OnRateChange(string id)
 	{
@@ -302,7 +302,7 @@ internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 			@this.Events?.RaiseMediaPlayerRateChanged(@this.PlaybackRate);
 		}
 	}
-	
+
 	[JSExport]
 	private static void OnDurationChange(string id)
 	{
@@ -311,7 +311,7 @@ internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 			@this.Events?.NaturalDurationChanged();
 		}
 	}
-	
+
 	[JSExport]
 	private static void OnEnded(string id)
 	{
@@ -339,7 +339,7 @@ internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 			}
 		}
 	}
-	
+
 	[JSExport]
 	private static void OnError(string id)
 	{
@@ -349,7 +349,7 @@ internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 			@this._player.PlaybackSession.PlaybackState = MediaPlaybackState.None;
 		}
 	}
-	
+
 	[JSExport]
 	private static void OnPause(string id)
 	{
@@ -358,7 +358,7 @@ internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 			@this._player.PlaybackSession.PlaybackState = MediaPlaybackState.Paused;
 		}
 	}
-	
+
 	[JSExport]
 	private static void OnSeeked(string id)
 	{
@@ -367,7 +367,7 @@ internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 			@this.Events?.RaiseSeekCompleted();
 		}
 	}
-	
+
 	[JSExport]
 	private static void OnVolumeChange(string id)
 	{
@@ -376,7 +376,7 @@ internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 			@this.Events?.RaiseVolumeChanged();
 		}
 	}
-	
+
 	[JSExport]
 	private static void OnTimeUpdate(string id)
 	{
@@ -420,7 +420,7 @@ internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 			Console.WriteLine($"Setting native source to {uri}");
 			_setSource(elementId, uri);
 		}
-		
+
 		[JSImport($"globalThis.Uno.UI.Runtime.Skia.{nameof(BrowserMediaPlayerExtension)}.toggleMute")]
 		public static partial void SetMuted(string elementId, bool muted);
 		[JSImport($"globalThis.Uno.UI.Runtime.Skia.{nameof(BrowserMediaPlayerExtension)}.setVolume")]
