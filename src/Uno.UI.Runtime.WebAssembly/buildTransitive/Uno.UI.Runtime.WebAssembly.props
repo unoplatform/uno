@@ -2,7 +2,6 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
 	<PropertyGroup>
-		<IsUnoHead Condition="'$(OutputType)'=='Exe' OR '$(OutputType)'=='WinExe'">true</IsUnoHead>
 		<UnoRuntimeIdentifier>WebAssembly</UnoRuntimeIdentifier>
 		<UnoIsWebAssemblyBrowserHead>true</UnoIsWebAssemblyBrowserHead>
 	</PropertyGroup>

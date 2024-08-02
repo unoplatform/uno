@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<PropertyGroup>
-		<IsUnoHead Condition="'$(OutputType)'=='Exe' OR '$(OutputType)'=='WinExe'">true</IsUnoHead>
 		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
 		<SupportsFontManifest>true</SupportsFontManifest>
 		<UnoIsSkiaLinuxFramebufferHead>true</UnoIsSkiaLinuxFramebufferHead>
