@@ -140,6 +140,12 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 			return WindowInsetsCompat.ToWindowInsetsCompat(activity.WindowManager?.CurrentWindowMetrics.WindowInsets);
 		}
 
+		var decorView = activity.Window.DecorView;
+		if (decorView.IsAttachedToWindow)
+		{
+			return ViewCompat.GetRootWindowInsets(decorView);
+		}
+
 		return null;
 	}
 
