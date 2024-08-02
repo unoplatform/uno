@@ -161,23 +161,6 @@ namespace Microsoft.UI.Xaml
 
 		}
 
-		// WinUI overrides this in CalendarViewBaseItemChrome, ListViewBaseItemChrome, and MediaPlayerElement.
-		private protected virtual bool HasTemplateChild()
-		{
-			return GetFirstChild() is not null;
-		}
-
-		private UIElement? GetFirstChild()
-		{
-			var children = GetChildren();
-			if (children is not null && children.Count > 0)
-			{
-				return children[0];
-			}
-
-			return null;
-		}
-
 		private protected virtual void ApplyTemplate(out bool addedVisuals)
 		{
 			addedVisuals = false;
@@ -209,11 +192,6 @@ namespace Microsoft.UI.Xaml
 					AddChild(child);
 				}
 			}
-		}
-
-		private protected virtual FrameworkTemplate? GetTemplate()
-		{
-			return null;
 		}
 
 		internal void InvokeApplyTemplate(out bool addedVisuals)

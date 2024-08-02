@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using Uno.Disposables;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -605,7 +606,10 @@ namespace Microsoft.UI.Xaml.Controls
 			);
 		#endregion
 
-		//private readonly SerialDisposable _sizeChangedSubscription = new SerialDisposable();
+
+#if !__SKIA__
+		private readonly SerialDisposable _sizeChangedSubscription = new SerialDisposable();
+#endif
 
 #pragma warning disable 649 // unused member for Unit tests
 		private _ScrollContentPresenter? _presenter;
@@ -1063,23 +1067,26 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		//private void UpdateSizeChangedSubscription(bool isCleanupRequired = false)
-		//{
-		//	// TODO HERE
-		//	if (!isCleanupRequired
-		//		&& Content is IFrameworkElement element)
-		//	{
-		//		_sizeChangedSubscription.Disposable = Disposable.Create(() => element.SizeChanged -= OnElementSizeChanged);
-		//		element.SizeChanged += OnElementSizeChanged;
-		//	}
-		//	else
-		//	{
-		//		_sizeChangedSubscription.Disposable = null;
-		//	}
+#if !__SKIA__
+		[SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Used only by some platforms; wip refactor")]
+		private void UpdateSizeChangedSubscription(bool isCleanupRequired = false)
+		{
+			// TODO HERE
+			if (!isCleanupRequired
+				&& Content is IFrameworkElement element)
+			{
+				_sizeChangedSubscription.Disposable = Disposable.Create(() => element.SizeChanged -= OnElementSizeChanged);
+				element.SizeChanged += OnElementSizeChanged;
+			}
+			else
+			{
+				_sizeChangedSubscription.Disposable = null;
+			}
 
-		//	void OnElementSizeChanged(object sender, SizeChangedEventArgs args)
-		//		=> UpdateDimensionProperties();
-		//}
+			void OnElementSizeChanged(object sender, SizeChangedEventArgs args)
+				=> UpdateDimensionProperties();
+		}
+#endif
 		#endregion
 
 		#region Managed scroll bars support

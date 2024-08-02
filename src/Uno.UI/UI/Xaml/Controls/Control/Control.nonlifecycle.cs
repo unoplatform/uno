@@ -19,7 +19,7 @@ partial class Control
 	internal void SetUpdateControlTemplate(bool forceUpdate = false)
 	{
 		if (
-			!FeatureConfiguration.Control.UseLegacyLazyApplyTemplate ||
+			!Uno.UI.FeatureConfiguration.Control.UseLegacyLazyApplyTemplate ||
 			forceUpdate ||
 			this.HasParent() ||
 			CanCreateTemplateWithoutParent
@@ -68,7 +68,7 @@ partial class Control
 
 			if (Template != null)
 			{
-				TemplatedRoot = Template.LoadContentCached();
+				TemplatedRoot = Template.LoadContentCached(templatedParent: this);
 			}
 			else
 			{
