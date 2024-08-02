@@ -40,19 +40,11 @@ namespace Microsoft.UI.Xaml
 			=> throw new NotSupportedException("Use the factory constructors");
 
 		public FrameworkTemplate(Func<View?>? factory)
-			: this(null, (o, s) =>
-			{
-				s.IsIgnored = true;
-				return factory?.Invoke();
-			})
+			: this(null, (o, s) => factory?.Invoke())
 		{
-			// fixme@xy: locate the caller for this implementation
-			// and try to see if we can drop this overload
-			// because it won't inject the templated parent at all.
-
-			// ^update: we may be able to get away with this,
-			// since the TemplateCache(from winui, not here) mechanism may be used to re-inject the TP post creation.
-			// still we should explain why this overload is kept? (whos calling it)
+			// fixme@xy: This overload simply should not exist, since the materialized members do not have the tp injected.
+			// It can lead to issues like template-parent binding not working...
+			// Currently, it seems to be only used in unit tests & runtime tests.
 		}
 
 		public FrameworkTemplate(object? owner, FrameworkTemplateBuilder? factory)
@@ -93,28 +85,33 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		/// <returns>A new instance of the template</returns>
 		View? IFrameworkTemplateInternal.LoadContent(DependencyObject? templatedParent)
-		//View? IFrameworkTemplateInternal.LoadContent(TemplateMaterializationSettings settings)
 		{
 			try
 			{
 				ResourceResolver.PushNewScope(_xamlScope);
 
-				var members = new List<DependencyObject>();
-				var settings = new TemplateMaterializationSettings(templatedParent, members.Add);
-
-				var view = _viewFactory?.Invoke(_ownerRef?.Target, settings);
-
-				if (view is { })
+				if (!FrameworkTemplatePool.IsPoolingEnabled)
 				{
-					FrameworkTemplatePool.Instance.TrackMaterializedTemplate(this, view, members);
+					var settings = new TemplateMaterializationSettings(templatedParent, null);
+
+					var view = _viewFactory?.Invoke(_ownerRef?.Target, settings);
+					return view;
 				}
+				else
+				{
+					var members = new List<DependencyObject>();
+					var settings = new TemplateMaterializationSettings(templatedParent, members.Add);
 
-				//if (view is FrameworkElement fe)
-				//{
-				//	fe.IsTemplateRoot = true;
-				//}
+					var view = _viewFactory?.Invoke(_ownerRef?.Target, settings);
 
-				return view;
+					if (view is { })
+					{
+						// TODO: impl recycling (tp update) for tracked template members
+						FrameworkTemplatePool.Instance.TrackMaterializedTemplate(this, view, members);
+					}
+
+					return view;
+				}
 			}
 			finally
 			{

@@ -438,7 +438,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 						}
 						else if (instance is DependencyObject dependencyObject)
 						{
-							ProcessMemberElements(dependencyObject, member, dependencyProperty, rootInstance, /* fixme@xy: should it be null here? */ settings);
+							ProcessMemberElements(dependencyObject, member, dependencyProperty, rootInstance, settings);
 						}
 						else
 						{
@@ -1149,31 +1149,19 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			object rootInstance,
 			TemplateMaterializationSettings? settings)
 		{
-			var addMethodMap = new Dictionary<Type, MethodInfo>(); // review@xy: globally cache this lookup by (instance-type, item-type)?
+			var collectionType = collectionInstance.GetType();
+
 			foreach (var child in nonBindingObjects)
 			{
 				var item = LoadObject(child, rootInstance: rootInstance, settings: settings);
 				var itemType = item?.GetType() ?? typeof(object);
-				if (!addMethodMap.TryGetValue(itemType, out var addMethodInfo))
-				{
-					addMethodInfo =
-						FindAddMethod(collectionInstance, itemType) ??
-						throw new InvalidOperationException($"The type {collectionInstance.GetType()} does not contains an Add({itemType}) method");
-				}
+
+				var addMethodInfo =
+					TypeResolver.FindCollectionAddItemMethod(collectionType, itemType) ??
+					throw new InvalidOperationException($"The type {collectionType} does not contains an Add({itemType}) method");
 
 				addMethodInfo.Invoke(collectionInstance, new[] { item });
 			}
-		}
-
-		private MethodInfo? FindAddMethod(object collectionInstance, Type? itemType)
-		{
-			return collectionInstance.GetType()
-				.GetMethods(BindingFlags.Instance | BindingFlags.FlattenHierarchy | BindingFlags.Public)
-				.Where(m => m.Name == "Add")
-				.FirstOrDefault(m =>
-					m.GetParameters() is [var arg0] &&
-					(itemType ?? typeof(object)).Is(arg0.ParameterType)
-				);
 		}
 
 		private object? GetResourceKey(XamlObjectDefinition child) =>

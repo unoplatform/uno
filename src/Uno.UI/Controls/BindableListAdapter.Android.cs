@@ -298,7 +298,7 @@ namespace Uno.UI.Controls
 		{
 			var view =
 				convertView ??
-				template?.LoadContent(/* fixme@xy: inject tp */) ??
+				template?.LoadContent() ??
 				new TextBlock()
 				{
 					Text = source?.ToString()

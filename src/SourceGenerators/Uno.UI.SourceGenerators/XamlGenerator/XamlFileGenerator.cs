@@ -5880,8 +5880,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			using (TrySetDefaultBindMode(xamlObjectDefinition))
 			{
-				var isItemsPanelTemplate = typeName == "ItemsPanelTemplate";
-
 				if (typeName
 					is "DataTemplate"
 					or "ItemsPanelTemplate"
@@ -5902,12 +5900,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						var resourceOwner = CurrentResourceOwnerName;
 
-						// fixme@xy?: do we need to branch here to skip templated-parent for the invalid types (DataTemplate and ListViewBaseLayoutTemplate)
 						writer.Append($"{resourceOwner}, (__owner, __settings) => ");
+
 						// This case is to support the layout switching for the ListViewBaseLayout, which is not
 						// a FrameworkTemplate. This will need to be removed when this custom list view is removed.
 						var returnType = typeName == "ListViewBaseLayoutTemplate" ? "global::Uno.UI.Controls.Legacy.ListViewBaseLayout" : "_View";
-
 						BuildChildThroughSubclass(writer, contentOwner, returnType);
 
 						writer.AppendIndented(")");
