@@ -533,7 +533,7 @@ public partial class Slider
 	//		in the absence of an explicitly defined one
 	//
 	//---------------------------------------------------------------------------
-	private protected override string GetPlainText()
+	internal override string GetPlainText()
 	{
 		var header = Header;
 

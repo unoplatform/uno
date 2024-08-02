@@ -1413,4 +1413,14 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	}
 
 	partial void SetUpdateTemplatePartial();
+
+	internal string GetTextBlockText()
+	{
+		if (IsUsingDefaultTemplate && ContentTemplateRoot is ImplicitTextBlock tb)
+		{
+			return tb.Text;
+		}
+
+		return null;
+	}
 }

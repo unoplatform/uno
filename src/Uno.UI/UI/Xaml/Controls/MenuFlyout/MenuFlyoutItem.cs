@@ -742,7 +742,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return new MenuFlyoutItemAutomationPeer(this);
 		}
 
-		private protected override string GetPlainText() => Text;
+		internal override string GetPlainText() => Text;
 
 		internal string KeyboardAcceleratorTextOverrideImpl
 		{

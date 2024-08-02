@@ -310,9 +310,9 @@ partial class ComboBox
 			}
 		}
 
-		var spGenerator = ItemContainerGenerator;
-		ItemContainerGenerator pItemContainerGenerator = spGenerator;
-		if (m_iLastGeneratedItemIndexforFaceplate > 0)
+		ItemContainerGenerator? spGenerator = null; // TODO Uno: Support for ItemContainerGenerator #17808 (Should reference this.ItemContainerGenerator property)
+		ItemContainerGenerator? pItemContainerGenerator = spGenerator;
+		if (m_iLastGeneratedItemIndexforFaceplate > 0 && pItemContainerGenerator is not null)
 		{
 			// This container was generated just for the purpose of extracting Content and ContentTemplate.
 			// This is the case where we generated an item which was its own container (e.g. defined in XAML or code behind).
@@ -358,7 +358,7 @@ partial class ComboBox
 		spContainer = ContainerFromIndex(index);
 		spComboBoxItem = spContainer as ComboBoxItem;
 
-		if (spComboBoxItem is null)
+		if (spComboBoxItem is null && pItemContainerGenerator is not null)
 		{
 			bool isNewlyRealized = false;
 			generatorPosition = pItemContainerGenerator.GeneratorPositionFromIndex(index);
@@ -383,6 +383,11 @@ partial class ComboBox
 			//bGeneratedComboBoxItem = IsItemItsOwnContainer(spItem);
 			//bGeneratedComboBoxItem = !bGeneratedComboBoxItem;
 			m_iLastGeneratedItemIndexforFaceplate = index;
+		}
+
+		if (spComboBoxItem is null)
+		{
+			return;
 		}
 
 		spContent = spComboBoxItem.Content;
@@ -421,7 +426,7 @@ partial class ComboBox
 
 		}
 
-		if (bGeneratedComboBoxItem)
+		if (bGeneratedComboBoxItem && pItemContainerGenerator is not null)
 		{
 			// This container was generated just for the purpose of extracting Content and ContentTemplate
 			// It is not connected to the visual tree which might have unintended consequences, so remove it
