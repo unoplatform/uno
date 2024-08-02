@@ -4678,6 +4678,103 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual("2", textBlocks[2].Text);
 		}
 #endif
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_ScrollIntoView_FreshlyAddedDefaultItem() // checks against #17695
+		{
+			var source = new ObservableCollection<string>();
+			var sut = new ListView
+			{
+				ItemsSource = source,
+			};
+
+			await UITestHelper.Load(sut, x => x.IsLoaded); // custom criteria to prevent empty listview failure
+
+			void AddItem(string item, bool select = false)
+			{
+				source.Add(item);
+				if (select)
+				{
+					sut.SelectedItem = item;
+				}
+			}
+
+			// We just assume here that there is enough space to display 3 items.
+			// Here we are testing if adding a new items and immediately selecting it
+			// doesn't result in a listview with missing items in the viewport.
+			AddItem($"Item 1", select: true);
+			await Task.Delay(10);
+			AddItem($"Item 2", select: false);
+			await Task.Delay(10);
+			AddItem($"Item 3", select: true);
+
+			await UITestHelper.WaitForIdle();
+
+			var tree = sut.TreeGraph();
+#if !__ANDROID__
+			var panel = sut.FindFirstDescendant<ItemsStackPanel>() ?? throw new Exception("Failed to find the ListView's Panel (ItemsStackPanel)");
+			Assert.AreEqual(3, panel.Children.Count);
+#else
+			var count = sut.MaterializedContainers.Count();
+			Assert.AreEqual(3, count);
+#endif
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __ANDROID__
+		[Ignore("droid: Scrollable/Extent-Height doesnt get updated until manually scroll occurs, but otherwise the visuals are good.")]
+#endif
+		public async Task When_ScrollIntoView_FreshlyAddedOffscreenItem()
+		{
+			const int FixedItemHeight = 29;
+
+			var source = new ObservableCollection<string>();
+			var sut = new ListView
+			{
+				ItemsSource = source,
+				ItemTemplate = FixedSizeItemTemplate, // height=29
+			};
+
+			await UITestHelper.Load(sut, x => x.IsLoaded); // custom criteria to prevent empty listview failure
+
+			void AddItem(string item, bool select = false)
+			{
+				source.Add(item);
+				if (select)
+				{
+					sut.SelectedItem = item;
+				}
+			}
+
+			// Fill the source with enough enough items to fill the available height.
+			// Rounding up to the next tens, so we always start counting from XX1 XX2 XX3 for next step
+			var fulfillSize = Math.Round(sut.XamlRoot.Size.Height / FixedItemHeight / 10, MidpointRounding.ToPositiveInfinity) * 10 + 10;
+			for (int i = 0; i < fulfillSize; i++)
+			{
+				AddItem($"Item {i + 1}", select: false);
+			}
+
+			AddItem($"Item {fulfillSize + 1}", select: true);
+			await Task.Delay(10);
+			AddItem($"Item {fulfillSize + 2}", select: false);
+			await Task.Delay(10);
+			AddItem($"Item {fulfillSize + 3}", select: true);
+
+			await UITestHelper.WaitForIdle();
+
+			var tree = sut.TreeGraph();
+			var sv = sut.FindFirstDescendant<ScrollViewer>() ?? throw new Exception("Failed to find the ListView's ScrollViewer");
+
+			// Here we aren't verifying the viewport is entirely filled,
+			// But the last 3 are materialized, and that we are scrolled to the end.
+			Assert.IsNotNull(sut.ContainerFromIndex(source.Count - 3), "Container#n-3 is null");
+			Assert.IsNotNull(sut.ContainerFromIndex(source.Count - 2), "Container#n-2 is null");
+			Assert.IsNotNull(sut.ContainerFromIndex(source.Count - 1), "Container#n-1 is null");
+
+			Assert.AreEqual(sv.ScrollableHeight, sv.VerticalOffset, "ListView is not scrolled to the end.");
+		}
 	}
 
 	public partial class Given_ListViewBase // data class, data-context, view-model, template-selector
