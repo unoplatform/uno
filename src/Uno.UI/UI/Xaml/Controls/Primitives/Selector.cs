@@ -781,7 +781,18 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			RefreshPartial();
 		}
 
-		public bool IsSelectionActive { get; set; }
+		public bool IsSelectionActive
+		{
+			get => (bool)GetValue(IsSelectionActiveProperty);
+			set => SetValue(IsSelectionActiveProperty, value);
+		}
+
+		internal static DependencyProperty IsSelectionActiveProperty { get; } =
+			DependencyProperty.Register(
+				nameof(IsSelectionActive),
+				typeof(bool),
+				typeof(Selector),
+				new FrameworkPropertyMetadata(false));
 
 		// This method returns a value indicating whether the object is selectable.
 		private protected bool IsSelectableHelper(object obj)

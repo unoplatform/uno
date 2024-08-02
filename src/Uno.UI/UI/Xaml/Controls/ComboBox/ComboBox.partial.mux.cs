@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Reflection;
 using DirectUI;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -291,6 +290,9 @@ partial class ComboBox
 
 		Debug.Assert(!IsInline, "ContentPresenter is not used in inline mode.");
 
+		UpdateContentPresenter();
+		return;
+
 		// Avoid reentrancy.
 		if (m_preparingContentPresentersElement)
 		{
@@ -423,7 +425,6 @@ partial class ComboBox
 
 			SelectionBoxItem = spContent;
 			SelectionBoxItemTemplate = spDataTemplate;
-
 		}
 
 		if (bGeneratedComboBoxItem && pItemContainerGenerator is not null)
@@ -533,6 +534,14 @@ partial class ComboBox
 		{
 			UpdateHeaderPresenterVisibility();
 		}
+		else if (args.Property == VisibilityProperty)
+		{
+			OnVisibilityChanged();
+		}
+		else if (args.Property == IsSelectionActiveProperty)
+		{
+			OnIsSelectionActiveChanged();
+		}
 		else if (args.Property == TextProperty)
 		{
 			if (m_tpEditableTextPart is not null && IsEditable)
@@ -610,14 +619,21 @@ partial class ComboBox
 		}
 
 		// TODO Uno: Implement
-		//if (IsSmallFormFactor)
-		//{
-		//	isDropDownOpen ? OnOpenSmallFormFactor() : OnCloseSmallFormFactor();
-		//}
-		//else
-		//{
-		//	isDropDownOpen ? OnOpen() : OnClose();
-		//}
+		if (IsSmallFormFactor)
+		{
+			// isDropDownOpen? OnOpenSmallFormFactor() : OnCloseSmallFormFactor();
+		}
+		else
+		{
+			if (IsDropDownOpen)
+			{
+				OnOpen();
+			}
+			else
+			{
+				OnClose();
+			}
+		}
 
 		ElementSoundPlayerService.RequestInteractionSoundForElementStatic(isDropDownOpen ? ElementSoundKind.Show : ElementSoundKind.Hide, this);
 	}
@@ -677,6 +693,44 @@ partial class ComboBox
 		}
 	}
 
+	private void OnIsSelectionActiveChanged() => UpdateVisualState();
+
+	private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs e)
+	{
+		base.OnIsEnabledChanged(e);
+
+		var bIsEnabled = IsEnabled;
+		if (!bIsEnabled)
+		{
+			ClearStateFlags();
+		}
+
+		UpdateVisualState();
+	}
+
+	// Update the visual states when the Visibility property is changed.
+	private void OnVisibilityChanged()
+	{
+		var visibility = Visibility;
+		if (Visibility.Visible != visibility)
+		{
+			ClearStateFlags();
+		}
+
+		UpdateVisualState();
+	}
+
+	// Clear flags relating to the visual state.  Called when IsEnabled is set to false
+	// or when Visibility is set to Hidden or Collapsed.
+	private void ClearStateFlags()
+	{
+		IsDropDownOpen = false;
+		m_IsPointerOverMain = false;
+		m_IsPointerOverPopup = false;
+		m_IsPointerOverDropDownOverlay = false;
+		m_bIsPressed = false;
+	}
+
 	private void UpdateSelectionBoxHighlighted()
 	{
 		bool isDropDownOpen = IsDropDownOpen;
@@ -685,6 +739,238 @@ partial class ComboBox
 		IsSelectionBoxHighlighted = value;
 	}
 
+	private void OnOpen()
+	{
+		// TODO Uno: BackButton support
+		//if (DXamlCore.Current.BackButtonSupported)
+		//{
+		//	BackButtonIntegration.RegisterListener(this);
+		//}
+
+		int selectedItemIndex = SelectedIndex;
+
+		// Save off the selected index when opened so that we can
+		// restore it when the user cancels using ESC/GamepadB.
+		if (!m_restoreIndexSet)
+		{
+			m_restoreIndexSet = true;
+			m_indexToRestoreOnCancel = selectedItemIndex;
+		}
+
+		m_isClosingDueToCancel = false;
+
+		if (m_tpPopupPart is not null)
+		{
+			m_tpPopupPart.IsOpen = true;
+
+			bool isDefaultShadowEnabled = IsDefaultShadowEnabled;
+
+			// Cast a shadow
+			if (isDefaultShadowEnabled)
+			{
+				ApplyElevationEffect(m_tpElementPopupChild);
+			}
+			else
+			{
+				ClearElevationEffect(m_tpElementPopupChild);
+			}
+		}
+
+		if (m_isOverlayVisible)
+		{
+			PlayOverlayOpeningAnimation();
+		}
+
+		// Before CarouselPanel gets into the measure pass we have to update m_bIsPopupPannable flag
+		// and propagate m_bShouldCarousel flag to the CarouselPanel
+		// On Edit mode we don't carousel because popup appears aligned to the bottom of the ComboBox
+		// instead of centered above the ComboBox, so carouseling doesn't make sense for this design.
+		m_bShouldCarousel = m_inputDeviceTypeUsedToOpen == InputDeviceType.Touch && !IsEditable;
+		SetIsPopupPannable();
+		SetContentPresenter(-1, true /*forceSelectionBoxToNull*/);
+
+		RaiseDropDownOpenChangedEvents(true);
+
+		// At this point, the template settings are holding old values which might
+		// not be correct anymore. Thus, if we move to the "Opened" visual state
+		// and begin the SplitOpenThemeAnimation right away, the animation parameters
+		// might be incorrect. To avoid this, will call UpdateLayout to trigger an
+		// arrange pass that will end up calling ComboBox.ArrangePopup. This
+		// method will update the template settings appropriately.
+		UpdateLayout();
+		UpdateVisualState();
+		UpdateSelectionBoxHighlighted();
+
+		// Focus is forcibly set to the ComboBox when it is opened.  This is needed to make sure
+		// narrator scenarios function as expected.  For example, when an item is selected from
+		// an open ComboBox using narrator, the high-light rectangle needs to move back to the
+		// ComboBox; this only happens if the ComboBox or one of it's items has focus.  If it
+		// doesn't have focus, the high-light rectangle will stay where the item was prior to the
+		// popup closing, which is confusing to narrator users.  Another example is when opening
+		// the ComboBox, if there is already a selected item, it should get narrator focus as
+		// soon as it opens.
+		// This does not change the behavior for keyboard/touch/mouse users since interacting
+		// with the control using any of those input methods would have set focus to it anyway.
+		// This only affects opening the ComboBox programmatically, which is what narrator does.
+		if (IsEditable)
+		{
+			// Ensure focus is in TextBox when popup opens.
+			if (!EditableTextHasFocus() && m_tpEditableTextPart is not null)
+			{
+				m_tpEditableTextPart.Focus(FocusState.Programmatic);
+			}
+		}
+		else
+		{
+
+			// If no item is selected when we open the combo box and there's at least one item,
+			// give focus to or select the first item to ensure that keyboarding can function normally.
+			if (selectedItemIndex >= 0)
+			{
+				SetFocusedItem(selectedItemIndex, m_bShouldCenterSelectedItem /*shouldScrollIntoView*/, true /*forceFocus*/, FocusState.Programmatic);
+			}
+			else
+			{
+				var itemCount = GetItemCount();
+
+				if (itemCount > 0)
+				{
+					ComboBoxSelectionChangedTrigger selectionChangedTrigger = SelectionChangedTrigger;
+
+					if (selectionChangedTrigger == ComboBoxSelectionChangedTrigger.Always)
+					{
+						SelectedIndex = 0;
+					}
+					else
+					{
+						OverrideSelectedIndexForVisualStates(0);
+					}
+
+					SetFocusedItem(0, false /*shouldScrollIntoView*/, true /*forceFocus*/, FocusState.Programmatic, false);
+				}
+			}
+		}
+	}
+
+	private void OnClose()
+	{
+		// BackButtonIntegration_UnregisterListener(this);
+
+		m_isDropDownClosing = true;
+
+		if (IsEditable)
+		{
+			CommitRevertEditableSearch(m_isClosingDueToCancel /*restoreValue*/);
+		}
+		else if (m_isClosingDueToCancel && m_indexToRestoreOnCancel != -1)
+		{
+			SelectedIndex = m_indexToRestoreOnCancel;
+		}
+
+		m_indexToRestoreOnCancel = -1;
+		m_restoreIndexSet = false;
+		m_isClosingDueToCancel = false;
+
+		ClearSelectedIndexOverrideForVisualStates();
+		SetClosingAnimationDirection();
+
+		if (m_isOverlayVisible)
+		{
+			PlayOverlayClosingAnimation();
+		}
+
+		UpdateVisualState(true);
+		if (m_tpClosedStoryboard is null)
+		{
+			// If we do not have a storyboard for closed state, the completed handler for the
+			// animation will never be called, so we need to complete closing the drop down
+			// now.
+			FinishClosingDropDown();
+		}
+		else
+		{
+			// Editable ComboBox handles ContentPresenter changes in CommitRevertEditableSearch.
+			if (!IsEditable)
+			{
+				var selectedIndex = SelectedIndex;
+				SetContentPresenter(selectedIndex);
+			}
+		}
+
+		// Clear pointer over status while the dropdown is closing.
+		// Sometimes when the dropdown animates out from under the pointer we don't get a
+		// PointerExited so the ComboBox stays in PointerOver state indefinitely.
+		m_IsPointerOverPopup = false;
+		m_IsPointerOverMain = false;
+		m_IsPointerOverDropDownOverlay = false;
+		ChangeVisualState(false);
+	}
+
+
+	private void FinishClosingDropDown()
+	{
+		// Clean up any existing operation. Important to clear this before firing the
+		// DropDownClosed event because the event handler may set IsDropDownOpen back to true,
+		// which will begin a new async operation. Dropping this will destroy the
+		// operation which will prevent the completion event from firing, ensuring that
+		// our completion callback doesn't erroneously call FinishClosingDropDown again.
+		m_tpAsyncSelectionInfo = null;
+
+		int selectedIndex = SelectedIndex;
+
+		// This returns focus to ComboBox after clicking on a ComboBoxItem.
+		SetFocusedItem(-1, false /*shouldScrollIntoView*/);
+
+		// Ensure Focus moves over to Textbox next time ComboBox is focused.
+		m_shouldMoveFocusToTextBox = true;
+
+		if (IsInline)
+		{
+			EnsurePresenterReadyForInlineMode();
+			UpdateSelectionBoxItemProperties(selectedIndex);
+			ForceApplyInlineLayoutUpdate();
+		}
+		else
+		{
+			// Editable ComboBox handles ContentPresenter changes in CommitRevertEditableSearch.
+			if (!IsEditable)
+			{
+				SetContentPresenter(selectedIndex);
+			}
+
+			if (m_tpPopupPart is not null)
+			{
+				m_tpPopupPart.IsOpen = false;
+				m_IsPointerOverPopup = false; // closing the popup will not fire a PointerExited
+				ResetCarouselPanelState();
+				ClearStateFlagsOnItems();
+			}
+		}
+
+		m_isExpanded = false;
+		m_isDropDownClosing = false;
+		m_previousInputDeviceTypeUsedToOpen = m_inputDeviceTypeUsedToOpen;
+		m_inputDeviceTypeUsedToOpen = InputDeviceType.None;
+
+		RaiseDropDownOpenChangedEvents(false);
+		UpdateVisualState();
+		UpdateSelectionBoxHighlighted();
+	}
+
+	private void RaiseDropDownOpenChangedEvents(bool isDropDownOpen)
+	{
+		var args = new RoutedEventArgs();
+		args.OriginalSource = this;
+
+		if (isDropDownOpen)
+		{
+			OnDropDownOpened(args);
+		}
+		else
+		{
+			OnDropDownClosed(args);
+		}
+	}
 
 	private void FocusChanged(bool hasFocus)
 	{
@@ -1510,6 +1796,15 @@ partial class ComboBox
 		}
 	}
 
+	private bool HasSearchStringTimedOut()
+	{
+		const int timeOutInMilliseconds = 1000;
+
+		var now = DateTime.UtcNow;
+
+		return (now - m_timeSinceLastCharacterReceived).TotalMilliseconds > timeOutInMilliseconds;
+	}
+
 	private void ProcessSearch(char keyCode)
 	{
 		int foundIndex = -1;
@@ -2030,7 +2325,5 @@ partial class ComboBox
 	private void EnsurePresenterReadyForInlineMode() { }
 
 	private void ForceApplyInlineLayoutUpdate() { }
-
-	private void FinishClosingDropDown() { }
 #endif
 }
