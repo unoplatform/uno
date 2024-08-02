@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Media.Animation;
 using Uno.Disposables;
 using Uno.UI.Xaml.Input;
 using Windows.Foundation;
@@ -12,10 +13,19 @@ namespace Microsoft.UI.Xaml.Controls;
 
 partial class ComboBox
 {
+// TODO MZ: These disablings should not be required
+#pragma warning disable CS0067 // Unused only in reference API.
+#pragma warning disable CS0649 // Unused only in reference API.
+#pragma warning disable CS0169 // Unused only in reference API.
+#pragma warning disable CS0168 // Unused only in reference API.
+#pragma warning disable CS0414 // Unused only in reference API.
 	internal bool IsSearchResultIndexSet() => m_searchResultIndexSet;
 
 	internal int GetSearchResultIndex() => m_searchResultIndex;
 
+	private bool m_bIsPopupPannable;
+	private bool m_bShouldCarousel;
+	private bool m_bShouldCenterSelectedItem;
 	private bool m_handledGamepadOrRemoteKeyDown;
 	private bool m_ignoreCancelKeyDowns;
 	private bool m_isEditModeConfigured;
@@ -44,12 +54,18 @@ partial class ComboBox
 	// Editable ComboBox is designed to set the focus on TextBox when ComboBox is focused, there are some cases when we don't want
 	// this behavior eg(Shift+Tab).
 	private bool m_shouldMoveFocusToTextBox;
-	private bool m_isClosingDueToCancel;
+	private bool m_isExpanded;
+	private bool m_isOverlayVisible;
 	private bool m_restoreIndexSet;
+	private bool m_isClosingDueToCancel;
 
 	private bool m_IsPointerOverDropDownOverlay;
 
 	private InputDeviceType m_inputDeviceTypeUsedToOpen;
+	private InputDeviceType m_previousInputDeviceTypeUsedToOpen;
+
+	private FrameworkElement m_tpElementPopupChild;
+	private FrameworkElement m_tpElementPopupContent;
 
 	private readonly SerialDisposable m_spEditableTextPointerPressedEventHandler = new();
 	private readonly SerialDisposable m_spEditableTextTappedEventHandler = new();
@@ -65,6 +81,7 @@ partial class ComboBox
 	private TextBlock m_tpEditableContentPresenterTextBlock;
 	private ComboBoxItem m_tpSwappedOutComboBoxItem;
 
+	private Storyboard m_tpClosedStoryboard;
 	private DependencyObject m_tpGeneratedContainerForContentPresenter;
 	private int m_iLastGeneratedItemIndexforFaceplate;
 	private object m_customValueRef;
@@ -78,6 +95,7 @@ partial class ComboBox
 
 	private bool IsFullMode => IsSmallFormFactor && m_itemCount > s_itemCountThreshold;
 
+	private IAsyncInfo m_tpAsyncSelectionInfo;
 	private int m_itemCount;
 
 	private int m_indexToRestoreOnCancel = -1;

@@ -863,6 +863,8 @@ public partial class ComboBox : Selector
 #endif
 
 			child.Arrange(frame);
+
+			combo.m_bPopupHasBeenArrangedOnce = true;
 		}
 	}
 }

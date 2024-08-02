@@ -209,11 +209,6 @@ partial class ComboBox
 			new FrameworkPropertyMetadata(null));
 
 	/// <summary>
-	/// Occurs when the user submits some text that does not correspond to an item in the ComboBox dropdown list.
-	/// </summary>
-	public event TypedEventHandler<ComboBox, ComboBoxTextSubmittedEventArgs> TextSubmitted;
-
-	/// <summary>
 	/// Occurs when the drop-down portion of the ComboBox closes.
 	/// </summary>
 	public event EventHandler<object> DropDownClosed;
@@ -222,4 +217,9 @@ partial class ComboBox
 	/// Occurs when the drop-down portion of the ComboBox opens.
 	/// </summary>
 	public event EventHandler<object> DropDownOpened;
+
+	/// <summary>
+	/// Occurs when the user submits some text that does not correspond to an item in the ComboBox dropdown list.
+	/// </summary>
+	public event TypedEventHandler<ComboBox, ComboBoxTextSubmittedEventArgs> TextSubmitted;
 }

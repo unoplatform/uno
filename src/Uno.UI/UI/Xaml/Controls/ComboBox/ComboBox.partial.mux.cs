@@ -13,6 +13,7 @@ using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 using Windows.Foundation;
 using Windows.System;
+using static DirectUI.ElevationHelper;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -279,162 +280,162 @@ partial class ComboBox
 
 	private void SetContentPresenter(int index, bool forceSelectionBoxToNull = false)
 	{
-		bool bGeneratedComboBoxItem = false;
-		DependencyObject spContainer;
-		DependencyObject spGeneratedComboBoxItemAsDO;
-		ComboBoxItem? spComboBoxItem;
-		object? spContent;
-		DataTemplate spDataTemplate;
-		DataTemplateSelector spDataTemplateSelector;
-		GeneratorPosition generatorPosition;
+		UpdateContentPresenter(); // TODO MZ: This should not happen
+		return; // TODO MZ: This should not happen
 
-		Debug.Assert(!IsInline, "ContentPresenter is not used in inline mode.");
+		//bool bGeneratedComboBoxItem = false;
+		//DependencyObject spContainer;
+		//DependencyObject spGeneratedComboBoxItemAsDO;
+		//ComboBoxItem? spComboBoxItem;
+		//object? spContent;
+		//DataTemplate spDataTemplate;
+		//DataTemplateSelector spDataTemplateSelector;
+		//GeneratorPosition generatorPosition;
 
-		UpdateContentPresenter();
-		return;
+		//Debug.Assert(!IsInline, "ContentPresenter is not used in inline mode.");
 
-		// Avoid reentrancy.
-		if (m_preparingContentPresentersElement)
-		{
-			return;
-		}
+		//// Avoid reentrancy.
+		//if (m_preparingContentPresentersElement)
+		//{
+		//	return;
+		//}
 
-		if (m_tpSwappedOutComboBoxItem is not null)
-		{
-			if (m_tpContentPresenterPart is not null)
-			{
-				spContent = m_tpContentPresenterPart.Content;
-				{
-					m_tpContentPresenterPart.Content = null;
-					m_tpSwappedOutComboBoxItem.Content = spContent;
-					m_tpSwappedOutComboBoxItem = null;
-				}
-			}
-		}
+		//if (m_tpSwappedOutComboBoxItem is not null)
+		//{
+		//	if (m_tpContentPresenterPart is not null)
+		//	{
+		//		spContent = m_tpContentPresenterPart.Content;
+		//		{
+		//			m_tpContentPresenterPart.Content = null;
+		//			m_tpSwappedOutComboBoxItem.Content = spContent;
+		//			m_tpSwappedOutComboBoxItem = null;
+		//		}
+		//	}
+		//}
 
-		ItemContainerGenerator? spGenerator = null; // TODO Uno: Support for ItemContainerGenerator #17808 (Should reference this.ItemContainerGenerator property)
-		ItemContainerGenerator? pItemContainerGenerator = spGenerator;
-		if (m_iLastGeneratedItemIndexforFaceplate > 0 && pItemContainerGenerator is not null)
-		{
-			// This container was generated just for the purpose of extracting Content and ContentTemplate.
-			// This is the case where we generated an item which was its own container (e.g. defined in XAML or code behind).
-			// We keep this until the next item is being put on faceplate or popup is opened so that ItemContainerGenerator.ContainerFromIndex returns the
-			// correct container for this item which a developer would expect.
-			// We need to remove this item once popup opens (or another item takes its place on faceplate)
-			// so that virtualizing panel underneath does not get items out of order.
-			// We want to remove instead of recycle because we do not want to change the collection order by reusing containers for different data.
-			generatorPosition = pItemContainerGenerator.GeneratorPositionFromIndex(m_iLastGeneratedItemIndexforFaceplate);
-			if (generatorPosition.Offset == 0 && generatorPosition.Index >= 0)
-			{
-				// Only remove if the position returned by Generator is correct
-				pItemContainerGenerator.Remove(generatorPosition, 1);
-			}
+		//ItemContainerGenerator? spGenerator = null; // TODO Uno: Support for ItemContainerGenerator #17808 (Should reference this.ItemContainerGenerator property)
+		//ItemContainerGenerator? pItemContainerGenerator = spGenerator;
+		//if (m_iLastGeneratedItemIndexforFaceplate > 0 && pItemContainerGenerator is not null)
+		//{
+		//	// This container was generated just for the purpose of extracting Content and ContentTemplate.
+		//	// This is the case where we generated an item which was its own container (e.g. defined in XAML or code behind).
+		//	// We keep this until the next item is being put on faceplate or popup is opened so that ItemContainerGenerator.ContainerFromIndex returns the
+		//	// correct container for this item which a developer would expect.
+		//	// We need to remove this item once popup opens (or another item takes its place on faceplate)
+		//	// so that virtualizing panel underneath does not get items out of order.
+		//	// We want to remove instead of recycle because we do not want to change the collection order by reusing containers for different data.
+		//	generatorPosition = pItemContainerGenerator.GeneratorPositionFromIndex(m_iLastGeneratedItemIndexforFaceplate);
+		//	if (generatorPosition.Offset == 0 && generatorPosition.Index >= 0)
+		//	{
+		//		// Only remove if the position returned by Generator is correct
+		//		pItemContainerGenerator.Remove(generatorPosition, 1);
+		//	}
 
-			m_iLastGeneratedItemIndexforFaceplate = -1;
-		}
+		//	m_iLastGeneratedItemIndexforFaceplate = -1;
+		//}
 
-		if (index == -1)
-		{
-			if (m_tpContentPresenterPart is not null)
-			{
-				m_tpContentPresenterPart.ContentTemplateSelector = null;
-				m_tpContentPresenterPart.ContentTemplate = null;
-				m_tpContentPresenterPart.Content = m_tpEmptyContent;
-			}
+		//if (index == -1)
+		//{
+		//	if (m_tpContentPresenterPart is not null)
+		//	{
+		//		m_tpContentPresenterPart.ContentTemplateSelector = null;
+		//		m_tpContentPresenterPart.ContentTemplate = null;
+		//		m_tpContentPresenterPart.Content = m_tpEmptyContent;
+		//	}
 
-			// Only reset the SelectionBoxItem if a custom value is not selected.
-			if (forceSelectionBoxToNull || !IsEditable || m_customValueRef is null)
-			{
-				SelectionBoxItem = null;
-			}
+		//	// Only reset the SelectionBoxItem if a custom value is not selected.
+		//	if (forceSelectionBoxToNull || !IsEditable || m_customValueRef is null)
+		//	{
+		//		SelectionBoxItem = null;
+		//	}
 
-			SelectionBoxItemTemplate = null;
-			return;
-		}
+		//	SelectionBoxItemTemplate = null;
+		//	return;
+		//}
 
-		if (m_tpContentPresenterPart is not null)
-		{
-			m_tpContentPresenterPart.Content = null;
-		}
+		//if (m_tpContentPresenterPart is not null)
+		//{
+		//	m_tpContentPresenterPart.Content = null;
+		//}
 
-		spContainer = ContainerFromIndex(index);
-		spComboBoxItem = spContainer as ComboBoxItem;
+		//spContainer = ContainerFromIndex(index);
+		//spComboBoxItem = spContainer as ComboBoxItem;
 
-		if (spComboBoxItem is null && pItemContainerGenerator is not null)
-		{
-			bool isNewlyRealized = false;
-			generatorPosition = pItemContainerGenerator.GeneratorPositionFromIndex(index);
-			pItemContainerGenerator.StartAt(generatorPosition, GeneratorDirection.Forward, true);
-			spGeneratedComboBoxItemAsDO = pItemContainerGenerator.GenerateNext(out isNewlyRealized);
-			pItemContainerGenerator.Stop();
-			m_preparingContentPresentersElement = true;
-			m_tpGeneratedContainerForContentPresenter = spGeneratedComboBoxItemAsDO;
-			try
-			{
-				pItemContainerGenerator.PrepareItemContainer(spGeneratedComboBoxItemAsDO);
-			}
-			finally
-			{
-				m_tpGeneratedContainerForContentPresenter = null;
-				m_preparingContentPresentersElement = false;
-			}
-			spComboBoxItem = (ComboBoxItem)spGeneratedComboBoxItemAsDO;
-			// We dont want to remove the comboBoxItem if it was created explicitly in XAML and exists in Items collection
-			// TODO Uno: Missing implementation for ItemContainerGenerator #17808
-			//spItem = null;  spComboBoxItem.ReadLocalValue(ItemContainerGenerator.ItemForItemContainerProperty);
-			//bGeneratedComboBoxItem = IsItemItsOwnContainer(spItem);
-			//bGeneratedComboBoxItem = !bGeneratedComboBoxItem;
-			m_iLastGeneratedItemIndexforFaceplate = index;
-		}
+		//if (spComboBoxItem is null && pItemContainerGenerator is not null)
+		//{
+		//	bool isNewlyRealized = false;
+		//	generatorPosition = pItemContainerGenerator.GeneratorPositionFromIndex(index);
+		//	pItemContainerGenerator.StartAt(generatorPosition, GeneratorDirection.Forward, true);
+		//	spGeneratedComboBoxItemAsDO = pItemContainerGenerator.GenerateNext(out isNewlyRealized);
+		//	pItemContainerGenerator.Stop();
+		//	m_preparingContentPresentersElement = true;
+		//	m_tpGeneratedContainerForContentPresenter = spGeneratedComboBoxItemAsDO;
+		//	try
+		//	{
+		//		pItemContainerGenerator.PrepareItemContainer(spGeneratedComboBoxItemAsDO);
+		//	}
+		//	finally
+		//	{
+		//		m_tpGeneratedContainerForContentPresenter = null;
+		//		m_preparingContentPresentersElement = false;
+		//	}
+		//	spComboBoxItem = (ComboBoxItem)spGeneratedComboBoxItemAsDO;
+		//	// We dont want to remove the comboBoxItem if it was created explicitly in XAML and exists in Items collection
+		//	// TODO Uno: Missing implementation for ItemContainerGenerator #17808
+		//	//spItem = null;  spComboBoxItem.ReadLocalValue(ItemContainerGenerator.ItemForItemContainerProperty);
+		//	//bGeneratedComboBoxItem = IsItemItsOwnContainer(spItem);
+		//	//bGeneratedComboBoxItem = !bGeneratedComboBoxItem;
+		//	m_iLastGeneratedItemIndexforFaceplate = index;
+		//}
 
-		if (spComboBoxItem is null)
-		{
-			return;
-		}
+		//if (spComboBoxItem is null)
+		//{
+		//	return;
+		//}
 
-		spContent = spComboBoxItem.Content;
-		{
-			// Because we can't keep UIElement in 2 different place
-			// we need to reset ComboBoxItem.Content property. And we need to do it for UIElement only
-			if (spContent is UIElement)
-			{
-				spComboBoxItem.Content = null;
-				if (!bGeneratedComboBoxItem)
-				{
-					m_tpSwappedOutComboBoxItem = spComboBoxItem;
-				}
-			}
+		//spContent = spComboBoxItem.Content;
+		//{
+		//	// Because we can't keep UIElement in 2 different place
+		//	// we need to reset ComboBoxItem.Content property. And we need to do it for UIElement only
+		//	if (spContent is UIElement)
+		//	{
+		//		spComboBoxItem.Content = null;
+		//		if (!bGeneratedComboBoxItem)
+		//		{
+		//			m_tpSwappedOutComboBoxItem = spComboBoxItem;
+		//		}
+		//	}
 
-			spComboBoxItem.IsPointerOver = false;
-			spComboBoxItem.ChangeVisualStateInternal(true);
+		//	spComboBoxItem.IsPointerOver = false;
+		//	spComboBoxItem.ChangeVisualStateInternal(true);
 
-			// We want the item displayed in the 'selected item' ContentPresenter to have the same visual representation as the
-			// items in the Popup's StackPanel, to do that we copy the DataTemplate of the ComboBoxItem.
-			spDataTemplate = spComboBoxItem.ContentTemplate;
-			spDataTemplateSelector = spComboBoxItem.ContentTemplateSelector;
-			if (m_tpContentPresenterPart is not null)
-			{
-				m_tpContentPresenterPart.Content = spContent;
-				m_tpContentPresenterPart.ContentTemplate = spDataTemplate;
-				m_tpContentPresenterPart.ContentTemplateSelector = spDataTemplateSelector;
-				if (spDataTemplate is null)
-				{
-					spDataTemplate = m_tpContentPresenterPart.SelectedContentTemplate;
-				}
-			}
+		//	// We want the item displayed in the 'selected item' ContentPresenter to have the same visual representation as the
+		//	// items in the Popup's StackPanel, to do that we copy the DataTemplate of the ComboBoxItem.
+		//	spDataTemplate = spComboBoxItem.ContentTemplate;
+		//	spDataTemplateSelector = spComboBoxItem.ContentTemplateSelector;
+		//	if (m_tpContentPresenterPart is not null)
+		//	{
+		//		m_tpContentPresenterPart.Content = spContent;
+		//		m_tpContentPresenterPart.ContentTemplate = spDataTemplate;
+		//		m_tpContentPresenterPart.ContentTemplateSelector = spDataTemplateSelector;
+		//		if (spDataTemplate is null)
+		//		{
+		//			spDataTemplate = m_tpContentPresenterPart.SelectedContentTemplate;
+		//		}
+		//	}
 
-			SelectionBoxItem = spContent;
-			SelectionBoxItemTemplate = spDataTemplate;
-		}
+		//	SelectionBoxItem = spContent;
+		//	SelectionBoxItemTemplate = spDataTemplate;
+		//}
 
-		if (bGeneratedComboBoxItem && pItemContainerGenerator is not null)
-		{
-			// This container was generated just for the purpose of extracting Content and ContentTemplate
-			// It is not connected to the visual tree which might have unintended consequences, so remove it
-			generatorPosition = pItemContainerGenerator.GeneratorPositionFromIndex(index);
-			pItemContainerGenerator.Recycle(generatorPosition, 1);
-			m_iLastGeneratedItemIndexforFaceplate = -1;
-		}
+		//if (bGeneratedComboBoxItem && pItemContainerGenerator is not null)
+		//{
+		//	// This container was generated just for the purpose of extracting Content and ContentTemplate
+		//	// It is not connected to the visual tree which might have unintended consequences, so remove it
+		//	generatorPosition = pItemContainerGenerator.GeneratorPositionFromIndex(index);
+		//	pItemContainerGenerator.Recycle(generatorPosition, 1);
+		//	m_iLastGeneratedItemIndexforFaceplate = -1;
+		//}
 	}
 
 	internal void UpdateSelectionBoxItemProperties(int index)
@@ -763,7 +764,7 @@ partial class ComboBox
 		{
 			m_tpPopupPart.IsOpen = true;
 
-			bool isDefaultShadowEnabled = IsDefaultShadowEnabled;
+			bool isDefaultShadowEnabled = IsDefaultShadowEnabled(this);
 
 			// Cast a shadow
 			if (isDefaultShadowEnabled)
@@ -827,7 +828,7 @@ partial class ComboBox
 			// give focus to or select the first item to ensure that keyboarding can function normally.
 			if (selectedItemIndex >= 0)
 			{
-				SetFocusedItem(selectedItemIndex, m_bShouldCenterSelectedItem /*shouldScrollIntoView*/, true /*forceFocus*/, FocusState.Programmatic);
+				SetFocusedItem(selectedItemIndex, m_bShouldCenterSelectedItem /*shouldScrollIntoView*/, true /*forceFocus*/, FocusState.Programmatic, false);
 			}
 			else
 			{
@@ -2325,5 +2326,17 @@ partial class ComboBox
 	private void EnsurePresenterReadyForInlineMode() { }
 
 	private void ForceApplyInlineLayoutUpdate() { }
+
+	private void SetIsPopupPannable() { }
+
+	private void SetClosingAnimationDirection() { }
+
+	private void ResetCarouselPanelState() { }
+
+	private void PlayOverlayClosingAnimation() { }
+
+	private void PlayOverlayOpeningAnimation() { }
+
+	private void ClearStateFlagsOnItems() { }
 #endif
 }
