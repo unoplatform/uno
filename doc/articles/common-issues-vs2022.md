@@ -12,7 +12,7 @@ A [Visual Studio issue](https://developercommunity.visualstudio.com/t/WinAppSDK-
 
 When using iOS Hot Restart on Visual Studio 2022, a [limitation of the environment](https://developercommunity.visualstudio.com/t/iOS-Hot-Restart-does-not-work-for-non-MA/10714660) prevents an Uno Platform app from starting properly when MAUI Embeddeding is referenced.
 
-A workaround is to disabled MAUI Embedding in the [`UnoFeatures` of your project](xref:Uno.Features.Uno.Sdk#uno-platform-features).
+A workaround is to disable MAUI Embedding in the [`UnoFeatures` of your project](xref:Uno.Features.Uno.Sdk#uno-platform-features).
 
 ## App builds in Visual Studio 2022 are taking a long time
 
