@@ -251,11 +251,11 @@ namespace Microsoft.UI.Xaml.Controls
 		internal void UnhookScrollEvents(ScrollViewer sv)
 		{
 			sv.PointerWheelChanged -= PointerWheelScroll;
-			
+
 			ManipulationStarting -= PrepareTouchScroll;
-            ManipulationStarted -= TouchScrollStarted;
-            ManipulationDelta -= UpdateTouchScroll;
-            ManipulationCompleted -= CompleteTouchScroll;
+			ManipulationStarted -= TouchScrollStarted;
+			ManipulationDelta -= UpdateTouchScroll;
+			ManipulationCompleted -= CompleteTouchScroll;
 		}
 #endif
 
