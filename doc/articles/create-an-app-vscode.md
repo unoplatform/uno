@@ -43,6 +43,9 @@ Next, open the project using Visual Studio Code:
 * Visual Studio Code might ask to restore the NuGet packages. Allow it to restore them if asked.
 * Once the solution has been loaded, in the status bar at the bottom left of VS Code, `MyApp.sln` is selected by default. Select `MyApp.csproj` to load the project instead.
 
+> [!IMPORTANT]
+> A notification window will appear for the free registration of the extension. If the notification disappears before you can enter the license, you can find it again in the "Notification Bell" icon at the bottom right of the VS Code window.
+
 ## Debug the App
 
 Uno Platform provides integrated support for debugging your app on Windows, macOS, and Linux.
