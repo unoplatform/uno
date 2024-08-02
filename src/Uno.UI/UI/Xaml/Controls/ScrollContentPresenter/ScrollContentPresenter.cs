@@ -235,6 +235,7 @@ namespace Microsoft.UI.Xaml.Controls
 			=> new Rect(default, RenderSize);
 #endif
 
+#if UNO_HAS_MANAGED_SCROLL_PRESENTER
 		internal void HookScrollEvents(ScrollViewer sv)
 		{
 			// Mouse wheel support
@@ -258,6 +259,7 @@ namespace Microsoft.UI.Xaml.Controls
 			sv.ManipulationDelta -= UpdateTouchScroll;
 			sv.ManipulationCompleted -= CompleteTouchScroll;
 		}
+#endif
 
 		private void PointerWheelScroll(object sender, Input.PointerRoutedEventArgs e)
 		{
