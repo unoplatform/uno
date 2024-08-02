@@ -26,7 +26,6 @@ namespace Microsoft.UI.Xaml
 		private PropertyMetadata? _metadata;
 		private object? _defaultValue;
 		private Flags _flags;
-		private DependencyPropertyCallbackManager? _callbackManager;
 
 		private const int DefaultValueIndex = (int)DependencyPropertyValuePrecedences.DefaultValue;
 		private const int StackSize = DefaultValueIndex + 1;
@@ -61,8 +60,6 @@ namespace Microsoft.UI.Xaml
 
 		public void Dispose()
 		{
-			_callbackManager?.Dispose();
-
 			if (_stack != null)
 			{
 				// Note that `clearArray` is required here to avoid pooled arrays to leak
@@ -461,14 +458,6 @@ namespace Microsoft.UI.Xaml
 		{
 			return $"DependencyPropertyDetails({Property.Name})";
 		}
-
-		internal IDisposable RegisterCallback(PropertyChangedCallback callback)
-			=> (_callbackManager ??= new DependencyPropertyCallbackManager()).RegisterCallback(callback);
-
-		internal bool CanRaisePropertyChanged => _callbackManager is not null;
-
-		internal void RaisePropertyChangedNoNullCheck(DependencyObject actualInstanceAlias, DependencyPropertyChangedEventArgs eventArgs)
-			=> _callbackManager!.RaisePropertyChanged(actualInstanceAlias, eventArgs);
 
 		[Flags]
 		private enum Flags : byte
