@@ -12,8 +12,10 @@ namespace Microsoft.UI.Xaml.Controls;
 
 partial class ComboBox
 {
-#pragma warning disable CS0649 // never assigned to, and will always have its default value false
-#pragma warning disable CS0414 // never assigned to, and will always have its default value false
+	internal bool IsSearchResultIndexSet() => m_searchResultIndexSet;
+
+	internal int GetSearchResultIndex() => m_searchResultIndex;
+
 	private bool m_handledGamepadOrRemoteKeyDown;
 	private bool m_ignoreCancelKeyDowns;
 	private bool m_isEditModeConfigured;
