@@ -16,6 +16,8 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Uno.UI.Extensions;
+using System.Runtime.InteropServices.JavaScript;
+
 
 #if __ANDROID__
 using _View = Android.Views.View;
@@ -1745,8 +1747,56 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 		}
-
 		internal void SetNeedsUpdateItems()
 			=> UpdateItems(null);
+
+		private protected virtual bool IsHostForItemContainer(DependencyObject pContainer)
+		{
+			bool hasParent = false;
+
+			var pIsHost = false;
+
+			// If ItemsControlFromItemContainer can determine who owns the element,
+			// use its decision.
+			var spItemsControl = ItemsControlFromItemContainer(pContainer);
+
+			if (spItemsControl is not null)
+			{
+				pIsHost = (spItemsControl == this);
+				return pIsHost;
+			}
+
+			// If the element is in my items view, and if it can be its own ItemContainer,
+			// it's mine.  Contains may be expensive, so we avoid calling it in cases
+			// where we already know the answer - namely when the element has a
+			// logical parent (ItemsControlFromItemContainer handles this case).  This
+			// leaves only those cases where the element belongs to my items
+			// without having a logical parent (e.g. via ItemsSource) and without
+			// having been generated yet. HasItem indicates if anything has been generated.
+
+			if (pContainer is FrameworkElement fe)
+			{
+				hasParent = fe.Parent != null;
+			}
+
+			if (!hasParent)
+			{
+				pIsHost = IsItemItsOwnContainer(pContainer);
+				if (pIsHost)
+				{
+					int nCount = Items?.Count ?? 0;
+					pIsHost = nCount > 0;
+					if (pIsHost)
+					{
+						pIsHost = Items.IndexOf(pContainer) >= 0;
+					}
+				}
+			}
+
+			return pIsHost;
+		}
+
+		// TODO Uno: Implement from WinUI
+		private protected bool IsItemsHostInvalid => false;
 	}
 }

@@ -26,6 +26,7 @@ partial class ComboBox
 	private bool m_IsPointerOverMain;
 	private bool m_IsPointerOverPopup;
 	private bool m_bIsPressed;
+	private bool m_preparingContentPresentersElement;
 	private bool m_isDropDownClosing;
 	private bool m_bPopupHasBeenArrangedOnce;
 	// Used to determine when to open the popup based on touch, we open the popup when TextBox gains
@@ -58,8 +59,12 @@ partial class ComboBox
 	private readonly SerialDisposable m_spDropDownOverlayPointerEnteredHandler = new();
 	private readonly SerialDisposable m_spDropDownOverlayPointerExitedHandler = new();
 
+	private object m_tpEmptyContent;
 	private TextBlock m_tpEditableContentPresenterTextBlock;
+	private ComboBoxItem m_tpSwappedOutComboBoxItem;
 
+	private DependencyObject m_tpGeneratedContainerForContentPresenter;
+	private int m_iLastGeneratedItemIndexforFaceplate;
 	private object m_customValueRef;
 	private Rect m_candidateWindowBoundsRect;
 
@@ -67,9 +72,9 @@ partial class ComboBox
 
 	private bool IsSmallFormFactor => false; // TODO Uno: This is currently not supported.
 
-	private bool IsInline => IsSmallFormFactor && m_itemCount <= s_itemCountThreashold;
+	private bool IsInline => IsSmallFormFactor && m_itemCount <= s_itemCountThreshold;
 
-	private bool IsFullMode() => IsSmallFormFactor && m_itemCount > s_itemCountThreashold;
+	private bool IsFullMode => IsSmallFormFactor && m_itemCount > s_itemCountThreshold;
 
 	private int m_itemCount;
 

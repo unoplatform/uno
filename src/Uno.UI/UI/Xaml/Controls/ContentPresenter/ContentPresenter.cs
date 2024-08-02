@@ -110,6 +110,8 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	/// <remarks>This is used to alter the propagation of the templated parent.</remarks>
 	internal bool IsNativeHost { get; set; }
 
+	internal DataTemplate SelectedContentTemplate => _dataTemplateUsedLastUpdate;
+
 	protected override bool IsSimpleLayout => true;
 
 	#region Content DependencyProperty

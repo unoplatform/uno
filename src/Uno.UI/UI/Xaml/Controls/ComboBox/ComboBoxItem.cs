@@ -39,6 +39,8 @@ namespace Microsoft.UI.Xaml.Controls
 			base.OnKeyDown(args);
 		}
 
+		internal void ChangeVisualStateInternal(bool useTransitions) => ChangeVisualState(useTransitions);
+
 		private protected override void ChangeVisualState(bool useTransitions)
 		{
 			bool bIsEnabled = false;
