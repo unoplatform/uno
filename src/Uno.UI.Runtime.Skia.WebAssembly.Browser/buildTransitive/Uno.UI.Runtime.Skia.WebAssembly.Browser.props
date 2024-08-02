@@ -4,6 +4,7 @@
 	<PropertyGroup>
 		<UnoWinRTRuntimeIdentifier>WebAssembly</UnoWinRTRuntimeIdentifier>
 		<UnoUIRuntimeIdentifier>Skia</UnoUIRuntimeIdentifier>
+		<SupportsFontManifest>true</SupportsFontManifest>
 	</PropertyGroup>
 
 </Project>

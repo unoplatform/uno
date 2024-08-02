@@ -1,5 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<PropertyGroup>
+		<IsUnoHead Condition="'$(OutputType)'=='Exe' OR '$(OutputType)'=='WinExe'">true</IsUnoHead>
+	</PropertyGroup>
 
 	<Target Name="_UnoSkiaWebAssemblyFeatureDefines" AfterTargets="PrepareForBuild">
 
@@ -11,6 +14,15 @@
 			Condition=" '$(UnoRuntimeIdentifier)' != '' "
 			Text="Unable to Uno.WinUI.Runtime.Skia.WebAssembly.Browser and Uno.UI.WebAssembly cannot be used at the same time." />
 
+	</Target>
+
+	<!-- Copy Content files to the output folder like APPX packaging does. -->
+	<Target Name="_UnoBeforeCopyLocal" BeforeTargets="CopyFilesToOutputDirectory;_CopyFilesMarkedCopyLocal">
+		<ItemGroup>
+			<ContentWithTargetPath
+				Update="@(ContentWithTargetPath)"
+				CopyToOutputDirectory="Always" />
+		</ItemGroup>
 	</Target>
 
 	<Choose>
