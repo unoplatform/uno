@@ -24,14 +24,13 @@ namespace Microsoft.UI.Xaml
 	/// _value could be an instance of ModifiedValue (which holds animated and coercion values, as well as the base value).
 	/// Or if it's not ModifiedValue, then it's directly the base value.
 	/// </remarks>
-	internal class DependencyPropertyDetails : IDisposable
+	internal class DependencyPropertyDetails
 	{
 		private DependencyPropertyValuePrecedences _baseValueSource = DependencyPropertyValuePrecedences.DefaultValue;
 		private object? _value = DependencyProperty.UnsetValue;
 		private object? _inheritedValue = DependencyProperty.UnsetValue;
 		private BindingExpression? _binding;
 		private Flags _flags;
-		private DependencyPropertyCallbackManager? _callbackManager;
 
 		internal void CloneToForHotReload(DependencyPropertyDetails other)
 		{
@@ -43,11 +42,6 @@ namespace Microsoft.UI.Xaml
 			{
 				other.SetValue(this.GetBaseValue(), DependencyPropertyValuePrecedences.Local);
 			}
-		}
-
-		public void Dispose()
-		{
-			_callbackManager?.Dispose();
 		}
 
 		public DependencyProperty Property { get; }
@@ -301,14 +295,6 @@ namespace Microsoft.UI.Xaml
 		{
 			return $"DependencyPropertyDetails({Property.Name})";
 		}
-
-		internal IDisposable RegisterCallback(PropertyChangedCallback callback)
-			=> (_callbackManager ??= new DependencyPropertyCallbackManager()).RegisterCallback(callback);
-
-		internal bool CanRaisePropertyChanged => _callbackManager is not null;
-
-		internal void RaisePropertyChangedNoNullCheck(DependencyObject actualInstanceAlias, DependencyPropertyChangedEventArgs eventArgs)
-			=> _callbackManager!.RaisePropertyChanged(actualInstanceAlias, eventArgs);
 
 		[Flags]
 		private enum Flags : byte

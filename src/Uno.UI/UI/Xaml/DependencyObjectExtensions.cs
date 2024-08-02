@@ -295,7 +295,9 @@ namespace Microsoft.UI.Xaml
 		/// <returns>A disposable that will unregister the callback when disposed.</returns>
 		public static IDisposable RegisterDisposablePropertyChangedCallback(this object instance, DependencyProperty property, PropertyChangedCallback callback)
 		{
-			return GetStore(instance).RegisterPropertyChangedCallback(property, callback);
+			var store = GetStore(instance);
+			var token = store.RegisterPropertyChangedCallback(property, callback);
+			return Disposable.Create(() => store.UnregisterPropertyChangedCallback(property, token));
 		}
 
 		/// <summary>
