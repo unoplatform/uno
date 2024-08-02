@@ -78,10 +78,6 @@ namespace Microsoft.UI.Xaml.Controls
 			return m_searchResultIndex;
 		}
 
-		protected override DependencyObject GetContainerForItemOverride() => new ComboBoxItem { IsGeneratedContainer = true };
-
-		protected override bool IsItemItsOwnContainerOverride(object item) => item is ComboBoxItem;
-
 		protected override void OnApplyTemplate()
 		{
 			if (IsEditable)
@@ -230,6 +226,16 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			IsDropDownOpen = false;
 		}
+
+		protected virtual void OnIsDropDownOpenChanged(bool oldIsDropDownOpen, bool newIsDropDownOpen)
+		{
+			OnIsDropDownOpenChangedPartial(oldIsDropDownOpen, newIsDropDownOpen);
+			OnIsDropDownOpenChangedPartialNative(oldIsDropDownOpen, newIsDropDownOpen);
+		}
+
+		partial void OnIsDropDownOpenChangedPartial(bool oldIsDropDownOpen, bool newIsDropDownOpen);
+
+		partial void OnIsDropDownOpenChangedPartialNative(bool oldIsDropDownOpen, bool newIsDropDownOpen);
 
 		private void UpdateDescriptionVisibility(bool initialization)
 		{

@@ -2,6 +2,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Reflection;
 using DirectUI;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -17,7 +19,7 @@ namespace Microsoft.UI.Xaml.Controls;
 
 partial class ComboBox
 {
-	private const int s_itemCountThreashold = 5;
+	private const int s_itemCountThreshold = 5;
 
 	private void PrepareState()
 	{
@@ -258,7 +260,7 @@ partial class ComboBox
 		}
 
 		// DropDownStates VisualStateGroup.
-		if (!IsFullMode())
+		if (!IsFullMode)
 		{
 			if (m_isDropDownClosing)
 			{
@@ -276,16 +278,257 @@ partial class ComboBox
 		EnsureValidationVisuals();
 	}
 
+	private void SetContentPresenter(int index, bool forceSelectionBoxToNull = false)
+	{
+		bool bGeneratedComboBoxItem = false;
+		DependencyObject spContainer;
+		DependencyObject spGeneratedComboBoxItemAsDO;
+		ComboBoxItem? spComboBoxItem;
+		object? spContent;
+		DataTemplate spDataTemplate;
+		DataTemplateSelector spDataTemplateSelector;
+		GeneratorPosition generatorPosition;
+
+		Debug.Assert(!IsInline, "ContentPresenter is not used in inline mode.");
+
+		// Avoid reentrancy.
+		if (m_preparingContentPresentersElement)
+		{
+			return;
+		}
+
+		if (m_tpSwappedOutComboBoxItem is not null)
+		{
+			if (m_tpContentPresenterPart is not null)
+			{
+				spContent = m_tpContentPresenterPart.Content;
+				{
+					m_tpContentPresenterPart.Content = null;
+					m_tpSwappedOutComboBoxItem.Content = spContent;
+					m_tpSwappedOutComboBoxItem = null;
+				}
+			}
+		}
+
+		var spGenerator = ItemContainerGenerator;
+		ItemContainerGenerator pItemContainerGenerator = spGenerator;
+		if (m_iLastGeneratedItemIndexforFaceplate > 0)
+		{
+			// This container was generated just for the purpose of extracting Content and ContentTemplate.
+			// This is the case where we generated an item which was its own container (e.g. defined in XAML or code behind).
+			// We keep this until the next item is being put on faceplate or popup is opened so that ItemContainerGenerator.ContainerFromIndex returns the
+			// correct container for this item which a developer would expect.
+			// We need to remove this item once popup opens (or another item takes its place on faceplate)
+			// so that virtualizing panel underneath does not get items out of order.
+			// We want to remove instead of recycle because we do not want to change the collection order by reusing containers for different data.
+			generatorPosition = pItemContainerGenerator.GeneratorPositionFromIndex(m_iLastGeneratedItemIndexforFaceplate);
+			if (generatorPosition.Offset == 0 && generatorPosition.Index >= 0)
+			{
+				// Only remove if the position returned by Generator is correct
+				pItemContainerGenerator.Remove(generatorPosition, 1);
+			}
+
+			m_iLastGeneratedItemIndexforFaceplate = -1;
+		}
+
+		if (index == -1)
+		{
+			if (m_tpContentPresenterPart is not null)
+			{
+				m_tpContentPresenterPart.ContentTemplateSelector = null;
+				m_tpContentPresenterPart.ContentTemplate = null;
+				m_tpContentPresenterPart.Content = m_tpEmptyContent;
+			}
+
+			// Only reset the SelectionBoxItem if a custom value is not selected.
+			if (forceSelectionBoxToNull || !IsEditable || m_customValueRef is null)
+			{
+				SelectionBoxItem = null;
+			}
+
+			SelectionBoxItemTemplate = null;
+			return;
+		}
+
+		if (m_tpContentPresenterPart is not null)
+		{
+			m_tpContentPresenterPart.Content = null;
+		}
+
+		spContainer = ContainerFromIndex(index);
+		spComboBoxItem = spContainer as ComboBoxItem;
+
+		if (spComboBoxItem is null)
+		{
+			bool isNewlyRealized = false;
+			generatorPosition = pItemContainerGenerator.GeneratorPositionFromIndex(index);
+			pItemContainerGenerator.StartAt(generatorPosition, GeneratorDirection.Forward, true);
+			spGeneratedComboBoxItemAsDO = pItemContainerGenerator.GenerateNext(out isNewlyRealized);
+			pItemContainerGenerator.Stop();
+			m_preparingContentPresentersElement = true;
+			m_tpGeneratedContainerForContentPresenter = spGeneratedComboBoxItemAsDO;
+			try
+			{
+				pItemContainerGenerator.PrepareItemContainer(spGeneratedComboBoxItemAsDO);
+			}
+			finally
+			{
+				m_tpGeneratedContainerForContentPresenter = null;
+				m_preparingContentPresentersElement = false;
+			}
+			spComboBoxItem = (ComboBoxItem)spGeneratedComboBoxItemAsDO;
+			// We dont want to remove the comboBoxItem if it was created explicitly in XAML and exists in Items collection
+			// TODO Uno: Missing implementation for ItemContainerGenerator #17808
+			//spItem = null;  spComboBoxItem.ReadLocalValue(ItemContainerGenerator.ItemForItemContainerProperty);
+			//bGeneratedComboBoxItem = IsItemItsOwnContainer(spItem);
+			//bGeneratedComboBoxItem = !bGeneratedComboBoxItem;
+			m_iLastGeneratedItemIndexforFaceplate = index;
+		}
+
+		spContent = spComboBoxItem.Content;
+		{
+			// Because we can't keep UIElement in 2 different place
+			// we need to reset ComboBoxItem.Content property. And we need to do it for UIElement only
+			if (spContent is UIElement)
+			{
+				spComboBoxItem.Content = null;
+				if (!bGeneratedComboBoxItem)
+				{
+					m_tpSwappedOutComboBoxItem = spComboBoxItem;
+				}
+			}
+
+			spComboBoxItem.IsPointerOver = false;
+			spComboBoxItem.ChangeVisualStateInternal(true);
+
+			// We want the item displayed in the 'selected item' ContentPresenter to have the same visual representation as the
+			// items in the Popup's StackPanel, to do that we copy the DataTemplate of the ComboBoxItem.
+			spDataTemplate = spComboBoxItem.ContentTemplate;
+			spDataTemplateSelector = spComboBoxItem.ContentTemplateSelector;
+			if (m_tpContentPresenterPart is not null)
+			{
+				m_tpContentPresenterPart.Content = spContent;
+				m_tpContentPresenterPart.ContentTemplate = spDataTemplate;
+				m_tpContentPresenterPart.ContentTemplateSelector = spDataTemplateSelector;
+				if (spDataTemplate is null)
+				{
+					spDataTemplate = m_tpContentPresenterPart.SelectedContentTemplate;
+				}
+			}
+
+			SelectionBoxItem = spContent;
+			SelectionBoxItemTemplate = spDataTemplate;
+
+		}
+
+		if (bGeneratedComboBoxItem)
+		{
+			// This container was generated just for the purpose of extracting Content and ContentTemplate
+			// It is not connected to the visual tree which might have unintended consequences, so remove it
+			generatorPosition = pItemContainerGenerator.GeneratorPositionFromIndex(index);
+			pItemContainerGenerator.Recycle(generatorPosition, 1);
+			m_iLastGeneratedItemIndexforFaceplate = -1;
+		}
+	}
+
+	internal void UpdateSelectionBoxItemProperties(int index)
+	{
+		Debug.Assert(IsInline, "When not in inline mode SetContentPresenter should be used instead of UpdateSelectionBoxItemProperties.");
+
+		if (-1 == index)
+		{
+			SelectionBoxItemTemplate = null;
+			SelectionBoxItem = null;
+		}
+		else
+		{
+			DataTemplate spDataTemplate;
+			object spItem;
+			ComboBoxItem spComboBoxItem;
+
+			var spContainer = ContainerFromIndex(index);
+
+			// The item will not have been realized if SelectedItem/Index was set in xaml and we're being called
+			// from OnApplyTemplate, but in that case the item will be realized when the ItemsPresenter
+			// is added to the visual tree later in the layout pass, and SetContentPresenter will be called
+			// again then.
+
+			if (spContainer is not null)
+			{
+				spComboBoxItem = (ComboBoxItem)spContainer;
+				spDataTemplate = spComboBoxItem.ContentTemplate;
+				spItem = spComboBoxItem.Content;
+
+				SelectionBoxItem = spItem;
+				SelectionBoxItemTemplate = spDataTemplate;
+			}
+		}
+	}
+
+	protected override bool IsItemItsOwnContainerOverride(object item) => item is ComboBoxItem;
+
+	protected override DependencyObject GetContainerForItemOverride() => new ComboBoxItem { IsGeneratedContainer = true };
+
+	protected override void PrepareContainerForItemOverride(DependencyObject element, object item)
+	{
+		base.PrepareContainerForItemOverride(element, item);
+
+		var isDropDownOpen = IsDropDownOpen;
+		var selectedIndex = SelectedIndex;
+		var selectedItem = SelectedItem;
+
+		var areEqual = PropertyValue.AreEqualImpl(selectedItem, item);
+		if (!isDropDownOpen && m_tpSwappedOutComboBoxItem is null && areEqual && !IsInline)
+		{
+			SetContentPresenter(selectedIndex);
+		}
+	}
+
+	protected override void ClearContainerForItemOverride(DependencyObject element, object item)
+	{
+		var sPassedElement = element as ComboBoxItem;
+
+		var isItemsHostInvalid = IsItemsHostInvalid;
+
+		if (!isItemsHostInvalid && sPassedElement == m_tpSwappedOutComboBoxItem)
+		{
+			Debug.Assert(!IsInline, "m_tpSwappedOutComboBoxItem is not used in inline mode.");
+			SetContentPresenter(-1);
+		}
+
+		base.ClearContainerForItemOverride(element, item);
+	}
+
+	// The first generated container is not part of the visual tree until its prepared
+	// During prepare container we set IsSelected property on the item being prepared which calls this method
+	// Since the container is not hooked into Visual tree yet, we return False from the base class's method.
+	// We cover this case by keeping track of the generated container in m_tpGeneratedContainerForContentPresenter and overriding this method.
+	private protected override bool IsHostForItemContainer(DependencyObject pContainer)
+	{
+		var isHost = base.IsHostForItemContainer(pContainer);
+		if (!isHost && m_tpGeneratedContainerForContentPresenter is not null)
+		{
+			isHost = pContainer == m_tpGeneratedContainerForContentPresenter;
+		}
+
+		return isHost;
+	}
+
 	internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 	{
 		base.OnPropertyChanged2(args);
 
 		// TODO Uno: Only IsEditable logic for now.
-		if (args.Property == HeaderProperty || args.Property == HeaderTemplateProperty)
+		if (args.Property == IsDropDownOpenProperty)
+		{
+			OnIsDropDownOpenChanged((bool)args.OldValue, (bool)args.NewValue);
+			OnIsDropDownOpenChanged();
+		}
+		else if (args.Property == HeaderProperty || args.Property == HeaderTemplateProperty)
 		{
 			UpdateHeaderPresenterVisibility();
 		}
-		if (args.Property == TextProperty)
+		else if (args.Property == TextProperty)
 		{
 			if (m_tpEditableTextPart is not null && IsEditable)
 			{
@@ -335,6 +578,43 @@ partial class ComboBox
 				}
 			}
 		}
+	}
+
+	private void OnIsDropDownOpenChanged()
+	{
+		var isDropDownOpen = IsDropDownOpen;
+
+		Debug.Assert(!(m_isDropDownClosing && !isDropDownOpen), "The drop down cannot already be closing if IsDropDownOpen was just changed to false.");
+
+		m_skipFocusSuggestion = !isDropDownOpen;
+
+		var spElement = m_tpEmptyContent as UIElement;
+		if (spElement is not null)
+		{
+			int selectedIndex = SelectedIndex;
+
+			// hide default placeholder text is we open dropdown or have anything is selected.
+			spElement.Opacity = isDropDownOpen || selectedIndex >= 0 ? 0 : 1;
+		}
+
+		if (m_isDropDownClosing && isDropDownOpen)
+		{
+			// We are opening the drop down before it is fully closed. Wrap up on the closing
+			// logic before initiating the opening logic.
+			FinishClosingDropDown();
+		}
+
+		// TODO Uno: Implement
+		//if (IsSmallFormFactor)
+		//{
+		//	isDropDownOpen ? OnOpenSmallFormFactor() : OnCloseSmallFormFactor();
+		//}
+		//else
+		//{
+		//	isDropDownOpen ? OnOpen() : OnClose();
+		//}
+
+		ElementSoundPlayerService.RequestInteractionSoundForElementStatic(isDropDownOpen ? ElementSoundKind.Show : ElementSoundKind.Hide, this);
 	}
 
 	private void UpdateEditableTextBox(object? item, bool selectText, bool selectAll)
@@ -409,7 +689,7 @@ partial class ComboBox
 		UpdateSelectionBoxHighlighted();
 		IsSelectionActive = hasFocus;
 
-		if (!hasFocus && !IsFullMode())
+		if (!hasFocus && !IsFullMode)
 		{
 			m_isClosingDueToCancel = true;
 			IsDropDownOpen = false;
@@ -1734,8 +2014,6 @@ partial class ComboBox
 
 
 #if HAS_UNO // Not ported yet
-	private void SetContentPresenter(int value) { }
-
 	private void PopupKeyDown(KeyRoutedEventArgs args) { }
 
 	private void MainKeyDown(KeyRoutedEventArgs args) { }
@@ -1747,5 +2025,7 @@ partial class ComboBox
 	private void EnsurePresenterReadyForInlineMode() { }
 
 	private void ForceApplyInlineLayoutUpdate() { }
+
+	private void FinishClosingDropDown() { }
 #endif
 }

@@ -73,6 +73,25 @@ partial class ComboBox
 				options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
 
 	/// <summary>
+	/// Gets or sets a value that indicates whether the drop-down portion of the ComboBox is currently open.
+	/// </summary>
+	public bool IsDropDownOpen
+	{
+		get => (bool)this.GetValue(IsDropDownOpenProperty);
+		set => this.SetValue(IsDropDownOpenProperty, value);
+	}
+
+	/// <summary>
+	/// Identifies the IsDropDownOpen dependency property.
+	/// </summary>
+	public static DependencyProperty IsDropDownOpenProperty { get; } =
+	   DependencyProperty.Register(
+		   nameof(IsDropDownOpen),
+		   typeof(bool),
+		   typeof(ComboBox),
+		   new FrameworkPropertyMetadata(false));
+
+	/// <summary>
 	/// Gets or sets a value that indicates whether the user can
 	/// edit text in the text box portion of the ComboBox.
 	/// </summary>

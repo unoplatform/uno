@@ -20,7 +20,6 @@
 				.Property("Placeholder", "object", "null")
 			.Class("ComboBox")
 				.Property("PlaceholderText", "string", "string.Empty")
-				.Property("IsDropDownOpen", "bool", "false")
 				.Property("MaxDropDownHeight", "double", "double.PositiveInfinity")
 			.Class("ItemsControl")
 				.Property("DisplayMemberPath", "string", "string.Empty")

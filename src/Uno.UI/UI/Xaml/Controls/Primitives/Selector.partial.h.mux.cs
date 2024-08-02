@@ -12,4 +12,6 @@ partial class Selector
 
 	// Allows the insertion of custom values by not reverting values outside the item source.
 	private bool m_customValuesAllowed;
+
+	protected bool m_skipFocusSuggestion;
 }
