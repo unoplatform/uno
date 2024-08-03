@@ -86,7 +86,7 @@
 		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Skia\Release\net9.0\Uno.UI.XamlHost.dll" target="uno-runtime\net9.0\skia" />
 		<file src="..\..\src\Uno.UI.XamlHost\Bin\Uno.UI.XamlHost.Skia\Release\net9.0\Uno.UI.XamlHost.pdb" target="uno-runtime\net9.0\skia" />
 
-		<file src="..\..\src\Uno.UI.XamlHost\buildTransitive\Uno.WinUI.XamlHost.props" target="build" />
+		<file src="..\..\src\Uno.UI.XamlHost\buildTransitive\Uno.WinUI.XamlHost.props" target="buildTransitive" />
 	</files>
 
 </package>
