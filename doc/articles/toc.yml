@@ -148,8 +148,6 @@
           href: how-uno-works.md
         - name: Best practices
           href: best-practices-uno.md
-        - name: Why use Uno Platform?
-          href: xref:Uno.Overview.WhyUno
 
     - name: Authoring
       items:
@@ -379,7 +377,8 @@
             href: uno-development/Uno-UI-XAML-ResourceTrimming.md
           - name: Hot Reload internals
             href: xref:Uno.Contributing.Internals.HotReload
-
+    - name: Why use Uno Platform?
+      href: xref:Uno.Overview.WhyUno
     - name: FAQ
       href: xref:Uno.Development.FAQ
 
