@@ -440,12 +440,6 @@ namespace Microsoft.UI.Xaml
 			uielement?.InvalidateArrange();
 		}
 
-		/// <summary>
-		/// See <see cref="DependencyObjectStore.RegisterPropertyChangedCallbackStrong(ExplicitPropertyChangedCallback)"/> for more details
-		/// </summary>
-		internal static void RegisterPropertyChangedCallbackStrong(this IDependencyObjectStoreProvider storeProvider, ExplicitPropertyChangedCallback handler)
-			=> storeProvider.Store.RegisterPropertyChangedCallbackStrong(handler);
-
 		// TODO Uno: MUX uses a IsRightToLeft virtual method on DependencyObject. This
 		// allows for some customization - e.g. glyphs should not respect this.
 		internal static bool IsRightToLeft(this DependencyObject dependencyObject) =>

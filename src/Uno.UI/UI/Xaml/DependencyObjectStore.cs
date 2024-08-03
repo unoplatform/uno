@@ -992,18 +992,6 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		/// <summary>
-		/// Registers an strong-referenced explicit DependencyProperty changed handler to be notified of any property change.
-		/// </summary>
-		/// <remarks>
-		/// This method is meant to be used only for a DependencyObject to
-		/// itself, to match the behavior of generic WinUI's OnPropertyChanged virtual method.
-		/// </remarks>
-		internal void RegisterPropertyChangedCallbackStrong(ExplicitPropertyChangedCallback handler)
-		{
-			_genericCallbacks = _genericCallbacks.Add(handler);
-		}
-
 		private readonly struct InheritedPropertyChangedCallbackDisposable : IDisposable
 		{
 			public InheritedPropertyChangedCallbackDisposable(ManagedWeakReference objectStoreWeak, DependencyObjectStore childStore)
