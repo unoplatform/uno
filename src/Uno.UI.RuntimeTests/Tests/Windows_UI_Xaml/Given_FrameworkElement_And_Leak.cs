@@ -247,7 +247,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			void HolderUpdate(int value)
 			{
+#if HAS_UNO
+				_ = rootContainer!.Dispatcher.RunAsync(CoreDispatcherPriority.High,
+#else
 				_ = TestServices.WindowHelper.CurrentTestWindow.DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.High,
+#endif
 					() =>
 					{
 						maxCounter = Math.Max(value, maxCounter);
