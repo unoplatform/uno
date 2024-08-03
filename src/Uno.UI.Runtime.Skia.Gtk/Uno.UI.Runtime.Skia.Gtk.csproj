@@ -48,7 +48,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Include="buildTransitive/*.targets">
+		<Content Include="buildTransitive/*.*">
 			<Pack>true</Pack>
 			<PackagePath>buildTransitive</PackagePath>
 		</Content>

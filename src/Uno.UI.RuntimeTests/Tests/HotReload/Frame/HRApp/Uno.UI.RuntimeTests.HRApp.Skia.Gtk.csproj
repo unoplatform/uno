@@ -46,7 +46,7 @@
 
 		<!--
 		<PackageReference Include="Uno.Resizetizer" Version="1.0.4" />
-		<PackageReference Include="Uno.WinUI.Skia.Gtk" Version="4.8.33" />
+		<PackageReference Include="Uno.WinUI.Runtime.Skia.Gtk" Version="4.8.33" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="7.0.0" />
 		<PackageReference Include="SkiaSharp.Views.Uno.WinUI" Version="2.88.7" />
 		<PackageReference Include="SkiaSharp.Skottie" Version="2.88.7" />
@@ -55,9 +55,8 @@
 		-->
 	</ItemGroup>
 
-	
-	<Import Project="$(MSBuildThisFileDirectory)../../../../../../build/nuget/*.Skia.Gtk.props" />
-	<Import Project="$(MSBuildThisFileDirectory)../../../../../../build/nuget/*.Skia.Gtk.targets" />
+	<Import Project="..\..\..\..\..\Uno.UI.Runtime.Skia.Gtk\buildTransitive\*.Skia.Gtk.props" />
+	<Import Project="..\..\..\..\..\Uno.UI.Runtime.Skia.Gtk\buildTransitive\*.Skia.Gtk.targets" />
 	<Import Project="$(MSBuildThisFileDirectory)../../../../../../build/nuget/uno.winui.runtime-replace.targets" />
 	<Import Project="$(MSBuildThisFileDirectory)../../../../../SourceGenerators/sourcegenerators.local.props" />
 
