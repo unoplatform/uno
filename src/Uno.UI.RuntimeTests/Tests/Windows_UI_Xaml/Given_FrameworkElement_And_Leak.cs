@@ -400,8 +400,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				var SUT = new Grid();
 				root.Children.Add(SUT);
 
+#if UNO_HAS_UIELEMENT_IMPLICIT_PINNING
 				Assert.IsFalse((SUT as IDependencyObjectStoreProvider).Store.AreHardReferencesEnabled);
 				Assert.IsNotNull(SUT.GetParent());
+#endif
 
 				TestServices.WindowHelper.WindowContent = root;
 				await TestServices.WindowHelper.WaitForIdle();
@@ -410,8 +412,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				Assert.IsNotNull(SUT.GetParent());
 
 				root.Children.Clear();
+
+#if UNO_HAS_UIELEMENT_IMPLICIT_PINNING
 				Assert.IsFalse((SUT as IDependencyObjectStoreProvider).Store.AreHardReferencesEnabled);
 				Assert.IsNull(SUT.GetParent());
+#endif
 			}
 		}
 
