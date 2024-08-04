@@ -48,6 +48,12 @@ namespace Microsoft.UI.Xaml.Data
 			};
 			set
 			{
+				if (value is null)
+				{
+					_elementInstanceRef = null;
+					return;
+				}
+
 				_elementInstanceRef = WeakReferencePool.RentWeakReference(this, value);
 
 				var target = _elementInstanceRef?.Target;
