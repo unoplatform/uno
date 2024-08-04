@@ -148,16 +148,23 @@ namespace Uno.UI.DataBinding
 		/// </summary>
 		internal void CloneShareableObjectsInPath()
 		{
+			var didClone = false;
+			object? clone = null;
 			foreach (BindingItem item in GetPathItems())
 			{
+				if (didClone)
+				{
+					item.DataContext = clone;
+					break;
+				}
+
 				if (item.PropertyType == typeof(Brush) || item.PropertyType == typeof(GeneralTransform))
 				{
 					if (item.Value is IShareableDependencyObject shareable && !shareable.IsClone && item.DataContext is DependencyObject owner)
 					{
-						var clone = shareable.Clone();
-
+						clone = shareable.Clone();
 						item.Value = clone;
-						break;
+						didClone = true;
 					}
 				}
 			}

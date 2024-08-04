@@ -672,15 +672,21 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void TryObserveCollectionViewSource(object newValue)
 		{
+			// TODO: We should NOT handle CollectionViewSource here.
+			// Actually, setting ItemsSource to CVS from code-behind in WinUI throws an exception.
+			// WinUI only handles CVS via Binding and the implementation is directly inside BindingExpression_Partial.cpp
+			// See AttachToCollectionViewSource and BindingExpressionCVSViewChangedHandler
 			if (newValue is CollectionViewSource cvs)
 			{
 				_cvsViewChanged.Disposable = null;
 				_cvsViewChanged.Disposable = cvs.RegisterDisposablePropertyChangedCallback(
-					CollectionViewSource.ViewProperty,
-					(s, e) =>
+					(_, dp, args) =>
 					{
-						ObserveCollectionChanged();
-						UpdateItems(null);
+						if (dp == CollectionViewSource.ViewProperty)
+						{
+							ObserveCollectionChanged();
+							UpdateItems(null);
+						}
 					}
 				);
 			}
