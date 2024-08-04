@@ -79,7 +79,7 @@ namespace Microsoft.UI.Xaml
 		private ImmutableList<ParentChangedCallback> _parentChangedCallbacks = ImmutableList<ParentChangedCallback>.Empty;
 
 		private readonly ManagedWeakReference _originalObjectRef;
-		private DependencyObject? _hardOriginalObjectRef;
+		private readonly DependencyObject _hardOriginalObjectRef;
 
 		/// <summary>
 		/// This field is used to pass a reference to itself in the case
@@ -90,7 +90,9 @@ namespace Microsoft.UI.Xaml
 
 		private readonly Type _originalObjectType;
 		private readonly SerialDisposable _inheritedProperties = new SerialDisposable();
+#if UNO_HAS_UIELEMENT_IMPLICIT_PINNING
 		private ManagedWeakReference? _parentRef;
+#endif
 		private object? _hardParentRef;
 		private readonly Dictionary<DependencyProperty, ManagedWeakReference> _inheritedForwardedProperties = new Dictionary<DependencyProperty, ManagedWeakReference>(DependencyPropertyComparer.Default);
 		private Stack<DependencyPropertyValuePrecedences?>? _overriddenPrecedences;
@@ -128,16 +130,26 @@ namespace Microsoft.UI.Xaml
 		/// </remarks>
 		public object? Parent
 		{
-			get => _hardParentRef ?? _parentRef?.Target;
+			get =>
+#if UNO_HAS_UIELEMENT_IMPLICIT_PINNING
+				_hardParentRef ?? _parentRef?.Target;
+#else
+				_hardParentRef;
+#endif
 			set
 			{
+#if UNO_HAS_UIELEMENT_IMPLICIT_PINNING
 				if (
 					!ReferenceEquals(_parentRef?.Target, value)
 					|| (_parentRef != null && value is null)
 				)
+#else
+				if (_hardParentRef != value)
+#endif
 				{
 					DisableHardReferences();
 
+#if UNO_HAS_UIELEMENT_IMPLICIT_PINNING
 					var previousParent = _parentRef?.Target;
 
 					if (_parentRef != null)
@@ -151,6 +163,10 @@ namespace Microsoft.UI.Xaml
 					{
 						_parentRef = WeakReferencePool.RentWeakReference(this, value);
 					}
+#else
+					var previousParent = _hardParentRef;
+					_hardParentRef = value;
+#endif
 
 					_inheritedProperties.Disposable = null;
 
@@ -186,9 +202,10 @@ namespace Microsoft.UI.Xaml
 			ObjectId = Interlocked.Increment(ref _objectIdCounter);
 
 			_originalObjectRef = WeakReferencePool.RentWeakReference(this, originalObject);
+			_hardOriginalObjectRef = (DependencyObject)originalObject;
 			_originalObjectType = originalObject is AttachedDependencyObject a ? a.Owner.GetType() : originalObject.GetType();
 
-			_properties = new DependencyPropertyDetailsCollection(_originalObjectType, _originalObjectRef, dataContextProperty, templatedParentProperty);
+			_properties = new DependencyPropertyDetailsCollection(_originalObjectType, _hardOriginalObjectRef, dataContextProperty, templatedParentProperty);
 
 			_dataContextProperty = dataContextProperty;
 			_templatedParentProperty = templatedParentProperty;
@@ -535,8 +552,8 @@ namespace Microsoft.UI.Xaml
 
 					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 					{
-						var name = (_originalObjectRef.Target as IFrameworkElement)?.Name ?? _originalObjectRef.Target?.GetType().Name;
-						var hashCode = _originalObjectRef.Target?.GetHashCode();
+						var name = (ActualInstance as IFrameworkElement)?.Name ?? ActualInstance.GetType().Name;
+						var hashCode = ActualInstance.GetHashCode();
 
 						this.Log().Debug(
 							$"SetValue on [{name}/{hashCode:X8}] for [{property.Name}] to [{newValue}] (req:{value} reqp:{precedence} p:{previousValue} pp:{previousPrecedence} np:{newPrecedence})"
@@ -770,8 +787,7 @@ namespace Microsoft.UI.Xaml
 		{
 			if (_validatePropertyOwner)
 			{
-				var isFrameworkElement = _originalObjectType.Is(typeof(FrameworkElement));
-				var isMixinFrameworkElement = _originalObjectRef.Target is IFrameworkElement && !isFrameworkElement;
+				var isMixinFrameworkElement = ActualInstance is IFrameworkElement and not FrameworkElement;
 
 				if (
 					!_originalObjectType.Is(property.OwnerType)
@@ -1802,8 +1818,8 @@ namespace Microsoft.UI.Xaml
 			return isAncestor;
 		}
 
-		public DependencyObject? ActualInstance
-			=> _hardOriginalObjectRef ?? _originalObjectRef.Target as DependencyObject;
+		public DependencyObject ActualInstance
+			=> _hardOriginalObjectRef;
 
 		/// <summary>
 		/// Creates a weak delegate for the specified PropertyChangedCallback callback.
@@ -2204,13 +2220,12 @@ namespace Microsoft.UI.Xaml
 		/// </remarks>
 		internal void TryEnableHardReferences()
 		{
+#if UNO_HAS_UIELEMENT_IMPLICIT_PINNING
 			if (FeatureConfiguration.DependencyObject.IsStoreHardReferenceEnabled)
 			{
 				_hardParentRef = Parent;
-				_hardOriginalObjectRef = ActualInstance;
-
-				_properties.TryEnableHardReferences();
 			}
+#endif
 		}
 
 		/// <summary>
@@ -2218,13 +2233,12 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		internal void DisableHardReferences()
 		{
+#if UNO_HAS_UIELEMENT_IMPLICIT_PINNING
 			if (FeatureConfiguration.DependencyObject.IsStoreHardReferenceEnabled)
 			{
 				_hardParentRef = null;
-				_hardOriginalObjectRef = null;
-
-				_properties.DisableHardReferences();
 			}
+#endif
 		}
 
 		/// <summary>

@@ -14,8 +14,7 @@ namespace Microsoft.UI.Xaml
 	partial class DependencyPropertyDetailsCollection : IDisposable
 	{
 		private readonly Type _ownerType;
-		private readonly ManagedWeakReference _ownerReference;
-		private object? _hardOwnerReference;
+		private readonly DependencyObject _ownerReference;
 		private readonly DependencyProperty _dataContextProperty;
 		private readonly DependencyProperty _templatedParentProperty;
 
@@ -32,13 +31,13 @@ namespace Microsoft.UI.Xaml
 
 		private const int BucketSize = 16;
 
-		private object? Owner => _hardOwnerReference ?? _ownerReference.Target;
+		private object? Owner => _ownerReference;
 
 		/// <summary>
 		/// Creates an instance using the specified DependencyObject <see cref="Type"/>
 		/// </summary>
 		/// <param name="ownerType">The owner type</param>
-		public DependencyPropertyDetailsCollection(Type ownerType, ManagedWeakReference ownerReference, DependencyProperty dataContextProperty, DependencyProperty templatedParentProperty)
+		public DependencyPropertyDetailsCollection(Type ownerType, DependencyObject ownerReference, DependencyProperty dataContextProperty, DependencyProperty templatedParentProperty)
 		{
 			_ownerType = ownerType;
 			_ownerReference = ownerReference;
@@ -237,15 +236,5 @@ namespace Microsoft.UI.Xaml
 		internal DependencyPropertyDetails?[] GetAllDetails()
 			// If _entries is null, it means we were already disposed. Gracefully return empty so that the caller doesn't have anything to do.
 			=> _entries ?? _empty;
-
-		internal void TryEnableHardReferences()
-		{
-			_hardOwnerReference = _ownerReference.Target;
-		}
-
-		internal void DisableHardReferences()
-		{
-			_hardOwnerReference = null;
-		}
 	}
 }
