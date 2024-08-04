@@ -13,7 +13,7 @@ public partial class CompositionShape
 {
 	private Matrix3x2 _combinedTransformMatrix = Matrix3x2.Identity;
 
-	protected Matrix3x2 CombinedTransformMatrix
+	private protected Matrix3x2 CombinedTransformMatrix
 	{
 		get => _combinedTransformMatrix;
 		private set => SetProperty(ref _combinedTransformMatrix, value);
