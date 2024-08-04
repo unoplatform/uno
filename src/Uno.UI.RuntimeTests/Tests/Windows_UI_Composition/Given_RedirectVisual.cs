@@ -20,7 +20,6 @@ public class Given_RedirectVisual
 {
 	[TestMethod]
 	[RunsOnUIThread]
-	[Ignore("Disabled because of https://github.com/unoplatform/uno-private/issues/307")]
 	public async Task When_Source_Changes()
 	{
 		var compositor = Window.Current.Compositor;
