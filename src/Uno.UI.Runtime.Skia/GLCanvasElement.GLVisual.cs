@@ -8,7 +8,7 @@ public abstract partial class GLCanvasElement
 {
 	private class GLVisual(GLCanvasElement owner, Compositor compositor) : Visual(compositor)
 	{
-		private readonly SKPixmap _pixmap = new SKPixmap(new SKImageInfo((int)owner._width, (int)owner._height, SKColorType.Bgra8888), owner._pixels);
+		private readonly SKPixmap _pixmap = new SKPixmap(new SKImageInfo((int)owner._width, (int)owner._height, SKColorType.Bgra8888, SKAlphaType.Unpremul), owner._pixels);
 
 		internal override void Paint(in PaintingSession session)
 		{
