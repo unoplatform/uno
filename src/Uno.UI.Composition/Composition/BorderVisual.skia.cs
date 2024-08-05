@@ -257,7 +257,6 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 	private unsafe void UpdateBackgroundPath(bool useInnerBorderBoundsAsAreaForBackground, SKSize innerArea, SKSize outerArea, SKPoint* outerRadii, SKPoint* innerRadii)
 	{
 		var backgroundPath = new SKPath();
-		backgroundPath.Reset();
 		var roundRect = new SKRoundRect();
 		var rect = useInnerBorderBoundsAsAreaForBackground
 			? new SKRect(0, 0, innerArea.Width, innerArea.Height)
