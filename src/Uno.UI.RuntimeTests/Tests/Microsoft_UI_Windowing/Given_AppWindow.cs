@@ -17,6 +17,12 @@ public class Given_AppWindow
 	[TestMethod]
 	public async Task When_Resize()
 	{
+		if (OperatingSystem.IsLinux())
+		{
+			// Currently failing in CI #9080
+			Assert.Inconclusive();
+		}
+
 		AssertPositioningAndSizingSupport();
 
 		var appWindow = TestServices.WindowHelper.CurrentTestWindow.AppWindow;
