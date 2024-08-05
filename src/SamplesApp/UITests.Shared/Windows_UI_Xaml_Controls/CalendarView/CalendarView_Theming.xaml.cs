@@ -5,6 +5,9 @@ using Microsoft.UI.Xaml.Controls;
 using Uno.Helpers.Theming;
 #endif
 using Uno.UI.Samples.Controls;
+#if WINAPPSDK
+using Windows.UI.ViewManagement;
+#endif
 
 namespace UITests.Windows_UI_Xaml_Controls.CalendarView
 {
