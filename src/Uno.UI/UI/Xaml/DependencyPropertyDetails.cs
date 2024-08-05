@@ -333,7 +333,7 @@ namespace Microsoft.UI.Xaml
 		{
 			if (_stack == null)
 			{
-				if (_highestPrecedence == DependencyPropertyValuePrecedences.Local)
+				if (_highestPrecedence == DependencyPropertyValuePrecedences.Local && precedence < DependencyPropertyValuePrecedences.Local)
 				{
 					return (Unwrap(_fastLocalValue), DependencyPropertyValuePrecedences.Local);
 				}
