@@ -1,10 +1,10 @@
 ﻿using System;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Uno.Helpers.Theming;
 #if !WINAPPSDK
-using Uno.UI.Samples.Controls;
+using Uno.Helpers.Theming;
 #endif
+using Uno.UI.Samples.Controls;
 
 namespace UITests.Windows_UI_Xaml_Controls.CalendarView
 {
