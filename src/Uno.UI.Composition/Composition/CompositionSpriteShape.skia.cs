@@ -19,8 +19,7 @@ namespace Microsoft.UI.Composition
 			{
 				if (FillBrush is { } fill)
 				{
-					var fillPaint = TryCreateAndClearFillPaint();
-					fillPaint.ColorFilter = session.Filters.OpacityColorFilter;
+					var fillPaint = TryCreateAndClearFillPaint(session.Filters.OpacityColorFilter);
 
 					if (Compositor.TryGetEffectiveBackgroundColor(this, out var colorFromTransition))
 					{
@@ -53,10 +52,8 @@ namespace Microsoft.UI.Composition
 
 				if (StrokeBrush is { } stroke && StrokeThickness > 0)
 				{
-					var fillPaint = TryCreateAndClearFillPaint();
-					var strokePaint = TryCreateAndClearStrokePaint();
-					fillPaint.ColorFilter = session.Filters.OpacityColorFilter;
-					strokePaint.ColorFilter = session.Filters.OpacityColorFilter;
+					var fillPaint = TryCreateAndClearFillPaint(session.Filters.OpacityColorFilter);
+					var strokePaint = TryCreateAndClearStrokePaint(session.Filters.OpacityColorFilter);
 
 					// Set stroke thickness
 					strokePaint.StrokeWidth = StrokeThickness;
@@ -91,13 +88,13 @@ namespace Microsoft.UI.Composition
 			}
 		}
 
-		private SKPaint TryCreateAndClearStrokePaint()
-			=> TryCreateAndClearPaint(ref _strokePaint, true, CompositionConfiguration.UseBrushAntialiasing);
+		private SKPaint TryCreateAndClearStrokePaint(SKColorFilter? colorFilter)
+			=> TryCreateAndClearPaint(ref _strokePaint, true, colorFilter, CompositionConfiguration.UseBrushAntialiasing);
 
-		private SKPaint TryCreateAndClearFillPaint()
-			=> TryCreateAndClearPaint(ref _fillPaint, false, CompositionConfiguration.UseBrushAntialiasing);
+		private SKPaint TryCreateAndClearFillPaint(SKColorFilter? colorFilter)
+			=> TryCreateAndClearPaint(ref _fillPaint, false, colorFilter, CompositionConfiguration.UseBrushAntialiasing);
 
-		private static SKPaint TryCreateAndClearPaint(ref SKPaint? paint, bool isStroke, bool isHighQuality = false)
+		private static SKPaint TryCreateAndClearPaint(ref SKPaint? paint, bool isStroke, SKColorFilter? colorFilter, bool isHighQuality = false)
 		{
 			if (paint == null)
 			{
@@ -130,6 +127,8 @@ namespace Microsoft.UI.Composition
 					paint.PathEffect = null;
 				}
 			}
+			
+			paint.ColorFilter = colorFilter;
 
 			return paint;
 		}
@@ -178,7 +177,7 @@ namespace Microsoft.UI.Composition
 
 				if (StrokeBrush is { } stroke && StrokeThickness > 0)
 				{
-					var strokePaint = TryCreateAndClearStrokePaint();
+					var strokePaint = TryCreateAndClearStrokePaint(null);
 					strokePaint.StrokeWidth = StrokeThickness;
 					var strokeGeometry = strokePaint.GetFillPath(geometryWithTransformations);
 					if (strokeGeometry.Contains((float)point.X, (float)point.Y))
