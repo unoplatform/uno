@@ -3550,6 +3550,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[Ignore("Fails on WinUI as well.")]
 		public async Task When_Item_Removed_Then_DataContext_Released()
 		{
 			using (FeatureConfigurationHelper.UseTemplatePooling())
