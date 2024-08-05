@@ -69,8 +69,6 @@ namespace Microsoft.UI.Xaml
 		internal void OnElementUnloaded()
 		{
 			IsLoaded = false;
-			IsActiveInVisualTree = false;
-			Depth = int.MinValue;
 
 			OnFwEltUnloaded();
 			UpdateHitTest();

@@ -985,7 +985,8 @@ namespace Microsoft.UI.Xaml
 			m_firedLoadingEvent = false;
 		}
 
-		internal override void Leave(LeaveParams @params)
+		// UNO TODO: Not yet ported
+		internal override void LeaveImpl(LeaveParams @params)
 		{
 			// The way this works on WinUI is that when an element enters the visual tree, all values
 			// of properties that are marked with MetaDataPropertyInfoFlags::IsSparse and MetaDataPropertyInfoFlags::IsVisualTreeProperty
@@ -997,12 +998,12 @@ namespace Microsoft.UI.Xaml
 				{
 					if (resource is FrameworkElement resourceAsUIElement)
 					{
-						resourceAsUIElement.Leave(@params);
+						resourceAsUIElement.LeaveImpl(@params);
 					}
 				}
 			}
 
-			base.Leave(@params);
+			base.LeaveImpl(@params);
 
 			ReconfigureViewportPropagation(isLeavingTree: true);
 		}

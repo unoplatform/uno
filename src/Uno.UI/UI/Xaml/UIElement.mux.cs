@@ -1234,6 +1234,16 @@ namespace Microsoft.UI.Xaml
 			// UNO specific: We don't have UIElementCollection field, so we do it this way
 			foreach (var child in _children)
 			{
+				if (child == this)
+				{
+					// In some cases, we end up with ContentPresenter having itself as a child.
+					// Initial investigation: ScrollViewer sets its Content to ContentPresenter, and
+					// ContentPresenter sets its Content as the ScrollViewer Content.
+					// Skip this case for now.
+					// TODO: Investigate this more deeply.
+					continue;
+				}
+
 				this.ChildEnter(child, @params);
 			}
 
@@ -1360,23 +1370,297 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		internal virtual void Leave(LeaveParams @params)
+		// NOTE: This should actually be on DependencyObject, not UIElement.
+		// We'll be able to do it once DependencyObject is a class instead of an interface.
+		//
+		// Causes the object and its properties to leave scope. If bLive,
+		// then the object is leaving the "Live" tree, and the object can no
+		// longer respond to OM requests related to being Live.   Actions
+		// like downloads and animation will be halted.
+		private void Leave(LeaveParams @params)
 		{
-			foreach (var child in _children)
+			// If IsProcessingEnterLeave is true, then this element is already part of the
+			// Enter/Leave walk.  This can happen, for instance, if a custom DP's value has
+			// been set to some ancestor of this node.
+			if (_isProcessingEnterLeave)
 			{
-				if (child == this)
-				{
-					// In some cases, we end up with ContentPresenter having itself as a child.
-					// Initial investigation: ScrollViewer sets its Content to ContentPresenter, and
-					// ContentPresenter sets its Content as the ScrollViewer Content.
-					// Skip this case for now.
-					// TODO: Investigate this more deeply.
-					continue;
-				}
-
-				child.Leave(@params);
+				return;
+			}
+			else
+			{
+				_isProcessingEnterLeave = true;
 			}
 
+			try
+			{
+				// UNO TODO: We naively call LeaveImpl right away.
+				LeaveImpl(@params);
+
+				//DependencyObject pAdjustedNamescopeOwner = pNamescopeOwner;
+
+				//// When we copy the LeaveParams, reset the pointer to the resource dictionary
+				//// parent so that descendants don't think they are the direct child of one.
+				//LeaveParams leaveParams = params;
+				//leaveParams.pParentResourceDictionary = null;
+
+				//// It only makes sense to leave a live tree if you are currently live.
+				//// If this happens, we are likely recovering from a situation where this
+				//// tree has only partially entered the live tree.
+				//bool bAdjustedLive = @params.IsLive && IsActiveInVisualTree;
+
+				//if (m_pInheritedProperties != null)
+				//{
+				//	if (m_pInheritedProperties.m_pWriter == this)
+				//	{
+				//		// This DO owns this m_pInheritedProperties. Mark it as out of date
+				//		// so that subsequent property accesses get updated property values.
+				//		m_pInheritedProperties.m_cGenerationCounter = 0;
+				//	}
+				//	else
+				//	{
+				//		// This DO's inherited properties are a read only reference to some
+				//		// parent, that reference is no longer valid, and we need to release
+				//		// it.
+				//		DisconnectInheritedProperties();
+				//	}
+				//}
+
+				//if (this.IsStandardNameScopeOwner())
+				//{
+				//	pAdjustedNamescopeOwner = this;
+
+				//	// If this is a permanent namescopeOwner, but its names are not registered
+				//	// in its own namescope, then the optimization further down about skipping name registration
+				//	// wouldn't apply.
+				//	if (!@params.SkipNameRegistration && this.ShouldRegisterInParentNamescope() && pNamescopeOwner != this &&
+				//		!IsTemplateNamescopeMember())
+				//	{
+				//		// not using the "adjusted" namescope owner
+				//		UnregisterName(pNamescopeOwner);
+				//	}
+
+				//	if (HasDeferred())
+				//	{
+				//		// Either of code-paths below will leave the method, so NotifyLeave should not be called twice
+				//		DeferredMapping.NotifyLeave(
+				//			pNamescopeOwner,
+				//			this,
+				//			@params.fSkipNameRegistration);
+				//	}
+
+				//	if (!bAdjustedLive && !this.GetContext().HasRegisteredNames(this))
+				//	{
+				//		// If we are removing a Namescope Owner from a non-live tree,
+				//		// and it hasn't had gone through registration of the names, then
+				//		// there is nothing to clean up.  Score.
+				//		return;
+				//	}
+				//	else
+				//	{
+				//		// ensure that the fNamescopeMember is set, (as this may not be
+				//		// the case if this is the rootVisual leaving the tree)
+				//		SetIsStandardNameScopeMember(TRUE);
+
+				//		// If this is a permanent NamescopeOwner, then he will be taking his
+				//		// names with him en masse, so pass TRUE for bSkipRegistration
+				//		leaveParams.IsLive = bAdjustedLive;
+				//		leaveParams.SkipNameRegistration = TRUE;
+
+				//		LeaveImpl(pAdjustedNamescopeOwner, leaveParams);
+				//		return;
+				//	}
+				//}
+
+				//if (@params.SkipNameRegistration
+				//	&& null != GetParentInternal() as PopupRoot)
+				//{
+				//	// Popup's child receives Leave from two different namescopes - namescope of its logical
+				//	// parent and that of its visual parent. This Leave is from the visual parent of popup's child.
+				//	// Use the namescope in which name registration is done to ensure the correct
+				//	// IsNamescopeMember flag.
+				//	pAdjustedNamescopeOwner = GetStandardNameScopeOwner();
+
+				//	if (pAdjustedNamescopeOwner == null && IsActiveInVisualTree)
+				//	{
+				//		if (this.GetLogicalParentNoRef() is Popup popup)
+				//		{
+				//			// This is a temporary fix for the case where a Popup's child is leaving the tree, but we can't find
+				//			// the namescope owner (because the owner isn't live anymore, so GetStandardNameScopeOwnerInternal
+				//			// skips it).  We hit this case in the CommandBarFlyoutCommandBar, which contains a parented popup
+				//			// called "OverflowPopup".  When the flyout closes, the children begin the process of leaving the
+				//			// tree.  As part of this process, the OverflowPopup is closed, and as its children process Leave,
+				//			// pAdjustedNamescopeOwner comes back as nullptr here because the namescope owner has already left
+				//			// the "live" state.  We've made the change this way to minimize risk for a WinAppSDK 1.0 update.
+				//			// An easy way to repro this case is to right-click a TextBox in two different XAML Windows on
+				//			// the same thread.
+				//			// Find a better, more comprehensive fix with http://osgvsowi/19548424
+				//			pAdjustedNamescopeOwner = popup.GetCachedStandardNamescopeOwnerNoRef();
+				//			popup.SetCachedStandardNamescopeOwner(null);
+				//		}
+				//	}
+				//}
+
+				//// MultiParentShareableDependencyObjects may not have a namescope owner (e.g. when it has multiple parents). But we
+				//// still need to make sure we do a live enter, so that types such as BitmapImage can still do work upon entering/
+				//// leaving the tree.
+				//bool liveLeaveOnMultiParentShareableDO = bAdjustedLive && DoesAllowMultipleParents();
+				//if (pAdjustedNamescopeOwner is not null || liveLeaveOnMultiParentShareableDO)
+				//{
+				//	if (pAdjustedNamescopeOwner is not null)
+				//	{
+				//		SetIsStandardNameScopeMember(pAdjustedNamescopeOwner.IsStandardNameScopeMember());
+				//	}
+				//	leaveParams.IsLive = bAdjustedLive;
+				//	leaveParams.SkipNameRegistration = @params.fSkipNameRegistration;
+				//	LeaveImpl(pAdjustedNamescopeOwner, leaveParams);
+				//}
+				//else if (leaveParams.IsForKeyboardAccelerator)
+				//{
+				//	// This is dead leave to register any keyboard accelerators collection to the list of live accelerators
+				//	leaveParams.IsLive = false;
+				//	leaveParams.SkipNameRegistration = true;
+				//	leaveParams.UseLayoutRounding = false;
+				//	leaveParams.CoercedIsEnabled = false;
+				//	LeaveImpl(pAdjustedNamescopeOwner, leaveParams);
+				//}
+
+				//if (HasDeferred())
+				//{
+				//	DeferredMapping.NotifyLeave(
+				//		pNamescopeOwner,
+				//		this,
+				//		@params.SkipNameRegistration));
+				//}
+			}
+			finally
+			{
+				_isProcessingEnterLeave = false;
+			}
+		}
+
+
+		// This method should be on DependencyObject instead of UIElement.
+		// We can only do that once DependencyObject becomes a class instead of interface.
+		private protected virtual void LeaveImpl(
+			bool live
+			//bool skipNameRegistration,
+			//bool coercedIsEnabled,
+			//bool visualTreeBeingReset
+			)
+		{
+
+		}
+
+		// Causes the object and its properties to leave scope. If bLive,
+		// then the object is leaving the "Live" tree, and the object can no
+		// longer respond to OM requests related to being Live.   Actions
+		// like downloads and animation will be halted.
+		//
+		// Derived classes are expected to first call <base>::LeaveImpl, and
+		// then call Leave on any "children".
+		//
+		// Objects are expected to cleanup all the unshared device resources on their leave from live tree
+		// i.e., when params.fIsLive = TRUE. This include primitives,
+		// composition nodes, visuals, shape realizations and cache realizations for UIElements.
+		// And it includes textures etc, for other objects like brushes and image sources.
+		// The recursive leave call for children elements and children properties
+		// would do similar cleanup on their final leave. This enables appropriate sharing.
+		// Hence an element should not cleanup resources for its
+		// child/property in its leave.
+		private void DependencyObject_LeaveImpl(LeaveParams @params)
+		{
+			// Raise InheritanceContextChanged for the live leave.  We need to do this before m_bitFields.fLive is updated.
+			// params.fIsLive cannot be used because it is updated before we get here.
+			//if (IsActiveInVisualTree && m_bitFields.fWantsInheritanceContextChanged)
+			//{
+			//	NotifyInheritanceContextChanged();
+			//}
+
+			// Mark the object as out of tree if the intention of this walk is to notify
+			// the element that it is leaving the live tree (as indicated by the bLive parameter.)
+			if (@params.IsLive)
+			{
+				//	m_checkForResourceOverrides = @params.CheckForResourceOverrides;
+				Depth = int.MinValue;
+				IsActiveInVisualTree = false;
+			}
+
+			//// Enumerate all the properties in its class
+
+			//if (!@params.SkipNameRegistration &&
+			//	!IsTemplateNamescopeMember())
+			//{
+			//	UnregisterName(pNamescopeOwner);
+			//	UnregisterDeferredStandardNameScopeEntries(pNamescopeOwner);
+			//}
+
+			//var pClassInfo = this.GetType();
+
+			//// Nothing else to do for value types and control/data templates.
+			//if (pClassInfo.IsValueType
+			//	|| pClassInfo == typeof(ControlTemplate)
+			//	|| pClassInfo == typeof(DataTemplate))
+			//{
+			//	return;
+			//}
+
+			//// Enumerate all the field-backed properties and leave as needed.
+			//EnterDependencyProperty pNullEnterProperty = MetadataAPI.GetNullEnterProperty();
+			//for (EnterDependencyProperty pEnterProperty = pClassInfo.GetFirstEnterProperty(); pEnterProperty != pNullEnterProperty; pEnterProperty = pEnterProperty.GetNextProperty())
+			//{
+			//	if (pEnterProperty.DoNotEnterLeave())
+			//	{
+			//		continue;
+			//	}
+
+			//	if (pEnterProperty.IsObjectProperty())
+			//	{
+			//		DependencyObject pDO = MapPropertyAndGroupOffsetToDO(pEnterProperty.m_nOffset, pEnterProperty.m_nGroupOffset);
+			//		if (pDO != null)
+			//		{
+			//			LeaveObjectProperty(pDO, pNamescopeOwner, @params);
+			//		}
+			//	}
+			//}
+
+			//LeaveSparseProperties(pNamescopeOwner, @params);
+			//if (@params.IsLive)
+			//{
+			//	// If we're currently the focused element, remove ourselves from being focused
+			//	var contentRoot = VisualTree.GetContentRootForElement(this, VisualTree.LookupOptions.NoFallback);
+			//	if (contentRoot != null)
+			//	{
+			//		FocusManager pFocusManager = contentRoot.GetFocusManagerNoRef();
+
+			//		if (pFocusManager is not null && pFocusManager.GetFocusedElementNoRef() == this)
+			//		{
+			//			pFocusManager.ClearFocus();
+			//		}
+
+			//		var akExport = contentRoot.GetAKExport();
+
+			//		if (akExport.IsActive())
+			//		{
+			//			akExport.RemoveElementFromAKMode(this);
+			//		}
+			//	}
+			//}
+
+			//InputServices inputServices = this.GetContext().GetInputServices();
+
+			//if (inputServices != null)
+			//{
+			//	inputServices->ObjectLeavingTree(this);
+			//}
+		}
+
+		internal virtual void LeaveImpl(LeaveParams @params)
+		{
+			// --------- UNO Specific BEGIN ---------
+			// This should be done in FrameworkElement's override of LeaveImpl.
+			// But:
+			// 1. Currently we manage Loaded/Unloaded in UIElement
+			// 2. OnElementUnloaded is important to be called on UIElement because Wasm hit testing implementation relies on that (for TextElements specifically)
 			if (IsActiveInVisualTree)
 			{
 				if (IsLoaded)
@@ -1398,6 +1682,251 @@ namespace Microsoft.UI.Xaml
 				var eventManager = this.GetContext().EventManager;
 				eventManager.RemoveRequest(this);
 			}
+			// --------- UNO Specific BEGIN ---------
+
+			//var core = this.GetContext();
+			//var isParentEnabled = @params.CoercedIsEnabled;
+			//bool alreadyCanceledTransitions = false;
+
+			// Uno docs: NOTE IMPORTANT -> GetIsEnabled() in WinUI is different from IsEnabled()
+			//// If parent is enabled, but local value of IsEnabled is FALSE, need to disable children.
+			//if (isParentEnabled && !GetIsEnabled())
+			//{
+			//	@params.CoercedIsEnabled = false;
+			//}
+
+			//ASSERT(IsTabNavigationWithVirtualizedItemsSupported() || !m_skipFocusSubtree_OffScreenPosition);
+
+			//// Clear the skip focus subtree flags.
+			//m_skipFocusSubtree_OffScreenPosition = false;
+			//m_skipFocusSubtree_Other = false;
+
+			//// When visual tree is being reset, (CCoreServices::ResetVisualTree) no need to coerce values/raise events.
+			//if (@params.IsLive && !@params.VisualTreeBeingReset)
+			//{
+			//	// If parent is enabled and local value is enabled and coerced value is disabled, then coerce to TRUE.
+			//	if (isParentEnabled && GetIsEnabled() && !IsEnabled())
+			//	{
+			//		// Coerce value and raise changed event.
+			//		CoerceIsEnabled(true, /*bCoerceChildren*/false);
+			//	}
+
+			//	// Revert the UseLayoutRounding property
+			//	if (!IsPropertyDefaultByIndex(UIElement.UseLayoutRounding))
+			//	{
+			//		// Pass on the non-default value
+			//		@params.UseLayoutRounding = GetUseLayoutRounding();
+			//	}
+			//	else
+			//	{
+			//		// Inherit the new value
+			//		SetUseLayoutRounding(@params.fUseLayoutRounding);
+			//	}
+			//}
+
+			//// If we have absolutely positioned renderers, we always need
+			//// to cancel transitions regardless of fIsLive. This covers scenarios
+			//// like removing the dragged item from a list while dragging, which
+			//// only results in a non-live leave walk (because of how DOCollection
+			//// handles removes).
+			//if (HasAbsolutelyPositionedLayoutTransitionRenderers())
+			//{
+			//	if (HasLayoutTransitionStorage())
+			//	{
+			//		GetLayoutTransitionStorage().UnregisterElementForTransitions(this);     // kills unrealized transitions in the layout manager, very unlikely
+			//	}
+
+			//	CTransition.CancelTransitions(this);  // kills currently running animations, quite likely.
+			//	alreadyCanceledTransitions = true;
+			//}
+
+			//// calculate offsets when transitioning from a live element in the visual tree to a non live element
+			//if (@params.fIsLive)
+			//{
+			//	CLayoutManager pLayoutManager = VisualTree.GetLayoutManagerForElement(this);
+
+			//	// transform the offset to be absolute against the plugin
+			//	if (HasLayoutTransitionStorage())
+			//	{
+			//		Rect offset = new Rect(0, 0, 0, 0);
+			//		Rect topLeft = new Rect(0, 0, 0, 0);
+			//		LayoutTransitionStorage pStorage = GetLayoutTransitionStorage();
+			//		UIElement pParent = GetParentInternal(false);
+
+			//		ASSERT(pParent);    // difficult assert, based on the logic inside Collection::Remove
+			//							// but it can be trusted to never change.
+
+			//		// no matter what, if we are leaving the live tree and we have a transition active, we should stop it
+			//		// * this is an important step in how unloading nesting works. When a sub-graph is leaving the visual tree,
+			//		//   individual nodes that are unloading are not stopped by the cancellation of unloads happening
+			//		//   higher in the tree (there are no dependencies).
+			//		// * another important reason to call cancel here is that the cancel will update the current offset with data
+			//		//   from the LTE.
+
+			//		if (!alreadyCanceledTransitions)
+			//		{
+			//			pStorage.UnregisterElementForTransitions(this);     // kills unrealized transitions in the layout manager, very unlikely
+			//			Transition.CancelTransitions(this);  // kills currently running animations, quite likely.
+			//		}
+
+			//		xref_ptr<ITransformer> pTransformer;
+			//		pParent.TransformToRoot(out pTransformer);
+			//		Transformer.TransformBounds(pTransformer, ref topLeft, ref offset);
+
+			//		// preparation:
+			//		// if we are in a new layout cycle, next generation information is actually correct
+			//		if (pStorage is not null && pLayoutManager is not null && pLayoutManager.GetLayoutCounter() >= pStorage.m_nextGenerationCounter)
+			//		{
+			//			pStorage.m_currentOffset = pStorage.m_nextGenerationOffset;
+			//			pStorage.m_currentSize = pStorage.m_nextGenerationSize;
+			//		}
+
+			//		// current offset was relative to parent
+			//		pStorage.m_currentOffset.x += offset.X;
+			//		pStorage.m_currentOffset.y += offset.Y;
+
+			//		// update opacity
+			//		{
+			//			// if there was an active transition, it will always have better information
+			//			// by way of the opacity on the LayoutTransitionElement.
+			//			// Unfortunately, the cancelling of a transition and the call to leave occurs
+			//			// at different points in time, so we use a value to indicate whether the
+			//			// leaveImpl should bother with caching the opacity.
+			//			// It will do so, if there was not active transition during unload.
+
+			//			// The flag will normally be true, except if an element is being removed that had
+			//			// an active transition.
+			//			if (pStorage.m_opacityCache == LeaveShouldDetermineOpacity)
+			//			{
+			//				pStorage.m_opacityCache = GetOpacityToRoot();
+			//			}
+			//		}
+
+			//	}
+
+			//	if (pLayoutManager is not null) // can be null when plugin is tearing down.
+			//	{
+			//		// indicates when this leave occurred (is used as a signal to know if a reparent is occurring)
+
+			//		// we cannot use the LeftInThisTick constant, since that would be sure to trigger a reparent
+			//		// when the element is being entered again. Instead, we need to set the counter such that,
+			//		// --- if an enter occurs in the same tick it will be counted as a reparent ---
+
+			//		m_leftTreeCounter = pLayoutManager.GetLayoutCounter();
+			//	}
+			//}
+
+			//if (@params.fIsLive)
+			//{
+			//	// Ensure the element's render data is removed from the scene by clearing it.
+			//	// We don't need to do this recursively since the Leave() walk is already recursive.
+			//	// TODO: INCWALK: Consider just calling the recursive version here anyway? It would be simpler and less error-prone, but perhaps worse for perf.
+
+			//	// Cleanup all the unshared per element device resources. This include primitives,
+			//	// composition nodes, visuals, shape realizations and cache realizations.
+			//	// The recursive leave call for children would do similar cleanup on the elements of subtree.
+			//	if (m_propertyRenderData.IsRenderWalkTypeForComposition())
+			//	{
+			//		EnsurePropertyRenderData(RWT_None);
+			//	}
+			//	else if (m_propertyRenderData.type == RWT_NonePreserveDComp)
+			//	{
+			//		// An item was removed from the tree after a Device Lost, but before the
+			//		// the Property Render Data was completely restored.  Clean up the
+			//		// composition data.
+			//		RemoveCompositionPeer();
+			//	}
+
+			//	// If there is a UIA client listening, register this element to have the StructureChanged
+			//	// automation event fired for it. We do this here because CUIElement::LeavePCSceneRecursive
+			//	// (i.e. the place where we register removed elements) will not be called on this subtree,
+			//	// given that it is trying to be efficient and ride on the Leave walk instead of doing
+			//	// another one.
+			//	if (core->UIAClientsAreListening(UIAXcp::AEStructureChanged) == S_OK)
+			//	{
+			//		RegisterForStructureChangedEvent(
+			//			AutomationEventsHelper::StructureChangedType::Removed);
+			//	}
+
+			//	// Special case for LTE embedded in the tree in the HWWalk. The TransitionRoot does not
+			//	// enter/leave the tree like regular UIElements do, so we need to ensure we keep it up-to-date here.
+			//	CTransitionRoot* localTransitionRootNoRef = GetLocalTransitionRoot(false);
+			//	if (localTransitionRootNoRef)
+			//	{
+			//		localTransitionRootNoRef->LeavePCSceneRecursive();
+			//	}
+			//}
+
+			DependencyObject_LeaveImpl(@params);
+
+			//// Extends LeaveImpl to the ContextFlyout.
+			//FlyoutBase pFlyoutBase = ContextFlyout;
+			//if (pFlyoutBase is not null)
+			//{
+			//	pFlyoutBase.Leave(pNamescopeOwner, @params /*LeaveParams*/);
+			//}
+
+			//if (EventEnabledElementRemovedInfo() && @params.fIsLive)
+			//{
+			//	var pParent = this.GetUIElementParentInternal();
+			//	TraceElementRemovedInfo(reinterpret_cast<XUINT64>(this), reinterpret_cast<XUINT64>(pParent));
+			//}
+
+			//// Work on the children
+			//if (m_pChildren is not null)
+			//{
+			//	m_pChildren.Leave(pNamescopeOwner, @params));
+			//}
+
+			// UNO specific: We don't have UIElementCollection field, so we do it this way
+			foreach (var child in _children)
+			{
+				child.Leave(@params);
+			}
+
+			// If this object has a managed peer, it needs to process Leave as well.
+			//if (HasManagedPeer())
+			{
+				this.LeaveImpl(@params.IsLive
+					//@params.fSkipNameRegistration,
+					//@params.fCoercedIsEnabled,
+					//@params.fVisualTreeBeingReset
+					);
+			}
+
+			if (@params.IsLive)
+			{
+				//// If we are leaving the Live tree and there are events.
+				//// Popup can live outside the live tree. Do not remove event handlers for Popup when it leaves the tree.
+				//// Popup's event handlers will be removed when it gets deleted.
+				//if (this is not Popup)
+				//{
+				//	RemoveAllEventListeners(true /* leaveUIEShownHiddenEventListenersAttached */);
+				//}
+
+				//// Let this DirectManipulation container know that it no longer lives in the tree
+				//if (m_fIsDirectManipulationContainer)
+				//{
+				//	ctl::ComPtr<CUIDMContainer> dmContainer;
+				//	GetDirectManipulationContainer(&dmContainer);
+				//	if (dmContainer != null)
+				//	{
+				//		// This call marks the associated viewport's m_fNeedsUnregistration flag to true so that the viewport
+				//		// will be removed from the InputManager's internal viewports xvector, and the viewport will no longer be
+				//		// submitted to the compositor.
+				//		dmContainer.NotifyManipulatabilityAffectingPropertyChanged(false /*fIsInLiveTree*/);
+				//	}
+				//}
+
+				//// Discard the potential rejection viewports within this leaving element's subtree
+				//DiscardRejectionViewportsInSubTree();
+
+				//if (CanBeScrollAnchor)
+				//{
+				//	UpdateAnchorCandidateOnParentScrollProvider(false /* add */);
+				//}
+			}
+
 		}
 #endif
 	}

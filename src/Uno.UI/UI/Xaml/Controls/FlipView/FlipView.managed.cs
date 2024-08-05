@@ -127,9 +127,9 @@ namespace Microsoft.UI.Xaml.Controls
 			HookTemplate();
 		}
 
-		internal override void Leave(LeaveParams @params)
+		internal override void LeaveImpl(LeaveParams @params)
 		{
-			base.Leave(@params);
+			base.LeaveImpl(@params);
 
 			UnhookTemplate();
 		}

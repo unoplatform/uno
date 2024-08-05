@@ -978,9 +978,9 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		}
 	}
 
-	internal override void Leave(LeaveParams @params)
+	internal override void LeaveImpl(LeaveParams @params)
 	{
-		base.Leave(@params);
+		base.LeaveImpl(@params);
 
 		if (IsNativeHost)
 		{

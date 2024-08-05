@@ -62,8 +62,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			SetAcceptsReturn(true);
 
 			Loaded += OnLoaded;
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 			//TODO Uno specific: Call LeaveImpl to simulate leaving visual tree
 			Unloaded += (s, e) => LeaveImpl();
+#endif
 		}
 
 		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
@@ -182,8 +184,15 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		/// <summary>
 		/// Called when the element leaves the tree. Detaches event handler from Command.CanExecuteChanged.
 		/// </summary>
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		private protected override void LeaveImpl(bool live)
+#else
 		private void LeaveImpl()
+#endif
 		{
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			base.LeaveImpl(live);
+#endif
 			if (_canExecuteChangedHandler.Disposable != null)
 			{
 				_canExecuteChangedHandler.Disposable = null;
