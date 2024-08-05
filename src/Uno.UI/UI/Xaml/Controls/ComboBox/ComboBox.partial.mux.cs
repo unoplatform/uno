@@ -5,10 +5,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using DirectUI;
 using Microsoft.UI.Input;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Uno.Disposables;
+using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 using Windows.Foundation;
@@ -1371,7 +1374,24 @@ partial class ComboBox
 		m_searchResultIndex = index;
 	}
 
-	private void OnKeyDownPrivate(object pSender, KeyRoutedEventArgs pArgs)
+	protected override void OnKeyDown(KeyRoutedEventArgs args)
+	{
+#if HAS_UNO // TODO Uno: This code is customized version to working navigation handling discrepancies and CharacterReceived support missing.
+		args.Handled = TryHandleKeyDown(args, null);
+
+		if (!args.Handled)
+		{
+			OnKeyDownPrivate(null, args);
+		}
+
+		// Temporary as Uno doesn't yet implement CharacterReceived event.
+		OnCharacterReceived(this, new CharacterReceivedRoutedEventArgs(args.UnicodeKey ?? default, default));
+#endif
+	}
+
+	protected override void OnKeyUp(KeyRoutedEventArgs args) => OnKeyUpPrivate(null, args);
+
+	private void OnKeyDownPrivate(object? pSender, KeyRoutedEventArgs pArgs)
 	{
 		base.OnKeyDown(pArgs);
 
@@ -1411,6 +1431,412 @@ partial class ComboBox
 
 		eventHandled = pArgs.Handled;
 		m_handledGamepadOrRemoteKeyDown = eventHandled && XboxUtility.IsGamepadNavigationInput(originalKey);
+	}
+
+	private void OnTextBoxPreviewKeyDown(object pSender, KeyRoutedEventArgs pArgs)
+	{
+		VirtualKey keyObject = pArgs.Key;
+
+		if (keyObject == VirtualKey.Up || keyObject == VirtualKey.Down)
+		{
+			OnKeyDownPrivate(pSender, pArgs);
+			pArgs.Handled = true;
+		}
+	}
+
+	private void OnKeyUpPrivate(object? sender, KeyRoutedEventArgs args)
+	{
+		base.OnKeyUp(args);
+
+		var key = args.Key;
+		var originalKey = args.OriginalKey;
+
+
+		//Key maps to both gamepad B and Escape key
+		if (m_ignoreCancelKeyDowns && key == VirtualKey.Escape)
+		{
+			m_ignoreCancelKeyDowns = false;
+			//We know some escape key was pressed, so make sure to mark it as handled.
+			args.Handled = true;
+		}
+
+		bool eventHandled = false;
+		eventHandled = args.Handled;
+
+		if (eventHandled)
+		{
+			return;
+		}
+
+		bool isEnabled = IsEnabled;
+
+		if (!isEnabled)
+		{
+			return;
+		}
+
+		// Ideally, we want the ComboBox to execute its functional behavior in response to KeyUp,
+		// not KeyDown.  Our not doing so causes problems - for example, if a page listens to the
+		// B button to know when to navigate back, it will do so in response to a B button press
+		// that was intended just to close the ComboBox drop-down, since the ComboBox does not
+		// handle the KeyUp event, so the Page ends up receiving it. However, for the purposes of TH2,
+		// we'll scope things to simply unblock this specific Xbox scenario by merely marking KeyUp
+		// as handled when KeyDown was handled, to prevent it from bubbling up to a page or
+		// something else that might want to respond to it.  Task #4373221 has been filed to track
+		// the more general work item to bring controls such as ComboBox in line with the
+		// design philosophy that controls should execute functional behavior in response to KeyUp,
+		// rather than KeyDown.
+		if (m_handledGamepadOrRemoteKeyDown && XboxUtility.IsGamepadNavigationInput(originalKey))
+		{
+			args.Handled = true;
+		}
+
+		m_handledGamepadOrRemoteKeyDown = false;
+	}
+
+	private void PopupKeyDown(KeyRoutedEventArgs args)
+	{
+		bool handled = false;
+		int newFocusedIndex = -1;
+		var key = VirtualKey.None;
+		FocusState focusState = FocusState.Programmatic;
+		bool bFocused = false;
+		bool skipSelection = false;
+
+		key = args.Key;
+		var nModifierKeys = CoreImports.Input_GetKeyboardModifiers();
+
+		var lastPointerType = VisualTree.GetContentRootForElement(this)?.InputManager.LastInputDeviceType;
+
+		switch (key)
+		{
+			case VirtualKey.Escape:
+				// NOTE: GamepadNavigationCancel routes through the _Escape case here.
+				// Ensure that the combobox has focus if it's closed via Escape or GamepadNavigationCancel.
+				// Use programmatic focus here to be consistent with Tab; FocusManager will resolve to Keyboard focus.
+				Focus(focusState);
+
+				m_isClosingDueToCancel = true;
+				IsDropDownOpen = false;
+
+				// If we closed the drop-down in response to a cancel key-down,
+				// then we should ignore all subsequent cancel key-down messages
+				// until we get a key-up, as otherwise we can run into the situation
+				// where a user can press B to close a ComboBox, then hold B down
+				// long enough for that key press to start repeating, and then at that point
+				// the popup has closed and the user might unexpectedly navigate back.
+				m_ignoreCancelKeyDowns = true;
+				handled = true;
+				break;
+			case VirtualKey.Tab:
+				// Need to enable this to support focusing out of combobox using tab key.
+				bFocused = Focus(focusState);
+				Debug.Assert(bFocused, "Focus could not leave ComboBox.");
+
+				IsDropDownOpen = false;
+				break;
+			case VirtualKey.Space:
+				// If we're in searching mode or in Editable mode, then we shouldn't handle the current space KeyDown. Let the Character event handle it.
+				// Gamepad A button maps to VirtualKey.Space here, continue into next condition case to select new item.
+				if ((IsEditable || IsInSearchingMode()) && lastPointerType != InputDeviceType.GamepadOrRemote)
+				{
+					break;
+				}
+				goto case VirtualKey.Enter;
+			case VirtualKey.Enter:
+				if (VirtualKeyModifiers.Menu != (nModifierKeys & (VirtualKeyModifiers.Control | VirtualKeyModifiers.Menu)))
+				{
+					if (IsEditable && EditableTextHasFocus())
+					{
+						IsDropDownOpen = false;
+						handled = true;
+					}
+					else
+					{
+						// KeyRoutedEventArgs.OriginalSource (used by WPF) isn't available in Silverlight; use FocusManager.GetFocusedElement instead
+						var spFocused = this.GetFocusedElement();
+						var spComboBoxItem = spFocused as ComboBoxItem;
+						if (spComboBoxItem is not null)
+						{
+							bool bIsSelected = false;
+							bIsSelected = spComboBoxItem.IsSelected;
+							if ((VirtualKeyModifiers.Control == (nModifierKeys & VirtualKeyModifiers.Control)) && bIsSelected)
+							{
+								SelectedIndex = -1;
+							}
+							else
+							{
+								SelectedIndex = GetFocusedIndex();
+								IsDropDownOpen = false;
+							}
+							handled = true;
+						}
+					}
+				}
+				break;
+			case VirtualKey.Up:
+			case VirtualKey.Down:
+				if (IsEditable
+					&& (EditableTextHasFocus() || lastPointerType == InputDeviceType.GamepadOrRemote))
+				{
+					int currentSelectedIndex = -1;
+					if (IsSearchResultIndexSet())
+					{
+						currentSelectedIndex = m_searchResultIndex;
+					}
+					else
+					{
+						currentSelectedIndex = SelectedIndex;
+					}
+
+					newFocusedIndex = currentSelectedIndex + (key == VirtualKey.Up ? -1 : 1);
+
+					if (lastPointerType == InputDeviceType.GamepadOrRemote)
+					{
+						int itemCount = GetItemCount();
+
+						// If Popup opened down and moving above the first element, return focus to TextBox.
+						// If Popup opened up and moving below the last element, return focus to TextBox.
+						if ((newFocusedIndex == -1 && !m_openedUp) || (newFocusedIndex >= (int)itemCount && m_openedUp))
+						{
+							if (m_tpEditableTextPart is not null)
+							{
+								m_tpEditableTextPart.Focus(FocusState.Programmatic);
+							}
+
+							skipSelection = true;
+
+							handled = true;
+						}
+						else
+						{
+							newFocusedIndex = newFocusedIndex < 0 ? 0 : newFocusedIndex;
+						}
+					}
+					else
+					{
+						newFocusedIndex = newFocusedIndex < 0 ? 0 : newFocusedIndex;
+					}
+				}
+				else if (0 != (nModifierKeys & VirtualKeyModifiers.Menu))
+				{
+					IsDropDownOpen = false;
+					handled = true;
+				}
+				break;
+			case VirtualKey.Home:
+			case VirtualKey.End:
+			case VirtualKey.PageUp:
+			case VirtualKey.PageDown:
+			case VirtualKey.GamepadLeftTrigger:
+			case VirtualKey.GamepadRightTrigger:
+				{
+					newFocusedIndex = GetFocusedIndex();
+					HandleNavigationKey(key, /*scrollViewport*/ true, ref newFocusedIndex);
+					// When the user presses a navigation key, we want to mark the key as handled. This prevents
+					// the key presses from bubbling up to the parent ScrollViewer and inadvertently scrolling.
+					handled = true;
+				}
+				break;
+			case VirtualKey.Left:
+			case VirtualKey.Right:
+				// Mark left/right keys as handled to prevent navigation out of the popup, but
+				// don't actually change selection.
+				handled = true;
+				break;
+			case VirtualKey.F4:
+				if (nModifierKeys == VirtualKeyModifiers.None)
+				{
+					IsDropDownOpen = false;
+					handled = true;
+				}
+				break;
+			default:
+				Debug.Assert(!handled);
+				break;
+		}
+
+		if (newFocusedIndex != -1 && !skipSelection)
+		{
+			handled = true;
+			int itemCount = GetItemCount();
+			newFocusedIndex = (int)(Math.Min(newFocusedIndex, (int)(itemCount) - 1));
+			if (0 <= newFocusedIndex)
+			{
+				var selectionChangedTrigger = SelectionChangedTrigger;
+
+				if (IsEditable
+					&& (EditableTextHasFocus() || lastPointerType == InputDeviceType.GamepadOrRemote))
+				{
+					SetSearchResultIndex(newFocusedIndex);
+
+					var spItems = Items;
+
+					var spItem = spItems[newFocusedIndex];
+
+					UpdateEditableTextBox(spItem, true /*selectText*/, true /*selectAll*/);
+
+					if (lastPointerType == InputDeviceType.GamepadOrRemote)
+					{
+						SetFocusedItem(newFocusedIndex, true /*shouldScrollIntoView*/, false /*forceFocus*/, FocusState.Keyboard, false);
+					}
+					else
+					{
+						// TODO Uno: Support ScrollIntoView
+						//ScrollIntoView(
+						//	newFocusedIndex,
+						//	false /*isGroupItemIndex*/,
+						//	false /*isHeader*/,
+						//	false /*isFooter*/,
+						//	false /*isFromPublicAPI*/,
+						//	true  /*ensureContainerRealized*/,
+						//	false /*animateIfBringIntoView*/,
+						//	ScrollIntoViewAlignment.Default);
+					}
+				}
+				else
+				{
+					SetFocusedItem(newFocusedIndex, true /*shouldScrollIntoView*/, false /*forceFocus*/, FocusState.Keyboard, false);
+				}
+
+				if (selectionChangedTrigger == ComboBoxSelectionChangedTrigger.Always)
+				{
+					SelectedIndex = newFocusedIndex;
+				}
+				else
+				{
+					OverrideSelectedIndexForVisualStates(newFocusedIndex);
+				}
+			}
+		}
+
+		if (handled)
+		{
+			args.Handled = true;
+		}
+	}
+
+	private void MainKeyDown(KeyRoutedEventArgs args)
+	{
+		args.Handled = true;
+		int newSelectedIndex = -1;
+		VirtualKey keyObject = VirtualKey.None;
+
+		var key = args.OriginalKey;
+		m_inputDeviceTypeUsedToOpen = InputDeviceType.Keyboard;
+
+		keyObject = args.Key;
+		var nModifierKeys = CoreImports.Input_GetKeyboardModifiers();
+		switch (key)
+		{
+			case VirtualKey.Escape:
+				if (IsEditable)
+				{
+					CommitRevertEditableSearch(true /*restoreValue*/);
+					ClearSelectedIndexOverrideForVisualStates();
+
+					break;
+				}
+				else
+				{
+					args.Handled = false;
+					break;
+				}
+			case VirtualKey.GamepadA:
+				{
+					if (IsEditable)
+					{
+						EnsureTextBoxIsEnabled(true /* moveFocusToTextBox */);
+					}
+
+					m_inputDeviceTypeUsedToOpen = InputDeviceType.GamepadOrRemote;
+					IsDropDownOpen = true;
+					break;
+				}
+			case VirtualKey.GamepadB:
+				{
+					if (IsEditable && EditableTextHasFocus())
+					{
+						Focus(FocusState.Programmatic);
+					}
+					else
+					{
+						args.Handled = false;
+					}
+					break;
+				}
+			case VirtualKey.Enter:
+				if (IsEditable)
+				{
+					CommitRevertEditableSearch(false /*restoreValue*/);
+				}
+				else if (!IsInSearchingMode())
+				{
+					IsDropDownOpen = true;
+				}
+				break;
+			case VirtualKey.Tab:
+				if (IsEditable)
+				{
+					CommitRevertEditableSearch(false /*restoreValue*/);
+				}
+
+				args.Handled = false;
+				break;
+			case VirtualKey.Space:
+				{
+					if (IsEditable)
+					{
+						// Allow the CharacterReceived handler to handle space character.
+						args.Handled = false;
+					}
+					else if (IsInSearchingMode())
+					{
+						// If we're in TextSearch mode, then process the Space key as a character so it won't get eaten by our parent.
+						ProcessSearch(' ');
+					}
+					else
+					{
+						IsDropDownOpen = true;
+					}
+					break;
+				}
+			case VirtualKey.Down:
+			case VirtualKey.Up:
+				if (IsEditable || 0 != (nModifierKeys & VirtualKeyModifiers.Menu))
+				{
+					IsDropDownOpen = true;
+					break;
+				}
+				goto case VirtualKey.Home;
+			case VirtualKey.Home:
+			case VirtualKey.End:
+				{
+					int currentSelectedIndex = SelectedIndex;
+					newSelectedIndex = currentSelectedIndex;
+					HandleNavigationKey(keyObject,  /*scrollViewport*/ false, ref newSelectedIndex);
+				}
+				break;
+
+			case VirtualKey.F4:
+				if (nModifierKeys == VirtualKeyModifiers.None)
+				{
+					IsDropDownOpen = true;
+				}
+				else
+				{
+					args.Handled = false;
+				}
+				break;
+			default:
+				args.Handled = false;
+				break;
+		}
+
+		if (0 <= newSelectedIndex)
+		{
+			SelectedIndex = newSelectedIndex;
+		}
 	}
 
 	private void OnTextBoxTextChanged(object sender, TextChangedEventArgs args)
@@ -1727,17 +2153,6 @@ partial class ComboBox
 		}
 	}
 
-	private void OnTextBoxPreviewKeyDown(object pSender, KeyRoutedEventArgs pArgs)
-	{
-		VirtualKey keyObject = pArgs.Key;
-
-		if (keyObject == VirtualKey.Up || keyObject == VirtualKey.Down)
-		{
-			OnKeyDownPrivate(pSender, pArgs);
-			pArgs.Handled = true;
-		}
-	}
-
 	private void OnDropDownOverlayPointerEntered(object sender, PointerRoutedEventArgs args)
 	{
 		m_IsPointerOverDropDownOverlay = true;
@@ -1793,6 +2208,48 @@ partial class ComboBox
 					EnsurePresenterReadyForInlineMode();
 					ForceApplyInlineLayoutUpdate();
 				}
+			}
+		}
+	}
+
+	// should the keycode be ignored when processing characters for search
+	bool ShouldIgnoreKeyCode(char keyCode) => keyCode == VK_ESCAPE;
+
+	private void OnCharacterReceived(UIElement pSender, CharacterReceivedRoutedEventArgs pArgs)
+	{
+		if (IsTextSearchEnabled)
+		{
+			char keyCode;
+			keyCode = pArgs.Character;
+
+			if (!IsEditable)
+			{
+				// Space should have been handled by now because we handle the Space key in the KeyDown event handler.
+				// NOTE: The 2 below specifies the map type, and maps VK to CHAR
+				Debug.Assert(' ' != keyCode);
+			}
+
+			if (!ShouldIgnoreKeyCode(keyCode))
+			{
+				ProcessSearch((char)(keyCode));
+			}
+		}
+	}
+
+	private void OnPopupCharacterReceived(UIElement pSender, CharacterReceivedRoutedEventArgs pEventArgs)
+	{
+		UIElement pSenderAsUIE = pSender;
+
+		var parentComboBox = FindParentComboBoxFromDO(pSenderAsUIE);
+
+		if (parentComboBox != null && parentComboBox.IsTextSearchEnabled)
+		{
+			char keyCode;
+			keyCode = pEventArgs.Character;
+
+			if (!ShouldIgnoreKeyCode(keyCode))
+			{
+				parentComboBox.ProcessSearch(keyCode);
 			}
 		}
 	}
@@ -1947,7 +2404,7 @@ partial class ComboBox
 
 			if (item is not null)
 			{
-				strItem = TryGetStringValue(item/*, _propertyPathListener*/);
+				strItem = TryGetStringValue(item, m_spPropertyPathListener);
 
 				if (strItem is null)
 				{
@@ -2031,6 +2488,53 @@ partial class ComboBox
 			m_isInSearchingMode = false;
 		}
 		return IsTextSearchEnabled && m_isInSearchingMode;
+	}
+
+	private string TryGetStringValue(object @object, PropertyPathListener pathListener)
+	{
+		object spBoxedValue;
+		object spObject = @object;
+
+		if (spObject is ICustomPropertyProvider spObjectPropertyAccessor)
+		{
+			if (pathListener != null)
+			{
+				// Our caller has provided us with a PropertyPathListener. By setting the source of the listener, we can pull a value out.
+				// This is our boxedValue, which we effectively ToString below.
+				pathListener.SetSource(spObject);
+				spBoxedValue = pathListener.GetValue();
+			}
+			else
+			{
+				// No PathListener specified, but this object implements
+				// ICustomPropertyProvider. Call .ToString on the object:
+				return spObjectPropertyAccessor.GetStringRepresentation();
+			}
+		}
+		else
+		{
+			// Try to get the string value by unboxing the object itself.
+			spBoxedValue = spObject;
+		}
+
+		if (spBoxedValue != null)
+		{
+			if (spBoxedValue is IStringable spStringable)
+			{
+				// We've set a BoxedValue. If it is castable to a string, try to ToString it.
+				return spStringable.ToString();
+			}
+			else
+			{
+				return FrameworkElement.GetStringFromObject(spBoxedValue);
+				// We've set a BoxedValue, but we can't directly ToString it. Try to get a string out of it.
+			}
+		}
+		else
+		{
+			// If we haven't found a BoxedObject and it's not Stringable, try one last time to get a string out.
+			return FrameworkElement.GetStringFromObject(@object);
+		}
 	}
 
 	private bool AppendCharToSearchString(char ch)
@@ -2280,6 +2784,8 @@ partial class ComboBox
 		}
 	}
 
+	protected override AutomationPeer OnCreateAutomationPeer() => new ComboBoxAutomationPeer(this);
+
 	private void EnsurePropertyPathListener()
 	{
 		// TODO Uno: Property path listener is not implemented yet
@@ -2315,9 +2821,7 @@ partial class ComboBox
 
 
 #if HAS_UNO // Not ported yet
-	private void PopupKeyDown(KeyRoutedEventArgs args) { }
 
-	private void MainKeyDown(KeyRoutedEventArgs args) { }
 
 	private void ArrangePopup(bool value) { }
 
