@@ -24,8 +24,11 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 		_xamlRoot = xamlRoot;
 
 		_host = new X11XamlRootHost(this, window, xamlRoot, UpdatePositionAndSize, OnWindowClosing, OnNativeActivated, OnNativeVisibilityChanged);
+		// synchronously initialize Position and Size here before anyone reads their values
+		UpdatePositionAndSize(updatePositionSize: true, raiseNativeSizeChanged: false);
 
-		// not fired synchronously because we need to wait or the subscriptions in BaseWindowImplementation.InitializeNativeWindow
+		// an additional asynchronous call here is needed because we need to wait for the subscriptions in
+		// BaseWindowImplementation.InitializeNativeWindow to fire SizeChanged.
 		(_host as IXamlRootHost).RootElement?.Dispatcher.RunAsync(CoreDispatcherPriority.High, UpdatePositionAndSize);
 
 		RasterizationScale = (float)XamlRoot.GetDisplayInformation(_xamlRoot).RawPixelsPerViewPixel;
@@ -178,7 +181,9 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 		XLib.XSync(display, false);
 	}
 
-	private void UpdatePositionAndSize()
+	private void UpdatePositionAndSize() => UpdatePositionAndSize(true, true);
+
+	private void UpdatePositionAndSize(bool updatePositionSize, bool raiseNativeSizeChanged)
 	{
 		var display = _host.RootX11Window.Display;
 		var window = _host.RootX11Window.Window;
@@ -197,12 +202,18 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 		XWindowAttributes windowAttrs = default;
 		_ = XLib.XGetWindowAttributes(display, windowToRead, ref windowAttrs);
 		_ = XLib.XTranslateCoordinates(display, windowToRead, root, 0, 0, out var rootx, out var rooty, out _);
-		Position = new PointInt32 { X = rootx, Y = rooty };
-		Size = new SizeInt32 { Width = windowAttrs.width, Height = windowAttrs.height };
+		if (updatePositionSize)
+		{
+			Position = new PointInt32 { X = rootx, Y = rooty };
+			Size = new SizeInt32 { Width = windowAttrs.width, Height = windowAttrs.height };
+		}
 
 		XWindowAttributes windowAttrs2 = default;
 		_ = XLib.XGetWindowAttributes(display, window, ref windowAttrs2);
-		RaiseNativeSizeChanged(new Size(windowAttrs2.width, windowAttrs2.height));
+		if (raiseNativeSizeChanged)
+		{
+			RaiseNativeSizeChanged(new Size(windowAttrs2.width, windowAttrs2.height));
+		}
 		// copy the root window dimensions to the top window
 		_ = XLib.XResizeWindow(display, _host.TopX11Window.Window, windowAttrs2.width, windowAttrs2.height);
 	}
