@@ -146,8 +146,15 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		/// <summary>
 		/// Called when the element enters the tree. Attaches event handler to Command.CanExecuteChanged.
 		/// </summary>
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		private protected override void EnterImpl(bool live)
+#else
 		private void EnterImpl()
+#endif
 		{
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			base.EnterImpl(live);
+#endif
 			if (_canExecuteChangedHandler.Disposable == null)
 			{
 				var command = Command;
@@ -309,8 +316,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		private void OnLoaded(object sender, RoutedEventArgs args)
 		{
 			UpdateVisualState(false);
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 			// TODO Uno specific: Call EnterImpl to simulate entering visual tree
 			EnterImpl();
+#endif
 		}
 
 		/// <summary>

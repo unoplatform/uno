@@ -158,10 +158,9 @@ namespace Microsoft.UI.Xaml.Controls
 #if !__NETSTD_REFERENCE__
 
 #if UNO_HAS_ENHANCED_LIFECYCLE
-		internal override void Enter(EnterParams @params, int depth)
+		private protected override void EnterImpl(bool live)
 		{
-			//base.EnterImpl(bLive, bSkipNameRegistration, bCoercedIsEnabled, bUseLayoutRounding);
-			base.Enter(@params, depth);
+			base.EnterImpl(live);
 #else
 		private void EnterImpl()
 		{

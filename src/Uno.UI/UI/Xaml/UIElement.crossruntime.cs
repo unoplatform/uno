@@ -124,7 +124,7 @@ namespace Microsoft.UI.Xaml
 			// Uno TODO: WinUI has much more complex logic than this.
 			if (@params.IsLive)
 			{
-				child.Enter(@params, this.Depth + 1);
+				child.EnterImpl(@params, this.Depth + 1);
 			}
 		}
 #endif

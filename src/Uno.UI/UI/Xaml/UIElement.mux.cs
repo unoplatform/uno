@@ -821,39 +821,543 @@ namespace Microsoft.UI.Xaml
 		}
 
 #if UNO_HAS_ENHANCED_LIFECYCLE
-		// Doesn't exactly match WinUI code.
-		internal virtual void Enter(EnterParams @params, int depth)
+		private bool _isProcessingEnterLeave;
+
+		// NOTE: This should actually be on DependencyObject, not UIElement.
+		// We'll be able to do it once DependencyObject is a class instead of an interface.
+		internal void Enter(EnterParams @params, int depth)
+		{
+			// If IsProcessingEnterLeave is true, then this element is already part of the
+			// Enter/Leave walk. This can happen, for instance, if a custom DP's value has
+			// been set to some ancestor of this node.
+			if (_isProcessingEnterLeave)
+			{
+				return;
+			}
+			else
+			{
+				_isProcessingEnterLeave = true;
+			}
+
+			try
+			{
+				// UNO TODO: We naively call EnterImpl right away.
+				EnterImpl(@params, depth);
+
+				//if (this is XamlIslandRoot xamlIsland)
+				//{
+				//	// The CXamlIslandRoot can enter the tree in a few different ways, and we need to make sure
+				//	// that however it enters, we override the params.visualTree with the one from the CXamlIslandRoot.
+				//	// CXamlIslandRoot always defines its own visual tree, so we must set it here.  Note that after
+				//	// the tree refactoring, this won't be necessary because the XamlIslandRoot won't be in the tree
+				//	// anymore.
+				//	@params.VisualTree = xamlIsland.GetVisualTreeNoRef();
+				//}
+
+				//if (@params.IsLive && @params.VisualTree is not null)
+				//{
+				//	// As the DO enters the live tree, we call SetVisualTree to remember which one it's associated with
+				//	SetVisualTree(@params.VisualTree);
+				//}
+
+				//DependencyObject pAdjustedNamescopeOwner = pNamescopeOwner;
+
+				//When we copy the EnterParams, reset the pointer to the resource dictionary
+				//parent so that descendants don't think they are the direct child of one.
+				//EnterParams enterParams = @params;
+				//enterParams.ParentResourceDictionary = null;
+
+				//if (m_pInheritedProperties is not null)
+				//{
+				//	if (m_pInheritedProperties.m_pWriter == this)
+				//	{
+				//		// This DO owns this m_pInheritedProperties. Mark it as out of date
+				//		// so that subsequent property accesses get updated property values.
+				//		m_pInheritedProperties.m_cGenerationCounter = 0;
+				//	}
+				//	else
+				//	{
+				//		// This DO's inherited properties are a read only reference to some
+				//		// parent, that reference is no longer valid, and we need to release
+				//		// it.
+				//		DisconnectInheritedProperties();
+				//	}
+				//}
+
+				//if (this.IsStandardNameScopeOwner())
+				//{
+				//	pAdjustedNamescopeOwner = this;
+
+				//	// If we are entering some other scope
+				//	if (pAdjustedNamescopeOwner != pNamescopeOwner)
+				//	{
+				//		// If this is a permanent namescopeOwner, but its names are not registered
+				//		// in its own namescope, then the optimization further down about skipping name registration
+				//		// wouldn't apply.
+				//		if (!@params.SkipNameRegistration &&
+				//			this.ShouldRegisterInParentNamescope() &&
+				//			pNamescopeOwner != this &&
+				//			!IsTemplateNamescopeMember())
+				//		{
+				//			// not using the "adjusted" namescope owner
+				//			RegisterName(pNamescopeOwner);
+				//		}
+
+				//		// regarding condition below: The only element that is a Permanent
+				//		// Namescope owner, but not a Namescope member is the Root Visual;
+				//		// and it isn't necessary to try to defer name registration for the root visual.
+				//		if (this.IsStandardNameScopeMember() && this.GetContext().HasRegisteredNames(this))
+				//		{
+				//			//ASSERT(this.IsStandardNameScopeOwner());
+
+				//			if (@params.IsLive)
+				//			{
+				//				if (!IsActiveInVisualTree)
+				//				{
+				//					TryReCreateUIAWrapper();
+				//				}
+
+				//				// pass TRUE for bSkipRegistration:  The names have already been
+				//				// registered, and being a Permanent Namescope Owner, we aren't
+				//				// expected to have to merge Namescopes with a parent Namescope.
+				//				enterParams.SkipNameRegistration = true;
+				//				this.EnterImpl(pAdjustedNamescopeOwner, enterParams);
+				//				return;
+				//			}
+				//			else
+				//			{
+				//				// Skipping the non-live Enter walk here, as it should only be propagating
+				//				// name information, which we already have. This is kind of an odd part of
+				//				// the non-live enter. You can never rely on anything except your direct parent
+				//				// remaining unchanged because this optimization will terminate non-live Enters
+				//				// at NameScope boundaries when manipulating XAML fragments.
+				//				return;
+				//			}
+				//		}
+				//	}
+				//}
+
+				//if (@params.SkipNameRegistration && GetParentInternal() is PopupRoot)
+				//{
+				//	// Popup's child receives Enter from two different namescopes - namescope of its logical
+				//	// parent and that of its visual parent. This Enter is from the visual parent of popup's child.
+				//	// It should have a valid namescope owner by now since name registration is done
+				//	// before the popup is opened. Use the namescope in which name registration is done
+				//	// to ensure the correct IsNamescopeMember flag.
+				//	pAdjustedNamescopeOwner = GetStandardNameScopeOwner();
+				//	ASSERT(pAdjustedNamescopeOwner);
+
+				//	if (this.GetLogicalParentNoRef() is Popup popup)
+				//	{
+				//		// See comment in CDependencyObject::Leave
+				//		popup.SetCachedStandardNamescopeOwner(pAdjustedNamescopeOwner);
+				//	}
+				//}
+
+				//// [Blue Compat]: When parsing App.xaml, skip entering any tree children of the Application object.
+				//bool isNamescopeOwnerApplicationDuringParse = pNamescopeOwner is not null && pNamescopeOwner.ParserOwnsParent() && pNamescopeOwner is Application;
+
+				//// MultiParentShareableDependencyObjects may not have a namescope owner (e.g. when it has multiple parents). But we
+				//// still need to make sure we do a live enter, so that types such as BitmapImage can still do work upon entering/
+				//// leaving the tree.
+				//bool liveEnterOnMultiParentShareableDO = @params.IsLive && DoesAllowMultipleParents();
+
+				//if ((pAdjustedNamescopeOwner is not null || liveEnterOnMultiParentShareableDO)
+				//	&& !isNamescopeOwnerApplicationDuringParse)
+				//{
+				//	if (@params.IsLive && !IsActiveInVisualTree)
+				//	{
+				//		TryReCreateUIAWrapper();
+				//	}
+
+				//	if (pAdjustedNamescopeOwner is not null)
+				//	{
+				//		SetIsStandardNameScopeMember(pAdjustedNamescopeOwner.IsStandardNameScopeMember());
+				//	}
+				//	EnterImpl(pAdjustedNamescopeOwner, @params);
+				//}
+				//else if (@params.IsForKeyboardAccelerator)
+				//{
+				//	// This is dead enter to register any keyboard accelerators collection to the list of live accelerators
+				//	@params.IsLive = false;
+				//	@params.SkipNameRegistration = true;
+				//	@params.UseLayoutRounding = false;
+				//	@params.CoercedIsEnabled = false;
+				//	EnterImpl(pAdjustedNamescopeOwner, @params);
+				//}
+			}
+			finally
+			{
+				_isProcessingEnterLeave = false;
+			}
+		}
+
+		// This method should be on DependencyObject instead of UIElement.
+		// We can only do that once DependencyObject becomes a class instead of interface.
+		private protected virtual void EnterImpl(
+			bool live
+			//bool skipNameRegistration,
+			//bool coercedIsEnabled,
+			//bool useLayoutRounding
+			)
+		{
+
+		}
+
+		private void DependencyObject_EnterImpl(EnterParams @params)
+		{
+			if (@params.IsLive)
+			{
+				if (!IsActiveInVisualTree)
+				{
+					IsActiveInVisualTree = true;
+				}
+
+				//m_checkForResourceOverrides = @params.fCheckForResourceOverrides;
+			}
+
+			//if (!@params.SkipNameRegistration)
+			//{
+			//	if (!IsTemplateNamescopeMember())
+			//	{
+			//		RegisterName(pNamescopeOwner);
+			//		RegisterDeferredStandardNameScopeEntries(pNamescopeOwner);
+			//	}
+			//}
+
+			//if (HasDeferred())
+			//{
+			//	CDeferredMapping.NotifyEnter(
+			//		pNamescopeOwner,
+			//		this,
+			//		@params.fSkipNameRegistration);
+			//}
+
+			// Nothing else to do for value types and control/data templates.
+			//var pClassInfo = this.GetType();
+
+			//if (pClassInfo.IsValueType
+			//	|| pClassInfo == typeof(ControlTemplate)
+			//	|| pClassInfo == typeof(DataTemplate))
+			//{
+			//	return ;
+			//}
+
+			// Enumerate all the field-backed properties and enter/invoke as needed.
+			//EnterDependencyProperty pNullEnterProperty = MetadataAPI.GetNullEnterProperty();
+			//for (EnterDependencyProperty pEnterProperty = pClassInfo.GetFirstEnterProperty(); pEnterProperty != pNullEnterProperty; pEnterProperty = pEnterProperty.GetNextProperty())
+			//{
+			//	if (!pEnterProperty.DoNotEnterLeave())
+			//	{
+			//		if (pEnterProperty->IsObjectProperty())
+			//		{
+			//			DependencyObject pDO = MapPropertyAndGroupOffsetToDO(pEnterProperty->m_nOffset, pEnterProperty->m_nGroupOffset);
+			//			if (pDO != null)
+			//			{
+			//				EnterObjectProperty(pDO, pNamescopeOwner, @params);
+			//			}
+			//		}
+			//	}
+			//	if (pEnterProperty.NeedsInvoke())
+			//	{
+			//		Invoke(MetadataAPI.GetDependencyPropertyByIndex(pEnterProperty->m_nPropertyIndex), pNamescopeOwner, @params.IsLive);
+			//	}
+			//}
+
+			//EnterSparseProperties(pNamescopeOwner, @params);
+
+			// ----------------------- UNO-specific END -----------------------
+			// The way this works on WinUI is that when an element enters the visual tree, all values
+			// of properties that are marked with MetaDataPropertyInfoFlags::IsSparse and MetaDataPropertyInfoFlags::IsVisualTreeProperty
+			// are entered as well.
+			// The property we currently know it has an effect is Resources
+			// In WinUI, it happens in CDependencyObject::EnterImpl (the call to EnterSparseProperties)
+			if (this is FrameworkElement { Resources: { } resources })
+			{
+				foreach (var resource in resources.Values)
+				{
+					if (resource is FrameworkElement resourceAsUIElement)
+					{
+						resourceAsUIElement.XamlRoot = XamlRoot;
+						resourceAsUIElement.EnterImpl(@params, int.MinValue);
+					}
+				}
+			}
+			// ----------------------- UNO-specific END -----------------------
+
+
+			//if (@params.IsLive && m_bitFields.fWantsInheritanceContextChanged)
+			//{
+			//	// We only raise this InheritanceContextChanged if we're entering the live tree because the
+			//	// event also acts like a DO.Loaded event for BindingExpression.  This keeps us from adding
+			//	// a new internal event
+			//	NotifyInheritanceContextChanged();
+			//}
+
+			//if (IsActiveInVisualTree)
+			//{
+			//	// If our theme is different from the parent, make sure we walk the subtree.
+			//	DependencyObject? pParent = null;
+
+			//	if (this is FrameworkElement thisAsFe)
+			//	{
+			//		// Get logical parent so popups and flyouts inherit theme changes
+			//		pParent = GetInheritanceParentInternal(true /* fLogicalParent */);
+			//	}
+			//	else
+			//	{
+			//		pParent = GetParentInternal(false /* public */);
+			//	}
+
+			//	if (pParent is not null && pParent.GetTheme() != Theme.None && pParent.GetTheme() != m_theme)
+			//	{
+			//		NotifyThemeChanged(pParent.GetTheme());
+			//	}
+			//	else
+			//	{
+			//		// Update theme references to account for new ancestor theme dictionaries.
+			//		UpdateAllThemeReferences();
+			//	}
+			//}
+		}
+
+		internal virtual void EnterImpl(EnterParams @params, int depth)
 		{
 			Depth = depth;
 
-			if (@params.IsLive)
-			{
-				IsActiveInVisualTree = true;
-			}
+			var core = this.GetContext();
+			//bool isParentEnabled = @params.CoercedIsEnabled;
 
+			//// Explicitly check the shadow for ancestor elements set as Receivers. We can't rely on CThemeShadow::EnterImpl
+			//// here, because ThemeShadows can be shared, and the shadow could already be in the tree elsewhere.
+			//if (@params.IsLive && !ThemeShadow.IsDropShadowMode)
+			//{
+			//	if (this.Shadow is ThemeShadow themeShadow)
+			//	{
+			//		themeShadow.CheckForAncestorReceivers(this /* newParent */);
+			//		//Task: 15141734
+			//		//If ThemeShadow is set, we force the canvas root to have compNode
+			//		EnsureRootCanvasCompNode();
+			//	}
+			//}
+
+			// Uno docs: NOTE IMPORTANT -> GetIsEnabled() in WinUI is different from IsEnabled()
+			//// If parent is enabled, but local value of IsEnabled is FALSE, need to disable children.
+			//if (isParentEnabled && !GetIsEnabled())
+			//{
+			//	@params.CoercedIsEnabled = false;
+			//}
+
+			//if (@params.IsLive)
+			//{
+			//	// If parent is disabled, but local value is enabled, then coerce to FALSE.
+			//	if (!isParentEnabled && GetIsEnabled())
+			//	{
+			//		// Coerce value and raise changed event.
+			//		CoerceIsEnabled(false, /*bCoerceChildren*/false);
+			//	}
+
+			//	// Inherit the UseLayoutRounding property
+			//	if (!IsPropertyDefaultByIndex(UIElement.UseLayoutRounding))
+			//	{
+			//		// Pass on the non-default value
+			//		@params.UseLayoutRounding = GetUseLayoutRounding();
+			//	}
+			//	else
+			//	{
+			//		// Inherit the new value
+			//		SetUseLayoutRounding(@params.UseLayoutRounding);
+			//	}
+
+			//	// layout storage has been created by the parent collection (OnAddToCollection) or by the setting
+			//	// of one of the transitions.
+			//	// when transitioning into a live tree, the absolute offset can be transformed into a relative value
+			//	// that is used by layout transitions.
+			//	if (!IsActiveInVisualTree)
+			//	{
+			//		if (HasLayoutTransitionStorage())
+			//		{
+			//			LayoutTransitionStorage pStorage = GetLayoutTransitionStorage();
+
+			//			Rect offset = new Rect(0, 0, 0, 0);
+			//			Rect topLeft = new Rect(0, 0, 0, 0);
+			//			if (pStorage.m_nextGenerationCounter > 0)  // used to verify storage should have meaningful values
+			//			{
+			//				CLayoutManager pLayoutManager = VisualTree.GetLayoutManagerForElement(this);
+			//				// after the base implementation of enter, the element will be active (and thus no longer relative)
+
+			//				ASSERT(GetParentInternal(false));
+
+			//				// since we have just been reparented, the offset is currently to the plugin
+			//				xref_ptr<ITransformer> pTransformer;
+			//				((UIElement)GetParentInternal(false)).TransformToRoot(out pTransformer);
+			//				Transformer.TransformBounds(pTransformer, ref topLeft, ref offset);
+
+			//				// current offset will be either the last actual layout pass or the bcb information
+			//				pStorage.m_currentOffset.x -= offset.X;
+			//				pStorage.m_currentOffset.y -= offset.Y;
+
+			//				// copy these offsets to next generation as well
+			//				pStorage.m_nextGenerationOffset = pStorage.m_currentOffset;
+			//				if (pLayoutManager is not null)
+			//				{
+			//					pStorage.m_nextGenerationCounter = pLayoutManager.GetNextLayoutCounter();
+			//				}
+			//			}
+			//		}
+
+			//		m_enteredTreeCounter = EnteredInThisTick;   // the enter counter will be set on the next layout cycle
+			//	}
+			//}
+
+			// Pass updated params to children.
+			DependencyObject_EnterImpl(@params);
+
+			//// Extends EnterImpl to the ContextFlyout
+			//FlyoutBase pFlyoutBase = this.ContextFlyout;
+			//if (pFlyoutBase is not null)
+			//{
+			//	// This FlyoutBase can be shared between ContentRoots -- remove the VisualTree
+			//	// pointer here for this enter.  TODO: figure out why this happens
+			//	// Bug 19548424: Investigate places where an element entering the tree doesn't have a unique VisualTree ptr
+			//	EnterParams newParams = @params;
+			//	newParams.VisualTree = null;
+			//	pFlyoutBase.Enter(pNamescopeOwner, newParams/*EnterParams*/);
+			//}
+
+			//// Work on the children
+			//if (m_pChildren is not null)
+			//{
+			//	m_pChildren.Enter(pNamescopeOwner, @params));
+			//}
+
+			// UNO specific: We don't have UIElementCollection field, so we do it this way
 			foreach (var child in _children)
 			{
-				if (child == this)
-				{
-					// In some cases, we end up with ContentPresenter having itself as a child.
-					// Initial investigation: ScrollViewer sets its Content to ContentPresenter, and
-					// ContentPresenter sets its Content as the ScrollViewer Content.
-					// Skip this case for now.
-					// TODO: Investigate this more deeply.
-					continue;
-				}
-
-				child.Enter(@params, depth + 1);
+				this.ChildEnter(child, @params);
 			}
+
+			//{
+			//	DependencyObject annotations = GetAutomationAnnotationsStorage();
+
+			//	if (annotations is not null)
+			//	{
+			//		annotations.Enter(pNamescopeOwner, @params);
+			//	}
+			//}
+
+			//If this object has a managed peer, it needs to process Enter as well.
+			//if (HasManagedPeer())
+			{
+				this.EnterImpl(@params.IsLive
+					//@params.SkipNameRegistration,
+					//@params.CoercedIsEnabled,
+					//@params.UseLayoutRounding
+					);
+			}
+
+			//var contentRoot = VisualTree.GetContentRootForElement(this);
 
 			if (@params.IsLive)
 			{
-				var core = this.GetContext();
-				core.EventManager.AddRequestsInOrder(this);
-			}
+				// If there are events registered on this element, ask the
+				// EventManager to extract them and a request for every event.
+				//if (m_pEventList)
+				{
+					// Get the event manager.
+					EventManager pEventManager = core.EventManager;
+					pEventManager.AddRequestsInOrder(this);
+				}
 
-			// Make sure that we propagate OnDirtyPath bits to the new parent.
-			SetLayoutFlags(LayoutFlag.MeasureDirty | LayoutFlag.ArrangeDirty);
+				// Make sure that we propagate OnDirtyPath bits to the new parent.
+				//if ((GetIsLayoutElement() || GetIsParentLayoutElement()))
+				{
+					SetLayoutFlags(LayoutFlag.MeasureDirty | LayoutFlag.ArrangeDirty);
+				}
+				//else
+				//{
+				//	if (GetIsMeasureDirty() == FALSE)
+				//	{
+				//		SetLayoutFlags(LF_MEASURE_DIRTY_PENDING, TRUE);
+				//	}
+				//	if (GetIsArrangeDirty() == FALSE)
+				//	{
+				//		SetLayoutFlags(LF_ARRANGE_DIRTY_PENDING, TRUE);
+				//	}
+				//}
+
+				//bool propMeasure = GetRequiresMeasure();
+				//bool propArrange = GetRequiresArrange();
+
+				//bool propViewport = GetIsViewportDirtyOrOnViewportDirtyPath();
+				//bool propContributesToViewport = GetWantsViewportOrContributesToViewport();
+
+				//if (CanBeScrollAnchor)
+				//{
+				//	UpdateAnchorCandidateOnParentScrollProvider(true /* add */);
+				//}
+
+				//if (EventEnabledElementAddedInfo())
+				//{
+				//	var pParent = this.GetUIElementParentInternal();
+				//	TraceElementAddedInfo(reinterpret_cast<XUINT64>(this), reinterpret_cast<XUINT64>(pParent));
+				//}
+
+				//if (propMeasure)
+				//{
+				//	PropagateOnMeasureDirtyPath();
+
+				//	// We need to invalidate the parent's measure so that it will re-measure its children
+				//	CUIElement* pParent = GetUIElementParentInternal();
+				//	if (pParent != nullptr)
+				//	{
+				//		pParent->InvalidateMeasure();
+				//	}
+				//}
+
+				//if (propArrange)
+				//{
+				//	PropagateOnArrangeDirtyPath();
+				//}
+
+				//if (propViewport)
+				//{
+				//	PropagateOnViewportDirtyPath();
+				//}
+
+				//if (propContributesToViewport)
+				//{
+				//	PropagateOnContributesToViewport();
+				//}
+
+				//InvalidateAutomationPeerDataInternal();
+
+				//var akExport = contentRoot.GetAKExport();
+
+				//if (akExport.IsActive())
+				//{
+				//	akExport.AddElementToAKMode(this);
+				//}
+
+				ResetLayoutInformation();
+
+				// Let this DirectManipulation container know that it is now live in the tree.
+				//if (m_fIsDirectManipulationContainer)
+				//{
+				//	ctl::ComPtr<CUIDMContainer> dmContainer;
+				//	IFC_RETURN(GetDirectManipulationContainer(&dmContainer));
+				//	if (dmContainer != nullptr)
+				//	{
+				//		CInputServices* inputServicesNoRef = GetContext()->GetInputServices();
+				//		if (inputServicesNoRef)
+				//		{
+				//			inputServicesNoRef->EnsureHwndForDManipService(this, GetElementInputWindow());
+				//		}
+
+				//		IFC_RETURN(dmContainer->NotifyManipulatabilityAffectingPropertyChanged(TRUE /*fIsInLiveTree*/));
+				//	}
+				//}
+			}
 		}
 
 		internal virtual void Leave(LeaveParams @params)
