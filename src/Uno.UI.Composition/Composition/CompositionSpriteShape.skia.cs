@@ -166,10 +166,10 @@ namespace Microsoft.UI.Composition
 
 		internal override bool HitTest(Point point)
 		{
-			point = CombinedTransformMatrix.Inverse().Transform(point);
-
 			if (_geometryWithTransformations is { } geometryWithTransformations)
 			{
+				point = CombinedTransformMatrix.Inverse().Transform(point);
+
 				if (FillBrush is { } && geometryWithTransformations.Contains((float)point.X, (float)point.Y))
 				{
 					return true;
