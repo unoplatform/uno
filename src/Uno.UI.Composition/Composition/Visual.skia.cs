@@ -265,7 +265,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 			if (GetPrePaintingClipping() is { } preClip)
 			{
-				canvas.ClipPath(preClip);
+				canvas.ClipPath(preClip, antialias: true);
 			}
 
 			// Rendering shouldn't depend on matrix or clip adjustments happening in a visual's Paint. That should
@@ -282,7 +282,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 			if (GetPostPaintingClipping() is { } postClip)
 			{
-				canvas.ClipPath(postClip);
+				canvas.ClipPath(postClip, antialias: true);
 			}
 
 			foreach (var child in GetChildrenInRenderOrder())
