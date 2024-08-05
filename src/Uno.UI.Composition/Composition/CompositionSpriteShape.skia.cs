@@ -127,7 +127,7 @@ namespace Microsoft.UI.Composition
 					paint.PathEffect = null;
 				}
 			}
-			
+
 			paint.ColorFilter = colorFilter;
 
 			return paint;
