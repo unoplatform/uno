@@ -19,6 +19,7 @@ public class Given_DependencyProperty
 		Assert.AreEqual(0, changedCount);
 	}
 
+#if HAS_UNO
 	[TestMethod]
 	public void When_GetValueUnderPrecedence()
 	{
@@ -33,4 +34,5 @@ public class Given_DependencyProperty
 		Assert.IsNull(actualValue2);
 		Assert.AreEqual(DependencyPropertyValuePrecedences.DefaultValue, actualPrecedence2);
 	}
+#endif
 }
