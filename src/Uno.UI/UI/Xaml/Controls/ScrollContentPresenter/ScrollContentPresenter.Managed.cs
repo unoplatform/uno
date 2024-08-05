@@ -68,6 +68,29 @@ namespace Microsoft.UI.Xaml.Controls
 			ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY; // Updated in PrepareTouchScroll!
 		}
 
+		internal void HookScrollEvents(ScrollViewer sv)
+		{
+			// Mouse wheel support
+			sv.PointerWheelChanged += PointerWheelScroll;
+
+			// Touch scroll support
+			// Note: Events are hooked on the SCP itself, not the ScrollViewer
+			ManipulationStarting += PrepareTouchScroll;
+			ManipulationStarted += TouchScrollStarted;
+			ManipulationDelta += UpdateTouchScroll;
+			ManipulationCompleted += CompleteTouchScroll;
+		}
+
+		internal void UnhookScrollEvents(ScrollViewer sv)
+		{
+			sv.PointerWheelChanged -= PointerWheelScroll;
+
+			ManipulationStarting -= PrepareTouchScroll;
+			ManipulationStarted -= TouchScrollStarted;
+			ManipulationDelta -= UpdateTouchScroll;
+			ManipulationCompleted -= CompleteTouchScroll;
+		}
+
 		/// <inheritdoc />
 		protected override void OnContentChanged(object oldValue, object newValue)
 		{

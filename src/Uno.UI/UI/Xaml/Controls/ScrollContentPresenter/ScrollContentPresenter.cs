@@ -235,30 +235,6 @@ namespace Microsoft.UI.Xaml.Controls
 			=> new Rect(default, RenderSize);
 #endif
 
-#if UNO_HAS_MANAGED_SCROLL_PRESENTER
-		internal void HookScrollEvents(ScrollViewer sv)
-		{
-			// Mouse wheel support
-			sv.PointerWheelChanged += PointerWheelScroll;
-
-			// Touch scroll support
-			ManipulationStarting += PrepareTouchScroll;
-			ManipulationStarted += TouchScrollStarted;
-			ManipulationDelta += UpdateTouchScroll;
-			ManipulationCompleted += CompleteTouchScroll;
-		}
-
-		internal void UnhookScrollEvents(ScrollViewer sv)
-		{
-			sv.PointerWheelChanged -= PointerWheelScroll;
-
-			ManipulationStarting -= PrepareTouchScroll;
-			ManipulationStarted -= TouchScrollStarted;
-			ManipulationDelta -= UpdateTouchScroll;
-			ManipulationCompleted -= CompleteTouchScroll;
-		}
-#endif
-
 		private void PointerWheelScroll(object sender, Input.PointerRoutedEventArgs e)
 		{
 			var properties = e.GetCurrentPoint(null).Properties;
