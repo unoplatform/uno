@@ -80,7 +80,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			await UITestHelper.Load(new Border() { Width = 1, Height = 1 });
 
-#if WINAPPSDK
+#if WINAPPSDK || UNO_HAS_ENHANCED_LIFECYCLE
 			Assert.AreEqual("ResourceTextBlockLoaded,ResourceGridLoaded,TextBlockLoaded,ResourceGridUnloaded,ResourceTextBlockUnloaded,TextBlockUnloaded,", result);
 #elif __ANDROID__
 			Assert.AreEqual("ResourceGridLoaded,ResourceTextBlockLoaded,TextBlockLoaded,ResourceGridUnloaded,ResourceTextBlockUnloaded,TextBlockUnloaded,", result);
@@ -137,7 +137,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			grid.Resources.Remove("MyResourceGridKey");
 			await TestServices.WindowHelper.WaitForIdle();
 
-#if WINAPPSDK
+#if WINAPPSDK || UNO_HAS_ENHANCED_LIFECYCLE
 			Assert.AreEqual("ResourceTextBlockLoaded,ResourceGridLoaded,TextBlockLoaded,ResourceGridUnloaded,ResourceTextBlockUnloaded,", result);
 #elif __ANDROID__
 			Assert.AreEqual("ResourceGridLoaded,ResourceTextBlockLoaded,TextBlockLoaded,ResourceGridUnloaded,ResourceTextBlockUnloaded,", result);
@@ -147,7 +147,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			await UITestHelper.Load(new Border() { Width = 1, Height = 1 });
 
-#if WINAPPSDK
+#if WINAPPSDK || UNO_HAS_ENHANCED_LIFECYCLE
 			Assert.AreEqual("ResourceTextBlockLoaded,ResourceGridLoaded,TextBlockLoaded,ResourceGridUnloaded,ResourceTextBlockUnloaded,TextBlockUnloaded,", result);
 #elif __ANDROID__
 			Assert.AreEqual("ResourceGridLoaded,ResourceTextBlockLoaded,TextBlockLoaded,ResourceGridUnloaded,ResourceTextBlockUnloaded,TextBlockUnloaded,", result);

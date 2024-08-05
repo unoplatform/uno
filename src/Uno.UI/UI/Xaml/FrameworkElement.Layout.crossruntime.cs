@@ -913,38 +913,80 @@ namespace Microsoft.UI.Xaml
 #endif
 		}
 
-		internal override void Enter(EnterParams @params, int depth)
+		internal override void EnterImpl(EnterParams @params, int depth)
 		{
-			// The way this works on WinUI is that when an element enters the visual tree, all values
-			// of properties that are marked with MetaDataPropertyInfoFlags::IsSparse and MetaDataPropertyInfoFlags::IsVisualTreeProperty
-			// are entered as well.
-			// The property we currently know it has an effect is Resources
-			if (Resources is not null)
-			{
-				foreach (var resource in Resources.Values)
-				{
-					if (resource is FrameworkElement resourceAsUIElement)
-					{
-						resourceAsUIElement.XamlRoot = XamlRoot;
-						resourceAsUIElement.Enter(@params, int.MinValue);
-					}
-				}
-			}
+			var core = this.GetContext();
 
-			base.Enter(@params, depth);
+			//if (@params.IsLive && @params.CheckForResourceOverrides == false)
+			//{
+			//    var resources = GetResourcesNoCreate();
 
+			//    if (resources is not null &&
+			//        resources.HasPotentialOverrides())
+			//    {
+			//        @params.CheckForResourceOverrides = TRUE;
+			//    }
+			//}
+
+			base.EnterImpl(@params, depth);
+
+			////Check for focus chrome property.
+			//if (@params.IsLive)
+			//{
+			//	if (Control.GetIsTemplateFocusTarget(this))
+			//	{
+			//		UpdateFocusAncestorsTarget(true /*shouldSet*/); //Add pointer to the Descendant
+			//	}
+			//}
+
+			//// Walk the list of events (if any) to keep watch of loaded events.
+			//if (@params.IsLive && m_pEventList is not null)
+			//{
+			//	CXcpList<REQUEST>::XCPListNode* pTemp = m_pEventList.GetHead();
+			//	while (pTemp is not null)
+			//	{
+			//		REQUEST* pRequest = (REQUEST*)pTemp->m_pData;
+			//		if (pRequest && pRequest->m_hEvent.index != KnownEventIndex::UnknownType_UnknownEvent)
+			//		{
+			//			if (pRequest->m_hEvent.index == KnownEventIndex::FrameworkElement_Loaded)
+			//			{
+			//				// Take note of the fact we added a loaded event to the event manager.
+			//				core->KeepWatch(WATCH_LOADED_EVENTS);
+			//			}
+			//		}
+			//		pTemp = pTemp->m_pNext;
+			//	}
+			//}
+
+			// Apply style when element is live in the tree
 			if (@params.IsLive)
 			{
+				//if (m_eImplicitStyleProvider == ImplicitStyleProvider::None)
+				//{
+				//	if (!GetStyle())
+				//	{
+				//		IFC_RETURN(ApplyStyle());
+				//	}
+				//}
+				//else if (m_eImplicitStyleProvider == ImplicitStyleProvider::AppWhileNotInTree)
+				//{
+				//	IFC_RETURN(UpdateImplicitStyle(m_pImplicitStyle, null, /*bForceUpdate*/false, /*bUpdateChildren*/false));
+				//}
+
+				// ---------- Uno-specific BEGIN ----------
 				// Apply active style and default style when we enter the visual tree, if they haven't been applied already.
 				this.ApplyStyles();
+				// ---------- Uno-specific END ----------
 			}
 
+			// Uno-specific
 			ReconfigureViewportPropagation();
 
 			m_firedLoadingEvent = false;
 		}
 
-		internal override void Leave(LeaveParams @params)
+		// UNO TODO: Not yet ported
+		internal override void LeaveImpl(LeaveParams @params)
 		{
 			// The way this works on WinUI is that when an element enters the visual tree, all values
 			// of properties that are marked with MetaDataPropertyInfoFlags::IsSparse and MetaDataPropertyInfoFlags::IsVisualTreeProperty
@@ -956,12 +998,12 @@ namespace Microsoft.UI.Xaml
 				{
 					if (resource is FrameworkElement resourceAsUIElement)
 					{
-						resourceAsUIElement.Leave(@params);
+						resourceAsUIElement.LeaveImpl(@params);
 					}
 				}
 			}
 
-			base.Leave(@params);
+			base.LeaveImpl(@params);
 
 			ReconfigureViewportPropagation(isLeavingTree: true);
 		}
