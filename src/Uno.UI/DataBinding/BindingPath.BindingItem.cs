@@ -316,7 +316,7 @@ namespace Uno.UI.DataBinding
 				{
 					if (_precedence != DependencyPropertyValuePrecedences.Animations)
 					{
-						throw new InvalidOperationException("Substitute value is currently used only for Timeline's PropertyInfo which should be using Animations precedence.")
+						throw new InvalidOperationException("Substitute value is currently used only for Timeline's PropertyInfo which should be using Animations precedence.");
 					}
 
 					_substituteValueGetter =
