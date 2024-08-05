@@ -7,12 +7,15 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.TemplatedParent.Setup;
+#if HAS_UNO
 using Uno.UI.Xaml;
+#endif
 using WindowHelper = Private.Infrastructure.TestServices.WindowHelper;
 
 namespace Uno.UI.RuntimeTests.Tests.TemplatedParent;
@@ -131,12 +134,34 @@ public partial class TemplatedParentTests
 			var match = line.Split(" // TP=", count: 2);
 
 			var node = descendants[i];
-			var tp = (node as FrameworkElement)?.GetTemplatedParent();
+			var tp = GetTemplatedParentCompat(node as FrameworkElement);
 
 			Assert.AreEqual(2, match.Length, $"Failed to parse expectation on line {i}");
 			Assert.AreEqual(match[0], DescribeObject(node), $"Invalid node on line {i}");
 			Assert.AreEqual(match[1], DescribeObject(tp), $"Invalid templated-parent on line {i}");
 		}
+	}
+
+
+	private static object GetTemplatedParentCompat(FrameworkElement fe)
+	{
+		if (fe is null)
+		{
+			return null;
+		}
+
+#if HAS_UNO
+		return fe.GetTemplatedParent();
+#else
+		fe.SetBinding(FrameworkElement.TagProperty, new Binding
+		{
+			RelativeSource = new() { Mode = RelativeSourceMode.TemplatedParent }
+		});
+		var tp = fe.Tag;
+
+		fe.ClearValue(FrameworkElement.TagProperty);
+		return tp;
+#endif
 	}
 }
 public partial class TemplatedParentTests
@@ -145,7 +170,7 @@ public partial class TemplatedParentTests
 	{
 		if (x is FrameworkElement fe)
 		{
-			yield return $"TP={DescribeObject(fe.GetTemplatedParent())}";
+			yield return $"TP={DescribeObject(GetTemplatedParentCompat(fe))}";
 		}
 	}
 
