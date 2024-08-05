@@ -3,6 +3,7 @@ using System.Diagnostics;
 using Microsoft.UI.Xaml.Input;
 using Windows.Devices.Input;
 using Windows.Foundation;
+using Uno.UI.Xaml;
 
 #if HAS_UNO_WINUI
 using _PointerDeviceType = global::Microsoft.UI.Input.PointerDeviceType;
@@ -70,6 +71,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void HookScrollEvents(ScrollViewer sv)
 		{
+			// Note: the way WinUI does scrolling is very different, and doesn't use
+			// PointerWheelChanged changes, etc.
+			// We can either subscribe on the ScrollViewer or the SCP directly, but due to
+			// the way hit-testing works (see #16201), the SCP will not receive any pointer
+			// events. On WinUI, this is also the case: pointer presses are received on the SV,
+			// not on the SCP.
+
 			// Mouse wheel support
 			sv.PointerWheelChanged += PointerWheelScroll;
 
@@ -89,6 +97,24 @@ namespace Microsoft.UI.Xaml.Controls
 			ManipulationStarted -= TouchScrollStarted;
 			ManipulationDelta -= UpdateTouchScroll;
 			ManipulationCompleted -= CompleteTouchScroll;
+		}
+
+		private protected override void OnLoaded()
+		{
+			base.OnLoaded();
+			if (Scroller is { } sv)
+			{
+				HookScrollEvents(sv);
+			}
+		}
+
+		private protected override void OnUnloaded()
+		{
+			base.OnUnloaded();
+			if (Scroller is { } sv)
+			{
+				UnhookScrollEvents(sv);
+			}
 		}
 
 		/// <inheritdoc />
