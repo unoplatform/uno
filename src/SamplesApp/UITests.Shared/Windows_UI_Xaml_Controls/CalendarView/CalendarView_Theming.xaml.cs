@@ -110,7 +110,7 @@ namespace UITests.Windows_UI_Xaml_Controls.CalendarView
 				}
 			}
 #elif __WASM__
-			var serializedTheme = Uno.Foundation.WebAssemblyRuntime.InvokeJS("Microsoft.UI.Xaml.Application.getDefaultSystemTheme()");
+			var serializedTheme = Uno.Foundation.WebAssemblyRuntime.InvokeJS("Uno.Helpers.Theming.SystemThemeHelper.getSystemTheme()");
 
 			if (serializedTheme != null)
 			{
