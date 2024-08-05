@@ -17,6 +17,7 @@ using Microsoft.UI.Xaml.Markup;
 using System.Numerics;
 using Microsoft.Graphics.Canvas.Geometry;
 using Microsoft.Graphics.Canvas;
+using Windows.Foundation;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Composition;
 
@@ -31,7 +32,6 @@ public class Given_CompositionSpriteShape
 		Vector2 scale = new(200f / 570f);
 		Vector2 offset = -112.5f * scale;
 
-		var compositor = Compositor.GetSharedCompositor();
 		var expected = new ContentControl()
 		{
 			Width = 200,
@@ -55,8 +55,6 @@ public class Given_CompositionSpriteShape
 
 		using (var builder = new CanvasPathBuilder(CanvasDevice.GetSharedDevice()))
 		{
-			var visual = compositor.CreateShapeVisual();
-
 			builder.SetFilledRegionDetermination(CanvasFilledRegionDetermination.Alternate);
 
 			builder.BeginFigure(new Vector2(656.5f, 400.5f));
@@ -102,7 +100,62 @@ public class Given_CompositionSpriteShape
 		}
 	}
 
-	private async Task RenderPath(CompositionPath path, FrameworkElement expected, Vector2? scale = null, Vector2? offset = null)
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Using_Circle()
+	{
+		var expected = new Ellipse()
+		{
+			Width = 200,
+			Height = 200,
+			VerticalAlignment = VerticalAlignment.Top,
+			HorizontalAlignment = HorizontalAlignment.Left,
+			Fill = new SolidColorBrush(Windows.UI.Colors.Black)
+		};
+
+		await RenderPath(new CompositionPath(CanvasGeometry.CreateCircle(CanvasDevice.GetSharedDevice(), new(100, 100), 100)), expected);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Using_RoundedRectangle()
+	{
+		var expected = new Rectangle()
+		{
+			Width = 200,
+			Height = 200,
+			RadiusX = 16,
+			RadiusY = 16,
+			VerticalAlignment = VerticalAlignment.Top,
+			HorizontalAlignment = HorizontalAlignment.Left,
+			Fill = new SolidColorBrush(Windows.UI.Colors.Black)
+		};
+
+		await RenderPath(new CompositionPath(CanvasGeometry.CreateRoundedRectangle(CanvasDevice.GetSharedDevice(), new(0, 0, 200, 200), 16, 16)), expected);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Using_Polygon()
+	{
+		var points = GetStarPoints(new(100), 100, 5, 0.5f);
+		var pointCollection = new PointCollection();
+		pointCollection.AddRange(points.Select(VectorExtensions.ToPoint));
+
+		var expected = new Polygon()
+		{
+			Width = 200,
+			Height = 200,
+			VerticalAlignment = VerticalAlignment.Top,
+			HorizontalAlignment = HorizontalAlignment.Left,
+			Fill = new SolidColorBrush(Windows.UI.Colors.Black),
+			Points = pointCollection
+		};
+
+		await RenderPath(new CompositionPath(CanvasGeometry.CreatePolygon(CanvasDevice.GetSharedDevice(), points)), expected);
+	}
+
+	private async Task RenderPath(CompositionPath path, FrameworkElement expected, Vector2? scale = null, Vector2? offset = null, Windows.UI.Color? color = null)
 	{
 		var compositor = Compositor.GetSharedCompositor();
 		using var visual = compositor.CreateShapeVisual();
@@ -119,15 +172,15 @@ public class Given_CompositionSpriteShape
 			shape.Offset = offset.Value;
 		}
 
-		shape.FillBrush = compositor.CreateColorBrush(Windows.UI.Colors.Black);
+		shape.FillBrush = compositor.CreateColorBrush(color ?? Windows.UI.Colors.Black);
 
 		visual.Shapes.Add(shape);
-		visual.Size = new(200);
+		visual.Size = new((float)expected.Width, (float)expected.Height);
 
 		var sut = new ContentControl
 		{
-			Width = 200,
-			Height = 200
+			Width = expected.Width,
+			Height = expected.Height
 		};
 
 		ElementCompositionPreview.SetElementChildVisual(sut, visual);
@@ -155,6 +208,26 @@ public class Given_CompositionSpriteShape
 		});
 
 		return (await UITestHelper.ScreenShot(expected), await UITestHelper.ScreenShot(sut));
+	}
+
+	private Vector2[] GetStarPoints(Vector2 center, float radius, int numPoints, float innerRadiusFactor)
+	{
+		Vector2[] points = new Vector2[numPoints * 2];
+		float angleStep = 2f * MathF.PI / numPoints;
+		float innerRadius = radius * innerRadiusFactor;
+
+		for (int i = 0; i < numPoints * 2; i++)
+		{
+			float currentRadius = (i % 2 == 0) ? radius : innerRadius;
+			float angle = i * angleStep / 2f - MathF.PI / 2f;
+
+			float x = center.X + currentRadius * MathF.Cos(angle);
+			float y = center.Y + currentRadius * MathF.Sin(angle);
+
+			points[i] = new Vector2(x, y);
+		}
+
+		return points;
 	}
 #endif
 }

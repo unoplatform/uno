@@ -777,28 +777,30 @@ namespace UITests.Shared.Windows_UI_Composition
 			var polyGeometry = compositor.CreatePathGeometry(polyPath);
 			var polyShape = compositor.CreateSpriteShape(polyGeometry);
 
-			polyShape.FillBrush = compositor.CreateColorBrush(Windows.UI.Colors.LightYellow);
+			polyShape.FillBrush = compositor.CreateColorBrush(Windows.UI.Colors.PaleVioletRed);
 
 			polyVisual.Shapes.Add(polyShape);
 			polyVisual.Size = new(200);
+			polyVisual.Offset = new(0, 5, 0);
 
 			ElementCompositionPreview.SetElementChildVisual(compPresenter6, polyVisual);
 		}
 
 		private Vector2[] GetStarPoints(Vector2 center, float radius, int numPoints, float innerRadiusFactor)
 		{
-			var angleDelta = 2 * MathF.PI / numPoints;
-			var points = new Vector2[numPoints * 2];
+			Vector2[] points = new Vector2[numPoints * 2];
+			float angleStep = 2f * MathF.PI / numPoints;
+			float innerRadius = radius * innerRadiusFactor;
 
 			for (int i = 0; i < numPoints * 2; i++)
 			{
-				float angle = i * angleDelta;
-				float currentRadius = (i % 2 == 0) ? radius : radius * innerRadiusFactor;
+				float currentRadius = (i % 2 == 0) ? radius : innerRadius;
+				float angle = i * angleStep / 2f - MathF.PI / 2f;
 
 				float x = center.X + currentRadius * MathF.Cos(angle);
 				float y = center.Y + currentRadius * MathF.Sin(angle);
 
-				points[i] = new(x, y);
+				points[i] = new Vector2(x, y);
 			}
 
 			return points;
