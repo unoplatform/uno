@@ -145,7 +145,11 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 
 	internal override SKPath? GetPrePaintingClipping()
 	{
-		if (_borderPathOuterRect is { } rect)
+		// This method is only important for airspace (to accurately deal with corner radii, etc.),
+		// other than that it doesn't really do anything.
+		UpdatePathsAndCornerClip();
+
+		if (_cornerRadius != CornerRadius.None && _borderPathOuterRect is { } rect)
 		{
 			var path = new SKPath();
 			path.AddRoundRect(rect);
