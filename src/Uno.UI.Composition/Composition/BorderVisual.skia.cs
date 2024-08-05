@@ -86,14 +86,15 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 				{
 					// we need this to get notified on brush updates
 					// (BorderBrush internals change -> BorderShape is notified through FillBrush -> render invalidation)
-					BorderShape = Compositor.CreateSpriteShape();
-
-					_borderShape!.Geometry = Compositor.CreatePathGeometry();
+					var borderShape = Compositor.CreateSpriteShape();
+					borderShape.Geometry = Compositor.CreatePathGeometry();
 #if DEBUG
-					_borderShape!.Comment = "#borderShape";
+					borderShape.Comment = "#borderShape";
 #endif
+					borderShape.FillBrush = BorderBrush;
+					BorderShape = borderShape;
 				}
-				if (_borderShape is { })
+				else if (_borderShape is { })
 				{
 					_borderShape.FillBrush = BorderBrush;
 				}
@@ -104,14 +105,17 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 				{
 					// we need this to get notified on brush updates.
 					// (BackgroundBrush internals change -> BackgroundShape is notified through FillBrush -> render invalidation)
-					BackgroundShape = Compositor.CreateSpriteShape();
+					var backgroundShape = Compositor.CreateSpriteShape();
 
-					_backgroundShape!.Geometry = Compositor.CreatePathGeometry();
+					backgroundShape.Geometry = Compositor.CreatePathGeometry();
 #if DEBUG
-					_backgroundShape!.Comment = "#backgroundShape";
+					backgroundShape.Comment = "#backgroundShape";
 #endif
+					backgroundShape.FillBrush = BackgroundBrush;
+
+					BackgroundShape = backgroundShape;
 				}
-				if (_backgroundShape is { })
+				else if (_backgroundShape is { })
 				{
 					_backgroundShape.FillBrush = BackgroundBrush;
 				}
