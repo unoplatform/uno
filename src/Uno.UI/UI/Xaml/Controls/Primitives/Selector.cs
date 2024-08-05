@@ -1,26 +1,17 @@
-﻿using Uno.UI.Controls;
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Uno.Extensions;
 using System.Collections.Specialized;
-using Uno.Extensions.Specialized;
-using System.Diagnostics;
-using Uno.UI;
-using Uno.Disposables;
+using System.Linq;
+using DirectUI;
 using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Uno.Disposables;
+using Uno.Extensions;
+using Uno.Extensions.Specialized;
 using Uno.UI.DataBinding;
+using Uno.UI.Xaml.Input;
 using Windows.Foundation.Collections;
 using Windows.System;
-using Uno.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
-using Windows.Foundation;
-using Uno.UI.Extensions;
-using Microsoft.UI.Xaml.Media;
-using Uno.UI.Helpers;
-using Uno.UI.Xaml.Input;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives
 {
@@ -813,7 +804,24 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		protected virtual (Orientation PhysicalOrientation, Orientation LogicalOrientation) GetItemsHostOrientations()
 		{
-			return (Orientation.Horizontal, Orientation.Horizontal);
+			// TODO Uno: This implementation is simplified, should be ported from WinUI
+			var panel = ItemsPanelRoot;
+
+			var logicalOrientation = Orientation.Vertical;
+			var physicalOrientation = Orientation.Vertical;
+
+			if (panel is StackPanel sp)
+			{
+				logicalOrientation = sp.Orientation;
+				physicalOrientation = logicalOrientation;
+			}
+			else if (panel is IOrientedPanel orientedPanel)
+			{
+				logicalOrientation = orientedPanel.LogicalOrientation;
+				physicalOrientation = orientedPanel.PhysicalOrientation;
+			}
+
+			return (physicalOrientation, logicalOrientation);
 		}
 
 		protected void SetFocusedItem(int index,

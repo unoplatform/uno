@@ -136,6 +136,25 @@ partial class ComboBox
 			new FrameworkPropertyMetadata(true));
 
 	/// <summary>
+	/// Gets or sets a value that specifies whether the area outside of a light-dismiss UI is darkened.
+	/// </summary>
+	public LightDismissOverlayMode LightDismissOverlayMode
+	{
+		get => (LightDismissOverlayMode)GetValue(LightDismissOverlayModeProperty);
+		set => SetValue(LightDismissOverlayModeProperty, value);
+	}
+
+	/// <summary>
+	/// Identifies the LightDismissOverlayMode dependency property.
+	/// </summary>
+	public static DependencyProperty LightDismissOverlayModeProperty { get; } =
+		DependencyProperty.Register(
+			nameof(LightDismissOverlayMode),
+			typeof(LightDismissOverlayMode),
+			typeof(ComboBox),
+			new FrameworkPropertyMetadata(default(LightDismissOverlayMode)));
+
+	/// <summary>
 	/// Gets or sets a brush that describes the color of placeholder text.
 	/// </summary>
 	public Brush PlaceholderForeground

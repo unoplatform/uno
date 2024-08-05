@@ -48,9 +48,6 @@ public partial class ComboBox : Selector
 	private ContentPresenter? m_tpHeaderContentPresenterPart;
 	private Border? m_tpDropDownOverlayPart;
 
-	private DateTime m_timeSinceLastCharacterReceived;
-	private string m_searchString = "";
-	private int m_searchResultIndex = -1;
 	private int m_indexForcedToUnselectedVisual = -1;
 	private int m_indexForcedToSelectedVisual = -1;
 
@@ -160,7 +157,7 @@ public partial class ComboBox : Selector
 	{
 		base.OnLoaded();
 
-		UpdateDropDownState();
+		UpdateVisualState();
 
 		if (_popup != null)
 		{
@@ -408,21 +405,6 @@ public partial class ComboBox : Selector
 			RaiseDropDownOpenChangedEvents(newIsDropDownOpen);
 			UpdateContentPresenter();
 		}
-
-		UpdateDropDownState();
-	}
-
-	protected override void OnKeyDown(KeyRoutedEventArgs args)
-	{
-		base.OnKeyDown(args);
-
-		if (!args.Handled)
-		{
-			args.Handled = TryHandleKeyDown(args, null);
-		}
-
-		// Temporary as Uno doesn't yet implement CharacterReceived event.
-		UnoOnCharacterReceived(args);
 	}
 
 	internal bool TryHandleKeyDown(KeyRoutedEventArgs args, ComboBoxItem? focusedContainer)
@@ -432,33 +414,7 @@ public partial class ComboBox : Selector
 			return false;
 		}
 
-		if (args.Key == VirtualKey.Enter ||
-			args.Key == VirtualKey.Space)
-		{
-			if (IsDropDownOpen)
-			{
-				// If we got a space while in searching mode, we shouldn't close the dropdown.
-				if (!(args.Key == VirtualKey.Space && IsInSearchingMode()) && SelectedIndex > -1)
-				{
-					IsDropDownOpen = false;
-					return true;
-				}
-			}
-			else
-			{
-				IsDropDownOpen = true;
-				return true;
-			}
-		}
-		else if (args.Key == VirtualKey.Escape)
-		{
-			if (IsDropDownOpen)
-			{
-				IsDropDownOpen = false;
-				return true;
-			}
-		}
-		else if (args.Key == VirtualKey.Down)
+		if (args.Key == VirtualKey.Down)
 		{
 			if (IsDropDownOpen)
 			{
@@ -488,76 +444,7 @@ public partial class ComboBox : Selector
 				}
 			}
 		}
-		else if (args.Key == VirtualKey.Tab)
-		{
-			if (_popup is { } p)
-			{
-				p.IsOpen = false;
-			}
-			// Don't handle. Let VisualTree.RootElement deal with focus management
-		}
 		return false;
-	}
-
-	// Uno TODO: This should override OnCharacterReceived when it's implemented.
-	private void UnoOnCharacterReceived(KeyRoutedEventArgs args)
-	{
-		if (IsTextSearchEnabled)
-		{
-			if (args.UnicodeKey is not { } keyCode)
-			{
-				return;
-			}
-
-			ProcessSearch(keyCode);
-		}
-	}
-
-	private string TryGetStringValue(object @object/*, PropertyPathListener pathListener*/)
-	{
-		object spBoxedValue;
-		object spObject = @object;
-
-		if (spObject is ICustomPropertyProvider spObjectPropertyAccessor)
-		{
-			//if (pathListener != null)
-			//{
-			//	// Our caller has provided us with a PropertyPathListener. By setting the source of the listener, we can pull a value out.
-			//	// This is our boxedValue, which we effectively ToString below.
-			//	pathListener.SetSource(spObject));
-			//	spBoxedValue = pathListener.GetValue();
-			//}
-			//else
-			{
-				// No PathListener specified, but this object implements
-				// ICustomPropertyProvider. Call .ToString on the object:
-				return spObjectPropertyAccessor.GetStringRepresentation();
-			}
-		}
-		else
-		{
-			// Try to get the string value by unboxing the object itself.
-			spBoxedValue = spObject;
-		}
-
-		if (spBoxedValue != null)
-		{
-			if (spBoxedValue is IStringable spStringable)
-			{
-				// We've set a BoxedValue. If it is castable to a string, try to ToString it.
-				return spStringable.ToString();
-			}
-			else
-			{
-				return FrameworkElement.GetStringFromObject(spBoxedValue);
-				// We've set a BoxedValue, but we can't directly ToString it. Try to get a string out of it.
-			}
-		}
-		else
-		{
-			// If we haven't found a BoxedObject and it's not Stringable, try one last time to get a string out.
-			return FrameworkElement.GetStringFromObject(@object);
-		}
 	}
 
 	private bool TryMoveKeyboardFocus(int offset, ComboBoxItem? focusedContainer)
@@ -599,35 +486,6 @@ public partial class ComboBox : Selector
 	/// The standard popup layouter works like on Windows, and doesn't stretch to take the full size of the screen.
 	/// </remarks>
 	public bool IsPopupFullscreen { get; set; }
-
-	private void UpdateDropDownState()
-	{
-		var state = IsDropDownOpen ? "Opened" : "Closed";
-		VisualStateManager.GoToState(this, state, true);
-	}
-
-	protected override AutomationPeer OnCreateAutomationPeer()
-	{
-		return new ComboBoxAutomationPeer(this);
-	}
-
-	public LightDismissOverlayMode LightDismissOverlayMode
-	{
-		get
-		{
-			return (LightDismissOverlayMode)this.GetValue(LightDismissOverlayModeProperty);
-		}
-		set
-		{
-			this.SetValue(LightDismissOverlayModeProperty, value);
-		}
-	}
-
-	public static DependencyProperty LightDismissOverlayModeProperty { get; } =
-	DependencyProperty.Register(
-		"LightDismissOverlayMode", typeof(LightDismissOverlayMode),
-		typeof(ComboBox),
-		new FrameworkPropertyMetadata(default(LightDismissOverlayMode)));
 
 	/// <summary>
 	/// Sets the light-dismiss colour, if the overlay is enabled. The external API for modifying this is to override the PopupLightDismissOverlayBackground, etc, static resource values.

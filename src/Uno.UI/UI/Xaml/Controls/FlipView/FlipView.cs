@@ -36,5 +36,9 @@ namespace Microsoft.UI.Xaml.Controls
 			// UNO TODO: Implement GetPreviousAndNextButtons on FlipView
 			return (null, null);
 		}
+
+		// TODO Uno: This should not be necessary, but it is required as ItemsControl is now different from WinUI.
+		protected override (Orientation PhysicalOrientation, Orientation LogicalOrientation) GetItemsHostOrientations() =>
+			(Orientation.Horizontal, Orientation.Horizontal);
 	}
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DirectUI;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Media.Animation;
 using Uno.Disposables;
@@ -13,6 +14,8 @@ namespace Microsoft.UI.Xaml.Controls;
 
 partial class ComboBox
 {
+	private const char VK_ESCAPE = (char)0x1B;
+
 // TODO MZ: These disablings should not be required
 #pragma warning disable CS0067 // Unused only in reference API.
 #pragma warning disable CS0649 // Unused only in reference API.
@@ -30,6 +33,7 @@ partial class ComboBox
 	private bool m_ignoreCancelKeyDowns;
 	private bool m_isEditModeConfigured;
 	private bool m_isInSearchingMode;
+	private bool m_openedUp;
 
 	// On pointer released we perform some actions depending on control. We decide to whether to perform them
 	// depending on some parameters including but not limited to whether released is followed by a pressed, which
@@ -86,6 +90,13 @@ partial class ComboBox
 	private int m_iLastGeneratedItemIndexforFaceplate;
 	private object m_customValueRef;
 	private Rect m_candidateWindowBoundsRect;
+
+	// TypeAhead methods and members
+	private string m_searchString = "";
+	private DateTime m_timeSinceLastCharacterReceived;
+	private PropertyPathListener m_spPropertyPathListener;
+	// Keeps track of the item's index that matched the last search.
+	private int m_searchResultIndex = -1;
 
 	private bool ShouldMoveFocusToTextBox => m_shouldMoveFocusToTextBox;
 
