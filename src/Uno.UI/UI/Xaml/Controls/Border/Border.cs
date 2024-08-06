@@ -100,22 +100,40 @@ public partial class Border : FrameworkElement
 				// disable the property-based propagation here to support the case where the Parent property is overridden to simulate
 				// a different inheritance hierarchy, as is done for some controls with native styles.
 				FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
-				(s, e) => ((Border)s)?.OnChildChanged((UIElement)e.OldValue, (UIElement)e.NewValue)
+				(DependencyObject s, DependencyPropertyChangedEventArgs e) => ((Border)s)?.OnChildChanged((UIElement)e.OldValue, (UIElement)e.NewValue),
+				OnCoerceChild
 			)
 		);
 
-	private void OnChildChanged(UIElement oldValue, UIElement newValue)
+	private static object OnCoerceChild(DependencyObject dependencyObject, object baseValue, DependencyPropertyValuePrecedences precedence)
 	{
-		ReAttachChildTransitions(oldValue, newValue);
-
-		if (oldValue is not null)
+		// Until we do the breaking change (#8339), Child is a Dependency property in Uno Platform.
+		// This means that setting Child to the same reference does not trigger PropertyChanged, 
+		// which is a problem, as WinUI always removes the current child and adds it again,
+		// even when dealing with the exact same reference. This also triggers measure/arrange
+		// on the child. To work around this, we force the update in coerce here. 
+		var border = (Border)dependencyObject;
+		if (baseValue == border.Child)
 		{
-			RemoveChild(oldValue);
+			border.SetChild(border.Child);
 		}
 
-		if (newValue is not null)
+		return baseValue;
+	}
+
+	private void SetChild(UIElement child)
+	{
+		var existingChild = Child;
+		ReAttachChildTransitions(existingChild, child);
+
+		if (existingChild is not null)
 		{
-			AddChild(newValue);
+			RemoveChild(existingChild);
+		}
+
+		if (child is not null)
+		{
+			AddChild(child);
 		}
 	}
 
