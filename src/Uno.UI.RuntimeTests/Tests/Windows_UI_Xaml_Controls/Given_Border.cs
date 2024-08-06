@@ -615,6 +615,52 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(1, outerBorderRightTaps);
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Child_Set_Same_Reference()
+		{
+			var SUT = new Border() { Width = 100, Height = 100 };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			var child = new MeasureArrangeCounterButton();
+			SUT.Child = child;
+
+			await WindowHelper.WaitFor(() => child.ArrangeCount > 0);
+
+			Assert.IsTrue(child.MeasureCount > 0);
+			Assert.IsTrue(child.ArrangeCount > 0);
+
+			var oldMeasureCount = child.MeasureCount;
+			var oldArrangeCount = child.ArrangeCount;
+
+			SUT.Child = child;
+
+			await WindowHelper.WaitFor(() => child.MeasureCount > oldMeasureCount);
+
+			Assert.IsTrue(child.MeasureCount > oldMeasureCount);
+			Assert.IsTrue(child.ArrangeCount > oldArrangeCount);
+		}
+
+		internal partial class MeasureArrangeCounterButton : Button
+		{
+			internal int MeasureCount { get; private set; }
+
+			internal int ArrangeCount { get; private set; }
+
+			protected override Size MeasureOverride(Size availableSize)
+			{
+				MeasureCount++;
+				return base.MeasureOverride(availableSize);
+			}
+
+			protected override Size ArrangeOverride(Size finalSize)
+			{
+				ArrangeCount++;
+				return base.ArrangeOverride(finalSize);
+			}
+		}
+
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #else
