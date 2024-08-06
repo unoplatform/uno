@@ -41,6 +41,9 @@ public partial class Compositor
 		{
 			if (_backgroundTransitions[i].Visual == visual)
 			{
+				// when the background changes when already in a transition, the new transition
+				// picks up from where the preexisting transition stopped.
+				fromColor = _backgroundTransitions[i].CurrentColor;
 				_backgroundTransitions.RemoveAt(i);
 				break;
 			}
