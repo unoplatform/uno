@@ -1,4 +1,18 @@
-﻿using System;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference dxaml\xcp\dxaml\lib\NavigationHistory.cpp, tag winui3/release/1.5.5, commit fd8e26f1d
+
+//  Abstract:
+//      Manages the sequence of navigated content and the navigations
+//      between them. Serializes and deserializes the navigation entries
+//      using Windows storage.
+//  Notes:
+//      Navigations are split into requests and commits because they can
+//      be canceled synchronously, but are carried out asynchronously
+//      because components are loaded asynchronously. Commits are atomic;
+//      any intermediate error rolls back all changes.
+
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.UI.Xaml.Controls;

@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference dxaml\xcp\dxaml\lib\NavigationCache.h, tag winui3/release/1.5.5, commit fd8e26f1d
 
 //  Abstract:
 //      Asynchronously loads frame content and caches it. Uses two caches:
