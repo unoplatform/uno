@@ -405,7 +405,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private static bool IsObservableCollection(object src)
 		{
 			var type = src.GetType();
-			
+
 			while (type != null && type != typeof(object))
 			{
 				if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(ObservableCollection<>))

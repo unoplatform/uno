@@ -4679,6 +4679,56 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is only supported on skia")]
+#endif
+		public async Task When_DragDrop_ItemsSource_Is_Subclass_Of_ObservableCollection()
+		{
+			var SUT = new ListView
+			{
+				AllowDrop = true,
+				CanDragItems = true,
+				CanReorderItems = true,
+				ItemsSource = new SubclassOfObservableCollection
+				{
+					"0",
+					"1",
+					"2"
+				}
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			// drag(pick-up) item#0
+			mouse.MoveTo(SUT.GetAbsoluteBoundsRect().Location + new Point(20, SUT.ActualHeight / 6));
+			await WindowHelper.WaitForIdle();
+			mouse.Press();
+			await WindowHelper.WaitForIdle();
+
+			// drop onto item#1
+			mouse.MoveTo(SUT.GetAbsoluteBoundsRect().Location + new Point(20, SUT.ActualHeight * 2 / 6));
+			await WindowHelper.WaitForIdle();
+			mouse.MoveTo(SUT.GetAbsoluteBoundsRect().Location + new Point(20, SUT.ActualHeight * 3 / 6));
+			await WindowHelper.WaitForIdle();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			var textBlocks = SUT.FindFirstDescendant<ItemsStackPanel>().Children
+				.Select(c => c.FindFirstDescendant<TextBlock>())
+				.OrderBy(c => c.GetAbsoluteBoundsRect().Y)
+				.ToList();
+			Assert.AreEqual("1", textBlocks[0].Text);
+			Assert.AreEqual("0", textBlocks[1].Text);
+			Assert.AreEqual("2", textBlocks[2].Text);
+		}
+#endif
+
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_ScrollIntoView_FreshlyAddedDefaultItem() // checks against #17695
@@ -5198,6 +5248,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				return Name;
 			}
+		}
+
+		public class SubclassOfObservableCollection : ObservableCollection<string>
+		{
 		}
 	}
 }
