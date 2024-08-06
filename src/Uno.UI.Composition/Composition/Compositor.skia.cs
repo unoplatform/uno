@@ -108,9 +108,9 @@ public partial class Compositor
 
 		RecursiveDispatchAnimationFrames();
 
-		_backgroundTransitions.RemoveAll(transition => TimestampInTicks >= transition.EndTimestamp);
+		var removedCount = _backgroundTransitions.RemoveAll(transition => TimestampInTicks >= transition.EndTimestamp);
 
-		if (_backgroundTransitions.Count > 0)
+		if (removedCount > 0 || _backgroundTransitions.Count > 0)
 		{
 			NativeDispatcher.Main.Enqueue(() => CoreApplication.QueueInvalidateRender(rootVisual.CompositionTarget), NativeDispatcherPriority.Idle);
 		}
