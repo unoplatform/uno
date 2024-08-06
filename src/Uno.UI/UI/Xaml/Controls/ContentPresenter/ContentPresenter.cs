@@ -1177,8 +1177,8 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		}
 
 		// Check if the Content is set to something
-		var v = this.GetValueUnderPrecedence(ContentProperty, DependencyPropertyValuePrecedences.DefaultValue);
-		if (v.precedence != DependencyPropertyValuePrecedences.DefaultValue)
+		var store = ((IDependencyObjectStoreProvider)this).Store;
+		if (store.GetCurrentHighestValuePrecedence(ContentProperty) != DependencyPropertyValuePrecedences.DefaultValue)
 		{
 			ClearImplicitBindinds();
 			return; // Nope, there's a value somewhere
