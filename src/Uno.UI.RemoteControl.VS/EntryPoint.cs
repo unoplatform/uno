@@ -107,12 +107,10 @@ public partial class EntryPoint : IDisposable
 
 		_ = _debuggerObserver.ObserveProfilesAsync();
 
-		_ = _globalPropertiesChanged();
-
 		TelemetryHelper.DataModelTelemetrySession.AddSessionChannel(new TelemetryEventListener(this));
 	}
 
-	private async Task<Dictionary<string, string>> OnProvideGlobalPropertiesAsync()
+	private Task<Dictionary<string, string>> OnProvideGlobalPropertiesAsync()
 	{
 		Dictionary<string, string> properties = new()
 		{
@@ -129,9 +127,7 @@ public partial class EntryPoint : IDisposable
 			properties.Add(UnoRemoteControlConfigCookieProperty, _remoteControlConfigCookie);
 		}
 
-		await Task.Yield();
-
-		return properties;
+		return Task.FromResult(properties);
 	}
 
 	[MemberNotNull(
@@ -285,8 +281,8 @@ public partial class EntryPoint : IDisposable
 
 		if (_process is { HasExited: false })
 		{
-			_debugAction?.Invoke($"Server already running");
-			return; // Dev-server is already running.
+			_debugAction?.Invoke("Server already running");
+			return;
 		}
 
 		await _processGate.WaitAsync();
@@ -346,6 +342,8 @@ public partial class EntryPoint : IDisposable
 				_ideChannelClient.ForceHotReloadRequested += OnForceHotReloadRequestedAsync;
 				_ideChannelClient.ConnectToHost();
 
+				// Set the port to the projects
+				// This LEGACY as port should be set through the global properties (cf. OnProvideGlobalPropertiesAsync)
 				var portString = _remoteControlServerPort.ToString(CultureInfo.InvariantCulture);
 				foreach (var p in await _dte.GetProjectsAsync())
 				{
@@ -386,10 +384,30 @@ public partial class EntryPoint : IDisposable
 		{
 			if (_closing || _ct.IsCancellationRequested)
 			{
+				if (_remoteControlConfigCookie is not null)
+				{
+					File.WriteAllText(_remoteControlConfigCookie, "--closed--"); // Make sure VS will re-build on next start
+				}
+
+				_debugAction?.Invoke($"Remote Control server exited ({_process?.ExitCode}) and won't be restarted as solution is closing.");
 				return;
 			}
 
+			_debugAction?.Invoke($"Remote Control server exited ({_process?.ExitCode}). It will restart in 5sec.");
+
 			await Task.Delay(5000, _ct.Token);
+
+			if (_closing || _ct.IsCancellationRequested)
+			{
+				if (_remoteControlConfigCookie is not null)
+				{
+					File.WriteAllText(_remoteControlConfigCookie, "--closed--"); // Make sure VS will re-build on next start
+				}
+
+				_debugAction?.Invoke($"Remote Control server will not be restarted as solution is closing.");
+				return;
+			}
+
 			await EnsureServerAsync();
 		}
 	}
