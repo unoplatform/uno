@@ -311,7 +311,12 @@ public partial class Border : FrameworkElement
 	{
 #if UNO_HAS_BORDER_VISUAL
 		this.UpdateBackground();
-		BorderHelper.SetUpBrushTransitionIfAllowed((BorderVisual)this.Visual, e.OldValue as Brush, e.NewValue as Brush, this.BackgroundTransition);
+		BorderHelper.SetUpBrushTransitionIfAllowed(
+			(BorderVisual)this.Visual,
+			e.OldValue as Brush,
+			e.NewValue as Brush,
+			this.BackgroundTransition,
+			(this as IDependencyObjectStoreProvider).Store.GetPropertyDetails(BackgroundProperty).CurrentHighestValuePrecedence == DependencyPropertyValuePrecedences.Animations);
 #else
 		UpdateBorder();
 #endif

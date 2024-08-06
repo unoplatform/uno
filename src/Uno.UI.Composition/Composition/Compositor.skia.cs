@@ -32,6 +32,18 @@ public partial class Compositor
 		}
 	}
 
+	internal void DisableBackgroundTransition(BorderVisual visual)
+	{
+		for (int i = 0; i < _backgroundTransitions.Count; i++)
+		{
+			if (_backgroundTransitions[i].Visual == visual)
+			{
+				_backgroundTransitions[i] = _backgroundTransitions[i] with { IsActive = false };
+				break;
+			}
+		}
+	}
+
 	internal void RegisterBackgroundTransition(BorderVisual visual, Color fromColor, Color toColor, TimeSpan duration)
 	{
 		var start = TimestampInTicks;
@@ -39,17 +51,23 @@ public partial class Compositor
 
 		for (int i = 0; i < _backgroundTransitions.Count; i++)
 		{
-			if (_backgroundTransitions[i].Visual == visual)
+			var transition = _backgroundTransitions[i];
+			if (transition.Visual == visual)
 			{
+				if (!transition.IsActive)
+				{
+					_backgroundTransitions[i] = transition with { IsActive = true };
+					return;
+				}
 				// when the background changes when already in a transition, the new transition
 				// picks up from where the preexisting transition stopped.
-				fromColor = _backgroundTransitions[i].CurrentColor;
+				fromColor = transition.CurrentColor;
 				_backgroundTransitions.RemoveAt(i);
 				break;
 			}
 		}
 
-		_backgroundTransitions.Add(new ColorBrushTransitionState(visual, fromColor, toColor, start, end));
+		_backgroundTransitions.Add(new ColorBrushTransitionState(visual, fromColor, toColor, start, end, true));
 	}
 
 	internal bool TryGetEffectiveBackgroundColor(CompositionSpriteShape shape, out Color color)
@@ -58,8 +76,15 @@ public partial class Compositor
 		{
 			if (transition.Visual.BackgroundShape == shape)
 			{
-				color = transition.CurrentColor;
-				return true;
+				if (transition.IsActive)
+				{
+					color = transition.CurrentColor;
+					return true;
+				}
+				else
+				{
+					break;
+				}
 			}
 		}
 
