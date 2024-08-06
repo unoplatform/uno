@@ -14,13 +14,13 @@ namespace Microsoft.UI.Xaml.Shapes
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{
-			var (shapeSize, renderingArea) = ArrangeRelativeShape(finalSize);
+			var (_, renderingArea) = ArrangeRelativeShape(finalSize);
 
 			Render(renderingArea.Width > 0 && renderingArea.Height > 0
 				? GetGeometry(renderingArea)
 				: null);
 
-			return shapeSize;
+			return finalSize;
 		}
 
 		private SkiaGeometrySource2D GetGeometry(Rect renderingArea)
