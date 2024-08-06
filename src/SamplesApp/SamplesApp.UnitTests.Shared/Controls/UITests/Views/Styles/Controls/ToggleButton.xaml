@@ -31,7 +31,7 @@
 		<Setter Property="FontSize"
 				Value="20" />
 		<Setter Property="Foreground"
-				Value="{StaticResource Color06Brush}" />
+				Value="{ThemeResource AccentFillColorDefaultBrush}" />
 		<Setter Property="Background"
 				Value="Transparent" />
 		<Setter Property="HorizontalContentAlignment"
