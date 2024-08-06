@@ -207,7 +207,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var SUT = new TextBlock
 			{
 				Text = "\t\r",
-				FontFamily = "ms-appx:///Assets/Fonts/CascadiaCode-Regular.ttf",
+				FontFamily = new FontFamily("ms-appx:///Assets/Fonts/CascadiaCode-Regular.ttf"),
 				Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red)
 			};
 
