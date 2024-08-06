@@ -235,7 +235,7 @@ public partial class RemoteControlClient : IRemoteControlClient
 						// Note: If we have a preferred endpoint (last known to be successful), we delay a bit the connection to other endpoints.
 						//		 This is to reduce the number of (task cancelled / socket) exceptions at startup by giving a chance to the preferred endpoint to succeed first.
 						var cts = new CancellationTokenSource();
-						var delay = preferred is null || preferred.Equals(srv.endpoint, StringComparison.OrdinalIgnoreCase) ? 0 : 1000;
+						var delay = preferred is null || preferred.Equals(srv.endpoint, StringComparison.OrdinalIgnoreCase) ? 0 : 3000;
 						var task = Connect(serverUri, delay, cts.Token);
 
 						return (task, srv.endpoint, cts);
@@ -246,9 +246,6 @@ public partial class RemoteControlClient : IRemoteControlClient
 				.Where(c => c.task is not null)
 				.ToDictionary(c => c.task as Task);
 			var timeout = Task.Delay(30000);
-
-			// Ensure to await all connection tasks to avoid UnobservedTaskException
-			CleanupConnections(pending.Keys);
 
 			// Wait for the first connection to succeed
 			Connection? connection = default;
@@ -407,7 +404,8 @@ public partial class RemoteControlClient : IRemoteControlClient
 		{
 			if (delay > 0)
 			{
-				await Task.Delay(delay, ct);
+				// We don't use the CT to make sure to NOT throw an exception here
+				await Task.Delay(delay, CancellationToken.None);
 			}
 
 			if (ct.IsCancellationRequested)
@@ -436,25 +434,6 @@ public partial class RemoteControlClient : IRemoteControlClient
 			return new(this, serverUri, watch, null);
 		}
 	}
-
-	/// <summary>
-	/// Cleanup connections to avoid tasks raising UnobservedTaskException.
-	/// </summary>
-	private static void CleanupConnections(IEnumerable<Task> connections)
-		=> _ = Task.Run(async () =>
-		{
-			foreach (var connection in connections)
-			{
-				try
-				{
-					await connection;
-				}
-				catch
-				{
-					// Exceptions are not used here.
-				}
-			}
-		});
 
 	private async Task ProcessMessages(WebSocket socket, CancellationToken ct)
 	{
