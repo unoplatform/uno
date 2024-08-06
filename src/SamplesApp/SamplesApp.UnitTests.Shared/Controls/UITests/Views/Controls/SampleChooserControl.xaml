@@ -31,16 +31,7 @@
 			<x:Double x:Key="TitleContainerHeight">45</x:Double>
 
 			<uc:FromNullableBoolToReverseBoolConverter x:Key="reverseBoolConverter" />
-
-			<!-- Converters -->
-			<uc:FromNullableBoolToDefaultValueConverter x:Key="FavoritesPathConverter"
-														NullOrFalseValue="{StaticResource Icon_Favorite_Empty}"
-														TrueValue="{StaticResource Icon_Favorite_Full}" />
-
-			<converters:FromBoolToBrushConverter x:Key="TabActiveColorForeground"
-												 TrueValue="{ThemeResource AccentFillColorDefaultBrush}"
-												 NullOrFalseValue="{ThemeResource TextFillColorPrimaryBrush}" />
-
+			
 			<!-- Styles -->
 			<Style x:Key="BaseTitleGridContainerStyle"
 				   TargetType="Grid">
