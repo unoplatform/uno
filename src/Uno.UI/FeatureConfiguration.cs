@@ -397,6 +397,18 @@ namespace Uno.UI
 			public static bool IsPoolingEnabled { get; set; }
 		}
 
+		public static class Frame
+		{
+			/// <summary>
+			/// On non-Skia targets, Frame pools page instances to improve performance by default.
+			/// To follow the WinUI behavior, set this to true. Skia uses WinUI behavior by default.
+			/// </summary>
+			public static bool UseWinUIBehavior { get; set; }
+#if __SKIA__
+				= true;
+#endif
+		}
+
 		public static class PointerRoutedEventArgs
 		{
 #if __ANDROID__
@@ -453,7 +465,7 @@ namespace Uno.UI
 			{
 				if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_Frame_Available)
 				{
-					SetUWPDefaultStylesOverride<Frame>(useUWPDefaultStyle: false);
+					SetUWPDefaultStylesOverride<Microsoft.UI.Xaml.Controls.Frame>(useUWPDefaultStyle: false);
 				}
 
 				if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_CommandBar_Available)

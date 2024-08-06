@@ -105,7 +105,28 @@ public partial class Page : UserControl
 
 	#endregion
 
-	public NavigationCacheMode NavigationCacheMode { get; set; }
+	/// <summary>
+	/// Gets or sets the navigation mode that indicates whether this Page is cached,
+	/// and the period of time that the cache entry should persist.
+	/// </summary>
+	/// <remarks>
+	/// To enable a page to be cached, set NavigationCacheMode to either Enabled or Required.
+	/// The difference in behavior is that Enabled might not be cached if the frame's cache
+	/// size limit (CacheSize) is exceeded, whereas Required always generates an entry
+	/// no matter the size limit.
+	/// </remarks>
+	public NavigationCacheMode NavigationCacheMode
+	{
+		get => (NavigationCacheMode)GetValue(NavigationCacheModeProperty);
+		set => SetValue(NavigationCacheModeProperty, value);
+	}
+
+	internal static DependencyProperty NavigationCacheModeProperty { get; } =
+		DependencyProperty.Register(
+			nameof(NavigationCacheMode),
+			typeof(NavigationCacheMode),
+			typeof(Page),
+			new FrameworkPropertyMetadata(NavigationCacheMode.Disabled));
 
 	protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 	{
