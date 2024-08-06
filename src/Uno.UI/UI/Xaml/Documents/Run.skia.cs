@@ -36,10 +36,16 @@ namespace Microsoft.UI.Xaml.Documents
 
 		private SegmentInfo GetSegmentStartingFrom(int i, ReadOnlySpan<char> text)
 		{
+			var fontInfo = FontInfo;
+
+			if (i < text.Length && text[i] == '\t')
+			{
+				return (LeadingSpaces: 0, TrailingSpaces: 0, LineBreakLength: 0, Typeface: fontInfo.SKFont.Typeface, NextStartingIndex: i + 1);
+			}
+
 			int leadingSpaces = 0;
 			int trailingSpaces = 0;
 			int lineBreakLength = 0;
-			var fontInfo = FontInfo;
 			SKTypeface? segmentTypeface = null;
 
 			// Count leading spaces
@@ -67,26 +73,7 @@ namespace Microsoft.UI.Xaml.Documents
 				// Also, we don't consider tabs "spaces" since they don't get the general space treatment.
 				if (text[i] == '\t')
 				{
-					i++;
-					break;
-				}
-
-				if (i + 1 < text.Length && text[i + 1] == '\t')
-				{
-					if (char.IsWhiteSpace(text[i]))
-					{
-						if (segmentTypeface is not null && segmentTypeface != fontInfo.SKFont.Typeface)
-						{
-							// Don't include the trailing space in the current segment if it doesn't use the originally specified font.
-							// The reasons are the same as explained for leading spaces in the beginning of this method.
-							break;
-						}
-
-						trailingSpaces++;
-					}
-
-					i++;
-					break;
+					return (leadingSpaces, trailingSpaces, lineBreakLength, segmentTypeface, i);
 				}
 
 				if (Unicode.HasWordBreakOpportunityAfter(text, i) || (i + 1 < text.Length && Unicode.HasWordBreakOpportunityBefore(text, i + 1)))
