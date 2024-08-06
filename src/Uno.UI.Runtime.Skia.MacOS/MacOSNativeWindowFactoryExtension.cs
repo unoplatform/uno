@@ -20,6 +20,6 @@ internal class MacOSNativeWindowFactoryExtension : INativeWindowFactoryExtension
 	public INativeWindowWrapper CreateWindow(Window window, XamlRoot xamlRoot)
 	{
 		var native = new MacOSWindowNative(window, xamlRoot, out var initialSize);
-		return new MacOSWindowWrapper(native, xamlRoot, initialSize);
+		return new MacOSWindowWrapper(native, window, xamlRoot, initialSize);
 	}
 }

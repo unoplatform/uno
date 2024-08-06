@@ -9,6 +9,7 @@ using Uno.Disposables;
 using Uno.UI.Extensions;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation;
+using Windows.Graphics;
 using Windows.Graphics.Display;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
@@ -50,7 +51,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	internal int SystemUiVisibility { get; set; }
 
-	internal void OnNativeVisibilityChanged(bool visible) => Visible = visible;
+	internal void OnNativeVisibilityChanged(bool visible) => IsVisible = visible;
 
 	internal void OnActivityCreated() => AddPreDrawListener();
 
@@ -75,6 +76,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 		Bounds = new Rect(default, windowSize);
 		VisibleBounds = visibleBounds;
+		Size = windowSize.ToSizeInt32();
 
 		if (_previousTrueVisibleBounds != trueVisibleBounds)
 		{
@@ -251,6 +253,6 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		{
 		}
 
-		public bool OnPreDraw() => _windowWrapper.Visible;
+		public bool OnPreDraw() => _windowWrapper.IsVisible;
 	}
 }

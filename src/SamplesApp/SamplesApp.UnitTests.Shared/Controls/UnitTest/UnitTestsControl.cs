@@ -112,6 +112,11 @@ namespace Uno.UI.Samples.Tests
 		{
 			Private.Infrastructure.TestServices.WindowHelper.XamlRoot = XamlRoot;
 
+			if (Private.Infrastructure.TestServices.WindowHelper.XamlRoot is null)
+			{
+				throw new InvalidOperationException("XamlRoot should not be null after Loaded");
+			}
+
 			Private.Infrastructure.TestServices.WindowHelper.IsXamlIsland =
 #if HAS_UNO
 				XamlRoot.HostWindow is null;
