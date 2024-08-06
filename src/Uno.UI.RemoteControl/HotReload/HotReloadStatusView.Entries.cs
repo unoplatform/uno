@@ -24,13 +24,13 @@ internal record DevServerEntry() : HotReloadLogEntry(EntrySource.DevServer, -1, 
 		var (iconState, desc) = (oldStatus, newStatus) switch
 		{
 			(_, { State: ConnectionState.NoServer }) => (EntryIcon.Error, "No endpoint found"),
-			(_, { State: ConnectionState.Connecting }) => (EntryIcon.Loading, "Connecting..."),
-			({ State: not ConnectionState.ConnectionTimeout }, { State: ConnectionState.ConnectionTimeout }) => (EntryIcon.Error, "Timeout"),
-			({ State: not ConnectionState.ConnectionFailed }, { State: ConnectionState.ConnectionFailed }) => (EntryIcon.Error, "Connection error"),
+			(not null, { State: ConnectionState.Connecting }) => (EntryIcon.Loading, "Connecting..."),
+			(null or { State: not ConnectionState.ConnectionTimeout }, { State: ConnectionState.ConnectionTimeout }) => (EntryIcon.Error, "Timeout"),
+			(null or { State: not ConnectionState.ConnectionFailed }, { State: ConnectionState.ConnectionFailed }) => (EntryIcon.Error, "Connection error"),
 
-			({ IsVersionValid: not false }, { IsVersionValid: false }) => (EntryIcon.Warning, "Version mismatch"),
-			({ InvalidFrames.Count: 0 }, { InvalidFrames.Count: > 0 }) => (EntryIcon.Warning, "Unknown messages"),
-			({ MissingRequiredProcessors.IsEmpty: true }, { MissingRequiredProcessors.IsEmpty: false }) => (EntryIcon.Warning, "Processors missing"),
+			(null or { IsVersionValid: not false }, { IsVersionValid: false }) => (EntryIcon.Warning, "Version mismatch"),
+			(null or { InvalidFrames.Count: 0 }, { InvalidFrames.Count: > 0 }) => (EntryIcon.Warning, "Unknown messages"),
+			(null or { MissingRequiredProcessors.IsEmpty: true }, { MissingRequiredProcessors.IsEmpty: false }) => (EntryIcon.Warning, "Processors missing"),
 
 			({ KeepAlive.State: KeepAliveState.Idle or KeepAliveState.Ok }, { KeepAlive.State: KeepAliveState.Late }) => (EntryIcon.Error, "Connection lost (>1000ms)"),
 			({ KeepAlive.State: KeepAliveState.Idle or KeepAliveState.Ok }, { KeepAlive.State: KeepAliveState.Lost }) => (EntryIcon.Error, "Connection lost (>1s)"),
@@ -139,14 +139,14 @@ public enum EntrySource
 public enum EntryIcon
 {
 	// Kind
-	Loading = 0x1,
-	Success = 0x2,
-	Warning = 0x3,
-	Error = 0x4,
+	Loading = 1 << 0,
+	Success = 1 << 1,
+	Warning = 1 << 2,
+	Error = 1 << 3,
 
 	// Source
-	Connection = 0x1 << 8,
-	HotReload = 0x2 << 8,
+	Connection = 1 << 8,
+	HotReload = 2 << 8,
 }
 
 

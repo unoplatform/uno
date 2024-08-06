@@ -232,6 +232,8 @@ public partial class RemoteControlClient : IRemoteControlClient
 				{
 					if (TryParse(srv.endpoint, srv.port, isHttps, out var serverUri))
 					{
+						// Note: If we have a preferred endpoint (last known to be successful), we delay a bit the connection to other endpoints.
+						//		 This is to reduce the number of (task cancelled / socket) exceptions at startup by giving a chance to the preferred endpoint to succeed first.
 						var cts = new CancellationTokenSource();
 						var delay = preferred is null || preferred.Equals(srv.endpoint, StringComparison.OrdinalIgnoreCase) ? 0 : 1000;
 						var task = Connect(serverUri, delay, cts.Token);
@@ -266,13 +268,13 @@ public partial class RemoteControlClient : IRemoteControlClient
 					return null;
 				}
 
-				// Remove the completed task from the pending list, no matter its completion status
 				var (_, endpoint, _) = pending[task];
+
+				// Remove the completed task from the pending list, no matter its completion status
 				pending.Remove(task);
 
 				// If the connection is successful, break the loop
-				if (task.IsCompleted
-					&& ((Task<Connection?>)task).Result is { Socket: not null } successfulConnection)
+				if (task is Task<Connection?> { IsCompleted: true, Result: { Socket: not null } successfulConnection })
 				{
 					ApplicationData.Current.LocalSettings.Values[lastEndpointKey] = endpoint;
 
