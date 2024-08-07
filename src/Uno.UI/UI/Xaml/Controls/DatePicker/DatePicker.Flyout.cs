@@ -88,7 +88,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			_lazyFlyout = new Lazy<DatePickerFlyout>(CreateFlyout);
-#else
+#elif __SKIA__
 			if (UseNativeStyle && ApiExtensibility.CreateInstance<ISkiaNativeDatePickerProviderExtension>(null, out var instance))
 			{
 				_lazyFlyout = new Lazy<DatePickerFlyout>(() =>
@@ -103,6 +103,8 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				_lazyFlyout = new Lazy<DatePickerFlyout>(CreateManagedDatePickerFlyout);
 			}
+#else
+			_lazyFlyout = new Lazy<DatePickerFlyout>(CreateManagedDatePickerFlyout);
 #endif
 
 			void OnPicked(DatePickerFlyout snd, DatePickedEventArgs evt)
