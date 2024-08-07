@@ -46,6 +46,7 @@ public partial class EntryPoint : IDisposable
 	private Action<string>? _errorAction;
 	private int _msBuildLogLevel;
 	private System.Diagnostics.Process? _process;
+	private SemaphoreSlim _processGate = new(1);
 
 	private int _remoteControlServerPort;
 	private string? _remoteControlConfigCookie;
@@ -215,31 +216,7 @@ public partial class EntryPoint : IDisposable
 	{
 		try
 		{
-<<<<<<< HEAD
-			StartServer();
-			var portString = RemoteControlServerPort.ToString(CultureInfo.InvariantCulture);
-			foreach (var p in await _dte.GetProjectsAsync())
-			{
-				var filename = string.Empty;
-				try
-				{
-					filename = p.FileName;
-				}
-				catch (Exception ex)
-				{
-					_debugAction?.Invoke($"Exception on retrieving {p.UniqueName} details. Err: {ex}.");
-					_warningAction?.Invoke($"Cannot read {p.UniqueName} project details (It may be unloaded).");
-				}
-				if (string.IsNullOrWhiteSpace(filename) == false
-					&& GetMsbuildProject(filename) is Microsoft.Build.Evaluation.Project msbProject
-					&& IsApplication(msbProject))
-				{
-					SetGlobalProperty(filename, RemoteControlServerPortProperty, portString);
-				}
-			}
-=======
 			await EnsureServerAsync();
->>>>>>> 05606517e9 (fix(devServer): Make sure the dev-server is always active and project is rebuilt if port change)
 		}
 		catch (Exception e)
 		{
@@ -247,14 +224,6 @@ public partial class EntryPoint : IDisposable
 		}
 	}
 
-<<<<<<< HEAD
-	private void BuildEvents_OnBuildDone(vsBuildScope Scope, vsBuildAction Action)
-	{
-		StartServer();
-	}
-
-=======
->>>>>>> 05606517e9 (fix(devServer): Make sure the dev-server is always active and project is rebuilt if port change)
 	private void SolutionEvents_BeforeClosing()
 	{
 		// Detach event handler to avoid this being called multiple times
@@ -306,18 +275,6 @@ public partial class EntryPoint : IDisposable
 		throw new InvalidOperationException($"Unable to detect current dotnet version (\"dotnet --version\" returned \"{result.output}\")");
 	}
 
-<<<<<<< HEAD
-	private void StartServer()
-	{
-		if (_process?.HasExited ?? true)
-		{
-			RemoteControlServerPort = GetTcpPort();
-
-			var version = GetDotnetMajorVersion();
-			if (version < 7)
-			{
-				throw new InvalidOperationException($"Unsupported dotnet version ({version}) detected");
-=======
 	private async Task EnsureServerAsync()
 	{
 		_debugAction?.Invoke($"Starting server (tid:{Environment.CurrentManagedThreadId})");
@@ -407,46 +364,9 @@ public partial class EntryPoint : IDisposable
 						SetGlobalProperty(filename, RemoteControlServerPortProperty, portString);
 					}
 				}
->>>>>>> 05606517e9 (fix(devServer): Make sure the dev-server is always active and project is rebuilt if port change)
 			}
-			var runtimeVersionPath = $"net{version}.0";
-
-			var pipeGuid = Guid.NewGuid();
-
-			var hostBinPath = Path.Combine(_toolsPath, "host", runtimeVersionPath, "Uno.UI.RemoteControl.Host.dll");
-			var arguments = $"\"{hostBinPath}\" --httpPort {RemoteControlServerPort} --ppid {System.Diagnostics.Process.GetCurrentProcess().Id} --ideChannel \"{pipeGuid}\"";
-			var pi = new ProcessStartInfo("dotnet", arguments)
+			else
 			{
-<<<<<<< HEAD
-				UseShellExecute = false,
-				CreateNoWindow = true,
-				WindowStyle = ProcessWindowStyle.Hidden,
-				WorkingDirectory = Path.Combine(_toolsPath, "host"),
-
-				// redirect the output
-				RedirectStandardOutput = true,
-				RedirectStandardError = true
-			};
-
-			_process = new System.Diagnostics.Process();
-
-			// hookup the event handlers to capture the data that is received
-			_process.OutputDataReceived += (sender, args) => _debugAction?.Invoke(args.Data);
-			_process.ErrorDataReceived += (sender, args) => _errorAction?.Invoke(args.Data);
-
-			_process.StartInfo = pi;
-			_process.Start();
-
-			// start our event pumps
-			_process.BeginOutputReadLine();
-			_process.BeginErrorReadLine();
-
-			_ideChannelClient = new IdeChannelClient(pipeGuid, new Logger(this));
-			_ideChannelClient.ForceHotReloadRequested += OnForceHotReloadRequestedAsync;
-			_ideChannelClient.ConnectToHost();
-
-			_ = _globalPropertiesChanged();
-=======
 				_process = null;
 				_remoteControlServerPort = 0;
 			}
@@ -458,7 +378,6 @@ public partial class EntryPoint : IDisposable
 		finally
 		{
 			_processGate.Release();
->>>>>>> 05606517e9 (fix(devServer): Make sure the dev-server is always active and project is rebuilt if port change)
 		}
 
 		async Task Restart()
