@@ -31,16 +31,7 @@
 			<x:Double x:Key="TitleContainerHeight">45</x:Double>
 
 			<uc:FromNullableBoolToReverseBoolConverter x:Key="reverseBoolConverter" />
-
-			<!-- Converters -->
-			<uc:FromNullableBoolToDefaultValueConverter x:Key="FavoritesPathConverter"
-														NullOrFalseValue="{StaticResource Icon_Favorite_Empty}"
-														TrueValue="{StaticResource Icon_Favorite_Full}" />
-
-			<converters:FromBoolToBrushConverter x:Key="TabActiveColorForeground"
-												 TrueValue="{StaticResource Color06Brush}"
-												 NullOrFalseValue="{StaticResource Color07Brush}" />
-
+			
 			<!-- Styles -->
 			<Style x:Key="BaseTitleGridContainerStyle"
 				   TargetType="Grid">
@@ -97,7 +88,7 @@
 				<Border Style="{StaticResource TemplateContainerStyle}">
 					<u:StarStackPanel Orientation="Horizontal"
 									  Sizes="*,Auto">
-						<TextBlock Style="{StaticResource Typo02}"
+						<TextBlock Style="{StaticResource Typo03}"
 								   VerticalAlignment="Center"
 								   TextWrapping="NoWrap">
 							<Run Text="{Binding Category}" /> (<Run Text="{Binding Count}" />)
@@ -115,7 +106,7 @@
 					<u:StarStackPanel Orientation="Horizontal"
 									  Sizes="*,Auto,Auto">
 						<TextBlock Text="{Binding ControlName}"
-								   Style="{StaticResource Typo02}"
+								   Style="{StaticResource Typo03}"
 								   TextWrapping="NoWrap"
 								   VerticalAlignment="Center" />
 
@@ -209,16 +200,11 @@
 					</Grid.ColumnDefinitions>
 
 					<Button Style="{StaticResource IconButtonStyle}"
+							Margin="8,0,0,0"
 							HorizontalContentAlignment="Left"
 							Command="{Binding ShowPreviousSectionCommand}">
 						<StackPanel Orientation="Horizontal">
-							<u:PathControl Style="{StaticResource Icon_Back_Chevron}"
-										   Margin="5,0"
-										   HorizontalContentAlignment="Left"
-										   VerticalContentAlignment="Center" />
-							<TextBlock Text="Back"
-									   Style="{StaticResource Typo04}"
-									   VerticalAlignment="Center" />
+							<FontIcon Glyph="&#xE72B;" FontSize="14" Foreground="{ThemeResource AccentFillColorDefaultBrush}" />
 						</StackPanel>
 					</Button>
 
@@ -293,7 +279,7 @@
 					
 					<!-- Playground button -->
 					<Button Style="{StaticResource IconButtonStyle}"
-							Foreground="{StaticResource Color06Brush}"
+							Foreground="{ThemeResource AccentFillColorDefaultBrush}"
 							Grid.Column="1"
 							VerticalAlignment="Center"
 							HorizontalAlignment="Right"
@@ -310,7 +296,7 @@
 						Text="Library" />
 
 					<Button Style="{StaticResource IconButtonStyle}"
-							Foreground="{StaticResource Color06Brush}"
+							Foreground="{ThemeResource AccentFillColorDefaultBrush}"
 							Grid.Column="3"
 							VerticalAlignment="Center"
 							HorizontalAlignment="Right"
@@ -405,67 +391,55 @@
 							because path foreground doesn't change through visual states.-->
 						<RadioButton GroupName="SelectedSectionPhone"
 									 Style="{StaticResource SampleChooserNavRadioButtonStyle}"
-									 Foreground="{Binding CategoriesSelected, Converter={StaticResource TabActiveColorForeground}}"
 									 IsChecked="{Binding CategoriesSelected, Mode=TwoWay}"
 									 Command="{Binding ShowNewSectionCommand}"
 									 CommandParameter="Library">
-							<Grid>
-								<u:PathControl Style="{StaticResource Icon_Section_Library}"
-											   VerticalAlignment="Top"
-											   Margin="{StaticResource NavIconMargin}" />
+							<StackPanel VerticalAlignment="Center" Orientation="Vertical">
+								<FontIcon Glyph="&#xE8F1;" />
 								<TextBlock Style="{StaticResource Typo06}"
 										   VerticalAlignment="Bottom"
-										   Text="LIBRARY" />
-							</Grid>
+										   Text="Library" />
+							</StackPanel>
 						</RadioButton>
 
 						<RadioButton GroupName="SelectedSectionPhone"
 									 Style="{StaticResource SampleChooserNavRadioButtonStyle}"
-									 Foreground="{Binding FavoritesSelected, Converter={StaticResource TabActiveColorForeground}}"
 									 IsChecked="{Binding FavoritesSelected, Mode=TwoWay}"
 									 Command="{Binding ShowNewSectionCommand}"
 									 CommandParameter="Favorites">
-							<Grid>
-								<u:PathControl Style="{StaticResource Icon_Section_Favorites}"
-											   VerticalAlignment="Top"
-											   Margin="{StaticResource NavIconMargin}" />
+							<StackPanel VerticalAlignment="Center" Orientation="Vertical">
+								<FontIcon Glyph="&#xE734;" />
 								<TextBlock Style="{StaticResource Typo06}"
 										   VerticalAlignment="Bottom"
-										   Text="FAVS" />
-							</Grid>
+										   Text="Favorites" />
+							</StackPanel>
 						</RadioButton>
 
 						<RadioButton GroupName="SelectedSectionPhone"
 									 Style="{StaticResource SampleChooserNavRadioButtonStyle}"
-									 Foreground="{Binding RecentsSelected, Converter={StaticResource TabActiveColorForeground}}"
 									 IsChecked="{Binding RecentsSelected, Mode=TwoWay}"
 									 Command="{Binding ShowNewSectionCommand}"
 									 CommandParameter="Recents">
-							<Grid>
-								<u:PathControl Style="{StaticResource Icon_Section_Recents}"
-											   VerticalAlignment="Top"
-											   Margin="{StaticResource NavIconMargin}" />
+							<StackPanel VerticalAlignment="Center" Orientation="Vertical">
+								<FontIcon Glyph="&#xE823;" />
 								<TextBlock Style="{StaticResource Typo06}"
 										   VerticalAlignment="Bottom"
-										   Text="RECENTS" />
-							</Grid>
+										   Text="Recents" />
+							</StackPanel>
 						</RadioButton>
 
 						<RadioButton GroupName="SelectedSectionPhone"
 									 Style="{StaticResource SampleChooserNavRadioButtonStyle}"
 									 VerticalContentAlignment="Stretch"
-									 Foreground="{Binding SearchSelected, Converter={StaticResource TabActiveColorForeground}}"
 									 IsChecked="{Binding SearchSelected, Mode=TwoWay}"
 									 Command="{Binding ShowNewSectionCommand}"
 									 CommandParameter="Search">
-							<Grid VerticalAlignment="Stretch">
-								<u:PathControl Style="{StaticResource Icon_Section_Search}"
-											   VerticalAlignment="Top"
-											   Margin="{StaticResource NavIconMargin}" />
+							<StackPanel VerticalAlignment="Center" Orientation="Vertical">
+								<FontIcon Glyph="&#xE721;" />
 								<TextBlock Style="{StaticResource Typo06}"
 										   VerticalAlignment="Bottom"
-										   Text="SEARCH" />
-							</Grid>
+										   Text="Search" />
+							</StackPanel>
 						</RadioButton>
 					</u:StarStackPanel>
 				</Border>
@@ -480,7 +454,7 @@
 					<RowDefinition Height="Auto" />
 				</Grid.RowDefinitions>
 				<!-- CONTENT -->
-				<Grid Style="{StaticResource BaseTitleGridContainerStyle}">
+				<Grid Style="{StaticResource BaseTitleGridContainerStyle}" ColumnSpacing="4">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="50" />
 						<ColumnDefinition Width="*" />
@@ -521,7 +495,7 @@
 							VerticalAlignment="Center"
 							VerticalContentAlignment="Center"
 							HorizontalContentAlignment="Center"
-							Foreground="{StaticResource Color06Brush}"
+							Foreground="{ThemeResource AccentFillColorDefaultBrush}"
 							Visibility="{Binding IsDebug}">
 						<Button.Content>
 							<SymbolIcon Symbol="Help" />
@@ -538,10 +512,7 @@
 					        Grid.Column="3"
 					        Command="{Binding LoadPreviousTestCommand}"
 					        CommandParameter="{Binding CurrentSelectedSample}">
-						<u:PathControl Style="{StaticResource Icon_Previous}"
-						               VerticalContentAlignment="Center"
-						               HorizontalContentAlignment="Center"
-						               Margin="0,4,10,0" />
+						<FontIcon Glyph="&#xE76B;" Foreground="{ThemeResource AccentFillColorDefaultBrush}" />
 					</Button>
 
 					<!-- Reload Button -->
@@ -549,10 +520,7 @@
 					        Grid.Column="4"
 					        Command="{Binding ReloadCurrentTestCommand}"
 					        CommandParameter="{Binding CurrentSelectedSample}">
-						<u:PathControl Style="{StaticResource Icon_Reload}"
-						               VerticalContentAlignment="Center"
-						               HorizontalContentAlignment="Center"
-						               Margin="0,4,10,0" />
+						<FontIcon Glyph="&#xE72C;" Foreground="{ThemeResource AccentFillColorDefaultBrush}" />
 					</Button>
 
 					<!-- Next Button -->
@@ -560,10 +528,7 @@
 					        Grid.Column="5"
 					        Command="{Binding LoadNextTestCommand}"
 					        CommandParameter="{Binding CurrentSelectedSample}">
-						<u:PathControl Style="{StaticResource Icon_Next}"
-						               VerticalContentAlignment="Center"
-						               HorizontalContentAlignment="Center"
-						               Margin="0,4,10,0" />
+						<FontIcon Glyph="&#xE76C;" Foreground="{ThemeResource AccentFillColorDefaultBrush}" />
 					</Button>
 
 					<!-- Favorite Button -->
@@ -571,10 +536,11 @@
 							Grid.Column="6"
 							Command="{Binding ToggleFavoriteCommand}"
 							CommandParameter="{Binding CurrentSelectedSample}">
-						<u:PathControl Style="{Binding CurrentSelectedSample.IsFavorite, Converter={StaticResource FavoritesPathConverter}, TargetNullValue={StaticResource Icon_Favorite_Empty}, FallbackValue={StaticResource Icon_Favorite_Empty}}"
-									   VerticalContentAlignment="Center"
-									   HorizontalContentAlignment="Center"
-									   Margin="10,0" />
+						<Grid>
+							<FontIcon Glyph="&#xE734;" Visibility="{Binding CurrentSelectedSample.IsFavorite, Mode=OneWay, Converter={StaticResource TrueToCollapsed}}" />
+							<FontIcon Foreground="{ThemeResource AccentFillColorDefaultBrush}" Glyph="&#xE735;" Visibility="{Binding CurrentSelectedSample.IsFavorite, Mode=OneWay, Converter={StaticResource TrueToVisible}}" />
+						</Grid>
+						
 					</Button>
 
 					<!-- Dark theme check box -->
@@ -585,7 +551,7 @@
 						<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xEC46;" />
 					</CheckBox>
 
-					<Button Grid.Column="10" Margin="8,0">
+					<Button Grid.Column="10" Margin="0,0,8,0">
 						<SymbolIcon Symbol="More" />
 						<Button.Flyout>
 							<MenuFlyout>

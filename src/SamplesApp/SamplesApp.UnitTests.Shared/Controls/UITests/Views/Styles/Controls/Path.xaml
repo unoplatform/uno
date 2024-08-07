@@ -25,7 +25,7 @@
 		   TargetType="u:PathControl"
 		   BasedOn="{StaticResource DefaultPathControlStyle}">
 		<Setter Property="Foreground"
-				Value="{StaticResource Color06Brush}" />
+				Value="{ThemeResource AccentFillColorDefaultBrush}" />
 		<Setter Property="Width"
 				Value="5" />
 		<Setter Property="Template">
@@ -45,7 +45,7 @@
 	       TargetType="u:PathControl"
 	       BasedOn="{StaticResource DefaultPathControlStyle}">
 		<Setter Property="Foreground"
-		        Value="{StaticResource Color06Brush}" />
+		        Value="{ThemeResource AccentFillColorDefaultBrush}" />
 		<Setter Property="Height"
 		        Value="16" />
 		<Setter Property="VerticalAlignment"
@@ -68,7 +68,7 @@
 	       TargetType="u:PathControl"
 	       BasedOn="{StaticResource DefaultPathControlStyle}">
 		<Setter Property="Foreground"
-		        Value="{StaticResource Color06Brush}" />
+		        Value="{ThemeResource AccentFillColorDefaultBrush}" />
 		<Setter Property="Height"
 		        Value="16" />
 		<Setter Property="VerticalAlignment"
@@ -91,7 +91,7 @@
 	       TargetType="u:PathControl"
 	       BasedOn="{StaticResource DefaultPathControlStyle}">
 		<Setter Property="Foreground"
-		        Value="{StaticResource Color06Brush}" />
+		        Value="{ThemeResource AccentFillColorDefaultBrush}" />
 		<Setter Property="Height"
 		        Value="16" />
 		<Setter Property="VerticalAlignment"
@@ -158,7 +158,7 @@
 		   TargetType="u:PathControl"
 		   BasedOn="{StaticResource DefaultPathControlStyle}">
 		<Setter Property="Foreground"
-				Value="{StaticResource Color06Brush}" />
+				Value="{ThemeResource AccentFillColorDefaultBrush}" />
 		<Setter Property="Width"
 				Value="20" />
 		<Setter Property="VerticalAlignment"
@@ -180,7 +180,7 @@
 		   TargetType="u:PathControl"
 		   BasedOn="{StaticResource DefaultPathControlStyle}">
 		<Setter Property="Foreground"
-				Value="{StaticResource Color06Brush}" />
+				Value="{ThemeResource AccentFillColorDefaultBrush}" />
 		<Setter Property="Height"
 				Value="20" />
 		<Setter Property="VerticalAlignment"
@@ -202,7 +202,7 @@
 		   TargetType="u:PathControl"
 		   BasedOn="{StaticResource DefaultPathControlStyle}">
 		<Setter Property="Foreground"
-				Value="{StaticResource Color06Brush}" />
+				Value="{ThemeResource AccentFillColorDefaultBrush}" />
 		<Setter Property="Height"
 				Value="20" />
 		<Setter Property="VerticalAlignment"
@@ -229,7 +229,7 @@
 		   TargetType="u:PathControl"
 		   BasedOn="{StaticResource DefaultPathControlStyle}">
 		<Setter Property="Foreground"
-				Value="{StaticResource Color06Brush}" />
+				Value="{ThemeResource AccentFillColorDefaultBrush}" />
 		<Setter Property="Height"
 				Value="16" />
 		<Setter Property="VerticalAlignment"
