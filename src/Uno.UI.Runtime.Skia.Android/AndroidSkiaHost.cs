@@ -37,6 +37,7 @@ public class AndroidSkiaHost : ISkiaApplicationHost
 			ApiExtensibility.Register<TextBoxView>(typeof(IOverlayTextBoxViewExtension), o => new AndroidInvisibleTextBoxViewExtension(o));
 			ApiExtensibility.Register<ContentPresenter>(typeof(ContentPresenter.INativeElementHostingExtension), o => new AndroidSkiaNativeElementHostingExtension(o));
 			ApiExtensibility.Register<CoreWebView2>(typeof(INativeWebViewProvider), o => new AndroidNativeWebViewProvider(o));
+			ApiExtensibility.Register(typeof(ISkiaNativeDatePickerProviderExtension), _ => new AndroidSkiaDatePickerProvider());
 
 			Application.Start(_ => _appBuilder());
 		}

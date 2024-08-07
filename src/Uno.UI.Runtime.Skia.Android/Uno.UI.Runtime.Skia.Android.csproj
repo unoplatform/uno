@@ -32,6 +32,7 @@
 
 	<ItemGroup>
 		<None Include="..\Common\uno.png" Pack="true" PackagePath="\" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\DatePicker\NativeDatePickerFlyout.Android.cs" />
 		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\Android\NativeWebViewWrapper.Android.cs" />
 		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\Android\InternalWebClient.Android.cs" />
 		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\Android\InternalWebChromeClient.Android.cs" />

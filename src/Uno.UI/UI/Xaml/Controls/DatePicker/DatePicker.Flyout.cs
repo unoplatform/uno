@@ -1,16 +1,13 @@
 ﻿using System;
 using Uno;
+using Uno.Foundation.Extensibility;
 using Uno.UI;
 
 namespace Microsoft.UI.Xaml.Controls
 {
 	partial class DatePicker
 	{
-#if __IOS__ || __ANDROID__
-		private const bool DEFAULT_NATIVE_STYLE = true;
-#else
-		private const bool DEFAULT_NATIVE_STYLE = false;
-#endif
+		private static bool DEFAULT_NATIVE_STYLE = OperatingSystem.IsAndroid() || OperatingSystem.IsIOS();
 
 		[UnoOnly]
 		public static DependencyProperty UseNativeStyleProperty { get; } = DependencyProperty.Register(
@@ -92,7 +89,20 @@ namespace Microsoft.UI.Xaml.Controls
 
 			_lazyFlyout = new Lazy<DatePickerFlyout>(CreateFlyout);
 #else
-			_lazyFlyout = new Lazy<DatePickerFlyout>(CreateManagedDatePickerFlyout);
+			if (UseNativeStyle && ApiExtensibility.CreateInstance<ISkiaNativeDatePickerProviderExtension>(null, out var instance))
+			{
+				_lazyFlyout = new Lazy<DatePickerFlyout>(() =>
+				{
+					var f = instance.CreateNativeDatePickerFlyout();
+					f.DatePicked += OnPicked;
+
+					return f;
+				});
+			}
+			else
+			{
+				_lazyFlyout = new Lazy<DatePickerFlyout>(CreateManagedDatePickerFlyout);
+			}
 #endif
 
 			void OnPicked(DatePickerFlyout snd, DatePickedEventArgs evt)
