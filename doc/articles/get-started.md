@@ -7,47 +7,47 @@ uid: Uno.GetStarted
 1. Run <a href="https://aka.platform.uno/uno-check#install-and-run-uno-check" target="_blank">Uno.Check</a> to install all the pre-requisites
 2. Download the Uno Platform extension for your IDE:
 
-<!-- markdownlint-disable MD001 -->
+   <!-- markdownlint-disable MD001 MD009 -->
 
-<div class="row">
+   <div class="row">
 
-<!-- Visual Studio -->
-<div class="col-md-4 col-xs-12 ">
-<a href="https://aka.platform.uno/vs-extension-marketplace">
-<div class="alert alert-info alert-hover">
+   <!-- Visual Studio -->
+   <div class="col-md-4 col-xs-12 ">
+   <a href="https://aka.platform.uno/vs-extension-marketplace" target="_blank">
+   <div class="alert alert-info alert-hover">
 
-#### Visual Studio 2022
+   #### Visual Studio 2022
 
-Get the VSIX from the marketplace
-</div>
-</a>
-</div>
+   Get the VSIX from the marketplace
+   </div>
+   </a>
+   </div>
 
-<!-- Code -->
-<div class="col-md-4 col-xs-12 ">
-<a href="https://aka.platform.uno/vscode-extension-marketplace">
-<div class="alert alert-info alert-hover">
+   <!-- Code -->
+   <div class="col-md-4 col-xs-12 ">
+   <a href="https://aka.platform.uno/vscode-extension-marketplace" target="_blank">
+   <div class="alert alert-info alert-hover">
 
-#### Visual Studio Code
+   #### Visual Studio Code
 
-Install the VSIX from the marketplace
-</div>
-</a>
-</div>
+   Install the VSIX from the marketplace
+   </div>
+   </a>
+   </div>
 
-<!-- Rider -->
-<div class="col-md-4 col-xs-12 ">
-<a href="https://aka.platform.uno/rider-extension-marketplace">
-<div class="alert alert-info alert-hover">
+   <!-- Rider -->
+   <div class="col-md-4 col-xs-12 ">
+   <a href="https://aka.platform.uno/rider-extension-marketplace" target="_blank">
+   <div class="alert alert-info alert-hover">
 
-#### JetBrains Rider
+   #### JetBrains Rider
 
-Get the extension from the marketplace
-</div>
-</a>
-</div>
+   Get the extension from the marketplace
+   </div>
+   </a>
+   </div>
 
-</div> <!-- row -->
+   </div> <!-- row -->
 
 ## Get Started
 
