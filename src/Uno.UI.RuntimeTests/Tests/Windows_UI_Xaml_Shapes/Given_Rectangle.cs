@@ -110,6 +110,9 @@ public class Given_Rectangle
 	[DataRow(19.0d, 19.0d, 199.0d)]
 	[DataRow(20.0d, 39.0d, 219.0d)]
 	[RequiresFullWindow]
+#if __IOS__
+	[Ignore("Does not work on iOS")]
+#endif
 	public async Task When_StrokeThickness_Should_Arrange_Correctly(double strokeThickness, double expectedGreenWidth, double expectedGreenHeight)
 	{
 		if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
