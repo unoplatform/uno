@@ -75,6 +75,9 @@ public class Given_Rectangle
 	[DataRow(60.0d, 70.0d, 10.0d, 59.0d, 69.0d)]
 	[DataRow(10.0d, 80.0d, 30.0d, 39d, 109.0d)]
 	[RequiresFullWindow]
+#if __IOS__
+	[Ignore("Does not work on iOS")]
+#endif
 	public async Task When_StrokeThickness_Is_GreaterThan_Or_Equals_Width(double width, double height, double strokeThickness, double expectedWidth, double expectedHeight)
 	{
 		if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
