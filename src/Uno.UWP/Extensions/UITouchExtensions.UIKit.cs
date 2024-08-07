@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using UIKit;
 using Windows.Devices.Input;
 
-namespace Uno.UI.Xaml.Extensions;
+namespace Uno.UI.Extensions;
 
 internal static class UITouchExtensions
 {

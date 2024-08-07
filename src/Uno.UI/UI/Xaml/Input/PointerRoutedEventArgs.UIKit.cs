@@ -5,6 +5,7 @@ using Windows.Foundation;
 using Windows.System;
 using Foundation;
 using UIKit;
+using Uno.UI.Extensions;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
