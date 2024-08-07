@@ -574,7 +574,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				writer.Indent();
 				using (writer.BlockInvariant("if (global::System.Diagnostics.Debugger.IsAttached)"))
 				{
-					writer.AppendLineIndented("global::System.Diagnostics.Debugger.WriteLine(e.Exception);");
+					writer.AppendLineIndented("global::System.Diagnostics.Debug.WriteLine(e.Exception);");
 					writer.AppendLineIndented("#if !DISABLE_XAML_GENERATED_BREAK_ON_UNHANDLED_EXCEPTION");
 					writer.AppendLineIndented("global::System.Diagnostics.Debugger.Break();");
 					writer.AppendLineIndented("#endif");
