@@ -7745,6 +7745,26 @@
 		</Setter>
 	</not_netstdref:Style>
 
+	<skia:Style TargetType="WebView">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate>
+					<ContentPresenter x:Name="WebViewTemplateRoot" />
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</skia:Style>
+
+	<skia:Style TargetType="mux:WebView2">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate>
+					<ContentPresenter x:Name="WebViewTemplateRoot" />
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</skia:Style>
+
 	<Style x:Key="TextBlockButtonStyle" TargetType="ButtonBase">
 		<Setter Property="Background" Value="{ThemeResource HyperlinkButtonBackground}" />
 		<Setter Property="Foreground" Value="{ThemeResource HyperlinkButtonForeground}" />
