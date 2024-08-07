@@ -64,7 +64,7 @@ namespace UITests.Shared.Windows_UI_Composition
 		};
 
 		private const string vertexShaderSource = @"
-#version 450
+#version 410
 
 layout(location = 0) in vec3 pos;
 layout(location = 1) in vec3 vertex_color;
@@ -86,7 +86,7 @@ void main() {
 }";
 
 		private const string fragmentShaderSource = @"
-#version 450
+#version 410
 
 in vec3 color;
 
