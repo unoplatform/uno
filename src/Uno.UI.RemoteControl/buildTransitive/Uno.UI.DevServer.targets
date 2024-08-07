@@ -6,6 +6,10 @@
 		<UnoRuntimeEnabledPackage Include="Uno.WinUI.DevServer"  PackageBasePath="$(MSBuildThisFileDirectory)" Condition="'$(MSBuildThisFile)'=='uno.winui.devserver.targets'"  />
 	</ItemGroup>
 
+	<ItemGroup Condition="$(UnoRemoteControlConfigCookie) != ''">
+		<UpToDateCheckInput Include="$(UnoRemoteControlConfigCookie)" />
+	</ItemGroup>
+
 	<PropertyGroup>
 		<!-- Keep the inner path with '/' separator -->
 		<UnoRemoteControlProcessorsPath Condition="'$(SolutionFileName)'!='Uno.UI.sln'">$(MSBuildThisFileDirectory)../tools/rc/processors</UnoRemoteControlProcessorsPath>

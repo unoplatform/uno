@@ -26,7 +26,7 @@ public partial class RemoteControlClient
 		{
 			_owner = owner;
 #if HAS_UNO_WINUI
-			DiagnosticView.Register("Dev-server", () => new RemoteControlStatusView(owner));
+			DiagnosticView.Register("Dev-server", () => new RemoteControlStatusView(owner), DiagnosticViewRegistrationMode.OnDemand);
 #endif
 		}
 
