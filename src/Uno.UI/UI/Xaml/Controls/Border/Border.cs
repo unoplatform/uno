@@ -86,7 +86,19 @@ public partial class Border : FrameworkElement
 	public UIElement Child
 	{
 		get => (UIElement)this.GetValue(ChildProperty);
-		set => this.SetValue(ChildProperty, value);
+		set
+		{
+			// This means that setting Child to the same reference does not trigger PropertyChanged, 
+			// which is a problem, as WinUI always removes the current child and adds it again,
+			// even when dealing with the exact same reference. This also triggers measure/arrange
+			// on the child. To work around this, we force the update here.
+			if (value == this.Child)
+			{
+				SetChild(value);
+			}
+
+			this.SetValue(ChildProperty, value);
+		}
 	}
 
 	public static DependencyProperty ChildProperty { get; } =
@@ -100,26 +112,9 @@ public partial class Border : FrameworkElement
 				// disable the property-based propagation here to support the case where the Parent property is overridden to simulate
 				// a different inheritance hierarchy, as is done for some controls with native styles.
 				FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
-				(DependencyObject s, DependencyPropertyChangedEventArgs e) => ((Border)s)?.OnChildChanged((UIElement)e.OldValue, (UIElement)e.NewValue),
-				OnCoerceChild
+				(DependencyObject s, DependencyPropertyChangedEventArgs e) => ((Border)s)?.SetChild((UIElement)e.NewValue)
 			)
 		);
-
-	private static object OnCoerceChild(DependencyObject dependencyObject, object baseValue, DependencyPropertyValuePrecedences precedence)
-	{
-		// Until we do the breaking change (#8339), Child is a Dependency property in Uno Platform.
-		// This means that setting Child to the same reference does not trigger PropertyChanged, 
-		// which is a problem, as WinUI always removes the current child and adds it again,
-		// even when dealing with the exact same reference. This also triggers measure/arrange
-		// on the child. To work around this, we force the update in coerce here. 
-		var border = (Border)dependencyObject;
-		if (baseValue == border.Child)
-		{
-			border.SetChild(border.Child);
-		}
-
-		return baseValue;
-	}
 
 	private void SetChild(UIElement child)
 	{
