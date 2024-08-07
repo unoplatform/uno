@@ -564,6 +564,22 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				renderWindow.Size = requestedRenderingWindow.Size; // The renderWindow contains only position information
 				startIndex = Math.Max(0, startIndex - StartIndex);
 
+				if (Rows > 0 && Cols > 0)
+				{
+					var maxItemsInView = Rows * Cols;
+					var totalYears = _host.Owner.MaxDate.Year - _host.Owner.MinDate.Year;
+
+					if (_host is CalendarViewGeneratorDecadeViewHost && startIndex >= totalYears - maxItemsInView)
+					{
+						startIndex = totalYears - maxItemsInView;
+					}
+					else if (_host is CalendarViewGeneratorYearViewHost && startIndex >= totalYears * 12 - maxItemsInView)
+					{
+						// TODO: find a way to get number of months in calendar so we can replace magic number
+						startIndex = totalYears * 12 - maxItemsInView;
+					}
+				}
+
 				// Prepare the items generator to generate some new items (will also set which items can be recycled in this measure pass).
 				var expectedItemsCount = LastVisibleIndex - FirstVisibleIndex;
 				_cache.BeginGeneration(startIndex, startIndex + expectedItemsCount);
