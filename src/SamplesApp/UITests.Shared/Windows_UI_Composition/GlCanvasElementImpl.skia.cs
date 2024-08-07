@@ -74,13 +74,6 @@ uniform mat4 transform;
 out vec3 color;
 
 void main() {
-  mat4 M = mat4(
-    vec4(2.000000, 0.000000, 0.000000, 0.000000),
-    vec4(0.000000, 1.782013, -0.680986, -0.453991),
-    vec4(0.000000, -0.907981, -1.336510, -0.891007),
-    vec4(0.000000, 0.000000, 2.000000, 3.000000)
-  );
-
   gl_Position = transform * vec4(pos, 1.0);
   color = vertex_color;
 }";
