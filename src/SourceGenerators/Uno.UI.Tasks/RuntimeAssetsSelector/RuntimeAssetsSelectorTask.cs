@@ -106,7 +106,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 				//     Two layer mode:
 				//         - For Wasm Skia, we do nothing.
 				//         - For Android Skia and iOS Skia:
-				//             - Adjust both RuntimeCopyLocalItems and ResolvedCompileFileDefinitions such that netX.0 binaries are used instead of netX.0-android or netX.0-ios
+				//             - Adjust both RuntimeCopyLocalItems and ResolvedCompileFileDefinitions such that netX.0 binaries are used instead of netX.0-android, -ios, -maccatalyst, or -tvos
 				//                 - maybe we should prefer netX.0-desktop over netX.0, if exists.
 				//                 - we should only do that for dlls that reference Uno.UI.dll (use Mono.Cecil to detect that)
 
@@ -124,7 +124,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 				}
 
 				var isTwoLayer = !isSingleLayer && UnoUIRuntimeIdentifier == "skia";
-				if (isTwoLayer && UnoWinRTRuntimeIdentifier is not ("android" or "ios" or "webassembly"))
+				if (isTwoLayer && !IsSkiaMobileRuntimeIdentifier(UnoWinRTRuntimeIdentifier))
 				{
 					this.Log.LogError($"The combination of UnoUIRuntimeIdentifier '{UnoUIRuntimeIdentifier}' and UnoWinRTRuntimeIdentifier '{UnoWinRTRuntimeIdentifier}' is not expected");
 					return false;
@@ -272,7 +272,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 				return Path.GetFullPath(Path.Combine(unoRuntimeTfmDirectory, "webassembly", Path.GetFileName(assembly)));
 			}
 
-			if (UnoWinRTRuntimeIdentifier is not ("android" or "ios"))
+			if (!IsSkiaMobileRuntimeIdentifier(UnoWinRTRuntimeIdentifier))
 			{
 				throw new Exception($"Unexpected UnoWinRTRuntimeIdentifier '{UnoWinRTRuntimeIdentifier}'");
 			}
@@ -373,7 +373,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 						}));
 				}
 
-				if (isTwoLayer && UnoWinRTRuntimeIdentifier is "android" or "ios")
+				if (isTwoLayer && IsSkiaMobileRuntimeIdentifier(UnoWinRTRuntimeIdentifier))
 				{
 					var compileTimeAssembly = adjustedAssembly;
 					if (!isWinRTAssembly)
@@ -440,7 +440,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 			// The idea here is that we loop over ResolvedCompileFileDefinitionsInput, look for dlls from NuGet package cache,
 			// and then try to find the right dll.
 			// TODO: Do this only if the dll has a reference to Uno.UI.dll
-			if (UnoWinRTRuntimeIdentifier is "android" or "ios")
+			if (IsSkiaMobileRuntimeIdentifier(UnoWinRTRuntimeIdentifier))
 			{
 				var runtimeEnabledPackages = UnoRuntimeEnabledPackage.Select(p => p.GetMetadata("Identity")).ToImmutableHashSet(StringComparer.OrdinalIgnoreCase);
 				var nugetCacheRoot = NuGetPackageRoot.Replace('\\', '/');
@@ -466,7 +466,9 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 							{
 								var targetFramework = split[3];
 								if (targetFramework.Contains("-android") ||
-									targetFramework.Contains("-ios")) TODO MZ
+									targetFramework.Contains("-ios") ||
+									targetFramework.Contains("-maccatalyst") |
+									targetFramework.Contains("-tvos"))
 								{
 									var packageVersion = split[1];
 
@@ -530,5 +532,8 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 				}
 			}
 		}
+
+		private bool IsSkiaMobileRuntimeIdentifier(string runtimeIdentifier)
+			=> runtimeIdentifier is "android" or "ios" or "maccatalyst" or "tvos";
 	}
 }
