@@ -4,6 +4,7 @@ using Silk.NET.Core.Contexts;
 using Silk.NET.OpenGL;
 using Uno.Foundation.Extensibility;
 using Uno.UI.Runtime.Skia;
+using Boolean = Silk.NET.OpenGL.Boolean;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -120,6 +121,10 @@ public abstract partial class GLCanvasElement : FrameworkElement
 		_gl!.BindFramebuffer(GLEnum.Framebuffer, _framebuffer);
 		{
 			_gl.Viewport(new System.Drawing.Size((int)_width, (int)_height));
+
+			_gl.Enable(EnableCap.DepthTest);
+			_gl.DepthMask(true);
+
 			RenderOverride(_gl);
 
 			// Can we do without this copy?
@@ -164,17 +169,22 @@ public abstract partial class GLCanvasElement : FrameworkElement
 		private readonly int _oldFramebuffer;
 		private readonly int _oldTextureColorBuffer;
 		private readonly int _oldRbo;
+		private readonly bool _depthTestEnabled;
+		private readonly bool _depthTestMask;
 		private readonly int[] _oldViewport = new int[4];
 
 		public GLStateDisposable(GL gl)
 		{
 			_gl = gl;
+
+			_depthTestEnabled = gl.GetBoolean(GLEnum.DepthTest);
+			_depthTestMask = gl.GetBoolean(GLEnum.DepthWritemask);
+			_oldArrayBuffer = gl.GetInteger(GLEnum.ArrayBufferBinding);
+			_oldVertexArray = gl.GetInteger(GLEnum.VertexArrayBinding);
+			_oldFramebuffer = gl.GetInteger(GLEnum.FramebufferBinding);
+			_oldTextureColorBuffer = gl.GetInteger(GLEnum.TextureBinding2D);
+			_oldRbo = gl.GetInteger(GLEnum.RenderbufferBinding);
 			gl.GetInteger(GLEnum.Viewport, new Span<int>(_oldViewport));
-			gl.GetInteger(GLEnum.ArrayBufferBinding, out _oldArrayBuffer);
-			gl.GetInteger(GLEnum.VertexArrayBinding, out _oldVertexArray);
-			gl.GetInteger(GLEnum.FramebufferBinding, out _oldFramebuffer);
-			gl.GetInteger(GLEnum.TextureBinding2D, out _oldTextureColorBuffer);
-			gl.GetInteger(GLEnum.RenderbufferBinding, out _oldRbo);
 		}
 
 		public void Dispose()
@@ -185,6 +195,16 @@ public abstract partial class GLCanvasElement : FrameworkElement
 			_gl.BindTexture(GLEnum.Texture2D, (uint)_oldTextureColorBuffer);
 			_gl.BindRenderbuffer(GLEnum.Renderbuffer, (uint)_oldRbo);
 			_gl.Viewport(_oldViewport[0], _oldViewport[1], (uint)_oldViewport[2], (uint)_oldViewport[3]);
+			if (_depthTestEnabled)
+			{
+				_gl.Enable(EnableCap.DepthTest);
+			}
+			else
+			{
+				_gl.Disable(EnableCap.DepthTest);
+			}
+
+			_gl.DepthMask(_depthTestMask);
 		}
 	}
 }
