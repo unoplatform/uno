@@ -70,6 +70,7 @@
 		<CompilerVisibleProperty Include="UnoRemoteControlPort" />
 		<CompilerVisibleProperty Include="UnoRemoteControlHost" />
 		<CompilerVisibleProperty Include="UnoRemoteControlProcessorsPath" />
+		<CompilerVisibleProperty Include="UnoRemoteControlConfigCookie" />
 		<CompilerVisibleProperty Include="UnoEnCLogPath" />
 		<CompilerVisibleProperty Include="UnoDisableBindableTypeProvidersGeneration" />
 		<CompilerVisibleProperty Include="ShouldWriteErrorOnInvalidXaml" />
