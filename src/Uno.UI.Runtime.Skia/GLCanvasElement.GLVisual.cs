@@ -1,6 +1,5 @@
 using Microsoft.UI.Composition;
 using SkiaSharp;
-using Uno.UI.Composition;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -17,7 +16,10 @@ public abstract partial class GLCanvasElement
 			session.Canvas.ClipRect(new SKRect(0, 0, owner.Visual.Size.X, owner.Visual.Size.Y));
 			session.Canvas.Clear(SKColors.Transparent);
 			session.Canvas.Save();
-			owner.Render();
+			if (owner._renderDirty)
+			{
+				owner.Render();
+			}
 			using var image = SKImage.FromPixels(_pixmap);
 			// opengl coordinates go bottom-up, so we concat a matrix to flip horizontally and vertically
 			var flip = new SKMatrix(scaleX: -1, scaleY: -1, skewX: 0, skewY: 0, transX: owner.Visual.Size.X, transY: owner.Visual.Size.Y, persp0: 0, persp1: 0, persp2: 1);
