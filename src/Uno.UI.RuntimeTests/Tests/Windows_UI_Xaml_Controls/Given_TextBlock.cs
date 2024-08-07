@@ -202,6 +202,34 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_NewLine_After_Tab()
+		{
+			var SUT = new TextBlock
+			{
+				Text = "\t\r",
+				FontFamily = new FontFamily("ms-appx:///Assets/Fonts/CascadiaCode-Regular.ttf"),
+				Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red)
+			};
+
+			await UITestHelper.Load(SUT);
+
+#if __SKIA__
+			var segments = ((Run)SUT.Inlines.Single()).Segments;
+			Assert.AreEqual(2, segments.Count);
+			Assert.IsTrue(segments[0].IsTab);
+			Assert.AreEqual("\r", segments[1].Text.ToString());
+#endif
+
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			var screenshot = await UITestHelper.ScreenShot(SUT);
+			ImageAssert.DoesNotHaveColorInRectangle(screenshot, new Rectangle(0, 0, screenshot.Width, screenshot.Height), Microsoft.UI.Colors.Red, tolerance: 15);
+		}
+
+		[TestMethod]
 		public void Check_ActualWidth_After_Measure()
 		{
 			var SUT = new TextBlock { Text = "Some text" };
