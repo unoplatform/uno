@@ -32,7 +32,7 @@ public partial class Compositor
 		}
 	}
 
-	internal void DisableBackgroundTransition(BorderVisual visual)
+	internal void DeactivateBackgroundTransition(BorderVisual visual)
 	{
 		for (int i = 0; i < _backgroundTransitions.Count; i++)
 		{
@@ -54,13 +54,17 @@ public partial class Compositor
 			var transition = _backgroundTransitions[i];
 			if (transition.Visual == visual)
 			{
+				// when the background changes when already in a transition, the new transition
+				// picks up from where the preexisting transition stopped UNLESS the preexisting
+				// transition was inactive (i.e. an animation started during the transition.
+				// In that case, just reactivate the preexisting transition.
+
 				if (!transition.IsActive)
 				{
 					_backgroundTransitions[i] = transition with { IsActive = true };
 					return;
 				}
-				// when the background changes when already in a transition, the new transition
-				// picks up from where the preexisting transition stopped.
+
 				fromColor = transition.CurrentColor;
 				_backgroundTransitions.RemoveAt(i);
 				break;

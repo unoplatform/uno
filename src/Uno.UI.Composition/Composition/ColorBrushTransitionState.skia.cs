@@ -5,6 +5,7 @@ using Windows.UI;
 
 namespace Microsoft.UI.Composition;
 
+/// <param name="IsActive">If false, the transition is "disabled" and the <see cref="CurrentColor"/> of the transition won't be used.</param>
 internal readonly record struct ColorBrushTransitionState(
 	BorderVisual Visual,
 	Color FromColor,
