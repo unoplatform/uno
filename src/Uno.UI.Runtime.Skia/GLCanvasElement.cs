@@ -14,13 +14,12 @@ public abstract partial class GLCanvasElement : FrameworkElement
 
 	private readonly uint _width;
 	private readonly uint _height;
-	private readonly IntPtr _pixels;
 	private readonly GLVisual _glVisual;
 
-	private bool _firstLoad = true;
 	private bool _renderDirty = true;
 
 	private GL? _gl;
+	private IntPtr _pixels;
 	private uint _framebuffer;
 	private uint _textureColorBuffer;
 	private uint _renderBuffer;
@@ -29,22 +28,9 @@ public abstract partial class GLCanvasElement : FrameworkElement
 	{
 		_width = (uint)resolution.Width;
 		_height = (uint)resolution.Height;
-		_pixels = Marshal.AllocHGlobal((int)(_width * _height * BytesPerPixel));
 
 		_glVisual = new GLVisual(this, Visual.Compositor);
 		Visual.Children.InsertAtTop(_glVisual);
-	}
-
-	~GLCanvasElement()
-	{
-		Marshal.FreeHGlobal(_pixels);
-
-		if (_gl is { })
-		{
-			_gl.DeleteFramebuffer(_framebuffer);
-			_gl.DeleteTexture(_textureColorBuffer);
-			_gl.DeleteRenderbuffer(_renderBuffer);
-		}
 	}
 
 	protected abstract void Init(GL gl);
@@ -57,7 +43,7 @@ public abstract partial class GLCanvasElement : FrameworkElement
 		_glVisual.Compositor.InvalidateRender(_glVisual);
 	}
 
-	private unsafe protected override void OnLoaded()
+	private protected override unsafe void OnLoaded()
 	{
 		base.OnLoaded();
 
@@ -74,42 +60,40 @@ public abstract partial class GLCanvasElement : FrameworkElement
 			throw new InvalidOperationException($"Couldn't create a {nameof(GL)} object for {nameof(GLCanvasElement)}. Make sure you are running on a platform with {nameof(GLCanvasElement)} support.");
 		}
 
-		if (_firstLoad)
+		using var _ = new GLStateDisposable(_gl);
+
+		_pixels = Marshal.AllocHGlobal((int)(_width * _height * BytesPerPixel));
+		_framebuffer = _gl.GenBuffer();
+		_gl.BindFramebuffer(GLEnum.Framebuffer, _framebuffer);
 		{
-			_firstLoad = false;
-
-			using var _ = new GLStateDisposable(_gl);
-
-			_framebuffer = _gl.GenBuffer();
-			_gl.BindFramebuffer(GLEnum.Framebuffer, _framebuffer);
+			_textureColorBuffer = _gl.GenTexture();
+			_gl.BindTexture(GLEnum.Texture2D, _textureColorBuffer);
 			{
-				_textureColorBuffer = _gl.GenTexture();
-				_gl.BindTexture(GLEnum.Texture2D, _textureColorBuffer);
-				{
-					_gl.TexImage2D(GLEnum.Texture2D, 0, InternalFormat.Rgb, _width, _height, 0, GLEnum.Rgb, GLEnum.UnsignedByte, (void*)0);
-					_gl.TexParameterI(GLEnum.Texture2D, GLEnum.TextureMinFilter, (uint)GLEnum.Linear);
-					_gl.TexParameterI(GLEnum.Texture2D, GLEnum.TextureMagFilter, (uint)GLEnum.Linear);
-					_gl.FramebufferTexture2D(GLEnum.Framebuffer, FramebufferAttachment.ColorAttachment0, GLEnum.Texture2D, _textureColorBuffer, 0);
-				}
-				_gl.BindTexture(GLEnum.Texture2D, 0);
-
-				_renderBuffer = _gl.GenRenderbuffer();
-				_gl.BindRenderbuffer(GLEnum.Renderbuffer, _renderBuffer);
-				{
-					_gl.RenderbufferStorage(GLEnum.Renderbuffer, InternalFormat.Depth24Stencil8, _width, _height);
-					_gl.FramebufferRenderbuffer(GLEnum.Framebuffer, GLEnum.DepthStencilAttachment, GLEnum.Renderbuffer, _renderBuffer);
-
-					Init(_gl);
-				}
-				_gl.BindRenderbuffer(GLEnum.Renderbuffer, 0);
-
-				if (_gl.CheckFramebufferStatus(GLEnum.Framebuffer) != GLEnum.FramebufferComplete)
-				{
-					throw new InvalidOperationException("Offscreen framebuffer is not complete");
-				}
+				_gl.TexImage2D(GLEnum.Texture2D, 0, InternalFormat.Rgb, _width, _height, 0, GLEnum.Rgb, GLEnum.UnsignedByte, (void*)0);
+				_gl.TexParameterI(GLEnum.Texture2D, GLEnum.TextureMinFilter, (uint)GLEnum.Linear);
+				_gl.TexParameterI(GLEnum.Texture2D, GLEnum.TextureMagFilter, (uint)GLEnum.Linear);
+				_gl.FramebufferTexture2D(GLEnum.Framebuffer, FramebufferAttachment.ColorAttachment0, GLEnum.Texture2D, _textureColorBuffer, 0);
 			}
-			_gl.BindFramebuffer(GLEnum.Framebuffer, 0);
+			_gl.BindTexture(GLEnum.Texture2D, 0);
+
+			_renderBuffer = _gl.GenRenderbuffer();
+			_gl.BindRenderbuffer(GLEnum.Renderbuffer, _renderBuffer);
+			{
+				_gl.RenderbufferStorage(GLEnum.Renderbuffer, InternalFormat.Depth24Stencil8, _width, _height);
+				_gl.FramebufferRenderbuffer(GLEnum.Framebuffer, GLEnum.DepthStencilAttachment, GLEnum.Renderbuffer, _renderBuffer);
+
+				Init(_gl);
+			}
+			_gl.BindRenderbuffer(GLEnum.Renderbuffer, 0);
+
+			if (_gl.CheckFramebufferStatus(GLEnum.Framebuffer) != GLEnum.FramebufferComplete)
+			{
+				throw new InvalidOperationException("Offscreen framebuffer is not complete");
+			}
 		}
+		_gl.BindFramebuffer(GLEnum.Framebuffer, 0);
+
+		Invalidate();
 	}
 
 	private unsafe void Render()
@@ -133,6 +117,18 @@ public abstract partial class GLCanvasElement : FrameworkElement
 			_gl.ReadPixels(0, 0, _width, _height, GLEnum.Bgra, GLEnum.UnsignedByte, (void*)_pixels);
 		}
 	}
+
+	private protected override void OnUnloaded()
+    {
+    	Marshal.FreeHGlobal(_pixels);
+
+    	if (_gl is { })
+    	{
+    		_gl.DeleteFramebuffer(_framebuffer);
+    		_gl.DeleteTexture(_textureColorBuffer);
+    		_gl.DeleteRenderbuffer(_renderBuffer);
+    	}
+    }
 
 	/// <summary>
 	/// By default, SKCanvasElement uses all the <see cref="availableSize"/> given. Subclasses of SKCanvasElement
@@ -196,6 +192,7 @@ public abstract partial class GLCanvasElement : FrameworkElement
 			_gl.BindTexture(GLEnum.Texture2D, (uint)_oldTextureColorBuffer);
 			_gl.BindRenderbuffer(GLEnum.Renderbuffer, (uint)_oldRbo);
 			_gl.Viewport(_oldViewport[0], _oldViewport[1], (uint)_oldViewport[2], (uint)_oldViewport[3]);
+			_gl.DepthMask(_depthTestMask);
 			if (_depthTestEnabled)
 			{
 				_gl.Enable(EnableCap.DepthTest);
@@ -204,8 +201,6 @@ public abstract partial class GLCanvasElement : FrameworkElement
 			{
 				_gl.Disable(EnableCap.DepthTest);
 			}
-
-			_gl.DepthMask(_depthTestMask);
 		}
 	}
 }
