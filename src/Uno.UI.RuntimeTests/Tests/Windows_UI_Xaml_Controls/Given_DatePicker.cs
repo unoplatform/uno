@@ -212,8 +212,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_MonochromaticOverlayPresenter_Workaround()
 		{
-			using var fluent = StyleHelper.UseFluentStyles();
-
 			var timePicker = new DatePicker();
 			timePicker.UseNativeStyle = false;
 

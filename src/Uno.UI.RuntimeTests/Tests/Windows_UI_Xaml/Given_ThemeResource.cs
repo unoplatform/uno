@@ -183,7 +183,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[TestMethod]
 		public async Task When_Refresh_On_Loading()
 		{
-			using var _ = StyleHelper.UseFluentStyles();
 			var userControl = new ThemeResource_Refresh_On_Loading();
 			WindowHelper.WindowContent = userControl;
 			await WindowHelper.WaitForLoaded(userControl);
