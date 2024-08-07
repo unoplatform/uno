@@ -120,7 +120,7 @@ void main() {
 
 			const double duration = 4;
 			var transform =
-				Matrix4x4.CreateRotationY((float)(2 * Math.PI * (float)(Stopwatch.GetElapsedTime(0).Milliseconds * 1.0 / 1000 / duration % 1))) *
+				Matrix4x4.CreateRotationY((float)((Stopwatch.GetElapsedTime(0).TotalSeconds / duration) * (2 * Math.PI))) *
 				Matrix4x4.CreateRotationX((float)(0.15 * Math.PI)) *
 				Matrix4x4.CreateTranslation(0, 0, -3) *
 				Perspective();
