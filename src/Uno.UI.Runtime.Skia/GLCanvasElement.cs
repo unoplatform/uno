@@ -1,10 +1,10 @@
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Windows.Foundation;
 using Silk.NET.Core.Contexts;
 using Silk.NET.OpenGL;
 using Uno.Foundation.Extensibility;
 using Uno.UI.Runtime.Skia;
-using Boolean = Silk.NET.OpenGL.Boolean;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -18,6 +18,7 @@ public abstract partial class GLCanvasElement : FrameworkElement
 	private readonly GLVisual _glVisual;
 
 	private bool _firstLoad = true;
+	private bool _renderDirty = true;
 
 	private GL? _gl;
 	private uint _framebuffer;
@@ -50,7 +51,11 @@ public abstract partial class GLCanvasElement : FrameworkElement
 	protected abstract void OnDestroy(GL gl);
 	protected abstract void RenderOverride(GL gl);
 
-	public void Invalidate() => _glVisual.Compositor.InvalidateRender(_glVisual);
+	public void Invalidate()
+	{
+		_renderDirty = true;
+		_glVisual.Compositor.InvalidateRender(_glVisual);
+	}
 
 	private unsafe protected override void OnLoaded()
 	{
@@ -105,16 +110,12 @@ public abstract partial class GLCanvasElement : FrameworkElement
 			}
 			_gl.BindFramebuffer(GLEnum.Framebuffer, 0);
 		}
-
-		Render();
 	}
 
 	private unsafe void Render()
 	{
-		if (!IsLoaded)
-		{
-			return;
-		}
+		Debug.Assert(_renderDirty);
+		_renderDirty = false;
 
 		using var _ = new GLStateDisposable(_gl!);
 

@@ -122,7 +122,6 @@ void main() {
 			Gl.ClearColor(0.1f, 0.12f, 0.2f, 1);
 			Gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-			// Gl.Enable(EnableCap.DepthTest);
 			_vao.Bind();
 			_shader.Use();
 
