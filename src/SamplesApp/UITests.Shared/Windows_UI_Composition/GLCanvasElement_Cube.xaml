@@ -10,6 +10,8 @@
              d:DesignHeight="300"
              d:DesignWidth="400">
 
-	<skia:RotatingCubeGlCanvasElement />
-	<not_skia:TextBlock Text="This sample is only supported on skia." />
+	<Grid>
+		<skia:RotatingCubeGlCanvasElement />
+		<not_skia:TextBlock Text="This sample is only supported on skia." />
+	</Grid>
 </UserControl>

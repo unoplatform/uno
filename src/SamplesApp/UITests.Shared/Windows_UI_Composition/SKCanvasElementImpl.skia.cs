@@ -1,3 +1,4 @@
+#if __SKIA__
 using System;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
@@ -132,3 +133,4 @@ public class SKCanvasElementImpl : SKCanvasElement
 		}
 	}
 }
+#endif
