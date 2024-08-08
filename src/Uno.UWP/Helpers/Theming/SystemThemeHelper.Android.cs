@@ -7,7 +7,7 @@ namespace Uno.Helpers.Theming;
 
 internal static partial class SystemThemeHelper
 {
-	private static SystemTheme GetSystemTheme()
+	internal static SystemTheme GetSystemTheme()
 	{
 		if ((int)Build.VERSION.SdkInt >= 28)
 		{
