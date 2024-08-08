@@ -207,6 +207,12 @@ public partial class CompositionPathGeometry : CompositionGeometry, ID2D1Geometr
 		base.OnPropertyChangedCore(propertyName, isSubPropertyChange);
 	}
 
+	private protected override void DisposeInternal()
+	{
+		_geometrySource2D?.Dispose();
+		base.DisposeInternal();
+	}
+
 	void ID2D1GeometrySink.AddLine(Point point) => _commands.Add(CompositionPathCommand.Create(point));
 
 	void ID2D1GeometrySink.AddBezier(D2D1BezierSegment bezier) => _commands.Add(CompositionPathCommand.Create(bezier));

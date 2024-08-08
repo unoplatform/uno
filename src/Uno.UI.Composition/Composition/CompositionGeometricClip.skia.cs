@@ -1,8 +1,10 @@
 #nullable enable
 
 using System;
+using System.IO;
 using SkiaSharp;
 using Windows.Foundation;
+using Windows.Graphics.Interop;
 
 namespace Microsoft.UI.Composition;
 
@@ -10,7 +12,7 @@ partial class CompositionGeometricClip
 {
 	private protected override Rect? GetBoundsCore(Visual visual)
 	{
-		switch (Geometry)
+		if (Geometry is not null)
 		{
 			case CompositionPathGeometry { Path.GeometrySource: SkiaGeometrySource2D geometrySource }:
 				return geometrySource.TightBounds.ToRect();
@@ -24,11 +26,13 @@ partial class CompositionGeometricClip
 			default:
 				throw new InvalidOperationException($"Clipping with {Geometry} is not supported");
 		}
+
+		return null;
 	}
 
 	internal override void Apply(SKCanvas canvas, Visual visual)
 	{
-		switch (Geometry)
+		if (Geometry is not null)
 		{
 			case CompositionPathGeometry { Path.GeometrySource: SkiaGeometrySource2D geometrySource }:
 				var path = TransformMatrix.IsIdentity
