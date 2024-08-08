@@ -7,7 +7,16 @@ namespace Uno.UI.Runtime.Skia.Wpf.Extensions;
 // https://sharovarskyi.com/blog/posts/csharp-win32-opengl-silknet/
 internal class WpfGlNativeContext : INativeContext
 {
-	private readonly UnmanagedLibrary _l = new UnmanagedLibrary("opengl32.dll");
+	private readonly UnmanagedLibrary _l;
+
+	public WpfGlNativeContext()
+	{
+		_l = new UnmanagedLibrary("opengl32.dll");
+		if (_l.Handle == IntPtr.Zero)
+		{
+			throw new PlatformNotSupportedException("Unable to load opengl32.dll. Make sure you're running on a system with OpenGL support");
+		}
+	}
 
 	public bool TryGetProcAddress(string proc, out nint addr, int? slot = null)
 	{
