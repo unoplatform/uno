@@ -111,9 +111,6 @@ public abstract partial class GLCanvasElement : FrameworkElement
 		{
 			_gl.Viewport(new System.Drawing.Size((int)_width, (int)_height));
 
-			_gl.Enable(EnableCap.DepthTest);
-			_gl.DepthMask(true);
-
 			RenderOverride(_gl);
 
 			// Can we do without this copy?
