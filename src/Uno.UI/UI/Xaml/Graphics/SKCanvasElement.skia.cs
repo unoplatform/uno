@@ -33,7 +33,7 @@ public abstract class SKCanvasElement : FrameworkElement
 	{
 		_skiaVisual = new SKCanvasVisual(this, ElementCompositionPreview.GetElementVisual(this).Compositor);
 		Visual.Children.InsertAtTop(_skiaVisual);
-		
+
 		SizeChanged += OnSizeChanged;
 	}
 
@@ -47,7 +47,10 @@ public abstract class SKCanvasElement : FrameworkElement
 	/// </summary>
 	/// <param name="canvas">The SKCanvas that should be drawn on.</param>
 	/// <param name="area">The dimensions of the clipping area.</param>
-	/// <remarks>When called, the <paramref name="canvas"/> is already set up such that the origin (0,0) is at the top-left of the clipping area.</remarks>
+	/// <remarks>
+	/// When called, the <paramref name="canvas"/> is already set up such that the origin (0,0) is at the top-left of the clipping area.
+	/// Drawing outside this area (i.e. outside the (0, 0, area.Width, area.Height rectangle) will be clipped out.
+	/// </remarks>
 	protected abstract void RenderOverride(SKCanvas canvas, Size area);
 
 	/// <summary>
@@ -84,6 +87,6 @@ public abstract class SKCanvasElement : FrameworkElement
 		}
 		return finalSize;
 	}
-	
+
 	private void OnSizeChanged(object sender, SizeChangedEventArgs args) => _skiaVisual.Size = args.NewSize.ToVector2();
 }
