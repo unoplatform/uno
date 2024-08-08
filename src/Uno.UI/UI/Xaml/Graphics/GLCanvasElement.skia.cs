@@ -10,6 +10,13 @@ using Uno.Foundation.Extensibility;
 
 namespace Microsoft.UI.Xaml.Controls;
 
+/// <summary>
+/// A <see cref="FrameworkElement"/> that exposes the ability to draw 3D graphics using OpenGL and Silk.NET.
+/// </summary>
+/// <remarks>
+/// This is only available on skia-based targets and when running with hardware acceleration.
+/// This is currently only available on the WPF and X11 targets.
+/// </remarks>
 public abstract partial class GLCanvasElement : FrameworkElement
 {
 	internal delegate IntPtr GLGetProcAddress(string proc);
@@ -28,6 +35,7 @@ public abstract partial class GLCanvasElement : FrameworkElement
 	private uint _textureColorBuffer;
 	private uint _renderBuffer;
 
+	/// <param name="resolution">The resolution of the backing framebuffer.</param>
 	protected GLCanvasElement(Size resolution)
 	{
 		_width = (uint)resolution.Width;
@@ -37,10 +45,44 @@ public abstract partial class GLCanvasElement : FrameworkElement
 		Visual.Children.InsertAtTop(_glVisual);
 	}
 
+	/// <summary>
+	/// Use this function for the initial setup, e.g. setting up VAOs, VBOs, EBOs, etc.
+	/// </summary>
+	/// <remarks>
+	/// <see cref="Init"/> might be called multiple times. Every call to <see cref="Init"/> except the first one
+	/// will be preceded by a call to <see cref="OnDestroy"/>.
+	/// </remarks>
 	protected abstract void Init(GL gl);
+	/// <summary>
+	/// Use this function for cleaning up previously allocated resources.
+	/// </summary>
+	/// /// <remarks>
+	/// <see cref="OnDestroy"/> might be called multiple times. Every call to <see cref="OnDestroy"/> will be preceded by
+	/// a call to <see cref="Init"/>.
+	/// </remarks>
 	protected abstract void OnDestroy(GL gl);
+	/// <summary>
+	/// The rendering logic goes this.
+	/// </summary>
+	/// <remarks>
+	/// Before <see cref="RenderOverride"/> is called, the OpenGL viewport is set to the resolution that was provided to
+	/// the <see cref="GLCanvasElement"/> constructor.
+	/// </remarks>
+	/// <remarks>
+	/// Due to the way <see cref="GLCanvasElement"/> interacts with Skia (which also uses OpenGL), you must make sure
+	/// to restore all the OpenGL state values to their original values. For example, make sure to save the values
+	/// for the initially-bound OpenGL VAO if you intend to bind your own VAO and bind the original VAO at the end of
+	/// the method. Similarly, make sure to disable depth testing at the end if you choose to enable it. Some of this
+	/// may be done for you automatically.
+	/// </remarks>
 	protected abstract void RenderOverride(GL gl);
 
+	/// <summary>
+	/// Invalidates the rendering, and calls <see cref="RenderOverride"/> in the next rendering cycle.
+	/// <see cref="RenderOverride"/> will only be called once after <see cref="Invalidate"/> and the output will
+	/// be saved. You need to call <see cref="Invalidate"/> everytime an update is needed. If drawing an
+	/// animation, call <see cref="Invalidate"/> inside <see cref="RenderOverride"/> to continuously invalidate and update.
+	/// </summary>
 	public void Invalidate()
 	{
 		_renderDirty = true;
@@ -132,9 +174,10 @@ public abstract partial class GLCanvasElement : FrameworkElement
     }
 
 	/// <summary>
-	/// By default, SKCanvasElement uses all the <see cref="availableSize"/> given. Subclasses of SKCanvasElement
+	/// By default, <see cref="GLCanvasElement"/> uses all the <see cref="availableSize"/> given. Subclasses of <see cref="SKCanvasElement"/>
 	/// should override this method if they need something different.
 	/// </summary>
+	/// <remarks>An exception will be thrown if availableSize is infinite (e.g. if inside a StackPanel).</remarks>
 	protected override Size MeasureOverride(Size availableSize)
 	{
 		if (availableSize.Width == Double.PositiveInfinity ||
@@ -147,6 +190,11 @@ public abstract partial class GLCanvasElement : FrameworkElement
 		return availableSize;
 	}
 
+	/// <summary>
+	/// By default, <see cref="GLCanvasElement"/> uses all the <see cref="finalSize"/> given. Subclasses of <see cref="SKCanvasElement"/>
+	/// should override this method if they need something different.
+	/// </summary>
+	/// <remarks>An exception will be thrown if <see cref="finalSize"/> is infinite (e.g. if inside a StackPanel).</remarks>
 	protected override Size ArrangeOverride(Size finalSize)
 	{
 		if (finalSize.Width == Double.PositiveInfinity ||
