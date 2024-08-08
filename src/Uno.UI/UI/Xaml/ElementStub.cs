@@ -7,6 +7,7 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
+using Uno.UI.Xaml;
 using Windows.Foundation;
 
 #if __ANDROID__
@@ -159,6 +160,16 @@ namespace Microsoft.UI.Xaml
 			{
 				Materialize(isVisibilityChanged: true);
 			}
+		}
+
+		internal override void Enter(EnterParams @params, int depth)
+		{
+			// the base impl would cause immediately materialization by loading this stub
+			// which is not something we want here.
+		}
+
+		internal override void Leave(LeaveParams @params)
+		{
 		}
 
 		private protected override void OnLoaded()

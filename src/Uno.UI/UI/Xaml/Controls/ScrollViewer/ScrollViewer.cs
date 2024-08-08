@@ -716,14 +716,11 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 			void UpdateDimensionProperties()
 		{
-			if (this.Log().IsEnabled(LogLevel.Debug)
-				&& (ActualHeight != ViewportHeight || ActualWidth != ViewportWidth)
-			)
-			{
-				this.Log().LogDebug($"ScrollViewer setting ViewportHeight={ActualHeight}, ViewportWidth={ActualWidth}");
-			}
+			// The dimensions of the presenter (which are often but not always the same as the ScrollViewer) determine the viewport size
+			var vpHeight = (_presenter as IFrameworkElement)?.ActualHeight ?? ActualHeight;
+			var vpWidth = (_presenter as IFrameworkElement)?.ActualWidth ?? ActualWidth;
 
-			if (ActualWidth == 0 || ActualHeight == 0)
+			if (vpHeight == 0 || vpWidth == 0)
 			{
 				// Do not update properties if we don't have any valid size yet.
 				// This is useful essentially for the first size changed on the Content,
@@ -734,9 +731,14 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			// The dimensions of the presenter (which are often but not always the same as the ScrollViewer) determine the viewport size
-			ViewportHeight = (_presenter as IFrameworkElement)?.ActualHeight ?? ActualHeight;
-			ViewportWidth = (_presenter as IFrameworkElement)?.ActualWidth ?? ActualWidth;
+			if ((ActualHeight != vpHeight || ActualWidth != vpWidth) &&
+				this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"ScrollViewer setting ViewportHeight={ActualHeight}, ViewportWidth={ActualWidth}");
+			}
+
+			ViewportHeight = vpHeight;
+			ViewportWidth = vpWidth;
 
 			if (_presenter?.CustomContentExtent is { } customExtent)
 			{
