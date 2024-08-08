@@ -2,11 +2,11 @@
 uid: Uno.Controls.GLCanvasElement
 ---
 
-## GLCanvasElement
-
 > [!IMPORTANT]
 > This functionality is only available on Skia Desktop (`net8.0-desktop`) targets that are running with hardware acceleration. This is also not available on MacOS.
 
+## GLCanvasElement
+    
 > [!IMPORTANT]
 > If your application uses `GLCanvasElement`, you will need to add a PackageReference to `Silk.NET.OpenGL`.
 
@@ -31,11 +31,7 @@ The `OnDestroy` method is the complement of `Init` and is used to clean up any a
 > [!IMPORTANT]
 > `Init` and `OnDestroy` might be called multiple times in pairs. Every call to `OnDestroy` will be preceded by a call to `Init`.
 
-The `RenderOverride` method takes a `Silk.NET.OpenGL.GL` instance that can be used to make OpenGL calls. When `RenderOverride` is called, you can assume that 
-
-To learn more about using Silk.NET as a C# binding for OpenGL, see the examples in the Silk.NET repository [here](https://github.com/dotnet/Silk.NET/tree/main/examples/CSharp). Note that the windowing and inputs APIs in Silk.NET are not relevant to `GLCanvasElement`, since Uno Platform has its own support for input and windowing.
-
-When adding your drawing logic in `RenderOverride` on the provided canvas, you can assume that the OpenGL viewport rectangle is already set and its dimensions are equal to the `resolution` parameter provided to the `GLCanvasElement` constructor. Due to the fact that both `GLCanvasElement` and the Skia rendering engine used by Uno both use OpenGL, you must make sure to restore all the OpenGL state values to their original values at the end of `RenderOverride`. For example, make sure to save the values for the initially-bound VAO if you intend to bind your own VAO and bind the original VAO at the end of `RenderOverride`.
+The `RenderOverride` method takes a `Silk.NET.OpenGL.GL` instance that can be used to make OpenGL calls. When adding your drawing logic in `RenderOverride` on the provided canvas, you can assume that the OpenGL viewport rectangle is already set and its dimensions are equal to the `resolution` parameter provided to the `GLCanvasElement` constructor. Due to the fact that both `GLCanvasElement` and the Skia rendering engine used by Uno both use OpenGL, you must make sure to restore all the OpenGL state values to their original values at the end of `RenderOverride`. For example, make sure to save the values for the initially-bound VAO if you intend to bind your own VAO and bind the original VAO at the end of `RenderOverride`.
 
 ```csharp
 protected override void RenderOverride(GL gl)
@@ -48,7 +44,10 @@ protected override void RenderOverride(GL gl)
     gl.BindVertexArray(oldVAO);
 }
 ```
+
 Similarly, make sure to disable depth testing at the end if you choose to enable it. To reduce bugs, some of the more common OpenGL state variables are restored automatically for you, but don't depend on this behaviour.
+
+To learn more about using Silk.NET as a C# binding for OpenGL, see the examples in the Silk.NET repository [here](https://github.com/dotnet/Silk.NET/tree/main/examples/CSharp). Note that the windowing and inputs APIs in Silk.NET are not relevant to `GLCanvasElement`, since Uno Platform has its own support for input and windowing.
 
 Additionally, `GLCanvasElement` has an `Invalidate` method that can be used at any time to tell the Uno Platform runtime to redraw the `GLCanvasElement`, calling `RenderOverride` in the process. Note that `RenderOverride` will only be called once per `Invalidate` call and the output will be saved to be used in future frames. To update the output, you must call `Invalidate`. If you need to continuously update the output (e.g. in an animation), you can add an `Invalidate` call inside `RenderOverride`.
 
@@ -77,7 +76,7 @@ XAML:
              d:DesignWidth="400">
 
     <skia:GLTriangleElement />
-	<not_skia:TextBlock Text="This sample is only supported on skia." />
+    <not_skia:TextBlock Text="This sample is only supported on skia." />
 </UserControl>
 ```
 
