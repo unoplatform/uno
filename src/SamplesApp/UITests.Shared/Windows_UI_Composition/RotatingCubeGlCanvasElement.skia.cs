@@ -63,8 +63,8 @@ namespace UITests.Shared.Windows_UI_Composition
 			0, 4, 5,
 		};
 
-		private const string vertexShaderSource = @"
-#version 410
+		private const string VertexShaderSource = @"
+#version 330
 
 layout(location = 0) in vec3 pos;
 layout(location = 1) in vec3 vertex_color;
@@ -78,8 +78,8 @@ void main() {
   color = vertex_color;
 }";
 
-		private const string fragmentShaderSource = @"
-#version 410
+		private const string FragmentShaderSource = @"
+#version 330
 
 in vec3 color;
 
@@ -98,7 +98,7 @@ void main() {
 			_vao.VertexAttributePointer(0, 3, VertexAttribPointerType.Float, 6, 0);
 			_vao.VertexAttributePointer(1, 3, VertexAttribPointerType.Float, 6, 3);
 
-			_shader = new Shader(Gl, vertexShaderSource, fragmentShaderSource);
+			_shader = new Shader(Gl, VertexShaderSource, FragmentShaderSource);
 		}
 
 		protected override void OnDestroy(GL Gl)
@@ -131,6 +131,7 @@ void main() {
 			_shader.SetUniform("transform", transform);
 			Gl.DrawElements(PrimitiveType.Triangles, (uint)_triangleIndices.Length, DrawElementsType.UnsignedInt, null);
 
+			// https://www.songho.ca/opengl/gl_projectionmatrix.html
 			static Matrix4x4 Perspective()
 			{
 				const float
