@@ -9,32 +9,89 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Web.WebView2.Core;
+using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls;
+
+using WpfCoreWebView2HostResourceAccessKind = WpfWebView.Microsoft.Web.WebView2.Core.CoreWebView2HostResourceAccessKind;
+using WpfCoreWebView2InitializationCompletedEventArgs = WpfWebView.Microsoft.Web.WebView2.Core.CoreWebView2InitializationCompletedEventArgs;
+using WpfCoreWebView2NavigationCompletedEventArgs = WpfWebView.Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs;
+using WpfCoreWebView2NavigationStartingEventArgs = WpfWebView.Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs;
+using WpfCoreWebView2SourceChangedEventArgs = WpfWebView.Microsoft.Web.WebView2.Core.CoreWebView2SourceChangedEventArgs;
+using WpfCoreWebView2WebMessageReceivedEventArgs = WpfWebView.Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs;
+using WpfWebView2 = WpfWebView.Microsoft.Web.WebView2.Wpf.WebView2;
 
 namespace Uno.UI.Runtime.Skia.Wpf.Extensions;
 
-internal sealed class WpfNativeWebView : INativeWebView
+internal sealed class WpfNativeWebView : INativeWebView, ISupportsVirtualHostMapping
 {
-	private WpfWebView.Microsoft.Web.WebView2.Wpf.WebView2 _nativeWebView;
+	private WpfWebView2 _nativeWebView;
 	private CoreWebView2 _coreWebView2;
 	private List<Func<Task>> _actions = new();
+	private Dictionary<ulong, string> _navigationIdToUriMap = new();
 
-	public WpfNativeWebView(WpfWebView.Microsoft.Web.WebView2.Wpf.WebView2 nativeWebView, CoreWebView2 coreWebView2)
+	public WpfNativeWebView(WpfWebView2 nativeWebView, CoreWebView2 coreWebView2)
 	{
 		_coreWebView2 = coreWebView2;
 		_nativeWebView = nativeWebView;
-		nativeWebView.CoreWebView2InitializationCompleted += this.NativeWebView_CoreWebView2InitializationCompleted;
+		nativeWebView.NavigationCompleted += NativeWebView_NavigationCompleted;
+		nativeWebView.SourceChanged += NativeWebView_SourceChanged;
+		nativeWebView.WebMessageReceived += NativeWebView_WebMessageReceived;
+		nativeWebView.NavigationStarting += NativeWebView_NavigationStarting;
+		nativeWebView.CoreWebView2InitializationCompleted += NativeWebView_CoreWebView2InitializationCompleted;
 		nativeWebView.EnsureCoreWebView2Async();
 	}
 
-	private async void NativeWebView_CoreWebView2InitializationCompleted(object? sender, WpfWebView.Microsoft.Web.WebView2.Core.CoreWebView2InitializationCompletedEventArgs e)
+	private void NativeWebView_SourceChanged(object? sender, WpfCoreWebView2SourceChangedEventArgs e)
 	{
+		_coreWebView2.Source = _nativeWebView.Source.ToString();
+	}
+
+	private void NativeWebView_WebMessageReceived(object? sender, WpfCoreWebView2WebMessageReceivedEventArgs e)
+	{
+		_coreWebView2.RaiseWebMessageReceived(e.WebMessageAsJson);
+	}
+
+	private void NativeWebView_NavigationStarting(object? sender, WpfCoreWebView2NavigationStartingEventArgs e)
+	{
+		_coreWebView2.RaiseNavigationStarting(e.Uri, out var cancel);
+		_coreWebView2.SetHistoryProperties(_nativeWebView.CanGoBack, _nativeWebView.CanGoForward);
+		e.Cancel = cancel;
+		_navigationIdToUriMap[e.NavigationId] = e.Uri;
+	}
+
+	private void NativeWebView_NavigationCompleted(object? sender, WpfCoreWebView2NavigationCompletedEventArgs e)
+	{
+		if (!_navigationIdToUriMap.TryGetValue(e.NavigationId, out var uri))
+		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().LogError("Got NavigationCompleted for unknown navigation id");
+			}
+		}
+
+		_navigationIdToUriMap.Remove(e.NavigationId);
+		// The source is set through NativeWebView_SourceChanged
+		// Note that when using NavigateToString on WinUI, the NavigationCompleted event on WinUI has uri containing base64 of the passed string, while source becomes about:blank.
+		// On WPF, we already have the same behavior for free. _coreWebView.Source becomes about:blank and the event arguments of NavigationCompleted contains the base64 value.
+		// So, we should skip setting the source from base64.
+		_coreWebView2.RaiseNavigationCompleted(uri is null ? null : new Uri(uri), e.IsSuccess, e.HttpStatusCode, (CoreWebView2WebErrorStatus)e.WebErrorStatus, shouldSetSource: false);
+	}
+
+	private async void NativeWebView_CoreWebView2InitializationCompleted(object? sender, WpfCoreWebView2InitializationCompletedEventArgs e)
+	{
+		_nativeWebView.CoreWebView2.HistoryChanged += CoreWebView2_HistoryChanged;
 		foreach (var action in _actions)
 		{
 			await action();
 		}
 
 		_actions.Clear();
+	}
+
+	private void CoreWebView2_HistoryChanged(object? sender, object e)
+	{
+		_coreWebView2.SetHistoryProperties(_nativeWebView.CanGoBack, _nativeWebView.CanGoForward);
+		_coreWebView2.RaiseHistoryChanged();
 	}
 
 	public Task<string?> ExecuteScriptAsync(string script, CancellationToken token)
@@ -54,7 +111,7 @@ internal sealed class WpfNativeWebView : INativeWebView
 		=> ExecuteEnsuringCoreWebView2(() => _nativeWebView.CoreWebView2.Navigate(uri.ToString()));
 
 	public void ProcessNavigation(string html)
-		=> ExecuteEnsuringCoreWebView2(() => _nativeWebView.NavigateToString(html));
+		=> ExecuteEnsuringCoreWebView2(() => _nativeWebView.CoreWebView2.NavigateToString(html));
 
 	public void ProcessNavigation(HttpRequestMessage httpRequestMessage)
 		=> ExecuteEnsuringCoreWebView2(() => ProcessNavigationCore(httpRequestMessage));
@@ -114,4 +171,10 @@ internal sealed class WpfNativeWebView : INativeWebView
 
 		return tcs.Task;
 	}
+
+	public void ClearVirtualHostNameToFolderMapping(string hostName)
+		=> ExecuteEnsuringCoreWebView2(() => _nativeWebView.CoreWebView2.ClearVirtualHostNameToFolderMapping(hostName));
+
+	public void SetVirtualHostNameToFolderMapping(string hostName, string folderPath, CoreWebView2HostResourceAccessKind accessKind)
+		=> ExecuteEnsuringCoreWebView2(() => _nativeWebView.CoreWebView2.SetVirtualHostNameToFolderMapping(hostName, folderPath, (WpfCoreWebView2HostResourceAccessKind)accessKind));
 }
