@@ -69,11 +69,12 @@ public abstract partial class GLCanvasElement : FrameworkElement
 	/// the <see cref="GLCanvasElement"/> constructor.
 	/// </remarks>
 	/// <remarks>
-	/// Due to the way <see cref="GLCanvasElement"/> interacts with Skia (which also uses OpenGL), you must make sure
-	/// to restore all the OpenGL state values to their original values. For example, make sure to save the values
-	/// for the initially-bound OpenGL VAO if you intend to bind your own VAO and bind the original VAO at the end of
-	/// the method. Similarly, make sure to disable depth testing at the end if you choose to enable it. Some of this
-	/// may be done for you automatically.
+	/// Due to the fact that both <see cref="GLCanvasElement"/> and the skia rendering engine used by Uno both use OpenGL,
+	/// you must make sure to restore all the OpenGL state values to their original values at the end of <see cref="RenderOverride"/>.
+	/// For example, make sure to save the values for the initially-bound OpenGL VAO if you intend to bind your own VAO
+	/// and bind the original VAO at the end of the method. Similarly, make sure to disable depth testing at
+	/// the end if you choose to enable it.
+	/// Some of this may be done for you automatically.
 	/// </remarks>
 	protected abstract void RenderOverride(GL gl);
 
