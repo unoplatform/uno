@@ -16,8 +16,8 @@ There are two ways to migrate an application to .NET 7.
 
    1. In a separate folder, create a new application from the templates using [`dotnet new unoapp -o MyApp`](get-started-dotnet-new.md) (MyApp being of the same name as your existing app), or by using the Visual Studio `Uno Platform App` template
    2. Move the `MyApp.Mobile` project folder and include it in your existing solution
-   3. Make the adjustments to move from the [UWP APIs to the WinUI APIs](updating-to-winui3.md)
-   4. Optionally [convert your legacy Xamarin heads](updating-to-winui3.md) to use Uno.WinUI instead of Uno.UI
+   3. Make the adjustments to move from the [UWP APIs to the WinUI APIs](xref:updating-to-winui3.md)
+   4. Optionally [convert your legacy Xamarin heads](xref:updating-to-winui3.md) to use Uno.WinUI instead of Uno.UI
 
 ## Additional considerations
 
