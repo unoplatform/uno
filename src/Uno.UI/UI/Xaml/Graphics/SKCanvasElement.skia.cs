@@ -39,7 +39,7 @@ public abstract partial class SKCanvasElement : FrameworkElement
 	protected abstract void RenderOverride(SKCanvas canvas, Size area);
 
 	/// <summary>
-	/// By default, SKCanvasElement uses all the <see cref="availableSize"/> given. Subclasses of <see cref="SKCanvasElement"/>
+	/// By default, <see cref="SKCanvasElement"/> uses all the <see cref="availableSize"/> given. Subclasses of <see cref="SKCanvasElement"/>
 	/// should override this method if they need something different.
 	/// </summary>
 	/// <remarks>An exception will be thrown if availableSize is infinite (e.g. if inside a StackPanel).</remarks>
@@ -57,7 +57,7 @@ public abstract partial class SKCanvasElement : FrameworkElement
 	}
 
 	/// <summary>
-	/// By default, SKCanvasElement uses all the <see cref="finalSize"/> given. Subclasses of <see cref="SKCanvasElement"/>
+	/// By default, <see cref="SKCanvasElement"/> uses all the <see cref="finalSize"/> given. Subclasses of <see cref="SKCanvasElement"/>
 	/// should override this method if they need something different.
 	/// </summary>
 	/// <remarks>An exception will be thrown if <see cref="finalSize"/> is infinite (e.g. if inside a StackPanel).</remarks>
