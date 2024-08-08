@@ -85,8 +85,6 @@ public abstract partial class GLCanvasElement : FrameworkElement
 			{
 				_gl.RenderbufferStorage(GLEnum.Renderbuffer, InternalFormat.Depth24Stencil8, _width, _height);
 				_gl.FramebufferRenderbuffer(GLEnum.Framebuffer, GLEnum.DepthStencilAttachment, GLEnum.Renderbuffer, _renderBuffer);
-
-				Init(_gl);
 			}
 			_gl.BindRenderbuffer(GLEnum.Renderbuffer, 0);
 
@@ -94,6 +92,8 @@ public abstract partial class GLCanvasElement : FrameworkElement
 			{
 				throw new InvalidOperationException("Offscreen framebuffer is not complete");
 			}
+			
+			Init(_gl);
 		}
 		_gl.BindFramebuffer(GLEnum.Framebuffer, 0);
 
