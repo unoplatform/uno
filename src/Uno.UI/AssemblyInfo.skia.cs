@@ -1,6 +1,5 @@
 using global::System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Gtk")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.MacOS")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Wpf")]

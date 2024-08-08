@@ -7,7 +7,6 @@ using Uno.UI.Xaml.Islands;
 using Windows.Foundation;
 using Windows.Graphics.Display;
 using Uno.UI.Extensions;
-using Windows.UI.Composition;
 using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml;
