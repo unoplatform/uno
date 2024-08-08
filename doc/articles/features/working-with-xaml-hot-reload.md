@@ -385,6 +385,7 @@ The output window in Visual Studio has an output named `Uno Platform` in its dro
 - For `net8.0-windows10.xx`:
   - Ensure that the `net8.0-windows10.xxx` target framework **is selected in the top-left dropdown list of the XAML editor**. Selecting any other platform will break hot reload.
   - [A VS issue for WinUI may be hit](https://developercommunity.visualstudio.com/t/net80-windows10-needs-to-be-first-for-W/10643724). If XAML hot reload does not work, ensure that the `Uno Platform` output window exists, and that it mentions that the extension has successfully loaded. To do so, try closing and reopening the solution, and make sure that the [Visual Studio extension is installed](xref:Uno.GetStarted.vs2022).
+- If the indicator is red and indicates that connection failed, make sure that you have the latests versions of Uno.SDK and the VS extension, then rebuild your application.
 
 ### [**Visual Studio Code**](#tab/vscode)
 
