@@ -130,11 +130,18 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 
 	protected override void ShowCore()
 	{
+<<<<<<< HEAD
 		// The window needs to be mapped earlier because it's used in DisplayInformationExtension
 		// if (NativeWindow is X11Window x11Window)
 		// {
 		// 	XLib.XMapWindow(x11Window.Display, x11Window.Window);
 		// }
+=======
+		using var lockDiposable = X11Helper.XLock(_host.RootX11Window.Display);
+		using var lockDiposable2 = X11Helper.XLock(_host.TopX11Window.Display);
+		_ = XLib.XMapWindow(_host.RootX11Window.Display, _host.RootX11Window.Window);
+		_ = XLib.XMapWindow(_host.TopX11Window.Display, _host.TopX11Window.Window);
+>>>>>>> 2ed088a85a (fix: WSL not starting up)
 	}
 
 	protected override IDisposable ApplyOverlappedPresenter(OverlappedPresenter presenter)
