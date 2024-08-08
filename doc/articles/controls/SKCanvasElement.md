@@ -9,7 +9,7 @@ When creating an Uno Platform application, developers might want to create elabo
 On Uno Platform Skia Desktop targets, we can utilize the pre-existing internal Skia canvas used to render the application window instead of creating additional Skia surfaces. This way, a lot of Skia functionally can be acquired "for free". For example, no additional packages are needed, and setup for hardware acceleration is not needed if the Uno application is already using OpenGL to render. Moreover, this is faster than `SKXamlCanvas`, which has to make additional buffer copying.
 
 > [!IMPORTANT]
-> This functionality is only available on Skia Desktop (`net8.0-desktop`) targets.
+> This functionality is only available on Skia Desktop (`netX.0-desktop`) targets.
 
 ## SKCanvasElement
 

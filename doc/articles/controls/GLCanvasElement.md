@@ -5,7 +5,7 @@ uid: Uno.Controls.GLCanvasElement
 ## GLCanvasElement
 
 > [!IMPORTANT]
-> This functionality is only available on Skia Desktop (`net8.0-desktop`) targets that are running with hardware acceleration. This is also not available on MacOS.
+> This functionality is only available on Skia Desktop (`netX.0-desktop`) targets that are running with hardware acceleration. This is also not available on MacOS.
 
 `GLCanvasElement` is a `FrameworkElement` for drawing 3D graphics with OpenGL.
 
