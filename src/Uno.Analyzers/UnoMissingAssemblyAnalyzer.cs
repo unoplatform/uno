@@ -39,6 +39,7 @@ public class UnoMissingAssemblyAnalyzer : DiagnosticAnalyzer
 		{
 			var assemblies = context.Compilation.ReferencedAssemblyNames.Select(a => a.Name).ToImmutableHashSet();
 			var progressRing = context.Compilation.GetTypeByMetadataName("Microsoft" /* UWP don't rename */ + ".UI.Xaml.Controls.ProgressRing");
+			var glCanvasElement = context.Compilation.GetTypeByMetadataName("Microsoft" /* UWP don't rename */ + ".UI.Xaml.Controls.GLCanvasElement");
 			var mpe = context.Compilation.GetTypeByMetadataName("Microsoft.UI.Xaml.Controls.MediaPlayerElement");
 			_ = context.Options.AnalyzerConfigOptionsProvider.GlobalOptions.TryGetValue("build_property.UnoRuntimeIdentifier", out var unoRuntimeIdentifier);
 			_ = context.Options.AnalyzerConfigOptionsProvider.GlobalOptions.TryGetValue("build_property.IsUnoHead", out var isUnoHead);
@@ -65,6 +66,10 @@ public class UnoMissingAssemblyAnalyzer : DiagnosticAnalyzer
 #endif
 
 					context.ReportDiagnostic(Diagnostic.Create(Rule, objectCreation.Syntax.GetLocation(), "ProgressRing", lottieNuGetPackageName));
+				}
+				else if (type.DerivesFrom(glCanvasElement) && !assemblies.Contains("Silk.NET.OpenGL"))
+				{
+					context.ReportDiagnostic(Diagnostic.Create(Rule, objectCreation.Syntax.GetLocation(), "GLCanvasElement", "Silk.NET.OpenGL"));
 				}
 				else if (type.DerivesFrom(mpe))
 				{
