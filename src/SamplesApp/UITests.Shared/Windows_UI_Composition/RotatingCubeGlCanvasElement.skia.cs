@@ -20,7 +20,7 @@ using Silk.NET.OpenGL;
 
 namespace UITests.Shared.Windows_UI_Composition
 {
-	public class GlCanvasElementImpl() : GLCanvasElement(new Size(1200, 800))
+	public class RotatingCubeGlCanvasElement() : GLCanvasElement(new Size(1200, 800))
 	{
 		private static BufferObject<float> _vbo;
 		private static BufferObject<uint> _ebo;
