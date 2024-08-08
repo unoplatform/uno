@@ -26,9 +26,9 @@ public abstract partial class GLCanvasElement
 		{
 			// we clear the drawing area here because in some cases when unloading the GLCanvasElement, the
 			// drawing isn't cleared for some reason (a possible hypothesis is timing problems between raw GL and skia).
+			session.Canvas.Save();
 			session.Canvas.ClipRect(new SKRect(0, 0, _owner.Visual.Size.X, _owner.Visual.Size.Y));
 			session.Canvas.Clear(SKColors.Transparent);
-			session.Canvas.Save();
 			if (_owner._renderDirty)
 			{
 				_owner.Render();
