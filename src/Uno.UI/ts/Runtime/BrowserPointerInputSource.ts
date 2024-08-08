@@ -10,7 +10,7 @@
 
 	export enum HtmlPointerEvent {
 		pointerover = 1,
-		pointerout = 1 << 1,
+		pointerleave = 1 << 1,
 		pointerdown = 1 << 2,
 		pointerup = 1 << 3,
 		pointercancel = 1 << 4,
@@ -62,7 +62,7 @@
 			const element = document.body;
 
 			element.addEventListener("pointerover", this.onPointerEventReceived.bind(this), { capture: false });
-			element.addEventListener("pointerout", this.onPointerEventReceived.bind(this), { capture: false });
+			element.addEventListener("pointerleave", this.onPointerEventReceived.bind(this), { capture: false });
 			element.addEventListener("pointerdown", this.onPointerEventReceived.bind(this), { capture: false });
 			element.addEventListener("pointerup", this.onPointerEventReceived.bind(this), { capture: false });
 			//element.addEventListener("lostpointercapture", this.onPointerEventReceived.bind(this), { capture: false });
@@ -171,8 +171,8 @@
 			switch (eventName) {
 				case "pointerover":
 					return HtmlPointerEvent.pointerover;
-				case "pointerout":
-					return HtmlPointerEvent.pointerout;
+				case "pointerleave":
+					return HtmlPointerEvent.pointerleave;
 				case "pointerdown"	 :
 					return HtmlPointerEvent.pointerdown;
 				case "pointerup"	 :

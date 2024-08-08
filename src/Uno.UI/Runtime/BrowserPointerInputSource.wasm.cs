@@ -111,7 +111,7 @@ internal partial class BrowserPointerInputSource : IUnoCorePointerInputSource
 					that.PointerEntered?.Invoke(that, args);
 					break;
 
-				case HtmlPointerEvent.pointerout:
+				case HtmlPointerEvent.pointerleave:
 					that.PointerExited?.Invoke(that, args);
 					break;
 
@@ -241,7 +241,7 @@ internal partial class BrowserPointerInputSource : IUnoCorePointerInputSource
 	private static bool GetIsInRange(byte @event, bool hasRelatedTarget, PointerDeviceType pointerType, bool isInContact)
 	{
 		const int cancel = (int)HtmlPointerEvent.pointercancel;
-		const int exitOrUp = (int)(HtmlPointerEvent.pointerout | HtmlPointerEvent.pointerup);
+		const int exitOrUp = (int)(HtmlPointerEvent.pointerleave | HtmlPointerEvent.pointerup);
 
 		var isInRange = true;
 		if (@event is cancel)
@@ -337,7 +337,7 @@ internal partial class BrowserPointerInputSource : IUnoCorePointerInputSource
 
 		// Minimal default pointer required to maintain state
 		pointerover = 1,
-		pointerout = 1 << 1,
+		pointerleave = 1 << 1,
 		pointerdown = 1 << 2,
 		pointerup = 1 << 3,
 		pointercancel = 1 << 4,
