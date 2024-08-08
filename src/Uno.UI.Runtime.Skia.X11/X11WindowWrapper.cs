@@ -134,6 +134,7 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 	protected override void ShowCore()
 	{
 		using var lockDiposable = X11Helper.XLock(_host.RootX11Window.Display);
+		using var lockDiposable2 = X11Helper.XLock(_host.TopX11Window.Display);
 		_ = XLib.XMapWindow(_host.RootX11Window.Display, _host.RootX11Window.Window);
 		_ = XLib.XMapWindow(_host.TopX11Window.Display, _host.TopX11Window.Window);
 	}
