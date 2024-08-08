@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="UITests.Shared.Windows_UI_Composition.GLCanvasElement_Simple"
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Composition.GLCanvasElement_Cube"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="using:UITests.Shared.Windows_UI_Composition"
@@ -10,6 +10,6 @@
              d:DesignHeight="300"
              d:DesignWidth="400">
 
-	<skia:SimpleTriangleGlCanvasElement />
+	<skia:RotatingCubeGlCanvasElement />
 	<not_skia:TextBlock Text="This sample is only supported on skia." />
 </UserControl>
