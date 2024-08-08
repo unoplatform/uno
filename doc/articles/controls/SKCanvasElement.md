@@ -67,7 +67,7 @@ public partial class SKCanvasElementExample : UserControl
 {
     public int MaxSampleIndex => SKCanvasElementImpl.SampleCount - 1;
 
-    public SKCanvasElement_Simple()
+    public SKCanvasElementExample()
     {
         this.InitializeComponent();
     }
