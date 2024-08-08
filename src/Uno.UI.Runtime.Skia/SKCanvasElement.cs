@@ -7,34 +7,53 @@ using SkiaSharp;
 namespace Microsoft.UI.Xaml.Controls;
 
 /// <summary>
-/// A wrapper around <see cref="SkiaVisual"/> that takes care of sizing, layouting and DPI.
+/// A <see cref="FrameworkElement"/> that exposes the ability to draw directly on the window using SkiaSharp.
 /// </summary>
+/// <remarks>This is only available on skia-based targets.</remarks>
 public abstract class SKCanvasElement : FrameworkElement
 {
-	private class SKCanvasVisual(SKCanvasElement owner, Compositor compositor) : SkiaVisual(compositor)
+	private class SKCanvasVisual(SKCanvasElement owner, Compositor compositor) : Visual(compositor)
 	{
-		protected override void RenderOverride(SKCanvas canvas) => owner.RenderOverride(canvas, Size.ToSize());
+		internal override void Paint(in PaintingSession session)
+		{
+			session.Canvas.Save();
+			// clipping here guards against a naked canvas.Clear() call which would wipe out the entire window.
+			session.Canvas.ClipRect(new SKRect(0, 0, Size.X, Size.Y));
+			owner.RenderOverride(session.Canvas, Size.ToSize());
+			session.Canvas.Restore();
+		}
+
+		public void Invalidate() => Compositor.InvalidateRender(this);
 	}
 
-	private readonly SkiaVisual _skiaVisual;
+	private readonly SKCanvasVisual _skiaVisual;
 
 	protected SKCanvasElement()
 	{
 		_skiaVisual = new SKCanvasVisual(this, ElementCompositionPreview.GetElementVisual(this).Compositor);
 		Visual.Children.InsertAtTop(_skiaVisual);
+		
+		SizeChanged += OnSizeChanged;
 	}
+
+	/// <summary>
+	/// Queue a rendering cycle that will call <see cref="RenderOverride"/>.
+	/// </summary>
+	public void Invalidate() => _skiaVisual.Invalidate();
 
 	/// <summary>
 	/// The SkiaSharp drawing logic goes here.
 	/// </summary>
-	/// <param name="canvas">The SKCanvas that should be drawn on. The drawing will directly appear in the clipping area.</param>
+	/// <param name="canvas">The SKCanvas that should be drawn on.</param>
 	/// <param name="area">The dimensions of the clipping area.</param>
+	/// <remarks>When called, the <paramref name="canvas"/> is already set up such that the origin (0,0) is at the top-left of the clipping area.</remarks>
 	protected abstract void RenderOverride(SKCanvas canvas, Size area);
 
 	/// <summary>
-	/// By default, SKCanvasElement uses all the <see cref="availableSize"/> given. Subclasses of SKCanvasElement
+	/// By default, SKCanvasElement uses all the <see cref="availableSize"/> given. Subclasses of <see cref="SKCanvasElement"/>
 	/// should override this method if they need something different.
 	/// </summary>
+	/// <remarks>An exception will be thrown if availableSize is infinite (e.g. if inside a StackPanel).</remarks>
 	protected override Size MeasureOverride(Size availableSize)
 	{
 		if (availableSize.Width == Double.PositiveInfinity ||
@@ -48,13 +67,13 @@ public abstract class SKCanvasElement : FrameworkElement
 		return availableSize;
 	}
 
+	/// <summary>
+	/// By default, SKCanvasElement uses all the <see cref="finalSize"/> given. Subclasses of <see cref="SKCanvasElement"/>
+	/// should override this method if they need something different.
+	/// </summary>
+	/// <remarks>An exception will be thrown if <see cref="finalSize"/> is infinite (e.g. if inside a StackPanel).</remarks>
 	protected override Size ArrangeOverride(Size finalSize)
 	{
-		_skiaVisual.Size = new Vector2((float)finalSize.Width, (float)finalSize.Height);
-		// clipping is necessary in case a user does a canvas clear without any clipping defined.
-		// In that case. the entire window will be cleared.
-		_skiaVisual.Clip = _skiaVisual.Compositor.CreateRectangleClip(0, 0, (float)finalSize.Width, (float)finalSize.Height);
-
 		if (finalSize.Width == Double.PositiveInfinity ||
 			finalSize.Height == Double.PositiveInfinity ||
 			double.IsNaN(finalSize.Width) ||
@@ -64,4 +83,6 @@ public abstract class SKCanvasElement : FrameworkElement
 		}
 		return finalSize;
 	}
+	
+	private void OnSizeChanged(object sender, SizeChangedEventArgs args) => _skiaVisual.Size = args.NewSize.ToVector2();
 }
