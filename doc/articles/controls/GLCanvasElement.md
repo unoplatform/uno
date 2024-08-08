@@ -2,13 +2,10 @@
 uid: Uno.Controls.GLCanvasElement
 ---
 
+## GLCanvasElement
+
 > [!IMPORTANT]
 > This functionality is only available on Skia Desktop (`net8.0-desktop`) targets that are running with hardware acceleration. This is also not available on MacOS.
-
-## GLCanvasElement
-    
-> [!IMPORTANT]
-> If your application uses `GLCanvasElement`, you will need to add a PackageReference to `Silk.NET.OpenGL`.
 
 `GLCanvasElement` is a `FrameworkElement` for drawing 3D graphics with OpenGL.
 
@@ -24,6 +21,11 @@ protected abstract void OnDestroy(GL gl);
 
 The protected constructor has a `Size` parameter, which decides the resolution of the offscreen framebuffer that the `GLCanvasElement` will draw onto. Note that the `resolution` parameter is unrelated to the final size of the drawing in the Uno window. After drawing (using `RenderOverride`) is done, the output is resized to fit the arranged size of the `GLCanvasElement`. You can control the final size just like any other `UIelement`, e.g. using `MeasureOverride`, `ArrangeOverride`, the `Width/Height` properties, etc.
 
+The 3 abstract methods above all take a `Silk.NET.OpenGL.GL` parameter that can be used to make OpenGL calls.
+
+> [!IMPORTANT]
+> If your application uses `GLCanvasElement`, you will need to add a PackageReference to `Silk.NET.OpenGL`.
+
 The `Init` method is a regular OpenGL setup method that you can use to set up the needed OpenGL objects, like textures, Vertex Array Buffers (VAOs), Element Array Buffers (EBOs), etc.
 
 The `OnDestroy` method is the complement of `Init` and is used to clean up any allocated resources.
@@ -31,7 +33,7 @@ The `OnDestroy` method is the complement of `Init` and is used to clean up any a
 > [!IMPORTANT]
 > `Init` and `OnDestroy` might be called multiple times in pairs. Every call to `OnDestroy` will be preceded by a call to `Init`.
 
-The `RenderOverride` method takes a `Silk.NET.OpenGL.GL` instance that can be used to make OpenGL calls. When adding your drawing logic in `RenderOverride` on the provided canvas, you can assume that the OpenGL viewport rectangle is already set and its dimensions are equal to the `resolution` parameter provided to the `GLCanvasElement` constructor. Due to the fact that both `GLCanvasElement` and the Skia rendering engine used by Uno both use OpenGL, you must make sure to restore all the OpenGL state values to their original values at the end of `RenderOverride`. For example, make sure to save the values for the initially-bound VAO if you intend to bind your own VAO and bind the original VAO at the end of `RenderOverride`.
+The `RenderOverride` is the main render-loop function. When adding your drawing logic in `RenderOverride`, you can assume that the OpenGL viewport rectangle is already set and its dimensions are equal to the `resolution` parameter provided to the `GLCanvasElement` constructor. Due to the fact that both `GLCanvasElement` and the Skia rendering engine used by Uno both use OpenGL, you must make sure to restore all the OpenGL state values to their original values at the end of `RenderOverride`. For example, make sure to save the values for the initially-bound VAO if you intend to bind your own VAO and bind the original VAO at the end of `RenderOverride`.
 
 ```csharp
 protected override void RenderOverride(GL gl)
