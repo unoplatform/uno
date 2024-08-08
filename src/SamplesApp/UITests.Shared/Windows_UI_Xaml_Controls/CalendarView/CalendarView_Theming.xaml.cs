@@ -6,6 +6,7 @@ using Uno.Helpers.Theming;
 #endif
 using Uno.UI.Samples.Controls;
 #if WINAPPSDK
+using Windows.UI;
 using Windows.UI.ViewManagement;
 #endif
 
