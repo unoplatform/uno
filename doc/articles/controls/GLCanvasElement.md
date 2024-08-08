@@ -77,8 +77,10 @@ XAML:
              d:DesignHeight="300"
              d:DesignWidth="400">
 
-    <skia:GLTriangleElement />
-    <not_skia:TextBlock Text="This sample is only supported on skia." />
+    <Grid>
+        <skia:GLTriangleElement />
+        <not_skia:TextBlock Text="This sample is only supported on skia." />
+    </Grid>
 </UserControl>
 ```
 

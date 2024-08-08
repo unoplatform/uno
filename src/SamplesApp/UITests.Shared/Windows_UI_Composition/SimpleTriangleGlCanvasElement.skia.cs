@@ -1,3 +1,4 @@
+#if __SKIA__
 using System;
 using System.Drawing;
 using Microsoft.UI.Xaml.Controls;
@@ -105,3 +106,4 @@ void main()
 		}
 	}
 }
+#endif

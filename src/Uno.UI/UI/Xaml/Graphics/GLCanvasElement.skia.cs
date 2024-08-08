@@ -135,7 +135,7 @@ public abstract partial class GLCanvasElement : FrameworkElement
 			{
 				throw new InvalidOperationException("Offscreen framebuffer is not complete");
 			}
-			
+
 			Init(_gl);
 		}
 		_gl.BindFramebuffer(GLEnum.Framebuffer, 0);
@@ -163,16 +163,16 @@ public abstract partial class GLCanvasElement : FrameworkElement
 	}
 
 	private protected override void OnUnloaded()
-    {
-    	Marshal.FreeHGlobal(_pixels);
+	{
+		Marshal.FreeHGlobal(_pixels);
 
-    	if (_gl is { })
-    	{
-    		_gl.DeleteFramebuffer(_framebuffer);
-    		_gl.DeleteTexture(_textureColorBuffer);
-    		_gl.DeleteRenderbuffer(_renderBuffer);
-    	}
-    }
+		if (_gl is { })
+		{
+			_gl.DeleteFramebuffer(_framebuffer);
+			_gl.DeleteTexture(_textureColorBuffer);
+			_gl.DeleteRenderbuffer(_renderBuffer);
+		}
+	}
 
 	/// <summary>
 	/// By default, <see cref="GLCanvasElement"/> uses all the <see cref="availableSize"/> given. Subclasses of <see cref="SKCanvasElement"/>

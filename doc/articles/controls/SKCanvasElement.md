@@ -47,15 +47,17 @@ XAML:
              d:DesignHeight="300"
              d:DesignWidth="400">
 
-    <skia:Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <Slider Grid.Row="0" x:Name="slider" Header="Sample" Minimum="0" Maximum="{x:Bind MaxSampleIndex}" />
-        <local:SKCanvasElementImpl Grid.Row="1" Sample="{x:Bind slider.Value, Mode=OneWay}" />
-    </skia:Grid>
-    <not_skia:TextBlock Text="This sample is only supported on skia." />
+    <Grid>
+        <skia:Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Slider Grid.Row="0" x:Name="slider" Header="Sample" Minimum="0" Maximum="{x:Bind MaxSampleIndex}" />
+            <local:SKCanvasElementImpl Grid.Row="1" Sample="{x:Bind slider.Value, Mode=OneWay}" />
+        </skia:Grid>
+        <not_skia:TextBlock Text="This sample is only supported on skia." />
+    </Grid>
 </UserControl>
 ```
 

@@ -11,6 +11,7 @@
 
 // https://github.com/dotnet/Silk.NET/tree/c27224cce6b8136224c01d40de2d608879d709b5/examples/CSharp/OpenGL%20Tutorials
 
+#if __SKIA__
 using System;
 using System.Diagnostics;
 using System.Numerics;
@@ -284,3 +285,4 @@ void main() {
 		}
 	}
 }
+#endif
