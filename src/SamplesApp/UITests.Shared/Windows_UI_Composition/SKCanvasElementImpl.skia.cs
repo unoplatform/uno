@@ -30,7 +30,7 @@ public class SKCanvasElementImpl : SKCanvasElement
 	protected override void RenderOverride(SKCanvas canvas, Size area)
 	{
 		var minDim = Math.Min(area.Width, area.Height);
-		// rescale to fit the given area, assuming each drawing takes is 260x260
+		// rescale to fit the given area, assuming each drawing is 260x260
 		canvas.Scale((float)(minDim / 260), (float)(minDim / 260));
 
 		switch (Sample)
