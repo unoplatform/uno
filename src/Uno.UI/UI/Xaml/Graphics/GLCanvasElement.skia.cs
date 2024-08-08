@@ -1,15 +1,19 @@
+#nullable enable
+
+using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Windows.Foundation;
 using Silk.NET.Core.Contexts;
 using Silk.NET.OpenGL;
 using Uno.Foundation.Extensibility;
-using Uno.UI.Runtime.Skia;
 
 namespace Microsoft.UI.Xaml.Controls;
 
 public abstract partial class GLCanvasElement : FrameworkElement
 {
+	internal delegate IntPtr GLGetProcAddress(string proc);
+
 	private const int BytesPerPixel = 4;
 
 	private readonly uint _width;
