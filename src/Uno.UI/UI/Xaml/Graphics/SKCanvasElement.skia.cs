@@ -1,7 +1,6 @@
 using System;
 using System.Numerics;
 using Windows.Foundation;
-using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Hosting;
 using SkiaSharp;
 
@@ -11,22 +10,8 @@ namespace Microsoft.UI.Xaml.Controls;
 /// A <see cref="FrameworkElement"/> that exposes the ability to draw directly on the window using SkiaSharp.
 /// </summary>
 /// <remarks>This is only available on skia-based targets.</remarks>
-public abstract class SKCanvasElement : FrameworkElement
+public abstract partial class SKCanvasElement : FrameworkElement
 {
-	private class SKCanvasVisual(SKCanvasElement owner, Compositor compositor) : Visual(compositor)
-	{
-		internal override void Paint(in PaintingSession session)
-		{
-			session.Canvas.Save();
-			// clipping here guards against a naked canvas.Clear() call which would wipe out the entire window.
-			session.Canvas.ClipRect(new SKRect(0, 0, Size.X, Size.Y));
-			owner.RenderOverride(session.Canvas, Size.ToSize());
-			session.Canvas.Restore();
-		}
-
-		public void Invalidate() => Compositor.InvalidateRender(this);
-	}
-
 	private readonly SKCanvasVisual _skiaVisual;
 
 	protected SKCanvasElement()

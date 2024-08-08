@@ -3,7 +3,7 @@ using System;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-public abstract class SKCanvasElement : FrameworkElement
+public abstract partial class SKCanvasElement : FrameworkElement
 {
 	protected SKCanvasElement()
 	{
