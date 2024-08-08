@@ -1,3 +1,4 @@
+using System;
 using System.Numerics;
 using Windows.Foundation;
 using Microsoft.UI.Composition;
@@ -74,8 +75,8 @@ public abstract class SKCanvasElement : FrameworkElement
 	/// <remarks>An exception will be thrown if <see cref="finalSize"/> is infinite (e.g. if inside a StackPanel).</remarks>
 	protected override Size ArrangeOverride(Size finalSize)
 	{
-		if (finalSize.Width == Double.PositiveInfinity ||
-			finalSize.Height == Double.PositiveInfinity ||
+		if (finalSize.Width == double.PositiveInfinity ||
+			finalSize.Height == double.PositiveInfinity ||
 			double.IsNaN(finalSize.Width) ||
 			double.IsNaN(finalSize.Height))
 		{
