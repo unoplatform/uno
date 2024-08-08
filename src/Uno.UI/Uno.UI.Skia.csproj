@@ -30,6 +30,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="SkiaSharp.HarfBuzz" />
+		<PackageReference Include="Silk.NET.OpenGL" Version="2.16.0" PrivateAssets="All" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -95,10 +96,6 @@
 			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
 			<UndefineProperties>TargetFramework</UndefineProperties>
 		</ProjectReference>
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="Silk.NET.OpenGL" Version="2.16.0" />
 	</ItemGroup>
 
 	<Target Name="VS16Mac_RemoveSystemMemory" BeforeTargets="ResolveAssemblyReferences" Condition="$([MSBuild]::IsOsPlatform('OSX'))">

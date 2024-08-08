@@ -38,6 +38,7 @@
 	<ItemGroup>
 		<PackageReference Include="SkiaSharp.Views.WPF" />
 		<PackageReference Include="SkiaSharp.Harfbuzz" />
+		<PackageReference Include="Silk.NET.OpenGL" Version="2.16.0" PrivateAssets="All" />
 
 		<!-- 
 			Required to ensure that this reference is latest and not 
