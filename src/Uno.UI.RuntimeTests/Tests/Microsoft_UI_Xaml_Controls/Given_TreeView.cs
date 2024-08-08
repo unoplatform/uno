@@ -371,6 +371,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 
 #if HAS_UNO
 		[TestMethod]
+		[RequiresFullWindow]
 		public async Task When_ItemTemplateSelector_DataTemplate_Root_IsNot_TreeViewItem()
 		{
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
@@ -378,8 +379,11 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 				Assert.Inconclusive(); // "System.NotImplementedException: RenderTargetBitmap is not supported on this platform.";
 			}
 
+			Border border = null;
+
 			var sp = new StackPanel
 			{
+				Background = new SolidColorBrush(Colors.Blue),
 				Children =
 				{
 					new TreeView
@@ -387,7 +391,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 						ItemsSource = "12",
 						ItemTemplateSelector = new TreeItemTemplateSelector
 						{
-							Template = new DataTemplate(() => new Border
+							Template = new DataTemplate(() => border = new Border
 							{
 								Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
 								Width = 100,
@@ -402,10 +406,13 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			await UITestHelper.Load(sp);
 
 			var tv = sp.FindFirstDescendant<TreeView>();
+
+			Assert.IsNotNull(border);
+			var containerX = border.GetAbsoluteBoundsRect().X;
 			var screenshot = await UITestHelper.ScreenShot(tv);
+
 			var tvi = sp.FindFirstDescendant<TreeViewItem>();
-			var x = 40d; // roughly the midX of tvi in tv coordinates
-			x /= screenshot.ImplicitScaling; // HasColorAt takes screenshot coordinates, not managed coordinates
+			var x = containerX + 50d;
 			ImageAssert.HasColorAt(screenshot, new Point(x, screenshot.Height / 4), Microsoft.UI.Colors.Red);
 			ImageAssert.HasColorAt(screenshot, new Point(x, screenshot.Height * 3 / 4), Microsoft.UI.Colors.Red);
 
