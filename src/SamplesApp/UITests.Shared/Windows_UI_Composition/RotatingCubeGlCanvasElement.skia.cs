@@ -110,8 +110,11 @@ void main() {
 		}
 
 		// somewhat follows https://github.com/c2d7fa/opengl-cube
-		protected unsafe override void RenderOverride(GL Gl)
+		protected override unsafe void RenderOverride(GL Gl)
 		{
+			Gl.Enable(EnableCap.DepthTest);
+			Gl.DepthMask(true);
+
 			Gl.ClearColor(0.1f, 0.12f, 0.2f, 1);
 			Gl.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
