@@ -206,6 +206,11 @@ namespace Microsoft.UI.Xaml.Documents
 							goto MaxLinesHit;
 						}
 
+						if (segment.IsTab)
+						{
+							segment.AdjustTabWidth(x);
+						}
+
 						float remainingWidth = availableWidth - x;
 						(int segmentLengthWithoutTrailingSpaces, float widthWithoutTrailingSpaces) = GetSegmentRenderInfo(segment, start, characterSpacing);
 
@@ -294,8 +299,8 @@ namespace Microsoft.UI.Xaml.Documents
 							}
 						}
 
-						// By this point, we must have at least dealt with the leading spaces.
-						global::System.Diagnostics.CI.Assert(start >= segment.LeadingSpaces);
+						// By this point, we must have at least dealt with all the leading spaces. We either drew
+						// all the leading spaces or we drew as many as we could and we're discarding the rest.
 
 						if (x > 0)
 						{
@@ -832,6 +837,23 @@ namespace Microsoft.UI.Xaml.Documents
 					caretLocation = x + justifySpaceOffset * segmentSpan.TrailingSpaces;
 				}
 
+				if (Math.Round(caretLocation + CaretThickness) > _lastArrangedSize.Width)
+				{
+					// WinUI draws the caret one-pixel early if the text takes (almost) all the available width.
+					// Try this and move the caret to the end (after the l):
+					// new TextBox
+					// {
+					// 	Width = 94,
+					// 	TextWrapping = TextWrapping.Wrap,
+					// 	Text = "abcdefghijkl",
+					// 	FontFamily = new FontFamily("/Assets/Roboto-Regular.ttf#Roboto")
+					// }
+					// and try again with
+					// 	Width = 95,
+					// Notice how the caret is drawn one pixel later in the second case even though the text is the exact same.
+					caretLocation--;
+				}
+
 				if (caretLocation != float.MinValue && fireEvents)
 				{
 					CaretFound?.Invoke(new Rect(new Point(caretLocation, y - line.Height), new Point(caretLocation + CaretThickness, y)));
@@ -1007,86 +1029,6 @@ namespace Microsoft.UI.Xaml.Documents
 			} while (i < line.RenderOrderedSegmentSpans.Count);
 
 			return extendedSelection ? (span, spanX - span.Width) : null;
-		}
-
-		/// <remarks>
-		/// Adjusted for surrogate pairs
-		/// </remarks>
-		internal (int start, int end) GetStartAndEndIndicesForSpanAdjusted(RenderSegmentSpan span, bool includeNewline)
-		{
-			var characterCount = 0;
-			var lineIndex = 0;
-			RenderLine line;
-			for (; lineIndex < _renderLines.Count; lineIndex++)
-			{
-				line = _renderLines[lineIndex];
-				if (line.SegmentSpans.Contains(span))
-				{
-					break;
-				}
-				characterCount += line.SegmentSpans.Sum(GlyphsLengthWithCR);
-			}
-
-			line = _renderLines[lineIndex];
-
-			characterCount += line.SegmentSpans
-				.TakeWhile(s => !s.Equals(span)) // all previous spans in line
-				.Sum(GlyphsLengthWithCR); // all characters in span
-
-			var start = characterCount;
-			var end = characterCount + GlyphsLengthWithCR(span);
-			if (!includeNewline && (SpanEndsInNewLine(span)))
-			{
-				end -= span.Segment.LineBreakLength;
-			}
-
-			return AdjustSelectionForSurrogatePairs(start, end);
-		}
-
-		/// <summary>
-		/// When we read the length of a span or segment from Skia/HarfBuzz, what we actually get is the
-		/// number of glyphs (i.e. Unicode runes), not the number of c# chars, so surrogate pairs will
-		/// only be counted as a single "unit". This method stretches the range to account for surrogate
-		/// pairs being 2 characters, not one.
-		/// </summary>
-		/// <remarks>
-		/// Make sure not to call this on an already-adjusted range with surrogate pairs in it, as it will
-		/// double count the surrogate pairs.
-		/// </remarks>
-		/// <remarks>Assumes valid indices</remarks>
-		private (int start, int end) AdjustSelectionForSurrogatePairs(int unadjustedStart, int unadjustedEnd)
-		{
-			var start = Math.Min(unadjustedStart, unadjustedEnd);
-			var end = Math.Max(unadjustedStart, unadjustedEnd);
-			var text = ((IBlock)_collection.GetParent()).GetText();
-
-			var count = 0;
-			for (int i = 0, j = 0; i < text.Length && j < start; i++, j++, count += 1)
-			{
-				if (i < text.Length - 1 && char.IsSurrogatePair(text[i], text[i + 1]))
-				{
-					// Notice how j didn't move here
-					count += 1;
-					i++;
-				}
-			}
-
-			var adjustedStart = count;
-
-			for (int i = start, j = 0; i < text.Length && j < end - start; i++, j++, count += 1)
-			{
-				if (i < text.Length - 1 && char.IsSurrogatePair(text[i], text[i + 1]))
-				{
-					// Notice how j didn't move here
-					count += 1;
-					i++;
-				}
-			}
-
-			var adjustedEnd = count;
-
-			// keep direction
-			return unadjustedStart < unadjustedEnd ? (adjustedStart, adjustedEnd) : (adjustedEnd, adjustedStart);
 		}
 
 		// equivalent to AdjustSelectionForSurrogatePairs for a single index

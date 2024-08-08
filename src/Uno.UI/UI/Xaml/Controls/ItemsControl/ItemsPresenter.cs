@@ -168,21 +168,26 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.OnTemplatedParentChanged(e);
 
-			if (TemplatedParent is ItemsControl itemsControl && IsLoaded)
+			if (TemplatedParent is ItemsControl itemsControl
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+				&& IsLoaded
+#endif
+				)
 			{
 				itemsControl.SetItemsPresenter(this);
 			}
 		}
 
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
-
 			if (TemplatedParent is ItemsControl itemsControl && IsLoaded)
 			{
 				itemsControl.SetItemsPresenter(this);
 			}
 		}
+#endif
 
 		public ItemsPresenter()
 		{

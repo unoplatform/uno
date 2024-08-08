@@ -45,7 +45,6 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 {
 	[TestClass]
 	[RequiresFullWindow]
-	[RunsOnUIThread]
 	public partial class NavigationViewTests : MUXApiTestBase
 	{
 		private async Task<NavigationView> SetupNavigationView(NavigationViewPaneDisplayMode paneDisplayMode = NavigationViewPaneDisplayMode.Auto, bool wrapInScrollViewer = false)

@@ -6,6 +6,9 @@ uid: Uno.Features.WinUIWindow
 
 > [!TIP]
 > This article covers Uno-specific information for `Microsoft.UI.Xaml.Window` and windowing. For a full description of the feature and instructions on using it, see [Window Class](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.window) and [Windowing Overview](https://learn.microsoft.com/windows/apps/windows-app-sdk/windowing/windowing-overview).
+>
+> [!Video https://www.youtube-nocookie.com/embed?listType=playlist&list=PLl_OlDcUya9qHAzFlO5Z6SGJ8zHg-nYkh]
+For more information and detailed walkthroughs on Windowing, please refer to the rest of the [video playlist](https://www.youtube.com/playlist?list=PLl_OlDcUya9qHAzFlO5Z6SGJ8zHg-nYkh).
 
 * The `Microsoft.UI.Xaml.Window` class allows for managing the window of the application.
 * This article also describes window management in Uno Platform apps
@@ -98,9 +101,9 @@ var nativeWindow = Uno.UI.Xaml.WindowHelper.GetNativeWindow(MainWindow);
 
 The `nativeWindow` is an `object`, so you need to cast it to the specific type on the given platform. See the table below:
 
-|                            | Skia+GTK | Skia+WPF | iOS   | Android | macOS | Catalyst | WebAssembly |
-| -------------------------- | :------: | :------: | :---: | :-----: | :---: | :------: | :---------: |
-| `WindowHelper.GetNativeWindow`` |`Gtk.Window`|`System.Windows.Window`|`UIKit.UIWindow`|`Android.View.Window`|`AppKit.NSWindow`|`UIKit.UIWindow`|`null`         |
+|                                |   Skia+GTK   |               Skia+X11                |        Skia+WPF         |       iOS        |        Android        |       macOS       |     Catalyst     | WebAssembly |
+| ------------------------------ | :----------: | :-----------------------------------: | :---------------------: | :--------------: | :-------------------: | :---------------: | :--------------: | :---------: |
+| `WindowHelper.GetNativeWindow` | `Gtk.Window` | `Uno.UI.Runtime.Skia.X11NativeWindow` | `System.Windows.Window` | `UIKit.UIWindow` | `Android.View.Window` | `AppKit.NSWindow` | `UIKit.UIWindow` |   `null`    |
 
 ## Avoiding `Window.Current`
 
@@ -120,6 +123,6 @@ This feature can help blend the background of the window with the background of 
 
 ### Supported platforms
 
-|                            | Skia Desktop | iOS   | Android | macOS | Catalyst | WebAssembly |
-| -------------------------- | :------: | :---: | :-----: | :---: | :------: | :---------: |
-| `WindowHelper.SetBackground` |   ✔️     | ❌    |  ❌     |  ❌  |   ❌     |  ❌         |
+|                              | Skia Desktop | iOS | Android | macOS | Catalyst | WebAssembly |
+| ---------------------------- | :----------: | :-: | :-----: | :---: | :------: | :---------: |
+| `WindowHelper.SetBackground` |      ✔️     | ❌  |   ❌    |  ❌  |    ❌    |     ❌     |

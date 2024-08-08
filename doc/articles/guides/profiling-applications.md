@@ -12,8 +12,8 @@ uid: Uno.Tutorials.ProfilingApplications
 
 Run the following commands
 
-- `dotnet tool update -g dotnet-dsrouter --add-source=https://aka.ms/dotnet-tools/index.json`
-- `dotnet tool update -g dotnet-trace --add-source=https://aka.ms/dotnet-tools/index.json`
+- `dotnet tool update -g dotnet-dsrouter`
+- `dotnet tool update -g dotnet-trace`
 
 ## Profiling .NET iOS applications
 
@@ -113,69 +113,58 @@ dotnet-trace collect --diagnostic-port ~/my-dev-port,connect --format speedscope
     dotnet-trace collect --diagnostic-port ~/my-desktop-port --format speedscope
     ```
 
-## Profiling .NET Android applications
+## Profiling .NET Android applications (.NET 8)
 
-### Adjust your application to enable profiling
+### Enable profiling in your application
 
-Profiling has to first be enabled in the application. Some additional properties need to be added to the `MyApp` project :
+In `Platforms/Android/environment.conf`, add **one** of the following lines:
 
-```xml
-<PropertyGroup>
-    <RuntimeIdentifier Condition="'$(TargetFramework)' == 'net8.0-android'">android-x64</RuntimeIdentifier>
-</PropertyGroup>
-
-<PropertyGroup Condition="'$(AndroidEnableProfiler)'=='true'">
-    <IsEmulator Condition="'$(IsEmulator)' == ''">true</IsEmulator>
-    <AndroidLinkResources>true</AndroidLinkResources>
-</PropertyGroup>
-
-<ItemGroup Condition="'$(AndroidEnableProfiler)'=='true'">
-    <AndroidEnvironment Condition="'$(IsEmulator)' == 'true'" Include="Platforms/Android/environment.emulator.txt" />
-    <AndroidEnvironment Condition="'$(IsEmulator)' != 'true'" Include="Platforms/Android/environment.device.txt" />
-</ItemGroup>
-```
-
-Then in the `Platforms/Android` application folder, add the following two files:
-
-- `environment.device.txt`
+- For devices:
 
     ```text
-    DOTNET_DiagnosticPorts=127.0.0.1:9000,suspend
+    DOTNET_DiagnosticPorts=127.0.0.1:9000,suspend,connect
     ```
 
-- `environment.emulator.txt`
+- For emulators:
 
     ```text
-    DOTNET_DiagnosticPorts=10.0.2.2:9001,suspend
+    DOTNET_DiagnosticPorts=10.0.2.2:9000,suspend,connect
     ```
 
-Note that the `suspend` directive means that if `dotnet-trace` is not running, the application waits for it to start.
+The `suspend` directive means that the application will wait for `dotnet-trace` connections before starting, `nosuspend` may also be used.
 
 ### Profiling the application
 
-- Start the diagnostics router, in any folder:
+- Start the diagnostics router:
+
+  - For devices, run `adb reverse tcp:9000 tcp:9001` then `dotnet-dsrouter android -v debug`
+
+  - For emulators, run `dotnet-dsrouter android-emu -v debug`
+
+- Run `dotnet-trace`, in the folder where you want your traces to be stored, using the **PID** provided by the `dotnet-dsrouter` output:
 
     ```dotnetcli
-    dotnet-dsrouter client-server -tcps 127.0.0.1:9001 -ipcc /tmp/uno-app --verbose debug
+    dotnet-trace collect -p PID --format speedscope
     ```
 
-- Start `dotnet-trace`, in the app folder or where you want your traces to be stored:
-
-    ```dotnetcli
-    dotnet-trace collect --diagnostic-port /tmp/uno-app --format speedscope -o uno-app-trace
-    ```
-
-- Start an `x86-64` emulator or `arm64` (`armv8`) device
+- Start the `x64` emulator or the `arm64` device
     > Running on a 32 bits device is not supported and will generate unusable traces in SpeedScope
+
 - Build the application with profiling enabled
 
     ```dotnetcli
-    dotnet build -f net7.0-android -t:run -c Release -p:IsEmulator=true /p:RunAOTCompilation=true /p:AndroidEnableProfiler=true
+    dotnet build -c Release -f net8.0-android -r android-arm64 -t:Run -p:AndroidEnableProfiler=true
     ```
 
-- The app will start and the `dotnet-trace` will display a MB number counting up
-- Use the app and once done, stop `dotnet-trace` using the specified method (Likely `Enter` or `Ctr+C`)
-- Open a browser at `https://speedscope.app` and drop the `uno-app-trace.speedscope.json` file on it
+  Use `-r android-x64` for emulators instead.
+
+- The app will start and `dotnet-trace` will display a MB number counting up
+
+- Use the app, once done, stop `dotnet-trace` by pressing `Enter` or `Ctrl+C`
+
+- Open a browser at `https://speedscope.app` and drop the `*.speedscope.json` file in it
+
+See complete [documentation](https://github.com/xamarin/xamarin-android/blob/main/Documentation/guides/tracing.md) for more details.
 
 ### Analyzing the trace data
 

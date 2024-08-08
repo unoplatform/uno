@@ -12,7 +12,6 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.Runtime.Skia.Gtk.Extensions;
-using static Uno.UI.Xaml.Controls.BorderLayerRenderer;
 using GtkWindow = Gtk.Window;
 using Uno.UI.Runtime.Skia.Gtk.Helpers.Dpi;
 using Windows.Graphics.Display;
@@ -61,7 +60,7 @@ internal abstract class GtkTextBoxView : IOverlayTextBoxView
 
 	public void AddToTextInputLayer(XamlRoot xamlRoot)
 	{
-		if (GtkNativeElementHostingExtension.GetOverlayLayer(xamlRoot) is { } layer && RootWidget.Parent != layer)
+		if (GtkManager.XamlRootMap.GetHostForRoot(xamlRoot)?.NativeOverlayLayer is { } layer && RootWidget.Parent != layer)
 		{
 			layer.Put(RootWidget, 0, 0);
 			layer.ShowAll();

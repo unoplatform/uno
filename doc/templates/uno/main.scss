@@ -489,10 +489,29 @@ h5 {
   }
 }
 
+// Specific case for paragraphs under embedded videos
+.embeddedvideo + p {
+  margin-top: 10px;
+}
 
 // Algolia
 .DocSearch-Hit-content-wrapper {
   height: 100%;
+}
+
+// Mermaid graph
+/* Workaround until this issue https://github.com/mermaid-js/mermaid/issues/1984 is fixed and mermaid version updated */
+.lang-mermaid svg {
+  height: auto;
+}
+
+// For tabbed content
+.tabGroup {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+.tabGroup section[role="tabpanel"] > pre:last-child {
+  margin-bottom: 0;
 }
 
 // Easy-copy-code
@@ -507,12 +526,9 @@ h5 {
   margin-top: 16px;
   min-height: 30px;
 }
-.tabGroup section[role="tabpanel"] .code-header {
-  margin-left: -16px;
-  margin-right: -16px;
-}
-.tabGroup section[role="tabpanel"] .code-header:first-child {
-  margin-top: -16px;
+.tabGroup section[role="tabpanel"] > .codeHeader, .tabGroup section[role="tabpanel"] > pre {
+  margin-left: 0;
+  margin-right: 0;
 }
 .code-header > .language {
   padding: 2px 16px;

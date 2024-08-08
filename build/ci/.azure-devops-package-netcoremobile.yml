@@ -10,17 +10,6 @@ jobs:
 
   pool: ${{ parameters.poolName }}
 
-  strategy:
-    matrix:
-      NET8:
-        UnoDisableNetPreviousMobile: true
-        ZipFileTargetFramework: net8
-
-      NET7:
-        UnoDisableNetCurrentMobile: true
-        UnoDisableNetCurrent: true
-        ZipFileTargetFramework: net7
-
   variables:
     CombinedConfiguration: Release|Any CPU
     CI_Build: true
@@ -56,13 +45,13 @@ jobs:
   - task: DotNetCoreCLI@2
     inputs:
       workingDirectory: Build
-      arguments: Uno.UI.Build.csproj /nr:false /r /m /t:PrepareBuildAssets "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer)-netcoremobile-$(ZipFileTargetFramework)-prepare-$(XAML_FLAVOR_BUILD).binlog
+      arguments: Uno.UI.Build.csproj /nr:false /r /m /t:PrepareBuildAssets "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer)-netcoremobile-prepare-$(XAML_FLAVOR_BUILD).binlog
     displayName: Preparing assets
 
   - task: DotNetCoreCLI@2
     inputs:
       workingDirectory: Build
-      arguments: Uno.UI.Build.csproj /r /m /t:BuildCIMobile "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer)-netcoremobile-$(ZipFileTargetFramework)-$(XAML_FLAVOR_BUILD).binlog
+      arguments: Uno.UI.Build.csproj /r /m /t:BuildCIMobile "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer)-netcoremobile-$(XAML_FLAVOR_BUILD).binlog
     displayName: Building package binaries
 
   - task: MSBuild@1
@@ -76,7 +65,6 @@ jobs:
       restoreNugetPackages: false
       logProjectEvents: false
       createLogFile: false
-    condition: and(succeeded(), eq(variables['ZipFileTargetFramework'], 'net7'))
     displayName: Building WinAppSDK/UWP package binaries
 
   - template: templates/copy-package-assets.yml
@@ -86,7 +74,7 @@ jobs:
       rootFolderOrFile: $(build.sourcesdirectory)\build-artifacts\bin-$(XAML_FLAVOR_BUILD)
       includeRootFolder: false
       archiveType: 'zip'
-      archiveFile: '$(Build.ArtifactStagingDirectory)/windows-netcoremobile-$(ZipFileTargetFramework)-bin-$(XAML_FLAVOR_BUILD).zip'
+      archiveFile: '$(Build.ArtifactStagingDirectory)/windows-netcoremobile-bin-$(XAML_FLAVOR_BUILD).zip'
 
   - task: PublishBuildArtifacts@1
     condition: always()

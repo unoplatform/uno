@@ -13,9 +13,18 @@ using MUXControlsTestApp.Utilities;
 using Uno.UI.Helpers;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.ApplicationModel.DataTransfer;
-using Windows.UI;
+using Color = Windows.UI.Color;
+
+#if HAS_UNO_WINUI || WINAPPSDK || WINUI
+using Colors = Microsoft.UI.Colors;
+#else
+using Colors = Windows.UI.Colors;
+#endif
 
 using static Private.Infrastructure.TestServices;
+using Private.Infrastructure;
+using Microsoft.UI.Xaml.Data;
+
 
 #if WINAPPSDK
 using Uno.UI.Extensions;
@@ -32,6 +41,104 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[RunsOnUIThread]
 	public partial class Given_TextBox
 	{
+		[TestMethod]
+		[DataRow(UpdateSourceTrigger.Default)]
+		[DataRow(UpdateSourceTrigger.PropertyChanged)]
+		[DataRow(UpdateSourceTrigger.Explicit)]
+		[DataRow(UpdateSourceTrigger.LostFocus)]
+		public async Task When_TwoWay_Text_Binding(UpdateSourceTrigger trigger)
+		{
+			var SUT = new When_TwoWay_Text_Binding();
+			var tb = trigger switch
+			{
+				UpdateSourceTrigger.Default => SUT.tbTwoWay_triggerDefault,
+				UpdateSourceTrigger.PropertyChanged => SUT.tbTwoWay_triggerPropertyChanged,
+				UpdateSourceTrigger.Explicit => SUT.tbTwoWay_triggerExplicit,
+				UpdateSourceTrigger.LostFocus => SUT.tbTwoWay_triggerLostFocus,
+				_ => throw new Exception("Should not happen."),
+			};
+			var expectedSetCount = 0;
+
+			await UITestHelper.Load(SUT);
+
+			var vm = (When_TwoWay_Text_Binding.VM)tb.DataContext;
+
+			Assert.AreNotEqual(tb, FocusManager.GetFocusedElement(SUT.XamlRoot));
+
+			Assert.AreEqual(expectedSetCount, vm.SetCount);
+			Assert.AreEqual("", tb.Text);
+
+			// Change text while not focused
+			tb.Text = "Hello";
+			if (trigger != UpdateSourceTrigger.Explicit)
+			{
+				expectedSetCount++;
+			}
+
+			Assert.AreEqual(expectedSetCount, vm.SetCount);
+			Assert.AreEqual("Hello", tb.Text);
+
+			tb.Focus(FocusState.Programmatic);
+			Assert.AreEqual(tb, FocusManager.GetFocusedElement(SUT.XamlRoot));
+
+			// Change text while focused
+			tb.Text = "Hello2";
+			if (trigger is UpdateSourceTrigger.PropertyChanged)
+			{
+				expectedSetCount++;
+			}
+			Assert.AreEqual(expectedSetCount, vm.SetCount);
+			Assert.AreEqual("Hello2", tb.Text);
+
+			// To unfocus TextBox.
+			SUT.dummyButton.Focus(FocusState.Programmatic);
+			Assert.AreEqual(SUT.dummyButton, FocusManager.GetFocusedElement(SUT.XamlRoot));
+			if (trigger is UpdateSourceTrigger.Default or UpdateSourceTrigger.LostFocus)
+			{
+				expectedSetCount++;
+			}
+
+			// In WinUI, a WaitForIdle is required.
+			// In Uno, it's not at the time of writing the test.
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(expectedSetCount, vm.SetCount);
+			Assert.AreEqual("Hello2", tb.Text);
+		}
+
+		[TestMethod]
+		public async Task When_BorderThickness_Zero()
+		{
+			using var fluent = StyleHelper.UseFluentStyles();
+			var grid = new Grid
+			{
+				Width = 120,
+				Height = 120,
+				Background = new SolidColorBrush(Colors.Yellow)
+			};
+
+			var textBox = new TextBox
+			{
+				Text = "",
+				Background = new SolidColorBrush(Colors.Transparent),
+				BorderThickness = new Thickness(0),
+				Width = 100,
+				Height = 100
+			};
+
+			grid.Children.Add(textBox);
+
+			await UITestHelper.Load(grid);
+
+			var borderThicknessZero = await UITestHelper.ScreenShot(grid);
+
+			textBox.Visibility = Visibility.Collapsed;
+
+			var opacityZero = await UITestHelper.ScreenShot(grid);
+
+			await ImageAssert.AreEqualAsync(opacityZero, borderThicknessZero);
+		}
+
 #if __ANDROID__
 		[TestMethod]
 		public void When_InputScope_Null_And_ImeOptions()
@@ -532,8 +639,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			int update = 0;
 			var initialText = "Text";
-			string GetCurrentText() => initialText + update;
-			string GetNewText() => initialText + ++update;
 
 			var textBox = new TextBox
 			{
@@ -543,13 +648,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = textBox;
 			await WindowHelper.WaitForLoaded(textBox);
 
+			// make sure the initial (''->'Waiting') TextChanged event had time to be dispatched
+			await WindowHelper.WaitForIdle();
+
 			int textChangedInvokeCount = 0;
 			int textChangingInvokeCount = 0;
 
 			bool failedCheck = false;
 			bool finished = false;
 
-			void OnTextChanged(object sender, TextChangedEventArgs e)
+			string GetCurrentText() => initialText + update;
+			string GetNewText() => initialText + ++update;
+			async void OnTextChanged(object sender, TextChangedEventArgs e)
 			{
 				textChangedInvokeCount++;
 				if (GetCurrentText() != textBox.Text)

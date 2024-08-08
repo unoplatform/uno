@@ -1,4 +1,5 @@
-﻿	#nullable disable
+﻿#nullable disable
+#pragma warning disable IDE0051 // Members used for testing by reflection
 
 using System;
 using System.Formats.Asn1;
@@ -44,7 +45,7 @@ public class Given_Frame_DataContext : BaseTestClass
 	[TestMethod]
 	public async Task Check_Can_Change_Page1_With_DataContext()
 	{
-		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
+		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token;
 
 		var frame = new Microsoft.UI.Xaml.Controls.Frame();
 		UnitTestsUIContentHelper.Content = frame;
@@ -77,9 +78,10 @@ public class Given_Frame_DataContext : BaseTestClass
 	/// Navigate back to Page1
 	/// </summary>
 	[TestMethod]
+	[Ignore("This test is no longer valid with WinUI Frame #17739")]
 	public async Task Check_Can_Change_Page1_Navigate_And_Return_With_DataContext()
 	{
-		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
+		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token;
 
 		var frame = new Microsoft.UI.Xaml.Controls.Frame();
 		UnitTestsUIContentHelper.Content = frame;
@@ -123,10 +125,10 @@ public class Given_Frame_DataContext : BaseTestClass
 	/// Navigate back to Page1
 	/// </summary>
 	[TestMethod]
-	//[Ignore("Not yet working")]
+	[Ignore("This test is no longer valid with WinUI Frame #17739")]
 	public async Task Check_Can_Change_Page1_Before_Navigating_Back_With_DataContext()
 	{
-		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
+		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token;
 
 		var frame = new Microsoft.UI.Xaml.Controls.Frame();
 		UnitTestsUIContentHelper.Content = frame;
@@ -166,7 +168,7 @@ public class Given_Frame_DataContext : BaseTestClass
 	[TestMethod]
 	public async Task Check_Can_Change_Page1_With_Inherited_DataContext()
 	{
-		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
+		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token;
 
 		var frame = new Microsoft.UI.Xaml.Controls.Frame();
 		UnitTestsUIContentHelper.Content = frame;

@@ -3,51 +3,23 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if false
+#if false || false || false || false || false || false || false
 	public enum TeachingTipPlacementMode
 	{
-#if false
-		Auto = 0,
-#endif
-#if false
-		Top = 1,
-#endif
-#if false
-		Bottom = 2,
-#endif
-#if false
-		Left = 3,
-#endif
-#if false
-		Right = 4,
-#endif
-#if false
-		TopRight = 5,
-#endif
-#if false
-		TopLeft = 6,
-#endif
-#if false
-		BottomRight = 7,
-#endif
-#if false
-		BottomLeft = 8,
-#endif
-#if false
-		LeftTop = 9,
-#endif
-#if false
-		LeftBottom = 10,
-#endif
-#if false
-		RightTop = 11,
-#endif
-#if false
-		RightBottom = 12,
-#endif
-#if false
-		Center = 13,
-#endif
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.TeachingTipPlacementMode.Auto
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.TeachingTipPlacementMode.Top
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.TeachingTipPlacementMode.Bottom
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.TeachingTipPlacementMode.Left
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.TeachingTipPlacementMode.Right
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.TeachingTipPlacementMode.TopRight
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.TeachingTipPlacementMode.TopLeft
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.TeachingTipPlacementMode.BottomRight
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.TeachingTipPlacementMode.BottomLeft
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.TeachingTipPlacementMode.LeftTop
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.TeachingTipPlacementMode.LeftBottom
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.TeachingTipPlacementMode.RightTop
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.TeachingTipPlacementMode.RightBottom
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.TeachingTipPlacementMode.Center
 	}
 #endif
 }

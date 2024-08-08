@@ -63,11 +63,11 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(UnoRuntimeIdentifier)'=='WebAssembly'">
-		<DefineConstants>$(DefineConstants);__WASM__;UNO_HAS_ENHANCED_HIT_TEST_PROPERTY</DefineConstants>
+		<DefineConstants>$(DefineConstants);__WASM__;UNO_HAS_ENHANCED_HIT_TEST_PROPERTY;UNO_HAS_ENHANCED_LIFECYCLE</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(UnoRuntimeIdentifier)'=='Skia'">
-		<DefineConstants>$(DefineConstants);__SKIA__;UNO_HAS_ENHANCED_HIT_TEST_PROPERTY;UNO_HAS_MANAGED_SCROLL_PRESENTER;UNO_HAS_MANAGED_POINTERS;SUPPORTS_RTL</DefineConstants>
+		<DefineConstants>$(DefineConstants);__SKIA__;UNO_HAS_ENHANCED_HIT_TEST_PROPERTY;UNO_HAS_MANAGED_SCROLL_PRESENTER;UNO_HAS_MANAGED_POINTERS;SUPPORTS_RTL;UNO_HAS_ENHANCED_LIFECYCLE;UNO_HAS_BORDER_VISUAL</DefineConstants>
 		<DefineConstants>$(DefineConstants);UNO_SUPPORTS_NATIVEHOST;HAS_INPUT_INJECTOR</DefineConstants>
 	</PropertyGroup>
 
@@ -90,7 +90,7 @@
 
 	<PropertyGroup Condition="$(IsMacOS)">
 		<DefineConstants>$(DefineConstants);__MACOS__;XAMARIN;UNO_HAS_UIELEMENT_IMPLICIT_PINNING;UNO_HAS_MANAGED_SCROLL_PRESENTER;UNO_HAS_MANAGED_POINTERS</DefineConstants>
-		<SupportedOSPlatformVersion>10.14</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion>10.15</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(IsAndroid)">
@@ -98,7 +98,7 @@
 		<SupportedOSPlatformVersion>21.0</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
-	<PropertyGroup Condition=" '$(TargetFramework)' != 'uap10.0.19041' and '$(TargetFramework)'!='net7.0-windows10.0.19041.0' and '$(TargetPlatformIdentifier)' != 'UAP'">
+	<PropertyGroup Condition=" '$(TargetFramework)' != 'uap10.0.19041' and '$(TargetFramework)'!='net8.0-windows10.0.19041.0' and '$(TargetPlatformIdentifier)' != 'UAP'">
 		<DefineConstants>$(DefineConstants);HAS_UNO</DefineConstants>
 		<DefineConstants Condition="'$(UNO_UWP_BUILD)'!='true'">$(DefineConstants);HAS_UNO_WINUI</DefineConstants>
 
@@ -107,7 +107,7 @@
     	<DefaultXamlRuntime Condition="'$(DefaultXamlRuntime)'==''">WinUI</DefaultXamlRuntime>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(TargetFramework)'=='net7.0-windows10.0.19041.0'">
+	<PropertyGroup Condition="'$(TargetFramework)'=='net8.0-windows10.0.19041.0'">
 		<DefineConstants>$(DefineConstants);HAS_INPUT_INJECTOR;WINDOWS_WINUI</DefineConstants>
 	</PropertyGroup>
 
@@ -136,9 +136,9 @@
 			<!-- Current nuget publishing uses netX.0-android30.0 -->
 			<_OverrideTargetFramework Condition="$(_OverrideTargetFramework.EndsWith('.0-android'))">$(_OverrideTargetFramework)30.0</_OverrideTargetFramework>
 
-			<_overridePackageId>$(CommonOverridePackageId)</_overridePackageId>
-			<_overridePackageId Condition="'$(CommonOverridePackageId)'==''">$(AssemblyName)</_overridePackageId>
-			<_overridePackageId Condition="'$(UNO_UWP_BUILD)'=='false'">$(_overridePackageId.Replace('Uno.UI','Uno.WinUI'))</_overridePackageId>
+			<_overridePackageId>$(CommonOverridePackageId.ToLowerInvariant())</_overridePackageId>
+			<_overridePackageId Condition="'$(CommonOverridePackageId)'==''">$(AssemblyName.ToLowerInvariant())</_overridePackageId>
+			<_overridePackageId Condition="'$(UNO_UWP_BUILD)'=='false'">$(_overridePackageId.Replace('uno.ui','uno.winui'))</_overridePackageId>
 			<_TargetNugetFolder>$(NuGetPackageRoot)\$(_overridePackageId)\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
 			<_TargetNugetRefFolder>$(NuGetPackageRoot)\$(_overridePackageId)\$(UnoNugetOverrideVersion)\ref\$(_OverrideTargetFramework)</_TargetNugetRefFolder>
 		</PropertyGroup>
@@ -169,7 +169,8 @@
 			<_OverrideTargetFramework Condition="$(_OverrideTargetFramework.EndsWith('.0-android'))">$(_OverrideTargetFramework)30.0</_OverrideTargetFramework>
 
 			<CommonOverridePackageId Condition="'$(CommonOverridePackageId)'==''">$(AssemblyName)</CommonOverridePackageId>
-			<CommonOverridePackageId Condition="'$(UNO_UWP_BUILD)'=='false'">$(CommonOverridePackageId.Replace('Uno.UI','Uno.WinUI'))</CommonOverridePackageId>
+			<CommonOverridePackageId>$(CommonOverridePackageId.ToLowerInvariant())</CommonOverridePackageId>
+			<CommonOverridePackageId Condition="'$(UNO_UWP_BUILD)'=='false'">$(CommonOverridePackageId.Replace('uno.ui','uno.winui'))</CommonOverridePackageId>
 			<_TargetNugetFolder Condition="'$(UnoRuntimeIdentifier)'=='' or '$(UnoRuntimeIdentifier)'=='Reference'">$(NuGetPackageRoot)\$(CommonOverridePackageId)\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
 			<_TargetNugetFolder Condition="'$(UnoRuntimeIdentifier)'!='' and '$(UnoRuntimeIdentifier)'!='Reference'">$(NuGetPackageRoot)\$(CommonOverridePackageId)\$(UnoNugetOverrideVersion)\uno-runtime\$(TargetFramework)\$(UnoRuntimeIdentifier.ToLower())</_TargetNugetFolder>
 		</PropertyGroup>

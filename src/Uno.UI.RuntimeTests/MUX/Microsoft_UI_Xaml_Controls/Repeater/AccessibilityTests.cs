@@ -34,7 +34,6 @@ using RepeaterAutomationPeer = Microsoft/* UWP don't rename */.UI.Xaml.Automatio
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
 	[TestClass]
-	[Uno.UI.RuntimeTests.RunsOnUIThread]
 	public class AccessibilityTests : MUXApiTestBase
 	{
 		[TestMethod]

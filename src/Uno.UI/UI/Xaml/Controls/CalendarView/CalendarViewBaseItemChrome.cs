@@ -280,8 +280,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (pChildNoRef is { })
 			{
 				pChildNoRef.Measure(availableSize);
-				// TODO UNO
-				//pChildNoRef.EnsureLayoutStorage();
+				pChildNoRef.EnsureLayoutStorage();
 
 				desiredSize.Width = Math.Max(pChildNoRef.DesiredSize.Width, desiredSize.Width);
 				desiredSize.Height = Math.Max(pChildNoRef.DesiredSize.Height, desiredSize.Height);

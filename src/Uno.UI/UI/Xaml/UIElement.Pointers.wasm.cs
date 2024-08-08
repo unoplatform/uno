@@ -18,6 +18,7 @@ using Uno.UI;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml.Islands;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 using PointerIdentifierPool = Windows.Devices.Input.PointerIdentifierPool; // internal type (should be in Uno namespace)
@@ -330,14 +331,35 @@ public partial class UIElement : DependencyObject
 		if (args.ctrl) keyModifiers |= VirtualKeyModifiers.Control;
 		if (args.shift) keyModifiers |= VirtualKeyModifiers.Shift;
 
+		var buttons = (WindowManagerInterop.HtmlPointerButtonsState)args.buttons;
+		var buttonUpdate = (WindowManagerInterop.HtmlPointerButtonUpdate)args.buttonUpdate;
+
+		if (args.Event == (int)NativePointerEvent.pointerdown &&
+			buttons == WindowManagerInterop.HtmlPointerButtonsState.None &&
+			args.deviceType == (int)PointerDeviceType.Mouse)
+		{
+			// This scenario should technically not occur, but it may happen for macOS devices with the trackpad tap to click setting
+			// enabled (see discussion in issue #16076). To work around this, we use the buttonUpdate value which seems to be reliable.
+			buttons = buttonUpdate switch
+			{
+				WindowManagerInterop.HtmlPointerButtonUpdate.Left => WindowManagerInterop.HtmlPointerButtonsState.Left,
+				WindowManagerInterop.HtmlPointerButtonUpdate.Middle => WindowManagerInterop.HtmlPointerButtonsState.Middle,
+				WindowManagerInterop.HtmlPointerButtonUpdate.Right => WindowManagerInterop.HtmlPointerButtonsState.Right,
+				WindowManagerInterop.HtmlPointerButtonUpdate.X1 => WindowManagerInterop.HtmlPointerButtonsState.X1,
+				WindowManagerInterop.HtmlPointerButtonUpdate.X2 => WindowManagerInterop.HtmlPointerButtonsState.X2,
+				WindowManagerInterop.HtmlPointerButtonUpdate.Eraser => WindowManagerInterop.HtmlPointerButtonsState.Eraser,
+				_ => WindowManagerInterop.HtmlPointerButtonsState.None
+			};
+		}
+
 		return new PointerRoutedEventArgs(
 			args.timestamp,
 			pointerId,
 			position,
 			isInContact,
 			isInRange,
-			(WindowManagerInterop.HtmlPointerButtonsState)args.buttons,
-			(WindowManagerInterop.HtmlPointerButtonUpdate)args.buttonUpdate,
+			buttons,
+			buttonUpdate,
 			keyModifiers,
 			args.pressure,
 			wheel,
@@ -379,6 +401,11 @@ public partial class UIElement : DependencyObject
 	/// <returns></returns>
 	private object CoerceHitTestVisibility(object baseValue)
 	{
+		if (this is RootVisual or XamlIsland)
+		{
+			return HitTestability.Visible;
+		}
+
 		// The HitTestVisibilityProperty is never set directly. This means that baseValue is always the result of the parent's CoerceHitTestVisibility.
 		var baseHitTestVisibility = (HitTestability)baseValue;
 
@@ -431,19 +458,6 @@ public partial class UIElement : DependencyObject
 		{
 			UpdateDOMProperties();
 		}
-	}
-
-	internal void SetHitTestVisibilityForRoot()
-	{
-		// Root element must be visible to hit testing, regardless of the other properties values.
-		// The default value of HitTestVisibility is collapsed to avoid spending time coercing to a
-		// Collapsed.
-		HitTestVisibility = HitTestability.Visible;
-	}
-
-	internal void ClearHitTestVisibilityForRoot()
-	{
-		this.ClearValue(HitTestVisibilityProperty);
 	}
 
 	#endregion

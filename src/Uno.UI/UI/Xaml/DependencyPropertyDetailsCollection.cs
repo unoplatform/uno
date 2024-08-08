@@ -2,6 +2,7 @@
 
 using System;
 using System.Runtime.CompilerServices;
+using Microsoft.UI.Xaml.Data;
 using Uno.Buffers;
 using Uno.UI.DataBinding;
 
@@ -48,6 +49,51 @@ namespace Microsoft.UI.Xaml
 			_entries = _empty;
 		}
 
+		internal void CloneToForHotReload(DependencyPropertyDetailsCollection other, DependencyObjectStore store, DependencyObjectStore otherStore)
+		{
+			for (int i = 0; i < _entries.Length; i++)
+			{
+				if (_entries[i] is { Property: { } oldDP } oldDetails)
+				{
+					var newDP = DependencyProperty.GetProperty(oldDP.OwnerType, oldDP.Name);
+					if (newDP is null)
+					{
+						continue;
+					}
+
+					if (other.GetPropertyDetails(newDP) is { } newDetails)
+					{
+						oldDetails.CloneToForHotReload(newDetails);
+
+						// This may not work well for x:Bind, we will investigate proper support for x:Bind.
+						// Though, anything will be done now for x:Bind will need to be re-worked if we refactored
+						// x:Bind to be fully compiled, as in WinUI.
+						if (oldDetails.GetBinding() is { ParentBinding: { } binding })
+						{
+							var newBinding = new Binding(binding.Path, binding.Converter, binding.ConverterParameter);
+							var newSource = binding.Source;
+							if (newSource is IDependencyObjectStoreProvider { Store: { } oldStore } && oldStore == store)
+							{
+								newSource = otherStore.ActualInstance;
+							}
+
+							newBinding.Source = newSource;
+							newBinding.Mode = binding.Mode;
+							newBinding.TargetNullValue = binding.TargetNullValue;
+							newBinding.ElementName = binding.ElementName;
+							newBinding.FallbackValue = binding.FallbackValue;
+							if (binding.RelativeSource is { } relativeSource)
+							{
+								newBinding.RelativeSource = new RelativeSource(relativeSource.Mode);
+							}
+
+							otherStore.SetBinding(newDP, newBinding);
+						}
+					}
+				}
+			}
+		}
+
 		public void Dispose()
 		{
 			var entries = _entries;
@@ -60,6 +106,8 @@ namespace Microsoft.UI.Xaml
 			}
 
 			ReturnEntriesAndOffsetsToPools();
+
+			_entries = null!;
 		}
 
 		public DependencyPropertyDetails DataContextPropertyDetails
@@ -86,6 +134,11 @@ namespace Microsoft.UI.Xaml
 
 		private DependencyPropertyDetails? TryGetPropertyDetails(DependencyProperty property, bool forceCreate)
 		{
+			if (_entries is null)
+			{
+				return null;
+			}
+
 			if (forceCreate)
 			{
 				// Since BucketSize is a power of 2 we can shift and mask to divide and modulo respectively
@@ -140,11 +193,15 @@ namespace Microsoft.UI.Xaml
 					_entries = entries = newEntries;
 				}
 
-				ref var propertyEntry = ref entries[offset + bucketRemainder];
-
-				if (propertyEntry == null)
+				// Avoid using ref here, as TryResolveDefaultValueFromProviders execution could execute code which
+				// could cause the entries array to be expanded by bucket size and to be reallocated, which would
+				// cause the reference to be invalidated. Example of this is a child property which calls child.SetParent(this).
+				// Even though the _entries size may change, the offset and bucketRemainder will still be valid.
+				var propertyEntry = entries[offset + bucketRemainder];
+				if (propertyEntry is null)
 				{
 					propertyEntry = new DependencyPropertyDetails(property, _ownerType, property == _dataContextProperty || property == _templatedParentProperty);
+					_entries[offset + bucketRemainder] = propertyEntry;
 
 					if (TryResolveDefaultValueFromProviders(property, out var value))
 					{
@@ -198,7 +255,9 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		internal DependencyPropertyDetails?[] GetAllDetails() => _entries;
+		internal DependencyPropertyDetails?[] GetAllDetails()
+			// If _entries is null, it means we were already disposed. Gracefully return empty so that the caller doesn't have anything to do.
+			=> _entries ?? _empty;
 
 		internal void TryEnableHardReferences()
 		{

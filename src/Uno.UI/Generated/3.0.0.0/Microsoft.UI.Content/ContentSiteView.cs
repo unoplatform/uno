@@ -3,16 +3,11 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Content
 {
-#if false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class ContentSiteView
 	{
-#if false
-		internal ContentSiteView()
-		{
-		}
-#endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::System.Numerics.Vector2 ActualSize
@@ -83,16 +78,7 @@ namespace Microsoft.UI.Content
 			}
 		}
 #endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool IsSiteVisible
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ContentSiteView.IsSiteVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContentSiteView.IsSiteVisible");
-			}
-		}
-#endif
+		// Skipping already declared property IsSiteVisible
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Microsoft.UI.Content.ContentLayoutDirection LayoutDirection
@@ -103,36 +89,9 @@ namespace Microsoft.UI.Content
 			}
 		}
 #endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public float OverrideScale
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float ContentSiteView.OverrideScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20ContentSiteView.OverrideScale");
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public float ParentScale
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float ContentSiteView.ParentScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20ContentSiteView.ParentScale");
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public float RasterizationScale
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float ContentSiteView.RasterizationScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20ContentSiteView.RasterizationScale");
-			}
-		}
-#endif
+		// Skipping already declared property OverrideScale
+		// Skipping already declared property ParentScale
+		// Skipping already declared property RasterizationScale
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::System.Numerics.Vector2 RequestedSize

@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls;
 /// <summary>
 /// A border layouter, to apply Padding to the border.
 /// </summary>
-public partial class Border
+partial class Border
 #if !__CROSSRUNTIME__ && !IS_UNIT_TESTS
 	: ICustomClippingElement
 #endif
@@ -27,7 +27,7 @@ public partial class Border
 
 			var desiredSize = MeasureElement(child, childAvailableSize);
 
-			//IFC(pChild->EnsureLayoutStorage());
+			child.EnsureLayoutStorage();
 
 			// Desired size would be my child's desired size plus the border
 			desiredSize.Width = desiredSize.Width + combined.Width;

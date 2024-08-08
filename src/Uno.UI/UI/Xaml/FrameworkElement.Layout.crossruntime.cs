@@ -10,11 +10,13 @@ using Windows.Foundation;
 using Microsoft.UI.Xaml.Controls.Primitives;
 
 using Uno.UI;
+using Uno.UI.Xaml;
 using static System.Math;
 using static Uno.UI.LayoutHelper;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Core.Scaling;
+using Uno.UI.Extensions;
 
 namespace Microsoft.UI.Xaml
 {
@@ -22,10 +24,7 @@ namespace Microsoft.UI.Xaml
 	{
 		private readonly static IEventProvider _trace = Tracing.Get(FrameworkElement.TraceProvider.Id);
 
-		/// <summary>
-		/// DesiredSize from MeasureOverride, after clamping to min size but before being clipped by max size (from GetMinMax())
-		/// </summary>
-		private Size _unclippedDesiredSize;
+		private bool m_firedLoadingEvent;
 
 		private const double SIZE_EPSILON = 0.05d;
 		private readonly Size MaxSize = new Size(double.PositiveInfinity, double.PositiveInfinity);
@@ -44,6 +43,89 @@ namespace Microsoft.UI.Xaml
 				}
 			}
 		}
+
+		partial void OnLoading();
+
+		private void OnFwEltLoading()
+		{
+			IsLoading = true;
+
+			OnLoading();
+			OnLoadingPartial();
+
+			void InvokeLoading()
+			{
+				_loading?.Invoke(this, new RoutedEventArgs(this));
+			}
+
+			if (FeatureConfiguration.FrameworkElement.HandleLoadUnloadExceptions)
+			{
+				/// <remarks>
+				/// This method contains or is called by a try/catch containing method and
+				/// can be significantly slower than other methods as a result on WebAssembly.
+				/// See https://github.com/dotnet/runtime/issues/56309
+				/// </remarks>
+				void InvokeLoadingWithTry()
+				{
+					try
+					{
+						InvokeLoading();
+					}
+					catch (Exception error)
+					{
+						_log.Error("OnElementLoading failed in FrameworkElement", error);
+						Application.Current.RaiseRecoverableUnhandledException(error);
+					}
+				}
+
+				InvokeLoadingWithTry();
+			}
+			else
+			{
+				InvokeLoading();
+			}
+		}
+
+		private protected sealed override void OnFwEltLoaded()
+		{
+			OnLoadedPartial();
+
+			void InvokeLoaded()
+			{
+				// Raise event before invoking base in order to raise them top to bottom
+				OnLoaded();
+				_loaded?.Invoke(this, new RoutedEventArgs(this));
+			}
+
+			if (FeatureConfiguration.FrameworkElement.HandleLoadUnloadExceptions)
+			{
+				/// <remarks>
+				/// This method contains or is called by a try/catch containing method and
+				/// can be significantly slower than other methods as a result on WebAssembly.
+				/// See https://github.com/dotnet/runtime/issues/56309
+				/// </remarks>
+				void InvokeLoadedWithTry()
+				{
+					try
+					{
+						InvokeLoaded();
+					}
+					catch (Exception error)
+					{
+						_log.Error("OnElementLoaded failed in FrameworkElement", error);
+						Application.Current.RaiseRecoverableUnhandledException(error);
+					}
+				}
+
+				InvokeLoadedWithTry();
+			}
+			else
+			{
+				InvokeLoaded();
+			}
+		}
+
+		partial void OnLoadedPartial();
 
 		internal sealed override void MeasureCore(Size availableSize)
 		{
@@ -81,6 +163,11 @@ namespace Microsoft.UI.Xaml
 
 		private void InnerMeasureCore(Size availableSize)
 		{
+			if (_traceLayoutCycle && this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().LogWarning($"[LayoutCycleTracing] Measuring {this},{this.GetDebugName()} with availableSize {availableSize}.");
+			}
+
 			// Uno TODO
 			//CLayoutManager* pLayoutManager = VisualTree::GetLayoutManagerForElement(this);
 			//bool bInLayoutTransition = pLayoutManager ? pLayoutManager->GetTransitioningElement() == this : false;
@@ -99,12 +186,23 @@ namespace Microsoft.UI.Xaml
 
 			//bool bTemplateApplied = false;
 
-			//RaiseLoadingEventIfNeeded();
+			RaiseLoadingEventIfNeeded();
 
 			//if (!bInLayoutTransition)
 			{
 				// Templates should be applied here.
 				//bTemplateApplied = InvokeApplyTemplate();
+
+				// TODO: BEGIN Uno specific
+				if (this is Control thisAsControl)
+				{
+					thisAsControl.ApplyTemplate();
+
+					// Update bindings to ensure resources defined
+					// in visual parents get applied.
+					this.UpdateResourceBindings();
+				}
+				// TODO: END Uno specific
 
 				// Subtract the margins from the available size
 				var margin = Margin;
@@ -172,8 +270,8 @@ namespace Microsoft.UI.Xaml
 
 				// Here is the "true minimum" desired size - the one that is
 				// for sure enough for the control to render its content.
-				// EnsureLayoutStorage();
-				_unclippedDesiredSize = desiredSize;
+				EnsureLayoutStorage();
+				m_unclippedDesiredSize = desiredSize;
 
 				// More layout transforms processing here.
 
@@ -253,10 +351,53 @@ namespace Microsoft.UI.Xaml
 				desiredSize.Height = LayoutRound(desiredSize.Height);
 			}
 
-			// DesiredSize must include margins
-			LayoutInformation.SetDesiredSize(this, desiredSize);
+			if (_traceLayoutCycle && this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().LogWarning($"[LayoutCycleTracing] Measured {this},{this.GetDebugName()}: desiredSize is {desiredSize}.");
+			}
 
-			_logDebug?.Debug($"{DepthIndentation}[{FormatDebugName()}] Measure({Name}/{availableSize}/{Margin}) = {desiredSize} _unclippedDesiredSize={_unclippedDesiredSize}");
+#if __SKIA__
+			if (desiredSize != DesiredSize)
+#endif
+			{
+				// DesiredSize must include margins
+				m_desiredSize = desiredSize;
+#if __SKIA__
+				this.OnDesiredSizeChanged();
+#endif
+			}
+
+			_logDebug?.Debug($"{DepthIndentation}[{FormatDebugName()}] Measure({Name}/{availableSize}/{Margin}) = {desiredSize} _unclippedDesiredSize={m_unclippedDesiredSize}");
+		}
+
+		private protected virtual void OnDesiredSizeChanged()
+		{
+
+		}
+
+		private void RaiseLoadingEventIfNeeded()
+		{
+			if (!m_firedLoadingEvent //&&
+				/*ShouldRaiseEvent(_loading)*/ /*Uno TODO: Should we skip this or not? */)
+			{
+				//CEventManager* pEventManager = GetContext()->GetEventManager();
+				//ASSERT(pEventManager);
+
+				//TraceFrameworkElementLoadingBegin();
+
+				// Uno specific: WinUI only raises Loading event here.
+				OnFwEltLoading();
+				//pEventManager->Raise(
+				//	EventHandle(KnownEventIndex::FrameworkElement_Loading),
+				//	FALSE /* bRefire */,
+				//	this /* pSender */,
+				//	NULL /* pArgs */,
+				//	TRUE /* fRaiseSync */);
+
+				//TraceFrameworkElementLoadingEnd();
+
+				m_firedLoadingEvent = true;
+			}
 		}
 
 		private string FormatDebugName()
@@ -296,6 +437,10 @@ namespace Microsoft.UI.Xaml
 		private void InnerArrangeCore(Rect finalRect)
 		{
 			_logDebug?.Debug($"{DepthIndentation}{FormatDebugName()}: InnerArrangeCore({finalRect})");
+			if (_traceLayoutCycle && this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().LogWarning($"[LayoutCycleTracing] Arranging {this},{this.GetDebugName()} with finalRect {finalRect}.");
+			}
 
 			// Uno TODO:
 			//CLayoutManager* pLayoutManager = VisualTree::GetLayoutManagerForElement(this);
@@ -322,10 +467,9 @@ namespace Microsoft.UI.Xaml
 			Size clientSize = default;
 			double offsetX = 0, offsetY = 0;
 
-			// Uno TODO:
-			//IFC_RETURN(EnsureLayoutStorage());
+			EnsureLayoutStorage();
 
-			unclippedDesiredSize = _unclippedDesiredSize;
+			unclippedDesiredSize = m_unclippedDesiredSize;
 			oldRenderSize = RenderSize;
 
 			//if (!bInLayoutTransition)
@@ -461,10 +605,10 @@ namespace Microsoft.UI.Xaml
 			//	OnActualSizeChanged();
 			//}
 
-			//if (!IsSameSize(oldRenderSize, innerInkSize))
-			//{
-			//	VisualTree.GetLayoutManagerForElement(this).EnqueueForSizeChanged(this, oldRenderSize);
-			//}
+			if (oldRenderSize != innerInkSize)
+			{
+				this.GetContext().EventManager.EnqueueForSizeChanged(this, oldRenderSize);
+			}
 
 			//if (!bInLayoutTransition)
 			{
@@ -583,8 +727,15 @@ namespace Microsoft.UI.Xaml
 			var clippedFrame = GetClipRect(needsClipBounds, visualOffset, finalRect, new Size(maxWidth, maxHeight), margin);
 			ArrangeNative(visualOffset, clippedFrame);
 
-			OnLayoutUpdated();
+			if (_traceLayoutCycle && this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().LogWarning($"[LayoutCycleTracing] Arranged {this},{this.GetDebugName()}: {clippedFrame}.");
+			}
+
+			AfterArrange();
 		}
+
+		internal virtual void AfterArrange() { }
 
 		// Part of this code originates from https://github.com/dotnet/wpf/blob/b9b48871d457fc1f78fa9526c0570dae8e34b488/src/Microsoft.DotNet.Wpf/src/PresentationFramework/System/Windows/FrameworkElement.cs#L4877
 		private protected virtual Rect? GetClipRect(bool needsClipToSlot, Point visualOffset, Rect finalRect, Size maxSize, Thickness margin)
@@ -611,7 +762,7 @@ namespace Microsoft.UI.Xaml
 
 				Size clippingSize = default;
 
-				// EnsureLayoutStorage();
+				EnsureLayoutStorage();
 
 				// If clipping is forced, ensure the clip is at least as small as the RenderSize.
 				//if (forceClipToRenderSize)
@@ -760,6 +911,101 @@ namespace Microsoft.UI.Xaml
 
 			ArrangeVisual(newRect, clipRect);
 #endif
+		}
+
+		internal override void EnterImpl(EnterParams @params, int depth)
+		{
+			var core = this.GetContext();
+
+			//if (@params.IsLive && @params.CheckForResourceOverrides == false)
+			//{
+			//    var resources = GetResourcesNoCreate();
+
+			//    if (resources is not null &&
+			//        resources.HasPotentialOverrides())
+			//    {
+			//        @params.CheckForResourceOverrides = TRUE;
+			//    }
+			//}
+
+			base.EnterImpl(@params, depth);
+
+			////Check for focus chrome property.
+			//if (@params.IsLive)
+			//{
+			//	if (Control.GetIsTemplateFocusTarget(this))
+			//	{
+			//		UpdateFocusAncestorsTarget(true /*shouldSet*/); //Add pointer to the Descendant
+			//	}
+			//}
+
+			//// Walk the list of events (if any) to keep watch of loaded events.
+			//if (@params.IsLive && m_pEventList is not null)
+			//{
+			//	CXcpList<REQUEST>::XCPListNode* pTemp = m_pEventList.GetHead();
+			//	while (pTemp is not null)
+			//	{
+			//		REQUEST* pRequest = (REQUEST*)pTemp->m_pData;
+			//		if (pRequest && pRequest->m_hEvent.index != KnownEventIndex::UnknownType_UnknownEvent)
+			//		{
+			//			if (pRequest->m_hEvent.index == KnownEventIndex::FrameworkElement_Loaded)
+			//			{
+			//				// Take note of the fact we added a loaded event to the event manager.
+			//				core->KeepWatch(WATCH_LOADED_EVENTS);
+			//			}
+			//		}
+			//		pTemp = pTemp->m_pNext;
+			//	}
+			//}
+
+			// Apply style when element is live in the tree
+			if (@params.IsLive)
+			{
+				//if (m_eImplicitStyleProvider == ImplicitStyleProvider::None)
+				//{
+				//	if (!GetStyle())
+				//	{
+				//		IFC_RETURN(ApplyStyle());
+				//	}
+				//}
+				//else if (m_eImplicitStyleProvider == ImplicitStyleProvider::AppWhileNotInTree)
+				//{
+				//	IFC_RETURN(UpdateImplicitStyle(m_pImplicitStyle, null, /*bForceUpdate*/false, /*bUpdateChildren*/false));
+				//}
+
+				// ---------- Uno-specific BEGIN ----------
+				// Apply active style and default style when we enter the visual tree, if they haven't been applied already.
+				this.ApplyStyles();
+				// ---------- Uno-specific END ----------
+			}
+
+			// Uno-specific
+			ReconfigureViewportPropagation();
+
+			m_firedLoadingEvent = false;
+		}
+
+		// UNO TODO: Not yet ported
+		internal override void LeaveImpl(LeaveParams @params)
+		{
+			// The way this works on WinUI is that when an element enters the visual tree, all values
+			// of properties that are marked with MetaDataPropertyInfoFlags::IsSparse and MetaDataPropertyInfoFlags::IsVisualTreeProperty
+			// are entered as well.
+			// The property we currently know it has an effect is Resources
+			if (Resources is not null)
+			{
+				foreach (var resource in Resources.Values)
+				{
+					if (resource is FrameworkElement resourceAsUIElement)
+					{
+						resourceAsUIElement.LeaveImpl(@params);
+					}
+				}
+			}
+
+			base.LeaveImpl(@params);
+
+			ReconfigureViewportPropagation(isLeavingTree: true);
 		}
 	}
 }

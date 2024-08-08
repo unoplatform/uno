@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Uno.UI;
 using System.Linq;
 using Microsoft.UI.Xaml.Input;
@@ -7,7 +6,6 @@ using Microsoft.UI.Xaml.Media;
 using Windows.UI.Text;
 using Microsoft.UI.Xaml.Markup;
 using System.ComponentModel;
-using System.Reflection;
 using Uno.UI.Xaml;
 using Windows.Foundation;
 using Uno;
@@ -225,10 +223,12 @@ namespace Microsoft.UI.Xaml.Controls
 		internal void SetUpdateControlTemplate(bool forceUpdate = false)
 		{
 			if (
-				!FeatureConfiguration.Control.UseLegacyLazyApplyTemplate
-				|| forceUpdate
-				|| this.HasParent()
-				|| CanCreateTemplateWithoutParent
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+				!FeatureConfiguration.Control.UseLegacyLazyApplyTemplate ||
+#endif
+				forceUpdate ||
+				this.HasParent() ||
+				CanCreateTemplateWithoutParent
 			)
 			{
 				UpdateTemplate();
@@ -301,6 +301,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private bool _applyTemplateShouldBeInvoked;
 
+#if __ANDROID__ || __IOS__ || __MACOS__ || IS_UNIT_TESTS
 		private protected override void OnPostLoading()
 		{
 			base.OnPostLoading();
@@ -311,8 +312,9 @@ namespace Microsoft.UI.Xaml.Controls
 			// in visual parents get applied.
 			this.UpdateResourceBindings();
 		}
+#endif
 
-		private void TryCallOnApplyTemplate()
+		internal void TryCallOnApplyTemplate()
 		{
 			if (_applyTemplateShouldBeInvoked)
 			{
@@ -466,7 +468,21 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		protected override Size MeasureOverride(Size availableSize)
-			=> MeasureFirstChild(availableSize);
+		{
+			var child = this.FindFirstChild();
+			if (child is not null)
+			{
+				var measuredSize = MeasureElement(child, availableSize);
+				if (child is UIElement childAsUIElement)
+				{
+					childAsUIElement.EnsureLayoutStorage();
+				}
+
+				return measuredSize;
+			}
+
+			return new Size(0, 0);
+		}
 
 		protected override Size ArrangeOverride(Size finalSize)
 			=> ArrangeFirstChild(finalSize);
@@ -702,6 +718,18 @@ namespace Microsoft.UI.Xaml.Controls
 					(s, e) => ((Control)s)?.OnFontStyleChanged((FontStyle)e.OldValue, (FontStyle)e.NewValue)
 				)
 			);
+		#endregion
+
+		#region FontStretch
+
+		public FontStretch FontStretch
+		{
+			get => GetFontStretchValue();
+			set => SetFontStretchValue(value);
+		}
+
+		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnFontStretchChanged), DefaultValue = FontStretch.Normal, Options = FrameworkPropertyMetadataOptions.Inherits)]
+		public static DependencyProperty FontStretchProperty { get; } = CreateFontStretchProperty();
 		#endregion
 
 		#region Padding DependencyProperty
@@ -963,6 +991,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void OnFontStyleChangedPartial(FontStyle oldValue, FontStyle newValue);
 
+		private protected virtual void OnFontStretchChanged(FontStretch oldValue, FontStretch newValue)
+		{
+			OnFontStretchChangedPartial(oldValue, newValue);
+		}
+
+		partial void OnFontStretchChangedPartial(FontStretch oldValue, FontStretch newValue);
+
 		protected virtual void OnPaddingChanged(Thickness oldValue, Thickness newValue)
 		{
 			OnPaddingChangedPartial(oldValue, newValue);
@@ -1090,7 +1125,16 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 
 		private static readonly KeyEventHandler OnKeyDownHandler =
-			(object sender, KeyRoutedEventArgs args) => ((Control)sender).OnKeyDown(args);
+			(object sender, KeyRoutedEventArgs args) =>
+			{
+				var senderAsControl = (Control)sender;
+				// ToolTipService.CloseToolTipInternal(args); TODO:MZ:KA
+				ProcessAcceleratorsIfApplicable(args, senderAsControl);
+				if (!args.Handled)
+				{
+					senderAsControl.OnKeyDown(args);
+				}
+			};
 
 		private static readonly KeyEventHandler OnKeyUpHandler =
 			(object sender, KeyRoutedEventArgs args) => ((Control)sender).OnKeyUp(args);

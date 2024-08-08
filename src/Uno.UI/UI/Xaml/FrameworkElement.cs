@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using Uno.UI;
 using System.Linq;
 using Windows.Foundation;
@@ -24,6 +25,7 @@ using Uno.UI.DataBinding;
 using Uno.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Data;
+using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Media;
 
@@ -63,7 +65,7 @@ namespace Microsoft.UI.Xaml
 		private FrameworkElementLayouter _layouter;
 
 		ILayouter ILayouterElement.Layouter => _layouter;
-		Size ILayouterElement.LastAvailableSize => LastAvailableSize;
+		Size ILayouterElement.LastAvailableSize => m_previousAvailableSize;
 		bool ILayouterElement.IsMeasureDirty => IsMeasureDirty;
 		bool ILayouterElement.IsFirstMeasureDoneAndManagedElement => IsFirstMeasureDone;
 		bool ILayouterElement.IsMeasureDirtyPathDisabled => IsMeasureDirtyPathDisabled;
@@ -141,6 +143,9 @@ namespace Microsoft.UI.Xaml
 		{
 			InternalBackgroundSizing = (BackgroundSizing)e.NewValue;
 			OnBackgroundSizingChangedPartial(e);
+#if __SKIA__
+			(this as IBorderInfoProvider)?.UpdateBackgroundSizing();
+#endif
 		}
 
 		partial void OnBackgroundSizingChangedPartial(DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs);
@@ -176,11 +181,72 @@ namespace Microsoft.UI.Xaml
 		{
 #if !__NETSTD_REFERENCE__ && !IS_UNIT_TESTS
 			SizeChanged?.Invoke(this, args);
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 			_renderTransform?.UpdateSize(args.NewSize);
+#endif
 #endif
 		}
 
-		internal void SetActualSize(Size size) => AssignedActualSize = size;
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		internal void UpdateRenderTransformSize(Size newSize)
+			=> _renderTransform?.UpdateSize(newSize);
+#endif
+
+#if !IS_UNIT_TESTS
+		private protected override double GetActualHeight()
+		{
+			var height = Height;
+			if (double.IsNaN(height))
+			{
+				height = Math.Min(MinHeight, double.PositiveInfinity);
+			}
+
+			if (IsMeasureDirty && !HasLayoutStorage)
+			{
+				height = 0;
+			}
+			else if (HasLayoutStorage)
+			{
+				height = RenderSize.Height;
+			}
+			else
+			{
+				height = ComputeHeightInMinMaxRange(height);
+			}
+
+			return height;
+		}
+
+		private protected override double GetActualWidth()
+		{
+			var width = Width;
+			if (double.IsNaN(width))
+			{
+				width = Math.Min(MinWidth, double.PositiveInfinity);
+			}
+
+			if (IsMeasureDirty && !HasLayoutStorage)
+			{
+				width = 0;
+			}
+			else if (HasLayoutStorage)
+			{
+				width = RenderSize.Width;
+			}
+			else
+			{
+				width = ComputeWidthInMinMaxRange(width);
+			}
+
+			return width;
+		}
+
+		private double ComputeWidthInMinMaxRange(double width)
+			=> Math.Max(Math.Min(width, MaxWidth), MinWidth);
+
+		private double ComputeHeightInMinMaxRange(double height)
+			=> Math.Max(Math.Min(height, MaxHeight), MinHeight);
+#endif
 
 		partial void Initialize()
 		{
@@ -351,6 +417,10 @@ namespace Microsoft.UI.Xaml
 
 			// Apply active style and default style when we enter the visual tree, if they haven't been applied already.
 			ApplyStyles();
+
+			// This is replicating the UpdateAllThemeReferences call in Enter in WinUI.
+			// Updates theme references to account for new ancestor theme dictionaries.
+			this.UpdateResourceBindings();
 		}
 
 		partial void OnUnloadedPartial()
@@ -748,12 +818,55 @@ namespace Microsoft.UI.Xaml
 
 		protected virtual bool GoToElementStateCore(string stateName, bool useTransitions) => false;
 
-		public event EventHandler<object> LayoutUpdated;
+		#region LayoutUpdated
 
-		internal virtual void OnLayoutUpdated()
+		private event EventHandler<object> _layoutUpdated;
+
+		public event EventHandler<object> LayoutUpdated
 		{
-			LayoutUpdated?.Invoke(this, new RoutedEventArgs(this));
+			add
+			{
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				var isFirstSubscriber = _layoutUpdated is null;
+#endif
+
+				_layoutUpdated += value;
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				if (isFirstSubscriber)
+				{
+					Uno.UI.Extensions.DependencyObjectExtensions.GetContext(this).EventManager.AddLayoutUpdatedEventHandler(this);
+				}
+#endif
+			}
+			remove
+			{
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				var hadSubscribers = _layoutUpdated is not null;
+#endif
+
+				_layoutUpdated -= value;
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				if (hadSubscribers && _layoutUpdated is null)
+				{
+					Uno.UI.Extensions.DependencyObjectExtensions.GetContext(this).EventManager.RemoveLayoutUpdatedEventHandler(this);
+				}
+#endif
+			}
 		}
+
+		// This shouldn't be virtual on enhanced lifecycle as it won't be called if there is no real subscriber to LayoutUpdated.
+		internal
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+			virtual
+#endif
+			void OnLayoutUpdated()
+		{
+			_layoutUpdated?.Invoke(null, null);
+		}
+
+		#endregion
 
 		private protected virtual Thickness GetBorderThickness() => Thickness.Empty;
 

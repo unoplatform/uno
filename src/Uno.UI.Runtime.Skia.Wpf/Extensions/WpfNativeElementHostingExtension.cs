@@ -1,28 +1,32 @@
 ﻿#nullable enable
 
+using System;
+using System.Windows.Media;
 using Uno.Foundation.Logging;
-using Windows.UI.Core;
 using Microsoft.UI.Xaml;
+using ContentPresenter = Microsoft.UI.Xaml.Controls.ContentPresenter;
 using WpfCanvas = System.Windows.Controls.Canvas;
 
 namespace Uno.UI.Runtime.Skia.Wpf;
 
-internal partial class WpfNativeElementHostingExtension : INativeElementHostingExtension
+internal partial class WpfNativeElementHostingExtension : ContentPresenter.INativeElementHostingExtension
 {
-	public WpfNativeElementHostingExtension()
+	private readonly ContentPresenter _presenter;
+
+	public WpfNativeElementHostingExtension(ContentPresenter contentPresenter)
 	{
+		_presenter = contentPresenter;
 	}
 
-	internal static WpfCanvas? GetOverlayLayer(XamlRoot xamlRoot) =>
-		WpfManager.XamlRootMap.GetHostForRoot(xamlRoot)?.NativeOverlayLayer;
+	private XamlRoot? XamlRoot => _presenter.XamlRoot;
+	private WpfCanvas? OverlayLayer => _presenter.XamlRoot is { } xamlRoot ? WpfManager.XamlRootMap.GetHostForRoot(xamlRoot)?.NativeOverlayLayer : null;
 
 	public bool IsNativeElement(object content)
 		=> content is System.Windows.UIElement;
 
-	public void AttachNativeElement(object owner, object content)
+	public void AttachNativeElement(object content)
 	{
-		if (owner is XamlRoot xamlRoot
-			&& GetOverlayLayer(xamlRoot) is { } layer
+		if (OverlayLayer is { } layer
 			&& content is System.Windows.FrameworkElement contentAsFE
 			&& contentAsFE.Parent != layer)
 		{
@@ -32,15 +36,14 @@ internal partial class WpfNativeElementHostingExtension : INativeElementHostingE
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().Debug($"Unable to attach native element {content} in {owner}.");
+				this.Log().Debug($"Unable to attach native element {content} in {XamlRoot}.");
 			}
 		}
 	}
 
-	public void DetachNativeElement(object owner, object content)
+	public void DetachNativeElement(object content)
 	{
-		if (owner is XamlRoot xamlRoot
-			&& GetOverlayLayer(xamlRoot) is { } layer
+		if (OverlayLayer is { } layer
 			&& content is System.Windows.FrameworkElement contentAsFE
 			&& contentAsFE.Parent == layer)
 		{
@@ -50,18 +53,28 @@ internal partial class WpfNativeElementHostingExtension : INativeElementHostingE
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().Debug($"Unable to detach native element {content} in {owner}.");
+				this.Log().Debug($"Unable to detach native element {content} in {XamlRoot}.");
 			}
 		}
 	}
 
-	public bool IsNativeElementAttached(object owner, object nativeElement) =>
-		nativeElement is System.Windows.FrameworkElement contentAsFE
-			&& owner is XamlRoot xamlRoot
-			&& GetOverlayLayer(xamlRoot) is { } layer
-			&& contentAsFE.Parent == layer;
+	public void ChangeNativeElementVisibility(object content, bool visible)
+	{
+		if (content is System.Windows.UIElement contentAsUIElement)
+		{
+			contentAsUIElement.Visibility = visible ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
+		}
+	}
 
-	public void ArrangeNativeElement(object owner, object content, Windows.Foundation.Rect arrangeRect)
+	public void ChangeNativeElementOpacity(object content, double opacity)
+	{
+		if (content is System.Windows.UIElement contentAsUIElement)
+		{
+			contentAsUIElement.Opacity = opacity;
+		}
+	}
+
+	public void ArrangeNativeElement(object content, Windows.Foundation.Rect arrangeRect, Windows.Foundation.Rect clipRect)
 	{
 		if (content is System.Windows.UIElement contentAsUIElement)
 		{
@@ -69,20 +82,29 @@ internal partial class WpfNativeElementHostingExtension : INativeElementHostingE
 			WpfCanvas.SetTop(contentAsUIElement, arrangeRect.Y);
 
 			contentAsUIElement.Arrange(
-				new(0, 0, arrangeRect.Width, arrangeRect.Height)
+				new(arrangeRect.X, arrangeRect.Y, arrangeRect.Width, arrangeRect.Height)
 			);
+
+			// no longer needed now that we draw everything above of the native elements but kept for reference
+			// contentAsUIElement.Clip = new RectangleGeometry(new System.Windows.Rect(0, clipRect.Y, Math.Round(clipRect.Width), Math.Round(clipRect.Height)));
 		}
 		else
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().Debug($"Unable to arrange native element {content} in {owner}.");
+				this.Log().Debug($"Unable to arrange native element {content} in {XamlRoot}.");
 			}
 		}
 	}
 
-	public Windows.Foundation.Size MeasureNativeElement(object owner, object content, Windows.Foundation.Size size)
+	public Windows.Foundation.Size MeasureNativeElement(object content, Windows.Foundation.Size childMeasuredSize, Windows.Foundation.Size availableSize)
 	{
-		return size;
+		if (content is System.Windows.UIElement contentAsUIElement)
+		{
+			contentAsUIElement.Measure(new System.Windows.Size(availableSize.Width, availableSize.Height));
+			return new Windows.Foundation.Size(contentAsUIElement.DesiredSize.Width, contentAsUIElement.DesiredSize.Height);
+		}
+
+		return Windows.Foundation.Size.Empty;
 	}
 }

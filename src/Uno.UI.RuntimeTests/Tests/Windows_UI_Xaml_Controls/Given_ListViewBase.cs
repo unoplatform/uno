@@ -45,6 +45,9 @@ using static Uno.UI.Extensions.ViewExtensions;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
+#if __IOS__
+	[Ignore("Disable all listview tests until crash is resolved https://github.com/unoplatform/uno/issues/17101")]
+#endif
 	public partial class Given_ListViewBase // resources
 	{
 		private ResourceDictionary _testsResources;
@@ -3145,6 +3148,32 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Item_Removed_Selection_Stays()
+		{
+			var SUT = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Single,
+				Items =
+				{
+					new ListViewItem { Content = "Item 1" },
+					new ListViewItem { Content = "Item 2" }
+				}
+			};
+
+			await UITestHelper.Load(SUT);
+
+			SUT.SelectedIndex = 1;
+			await WindowHelper.WaitForIdle();
+
+			SUT.Items.RemoveAt(0);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, SUT.Items.Count);
+			Assert.AreEqual(0, SUT.SelectedIndex);
+			Assert.AreEqual("Item 2", ((ListViewItem)SUT.Items[0]).Content);
+		}
+
+		[TestMethod]
 #if __WASM__ || __SKIA__
 		[Ignore("Fails on WASM/Skia - https://github.com/unoplatform/uno/issues/7323")]
 #endif
@@ -4591,6 +4620,161 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsNotNull(lv.ContainerFromItem(0));
 		}
 #endif
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is only supported on skia")]
+#endif
+		public async Task When_UpdateLayout_In_DragDropping()
+		{
+			var SUT = new ListView
+			{
+				AllowDrop = true,
+				CanDragItems = true,
+				CanReorderItems = true
+			};
+
+			for (var i = 0; i < 3; i++)
+			{
+				SUT.Items.Add(new UpdateLayoutOnUnloadedControl
+				{
+					Content = new TextBlock
+					{
+						AllowDrop = true,
+						CanDrag = true,
+						Height = 100,
+						Text = i.ToString()
+					}
+				});
+			}
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			// drag(pick-up) item#0
+			mouse.MoveTo(SUT.GetAbsoluteBoundsRect().GetCenter() with { Y = SUT.GetAbsoluteBoundsRect().Y + 50 });
+			await WindowHelper.WaitForIdle();
+			mouse.Press();
+			await WindowHelper.WaitForIdle();
+
+			// drop onto item#1
+			mouse.MoveTo(SUT.GetAbsoluteBoundsRect().GetCenter() with { Y = SUT.GetAbsoluteBoundsRect().Y + 100 }, 1);
+			await WindowHelper.WaitForIdle();
+			mouse.MoveTo(SUT.GetAbsoluteBoundsRect().GetCenter() with { Y = SUT.GetAbsoluteBoundsRect().Y + 150 }, 1);
+			await WindowHelper.WaitForIdle();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			var textBlocks = SUT.FindFirstDescendant<ItemsStackPanel>().Children
+				.Select(c => c.FindFirstDescendant<TextBlock>())
+				.OrderBy(c => c.GetAbsoluteBoundsRect().Y)
+				.ToList();
+			Assert.AreEqual("1", textBlocks[0].Text);
+			Assert.AreEqual("0", textBlocks[1].Text);
+			Assert.AreEqual("2", textBlocks[2].Text);
+		}
+#endif
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_ScrollIntoView_FreshlyAddedDefaultItem() // checks against #17695
+		{
+			var source = new ObservableCollection<string>();
+			var sut = new ListView
+			{
+				ItemsSource = source,
+			};
+
+			await UITestHelper.Load(sut, x => x.IsLoaded); // custom criteria to prevent empty listview failure
+
+			void AddItem(string item, bool select = false)
+			{
+				source.Add(item);
+				if (select)
+				{
+					sut.SelectedItem = item;
+				}
+			}
+
+			// We just assume here that there is enough space to display 3 items.
+			// Here we are testing if adding a new items and immediately selecting it
+			// doesn't result in a listview with missing items in the viewport.
+			AddItem($"Item 1", select: true);
+			await Task.Delay(10);
+			AddItem($"Item 2", select: false);
+			await Task.Delay(10);
+			AddItem($"Item 3", select: true);
+
+			await UITestHelper.WaitForIdle();
+
+			var tree = sut.TreeGraph();
+#if !__ANDROID__
+			var panel = sut.FindFirstDescendant<ItemsStackPanel>() ?? throw new Exception("Failed to find the ListView's Panel (ItemsStackPanel)");
+			Assert.AreEqual(3, panel.Children.Count);
+#else
+			var count = sut.MaterializedContainers.Count();
+			Assert.AreEqual(3, count);
+#endif
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __ANDROID__
+		[Ignore("droid: Scrollable/Extent-Height doesnt get updated until manually scroll occurs, but otherwise the visuals are good.")]
+#endif
+		public async Task When_ScrollIntoView_FreshlyAddedOffscreenItem()
+		{
+			const int FixedItemHeight = 29;
+
+			var source = new ObservableCollection<string>();
+			var sut = new ListView
+			{
+				ItemsSource = source,
+				ItemTemplate = FixedSizeItemTemplate, // height=29
+			};
+
+			await UITestHelper.Load(sut, x => x.IsLoaded); // custom criteria to prevent empty listview failure
+
+			void AddItem(string item, bool select = false)
+			{
+				source.Add(item);
+				if (select)
+				{
+					sut.SelectedItem = item;
+				}
+			}
+
+			// Fill the source with enough enough items to fill the available height.
+			// Rounding up to the next tens, so we always start counting from XX1 XX2 XX3 for next step
+			var fulfillSize = Math.Round(sut.XamlRoot.Size.Height / FixedItemHeight / 10, MidpointRounding.ToPositiveInfinity) * 10 + 10;
+			for (int i = 0; i < fulfillSize; i++)
+			{
+				AddItem($"Item {i + 1}", select: false);
+			}
+
+			AddItem($"Item {fulfillSize + 1}", select: true);
+			await Task.Delay(10);
+			AddItem($"Item {fulfillSize + 2}", select: false);
+			await Task.Delay(10);
+			AddItem($"Item {fulfillSize + 3}", select: true);
+
+			await UITestHelper.WaitForIdle();
+
+			var tree = sut.TreeGraph();
+			var sv = sut.FindFirstDescendant<ScrollViewer>() ?? throw new Exception("Failed to find the ListView's ScrollViewer");
+
+			// Here we aren't verifying the viewport is entirely filled,
+			// But the last 3 are materialized, and that we are scrolled to the end.
+			Assert.IsNotNull(sut.ContainerFromIndex(source.Count - 3), "Container#n-3 is null");
+			Assert.IsNotNull(sut.ContainerFromIndex(source.Count - 2), "Container#n-2 is null");
+			Assert.IsNotNull(sut.ContainerFromIndex(source.Count - 1), "Container#n-1 is null");
+
+			Assert.AreEqual(sv.ScrollableHeight, sv.VerticalOffset, "ListView is not scrolled to the end.");
+		}
 	}
 
 	public partial class Given_ListViewBase // data class, data-context, view-model, template-selector
@@ -4910,6 +5094,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			public BackNavigationPage()
 			{
 				Content = new Button().Apply(x => x.Click += (s, e) => Frame.GoBack());
+			}
+		}
+
+		public partial class UpdateLayoutOnUnloadedControl : UserControl
+		{
+			public UpdateLayoutOnUnloadedControl()
+			{
+				Unloaded += (_, _) => UpdateLayout();
 			}
 		}
 	}

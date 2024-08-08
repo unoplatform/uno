@@ -26,91 +26,6 @@ namespace Microsoft.UI.Xaml
 	{
 		bool IFrameworkElementInternal.HasLayouter => true;
 
-		/*
-			About NativeOn** vs ManagedOn** methods:
-				The flag FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded will configure which set of methods will be used
-				but they are mutually exclusive: Only one of each is going to be invoked.
-
-			For the managed methods: for perf consideration (avoid lots of casting) the loaded state is managed by the UI Element,
-				the FrameworkElement only makes it publicly available by overriding methods from UIElement and raising events.
-				The propagation of this loaded state is also made by the UIElement.
-		 */
-
-		private void NativeOnLoading(FrameworkElement sender, object args)
-		{
-			OnLoadingPartial();
-
-			// Explicit propagation of the loading even must be performed
-			// after the compiled bindings are applied, as there may be altered
-			// properties that affect the visual tree.
-			foreach (var child in _children)
-			{
-				(child as FrameworkElement)?.InternalDispatchEvent("loading", args as EventArgs);
-			}
-		}
-
-
-		private void NativeOnLoaded(object sender, RoutedEventArgs args)
-		{
-			base.IsLoaded = true;
-
-			foreach (var child in _children)
-			{
-				(child as FrameworkElement)?.InternalDispatchEvent("loaded", args);
-			}
-
-			RaiseOnLoadedSafe();
-		}
-
-		/// <remarks>
-		/// This method contains or is called by a try/catch containing method and
-		/// can be significantly slower than other methods as a result on WebAssembly.
-		/// See https://github.com/dotnet/runtime/issues/56309
-		/// </remarks>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private void RaiseOnLoadedSafe()
-		{
-			try
-			{
-				OnLoaded();
-			}
-			catch (Exception error)
-			{
-				_log.Error("NativeOnLoaded failed in FrameworkElement", error);
-				Application.Current.RaiseRecoverableUnhandledException(error);
-			}
-		}
-
-		private void NativeOnUnloaded(object sender, RoutedEventArgs args)
-		{
-			base.IsLoaded = false;
-
-			foreach (var child in _children)
-			{
-				(child as FrameworkElement)?.InternalDispatchEvent("unloaded", args);
-			}
-
-			RaiseOnUnloadedSafe();
-		}
-
-		/// <remarks>
-		/// This method contains or is called by a try/catch containing method and can be significantly slower than other methods as a result on WebAssembly.
-		/// See https://github.com/dotnet/runtime/issues/56309
-		/// </remarks>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private void RaiseOnUnloadedSafe()
-		{
-			try
-			{
-				OnUnloaded();
-			}
-			catch (Exception error)
-			{
-				_log.Error("NativeOnUnloaded failed in FrameworkElement", error);
-				Application.Current.RaiseRecoverableUnhandledException(error);
-			}
-		}
-
 		internal bool HasParent()
 			=> Parent != null;
 
@@ -119,25 +34,11 @@ namespace Microsoft.UI.Xaml
 		{
 			add
 			{
-				if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded)
-				{
-					_loading += value;
-				}
-				else
-				{
-					RegisterEventHandler("loading", value, GenericEventHandlers.RaiseRoutedEventHandler);
-				}
+				_loading += value;
 			}
 			remove
 			{
-				if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded)
-				{
-					_loading -= value;
-				}
-				else
-				{
-					UnregisterEventHandler("loading", value, GenericEventHandlers.RaiseRoutedEventHandler);
-				}
+				_loading -= value;
 			}
 		}
 
@@ -146,25 +47,11 @@ namespace Microsoft.UI.Xaml
 		{
 			add
 			{
-				if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded)
-				{
-					_loaded += value;
-				}
-				else
-				{
-					RegisterEventHandler("loaded", value, GenericEventHandlers.RaiseRoutedEventHandler);
-				}
+				_loaded += value;
 			}
 			remove
 			{
-				if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded)
-				{
-					_loaded -= value;
-				}
-				else
-				{
-					UnregisterEventHandler("loaded", value, GenericEventHandlers.RaiseRoutedEventHandler);
-				}
+				_loaded -= value;
 			}
 		}
 
@@ -173,25 +60,11 @@ namespace Microsoft.UI.Xaml
 		{
 			add
 			{
-				if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded)
-				{
-					_unloaded += value;
-				}
-				else
-				{
-					RegisterEventHandler("unloaded", value, GenericEventHandlers.RaiseRoutedEventHandler);
-				}
+				_unloaded += value;
 			}
 			remove
 			{
-				if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded)
-				{
-					_unloaded -= value;
-				}
-				else
-				{
-					UnregisterEventHandler("unloaded", value, GenericEventHandlers.RaiseRoutedEventHandler);
-				}
+				_unloaded -= value;
 			}
 		}
 

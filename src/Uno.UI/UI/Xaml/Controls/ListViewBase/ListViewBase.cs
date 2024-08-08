@@ -101,6 +101,10 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					OnItemClicked(focusedContainer, args.KeyboardModifiers);
 				}
+
+#if __WASM__
+				((IHtmlHandleableRoutedEventArgs)args).HandledResult &= ~HtmlEventDispatchResult.PreventDefault;
+#endif
 				return true;
 			}
 			else

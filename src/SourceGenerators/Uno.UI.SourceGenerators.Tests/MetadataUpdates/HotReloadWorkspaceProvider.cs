@@ -371,8 +371,9 @@ internal class HotReloadWorkspace
 #endif
 
 		var availableTargets = new[] {
-			Path.Combine("Uno.UI.Skia", configuration, "net7.0"),
-			Path.Combine("Uno.UI.Reference", configuration, "net7.0"),
+			Path.Combine("Uno.UI.Skia", configuration, "net8.0"),
+			Path.Combine("Uno.UI.Reference", configuration, "net8.0"),
+			Path.Combine("Uno.UI.Tests", configuration, "net8.0"),
 		};
 
 		var unoUIBase = Path.Combine(

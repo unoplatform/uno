@@ -15,19 +15,68 @@ namespace Microsoft.UI.Composition;
 public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 {
 	private static readonly IPrivateSessionFactory _factory = new PaintingSession.SessionFactory();
+	private static readonly List<Visual> s_emptyList = new List<Visual>();
 
 	private CompositionClip? _clip;
-	private RectangleClip? _cornerRadiusClip;
 	private Vector2 _anchorPoint = Vector2.Zero; // Backing for scroll offsets
 	private int _zIndex;
-	private bool _matrixDirty = true;
 	private Matrix4x4 _totalMatrix = Matrix4x4.Identity;
+
+	private VisualFlags _flags = VisualFlags.MatrixDirty;
+
+	internal bool IsPopupVisual => (_flags & VisualFlags.IsPopupVisualSet) != 0 ? (_flags & VisualFlags.IsPopupVisual) != 0 : (_flags & VisualFlags.IsPopupVisualInherited) != 0;
+	internal bool IsNativeHostVisual
+	{
+		get => (_flags & VisualFlags.IsNativeHostVisual) != 0;
+		set
+		{
+			if (value)
+			{
+				_flags |= VisualFlags.IsNativeHostVisual;
+			}
+			else
+			{
+				_flags &= ~VisualFlags.IsNativeHostVisual;
+			}
+		}
+	}
+
+	/// <summary>A visual is a popup visual if it's directly set by SetAsFlyoutVisual or is a child of a flyout visual</summary>
+	/// <remarks>call with a null <paramref name="isPopupVisual"/> to unset.</remarks>
+	internal void SetAsPopupVisual(bool? isPopupVisual, bool inherited = false)
+	{
+		Debug.Assert(!inherited || isPopupVisual is { }, "Only non-null values should be inherited.");
+		var oldValue = IsPopupVisual;
+
+		if (inherited)
+		{
+			_flags |= (isPopupVisual!.Value ? VisualFlags.IsPopupVisualInherited : 0);
+		}
+		else if (isPopupVisual is { })
+		{
+			_flags |= (isPopupVisual.Value ? VisualFlags.IsPopupVisual : 0);
+			_flags |= VisualFlags.IsPopupVisualSet;
+		}
+		else
+		{
+			_flags &= ~VisualFlags.IsPopupVisualSet;
+		}
+
+		var newValue = IsPopupVisual;
+		if (oldValue != newValue)
+		{
+			foreach (var child in GetChildrenInRenderOrder())
+			{
+				child.SetAsPopupVisual(newValue, true);
+			}
+		}
+	}
 
 	/// <returns>true if wasn't dirty</returns>
 	internal virtual bool SetMatrixDirty()
 	{
-		var matrixDirty = _matrixDirty;
-		_matrixDirty = true;
+		var matrixDirty = (_flags & VisualFlags.MatrixDirty) != 0;
+		_flags |= VisualFlags.MatrixDirty;
 		return !matrixDirty;
 	}
 
@@ -47,9 +96,9 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			// This contradicts the traditional linear algebraic definitions, but works out in practice (e.g.
 			// if the canvas is scaled very early, you want all the offsets to scale with it)
 			// https://learn.microsoft.com/en-us/xamarin/xamarin-forms/user-interface/graphics/skiasharp/transforms/matrix
-			if (_matrixDirty)
+			if ((_flags & VisualFlags.MatrixDirty) != 0)
 			{
-				_matrixDirty = false;
+				_flags &= ~VisualFlags.MatrixDirty;
 
 				// Start out with the final matrix of the parent
 				var matrix = Parent?.TotalMatrix ?? Matrix4x4.Identity;
@@ -78,24 +127,13 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	}
 
 #if DEBUG
-	internal string TotalMatrixString => $"{(_matrixDirty ? "-dirty-" : "")}{_totalMatrix}";
+	internal string TotalMatrixString => $"{((_flags & VisualFlags.MatrixDirty) != 0 ? "-dirty-" : "")}{_totalMatrix}";
 #endif
 
 	public CompositionClip? Clip
 	{
 		get => _clip;
 		set => SetProperty(ref _clip, value);
-	}
-
-	/// <summary>
-	/// DO NOT USE: This a a temporary property to properly support the corner radius. 
-	/// It should be removed by https://github.com/unoplatform/uno/issues/16294.
-	/// This clipping should be applied only on Children elements (i.e. in the context of a ContainerVisual)
-	/// </summary>
-	internal RectangleClip? CornerRadiusClip
-	{
-		get => _cornerRadiusClip;
-		set => SetProperty(ref _cornerRadiusClip, value);
 	}
 
 	public Vector2 AnchorPoint
@@ -130,7 +168,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// </summary>
 	/// <param name="surface">The surface on which this visual should be rendered.</param>
 	/// <param name="offsetOverride">The offset (from the origin) to render the Visual at. If null, the offset properties on the Visual like <see cref="Offset"/> and <see cref="AnchorPoint"/> are used.</param>
-	internal void RenderRootVisual(SKSurface surface, Vector2? offsetOverride = null)
+	internal void RenderRootVisual(SKSurface surface, Vector2? offsetOverride, Action<PaintingSession, Visual>? postRenderAction)
 	{
 		if (this is { Opacity: 0 } or { IsVisible: false })
 		{
@@ -151,9 +189,10 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			initialTransform = invertedParentTotalMatrix * initialTransform;
 		}
 
+		canvas.Save();
+
 		if (offsetOverride is { } offset)
 		{
-			canvas.Save();
 			var totalOffset = GetTotalOffset();
 			var translation = Matrix4x4.Identity with { M41 = -(offset.X + totalOffset.X + AnchorPoint.X), M42 = -(offset.Y + totalOffset.Y + AnchorPoint.Y) };
 			initialTransform = translation * initialTransform;
@@ -161,20 +200,18 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		using (var session = _factory.CreateInstance(this, surface, canvas, DrawingFilters.Default, initialTransform))
 		{
-			Render(session);
+			Render(session, postRenderAction);
 		}
 
-		if (offsetOverride is { })
-		{
-			canvas.Restore();
-		}
+		canvas.Restore();
 	}
 
 	/// <summary>
 	/// Position a sub visual on the canvas and draw its content.
 	/// </summary>
 	/// <param name="parentSession">The drawing session of the <see cref="Parent"/> visual.</param>
-	private void Render(in PaintingSession parentSession)
+	/// <param name="postRenderAction">An action that gets invoked right after the visual finishes rendering. This can be used when there is a need to walk the visual tree regularly with minimal performance impact.</param>
+	private void Render(in PaintingSession parentSession, Action<PaintingSession, Visual>? postRenderAction)
 	{
 #if TRACE_COMPOSITION
 		var indent = int.TryParse(Comment?.Split(new char[] { '-' }, 2, StringSplitOptions.TrimEntries).FirstOrDefault(), out var depth)
@@ -190,14 +227,27 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		using (var session = CreateLocalSession(in parentSession))
 		{
-			Paint(session);
+			var canvas = session.Canvas;
 
-			// The CornerRadiusClip doesn't affect the visual itself, only its children
-			CornerRadiusClip?.Apply(session.Canvas, this);
+			ApplyPrePaintingClipping(canvas);
+
+			// Rendering shouldn't depend on matrix or clip adjustments happening in a visual's Paint. That should
+			// be specific to that visual and should not affect the rendering of any other visual.
+#if DEBUG
+			var saveCount = canvas.SaveCount;
+#endif
+			Paint(session);
+#if DEBUG
+			Debug.Assert(saveCount == canvas.SaveCount);
+#endif
+
+			postRenderAction?.Invoke(session, this);
+
+			ApplyPostPaintingClipping(canvas);
 
 			foreach (var child in GetChildrenInRenderOrder())
 			{
-				child.Render(in session);
+				child.Render(in session, postRenderAction);
 			}
 		}
 	}
@@ -219,7 +269,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	}
 
 	/// <remarks>The canvas' TotalMatrix is assumed to already be set up to the local coordinates of the visual.</remarks>
-	private protected virtual void ApplyClipping(in SKCanvas canvas)
+	private protected virtual void ApplyPrePaintingClipping(in SKCanvas canvas)
 	{
 		// Apply the clipping defined on the element
 		// (Only the Clip property, clipping applied by parent for layout constraints reason it's managed by the ShapeVisual through the ViewBox)
@@ -227,12 +277,21 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		Clip?.Apply(canvas, this);
 	}
 
-	private protected virtual IList<Visual> GetChildrenInRenderOrder() => Array.Empty<Visual>();
-	internal IList<Visual> GetChildrenInRenderOrderTestingOnly() => GetChildrenInRenderOrder();
+	/// <summary>This clipping won't affect the visual itself, but its children.</summary>
+	private protected virtual void ApplyPostPaintingClipping(in SKCanvas canvas) { }
+
+	/// <remarks>You should NOT mutate the list returned by this method.</remarks>
+	// NOTE: Returning List<Visual> so that enumerating doesn't cause boxing.
+	// This has the side effect of having to return an empty list here.
+	// The caller then shouldn't mutate the list, otherwise, things will go wrong badly.
+	// An alternative is to return null and check for null on the call sites.
+	private protected virtual List<Visual> GetChildrenInRenderOrder() => s_emptyList;
+
+	/// <remarks>You should NOT mutate the list returned by this method.</remarks>
+	internal List<Visual> GetChildrenInRenderOrderTestingOnly() => GetChildrenInRenderOrder();
 
 	/// <summary>
-	/// Creates a new <see cref="PaintingSession"/> set up with the local coordinates,
-	/// clipping and opacity.
+	/// Creates a new <see cref="PaintingSession"/> set up with the local coordinates and opacity.
 	/// </summary>
 	private PaintingSession CreateLocalSession(in PaintingSession parentSession)
 	{
@@ -255,8 +314,16 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			canvas.SetMatrix((TotalMatrix * rootTransform).ToSKMatrix());
 		}
 
-		ApplyClipping(canvas);
-
 		return session;
+	}
+
+	[Flags]
+	internal enum VisualFlags : byte
+	{
+		IsPopupVisualSet = 1,
+		IsPopupVisual = 2,
+		IsPopupVisualInherited = 4,
+		IsNativeHostVisual = 8,
+		MatrixDirty = 16
 	}
 }

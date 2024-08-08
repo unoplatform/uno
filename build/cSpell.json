@@ -24,6 +24,7 @@
 	"databinding",
 	"datacontext",
 	"datagrid",
+	"decompile",
 	"devs",
 	"dbus",
 	"Dismissable",
@@ -45,6 +46,7 @@
 	"hectopascals",
 	"HoloLens",
 	"howto",
+	"hotreload",
 	"hotswap",
 	"Inlines",
 	"keychain",
@@ -62,6 +64,7 @@
 	"msbuild",
 	"MVUX",
 	"MVVM",
+	"MSIX",
 	"NETSDK",
 	"netstandard",
 	"neumorphic",
@@ -108,7 +111,9 @@
 	"webservices",
 	"webapps",
 	"Haptics",
-	"autoplay"
+	"autoplay",
+	"Xcodes",
+	"Raygun"
   ],
   "ignoreWords": [
 	"ADAL",
@@ -151,8 +156,11 @@
 	"odel",
 	"pdate",
 	"progressring",
+	"pwsh",
 	"Ronica",
 	"Serilog",
+	"Sideloading",
+	"sideload",
 	"Singh",
 	"slnf",
 	"startscreen",
@@ -188,7 +196,11 @@
 	"wapproj's",
 	"xamlmerge",
 	"xbind",
-	"xcprivacy"
+	"xcprivacy",
+	"jlaban",
+	"sasakrsmanovic",
+	"maccatalyst",
+	"settingscard"
   ],
   "patterns": [
 	{

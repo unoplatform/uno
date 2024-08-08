@@ -56,7 +56,7 @@
 		<Content Update="Config\*.json">
 			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
 		</Content>
-		<Content Update="Config\global-net7.0.json" Condition="'$(TargetFramework)' == 'net7.0'">
+		<Content Update="Config\global-net9.0.json" Condition="'$(TargetFramework)' == 'net9.0'">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 			<TargetPath>global.json</TargetPath>
 		</Content>
@@ -68,9 +68,9 @@
 
 	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 		<PropertyGroup>
-			<_OverridePackageId>Uno.UI</_OverridePackageId>
-			<_OverridePackageId Condition="'$(UNO_UWP_BUILD)'=='false'">Uno.WinUI</_OverridePackageId>
-			<_TargetNugetFolder>$(NuGetPackageRoot)\$(_OverridePackageId).DevServer\$(UnoNugetOverrideVersion)\tools\rc\host\$(TargetFramework)</_TargetNugetFolder>
+			<_OverridePackageId>uno.ui</_OverridePackageId>
+			<_OverridePackageId Condition="'$(UNO_UWP_BUILD)'=='false'">uno.winui</_OverridePackageId>
+			<_TargetNugetFolder>$(NuGetPackageRoot)\$(_OverridePackageId).devserver\$(UnoNugetOverrideVersion)\tools\rc\host\$(TargetFramework)</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)*.*" />

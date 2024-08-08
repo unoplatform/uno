@@ -10,7 +10,7 @@ using Verify = XamlSourceGeneratorVerifier;
 public class Given_HotReloadEnabledInBuild
 {
 	// Specify this centrally for all tests that rely on Uno5 or above
-	private static readonly ReferenceAssemblies _net7Uno5Refs = ReferenceAssemblies.Net.Net70.AddPackages(ImmutableArray.Create(new PackageIdentity("Uno.WinUI", "5.0.118")));
+	private static readonly ReferenceAssemblies _net8Uno5Refs = ReferenceAssemblies.Net.Net80.AddPackages([new PackageIdentity("Uno.WinUI", "5.0.118")]);
 
 	[TestMethod]
 	public async Task SetBaseUriIncludedInOutputForFrameworkElements()
@@ -34,7 +34,7 @@ public class Given_HotReloadEnabledInBuild
 
 		var configOverride = new Dictionary<string, string> { { "build_property.UnoForceHotReloadCodeGen", "true" } };
 
-		var test = new Verify.Test(xamlFile, configOverride)
+		var test = new Verify.Test(xamlFile)
 		{
 			TestState =
 			{
@@ -57,8 +57,9 @@ public class Given_HotReloadEnabledInBuild
 					"""
 				}
 			},
-			ReferenceAssemblies = _net7Uno5Refs,
+			ReferenceAssemblies = _net8Uno5Refs,
 			DisableBuildReferences = true,
+			GlobalConfigOverride = configOverride,
 		}.AddGeneratedSources();
 
 		await test.RunAsync();
@@ -87,7 +88,7 @@ public class Given_HotReloadEnabledInBuild
 
 		var configOverride = new Dictionary<string, string> { { "build_property.UnoForceHotReloadCodeGen", "true" } };
 
-		var test = new Verify.Test(xamlFile, configOverride)
+		var test = new Verify.Test(xamlFile)
 		{
 			TestState =
 			{
@@ -110,8 +111,8 @@ public class Given_HotReloadEnabledInBuild
 					"""
 				}
 			},
-			ReferenceAssemblies = _net7Uno5Refs,
-			DisableBuildReferences = true,
+			ReferenceAssemblies = _net8Uno5Refs,
+			GlobalConfigOverride = configOverride,
 		}.AddGeneratedSources();
 
 		await test.RunAsync();
@@ -137,7 +138,7 @@ public class Given_HotReloadEnabledInBuild
 
 		var configOverride = new Dictionary<string, string> { { "build_property.UnoForceHotReloadCodeGen", "true" } };
 
-		var test = new Verify.Test(xamlFile, configOverride)
+		var test = new Verify.Test(xamlFile)
 		{
 			TestState =
 			{
@@ -160,8 +161,8 @@ public class Given_HotReloadEnabledInBuild
 					"""
 				}
 			},
-			ReferenceAssemblies = _net7Uno5Refs,
-			DisableBuildReferences = true,
+			ReferenceAssemblies = _net8Uno5Refs,
+			GlobalConfigOverride = configOverride,
 		}.AddGeneratedSources();
 
 		await test.RunAsync();
@@ -196,7 +197,7 @@ public class Given_HotReloadEnabledInBuild
 
 		var configOverride = new Dictionary<string, string> { { "build_property.UnoForceHotReloadCodeGen", "true" } };
 
-		var test = new Verify.Test(xamlFile, configOverride)
+		var test = new Verify.Test(xamlFile)
 		{
 			TestState =
 			{
@@ -219,8 +220,8 @@ public class Given_HotReloadEnabledInBuild
 					"""
 				}
 			},
-			ReferenceAssemblies = _net7Uno5Refs,
-			DisableBuildReferences = true,
+			ReferenceAssemblies = _net8Uno5Refs,
+			GlobalConfigOverride = configOverride,
 		}.AddGeneratedSources();
 
 		await test.RunAsync();
@@ -240,10 +241,11 @@ public class Given_HotReloadEnabledInBuild
 
 		var configOverride = new Dictionary<string, string> { { "build_property.UnoForceHotReloadCodeGen", "true" } };
 
-		var test = new Verify.Test(xamlFile, configOverride)
+		var test = new Verify.Test(xamlFile)
 		{
-			ReferenceAssemblies = _net7Uno5Refs,
+			ReferenceAssemblies = _net8Uno5Refs,
 			DisableBuildReferences = true,
+			GlobalConfigOverride = configOverride,
 		}.AddGeneratedSources();
 
 		await test.RunAsync();
@@ -304,7 +306,7 @@ public class Given_HotReloadEnabledInBuild
 
 		var configOverride = new Dictionary<string, string> { { "build_property.UnoForceHotReloadCodeGen", "true" } };
 
-		var test = new Verify.Test(xamlFile, configOverride)
+		var test = new Verify.Test(xamlFile)
 		{
 			TestState =
 			{
@@ -327,8 +329,8 @@ public class Given_HotReloadEnabledInBuild
 					"""
 				}
 			},
-			ReferenceAssemblies = _net7Uno5Refs,
-			DisableBuildReferences = true,
+			ReferenceAssemblies = _net8Uno5Refs,
+			GlobalConfigOverride = configOverride,
 		}.AddGeneratedSources();
 
 		await test.RunAsync();

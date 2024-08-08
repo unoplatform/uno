@@ -53,6 +53,9 @@ public class ApplicationHelper
 
 	public static IReadOnlyList<Microsoft.UI.Xaml.Window> Windows => _windows.AsReadOnly();
 
+	// Exposing as a List internally to avoid enumerator boxing allocations.
+	internal static List<Microsoft.UI.Xaml.Window> WindowsInternal => _windows;
+
 	public static bool IsLoadableComponent(Uri resource)
 	{
 		return Application.Current?.IsLoadableComponent(resource) ?? false;

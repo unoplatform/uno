@@ -40,6 +40,8 @@
         href: xref:Uno.UI.CommonIssues.vscode
       - name: WebAssembly
         href: xref:Uno.UI.CommonIssues.Wasm
+      - name: UWP
+        href: xref:Uno.UI.CommonIssues.UWP
       - name: Skia (Gtk/Wpf/Framebuffer)
         href: xref:Uno.UI.CommonIssues.Skia
       - name: iOS/mac Catalyst
@@ -81,7 +83,12 @@
       - name: How to deploy a WebAssembly app on Azure Static Web Apps
         href: xref:Uno.Tutorials.AzureStaticWepApps
       - name: How to use Windows Community Toolkit
-        href: xref:Uno.Development.CommunityToolkit
+        topicHref: xref:Uno.Development.CommunityToolkit
+        items:
+          - name: Windows Community Toolkit - Version 8.x
+            href: xref:Uno.Development.CommunityToolkit.v8
+          - name: Windows Community Toolkit - Version 7.x
+            href: xref:Uno.Development.CommunityToolkit.v7
       - name: How to manually add a splash screen
         href: xref:Uno.Development.SplashScreen
       - name: How to use native Frame navigation
@@ -122,10 +129,10 @@
 
 - name: Overview
   items:
+    - name: Intro
+      href: xref:Uno.Documentation.Intro
     - name: Architecture
       items:
-        - name: Intro
-          href: xref:Uno.Documentation.Intro
         - name: Supported Platforms
           href: getting-started/requirements.md
           items:
@@ -141,8 +148,6 @@
           href: how-uno-works.md
         - name: Best practices
           href: best-practices-uno.md
-        - name: Why use Uno Platform?
-          href: xref:Uno.Overview.WhyUno
 
     - name: Authoring
       items:
@@ -231,6 +236,30 @@
         topicHref: guides/silverlight-migration/silverlight-migration-landing.md
         href: guides/silverlight-migration/toc.yml
 
+    - name: Publishing
+      items:
+        - name: Overview
+          href: xref:uno.publishing.overview
+        - name: Publishing for Desktop
+          href: xref:uno.publishing.desktop
+        - name: Publishing for WebAssembly
+          href: xref:uno.publishing.webassembly
+        - name: Publishing for Windows
+          topicHref: xref:uno.publishing.windows
+          items:
+            - name: Build Packaged Unsigned Apps
+              href: xref:uno.publishing.windows.sideload.packaged.unsigned
+            - name: Build Packaged Signed Apps
+              href: xref:uno.publishing.windows.sideload.packaged.signed
+            - name: Build Unpackaged Apps
+              href: xref:uno.publishing.windows.sideload.unpackaged.unsigned
+        - name: Publishing for iOS
+          href: xref:uno.publishing.ios
+        - name: Publishing for Android
+          href: xref:uno.publishing.android
+        - name: Publishing for Mac Catalyst
+          href: xref:uno.publishing.maccatalyst
+
     - name: Performance
       items:
         - name: Improving Build Times
@@ -245,6 +274,8 @@
           href: features/upri-trimming.md
         - name: Working with XAML Trimming
           href: features/resources-trimming.md
+        - name: Error Monitoring & Crash Reporting with Raygun
+          href: xref:Monitoring.Raygun
 
     - name: Contributing
       items:
@@ -346,7 +377,8 @@
             href: uno-development/Uno-UI-XAML-ResourceTrimming.md
           - name: Hot Reload internals
             href: xref:Uno.Contributing.Internals.HotReload
-
+    - name: Why use Uno Platform?
+      href: xref:Uno.Overview.WhyUno
     - name: FAQ
       href: xref:Uno.Development.FAQ
 
@@ -394,12 +426,14 @@
               href: controls/ComboBox.md
             - name: CommandBar
               href: controls/CommandBar.md
-            - name: ContentDialog
-              href: controls/ContentDialog.md
             - name: DatePicker
               href: controls/DatePicker.md
             - name: Flyout
               href: controls/Flyout.md
+            - name: Flyout
+              href: controls/Frame.md
+            - name: Image
+              href: xref:Uno.Features.Image
             - name: ListView and GridView
               href: controls/ListViewBase.md
             - name: MapControl
@@ -628,6 +662,10 @@
         href: xref:Uno.GetStarted.vscode.DevKit
       - name: Omnisharp Support
         href: xref:Uno.GetStarted.vscode.OmniSharp
+    - name: Rider
+      items:
+      - name: License Agreement
+        href: xref:Uno.Rider.EULA
     - name: Templates
       items:
       - name: Visual Studio Wizard

@@ -1,19 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Private.Infrastructure;
-using Uno.UI.RuntimeTests.Helpers;
-using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
-using Windows.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
+using MUXControlsTestApp.Utilities;
+using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
+using Windows.UI;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
@@ -193,6 +188,28 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				Assert.AreEqual(Colors.DarkGreen, (control.button03_override.Background as SolidColorBrush)?.Color);
 				Assert.AreEqual(Colors.DarkGreen, (control.button04_override.Background as SolidColorBrush)?.Color);
 			}
+		}
+
+		[TestMethod]
+		public async Task When_Refresh_On_Loading()
+		{
+			using var _ = StyleHelper.UseFluentStyles();
+			var userControl = new ThemeResource_Refresh_On_Loading();
+			WindowHelper.WindowContent = userControl;
+			await WindowHelper.WaitForLoaded(userControl);
+
+			var expected = new Thickness(40);
+
+			var loaded = false;
+			var datePicker = new DatePicker();
+			datePicker.Loaded += (s, e) => loaded = true;
+			userControl.SetContent(datePicker);
+
+			await WindowHelper.WaitFor(() => loaded);
+
+			var datePart = (TextBlock)datePicker.FindVisualChildByName("DayTextBlock");
+
+			Assert.AreEqual(expected, datePart.Padding);
 		}
 
 		private async Task When_DefaultForeground(Color lightThemeColor, Color darkThemeColor)

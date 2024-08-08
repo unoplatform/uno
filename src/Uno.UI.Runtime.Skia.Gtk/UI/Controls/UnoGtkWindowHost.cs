@@ -8,9 +8,9 @@ using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Gtk.Hosting;
 using Uno.UI.Runtime.Skia.Gtk.Rendering;
-using Uno.UI.Xaml.Core;
 using Windows.Graphics.Display;
 using Windows.Foundation;
+using SkiaSharp;
 using WinUI = Microsoft.UI.Xaml;
 using WinUIWindow = Microsoft.UI.Xaml.Window;
 using GtkWindow = Gtk.Window;
@@ -26,7 +26,6 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 	private readonly Fixed _nativeOverlayLayer = new();
 	private readonly CompositeDisposable _disposables = new();
 
-	private Widget? _area;
 	private XamlRoot? _xamlRoot;
 	private IGtkRenderer? _renderer;
 
@@ -50,16 +49,13 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 
 	public Fixed? NativeOverlayLayer => _nativeOverlayLayer;
 
-	public IGtkRenderer? Renderer => _renderer;
-
 	public async Task InitializeAsync()
 	{
 		_renderer = await GtkRendererProvider.CreateForHostAsync(this);
 		UpdateRendererBackground();
+		_renderer.BackgroundColor = SKColors.Transparent;
 
-		var overlay = new Overlay();
-
-		_area = (Widget)_renderer;
+		var area = _renderer is GLRenderSurfaceBase ? (Widget)_renderer : new Box(Orientation.Vertical, 0);
 
 		_xamlRoot = GtkManager.XamlRootMap.GetRootForHost(this);
 		_xamlRoot!.Changed += OnXamlRootChanged;
@@ -69,18 +65,42 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 		// Either way, make sure to match the subscription with the size, i.e. either use
 		// _area.Realized/SizeAllocated and _area.AllocatedXX or _gtkWindow.Realized/SizeAllocation
 		// and _gtkWindow.AllocatedXX
-		_area.Realized += (s, e) =>
+		area.Realized += (s, e) =>
 		{
-			UpdateWindowSize(_area.AllocatedWidth, _area.AllocatedHeight);
+			UpdateWindowSize(area.AllocatedWidth, area.AllocatedHeight);
 		};
-
-		_area.SizeAllocated += (s, e) =>
+		area.SizeAllocated += (s, e) =>
 		{
 			UpdateWindowSize(e.Allocation.Width, e.Allocation.Height);
 		};
 
-		overlay.Add(_area);
+		var overlay = new Overlay();
+		overlay.Add(area);
 		overlay.AddOverlay(_nativeOverlayLayer);
+
+		// we don't enable airspace when using OpenGL due to problems with transparency
+		if (_renderer is SoftwareRenderSurface)
+		{
+			var area2 = (Widget)_renderer;
+			// PassThrough makes it so that any pointer event will fall through.
+			// We can't selectively pass certain events through, so we can either
+			// pass through all the events, or none of them. We go with the
+			// former. This means that clicking on a popup on top of a native element
+			// will pass the pointer event to the native element even if it's supposed
+			// to be hidden behind the popup.
+			area2.Realized += (s, e) =>
+			{
+				area2.Window.PassThrough = true;
+			};
+
+			area.SizeAllocated += (s, e) =>
+			{
+				UpdateWindowSize(e.Allocation.Width, e.Allocation.Height);
+			};
+			overlay.AddOverlay(area2);
+			overlay.SetOverlayPassThrough(area2, true);
+		}
+
 		_eventBox.Add(overlay);
 		_gtkWindow.Add(_eventBox);
 	}
@@ -112,7 +132,7 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 				_renderer.BackgroundColor = brush.Color;
 			}
 		}
-		else
+		else if (_winUIWindow.Background is not null)
 		{
 			if (this.Log().IsEnabled(LogLevel.Warning))
 			{
@@ -127,4 +147,6 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 
 		_renderer?.InvalidateRender();
 	}
+
+	public void TakeScreenshot(string filePath) => _renderer?.TakeScreenshot(filePath);
 }

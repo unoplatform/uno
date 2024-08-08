@@ -5,8 +5,5 @@ echo - crosstargeting_override.props is not defininig UnoTargetFrameworkOverride
 echo - This script is run from the build folder (not src/build)
 pause
 
-set UnoDisableNetCurrentMobile=true
-set UnoDisableNetCurrent=true
-
 msbuild Uno.UI.Build.csproj /r "/p:CombinedConfiguration=Release|AnyCPU;BUILD_BUILDNUMBER=test_test_8888" /t:GenerateDoc /bl
 pause

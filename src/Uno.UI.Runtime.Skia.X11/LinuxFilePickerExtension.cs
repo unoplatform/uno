@@ -135,7 +135,7 @@ internal class LinuxFilePickerExtension(IFilePicker picker) : IFileOpenPickerExt
 				(false, true) => ResourceAccessor.GetLocalizedStringResource("FILE_PICKER_TITLE_DIRECTORY_SINGLE"),
 				(false, false) => ResourceAccessor.GetLocalizedStringResource("FILE_PICKER_TITLE_FILE_SINGLE")
 			};
-			var window = "x11:" + host.X11Window.Window.ToString("X", CultureInfo.InvariantCulture);
+			var window = "x11:" + host.RootX11Window.Window.ToString("X", CultureInfo.InvariantCulture);
 			var requestPath2 = await fileChooser.OpenFileAsync(window, title, new Dictionary<string, object>
 			{
 				{ "handle_token", handleToken },

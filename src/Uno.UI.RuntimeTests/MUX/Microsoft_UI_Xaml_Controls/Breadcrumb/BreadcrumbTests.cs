@@ -30,7 +30,6 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 {
 
 	[TestClass]
-	[RunsOnUIThread]
 	[RequiresFullWindow]
 	public class BreadcrumbTests : MUXApiTestBase
 	{
@@ -310,7 +309,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 
 					await RunOnUIThread.ExecuteAsync(() =>
 					{
-						var openPopups = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot);
+						var openPopups = VisualTreeHelper.GetOpenPopupsForXamlRoot(Content.XamlRoot);
 						var flyout = openPopups[openPopups.Count - 1];
 						Verify.IsNotNull(flyout, "Flyout could not be retrieved");
 						var ellipsisItemsRepeater = TestUtilities.FindDescendents<ItemsRepeater>(flyout).Single();
@@ -330,10 +329,12 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 			}
 			finally
 			{
+#if HAS_UNO
 				await RunOnUIThread.ExecuteAsync(() =>
 				{
 					VisualTreeHelper.CloseAllFlyouts(TestServices.WindowHelper.XamlRoot);
 				});
+#endif
 			}
 		}
 
@@ -392,7 +393,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 
 					await RunOnUIThread.ExecuteAsync(() =>
 					{
-						var openPopups = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot);
+						var openPopups = VisualTreeHelper.GetOpenPopupsForXamlRoot(Content.XamlRoot);
 						var flyout = openPopups[openPopups.Count - 1];
 						Verify.IsNotNull(flyout, "Flyout could not be retrieved");
 						var ellipsisItemsRepeater = TestUtilities.FindDescendents<ItemsRepeater>(flyout).Single();
@@ -412,10 +413,12 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 			}
 			finally
 			{
+#if HAS_UNO
 				await RunOnUIThread.ExecuteAsync(() =>
 				{
 					VisualTreeHelper.CloseAllFlyouts(TestServices.WindowHelper.XamlRoot);
 				});
+#endif
 			}
 		}
 

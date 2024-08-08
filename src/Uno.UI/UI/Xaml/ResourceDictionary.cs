@@ -139,8 +139,8 @@ namespace Microsoft.UI.Xaml
 				_values.Remove(keyToRemove);
 				if (value is FrameworkElement fe)
 				{
-#if __SKIA__ || __WASM__
-					fe.OnElementUnloaded();
+#if UNO_HAS_ENHANCED_LIFECYCLE
+					fe.LeaveImpl(new LeaveParams());
 #else
 					fe.PerformOnUnloaded(isFromResources: true);
 #endif

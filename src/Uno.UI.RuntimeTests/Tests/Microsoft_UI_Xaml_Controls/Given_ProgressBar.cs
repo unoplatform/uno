@@ -27,23 +27,30 @@ public class Given_ProgressBar
 		}
 
 		var sut = new ProgressBar();
-		sut.Width = 200;
-		sut.Height = 40;
-		var layoutCount = 0;
-		sut.LayoutUpdated += async (s, e) =>
+		try
 		{
-			layoutCount++;
+			sut.Width = 200;
+			sut.Height = 40;
+			var layoutCount = 0;
+			sut.LayoutUpdated += async (s, e) =>
+			{
+				layoutCount++;
+				await Task.Delay(1000);
+			};
+
+			TestServices.WindowHelper.WindowContent = sut;
 			await Task.Delay(1000);
-		};
+			await TestServices.WindowHelper.WaitForLoaded(sut);
 
-		TestServices.WindowHelper.WindowContent = sut;
-		await Task.Delay(1000);
-		await TestServices.WindowHelper.WaitForLoaded(sut);
+			sut.IsIndeterminate = true;
+			await Task.Delay(1000);
 
-		sut.IsIndeterminate = true;
-		await Task.Delay(1000);
-
-		Verify.IsLessThanOrEqual(layoutCount, 4);
+			Verify.IsLessThanOrEqual(layoutCount, 4);
+		}
+		finally
+		{
+			sut.IsIndeterminate = false;
+		}
 	}
 
 	[TestMethod]

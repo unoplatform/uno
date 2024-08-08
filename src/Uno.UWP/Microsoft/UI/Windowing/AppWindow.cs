@@ -2,13 +2,23 @@
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
-using Windows.Foundation;
 using Microsoft.UI.Windowing.Native;
+using Windows.Foundation;
+using Windows.Graphics;
 using Windows.UI.ViewManagement;
 using MUXWindowId = Microsoft.UI.WindowId;
 
+#if HAS_UNO_WINUI
+using Microsoft.UI.Dispatching;
+#else
+using Windows.System;
+#endif
+
 namespace Microsoft.UI.Windowing;
 
+/// <summary>
+/// Represents a system-managed container for the content of an app.
+/// </summary>
 #if HAS_UNO_WINUI
 public
 #else
@@ -28,6 +38,8 @@ partial class AppWindow
 	{
 		Id = new(Interlocked.Increment(ref _windowIdIterator));
 
+		TitleBar = new(this);
+
 		_windowIdMap[Id] = this;
 		ApplicationView.GetOrCreateForWindowId(Id);
 	}
@@ -37,8 +49,46 @@ partial class AppWindow
 	/// <summary>
 	/// Gets the title bar of the app window.
 	/// </summary>
-	public AppWindowTitleBar TitleBar { get; } = new AppWindowTitleBar();
+	public AppWindowTitleBar TitleBar { get; }
 
+	/// <summary>
+	/// Gets the current size of the window's client area in client coordinates.
+	/// </summary>
+	public SizeInt32 ClientSize => _nativeAppWindow.ClientSize;
+
+	/// <summary>
+	/// Gets the dispatcher queue associated with the app window.
+	/// </summary>
+	public DispatcherQueue DispatcherQueue => _nativeAppWindow.DispatcherQueue;
+
+	/// <summary>
+	/// Gets the identifier for the app window.
+	/// </summary>
+	public MUXWindowId Id { get; }
+
+	/// <summary>
+	/// Gets a value that indicates whether the window is shown.
+	/// </summary>
+	public bool IsVisible => _nativeAppWindow.IsVisible;
+
+	/// <summary>
+	/// Gets the current position of the window in screen coordinates.
+	/// </summary>
+	public PointInt32 Position => _nativeAppWindow.Position;
+
+	/// <summary>
+	/// Gets the currently applied presenter for the app window.
+	/// </summary>
+	public AppWindowPresenter Presenter => _presenter;
+
+	/// <summary>
+	/// Gets the current size of the window in screen coordinates.
+	/// </summary>
+	public SizeInt32 Size => _nativeAppWindow.Size;
+
+	/// <summary>
+	/// Gets or sets the displayed title of the app window.
+	/// </summary>
 	public string Title
 	{
 		get => _nativeAppWindow is not null ? _nativeAppWindow.Title : _titleCache;
@@ -78,10 +128,6 @@ partial class AppWindow
 
 	internal static MUXWindowId MainWindowId { get; } = new(1);
 
-	public MUXWindowId Id { get; }
-
-	public AppWindowPresenter Presenter => _presenter;
-
 	public static AppWindow GetFromWindowId(MUXWindowId windowId)
 	{
 		if (!_windowIdMap.TryGetValue(windowId, out var appWindow))
@@ -94,6 +140,10 @@ partial class AppWindow
 
 	internal static bool TryGetFromWindowId(MUXWindowId windowId, [NotNullWhen(true)] out AppWindow appWindow)
 		=> _windowIdMap.TryGetValue(windowId, out appWindow);
+
+	public void Move(PointInt32 position) => _nativeAppWindow.Move(position);
+
+	public void Resize(SizeInt32 size) => _nativeAppWindow.Resize(size);
 
 	public void SetPresenter(AppWindowPresenter appWindowPresenter)
 	{
@@ -132,4 +182,6 @@ partial class AppWindow
 	}
 
 	internal void RaiseClosing(AppWindowClosingEventArgs args) => Closing?.Invoke(this, args);
+
+	internal void OnAppWindowChanged(AppWindowChangedEventArgs args) => Changed?.Invoke(this, args);
 }

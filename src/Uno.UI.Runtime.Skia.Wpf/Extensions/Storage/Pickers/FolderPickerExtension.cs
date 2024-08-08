@@ -2,6 +2,10 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Win32;
+using Windows.Storage;
 using Windows.Storage.Pickers;
 
 namespace Uno.Extensions.Storage.Pickers;
@@ -15,6 +19,27 @@ internal partial class FolderPickerExtension : IFolderPickerExtension
 	public FolderPickerExtension(FolderPicker owner)
 	{
 		_picker = owner ?? throw new ArgumentNullException(nameof(owner));
+	}
+
+	public Task<StorageFolder?> PickSingleFolderAsync(CancellationToken token)
+	{
+		var openFolderDialog = new OpenFolderDialog();
+
+		var initialDirectory = GetPickerIdLocationPath() ??
+			PickerHelpers.GetInitialDirectory(_picker.SuggestedStartLocation);
+
+		if (initialDirectory is not null)
+		{
+			openFolderDialog.InitialDirectory = initialDirectory;
+		}
+
+		if (openFolderDialog.ShowDialog() == true &&
+			!string.IsNullOrEmpty(openFolderDialog.FolderName))
+		{
+			return Task.FromResult<StorageFolder?>(new StorageFolder(openFolderDialog.FolderName));
+		}
+
+		return Task.FromResult<StorageFolder?>(null);
 	}
 
 	private string? GetPickerIdLocationPath() =>

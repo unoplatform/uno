@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Windows.Input;
 using Windows.Foundation;
 using Windows.System;
@@ -28,6 +29,8 @@ public partial class TextBox
 
 	private TextBoxView _textBoxView;
 
+	private bool _deleteButtonVisibilityChangedSinceLastUpdateScrolling = true;
+
 	private readonly Rectangle _caretRect = new Rectangle();
 	private readonly List<Rectangle> _cachedRects = new List<Rectangle>();
 	private int _usedRects;
@@ -35,6 +38,7 @@ public partial class TextBox
 
 	private (int start, int length) _selection;
 	private bool _selectionEndsAtTheStart;
+	private float _caretXOffset; // this is not necessarily the visual offset of the caret, but where the caret is logically supposed to be when moving up and down with the keyboard, even if the caret is temporarily elsewhere
 	private bool _showCaret = true;
 
 	private bool _inSelectInternal;
@@ -57,7 +61,7 @@ public partial class TextBox
 	private string _textWhenTypingStarted;
 
 	private int _historyIndex;
-	private List<HistoryRecord> _history = new(); // the selection of an action is what was selected right before it happened. Might turn out to be unnecessary.
+	private readonly List<HistoryRecord> _history = new(); // the selection of an action is what was selected right before it happened. Might turn out to be unnecessary.
 
 	private (int start, int length, bool tripleTap)? _multiTapChunk;
 	private (int hashCode, List<(int start, int length)> chunks) _cachedChunks = (-1, new());
@@ -129,6 +133,8 @@ public partial class TextBox
 		_currentlyTyping = newValue;
 	}
 
+	partial void OnUnloadedPartial() => _timer.Stop();
+
 	partial void OnForegroundColorChangedPartial(Brush newValue) => TextBoxView?.OnForegroundChanged(newValue);
 
 	partial void OnSelectionHighlightColorChangedPartial(SolidColorBrush brush) => TextBoxView?.OnSelectionHighlightColorChanged(brush);
@@ -197,7 +203,7 @@ public partial class TextBox
 						}
 					};
 
-					displayBlock.LayoutUpdated += (_, _) => canvas.Width = Math.Ceiling(displayBlock.ActualWidth + InlineCollection.CaretThickness);
+					displayBlock.DesiredSizeChangedCallback = () => canvas.Width = Math.Ceiling(displayBlock.ActualWidth + InlineCollection.CaretThickness);
 
 					bool lastFoundCaret = false;
 					bool currentFoundCaret = false;
@@ -250,15 +256,15 @@ public partial class TextBox
 							_rectsChanged = true;
 							rectangle.Fill = SelectionHighlightColor;
 						}
-						if (rectangle.Width != Math.Ceiling(rect.Width))
+						if (rectangle.Width != rect.Width)
 						{
 							_rectsChanged = true;
-							rectangle.Width = Math.Ceiling(rect.Width);
+							rectangle.Width = rect.Width;
 						}
-						if (rectangle.Height != Math.Ceiling(rect.Height))
+						if (rectangle.Height != rect.Height)
 						{
 							_rectsChanged = true;
-							rectangle.Height = Math.Ceiling(rect.Height);
+							rectangle.Height = rect.Height;
 						}
 						if ((double)rectangle.GetValue(Canvas.LeftProperty) != rect.Left)
 						{
@@ -325,8 +331,9 @@ public partial class TextBox
 		TrySetCurrentlyTyping(false);
 		if (!_inSelectInternal)
 		{
-			// SelectInternal sets _selectionEndsAtTheStart on its own
+			// SelectInternal sets _selectionEndsAtTheStart and _caretXOffset on its own
 			_selectionEndsAtTheStart = false;
+			_caretXOffset = (float)(DisplayBlockInlines?.GetRectForIndex(start + length).Left ?? 0);
 		}
 		_selection = (start, length);
 		if (!_isSkiaTextBox)
@@ -372,6 +379,13 @@ public partial class TextBox
 	{
 		if (_isSkiaTextBox && _contentElement is ScrollViewer sv)
 		{
+			if (_deleteButtonVisibilityChangedSinceLastUpdateScrolling)
+			{
+				_deleteButtonVisibilityChangedSinceLastUpdateScrolling = false;
+				// enqueuing on the dispatcher is needed so that we UpdateScrolling after the button is layouted
+				DispatcherQueue.TryEnqueue(UpdateScrolling);
+			}
+
 			var selectionEnd = _selectionEndsAtTheStart ? _selection.start : _selection.start + _selection.length;
 
 			var horizontalOffset = sv.HorizontalOffset;
@@ -381,7 +395,7 @@ public partial class TextBox
 
 			// TODO: we are sometimes horizontally overscrolling, but it's more visually pleasant that underscrolling as we want the caret to be fully showing.
 			var newHorizontalOffset = horizontalOffset.AtMost(rect.Left).AtLeast(Math.Ceiling(rect.Left - sv.ViewportWidth + InlineCollection.CaretThickness));
-			var newVerticalOffset = verticalOffset.AtMost(rect.Top).AtLeast(rect.Top - sv.ViewportWidth);
+			var newVerticalOffset = verticalOffset.AtMost(rect.Top).AtLeast(rect.Top - sv.ViewportHeight);
 
 			sv.ChangeView(newHorizontalOffset, newVerticalOffset, null);
 		}
@@ -461,9 +475,11 @@ public partial class TextBox
 				text = Text;
 				break;
 			case VirtualKey.V when ctrl:
+			case VirtualKey.Insert when shift:
 				PasteFromClipboard(); // async so doesn't actually do anything right now
 				break;
 			case VirtualKey.C when ctrl:
+			case VirtualKey.Insert when ctrl:
 				CopySelectionToClipboard();
 				break;
 			case VirtualKey.Escape:
@@ -490,23 +506,27 @@ public partial class TextBox
 		selectionStart = Math.Max(0, Math.Min(text.Length, selectionStart));
 		selectionLength = Math.Max(-selectionStart, Math.Min(text.Length - selectionStart, selectionLength));
 
+		var caretXOffset = _caretXOffset;
+
 		_suppressCurrentlyTyping = true;
-		if (text == Text)
+		_clearHistoryOnTextChanged = false;
+		if (!_isPressed)
 		{
-			if (!_isPressed)
-			{
-				SelectInternal(selectionStart, selectionLength);
-			}
-		}
-		else
-		{
-			_clearHistoryOnTextChanged = false;
 			_pendingSelection = (selectionStart, selectionLength);
-			ProcessTextInput(text);
-			_clearHistoryOnTextChanged = true;
 		}
+		ProcessTextInput(text);
+		_clearHistoryOnTextChanged = true;
 		_suppressCurrentlyTyping = false;
+
+		// don't change the caret offset when moving up and down
+		if (args.Key is VirtualKey.Up or VirtualKey.Down)
+		{
+			// this condition is accurate in the case of hitting Down on the last line
+			// or up on the first line. On WinUI, the caret offset won't change.
+			_caretXOffset = caretXOffset;
+		}
 	}
+
 	private void KeyDownBack(KeyRoutedEventArgs args, ref string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
 		if (_isPressed)
@@ -564,7 +584,7 @@ public partial class TextBox
 
 		var start = selectionStart;
 		var end = selectionStart + selectionLength;
-		var newEnd = GetUpResult(text, selectionStart, selectionLength, shift);
+		var newEnd = GetUpDownResult(text, selectionStart, selectionLength, shift, up: true);
 		if (shift)
 		{
 			selectionLength = newEnd - selectionStart;
@@ -592,7 +612,7 @@ public partial class TextBox
 
 		var start = selectionStart;
 		var end = selectionStart + selectionLength;
-		var newEnd = GetDownResult(text, selectionStart, selectionLength, shift);
+		var newEnd = GetUpDownResult(text, selectionStart, selectionLength, shift, up: false);
 		if (shift)
 		{
 			selectionLength = newEnd - selectionStart;
@@ -827,6 +847,12 @@ public partial class TextBox
 	{
 		_inSelectInternal = true;
 		_selectionEndsAtTheStart = selectionLength < 0;
+		if (DisplayBlockInlines is { }) // this check is important because on start up, the Inlines haven't been created yet.
+		{
+			_caretXOffset = selectionLength >= 0 ?
+				(float)DisplayBlockInlines.GetRectForIndex(selectionStart + selectionLength).Left :
+				(float)DisplayBlockInlines.GetRectForIndex(selectionStart + selectionLength).Right;
+		}
 		Select(Math.Min(selectionStart, selectionStart + selectionLength), Math.Abs(selectionLength));
 		_inSelectInternal = false;
 	}
@@ -1036,9 +1062,9 @@ public partial class TextBox
 	/// <summary>
 	/// There are 2 concepts of a "line", there's a line that ends at end-of-text, \r, \n, etc.
 	/// and then there's an actual rendered line that may end due to wrapping and not a line break.
-	/// GetUpResult and GetDownResult care about the second kind of lines.
+	/// This method cares about the second kind of lines.
 	/// </summary>
-	private int GetUpResult(string text, int selectionStart, int selectionLength, bool shift)
+	private int GetUpDownResult(string text, int selectionStart, int selectionLength, bool shift, bool up)
 	{
 		if (text.Length == 0)
 		{
@@ -1050,50 +1076,21 @@ public partial class TextBox
 		var startLineIndex = lines.IndexOf(startLine);
 		var endLineIndex = lines.IndexOf(endLine);
 
-		if (shift && endLineIndex == 0)
+		if (up && shift && endLineIndex == 0)
 		{
 			return 0; // first line, goes to the beginning
 		}
-
-		var newLineIndex = selectionLength < 0 || shift ? Math.Max(0, endLineIndex - 1) : Math.Max(0, startLineIndex - 1);
-
-		var rect = DisplayBlockInlines.GetRectForIndex(selectionStart + selectionLength);
-		var x = shift && selectionLength > 0 ? rect.Right : rect.Left;
-		var y = (newLineIndex + 0.5) * rect.Height; // 0.5 is to get the center of the line, rect.Height is line height
-		var index = Math.Max(0, DisplayBlockInlines.GetIndexAt(new Point(x, y), true, true));
-		if (text.Length > index - 1
-			&& index - 1 >= 0
-			&& index == lines[newLineIndex].start + lines[newLineIndex].length
-			&& (text[index - 1] == '\r' || text[index - 1] == ' '))
-		{
-			// if we're past \r or space, we will actually be at the beginning of the next line, so we take a step back
-			index--;
-		}
-
-		return index;
-	}
-
-	private int GetDownResult(string text, int selectionStart, int selectionLength, bool shift)
-	{
-		if (text.Length == 0)
-		{
-			return 0;
-		}
-		var startLine = GetLineAt(text, selectionStart, 0);
-		var endLine = GetLineAt(text, selectionStart + selectionLength, 0);
-		var lines = DisplayBlockInlines.GetLineIntervals();
-		var startLineIndex = lines.IndexOf(startLine);
-		var endLineIndex = lines.IndexOf(endLine);
-
-		if (!shift && (startLineIndex == lines.Count - 1 || endLineIndex == lines.Count - 1))
+		else if (!up && !shift && (startLineIndex == lines.Count - 1 || endLineIndex == lines.Count - 1))
 		{
 			return text.Length; // last line, goes to the end
 		}
 
-		var newLineIndex = selectionLength > 0 || shift ? Math.Min(lines.Count, endLineIndex + 1) : Math.Min(lines.Count, startLineIndex + 1);
+		var newLineIndex = up ?
+			selectionLength < 0 || shift ? Math.Max(0, endLineIndex - 1) : Math.Max(0, startLineIndex - 1) :
+			selectionLength > 0 || shift ? Math.Min(lines.Count, endLineIndex + 1) : Math.Min(lines.Count, startLineIndex + 1);
 
 		var rect = DisplayBlockInlines.GetRectForIndex(selectionStart + selectionLength);
-		var x = shift && selectionLength > 0 ? rect.Right : rect.Left;
+		var x = _caretXOffset;
 		var y = (newLineIndex + 0.5) * rect.Height; // 0.5 is to get the center of the line, rect.Height is line height
 		var index = Math.Max(0, DisplayBlockInlines.GetIndexAt(new Point(x, y), true, true));
 		if (text.Length > index - 1
@@ -1236,17 +1233,44 @@ public partial class TextBox
 		}
 	}
 
-	partial void OnFocusStateChangedPartial2(FocusState focusState)
+	private string RemoveLF(string baseString)
 	{
-		if (_isSkiaTextBox)
+
+		var builder = new StringBuilder();
+		for (int i = 0; i < baseString.Length; i++)
 		{
-			// this is needed so that we UpdateScrolling after the button appears/disappears.
-			UpdateLayout();
-			// Another round because a collapsed DeleteButton gets measured on the subsequent layout cycle.
-			_contentElement?.InvalidateMeasure();
-			UpdateLayout();
-			UpdateScrolling();
+			var c = baseString[i];
+			if (c == '\n')
+			{
+				builder.Append('\r');
+			}
+			else if (c == '\r' && i + 1 < baseString.Length && baseString[i + 1] == '\n')
+			{
+				if (_pendingSelection is { } selection)
+				{
+					var (start, end) = (selection.start, selection.start + selection.length);
+					if (start > i)
+					{
+						start--;
+					}
+					if (end > i)
+					{
+						end--;
+					}
+					_pendingSelection = (start, end - start);
+				}
+
+				builder.Append('\r');
+				i++;
+			}
+			else
+			{
+				builder.Append(c);
+			}
 		}
+
+		baseString = builder.ToString();
+		return baseString;
 	}
 
 	partial void PasteFromClipboardPartial(string clipboardText, int selectionStart, int selectionLength, string newText)
@@ -1264,15 +1288,7 @@ public partial class TextBox
 				CommitAction(new ReplaceAction(Text, newText, selectionStart));
 			}
 
-			if (Text == newText)
-			{
-				// OnTextChanged won't fire, so we immediately change the selection
-				Select(selectionStart + clipboardText.Length, 0);
-			}
-			else
-			{
-				_pendingSelection = (selectionStart + clipboardText.Length, 0);
-			}
+			_pendingSelection = (selectionStart + clipboardText.Length, 0);
 		}
 	}
 

@@ -20,6 +20,8 @@ namespace Windows.Storage.Pickers
 {
 	public partial class FileOpenPicker
 	{
+		private int _multipleFileLimit;
+
 		private Task<StorageFile?> PickSingleFileTaskAsync(CancellationToken token)
 		{
 			var tcs = new TaskCompletionSource<StorageFile?>();
@@ -51,7 +53,12 @@ namespace Windows.Storage.Pickers
 			return tcs.Task;
 		}
 
-		private UIViewController GetViewController(bool multiple, TaskCompletionSource<StorageFile?[]> completionSource)
+		internal void SetMultipleFileLimit(int limit)
+		{
+			_multipleFileLimit = limit;
+		}
+
+		private UIViewController GetViewController(bool multiple, int limit, TaskCompletionSource<StorageFile?[]> completionSource)
 		{
 			var iOS14AndAbove = UIDevice.CurrentDevice.CheckSystemVersion(14, 0);
 			switch (SuggestedStartLocation)
@@ -69,7 +76,7 @@ namespace Windows.Storage.Pickers
 					var imageConfiguration = new PHPickerConfiguration
 					{
 						Filter = PHPickerFilter.ImagesFilter,
-						SelectionLimit = 0
+						SelectionLimit = limit
 					};
 					return new PHPickerViewController(imageConfiguration)
 					{
@@ -79,7 +86,7 @@ namespace Windows.Storage.Pickers
 					var videoConfiguration = new PHPickerConfiguration
 					{
 						Filter = PHPickerFilter.VideosFilter,
-						SelectionLimit = 0
+						SelectionLimit = limit
 					};
 					return new PHPickerViewController(videoConfiguration)
 					{
@@ -107,7 +114,7 @@ namespace Windows.Storage.Pickers
 
 			var completionSource = new TaskCompletionSource<StorageFile?[]>();
 
-			using var viewController = this.GetViewController(multiple, completionSource);
+			using var viewController = this.GetViewController(multiple, _multipleFileLimit, completionSource);
 
 			viewController.OverrideUserInterfaceStyle = CoreApplication.RequestedTheme == SystemTheme.Light ?
 				UIUserInterfaceStyle.Light : UIUserInterfaceStyle.Dark;

@@ -5,6 +5,7 @@
 	xmlns:local="using:UITests.Shared.Windows_UI_Input.VisualStatesTests"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	FontSize="12"
 	mc:Ignorable="d"
 	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -268,6 +269,7 @@
 				<Button
 					x:Name="MyButton"
 					Content="Button"
+					FontSize="12"
 					Template="{StaticResource ButtonTemplate}"
 					Loaded="ListenVisualStates" />
 
@@ -277,18 +279,21 @@
 					Content="Indeterminate Toggle button"
 					IsThreeState="True"
 					IsChecked="{x:Null}"
+					FontSize="12"
 					Template="{StaticResource ToggleButtonTemplate}"
 					Loaded="ListenVisualStates" />
 				<ToggleButton
 					x:Name="MyCheckedToggleButton"
 					Content="Checked toggle button"
 					IsChecked="True"
+					FontSize="12"
 					Template="{StaticResource ToggleButtonTemplate}"
 					Loaded="ListenVisualStates" />
 				<ToggleButton
 					x:Name="MyUncheckedToggleButton"
 					Content="Unchecked toggle button"
 					IsChecked="False"
+					FontSize="12"
 					Template="{StaticResource ToggleButtonTemplate}"
 					Loaded="ListenVisualStates" />
 
@@ -296,6 +301,7 @@
 				<RadioButton
 					x:Name="MyRadioButton"
 					Content="Radio button"
+					FontSize="12"
 					Template="{StaticResource RadioButtonTemplate}"
 					Loaded="ListenVisualStates" />
 
@@ -303,6 +309,7 @@
 				<HyperlinkButton
 					x:Name="MyHyperlinkButton"
 					Content="Hyperlink button"
+					FontSize="12"
 					Template="{StaticResource HyperlinkButtonTemplate}"
 					Loaded="ListenVisualStates" />
 
@@ -312,18 +319,21 @@
 					Content="Indeterminate checkbox"
 					IsThreeState="True"
 					IsChecked="{x:Null}"
+					FontSize="12"
 					Template="{StaticResource CheckBoxTemplate}"
 					Loaded="ListenVisualStates" />
 				<CheckBox
 					x:Name="MyCheckedCheckbox"
 					Content="Checked checkbox"
 					IsChecked="True"
+					FontSize="12"
 					Template="{StaticResource CheckBoxTemplate}"
 					Loaded="ListenVisualStates" />
 				<CheckBox
 					x:Name="MyUncheckedCheckbox"
 					Content="Unchecked checkbox"
 					IsChecked="False"
+					FontSize="12"
 					Template="{StaticResource CheckBoxTemplate}"
 					Loaded="ListenVisualStates" />
 

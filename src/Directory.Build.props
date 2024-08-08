@@ -5,9 +5,17 @@
 	<PropertyGroup>
 		<DebugType>portable</DebugType>
 		<DebugSymbols>True</DebugSymbols>
-		<RepositoryUrl>$(BUILD_REPOSITORY_URI)</RepositoryUrl>
+
+		<RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<RepositoryBranch>$(GITVERSION_BranchName)</RepositoryBranch>
+		<RepositoryCommit>$(GitVersion_Sha)</RepositoryCommit>
+		<PackageProjectUrl>https://github.com/unoplatform/uno</PackageProjectUrl>
 		<Copyright>Copyright (C) 2015-$([System.DateTime]::Now.ToString(`yyyy`)) Uno Platform Inc. - all rights reserved</Copyright>
 		<Authors>Uno Platform</Authors>
+		<PackageIcon>uno.png</PackageIcon>
+		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+
 		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
 		<GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
 		<_SkipUpgradeNetAnalyzersNuGetWarning>true</_SkipUpgradeNetAnalyzersNuGetWarning>
@@ -51,11 +59,11 @@
 
 		<EnableWindowsTargeting>true</EnableWindowsTargeting>
 
-		<NetCurrent>net8.0</NetCurrent>
-		<NetPrevious>net7.0</NetPrevious>
+		<NetCurrent>net9.0</NetCurrent>
+		<NetPrevious>net8.0</NetPrevious>
 
-		<NetCurrentNetCoreMobile>$(NetCurrent)-android;$(NetCurrent)-ios;$(NetCurrent)-maccatalyst;$(NetCurrent)-macos</NetCurrentNetCoreMobile>
-		<NetPreviousNetCoreMobile>$(NetPrevious)-android;$(NetPrevious)-ios;$(NetPrevious)-maccatalyst;$(NetPrevious)-macos</NetPreviousNetCoreMobile>
+		<NetCurrentNetCoreMobile>$(NetCurrent)-android;$(NetCurrent)-ios17.2;$(NetCurrent)-maccatalyst17.2;$(NetCurrent)-macos14.2</NetCurrentNetCoreMobile>
+		<NetPreviousNetCoreMobile>$(NetPrevious)-android;$(NetPrevious)-ios17.0;$(NetPrevious)-maccatalyst17.0;$(NetPrevious)-macos14.0</NetPreviousNetCoreMobile>
 
 		<NetPreviousWpf>$(NetPrevious)-windows</NetPreviousWpf>
 		<NetCurrentWpf>$(NetCurrent)-windows</NetCurrentWpf>
@@ -72,7 +80,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<MicrosoftNetCompilersToolsetVersion>4.9.0-3.final</MicrosoftNetCompilersToolsetVersion>
+		<MicrosoftNetCompilersToolsetVersion>4.11.0-2.final</MicrosoftNetCompilersToolsetVersion>
 	</PropertyGroup>
 
   <ItemGroup>
@@ -247,6 +255,9 @@
 		
 		<!-- Disable warning about cross platform call sites -->
 		<NoWarn>$(NoWarn);CA1416</NoWarn>
+
+		<!-- Workaround for https://github.com/dotnet/runtime/issues/103205 -->
+		<NoWarn>$(NoWarn);CS0436</NoWarn>
 
 		<!-- On CI, UWP source is generated in a job running on Windows (CRLF EOLs). -->
 		<!-- When the artifacts are downloaded in a job running on Linux, IDE0055 will complain (expecting LF EOLs) -->

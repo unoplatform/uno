@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Uno.UI.RemoteControl.Host.IDEChannel;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
@@ -22,7 +23,7 @@ internal class IdeChannelServer : IIdeChannelServer
 		await Task.Yield();
 	}
 
-	public async Task SendToDevServerAsync(IdeMessageEnvelope message)
+	public async Task SendToDevServerAsync(IdeMessageEnvelope message, CancellationToken ct)
 	{
 		MessageFromIDE?.Invoke(this, IdeMessageSerializer.Deserialize(message));
 

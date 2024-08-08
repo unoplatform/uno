@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using Windows.System;
 using Windows.UI.Core;
@@ -15,9 +16,24 @@ namespace Private.Infrastructure
 		{
 			static KeyboardHelper()
 			{
+				// a-z
 				for (VirtualKey key = VirtualKey.A; key <= VirtualKey.Z; key++)
 				{
 					m_vKeyMapping.Add(char.ToLower((char)key).ToString(), key);
+				}
+
+				// 0-9
+				for (VirtualKey key = VirtualKey.Number0; key <= VirtualKey.Number9; key++)
+				{
+					var number = key - VirtualKey.Number0;
+					m_vKeyMapping.Add(number.ToString(CultureInfo.InvariantCulture), key);
+				}
+
+				// f1 - f24
+				for (VirtualKey key = VirtualKey.F1; key <= VirtualKey.F24; key++)
+				{
+					var number = (key - VirtualKey.F1) + 1;
+					m_vKeyMapping.Add("f" + number.ToString(CultureInfo.InvariantCulture), key);
 				}
 			}
 
@@ -27,6 +43,7 @@ namespace Private.Infrastructure
 				{"backspace",                   VirtualKey.Back},
 				{"clear",                       VirtualKey.Clear},
 				{"enter",                       VirtualKey.Enter},
+				{"equal",                       (global::Windows.System.VirtualKey)187},
 				{"return",                      VirtualKey.Enter},
 				{"numpadenter",                 VirtualKey.Enter},
 				{"shift",                       VirtualKey.Shift},
@@ -65,30 +82,6 @@ namespace Private.Infrastructure
 				{"separator",                   VirtualKey.Separator},
 				{"-",                           VirtualKey.Subtract},
 				{"/",                           VirtualKey.Divide},
-				{"f1",                          VirtualKey.F1},
-				{"f2",                          VirtualKey.F2},
-				{"f3",                          VirtualKey.F3},
-				{"f4",                          VirtualKey.F4},
-				{"f5",                          VirtualKey.F5},
-				{"f6",                          VirtualKey.F6},
-				{"f7",                          VirtualKey.F7},
-				{"f8",                          VirtualKey.F8},
-				{"f9",                          VirtualKey.F9},
-				{"f10",                         VirtualKey.F10},
-				{"f11",                         VirtualKey.F11},
-				{"f12",                         VirtualKey.F12},
-				{"f13",                         VirtualKey.F13},
-				{"f14",                         VirtualKey.F14},
-				{"f15",                         VirtualKey.F15},
-				{"f16",                         VirtualKey.F16},
-				{"f17",                         VirtualKey.F17},
-				{"f18",                         VirtualKey.F18},
-				{"f19",                         VirtualKey.F19},
-				{"f20",                         VirtualKey.F20},
-				{"f21",                         VirtualKey.F21},
-				{"f22",                         VirtualKey.F22},
-				{"f23",                         VirtualKey.F23},
-				{"f24",                         VirtualKey.F24},
 				{"numlock",                     VirtualKey.NumberKeyLock},
 				{"scrolllock",                  VirtualKey.Scroll},
 				{"lshift",                      VirtualKey.LeftShift},
@@ -107,6 +100,7 @@ namespace Private.Infrastructure
 				{"tab",                         VirtualKey.Tab},
 				{"esc",                         VirtualKey.Escape},
 				{"ctrl",                        VirtualKey.Control},
+				{"ctrlscan",                    VirtualKey.Control},
 				{"GamepadA",                    VirtualKey.GamepadA},
 				{"GamepadB",                    VirtualKey.GamepadB},
 				{"GamepadDpadRight",            VirtualKey.GamepadDPadRight},
@@ -214,12 +208,6 @@ namespace Private.Infrastructure
 				async Task RaiseOnElementDispatcherAsync(UIElement element, RoutedEvent routedEvent, RoutedEventArgs args)
 				{
 					bool raiseSynchronously = element.Dispatcher.HasThreadAccess;
-#if __WASM__
-					if (!Uno.UI.Dispatching.NativeDispatcher.IsThreadingSupported)
-					{
-						raiseSynchronously = true;
-					}
-#endif
 
 					if (raiseSynchronously)
 					{
@@ -282,13 +270,26 @@ namespace Private.Infrastructure
 			public static void Enter(UIElement element = null)
 			{
 				PressKeySequence("$d$_enter#$u$_enter", element);
-
 			}
 
 			public static void Space(UIElement element = null)
 			{
 				PressKeySequence("$d$_space#$u$_space", element);
 
+			}
+			public static void Backspace(UIElement element = null)
+			{
+				PressKeySequence("$d$_backspace#$u$_backspace", element);
+			}
+
+			public static void Delete(UIElement element = null)
+			{
+				PressKeySequence("$d$_delete#$u$_delete", element);
+			}
+
+			public static void CtrlTab(UIElement element = null)
+			{
+				PressKeySequence("$d$_ctrlscan#$d$_tab#$u$_tab#$u$_ctrlscan", element);
 			}
 
 			public static void GamepadA(UIElement element = null)
@@ -317,6 +318,18 @@ namespace Private.Infrastructure
 			public static void GamepadDpadDown(UIElement element = null)
 			{
 				PressKeySequence("$d$_GamepadDpadDown#$u$_GamepadDpadDown", element);
+			}
+
+			/// <param name="text">Assuming lowercase text. To add capitalization, use <see cref="PressKeySequence"/></param>
+			public static void InputText(string text, UIElement element = null)
+			{
+				var sequence = text
+					.ToLower()
+					.Select(c => $"$d$_{c}#$u$_{c}#")
+					.Aggregate("", (a, b) => a + b)
+					[..^1]; // drop last #
+
+				PressKeySequence(sequence, element);
 			}
 		}
 	}

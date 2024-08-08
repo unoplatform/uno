@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Media;
+using Uno.Disposables;
 using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -64,4 +66,8 @@ partial class CalendarViewBaseItem : IBorderInfoProvider
 	Thickness IBorderInfoProvider.BorderThickness => GetItemBorderThickness();
 
 	CornerRadius IBorderInfoProvider.CornerRadius => GetItemCornerRadius();
+
+#if UNO_HAS_BORDER_VISUAL
+	BorderVisual IBorderInfoProvider.BorderVisual => Visual as BorderVisual ?? throw new InvalidCastException($"{nameof(IBorderInfoProvider)}s should use a {nameof(BorderVisual)}.");
+#endif
 }

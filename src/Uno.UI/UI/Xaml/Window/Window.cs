@@ -52,6 +52,11 @@ partial class Window
 
 	internal Window(WindowType windowType)
 	{
+		if (_current is null)
+		{
+			windowType = WindowType.CoreWindow;
+		}
+
 		InitialWindow ??= this;
 		_current ??= this; // TODO:MZ: Do we want this?
 
@@ -192,7 +197,7 @@ partial class Window
 	{
 		get
 		{
-			if (_current is null)
+			if (_current is null && CoreApplication.IsFullFledgedApp)
 			{
 				EnsureWindowCurrent();
 			}
@@ -240,6 +245,9 @@ partial class Window
 		if (_windowType is WindowType.CoreWindow)
 		{
 			WinUICoreServices.Instance.InitCoreWindowContentRoot();
+#if __WASM__ // We normally call SetHost from the NativeWindowWrapper on DesktopXamlSource targets, but for WASM we put it here.
+			WinUICoreServices.Instance.MainVisualTree!.ContentRoot.SetHost(this);
+#endif
 		}
 
 		_windowImplementation.Initialize();

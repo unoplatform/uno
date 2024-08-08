@@ -16,10 +16,6 @@ jobs:
     UNO_UWP_BUILD: false
     XAML_FLAVOR_BUILD: WinUI
 
-    # Only build for NetPrevious
-    UnoDisableNetCurrentMobile: true
-    UnoDisableNetCurrent: true
-
   steps:
   - template: templates/nuget-cache.yml
     parameters:
@@ -29,6 +25,8 @@ jobs:
 
   - template: templates/gitversion.yml
   - template: templates/jdk-setup.yml
+
+  - template: templates/docfx-intermediary-assets.yml
 
   - task: MSBuild@1
     inputs:

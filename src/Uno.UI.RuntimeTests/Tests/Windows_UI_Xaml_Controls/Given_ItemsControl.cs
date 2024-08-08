@@ -240,6 +240,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			ContentControl cc = null;
 			await WindowHelper.WaitFor(() => (cc = SUT.ContainerFromItem(source[0]) as ContentControl) != null);
 
+			// Not required on WinUI.
+			// In Uno, ContainerFromItem is available very early, making the above WaitFor completes synchronously.
+			// In WinUI, ContainerFromItem is available more late, so WaitFor completes asynchronously allowing for a next layout pass to happen.
+			// This should be okay for now.
+			await WindowHelper.WaitForIdle();
+
 			Assert.AreEqual(4, CounterGrid.CreationCount);
 			Assert.AreEqual(4, CounterGrid2.CreationCount);
 			Assert.AreEqual(4, CounterGrid.BindCount);

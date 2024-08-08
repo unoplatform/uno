@@ -4,21 +4,13 @@ uid: Uno.GettingStarted.CreateAnApp.Rider
 
 # Create an app with Rider
 
-<div style="position: relative; width: 100%; padding-bottom: 56.25%;">
-    <iframe
-        src="https://www.youtube-nocookie.com/embed/BQdj9rqLcos"
-        title="YouTube video player"
-        frameborder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        allowfullscreen
-        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
-    </iframe>
-</div>
-
 > [!NOTE]
-> Make sure to setup your environment by [following our instructions](xref:Uno.GetStarted.Rider).
+> Make sure to setup your environment first by [following our instructions](xref:Uno.GetStarted.Rider).
 
 ## Create the App
+
+> [!IMPORTANT]
+> Current versions of Rider (2024.1 and earlier) do not support creating Uno Platform projects using the "New Solution" dialog, even if the Uno Platform project template appears. Make sure to follow the directions below.
 
 Creating an Uno Platform project is done [using dotnet new](xref:Uno.GetStarted.dotnet-new) and the Uno Platform Live Wizard by following these steps:
 
@@ -40,58 +32,94 @@ Creating an Uno Platform project is done [using dotnet new](xref:Uno.GetStarted.
 
 1. In your terminal, navigate to the folder that will contain your new app.
 
-    > [!IMPORTANT]
-    > As of Rider 2023.3, the Uno Platform 5.2 `net8.0-browserwasm` and `net8.0-desktop` TargetFrameworks are not supported. See [this JetBrains article](https://aka.platform.uno/rider-desktop-wasm-support) for more details.
-    > To build an app using Uno Platform 5.1 templates that are compatible with Rider, run `dotnet new uninstall uno.templates` then `dotnet new install uno.templates::5.1.25`.
-
 1. Create a new project by pasting the command that was previously generated in the Live Wizard.
+
 1. Open the solution in Rider, you should now have a folder structure that looks like this:
 
     ![A screen showing the structure of the solution in Rider](Assets/quick-start/rider-folder-structure.png)
 
 > [!TIP]
 > If you are not able to run the online Live Wizard, you can explore the [`dotnet new` template](xref:Uno.GetStarted.dotnet-new) directly in the CLI.
+> [!IMPORTANT]
+> A notification window will appear for the free registration of the extension. If the notification disappears before you can enter the license, you can find it again in the "Notification Bell" icon at the top right of the Rider window.
+
+### Considerations for macOS and Linux
+
+When using macOS or Linux for developing your application and you have selected the WinAppSDK target, you may get the **UNOB0014** error which mentions building on macOS or Linux is not supported. While Uno Platform is able to filter out unsupported targets from the command line and other IDE, Rider currently [does not support this automatic filtering](https://youtrack.jetbrains.com/issue/RIDER-114790/Unsupported-target-framework-filtering).
+
+To correct this, you'll need to modify your `csproj` file in order to make the project compatible.
+
+You can change this line:
+
+```xml
+<TargetFrameworks>net8.0-android;net8.0-ios;net8.0-maccatalyst;net8.0-windows10.0.19041;net8.0-browserwasm;net8.0-desktop</TargetFrameworks>
+```
+
+To be:
+
+```xml
+<TargetFrameworks>net8.0-android;net8.0-browserwasm;net8.0-desktop</TargetFrameworks>
+<TargetFrameworks Condition=" $([MSBuild]::IsOSPlatform('windows')) ">$(TargetFrameworks);net8.0-windows10.0.19041</TargetFrameworks>
+<TargetFrameworks Condition=" !$([MSBuild]::IsOSPlatform('linux')) ">$(TargetFrameworks);net8.0-ios;net8.0-maccatalyst</TargetFrameworks>
+```
+
+Make sure to adjust the list of target frameworks based on the platforms you have in your original list.
 
 ## Debug the App
 
+### [**Desktop**](#tab/desktop)
+
+Select the **MyUnoApp (Desktop)** debug profile then click the green arrow or the debug button.
+
+![A view of the Rider taskbar for Desktop](Assets/quick-start/run-desktop-rider.png)
+
 ### [**Android**](#tab/android)
 
-Set Android as your startup project. Run.
-![run-android-rider](Assets/quick-start/run-android-rider.png)
+Set the Android debug profile in the debugger toolbar, then click the green arrow or the debug button.
+![A view of the Rider taskbar for Android](Assets/quick-start/run-android-rider.png)
 
 > [!NOTE]
 > Whether you're using a physical device or the emulator, the app will install but will not automatically open. You will have to manually open it.
 
 ### [**WebAssembly**](#tab/wasm)
 
-Select Wasm as your startup project then run.
+Select the **MyUnoApp (WebAssembly)** debug profile then click the green arrow or the debug button.
 
-![run-wasm-rider](Assets/quick-start/run-wasm-rider.png)
+![A view of the Rider taskbar for WebAssembly](Assets/quick-start/run-wasm-rider.png)
 
 A new browser window will automatically run your application.
 
 > [!NOTE]
 > There is no debugging for WebAssembly within Rider for Uno Platform, but you can debug using the [built-in Chrome tools](external/uno.wasm.bootstrap/doc/debugger-support.md#how-to-use-the-browser-debugger).
 
+### [**iOS**](#tab/ios)
+
+Select the **MyUnoApp** debug profile with the mobile Apple logo then click the green arrow or the debug button.
+
+![A view of the Rider taskbar for iOS](Assets/quick-start/run-ios-rider.png)
+
+> [!NOTE]
+> Debugging iOS apps is only supported on macOS
+
 ### [**Catalyst**](#tab/catalyst)
 
-You will be able to build the Catalyst project, by selecting one of the project with the apple logo.
+Select the **MyUnoApp** debug profile with the desktop Apple logo then click the green arrow or the debug button.
 
-![run-catalyst-rider](Assets/quick-start/run-catalyst-rider.png)
+![A view of the Rider taskbar for Catalyst](Assets/quick-start/run-catalyst-rider.png)
 
-Alternatively, you can use a tool like VNC to run the simulator on a mac.  
+> [!NOTE]
+> Debugging Mac Catalyst apps is only supported on macOS
 
 ### [**WinUI/WinAppSDK**](#tab/winui)
 
-You will be able to build the Windows project.
+Select the **MyUnoApp (WinAppSDK Unpackaged)** debug profile then click the green arrow or the debug button.
 
-![run-winappsdk-rider](Assets/quick-start/run-winappsdk-rider.png)  
+![A view of the Rider taskbar for WinAppSDK](Assets/quick-start/run-winappsdk-rider.png)
 
-### [**Desktop**](#tab/desktop)
+> [!NOTE]
+> Debugging Windows App SDK profile is only supported on Windows.
 
-Select the `net8.0-desktop` target framework, then Run.
-
-***
+---
 
 ## Next Steps
 

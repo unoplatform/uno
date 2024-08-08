@@ -10,10 +10,12 @@
 		<TargetPlatformIdentifier>BrowserWasm</TargetPlatformIdentifier>
 		<TargetFrameworkIdentifier>BrowserWasm</TargetFrameworkIdentifier>
 		<TargetPlatformSupported>true</TargetPlatformSupported>
-		<TargetPlatformVersion>$([System.Text.RegularExpressions.Regex]::Match($(TargetFramework), '\d+.\d+'))</TargetPlatformVersion>
-		<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">8.0</SupportedOSPlatformVersion>
+		<TargetPlatformVersion>1.0</TargetPlatformVersion>
+		<SupportedOSPlatformVersion Condition=" '$(SupportedOSPlatformVersion)' == '' ">1.0</SupportedOSPlatformVersion>
 
 		<OutputType Condition=" $(OutputType) == 'Exe' AND $(OutputType) != $(_InitialOutputType)">$([MSBuild]::ValueOrDefault('$(_InitialOutputType)', 'Library'))</OutputType>
+
+		<IsMSALSupported>true</IsMSALSupported>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -41,10 +43,31 @@
 			with other target framework `Content` items handling.
 
 			See https://github.com/dotnet/sdk/blob/e3c62139dd25af2b7593a2cde702261f20822e47/src/StaticWebAssetsSdk/Sdk/Sdk.StaticWebAssets.StaticAssets.ProjectSystem.props#L36
-			-->
-			<_RemoveWebSDKConfigContent Include="@(Content)" Condition="'%(Content.DefiningProjectDirectory)'!='' AND $([System.String]::Copy(%(Content.DefiningProjectDirectory)).Contains('Microsoft.NET.Sdk.StaticWebAssets'))" />
-			<Content Remove="@(_RemoveWebSDKConfigContent)" />
-			<_RemoveWebSDKConfigContent Remove="@(_RemoveWebSDKConfigContent)"/>
+				-->
+			
+			<!-- Get all files included by the Web Sdk, except ones from the Assets folder -->
+			<_ContentToUpdate
+				Include="@(Content)"
+				IsWebSdk="true"
+				Exclude="$(AssetsFolder)**"
+				Condition="'%(Content.DefiningProjectDirectory)'!='' AND $([System.String]::Copy(%(Content.DefiningProjectDirectory)).Contains('Microsoft.NET.Sdk.StaticWebAssets'))" />
+
+			<!-- Get all files included by everything else, except ones from the Assets folder -->
+			<_NonWebSdkContent
+				Include="@(Content)"
+				Exclude="$(AssetsFolder)**"
+				Condition="'%(Content.DefiningProjectDirectory)'!='' AND !$([System.String]::Copy(%(Content.DefiningProjectDirectory)).Contains('Microsoft.NET.Sdk.StaticWebAssets'))" />
+
+			<!-- Remove the files Web SDK included files. This will also remove duplicates, regardless of the metadata -->
+			<Content Remove="@(_ContentToUpdate)"
+					 Condition="'%(_ContentToUpdate.IsWebSdk)'=='true' AND '%(_ContentToUpdate.IsDefaultItem)'!='true'" />
+			
+			<!-- Add back the non-websdk content -->
+			<Content Include="@(_NonWebSdkContent)" KeepDuplicates="false" />
+
+			<!-- Cleanup -->
+			<_ContentToUpdate Remove="@(_ContentToUpdate)"/>
+			<_NonWebSdkContent Remove="@(_NonWebSdkContent)"/>
 		</ItemGroup>
 	</Target>
 
@@ -57,7 +80,7 @@
 			`DefiningProjectDirectory` is not available when used from a global itemgroup, but is 
 			available from an target.
 			-->
-			<_RemoveWebSDKUsing Include="@(Using)" Condition="$([System.String]::Copy(%(Using.DefiningProjectDirectory)).Contains('Microsoft.NET.Sdk.Web'))" />
+			<_RemoveWebSDKUsing Include="@(Using)" Condition="'%(Using.DefiningProjectDirectory)'!='' AND $([System.String]::Copy(%(Using.DefiningProjectDirectory)).Contains('Microsoft.NET.Sdk.Web'))" />
 			<Using Remove="@(_RemoveWebSDKUsing)" />
 			<_RemoveWebSDKUsing Remove="@(_RemoveWebSDKUsing)"/>
 		</ItemGroup>

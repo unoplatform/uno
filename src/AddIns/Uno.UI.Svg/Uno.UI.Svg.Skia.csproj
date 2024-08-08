@@ -32,7 +32,7 @@
 
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			<_TargetNugetFolder>$(NuGetPackageRoot)\Uno.UI.Svg\$(UnoNugetOverrideVersion)\uno-runtime\$(UnoRuntimeIdentifier.ToLowerInvariant())</_TargetNugetFolder>
+			<_TargetNugetFolder>$(NuGetPackageRoot)\uno.ui.svg\$(UnoNugetOverrideVersion)\uno-runtime\$(UnoRuntimeIdentifier.ToLowerInvariant())</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)**" />

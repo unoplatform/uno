@@ -3,62 +3,16 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class SelectorBarItem : global::Microsoft.UI.Xaml.Controls.ItemContainer
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public string Text
-		{
-			get
-			{
-				return (string)this.GetValue(TextProperty);
-			}
-			set
-			{
-				this.SetValue(TextProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Xaml.Controls.IconElement Icon
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.IconElement)this.GetValue(IconProperty);
-			}
-			set
-			{
-				this.SetValue(IconProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty IconProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(Icon), typeof(global::Microsoft.UI.Xaml.Controls.IconElement),
-			typeof(global::Microsoft.UI.Xaml.Controls.SelectorBarItem),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.IconElement)));
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty TextProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(Text), typeof(string),
-			typeof(global::Microsoft.UI.Xaml.Controls.SelectorBarItem),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(string)));
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public SelectorBarItem() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.SelectorBarItem", "SelectorBarItem.SelectorBarItem()");
-		}
-#endif
+		// Skipping already declared property Text
+		// Skipping already declared property Icon
+		// Skipping already declared property IconProperty
+		// Skipping already declared property TextProperty
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.SelectorBarItem.SelectorBarItem()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBarItem.SelectorBarItem()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBarItem.Text.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SelectorBarItem.Text.set

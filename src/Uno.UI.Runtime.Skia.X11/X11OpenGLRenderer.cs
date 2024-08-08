@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Drawing;
 using System.Globalization;
-using Microsoft.UI.Xaml;
 using SkiaSharp;
 using Uno.Foundation.Logging;
+using Uno.UI.Helpers;
 using Uno.UI.Hosting;
 
 namespace Uno.WinUI.Runtime.Skia.X11
@@ -22,6 +22,10 @@ namespace Uno.WinUI.Runtime.Skia.X11
 		private Size _lastSize;
 		private GRBackendRenderTarget? _renderTarget;
 		private SKSurface? _surface;
+		private X11AirspaceRenderHelper? _airspaceHelper;
+		private SKColor _background = SKColors.White;
+
+		public void SetBackgroundColor(SKColor color) => _background = color;
 
 		public X11OpenGLRenderer(IXamlRootHost host, X11Window x11window)
 		{
@@ -32,9 +36,9 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 		public void Dispose() => _grContext.Dispose();
 
-		void IX11Renderer.InvalidateRender()
+		void IX11Renderer.Render()
 		{
-			using var _1 = X11Helper.XLock(_x11Window.Display);
+			using var lockDiposable = X11Helper.XLock(_x11Window.Display);
 
 			if (_host is X11XamlRootHost { Closed.IsCompleted: true })
 			{
@@ -65,15 +69,16 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			}
 
 			XWindowAttributes attributes = default;
-			var _2 = XLib.XGetWindowAttributes(_x11Window.Display, _x11Window.Window, ref attributes);
+			_ = XLib.XGetWindowAttributes(_x11Window.Display, _x11Window.Window, ref attributes);
 
 			var width = attributes.width;
 			var height = attributes.height;
 
-			if (_surface == null || _renderTarget == null || _lastSize != new Size(width, height))
+			if (_surface == null || _airspaceHelper == null || _renderTarget == null || _lastSize != new Size(width, height))
 			{
 				_renderTarget?.Dispose();
 				_surface?.Dispose();
+				_airspaceHelper?.Dispose();
 
 				var skColorType = SKColorType.Rgba8888; // this is Rgba8888 regardless of SKImageInfo.PlatformColorType
 				var grSurfaceOrigin = GRSurfaceOrigin.BottomLeft; // to match OpenGL's origin
@@ -82,13 +87,14 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 				_renderTarget = new GRBackendRenderTarget(width, height, glXInfo.sampleCount, glXInfo.stencilBits, glInfo);
 				_surface = SKSurface.Create(_grContext, _renderTarget, grSurfaceOrigin, skColorType);
+				_airspaceHelper = new X11AirspaceRenderHelper(_x11Window.Display, _x11Window.Window, width, height);
 				_lastSize = new Size(width, height);
 			}
 
 			var canvas = _surface.Canvas;
 			using (new SKAutoCanvasRestore(canvas, true))
 			{
-				canvas.Clear(SKColors.Transparent);
+				canvas.Clear(_background);
 
 				var scale = _host.RootElement?.XamlRoot is { } root
 					? root.RasterizationScale
@@ -97,7 +103,11 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 				if (_host.RootElement?.Visual is { } rootVisual)
 				{
-					_host.RootElement.XamlRoot!.Compositor.RenderRootVisual(_surface, rootVisual);
+					var path = SkiaRenderHelper.RenderRootVisualAndReturnPath(width, height, rootVisual, _surface);
+					if (path is { })
+					{
+						_airspaceHelper.XShapeClip(path);
+					}
 				}
 			}
 
@@ -105,7 +115,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 			GlxInterface.glXSwapBuffers(_x11Window.Display, _x11Window.Window);
 
-			var _3 = XLib.XFlush(_x11Window.Display); // unnecessary on most X11 implementations
+			_ = XLib.XFlush(_x11Window.Display); // unnecessary on most X11 implementations
 		}
 
 		private GRContext CreateGRGLContext()

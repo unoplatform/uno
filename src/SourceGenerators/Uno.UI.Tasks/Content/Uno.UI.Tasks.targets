@@ -221,7 +221,7 @@
 
 	<Target Name="_UnoLinkerUpriFeatures"
 		Condition="'$(IsUnoHead)'=='true'"
-		BeforeTargets="BuildDist">
+		BeforeTargets="BuildDist;PrepareForILLink">
 
 		<UpriFeaturesGeneratorTask_v0
 			Languages="@(UnoSupportedLanguage)">
@@ -304,6 +304,8 @@
 			and $(_IsXamlTrimmingAvailable)"
 		  BeforeTargets="BuildDist;PrepareForILLink">
 
+		<Error Condition="'$(ILLinkTasksAssembly)'==''" Text="The property 'ILLinkTasksAssembly' wasn't set. You need to set _RequiresILLinkPack MSBuild property to true, or reference Microsoft.NET.ILLink.Tasks NuGet package with version same as your TargetFramework version." />
+
 		<ItemGroup>
 			<!-- Filter ReferenceCopyLocalPaths as it may contain pdbs as well -->
 			<_UnoLinkerHintsPass1AssembliesForReferencePaths
@@ -312,21 +314,13 @@
 		</ItemGroup>
 
 		<PropertyGroup>
-			<_UnoLinkerHintGeneratorILLinkerPath>$(MSBuildThisFileDirectory)\..\tools\linker</_UnoLinkerHintGeneratorILLinkerPath>
-
-			
-			<_UnoLinkerHintGeneratorILLinkerPath
-				Condition="
-				'$(TargetFrameworkIdentifier)'=='.NETCoreApp'
-				and $([MSBuild]::VersionGreaterThanOrEquals($(TargetFrameworkVersion), '6.0'))
-				and '$(ILLinkTasksAssembly)'!=''"
-			>$([System.IO.Path]::GetDirectoryName($(ILLinkTasksAssembly)))\..\net$(BundledNETCoreAppTargetFrameworkVersion)</_UnoLinkerHintGeneratorILLinkerPath>
-
 			<_UnoUIPackageBasePath
 				Condition="
 					'%(UnoRuntimeEnabledPackage.Identity)'=='Uno.UI'
 					or '%(UnoRuntimeEnabledPackage.Identity)'=='Uno.WinUI'"
 				>%(UnoRuntimeEnabledPackage.PackageBasePath)</_UnoUIPackageBasePath>
+
+			<_UnoLinkerHintGeneratorILLinkerPath Condition="'$(ILLinkTasksAssembly)'!=''">$([System.IO.Path]::GetDirectoryName($(ILLinkTasksAssembly)))\..\net$(TargetFrameworkVersion.Substring(1))</_UnoLinkerHintGeneratorILLinkerPath>
 		</PropertyGroup>
 
 		<LinkerHintGeneratorTask_v0
@@ -346,6 +340,20 @@
 		<ItemGroup>
 			<RuntimeHostConfigurationOption Include="@(_LinkerHintOutputFeatures)" Trim="true" />
 		</ItemGroup>
+	</Target>
+
+	<Target Name="_UnoLinkerAndroidUITestSupport"
+			Condition="'$(IsUnoHead)'=='true' and '$(TargetPlatformIdentifier)'=='android' and '$(IsUiAutomationMappingEnabled)'!='true'"
+			BeforeTargets="PrepareForILLink">
+
+		<ItemGroup>
+			<RuntimeHostConfigurationOption Include="AndroidUITestSupport" Value="false" Trim="true" />
+		</ItemGroup>
+
+		<PropertyGroup>
+			<_ExtraTrimmerArgs>--link-attributes "$(MSBuildThisFileDirectory)Descriptors/Uno.UI.LinkAttributes.Android.xml" $(_ExtraTrimmerArgs)</_ExtraTrimmerArgs>
+		</PropertyGroup>
+
 	</Target>
 
 	<Target Name="_ValidateBootstraperVersion"

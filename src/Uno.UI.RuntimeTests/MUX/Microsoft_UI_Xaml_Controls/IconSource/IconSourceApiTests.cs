@@ -38,7 +38,6 @@ using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 {
 	[TestClass]
-	[Uno.UI.RuntimeTests.RunsOnUIThread]
 	public class IconSourceApiTests : MUXApiTestBase
 	{
 		[TestMethod]

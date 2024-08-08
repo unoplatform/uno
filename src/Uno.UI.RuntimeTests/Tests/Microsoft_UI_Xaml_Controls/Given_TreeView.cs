@@ -38,6 +38,7 @@ using TreeViewNode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewNo
 using TreeViewItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewItem;
 using TreeViewList = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewList;
 #if HAS_UNO
+using Windows.Foundation.Metadata;
 using TreeNodeSelectionState = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeNodeSelectionState;
 #endif
 
@@ -318,6 +319,86 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 
 			Assert.IsFalse(TestableTreeViewItem.DraggingThrewException);
 		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is only supported on skia")]
+#elif HAS_UNO && !HAS_UNO_WINUI
+		[Ignore("Fails on UWP branch as mixing WUX and MUX types causes errors.")]
+#endif
+		public async Task When_TreeViewItem_Dragged_NRE2()
+		{
+			using var _ = new DisposableAction(() => TestableTreeViewItem.DraggingThrewException = false);
+			var treeView = new TreeView
+			{
+				ItemTemplate = new DataTemplate(() =>
+				{
+					var tvi = new TestableTreeViewItem();
+					tvi.SetBinding(TreeViewItem.ItemsSourceProperty, new Binding("Items"));
+					tvi.SetBinding(ContentControl.ContentProperty, new Binding("Label"));
+					return tvi;
+				}),
+				ItemsSource = new ObservableCollection<TestTreeNodeModel>
+				{
+					new TestTreeNodeModel("Root 1")
+					{
+						Items =
+						{
+							new TestTreeNodeModel("Child 1.1"),
+							new TestTreeNodeModel("Child 1.2"),
+						}
+					},
+					new TestTreeNodeModel("Root 2")
+					{
+						Items =
+						{
+							new TestTreeNodeModel("Child 2.1"),
+						}
+					},
+				}
+			};
+
+			await UITestHelper.Load(treeView);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			treeView.RootNodes[0].IsExpanded = true;
+			await WindowHelper.WaitForIdle();
+
+			var ttv = treeView.TransformToVisual(null);
+
+			var test = new[]
+			{
+				("move", new Point(103, 29)),
+				("press", new Point()),
+				("move", new Point(103, 36)),
+				("move", new Point(103, 40)),
+				("move", new Point(103, 47)),
+				("release", new Point()),
+			};
+
+
+			foreach (var (action, position) in test)
+			{
+				if (action == "press")
+				{
+					mouse.Press();
+				}
+				else if (action == "release")
+				{
+					mouse.Release();
+				}
+				else
+				{
+					Assert.AreEqual("move", action);
+					mouse.MoveTo(ttv.TransformPoint(position), 1);
+				}
+				await WindowHelper.WaitForIdle();
+			}
+
+			Assert.IsFalse(TestableTreeViewItem.DraggingThrewException);
+		}
 #endif
 
 		[TestMethod]
@@ -341,6 +422,9 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			Assert.AreEqual(-1, listControl.SelectedIndex);
 		}
 
+#if __IOS__
+		[Ignore("Fails on iOS 17 https://github.com/unoplatform/uno/issues/17102")]
+#endif
 		[TestMethod]
 		public async Task When_Setting_SelectedItem_TakesEffect()
 		{
@@ -364,6 +448,60 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 #endif
 			Assert.AreEqual(1, listControl.SelectedIndex);
 		}
+
+#if HAS_UNO
+		[TestMethod]
+		[RequiresFullWindow]
+		public async Task When_ItemTemplateSelector_DataTemplate_Root_IsNot_TreeViewItem()
+		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // "System.NotImplementedException: RenderTargetBitmap is not supported on this platform.";
+			}
+
+			Border border = null;
+
+			var sp = new StackPanel
+			{
+				Background = new SolidColorBrush(Colors.Blue),
+				Children =
+				{
+					new TreeView
+					{
+						ItemsSource = "12",
+						ItemTemplateSelector = new TreeItemTemplateSelector
+						{
+							Template = new DataTemplate(() => border = new Border
+							{
+								Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
+								Width = 100,
+								Height = 100,
+								Child = new TextBlock().Apply(tb => tb.SetBinding(TextBlock.TextProperty, new Binding()))
+							})
+						}
+					}
+				}
+			};
+
+			await UITestHelper.Load(sp);
+
+			var tv = sp.FindFirstDescendant<TreeView>();
+
+			Assert.IsNotNull(border);
+			var containerX = border.GetAbsoluteBoundsRect().X;
+			var screenshot = await UITestHelper.ScreenShot(tv);
+
+			var tvi = sp.FindFirstDescendant<TreeViewItem>();
+			var x = containerX + 50d;
+			ImageAssert.HasColorAt(screenshot, new Point(x, screenshot.Height / 4), Microsoft.UI.Colors.Red);
+			ImageAssert.HasColorAt(screenshot, new Point(x, screenshot.Height * 3 / 4), Microsoft.UI.Colors.Red);
+
+			((TreeViewItem)sp.FindFirstDescendant<TreeViewList>().ContainerFromIndex(0)).ActualHeight.Should().BeApproximately(102, 1);
+			((TreeViewItem)sp.FindFirstDescendant<TreeViewList>().ContainerFromIndex(1)).ActualHeight.Should().BeApproximately(102, 1);
+			Assert.AreEqual("1", ((ContentPresenter)((TreeViewItem)sp.FindFirstDescendant<TreeViewList>().ContainerFromIndex(0)).FindName("ContentPresenter")).FindFirstDescendant<TextBlock>().Text);
+			Assert.AreEqual("2", ((ContentPresenter)((TreeViewItem)sp.FindFirstDescendant<TreeViewList>().ContainerFromIndex(1)).FindName("ContentPresenter")).FindFirstDescendant<TextBlock>().Text);
+		}
+#endif
 
 		[TestMethod]
 #if __MACOS__
@@ -912,6 +1050,12 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 					}
 				}
 			}
+		}
+
+		public class TreeItemTemplateSelector : DataTemplateSelector
+		{
+			public DataTemplate Template { get; set; }
+			protected override DataTemplate SelectTemplateCore(object item) => Template;
 		}
 	}
 

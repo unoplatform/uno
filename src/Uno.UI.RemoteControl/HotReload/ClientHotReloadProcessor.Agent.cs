@@ -1,4 +1,5 @@
-﻿#nullable enable
+﻿
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -24,11 +25,18 @@ namespace Uno.UI.RemoteControl.HotReload
 		private bool _linkerEnabled;
 		private HotReloadAgent? _agent;
 		private bool _serverMetadataUpdatesEnabled;
-		private static ClientHotReloadProcessor? _instance;
 		private readonly TaskCompletionSource<bool> _hotReloadWorkloadSpaceLoaded = new();
 
 		private void WorkspaceLoadResult(HotReloadWorkspaceLoadResult hotReloadWorkspaceLoadResult)
-				=> _hotReloadWorkloadSpaceLoaded.SetResult(hotReloadWorkspaceLoadResult.WorkspaceInitialized);
+		{
+			// If we get a workspace loaded message, we can assume that we are running with the dev-server
+			// This mean that HR won't work with the debugger attached.
+			if (Debugger.IsAttached)
+			{
+				_status.ReportInvalidRuntime();
+			}
+			_hotReloadWorkloadSpaceLoaded.SetResult(hotReloadWorkspaceLoadResult.WorkspaceInitialized);
+		}
 
 		/// <summary>
 		/// Waits for the server's hot reload workspace to be loaded
@@ -141,7 +149,7 @@ namespace Uno.UI.RemoteControl.HotReload
 			return Array.Empty<string>();
 		}
 
-		private void AssemblyReload(AssemblyDeltaReload assemblyDeltaReload)
+		private void ProcessAssemblyReload(AssemblyDeltaReload assemblyDeltaReload)
 		{
 			try
 			{
@@ -149,8 +157,9 @@ namespace Uno.UI.RemoteControl.HotReload
 				{
 					if (this.Log().IsEnabled(LogLevel.Error))
 					{
-						this.Log().Error($"Hot Reload is not supported when the debugger is attached.");
+						this.Log().Error("Hot Reload is not supported when the debugger is attached.");
 					}
+					_status.ReportLocalStarting([]).ReportIgnored("Hot Reload is not supported when the debugger is attached");
 
 					return;
 				}
@@ -159,13 +168,13 @@ namespace Uno.UI.RemoteControl.HotReload
 				{
 					if (this.Log().IsEnabled(LogLevel.Trace))
 					{
-						this.Log().Trace($"Applying IL Delta after {assemblyDeltaReload.FilePath}, Guid:{assemblyDeltaReload.ModuleId}");
+						this.Log().Trace($"Applying IL Delta after {string.Join(",", assemblyDeltaReload.FilePaths)}, Guid:{assemblyDeltaReload.ModuleId}");
 					}
 
 					var changedTypesStreams = new MemoryStream(Convert.FromBase64String(assemblyDeltaReload.UpdatedTypes));
 					var changedTypesReader = new BinaryReader(changedTypesStreams);
 
-					var delta = new UpdateDelta()
+					var delta = new UpdateDelta
 					{
 						MetadataDelta = Convert.FromBase64String(assemblyDeltaReload.MetadataDelta),
 						ILDelta = Convert.FromBase64String(assemblyDeltaReload.ILDelta),
@@ -174,18 +183,19 @@ namespace Uno.UI.RemoteControl.HotReload
 						UpdatedTypes = ReadIntArray(changedTypesReader)
 					};
 
+					_status.ConfigureSourceForNextOperation(HotReloadSource.DevServer);
 					_agent?.ApplyDeltas(new[] { delta });
 
 					if (this.Log().IsEnabled(LogLevel.Trace))
 					{
-						this.Log().Trace($"Done applying IL Delta for {assemblyDeltaReload.FilePath}, Guid:{assemblyDeltaReload.ModuleId}");
+						this.Log().Trace($"Done applying IL Delta for {string.Join(",", assemblyDeltaReload.FilePaths)}, Guid:{assemblyDeltaReload.ModuleId}");
 					}
 				}
 				else
 				{
 					if (this.Log().IsEnabled(LogLevel.Trace))
 					{
-						this.Log().Trace($"Failed to apply IL Delta for {assemblyDeltaReload.FilePath} ({assemblyDeltaReload})");
+						this.Log().Trace($"Failed to apply IL Delta for {string.Join(",", assemblyDeltaReload.FilePaths)} ({assemblyDeltaReload})");
 					}
 				}
 			}
@@ -193,8 +203,12 @@ namespace Uno.UI.RemoteControl.HotReload
 			{
 				if (this.Log().IsEnabled(LogLevel.Error))
 				{
-					this.Log().Error($"An exception occurred when applying IL Delta for {assemblyDeltaReload.FilePath} ({assemblyDeltaReload.ModuleId})", e);
+					this.Log().Error($"An exception occurred when applying IL Delta for {string.Join(",", assemblyDeltaReload.FilePaths)} ({assemblyDeltaReload.ModuleId})", e);
 				}
+			}
+			finally
+			{
+				_status.ConfigureSourceForNextOperation(default); // runtime
 			}
 		}
 

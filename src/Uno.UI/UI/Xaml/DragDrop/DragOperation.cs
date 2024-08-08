@@ -22,6 +22,7 @@ namespace Microsoft.UI.Xaml
 	{
 		private static readonly TimeSpan _deferralTimeout = TimeSpan.FromSeconds(30); // Random value!
 
+		private readonly InputManager _inputManager;
 		private readonly IDragDropExtension? _extension;
 		private readonly ICoreDropOperationTarget _target;
 		private readonly DragView _view;
@@ -46,11 +47,13 @@ namespace Microsoft.UI.Xaml
 
 		public DragOperation(InputManager inputManager, IDragDropExtension? extension, CoreDragInfo info, ICoreDropOperationTarget? target = null)
 		{
+			_inputManager = inputManager;
 			_extension = extension;
 			Info = info;
 
-			_target = target ?? new DropUITarget(); // The DropUITarget must be re-created for each drag operation! (Caching of the drag ui-override)
+			_target = target ?? new DropUITarget(inputManager.ContentRoot.XamlRoot!); // The DropUITarget must be re-created for each drag operation! (Caching of the drag ui-override)
 			_view = new DragView(info.DragUI as DragUI);
+			_view.SetLocation(Info.Position);
 			_viewHandle = inputManager.OpenDragAndDrop(_view);
 			_viewOverride = new CoreDragUIOverride(); // UWP does re-use the same instance for each update on _target
 		}
@@ -66,8 +69,7 @@ namespace Microsoft.UI.Xaml
 
 			var wasOverWindow = _isOverWindow;
 
-			//TODO: Multi-window support #13982
-			_isOverWindow = Window.CurrentSafe?.Bounds.Contains(src.GetPosition(null)) ?? false;
+			_isOverWindow = _inputManager.ContentRoot.XamlRoot?.Bounds.Contains(src.GetPosition(null)) ?? false;
 
 			Update(src); // It's required to do that as soon as possible in order to update the view's location
 
@@ -83,7 +85,7 @@ namespace Microsoft.UI.Xaml
 			return _acceptedOperation;
 		}
 
-		internal DataPackageOperation Aborted(IDragEventSource src)
+		internal DataPackageOperation Aborted()
 		{
 			// For safety, we don't validate the FrameId for the finalizing actions, we rely only on the _state
 			if (_state >= State.Completing)
@@ -91,7 +93,6 @@ namespace Microsoft.UI.Xaml
 				return _acceptedOperation;
 			}
 
-			Update(src);
 			Enqueue(RaiseFinalLeave);
 
 			return _acceptedOperation;
@@ -140,7 +141,7 @@ namespace Microsoft.UI.Xaml
 			if (!isOver)
 			{
 				await _target.EnterAsync(Info, _viewOverride).AsTask(ct);
-				// No Task.Yield here. This is similar to what happens on WinUI.
+				// No waiting for Idle here. This is similar to what happens on WinUI.
 			}
 			var acceptedOperation = await _target.OverAsync(Info, _viewOverride).AsTask(ct);
 
@@ -166,7 +167,7 @@ namespace Microsoft.UI.Xaml
 
 			// When the pointer goes out of the window, we hide our internal control and,
 			// if supported by the OS, we request a Drag and Drop operation with the native UI.
-			_view.Hide();
+			_viewHandle.Dispose();
 			if (!_hasRequestedNativeDrag)
 			{
 				_extension?.StartNativeDrag(Info);
@@ -212,7 +213,8 @@ namespace Microsoft.UI.Xaml
 #endif
 				{
 					await _target.OverAsync(Info, _viewOverride).AsTask(ct);
-					await Task.Yield(); // give a chance for layout updates, etc. This is similar to what happens on WinUI.
+					// give a chance for layout updates, etc. This is similar to what happens on WinUI.
+					await NativeDispatcher.Main.EnqueueAsync(() => { }, NativeDispatcherPriority.Idle);
 				}
 				result = await _target.DropAsync(Info).AsTask(ct);
 				result &= Info.AllowedOperations;

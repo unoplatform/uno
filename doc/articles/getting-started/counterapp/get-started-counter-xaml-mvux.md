@@ -85,7 +85,7 @@ Also, for more information on all the template options, see [Using the Uno Platf
 
 [!INCLUDE [Main Page - Other Elements](includes/include-elements-xaml.md)]
 
-[!INCLUDE [View Model](includes/include-mvux.md)]
+[!INCLUDE [Main Model](includes/include-mvux.md)]
 
 ## Data Binding
 
@@ -99,32 +99,32 @@ Now that we have the **`BindableMainModel`** class, we can update the **`MainPag
     </Page.DataContext>
     ```
 
-- Update the **`TextBlock`** by removing the **`Text`** attribute, replacing it with two **`Run`** elements, and binding the **`Text`** property of the second **`Run`** element to the **`Count`** property of the **BindableMainModel**.
+- Update the **`TextBlock`** by removing the **`Text`** attribute, replacing it with two **`Run`** elements, and binding the **`Text`** property of the second **`Run`** element to the **`Countable.Count`** property of the **BindableMainModel**.
 
     ```xml
     <TextBlock Margin="12"
                HorizontalAlignment="Center"
                TextAlignment="Center">
-        <Run Text="Counter: " /><Run Text="{Binding Count}" />
+        <Run Text="Counter: " /><Run Text="{Binding Countable.Count}" />
     </TextBlock>
     ```
 
-- Update the **`TextBox`** by binding the **`Text`** property to the **`Step`** property of the **BindableMainModel**. The **`Mode`** of the binding is set to **`TwoWay`** so that the **`Step`** property is updated when the user changes the value in the **`TextBox`**.
+- Update the **`TextBox`** by binding the **`Text`** property to the **`Countable.Step`** property of the **BindableMainModel**. The **`Mode`** of the binding is set to **`TwoWay`** so that the **`Countable.Step`** property is updated when the user changes the value in the **`TextBox`**.
 
     ```xml
     <TextBox Margin="12"
              HorizontalAlignment="Center"
              PlaceholderText="Step Size"
-             Text="{Binding Step, Mode=TwoWay}"
+             Text="{Binding Countable.Step, Mode=TwoWay}"
              TextAlignment="Center" />
     ```
 
-- Update the **`Button`** to add a **`Command`** attribute that is bound to the **`IncrementCommand`** property of the **`BindableMainModel`**.
+- Update the **`Button`** to add a **`Command`** attribute that is bound to the **`IncrementCounter`** task of the **`BindableMainModel`**.
 
     ```xml
     <Button Margin="12"
             HorizontalAlignment="Center"
-            Command="{Binding IncrementCommand}"
+            Command="{Binding IncrementCounter}"
             Content="Increment Counter by Step Size" />
     ```
 
@@ -149,23 +149,23 @@ The final code for **MainPage.xaml** should look like this:
     <TextBox Margin="12"
              HorizontalAlignment="Center"
              PlaceholderText="Step Size"
-             Text="{Binding Step, Mode=TwoWay}"
+             Text="{Binding Countable.Step, Mode=TwoWay}"
              TextAlignment="Center" />
 
     <TextBlock Margin="12"
                HorizontalAlignment="Center"
                TextAlignment="Center">
-        <Run Text="Counter: " /><Run Text="{Binding Count}" />
+        <Run Text="Counter: " /><Run Text="{Binding Countable.Count}" />
     </TextBlock>
 
     <Button Margin="12"
             HorizontalAlignment="Center"
-            Command="{Binding IncrementCommand}"
+            Command="{Binding IncrementCounter}"
             Content="Increment Counter by Step Size" />
   </StackPanel>
 </Page>
 ```
 
-[!INCLUDE [View Model](includes/include-wrap.md)]
+[!INCLUDE [Wrap Up](includes/include-wrap.md)]
 
 If you want to see the completed application, you can download the source code from [GitHub](https://github.com/unoplatform/Uno.Samples/tree/master/reference/Counter/XAML-MVUX).

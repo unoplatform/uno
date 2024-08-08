@@ -16,7 +16,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Composition;
 
 [TestClass]
 [RunsOnUIThread]
-internal partial class Given_ExpressionAnimation
+public partial class Given_ExpressionAnimation
 {
 	[TestMethod]
 	public async Task When_Animating_Visual_Offset()

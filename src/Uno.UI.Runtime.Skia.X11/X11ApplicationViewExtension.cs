@@ -1,5 +1,4 @@
-﻿using System;
-using Windows.Foundation;
+﻿using Windows.Foundation;
 using Windows.UI.ViewManagement;
 
 namespace Uno.WinUI.Runtime.Skia.X11
@@ -12,8 +11,10 @@ namespace Uno.WinUI.Runtime.Skia.X11
 		{
 			if (X11Helper.XamlRootHostFromApplicationView(_owner, out var host))
 			{
-				using var _1 = X11Helper.XLock(host.X11Window.Display);
-				var _2 = XLib.XResizeWindow(host.X11Window.Display, host.X11Window.Window, (int)size.Width, (int)size.Height);
+				using var rootLockDiposable = X11Helper.XLock(host.RootX11Window.Display);
+				_ = XLib.XResizeWindow(host.RootX11Window.Display, host.RootX11Window.Window, (int)size.Width, (int)size.Height);
+				using var topLockDiposable = X11Helper.XLock(host.TopX11Window.Display);
+				_ = XLib.XResizeWindow(host.TopX11Window.Display, host.TopX11Window.Window, (int)size.Width, (int)size.Height);
 			}
 			return false;
 		}

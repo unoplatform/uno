@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Uno.UI.Helpers;
@@ -56,7 +58,7 @@ public static class TypeMappings
 	/// </summary>
 	/// <typeparam name="TOriginalType">The original type to be created</typeparam>
 	/// <returns>An new instance for the original type</returns>
-	public static object CreateInstance<TOriginalType>()
+	public static object CreateInstance<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] TOriginalType>()
 		=> Activator.CreateInstance(typeof(TOriginalType).GetReplacementType());
 
 	/// <summary>
@@ -65,7 +67,7 @@ public static class TypeMappings
 	/// <typeparam name="TOriginalType">The original type to be created</typeparam>
 	/// <param name="args">The arguments used to create the instance, passed to the ctor</param>
 	/// <returns>An new instance for the original type</returns>
-	public static object CreateInstance<TOriginalType>(params object[] args)
+	public static object CreateInstance<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] TOriginalType>(params object[] args)
 		=> Activator.CreateInstance(typeof(TOriginalType).GetReplacementType(), args: args);
 
 	internal static Type GetMappedType(this Type originalType) =>
@@ -165,12 +167,10 @@ public static class TypeMappings
 	/// <param name="updateLayout">Indicates whether the layout should be updated after resuming updates</param>
 	public static void Resume(bool updateLayout)
 	{
-		var completion = _mappingsPaused;
-		_mappingsPaused = null;
-		if (completion is not null)
+		if (Interlocked.Exchange(ref _mappingsPaused, null) is { } completion)
 		{
-			MappedTypeToOriginalTypeMappings = AllMappedTypeToOriginalTypeMappings.ToDictionary(x => x.Key, x => x.Value);
-			OriginalTypeToMappedType = AllOriginalTypeToMappedType.ToDictionary(x => x.Key, x => x.Value);
+			MappedTypeToOriginalTypeMappings = new Dictionary<Type, Type>(AllMappedTypeToOriginalTypeMappings);
+			OriginalTypeToMappedType = new Dictionary<Type, Type>(AllOriginalTypeToMappedType);
 			completion.TrySetResult(updateLayout);
 		}
 	}

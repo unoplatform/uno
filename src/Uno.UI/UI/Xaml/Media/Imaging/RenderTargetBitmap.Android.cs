@@ -40,26 +40,9 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		/// <inheritdoc />
 		private protected override bool IsSourceReady => _buffer != null;
 
-		[StructLayout(LayoutKind.Explicit)]
-		private struct ByteArrayToIntArrayBridge
-		{
-			[FieldOffset(0)]
-			public byte[] ByteArray;
-
-			[FieldOffset(0)]
-			public int[] IntArray;
-
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-			public ByteArrayToIntArrayBridge(byte[] bytes)
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-			{
-				ByteArray = bytes;
-			}
-		}
-
 		private static ImageData Open(byte[] buffer, int bufferLength, int width, int height)
 		{
-			var bitmap = Bitmap.CreateBitmap(new ByteArrayToIntArrayBridge(buffer).IntArray, width, height, Bitmap.Config.Argb8888!);
+			var bitmap = Bitmap.CreateBitmap(MemoryMarshal.Cast<byte, int>(buffer).ToArray(), width, height, Bitmap.Config.Argb8888!);
 			return ImageData.FromBitmap(bitmap);
 		}
 

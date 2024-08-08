@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 using Android.Views;
 using Windows.Foundation;
@@ -14,7 +13,6 @@ namespace Uno.UI
 		/// Get relative bounds for native views.
 		/// </summary>
 		/// <remarks>This should only be used for non-FrameworkElements, prefer the more accurate overload that takes <see cref="FrameworkElement"/>s where possible.</remarks>
-		[Pure]
 		internal static Rect GetBoundsRectRelativeTo(this View element, View relativeTo)
 		{
 			var elementToTarget = UIElement.TransformToVisual(element, relativeTo);

@@ -181,6 +181,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				}
 #if HAS_UNO //WinUI uses COMException here, we use InvalidOperationException instead.
 				catch (InvalidOperationException e)
+#else
+				catch (COMException e)
 #endif
 				{
 					errorMessage = e.Message;
@@ -410,7 +412,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			ItemsRepeater rootRepeater = null;
 			ScrollViewer scrollViewer = null;
 			UnoManualResetEvent viewChanged = new UnoManualResetEvent(false);
-			RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(async () =>
 			{
 				var anchorProvider = (ItemsRepeaterScrollHost)XamlReader.Load(
 					@"<controls:ItemsRepeaterScrollHost Width='400' Height='600'
@@ -434,6 +436,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
                 </controls:ItemsRepeaterScrollHost>");
 
 				Content = anchorProvider;
+
+				await TestServices.WindowHelper.WaitForLoaded(anchorProvider);
 
 				rootRepeater = (ItemsRepeater)anchorProvider.FindName("rootRepeater");
 				rootRepeater.SizeChanged += (sender, args) =>
@@ -503,7 +507,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			ScrollViewer scrollViewer = null;
 			ItemsRepeaterScrollHost scrollhost = null;
 			UnoManualResetEvent viewChanged = new UnoManualResetEvent(false);
-			RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(async () =>
 			{
 				scrollhost = (ItemsRepeaterScrollHost)XamlReader.Load(
 				  @"<controls:ItemsRepeaterScrollHost Width='400' Height='600'
@@ -526,6 +530,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
                 </controls:ItemsRepeaterScrollHost>");
 
 				Content = scrollhost;
+
+				await TestServices.WindowHelper.WaitForLoaded(scrollhost);
 
 				rootRepeater = (ItemsRepeater)scrollhost.FindName("repeater");
 				scrollViewer = (ScrollViewer)scrollhost.FindName("scrollviewer");
@@ -564,7 +570,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		public async Task VerifyStoreScenarioCache()
 		{
 			ItemsRepeater rootRepeater = null;
-			RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(async () =>
 			{
 				var scrollhost = (ItemsRepeaterScrollHost)XamlReader.Load(
 				  @" <controls:ItemsRepeaterScrollHost Width='400' Height='200'
@@ -596,6 +602,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
                     </controls:ItemsRepeaterScrollHost>");
 
 				Content = scrollhost;
+
+				await TestServices.WindowHelper.WaitForLoaded(scrollhost);
 
 				rootRepeater = (ItemsRepeater)scrollhost.FindName("rootRepeater");
 
@@ -629,7 +637,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		public async Task VerifyUIElementsInItemsSource()
 		{
 			ItemsRepeater repeater = null;
-			RunOnUIThread.Execute(() =>
+			await RunOnUIThread.ExecuteAsync(async () =>
 			{
 				var scrollhost = (ItemsRepeaterScrollHost)XamlReader.Load(
 				  @"<controls:ItemsRepeaterScrollHost  
@@ -659,6 +667,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 				Content = scrollhost;
 
+				await TestServices.WindowHelper.WaitForLoaded(scrollhost);
+
 				// Get the control after entering the tree
 				repeater = (ItemsRepeater)scrollhost.FindName("repeater");
 			});
@@ -679,8 +689,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		[TestMethod]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#elif __IOS__
-		[Ignore("Fails")]
+#elif __IOS__ || __SKIA__
+		[Ignore("Fails https://github.com/unoplatform/uno/issues/9080")]
 #endif
 		public async Task VerifyRepeaterDoesNotLeakItemContainers()
 		{

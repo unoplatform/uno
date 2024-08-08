@@ -3,25 +3,16 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.Windows.ApplicationModel.Resources
 {
-#if false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial interface IResourceManager
 	{
-#if false
-		global::Microsoft.Windows.ApplicationModel.Resources.ResourceMap MainResourceMap
-		{
-			get;
-		}
-#endif
+		// Skipping already declared property MainResourceMap
 		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.IResourceManager.MainResourceMap.get
-#if false
-		global::Microsoft.Windows.ApplicationModel.Resources.ResourceContext CreateResourceContext();
-#endif
+		// Skipping already declared method Microsoft.Windows.ApplicationModel.Resources.IResourceManager.CreateResourceContext()
 		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.IResourceManager.ResourceNotFound.add
 		// Forced skipping of method Microsoft.Windows.ApplicationModel.Resources.IResourceManager.ResourceNotFound.remove
-#if false
-		event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Windows.ApplicationModel.Resources.ResourceManager, global::Microsoft.Windows.ApplicationModel.Resources.ResourceNotFoundEventArgs> ResourceNotFound;
-#endif
+		// Skipping already declared event Microsoft.Windows.ApplicationModel.Resources.IResourceManager.ResourceNotFound
 	}
 }

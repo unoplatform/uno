@@ -17,7 +17,6 @@
 // ******************************************************************
 using System.Collections;
 using System.Collections.Immutable;
-using System.Diagnostics.Contracts;
 using System.Runtime.InteropServices;
 
 namespace Uno.Collections
@@ -74,14 +73,12 @@ namespace Uno.Collections
 		}
 
 		/// <inheritdoc />
-		[Pure]
 		public IImmutableList<T> Clear()
 		{
 			return Empty;
 		}
 
 		/// <inheritdoc />
-		[Pure]
 		public int IndexOf(T item, int index, int count, IEqualityComparer<T> equalityComparer)
 		{
 			var comparer = equalityComparer ?? EqualityComparer<T>.Default;
@@ -96,7 +93,6 @@ namespace Uno.Collections
 		}
 
 		/// <inheritdoc />
-		[Pure]
 		public int LastIndexOf(T item, int index, int count, IEqualityComparer<T> equalityComparer)
 		{
 			var comparer = equalityComparer ?? EqualityComparer<T>.Default;
@@ -111,14 +107,12 @@ namespace Uno.Collections
 		}
 
 		/// <inheritdoc />
-		[Pure]
 		IImmutableList<T> IImmutableList<T>.Add(T value)
 		{
 			return Add(value);
 		}
 
 		/// <inheritdoc />
-		[Pure]
 		public IImmutableList<T> AddRange(IEnumerable<T> items)
 		{
 			var itemsToAdd = items.ToArray();
@@ -129,7 +123,6 @@ namespace Uno.Collections
 		}
 
 		/// <inheritdoc />
-		[Pure]
 		public IImmutableList<T> Insert(int index, T element)
 		{
 			var newData = new T[_data.Length + 1];
@@ -147,7 +140,6 @@ namespace Uno.Collections
 		}
 
 		/// <inheritdoc />
-		[Pure]
 		public IImmutableList<T> InsertRange(int index, IEnumerable<T> items)
 		{
 			var insertedItems = items.ToArray();
@@ -173,7 +165,6 @@ namespace Uno.Collections
 		}
 
 		/// <inheritdoc />
-		[Pure]
 		public IImmutableList<T> Remove(T value, IEqualityComparer<T> equalityComparer)
 		{
 			var comparer = equalityComparer ?? EqualityComparer<T>.Default;
@@ -182,7 +173,6 @@ namespace Uno.Collections
 		}
 
 		/// <inheritdoc />
-		[Pure]
 		public IImmutableList<T> RemoveAll(Predicate<T> match)
 		{
 			var newData = _data.Where(x => !match(x)).ToArray();
@@ -190,7 +180,6 @@ namespace Uno.Collections
 		}
 
 		/// <inheritdoc />
-		[Pure]
 		public IImmutableList<T> RemoveRange(IEnumerable<T> items, IEqualityComparer<T> equalityComparer)
 		{
 			var itemsToRemove = items.ToArray();
@@ -203,7 +192,6 @@ namespace Uno.Collections
 		}
 
 		/// <inheritdoc />
-		[Pure]
 		public IImmutableList<T> RemoveRange(int index, int count)
 		{
 			if (index < 0 || index >= _data.Length)
@@ -238,14 +226,12 @@ namespace Uno.Collections
 		}
 
 		/// <inheritdoc />
-		[Pure]
 		IImmutableList<T> IImmutableList<T>.RemoveAt(int index)
 		{
 			return RemoveAt(index);
 		}
 
 		/// <inheritdoc />
-		[Pure]
 		public IImmutableList<T> SetItem(int index, T value)
 		{
 			if (Equals(_data[index], value))
@@ -259,7 +245,6 @@ namespace Uno.Collections
 		}
 
 		/// <inheritdoc />
-		[Pure]
 		public IImmutableList<T> Replace(T oldValue, T newValue, IEqualityComparer<T> equalityComparer)
 		{
 			var comparer = equalityComparer ?? EqualityComparer<T>.Default;
@@ -290,7 +275,6 @@ namespace Uno.Collections
 		/// Returns a new list with the specifed value appended at the end.
 		/// </summary>
 		/// <param name="value"></param>
-		[Pure]
 		public ImmutableList<T> Add(T value)
 		{
 			var newData = new T[_data.Length + 1];
@@ -306,7 +290,6 @@ namespace Uno.Collections
 		/// </summary>
 		/// <param name="value">The value to remove</param>
 		/// <returns>A new list</returns>
-		[Pure]
 		public ImmutableList<T> Remove(T value)
 		{
 			var i = IndexOf(value);
@@ -318,7 +301,6 @@ namespace Uno.Collections
 		/// Determines whether the list contains a specified element
 		/// </summary>
 		/// <param name="value">The value to locate.</param>
-		[Pure]
 		public bool Contains(T value)
 		{
 			return _data.Contains(value);
@@ -329,7 +311,6 @@ namespace Uno.Collections
 		/// </summary>
 		/// <param name="index">The index to remove</param>
 		/// <returns>A new list with the item removed</returns>
-		[Pure]
 		public ImmutableList<T> RemoveAt(int index)
 		{
 			if (_data.Length == 0)
@@ -350,7 +331,6 @@ namespace Uno.Collections
 		/// Returns the index of the specified value
 		/// </summary>
 		/// <param name="value"></param>
-		[Pure]
 		public int IndexOf(T value)
 		{
 			for (var i = 0; i < _data.Length; ++i)

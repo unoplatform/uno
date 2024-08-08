@@ -18,6 +18,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Input;
+using Uno.Helpers;
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
 namespace Uno.UI.Xaml.Input

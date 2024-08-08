@@ -22,6 +22,7 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		private bool _fontStyleChanged;
 		private bool _fontWeightChanged;
+		private bool _fontStretchChanged;
 		private bool _textChanged;
 		private bool _fontFamilyChanged;
 		private bool _fontSizeChanged;
@@ -76,6 +77,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			ConditionalUpdate(ref _fontStyleChanged, () => this.SetFontStyle(FontStyle));
 			ConditionalUpdate(ref _fontWeightChanged, () => this.SetFontWeight(FontWeight));
+			ConditionalUpdate(ref _fontStretchChanged, () => this.SetFontStretch(FontStretch));
 			ConditionalUpdate(ref _fontFamilyChanged, () => this.SetFontFamily(FontFamily));
 			ConditionalUpdate(ref _fontSizeChanged, () => this.SetFontSize(FontSize));
 			ConditionalUpdate(ref _maxLinesChanged, () => this.SetMaxLines(MaxLines));
@@ -163,9 +165,9 @@ namespace Microsoft.UI.Xaml.Controls
 			return base.ArrangeOverride(arrangeSize);
 		}
 
-		internal override void OnLayoutUpdated()
+		internal override void AfterArrange()
 		{
-			base.OnLayoutUpdated();
+			base.AfterArrange();
 
 			if (_shouldUpdateIsTextTrimmed)
 			{
@@ -176,6 +178,8 @@ namespace Microsoft.UI.Xaml.Controls
 		partial void OnFontStyleChangedPartial() => _fontStyleChanged = true;
 
 		partial void OnFontWeightChangedPartial() => _fontWeightChanged = true;
+
+		partial void OnFontStretchChangedPartial() => _fontStretchChanged = true;
 
 		partial void OnIsTextSelectionEnabledChangedPartial()
 		{

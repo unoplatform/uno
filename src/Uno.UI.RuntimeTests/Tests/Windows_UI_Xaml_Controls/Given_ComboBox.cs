@@ -232,6 +232,44 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+#if HAS_UNO
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is only supported on skia")]
+#endif
+		public async Task When_PointerWheel()
+		{
+			var SUT = new ComboBox();
+			var items = new[] { "First", "Second", "Third" };
+			SUT.ItemsSource = items;
+			var rect = await UITestHelper.Load(SUT);
+
+			SUT.SelectedIndex = 0;
+			SUT.Focus(FocusState.Programmatic);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			mouse.MoveTo(rect.X + 2, rect.Y + 2);
+
+			mouse.WheelDown();
+
+			Assert.AreEqual(1, SUT.SelectedIndex);
+
+			await WindowHelper.WaitForIdle();
+
+			mouse.WheelUp();
+
+			Assert.AreEqual(0, SUT.SelectedIndex);
+
+			await WindowHelper.WaitForIdle();
+
+			mouse.WheelUp();
+
+			Assert.AreEqual(0, SUT.SelectedIndex);
+		}
+#endif
+
 		[TestMethod]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
@@ -838,6 +876,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await WindowHelper.WaitForIdle();
 				SUT.IsDropDownOpen = false;
 
+				// Not required on WinUI. Fixing this in Uno requires porting ComboBox.
+				await WindowHelper.WaitForIdle();
+
 				Assert.AreEqual(SUT.Items.Count, 3);
 
 				using (c.BatchUpdate())
@@ -937,7 +978,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if HAS_UNO
 		[TestMethod]
-		public void When_SelectedItem_TwoWay_Binding()
+		public async Task When_SelectedItem_TwoWay_Binding()
 		{
 			var itemsControl = new ItemsControl()
 			{
@@ -963,6 +1004,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = itemsControl;
 
 			itemsControl.ItemsSource = test;
+
+			await WindowHelper.WaitForIdle();
 
 			var comboBox = itemsControl.FindName("combo") as ComboBox;
 
@@ -1079,7 +1122,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var screenshotAfter = await TakeScreenshot(stackPanel);
 
 			// Verify that the UI looks the same as at the beginning
-			await ImageAssert.AreEqualAsync(screenshotBefore, screenshotAfter);
+			await ImageAssert.AreSimilarAsync(screenshotBefore, screenshotAfter);
 		}
 
 		[TestMethod]

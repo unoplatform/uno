@@ -8,9 +8,9 @@ namespace Microsoft.UI.Composition;
 
 public partial class ShapeVisual
 {
-	private protected override void ApplyClipping(in SKCanvas canvas)
+	private protected override void ApplyPrePaintingClipping(in SKCanvas canvas)
 	{
-		base.ApplyClipping(in canvas);
+		base.ApplyPrePaintingClipping(in canvas);
 		if (GetViewBoxPathInElementCoordinateSpace() is { } path)
 		{
 			canvas.ClipPath(path, antialias: true);

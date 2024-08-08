@@ -14,9 +14,17 @@ parameters:
   snapshotGroupCount: 3
 
 jobs:
+- template: .azure-devops-package-skia-native-assets.yml
+  parameters:
+    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
+    XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
+    macOSImageName: ${{ parameters.vmMacImage }}
+    AssetNativeSuffix: '-SamplesApp'
+
 - job: Skia_Tests_Build
   displayName: 'Build Skia Samples App UI Tests'
   timeoutInMinutes: 60
+  dependsOn: skia_package_macos_native_build
 
   pool: ${{ parameters.poolName }}
 
@@ -27,10 +35,6 @@ jobs:
 
     # Use pre-defined local nuget cache for restore
     NUGET_PACKAGES: 'C:\NugetPackages'
-
-    # Only build for NetPrevious
-    UnoDisableNetCurrentMobile: true
-    UnoDisableNetCurrent: true
 
     UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
@@ -48,36 +52,43 @@ jobs:
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
 
-  - powershell: dotnet msbuild src/SamplesApp/SamplesApp.Skia.Gtk/SamplesApp.Skia.Gtk.csproj /r /m /p:Configuration=Release /detailedsummary /m /bl:$(build.artifactstagingdirectory)\build-gtk.binlog
+  ## Restore skia-macos native assets
+  - task: DownloadPipelineArtifact@2
+    displayName: Restoring macOS native assets
+    inputs:
+      artifact: NugetPackages-Artifacts-skia-macos-native-SamplesApp-$(XAML_FLAVOR_BUILD)
+      path: $(Build.SourcesDirectory)/src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/build/Release
+
+  - powershell: dotnet msbuild src/SamplesApp/SamplesApp.Skia.Gtk/SamplesApp.Skia.Gtk.csproj /r /m /p:UnoTargetFrameworkOverride=net8.0 /p:Configuration=Release /detailedsummary /m /bl:$(build.artifactstagingdirectory)\build-gtk.binlog
     displayName: Build GTK Head
 
   - task: PublishBuildArtifacts@1
     retryCountOnTaskFailure: 3
     condition: always()
     inputs:
-      PathtoPublish: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.Gtk\bin\Release\net7.0
+      PathtoPublish: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.Gtk\bin\Release\net8.0
       ArtifactName: skia-gtk-samples-app-$(XAML_FLAVOR_BUILD)
       ArtifactType: Container
 
-  - powershell: dotnet msbuild src/SamplesApp/UnoIslandsSamplesApp.Skia.WPF/UnoIslandsSamplesApp.Skia.Wpf.csproj /r /m /p:Configuration=Release /detailedsummary /m /bl:$(build.artifactstagingdirectory)\build-wpf-islands.binlog
+  - powershell: dotnet msbuild src/SamplesApp/UnoIslandsSamplesApp.Skia.WPF/UnoIslandsSamplesApp.Skia.Wpf.csproj /r /m /p:UnoTargetFrameworkOverride=net8.0 /p:Configuration=Release /detailedsummary /m /bl:$(build.artifactstagingdirectory)\build-wpf-islands.binlog
     displayName: Build WPF Islands Head
 
   - task: PublishBuildArtifacts@1
     retryCountOnTaskFailure: 3
     condition: always()
     inputs:
-      PathtoPublish: $(Build.SourcesDirectory)\src\SamplesApp\UnoIslandsSamplesApp.Skia.WPF\bin\Release\net7.0-windows
+      PathtoPublish: $(Build.SourcesDirectory)\src\SamplesApp\UnoIslandsSamplesApp.Skia.WPF\bin\Release\net8.0-windows
       ArtifactName: uno-islands-skia-wpf-samples-app-$(XAML_FLAVOR_BUILD)
       ArtifactType: Container
 
-  - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj -c Release -f net7.0 /bl:$(build.artifactstagingdirectory)\build-x11.binlog
+  - powershell: dotnet publish src/SamplesApp/SamplesApp.Skia.Generic/SamplesApp.Skia.Generic.csproj -c Release -p:UnoTargetFrameworkOverride=net8.0 -f net8.0 /bl:$(build.artifactstagingdirectory)\build-generic.binlog
     displayName: Build Generic Skia Head
 
   - task: PublishBuildArtifacts@1
     retryCountOnTaskFailure: 3
     condition: always()
     inputs:
-      PathtoPublish: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.Generic\bin\Release\net7.0
+      PathtoPublish: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.Generic\bin\Release\net8.0
       ArtifactName: skia-generic-samples-app-$(XAML_FLAVOR_BUILD)
       ArtifactType: Container
 
@@ -169,10 +180,6 @@ jobs:
 
     CI_Build: true
 
-    # Only build for NetPrevious
-    UnoDisableNetCurrentMobile: true
-    UnoDisableNetCurrent: true
-
     UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
@@ -196,8 +203,15 @@ jobs:
       cd $(build.sourcesdirectory)/src/SourceGenerators/Uno.UI.SourceGenerators
       dotnet build -c Debug
       cd $(build.sourcesdirectory)/src/Uno.UI.RemoteControl.Host
-      dotnet build -c Debug -p:UnoDisableNetCurrent=true
+      dotnet build -c Debug
     displayName: Build HR dependencies
+
+  # We need just the .NET 8 runtime (not the SDK).
+  # Building with .NET 9 SDK is fine, but running the app when the TFM is net8.0 requires the .NET 8 runtime
+  - task: UseDotNet@2
+    inputs:
+      packageType: 'runtime'
+      version: '8.x'
 
   - script: |
         cd $(SamplesAppArtifactPath)

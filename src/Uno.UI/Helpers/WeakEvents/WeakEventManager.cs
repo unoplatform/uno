@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
@@ -30,9 +31,13 @@ namespace Uno.UI.Helpers
 		{
 			if (_eventHandlers.TryGetValue(eventName, out List<Subscription>? target))
 			{
-				for (int i = 0; i < target.Count; i++)
+				// clone the target array just in case one of the subscriptions calls RemoveEventHandler
+				var targetClone = ArrayPool<Subscription>.Shared.Rent(target.Count);
+				target.CopyTo(targetClone, 0);
+				var count = target.Count;
+				for (int i = 0; i < count; i++)
 				{
-					Subscription subscription = target[i];
+					Subscription subscription = targetClone[i];
 					bool isStatic = subscription.Subscriber == null;
 					if (isStatic)
 					{
@@ -53,6 +58,8 @@ namespace Uno.UI.Helpers
 						subscription.Handler.Invoke(subscriber, null);
 					}
 				}
+
+				ArrayPool<Subscription>.Shared.Return(targetClone);
 			}
 		}
 

@@ -26,30 +26,54 @@
 	-->
 	<PropertyGroup Condition=" '$(BuildingInsideVisualStudio)' == 'true' AND '$(TargetFrameworks)' != '' ">
 		<_UnoTargetFrameworkCount>$(TargetFrameworks.Split(';', System.StringSplitOptions.RemoveEmptyEntries).Length)</_UnoTargetFrameworkCount>
+		
+		<!-- Cleanup the target frameworks so the rewriting becomes simpler -->
+		<TargetFrameworks>$([System.Text.RegularExpressions.Regex]::Replace($(TargetFrameworks), '\s', ''))</TargetFrameworks>
+
+		<!-- Ensure that the TFM list ends with a `;` in order for replacements to be tfm specific -->
+		<TargetFrameworks Condition="!$(TargetFrameworks.EndsWith(';'))">$(TargetFrameworks);</TargetFrameworks>
+
+		<!-- Select the first original target framework to be replaced-->
 		<_UnoFirstOriginalTargetFramework>$(TargetFrameworks.Split(';', System.StringSplitOptions.RemoveEmptyEntries)[0].Trim())</_UnoFirstOriginalTargetFramework>
 	</PropertyGroup>
 
-	<PropertyGroup
-		Condition="
-			'$(BuildingInsideVisualStudio)' == 'true'
-			AND (
-				$([MSBuild]::GetTargetPlatformIdentifier($(_UnoSelectedTargetFramework))) == 'browserwasm'
-				OR $([MSBuild]::GetTargetPlatformIdentifier($(_UnoSelectedTargetFramework))) == 'desktop'
-				OR $([MSBuild]::GetTargetPlatformIdentifier($(_UnoSelectedTargetFramework))) == 'windows'
-			)
-			AND '$(TargetFrameworks)' != ''
-			AND '$(_UnoFirstOriginalTargetFramework)' != '$(_UnoSelectedTargetFramework)'">
+	<Choose>
+		<When Condition="
+				'$(BuildingInsideVisualStudio)' == 'true'
+				AND '$(UnoDisableFirstTargetFrameworkRewrite)' != 'true'
+				AND (
+					$([MSBuild]::GetTargetPlatformIdentifier($(_UnoSelectedTargetFramework))) == 'browserwasm'
+					OR $([MSBuild]::GetTargetPlatformIdentifier($(_UnoSelectedTargetFramework))) == 'desktop'
+					OR $([MSBuild]::GetTargetPlatformIdentifier($(_UnoSelectedTargetFramework))) == 'windows'
+				)
+				AND '$(TargetFrameworks)' != ''
+				AND '$(_UnoFirstOriginalTargetFramework)' != '$(_UnoSelectedTargetFramework)'
+				AND $(TargetFrameworks.Contains('$(_UnoSelectedTargetFramework);'))">
 
-		<_UnoTargetFrameworksFiltered>
-			$(TargetFrameworks
-			.Replace($(_UnoSelectedTargetFramework),'**PLACEHOLDER**')
-			.Replace('$(_UnoFirstOriginalTargetFramework)',$(_UnoSelectedTargetFramework))
-			.Replace('**PLACEHOLDER**','$(_UnoFirstOriginalTargetFramework)')
-			)
-		</_UnoTargetFrameworksFiltered>
-
-		<TargetFrameworks>$([MSBuild]::Unescape('$(_UnoTargetFrameworksFiltered)'))</TargetFrameworks>
-	</PropertyGroup>
+			<PropertyGroup>
+				<!-- 
+					This property is multiline, but only inside the expression. There must be no crlf 
+					before the first `$(` or after the last `)`
+				-->
+				<TargetFrameworks>$(
+						[MSBuild]::Unescape(
+							$(
+								TargetFrameworks
+								.Replace('$(_UnoSelectedTargetFramework);','**PLACEHOLDER**;')
+								.Replace('$(_UnoFirstOriginalTargetFramework);','$(_UnoSelectedTargetFramework);')
+								.Replace('**PLACEHOLDER**;','$(_UnoFirstOriginalTargetFramework);')
+							)
+						)
+					)</TargetFrameworks>
+			</PropertyGroup>
+		</When>
+		<Otherwise>
+			<PropertyGroup>
+				<!-- As we've rewritten the list, we need to make sure that `;` is not escaped -->
+				<TargetFrameworks>$([MSBuild]::Unescape($(TargetFrameworks)))</TargetFrameworks>
+			</PropertyGroup>
+		</Otherwise>
+	</Choose>
 
 	<Target Name="_UnoVSWarnBrowserIsFirst"
 			BeforeTargets="_SetBuildInnerTarget;_ComputeTargetFrameworkItems"
@@ -88,6 +112,20 @@
 
 		<Warning Code="UNOB0012"
 					Text="The windows TargetFramework must not be placed first in the TargetFrameworks property in order for other platforms debugging to work. (See https://aka.platform.uno/UNOB0012)" />
+	</Target>
+
+	<Target Name="_UnoVSWarnNetIsFirst"
+			BeforeTargets="_SetBuildInnerTarget;_ComputeTargetFrameworkItems"
+			Condition=" 
+			'$(UnoDisableVSWarnNetIsFirst)' != 'true'
+			AND '$(BuildingInsideVisualStudio)' == 'true'
+			AND '$(_UnoTargetFrameworkCount)' != ''
+			AND $(_UnoTargetFrameworkCount) &gt; 1
+			AND $([MSBuild]::GetTargetPlatformIdentifier($(_UnoFirstOriginalTargetFramework))) == ''
+			AND $(_UnoFirstOriginalTargetFramework.StartsWith('net'))">
+
+		<Warning Code="UNOB0013"
+				 Text="The $(_UnoFirstOriginalTargetFramework) TargetFramework must not be placed first in the TargetFrameworks property in order for other platforms debugging to work. (See https://aka.platform.uno/UNOB0013)" />
 	</Target>
 
 	<!-- Include any additional targets that packages defined by other packages -->

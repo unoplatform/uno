@@ -21,7 +21,7 @@ uid: Uno.Development.SignalR
 
 3. In your `Startup.cs` file, add your `SignalR` service and a `CORS policy` to the `ConfigureServices` method.
 
-    ``` csharp
+    ```csharp
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddRazorPages();
@@ -39,7 +39,7 @@ uid: Uno.Development.SignalR
 
 4. In your `Configure` method, add your CORS policy and `Hubs` endpoint
 
-    ``` csharp
+    ```csharp
     app.UseCors("CorsPolicy");
 
     app.UseEndpoints(endpoints =>

@@ -12,10 +12,8 @@ namespace Uno.UI.DataBinding
 {
 	internal partial class BindingPath
 	{
-		private sealed class BindingItem : IBindingItem, IDisposable
+		private sealed class BindingItem : IBindingItem, IDisposable, IEquatable<BindingItem>
 		{
-			private delegate void PropertyChangedHandler(object? previousValue, object? newValue, bool shouldRaiseValueChanged);
-
 			private ManagedWeakReference? _dataContextWeakStorage;
 			private Flags _flags;
 
@@ -92,7 +90,7 @@ namespace Uno.UI.DataBinding
 			public BindingItem? Next { get; }
 			public string PropertyName { get; }
 
-			public IValueChangedListener? ValueChangedListener { get; set; }
+			public BindingPath? Path { get; set; }
 
 			public object? Value
 			{
@@ -316,8 +314,13 @@ namespace Uno.UI.DataBinding
 			{
 				if (_substituteValueGetter == null && _dataContextType != null)
 				{
+					if (_precedence != DependencyPropertyValuePrecedences.Animations)
+					{
+						throw new InvalidOperationException("Substitute value is currently used only for Timeline's PropertyInfo which should be using Animations precedence.");
+					}
+
 					_substituteValueGetter =
-						BindingPropertyHelper.GetSubstituteValueGetter(_dataContextType, PropertyName, _precedence ?? DependencyPropertyValuePrecedences.Local);
+						BindingPropertyHelper.GetSubstituteValueGetter(_dataContextType, PropertyName, DependencyPropertyValuePrecedences.Animations);
 				}
 			}
 
@@ -392,7 +395,7 @@ namespace Uno.UI.DataBinding
 
 			private void RaiseValueChanged(object? newValue)
 			{
-				ValueChangedListener?.OnValueChanged(newValue);
+				Path?.OnValueChanged(newValue);
 			}
 
 			/// <summary>
@@ -539,6 +542,35 @@ namespace Uno.UI.DataBinding
 
 				public void NewValue(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 					=> NewValue();
+			}
+
+			/// <remarks>
+			/// This is defined so that 2 BindingItems are equal if they refer to the same property on the same object
+			/// even if they're a part of 2 different "chains".
+			/// </remarks>
+			public bool Equals(BindingItem? that)
+			{
+				return that != null
+					&& this.PropertyType == that.PropertyType
+					&& !DependencyObjectStore.AreDifferent(this.DataContext, that.DataContext)
+					&& ComparePropertyName(this.PropertyName, that.PropertyName);
+
+				// This is a naive comparison that most definitely doesn't match WinUI, but it should be good enough
+				// for almost all cases.
+				static bool ComparePropertyName(string name1, string name2)
+				{
+					if (name1.StartsWith('['))
+					{
+						// for indexers, we look for an identical match.
+						return name1 == name2;
+					}
+					else
+					{
+						// e.g. "(Microsoft.UI.Xaml.Controls.Border.Background)" and "Background" should match.
+						return name1.Replace(")", "").Replace("(", "").Split(':', '.')[^1] ==
+							name2.Replace(")", "").Replace("(", "").Split(':', '.')[^1];
+					}
+				}
 			}
 		}
 	}

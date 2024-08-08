@@ -1,31 +1,45 @@
 ﻿#nullable enable
 
 using System;
+using System.ComponentModel;
 using Microsoft.UI.Content;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Windows.Foundation;
+using Windows.Graphics;
 using Windows.UI.Core;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Dispatching;
+#else
+using Windows.System;
+#endif
 
 namespace Uno.UI.Xaml.Controls;
 
 internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 {
+	public const int InitialWidth = 1024;
+	public const int InitialHeight = 640;
+
 	protected readonly ContentSite _contentSite = new();
 	private Rect _bounds;
 	private Rect _visibleBounds;
 	private bool _visible;
+	private PointInt32 _position;
+	private SizeInt32 _size;
 	private string _title = "";
 	private CoreWindowActivationState _activationState;
 	private XamlRoot? _xamlRoot;
+	private Window? _window;
 	private float _rasterizationScale;
 	private readonly SerialDisposable _presenterSubscription = new SerialDisposable();
 
-	protected NativeWindowWrapperBase(XamlRoot xamlRoot) : this()
+	protected NativeWindowWrapperBase(Window window, XamlRoot xamlRoot) : this()
 	{
-		SetXamlRoot(xamlRoot);
+		SetWindow(window, xamlRoot);
 	}
 
 	protected NativeWindowWrapperBase()
@@ -36,7 +50,11 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 
 	protected XamlRoot? XamlRoot => _xamlRoot;
 
-	internal void SetXamlRoot(XamlRoot xamlRoot) => _xamlRoot = xamlRoot;
+	internal void SetWindow(Window window, XamlRoot xamlRoot)
+	{
+		_window = window;
+		_xamlRoot = xamlRoot;
+	}
 
 	public abstract object? NativeWindow { get; }
 
@@ -81,7 +99,7 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 		}
 	}
 
-	public bool Visible
+	public bool IsVisible
 	{
 		get => _visible;
 		set
@@ -125,6 +143,36 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 		}
 	}
 
+	public PointInt32 Position
+	{
+		get => _position;
+		set
+		{
+			if (!_position.Equals(value))
+			{
+				_position = value;
+				_window?.AppWindow.OnAppWindowChanged(new AppWindowChangedEventArgs() { DidPositionChange = true });
+			}
+		}
+	}
+
+	public SizeInt32 Size
+	{
+		get => _size;
+		set
+		{
+			if (!_size.Equals(value))
+			{
+				_size = value;
+				_window?.AppWindow.OnAppWindowChanged(new AppWindowChangedEventArgs() { DidSizeChange = true });
+			}
+		}
+	}
+
+	public SizeInt32 ClientSize => throw new NotImplementedException();
+
+	public DispatcherQueue DispatcherQueue => throw new NotImplementedException();
+
 	public event EventHandler<Size>? SizeChanged;
 	public event EventHandler<Rect>? VisibleBoundsChanged;
 	public event EventHandler<CoreWindowActivationState>? ActivationChanged;
@@ -144,7 +192,7 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 		ShowCore();
 		// On single-window targets, the window is already shown with splash screen
 		// so we must ensure the property is initialized correctly.
-		Visible = true;
+		IsVisible = true;
 		Shown?.Invoke(this, EventArgs.Empty);
 	}
 
@@ -186,5 +234,25 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 	private void RaiseContentIslandStateChanged(ContentIslandStateChangedEventArgs args)
 	{
 		XamlRoot?.VisualTree.ContentRoot.CompositionContent?.RaiseStateChanged(args);
+	}
+	public virtual void Move(PointInt32 position)
+	{
+	}
+
+	public virtual void Resize(SizeInt32 size)
+	{
+	}
+
+	public void Destroy() { }
+
+	public void Hide() { }
+
+	public void Show(bool activateWindow)
+	{
+		Show();
+		if (activateWindow)
+		{
+			Activate();
+		}
 	}
 }

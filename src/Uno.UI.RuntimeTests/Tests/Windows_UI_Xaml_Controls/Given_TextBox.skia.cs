@@ -245,6 +245,32 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Ctrl_End_ScrollViewer_Vertical_Offset()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 400,
+				Height = 90,
+				TextWrapping = TextWrapping.Wrap,
+				Text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Gravida dictum fusce ut placerat orci nulla. Luctus venenatis lectus magna fringilla urna porttitor rhoncus. Faucibus vitae aliquet nec ullamcorper. Sem fringilla ut morbi tincidunt. Imperdiet proin fermentum leo vel orci. Velit aliquet sagittis id consectetur. Faucibus et molestie ac feugiat sed lectus vestibulum. Morbi enim nunc faucibus a pellentesque sit amet porttitor. Elementum sagittis vitae et leo duis ut diam. Pulvinar pellentesque habitant morbi tristique senectus et netus et malesuada. Id porta nibh venenatis cras sed felis eget velit aliquet. Feugiat pretium nibh ipsum consequat nisl. Adipiscing diam donec adipiscing tristique risus nec feugiat. Consequat semper viverra nam libero justo laoreet sit. Non tellus orci ac auctor augue mauris augue neque. Dolor purus non enim praesent."
+			};
+
+			await UITestHelper.Load(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, ((ScrollViewer)SUT.ContentElement).VerticalOffset);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.End, VirtualKeyModifiers.Control));
+			await WindowHelper.WaitForIdle();
+
+			((ScrollViewer)SUT.ContentElement).VerticalOffset.Should().BeApproximately(((ScrollViewer)SUT.ContentElement).ScrollableHeight, 1.0);
+		}
+
+		[TestMethod]
 		public async Task When_Ctrl_A()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -824,6 +850,36 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(0, sv.ScrollableWidth);
+		}
+
+		[TestMethod]
+		public async Task When_Scrolling_Updates_After_Pasting_Long_Text()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var dp = new DataPackage();
+			var text = "This should be a lot longer than the width of the TextBox.";
+			dp.SetText(text);
+			Clipboard.SetContent(dp);
+			await WindowHelper.WaitForIdle();
+
+			SUT.PasteFromClipboard();
+			await WindowHelper.WaitForIdle();
+
+			((ScrollViewer)SUT.ContentElement).HorizontalOffset.Should().BeApproximately(((ScrollViewer)SUT.ContentElement).ScrollableWidth, 1.0);
 		}
 
 		[TestMethod]
@@ -1514,7 +1570,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task When_Copy_Paste()
+		[DataRow(false)]
+		[DataRow(true)]
+		public async Task When_Copy_Paste(bool useInsert)
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
 
@@ -1539,7 +1597,31 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Focus(FocusState.Programmatic);
 			await WindowHelper.WaitForIdle();
 
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.V, VirtualKeyModifiers.Control, unicodeKey: 'v'));
+			void Paste()
+			{
+				if (useInsert)
+				{
+					SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Insert, VirtualKeyModifiers.Shift));
+				}
+				else
+				{
+					SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.V, VirtualKeyModifiers.Control, unicodeKey: 'v'));
+				}
+			}
+
+			void Copy()
+			{
+				if (useInsert)
+				{
+					SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Insert, VirtualKeyModifiers.Control));
+				}
+				else
+				{
+					SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.C, VirtualKeyModifiers.Control, unicodeKey: 'c'));
+				}
+			}
+
+			Paste();
 			await WindowHelper.WaitForIdle();
 
 			Assert.IsFalse(handled);
@@ -1547,7 +1629,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.Select(2, 4);
 			await WindowHelper.WaitForIdle();
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.C, VirtualKeyModifiers.Control, unicodeKey: 'c'));
+			Copy();
 			await WindowHelper.WaitForIdle();
 
 			Assert.IsFalse(handled);
@@ -1557,7 +1639,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.Select(SUT.Text.Length - 1, 0);
 			await WindowHelper.WaitForIdle();
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.V, VirtualKeyModifiers.Control, unicodeKey: 'v'));
+			Paste();
 			await WindowHelper.WaitForIdle();
 
 			Assert.IsFalse(handled);
@@ -1567,7 +1649,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.Select(6, 3);
 			await WindowHelper.WaitForIdle();
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.V, VirtualKeyModifiers.Control, unicodeKey: 'v'));
+			Paste();
 			await WindowHelper.WaitForIdle();
 
 			Assert.IsFalse(handled);
@@ -1623,6 +1705,84 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual("Heworlllo  d", SUT.Text);
 			Assert.AreEqual(10, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Paste_History_Remains_Intact()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Text = "initial"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await UITestHelper.Load(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var dp = new DataPackage();
+			var text = "copied content";
+			dp.SetText(text);
+			Clipboard.SetContent(dp);
+
+			// This actually matches WinUI. text comes before "initial" and text2 comes after text
+
+			SUT.PasteFromClipboard();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(text + "initial", SUT.Text);
+
+			var dp2 = new DataPackage();
+			var text2 = "copied content 2";
+			dp2.SetText(text2);
+			Clipboard.SetContent(dp2);
+
+			SUT.PasteFromClipboard();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(text + text2 + "initial", SUT.Text);
+
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(text + "initial", SUT.Text);
+
+			SUT.Undo();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("initial", SUT.Text);
+		}
+
+		[TestMethod]
+		public async Task When_Paste_The_Same_Text()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				AcceptsReturn = true,
+				Text = "copied\r\ncontent"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await UITestHelper.Load(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var dp = new DataPackage();
+			var text = "copied\r\ncontent";
+			dp.SetText(text);
+			Clipboard.SetContent(dp);
+
+			SUT.SelectAll();
+			await WindowHelper.WaitForIdle();
+			SUT.PasteFromClipboard();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("copied\rcontent".Length, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 		}
 
@@ -1767,7 +1927,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Down, VirtualKeyModifiers.None));
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(16, SUT.SelectionStart); // notice how up -> down -> up doesn't necessarily end up back where it started, this is correct
+			Assert.AreEqual(17, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Up, VirtualKeyModifiers.None));
@@ -1777,7 +1937,60 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Down, VirtualKeyModifiers.None));
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(16, SUT.SelectionStart);
+			Assert.AreEqual(17, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Multiline_UpDown_Caret_Position_Preserved()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				AcceptsReturn = true,
+				Text = "abcdef\rabc\rabcdefghi"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.Select("abcdef".Length, 0);
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("abcdef".Length, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Down, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("abcdef\rabc".Length, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Up, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("abcdef".Length, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Down, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Down, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("abcdef\rabc\rabcdef".Length, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Down, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			// hitting down on the last line goes to the end BUT doesn't change the logical caret column position.
+			Assert.AreEqual("abcdef\rabc\rabcdefghi".Length, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Up, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("abcdef\rabc".Length, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 		}
 
@@ -1811,7 +2024,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Down, VirtualKeyModifiers.None));
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(16, SUT.SelectionStart); // notice how up -> down -> up doesn't necessarily end up back where it started, this is correct
+			Assert.AreEqual(17, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Up, VirtualKeyModifiers.None));
@@ -1821,7 +2034,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Down, VirtualKeyModifiers.None));
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(16, SUT.SelectionStart);
+			Assert.AreEqual(17, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 		}
 
@@ -3269,6 +3482,71 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(1, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Variable_Width_Tab()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				Text = "\tabc"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await UITestHelper.Load(SUT);
+			var bitmap = await UITestHelper.ScreenShot(SUT);
+
+			SUT.Text = "a\tabc";
+			await WindowHelper.WaitForIdle();
+			var bitmap2 = await UITestHelper.ScreenShot(SUT);
+
+			for (var x = 20; x < bitmap.Width; x++)
+			{
+				for (var y = 0; y < bitmap.Height; y++)
+				{
+					Assert.AreEqual(bitmap.GetPixel(x, y), bitmap2.GetPixel(x, y));
+				}
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Tab_Forces_NewLine_When_Not_Enough_Width()
+		{
+			using var _1 = new TextBoxFeatureConfigDisposable();
+			using var _2 = StyleHelper.UseFluentStyles();
+
+			// WinUI actually wraps when width <= 114, not <= 113 like we have here.
+			// But when width == 114, WinUI has a bug where it wraps, but it doesn't
+			// increase the height of the TextBox, so most of the new line (due to wrapping)
+			// is out of view :/.
+			var sp = new StackPanel
+			{
+				Children =
+				{
+					new TextBox
+					{
+						Width = 114,
+						TextWrapping = TextWrapping.Wrap,
+						Text = "\t\t",
+						FontFamily = new FontFamily("ms-appx:///Uno.UI.RuntimeTests/Assets/Fonts/Roboto-Regular.ttf")
+					},
+					new TextBox
+					{
+						Width = 113,
+						TextWrapping = TextWrapping.Wrap,
+						Text = "\t\t",
+						FontFamily = new FontFamily("ms-appx:///Uno.UI.RuntimeTests/Assets/Fonts/Roboto-Regular.ttf")
+					},
+				}
+			};
+
+			await UITestHelper.Load(sp);
+
+			Assert.AreNotEqual(sp.Children[0].ActualSize.Y, sp.Children[1].ActualSize.Y);
 		}
 
 		[TestMethod]

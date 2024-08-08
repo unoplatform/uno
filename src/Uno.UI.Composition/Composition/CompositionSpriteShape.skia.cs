@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.Linq;
 using SkiaSharp;
 using Uno;
 using Uno.Extensions;
@@ -32,9 +33,22 @@ namespace Microsoft.UI.Composition
 				if (FillBrush is { } fill)
 				{
 					var fillPaint = TryCreateAndClearFillPaint(in session);
-					fill.UpdatePaint(fillPaint, geometryWithTransformations.Bounds);
 
-					if (FillBrush is CompositionEffectBrush { HasBackdropBrushInput: true })
+					if (Compositor.TryGetEffectiveBackgroundColor(this, out var colorFromTransition))
+					{
+						fillPaint.Color = colorFromTransition.ToSKColor();
+					}
+					else
+					{
+						fill.UpdatePaint(fillPaint, geometryWithTransformations.Bounds);
+					}
+
+					if (fill is CompositionBrushWrapper wrapper)
+					{
+						fill = wrapper.WrappedBrush;
+					}
+
+					if (fill is CompositionEffectBrush { HasBackdropBrushInput: true })
 					{
 						// workaround until SkiaSharp adds support for SaveLayerRec
 						fillPaint.FilterQuality = SKFilterQuality.High;
@@ -56,8 +70,10 @@ namespace Microsoft.UI.Composition
 
 					// Set stroke thickness
 					strokePaint.StrokeWidth = StrokeThickness;
-					// TODO: Add support for dashes here
-					// strokePaint.PathEffect = SKPathEffect.CreateDash();
+					if (StrokeDashArray is { Count: > 0 } strokeDashArray)
+					{
+						strokePaint.PathEffect = SKPathEffect.CreateDash(strokeDashArray.ToEvenArray(), 0);
+					}
 
 					// Generate stroke geometry for bounds that will be passed to a brush.
 					// - [Future]: This generated geometry should also be used for hit testing.
@@ -112,10 +128,16 @@ namespace Microsoft.UI.Composition
 				// - Brushes can change, we cant leave color and shader garbage
 				//	 from last rendering around for the next pass.
 				paint.Color = SKColors.White;   // Transparent color wouldn't draw anything
-				if (paint.Shader != null)
+				if (paint.Shader is { } shader)
 				{
-					paint.Shader.Dispose();
+					shader.Dispose();
 					paint.Shader = null;
+				}
+
+				if (paint.PathEffect is { } pathEffect)
+				{
+					pathEffect.Dispose();
+					paint.PathEffect = null;
 				}
 			}
 

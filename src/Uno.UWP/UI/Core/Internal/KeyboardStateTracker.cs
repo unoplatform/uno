@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Windows.System;
 using Windows.UI.Core;
 
@@ -93,6 +94,16 @@ internal static class KeyboardStateTracker
 		if (key == VirtualKey.LeftMenu || key == VirtualKey.RightMenu)
 		{
 			_keyStates[VirtualKey.Menu] = _keyStates[key];
+		}
+	}
+
+	internal static void Reset()
+	{
+		// Clearing state when debugger is attached would
+		// make it hard to debug key events.
+		if (!System.Diagnostics.Debugger.IsAttached)
+		{
+			_keyStates.Clear();
 		}
 	}
 }

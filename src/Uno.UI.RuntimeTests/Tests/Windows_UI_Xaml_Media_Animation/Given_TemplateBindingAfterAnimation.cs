@@ -8,7 +8,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation;
 
 [TestClass]
 [RunsOnUIThread]
-internal class Given_TemplateBindingAfterAnimation
+public class Given_TemplateBindingAfterAnimation
 {
 	[TestMethod]
 	public async Task When_TemplateBinding_And_Animation_Set_Local_On_TemplatedParent()

@@ -378,7 +378,7 @@ namespace Microsoft.UI.Xaml.Controls
 				if (!ignoreColumnDesiredSize)
 				{
 					Xuint columnSpan = GetColumnSpanAdjusted(pChild);
-					//pChild.EnsureLayoutStorage();
+					pChild.EnsureLayoutStorage();
 					if (columnSpan == 1)
 					{
 						DefinitionBase pChildColumn = GetColumnNoRef(pChild);
@@ -398,7 +398,7 @@ namespace Microsoft.UI.Xaml.Controls
 				if (!forceRowToInfinity)
 				{
 					Xuint rowSpan = GetRowSpanAdjusted(pChild);
-					//pChild.EnsureLayoutStorage();
+					pChild.EnsureLayoutStorage();
 					if (rowSpan == 1)
 					{
 						DefinitionBase pChildRow = GetRowNoRef(pChild);
@@ -1083,10 +1083,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 						//currentChild.Measure(innerAvailableSize);
 						this.MeasureElement(currentChild, innerAvailableSize);
-						//currentChild.EnsureLayoutStorage();
+						currentChild.EnsureLayoutStorage();
 
-						//XSIZEF childDesiredSize = currentChild.GetLayoutStorage().m_desiredSize;
-						XSIZEF childDesiredSize = currentChild.DesiredSize;
+						XSIZEF childDesiredSize = currentChild.m_desiredSize;
 						desiredSize.Width = Math.Max(desiredSize.Width, childDesiredSize.Width);
 						desiredSize.Height = Math.Max(desiredSize.Height, childDesiredSize.Height);
 					}
@@ -1377,9 +1376,8 @@ namespace Microsoft.UI.Xaml.Controls
 						var currentChild = childrenEnumerator.Current;
 						ASSERT(currentChild is { });
 
-						//currentChild.EnsureLayoutStorage();
-						//XSIZEF childDesiredSize = currentChild.GetLayoutStorage().m_desiredSize;
-						XSIZEF childDesiredSize = currentChild.DesiredSize;
+						currentChild.EnsureLayoutStorage();
+						XSIZEF childDesiredSize = currentChild.m_desiredSize;
 						innerRect.Width = Math.Max(innerRect.Width, childDesiredSize.Width);
 						innerRect.Height = Math.Max(innerRect.Height, childDesiredSize.Height);
 						//currentChild.Arrange(innerRect);

@@ -106,11 +106,12 @@ internal static class LayouterElementExtensions
 				// If the child is dirty (or is a path to a dirty descendant child),
 				// We're remeasuring it.
 
-				if (child is UIElement { IsMeasureDirtyOrMeasureDirtyPath: true })
+				if (child is UIElement { IsMeasureDirtyOrMeasureDirtyPath: true } childAsUIElement)
 				{
-					var previousDesiredSize = LayoutInformation.GetDesiredSize(child);
-					element.Layouter.MeasureChild(child, LayoutInformation.GetAvailableSize(child));
-					var newDesiredSize = LayoutInformation.GetDesiredSize(child);
+					var previousDesiredSize = childAsUIElement.m_desiredSize;
+					childAsUIElement.EnsureLayoutStorage();
+					element.Layouter.MeasureChild(child, childAsUIElement.m_previousAvailableSize);
+					var newDesiredSize = childAsUIElement.m_desiredSize;
 					if (newDesiredSize != previousDesiredSize)
 					{
 						isDirty = true;

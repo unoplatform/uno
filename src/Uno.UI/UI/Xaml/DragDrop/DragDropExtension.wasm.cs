@@ -183,7 +183,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 								+ "Only one native drop operation is supported on wasm currently."
 								+ "Aborting previous operation and beginning a new one.");
 
-							_manager.ProcessAborted(_pendingNativeDrop);
+							_manager.ProcessAborted(_pendingNativeDrop.Id);
 						}
 					}
 
@@ -220,7 +220,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 
 				case "dragleave" when _pendingNativeDrop != null:
 					_pendingNativeDrop.Update(args);
-					acceptedOperation = _manager.ProcessAborted(_pendingNativeDrop);
+					acceptedOperation = _manager.ProcessAborted(_pendingNativeDrop.Id);
 					_pendingNativeDrop = null;
 					break;
 

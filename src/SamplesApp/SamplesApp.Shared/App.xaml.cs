@@ -114,9 +114,6 @@ namespace SamplesApp
 			SetupAndroidEnvironment();
 
 #if __IOS__ && !__MACCATALYST__ && !TESTFLIGHT
-			// requires Xamarin Test Cloud Agent
-			Xamarin.Calabash.Start();
-
 			LaunchiOSWatchDog();
 #endif
 			var activationKind =
@@ -526,11 +523,11 @@ namespace SamplesApp
 			Uno.UI.FeatureConfiguration.DatePicker.UseLegacyStyle = true;
 			Uno.UI.FeatureConfiguration.TimePicker.UseLegacyStyle = true;
 #endif
-#if __SKIA__
-			Uno.UI.FeatureConfiguration.ToolTip.UseToolTips = true;
-#endif
 #if HAS_UNO
 			Uno.UI.FeatureConfiguration.TextBox.UseOverlayOnSkia = false;
+			Uno.UI.FeatureConfiguration.ToolTip.UseToolTips = true;
+
+			Uno.UI.FeatureConfiguration.Font.DefaultTextFontFamily = "ms-appx:///Uno.Fonts.OpenSans/Fonts/OpenSans.ttf";
 #endif
 		}
 
@@ -572,7 +569,9 @@ namespace SamplesApp
 					{
 						try
 						{
-							property.SetValue(null, Convert.ChangeType(value, property.PropertyType));
+							// ChangeType doesn't handle Nullable types
+							var type = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
+							property.SetValue(null, value == "null" ? null : Convert.ChangeType(value, type));
 						}
 						catch (Exception)
 						{

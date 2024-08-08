@@ -32,6 +32,7 @@ using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using MenuBar = Microsoft/* UWP don't rename */.UI.Xaml.Controls.MenuBar;
 using MenuBarItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.MenuBarItem;
 using MenuBarItemAutomationPeer = Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer;
+using RuntimeTests.Windows_UI_Xaml_Controls.Flyout;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -42,6 +43,51 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 	public class Given_MenuFlyout
 	{
+		[TestMethod]
+		[RequiresFullWindow]
+		public async Task When_Toggle_IsEnabled_Via_Binding()
+		{
+			var page = new Flyout_ToggleMenu_IsEnabled();
+
+			WindowHelper.WindowContent = page;
+			await WindowHelper.WaitForLoaded(page);
+
+			var content = page.Content as StackPanel;
+			var button = content.Children.First() as Button;
+			var buttonPeer = FrameworkElementAutomationPeer.CreatePeerForElement(button) as ButtonAutomationPeer;
+
+			var flyout = button.Flyout as MenuFlyout;
+
+			async Task AssertIsEnabled(bool expected)
+			{
+				buttonPeer.Invoke();
+				await TestServices.WindowHelper.WaitFor(() => VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot).Count > 0);
+
+				var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot).First();
+				foreach (var item in flyout.Items)
+				{
+					// The toggleItem should be disabled by default
+					Assert.AreEqual(expected, item.IsEnabled);
+				}
+
+				popup.IsOpen = false;
+
+				await WindowHelper.WaitForIdle();
+			}
+
+			await AssertIsEnabled(false);
+
+			// Enable the toggleItem
+			page.ViewModel.AreItemsEnabled = true;
+
+			await AssertIsEnabled(true);
+
+			// Disable the toggleItem
+			page.ViewModel.AreItemsEnabled = false;
+
+			await AssertIsEnabled(false);
+		}
+
 		[TestMethod]
 		[RequiresFullWindow]
 		public async Task When_Native_AppBarButton_And_Managed_Popups()

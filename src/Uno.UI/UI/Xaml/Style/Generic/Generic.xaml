@@ -1348,7 +1348,6 @@
 							<ContentPresenter x:Name="ContentPresenter"
 											  ContentTransitions="{TemplateBinding ContentTransitions}"
 											  ContentTemplate="{TemplateBinding ContentTemplate}"
-											  not_win:ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
 											  Content="{TemplateBinding Content}"
 											  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
 											  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
@@ -7757,7 +7756,6 @@
 					<Grid Margin="{TemplateBinding Padding}" Background="{TemplateBinding Background}">
 						<ContentPresenter x:Name="Text"
                             Content="{TemplateBinding Content}"
-                            ContentTemplate="{TemplateBinding ContentTemplate}"
                             HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                             VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
 

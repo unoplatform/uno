@@ -17,7 +17,13 @@ namespace Microsoft.UI.Composition
 		{
 		}
 
-		public long TimestampInTicks => Stopwatch.GetTimestamp();
+		// https://github.com/dotnet/runtime/blob/c52fd37cc835a13bcfa9a64fdfe7520809a75345/src/libraries/System.Private.CoreLib/src/System/Diagnostics/Stopwatch.cs#L27
+		private static readonly double s_tickFrequency = (double)TimeSpan.TicksPerSecond / Stopwatch.Frequency;
+
+		// Callsites usually use this with TimeSpan ticks. We need to multiply by s_tickFrequency to get it right.
+		// NOTE: s_tickFrequency is likely 1 on Windows, but not on Linux.
+		// See https://github.com/dotnet/runtime/blob/c52fd37cc835a13bcfa9a64fdfe7520809a75345/src/libraries/System.Private.CoreLib/src/System/Diagnostics/Stopwatch.cs#L157
+		public long TimestampInTicks => unchecked((long)(Stopwatch.GetTimestamp() * s_tickFrequency));
 
 		internal static Compositor GetSharedCompositor() => _sharedCompositorLazy.Value;
 
@@ -44,6 +50,11 @@ namespace Microsoft.UI.Composition
 
 		public ShapeVisual CreateShapeVisual()
 			=> new ShapeVisual(this);
+
+#if __SKIA__
+		internal BorderVisual CreateBorderVisual()
+			=> new BorderVisual(this);
+#endif
 
 		public CompositionSpriteShape CreateSpriteShape()
 			=> new CompositionSpriteShape(this);

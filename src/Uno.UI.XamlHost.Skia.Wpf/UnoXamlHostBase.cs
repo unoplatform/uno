@@ -12,6 +12,7 @@ using WpfControl = global::System.Windows.Controls.Control;
 using WUX = Microsoft.UI.Xaml;
 using Uno.UI.Xaml.Controls;
 using Microsoft.UI.Content;
+using Uno.UI.Xaml.Core;
 
 namespace Uno.UI.XamlHost.Skia.Wpf
 {
@@ -227,11 +228,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 
 				_childInternal = value;
 
-				if (_childInternal.XamlRoot is not null)
-				{
-					WpfManager.XamlRootMap.Register(_childInternal.XamlRoot, this);
-				}
-				else if (_childInternal is FrameworkElement element)
+				if (_childInternal is FrameworkElement element)
 				{
 					element.Loading += OnChildLoading;
 				}
@@ -244,7 +241,6 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 					// If XAML content has changed, check XAML size
 					// to determine if UnoXamlHost needs to re-run layout.
 					frameworkElement.SizeChanged += XamlContentSizeChanged;
-					WpfManager.XamlRootMap.Register(frameworkElement.XamlRoot, this);
 				}
 
 				OnChildChanged();

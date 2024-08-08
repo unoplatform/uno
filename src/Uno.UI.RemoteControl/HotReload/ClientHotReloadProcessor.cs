@@ -1,21 +1,21 @@
-﻿using System;
+﻿#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.RemoteControl.HotReload.Messages;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Markup;
+using Uno.Diagnostics.UI;
+using System.Collections.Immutable;
+using System.Diagnostics;
+using System.Reflection;
+using Uno.UI.Helpers;
 
 namespace Uno.UI.RemoteControl.HotReload;
 
-public partial class ClientHotReloadProcessor : IRemoteControlProcessor
+public partial class ClientHotReloadProcessor : IClientProcessor
 {
 	private string? _projectPath;
 	private string[]? _xamlPaths;
@@ -27,11 +27,12 @@ public partial class ClientHotReloadProcessor : IRemoteControlProcessor
 	public ClientHotReloadProcessor(IRemoteControlClient rcClient)
 	{
 		_rcClient = rcClient;
+		_status = new(this);
 	}
 
 	partial void InitializeMetadataUpdater();
 
-	string IRemoteControlProcessor.Scope => HotReloadConstants.HotReload;
+	string IClientProcessor.Scope => WellKnownScopes.HotReload;
 
 	public async Task Initialize()
 		=> await ConfigureServer();
@@ -41,15 +42,19 @@ public partial class ClientHotReloadProcessor : IRemoteControlProcessor
 		switch (frame.Name)
 		{
 			case AssemblyDeltaReload.Name:
-				AssemblyReload(JsonConvert.DeserializeObject<HotReload.Messages.AssemblyDeltaReload>(frame.Content)!);
+				ProcessAssemblyReload(frame.GetContent<AssemblyDeltaReload>());
 				break;
 
 			case FileReload.Name:
-				await ProcessFileReload(JsonConvert.DeserializeObject<HotReload.Messages.FileReload>(frame.Content)!);
+				await ProcessFileReload(frame.GetContent<FileReload>());
 				break;
 
 			case HotReloadWorkspaceLoadResult.Name:
-				WorkspaceLoadResult(JsonConvert.DeserializeObject<HotReload.Messages.HotReloadWorkspaceLoadResult>(frame.Content)!);
+				WorkspaceLoadResult(frame.GetContent<HotReloadWorkspaceLoadResult>());
+				break;
+
+			case HotReloadStatusMessage.Name:
+				await ProcessServerStatus(frame.GetContent<HotReloadStatusMessage>());
 				break;
 
 			default:
@@ -59,8 +64,6 @@ public partial class ClientHotReloadProcessor : IRemoteControlProcessor
 				}
 				break;
 		}
-
-		return;
 	}
 
 	private async Task ProcessFileReload(HotReload.Messages.FileReload fileReload)
@@ -80,43 +83,55 @@ public partial class ClientHotReloadProcessor : IRemoteControlProcessor
 		}
 	}
 
+	#region Configure hot-reload
 	private async Task ConfigureServer()
 	{
 		var assembly = _rcClient.AppType.Assembly;
-
 		if (assembly.GetCustomAttributes(typeof(ProjectConfigurationAttribute), false) is ProjectConfigurationAttribute[] configs)
 		{
-			var config = configs.First();
+			_status.ReportServerState(HotReloadState.Initializing);
 
-			_projectPath = config.ProjectPath;
-			_xamlPaths = config.XamlPaths;
-
-			if (this.Log().IsEnabled(LogLevel.Debug))
+			try
 			{
-				this.Log().LogDebug($"ProjectConfigurationAttribute={config.ProjectPath}, Paths={_xamlPaths.Length}");
-			}
+				var config = configs.First();
 
-			if (this.Log().IsEnabled(LogLevel.Trace))
-			{
-				foreach (var path in _xamlPaths)
+				_projectPath = config.ProjectPath;
+				_xamlPaths = config.XamlPaths;
+
+				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
-					this.Log().Trace($"\t- {path}");
+					this.Log().LogDebug($"ProjectConfigurationAttribute={config.ProjectPath}, Paths={_xamlPaths.Length}");
 				}
+
+				if (this.Log().IsEnabled(LogLevel.Trace))
+				{
+					foreach (var path in _xamlPaths)
+					{
+						this.Log().Trace($"\t- {path}");
+					}
+				}
+
+				_msbuildProperties = Messages.ConfigureServer.BuildMSBuildProperties(config.MSBuildProperties);
+
+				ConfigureHotReloadMode();
+				InitializeMetadataUpdater();
+				InitializePartialReload();
+				InitializeXamlReader();
+
+				ConfigureServer message = new(_projectPath, _xamlPaths, GetMetadataUpdateCapabilities(), _serverMetadataUpdatesEnabled, config.MSBuildProperties);
+
+				await _rcClient.SendMessage(message);
 			}
-
-			_msbuildProperties = Messages.ConfigureServer.BuildMSBuildProperties(config.MSBuildProperties);
-
-			ConfigureHotReloadMode();
-			InitializeMetadataUpdater();
-			InitializePartialReload();
-			InitializeXamlReader();
-
-			ConfigureServer message = new(_projectPath, _xamlPaths, GetMetadataUpdateCapabilities(), _serverMetadataUpdatesEnabled, config.MSBuildProperties);
-
-			await _rcClient.SendMessage(message);
+			catch
+			{
+				_status.ReportServerState(HotReloadState.Disabled);
+				throw;
+			}
 		}
 		else
 		{
+			_status.ReportServerState(HotReloadState.Disabled);
+
 			if (this.Log().IsEnabled(LogLevel.Error))
 			{
 				this.Log().LogError("Unable to find ProjectConfigurationAttribute");
@@ -154,5 +169,13 @@ public partial class ClientHotReloadProcessor : IRemoteControlProcessor
 		}
 
 		return output;
+	}
+	#endregion
+
+	private async Task ProcessServerStatus(HotReloadStatusMessage status)
+	{
+#if HAS_UNO_WINUI
+		_status.ReportServerStatus(status);
+#endif
 	}
 }

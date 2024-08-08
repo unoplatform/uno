@@ -114,6 +114,10 @@ namespace Microsoft.UI.Xaml
 
 		private static readonly bool _validatePropertyOwner = Debugger.IsAttached;
 
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		internal bool IsDisposed => _isDisposed;
+#endif
+
 		/// <summary>
 		/// Provides the parent Dependency Object of this dependency object
 		/// </summary>
@@ -162,6 +166,14 @@ namespace Microsoft.UI.Xaml
 		static DependencyObjectStore()
 		{
 			InitializeStaticBinder();
+		}
+
+		/// <summary>
+		/// This is used by HotReload so that type replacement doesn't cause property values to be lost.
+		/// </summary>
+		internal void ClonePropertiesToAnotherStoreForHotReload(DependencyObjectStore otherStore)
+		{
+			_properties.CloneToForHotReload(otherStore._properties, this, otherStore);
 		}
 
 		/// <summary>
@@ -470,7 +482,10 @@ namespace Microsoft.UI.Xaml
 					// Resolve the stack once for the instance, for performance.
 					propertyDetails ??= _properties.GetPropertyDetails(property);
 
-					TryClearBinding(value, propertyDetails);
+					if (precedence <= DependencyPropertyValuePrecedences.Local)
+					{
+						TryClearBinding(value, propertyDetails);
+					}
 
 					var previousValue = GetValue(propertyDetails);
 					var previousPrecedence = GetCurrentHighestValuePrecedence(propertyDetails);
@@ -1282,7 +1297,7 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Do a tree walk to find the correct values of StaticResource and ThemeResource assignations.
 		/// </summary>
-		internal void UpdateResourceBindings(ResourceUpdateReason updateReason, ResourceDictionary? containingDictionary = null)
+		internal void UpdateResourceBindings(ResourceUpdateReason updateReason, FrameworkElement? resourceContextProvider = null, ResourceDictionary? containingDictionary = null)
 		{
 			if (updateReason == ResourceUpdateReason.None)
 			{
@@ -1293,7 +1308,7 @@ namespace Microsoft.UI.Xaml
 
 			if (updateReason == ResourceUpdateReason.ThemeResource)
 			{
-				dictionariesInScope = GetResourceDictionaries(includeAppResources: false, containingDictionary).ToArray();
+				dictionariesInScope = GetResourceDictionaries(includeAppResources: false, resourceContextProvider, containingDictionary).ToArray();
 				for (var i = dictionariesInScope.Length - 1; i >= 0; i--)
 				{
 					ResourceResolver.PushSourceToScope(dictionariesInScope[i]);
@@ -1301,7 +1316,7 @@ namespace Microsoft.UI.Xaml
 
 				_properties.UpdateBindingExpressions();
 
-				foreach (var dict in dictionariesInScope)
+				for (int i = 0; i < dictionariesInScope.Length; i++)
 				{
 					ResourceResolver.PopSourceFromScope();
 				}
@@ -1309,11 +1324,11 @@ namespace Microsoft.UI.Xaml
 
 			if (_resourceBindings == null || !_resourceBindings.HasBindings)
 			{
-				UpdateChildResourceBindings(updateReason);
+				UpdateChildResourceBindings(updateReason, resourceContextProvider);
 				return;
 			}
 
-			dictionariesInScope ??= GetResourceDictionaries(includeAppResources: false, containingDictionary).ToArray();
+			dictionariesInScope ??= GetResourceDictionaries(includeAppResources: false, resourceContextProvider, containingDictionary).ToArray();
 
 			var bindings = _resourceBindings.GetAllBindings();
 
@@ -1322,7 +1337,7 @@ namespace Microsoft.UI.Xaml
 				InnerUpdateResourceBindings(updateReason, dictionariesInScope, binding.Property, binding.Binding);
 			}
 
-			UpdateChildResourceBindings(updateReason);
+			UpdateChildResourceBindings(updateReason, resourceContextProvider);
 		}
 
 		/// <remarks>
@@ -1422,7 +1437,7 @@ namespace Microsoft.UI.Xaml
 
 		private bool _isUpdatingChildResourceBindings;
 
-		private void UpdateChildResourceBindings(ResourceUpdateReason updateReason)
+		private void UpdateChildResourceBindings(ResourceUpdateReason updateReason, FrameworkElement? resourceContextProvider = null)
 		{
 			if (_isUpdatingChildResourceBindings)
 			{
@@ -1434,7 +1449,7 @@ namespace Microsoft.UI.Xaml
 			{
 				try
 				{
-					InnerUpdateChildResourceBindings(updateReason);
+					InnerUpdateChildResourceBindings(updateReason, resourceContextProvider);
 				}
 				finally
 				{
@@ -1457,7 +1472,7 @@ namespace Microsoft.UI.Xaml
 		/// See https://github.com/dotnet/runtime/issues/56309
 		/// </remarks>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private void InnerUpdateChildResourceBindings(ResourceUpdateReason updateReason)
+		private void InnerUpdateChildResourceBindings(ResourceUpdateReason updateReason, FrameworkElement? resourceContextProvider = null)
 		{
 			_isUpdatingChildResourceBindings = true;
 
@@ -1479,7 +1494,7 @@ namespace Microsoft.UI.Xaml
 				{
 					foreach (var innerValue in dependencyObjectCollection)
 					{
-						UpdateResourceBindingsIfNeeded(innerValue, updateReason);
+						UpdateResourceBindingsIfNeeded(innerValue, updateReason, resourceContextProvider);
 					}
 				}
 
@@ -1487,65 +1502,56 @@ namespace Microsoft.UI.Xaml
 				{
 					foreach (var innerValue in updateable.GetAdditionalChildObjects())
 					{
-						UpdateResourceBindingsIfNeeded(innerValue, updateReason);
+						UpdateResourceBindingsIfNeeded(innerValue, updateReason, resourceContextProvider);
 					}
 				}
 
 				if (propertyValue is DependencyObject dependencyObject)
 				{
-					UpdateResourceBindingsIfNeeded(dependencyObject, updateReason);
+					UpdateResourceBindingsIfNeeded(dependencyObject, updateReason, resourceContextProvider);
 				}
 			}
 		}
 
-		private void UpdateResourceBindingsIfNeeded(DependencyObject dependencyObject, ResourceUpdateReason updateReason)
+		private void UpdateResourceBindingsIfNeeded(DependencyObject dependencyObject, ResourceUpdateReason updateReason, FrameworkElement? resourceContextProvider = null)
 		{
+			// propagate to non-FE DO
 			if (dependencyObject is not IFrameworkElement && dependencyObject is IDependencyObjectStoreProvider storeProvider)
 			{
-				storeProvider.Store.UpdateResourceBindings(updateReason);
+				storeProvider.Store.UpdateResourceBindings(
+					updateReason,
+					// when propagating to non-FE, we need to inject a FE as the resource context
+					resourceContextProvider: resourceContextProvider ?? ActualInstance as FrameworkElement
+				);
 			}
 		}
 
 		/// <summary>
 		/// Returns all ResourceDictionaries in scope using the visual tree, from nearest to furthest.
 		/// </summary>
-		internal IEnumerable<ResourceDictionary> GetResourceDictionaries(bool includeAppResources, ResourceDictionary? containingDictionary = null)
+		internal IEnumerable<ResourceDictionary> GetResourceDictionaries(
+			bool includeAppResources,
+			FrameworkElement? resourceContextProvider = null,
+			ResourceDictionary? containingDictionary = null)
 		{
 			if (containingDictionary is not null)
 			{
 				yield return containingDictionary;
 			}
 
-			var candidate = ActualInstance;
-			var candidateFE = candidate as FrameworkElement;
-
+			// for non-FE, favor context provider over actual-instance
+			var candidate = ActualInstance as FrameworkElement ?? resourceContextProvider ?? ActualInstance;
 			while (candidate is not null)
 			{
-				var parent = candidate.GetParent() as DependencyObject;
-
-				if (candidateFE is not null)
+				if (candidate is FrameworkElement fe)
 				{
-					if (candidateFE.Resources is { IsEmpty: false }) // It's legal (if pointless) on UWP to set Resources to null from user code, so check
+					if (fe.Resources is { IsEmpty: false }) // It's legal (if pointless) on UWP to set Resources to null from user code, so check
 					{
-						yield return candidateFE.Resources;
-					}
-
-					if (parent is FrameworkElement fe)
-					{
-						// If the parent is a framework element, cast only once and assign
-						// the result to both variables.
-						candidate = candidateFE = fe;
-					}
-					else
-					{
-						candidate = parent;
+						yield return fe.Resources;
 					}
 				}
-				else
-				{
-					candidateFE = parent as FrameworkElement;
-					candidate = parent;
-				}
+
+				candidate = candidate.GetParent() as DependencyObject;
 			}
 
 			if (includeAppResources && Application.Current != null)
@@ -1873,7 +1879,7 @@ namespace Microsoft.UI.Xaml
 			bool bypassesPropagation = false
 		)
 		{
-			var eventArgs = new DependencyPropertyChangedEventArgs(property, previousValue, previousPrecedence, newValue, newPrecedence, bypassesPropagation);
+			//var propertyChangedParams = new PropertyChangedParams(property, previousValue, newValue);
 			var propertyMetadata = propertyDetails.Metadata;
 
 			// We can reuse the weak reference, otherwise capture the weak reference to this instance.
@@ -1912,7 +1918,7 @@ namespace Microsoft.UI.Xaml
 					var localChildrenStores = _childrenStores;
 					for (var storeIndex = 0; storeIndex < localChildrenStores.Count; storeIndex++)
 					{
-						CallChildCallback(localChildrenStores[storeIndex], instanceRef, property, eventArgs);
+						CallChildCallback(localChildrenStores[storeIndex], instanceRef, property, newValue);
 					}
 				}
 			}
@@ -1934,33 +1940,61 @@ namespace Microsoft.UI.Xaml
 			// dependency property value through the cache.
 			propertyMetadata.RaiseBackingFieldUpdate(actualInstanceAlias, newValue);
 
+			DependencyPropertyChangedEventArgs? eventArgs = null;
+
 			// Raise the changes for the callback register to the property itself
-			propertyMetadata.RaisePropertyChanged(actualInstanceAlias, eventArgs);
+			if (propertyMetadata.HasPropertyChanged)
+			{
+				eventArgs ??= new DependencyPropertyChangedEventArgs(property, previousValue, newValue
+#if __IOS__ || __MACOS__ || IS_UNIT_TESTS
+					, previousPrecedence, newPrecedence, bypassesPropagation
+#endif
+				);
+				propertyMetadata.RaisePropertyChangedNoNullCheck(actualInstanceAlias, eventArgs);
+			}
 
 			// Ensure binding is propagated
-			OnDependencyPropertyChanged(propertyDetails, eventArgs);
+			OnDependencyPropertyChanged(propertyDetails, newValue);
 
 			// Raise the common property change callback of WinUI
 			// This is raised *after* the data bound properties are updated
 			// but before the registered property callbacks
 			if (actualInstanceAlias is IDependencyObjectInternal doInternal)
 			{
+				eventArgs ??= new DependencyPropertyChangedEventArgs(property, previousValue, newValue
+#if __IOS__ || __MACOS__ || IS_UNIT_TESTS
+					, previousPrecedence, newPrecedence, bypassesPropagation
+#endif
+);
 				doInternal.OnPropertyChanged2(eventArgs);
 			}
 
 			// Raise the changes for the callbacks register through RegisterPropertyChangedCallback.
-			propertyDetails.RaisePropertyChanged(actualInstanceAlias, eventArgs);
+			if (propertyDetails.CanRaisePropertyChanged)
+			{
+				eventArgs ??= new DependencyPropertyChangedEventArgs(property, previousValue, newValue
+#if __IOS__ || __MACOS__ || IS_UNIT_TESTS
+					, previousPrecedence, newPrecedence, bypassesPropagation
+#endif
+				);
+				propertyDetails.RaisePropertyChangedNoNullCheck(actualInstanceAlias, eventArgs);
+			}
 
 			// Raise the property change for generic handlers
 			var currentCallbacks = _genericCallbacks.Data;
 			for (var callbackIndex = 0; callbackIndex < currentCallbacks.Length; callbackIndex++)
 			{
 				var callback = currentCallbacks[callbackIndex];
+				eventArgs ??= new DependencyPropertyChangedEventArgs(property, previousValue, newValue
+#if __IOS__ || __MACOS__ || IS_UNIT_TESTS
+					, previousPrecedence, newPrecedence, bypassesPropagation
+#endif
+				);
 				callback.Invoke(instanceRef, property, eventArgs);
 			}
 		}
 
-		private void CallChildCallback(DependencyObjectStore childStore, ManagedWeakReference instanceRef, DependencyProperty property, DependencyPropertyChangedEventArgs eventArgs)
+		private void CallChildCallback(DependencyObjectStore childStore, ManagedWeakReference instanceRef, DependencyProperty property, object? newValue)
 		{
 			var propagateUnregistering = (_unregisteringInheritedProperties || _parentUnregisteringInheritedProperties) && property == _dataContextProperty;
 			try
@@ -1970,7 +2004,7 @@ namespace Microsoft.UI.Xaml
 					childStore._parentUnregisteringInheritedProperties = true;
 				}
 
-				childStore.OnParentPropertyChangedCallback(instanceRef, property, eventArgs.NewValue);
+				childStore.OnParentPropertyChangedCallback(instanceRef, property, newValue);
 			}
 			finally
 			{

@@ -425,7 +425,7 @@ namespace Microsoft.UI.Xaml
 			if (fullBinding != null)
 			{
 				var boundProperty = DependencyProperty.GetProperty(_originalObjectType, dependencyProperty)
-					?? FindStandardProperty(_originalObjectType, dependencyProperty, fullBinding.CompiledSource != null);
+					?? FindStandardProperty(_originalObjectType, dependencyProperty, fullBinding.IsXBind);
 
 				if (boundProperty != null)
 				{
@@ -436,6 +436,18 @@ namespace Microsoft.UI.Xaml
 			{
 				throw new NotSupportedException("Only Microsoft.UI.Xaml.Data.Binding is supported for bindings.");
 			}
+		}
+
+		internal void SetTemplateBinding(DependencyProperty targetProperty, DependencyProperty sourceProperty)
+		{
+			SetBinding(
+				targetProperty,
+				new Binding
+				{
+					Path = sourceProperty.Name,
+					RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent),
+				}
+			);
 		}
 
 		/// <summary>
@@ -504,7 +516,7 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Sets the specified source <paramref name="value"/> on <paramref name="property"/>
 		/// </summary>
-		internal void SetBindingValue(DependencyPropertyDetails propertyDetails, object value)
+		internal void SetBindingValue(DependencyPropertyDetails propertyDetails, object? value)
 		{
 			var unregisteringInheritedProperties = _unregisteringInheritedProperties || _parentUnregisteringInheritedProperties;
 			if (unregisteringInheritedProperties)
@@ -557,13 +569,13 @@ namespace Microsoft.UI.Xaml
 			return null;
 		}
 
-		private void OnDependencyPropertyChanged(DependencyPropertyDetails propertyDetails, DependencyPropertyChangedEventArgs args)
+		private void OnDependencyPropertyChanged(DependencyPropertyDetails propertyDetails, object? newValue)
 		{
-			SetBindingValue(propertyDetails, args.NewValue);
+			SetBindingValue(propertyDetails, newValue);
 
 			if (!propertyDetails.HasValueDoesNotInherit)
 			{
-				var newValueAsProvider = args.NewValue as IDependencyObjectStoreProvider;
+				var newValueAsProvider = newValue as IDependencyObjectStoreProvider;
 
 				if (propertyDetails.HasValueInherits)
 				{
@@ -573,11 +585,11 @@ namespace Microsoft.UI.Xaml
 							propertyDetails,
 
 							// Ensure DataContext propagation loops cannot happen
-							ReferenceEquals(newValueAsProvider.Store.Parent, ActualInstance) ? null : args.NewValue);
+							ReferenceEquals(newValueAsProvider.Store.Parent, ActualInstance) ? null : newValue);
 					}
 					else
 					{
-						SetChildrenBindableValue(propertyDetails, args.NewValue);
+						SetChildrenBindableValue(propertyDetails, newValue);
 					}
 				}
 				else
@@ -642,6 +654,9 @@ namespace Microsoft.UI.Xaml
 
 		public Microsoft.UI.Xaml.Data.Binding? GetBinding(DependencyProperty dependencyProperty)
 			=> GetBindingExpression(dependencyProperty)?.ParentBinding;
+
+		internal bool IsPropertyTemplateBound(DependencyProperty dependencyProperty)
+			=> _properties.IsPropertyTemplateBound(dependencyProperty);
 
 		/// <summary>
 		/// BindingPath Registration handler for DependencyProperty instances

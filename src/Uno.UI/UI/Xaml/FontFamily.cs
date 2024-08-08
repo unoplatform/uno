@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Uno.UI;
 
 namespace Microsoft.UI.Xaml.Media
 {
@@ -22,7 +23,7 @@ namespace Microsoft.UI.Xaml.Media
 		// Makes introduction of FontFamily a non-breaking change (for now)
 		public static implicit operator FontFamily(string familyName) => new FontFamily(familyName);
 
-		public static FontFamily Default { get; } = new FontFamily("Segoe UI");
+		public static FontFamily Default => FeatureConfiguration.Font.DefaultTextFontFamily;
 
 		public static FontFamily XamlAutoFontFamily => Default;
 

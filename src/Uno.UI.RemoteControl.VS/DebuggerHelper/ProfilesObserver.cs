@@ -169,17 +169,17 @@ internal class ProfilesObserver : IDisposable
 	{
 		_projectAdded = (s) =>
 		{
-			_debugLog($"_projectAdded: {s}");
+			_debugLog($"_projectAdded: {s.FileName}");
 			TryUpdateSolution();
 		};
 		_projectRemoved = (s) =>
 		{
-			_debugLog($"_projectRemoved: {s}");
+			_debugLog($"_projectRemoved: {s.FileName}");
 			TryUpdateSolution();
 		};
 		_projectRenamed = (s, v) =>
 		{
-			_debugLog($"_projectRenamed: {s}");
+			_debugLog($"_projectRenamed: {s.FileName}");
 			TryUpdateSolution();
 		};
 		_afterExecute = (s, c, o, m) =>

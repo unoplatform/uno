@@ -32,6 +32,8 @@ using Popup = Microsoft.UI.Xaml.Controls.Primitives.Popup;
 using Uno.UI;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Controls;
+using Uno.UI.Dispatching;
+
 #if __ANDROID__
 using Android.Views;
 #endif
@@ -362,7 +364,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnOverflowPopupClosed(object? sender, object e)
 		{
-			IsOpen = false;
+			NativeDispatcher.Main.Enqueue(() => IsOpen = false, NativeDispatcherPriority.Idle);
 		}
 
 #if __IOS__ || __ANDROID__
@@ -670,8 +672,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var wasHandled = false;
 
 			// If the ALT key is not pressed, don't shift focus.
-			var modifierKeys = VirtualKeyModifiers.None;
-			GetKeyboardModifiers(out modifierKeys);
+			var modifierKeys = GetKeyboardModifiers();
 			if ((modifierKeys & VirtualKeyModifiers.Menu) != 0)
 			{
 				return false;
@@ -705,8 +706,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			// If the ALT key is not pressed, don't shift focus.
-			var modifierKeys = VirtualKeyModifiers.None;
-			GetKeyboardModifiers(out modifierKeys);
+			var modifierKeys = GetKeyboardModifiers();
 			if ((modifierKeys & VirtualKeyModifiers.Menu) != 0)
 			{
 				return false;
@@ -1573,7 +1573,7 @@ namespace Microsoft.UI.Xaml.Controls
 					wasHandledLocally = true;
 					break;
 				case VirtualKey.Tab:
-					GetKeyboardModifiers(out var modifierKeys);
+					var modifierKeys = GetKeyboardModifiers();
 					HandleTabKeyPressedInOverflow((modifierKeys & VirtualKeyModifiers.Shift) != 0, out wasHandledLocally);
 					break;
 			}

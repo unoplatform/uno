@@ -15,10 +15,12 @@ using Uno.UI.Runtime.Skia.Extensions.System;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Runtime.Skia;
 using System.Threading.Tasks;
+using System.Runtime.InteropServices.Marshalling;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
 
-public class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDisposable
+public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDisposable
 {
 	[ThreadStatic] private static bool _isDispatcherThread;
 	private readonly EventLoop _eventLoop;
@@ -29,10 +31,7 @@ public class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDisposable
 	{
 		// This seems to be necessary to run on WSL, but not necessary on the X.org implementation.
 		// We therefore wrap every x11 call with XLockDisplay and XUnlockDisplay
-		var _ = X11Helper.XInitThreads();
-
-		[DllImport("libc")]
-		static extern void setlocale(int type, string s);
+		_ = X11Helper.XInitThreads();
 
 		// keyboard input fails without this, not sure why this works but Avalonia and xev make similar calls, cf. https://stackoverflow.com/a/18288346
 		// This disables IME, cf. https://tedyin.com/posts/a-brief-intro-to-linux-input-method-framework/
@@ -63,6 +62,10 @@ public class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDisposable
 		ApiExtensibility.Register<FileOpenPicker>(typeof(IFileOpenPickerExtension), o => new LinuxFilePickerExtension(o));
 		ApiExtensibility.Register<FolderPicker>(typeof(IFolderPickerExtension), o => new LinuxFilePickerExtension(o));
 		ApiExtensibility.Register<FileSavePicker>(typeof(IFileSavePickerExtension), o => new LinuxFileSaverExtension(o));
+
+		ApiExtensibility.Register<ContentPresenter>(typeof(ContentPresenter.INativeElementHostingExtension), o => new X11NativeElementHostingExtension(o));
+
+		ApiExtensibility.Register<DragDropManager>(typeof(Windows.ApplicationModel.DataTransfer.DragDrop.Core.IDragDropExtension), o => new X11DragDropExtension(o));
 	}
 
 	public X11ApplicationHost(Func<Application> appBuilder)
@@ -77,6 +80,9 @@ public class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDisposable
 		CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
 	}
 
+	[LibraryImport("libc", StringMarshallingCustomType = typeof(AnsiStringMarshaller))]
+	private static partial void setlocale(int type, string s);
+
 	protected override Task RunLoop()
 	{
 		Thread.CurrentThread.Name = "Main Thread (keep-alive)";
@@ -84,10 +90,6 @@ public class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDisposable
 
 		while (!X11XamlRootHost.AllWindowsDone())
 		{
-			if (this.Log().IsEnabled(LogLevel.Trace))
-			{
-				this.Log().Trace($"{nameof(X11ApplicationHost)} is testing for all windows closed.");
-			}
 			Thread.Sleep(100);
 		}
 

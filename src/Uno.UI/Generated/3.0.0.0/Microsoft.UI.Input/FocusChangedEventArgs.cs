@@ -3,30 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Input
 {
-#if false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class FocusChangedEventArgs
 	{
-#if false
-		internal FocusChangedEventArgs()
-		{
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool Handled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool FocusChangedEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FocusChangedEventArgs.Handled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Input.FocusChangedEventArgs", "bool FocusChangedEventArgs.Handled");
-			}
-		}
-#endif
+		// Skipping already declared property Handled
 		// Forced skipping of method Microsoft.UI.Input.FocusChangedEventArgs.Handled.set
 		// Forced skipping of method Microsoft.UI.Input.FocusChangedEventArgs.Handled.get
 	}

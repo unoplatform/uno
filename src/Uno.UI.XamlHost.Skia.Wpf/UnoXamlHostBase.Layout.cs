@@ -100,13 +100,10 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 		//Might be some missing logic. Maybe not needed now after Arrange and Measure works with XamlIslandRoot
 		private void UpdateUnoSize(Size newSize)
 		{
-			if (IsXamlContentLoaded())
+			if (_xamlSource?.XamlIsland is { } island)
 			{
-				if (_xamlSource?.XamlIsland is { } island)
-				{
-					island.Width = newSize.Width;
-					island.Height = newSize.Height;
-				}
+				island.Width = newSize.Width;
+				island.Height = newSize.Height;
 			}
 		}
 	}

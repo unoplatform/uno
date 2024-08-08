@@ -15,9 +15,6 @@ jobs:
   dependsOn:
     - Generate_Packages
 
-  variables:
-    UnoDisableNetPreviousMobile: true
-
   steps:
   - task: DownloadBuildArtifacts@0
     inputs:
@@ -40,6 +37,14 @@ jobs:
       BUILD_SOURCESDIRECTORY: $(BUILD.SOURCESDIRECTORY)
       GITVERSION_SemVer: $(GITVERSION.SemVer)
 
+  - task: PublishBuildArtifacts@1
+    retryCountOnTaskFailure: 3
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.sourcesdirectory)/src/SolutionTemplate/binlogs
+      ArtifactName: template-tests-binlogs-windows
+      ArtifactType: Container
+
 - job: Dotnet_Template_Tests_NetCoreMobile_macos
   displayName: 'Run .NET Templates Tests macOS'
   timeoutInMinutes: 90
@@ -50,9 +55,6 @@ jobs:
   dependsOn:
     - Generate_Packages
 
-  variables:
-    UnoDisableNetPreviousMobile: true
-
   steps:
   - task: DownloadBuildArtifacts@0
     inputs:
@@ -60,14 +62,9 @@ jobs:
 
   - template: templates/gitversion.yml
 
-  - bash: |
-      sed -i.bu 's/8.0.100/8.0.200/' build/ci/net8/global.json
-    displayName: Replace global.json with .NET 8.0.200
-
   - template: templates/ios-build-select-version.yml
     parameters:
       xCodeRoot: ${{ parameters.xCodeRoot }}
-      XamarinSDKVersion: ${{ parameters.XamarinSDKVersion }}
 
   - template: templates/dotnet-mobile-install-mac.yml
 
@@ -80,14 +77,19 @@ jobs:
       BUILD_SOURCESDIRECTORY: $(BUILD.SOURCESDIRECTORY)
       GITVERSION_SemVer: $(GITVERSION.SemVer)
 
+  - task: PublishBuildArtifacts@1
+    retryCountOnTaskFailure: 3
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.sourcesdirectory)/src/SolutionTemplate/binlogs
+      ArtifactName: template-tests-binlogs-macos
+      ArtifactType: Container
+
 - job: Dotnet_Template_Tests_net7_Linux
   displayName: 'Run dotnet new Templates Tests - Linux (net7)'
 
   dependsOn:
     - Generate_Packages
-
-  variables:
-    UnoDisableNetPreviousMobile: true
 
   pool: ${{ parameters.vmPoolLinux }}
 
@@ -97,10 +99,6 @@ jobs:
   - task: DownloadBuildArtifacts@0
     inputs:
       artifactName: NugetPackages
-
-  - script: |
-      sed -i 's/8.0.100/8.0.200/g' build/ci/net8/global.json
-    displayName: Replace global.json with .NET 8.0.200
 
   - template: templates/dotnet-mobile-install-linux.yml
 
@@ -116,3 +114,11 @@ jobs:
     env:
       BUILD_SOURCESDIRECTORY: $(BUILD.SOURCESDIRECTORY)
       GITVERSION_SemVer: $(GITVERSION.SemVer)
+
+  - task: PublishBuildArtifacts@1
+    retryCountOnTaskFailure: 3
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.sourcesdirectory)/src/SolutionTemplate/binlogs
+      ArtifactName: template-tests-binlogs-net7-linux
+      ArtifactType: Container

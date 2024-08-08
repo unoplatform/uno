@@ -113,6 +113,8 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		public event EventHandler<ScrollViewerViewChangedEventArgs>? ViewChanged;
 
+		internal event SizeChangedEventHandler? ExtentSizeChanged;
+
 		static ScrollViewer()
 		{
 #if !IS_UNIT_TESTS
@@ -177,7 +179,7 @@ namespace Microsoft.UI.Xaml.Controls
 			=> (obj as ScrollViewer)?.UpdateComputedVerticalScrollability(invalidate: true);
 		#endregion
 
-		#region HorizontalScrollBarVisibility (Attached DP - inherited)
+		#region HorizontalScrollBarVisibility (Attached DP)
 		public static ScrollBarVisibility GetHorizontalScrollBarVisibility(DependencyObject element)
 			=> (ScrollBarVisibility)element.GetValue(HorizontalScrollBarVisibilityProperty);
 
@@ -197,13 +199,12 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(
 					ScrollBarVisibility.Disabled,
-					propertyChangedCallback: OnHorizontalScrollabilityPropertyChanged,
-					options: FrameworkPropertyMetadataOptions.Inherits
+					propertyChangedCallback: OnHorizontalScrollabilityPropertyChanged
 				)
 			);
 		#endregion
 
-		#region VerticalScrollBarVisibility (Attached DP - inherited)
+		#region VerticalScrollBarVisibility (Attached DP)
 		public static ScrollBarVisibility GetVerticalScrollBarVisibility(DependencyObject element)
 			=> (ScrollBarVisibility)element.GetValue(VerticalScrollBarVisibilityProperty);
 
@@ -223,13 +224,12 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(
 					ScrollBarVisibility.Auto,
-					propertyChangedCallback: OnVerticalScrollabilityPropertyChanged,
-					options: FrameworkPropertyMetadataOptions.Inherits
+					propertyChangedCallback: OnVerticalScrollabilityPropertyChanged
 				)
 			);
 		#endregion
 
-		#region HorizontalScrollMode (Attached DP - inherited)
+		#region HorizontalScrollMode (Attached DP)
 		public static ScrollMode GetHorizontalScrollMode(DependencyObject element)
 			=> (ScrollMode)element.GetValue(HorizontalScrollModeProperty);
 
@@ -249,13 +249,12 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(
 					ScrollMode.Enabled,
-					propertyChangedCallback: OnHorizontalScrollabilityPropertyChanged,
-					options: FrameworkPropertyMetadataOptions.Inherits
+					propertyChangedCallback: OnHorizontalScrollabilityPropertyChanged
 				)
 			);
 		#endregion
 
-		#region VerticalScrollMode (Attached DP - inherited)
+		#region VerticalScrollMode (Attached DP)
 
 		public static ScrollMode GetVerticalScrollMode(DependencyObject element)
 			=> (ScrollMode)element.GetValue(VerticalScrollModeProperty);
@@ -277,13 +276,12 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(
 					ScrollMode.Enabled,
-					propertyChangedCallback: OnVerticalScrollabilityPropertyChanged,
-					options: FrameworkPropertyMetadataOptions.Inherits
+					propertyChangedCallback: OnVerticalScrollabilityPropertyChanged
 				)
 			);
 		#endregion
 
-		#region BringIntoViewOnFocusChange (Attached DP - inherited)
+		#region BringIntoViewOnFocusChange (Attached DP)
 #if __IOS__
 		[global::Uno.NotImplemented]
 #endif
@@ -312,8 +310,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(
 					true,
-					propertyChangedCallback: OnBringIntoViewOnFocusChangeChanged,
-					options: FrameworkPropertyMetadataOptions.Inherits));
+					propertyChangedCallback: OnBringIntoViewOnFocusChangeChanged));
 
 		private static void OnBringIntoViewOnFocusChangeChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
@@ -325,7 +322,7 @@ namespace Microsoft.UI.Xaml.Controls
 		partial void OnBringIntoViewOnFocusChangeChangedPartial(bool newValue);
 		#endregion
 
-		#region ZoomMode (Attached DP - inherited)
+		#region ZoomMode (Attached DP)
 		public static ZoomMode GetZoomMode(DependencyObject element)
 			=> (ZoomMode)element.GetValue(ZoomModeProperty);
 
@@ -345,8 +342,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(
 					ZoomMode.Disabled,
-					propertyChangedCallback: (o, e) => ((ScrollViewer)o).OnZoomModeChanged((ZoomMode)e.NewValue),
-					options: FrameworkPropertyMetadataOptions.Inherits
+					propertyChangedCallback: (o, e) => ((ScrollViewer)o).OnZoomModeChanged((ZoomMode)e.NewValue)
 				)
 			);
 
@@ -701,10 +697,16 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void TrimOverscroll(Orientation orientation);
 
+		// TODO: Revisit if this can use SizeChanged += (_, _) => OnControlsBoundsChanged(); on all platforms.
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		internal override void AfterArrange()
+		{
+			base.AfterArrange();
+#else
 		internal override void OnLayoutUpdated()
 		{
 			base.OnLayoutUpdated();
-
+#endif
 			UpdateDimensionProperties();
 			UpdateZoomedContentAlignment();
 		}
@@ -742,6 +744,8 @@ namespace Microsoft.UI.Xaml.Controls
 			// The dimensions of the presenter (which are often but not always the same as the ScrollViewer) determine the viewport size
 			ViewportHeight = (_presenter as IFrameworkElement)?.ActualHeight ?? ActualHeight;
 			ViewportWidth = (_presenter as IFrameworkElement)?.ActualWidth ?? ActualWidth;
+
+			var oldSize = new Size(ExtentWidth, ExtentHeight);
 
 			if (_presenter?.CustomContentExtent is { } customExtent)
 			{
@@ -827,6 +831,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 			TrimOverscroll(Orientation.Vertical);
 			TrimOverscroll(Orientation.Horizontal);
+
+			var newSize = new Size(ExtentWidth, ExtentWidth);
+			if (oldSize != newSize)
+			{
+				ExtentSizeChanged?.Invoke(this, new(this, oldSize, newSize));
+			}
 		}
 
 		private void UpdateComputedVerticalScrollability(bool invalidate)
@@ -943,6 +953,18 @@ namespace Microsoft.UI.Xaml.Controls
 				_ => ScrollBarVisibility.Hidden // If a managed scroll bar was set in the template, native scroll bar has to stay Hidden
 			};
 #endif
+
+		internal UIElement ElementHorizontalScrollBar()
+		{
+			//UNO TODO: Implement ElementHorizontalScrollBar on ScrollViewer
+			return new();
+		}
+
+		internal UIElement ElementVerticalScrollBar()
+		{
+			//UNO TODO: Implement ElementVerticalScrollBar on ScrollViewer
+			return new();
+		}
 
 		/// <summary>
 		/// Sets the content of the ScrollViewer
@@ -1349,8 +1371,8 @@ namespace Microsoft.UI.Xaml.Controls
 			// updates. The ScrollContentPresenter will scroll smoothly since the native scrolling/rendering
 			// is on a separate thread, but the ScrollBars will be frozen until the end of the (long) scrolling
 			// duration.
-			_horizontalScrollbar?.Arrange(_horizontalScrollbar.LayoutSlot);
-			_verticalScrollbar?.Arrange(_verticalScrollbar.LayoutSlot);
+			_horizontalScrollbar?.Arrange(LayoutInformation.GetLayoutSlot(_horizontalScrollbar));
+			_verticalScrollbar?.Arrange(LayoutInformation.GetLayoutSlot(_verticalScrollbar));
 #endif
 		}
 
@@ -1436,6 +1458,66 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public void ScrollToVerticalOffset(double offset)
 			=> ChangeView(null, offset, null, false);
+
+		/// <summary>
+		/// Scroll content by one page to the left.
+		/// </summary>
+		internal void PageLeft()
+			=> HandleHorizontalScroll(ScrollEventType.LargeDecrement);
+
+		/// <summary>
+		/// Scroll content by one line to the right.
+		/// </summary>
+		internal void LineLeft()
+			=> HandleHorizontalScroll(ScrollEventType.SmallDecrement);
+
+		/// <summary>
+		/// Scroll content by one line to the right.
+		/// </summary>
+		internal void LineRight()
+			=> HandleHorizontalScroll(ScrollEventType.SmallIncrement);
+
+		/// <summary>
+		/// Scroll content by one page to the right.
+		/// </summary>
+		internal void PageRight()
+			=> HandleHorizontalScroll(ScrollEventType.LargeIncrement);
+
+		/// <summary>
+		/// Scroll content by one page to the top.
+		/// </summary>
+		internal void PageUp()
+			=> HandleVerticalScroll(ScrollEventType.LargeDecrement);
+
+		/// <summary>
+		/// Scroll content by one line to the top.
+		/// </summary>
+		internal void LineUp()
+			=> HandleVerticalScroll(ScrollEventType.SmallDecrement);
+
+		/// <summary>
+		/// Scroll content by one line to the bottom.
+		/// </summary>
+		internal void LineDown()
+			=> HandleVerticalScroll(ScrollEventType.SmallIncrement);
+
+		/// <summary>
+		/// Scroll content by one page to the bottom.
+		/// </summary>
+		internal void PageDown()
+			=> HandleVerticalScroll(ScrollEventType.LargeIncrement);
+
+		/// <summary>
+		/// Scroll content to the beginning.
+		/// </summary>
+		internal void PageHome()
+			=> HandleVerticalScroll(ScrollEventType.First);
+
+		/// <summary>
+		/// Scroll content to the end.
+		/// </summary>
+		internal void PageEnd()
+			=> HandleVerticalScroll(ScrollEventType.Last);
 
 		/// <summary>
 		/// Causes the ScrollViewer to load a new view into the viewport using the specified offsets and zoom factor, and optionally disables scrolling animation.
@@ -1722,5 +1804,21 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
+
+		/// <summary>
+		/// Handles the vertical ScrollBar.Scroll event and updates the UI.
+		/// </summary>
+		internal void HandleVerticalScroll(ScrollEventType scrollEventType, double offset = 0)
+		{
+			//UNO TODO: Implement HandleVerticalScroll on ScrollViewer
+		}
+
+		/// <summary>
+		/// Handles the horizontal ScrollBar.Scroll event and updates the UI.
+		/// </summary>
+		internal void HandleHorizontalScroll(ScrollEventType scrollEventType, double offset = 0)
+		{
+			//UNO TODO: Implement HandleHorizontalScroll on ScrollViewer
+		}
 	}
 }

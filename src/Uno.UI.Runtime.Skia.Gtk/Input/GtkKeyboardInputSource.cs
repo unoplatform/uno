@@ -49,7 +49,7 @@ partial class GtkKeyboardInputSource : IUnoKeyboardInputSource
 				this.Log().Trace($"OnKeyPressEvent: {evt.Key} -> {virtualKey}");
 			}
 
-			InputHelper.TryConvertKeyCodeToScanCode(evt.HardwareKeycode, out var scanCode);
+			var scanCode = EventHelper.GetScancode(evt);
 
 			KeyDown?.Invoke(this, new(
 					"keyboard",
@@ -57,7 +57,7 @@ partial class GtkKeyboardInputSource : IUnoKeyboardInputSource
 					GetKeyModifiers(evt.State),
 					new CorePhysicalKeyStatus
 					{
-						ScanCode = scanCode,
+						ScanCode = (uint)scanCode,
 						RepeatCount = 1,
 					},
 					KeyCodeToUnicode(evt.HardwareKeycode, evt.KeyValue)));
@@ -79,7 +79,7 @@ partial class GtkKeyboardInputSource : IUnoKeyboardInputSource
 				this.Log().Trace($"OnKeyReleaseEvent: {evt.Key} -> {virtualKey}");
 			}
 
-			InputHelper.TryConvertKeyCodeToScanCode(evt.HardwareKeycode, out var scanCode);
+			var scanCode = EventHelper.GetScancode(evt);
 
 			KeyUp?.Invoke(this, new(
 					"keyboard",
@@ -87,7 +87,7 @@ partial class GtkKeyboardInputSource : IUnoKeyboardInputSource
 					GetKeyModifiers(evt.State),
 					new CorePhysicalKeyStatus
 					{
-						ScanCode = scanCode,
+						ScanCode = (uint)scanCode,
 						RepeatCount = 1,
 					},
 					KeyCodeToUnicode(evt.HardwareKeycode, evt.KeyValue)));

@@ -39,9 +39,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
-		<PackageReference Include="MSTest.TestAdapter" Version="2.2.10" />
-		<PackageReference Include="MSTest.TestFramework" Version="2.1.2" />
+		<PackageReference Include="MSTest" />
 		<PackageReference Include="coverlet.collector" Version="6.0.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis" Version="4.8.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis.Features" Version="4.8.0" />

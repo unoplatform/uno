@@ -1,14 +1,20 @@
-﻿using Uno.UI.Samples.Controls;
+﻿using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
+using UITests.Shared.Helpers;
+using Uno.UI.Samples.Controls;
 
-namespace Uno.UI.Samples.UITests.ImageBrushTestControl
+namespace Uno.UI.Samples.UITests.ImageBrushTestControl;
+
+[Sample("Brushes")]
+public sealed partial class Ellipse : UserControl, IWaitableSample
 {
-	[Sample("Brushes")]
-	public sealed partial class Ellipse : UserControl
+	private readonly Task _samplePreparedTask;
+
+	public Ellipse()
 	{
-		public Ellipse()
-		{
-			this.InitializeComponent();
-		}
+		this.InitializeComponent();
+		_samplePreparedTask = WaitableSampleImageHelpers.WaitAllImages(imageBrush1, imageBrush2);
 	}
+
+	public Task SamplePreparedTask => _samplePreparedTask;
 }

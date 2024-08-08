@@ -102,7 +102,7 @@ namespace Microsoft.UI.Xaml.Media
 		private static bool IsElementIntersecting(Point intersectingPoint, UIElement uiElement)
 		{
 			GeneralTransform transformToRoot = uiElement.TransformToVisual(null);
-			var target = transformToRoot.TransformBounds(uiElement.LayoutSlot);
+			var target = transformToRoot.TransformBounds(LayoutInformation.GetLayoutSlot(uiElement));
 			return target.Contains(intersectingPoint);
 		}
 
@@ -303,7 +303,8 @@ namespace Microsoft.UI.Xaml.Media
 			var host = new ContentPresenter
 			{
 				IsNativeHost = true,
-				Content = nativeView
+				Content = nativeView,
+				ContentTemplate = null
 			};
 
 			// Propagate layout-related attached properties to the managed wrapper, so the host panel takes them into account
@@ -353,6 +354,13 @@ namespace Microsoft.UI.Xaml.Media
 				.OfType<T>()
 				?? Enumerable.Empty<T>();
 
+#if __CROSSRUNTIME__
+		// This overload is more performant than GetChildren(DependecnyObject) below.
+		// As the parameter type is more specific, the compiler will prefer it when the argument is UIElement.
+		internal static MaterializableList<UIElement> GetChildren(UIElement element)
+			=> element._children;
+#endif
+
 		public static IEnumerable<DependencyObject> GetChildren(DependencyObject view)
 			=> GetChildren<DependencyObject>(view);
 
@@ -399,23 +407,15 @@ namespace Microsoft.UI.Xaml.Media
 			throw new NotImplementedException("ReplaceChild not implemented on this platform.");
 		}
 
-		internal static IReadOnlyList<_View> ClearChildren(UIElement view)
+		internal static void ClearChildren(UIElement view)
 		{
 #if __ANDROID__
-			var children = GetChildren<_View>(view).ToList();
 			view.RemoveAllViews();
-
-			return children;
 #elif __IOS__ || __MACOS__
-			var children = view.ChildrenShadow.ToList();
+			var children = view.ChildrenShadow;
 			children.ForEach(v => v.RemoveFromSuperview());
-
-			return children;
 #elif __CROSSRUNTIME__
-			var children = view.GetChildren();
 			view.ClearChildren();
-
-			return children;
 #else
 			throw new NotImplementedException("ClearChildren not implemented on this platform.");
 #endif
@@ -449,7 +449,7 @@ namespace Microsoft.UI.Xaml.Media
 		/// On skia: The absolute position relative to the window origin.
 		/// Everywhere else: The position relative to the parent (i.e. the position in parent coordinates).
 		/// </param>
-		private static (UIElement? element, Branch? stale) SearchDownForTopMostElementAt(
+		internal static (UIElement? element, Branch? stale) SearchDownForTopMostElementAt(
 			Point position,
 			UIElement element,
 			GetHitTestability getVisibility,

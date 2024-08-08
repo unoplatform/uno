@@ -7,12 +7,7 @@
 
 	<PropertyGroup>
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
-		<Authors>Uno Platform</Authors>
-		<PackageProjectUrl>https://github.com/unoplatform/uno</PackageProjectUrl>
-		<PackageIcon>uno.png</PackageIcon>
-		<RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
 		<Description>This package provides the platform support for WebAssembly in Uno Platform projects.</Description>
-		<Copyright>Copyright (C) 2015-$([System.DateTime]::Now.ToString(`yyyy`)) Uno Platform inc. - all rights reserved</Copyright>
 
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
 		<DefineConstants>$(DefineConstants);IS_UNO</DefineConstants>
@@ -55,7 +50,7 @@
 
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			<_TargetNugetFolder>$(NuGetPackageRoot)\$(AssemblyName)\$(UnoNugetOverrideVersion)\lib\$(TargetFramework)</_TargetNugetFolder>
+			<_TargetNugetFolder>$(NuGetPackageRoot)\$(AssemblyName.ToLowerInvariant())\$(UnoNugetOverrideVersion)\lib\$(TargetFramework)</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)**" />

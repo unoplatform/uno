@@ -15,16 +15,15 @@ partial class InputManager
 	#region Drag and Drop
 	private DragRoot _dragRoot;
 
-	internal CoreDragDropManager CoreDragDrop { get; private set; }
-
-	internal CoreDragDropManager.IDragDropManager DragDrop => CoreDragDrop.DragDrop;
+	internal DragDropManager DragDrop { get; private set; }
 
 	private void InitDragAndDrop()
 	{
-		CoreDragDrop = CoreDragDropManager.CreateForCurrentView(); // So it's ready to be accessed by ui manager and platform extension
-		var uiManager = new DragDropManager(this);
+		// So it's ready to be accessed by ui manager and platform extension
+		var coreManager = ContentRoot.GetOwnerWindow()?.AppWindow.Id is { } id ? CoreDragDropManager.GetOrCreateForWindowId(id) : CoreDragDropManager.GetForCurrentViewSafe();
+		var uiManager = DragDrop = new DragDropManager(this);
 
-		CoreDragDrop.SetUIManager(uiManager);
+		coreManager.SetUIManager(uiManager);
 	}
 
 	internal IDisposable OpenDragAndDrop(DragView dragView)

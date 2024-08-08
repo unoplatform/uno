@@ -6,15 +6,6 @@ namespace Uno.UI {
 	export class WindowManager {
 
 		public static current: WindowManager;
-		private static _isLoadEventsEnabled: boolean = false;
-
-		/**
-		 * Defines if the WindowManager is responsible to raise the loading, loaded and unloaded events,
-		 * or if they are raised directly by the managed code to reduce interop.
-		 */
-		public static get isLoadEventsEnabled(): boolean {
-			return WindowManager._isLoadEventsEnabled;
-		}
 
 		private static readonly unoRootClassName = "uno-root-element";
 		private static readonly unoUnarrangedClassName = "uno-unarranged";
@@ -27,13 +18,11 @@ namespace Uno.UI {
 			* @param containerElementId The ID of the container element for the Xaml UI
 			* @param loadingElementId The ID of the loading element to remove once ready
 			*/
-		public static async init(isLoadEventsEnabled: boolean, containerElementId: string = "uno-body", loadingElementId: string = "uno-loading") {
+		public static async init(containerElementId: string = "uno-body", loadingElementId: string = "uno-loading") {
 
 			HtmlDom.initPolyfills();
 
 			await WindowManager.initMethods();
-
-			WindowManager._isLoadEventsEnabled = isLoadEventsEnabled;
 
 			Uno.UI.Dispatching.NativeDispatcher.init(WindowManager.buildReadyPromise());
 
@@ -192,6 +181,17 @@ namespace Uno.UI {
 
 		static setBodyCursor(value: string): void {
 			document.body.style.cursor = value;
+		}
+
+		static setSingleLine(htmlId: number): void {
+			const element = this.current.getView(htmlId);
+			if (element instanceof HTMLTextAreaElement) {
+				element.addEventListener("keydown", e => {
+					if (e.key === "Enter") {
+						e.preventDefault();
+					}
+				})
+			}
 		}
 
 		/**
@@ -1036,9 +1036,6 @@ namespace Uno.UI {
 				// Remove existing
 				this.containerElement.removeChild(this.rootElement);
 
-				if (WindowManager.isLoadEventsEnabled) {
-					this.dispatchEvent(this.rootElement, "unloaded");
-				}
 				this.rootElement.classList.remove(WindowManager.unoRootClassName);
 			}
 
@@ -1052,23 +1049,13 @@ namespace Uno.UI {
 
 			this.rootElement = newRootElement;
 
-			if (WindowManager.isLoadEventsEnabled) {
-				this.dispatchEvent(this.rootElement, "loading");
-			}
-
 			this.containerElement.appendChild(this.rootElement);
 
-			if (WindowManager.isLoadEventsEnabled) {
-				this.dispatchEvent(this.rootElement, "loaded");
-			}
 			this.setAsArranged(newRootElement); // patch because root is not measured/arranged
 		}
 
 		/**
 			* Set a view as a child of another one.
-			*
-			* "Loading" & "Loaded" events will be raised if necessary.
-			*
 			* @param pParams Pointer to a WindowManagerAddViewParams native structure.
 			*/
 		public addViewNative(pParams: number): boolean {
@@ -1087,16 +1074,6 @@ namespace Uno.UI {
 			const parentElement = this.getView(parentId);
 			const childElement = this.getView(childId);
 
-			let shouldRaiseLoadEvents = false;
-			if (WindowManager.isLoadEventsEnabled) {
-				const alreadyLoaded = this.getIsConnectedToRootElement(childElement);
-				shouldRaiseLoadEvents = !alreadyLoaded && this.getIsConnectedToRootElement(parentElement);
-
-				if (shouldRaiseLoadEvents) {
-					this.dispatchEvent(childElement, "loading");
-				}
-			}
-
 			if (index != null && index < parentElement.childElementCount) {
 				const insertBeforeElement = parentElement.children[index];
 				parentElement.insertBefore(childElement, insertBeforeElement);
@@ -1104,16 +1081,10 @@ namespace Uno.UI {
 			} else {
 				parentElement.appendChild(childElement);
 			}
-
-			if (shouldRaiseLoadEvents) {
-				this.dispatchEvent(childElement, "loaded");
-			}
 		}
 
 		/**
 			* Remove a child from a parent element.
-			*
-			* "Unloading" & "Unloaded" events will be raised if necessary.
 			*/
 		public removeViewNative(pParams: number): boolean {
 			const params = WindowManagerRemoveViewParams.unmarshal(pParams);
@@ -1125,18 +1096,11 @@ namespace Uno.UI {
 			const parentElement = this.getView(parentId);
 			const childElement = this.getView(childId);
 
-			const shouldRaiseLoadEvents = WindowManager.isLoadEventsEnabled
-				&& this.getIsConnectedToRootElement(childElement);
-
 			parentElement.removeChild(childElement);
 
 			// Mark the element as unarranged, so if it gets measured while being
 			// disconnected from the root element, it won't be visible.
 			this.setAsUnarranged(childElement);
-
-			if (shouldRaiseLoadEvents) {
-				this.dispatchEvent(childElement, "unloaded");
-			}
 		}
 
 		public destroyViewNativeFast(htmlId: number) {
@@ -1674,7 +1638,7 @@ namespace Uno.UI {
 			if (element) {
 				element.parentElement.removeChild(element);
 			}
-			
+
 			let bootstrapperLoaders = document.getElementsByClassName(WindowManager.unoPersistentLoaderClassName);
 			if (bootstrapperLoaders.length > 0) {
 				let bootstrapperLoader = bootstrapperLoaders[0] as HTMLElement;
@@ -1779,7 +1743,7 @@ namespace Uno.UI {
 
 		public getIsOverflowing(elementId: number): boolean {
 			const element = this.getView(elementId) as HTMLElement;
-			
+
 			return element.clientWidth < element.scrollWidth || element.clientHeight < element.scrollHeight;
 		}
 
@@ -1787,6 +1751,14 @@ namespace Uno.UI {
 			const element = this.getView(elementId) as HTMLElement;
 
 			element.setAttribute("tabindex", isFocusable ? "0" : "-1");
+		}
+
+		public resizeWindow(width: number, height: number) {
+			window.resizeTo(width, height);
+		}
+
+		public moveWindow(x: number, y: number) {
+			window.moveTo(x, y);
 		}
 	}
 

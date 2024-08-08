@@ -26,7 +26,7 @@ Get-ChildItem -Recurse -Filter global.json | ForEach-Object {
     Write-Host "Updated $globalJsonfilePath with $env:GITVERSION_SemVer"
 
     $globalJson = (Get-Content $globalJsonfilePath) -replace '^\s*//.*' | ConvertFrom-Json
-    $globalJson.'msbuild-sdks'.'Uno.Sdk' = $env:GITVERSION_SemVer
+    $globalJson.'msbuild-sdks'.'Uno.Sdk.Private' = $env:GITVERSION_SemVer
     $globalJson | ConvertTo-Json -Depth 100 | Set-Content $globalJsonfilePath
 }
 
@@ -55,8 +55,14 @@ $projects =
     # 5.2 Blank
     @("5.2/uno52blank/uno52blank/uno52blank.csproj", ""),
 
+    # 5.2 Blank SkiaSharp 3
+    @("5.2/uno52blank/uno52blank/uno52blank.csproj", "-p:SkiaSharpVersion=3.0.0-preview.3.1"),
+
     # 5.2 Uno Lib
     @("5.2/uno52Lib/uno52Lib.csproj", ""),
+
+    # 5.2 Uno NuGet Lib
+    @("5.2/uno52NuGetLib/uno52NuGetLib.csproj", ""),
 
     # 5.2 Uno SingleProject Lib
     @("5.2/uno52SingleProjectLib/uno52SingleProjectLib.csproj", ""),
@@ -76,13 +82,13 @@ for($i = 0; $i -lt $projects.Length; $i++)
     $projectOptions=$projects[$i][1];
 
     Write-Host "Building Debug $projectPath with $projectOptions"
-    dotnet build $debug "$projectPath" $projectOptions
+    dotnet build $debug "$projectPath" $projectOptions -bl:binlogs/$projectPath/debug.binlog
     Assert-ExitCodeIsZero
 
     dotnet clean $debug "$projectPath"
 
     Write-Host "Building Release $projectPath with $projectOptions"
-    dotnet build $release "$projectPath" $projectOptions
+    dotnet build $release "$projectPath" $projectOptions -bl:binlogs/$projectPath/release.binlog
     Assert-ExitCodeIsZero
 
     dotnet clean $release "$projectPath"

@@ -1,4 +1,4 @@
-<Project Sdk="Uno.Sdk">
+<Project Sdk="Uno.Sdk.Private">
   <PropertyGroup>
     <TargetFrameworks>$(DotNetVersion)-android;$(DotNetVersion)-ios;$(DotNetVersion)-maccatalyst</TargetFrameworks>
     <TargetFrameworks Condition="'$(OverrideTargetFramework)'!=''">$(OverrideTargetFramework)</TargetFrameworks>

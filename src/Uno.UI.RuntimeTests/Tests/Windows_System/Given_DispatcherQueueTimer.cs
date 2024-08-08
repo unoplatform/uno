@@ -102,7 +102,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 			}
 		}
 
-#if !WINAPPSDK && !__WASM__ // CoreDispatcher.Main.HasThreadAccess is always false on WASM ...
+#if !WINAPPSDK
 		[TestMethod]
 		public async Task When_Tick_Then_RunningOnDispatcher()
 		{

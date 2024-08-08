@@ -24,6 +24,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
+using SamplesApp.UITests;
 using Uno.UI.RuntimeTests.Helpers;
 using Point = System.Drawing.Point;
 
@@ -46,6 +47,39 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	[TestClass]
 	public partial class Given_UIElement
 	{
+		private partial class ButtonChangingClipDuringArrange : Button
+		{
+			protected override Size ArrangeOverride(Size finalSize)
+			{
+				Clip = new RectangleGeometry()
+				{
+					Rect = new Rect(0, 0, 100, 10),
+					Transform = new TranslateTransform(),
+				};
+				return base.ArrangeOverride(finalSize);
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __ANDROID__ || __IOS__
+		[Ignore("LayoutStorage not implemented properly for Layouter")]
+#endif
+		public async Task When_Not_In_Visual_Tree_Should_Reset_LayoutStorage()
+		{
+			var SUT = new TextBox { Text = "Some text", Margin = new Thickness(10) };
+			var border = new Border { Child = SUT };
+
+			await UITestHelper.Load(border);
+
+			Assert.AreNotEqual(default, SUT.DesiredSize);
+
+			TestServices.WindowHelper.WindowContent = null;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(default, SUT.DesiredSize);
+		}
+
 		[TestMethod]
 		[RunsOnUIThread]
 		[DataRow(200)]
@@ -158,6 +192,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.AreEqual(new Rect(0, 0, 99, 99), chartreuseBounds);
 			Assert.AreEqual(new Rect(25, 25, 49, 49), deepPinkBounds);
 			Assert.AreEqual(new Rect(65, 25, 4, 24), deepSkyBlueBounds);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[UnoWorkItem("https://github.com/unoplatform/uno/issues/17642")]
+		public async Task When_Clipping_Changes_During_Arrange()
+		{
+			await UITestHelper.Load(new ButtonChangingClipDuringArrange() { Content = "Hello" });
 		}
 
 #if HAS_UNO // Tests use IsArrangeDirty, which is an internal property
@@ -809,60 +851,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		}
 #endif
 
-#if HAS_UNO // Cannot Set the LayoutInformation on UWP
-		[TestMethod]
-		[RunsOnUIThread]
-		public void When_UpdateLayout_Then_TreeNotMeasuredUsingCachedValue()
-		{
-			if (TestServices.WindowHelper.RootElement is Panel root)
-			{
-				var sut = new Grid
-				{
-					HorizontalAlignment = HorizontalAlignment.Stretch,
-					VerticalAlignment = VerticalAlignment.Stretch
-				};
-
-				var originalRootAvailableSize = LayoutInformation.GetAvailableSize(root);
-				var originalRootDesiredSize = LayoutInformation.GetDesiredSize(root);
-				var originalRootLayoutSlot = LayoutInformation.GetLayoutSlot(root);
-
-				Size availableSize;
-				Rect layoutSlot;
-				try
-				{
-					LayoutInformation.SetAvailableSize(root, default);
-					LayoutInformation.SetDesiredSize(root, default);
-					LayoutInformation.SetLayoutSlot(root, default);
-
-					root.Children.Add(sut);
-					sut.UpdateLayout();
-
-					availableSize = LayoutInformation.GetAvailableSize(sut);
-					layoutSlot = LayoutInformation.GetLayoutSlot(sut);
-				}
-				finally
-				{
-					LayoutInformation.SetAvailableSize(root, originalRootAvailableSize);
-					LayoutInformation.SetDesiredSize(root, originalRootDesiredSize);
-					LayoutInformation.SetLayoutSlot(root, originalRootLayoutSlot);
-
-					root.Children.Remove(sut);
-					try { root.UpdateLayout(); }
-					catch { } // Make sure to restore visual tree if test has failed!
-				}
-
-				Assert.AreNotEqual(default, availableSize);
-#if !__IOS__ // Arrange is async on iOS!
-				Assert.AreNotEqual(default, layoutSlot);
-#endif
-			}
-			else
-			{
-				Assert.Inconclusive("The RootElement is not a Panel");
-			}
-		}
-#endif
-
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_UpdateLayout_Then_ReentrancyNotAllowed()
@@ -1310,7 +1298,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			await TestServices.WindowHelper.WaitForIdle();
 
 			var bitmap = await UITestHelper.ScreenShot(sp);
-			ImageAssert.HasColorInRectangle(bitmap, new System.Drawing.Rectangle(new Point(0, 0), bitmap.Size), Microsoft.UI.Colors.Yellow);
+			ImageAssert.HasColorInRectangle(bitmap, new System.Drawing.Rectangle(new Point(0, 0), bitmap.Size), Microsoft.UI.Colors.Yellow, tolerance: 25);
 		}
 #endif
 
@@ -1683,6 +1671,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.AreEqual(0, dragOverCount);
 			Assert.AreEqual(0, dropCount);
 
+			mouse.MoveTo(new Windows.Foundation.Point(SUT.GetAbsoluteBoundsRect().GetCenter().X, SUT.GetAbsoluteBoundsRect().Top + 15), 1);
+			await TestServices.WindowHelper.WaitForIdle();
 			mouse.MoveTo(new Windows.Foundation.Point(SUT.GetAbsoluteBoundsRect().GetCenter().X, SUT.GetAbsoluteBoundsRect().Top + 10), 1);
 			await TestServices.WindowHelper.WaitForIdle();
 

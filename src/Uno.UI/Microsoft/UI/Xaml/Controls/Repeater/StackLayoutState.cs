@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using Windows.Foundation;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
@@ -23,6 +24,13 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 		internal double TotalElementSize => m_totalElementSize;
 		internal double MaxArrangeBounds => m_maxArrangeBounds;
 		internal int TotalElementsMeasured => m_totalElementsMeasured;
+
+		// Uno workaround [BEGIN]: Backing field for uno workarounds
+		internal double Uno_LastKnownAverageElementSize;
+		internal int Uno_LastKnownRealizedElementsCount;
+		internal int Uno_LastKnownItemsCount;
+		internal Size Uno_LastKnownDesiredSize;
+		// Uno workaround [END]
 
 		public StackLayoutState()
 		{

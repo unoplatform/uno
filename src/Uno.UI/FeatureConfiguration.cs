@@ -197,8 +197,11 @@ namespace Uno.UI
 
 			/// <summary>
 			/// The default font family for text when a font isn't explicitly specified (e.g. for a TextBlock)
-			/// This is often needs to be set by users on Linux, where Microsoft's Segoe UI isn't present
 			/// </summary>
+			/// <remarks>
+			/// The default is Segoe UI, which is not available on Mac and Linux as well as browsers running on Mac and Linux.
+			/// So, you can change to OpenSans. For more information, see https://aka.platform.uno/feature-opensans
+			/// </remarks>
 			public static string DefaultTextFontFamily { get; set; } = "Segoe UI";
 
 			/// <summary>
@@ -235,17 +238,6 @@ namespace Uno.UI
 			/// </summary>
 			public static bool InvalidateNativeCacheOnRemeasure { get; set; } = true;
 #endif
-
-			/// <summary>
-			/// [WebAssembly Only] Controls the propagation of <see cref="Microsoft.UI.Xaml.FrameworkElement.Loaded"/> and
-			/// <see cref="Microsoft.UI.Xaml.FrameworkElement.Unloaded"/> events through managed
-			/// or native visual tree traversal.
-			/// </summary>
-			/// <remarks>
-			/// This setting impacts significantly the loading performance of controls on WebAssembly.
-			/// Setting it to true avoids the use of costly JavaScript->C# interop.
-			/// </remarks>
-			public static bool WasmUseManagedLoadedUnloaded { get; set; } = true;
 
 			/// <summary>
 			/// When false, skips the FrameworkElement Loading/Loaded/Unloaded exception handling. This can be
@@ -405,6 +397,18 @@ namespace Uno.UI
 			public static bool IsPoolingEnabled { get; set; }
 		}
 
+		public static class Frame
+		{
+			/// <summary>
+			/// On non-Skia targets, Frame pools page instances to improve performance by default.
+			/// To follow the WinUI behavior, set this to true. Skia uses WinUI behavior by default.
+			/// </summary>
+			public static bool UseWinUIBehavior { get; set; }
+#if __SKIA__
+				= true;
+#endif
+		}
+
 		public static class PointerRoutedEventArgs
 		{
 #if __ANDROID__
@@ -461,7 +465,7 @@ namespace Uno.UI
 			{
 				if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_Frame_Available)
 				{
-					SetUWPDefaultStylesOverride<Frame>(useUWPDefaultStyle: false);
+					SetUWPDefaultStylesOverride<Microsoft.UI.Xaml.Controls.Frame>(useUWPDefaultStyle: false);
 				}
 
 				if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_CommandBar_Available)
@@ -572,7 +576,7 @@ namespace Uno.UI
 		public static class ToolTip
 		{
 			public static bool UseToolTips { get; set; }
-#if __WASM__
+#if __WASM__ || __SKIA__
 				= true;
 #endif
 

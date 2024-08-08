@@ -16,8 +16,10 @@ namespace Microsoft.UI.Xaml.Shapes
 	{
 		private const double DefaultStrokeThicknessWhenNoStrokeDefined = 0.0;
 
+#if !__SKIA__
 		private Action _brushChanged;
 		private Action _strokeBrushChanged;
+#endif
 
 		/// <summary>
 		/// Returns 0.0 if Stroke is <c>null</c>, otherwise, StrokeThickness
@@ -55,7 +57,13 @@ namespace Microsoft.UI.Xaml.Shapes
 
 		private void OnFillChanged(Brush oldValue, Brush newValue)
 		{
+#if __SKIA__
+			// On Skia, OnFillBrushChanged will call GetOrCreateCompositionBrush and assign this to _shape.FillBrush
+			// In this case, we don't really want to listen to brush changes as the Brush is responsible for synchronizing its internal composition brush
+			OnFillBrushChanged();
+#else
 			Brush.SetupBrushChanged(oldValue, newValue, ref _brushChanged, () => OnFillBrushChanged());
+#endif
 		}
 
 		#endregion
@@ -86,7 +94,13 @@ namespace Microsoft.UI.Xaml.Shapes
 				InvalidateMeasure();
 			}
 
+#if __SKIA__
+			// On Skia, OnStrokeBrushChanged will call GetOrCreateCompositionBrush and assign this to _shape.StrokeBrush
+			// In this case, we don't really want to listen to brush changes as the Brush is responsible for synchronizing its internal composition brush
+			OnStrokeBrushChanged();
+#else
 			Brush.SetupBrushChanged(oldValue, newValue, ref _strokeBrushChanged, () => OnStrokeBrushChanged());
+#endif
 		}
 
 		#endregion

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage.Streams;
 using Microsoft.UI.Xaml;
@@ -57,13 +58,13 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 			};
 		}
 
-		private void Log(object snd, string evt, DataPackageView data)
-			=> _output.Text += $"[{GetName(snd)}] {evt} {GetData(data)}\r\n";
+		private async void Log(object snd, string evt, DataPackageView data)
+			=> _output.Text += $"[{GetName(snd)}] {evt} {await GetData(data)}\r\n";
 
 		private static string GetName(object uiElt)
 			=> uiElt is null ? "--null--" : (uiElt as FrameworkElement)?.Name ?? uiElt.GetType().Name;
 
-		private static string GetData(DataPackageView data)
-			=> $"<{string.Join("|", data.AvailableFormats)}>";
+		private static async Task<string> GetData(DataPackageView data)
+			=> $"<{string.Join("|", data.AvailableFormats)}> {(data.AvailableFormats.Contains(StandardDataFormats.Text) ? await data.GetTextAsync() : string.Empty)}";
 	}
 }

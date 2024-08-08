@@ -1,41 +1,19 @@
 using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.ComponentModel.Composition;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.IO;
-using System.IO.Pipes;
 using System.Linq;
-using System.Net;
-using System.Net.Sockets;
-using System.Reflection;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Threading.Tasks.Dataflow;
-using System.Xml;
-using EnvDTE;
 using EnvDTE80;
+using Microsoft;
 using Microsoft.Build.Evaluation;
 using Microsoft.Build.Framework;
 using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.OLE.Interop;
-using Microsoft.VisualStudio.ProjectSystem;
-using Microsoft.VisualStudio.ProjectSystem.Build;
 using Microsoft.VisualStudio.ProjectSystem.Debug;
-using Microsoft.VisualStudio.ProjectSystem.Properties;
-using Microsoft.VisualStudio.ProjectSystem.VS;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using StreamJsonRpc;
-using Uno.UI.RemoteControl.Messaging.IdeChannel;
-using Uno.UI.RemoteControl.VS.DebuggerHelper;
 using Uno.UI.RemoteControl.VS.Helpers;
-using Uno.UI.RemoteControl.VS.IdeChannel;
-using ILogger = Uno.UI.RemoteControl.VS.Helpers.ILogger;
 using Task = System.Threading.Tasks.Task;
 
 #pragma warning disable VSTHRD010
@@ -51,6 +29,9 @@ public partial class EntryPoint : IDisposable
 	private const string WasmTargetFrameworkIdentifier = "browserwasm";
 	private const string UnoSelectedTargetFrameworkProperty = "_UnoSelectedTargetFramework";
 	private CancellationTokenSource? _wasmProjectReloadTask;
+	private Stopwatch _lastOperation = new Stopwatch();
+	private TimeSpan _profileOrFrameworkDelay = TimeSpan.FromSeconds(1);
+	private bool _pendingRequestedChanged;
 
 	private async Task OnDebugFrameworkChangedAsync(string? previousFramework, string newFramework, bool forceReload = false)
 	{
@@ -60,6 +41,20 @@ public partial class EntryPoint : IDisposable
 		if (GetTargetFrameworkIdentifier(newFramework) is { } targetFrameworkIdentifier)
 		{
 			_debugAction?.Invoke($"OnDebugFrameworkChangedAsync({previousFramework}, {newFramework}, {targetFrameworkIdentifier}, forceReload: {forceReload})");
+
+			if (!_pendingRequestedChanged && _lastOperation.IsRunning && _lastOperation.Elapsed < _profileOrFrameworkDelay)
+			{
+				// This debouncing needs to happen when VS intermittently changes the active
+				// profile or target framework on project reloading. We skip the change if it
+				// is arbitrarily too close to the previous one.
+				// Note that this block must be done before the IsNullOrEmpty(previousFramework)
+				// in order to catch automatic profile changes by VS when iOS is selected.
+				_debugAction?.Invoke($"Skipping framework change because the active profile or framework was changed in the last {_profileOrFrameworkDelay}");
+				return;
+			}
+
+			_pendingRequestedChanged = false;
+			_lastOperation.Restart();
 
 			if (!forceReload && string.IsNullOrEmpty(previousFramework))
 			{
@@ -103,6 +98,7 @@ public partial class EntryPoint : IDisposable
 				{
 					_debugAction?.Invoke($"Setting profile {selectedProfile}");
 
+					_pendingRequestedChanged = true;
 					await _debuggerObserver.SetActiveLaunchProfileAsync(selectedProfile.Name);
 				}
 			}
@@ -115,6 +111,20 @@ public partial class EntryPoint : IDisposable
 	{
 		// In this case, a new TargetFramework was selected. We need to file a matching target framework, if any.
 		_debugAction?.Invoke($"OnDebugProfileChangedAsync({previousProfile},{newProfile})");
+
+		if (!_pendingRequestedChanged && _lastOperation.IsRunning && _lastOperation.Elapsed < _profileOrFrameworkDelay)
+		{
+			// This debouncing needs to happen when VS intermittently changes the active
+			// profile or target framework on project reloading. We skip the change if it
+			// is arbitrarily too close to the previous one.
+			// Note that this block must be done before the IsNullOrEmpty(previousProfile)
+			// in order to catch automatic profile changes by VS when iOS is selected.
+			_debugAction?.Invoke($"Skipping profile change because the active profile or framework was changed in the last {_profileOrFrameworkDelay}");
+			return;
+		}
+
+		_pendingRequestedChanged = false;
+		_lastOperation.Restart();
 
 		if (string.IsNullOrEmpty(previousProfile))
 		{
@@ -134,6 +144,7 @@ public partial class EntryPoint : IDisposable
 			{
 				_debugAction?.Invoke($"Setting framework {targetFramework}");
 
+				_pendingRequestedChanged = true;
 				await _debuggerObserver.SetActiveTargetFrameworkAsync(targetFramework);
 			}
 			else if (profile.OtherSettings.TryGetValue(CompatibleTargetFrameworkProfileKey, out var compatibleTargetObject)
@@ -142,6 +153,7 @@ public partial class EntryPoint : IDisposable
 			{
 				_debugAction?.Invoke($"Setting framework {compatibleTarget}");
 
+				_pendingRequestedChanged = true;
 				await _debuggerObserver.SetActiveTargetFrameworkAsync(compatibleTargetFramework);
 			}
 		}
@@ -227,40 +239,24 @@ public partial class EntryPoint : IDisposable
 							// properly keeps the value.
 							await WriteProjectUserSettingsAsync(newFramework);
 
-							// Unload project
-							solution4.UnloadProject(ref projectGuid, (uint)_VSProjectUnloadStatus.UNLOADSTATUS_UnloadedByUser);
+							var reloadStopWatch = Stopwatch.StartNew();
+							// Reload the project in-place. This allows to keep files related to
+							// this project opened even when reloading.
+							startupProject.ReloadProjectInSolution();
+							reloadStopWatch.Stop();
 
-							// Reload project
-							solution4.ReloadProject(ref projectGuid);
+							// Adjust the delay, but cannot be below 1s (fast machines) nor
+							// above 3s (very slow machines) to attempt to guess for other
+							// IDE delays after reloading a project.
+							_profileOrFrameworkDelay = TimeSpan.FromSeconds(
+								Math.Max(1.0, Math.Min(3.0, reloadStopWatch.Elapsed.TotalSeconds))
+							);
+
+							_debugAction?.Invoke($"Adjust in profile/framework change delay to {_profileOrFrameworkDelay}");
 
 							var sw2 = Stopwatch.StartNew();
 
-							while (sw2.Elapsed < TimeSpan.FromSeconds(5))
-							{
-								// Reset the startup project, as VS will move it to the next available
-								// project in the solution on unload.
-								if (_dte.Solution.SolutionBuild is SolutionBuild2 val)
-								{
-									_debugAction?.Invoke($"Setting startup project to {startupProjectUniqueName}");
-									val.StartupProjects = startupProjectUniqueName;
-								}
-
-								await Task.Delay(50);
-
-								if (await _dte.GetStartupProjectsAsync() is { Length: > 0 } newStartupProjects
-									&& newStartupProjects[0].UniqueName == startupProjectUniqueName)
-								{
-									_debugAction?.Invoke($"Startup project changed successfully");
-									break;
-								}
-								else
-								{
-									_debugAction?.Invoke($"Startup project was not changed, retrying...");
-									await Task.Delay(1000);
-								}
-
-								await WriteProjectUserSettingsAsync(newFramework);
-							}
+							await WriteProjectUserSettingsAsync(newFramework);
 						}
 					}
 				}

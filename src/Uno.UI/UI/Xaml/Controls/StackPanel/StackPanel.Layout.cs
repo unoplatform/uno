@@ -54,6 +54,7 @@ partial class StackPanel
 			var view = Children[i];
 
 			var measuredSize = MeasureElement(view, slotSize);
+			view.EnsureLayoutStorage();
 			if (view.Visibility == Visibility.Visible)
 			{
 				visibleChildrenCount++;
@@ -125,6 +126,8 @@ partial class StackPanel
 		for (var i = 0; i < count; i++)
 		{
 			var view = Children[i];
+			view.EnsureLayoutStorage();
+
 			var desiredChildSize = GetElementDesiredSize(view);
 
 			var addSpacing = view.Visibility == Visibility.Visible && !isFirstVisibleChild;

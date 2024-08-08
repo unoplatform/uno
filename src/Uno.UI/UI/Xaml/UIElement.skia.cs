@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using System.Linq;
 using Microsoft.UI.Composition;
@@ -26,12 +27,13 @@ using Microsoft.UI.Xaml.Hosting;
 using Uno.UI.Media;
 using Uno.UI.Dispatching;
 using Uno.Collections;
+using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml
 {
 	public partial class UIElement : DependencyObject, IVisualElement, IVisualElement2
 	{
-		private ShapeVisual _visual;
+		private protected ShapeVisual _visual;
 		private Rect _lastFinalRect;
 		private Rect? _lastClippedFrame;
 
@@ -56,11 +58,12 @@ namespace Microsoft.UI.Xaml
 				nameof(UseLayoutRounding),
 				typeof(bool),
 				typeof(UIElement),
-				new FrameworkPropertyMetadata(true));
+				new FrameworkPropertyMetadata(true, propertyChangedCallback: (o, _) => (o as IBorderInfoProvider)?.UpdateBorderThickness()));
 
 		partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
 		{
 			UpdateOpacity();
+			ContentPresenter.UpdateNativeHostContentPresentersOpacities();
 		}
 
 		partial void OnIsHitTestVisibleChangedPartial(bool oldValue, bool newValue)
@@ -80,7 +83,9 @@ namespace Microsoft.UI.Xaml
 
 				if (_visual is null)
 				{
-					_visual = Compositor.GetSharedCompositor().CreateShapeVisual();
+					_visual = CreateElementVisual();
+					Debug.Assert(this is not IBorderInfoProvider || _visual is BorderVisual,
+						"Border info providers are expected to override CreateElementVisual and return BorderVisual, and types returning BorderVisual should be IBorderInfoProviders");
 #if ENABLE_CONTAINER_VISUAL_TRACKING
 					_visual.Comment = $"{this.GetDebugDepth():D2}-{this.GetDebugName()}";
 #endif
@@ -90,15 +95,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-#if ENABLE_CONTAINER_VISUAL_TRACKING // Make sure to update the Comment to have the valid depth
-		partial void OnLoading()
-		{
-			if (_visual is not null)
-			{
-				_visual.Comment = $"{this.GetDebugDepth():D2}-{this.GetDebugName()}";
-			}
-		}
-#endif
+		private protected virtual ShapeVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateShapeVisual();
 
 		internal void AddChild(UIElement child, int? index = null)
 		{
@@ -126,7 +123,6 @@ namespace Microsoft.UI.Xaml
 			}
 
 			child.SetParent(this);
-			OnAddingChild(child);
 
 			if (index is { } actualIndex && actualIndex != _children.Count)
 			{
@@ -139,6 +135,9 @@ namespace Microsoft.UI.Xaml
 				_children.Add(child);
 				Visual.Children.InsertAtTop(child.Visual);
 			}
+
+			var enterParams = new EnterParams(IsActiveInVisualTree);
+			ChildEnter(child, enterParams);
 
 			OnChildAdded(child);
 
@@ -253,8 +252,8 @@ namespace Microsoft.UI.Xaml
 
 			if (newValue == Visibility.Collapsed)
 			{
-				LayoutInformation.SetDesiredSize(this, new Size(0, 0));
-				_size = new Size(0, 0);
+				m_desiredSize = new Size(0, 0);
+				m_size = new Size(0, 0);
 			}
 
 			if (FeatureConfiguration.UIElement.UseInvalidateMeasurePath && this.GetParent() is UIElement parent)

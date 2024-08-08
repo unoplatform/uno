@@ -31,6 +31,7 @@ using Microsoft.UI.Xaml.Input;
 using Uno.Collections;
 
 using RadialGradientBrush = Microsoft/* UWP don't rename */.UI.Xaml.Media.RadialGradientBrush;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -144,6 +145,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Invalidate _paint
 		partial void OnFontWeightChangedPartial() => _paint = null;
 		partial void OnFontStyleChangedPartial() => _paint = null;
+		partial void OnFontStretchChangedPartial() => _paint = null;
 		partial void OnFontFamilyChangedPartial() => _paint = null;
 		partial void OnFontSizeChangedPartial() => _paint = null;
 		partial void OnCharacterSpacingChangedPartial() => _paint = null;
@@ -235,14 +237,15 @@ namespace Microsoft.UI.Xaml.Controls
 			// The size is incorrect at this point, we update it later in `UpdateLayout`.
 			var shader = Foreground switch
 			{
-				GradientBrush gb => gb.GetShader(LayoutSlot.Size.LogicalToPhysicalPixels()),
-				RadialGradientBrush rgb => rgb.GetShader(LayoutSlot.Size.LogicalToPhysicalPixels()),
+				GradientBrush gb => gb.GetShader(LayoutInformation.GetLayoutSlot(this).Size.LogicalToPhysicalPixels()),
+				RadialGradientBrush rgb => rgb.GetShader(LayoutInformation.GetLayoutSlot(this).Size.LogicalToPhysicalPixels()),
 				_ => null,
 			};
 
 			_paint = TextPaintPool.GetPaint(
 				FontWeight,
 				FontStyle,
+				FontStretch,
 				FontFamily,
 				FontSize,
 				CharacterSpacing,

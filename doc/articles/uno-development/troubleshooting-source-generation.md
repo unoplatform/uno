@@ -36,8 +36,11 @@ In some cases, the generated code may use patterns that cause C# to raise warnin
 
 The MSBuild `XamlGeneratorAnalyzerSuppressions` item is used to configure suppressions, with the format `CATEGORY-CODE_TEXT`:
 
-- If `CATEGORY` is `csharp`, the generator will create a `#pragma warning CODE_TEXT` entry at the top of the generated files
-- If `CATEGORY` is anything else, `SuppressMessageAttribute` attributes will be applied on generated classes.
+1. Starting with Uno Platform 5.3, the generator will create a `#pragma warning CODE_TEXT` entry at the top of the generated files.
+1. Prior to Uno Platform 5.3, the generation depends on the category:
+
+    - If `CATEGORY` is `csharp`, the generator will create a `#pragma warning CODE_TEXT` entry at the top of the generated files
+    - If `CATEGORY` is anything else, `SuppressMessageAttribute` attributes will be applied on generated classes.
 
 To define a pragma, in your csproj add the following:
 

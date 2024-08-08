@@ -20,43 +20,15 @@ using _Image = AppKit.NSImage;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-public partial class Border
+partial class Border
 {
-	partial void OnChildChangedPartial(UIElement previousValue, UIElement newValue)
-	{
-		previousValue?.RemoveFromSuperview();
-
-		if (newValue != null)
-		{
-			AddSubview(newValue);
-		}
-
-		UpdateBorder();
-	}
-
 	protected override void OnAfterArrange()
 	{
 		base.OnAfterArrange();
-		UpdateBorder();
-	}
-
-	partial void AfterUpdateBorderPartial()
-	{
-		if (_borderRenderer.BoundsPath is CGPath updated) // UpdateLayer may return null if there is no update
-		{
-			BoundsPath = updated;
-			BoundsPathUpdated?.Invoke(this, default);
-		}
-
-		_borderRenderer.BoundsPath = null;
-
-		this.SetNeedsDisplay();
+		BorderRenderer.Update();
 	}
 
 	bool ICustomClippingElement.AllowClippingToLayoutSlot => CornerRadius == CornerRadius.None && (!(Child is UIElement ue) || ue.RenderTransform == null);
 	bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
-
-	internal event EventHandler BoundsPathUpdated;
-	internal CGPath BoundsPath { get; private set; }
 }
 #endif

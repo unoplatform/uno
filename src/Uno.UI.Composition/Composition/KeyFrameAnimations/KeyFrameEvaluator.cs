@@ -38,7 +38,7 @@ internal sealed class KeyFrameEvaluator<T> : IKeyFrameEvaluator
 
 	public (object Value, bool ShouldStop) Evaluate()
 	{
-		var elapsed = Stopwatch.GetElapsedTime(_startTimestamp, _compositor.TimestampInTicks);
+		var elapsed = new TimeSpan(_compositor.TimestampInTicks - _startTimestamp);
 		if (elapsed >= _totalDuration)
 		{
 			return (_finalValue, true);

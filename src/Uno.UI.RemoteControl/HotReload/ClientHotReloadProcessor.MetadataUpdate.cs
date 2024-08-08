@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -17,67 +18,104 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Uno.Diagnostics.UI;
+
+#if HAS_UNO_WINUI
+using _WindowActivatedEventArgs = Microsoft.UI.Xaml.WindowActivatedEventArgs;
+#else
+using _WindowActivatedEventArgs = Windows.UI.Core.WindowActivatedEventArgs;
+#endif
 
 namespace Uno.UI.RemoteControl.HotReload;
 
 partial class ClientHotReloadProcessor
 {
-	private static int _isReloading;
+	private static int _isWaitingForTypeMapping;
 
 	private static ElementUpdateAgent? _elementAgent;
 
-	private static Logger _log = typeof(ClientHotReloadProcessor).Log();
+	private static readonly Logger _log = typeof(ClientHotReloadProcessor).Log();
+	private static Window? _currentWindow;
 
 	private static ElementUpdateAgent ElementAgent
 	{
 		get
 		{
-			_elementAgent ??= new ElementUpdateAgent(s =>
-				{
-					if (_log.IsEnabled(LogLevel.Trace))
-					{
-						_log.Trace(s);
-					}
-				});
+			var log = _log.IsEnabled(LogLevel.Trace)
+				? new Action<string>(_log.Trace)
+				: static _ => { };
+
+			_elementAgent ??= new ElementUpdateAgent(log, static (callback, error) => HotReloadClientOperation.GetForCurrentThread()?.ReportError(callback, error));
 
 			return _elementAgent;
 		}
 	}
 
-	private static async Task<bool> ShouldReload()
+	private static async Task<(bool value, string reason)> ShouldReload()
 	{
-		if (Interlocked.CompareExchange(ref _isReloading, 1, 0) == 1)
+		if (Interlocked.CompareExchange(ref _isWaitingForTypeMapping, 1, 0) == 1)
 		{
-			return false;
+			return (false, "another reload is already waiting for type mapping to resume");
 		}
 		try
 		{
-			var waiter = TypeMappings.WaitForResume();
-			if (!waiter.IsCompleted)
-			{
-				return false;
-			}
-			return await waiter;
+			var shouldReload = await TypeMappings.WaitForResume();
+			return shouldReload
+				? (true, string.Empty)
+				: (false, "type mapping prevent reload");
 		}
 		finally
 		{
-			Interlocked.Exchange(ref _isReloading, 0);
+			Interlocked.Exchange(ref _isWaitingForTypeMapping, 0);
 		}
 	}
 
-	internal static Window? CurrentWindow { get; set; }
+	internal static void SetWindow(Window window, bool disableIndicator)
+	{
+#if HAS_UNO_WINUI
+		if (_currentWindow is not null)
+		{
+			_currentWindow.Activated -= ShowDiagnosticsOnFirstActivation;
+		}
+#endif
 
-	private static async Task ReloadWithUpdatedTypes(Type[] updatedTypes)
+		_currentWindow = window;
+
+#if HAS_UNO_WINUI
+		if (_currentWindow is not null && !disableIndicator)
+		{
+			_currentWindow.Activated += ShowDiagnosticsOnFirstActivation;
+		}
+#endif
+	}
+
+#if HAS_UNO_WINUI // No diag to show currently on windows (so no WINUI)
+	private static void ShowDiagnosticsOnFirstActivation(object snd, _WindowActivatedEventArgs windowActivatedEventArgs)
+	{
+		if (snd is Window { RootElement.XamlRoot: { } xamlRoot } window)
+		{
+			window.Activated -= ShowDiagnosticsOnFirstActivation;
+			DiagnosticsOverlay.Get(xamlRoot).Show();
+		}
+	}
+#endif
+
+	/// <summary>
+	/// Run on UI thread to reload the visual tree with updated types
+	/// </summary>
+	private static async Task ReloadWithUpdatedTypes(HotReloadClientOperation? hrOp, Window window, Type[] updatedTypes)
 	{
 		var handlerActions = ElementAgent?.ElementHandlerActions;
 
 		var uiUpdating = true;
 		try
 		{
-			var window = CurrentWindow;
-			if (window is null || !await ShouldReload())
+			hrOp?.SetCurrent();
+
+			if (await ShouldReload() is { value: false } prevent)
 			{
 				uiUpdating = false;
+				hrOp?.ReportIgnored(prevent.reason);
 				return;
 			}
 
@@ -186,6 +224,8 @@ partial class ClientHotReloadProcessor
 		}
 		catch (Exception ex)
 		{
+			hrOp?.ReportError(ex);
+
 			if (_log.IsEnabled(LogLevel.Error))
 			{
 				_log.Error($"Error doing UI Update - {ex.Message}", ex);
@@ -197,6 +237,9 @@ partial class ClientHotReloadProcessor
 		{
 			// Action: ReloadCompleted
 			_ = handlerActions?.Do(h => h.Value.ReloadCompleted(updatedTypes, uiUpdating)).ToArray();
+
+			hrOp?.ResignCurrent();
+			hrOp?.ReportCompleted();
 		}
 	}
 
@@ -360,6 +403,12 @@ partial class ClientHotReloadProcessor
 			if (instanceFE is not null &&
 				newInstanceFE is not null)
 			{
+#if HAS_UNO
+				var oldStore = ((IDependencyObjectStoreProvider)instanceFE).Store;
+				var newStore = ((IDependencyObjectStoreProvider)newInstanceFE).Store;
+				oldStore.ClonePropertiesToAnotherStoreForHotReload(newStore);
+#endif
+
 				handler?.BeforeElementReplaced(instanceFE, newInstanceFE, updatedTypes);
 
 				SwapViews(instanceFE, newInstanceFE);
@@ -376,13 +425,67 @@ partial class ClientHotReloadProcessor
 		}
 	}
 
+	/// <summary>
+	/// Forces a hot reload update
+	/// </summary>
+	public static void ForceHotReloadUpdate()
+	{
+		try
+		{
+			Instance?._status.ConfigureSourceForNextOperation(HotReloadSource.Manual);
+			UpdateApplicationCore([]);
+		}
+		finally
+		{
+			Instance?._status.ConfigureSourceForNextOperation(default);
+		}
+	}
+
+	/// <summary>
+	/// Entry point for .net MetadataUpdateHandler, do not use directly.
+	/// </summary>
+	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static void UpdateApplication(Type[] types)
 	{
-		foreach (var t in types)
+		if (types is { Length: > 0 })
 		{
-			if (t.GetCustomAttribute<System.Runtime.CompilerServices.MetadataUpdateOriginalTypeAttribute>() is { } update)
+			UpdateApplicationCore(types);
+		}
+		else
+		{
+			// https://github.com/dotnet/aspnetcore/issues/52937
+			// Explicitly ignore to avoid flicker on WASM
+			_log.Trace("Invalid metadata update, ignore it.");
+		}
+	}
+
+	private static void UpdateApplicationCore(Type[] types)
+	{
+		var hr = Instance?._status.ReportLocalStarting(types);
+
+		foreach (var type in types)
+		{
+			try
 			{
-				TypeMappings.RegisterMapping(t, update.OriginalType);
+				// Look up the attribute by name rather than by type.
+				// This would allow netstandard targeting libraries to define their own copy without having to cross-compile.
+				var attr = type.GetCustomAttributesData().FirstOrDefault(data => data is { AttributeType.FullName: "System.Runtime.CompilerServices.MetadataUpdateOriginalTypeAttribute" });
+				if (attr is { ConstructorArguments: [{ Value: Type originalType }] })
+				{
+					TypeMappings.RegisterMapping(type, originalType);
+				}
+				else if (attr is not null && _log.IsEnabled(LogLevel.Warning))
+				{
+					_log.Warn($"Found invalid MetadataUpdateOriginalTypeAttribute for {type}");
+				}
+			}
+			catch (Exception error)
+			{
+				if (_log.IsEnabled(LogLevel.Error))
+				{
+					_log.Error($"Error while processing MetadataUpdateOriginalTypeAttribute for {type}", error);
+				}
+				hr?.ReportError(error);
 			}
 		}
 
@@ -392,21 +495,24 @@ partial class ClientHotReloadProcessor
 		}
 
 #if WINUI
-		var dispatcherQueue = CurrentWindow?.DispatcherQueue;
-		if (dispatcherQueue is not null)
+		if (_currentWindow is { DispatcherQueue: { } dispatcherQueue } window)
 		{
-			dispatcherQueue.TryEnqueue(async () => await ReloadWithUpdatedTypes(types));
+			dispatcherQueue.TryEnqueue(async () => await ReloadWithUpdatedTypes(hr, window, types));
 		}
 #else
-		var dispatcher = CurrentWindow?.Dispatcher;
-		if (dispatcher is not null)
+		if (_currentWindow is { Dispatcher: { } dispatcher } window)
 		{
-			_ = dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () => await ReloadWithUpdatedTypes(types));
+			_ = dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () => await ReloadWithUpdatedTypes(hr, window, types));
 		}
 #endif
-		else if (_log.IsEnabled(LogLevel.Warning))
+		else
 		{
-			_log.Warn($"Unable to access Dispatcher/DispatcherQueue in order to invoke {nameof(ReloadWithUpdatedTypes)}. Make sure you have enabled hot-reload (Window.EnableHotReload()) in app startup. See https://aka.platform.uno/hot-reload");
+			var errorMsg = $"Unable to access Dispatcher/DispatcherQueue in order to invoke {nameof(ReloadWithUpdatedTypes)}. Make sure you have enabled hot-reload (Window.EnableHotReload()) in app startup. See https://aka.platform.uno/hot-reload";
+			hr?.ReportError(new InvalidOperationException(errorMsg));
+			if (_log.IsEnabled(LogLevel.Warning))
+			{
+				_log.Warn(errorMsg);
+			}
 		}
 	}
 }

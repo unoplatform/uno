@@ -39,8 +39,8 @@
 
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			<_overridePackageId>Uno.UI.Lottie</_overridePackageId>
-			<_overridePackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Lottie</_overridePackageId>
+			<_overridePackageId>uno.ui.lottie</_overridePackageId>
+			<_overridePackageId Condition="'$(UNO_UWP_BUILD)'!='true'">uno.winui.lottie</_overridePackageId>
 			<_TargetNugetFolder>$(NuGetPackageRoot)\$(_overridePackageId)\$(UnoNugetOverrideVersion)\uno-runtime\$(TargetFramework)\$(UnoRuntimeIdentifier.ToLowerInvariant())</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>

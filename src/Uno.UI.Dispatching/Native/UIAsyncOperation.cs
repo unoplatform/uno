@@ -54,12 +54,11 @@ namespace Uno.UI.Dispatching
 		{
 			get
 			{
-				if (_cts == null)
+				if (_cts is null)
 				{
-					_cts = new CancellationTokenSource();
+					Interlocked.CompareExchange(ref _cts, new CancellationTokenSource(), null);
 				}
-
-				return _cts.Token;
+				return _cts!.Token;
 			}
 		}
 
@@ -67,11 +66,10 @@ namespace Uno.UI.Dispatching
 		{
 			get
 			{
-				if (_tcs == null)
+				if (_tcs is null)
 				{
-					_tcs = new FastTaskCompletionSource<object>();
+					Interlocked.CompareExchange(ref _tcs, new FastTaskCompletionSource<object>(), null);
 				}
-
 				return _tcs;
 			}
 		}

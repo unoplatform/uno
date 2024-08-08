@@ -2,7 +2,6 @@
 // #define TRACK_REFS
 #nullable enable
 
-#if !WINAPPSDK
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -22,8 +21,12 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 
-#if !HAS_UNO_WINUI
+#if !HAS_UNO_WINUI && !WINAPPSDK
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+#endif
+
+#if WINAPPSDK
+using Microsoft.UI.Xaml.Media;
 #endif
 
 #if __MACOS__
@@ -53,6 +56,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(ToggleButton), 15)]
 		[DataRow(typeof(RepeatButton), 15)]
 		[DataRow(typeof(TextBlock), 15)]
+		[DataRow(typeof(ScrollViewer), 15)]
 		[DataRow(typeof(CheckBox), 15)]
 		[DataRow(typeof(ListView), 15)]
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.ProgressBar), 15)]
@@ -91,6 +95,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #if !__IOS__ // Disabled https://github.com/unoplatform/uno/pull/15540
 		[DataRow(typeof(ToggleSwitch), 15)]
 #endif
+#if __SKIA__ && HAS_UNO_WINUI // Control is currently supported on Skia targets only.
+		[DataRow(typeof(SelectorBar), 15)]
+		[DataRow(typeof(SelectorBarItem), 15)]
+		[DataRow(typeof(ItemsView), 15)]
+		[DataRow(typeof(ScrollView), 15)]
+#endif
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.SwipeControl), 15)]
 		[DataRow(typeof(SplitView), 15)]
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.AnimatedIcon), 15,
@@ -100,7 +110,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			LeakTestStyles.All
 #endif
 			)]
+#if !__IOS__ // Disabled https://github.com/unoplatform/uno/issues/9080
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.BreadcrumbBar), 15)]
+#endif
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.BreadcrumbBarItem), 15)]
 #if !__IOS__ // Disabled https://github.com/unoplatform/uno/issues/9080
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.ColorPicker), 15)]
@@ -158,7 +170,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #endif
 		[DataRow("Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.Button_Command_Leak", 15)]
 		[DataRow("Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.ItemsControl_ItemsSource_Leak", 15)]
-#if !__WASM__ && !__IOS__ // Disabled - https://github.com/unoplatform/uno/issues/7860
+#if !__WASM__ && !__IOS__ && !WINAPPSDK // Disabled - https://github.com/unoplatform/uno/issues/7860
 		[DataRow("Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.ContentDialog_Leak", 15)]
 #endif
 		[DataRow(typeof(TextBox_Focus_Leak), 15,
@@ -177,6 +189,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			LeakTestStyles.All
 #endif
 			)]
+		[DataRow(typeof(MediaPlayerElement), 15)]
 		public async Task When_Add_Remove(object controlTypeRaw, int count, LeakTestStyles leakTestStyles = LeakTestStyles.All)
 		{
 			if (leakTestStyles.HasFlag(LeakTestStyles.Default))
@@ -236,7 +249,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			void HolderUpdate(int value)
 			{
+#if HAS_UNO
 				_ = rootContainer!.Dispatcher.RunAsync(CoreDispatcherPriority.High,
+#else
+				_ = TestServices.WindowHelper.CurrentTestWindow.DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.High,
+#endif
 					() =>
 					{
 						maxCounter = Math.Max(value, maxCounter);
@@ -326,16 +343,26 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				}
 
 				// Add all children to the tracking
+#if WINAPPSDK
+				for (int i = 0; i < VisualTreeHelper.GetChildrenCount(item); i++)
+				{
+					var child = VisualTreeHelper.GetChild(item, i);
+#else
 				foreach (var child in item.EnumerateAllChildren(maxDepth: 200).OfType<UIElement>())
 				{
+#endif
 					TrackDependencyObject(child);
 
 					if (child is FrameworkElement fe)
 					{
+#if !WINAPPSDK
 						// Don't use VisualStateManager.GetVisualStateManager to avoid creating an instance
 						if (child.GetValue(VisualStateManager.VisualStateManagerProperty) is VisualStateManager vsm)
+#endif
 						{
+#if !WINAPPSDK
 							TrackDependencyObject(vsm);
+#endif
 
 							if (VisualStateManager.GetVisualStateGroups(fe) is { } groups)
 							{
@@ -383,8 +410,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			}
 		}
 
+#if !WINAPPSDK
 		[TestMethod]
-		public void When_Control_Loaded_Then_HardReferences()
+		public async Task When_Control_Loaded_Then_HardReferences()
 		{
 			if (FeatureConfiguration.DependencyObject.IsStoreHardReferenceEnabled)
 			{
@@ -396,6 +424,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				Assert.IsNotNull(SUT.GetParent());
 
 				TestServices.WindowHelper.WindowContent = root;
+				await TestServices.WindowHelper.WaitForIdle();
 
 				Assert.IsTrue((SUT as IDependencyObjectStoreProvider).Store.AreHardReferencesEnabled);
 				Assert.IsNotNull(SUT.GetParent());
@@ -405,22 +434,30 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				Assert.IsNull(SUT.GetParent());
 			}
 		}
+#endif
 
 		private class Holder
 		{
 			private readonly Action<int> _update;
 			private static int _counter;
 
+			private static object _lock = new object();
+
 			public Holder(Action<int> update)
 			{
 				_update = update;
-				_update(++_counter);
+				lock (_lock)
+				{
+					_update(++_counter);
+				}
 			}
 
 			~Holder()
 			{
-				var counter = Interlocked.Decrement(ref _counter);
-				_update(counter);
+				lock (_lock)
+				{
+					_update(--_counter);
+				}
 			}
 
 			public static void Reset() => _counter = 0;
@@ -436,4 +473,3 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		}
 	}
 }
-#endif

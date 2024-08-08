@@ -18,6 +18,7 @@ using Windows.UI.Text;
 using Uno.UI;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Automation.Peers;
 
 #if __ANDROID__
 using View = Android.Views.View;
@@ -32,6 +33,7 @@ using View = Microsoft.UI.Xaml.UIElement;
 using Color = Windows.UI.Color;
 #else
 using Color = System.Drawing.Color;
+
 #endif
 
 #if __WASM__
@@ -71,6 +73,10 @@ namespace Microsoft.UI.Xaml.Documents
 				)
 			);
 
+		// While font family itself didn't change, OnFontFamilyChanged will invalidate whatever
+		// needed for the rendering to happen correctly on the next frame.
+		internal void OnFontLoaded() => OnFontFamilyChanged();
+
 		protected virtual void OnFontFamilyChanged()
 		{
 			OnFontFamilyChangedPartial();
@@ -105,6 +111,26 @@ namespace Microsoft.UI.Xaml.Documents
 		}
 
 		partial void OnFontStyleChangedPartial();
+
+		#endregion
+
+		#region FontStretch Dependency Property
+
+		public FontStretch FontStretch
+		{
+			get => GetFontStretchValue();
+			set => SetFontStretchValue(value);
+		}
+
+		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnFontStretchChanged), DefaultValue = FontStretch.Normal, Options = FrameworkPropertyMetadataOptions.Inherits)]
+		public static DependencyProperty FontStretchProperty { get; } = CreateFontStretchProperty();
+
+		protected virtual void OnFontStretchChanged()
+		{
+			OnFontStretchChangedPartial();
+		}
+
+		partial void OnFontStretchChangedPartial();
 
 		#endregion
 
@@ -309,6 +335,22 @@ namespace Microsoft.UI.Xaml.Documents
 			}
 		}
 
+		// WASM specific as on WASM BaseClass is UIElement
+
+#if !__WASM__
+		//UNO TODO: Implement GetOrCreateAutomationPeer on TextElement
+		internal Automation.Peers.AutomationPeer GetOrCreateAutomationPeer()
+		{
+			return null;
+		}
+
+		//UNO TODO: Implement GetAccessKeyScopeOwner on TextElement
+		internal DependencyObject GetAccessKeyScopeOwner()
+		{
+			return null;
+		}
+#endif
+
 		partial void OnNameChangedPartial(string newValue);
 
 		/// <summary>
@@ -353,6 +395,12 @@ namespace Microsoft.UI.Xaml.Documents
 			}
 
 			((IDependencyObjectStoreProvider)this).Store.SetLastUsedTheme(Application.Current?.RequestedThemeForResources);
+		}
+
+		internal protected virtual List<AutomationPeer> AppendAutomationPeerChildren(int startPos, int endPos)
+		{
+			//return S_OK;
+			return null;
 		}
 	}
 }

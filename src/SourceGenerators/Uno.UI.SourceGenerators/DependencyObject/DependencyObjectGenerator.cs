@@ -144,6 +144,11 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 // </auto-generated>
 
 #pragma warning disable 1591 // Ignore missing XML comment warnings
+");
+
+					AnalyzerSuppressionsGenerator.Generate(builder, _analyzerSuppressions);
+
+					builder.Append(@"
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -167,15 +172,11 @@ using AppKit;
 						{
 							builder.AppendLineIndented(@"[global::Microsoft.UI.Xaml.Data.Bindable]");
 						}
-
-						AnalyzerSuppressionsGenerator.Generate(builder, _analyzerSuppressions);
 					};
 
 					var internalDependencyObject = _isUnoSolution && !typeSymbol.IsSealed ? ", IDependencyObjectInternal" : "";
 					using (typeSymbol.AddToIndentedStringBuilder(builder, beforeClassHeaderAction, afterClassHeader: $" : IDependencyObjectStoreProvider, IWeakReferenceProvider{internalDependencyObject}"))
 					{
-						AnalyzerSuppressionsGenerator.Generate(builder, _analyzerSuppressions);
-
 						GenerateDependencyObjectImplementation(typeSymbol, builder, hasDispatcherQueue: _dependencyObjectSymbol!.GetMembers("DispatcherQueue").Any());
 						GenerateIBinderImplementation(typeSymbol, builder);
 					}
@@ -473,23 +474,9 @@ partial void OnDetachedFromWindowPartial();
 				if (hasBinderDetails)
 				{
 					builder.AppendMultiLineIndented($@"
-///<summary>
-/// Should not be used directly.
-/// Helper method to provide Xaml debugging information to tools like Stetho.
-///</summary>
-[Java.Interop.ExportField(""xamlBinder"")]
 public BinderDetails GetBinderDetail()
 {{
 	return null;
-}}
-
-partial void UpdateBinderDetails()
-{{
-	if (BinderDetails.IsBinderDetailsEnabled)
-	{{
-		var field = this.Class.GetField(""xamlBinder"");
-		field.Set(this, new BinderDetails(this));
-	}}
 }}
 					");
 				}
@@ -510,13 +497,8 @@ private void __InitializeBinder()
 	if(BinderReferenceHolder.IsEnabled)
 	{{
 		_refHolder = new BinderReferenceHolder(this.GetType(), this);
-
-		UpdateBinderDetails();
 	}}
 }}
-
-
-partial void UpdateBinderDetails();
 
 /// <summary>
 /// Obsolete method kept for binary compatibility

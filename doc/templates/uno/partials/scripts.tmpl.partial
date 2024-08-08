@@ -5,7 +5,8 @@
 <script src="https://unpkg.com/highlightjs-dotnetconfig@0.9.3/dist/dotnetconfig.min.js"></script>
 <script type="text/javascript" src="{{_rel}}styles/docfx.js"></script>
 <script type="text/javascript" src="{{_rel}}styles/main.js"></script>
-<!-- Mermaid version will need to be bumped here when this issue is fixed : https://github.com/mermaid-js/mermaid/issues/1984 -->
+<!-- Mermaid version will need to be bumped here when this issue is fixed -->
+<!-- Search for this issue in the code to remove the related workaround: https://github.com/mermaid-js/mermaid/issues/1984 -->
 <script type="text/javascript" src="https://unpkg.com/mermaid@8.14.0/dist/mermaid.min.js"
 integrity="sha384-atOyb0FxAgN9LyAc6PEf9BjgwLISyansgdH8/VXQH8p2o5vfrRgmGIJ2Sg22L0A0"
 crossorigin="anonymous"></script>
@@ -15,30 +16,120 @@ startOnLoad: false
 });
 mermaid.init(undefined, ".lang-mermaid");
 </script>
+
 <!-- Algolia DocSearch -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3" />
 <script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
 <script>
-    function handleCreateSearchBox(){
-      if (document.getElementById("docsearch")){
-        if (document.getElementById("docsearch").children.length>0)
-        {
-          document.removeEventListener('DOMNodeInserted', handleCreateSearchBox);
+    /**
+     * Initialize Algolia DocSearch
+     * This function initializes DocSearch for the element with id 'docsearch'.
+     */
+    function initializeDocSearch() {
+        console.log("initializeDocSearch called");
+        try {
+            const searchBox = document.getElementById("docsearch");
+
+            if (searchBox) {
+                console.log("Found 'docsearch' element");
+                // Check if the search box is already initialized
+                if (searchBox.children.length > 0) {
+                    console.log("Search box already initialized.");
+                    // Disconnect the observer if search box is already initialized
+                    if (observer) {
+                        observer.disconnect();
+                        console.log("MutationObserver disconnected.");
+                    }
+                } else {
+                    // Initialize DocSearch if not already initialized
+                    console.log("Initializing DocSearch...");
+                    docsearch({
+                        container: '#docsearch',
+                        appId: 'PHB9D8WS99',
+                        indexName: 'platform',
+                        apiKey: '7877394996f96cde1a9b795dce3f7787',
+                        placeholder: 'Search Docs...'
+                    });
+                    console.log("DocSearch initialized.");
+                    // Disconnect the observer after initialization
+                    if (observer) {
+                        observer.disconnect();
+                        console.log("MutationObserver disconnected.");
+                    }
+                }
+            } else {
+                console.warn("'docsearch' element not found.");
+            }
+        } catch (error) {
+            console.error("Error initializing DocSearch:", error);
         }
-        else {
-          docsearch({
-            container: '#docsearch',
-            appId: 'PHB9D8WS99',
-            indexName: 'platform',
-            apiKey: '7877394996f96cde1a9b795dce3f7787',
-            placeholder: 'Search Docs...'
-          });
-          console.log(docsearch);
-        }
-      }
     }
-    window.addEventListener('DOMNodeInserted', handleCreateSearchBox);
+
+    /**
+     * Set up MutationObserver to watch for additions to the DOM
+     * This function sets up a MutationObserver to monitor the entire document for added nodes.
+     * If the 'docsearch' element is added, it will call initializeDocSearch().
+     */
+    let observer;
+    function observeDocSearch() {
+        observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.addedNodes.length) {
+                    mutation.addedNodes.forEach((node) => {
+                        // Check if the added node is the 'docsearch' element
+                        if (node.id === 'docsearch') {
+                            console.log("'docsearch' element added to DOM");
+                            initializeDocSearch();
+                        }
+                    });
+                }
+            });
+        });
+
+        // Observe the entire document for child additions
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+
+        console.log("MutationObserver set up to observe 'docsearch' element");
+    }
+
+    /**
+     * Retry initialization using requestAnimationFrame
+     * This function tries to initialize DocSearch using requestAnimationFrame for better timing handling for some browsers like Firefox.
+     */
+    function retryInitialization() {
+        if (!document.getElementById('docsearch')) {
+            console.log("Retrying DocSearch initialization using requestAnimationFrame");
+            requestAnimationFrame(retryInitialization);
+        } else {
+            initializeDocSearch();
+        }
+    }
+
+    /**
+     * Load event handler
+     * This function handles the load event to ensure the entire page is fully loaded.
+     * It then checks if the 'docsearch' element is present and initializes DocSearch.
+     * If the element is not present, it sets up the MutationObserver and starts the retry mechanism.
+     */
+    window.addEventListener('load', () => {
+        console.log("Load event fired");
+
+        // Check if the 'docsearch' element already exists in the DOM
+        if (document.getElementById('docsearch')) {
+            console.log("'docsearch' element already present in DOM");
+            initializeDocSearch();
+        } else {
+            console.log("'docsearch' element not present in DOM, setting up MutationObserver");
+            observeDocSearch();
+            // Start retrying using requestAnimationFrame
+            retryInitialization();
+        }
+    });
 </script>
+
 <!-- Easy-copy-code -->
 <script>
 $(function() {
@@ -62,7 +153,7 @@ $(function() {
         document.body.removeChild(el);
     }
 
-    $("code.hljs, code.lang-http").each(function() {
+    $("code.hljs, code[class^='lang-']").each(function() {
         var $this = $(this);
         var language = /lang-(.+?)(\s|$)/.exec($this.attr("class"));
         if (language === null) {
@@ -70,11 +161,25 @@ $(function() {
         }
         else language = language[1].toUpperCase();
 
+        // Skip lang-mermaid as we don't need the easy-copy-code for mermaid graphs
+        if (language === 'MERMAID') {
+            return;
+        }
+
+        if (language === 'CPP') {
+            language = "C++";
+        }
         if (language === 'CSHARP' || language === 'CS') {
             language = "C#";
         }
         if (language === 'JS') {
             language = "JavaScript";
+        }
+        if (language === 'DOTNETCLI') {
+            language = ".NET CLI";
+        }
+        if (language === 'PWSH') {
+            language = "PowerShell";
         }
         var $codeHeader = $(
             '<div class="code-header">'+

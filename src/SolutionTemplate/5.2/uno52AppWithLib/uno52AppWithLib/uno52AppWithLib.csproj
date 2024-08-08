@@ -1,4 +1,4 @@
-<Project Sdk="Uno.Sdk">
+<Project Sdk="Uno.Sdk.Private">
   <PropertyGroup>
     <TargetFrameworks>net8.0-browserwasm;net8.0-desktop;net8.0</TargetFrameworks>
     <TargetFrameworks Condition="!$([MSBuild]::IsOSPlatform('linux'))">$(TargetFrameworks);net8.0-android;net8.0-ios;net8.0-maccatalyst;net8.0-desktop</TargetFrameworks>
@@ -35,6 +35,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="test_root_asset.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="../uno52lib/uno52lib.csproj" />
     <ProjectReference Include="../uno52emptylib/uno52emptylib.csproj" />
   </ItemGroup>
@@ -54,6 +58,10 @@
         <_AssetsToValidate Include="$(OutputPath)Assets\Icons\icon_foreground.scale-300.png" />
         <_AssetsToValidate Include="$(OutputPath)Assets\Icons\icon_foreground.scale-400.png" />
 
+        <!-- Validate json files handling -->
+        <_AssetsToValidate Include="$(OutputPath)test_root_asset.json" />
+        <_AssetsToValidate Include="$(OutputPath)test_root_asset_not_included.json" MustNotExist="true" />
+
         <!-- Transitive library asset -->
         <_AssetsToValidate Include="$(OutputPath)\uno52lib\Assets\test.xml" />
         <_AssetsToValidate Include="$(OutputPath)\uno52lib\Assets\icon_lib.png" />
@@ -63,6 +71,7 @@
       <ItemGroup
           Condition="'$(TargetFramework)'=='net8.0-browserwasm'">
         <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\Assets\SharedAssets.md" />
+        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\Assets\json_file_asset.json" />
         <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\Assets\Icons\icon_foreground.png" />
         <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\Assets\Icons\icon_foreground.scale-100.png" />
         <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\Assets\Icons\icon_foreground.scale-125.png" />
@@ -71,13 +80,20 @@
         <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\Assets\Icons\icon_foreground.scale-300.png" />
         <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\Assets\Icons\icon_foreground.scale-400.png" />
 
+        <!-- Validate json files handling -->
+        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\test_root_asset.json" />
+        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\test_root_asset_not_included.json" MustNotExist="true" />
+
         <!-- Transitive library asset -->
         <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\uno52lib\Assets\test.xml" />
         <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\uno52lib\Assets\icon_lib.png" />
       </ItemGroup>
 
     <Error Text="Missing asset %(_AssetsToValidate.Identity)"
-          Condition="'@(_AssetsToValidate)'!='' AND !exists('%(_AssetsToValidate.Identity)')" />
+          Condition="'@(_AssetsToValidate)'!='' AND '%(_AssetsToValidate.MustNotExist)'!='true' AND !exists('%(_AssetsToValidate.Identity)')" />
+
+    <Error Text="Invalid existing asset %(_AssetsToValidate.Identity)"
+          Condition="'@(_AssetsToValidate)'!='' AND '%(_AssetsToValidate.MustNotExist)'=='true'  AND exists('%(_AssetsToValidate.Identity)')" />
 
   </Target>
 

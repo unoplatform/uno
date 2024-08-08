@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Globalization;
 using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
+using Windows.Graphics;
 using Windows.UI.Core;
 using Windows.UI.Core.Preview;
 using Microsoft.UI.Windowing;
@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
+using Uno.UI.Runtime.Skia;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
 
@@ -18,11 +19,17 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 	private readonly X11XamlRootHost _host;
 	private readonly XamlRoot _xamlRoot;
 
-	internal X11WindowWrapper(Window window, XamlRoot xamlRoot) : base(xamlRoot)
+	internal X11WindowWrapper(Window window, XamlRoot xamlRoot) : base(window, xamlRoot)
 	{
 		_xamlRoot = xamlRoot;
 
-		_host = new X11XamlRootHost(this, window, xamlRoot, RaiseNativeSizeChanged, OnWindowClosing, OnNativeActivated, OnNativeVisibilityChanged);
+		_host = new X11XamlRootHost(this, window, xamlRoot, UpdatePositionAndSize, OnWindowClosing, OnNativeActivated, OnNativeVisibilityChanged);
+		// synchronously initialize Position and Size here before anyone reads their values
+		UpdatePositionAndSize(updatePositionSize: true, raiseNativeSizeChanged: false);
+
+		// an additional asynchronous call here is needed because we need to wait for the subscriptions in
+		// BaseWindowImplementation.InitializeNativeWindow to fire SizeChanged.
+		(_host as IXamlRootHost).RootElement?.Dispatcher.RunAsync(CoreDispatcherPriority.High, UpdatePositionAndSize);
 
 		RasterizationScale = (float)XamlRoot.GetDisplayInformation(_xamlRoot).RawPixelsPerViewPixel;
 	}
@@ -31,19 +38,19 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 	{
 		get
 		{
-			using var _1 = X11Helper.XLock(_host.X11Window.Display);
+			using var lockDiposable = X11Helper.XLock(_host.RootX11Window.Display);
 			var @out = string.Empty;
-			var _2 = XLib.XFetchName(_host.X11Window.Display, _host.X11Window.Window, ref @out);
+			_ = XLib.XFetchName(_host.RootX11Window.Display, _host.RootX11Window.Window, ref @out);
 			return @out;
 		}
 		set
 		{
-			using var _1 = X11Helper.XLock(_host.X11Window.Display);
-			var _2 = XLib.XStoreName(_host.X11Window.Display, _host.X11Window.Window, value);
+			using var lockDiposable = X11Helper.XLock(_host.RootX11Window.Display);
+			_ = XLib.XStoreName(_host.RootX11Window.Display, _host.RootX11Window.Window, value);
 		}
 	}
 
-	public override object NativeWindow => _host.X11Window;
+	public override object NativeWindow => new X11NativeWindow(_host.RootX11Window.Window);
 
 	private void RaiseNativeSizeChanged(Size newWindowSize)
 	{
@@ -57,31 +64,29 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 
 	public override void Activate()
 	{
-		if (NativeWindow is X11Window x11Window)
-		{
-			using var _ = X11Helper.XLock(x11Window.Display);
-			var _1 = XLib.XRaiseWindow(x11Window.Display, x11Window.Window);
+		var x11Window = _host.RootX11Window;
+		using var lockDiposable = X11Helper.XLock(x11Window.Display);
+		_ = XLib.XRaiseWindow(x11Window.Display, x11Window.Window);
 
-			// We could send _NET_ACTIVE_WINDOW as well, although it doesn't seem to be needed (and only works with EWMH-compliant WMs)
-			// XClientMessageEvent xclient = default;
-			// xclient.send_event = 1;
-			// xclient.type = XEventName.ClientMessage;
-			// xclient.window = x11Window.Window;
-			// xclient.message_type = X11Helper.GetAtom(x11Window.Display, X11Helper._NET_ACTIVE_WINDOW);
-			// xclient.format = 32;
-			// xclient.ptr1 = 1;
-			// xclient.ptr2 = X11Helper.CurrentTime;
-			//
-			// XEvent xev = default;
-			// xev.ClientMessageEvent = xclient;
-			// var _2 = XLib.XSendEvent(x11Window.Display, XLib.XDefaultRootWindow(x11Window.Display), false, (IntPtr)(XEventMask.SubstructureRedirectMask | XEventMask.SubstructureNotifyMask), ref xev);
-			// var _3 = XLib.XFlush(x11Window.Display);
-		}
+		// We could send _NET_ACTIVE_WINDOW as well, although it doesn't seem to be needed (and only works with EWMH-compliant WMs)
+		// XClientMessageEvent xclient = default;
+		// xclient.send_event = 1;
+		// xclient.type = XEventName.ClientMessage;
+		// xclient.window = x11Window.Window;
+		// xclient.message_type = X11Helper.GetAtom(x11Window.Display, X11Helper._NET_ACTIVE_WINDOW);
+		// xclient.format = 32;
+		// xclient.ptr1 = 1;
+		// xclient.ptr2 = X11Helper.CurrentTime;
+		//
+		// XEvent xev = default;
+		// xev.ClientMessageEvent = xclient;
+		// _ = XLib.XSendEvent(x11Window.Display, XLib.XDefaultRootWindow(x11Window.Display), false, (IntPtr)(XEventMask.SubstructureRedirectMask | XEventMask.SubstructureNotifyMask), ref xev);
+		// _ = XLib.XFlush(x11Window.Display);
 	}
 
 	public override void Close()
 	{
-		var x11Window = (X11Window)NativeWindow;
+		var x11Window = _host.RootX11Window;
 		if (this.Log().IsEnabled(LogLevel.Information))
 		{
 			this.Log().Info($"Forcibly closing X11 window {x11Window.Display.ToString("X", CultureInfo.InvariantCulture)}, {x11Window.Window.ToString("X", CultureInfo.InvariantCulture)}");
@@ -89,8 +94,6 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 		using (X11Helper.XLock(x11Window.Display))
 		{
 			X11XamlRootHost.Close(x11Window);
-			var _1 = XLib.XDestroyWindow(x11Window.Display, x11Window.Window);
-			var _2 = XLib.XFlush(x11Window.Display);
 		}
 
 		RaiseClosed();
@@ -126,20 +129,18 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 
 	private void OnNativeActivated(bool focused) => ActivationState = focused ? CoreWindowActivationState.PointerActivated : CoreWindowActivationState.Deactivated;
 
-	private void OnNativeVisibilityChanged(bool visible) => Visible = visible;
+	private void OnNativeVisibilityChanged(bool visible) => IsVisible = visible;
 
 	protected override void ShowCore()
 	{
-		// The window needs to be mapped earlier because it's used in DisplayInformationExtension
-		// if (NativeWindow is X11Window x11Window)
-		// {
-		// 	XLib.XMapWindow(x11Window.Display, x11Window.Window);
-		// }
+		using var lockDiposable = X11Helper.XLock(_host.RootX11Window.Display);
+		_ = XLib.XMapWindow(_host.RootX11Window.Display, _host.RootX11Window.Window);
+		_ = XLib.XMapWindow(_host.TopX11Window.Display, _host.TopX11Window.Window);
 	}
 
 	protected override IDisposable ApplyOverlappedPresenter(OverlappedPresenter presenter)
 	{
-		presenter.SetNative(new X11NativeOverlappedPresenter(_host.X11Window, this));
+		presenter.SetNative(new X11NativeOverlappedPresenter(_host.RootX11Window, this));
 		return Disposable.Create(() => presenter.SetNative(null));
 	}
 
@@ -150,12 +151,79 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 		return Disposable.Create(() => SetFullScreenMode(false));
 	}
 
+	public override void Move(PointInt32 position)
+	{
+		var display = _host.RootX11Window.Display;
+		var window = _host.RootX11Window.Window;
+		using var lockDiposable = X11Helper.XLock(display);
+
+		_ = X11Helper.XMoveWindow(display, window, position.X, position.Y);
+		XLib.XSync(display, false);
+	}
+
+	public override void Resize(SizeInt32 size)
+	{
+		var display = _host.RootX11Window.Display;
+		var window = _host.RootX11Window.Window;
+		using var lockDiposable = X11Helper.XLock(display);
+
+		// If the window manager adds decorations, usually that is implemented by wrapping
+		// the window in another slightly bigger window that includes the decorations. In that case,
+		// XGetWindowAttributes will give us x and y offsets relative to this slightly bigger window,
+		// not relative to the root window.
+		_ = XLib.XQueryTree(display, window, out var root, out var parent, out var children, out _);
+		_ = XLib.XQueryTree(display, parent, out _, out var parentParent, out var children2, out _);
+		_ = XLib.XFree(children);
+		_ = XLib.XFree(children2);
+
+		var windowToResize = parentParent == root ? parent : window;
+		_ = XLib.XResizeWindow(display, windowToResize, size.Width, size.Height);
+		XLib.XSync(display, false);
+	}
+
+	private void UpdatePositionAndSize() => UpdatePositionAndSize(true, true);
+
+	private void UpdatePositionAndSize(bool updatePositionSize, bool raiseNativeSizeChanged)
+	{
+		var display = _host.RootX11Window.Display;
+		var window = _host.RootX11Window.Window;
+		using var xLock = X11Helper.XLock(display);
+
+		// If the window manager adds decorations, usually that is implemented by wrapping
+		// the window in another slightly bigger window that includes the decorations. In that case,
+		// XGetWindowAttributes will give us x and y offsets relative to this slightly bigger window,
+		// not relative to the root window.
+		_ = XLib.XQueryTree(display, window, out var root, out var parent, out var children, out _);
+		_ = XLib.XQueryTree(display, parent, out _, out var parentParent, out var children2, out _);
+		_ = XLib.XFree(children);
+		_ = XLib.XFree(children2);
+
+		var windowToRead = parentParent == root ? parent : window;
+		XWindowAttributes windowAttrs = default;
+		_ = XLib.XGetWindowAttributes(display, windowToRead, ref windowAttrs);
+		_ = XLib.XTranslateCoordinates(display, windowToRead, root, 0, 0, out var rootx, out var rooty, out _);
+		if (updatePositionSize)
+		{
+			Position = new PointInt32 { X = rootx, Y = rooty };
+			Size = new SizeInt32 { Width = windowAttrs.width, Height = windowAttrs.height };
+		}
+
+		XWindowAttributes windowAttrs2 = default;
+		_ = XLib.XGetWindowAttributes(display, window, ref windowAttrs2);
+		if (raiseNativeSizeChanged)
+		{
+			RaiseNativeSizeChanged(new Size(windowAttrs2.width, windowAttrs2.height));
+		}
+		// copy the root window dimensions to the top window
+		_ = XLib.XResizeWindow(display, _host.TopX11Window.Window, windowAttrs2.width, windowAttrs2.height);
+	}
+
 	internal void SetFullScreenMode(bool on)
 	{
 		X11Helper.SetWMHints(
-			_host.X11Window,
-			X11Helper.GetAtom(_host.X11Window.Display, X11Helper._NET_WM_STATE),
+			_host.RootX11Window,
+			X11Helper.GetAtom(_host.RootX11Window.Display, X11Helper._NET_WM_STATE),
 			on ? 1 : 0,
-			X11Helper.GetAtom(_host.X11Window.Display, X11Helper._NET_WM_STATE_FULLSCREEN));
+			X11Helper.GetAtom(_host.RootX11Window.Display, X11Helper._NET_WM_STATE_FULLSCREEN));
 	}
 }

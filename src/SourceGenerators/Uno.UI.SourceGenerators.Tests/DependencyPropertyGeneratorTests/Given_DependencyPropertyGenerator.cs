@@ -124,7 +124,7 @@ public class Given_DependencyPropertyGenerator
 					}
 				}
 			},
-			ReferenceAssemblies = ReferenceAssemblies.Net.Net70.AddPackages(ImmutableArray.Create(new PackageIdentity("Uno.WinUI", "5.0.118"))),
+			ReferenceAssemblies = ReferenceAssemblies.Net.Net80.AddPackages(ImmutableArray.Create(new PackageIdentity("Uno.WinUI", "5.0.118"))),
 		};
 
 		await test.RunAsync();
@@ -251,7 +251,7 @@ public class Given_DependencyPropertyGenerator
 					}
 				}
 			},
-			ReferenceAssemblies = ReferenceAssemblies.Net.Net70.AddPackages(ImmutableArray.Create(new PackageIdentity("Uno.WinUI", "5.0.118"))),
+			ReferenceAssemblies = ReferenceAssemblies.Net.Net80.AddPackages(ImmutableArray.Create(new PackageIdentity("Uno.WinUI", "5.0.118"))),
 		};
 
 		await test.RunAsync();
@@ -376,7 +376,7 @@ public class Given_DependencyPropertyGenerator
 					}
 				}
 			},
-			ReferenceAssemblies = ReferenceAssemblies.Net.Net70.AddPackages(ImmutableArray.Create(new PackageIdentity("Uno.WinUI", "5.0.118"))),
+			ReferenceAssemblies = ReferenceAssemblies.Net.Net80.AddPackages(ImmutableArray.Create(new PackageIdentity("Uno.WinUI", "5.0.118"))),
 		};
 
 		test.ExpectedDiagnostics.Add(

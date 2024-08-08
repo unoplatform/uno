@@ -35,6 +35,89 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[RunsOnUIThread]
 	public class Given_TextBlock
 	{
+#if __ANDROID__
+		[Ignore("Visually looks good, but fails :(")]
+#endif
+		[TestMethod]
+		[DataRow((ushort)400, FontStyle.Italic, FontStretch.Condensed, "ms-appx:///Assets/Fonts/OpenSans/OpenSans_Condensed-MediumItalic.ttf")]
+		[DataRow((ushort)400, FontStyle.Normal, FontStretch.SemiCondensed, "ms-appx:///Assets/Fonts/OpenSans/OpenSans_SemiCondensed-Regular.ttf")]
+		[DataRow((ushort)600, FontStyle.Normal, FontStretch.SemiCondensed, "ms-appx:///Assets/Fonts/OpenSans/OpenSans_SemiCondensed-SemiBold.ttf")]
+		[DataRow((ushort)700, FontStyle.Normal, FontStretch.Normal, "ms-appx:///Assets/Fonts/OpenSans/OpenSans-Bold.ttf")]
+		[DataRow((ushort)400, FontStyle.Normal, FontStretch.Normal, "ms-appx:///Assets/Fonts/OpenSans/OpenSans-Regular.ttf")]
+		[DataRow((ushort)600, FontStyle.Normal, FontStretch.SemiCondensed, "ms-appx:///Assets/Fonts/OpenSans/OpenSans_SemiCondensed-SemiBold.ttf#Open Sans")]
+		public async Task When_Font_Has_Manifest(ushort weight, FontStyle style, FontStretch stretch, string ttfFile)
+		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			var SUT = new TextBlock
+			{
+				Text = "Hello World!",
+				FontSize = 18,
+				FontStyle = style,
+				FontStretch = stretch,
+				FontWeight = new FontWeight(weight),
+				FontFamily = new FontFamily("ms-appx:///Assets/Fonts/OpenSans/OpenSans.ttf"),
+			};
+			var SUTContainer = new Border()
+			{
+				Width = 200,
+				Height = 100,
+				Child = SUT
+			};
+
+			var expectedTB = new TextBlock
+			{
+				Text = "Hello World!",
+				FontSize = 18,
+				FontFamily = new FontFamily(ttfFile)
+			};
+			var expectedTBContainer = new Border()
+			{
+				Width = 200,
+				Height = 100,
+				Child = expectedTB
+			};
+
+			var differentTtf = "ms-appx:///Assets/Fonts/OpenSans/OpenSans-Bold.ttf";
+			if (ttfFile == differentTtf)
+			{
+				differentTtf = "ms-appx:///Assets/Fonts/OpenSans/OpenSans-Regular.ttf";
+			}
+
+			var differentTB = new TextBlock
+			{
+				Text = "Hello World!",
+				FontSize = 18,
+				FontFamily = new FontFamily(differentTtf),
+			};
+			var differentTBContainer = new Border()
+			{
+				Width = 200,
+				Height = 100,
+				Child = differentTB
+			};
+
+			var sp = new StackPanel()
+			{
+				Children =
+				{
+					SUTContainer,
+					expectedTBContainer,
+					differentTBContainer,
+				},
+			};
+
+			await UITestHelper.Load(sp);
+			var actual = await UITestHelper.ScreenShot(SUTContainer);
+			var expected = await UITestHelper.ScreenShot(expectedTBContainer);
+			var different = await UITestHelper.ScreenShot(differentTBContainer);
+			await ImageAssert.AreEqualAsync(actual, expected);
+			await ImageAssert.AreNotEqualAsync(actual, different);
+		}
+
 #if __SKIA__
 		[TestMethod]
 		// It looks like CI might not have any installed fonts with Chinese characters which could cause the test to fail
@@ -42,7 +125,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task Check_FontFallback()
 		{
 			var SUT = new TextBlock { Text = "示例文本", FontSize = 24 };
-			var skFont = FontDetailsCache.GetFont(SUT.FontFamily?.Source, (float)SUT.FontSize, SUT.FontWeight, SUT.FontStyle).SKFont;
+			var skFont = FontDetailsCache.GetFont(SUT.FontFamily?.Source, (float)SUT.FontSize, SUT.FontWeight, SUT.FontStretch, SUT.FontStyle).SKFont;
 			Assert.IsFalse(skFont.ContainsGlyph(SUT.Text[0]));
 
 			var fallbackFont = SKFontManager.Default.MatchCharacter(SUT.Text[0]);
@@ -50,6 +133,46 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(fallbackFont.ContainsGlyph(SUT.Text[0]));
 
 			var expected = new TextBlock { Text = "示例文本", FontSize = 24, FontFamily = new FontFamily(fallbackFont.FamilyName) };
+
+			await UITestHelper.Load(SUT);
+			var screenshot1 = await UITestHelper.ScreenShot(SUT);
+
+			await UITestHelper.Load(expected);
+			var screenshot2 = await UITestHelper.ScreenShot(expected);
+
+			Assert.AreEqual(screenshot2.Width, screenshot1.Width);
+			Assert.AreEqual(screenshot2.Height, screenshot1.Height);
+
+			await ImageAssert.AreSimilarAsync(screenshot1, screenshot2, imperceptibilityThreshold: 0.15);
+		}
+
+		// Reason for failure on X11 is not very known, but it's likely the AdvanceX of space character
+		// is different between the fallback font and OpenSans
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaX11)]
+		public async Task Check_FontFallback_Shaping()
+		{
+			var SUT = new TextBlock
+			{
+				Text = "اللغة العربية",
+				FontSize = 24,
+				LineHeight = 34,
+			};
+
+			var skFont = FontDetailsCache.GetFont(SUT.FontFamily?.Source, (float)SUT.FontSize, SUT.FontWeight, SUT.FontStretch, SUT.FontStyle).SKFont;
+			var familyName = skFont.Typeface.FamilyName;
+			Assert.IsFalse(skFont.ContainsGlyph(SUT.Text[0]));
+
+			var fallbackFont = SKFontManager.Default.MatchCharacter(SUT.Text[0]);
+
+			Assert.IsTrue(fallbackFont.ContainsGlyph(SUT.Text[0]));
+
+			var expected = new TextBlock
+			{
+				Text = "اللغة العربية",
+				FontSize = 24,
+				FontFamily = new FontFamily(fallbackFont.FamilyName),
+				LineHeight = 34,
+			};
 
 			await UITestHelper.Load(SUT);
 			var screenshot1 = await UITestHelper.ScreenShot(SUT);
@@ -76,6 +199,34 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(TextDecorations.None, SUT.textBlock4.TextDecorations);
 			Assert.AreEqual(TextDecorations.Strikethrough, SUT.textBlock5.TextDecorations);
 			Assert.AreEqual(TextDecorations.None, SUT.textBlock6.TextDecorations);
+		}
+
+		[TestMethod]
+		public async Task When_NewLine_After_Tab()
+		{
+			var SUT = new TextBlock
+			{
+				Text = "\t\r",
+				FontFamily = new FontFamily("ms-appx:///Assets/Fonts/CascadiaCode-Regular.ttf"),
+				Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red)
+			};
+
+			await UITestHelper.Load(SUT);
+
+#if __SKIA__
+			var segments = ((Run)SUT.Inlines.Single()).Segments;
+			Assert.AreEqual(2, segments.Count);
+			Assert.IsTrue(segments[0].IsTab);
+			Assert.AreEqual("\r", segments[1].Text.ToString());
+#endif
+
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			var screenshot = await UITestHelper.ScreenShot(SUT);
+			ImageAssert.DoesNotHaveColorInRectangle(screenshot, new Rectangle(0, 0, screenshot.Width, screenshot.Height), Microsoft.UI.Colors.Red, tolerance: 15);
 		}
 
 		[TestMethod]
@@ -801,7 +952,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			var SUT = new TextBlock
 			{
-				Text = "Hello world",
+				Text = "hello uno",
 				IsTextSelectionEnabled = true,
 			};
 
@@ -885,6 +1036,54 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					new Rectangle(bitmap.Width * i / 10, 0, bitmap.Width / 10, bitmap.Height),
 					SUT.SelectionHighlightColor.Color);
 			}
+		}
+
+		[TestMethod]
+		public async Task When_IsTextSelectionEnabled_Wrapping_DoubleTapped()
+		{
+			var SUT = new TextBlock
+			{
+				Width = 50,
+				TextWrapping = TextWrapping.Wrap,
+				Text = "Awordthatislongerthananentireline",
+				IsTextSelectionEnabled = true,
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var bitmap = await UITestHelper.ScreenShot(SUT);
+
+			ImageAssert.DoesNotHaveColorInRectangle(
+				bitmap,
+				new Rectangle(new System.Drawing.Point(), bitmap.Size),
+				SUT.SelectionHighlightColor.Color);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			// double tap
+			mouse.Press();
+			mouse.Release();
+			mouse.Press();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			bitmap = await UITestHelper.ScreenShot(SUT);
+
+			// first line selected
+			ImageAssert.HasColorInRectangle(
+				bitmap,
+				new Rectangle(0, 0, bitmap.Width, bitmap.Height / 6),
+				SUT.SelectionHighlightColor.Color);
+			// last line selected
+			ImageAssert.HasColorInRectangle(
+				bitmap,
+				new Rectangle(0, bitmap.Height * 5 / 6, bitmap.Width, bitmap.Height / 6),
+				SUT.SelectionHighlightColor.Color);
 		}
 
 		[TestMethod]

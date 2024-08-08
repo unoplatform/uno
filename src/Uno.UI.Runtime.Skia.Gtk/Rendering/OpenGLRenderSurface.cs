@@ -98,6 +98,7 @@ namespace Uno.UI.Runtime.Skia.Gtk
 			_gl.GetInteger(GLEnum.Stencil, out var stencil);
 			_gl.GetInteger(GLEnum.Samples, out var samples);
 
+			// Note: stencil and samples will always be zero even if there actually is a stencil buffer and MSAA is enabled
 			return (framebuffer, stencil, samples);
 		}
 

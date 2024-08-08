@@ -142,6 +142,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				return unoPlatformIDE;
 			}
+			else if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("VSCODE_CWD")) || Environment.GetEnvironmentVariable("TERM_PROGRAM") == "vscode")
+			{
+				return "vscode";
+			}
+			else if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("IDEA_INITIAL_DIRECTORY")))
+			{
+				return "rider";
+			}
 			else
 			{
 				return "unknown";

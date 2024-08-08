@@ -15,6 +15,7 @@ using Windows.Graphics.Display;
 using Microsoft.UI.Xaml;
 using Uno.UI.Runtime.Skia.Gtk.Hosting;
 using Pango;
+using Uno.UI.Helpers;
 using Context = Cairo.Context;
 
 namespace Uno.UI.Runtime.Skia.Gtk;
@@ -96,7 +97,7 @@ internal class SoftwareRenderSurface : DrawingArea, IGtkRenderer
 			if (_host.RootElement?.Visual is { } rootVisual)
 			{
 				var compositor = Compositor.GetSharedCompositor();
-				compositor.RenderRootVisual(_surface, rootVisual);
+				SkiaRenderHelper.RenderRootVisualAndClearNativeAreas(scaledWidth, scaledHeight, rootVisual, _surface);
 
 				if (compositor.IsSoftwareRenderer is null)
 				{

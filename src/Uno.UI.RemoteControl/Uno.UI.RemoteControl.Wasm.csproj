@@ -39,6 +39,7 @@
 		<ProjectReference Include="..\Uno.UI.RemoteControl.Messaging\Uno.UI.RemoteControl.Messaging.csproj" />
 		<ProjectReference Include="..\Uno.UWP\Uno.Wasm.csproj" />
 		<ProjectReference Include="..\Uno.UI\Uno.UI.Wasm.csproj" />
+		<ProjectReference Include="..\Uno.UI.Toolkit\Uno.UI.Toolkit.Wasm.csproj" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(DocsGeneration)'==''">
@@ -56,12 +57,27 @@
 			<UndefineProperties>TargetFramework</UndefineProperties>
 		</ProjectReference>
 	</ItemGroup>
+	
+	<ItemGroup Condition="'$(UNO_UWP_BUILD)'=='true'">
+		<Page Remove="Themes\Generic.xaml" />
+
+		<Page Remove="RemoteControlStatusView.xaml" />
+		<Compile Remove="RemoteControlStatusView.cs" />
+		<None Include="RemoteControlStatusView.cs" />
+
+		<Page Remove="HotReload\HotReloadStatusView.xaml" />
+		<Compile Remove="HotReload\HotReloadStatusView.cs" />
+		<None Include="HotReload\HotReloadStatusView.cs" />
+	</ItemGroup>
+	<PropertyGroup Condition="'$(UNO_UWP_BUILD)'=='true'">
+		<PageExclusions>$(MSBuildThisFileDirectory)**\*.xaml</PageExclusions>
+	</PropertyGroup>
 
 	<Target Name="_UnoUIRemoteControlOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			<_TargetNugetFolder>$(NuGetPackageRoot)\$(PackageId)\$(UnoNugetOverrideVersion)\uno-runtime\$(UnoRuntimeIdentifier.ToLowerInvariant())</_TargetNugetFolder>
+			<_TargetNugetFolder>$(NuGetPackageRoot)\$(PackageId.ToLowerInvariant())\$(UnoNugetOverrideVersion)\uno-runtime\$(TargetFramework)\$(UnoRuntimeIdentifier.ToLowerInvariant())</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)**" />
@@ -73,5 +89,7 @@
 		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
 		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
 	</Target>
+
+	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
 
 </Project>

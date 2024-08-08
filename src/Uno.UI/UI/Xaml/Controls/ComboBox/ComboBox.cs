@@ -161,6 +161,104 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		protected override void OnPointerWheelChanged(PointerRoutedEventArgs e)
+		{
+			if (!IsEnabled)
+			{
+				return;
+			}
+
+			if (HasFocus())
+			{
+				if (!IsDropDownOpen)
+				{
+					var point = e.GetCurrentPoint(this);
+					var properties = point.Properties;
+					var delta = properties.MouseWheelDelta;
+					var selectedIndex = SelectedIndex;
+					if (delta < 0)
+					{
+						SelectNext(ref selectedIndex);
+					}
+					else
+					{
+						SelectPrev(ref selectedIndex);
+					}
+
+					SelectedIndex = selectedIndex;
+				}
+
+				e.Handled = true;
+			}
+
+			base.OnPointerWheelChanged(e);
+		}
+
+		// Selects the next item in the list.
+		private void SelectNext(ref int index)
+		{
+			var count = Items.Count;
+			if (count > 0)
+			{
+				int internalSelectedIndex = index + 1;
+				if (internalSelectedIndex <= count - 1)
+				{
+					SelectItemHelper(ref internalSelectedIndex, 1);
+					if (internalSelectedIndex != -1)
+					{
+						index = internalSelectedIndex;
+					}
+				}
+			}
+		}
+
+		// Selects the previous item in the list.
+		private void SelectPrev(ref int index)
+		{
+			var count = Items.Count;
+			if (count > 0)
+			{
+				int internalSelectedIndex = index - 1;
+				if (internalSelectedIndex >= 0)
+				{
+					SelectItemHelper(ref internalSelectedIndex, -1);
+					if (internalSelectedIndex != -1)
+					{
+						index = internalSelectedIndex;
+					}
+				}
+			}
+		}
+
+		// Given a direction, searches through list for next available item to select.
+		private void SelectItemHelper(ref int index, int increment)
+		{
+			var items = Items;
+			var count = items.Count;
+			bool isSelectable = false;
+
+			for (; index > -1 && index < count; index += increment)
+			{
+				var item = items[index];
+				isSelectable = IsSelectableHelper(item);
+				if (isSelectable)
+				{
+					var container = ContainerFromIndex(index);
+					isSelectable = IsSelectableHelper(container);
+					if (isSelectable)
+					{
+						break;
+					}
+				}
+			}
+
+			if (!isSelectable)
+			{
+				// If no selectable item was found, set index to -1 so selection will not be updated.
+				index = -1;
+			}
+		}
+
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
@@ -191,12 +289,10 @@ namespace Microsoft.UI.Xaml.Controls
 				_popup.Opened -= OnPopupOpened;
 			}
 
-			if (XamlRoot is null)
+			if (XamlRoot is not null)
 			{
-				throw new InvalidOperationException("XamlRoot must be set on Loaded");
+				XamlRoot.Changed -= OnXamlRootChanged;
 			}
-
-			XamlRoot.Changed -= OnXamlRootChanged;
 		}
 
 		protected virtual void OnDropDownClosed(object e)
@@ -1322,12 +1418,17 @@ namespace Microsoft.UI.Xaml.Controls
 
 				if (combo.IsPopupFullscreen)
 				{
-					// Size : Note we set both Min and Max to match the UWP behavior which alter only those
-					//        properties. The MinHeight is not set to allow the the root child control to specificy
-					//		  one and provide a VerticalAlignment.
+					// In full screen mode, we want the popup to stretch horizontally, so we set MinWidth and MaxWidth to the available width.
+					// However, we don't want it to stretch vertically.
+					// We want the height to exactly show all the items, i.e, combo.ActualHeight * combo.Items.Count. However, we want to limit that by
+					// both MaxDropDownHeight and visible height (quite similar to non-fullscreen mode).
+					// This also allows the child to set MinHeight and provide a VerticalAlignment
+					var maxHeight = Math.Min(visibleSize.Height, Math.Min(combo.MaxDropDownHeight, combo.ActualHeight * combo.Items.Count));
+
 					child.MinWidth = available.Width;
 					child.MaxWidth = available.Width;
-					child.MaxHeight = available.Height;
+					child.MinHeight = combo.ActualHeight;
+					child.MaxHeight = maxHeight;
 				}
 				else
 				{

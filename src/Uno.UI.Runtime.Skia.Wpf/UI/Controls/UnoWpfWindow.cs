@@ -5,13 +5,17 @@ using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.IO;
 using System.Windows;
-using System.Windows.Shell;
 using Windows.ApplicationModel.Core;
+using Windows.Foundation;
 using Uno.Foundation.Logging;
 using Windows.UI.ViewManagement;
+using Uno.UI.Runtime.Skia.Wpf.Hosting;
+using Uno.UI.Xaml.Controls;
+using WindowChrome = System.Windows.Shell.WindowChrome;
 using WinUI = Microsoft.UI.Xaml;
 using WinUIApplication = Microsoft.UI.Xaml.Application;
 using WpfWindow = System.Windows.Window;
+using WpfControl = System.Windows.Controls.Control;
 
 namespace Uno.UI.Runtime.Skia.Wpf.UI.Controls;
 
@@ -30,15 +34,16 @@ internal class UnoWpfWindow : WpfWindow
 		_windowToWpfWindow[winUIWindow ?? throw new ArgumentNullException(nameof(winUIWindow))] = this;
 		winUIWindow.Closed += (_, _) => _windowToWpfWindow.TryRemove(winUIWindow, out _);
 
-		Windows.Foundation.Size preferredWindowSize = ApplicationView.PreferredLaunchViewSize;
-		if (preferredWindowSize != Windows.Foundation.Size.Empty)
+		var preferredWindowSize = ApplicationView.PreferredLaunchViewSize;
+		if (preferredWindowSize.IsEmpty)
 		{
-			Width = (int)preferredWindowSize.Width;
-			Height = (int)preferredWindowSize.Height;
+			preferredWindowSize = new Windows.Foundation.Size(NativeWindowWrapperBase.InitialWidth, NativeWindowWrapperBase.InitialHeight);
 		}
+		Width = (int)preferredWindowSize.Width;
+		Height = (int)preferredWindowSize.Height;
 
-		Content = Host = new UnoWpfWindowHost(this, winUIWindow);
-		WpfManager.XamlRootMap.Register(xamlRoot, Host);
+		Host = new UnoWpfWindowHost(this, winUIWindow);
+		WpfManager.XamlRootMap.Register(xamlRoot, (IWpfXamlRootHost)Host);
 
 		_applicationView = ApplicationView.GetForWindowId(winUIWindow.AppWindow.Id);
 		_applicationView.PropertyChanged += OnApplicationViewPropertyChanged;
@@ -75,7 +80,7 @@ internal class UnoWpfWindow : WpfWindow
 		_winUIWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged -= ExtendContentIntoTitleBar;
 	}
 
-	internal UnoWpfWindowHost Host { get; private set; }
+	internal WpfControl Host { get; }
 
 	private void OnApplicationViewPropertyChanged(object? sender, PropertyChangedEventArgs e) => UpdateWindowPropertiesFromApplicationView();
 

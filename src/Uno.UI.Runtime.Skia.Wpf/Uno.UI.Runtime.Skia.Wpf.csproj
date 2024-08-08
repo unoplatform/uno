@@ -1,20 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>$(NetPrevious)</TargetFrameworks>
-		<TargetFrameworks Condition="'$(UnoDisableNetCurrent)'!='true'">$(TargetFrameworks);$(NetCurrent)</TargetFrameworks>
+		<TargetFrameworks>$(NetPrevious);$(NetCurrent)</TargetFrameworks>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override.props" />
 
 	<PropertyGroup>
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
-		<authors>Uno Platform</authors>
-		<PackageProjectUrl>https://github.com/unoplatform/uno</PackageProjectUrl>
-		<PackageIcon>uno.png</PackageIcon>
-		<RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
 		<Description>This package provides the platform support for Skia in Uno Platform projects.</Description>
-		<Copyright>Copyright (C) 2015-$([System.DateTime]::Now.ToString(`yyyy`)) Uno Platform Inc. - all rights reserved</Copyright>
 
 		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Runtime.Skia.Wpf</PackageId>
 

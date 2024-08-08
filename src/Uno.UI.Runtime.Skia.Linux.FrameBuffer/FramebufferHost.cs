@@ -75,25 +75,36 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 
 		private void StartConsoleInterception()
 		{
-			_consoleInterceptionThread = new(() =>
+			// Only use the keyboard interception if the input is not redirected, to support
+			// starting the app without a pty.
+			if (!Console.IsInputRedirected && Console.KeyAvailable)
 			{
-
-				// Loop until Application.Current.Exit() is invoked
-				while (!_coreApplicationExtension!.ExitRequested)
+				_consoleInterceptionThread = new(() =>
 				{
-					// Read the console keys without showing them on screen.
-					// The keyboard input is handled by libinput.
-					Console.ReadKey(true);
+					// Loop until Application.Current.Exit() is invoked
+					while (!_coreApplicationExtension!.ExitRequested)
+					{
+						// Read the console keys without showing them on screen.
+						// The keyboard input is handled by libinput.
+						Console.ReadKey(true);
+					}
+
+					// The process asked to exit
+					_terminationGate.Set();
+				});
+
+				// The thread must not block the process from exiting
+				_consoleInterceptionThread.IsBackground = true;
+
+				_consoleInterceptionThread.Start();
+			}
+			else
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"Console input is redirected, skipping input interception");
 				}
-
-				// The process asked to exit
-				_terminationGate.Set();
-			});
-
-			// The thread must not block the process from exiting
-			_consoleInterceptionThread.IsBackground = true;
-
-			_consoleInterceptionThread.Start();
+			}
 		}
 
 		private void InnerInitialize()
@@ -104,7 +115,6 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 			ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), o => _coreApplicationExtension!);
 			ApiExtensibility.Register<IXamlRootHost>(typeof(Windows.UI.Core.IUnoCorePointerInputSource), o => { FrameBufferPointerInputSource.Instance.SetHost(o); return FrameBufferPointerInputSource.Instance; });
 			ApiExtensibility.Register<IXamlRootHost>(typeof(Windows.UI.Core.IUnoKeyboardInputSource), o => { FrameBufferKeyboardInputSource.Instance.SetHost(o); return FrameBufferKeyboardInputSource.Instance; });
-			ApiExtensibility.Register(typeof(Windows.UI.Core.INativeElementHostingExtension), o => new FrameBufferNativeElementHostingExtension());
 			ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new ApplicationViewExtension(o));
 			ApiExtensibility.Register(typeof(Windows.Graphics.Display.IDisplayInformationExtension), o => _displayInformationExtension ??= new DisplayInformationExtension(o, DisplayScale));
 
@@ -138,6 +148,9 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 				}
 
 				_displayInformationExtension.Renderer = _renderer;
+
+				// Force the first render once the app has been setup
+				Dispatch(() => _renderer?.InvalidateRender(), NativeDispatcherPriority.High);
 			}
 
 			Windows.UI.Core.CoreDispatcher.DispatchOverride = Dispatch;

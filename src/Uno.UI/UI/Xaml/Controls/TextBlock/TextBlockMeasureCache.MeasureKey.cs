@@ -57,7 +57,16 @@ namespace Microsoft.UI.Xaml.Controls
 				_textWrapping = source.TextWrapping;
 				_fontWeight = source.FontWeight;
 				_text = source.Text;
-				_fontFamily = source.FontFamily;
+
+				var fontFamily = source.FontFamily;
+				if (fontFamily?.Source?.Equals("XamlAutoFontFamily", StringComparison.OrdinalIgnoreCase) == true)
+				{
+					// If FeatureConfiguration.Font.DefaultTextFontFamily is set to ms-appx, we should adjust fontFamily in cache.
+					// This is important to properly clear the TextBlock cache when the ms-appx font is loaded.
+					fontFamily = FontFamily.Default;
+				}
+
+				_fontFamily = fontFamily;
 				_fontSize = source.FontSize;
 				_maxLines = source.MaxLines;
 				_textTrimming = source.TextTrimming;
@@ -69,7 +78,7 @@ namespace Microsoft.UI.Xaml.Controls
 				_textDecorations = source.TextDecorations;
 
 				_hashCode = _text?.GetHashCode() ?? 0
-					^ _fontFamily.GetHashCode()
+					^ _fontFamily?.GetHashCode() ?? 0
 					^ _fontSize.GetHashCode();
 			}
 

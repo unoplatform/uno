@@ -44,7 +44,7 @@
 
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			<_TargetNugetFolder>$(NuGetPackageRoot)\Uno.UI\$(UnoNugetOverrideVersion)\uno-runtime\webassembly</_TargetNugetFolder>
+			<_TargetNugetFolder>$(NuGetPackageRoot)\uno.ui\$(UnoNugetOverrideVersion)\uno-runtime\webassembly</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="@(TargetPathWithTargetPlatformMoniker)" />

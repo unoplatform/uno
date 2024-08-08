@@ -135,7 +135,7 @@ namespace Windows.Storage
 				=> _values.Keys;
 
 			public ICollection<object> Values
-				=> _values.Values.Select(DataTypeSerializer.Deserialize).ToList();
+				=> _values.Values.Select(DataTypeSerializer.Deserialize).Where(item => item is not null).Select(item => item!).ToList();
 
 			public int Count
 				=> _values.Count;

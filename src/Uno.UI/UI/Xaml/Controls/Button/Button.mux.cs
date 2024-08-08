@@ -2,6 +2,7 @@
 
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -109,8 +110,16 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		// TODO Uno: Keyboard accelerators not supported yet.
-		//private void OnProcessKeyboardAcceleratorsImplLocal()
+		internal void OnProcessKeyboardAcceleratorsImplLocal(ProcessKeyboardAcceleratorEventArgs args)
+		{
+			var spButtonFlyout = Flyout;
+			if (spButtonFlyout is null)
+			{
+				return;
+			}
+
+			spButtonFlyout.TryInvokeKeyboardAccelerator(args);
+		}
 
 		//internal void SuppressFlyoutOpening()
 		//{

@@ -8,11 +8,7 @@
 
 	<PropertyGroup>
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
-		<authors>Uno Platform</authors>
-		<PackageIcon>uno.png</PackageIcon>
-		<RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
 		<Description>This package provides the platform support for Skia in Uno Platform projects.</Description>
-		<Copyright>Copyright (C) 2015-$([System.DateTime]::Now.ToString(`yyyy`)) Uno Platform Inc. - all rights reserved</Copyright>
 
 		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Runtime.Skia.Gtk</PackageId>
 
@@ -21,6 +17,9 @@
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
+		<!-- Don't install GTK at this step, let the app head do it -->
+		<SkipGtkInstall>true</SkipGtkInstall>
 	</PropertyGroup>
 
 	<ItemGroup>

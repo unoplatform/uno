@@ -2,15 +2,8 @@ steps:
 
   - bash: |
       rm global.json
-      cp build/ci/net7/global.json global.json
-    displayName: "Using .NET 7 global.json"
-    condition: and(succeeded(), eq(variables.UnoDisableNetCurrent, 'true'))
-
-  - bash: |
-      rm global.json
-      cp build/ci/net8/global.json global.json
-    displayName: "Using .NET 8 global.json"
-    condition: and(succeeded(), ne(variables.UnoDisableNetCurrent, 'true'))
+      cp build/ci/net9/global.json global.json
+    displayName: "Using .NET 9 global.json"
 
   - task: UseDotNet@2
     displayName: 'Use .NET SDK'

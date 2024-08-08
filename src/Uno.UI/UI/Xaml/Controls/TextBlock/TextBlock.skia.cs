@@ -28,6 +28,8 @@ namespace Microsoft.UI.Xaml.Controls
 		private MenuFlyout? _contextMenu;
 		private readonly Dictionary<ContextMenuItem, MenuFlyoutItem> _flyoutItems = new();
 
+		internal Action? DesiredSizeChangedCallback { get; set; }
+
 		public TextBlock()
 		{
 			SetDefaultForeground(ForegroundProperty);
@@ -43,6 +45,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 			GotFocus += (_, _) => UpdateSelectionRendering();
 			LostFocus += (_, _) => UpdateSelectionRendering();
+		}
+
+		private protected override void OnDesiredSizeChanged()
+		{
+			base.OnDesiredSizeChanged();
+			DesiredSizeChangedCallback?.Invoke();
 		}
 
 #if DEBUG
@@ -142,7 +150,12 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else
 			{
-				var font = FontDetailsCache.GetFont(FontFamily?.Source, (float)FontSize, FontWeight, FontStyle);
+				var font = FontDetailsCache.GetFont(FontFamily?.Source, (float)FontSize, FontWeight, FontStretch, FontStyle);
+				if (font.CanChange)
+				{
+					font.RegisterElementForFontLoaded(this);
+				}
+
 				return font.LineHeight;
 			}
 		}
@@ -215,24 +228,18 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (IsTextSelectionEnabled)
 			{
-				// This could definitely be made faster, but at the cost of uglifying the code quite a bit.
-				// Since double tapping is not very repetitive, this shouldn't matter.
-				var position = e.GetPosition(this);
-				var nullableSpan = Inlines.GetRenderSegmentSpanAt(position, false);
-				if (nullableSpan is { span: var span })
+				if (GetCharacterIndexAtPoint(e.GetPosition(this), true) is var index and > 1)
 				{
-					// Index
-					var adjustedIndex = GetCharacterIndexAtPoint(position, true);
-					var spanRange = Inlines.GetStartAndEndIndicesForSpanAdjusted(span, false);
-					var chunk = GetChunkAt(Text[spanRange.start..spanRange.end], adjustedIndex - spanRange.start);
+					var chunk = GetChunkAt(Text, index);
 
-					// the chunk range will be relative to the span, so we have to add the offset of the span relative to the entire Text
-					Selection = new Range(spanRange.start + chunk.start, spanRange.start + chunk.start + chunk.length);
+					Selection = new Range(chunk.start, chunk.start + chunk.length);
 				}
 			}
 		}
 
-		// Note: this is a very close copy of TextBox.GenerateChunks.
+		// Note: this is a very close copy of TextBox.GenerateChunks. Note how, unlike TextBox, we don't need
+		// to add any caching here, since chunked-selection in TextBlocks only occurs on double-tapping,
+		// which is a lot less frequent than the TextBox scenarios (e.g. holding ctrl+shift+<right|left>).
 		private (int start, int length) GetChunkAt(string text, int index)
 		{
 			// a chunk is possible (continuous letters/numbers or continuous non-letters/non-numbers) then possible spaces.
@@ -242,7 +249,15 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				var start = i;
 				var c = text[i];
-				if (c is '\r' or '\t')
+				if (c is '\r')
+				{
+					i++;
+					if (text[i] is '\n')
+					{
+						i++;
+					}
+				}
+				else if (c is '\n' or '\t')
 				{
 					i++;
 				}

@@ -3,16 +3,11 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Content
 {
-#if false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class ContentIsland : global::System.IDisposable, global::Microsoft.UI.IClosableNotifier, global::Microsoft.UI.Composition.ICompositionSupportsSystemBackdrop
 	{
-#if false
-		internal ContentIsland()
-		{
-		}
-#endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Windows.UI.Composition.CompositionBrush SystemBackdrop
@@ -163,16 +158,7 @@ namespace Microsoft.UI.Content
 			}
 		}
 #endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool IsSiteVisible
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ContentIsland.IsSiteVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContentIsland.IsSiteVisible");
-			}
-		}
-#endif
+		// Skipping already declared property IsSiteVisible
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Microsoft.UI.Content.ContentLayoutDirection LayoutDirection
@@ -183,16 +169,7 @@ namespace Microsoft.UI.Content
 			}
 		}
 #endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public float RasterizationScale
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float ContentIsland.RasterizationScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20ContentIsland.RasterizationScale");
-			}
-		}
-#endif
+		// Skipping already declared property RasterizationScale
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public bool IsClosed
@@ -296,38 +273,8 @@ namespace Microsoft.UI.Content
 			throw new global::System.NotImplementedException("The member ContentIsland ContentIsland.GetFromId(ulong id) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentIsland%20ContentIsland.GetFromId%28ulong%20id%29");
 		}
 #endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Content.ContentIsland, global::Microsoft.UI.Content.ContentIslandAutomationProviderRequestedEventArgs> AutomationProviderRequested
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentIsland", "event TypedEventHandler<ContentIsland, ContentIslandAutomationProviderRequestedEventArgs> ContentIsland.AutomationProviderRequested");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentIsland", "event TypedEventHandler<ContentIsland, ContentIslandAutomationProviderRequestedEventArgs> ContentIsland.AutomationProviderRequested");
-			}
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Content.ContentIsland, global::Microsoft.UI.Content.ContentIslandStateChangedEventArgs> StateChanged
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentIsland", "event TypedEventHandler<ContentIsland, ContentIslandStateChangedEventArgs> ContentIsland.StateChanged");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentIsland", "event TypedEventHandler<ContentIsland, ContentIslandStateChangedEventArgs> ContentIsland.StateChanged");
-			}
-		}
-#endif
+		// Skipping already declared event Microsoft.UI.Content.ContentIsland.AutomationProviderRequested
+		// Skipping already declared event Microsoft.UI.Content.ContentIsland.StateChanged
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public event global::Microsoft.UI.ClosableNotifierHandler Closed

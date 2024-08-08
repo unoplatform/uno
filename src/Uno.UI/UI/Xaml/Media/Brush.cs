@@ -2,7 +2,7 @@
 
 using System;
 using System.ComponentModel;
-using System.Diagnostics.Contracts;
+using Microsoft.UI.Composition;
 using Uno.Disposables;
 using Uno.UI.Helpers;
 using Uno.UI.Xaml;
@@ -67,7 +67,13 @@ namespace Microsoft.UI.Xaml.Media
 			}
 		}
 
-		private protected void OnInvalidateRender() => _weakEventManager.HandleEvent(nameof(InvalidateRender));
+		private protected void OnInvalidateRender()
+		{
+			_weakEventManager.HandleEvent(nameof(InvalidateRender));
+#if __SKIA__
+			SynchronizeCompositionBrush();
+#endif
+		}
 
 		internal virtual void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 		{
@@ -140,13 +146,11 @@ namespace Microsoft.UI.Xaml.Media
 			return Color.FromArgb((byte)(Opacity * referenceColor.A), referenceColor.R, referenceColor.G, referenceColor.B);
 		}
 
-		[Pure]
 		internal static Color? GetColorWithOpacity(Brush? brush, Color? defaultColor = null)
 		{
 			return TryGetColorWithOpacity(brush, out var c) ? c : defaultColor;
 		}
 
-		[Pure]
 		internal static bool TryGetColorWithOpacity(Brush? brush, out Color color)
 		{
 			switch (brush)

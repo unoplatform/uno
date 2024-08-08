@@ -13,6 +13,9 @@ namespace Microsoft.UI.Xaml
 		void InitializeEffectiveViewport();
 		IDisposable RequestViewportUpdates(bool isInternal, IFrameworkElement_EffectiveViewport child);
 		void OnParentViewportChanged(bool isInitial, bool isInternal, IFrameworkElement_EffectiveViewport parent, ViewportInfo viewport);
+
+#if !UNO_REFERENCE_API // Only called by Layouter which is under !UNO_REFERENCE_API condition.
 		void OnLayoutUpdated();
+#endif
 	}
 }

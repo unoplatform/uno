@@ -191,7 +191,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public void Hide()
 		{
-			if (_hiding)
+			if (_hiding || !m_isShowing)
 			{
 				return;
 			}

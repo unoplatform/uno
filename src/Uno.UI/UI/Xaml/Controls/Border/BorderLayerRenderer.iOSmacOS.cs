@@ -27,13 +27,28 @@ namespace Uno.UI.Xaml.Controls;
 
 partial class BorderLayerRenderer
 {
+	private CGPath _boundsPath;
+
 	// Creates a unique native CGColor for the transparent color, and make sure to keep a strong ref on it
 	// https://github.com/unoplatform/uno/issues/10283
 	private static readonly CGColor _transparent = Colors.Transparent;
 
 	private SerialDisposable _layerDisposable = new SerialDisposable();
 
-	internal CGPath BoundsPath { get; set; }
+	internal CGPath BoundsPath
+	{
+		get => _boundsPath;
+		set
+		{
+			if (_boundsPath != value)
+			{
+				_boundsPath = value;
+				BoundsPathUpdated?.Invoke(this, EventArgs.Empty);
+			}
+		}
+	}
+
+	internal event EventHandler BoundsPathUpdated;
 
 	/// <summary>
 	/// Updates or creates a sublayer to render a border-like shape.
@@ -70,9 +85,6 @@ partial class BorderLayerRenderer
 
 			BoundsPath = updatedBoundsPath;
 		}
-
-
-		BoundsPath = null; // no change
 	}
 
 	/// <summary>
@@ -234,7 +246,7 @@ partial class BorderLayerRenderer
 
 			var borderCALayer = borderBrush switch
 			{
-				GradientBrush gradientBorder => gradientBorder.GetLayer(area.Size),
+				GradientBrush gradientBorder when gradientBorder.CanApplyToBorder(cornerRadius) => gradientBorder.GetLayer(area.Size),
 				RadialGradientBrush radialBorder => radialBorder.GetLayer(area.Size),
 				_ => null,
 			};
@@ -252,7 +264,7 @@ partial class BorderLayerRenderer
 				var borderLayerIndex = parent.Sublayers.Length;
 				CreateGradientBrushLayers(area, area, parent, sublayers, ref borderLayerIndex, borderCALayer, fillMask);
 			}
-			else if (borderBrush is SolidColorBrush scbBorder || borderBrush == null)
+			else
 			{
 				Action onInvalidateRender = () =>
 				{
@@ -382,7 +394,7 @@ partial class BorderLayerRenderer
 
 				var borderCALayer = borderBrush switch
 				{
-					GradientBrush gradientBorder => gradientBorder.GetLayer(area.Size),
+					GradientBrush gradientBorder when gradientBorder.CanApplyToBorder(cornerRadius) => gradientBorder.GetLayer(area.Size),
 					RadialGradientBrush radialBorder => radialBorder.GetLayer(area.Size),
 					_ => null,
 				};
@@ -400,12 +412,13 @@ partial class BorderLayerRenderer
 					var borderLayerIndex = parent.Sublayers.Length;
 					CreateGradientBrushLayers(area, area, parent, sublayers, ref borderLayerIndex, borderCALayer, fillMask);
 				}
-				else if (borderBrush is SolidColorBrush scbBorder)
+				else
 				{
 					Action onInvalidateRender = () => layer.FillColor = Brush.GetFallbackColor(borderBrush);
+
 					onInvalidateRender();
-					scbBorder.InvalidateRender += onInvalidateRender;
-					new DisposableAction(() => scbBorder.InvalidateRender -= onInvalidateRender).DisposeWith(disposables);
+					borderBrush.InvalidateRender += onInvalidateRender;
+					new DisposableAction(() => borderBrush.InvalidateRender -= onInvalidateRender).DisposeWith(disposables);
 				}
 			}
 

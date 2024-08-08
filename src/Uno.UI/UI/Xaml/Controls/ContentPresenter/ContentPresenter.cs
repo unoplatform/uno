@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Collections;
+using System.Diagnostics;
 using System.Linq;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
@@ -13,6 +14,8 @@ using Windows.Foundation;
 using Uno.UI;
 using Microsoft.UI.Xaml.Media;
 using Windows.UI.Text;
+using Microsoft.UI.Composition;
+using Uno.UI.Controls;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Controls;
 
@@ -56,10 +59,13 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	, ICustomClippingElement
 #endif
 {
+#if !UNO_HAS_BORDER_VISUAL
 	private readonly BorderLayerRenderer _borderRenderer;
+#endif
 
 	private bool _firstLoadResetDone;
 	private View _contentTemplateRoot;
+	private bool _appliedTemplate;
 
 	/// <summary>
 	/// Will be set to either the result of ContentTemplateSelector or to ContentTemplate, depending on which is used
@@ -68,11 +74,22 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	public ContentPresenter()
 	{
+#if !UNO_HAS_BORDER_VISUAL
 		_borderRenderer = new BorderLayerRenderer(this);
+#endif
 		SetDefaultForeground(ForegroundProperty);
 
 		InitializePlatform();
 	}
+
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __NETSTD_REFERENCE__ || __MACOS__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#endif
+	public BrushTransition BackgroundTransition { get; set; }
+
+#if UNO_HAS_BORDER_VISUAL
+	private protected override ShapeVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateBorderVisual();
+#endif
 
 	partial void InitializePlatform();
 
@@ -196,7 +213,11 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	}
 	private void OnBackgroundSizingChanged(DependencyPropertyChangedEventArgs e)
 	{
+#if UNO_HAS_BORDER_VISUAL
+		this.UpdateBackgroundSizing();
+#else
 		UpdateBorder();
+#endif
 		base.OnBackgroundSizingChangedInner(e);
 	}
 
@@ -312,6 +333,18 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 				(s, e) => ((ContentPresenter)s)?.OnFontStyleChanged((FontStyle)e.OldValue, (FontStyle)e.NewValue)
 			)
 		);
+	#endregion
+
+	#region FontStretch
+
+	public FontStretch FontStretch
+	{
+		get => GetFontStretchValue();
+		set => SetFontStretchValue(value);
+	}
+
+	[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnFontStretchChanged), DefaultValue = FontStretch.Normal, Options = FrameworkPropertyMetadataOptions.Inherits)]
+	public static DependencyProperty FontStretchProperty { get; } = CreateFontStretchProperty();
 	#endregion
 
 	#region TextWrapping Dependency Property
@@ -508,7 +541,14 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			)
 		);
 
-	private void OnPaddingChanged(Thickness oldValue, Thickness newValue) => UpdateBorder();
+	private void OnPaddingChanged(Thickness oldValue, Thickness newValue)
+	{
+#if UNO_HAS_BORDER_VISUAL
+		// TODO: https://github.com/unoplatform/uno/issues/16705
+#else
+		UpdateBorder();
+#endif
+	}
 
 	#endregion
 
@@ -532,7 +572,14 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			)
 		);
 
-	private void OnBorderThicknessChanged(Thickness oldValue, Thickness newValue) => UpdateBorder();
+	private void OnBorderThicknessChanged(Thickness oldValue, Thickness newValue)
+	{
+#if UNO_HAS_BORDER_VISUAL
+		this.UpdateBorderThickness();
+#else
+		UpdateBorder();
+#endif
+	}
 
 	#endregion
 
@@ -564,7 +611,11 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			(Content as UIElement)?.InvalidateArrange();
 		}
 #endif
+#if UNO_HAS_BORDER_VISUAL
+		this.UpdateBorderBrush();
+#else
 		UpdateBorder();
+#endif
 	}
 
 
@@ -582,9 +633,100 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		set => SetCornerRadiusValue(value);
 	}
 
-	private void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue) => UpdateBorder();
+	private void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue)
+	{
+#if UNO_HAS_BORDER_VISUAL
+		this.UpdateCornerRadius();
+#else
+		UpdateBorder();
+#endif
+	}
 
 	#endregion
+
+	protected override void OnApplyTemplate()
+	{
+		base.OnApplyTemplate();
+
+		// Applying the template will not delete existing visuals. This will be done conditionally
+		// when the template is invalidated.
+		// Uno specific: since we don't call this early enough, we have to comment out the condition
+		// if (GetChildren().Count == 0)
+		{
+			ContentControl pTemplatedParent = TemplatedParent as ContentControl;
+
+			// Only ContentControl has the two properties below.  Other parents would just fail to bind since they don't have these
+			// two content related properties.
+			if (pTemplatedParent != null
+#if ANDROID || __IOS__
+				&& this is not NativeCommandBarPresenter // Uno specific: NativeCommandBarPresenter breaks if you inherit from the TP
+#endif
+				)
+			{
+				// bool needsRefresh = false;
+				DependencyProperty pdpTarget;
+
+				// By default Content and ContentTemplate are template are bound.
+				// If no template binding exists already then hook them up now
+				// pdpTarget = GetPropertyByIndexInline(KnownPropertyIndex::ContentPresenter_SelectedContentTemplate);
+				// IFCEXPECT(pdpTarget);
+				// if (IsPropertyDefault(pdpTarget) && !IsPropertyTemplateBound(pdpTarget))
+				// {
+				// 	const CDependencyProperty* pdpSource = pTemplatedParent->GetPropertyByIndexInline(KnownPropertyIndex::ContentControl_SelectedContentTemplate);
+				// 	IFCEXPECT(pdpSource);
+				//
+				// 	IFC(SetTemplateBinding(pdpTarget, pdpSource));
+				// 	needsRefresh = true;
+				// }
+
+				// UNO Specific: SelectedContentTemplate is not implemented, we hook ContentTemplateSelector instead
+				pdpTarget = ContentPresenter.ContentTemplateSelectorProperty;
+				global::System.Diagnostics.Debug.Assert(pdpTarget is { });
+				var store = ((IDependencyObjectStoreProvider)this).Store;
+				if (store.GetCurrentHighestValuePrecedence(pdpTarget) == DependencyPropertyValuePrecedences.DefaultValue &&
+					!store.IsPropertyTemplateBound(pdpTarget))
+				{
+					DependencyProperty pdpSource = ContentControl.ContentTemplateSelectorProperty;
+					global::System.Diagnostics.Debug.Assert(pdpSource is { });
+
+					store.SetTemplateBinding(pdpTarget, pdpSource);
+					// needsRefresh = true;
+				}
+
+				pdpTarget = ContentPresenter.ContentTemplateProperty;
+				global::System.Diagnostics.Debug.Assert(pdpTarget is { });
+				if (store.GetCurrentHighestValuePrecedence(pdpTarget) == DependencyPropertyValuePrecedences.DefaultValue &&
+					!store.IsPropertyTemplateBound(pdpTarget))
+				{
+					DependencyProperty pdpSource = ContentControl.ContentTemplateProperty;
+					global::System.Diagnostics.Debug.Assert(pdpSource is { });
+
+					store.SetTemplateBinding(pdpTarget, pdpSource);
+					// needsRefresh = true;
+				}
+
+				pdpTarget = ContentPresenter.ContentProperty;
+				global::System.Diagnostics.Debug.Assert(pdpTarget is { });
+				if (store.GetCurrentHighestValuePrecedence(pdpTarget) == DependencyPropertyValuePrecedences.DefaultValue &&
+					!store.IsPropertyTemplateBound(pdpTarget))
+				{
+					DependencyProperty pdpSource = ContentControl.ContentProperty;
+					global::System.Diagnostics.Debug.Assert(pdpSource is { });
+
+					store.SetTemplateBinding(pdpTarget, pdpSource);
+					// needsRefresh = true;
+				}
+
+				// Uno specific: uno bindings don't work this way
+				// Setting up the binding doesn't get you the values.  We need to call refresh to get the latest value
+				// for m_pContentTemplate, SelectedContentTemplate and/or m_pContent for the tests below.
+				// if (needsRefresh)
+				// {
+				// 	IFC(pTemplatedParent->RefreshTemplateBindings(TemplateBindingsRefreshType::All));
+				// }
+			}
+		}
+	}
 
 	protected virtual void OnForegroundColorChanged(Brush oldValue, Brush newValue)
 	{
@@ -621,38 +763,39 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	partial void OnFontStyleChangedPartial(FontStyle oldValue, FontStyle newValue);
 
+	private protected virtual void OnFontStretchChanged(FontStretch oldValue, FontStretch newValue)
+	{
+		OnFontStretchChangedPartial(oldValue, newValue);
+	}
+
+	partial void OnFontStretchChangedPartial(FontStretch oldValue, FontStretch newValue);
+
 	protected virtual void OnContentChanged(object oldValue, object newValue)
 	{
-		if (oldValue != null && newValue == null)
-		{
-			// The content is being reset, remove the existing content properly.
-			ContentTemplateRoot = null;
-		}
-		else if (oldValue is View || newValue is View)
+		if (oldValue is View || newValue is View)
 		{
 			// Make sure not to reuse the previous Content as a ContentTemplateRoot (i.e., in case there's no data template)
 			// If setting Content to a new View, recreate the template
 			ContentTemplateRoot = null;
 		}
 
-		if (newValue is not null)
-		{
-			TryRegisterNativeElement(newValue);
+		TrySetDataContextFromContent(newValue);
 
-			TrySetDataContextFromContent(newValue);
-
-			SetUpdateTemplate();
-		}
-		else
+		if (IsInLiveTree)
 		{
-			// Restore the inherited data context as it may have been overridden by TrySetDataContextFromContent
-			this.ClearValue(DataContextProperty, DependencyPropertyValuePrecedences.Local);
+			TryRegisterNativeElement(oldValue, newValue);
 		}
+
+		SetUpdateTemplate();
 	}
 
 	private void TrySetDataContextFromContent(object value)
 	{
-		if (value != null)
+		if (value == null)
+		{
+			this.ClearValue(DataContextProperty, DependencyPropertyValuePrecedences.Local);
+		}
+		else
 		{
 			if (!(value is View))
 			{
@@ -687,6 +830,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	protected virtual void OnContentTemplateSelectorChanged(DataTemplateSelector oldContentTemplateSelector, DataTemplateSelector newContentTemplateSelector)
 	{
+		SetUpdateTemplate();
 	}
 
 	partial void UnregisterContentTemplateRoot();
@@ -805,9 +949,10 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		}
 	}
 
-	private protected override void OnLoaded()
+#if UNO_HAS_ENHANCED_LIFECYCLE
+	internal override void EnterImpl(EnterParams @params, int depth)
 	{
-		base.OnLoaded();
+		base.EnterImpl(@params, depth);
 
 		if (ResetDataContextOnFirstLoad() || ContentTemplateRoot == null)
 		{
@@ -818,16 +963,82 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		// as it may have been reset during the last unload.
 		SynchronizeContentTemplatedParent();
 
+#if !UNO_HAS_BORDER_VISUAL
+		UpdateBorder();
+#endif
+
+		// We do this in Enter not Loaded since Loaded is a lot more tricky
+		// (e.g. you can have Unloaded without Loaded, you can have multiple loaded events without unloaded in between, etc.)
+		if (!IsNativeHost)
+		{
+			TryRegisterNativeElement(null, Content);
+		}
+		if (IsNativeHost) // IsNativeHost can become true after the above TryRegisterNativeElement call, so this is not an if-else situation
+		{
+			AttachNativeElement();
+		}
+	}
+
+	internal override void LeaveImpl(LeaveParams @params)
+	{
+		base.LeaveImpl(@params);
+
+		if (IsNativeHost)
+		{
+			DetachNativeElement(Content);
+		}
+	}
+#endif
+
+	private protected override void OnLoaded()
+	{
+		base.OnLoaded();
+
+
+		// WinUI has some special handling for ContentPresenter and ContentControl where even though they aren't Controls,
+		// they use OnApplyTemplate. As a workaround for now, we just call OnApplyTemplate here.
+		if (!_appliedTemplate)
+		{
+			_appliedTemplate = true;
+			OnApplyTemplate();
+		}
+
+
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+		if (ResetDataContextOnFirstLoad() || ContentTemplateRoot == null)
+		{
+			SetUpdateTemplate();
+		}
+#endif
+
+		// When the control is loaded, set the TemplatedParent
+		// as it may have been reset during the last unload.
+		SynchronizeContentTemplatedParent();
+
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 		UpdateBorder();
 
-		TryAttachNativeElement();
+		if (!IsNativeHost)
+		{
+			TryRegisterNativeElement(null, Content);
+		}
+		if (IsNativeHost)
+		{
+			AttachNativeElement();
+		}
+#endif
 	}
 
 	private protected override void OnUnloaded()
 	{
 		base.OnUnloaded();
 
-		TryDetachNativeElement();
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+		if (IsNativeHost)
+		{
+			DetachNativeElement(Content);
+		}
+#endif
 	}
 
 	private bool ResetDataContextOnFirstLoad()
@@ -967,8 +1178,8 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		}
 
 		// Check if the Content is set to something
-		var v = this.GetValueUnderPrecedence(ContentProperty, DependencyPropertyValuePrecedences.DefaultValue);
-		if (v.precedence != DependencyPropertyValuePrecedences.DefaultValue)
+		var store = ((IDependencyObjectStoreProvider)this).Store;
+		if (store.GetCurrentHighestValuePrecedence(ContentProperty) != DependencyPropertyValuePrecedences.DefaultValue)
 		{
 			ClearImplicitBindinds();
 			return; // Nope, there's a value somewhere
@@ -1005,7 +1216,15 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	/// <remarks>
 	/// Don't call base, the UpdateBorder() method handles drawing the background.
 	/// </remarks>
-	protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e) => UpdateBorder();
+	protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
+	{
+#if UNO_HAS_BORDER_VISUAL
+		this.UpdateBackground();
+		BorderHelper.SetUpBrushTransitionIfAllowed((BorderVisual)this.Visual, e.OldValue as Brush, e.NewValue as Brush, this.BackgroundTransition);
+#else
+		UpdateBorder();
+#endif
+	}
 
 	internal override void UpdateThemeBindings(ResourceUpdateReason updateReason)
 	{
@@ -1068,9 +1287,11 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 				contentSize.Width,
 				contentSize.Height);
 
+			if (child is UIElement childAsUIElement)
+			{
+				childAsUIElement.EnsureLayoutStorage();
+			}
 			ArrangeElement(child, arrangeRect);
-
-			ArrangeNativeElement(arrangeRect);
 		}
 
 		return finalSize;
@@ -1131,15 +1352,26 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		var padding = Padding;
 		var borderThickness = BorderThickness;
 
-		var measuredSize = MeasureFirstChild(
-			new Size(
-				size.Width - padding.Left - padding.Right - borderThickness.Left - borderThickness.Right,
-				size.Height - padding.Top - padding.Bottom - borderThickness.Top - borderThickness.Bottom
-			)
-		);
+		var child = this.FindFirstChild();
+		Size measuredSize = default;
+		if (child is not null)
+		{
+			measuredSize = MeasureElement(child,
+				new Size(
+					size.Width - padding.Left - padding.Right - borderThickness.Left - borderThickness.Right,
+					size.Height - padding.Top - padding.Bottom - borderThickness.Top - borderThickness.Bottom
+				));
+			if (child is UIElement childAsUIElement)
+			{
+				childAsUIElement.EnsureLayoutStorage();
+			}
+		}
 
 #if UNO_SUPPORTS_NATIVEHOST
-		measuredSize = MeasureNativeElement(measuredSize);
+		if (IsNativeHost)
+		{
+			measuredSize = MeasureNativeElement(measuredSize, size);
+		}
 #endif
 
 		return new Size(
@@ -1157,24 +1389,21 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	/// <summary>
 	/// Registers the provided native element in the native shell
 	/// </summary>
-	partial void TryRegisterNativeElement(object newValue);
+	partial void TryRegisterNativeElement(object oldValue, object newValue);
 
 	/// <summary>
 	/// Attaches the current native element in the native shell
 	/// </summary>
-	partial void TryAttachNativeElement();
+	partial void AttachNativeElement();
 
 	/// <summary>
 	/// Detaches the current native element from the native shell
 	/// </summary>
-	partial void TryDetachNativeElement();
+	partial void DetachNativeElement(object content);
 
-	/// <summary>
-	/// Arranges the native element in the native shell
-	/// </summary>
-	partial void ArrangeNativeElement(Rect arrangeRect);
-
+#if !UNO_HAS_BORDER_VISUAL
 	private void UpdateBorder() => _borderRenderer.Update();
+#endif
 
 	private void SetUpdateTemplate()
 	{

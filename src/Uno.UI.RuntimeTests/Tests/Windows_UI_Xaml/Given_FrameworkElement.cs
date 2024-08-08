@@ -638,9 +638,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.AreEqual(new Size(double.PositiveInfinity, double.PositiveInfinity), SUT.MeasureOverrides.Last());
 				Assert.AreEqual(new Size(0, 0), SUT.DesiredSize);
 
+#if __CROSSRUNTIME__
+				// Unlike WinUI, we don't crash.
+				SUT.Measure(new Size(double.NaN, double.NaN));
+				SUT.Measure(new Size(42.0, double.NaN));
+				SUT.Measure(new Size(double.NaN, 42.0));
+#else
 				Assert.ThrowsException<InvalidOperationException>(() => SUT.Measure(new Size(double.NaN, double.NaN)));
 				Assert.ThrowsException<InvalidOperationException>(() => SUT.Measure(new Size(42.0, double.NaN)));
 				Assert.ThrowsException<InvalidOperationException>(() => SUT.Measure(new Size(double.NaN, 42.0)));
+#endif
 			});
 
 		[TestMethod]
@@ -734,19 +741,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// This is matching Windows and is important to keep the behavior of this test like this.
 			Assert.AreEqual(new Size(120, 50), grid.AvailableSizeUsedForMeasure);
 
-#if __SKIA__
-			// https://github.com/unoplatform/uno/issues/7271
-			// This assert is NOT correct. The correct size is 50, 15
-			// It's happening because ContentControl is measuring incorrectly because GetFirstChild is returning null instead of the Border.
-			Assert.AreEqual(new Size(50, 0), grid.DesiredSize);
-#else
 			Assert.AreEqual(new Size(50, 15), grid.DesiredSize);
-#endif
-
-#if WINAPPSDK // Failing on WASM - https://github.com/unoplatform/uno/issues/2314
 			Assert.AreEqual(new Size(110, 15), contentCtl.DesiredSize);
 			Assert.AreEqual(new Size(100, 15), content.DesiredSize);
-#endif
 
 			grid.Arrange(new Rect(default, new Size(50, 50)));
 
@@ -756,14 +753,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await Task.Delay(10);
 			await TestServices.WindowHelper.WaitForIdle();
 
-#if WINAPPSDK // Failing on WASM - https://github.com/unoplatform/uno/issues/2314
 			var ls1 = LayoutInformation.GetLayoutSlot(grid);
 			Assert.AreEqual(new Rect(0, 0, 50, 50), ls1);
 			var ls2 = LayoutInformation.GetLayoutSlot(contentCtl);
 			Assert.AreEqual(new Rect(0, 0, 120, 50), ls2);
 			var ls3 = LayoutInformation.GetLayoutSlot(content);
 			Assert.AreEqual(new Rect(0, 0, 100, 15), ls3);
-#endif
 		}
 
 		[TestMethod]
@@ -1003,6 +998,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			hostPanel.Children.Add(sut);
 
+			await TestServices.WindowHelper.WaitForIdle();
+
 			Assert.AreEqual(1, loadingCount, "loading");
 			Assert.AreEqual(1, loadedCount, "loaded");
 		}
@@ -1046,6 +1043,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var hostPanel = new Grid { Children = { sut } };
 
 			TestServices.WindowHelper.WindowContent = hostPanel;
+
 			await TestServices.WindowHelper.WaitForIdle();
 
 			var unloadCount = 0;
@@ -1111,18 +1109,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			sut.Loading += (snd, e) => loadingCount++;
 			sut.Loaded += (snd, e) => loadedCount++;
 
-			hostPanel.Loading += (snd, e) =>
+			hostPanel.Loading += async (snd, e) =>
 			{
 				hostPanel.Children.Add(sut);
 
-				// Note: This is NOT the case on UWP. Loading and Loaded event are raised on the child (aka. 'sut'')
-				//		 only after the completion of the current handler.
-				Assert.AreEqual(1, loadingCount, "loading");
+				Assert.AreEqual(0, loadingCount, "loading");
 				Assert.AreEqual(0, loadedCount, "loaded");
 				success = true;
 			};
 
 			TestServices.WindowHelper.WindowContent = hostPanel;
+
 			await TestServices.WindowHelper.WaitForIdle();
 
 			Assert.IsTrue(success);
@@ -1146,24 +1143,176 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				hostPanel.Children.Add(sut);
 
-				// Note: This is NOT the case on UWP. Loading and Loaded event are raised on the child (aka. 'sut'')
-				//		 only after the completion of the current handler.
-				// Note 2: On UWP, when adding a child to the parent while in the parent's loading event handler (i.e. this case)
-				//		   the child will receive the Loaded ** BEFORE ** the Loading event.
-				Assert.AreEqual(1, loadingCount, "loading");
-				Assert.AreEqual(1, loadedCount, "loaded");
-
+				Assert.AreEqual(0, loadingCount, "loading");
+				Assert.AreEqual(0, loadedCount, "loaded");
 				success = true;
 			};
 
 			TestServices.WindowHelper.WindowContent = hostPanel;
+
 			await TestServices.WindowHelper.WaitForIdle();
+
+			// NOTE: The following asserts are flaky on WinUI but not Uno.
+			// In WinUI, sometimes the above WaitForIdle isn't enough for Loaded to be raised.
 
 			Assert.IsTrue(success);
 			Assert.AreEqual(1, loadingCount, "loading");
 			Assert.AreEqual(1, loadedCount, "loaded");
 		}
 #endif
+		[TestMethod]
+		[RunsOnUIThread]
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+		[Ignore("Works only with proper lifecycle.")]
+#endif
+		public async Task When_Removed_After_Add_But_Before_Loaded()
+		{
+			var sp = new StackPanel
+			{
+				Width = 200,
+				Height = 500,
+			};
+
+			await Uno.UI.RuntimeTests.Helpers.UITestHelper.Load(sp);
+			List<string> events = new();
+
+			var sut = new Button() { Content = "Click me" };
+			sut.Loading += Sut_Loading;
+			sut.Loaded += Sut_Loaded;
+			sut.Unloaded += Sut_Unloaded;
+
+			sp.Children.Add(sut);
+			sp.Children.Remove(sut);
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// NOTE: On WinUI, Unloaded is fired.
+			// In Uno, we only fire Unloaded if IsLoaded is true.
+			// See UIElement.Leave for more details.
+			Assert.AreEqual(0, events.Count);
+			//Assert.AreEqual("Unloaded", events[0]);
+
+			void Sut_Loading(FrameworkElement sender, object args)
+			{
+				events.Add("Loading");
+			}
+
+			void Sut_Loaded(object sender, RoutedEventArgs args)
+			{
+				events.Add("Loaded");
+			}
+
+			void Sut_Unloaded(object sender, RoutedEventArgs args)
+			{
+				events.Add("Unloaded");
+			}
+		}
+
+#if UNO_HAS_ENHANCED_LIFECYCLE || !HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task TestEventOrder()
+		{
+			var sut = new ControlLoggingEventsSequence();
+			await Uno.UI.RuntimeTests.Helpers.UITestHelper.Load(sut);
+			var events = sut.Events;
+
+			const int expectedCount =
+#if WINAPPSDK
+				9;
+#else
+				11;
+#endif
+
+			Assert.AreEqual(expectedCount, events.Count);
+			Assert.AreEqual("Parent Loading", events[0]);
+			Assert.AreEqual("Child Loading", events[1]);
+			Assert.AreEqual("Child OnApplyTemplate", events[2]);
+			Assert.AreEqual("Parent SizeChanged", events[3]);
+			Assert.AreEqual("Child SizeChanged", events[4]);
+
+			// On WinUI, order isn't guaranteed. Different runs of test can produce different order of LayoutUpdated.
+			// In Uno as well, we put elements that are interested in LayoutUpdated event in a CWT, so the order
+			// isn't guaranteed as well.
+			if (events[5] == "Child LayoutUpdated")
+			{
+				Assert.AreEqual("Parent LayoutUpdated", events[6]);
+			}
+			else
+			{
+				Assert.AreEqual("Parent LayoutUpdated", events[5]);
+				Assert.AreEqual("Child LayoutUpdated", events[6]);
+			}
+
+			Assert.AreEqual("Child Loaded", events[7]);
+			Assert.AreEqual("Parent Loaded", events[8]);
+
+
+#if HAS_UNO
+			if (events[9] == "Child LayoutUpdated")
+			{
+				Assert.AreEqual("Parent LayoutUpdated", events[10]);
+			}
+			else
+			{
+				Assert.AreEqual("Parent LayoutUpdated", events[9]);
+				Assert.AreEqual("Child LayoutUpdated", events[10]);
+			}
+#endif
+		}
+#endif
+	}
+
+	public partial class ControlLoggingEventsSequence : StackPanel
+	{
+		private sealed partial class CustomButton : Button
+		{
+			private readonly List<string> _events;
+
+			public CustomButton(List<string> events)
+			{
+				_events = events;
+			}
+
+			protected override void OnApplyTemplate()
+			{
+				_events.Add("Child OnApplyTemplate");
+				base.OnApplyTemplate();
+			}
+		}
+
+		private readonly List<string> _events = new();
+
+		public IReadOnlyList<string> Events => _events.AsReadOnly();
+
+		public ControlLoggingEventsSequence()
+		{
+			var btn = new CustomButton(_events) { Content = "Click" };
+			btn.Loading += Btn_Loading;
+			btn.Loaded += Btn_Loaded;
+			btn.LayoutUpdated += Btn_LayoutUpdated;
+			btn.SizeChanged += Btn_SizeChanged;
+			Loading += ControlLoggingEventsSequence_Loading;
+			Loaded += ControlLoggingEventsSequence_Loaded;
+			LayoutUpdated += ControlLoggingEventsSequence_LayoutUpdated;
+			SizeChanged += ControlLoggingEventsSequence_SizeChanged;
+			this.Children.Add(btn);
+		}
+
+		protected override void OnApplyTemplate()
+		{
+			_events.Add("Parent OnApplyTemplate");
+			base.OnApplyTemplate();
+		}
+
+		private void Btn_SizeChanged(object sender, SizeChangedEventArgs args) => _events.Add("Child SizeChanged");
+		private void Btn_LayoutUpdated(object sender, object e) => _events.Add("Child LayoutUpdated");
+		private void Btn_Loaded(object sender, RoutedEventArgs e) => _events.Add("Child Loaded");
+		private void Btn_Loading(FrameworkElement sender, object args) => _events.Add("Child Loading");
+		private void ControlLoggingEventsSequence_SizeChanged(object sender, SizeChangedEventArgs args) => _events.Add("Parent SizeChanged");
+		private void ControlLoggingEventsSequence_LayoutUpdated(object sender, object e) => _events.Add("Parent LayoutUpdated");
+		private void ControlLoggingEventsSequence_Loaded(object sender, RoutedEventArgs e) => _events.Add("Parent Loaded");
+		private void ControlLoggingEventsSequence_Loading(FrameworkElement sender, object args) => _events.Add("Parent Loading");
 	}
 
 	public partial class MyControl01 : FrameworkElement

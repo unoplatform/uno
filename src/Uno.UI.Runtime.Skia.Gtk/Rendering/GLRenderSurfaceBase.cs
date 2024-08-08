@@ -14,6 +14,7 @@ using Uno.UI.Hosting;
 using Microsoft.UI.Composition;
 using Uno.UI.Runtime.Skia.Gtk.Hosting;
 using Microsoft.UI.Xaml;
+using Uno.UI.Helpers;
 
 namespace Uno.UI.Runtime.Skia.Gtk
 {
@@ -62,7 +63,7 @@ namespace Uno.UI.Runtime.Skia.Gtk
 			Realized += GLRenderSurface_Realized;
 
 			HasDepthBuffer = false;
-			HasStencilBuffer = false;
+			HasStencilBuffer = true;
 
 			// AutoRender must be disabled to avoid having the GLArea re-render the
 			// composition Visuals after pointer interactions, causing undefined behaviors
@@ -114,7 +115,7 @@ namespace Uno.UI.Runtime.Skia.Gtk
 
 				var glInfo = new GRGlFramebufferInfo((uint)framebuffer, colorType.ToGlSizedFormat());
 
-				_renderTarget = new GRBackendRenderTarget(w, h, samples, stencil, glInfo);
+				_renderTarget = new GRBackendRenderTarget(w, h, samples, 8, glInfo);
 
 				// create the surface
 				_surface?.Dispose();
@@ -142,7 +143,10 @@ namespace Uno.UI.Runtime.Skia.Gtk
 
 				if (_host.RootElement?.Visual is { } rootVisual)
 				{
-					Compositor.GetSharedCompositor().RenderRootVisual(_surface, rootVisual);
+					// OpenGL rendering on Gtk doesn't work well with transparency
+					// even though stencil buffer support is present and the color includes alpha
+					// SkiaRenderHelper.RenderRootVisual(w, h, rootVisual, _surface, canvas);
+					Compositor.GetSharedCompositor().RenderRootVisual(_surface, rootVisual, null);
 				}
 			}
 

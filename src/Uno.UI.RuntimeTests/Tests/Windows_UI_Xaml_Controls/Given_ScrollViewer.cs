@@ -5,23 +5,23 @@ using System.Numerics;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
+using MUXControlsTestApp.Utilities;
+using Uno.Extensions;
+using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Shapes;
 using Windows.UI.ViewManagement;
-using Microsoft.UI.Xaml.Input;
-using MUXControlsTestApp.Utilities;
-using static Private.Infrastructure.TestServices;
-using Uno.Disposables;
-using Uno.Extensions;
-using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.Toolkit.Extensions;
+using static Private.Infrastructure.TestServices;
+using Disposable = Uno.Disposables.Disposable;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -90,6 +90,34 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				.Count();
 
 			Assert.IsTrue(buttons == 0);
+		}
+
+		[TestMethod]
+		public async Task When_ScrollViewer_Pointer_Released_Should_Not_Focus()
+		{
+			var scrollViewer = new ScrollViewer();
+			var stackPanel = new StackPanel();
+			stackPanel.Children.Add(new Button() { Content = "First button" });
+			stackPanel.Children.Add(new Button() { Content = "Second button" });
+			stackPanel.Children.Add(new Rectangle() { Fill = new SolidColorBrush() { Color = Colors.Red }, Width = 100, Height = 100 });
+
+			scrollViewer.Content = stackPanel;
+
+			WindowHelper.WindowContent = scrollViewer;
+			await WindowHelper.WaitForLoaded(scrollViewer);
+
+			// Focus second button
+			var secondButton = stackPanel.Children[1] as Button;
+			secondButton.Focus(FocusState.Programmatic);
+
+			// Tap the rectangle center
+			var rectangle = stackPanel.Children[2] as Rectangle;
+			InputHelper.Tap(rectangle);
+
+			await WindowHelper.WaitForIdle();
+
+			// Second button should still be focused
+			Assert.AreEqual(secondButton, FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot));
 		}
 
 		[TestMethod]
@@ -721,6 +749,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
+		[RequiresFullWindow]
 #if !__SKIA__
 		[Ignore("InputInjector is only supported on skia")]
 #endif
@@ -728,19 +757,32 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			var ts = new ToggleSwitch();
 			var tb = new TextBox { Width = 300 };
+			var button = new Button() { Content = "Test" };
+			var rect = new Rectangle { Width = 300, Height = 300, Fill = new SolidColorBrush(Colors.Red) };
+
 			var SUT = new ScrollViewer
 			{
+				Height = 300,
 				Content = new StackPanel
 				{
 					Children =
 					{
 						tb,
-						ts
+						ts,
+						rect,
 					}
 				}
 			};
+			var outer = new StackPanel()
+			{
+				Children =
+				{
+					SUT,
+					button,
+				}
+			};
 
-			await UITestHelper.Load(SUT);
+			await UITestHelper.Load(outer);
 
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 			using var mouse = injector.GetMouse();
@@ -752,12 +794,23 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// The ScrollViewer should NOT grab focus here.
 			Assert.AreEqual(ts, FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 
-			mouse.Press(tb.GetAbsoluteBounds().GetCenter() + new Point(0, 20)); // click somewhere empty inside the ScrollViewer
+			mouse.Press(rect.GetAbsoluteBounds().GetCenter()); // click somewhere empty inside the ScrollViewer
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
 
-			// This time, since no element inside handled PointerPressed, ScrollViewer should focus the first element inside.
+			// Because the focused element is inside the scrollviewer already, keep the focus there.
+			Assert.AreEqual(ts, FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
+
+			button.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			mouse.Press(rect.GetAbsoluteBounds().GetCenter()); // click somewhere empty inside the ScrollViewer
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			// The ScrollViewer should grab focus here and set it to the first element.
 			Assert.AreEqual(tb, FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
+
 		}
 #endif
 

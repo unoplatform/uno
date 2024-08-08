@@ -6,7 +6,7 @@ uid: Uno.Authoring.Tests
 This tutorial will guide you through the process of creating an [Uno application along with tests](xref:Uno.GettingStarted.UsingWizard#10-testing).
 
 > [!NOTE]
-> Make sure to setup your environment first by [following our instructions](xref:Uno.GetStarted.vs2022).
+> Make sure to setup your environment first by [following our instructions](xref:Uno.GetStarted).
   
 ## 1. Exploring the Solution
 

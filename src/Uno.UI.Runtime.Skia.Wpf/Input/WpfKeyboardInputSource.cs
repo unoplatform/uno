@@ -1,6 +1,5 @@
 ﻿using System.Windows.Input;
 using System;
-using System.Reflection;
 using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.System;
@@ -10,6 +9,7 @@ using Uno.UI.Hosting;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using WpfUIElement = System.Windows.UIElement;
 using WinUIKeyEventArgs = Windows.UI.Core.KeyEventArgs;
+using System.Runtime.InteropServices;
 
 namespace Uno.UI.Runtime.Skia.Wpf.Input;
 
@@ -35,14 +35,13 @@ internal class WpfKeyboardInputSource : IUnoKeyboardInputSource
 	{
 		try
 		{
-			var virtualKey = ConvertKey(args.Key);
-
+			var virtualKey = ConvertKey(args.Key, args.SystemKey);
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
 				this.Log().Trace($"OnKeyPressEvent: {args.Key} -> {virtualKey}");
 			}
 
-			var scanCode = GetScanCode(args);
+			var scanCode = GetScanCode(virtualKey);
 
 			KeyDown?.Invoke(this, new(
 				"keyboard",
@@ -65,14 +64,14 @@ internal class WpfKeyboardInputSource : IUnoKeyboardInputSource
 	{
 		try
 		{
-			var virtualKey = ConvertKey(args.Key);
+			var virtualKey = ConvertKey(args.Key, args.SystemKey);
 
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
 				this.Log().Trace($"OnKeyPressEvent: {args.Key} -> {virtualKey}");
 			}
 
-			var scanCode = GetScanCode(args);
+			var scanCode = GetScanCode(virtualKey);
 
 			KeyUp?.Invoke(this, new(
 				"keyboard",
@@ -91,29 +90,10 @@ internal class WpfKeyboardInputSource : IUnoKeyboardInputSource
 		}
 	}
 
-	// WPF doesn't expose the scancode, but it exists internally
-	private static uint GetScanCode(KeyEventArgs args)
+	private static uint GetScanCode(VirtualKey virtualKey)
 	{
-		try
-		{
-			if (typeof(KeyEventArgs).GetProperty("ScanCode", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance) is { } propertyInfo)
-			{
-				return (uint)(int)propertyInfo.GetValue(args)!;
-			}
-			else
-			{
-				throw new PlatformNotSupportedException("Unable to get the ScanCode property from WPF. This likely means this WPF version is not compatible with Uno Platform, contact the developers for more information.");
-			}
-		}
-		catch (Exception e)
-		{
-			if (typeof(WpfKeyboardInputSource).Log().IsEnabled(LogLevel.Error))
-			{
-				typeof(WpfKeyboardInputSource).Log().LogError("Unable to get ScanCode from WPF KeyEventArgs.", e);
-			}
-
-			throw;
-		}
+		var scanCode = MapVirtualKeyW((uint)virtualKey, 0 /*MAPVK_VK_TO_VSC*/);
+		return scanCode;
 	}
 
 	private static char? KeyCodeToUnicode(uint keyCode, VirtualKey virtualKey)
@@ -156,8 +136,16 @@ internal class WpfKeyboardInputSource : IUnoKeyboardInputSource
 		return modifiers;
 	}
 
-	private VirtualKey ConvertKey(Key key)
+	private static VirtualKey ConvertKey(Key key, Key systemKey)
 	{
+		if (key == Key.System)
+		{
+			return (VirtualKey)System.Windows.Input.KeyInterop.VirtualKeyFromKey(systemKey);
+		}
+
 		return (VirtualKey)System.Windows.Input.KeyInterop.VirtualKeyFromKey(key);
 	}
+
+	[DllImport("User32.dll")]
+	private static extern uint MapVirtualKeyW(uint code, uint mapType);
 }

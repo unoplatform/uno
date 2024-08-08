@@ -208,6 +208,19 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 
 		#region Private
 
+		//UNO TODO: Implement GetRootNoRef on AutomationPeer
+		internal DependencyObject GetRootNoRef()
+		{
+			return null;
+		}
+
+		//UNO TODO: Check the implementations of IsKeyboardFocusableHelper and IsOffscreenHelper
+		internal bool IsKeyboardFocusableHelper()
+			=> false;
+
+		internal bool IsOffscreenHelper(bool ignoreClippingOnScrollContentPresenters)
+			=> false;
+
 		private static string LocalizeControlType(AutomationControlType controlType) =>
 			// TODO: Humanize ("AppBarButton" -> "app bar button")
 			// TODO: Localize

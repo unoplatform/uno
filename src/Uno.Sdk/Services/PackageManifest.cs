@@ -117,7 +117,7 @@ internal class PackageManifest
 		return this;
 	}
 
-	private string? GetGroupVersion(string groupName)
+	public string GetGroupVersion(string groupName)
 	{
 		var group = Manifest.SingleOrDefault(x => x.Group.Equals(groupName, StringComparison.InvariantCultureIgnoreCase));
 		return GetGroupVersion(group);
@@ -145,6 +145,7 @@ internal class PackageManifest
 		public const string MsalClient = nameof(MsalClient);
 		public const string Mvvm = nameof(Mvvm);
 		public const string Prism = nameof(Prism);
+		public const string UnoFonts = nameof(UnoFonts);
 		public const string AndroidMaterial = nameof(AndroidMaterial);
 		public const string AndroidXLegacySupportV4 = nameof(AndroidXLegacySupportV4);
 		public const string AndroidXAppCompat = nameof(AndroidXAppCompat);

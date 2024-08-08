@@ -1,5 +1,5 @@
 ﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
-<!-- MUX Reference BreadcrumbBar.xaml, tag winui3/release/1.4.2 -->
+<!-- MUX Reference controls\dev\Breadcrumb\BreadcrumbBar.xaml, tag winui3/release/1.5.3, commit 2a60e27 -->
 <ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:controls="using:Microsoft.UI.Xaml.Controls" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
   <Style x:Key="DefaultBreadcrumbBarItemStyle" TargetType="controls:BreadcrumbBarItem">
     <Setter Property="Background" Value="{ThemeResource BreadcrumbBarBackgroundBrush}" />
@@ -111,7 +111,7 @@
               </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
             <Grid.Resources>
-              <Flyout x:Name="PART_EllipsisFlyout">
+              <Flyout x:Name="PART_EllipsisFlyout" ShouldConstrainToRootBounds="False">
                 <Flyout.FlyoutPresenterStyle>
                   <Style TargetType="FlyoutPresenter">
                     <Setter Property="Background" Value="{ThemeResource BreadcrumbBarEllipsisFlyoutPresenterBackground}" />
@@ -131,7 +131,18 @@
                       <Setter.Value>
                         <ControlTemplate TargetType="FlyoutPresenter">
                           <Grid Background="{TemplateBinding Background}" CornerRadius="{TemplateBinding CornerRadius}" BackgroundSizing="InnerBorderEdge">
-                            <ScrollViewer x:Name="FlyoutPresenterScrollViewer" Margin="{TemplateBinding Padding}" HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}" HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}" VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}" VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}" IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}" IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}" Content="{TemplateBinding Content}" ZoomMode="{TemplateBinding ScrollViewer.ZoomMode}" AutomationProperties.AccessibilityView="Raw" />
+                            <ScrollViewer
+                                x:Name="FlyoutPresenterScrollViewer"
+                                AutomationProperties.AccessibilityView="Raw"
+                                Margin="{TemplateBinding Padding}"
+                                HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}"
+                                HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+                                VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}"
+                                VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
+                                IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}"
+                                IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}"
+                                Content="{TemplateBinding Content}"
+                                ZoomMode="{TemplateBinding ScrollViewer.ZoomMode}" />
                             <Border x:Name="FlyoutPresenterBorder" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding CornerRadius}" />
                           </Grid>
                         </ControlTemplate>
@@ -145,7 +156,16 @@
               <ColumnDefinition Width="Auto" x:Name="PART_ContentColumn" />
               <ColumnDefinition Width="Auto" x:Name="PART_ChevronColumn" />
             </Grid.ColumnDefinitions>
-            <Button x:Name="PART_ItemButton" x:DeferLoadStrategy="Lazy" Grid.Column="0" AutomationProperties.Name="BreadcrumbBarItemButton" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Control.IsTemplateFocusTarget="True" IsTabStop="False" FocusVisualMargin="-3" Padding="1,3" CornerRadius="{TemplateBinding CornerRadius}" AutomationProperties.AccessibilityView="Raw">
+            <Button x:Name="PART_ItemButton" x:DeferLoadStrategy="Lazy"
+              AutomationProperties.AccessibilityView="Raw"
+              Background="{TemplateBinding Background}"
+              BorderBrush="{TemplateBinding BorderBrush}"
+              BorderThickness="{TemplateBinding BorderThickness}"
+              Control.IsTemplateFocusTarget="True"
+              IsTabStop="False"
+              FocusVisualMargin="-3"
+              Padding="1,3"
+              CornerRadius="{TemplateBinding CornerRadius}">
               <Button.Style>
                 <Style TargetType="Button">
                   <Setter Property="Foreground" Value="{ThemeResource BreadcrumbBarNormalForegroundBrush}" />
@@ -225,7 +245,15 @@
                               </VisualState>
                             </VisualStateGroup>
                           </VisualStateManager.VisualStateGroups>
-                          <ContentPresenter x:Name="PART_ContentPresenter" AutomationProperties.Name="ContentPresenter" BorderBrush="{TemplateBinding BorderBrush}" Content="{TemplateBinding Content}" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" Padding="{TemplateBinding Padding}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" AutomationProperties.AccessibilityView="Raw" />
+                          <ContentPresenter x:Name="PART_ContentPresenter"
+                            AutomationProperties.AccessibilityView="Raw"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            Content="{TemplateBinding Content}"
+                            ContentTransitions="{TemplateBinding ContentTransitions}"
+                            ContentTemplate="{TemplateBinding ContentTemplate}"
+                            Padding="{TemplateBinding Padding}"
+                            HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
                         </Grid>
                       </ControlTemplate>
                     </Setter.Value>
@@ -233,17 +261,67 @@
                 </Style>
               </Button.Style>
               <!-- This is the Button Content -->
-              <Grid AutomationProperties.Name="BreadcrumbBarItemGrid" AutomationProperties.AccessibilityView="Raw">
-                <ContentPresenter x:Name="PART_ItemContentPresenter" AutomationProperties.Name="BreadcrumbBarItemContentPresenter" Grid.Column="0" Content="{TemplateBinding Content}" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" FontFamily="{TemplateBinding FontFamily}" FontSize="{TemplateBinding FontSize}" FontWeight="{TemplateBinding FontWeight}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" LineHeight="20" AutomationProperties.AccessibilityView="Raw" />
-                <TextBlock x:Name="PART_EllipsisTextBlock" AutomationProperties.Name="BreadcrumbBarEllipsisTextBlock" Grid.Column="0" FontFamily="{ThemeResource SymbolThemeFontFamily}" FontSize="{TemplateBinding FontSize}" Padding="3" Text="&#xE712;" Visibility="Collapsed" VerticalAlignment="Stretch" IsTextScaleFactorEnabled="False" AutomationProperties.AccessibilityView="Raw" />
+                <Grid AutomationProperties.AccessibilityView="Raw">
+                <ContentPresenter x:Name="PART_ItemContentPresenter"
+                  AutomationProperties.AccessibilityView="Raw"
+                  Content="{TemplateBinding Content}"
+                  ContentTransitions="{TemplateBinding ContentTransitions}"
+                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                  FontFamily="{TemplateBinding FontFamily}"
+                  FontSize="{TemplateBinding FontSize}"
+                  FontWeight="{TemplateBinding FontWeight}"
+                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                  LineHeight="20" />
+                <TextBlock x:Name="PART_EllipsisTextBlock"
+                  AutomationProperties.AccessibilityView="Raw"
+                  FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                  FontSize="{TemplateBinding FontSize}"
+                  Padding="3"
+                  Text="&#xE712;"
+                  Visibility="Collapsed"
+                  VerticalAlignment="Stretch"
+                  IsTextScaleFactorEnabled="False" />
               </Grid>
             </Button>
             <!-- ContentPresenter to be shown only when the rendered item is the Current Item -->
-            <ContentPresenter x:Name="PART_LastItemContentPresenter" Grid.Column="0" Visibility="Collapsed" Content="{TemplateBinding Content}" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" FocusVisualMargin="-3" FontFamily="{TemplateBinding FontFamily}" FontSize="{TemplateBinding FontSize}" FontWeight="{TemplateBinding FontWeight}" Foreground="{ThemeResource BreadcrumbBarCurrentNormalForegroundBrush}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" LineHeight="20" Padding="1,3" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" CornerRadius="{TemplateBinding CornerRadius}" AutomationProperties.AccessibilityView="Raw" />
+            <ContentPresenter x:Name="PART_LastItemContentPresenter"
+              AutomationProperties.AccessibilityView="Raw"
+              Visibility="Collapsed"
+              Content="{TemplateBinding Content}"
+              ContentTransitions="{TemplateBinding ContentTransitions}"
+              ContentTemplate="{TemplateBinding ContentTemplate}"
+              FocusVisualMargin="-3"
+              FontFamily="{TemplateBinding FontFamily}"
+              FontSize="{TemplateBinding FontSize}"
+              FontWeight="{TemplateBinding FontWeight}"
+              Foreground="{ThemeResource BreadcrumbBarCurrentNormalForegroundBrush}"
+              HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+              LineHeight="20" Padding="1,3"
+              VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+              CornerRadius="{TemplateBinding CornerRadius}" />
             <!-- ContentPresenter to be shown only when the rendered item is a drop down Item -->
-            <ContentPresenter x:Name="PART_EllipsisDropDownItemContentPresenter" x:DeferLoadStrategy="Lazy" Grid.Column="0" Visibility="Collapsed" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTransitions="{TemplateBinding ContentTransitions}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" HorizontalContentAlignment="Stretch" FontWeight="Normal" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" AutomationProperties.AccessibilityView="Raw" />
+            <ContentPresenter x:Name="PART_EllipsisDropDownItemContentPresenter" x:DeferLoadStrategy="Lazy"
+              AutomationProperties.AccessibilityView="Raw"
+              Visibility="Collapsed"
+              Content="{TemplateBinding Content}"
+              ContentTemplate="{TemplateBinding ContentTemplate}"
+              ContentTransitions="{TemplateBinding ContentTransitions}"
+              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+              HorizontalContentAlignment="Stretch"
+              FontWeight="Normal"
+              VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
             <!-- TextBlock that contains the chevron icon -->
-            <TextBlock x:Name="PART_ChevronTextBlock" AutomationProperties.Name="ChevronTextBlock" Grid.Column="1" HorizontalAlignment="Center" IsTextScaleFactorEnabled="False" FontFamily="{ThemeResource SymbolThemeFontFamily}" FontSize="{ThemeResource BreadcrumbBarChevronFontSize}" Foreground="{ThemeResource BreadcrumbBarNormalForegroundBrush}" Text="&#xE76C;" Padding="{ThemeResource BreadcrumbBarChevronPadding}" VerticalAlignment="Center" AutomationProperties.AccessibilityView="Raw" />
+            <TextBlock x:Name="PART_ChevronTextBlock"
+              AutomationProperties.AccessibilityView="Raw"
+              Grid.Column="1"
+              HorizontalAlignment="Center"
+              IsTextScaleFactorEnabled="False"
+              FontFamily="{ThemeResource SymbolThemeFontFamily}"
+              FontSize="{ThemeResource BreadcrumbBarChevronFontSize}"
+              Foreground="{ThemeResource BreadcrumbBarNormalForegroundBrush}"
+              Text="&#xE76C;" Padding="{ThemeResource BreadcrumbBarChevronPadding}"
+              VerticalAlignment="Center" />
           </Grid>
         </ControlTemplate>
       </Setter.Value>

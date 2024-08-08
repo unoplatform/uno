@@ -1,7 +1,7 @@
-﻿using Windows.System;
-using Uno.UI.Xaml.Input;
-using Windows.UI.Core;
+﻿using Uno.UI.Xaml.Input;
 using Windows.Foundation.Metadata;
+using Windows.System;
+using Windows.UI.Core;
 
 namespace Microsoft.UI.Xaml.Input
 {
@@ -45,6 +45,8 @@ namespace Microsoft.UI.Xaml.Input
 		public global::Windows.System.VirtualKey OriginalKey { get; }
 
 		internal VirtualKeyModifiers KeyboardModifiers { get; }
+
+		internal bool HandledShouldNotImpedeTextInput { get; set; }
 
 		/// <summary>
 		/// This gets the the Unicode Key associated with the event. This is not limited to the

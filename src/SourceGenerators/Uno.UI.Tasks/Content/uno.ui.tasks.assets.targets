@@ -78,6 +78,8 @@
 					or '$(TargetPlatformIdentifier)'=='ios'
 					or '$(TargetPlatformIdentifier)'=='macos'
 					or '$(TargetPlatformIdentifier)'=='maccatalyst'
+					or '$(TargetPlatformIdentifier)'=='desktop'
+					or '$(TargetPlatformIdentifier)'=='browserwasm'
 					">$(TargetPlatformVersion)</_UnoTargetPlatformVersion>
 		</PropertyGroup>
 

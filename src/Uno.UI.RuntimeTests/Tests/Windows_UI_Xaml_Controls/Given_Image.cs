@@ -31,6 +31,55 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[TestClass]
 	public class Given_Image
 	{
+		[TestMethod]
+		[RunsOnUIThread]
+#if !__SKIA__
+		[Ignore("TODO: Fix on other platforms")]
+#endif
+		public async Task When_Parent_Has_BorderThickness()
+		{
+			var image = new Image()
+			{
+				Width = 100,
+				Height = 100,
+				Source = new BitmapImage(new Uri("ms-appx:///Assets/my500x200.jpg")),
+			};
+
+			var grid = new Grid()
+			{
+				Width = 100,
+				Height = 100,
+				Background = new SolidColorBrush(Microsoft.UI.Colors.Orange),
+				BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Gray),
+				BorderThickness = new(20),
+				Children =
+				{
+					image,
+				},
+			};
+
+			var imageOpened = false;
+			image.ImageOpened += (_, _) => imageOpened = true;
+
+			await UITestHelper.Load(grid);
+
+			await WindowHelper.WaitFor(() => imageOpened == true);
+
+			var screenshot = await UITestHelper.ScreenShot(grid);
+
+			var orangeBounds = ImageAssert.GetColorBounds(screenshot, Colors.Orange, tolerance: 10); // 60x60
+			var redBounds = ImageAssert.GetColorBounds(screenshot, Colors.Red, tolerance: 10); // 60x20
+			var greenBounds = ImageAssert.GetColorBounds(screenshot, Color.FromArgb(255, 75, 255, 0), tolerance: 10); // 20x20
+			var yellowBounds = ImageAssert.GetColorBounds(screenshot, Color.FromArgb(255, 255, 249, 75), tolerance: 10); // 20x20
+			var pinkBounds = ImageAssert.GetColorBounds(screenshot, Color.FromArgb(255, 255, 35, 233), tolerance: 10); // 12x20
+
+			Assert.AreEqual(new Rect(20, 20, 59, 59), orangeBounds);
+			Assert.AreEqual(new Rect(20, 30, 59, 18), redBounds);
+			Assert.AreEqual(new Rect(20, 41, 19, 17), greenBounds);
+			Assert.AreEqual(new Rect(44, 41, 19, 17), yellowBounds);
+			Assert.AreEqual(new Rect(68, 41, 11, 17), pinkBounds);
+		}
+
 #if !__IOS__ // Currently fails on iOS
 		[TestMethod]
 #endif
@@ -422,7 +471,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			void BitmapImage_ImageFailed(object sender, ExceptionRoutedEventArgs e) => logs.Add("BitmapImage_ImageFailed");
 			void BitmapImage_DownloadProgress(object sender, DownloadProgressEventArgs e) => logs.Add("BitmapImage_DownloadProgress");
-			void BitmapImage_ImageOpened(object sender, RoutedEventArgs e) => logs.Add("BitmapImage_ImageOpened");
+			void BitmapImage_ImageOpened(object sender, RoutedEventArgs e) => logs.Add($"BitmapImage_ImageOpened. {bitmapImage.PixelWidth}x{bitmapImage.PixelHeight}");
 			void Image_ImageFailed(object sender, ExceptionRoutedEventArgs e) => logs.Add("Image_ImageFailed");
 			void Image_ImageOpened(object sender, RoutedEventArgs e)
 			{
@@ -437,7 +486,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await TestServices.WindowHelper.WaitFor(() => imageOpened);
 
 			Assert.AreEqual(2, logs.Count, string.Join(Environment.NewLine, logs));
-			Assert.AreEqual("BitmapImage_ImageOpened", logs[0]);
+			Assert.AreEqual("BitmapImage_ImageOpened. 100x150", logs[0]);
 			Assert.AreEqual("Image_ImageOpened", logs[1]);
 		}
 
@@ -582,6 +631,35 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 
 			await When_Exif_Rotated_Common(new Uri("ms-appx:///Assets/testimage_exif_rotated.jpg"));
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+		public async Task When_Exif_Rotated_MsAppx_Unequal_Dimensions()
+		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			var uri = new Uri("ms-appx:///Assets/testimage_exif_rotated_different_dimensions.jpg");
+			var image = new Image();
+			var bitmapImage = new BitmapImage(uri);
+			var imageOpened = false;
+			image.ImageOpened += (_, _) => imageOpened = true;
+			image.Source = bitmapImage;
+			WindowHelper.WindowContent = image;
+			await WindowHelper.WaitForLoaded(image);
+			await WindowHelper.WaitFor(() => imageOpened);
+			var screenshot = await TakeScreenshot(image);
+			ImageAssert.HasColorAt(screenshot, 5, screenshot.Height / 2, Color.FromArgb(0xFF, 0xED, 0x1B, 0x24), tolerance: 5);
+			ImageAssert.HasColorAt(screenshot, screenshot.Width / 2 - 10, screenshot.Height / 2, Color.FromArgb(0xFF, 0xED, 0x1B, 0x24), tolerance: 5);
+			ImageAssert.HasColorAt(screenshot, screenshot.Width / 2 + 10, screenshot.Height / 2, Color.FromArgb(0xFF, 0x23, 0xB1, 0x4D), tolerance: 5);
+			ImageAssert.HasColorAt(screenshot, screenshot.Width - 5, screenshot.Height / 2, Color.FromArgb(0xFF, 0x23, 0xB1, 0x4D), tolerance: 5);
+
 		}
 
 		[TestMethod]

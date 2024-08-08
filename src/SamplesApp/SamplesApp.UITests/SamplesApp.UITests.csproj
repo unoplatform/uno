@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>$(NetPrevious)</TargetFramework>
+		<TargetFramework>$(NetCurrent)</TargetFramework>
 
 		<DefineConstants Condition="$(UnoTargetFrameworkOverride.ToLowerInvariant().EndsWith('-android'))">$(DefineConstants);TARGET_FRAMEWORK_OVERRIDE_ANDROID</DefineConstants>
 
-		<DefineConstants Condition="$(UnoTargetFrameworkOverride.ToLowerInvariant().EndsWith('-ios'))">$(DefineConstants);TARGET_FRAMEWORK_OVERRIDE_IOS</DefineConstants>
+		<DefineConstants Condition="$(UnoTargetFrameworkOverride.ToLowerInvariant().Contains('-ios'))">$(DefineConstants);TARGET_FRAMEWORK_OVERRIDE_IOS</DefineConstants>
 
 		<!-- Use 'GeneratedRegexAttribute' to generate the regular expression -->
 		<NoWarn>$(NoWarn);SYSLIB1045</NoWarn>
@@ -24,6 +24,7 @@
 		<PackageReference Include="Uno.UITest.Helpers" />
 		<PackageReference Include="SkiaSharp" />
 		<PackageReference Include="SkiaSharp.NativeAssets.Linux" />
+		<PackageReference Include="System.Text.Json" Version="8.0.4" />
 	</ItemGroup>
 
 	<ItemGroup>

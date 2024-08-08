@@ -49,7 +49,7 @@ You may need to follow additional directions, depending on your development envi
 
 [!include[linux-setup](includes/additional-linux-setup-inline.md)]
 
-***
+---
 
 ## Next Steps
 

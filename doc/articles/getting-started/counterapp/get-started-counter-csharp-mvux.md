@@ -85,7 +85,7 @@ Also, for more information on all the template options, see [Using the Uno Platf
 
 [!INCLUDE [Main Page - Other Elements](includes/include-elements-csharp.md)]
 
-[!INCLUDE [View Model](includes/include-mvux.md)]
+[!INCLUDE [Main Model](includes/include-mvux.md)]
 
 ## Data Binding
 
@@ -102,17 +102,17 @@ Now that we have the **`BindableMainModel`** class, we can update the **`MainPag
     );
     ```
 
-- Update the **`TextBlock`** by removing its current text content and replacing it with a binding expression for the **`Count`** property of the **`BindableMainModel`**. Modify the existing **`Text`** property with `() => vm.Count, txt => $"Counter: {txt}"`. The adjusted code is as follows:
+- Update the **`TextBlock`** by removing its current text content and replacing it with a binding expression for the **`Countable.Count`** property of the **`BindableMainModel`**. Modify the existing **`Text`** property with `() => vm.Countable.Count, txt => $"Counter: {txt}"`. The adjusted code is as follows:
 
     ```csharp
     new TextBlock()
         .Margin(12)
         .HorizontalAlignment(HorizontalAlignment.Center)
         .TextAlignment(Microsoft.UI.Xaml.TextAlignment.Center)
-        .Text(() => vm.Count, txt => $"Counter: {txt}")
+        .Text(() => vm.Countable.Count, txt => $"Counter: {txt}")
     ```
 
-- Update the **`TextBox`** by binding the **`Text`** property to the **`Step`** property of the **BindableMainModel**. The **`Mode`** of the binding is set to **`TwoWay`** so that the **`Step`** property is updated when the user changes the value in the **`TextBox`**.
+- Update the **`TextBox`** by binding the **`Text`** property to the **`Countable.Step`** property of the **BindableMainModel**. The **`Mode`** of the binding is set to **`TwoWay`** so that the **`Countable.Step`** property is updated when the user changes the value in the **`TextBox`**.
 
     ```csharp
     new TextBox()
@@ -120,16 +120,16 @@ Now that we have the **`BindableMainModel`** class, we can update the **`MainPag
         .HorizontalAlignment(HorizontalAlignment.Center)
         .TextAlignment(Microsoft.UI.Xaml.TextAlignment.Center)
         .PlaceholderText("Step Size")
-        .Text(x => x.Binding(() => vm.Step).TwoWay())
+        .Text(x => x.Binding(() => vm.Countable.Step).TwoWay())
     ```
 
-- Update the **`Button`** to add a **`Command`** property that is bound to the **`IncrementCommand`** property of the **`BindableMainModel`**.
+- Update the **`Button`** to add a **`Command`** property that is bound to the **`IncrementCounter`** task of the **`BindableMainModel`**.
 
     ```csharp
     new Button()
         .Margin(12)
         .HorizontalAlignment(HorizontalAlignment.Center)
-        .Command(() => vm.IncrementCommand)
+        .Command(() => vm.IncrementCounter)
         .Content("Increment Counter by Step Size")
     ```
 
@@ -159,16 +159,16 @@ Now that we have the **`BindableMainModel`** class, we can update the **`MainPag
                                 .HorizontalAlignment(HorizontalAlignment.Center)
                                 .TextAlignment(Microsoft.UI.Xaml.TextAlignment.Center)
                                 .PlaceholderText("Step Size")
-                                .Text(x => x.Binding(() => vm.Step).TwoWay()),
+                                .Text(x => x.Binding(() => vm.Countable.Step).TwoWay()),
                             new TextBlock()
                                 .Margin(12)
                                 .HorizontalAlignment(HorizontalAlignment.Center)
                                 .TextAlignment(Microsoft.UI.Xaml.TextAlignment.Center)
-                                .Text(() => vm.Count, txt => $"Counter: {txt}"),
+                                .Text(() => vm.Countable.Count, txt => $"Counter: {txt}"),
                             new Button()
                                 .Margin(12)
                                 .HorizontalAlignment(HorizontalAlignment.Center)
-                                .Command(() => vm.IncrementCommand)
+                                .Command(() => vm.IncrementCounter)
                                 .Content("Increment Counter by Step Size")
                         )
                 )
@@ -177,6 +177,6 @@ Now that we have the **`BindableMainModel`** class, we can update the **`MainPag
     }
     ```
 
-[!INCLUDE [View Model](includes/include-wrap.md)]
+[!INCLUDE [Wrap up](includes/include-wrap.md)]
 
 If you want to see the completed application, you can download the source code from [GitHub](https://github.com/unoplatform/Uno.Samples/tree/master/reference/Counter/CSharp-MVUX).

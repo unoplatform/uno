@@ -15,7 +15,18 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Uno.Disposables;
 using Uno.Extensions;
+
 using static Private.Infrastructure.TestServices;
+using static Microsoft.UI.Xaml.Controls.AutoSuggestionBoxTextChangeReason;
+using SamplesApp.UITests;
+using Uno.UI.RuntimeTests.Helpers;
+using Windows.Foundation;
+
+#if __IOS__
+using UIKit;
+#elif __MACOS__
+using AppKit;
+#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -23,6 +34,39 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[RunsOnUIThread]
 	public class Given_AutoSuggestBox
 	{
+#if !WINAPPSDK
+		[TestMethod]
+		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15662")]
+		public async Task When_SymbolIcon_Verify_Size()
+		{
+			var SUT = new AutoSuggestBox()
+			{
+				QueryIcon = new SymbolIcon(Symbol.Home),
+			};
+
+			await UITestHelper.Load(SUT);
+
+#if __SKIA__ || __WASM__
+			var tb = SUT.FindChildren<TextBlock>().Single(tb => tb.Text.Length == 1 && tb.Text[0] == (char)Symbol.Home);
+#else
+			var tb = (TextBlock)SUT.EnumerateAllChildren().SingleOrDefault(c => c is TextBlock textBlock && textBlock.Text.Length == 1 && textBlock.Text[0] == (char)Symbol.Home);
+#endif
+
+			Assert.AreEqual(12, tb.FontSize);
+
+			var tbBounds = tb.GetAbsoluteBounds();
+
+#if __WASM__
+			Assert.AreEqual(new Size(13, 12), new Size(tbBounds.Width, tbBounds.Height));
+#elif __ANDROID__
+			Assert.AreEqual(new Size(12, 14), new Size(tbBounds.Width, tbBounds.Height));
+#else
+			// 12, 12 is the right behavior here.
+			Assert.AreEqual(new Size(12, 12), new Size(tbBounds.Width, tbBounds.Height));
+#endif
+		}
+#endif
+
 #if !WINAPPSDK // GetTemplateChild is protected in UWP while public in Uno.
 		[TestMethod]
 		public async Task When_Text_Changed_Should_Reflect_In_DataTemplate_TextBox()
@@ -61,6 +105,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Focus(FocusState.Programmatic);
 			textBox.IsFocused.Should().BeTrue();
 			SUT.Text = "a";
+			SUT.IsSuggestionListOpen.Should().BeFalse();
+			await WindowHelper.WaitForIdle();
 			SUT.IsSuggestionListOpen.Should().BeTrue();
 		}
 
@@ -280,47 +326,89 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(AutoSuggestionBoxTextChangeReason.SuggestionChosen, reason);
 		}
 
-
 		[TestMethod]
-		public async Task When_Text_Changed_Sequence()
+		[DataRow(true)]
+		[DataRow(false)]
+		public async Task When_Text_Changed_Sequence(bool waitBetweenActions)
 		{
-			var SUT = new AutoSuggestBox();
-			SUT.ItemsSource = new List<string>() { "ab", "abc", "abcde" };
+			var SUT = new AutoSuggestBox()
+			{
+				ItemsSource = new List<string>() { "ab", "abc", "abcde" }
+			};
 			WindowHelper.WindowContent = SUT;
 			await WindowHelper.WaitForIdle();
-			bool eventRaised = false;
+
+			var textBox = (TextBox)SUT.GetTemplateChild("TextBox");
+
+			var expectations = new List<AutoSuggestionBoxTextChangeReason>();
 			var reasons = new List<AutoSuggestionBoxTextChangeReason>();
-			var counter = 0;
 			SUT.TextChanged += (s, e) =>
 			{
 				reasons.Add(e.Reason);
-				if (++counter == 7)
-				{
-					eventRaised = true;
-				}
 			};
-			var textBox = (TextBox)SUT.GetTemplateChild("TextBox");
+
+			expectations.Add(SuggestionChosen);
 			SUT.Focus(FocusState.Programmatic);
 			SUT.ChoseItem("ab");
-			SUT.Text = "other";
-			textBox.ProcessTextInput("manual");
-			SUT.ChoseItem("ab");
-			textBox.ProcessTextInput("manual");
-			SUT.Text = "other";
-			SUT.ChoseItem("ab");
+			await Wait();
 
-			await WindowHelper.WaitFor(() => eventRaised);
-			CollectionAssert.AreEquivalent(
-				new[] {
-					AutoSuggestionBoxTextChangeReason.SuggestionChosen,
-					AutoSuggestionBoxTextChangeReason.ProgrammaticChange,
-					AutoSuggestionBoxTextChangeReason.UserInput,
-					AutoSuggestionBoxTextChangeReason.SuggestionChosen,
-					AutoSuggestionBoxTextChangeReason.UserInput,
-					AutoSuggestionBoxTextChangeReason.ProgrammaticChange,
-					AutoSuggestionBoxTextChangeReason.SuggestionChosen
-				},
-				reasons);
+			expectations.Add(ProgrammaticChange);
+			SUT.Text = "other";
+			await Wait();
+
+			expectations.Add(UserInput);
+			SUT.Focus(FocusState.Programmatic);
+#if __SKIA__
+			KeyboardHelper.InputText("manual");
+#else
+			textBox.ProcessTextInput("manual");
+#endif
+			await Wait();
+
+			expectations.Add(SuggestionChosen);
+			SUT.ChoseItem("ab");
+			await Wait();
+
+			expectations.Add(UserInput);
+			SUT.Focus(FocusState.Programmatic);
+#if __SKIA__ // We want to test the behaviour of "typing individual characters in sequence", not setting the Text in one shot. The behaviour is currently only accurate on skia.
+			KeyboardHelper.InputText("manual");
+#else
+			textBox.ProcessTextInput("manual");
+#endif
+			await Wait();
+
+			expectations.Add(ProgrammaticChange);
+			SUT.Focus(FocusState.Programmatic);
+			SUT.Text = "other";
+			await Wait();
+
+			expectations.Add(SuggestionChosen);
+			SUT.ChoseItem("ab");
+			await Wait();
+
+			await WindowHelper.WaitForIdle();
+
+			// We want to test the behaviour of "typing individual characters in sequence", not setting the Text in one shot. The behaviour is currently only accurate on skia.
+			if (!waitBetweenActions)
+			{
+				// skia is closer to what happens on WinUI. On WinUI, if there is no delay between changes,
+				// AutoSuggestBox.TextChanged is fired once (but TextBox.TextChanged fires everytime)
+				expectations = new() { SuggestionChosen };
+			}
+
+			CollectionAssert.AreEquivalent(expectations, reasons, string.Join("; ",
+				$"expectations[{expectations.Count}]: {string.Join(",", expectations)}",
+				$"actual[{reasons.Count}]: {string.Join(",", reasons)}"
+			));
+
+			async Task Wait()
+			{
+				if (waitBetweenActions)
+				{
+					await WindowHelper.WaitForIdle();
+				}
+			}
 		}
 
 		[TestMethod]

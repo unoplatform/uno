@@ -186,10 +186,11 @@ namespace Microsoft.UI.Xaml
 			PropertyChangedCallback += callback;
 		}
 
+		internal bool HasPropertyChanged => PropertyChangedCallback is not null;
 
-		internal void RaisePropertyChanged(DependencyObject source, DependencyPropertyChangedEventArgs e)
+		internal void RaisePropertyChangedNoNullCheck(DependencyObject source, DependencyPropertyChangedEventArgs e)
 		{
-			PropertyChangedCallback?.Invoke(source, e);
+			PropertyChangedCallback.Invoke(source, e);
 		}
 
 		internal void RaiseBackingFieldUpdate(DependencyObject source, object newValue)

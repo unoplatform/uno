@@ -1,7 +1,11 @@
 ﻿using System.Numerics;
 using Windows.Foundation;
 
+#if IS_UNO_COMPOSITION
+namespace Uno.UI.Composition;
+#else
 namespace Microsoft.UI.Xaml;
+#endif
 
 /// <summary>
 /// Represents a potentially non-uniform CornerRadius.

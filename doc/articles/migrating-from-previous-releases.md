@@ -10,6 +10,48 @@ uid: Uno.Development.MigratingFromPreviousReleases
 
 To align the behavior with WinUI, lazy loading using `x:Load="False"` and `x:DeferLoadStrategy="lazy"` is no longer affected with changes to the visibility of the lazily-loaded element. Previously, binding the `Visibility` property of the lazily-loaded element and then updating the source of the binding to make the element visible would cause the element to materialize (i.e. load). This is no longer the case. To load the element, add an `x:Name` to the element and call `FindName` with th given name.
 
+## Uno Platform 5.3
+
+Uno Platform 5.3 contains an improved template and Uno.SDK versioning, new default text font, and Rider support.
+
+The support for .NET 7 has been removed, since it was a Standard Term Support (STS) release which [ended in May 2024](https://dotnet.microsoft.com/en-us/platform/support/policy/dotnet-core). You can [upgrade your project to .NET 8](xref:Uno.Development.MigratingFromNet7ToNet8) using our guide.
+
+Make sure to [re-run Uno.Check](xref:UnoCheck.UsingUnoCheck) to get all the latest dependencies.
+
+### Visual Studio
+
+Update your [Uno Platform extension](https://aka.platform.uno/vs-extension-marketplace) in VS 2022 to 5.3.x or later. Earlier versions may automatically update to an incorrect version of the Uno.SDK.
+
+### Single Project updates
+
+Similar to version 5.2, using the new project template is entirely optional and previous project structures are fully supported.
+
+If you want to migrate to the new Single Project, you can follow the [Migrating to Single Project](xref:Uno.Development.MigratingToSingleProject) guide.
+
+If you are upgrading from an Uno Platform 5.2 project, you can remove the following section from your `Directory.Build.props`:
+
+```xml
+  <!-- See https://aka.platform.uno/using-uno-sdk#implicit-packages for more information regarding the Implicit Packages version properties. -->
+  <PropertyGroup>
+    <UnoExtensionsVersion>...</UnoExtensionsVersion>
+    <UnoToolkitVersion>...</UnoToolkitVersion>
+    <UnoThemesVersion>...</UnoThemesVersion>
+    <UnoCSharpMarkupVersion>...</UnoCSharpMarkupVersion>
+  </PropertyGroup>
+```
+
+### Default Text Font
+
+Starting from Uno Platform 5.3, the [default text font](xref:Uno.Features.CustomFonts#default-text-font) has been changed to [Open Sans](https://github.com/unoplatform/uno.fonts#open-sans-font) in the templates, when the [`OpenSans` feature](xref:Uno.Features.Uno.Sdk#uno-platform-features) is specified.
+
+If you created your project with Uno Platform 5.2 or earlier, you can start using Open Sans by adding the `OpenSans` feature in your `.csproj` file.
+
+### Rider support
+
+The new [Uno Platform Rider plugin](https://aka.platform.uno/rider-support) support provides C# and XAML Hot Reload support, and to benefit from this new support, new projects created with Uno Platform 5.3 templates contain a new `.run` folder which provides proper support.
+
+If your project was created using an Uno Platform 5.2 or earlier template, you can create a new temporary template with the same name as your current project (e.g. `dotnet new unoapp -o MyExistingProject`), then copy over the `.run` folder in your project.
+
 ## Uno Platform 5.2
 
 Uno Platform 5.2 contains a new project template that supports all target frameworks into a single project, based on the Uno.Sdk that was introduced in Uno Platform 5.1.

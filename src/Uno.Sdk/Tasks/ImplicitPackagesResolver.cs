@@ -26,8 +26,6 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 	[Required]
 	public string OutputType { get; set; } = null!;
 
-	public bool IsPackable { get; set; }
-
 	public bool Optimize { get; set; }
 
 	[Required]
@@ -96,6 +94,8 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 	public string? CommunityToolkitMvvmVersion { get; set; }
 
 	public string? PrismVersion { get; set; }
+
+	public string? UnoFontsVersion { get; set; }
 
 	public string? AndroidXNavigationVersion { get; set; }
 
@@ -166,19 +166,23 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 				throw new InvalidOperationException("Unable to parse UnoVersion from the Package Manifest.");
 			}
 
+			// This needs to run before we get and Validate the Uno Features
+			SetupRuntimePackageManifestUpdates(_manifest);
+
 			_unoFeatures = GetFeatures();
 			if (Log.HasLoggedErrors)
 			{
 				return false;
 			}
 
-			// TODO: Add update from Manifest that can ship via nuget.org
-			SetupRuntimePackageManifestUpdates(_manifest);
 			foreach (var reference in ImplicitPackageReferences)
 			{
 				var packageId = reference.ItemSpec;
-				var excludeAssets = packageId == "Uno.WinUI.DevServer" && Optimize ? "all" : null;
-				AddPackage(packageId, excludeAssets);
+				var metadata = reference.CloneCustomMetadata()
+					.Keys
+					.Cast<string>()
+					.ToDictionary(x => x, x => reference.GetMetadata(x));
+				AddPackage(packageId, metadata);
 			}
 		}
 		catch (Exception ex)
@@ -243,6 +247,7 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 			.UpdateManifest(PackageManifest.Group.MsalClient, MicrosoftIdentityClientVersion)
 			.UpdateManifest(PackageManifest.Group.Mvvm, CommunityToolkitMvvmVersion)
 			.UpdateManifest(PackageManifest.Group.Prism, PrismVersion)
+			.UpdateManifest(PackageManifest.Group.UnoFonts, UnoFontsVersion)
 			.UpdateManifest(PackageManifest.Group.AndroidMaterial, AndroidMaterialVersion)
 			.UpdateManifest(PackageManifest.Group.AndroidXLegacySupportV4, AndroidXLegacySupportV4Version)
 			.UpdateManifest(PackageManifest.Group.AndroidXAppCompat, AndroidXAppCompatVersion)
@@ -313,22 +318,25 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 			.Single(x => x.DeclaringType == typeof(UnoFeature))
 			.GetCustomAttribute<UnoAreaAttribute>()?.Area;
 
+		if (_manifest is null)
+			throw new ArgumentNullException(nameof(_manifest));
+
 		switch (area)
 		{
 			case UnoArea.Core:
-				VerifyFeature(feature, _manifest!.UnoVersion);
+				VerifyFeature(feature, _manifest.UnoVersion);
 				break;
 			case UnoArea.CSharpMarkup:
-				VerifyFeature(feature, UnoCSharpMarkupVersion);
+				VerifyFeature(feature, _manifest.GetGroupVersion(PackageManifest.Group.CSharpMarkup));
 				break;
 			case UnoArea.Extensions:
-				VerifyFeature(feature, UnoExtensionsVersion);
+				VerifyFeature(feature, _manifest.GetGroupVersion(PackageManifest.Group.Extensions));
 				break;
 			case UnoArea.Theme:
-				VerifyFeature(feature, UnoThemesVersion);
+				VerifyFeature(feature, _manifest.GetGroupVersion(PackageManifest.Group.Themes));
 				break;
 			case UnoArea.Toolkit:
-				VerifyFeature(feature, UnoToolkitVersion);
+				VerifyFeature(feature, _manifest.GetGroupVersion(PackageManifest.Group.Toolkit));
 				break;
 		}
 	}
@@ -350,7 +358,7 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 		}
 	}
 
-	private void AddPackage(string packageId, string? excludeAssets = null)
+	private void AddPackage(string packageId, IDictionary<string, string> metadata)
 	{
 		// 1) Check for Existing References
 		var existingReference = PackageReferences.SingleOrDefault(x => x.ItemSpec == packageId);
@@ -399,7 +407,7 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 
 		// 5) Add the Implicit Package Reference
 		Debug("Adding Implicit Reference for '{0}' with version: '{1}'.", packageId, version);
-		_implicitPackages.Add(new PackageReference(packageId, version, excludeAssets));
+		_implicitPackages.Add(new PackageReference(packageId, version, metadata));
 	}
 
 	private void Debug(string message, params object[] args)

@@ -23,6 +23,7 @@ using TabViewTabDragCompletedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml
 
 using static Uno.UI.Extensions.ViewExtensions;
 using static Uno.UI.Extensions.PrettyPrint;
+using System.Numerics;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests;
 
@@ -69,7 +70,7 @@ public sealed partial class TabViewSelectionAndScrolling : Page
 		if (x is FrameworkElement fe)
 		{
 			yield return $"Desired={FormatSize(fe.DesiredSize)}";
-			yield return $"Actual={FormatSize(fe.AssignedActualSize)}";
+			yield return $"Actual={FormatSize(fe.ActualSize.ToSize())}";
 			yield return $"IsLoaded={fe.IsLoaded}";
 		}
 		if (TryGetDpValue<Thickness>(x, "Margin", out var margin)) yield return $"Margin={FormatThickness(margin)}";

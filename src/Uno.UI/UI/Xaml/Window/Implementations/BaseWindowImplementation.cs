@@ -8,6 +8,7 @@ using Windows.UI.Core;
 using Microsoft.UI.Xaml;
 using Windows.UI.ViewManagement;
 using Uno.Helpers.Theming;
+using Uno.UI.Core;
 
 #if !HAS_UNO_WINUI
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
@@ -20,7 +21,6 @@ using Microsoft.UI.Windowing;
 #else
 using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
 using WindowActivatedEventArgs = Windows.UI.Core.WindowActivatedEventArgs;
-
 #endif
 
 namespace Uno.UI.Xaml.Controls;
@@ -48,7 +48,7 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 
 	public abstract CoreWindow? CoreWindow { get; }
 
-	public bool Visible => NativeWindowWrapper?.Visible ?? false;
+	public bool Visible => NativeWindowWrapper?.IsVisible ?? false;
 
 	public abstract UIElement? Content { get; set; }
 
@@ -213,6 +213,7 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 		CoreWindow?.OnActivated(coreWindowActivatedEventArgs);
 		Activated?.Invoke(Window, activatedEventArgs);
 		SystemThemeHelper.RefreshSystemTheme();
+		KeyboardStateTracker.Reset();
 	}
 
 	public void Close() => NativeWindowWrapper?.Close();

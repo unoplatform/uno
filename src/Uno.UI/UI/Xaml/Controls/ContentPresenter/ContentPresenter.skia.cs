@@ -1,41 +1,60 @@
 ﻿using System;
-using System.Runtime.InteropServices;
-using Uno.Extensions;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
+using Uno.Disposables;
 using Uno.Foundation.Extensibility;
+using Uno.Foundation.Logging;
 using Uno.UI;
-using Uno.UI.DataBinding;
 using Windows.Foundation;
-using Windows.Foundation.Metadata;
-using Windows.UI.Core;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Shapes;
-using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls;
 
 partial class ContentPresenter
 {
-	private static readonly Lazy<INativeElementHostingExtension> _nativeElementHostingExtension = new Lazy<INativeElementHostingExtension>(() =>
-	{
-		ApiExtensibility.CreateInstance<INativeElementHostingExtension>(typeof(ContentPresenter), out var extension);
-		return extension;
-	});
+	private Lazy<INativeElementHostingExtension> _nativeElementHostingExtension;
+	private static readonly HashSet<ContentPresenter> _nativeHosts = new();
 
-	private Rect? _lastArrangeRect;
-	private Rect _lastGlobalRect;
-	private bool _nativeHostRegistered;
+	private Rect _lastFinalRect;
+#if DEBUG
+	private bool _nativeElementAttached;
+#endif
+
+	internal static bool HasNativeElements() => _nativeHosts.Count > 0;
 
 	partial void InitializePlatform()
 	{
-		Loaded += (s, e) => RegisterNativeHostSupport();
-		Unloaded += (s, e) => UnregisterNativeHostSupport();
+		_nativeElementHostingExtension = new Lazy<INativeElementHostingExtension>(() =>
+		{
+			try
+			{
+				ApiExtensibility.CreateInstance<INativeElementHostingExtension>(this, out var extension);
+				return extension;
+			}
+			catch (Exception e) // this catches weird cases like an enqueued Loaded event on a ContentPresenter that dispatches after the window of that ContentPresenter is closed
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().LogError($"Couldn't create an {nameof(INativeElementHostingExtension)}.", e);
+				}
+				return null;
+			}
+		});
 	}
 
-	partial void TryRegisterNativeElement(object newValue)
+	private IDisposable _nativeElementDisposable;
+
+	partial void TryRegisterNativeElement(object oldValue, object newValue)
 	{
-		if (IsNativeElement(newValue))
+		if (IsNativeHost && IsInLiveTree)
+		{
+			DetachNativeElement(oldValue);
+		}
+
+		if (_nativeElementHostingExtension.Value?.IsNativeElement(newValue) ?? false)
 		{
 			IsNativeHost = true;
+			Visual.IsNativeHostVisual = true;
 
 			if (ContentTemplate is not null)
 			{
@@ -46,96 +65,135 @@ partial class ContentPresenter
 				throw new InvalidOperationException("ContentTemplateSelector cannot be set when the Content is a native element");
 			}
 
-			RegisterNativeHostSupport();
-		}
-		else if (IsNativeHost)
-		{
-			IsNativeHost = false;
-			UnregisterNativeHostSupport();
-		}
-	}
-
-	void RegisterNativeHostSupport()
-	{
-		if (IsNativeHost && XamlRoot is not null)
-		{
-			XamlRoot.InvalidateRender += UpdateNativeElementPosition;
-			_nativeHostRegistered = true;
-		}
-	}
-
-	void UnregisterNativeHostSupport()
-	{
-		if (_nativeHostRegistered)
-		{
-			_nativeHostRegistered = false;
-			XamlRoot.InvalidateRender -= UpdateNativeElementPosition;
-		}
-	}
-
-	partial void ArrangeNativeElement(Rect arrangeRect)
-	{
-		if (IsNativeHost)
-		{
-			_lastArrangeRect = arrangeRect;
-
-			UpdateNativeElementPosition();
-		}
-	}
-
-	partial void TryAttachNativeElement()
-	{
-		if (IsNativeHost)
-		{
-			AttachNativeElement(XamlRoot, Content);
-		}
-	}
-
-	partial void TryDetachNativeElement()
-	{
-		if (IsNativeHost)
-		{
-			DetachNativeElement(XamlRoot, Content);
-		}
-	}
-
-	private Size MeasureNativeElement(Size size)
-	{
-		if (IsNativeHost)
-		{
-			return MeasureNativeElement(XamlRoot, Content, size);
+			if (IsInLiveTree)
+			{
+				//If in visual tree, attach immediately. If not, don't attach since Enter will attach later.
+				AttachNativeElement();
+			}
 		}
 		else
 		{
-			return size;
+			IsNativeHost = false;
+			Visual.IsNativeHostVisual = false;
 		}
 	}
 
-	private void UpdateNativeElementPosition()
+	private void ArrangeNativeElement()
 	{
-		if (_lastArrangeRect is { } lastArrangeRect)
+		if (!IsNativeHost)
 		{
-			var globalPosition = TransformToVisual(null).TransformPoint(lastArrangeRect.Location);
-			var globalRect = new Rect(globalPosition, lastArrangeRect.Size);
+			// the ArrangeNativeElement call is queued on the dispatcher, so by the time we get here, the ContentPresenter
+			// might no longer be a NativeHost
+			return;
+		}
+		var arrangeRect = this.GetAbsoluteBoundsRect();
+		var ev = GetParentViewport().Effective;
 
-			if (_lastGlobalRect != globalRect)
+		Rect clipRect;
+		if (ev.IsEmpty)
+		{
+			clipRect = new Rect(0, 0, 0, 0);
+		}
+		else if (ev.IsInfinite)
+		{
+			clipRect = null;
+		}
+		else
+		{
+			var top = Math.Min(Math.Max(0, ev.Y), ActualHeight);
+			var height = Math.Max(0, Math.Min(ev.Height + ev.Y, ActualHeight - top));
+			var left = Math.Min(Math.Max(0, ev.X), ActualWidth);
+			var width = Math.Max(0, Math.Min(ev.Width + ev.X, ActualWidth - left));
+			clipRect = new Rect(left, top, width, height);
+		}
+
+		var clipInGlobalCoordinates = new Rect(
+			arrangeRect.X + clipRect.X,
+			arrangeRect.Y + clipRect.Y,
+			clipRect.Width,
+			clipRect.Height);
+		_lastFinalRect = arrangeRect.IntersectWith(clipInGlobalCoordinates) ?? new Rect(arrangeRect.X, arrangeRect.Y, 0, 0);
+
+		_nativeElementHostingExtension.Value!.ArrangeNativeElement(
+			Content,
+			arrangeRect,
+			clipRect);
+	}
+
+	partial void AttachNativeElement()
+	{
+#if DEBUG
+		global::System.Diagnostics.Debug.Assert(IsNativeHost && XamlRoot is not null && !_nativeElementAttached);
+		_nativeElementAttached = true;
+#endif
+		_nativeElementHostingExtension.Value!.AttachNativeElement(Content);
+		_nativeHosts.Add(this);
+		EffectiveViewportChanged += OnEffectiveViewportChanged;
+		LayoutUpdated += OnLayoutUpdated;
+		var visiblityToken = RegisterPropertyChangedCallback(HitTestVisibilityProperty, OnHitTestVisiblityChanged);
+		_nativeElementDisposable = Disposable.Create(() =>
+		{
+			UnregisterPropertyChangedCallback(HitTestVisibilityProperty, visiblityToken);
+		});
+	}
+
+	partial void DetachNativeElement(object content)
+	{
+#if DEBUG
+		global::System.Diagnostics.Debug.Assert(IsNativeHost && _nativeElementAttached);
+		_nativeElementAttached = false;
+#endif
+		_nativeHosts.Remove(this);
+		EffectiveViewportChanged -= OnEffectiveViewportChanged;
+		LayoutUpdated -= OnLayoutUpdated;
+		_nativeElementHostingExtension.Value!.DetachNativeElement(content);
+		_nativeElementDisposable?.Dispose();
+	}
+
+	private Size MeasureNativeElement(Size childMeasuredSize, Size availableSize)
+	{
+		global::System.Diagnostics.Debug.Assert(IsNativeHost);
+		return _nativeElementHostingExtension.Value!.MeasureNativeElement(Content, childMeasuredSize, availableSize);
+	}
+
+	private void OnHitTestVisiblityChanged(DependencyObject sender, DependencyProperty dp)
+	{
+		_nativeElementHostingExtension.Value!.ChangeNativeElementVisibility(Content, HitTestVisibility != HitTestability.Collapsed);
+	}
+
+	internal static void UpdateNativeHostContentPresentersOpacities()
+	{
+		foreach (var contentPresenter in _nativeHosts)
+		{
+			double finalOpacity = 1;
+			UIElement parent = contentPresenter;
+			while (parent is not null)
 			{
-				_lastGlobalRect = globalRect;
-
-				_nativeElementHostingExtension.Value?.ArrangeNativeElement(XamlRoot, Content, globalRect);
+				finalOpacity *= parent.Opacity;
+				parent = parent.GetParent() as UIElement;
 			}
+
+			contentPresenter._nativeElementHostingExtension!.Value.ChangeNativeElementOpacity(contentPresenter.Content, finalOpacity);
 		}
 	}
 
-	internal static bool IsNativeElement(object content) => _nativeElementHostingExtension.Value?.IsNativeElement(content) ?? false;
+	private void OnLayoutUpdated(object sender, object e)
+	{
+		// Not quite sure why we need to queue the arrange call, but the native element either explodes or doesn't
+		// respect alignments correctly otherwise. This is particularly relevant for the initial load.
+		DispatcherQueue.TryEnqueue(ArrangeNativeElement);
+	}
 
-	internal static void AttachNativeElement(object owner, object content) => _nativeElementHostingExtension.Value?.AttachNativeElement(owner, content);
+	private void OnEffectiveViewportChanged(FrameworkElement sender, EffectiveViewportChangedEventArgs args)
+	{
+		global::System.Diagnostics.Debug.Assert(IsNativeHost);
+		// The arrange call here is queued because EVPChanged is fired before the layout of the ContentPresenter is updated,
+		// so calling ArrangeNativeElement synchronously would get outdated coordinates.
+		DispatcherQueue.TryEnqueue(ArrangeNativeElement);
+	}
 
-	internal static void DetachNativeElement(object owner, object content) => _nativeElementHostingExtension.Value?.DetachNativeElement(owner, content);
-
-	internal static void ArrangeNativeElement(object owner, object content, Rect arrangeRect) => _nativeElementHostingExtension.Value?.ArrangeNativeElement(owner, content, arrangeRect);
-
-	internal static Size MeasureNativeElement(object owner, object content, Size size) => _nativeElementHostingExtension.Value?.MeasureNativeElement(owner, content, size) ?? size;
-
-	internal static bool IsNativeElementAttached(object owner, object nativeElement) => _nativeElementHostingExtension.Value?.IsNativeElementAttached(owner, nativeElement) ?? false;
+	internal object CreateSampleComponent(string text)
+	{
+		return _nativeElementHostingExtension.Value?.CreateSampleComponent(text);
+	}
 }

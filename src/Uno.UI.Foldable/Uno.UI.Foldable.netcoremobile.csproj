@@ -21,12 +21,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<authors>Uno Platform</authors>
-		<PackageProjectUrl>https://github.com/unoplatform/uno</PackageProjectUrl>
-		<PackageIcon>uno.png</PackageIcon>
-		<RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
 		<Description>This package provides the ability for Uno Platform based apps to use dual screen devices such as the Surface Duo or Neo</Description>
-		<Copyright>Copyright (C) 2015-$([System.DateTime]::Now.ToString(`yyyy`)) Uno Platform Inc. - all rights reserved</Copyright>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -51,8 +46,11 @@
 
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
+			
+			<!-- Current nuget publishing uses netX.0-android30.0 -->
+			<_OverrideTargetFramework Condition="$(_OverrideTargetFramework.EndsWith('.0-android'))">$(_OverrideTargetFramework)30.0</_OverrideTargetFramework>
 
-			<_TargetNugetFolder>$(NuGetPackageRoot)\Uno.UI.Foldable\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
+			<_TargetNugetFolder>$(NuGetPackageRoot)\uno.ui.foldable\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
 		</PropertyGroup>
 
 	<ItemGroup>

@@ -105,7 +105,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				if (typeSymbol is INamedTypeSymbol { TypeKind: TypeKind.Interface })
 				{
-					return namedTypeSymbol.AllInterfaces.Contains(typeSymbol);
+					return namedTypeSymbol.AllInterfaces.Contains(typeSymbol, SymbolEqualityComparer.Default);
 				}
 
 				do

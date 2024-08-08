@@ -46,6 +46,19 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		internal void CloneToForHotReload(DependencyPropertyDetails other)
+		{
+			// If the old instance has a local value **and** the new instance doesn't, then copy the local value.
+			// We shouldn't be copying local value if the new instance already has it set. The new value in the new instance
+			// should not be overwritten as it's more likely to be more correct.
+			var oldValue = this.GetValue(DependencyPropertyValuePrecedences.Local);
+			if (oldValue != DependencyProperty.UnsetValue &&
+				other.GetValue(DependencyPropertyValuePrecedences.Local) == DependencyProperty.UnsetValue)
+			{
+				other.SetValue(oldValue, DependencyPropertyValuePrecedences.Local);
+			}
+		}
+
 		public void Dispose()
 		{
 			_callbackManager?.Dispose();
@@ -320,7 +333,7 @@ namespace Microsoft.UI.Xaml
 		{
 			if (_stack == null)
 			{
-				if (_highestPrecedence == DependencyPropertyValuePrecedences.Local)
+				if (_highestPrecedence == DependencyPropertyValuePrecedences.Local && precedence < DependencyPropertyValuePrecedences.Local)
 				{
 					return (Unwrap(_fastLocalValue), DependencyPropertyValuePrecedences.Local);
 				}
@@ -452,8 +465,10 @@ namespace Microsoft.UI.Xaml
 		internal IDisposable RegisterCallback(PropertyChangedCallback callback)
 			=> (_callbackManager ??= new DependencyPropertyCallbackManager()).RegisterCallback(callback);
 
-		internal void RaisePropertyChanged(DependencyObject actualInstanceAlias, DependencyPropertyChangedEventArgs eventArgs)
-			=> _callbackManager?.RaisePropertyChanged(actualInstanceAlias, eventArgs);
+		internal bool CanRaisePropertyChanged => _callbackManager is not null;
+
+		internal void RaisePropertyChangedNoNullCheck(DependencyObject actualInstanceAlias, DependencyPropertyChangedEventArgs eventArgs)
+			=> _callbackManager!.RaisePropertyChanged(actualInstanceAlias, eventArgs);
 
 		[Flags]
 		private enum Flags : byte

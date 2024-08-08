@@ -23,6 +23,10 @@ internal partial class PopupRoot : Panel
 		KeyDown += OnKeyDown;
 		Loaded += OnRootLoaded;
 		Unloaded += OnRootUnloaded;
+
+		// See https://github.com/unoplatform/uno/issues/16358#issuecomment-2115276460
+		// This is a hack to prevent Unfocus from being called.
+		PointerReleased += (_, e) => e.Handled = true;
 	}
 
 	private void OnRootLoaded(object sender, RoutedEventArgs args)
@@ -98,6 +102,7 @@ internal partial class PopupRoot : Panel
 				continue;
 			}
 
+			child.EnsureLayoutStorage();
 			// Note: The popup alignment is ensure by the PopupPanel itself
 			ArrangeElement(child, new Rect(new Point(), finalSize));
 		}

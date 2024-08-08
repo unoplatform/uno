@@ -44,6 +44,7 @@
 		<ProjectReference Include="..\Uno.UI.RemoteControl.Messaging\Uno.UI.RemoteControl.Messaging.csproj" />
 		<ProjectReference Include="..\Uno.UWP\Uno.Reference.csproj" />
 		<ProjectReference Include="..\Uno.UI\Uno.UI.Reference.csproj" />
+		<ProjectReference Include="..\Uno.UI.Toolkit\Uno.UI.Toolkit.Reference.csproj" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(DocsGeneration)'==''">
@@ -61,12 +62,27 @@
 			<UndefineProperties>TargetFramework</UndefineProperties>
 		</ProjectReference>
 	</ItemGroup>
+	
+	<ItemGroup Condition="'$(UNO_UWP_BUILD)'=='true'">
+		<Page Remove="Themes\Generic.xaml" />
+
+		<Page Remove="RemoteControlStatusView.xaml" />
+		<Compile Remove="RemoteControlStatusView.cs" />
+		<None Include="RemoteControlStatusView.cs" />
+
+		<Page Remove="HotReload\HotReloadStatusView.xaml" />
+		<Compile Remove="HotReload\HotReloadStatusView.cs" />
+		<None Include="HotReload\HotReloadStatusView.cs" />
+	</ItemGroup>
+	<PropertyGroup Condition="'$(UNO_UWP_BUILD)'=='true'">
+		<PageExclusions>$(MSBuildThisFileDirectory)**\*.xaml</PageExclusions>
+	</PropertyGroup>
 
 	<Target Name="_UnoRemoteControlOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			<_TargetNugetFolder>$(NuGetPackageRoot)\$(PackageId)\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
+			<_TargetNugetFolder>$(NuGetPackageRoot)\$(PackageId.ToLowerInvariant())\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)\*.*" />
@@ -77,4 +93,7 @@
 
 		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
 	</Target>
+
+	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
+
 </Project>

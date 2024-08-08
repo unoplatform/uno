@@ -28,6 +28,7 @@ using ButtonBase = Microsoft.UI.Xaml.Controls.Primitives.ButtonBase;
 using Uno.UI;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.UI.Xaml.Controls;
+using TextBox = Microsoft.UI.Xaml.Controls.TextBox;
 
 #if !HAS_UNO_WINUI
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
@@ -43,13 +44,13 @@ namespace Windows.UI.Tests.Enterprise
 	public class CommandBarIntegrationTests : BaseDxamlTestClass
 	{
 		[ClassInitialize]
-		void ClassSetup()
+		public static void ClassSetup()
 		{
 			CommonTestSetupHelper.CommonTestClassSetup();
 		}
 
 		[ClassCleanup]
-		void TestCleanup()
+		public static void TestCleanup()
 		{
 			TestServices.WindowHelper.ShutdownXaml();
 			TestServices.WindowHelper.VerifyTestCleanup();

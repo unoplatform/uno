@@ -35,6 +35,7 @@ On some platforms, you can further customize the file-picking experience by util
 | SuggestedFileName       | ✔   | ✔           | ✖      | ✖     | ✔ |
 | SuggestedStartLocation  | ✔   | ✔ (1)       | 💬 (4) | ✔ (3) | ✔ |
 | SettingsIdentifier      | ✔   | ✔ (1)       | ✔      | ✖     | ✔ |
+| SetMultipleFileLimit()  | ✖   | ✖           | ✖      | ✔     | ✖ |
 
 *(1) - Only for the native file pickers - see WebAssembly section below*\
 *(2) - For FileOpenPicker, VideosLibrary and PicturesLibrary are used to apply `image/*` and `video/*` filters*\
@@ -152,6 +153,45 @@ else
 {
     // No file was picked or the dialog was cancelled.
 }
+```
+
+> [!IMPORTANT]
+> On Uno Platform Targets, the `Path` information found on the `StorageFile` object returned from either the `PickMultipleFilesAsync()` or `PickSingleFileAsync()` method cannot be used with Windows File System APIs. This means that, for example, this `Path` cannot be used to initialize a `FileInfo` object.
+> If you need to access file size, use the `GetBasicProperties()` or `GetBasicPropertiesAsync()` methods. Both methods provide access to the `Size` and the `DateModified.` For the file extension, use the `FileType` property.
+
+##### Accessing information about the File
+
+```csharp
+var fileOpenPicker = new FileOpenPicker();
+...
+
+var pickedFile = await fileOpenPicker.PickSingleFileAsync();
+
+if (pickedFile != null)
+{
+    var extension = pickedFile.FileType;
+
+    var properties = await pickedFile.GetBasicPropertiesAsync();    
+    var size = properties.Size;
+}
+```
+
+> [!NOTE]
+> On iOS, when making multiple selections, you can limit the number of items selected by calling the `SetMultipleFileLimit()` method and specifying the maximum number of items.
+>
+
+##### Limiting the number of items
+
+```csharp
+var fileOpenPicker = new FileOpenPicker();
+fileOpenPicker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
+fileOpenPicker.FileTypeFilter.Add(".jpg");
+fileOpenPicker.FileTypeFilter.Add(".png");
+//The user will be able to pick up to three files.
+fileOpenPicker.SetMultipleFileLimit(3);
+
+var pickedFiles = await fileOpenPicker.PickMultipleFilesAsync();
+...
 ```
 
 > [!NOTE]

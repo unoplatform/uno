@@ -22,8 +22,8 @@ using System.Runtime.CompilerServices;
 
 namespace Uno.UI.DataBinding
 {
-	[DebuggerDisplay("Path={_path} DataContext={_dataContext}")]
-	internal partial class BindingPath : IDisposable, IValueChangedListener, IEquatable<BindingPath>
+	[DebuggerDisplay("Path={_path} DataContext={_dataContextWeakStorage?.Target}")]
+	internal partial class BindingPath : IDisposable
 	{
 		private static List<IPropertyChangedRegistrationHandler> _propertyChangedHandlers = new List<IPropertyChangedRegistrationHandler>(2);
 		private readonly string _path;
@@ -84,13 +84,7 @@ namespace Uno.UI.DataBinding
 			void NewValue();
 		}
 
-		/// <summary>
-		/// Provides the new values for the current binding.
-		/// </summary>
-		/// <remarks>
-		/// This event is not a generic type for performance constraints on Mono's Full-AOT
-		/// </remarks>
-		public IValueChangedListener? ValueChangedListener { get; set; }
+		public BindingExpression? Expression { get; set; }
 
 		static BindingPath()
 		{
@@ -122,7 +116,7 @@ namespace Uno.UI.DataBinding
 
 			if (_value != null)
 			{
-				_value.ValueChangedListener = this;
+				_value.Path = this;
 			}
 		}
 
@@ -309,13 +303,13 @@ namespace Uno.UI.DataBinding
 			else
 			{
 				// This is an empty path binding, raise the current value as changed.
-				ValueChangedListener?.OnValueChanged(Value);
+				Expression?.OnValueChanged(Value);
 			}
 		}
 
-		void IValueChangedListener.OnValueChanged(object o)
+		internal void OnValueChanged(object? o)
 		{
-			ValueChangedListener?.OnValueChanged(o);
+			Expression?.OnValueChanged(o);
 		}
 
 		~BindingPath()
@@ -323,11 +317,26 @@ namespace Uno.UI.DataBinding
 			Dispose(false);
 		}
 
-		public bool Equals(BindingPath? that)
+		public bool PrefixOfOrEqualTo(BindingPath? that)
 		{
-			return that != null
-				&& this.Path == that.Path
-				&& !DependencyObjectStore.AreDifferent(this.DataContext, that.DataContext);
+			if (that == null || DependencyObjectStore.AreDifferent(this.DataContext, that.DataContext))
+			{
+				return false;
+			}
+
+			var currentLeft = this._chain;
+			var currentRight = that._chain;
+			while (currentLeft != null)
+			{
+				if (!currentLeft.Equals(currentRight))
+				{
+					return false;
+				}
+				currentLeft = currentLeft.Next;
+				currentRight = currentRight.Next;
+			}
+
+			return true;
 		}
 
 		// We define Equals to be based on Path, so `RuntimeHelpers.GetHashCode(path)` doesn't work,
@@ -472,7 +481,7 @@ namespace Uno.UI.DataBinding
 				{
 					tail = tail.Next;
 				}
-				tail.ValueChangedListener?.OnValueChanged(bindingItem.Value);
+				tail.Path?.OnValueChanged(bindingItem.Value);
 			};
 
 			notify.CollectionChanged += handler;
@@ -537,8 +546,18 @@ namespace Uno.UI.DataBinding
 
 			return null;
 		}
-		#endregion
 
+		internal bool OnlyLeafNodeNull()
+		{
+			var tail = _chain;
+			while (tail?.Value != null)
+			{
+				tail = tail.Next;
+			}
+
+			return tail?.Value is null && tail?.Next == null;
+		}
+		#endregion
 	}
 }
 #endif

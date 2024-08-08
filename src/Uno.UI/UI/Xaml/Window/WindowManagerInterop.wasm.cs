@@ -14,6 +14,7 @@ using Windows.UI;
 using Microsoft.UI.Xaml;
 
 using System.Runtime.InteropServices.JavaScript;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Xaml
 {
@@ -25,11 +26,14 @@ namespace Uno.UI.Xaml
 		//When users set double.MaxValue to scroll to the end of the page Javascript doesn't scroll.
 		private const double MAX_SCROLLING_OFFSET = 1_000_000_000_000_000_000;
 
-		internal static Task InitAsync(bool isLoadEventsEnabled)
-			=> NativeMethods.InitAsync(isLoadEventsEnabled);
+		internal static Task InitAsync()
+			=> NativeMethods.InitAsync();
 
 		internal static void SetBodyCursor(string value)
 			=> NativeMethods.SetBodyCursor(value);
+
+		internal static void SetSingleLine(TextBoxView textBoxView)
+			=> NativeMethods.SetSingleLine(textBoxView.HtmlId);
 
 		/// <summary>
 		/// This method has two purposes:
@@ -1111,6 +1115,9 @@ namespace Uno.UI.Xaml
 			[JSImport("globalThis.Uno.UI.WindowManager.setBodyCursor")]
 			internal static partial void SetBodyCursor(string value);
 
+			[JSImport("globalThis.Uno.UI.WindowManager.setSingleLine")]
+			internal static partial void SetSingleLine(IntPtr htmlId);
+
 			[JSImport("globalThis.Uno.UI.WindowManager.beforeLaunch")]
 			internal static partial string BeforeLaunch();
 
@@ -1130,7 +1137,7 @@ namespace Uno.UI.Xaml
 			internal static partial string GetProperty(IntPtr htmlId, string name);
 
 			[JSImport("globalThis.Uno.UI.WindowManager.init")]
-			internal static partial Task InitAsync(bool isLoadEventsEnabled);
+			internal static partial Task InitAsync();
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.measureViewNativeFast")]
 			internal static partial void MeasureView(IntPtr htmlId, double availableWidth, double availableHeight, bool measureContent, IntPtr pReturn);

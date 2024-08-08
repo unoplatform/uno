@@ -60,6 +60,11 @@ public abstract class UnoManualOrAutoResetEvent : IDisposable
 
 	public async Task<bool> WaitOne(TimeSpan timeout)
 	{
+		if (timeout < TimeSpan.Zero)
+		{
+			// UnoAutoResetEvent does not support -1 for infinite timeout.
+			timeout = TimeSpan.FromSeconds(5);
+		}
 		for (int i = 0; i < timeout.TotalMilliseconds / 50; i++)
 		{
 			if (_wasSet)

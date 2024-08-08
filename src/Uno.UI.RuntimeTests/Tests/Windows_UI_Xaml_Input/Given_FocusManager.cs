@@ -22,6 +22,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 		public async Task GotLostFocus()
 		{
 			using var _ = new AssertionScope();
+			var buttons = new Button[4];
+			RoutedEventHandler[] onButtonGotFocus = new RoutedEventHandler[4];
+			RoutedEventHandler[] onButtonLostFocus = new RoutedEventHandler[4];
+			EventHandler<FocusManagerGotFocusEventArgs> onFocusManagerGotFocus = null;
+			EventHandler<FocusManagerLostFocusEventArgs> onFocusManagerLostFocus = null;
+
 			try
 			{
 				var panel = new StackPanel();
@@ -30,7 +36,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 				var receivedGotFocus = new bool[4];
 				var receivedLostFocus = new bool[4];
 
-				var buttons = new Button[4];
 				for (var i = 0; i < 4; i++)
 				{
 					var button = new Button
@@ -69,31 +74,41 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 				for (var i = 0; i < 4; i++)
 				{
 					var inner = i;
-					buttons[i].GotFocus += (o, e) =>
+
+					onButtonGotFocus[i] = (o, e) =>
 					{
 						receivedGotFocus[inner] = true;
 						wasEventRaised = true;
 						FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot).Should().NotBeNull($"buttons[{i}].GotFocus");
 					};
 
-					buttons[i].LostFocus += (o, e) =>
+					onButtonLostFocus[i] = (o, e) =>
 					{
 						receivedLostFocus[inner] = true;
 						wasEventRaised = true;
 						FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot).Should().NotBeNull($"buttons[{i}].LostFocus");
 					};
+
+					buttons[i].GotFocus += onButtonGotFocus[i];
+
+					buttons[i].LostFocus += onButtonLostFocus[i];
 				}
 
-				FocusManager.GotFocus += (o, e) =>
+				onFocusManagerGotFocus = (o, e) =>
 				{
 					FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot).Should().NotBeNull($"FocusManager.GotFocus - element");
 					wasEventRaised = true;
 				};
-				FocusManager.LostFocus += (o, e) =>
+
+				onFocusManagerLostFocus = (o, e) =>
 				{
 					FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot).Should().NotBeNull($"FocusManager.LostFocus - element");
 					wasEventRaised = true;
 				};
+
+				FocusManager.GotFocus += onFocusManagerGotFocus;
+
+				FocusManager.LostFocus += onFocusManagerLostFocus;
 
 				buttons[1].Focus(FocusState.Programmatic);
 				buttons[3].Focus(FocusState.Programmatic);
@@ -118,7 +133,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 			}
 			finally
 			{
+				for (var i = 0; i < 4; i++)
+				{
+					buttons[i].GotFocus -= onButtonGotFocus[i];
+					buttons[i].LostFocus -= onButtonLostFocus[i];
+				}
 
+				FocusManager.GotFocus -= onFocusManagerGotFocus;
+
+				FocusManager.LostFocus -= onFocusManagerLostFocus;
 			}
 		}
 

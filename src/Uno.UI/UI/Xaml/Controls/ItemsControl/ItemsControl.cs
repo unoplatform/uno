@@ -995,7 +995,14 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private protected virtual void UpdateItems(NotifyCollectionChangedEventArgs args)
 		{
-			if (ItemsPanelRoot == null || !ShouldItemsControlManageChildren)
+			if (ItemsPanelRoot == null
+				|| !ShouldItemsControlManageChildren
+#if __ANDROID__
+				// workaround for INCC callback on disposed object
+				// see: Given_xBind.When_XBind_TargetDisposed_Test()
+				|| (Handle == nint.Zero || ItemsPanelRoot.Handle == nint.Zero)
+#endif
+				)
 			{
 				return;
 			}
@@ -1180,12 +1187,10 @@ namespace Microsoft.UI.Xaml.Controls
 						}
 					}
 
-					if (!contentControl.IsContainerFromTemplateRoot)
-					{
-						// Clears value set in PrepareContainerForItemOverride
-						ClearPropertyWhenNoExpression(contentControl, ContentControl.ContentProperty);
-					}
-
+					// Make sure to clean up the template/selector first before cleaning up the ContentProperty.
+					// This way, if the contentControl contains a ContentPresenter with a template/selector, changing
+					// the content doesn't cause the selector to reevaluate (or the template to respond to changes).
+					// When_TemplateSelector_And_List_Reloaded asserts against this.
 					if (contentControl.ContentTemplate is { } ct && ct == ItemTemplate)
 					{
 						ClearPropertyWhenNoExpression(contentControl, ContentControl.ContentTemplateProperty);
@@ -1193,6 +1198,12 @@ namespace Microsoft.UI.Xaml.Controls
 					else if (contentControl.ContentTemplateSelector is { } cts && cts == ItemTemplateSelector)
 					{
 						ClearPropertyWhenNoExpression(contentControl, ContentControl.ContentTemplateSelectorProperty);
+					}
+
+					if (!contentControl.IsContainerFromTemplateRoot)
+					{
+						// Clears value set in PrepareContainerForItemOverride
+						ClearPropertyWhenNoExpression(contentControl, ContentControl.ContentProperty);
 					}
 				}
 
