@@ -25,7 +25,7 @@ As discussed earlier, the UWP implementation of the **TimeEntryUno** application
 > [!TIP]
 > The IdentityServer4 server-side implementation used in the sample mirrors the QuickStart tutorial shown below. :
 >
-> * [Protecting an API using Client Credentials](http://docs.identityserver.io/en/latest/quickstarts/1_client_credentials.html)
+> * [Protecting an API using Client Credentials](https://docs.duendesoftware.com/identityserver/v7/quickstarts/1_client_credentials/)
 
 The code to retrieve the access token is encapsulated within the a class **IdentityServerClient** and uses the **HttpClient** class as well as the **IdentityModel** NuGet package.
 
