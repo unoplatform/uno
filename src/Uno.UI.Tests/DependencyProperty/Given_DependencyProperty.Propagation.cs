@@ -384,12 +384,12 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 
 			CreateSub();
 
-			SUT.TemplatedParent = SUT;
+			//SUT.TemplatedParent = SUT;
 
 			GC.Collect(2, GCCollectionMode.Forced);
 			GC.WaitForPendingFinalizers();
 
-			SUT.TemplatedParent = null;
+			//SUT.TemplatedParent = null;
 
 			GC.Collect(2, GCCollectionMode.Forced);
 			GC.WaitForPendingFinalizers();

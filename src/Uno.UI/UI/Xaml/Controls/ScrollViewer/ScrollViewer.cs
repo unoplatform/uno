@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using Uno.Disposables;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -136,15 +137,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 			UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewer.GetUpdatesMode(this);
 			InitializePartial();
-
-
-			this.RegisterParentChangedCallback(this, (_, _, args) =>
-			{
-				if (args.NewParent is null)
-				{
-					ClearContentTemplatedParent(Content);
-				}
-			});
 		}
 
 		partial void InitializePartial();
@@ -523,7 +515,7 @@ namespace Microsoft.UI.Xaml.Controls
 				"ComputedHorizontalScrollBarVisibility",
 				typeof(Visibility),
 				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(Visibility.Collapsed)); // This has to be collapsed by default to allow deferred loading of the template
+				new FrameworkPropertyMetadata(Visibility.Visible));
 
 		public Visibility ComputedHorizontalScrollBarVisibility
 		{
@@ -538,7 +530,7 @@ namespace Microsoft.UI.Xaml.Controls
 				"ComputedVerticalScrollBarVisibility",
 				typeof(Visibility),
 				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(Visibility.Collapsed)); // This has to be collapsed by default to allow deferred loading of the template
+				new FrameworkPropertyMetadata(Visibility.Visible));
 
 		public Visibility ComputedVerticalScrollBarVisibility
 		{
@@ -616,7 +608,10 @@ namespace Microsoft.UI.Xaml.Controls
 			);
 		#endregion
 
+
+#if !__SKIA__
 		private readonly SerialDisposable _sizeChangedSubscription = new SerialDisposable();
+#endif
 
 #pragma warning disable 649 // unused member for Unit tests
 		private _ScrollContentPresenter? _presenter;
@@ -681,8 +676,9 @@ namespace Microsoft.UI.Xaml.Controls
 		protected override Size MeasureOverride(Size availableSize)
 		{
 			ViewportMeasureSize = availableSize;
-
-			return base.MeasureOverride(availableSize);
+			var size = base.MeasureOverride(availableSize);
+			UpdateDimensionProperties();
+			return size;
 		}
 
 		protected override Size ArrangeOverride(Size finalSize)
@@ -707,7 +703,6 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.OnLayoutUpdated();
 #endif
-			UpdateDimensionProperties();
 			UpdateZoomedContentAlignment();
 		}
 
@@ -1058,16 +1053,9 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		#region Content and TemplatedParent forwarding to the ScrollContentPresenter
+		#region Content forwarding to the ScrollContentPresenter
 		protected override void OnContentChanged(object? oldValue, object? newValue)
 		{
-			if (oldValue is not null && !ReferenceEquals(oldValue, newValue))
-			{
-				// remove the explicit templated parent propagation
-				// for the lack of TemplatedParentScope support
-				ClearContentTemplatedParent(oldValue);
-			}
-
 			base.OnContentChanged(oldValue, newValue);
 
 			if (_presenter is not null)
@@ -1075,39 +1063,22 @@ namespace Microsoft.UI.Xaml.Controls
 				ApplyScrollContentPresenterContent(newValue);
 			}
 
-			UpdateSizeChangedSubscription();
+			//UpdateSizeChangedSubscription();
 
 			_snapPointsInfo = newValue as IScrollSnapPointsInfo;
 		}
 
 		private void ApplyScrollContentPresenterContent(object? content)
 		{
-			// Stop the automatic propagation of the templated parent on the Content
-			// This prevents issues when the a ScrollViewer is hosted in a control template
-			// and its content is a ContentControl or ContentPresenter, which has a TemplateBinding
-			// on the Content property. This can make the Content added twice in the visual tree.
-			// cf. https://github.com/unoplatform/uno/issues/3762
-			if (content is IDependencyObjectStoreProvider provider)
-			{
-				var contentTemplatedParent = provider.Store.GetValue(provider.Store.TemplatedParentProperty);
-				if (contentTemplatedParent == null || contentTemplatedParent != TemplatedParent)
-				{
-					// Note: Even if the TemplatedParent is already null, we make sure to set it with the local precedence
-					provider.Store.SetValue(provider.Store.TemplatedParentProperty, null, DependencyPropertyValuePrecedences.Local);
-				}
-			}
-
 			// Then explicitly propagate the Content to the _presenter
 			if (_presenter != null)
 			{
 				_presenter.Content = content as View;
 			}
-
-			// Propagate the ScrollViewer's own templated parent, instead of
-			// the scrollviewer itself (through ScrollContentPresenter)
-			SynchronizeContentTemplatedParent(TemplatedParent);
 		}
 
+#if !__SKIA__
+		[SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Used only by some platforms; wip refactor")]
 		private void UpdateSizeChangedSubscription(bool isCleanupRequired = false)
 		{
 			// TODO HERE
@@ -1125,29 +1096,7 @@ namespace Microsoft.UI.Xaml.Controls
 			void OnElementSizeChanged(object sender, SizeChangedEventArgs args)
 				=> UpdateDimensionProperties();
 		}
-
-		protected internal override void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnTemplatedParentChanged(e);
-
-			SynchronizeContentTemplatedParent(e.NewValue as DependencyObject);
-		}
-
-		private void SynchronizeContentTemplatedParent(DependencyObject? templatedParent)
-		{
-			if (Content is View && Content is IDependencyObjectStoreProvider provider)
-			{
-				provider.Store.SetValue(provider.Store.TemplatedParentProperty, templatedParent, DependencyPropertyValuePrecedences.Local);
-			}
-		}
-
-		private void ClearContentTemplatedParent(object? oldContent)
-		{
-			if (oldContent is IDependencyObjectStoreProvider provider)
-			{
-				provider.Store.ClearValue(provider.Store.TemplatedParentProperty, DependencyPropertyValuePrecedences.Local);
-			}
-		}
+#endif
 		#endregion
 
 		#region Managed scroll bars support

@@ -11,6 +11,7 @@ using Android.Views;
 using Android.Widget;
 using System.Drawing;
 using Windows.UI.Core;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Controls
 {
@@ -47,19 +48,19 @@ namespace Uno.UI.Controls
 			set { BindableAdapter.VerticalSpacing = value; }
 		}
 
-		public Func<View> ItemTemplate
+		public DataTemplate ItemTemplate
 		{
 			get { return BindableAdapter.ItemTemplate; }
 			set { BindableAdapter.ItemTemplate = value; }
 		}
 
-		public Func<View> HeaderTemplate
+		public DataTemplate HeaderTemplate
 		{
 			get { return BindableAdapter.HeaderTemplate; }
 			set { BindableAdapter.HeaderTemplate = value; }
 		}
 
-		public Func<View> FooterTemplate
+		public DataTemplate FooterTemplate
 		{
 			get { return BindableAdapter.FooterTemplate; }
 			set { BindableAdapter.FooterTemplate = value; }

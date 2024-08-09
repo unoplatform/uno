@@ -46,7 +46,7 @@ namespace TestRepro
 			"myTemplate"
 			] = 
 			new global::Uno.UI.Xaml.WeakResourceInitializer(this, __ResourceOwner_1 => 
-				new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1 , __owner => 				new _MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_TestReproMyResourceDictionarySC0().Build(__owner)
+				new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, (__owner, __settings) => 				new _MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_TestReproMyResourceDictionarySC0().Build(__owner, __settings)
 				)			)
 			;
 		}
@@ -59,7 +59,7 @@ namespace TestRepro
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 			private const string __baseUri_MyResourceDictionary_92716e07ff456818f6d4125e055d4d57 = "ms-appx:///TestProject/";
 			global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
-			public _View Build(object __ResourceOwner_1)
+			public _View Build(object __ResourceOwner_1, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
 			{
 				_View __rootInstance = null;
 				var __that = this;
@@ -72,6 +72,8 @@ namespace TestRepro
 				}
 				.MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_XamlApply((MyResourceDictionary_92716e07ff456818f6d4125e055d4d57XamlApplyExtensions.XamlApplyHandler0)(c0 => 
 				{
+					c0.SetTemplatedParent(__settings?.TemplatedParent);
+					__settings?.TemplateMemberCreatedCallback?.Invoke(c0);
 					/* _isTopLevelDictionary:True */
 					__that._component_0 = c0;
 					__nameScope.RegisterName("tb", c0);
@@ -178,7 +180,7 @@ namespace MyProject
 
 			// Method for resource myTemplate 
 			private object Get_1(object __ResourceOwner_1) =>
-				new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1 , __owner => 				new __Resources._MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_MyResourceDictionaryRDSC1().Build(__owner)
+				new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, (__owner, __settings) => 				new __Resources._MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_MyResourceDictionaryRDSC1().Build(__owner, __settings)
 				)				;
 
 			private global::Microsoft.UI.Xaml.ResourceDictionary _MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_ResourceDictionary;
@@ -197,7 +199,7 @@ namespace MyProject
 							"myTemplate"
 							] = 
 							new global::Uno.UI.Xaml.WeakResourceInitializer(this, __ResourceOwner_1 => 
-								new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1 , __owner => 								new __Resources._MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_MyResourceDictionaryRDSC2().Build(__owner)
+								new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, (__owner, __settings) => 								new __Resources._MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_MyResourceDictionaryRDSC2().Build(__owner, __settings)
 								)							)
 							,
 						}
@@ -225,7 +227,7 @@ namespace MyProject.__Resources
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_MyResourceDictionary_92716e07ff456818f6d4125e055d4d57 = "ms-appx:///TestProject/";
 		global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
-		public _View Build(object __ResourceOwner_1)
+		public _View Build(object __ResourceOwner_1, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
 		{
 			_View __rootInstance = null;
 			var __that = this;
@@ -238,6 +240,8 @@ namespace MyProject.__Resources
 			}
 			.MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_XamlApply((MyResourceDictionary_92716e07ff456818f6d4125e055d4d57XamlApplyExtensions.XamlApplyHandler0)(c1 => 
 			{
+				c1.SetTemplatedParent(__settings?.TemplatedParent);
+				__settings?.TemplateMemberCreatedCallback?.Invoke(c1);
 				/* _isTopLevelDictionary:True */
 				__that._component_0 = c1;
 				__nameScope.RegisterName("tb", c1);
@@ -314,7 +318,7 @@ namespace MyProject.__Resources
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_MyResourceDictionary_92716e07ff456818f6d4125e055d4d57 = "ms-appx:///TestProject/";
 		global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
-		public _View Build(object __ResourceOwner_1)
+		public _View Build(object __ResourceOwner_1, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
 		{
 			_View __rootInstance = null;
 			var __that = this;
@@ -327,6 +331,8 @@ namespace MyProject.__Resources
 			}
 			.MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_XamlApply((MyResourceDictionary_92716e07ff456818f6d4125e055d4d57XamlApplyExtensions.XamlApplyHandler0)(c2 => 
 			{
+				c2.SetTemplatedParent(__settings?.TemplatedParent);
+				__settings?.TemplateMemberCreatedCallback?.Invoke(c2);
 				/* _isTopLevelDictionary:True */
 				__that._component_0 = c2;
 				__nameScope.RegisterName("tb", c2);

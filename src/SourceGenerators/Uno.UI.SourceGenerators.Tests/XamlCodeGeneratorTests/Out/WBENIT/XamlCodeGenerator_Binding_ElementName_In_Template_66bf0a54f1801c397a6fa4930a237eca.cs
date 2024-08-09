@@ -59,7 +59,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 						IsParsing = true,
 						Name = "topLevel",
 						Tag = @"42",
-						ContentTemplate = 						new global::Microsoft.UI.Xaml.DataTemplate(this , __owner => 						new _Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca_UnoUITestsWindows_UI_Xaml_DataBindingTestsControlsBinding_ElementName_In_TemplateSC0().Build(__owner)
+						ContentTemplate = 						new global::Microsoft.UI.Xaml.DataTemplate(this, (__owner, __settings) => 						new _Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca_UnoUITestsWindows_UI_Xaml_DataBindingTestsControlsBinding_ElementName_In_TemplateSC0().Build(__owner, __settings)
 						)						,
 						// Source 0\Binding_ElementName_In_Template.xaml (Line 11:4)
 					}
@@ -123,7 +123,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 			private const string __baseUri_Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca = "ms-appx:///TestProject/";
 			global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
-			public _View Build(object __ResourceOwner_1)
+			public _View Build(object __ResourceOwner_1, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
 			{
 				_View __rootInstance = null;
 				var __that = this;
@@ -136,6 +136,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 				}
 				.Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca_XamlApply((Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237ecaXamlApplyExtensions.XamlApplyHandler2)(c4 => 
 				{
+					c4.SetTemplatedParent(__settings?.TemplatedParent);
+					__settings?.TemplateMemberCreatedCallback?.Invoke(c4);
 					/* _isTopLevelDictionary:False */
 					__that._component_0 = c4;
 					__nameScope.RegisterName("innerTextBlock", c4);

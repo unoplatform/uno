@@ -111,7 +111,7 @@ namespace TestRepro
 			"MyItemTemplate"
 			] = 
 			new global::Uno.UI.Xaml.WeakResourceInitializer(this, __ResourceOwner_1 => 
-				new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1 , __owner => 				((I_MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPageSC0)global::Uno.UI.Helpers.TypeMappings.CreateInstance<_MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPageSC0>()).Build(__owner)
+				new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, (__owner, __settings) => 				((I_MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPageSC0)global::Uno.UI.Helpers.TypeMappings.CreateInstance<_MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPageSC0>()).Build(__owner, __settings)
 				)				.GenericApply(__that, __nameScope, ((c6, __that, __nameScope) => 
 				{
 					global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(c6, "OriginalSourceLocation", "file:///C:/Project/0/MainPage.xaml#L13:6");
@@ -167,7 +167,7 @@ namespace TestRepro
 		partial void OnInitializeCompleted();
 		internal interface I_MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPageSC0
 		{
-			_View Build(object owner);
+			_View Build(object owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings);
 		}
 		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
@@ -178,7 +178,7 @@ namespace TestRepro
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 			private const string __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
 			global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
-			public _View Build(object __ResourceOwner_1)
+			public _View Build(object __ResourceOwner_1, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
 			{
 				_View __rootInstance = null;
 				var __that = this;
@@ -196,6 +196,8 @@ namespace TestRepro
 						}
 						.GenericApply(__that, __nameScope, ((c10, __that, __nameScope) => 
 						{
+							c10.SetTemplatedParent(__settings?.TemplatedParent);
+							__settings?.TemplateMemberCreatedCallback?.Invoke(c10);
 							c10.SetBinding(
 								global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
 								new Microsoft.UI.Xaml.Data.Binding()
@@ -216,6 +218,8 @@ namespace TestRepro
 						}
 						.GenericApply(__that, __nameScope, ((c11, __that, __nameScope) => 
 						{
+							c11.SetTemplatedParent(__settings?.TemplatedParent);
+							__settings?.TemplateMemberCreatedCallback?.Invoke(c11);
 							/* _isTopLevelDictionary:False */
 							__that._component_0 = c11;
 							global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(c11, global::Microsoft.UI.Xaml.Controls.Button.StyleProperty, "MyCustomButtonStyle", isThemeResourceExtension: false, isHotReloadSupported: true, context: global::MyProject.GlobalStaticResources.__ParseContext_);
@@ -228,6 +232,8 @@ namespace TestRepro
 				}
 				.GenericApply(__that, __nameScope, ((c12, __that, __nameScope) => 
 				{
+					c12.SetTemplatedParent(__settings?.TemplatedParent);
+					__settings?.TemplateMemberCreatedCallback?.Invoke(c12);
 					global::Uno.UI.FrameworkElementHelper.SetBaseUri(c12, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d, "file:///C:/Project/0/MainPage.xaml", 14, 8);
 					c12.CreationComplete();
 				}

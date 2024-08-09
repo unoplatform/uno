@@ -37,7 +37,7 @@ namespace Uno.UI.Controls
 
 			if (_commandBar == null)
 			{
-				commandBar = TemplatedParent as CommandBar;
+				commandBar = GetTemplatedParent() as CommandBar; // todo@xy: validate
 				_commandBar = new WeakReference<CommandBar?>(commandBar);
 			}
 
