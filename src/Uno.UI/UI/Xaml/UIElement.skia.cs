@@ -3,33 +3,33 @@
 #endif
 
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Linq;
-using Microsoft.UI.Composition;
+using Windows.UI.Composition;
 using System.Numerics;
 using Windows.Foundation.Metadata;
 
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Extensions;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls.Primitives;
 using Uno.UI.Xaml.Input;
 using Uno.UI.Xaml.Core;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Hosting;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Hosting;
 using Uno.UI.Media;
 using Uno.UI.Dispatching;
 using Uno.Collections;
 using Uno.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	public partial class UIElement : DependencyObject, IVisualElement, IVisualElement2
 	{

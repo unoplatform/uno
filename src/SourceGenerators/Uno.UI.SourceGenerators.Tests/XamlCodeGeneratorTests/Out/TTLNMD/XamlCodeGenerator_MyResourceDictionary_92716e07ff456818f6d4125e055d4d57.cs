@@ -7,14 +7,14 @@ using System.Diagnostics;
 using System.Linq;
 using Uno.UI;
 using Uno.UI.Xaml;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Documents;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Animation;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Documents;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Shapes;
 using Windows.UI.Text;
 using Uno.Extensions;
 using Uno;
@@ -29,7 +29,7 @@ using _View = UIKit.UIView;
 #elif __MACOS__
 using _View = AppKit.NSView;
 #else
-using _View = Microsoft.UI.Xaml.UIElement;
+using _View = Windows.UI.Xaml.UIElement;
 #endif
 
 namespace MyProject
@@ -43,7 +43,7 @@ namespace MyProject
 		// This non-static inner class is a means of reducing size of AOT compilations by avoiding many accesses to static members from a static callsite, which adds costly class initializer checks each time.
 		internal sealed class ResourceDictionarySingleton__MyResourceDictionary_92716e07ff456818f6d4125e055d4d57 : global::Uno.UI.IXamlResourceDictionaryProvider
 		{
-			private static global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
+			private static global::Windows.UI.Xaml.NameScope __nameScope = new global::Windows.UI.Xaml.NameScope();
 			private static global::Uno.UI.IXamlResourceDictionaryProvider __that;
 			internal static global::Uno.UI.IXamlResourceDictionaryProvider Instance
 			{
@@ -66,16 +66,16 @@ namespace MyProject
 				__ParseContext_ = global::MyProject.GlobalStaticResources.__ParseContext_;
 			}
 
-			private global::Microsoft.UI.Xaml.ResourceDictionary _MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_ResourceDictionary;
+			private global::Windows.UI.Xaml.ResourceDictionary _MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_ResourceDictionary;
 
-			internal global::Microsoft.UI.Xaml.ResourceDictionary MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_ResourceDictionary
+			internal global::Windows.UI.Xaml.ResourceDictionary MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_ResourceDictionary
 			{
 				get
 				{
 					if (_MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_ResourceDictionary == null)
 					{
 						_MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_ResourceDictionary = 
-						new global::Microsoft.UI.Xaml.ResourceDictionary
+						new global::Windows.UI.Xaml.ResourceDictionary
 						{
 							IsParsing = true,
 							MergedDictionaries = {
@@ -102,10 +102,10 @@ namespace MyProject
 				}
 			}
 
-			global::Microsoft.UI.Xaml.ResourceDictionary global::Uno.UI.IXamlResourceDictionaryProvider.GetResourceDictionary() => MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_ResourceDictionary;
+			global::Windows.UI.Xaml.ResourceDictionary global::Uno.UI.IXamlResourceDictionaryProvider.GetResourceDictionary() => MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_ResourceDictionary;
 		}
 
-		internal static global::Microsoft.UI.Xaml.ResourceDictionary MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_ResourceDictionary => ResourceDictionarySingleton__MyResourceDictionary_92716e07ff456818f6d4125e055d4d57.Instance.GetResourceDictionary();
+		internal static global::Windows.UI.Xaml.ResourceDictionary MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_ResourceDictionary => ResourceDictionarySingleton__MyResourceDictionary_92716e07ff456818f6d4125e055d4d57.Instance.GetResourceDictionary();
 	}
 }
 namespace MyProject.__Resources

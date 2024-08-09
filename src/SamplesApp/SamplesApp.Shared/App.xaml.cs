@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -10,9 +10,9 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.UI.Core;
 using Windows.UI.Popups;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Navigation;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Navigation;
 using Windows.Foundation.Metadata;
 using Windows.Graphics.Display;
 using System.Globalization;
@@ -39,7 +39,7 @@ using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActiv
 #endif
 
 #if UNO_ISLANDS
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml.Markup;
 using Uno.UI.XamlHost;
 #endif
 
@@ -59,7 +59,7 @@ namespace SamplesApp
 		private static ILogger? _log;
 #endif
 
-		private static Microsoft.UI.Xaml.Window? _mainWindow;
+		private static Windows.UI.Xaml.Window? _mainWindow;
 		private bool _wasActivated;
 		private bool _isSuspended;
 
@@ -96,7 +96,7 @@ namespace SamplesApp
 #endif
 		}
 
-		internal static Microsoft.UI.Xaml.Window? MainWindow => _mainWindow;
+		internal static Windows.UI.Xaml.Window? MainWindow => _mainWindow;
 
 		/// <summary>
 		/// Invoked when the application is launched normally by the end user.  Other entry points
@@ -186,9 +186,9 @@ namespace SamplesApp
 		{
 			_mainWindow ??=
 #if HAS_UNO_WINUI || WINAPPSDK
-				new Microsoft.UI.Xaml.Window();
+				new Windows.UI.Xaml.Window();
 #else
-				Microsoft.UI.Xaml.Window.Current!;
+				Windows.UI.Xaml.Window.Current!;
 #endif
 			Private.Infrastructure.TestServices.WindowHelper.CurrentTestWindow =
 				_mainWindow;
@@ -304,7 +304,7 @@ namespace SamplesApp
 		public event EventHandler? MainWindowActivated;
 
 #if HAS_UNO && !HAS_UNO_WINUI
-		protected override void OnWindowCreated(global::Microsoft.UI.Xaml.WindowCreatedEventArgs args)
+		protected override void OnWindowCreated(global::Windows.UI.Xaml.WindowCreatedEventArgs args)
 		{
 			if (Current is null)
 			{
@@ -468,42 +468,42 @@ namespace SamplesApp
 				builder.AddFilter("Uno.UI.Skia", LogLevel.Debug);
 
 				// builder.AddFilter("Uno.Foundation.WebAssemblyRuntime", LogLevel.Debug );
-				// builder.AddFilter("Microsoft.UI.Xaml.Controls.PopupPanel", LogLevel.Debug );
+				// builder.AddFilter("Windows.UI.Xaml.Controls.PopupPanel", LogLevel.Debug );
 
 				// Generic Xaml events
-				// builder.AddFilter("Microsoft.UI.Xaml", LogLevel.Debug );
-				// builder.AddFilter("Microsoft.UI.Xaml.Media", LogLevel.Debug );
-				// builder.AddFilter("Microsoft.UI.Xaml.Shapes", LogLevel.Debug );
-				// builder.AddFilter("Microsoft.UI.Xaml.VisualStateGroup", LogLevel.Debug );
-				// builder.AddFilter("Microsoft.UI.Xaml.StateTriggerBase", LogLevel.Debug );
-				// builder.AddFilter("Microsoft.UI.Xaml.UIElement", LogLevel.Debug );
-				// builder.AddFilter("Microsoft.UI.Xaml.FrameworkElement", LogLevel.Trace );
-				// builder.AddFilter("Microsoft.UI.Xaml.Controls.TextBlock", LogLevel.Debug );
+				// builder.AddFilter("Windows.UI.Xaml", LogLevel.Debug );
+				// builder.AddFilter("Windows.UI.Xaml.Media", LogLevel.Debug );
+				// builder.AddFilter("Windows.UI.Xaml.Shapes", LogLevel.Debug );
+				// builder.AddFilter("Windows.UI.Xaml.VisualStateGroup", LogLevel.Debug );
+				// builder.AddFilter("Windows.UI.Xaml.StateTriggerBase", LogLevel.Debug );
+				// builder.AddFilter("Windows.UI.Xaml.UIElement", LogLevel.Debug );
+				// builder.AddFilter("Windows.UI.Xaml.FrameworkElement", LogLevel.Trace );
+				// builder.AddFilter("Windows.UI.Xaml.Controls.TextBlock", LogLevel.Debug );
 
 				// Layouter specific messages
-				// builder.AddFilter("Microsoft.UI.Xaml.Controls", LogLevel.Debug );
-				// builder.AddFilter("Microsoft.UI.Xaml.Controls.Layouter", LogLevel.Debug );
-				// builder.AddFilter("Microsoft.UI.Xaml.Controls.Panel", LogLevel.Debug );
+				// builder.AddFilter("Windows.UI.Xaml.Controls", LogLevel.Debug );
+				// builder.AddFilter("Windows.UI.Xaml.Controls.Layouter", LogLevel.Debug );
+				// builder.AddFilter("Windows.UI.Xaml.Controls.Panel", LogLevel.Debug );
 				// builder.AddFilter("Windows.Storage", LogLevel.Debug );
 
 				// Binding related messages
-				// builder.AddFilter("Microsoft.UI.Xaml.Data", LogLevel.Debug );
-				// builder.AddFilter("Microsoft.UI.Xaml.Data", LogLevel.Debug );
+				// builder.AddFilter("Windows.UI.Xaml.Data", LogLevel.Debug );
+				// builder.AddFilter("Windows.UI.Xaml.Data", LogLevel.Debug );
 
 				// Binder memory references tracking
 				// builder.AddFilter("Uno.UI.DataBinding.BinderReferenceHolder", LogLevel.Debug );
 
 				// builder.AddFilter(ListView-related messages
-				// builder.AddFilter("Microsoft.UI.Xaml.Controls.ListViewBase", LogLevel.Debug );
-				// builder.AddFilter("Microsoft.UI.Xaml.Controls.ListView", LogLevel.Debug );
-				// builder.AddFilter("Microsoft.UI.Xaml.Controls.GridView", LogLevel.Debug );
-				// builder.AddFilter("Microsoft.UI.Xaml.Controls.VirtualizingPanelLayout", LogLevel.Debug );
-				// builder.AddFilter("Microsoft.UI.Xaml.Controls.NativeListViewBase", LogLevel.Debug );
-				// builder.AddFilter("Microsoft.UI.Xaml.Controls.ListViewBaseSource", LogLevel.Debug ); //iOS
-				// builder.AddFilter("Microsoft.UI.Xaml.Controls.ListViewBaseInternalContainer", LogLevel.Debug ); //iOS
-				// builder.AddFilter("Microsoft.UI.Xaml.Controls.NativeListViewBaseAdapter", LogLevel.Debug ); //Android
-				// builder.AddFilter("Microsoft.UI.Xaml.Controls.BufferViewCache", LogLevel.Debug ); //Android
-				// builder.AddFilter("Microsoft.UI.Xaml.Controls.VirtualizingPanelGenerator", LogLevel.Debug ); //WASM
+				// builder.AddFilter("Windows.UI.Xaml.Controls.ListViewBase", LogLevel.Debug );
+				// builder.AddFilter("Windows.UI.Xaml.Controls.ListView", LogLevel.Debug );
+				// builder.AddFilter("Windows.UI.Xaml.Controls.GridView", LogLevel.Debug );
+				// builder.AddFilter("Windows.UI.Xaml.Controls.VirtualizingPanelLayout", LogLevel.Debug );
+				// builder.AddFilter("Windows.UI.Xaml.Controls.NativeListViewBase", LogLevel.Debug );
+				// builder.AddFilter("Windows.UI.Xaml.Controls.ListViewBaseSource", LogLevel.Debug ); //iOS
+				// builder.AddFilter("Windows.UI.Xaml.Controls.ListViewBaseInternalContainer", LogLevel.Debug ); //iOS
+				// builder.AddFilter("Windows.UI.Xaml.Controls.NativeListViewBaseAdapter", LogLevel.Debug ); //Android
+				// builder.AddFilter("Windows.UI.Xaml.Controls.BufferViewCache", LogLevel.Debug ); //Android
+				// builder.AddFilter("Windows.UI.Xaml.Controls.VirtualizingPanelGenerator", LogLevel.Debug ); //WASM
 			});
 
 			Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory = factory;

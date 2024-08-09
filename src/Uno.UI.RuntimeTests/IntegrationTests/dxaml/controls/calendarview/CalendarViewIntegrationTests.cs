@@ -9,27 +9,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Markup;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Animation;
-using Microsoft.UI.Xaml.Tests.Common;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Tests.Common;
 using FluentAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.Disposables;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.MUX.Helpers;
-using CalendarView = Microsoft.UI.Xaml.Controls.CalendarView;
+using CalendarView = Windows.UI.Xaml.Controls.CalendarView;
 
 using static Private.Infrastructure.TestServices;
 using static Private.Infrastructure.CalendarHelper;
 using Uno.UI.RuntimeTests;
 
-namespace Microsoft.UI.Xaml.Tests.Enterprise
+namespace Windows.UI.Xaml.Tests.Enterprise
 {
 	[TestClass]
 	public partial class CalendarViewIntegrationTests : BaseDxamlTestClass
@@ -107,17 +107,17 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 				VERIFY_ARE_EQUAL(cv.IsOutOfScopeEnabled, true);
 				VERIFY_ARE_EQUAL(cv.IsGroupLabelVisible, false);
 				VERIFY_ARE_EQUAL(cv.DayItemFontStyle, global::Windows.UI.Text.FontStyle.Normal);
-				VERIFY_ARE_EQUAL(cv.DayItemFontWeight.Weight, Microsoft.UI.Text.FontWeights.Normal.Weight);
-				VERIFY_ARE_EQUAL(cv.TodayFontWeight.Weight, Microsoft.UI.Text.FontWeights.SemiBold.Weight);
+				VERIFY_ARE_EQUAL(cv.DayItemFontWeight.Weight, Windows.UI.Text.FontWeights.Normal.Weight);
+				VERIFY_ARE_EQUAL(cv.TodayFontWeight.Weight, Windows.UI.Text.FontWeights.SemiBold.Weight);
 				VERIFY_ARE_EQUAL(cv.FirstOfMonthLabelFontSize, 12.0);
 				VERIFY_ARE_EQUAL(cv.FirstOfMonthLabelFontStyle, global::Windows.UI.Text.FontStyle.Normal);
-				VERIFY_ARE_EQUAL(cv.FirstOfMonthLabelFontWeight.Weight, Microsoft.UI.Text.FontWeights.Normal.Weight);
+				VERIFY_ARE_EQUAL(cv.FirstOfMonthLabelFontWeight.Weight, Windows.UI.Text.FontWeights.Normal.Weight);
 				VERIFY_ARE_EQUAL(cv.MonthYearItemFontSize, 20.0);
 				VERIFY_ARE_EQUAL(cv.MonthYearItemFontStyle, global::Windows.UI.Text.FontStyle.Normal);
-				VERIFY_ARE_EQUAL(cv.MonthYearItemFontWeight.Weight, Microsoft.UI.Text.FontWeights.Normal.Weight);
+				VERIFY_ARE_EQUAL(cv.MonthYearItemFontWeight.Weight, Windows.UI.Text.FontWeights.Normal.Weight);
 				VERIFY_ARE_EQUAL(cv.FirstOfYearDecadeLabelFontSize, 12.0);
 				VERIFY_ARE_EQUAL(cv.FirstOfYearDecadeLabelFontStyle, global::Windows.UI.Text.FontStyle.Normal);
-				VERIFY_ARE_EQUAL(cv.FirstOfYearDecadeLabelFontWeight.Weight, Microsoft.UI.Text.FontWeights.Normal.Weight);
+				VERIFY_ARE_EQUAL(cv.FirstOfYearDecadeLabelFontWeight.Weight, Windows.UI.Text.FontWeights.Normal.Weight);
 
 				global::Windows.Globalization.Calendar calendar = new global::Windows.Globalization.Calendar();
 				calendar.SetToNow();
@@ -3143,11 +3143,11 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 
 			await RunOnUIThread(() =>
 			{
-				cv.SelectedForeground = new SolidColorBrush(Microsoft.UI.Colors.Red);
+				cv.SelectedForeground = new SolidColorBrush(Windows.UI.Colors.Red);
 				cv.BorderThickness = new Thickness(3);
 				cv.HorizontalDayItemAlignment = HorizontalAlignment.Left;
 				cv.HorizontalFirstOfMonthLabelAlignment = HorizontalAlignment.Right;
-				cv.CalendarItemBorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Yellow);
+				cv.CalendarItemBorderBrush = new SolidColorBrush(Windows.UI.Colors.Yellow);
 				cv.CalendarViewDayItemStyle = (Style)(XamlReader.Load(
 					"<Style xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' TargetType='CalendarViewDayItem'>" +
 					" <Setter Property='MinWidth' Value='50' />" +
@@ -3932,7 +3932,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 				cv.DayItemFontFamily = new Media.FontFamily("Segoe UI Symbol");
 				cv.DayItemFontSize = 50;
 				cv.DayItemFontStyle = global::Windows.UI.Text.FontStyle.Italic;
-				cv.DayItemFontWeight = Microsoft.UI.Text.FontWeights.ExtraBold;
+				cv.DayItemFontWeight = Windows.UI.Text.FontWeights.ExtraBold;
 				cv.UpdateLayout();
 
 				actualHeight = dayItem.ActualHeight;
@@ -4176,9 +4176,9 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 				cv.FirstOfMonthLabelFontSize = 20;
 				cv.IsGroupLabelVisible = true;
 				cv.FirstDayOfWeek = global::Windows.Globalization.DayOfWeek.Thursday;
-				cv.OutOfScopeBackground = new SolidColorBrush(Microsoft.UI.Colors.Red);
-				cv.CalendarItemBackground = new SolidColorBrush(Microsoft.UI.Colors.Blue);
-				cv.SelectedBorderBrush = new SolidColorBrush(Microsoft.UI.Colors.White);
+				cv.OutOfScopeBackground = new SolidColorBrush(Windows.UI.Colors.Red);
+				cv.CalendarItemBackground = new SolidColorBrush(Windows.UI.Colors.Blue);
+				cv.SelectedBorderBrush = new SolidColorBrush(Windows.UI.Colors.White);
 				cv.CalendarViewDayItemStyle = (Style)(XamlReader.Load(
 					"<Style xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' TargetType='CalendarViewDayItem'>" +
 					" <Setter Property='MinWidth' Value='50' />" +
@@ -4205,14 +4205,14 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 
 				// half transparent green background will be drawn on below Red background
 				dayDec31.Background =
-					new SolidColorBrush(Microsoft.UI.ColorHelper.FromArgb(0x80, 0, 0xFF, 0));
+					new SolidColorBrush(Windows.UI.ColorHelper.FromArgb(0x80, 0, 0xFF, 0));
 				dayJan1.Background =
-					new SolidColorBrush(Microsoft.UI.ColorHelper.FromArgb(0x80, 0, 0xFF, 0));
+					new SolidColorBrush(Windows.UI.ColorHelper.FromArgb(0x80, 0, 0xFF, 0));
 
 				ColorCollection colors = new ColorCollection();
 				for (int i = 0; i < 8; i++)
 				{
-					colors.Add(Microsoft.UI.Colors.Yellow);
+					colors.Add(Windows.UI.Colors.Yellow);
 				}
 
 				dayDec31.SetDensityColors(colors);
@@ -5131,7 +5131,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		{
 			TestCleanupWrapper cleanup;
 			var helper = new CalendarHelper.CalendarViewHelper();
-			global::Windows.UI.Color newColor = Microsoft.UI.Colors.Red;
+			global::Windows.UI.Color newColor = Windows.UI.Colors.Red;
 
 			Button flyoutButton = null;
 			Flyout flyout = null;
@@ -5775,11 +5775,11 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		static LinearGradientBrush MakeLinearGradientBrush(float startX, float endX)
 		{
 			GradientStop stop1 = new GradientStop();
-			stop1.Color = Microsoft.UI.Colors.Green;
+			stop1.Color = Windows.UI.Colors.Green;
 			stop1.Offset = 0.2;
 
 			GradientStop stop2 = new GradientStop();
-			stop2.Color = Microsoft.UI.Colors.Red;
+			stop2.Color = Windows.UI.Colors.Red;
 			stop2.Offset = 0.8;
 
 			GradientStopCollection stopCollection = new GradientStopCollection();

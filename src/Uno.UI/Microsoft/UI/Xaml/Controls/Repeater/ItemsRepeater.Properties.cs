@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {

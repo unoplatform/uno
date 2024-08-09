@@ -7,7 +7,7 @@ using Uno.UI.Dispatching;
 using Windows.ApplicationModel.Core;
 using Windows.UI;
 
-namespace Microsoft.UI.Composition;
+namespace Windows.UI.Composition;
 
 public partial class Compositor
 {

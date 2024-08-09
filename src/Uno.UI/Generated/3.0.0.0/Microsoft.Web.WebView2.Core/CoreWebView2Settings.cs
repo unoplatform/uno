@@ -233,20 +233,6 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool IsReputationCheckingRequired
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2Settings.IsReputationCheckingRequired is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2Settings.IsReputationCheckingRequired");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Settings", "bool CoreWebView2Settings.IsReputationCheckingRequired");
-			}
-		}
-#endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Settings.UserAgent.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Settings.UserAgent.set
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Settings.AreBrowserAcceleratorKeysEnabled.get
@@ -261,8 +247,6 @@ namespace Microsoft.Web.WebView2.Core
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Settings.IsSwipeNavigationEnabled.set
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Settings.HiddenPdfToolbarItems.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Settings.HiddenPdfToolbarItems.set
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Settings.IsReputationCheckingRequired.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Settings.IsReputationCheckingRequired.set
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Settings.HostObjectDispatchAdapter.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Settings.HostObjectDispatchAdapter.set
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Settings.IsScriptEnabled.get

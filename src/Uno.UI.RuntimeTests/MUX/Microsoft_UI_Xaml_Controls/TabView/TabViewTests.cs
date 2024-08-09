@@ -7,15 +7,15 @@
 using MUXControlsTestApp.Utilities;
 using System;
 using System.Threading;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Markup;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Media;
 using Common;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Automation;
-using Microsoft.UI.Xaml.Automation.Provider;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Automation;
+using Windows.UI.Xaml.Automation.Provider;
 using Private.Infrastructure;
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
@@ -28,11 +28,11 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 #endif
 
-using Symbol = Microsoft.UI.Xaml.Controls.Symbol;
+using Symbol = Windows.UI.Xaml.Controls.Symbol;
 
 using SymbolIconSource = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SymbolIconSource;
 
-namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
+namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 {
 
 	[TestClass]

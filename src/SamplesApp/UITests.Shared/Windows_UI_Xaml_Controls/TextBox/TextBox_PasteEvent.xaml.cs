@@ -1,6 +1,6 @@
 ﻿using System;
 using Uno.UI.Samples.Controls;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 {
@@ -19,7 +19,7 @@ namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 			InitializeComponent();
 		}
 
-		private void OnMultilineChanged(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+		private void OnMultilineChanged(object sender, Windows.UI.Xaml.RoutedEventArgs e)
 		{
 			SampleTextBox.AcceptsReturn = MultilineCheckBox.IsChecked == true;
 		}

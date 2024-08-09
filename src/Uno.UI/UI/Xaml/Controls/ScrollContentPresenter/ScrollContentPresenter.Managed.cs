@@ -1,6 +1,6 @@
 ﻿#if UNO_HAS_MANAGED_SCROLL_PRESENTER
 using System.Diagnostics;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Input;
 using Windows.Devices.Input;
 using Windows.Foundation;
 
@@ -10,7 +10,7 @@ using _PointerDeviceType = global::Microsoft.UI.Input.PointerDeviceType;
 using _PointerDeviceType = global::Windows.Devices.Input.PointerDeviceType;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class ScrollContentPresenter : ContentPresenter
 #if !__CROSSRUNTIME__ && !IS_UNIT_TESTS

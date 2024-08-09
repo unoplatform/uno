@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
-using Microsoft.UI.Xaml.Documents;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Documents;
+using Windows.UI.Xaml.Media;
 using Windows.Foundation;
 using Uno.UI.Controls;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Input;
 using Foundation;
 using UIKit;
 using CoreGraphics;
@@ -15,7 +15,7 @@ using CoreAnimation;
 using ObjCRuntime;
 using Uno.UI.Xaml;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class TextBlock : FrameworkElement, IFontScalable
 	{

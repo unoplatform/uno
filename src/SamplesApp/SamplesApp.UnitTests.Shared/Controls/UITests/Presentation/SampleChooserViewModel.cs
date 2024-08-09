@@ -14,7 +14,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Globalization;
 using Windows.UI.Core;
 using Windows.Storage;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using System.IO;
 using Windows.UI.Popups;
 using Uno.Extensions;
@@ -28,7 +28,7 @@ using Microsoft.Extensions.Logging;
 using Uno.Logging;
 #endif
 
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using Windows.Graphics.Imaging;
 using Windows.Graphics.Display;
 using SamplesApp;
@@ -108,7 +108,7 @@ namespace SampleControl.Presentation
 
 #if HAS_UNO
 			// Disable all pooling so that controls get collected quickly.
-			Microsoft.UI.Xaml.FrameworkTemplatePool.IsPoolingEnabled = false;
+			Windows.UI.Xaml.FrameworkTemplatePool.IsPoolingEnabled = false;
 #endif
 #if WINAPPSDK
 			UseFluentStyles = true;
@@ -295,7 +295,7 @@ namespace SampleControl.Presentation
 					_log.Debug($"Generating tests for {tests.Length} test in {folderName}");
 				}
 
-				var target = new Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap();
+				var target = new Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap();
 
 				for (int i = 0; i < tests.Length; i++)
 				{
@@ -1204,7 +1204,7 @@ namespace SampleControl.Presentation
 			async
 #endif
 			Task GenerateBitmap(CancellationToken ct
-			, Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap targetBitmap
+			, Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap targetBitmap
 			, StorageFile file
 			, FrameworkElement content)
 		{
@@ -1215,7 +1215,7 @@ namespace SampleControl.Presentation
 
 			try
 			{
-				targetBitmap = new Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap();
+				targetBitmap = new Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap();
 
 				await targetBitmap.RenderAsync(element).AsTask(ct);
 

@@ -3,11 +3,11 @@
 using Uno;
 using Windows.Foundation;
 using Windows.UI.Text;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Automation;
-using Microsoft.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Automation;
+using Windows.UI.Xaml.Automation.Peers;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 /// <summary>
 /// Represents an icon that uses a glyph from the specified font.
@@ -183,7 +183,7 @@ public partial class FontIcon : IconElement
 		_textBlock.Style = null;
 		_textBlock.VerticalAlignment = VerticalAlignment.Center;
 		_textBlock.HorizontalAlignment = HorizontalAlignment.Center;
-		_textBlock.TextAlignment = Microsoft.UI.Xaml.TextAlignment.Center;
+		_textBlock.TextAlignment = Windows.UI.Xaml.TextAlignment.Center;
 		_textBlock.SetValue(AutomationProperties.AccessibilityViewProperty, AccessibilityView.Raw);
 
 		_textBlock.Text = Glyph;

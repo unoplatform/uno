@@ -7,14 +7,14 @@ using System.Diagnostics;
 using System.Linq;
 using Uno.UI;
 using Uno.UI.Xaml;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Documents;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Animation;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Documents;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Shapes;
 using Windows.UI.Text;
 using Uno.Extensions;
 using Uno;
@@ -29,13 +29,13 @@ using _View = UIKit.UIView;
 #elif __MACOS__
 using _View = AppKit.NSView;
 #else
-using _View = Microsoft.UI.Xaml.UIElement;
+using _View = Windows.UI.Xaml.UIElement;
 #endif
 
 namespace TestRepro
 {
 	[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
-	partial class MainPage : global::Microsoft.UI.Xaml.Controls.Page
+	partial class MainPage : global::Windows.UI.Xaml.Controls.Page
 	{
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		internal string __checksum() => "346ee2c4a3294fdba50b4b5daaa042583c405e7a";
@@ -43,32 +43,32 @@ namespace TestRepro
 		private const string __baseUri_prefix_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
-		private global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
+		private global::Windows.UI.Xaml.NameScope __nameScope = new global::Windows.UI.Xaml.NameScope();
 		private void InitializeComponent()
 		{
 			var __resourceLocator = new global::System.Uri("file:///C:/Project/0/MainPage.xaml");
 			if(global::Uno.UI.ApplicationHelper.IsLoadableComponent(__resourceLocator))
 			{
-				global::Microsoft.UI.Xaml.Application.LoadComponent(this, __resourceLocator);
+				global::Windows.UI.Xaml.Application.LoadComponent(this, __resourceLocator);
 				return;
 			}
 			NameScope.SetNameScope(this, __nameScope);
 			var __that = this;
 			base.IsParsing = true;
 			Resources[
-			typeof(global::Microsoft.UI.Xaml.Controls.TextBlock)
+			typeof(global::Windows.UI.Xaml.Controls.TextBlock)
 			] = 
 			new global::Uno.UI.Xaml.WeakResourceInitializer(this, __ResourceOwner_1 => 
-				new global::Microsoft.UI.Xaml.Style
+				new global::Windows.UI.Xaml.Style
 				{
-					TargetType = typeof(global::Microsoft.UI.Xaml.Controls.TextBlock),
+					TargetType = typeof(global::Windows.UI.Xaml.Controls.TextBlock),
 					// Source 0\MainPage.xaml (Line 7:6)
 					Setters = 
 					{
-						new global::Microsoft.UI.Xaml.Setter
+						new global::Windows.UI.Xaml.Setter
 						{
-							Property = global::Microsoft.UI.Xaml.Controls.TextBlock.ForegroundProperty,
-							Value = new global::Microsoft.UI.Xaml.Media.SolidColorBrush(global::Microsoft.UI.Colors.Red),
+							Property = global::Windows.UI.Xaml.Controls.TextBlock.ForegroundProperty,
+							Value = new global::Windows.UI.Xaml.Media.SolidColorBrush(global::Windows.UI.Colors.Red),
 							// Source 0\MainPage.xaml (Line 8:8)
 						}
 						,
@@ -85,16 +85,16 @@ namespace TestRepro
 			"MyCustomButtonStyle"
 			] = 
 			new global::Uno.UI.Xaml.WeakResourceInitializer(this, __ResourceOwner_1 => 
-				new global::Microsoft.UI.Xaml.Style
+				new global::Windows.UI.Xaml.Style
 				{
-					TargetType = typeof(global::Microsoft.UI.Xaml.Controls.Button),
+					TargetType = typeof(global::Windows.UI.Xaml.Controls.Button),
 					// Source 0\MainPage.xaml (Line 10:6)
 					Setters = 
 					{
-						new global::Microsoft.UI.Xaml.Setter
+						new global::Windows.UI.Xaml.Setter
 						{
-							Property = global::Microsoft.UI.Xaml.Controls.Button.BackgroundProperty,
-							Value = new global::Microsoft.UI.Xaml.Media.SolidColorBrush(global::Microsoft.UI.Colors.Azure),
+							Property = global::Windows.UI.Xaml.Controls.Button.BackgroundProperty,
+							Value = new global::Windows.UI.Xaml.Media.SolidColorBrush(global::Windows.UI.Colors.Azure),
 							// Source 0\MainPage.xaml (Line 11:8)
 						}
 						,
@@ -111,7 +111,7 @@ namespace TestRepro
 			"MyItemTemplate"
 			] = 
 			new global::Uno.UI.Xaml.WeakResourceInitializer(this, __ResourceOwner_1 => 
-				new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1 , __owner => 				((I_MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPageSC0)global::Uno.UI.Helpers.TypeMappings.CreateInstance<_MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPageSC0>()).Build(__owner)
+				new global::Windows.UI.Xaml.DataTemplate(__ResourceOwner_1 , __owner => 				((I_MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPageSC0)global::Uno.UI.Helpers.TypeMappings.CreateInstance<_MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPageSC0>()).Build(__owner)
 				)				.GenericApply(__that, __nameScope, ((c6, __that, __nameScope) => 
 				{
 					global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(c6, "OriginalSourceLocation", "file:///C:/Project/0/MainPage.xaml#L13:6");
@@ -121,11 +121,11 @@ namespace TestRepro
 			;
 			// Source 0\MainPage.xaml (Line 1:2)
 			base.Content = 
-			new global::Microsoft.UI.Xaml.Controls.ListView
+			new global::Windows.UI.Xaml.Controls.ListView
 			{
 				IsParsing = true,
 				Name = "TheListView",
-				HeaderTemplate = 				new global::Microsoft.UI.Xaml.DataTemplate(this , __owner => 				((I_MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPageSC1)global::Uno.UI.Helpers.TypeMappings.CreateInstance<_MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPageSC1>()).Build(__owner)
+				HeaderTemplate = 				new global::Windows.UI.Xaml.DataTemplate(this , __owner => 				((I_MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPageSC1)global::Uno.UI.Helpers.TypeMappings.CreateInstance<_MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPageSC1>()).Build(__owner)
 				)				.GenericApply(__that, __nameScope, ((c7, __that, __nameScope) => 
 				{
 					global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(c7, "OriginalSourceLocation", "file:///C:/Project/0/MainPage.xaml#L42:8");
@@ -140,7 +140,7 @@ namespace TestRepro
 				__that._component_0 = c8;
 				__nameScope.RegisterName("TheListView", c8);
 				__that.TheListView = c8;
-				global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(c8, global::Microsoft.UI.Xaml.Controls.ListView.ItemTemplateProperty, "MyItemTemplate", isThemeResourceExtension: false, isHotReloadSupported: true, context: global::MyProject.GlobalStaticResources.__ParseContext_);
+				global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(c8, global::Windows.UI.Xaml.Controls.ListView.ItemTemplateProperty, "MyItemTemplate", isThemeResourceExtension: false, isHotReloadSupported: true, context: global::MyProject.GlobalStaticResources.__ParseContext_);
 				global::Uno.UI.FrameworkElementHelper.SetBaseUri(c8, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d, "file:///C:/Project/0/MainPage.xaml", 40, 4);
 				c8.CreationComplete();
 			}
@@ -160,21 +160,21 @@ namespace TestRepro
 				/* _isTopLevelDictionary:False */
 				__that._component_1 = c10;
 				// Class TestRepro.MainPage
-				global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(c10, global::Microsoft.UI.Xaml.Controls.Page.BackgroundProperty, "ApplicationPageBackgroundThemeBrush", isThemeResourceExtension: true, isHotReloadSupported: true, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-				global::Microsoft.UI.Xaml.VisualStateManager.SetVisualStateGroups(c10, 
+				global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(c10, global::Windows.UI.Xaml.Controls.Page.BackgroundProperty, "ApplicationPageBackgroundThemeBrush", isThemeResourceExtension: true, isHotReloadSupported: true, context: global::MyProject.GlobalStaticResources.__ParseContext_);
+				global::Windows.UI.Xaml.VisualStateManager.SetVisualStateGroups(c10, 
 				new[]
 				{
-					new global::Microsoft.UI.Xaml.VisualStateGroup
+					new global::Windows.UI.Xaml.VisualStateGroup
 					{
 						// Source 0\MainPage.xaml (Line 21:6)
 						States = 
 						{
-							new global::Microsoft.UI.Xaml.VisualState
+							new global::Windows.UI.Xaml.VisualState
 							{
 								Name = "WideState",
 								StateTriggers = 
 								{
-									new global::Microsoft.UI.Xaml.AdaptiveTrigger
+									new global::Windows.UI.Xaml.AdaptiveTrigger
 									{
 										MinWindowWidth = 641d,
 										// Source 0\MainPage.xaml (Line 24:12)
@@ -197,9 +197,9 @@ namespace TestRepro
 								{
 									c12.Name = "WideState";
 									c12.Setters.Add(
-										new global::Microsoft.UI.Xaml.Setter
+										new global::Windows.UI.Xaml.Setter
 										{
-											Target = new global::Microsoft.UI.Xaml.TargetPropertyPath(this._TheListViewSubject, "Background"),
+											Target = new global::Windows.UI.Xaml.TargetPropertyPath(this._TheListViewSubject, "Background"),
 											Value = @"Red",
 											// Source 0\MainPage.xaml (Line 27:12)
 										}
@@ -211,12 +211,12 @@ namespace TestRepro
 							}
 							))
 							,
-							new global::Microsoft.UI.Xaml.VisualState
+							new global::Windows.UI.Xaml.VisualState
 							{
 								Name = "NarrowState",
 								StateTriggers = 
 								{
-									new global::Microsoft.UI.Xaml.AdaptiveTrigger
+									new global::Windows.UI.Xaml.AdaptiveTrigger
 									{
 										MinWindowWidth = 0d,
 										// Source 0\MainPage.xaml (Line 32:12)
@@ -239,9 +239,9 @@ namespace TestRepro
 								{
 									c15.Name = "NarrowState";
 									c15.Setters.Add(
-										new global::Microsoft.UI.Xaml.Setter
+										new global::Windows.UI.Xaml.Setter
 										{
-											Target = new global::Microsoft.UI.Xaml.TargetPropertyPath(this._TheListViewSubject, "Background"),
+											Target = new global::Windows.UI.Xaml.TargetPropertyPath(this._TheListViewSubject, "Background"),
 											Value = @"Green",
 											// Source 0\MainPage.xaml (Line 35:12)
 										}
@@ -274,36 +274,36 @@ namespace TestRepro
 			;
 		}
 		partial void OnInitializeCompleted();
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _TheListViewSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
-		private global::Microsoft.UI.Xaml.Controls.ListView TheListView
+		private global::Windows.UI.Xaml.Data.ElementNameSubject _TheListViewSubject = new global::Windows.UI.Xaml.Data.ElementNameSubject();
+		private global::Windows.UI.Xaml.Controls.ListView TheListView
 		{
 			get
 			{
-				return (global::Microsoft.UI.Xaml.Controls.ListView)_TheListViewSubject.ElementInstance;
+				return (global::Windows.UI.Xaml.Controls.ListView)_TheListViewSubject.ElementInstance;
 			}
 			set
 			{
 				_TheListViewSubject.ElementInstance = value;
 			}
 		}
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _WideStateSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
-		private global::Microsoft.UI.Xaml.VisualState WideState
+		private global::Windows.UI.Xaml.Data.ElementNameSubject _WideStateSubject = new global::Windows.UI.Xaml.Data.ElementNameSubject();
+		private global::Windows.UI.Xaml.VisualState WideState
 		{
 			get
 			{
-				return (global::Microsoft.UI.Xaml.VisualState)_WideStateSubject.ElementInstance;
+				return (global::Windows.UI.Xaml.VisualState)_WideStateSubject.ElementInstance;
 			}
 			set
 			{
 				_WideStateSubject.ElementInstance = value;
 			}
 		}
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _NarrowStateSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
-		private global::Microsoft.UI.Xaml.VisualState NarrowState
+		private global::Windows.UI.Xaml.Data.ElementNameSubject _NarrowStateSubject = new global::Windows.UI.Xaml.Data.ElementNameSubject();
+		private global::Windows.UI.Xaml.VisualState NarrowState
 		{
 			get
 			{
-				return (global::Microsoft.UI.Xaml.VisualState)_NarrowStateSubject.ElementInstance;
+				return (global::Windows.UI.Xaml.VisualState)_NarrowStateSubject.ElementInstance;
 			}
 			set
 			{
@@ -322,19 +322,19 @@ namespace TestRepro
 			private const string __baseUri_prefix_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 			private const string __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
-			global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
+			global::Windows.UI.Xaml.NameScope __nameScope = new global::Windows.UI.Xaml.NameScope();
 			public _View Build(object __ResourceOwner_1)
 			{
 				_View __rootInstance = null;
 				var __that = this;
 				__rootInstance = 
-				new global::Microsoft.UI.Xaml.Controls.StackPanel
+				new global::Windows.UI.Xaml.Controls.StackPanel
 				{
 					IsParsing = true,
 					// Source 0\MainPage.xaml (Line 14:8)
 					Children = 
 					{
-						new global::Microsoft.UI.Xaml.Controls.TextBlock
+						new global::Windows.UI.Xaml.Controls.TextBlock
 						{
 							IsParsing = true,
 							// Source 0\MainPage.xaml (Line 15:10)
@@ -342,8 +342,8 @@ namespace TestRepro
 						.GenericApply(__that, __nameScope, ((c17, __that, __nameScope) => 
 						{
 							c17.SetBinding(
-								global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
-								new Microsoft.UI.Xaml.Data.Binding()
+								global::Windows.UI.Xaml.Controls.TextBlock.TextProperty,
+								new Windows.UI.Xaml.Data.Binding()
 								{
 									Path = @"",
 								}
@@ -353,7 +353,7 @@ namespace TestRepro
 						}
 						))
 						,
-						new global::Microsoft.UI.Xaml.Controls.Button
+						new global::Windows.UI.Xaml.Controls.Button
 						{
 							IsParsing = true,
 							Content = @"DoSomething",
@@ -363,7 +363,7 @@ namespace TestRepro
 						{
 							/* _isTopLevelDictionary:False */
 							__that._component_0 = c18;
-							global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(c18, global::Microsoft.UI.Xaml.Controls.Button.StyleProperty, "MyCustomButtonStyle", isThemeResourceExtension: false, isHotReloadSupported: true, context: global::MyProject.GlobalStaticResources.__ParseContext_);
+							global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(c18, global::Windows.UI.Xaml.Controls.Button.StyleProperty, "MyCustomButtonStyle", isThemeResourceExtension: false, isHotReloadSupported: true, context: global::MyProject.GlobalStaticResources.__ParseContext_);
 							global::Uno.UI.FrameworkElementHelper.SetBaseUri(c18, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d, "file:///C:/Project/0/MainPage.xaml", 16, 10);
 							c18.CreationComplete();
 						}
@@ -389,21 +389,21 @@ namespace TestRepro
 				}
 				if (__rootInstance is DependencyObject d)
 				{
-					if (global::Microsoft.UI.Xaml.NameScope.GetNameScope(d) == null)
+					if (global::Windows.UI.Xaml.NameScope.GetNameScope(d) == null)
 					{
-						global::Microsoft.UI.Xaml.NameScope.SetNameScope(d, __nameScope);
+						global::Windows.UI.Xaml.NameScope.SetNameScope(d, __nameScope);
 						__nameScope.Owner = d;
 					}
 					global::Uno.UI.FrameworkElementHelper.AddObjectReference(d, this);
 				}
 				return __rootInstance;
 			}
-			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder { get; } = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-			private global::Microsoft.UI.Xaml.Controls.Button _component_0
+			private global::Windows.UI.Xaml.Markup.ComponentHolder _component_0_Holder { get; } = new global::Windows.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+			private global::Windows.UI.Xaml.Controls.Button _component_0
 			{
 				get
 				{
-					return (global::Microsoft.UI.Xaml.Controls.Button)_component_0_Holder.Instance;
+					return (global::Windows.UI.Xaml.Controls.Button)_component_0_Holder.Instance;
 				}
 				set
 				{
@@ -423,13 +423,13 @@ namespace TestRepro
 			private const string __baseUri_prefix_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 			private const string __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
-			global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
+			global::Windows.UI.Xaml.NameScope __nameScope = new global::Windows.UI.Xaml.NameScope();
 			public _View Build(object __ResourceOwner_1)
 			{
 				_View __rootInstance = null;
 				var __that = this;
 				__rootInstance = 
-				new global::Microsoft.UI.Xaml.Controls.TextBlock
+				new global::Windows.UI.Xaml.Controls.TextBlock
 				{
 					IsParsing = true,
 					Text = "Header",
@@ -444,9 +444,9 @@ namespace TestRepro
 				;
 				if (__rootInstance is DependencyObject d)
 				{
-					if (global::Microsoft.UI.Xaml.NameScope.GetNameScope(d) == null)
+					if (global::Windows.UI.Xaml.NameScope.GetNameScope(d) == null)
 					{
-						global::Microsoft.UI.Xaml.NameScope.SetNameScope(d, __nameScope);
+						global::Windows.UI.Xaml.NameScope.SetNameScope(d, __nameScope);
 						__nameScope.Owner = d;
 					}
 					global::Uno.UI.FrameworkElementHelper.AddObjectReference(d, this);
@@ -454,24 +454,24 @@ namespace TestRepro
 				return __rootInstance;
 			}
 		}
-		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder { get; } = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-		private global::Microsoft.UI.Xaml.Controls.ListView _component_0
+		private global::Windows.UI.Xaml.Markup.ComponentHolder _component_0_Holder { get; } = new global::Windows.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+		private global::Windows.UI.Xaml.Controls.ListView _component_0
 		{
 			get
 			{
-				return (global::Microsoft.UI.Xaml.Controls.ListView)_component_0_Holder.Instance;
+				return (global::Windows.UI.Xaml.Controls.ListView)_component_0_Holder.Instance;
 			}
 			set
 			{
 				_component_0_Holder.Instance = value;
 			}
 		}
-		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_1_Holder { get; } = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-		private global::Microsoft.UI.Xaml.Controls.Page _component_1
+		private global::Windows.UI.Xaml.Markup.ComponentHolder _component_1_Holder { get; } = new global::Windows.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+		private global::Windows.UI.Xaml.Controls.Page _component_1
 		{
 			get
 			{
-				return (global::Microsoft.UI.Xaml.Controls.Page)_component_1_Holder.Instance;
+				return (global::Windows.UI.Xaml.Controls.Page)_component_1_Holder.Instance;
 			}
 			set
 			{

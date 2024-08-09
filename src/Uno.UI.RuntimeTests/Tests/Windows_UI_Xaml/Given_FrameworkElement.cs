@@ -8,20 +8,20 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Media;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Private.Infrastructure;
 using MUXControlsTestApp.Utilities;
-using Microsoft.UI.Xaml.Automation;
+using Windows.UI.Xaml.Automation;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
-using Microsoft.UI.Xaml.Shapes;
-using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml.Shapes;
+using Windows.UI.Xaml.Media.Imaging;
 using Windows.Foundation.Metadata;
 
 
@@ -40,7 +40,7 @@ using _View = UIKit.UIView;
 #elif __MACOS__
 using _View = AppKit.NSView;
 #else
-using _View = Microsoft.UI.Xaml.UIElement;
+using _View = Windows.UI.Xaml.UIElement;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -55,7 +55,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			var redEllipse = new Ellipse()
 			{
-				Fill = new SolidColorBrush(Microsoft.UI.Colors.Red),
+				Fill = new SolidColorBrush(Windows.UI.Colors.Red),
 				Width = 120,
 				Height = 120,
 			};
@@ -64,7 +64,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				Width = 100,
 				Height = 100,
-				BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Blue),
+				BorderBrush = new SolidColorBrush(Windows.UI.Colors.Blue),
 				BorderThickness = new(1),
 				RenderTransform = new TranslateTransform() { X = 20 },
 				Children =
@@ -77,7 +77,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				Width = 100,
 				Height = 100,
-				BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Yellow),
+				BorderBrush = new SolidColorBrush(Windows.UI.Colors.Yellow),
 				BorderThickness = new(1),
 				Children =
 				{
@@ -87,13 +87,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				VerticalAlignment = VerticalAlignment.Top,
 			};
 
-			var root = new Grid() { Children = { parentGrid }, Width = 150, Height = 150, Background = new SolidColorBrush(Microsoft.UI.Colors.Gray) };
+			var root = new Grid() { Children = { parentGrid }, Width = 150, Height = 150, Background = new SolidColorBrush(Windows.UI.Colors.Gray) };
 			await UITestHelper.Load(root);
 
 			var screenshot = await UITestHelper.ScreenShot(root);
-			var yellowBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Yellow, tolerance: 10);
-			var blueBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Blue, tolerance: 10);
-			var redBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Red, tolerance: 10);
+			var yellowBounds = ImageAssert.GetColorBounds(screenshot, Windows.UI.Colors.Yellow, tolerance: 10);
+			var blueBounds = ImageAssert.GetColorBounds(screenshot, Windows.UI.Colors.Blue, tolerance: 10);
+			var redBounds = ImageAssert.GetColorBounds(screenshot, Windows.UI.Colors.Red, tolerance: 10);
 
 			Assert.AreEqual(new Rect(0, 0, 99, 99), yellowBounds);
 			Assert.AreEqual(new Rect(21, 1, 77, 97), blueBounds);
@@ -106,7 +106,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			var redEllipse = new Ellipse()
 			{
-				Fill = new SolidColorBrush(Microsoft.UI.Colors.Red),
+				Fill = new SolidColorBrush(Windows.UI.Colors.Red),
 				Width = 120,
 				Height = 120,
 			};
@@ -115,7 +115,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				Width = 100,
 				Height = 100,
-				BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Blue),
+				BorderBrush = new SolidColorBrush(Windows.UI.Colors.Blue),
 				BorderThickness = new(1),
 				RenderTransform = new TranslateTransform() { X = 20 },
 				Children =
@@ -128,20 +128,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				Width = 100,
 				Height = 100,
-				BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Yellow),
+				BorderBrush = new SolidColorBrush(Windows.UI.Colors.Yellow),
 				BorderThickness = new(1),
 				Child = grid,
 				HorizontalAlignment = HorizontalAlignment.Left,
 				VerticalAlignment = VerticalAlignment.Top,
 			};
 
-			var root = new Grid() { Children = { parentBorder }, Width = 150, Height = 150, Background = new SolidColorBrush(Microsoft.UI.Colors.Gray) };
+			var root = new Grid() { Children = { parentBorder }, Width = 150, Height = 150, Background = new SolidColorBrush(Windows.UI.Colors.Gray) };
 			await UITestHelper.Load(root);
 
 			var screenshot = await UITestHelper.ScreenShot(root);
-			var yellowBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Yellow, tolerance: 10);
-			var blueBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Blue, tolerance: 10);
-			var redBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Red, tolerance: 10);
+			var yellowBounds = ImageAssert.GetColorBounds(screenshot, Windows.UI.Colors.Yellow, tolerance: 10);
+			var blueBounds = ImageAssert.GetColorBounds(screenshot, Windows.UI.Colors.Blue, tolerance: 10);
+			var redBounds = ImageAssert.GetColorBounds(screenshot, Windows.UI.Colors.Red, tolerance: 10);
 			Assert.AreEqual(new Rect(0, 0, 99, 99), yellowBounds);
 			Assert.AreEqual(new Rect(21, 1, 77, 97), blueBounds);
 			Assert.AreEqual(new Rect(22, 2, 76, 96), redBounds);
@@ -153,7 +153,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			var redEllipse = new Ellipse()
 			{
-				Fill = new SolidColorBrush(Microsoft.UI.Colors.Red),
+				Fill = new SolidColorBrush(Windows.UI.Colors.Red),
 				Width = 120,
 				Height = 120,
 			};
@@ -162,7 +162,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				Width = 100,
 				Height = 100,
-				BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Blue),
+				BorderBrush = new SolidColorBrush(Windows.UI.Colors.Blue),
 				BorderThickness = new(1),
 				RenderTransform = new TranslateTransform() { X = 20 },
 				Child = redEllipse,
@@ -172,7 +172,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				Width = 100,
 				Height = 100,
-				BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Yellow),
+				BorderBrush = new SolidColorBrush(Windows.UI.Colors.Yellow),
 				BorderThickness = new(1),
 				Children =
 				{
@@ -182,13 +182,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				VerticalAlignment = VerticalAlignment.Top,
 			};
 
-			var root = new Grid() { Children = { parentGrid }, Width = 150, Height = 150, Background = new SolidColorBrush(Microsoft.UI.Colors.Gray) };
+			var root = new Grid() { Children = { parentGrid }, Width = 150, Height = 150, Background = new SolidColorBrush(Windows.UI.Colors.Gray) };
 			await UITestHelper.Load(root);
 
 			var screenshot = await UITestHelper.ScreenShot(root);
-			var yellowBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Yellow, tolerance: 10);
-			var blueBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Blue, tolerance: 10);
-			var redBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Red, tolerance: 10);
+			var yellowBounds = ImageAssert.GetColorBounds(screenshot, Windows.UI.Colors.Yellow, tolerance: 10);
+			var blueBounds = ImageAssert.GetColorBounds(screenshot, Windows.UI.Colors.Blue, tolerance: 10);
+			var redBounds = ImageAssert.GetColorBounds(screenshot, Windows.UI.Colors.Red, tolerance: 10);
 
 			Assert.AreEqual(new Rect(0, 0, 99, 99), yellowBounds);
 			Assert.AreEqual(new Rect(21, 1, 97, 97), blueBounds);
@@ -201,7 +201,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			var redEllipse = new Ellipse()
 			{
-				Fill = new SolidColorBrush(Microsoft.UI.Colors.Red),
+				Fill = new SolidColorBrush(Windows.UI.Colors.Red),
 				Width = 120,
 				Height = 120,
 			};
@@ -210,7 +210,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				Width = 100,
 				Height = 100,
-				BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Blue),
+				BorderBrush = new SolidColorBrush(Windows.UI.Colors.Blue),
 				BorderThickness = new(1),
 				RenderTransform = new TranslateTransform() { X = 20 },
 				Child = redEllipse,
@@ -220,20 +220,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				Width = 100,
 				Height = 100,
-				BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Yellow),
+				BorderBrush = new SolidColorBrush(Windows.UI.Colors.Yellow),
 				BorderThickness = new(1),
 				Child = border,
 				HorizontalAlignment = HorizontalAlignment.Left,
 				VerticalAlignment = VerticalAlignment.Top,
 			};
 
-			var root = new Grid() { Children = { parentBorder }, Width = 150, Height = 150, Background = new SolidColorBrush(Microsoft.UI.Colors.Gray) };
+			var root = new Grid() { Children = { parentBorder }, Width = 150, Height = 150, Background = new SolidColorBrush(Windows.UI.Colors.Gray) };
 			await UITestHelper.Load(root);
 
 			var screenshot = await UITestHelper.ScreenShot(root);
-			var yellowBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Yellow, tolerance: 10);
-			var blueBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Blue, tolerance: 10);
-			var redBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Red, tolerance: 10);
+			var yellowBounds = ImageAssert.GetColorBounds(screenshot, Windows.UI.Colors.Yellow, tolerance: 10);
+			var blueBounds = ImageAssert.GetColorBounds(screenshot, Windows.UI.Colors.Blue, tolerance: 10);
+			var redBounds = ImageAssert.GetColorBounds(screenshot, Windows.UI.Colors.Red, tolerance: 10);
 			Assert.AreEqual(new Rect(0, 0, 99, 99), yellowBounds);
 			Assert.AreEqual(new Rect(21, 1, 97, 97), blueBounds);
 			Assert.AreEqual(new Rect(22, 2, 96, 96), redBounds);
@@ -245,7 +245,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			var redEllipse = new Ellipse()
 			{
-				Fill = new SolidColorBrush(Microsoft.UI.Colors.Red),
+				Fill = new SolidColorBrush(Windows.UI.Colors.Red),
 				Width = 120,
 				Height = 120,
 			};
@@ -254,7 +254,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				Width = 100,
 				Height = 100,
-				BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Blue),
+				BorderBrush = new SolidColorBrush(Windows.UI.Colors.Blue),
 				BorderThickness = new(1),
 				RenderTransform = new TranslateTransform() { X = 20 },
 				Child = redEllipse,
@@ -262,12 +262,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				VerticalAlignment = VerticalAlignment.Top,
 			};
 
-			var root = new Grid() { Children = { border }, Width = 150, Height = 150, Background = new SolidColorBrush(Microsoft.UI.Colors.Gray) };
+			var root = new Grid() { Children = { border }, Width = 150, Height = 150, Background = new SolidColorBrush(Windows.UI.Colors.Gray) };
 			await UITestHelper.Load(root);
 
 			var screenshot = await UITestHelper.ScreenShot(root);
-			var blueBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Blue, tolerance: 10);
-			var redBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Red, tolerance: 10);
+			var blueBounds = ImageAssert.GetColorBounds(screenshot, Windows.UI.Colors.Blue, tolerance: 10);
+			var redBounds = ImageAssert.GetColorBounds(screenshot, Windows.UI.Colors.Red, tolerance: 10);
 			Assert.AreEqual(new Rect(20, 0, 99, 99), blueBounds);
 			Assert.AreEqual(new Rect(21, 1, 97, 97), redBounds);
 		}
@@ -278,7 +278,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			var redEllipse = new Ellipse()
 			{
-				Fill = new SolidColorBrush(Microsoft.UI.Colors.Red),
+				Fill = new SolidColorBrush(Windows.UI.Colors.Red),
 				Width = 120,
 				Height = 120,
 			};
@@ -287,7 +287,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				Width = 100,
 				Height = 100,
-				BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Blue),
+				BorderBrush = new SolidColorBrush(Windows.UI.Colors.Blue),
 				BorderThickness = new(1),
 				RenderTransform = new TranslateTransform() { X = 20 },
 				Child = redEllipse,
@@ -295,12 +295,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				VerticalAlignment = VerticalAlignment.Top,
 			};
 
-			var root = new Grid() { Children = { border }, Width = 150, Height = 150, Background = new SolidColorBrush(Microsoft.UI.Colors.Gray) };
+			var root = new Grid() { Children = { border }, Width = 150, Height = 150, Background = new SolidColorBrush(Windows.UI.Colors.Gray) };
 			await UITestHelper.Load(root);
 
 			var screenshot = await UITestHelper.ScreenShot(root);
-			var blueBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Blue, tolerance: 10);
-			var redBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Red, tolerance: 10);
+			var blueBounds = ImageAssert.GetColorBounds(screenshot, Windows.UI.Colors.Blue, tolerance: 10);
+			var redBounds = ImageAssert.GetColorBounds(screenshot, Windows.UI.Colors.Red, tolerance: 10);
 			Assert.AreEqual(new Rect(20, 0, 99, 99), blueBounds);
 			Assert.AreEqual(new Rect(21, 1, 97, 97), redBounds);
 		}
@@ -443,7 +443,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 		public async Task When_Alignment_Changes_During_Measure()
 		{
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
@@ -585,7 +585,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var sut = new Grid
 			{
 				Margin = new Thickness(0, 100, 0, 0),
-				BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.DeepPink),
+				BorderBrush = new SolidColorBrush(Windows.UI.Colors.DeepPink),
 				BorderThickness = new Thickness(5),
 				MinWidth = 100,
 				MinHeight = 100,
@@ -603,14 +603,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 							ItemsSource="0123456789",
 							ItemTemplate = new DataTemplate(() => new Border
 							{
-								BorderBrush= new SolidColorBrush(Microsoft.UI.Colors.Red),
+								BorderBrush= new SolidColorBrush(Windows.UI.Colors.Red),
 								Margin= new Thickness(5),
 								BorderThickness=new Thickness(5),
 								Width=300,
 								Child = new TextBlock
 								{
 									TextWrapping= TextWrapping.Wrap,
-									Foreground = new SolidColorBrush(Microsoft.UI.Colors.Chartreuse)
+									Foreground = new SolidColorBrush(Windows.UI.Colors.Chartreuse)
 								}.Apply(tb => tb.SetBinding(TextBlock.TextProperty, new Binding()))
 							}),
 							Layout = new Microsoft/* UWP don't rename */.UI.Xaml.Controls.StackLayout{Orientation = Orientation.Horizontal}

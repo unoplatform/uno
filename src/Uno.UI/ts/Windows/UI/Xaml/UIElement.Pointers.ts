@@ -1,4 +1,4 @@
-﻿namespace Microsoft.UI.Xaml {
+﻿namespace Windows.UI.Xaml {
 	import WindowManager = Uno.UI.WindowManager;
 	import HtmlEventDispatchResult = Uno.UI.HtmlEventDispatchResult;
 	import PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
@@ -25,9 +25,9 @@
 		private static ensurePointersInit(): void {
 			if (!UIElement._dispatchPointerEventMethod) {
 				if ((<any>globalThis).DotnetExports !== undefined) {
-					UIElement._dispatchPointerEventMethod = (<any>globalThis).DotnetExports.UnoUI.Microsoft.UI.Xaml.UIElement.OnNativePointerEvent;
+					UIElement._dispatchPointerEventMethod = (<any>globalThis).DotnetExports.UnoUI.Windows.UI.Xaml.UIElement.OnNativePointerEvent;
 				} else {
-					UIElement._dispatchPointerEventMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Microsoft.UI.Xaml.UIElement:OnNativePointerEvent");
+					UIElement._dispatchPointerEventMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.UIElement:OnNativePointerEvent");
 				}
 
 				document.getRootNode().addEventListener("pointerover", UIElement_Pointers.onRootPointerOverDispatching, { capture: true, passive: true });
@@ -45,7 +45,7 @@
 		}
 
 		public static subscribePointerEvents(pParams: number): void {
-			const params = Microsoft.UI.Xaml.NativePointerSubscriptionParams.unmarshal(pParams);
+			const params = Windows.UI.Xaml.NativePointerSubscriptionParams.unmarshal(pParams);
 			const element = WindowManager.current.getView(params.HtmlId);
 
 			if (params.Events & NativePointerEvent.pointerover) {
@@ -72,7 +72,7 @@
 		}
 
 		public static unSubscribePointerEvents(pParams: number): void {
-			const params = Microsoft.UI.Xaml.NativePointerSubscriptionParams.unmarshal(pParams);
+			const params = Windows.UI.Xaml.NativePointerSubscriptionParams.unmarshal(pParams);
 			const element = WindowManager.current.getView(params.HtmlId);
 
 			if (!element) {
@@ -200,7 +200,7 @@
 
 			args.marshal(UIElement._dispatchPointerEventArgs);
 			UIElement._dispatchPointerEventMethod();
-			const response = Microsoft.UI.Xaml.NativePointerEventResult.unmarshal(UIElement._dispatchPointerEventResult);
+			const response = Windows.UI.Xaml.NativePointerEventResult.unmarshal(UIElement._dispatchPointerEventResult);
 
 			if (response.Result & HtmlEventDispatchResult.StopPropagation) {
 				evt.stopPropagation();
@@ -238,7 +238,7 @@
 		//#endregion
 
 		//#region Helpers
-		private static toNativePointerEventArgs(evt: PointerEvent | WheelEvent): Microsoft.UI.Xaml.NativePointerEventArgs {
+		private static toNativePointerEventArgs(evt: PointerEvent | WheelEvent): Windows.UI.Xaml.NativePointerEventArgs {
 			let src = evt.target as HTMLElement | SVGElement;
 			if (src instanceof SVGElement) {
 				// The XAML SvgElement are UIElement in Uno (so they have a XamlHandle),
@@ -292,7 +292,7 @@
 				wheelDeltaY = 0;
 			}
 
-			const args = new Microsoft.UI.Xaml.NativePointerEventArgs();
+			const args = new Windows.UI.Xaml.NativePointerEventArgs();
 			args.Event = UIElement.toNativeEvent(evt.type);
 			args.pointerId = pointerId;
 			args.x = evt.clientX;

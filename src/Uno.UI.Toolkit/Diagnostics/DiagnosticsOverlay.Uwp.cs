@@ -2,7 +2,7 @@
 #if !WINUI && !HAS_UNO_WINUI
 using System;
 using System.Linq;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 
 namespace Uno.Diagnostics.UI;
 

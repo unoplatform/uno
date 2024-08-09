@@ -61,7 +61,7 @@
 
 		<!-- We remove Unit tests imported from MUX on UAP as they are usualy heavily relying on internal classes.-->
 		<Compile Remove="$(MSBuildThisFileDirectory)MUX\Microsoft_UI_XAML_Controls\**\*.cs" />
-		<!-- We remove WebView2 tests, as the installed version of Microsoft.UI.Xaml does not include this control -->
+		<!-- We remove WebView2 tests, as the installed version of Windows.UI.Xaml does not include this control -->
 		<Compile Remove="$(MSBuildThisFileDirectory)Tests\Microsoft_UI_Xaml_Controls\Given_WebView2.cs" />
 	</ItemGroup>
 	

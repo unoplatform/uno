@@ -2,8 +2,8 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference ScrollItemAdapter_Partial.cpp, tag winui3/release/1.5.3
 
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Automation.Peers;
 
 namespace DirectUI;
 

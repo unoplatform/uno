@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Linq;
 using Uno.Extensions;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Uno.UI.DataBinding;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Data;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Animation;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Controls;
 using Uno.UI;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls.Primitives;
 using Uno.Foundation.Logging;
 using Uno.Collections;
 
@@ -55,8 +55,8 @@ using Point = Windows.Foundation.Point;
 using CGSize = Windows.Foundation.Size;
 using _Size = Windows.Foundation.Size;
 using NMath = System.Math;
-using View = Microsoft.UI.Xaml.UIElement;
-using ViewGroup = Microsoft.UI.Xaml.UIElement;
+using View = Windows.UI.Xaml.UIElement;
+using ViewGroup = Windows.UI.Xaml.UIElement;
 #else
 #pragma warning disable CS8981 // The type name 'nint' only contains lower-cased ascii characters. Such names may become reserved for the language
 using nint = System.Int32;
@@ -64,11 +64,11 @@ using nfloat = System.Double;
 using CGSize = Windows.Foundation.Size;
 using _Size = Windows.Foundation.Size;
 using NMath = System.Math;
-using View = Microsoft.UI.Xaml.UIElement;
-using ViewGroup = Microsoft.UI.Xaml.UIElement;
+using View = Windows.UI.Xaml.UIElement;
+using ViewGroup = Windows.UI.Xaml.UIElement;
 #endif
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	internal partial interface IFrameworkElement : IDataContextProvider, DependencyObject, IDependencyObjectParse
 	{
@@ -107,7 +107,7 @@ namespace Microsoft.UI.Xaml
 
 		Style Style { get; set; }
 
-		Microsoft.UI.Xaml.Media.Brush Background { get; set; }
+		Windows.UI.Xaml.Media.Brush Background { get; set; }
 
 		Transform RenderTransform { get; set; }
 
@@ -287,7 +287,7 @@ namespace Microsoft.UI.Xaml
 				}
 			}
 
-			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_Primitives_FlyoutBase_Available)
+			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_Primitives_FlyoutBase_Available)
 			{
 				// Static version here to ensure that it's not used outside of this scope
 				// where we're ensuring that we're not taking a dependency on FlyoutBase statically.
@@ -458,7 +458,7 @@ namespace Microsoft.UI.Xaml
 				.SizeThatFits(view, new _Size(view.MeasuredWidth, view.MeasuredHeight).PhysicalToLogicalPixels())
 				.LogicalToPhysicalPixels();
 
-			Microsoft.UI.Xaml.Controls.Layouter.SetMeasuredDimensions(view, (int)updated.Width, (int)updated.Height);
+			Windows.UI.Xaml.Controls.Layouter.SetMeasuredDimensions(view, (int)updated.Width, (int)updated.Height);
 		}
 
 		/// <summary>
@@ -472,7 +472,7 @@ namespace Microsoft.UI.Xaml
 				.SizeThatFits(view, new _Size(measuredSize.Width, measuredSize.Height).PhysicalToLogicalPixels())
 				.LogicalToPhysicalPixels();
 
-			Microsoft.UI.Xaml.Controls.Layouter.SetMeasuredDimensions(view, (int)updated.Width, (int)updated.Height);
+			Windows.UI.Xaml.Controls.Layouter.SetMeasuredDimensions(view, (int)updated.Width, (int)updated.Height);
 		}
 #endif
 

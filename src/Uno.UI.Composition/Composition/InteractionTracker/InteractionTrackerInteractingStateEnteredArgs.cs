@@ -1,4 +1,4 @@
-namespace Microsoft.UI.Composition.Interactions;
+﻿namespace Windows.UI.Composition.Interactions;
 
 public partial class InteractionTrackerInteractingStateEnteredArgs
 {

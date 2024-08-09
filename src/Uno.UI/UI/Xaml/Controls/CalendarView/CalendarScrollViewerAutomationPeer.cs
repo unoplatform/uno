@@ -2,9 +2,9 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System.Collections.Generic;
-using Microsoft.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Automation.Peers;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	internal class CalendarScrollViewerAutomationPeer : ScrollViewerAutomationPeer
 	{

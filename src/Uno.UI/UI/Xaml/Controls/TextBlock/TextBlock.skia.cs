@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Windows.Foundation;
 using SkiaSharp;
-using Microsoft.UI.Composition;
+using Windows.UI.Composition;
 using System.Numerics;
 using System.Windows.Input;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.System;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 using Uno.UI;
-using Microsoft.UI.Xaml.Documents.TextFormatting;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Documents.TextFormatting;
+using Windows.UI.Xaml.Input;
 using Uno.UI.Helpers.WinUI;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Media;
@@ -19,7 +19,7 @@ using Uno.UI.Xaml.Core.Scaling;
 
 #nullable enable
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	partial class TextBlock : FrameworkElement, IBlock
 	{

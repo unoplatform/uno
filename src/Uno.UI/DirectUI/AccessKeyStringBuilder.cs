@@ -3,9 +3,9 @@
 // MUX Reference AccessKeyStringBuilder.cpp, tag winui3/release/1.5.3
 
 using System;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Documents;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Documents;
 
 namespace DirectUI;
 

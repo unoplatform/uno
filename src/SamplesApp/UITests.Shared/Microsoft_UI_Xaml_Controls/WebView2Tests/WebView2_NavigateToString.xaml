@@ -1,4 +1,4 @@
-<UserControl
+﻿<UserControl
 	x:Class="SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests.WebView2_NavigateToString"
 	xmlns:controls="using:Uno.UI.Samples.Controls"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"

@@ -4,13 +4,13 @@ using System;
 using Gtk;
 using Uno.Foundation.Logging;
 using Uno.UI.Runtime.Skia.Gtk.Extensions.Helpers;
-using Microsoft.UI.Xaml;
-using WUX = Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
+using WUX = Windows.UI.Xaml;
 using Uno.UI.Runtime.Skia.Gtk.Extensions;
 using Uno.UI.Runtime.Skia.Gtk.UI;
 using Uno.UI.Runtime.Skia.Gtk.UI.Controls;
 using GtkApplication = Gtk.Application;
-using WinUIApplication = Microsoft.UI.Xaml.Application;
+using WinUIApplication = Windows.UI.Xaml.Application;
 
 namespace Uno.UI.Runtime.Skia.Gtk
 {

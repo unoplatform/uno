@@ -2,8 +2,8 @@
 using System.ComponentModel;
 using System.Drawing;
 using System.Globalization;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Media;
 using Uno.UI.Extensions;
 
 #if __IOS__
@@ -23,7 +23,7 @@ using ObjCRuntime;
 #elif __ANDROID__
 using Android.Graphics;
 #elif __SKIA__
-using Path = Microsoft.UI.Composition.SkiaGeometrySource2D;
+using Path = Windows.UI.Composition.SkiaGeometrySource2D;
 using SkiaSharp;
 using Uno.UI.UI.Xaml.Media;
 #else

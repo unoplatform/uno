@@ -7,7 +7,7 @@ using Uno;
 using Uno.Extensions;
 using Uno.UI.Composition;
 
-namespace Microsoft.UI.Composition
+namespace Windows.UI.Composition
 {
 	public partial class CompositionSpriteShape : CompositionShape
 	{

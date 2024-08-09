@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Documents;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Documents;
+using Windows.UI.Xaml.Media;
 
 namespace Uno.UI.RuntimeTests.MUX.Helpers
 {
@@ -136,7 +136,7 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 			{
 				xamlRoot = te.XamlRoot;
 			}
-			else if (obj is Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase fb)
+			else if (obj is Windows.UI.Xaml.Controls.Primitives.FlyoutBase fb)
 			{
 				xamlRoot = fb.XamlRoot;
 			}

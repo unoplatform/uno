@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 
-namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
+namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 {
 	public partial class TabViewTests
 	{

@@ -4,10 +4,10 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml.Markup;
 using MUXControlsTestApp.Utilities;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using Common;
 using System.Threading;
 
@@ -24,11 +24,11 @@ using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 using TeachingTip = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TeachingTip;
 using IconSource = Microsoft/* UWP don't rename */.UI.Xaml.Controls.IconSource;
 using SymbolIconSource = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SymbolIconSource;
-using Microsoft.UI.Composition;
-using Microsoft.UI.Xaml;
+using Windows.UI.Composition;
+using Windows.UI.Xaml;
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Xaml.Shapes;
 
 #if !HAS_UNO_WINUI
 using Windows.UI.Xaml.Controls;
@@ -40,7 +40,7 @@ using System.Threading.Tasks;
 using Uno.UI.RuntimeTests.Helpers;
 using Microsoft.UI.Private.Controls;
 
-namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests;
+namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests;
 
 [TestClass]
 public class TeachingTipTests

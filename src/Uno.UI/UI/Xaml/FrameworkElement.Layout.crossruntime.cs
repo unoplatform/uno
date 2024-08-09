@@ -7,18 +7,18 @@ using Uno.Diagnostics.Eventing;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls.Primitives;
 
 using Uno.UI;
 using Uno.UI.Xaml;
 using static System.Math;
 using static Uno.UI.LayoutHelper;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Core.Scaling;
 using Uno.UI.Extensions;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	public partial class FrameworkElement
 	{

@@ -1,14 +1,14 @@
 ﻿#if !__UWP__
 using System;
 using System.Linq;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 /// <summary>
 /// PopupPanel implementation for <see cref="FlyoutBase"/>.
@@ -27,7 +27,7 @@ internal partial class FlyoutBasePopupPanel : PopupPanel
 		_flyout._popup.AssociatedFlyout = flyout;
 		// Required for the dismiss handling
 		// This should however be customized depending of the Popup.DismissMode
-		Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
+		Background = new SolidColorBrush(Windows.UI.Colors.Transparent);
 	}
 
 	protected override bool FullPlacementRequested => _flyout.EffectivePlacement == FlyoutPlacementMode.Full;

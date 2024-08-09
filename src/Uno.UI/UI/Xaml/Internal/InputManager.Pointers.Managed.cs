@@ -17,17 +17,17 @@ using Windows.UI.Core;
 using Windows.UI.Input;
 using Windows.UI.Input.Preview.Injection;
 using Microsoft.UI.Input;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using static Microsoft.UI.Xaml.UIElement;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using static Windows.UI.Xaml.UIElement;
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 using PointerEventArgs = Windows.UI.Core.PointerEventArgs;
 using PointerUpdateKind = Windows.UI.Input.PointerUpdateKind;
-using Microsoft.UI.Composition.Interactions;
-using Microsoft.UI.Composition;
+using Windows.UI.Composition.Interactions;
+using Windows.UI.Composition;
 
 namespace Uno.UI.Xaml.Core;
 
@@ -229,7 +229,7 @@ internal partial class InputManager
 				{
 					foreach (var tracker in vis.Trackers)
 					{
-						tracker.ReceivePointerWheel(args.CurrentPoint.Properties.MouseWheelDelta / global::Microsoft.UI.Xaml.Controls.ScrollContentPresenter.ScrollViewerDefaultMouseWheelDelta, args.CurrentPoint.Properties.IsHorizontalMouseWheel);
+						tracker.ReceivePointerWheel(args.CurrentPoint.Properties.MouseWheelDelta / global::Windows.UI.Xaml.Controls.ScrollContentPresenter.ScrollViewerDefaultMouseWheelDelta, args.CurrentPoint.Properties.IsHorizontalMouseWheel);
 					}
 
 					return;

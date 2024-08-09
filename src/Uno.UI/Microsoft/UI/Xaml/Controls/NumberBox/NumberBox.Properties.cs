@@ -4,11 +4,11 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference NumberBox.properties.cpp, commit 7c3ba16da9e273c73169c062cc803868695fa864
 
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 using Windows.Foundation;
 using Windows.Globalization.NumberFormatting;
 

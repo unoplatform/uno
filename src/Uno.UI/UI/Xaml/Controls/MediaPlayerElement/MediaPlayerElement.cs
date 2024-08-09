@@ -1,12 +1,12 @@
 ﻿using System;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Windows.Media.Playback;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	[TemplatePart(Name = PosterImageName, Type = typeof(Image))]
 	[TemplatePart(Name = TransportControlsPresenterName, Type = typeof(ContentPresenter))]

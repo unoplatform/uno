@@ -3,8 +3,8 @@ using Private.Infrastructure;
 using System.Threading.Tasks;
 using Windows.UI;
 using Uno.UI.RuntimeTests.Helpers;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Icons;
 

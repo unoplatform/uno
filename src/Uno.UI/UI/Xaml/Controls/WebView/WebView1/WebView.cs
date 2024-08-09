@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using Windows.UI.Core;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 #if IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 [Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

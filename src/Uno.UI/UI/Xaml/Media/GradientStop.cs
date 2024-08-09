@@ -1,8 +1,8 @@
 ﻿using System;
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml.Markup;
 using Windows.UI;
 
-namespace Microsoft.UI.Xaml.Media
+namespace Windows.UI.Xaml.Media
 {
 	[ContentProperty(Name = nameof(Color))]
 	public partial class GradientStop : DependencyObject

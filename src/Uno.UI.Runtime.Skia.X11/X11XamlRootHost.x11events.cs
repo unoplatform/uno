@@ -6,7 +6,7 @@ using System.Threading;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
 

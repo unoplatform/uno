@@ -9,9 +9,9 @@ using System.Runtime.InteropServices;
 using System.Text;
 using Uno.Buffers;
 using Uno.UI.DataBinding;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Data;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	/// <summary>
 	/// Represents the stack of values used by the Dependency Property Value Precedence system

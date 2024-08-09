@@ -1,7 +1,7 @@
-using System.Threading.Tasks;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
+﻿using System.Threading.Tasks;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 using Uno.UI.RuntimeTests.Helpers;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 
@@ -16,18 +16,18 @@ public class Given_VisualStateManager
 		await UITestHelper.Load(root);
 		var control = (Control)root.FindName("control");
 		var border = (Border)root.FindName("SUT_BackgroundBorder");
-		Assert.AreEqual(Microsoft.UI.Colors.Green, ((SolidColorBrush)border.Background).Color);
+		Assert.AreEqual(Windows.UI.Colors.Green, ((SolidColorBrush)border.Background).Color);
 
 		VisualStateManager.GoToState(control, "Red", true);
 		await Task.Delay(1000);
-		Assert.AreEqual(Microsoft.UI.Colors.Red, ((SolidColorBrush)border.Background).Color);
+		Assert.AreEqual(Windows.UI.Colors.Red, ((SolidColorBrush)border.Background).Color);
 
 		VisualStateManager.GoToState(control, "Green", true);
 		await Task.Delay(1000);
-		Assert.AreEqual(Microsoft.UI.Colors.Green, ((SolidColorBrush)border.Background).Color);
+		Assert.AreEqual(Windows.UI.Colors.Green, ((SolidColorBrush)border.Background).Color);
 
 		VisualStateManager.GoToState(control, "Red", true);
 		await Task.Delay(1000);
-		Assert.AreEqual(Microsoft.UI.Colors.Red, ((SolidColorBrush)border.Background).Color);
+		Assert.AreEqual(Windows.UI.Colors.Red, ((SolidColorBrush)border.Background).Color);
 	}
 }

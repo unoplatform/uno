@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using Uno.UI;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Automation.Peers;
 
-namespace Microsoft.UI.Xaml.Automation
+namespace Windows.UI.Xaml.Automation
 {
 	public sealed partial class AutomationProperties
 	{
@@ -169,7 +169,7 @@ namespace Microsoft.UI.Xaml.Automation
 			=> element.SetValue(AutomationIdProperty, value);
 		#endregion
 
-		public static int GetPositionInSet(global::Microsoft.UI.Xaml.DependencyObject element) => (int)element.GetValue(PositionInSetProperty);
+		public static int GetPositionInSet(global::Windows.UI.Xaml.DependencyObject element) => (int)element.GetValue(PositionInSetProperty);
 
 		public static void SetPositionInSet(DependencyObject element, int value) => element.SetValue(PositionInSetProperty, value);
 
@@ -202,27 +202,27 @@ namespace Microsoft.UI.Xaml.Automation
 #if __WASM__
 		private static string FindHtmlRole(UIElement uIElement)
 		{
-			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_Button_Available && uIElement is Button)
+			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_Button_Available && uIElement is Button)
 			{
 				return "button";
 			}
-			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_RadioButton_Available && uIElement is RadioButton)
+			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_RadioButton_Available && uIElement is RadioButton)
 			{
 				return "radio";
 			}
-			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_CheckBox_Available && uIElement is CheckBox)
+			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_CheckBox_Available && uIElement is CheckBox)
 			{
 				return "checkbox";
 			}
-			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_TextBlock_Available && uIElement is TextBlock)
+			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_TextBlock_Available && uIElement is TextBlock)
 			{
 				return "label";
 			}
-			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_TextBox_Available && uIElement is TextBox)
+			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_TextBox_Available && uIElement is TextBox)
 			{
 				return "textbox";
 			}
-			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_Slider_Available && uIElement is Slider)
+			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_Slider_Available && uIElement is Slider)
 			{
 				return "slider";
 			}

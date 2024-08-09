@@ -11,10 +11,10 @@ using XSIZEF = Windows.Foundation.Size;
 using Xuint = System.Int32;
 using XFLOAT = System.Double;
 using XRECTF = Windows.Foundation.Rect;
-using PropertyChangedParams = Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs;
-using CDOCollection = Microsoft.UI.Xaml.Controls.DefinitionCollectionBase;
+using PropertyChangedParams = Windows.UI.Xaml.DependencyPropertyChangedEventArgs;
+using CDOCollection = Windows.UI.Xaml.Controls.DefinitionCollectionBase;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	partial class Grid
 	{

@@ -2,7 +2,7 @@
 
 using Uno.UI.DataBinding;
 
-namespace Microsoft.UI.Xaml.Markup
+namespace Windows.UI.Xaml.Markup
 {
 	/// <summary>
 	/// Reference holder for XAML generated x:Name and other markup elements.

@@ -1,4 +1,4 @@
-﻿namespace Microsoft.UI.Xaml
+﻿namespace Windows.UI.Xaml
 {
 	/// <summary>
 	/// Specifies the visual feedback used to indicate the UI element with focus when navigating with a keyboard or gamepad.

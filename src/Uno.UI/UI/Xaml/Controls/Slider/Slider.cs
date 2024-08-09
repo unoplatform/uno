@@ -1,11 +1,11 @@
-﻿using Microsoft.UI.Xaml.Controls.Primitives;
+﻿using Windows.UI.Xaml.Controls.Primitives;
 
 #if __IOS__
 using Foundation;
 using UIKit;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 /// <summary>
 /// Represents a control that lets the user select from a range of values by moving a Thumb control along a track.

@@ -5,18 +5,18 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml.Shapes;
 using Windows.Foundation.Metadata;
 using Uno.UI;
 using static Private.Infrastructure.TestServices;
 using Windows.Media.Core;
 using Uno.UI.RuntimeTests.Extensions;
-using Microsoft.UI.Composition;
+using Windows.UI.Composition;
 using System.IO;
 using Windows.Foundation;
 using Windows.UI.Input.Preview.Injection;
@@ -128,7 +128,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		public async Task When_Clip_And_CornerRadius()
 		{
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
@@ -137,7 +137,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				Width = 300,
 				Height = 300,
-				Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
+				Background = new SolidColorBrush(Windows.UI.Colors.Red),
 				CornerRadius = new CornerRadius(50),
 				Clip = new RectangleGeometry()
 				{
@@ -149,12 +149,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var screenshot = await UITestHelper.ScreenShot(SUT);
 			var redBounds = ImageAssert.GetColorBounds(screenshot, Colors.Red, 10);
 			Assert.AreEqual(new Size(149, 149), new Size(redBounds.Width, redBounds.Height));
-			ImageAssert.DoesNotHaveColorAt(screenshot, 10, 10, Microsoft.UI.Colors.Red, tolerance: 10);
-			ImageAssert.HasColorAt(screenshot, 20, 20, Microsoft.UI.Colors.Red, tolerance: 10);
-			ImageAssert.HasColorAt(screenshot, 10, 148, Microsoft.UI.Colors.Red, tolerance: 10);
-			ImageAssert.HasColorAt(screenshot, 148, 148, Microsoft.UI.Colors.Red, tolerance: 10);
-			ImageAssert.HasColorAt(screenshot, 5, 148, Microsoft.UI.Colors.Red, tolerance: 10);
-			ImageAssert.DoesNotHaveColorAt(screenshot, 155, 155, Microsoft.UI.Colors.Red, tolerance: 10);
+			ImageAssert.DoesNotHaveColorAt(screenshot, 10, 10, Windows.UI.Colors.Red, tolerance: 10);
+			ImageAssert.HasColorAt(screenshot, 20, 20, Windows.UI.Colors.Red, tolerance: 10);
+			ImageAssert.HasColorAt(screenshot, 10, 148, Windows.UI.Colors.Red, tolerance: 10);
+			ImageAssert.HasColorAt(screenshot, 148, 148, Windows.UI.Colors.Red, tolerance: 10);
+			ImageAssert.HasColorAt(screenshot, 5, 148, Windows.UI.Colors.Red, tolerance: 10);
+			ImageAssert.DoesNotHaveColorAt(screenshot, 155, 155, Windows.UI.Colors.Red, tolerance: 10);
 		}
 
 		[TestMethod]
@@ -163,7 +163,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		public async Task When_Clipped_With_TransformMatrix()
 		{
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
@@ -172,7 +172,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				Width = 100,
 				Height = 100,
-				Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
+				Background = new SolidColorBrush(Windows.UI.Colors.Red),
 				Clip = new RectangleGeometry
 				{
 					Rect = new Rect(0, 0, 100, 100),
@@ -186,7 +186,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await UITestHelper.Load(SUT);
 
 			var bitmap = await UITestHelper.ScreenShot(SUT);
-			ImageAssert.DoesNotHaveColorInRectangle(bitmap, new System.Drawing.Rectangle(0, 50, 100, 50), Microsoft.UI.Colors.Red);
+			ImageAssert.DoesNotHaveColorInRectangle(bitmap, new System.Drawing.Rectangle(0, 50, 100, 50), Windows.UI.Colors.Red);
 		}
 
 		[TestMethod]
@@ -285,7 +285,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __MACOS__
 			Assert.Inconclusive(); // MACOS interpret colors differently
 #endif
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
@@ -339,7 +339,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.Inconclusive(); // MACOS interpret colors differently
 #endif
 
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
@@ -407,7 +407,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.Inconclusive(); //MACOS interprets colors differently
 #endif
 
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
@@ -450,14 +450,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.Inconclusive(); //MACOS interprets colors differently
 #endif
 
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
 
 			var SUT = new Border() { Background = new SolidColorBrush(Colors.Blue) };
 			var inner = new Border() { CornerRadius = new CornerRadius(40), Width = 80, Height = 80 };
-			inner.Child = new Microsoft.UI.Xaml.Shapes.Rectangle() { Fill = new SolidColorBrush(Colors.Red), Width = 80, Height = 80 };
+			inner.Child = new Windows.UI.Xaml.Shapes.Rectangle() { Fill = new SolidColorBrush(Colors.Red), Width = 80, Height = 80 };
 			SUT.Child = inner;
 
 			var snapshot = await TakeScreenshot(SUT);
@@ -560,7 +560,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __IOS__
 			Assert.Inconclusive(); // iOS not working currently. https://github.com/unoplatform/uno/issues/6749
 #endif
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
@@ -665,7 +665,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		public async Task Border_CornerRadius_GradientBrush()
 		{
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}

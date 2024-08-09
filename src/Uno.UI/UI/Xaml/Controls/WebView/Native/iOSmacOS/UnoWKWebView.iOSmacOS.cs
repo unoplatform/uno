@@ -28,7 +28,7 @@ using AppKit;
 using Uno.UI;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageHandler
 #if __MACOS__
@@ -697,7 +697,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 
 	async Task<string> INativeWebView.InvokeScriptAsync(string script, string[] arguments, CancellationToken ct)
 	{
-		var argumentString = Microsoft.UI.Xaml.Controls.WebView.ConcatenateJavascriptArguments(arguments);
+		var argumentString = Windows.UI.Xaml.Controls.WebView.ConcatenateJavascriptArguments(arguments);
 		var javascript = string.Format(CultureInfo.InvariantCulture, "javascript:{0}(\"{1}\")", script, argumentString);
 
 		if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))

@@ -3,17 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Graphics
 {
-#if false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial struct DisplayAdapterId
 	{
 		// Forced skipping of method Windows.Graphics.DisplayAdapterId.DisplayAdapterId()
-#if false
-		public uint LowPart;
-#endif
-#if false
-		public int HighPart;
-#endif
+		// Skipping already declared field Windows.Graphics.DisplayAdapterId.LowPart
+		// Skipping already declared field Windows.Graphics.DisplayAdapterId.HighPart
 	}
 }

@@ -1,4 +1,4 @@
-// Copyright Edward Rosten 2006--2013.
+﻿// Copyright Edward Rosten 2006--2013.
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions
@@ -31,8 +31,8 @@ using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.DataTransfer.DragDrop;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Windows.Foundation;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Input;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;

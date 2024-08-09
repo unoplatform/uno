@@ -5,11 +5,11 @@ using System.Text;
 using CoreGraphics;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-using Microsoft.UI.Xaml.Markup;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Controls.Primitives;
 using UIKit;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	[ContentProperty(Name = "Child")]
 	public partial class Popover : NativePopupBase

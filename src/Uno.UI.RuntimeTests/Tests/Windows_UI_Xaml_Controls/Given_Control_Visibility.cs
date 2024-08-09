@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Markup;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Controls.Primitives;
 using SamplesApp.UITests;
 using Uno.UI.RuntimeTests.Helpers;
 
@@ -97,13 +97,13 @@ public class Given_Control_Visibility
 				{
 					Width = 100,
 					Height = 100,
-					Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
+					Background = new SolidColorBrush(Windows.UI.Colors.Red),
 					Child = control,
 				};
 
 				await UITestHelper.Load(border);
 				var bitmap = await UITestHelper.ScreenShot(border);
-				var bounds = ImageAssert.GetColorBounds(bitmap, Microsoft.UI.Colors.Yellow);
+				var bounds = ImageAssert.GetColorBounds(bitmap, Windows.UI.Colors.Yellow);
 				// When there is DPI scaling, the Widths can differ by 1px (rounding errors maybe?)
 				Assert.AreEqual(bitmap.Width, bounds.Width, delta: 1, $"Checking width when visible for {type}");
 				Assert.AreEqual(bitmap.Height, bounds.Height, delta: 1, $"Checking height when visible for {type}");
@@ -112,7 +112,7 @@ public class Given_Control_Visibility
 				await UITestHelper.WaitForIdle();
 
 				bitmap = await UITestHelper.ScreenShot(border);
-				bounds = ImageAssert.GetColorBounds(bitmap, Microsoft.UI.Colors.Red);
+				bounds = ImageAssert.GetColorBounds(bitmap, Windows.UI.Colors.Red);
 				Assert.AreEqual(bitmap.Width, bounds.Width, delta: 1, $"Checking width when collapsed for {type}");
 				Assert.AreEqual(bitmap.Height, bounds.Height, delta: 1, $"Checking height when collapsed for {type}");
 			}

@@ -1,8 +1,8 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
 using Windows.UI;
@@ -54,11 +54,11 @@ public class Given_BackgroundTransition
 			Assert.Fail("Unexpected input");
 		}
 
-		setBackground(new SolidColorBrush(Microsoft.UI.Colors.Red));
+		setBackground(new SolidColorBrush(Windows.UI.Colors.Red));
 
 		await UITestHelper.Load(control);
 
-		setBackground(new SolidColorBrush(Microsoft.UI.Colors.Blue));
+		setBackground(new SolidColorBrush(Windows.UI.Colors.Blue));
 
 		await Task.Delay(1000);
 

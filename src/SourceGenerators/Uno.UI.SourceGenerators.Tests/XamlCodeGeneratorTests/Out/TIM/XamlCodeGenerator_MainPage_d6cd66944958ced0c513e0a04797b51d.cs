@@ -7,14 +7,14 @@ using System.Diagnostics;
 using System.Linq;
 using Uno.UI;
 using Uno.UI.Xaml;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Documents;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Animation;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Documents;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Shapes;
 using Windows.UI.Text;
 using Uno.Extensions;
 using Uno;
@@ -29,18 +29,18 @@ using _View = UIKit.UIView;
 #elif __MACOS__
 using _View = AppKit.NSView;
 #else
-using _View = Microsoft.UI.Xaml.UIElement;
+using _View = Windows.UI.Xaml.UIElement;
 #endif
 
 namespace TestRepro
 {
-	partial class MainPage : global::Microsoft.UI.Xaml.Controls.Page
+	partial class MainPage : global::Windows.UI.Xaml.Controls.Page
 	{
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_prefix_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
-		private global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
+		private global::Windows.UI.Xaml.NameScope __nameScope = new global::Windows.UI.Xaml.NameScope();
 		private void InitializeComponent()
 		{
 			NameScope.SetNameScope(this, __nameScope);
@@ -48,13 +48,13 @@ namespace TestRepro
 			base.IsParsing = true;
 			// Source 0\MainPage.xaml (Line 1:2)
 			base.Content = 
-			new global::Microsoft.UI.Xaml.Controls.Grid
+			new global::Windows.UI.Xaml.Controls.Grid
 			{
 				IsParsing = true,
 				// Source 0\MainPage.xaml (Line 11:3)
 				Children = 
 				{
-					new global::Microsoft.UI.Xaml.Controls.Button
+					new global::Windows.UI.Xaml.Controls.Button
 					{
 						IsParsing = true,
 						// Source 0\MainPage.xaml (Line 12:4)
@@ -66,7 +66,7 @@ namespace TestRepro
 						__that.__0_Click_P1_Button_Click_Builder = (__owner) => 
 						{
 							var Click_P1_Button_Click_That = (__that as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;
-							/* first level targetMethod:TestRepro.C1.Button_Click(object, Microsoft.UI.Xaml.RoutedEventArgs) */ __owner.Click += (_sender,_e) => 
+							/* first level targetMethod:TestRepro.C1.Button_Click(object, Windows.UI.Xaml.RoutedEventArgs) */ __owner.Click += (_sender,_e) => 
 							{
 								(Click_P1_Button_Click_That.Target as global::TestRepro.MainPage)?.P1.Button_Click(_sender,_e);
 							}
@@ -78,7 +78,7 @@ namespace TestRepro
 					}
 					))
 					,
-					new global::Microsoft.UI.Xaml.Controls.Button
+					new global::Windows.UI.Xaml.Controls.Button
 					{
 						IsParsing = true,
 						// Source 0\MainPage.xaml (Line 13:4)
@@ -90,7 +90,7 @@ namespace TestRepro
 						__that.__1_Click_P2_Button_Click_Builder = (__owner) => 
 						{
 							var Click_P2_Button_Click_That = (__that as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;
-							/* first level targetMethod:TestRepro.ImplicitImpl.Button_Click(object, Microsoft.UI.Xaml.RoutedEventArgs) */ __owner.Click += (_sender,_e) => 
+							/* first level targetMethod:TestRepro.ImplicitImpl.Button_Click(object, Windows.UI.Xaml.RoutedEventArgs) */ __owner.Click += (_sender,_e) => 
 							{
 								(Click_P2_Button_Click_That.Target as global::TestRepro.MainPage)?.P2.Button_Click(_sender,_e);
 							}
@@ -102,7 +102,7 @@ namespace TestRepro
 					}
 					))
 					,
-					new global::Microsoft.UI.Xaml.Controls.Button
+					new global::Windows.UI.Xaml.Controls.Button
 					{
 						IsParsing = true,
 						// Source 0\MainPage.xaml (Line 14:4)
@@ -114,7 +114,7 @@ namespace TestRepro
 						__that.__2_Click_P3_Button_Click_Builder = (__owner) => 
 						{
 							var Click_P3_Button_Click_That = (__that as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;
-							/* first level targetMethod:TestRepro.I.Button_Click(object, Microsoft.UI.Xaml.RoutedEventArgs) */ __owner.Click += (_sender,_e) => 
+							/* first level targetMethod:TestRepro.I.Button_Click(object, Windows.UI.Xaml.RoutedEventArgs) */ __owner.Click += (_sender,_e) => 
 							{
 								(Click_P3_Button_Click_That.Target as global::TestRepro.MainPage)?.P3.Button_Click(_sender,_e);
 							}
@@ -149,7 +149,7 @@ namespace TestRepro
 				/* _isTopLevelDictionary:False */
 				__that._component_3 = c5;
 				// Class TestRepro.MainPage
-				global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(c5, global::Microsoft.UI.Xaml.Controls.Page.BackgroundProperty, "ApplicationPageBackgroundThemeBrush", isThemeResourceExtension: true, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
+				global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(c5, global::Windows.UI.Xaml.Controls.Page.BackgroundProperty, "ApplicationPageBackgroundThemeBrush", isThemeResourceExtension: true, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
 				global::Uno.UI.FrameworkElementHelper.SetBaseUri(c5, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
 				c5.CreationComplete();
 			}
@@ -166,51 +166,51 @@ namespace TestRepro
 			;
 		}
 		partial void OnInitializeCompleted();
-		private global::System.Action<global::Microsoft.UI.Xaml.Controls.Primitives.ButtonBase> __0_Click_P1_Button_Click_Builder;
-		private global::System.Action<global::Microsoft.UI.Xaml.Controls.Primitives.ButtonBase> __1_Click_P2_Button_Click_Builder;
-		private global::System.Action<global::Microsoft.UI.Xaml.Controls.Primitives.ButtonBase> __2_Click_P3_Button_Click_Builder;
-		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder  = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-		private global::Microsoft.UI.Xaml.Controls.Button _component_0
+		private global::System.Action<global::Windows.UI.Xaml.Controls.Primitives.ButtonBase> __0_Click_P1_Button_Click_Builder;
+		private global::System.Action<global::Windows.UI.Xaml.Controls.Primitives.ButtonBase> __1_Click_P2_Button_Click_Builder;
+		private global::System.Action<global::Windows.UI.Xaml.Controls.Primitives.ButtonBase> __2_Click_P3_Button_Click_Builder;
+		private global::Windows.UI.Xaml.Markup.ComponentHolder _component_0_Holder  = new global::Windows.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+		private global::Windows.UI.Xaml.Controls.Button _component_0
 		{
 			get
 			{
-				return (global::Microsoft.UI.Xaml.Controls.Button)_component_0_Holder.Instance;
+				return (global::Windows.UI.Xaml.Controls.Button)_component_0_Holder.Instance;
 			}
 			set
 			{
 				_component_0_Holder.Instance = value;
 			}
 		}
-		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_1_Holder  = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-		private global::Microsoft.UI.Xaml.Controls.Button _component_1
+		private global::Windows.UI.Xaml.Markup.ComponentHolder _component_1_Holder  = new global::Windows.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+		private global::Windows.UI.Xaml.Controls.Button _component_1
 		{
 			get
 			{
-				return (global::Microsoft.UI.Xaml.Controls.Button)_component_1_Holder.Instance;
+				return (global::Windows.UI.Xaml.Controls.Button)_component_1_Holder.Instance;
 			}
 			set
 			{
 				_component_1_Holder.Instance = value;
 			}
 		}
-		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_2_Holder  = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-		private global::Microsoft.UI.Xaml.Controls.Button _component_2
+		private global::Windows.UI.Xaml.Markup.ComponentHolder _component_2_Holder  = new global::Windows.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+		private global::Windows.UI.Xaml.Controls.Button _component_2
 		{
 			get
 			{
-				return (global::Microsoft.UI.Xaml.Controls.Button)_component_2_Holder.Instance;
+				return (global::Windows.UI.Xaml.Controls.Button)_component_2_Holder.Instance;
 			}
 			set
 			{
 				_component_2_Holder.Instance = value;
 			}
 		}
-		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_3_Holder  = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-		private global::Microsoft.UI.Xaml.Controls.Page _component_3
+		private global::Windows.UI.Xaml.Markup.ComponentHolder _component_3_Holder  = new global::Windows.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+		private global::Windows.UI.Xaml.Controls.Page _component_3
 		{
 			get
 			{
-				return (global::Microsoft.UI.Xaml.Controls.Page)_component_3_Holder.Instance;
+				return (global::Windows.UI.Xaml.Controls.Page)_component_3_Holder.Instance;
 			}
 			set
 			{
@@ -296,16 +296,16 @@ namespace MyProject
 {
 	static class MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions
 	{
-		public delegate void XamlApplyHandler0(global::Microsoft.UI.Xaml.Controls.Button instance);
+		public delegate void XamlApplyHandler0(global::Windows.UI.Xaml.Controls.Button instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.Button MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Microsoft.UI.Xaml.Controls.Button instance, XamlApplyHandler0 handler)
+		public static global::Windows.UI.Xaml.Controls.Button MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Windows.UI.Xaml.Controls.Button instance, XamlApplyHandler0 handler)
 		{
 			handler(instance);
 			return instance;
 		}
-		public delegate void XamlApplyHandler1(global::Microsoft.UI.Xaml.Controls.Grid instance);
+		public delegate void XamlApplyHandler1(global::Windows.UI.Xaml.Controls.Grid instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.Grid MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Microsoft.UI.Xaml.Controls.Grid instance, XamlApplyHandler1 handler)
+		public static global::Windows.UI.Xaml.Controls.Grid MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Windows.UI.Xaml.Controls.Grid instance, XamlApplyHandler1 handler)
 		{
 			handler(instance);
 			return instance;

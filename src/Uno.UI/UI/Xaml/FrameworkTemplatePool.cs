@@ -7,12 +7,12 @@
 using System;
 using System.Collections.Generic;
 using Uno.Diagnostics.Eventing;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Uno.Buffers;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using Uno.UI.Dispatching;
 using Windows.Foundation.Metadata;
 using Windows.System;
@@ -39,18 +39,18 @@ using Font = AppKit.NSFont;
 using DependencyObject = System.Object;
 using AppKit;
 #elif METRO
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Markup;
 #else
-using View = Microsoft.UI.Xaml.UIElement;
-using ViewGroup = Microsoft.UI.Xaml.UIElement;
+using View = Windows.UI.Xaml.UIElement;
+using ViewGroup = Windows.UI.Xaml.UIElement;
 using System.Text;
 using System.Runtime.CompilerServices;
 #endif
 
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	/// <summary>
 	/// Provides an instance pool for FrameworkTemplates, when <see cref="FrameworkTemplate.LoadContentCached"/> is called.

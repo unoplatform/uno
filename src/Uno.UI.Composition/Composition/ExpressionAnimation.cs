@@ -1,8 +1,8 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 
-namespace Microsoft.UI.Composition;
+namespace Windows.UI.Composition;
 
 public partial class ExpressionAnimation : CompositionAnimation
 {

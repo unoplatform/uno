@@ -2,11 +2,11 @@
 using System.Numerics;
 using System.Threading.Tasks;
 using Microsoft.UI;
-using Microsoft.UI.Composition;
-using Microsoft.UI.Composition.Interactions;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Hosting;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Composition;
+using Windows.UI.Composition.Interactions;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Hosting;
+using Windows.UI.Xaml.Media;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI.Input.Preview.Injection;
@@ -187,7 +187,7 @@ public partial class Given_InteractionTracker
 		{
 			Width = 200,
 			Height = 200,
-			Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
+			Background = new SolidColorBrush(Windows.UI.Colors.Red),
 		};
 
 		var captureLostRaised = false;
@@ -276,7 +276,7 @@ public partial class Given_InteractionTracker
 		{
 			Width = 200,
 			Height = 200,
-			Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
+			Background = new SolidColorBrush(Windows.UI.Colors.Red),
 		};
 
 		var position = await UITestHelper.Load(border);

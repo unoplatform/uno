@@ -7,14 +7,14 @@ using System.Diagnostics;
 using System.Linq;
 using Uno.UI;
 using Uno.UI.Xaml;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Documents;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Animation;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Documents;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Shapes;
 using Windows.UI.Text;
 using Uno.Extensions;
 using Uno;
@@ -29,18 +29,18 @@ using _View = UIKit.UIView;
 #elif __MACOS__
 using _View = AppKit.NSView;
 #else
-using _View = Microsoft.UI.Xaml.UIElement;
+using _View = Windows.UI.Xaml.UIElement;
 #endif
 
 namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls
 {
-	partial class Grid_Uses_New_Succinct_Syntax : global::Microsoft.UI.Xaml.Controls.Page
+	partial class Grid_Uses_New_Succinct_Syntax : global::Windows.UI.Xaml.Controls.Page
 	{
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_prefix_Grid_Uses_New_Succinct_Syntax_cc38332c9fd4c0da9c1fa0270bbd3609 = "ms-appx:///TestProject/";
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_Grid_Uses_New_Succinct_Syntax_cc38332c9fd4c0da9c1fa0270bbd3609 = "ms-appx:///TestProject/";
-		private global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
+		private global::Windows.UI.Xaml.NameScope __nameScope = new global::Windows.UI.Xaml.NameScope();
 		private void InitializeComponent()
 		{
 			NameScope.SetNameScope(this, __nameScope);
@@ -48,64 +48,64 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls
 			base.IsParsing = true;
 			// Source 0\Grid_Uses_New_Succinct_Syntax.xaml (Line 1:2)
 			base.Content = 
-			new global::Microsoft.UI.Xaml.Controls.Grid
+			new global::Windows.UI.Xaml.Controls.Grid
 			{
 				IsParsing = true,
 				Name = "grid",
 				ColumnDefinitions = 
 				{
-					new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
+					new global::Windows.UI.Xaml.Controls.ColumnDefinition
 					{
-						Width = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Star)
+						Width = new global::Windows.UI.Xaml.GridLength(1f, global::Windows.UI.Xaml.GridUnitType.Star)
 					}
 					,
-					new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
+					new global::Windows.UI.Xaml.Controls.ColumnDefinition
 					{
-						Width = new global::Microsoft.UI.Xaml.GridLength(2f, global::Microsoft.UI.Xaml.GridUnitType.Star)
+						Width = new global::Windows.UI.Xaml.GridLength(2f, global::Windows.UI.Xaml.GridUnitType.Star)
 					}
 					,
-					new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
+					new global::Windows.UI.Xaml.Controls.ColumnDefinition
 					{
-						Width = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Auto)
+						Width = new global::Windows.UI.Xaml.GridLength(1f, global::Windows.UI.Xaml.GridUnitType.Auto)
 					}
 					,
-					new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
+					new global::Windows.UI.Xaml.Controls.ColumnDefinition
 					{
-						Width = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Star)
+						Width = new global::Windows.UI.Xaml.GridLength(1f, global::Windows.UI.Xaml.GridUnitType.Star)
 					}
 					,
-					new global::Microsoft.UI.Xaml.Controls.ColumnDefinition
+					new global::Windows.UI.Xaml.Controls.ColumnDefinition
 					{
-						Width = new global::Microsoft.UI.Xaml.GridLength(300f, global::Microsoft.UI.Xaml.GridUnitType.Pixel)
+						Width = new global::Windows.UI.Xaml.GridLength(300f, global::Windows.UI.Xaml.GridUnitType.Pixel)
 					}
 					,
 				}
 				,
 				RowDefinitions = 
 				{
-					new global::Microsoft.UI.Xaml.Controls.RowDefinition
+					new global::Windows.UI.Xaml.Controls.RowDefinition
 					{
-						Height = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Star)
+						Height = new global::Windows.UI.Xaml.GridLength(1f, global::Windows.UI.Xaml.GridUnitType.Star)
 					}
 					,
-					new global::Microsoft.UI.Xaml.Controls.RowDefinition
+					new global::Windows.UI.Xaml.Controls.RowDefinition
 					{
-						Height = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Auto)
+						Height = new global::Windows.UI.Xaml.GridLength(1f, global::Windows.UI.Xaml.GridUnitType.Auto)
 					}
 					,
-					new global::Microsoft.UI.Xaml.Controls.RowDefinition
+					new global::Windows.UI.Xaml.Controls.RowDefinition
 					{
-						Height = new global::Microsoft.UI.Xaml.GridLength(25f, global::Microsoft.UI.Xaml.GridUnitType.Pixel)
+						Height = new global::Windows.UI.Xaml.GridLength(25f, global::Windows.UI.Xaml.GridUnitType.Pixel)
 					}
 					,
-					new global::Microsoft.UI.Xaml.Controls.RowDefinition
+					new global::Windows.UI.Xaml.Controls.RowDefinition
 					{
-						Height = new global::Microsoft.UI.Xaml.GridLength(14f, global::Microsoft.UI.Xaml.GridUnitType.Pixel)
+						Height = new global::Windows.UI.Xaml.GridLength(14f, global::Windows.UI.Xaml.GridUnitType.Pixel)
 					}
 					,
-					new global::Microsoft.UI.Xaml.Controls.RowDefinition
+					new global::Windows.UI.Xaml.Controls.RowDefinition
 					{
-						Height = new global::Microsoft.UI.Xaml.GridLength(20f, global::Microsoft.UI.Xaml.GridUnitType.Pixel)
+						Height = new global::Windows.UI.Xaml.GridLength(20f, global::Windows.UI.Xaml.GridUnitType.Pixel)
 					}
 					,
 				}
@@ -143,12 +143,12 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls
 
 		}
 		partial void OnInitializeCompleted();
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _gridSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
-		public global::Microsoft.UI.Xaml.Controls.Grid grid
+		private global::Windows.UI.Xaml.Data.ElementNameSubject _gridSubject = new global::Windows.UI.Xaml.Data.ElementNameSubject();
+		public global::Windows.UI.Xaml.Controls.Grid grid
 		{
 			get
 			{
-				return (global::Microsoft.UI.Xaml.Controls.Grid)_gridSubject.ElementInstance;
+				return (global::Windows.UI.Xaml.Controls.Grid)_gridSubject.ElementInstance;
 			}
 			set
 			{
@@ -161,9 +161,9 @@ namespace MyProject
 {
 	static class Grid_Uses_New_Succinct_Syntax_cc38332c9fd4c0da9c1fa0270bbd3609XamlApplyExtensions
 	{
-		public delegate void XamlApplyHandler0(global::Microsoft.UI.Xaml.Controls.Grid instance);
+		public delegate void XamlApplyHandler0(global::Windows.UI.Xaml.Controls.Grid instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.Grid Grid_Uses_New_Succinct_Syntax_cc38332c9fd4c0da9c1fa0270bbd3609_XamlApply(this global::Microsoft.UI.Xaml.Controls.Grid instance, XamlApplyHandler0 handler)
+		public static global::Windows.UI.Xaml.Controls.Grid Grid_Uses_New_Succinct_Syntax_cc38332c9fd4c0da9c1fa0270bbd3609_XamlApply(this global::Windows.UI.Xaml.Controls.Grid instance, XamlApplyHandler0 handler)
 		{
 			handler(instance);
 			return instance;

@@ -4,7 +4,7 @@ using System.Numerics;
 using SkiaSharp;
 using Uno.UI.Composition;
 
-namespace Microsoft.UI.Composition;
+namespace Windows.UI.Composition;
 
 public partial class ShapeVisual
 {

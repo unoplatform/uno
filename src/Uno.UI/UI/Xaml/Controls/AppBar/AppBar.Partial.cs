@@ -15,21 +15,21 @@ using Uno.UI;
 using Uno.UI.Helpers.WinUI;
 using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Animation;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Shapes;
 using Uno.UI.Extensions;
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 using Uno.UI.Xaml.Input;
 using System.Linq;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml;
-using Popup = Microsoft.UI.Xaml.Controls.Primitives.Popup;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Popup = Windows.UI.Xaml.Controls.Primitives.Popup;
 using Windows.System;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Automation;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Automation;
 using Uno.UI.Controls;
 using Uno.UI.Xaml.Core;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
@@ -42,7 +42,7 @@ using Windows.Devices.Input;
 using Windows.UI.Core;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class AppBar : ContentControl
 #if HAS_NATIVE_COMMANDBAR
@@ -1162,7 +1162,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 				else
 				{
-					layoutBounds = XamlRoot?.Bounds ?? Microsoft.UI.Xaml.Window.CurrentSafe?.Bounds ?? default;
+					layoutBounds = XamlRoot?.Bounds ?? Windows.UI.Xaml.Window.CurrentSafe?.Bounds ?? default;
 
 					if (WinUICoreServices.Instance.InitializationType == InitializationType.IslandsOnly)
 					{

@@ -8,11 +8,11 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml;
 using Windows.UI;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Shapes;
 
 namespace Uno.UI.Tests.BinderTests
 {
@@ -1431,9 +1431,9 @@ namespace Uno.UI.Tests.BinderTests
 		[TestMethod]
 		public void When_AddParentChanged_OnParentChanged()
 		{
-			var firstParent = new Microsoft.UI.Xaml.Controls.Border();
-			var secondParent = new Microsoft.UI.Xaml.Controls.Border();
-			var border = new Microsoft.UI.Xaml.Controls.Border();
+			var firstParent = new Windows.UI.Xaml.Controls.Border();
+			var secondParent = new Windows.UI.Xaml.Controls.Border();
+			var border = new Windows.UI.Xaml.Controls.Border();
 			firstParent.Child = border;
 
 			IDisposable disposable = null;
@@ -1458,9 +1458,9 @@ namespace Uno.UI.Tests.BinderTests
 		[TestMethod]
 		public void When_RemoveParentChanged_OnParentChanged()
 		{
-			var firstParent = new Microsoft.UI.Xaml.Controls.Border();
-			var secondParent = new Microsoft.UI.Xaml.Controls.Border();
-			var border = new Microsoft.UI.Xaml.Controls.Border();
+			var firstParent = new Windows.UI.Xaml.Controls.Border();
+			var secondParent = new Windows.UI.Xaml.Controls.Border();
+			var border = new Windows.UI.Xaml.Controls.Border();
 			firstParent.Child = border;
 			IDisposable disposable = null;
 			IDisposable disposable2 = null;
@@ -1485,12 +1485,12 @@ namespace Uno.UI.Tests.BinderTests
 		[TestMethod]
 		public void When_NullablePropertyBinding()
 		{
-			var SUT = new Microsoft.UI.Xaml.Controls.Border();
+			var SUT = new Windows.UI.Xaml.Controls.Border();
 			SUT.Tag = new NullablePropertyOwner() { MyNullable = 42 };
 
-			var o2 = new Microsoft.UI.Xaml.Controls.Border();
+			var o2 = new Windows.UI.Xaml.Controls.Border();
 			o2.SetBinding(
-				Microsoft.UI.Xaml.Controls.Border.TagProperty,
+				Windows.UI.Xaml.Controls.Border.TagProperty,
 				new Binding()
 				{
 					Path = "Tag.MyNullable.Value",
@@ -1506,16 +1506,16 @@ namespace Uno.UI.Tests.BinderTests
 		[TestMethod]
 		public void When_NullableStructRecordPropertyBinding()
 		{
-			var SUT = new Microsoft.UI.Xaml.Controls.Border();
+			var SUT = new Windows.UI.Xaml.Controls.Border();
 			var propertyOwner = new NullableStructRecordPropertyOwner()
 			{
 				MyProperty = null
 			};
 			SUT.Tag = propertyOwner;
 
-			var o2 = new Microsoft.UI.Xaml.Controls.Border();
+			var o2 = new Windows.UI.Xaml.Controls.Border();
 			o2.SetBinding(
-				Microsoft.UI.Xaml.Controls.Border.TagProperty,
+				Windows.UI.Xaml.Controls.Border.TagProperty,
 				new Binding()
 				{
 					Path = "Tag.MyProperty.Value.OtherProperty",
@@ -1537,16 +1537,16 @@ namespace Uno.UI.Tests.BinderTests
 		[TestMethod]
 		public void When_StructRecordWithValuePropertyBinding()
 		{
-			var SUT = new Microsoft.UI.Xaml.Controls.Border();
+			var SUT = new Windows.UI.Xaml.Controls.Border();
 			var propertyOwner = new StructRecordWithValuePropertyOwner()
 			{
 				MyProperty = new StructRecordWithValuePropertyOwner.MyRecord()
 			};
 			SUT.Tag = propertyOwner;
 
-			var o2 = new Microsoft.UI.Xaml.Controls.Border();
+			var o2 = new Windows.UI.Xaml.Controls.Border();
 			o2.SetBinding(
-				Microsoft.UI.Xaml.Controls.Border.TagProperty,
+				Windows.UI.Xaml.Controls.Border.TagProperty,
 				new Binding()
 				{
 					Path = "Tag.MyProperty.Value",

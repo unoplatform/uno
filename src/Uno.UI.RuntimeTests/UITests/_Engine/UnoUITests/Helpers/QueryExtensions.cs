@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Windows.Foundation;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Uno.UITest;
 
 namespace Uno.UITest.Helpers.Queries;

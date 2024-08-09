@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class TreeView : global::Microsoft.UI.Xaml.Controls.Control
+	public partial class TreeView : global::Windows.UI.Xaml.Controls.Control
 	{
 		// Skipping already declared property SelectionMode
 		// Skipping already declared property RootNodes
@@ -47,9 +47,9 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeView.Expanding.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeView.Collapsed.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeView.Collapsed.remove
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.TreeView.NodeFromContainer(Microsoft.UI.Xaml.DependencyObject)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.TreeView.NodeFromContainer(Windows.UI.Xaml.DependencyObject)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.TreeView.ContainerFromNode(Microsoft.UI.Xaml.Controls.TreeViewNode)
-		// Skipping already declared method Microsoft.UI.Xaml.Controls.TreeView.ItemFromContainer(Microsoft.UI.Xaml.DependencyObject)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.TreeView.ItemFromContainer(Windows.UI.Xaml.DependencyObject)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.TreeView.ContainerFromItem(object)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeView.CanDragItems.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeView.CanDragItems.set
@@ -76,8 +76,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeView.SelectedItem.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeView.SelectedItem.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeView.SelectedItems.get
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeView.SelectionChanged.add
-		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeView.SelectionChanged.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeView.CanDragItemsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeView.CanReorderItemsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeView.ItemTemplateProperty.get
@@ -93,6 +91,5 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.TreeView.ItemInvoked
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.TreeView.DragItemsCompleted
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.TreeView.DragItemsStarting
-		// Skipping already declared event Microsoft.UI.Xaml.Controls.TreeView.SelectionChanged
 	}
 }

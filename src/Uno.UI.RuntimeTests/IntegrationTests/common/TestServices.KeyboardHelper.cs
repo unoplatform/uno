@@ -5,8 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Windows.System;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Input;
 
 namespace Private.Infrastructure
 {

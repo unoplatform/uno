@@ -2,7 +2,7 @@
 using System.Linq;
 using Uno.UI;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class Control
 	{

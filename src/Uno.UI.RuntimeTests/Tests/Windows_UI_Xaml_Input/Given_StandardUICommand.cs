@@ -2,9 +2,9 @@
 using System.Windows.Input;
 using Private.Infrastructure;
 using Windows.System;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Markup;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input;
 

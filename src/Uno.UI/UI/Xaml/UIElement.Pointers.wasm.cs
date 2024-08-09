@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.JavaScript;
 using Uno.Foundation;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Input;
 using Windows.System;
 using Uno;
 using Uno.Foundation.Interop;
@@ -32,7 +32,7 @@ using Windows.UI.Input;
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 #endif
 
-namespace Microsoft.UI.Xaml;
+namespace Windows.UI.Xaml;
 
 public partial class UIElement : DependencyObject
 {

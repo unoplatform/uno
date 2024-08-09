@@ -1,6 +1,6 @@
 ﻿using System;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 using SamplesApp.Windows_UI_Xaml_Controls.WebView;
 

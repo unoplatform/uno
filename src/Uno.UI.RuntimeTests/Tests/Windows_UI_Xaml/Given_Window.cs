@@ -1,14 +1,14 @@
 ﻿using System;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Windows.ApplicationModel.Core;
 using FluentAssertions;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
 using Private.Infrastructure;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 
 #if !WINDOWS_UWP && !WINAPPSDK
 using Uno.UI.Xaml;

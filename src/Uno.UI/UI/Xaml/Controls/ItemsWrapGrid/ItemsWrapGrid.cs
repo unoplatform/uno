@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using Uno.UI;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class ItemsWrapGrid : Panel, IVirtualizingPanel
 	{

@@ -6,14 +6,14 @@ using System.Diagnostics;
 using HarfBuzzSharp;
 using SkiaSharp;
 using Uno.Foundation.Logging;
-using Microsoft.UI.Xaml.Documents.TextFormatting;
+using Windows.UI.Xaml.Documents.TextFormatting;
 using Uno.Extensions;
 using Buffer = HarfBuzzSharp.Buffer;
-using GlyphInfo = Microsoft.UI.Xaml.Documents.TextFormatting.GlyphInfo;
+using GlyphInfo = Windows.UI.Xaml.Documents.TextFormatting.GlyphInfo;
 
 using SegmentInfo = (int LeadingSpaces, int TrailingSpaces, int LineBreakLength, SkiaSharp.SKTypeface? Typeface, int NextStartingIndex);
 
-namespace Microsoft.UI.Xaml.Documents
+namespace Windows.UI.Xaml.Documents
 {
 	partial class Run
 	{

@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Uno.Extensions;
 using System.Collections;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 namespace Uno.UI.DataBinding
 {

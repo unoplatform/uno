@@ -14,14 +14,14 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Helpers;
 using Uno.UI.RemoteControl.HotReload.MetadataUpdater;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 using Uno.Diagnostics.UI;
 
 #if HAS_UNO_WINUI
-using _WindowActivatedEventArgs = Microsoft.UI.Xaml.WindowActivatedEventArgs;
+using _WindowActivatedEventArgs = Windows.UI.Xaml.WindowActivatedEventArgs;
 #else
 using _WindowActivatedEventArgs = Windows.UI.Core.WindowActivatedEventArgs;
 #endif

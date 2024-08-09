@@ -6,10 +6,10 @@ using Svg.Skia;
 using Uno.Disposables;
 using Windows.Foundation;
 using Windows.Graphics.Display;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using SKMatrix = SkiaSharp.SKMatrix;
 using SKRect = SkiaSharp.SKRect;
 #if HAS_UNO_WINUI
@@ -85,7 +85,7 @@ internal partial class SvgCanvas : SkiaCanvas
 
 	private void SvgCanvas_Unloaded(object sender, RoutedEventArgs e) => _disposables.Dispose();
 
-	private void SvgCanvas_SizeChanged(object sender, Microsoft.UI.Xaml.SizeChangedEventArgs args) => Invalidate();
+	private void SvgCanvas_SizeChanged(object sender, Windows.UI.Xaml.SizeChangedEventArgs args) => Invalidate();
 
 	private void SvgProviderSourceOpened(object? sender, EventArgs e)
 	{

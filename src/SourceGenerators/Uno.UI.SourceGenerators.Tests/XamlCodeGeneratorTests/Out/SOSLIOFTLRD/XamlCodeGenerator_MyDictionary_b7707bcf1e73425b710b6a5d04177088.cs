@@ -7,14 +7,14 @@ using System.Diagnostics;
 using System.Linq;
 using Uno.UI;
 using Uno.UI.Xaml;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Documents;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Animation;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Documents;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Shapes;
 using Windows.UI.Text;
 using Uno.Extensions;
 using Uno;
@@ -29,13 +29,13 @@ using _View = UIKit.UIView;
 #elif __MACOS__
 using _View = AppKit.NSView;
 #else
-using _View = Microsoft.UI.Xaml.UIElement;
+using _View = Windows.UI.Xaml.UIElement;
 #endif
 
 namespace TestNamespace
 {
 	[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
-	public sealed partial class TestClass : global::Microsoft.UI.Xaml.ResourceDictionary
+	public sealed partial class TestClass : global::Windows.UI.Xaml.ResourceDictionary
 	{
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_prefix_MyDictionary_b7707bcf1e73425b710b6a5d04177088 = "ms-appx:///TestProject/";
@@ -62,7 +62,7 @@ namespace MyProject
 		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
 		internal sealed class ResourceDictionarySingleton__MyDictionary_b7707bcf1e73425b710b6a5d04177088 : global::Uno.UI.IXamlResourceDictionaryProvider
 		{
-			private static global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
+			private static global::Windows.UI.Xaml.NameScope __nameScope = new global::Windows.UI.Xaml.NameScope();
 			private static global::Uno.UI.IXamlResourceDictionaryProvider __that;
 			internal static global::Uno.UI.IXamlResourceDictionaryProvider Instance
 			{
@@ -85,16 +85,16 @@ namespace MyProject
 				__ParseContext_ = global::MyProject.GlobalStaticResources.__ParseContext_;
 			}
 
-			private global::Microsoft.UI.Xaml.ResourceDictionary _MyDictionary_b7707bcf1e73425b710b6a5d04177088_ResourceDictionary;
+			private global::Windows.UI.Xaml.ResourceDictionary _MyDictionary_b7707bcf1e73425b710b6a5d04177088_ResourceDictionary;
 
-			internal global::Microsoft.UI.Xaml.ResourceDictionary MyDictionary_b7707bcf1e73425b710b6a5d04177088_ResourceDictionary
+			internal global::Windows.UI.Xaml.ResourceDictionary MyDictionary_b7707bcf1e73425b710b6a5d04177088_ResourceDictionary
 			{
 				get
 				{
 					if (_MyDictionary_b7707bcf1e73425b710b6a5d04177088_ResourceDictionary == null)
 					{
 						_MyDictionary_b7707bcf1e73425b710b6a5d04177088_ResourceDictionary = 
-						new global::Microsoft.UI.Xaml.ResourceDictionary
+						new global::Windows.UI.Xaml.ResourceDictionary
 						{
 							IsParsing = true,
 						}
@@ -106,10 +106,10 @@ namespace MyProject
 				}
 			}
 
-			global::Microsoft.UI.Xaml.ResourceDictionary global::Uno.UI.IXamlResourceDictionaryProvider.GetResourceDictionary() => MyDictionary_b7707bcf1e73425b710b6a5d04177088_ResourceDictionary;
+			global::Windows.UI.Xaml.ResourceDictionary global::Uno.UI.IXamlResourceDictionaryProvider.GetResourceDictionary() => MyDictionary_b7707bcf1e73425b710b6a5d04177088_ResourceDictionary;
 		}
 
-		internal static global::Microsoft.UI.Xaml.ResourceDictionary MyDictionary_b7707bcf1e73425b710b6a5d04177088_ResourceDictionary => ResourceDictionarySingleton__MyDictionary_b7707bcf1e73425b710b6a5d04177088.Instance.GetResourceDictionary();
+		internal static global::Windows.UI.Xaml.ResourceDictionary MyDictionary_b7707bcf1e73425b710b6a5d04177088_ResourceDictionary => ResourceDictionarySingleton__MyDictionary_b7707bcf1e73425b710b6a5d04177088.Instance.GetResourceDictionary();
 	}
 }
 namespace MyProject.__Resources

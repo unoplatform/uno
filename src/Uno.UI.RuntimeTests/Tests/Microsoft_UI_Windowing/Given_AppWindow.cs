@@ -3,7 +3,7 @@ using System;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.UI.Windowing;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Private.Infrastructure;
 using Windows.Graphics;
 

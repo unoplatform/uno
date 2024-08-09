@@ -4,7 +4,7 @@ using System;
 using System.ComponentModel;
 using Microsoft.UI.Content;
 using Microsoft.UI.Windowing;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Windows.Foundation;

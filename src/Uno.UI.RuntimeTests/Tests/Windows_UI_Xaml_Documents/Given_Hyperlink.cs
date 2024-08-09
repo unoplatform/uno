@@ -5,11 +5,11 @@ using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
 using Windows.UI.Text;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Documents;
-using Microsoft.UI.Xaml.Markup;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Documents;
+using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Media;
 using Uno.Extensions;
 using static Private.Infrastructure.TestServices;
 
