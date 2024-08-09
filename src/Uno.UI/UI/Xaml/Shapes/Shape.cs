@@ -81,7 +81,7 @@ namespace Microsoft.UI.Xaml.Shapes
 			typeof(Shape),
 			new FrameworkPropertyMetadata(
 				defaultValue: null,
-				options: FrameworkPropertyMetadataOptions.AffectsArrange,
+				options: FrameworkPropertyMetadataOptions.AffectsMeasure,
 				propertyChangedCallback: (s, e) => ((Shape)s).OnStrokeChanged((Brush)e.OldValue, (Brush)e.NewValue)
 			)
 		);
@@ -119,7 +119,7 @@ namespace Microsoft.UI.Xaml.Shapes
 			new FrameworkPropertyMetadata(
 				defaultValue: 1.0d,
 				propertyChangedCallback: (s, e) => ((Shape)s).OnStrokeThicknessChanged()
-			)
+			) // Perf: WinUI uses AffectsMeasure, we optimize this and only invalidate measure if Stroke is not null
 		);
 
 		private void OnStrokeThicknessChanged()

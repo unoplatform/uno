@@ -165,16 +165,12 @@ namespace Microsoft.UI.Xaml
 #if !SUPPORTS_RTL
 		[NotImplemented("__ANDROID__", "__IOS__", "__WASM__", "__MACOS__")]
 #endif
-		[GeneratedDependencyProperty(DefaultValue = FlowDirection.LeftToRight, Options = FrameworkPropertyMetadataOptions.Inherits, ChangedCallback = true)]
-		public static DependencyProperty FlowDirectionProperty { get; } = CreateFlowDirectionProperty();
-
-		private void OnFlowDirectionChanged(FlowDirection oldValue, FlowDirection newValue)
-		{
+		[GeneratedDependencyProperty(DefaultValue = FlowDirection.LeftToRight, Options =
 #if SUPPORTS_RTL
-			this.InvalidateArrange();
-			VisualTreeHelper.GetParent(this)?.InvalidateArrange();
+			FrameworkPropertyMetadataOptions.AffectsMeasure |
 #endif
-		}
+			FrameworkPropertyMetadataOptions.Inherits)]
+		public static DependencyProperty FlowDirectionProperty { get; } = CreateFlowDirectionProperty();
 
 		#endregion
 		internal void RaiseSizeChanged(SizeChangedEventArgs args)
