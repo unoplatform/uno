@@ -365,7 +365,9 @@ namespace Microsoft.UI.Xaml
 		/// Gets the current highest value precedence level
 		/// </summary>
 		internal DependencyPropertyValuePrecedences CurrentHighestValuePrecedence
-			=> _highestPrecedence;
+			=> _highestPrecedence == DependencyPropertyValuePrecedences.Animations && (_flags & Flags.LocalValueNewerThanAnimationsValue) != 0
+				? DependencyPropertyValuePrecedences.Local
+				: _highestPrecedence;
 
 		/// <summary>
 		/// Validate the value to prevent setting null to non-nullable dependency properties.
