@@ -600,7 +600,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var skBitmapScaled = new SKBitmap(skBitmap.Info with { Width = 100, Height = 100 });
 
+#pragma warning disable CS0618 // Type or member is obsolete
 			Assert.IsTrue(skBitmap.ScalePixels(skBitmapScaled, SKFilterQuality.High));
+#pragma warning restore CS0618 // Type or member is obsolete
 
 			for (int x = 0; x < 100; x++)
 			{
