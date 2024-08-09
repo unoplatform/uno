@@ -195,8 +195,10 @@ internal partial class X11PointerInputSource : IUnoCorePointerInputSource
 			new Point(_mousePosition.X / scale, _mousePosition.Y / scale),
 			// TODO: is isInContact correct?
 			(_pressedButtons & 0b1111) != 0,
-			properties
+			properties.SetUpdateKindFromPrevious(_previousPointerPointProperties)
 		);
+
+		_previousPointerPointProperties = properties;
 
 		return point;
 	}

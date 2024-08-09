@@ -1,4 +1,5 @@
 ﻿using Windows.Foundation;
+using Windows.UI.Input;
 using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
@@ -15,6 +16,8 @@ internal partial class X11PointerInputSource
 
 	private Point _mousePosition;
 	private byte _pressedButtons; // // bit 0 is not used
+
+	private PointerPointProperties? _previousPointerPointProperties;
 
 	public void ProcessMotionNotifyEvent(XMotionEvent ev)
 	{
