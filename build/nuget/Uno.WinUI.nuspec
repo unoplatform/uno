@@ -117,7 +117,6 @@
 				<reference file="Uno.UI.Composition.dll" />
 				<reference file="Uno.UI.Dispatching.dll" />
 				<reference file="Uno.Foundation.dll" />
-				<reference file="Uno.Foundation.Logging.dll" />
 				<reference file="Uno.dll" />
 				<reference file="Uno.UI.Toolkit.dll" />
 				<reference file="Uno.UI.FluentTheme.dll" />
@@ -132,7 +131,6 @@
 				<reference file="Uno.UI.Composition.dll" />
 				<reference file="Uno.UI.Dispatching.dll" />
 				<reference file="Uno.Foundation.dll" />
-				<reference file="Uno.Foundation.Logging.dll" />
 				<reference file="Uno.dll" />
 				<reference file="Uno.UI.Toolkit.dll" />
 				<reference file="Uno.UI.FluentTheme.dll" />
@@ -147,7 +145,6 @@
 				<reference file="Uno.UI.Composition.dll" />
 				<reference file="Uno.UI.Dispatching.dll" />
 				<reference file="Uno.Foundation.dll" />
-				<reference file="Uno.Foundation.Logging.dll" />
 				<reference file="Uno.dll" />
 				<reference file="Uno.UI.Toolkit.dll" />
 				<reference file="Uno.UI.FluentTheme.dll" />
@@ -162,7 +159,6 @@
 				<reference file="Uno.UI.Composition.dll" />
 				<reference file="Uno.UI.Dispatching.dll" />
 				<reference file="Uno.Foundation.dll" />
-				<reference file="Uno.Foundation.Logging.dll" />
 				<reference file="Uno.dll" />
 				<reference file="Uno.UI.Toolkit.dll" />
 				<reference file="Uno.UI.FluentTheme.dll" />
@@ -177,7 +173,6 @@
 				<reference file="Uno.UI.Composition.dll" />
 				<reference file="Uno.UI.Dispatching.dll" />
 				<reference file="Uno.Foundation.dll" />
-				<reference file="Uno.Foundation.Logging.dll" />
 				<reference file="Uno.dll" />
 				<reference file="Uno.UI.Toolkit.dll" />
 				<reference file="Uno.UI.FluentTheme.dll" />
@@ -193,7 +188,6 @@
 				<reference file="Uno.UI.Composition.dll" />
 				<reference file="Uno.UI.Dispatching.dll" />
 				<reference file="Uno.Foundation.dll" />
-				<reference file="Uno.Foundation.Logging.dll" />
 				<reference file="Uno.dll" />
 				<reference file="Uno.UI.Toolkit.dll" />
 				<reference file="Uno.UI.FluentTheme.dll" />
@@ -208,7 +202,6 @@
 				<reference file="Uno.UI.Composition.dll" />
 				<reference file="Uno.UI.Dispatching.dll" />
 				<reference file="Uno.Foundation.dll" />
-				<reference file="Uno.Foundation.Logging.dll" />
 				<reference file="Uno.dll" />
 				<reference file="Uno.UI.Toolkit.dll" />
 				<reference file="Uno.UI.FluentTheme.dll" />
@@ -223,7 +216,6 @@
 				<reference file="Uno.UI.Composition.dll" />
 				<reference file="Uno.UI.Dispatching.dll" />
 				<reference file="Uno.Foundation.dll" />
-				<reference file="Uno.Foundation.Logging.dll" />
 				<reference file="Uno.dll" />
 				<reference file="Uno.UI.Toolkit.dll" />
 				<reference file="Uno.UI.FluentTheme.dll" />
@@ -238,7 +230,6 @@
 				<reference file="Uno.UI.Composition.dll" />
 				<reference file="Uno.UI.Dispatching.dll" />
 				<reference file="Uno.Foundation.dll" />
-				<reference file="Uno.Foundation.Logging.dll" />
 				<reference file="Uno.dll" />
 				<reference file="Uno.UI.Toolkit.dll" />
 				<reference file="Uno.UI.FluentTheme.dll" />
@@ -254,7 +245,6 @@
 				<reference file="Uno.UI.Composition.dll" />
 				<reference file="Uno.UI.Dispatching.dll" />
 				<reference file="Uno.Foundation.dll" />
-				<reference file="Uno.Foundation.Logging.dll" />
 				<reference file="Uno.dll" />
 				<reference file="Uno.UI.Toolkit.dll" />
 				<reference file="Uno.UI.FluentTheme.dll" />
@@ -297,8 +287,6 @@
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net8.0-ios17.0\Uno.pdb" target="lib\net8.0-ios17.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net8.0-ios17.0\Uno.Foundation.dll" target="lib\net8.0-ios17.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net8.0-ios17.0\Uno.Foundation.pdb" target="lib\net8.0-ios17.0" />
-		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net8.0-ios17.0\Uno.Foundation.Logging.dll" target="lib\net8.0-ios17.0" />
-		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net8.0-ios17.0\Uno.Foundation.Logging.pdb" target="lib\net8.0-ios17.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net8.0-ios17.0\Uno.UI.dll" target="lib\net8.0-ios17.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net8.0-ios17.0\Uno.UI.pdb" target="lib\net8.0-ios17.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net8.0-ios17.0\Uno.UI.Composition.dll" target="lib\net8.0-ios17.0" />
@@ -322,8 +310,6 @@
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net8.0-maccatalyst17.0\Uno.pdb" target="lib\net8.0-maccatalyst17.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net8.0-maccatalyst17.0\Uno.Foundation.dll" target="lib\net8.0-maccatalyst17.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net8.0-maccatalyst17.0\Uno.Foundation.pdb" target="lib\net8.0-maccatalyst17.0" />
-		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net8.0-maccatalyst17.0\Uno.Foundation.Logging.dll" target="lib\net8.0-maccatalyst17.0" />
-		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net8.0-maccatalyst17.0\Uno.Foundation.Logging.pdb" target="lib\net8.0-maccatalyst17.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net8.0-maccatalyst17.0\Uno.UI.dll" target="lib\net8.0-maccatalyst17.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net8.0-maccatalyst17.0\Uno.UI.pdb" target="lib\net8.0-maccatalyst17.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net8.0-maccatalyst17.0\Uno.UI.Composition.dll" target="lib\net8.0-maccatalyst17.0" />
@@ -347,8 +333,6 @@
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net8.0-macos14.0\Uno.pdb" target="lib\net8.0-macos14.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net8.0-macos14.0\Uno.Foundation.dll" target="lib\net8.0-macos14.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net8.0-macos14.0\Uno.Foundation.pdb" target="lib\net8.0-macos14.0" />
-		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net8.0-macos14.0\Uno.Foundation.Logging.dll" target="lib\net8.0-macos14.0" />
-		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net8.0-macos14.0\Uno.Foundation.Logging.pdb" target="lib\net8.0-macos14.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net8.0-macos14.0\Uno.UI.dll" target="lib\net8.0-macos14.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net8.0-macos14.0\Uno.UI.pdb" target="lib\net8.0-macos14.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net8.0-macos14.0\Uno.UI.Composition.dll" target="lib\net8.0-macos14.0" />
@@ -372,8 +356,6 @@
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net8.0-android\Uno.pdb" target="lib\net8.0-android30.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net8.0-android\Uno.Foundation.dll" target="lib\net8.0-android30.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net8.0-android\Uno.Foundation.pdb" target="lib\net8.0-android30.0" />
-		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net8.0-android\Uno.Foundation.Logging.dll" target="lib\net8.0-android30.0" />
-		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net8.0-android\Uno.Foundation.Logging.pdb" target="lib\net8.0-android30.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net8.0-android\Uno.UI.dll" target="lib\net8.0-android30.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net8.0-android\Uno.UI.pdb" target="lib\net8.0-android30.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net8.0-android\Uno.UI.Composition.dll" target="lib\net8.0-android30.0" />
@@ -400,8 +382,6 @@
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net9.0-ios17.2\Uno.pdb" target="lib\net9.0-ios17.2" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net9.0-ios17.2\Uno.Foundation.dll" target="lib\net9.0-ios17.2" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net9.0-ios17.2\Uno.Foundation.pdb" target="lib\net9.0-ios17.2" />
-		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net9.0-ios17.2\Uno.Foundation.Logging.dll" target="lib\net9.0-ios17.2" />
-		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net9.0-ios17.2\Uno.Foundation.Logging.pdb" target="lib\net9.0-ios17.2" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net9.0-ios17.2\Uno.UI.dll" target="lib\net9.0-ios17.2" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net9.0-ios17.2\Uno.UI.pdb" target="lib\net9.0-ios17.2" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net9.0-ios17.2\Uno.UI.Composition.dll" target="lib\net9.0-ios17.2" />
@@ -425,8 +405,6 @@
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net9.0-maccatalyst17.2\Uno.pdb" target="lib\net9.0-maccatalyst17.2" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net9.0-maccatalyst17.2\Uno.Foundation.dll" target="lib\net9.0-maccatalyst17.2" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net9.0-maccatalyst17.2\Uno.Foundation.pdb" target="lib\net9.0-maccatalyst17.2" />
-		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net9.0-maccatalyst17.2\Uno.Foundation.Logging.dll" target="lib\net9.0-maccatalyst17.2" />
-		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net9.0-maccatalyst17.2\Uno.Foundation.Logging.pdb" target="lib\net9.0-maccatalyst17.2" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net9.0-maccatalyst17.2\Uno.UI.dll" target="lib\net9.0-maccatalyst17.2" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net9.0-maccatalyst17.2\Uno.UI.pdb" target="lib\net9.0-maccatalyst17.2" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net9.0-maccatalyst17.2\Uno.UI.Composition.dll" target="lib\net9.0-maccatalyst17.2" />
@@ -450,8 +428,6 @@
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net9.0-macos14.2\Uno.pdb" target="lib\net9.0-macos14.2" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net9.0-macos14.2\Uno.Foundation.dll" target="lib\net9.0-macos14.2" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net9.0-macos14.2\Uno.Foundation.pdb" target="lib\net9.0-macos14.2" />
-		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net9.0-macos14.2\Uno.Foundation.Logging.dll" target="lib\net9.0-macos14.2" />
-		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net9.0-macos14.2\Uno.Foundation.Logging.pdb" target="lib\net9.0-macos14.2" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net9.0-macos14.2\Uno.UI.dll" target="lib\net9.0-macos14.2" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net9.0-macos14.2\Uno.UI.pdb" target="lib\net9.0-macos14.2" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net9.0-macos14.2\Uno.UI.Composition.dll" target="lib\net9.0-macos14.2" />
@@ -475,8 +451,6 @@
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net9.0-android\Uno.pdb" target="lib\net9.0-android30.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net9.0-android\Uno.Foundation.dll" target="lib\net9.0-android30.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net9.0-android\Uno.Foundation.pdb" target="lib\net9.0-android30.0" />
-		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net9.0-android\Uno.Foundation.Logging.dll" target="lib\net9.0-android30.0" />
-		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net9.0-android\Uno.Foundation.Logging.pdb" target="lib\net9.0-android30.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net9.0-android\Uno.UI.dll" target="lib\net9.0-android30.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net9.0-android\Uno.UI.pdb" target="lib\net9.0-android30.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net9.0-android\Uno.UI.Composition.dll" target="lib\net9.0-android30.0" />
@@ -501,7 +475,6 @@
 		<!-- net9.0 reference -->
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Reference\Release\net9.0\Uno.dll" target="lib\net9.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Reference\Release\net9.0\Uno.Foundation.dll" target="lib\net9.0" />
-		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Reference\Release\net9.0\Uno.Foundation.Logging.dll" target="lib\net9.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Reference\Release\net9.0\Uno.UI.dll" target="lib\net9.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Reference\Release\net9.0\Uno.UI.Composition.dll" target="lib\net9.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Reference\Release\net9.0\Uno.UI.Dispatching.dll" target="lib\net9.0" />
@@ -518,7 +491,6 @@
 		<!-- net8.0 reference -->
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Reference\Release\net8.0\Uno.dll" target="lib\net8.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Reference\Release\net8.0\Uno.Foundation.dll" target="lib\net8.0" />
-		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Reference\Release\net8.0\Uno.Foundation.Logging.dll" target="lib\net8.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Reference\Release\net8.0\Uno.UI.dll" target="lib\net8.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Reference\Release\net8.0\Uno.UI.Composition.dll" target="lib\net8.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Reference\Release\net8.0\Uno.UI.Dispatching.dll" target="lib\net8.0" />
@@ -537,8 +509,6 @@
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\net9.0\Uno.pdb" target="uno-runtime\net9.0\webassembly" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\net9.0\Uno.Foundation.dll" target="uno-runtime\net9.0\webassembly" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\net9.0\Uno.Foundation.pdb" target="uno-runtime\net9.0\webassembly" />
-		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\net9.0\Uno.Foundation.Logging.dll" target="uno-runtime\net9.0\webassembly" />
-		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\net9.0\Uno.Foundation.Logging.pdb" target="uno-runtime\net9.0\webassembly" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\net9.0\Uno.UI.dll" target="uno-runtime\net9.0\webassembly" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\net9.0\Uno.UI.pdb" target="uno-runtime\net9.0\webassembly" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\net9.0\Uno.UI.Composition.dll" target="uno-runtime\net9.0\webassembly" />
@@ -563,8 +533,6 @@
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Skia\Release\net9.0\Uno.pdb" target="uno-runtime\net9.0\skia" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Skia\Release\net9.0\Uno.Foundation.dll" target="uno-runtime\net9.0\skia" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Skia\Release\net9.0\Uno.Foundation.pdb" target="uno-runtime\net9.0\skia" />
-		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\net9.0\Uno.Foundation.Logging.dll" target="uno-runtime\net9.0\skia" />
-		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\net9.0\Uno.Foundation.Logging.pdb" target="uno-runtime\net9.0\skia" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Skia\Release\net9.0\Uno.UI.dll" target="uno-runtime\net9.0\skia" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Skia\Release\net9.0\Uno.UI.pdb" target="uno-runtime\net9.0\skia" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Skia\Release\net9.0\Uno.UI.Composition.dll" target="uno-runtime\net9.0\skia" />
@@ -588,8 +556,6 @@
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\net8.0\Uno.pdb" target="uno-runtime\net8.0\webassembly" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\net8.0\Uno.Foundation.dll" target="uno-runtime\net8.0\webassembly" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\net8.0\Uno.Foundation.pdb" target="uno-runtime\net8.0\webassembly" />
-		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\net8.0\Uno.Foundation.Logging.dll" target="uno-runtime\net8.0\webassembly" />
-		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\net8.0\Uno.Foundation.Logging.pdb" target="uno-runtime\net8.0\webassembly" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\net8.0\Uno.UI.dll" target="uno-runtime\net8.0\webassembly" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\net8.0\Uno.UI.pdb" target="uno-runtime\net8.0\webassembly" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Wasm\Release\net8.0\Uno.UI.Composition.dll" target="uno-runtime\net8.0\webassembly" />
@@ -614,8 +580,6 @@
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Skia\Release\net8.0\Uno.pdb" target="uno-runtime\net8.0\skia" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Skia\Release\net8.0\Uno.Foundation.dll" target="uno-runtime\net8.0\skia" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Skia\Release\net8.0\Uno.Foundation.pdb" target="uno-runtime\net8.0\skia" />
-		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Skia\Release\net8.0\Uno.Foundation.Logging.dll" target="uno-runtime\net8.0\skia" />
-		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Skia\Release\net8.0\Uno.Foundation.Logging.pdb" target="uno-runtime\net8.0\skia" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Skia\Release\net8.0\Uno.UI.dll" target="uno-runtime\net8.0\skia" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Skia\Release\net8.0\Uno.UI.pdb" target="uno-runtime\net8.0\skia" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Skia\Release\net8.0\Uno.UI.Composition.dll" target="uno-runtime\net8.0\skia" />

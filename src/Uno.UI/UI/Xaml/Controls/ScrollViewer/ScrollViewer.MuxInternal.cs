@@ -112,18 +112,67 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override void OnPointerReleased(PointerRoutedEventArgs args)
 		{
+			base.OnPointerReleased(args);
+			var handled = args.Handled;
+			if (handled)
+			{
+				return;
+			}
+
 			if (m_isPointerLeftButtonPressed)
 			{
+				//GestureModes gestureFollowing = GestureModes.None;
+
+				// Reset the pointer left button pressed state
 				m_isPointerLeftButtonPressed = false;
 
-				var isFocusedOnLightDismissPopupOfFlyout = ScrollContentControl_SetFocusOnFlyoutLightDismissPopupByPointer(this);
-				if (isFocusedOnLightDismissPopupOfFlyout)
+				//var gestureFollowing = args.GestureFollowing;
+
+				//if (gestureFollowing == GestureModes.RightTapped)
+				//{
+				//	// Schedule the focus change for OnRightTappedUnhandled.
+				//	m_shouldFocusOnRightTapUnhandled = true;
+				//}
+				//else
 				{
-					args.Handled = true;
-				}
-				else
-				{
-					args.Handled = Focus(FocusState.Pointer);
+					// Set focus on the Flyout inner ScrollViewer to dismiss IHM.
+					//if (m_isFocusableOnFlyoutScrollViewer)
+					//{
+					var isFocusedOnLightDismissPopupOfFlyout = ScrollContentControl_SetFocusOnFlyoutLightDismissPopupByPointer(this);
+					//}
+					if (isFocusedOnLightDismissPopupOfFlyout)
+					{
+						args.Handled = true;
+					}
+					else
+					{
+						bool scrollViewerIsFocusAncestor = false;
+						var scrollViewerIsTabStop = IsTabStop;
+
+						if (VisualTree.GetFocusManagerForElement(this) is FocusManager focusManager)
+						{
+							if (focusManager.FocusedElement is DependencyObject currentFocusedElement)
+							{
+								scrollViewerIsFocusAncestor = this.IsAncestorOf(currentFocusedElement);
+							}
+						}
+
+						if (!scrollViewerIsTabStop && scrollViewerIsFocusAncestor)
+						{
+							// Do not take focus when:
+							// - ScrollViewer.IsTabStop is False and
+							// - Currently focused element is within this ScrollViewer.
+							// In that case, leave the focus as is by marking this event handled.
+							args.Handled = true;
+						}
+						else
+						{
+							// Focus now.
+							// Set focus to the ScrollViewer to capture key input for scrolling
+							var focused = Focus(FocusState.Pointer);
+							args.Handled = focused;
+						}
+					}
 				}
 			}
 		}

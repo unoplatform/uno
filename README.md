@@ -3,15 +3,16 @@
 </h1>
 
 
-## Pixel-Perfect. Multi-Platform. C# & Windows XAML. Today.
+## **Pixel-Perfect. Multi-Platform. C# & Windows XAML. Today.**
 
-[![Open Uno in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/unoplatform/uno) 
+[![NuGet](https://img.shields.io/nuget/v/uno.sdk.svg?style=flat&color=159bff)](https://www.nuget.org/packages/uno.sdk/)
 [![Azure DevOps](https://img.shields.io/azure-devops/build/uno-platform/1dd81cbd-cb35-41de-a570-b0df3571a196/5/master?label=master)](https://uno-platform.visualstudio.com/Uno%20Platform/_build?definitionId=5)
-[![Twitter Followers](https://img.shields.io/twitter/follow/unoplatform?label=follow%20%40unoplatform&style=flat)](https://twitter.com/unoplatform)
-[![GitHub Stars](https://img.shields.io/github/stars/unoplatform/uno?label=github%20stars)](https://github.com/unoplatform/uno/stargazers/)
-[![NuGet Downloads](https://img.shields.io/nuget/dt/uno.ui.svg)](https://www.nuget.org/packages/uno.ui)
-[![All Contributors](https://img.shields.io/github/contributors/unoplatform/uno.svg)](https://GitHub.com/unoplatform/uno/graphs/contributors)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/unoplatform/uno/blob/master/CONTRIBUTING.md)
+[![NuGet Downloads](https://img.shields.io/nuget/dt/uno.winui.svg?style=flat&color=7a67f8)](https://www.nuget.org/packages/uno.winui)
+[![GitHub Stars](https://img.shields.io/github/stars/unoplatform/uno?style=flat&color=7a67f8)](https://github.com/unoplatform/uno/stargazers/)
+[![All Contributors](https://img.shields.io/github/contributors/unoplatform/uno.svg?style=flat&color=7a67f8)](https://GitHub.com/unoplatform/uno/graphs/contributors)
+[![X/Twitter Followers](https://img.shields.io/twitter/follow/unoplatform?label=follow%20%40unoplatform&style=flat&color=f85977&logo=x)](https://x.com/unoplatform)
+[![Open Uno in Gitpod](https://img.shields.io/badge/gitpod-setup%20automated-159bff?logo=gitpod&style=flat)](https://gitpod.io/#https://github.com/unoplatform/uno)
+[![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg?style=flat)](https://github.com/unoplatform/uno/blob/master/CONTRIBUTING.md)
 
 # What is the Uno Platform?
 The Uno Platform is an Open-source platform for building single codebase native mobile, web, desktop, and embedded apps quickly.
@@ -54,12 +55,12 @@ For a larger example and features demo:
 * UWP/WinUI Code Support:
     * [Windows Community Toolkit](https://github.com/CommunityToolkit/Windows)
     * [Windows Community Toolkit (Uno Fork)](https://github.com/unoplatform/uno.WindowsCommunityToolkit)
+    * [Community Toolkit MVVM](https://learn.microsoft.com/dotnet/communitytoolkit/mvvm/)
     * [MVVM Light Toolkit](https://github.com/unoplatform/uno.mvvmlight)
     * [Microsoft XAML Behaviors](https://github.com/unoplatform/uno.XamlBehaviors)
     * [Prism](https://github.com/prismlibrary/prism)
     * [SkiaSharp](https://github.com/mono/SkiaSharp)
     * [SkiaSharp.Extended](https://github.com/mono/SkiaSharp.Extended)
-    * [MVVMCross](https://www.mvvmcross.com/) (soon)
     * [ReactiveUI Official](https://github.com/reactiveui/ReactiveUI/pull/2067)
     * [WindowsStateTriggers](https://github.com/unoplatform/uno.WindowsStateTriggers)
     * [Xamarin.Forms for UWP](https://github.com/unoplatform/uno.Xamarin.Forms), [NuGet](https://www.nuget.org/packages/ReactiveUI.Uno)

@@ -2,6 +2,7 @@
 using System.Globalization;
 using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
+using Windows.Graphics;
 using Windows.UI.Core;
 using Windows.UI.Core.Preview;
 using Microsoft.UI.Windowing;
@@ -18,11 +19,17 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 	private readonly X11XamlRootHost _host;
 	private readonly XamlRoot _xamlRoot;
 
-	internal X11WindowWrapper(Window window, XamlRoot xamlRoot) : base(xamlRoot)
+	internal X11WindowWrapper(Window window, XamlRoot xamlRoot) : base(window, xamlRoot)
 	{
 		_xamlRoot = xamlRoot;
 
-		_host = new X11XamlRootHost(this, window, xamlRoot, RaiseNativeSizeChanged, OnWindowClosing, OnNativeActivated, OnNativeVisibilityChanged);
+		_host = new X11XamlRootHost(this, window, xamlRoot, UpdatePositionAndSize, OnWindowClosing, OnNativeActivated, OnNativeVisibilityChanged);
+		// synchronously initialize Position and Size here before anyone reads their values
+		UpdatePositionAndSize(updatePositionSize: true, raiseNativeSizeChanged: false);
+
+		// an additional asynchronous call here is needed because we need to wait for the subscriptions in
+		// BaseWindowImplementation.InitializeNativeWindow to fire SizeChanged.
+		(_host as IXamlRootHost).RootElement?.Dispatcher.RunAsync(CoreDispatcherPriority.High, UpdatePositionAndSize);
 
 		RasterizationScale = (float)XamlRoot.GetDisplayInformation(_xamlRoot).RawPixelsPerViewPixel;
 	}
@@ -122,10 +129,12 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 
 	private void OnNativeActivated(bool focused) => ActivationState = focused ? CoreWindowActivationState.PointerActivated : CoreWindowActivationState.Deactivated;
 
-	private void OnNativeVisibilityChanged(bool visible) => Visible = visible;
+	private void OnNativeVisibilityChanged(bool visible) => IsVisible = visible;
 
 	protected override void ShowCore()
 	{
+		using var lockDiposable = X11Helper.XLock(_host.RootX11Window.Display);
+		using var lockDiposable2 = X11Helper.XLock(_host.TopX11Window.Display);
 		_ = XLib.XMapWindow(_host.RootX11Window.Display, _host.RootX11Window.Window);
 		_ = XLib.XMapWindow(_host.TopX11Window.Display, _host.TopX11Window.Window);
 	}
@@ -141,6 +150,73 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 		SetFullScreenMode(true);
 
 		return Disposable.Create(() => SetFullScreenMode(false));
+	}
+
+	public override void Move(PointInt32 position)
+	{
+		var display = _host.RootX11Window.Display;
+		var window = _host.RootX11Window.Window;
+		using var lockDiposable = X11Helper.XLock(display);
+
+		_ = X11Helper.XMoveWindow(display, window, position.X, position.Y);
+		XLib.XSync(display, false);
+	}
+
+	public override void Resize(SizeInt32 size)
+	{
+		var display = _host.RootX11Window.Display;
+		var window = _host.RootX11Window.Window;
+		using var lockDiposable = X11Helper.XLock(display);
+
+		// If the window manager adds decorations, usually that is implemented by wrapping
+		// the window in another slightly bigger window that includes the decorations. In that case,
+		// XGetWindowAttributes will give us x and y offsets relative to this slightly bigger window,
+		// not relative to the root window.
+		_ = XLib.XQueryTree(display, window, out var root, out var parent, out var children, out _);
+		_ = XLib.XQueryTree(display, parent, out _, out var parentParent, out var children2, out _);
+		_ = XLib.XFree(children);
+		_ = XLib.XFree(children2);
+
+		var windowToResize = parentParent == root ? parent : window;
+		_ = XLib.XResizeWindow(display, windowToResize, size.Width, size.Height);
+		XLib.XSync(display, false);
+	}
+
+	private void UpdatePositionAndSize() => UpdatePositionAndSize(true, true);
+
+	private void UpdatePositionAndSize(bool updatePositionSize, bool raiseNativeSizeChanged)
+	{
+		var display = _host.RootX11Window.Display;
+		var window = _host.RootX11Window.Window;
+		using var xLock = X11Helper.XLock(display);
+
+		// If the window manager adds decorations, usually that is implemented by wrapping
+		// the window in another slightly bigger window that includes the decorations. In that case,
+		// XGetWindowAttributes will give us x and y offsets relative to this slightly bigger window,
+		// not relative to the root window.
+		_ = XLib.XQueryTree(display, window, out var root, out var parent, out var children, out _);
+		_ = XLib.XQueryTree(display, parent, out _, out var parentParent, out var children2, out _);
+		_ = XLib.XFree(children);
+		_ = XLib.XFree(children2);
+
+		var windowToRead = parentParent == root ? parent : window;
+		XWindowAttributes windowAttrs = default;
+		_ = XLib.XGetWindowAttributes(display, windowToRead, ref windowAttrs);
+		_ = XLib.XTranslateCoordinates(display, windowToRead, root, 0, 0, out var rootx, out var rooty, out _);
+		if (updatePositionSize)
+		{
+			Position = new PointInt32 { X = rootx, Y = rooty };
+			Size = new SizeInt32 { Width = windowAttrs.width, Height = windowAttrs.height };
+		}
+
+		XWindowAttributes windowAttrs2 = default;
+		_ = XLib.XGetWindowAttributes(display, window, ref windowAttrs2);
+		if (raiseNativeSizeChanged)
+		{
+			RaiseNativeSizeChanged(new Size(windowAttrs2.width, windowAttrs2.height));
+		}
+		// copy the root window dimensions to the top window
+		_ = XLib.XResizeWindow(display, _host.TopX11Window.Window, windowAttrs2.width, windowAttrs2.height);
 	}
 
 	internal void SetFullScreenMode(bool on)

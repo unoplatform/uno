@@ -128,15 +128,15 @@ namespace Microsoft.UI.Composition
 				// - Brushes can change, we cant leave color and shader garbage
 				//	 from last rendering around for the next pass.
 				paint.Color = SKColors.White;   // Transparent color wouldn't draw anything
-				if (paint.Shader != null)
+				if (paint.Shader is { } shader)
 				{
-					paint.Shader.Dispose();
+					shader.Dispose();
 					paint.Shader = null;
 				}
 
-				if (paint.PathEffect != null)
+				if (paint.PathEffect is { } pathEffect)
 				{
-					paint.PathEffect.Dispose();
+					pathEffect.Dispose();
 					paint.PathEffect = null;
 				}
 			}

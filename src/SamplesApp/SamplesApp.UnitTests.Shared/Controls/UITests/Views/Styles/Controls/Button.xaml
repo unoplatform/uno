@@ -20,7 +20,7 @@
 		<Setter Property="Background"
 				Value="{StaticResource TransparentColorBrush}" />
 		<Setter Property="Foreground"
-				Value="{StaticResource Color03Brush}" />
+				Value="{ThemeResource TextFillColorPrimaryBrush}" />
 		<Setter Property="BorderThickness"
 				Value="0" />
 		<Setter Property="Padding"

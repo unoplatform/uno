@@ -11,7 +11,7 @@ namespace Uno.Helpers.Theming;
 
 internal static partial class SystemThemeHelper
 {
-	private static SystemTheme GetSystemTheme()
+	internal static SystemTheme GetSystemTheme()
 	{
 		//Ensure the current device is running 12.0 or higher, because `TraitCollection.UserInterfaceStyle` was introduced in iOS 12.0
 		if (UIDevice.CurrentDevice.CheckSystemVersion(12, 0))

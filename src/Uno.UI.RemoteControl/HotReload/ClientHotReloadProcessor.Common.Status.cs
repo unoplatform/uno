@@ -70,12 +70,24 @@ public partial class ClientHotReloadProcessor
 #endif
 
 		private HotReloadState? _serverState;
+		private bool _isFinalServerState;
 		private ImmutableDictionary<long, HotReloadServerOperationData> _serverOperations = ImmutableDictionary<long, HotReloadServerOperationData>.Empty;
 		private ImmutableList<HotReloadClientOperation> _localOperations = ImmutableList<HotReloadClientOperation>.Empty;
 		private HotReloadSource _source;
 
+		public void ReportInvalidRuntime()
+		{
+			_serverState = HotReloadState.Disabled;
+			_isFinalServerState = true;
+		}
+
 		public void ReportServerState(HotReloadState state)
 		{
+			if (_isFinalServerState)
+			{
+				return;
+			}
+
 			_serverState = state;
 			NotifyStatusChanged();
 		}
@@ -83,7 +95,7 @@ public partial class ClientHotReloadProcessor
 #if HAS_UNO_WINUI
 		public void ReportServerStatus(HotReloadStatusMessage status)
 		{
-			if (_serverState is not HotReloadState.Disabled)
+			if (!_isFinalServerState)
 			{
 				_serverState = status.State; // Do not override the state if it has already been set (debugger attached with dev-server)
 			}
@@ -131,7 +143,12 @@ public partial class ClientHotReloadProcessor
 		{
 			var serverState = _serverState ?? (_localOperations.Any() ? HotReloadState.Ready /* no info */ : HotReloadState.Initializing);
 			var localState = _localOperations.Any(op => op.Result is null) ? HotReloadState.Processing : HotReloadState.Ready;
-			var globalState = _serverState is HotReloadState.Disabled ? HotReloadState.Disabled : (HotReloadState)Math.Max((int)serverState, (int)localState);
+			var globalState = _serverState switch
+			{
+				HotReloadState.Disabled => HotReloadState.Disabled,
+				HotReloadState.Initializing => HotReloadState.Initializing,
+				_ => (HotReloadState)Math.Max((int)serverState, (int)localState)
+			};
 
 			return new(globalState, (serverState, _serverOperations.Values.ToImmutableArray()), (localState, _localOperations));
 		}
@@ -180,7 +197,7 @@ public partial class ClientHotReloadProcessor
 
 		public HotReloadSource Source { get; }
 
-		public Type[] Types { get; }
+		public Type[] Types { get; private set; }
 
 		internal string[] CuratedTypes => _curatedTypes ??= GetCuratedTypes();
 
@@ -225,6 +242,18 @@ public partial class ClientHotReloadProcessor
 		public ImmutableList<Exception> Exceptions => _exceptions;
 
 		public string? IgnoreReason { get; private set; }
+
+		internal void AddType(Type type)
+		{
+			if (Types.Contains(type))
+			{
+				return;
+			}
+
+			_curatedTypes = null;
+			Types = Types.Append(type).ToArray();
+			_onUpdated();
+		}
 
 		internal void ReportError(MethodInfo source, Exception error)
 			=> ReportError(error); // For now we just ignore the source

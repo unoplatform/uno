@@ -314,8 +314,13 @@ namespace Uno.UI.DataBinding
 			{
 				if (_substituteValueGetter == null && _dataContextType != null)
 				{
+					if (_precedence != DependencyPropertyValuePrecedences.Animations)
+					{
+						throw new InvalidOperationException("Substitute value is currently used only for Timeline's PropertyInfo which should be using Animations precedence.");
+					}
+
 					_substituteValueGetter =
-						BindingPropertyHelper.GetSubstituteValueGetter(_dataContextType, PropertyName, _precedence ?? DependencyPropertyValuePrecedences.Local);
+						BindingPropertyHelper.GetSubstituteValueGetter(_dataContextType, PropertyName, DependencyPropertyValuePrecedences.Animations);
 				}
 			}
 

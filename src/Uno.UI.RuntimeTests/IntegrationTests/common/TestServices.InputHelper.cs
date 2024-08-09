@@ -78,7 +78,21 @@ namespace Private.Infrastructure
 			}
 			public static void Tap(Point point)
 			{
+#if WINAPPSDK || __SKIA__
+				Finger finger = null;
+				MUXControlsTestApp.Utilities.RunOnUIThread.Execute(() =>
+				{
+					finger = InputInjector.TryCreate()?.GetFinger() ?? throw new InvalidOperationException("Failed to create finger");
+					finger.Press(point);
+				});
+
+				MUXControlsTestApp.Utilities.RunOnUIThread.Execute(() =>
+				{
+					finger.Release();
+				});
+#else
 				throw new System.NotImplementedException();
+#endif
 			}
 
 			public static void ScrollMouseWheel(CalendarView cv, int i)

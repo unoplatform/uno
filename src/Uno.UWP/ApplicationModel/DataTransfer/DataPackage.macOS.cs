@@ -1,5 +1,7 @@
 ﻿#nullable enable
 
+#pragma warning disable CS0618 // Multiple obsoletion errors are happening starting with .NET 9 SDK Preview 6
+
 using System;
 using System.Collections.Generic;
 using System.IO;

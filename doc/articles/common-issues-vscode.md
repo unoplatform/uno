@@ -9,6 +9,7 @@ uid: Uno.UI.CommonIssues.vscode
 - C# Debugging is not supported when running in a remote Linux Container, Code Spaces or GitPod.
 - C# Hot Reload for WebAssembly only supports modifying method bodies. Any other modification is rejected by the compiler.
 - C# Hot Reload for Skia supports modifying method bodies, adding properties, adding methods, adding classes. A more accurate list is provided here in Microsoft's documentation.
+- Calls to `InitializeComponent()` may show intellisense errors until the Windows head has been built once.
 
 ## Troubleshooting Uno Platform VS Code issues
 

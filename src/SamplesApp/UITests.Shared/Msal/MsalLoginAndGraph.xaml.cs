@@ -1,15 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Graph;
 using Microsoft.Identity.Client;
-using Uno.Extensions;
-using Uno.UI.MSAL;
+using Microsoft.Kiota.Abstractions;
+using Microsoft.Kiota.Abstractions.Authentication;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Imaging;
+using Uno.UI.MSAL;
 using Uno.UI.Samples.Controls;
 using Prompt = Microsoft.Identity.Client.Prompt;
 
@@ -59,14 +62,12 @@ namespace UITests.Msal
 
 		private async void LoadFromGraph(object sender, RoutedEventArgs e)
 		{
-			var http = new HttpClient();
-			var httpClient = http;
-			var client = new GraphServiceClient(httpClient);
-			client.AuthenticationProvider = this;
+			var httpClient = new HttpClient();
+			var client = new GraphServiceClient(httpClient, this);
 
 			try
 			{
-				using (var stream = await client.Me.Photo.Content.Request().GetAsync())
+				using (var stream = await client.Me.Photo.Content.GetAsync())
 				{
 					var bitmap = new BitmapImage();
 					await bitmap.SetSourceAsync(stream.AsRandomAccessStream());
@@ -80,7 +81,7 @@ namespace UITests.Msal
 
 			try
 			{
-				var me = await client.Me.Request().GetAsync();
+				var me = await client.Me.GetAsync();
 
 				name.Text = me.DisplayName;
 			}
@@ -90,9 +91,9 @@ namespace UITests.Msal
 			}
 		}
 
-		Task IAuthenticationProvider.AuthenticateRequestAsync(HttpRequestMessage request)
+		Task IAuthenticationProvider.AuthenticateRequestAsync(RequestInformation request, Dictionary<string, object> additionalAuthenticationContext, CancellationToken cancellationToken)
 		{
-			request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", tokenBox.Text);
+			request.Headers.Add("Authorization", $"Bearer {tokenBox.Text}");
 			return Task.CompletedTask;
 		}
 	}

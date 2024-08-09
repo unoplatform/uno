@@ -149,10 +149,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 				writer.AppendLineIndented("#pragma warning disable XAOBS001 // Ignore obsolete Android members");
 				writer.AppendLineIndented("#pragma warning disable Uno0001 // Ignore not implemented members");
 				writer.AppendLineIndented("#pragma warning disable Uno0007 // An assembly required for a component is missing");
-				AnalyzerSuppressionsGenerator.GenerateCSharpPragmaSupressions(writer, AnalyzerSuppressions);
-				writer.AppendLineIndented("using System;");
-				writer.AppendLineIndented("using System.Linq;");
-				writer.AppendLineIndented("using System.Diagnostics;");
+				AnalyzerSuppressionsGenerator.Generate(writer, AnalyzerSuppressions);
 
 				using (writer.BlockInvariant("namespace {0}", _defaultNamespace))
 				{
@@ -172,10 +169,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 
 			private void GenerateProviderTable(IndentedStringBuilder writer)
 			{
-				writer.AppendLineIndented("[System.Runtime.CompilerServices.CompilerGeneratedAttribute]");
-				writer.AppendLineIndented("[System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Maintainability\", \"CA1502:AvoidExcessiveComplexity\", Justification=\"Must be ignored even if generated code is checked.\")]");
-				writer.AppendLineIndented("[System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Maintainability\", \"CA1506:AvoidExcessiveClassCoupling\", Justification = \"Must be ignored even if generated code is checked.\")]");
-				AnalyzerSuppressionsGenerator.Generate(writer, AnalyzerSuppressions);
+				writer.AppendLineIndented("[global::System.Runtime.CompilerServices.CompilerGeneratedAttribute]");
 				using (writer.BlockInvariant("public class BindableMetadataProvider : global::Uno.UI.DataBinding.IBindableMetadataProvider"))
 				{
 					GenerateTypeTable(writer);
@@ -288,30 +282,27 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 				writer.AppendLineIndented("/// <summary>");
 				writer.AppendLineInvariantIndented("/// Builder for {0}", ownerType.GetFullyQualifiedTypeExcludingGlobal());
 				writer.AppendLineIndented("/// </summary>");
-				writer.AppendLineIndented("[System.Runtime.CompilerServices.CompilerGeneratedAttribute]");
-				writer.AppendLineIndented("[System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Maintainability\", \"CA1502:AvoidExcessiveComplexity\", Justification=\"Must be ignored even if generated code is checked.\")]");
-				writer.AppendLineIndented("[System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Maintainability\", \"CA1506:AvoidExcessiveClassCoupling\", Justification = \"Must be ignored even if generated code is checked.\")]");
-				AnalyzerSuppressionsGenerator.Generate(writer, AnalyzerSuppressions);
+				writer.AppendLineIndented("[global::System.Runtime.CompilerServices.CompilerGeneratedAttribute]");
 				using (writer.BlockInvariant("static class MetadataBuilder_{0:000}", typeInfo.Index))
 				{
 					var postWriter = new IndentedStringBuilder();
 					postWriter.Indent(writer.CurrentLevel);
 
 					// Generate a parameter-less build to avoid generating a lambda during registration (avoids creating a caching backing field)
-					writer.AppendLineIndented("[System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Maintainability\", \"CA1502:AvoidExcessiveComplexity\", Justification=\"Must be ignored even if generated code is checked.\")]");
-					writer.AppendLineIndented("[System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Maintainability\", \"CA1506:AvoidExcessiveClassCoupling\", Justification = \"Must be ignored even if generated code is checked.\")]");
-					writer.AppendLineIndented("[System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Maintainability\", \"CA1505:AvoidUnmaintainableCode\", Justification = \"Must be ignored even if generated code is checked.\")]");
+					writer.AppendLineIndented("[global::System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Maintainability\", \"CA1502:AvoidExcessiveComplexity\", Justification=\"Must be ignored even if generated code is checked.\")]");
+					writer.AppendLineIndented("[global::System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Maintainability\", \"CA1506:AvoidExcessiveClassCoupling\", Justification = \"Must be ignored even if generated code is checked.\")]");
+					writer.AppendLineIndented("[global::System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Maintainability\", \"CA1505:AvoidUnmaintainableCode\", Justification = \"Must be ignored even if generated code is checked.\")]");
 					using (writer.BlockInvariant("internal static global::Uno.UI.DataBinding.IBindableType Build()"))
 					{
 						writer.AppendLineIndented("return Build(null);");
 					}
 
-					writer.AppendLineIndented("[System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Maintainability\", \"CA1502:AvoidExcessiveComplexity\", Justification=\"Must be ignored even if generated code is checked.\")]");
-					writer.AppendLineIndented("[System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Maintainability\", \"CA1506:AvoidExcessiveClassCoupling\", Justification = \"Must be ignored even if generated code is checked.\")]");
-					writer.AppendLineIndented("[System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Maintainability\", \"CA1505:AvoidUnmaintainableCode\", Justification = \"Must be ignored even if generated code is checked.\")]");
+					writer.AppendLineIndented("[global::System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Maintainability\", \"CA1502:AvoidExcessiveComplexity\", Justification=\"Must be ignored even if generated code is checked.\")]");
+					writer.AppendLineIndented("[global::System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Maintainability\", \"CA1506:AvoidExcessiveClassCoupling\", Justification = \"Must be ignored even if generated code is checked.\")]");
+					writer.AppendLineIndented("[global::System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Maintainability\", \"CA1505:AvoidUnmaintainableCode\", Justification = \"Must be ignored even if generated code is checked.\")]");
 					using (writer.BlockInvariant("internal static global::Uno.UI.DataBinding.IBindableType Build(global::Uno.UI.DataBinding.BindableType parent)"))
 					{
-						RegisterHintMethod($"MetadataBuilder_{typeInfo.Index:000}", ownerType, "Uno.UI.DataBinding.IBindableType Build(Uno.UI.DataBinding.BindableType)");
+						RegisterHintMethod($"MetadataBuilder_{typeInfo.Index:000}", ownerType, "global::Uno.UI.DataBinding.IBindableType Build(global::Uno.UI.DataBinding.BindableType)");
 
 						writer.AppendLineInvariantIndented(
 							@"var bindableType = parent ?? new global::Uno.UI.DataBinding.BindableType({0}, typeof({1}));",
@@ -336,7 +327,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 								writer.AppendLineIndented(@"bindableType.AddActivator(CreateInstance);");
 								postWriter.AppendLineIndented($@"private static object CreateInstance() => new {ownerTypeName}();");
 
-								RegisterHintMethod($"MetadataBuilder_{typeInfo.Index:000}", ownerType, "System.Object CreateInstance()");
+								RegisterHintMethod($"MetadataBuilder_{typeInfo.Index:000}", ownerType, "global::System.Object CreateInstance()");
 							}
 						}
 
@@ -350,12 +341,12 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 								writer.AppendLineIndented("bindableType.AddIndexer(GetIndexer, SetIndexer);");
 
 								postWriter.AppendLineIndented($@"private static object GetIndexer(object instance, string name) => (({ownerTypeName})instance)[name];");
-								RegisterHintMethod($"MetadataBuilder_{typeInfo.Index:000}", ownerType, "System.Object GetIndexer(System.Object, System.String)");
+								RegisterHintMethod($"MetadataBuilder_{typeInfo.Index:000}", ownerType, "global::System.Object GetIndexer(global::System.Object, global::System.String)");
 
 								if (property.SetMethod != null)
 								{
 									postWriter.AppendLineIndented($@"private static void SetIndexer(object instance, string name, object value) => (({ownerTypeName})instance)[name] = ({propertyTypeName})value;");
-									RegisterHintMethod($"MetadataBuilder_{typeInfo.Index:000}", ownerType, "System.Void SetIndexer(System.Object,System.String,System.Object)");
+									RegisterHintMethod($"MetadataBuilder_{typeInfo.Index:000}", ownerType, "global::System.Void SetIndexer(global::System.Object, global::System.String, global::System.Object)");
 								}
 								else
 								{
@@ -378,11 +369,11 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 								)
 							{
 								writer.AppendLineIndented($@"bindableType.AddProperty(""{propertyName}"", typeof({propertyTypeName}), Get{propertyName}, Set{propertyName});");
-								postWriter.AppendLineIndented($@"private static object Get{propertyName}(object instance, Microsoft.UI.Xaml.DependencyPropertyValuePrecedences? precedence) => (({ownerTypeName})instance).{propertyName};");
+								postWriter.AppendLineIndented($@"private static object Get{propertyName}(object instance, global::Microsoft.UI.Xaml.DependencyPropertyValuePrecedences? precedence) => (({ownerTypeName})instance).{propertyName};");
 
 								if (property.Type.IsValueType && property.Type.OriginalDefinition.SpecialType != SpecialType.System_Nullable_T)
 								{
-									using (postWriter.BlockInvariant($@"private static void Set{propertyName}(object instance, object value, Microsoft.UI.Xaml.DependencyPropertyValuePrecedences? precedence)"))
+									using (postWriter.BlockInvariant($@"private static void Set{propertyName}(object instance, object value, global::Microsoft.UI.Xaml.DependencyPropertyValuePrecedences? precedence)"))
 									{
 										using (postWriter.BlockInvariant($"if(value != null)"))
 										{
@@ -392,20 +383,20 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 								}
 								else
 								{
-									postWriter.AppendLineIndented($@"private static void Set{propertyName}(object instance, object value, Microsoft.UI.Xaml.DependencyPropertyValuePrecedences? precedence) => (({ownerTypeName})instance).{propertyName} = ({propertyTypeName})value;");
+									postWriter.AppendLineIndented($@"private static void Set{propertyName}(object instance, object value, global::Microsoft.UI.Xaml.DependencyPropertyValuePrecedences? precedence) => (({ownerTypeName})instance).{propertyName} = ({propertyTypeName})value;");
 								}
 
-								RegisterHintMethod($"MetadataBuilder_{typeInfo.Index:000}", ownerType, $"System.Object Get{propertyName}(System.Object,System.Nullable`1<Microsoft.UI.Xaml.DependencyPropertyValuePrecedences>)");
-								RegisterHintMethod($"MetadataBuilder_{typeInfo.Index:000}", ownerType, $"System.Void Set{propertyName}(System.Object,System.Object,System.Nullable`1<Microsoft.UI.Xaml.DependencyPropertyValuePrecedences>)");
+								RegisterHintMethod($"MetadataBuilder_{typeInfo.Index:000}", ownerType, $"global::System.Object Get{propertyName}(global::System.Object, global::System.Nullable`1<global::Microsoft.UI.Xaml.DependencyPropertyValuePrecedences>)");
+								RegisterHintMethod($"MetadataBuilder_{typeInfo.Index:000}", ownerType, $"global::System.Void Set{propertyName}(global::System.Object, global::System.Object, global::System.Nullable`1<global::Microsoft.UI.Xaml.DependencyPropertyValuePrecedences>)");
 
 							}
 							else if (HasPublicGetter(property))
 							{
 								writer.AppendLineIndented($@"bindableType.AddProperty(""{propertyName}"", typeof({propertyTypeName}), Get{propertyName});");
 
-								postWriter.AppendLineIndented($@"private static object Get{propertyName}(object instance, Microsoft.UI.Xaml.DependencyPropertyValuePrecedences? precedence) => (({ownerTypeName})instance).{propertyName};");
+								postWriter.AppendLineIndented($@"private static object Get{propertyName}(object instance, global::Microsoft.UI.Xaml.DependencyPropertyValuePrecedences? precedence) => (({ownerTypeName})instance).{propertyName};");
 
-								RegisterHintMethod($"MetadataBuilder_{typeInfo.Index:000}", ownerType, $"System.Object Get{propertyName}(System.Object,System.Nullable`1<Microsoft.UI.Xaml.DependencyPropertyValuePrecedences>)");
+								RegisterHintMethod($"MetadataBuilder_{typeInfo.Index:000}", ownerType, $"global::System.Object Get{propertyName}(global::System.Object, global::System.Nullable`1<global::Microsoft.UI.Xaml.DependencyPropertyValuePrecedences>)");
 							}
 						}
 
@@ -570,7 +561,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 					writer.AppendLineIndented(@"return instance as global::Uno.UI.DataBinding.IBindableType;");
 				}
 
-				using (writer.BlockInvariant("public global::Uno.UI.DataBinding.IBindableType GetBindableTypeByType(Type type)"))
+				using (writer.BlockInvariant("public global::Uno.UI.DataBinding.IBindableType GetBindableTypeByType(global::System.Type type)"))
 				{
 					writer.AppendLineIndented(@"var bindableType = GetBindableTypeByFullName(type.FullName);");
 
@@ -582,7 +573,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 							using (writer.BlockInvariant(@"if(!_knownMissingTypes.Contains(type) && !type.IsGenericType && !type.IsAbstract)"))
 							{
 								writer.AppendLineIndented(@"_knownMissingTypes.Add(type);");
-								writer.AppendLineIndented(@"Debug.WriteLine($""The Bindable attribute is missing and the type [{{type.FullName}}] is not known by the MetadataProvider. Reflection was used instead of the binding engine and generated static metadata. Add the Bindable attribute to prevent this message and performance issues."");");
+								writer.AppendLineIndented(@"global::System.Diagnostics.Debug.WriteLine($""The Bindable attribute is missing and the type [{{type.FullName}}] is not known by the MetadataProvider. Reflection was used instead of the binding engine and generated static metadata. Add the Bindable attribute to prevent this message and performance issues."");");
 							}
 						}
 					}
@@ -658,7 +649,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 					writer.AppendLineIndented("return element;");
 				}
 
-				using (writer.BlockInvariant("public global::Uno.UI.DataBinding.IBindableType GetBindableTypeByType(Type type)"))
+				using (writer.BlockInvariant("public global::Uno.UI.DataBinding.IBindableType GetBindableTypeByType(global::System.Type type)"))
 				{
 					writer.AppendLineIndented(@"var bindableType = GetBindableTypeByFullName(type.FullName);");
 
@@ -668,7 +659,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 						using (writer.BlockInvariant(@"lock(_knownMissingTypes)"))
 						using (writer.BlockInvariant(@"if (_knownMissingTypes.Add(type))"))
 						{
-							writer.AppendLineIndented(@"Debug.WriteLine($""The Bindable attribute is missing and the type [{type.FullName}] is not known by the MetadataProvider. Reflection was used instead of the binding engine and generated static metadata. Add the Bindable attribute to prevent this message and performance issues."");");
+							writer.AppendLineIndented(@"global::System.Diagnostics.Debug.WriteLine($""The Bindable attribute is missing and the type [{type.FullName}] is not known by the MetadataProvider. Reflection was used instead of the binding engine and generated static metadata. Add the Bindable attribute to prevent this message and performance issues."");");
 						}
 					}
 					writer.AppendLineIndented(@"#endif");

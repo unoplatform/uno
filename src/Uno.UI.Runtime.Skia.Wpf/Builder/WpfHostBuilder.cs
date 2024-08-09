@@ -22,7 +22,7 @@ internal class WpfHostBuilder : IPlatformHostBuilder, IWindowsSkiaHostBuilder
 	{
 		if (Environment.OSVersion.Platform == PlatformID.Win32NT)
 		{
-			RegisterAssemblyResolver();
+			RegisterAssemblyResolver(UseSharedFramework);
 		}
 	}
 
@@ -56,7 +56,7 @@ internal class WpfHostBuilder : IPlatformHostBuilder, IWindowsSkiaHostBuilder
 		}
 	}
 
-	private void RegisterAssemblyResolver()
+	private void RegisterAssemblyResolver(bool useSharedFramework)
 	{
 		AssemblyLoadContext.Default.Resolving += OnAssemblyResolving;
 
@@ -71,12 +71,11 @@ internal class WpfHostBuilder : IPlatformHostBuilder, IWindowsSkiaHostBuilder
 			var version = Path.GetFileName(Path.GetDirectoryName(uri.LocalPath))!;
 			var dotnetShared = Path.Combine(Path.GetDirectoryName(uri.LocalPath)!, "..", "..");
 
-			_windowsDesktopFrameworkPath = Path.GetFullPath(Path.Combine(
-				dotnetShared,
-				"Microsoft.WindowsDesktop.App",
-				version));
+			_windowsDesktopFrameworkPath = useSharedFramework ?
+				Path.GetFullPath(Path.Combine(dotnetShared, "Microsoft.WindowsDesktop.App", version)) :
+				Path.Combine(Path.GetDirectoryName(typeof(object).Assembly.Location)!, "Microsoft.WindowsDesktop.App");
 
-			if (!Directory.Exists(_windowsDesktopFrameworkPath))
+			if (useSharedFramework && !Directory.Exists(_windowsDesktopFrameworkPath))
 			{
 				AdjustPath(dotnetShared, version, ref _windowsDesktopFrameworkPath);
 			}
@@ -159,6 +158,9 @@ internal class WpfHostBuilder : IPlatformHostBuilder, IWindowsSkiaHostBuilder
 
 	public bool IsSupported
 		=> OperatingSystem.IsWindows();
+
+	private static bool UseSharedFramework
+		=> AppContext.TryGetSwitch("UseSharedWpfFramework", out var enabled) ? enabled : true;
 
 	Func<Application>? IWindowsSkiaHostBuilder.WpfApplication
 	{

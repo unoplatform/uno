@@ -9,6 +9,9 @@ uid: Uno.GettingStarted.CreateAnApp.Rider
 
 ## Create the App
 
+> [!IMPORTANT]
+> Current versions of Rider (2024.1 and earlier) do not support creating Uno Platform projects using the "New Solution" dialog, even if the Uno Platform project template appears. Make sure to follow the directions below.
+
 Creating an Uno Platform project is done [using dotnet new](xref:Uno.GetStarted.dotnet-new) and the Uno Platform Live Wizard by following these steps:
 
 1. Open a browser and navigate to the <a target="_blank" href="https://aka.platform.uno/app-wizard">Live Wizard</a>
@@ -37,6 +40,8 @@ Creating an Uno Platform project is done [using dotnet new](xref:Uno.GetStarted.
 
 > [!TIP]
 > If you are not able to run the online Live Wizard, you can explore the [`dotnet new` template](xref:Uno.GetStarted.dotnet-new) directly in the CLI.
+> [!IMPORTANT]
+> A notification window will appear for the free registration of the extension. If the notification disappears before you can enter the license, you can find it again in the "Notification Bell" icon at the top right of the Rider window.
 
 ### Considerations for macOS and Linux
 

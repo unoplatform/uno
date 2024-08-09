@@ -830,6 +830,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	protected virtual void OnContentTemplateSelectorChanged(DataTemplateSelector oldContentTemplateSelector, DataTemplateSelector newContentTemplateSelector)
 	{
+		SetUpdateTemplate();
 	}
 
 	partial void UnregisterContentTemplateRoot();
@@ -949,9 +950,9 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	}
 
 #if UNO_HAS_ENHANCED_LIFECYCLE
-	internal override void Enter(EnterParams @params, int depth)
+	internal override void EnterImpl(EnterParams @params, int depth)
 	{
-		base.Enter(@params, depth);
+		base.EnterImpl(@params, depth);
 
 		if (ResetDataContextOnFirstLoad() || ContentTemplateRoot == null)
 		{
@@ -978,9 +979,9 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		}
 	}
 
-	internal override void Leave(LeaveParams @params)
+	internal override void LeaveImpl(LeaveParams @params)
 	{
-		base.Leave(@params);
+		base.LeaveImpl(@params);
 
 		if (IsNativeHost)
 		{
@@ -1177,8 +1178,8 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		}
 
 		// Check if the Content is set to something
-		var v = this.GetValueUnderPrecedence(ContentProperty, DependencyPropertyValuePrecedences.DefaultValue);
-		if (v.precedence != DependencyPropertyValuePrecedences.DefaultValue)
+		var store = ((IDependencyObjectStoreProvider)this).Store;
+		if (store.GetCurrentHighestValuePrecedence(ContentProperty) != DependencyPropertyValuePrecedences.DefaultValue)
 		{
 			ClearImplicitBindinds();
 			return; // Nope, there's a value somewhere

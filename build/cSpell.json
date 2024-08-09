@@ -24,6 +24,7 @@
 	"databinding",
 	"datacontext",
 	"datagrid",
+	"decompile",
 	"devs",
 	"dbus",
 	"Dismissable",
@@ -111,7 +112,8 @@
 	"webapps",
 	"Haptics",
 	"autoplay",
-	"Xcodes"
+	"Xcodes",
+	"Raygun"
   ],
   "ignoreWords": [
 	"ADAL",

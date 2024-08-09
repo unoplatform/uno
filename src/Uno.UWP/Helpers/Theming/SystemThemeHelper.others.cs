@@ -11,6 +11,6 @@ internal static partial class SystemThemeHelper
 	/// <summary>
 	/// For unsupported targets we default to light theme.
 	/// </summary>
-	private static SystemTheme GetSystemTheme() => SystemTheme.Light;
+	internal static SystemTheme GetSystemTheme() => SystemTheme.Light;
 }
 #endif

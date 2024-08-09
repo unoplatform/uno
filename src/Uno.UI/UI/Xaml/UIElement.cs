@@ -383,14 +383,25 @@ namespace Microsoft.UI.Xaml
 
 		private void OnClipChanged(DependencyPropertyChangedEventArgs e)
 		{
-			if (e.OldValue is RectangleGeometry oldValue)
+			var oldValue = e.OldValue as RectangleGeometry;
+			var newValue = e.NewValue as RectangleGeometry;
+			if (oldValue is not null)
 			{
 				oldValue.GeometryChanged -= ApplyClip;
 			}
 
-			ApplyClip();
+			// The clip could change, but the new instance is equivalent to the old one.
+			// In this case, we don't want to ApplyClip.
+			// NOTE: This is NOT a performance optimizations.
+			// On Wasm, ApplyClip invalidates arrange, so, if Clip is set during arrange, we will end up with layout cycle if we always call ApplyClip.
+			// NOTE 2: It's more ideal if clip changes don't invalidate arrange in the first place.
+			if (oldValue?.Rect != newValue?.Rect || oldValue?.Transform?.ToMatrix(default) != newValue?.Transform?.ToMatrix(default))
+			{
+				ApplyClip();
+			}
 
-			if (e.NewValue is RectangleGeometry newValue)
+
+			if (newValue is not null)
 			{
 				newValue.GeometryChanged += ApplyClip;
 			}
@@ -1335,7 +1346,7 @@ namespace Microsoft.UI.Xaml
 			set => SetXYFocusKeyboardNavigationValue(value);
 		}
 
-		[GeneratedDependencyProperty(DefaultValue = default(XYFocusKeyboardNavigationMode), Options = FrameworkPropertyMetadataOptions.Inherits)]
+		[GeneratedDependencyProperty(DefaultValue = default(XYFocusKeyboardNavigationMode))]
 		public static DependencyProperty XYFocusKeyboardNavigationProperty { get; } = CreateXYFocusKeyboardNavigationProperty();
 
 		public XYFocusNavigationStrategy XYFocusDownNavigationStrategy

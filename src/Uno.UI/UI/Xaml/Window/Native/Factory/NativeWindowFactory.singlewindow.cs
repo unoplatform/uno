@@ -13,7 +13,7 @@ partial class NativeWindowFactory
 
 	private static INativeWindowWrapper? CreateWindowPlatform(Microsoft.UI.Xaml.Window window, XamlRoot xamlRoot)
 	{
-		NativeWindowWrapper.Instance.SetXamlRoot(xamlRoot);
+		NativeWindowWrapper.Instance.SetWindow(window, xamlRoot);
 		return NativeWindowWrapper.Instance;
 	}
 }

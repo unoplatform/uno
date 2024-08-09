@@ -5,9 +5,17 @@
 	<PropertyGroup>
 		<DebugType>portable</DebugType>
 		<DebugSymbols>True</DebugSymbols>
-		<RepositoryUrl>$(BUILD_REPOSITORY_URI)</RepositoryUrl>
+
+		<RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<RepositoryBranch>$(GITVERSION_BranchName)</RepositoryBranch>
+		<RepositoryCommit>$(GitVersion_Sha)</RepositoryCommit>
+		<PackageProjectUrl>https://github.com/unoplatform/uno</PackageProjectUrl>
 		<Copyright>Copyright (C) 2015-$([System.DateTime]::Now.ToString(`yyyy`)) Uno Platform Inc. - all rights reserved</Copyright>
 		<Authors>Uno Platform</Authors>
+		<PackageIcon>uno.png</PackageIcon>
+		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+
 		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
 		<GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
 		<_SkipUpgradeNetAnalyzersNuGetWarning>true</_SkipUpgradeNetAnalyzersNuGetWarning>
@@ -72,7 +80,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<MicrosoftNetCompilersToolsetVersion>4.11.0-3.24307.3</MicrosoftNetCompilersToolsetVersion>
+		<MicrosoftNetCompilersToolsetVersion>4.11.0-2.final</MicrosoftNetCompilersToolsetVersion>
 	</PropertyGroup>
 
   <ItemGroup>

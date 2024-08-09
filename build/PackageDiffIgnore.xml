@@ -1858,7 +1858,25 @@
 
 		<Methods>
 			<Member fullName=".* Microsoft\.UI\.Windowing\.AppWindowTitleBar\..*" reason="Not in UWP" isRegex="true" />
+		</Methods>
+	</IgnoreSet>
+	<IgnoreSet baseVersion="5.3">
+		<Assemblies>
+			<Member fullName="Uno.Foundation.Logging" reason="Already pulled transitively"/>
+		</Assemblies>
+		<Types>
+		</Types>
 
+		<Events>
+		</Events>
+
+		<Fields>
+		</Fields>
+
+		<Properties>
+		</Properties>
+
+		<Methods>
 			<!-- AutomationPeers -->
 			<Member fullName="System.Void Windows.UI.Xaml.Automation.Peers.CalendarDatePickerAutomationPeer.SetValueImpl(System.String value)" reason="Not previously implemented." />
 			<Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.CalendarDatePickerAutomationPeer.SetValueImpl(System.String value)" reason="Not previously implemented." />
@@ -1874,7 +1892,6 @@
 
 		</Methods>
 	</IgnoreSet>
-
 	<![CDATA[
 		The 'baseVersion' should be the current latest stable version published on nuget, 
 		NOT what will be published by the PR in progress.

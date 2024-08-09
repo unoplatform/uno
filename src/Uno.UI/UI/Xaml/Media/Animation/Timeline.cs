@@ -360,9 +360,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void Deactivate()");
 		}
 
-		private protected IValueAnimator InitializeAnimator() => throw new NotSupportedException(); // Should be implemented by classes which use AnimationImplementation
-
-
 		/// <summary>
 		/// Checks if the Timeline will repeat.
 		/// </summary>

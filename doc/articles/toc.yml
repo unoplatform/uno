@@ -129,10 +129,10 @@
 
 - name: Overview
   items:
+    - name: Intro
+      href: xref:Uno.Documentation.Intro
     - name: Architecture
       items:
-        - name: Intro
-          href: xref:Uno.Documentation.Intro
         - name: Supported Platforms
           href: getting-started/requirements.md
           items:
@@ -148,8 +148,6 @@
           href: how-uno-works.md
         - name: Best practices
           href: best-practices-uno.md
-        - name: Why use Uno Platform?
-          href: xref:Uno.Overview.WhyUno
 
     - name: Authoring
       items:
@@ -253,6 +251,8 @@
               href: xref:uno.publishing.windows.sideload.packaged.unsigned
             - name: Build Packaged Signed Apps
               href: xref:uno.publishing.windows.sideload.packaged.signed
+            - name: Build Unpackaged Apps
+              href: xref:uno.publishing.windows.sideload.unpackaged.unsigned
         - name: Publishing for iOS
           href: xref:uno.publishing.ios
         - name: Publishing for Android
@@ -274,6 +274,8 @@
           href: features/upri-trimming.md
         - name: Working with XAML Trimming
           href: features/resources-trimming.md
+        - name: Error Monitoring & Crash Reporting with Raygun
+          href: xref:Monitoring.Raygun
 
     - name: Contributing
       items:
@@ -375,7 +377,8 @@
             href: uno-development/Uno-UI-XAML-ResourceTrimming.md
           - name: Hot Reload internals
             href: xref:Uno.Contributing.Internals.HotReload
-
+    - name: Why use Uno Platform?
+      href: xref:Uno.Overview.WhyUno
     - name: FAQ
       href: xref:Uno.Development.FAQ
 
@@ -427,6 +430,8 @@
               href: controls/DatePicker.md
             - name: Flyout
               href: controls/Flyout.md
+            - name: Flyout
+              href: controls/Frame.md
             - name: Image
               href: xref:Uno.Features.Image
             - name: ListView and GridView
@@ -657,6 +662,10 @@
         href: xref:Uno.GetStarted.vscode.DevKit
       - name: Omnisharp Support
         href: xref:Uno.GetStarted.vscode.OmniSharp
+    - name: Rider
+      items:
+      - name: License Agreement
+        href: xref:Uno.Rider.EULA
     - name: Templates
       items:
       - name: Visual Studio Wizard

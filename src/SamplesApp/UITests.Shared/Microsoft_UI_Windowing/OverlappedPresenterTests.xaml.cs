@@ -22,7 +22,7 @@ using SampleControl.Presentation;
 
 namespace UITests.Microsoft_UI_Windowing;
 
-[Sample("Microsoft.UI.Windowing", Name = "OverlappedPresenter", IsManualTest = true, ViewModelType = typeof(OverlappedPresenterTestsViewModel),
+[Sample("Windowing", Name = "OverlappedPresenter", IsManualTest = true, ViewModelType = typeof(OverlappedPresenterTestsViewModel),
 	Description = "Playground for testing of OverlappedPresenter functionality.")]
 public sealed partial class OverlappedPresenterTests : Page
 {

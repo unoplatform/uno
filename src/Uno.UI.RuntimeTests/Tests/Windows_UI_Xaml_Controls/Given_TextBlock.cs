@@ -145,6 +145,46 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await ImageAssert.AreSimilarAsync(screenshot1, screenshot2, imperceptibilityThreshold: 0.15);
 		}
+
+		// Reason for failure on X11 is not very known, but it's likely the AdvanceX of space character
+		// is different between the fallback font and OpenSans
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaX11)]
+		public async Task Check_FontFallback_Shaping()
+		{
+			var SUT = new TextBlock
+			{
+				Text = "اللغة العربية",
+				FontSize = 24,
+				LineHeight = 34,
+			};
+
+			var skFont = FontDetailsCache.GetFont(SUT.FontFamily?.Source, (float)SUT.FontSize, SUT.FontWeight, SUT.FontStretch, SUT.FontStyle).SKFont;
+			var familyName = skFont.Typeface.FamilyName;
+			Assert.IsFalse(skFont.ContainsGlyph(SUT.Text[0]));
+
+			var fallbackFont = SKFontManager.Default.MatchCharacter(SUT.Text[0]);
+
+			Assert.IsTrue(fallbackFont.ContainsGlyph(SUT.Text[0]));
+
+			var expected = new TextBlock
+			{
+				Text = "اللغة العربية",
+				FontSize = 24,
+				FontFamily = new FontFamily(fallbackFont.FamilyName),
+				LineHeight = 34,
+			};
+
+			await UITestHelper.Load(SUT);
+			var screenshot1 = await UITestHelper.ScreenShot(SUT);
+
+			await UITestHelper.Load(expected);
+			var screenshot2 = await UITestHelper.ScreenShot(expected);
+
+			Assert.AreEqual(screenshot2.Width, screenshot1.Width);
+			Assert.AreEqual(screenshot2.Height, screenshot1.Height);
+
+			await ImageAssert.AreSimilarAsync(screenshot1, screenshot2, imperceptibilityThreshold: 0.15);
+		}
 #endif
 
 		[TestMethod]
@@ -159,6 +199,34 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(TextDecorations.None, SUT.textBlock4.TextDecorations);
 			Assert.AreEqual(TextDecorations.Strikethrough, SUT.textBlock5.TextDecorations);
 			Assert.AreEqual(TextDecorations.None, SUT.textBlock6.TextDecorations);
+		}
+
+		[TestMethod]
+		public async Task When_NewLine_After_Tab()
+		{
+			var SUT = new TextBlock
+			{
+				Text = "\t\r",
+				FontFamily = new FontFamily("ms-appx:///Assets/Fonts/CascadiaCode-Regular.ttf"),
+				Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red)
+			};
+
+			await UITestHelper.Load(SUT);
+
+#if __SKIA__
+			var segments = ((Run)SUT.Inlines.Single()).Segments;
+			Assert.AreEqual(2, segments.Count);
+			Assert.IsTrue(segments[0].IsTab);
+			Assert.AreEqual("\r", segments[1].Text.ToString());
+#endif
+
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			var screenshot = await UITestHelper.ScreenShot(SUT);
+			ImageAssert.DoesNotHaveColorInRectangle(screenshot, new Rectangle(0, 0, screenshot.Width, screenshot.Height), Microsoft.UI.Colors.Red, tolerance: 15);
 		}
 
 		[TestMethod]

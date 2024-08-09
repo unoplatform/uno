@@ -121,7 +121,6 @@
 		<PackageReference Update="FluentAssertions" Version="5.10.3" />
 		<PackageReference Update="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
 		<PackageReference Update="Microsoft.Extensions.Logging.Debug" Version="5.0.0" />
-		<PackageReference Update="Microsoft.Extensions.Logging.Filter" Version="1.1.2" />
 		<PackageReference Update="Uno.Extensions.Logging.WebAssembly.Console" Version="1.7.0" />
 		<PackageReference Update="Uno.Extensions.Logging.WebAssembly.OSLog" Version="1.4.0" />
 		<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" />
@@ -148,6 +147,12 @@
 		<PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.3.1.3" />
 		<PackageReference Update="Xamarin.AndroidX.Fragment" Version="1.3.6.3" />
 		<PackageReference Update="Xamarin.AndroidX.SwipeRefreshLayout" Version="1.1.0.10" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos'">
+		<!-- Workaround: For iOS/macOS builds, System.Private.Uri is pulled implicitly with a vulnerable version -->
+		<!-- There is a bit of related discussions in https://github.com/dotnet/sdk/issues/30659 -->
+		<PackageReference Include="System.Private.Uri" Version="4.3.2" />
 	</ItemGroup>
 
 	<Target Name="ValidateSolutionPath" BeforeTargets="Build">

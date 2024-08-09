@@ -8,6 +8,8 @@ uid: Uno.UI.CommonIssues.AllIDEs
 
 This error may happen for multiple reasons:
 
+- Make sure to update your [Uno Platform extension](https://aka.platform.uno/vs-extension-marketplace) in VS 2022 to 5.3.x or later. Earlier versions may automatically update to an incorrect version of the Uno.SDK.
+- Make sure to [re-run Uno.Check](xref:UnoCheck.UsingUnoCheck) to get all the latest dependencies.
 - Ensure that all [NuGet feeds are authenticated properly](https://learn.microsoft.com/nuget/consume-packages/consuming-packages-authenticated-feeds). When building on the command line, some enterprise NuGet feeds may not be authenticated properly.
 - Ensure that no global package mappings are interfering with nuget restore. To validate that no package mappings are set, on Windows for Visual Studio 2022:
   - Make a backup copy of `%AppData%\NuGet\NuGet.Config`
@@ -29,7 +31,9 @@ Similar error messages using various libraries:
 
 Layout cycle means that the measuring of a specific part of the visual tree couldn't get stabilized. For example, during an element `Arrange` pass, its measure was invalidated, then it's measured again then arranged, and the app will fall into a layout cycle.
 
-Uno Platform and WinUI run this loop for 250 iterations. If the loop hasn't stabilized, the app will fail with an exception with the message `Layout cycle detected`. This error is sometimes tricky to debug, you can set `Microsoft.UI.Xaml.DebugSettings.LayoutCycleTracingLevel = Microsoft.UI.Xaml.LayoutCycleTracingLevel.High` in order to get additional troubleshooting information printed out in the app's logs. For more information, see also [LayoutCycleTracingLevel in Microsoft Docs](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.debugsettings.layoutcycletracinglevel). Note that what Uno Platform logs may be quite different from what WinUI logs.
+Uno Platform and WinUI run this loop for 250 iterations. If the loop hasn't stabilized, the app will fail with an exception with the message `Layout cycle detected`. For more information, see also [LayoutCycleTracingLevel in Microsoft Docs](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.debugsettings.layoutcycletracinglevel). Note that what Uno Platform logs may be quite different from what WinUI logs.
+
+This error is sometimes tricky to debug. To get more information, in your `App.OnLaunched` method, you can call `DebugSettings.LayoutCycleTracingLevel = Microsoft.UI.Xaml.LayoutCycleTracingLevel.High` in order to get additional troubleshooting information printed out in the app's logs. You will also need to update your logging to `.SetMinimumLevel(LogLevel.Trace)`, as well as add `builder.AddFilter("Microsoft.UI.Xaml.UIElement", LogLevel.Trace);` if you set the log level to high and want to get stack trace information.
 
 When the last 10 iterations out of 150 are reached, we will start logging some information as warnings. Those logs are prefixed with `[LayoutCycleTracing]` and include information such as when an element is measured or arranged, and when measure or arrange is invalidated.
 

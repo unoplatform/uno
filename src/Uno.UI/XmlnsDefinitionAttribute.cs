@@ -19,6 +19,7 @@ using System.Windows.Markup;
 [assembly: Microsoft/* UWP don't rename */.UI.Xaml.XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", Microsoft/* UWP don't rename */.UI.Xaml.XamlConstants.Namespaces.Input)]
 [assembly: Microsoft/* UWP don't rename */.UI.Xaml.XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", Microsoft/* UWP don't rename */.UI.Xaml.XamlConstants.Namespaces.Markup)]
 [assembly: Microsoft/* UWP don't rename */.UI.Xaml.XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", Microsoft/* UWP don't rename */.UI.Xaml.XamlConstants.WindowsUINamespace)]
+[assembly: Microsoft/* UWP don't rename */.UI.Xaml.XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", "Windows" /* Keep to avoid renaming */ + ".UI")]
 
 [assembly: Microsoft/* UWP don't rename */.UI.Xaml.XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml", "System")]
 [assembly: Microsoft/* UWP don't rename */.UI.Xaml.XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml", "System")]
