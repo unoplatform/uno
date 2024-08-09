@@ -30,6 +30,8 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 	private bool _wasShown;
 	private CoreWindowActivationState _lastActivationState = CoreWindowActivationState.Deactivated;
 	private Size _lastSize = new Size(-1, -1);
+	private bool _wasClosedProgrammatically;
+	private bool _wasClosed;
 
 #pragma warning disable CS0649
 	public BaseWindowImplementation(Window window)
@@ -71,6 +73,11 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 
 	public virtual void Activate()
 	{
+		if (_wasClosed)
+		{
+			throw new InvalidOperationException("Cannot reactivate a closed window.");
+		}
+
 		if (!_wasShown)
 		{
 			_wasShown = true;
@@ -114,11 +121,22 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 		SetVisibleBoundsFromNative();
 	}
 
-	private void OnNativeClosing(object? sender, Microsoft.UI.Windowing.AppWindowClosingEventArgs e) => Window.AppWindow.RaiseClosing(e);
+	private void OnNativeClosing(object? sender, Microsoft.UI.Windowing.AppWindowClosingEventArgs e)
+	{
+		// Only raise AppWindow.Closing if the window is not closed programmatically.
+		if (!_wasClosedProgrammatically)
+		{
+			Window.AppWindow.RaiseClosing(e);
+		}
+	}
 
 	private void OnNativeShown(object? sender, EventArgs e) => ContentManager.TryLoadRootVisual(XamlRoot!);
 
-	private void OnNativeClosed(object? sender, EventArgs args) => Closed?.Invoke(Window, new WindowEventArgs());
+	private void OnNativeClosed(object? sender, EventArgs args)
+	{
+		Closed?.Invoke(Window, new WindowEventArgs());
+		_wasClosed = true;
+	}
 
 	private void OnNativeSizeChanged(object? sender, Size size)
 	{
@@ -216,5 +234,9 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 		KeyboardStateTracker.Reset();
 	}
 
-	public void Close() => NativeWindowWrapper?.Close();
+	public void Close()
+	{
+		_wasClosedProgrammatically = true;
+		NativeWindowWrapper?.Close();
+	}
 }
