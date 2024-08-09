@@ -19,7 +19,7 @@ public enum RuntimeTestPlatform
 }
 
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-public sealed partial class ConditionalTestAttribute : TestMethodAttribute
+public partial class ConditionalTestAttribute : TestMethodAttribute
 {
 	private static readonly RuntimeTestPlatform _currentPlatform;
 

@@ -84,10 +84,27 @@ public partial class CoreWebView2
 			throw new ArgumentNullException(nameof(folderPath));
 		}
 
-		_hostToFolderMap.Add(hostName.ToLowerInvariant(), folderPath);
+		if (_nativeWebView is ISupportsVirtualHostMapping supportsVirtualHostMapping)
+		{
+			supportsVirtualHostMapping.SetVirtualHostNameToFolderMapping(hostName, folderPath, accessKind);
+		}
+		else
+		{
+			_hostToFolderMap.Add(hostName.ToLowerInvariant(), folderPath);
+		}
 	}
 
-	public void ClearVirtualHostNameToFolderMapping(string hostName) => _hostToFolderMap.Remove(hostName);
+	public void ClearVirtualHostNameToFolderMapping(string hostName)
+	{
+		if (_nativeWebView is ISupportsVirtualHostMapping supportsVirtualHostMapping)
+		{
+			supportsVirtualHostMapping.ClearVirtualHostNameToFolderMapping(hostName);
+		}
+		else
+		{
+			_hostToFolderMap.Remove(hostName);
+		}
+	}
 
 	internal void NavigateWithHttpRequestMessage(global::Windows.Web.Http.HttpRequestMessage requestMessage)
 	{
@@ -180,9 +197,13 @@ public partial class CoreWebView2
 		handled = args.Handled;
 	}
 
-	internal void RaiseNavigationCompleted(Uri? uri, bool isSuccess, int httpStatusCode, CoreWebView2WebErrorStatus errorStatus)
+	internal void RaiseNavigationCompleted(Uri? uri, bool isSuccess, int httpStatusCode, CoreWebView2WebErrorStatus errorStatus, bool shouldSetSource = true)
 	{
-		Source = (uri ?? BlankUri).ToString();
+		if (shouldSetSource)
+		{
+			Source = (uri ?? BlankUri).ToString();
+		}
+
 		NavigationCompleted?.Invoke(this, new CoreWebView2NavigationCompletedEventArgs((ulong)_navigationId, uri, isSuccess, httpStatusCode, errorStatus));
 	}
 

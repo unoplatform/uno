@@ -2,7 +2,7 @@
 
 > Uno Platform supports two `WebView` controls - a legacy `WebView` and a modernized `WebView2` control. For new development, we strongly recommend `WebView2` as it will get further improvements in the future.
 
-`WebView2` is currently supported on Windows, Android, iOS, and macOS.
+`WebView2` is currently supported on Windows, Android, iOS, macOS, and Skia WPF.
 
 ## Basic usage
 
@@ -23,6 +23,9 @@ Afterward, you can perform actions such as navigating to an HTML string:
 ```csharp
 MyWebView.NavigateToString("<html><body><p>Hello world!</p></body></html>");
 ```
+
+> [!IMPORTANT]
+> For Skia WPF, you should add `<PackageReference Include="Microsoft.Web.WebView2" Aliases="WpfWebView" />` to your csproj.
 
 ## Executing JavaScript
 
