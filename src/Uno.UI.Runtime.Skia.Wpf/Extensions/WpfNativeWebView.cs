@@ -104,8 +104,10 @@ internal sealed class WpfNativeWebView : INativeWebView, ISupportsVirtualHostMap
 		=> ExecuteEnsuringCoreWebView2(_nativeWebView.GoForward);
 
 	public Task<string?> InvokeScriptAsync(string script, string[]? arguments, CancellationToken token)
-		// TODO: Use the arguments parameter
-		=> ExecuteEnsuringCoreWebView2(() => _nativeWebView.ExecuteScriptAsync(script));
+	{
+		var argumentString = Microsoft.UI.Xaml.Controls.WebView.ConcatenateJavascriptArguments(arguments);
+		return ExecuteScriptAsync($"{script}({argumentString})", token);
+	}
 
 	public void ProcessNavigation(Uri uri)
 		=> ExecuteEnsuringCoreWebView2(() => _nativeWebView.CoreWebView2.Navigate(uri.ToString()));

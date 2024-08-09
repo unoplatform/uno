@@ -33,6 +33,19 @@
 		<PackageReference Include="MSTest.TestFramework" />
 		<PackageReference Include="MSTest.Analyzers" />
 		<PackageReference Include="SkiaSharp.Views.WPF" />
+		<PackageReference Include="Microsoft.Web.WebView2" Aliases="WpfWebView" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="..\LinkedFiles\WebContent\index.html">
+			<Link>WebContent\index.html</Link>
+		</Content>
+		<Content Include="..\LinkedFiles\WebContent\css\site.css">
+			<Link>WebContent\css\site.css</Link>
+		</Content>
+		<Content Include="..\LinkedFiles\WebContent\js\site.js">
+			<Link>WebContent\js\site.js</Link>
+		</Content>
 	</ItemGroup>
 
 	<ItemGroup>
