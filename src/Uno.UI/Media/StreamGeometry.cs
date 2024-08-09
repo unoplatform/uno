@@ -23,7 +23,8 @@ using ObjCRuntime;
 #elif __ANDROID__
 using Android.Graphics;
 #elif __SKIA__
-using Path = Microsoft.UI.Composition.SkiaGeometrySource2D;
+using Microsoft.UI.Composition;
+using Path = SkiaSharp.SKPath;
 using SkiaSharp;
 using Uno.UI.UI.Xaml.Media;
 #else
@@ -50,16 +51,10 @@ namespace Uno.Media
 		}
 
 #if __SKIA__
-		internal override Path GetGeometrySource2D()
-		{
-			bezierPath.Geometry.FillType = FillRule.ToSkiaFillType();
-			return bezierPath;
-		}
-
 		internal override SKPath GetSKPath()
 		{
-			bezierPath.Geometry.FillType = FillRule.ToSkiaFillType();
-			return bezierPath.Geometry;
+			bezierPath.FillType = FillRule.ToSkiaFillType();
+			return bezierPath;
 		}
 #endif
 

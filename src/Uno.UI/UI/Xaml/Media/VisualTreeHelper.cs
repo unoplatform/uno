@@ -659,9 +659,14 @@ namespace Microsoft.UI.Xaml.Media
 				}
 			}
 
-			// We didn't find any child at the given position, validate that element can be touched (i.e. not HitTestability.Invisible),
-			// and the position is in actual bounds (which might be different than the clipping bounds)
+			// We didn't find any child at the given position, validate that element can be touched,
+			// and the position is in actual bounds(which might be different than the clipping bounds)
+#if __SKIA__
+			if (element.HitTest(transformToElement.Inverse().Transform(testPosition)) && renderingBounds.Contains(testPosition))
+#else
+
 			if (elementHitTestVisibility == HitTestability.Visible && renderingBounds.Contains(testPosition))
+#endif
 			{
 				TRACE($"> LEAF! ({element.GetDebugName()} is the OriginalSource) | stale branch: {stale?.ToString() ?? "-- none --"}");
 				return (element, stale);

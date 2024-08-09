@@ -1,11 +1,9 @@
 ﻿#nullable enable
 
-using System;
-using System.Linq;
+using Windows.Foundation;
 using SkiaSharp;
 using Uno;
 using Uno.Extensions;
-using Uno.UI.Composition;
 
 namespace Microsoft.UI.Composition
 {
@@ -13,26 +11,15 @@ namespace Microsoft.UI.Composition
 	{
 		private SKPaint? _strokePaint;
 		private SKPaint? _fillPaint;
+		private SKPath? _geometryWithTransformations;
 
 		internal override void Paint(in Visual.PaintingSession session)
 		{
-			if (Geometry?.BuildGeometry() is SkiaGeometrySource2D { Geometry: { } geometry })
+			if (_geometryWithTransformations is { } geometryWithTransformations)
 			{
-				var transform = this.GetTransform();
-				SKPath geometryWithTransformations;
-				if (transform.IsIdentity)
-				{
-					geometryWithTransformations = geometry;
-				}
-				else
-				{
-					geometryWithTransformations = new SKPath();
-					geometry.Transform(transform.ToSKMatrix(), geometryWithTransformations);
-				}
-
 				if (FillBrush is { } fill)
 				{
-					var fillPaint = TryCreateAndClearFillPaint(in session);
+					var fillPaint = TryCreateAndClearFillPaint(session.Filters.OpacityColorFilter);
 
 					if (Compositor.TryGetEffectiveBackgroundColor(this, out var colorFromTransition))
 					{
@@ -65,8 +52,8 @@ namespace Microsoft.UI.Composition
 
 				if (StrokeBrush is { } stroke && StrokeThickness > 0)
 				{
-					var fillPaint = TryCreateAndClearFillPaint(in session);
-					var strokePaint = TryCreateAndClearStrokePaint(in session);
+					var fillPaint = TryCreateAndClearFillPaint(session.Filters.OpacityColorFilter);
+					var strokePaint = TryCreateAndClearStrokePaint(session.Filters.OpacityColorFilter);
 
 					// Set stroke thickness
 					strokePaint.StrokeWidth = StrokeThickness;
@@ -92,7 +79,7 @@ namespace Microsoft.UI.Composition
 					// So, to get a correct stroke geometry, we must apply the transformations first.
 
 					// Get the stroke geometry, after scaling has been applied.
-					using var strokeGeometry = strokePaint.GetFillPath(geometryWithTransformations);
+					var strokeGeometry = strokePaint.GetFillPath(geometryWithTransformations);
 
 					stroke.UpdatePaint(fillPaint, strokeGeometry.Bounds);
 
@@ -101,13 +88,13 @@ namespace Microsoft.UI.Composition
 			}
 		}
 
-		private SKPaint TryCreateAndClearStrokePaint(in Visual.PaintingSession session)
-			=> TryCreateAndClearPaint(in session, ref _strokePaint, true, CompositionConfiguration.UseBrushAntialiasing);
+		private SKPaint TryCreateAndClearStrokePaint(SKColorFilter? colorFilter)
+			=> TryCreateAndClearPaint(ref _strokePaint, true, colorFilter, CompositionConfiguration.UseBrushAntialiasing);
 
-		private SKPaint TryCreateAndClearFillPaint(in Visual.PaintingSession session)
-			=> TryCreateAndClearPaint(in session, ref _fillPaint, false, CompositionConfiguration.UseBrushAntialiasing);
+		private SKPaint TryCreateAndClearFillPaint(SKColorFilter? colorFilter)
+			=> TryCreateAndClearPaint(ref _fillPaint, false, colorFilter, CompositionConfiguration.UseBrushAntialiasing);
 
-		private static SKPaint TryCreateAndClearPaint(in Visual.PaintingSession session, ref SKPaint? paint, bool isStroke, bool isHighQuality = false)
+		private static SKPaint TryCreateAndClearPaint(ref SKPaint? paint, bool isStroke, SKColorFilter? colorFilter, bool isHighQuality = false)
 		{
 			if (paint == null)
 			{
@@ -141,9 +128,65 @@ namespace Microsoft.UI.Composition
 				}
 			}
 
-			paint.ColorFilter = session.Filters.OpacityColorFilter;
+			paint.ColorFilter = colorFilter;
 
 			return paint;
+		}
+
+		private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
+		{
+			base.OnPropertyChangedCore(propertyName, isSubPropertyChange);
+
+			switch (propertyName)
+			{
+				case nameof(Geometry) or nameof(CombinedTransformMatrix):
+					if (Geometry?.BuildGeometry() is SkiaGeometrySource2D { Geometry: { } geometry })
+					{
+						var transform = CombinedTransformMatrix;
+						SKPath geometryWithTransformations;
+						if (transform.IsIdentity)
+						{
+							geometryWithTransformations = geometry;
+						}
+						else
+						{
+							geometryWithTransformations = new SKPath();
+							geometry.Transform(transform.ToSKMatrix(), geometryWithTransformations);
+						}
+
+						_geometryWithTransformations = geometryWithTransformations;
+					}
+					else
+					{
+						_geometryWithTransformations = null;
+					}
+					break;
+			}
+		}
+
+		internal override bool HitTest(Point point)
+		{
+			if (_geometryWithTransformations is { } geometryWithTransformations)
+			{
+				point = CombinedTransformMatrix.Inverse().Transform(point);
+
+				if (FillBrush is { } && geometryWithTransformations.Contains((float)point.X, (float)point.Y))
+				{
+					return true;
+				}
+
+				if (StrokeBrush is { } stroke && StrokeThickness > 0)
+				{
+					var strokePaint = TryCreateAndClearStrokePaint(null);
+					strokePaint.StrokeWidth = StrokeThickness;
+					var strokeGeometry = strokePaint.GetFillPath(geometryWithTransformations);
+					if (strokeGeometry.Contains((float)point.X, (float)point.Y))
+					{
+						return true;
+					}
+				}
+			}
+			return false;
 		}
 	}
 }

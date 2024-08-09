@@ -89,6 +89,9 @@ namespace Microsoft.UI.Xaml.Controls
 			return desiredSize;
 		}
 
+		// the entire body of the text block is considered hit-testable
+		internal override bool HitTest(Point point) => TransformToVisual((UIElement)this.GetParent()).Inverse.TransformBounds(LayoutSlotWithMarginsAndAlignments).Contains(point);
+
 		partial void OnIsTextSelectionEnabledChangedPartial()
 		{
 			if (_inlines is { })

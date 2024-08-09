@@ -168,8 +168,13 @@ namespace Microsoft.UI.Xaml.Shapes
 		);
 		#endregion
 
+		// Do not invoke base.IsViewHit(): We don't have to have de FrameworkElement.Background to be hit testable!
 		internal override bool IsViewHit()
-			=> Fill != null; // Do not invoke base.IsViewHit(): We don't have to have de FrameworkElement.Background to be hit testable!
+			=> Fill != null
+#if __SKIA__ // we only add this condition for skia because it's the only platform with proper hit-testing support for shapes. If we add it for other platforms, we get a different but still inaccurate behaviour, so we prefer to keep the behaviour as is.
+				|| Stroke != null
+#endif
+				;
 
 		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{

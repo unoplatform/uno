@@ -765,6 +765,131 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await ImageAssert.AreSimilarAsync(bitmap2, bitmap2Expected, imperceptibilityThreshold: 0.7);
 		}
 
+#if HAS_UNO
+		[TestMethod]
+#if !__SKIA__
+		[Ignore("Only skia accurately hittests CorderRadius")]
+#endif
+		[DataRow(true, true)]
+		[DataRow(false, true)]
+		[DataRow(false, false)]
+		public async Task When_Border_CorderRadius_HitTesting(bool addBorderChild, bool addGridBackground)
+		{
+			var borderPressedCount = 0;
+			var rectanglePressedCount = 0;
+			var gridPressedCount = 0;
+			var root = new Grid
+			{
+				Background = addGridBackground ? new SolidColorBrush(Colors.Transparent) : null,
+				Children =
+				{
+					new Border
+					{
+						Height = 150,
+						Width = 150,
+						CornerRadius = 50,
+						BorderBrush = Colors.Red,
+						BorderThickness = new Thickness(20),
+						Child = !addBorderChild ? null : new Rectangle
+						{
+							Width = 150,
+							Height = 150,
+							Fill = Colors.Green
+						}.Apply(r => r.PointerPressed += (_, args) =>
+						{
+							rectanglePressedCount++;
+							args.Handled = true;
+						})
+					}.Apply(b => b.PointerPressed += (_, args) =>
+					{
+						borderPressedCount++;
+						args.Handled = true;
+					})
+				}
+			}.Apply(g => g.PointerPressed += (_, _) => gridPressedCount++);
+
+			await UITestHelper.Load(root);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			// points are relative to root
+			var pointToTarget = new Dictionary<Point, string>
+			{
+				{ new Point(12, 11), addGridBackground ? "grid" : "" },
+				{ new Point(7, 21), addGridBackground ? "grid" : "" },
+				{ new Point(7, 127), addGridBackground ? "grid" : "" },
+				{ new Point(19, 138), addGridBackground ? "grid" : "" },
+				{ new Point(9, 143), addGridBackground ? "grid" : "" },
+				{ new Point(125, 144), addGridBackground ? "grid" : "" },
+				{ new Point(140, 134), addGridBackground ? "grid" : "" },
+				{ new Point(145, 27), addGridBackground ? "grid" : "" },
+				{ new Point(134, 13), addGridBackground ? "grid" : "" },
+
+				{ new Point(140, 77), "border" },
+				{ new Point(122, 135), "border" },
+				{ new Point(74, 143), "border" },
+				{ new Point(19, 125), "border" },
+				{ new Point(10, 80), "border" },
+				{ new Point(24, 18), "border" },
+
+				// This is actually what WinUI reports.The inner radius of the corners doesn't clip in hit-testing, but is itself hit-testable.
+				// So if there's a child in the border, you can click it "through" the thickness of the border, but if there is no child,
+				// the border will be clicked.
+				{ new Point(24, 25), addBorderChild ? "rectangle" : "border" },
+				{ new Point(20, 125), addBorderChild ? "rectangle" : "border" },
+				{ new Point(122, 126), addBorderChild ? "rectangle" : "border" },
+				{ new Point(121, 22), addBorderChild ? "rectangle" : "border" },
+				{ new Point(29, 123), addBorderChild ? "rectangle" : "border" },
+				{ new Point(118, 123), addBorderChild ? "rectangle" : "border" },
+				{ new Point(117, 29), addBorderChild ? "rectangle" : "border" },
+				{ new Point(27, 33), addBorderChild ? "rectangle" : "border" },
+
+				{ new Point(35, 39), addBorderChild ? "rectangle" : addGridBackground ? "grid" : "" },
+				{ new Point(33, 112), addBorderChild ? "rectangle" : addGridBackground ? "grid" : "" },
+				{ new Point(73, 126), addBorderChild ? "rectangle" : addGridBackground ? "grid" : "" },
+				{ new Point(113, 119), addBorderChild ? "rectangle" : addGridBackground ? "grid" : "" },
+				{ new Point(127, 73), addBorderChild ? "rectangle" : addGridBackground ? "grid" : "" },
+				{ new Point(116, 37), addBorderChild ? "rectangle" : addGridBackground ? "grid" : "" },
+				{ new Point(74, 26), addBorderChild ? "rectangle" : addGridBackground ? "grid" : "" },
+				{ new Point(33, 35), addBorderChild ? "rectangle" : addGridBackground ? "grid" : "" },
+			};
+
+			var expectedBorderPressedCount = 0;
+			var expectedRectanglePressedCount = 0;
+			var expectedGridPressedCount = 0;
+
+			Assert.AreEqual(expectedBorderPressedCount, borderPressedCount);
+			Assert.AreEqual(expectedRectanglePressedCount, rectanglePressedCount);
+			Assert.AreEqual(expectedGridPressedCount, gridPressedCount);
+
+			await Task.Delay(100); // wait for the renderer
+			foreach (var (point, actualTarget) in pointToTarget)
+			{
+				mouse.MoveTo(root.TransformToVisual(null).TransformPoint(point), 1);
+				mouse.Press();
+				mouse.Release();
+
+				switch (actualTarget)
+				{
+					case "grid":
+						expectedGridPressedCount++;
+						break;
+					case "border":
+						expectedBorderPressedCount++;
+						break;
+					case "rectangle":
+						expectedRectanglePressedCount++;
+						break;
+				}
+
+				Assert.AreEqual(expectedBorderPressedCount, borderPressedCount);
+				Assert.AreEqual(expectedRectanglePressedCount, rectanglePressedCount);
+				Assert.AreEqual(expectedGridPressedCount, gridPressedCount);
+			}
+		}
+#endif
+
 		[TestMethod]
 		public async Task Border_AntiAlias()
 		{

@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System.Numerics;
+using Windows.Foundation;
 using SkiaSharp;
 using Uno.UI.Composition;
 
@@ -53,5 +54,28 @@ public partial class ShapeVisual
 		}
 
 		return shape;
+	}
+
+	/// <remarks>This does NOT take the clipping into account.</remarks>
+	internal virtual bool HitTest(Point point)
+	{
+		if (_shapes is null)
+		{
+			return false;
+		}
+
+		foreach (var shape in _shapes)
+		{
+			if (shape.HitTest(point))
+			{
+				return true;
+			}
+		}
+
+		// Do not check the child visuals. On WinUI, if you add a child visual (e.g. using ContainerVisual.Children.InsertAtTop),
+		// the child doesn't factor at all in hit-testing. The children of the UIElement that owns this visual will be checked
+		// separately in VisualTreeHelper.HitTest
+
+		return false;
 	}
 }

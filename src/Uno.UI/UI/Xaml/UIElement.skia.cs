@@ -97,6 +97,10 @@ namespace Microsoft.UI.Xaml
 
 		private protected virtual ShapeVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateShapeVisual();
 
+		/// <param name="point">The point being tested, in element coordinates (i.e. top-left of element is (0,0) if not RTL)</param>
+		/// <remarks>This does NOT take the clipping into account.</remarks>
+		internal virtual bool HitTest(Point point) => Visual.HitTest(point);
+
 		internal void AddChild(UIElement child, int? index = null)
 		{
 			if (child == null)

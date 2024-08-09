@@ -44,10 +44,22 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				if (_scroller is { } oldScroller)
 				{
+#if UNO_HAS_MANAGED_SCROLL_PRESENTER
+					if (oldScroller.Target is ScrollViewer oldScrollerTarget)
+					{
+						UnhookScrollEvents(oldScrollerTarget);
+					}
+#endif
 					WeakReferencePool.ReturnWeakReference(this, oldScroller);
 				}
 
 				_scroller = WeakReferencePool.RentWeakReference(this, value);
+#if UNO_HAS_MANAGED_SCROLL_PRESENTER
+				if (IsInLiveTree && value is ScrollViewer newTarget)
+				{
+					HookScrollEvents(newTarget);
+				}
+#endif
 			}
 		}
 		#endregion
