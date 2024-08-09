@@ -615,6 +615,54 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(1, outerBorderRightTaps);
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Child_Set_Same_Reference()
+		{
+			var SUT = new Border() { Width = 100, Height = 100 };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			var child = new MeasureArrangeCounterButton();
+			SUT.Child = child;
+
+			await WindowHelper.WaitForLoaded(child);
+
+#if HAS_UNO // Uno specific: The initial layout count here is incorrect - should be 1 as in WinUI
+			var initialCount = 2;
+#else
+			var initialCount = 1;
+#endif
+			Assert.AreEqual(initialCount, child.MeasureCount);
+			Assert.AreEqual(initialCount, child.ArrangeCount);
+
+			SUT.Child = child;
+
+			await WindowHelper.WaitFor(() => child.MeasureCount > initialCount);
+
+			Assert.AreEqual(3, child.MeasureCount);
+			Assert.AreEqual(3, child.ArrangeCount);
+		}
+
+		internal partial class MeasureArrangeCounterButton : Button
+		{
+			internal int MeasureCount { get; private set; }
+
+			internal int ArrangeCount { get; private set; }
+
+			protected override Size MeasureOverride(Size availableSize)
+			{
+				MeasureCount++;
+				return base.MeasureOverride(availableSize);
+			}
+
+			protected override Size ArrangeOverride(Size finalSize)
+			{
+				ArrangeCount++;
+				return base.ArrangeOverride(finalSize);
+			}
+		}
+
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is only supported on skia")]
 #else
