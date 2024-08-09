@@ -1,8 +1,6 @@
 ﻿#nullable enable
 using System;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 
 namespace Uno.Diagnostics.UI;
@@ -71,7 +69,7 @@ internal partial class DiagnosticView
 	{
 		var provider = details is null
 			? new DiagnosticView<TView, TState>(typeof(TView).Name, friendlyName, _ => new TView(), update)
-			: new DiagnosticView<TView, TState>(typeof(TView).Name, friendlyName, _ => new TView(), update, (ctx, state, ct) => new(details(state)));
+			: new DiagnosticView<TView, TState>(typeof(TView).Name, friendlyName, _ => new TView(), update, (ctx, view, state, ct) => new(details(state)));
 		DiagnosticViewRegistry.Register(provider);
 		return provider;
 	}
@@ -98,7 +96,40 @@ internal partial class DiagnosticView
 	{
 		var provider = details is null
 			? new DiagnosticView<TView, TState>(typeof(TView).Name, friendlyName, factory, update)
-			: new DiagnosticView<TView, TState>(typeof(TView).Name, friendlyName, factory, update, (ctx, state, ct) => new(details(state)));
+			: new DiagnosticView<TView, TState>(typeof(TView).Name, friendlyName, factory, update, (ctx, view, state, ct) => new(details(state)));
+		DiagnosticViewRegistry.Register(provider);
+		return provider;
+	}
+
+	/// <summary>
+	/// Registers a generic FrameworkElement as a diagnostic view.
+	/// </summary>
+	/// <remarks>
+	/// This method only registers the diagnostic view; it does not open the overlay.
+	/// </remarks>
+	/// <typeparam name="TView">The type of the generic FrameworkElement to use.</typeparam>
+	/// <typeparam name="TState">The type of the state used to update the <typeparamref name="TView"/>.</typeparam>
+	/// <param name="friendlyName">The user-friendly name of the diagnostic view.</param>
+	/// <param name="factory">A factory function to create an instance of the generic element.</param>
+	/// <param name="update">A delegate used to update the <typeparamref name="TView"/> when the <typeparamref name="TState"/> is updated.</param>
+	/// <param name="details">An optional delegate used to show more details about the diagnostic info when the user taps on the view.</param>
+	/// <returns>A diagnostic view helper class which can be used to push updates to the state (see <see cref="DiagnosticView{TView,TState}.Update"/>).</returns>
+
+	public static DiagnosticView<TView, TState> Register<TView, TState>(
+		string friendlyName,
+		Func<IDiagnosticViewContext, TView> factory)
+		where TView : FrameworkElement, IDiagnosticViewElement<TState>
+	{
+		var provider = new DiagnosticView<TView, TState>(
+			typeof(TView).Name,
+			friendlyName,
+			factory,
+			static (view, state) => view.Update(state),
+			async (ctx, view, state, ct) =>
+			{
+				await view.ShowDetails(ct);
+				return null;
+			});
 		DiagnosticViewRegistry.Register(provider);
 		return provider;
 	}

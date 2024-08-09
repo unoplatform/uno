@@ -309,7 +309,8 @@
 								</Style>
 							</Button.Resources>
 							<Button.Flyout>
-								<Flyout Placement="BottomEdgeAlignedLeft"
+								<Flyout x:Name="PART_Details"
+										Placement="BottomEdgeAlignedLeft"
 										FlyoutPresenterStyle="{StaticResource HotReloadFlyoutPresenterStyle}">
 									<Grid>
 										<Grid.Resources>

@@ -10,6 +10,7 @@ using System.Text;
 using Uno.Buffers;
 using Uno.UI.DataBinding;
 using Microsoft.UI.Xaml.Data;
+using Uno.Foundation.Logging;
 
 namespace Microsoft.UI.Xaml
 {
@@ -49,12 +50,27 @@ namespace Microsoft.UI.Xaml
 		internal void CloneToForHotReload(DependencyPropertyDetails other)
 		{
 			// If the old instance has a local value **and** the new instance doesn't, then copy the local value.
-			// We shouldn't be copying local value if the new instance already has it set. The new value in the new instance
-			// should not be overwritten as it's more likely to be more correct.
+			// We shouldn't be copying local value if the new instance already has it set.
+			// The new value in the new instance should not be overwritten as it's more likely to be more correct,
+			// except for the DataContext which we preserve anyway in order to preserve the state of the view (only if type didn't change).
 			var oldValue = this.GetValue(DependencyPropertyValuePrecedences.Local);
-			if (oldValue != DependencyProperty.UnsetValue &&
-				other.GetValue(DependencyPropertyValuePrecedences.Local) == DependencyProperty.UnsetValue)
+			if (oldValue == DependencyProperty.UnsetValue)
 			{
+				return;
+			}
+
+			var newValue = other.GetValue(DependencyPropertyValuePrecedences.Local);
+			if (newValue == DependencyProperty.UnsetValue)
+			{
+				other.SetValue(oldValue, DependencyPropertyValuePrecedences.Local);
+			}
+			else if (Property == UIElement.DataContextProperty && oldValue?.GetType() == newValue?.GetType())
+			{
+				this.Log().LogWarning("""
+					A new DataContext has been set but is being on overriden by the previous instance during hot-reload in order to preserve the state of the page.
+					To override the old DataContext, you can defer it's assignation to the Loading event (e.g. this.Loading += (snd, e) => this.DataContext = new MyViewModel()).
+					""");
+
 				other.SetValue(oldValue, DependencyPropertyValuePrecedences.Local);
 			}
 		}

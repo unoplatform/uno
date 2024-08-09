@@ -11,32 +11,14 @@ namespace Uno.Diagnostics.UI;
 
 public sealed partial class DiagnosticsOverlay
 {
-	private sealed record ViewContext : IDiagnosticViewContext, IDisposable
+	private sealed record ViewContext(DiagnosticsOverlay Owner, DispatcherQueue Dispatcher, DiagnosticElement Element) : IDiagnosticViewContext, IDisposable
 	{
 		private Queue<Action> _pending = new();
 		private Queue<Action> _pending2 = new();
 		private List<Action>? _recurrents;
 
-		private readonly DiagnosticsOverlay _owner;
-		private readonly DispatcherQueue _dispatcher;
 		private DispatcherQueueTimer? _timer;
 		private int _updatesScheduled;
-
-		public static ViewContext? TryCreate(DiagnosticsOverlay owner)
-		{
-			if (owner._root.Content?.DispatcherQueue is { } dispatcher)
-			{
-				return new ViewContext(owner, dispatcher);
-			}
-
-			return null;
-		}
-
-		private ViewContext(DiagnosticsOverlay owner, DispatcherQueue dispatcher)
-		{
-			_owner = owner;
-			_dispatcher = dispatcher;
-		}
 
 		public void Schedule(Action action)
 		{
@@ -47,7 +29,7 @@ public sealed partial class DiagnosticsOverlay
 
 			if (Interlocked.Increment(ref _updatesScheduled) is 1)
 			{
-				_dispatcher.TryEnqueue(DispatcherQueuePriority.Low, DoUpdates);
+				Dispatcher.TryEnqueue(DispatcherQueuePriority.Low, DoUpdates);
 			}
 		}
 
@@ -67,7 +49,7 @@ public sealed partial class DiagnosticsOverlay
 				{
 					if (_timer is null)
 					{
-						_timer = _dispatcher.CreateTimer();
+						_timer = Dispatcher.CreateTimer();
 						_timer.Interval = TimeSpan.FromMilliseconds(1000);
 						_timer.Tick += (snd, e) => DoUpdates();
 					}
@@ -95,7 +77,7 @@ public sealed partial class DiagnosticsOverlay
 
 					if (Interlocked.Decrement(ref _updatesScheduled) > 0)
 					{
-						_dispatcher.TryEnqueue(DispatcherQueuePriority.Low, DoUpdates);
+						Dispatcher.TryEnqueue(DispatcherQueuePriority.Low, DoUpdates);
 					}
 				}
 			}
@@ -103,7 +85,7 @@ public sealed partial class DiagnosticsOverlay
 
 		/// <inheritdoc />
 		public void Notify(DiagnosticViewNotification notif)
-			=> _owner.Notify(notif, this);
+			=> Owner.Notify(notif, this);
 
 		private void DoUpdates()
 		{
