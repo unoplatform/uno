@@ -62,7 +62,12 @@ namespace Microsoft.UI.Xaml
 			_flags |= attached ? Flags.IsAttached : Flags.None;
 			_flags |= typeof(DependencyObjectCollection).IsAssignableFrom(propertyType) ? Flags.IsDependencyObjectCollection : Flags.None;
 			_flags |= GetIsTypeNullable(propertyType) ? Flags.IsTypeNullable : Flags.None;
-			_flags |= (defaultMetadata as FrameworkPropertyMetadata)?.Options.HasWeakStorage() is true ? Flags.HasWeakStorage : Flags.None;
+			if (defaultMetadata is FrameworkPropertyMetadata frameworkMetadata)
+			{
+				_flags |= frameworkMetadata.Options.HasWeakStorage() ? Flags.HasWeakStorage : Flags.None;
+				_flags |= frameworkMetadata.Options.HasInherits() ? Flags.IsInherited : Flags.None;
+			}
+
 			_flags |= ownerType.Assembly.Equals(typeof(DependencyProperty).Assembly) ? Flags.IsUnoType : Flags.None;
 
 			if (ownerType == typeof(FrameworkElement))
@@ -337,6 +342,12 @@ namespace Microsoft.UI.Xaml
 			=> (_flags & Flags.IsAttached) != 0;
 
 		/// <summary>
+		/// Determines if the property is an inherited property
+		/// </summary>
+		internal bool IsInherited
+			=> (_flags & Flags.IsInherited) != 0;
+
+		/// <summary>
 		/// Determines if the owner type is declared by Uno.UI
 		/// </summary>
 		internal bool IsUnoType
@@ -555,6 +566,11 @@ namespace Microsoft.UI.Xaml
 			IsUnoType = (1 << 4),
 
 			ValidateNotNegativeAndNotNaN = (1 << 5),
+
+			/// <summary>
+			/// Set when the property is an inherited property
+			/// </summary>
+			IsInherited = (1 << 6),
 		}
 	}
 }
