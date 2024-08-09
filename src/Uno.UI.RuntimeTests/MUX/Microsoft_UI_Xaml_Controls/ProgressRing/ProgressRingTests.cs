@@ -3,6 +3,7 @@ using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 using Microsoft.UI.Xaml.Controls;
+using Uno.Disposables;
 
 namespace Uno.UI.RuntimeTests.MUX.Microsoft_UI_Xaml_Controls.ProgressRingTests;
 
@@ -18,7 +19,7 @@ public class ProgressRingTests
 #endif
 	public async Task ProgressRingDefaultHeightShouldBe32(bool useFluent)
 	{
-		using (useFluent ? StyleHelper.UseFluentStyles() : null)
+		using (useFluent ? Disposable.Empty : StyleHelper.UseUwpStyles())
 		{
 			var grid = new Grid();
 			grid.Width = 100;

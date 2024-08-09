@@ -727,6 +727,7 @@ namespace Microsoft.UI.Xaml
 			var routedArgs = new DragStartingEventArgs(this, ptArgs);
 			PrepareShare(routedArgs.Data); // Gives opportunity to the control to fulfill the data
 			SafeRaiseEvent(DragStartingEvent, routedArgs); // The event won't bubble, cf. PrepareManagedDragAndDropEventBubbling
+			UpdateLayout(); // we need a layout cycle before a possible DragEnter just in case DragStarting causes the visual tree to change
 
 			// We need to give a chance for  for layout updates, etc. This is particularly problematic with TreeView
 			// dragging where the DragStarting event on the TreeView will "internally" collapse some nodes,

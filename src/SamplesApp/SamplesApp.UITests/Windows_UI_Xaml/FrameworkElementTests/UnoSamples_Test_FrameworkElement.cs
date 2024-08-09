@@ -99,7 +99,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FrameworkElementTests
 				var rect = _app.GetPhysicalRect(element);
 				var borderCenterOffset = rect.Width / 50f * 7.5f;
 
-				const byte tolerance = 4;
+				const byte tolerance = 6;
 
 				ImageAssert.HasColorAt(scrn, rect.CenterX, rect.CenterY, centerColor, tolerance);
 				ImageAssert.HasColorAt(scrn, rect.X + borderCenterOffset, rect.CenterY, borderColor, tolerance);

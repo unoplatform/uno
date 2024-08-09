@@ -56,114 +56,102 @@ public class SelectorBarTests : MUXApiTestBase
 	[TestMethod]
 	public async Task VerifySelectorBarItems()
 	{
-		IDisposable styleDisposable = null;
-		try
+		//using (PrivateLoggingHelper privateIVLoggingHelper = new PrivateLoggingHelper("ItemsView", "ScrollView"))
 		{
-			await TestServices.RunOnUIThread(() =>
+			SelectorBar selectorBar = null;
+			AutoResetEvent selectorBarLoadedEvent = new AutoResetEvent(false);
+			AutoResetEvent selectorBarUnloadedEvent = new AutoResetEvent(false);
+
+			RunOnUIThread.Execute(() =>
 			{
-				styleDisposable = StyleHelper.UseFluentStyles();
+				selectorBar = new SelectorBar();
+				Verify.IsNotNull(selectorBar);
+				Verify.IsNotNull(selectorBar.Items);
+
+				SelectorBarItem selectorBarItemDeleted = new SelectorBarItem()
+				{
+					Text = "Deleted",
+					Icon = new SymbolIcon(Symbol.Delete),
+					IsEnabled = false
+				};
+
+				selectorBar.Items.Add(selectorBarItemDeleted);
+
+				SelectorBarItem selectorBarItemRemote = new SelectorBarItem()
+				{
+					Text = "Remote",
+					Icon = new SymbolIcon(Symbol.Remote),
+					IsSelected = true
+				};
+
+				selectorBar.Items.Add(selectorBarItemRemote);
+
+				SelectorBarItem selectorBarItemShared = new SelectorBarItem()
+				{
+					Text = "Shared",
+					Icon = new SymbolIcon(Symbol.Share)
+				};
+
+				selectorBar.Items.Add(selectorBarItemShared);
+
+				SelectorBarItem selectorBarItemFavorites = new SelectorBarItem()
+				{
+					Text = "Favorites",
+					Icon = new SymbolIcon(Symbol.Favorite)
+				};
+
+				selectorBar.Items.Add(selectorBarItemFavorites);
+
+				Verify.AreEqual(4, selectorBar.Items.Count);
+
+				SetupDefaultUI(selectorBar, selectorBarLoadedEvent, selectorBarUnloadedEvent);
 			});
-			//using (PrivateLoggingHelper privateIVLoggingHelper = new PrivateLoggingHelper("ItemsView", "ScrollView"))
+
+			WaitForEvent("Waiting for Loaded event", selectorBarLoadedEvent);
+
+			RunOnUIThread.Execute(() =>
 			{
-				SelectorBar selectorBar = null;
-				AutoResetEvent selectorBarLoadedEvent = new AutoResetEvent(false);
-				AutoResetEvent selectorBarUnloadedEvent = new AutoResetEvent(false);
+				Log.Comment("Logging SelectorBar property values after Loaded event");
+				LogSelectorBarProperties(selectorBar);
 
-				RunOnUIThread.Execute(() =>
-				{
-					selectorBar = new SelectorBar();
-					Verify.IsNotNull(selectorBar);
-					Verify.IsNotNull(selectorBar.Items);
+				Log.Comment("Verifying SelectorBar property values after Loaded event");
+				Verify.AreEqual(selectorBar.Items[1], selectorBar.SelectedItem);
+				Verify.IsTrue(selectorBar.IsEnabled);
+				Verify.IsFalse(selectorBar.IsTabStop);
+				Verify.AreEqual(XYFocusKeyboardNavigationMode.Auto, selectorBar.XYFocusKeyboardNavigation);
+				Verify.AreEqual(KeyboardNavigationMode.Once, selectorBar.TabNavigation);
 
-					SelectorBarItem selectorBarItemDeleted = new SelectorBarItem()
-					{
-						Text = "Deleted",
-						Icon = new SymbolIcon(Symbol.Delete),
-						IsEnabled = false
-					};
+				ItemsView itemsView = SelectorBarTestHooks.GetItemsViewPart(selectorBar);
 
-					selectorBar.Items.Add(selectorBarItemDeleted);
+				Log.Comment("Logging ItemsView property values after Loaded event");
+				LogItemsViewProperties(itemsView);
 
-					SelectorBarItem selectorBarItemRemote = new SelectorBarItem()
-					{
-						Text = "Remote",
-						Icon = new SymbolIcon(Symbol.Remote),
-						IsSelected = true
-					};
+				Log.Comment("Verifying ItemsView property values after Loaded event");
+				Verify.IsNotNull(itemsView);
+				Verify.AreEqual(XYFocusKeyboardNavigationMode.Disabled, itemsView.XYFocusKeyboardNavigation);
+				Verify.AreEqual(KeyboardNavigationMode.Once, itemsView.TabNavigation);
+				Verify.AreEqual(ItemsViewSelectionMode.Single, itemsView.SelectionMode);
+				Verify.AreEqual(1, itemsView.SelectedItems.Count);
+				Verify.AreEqual(-1, itemsView.CurrentItemIndex);
+				Verify.AreEqual(selectorBar.Items[1], itemsView.SelectedItem);
 
-					selectorBar.Items.Add(selectorBarItemRemote);
+				Log.Comment("Removing 2nd SelectorBarItem.");
+				selectorBar.Items.RemoveAt(1);
+				Verify.AreEqual(3, selectorBar.Items.Count);
+				Verify.IsNull(selectorBar.SelectedItem);
 
-					SelectorBarItem selectorBarItemShared = new SelectorBarItem()
-					{
-						Text = "Shared",
-						Icon = new SymbolIcon(Symbol.Share)
-					};
+				Log.Comment("Clearing all SelectorBarItems.");
+				selectorBar.Items.Clear();
+				Verify.AreEqual(0, selectorBar.Items.Count);
 
-					selectorBar.Items.Add(selectorBarItemShared);
+				Log.Comment("Resetting window content and SelectorBar");
+				Content = null;
+				selectorBar = null;
+			});
 
-					SelectorBarItem selectorBarItemFavorites = new SelectorBarItem()
-					{
-						Text = "Favorites",
-						Icon = new SymbolIcon(Symbol.Favorite)
-					};
-
-					selectorBar.Items.Add(selectorBarItemFavorites);
-
-					Verify.AreEqual(4, selectorBar.Items.Count);
-
-					SetupDefaultUI(selectorBar, selectorBarLoadedEvent, selectorBarUnloadedEvent);
-				});
-
-				WaitForEvent("Waiting for Loaded event", selectorBarLoadedEvent);
-
-				RunOnUIThread.Execute(() =>
-				{
-					Log.Comment("Logging SelectorBar property values after Loaded event");
-					LogSelectorBarProperties(selectorBar);
-
-					Log.Comment("Verifying SelectorBar property values after Loaded event");
-					Verify.AreEqual(selectorBar.Items[1], selectorBar.SelectedItem);
-					Verify.IsTrue(selectorBar.IsEnabled);
-					Verify.IsFalse(selectorBar.IsTabStop);
-					Verify.AreEqual(XYFocusKeyboardNavigationMode.Auto, selectorBar.XYFocusKeyboardNavigation);
-					Verify.AreEqual(KeyboardNavigationMode.Once, selectorBar.TabNavigation);
-
-					ItemsView itemsView = SelectorBarTestHooks.GetItemsViewPart(selectorBar);
-
-					Log.Comment("Logging ItemsView property values after Loaded event");
-					LogItemsViewProperties(itemsView);
-
-					Log.Comment("Verifying ItemsView property values after Loaded event");
-					Verify.IsNotNull(itemsView);
-					Verify.AreEqual(XYFocusKeyboardNavigationMode.Disabled, itemsView.XYFocusKeyboardNavigation);
-					Verify.AreEqual(KeyboardNavigationMode.Once, itemsView.TabNavigation);
-					Verify.AreEqual(ItemsViewSelectionMode.Single, itemsView.SelectionMode);
-					Verify.AreEqual(1, itemsView.SelectedItems.Count);
-					Verify.AreEqual(-1, itemsView.CurrentItemIndex);
-					Verify.AreEqual(selectorBar.Items[1], itemsView.SelectedItem);
-
-					Log.Comment("Removing 2nd SelectorBarItem.");
-					selectorBar.Items.RemoveAt(1);
-					Verify.AreEqual(3, selectorBar.Items.Count);
-					Verify.IsNull(selectorBar.SelectedItem);
-
-					Log.Comment("Clearing all SelectorBarItems.");
-					selectorBar.Items.Clear();
-					Verify.AreEqual(0, selectorBar.Items.Count);
-
-					Log.Comment("Resetting window content and SelectorBar");
-					Content = null;
-					selectorBar = null;
-				});
-
-				WaitForEvent("Waiting for Unloaded event", selectorBarUnloadedEvent);
-				await TestServices.WindowHelper.WaitForIdle();
-				Log.Comment("Done");
-			}
-		}
-		finally
-		{
-			await TestServices.RunOnUIThread(() => styleDisposable?.Dispose());
+			WaitForEvent("Waiting for Unloaded event", selectorBarUnloadedEvent);
+			await TestServices.WindowHelper.WaitForIdle();
+			Log.Comment("Done");
 		}
 	}
 

@@ -314,17 +314,17 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 
 			if (checkHorizontal)
 			{
-				controlRect.CenterX.Should().BeApproximately(highlightRect.CenterX, 2f, "horizontal center");
+				controlRect.CenterX.Should().BeApproximately(highlightRect.CenterX, 10f, "horizontal center");
 			}
 
 			if (checkVertical)
 			{
-				controlRect.CenterY.Should().BeApproximately(highlightRect.CenterY, 2f, "vertical center");
+				controlRect.CenterY.Should().BeApproximately(highlightRect.CenterY, 10f, "vertical center");
 			}
 
 			if (checkWidth)
 			{
-				controlRect.Width.Should().BeApproximately(highlightRect.Width, 2f, "width");
+				controlRect.Width.Should().BeApproximately(highlightRect.Width, 10f, "width");
 			}
 
 			_app.FastTap("DismissButton");

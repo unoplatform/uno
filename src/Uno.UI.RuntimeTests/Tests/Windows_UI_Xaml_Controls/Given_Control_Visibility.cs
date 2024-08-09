@@ -60,7 +60,10 @@ public class Given_Control_Visibility
 					// Native implementation not found. Make sure FlipView has a style which contains an ItemsPanel of type {nameof(PagedCollectionView)}.
 					type == typeof(FlipView) ||
 #endif
-					type == typeof(ColorPickerSlider))
+					type == typeof(MediaTransportControls) || // matches winui
+					type == typeof(MenuBarItem) || // matches winui
+					type == typeof(ColorPickerSlider)
+					)
 				{
 					continue;
 				}

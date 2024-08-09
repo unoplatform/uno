@@ -71,15 +71,15 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.SwipeControlTests
 		[AutoRetry]
 		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		public Task When_InListView()
-			=> When_InScrollableContainer("UITests.Windows_UI_Xaml_Controls.SwipeControlTests.SwipeControl_ListView");
+			=> When_InScrollableContainer("UITests.Windows_UI_Xaml_Controls.SwipeControlTests.SwipeControl_ListView", isLeftAligned: false);
 
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		public Task When_InScrollViewer()
-			=> When_InScrollableContainer("UITests.Windows_UI_Xaml_Controls.SwipeControlTests.SwipeControl_ScrollViewer");
+			=> When_InScrollableContainer("UITests.Windows_UI_Xaml_Controls.SwipeControlTests.SwipeControl_ScrollViewer", isLeftAligned: true);
 
-		private async Task When_InScrollableContainer(string testName)
+		private async Task When_InScrollableContainer(string testName, bool isLeftAligned)
 		{
 			QueryEx sut = new QueryEx(q => q.All().Marked("SUT"));
 			QueryEx output = new QueryEx(q => q.All().Marked("Output"));
@@ -87,7 +87,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.SwipeControlTests
 			Run(testName, skipInitialScreenshot: true);
 
 			var sutPhyRect = _app.GetPhysicalRect(sut);
-			var item2PhyPosition = new Point((int)sutPhyRect.X + 150, (int)sutPhyRect.Y + 150).LogicalToPhysicalPixels(_app);
+			var item2PhyPosition = new Point((int)(isLeftAligned ? sutPhyRect.X : sutPhyRect.CenterX), (int)sutPhyRect.Y + 150).LogicalToPhysicalPixels(_app);
 
 			// Validate initial state
 			var initial = TakeScreenshot("initial");

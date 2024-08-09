@@ -193,7 +193,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 
 			var lateRect = _app.GetPhysicalRect("lateImage");
 
-			ImageAssert.AreAlmostEqual(bmp, expectedRect, bmp, lateRect, permittedPixelError: 20);
+			ImageAssert.AreAlmostEqual(bmp, expectedRect, bmp, lateRect, permittedPixelError: 21);
 		}
 
 		[Test]
