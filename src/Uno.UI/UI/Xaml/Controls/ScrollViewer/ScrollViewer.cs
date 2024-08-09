@@ -757,6 +757,8 @@ namespace Microsoft.UI.Xaml.Controls
 				var explicitHeight = fe.Height;
 				var extentHeight = 0d;
 				var extentWidth = 0d;
+				var marginWidthAlreadyIncluded = false;
+				var marginHeightAlreadyIncluded = false;
 				if (explicitHeight.IsFinite())
 				{
 					extentHeight = explicitHeight;
@@ -768,15 +770,25 @@ namespace Microsoft.UI.Xaml.Controls
 						fe.VerticalAlignment == VerticalAlignment.Stretch;
 
 					extentHeight = canUseActualHeightAsExtent ? LayoutRoundIfNeeded(fe, fe.ActualHeight) : fe.DesiredSize.Height;
+
+					// DesiredSize already includes margins.
+					marginHeightAlreadyIncluded = !canUseActualHeightAsExtent;
 				}
 
+				if (marginHeightAlreadyIncluded)
+				{
+					ExtentHeight = extentHeight;
+				}
+				else
+				{
 #if __WASM__
-				// Issue needs to be fixed first for WASM for Bottom Margin missing
-				// Details here: https://github.com/unoplatform/uno/issues/7000
-				ExtentHeight = extentHeight + fe.Margin.Top;
+					// Issue needs to be fixed first for WASM for Bottom Margin missing
+					// Details here: https://github.com/unoplatform/uno/issues/7000
+					ExtentHeight = extentHeight + fe.Margin.Top;
 #else
-				ExtentHeight = extentHeight + fe.Margin.Top + fe.Margin.Bottom;
+					ExtentHeight = extentHeight + fe.Margin.Top + fe.Margin.Bottom;
 #endif
+				}
 
 
 				var explicitWidth = fe.Width;
@@ -791,15 +803,25 @@ namespace Microsoft.UI.Xaml.Controls
 						fe.HorizontalAlignment == HorizontalAlignment.Stretch;
 
 					extentWidth = canUseActualWidthAsExtent ? LayoutRoundIfNeeded(fe, fe.ActualWidth) : fe.DesiredSize.Width;
+
+					// DesiredSize already includes margins.
+					marginWidthAlreadyIncluded = !canUseActualWidthAsExtent;
 				}
 
+				if (marginWidthAlreadyIncluded)
+				{
+					ExtentWidth = extentWidth;
+				}
+				else
+				{
 #if __WASM__
-				// Issue needs to be fixed first for WASM for Right Margin missing
-				// Details here: https://github.com/unoplatform/uno/issues/7000
-				ExtentWidth = extentWidth + fe.Margin.Left;
+					// Issue needs to be fixed first for WASM for Right Margin missing
+					// Details here: https://github.com/unoplatform/uno/issues/7000
+					ExtentWidth = extentWidth + fe.Margin.Left;
 #else
-				ExtentWidth = extentWidth + fe.Margin.Left + fe.Margin.Right;
+					ExtentWidth = extentWidth + fe.Margin.Left + fe.Margin.Right;
 #endif
+				}
 			}
 			else
 			{

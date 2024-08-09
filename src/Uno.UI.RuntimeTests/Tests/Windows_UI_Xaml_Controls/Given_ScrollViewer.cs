@@ -1479,5 +1479,33 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		}
 #endif
+
+		[TestMethod]
+		public async Task When_Zero_Size_With_Margin()
+		{
+			var SUT = new ScrollViewer()
+			{
+				Width = 100,
+				Height = 100,
+				HorizontalScrollBarVisibility = ScrollBarVisibility.Visible,
+				VerticalScrollBarVisibility = ScrollBarVisibility.Visible,
+				HorizontalScrollMode = ScrollMode.Auto,
+				VerticalScrollMode = ScrollMode.Auto,
+				Content = new Grid()
+				{
+					Margin = new Thickness(150)
+				}
+			};
+
+			await UITestHelper.Load(SUT);
+
+			Assert.AreEqual(300, SUT.ExtentWidth);
+			Assert.AreEqual(300, SUT.ExtentHeight);
+			Assert.AreEqual(100, SUT.ViewportWidth);
+			Assert.AreEqual(100, SUT.ViewportHeight);
+			Assert.AreEqual(200, SUT.ScrollableWidth);
+			Assert.AreEqual(200, SUT.ScrollableHeight);
+
+		}
 	}
 }
