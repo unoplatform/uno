@@ -107,6 +107,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if !HAS_RENDER_TARGET_BITMAP
+		[Ignore("Cannot take screenshot on this platform.")]
+#endif
 		public async Task When_BorderThickness_Zero()
 		{
 			using var fluent = StyleHelper.UseFluentStyles();

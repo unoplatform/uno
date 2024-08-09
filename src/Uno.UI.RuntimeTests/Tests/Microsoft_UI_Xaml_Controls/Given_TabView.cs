@@ -26,7 +26,7 @@ public class Given_TabView
 #if HAS_UNO
 	[TestMethod]
 #if !HAS_INPUT_INJECTOR
-	[Ignore("InputInjector is only supported on skia")]
+	[Ignore("InputInjector is not supported on this platform.")]
 #endif
 	public async Task When_First_Item_Unselected()
 	{

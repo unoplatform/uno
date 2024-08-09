@@ -500,7 +500,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if HAS_UNO
 		[TestMethod]
 #if !HAS_INPUT_INJECTOR
-		[Ignore("Pointer injection supported only on skia for now.")]
+		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		public async Task When_ScrollWheel()
 		{

@@ -55,6 +55,9 @@ public class Given_BitmapIcon
 	}
 
 	[TestMethod]
+#if !HAS_RENDER_TARGET_BITMAP
+	[Ignore("Cannot take screenshot on this platform.")]
+#endif
 	public async Task When_Foreground_Set_With_ShowAsMonochrome_False()
 	{
 		var bitmapIcon = new BitmapIcon()
@@ -76,6 +79,9 @@ public class Given_BitmapIcon
 	}
 
 	[TestMethod]
+#if !HAS_RENDER_TARGET_BITMAP
+	[Ignore("Cannot take screenshot on this platform.")]
+#endif
 	public async Task When_Foreground_Set_With_ShowAsMonochrome_True()
 	{
 		var bitmapIcon = new BitmapIcon

@@ -70,8 +70,8 @@ public partial class Capture_Tests : SampleControlUITestBase
 		App.WaitForElement(target);
 		act(target);
 
-#if !__SKIA__
-		TakeScreenshot("Result");
+#if HAS_RENDER_TARGET_BITMAP
+		await TakeScreenshotAsync("Result");
 #endif
 
 		result.GetDependencyPropertyValue<string>("Text").Should().Be("SUCCESS");

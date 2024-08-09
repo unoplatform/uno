@@ -9,7 +9,7 @@ using Windows.UI.Input.Preview.Injection;
 
 namespace Uno.UITest;
 
-public partial class SkiaApp
+public partial class RuntimeTestsApp
 {
 	private class MouseHelper
 	{

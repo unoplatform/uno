@@ -31,8 +31,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.InteractionTests
 	public partial class SplitButtonTests
 	{
 		[TestMethod]
-#if !__SKIA__
-		[Ignore("InputInjector is only supported on skia")]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		public async Task BasicInteractionTest()
 		{
@@ -70,8 +70,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.InteractionTests
 		}
 
 		[TestMethod]
-#if !__SKIA__
-		[Ignore("InputInjector is only supported on skia")]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		public async Task CommandTest()
 		{
@@ -123,8 +123,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.InteractionTests
 		}
 
 		[TestMethod]
-#if !__SKIA__
-		[Ignore("InputInjector is only supported on skia")]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		public async Task TouchTest()
 		{
@@ -216,7 +216,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.InteractionTests
 
 		[TestMethod]
 #if !__SKIA__
-		[Ignore("InputInjector is only supported on skia")]
+		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		public async Task KeyboardTest()
 		{
@@ -265,8 +265,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.InteractionTests
 		}
 
 		[TestMethod]
-#if !__SKIA__
-		[Ignore("InputInjector is only supported on skia")]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		public async Task ToggleTest()
 		{

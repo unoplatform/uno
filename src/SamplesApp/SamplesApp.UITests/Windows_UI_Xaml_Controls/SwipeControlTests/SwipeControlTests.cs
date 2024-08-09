@@ -11,6 +11,10 @@ using SamplesApp.UITests.TestFramework;
 using Uno.Testing;
 using Uno.UITest.Helpers.Queries;
 
+#if IS_RUNTIME_UI_TESTS
+using Uno.UI.RuntimeTests.Helpers;
+#endif
+
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.SwipeControlTests
 {
 	[TestFixture]
@@ -66,16 +70,25 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.SwipeControlTests
 		}
 
 
-#if !__SKIA__ // No screenshot on skia
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.iOS, Platform.Android)]
+#if __SKIA__
+		[Ignore("Invalid layout of items")]
+#elif !HAS_RENDER_TARGET_BITMAP
+		[Ignore("Cannot take screenshot on this platform.")]
+#endif
 		public Task When_InListView()
 			=> When_InScrollableContainer("UITests.Windows_UI_Xaml_Controls.SwipeControlTests.SwipeControl_ListView");
 
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.iOS, Platform.Android)]
+#if __SKIA__
+		[Ignore("Invalid layout of items")]
+#elif !HAS_RENDER_TARGET_BITMAP
+		[Ignore("Cannot take screenshot on this platform.")]
+#endif
 		public Task When_InScrollViewer()
 			=> When_InScrollableContainer("UITests.Windows_UI_Xaml_Controls.SwipeControlTests.SwipeControl_ScrollViewer");
 
@@ -84,37 +97,36 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.SwipeControlTests
 			QueryEx sut = new QueryEx(q => q.All().Marked("SUT"));
 			QueryEx output = new QueryEx(q => q.All().Marked("Output"));
 
-			Run(testName, skipInitialScreenshot: true);
+			await RunAsync(testName);
 
-			var sutPhyRect = _app.GetPhysicalRect(sut);
-			var item2PhyPosition = new Point((int)sutPhyRect.X + 150, (int)sutPhyRect.Y + 150).LogicalToPhysicalPixels(_app);
+			var sutPhyRect = App.GetPhysicalRect(sut);
+			var item2PhyPosition = new Point((int)sutPhyRect.X + 150, (int)sutPhyRect.Y + 150).LogicalToPhysicalPixels(App);
 
 			// Validate initial state
-			var initial = TakeScreenshot("initial");
+			var initial = await TakeScreenshotAsync("initial");
 			ImageAssert.HasColorAt(initial, item2PhyPosition.X, item2PhyPosition.Y, "#FFFFA52C");
 
 			// Execute left command on item 2
-			_app.DragCoordinates(item2PhyPosition.X, item2PhyPosition.Y, item2PhyPosition.X + 300.LogicalToPhysicalPixels(_app), item2PhyPosition.Y);
+			App.DragCoordinates(item2PhyPosition.X, item2PhyPosition.Y, item2PhyPosition.X + 300.LogicalToPhysicalPixels(App), item2PhyPosition.Y);
 			await Task.Delay(1000); // We cannot detect the animation ...
 
 			var swippedItem = output.GetDependencyPropertyValue<string>("Text");
 			Assert.AreEqual("#FFFFA52C", swippedItem);
 
 			// Scroll up
-			_app.DragCoordinates(sutPhyRect.CenterX, sutPhyRect.Bottom - 10.LogicalToPhysicalPixels(_app), sutPhyRect.CenterX, sutPhyRect.Y + 10.LogicalToPhysicalPixels(_app));
+			App.DragCoordinates(sutPhyRect.CenterX, sutPhyRect.Bottom - 10.LogicalToPhysicalPixels(App), sutPhyRect.CenterX, sutPhyRect.Y + 10.LogicalToPhysicalPixels(App));
 
 			// Validate scrolled successfully
-			var postScroll = TakeScreenshot("after scroll");
+			var postScroll = await TakeScreenshotAsync("after scroll");
 			ImageAssert.DoesNotHaveColorAt(postScroll, item2PhyPosition.X, item2PhyPosition.Y, "#FFFFA52C");
 
 			// Execute left command on item that is now at item 2 location
-			_app.DragCoordinates(item2PhyPosition.X, item2PhyPosition.Y, item2PhyPosition.X + 300.LogicalToPhysicalPixels(_app), item2PhyPosition.Y);
+			App.DragCoordinates(item2PhyPosition.X, item2PhyPosition.Y, item2PhyPosition.X + 300.LogicalToPhysicalPixels(App), item2PhyPosition.Y);
 			await Task.Delay(1000); // We cannot detect the animation ...
 
 			swippedItem = output.GetDependencyPropertyValue<string>("Text");
 			Assert.AreNotEqual("#FFFFA52C", swippedItem);
 		}
-#endif
 
 		[Test]
 		[AutoRetry]

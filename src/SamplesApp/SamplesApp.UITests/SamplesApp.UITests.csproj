@@ -8,7 +8,7 @@
 		<DefineConstants Condition="$(UnoTargetFrameworkOverride.ToLowerInvariant().Contains('-ios'))">$(DefineConstants);TARGET_FRAMEWORK_OVERRIDE_IOS</DefineConstants>
 
 		<!-- Use 'GeneratedRegexAttribute' to generate the regular expression -->
-		<NoWarn>$(NoWarn);SYSLIB1045</NoWarn>
+		<NoWarn>$(NoWarn);SYSLIB1045;CS1998</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>
