@@ -62,8 +62,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				.OfType<RepeatButton>()
 				.Count();
 
-			Assert.IsTrue(buttons > 0); // We make sure that we really loaded the right template
-			Assert.IsTrue(buttons <= 4);
+			// We make sure that we really loaded the right template
+			Assert.IsTrue(0 < buttons && buttons <= 4, $"Expecting between 1 to 4 RepeatButtons to materialize, got: {buttons}");
 		}
 
 
@@ -1426,5 +1426,30 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		}
 #endif
+
+		[TestMethod]
+		public async Task When_SCP_Content_EmptySized_WithMargin_LayoutCycle()
+		{
+			var content = new Border
+			{
+				Margin = new(0, 4),
+				// using alignment to force empty size, without explicitly setting width/height
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top
+			};
+			var SUT = new ScrollViewer
+			{
+				Content = content,
+				// a width is required here to not, because SV will drop the update
+				// if either viewport's width or height is 0.
+				Width = 100,
+				HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+				HorizontalScrollMode = ScrollMode.Auto,
+				VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+				VerticalScrollMode = ScrollMode.Auto,
+			};
+
+			await UITestHelper.Load(SUT, x => x.IsLoaded);
+		}
 	}
 }

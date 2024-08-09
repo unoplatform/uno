@@ -165,6 +165,22 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForLoaded(firstNavBar);
 		}
 #endif
+
+		[TestMethod]
+		public async Task When_IsOpen_True_LayoutCycle()
+		{
+			var SUT = new CommandBar
+			{
+				SecondaryCommands =
+				{
+					new AppBarButton { Content="SecondaryCommand" }
+				}
+			};
+			await UITestHelper.Load(SUT);
+
+			SUT.IsOpen = true;
+			await WindowHelper.WaitForIdle();
+		}
 	}
 
 #if __IOS__
