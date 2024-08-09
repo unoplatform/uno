@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
@@ -10,7 +11,9 @@ using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
 #if !WINDOWS_UWP && !WINAPPSDK
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Controls;
-using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
+using Windows.ApplicationModel.Core;
+using Windows.UI;
+using Colors = Microsoft.UI.Colors;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
@@ -55,7 +58,7 @@ public class Given_Window
 			return;
 		}
 
-		if ()
+		if (!SupportsMultipleWindows())
 		{
 			Assert.Inconclusive("This test can only run in an environment without multiwindow support");
 		}
@@ -294,6 +297,21 @@ public class Given_Window
 		eventOrder.Should()
 			.NotContain("(AppWindow.Closing)")
 			.And.BeEquivalentTo("(Window.Closed)(Unloaded)");
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Window_Closed_Handler_In_Xaml()
+	{
+		var window = new WindowClosed();
+		var content = new Border() { Width = 100, Height = 100 };
+		window.Content = content;
+		window.Activate();
+
+		await TestServices.WindowHelper.WaitForLoaded(content);
+		window.Close();
+
+		await TestServices.WindowHelper.WaitFor(() => window.ClosedExecuted);
 	}
 #endif
 }
