@@ -75,7 +75,6 @@ namespace Microsoft.UI.Xaml
 			);
 
 			InitializePointers();
-			UpdateHitTest();
 		}
 
 		~UIElement()
@@ -357,7 +356,6 @@ namespace Microsoft.UI.Xaml
 		partial void OnVisibilityChangedPartial(Visibility oldValue, Visibility newValue)
 		{
 			InvalidateMeasure();
-			UpdateHitTest();
 
 			WindowManagerInterop.SetVisibility(HtmlId, newValue == Visibility.Visible);
 
@@ -390,8 +388,6 @@ namespace Microsoft.UI.Xaml
 
 		partial void OnIsHitTestVisibleChangedPartial(bool oldValue, bool newValue)
 		{
-			UpdateHitTest();
-
 			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
 			{
 				UpdateDOMProperties();
@@ -402,6 +398,33 @@ namespace Microsoft.UI.Xaml
 				// Need to invalidate the parent when the visibility changes to ensure its
 				// algorithm is doing its layout properly.
 				parent.InvalidateMeasure();
+			}
+
+			RefreshPointerEvents();
+		}
+
+		private protected void RefreshPointerEvents()
+			=> RefreshPointerEvents(this.GetHitTestVisibility() == HitTestability.Collapsed);
+
+		private void RefreshPointerEvents(bool notVisible)
+		{
+			if (notVisible || !IsEnabledOverride() || !IsHitTestVisible)
+			{
+				notVisible = true;
+				WindowManagerInterop.SetPointerEvents(HtmlId, "none");
+			}
+			else if (this.IsViewHitOrTagExternallyDefined())
+			{
+				WindowManagerInterop.SetPointerEvents(HtmlId, "auto");
+			}
+			else
+			{
+				WindowManagerInterop.SetPointerEvents(HtmlId, "none");
+			}
+
+			foreach (var child in _children)
+			{
+				child.RefreshPointerEvents(notVisible);
 			}
 		}
 

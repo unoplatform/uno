@@ -90,7 +90,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void OnSourceChanged(ImageSource newValue, bool forceReload)
 		{
-			UpdateHitTest();
+			RefreshPointerEvents();
 
 			_lastMeasuredSize = _zeroSize;
 			// Hide the old image until the new image is loaded. This is the behaviour on WinUI.

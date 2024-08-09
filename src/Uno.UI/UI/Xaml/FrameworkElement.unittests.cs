@@ -18,8 +18,6 @@ namespace Microsoft.UI.Xaml
 
 		internal bool ShouldInterceptInvalidate { get; set; }
 
-		internal void UpdateHitTest() { }
-
 		private protected virtual void OnPostLoading() { }
 
 		partial void OnLoadingPartial();

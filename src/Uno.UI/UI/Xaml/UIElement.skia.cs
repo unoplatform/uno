@@ -43,8 +43,6 @@ namespace Microsoft.UI.Xaml
 
 			Initialize();
 			InitializePointers();
-
-			UpdateHitTest();
 		}
 
 		public bool UseLayoutRounding
@@ -64,11 +62,6 @@ namespace Microsoft.UI.Xaml
 		{
 			UpdateOpacity();
 			ContentPresenter.UpdateNativeHostContentPresentersOpacities();
-		}
-
-		partial void OnIsHitTestVisibleChangedPartial(bool oldValue, bool newValue)
-		{
-			UpdateHitTest();
 		}
 
 		private void UpdateOpacity()
@@ -247,7 +240,6 @@ namespace Microsoft.UI.Xaml
 
 		partial void OnVisibilityChangedPartial(Visibility oldValue, Visibility newValue)
 		{
-			UpdateHitTest();
 			UpdateOpacity();
 
 			if (newValue == Visibility.Collapsed)
