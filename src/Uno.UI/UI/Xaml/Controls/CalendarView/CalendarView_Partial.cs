@@ -1645,17 +1645,15 @@ namespace Microsoft.UI.Xaml.Controls
 			CalendarViewGeneratorHost pHost,
 			DateTime date)
 		{
-			int index = 0;
-
-			index = pHost.CalculateOffsetFromMinDate(date);
+			int index = pHost.CalculateOffsetFromMinDate(date);
 			global::System.Diagnostics.Debug.Assert(index >= 0);
 			global::System.Diagnostics.Debug.Assert(pHost.Panel is { });
+
 			pHost.Panel.ScrollItemIntoView(
 				index,
 				ScrollIntoViewAlignment.Leading,
 				0.0 /* offset */,
 				true /* forceSynchronous */);
-
 		}
 
 		// Bring a item into view with animation.
