@@ -17,6 +17,9 @@ using Uno.UI;
 using System.Collections;
 using System.Globalization;
 using Windows.ApplicationModel.Calls;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
 #if __ANDROID__
 using View = Android.Views.View;
@@ -1252,6 +1255,210 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		public DependencyProperty? GetCorrespondingInheritedProperty(DependencyProperty property)
+		{
+			if (property.OwnerType == _originalObjectType)
+			{
+				// Uno-specific fast path.
+				return property;
+			}
+
+			if (property == RichTextBlock.CharacterSpacingProperty ||
+				property == TextBlock.CharacterSpacingProperty ||
+				property == Control.CharacterSpacingProperty ||
+				property == TextElement.CharacterSpacingProperty)
+			{
+				if (_originalObjectType == typeof(RichTextBlock)) { return RichTextBlock.CharacterSpacingProperty; }
+				else if (_originalObjectType == typeof(TextBlock)) { return TextBlock.CharacterSpacingProperty; }
+				else if (typeof(Control).IsAssignableFrom(_originalObjectType)) { return Control.CharacterSpacingProperty; }
+				else if (typeof(TextElement).IsAssignableFrom(_originalObjectType)) { return TextElement.CharacterSpacingProperty; }
+
+				return null;
+			}
+			else if (property == RichTextBlock.FontFamilyProperty ||
+				property == TextBlock.FontFamilyProperty ||
+				property == Control.FontFamilyProperty ||
+				property == TextElement.FontFamilyProperty)
+			{
+				if (_originalObjectType == typeof(RichTextBlock)) { return RichTextBlock.FontFamilyProperty; }
+				else if (_originalObjectType == typeof(TextBlock)) { return TextBlock.FontFamilyProperty; }
+				else if (typeof(Control).IsAssignableFrom(_originalObjectType)) { return Control.FontFamilyProperty; }
+				else if (typeof(TextElement).IsAssignableFrom(_originalObjectType)) { return TextElement.FontFamilyProperty; }
+
+				return null;
+			}
+			else if (property == RichTextBlock.FontSizeProperty ||
+				property == TextBlock.FontSizeProperty ||
+				property == Control.FontSizeProperty ||
+				property == TextElement.FontSizeProperty)
+			{
+				if (_originalObjectType == typeof(RichTextBlock)) { return RichTextBlock.FontSizeProperty; }
+				else if (_originalObjectType == typeof(TextBlock)) { return TextBlock.FontSizeProperty; }
+				else if (typeof(Control).IsAssignableFrom(_originalObjectType)) { return Control.FontSizeProperty; }
+				else if (typeof(TextElement).IsAssignableFrom(_originalObjectType)) { return TextElement.FontSizeProperty; }
+
+				return null;
+			}
+			else if (property == RichTextBlock.FontStretchProperty ||
+				property == TextBlock.FontStretchProperty ||
+				property == Control.FontStretchProperty ||
+				property == TextElement.FontStretchProperty)
+			{
+				if (_originalObjectType == typeof(RichTextBlock)) { return RichTextBlock.FontStretchProperty; }
+				else if (_originalObjectType == typeof(TextBlock)) { return TextBlock.FontStretchProperty; }
+				else if (typeof(Control).IsAssignableFrom(_originalObjectType)) { return Control.FontStretchProperty; }
+				else if (typeof(TextElement).IsAssignableFrom(_originalObjectType)) { return TextElement.FontStretchProperty; }
+
+				return null;
+			}
+			else if (property == RichTextBlock.FontStyleProperty ||
+				property == TextBlock.FontStyleProperty ||
+				property == Control.FontStyleProperty ||
+				property == TextElement.FontStyleProperty)
+			{
+				if (_originalObjectType == typeof(RichTextBlock)) { return RichTextBlock.FontStyleProperty; }
+				else if (_originalObjectType == typeof(TextBlock)) { return TextBlock.FontStyleProperty; }
+				else if (typeof(Control).IsAssignableFrom(_originalObjectType)) { return Control.FontStyleProperty; }
+				else if (typeof(TextElement).IsAssignableFrom(_originalObjectType)) { return TextElement.FontStyleProperty; }
+
+				return null;
+			}
+			else if (property == RichTextBlock.FontWeightProperty ||
+				property == TextBlock.FontWeightProperty ||
+				property == Control.FontWeightProperty ||
+				property == TextElement.FontWeightProperty)
+			{
+				if (_originalObjectType == typeof(RichTextBlock)) { return RichTextBlock.FontWeightProperty; }
+				else if (_originalObjectType == typeof(TextBlock)) { return TextBlock.FontWeightProperty; }
+				else if (typeof(Control).IsAssignableFrom(_originalObjectType)) { return Control.FontWeightProperty; }
+				else if (typeof(TextElement).IsAssignableFrom(_originalObjectType)) { return TextElement.FontWeightProperty; }
+
+				return null;
+			}
+			else if (property == RichTextBlock.ForegroundProperty ||
+				property == TextBlock.ForegroundProperty ||
+				property == Control.ForegroundProperty ||
+				property == TextElement.ForegroundProperty ||
+				property == IconElement.ForegroundProperty ||
+				property == ContentPresenter.ForegroundProperty /*ContentPresenter is Uno-specific, it's handled differently in WinUI*/)
+			{
+				if (_originalObjectType == typeof(RichTextBlock)) { return RichTextBlock.ForegroundProperty; }
+				else if (_originalObjectType == typeof(TextBlock)) { return TextBlock.ForegroundProperty; }
+				else if (typeof(Control).IsAssignableFrom(_originalObjectType)) { return Control.ForegroundProperty; }
+				else if (typeof(TextElement).IsAssignableFrom(_originalObjectType)) { return TextElement.ForegroundProperty; }
+				else if (typeof(IconElement).IsAssignableFrom(_originalObjectType)) { return IconElement.ForegroundProperty; }
+				else if (typeof(ContentPresenter).IsAssignableFrom(_originalObjectType)) { return ContentPresenter.ForegroundProperty; } /*ContentPresenter is Uno-specific*/
+
+				return null;
+			}
+			// To make AppBarButtons work correctly in Windows Blue, IconElement.Foreground must be able to
+			// inherit directly from ContentPresenter.Foreground. This is captured separately from the other
+			// Foreground-property cases above, in order to avoid introducing regressions into Win8 apps:
+			// Since there was no general linkage between ContentPresenter.Foreground and other controls'
+			// Foreground properties previously, we don't want to introduce one now.
+			//else if (property == ContentPresenter.ForegroundProperty)
+			//{
+			//	if (typeof(IconElement).IsAssignableFrom(_originalObjectType)) { return IconElement.ForegroundProperty; }
+			//}
+			else if (property == RichTextBlock.TextAlignmentProperty ||
+				property == TextBlock.TextAlignmentProperty ||
+				property == RichEditBox.TextAlignmentProperty ||
+				property == TextBox.TextAlignmentProperty)
+			{
+				if (_originalObjectType == typeof(RichTextBlock)) { return RichTextBlock.TextAlignmentProperty; }
+				else if (_originalObjectType == typeof(TextBlock)) { return TextBlock.TextAlignmentProperty; }
+				else if (_originalObjectType == typeof(RichEditBox)) { return RichEditBox.TextAlignmentProperty; }
+				else if (_originalObjectType == typeof(TextBox)) { return TextBox.TextAlignmentProperty; }
+
+				return null;
+			}
+			else if (property == RichTextBlock.LineHeightProperty ||
+				property == TextBlock.LineHeightProperty)
+			{
+				if (_originalObjectType == typeof(RichTextBlock)) { return RichTextBlock.LineHeightProperty; }
+				else if (_originalObjectType == typeof(TextBlock)) { return TextBlock.LineHeightProperty; }
+
+				return null;
+			}
+			else if (property == RichTextBlock.LineStackingStrategyProperty ||
+				property == TextBlock.LineStackingStrategyProperty)
+			{
+				if (_originalObjectType == typeof(RichTextBlock)) { return RichTextBlock.LineStackingStrategyProperty; }
+				else if (_originalObjectType == typeof(TextBlock)) { return TextBlock.LineStackingStrategyProperty; }
+
+				return null;
+			}
+			else if (property == FrameworkElement.LanguageProperty ||
+				property == TextElement.LanguageProperty)
+			{
+				if (typeof(FrameworkElement).IsAssignableFrom(_originalObjectType)) { return FrameworkElement.LanguageProperty; }
+				else if (typeof(TextElement).IsAssignableFrom(_originalObjectType)) { return TextElement.LanguageProperty; }
+
+				return null;
+			}
+			else if (property == TextElement.TextDecorationsProperty ||
+				property == TextBlock.TextDecorationsProperty ||
+				property == RichTextBlock.TextDecorationsProperty)
+			{
+				if (_originalObjectType == typeof(TextBlock)) { return TextBlock.TextDecorationsProperty; }
+				else if (_originalObjectType == typeof(RichTextBlock)) { return RichTextBlock.TextDecorationsProperty; }
+				else if (typeof(TextElement).IsAssignableFrom(_originalObjectType)) { return TextElement.TextDecorationsProperty; }
+
+				return null;
+			}
+			else if (property == FrameworkElement.FlowDirectionProperty ||
+				property == Run.FlowDirectionProperty)
+			{
+				if (_originalObjectType == typeof(Run)) { return Run.FlowDirectionProperty; }
+				else if (typeof(FrameworkElement).IsAssignableFrom(_originalObjectType)) { return FrameworkElement.FlowDirectionProperty; }
+
+				return null;
+			}
+			else if (property == FrameworkElement.DataContextProperty)
+			{
+				if (typeof(FrameworkElement).IsAssignableFrom(_originalObjectType)) { return FrameworkElement.DataContextProperty; }
+
+				return null;
+			}
+			else if (property == UIElement.AllowDropProperty)
+			{
+				if (typeof(UIElement).IsAssignableFrom(_originalObjectType)) { return UIElement.AllowDropProperty; }
+
+				return null;
+			}
+			else if (property == FrameworkElement.AllowFocusOnInteractionProperty ||
+				property == TextElement.AllowFocusOnInteractionProperty ||
+				property == FlyoutBase.AllowFocusOnInteractionProperty)
+			{
+				if (typeof(FrameworkElement).IsAssignableFrom(_originalObjectType)) { return FrameworkElement.AllowFocusOnInteractionProperty; }
+				else if (typeof(TextElement).IsAssignableFrom(_originalObjectType)) { return TextElement.AllowFocusOnInteractionProperty; }
+				else if (typeof(FlyoutBase).IsAssignableFrom(_originalObjectType)) { return FlyoutBase.AllowFocusOnInteractionProperty; }
+
+				return null;
+			}
+			else if (property == FrameworkElement.AllowFocusWhenDisabledProperty ||
+				property == FlyoutBase.AllowFocusWhenDisabledProperty)
+			{
+				if (typeof(FrameworkElement).IsAssignableFrom(_originalObjectType)) { return FrameworkElement.AllowFocusWhenDisabledProperty; }
+				else if (typeof(FlyoutBase).IsAssignableFrom(_originalObjectType)) { return FlyoutBase.AllowFocusWhenDisabledProperty; }
+
+				return null;
+			}
+			else if (property == UIElement.HighContrastAdjustmentProperty)
+			{
+				if (typeof(UIElement).IsAssignableFrom(_originalObjectType)) { return UIElement.HighContrastAdjustmentProperty; }
+
+				return null;
+			}
+
+			// Look for a property with the same name, even if it is not of the same type
+			// TODO: This may not match WinUI behavior (https://github.com/unoplatform/uno/issues/17703), but needs more work to be removed.
+			// While this line alone is sufficient and we can remove all the above code, we keep the above code for two reasons:
+			// 1. It's more performant than DependencyProperty.GetProperty
+			// 2. It's the only code that should remain in future once we align the DP system closer to WinUI.
+			return DependencyProperty.GetProperty(_originalObjectType, property.Name);
+		}
+
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private (DependencyProperty? localProperty, DependencyPropertyDetails? propertyDetails) GetLocalPropertyDetails(DependencyProperty property)
 		{
@@ -1265,8 +1472,7 @@ namespace Microsoft.UI.Xaml
 			}
 			else
 			{
-				// Look for a property with the same name, even if it is not of the same type
-				var localProperty = DependencyProperty.GetProperty(_originalObjectType, property.Name);
+				var localProperty = GetCorrespondingInheritedProperty(property);
 
 				if (localProperty != null)
 				{
