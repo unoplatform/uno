@@ -1,0 +1,20 @@
+{
+  "version": "1.0",
+  "components": [
+    "Microsoft.VisualStudio.Component.CoreEditor",
+    "Microsoft.VisualStudio.Workload.CoreEditor",
+    "Microsoft.NetCore.Component.SDK",
+    "Microsoft.NetCore.Component.DevelopmentTools",
+    "Microsoft.Net.ComponentGroup.DevelopmentPrerequisites",
+    "Microsoft.VisualStudio.Component.TextTemplating",
+    "Microsoft.VisualStudio.ComponentGroup.MSIX.Packaging",
+    "Microsoft.VisualStudio.Component.ManagedDesktop.Prerequisites",
+    "Microsoft.VisualStudio.Component.Debugger.JustInTime",
+    "Microsoft.VisualStudio.Workload.ManagedDesktop",
+    "Microsoft.VisualStudio.Workload.NetCrossPlat",
+    "Microsoft.VisualStudio.Workload.NetCoreTools"
+  ],
+  "extensions": [
+    "https://marketplace.visualstudio.com/items?itemName=unoplatform.uno-platform-addin-2022"
+  ]
+}
