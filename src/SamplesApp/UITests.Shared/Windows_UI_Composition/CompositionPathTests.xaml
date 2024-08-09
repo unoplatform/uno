@@ -9,11 +9,13 @@
 			 d:DesignWidth="400">
 
 	<GridView SelectionMode="None" VerticalAlignment="Top" HorizontalAlignment="Left">
-		<ContentPresenter x:Name="compPresenter1" Width="200" Height="200"/>
-		<ContentPresenter x:Name="compPresenter2" Width="200" Height="200"/>
-		<ContentPresenter x:Name="compPresenter3" Width="200" Height="200"/>
-		<ContentPresenter x:Name="compPresenter4" Width="200" Height="200"/>
-		<ContentPresenter x:Name="compPresenter5" Width="200" Height="200"/>
-		<ContentPresenter x:Name="compPresenter6" Width="200" Height="200"/>
+		<!-- We need to set a background in order for ToolTip to work -->
+		<ContentPresenter x:Name="compPresenter1" Width="200" Height="200" ToolTipService.ToolTip="Basic Shape Visual" Background="Transparent"/>
+		<ContentPresenter x:Name="compPresenter2" Width="200" Height="200" ToolTipService.ToolTip="Complex-Shape Shape Visual" Background="Transparent"/>
+		<ContentPresenter x:Name="compPresenter3" Width="200" Height="200" ToolTipService.ToolTip="Multi-Shape Shape Visual" Background="Transparent"/>
+		<ContentPresenter x:Name="compPresenter4" Width="200" Height="200" ToolTipService.ToolTip="Circle Path Geometry" Background="Transparent"/>
+		<ContentPresenter x:Name="compPresenter5" Width="200" Height="200" ToolTipService.ToolTip="Rounded Rectangle Path Geometry" Background="Transparent"/>
+		<ContentPresenter x:Name="compPresenter6" Width="200" Height="200" ToolTipService.ToolTip="Polygon Path Geometry" Background="Transparent"/>
+		<ContentPresenter x:Name="compPresenter7" Width="200" Height="200" ToolTipService.ToolTip="Path Geometry Clipping" Background="Transparent"/>
 	</GridView>
 </UserControl>

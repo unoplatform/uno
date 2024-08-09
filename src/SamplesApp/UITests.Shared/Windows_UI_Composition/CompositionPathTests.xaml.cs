@@ -784,6 +784,25 @@ namespace UITests.Shared.Windows_UI_Composition
 			polyVisual.Offset = new(0, 5, 0);
 
 			ElementCompositionPreview.SetElementChildVisual(compPresenter6, polyVisual);
+
+			// Path Clipping
+			var surface = Microsoft.UI.Xaml.Media.LoadedImageSurface.StartLoadFromUri(new Uri("ms-appx:///Assets/test_image_200_200.png"));
+			surface.LoadCompleted += (s, o) =>
+			{
+				if (o.Status == Microsoft.UI.Xaml.Media.LoadedImageSourceLoadStatus.Success)
+				{
+					var imgBrush = compositor.CreateSurfaceBrush(surface);
+					var imgVisual = compositor.CreateSpriteVisual();
+					imgVisual.Size = new(200, 200);
+					imgVisual.Brush = imgBrush;
+					imgVisual.Offset = new(0, 5, 0);
+
+					var clip = compositor.CreateGeometricClip(polyGeometry);
+					imgVisual.Clip = clip;
+
+					ElementCompositionPreview.SetElementChildVisual(compPresenter7, imgVisual);
+				}
+			};
 		}
 
 		private Vector2[] GetStarPoints(Vector2 center, float radius, int numPoints, float innerRadiusFactor)
