@@ -91,7 +91,7 @@ public class LocalSettings_Tests : SampleControlUITestBase
 
         {
             _app.Tap(addButton);
-           _app.WaitForDependencyPropertyValue(output, "Text", 1);
+            _app.WaitForDependencyPropertyValue(output, "Text", 1);
             TakeScreenshot("Add Button");
         }
 
