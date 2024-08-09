@@ -288,5 +288,9 @@ input::-ms-clear {
 
 /* Uno has its own HR indicator: hide default dotnet indicator. */
 #dotnet-hotreload-toast {
-  visibility: collapse
+  visibility: collapse;
+}
+
+.uno-nativewebview {
+  border: 0px;
 }

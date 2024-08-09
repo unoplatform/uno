@@ -21,18 +21,7 @@ public partial class CoreWebView2
 	/// <summary>
 	/// Gets the title for the current top-level document.
 	/// </summary>
-	public string DocumentTitle
-	{
-		get => _documentTitle;
-		set
-		{
-			if (_documentTitle != value)
-			{
-				_documentTitle = value;
-				DocumentTitleChanged?.Invoke(this, null);
-			}
-		}
-	}
+	public string DocumentTitle => _nativeWebView.DocumentTitle;
 
 	/// <summary>
 	/// Gets the URI of the current top level document.
