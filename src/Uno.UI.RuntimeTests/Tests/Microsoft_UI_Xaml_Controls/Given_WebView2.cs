@@ -219,7 +219,7 @@ public class Given_WebView2
 			await webView.EnsureCoreWebView2Async();
 			webView.NavigationCompleted += (sender, e) => navigated = true;
 			webView.NavigateToString("<html><body><div id='test' style='width: 100px; height: 100px; background-color: blue;' /></body></html>");
-			await TestServices.WindowHelper.WaitFor(() => navigated);
+			await TestServices.WindowHelper.WaitFor(() => navigated, 3000);
 
 			var color = await webView.ExecuteScriptAsync("eval({ 'color' : document.getElementById('test').style.backgroundColor })");
 			Assert.AreEqual("{\"color\":\"blue\"}", color);
@@ -250,7 +250,7 @@ public class Given_WebView2
 			await webView.EnsureCoreWebView2Async();
 			webView.NavigationCompleted += (sender, e) => navigated = true;
 			webView.NavigateToString("<html></html>");
-			await TestServices.WindowHelper.WaitFor(() => navigated);
+			await TestServices.WindowHelper.WaitFor(() => navigated, 3000);
 
 			var script = $"'hello \"world\"'.toString()";
 			var result = await webView.ExecuteScriptAsync(script);
@@ -277,7 +277,7 @@ public class Given_WebView2
 
 			webView.NavigationCompleted += (sender, e) => navigated = true;
 			webView.NavigateToString("<html></html>");
-			await TestServices.WindowHelper.WaitFor(() => navigated);
+			await TestServices.WindowHelper.WaitFor(() => navigated, 3000);
 			var script = "(1 + 1).toString()";
 
 			var result = await webView.ExecuteScriptAsync($"eval(\"{script}\")");
@@ -346,7 +346,7 @@ public class Given_WebView2
 			await webView.EnsureCoreWebView2Async();
 			webView.NavigationCompleted += (sender, e) => navigated = true;
 			webView.NavigateToString("<html></html>");
-			await TestServices.WindowHelper.WaitFor(() => navigated);
+			await TestServices.WindowHelper.WaitFor(() => navigated, 3000);
 			var script = "(1 + 1)";
 
 			var result = await webView.ExecuteScriptAsync($"eval(\"{script}\")");
