@@ -44,7 +44,9 @@ NSView* uno_native_create_sample(NSWindow *window, const char* _Nullable text)
 void uno_native_arrange(NSView *element, double arrangeLeft, double arrangeTop, double arrangeWidth, double arrangeHeight, double clipLeft, double clipTop, double clipWidth, double clipHeight)
 {
     NSRect clip = NSMakeRect(clipLeft, clipTop, clipWidth, clipHeight);
-    element.hidden = NSIsEmptyRect(clip);
+    if (!element.hidden) {
+        element.hidden = NSIsEmptyRect(clip);
+    }
     // TODO handle partial case with element special layers
 
     NSRect arrange = NSMakeRect(arrangeLeft, arrangeTop, arrangeWidth, arrangeWidth);
@@ -109,7 +111,7 @@ void uno_native_set_opacity(NSView* element, double opacity)
 void uno_native_set_visibility(NSView* element, bool visible)
 {
 #if DEBUG
-    NSLog(@"uno_native_set_visibility #%p : %s -> %s", element, element.hidden ? "TRUE" : "FALSE", visible ? "TRUE" : "FALSE");
+    NSLog(@"uno_native_set_visibility #%p : hidden %s -> visible %s", element, element.hidden ? "TRUE" : "FALSE", visible ? "TRUE" : "FALSE");
 #endif
     element.hidden = !visible;
 }
