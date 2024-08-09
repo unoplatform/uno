@@ -18,11 +18,6 @@ public partial class Application
 		PermissionsHelper.Initialize();
 	}
 
-	static partial void StartPartial(ApplicationInitializationCallback callback)
-	{
-		callback(new ApplicationInitializationCallbackParams());
-	}
-
 	/// <remarks>
 	/// The 5 second timeout seems to be the safest timeout for suspension activities.
 	/// See - https://stackoverflow.com/a/3987733/732221

@@ -79,8 +79,6 @@ namespace Microsoft.UI.Xaml
 			});
 
 			RegisterExtensions();
-
-			InitializePartialStatic();
 		}
 
 		/// <summary>
@@ -106,8 +104,6 @@ namespace Microsoft.UI.Xaml
 		{
 			ApiExtensibility.Register<MessageDialog>(typeof(IMessageDialogExtension), dialog => new MessageDialogExtension(dialog));
 		}
-
-		static partial void InitializePartialStatic();
 
 		[Preserve]
 		public static class TraceProvider
@@ -258,10 +254,22 @@ namespace Microsoft.UI.Xaml
 
 		public static void Start(global::Microsoft.UI.Xaml.ApplicationInitializationCallback callback)
 		{
-			StartPartial(callback);
+			try
+			{
+				_startInvoked = true;
+				StartPartial();
+				callback(new ApplicationInitializationCallbackParams());
+			}
+			catch (Exception ex)
+			{
+				if (typeof(Application).Log().IsEnabled(LogLevel.Error))
+				{
+					typeof(Application).Log().LogError("Application initialization failed.", ex);
+				}
+			}
 		}
 
-		static partial void StartPartial(ApplicationInitializationCallback callback);
+		static partial void StartPartial();
 
 		protected internal virtual void OnActivated(IActivatedEventArgs args) { }
 

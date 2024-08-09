@@ -21,12 +21,12 @@ namespace Microsoft.UI.Xaml
 
 		partial void InitializePartial()
 		{
-			SetCurrentLanguage();
-
 			if (!_startInvoked)
 			{
 				throw new InvalidOperationException("The application must be started using Application.Start first, e.g. Microsoft.UI.Xaml.Application.Start(_ => new App());");
 			}
+
+			SetCurrentLanguage();
 
 			_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, Initialize);
 
@@ -79,15 +79,11 @@ namespace Microsoft.UI.Xaml
 			Start(callback);
 		}
 
-		static partial void StartPartial(ApplicationInitializationCallback callback)
+		static partial void StartPartial()
 		{
-			_startInvoked = true;
-
 			SynchronizationContext.SetSynchronizationContext(
 				ApplicationSynchronizationContext = new NativeDispatcherSynchronizationContext(NativeDispatcher.Main, NativeDispatcherPriority.Normal)
 			);
-
-			callback(new ApplicationInitializationCallbackParams());
 		}
 
 		private void Initialize()
