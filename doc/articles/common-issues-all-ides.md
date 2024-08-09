@@ -21,7 +21,7 @@ Try building your project again.
 
 ## Runtime error `No parameterless constructor defined for XXXX`
 
-This error is generally caused by some missing [IL Linker](https://github.com/mono/linker/tree/master/docs) configuration on WebAssembly. You may need to add some of your application assemblies in the LinkerConfig.xml file of your project. You can find [additional information in the documentation](features/using-il-linker-webassembly.md).
+This error is generally caused by some missing [IL Linker](https://github.com/dotnet/runtime/tree/main/src/tools/illink) configuration on WebAssembly. You may need to add some of your application assemblies in the LinkerConfig.xml file of your project. You can find [additional information in the documentation](features/using-il-linker-webassembly.md).
 
 Similar error messages using various libraries:
 

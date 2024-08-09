@@ -9,7 +9,7 @@ The available extensions are:
 
 Dependency Injection (DI) is an Inversion of Control (IoC) technique that enables consuming classes not to worry about the management or creation of their dependencies and instead rely on a central service to provide it when needed, based on how the provider was configured.  
 
-Uno Platform brings the power of [Microsoft Extensions Dependency Injection](https://learn.microsoft.com/dotnet/core/extensions/dependency-injection) to all OSs Uno Platform targets and adds its additional functionality via its Uno.Extensions.DependencyInjection library, which you can learn more about [here](xref:Overview.DependencyInjection).  
+Uno Platform brings the power of [Microsoft Extensions Dependency Injection](https://learn.microsoft.com/dotnet/core/extensions/dependency-injection) to all operating systems it targets and enhances it with additional functionality through its Uno.Extensions.DependencyInjection library. You can learn more about it in the [Uno.Extensions.DependencyInjection overview](xref:Uno.Extensions.DependencyInjection.Overview).
 
 This is included by default in the recommended preset, but not in the blank preset.
 
@@ -24,7 +24,7 @@ dotnet new unoapp -di
 
 This extension provides a way to load application configuration data from and to various sources using the [Options Pattern](https://learn.microsoft.com/dotnet/core/extensions/options). This is included by default in the recommended preset, but not in the blank preset.
 
-Refer to the [Uno Configuration](xref:Overview.Configuration) documentation for more information.
+Refer to the [Uno Configuration](xref:Uno.Extensions.Configuration.Overview) documentation for more information.
 
 ```dotnetcli
 dotnet new unoapp -config
@@ -34,9 +34,9 @@ dotnet new unoapp -config
 
 Uno.Extensions.Http allows for the registration of API endpoints as multiple typed HttpClient instances. In this centralized location for accessing web resources, the lifecycle of the corresponding HttpMessageHandler objects is managed. Added clients can optionally be configured to use the platform-native handler. Additional functionality is provided to clear cookies or log diagnostic messages in responses. This library uses Microsoft.Extensions.Http for any HTTP-related work. This is included by default in the recommended preset, but not in the blank preset.
 
-For more documentation on HTTP requests, [read the documentation](xref:Overview.Http).
+For more documentation on HTTP requests, [read the documentation](xref:Uno.Extensions.Http.Overview).
 
-Refer to the [documentation](xref:Overview.Http#refit) to learn how to use it in an Uno Platform app.
+Refer to the [documentation](xref:Uno.Extensions.Http.Overview#Refit) to learn how to use it in an Uno Platform app.
 
 ```dotnetcli
 dotnet new unoapp -http
@@ -47,9 +47,9 @@ dotnet new unoapp -http
 The Localization extension is responsible for managing globalization in your app.  
 This enables keeping all translations of your app in a single place and enables the user to easily switch the UI language.
 
-The generated app contains *resw* files which can be used to define the application strings. The defined languages are configured in *appsettings.json*. Follow [this link](Learn.Tutorials.Localization.HowToUseLocalization#3-update-the-ui-culture-with-localizationsettings) to learn how to switch the UI culture.
+The generated app contains *resw* files, which are used to define the application strings. The supported languages are configured in *appsettings.json*. To learn how to switch the UI culture, refer to the [localization tutorial](xref:Uno.Extensions.Localization.HowToUseLocalization#4-update-the-ui-culture-with-localizationsettings).
 
-![Visual Studio Solution Explorer showing localization files](assets/localization.jpg)
+![Visual Studio Solution Explorer showing localization files](../assets/localization.jpg)
 
 The default settings come with the following pre-set languages: English (*en*), Spanish (*es*), French (*fr*), and Portuguese - Brazil (*pt-BR*).
 
