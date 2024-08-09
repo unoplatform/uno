@@ -52,19 +52,19 @@ public sealed partial class AppWindowClosing : Page
 		secondaryWindow.Content = content;
 		secondaryWindow.AppWindow.Closing += OnSecondaryWindowClosing;
 		secondaryWindow.Activate();
-	}
 
-	private async void OnSecondaryWindowClosing(AppWindow sender, AppWindowClosingEventArgs args)
-	{
-		args.Cancel = true;
-		var dialog = new ContentDialog
+		async void OnSecondaryWindowClosing(AppWindow sender, AppWindowClosingEventArgs args)
 		{
-			Title = "Closing the window canceled.",
-			Content = "The secondary window should remain open.",
-			CloseButtonText = "OK",
-			XamlRoot = this.XamlRoot
-		};
+			args.Cancel = true;
+			var dialog = new ContentDialog
+			{
+				Title = "Closing the window canceled.",
+				Content = "The secondary window should remain open.",
+				CloseButtonText = "OK",
+				XamlRoot = content.XamlRoot,
+			};
 
-		await dialog.ShowAsync();
+			await dialog.ShowAsync();
+		}
 	}
 }

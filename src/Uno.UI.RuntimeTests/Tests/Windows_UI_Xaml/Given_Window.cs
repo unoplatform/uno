@@ -270,7 +270,31 @@ public class Given_Window
 
 	[TestMethod]
 	[RunsOnUIThread]
-	public async Task When_Window_Close_Programmatically()
+	public async Task When_Window_Close_Programmatically_Does_Not_Trigger_Closing()
+	{
+		if (!SupportsMultipleWindows())
+		{
+			Assert.Inconclusive("This test can only run in an environment with multiwindow support");
+		}
+
+		var sut = new Window();
+		var content = new Border() { Width = 100, Height = 100 };
+		sut.Content = content;
+		bool closingTriggered = false;
+		sut.AppWindow.Closing += (s, e) => closingTriggered = true;
+
+		sut.Activate();
+
+		await TestServices.WindowHelper.WaitForLoaded(content);
+
+		sut.Close();
+
+		closingTriggered.Should().BeFalse();
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Window_Close_Programmatically_Event_Order()
 	{
 		if (!SupportsMultipleWindows())
 		{
@@ -294,9 +318,7 @@ public class Given_Window
 		await TestServices.WindowHelper.WaitFor(() => eventOrder.Contains("(Window.Closed)"));
 		await TestServices.WindowHelper.WaitFor(() => eventOrder.Contains("(Unloaded)"));
 
-		eventOrder.Should()
-			.NotContain("(AppWindow.Closing)")
-			.And.BeEquivalentTo("(Window.Closed)(Unloaded)");
+		eventOrder.Should().BeEquivalentTo("(Window.Closed)(Unloaded)");
 	}
 
 	[TestMethod]
@@ -312,6 +334,19 @@ public class Given_Window
 		window.Close();
 
 		await TestServices.WindowHelper.WaitFor(() => window.ClosedExecuted);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Window_Title_In_Xaml()
+	{
+		var window = new WindowClosed();
+		var content = new Border() { Width = 100, Height = 100 };
+		window.Content = content;
+		window.Activate();
+
+		await TestServices.WindowHelper.WaitForLoaded(content);
+		Assert.AreEqual("Test title", window.Title);
 	}
 #endif
 }
