@@ -194,15 +194,12 @@ internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 		switch (_player.Source)
 		{
 			case MediaPlaybackItem item:
-				Console.WriteLine($"Initializing Source MediaPlaybackItem {item.Source.Uri}");
 				Uri = item.Source.Uri;
 				break;
 			case MediaSource source:
-				Console.WriteLine($"Initializing Source MediaSource {source.Uri}");
 				Uri = source.Uri;
 				break;
 			case MediaPlaybackList playlist:
-				Console.WriteLine($"Initializing Source MediaPlaybackList {playlist.Items.FirstOrDefault()?.Source.Uri}");
 				_playlist = playlist;
 				_playlistIndex = _playlist.Items.Count > 0 ? 0 : -1;
 				Uri = _playlist.Items.FirstOrDefault()?.Source.Uri;
