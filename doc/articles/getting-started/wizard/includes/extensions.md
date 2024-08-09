@@ -47,7 +47,7 @@ dotnet new unoapp -http
 The Localization extension is responsible for managing globalization in your app.  
 This enables keeping all translations of your app in a single place and enables the user to easily switch the UI language.
 
-The generated app contains *resw* files which can be used to define the application strings. The defined languages are configured in *appsettings.json*. Follow [this link](xref:Learn.Tutorials.Localization.HowToUseLocalization#3-update-the-ui-culture-with-localizationsettings) to learn how to switch the UI culture.
+The generated app contains *resw* files, which are used to define the application strings. The supported languages are configured in *appsettings.json*. To learn how to switch the UI culture, refer to the [localization tutorial](xref:Uno.Extensions.Localization.HowToUseLocalization#4-update-the-ui-culture-with-localizationsettings).
 
 ![Visual Studio Solution Explorer showing localization files](../assets/localization.jpg)
 
