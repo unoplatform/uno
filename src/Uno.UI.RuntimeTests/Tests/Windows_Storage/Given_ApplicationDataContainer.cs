@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Storage;
 
 namespace Uno.UI.Samples.Tests.Windows_Storage
@@ -277,6 +275,14 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 			var SUT = ApplicationData.Current.LocalSettings;
 
 			Assert.IsNull(SUT.Values["ThisKeyDoesNotExist"]);
+		}
+
+		[TestMethod]
+		public void When_Container_Values_Type()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			var instance = SUT.Values;
+			Assert.IsInstanceOfType(SUT.Values, typeof(ApplicationDataContainerSettings));
 		}
 
 		[TestMethod]
