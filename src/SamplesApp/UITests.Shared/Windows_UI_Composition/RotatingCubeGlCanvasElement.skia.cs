@@ -64,31 +64,33 @@ namespace UITests.Shared.Windows_UI_Composition
 			0, 4, 5,
 		};
 
-		private const string VertexShaderSource = @"
-#version 330
+		private readonly string _vertexShaderSource = "#version 330" + Environment.NewLine +
+		"""
 
-layout(location = 0) in vec3 pos;
-layout(location = 1) in vec3 vertex_color;
+		layout(location = 0) in vec3 pos;
+		layout(location = 1) in vec3 vertex_color;
 
-uniform mat4 transform;
+		uniform mat4 transform;
 
-out vec3 color;
+		out vec3 color;
 
-void main() {
-  gl_Position = transform * vec4(pos, 1.0);
-  color = vertex_color;
-}";
+		void main() {
+		  gl_Position = transform * vec4(pos, 1.0);
+		  color = vertex_color;
+		}                                      
+		""";
 
-		private const string FragmentShaderSource = @"
-#version 330
+		private readonly string FragmentShaderSource = "#version 330" + Environment.NewLine +
+		"""
 
-in vec3 color;
+		in vec3 color;
 
-out vec4 frag_color;
+		out vec4 frag_color;
 
-void main() {
-  frag_color = vec4(color, 1.0);
-}";
+		void main() {
+		  frag_color = vec4(color, 1.0);
+		}                                     
+		""";
 
 		protected override void Init(GL Gl)
 		{
@@ -99,7 +101,7 @@ void main() {
 			_vao.VertexAttributePointer(0, 3, VertexAttribPointerType.Float, 6, 0);
 			_vao.VertexAttributePointer(1, 3, VertexAttribPointerType.Float, 6, 3);
 
-			_shader = new Shader(Gl, VertexShaderSource, FragmentShaderSource);
+			_shader = new Shader(Gl, _vertexShaderSource, FragmentShaderSource);
 		}
 
 		protected override void OnDestroy(GL Gl)

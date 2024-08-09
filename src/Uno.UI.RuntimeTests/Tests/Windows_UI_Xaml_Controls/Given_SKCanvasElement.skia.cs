@@ -24,13 +24,13 @@ public class Given_SKCanvasElement
 
 		var border = new Border
 		{
-			BorderBrush = Colors.Green,
+			BorderBrush = Microsoft.UI.Colors.Green,
 			Height = 400,
 			Child = new ScrollViewer
 			{
 				VerticalAlignment = VerticalAlignment.Top,
 				Height = 100,
-				Background = Colors.Red,
+				Background = Microsoft.UI.Colors.Red,
 				Content = SUT
 			}
 		};
@@ -39,8 +39,8 @@ public class Given_SKCanvasElement
 
 		var bitmap = await UITestHelper.ScreenShot(border);
 
-		ImageAssert.HasColorInRectangle(bitmap, new Rectangle(0, 0, 400, 300), Colors.Blue);
-		ImageAssert.DoesNotHaveColorInRectangle(bitmap, new Rectangle(0, 101, 400, 299), Colors.Blue);
+		ImageAssert.HasColorInRectangle(bitmap, new Rectangle(0, 0, 400, 300), Microsoft.UI.Colors.Blue);
+		ImageAssert.DoesNotHaveColorInRectangle(bitmap, new Rectangle(0, 101, 400, 299), Microsoft.UI.Colors.Blue);
 	}
 
 	private class BlueFillSKCanvasElement : SKCanvasElement

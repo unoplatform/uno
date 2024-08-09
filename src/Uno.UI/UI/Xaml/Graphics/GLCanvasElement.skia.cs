@@ -152,7 +152,7 @@ public abstract partial class GLCanvasElement : FrameworkElement
 
 		_gl!.BindFramebuffer(GLEnum.Framebuffer, _framebuffer);
 		{
-			_gl.Viewport(new System.Drawing.Size((int)_width, (int)_height));
+			_gl.Viewport(new global::System.Drawing.Size((int)_width, (int)_height));
 
 			RenderOverride(_gl);
 
