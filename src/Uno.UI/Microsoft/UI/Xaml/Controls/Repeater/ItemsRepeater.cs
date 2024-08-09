@@ -65,7 +65,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 		internal static Point ClearedElementsArrangePosition = new Point(-10000.0f, -10000.0f);
 
 		// A convention we use in the ItemsRepeater codebase for an invalid Rect value.
-		internal static Rect InvalidRect = new Rect(-1, -1, -1, -1);
+		internal static Rect InvalidRect = Rect.InvalidRect;
 
 		public event TypedEventHandler<ItemsRepeater, ItemsRepeaterElementPreparedEventArgs> ElementPrepared;
 		public event TypedEventHandler<ItemsRepeater, ItemsRepeaterElementIndexChangedEventArgs> ElementIndexChanged;

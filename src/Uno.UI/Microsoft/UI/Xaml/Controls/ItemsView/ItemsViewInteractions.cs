@@ -1402,19 +1402,19 @@ partial class ItemsView
 				else
 				{
 					m_keyboardNavigationReferenceIndex = -1;
-					m_keyboardNavigationReferenceRect = new Rect(-1.0f, -1.0f, -1.0f, -1.0f);
+					m_keyboardNavigationReferenceRect = Rect.InvalidRect;
 				}
 			}
 
 			else
 			{
 				m_keyboardNavigationReferenceIndex = -1;
-				m_keyboardNavigationReferenceRect = new Rect(-1.0f, -1.0f, -1.0f, -1.0f);
+				m_keyboardNavigationReferenceRect = Rect.InvalidRect;
 			}
 		}
 		else
 		{
-			m_keyboardNavigationReferenceRect = new Rect(-1.0f, -1.0f, -1.0f, -1.0f);
+			m_keyboardNavigationReferenceRect = Rect.InvalidRect;
 		}
 
 		//ITEMSVIEW_TRACE_VERBOSE(*this, TRACE_MSG_METH_STR_INT, METH_NAME, this, TypeLogging::RectToString(m_keyboardNavigationReferenceRect).c_str(), m_keyboardNavigationReferenceIndex);
