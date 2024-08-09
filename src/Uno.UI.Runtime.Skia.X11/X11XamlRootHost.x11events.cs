@@ -148,13 +148,10 @@ internal partial class X11XamlRootHost
 					this.Log().Trace($"XLIB EVENT: {@event.type}");
 				}
 
-				if (@event.AnyEvent.window != x11Window.Window)
+				_ = XLib.XQueryTree(x11Window.Display, x11Window.Window, out IntPtr root, out _, out var children, out _);
+				_ = XLib.XFree(children);
+				if (@event.AnyEvent.window == root)
 				{
-#if DEBUG
-					_ = XLib.XQueryTree(x11Window.Display, x11Window.Window, out IntPtr root, out _, out var children, out _);
-					_ = XLib.XFree(children);
-					Debug.Assert(@event.AnyEvent.window == root);
-#endif
 					switch (@event.type)
 					{
 						case XEventName.PropertyNotify:
@@ -179,7 +176,7 @@ internal partial class X11XamlRootHost
 							break;
 					}
 				}
-				else
+				else if (@event.AnyEvent.window == x11Window.Window)
 				{
 					switch (@event.type)
 					{
@@ -261,9 +258,16 @@ internal partial class X11XamlRootHost
 						default:
 							if (this.Log().IsEnabled(LogLevel.Error))
 							{
-								this.Log().Error($"XLIB ERROR: received an unexpected {@event.type} event on window {x11Window.Window.ToString("X", CultureInfo.InvariantCulture)}");
+								this.Log().Error($"XLIB ERROR: received an unexpected {@event.type} event on a non-uno window {@event.AnyEvent.window.ToString("X", CultureInfo.InvariantCulture)}");
 							}
 							break;
+					}
+				}
+				else
+				{
+					if (this.Log().IsEnabled(LogLevel.Error))
+					{
+						this.Log().Error($"XLIB ERROR: received an unexpected {@event.type} event on window {x11Window.Window.ToString("X", CultureInfo.InvariantCulture)}");
 					}
 				}
 			}
