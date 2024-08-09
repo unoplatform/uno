@@ -610,7 +610,7 @@ namespace Microsoft.UI.Xaml.Controls
 			void SingleSelectionCase()
 			{
 
-				if (ItemsSource is ICollectionView collectionView)
+				if (ItemsSource is ICollectionView collectionView and not ISelectionInfo)
 				{
 					//NOTE: Windows seems to call MoveCurrentTo(item); we set position instead to have expected behavior when you have duplicate items in the list.
 					collectionView.MoveCurrentToPosition(clickedIndex);
