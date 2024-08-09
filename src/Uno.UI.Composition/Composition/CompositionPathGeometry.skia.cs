@@ -201,7 +201,16 @@ public partial class CompositionPathGeometry : CompositionGeometry, ID2D1Geometr
 		if (propertyName is nameof(Path))
 		{
 			_commands.Clear();
-			InternalBuildGeometry();
+
+			if (Path is not null)
+			{
+				InternalBuildGeometry();
+			}
+			else
+			{
+				_geometrySource2D?.Dispose();
+				_geometrySource2D = null;
+			}
 		}
 
 		base.OnPropertyChangedCore(propertyName, isSubPropertyChange);
