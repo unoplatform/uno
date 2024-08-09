@@ -700,7 +700,7 @@ namespace Microsoft.UI.Xaml
 		[GeneratedDependencyProperty(DefaultValue = true, Options = FrameworkPropertyMetadataOptions.Inherits)]
 		public static DependencyProperty AllowFocusOnInteractionProperty { get; } = CreateAllowFocusOnInteractionProperty();
 
-		internal
+		internal virtual
 #if __ANDROID__
 			new
 #endif

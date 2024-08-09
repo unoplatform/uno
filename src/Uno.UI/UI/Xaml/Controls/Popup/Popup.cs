@@ -194,6 +194,15 @@ public partial class Popup
 			typeof(Popup),
 			new FrameworkPropertyMetadata(PopupPlacementMode.Auto, FrameworkPropertyMetadataOptions.AffectsArrange));
 
+	internal DependencyObject OverlayInputPassThroughElement
+	{
+		get => (DependencyObject)GetValue(OverlayInputPassThroughElementProperty);
+		set => SetValue(OverlayInputPassThroughElementProperty, value);
+	}
+
+	internal static DependencyProperty OverlayInputPassThroughElementProperty { get; } =
+		DependencyProperty.Register(nameof(OverlayInputPassThroughElement), typeof(DependencyObject), typeof(Popup), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
+
 	/// <summary>
 	/// Gets the actual placement of the popup, in relation to its placement target.
 	/// </summary>
