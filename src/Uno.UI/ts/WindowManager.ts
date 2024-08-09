@@ -1673,6 +1673,11 @@ namespace Uno.UI {
 			return "#" + color.toString(16).padStart(8, "0");
 		}
 
+		public getElementInCoordinate(x: number, y: number): number {
+			const element = document.elementFromPoint(x, y) as HTMLElement;
+			return Number(element.getAttribute("XamlHandle"));
+		}
+
 		public setCursor(cssCursor: string): string {
 			const unoBody = document.getElementById(this.containerElementId);
 

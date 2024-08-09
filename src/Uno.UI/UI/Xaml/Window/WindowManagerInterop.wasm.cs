@@ -1023,6 +1023,12 @@ namespace Uno.UI.Xaml
 		internal static void SetIsFocusable(IntPtr htmlId, bool isFocusable)
 			=> NativeMethods.SetIsFocusable(htmlId, isFocusable);
 
+		internal static UIElement TryGetElementInCoordinate(Point point)
+		{
+			var htmlId = NativeMethods.GetElementInCoordinate(point.X, point.Y);
+			return UIElement.GetElementFromHandle(htmlId);
+		}
+
 		internal static partial class NativeMethods
 		{
 			[JSImport("globalThis.Uno.UI.WindowManager.current.arrangeElementNativeFast")]
@@ -1124,6 +1130,9 @@ namespace Uno.UI.Xaml
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.setIsFocusable")]
 			internal static partial void SetIsFocusable(nint htmlId, bool isFocusable);
+
+			[JSImport("globalThis.Uno.UI.WindowManager.current.getElementInCoordinate")]
+			internal static partial IntPtr GetElementInCoordinate(double x, double y);
 		}
 	}
 }
