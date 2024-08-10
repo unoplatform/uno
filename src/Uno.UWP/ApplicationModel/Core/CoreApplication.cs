@@ -22,8 +22,6 @@ public static partial class CoreApplication
 		InitializePlatform();
 	}
 
-	public static void Initialize() { }
-
 	static partial void InitializePlatform();
 
 	/// <summary>
