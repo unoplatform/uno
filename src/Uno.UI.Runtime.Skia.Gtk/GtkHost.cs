@@ -90,7 +90,7 @@ namespace Uno.UI.Runtime.Skia.Gtk
 				app.Host = this;
 			}
 
-			WinUIApplication.StartWithArguments(CreateApp);
+			WinUIApplication.Start(CreateApp);
 		}
 
 		private bool InitializeGtk()

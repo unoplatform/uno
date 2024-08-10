@@ -160,7 +160,7 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 
 			_renderer = new Renderer(this);
 
-			WUX.Application.StartWithArguments(CreateApp);
+			WUX.Application.Start(CreateApp);
 		}
 
 		void IXamlRootHost.InvalidateRender() => _renderer?.InvalidateRender();
