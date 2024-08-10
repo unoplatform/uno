@@ -269,7 +269,7 @@ namespace Microsoft.UI.Xaml
 
 		internal void InitializationCompleted()
 		{
-  			if (_initializationComplete)
+			if (_initializationComplete)
 			{
 				// InitializationCompleted is currently called from NativeApplication.OnActivityStarted
 				// and will be called every time the app is put to background then back to foreground.
