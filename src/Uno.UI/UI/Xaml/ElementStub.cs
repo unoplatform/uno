@@ -162,15 +162,18 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		internal override void Enter(EnterParams @params, int depth)
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		internal override void EnterImpl(EnterParams @params, int depth)
 		{
 			// the base impl would cause immediately materialization by loading this stub
 			// which is not something we want here.
 		}
 
-		internal override void Leave(LeaveParams @params)
+		internal override void LeaveImpl(LeaveParams @params)
 		{
+			// do nothing
 		}
+#endif
 
 		private protected override void OnLoaded()
 		{

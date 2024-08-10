@@ -1485,7 +1485,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			var content = new Border
 			{
-				Margin = new(0, 4),
+				Margin = new(0, 4, 0, 4),
 				// using alignment to force empty size, without explicitly setting width/height
 				HorizontalAlignment = HorizontalAlignment.Left,
 				VerticalAlignment = VerticalAlignment.Top
@@ -1503,7 +1503,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			};
 
 			await UITestHelper.Load(SUT, x => x.IsLoaded);
-    }
+		}
 
 		public async Task When_Zero_Size_With_Margin()
 		{
