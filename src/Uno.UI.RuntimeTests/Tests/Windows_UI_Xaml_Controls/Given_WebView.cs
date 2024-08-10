@@ -20,12 +20,12 @@ using _View = UIKit.UIView;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
-#if (!HAS_UNO || __ANDROID__ || __IOS__ || __MACOS__ || __SKIA__) && !WINAPPSDK
+#if (!HAS_UNO || __ANDROID__ || __IOS__ || __MACOS__) && !WINAPPSDK
 [TestClass]
 [RunsOnUIThread]
 public class Given_WebView
 {
-	[WebViewTest]
+	[TestMethod]
 #if __IOS__
 	[Ignore("iOS is disabled https://github.com/unoplatform/uno/issues/9080")]
 #endif
@@ -39,8 +39,8 @@ public class Given_WebView
 		Assert.AreEqual("https://bing.com", uri.OriginalString);
 	}
 
-#if __ANDROID__ || __IOS__ || __MACOS__ || __SKIA__
-	[WebViewTest]
+#if __ANDROID__ || __IOS__ || __MACOS__
+	[TestMethod]
 	public void When_NavigateWithHttpRequestMessage()
 	{
 		var webView = new WebView();
@@ -52,10 +52,7 @@ public class Given_WebView
 	}
 #endif
 
-	[WebViewTest]
-#if __SKIA__ && IS_CI
-	[Ignore("Passes locally but fails in CI")]
-#endif
+	[TestMethod]
 	public async Task When_NavigateToString()
 	{
 		var border = new Border();
@@ -128,10 +125,7 @@ public class Given_WebView
 	}
 #endif
 
-	[WebViewTest]
-#if __SKIA__ && IS_CI
-	[Ignore("Passes locally but fails in CI")]
-#endif
+	[TestMethod]
 	public async Task When_GoBack()
 	{
 		var border = new Border();

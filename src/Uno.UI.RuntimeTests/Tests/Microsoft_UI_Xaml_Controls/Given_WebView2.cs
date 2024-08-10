@@ -25,12 +25,12 @@ using _View = UIKit.UIView;
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 
-#if !HAS_UNO || __ANDROID__ || __IOS__ || __SKIA__
+#if !HAS_UNO || __ANDROID__ || __IOS__
 [TestClass]
 [RunsOnUIThread]
 public class Given_WebView2
 {
-	[WebViewTest]
+	[TestMethod]
 #if __IOS__
 	[Ignore("iOS is disabled https://github.com/unoplatform/uno/issues/9080")]
 #endif
@@ -57,7 +57,7 @@ public class Given_WebView2
 		Assert.IsTrue(webView.Source.OriginalString.StartsWith("https://example.com/", StringComparison.OrdinalIgnoreCase));
 	}
 
-	[WebViewTest]
+	[TestMethod]
 	public async Task When_NavigateToString()
 	{
 		var border = new Border();
@@ -87,7 +87,7 @@ public class Given_WebView2
 	}
 
 
-	[WebViewTest]
+	[TestMethod]
 	public async Task When_GoBack()
 	{
 		var border = new Border();
@@ -178,7 +178,7 @@ public class Given_WebView2
 #endif
 
 #if !__IOS__ // Temporarily disabled due to #11997
-	[WebViewTest]
+	[TestMethod]
 	public async Task When_ExecuteScriptAsync_Has_No_Result()
 	{
 		async Task Do()
@@ -203,7 +203,7 @@ public class Given_WebView2
 		await TestHelper.RetryAssert(Do, 3);
 	}
 
-	[WebViewTest]
+	[TestMethod]
 	public async Task When_ExecuteScriptAsync()
 	{
 		async Task Do()
@@ -234,7 +234,7 @@ public class Given_WebView2
 		await TestHelper.RetryAssert(Do, 3);
 	}
 
-	[WebViewTest]
+	[TestMethod]
 	public async Task When_ExecuteScriptAsync_String_Double_Quote()
 	{
 		async Task Do()
@@ -260,7 +260,7 @@ public class Given_WebView2
 		await TestHelper.RetryAssert(Do, 3);
 	}
 
-	[WebViewTest]
+	[TestMethod]
 	public async Task When_ExecuteScriptAsync_String()
 	{
 		async Task Do()
@@ -287,11 +287,9 @@ public class Given_WebView2
 		await TestHelper.RetryAssert(Do, 3);
 	}
 
-	[WebViewTest]
+	[TestMethod]
 #if WINAPPSDK
 	[Ignore("Crashes")]
-#elif __SKIA__ && IS_CI
-	[Ignore("Passes locally but fails in CI")]
 #endif
 	public async Task When_LocalFolder_File()
 	{
@@ -330,7 +328,7 @@ public class Given_WebView2
 		await TestHelper.RetryAssert(Do, 3);
 	}
 
-	[WebViewTest]
+	[TestMethod]
 	public async Task When_ExecuteScriptAsync_Non_String()
 	{
 		async Task Do()
@@ -360,7 +358,7 @@ public class Given_WebView2
 #if __IOS__
 	[Ignore("Currently fails on iOS https://github.com/unoplatform/uno/issues/9080")]
 #endif
-	[WebViewTest]
+	[TestMethod]
 	public async Task When_WebMessageReceived()
 	{
 		var border = new Border();
