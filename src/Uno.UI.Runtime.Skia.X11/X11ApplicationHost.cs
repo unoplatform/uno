@@ -109,7 +109,7 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 			app.Host = this;
 		}
 
-		Application.StartWithArguments(CreateApp);
+		Application.Start(CreateApp);
 	}
 
 	protected override void Initialize()
