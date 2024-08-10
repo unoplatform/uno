@@ -85,8 +85,8 @@
 
 	<Import Project="..\..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
 
-	<Import Project="..\..\..\build\nuget\*.Skia.Wpf.props" />
-	<Import Project="..\..\..\build\nuget\*.Skia.Wpf.targets" />
+	<Import Project="..\..\Uno.UI.Runtime.Skia.Wpf\buildTransitive\*.Runtime.Skia.Wpf.props" />
+	<Import Project="..\..\Uno.UI.Runtime.Skia.Wpf\buildTransitive\*.Runtime.Skia.Wpf.targets" />
 	<Import Project="..\..\..\build\nuget\uno.winui.runtime-replace.targets" />
 	
 </Project>
