@@ -19,16 +19,18 @@ namespace Microsoft.UI.Xaml
 		private static bool _startInvoked;
 		private static string _arguments = "";
 
+		[ThreadStatic]
+		private static Application _current;
+
 		partial void InitializePartial()
 		{
+			_current = this;
 			SetCurrentLanguage();
 
 			if (!_startInvoked)
 			{
 				throw new InvalidOperationException("The application must be started using Application.Start first, e.g. Microsoft.UI.Xaml.Application.Start(_ => new App());");
 			}
-
-			_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, Initialize);
 
 			CoreApplication.SetInvalidateRender(compositionTarget =>
 			{
@@ -88,9 +90,11 @@ namespace Microsoft.UI.Xaml
 			);
 
 			callback(new ApplicationInitializationCallbackParams());
+
+			_current.InvokeOnLaunched();
 		}
 
-		private void Initialize()
+		private void InvokeOnLaunched()
 		{
 			using (WritePhaseEventTrace(TraceProvider.LauchedStart, TraceProvider.LauchedStop))
 			{
