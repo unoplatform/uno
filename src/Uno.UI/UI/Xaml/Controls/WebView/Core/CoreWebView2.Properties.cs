@@ -40,7 +40,7 @@ public partial class CoreWebView2
 	public string Source
 	{
 		get => _source;
-		private set
+		internal set
 		{
 			if (_source != value)
 			{
