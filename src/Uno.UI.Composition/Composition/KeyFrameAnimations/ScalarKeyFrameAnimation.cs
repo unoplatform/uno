@@ -36,14 +36,7 @@ public partial class ScalarKeyFrameAnimation : KeyFrameAnimation
 			startValue = (float)compositionObject.GetAnimatableProperty(propertyName.ToString(), subPropertyName.ToString());
 		}
 
-		Func<float, float, float, float> lerp =
-#if NET8_0_OR_GREATER
-			float.Lerp;
-#else
-			(value1, value2, amount) => (value1 * (1.0f - amount)) + (value2 * amount);
-#endif
-
-		_keyframeEvaluator = new KeyFrameEvaluator<float>(startValue, _keyFrames[1.0f], Duration, _keyFrames, lerp, IterationCount, IterationBehavior, Compositor);
+		_keyframeEvaluator = new KeyFrameEvaluator<float>(startValue, _keyFrames[1.0f], Duration, _keyFrames, float.Lerp, IterationCount, IterationBehavior, Compositor);
 		return startValue;
 	}
 #endif

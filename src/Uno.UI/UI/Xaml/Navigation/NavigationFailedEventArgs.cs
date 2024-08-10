@@ -1,36 +1,31 @@
 ﻿using System;
 using Windows.Foundation.Metadata;
 
-namespace Microsoft.UI.Xaml.Navigation
-{
-	public sealed partial class NavigationFailedEventArgs
-	{
-		internal NavigationFailedEventArgs(Type sourcePageType, Exception exception)
-		{
-			SourcePageType = sourcePageType;
-			Exception = exception;
-		}
+namespace Microsoft.UI.Xaml.Navigation;
 
-		//
-		// Summary:
-		//     Gets the result code for the exception that is associated with the failed navigation.
-		//
-		// Returns:
-		//     A system exception result code.
-		public Exception Exception { get; }
-		//
-		// Summary:
-		//     Gets or sets a value that indicates whether the failure event has been handled.
-		//
-		// Returns:
-		//     true if the failure event is handled; false if the failure event is not yet handled.
-		public bool Handled { get; set; }
-		//
-		// Summary:
-		//     Gets the data type of the target page.
-		//
-		// Returns:
-		//     The data type of the target page, represented as namespace.type or simply type.
-		public Type SourcePageType { get; }
+/// <summary>
+/// Provides event data for the WebView.NavigationFailed and Frame.NavigationFailed events.
+/// </summary>
+public sealed partial class NavigationFailedEventArgs
+{
+	internal NavigationFailedEventArgs(Type sourcePageType, Exception exception)
+	{
+		SourcePageType = sourcePageType;
+		Exception = exception;
 	}
+
+	/// <summary>
+	/// Gets the result code for the exception that is associated with the failed navigation.
+	/// </summary>
+	public Exception Exception { get; }
+
+	/// <summary>
+	/// Gets or sets a value that indicates whether the failure event has been handled.
+	/// </summary>
+	public bool Handled { get; set; }
+
+	/// <summary>
+	/// Gets the value of the sourcePageType parameter (the page being navigated to) from the originating Navigate call.
+	/// </summary>
+	public Type SourcePageType { get; }
 }

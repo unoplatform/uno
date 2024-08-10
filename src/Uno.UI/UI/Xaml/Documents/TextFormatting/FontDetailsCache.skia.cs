@@ -1,21 +1,14 @@
 ﻿#nullable enable
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using HarfBuzzSharp;
 using SkiaSharp;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
-using Uno.UI.Xaml;
+using Uno.UI.Dispatching;
 using Uno.UI.Xaml.Media;
-using Windows.ApplicationModel;
 using Windows.Storage;
 using Windows.Storage.Helpers;
 using Windows.UI.Text;
@@ -31,30 +24,25 @@ internal static class FontDetailsCache
 		FontStretch Stretch,
 		FontStyle Style);
 
-	private static readonly ConcurrentDictionary<string, SKTypeface?> _typefaceCache = new();
 	private static Dictionary<FontCacheEntry, FontDetails> _fontCache = new();
 	private static object _fontCacheGate = new();
 
 	internal static void OnFontLoaded(string font, SKTypeface? typeface)
 	{
-		_typefaceCache[font] = typeface;
 		lock (_fontCacheGate)
 		{
-			foreach (var key in _fontCache.Keys)
+			foreach (var (key, details) in _fontCache)
 			{
 				if (key.Name == font)
 				{
-					if (_fontCache.TryGetValue(key, out var details))
+					if (typeface is null)
 					{
-						if (typeface is null)
-						{
-							// font load failed.
-							details.LoadFailed();
-						}
-						else
-						{
-							details.Update(typeface);
-						}
+						// font load failed.
+						details.LoadFailed();
+					}
+					else
+					{
+						details.Update(typeface);
 					}
 				}
 			}
@@ -93,7 +81,7 @@ internal static class FontDetailsCache
 	}
 
 	private static FontDetails GetFontInternal(
-		string? name,
+		string name,
 		float fontSize,
 		FontWeight weight,
 		FontStretch stretch,
@@ -105,11 +93,6 @@ internal static class FontDetailsCache
 
 		SKTypeface? skTypeFace;
 		bool temporaryDefaultFont = false;
-
-		if (name == null || string.Equals(name, "XamlAutoFontFamily", StringComparison.OrdinalIgnoreCase))
-		{
-			name = FeatureConfiguration.Font.DefaultTextFontFamily;
-		}
 
 		var hashIndex = name.IndexOf('#');
 		if (hashIndex > 0)
@@ -139,25 +122,28 @@ internal static class FontDetailsCache
 				skTypeFace = null;
 				task.ContinueWith(task =>
 				{
-					try
+					NativeDispatcher.Main.Enqueue(() =>
 					{
-						if (task.IsCompletedSuccessfully)
+						try
 						{
-							OnFontLoaded(name, task.Result);
+							if (task.IsCompletedSuccessfully)
+							{
+								OnFontLoaded(name, task.Result);
+							}
+							else
+							{
+								// Load failed.
+								OnFontLoaded(name, null);
+							}
 						}
-						else
+						catch (Exception e)
 						{
-							// Load failed.
-							OnFontLoaded(name, null);
+							if (typeof(FontDetailsCache).Log().IsEnabled(LogLevel.Error))
+							{
+								typeof(FontDetailsCache).Log().LogError($"Failed to load font {name} from ms-appx: {e}");
+							}
 						}
-					}
-					catch (Exception e)
-					{
-						if (typeof(FontDetailsCache).Log().IsEnabled(LogLevel.Error))
-						{
-							typeof(FontDetailsCache).Log().LogError($"Failed to load font {name} from ms-appx: {e}");
-						}
-					}
+					});
 				});
 			}
 		}
@@ -189,6 +175,11 @@ internal static class FontDetailsCache
 		FontStretch stretch,
 		FontStyle style)
 	{
+		if (name == null || string.Equals(name, "XamlAutoFontFamily", StringComparison.OrdinalIgnoreCase))
+		{
+			name = FeatureConfiguration.Font.DefaultTextFontFamily;
+		}
+
 		var key = new FontCacheEntry(name, fontSize, weight, stretch, style);
 
 		lock (_fontCacheGate)

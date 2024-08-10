@@ -1343,7 +1343,7 @@ namespace Microsoft.UI.Xaml
 			set => SetXYFocusKeyboardNavigationValue(value);
 		}
 
-		[GeneratedDependencyProperty(DefaultValue = default(XYFocusKeyboardNavigationMode), Options = FrameworkPropertyMetadataOptions.Inherits)]
+		[GeneratedDependencyProperty(DefaultValue = default(XYFocusKeyboardNavigationMode))]
 		public static DependencyProperty XYFocusKeyboardNavigationProperty { get; } = CreateXYFocusKeyboardNavigationProperty();
 
 		public XYFocusNavigationStrategy XYFocusDownNavigationStrategy

@@ -182,8 +182,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			Assert.AreEqual("[SolidColorBrush #FFFF0000]", tb02.Foreground?.ToString());
 
 			var tb01 = SUT.FindName("tb01") as TextBlock;
-			// This assertion is incorrect because of https://github.com/unoplatform/uno/issues/6700
-			Assert.AreEqual("[SolidColorBrush #FF000000]", tb01.Foreground?.ToString());
+
+			Assert.AreEqual("[SolidColorBrush #FFFF0000]", tb01.Foreground?.ToString());
 		}
 	}
 }

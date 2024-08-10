@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
+using Private.Infrastructure;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls
 {
@@ -9,6 +10,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls
 		public ContentDialog_Leak()
 		{
 			InitializeComponent();
+			XamlRoot = TestServices.WindowHelper.XamlRoot;
 		}
 
 

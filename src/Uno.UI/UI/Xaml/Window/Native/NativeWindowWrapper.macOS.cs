@@ -14,6 +14,7 @@ using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Windowing;
 using Uno.Disposables;
+using Windows.Graphics;
 using Windows.Graphics.Display;
 using Size = Windows.Foundation.Size;
 
@@ -95,7 +96,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		return new CGSize(applicationFrameSize.Width, applicationFrameSize.Height);
 	}
 
-	internal void OnNativeVisibilityChanged(bool visible) => Visible = visible;
+	internal void OnNativeVisibilityChanged(bool visible) => IsVisible = visible;
 
 	internal void OnNativeActivated(CoreWindowActivationState state) => ActivationState = state;
 
@@ -108,6 +109,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		var newWindowSize = new Size(_window.Frame.Width, _window.Frame.Height);
 		Bounds = new Rect(default, newWindowSize);
 		VisibleBounds = Bounds;
+		Size = newWindowSize.ToSizeInt32();
 	}
 
 	private void ObserveOrientationAndSize()

@@ -64,7 +64,7 @@
 								<VisualState x:Name="Checked">
 									<VisualState.Setters>
 										<Setter Target="ContentElement.Foreground"
-												Value="{StaticResource Color06Brush}" />
+												Value="{ThemeResource AccentFillColorDefaultBrush}" />
 									</VisualState.Setters>
 								</VisualState>
 								<VisualState x:Name="Unchecked" />

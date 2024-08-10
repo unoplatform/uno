@@ -52,7 +52,6 @@ namespace Microsoft.UI.Xaml.Data
 
 		public Binding()
 		{
-
 		}
 
 		/// <summary>
@@ -68,7 +67,6 @@ namespace Microsoft.UI.Xaml.Data
 			Path = path ?? new PropertyPath(String.Empty);
 			Converter = converter;
 			ConverterParameter = converterParameter;
-			Mode = BindingMode.OneWay;
 		}
 
 		public static implicit operator Binding(string path)
@@ -98,7 +96,7 @@ namespace Microsoft.UI.Xaml.Data
 		/// Gets or sets a value that names the language to pass to any converter specified by the Converter property.
 		/// </summary>
 		/// <value>The converter language.</value>
-		public string ConverterLanguage { get; set; }
+		public string ConverterLanguage { get; set; } = "";
 
 		/// <summary>
 		/// Gets or sets the name of the element to use as the binding source for the Binding.
@@ -129,7 +127,7 @@ namespace Microsoft.UI.Xaml.Data
 		/// Gets or sets a value that indicates the direction of the data flow in the binding.
 		/// </summary>
 		/// <value>The mode.</value>
-		public BindingMode Mode { get; set; }
+		public BindingMode Mode { get; set; } = BindingMode.OneWay;
 
 		/// <summary>
 		/// Gets or sets the binding source by specifying its location relative to the position of the binding target. This is most often used in bindings within XAML control templates.

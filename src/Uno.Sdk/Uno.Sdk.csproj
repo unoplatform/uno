@@ -9,7 +9,6 @@
 		<PackageType>MSBuildSdk</PackageType>
 		<SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
 		<Description>Provides a base SDK for Uno Platform projects.</Description>
-		<PackageIcon>uno.png</PackageIcon>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<UnoSdkVersionSuffix>_v0</UnoSdkVersionSuffix>
 		<!-- This is better but Jerome made me take it out -->
@@ -32,6 +31,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<!-- Avoid transitive dependency from Microsoft.Build.Tasks.Core on 7.0.0 which has a vulnerability -->
+		<PackageReference Include="System.Formats.Asn1" Version="8.0.1" />
+
 		<PackageReference Include="Microsoft.Build.Tasks.Core" Version="17.8.3" />
 		<PackageReference Include="PolySharp" Version="1.14.1">
 			<PrivateAssets>all</PrivateAssets>

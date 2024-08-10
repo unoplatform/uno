@@ -29,15 +29,9 @@ internal class FrameBufferWindowWrapper : NativeWindowWrapperBase
 		VisibleBounds = new Rect(default, newWindowSize);
 	}
 
-	internal void OnNativeVisibilityChanged(bool visible) => Visible = visible;
+	internal void OnNativeVisibilityChanged(bool visible) => IsVisible = visible;
 
 	internal void OnNativeActivated(CoreWindowActivationState state) => ActivationState = state;
 
 	internal void OnNativeClosed() => RaiseClosed();
-
-	internal void SetWindow(Window window, XamlRoot xamlRoot)
-	{
-		Window = window;
-		SetXamlRoot(xamlRoot);
-	}
 }

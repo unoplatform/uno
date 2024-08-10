@@ -42,11 +42,12 @@ internal partial class DiagnosticView
 	/// <typeparam name="TView">Type of the control.</typeparam>
 	/// <param name="friendlyName">The user-friendly name of the diagnostics view.</param>
 	/// <param name="factory">Factory to create an instance of the control.</param>
-	public static DiagnosticView<TView> Register<TView>(string friendlyName, Func<TView> factory)
+	/// <param name="mode">Defines when the registered diagnostic view should be displayed.</param>
+	public static DiagnosticView<TView> Register<TView>(string friendlyName, Func<TView> factory, DiagnosticViewRegistrationMode mode = default)
 		where TView : UIElement
 	{
 		var provider = new DiagnosticView<TView>(typeof(TView).Name, friendlyName, factory);
-		DiagnosticViewRegistry.Register(provider);
+		DiagnosticViewRegistry.Register(provider, mode);
 		return provider;
 	}
 

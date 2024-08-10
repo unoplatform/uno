@@ -38,6 +38,7 @@ using TreeViewNode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewNo
 using TreeViewItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewItem;
 using TreeViewList = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewList;
 #if HAS_UNO
+using Windows.Foundation.Metadata;
 using TreeNodeSelectionState = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeNodeSelectionState;
 #endif
 
@@ -447,6 +448,60 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 #endif
 			Assert.AreEqual(1, listControl.SelectedIndex);
 		}
+
+#if HAS_UNO
+		[TestMethod]
+		[RequiresFullWindow]
+		public async Task When_ItemTemplateSelector_DataTemplate_Root_IsNot_TreeViewItem()
+		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // "System.NotImplementedException: RenderTargetBitmap is not supported on this platform.";
+			}
+
+			Border border = null;
+
+			var sp = new StackPanel
+			{
+				Background = new SolidColorBrush(Colors.Blue),
+				Children =
+				{
+					new TreeView
+					{
+						ItemsSource = "12",
+						ItemTemplateSelector = new TreeItemTemplateSelector
+						{
+							Template = new DataTemplate(() => border = new Border
+							{
+								Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
+								Width = 100,
+								Height = 100,
+								Child = new TextBlock().Apply(tb => tb.SetBinding(TextBlock.TextProperty, new Binding()))
+							})
+						}
+					}
+				}
+			};
+
+			await UITestHelper.Load(sp);
+
+			var tv = sp.FindFirstDescendant<TreeView>();
+
+			Assert.IsNotNull(border);
+			var containerX = border.GetAbsoluteBoundsRect().X;
+			var screenshot = await UITestHelper.ScreenShot(tv);
+
+			var tvi = sp.FindFirstDescendant<TreeViewItem>();
+			var x = containerX + 50d;
+			ImageAssert.HasColorAt(screenshot, new Point(x, screenshot.Height / 4), Microsoft.UI.Colors.Red);
+			ImageAssert.HasColorAt(screenshot, new Point(x, screenshot.Height * 3 / 4), Microsoft.UI.Colors.Red);
+
+			((TreeViewItem)sp.FindFirstDescendant<TreeViewList>().ContainerFromIndex(0)).ActualHeight.Should().BeApproximately(102, 1);
+			((TreeViewItem)sp.FindFirstDescendant<TreeViewList>().ContainerFromIndex(1)).ActualHeight.Should().BeApproximately(102, 1);
+			Assert.AreEqual("1", ((ContentPresenter)((TreeViewItem)sp.FindFirstDescendant<TreeViewList>().ContainerFromIndex(0)).FindName("ContentPresenter")).FindFirstDescendant<TextBlock>().Text);
+			Assert.AreEqual("2", ((ContentPresenter)((TreeViewItem)sp.FindFirstDescendant<TreeViewList>().ContainerFromIndex(1)).FindName("ContentPresenter")).FindFirstDescendant<TextBlock>().Text);
+		}
+#endif
 
 		[TestMethod]
 #if __MACOS__
@@ -995,6 +1050,12 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 					}
 				}
 			}
+		}
+
+		public class TreeItemTemplateSelector : DataTemplateSelector
+		{
+			public DataTemplate Template { get; set; }
+			protected override DataTemplate SelectTemplateCore(object item) => Template;
 		}
 	}
 

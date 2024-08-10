@@ -78,6 +78,7 @@ public class Given_Frame_DataContext : BaseTestClass
 	/// Navigate back to Page1
 	/// </summary>
 	[TestMethod]
+	[Ignore("This test is no longer valid with WinUI Frame #17739")]
 	public async Task Check_Can_Change_Page1_Navigate_And_Return_With_DataContext()
 	{
 		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token;
@@ -124,7 +125,7 @@ public class Given_Frame_DataContext : BaseTestClass
 	/// Navigate back to Page1
 	/// </summary>
 	[TestMethod]
-	//[Ignore("Not yet working")]
+	[Ignore("This test is no longer valid with WinUI Frame #17739")]
 	public async Task Check_Can_Change_Page1_Before_Navigating_Back_With_DataContext()
 	{
 		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token;

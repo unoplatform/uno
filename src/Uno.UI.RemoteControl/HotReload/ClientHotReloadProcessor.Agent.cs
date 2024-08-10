@@ -33,7 +33,7 @@ namespace Uno.UI.RemoteControl.HotReload
 			// This mean that HR won't work with the debugger attached.
 			if (Debugger.IsAttached)
 			{
-				_status.ReportServerState(HotReloadState.Disabled);
+				_status.ReportInvalidRuntime();
 			}
 			_hotReloadWorkloadSpaceLoaded.SetResult(hotReloadWorkspaceLoadResult.WorkspaceInitialized);
 		}

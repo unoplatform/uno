@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
 using Uno.Disposables;
@@ -8,6 +9,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Data;
 [TestClass]
 public class Given_BindingExpression
 {
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Binding_Should_Have_Correct_Default()
+	{
+		var binding = new Binding();
+		Assert.AreEqual(BindingMode.OneWay, binding.Mode);
+		Assert.AreEqual("", binding.ConverterLanguage);
+	}
+
 	[TestMethod]
 	[RunsOnUIThread]
 	public async Task When_Binding_Outer_Inner_DC_Null()

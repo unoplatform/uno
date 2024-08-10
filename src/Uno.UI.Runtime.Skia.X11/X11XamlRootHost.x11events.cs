@@ -6,6 +6,7 @@ using System.Threading;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
+using Microsoft.UI.Xaml;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
 
@@ -15,10 +16,12 @@ internal partial class X11XamlRootHost
 {
 	private static int _threadCount;
 
-	private readonly Action<Size> _resizeCallback;
 	private readonly Action _closingCallback;
 	private readonly Action<bool> _focusCallback;
 	private readonly Action<bool> _visibilityCallback;
+	private readonly Action _configureCallback;
+
+	private int _needsConfigureCallback;
 
 	private X11PointerInputSource? _pointerSource;
 	private X11KeyboardInputSource? _keyboardSource;
@@ -145,28 +148,24 @@ internal partial class X11XamlRootHost
 					this.Log().Trace($"XLIB EVENT: {@event.type}");
 				}
 
-				if (@event.AnyEvent.window != x11Window.Window)
+				_ = XLib.XQueryTree(x11Window.Display, x11Window.Window, out IntPtr root, out _, out var children, out _);
+				_ = XLib.XFree(children);
+				if (@event.AnyEvent.window == root)
 				{
-#if DEBUG
-					_ = XLib.XQueryTree(x11Window.Display, x11Window.Window, out IntPtr root, out _, out var children, out _);
-					_ = XLib.XFree(children);
-					Debug.Assert(@event.AnyEvent.window == root);
-#endif
 					switch (@event.type)
 					{
 						case XEventName.PropertyNotify:
-							using (X11Helper.XLock(x11Window.Display))
+							if (@event.PropertyEvent.atom == X11Helper.GetAtom(x11Window.Display, X11Helper.RESOURCE_MANAGER))
 							{
-								if (@event.PropertyEvent.atom == X11Helper.GetAtom(x11Window.Display, X11Helper.RESOURCE_MANAGER))
+								if (this.Log().IsEnabled(LogLevel.Debug))
 								{
-									if (this.Log().IsEnabled(LogLevel.Debug))
-									{
-										this.Log().Debug($"X resources changed. Updating DPI scaling.");
-									}
-									XWindowAttributes attributes = default;
-									_ = XLib.XGetWindowAttributes(x11Window.Display, x11Window.Window, ref attributes);
-									UpdateSizeAndDpi(new Size(attributes.width, attributes.height));
+									this.Log().Debug($"X resources changed. Updating DPI scaling.");
 								}
+								QueueAction(this, () =>
+								{
+									_displayInformationExtension?.UpdateDetails();
+									_wrapper.RasterizationScale = (float)(_displayInformationExtension?.RawPixelsPerViewPixel ?? 1.0f);
+								});
 							}
 							break;
 						default:
@@ -177,7 +176,7 @@ internal partial class X11XamlRootHost
 							break;
 					}
 				}
-				else
+				else if (@event.AnyEvent.window == x11Window.Window)
 				{
 					switch (@event.type)
 					{
@@ -200,8 +199,7 @@ internal partial class X11XamlRootHost
 							}
 							break;
 						case XEventName.ConfigureNotify:
-							var configureEvent = @event.ConfigureEvent;
-							UpdateSizeAndDpi(new Size(configureEvent.width, configureEvent.height));
+							Interlocked.Exchange(ref _needsConfigureCallback, 1);
 							break;
 						case XEventName.FocusIn:
 							QueueAction(this, () => _focusCallback(true));
@@ -260,23 +258,21 @@ internal partial class X11XamlRootHost
 						default:
 							if (this.Log().IsEnabled(LogLevel.Error))
 							{
-								this.Log().Error($"XLIB ERROR: received an unexpected {@event.type} event on window {x11Window.Window.ToString("X", CultureInfo.InvariantCulture)}");
+								this.Log().Error($"XLIB ERROR: received an unexpected {@event.type} event on a non-uno window {@event.AnyEvent.window.ToString("X", CultureInfo.InvariantCulture)}");
 							}
 							break;
+					}
+				}
+				else
+				{
+					if (this.Log().IsEnabled(LogLevel.Error))
+					{
+						this.Log().Error($"XLIB ERROR: received an unexpected {@event.type} event on window {x11Window.Window.ToString("X", CultureInfo.InvariantCulture)}");
 					}
 				}
 			}
 		}
 		// ReSharper disable once FunctionNeverReturns
-	}
-	private void UpdateSizeAndDpi(Size size)
-	{
-		QueueAction(this, () =>
-		{
-			_displayInformationExtension?.UpdateDetails();
-			_wrapper.RasterizationScale = (float)(_displayInformationExtension?.RawPixelsPerViewPixel ?? 1.0f);
-			_resizeCallback(size);
-		});
 	}
 
 	public static void QueueAction(IXamlRootHost host, Action action)

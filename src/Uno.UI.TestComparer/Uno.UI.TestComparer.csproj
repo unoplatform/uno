@@ -20,6 +20,14 @@
 		<PackageReference Include="NUnit.Engine" Version="3.16.3" />
 		<PackageReference Include="Refit" Version="7.0.0" />
 		<PackageReference Include="Mono.Options" Version="6.6.0.161" />
+
+		<!-- BEGIN WORKAROUND: These dependencies already come transitively, but the version that comes transitively has security vulnerabilities reported by NuGet -->
+		<PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.0.1" />
+		<PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.0.1" />
+		<PackageReference Include="System.Text.Json" Version="8.0.4" />
+		<PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
+		<!-- END WORKAROUND -->
 	</ItemGroup>
 
 	<ItemGroup>

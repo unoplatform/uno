@@ -27,6 +27,8 @@ using NSDraggingInfo = AppKit.INSDraggingInfo;
 using Microsoft.UI.Windowing;
 using Uno.UI.Xaml.Controls;
 
+#pragma warning disable CS0618
+
 namespace Uno.UI.Controls
 {
 	/// <summary>

@@ -5,14 +5,17 @@
 
 using System;
 using System.Numerics;
-using Uno.Disposables;
-using Uno.UI.Helpers.WinUI;
+using System.Threading.Tasks;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Composition.Interactions;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Hosting;
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
+using Uno.Disposables;
+using Uno.UI.Dispatching;
+using Uno.UI.Helpers.WinUI;
+
 using RefreshPullDirection = Microsoft/* UWP don't rename */.UI.Xaml.Controls.RefreshPullDirection;
 
 namespace Microsoft.UI.Private.Controls;
@@ -214,9 +217,10 @@ internal partial class ScrollViewerIRefreshInfoProviderDefaultAnimationHandler :
 
 		if (m_compositor is not null)
 		{
-			m_refreshCompletedScopedBatch = m_compositor.CreateScopedBatch(CompositionBatchTypes.Animation);
-			m_refreshCompletedScopedBatch.Completed += RefreshCompletedBatchCompleted;
-			m_compositionScopedBatchCompletedEventToken.Disposable = Disposable.Create(() => m_refreshCompletedScopedBatch.Completed -= RefreshCompletedBatchCompleted);
+			// Uno specific: CompositionScopedBatch is not implemented
+			//m_refreshCompletedScopedBatch = m_compositor.CreateScopedBatch(CompositionBatchTypes.Animation);
+			//m_refreshCompletedScopedBatch.Completed += RefreshCompletedBatchCompleted;
+			//m_compositionScopedBatchCompletedEventToken.Disposable = Disposable.Create(() => m_refreshCompletedScopedBatch.Completed -= RefreshCompletedBatchCompleted);
 		}
 
 		if (m_refreshVisualizerRefreshCompletedAnimation is not null && m_infoProviderRefreshCompletedAnimation is not null)
@@ -227,10 +231,21 @@ internal partial class ScrollViewerIRefreshInfoProviderDefaultAnimationHandler :
 			m_infoProviderVisual.StartAnimation(animatedProperty, m_infoProviderRefreshCompletedAnimation);
 		}
 
-		if (m_refreshCompletedScopedBatch is not null)
+		// Uno workaround: CompositionScopedBatch is not implemented, so, we do a delay with the animation's duration.
+		// After the delay, this is roughly the right time to call RefreshCompletedBatchCompleted.
+		_ = Task.Run(async () =>
 		{
-			m_refreshCompletedScopedBatch.End();
-		}
+			await Task.Delay(REFRESH_ANIMATION_DURATION);
+			NativeDispatcher.Main.Enqueue(() =>
+			{
+				RefreshCompletedBatchCompleted();
+			});
+		});
+
+		//if (m_refreshCompletedScopedBatch is not null)
+		//{
+		//	m_refreshCompletedScopedBatch.End();
+		//}
 	}
 
 	//PrivateHelpers
@@ -286,7 +301,7 @@ internal partial class ScrollViewerIRefreshInfoProviderDefaultAnimationHandler :
 		}
 	}
 
-	private void RefreshCompletedBatchCompleted(object sender, CompositionBatchCompletedEventArgs args)
+	private void RefreshCompletedBatchCompleted(/*object sender, CompositionBatchCompletedEventArgs args*/)
 	{
 		//PTR_TRACE_INFO(null, TRACE_MSG_METH, METH_NAME, this);
 		m_compositionScopedBatchCompletedEventToken.Disposable = null;

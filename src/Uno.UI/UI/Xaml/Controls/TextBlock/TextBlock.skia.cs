@@ -232,7 +232,6 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					var chunk = GetChunkAt(Text, index);
 
-					// the chunk range will be relative to the span, so we have to add the offset of the span relative to the entire Text
 					Selection = new Range(chunk.start, chunk.start + chunk.length);
 				}
 			}

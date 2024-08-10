@@ -62,8 +62,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			SetAcceptsReturn(true);
 
 			Loaded += OnLoaded;
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 			//TODO Uno specific: Call LeaveImpl to simulate leaving visual tree
 			Unloaded += (s, e) => LeaveImpl();
+#endif
 		}
 
 		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
@@ -146,8 +148,15 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		/// <summary>
 		/// Called when the element enters the tree. Attaches event handler to Command.CanExecuteChanged.
 		/// </summary>
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		private protected override void EnterImpl(bool live)
+#else
 		private void EnterImpl()
+#endif
 		{
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			base.EnterImpl(live);
+#endif
 			if (_canExecuteChangedHandler.Disposable == null)
 			{
 				var command = Command;
@@ -175,8 +184,15 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		/// <summary>
 		/// Called when the element leaves the tree. Detaches event handler from Command.CanExecuteChanged.
 		/// </summary>
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		private protected override void LeaveImpl(bool live)
+#else
 		private void LeaveImpl()
+#endif
 		{
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			base.LeaveImpl(live);
+#endif
 			if (_canExecuteChangedHandler.Disposable != null)
 			{
 				_canExecuteChangedHandler.Disposable = null;
@@ -309,8 +325,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		private void OnLoaded(object sender, RoutedEventArgs args)
 		{
 			UpdateVisualState(false);
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 			// TODO Uno specific: Call EnterImpl to simulate entering visual tree
 			EnterImpl();
+#endif
 		}
 
 		/// <summary>

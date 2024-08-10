@@ -109,7 +109,7 @@ static partial class ViewExtensions
 			}
 			if (x is ScrollViewer sv)
 			{
-				yield return $"Offset=({sv.HorizontalOffset},{sv.VerticalOffset}), Viewport=({sv.ViewportHeight},{sv.ViewportWidth}), Extent=({sv.ExtentHeight},{sv.ExtentWidth})";
+				yield return $"Offset=({sv.HorizontalOffset},{sv.VerticalOffset}), Viewport=({sv.ViewportWidth},{sv.ViewportHeight}), Extent=({sv.ExtentWidth},{sv.ExtentHeight})";
 			}
 			if (TryGetDpValue<CornerRadius>(x, "CornerRadius", out var cr)) yield return $"CornerRadius={FormatCornerRadius(cr)}";
 			if (TryGetDpValue<Thickness>(x, "Margin", out var margin)) yield return $"Margin={FormatThickness(margin)}";

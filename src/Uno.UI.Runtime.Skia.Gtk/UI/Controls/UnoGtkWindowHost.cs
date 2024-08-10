@@ -69,6 +69,10 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 		{
 			UpdateWindowSize(area.AllocatedWidth, area.AllocatedHeight);
 		};
+		area.SizeAllocated += (s, e) =>
+		{
+			UpdateWindowSize(e.Allocation.Width, e.Allocation.Height);
+		};
 
 		var overlay = new Overlay();
 		overlay.Add(area);
