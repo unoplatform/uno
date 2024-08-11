@@ -2137,4 +2137,337 @@ public partial class Given_GridLayouting
 #endif
 	}
 #endif
+
+	[TestMethod]
+	public void When_One_Auto_Columns_and_one_star_and_two_children()
+	{
+		var SUT = new Grid() { Name = "test" };
+
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+
+		var c1 = new View { Name = "Child01", RequestedDesiredSize = new Size(5, 5) };
+		SUT.Children.Add(c1);
+
+		var c2 = new View { Name = "Child02", RequestedDesiredSize = new Size(10, 10) };
+		Grid.SetColumn(c2, 1);
+		SUT.Children.Add(c2);
+
+		SUT.Measure(new Size(20, 20));
+		var measuredSize = SUT.DesiredSize;
+		Assert.AreEqual(new Size(15, 10), measuredSize);
+		Assert.AreEqual(new Size(5, 5), c1.RequestedDesiredSize);
+		Assert.AreEqual(new Size(10, 10), c2.RequestedDesiredSize);
+
+		SUT.Arrange(new Rect(0, 0, 20, 20));
+
+		Assert.AreEqual(new Rect(0, 0, 5, 20), LayoutInformation.GetLayoutSlot(c1));
+		Assert.AreEqual(new Rect(5, 0, 15, 20), LayoutInformation.GetLayoutSlot(c2));
+
+		Assert.AreEqual(2, SUT.Children.Count);
+	}
+
+	[TestMethod]
+	public void When_Two_Auto_Columns_two_children()
+	{
+		var SUT = new Grid() { Name = "test" };
+
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+
+		var c1 = new View { Name = "Child01", RequestedDesiredSize = new Size(5, 5) };
+		SUT.Children.Add(c1);
+
+		var c2 = new View { Name = "Child02", RequestedDesiredSize = new Size(10, 10) };
+		Grid.SetColumn(c2, 1);
+		SUT.Children.Add(c2);
+
+		SUT.Measure(new Size(20, 20));
+		var measuredSize = SUT.DesiredSize;
+		Assert.AreEqual(new Size(15, 10), measuredSize);
+		Assert.AreEqual(new Size(5, 5), c1.RequestedDesiredSize);
+		Assert.AreEqual(new Size(10, 10), c2.RequestedDesiredSize);
+
+		SUT.Arrange(new Rect(0, 0, 20, 20));
+
+		Assert.AreEqual(new Rect(0, 0, 5, 20), LayoutInformation.GetLayoutSlot(c1));
+		Assert.AreEqual(new Rect(5, 0, 10, 20), LayoutInformation.GetLayoutSlot(c2));
+
+		Assert.AreEqual(2, SUT.Children.Count());
+	}
+
+	[TestMethod]
+	public void When_One_Auto_and_one_abs_and_one_star_and_three_children()
+	{
+		using var _ = new AssertionScope();
+
+		var SUT = new Grid() { Name = "test" };
+
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(6) });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+
+		var c1 = new View { Name = "Child01", RequestedDesiredSize = new Size(5, 5) };
+		SUT.Children.Add(c1);
+
+		var c2 = new View { Name = "Child02", RequestedDesiredSize = new Size(10, 10) };
+		Grid.SetColumn(c2, 1);
+		SUT.Children.Add(c2);
+
+		var c3 = new View { Name = "Child03", RequestedDesiredSize = new Size(10, 7) };
+		Grid.SetColumn(c3, 2);
+		SUT.Children.Add(c3);
+
+		SUT.Measure(new Size(20, 20));
+		var measuredSize = SUT.DesiredSize;
+
+		measuredSize.Should().Be(new Size(20, 10));
+		c1.DesiredSize.Should().Be(new Size(5, 5));
+		c2.DesiredSize.Should().Be(new Size(6, 10));
+		c3.DesiredSize.Should().Be(new Size(9, 7));
+
+		SUT.Arrange(new Rect(0, 0, 20, 20));
+
+		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 5, 20));
+		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(5, 0, 6, 20));
+		LayoutInformation.GetLayoutSlot(c3).Should().Be(new Rect(11, 0, 9, 20));
+
+		SUT.Children.Should().HaveCount(3);
+	}
+
+	[TestMethod]
+	public void When_Nine_grid_and_one_auto_cell_and_three_children()
+	{
+		using var _ = new AssertionScope();
+
+		var SUT = new Grid() { Name = "test" };
+
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+
+		SUT.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+		SUT.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+		SUT.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+
+		var c1 = new View { Name = "Child01", RequestedDesiredSize = new Size(5, 5) };
+		SUT.Children.Add(c1);
+
+		var c2 = new View { Name = "Child02", RequestedDesiredSize = new Size(3, 4) };
+		Grid.SetRow(c2, 1);
+		Grid.SetColumn(c2, 1);
+		SUT.Children.Add(c2);
+
+		var c3 = new View { Name = "Child03", RequestedDesiredSize = new Size(8, 9) };
+		Grid.SetRow(c3, 2);
+		Grid.SetColumn(c3, 2);
+		SUT.Children.Add(c3);
+
+		SUT.Measure(new Size(20, 20));
+		var measuredSize = SUT.DesiredSize;
+		measuredSize.Should().Be(new Size(16, 17));
+
+		c1.DesiredSize.Should().Be(new Size(5, 5));
+		c2.DesiredSize.Should().Be(new Size(3, 4));
+		c3.DesiredSize.Should().Be(new Size(8, 8));
+
+		SUT.Arrange(new Rect(0, 0, 20, 20));
+
+#if __ANDROID__
+		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 8.5f, 8.0));
+		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(8.5f, 8.0f, 3, 4));
+		LayoutInformation.GetLayoutSlot(c3).Should().Be(new Rect(11.5f, 12.0f, 8.5f, 8.0f));
+#else
+		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 8.0f, 8.0f));
+		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(8.0f, 8.0f, 3, 4));
+		LayoutInformation.GetLayoutSlot(c3).Should().Be(new Rect(11.0f, 12.0f, 9.0f, 8.0f));
+#endif
+		SUT.Children.Should().HaveCount(3);
+	}
+
+	[TestMethod]
+	public void When_Quad_two_auto_and_four_children()
+	{
+		var SUT = new Grid() { Name = "test" };
+
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+
+		SUT.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+		SUT.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+
+		var c1 = new View { Name = "Child01", RequestedDesiredSize = new Size(3, 4) };
+		SUT.Children.Add(c1);
+
+		var c2 = new View { Name = "Child02", RequestedDesiredSize = new Size(4, 5) };
+		Grid.SetColumn(c2, 1);
+		SUT.Children.Add(c2);
+
+		var c3 = new View { Name = "Child03", RequestedDesiredSize = new Size(6, 7) };
+		Grid.SetRow(c3, 1);
+		SUT.Children.Add(c3);
+
+		var c4 = new View { Name = "Child04", RequestedDesiredSize = new Size(8, 9) };
+		Grid.SetRow(c4, 1);
+		Grid.SetColumn(c4, 1);
+		SUT.Children.Add(c4);
+
+		SUT.Measure(new Size(20, 20));
+		var measuredSize = SUT.DesiredSize;
+		Assert.AreEqual(new Size(14, 14), measuredSize);
+
+		Assert.AreEqual(new Size(3, 4), c1.RequestedDesiredSize);
+		Assert.AreEqual(new Size(4, 5), c2.RequestedDesiredSize);
+		Assert.AreEqual(new Size(6, 7), c3.RequestedDesiredSize);
+		Assert.AreEqual(new Size(8, 9), c4.RequestedDesiredSize);
+
+		SUT.Arrange(new Rect(0, 0, 20, 20));
+
+		Assert.AreEqual(new Rect(0, 0, 12, 5), LayoutInformation.GetLayoutSlot(c1));
+		Assert.AreEqual(new Rect(12, 0, 8, 5), LayoutInformation.GetLayoutSlot(c2));
+		Assert.AreEqual(new Rect(0, 5, 12, 15), LayoutInformation.GetLayoutSlot(c3));
+		Assert.AreEqual(new Rect(12, 5, 8, 15), LayoutInformation.GetLayoutSlot(c4));
+
+		Assert.AreEqual(4, SUT.Children.Count);
+	}
+
+	[TestMethod]
+	public void When_Nine_grid_and_one_auto_cell_and_four_children()
+	{
+		using var _ = new AssertionScope();
+
+		var SUT = new Grid() { Name = "test" };
+
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+
+		SUT.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+		SUT.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+		SUT.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+
+		var c1 = new View { Name = "Child01", RequestedDesiredSize = new Size(5, 5) };
+		SUT.Children.Add(c1);
+
+		var c2 = new View { Name = "Child02", RequestedDesiredSize = new Size(3, 4) };
+		Grid.SetRow(c2, 1);
+		Grid.SetColumn(c2, 1);
+		SUT.Children.Add(c2);
+
+		var c3 = new View { Name = "Child03", RequestedDesiredSize = new Size(8, 9) };
+		Grid.SetRow(c3, 2);
+		Grid.SetColumn(c3, 2);
+		SUT.Children.Add(c3);
+
+		var c4 = new View { Name = "Child04", RequestedDesiredSize = new Size(5, 5) };
+		Grid.SetRow(c4, 1);
+		SUT.Children.Add(c4);
+
+		SUT.Measure(new Size(20, 20));
+		var measuredSize = SUT.DesiredSize;
+		measuredSize.Should().Be(new Size(16, 19));
+
+		c1.DesiredSize.Should().Be(new Size(5, 5));
+		c2.DesiredSize.Should().Be(new Size(3, 4));
+		c3.DesiredSize.Should().Be(new Size(8, 9));
+		c4.DesiredSize.Should().Be(new Size(5, 5));
+
+		SUT.Arrange(new Rect(0, 0, 20, 20));
+
+#if __ANDROID__
+		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 8.5f, 5.5f));
+		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(8.5f, 5.5f, 3, 5.5f));
+		LayoutInformation.GetLayoutSlot(c3).Should().Be(new Rect(11.5f, 11, 8.5f, 9));
+		LayoutInformation.GetLayoutSlot(c4).Should().Be(new Rect(0, 5.5f, 8.5f, 5.5f));
+
+#else
+		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 8.0f, 6.0f));
+		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(8.0f, 6.0f, 3, 5.0f));
+		LayoutInformation.GetLayoutSlot(c3).Should().Be(new Rect(11.0f, 11, 9.0f, 9));
+		LayoutInformation.GetLayoutSlot(c4).Should().Be(new Rect(0, 6.0f, 8.0f, 5.0f));
+#endif
+
+		SUT.Children.Should().HaveCount(4);
+	}
+
+	[TestMethod]
+	public void When_Three_Rows_One_Auto_Two_Fixed_And_Row_Span_Full()
+	{
+		using var _ = new AssertionScope();
+
+		var SUT = new Grid() { Name = "test", Height = 44 };
+
+		SUT.RowDefinitions.Add(new RowDefinition { Height = new GridLength(18) });
+		SUT.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+		SUT.RowDefinitions.Add(new RowDefinition { Height = new GridLength(18) });
+
+		var c1 = new View { Name = "Child01", RequestedDesiredSize = new Size(0, 10) };
+		Grid.SetRow(c1, 1);
+		SUT.Children.Add(c1);
+
+		var c2 = new View { Name = "Child02", RequestedDesiredSize = new Size(30, 0) };
+		Grid.SetRow(c2, 1);
+		SUT.Children.Add(c2);
+
+		var c3 = new View { Name = "Child03", RequestedDesiredSize = new Size(8, 24) };
+		Grid.SetRowSpan(c3, 3);
+		SUT.Children.Add(c3);
+
+		SUT.Measure(new Size(100, 44));
+		var measuredSize = SUT.DesiredSize;
+		measuredSize.Should().Be(new Size(30, 44));
+
+		c1.DesiredSize.Should().Be(new Size(0, 10));
+		c2.DesiredSize.Should().Be(new Size(30, 0));
+		c3.DesiredSize.Should().Be(new Size(8, 24));
+
+		SUT.Arrange(new Rect(0, 0, 20, 44));
+
+		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 18, 30, 10));
+		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(0, 18, 30, 10));
+		LayoutInformation.GetLayoutSlot(c3).Should().Be(new Rect(0, 0, 30, 46));
+
+		SUT.Children.Should().HaveCount(3);
+	}
+
+	[TestMethod]
+	public void When_Three_Colums_One_Auto_Two_Fixed_And_Column_Span_Full()
+	{
+		using var _ = new AssertionScope();
+
+		var SUT = new Grid() { Name = "test", Width = 44 };
+
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(18) });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(18) });
+
+		var c1 = new View { Name = "Child01", RequestedDesiredSize = new Size(10, 0) };
+		Grid.SetColumn(c1, 1);
+		SUT.Children.Add(c1);
+
+		var c2 = new View { Name = "Child02", RequestedDesiredSize = new Size(0, 30) };
+		Grid.SetColumn(c2, 1);
+		SUT.Children.Add(c2);
+
+		var c3 = new View { Name = "Child03", RequestedDesiredSize = new Size(24, 8) };
+		Grid.SetColumnSpan(c3, 3);
+		SUT.Children.Add(c3);
+
+		SUT.Measure(new Size(44, 100));
+		var measuredSize = SUT.DesiredSize;
+		measuredSize.Should().Be(new Size(44, 30));
+
+		c1.DesiredSize.Should().Be(new Size(10, 0));
+		c2.DesiredSize.Should().Be(new Size(0, 30));
+		c3.DesiredSize.Should().Be(new Size(24, 8));
+
+		SUT.Arrange(new Rect(0, 0, 44, 20));
+
+		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(18, 0, 10, 30));
+		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(18, 0, 10, 30));
+		LayoutInformation.GetLayoutSlot(c3).Should().Be(new Rect(0, 0, 46, 30));
+
+		SUT.Children.Should().HaveCount(3);
+	}
+
 }
