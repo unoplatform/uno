@@ -171,6 +171,7 @@ internal partial class X11PointerInputSource
 			IsXButton2Pressed = (mask & (1 << XButton2)) != 0,
 			IsHorizontalMouseWheel = isHorizontalMouseWheel,
 			IsInRange = true,
+			IsPrimary = true,
 			IsTouchPad = info is { } && IsTouchpad(info.Value.Properties),
 			MouseWheelDelta = (int)Math.Round(wheelDelta),
 			PointerUpdateKind = data.detail switch

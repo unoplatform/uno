@@ -132,7 +132,6 @@ internal partial class X11PointerInputSource
 			0, // TODO: XInput
 			new Point(_mousePosition.X / scale, _mousePosition.Y / scale),
 			new Point(_mousePosition.X / scale, _mousePosition.Y / scale),
-			// TODO: is isInContact correct?
 			properties.HasPressedButton,
 			properties.SetUpdateKindFromPrevious(_previousPointerPointProperties)
 		);
