@@ -1,0 +1,12 @@
+name: "Check links with linkcheck"
+on:
+- pull_request_target
+
+jobs:
+  triage:
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+    - uses: filiph/linkcheck@3.0.0
+           
