@@ -167,7 +167,15 @@ namespace Microsoft.UI.Xaml
 
 			// Applying the template will not delete existing visuals. This will be done conditionally
 			// when the template is invalidated.
-			if (!HasTemplateChild())
+			if (
+				!HasTemplateChild() ||
+				// review@xy: perhaps we can remove IsContentPresenterBypassEnabled completely, it has outlived its purpose.
+				// ContentPresenter bypass causes Content to be added as direct child
+				// (in situation where implicit style is not present or doesn't define a template setter),
+				// preventing template application.
+				// IsContentPresenterBypassEnabled depends on Template==null, which may have changed since, so we can't use that check here.
+				(this is ContentControl cc && cc.Content == GetFirstChild())
+			)
 			{
 				var template = GetTemplate();
 				if (template is not null)

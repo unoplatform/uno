@@ -13,6 +13,9 @@ using Microsoft.UI.Xaml.Shapes;
 using Windows.UI;
 using Windows.Foundation;
 using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.Helpers;
+
+using Expander = Microsoft/* UWP don't rename */.UI.Xaml.Controls.Expander;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {
@@ -356,6 +359,88 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			// Padding shouldn't affect measure
 			Assert.AreEqual(0, ((UIElement)VisualTreeHelper.GetChild(SUT, 0)).ActualOffset.Y);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_CCButton_ApplyTemplate_WithChild()
+		{
+			var SUT = XamlHelper.LoadXaml<Button>("""
+				<Button>
+					<TextBlock Text="Asd" />
+
+					<Button.Template>
+						<ControlTemplate TargetType="Button">
+							<Border x:Name="ControlTemplateRoot">
+								<ContentPresenter x:Name="ContentPresenter" Content="{TemplateBinding Content}" />
+							</Border>
+						</ControlTemplate>
+					</Button.Template>
+				</Button>
+			""");
+			await UITestHelper.Load(SUT);
+
+			Assert.IsNotNull(SUT.FindFirstDescendant<Border>("ControlTemplateRoot"), "Failed to find the expected template root (Border#ControlTemplateRoot)");
+		}
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_CCButton_ApplyTemplate_WithNoChild()
+		{
+			var SUT = XamlHelper.LoadXaml<Button>("""
+				<Button Content="Asd">
+					<Button.Template>
+						<ControlTemplate TargetType="Button">
+							<Border x:Name="ControlTemplateRoot">
+								<ContentPresenter x:Name="ContentPresenter" Content="{TemplateBinding Content}" />
+							</Border>
+						</ControlTemplate>
+					</Button.Template>
+				</Button>
+			""");
+			await UITestHelper.Load(SUT);
+
+			Assert.IsNotNull(SUT.FindFirstDescendant<Border>("ControlTemplateRoot"), "Failed to find the expected template root (Border#ControlTemplateRoot)");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_CCExpander_ApplyTemplate_WithChild()
+		{
+			var SUT = XamlHelper.LoadXaml<Expander>("""
+				<Expander>
+					<TextBlock Text="Asd" />
+
+					<Expander.Template>
+						<ControlTemplate TargetType="Expander">
+							<Border x:Name="ControlTemplateRoot">
+								<ContentPresenter x:Name="ContentPresenter" Content="{TemplateBinding Content}" />
+							</Border>
+						</ControlTemplate>
+					</Expander.Template>
+				</Expander>
+			""");
+			await UITestHelper.Load(SUT);
+
+			Assert.IsNotNull(SUT.FindFirstDescendant<Border>("ControlTemplateRoot"), "Failed to find the expected template root (Border#ControlTemplateRoot)");
+		}
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_CCExpander_ApplyTemplate_WithNoChild()
+		{
+			var SUT = XamlHelper.LoadXaml<Expander>("""
+				<Expander Content="Asd">
+					<Expander.Template>
+						<ControlTemplate TargetType="Expander">
+							<Border x:Name="ControlTemplateRoot">
+								<ContentPresenter x:Name="ContentPresenter" Content="{TemplateBinding Content}" />
+							</Border>
+						</ControlTemplate>
+					</Expander.Template>
+				</Expander>
+			""");
+			await UITestHelper.Load(SUT);
+
+			Assert.IsNotNull(SUT.FindFirstDescendant<Border>("ControlTemplateRoot"), "Failed to find the expected template root (Border#ControlTemplateRoot)");
 		}
 	}
 }
