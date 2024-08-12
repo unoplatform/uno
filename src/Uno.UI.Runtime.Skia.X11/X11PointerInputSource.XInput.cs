@@ -507,15 +507,17 @@ internal partial class X11PointerInputSource
 					}
 				}
 
+				int? pressureValuator = null;
 				int? horizontalValuator = null;
 				double? horizontalIncrement = null;
 				int? verticalValuator = null;
 				double? verticalIncrement = null;
 				for (var index = 0; index < info.NumClasses; index++)
 				{
-					if (info.Classes[index]->Type == XiDeviceClass.XIScrollClass)
+					var xiAnyClassInfo = info.Classes[index];
+					if (xiAnyClassInfo->Type == XiDeviceClass.XIScrollClass)
 					{
-						var classInfo = (XIScrollClassInfo*)info.Classes[index];
+						var classInfo = (XIScrollClassInfo*)xiAnyClassInfo;
 						if (classInfo->ScrollType == XiScrollType.Horizontal)
 						{
 							(horizontalValuator, horizontalIncrement) = (classInfo->Number, classInfo->Increment);
@@ -525,9 +527,14 @@ internal partial class X11PointerInputSource
 							(verticalValuator, verticalIncrement) = (classInfo->Number, classInfo->Increment);
 						}
 					}
+					else if (xiAnyClassInfo->Type == XiDeviceClass.XIValuatorClass &&
+					         ((XIValuatorClassInfo*)xiAnyClassInfo)->Label == X11Helper.GetAtom(display, "Abs MT Pressure"))
+					{
+						pressureValuator = ((XIValuatorClassInfo*)xiAnyClassInfo)->Number;
+					}
 				}
 
-				var @out = new DeviceInfo(new ImmutableList<string>(propsResult), horizontalValuator, horizontalIncrement, verticalValuator, verticalIncrement);
+				var @out = new DeviceInfo(new ImmutableList<string>(propsResult), pressureValuator, horizontalValuator, horizontalIncrement, verticalValuator, verticalIncrement);
 				_deviceInfoCache[id] = @out;
 				return @out;
 			}
@@ -536,5 +543,5 @@ internal partial class X11PointerInputSource
 		return null;
 	}
 
-	private record struct DeviceInfo(ImmutableList<string> Properties, int? HorizontalValuator, double? HorizontalIncrement, int? VerticalValuator, double? VerticalIncrement);
+	private record struct DeviceInfo(ImmutableList<string> Properties, int? PressureValuator, int? HorizontalValuator, double? HorizontalIncrement, int? VerticalValuator, double? VerticalIncrement);
 }
