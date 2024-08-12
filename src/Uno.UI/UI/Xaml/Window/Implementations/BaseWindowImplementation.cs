@@ -149,6 +149,7 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 				return;
 			}
 
+#if __SKIA__
 			// Legacy system close handling
 			var manager = SystemNavigationManagerPreview.GetForCurrentView();
 			if (manager is { HasConfirmedClose: false })
@@ -160,6 +161,7 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 					return;
 				}
 			}
+#endif
 
 			// If the closing event was not cancelled, close the window.
 			Close();
