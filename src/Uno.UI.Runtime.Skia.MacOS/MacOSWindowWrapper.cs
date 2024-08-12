@@ -52,16 +52,6 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase
 			e.Cancel = true;
 		}
 
-		var manager = SystemNavigationManagerPreview.GetForCurrentView();
-		if (!manager.HasConfirmedClose)
-		{
-			if (!manager.RequestAppClose())
-			{
-				e.Cancel = true;
-				return;
-			}
-		}
-
 		// All prerequisites passed, can safely close.
 		e.Cancel = false;
 	}

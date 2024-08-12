@@ -113,16 +113,6 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 			return;
 		}
 
-		var manager = SystemNavigationManagerPreview.GetForCurrentView();
-		if (!manager.HasConfirmedClose)
-		{
-			if (!manager.RequestAppClose())
-			{
-				// App closing was prevented
-				return;
-			}
-		}
-
 		// All prerequisites passed, can safely close.
 		Close();
 	}

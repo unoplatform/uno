@@ -106,16 +106,6 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 			return;
 		}
 
-		var manager = SystemNavigationManagerPreview.GetForCurrentView();
-		if (!manager.HasConfirmedClose)
-		{
-			if (!manager.RequestAppClose())
-			{
-				e.Cancel = true;
-				return;
-			}
-		}
-
 		// Closing should continue, perform suspension.
 		WinUIApplication.Current.RaiseSuspending();
 	}

@@ -114,16 +114,7 @@ internal class GtkWindowWrapper : NativeWindowWrapperBase
 			return;
 		}
 
-		var manager = SystemNavigationManagerPreview.GetForCurrentView();
-		if (!manager.HasConfirmedClose)
-		{
-			if (!manager.RequestAppClose())
-			{
-				// App closing was prevented, handle event
-				args.RetVal = true;
-				return;
-			}
-		}
+		
 
 		// Closing should continue, perform suspension.
 		WinUIApplication.Current.RaiseSuspending();
