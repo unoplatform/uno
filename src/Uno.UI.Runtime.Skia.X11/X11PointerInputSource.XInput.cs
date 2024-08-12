@@ -342,6 +342,17 @@ internal partial class X11PointerInputSource
 							// used for scrolling. We arbitrarily choose to handle it on the ButtonPress side.
 							X11XamlRootHost.QueueAction(_host, () => RaisePointerReleased(args));
 							break;
+						case XiEventType.XI_TouchBegin:
+							X11XamlRootHost.QueueAction(_host, () => RaisePointerEntered(args));
+							X11XamlRootHost.QueueAction(_host, () => RaisePointerPressed(args));
+							break;
+						case XiEventType.XI_TouchEnd:
+							X11XamlRootHost.QueueAction(_host, () => RaisePointerReleased(args));
+							X11XamlRootHost.QueueAction(_host, () => RaisePointerExited(args));
+							break;
+						case XiEventType.XI_TouchUpdate:
+							X11XamlRootHost.QueueAction(_host, () => RaisePointerMoved(args));
+							break;
 					}
 				}
 				break;
