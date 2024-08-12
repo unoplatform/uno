@@ -81,9 +81,9 @@ namespace Windows.UI.Input
 		public bool IsInRange { get; internal set; }
 
 		/// <summary>
-        /// This is necessary for InteractionTracker, which behaves differently on mouse, touch and trackpad inputs.
-        /// </summary>
-        internal bool IsTouchPad { get; set; }
+		/// This is necessary for InteractionTracker, which behaves differently on mouse, touch and trackpad inputs.
+		/// </summary>
+		internal bool IsTouchPad { get; set; }
 
 		public bool IsLeftButtonPressed { get; internal set; }
 
