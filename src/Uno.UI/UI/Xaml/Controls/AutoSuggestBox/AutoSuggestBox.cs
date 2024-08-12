@@ -337,7 +337,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			LayoutPopup();
 		}
-		
+g
 		private void OnSizeChanged(object sender, SizeChangedEventArgs args)
 		{
 			LayoutPopup();
