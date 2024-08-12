@@ -51,7 +51,7 @@
 		<_SingleProjectHostArchitecture>$(_SingleProjectHostArchitecture.ToLower())</_SingleProjectHostArchitecture>
 		<Platform>$([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture)</Platform>
 		<RuntimeIdentifier>win-$(_SingleProjectHostArchitecture)</RuntimeIdentifier>
-		<PublishProfile Condition=" $(PublishProfile) == '' ">win-$(Platform).pubxml</PublishProfile>
+		<PublishProfile Condition="$(PublishProfile) == '' and $(_IsExecutable) == 'true'">win-$(Platform).pubxml</PublishProfile>
 	</PropertyGroup>
 
 	<Target Name="EnsureDefaultPlatformForAnyCPU"
