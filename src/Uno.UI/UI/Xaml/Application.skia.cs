@@ -17,7 +17,6 @@ namespace Microsoft.UI.Xaml
 	public partial class Application : IApplicationEvents
 	{
 		private static bool _startInvoked;
-		private static string _arguments = "";
 
 		partial void InitializePartial()
 		{
@@ -73,12 +72,6 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		internal static void StartWithArguments(global::Microsoft.UI.Xaml.ApplicationInitializationCallback callback)
-		{
-			_arguments = GetCommandLineArgsWithoutExecutable();
-			Start(callback);
-		}
-
 		static partial void StartPartial(ApplicationInitializationCallback callback)
 		{
 			_startInvoked = true;
@@ -99,7 +92,7 @@ namespace Microsoft.UI.Xaml
 				// OnLaunched should execute only for full apps, not for individual islands.
 				if (CoreApplication.IsFullFledgedApp)
 				{
-					OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, _arguments));
+					OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, GetCommandLineArgsWithoutExecutable()));
 				}
 			}
 		}

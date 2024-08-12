@@ -83,7 +83,7 @@ public class MacSkiaHost : SkiaHost, ISkiaApplicationHost
 			var app = _appBuilder();
 			app.Host = this;
 		}
-		Application.StartWithArguments(CreateApp);
+		Application.Start(CreateApp);
 	}
 
 	private bool InitializeMac()
