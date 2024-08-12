@@ -73,8 +73,9 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		static partial void StartPartial(ApplicationInitializationCallback callback)
+		static partial void StartPartial()
 		{
+			_startInvoked = true;
 			SynchronizationContext.SetSynchronizationContext(
 				ApplicationSynchronizationContext = new NativeDispatcherSynchronizationContext(NativeDispatcher.Main, NativeDispatcherPriority.Normal)
 			);

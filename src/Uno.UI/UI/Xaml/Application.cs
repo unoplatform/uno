@@ -23,7 +23,6 @@ using Windows.UI.ViewManagement;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 #if HAS_UNO_WINUI
-using LaunchActivatedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.LaunchActivatedEventArgs;
 #else
 using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActivatedEventArgs;
 #endif
@@ -252,13 +251,17 @@ namespace Microsoft.UI.Xaml
 		public void Exit() => CoreApplication.Exit();
 #endif
 
+		/// <summary>
+		/// Provides the entry point and requests initialization of the application.
+		/// Use the specified ApplicationInitializationCallback to instantiate the Application class.
+		/// </summary>
+		/// <param name="callback">The callback that should be invoked during the initialization sequence.</param>
 		public static void Start(global::Microsoft.UI.Xaml.ApplicationInitializationCallback callback)
 		{
 			try
 			{
-				_startInvoked = true;
 				StartPartial();
-				callback(new ApplicationInitializationCallbackParams());
+				callback(new());
 			}
 			catch (Exception ex)
 			{

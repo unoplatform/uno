@@ -79,6 +79,7 @@ namespace Microsoft.UI.Xaml
 
 		static async partial void StartPartial()
 		{
+			_startInvoked = true;
 			SynchronizationContext.SetSynchronizationContext(
 				new NativeDispatcherSynchronizationContext(NativeDispatcher.Main, NativeDispatcherPriority.Normal)
 			);
