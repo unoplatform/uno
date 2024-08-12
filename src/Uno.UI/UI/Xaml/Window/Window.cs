@@ -91,9 +91,6 @@ partial class Window
 		InitializeWindowingFlavor();
 
 		SizeChanged += OnWindowSizeChanged;
-		Closed += OnWindowClosed;
-
-		ApplicationHelper.AddWindow(this);
 
 		// Eagerly initialize if possible.
 		if (Application.Current?.InitializationComplete == true)
@@ -104,8 +101,6 @@ partial class Window
 		// We set up the DisplayInformation instance after Initialize so that we have an actual window to bind to.
 		global::Windows.Graphics.Display.DisplayInformation.GetOrCreateForWindowId(AppWindow.Id);
 	}
-
-	private void OnWindowClosed(object sender, object e) => ApplicationHelper.RemoveWindow(this);
 
 	internal static Window GetFromAppWindow(AppWindow appWindow)
 	{
@@ -324,9 +319,9 @@ partial class Window
 	// WinUI: https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.window.settitlebar?view=windows-app-sdk-1.3
 	public void SetTitleBar(
 #if HAS_UNO_WINUI
-		UIElement titleBar
+		UIElement? titleBar
 #else
-		UIElement value
+		UIElement? value
 #endif
 		)
 	{

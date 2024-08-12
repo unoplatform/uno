@@ -58,7 +58,7 @@ public class Given_Window
 			return;
 		}
 
-		if (!SupportsMultipleWindows())
+		if (SupportsMultipleWindows())
 		{
 			Assert.Inconclusive("This test can only run in an environment without multiwindow support");
 		}
