@@ -39,6 +39,7 @@ using _ViewGroup = Android.Views.ViewGroup;
 using _View = Microsoft.UI.Xaml.UIElement;
 using _ViewGroup = Microsoft.UI.Xaml.UIElement;
 using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml.Shapes;
 #endif
 
 namespace Microsoft.UI.Xaml.Media
@@ -665,7 +666,11 @@ namespace Microsoft.UI.Xaml.Media
 			if (element.HitTest(transformToElement.Inverse().Transform(testPosition)) && renderingBounds.Contains(testPosition))
 #else
 
-			if (elementHitTestVisibility == HitTestability.Visible && renderingBounds.Contains(testPosition))
+			if (elementHitTestVisibility == HitTestability.Visible && renderingBounds.Contains(testPosition)
+#if __WASM__
+				&& (element is not Shape shape || shape.ContainsPoint(testPosition))
+#endif
+				)
 #endif
 			{
 				TRACE($"> LEAF! ({element.GetDebugName()} is the OriginalSource) | stale branch: {stale?.ToString() ?? "-- none --"}");

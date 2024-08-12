@@ -11,6 +11,7 @@ using Microsoft.UI.Xaml.Wasm;
 using RadialGradientBrush = Microsoft/* UWP don't rename */.UI.Xaml.Media.RadialGradientBrush;
 using System.Numerics;
 using System.Diagnostics;
+using Uno.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Shapes
 {
@@ -220,5 +221,15 @@ namespace Microsoft.UI.Xaml.Shapes
 			_mainSvgElement.SetNativeTransform(matrix);
 		}
 
+		internal virtual bool ContainsPoint(Point relativePosition)
+		{
+			var considerFill = Fill != null;
+
+			// TODO: Verify if this should also consider StrokeThickness (likely it should)
+			var considerStroke = Stroke != null;
+
+			return (considerFill || considerStroke) &&
+				WindowManagerInterop.ContainsPoint(_mainSvgElement.HtmlId, relativePosition.X, relativePosition.Y, considerFill, considerStroke);
+		}
 	}
 }

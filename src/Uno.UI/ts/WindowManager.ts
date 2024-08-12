@@ -222,6 +222,28 @@ namespace Uno.UI {
 			return Date.now() - performance.now();
 		}
 
+		public containsPoint(htmlId: number, x: number, y: number, considerFill: boolean, considerStroke: boolean): boolean {
+			const view = this.getView(htmlId);
+			if (view instanceof SVGGeometryElement) {
+				try {
+					const point = new DOMPoint(x, y);
+					return (considerFill && view.isPointInFill(point)) ||
+						(considerStroke && view.isPointInStroke(point));
+				}
+				catch (e) {
+					// SVGPoint is deprecated, but only Firefox and Safari supports DOMPoint
+					const svgElement = view.closest("svg");
+					const point = svgElement.createSVGPoint();
+					point.x = x;
+					point.y = y;
+					return (considerFill && view.isPointInFill(point)) ||
+						(considerStroke && view.isPointInStroke(point));
+				}
+			}
+
+			return false;
+		}
+
 		/**
 			* Create a html DOM element representing a Xaml element.
 			*

@@ -49,6 +49,9 @@ namespace Uno.UI.Xaml
 		internal static double GetBootTime()
 			=> NativeMethods.GetBootTime();
 
+		internal static bool ContainsPoint(IntPtr htmlId, double x, double y, bool considerFill, bool considerStroke)
+			=> NativeMethods.ContainsPoint(htmlId, x, y, considerFill, considerStroke);
+
 		#region CreateContent
 		internal static void CreateContent(IntPtr htmlId, string htmlTag, IntPtr handle, int uiElementRegistrationId, bool htmlTagIsSvg, bool isFocusable)
 		{
@@ -1133,6 +1136,9 @@ namespace Uno.UI.Xaml
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.getElementInCoordinate")]
 			internal static partial IntPtr GetElementInCoordinate(double x, double y);
+
+			[JSImport("globalThis.Uno.UI.WindowManager.current.containsPoint")]
+			internal static partial bool ContainsPoint(IntPtr htmlId, double x, double y, bool considerFill, bool considerStroke);
 		}
 	}
 }
