@@ -181,6 +181,62 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Keyboard_Navigation_Scrolls_SuggestionsList()
+		{
+			var SUT = new AutoSuggestBox();
+			SUT.ItemsSource = Enumerable.Range(0, 20).Select(i => $"a{i}").ToList();
+
+			await UITestHelper.Load(SUT);
+
+			var textBox = (TextBox)SUT.GetTemplateChild("TextBox");
+			var popup = (Popup)SUT.GetTemplateChild("SuggestionsPopup");
+
+			textBox.Focus(FocusState.Programmatic);
+			KeyboardHelper.InputText("a");
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(popup.IsOpen);
+
+			var sv = popup.Child.FindVisualChildByType<ScrollViewer>();
+			Assert.AreEqual(0, sv.VerticalOffset);
+			for (int i = 0; i < 10; i++)
+			{
+				KeyboardHelper.Down();
+				await WindowHelper.WaitForIdle();
+			}
+			Assert.AreNotEqual(0, sv.VerticalOffset);
+		}
+
+		[TestMethod]
+		public async Task When_Size_Changes_SuggestionsList_Size_Also_Changes()
+		{
+			var SUT = new AutoSuggestBox();
+			SUT.ItemsSource = Enumerable.Range(0, 20).Select(i => $"a{i}").ToList();
+			var border = new Border
+			{
+				Child = SUT,
+				Width = 40
+			};
+
+			await UITestHelper.Load(border);
+
+			var textBox = (TextBox)SUT.GetTemplateChild("TextBox");
+			var popup = (Popup)SUT.GetTemplateChild("SuggestionsPopup");
+
+			textBox.Focus(FocusState.Programmatic);
+			KeyboardHelper.InputText("a");
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(popup.IsOpen);
+
+			var sv = popup.Child.FindVisualChildByType<ScrollViewer>();
+			var initialWidth = sv.ActualWidth;
+
+			border.Width = 100;
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(initialWidth < sv.ActualWidth);
+		}
+
+		[TestMethod]
 #if __WASM__
 		[Ignore("WASM requires user confirmation to accept reading the clipboard.")]
 #endif
