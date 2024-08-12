@@ -290,6 +290,8 @@ namespace Microsoft.UI.Xaml.Controls
 				_popup.Closed += OnPopupClosed;
 				_popup.Opened += OnPopupOpened;
 			}
+
+			SizeChanged += OnSizeChanged;
 		}
 
 		void UnregisterEvents()
@@ -317,6 +319,8 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			_textChangedDisposable?.Dispose();
+
+			SizeChanged -= OnSizeChanged;
 		}
 
 		protected override void OnLostFocus(RoutedEventArgs e)
@@ -330,6 +334,11 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		private void OnPopupOpened(object sender, object e)
+		{
+			LayoutPopup();
+		}
+		
+		private void OnSizeChanged(object sender, SizeChangedEventArgs args)
 		{
 			LayoutPopup();
 		}
