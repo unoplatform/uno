@@ -79,7 +79,7 @@
 		</ImplicitPackagesResolver_v0>
 
 		<ItemGroup>
-			<_UnoProjectSystemPackageReference Remove="@(_UnoProjectSystemPackageReference" />
+			<_UnoProjectSystemPackageReference Remove="@(_UnoProjectSystemPackageReference)" />
 			<PackageVersion Remove="@(_UnoRemovePackageVersions)" />
 			<PackageReference Include="@(_UnoImplicitPackageReference)" />
 			<_UnoImplicitPackageReference Remove="@(_UnoImplicitPackageReference)" />
