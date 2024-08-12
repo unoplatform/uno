@@ -568,20 +568,24 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			void AttachUnhandledExceptionHandler()
 			{
-				writer.AppendLineIndented($"#if DEBUG");
+				writer.Append($"#if DEBUG");
+				writer.AppendLine();
 				writer.AppendLineIndented($"UnhandledException += (s, e) =>");
 				writer.AppendLineIndented("{");
 				writer.Indent();
 				using (writer.BlockInvariant("if (global::System.Diagnostics.Debugger.IsAttached)"))
 				{
 					writer.AppendLineIndented("global::System.Diagnostics.Debug.WriteLine(e.Exception);");
-					writer.AppendLineIndented("#if !DISABLE_XAML_GENERATED_BREAK_ON_UNHANDLED_EXCEPTION");
+					writer.Append("#if !DISABLE_XAML_GENERATED_BREAK_ON_UNHANDLED_EXCEPTION");
+					writer.AppendLine();
 					writer.AppendLineIndented("global::System.Diagnostics.Debugger.Break();");
-					writer.AppendLineIndented("#endif");
+					writer.Append("#endif");
+					writer.AppendLine();
 				}
 				writer.Indent(-1);
 				writer.AppendLineIndented("};");
-				writer.AppendLineIndented($"#endif");
+				writer.Append($"#endif");
+				writer.AppendLine();
 			}
 		}
 
