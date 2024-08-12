@@ -43,7 +43,7 @@ namespace UITests.Shared.Windows_UI_Composition
 			{
 			 gl_Position = vec4(aPosition, 1.0);
 			 vertexColor = vec4(aPosition.x + 0.5, aPosition.y + 0.5, aPosition.z + 0.5, 1.0);
-			}                      
+			}
 			""";
 
 			var fragmentCode = "#version 330" + Environment.NewLine +

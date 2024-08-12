@@ -6,7 +6,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:skia="http://uno.ui/skia#using:UITests.Shared.Windows_UI_Composition"
              xmlns:not_skia="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             mc:Ignorable="d skia"
+             mc:Ignorable="d skia not_skia"
              d:DesignHeight="300"
              d:DesignWidth="400">
 

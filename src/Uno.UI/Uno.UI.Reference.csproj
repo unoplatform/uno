@@ -80,6 +80,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="SkiaSharp" PrivateAssets="All" />
+		<PackageReference Include="Silk.NET.OpenGL" Version="2.16.0" PrivateAssets="All" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<EmbeddedResource Include="LinkerDefinition.$(TargetFramework).xml" Condition="exists('LinkerDefinition.$(TargetFramework).xml')">
 			<LogicalName>$(AssemblyName).xml</LogicalName>
 		</EmbeddedResource>

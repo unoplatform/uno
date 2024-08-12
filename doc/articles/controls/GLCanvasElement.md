@@ -71,9 +71,9 @@ XAML:
              xmlns:local="using:BlankApp"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:skia="http://uno.ui/skia"
+             xmlns:skia="http://uno.ui/skia#using:BlankApp"
              xmlns:not_skia="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             mc:Ignorable="d"
+             mc:Ignorable="d skia not_skia"
              d:DesignHeight="300"
              d:DesignWidth="400">
 
@@ -152,16 +152,20 @@ out_color = vertexColor;
         gl.CompileShader(vertexShader);
 
         gl.GetShader(vertexShader, ShaderParameterName.CompileStatus, out int vStatus);
-        if (vStatus != (int) GLEnum.True)
+        if (vStatus != (int)GLEnum.True)
+        {
             throw new Exception("Vertex shader failed to compile: " + gl.GetShaderInfoLog(vertexShader));
+        }
 
         uint fragmentShader = gl.CreateShader(ShaderType.FragmentShader);
         gl.ShaderSource(fragmentShader, fragmentCode);
         gl.CompileShader(fragmentShader);
 
         gl.GetShader(fragmentShader, ShaderParameterName.CompileStatus, out int fStatus);
-        if (fStatus != (int) GLEnum.True)
+        if (fStatus != (int)GLEnum.True)
+        {
             throw new Exception("Fragment shader failed to compile: " + gl.GetShaderInfoLog(fragmentShader));
+        }
 
         _program = gl.CreateProgram();
         gl.AttachShader(_program, vertexShader);
@@ -169,8 +173,10 @@ out_color = vertexColor;
         gl.LinkProgram(_program);
 
         gl.GetProgram(_program, ProgramPropertyARB.LinkStatus, out int lStatus);
-        if (lStatus != (int) GLEnum.True)
+        if (lStatus != (int)GLEnum.True)
+        {
             throw new Exception("Program failed to link: " + gl.GetProgramInfoLog(_program));
+        }
 
         gl.DetachShader(_program, vertexShader);
         gl.DetachShader(_program, fragmentShader);

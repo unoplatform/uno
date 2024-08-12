@@ -43,7 +43,7 @@ XAML:
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:skia="http://uno.ui/skia"
              xmlns:not_skia="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             mc:Ignorable="d"
+             mc:Ignorable="d skia not_skia"
              d:DesignHeight="300"
              d:DesignWidth="400">
 
@@ -67,7 +67,9 @@ Code-behind:
 // SKCanvasElementExample.xaml.cs
 public partial class SKCanvasElementExample : UserControl
 {
+#if __SKIA__
     public int MaxSampleIndex => SKCanvasElementImpl.SampleCount - 1;
+#endif
 
     public SKCanvasElementExample()
     {

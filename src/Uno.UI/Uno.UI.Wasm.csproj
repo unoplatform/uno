@@ -62,6 +62,9 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.TypeScript.MSBuild" PrivateAssets="all" />
+
+		<PackageReference Include="SkiaSharp" PrivateAssets="All" />
+		<PackageReference Include="Silk.NET.OpenGL" Version="2.16.0" PrivateAssets="All" />
 	</ItemGroup>
 
 	<ItemGroup>
