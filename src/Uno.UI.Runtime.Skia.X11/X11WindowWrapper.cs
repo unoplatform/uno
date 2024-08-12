@@ -95,8 +95,6 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 		{
 			X11XamlRootHost.Close(x11Window);
 		}
-
-		RaiseClosed();
 	}
 
 	public override void ExtendContentIntoTitleBar(bool extend)

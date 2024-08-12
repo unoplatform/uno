@@ -17,7 +17,6 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase
 		_window = nativeWindow;
 
 		nativeWindow.Host.Closing += OnWindowClosing;
-		nativeWindow.Host.Closed += OnWindowClosed;
 		nativeWindow.Host.RasterizationScaleChanged += Host_RasterizationScaleChanged;
 		nativeWindow.Host.SizeChanged += (_, s) => OnHostSizeChanged(s);
 		OnHostSizeChanged(initialSize);
@@ -55,8 +54,6 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase
 		// All prerequisites passed, can safely close.
 		e.Cancel = false;
 	}
-
-	private void OnWindowClosed(object? sender, EventArgs e) => RaiseClosed();
 
 	protected override IDisposable ApplyFullScreenPresenter()
 	{

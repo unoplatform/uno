@@ -29,7 +29,6 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 		_wpfWindow.Deactivated += OnNativeDeactivated;
 		_wpfWindow.IsVisibleChanged += OnNativeIsVisibleChanged;
 		_wpfWindow.Closing += OnNativeClosing;
-		_wpfWindow.Closed += OnNativeClosed;
 		_wpfWindow.DpiChanged += OnNativeDpiChanged;
 		_wpfWindow.StateChanged += OnNativeStateChanged;
 		_wpfWindow.Host.SizeChanged += (_, e) => OnHostSizeChanged(e.NewSize);
@@ -94,8 +93,6 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 		Bounds = new Windows.Foundation.Rect(default, new Windows.Foundation.Size(size.Width, size.Height));
 		VisibleBounds = Bounds;
 	}
-
-	private void OnNativeClosed(object? sender, EventArgs e) => RaiseClosed();
 
 	private void OnNativeClosing(object? sender, CancelEventArgs e)
 	{

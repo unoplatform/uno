@@ -38,5 +38,5 @@ internal interface IWindowImplementation
 
 	void Activate();
 
-	void Close();
+	bool Close();
 }

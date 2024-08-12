@@ -50,7 +50,7 @@ public class Given_Window
 #if HAS_UNO
 	[TestMethod]
 	[RunsOnUIThread]
-	public void When_CreateNewWindow()
+	public void When_CreateNewWindow_Unsupported()
 	{
 		if (!CoreApplication.IsFullFledgedApp)
 		{
