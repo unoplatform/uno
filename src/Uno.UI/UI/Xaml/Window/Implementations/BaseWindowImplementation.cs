@@ -20,7 +20,6 @@ using WindowActivatedEventArgs = Microsoft.UI.Xaml.WindowActivatedEventArgs;
 using Uno.Disposables;
 using Microsoft.UI.Windowing;
 using Windows.UI.Core.Preview;
-using Windows.ApplicationModel.Store.Preview.InstallControl;
 
 #else
 using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
@@ -34,7 +33,6 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 	private bool _wasShown;
 	private CoreWindowActivationState _lastActivationState = CoreWindowActivationState.Deactivated;
 	private Size _lastSize = new Size(-1, -1);
-	private bool _wasClosed;
 
 	private bool _isClosing;
 	private bool _isClosed;
@@ -83,7 +81,7 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 
 	public virtual void Activate()
 	{
-		if (_wasClosed)
+		if (_isClosed)
 		{
 			throw new InvalidOperationException("Cannot reactivate a closed window.");
 		}
@@ -144,7 +142,7 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 
 			Window.AppWindow.RaiseClosing(e);
 
-			if (e.Cancel)
+			if (e.Cancel && NativeWindowFactory.SupportsClosingCancellation)
 			{
 				return;
 			}
@@ -158,13 +156,26 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 				{
 					// App closing was prevented, handle event
 					e.Cancel = true;
-					return;
+
+					if (NativeWindowFactory.SupportsClosingCancellation)
+					{
+						return;
+					}
 				}
 			}
 #endif
 
+			if (e.Cancel && !NativeWindowFactory.SupportsClosingCancellation)
+			{
+				if (this.Log().IsWarningEnabled(LogLevel.Warning))
+				{
+					this.Log().Warn("Closing event was cancelled, but the platform does not support cancellation.");
+				}
+			}
+
+
 			// If the closing event was not cancelled, close the window.
-			Close();
+			e.Cancel = !Close();
 		}
 	}
 
@@ -263,7 +274,7 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 		KeyboardStateTracker.Reset();
 	}
 
-	public void Close()
+	public bool Close()
 	{
 		if (!_isClosed && !_isClosing)
 		{
@@ -284,6 +295,7 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 			// Create and populate the window closed event args
 			WindowEventArgs windowClosedEventArgs = new WindowEventArgs();
 			windowClosedEventArgs.Handled = false;
+
 			// Raise the window closed event
 			Closed?.Invoke(Window, windowClosedEventArgs);
 
@@ -291,7 +303,18 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 			{
 				// don't proceed to close if closing event has been handled
 				// _isClosing will get reset to false
-				return;
+
+				if (!NativeWindowFactory.SupportsClosingCancellation)
+				{
+					if (this.Log().IsWarningEnabled(LogLevel.Warning))
+					{
+						this.Log().Warn("Window.Closed event was cancelled, but the platform does not support cancellation.");
+					}
+				}
+				else
+				{
+					return false;
+				}
 			}
 
 			// Window.PrepareToClose();
@@ -316,7 +339,11 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 
 			// Close native window, cleanup, and unregister from hwnd mapping from DXamlCore
 			Shutdown();
+
+			return true;
 		}
+
+		return false;
 	}
 
 	private void Shutdown()
@@ -328,11 +355,8 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 			throw new InvalidOperationException("Native window is not initialized.");
 		}
 
-		if (_appWindowClosingEventArgs is not null)
-		{
-			_appWindowClosingEventArgs.Cancel = false;
-		}
-		else
+		// If AppWindow closing is in progress, we don't need to do anything here.
+		if (_appWindowClosingEventArgs is null)
 		{
 			NativeWindowWrapper.Close();
 		}

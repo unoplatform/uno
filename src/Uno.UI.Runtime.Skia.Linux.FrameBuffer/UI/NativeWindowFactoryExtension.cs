@@ -20,6 +20,8 @@ internal class NativeWindowFactoryExtension : INativeWindowFactoryExtension
 		_host = host;
 	}
 
+	public bool SupportsClosingCancellation => true;
+
 	public bool SupportsMultipleWindows => false;
 
 	public INativeWindowWrapper CreateWindow(Window window, XamlRoot xamlRoot)

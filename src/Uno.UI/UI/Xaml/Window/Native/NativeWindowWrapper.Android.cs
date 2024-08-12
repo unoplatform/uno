@@ -57,7 +57,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	internal void OnNativeActivated(CoreWindowActivationState state) => ActivationState = state;
 
-	internal void OnNativeClosed() => RaiseClosed();
+	internal void OnNativeClosed() => RaiseClosing();
 
 	internal bool IsStatusBarTranslucent()
 	{

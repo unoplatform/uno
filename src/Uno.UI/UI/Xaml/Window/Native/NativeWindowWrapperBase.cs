@@ -178,7 +178,6 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 	public event EventHandler<CoreWindowActivationState>? ActivationChanged;
 	public event EventHandler<bool>? VisibilityChanged;
 	public event EventHandler<AppWindowClosingEventArgs>? Closing;
-	public event EventHandler? Closed;
 	public event EventHandler? Shown;
 
 	public virtual void Activate() { }
@@ -204,8 +203,6 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 		Closing?.Invoke(this, args);
 		return args;
 	}
-
-	protected void RaiseClosed() => Closed?.Invoke(this, EventArgs.Empty);
 
 	public void SetPresenter(AppWindowPresenter presenter)
 	{

@@ -15,6 +15,8 @@ internal class MacOSNativeWindowFactoryExtension : INativeWindowFactoryExtension
 	{
 	}
 
+	public bool SupportsClosingCancellation => true;
+
 	public bool SupportsMultipleWindows => true;
 
 	public INativeWindowWrapper CreateWindow(Window window, XamlRoot xamlRoot)
