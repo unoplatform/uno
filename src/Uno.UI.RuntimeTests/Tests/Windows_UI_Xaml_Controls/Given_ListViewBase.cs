@@ -4814,7 +4814,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await UITestHelper.WaitForIdle();
 
-			var tree = sut.TreeGraph();
+			//var tree = sut.TreeGraph();
 			var sv = sut.FindFirstDescendant<ScrollViewer>() ?? throw new Exception("Failed to find the ListView's ScrollViewer");
 
 			// Here we aren't verifying the viewport is entirely filled,

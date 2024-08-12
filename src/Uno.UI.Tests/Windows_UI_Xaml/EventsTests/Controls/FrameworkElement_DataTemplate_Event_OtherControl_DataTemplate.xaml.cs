@@ -27,7 +27,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.EventsTests.Controls
 			this.InitializeComponent();
 		}
 
-		public DataTemplate GetTemplate() => Resources["testTemplate"] as DataTemplate;
+		public DataTemplate GetTestTemplate() => Resources["testTemplate"] as DataTemplate;
 
 		private void OnLoaded(object sender, RoutedEventArgs e)
 		{

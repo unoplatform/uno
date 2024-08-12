@@ -705,8 +705,6 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			};
 			SUT.ItemsSource = source;
 
-			var tree = SUT.TreeGraph();
-
 			var si = SUT.ContainerFromItem(source[0]) as ListViewItem;
 			Assert.IsNotNull(si);
 			Assert.AreEqual("Item 1", si.Content);
