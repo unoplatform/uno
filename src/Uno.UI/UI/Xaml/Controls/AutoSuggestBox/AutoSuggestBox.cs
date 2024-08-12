@@ -444,6 +444,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			_suggestionsList.SelectedIndex = nextIndex;
+			_suggestionsList.ScrollIntoView(_suggestionsList.SelectedItem);
 
 			if (nextIndex == -1)
 			{
