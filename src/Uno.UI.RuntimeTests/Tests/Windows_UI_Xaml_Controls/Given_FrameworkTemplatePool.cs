@@ -33,9 +33,11 @@ public class Given_FrameworkTemplatePool
 #if HAS_UNO
 	[TestMethod]
 	[RunsOnUIThread]
-#if __ANDROID__
-	[Ignore("https://github.com/unoplatform/uno/issues/13969")]
-#endif
+	//#if __ANDROID__
+	//[Ignore("https://github.com/unoplatform/uno/issues/13969")]
+	//#endif
+	// todo@xy: create new issue and link it here
+	[Ignore("Template pooling is globally disabled on all-platforms for #13969. With TemplatedParent rework, the recycling part was not re-introduced/updated.")]
 	public async Task When_Recycle()
 	{
 		using (FeatureConfigurationHelper.UseTemplatePooling())
