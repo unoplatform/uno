@@ -270,7 +270,7 @@ public class Given_Window
 
 	[TestMethod]
 	[RunsOnUIThread]
-	public async Task When_Window_Close_Programmatically_Does_Not_Trigger_Closing()
+	public async Task When_Window_Close_Programmatically_Does_Not_Trigger_AppWindow_Closing()
 	{
 		if (!SupportsMultipleWindows())
 		{
@@ -290,6 +290,77 @@ public class Given_Window
 		sut.Close();
 
 		closingTriggered.Should().BeFalse();
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Window_Close_Programmatically_Triggers_Window_Closed()
+	{
+		if (!SupportsMultipleWindows())
+		{
+			Assert.Inconclusive("This test can only run in an environment with multiwindow support");
+		}
+
+		var sut = new Window();
+		var content = new Border() { Width = 100, Height = 100 };
+		sut.Content = content;
+		bool closedTriggered = false;
+
+		sut.Closed += (s, e) => closedTriggered = true;
+
+		sut.Activate();
+
+		await TestServices.WindowHelper.WaitForLoaded(content);
+
+		sut.Close();
+
+		closedTriggered.Should().BeTrue();
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Window_Closed_Is_Handled()
+	{
+		if (!SupportsMultipleWindows())
+		{
+			Assert.Inconclusive("This test can only run in an environment with multiwindow support");
+		}
+
+		bool contentUnloaded = false;
+		var sut = new Window();
+		var content = new Border() { Width = 100, Height = 100 };
+		content.Unloaded += (s, e) => contentUnloaded = true;
+		sut.Content = content;
+		bool closedTriggered = false;
+
+		bool shouldHandle = true;
+		sut.Closed += (s, e) =>
+		{
+			e.Handled = shouldHandle;
+			closedTriggered = true;
+		};
+
+		sut.Activate();
+
+		await TestServices.WindowHelper.WaitForLoaded(content);
+
+		sut.Close();
+
+		closedTriggered.Should().BeTrue();
+
+		// The window should still be open
+		Assert.IsTrue(sut.Visible);
+
+		closedTriggered = false;
+		shouldHandle = false;
+
+		sut.Close();
+		closedTriggered.Should().BeTrue();
+
+		// The window should now be closed
+		Assert.IsFalse(sut.Visible);
+
+		await TestServices.WindowHelper.WaitFor(() => contentUnloaded);
 	}
 
 	[TestMethod]
