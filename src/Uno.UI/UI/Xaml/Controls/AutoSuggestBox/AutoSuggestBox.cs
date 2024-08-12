@@ -337,10 +337,13 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			LayoutPopup();
 		}
-g
+
 		private void OnSizeChanged(object sender, SizeChangedEventArgs args)
 		{
-			LayoutPopup();
+			if (_suggestionsContainer is not null)
+			{
+				_suggestionsContainer.Width = ActualWidth;
+			}
 		}
 
 		private void OnIsSuggestionListOpenChanged(DependencyPropertyChangedEventArgs e)
