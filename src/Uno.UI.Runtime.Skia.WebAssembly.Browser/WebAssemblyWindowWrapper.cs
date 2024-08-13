@@ -46,7 +46,7 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 
 	public override object? NativeWindow => null;
 
-	internal Window? Window { get; private set; }
+	internal Window? Window => _window;
 
 	public override string Title
 	{
@@ -65,17 +65,11 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 		VisibleBounds = new Rect(default, newWindowSize);
 	}
 
-	internal void OnNativeVisibilityChanged(bool visible) => Visible = visible;
+	internal void OnNativeVisibilityChanged(bool visible) => IsVisible = visible;
 
 	internal void OnNativeActivated(CoreWindowActivationState state) => ActivationState = state;
 
 	internal void OnNativeClosed() => RaiseClosed();
-
-	internal void SetWindow(Window window, XamlRoot xamlRoot)
-	{
-		Window = window;
-		SetXamlRoot(xamlRoot);
-	}
 
 	[JSExport]
 	private static void OnResize([JSMarshalAs<JSType.Any>] object instance, double width, double height)

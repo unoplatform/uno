@@ -83,7 +83,7 @@ public class PlatformHost : ISkiaApplicationHost, IXamlRootHost
 
 		//CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet += OnCoreWindowContentRootSet;
 
-		Application.StartWithArguments(CreateApp);
+		Application.Start(CreateApp);
 	}
 
 	//private void OnCoreWindowContentRootSet(object? sender, object e)
