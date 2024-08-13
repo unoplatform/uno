@@ -96,7 +96,7 @@
 		<PackageReference Update="Xamarin.UITest" Version="4.3.5" />
 		<PackageReference Update="Xamarin.TestCloud.Agent" Version="0.23.2" />
 		<PackageReference Update="System.Numerics.Vectors" Version="4.5.0" />
-		<PackageReference Update="Microsoft.Windows.Compatibility" Version="5.0.1" />
+		<PackageReference Update="Microsoft.Windows.Compatibility" Version="9.0.0-preview.6.24327.6" />
 
 		<PackageReference Update="SkiaSharp.Views" Version="$(SkiaSharpVersion)" />
 		<PackageReference Update="SkiaSharp.Views.Uno" Version="$(SkiaSharpVersion)" />
