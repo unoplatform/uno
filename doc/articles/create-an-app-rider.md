@@ -122,6 +122,10 @@ Select the **MyUnoApp (WebAssembly)** debug profile then click the green arrow o
 
 A new browser window will automatically run your application.
 
+> [!IMPORTANT]
+> There is currently a known issue with **Rider version 2024.2** on **macOS** that causes an **'Access to localhost was denied' error when launching applications on WebAssembly**. Until this issue is resolved, you will need to reload the browser page to successfully load the application.
+> (Related opened [Uno Platform issue](https://github.com/unoplatform/uno.rider/issues/87) and [Rider issue](https://youtrack.jetbrains.com/issue/RIDER-115776/MacOS-WASM-Access-to-localhost-was-denied-on-Initial-Run))
+>
 > [!NOTE]
 > There is no debugging for WebAssembly within Rider for Uno Platform, but you can debug using the [built-in Chrome tools](external/uno.wasm.bootstrap/doc/debugger-support.md#how-to-use-the-browser-debugger).
 
