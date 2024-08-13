@@ -782,10 +782,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					BuildLiteralProperties(blockWriter, topLevelControl, closure);
 				}
 
-				if (IsDependencyObject(topLevelControlType))
-				{
-					BuildExtendedProperties(writer, topLevelControl, useGenericApply: true);
-				}
+				BuildExtendedProperties(writer, topLevelControl, useGenericApply: true);
 			}
 
 			writer.AppendLineIndented(";");
