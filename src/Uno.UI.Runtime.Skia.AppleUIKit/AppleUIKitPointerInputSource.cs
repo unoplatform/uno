@@ -4,6 +4,7 @@ using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
 using UIKit;
 using Uno.Foundation.Logging;
+using Uno.UI.Extensions;
 using Uno.UI.Xaml.Extensions;
 using Windows.Devices.Input;
 using Windows.Foundation;

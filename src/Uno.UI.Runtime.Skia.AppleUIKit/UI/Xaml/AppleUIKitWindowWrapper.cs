@@ -54,12 +54,12 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 	{
 		_nativeWindow.RootViewController = _mainController;
 		_nativeWindow.MakeKeyAndVisible();
-		Visible = true;
+		IsVisible = true;
 	}
 
 	internal RootViewController MainController => _mainController;
 
-	internal void OnNativeVisibilityChanged(bool visible) => Visible = visible;
+	internal void OnNativeVisibilityChanged(bool visible) => IsVisible = visible;
 
 	internal void OnNativeActivated(CoreWindowActivationState state) => ActivationState = state;
 

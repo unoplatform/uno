@@ -71,7 +71,7 @@ partial class App
 			return;
 		}
 
-		if (Uno.UI.Helpers.SkiaTargetHelper.IsNonDesktop())
+		if (Uno.UI.Helpers.DeviceTargetHelper.IsNonDesktop())
 		{
 			// Reading Package.appxmanifest isn't supported on Wasm or Android, even if running Skia.
 			return;
@@ -149,7 +149,7 @@ partial class App
 	public void AssertApplicationData()
 	{
 #if __SKIA__
-		if (Uno.UI.Helpers.SkiaTargetHelper.IsNonDesktop())
+		if (Uno.UI.Helpers.DeviceTargetHelper.IsNonDesktop())
 		{
 			// Reading Package.appxmanifest isn't supported on Wasm, even if running Skia.
 			return;

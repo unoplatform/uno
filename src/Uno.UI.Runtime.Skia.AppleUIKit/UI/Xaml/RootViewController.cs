@@ -75,12 +75,6 @@ internal class RootViewController : UINavigationController, IRotationAwareViewCo
 		UIApplication.Notifications
 			.ObserveWillResignActive((sender, args) =>
 				VisualTreeHelper.CloseLightDismissPopups(WinUICoreServices.Instance.ContentRootCoordinator!.CoreWindowContentRoot!.XamlRoot));
-
-		// iOS 17+ only
-		if (UIDevice.CurrentDevice.CheckSystemVersion(17, 0))
-		{
-			((IUITraitChangeObservable)this).RegisterForTraitChanges<UITraitUserInterfaceStyle>((env, traits) => SystemThemeHelper.RefreshSystemTheme());
-		}
 	}
 
 	internal event Action? VisibleBoundsChanged;
