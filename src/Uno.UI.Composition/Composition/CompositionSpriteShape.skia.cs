@@ -90,12 +90,10 @@ namespace Microsoft.UI.Composition
 						var pathEffect = SKPathEffect.CreateTrim(Geometry.TrimStart, Geometry.TrimEnd);
 						if (strokePaint.PathEffect is SKPathEffect effect)
 						{
-							strokePaint.PathEffect = SKPathEffect.CreateSum(effect, pathEffect);
+							pathEffect = SKPathEffect.CreateSum(effect, pathEffect);
 						}
-						else
-						{
-							strokePaint.PathEffect = pathEffect;
-						}
+
+						strokePaint.PathEffect = pathEffect;
 					}
 
 					// Generate stroke geometry for bounds that will be passed to a brush.
