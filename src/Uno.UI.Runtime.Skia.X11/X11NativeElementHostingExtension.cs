@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Uno.Extensions;
 using Uno.UI.Runtime.Skia;
 namespace Uno.WinUI.Runtime.Skia.X11;
 
@@ -118,6 +120,11 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 			if (arrangeRect.Width <= 0 || arrangeRect.Height <= 0)
 			{
 				arrangeRect.Size = new Size(1, 1);
+			}
+			else
+			{
+				var scale = XamlRoot.GetDisplayInformation(xamlRoot).RawPixelsPerViewPixel;
+				arrangeRect = Matrix3x2.CreateScale((float)scale).Transform(arrangeRect);
 			}
 			_ = XLib.XResizeWindow(Display, nativeWindow.WindowId, (int)arrangeRect.Width, (int)arrangeRect.Height);
 			_ = X11Helper.XMoveWindow(Display, nativeWindow.WindowId, (int)arrangeRect.X, (int)arrangeRect.Y);
