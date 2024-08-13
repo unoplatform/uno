@@ -26,7 +26,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	private readonly DisplayInformation _displayInformation;
 
-	private Uno.UI.Controls.Window _window;
+	private Uno.UI.Controls.Window _nativeWindow;
 
 	private Size _previousWindowSize = new Size(-1, -1);
 
@@ -41,12 +41,12 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		if (preferredWindowSize != Windows.Foundation.Size.Empty)
 		{
 			var rect = new CoreGraphics.CGRect(100, 100, (int)preferredWindowSize.Width, (int)preferredWindowSize.Height);
-			_window = new Uno.UI.Controls.Window(rect, style, NSBackingStore.Buffered, false);
+			_nativeWindow = new Uno.UI.Controls.Window(rect, style, NSBackingStore.Buffered, false);
 		}
 		else
 		{
 			var rect = new CoreGraphics.CGRect(100, 100, 1024, 768);
-			_window = new Uno.UI.Controls.Window(rect, style, NSBackingStore.Buffered, false);
+			_nativeWindow = new Uno.UI.Controls.Window(rect, style, NSBackingStore.Buffered, false);
 		}
 
 		_mainController = Microsoft.UI.Xaml.Window.ViewControllerGenerator?.Invoke() ?? new RootViewController();
@@ -76,7 +76,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	internal static NativeWindowWrapper Instance => _instance.Value;
 
-	public override Uno.UI.Controls.Window NativeWindow => _window;
+	public override Uno.UI.Controls.Window NativeWindow => _nativeWindow;
 
 	internal RootViewController MainController => _mainController;
 
@@ -85,9 +85,9 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	protected override void ShowCore()
 	{
-		_window.ContentViewController = _mainController;
-		_window.Display();
-		_window.MakeKeyAndOrderFront(NSApplication.SharedApplication);
+		_nativeWindow.ContentViewController = _mainController;
+		_nativeWindow.Display();
+		_nativeWindow.MakeKeyAndOrderFront(NSApplication.SharedApplication);
 	}
 
 	internal Size GetWindowSize()
@@ -104,7 +104,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	internal void RaiseNativeSizeChanged()
 	{
-		var newWindowSize = new Size(_window.Frame.Width, _window.Frame.Height);
+		var newWindowSize = new Size(_nativeWindow.Frame.Width, _nativeWindow.Frame.Height);
 		Bounds = new Rect(default, newWindowSize);
 		VisibleBounds = Bounds;
 		Size = newWindowSize.ToSizeInt32();
