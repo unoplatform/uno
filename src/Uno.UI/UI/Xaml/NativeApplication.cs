@@ -22,6 +22,11 @@ namespace Microsoft.UI.Xaml
 	public class NativeApplication : Android.App.Application
 	{
 		private Application _app;
+
+#if ANDROID_SKIA
+		private AppBuilder _appBuilder;
+#endif
+
 		private Intent _lastHandledIntent;
 
 		private bool _isRunning;
@@ -45,7 +50,7 @@ namespace Microsoft.UI.Xaml
 			// Android.App.Application.Context to be populated properly. This enables
 			// APIs such as Windows.Storage.ApplicationData.Current.LocalSettings to function properly.
 #if ANDROID_SKIA
-			new Uno.UI.Runtime.Skia.Android.AndroidSkiaHost(() => _app = appBuilder()).Run();
+			_appBuilder = appBuilder;
 #else
 			_app = appBuilder();
 #endif
@@ -65,6 +70,14 @@ namespace Microsoft.UI.Xaml
 				{
 					this.Log().LogDebug($"Application activity started with intent {activity.Intent}");
 				}
+
+#if ANDROID_SKIA
+				if (!_isRunning)
+				{
+					// We create the host late enough for the ContextHelper.Context to have been set correctly.
+					new Uno.UI.Runtime.Skia.Android.AndroidSkiaHost(() => _app = _appBuilder()).Run();
+				}
+#endif
 
 				_app.InitializationCompleted();
 
