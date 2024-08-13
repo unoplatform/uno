@@ -17,5 +17,6 @@
 		<ContentPresenter x:Name="compPresenter5" Width="200" Height="200" ToolTipService.ToolTip="Rounded Rectangle Path Geometry" Background="Transparent"/>
 		<ContentPresenter x:Name="compPresenter6" Width="200" Height="200" ToolTipService.ToolTip="Polygon Path Geometry" Background="Transparent"/>
 		<ContentPresenter x:Name="compPresenter7" Width="200" Height="200" ToolTipService.ToolTip="Path Geometry Clipping" Background="Transparent"/>
+		<ContentPresenter x:Name="compPresenter8" Width="200" Height="200" ToolTipService.ToolTip="Geometry Trimming Animation" Background="Transparent"/>
 	</GridView>
 </UserControl>

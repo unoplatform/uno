@@ -53,6 +53,11 @@ namespace Microsoft.UI.Composition
 						fill = wrapper.WrappedBrush;
 					}
 
+					if (Geometry.TrimStart != default || Geometry.TrimEnd != default)
+					{
+						fillPaint.PathEffect = SKPathEffect.CreateTrim(Geometry.TrimStart, Geometry.TrimEnd);
+					}
+
 					if (fill is CompositionEffectBrush { HasBackdropBrushInput: true })
 					{
 						// workaround until SkiaSharp adds support for SaveLayerRec
@@ -78,6 +83,19 @@ namespace Microsoft.UI.Composition
 					if (StrokeDashArray is { Count: > 0 } strokeDashArray)
 					{
 						strokePaint.PathEffect = SKPathEffect.CreateDash(strokeDashArray.ToEvenArray(), 0);
+					}
+
+					if (Geometry.TrimStart != default || Geometry.TrimEnd != default)
+					{
+						var pathEffect = SKPathEffect.CreateTrim(Geometry.TrimStart, Geometry.TrimEnd);
+						if (strokePaint.PathEffect is SKPathEffect effect)
+						{
+							strokePaint.PathEffect = SKPathEffect.CreateSum(effect, pathEffect);
+						}
+						else
+						{
+							strokePaint.PathEffect = pathEffect;
+						}
 					}
 
 					// Generate stroke geometry for bounds that will be passed to a brush.

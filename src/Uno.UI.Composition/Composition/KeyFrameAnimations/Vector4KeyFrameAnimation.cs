@@ -29,7 +29,12 @@ public partial class Vector4KeyFrameAnimation : KeyFrameAnimation
 			startValue = (Vector4)compositionObject.GetAnimatableProperty(propertyName.ToString(), subPropertyName.ToString());
 		}
 
-		_keyframeEvaluator = new KeyFrameEvaluator<Vector4>(startValue, _keyFrames[1.0f], Duration, _keyFrames, Vector4.Lerp, IterationCount, IterationBehavior, Compositor);
+		if (!_keyFrames.TryGetValue(1.0f, out var finalValue))
+		{
+			finalValue = _keyFrames.Values.LastOrDefault(startValue);
+		}
+
+		_keyframeEvaluator = new KeyFrameEvaluator<Vector4>(startValue, finalValue, Duration, _keyFrames, Vector4.Lerp, IterationCount, IterationBehavior, Compositor);
 		return startValue;
 	}
 }

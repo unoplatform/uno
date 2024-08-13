@@ -34,7 +34,7 @@ namespace UITests.Shared.Windows_UI_Composition
 
 		private void CompositionPathTests_Loaded(object sender, RoutedEventArgs e)
 		{
-			var compositor = Microsoft.UI.Xaml.Window.Current.Compositor;
+			var compositor = Compositor.GetSharedCompositor();
 			var device = CanvasDevice.GetSharedDevice();
 
 			// Simple shape
@@ -803,6 +803,43 @@ namespace UITests.Shared.Windows_UI_Composition
 					ElementCompositionPreview.SetElementChildVisual(compPresenter7, imgVisual);
 				}
 			};
+
+			// Trim Animation
+			var polyVisual2 = compositor.CreateShapeVisual();
+			var polyGeometry2 = compositor.CreatePathGeometry(polyPath);
+			var polyShape2 = compositor.CreateSpriteShape(polyGeometry2);
+
+			polyShape2.StrokeBrush = compositor.CreateColorBrush(Windows.UI.Colors.PaleVioletRed);
+			polyShape2.StrokeDashCap = CompositionStrokeCap.Round;
+			polyShape2.StrokeEndCap = CompositionStrokeCap.Round;
+			polyShape2.StrokeStartCap = CompositionStrokeCap.Round;
+			polyShape2.StrokeMiterLimit = 4;
+			polyShape2.StrokeThickness = 2;
+
+			polyVisual2.Shapes.Add(polyShape2);
+			polyVisual2.Size = new(200);
+			polyVisual2.Offset = new(0, 5, 0);
+
+			polyGeometry2.TrimEnd = 1f;
+
+			var duration = TimeSpan.FromSeconds(2);
+
+			var trimStartAnimation = compositor.CreateScalarKeyFrameAnimation();
+			trimStartAnimation.InsertKeyFrame(0, 0);
+			trimStartAnimation.InsertKeyFrame(1, 1);
+			trimStartAnimation.Duration = duration;
+			trimStartAnimation.IterationBehavior = AnimationIterationBehavior.Forever;
+
+			var trimEndAnimation = compositor.CreateScalarKeyFrameAnimation();
+			trimEndAnimation.InsertKeyFrame(0, 0);
+			trimEndAnimation.InsertKeyFrame(1, 1.25f);
+			trimEndAnimation.Duration = duration;
+			trimEndAnimation.IterationBehavior = AnimationIterationBehavior.Forever;
+
+			polyGeometry2.StartAnimation(nameof(CompositionGeometry.TrimStart), trimStartAnimation);
+			polyGeometry2.StartAnimation(nameof(CompositionGeometry.TrimEnd), trimEndAnimation);
+
+			ElementCompositionPreview.SetElementChildVisual(compPresenter8, polyVisual2);
 		}
 
 		private Vector2[] GetStarPoints(Vector2 center, float radius, int numPoints, float innerRadiusFactor)

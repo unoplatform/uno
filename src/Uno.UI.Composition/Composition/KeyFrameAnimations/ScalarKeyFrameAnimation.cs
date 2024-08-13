@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 using Uno;
 
 namespace Microsoft.UI.Composition;
@@ -36,7 +37,12 @@ public partial class ScalarKeyFrameAnimation : KeyFrameAnimation
 			startValue = (float)compositionObject.GetAnimatableProperty(propertyName.ToString(), subPropertyName.ToString());
 		}
 
-		_keyframeEvaluator = new KeyFrameEvaluator<float>(startValue, _keyFrames[1.0f], Duration, _keyFrames, float.Lerp, IterationCount, IterationBehavior, Compositor);
+        if (!_keyFrames.TryGetValue(1.0f, out var finalValue))
+        {
+            finalValue = _keyFrames.Values.LastOrDefault(startValue);
+        }
+
+        _keyframeEvaluator = new KeyFrameEvaluator<float>(startValue, finalValue, Duration, _keyFrames, float.Lerp, IterationCount, IterationBehavior, Compositor);
 		return startValue;
 	}
 #endif
