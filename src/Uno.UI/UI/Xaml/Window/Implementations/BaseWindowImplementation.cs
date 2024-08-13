@@ -9,6 +9,9 @@ using Microsoft.UI.Xaml;
 using Windows.UI.ViewManagement;
 using Uno.Helpers.Theming;
 using Uno.UI.Core;
+using Microsoft.UI.Windowing;
+using Windows.UI.Core.Preview;
+using Uno.Disposables;
 
 #if !HAS_UNO_WINUI
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
@@ -17,10 +20,6 @@ using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 #if HAS_UNO_WINUI
 using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
 using WindowActivatedEventArgs = Microsoft.UI.Xaml.WindowActivatedEventArgs;
-using Uno.Disposables;
-using Microsoft.UI.Windowing;
-using Windows.UI.Core.Preview;
-
 #else
 using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
 using WindowActivatedEventArgs = Windows.UI.Core.WindowActivatedEventArgs;
