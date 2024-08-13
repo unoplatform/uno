@@ -365,6 +365,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[RunsOnUIThread]
 		public async Task When_CCButton_ApplyTemplate_WithChild()
 		{
+			// When_CC(Button|Expander)_ApplyTemplate_With(No)?Child tests are designed to verify that
+			// when content is added as direct child (as a result of IsContentPresenterBypassEnabled),
+			// the template would still be applied.
+			// These tests can be removed once IsContentPresenterBypassEnabled is removed.
+
 			var SUT = XamlHelper.LoadXaml<Button>("""
 				<Button>
 					<TextBlock Text="Asd" />
@@ -407,17 +412,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		public async Task When_CCExpander_ApplyTemplate_WithChild()
 		{
 			var SUT = XamlHelper.LoadXaml<Expander>("""
-				<Expander>
+				<muxc:Expander>
 					<TextBlock Text="Asd" />
 
-					<Expander.Template>
-						<ControlTemplate TargetType="Expander">
+					<muxc:Expander.Template>
+						<ControlTemplate TargetType="muxc:Expander">
 							<Border x:Name="ControlTemplateRoot">
 								<ContentPresenter x:Name="ContentPresenter" Content="{TemplateBinding Content}" />
 							</Border>
 						</ControlTemplate>
-					</Expander.Template>
-				</Expander>
+					</muxc:Expander.Template>
+				</muxc:Expander>
 			""");
 			await UITestHelper.Load(SUT);
 
@@ -428,15 +433,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		public async Task When_CCExpander_ApplyTemplate_WithNoChild()
 		{
 			var SUT = XamlHelper.LoadXaml<Expander>("""
-				<Expander Content="Asd">
-					<Expander.Template>
-						<ControlTemplate TargetType="Expander">
+				<muxc:Expander Content="Asd">
+					<muxc:Expander.Template>
+						<ControlTemplate TargetType="muxc:Expander">
 							<Border x:Name="ControlTemplateRoot">
 								<ContentPresenter x:Name="ContentPresenter" Content="{TemplateBinding Content}" />
 							</Border>
 						</ControlTemplate>
-					</Expander.Template>
-				</Expander>
+					</muxc:Expander.Template>
+				</muxc:Expander>
 			""");
 			await UITestHelper.Load(SUT);
 
