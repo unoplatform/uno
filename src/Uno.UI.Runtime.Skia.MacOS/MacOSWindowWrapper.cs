@@ -10,31 +10,31 @@ namespace Uno.UI.Runtime.Skia.MacOS;
 
 internal class MacOSWindowWrapper : NativeWindowWrapperBase
 {
-	private readonly MacOSWindowNative _window;
+	private readonly MacOSWindowNative _nativeWindow;
 
 	public MacOSWindowWrapper(MacOSWindowNative nativeWindow, Window window, XamlRoot xamlRoot, Size initialSize) : base(window, xamlRoot)
 	{
-		_window = nativeWindow;
+		_nativeWindow = nativeWindow;
 
 		nativeWindow.Host.Closing += OnWindowClosing;
 		nativeWindow.Host.RasterizationScaleChanged += Host_RasterizationScaleChanged;
 		nativeWindow.Host.SizeChanged += (_, s) => OnHostSizeChanged(s);
 		OnHostSizeChanged(initialSize);
 
-		RasterizationScale = (float)_window.Host.RasterizationScale;
+		RasterizationScale = (float)_nativeWindow.Host.RasterizationScale;
 	}
 
 	private void Host_RasterizationScaleChanged(object? sender, EventArgs args)
 	{
-		RasterizationScale = (float)_window.Host.RasterizationScale;
+		RasterizationScale = (float)_nativeWindow.Host.RasterizationScale;
 	}
 
-	public override object NativeWindow => _window;
+	public override object NativeWindow => _nativeWindow;
 
 	public override string Title
 	{
-		get => NativeUno.uno_window_get_title(_window.Handle);
-		set => NativeUno.uno_window_set_title(_window.Handle, value);
+		get => NativeUno.uno_window_get_title(_nativeWindow.Handle);
+		set => NativeUno.uno_window_set_title(_nativeWindow.Handle, value);
 	}
 
 	private void OnHostSizeChanged(Size size)
@@ -57,13 +57,13 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase
 
 	protected override IDisposable ApplyFullScreenPresenter()
 	{
-		NativeUno.uno_window_enter_full_screen(_window.Handle);
-		return Disposable.Create(() => NativeUno.uno_window_exit_full_screen(_window.Handle));
+		NativeUno.uno_window_enter_full_screen(_nativeWindow.Handle);
+		return Disposable.Create(() => NativeUno.uno_window_exit_full_screen(_nativeWindow.Handle));
 	}
 
 	protected override IDisposable ApplyOverlappedPresenter(OverlappedPresenter presenter)
 	{
-		presenter.SetNative(new MacOSNativeOverlappedPresenter(_window));
+		presenter.SetNative(new MacOSNativeOverlappedPresenter(_nativeWindow));
 		return Disposable.Create(() => presenter.SetNative(null));
 	}
 }
