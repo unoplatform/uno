@@ -196,7 +196,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public override void WillMoveToSuperview(UIView newsuper)
 		{
 			base.WillMoveToSuperview(newsuper);
-			UpdateSizeChangedSubscription(isCleanupRequired: newsuper == null);
+			_sizeChangedSubscription.Disposable = null;
 		}
 
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;

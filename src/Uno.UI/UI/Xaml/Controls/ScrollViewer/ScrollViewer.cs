@@ -608,10 +608,7 @@ namespace Microsoft.UI.Xaml.Controls
 			);
 		#endregion
 
-
-#if !__SKIA__
 		private readonly SerialDisposable _sizeChangedSubscription = new SerialDisposable();
-#endif
 
 #pragma warning disable 649 // unused member for Unit tests
 		private _ScrollContentPresenter? _presenter;
@@ -676,7 +673,9 @@ namespace Microsoft.UI.Xaml.Controls
 		protected override Size MeasureOverride(Size availableSize)
 		{
 			ViewportMeasureSize = availableSize;
+
 			var size = base.MeasureOverride(availableSize);
+
 			return size;
 		}
 
@@ -687,6 +686,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var arrangeSize = base.ArrangeOverride(finalSize);
 			TrimOverscroll(Orientation.Horizontal);
 			TrimOverscroll(Orientation.Vertical);
+
 			return arrangeSize;
 		}
 
@@ -1071,7 +1071,7 @@ namespace Microsoft.UI.Xaml.Controls
 				ApplyScrollContentPresenterContent(newValue);
 			}
 
-			//UpdateSizeChangedSubscription();
+			UpdateSizeChangedSubscription();
 
 			_snapPointsInfo = newValue as IScrollSnapPointsInfo;
 		}
@@ -1085,26 +1085,20 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-#if !__SKIA__
-		[SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Used only by some platforms; wip refactor")]
 		private void UpdateSizeChangedSubscription(bool isCleanupRequired = false)
 		{
-			// TODO HERE
-			if (!isCleanupRequired
-				&& Content is IFrameworkElement element)
+			_sizeChangedSubscription.Disposable = null;
+			if (Content is IFrameworkElement element)
 			{
-				_sizeChangedSubscription.Disposable = Disposable.Create(() => element.SizeChanged -= OnElementSizeChanged);
 				element.SizeChanged += OnElementSizeChanged;
-			}
-			else
-			{
-				_sizeChangedSubscription.Disposable = null;
+				_sizeChangedSubscription.Disposable = Disposable.Create(() =>
+					element.SizeChanged -= OnElementSizeChanged
+				);
 			}
 
 			void OnElementSizeChanged(object sender, SizeChangedEventArgs args)
 				=> UpdateDimensionProperties();
 		}
-#endif
 		#endregion
 
 		#region Managed scroll bars support
