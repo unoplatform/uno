@@ -72,15 +72,18 @@ namespace Microsoft.UI.Xaml
 				}
 
 #if ANDROID_SKIA
+				// We need to call TryHandleIntent first so the application arguments are set correctly.
+				// Then, when the Application is created, it will use those arguments.
+				_ = TryHandleIntent(activity.Intent);
 				if (!_isRunning)
 				{
 					// We create the host late enough for the ContextHelper.Context to have been set correctly.
 					new Uno.UI.Runtime.Skia.Android.AndroidSkiaHost(() => _app = _appBuilder()).Run();
 				}
-#endif
 
 				_app.InitializationCompleted();
-
+#else
+				_app.InitializationCompleted();
 				var handled = TryHandleIntent(activity.Intent);
 
 				// default to normal launch
@@ -88,6 +91,7 @@ namespace Microsoft.UI.Xaml
 				{
 					_app.OnLaunched(new LaunchActivatedEventArgs());
 				}
+#endif
 
 				_isRunning = true;
 			}
@@ -111,7 +115,11 @@ namespace Microsoft.UI.Xaml
 						this.Log().LogDebug("Intent contained JumpList extra arguments, calling OnLaunched.");
 					}
 
+#if ANDROID_SKIA
+					Application.SetArguments(intent.GetStringExtra(JumpListItem.ArgumentsExtraKey));
+#else
 					_app.OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, intent.GetStringExtra(JumpListItem.ArgumentsExtraKey)));
+#endif
 					handled = true;
 				}
 				else if (intent.Data != null)

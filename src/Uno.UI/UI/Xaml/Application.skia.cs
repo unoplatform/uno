@@ -21,6 +21,12 @@ namespace Microsoft.UI.Xaml
 		[ThreadStatic]
 		private static Application _current;
 
+		[ThreadStatic]
+		private static string? _argumentsOverride;
+
+		internal static void SetArguments(string arguments)
+			=> _argumentsOverride = arguments;
+
 		partial void InitializePartial()
 		{
 			_current = this;

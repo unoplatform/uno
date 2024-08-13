@@ -533,6 +533,13 @@ namespace Microsoft.UI.Xaml
 #if __MACOS__ || __SKIA__
 		private static string GetCommandLineArgsWithoutExecutable()
 		{
+#if __SKIA__
+			if (!string.IsNullOrEmpty(_argumentsOverride))
+			{
+				return _argumentsOverride;
+			}
+#endif
+
 			var args = Environment.GetCommandLineArgs();
 			if (args.Length <= 1)
 			{
