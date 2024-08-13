@@ -25,7 +25,7 @@ using NativeHandle = ObjCRuntime.NativeHandle;
 namespace Microsoft.UI.Xaml
 {
 	[Register("UnoAppDelegate")]
-	public partial class Application : NSApplicationDelegate
+	partial class Application : NSApplicationDelegate
 	{
 		private NSUrl[] _launchUrls;
 

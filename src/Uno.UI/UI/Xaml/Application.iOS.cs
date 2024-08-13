@@ -23,7 +23,7 @@ using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActiv
 namespace Microsoft.UI.Xaml
 {
 	[Register("UnoAppDelegate")]
-	public partial class Application : UIApplicationDelegate
+	partial class Application : UIApplicationDelegate
 	{
 		private bool _preventSecondaryActivationHandling;
 

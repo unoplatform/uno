@@ -35,7 +35,7 @@ using NativeMethods = __Microsoft.UI.Xaml.Application.NativeMethods;
 
 namespace Microsoft.UI.Xaml
 {
-	public partial class Application
+	partial class Application
 	{
 		private static bool _startInvoked;
 
