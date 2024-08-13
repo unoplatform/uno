@@ -37,12 +37,12 @@ public partial class ScalarKeyFrameAnimation : KeyFrameAnimation
 			startValue = (float)compositionObject.GetAnimatableProperty(propertyName.ToString(), subPropertyName.ToString());
 		}
 
-        if (!_keyFrames.TryGetValue(1.0f, out var finalValue))
-        {
-            finalValue = _keyFrames.Values.LastOrDefault(startValue);
-        }
+		if (!_keyFrames.TryGetValue(1.0f, out var finalValue))
+		{
+			finalValue = _keyFrames.Values.LastOrDefault(startValue);
+		}
 
-        _keyframeEvaluator = new KeyFrameEvaluator<float>(startValue, finalValue, Duration, _keyFrames, float.Lerp, IterationCount, IterationBehavior, Compositor);
+		_keyframeEvaluator = new KeyFrameEvaluator<float>(startValue, finalValue, Duration, _keyFrames, float.Lerp, IterationCount, IterationBehavior, Compositor);
 		return startValue;
 	}
 #endif

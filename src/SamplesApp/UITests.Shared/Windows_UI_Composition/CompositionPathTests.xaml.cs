@@ -18,6 +18,7 @@ using Microsoft.UI.Composition;
 using Microsoft.Graphics.Canvas.Geometry;
 using Microsoft.Graphics.Canvas;
 using System.Numerics;
+using System.Threading.Tasks;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -821,6 +822,8 @@ namespace UITests.Shared.Windows_UI_Composition
 			polyVisual2.Offset = new(0, 5, 0);
 
 			polyGeometry2.TrimEnd = 1f;
+
+			//await Task.Run(async () => await Task.Delay(2000));
 
 			var duration = TimeSpan.FromSeconds(2);
 
