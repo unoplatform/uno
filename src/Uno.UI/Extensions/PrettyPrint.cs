@@ -69,7 +69,7 @@ public static class PrettyPrint
 			(_knownColors.Value.TryGetValue(scb.Color, out var name) ? name : $"#{scb.Color.A:X2}{scb.Color.R:X2}{scb.Color.G:X2}{scb.Color.B:X2}") +
 			(scb.Opacity != 1 ? $"*{scb.Opacity:#.###}" : "");
 
-		return b.GetType().Name;
+		return b?.GetType().Name;
 	}
 
 	public static string EscapeMultiline(string s, bool escapeTabs = false)

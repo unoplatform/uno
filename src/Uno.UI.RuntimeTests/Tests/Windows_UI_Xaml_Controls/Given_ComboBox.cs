@@ -485,7 +485,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
-		public async Task When_Fluent_And_Theme_Changed()
+		public async Task When_CB_Fluent_And_Theme_Changed()
 		{
 			using (StyleHelper.UseFluentStyles())
 			{

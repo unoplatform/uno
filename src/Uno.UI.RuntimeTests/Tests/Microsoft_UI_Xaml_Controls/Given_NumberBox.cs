@@ -29,7 +29,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 public class Given_NumberBox
 {
 	[TestMethod]
-	public async Task When_Fluent_And_Theme_Changed()
+	public async Task When_NB_Fluent_And_Theme_Changed()
 	{
 		using (StyleHelper.UseFluentStyles())
 		{

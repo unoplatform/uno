@@ -123,11 +123,10 @@ namespace Microsoft.UI.Xaml
 					);
 
 				details.SetBinding(bindingExpression);
+				_bindings = _bindings.Add(bindingExpression);
 
 				if (!Equals(binding.RelativeSource, RelativeSource.TemplatedParent))
 				{
-					_bindings = _bindings.Add(bindingExpression);
-
 					if (bindingExpression.TargetPropertyDetails.Property.UniqueId == DataContextPropertyDetails.Property.UniqueId)
 					{
 						bindingExpression.DataContext = details.GetValue(DependencyPropertyValuePrecedences.Inheritance);
@@ -142,11 +141,7 @@ namespace Microsoft.UI.Xaml
 
 		private void ApplyBinding(BindingExpression binding, object dataContext)
 		{
-			if (Equals(binding.ParentBinding.RelativeSource, RelativeSource.TemplatedParent))
-			{
-				binding.DataContext = dataContext;
-			}
-			else if (Equals(binding.ParentBinding.RelativeSource, RelativeSource.Self))
+			if (Equals(binding.ParentBinding.RelativeSource, RelativeSource.Self))
 			{
 				binding.DataContext = Owner;
 			}

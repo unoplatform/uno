@@ -1286,7 +1286,8 @@ namespace Microsoft.UI.Xaml
 
 			ResourceDictionary[]? dictionariesInScope = null;
 
-			if (updateReason == ResourceUpdateReason.ThemeResource)
+			if (updateReason == ResourceUpdateReason.ThemeResource &&
+				_properties.HasBindings)
 			{
 				dictionariesInScope = GetResourceDictionaries(includeAppResources: false, resourceContextProvider, containingDictionary).ToArray();
 				for (var i = dictionariesInScope.Length - 1; i >= 0; i--)
@@ -1302,19 +1303,15 @@ namespace Microsoft.UI.Xaml
 				}
 			}
 
-			if (_resourceBindings == null || !_resourceBindings.HasBindings)
+			if (_resourceBindings?.HasBindings == true)
 			{
-				UpdateChildResourceBindings(updateReason, resourceContextProvider);
-				return;
-			}
+				dictionariesInScope ??= GetResourceDictionaries(includeAppResources: false, resourceContextProvider, containingDictionary).ToArray();
 
-			dictionariesInScope ??= GetResourceDictionaries(includeAppResources: false, resourceContextProvider, containingDictionary).ToArray();
-
-			var bindings = _resourceBindings.GetAllBindings();
-
-			foreach (var binding in bindings)
-			{
-				InnerUpdateResourceBindings(updateReason, dictionariesInScope, binding.Property, binding.Binding);
+				var bindings = _resourceBindings.GetAllBindings();
+				foreach (var binding in bindings)
+				{
+					InnerUpdateResourceBindings(updateReason, dictionariesInScope, binding.Property, binding.Binding);
+				}
 			}
 
 			UpdateChildResourceBindings(updateReason, resourceContextProvider);
