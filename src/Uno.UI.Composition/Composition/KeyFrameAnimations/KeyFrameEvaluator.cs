@@ -47,7 +47,7 @@ internal sealed class KeyFrameEvaluator<T> : IKeyFrameEvaluator
 		elapsed = TimeSpan.FromTicks(elapsed.Ticks % _duration.Ticks);
 
 		var currentFrame = (float)elapsed.Ticks / _duration.Ticks;
-		var nextKeyFrame = _keyFrames.Keys.First(k => k >= currentFrame);
+		var nextKeyFrame = _keyFrames.Keys.FirstOrDefault(k => k >= currentFrame, _keyFrames.Keys.Last());
 		if (nextKeyFrame == currentFrame)
 		{
 			// currentFrame is one that exists in the dictionary already.

@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Microsoft.UI.Composition;
 
@@ -26,8 +27,13 @@ public partial class BooleanKeyFrameAnimation : KeyFrameAnimation
 			startValue = (bool)compositionObject.GetAnimatableProperty(propertyName.ToString(), subPropertyName.ToString());
 		}
 
+		if (!_keyFrames.TryGetValue(1.0f, out var finalValue))
+		{
+			finalValue = _keyFrames.Values.LastOrDefault(startValue);
+		}
+
 		Func<bool, bool, float, bool> lerp = (value1, value2, _) => value1;
-		_keyframeEvaluator = new KeyFrameEvaluator<bool>(startValue, _keyFrames[1.0f], Duration, _keyFrames, lerp, IterationCount, IterationBehavior, Compositor);
+		_keyframeEvaluator = new KeyFrameEvaluator<bool>(startValue, finalValue, Duration, _keyFrames, lerp, IterationCount, IterationBehavior, Compositor);
 		return startValue;
 	}
 }
