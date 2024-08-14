@@ -69,7 +69,7 @@ namespace Microsoft.UI.Xaml.Controls
 			ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY; // Updated in PrepareTouchScroll!
 		}
 
-		internal void HookScrollEvents(ScrollViewer sv)
+		private void HookScrollEvents(ScrollViewer sv)
 		{
 			// Note: the way WinUI does scrolling is very different, and doesn't use
 			// PointerWheelChanged changes, etc.
@@ -89,7 +89,7 @@ namespace Microsoft.UI.Xaml.Controls
 			ManipulationCompleted += CompleteTouchScroll;
 		}
 
-		internal void UnhookScrollEvents(ScrollViewer sv)
+		private void UnhookScrollEvents(ScrollViewer sv)
 		{
 			sv.PointerWheelChanged -= PointerWheelScroll;
 

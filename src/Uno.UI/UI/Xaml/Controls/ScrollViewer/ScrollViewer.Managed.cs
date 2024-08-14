@@ -24,11 +24,7 @@ namespace Microsoft.UI.Xaml.Controls
 			=> (_presenter as ScrollContentPresenter)?.Set(horizontalOffset, verticalOffset, disableAnimation: disableAnimation) ?? true;
 
 		private partial void OnLoadedPartial() { }
-
-		private partial void OnUnloadedPartial()
-		{
-			Presenter?.UnhookScrollEvents(this);
-		}
+		private partial void OnUnloadedPartial() { }
 
 		#region Over scroll support
 		/// <summary>
