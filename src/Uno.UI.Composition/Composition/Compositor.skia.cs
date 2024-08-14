@@ -53,7 +53,7 @@ public partial class Compositor
 	{
 		foreach (var transition in _backgroundTransitions)
 		{
-			if (transition.Visual.BackgroundShape == shape)
+			if (transition.Visual.IsMyBackgroundShape(shape))
 			{
 				color = transition.CurrentColor;
 				return true;

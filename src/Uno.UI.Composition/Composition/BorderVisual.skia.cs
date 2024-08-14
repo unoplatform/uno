@@ -28,14 +28,11 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 	// state set here but affects children
 	private RectangleClip? _childClipCausedByCornerRadius;
 
-	internal CompositionSpriteShape? BackgroundShape
-	{
-		get => _backgroundShape;
-		private set => SetProperty(ref _backgroundShape, value);
-	}
-
 	// We do this instead of a direct SetProperty call so that SetProperty automatically gets an accurate propertyName
+	private CompositionSpriteShape? BackgroundShape { set => SetProperty(ref _backgroundShape, value); }
 	private CompositionSpriteShape? BorderShape { set => SetProperty(ref _borderShape, value); }
+
+	internal bool IsMyBackgroundShape(CompositionSpriteShape shape) => _backgroundShape == shape;
 
 	public CornerRadius CornerRadius
 	{
