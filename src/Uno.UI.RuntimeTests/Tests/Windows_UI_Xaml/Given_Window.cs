@@ -13,6 +13,7 @@ using Uno.UI.Xaml;
 using Uno.UI.Xaml.Controls;
 using Windows.ApplicationModel.Core;
 using Windows.UI;
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using Colors = Microsoft.UI.Colors;
 #endif
 
