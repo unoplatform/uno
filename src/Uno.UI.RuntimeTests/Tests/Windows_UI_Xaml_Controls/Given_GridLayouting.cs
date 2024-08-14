@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
@@ -2878,10 +2879,10 @@ public partial class Given_GridLayouting
 #endif
 		Assert.AreEqual(new Size(20, 5), c1.RenderSize);
 		Assert.AreEqual(new Rect(0, 0, 11, 11), LayoutInformation.GetLayoutSlot(c2));
-		Assert.AreEqual(1, c1.MeasureCallCount);
-		Assert.AreEqual(1, c2.MeasureCallCount); // The measure count is 1 because the grid has a recognized pattern (Nx1). It would be 2 otherwise.
-		Assert.AreEqual(1, c1.ArrangeCallCount);
-		Assert.AreEqual(1, c2.ArrangeCallCount);
+		Assert.AreEqual(1, c1.MeasureCallCount, "c1.MeasureCallCount");
+		Assert.AreEqual(1, c2.MeasureCallCount, "c2.MeasureCallCount"); // The measure count is 1 because the grid has a recognized pattern (Nx1). It would be 2 otherwise.
+		Assert.AreEqual(1, c1.ArrangeCallCount, "c1.ArrangeCallCount");
+		Assert.AreEqual(1, c2.ArrangeCallCount, "c2.ArrangeCallCount");
 
 		Assert.AreEqual(2, SUT.Children.Count);
 	}
@@ -2939,7 +2940,8 @@ public partial class Given_GridLayouting
 
 		Rect GetRect(string s)
 		{
-			return s == "empty" ? Rect.Empty : (Rect)s;
+			var parts = s.Split(',').Select(s => double.Parse(s, CultureInfo.InvariantCulture)).ToArray();
+			return s == "empty" ? Rect.Empty : new Rect(parts[0], parts[1], parts[2], parts[3]);
 		}
 
 		var c1 = new View
@@ -2959,21 +2961,24 @@ public partial class Given_GridLayouting
 
 		var availableSize = new Size(40, 40);
 		var unclippedExpectedSize = new Size(6d + margin * 2, 6d + margin * 2);
-		var expectedDesiredSize = unclippedExpectedSize.AtMost(availableSize);
+		var expectedDesiredSize = new Size(Math.Min(unclippedExpectedSize.Width, availableSize.Width), Math.Min(unclippedExpectedSize.Height, availableSize.Height));
 
 		SUT.Measure(availableSize);
 
-
 		SUT.DesiredSize.Should().Be(expectedDesiredSize);
+#if !WINAPPSDK
 		GetUnclippedDesiredSize(SUT).Should().Be(expectedDesiredSize);
+#endif
 		c1.DesiredSize.Should().Be(expectedDesiredSize.AtLeast(new Size(margin * 2, margin * 2)));
+#if !WINAPPSDK
 		GetUnclippedDesiredSize(c1).Should().Be(new Size(6d, 6d)); // Unclipped doesn't include margins!
+#endif
 
 		SUT.Arrange(new Rect(default, availableSize));
 
 		new Rect(c1.ActualOffset.X, c1.ActualOffset.Y, c1.RenderSize.Width, c1.RenderSize.Height).Should().Be(GetRect(expected));
 		var expectedClippedFrameRect = expectedClippedFrame == null
-			? new Rect(default, (GetRect(expected)).Size)
+			? new Rect(default, new Size(GetRect(expected).Width, GetRect(expected).Height))
 			: GetRect(expectedClippedFrame);
 		LayoutInformation.GetLayoutSlot(c1).Should().Be(expectedClippedFrameRect);
 	}
