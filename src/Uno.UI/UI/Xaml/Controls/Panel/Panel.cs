@@ -244,7 +244,7 @@ public partial class Panel : FrameworkElement, IPanel
 			e.OldValue as Brush,
 			e.NewValue as Brush,
 			this.BackgroundTransition,
-			(this as IDependencyObjectStoreProvider).Store.GetPropertyDetails(BackgroundProperty).CurrentHighestValuePrecedence == DependencyPropertyValuePrecedences.Animations);
+			((IDependencyObjectStoreProvider)this).Store.GetPropertyDetails(BackgroundProperty).CurrentHighestValuePrecedence == DependencyPropertyValuePrecedences.Animations);
 #else
 		UpdateBorder();
 #endif
