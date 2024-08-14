@@ -96,8 +96,6 @@ internal class GtkWindowWrapper : NativeWindowWrapperBase
 
 	private void OnWindowClosed(object? sender, EventArgs e)
 	{
-		RaiseClosed();
-
 		var windows = global::Gtk.Window.ListToplevels();
 		if (!windows.Where(w => w is UnoGtkWindow && w != NativeWindow).Any())
 		{
@@ -113,8 +111,6 @@ internal class GtkWindowWrapper : NativeWindowWrapperBase
 			args.RetVal = true;
 			return;
 		}
-
-		
 
 		// Closing should continue, perform suspension.
 		WinUIApplication.Current.RaiseSuspending();
