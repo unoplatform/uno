@@ -2277,7 +2277,7 @@ public partial class Given_GridLayouting
 
 		SUT.Arrange(new Rect(0, 0, 20, 20));
 
-#if __ANDROID__
+#if __ANDROID__ || __IOS__ || __WASM__
 		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 8.5f, 8.0));
 		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(8.5f, 8.0f, 3, 4));
 		LayoutInformation.GetLayoutSlot(c3).Should().Be(new Rect(11.5f, 12.0f, 8.5f, 8.0f));
@@ -2378,7 +2378,7 @@ public partial class Given_GridLayouting
 
 		SUT.Arrange(new Rect(0, 0, 20, 20));
 
-#if __ANDROID__
+#if __ANDROID__ || __IOS__ || __WASM__
 		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 8.5f, 5.5f));
 		LayoutInformation.GetLayoutSlot(c2).Should().Be(new Rect(8.5f, 5.5f, 3, 5.5f));
 		LayoutInformation.GetLayoutSlot(c3).Should().Be(new Rect(11.5f, 11, 8.5f, 9));
@@ -2790,8 +2790,8 @@ public partial class Given_GridLayouting
 	{
 		var SUT = new Grid() { Name = "test" };
 
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "20" });
-		SUT.RowDefinitions.Add(new RowDefinition { Height = "auto" });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(20) });
+		SUT.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 
 		var c1 = new View
 		{
@@ -2828,9 +2828,9 @@ public partial class Given_GridLayouting
 	{
 		var SUT = new Grid() { Name = "test" };
 
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "auto" });
-		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = "*" });
-		SUT.RowDefinitions.Add(new RowDefinition { Height = "auto" });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+		SUT.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+		SUT.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 
 		var c1 = new View
 		{
@@ -2871,7 +2871,7 @@ public partial class Given_GridLayouting
 		Assert.AreEqual(new Size(20, 5), c1.DesiredSize);
 		Assert.AreEqual(new Size(11, 11), c2.RequestedDesiredSize);
 		Assert.AreEqual(new Rect(11, 0, 89, 11), LayoutInformation.GetLayoutSlot(c1));
-#if __ANDROID__
+#if __ANDROID__ || __IOS__ || __WASM__
 		Assert.AreEqual(new Vector3(45.5f, 3, 0), c1.ActualOffset);
 #else
 		Assert.AreEqual(new Vector3(46, 3, 0), c1.ActualOffset);
