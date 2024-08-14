@@ -83,14 +83,15 @@ public class TimePickerIntegrationTests
 		await DateTimePickerHelper.OpenDateTimePicker(timePicker);
 		await TestServices.WindowHelper.WaitForIdle();
 
-#if !__ANDROID__ && !__APPLE_UIKIT__
-		await TestServices.RunOnUIThread(() =>
+		if (!OperatingSystem.IsAndroid() && !OperatingSystem.IsIOS())
 		{
-			var timePickerFlyoutPresenter = TreeHelper.GetVisualChildByTypeFromOpenPopups<TimePickerFlyoutPresenter>(timePicker);
-			Assert.IsNotNull(timePickerFlyoutPresenter);
-			Assert.IsTrue(timePickerFlyoutPresenter.IsDefaultShadowEnabled);
-		});
-#endif
+			await TestServices.RunOnUIThread(() =>
+			{
+				var timePickerFlyoutPresenter = TreeHelper.GetVisualChildByTypeFromOpenPopups<TimePickerFlyoutPresenter>(timePicker);
+				Assert.IsNotNull(timePickerFlyoutPresenter);
+				Assert.AreEqual(true, timePickerFlyoutPresenter.IsDefaultShadowEnabled);
+			});
+		}
 	}
 
 	[TestMethod]
