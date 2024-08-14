@@ -7,7 +7,7 @@ using Windows.Foundation;
 using Windows.UI.Input.Preview.Injection;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
+using System.Linq;
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 {
@@ -21,10 +21,11 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 #endif
 		public async Task When_ItemClicked_SelectsCorrectIndex()
 		{
+			var items = new object[] { "Item 1", "Item 2", "Item 3" };
 			var loggingSelectionInfo = new LoggingSelectionInfo();
 			var listViewBase = new ListViewBase
 			{
-				ItemsSource = loggingSelectionInfo
+				ItemsSource = items,
 			};
 
 			TestServices.WindowHelper.WindowContent = listViewBase;
@@ -38,8 +39,8 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			finger.Press(tapTarget);
 			finger.Release();
 
-			var selectionInfo = (MockSelectionInfo)listViewBase.ItemsSource;
-			Assert.AreEqual(0, selectionInfo.SelectedIndex);
+			Assert.AreEqual(0, listViewBase.SelectedIndex);
+			Assert.IsTrue(loggingSelectionInfo.MethodLog.All(m => !m.Contains("MoveCurrent", StringComparison.OrdinalIgnoreCase)));
 		}
 	}
 }

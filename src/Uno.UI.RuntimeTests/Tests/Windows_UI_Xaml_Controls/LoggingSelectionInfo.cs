@@ -1,7 +1,9 @@
+#if HAS_UNO
 using System.Collections.Generic;
 using Microsoft.UI.Xaml.Data;
 using Windows.Foundation;
 using System.Threading.Tasks;
+using System;
 
 public class LoggingSelectionInfo : ISelectionInfo, ICollectionView
 {
@@ -30,7 +32,7 @@ public class LoggingSelectionInfo : ISelectionInfo, ICollectionView
 	}
 
 	public event CurrentChangingEventHandler CurrentChanging;
-	public event CurrentChangedEventHandler CurrentChanged;
+	public event EventHandler<object> CurrentChanged;
 
 	private object _currentItem;
 	public object CurrentItem
@@ -151,3 +153,4 @@ public class LoggingSelectionInfo : ISelectionInfo, ICollectionView
 		return true;
 	}
 }
+#endif
