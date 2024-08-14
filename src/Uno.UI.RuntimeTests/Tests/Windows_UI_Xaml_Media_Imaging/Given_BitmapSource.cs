@@ -274,6 +274,38 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 			await WindowHelper.WaitFor(() => imageOpened);
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Uri_Nullified()
+		{
+			var image = new Image();
+			var bitmapImage = new BitmapImage();
+			image.Source = bitmapImage;
+			var border = new Border()
+			{
+				Width = 100,
+				Height = 100,
+				Background = new SolidColorBrush(Colors.Red),
+			};
+			border.Child = image;
+			WindowHelper.WindowContent = border;
+			await WindowHelper.WaitForLoaded(border);
+
+			var initialScreenshot = await UITestHelper.ScreenShot(border);
+
+			bitmapImage.UriSource = new Uri("ms-appx:///Assets/BlueSquare.png");
+			await WindowHelper.WaitForIdle();
+			var screenshotWithImage = await UITestHelper.ScreenShot(border);
+
+			await ImageAssert.AreNotEqualAsync(initialScreenshot, screenshotWithImage);
+
+			bitmapImage.UriSource = null;
+			await WindowHelper.WaitForIdle();
+			var screenshotWithoutImage = await UITestHelper.ScreenShot(border);
+
+			await ImageAssert.AreEqualAsync(screenshotWithoutImage, initialScreenshot);
+		}
+
 		private class Given_BitmapSource_Exception : Exception
 		{
 			public string Caller { get; }
