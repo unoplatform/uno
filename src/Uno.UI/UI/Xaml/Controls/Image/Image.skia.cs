@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Linq;
 using System.Numerics;
+using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Media;
 using Windows.Foundation;
-using Microsoft.UI.Composition;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
-using Uno.UI;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -144,6 +142,12 @@ namespace Microsoft.UI.Xaml.Controls
 				_imageSprite.SetPaintColor(MonochromeColor);
 				_imageSprite.Brush = _surfaceBrush;
 				ImageOpened?.Invoke(this, new RoutedEventArgs(this));
+			}
+			else if (currentData is { Kind: ImageDataKind.Empty })
+			{
+				// Ensure the previous content is unloaded
+				_currentSurface = null;
+				_imageSprite.Brush = null;
 			}
 			else if (currentData is { Kind: ImageDataKind.Error })
 			{
