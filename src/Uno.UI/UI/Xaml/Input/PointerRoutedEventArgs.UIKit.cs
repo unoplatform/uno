@@ -6,6 +6,7 @@ using Windows.System;
 using Foundation;
 using UIKit;
 using Uno.UI.Extensions;
+using Uno.UI.Xaml.Extensions;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -54,7 +55,7 @@ namespace Microsoft.UI.Xaml.Input
 				|| _nativeTouch.Phase == UITouchPhase.Stationary;
 
 			FrameId = PointerHelpers.ToFrameId(_nativeTouch.Timestamp);
-			Pointer = new Pointer(pointerId, deviceType, isInContact, isInRange: true);
+			Pointer = new Pointer(pointerId, (global::Microsoft.UI.Input.PointerDeviceType)deviceType, isInContact, isInRange: true);
 			KeyModifiers = VirtualKeyModifiers.None;
 			OriginalSource = originalSource;
 
