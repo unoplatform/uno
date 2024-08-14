@@ -7,6 +7,7 @@ using FluentAssertions;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Private.Infrastructure
 {
@@ -244,7 +245,7 @@ namespace Private.Infrastructure
 			Console.WriteLine(log);
 		}
 
-		internal static SafeEventRegistration<T, TDelegate> CreateSafeEventRegistration<T, TDelegate>(string eventName)
+		internal static SafeEventRegistration<T, TDelegate> CreateSafeEventRegistration<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicEvents | DynamicallyAccessedMemberTypes.NonPublicEvents)] T, TDelegate>(string eventName)
 			where T : class
 			where TDelegate : Delegate
 		{
