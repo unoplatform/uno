@@ -18,7 +18,7 @@ internal readonly record struct ColorBrushTransitionState(
 	{
 		get
 		{
-			var progress = (Visual.Compositor.TimestampInTicks - StartTimestamp) / (double)(EndTimestamp - StartTimestamp);
+			var progress = Math.Min(1, (Visual.Compositor.TimestampInTicks - StartTimestamp) / (double)(EndTimestamp - StartTimestamp));
 
 			var a = Lerp(FromColor.A, ToColor.A, progress);
 			var r = Lerp(FromColor.R, ToColor.R, progress);

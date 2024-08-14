@@ -79,7 +79,7 @@ internal static class BorderHelper
 			// SolidColorBrush animations work only on static brushes. Neither brush can be animating.
 			//&& oldBrushIsNullOrStatic
 			//&& !newBrush->IsEffectiveValueInSparseStorage(KnownPropertyIndex::SolidColorBrush_ColorAnimation)
-		   )
+			)
 		{
 			visual.Compositor.RegisterBackgroundTransition(visual, oldBrush?.Color ?? Colors.Transparent, newBrush.Color, transition.Duration);
 		}
