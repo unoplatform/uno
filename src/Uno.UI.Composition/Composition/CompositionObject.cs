@@ -56,6 +56,8 @@ namespace Microsoft.UI.Composition
 		private protected virtual void SetAnimatableProperty(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, object? propertyValue)
 			=> TryUpdateFromProperties(Properties, propertyName, subPropertyName, propertyValue);
 
+		// TODO: Clone the animation object to support scenarios where the same animation is used on multiple objects
+
 		public void StartAnimation(string propertyName, CompositionAnimation animation)
 		{
 #if __IOS__
@@ -101,6 +103,16 @@ namespace Microsoft.UI.Composition
 				{
 					this.Log().LogError($"An exception occurred while setting animation value '{animationValue}' to property '{propertyName}' for animation '{animation}'. {ex.Message}");
 				}
+			}
+		}
+
+		public void StartAnimation(string propertyName, CompositionAnimation animation, AnimationController animationController)
+		{
+			StartAnimation(propertyName, animation);
+
+			if (animation is KeyFrameAnimation keyFrameAnimation)
+			{
+				animationController.Initialize(this, propertyName, keyFrameAnimation);
 			}
 		}
 
@@ -174,6 +186,17 @@ namespace Microsoft.UI.Composition
 				animation.Stop();
 				_animations.Remove(propertyName);
 			}
+		}
+
+		public AnimationController? TryGetAnimationController(string propertyName)
+		{
+			if (_animations?.TryGetValue(propertyName, out var animation) == true && animation is KeyFrameAnimation keyFrameAnimation)
+			{
+				return new(this, propertyName, keyFrameAnimation);
+			}
+
+			// TODO: verify if returning null is the correct behavior
+			return null;
 		}
 
 		// AnimationController only supports KeyFrameAnimations
