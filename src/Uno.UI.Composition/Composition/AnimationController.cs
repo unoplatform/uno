@@ -31,10 +31,7 @@ public partial class AnimationController
 		EnsureAnimation().Resume();
 	}
 
-	public void Pause()
-	{
-		EnsureAnimation().Pause();
-	}
+	public void Pause() => EnsureAnimation().Pause();
 
 	public float Progress
 	{
@@ -43,7 +40,32 @@ public partial class AnimationController
 		{
 			var animation = EnsureAnimation();
 			_progress = value;
+			OnPropertyChanged(nameof(Progress), false);
 			_ownerObject.SeekAnimation(animation, value);
+		}
+	}
+
+	internal override object GetAnimatableProperty(string propertyName, string subPropertyName)
+	{
+		if (propertyName.Equals(nameof(Progress), StringComparison.OrdinalIgnoreCase))
+		{
+			return Progress;
+		}
+		else
+		{
+			return base.GetAnimatableProperty(propertyName, subPropertyName);
+		}
+	}
+
+	private protected override void SetAnimatableProperty(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, object? propertyValue)
+	{
+		if (propertyName.Equals(nameof(Progress), StringComparison.OrdinalIgnoreCase))
+		{
+			Progress = SubPropertyHelpers.ValidateValue<float>(propertyValue);
+		}
+		else
+		{
+			base.SetAnimatableProperty(propertyName, subPropertyName, propertyValue);
 		}
 	}
 
