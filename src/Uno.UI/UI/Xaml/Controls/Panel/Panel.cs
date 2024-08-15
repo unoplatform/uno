@@ -239,7 +239,12 @@ public partial class Panel : FrameworkElement, IPanel
 	{
 #if UNO_HAS_BORDER_VISUAL
 		this.UpdateBackground();
-		BorderHelper.SetUpBrushTransitionIfAllowed((BorderVisual)this.Visual, e.OldValue as Brush, e.NewValue as Brush, this.BackgroundTransition);
+		BorderHelper.SetUpBrushTransitionIfAllowed(
+			(BorderVisual)this.Visual,
+			e.OldValue as Brush,
+			e.NewValue as Brush,
+			this.BackgroundTransition,
+			((IDependencyObjectStoreProvider)this).Store.GetPropertyDetails(BackgroundProperty).CurrentHighestValuePrecedence == DependencyPropertyValuePrecedences.Animations);
 #else
 		UpdateBorder();
 #endif
