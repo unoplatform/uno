@@ -54,6 +54,7 @@ internal static class BorderHelper
 			return;
 		}
 
+		// Begin Uno Specific
 		if (isAnimation)
 		{
 			// When an animation sets the background, it skips the transition logic and is applied immediately.
@@ -63,6 +64,7 @@ internal static class BorderHelper
 			visual.Compositor.DeactivateBackgroundTransition(visual);
 			return;
 		}
+		// End Uno Specific
 
 		var oldBrush = fromBrush as SolidColorBrush;
 		var newBrush = toBrush as SolidColorBrush;
