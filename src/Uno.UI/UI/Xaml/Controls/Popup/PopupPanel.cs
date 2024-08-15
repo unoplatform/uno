@@ -297,6 +297,9 @@ internal partial class PopupPanel : Panel
 		return Popup?.IsLightDismissEnabled ?? false;
 	}
 
-	// This shouldn't be needed, see the above comment in IsViewHit
+	// This shouldn't be needed, but due to the way we implement Popups, we might
+	// need to make Popups not hit-testable even if the PopupPanel has a Background.
+#if __SKIA__
 	internal override bool HitTest(Point point) => IsViewHit();
+#endif
 }
