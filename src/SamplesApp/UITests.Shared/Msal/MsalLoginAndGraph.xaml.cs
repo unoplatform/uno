@@ -24,9 +24,9 @@ using Microsoft.Graph;
 namespace UITests.Msal
 {
 	[Sample("MSAL", IgnoreInSnapshotTests = true)]
-	public sealed partial class MsalLoginAndGraph : Page,
+	public sealed partial class MsalLoginAndGraph : Page
 #if !DISABLE_GRAPH
-	IAuthenticationProvider
+	, IAuthenticationProvider
 #endif
 	{
 #if !DISABLE_GRAPH
