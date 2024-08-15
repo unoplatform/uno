@@ -4,7 +4,7 @@ uid: Uno.Skia.Linux.Framebuffer
 
 # Using the Linux FrameBuffer and `libinput`
 
-Uno Platform supports the [Linux FrameBuffer](https://www.kernel.org/doc/html/latest/fb/framebuffer.html) and [libinput](https://github.com/wayland-project/libinput) as a target, in the case where your target device does not provide a Window Manager.
+Uno Platform supports the [Linux FrameBuffer](https://www.kernel.org/doc/html/latest/fb/framebuffer.html) and [libinput](https://wayland.freedesktop.org/libinput/doc/latest/what-is-libinput.html) as a target, in the case where your target device does not provide a Window Manager.
 
 There are some restrictions for the support for the FrameBuffer:
 
