@@ -3,6 +3,7 @@ using System.Diagnostics;
 using Microsoft.UI.Xaml.Input;
 using Windows.Devices.Input;
 using Windows.Foundation;
+using Uno.UI.Xaml;
 
 #if HAS_UNO_WINUI
 using _PointerDeviceType = global::Microsoft.UI.Input.PointerDeviceType;
@@ -65,15 +66,55 @@ namespace Microsoft.UI.Xaml.Controls
 
 			_strategy.Initialize(this);
 
+			ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY; // Updated in PrepareTouchScroll!
+		}
+
+		private void HookScrollEvents(ScrollViewer sv)
+		{
+			// Note: the way WinUI does scrolling is very different, and doesn't use
+			// PointerWheelChanged changes, etc.
+			// We can either subscribe on the ScrollViewer or the SCP directly, but due to
+			// the way hit-testing works (see #16201), the SCP will not receive any pointer
+			// events. On WinUI, this is also the case: pointer presses are received on the SV,
+			// not on the SCP.
+
 			// Mouse wheel support
-			PointerWheelChanged += PointerWheelScroll;
+			sv.PointerWheelChanged += PointerWheelScroll;
 
 			// Touch scroll support
-			ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY; // Updated in PrepareTouchScroll!
+			// Note: Events are hooked on the SCP itself, not the ScrollViewer
 			ManipulationStarting += PrepareTouchScroll;
 			ManipulationStarted += TouchScrollStarted;
 			ManipulationDelta += UpdateTouchScroll;
 			ManipulationCompleted += CompleteTouchScroll;
+		}
+
+		private void UnhookScrollEvents(ScrollViewer sv)
+		{
+			sv.PointerWheelChanged -= PointerWheelScroll;
+
+			ManipulationStarting -= PrepareTouchScroll;
+			ManipulationStarted -= TouchScrollStarted;
+			ManipulationDelta -= UpdateTouchScroll;
+			ManipulationCompleted -= CompleteTouchScroll;
+		}
+
+		private protected override void OnLoaded()
+		{
+			base.OnLoaded();
+			if (Scroller is { } sv)
+			{
+				HookScrollEvents(sv);
+			}
+		}
+
+		private protected override void OnUnloaded()
+		{
+			base.OnUnloaded();
+			if (Scroller is { } sv)
+			{
+				UnhookScrollEvents(sv);
+			}
 		}
 
 		/// <inheritdoc />

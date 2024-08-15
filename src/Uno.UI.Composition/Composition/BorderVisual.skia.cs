@@ -2,6 +2,7 @@
 
 using System;
 using System.Numerics;
+using Windows.Foundation;
 using SkiaSharp;
 using Uno.UI.Composition;
 
@@ -12,9 +13,6 @@ namespace Microsoft.UI.Composition;
 /// </summary>
 internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 {
-	[ThreadStatic] // this should be tied to the compositor
-	private static CompositionPathGeometry? _sharedPathGeometry;
-
 	// state set from outside and used inside the class
 	private CornerRadius _cornerRadius;
 	private Thickness _borderThickness;
@@ -27,12 +25,14 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 	private CompositionSpriteShape? _backgroundShape;
 	private CompositionSpriteShape? _borderShape;
 	private CompositionClip? _backgroundClip;
-	private SKPath? _borderPath;
-	private SKPath? _backgroundPath;
 	// state set here but affects children
 	private RectangleClip? _childClipCausedByCornerRadius;
 
-	internal CompositionSpriteShape? BackgroundShape => _backgroundShape;
+	// We do this instead of a direct SetProperty call so that SetProperty automatically gets an accurate propertyName
+	private CompositionSpriteShape? BackgroundShape { set => SetProperty(ref _backgroundShape, value); }
+	private CompositionSpriteShape? BorderShape { set => SetProperty(ref _borderShape, value); }
+
+	internal bool IsMyBackgroundShape(CompositionSpriteShape shape) => _backgroundShape == shape;
 
 	public CornerRadius CornerRadius
 	{
@@ -81,13 +81,17 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 				_borderPathValid = false; // to update _borderPath if previously skipped
 				if (BorderBrush is not null && _borderShape is null)
 				{
-					// we need this to track get notified on brush updates.
-					SetProperty(ref _borderShape, Compositor.CreateSpriteShape());
+					// we need this to get notified on brush updates
+					// (BorderBrush internals change -> BorderShape is notified through FillBrush -> render invalidation)
+					var borderShape = Compositor.CreateSpriteShape();
+					borderShape.Geometry = Compositor.CreatePathGeometry();
 #if DEBUG
-					_borderShape!.Comment = "#borderShape";
+					borderShape.Comment = "#borderShape";
 #endif
+					borderShape.FillBrush = BorderBrush;
+					BorderShape = borderShape;
 				}
-				if (_borderShape is { })
+				else if (_borderShape is { })
 				{
 					_borderShape.FillBrush = BorderBrush;
 				}
@@ -96,13 +100,19 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 				_backgroundPathValid = false; // to update _backgroundPath if previously skipped
 				if (BackgroundBrush is not null && _backgroundShape is null)
 				{
-					// we need this to track get notified on brush updates.
-					SetProperty(ref _backgroundShape, Compositor.CreateSpriteShape());
+					// we need this to get notified on brush updates.
+					// (BackgroundBrush internals change -> BackgroundShape is notified through FillBrush -> render invalidation)
+					var backgroundShape = Compositor.CreateSpriteShape();
+
+					backgroundShape.Geometry = Compositor.CreatePathGeometry();
 #if DEBUG
-					_backgroundShape!.Comment = "#backgroundShape";
+					backgroundShape.Comment = "#backgroundShape";
 #endif
+					backgroundShape.FillBrush = BackgroundBrush;
+
+					BackgroundShape = backgroundShape;
 				}
-				if (_backgroundShape is { })
+				else if (_backgroundShape is { })
 				{
 					_backgroundShape.FillBrush = BackgroundBrush;
 				}
@@ -112,16 +122,10 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 
 	internal override void Paint(in PaintingSession session)
 	{
-		_sharedPathGeometry ??= Compositor.CreatePathGeometry();
-		_sharedPathGeometry.Path ??= new CompositionPath(new SkiaGeometrySource2D());
-		var geometrySource = (SkiaGeometrySource2D)_sharedPathGeometry.Path.GeometrySource;
-
 		UpdatePathsAndCornerClip();
 
-		if (_backgroundShape is { } backgroundShape && _backgroundPath is { } backgroundPath)
+		if (_backgroundShape is { } backgroundShape)
 		{
-			backgroundShape.Geometry = _sharedPathGeometry; // will only do something the first time
-			geometrySource.Geometry = backgroundPath; // changing Geometry doesn't raise OnPropertyChanged or invalidate render.
 			session.Canvas.Save();
 			// it's necessary to clip the background because not all backgrounds are simple rounded rectangles with a solid color.
 			// E.g. effect brushes will draw outside the intended area if they're not clipped.
@@ -132,12 +136,7 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 
 		base.Paint(in session);
 
-		if (_borderShape is { } borderShape && _borderPath is { } borderPath)
-		{
-			borderShape.Geometry = _sharedPathGeometry; // will only do something the first time
-			geometrySource.Geometry = borderPath; // changing Geometry doesn't raise OnPropertyChanged or invalidate render.
-			_borderShape?.Render(in session);
-		}
+		_borderShape?.Render(in session);
 	}
 
 	private protected override void ApplyPostPaintingClipping(in SKCanvas canvas)
@@ -254,8 +253,7 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 
 	private unsafe void UpdateBackgroundPath(bool useInnerBorderBoundsAsAreaForBackground, SKSize innerArea, SKSize outerArea, SKPoint* outerRadii, SKPoint* innerRadii)
 	{
-		_backgroundPath ??= new SKPath();
-		_backgroundPath.Reset();
+		var backgroundPath = new SKPath();
 		var roundRect = new SKRoundRect();
 		var rect = useInnerBorderBoundsAsAreaForBackground
 			? new SKRect(0, 0, innerArea.Width, innerArea.Height)
@@ -264,30 +262,40 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 			roundRect.Handle,
 			&rect,
 			useInnerBorderBoundsAsAreaForBackground ? innerRadii : outerRadii);
-		_backgroundPath.AddRoundRect(roundRect);
-		_backgroundPath.Close();
+		backgroundPath.AddRoundRect(roundRect);
+		backgroundPath.Close();
+
+		// Unfortunately, this will cause an unnecessary render invalidation
+		((CompositionPathGeometry)_backgroundShape!.Geometry!).Path = new CompositionPath(new SkiaGeometrySource2D(backgroundPath));
 	}
 
 	private unsafe void UpdateBorderPath(SKRect innerArea, SKRect outerArea, SKPoint* outerRadii, SKPoint* innerRadii)
 	{
-		_borderPath ??= new SKPath();
-		_borderPath.Reset();
+		var borderPath = new SKPath();
 
-		// It's important to set this every time, since borderPathGeometry.Reset will reset it.
-		_borderPath.FillType = SKPathFillType.EvenOdd;
+		borderPath.FillType = SKPathFillType.EvenOdd;
 
 		// The order here (outer then inner) is important because of the SKPathFillType.
 		{
 			var outerRect = new SKRoundRect();
 			UnoSkiaApi.sk_rrect_set_rect_radii(outerRect.Handle, &outerArea, outerRadii);
-			_borderPath.AddRoundRect(outerRect);
-			_borderPath.Close();
+			borderPath.AddRoundRect(outerRect);
+			borderPath.Close();
 		}
 		{
 			var innerRect = new SKRoundRect();
 			UnoSkiaApi.sk_rrect_set_rect_radii(innerRect.Handle, &innerArea, innerRadii);
-			_borderPath.AddRoundRect(innerRect);
-			_borderPath.Close();
+			borderPath.AddRoundRect(innerRect);
+			borderPath.Close();
 		}
+
+		// Unfortunately, this will cause an unnecessary render invalidation
+		((CompositionPathGeometry)_borderShape!.Geometry!).Path = new CompositionPath(new SkiaGeometrySource2D(borderPath));
+	}
+
+	internal override bool HitTest(Point point)
+	{
+		UpdatePathsAndCornerClip();
+		return (_borderShape?.HitTest(point) ?? false) || (_backgroundShape?.HitTest(point) ?? false) || base.HitTest(point);
 	}
 }

@@ -8,16 +8,15 @@ namespace Microsoft.UI.Composition
 {
 	internal class SkiaGeometrySource2D : IGeometrySource2D
 	{
-		public SkiaGeometrySource2D()
-		{
-			Geometry = new SKPath();
-		}
-
 		public SkiaGeometrySource2D(SKPath source)
 		{
 			Geometry = source ?? throw new ArgumentNullException(nameof(source));
 		}
 
-		public SKPath Geometry { get; set; }
+		/// <remarks>
+		/// DO NOT MODIFY THIS SKPath. CREATE A NEW SkiaGeometrySource2D INSTEAD.
+		/// This can lead to nasty invalidation bugs where the SKPath changes without notifying anyone.
+		/// </remarks>
+		public SKPath Geometry { get; }
 	}
 }
