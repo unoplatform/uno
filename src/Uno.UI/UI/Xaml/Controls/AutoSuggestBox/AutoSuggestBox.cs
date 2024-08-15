@@ -283,6 +283,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (_suggestionsList != null)
 			{
 				_suggestionsList.ItemClick += OnSuggestionListItemClick;
+				_suggestionsList.SelectionChanged += OnSuggestionsListSelectionChanged;
 			}
 
 			if (_popup != null)
@@ -310,6 +311,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (_suggestionsList != null)
 			{
 				_suggestionsList.ItemClick -= OnSuggestionListItemClick;
+				_suggestionsList.SelectionChanged -= OnSuggestionsListSelectionChanged;
 			}
 
 			if (_popup != null)
@@ -391,6 +393,11 @@ namespace Microsoft.UI.Xaml.Controls
 			SubmitSearch(e.ClickedItem);
 		}
 
+		private void OnSuggestionsListSelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			_suggestionsList.ScrollIntoView(_suggestionsList.SelectedItem);
+		}
+
 		private void OnQueryButtonClick(object sender, RoutedEventArgs e)
 		{
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
@@ -456,7 +463,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			_suggestionsList.SelectedIndex = nextIndex;
-			_suggestionsList.ScrollIntoView(_suggestionsList.SelectedItem);
 
 			if (nextIndex == -1)
 			{
