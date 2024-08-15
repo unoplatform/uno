@@ -64,7 +64,7 @@ You can:
 - present Uno at a local user group
 - share your open-source Uno projects
 
-Whatever you do, let us know [through X/Twitter](https://x.com/unoplatform) or via mailto:info@platform.uno.
+Whatever you do, let us know [through X/Twitter](https://x.com/unoplatform), our [Discord Server](https://platform.uno/discord) in #contributing, or by emailing us at [info@platform.uno](mailto:info@platform.uno).
 
 ## Contributing code
 

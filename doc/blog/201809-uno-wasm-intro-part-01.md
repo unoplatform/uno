@@ -36,7 +36,7 @@ Consuming a WebAssembly module is generally composed of a `.wasm` file and a JS 
 
 ## Why WebAssembly ?
 
-WebAssembly is mainly trying to solve the issues that makes it difficult to optimize performance for large applications, provide access to binary-producing languages and improve the security of running the resulting code.
+WebAssembly is mainly trying to solve the issues that make it difficult to optimize performance for large applications, provide access to binary-producing languages, and improve the security of running the resulting code.
 
 WebAssembly modules are defined as self-contained units of byte code. It's possible to use [streaming compilation](https://webassembly.github.io/spec/web-api/index.html#streaming-modules) to concurrently process the byte code as it is being downloaded, unlike JavaScript where the source file needs to be fully parsed to make sense.
 
