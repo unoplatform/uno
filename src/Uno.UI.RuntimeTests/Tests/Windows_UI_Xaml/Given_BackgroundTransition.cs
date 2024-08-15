@@ -15,7 +15,6 @@ public class Given_BackgroundTransition
 {
 #if __SKIA__
 	[TestMethod]
-	[RunsOnUIThread]
 	[DataRow(typeof(Grid))]
 	[DataRow(typeof(StackPanel))]
 	[DataRow(typeof(Border))]
@@ -28,26 +27,22 @@ public class Given_BackgroundTransition
 		control.Width = 200;
 		control.Height = 200;
 
-		var transition = new BrushTransition()
-		{
-			Duration = TimeSpan.FromMilliseconds(2000),
-		};
-
 		Action<Brush> setBackground = null;
+		Action<BrushTransition> setTransition = null;
 		if (control is Panel panel)
 		{
-			panel.BackgroundTransition = transition;
 			setBackground = b => panel.Background = b;
+			setTransition = t => panel.BackgroundTransition = t;
 		}
 		else if (control is Border border)
 		{
-			border.BackgroundTransition = transition;
 			setBackground = b => border.Background = b;
+			setTransition = t => border.BackgroundTransition = t;
 		}
 		else if (control is ContentPresenter contentPresenter)
 		{
-			contentPresenter.BackgroundTransition = transition;
 			setBackground = b => contentPresenter.Background = b;
+			setTransition = t => contentPresenter.BackgroundTransition = t;
 		}
 		else
 		{
@@ -55,6 +50,8 @@ public class Given_BackgroundTransition
 		}
 
 		setBackground(new SolidColorBrush(Microsoft.UI.Colors.Red));
+
+		setTransition(new BrushTransition { Duration = TimeSpan.FromMilliseconds(2000) });
 
 		await UITestHelper.Load(control);
 
