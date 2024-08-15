@@ -278,6 +278,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 		[RunsOnUIThread]
 		public async Task When_Uri_Nullified()
 		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive("Taking screenshots is not possible on this target platform.");
+			}
+
 			var image = new Image();
 			var bitmapImage = new BitmapImage();
 			image.Source = bitmapImage;
