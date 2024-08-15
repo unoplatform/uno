@@ -501,12 +501,6 @@ namespace Microsoft.UI.Xaml.Media
 				clippingBounds = clippingBounds.IntersectWith(transformToElement.Transform(clip)) ?? default;
 			}
 			TRACE($"- clipping (absolute): {clippingBounds.ToDebugString()}");
-
-			// The region where the current element draws itself.
-			// Be aware that children might be out of this rendering bounds if no clipping defined.
-			// This is expressed in the window (absolute) coordinate space.
-			var renderingBounds = transformToElement.Transform(new Rect(new Point(), element.LayoutSlotWithMarginsAndAlignments.Size)).IntersectWith(clippingBounds) ?? Rect.Empty;
-			TRACE($"- rendering (absolute): {renderingBounds.ToDebugString()}");
 #else
 			// First compute the transformation between the element and its parent coordinate space
 			var matrix = Matrix3x2.Identity;
@@ -662,12 +656,19 @@ namespace Microsoft.UI.Xaml.Media
 			// We didn't find any child at the given position, validate that element can be touched,
 			// and the position is in actual bounds(which might be different than the clipping bounds)
 #if __SKIA__
-			if (element.HitTest(transformToElement.Inverse().Transform(testPosition)) && renderingBounds.Contains(testPosition))
+			if (element.HitTest(transformToElement.Inverse().Transform(testPosition)))
 #else
-
 			if (elementHitTestVisibility == HitTestability.Visible && renderingBounds.Contains(testPosition))
 #endif
 			{
+				// UIElement.HitTest should be a stronger condition than elementHitTestVisibility == HitTestability.Visible
+				// On WASM we match the native-element hit-testability (i.e. the `pointer-events` css property) to the
+				// HitTestVisibility of the corresponding managed element, so if we implement UIElement.HitTest for WASM
+				// in the future, this assertion makes sure that we're not regressing. If at some point
+				// elementHitTestVisibility != Visible but element.HitTest returns true, then this would break WASM
+				// hit-testing because `pointer-events` will be `none`, but element.HitTest is true.
+				global::System.Diagnostics.Debug.Assert(elementHitTestVisibility == HitTestability.Visible);
+
 				TRACE($"> LEAF! ({element.GetDebugName()} is the OriginalSource) | stale branch: {stale?.ToString() ?? "-- none --"}");
 				return (element, stale);
 			}

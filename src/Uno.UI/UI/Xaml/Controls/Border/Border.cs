@@ -322,17 +322,7 @@ public partial class Border : FrameworkElement
 
 	internal override bool CanHaveChildren() => true;
 
-	internal override bool IsViewHit() => IsViewHitImpl(this);
-
-	internal static bool IsViewHitImpl(FrameworkElement element)
-	{
-		_Debug.Assert(element is Panel
-			|| element is Border
-			|| element is ContentPresenter
-		);
-
-		return element.Background != null;
-	}
+	internal override bool IsViewHit() => ((IBorderInfoProvider)this).IsViewHit();
 
 #if !UNO_HAS_BORDER_VISUAL
 	private void UpdateBorder() => BorderRenderer.Update();

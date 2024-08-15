@@ -32,6 +32,8 @@ public partial class Page : UserControl
 	}
 #endif
 
+	internal override bool IsViewHit() => ((IBorderInfoProvider)this).IsViewHit();
+
 	protected internal virtual void OnNavigatedFrom(NavigationEventArgs e) { }
 
 	protected internal virtual void OnNavigatedTo(NavigationEventArgs e) { }

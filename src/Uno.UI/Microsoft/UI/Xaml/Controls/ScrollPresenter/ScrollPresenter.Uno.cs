@@ -23,6 +23,8 @@ partial class ScrollPresenter : IBorderInfoProvider
 	private protected override ShapeVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateBorderVisual();
 #endif
 
+	internal override bool IsViewHit() => ((IBorderInfoProvider)this).IsViewHit();
+
 	Brush IBorderInfoProvider.Background => Background;
 
 	BackgroundSizing IBorderInfoProvider.BackgroundSizing => BackgroundSizing.InnerBorderEdge;

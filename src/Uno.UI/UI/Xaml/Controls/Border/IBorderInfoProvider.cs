@@ -41,4 +41,6 @@ internal partial interface IBorderInfoProvider
 #if UNO_HAS_BORDER_VISUAL
 	BorderVisual BorderVisual { get; }
 #endif
+
+	bool IsViewHit() => Background != null || BorderBrush != null;
 }

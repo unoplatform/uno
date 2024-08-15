@@ -259,7 +259,7 @@ public partial class Panel : FrameworkElement, IPanel
 #endif
 	}
 
-	internal override bool IsViewHit() => Border.IsViewHitImpl(this);
+	internal override bool IsViewHit() => ((IBorderInfoProvider)this).IsViewHit();
 
 #if !UNO_HAS_BORDER_VISUAL
 	private void UpdateBorder() => _borderRenderer.Update();

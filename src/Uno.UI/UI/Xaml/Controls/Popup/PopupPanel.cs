@@ -296,4 +296,7 @@ internal partial class PopupPanel : Panel
 
 		return Popup?.IsLightDismissEnabled ?? false;
 	}
+
+	// This shouldn't be needed, see the above comment in IsViewHit
+	internal override bool HitTest(Point point) => IsViewHit();
 }
