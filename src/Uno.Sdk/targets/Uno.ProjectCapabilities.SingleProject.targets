@@ -14,11 +14,6 @@
 		<!-- Otherwise define LaunchProfilesGroupByPlatformFilters by default -->
 		<ProjectCapability Include="LaunchProfilesGroupByPlatformFilters" Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &gt;= '17.0' " Exclude="@(ProjectCapability)" />
 		<ProjectCapability Include="SingleTargetBuildForStartupProjects" Condition=" '$(EnableSingleTargetBuildForStartupProjects)' != 'false' " Exclude="@(ProjectCapability)" />
-
-		<!-- Required since VS 2022 17.4 Preview 1 -->
-		<ProjectCapability Include="MauiCore" Exclude="@(ProjectCapability)" />
-		<ProjectCapability Include="Maui" Exclude="@(ProjectCapability)" />
-		<ProjectCapability Include="UseMauiCore" Exclude="@(ProjectCapability)" />
 	</ItemGroup>
 
 	<PropertyGroup Condition="$(IsWinAppSdk)">

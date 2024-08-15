@@ -10,23 +10,30 @@ uid: Uno.GettingStarted.CreateAnApp.Rider
 ## Create the App
 
 > [!IMPORTANT]
-> Current versions of Rider (2024.1 and earlier) do not support creating Uno Platform projects using the "New Solution" dialog, even if the Uno Platform project template appears. Make sure to follow the directions below.
+>
+> - **Rider (2024.1 and earlier)**: Current versions of Rider (2024.1 and earlier) do not support creating Uno Platform projects using the "New Solution" dialog, even if the Uno Platform project template appears.
+>   Make sure to follow the directions for **Rider 2024.1** provided below.
+>
+> - **Rider (2024.2 and above)**: For Rider (2024.2 and above), we have released a Preview version of the Uno Platform Plugin that supports creating Uno Platform projects using the "New Solution" dialog.
+>   Make sure to follow the directions for **Rider 2024.2** provided below.
+
+### [**Rider Version 2024.1+**](#tab/rider2024-1)
 
 Creating an Uno Platform project is done [using dotnet new](xref:Uno.GetStarted.dotnet-new) and the Uno Platform Live Wizard by following these steps:
 
-1. Open a browser and navigate to the <a target="_blank" href="https://aka.platform.uno/app-wizard">Live Wizard</a>
-1. Configure your new project by providing a project name, then click **Start**
+1. Open a browser and navigate to the <a target="_blank" href="https://aka.platform.uno/app-wizard">Live Wizard</a>.
+1. Configure your new project by providing a project name, then click **Start**.
 
     ![A screen showing how to choose a solution name](Assets/quick-start/live-wizard-01-choose-name.png)
 
-1. Choose a template to build your application
+1. Choose a template to build your application.
 
     ![A screen showing how to choose template for the new app](Assets/quick-start/live-wizard-02-select-preset.png)
 
     > [!TIP]
     > For a detailed overview of the Uno Platform project wizard and all its options, see the [Wizard guide](xref:Uno.GettingStarted.UsingWizard).
 
-1. Click the **Create** button on the top right corner, then click the **Copy** button
+1. Click the **Create** button on the top right corner, then click the **Copy** button.
 
     ![A screen showing the dotnet new command to create the new app](Assets/quick-start/live-wizard-03-create-app.png)
 
@@ -40,6 +47,32 @@ Creating an Uno Platform project is done [using dotnet new](xref:Uno.GetStarted.
 
 > [!TIP]
 > If you are not able to run the online Live Wizard, you can explore the [`dotnet new` template](xref:Uno.GetStarted.dotnet-new) directly in the CLI.
+
+### [**Rider Version 2024.2+**](#tab/rider2024-2)
+
+Creating an Uno Platform project is done by following these steps:
+
+1. On the **Welcome to JetBrains Rider** screen, click **New Solution**.
+
+    ![A screen showing the Welcome to JetBrains Rider screen](Assets/quick-start/rider-welcome-screen-new-solution.png)
+
+1. From the project types list on the left, locate and click **Uno Platform App**. It will be under the **Uno Platform** section.
+1. Configure your new project by providing a solution name and a directory location.
+1. Choose a template to build your application.
+
+    ![A screen showing the Uno Platform App Template](Assets/quick-start/rider-configure-new-unoplatform-app.png)
+
+    > [!TIP]
+    > For a detailed overview of the Uno Platform project wizard and all its options, see the [Wizard guide](xref:Uno.GettingStarted.UsingWizard).
+
+1. Click the create button and wait for the solution to load.
+
+1. You should now have a folder structure that looks like this:
+
+    ![A screen showing the structure of the solution in Rider](Assets/quick-start/rider-folder-structure.png)
+
+---
+
 > [!IMPORTANT]
 > A notification window will appear for the free registration of the extension. If the notification disappears before you can enter the license, you can find it again in the "Notification Bell" icon at the top right of the Rider window.
 
@@ -89,6 +122,10 @@ Select the **MyUnoApp (WebAssembly)** debug profile then click the green arrow o
 
 A new browser window will automatically run your application.
 
+> [!IMPORTANT]
+> There is currently a known issue with **Rider version 2024.2** on **macOS** that causes an **'Access to localhost was denied' error when launching applications on WebAssembly**. Until this issue is resolved, you will need to reload the browser page to successfully load the application.
+> Please refer to this opened related [Rider issue](https://youtrack.jetbrains.com/issue/RIDER-115776/MacOS-WASM-Access-to-localhost-was-denied-on-Initial-Run) to track progress on this issue we are prioritizing with the JetBrains team.
+>
 > [!NOTE]
 > There is no debugging for WebAssembly within Rider for Uno Platform, but you can debug using the [built-in Chrome tools](external/uno.wasm.bootstrap/doc/debugger-support.md#how-to-use-the-browser-debugger).
 

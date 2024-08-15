@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI;
+using Windows.UI.Input.Preview.Injection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -198,6 +200,100 @@ public class Given_FlowDirection
 		var redTransformToRoot = (MatrixTransform)red.TransformToVisual(null);
 		Assert.AreEqual($"-1,0,0,1,{m31},{m32}", redTransformToRoot.Matrix.ToString());
 	}
+
+#if HAS_UNO
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_RTL_HitTesting()
+	{
+		// copied from When_RTL
+		var rootGrid = CreateGrid(Colors.WhiteSmoke);
+
+		var grid = CreateRTLGrid200x200WithTwoRowsAndTwoColumns();
+
+		rootGrid.Children.Add(grid);
+
+		var red = CreateRectangle(Stretch.Fill, Colors.Red);
+		Grid.SetRow(red, 0);
+		Grid.SetColumn(red, 0);
+
+		var green = CreateRectangle(Stretch.Fill, Colors.Green);
+		Grid.SetRow(green, 0);
+		Grid.SetColumn(green, 1);
+
+		var blue = CreateRectangle(Stretch.Fill, Colors.Blue);
+		Grid.SetRow(blue, 1);
+		Grid.SetColumn(blue, 0);
+
+		var yellow = CreateRectangle(Stretch.Fill, Colors.Yellow);
+		Grid.SetRow(yellow, 1);
+		Grid.SetColumn(yellow, 1);
+
+		grid.Children.Add(red);
+		grid.Children.Add(green);
+		grid.Children.Add(blue);
+		grid.Children.Add(yellow);
+
+		TestServices.WindowHelper.WindowContent = rootGrid;
+		await TestServices.WindowHelper.WaitForLoaded(rootGrid);
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var mouse = injector.GetMouse();
+
+		// points are relative to rootGrid
+		var pointToTarget = new Dictionary<Point, string>
+		{
+			{ new Point(50, 50), "green" },
+			{ new Point(150, 50), "red" },
+			{ new Point(50, 150), "yellow" },
+			{ new Point(150, 150), "blue" },
+		};
+
+		var greenPresses = 0;
+		var redPresses = 0;
+		var yellowPresses = 0;
+		var bluePresses = 0;
+
+		green.PointerPressed += (_, _) => greenPresses++;
+		red.PointerPressed += (_, _) => redPresses++;
+		yellow.PointerPressed += (_, _) => yellowPresses++;
+		blue.PointerPressed += (_, _) => bluePresses++;
+
+		var expectedGreenPresses = 0;
+		var expectedRedPresses = 0;
+		var expectedYellowPresses = 0;
+		var expectedBluePresses = 0;
+
+		await Task.Delay(100); // wait for the renderer
+		foreach (var (point, target) in pointToTarget)
+		{
+			mouse.MoveTo(rootGrid.TransformToVisual(null).TransformPoint(point), 1);
+			mouse.Press();
+			mouse.Release();
+
+			switch (target)
+			{
+				case "green":
+					expectedGreenPresses++;
+					break;
+				case "red":
+					expectedRedPresses++;
+					break;
+				case "yellow":
+					expectedYellowPresses++;
+					break;
+				case "blue":
+					expectedBluePresses++;
+					break;
+			}
+
+			Assert.AreEqual(expectedGreenPresses, greenPresses);
+			Assert.AreEqual(expectedRedPresses, redPresses);
+			Assert.AreEqual(expectedYellowPresses, yellowPresses);
+			Assert.AreEqual(expectedBluePresses, bluePresses);
+		}
+	}
+#endif
 
 	[TestMethod]
 	[RunsOnUIThread]

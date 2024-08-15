@@ -21,7 +21,7 @@ using Android.Graphics.Drawables.Shapes;
 using Path = Android.Graphics.Path;
 using Uno.UI;
 #elif __SKIA__
-using Path = Microsoft.UI.Composition.SkiaGeometrySource2D;
+using Path = SkiaSharp.SKPath;
 #else
 using Path = System.Object;
 #endif
@@ -46,7 +46,7 @@ namespace Uno.Media
 #elif __ANDROID__
 			bezierPath.MoveTo((float)startPoint.X, (float)startPoint.Y);
 #elif __SKIA__
-			bezierPath.Geometry.MoveTo(new SkiaSharp.SKPoint((float)startPoint.X, (float)startPoint.Y));
+			bezierPath.MoveTo(new SkiaSharp.SKPoint((float)startPoint.X, (float)startPoint.Y));
 #endif
 
 			_points.Add(startPoint);
@@ -61,7 +61,7 @@ namespace Uno.Media
 #elif __ANDROID__
 			bezierPath.LineTo((float)point.X, (float)point.Y);
 #elif __SKIA__
-			bezierPath.Geometry.LineTo((float)point.X, (float)point.Y);
+			bezierPath.LineTo((float)point.X, (float)point.Y);
 #endif
 
 			_points.Add(point);
@@ -76,7 +76,7 @@ namespace Uno.Media
 #elif __ANDROID__
 			bezierPath.CubicTo((float)point1.X, (float)point1.Y, (float)point2.X, (float)point2.Y, (float)point3.X, (float)point3.Y);
 #elif __SKIA__
-			bezierPath.Geometry.CubicTo((float)point1.X, (float)point1.Y, (float)point2.X, (float)point2.Y, (float)point3.X, (float)point3.Y);
+			bezierPath.CubicTo((float)point1.X, (float)point1.Y, (float)point2.X, (float)point2.Y, (float)point3.X, (float)point3.Y);
 #endif
 			_points.Add(point3);
 		}
@@ -97,7 +97,7 @@ namespace Uno.Media
 #elif __ANDROID__
 			bezierPath.QuadTo((float)point1.X, (float)point1.Y, (float)point2.X, (float)point2.Y);
 #elif __SKIA__
-			bezierPath.Geometry.QuadTo((float)point1.X, (float)point1.Y, (float)point2.X, (float)point2.Y);
+			bezierPath.QuadTo((float)point1.X, (float)point1.Y, (float)point2.X, (float)point2.Y);
 #endif
 
 			_points.Add(point2);
@@ -182,7 +182,7 @@ namespace Uno.Media
 				sweepAngle -= 360;
 			}
 
-			bezierPath.Geometry.ArcTo(
+			bezierPath.ArcTo(
 				new SkiaSharp.SKRect((float)circle.Left, (float)circle.Top, (float)circle.Right, (float)circle.Bottom),
 				(float)startAngle,
 				(float)sweepAngle,
@@ -248,7 +248,7 @@ namespace Uno.Media
 #elif __ANDROID__
 					bezierPath.Close();
 #elif __SKIA__
-					bezierPath.Geometry.Close();
+					bezierPath.Close();
 #elif __WASM__
 					// TODO: In most cases, the path is handled by the browser.
 					// But it might still be possible to hit this code path on Wasm?

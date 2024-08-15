@@ -1,31 +1,24 @@
 ﻿#nullable enable
 
+using System;
 using Windows.UI;
 
 namespace Microsoft.UI.Composition;
 
-internal sealed class ColorBrushTransitionState
+/// <param name="IsActive">If false, the transition is "disabled" and the <see cref="CurrentColor"/> of the transition won't be used.</param>
+internal readonly record struct ColorBrushTransitionState(
+	BorderVisual Visual,
+	Color FromColor,
+	Color ToColor,
+	long StartTimestamp,
+	long EndTimestamp,
+	bool IsActive)
 {
-	internal ColorBrushTransitionState(BorderVisual visual, Color fromColor, Color toColor, long startTimestamp, long endTimestamp)
-	{
-		Visual = visual;
-		FromColor = fromColor;
-		ToColor = toColor;
-		StartTimestamp = startTimestamp;
-		EndTimestamp = endTimestamp;
-	}
-
-	internal BorderVisual Visual { get; }
-	internal Color FromColor { get; }
-	internal Color ToColor { get; }
-	internal long StartTimestamp { get; }
-	internal long EndTimestamp { get; }
-
 	internal Color CurrentColor
 	{
 		get
 		{
-			var progress = (Visual.Compositor.TimestampInTicks - StartTimestamp) / (double)(EndTimestamp - StartTimestamp);
+			var progress = Math.Min(1, (Visual.Compositor.TimestampInTicks - StartTimestamp) / (double)(EndTimestamp - StartTimestamp));
 
 			var a = Lerp(FromColor.A, ToColor.A, progress);
 			var r = Lerp(FromColor.R, ToColor.R, progress);

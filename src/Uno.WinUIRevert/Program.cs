@@ -47,7 +47,7 @@ namespace UnoWinUIRevert
 				Directory.Delete(dispatcherQueuePath, true);
 			}
 
-			ReplaceInFile(Path.Combine(basePath, @"src", "Directory.Build.props"), "<UNO_UWP_BUILD>false</UNO_UWP_BUILD>", "<UNO_UWP_BUILD>true</UNO_UWP_BUILD>");
+			ReplaceInFile(Path.Combine(basePath, "Directory.Build.props"), "<UNO_UWP_BUILD>false</UNO_UWP_BUILD>", "<UNO_UWP_BUILD>true</UNO_UWP_BUILD>");
 
 			// Generic replacements
 			var genericReplacements = new[] {
