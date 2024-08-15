@@ -62,7 +62,11 @@ namespace UITests.Msal
 #endif
 		}
 
-		private async void SignIn(object sender, RoutedEventArgs e)
+		private
+#if !DISABLE_GRAPH
+			async
+#endif
+			void SignIn(object sender, RoutedEventArgs e)
 		{
 #if !DISABLE_GRAPH
 			var result = await _app.AcquireTokenInteractive(SCOPES)
@@ -74,7 +78,11 @@ namespace UITests.Msal
 #endif
 		}
 
-		private async void LoadFromGraph(object sender, RoutedEventArgs e)
+		private
+#if !DISABLE_GRAPH
+			async
+#endif
+			void LoadFromGraph(object sender, RoutedEventArgs e)
 		{
 #if !DISABLE_GRAPH
 			var httpClient = new HttpClient();
