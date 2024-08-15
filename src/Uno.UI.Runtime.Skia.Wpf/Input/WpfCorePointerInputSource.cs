@@ -44,6 +44,8 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 	private readonly WpfControl? _host;
 	private PointerEventArgs? _previous;
 
+	private bool _queueExited;
+
 	public WpfCorePointerInputSource(IXamlRootHost host)
 	{
 		if (host is null) return;
@@ -110,11 +112,24 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 	public void SetPointerCapture()
 		=> _renderLayer.CaptureMouse();
 
-	public void ReleasePointerCapture(PointerIdentifier pointer)
-		=> _renderLayer.ReleaseMouseCapture();
+	public void ReleasePointerCapture(PointerIdentifier pointer) => ReleasePointerCapture();
 
 	public void ReleasePointerCapture()
-		=> _renderLayer.ReleaseMouseCapture();
+	{
+		try
+		{
+			// When releasing the capture natively, we will synchronously get a Leave event.
+			// This capture release can happen during the handling of another pointer event
+			// (e.g. releasing during PointerUp), so we make sure to dispatch the next Exited
+			// that will fire during ReleaseMouseCapture.
+			_queueExited = true;
+			_renderLayer.ReleaseMouseCapture();
+		}
+		finally
+		{
+			_queueExited = false;
+		}
+	}
 
 	private RoutedEventArgs? _lastArgs;
 
@@ -178,7 +193,15 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 
 	private void HostOnMouseLeave(object sender, WpfMouseEventArgs args)
 	{
-		HostOnMouseEvent(args, PointerExited);
+		if (_queueExited)
+		{
+			var xamlRoot = WpfManager.XamlRootMap.GetRootForHost((IWpfXamlRootHost)_host!);
+			xamlRoot!.VisualTree.RootElement.DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.High, () => HostOnMouseEvent(args, PointerExited));
+		}
+		else
+		{
+			HostOnMouseEvent(args, PointerExited);
+		}
 	}
 
 
