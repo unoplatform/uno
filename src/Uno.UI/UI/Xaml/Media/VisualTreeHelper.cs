@@ -663,12 +663,12 @@ namespace Microsoft.UI.Xaml.Media
 			// We didn't find any child at the given position, validate that element can be touched,
 			// and the position is in actual bounds(which might be different than the clipping bounds)
 #if __SKIA__
-			if (element.HitTest(transformToElement.Inverse().Transform(testPosition)) && renderingBounds.Contains(testPosition))
+			if (renderingBounds.Contains(testPosition) && element.HitTest(transformToElement.Inverse().Transform(testPosition)))
 #else
 
 			if (elementHitTestVisibility == HitTestability.Visible && renderingBounds.Contains(testPosition)
 #if __WASM__
-				&& (element is not Shape shape || shape.ContainsPoint(testPosition))
+				&& element.HitTest(testPosition)
 #endif
 				)
 #endif

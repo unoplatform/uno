@@ -221,7 +221,7 @@ namespace Microsoft.UI.Xaml.Shapes
 			_mainSvgElement.SetNativeTransform(matrix);
 		}
 
-		internal virtual bool ContainsPoint(Point relativePosition)
+		internal override bool HitTest(Point relativePosition)
 		{
 			var considerFill = Fill != null;
 

@@ -40,7 +40,7 @@ namespace Microsoft.UI.Xaml.Shapes
 			}
 		}
 
-		internal override bool ContainsPoint(Point relativePosition)
+		internal override bool HitTest(Point relativePosition)
 		{
 			// ContainsPoint acts on SVGGeometryElement, and "g" HTML element is not SVGGeometryElement.
 			// So, we override ContainsPoint for Path specifically to operate on the inner child.
