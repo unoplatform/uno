@@ -21,7 +21,8 @@
 		<RootNamespace>Uno.WinUI.Runtime.Skia.AppleUIKit</RootNamespace>
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
-
+		<DefineConstants>$(DefineConstants);UIKIT_SKIA</DefineConstants>
+		
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
