@@ -105,21 +105,6 @@ public class Given_Window
 
 	[TestMethod]
 	[RunsOnUIThread]
-	public void When_Close_Non_Activated_Window()
-	{
-		AssertIsFullFledgedApp();
-		AssertSupportsMultipleWindows();
-
-		var sut = new Window(WindowType.DesktopXamlSource);
-		bool closedFired = false;
-		sut.Closed += (s, e) => closedFired = true;
-		sut.Close();
-
-		Assert.IsTrue(closedFired);
-	}
-
-	[TestMethod]
-	[RunsOnUIThread]
 	public async Task When_Secondary_Window_No_Background_Light_Dark()
 	{
 		AssertSupportsMultipleWindows();

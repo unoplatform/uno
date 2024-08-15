@@ -80,7 +80,11 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 
 	public override void Activate() => _wpfWindow.Activate();
 
-	public override void Close() => _wpfWindow.Close();
+	public override void Close()
+	{
+		base.Close();
+		_wpfWindow.Close();
+	}
 
 	public override void ExtendContentIntoTitleBar(bool extend)
 	{

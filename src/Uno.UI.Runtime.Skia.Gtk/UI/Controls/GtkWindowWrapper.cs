@@ -77,14 +77,10 @@ internal class GtkWindowWrapper : NativeWindowWrapperBase
 
 	public override void Close()
 	{
+		base.Close();
 		if (_wasShown)
 		{
 			_gtkWindow.Close();
-		}
-		else
-		{
-			// Simulate closing to be in line with other targets.
-			OnWindowClosed(null, EventArgs.Empty);
 		}
 	}
 

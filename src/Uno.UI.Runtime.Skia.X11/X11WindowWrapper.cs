@@ -86,6 +86,7 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 
 	public override void Close()
 	{
+		base.Close();
 		var x11Window = _host.RootX11Window;
 		if (this.Log().IsEnabled(LogLevel.Information))
 		{
