@@ -1,4 +1,4 @@
-﻿#if !DEBUG || !__IOS__ // Workaround for https://github.com/microsoftgraph/msgraph-sdk-dotnet/issues/2617
+﻿#if DEBUG && __IOS__ // Workaround for https://github.com/microsoftgraph/msgraph-sdk-dotnet/issues/2617
 #define DISABLE_GRAPH
 #endif
 using System;
@@ -9,8 +9,6 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Identity.Client;
-using Microsoft.Kiota.Abstractions;
-using Microsoft.Kiota.Abstractions.Authentication;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Imaging;
@@ -18,6 +16,8 @@ using Uno.UI.MSAL;
 using Uno.UI.Samples.Controls;
 using Prompt = Microsoft.Identity.Client.Prompt;
 #if !DISABLE_GRAPH
+using Microsoft.Kiota.Abstractions;
+using Microsoft.Kiota.Abstractions.Authentication;
 using Microsoft.Graph;
 #endif
 
