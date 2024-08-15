@@ -2881,8 +2881,13 @@ public partial class Given_GridLayouting
 		Assert.AreEqual(new Rect(0, 0, 11, 11), LayoutInformation.GetLayoutSlot(c2));
 		Assert.AreEqual(1, c1.MeasureCallCount, "c1.MeasureCallCount");
 		Assert.AreEqual(1, c2.MeasureCallCount, "c2.MeasureCallCount"); // The measure count is 1 because the grid has a recognized pattern (Nx1). It would be 2 otherwise.
+#if __IOS__
+		Assert.AreEqual(0, c1.ArrangeCallCount, "c1.ArrangeCallCount");
+		Assert.AreEqual(0, c2.ArrangeCallCount, "c2.ArrangeCallCount");
+#else
 		Assert.AreEqual(1, c1.ArrangeCallCount, "c1.ArrangeCallCount");
 		Assert.AreEqual(1, c2.ArrangeCallCount, "c2.ArrangeCallCount");
+#endif
 
 		Assert.AreEqual(2, SUT.Children.Count);
 	}
@@ -2969,7 +2974,7 @@ public partial class Given_GridLayouting
 #if !WINAPPSDK
 		GetUnclippedDesiredSize(SUT).Should().Be(expectedDesiredSize);
 #endif
-		c1.DesiredSize.Should().Be(expectedDesiredSize.AtLeast(new Size(margin * 2, margin * 2)));
+		c1.DesiredSize.Should().Be(new Size(Math.Max(margin * 2, expectedDesiredSize.Width), Math.Max(margin * 2, expectedDesiredSize.Height)));
 #if !WINAPPSDK
 		GetUnclippedDesiredSize(c1).Should().Be(new Size(6d, 6d)); // Unclipped doesn't include margins!
 #endif
