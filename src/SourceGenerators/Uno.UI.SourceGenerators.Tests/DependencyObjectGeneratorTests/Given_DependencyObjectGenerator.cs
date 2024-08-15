@@ -16,8 +16,8 @@ using Verify = CSharpSourceGeneratorVerifier<DependencyObjectGenerator>;
 [TestClass]
 public class Given_DependencyObjectGenerator
 {
-	private static readonly ReferenceAssemblies _net80Android = ReferenceAssemblies.Net.Net80Android;
-	private static readonly ReferenceAssemblies _net80 = ReferenceAssemblies.Net.Net80;
+	private static readonly ReferenceAssemblies _net80Android = ReferenceAssemblies.Net.Net80Android.AddPackages([new PackageIdentity("Uno.Diagnostics.Eventing", "2.1.0")]);
+	private static readonly ReferenceAssemblies _net80 = ReferenceAssemblies.Net.Net80.AddPackages([new PackageIdentity("Uno.Diagnostics.Eventing", "2.1.0")]);
 
 	private static MetadataReference[] BuildUnoReferences(bool isAndroid)
 	{
