@@ -181,6 +181,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __WASM__
+		[Ignore("The test is not playing nicely with KeyboardHelper on WASM.")]
+#endif
 		public async Task When_Keyboard_Navigation_Scrolls_SuggestionsList()
 		{
 			var SUT = new AutoSuggestBox();
@@ -192,7 +195,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var popup = (Popup)SUT.GetTemplateChild("SuggestionsPopup");
 
 			textBox.Focus(FocusState.Programmatic);
+#if __SKIA__
 			KeyboardHelper.InputText("a");
+#else
+			textBox.ProcessTextInput("a");
+#endif
 			await WindowHelper.WaitForIdle();
 			Assert.IsTrue(popup.IsOpen);
 
@@ -223,7 +230,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var popup = (Popup)SUT.GetTemplateChild("SuggestionsPopup");
 
 			textBox.Focus(FocusState.Programmatic);
+#if __SKIA__
 			KeyboardHelper.InputText("a");
+#else
+			textBox.ProcessTextInput("a");
+#endif
 			await WindowHelper.WaitForIdle();
 			Assert.IsTrue(popup.IsOpen);
 

@@ -103,7 +103,13 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (ScrollViewer is { } sv && sv.Presenter is { } presenter)
 			{
-				var offsetXY = element.TransformToVisual(presenter).TransformPoint(new Point(presenter.HorizontalOffset, presenter.VerticalOffset));
+				var offsetXY = element.TransformToVisual(presenter).TransformPoint(
+#if __SKIA__ // Skia correctly doesn't include the offsets in TransformToVisual
+					new Point(presenter.HorizontalOffset, presenter.VerticalOffset)
+#else
+					Point.Zero
+#endif
+					);
 
 				var (elementOffset, elementLength, presenterOffset, presenterViewportLength) =
 					ItemsPanelRoot.PhysicalOrientation is Orientation.Vertical
