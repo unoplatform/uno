@@ -17,6 +17,9 @@ internal static class RuntimeTestsAppExtensions
 	public static void Tap(this IApp app, string elementName)
 		=> app.Marked(elementName).Tap();
 
+	public static void Tap(this IApp app, QueryEx marked)
+		=> marked.Tap();
+
 	// WARNING: Those version does not wait on runtime UI tests ...
 	// TODO: We need to create async versions (and remove those!).
 	public static IEnumerable<QueryResult> WaitForElement(this IApp app, string elementName)

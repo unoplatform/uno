@@ -22,8 +22,13 @@ public class SampleControlUITestBase : IInjectPointers
 
 	public PointerDeviceType CurrentPointerType => App.CurrentPointerType;
 
-	protected async Task RunAsync(string metadataName)
+	protected async Task RunAsync(string metadataName, bool skipInitialScreenshot = true)
 	{
+		if (skipInitialScreenshot is not true)
+		{
+			throw new NotSupportedException("Initial screenshot is not supported by runtime tests.");
+		}
+
 		await App.RunAsync(metadataName);
 	}
 

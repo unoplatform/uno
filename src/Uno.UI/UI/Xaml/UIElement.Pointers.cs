@@ -728,7 +728,7 @@ namespace Microsoft.UI.Xaml
 			PrepareShare(routedArgs.Data); // Gives opportunity to the control to fulfill the data
 			SafeRaiseEvent(DragStartingEvent, routedArgs); // The event won't bubble, cf. PrepareManagedDragAndDropEventBubbling
 
-			// We need to give a chance for  for layout updates, etc. This is particularly problematic with TreeView
+			// We need to give a chance for layout updates, etc. This is particularly problematic with TreeView
 			// dragging where the DragStarting event on the TreeView will "internally" collapse some nodes,
 			// but actually removing them from the visual tree needs a layout cycle. Without waiting here,
 			// we can also get a DragEnter event on one of the to-be-collapsed containers in the same
@@ -737,7 +737,13 @@ namespace Microsoft.UI.Xaml
 			// is not very clear and the way it interacts with layout timing is not similar at all to
 			// what we do in Uno, so the closest thing is to wait for Low/Idle here.
 			// Note that waiting for Idle causes some unrelated problems in ListView dragging, so we choose Low.
-			await NativeDispatcher.Main.EnqueueAsync(() => { }, NativeDispatcherPriority.Low);
+			if (!ptArgs.IsInjected)
+			{
+				// Note: This is patch to properly support migration from UITests to runtime-test, the DragCoordinates should be async
+				// Note2: We should make sure to abort this defer when pointer is being released, if not possible in real world,
+				//		 this fire-and-forget delay drives the app to never complete the DnD operation in runtime-tests / when running sync.
+				await NativeDispatcher.Main.EnqueueAsync(() => { }, NativeDispatcherPriority.Low);
+			}
 
 			// We capture the original position of the pointer before going async,
 			// so we have the closet location of the "down" possible.

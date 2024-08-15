@@ -98,8 +98,15 @@ public partial class InputInjector
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
 	public void InjectMouseInput(IEnumerable<InjectedInputMouseInfo> input)
 	{
+		const InjectedInputMouseOptions _buttonDown = InjectedInputMouseOptions.LeftDown | InjectedInputMouseOptions.MiddleDown | InjectedInputMouseOptions.RightDown | InjectedInputMouseOptions.XDown;
+
 		foreach (var info in input)
 		{
+			if ((info.MouseOptions & _buttonDown) != 0 && !_mouse.Properties.HasPressedButton)
+			{
+				_mouse.StartNewSequence();
+			}
+
 			var args = info.ToEventArgs(_mouse!, VirtualKeyModifiers.None);
 			_mouse!.Update(args);
 
