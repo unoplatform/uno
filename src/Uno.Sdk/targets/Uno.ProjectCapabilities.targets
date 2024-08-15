@@ -1,12 +1,15 @@
 <Project>
+	<PropertyGroup>
+		<!-- Forces the VS Intellisense to detect uno projects as WinUI XAML -->
+		<!-- https://github.com/unoplatform/uno/issues/15517 -->
+		<!-- https://github.com/unoplatform/uno/issues/17530 -->
+		<DefaultXamlRuntime Condition="'$(DefaultXamlRuntime)'==''">WinUI</DefaultXamlRuntime>
+	</PropertyGroup>
+
 	<PropertyGroup Condition="!$(IsWinAppSdk)">
 		<!-- Sync with https://github.com/dotnet/maui/blob/ffab30545ac146710a9ee61138be33e52ca4b326/src/Templates/src/templates/maui-mobile/Directory.Build.targets -->
 		<!-- Required - Enable Launch Profiles for .NET 6 iOS/Android -->
 		<_KeepLaunchProfiles>true</_KeepLaunchProfiles>
-
-		<!-- Forces the VS Intellisense to detect uno projects as WinUI XAML -->
-		<!-- https://github.com/unoplatform/uno/issues/15517 -->
-    	<DefaultXamlRuntime Condition="'$(DefaultXamlRuntime)'==''">WinUI</DefaultXamlRuntime>
 	</PropertyGroup>
 
 	<!-- Additional capabilities to enable XAML Intellisense for non WinUI native projects -->
