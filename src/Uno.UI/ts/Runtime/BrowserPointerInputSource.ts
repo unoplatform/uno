@@ -65,25 +65,12 @@
 			element.addEventListener("pointerleave", this.onPointerEventReceived.bind(this), { capture: false });
 			element.addEventListener("pointerdown", this.onPointerEventReceived.bind(this), { capture: false });
 			element.addEventListener("pointerup", this.onPointerEventReceived.bind(this), { capture: false });
-			//element.addEventListener("lostpointercapture", this.onPointerEventReceived.bind(this), { capture: false });
 			element.addEventListener("pointercancel", this.onPointerEventReceived.bind(this), { capture: false });
 			element.addEventListener("pointermove", this.onPointerEventReceived.bind(this), { capture: false });
 			element.addEventListener("wheel", this.onPointerEventReceived.bind(this), { capture: false });
 		}
 
 		private onPointerEventReceived(evt: PointerEvent): void {
-			//let id = (evt.target as HTMLElement)?.id;
-			//if (id != "uno-canvas" && !id.startsWith("uno-semantics-")) {
-			//	// We have a div to enable accessibility (see enableA11y in WebAssemblyWindowWrapper).
-			//	// Pressing space on keyboard to click it will trigger pointer event which we want to ignore.
-			//	// So, we only care about events that come from uno-canvas.
-			//	return;
-			//}
-
-			// pointer events may have some side effects (like changing focus or opening a context menu on right clicking)
-			// We blanket-disable all the native behaviour so we don't have to whack-a-mole all the edge cases.
-			//evt.preventDefault();
-
 			const event = BrowserPointerInputSource.toHtmlPointerEvent(evt.type);
 
 			let pointerId: number, pointerType: PointerDeviceType, pressure: number;
@@ -131,6 +118,7 @@
 				wheelDeltaY, //double wheelDeltaY,
 				evt.relatedTarget !== null //bool hasRelatedTarget)
 			);
+			// This is uesless with root pointer management
 			//if (result & HtmlEventDispatchResult.StopPropagation) {
 			//	evt.stopPropagation();
 			//}
