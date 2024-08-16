@@ -16,7 +16,9 @@ using Uno.UI.Xaml.Controls;
 using Uno.UI.Runtime.Skia;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices.Marshalling;
+using Windows.Media.Playback;
 using Microsoft.UI.Xaml.Controls;
+using Uno.Media.Playback;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
 
@@ -47,6 +49,9 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 			}
 		}
 
+		// Force-initialize libVLC early
+		System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(X11MediaPlayerExtension).TypeHandle);
+
 		ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), _ => new X11CoreApplicationExtension());
 		ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new X11ApplicationViewExtension(o));
 		ApiExtensibility.Register(typeof(Windows.Graphics.Display.IDisplayInformationExtension), o => new X11DisplayInformationExtension(o, null));
@@ -69,6 +74,9 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 		ApiExtensibility.Register<DragDropManager>(typeof(Windows.ApplicationModel.DataTransfer.DragDrop.Core.IDragDropExtension), o => new X11DragDropExtension(o));
 
 		ApiExtensibility.Register<XamlRoot>(typeof(Uno.Graphics.INativeOpenGLWrapper), xamlRoot => new X11NativeOpenGLWrapper(xamlRoot));
+
+		ApiExtensibility.Register<MediaPlayer>(typeof(IMediaPlayerExtension), o => new X11MediaPlayerExtension(o));
+		ApiExtensibility.Register<MediaPlayerPresenter>(typeof(IMediaPlayerPresenterExtension), o => new X11MediaPlayerPresenterExtension(o));
 	}
 
 	public X11ApplicationHost(Func<Application> appBuilder, int renderFrameRate = 60)
