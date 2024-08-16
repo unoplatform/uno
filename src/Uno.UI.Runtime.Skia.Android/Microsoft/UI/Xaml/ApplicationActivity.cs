@@ -138,7 +138,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			var nativelyHandled = false;
-			if (_nativeLayerHost?.Path is { } p && p.Contains(ev.GetX(), ev.GetY()))
+			if (_nativeLayerHost?.Path?.Contains(ev.GetX(), ev.GetY()))
 			{
 				// We don't call the base method if NativeLayerHost.Path doesn't contain (X, Y).
 				// This is due to the way Android handles hit-testing with Canvas.ClipPath, where even if the ClipPath
@@ -162,7 +162,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			var nativelyHandled = false;
-			if (_nativeLayerHost?.Path is { } p && p.Contains(ev.GetX(), ev.GetY()))
+			if (_nativeLayerHost?.Path?.Contains(ev.GetX(), ev.GetY()))
 			{
 				// We don't call the base method if NativeLayerHost.Path doesn't contain (X, Y).
 				// This is due to the way Android handles hit-testing with Canvas.ClipPath, where even if the ClipPath
@@ -268,12 +268,7 @@ namespace Microsoft.UI.Xaml
 				canvas.Clear(SKColors.Transparent);
 				var scale = _cachedDisplayInformation!.RawPixelsPerViewPixel;
 				canvas.Scale((float)scale);
-				var negativePath = new SKPath();
-				if (SkiaRenderHelper.RenderRootVisualAndReturnPath((int)window.Bounds.Width, (int)window.Bounds.Height, root.Visual, e.Surface) is { } path)
-				{
-					negativePath.AddRect(new SKRect(0, 0, (int)(window.Bounds.Width * scale), (int)(window.Bounds.Height * scale)));
-					negativePath = negativePath.Op(path, SKPathOp.Difference);
-				}
+				var negativePath = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath((int)window.Bounds.Width, (int)window.Bounds.Height, root.Visual, e.Surface);
 				if (_nativeLayerHost is { })
 				{
 					_nativeLayerHost.Path = negativePath;
@@ -460,7 +455,7 @@ namespace Microsoft.UI.Xaml
 			protected override void OnDraw(Canvas canvas)
 			{
 				base.OnDraw(canvas);
-				if (Path is { })
+				if (Path is not null)
 				{
 					canvas.ClipPath(PathParser.CreatePathFromPathData(Path.ToSvgPathData()));
 				}

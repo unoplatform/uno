@@ -19,7 +19,7 @@ internal static class SkiaRenderHelper
 	public static SKPath? RenderRootVisualAndClearNativeAreas(int width, int height, ShapeVisual rootVisual, SKSurface surface)
 	{
 		var path = RenderRootVisualAndReturnPath(width, height, rootVisual, surface);
-		if (path is { })
+		if (path is not null)
 		{
 			// we clear the "negative" of what was drawn
 			var negativePath = new SKPath();
@@ -33,6 +33,23 @@ internal static class SkiaRenderHelper
 		}
 
 		return path;
+	}
+
+	/// <summary>
+	/// Does a rendering cycle and returns a path that represents the total area that was drawn
+	/// or null if the entire window is drawn.
+	/// </summary>
+	public static SKPath RenderRootVisualAndReturnNegativePath(int width, int height, ShapeVisual rootVisual, SKSurface surface)
+	{
+		var path = RenderRootVisualAndReturnPath(width, height, rootVisual, surface);
+		var negativePath = new SKPath();
+		if (path is not null)
+		{
+			negativePath.AddRect(new SKRect(0, 0, width, height));
+			negativePath = negativePath.Op(path, SKPathOp.Difference);
+		}
+
+		return negativePath;
 	}
 
 	/// <summary>

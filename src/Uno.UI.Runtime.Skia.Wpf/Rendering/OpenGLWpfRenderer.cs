@@ -229,16 +229,20 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 
 			if (_host.RootElement?.Visual is { } rootVisual)
 			{
-				var path = SkiaRenderHelper.RenderRootVisualAndReturnPath(width, height, rootVisual, _surface);
-				var negativePath = new SKPath();
-				if (path is { })
-				{
-					negativePath.AddRect(new SKRect(0, 0, _renderTarget.Width, _renderTarget.Height));
-					negativePath = negativePath.Op(path, SKPathOp.Difference);
-				}
+				var negativePath = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath(width, height, rootVisual, _surface);
 
-				_host.NativeOverlayLayer!.Clip ??= new PathGeometry();
-				((PathGeometry)_host.NativeOverlayLayer!.Clip).Figures = PathFigureCollection.Parse(negativePath.ToSvgPathData());
+				if (_host.NativeOverlayLayer is { } nativeLayer)
+				{
+					nativeLayer.Clip ??= new PathGeometry();
+					((PathGeometry)nativeLayer.Clip).Figures = PathFigureCollection.Parse(negativePath.ToSvgPathData());
+				}
+				else
+				{
+					if (this.Log().IsEnabled(LogLevel.Error))
+					{
+						this.Log().Error($"Airspace clipping failed because ${nameof(_host.NativeOverlayLayer)} is null");
+					}
+				}
 			}
 		}
 

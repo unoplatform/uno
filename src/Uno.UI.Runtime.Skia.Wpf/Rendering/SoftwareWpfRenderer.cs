@@ -6,6 +6,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Microsoft.UI.Xaml;
 using SkiaSharp;
+using Uno.Foundation.Logging;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Uno.UI.Helpers;
 using Visibility = System.Windows.Visibility;
@@ -89,16 +90,20 @@ internal class SoftwareWpfRenderer : IWpfRenderer
 				{
 					rootVisual.Compositor.IsSoftwareRenderer = true;
 
-					var path = SkiaRenderHelper.RenderRootVisualAndReturnPath(width, height, rootVisual, surface);
-					var negativePath = new SKPath();
-					if (path is { })
-					{
-						negativePath.AddRect(new SKRect(0, 0, width, height));
-						negativePath = negativePath.Op(path, SKPathOp.Difference);
-					}
+					var negativePath = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath(width, height, rootVisual, surface);
 
-					_host.NativeOverlayLayer!.Clip ??= new PathGeometry();
-					((PathGeometry)_host.NativeOverlayLayer!.Clip).Figures = PathFigureCollection.Parse(negativePath.ToSvgPathData());
+					if (_host.NativeOverlayLayer is { } nativeLayer)
+					{
+						nativeLayer.Clip ??= new PathGeometry();
+						((PathGeometry)nativeLayer!.Clip).Figures = PathFigureCollection.Parse(negativePath.ToSvgPathData());
+					}
+					else
+					{
+						if (this.Log().IsEnabled(LogLevel.Error))
+						{
+							this.Log().Error($"Airspace clipping failed because ${nameof(_host.NativeOverlayLayer)} is null");
+						}
+					}
 				}
 				finally
 				{

@@ -148,22 +148,8 @@ internal partial class BrowserRenderer
 			_surface.Canvas.Scale((float)scale);
 			if (_host.RootElement?.Visual is { } rootVisual)
 			{
-				var path = SkiaRenderHelper.RenderRootVisualAndReturnPath(_renderTarget.Width, _renderTarget.Height, rootVisual, _surface);
-				if (path is { })
-				{
-					// we clip the "negative" of what was drawn
-					var negativePath = new SKPath();
-					if (path is { })
-					{
-						negativePath.AddRect(new SKRect(0, 0, _renderTarget.Width, _renderTarget.Height));
-						negativePath = negativePath.Op(path, SKPathOp.Difference);
-					}
-					BrowserNativeElementHostingExtension.SetSvgClipPathForNativeElementHost(negativePath.ToSvgPathData());
-				}
-				else
-				{
-					BrowserNativeElementHostingExtension.SetSvgClipPathForNativeElementHost("");
-				}
+				var negativePath = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath(_renderTarget.Width, _renderTarget.Height, rootVisual, _surface);
+				BrowserNativeElementHostingExtension.SetSvgClipPathForNativeElementHost(!negativePath.IsEmpty ? negativePath.ToSvgPathData() : "");
 			}
 		}
 

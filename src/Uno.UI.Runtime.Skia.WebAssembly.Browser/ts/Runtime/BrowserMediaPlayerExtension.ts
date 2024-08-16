@@ -73,7 +73,7 @@ namespace Uno.UI.Runtime.Skia {
 		public static stop(elementId: string) {
 			const videoElement = document.getElementById(elementId) as HTMLVideoElement;
 			if (videoElement) {
-				videoElement.load();
+				videoElement.load(); // this is not a typo, loading an already-loaded video resets (i.e. stops) it.
 			}
 		}
 
