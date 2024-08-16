@@ -66,7 +66,9 @@ namespace SamplesApp
 		private static Microsoft.UI.Xaml.Window? _mainWindow;
 		private bool _wasActivated;
 		private bool _isSuspended;
+#if __SKIA__
 		private bool _gotOnLaunched;
+#endif
 
 		static App()
 		{
@@ -99,11 +101,12 @@ namespace SamplesApp
 			this.Suspending += OnSuspending;
 			this.Resuming += OnResuming;
 #endif
-
+#if __SKIA__
 			DispatcherQueue.GetForCurrentThread().TryEnqueue(DispatcherQueuePriority.High, () =>
 			{
 				Assert.IsTrue(_gotOnLaunched);
 			});
+#endif
 		}
 
 		internal static Microsoft.UI.Xaml.Window? MainWindow => _mainWindow;
@@ -119,7 +122,9 @@ namespace SamplesApp
 #endif
 		override void OnLaunched(LaunchActivatedEventArgs e)
 		{
+#if __SKIA__
 			_gotOnLaunched = true;
+#endif
 			EnsureMainWindow();
 
 			SetupAndroidEnvironment();
