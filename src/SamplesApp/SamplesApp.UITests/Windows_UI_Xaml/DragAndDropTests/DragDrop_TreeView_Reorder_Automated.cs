@@ -3,7 +3,7 @@
 #if HAS_RENDER_TARGET_BITMAP
 #define CAN_ASSERT_IMAGE
 #endif
-using Microsoft.UI.Xaml.Controls;
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Uno.UI.RuntimeTests.Helpers;
 #else
 #define CAN_ASSERT_IMAGE
