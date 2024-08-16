@@ -854,8 +854,8 @@ namespace Uno.UI {
 			this.setAsArranged(element);
 		}
 
-		public setPointerEvents(htmlId: number, enabled: boolean) {
-			this.getView(htmlId).style.pointerEvents = enabled ? "auto" : "none";
+		public setPointerEvents(htmlId: number, value: string) {
+			this.getView(htmlId).style.pointerEvents = value;
 		}
 
 		/**

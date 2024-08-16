@@ -142,9 +142,9 @@ namespace Uno.UI.Xaml
 
 		#region SetPointerEvents
 
-		internal static void SetPointerEvents(IntPtr htmlId, bool enabled)
+		internal static void SetPointerEvents(IntPtr htmlId, string value)
 		{
-			NativeMethods.SetPointerEvents(htmlId, enabled);
+			NativeMethods.SetPointerEvents(htmlId, value);
 		}
 
 		#endregion
@@ -1105,7 +1105,7 @@ namespace Uno.UI.Xaml
 			internal static partial void SetCornerRadius(IntPtr htmlId, float topLeftX, float topLeftY, float topRightX, float topRightY, float bottomRightX, float bottomRightY, float bottomLeftX, float bottomLeftY);
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.setPointerEvents")]
-			internal static partial void SetPointerEvents(IntPtr htmlId, bool enabled);
+			internal static partial void SetPointerEvents(IntPtr htmlId, string value);
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.setPropertyNativeFast")]
 			internal static partial void SetProperties(IntPtr htmlId, string[] pairs);

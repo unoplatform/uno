@@ -30,10 +30,6 @@ body {
   display: inline;
   outline: none;
   /*
-    Disable pointer events by default to match HitTestVisibilityProperty default value.
-  */
-  pointer-events: none;
-  /*
     Padding & margin are required for measure/arrange to behave well:
     margin & padding are calculated through Xaml elements.
   */

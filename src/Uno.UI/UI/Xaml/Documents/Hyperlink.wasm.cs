@@ -64,11 +64,7 @@ namespace Microsoft.UI.Xaml.Documents
 					("href", uri)
 				);
 			}
-			UpdateHitTest();
 		}
-
-		internal override bool IsViewHit()
-			=> NavigateUri != null || base.IsViewHit();
 	}
 
 	public enum NavigationTarget

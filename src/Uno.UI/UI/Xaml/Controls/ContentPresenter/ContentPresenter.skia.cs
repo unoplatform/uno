@@ -42,8 +42,6 @@ partial class ContentPresenter
 		});
 	}
 
-	private IDisposable _nativeElementDisposable;
-
 	partial void TryRegisterNativeElement(object oldValue, object newValue)
 	{
 		if (IsNativeHost && IsInLiveTree)
@@ -130,11 +128,6 @@ partial class ContentPresenter
 		_nativeHosts.Add(this);
 		EffectiveViewportChanged += OnEffectiveViewportChanged;
 		LayoutUpdated += OnLayoutUpdated;
-		var visiblityToken = RegisterPropertyChangedCallback(HitTestVisibilityProperty, OnHitTestVisiblityChanged);
-		_nativeElementDisposable = Disposable.Create(() =>
-		{
-			UnregisterPropertyChangedCallback(HitTestVisibilityProperty, visiblityToken);
-		});
 	}
 
 	partial void DetachNativeElement(object content)
@@ -147,18 +140,12 @@ partial class ContentPresenter
 		EffectiveViewportChanged -= OnEffectiveViewportChanged;
 		LayoutUpdated -= OnLayoutUpdated;
 		_nativeElementHostingExtension.Value!.DetachNativeElement(content);
-		_nativeElementDisposable?.Dispose();
 	}
 
 	private Size MeasureNativeElement(Size childMeasuredSize, Size availableSize)
 	{
 		global::System.Diagnostics.Debug.Assert(IsNativeHost);
 		return _nativeElementHostingExtension.Value!.MeasureNativeElement(Content, childMeasuredSize, availableSize);
-	}
-
-	private void OnHitTestVisiblityChanged(DependencyObject sender, DependencyProperty dp)
-	{
-		_nativeElementHostingExtension.Value!.ChangeNativeElementVisibility(Content, HitTestVisibility != HitTestability.Collapsed);
 	}
 
 	internal static void UpdateNativeHostContentPresentersOpacities()
@@ -179,6 +166,8 @@ partial class ContentPresenter
 
 	private void OnLayoutUpdated(object sender, object e)
 	{
+		_nativeElementHostingExtension.Value!.ChangeNativeElementVisibility(Content, this.GetHitTestVisibility() != HitTestability.Collapsed);
+
 		// Not quite sure why we need to queue the arrange call, but the native element either explodes or doesn't
 		// respect alignments correctly otherwise. This is particularly relevant for the initial load.
 		DispatcherQueue.TryEnqueue(ArrangeNativeElement);

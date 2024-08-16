@@ -249,6 +249,13 @@ public partial class Panel : FrameworkElement, IPanel
 		UpdateBorder();
 #endif
 		OnBackgroundChangedPartial();
+
+#if __WASM__
+		if (e.OldValue is null || e.NewValue is null)
+		{
+			RefreshPointerEvents();
+		}
+#endif
 	}
 
 	partial void OnBackgroundChangedPartial();
