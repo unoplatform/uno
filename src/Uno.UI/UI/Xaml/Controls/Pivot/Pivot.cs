@@ -175,15 +175,6 @@ namespace Microsoft.UI.Xaml.Controls
 						headerItem.Content = item;
 					}
 
-					headerItem.SetBinding(
-						ContentControl.ContentTemplateProperty,
-						new Binding
-						{
-							Path = "HeaderTemplate",
-							RelativeSource = RelativeSource.TemplatedParent
-						}
-					);
-
 					// Materialize template to ensure visual states are set correctly.
 					headerItem.EnsureTemplate();
 
