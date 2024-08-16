@@ -29,10 +29,6 @@
 		}
 
 		private onKeyboardEvent(evt: KeyboardEvent): void {
-			if ((evt.target as HTMLElement)?.id !== "uno-canvas" && (evt.target as HTMLElement)?.id !== "uno-input") {
-				return;
-			}
-
 			let result = BrowserKeyboardInputSource._exports.OnNativeKeyboardEvent(
 				this._source,
 				evt.type == "keydown",
