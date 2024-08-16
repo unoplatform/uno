@@ -133,8 +133,10 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 			.Any(File.Exists);
 	}
 
-	private unsafe static IntPtr FindWindowByTitle(IntPtr display, IntPtr current, string title)
+	internal unsafe static IntPtr FindWindowByTitle(IntPtr display, IntPtr current, string title)
 	{
+		using var lockDiposable = X11Helper.XLock(display);
+
 		_ = X11Helper.XFetchName(display, current, out var name);
 		if (name == title)
 		{

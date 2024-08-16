@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using System.Runtime.InteropServices.Marshalling;
 using Windows.Media.Playback;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.Web.WebView2.Core;
 using Uno.Media.Playback;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
@@ -77,6 +78,8 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 
 		ApiExtensibility.Register<MediaPlayer>(typeof(IMediaPlayerExtension), o => new X11MediaPlayerExtension(o));
 		ApiExtensibility.Register<MediaPlayerPresenter>(typeof(IMediaPlayerPresenterExtension), o => new X11MediaPlayerPresenterExtension(o));
+
+		ApiExtensibility.Register<CoreWebView2>(typeof(INativeWebViewProvider), o => new X11NativeWebViewProvider(o));
 	}
 
 	public X11ApplicationHost(Func<Application> appBuilder, int renderFrameRate = 60)
