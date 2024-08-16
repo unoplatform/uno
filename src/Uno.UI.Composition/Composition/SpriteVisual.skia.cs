@@ -68,6 +68,6 @@ namespace Microsoft.UI.Composition
 			}
 		}
 
-		internal override bool CanPaint => Brush?.CanPaint() ?? false;
+		internal override bool CanPaint() => Brush?.CanPaint() ?? false;
 	}
 }

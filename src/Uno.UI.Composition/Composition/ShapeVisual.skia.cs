@@ -72,7 +72,7 @@ public partial class ShapeVisual
 		return shape;
 	}
 
-	internal override bool CanPaint => base.CanPaint || (_shapes?.Any(s => s.CanPaint) ?? false);
+	internal override bool CanPaint() => base.CanPaint() || (_shapes?.Any(s => s.CanPaint()) ?? false);
 
 	/// <remarks>This does NOT take the clipping into account.</remarks>
 	internal virtual bool HitTest(Point point)

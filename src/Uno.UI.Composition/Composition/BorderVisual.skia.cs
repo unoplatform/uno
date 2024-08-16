@@ -327,10 +327,10 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 		((CompositionPathGeometry)_borderShape!.Geometry!).Path = new CompositionPath(new SkiaGeometrySource2D(borderPath));
 	}
 
-	internal override bool CanPaint =>
+	internal override bool CanPaint() =>
 		(BackgroundBrush?.CanPaint() ?? false) ||
 		(BorderBrush?.CanPaint() ?? false) ||
-		base.CanPaint;
+		base.CanPaint();
 
 	internal override bool HitTest(Point point)
 	{

@@ -35,6 +35,6 @@ namespace Microsoft.UI.Composition
 			}
 		}
 
-		internal override bool CanPaint => true;
+		internal override bool CanPaint() => true;
 	}
 }

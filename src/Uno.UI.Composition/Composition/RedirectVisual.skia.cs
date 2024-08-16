@@ -13,6 +13,6 @@ namespace Microsoft.UI.Composition
 			Source?.Paint(session);
 		}
 
-		internal override bool CanPaint => Source?.CanPaint ?? false;
+		internal override bool CanPaint() => Source?.CanPaint() ?? false;
 	}
 }
