@@ -410,7 +410,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 
 			// Test only to the left of the TextBox, which can have a blinking cursor and might fail the screenshot tests
 			// We also exclude the opening buttons as the focus might have changed
-			var testRect = new Rectangle(dialogRectangle.X, dialogRectangle.Y, (int)dialogRectangle.X + 25, dialogRectangle.Height);
+			var testRect = new Rectangle(dialogRectangle.X, dialogRectangle.Y, (int)dialogRectangle.X + 10, dialogRectangle.Height);
 
 			// compare
 			ImageAssert.AreNotEqual(initialScreenshot, dialogOpenedScreenshot);

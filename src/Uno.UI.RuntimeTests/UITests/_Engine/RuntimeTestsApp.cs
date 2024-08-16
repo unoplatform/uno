@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Devices.Input;
 using Windows.UI.Input.Preview.Injection;
@@ -259,11 +260,97 @@ public partial class RuntimeTestsApp : IApp
 		}
 	}
 
+	public async ValueTask DragCoordinatesAsync(double fromX, double fromY, double toX, double toY, CancellationToken ct = default)
+	{
+		switch (CurrentPointerType)
+		{
+			case PointerDeviceType.Touch:
+				_input.InitializeTouchInjection(InjectedInputVisualizationMode.Default);
+				await _input.InjectTouchInputAsync(Inputs(), ct);
+				_input.UninitializeTouchInjection();
+
+				IEnumerable<InjectedInputTouchInfo> Inputs()
+				{
+					yield return new()
+					{
+						PointerInfo = new()
+						{
+							PointerId = 42,
+							PixelLocation = new()
+							{
+								PositionX = (int)fromX,
+								PositionY = (int)fromY
+							},
+							PointerOptions = InjectedInputPointerOptions.New
+								| InjectedInputPointerOptions.FirstButton
+								| InjectedInputPointerOptions.PointerDown
+								| InjectedInputPointerOptions.InContact
+								| InjectedInputPointerOptions.InRange
+						}
+					};
+
+					var steps = 10;
+					var stepX = (toX - fromX) / steps;
+					var stepY = (toY - fromY) / steps;
+					for (var step = 0; step <= steps; step++)
+					{
+						yield return new()
+						{
+							PointerInfo = new()
+							{
+								PixelLocation = new()
+								{
+									PositionX = (int)(fromX + step * stepX),
+									PositionY = (int)(fromY + step * stepY)
+								},
+								PointerOptions = InjectedInputPointerOptions.Update
+									| InjectedInputPointerOptions.FirstButton
+									| InjectedInputPointerOptions.InContact
+									| InjectedInputPointerOptions.InRange
+							}
+						};
+					}
+
+					yield return new()
+					{
+						PointerInfo = new()
+						{
+							PixelLocation =
+							{
+								PositionX = (int)toX,
+								PositionY = (int)toY
+							},
+							PointerOptions = InjectedInputPointerOptions.FirstButton
+								| InjectedInputPointerOptions.PointerUp
+						}
+					};
+				}
+				break;
+
+			case PointerDeviceType.Mouse:
+				await InjectMouseInputAsync(Mouse.ReleaseAny(), ct);
+				await InjectMouseInputAsync(Mouse.MoveTo(fromX, fromY), ct);
+				await InjectMouseInputAsync(Mouse.Press(), ct);
+				await InjectMouseInputAsync(Mouse.MoveTo(toX, toY), ct);
+				await InjectMouseInputAsync(Mouse.Release(), ct);
+				break;
+
+			default:
+				throw NotSupported();
+		}
+	}
+
 	private void InjectMouseInput(IEnumerable<InjectedInputMouseInfo?> input)
 		=> _input.InjectMouseInput(input.Where(i => i is not null).Cast<InjectedInputMouseInfo>());
 
+	private ValueTask InjectMouseInputAsync(IEnumerable<InjectedInputMouseInfo?> input, CancellationToken ct)
+		=> _input.InjectMouseInputAsync(input.Where(i => i is not null).Cast<InjectedInputMouseInfo>(), ct);
+
 	private void InjectMouseInput(params InjectedInputMouseInfo?[] input)
 		=> _input.InjectMouseInput(input.Where(i => i is not null).Cast<InjectedInputMouseInfo>());
+
+	private ValueTask InjectMouseInputAsync(InjectedInputMouseInfo? input, CancellationToken ct)
+		=> _input.InjectMouseInputAsync(new[] { input }.Where(i => i is not null).Cast<InjectedInputMouseInfo>(), ct);
 
 	private Exception NotSupported([CallerMemberName] string operation = "")
 		=> new NotSupportedException($"'{operation}' with type '{CurrentPointerType}' is not supported yet on this platform. Feel free to contribute!");

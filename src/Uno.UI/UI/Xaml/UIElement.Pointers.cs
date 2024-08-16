@@ -737,13 +737,7 @@ namespace Microsoft.UI.Xaml
 			// is not very clear and the way it interacts with layout timing is not similar at all to
 			// what we do in Uno, so the closest thing is to wait for Low/Idle here.
 			// Note that waiting for Idle causes some unrelated problems in ListView dragging, so we choose Low.
-			if (!ptArgs.IsInjected)
-			{
-				// Note: This is patch to properly support migration from UITests to runtime-test, the DragCoordinates should be async
-				// Note2: We should make sure to abort this defer when pointer is being released, if not possible in real world,
-				//		 this fire-and-forget delay drives the app to never complete the DnD operation in runtime-tests / when running sync.
-				await NativeDispatcher.Main.EnqueueAsync(() => { }, NativeDispatcherPriority.Low);
-			}
+			await NativeDispatcher.Main.EnqueueAsync(() => { }, NativeDispatcherPriority.Low);
 
 			// We capture the original position of the pointer before going async,
 			// so we have the closet location of the "down" possible.

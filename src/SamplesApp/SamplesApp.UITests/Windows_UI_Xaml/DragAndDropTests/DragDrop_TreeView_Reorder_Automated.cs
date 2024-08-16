@@ -99,7 +99,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 			var toX = tvBounds.X + 100;
 			var toY = tvBounds.Y + _offset;
 
-			App.DragCoordinates(fromX, fromY, toX, toY);
+			await App.DragCoordinatesAsync(fromX, fromY, toX, toY);
 			App.Tap(focusbt);
 
 #if CAN_ASSERT_IMAGE
@@ -121,7 +121,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 
 			fromY = tvBounds.Y + _itemHeight * 1 + _offset;
 			toY = tvBounds.Y + _itemHeight * 4 + _offset;
-			App.DragCoordinates(fromX, fromY, toX, toY);
+			await App.DragCoordinatesAsync(fromX, fromY, toX, toY);
 			App.Tap(focusbt);
 
 #if CAN_ASSERT_IMAGE
@@ -142,7 +142,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 
 			fromY = tvBounds.Y + _itemHeight * 3 + _offset;
 			toY = tvBounds.Y + _itemHeight - 5;
-			App.DragCoordinates(fromX, fromY, toX, toY);
+			await App.DragCoordinatesAsync(fromX, fromY, toX, toY);
 			App.Tap(focusbt);
 
 #if CAN_ASSERT_IMAGE
@@ -200,7 +200,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 			var fromY = tvBounds.Y + _itemHeight * 3 + _offset;
 			var toX = tvBounds.X + 100;
 			var toY = tvBounds.Y + _offset;
-			App.DragCoordinates(fromX, fromY, toX, toY);
+			await App.DragCoordinatesAsync(fromX, fromY, toX, toY);
 
 #if IS_RUNTIME_UI_TESTS
 			await UITestHelper.WaitForIdle();
