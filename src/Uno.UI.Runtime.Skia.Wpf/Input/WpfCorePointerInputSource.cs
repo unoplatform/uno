@@ -196,7 +196,7 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 		if (_queueExited)
 		{
 			var xamlRoot = WpfManager.XamlRootMap.GetRootForHost((IWpfXamlRootHost)_host!);
-			xamlRoot!.VisualTree.RootElement.DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.High, () => HostOnMouseEvent(args, PointerExited));
+			_ = xamlRoot!.VisualTree.RootElement.Dispatcher.RunAsync(CoreDispatcherPriority.High, () => HostOnMouseEvent(args, PointerExited));
 		}
 		else
 		{
