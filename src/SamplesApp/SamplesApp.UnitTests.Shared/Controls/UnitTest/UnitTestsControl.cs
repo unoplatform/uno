@@ -127,9 +127,9 @@ namespace Uno.UI.Samples.Tests
 				false;
 #endif
 
-			if (unitTestContentRoot.ActualWidth < 500)
+			if (unitTestContentRoot.ActualWidth < 450)
 			{
-				// Reduce the size of outputColumn to just 10px so that unitTestContentRoot takes larger width
+				// Reduce the size of outputColumn to just 50px so that unitTestContentRoot takes larger width
 				outputColumn.Width = new GridLength(50);
 			}
 		}
