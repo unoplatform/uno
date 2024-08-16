@@ -3,6 +3,7 @@ using Android.Widget;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Android.App;
+using Uno.Foundation.Logging;
 using Rect = Windows.Foundation.Rect;
 using Size = Windows.Foundation.Size;
 
@@ -36,7 +37,17 @@ internal sealed class AndroidSkiaNativeElementHostingExtension : ContentPresente
 	{
 		if (content is View view)
 		{
-			ApplicationActivity.Instance.NativeLayerHost!.AddView(view);
+			if (ApplicationActivity.Instance.NativeLayerHost is { } host)
+			{
+				host.AddView(view);
+			}
+			else
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"Cannot attach native element because {nameof(ApplicationActivity.Instance.NativeLayerHost)} is null.");
+				}
+			}
 		}
 	}
 
@@ -44,7 +55,17 @@ internal sealed class AndroidSkiaNativeElementHostingExtension : ContentPresente
 	{
 		if (content is View view)
 		{
-			ApplicationActivity.Instance.NativeLayerHost!.RemoveView(view);
+			if (ApplicationActivity.Instance.NativeLayerHost is { } host)
+			{
+				host.RemoveView(view);
+			}
+			else
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"Cannot detach native element because {nameof(ApplicationActivity.Instance.NativeLayerHost)} is null.");
+				}
+			}
 		}
 	}
 
@@ -64,16 +85,26 @@ internal sealed class AndroidSkiaNativeElementHostingExtension : ContentPresente
 		}
 	}
 
-	public object CreateSampleComponent(string text)
+	public object? CreateSampleComponent(string text)
 	{
-		var btn = new global::Android.Widget.Button(ApplicationActivity.Instance.NativeLayerHost!.Context)
+		if (ApplicationActivity.Instance.NativeLayerHost is not { } host)
+		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error($"Cannot create a sample native element because {nameof(ApplicationActivity.Instance.NativeLayerHost)} is null.");
+			}
+
+			return null;
+		}
+
+		var btn = new global::Android.Widget.Button(host.Context)
 		{
 			Text = text
 		};
 
 		btn.Click += (_, _) =>
 		{
-			var builder = new AlertDialog.Builder(ApplicationActivity.Instance.NativeLayerHost.Context);
+			var builder = new AlertDialog.Builder(host.Context);
 			var dialog = builder.SetTitle("Button clicked")!.SetMessage($"Button {text} clicked!")!.Create();
 			dialog!.Show();
 		};
