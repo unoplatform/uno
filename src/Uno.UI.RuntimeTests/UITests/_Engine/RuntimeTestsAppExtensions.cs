@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Uno.UITest.Helpers.Queries;
 
-internal static class SkiaAppExtensions
+internal static class RuntimeTestsAppExtensions
 {
 	// This class contains compatibility method to match the Uno.UITest.IApp contract.
 	// Those methods are directly on the IApp interface but are not expected to be imported on the refreshed
@@ -16,6 +16,9 @@ internal static class SkiaAppExtensions
 
 	public static void Tap(this IApp app, string elementName)
 		=> app.Marked(elementName).Tap();
+
+	public static void Tap(this IApp app, QueryEx marked)
+		=> marked.Tap();
 
 	// WARNING: Those version does not wait on runtime UI tests ...
 	// TODO: We need to create async versions (and remove those!).

@@ -13,8 +13,7 @@ internal class InjectedInputState
 	public InjectedInputState(PointerDeviceType type)
 	{
 		Type = type;
-		Timestamp = (ulong)DateTime.Now.Ticks;
-		FrameId = (uint)(Timestamp / TimeSpan.TicksPerMillisecond);
+		StartNewSequence();
 	}
 
 	public PointerDeviceType Type { get; }
@@ -28,6 +27,12 @@ internal class InjectedInputState
 	public Point Position { get; set; }
 
 	public PointerPointProperties Properties { get; set; } = new();
+
+	public void StartNewSequence()
+	{
+		Timestamp = (ulong)DateTime.Now.Ticks;
+		FrameId = (uint)(Timestamp / TimeSpan.TicksPerMillisecond);
+	}
 
 	public void Update(PointerEventArgs args)
 	{

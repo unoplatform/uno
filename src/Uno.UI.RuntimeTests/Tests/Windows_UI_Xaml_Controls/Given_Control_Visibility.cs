@@ -21,6 +21,9 @@ public class Given_Control_Visibility
 #if HAS_UNO_WINUI
 	[TestMethod]
 	[UnoWorkItem("https://github.com/unoplatform/uno/issues/16369")]
+#if !HAS_RENDER_TARGET_BITMAP
+	[Ignore("Cannot take screenshot on this platform.")]
+#endif
 	public async Task When_Visibility_Changes()
 	{
 		foreach (var type in typeof(Control).Assembly.GetTypes())

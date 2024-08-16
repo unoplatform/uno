@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Devices.Input;
 using Windows.UI.Input.Preview.Injection;
@@ -14,19 +15,20 @@ using Windows.Web.Http;
 using Private.Infrastructure;
 using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests;
+using Uno.UI.RuntimeTests.Helpers;
 using Uno.UITest.Helpers.Queries;
 
 namespace Uno.UITest;
 
-public partial class SkiaApp : IApp
+public partial class RuntimeTestsApp : IApp
 {
-	private static SkiaApp? _current; // Make sure to not create multiple instances of the app (with a single InputInjector instance)!
-	internal static SkiaApp Current => _current ??= new();
+	private static RuntimeTestsApp? _current; // Make sure to not create multiple instances of the app (with a single InputInjector instance)!
+	internal static RuntimeTestsApp Current => _current ??= new();
 
 	private readonly InputInjector _input;
 	private MouseHelper Mouse { get; }
 
-	private SkiaApp()
+	private RuntimeTestsApp()
 	{
 		_input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Cannot create input injector");
 		Mouse = new MouseHelper(_input);
@@ -46,11 +48,20 @@ public partial class SkiaApp : IApp
 
 	public async Task RunAsync(string metadataName)
 	{
+#if __SKIA__
 		var assemblyName = "SamplesApp.Skia";
+#elif __WASM__
+		var assemblyName = "SamplesApp.Wasm";
+#else
+		throw new PlatformNotSupportedException();
+#pragma warning disable CS0162
+		var assemblyName = "";
+#endif
 		if (TestServices.WindowHelper.IsXamlIsland)
 		{
 			assemblyName = "UnoIslands" + assemblyName;
 		}
+
 		if (Type.GetType($"{metadataName}, {assemblyName}") is { } sampleType
 			&& Activator.CreateInstance(sampleType) is FrameworkElement sample)
 		{
@@ -73,6 +84,7 @@ public partial class SkiaApp : IApp
 		{
 			throw new InvalidOperationException($"Failed to run sample '{metadataName}'");
 		}
+#pragma warning restore CS0162
 	}
 
 	QueryResult[] IApp.Query(string marked) => Query(marked);
@@ -248,12 +260,110 @@ public partial class SkiaApp : IApp
 		}
 	}
 
+#if HAS_UNO
+	public async ValueTask DragCoordinatesAsync(double fromX, double fromY, double toX, double toY, CancellationToken ct = default)
+	{
+		switch (CurrentPointerType)
+		{
+			case PointerDeviceType.Touch:
+				_input.InitializeTouchInjection(InjectedInputVisualizationMode.Default);
+				await _input.InjectTouchInputAsync(Inputs(), ct);
+				_input.UninitializeTouchInjection();
+
+				IEnumerable<InjectedInputTouchInfo> Inputs()
+				{
+					yield return new()
+					{
+						PointerInfo = new()
+						{
+							PointerId = 42,
+							PixelLocation = new()
+							{
+								PositionX = (int)fromX,
+								PositionY = (int)fromY
+							},
+							PointerOptions = InjectedInputPointerOptions.New
+								| InjectedInputPointerOptions.FirstButton
+								| InjectedInputPointerOptions.PointerDown
+								| InjectedInputPointerOptions.InContact
+								| InjectedInputPointerOptions.InRange
+						}
+					};
+
+					var steps = 10;
+					var stepX = (toX - fromX) / steps;
+					var stepY = (toY - fromY) / steps;
+					for (var step = 0; step <= steps; step++)
+					{
+						yield return new()
+						{
+							PointerInfo = new()
+							{
+								PixelLocation = new()
+								{
+									PositionX = (int)(fromX + step * stepX),
+									PositionY = (int)(fromY + step * stepY)
+								},
+								PointerOptions = InjectedInputPointerOptions.Update
+									| InjectedInputPointerOptions.FirstButton
+									| InjectedInputPointerOptions.InContact
+									| InjectedInputPointerOptions.InRange
+							}
+						};
+					}
+
+					yield return new()
+					{
+						PointerInfo = new()
+						{
+							PixelLocation =
+							{
+								PositionX = (int)toX,
+								PositionY = (int)toY
+							},
+							PointerOptions = InjectedInputPointerOptions.FirstButton
+								| InjectedInputPointerOptions.PointerUp
+						}
+					};
+				}
+				break;
+
+			case PointerDeviceType.Mouse:
+				await InjectMouseInputAsync(Mouse.ReleaseAny(), ct);
+				await InjectMouseInputAsync(Mouse.MoveTo(fromX, fromY), ct);
+				await InjectMouseInputAsync(Mouse.Press(), ct);
+				await InjectMouseInputAsync(Mouse.MoveTo(toX, toY), ct);
+				await InjectMouseInputAsync(Mouse.Release(), ct);
+				break;
+
+			default:
+				throw NotSupported();
+		}
+	}
+
+	private ValueTask InjectMouseInputAsync(IEnumerable<InjectedInputMouseInfo?> input, CancellationToken ct)
+		=> _input.InjectMouseInputAsync(input.Where(i => i is not null).Cast<InjectedInputMouseInfo>(), ct);
+
+	private ValueTask InjectMouseInputAsync(InjectedInputMouseInfo? input, CancellationToken ct)
+		=> _input.InjectMouseInputAsync(new[] { input }.Where(i => i is not null).Cast<InjectedInputMouseInfo>(), ct);
+#endif
+
 	private void InjectMouseInput(IEnumerable<InjectedInputMouseInfo?> input)
 		=> _input.InjectMouseInput(input.Where(i => i is not null).Cast<InjectedInputMouseInfo>());
+
 
 	private void InjectMouseInput(params InjectedInputMouseInfo?[] input)
 		=> _input.InjectMouseInput(input.Where(i => i is not null).Cast<InjectedInputMouseInfo>());
 
 	private Exception NotSupported([CallerMemberName] string operation = "")
 		=> new NotSupportedException($"'{operation}' with type '{CurrentPointerType}' is not supported yet on this platform. Feel free to contribute!");
+
+	public async ValueTask<RawBitmap> TakeScreenshotAsync(string name)
+	{
+		var screenshot = await UITestHelper.ScreenShot((FrameworkElement)TestServices.WindowHelper.XamlRoot.Content!);
+#if false
+		UITestHelper.Save(screenshot, name);
+#endif
+		return screenshot;
+	}
 }

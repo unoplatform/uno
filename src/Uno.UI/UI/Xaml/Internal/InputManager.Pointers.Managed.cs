@@ -74,8 +74,7 @@ internal partial class InputManager
 			{
 				if (this.Log().IsEnabled(LogLevel.Error))
 				{
-					this.Log().Error(
-						"Failed to initialize the PointerManager: cannot resolve the IUnoCorePointerInputSource.");
+					this.Log().Error("Failed to initialize the PointerManager: cannot resolve the IUnoCorePointerInputSource.");
 				}
 				return;
 			}
@@ -192,7 +191,7 @@ internal partial class InputManager
 		}
 		#endregion
 
-		private void OnPointerWheelChanged(Windows.UI.Core.PointerEventArgs args)
+		private void OnPointerWheelChanged(Windows.UI.Core.PointerEventArgs args, bool isInjected = false)
 		{
 			if (IsRedirectedToInteractionTracker(args.CurrentPoint.PointerId))
 			{
@@ -239,7 +238,7 @@ internal partial class InputManager
 			}
 #endif
 
-			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
+			var routedArgs = new PointerRoutedEventArgs(args, originalSource) { IsInjected = isInjected };
 
 			// First raise the event, either on the OriginalSource or on the capture owners if any
 			RaiseUsingCaptures(Wheel, originalSource, routedArgs, setCursor: true);
@@ -270,7 +269,7 @@ internal partial class InputManager
 			}
 		}
 
-		private void OnPointerEntered(Windows.UI.Core.PointerEventArgs args)
+		private void OnPointerEntered(Windows.UI.Core.PointerEventArgs args, bool isInjected = false)
 		{
 			if (IsRedirectedToInteractionTracker(args.CurrentPoint.PointerId))
 			{
@@ -299,12 +298,12 @@ internal partial class InputManager
 				Trace($"PointerEntered [{originalSource.GetDebugName()}]");
 			}
 
-			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
+			var routedArgs = new PointerRoutedEventArgs(args, originalSource) { IsInjected = isInjected };
 
 			Raise(Enter, originalSource, routedArgs);
 		}
 
-		private void OnPointerExited(Windows.UI.Core.PointerEventArgs args)
+		private void OnPointerExited(Windows.UI.Core.PointerEventArgs args, bool isInjected = false)
 		{
 			if (IsRedirectedToInteractionTracker(args.CurrentPoint.PointerId))
 			{
@@ -339,7 +338,7 @@ internal partial class InputManager
 				Trace($"PointerExited [{overBranchLeaf.GetDebugName()}]");
 			}
 
-			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
+			var routedArgs = new PointerRoutedEventArgs(args, originalSource) { IsInjected = isInjected };
 
 			Raise(Leave, overBranchLeaf, routedArgs);
 			if (!args.CurrentPoint.IsInContact && (PointerDeviceType)args.CurrentPoint.Pointer.Type == PointerDeviceType.Touch)
@@ -350,7 +349,7 @@ internal partial class InputManager
 			}
 		}
 
-		private void OnPointerPressed(Windows.UI.Core.PointerEventArgs args)
+		private void OnPointerPressed(Windows.UI.Core.PointerEventArgs args, bool isInjected = false)
 		{
 			// If 2+ mouse buttons are pressed, we only respond to the first.
 			var buttonsPressed = 0;
@@ -394,13 +393,13 @@ internal partial class InputManager
 				Trace($"PointerPressed [{originalSource.GetDebugName()}]");
 			}
 
-			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
+			var routedArgs = new PointerRoutedEventArgs(args, originalSource) { IsInjected = isInjected };
 
 			_pressedElements[routedArgs.Pointer] = originalSource;
 			Raise(Pressed, originalSource, routedArgs);
 		}
 
-		private void OnPointerReleased(Windows.UI.Core.PointerEventArgs args)
+		private void OnPointerReleased(Windows.UI.Core.PointerEventArgs args, bool isInjected = false)
 		{
 			// When multiple mouse buttons are pressed and then released, we only respond to the last OnPointerReleased
 			// (i.e when no more buttons are still pressed).
@@ -438,7 +437,7 @@ internal partial class InputManager
 				Trace($"PointerReleased [{originalSource.GetDebugName()}]");
 			}
 
-			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
+			var routedArgs = new PointerRoutedEventArgs(args, originalSource) { IsInjected = isInjected };
 
 			RaiseUsingCaptures(Released, originalSource, routedArgs, setCursor: false);
 			if (isOutOfWindow || (PointerDeviceType)args.CurrentPoint.Pointer.Type != PointerDeviceType.Touch)
@@ -454,7 +453,7 @@ internal partial class InputManager
 			ClearPressedState(routedArgs);
 		}
 
-		private void OnPointerMoved(Windows.UI.Core.PointerEventArgs args)
+		private void OnPointerMoved(Windows.UI.Core.PointerEventArgs args, bool isInjected = false)
 		{
 			if (TryRedirectPointerMove(args))
 			{
@@ -482,7 +481,7 @@ internal partial class InputManager
 				Trace($"PointerMoved [{originalSource.GetDebugName()}]");
 			}
 
-			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
+			var routedArgs = new PointerRoutedEventArgs(args, originalSource) { IsInjected = isInjected };
 
 			// First raise the PointerExited events on the stale branch
 			if (staleBranch.HasValue)
@@ -506,7 +505,7 @@ internal partial class InputManager
 			RaiseUsingCaptures(Move, originalSource, routedArgs, setCursor: true);
 		}
 
-		private void OnPointerCancelled(Windows.UI.Core.PointerEventArgs args)
+		private void OnPointerCancelled(PointerEventArgs args, bool isInjected = false)
 		{
 			if (TryClearPointerRedirection(args.CurrentPoint.PointerId))
 			{
@@ -534,7 +533,7 @@ internal partial class InputManager
 				Trace($"PointerCancelled [{originalSource.GetDebugName()}]");
 			}
 
-			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
+			var routedArgs = new PointerRoutedEventArgs(args, originalSource) { IsInjected = isInjected };
 
 			RaiseUsingCaptures(Cancelled, originalSource, routedArgs, setCursor: false);
 			// Note: No ReleaseCaptures(routedArgs);, the cancel automatically raise it
@@ -567,23 +566,23 @@ internal partial class InputManager
 
 			if (args.CurrentPoint.Properties.IsCanceled)
 			{
-				OnPointerCancelled(args);
+				OnPointerCancelled(args, isInjected: true);
 			}
 			else if (args.CurrentPoint.Properties.MouseWheelDelta is not 0)
 			{
-				OnPointerWheelChanged(args);
+				OnPointerWheelChanged(args, isInjected: true);
 			}
 			else if (kind is PointerUpdateKind.Other)
 			{
-				OnPointerMoved(args);
+				OnPointerMoved(args, isInjected: true);
 			}
 			else if (((int)kind & 1) == 1)
 			{
-				OnPointerPressed(args);
+				OnPointerPressed(args, isInjected: true);
 			}
 			else
 			{
-				OnPointerReleased(args);
+				OnPointerReleased(args, isInjected: true);
 			}
 		}
 		#endregion
