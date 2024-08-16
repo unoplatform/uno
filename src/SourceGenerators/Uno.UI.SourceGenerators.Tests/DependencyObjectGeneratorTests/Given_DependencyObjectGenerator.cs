@@ -19,27 +19,24 @@ public class Given_DependencyObjectGenerator
 	private static readonly ReferenceAssemblies _net80Android = ReferenceAssemblies.Net.Net80Android.AddPackages([new PackageIdentity("Uno.Diagnostics.Eventing", "2.1.0")]);
 	private static readonly ReferenceAssemblies _net80 = ReferenceAssemblies.Net.Net80.AddPackages([new PackageIdentity("Uno.Diagnostics.Eventing", "2.1.0")]);
 
+	private const string Configuration =
+#if DEBUG
+		"Debug";
+#else
+		"Release";
+#endif
+
+	private const string TFM = "net8.0";
+
 	private static MetadataReference[] BuildUnoReferences(bool isAndroid)
 	{
-		const string configuration =
-#if DEBUG
-			"Debug";
-#else
-			"Release";
-#endif
-		string[] availableTargets;
-		if (isAndroid)
-		{
-			availableTargets = [Path.Combine("Uno.UI.netcoremobile", configuration, "net8.0")];
-		}
-		else
-		{
-			availableTargets = [
-				Path.Combine("Uno.UI.Skia", configuration, "net8.0"),
-				Path.Combine("Uno.UI.Reference", configuration, "net8.0"),
-				Path.Combine("Uno.UI.Tests", configuration, "net8.0"),
+		string[] availableTargets = isAndroid
+			? [Path.Combine("Uno.UI.netcoremobile", Configuration, $"{TFM}-android")]
+			: [
+				Path.Combine("Uno.UI.Skia", Configuration, TFM),
+				Path.Combine("Uno.UI.Reference", Configuration, TFM),
+				Path.Combine("Uno.UI.Tests", Configuration, TFM),
 			];
-		}
 
 		var unoUIBase = Path.Combine(
 			Path.GetDirectoryName(typeof(Given_DependencyObjectGenerator).Assembly.Location)!,
