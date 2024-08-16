@@ -260,6 +260,7 @@ public partial class RuntimeTestsApp : IApp
 		}
 	}
 
+#if HAS_UNO
 	public async ValueTask DragCoordinatesAsync(double fromX, double fromY, double toX, double toY, CancellationToken ct = default)
 	{
 		switch (CurrentPointerType)
@@ -340,17 +341,19 @@ public partial class RuntimeTestsApp : IApp
 		}
 	}
 
-	private void InjectMouseInput(IEnumerable<InjectedInputMouseInfo?> input)
-		=> _input.InjectMouseInput(input.Where(i => i is not null).Cast<InjectedInputMouseInfo>());
-
 	private ValueTask InjectMouseInputAsync(IEnumerable<InjectedInputMouseInfo?> input, CancellationToken ct)
 		=> _input.InjectMouseInputAsync(input.Where(i => i is not null).Cast<InjectedInputMouseInfo>(), ct);
 
-	private void InjectMouseInput(params InjectedInputMouseInfo?[] input)
-		=> _input.InjectMouseInput(input.Where(i => i is not null).Cast<InjectedInputMouseInfo>());
-
 	private ValueTask InjectMouseInputAsync(InjectedInputMouseInfo? input, CancellationToken ct)
 		=> _input.InjectMouseInputAsync(new[] { input }.Where(i => i is not null).Cast<InjectedInputMouseInfo>(), ct);
+#endif
+
+	private void InjectMouseInput(IEnumerable<InjectedInputMouseInfo?> input)
+		=> _input.InjectMouseInput(input.Where(i => i is not null).Cast<InjectedInputMouseInfo>());
+
+
+	private void InjectMouseInput(params InjectedInputMouseInfo?[] input)
+		=> _input.InjectMouseInput(input.Where(i => i is not null).Cast<InjectedInputMouseInfo>());
 
 	private Exception NotSupported([CallerMemberName] string operation = "")
 		=> new NotSupportedException($"'{operation}' with type '{CurrentPointerType}' is not supported yet on this platform. Feel free to contribute!");
