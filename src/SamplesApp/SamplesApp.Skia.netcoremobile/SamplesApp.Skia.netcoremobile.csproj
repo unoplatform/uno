@@ -266,7 +266,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Properties\" />
+		<TrimmerRootDescriptor Include="LinkerConfig.xml" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Properties\" />
 	</ItemGroup>
 
 
