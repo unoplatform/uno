@@ -57,7 +57,9 @@ namespace Microsoft.UI.Xaml.Input
 
 		public bool IsGenerated { get; } // Generated events are not supported by UNO
 
+#if !UNO_HAS_MANAGED_POINTERS
 		public bool Handled { get; set; }
+#endif
 
 		/// <summary>
 		/// This signals that a child element with a gesture recognizer has already detected and

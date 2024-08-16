@@ -27,6 +27,7 @@ namespace Microsoft.UI.Xaml.Input
 	{
 		private readonly PointerEventArgs _pointerEventArgs;
 		private readonly PointerPoint _currentPoint;
+		private bool _handled;
 
 		internal PointerEventArgs CoreArgs => _pointerEventArgs;
 
@@ -47,6 +48,16 @@ namespace Microsoft.UI.Xaml.Input
 			KeyModifiers = pointerEventArgs.KeyModifiers;
 			Handled = pointerEventArgs.Handled;
 			OriginalSource = source;
+		}
+
+		public bool Handled
+		{
+			get => _handled;
+			set
+			{
+				_handled = value;
+				_pointerEventArgs.Handled = value;
+			}
 		}
 
 		public PointerPoint GetCurrentPoint(UIElement relativeTo)
