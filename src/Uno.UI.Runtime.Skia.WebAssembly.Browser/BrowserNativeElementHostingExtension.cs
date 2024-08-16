@@ -17,24 +17,24 @@ internal partial class BrowserNativeElementHostingExtension : ContentPresenter.I
 	}
 
 	public bool IsNativeElement(object content)
-		=> content is SkiaWasmHtmlElement skiaWasmHtmlElement && NativeMethods.IsNativeElement(skiaWasmHtmlElement.ElementId);
+		=> content is BrowserHtmlElement skiaWasmHtmlElement && NativeMethods.IsNativeElement(skiaWasmHtmlElement.ElementId);
 
 	public void AttachNativeElement(object content)
 	{
-		Debug.Assert(content is SkiaWasmHtmlElement);
-		NativeMethods.AttachNativeElement(((SkiaWasmHtmlElement)content).ElementId);
+		Debug.Assert(content is BrowserHtmlElement);
+		NativeMethods.AttachNativeElement(((BrowserHtmlElement)content).ElementId);
 	}
 
 	public void DetachNativeElement(object content)
 	{
-		Debug.Assert(content is SkiaWasmHtmlElement);
-		NativeMethods.DetachNativeElement(((SkiaWasmHtmlElement)content).ElementId);
+		Debug.Assert(content is BrowserHtmlElement);
+		NativeMethods.DetachNativeElement(((BrowserHtmlElement)content).ElementId);
 	}
 
 	public void ArrangeNativeElement(object content, Windows.Foundation.Rect arrangeRect, Windows.Foundation.Rect clipRect)
 	{
-		Debug.Assert(content is SkiaWasmHtmlElement);
-		NativeMethods.ArrangeNativeElement(((SkiaWasmHtmlElement)content).ElementId, arrangeRect.X, arrangeRect.Y, arrangeRect.Width, arrangeRect.Height);
+		Debug.Assert(content is BrowserHtmlElement);
+		NativeMethods.ArrangeNativeElement(((BrowserHtmlElement)content).ElementId, arrangeRect.X, arrangeRect.Y, arrangeRect.Width, arrangeRect.Height);
 	}
 
 	public void ChangeNativeElementVisibility(object content, bool visible)
@@ -44,8 +44,8 @@ internal partial class BrowserNativeElementHostingExtension : ContentPresenter.I
 
 	public void ChangeNativeElementOpacity(object content, double opacity)
 	{
-		Debug.Assert(content is SkiaWasmHtmlElement);
-		NativeMethods.ChangeNativeElementOpacity(((SkiaWasmHtmlElement)content).ElementId, opacity);
+		Debug.Assert(content is BrowserHtmlElement);
+		NativeMethods.ChangeNativeElementOpacity(((BrowserHtmlElement)content).ElementId, opacity);
 	}
 
 	public static void SetSvgClipPathForNativeElementHost(string path) => NativeMethods.SetSvgClipPathForNativeElementHost(path);
@@ -55,7 +55,7 @@ internal partial class BrowserNativeElementHostingExtension : ContentPresenter.I
 	public object CreateSampleComponent(string text)
 	{
 		var id = new string(Random.Shared.GetItems("abcdefghijklmnopqrstuvwxyz".ToCharArray(), 10));
-		var element = SkiaWasmHtmlElement.CreateHtmlElement(id, "div");
+		var element = BrowserHtmlElement.CreateHtmlElement(id, "div");
 		NativeMethods.CreateSampleComponent(id, text);
 		return element;
 	}

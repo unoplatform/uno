@@ -14,7 +14,7 @@ internal partial class BrowserMediaPlayerPresenterExtension : IMediaPlayerPresen
 	private static readonly ConcurrentDictionary<string, BrowserMediaPlayerPresenterExtension> _elementIdToMediaPlayerPresenter = new();
 
 	private readonly MediaPlayerPresenter _presenter;
-	private SkiaWasmHtmlElement? _htmlElement;
+	private BrowserHtmlElement? _htmlElement;
 	private BrowserMediaPlayerExtension? _playerExtension;
 
 	public BrowserMediaPlayerPresenterExtension(MediaPlayerPresenter presenter)

@@ -33,7 +33,7 @@ internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 	private int _playlistIndex = -1; // -1 if no playlist or empty playlist, otherwise the 0-based index of the current track in the playlist
 	private MediaPlaybackList? _playlist; // only set and used if the current _player.Source is a playlist
 
-	public SkiaWasmHtmlElement HtmlElement { get; }
+	public BrowserHtmlElement HtmlElement { get; }
 
 	// the current effective url (e.g. current video in playlist) that is set natively
 	// DO NOT READ OR WRITE THIS. It's only used to RaiseSourceChanged.
@@ -112,7 +112,7 @@ internal partial class BrowserMediaPlayerExtension : IMediaPlayerExtension
 		_player = player;
 		_mediaPlayerToExtension.TryAdd(player, this);
 
-		HtmlElement = SkiaWasmHtmlElement.CreateHtmlElement("uno-mpe-" + new string(Random.Shared.GetItems("abcdefghijklmnopqrstuvwxyz".ToCharArray(), 10)), "video");
+		HtmlElement = BrowserHtmlElement.CreateHtmlElement("uno-mpe-" + new string(Random.Shared.GetItems("abcdefghijklmnopqrstuvwxyz".ToCharArray(), 10)), "video");
 		_elementIdToMediaPlayer.TryAdd(HtmlElement.ElementId, this);
 
 		NativeMethods.SetupEvents(HtmlElement.ElementId);
