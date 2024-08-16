@@ -85,20 +85,25 @@ internal class SoftwareWpfRenderer : IWpfRenderer
 			if (_host.RootElement?.Visual is { } rootVisual)
 			{
 				var isSoftwareRenderer = rootVisual.Compositor.IsSoftwareRenderer;
-				rootVisual.Compositor.IsSoftwareRenderer = true;
-
-				var path = SkiaRenderHelper.RenderRootVisualAndReturnPath(width, height, rootVisual, surface);
-				var negativePath = new SKPath();
-				if (path is { })
+				try
 				{
-					negativePath.AddRect(new SKRect(0, 0, width, height));
-					negativePath = negativePath.Op(path, SKPathOp.Difference);
+					rootVisual.Compositor.IsSoftwareRenderer = true;
+
+					var path = SkiaRenderHelper.RenderRootVisualAndReturnPath(width, height, rootVisual, surface);
+					var negativePath = new SKPath();
+					if (path is { })
+					{
+						negativePath.AddRect(new SKRect(0, 0, width, height));
+						negativePath = negativePath.Op(path, SKPathOp.Difference);
+					}
+
+					_host.NativeOverlayLayer!.Clip ??= new PathGeometry();
+					((PathGeometry)_host.NativeOverlayLayer!.Clip).Figures = PathFigureCollection.Parse(negativePath.ToSvgPathData());
 				}
-
-				_host.NativeOverlayLayer!.Clip ??= new PathGeometry();
-				((PathGeometry)_host.NativeOverlayLayer!.Clip).Figures = PathFigureCollection.Parse(negativePath.ToSvgPathData());
-
-				rootVisual.Compositor.IsSoftwareRenderer = isSoftwareRenderer;
+				finally
+				{
+					rootVisual.Compositor.IsSoftwareRenderer = isSoftwareRenderer;
+				}
 			}
 		}
 
