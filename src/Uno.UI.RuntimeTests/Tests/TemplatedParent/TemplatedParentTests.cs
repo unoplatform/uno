@@ -90,6 +90,10 @@ public partial class TemplatedParentTests
 		11.							ContentPresenter // TP=ContentControl#LeftRightControl_Template_RightContent
 		12.								TextBlock#LeftRightControl_Right // TP=<null>
 		""";
+#if __ANDROID__ || __IOS__
+		// skip ContentControls' ContentPresenter that were bypassed
+		expectations = SkipLines(expectations, 4, 6, 9, 11);
+#endif
 
 		VerifyTree(expectations, setup);
 	}
@@ -105,23 +109,35 @@ public partial class TemplatedParentTests
 		0	Uno17313_SettingsExpander // TP=<null>
 		1		Uno17313_Expander // TP=Uno17313_SettingsExpander
 		2			StackPanel // TP=Uno17313_Expander
-		4				ContentControl // TP=Uno17313_Expander
-		5					ContentPresenter // TP=ContentControl
-		6						Uno17313_SettingsCard // TP=Uno17313_SettingsExpander
-		7							Grid // TP=Uno17313_SettingsCard
-		8								ContentPresenter#PART_HeaderPresenter // TP=Uno17313_SettingsCard
-		9									ImplicitTextBlock // TP=ContentPresenter#PART_HeaderPresenter
-		10								ContentPresenter#PART_ContentPresenter // TP=Uno17313_SettingsCard
-		11									TextBlock // TP=<null>
-		12				ContentPresenter // TP=Uno17313_Expander
-		13					Border // TP=Uno17313_SettingsExpander
+		3				ContentControl // TP=Uno17313_Expander
+		4					ContentPresenter // TP=ContentControl
+		5						Uno17313_SettingsCard // TP=Uno17313_SettingsExpander
+		6							Grid // TP=Uno17313_SettingsCard
+		7								ContentPresenter#PART_HeaderPresenter // TP=Uno17313_SettingsCard
+		8									ImplicitTextBlock // TP=ContentPresenter#PART_HeaderPresenter
+		9								ContentPresenter#PART_ContentPresenter // TP=Uno17313_SettingsCard
+		10									TextBlock // TP=<null>
+		11				ContentPresenter // TP=Uno17313_Expander
+		12					Border // TP=Uno17313_SettingsExpander
 		""";
+#if __ANDROID__ || __IOS__
+		// skip ContentControls' ContentPresenter that were bypassed
+		// ContentPresenter on line#11 is from the control template, so that doesn't count
+		expectations = SkipLines(expectations, 4);
+#endif
 
 		VerifyTree(expectations, setup);
 	}
 }
 public partial class TemplatedParentTests
 {
+	private static string SkipLines(string tree, params int[] lines)
+	{
+		return string.Join('\n', tree.Split('\n')
+			.Where((x, i) => !lines.Contains(i))
+		);
+	}
+
 	private static void VerifyTree(string expectedTree, FrameworkElement root)
 	{
 		var expectations = expectedTree.Split('\n', StringSplitOptions.TrimEntries);
