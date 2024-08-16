@@ -70,7 +70,7 @@ public class Given_DependencyObjectGenerator
 			{
 				Sources = { testCode },
 			},
-			ReferenceAssemblies = _net80,
+			ReferenceAssemblies = _net80Android,
 		};
 
 		test.TestState.AdditionalReferences.AddRange(BuildUnoReferences(isAndroid: true));
