@@ -26,11 +26,13 @@ public partial class ShapeVisual
 	internal WeakReference? Owner { get; set; }
 
 	internal override SKPath? GetPrePaintingClipping()
-		=> GetViewBoxPathInElementCoordinateSpace() is { } path
-			? base.GetPrePaintingClipping() is { } baseClip
-				? path.Op(baseClip, SKPathOp.Intersect)
-				: path
-			: base.GetPrePaintingClipping();
+		=> (GetViewBoxPathInElementCoordinateSpace(), base.GetPrePaintingClipping()) switch
+		{
+			(null, { } baseClip) => baseClip,
+			({ } localClip, null) => localClip,
+			({ } localClip, { } baseClip) => localClip.Op(baseClip, SKPathOp.Intersect),
+			_ => null
+		};
 
 	/// <inheritdoc />
 	internal override void Paint(in PaintingSession session)
