@@ -1277,17 +1277,9 @@ namespace Microsoft.UI.Xaml
 						return (localProperty, propertyDetails);
 					}
 				}
-
-				// Then look for attached inheritable properties, only if a property details
-				// has been initialized. This avoids creating the details if the property has
-				// not been attached on a child, or if there's no property changed callback
-				// attached to a child.
-				else if (
-					property.IsAttached
-					&& _properties.FindPropertyDetails(property) is DependencyPropertyDetails attachedDetails
-					&& attachedDetails.HasInherits)
+				else if (property.IsAttached && property.IsInherited)
 				{
-					return (property, attachedDetails);
+					return (property, _properties.GetPropertyDetails(property));
 				}
 			}
 

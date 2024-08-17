@@ -17,7 +17,6 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 		public UniformGridLayout()
 		{
-			this.RegisterDisposablePropertyChangedCallback((i, s, e) => OnPropertyChanged(e));
 			//__RP_Marker_ClassById(RuntimeProfiler.ProfId_UniformGridLayout);
 			LayoutId = "UniformGridLayout";
 		}
