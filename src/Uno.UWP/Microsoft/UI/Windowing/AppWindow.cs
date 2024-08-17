@@ -7,6 +7,8 @@ using Windows.Foundation;
 using Windows.Graphics;
 using Windows.UI.ViewManagement;
 using MUXWindowId = Microsoft.UI.WindowId;
+using Windows.ApplicationModel.Core;
+
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Dispatching;
@@ -100,6 +102,17 @@ partial class AppWindow
 			}
 
 			_titleCache = value;
+		}
+	}
+
+	internal static void SkipMainWindowId()
+	{
+		// In case of Uno Islands we currently have no "main window",
+		// so we must avoid assigning the first created secondary window
+		// Id = 1, otherwise it would be considered as the main window.
+		if (!CoreApplication.IsFullFledgedApp && _windowIdIterator == 0)
+		{
+			_windowIdIterator++;
 		}
 	}
 

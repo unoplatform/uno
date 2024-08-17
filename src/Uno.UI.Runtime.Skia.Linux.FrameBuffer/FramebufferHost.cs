@@ -6,7 +6,6 @@ using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
 using Uno.UI.Hosting;
-using Uno.UI.Runtime.Skia.Gtk.Extensions.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Uno.WinUI.Runtime.Skia.Linux.FrameBuffer;
@@ -16,6 +15,7 @@ using Microsoft.UI.Xaml;
 using Uno.Helpers;
 using WUX = Microsoft.UI.Xaml;
 using System.Threading.Tasks;
+using Uno.UI.Runtime.Skia.Linux.FrameBuffer.UI;
 
 namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 {
