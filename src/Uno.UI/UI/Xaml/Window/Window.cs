@@ -52,7 +52,7 @@ partial class Window
 
 	internal Window(WindowType windowType)
 	{
-		if (_current is null)
+		if (_current is null && CoreApplication.IsFullFledgedApp)
 		{
 			windowType = WindowType.CoreWindow;
 		}
