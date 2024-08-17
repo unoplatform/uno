@@ -9,7 +9,7 @@
 
 	</Target>
 
-  <Target Name="_ForceUnoUIRuntimeWasm"
+  <Target Name="_ForceUnoUIRuntimeWasm" Condition="'$(DefaultLanguageSourceExtension)'=='.cs'"
 	  BeforeTargets="BeforeCompile">
 
 	<PropertyGroup>
