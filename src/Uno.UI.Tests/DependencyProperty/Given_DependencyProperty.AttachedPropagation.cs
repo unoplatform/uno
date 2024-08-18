@@ -32,7 +32,7 @@ namespace Uno.UI.Tests.AttachedPropagation
 			root.Children.Add(child1);
 
 			MyAttachedPropType.SetMyProperty(root, 42);
-			Assert.AreEqual(0, MyAttachedPropType.GetMyProperty(child1));
+			Assert.AreEqual(42, MyAttachedPropType.GetMyProperty(child1));
 
 			MyAttachedPropType.SetMyProperty(root, 43);
 			Assert.AreEqual(43, MyAttachedPropType.GetMyProperty(child1));
