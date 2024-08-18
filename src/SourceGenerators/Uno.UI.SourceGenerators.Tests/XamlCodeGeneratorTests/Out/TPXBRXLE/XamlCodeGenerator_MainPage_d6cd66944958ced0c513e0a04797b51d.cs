@@ -108,6 +108,10 @@ namespace TestRepro
 									that.Bindings.UpdateResources();
 									that.Bindings.NotifyXLoad("LoadElement");
 								}
+								else
+								{
+									_LoadElementSubject.ElementInstance = null;
+								}
 							}
 						}
 						c1.MaterializationChanged += _component_1_update;

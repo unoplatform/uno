@@ -6156,6 +6156,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 			}
 		}
+
+		private List<string> FindNamesIn(XamlObjectDefinition xamlObjectDefinition)
+		{
+			var list = new List<string>();
+			foreach (var element in EnumerateSubElements(xamlObjectDefinition))
+			{
+				var nameMember = FindMember(element, "Name");
+
+				if (nameMember?.Value is string name)
+				{
+					list.Add(name);
+				}
+			}
+
+			return list;
+		}
+
 		/// <summary>
 		/// Statically finds a element by name, given a xaml element root
 		/// </summary>
@@ -6360,6 +6377,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 													if (nameMember?.Value is string xName)
 													{
 														writer.AppendLineIndented($"that.Bindings.NotifyXLoad(\"{xName}\");");
+													}
+												}
+
+												using (writer.BlockInvariant("else"))
+												{
+													var elementNames = FindNamesIn(definition);
+													foreach (var elementName in elementNames)
+													{
+														writer.AppendLineIndented($"_{elementName}Subject.ElementInstance = null;");
 													}
 												}
 											}
