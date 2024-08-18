@@ -103,29 +103,32 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (ScrollViewer is { } sv && sv.Presenter is { } presenter)
 			{
-				var offsetXY = element.TransformToVisual(presenter).TransformPoint(Point.Zero);
+				var offsetXY = element.TransformToVisual(presenter).TransformPoint(
+#if __SKIA__ // Skia correctly doesn't include the offsets in TransformToVisual
+					new Point(presenter.HorizontalOffset, presenter.VerticalOffset)
+#else
+					Point.Zero
+#endif
+					);
 
-				var (newOffset, elementLength, presenterOffset, presenterViewportLength) =
+				var (elementOffset, elementLength, presenterOffset, presenterViewportLength) =
 					ItemsPanelRoot.PhysicalOrientation is Orientation.Vertical
 						? (offsetXY.Y, element.ActualSize.Y, presenter.VerticalOffset, presenter.ViewportHeight)
 						: (offsetXY.X, element.ActualSize.X, presenter.HorizontalOffset, presenter.ViewportWidth);
 
-				if (presenterOffset < newOffset && newOffset + elementLength < presenterOffset + presenterViewportLength)
+				if (presenterOffset <= elementOffset && elementOffset + elementLength <= presenterOffset + presenterViewportLength)
 				{
 					// if the element is within the visible viewport, do nothing.
 					return;
 				}
 
-				// If we use the above offset directly, the item we want to jump to will be the start of the viewport, i.e. leading
-				if (alignment is ScrollIntoViewAlignment.Default)
-				{
-					if (presenterOffset < newOffset)
-					{
-						// scroll one "viewport page" less: this brings the element's start right after the viewport's length ends
-						// we then scroll again by elementLength so that the end of the element is the end of the viewport
-						newOffset += (-presenterViewportLength) + elementLength;
-					}
-				}
+				// If we use the above offset directly, the item we want to jump to will be the start of the viewport, i.e. leading.
+				// For the default alignment, we move the element to either of the viewport ends (i.e. to the top or the bottom of the
+				// viewport. To move to the bottom, we scroll one "viewport page" less. This brings the element's start right after the
+				// viewport's length ends we then scroll again by elementLength so that the end of the element is the end of the viewport.
+				var newOffset = alignment is ScrollIntoViewAlignment.Default && presenterOffset < elementOffset
+					? elementOffset - presenterViewportLength + elementLength
+					: elementOffset;
 
 				if (ItemsPanelRoot.PhysicalOrientation is Orientation.Vertical)
 				{
