@@ -144,23 +144,12 @@ namespace Microsoft.UI.Xaml
 		{
 			get
 			{
-				if (this == TextBox.TextProperty.GetMetadata(typeof(TextBox)))
+				if (this == TextBox.TextProperty.Metadata)
 				{
 					return UpdateSourceTrigger.Explicit;
 				}
 
 				return UpdateSourceTrigger.PropertyChanged;
-			}
-		}
-
-		protected internal override void Merge(PropertyMetadata baseMetadata, DependencyProperty dp)
-		{
-			base.Merge(baseMetadata, dp);
-
-			if (baseMetadata is FrameworkPropertyMetadata baseFrameworkMetadata)
-			{
-				// Merge options flags
-				Options |= baseFrameworkMetadata.Options;
 			}
 		}
 
@@ -184,6 +173,12 @@ namespace Microsoft.UI.Xaml
 			set => Options = value
 				? Options |= FrameworkPropertyMetadataOptions.WeakStorage
 				: Options &= ~FrameworkPropertyMetadataOptions.WeakStorage;
+		}
+
+		internal override PropertyMetadata CloneWithOverwrittenDefaultValue(object newDefaultValue)
+		{
+			// This should clone CreateDefaultValueCallback when it's supported
+			return new FrameworkPropertyMetadata(newDefaultValue, Options, PropertyChangedCallback, CoerceValueCallback, BackingFieldUpdateCallback);
 		}
 	}
 }

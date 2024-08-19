@@ -4,11 +4,6 @@ namespace Microsoft.UI.Xaml.Shapes
 {
 	public partial class Rectangle : Shape
 	{
-		static Rectangle()
-		{
-			StretchProperty.OverrideMetadata(typeof(Rectangle), new FrameworkPropertyMetadata(defaultValue: Media.Stretch.Fill));
-		}
-
 #if __IOS__ || __MACOS__ || __SKIA__ || __ANDROID__ || __WASM__
 		/// <inheritdoc />
 		protected override Size MeasureOverride(Size availableSize)
