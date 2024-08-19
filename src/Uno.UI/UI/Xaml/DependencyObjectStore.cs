@@ -648,14 +648,14 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
-			var coerceValueCallback = propertyDetails.Metadata.CoerceValueCallback;
+			var coerceValueCallback = propertyDetails.Property.Metadata.CoerceValueCallback;
 			if (coerceValueCallback == null)
 			{
 				// No coercion to remove or to apply.
 				return;
 			}
 
-			var options = (propertyDetails.Metadata as FrameworkPropertyMetadata)?.Options ?? FrameworkPropertyMetadataOptions.Default;
+			var options = (propertyDetails.Property.Metadata as FrameworkPropertyMetadata)?.Options ?? FrameworkPropertyMetadataOptions.Default;
 
 			if (Equals(previousValue, baseValue) && ((options & FrameworkPropertyMetadataOptions.CoerceOnlyWhenChanged) != 0))
 			{
@@ -1869,7 +1869,7 @@ namespace Microsoft.UI.Xaml
 		)
 		{
 			//var propertyChangedParams = new PropertyChangedParams(property, previousValue, newValue);
-			var propertyMetadata = propertyDetails.Metadata;
+			var propertyMetadata = property.Metadata;
 
 			// We can reuse the weak reference, otherwise capture the weak reference to this instance.
 			var instanceRef = _originalObjectRef ?? ThisWeakReference;
@@ -2038,7 +2038,7 @@ namespace Microsoft.UI.Xaml
 		{
 			if (value != null
 				&& value != DependencyProperty.UnsetValue
-				&& ((propertyDetails.Metadata as FrameworkPropertyMetadata)?.Options.HasAutoConvert() ?? false))
+				&& ((propertyDetails.Property.Metadata as FrameworkPropertyMetadata)?.Options.HasAutoConvert() ?? false))
 			{
 				if (value?.GetType() != propertyDetails.Property.Type)
 				{

@@ -115,21 +115,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal event SizeChangedEventHandler? ExtentSizeChanged;
 
-		static ScrollViewer()
-		{
-#if !IS_UNIT_TESTS
-			HorizontalContentAlignmentProperty.OverrideMetadata(
-				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(HorizontalAlignment.Stretch)
-			);
-
-			VerticalContentAlignmentProperty.OverrideMetadata(
-				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(VerticalAlignment.Top)
-			);
-#endif
-		}
-
 		public ScrollViewer()
 		{
 			DefaultStyleKey = typeof(ScrollViewer);
