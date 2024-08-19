@@ -2,15 +2,14 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // EnumDefs.h
 
-namespace Uno.UI.Xaml.Input
+namespace Uno.UI.Xaml.Input;
+
+internal enum InputDeviceType
 {
-	internal enum InputDeviceType
-	{
-		None = 0,
-		Mouse = 1,
-		Touch = 2,
-		Pen = 3,
-		Keyboard = 4,
-		GamepadOrRemote = 5,
-	}
+	None = 0,
+	Mouse = 1,
+	Touch = 2,
+	Pen = 3,
+	Keyboard = 4,
+	GamepadOrRemote = 5,
 }

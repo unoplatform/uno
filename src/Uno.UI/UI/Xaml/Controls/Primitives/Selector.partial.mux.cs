@@ -320,19 +320,19 @@ partial class Selector
 				false /*isFromPublicAPI*/,
 				true  /*ensureContainerRealized*/,
 				animateIfBringIntoView,
-				ScrollIntoViewAlignment.ScrollIntoViewAlignment_Default);
+				ScrollIntoViewAlignment.Default);
 		}
 
 		if (shouldFocus)
 		{
-			ISelectorItem spSelectorItem;
-			IDependencyObject spContainer;
+			SelectorItem spSelectorItem;
+			DependencyObject spContainer;
 
-			ContainerFromIndex(index, &spContainer);
-			spSelectorItem = spContainer.AsOrNull<ISelectorItem>();
-			if (spSelectorItem)
+			spContainer = ContainerFromIndex(index);
+			spSelectorItem = spContainer as SelectorItem;
+			if (spSelectorItem is not null)
 			{
-				spSelectorItem.Cast<SelectorItem>().FocusSelfOrChild(focusState, animateIfBringIntoView, &bFocused, focusNavigationDirection, inputActivationBehavior);
+				spSelectorItem.FocusSelfOrChild(focusState, animateIfBringIntoView, &bFocused, focusNavigationDirection, inputActivationBehavior);
 			}
 		}
 	}
