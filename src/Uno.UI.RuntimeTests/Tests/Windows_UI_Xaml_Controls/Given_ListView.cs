@@ -22,8 +22,8 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		public async Task When_ItemClicked_SelectsCorrectIndex()
 		{
 			var items = new object[] { "Item 1", "Item 2", "Item 3" };
-			var loggingSelectionInfo = new LoggingSelectionInfo();
-			var listViewBase = new ListViewBase
+			var loggingSelectionInfo = new LoggingSelectionInfo(items, false, null);
+			var listViewBase = new ListView
 			{
 				ItemsSource = items,
 			};
