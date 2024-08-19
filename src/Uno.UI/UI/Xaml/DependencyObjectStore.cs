@@ -627,10 +627,7 @@ namespace Microsoft.UI.Xaml
 
 		private void TryUpdateInheritedAttachedProperty(DependencyProperty property, DependencyPropertyDetails propertyDetails)
 		{
-			if (
-				property.IsAttached
-				&& propertyDetails.Metadata is FrameworkPropertyMetadata fm
-				&& fm.Options.HasInherits())
+			if (property.IsAttached && property.IsInherited)
 			{
 				// Add inheritable attached properties to the inherited forwarded
 				// properties, so they can be automatically propagated when a child
