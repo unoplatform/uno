@@ -266,6 +266,9 @@ public class TimePickerIntegrationTests
 	public async Task SelectingTimeSetsSelectedTime()
 	{
 		var timePicker = await SetupTimePickerTestAsync();
+#if HAS_UNO
+		timePicker.UseNativeStyle = false;
+#endif
 		var targetTime = CreateTime(4, 30, 2);
 		targetTime.Second = 0;
 
@@ -352,6 +355,9 @@ public class TimePickerIntegrationTests
 	public async Task ValidateMinuteIncrementProperty()
 	{
 		var timePicker = await SetupTimePickerTestAsync();
+#if HAS_UNO
+		timePicker.UseNativeStyle = false;
+#endif
 
 		var timeChangedEvent = false;
 		var timeChangedRegistration = CreateSafeEventRegistration<TimePicker, EventHandler<TimePickerValueChangedEventArgs>>("TimeChanged");
