@@ -1,15 +1,47 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.UI.Xaml.Automation;
-using static Uno.UI.FeatureConfiguration;
+﻿using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Input;
+using Uno.UI.DataBinding;
+using Uno.UI.Extensions;
+using Uno.UI.Xaml.Input;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 partial class SelectorItem
 {
+	// If this item is unfocused, sets focus on the SelectorItem.
+	// Otherwise, sets focus to whichever element currently has focus
+	// (so focusState can be propagated).
+	private void FocusSelfOrChild(
+		FocusState focusState,
+		bool animateIfBringIntoView,
+		out bool pFocused,
+		FocusNavigationDirection focusNavigationDirection,
+		InputActivationBehavior inputActivationBehavior)
+	{
+		bool isItemAlreadyFocused = false;
+		DependencyObject spItemToFocus = null;
+
+		pFocused = false;
+
+		isItemAlreadyFocused = HasFocus();
+		if (isItemAlreadyFocused)
+		{
+			// Re-focus the currently focused item to propagate focusState (the item might be focused
+			// under a different FocusState value).
+			spItemToFocus = this.GetFocusedElement();
+		}
+		else
+		{
+			spItemToFocus = this;
+		}
+
+		if (spItemToFocus is not null)
+		{
+			bool forceBringIntoView = false;
+			pFocused = this.SetFocusedElementWithDirection(spItemToFocus, focusState, animateIfBringIntoView, focusNavigationDirection, forceBringIntoView, inputActivationBehavior);
+		}
+	}
+
 	//---------------------------------------------------------------------------
 	//
 	//  Synopsis:
