@@ -5,6 +5,9 @@ using Uno.Foundation.Logging;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
 
+// https://www.x.org/releases/X11R7.6/doc/xextproto/shape.html
+// Thanks to Jörg Seebohn for providing an example on how to use X SHAPE
+// https://gist.github.com/je-so/903479/834dfd78705b16ec5f7bbd10925980ace4049e17
 internal class X11AirspaceRenderHelper : IDisposable
 {
 	private const int BitsPerByte = 8;

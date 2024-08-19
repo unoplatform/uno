@@ -6,9 +6,6 @@ using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Runtime.Skia;
 namespace Uno.WinUI.Runtime.Skia.X11;
 
-// https://www.x.org/releases/X11R7.6/doc/xextproto/shape.html
-// Thanks to Jörg Seebohn for providing an example on how to use X SHAPE
-// https://gist.github.com/je-so/903479/834dfd78705b16ec5f7bbd10925980ace4049e17
 internal partial class X11NativeElementHostingExtension : ContentPresenter.INativeElementHostingExtension
 {
 	private static Dictionary<X11XamlRootHost, HashSet<X11NativeElementHostingExtension>> _hostToNativeElementHosts = new();
@@ -72,6 +69,7 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 			_ = XLib.XQueryTree(Display, nativeWindow.WindowId, out IntPtr root, out _, out var children, out _);
 			_ = XLib.XFree(children);
 			_ = X11Helper.XReparentWindow(Display, nativeWindow.WindowId, root, 0, 0);
+			_ = XLib.XUnmapWindow(Display, nativeWindow.WindowId);
 			_ = XLib.XSync(Display, false);
 
 			var set = _hostToNativeElementHosts[host];

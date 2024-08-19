@@ -79,7 +79,7 @@ internal static class SkiaRenderHelper
 					mainPath.AddRect(canvas.TotalMatrix.MapRect(new SKRect(0, 0, width, height)));
 				}
 
-				if (visual is { IsNativeHostVisual: false } && visual.CanPaint())
+				if (visual is { IsNativeHostVisual: false } && !visual.CanPaint())
 				{
 					return;
 				}

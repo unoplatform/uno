@@ -70,6 +70,9 @@ namespace Uno.WinUI.Runtime.Skia.X11
 		[LibraryImport(libX11)]
 		public static partial int XMapWindow(IntPtr display, IntPtr window);
 
+		[DllImport(libX11)]
+		public static extern int XUnmapWindow(IntPtr display, IntPtr window);
+
 		[LibraryImport(libX11)]
 		public static partial IntPtr XRootWindow(IntPtr display, int screen_number);
 		[LibraryImport(libX11)]

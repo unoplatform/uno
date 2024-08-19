@@ -138,7 +138,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			var nativelyHandled = false;
-			if (_nativeLayerHost?.Path?.Contains(ev.GetX(), ev.GetY()))
+			if (_nativeLayerHost?.Path?.Contains(ev.GetX(), ev.GetY()) ?? false)
 			{
 				// We don't call the base method if NativeLayerHost.Path doesn't contain (X, Y).
 				// This is due to the way Android handles hit-testing with Canvas.ClipPath, where even if the ClipPath
@@ -162,7 +162,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			var nativelyHandled = false;
-			if (_nativeLayerHost?.Path?.Contains(ev.GetX(), ev.GetY()))
+			if (_nativeLayerHost?.Path?.Contains(ev.GetX(), ev.GetY()) ?? false)
 			{
 				// We don't call the base method if NativeLayerHost.Path doesn't contain (X, Y).
 				// This is due to the way Android handles hit-testing with Canvas.ClipPath, where even if the ClipPath
