@@ -19,7 +19,7 @@ partial class InsetClip
 	internal override SKPath GetClipPath(Visual visual)
 	{
 		var bounds = GetBounds(visual).Value;
-		if (_clipPath is  null || _clipPath.Value.bounds != bounds)
+		if (_clipPath is null || _clipPath.Value.bounds != bounds)
 		{
 			var path = new SKPath();
 			var rect = bounds.ToSKRect();

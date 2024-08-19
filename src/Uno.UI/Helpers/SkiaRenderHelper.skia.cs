@@ -65,13 +65,11 @@ internal static class SkiaRenderHelper
 		}
 		else
 		{
-			var canvas = surface.Canvas;
-			// Assuming the canvas we're drawing on is on top of the native elements,
-			// we want to crop out "see-through windows" so we can see the native elements underneath the canvas
-
 			SKPath? mainPath = null;
 			rootVisual.Compositor.RenderRootVisual(surface, rootVisual, (session, visual) =>
 			{
+				var canvas = session.Canvas;
+
 				// the entire viewport
 				if (visual == rootVisual)
 				{
@@ -81,7 +79,7 @@ internal static class SkiaRenderHelper
 					mainPath.AddRect(canvas.TotalMatrix.MapRect(new SKRect(0, 0, width, height)));
 				}
 
-				if (visual is { CanPaint: false, IsNativeHostVisual: false })
+				if (visual is { IsNativeHostVisual: false } && visual.CanPaint())
 				{
 					return;
 				}
