@@ -662,16 +662,13 @@ namespace Microsoft.UI.Xaml.Media
 
 			// We didn't find any child at the given position, validate that element can be touched,
 			// and the position is in actual bounds(which might be different than the clipping bounds)
-#if __SKIA__
-			if (renderingBounds.Contains(testPosition) && element.HitTest(transformToElement.Inverse().Transform(testPosition)))
-#else
-
 			if (elementHitTestVisibility == HitTestability.Visible && renderingBounds.Contains(testPosition)
-#if __WASM__
+#if __SKIA__
+				&& element.HitTest(transformToElement.Inverse().Transform(testPosition))
+#elif __WASM__
 				&& element.HitTest(testPosition)
 #endif
 				)
-#endif
 			{
 				TRACE($"> LEAF! ({element.GetDebugName()} is the OriginalSource) | stale branch: {stale?.ToString() ?? "-- none --"}");
 				return (element, stale);
