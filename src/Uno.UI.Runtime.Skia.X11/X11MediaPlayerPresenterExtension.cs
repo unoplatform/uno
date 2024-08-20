@@ -31,11 +31,6 @@ internal class X11MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 		ContentPresenter.SizeChanged += (_, _) => StretchChanged();
 	}
 
-	~X11MediaPlayerPresenterExtension()
-	{
-
-	}
-
 	public void MediaPlayerChanged()
 	{
 		if (X11MediaPlayerExtension.GetByMediaPlayer(_presenter.MediaPlayer) is { } extension)
@@ -194,7 +189,7 @@ internal class X11MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 			.Data.Video.Height ?? 0;
 
 	public uint NaturalVideoWidth
-    		=> _playerExtension?.VlcPlayer.Media?.Tracks
-    			.FirstOrDefault(t => t.TrackType == TrackType.Video)
+			=> _playerExtension?.VlcPlayer.Media?.Tracks
+				.FirstOrDefault(t => t.TrackType == TrackType.Video)
 				.Data.Video.Width ?? 0;
 }

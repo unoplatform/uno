@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Concurrent;
+using System.Globalization;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -247,7 +248,7 @@ internal class X11NativeWebView : INativeWebView
 	public Task<string?> InvokeScriptAsync(string script, string[]? arguments, CancellationToken token)
 	{
 		var tcs = new TaskCompletionSource<string?>();
-		var jsInvokeId = Interlocked.Increment(ref _jsInvokeCounter).ToString();
+		var jsInvokeId = Interlocked.Increment(ref _jsInvokeCounter).ToString(CultureInfo.InvariantCulture);
 
 		// JsonSerializer.Serialize safely escapes quotes and concatenates the arguments (with a comma) to be passed to eval
 		// the [1..^1] part is to remove [ and ].

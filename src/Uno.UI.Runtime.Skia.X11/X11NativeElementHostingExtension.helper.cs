@@ -146,7 +146,7 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 		}
 
 		var window = IntPtr.Zero;
-		while (window == IntPtr.Zero && Stopwatch.GetElapsedTime(start) < timeout )
+		while (window == IntPtr.Zero && Stopwatch.GetElapsedTime(start) < timeout)
 		{
 			using (X11Helper.XLock(display))
 			{
