@@ -93,7 +93,7 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 
 			// Wait for the window to open.
 			Thread.Sleep(500);
-			IntPtr window = FindWindowByTitle(Display, root, title);
+			IntPtr window = FindWindowByTitle(host, title, TimeSpan.MaxValue);
 
 			if (window == IntPtr.Zero)
 			{
@@ -133,7 +133,31 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 			.Any(File.Exists);
 	}
 
-	internal unsafe static IntPtr FindWindowByTitle(IntPtr display, IntPtr current, string title)
+	internal static IntPtr FindWindowByTitle(X11XamlRootHost host, string title, TimeSpan timeout)
+	{
+		var start = Stopwatch.GetTimestamp();
+		var display = host.RootX11Window.Display;
+
+		IntPtr root;
+		using (X11Helper.XLock(display))
+		{
+			_ = XLib.XQueryTree(display, host.RootX11Window.Window, out root, out _, out var children, out _);
+			_ = XLib.XFree(children);
+		}
+
+		var window = IntPtr.Zero;
+		while (window == IntPtr.Zero && Stopwatch.GetElapsedTime(start) < timeout )
+		{
+			using (X11Helper.XLock(display))
+			{
+				window = FindWindowByTitle(display, root, title);
+			}
+		}
+
+		return window;
+	}
+
+	private unsafe static IntPtr FindWindowByTitle(IntPtr display, IntPtr current, string title)
 	{
 		using var lockDiposable = X11Helper.XLock(display);
 
@@ -155,35 +179,6 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 		for (var i = 0; i < nChildren; ++i)
 		{
 			IntPtr window = FindWindowByTitle(display, span[i], title);
-
-			if (window != IntPtr.Zero)
-			{
-				return window;
-			}
-		}
-
-		return IntPtr.Zero;
-	}
-
-	private unsafe static IntPtr FindWindowById(IntPtr display, IntPtr current, IntPtr id)
-	{
-		if (current == id)
-		{
-			return current;
-		}
-
-		_ = XLib.XQueryTree(display,
-			current,
-			out _,
-			out _,
-			out IntPtr children,
-			out int nChildren);
-
-		var span = new Span<IntPtr>(children.ToPointer(), nChildren);
-
-		for (var i = 0; i < nChildren; ++i)
-		{
-			IntPtr window = FindWindowById(display, span[i], id);
 
 			if (window != IntPtr.Zero)
 			{

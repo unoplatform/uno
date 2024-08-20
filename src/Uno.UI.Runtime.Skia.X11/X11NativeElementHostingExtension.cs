@@ -4,13 +4,14 @@ using System.Numerics;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI.Runtime.Skia;
 namespace Uno.WinUI.Runtime.Skia.X11;
 
 internal partial class X11NativeElementHostingExtension : ContentPresenter.INativeElementHostingExtension
 {
-	private static Dictionary<X11XamlRootHost, HashSet<X11NativeElementHostingExtension>> _hostToNativeElementHosts = new();
+	private static readonly Dictionary<X11XamlRootHost, HashSet<X11NativeElementHostingExtension>> _hostToNativeElementHosts = new();
 	private Rect? _lastArrangeRect;
 	private Rect? _lastClipRect;
 	private bool _layoutDirty = true;
@@ -44,7 +45,59 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 
 			host.AttachSubWindow(nativeWindow.WindowId);
 			_ = XLib.XMapWindow(Display, nativeWindow.WindowId);
-			_ = X11Helper.XRaiseWindow(host.TopX11Window.Display, host.TopX11Window.Window);
+			_ = X11Helper.XRaiseWindow(Display, host.TopX11Window.Window);
+
+			// hide the embedded window from showing up in the taskbar/dock.
+			var netWmStateAtom = X11Helper.GetAtom(Display, "_NET_WM_STATE");
+			var netWmStateSkipTaskbarAtom = X11Helper.GetAtom(Display, "_NET_WM_STATE_SKIP_TASKBAR");
+			if (netWmStateAtom != IntPtr.Zero && netWmStateSkipTaskbarAtom != IntPtr.Zero)
+			{
+				_ = XLib.XGetWindowProperty(
+					Display,
+					nativeWindow.WindowId,
+					netWmStateAtom,
+					IntPtr.Zero,
+					X11Helper.LONG_LENGTH,
+					false,
+					X11Helper.AnyPropertyType,
+					out var actualTypeAtom,
+					out var actualFormat,
+					out var nitems,
+					out _,
+					out var prop);
+				using var atomsDisposable = new DisposableStruct<IntPtr>(static p => { _ = XLib.XFree(p); }, prop);
+
+				if (actualFormat == 32)
+				{
+					unsafe
+					{
+						var atomSpan = new Span<IntPtr>(prop.ToPointer(), (int)nitems);
+
+						var foundSkipTaskbarAtom = false;
+						foreach (var atom in atomSpan)
+						{
+							if (atom == netWmStateSkipTaskbarAtom)
+							{
+								foundSkipTaskbarAtom = true;
+								break;
+							}
+						}
+
+						if (!foundSkipTaskbarAtom)
+						{
+							_ = XLib.XChangeProperty(
+								Display,
+								nativeWindow.WindowId,
+								netWmStateAtom,
+								X11Helper.GetAtom(Display, X11Helper.XA_ATOM),
+								32,
+								PropertyMode.Append,
+								new[] { X11Helper.GetAtom(Display, "_NET_WM_STATE_SKIP_TASKBAR") },
+								1);
+						}
+					}
+				}
+			}
 
 			if (!_hostToNativeElementHosts.TryGetValue(host, out var set))
 			{

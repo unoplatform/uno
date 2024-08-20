@@ -23,6 +23,13 @@ internal class X11NativeWebViewProvider(CoreWebView2 coreWebView2) : INativeWebV
 
 internal class X11NativeWebView : INativeWebView
 {
+	// Webview doesn't naturally support multiple windows and constructing any Webview after the first will block.
+	// On X11, Webview wraps GTK: https://github.com/webview/webview/blob/6e847a6efe88a15edf58c26b8c9ea933ba2569ec/webview.h#L1951-L1957
+	// Due to the way GTK works, we need to create the second Webview from GTK's main thread. Run() calls g_main_context_iteration in a loop,
+	// so we should only need to have one Run() function running for all Webviews combined.
+	// To create multiple Webviews, we need a "master" webview that is in charge of the Run() loop.
+	private static Webview? _masterWebview;
+
 	private int _jsInvokeCounter;
 	private readonly ConcurrentDictionary<string, TaskCompletionSource<string?>> _jsInvokeTasks = new();
 
@@ -37,8 +44,38 @@ internal class X11NativeWebView : INativeWebView
 		_coreWebView = coreWebView2;
 		_presenter = presenter;
 
+		var host = (X11XamlRootHost)X11Manager.XamlRootMap.GetHostForRoot(presenter.XamlRoot!)!;
+		var display = host.RootX11Window.Display;
+
+		if (_masterWebview is null)
+		{
+			new Thread(() =>
+			{
+#if DEBUG
+				_masterWebview = new Webview(true);
+#else
+				var webview = new Webview(false);
+#endif
+				_masterWebview.SetTitle("Uno Master WebView");
+				_masterWebview.SetSize(1, 1, WebviewHint.None);
+
+				_ = Task.Run(() =>
+				{
+					var window = X11NativeElementHostingExtension.FindWindowByTitle(host, "Uno Master WebView", TimeSpan.MaxValue);
+					using (X11Helper.XLock(display))
+					{
+						_ = XLib.XUnmapWindow(display, window);
+					}
+				});
+
+				_masterWebview.Run();
+			}).Start();
+		}
+
+		SpinWait.SpinUntil(() => _masterWebview is not null);
+
 		_nativeWebview = null!; // to work around nullability;
-		_ = Task.Run(() =>
+		_masterWebview!.Dispatch(() =>
 		{
 			// WARNING: The threading for Webview is fragile. If you move the Webview construction outside
 			// of the new thread, it won't work. Be careful about moving anything around.
@@ -47,14 +84,13 @@ internal class X11NativeWebView : INativeWebView
 #else
 			_nativeWebview = new Webview(false);
 #endif
-			_nativeWebview.SetSize(0, 0, WebviewHint.None);
+			_nativeWebview.SetSize(1, 1, WebviewHint.None);
 			_nativeWebview.SetTitle(_title);
 
 			_nativeWebview.Bind("onSourceChanged", OnSourceChanged);
 			_nativeWebview.Bind("onScriptInvocationDone", OnScriptInvocationDone);
 			_nativeWebview.Bind("onDocumentTitleChanged", OnDocumentTitleChanged);
 			_nativeWebview.Bind("onDocumentLoaded", OnDocumentLoaded);
-
 			// from https://learn.microsoft.com/en-us/dotnet/api/microsoft.web.webview2.core.corewebview2.navigationcompleted?view=webview2-dotnet-1.0.2478.35#microsoft-web-webview2-core-corewebview2-navigationcompleted
 			// "NavigationCompleted is raised when the WebView has completely loaded (body.onload has been raised) or loading stopped with error."
 			_nativeWebview.InitScript(
@@ -76,23 +112,11 @@ internal class X11NativeWebView : INativeWebView
 					onDocumentLoaded();
 				};
 				""");
-			_nativeWebview.Run();
 		});
 
 		_ = Task.Run(() =>
 		{
-			var window = IntPtr.Zero;
-			var host = (X11XamlRootHost)X11Manager.XamlRootMap.GetHostForRoot(presenter.XamlRoot!)!;
-			var display = host.RootX11Window.Display;
-			using var lockDisposable = X11Helper.XLock(display);
-			while (window == IntPtr.Zero)
-			{
-				_ = XLib.XQueryTree(display, host.RootX11Window.Window, out IntPtr root, out _, out var children, out _);
-				_ = XLib.XFree(children);
-				window = X11NativeElementHostingExtension.FindWindowByTitle(display, root, _title);
-
-			}
-
+			var window = X11NativeElementHostingExtension.FindWindowByTitle(host, _title, TimeSpan.MaxValue);
 			_ = _coreWebView.Owner.Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
 			{
 				_presenter.Content = new X11NativeWindow(window);
@@ -104,7 +128,7 @@ internal class X11NativeWebView : INativeWebView
 
 	~X11NativeWebView()
 	{
-		_nativeWebview.Dispose();
+		_nativeWebview.Dispatch(_nativeWebview.Dispose);
 	}
 
 	private void OnSourceChanged(string id, string req)
@@ -246,7 +270,6 @@ internal class X11NativeWebView : INativeWebView
 
 		return tcs.Task;
 	}
-
 
 	public void SetScrollingEnabled(bool isScrollingEnabled)
 	{
