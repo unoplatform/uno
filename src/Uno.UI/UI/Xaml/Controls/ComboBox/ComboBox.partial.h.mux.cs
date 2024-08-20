@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DirectUI;
-using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Media.Animation;
 using Uno.Disposables;
 using Uno.UI.Xaml.Input;
@@ -16,12 +11,13 @@ partial class ComboBox
 {
 	private const char VK_ESCAPE = (char)0x1B;
 
-// TODO MZ: These disablings should not be required
+	// TODO MZ: These disablings should not be required
 #pragma warning disable CS0067 // Unused only in reference API.
 #pragma warning disable CS0649 // Unused only in reference API.
 #pragma warning disable CS0169 // Unused only in reference API.
 #pragma warning disable CS0168 // Unused only in reference API.
 #pragma warning disable CS0414 // Unused only in reference API.
+#pragma warning disable IDE0055 // Unused only in reference API.
 	internal bool IsSearchResultIndexSet() => m_searchResultIndexSet;
 
 	internal int GetSearchResultIndex() => m_searchResultIndex;
