@@ -55,11 +55,11 @@ partial class SelectorItem
 
 		var contentTemplateRoot = ContentTemplateRoot;
 
-		if (contentTemplateRoot != null)
+		if (contentTemplateRoot is DependencyObject doContentTemplateRoot)
 		{
 			// we have the first child of the content. Check whether it has an automation name
 
-			strPlainText = AutomationProperties.GetName(contentTemplateRoot);
+			strPlainText = AutomationProperties.GetName(doContentTemplateRoot);
 
 			// fallback: use getplain text on it
 			if (string.IsNullOrEmpty(strPlainText))
