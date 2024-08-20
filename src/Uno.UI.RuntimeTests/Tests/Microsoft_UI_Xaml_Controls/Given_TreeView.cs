@@ -935,6 +935,16 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			Assert.AreEqual(TreeNodeSelectionState.Selected, SUT.NodeFromContainer(SUT.ContainerFromItem(targetItem))?.SelectionState, "[step2]target node is not selected");
 #endif
 		}
+
+		[TestMethod]
+		public async Task When_Simple_ItemsSource()
+		{
+			var SUT = new TreeView()
+			{
+				ItemsSource = new int[] { 1, 2 }
+			};
+			await UITestHelper.Load(SUT);
+		}
 	}
 	public partial class Given_TreeView // helper methods, view-models
 	{
