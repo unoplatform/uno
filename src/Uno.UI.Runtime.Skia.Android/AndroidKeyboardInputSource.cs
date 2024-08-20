@@ -35,7 +35,7 @@ internal sealed class AndroidKeyboardInputSource : IUnoKeyboardInputSource
 		try
 		{
 			var isDown = e.Action == KeyEventActions.Down;
-			var args = new KeyEventArgs("keyboard", virtualKey, modifiers, default(CorePhysicalKeyStatus)/*TODO*/, unicodeKey: null/*TODO*/);
+			var args = new KeyEventArgs("keyboard", virtualKey, modifiers, default(CorePhysicalKeyStatus)/*TODO*/, unicodeKey: (char)e.GetUnicodeChar(e.MetaState));
 			if (isDown)
 			{
 				KeyDown?.Invoke(this, args);

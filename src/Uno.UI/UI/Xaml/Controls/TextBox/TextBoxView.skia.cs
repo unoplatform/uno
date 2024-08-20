@@ -19,7 +19,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private readonly ManagedWeakReference _textBox;
 		private bool _isPasswordRevealed;
 		private readonly bool _isSkiaTextBox = !FeatureConfiguration.TextBox.UseOverlayOnSkia;
-		private static readonly bool _useInvisibleNativeTextView = OperatingSystem.IsBrowser() || OperatingSystem.IsAndroid();
+		private static readonly bool _useInvisibleNativeTextView = OperatingSystem.IsBrowser();
 
 		public TextBoxView(TextBox textBox)
 		{
