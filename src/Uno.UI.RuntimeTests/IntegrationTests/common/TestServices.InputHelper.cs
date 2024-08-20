@@ -101,6 +101,7 @@ namespace Private.Infrastructure
 			}
 
 			public static void LeftMouseClick(UIElement element) => Tap(element);
+			public static void LeftMouseClick(Point point) => throw new NotSupportedException("Not supported yet.");
 
 			public static void PenBarrelTap(FrameworkElement pElement)
 			{

@@ -1,8 +1,10 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Tests.Enterprise;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.MUX.Helpers;
 using Windows.Foundation;
@@ -10,7 +12,7 @@ using static Private.Infrastructure.TestServices;
 
 namespace Microsoft.UI.Xaml.Tests.Common;
 
-internal class ComboBoxHelper
+internal static class ComboBoxHelper
 {
 	public enum OpenMethod
 	{
@@ -30,36 +32,34 @@ internal class ComboBoxHelper
 		Programmatic
 	};
 
-	//public static async Task FocusComboBoxIfNecessary(ComboBox comboBox)
-	//{
-	//	var comboBoxGotFocusEvent = std.make_shared<Event>();
-	//	var gotFocusRegistration = CreateSafeEventRegistration(ComboBox, GotFocus);
-	//	gotFocusRegistration.Attach(comboBox, [&]()
+	public static async Task FocusComboBoxIfNecessary(ComboBox comboBox)
+	{
+		var comboBoxGotFocusEvent = new Event();
+		var gotFocusRegistration = CreateSafeEventRegistration<ComboBox, RoutedEventHandler>("GotFocus");
+		gotFocusRegistration.Attach(comboBox, (s, e) =>
+		{
+			LOG_OUTPUT("[ComboBox]: Got Focus Event Fired.");
+			comboBoxGotFocusEvent.Set();
+		});
 
-	//		{
-	//		LOG_OUTPUT(L"[ComboBox]: Got Focus Event Fired.");
-	//		comboBoxGotFocusEvent->Set();
-	//	});
+		bool alreadyHasFocus = false;
+		await RunOnUIThread(() =>
+		{
+			alreadyHasFocus = comboBox.FocusState != FocusState.Unfocused;
+			comboBox.Focus(FocusState.Keyboard);
+		});
 
-	//	bool alreadyHasFocus = false;
-	//	RunOnUIThread([&]()
-
-	//		{
-	//		alreadyHasFocus = comboBox->FocusState != xaml.FocusState.Unfocused;
-	//		comboBox->Focus(xaml.FocusState.Keyboard);
-	//	});
-
-	//	if (!alreadyHasFocus)
-	//	{
-	//		comboBoxGotFocusEvent->WaitForDefault();
-	//	}
-	//}
+		if (!alreadyHasFocus)
+		{
+			await comboBoxGotFocusEvent.WaitForDefault();
+		}
+	}
 
 	public static async Task OpenComboBox(ComboBox comboBox, OpenMethod openMethod)
 	{
-		var comboBoxOpenedEvent = std.make_shared<Event>();
-		var openedRegistration = CreateSafeEventRegistration(ComboBox, DropDownOpened);
-		openedRegistration.Attach(comboBox, [&](){ comboBoxOpenedEvent->Set(); });
+		var comboBoxOpenedEvent = new Event();
+		var openedRegistration = CreateSafeEventRegistration<ComboBox, EventHandler<object>>("DropDownOpened");
+		openedRegistration.Attach(comboBox, (s, e) => { comboBoxOpenedEvent.Set(); });
 
 		if (openMethod == OpenMethod.Mouse)
 		{
@@ -71,12 +71,12 @@ internal class ComboBoxHelper
 		}
 		else if (openMethod == OpenMethod.Keyboard)
 		{
-			FocusComboBoxIfNecessary(comboBox);
+			await FocusComboBoxIfNecessary(comboBox);
 			TestServices.KeyboardHelper.PressKeySequence(" ");
 		}
 		else if (openMethod == OpenMethod.Gamepad)
 		{
-			FocusComboBoxIfNecessary(comboBox);
+			await FocusComboBoxIfNecessary(comboBox);
 			CommonInputHelper.Accept(InputDevice.Gamepad);
 		}
 		else if (openMethod == OpenMethod.Programmatic)
@@ -88,7 +88,7 @@ internal class ComboBoxHelper
 		}
 		await TestServices.WindowHelper.WaitForIdle();
 
-		comboBoxOpenedEvent->WaitForDefault();
+		await comboBoxOpenedEvent.WaitForDefault();
 	}
 
 	public static async Task CloseComboBox(ComboBox comboBox)
@@ -98,13 +98,13 @@ internal class ComboBoxHelper
 
 	public static async Task CloseComboBox(ComboBox comboBox, CloseMethod closeMethod)
 	{
-		var dropDownClosedEvent = std.make_shared<Event>();
-		var dropDownClosedRegistration = CreateSafeEventRegistration(ComboBox, DropDownClosed);
-		dropDownClosedRegistration.Attach(comboBox, [&](){ dropDownClosedEvent->Set(); });
+		var dropDownClosedEvent = new Event();
+		var dropDownClosedRegistration = CreateSafeEventRegistration<ComboBox, EventHandler<object>>("DropDownClosed");
+		dropDownClosedRegistration.Attach(comboBox, (s, e) => { dropDownClosedEvent.Set(); });
 
 		if (closeMethod == CloseMethod.Touch || closeMethod == CloseMethod.Mouse)
 		{
-			Rect dropdownBounds = GetBoundsOfOpenDropdown(comboBox);
+			Rect dropdownBounds = await GetBoundsOfOpenDropdown(comboBox);
 			int outsideBuffer = 10; // Tap at least this far away from the dropdown in order to ensure that it closes.
 			var closeTapPoint = new Point(dropdownBounds.X + dropdownBounds.Width + outsideBuffer, dropdownBounds.Y + dropdownBounds.Height + outsideBuffer);
 
@@ -129,39 +129,37 @@ internal class ComboBoxHelper
 		{
 			await RunOnUIThread(() =>
 			{
-				comboBox->IsDropDownOpen = false;
+				comboBox.IsDropDownOpen = false;
 			});
 		}
 
-		dropDownClosedEvent->WaitForDefault();
-		Private.Infrastructure.await TestServices.WindowHelper.WaitForIdle();
+		await dropDownClosedEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
 
 		dropDownClosedRegistration.Detach();
 	}
 
-	static async Rect GetBoundsOfOpenDropdown(xaml.DependencyObject^ element)
+	private static async Task<Rect> GetBoundsOfOpenDropdown(DependencyObject element)
 	{
-		Rect dropdownBounds = { };
+		Rect dropdownBounds = new();
 
-		await RunOnUIThread(() =>
+		await RunOnUIThread(async () =>
+		{
+			var dropdownScrollViewer = (ScrollViewer)(TreeHelper.GetVisualChildByNameFromOpenPopups("ScrollViewer", element));
+			Assert.IsNotNull(dropdownScrollViewer, "DropDown not found.");
+			dropdownBounds = await ControlHelper.GetBounds(dropdownScrollViewer);
 
-			{
-				var dropdownScrollViewer = safe_cast < ScrollViewer ^> (TreeHelper.GetVisualChildByNameFromOpenPopups(L"ScrollViewer", element));
-				WEX.Common.Throw.IfFalse(dropdownScrollViewer != nullptr, E_FAIL, L"DropDown not found.");
-				dropdownBounds = ControlHelper.GetBounds(dropdownScrollViewer);
-
-				LOG_OUTPUT(L"dropdownBounds: (%f, %f, %f, %f)", dropdownBounds.X, dropdownBounds.Y, dropdownBounds.Width, dropdownBounds.Height);
-
-			});
-		Private.Infrastructure.await TestServices.WindowHelper.WaitForIdle();
+			LOG_OUTPUT("dropdownBounds: (%f, %f, %f, %f)", dropdownBounds.X, dropdownBounds.Y, dropdownBounds.Width, dropdownBounds.Height);
+		});
+		await TestServices.WindowHelper.WaitForIdle();
 
 		return dropdownBounds;
 	}
 
 	// Verify the selected Index on the ComboBox.
-	static void VerifySelectedIndex(ComboBox comboBox, int expected)
+	public static async Task VerifySelectedIndex(ComboBox comboBox, int expected)
 	{
-		SelectorHelper.VerifySelectedIndex(comboBox, expected);
+		await SelectorHelper.VerifySelectedIndex(comboBox, expected);
 	}
 
 	// Uses touch to select the ComboBoxItem with the specified index.
@@ -172,19 +170,18 @@ internal class ComboBoxHelper
 		await OpenComboBox(comboBox, OpenMethod.Touch);
 		await TestServices.WindowHelper.WaitForIdle();
 
-		Event selectionChangedEvent;
-		var selectionChangedRegistration = CreateSafeEventRegistration(ComboBox, SelectionChanged);
-		selectionChangedRegistration.Attach(comboBox, [&](){ selectionChangedEvent.Set(); });
+		Event selectionChangedEvent = new();
+		var selectionChangedRegistration = CreateSafeEventRegistration<ComboBox, SelectionChangedEventHandler>("SelectionChanged");
+		selectionChangedRegistration.Attach(comboBox, (s, e) => selectionChangedEvent.Set());
 
-		ComboBoxItem comboBoxItemToSelect;
-		RunOnUIThread([&]()
-
-			{
-			comboBoxItemToSelect = safe_cast < ComboBoxItem ^> (comboBox->ContainerFromIndex(index));
+		ComboBoxItem comboBoxItemToSelect = null;
+		await RunOnUIThread(() =>
+		{
+			comboBoxItemToSelect = (ComboBoxItem)comboBox.ContainerFromIndex(index);
 			THROW_IF_NULL(comboBoxItemToSelect);
 		});
 
 		TestServices.InputHelper.Tap(comboBoxItemToSelect);
-		selectionChangedEvent.WaitForDefault();
+		await selectionChangedEvent.WaitForDefault();
 	}
 }
