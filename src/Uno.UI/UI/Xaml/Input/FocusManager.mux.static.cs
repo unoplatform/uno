@@ -488,7 +488,8 @@ namespace Microsoft.UI.Xaml.Input
 				focusState,
 				animateIfBringIntoView,
 				forceBringIntoView,
-				focusNavigationDirection);
+				focusNavigationDirection,
+				false);
 
 			return pFocusUpdated;
 		}
