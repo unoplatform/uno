@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.UI.Xaml.Input;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
+using Uno.UI;
 using Uno.UI.DataBinding;
-using Uno.UI.Xaml.Core;
-using Uno.UI.Xaml.Islands;
 using Windows.Foundation;
 using Windows.System;
-using Microsoft.UI.Xaml.Input;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
@@ -41,12 +40,22 @@ internal partial class PopupRoot : Panel
 
 			if (xamlRoot.HostWindow is { } window)
 			{
-				window.Activated += OnChanged;
-				disposables.Add(() => window.Activated -= OnChanged);
+				window.Activated += OnWindowActivated;
+				disposables.Add(() => window.Activated -= OnWindowActivated);
 			}
 
 			_subscriptions.Disposable = disposables;
 		}
+	}
+
+	private void OnWindowActivated(object sender, WindowActivatedEventArgs e)
+	{
+		if (FeatureConfiguration.Popup.PreventLightDismissOnWindowDeactivated)
+		{
+			return;
+		}
+
+		CloseLightDismissablePopups();
 	}
 
 	private void OnRootUnloaded(object sender, RoutedEventArgs args)

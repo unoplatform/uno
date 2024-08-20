@@ -565,6 +565,11 @@
 										<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE9AB;" />
 									</ToggleMenuFlyoutItem.Icon>
 								</ToggleMenuFlyoutItem>
+								<not_win:ToggleMenuFlyoutItem Text="Keep popups open on breakpoints" IsChecked="{Binding PreventLightDismissOnWindowDeactivated, Mode=TwoWay}">
+									<not_win:ToggleMenuFlyoutItem.Icon>
+										<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE92F;" />
+									</not_win:ToggleMenuFlyoutItem.Icon>
+								</not_win:ToggleMenuFlyoutItem>
 								<MenuFlyoutItem Text="Log view dump" Command="{Binding LogViewDumpCommand}" Visibility="{Binding IsDebug, Converter={StaticResource TrueToVisible}}">
 									<MenuFlyoutItem.Icon>
 										<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xEBD2;" />
