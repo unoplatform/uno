@@ -9,6 +9,7 @@ using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
 using Uno.UI.DataBinding;
+using Uno.UI.Extensions;
 using Uno.UI.Xaml.Input;
 using Windows.Foundation.Collections;
 using Windows.System;
@@ -351,6 +352,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				}
 
 				SelectedIndexPath = GetIndexPathFromIndex(SelectedIndex);
+
+				OnSelectionChanged(oldSelectedIndex, newSelectedIndex, oldSelectedItem, newSelectedItem);
+
 				_isUpdatingSelection = false;
 				if (shouldRaiseSelectionChanged)
 				{
@@ -509,6 +513,13 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			if (element is SelectorItem selectorItem)
 			{
 				selectorItem.IsSelected = IsSelected(IndexFromContainer(element));
+			}
+
+			var newIndex = IndexFromContainer(element);
+
+			if (newIndex == GetFocusedIndex())
+			{
+				SetFocusedItem(newIndex, false);
 			}
 		}
 
@@ -824,67 +835,85 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			return (physicalOrientation, logicalOrientation);
 		}
 
-		protected void SetFocusedItem(int index,
-									  bool shouldScrollIntoView,
-									  bool forceFocus,
-									  FocusState focusState,
-									  bool animateIfBringIntoView)
+		private protected void SetFocusedItem(
+			int index,
+			bool shouldScrollIntoView,
+			bool animateIfBringIntoView = false,
+			FocusNavigationDirection focusNavigationDirection = FocusNavigationDirection.None,
+			InputActivationBehavior inputActivationBehavior = InputActivationBehavior.RequestActivation) // default to request activation to match legacy behavior
 		{
 
+			FocusState focusState = FocusState.Programmatic;
+
+			var hasFocus = HasFocus();
+			if (hasFocus)
+			{
+				var spFocused = this.GetFocusedElement();
+				var spFocusedAsElement = spFocused as UIElement;
+				if (spFocusedAsElement is { })
+				{
+					focusState = spFocusedAsElement.FocusState;
+					global::System.Diagnostics.Debug.Assert(FocusState.Unfocused != focusState, "FocusState_Unfocused unexpected since spFocusedAsElement is focused");
+				}
+			}
+
+			SetFocusedItem(index, shouldScrollIntoView, false /*forceFocus*/, focusState, animateIfBringIntoView, focusNavigationDirection, inputActivationBehavior);
 		}
 
-		protected void SetFocusedItem(int index,
-									  bool shouldScrollIntoView,
-									  bool forceFocus,
-									  FocusState focusState,
-									  bool animateIfBringIntoView,
-									  FocusNavigationDirection focusNavigationDirection)
+		private protected void SetFocusedItem(
+			int index,
+			bool shouldScrollIntoView,
+			bool forceFocus,
+			FocusState focusState,
+			bool animateIfBringIntoView,
+			FocusNavigationDirection focusNavigationDirection = FocusNavigationDirection.None,
+			InputActivationBehavior inputActivationBehavior = InputActivationBehavior.RequestActivation) // default to request activation to match legacy behavior
 		{
 
-			//bool bFocused = false;
-			//bool shouldFocus = false;
+			bool bFocused = false;
+			bool shouldFocus = false;
 
-			//var spItems = Items;
-			//var nCount = spItems?.Size;
+			var spItems = Items;
+			var nCount = spItems?.Size;
 
-			//if (index < 0 || nCount <= index)
-			//{
-			//	index = -1;
-			//}
+			if (index < 0 || nCount <= index)
+			{
+				index = -1;
+			}
 
-			//if (index >= 0)
-			//{
-			//	m_lastFocusedIndex = index;
-			//}
+			if (index >= 0)
+			{
+				// SetLastFocusedIndex(index);
+			}
 
-			//if (!forceFocus)
-			//{
-			//	//shouldFocus = HasFocus();
-			//}
-			//else
-			//{
-			//	shouldFocus = true;
-			//}
+			if (!forceFocus)
+			{
+				shouldFocus = HasFocus();
+			}
+			else
+			{
+				shouldFocus = true;
+			}
 
-			//if (shouldFocus)
-			//{
-			//	m_iFocusedIndex = index;
-			//}
+			if (shouldFocus)
+			{
+				SetFocusedIndex(index);
+			}
 
-			//if (m_iFocusedIndex == -1)
-			//{
-			//	if (shouldFocus)
-			//	{
-			//		// Since none of our child items have the focus, put the focus back on the main list box.
-			//		//
-			//		// This will happen e.g. when the focused item is being removed but is still in the visual tree at the time of this call.
-			//		// Note that this call may fail e.g. if IsTabStop is false, which is OK; it will just set focus
-			//		// to the next focusable element (or clear focus if none is found).
-			//		bFocused = Focus(focusState);
-			//	}
+			if (GetFocusedIndex() == -1)
+			{
+				if (shouldFocus)
+				{
+					// Since none of our child items have the focus, put the focus back on the main list box.
+					//
+					// This will happen e.g. when the focused item is being removed but is still in the visual tree at the time of this call.
+					// Note that this call may fail e.g. if IsTabStop is false, which is OK; it will just set focus
+					// to the next focusable element (or clear focus if none is found).
+					bFocused = Focus(focusState);
+				}
 
-			//	return;
-			//}
+				return;
+			}
 
 			//if (shouldScrollIntoView)
 			//{
@@ -904,15 +933,15 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			//		ScrollIntoViewAlignment.Default);
 			//}
 
-			//if (shouldFocus)
-			//{
-			//	var spContainer = ContainerFromIndex(index);
+			if (shouldFocus)
+			{
+				var spContainer = ContainerFromIndex(index);
 
-			//	if (spContainer is SelectorItem spSelectorItem)
-			//	{
-			//		//spSelectorItem.FocusSelfOrChild(focusState, animateIfBringIntoView, &bFocused, focusNavigationDirection);
-			//	}
-			//}
+				if (spContainer is SelectorItem spSelectorItem)
+				{
+					spSelectorItem.FocusSelfOrChild(focusState, animateIfBringIntoView, out bFocused, focusNavigationDirection, inputActivationBehavior);
+				}
+			}
 		}
 
 #if false
@@ -921,43 +950,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		}
 #endif
-
-		protected void SetFocusedItem(int index,
-									  bool shouldScrollIntoView,
-									  bool animateIfBringIntoView,
-									  FocusNavigationDirection focusNavigationDirection)
-		{
-
-			//bool hasFocus = false;
-			FocusState focusState = FocusState.Programmatic;
-
-			//hasFocus = HasFocus();
-
-			//if (hasFocus)
-			//{
-			//	DependencyObject spFocused;
-
-			//	//spFocused = GetFocusedElement();
-
-			//	if (spFocused is UIElement spFocusedAsElement)
-			//	{
-			//		focusState = spFocusedAsElement.FocusState;
-			//	}
-			//}
-
-			SetFocusedItem(index,
-							shouldScrollIntoView,
-							forceFocus: false,
-							focusState,
-							animateIfBringIntoView,
-							focusNavigationDirection);
-		}
-
-		protected void SetFocusedItem(int index,
-									  bool shouldScrollIntoView)
-		{
-
-		}
 
 #if false
 		bool CanScrollIntoView()
