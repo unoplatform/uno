@@ -19,6 +19,7 @@ using DirectUI;
 using Uno.Extensions;
 using DayOfWeek = Windows.Globalization.DayOfWeek;
 using DateTime = Windows.Foundation.WindowsFoundationDateTime;
+using Uno.UI.Extensions;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -2134,7 +2135,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 						//A control must be focused before we can set Engagement on it, attempt to set focus first
 						bool focused = false;
-						focused = FocusManager.SetFocusedElementWithDirection(spScrollViewer, FocusState.Keyboard, false /*animateIfBringintoView*/, false, FocusNavigationDirection.None);
+						focused = this.SetFocusedElementWithDirection(spScrollViewer, FocusState.Keyboard, false /*animateIfBringintoView*/, FocusNavigationDirection.None);
 						if (focused)
 						{
 							FocusManager.SetEngagedControl(spScrollViewer);

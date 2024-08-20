@@ -9,6 +9,8 @@ using Microsoft.UI.Xaml.Input;
 using CCalendarViewBaseItemChrome = Microsoft.UI.Xaml.Controls.CalendarViewBaseItem;
 using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 using Uno.UI.Xaml;
+using Uno.UI.Extensions;
+
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -293,8 +295,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (spItemToFocus is { })
 			{
-				var focused = FocusManager.SetFocusedElementWithDirection(spItemToFocus, focusState, false /* animateIfBringIntoView */, false, focusNavigationDirection);
-				pFocused = !focused;
+				var focused = this.SetFocusedElementWithDirection(spItemToFocus, focusState, false /* animateIfBringIntoView */, focusNavigationDirection);
+				pFocused = focused;
 			}
 
 			return pFocused;
