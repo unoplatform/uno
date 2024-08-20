@@ -11,7 +11,7 @@ partial class SelectorItem
 	// If this item is unfocused, sets focus on the SelectorItem.
 	// Otherwise, sets focus to whichever element currently has focus
 	// (so focusState can be propagated).
-	private void FocusSelfOrChild(
+	internal void FocusSelfOrChild(
 		FocusState focusState,
 		bool animateIfBringIntoView,
 		out bool pFocused,
