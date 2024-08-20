@@ -90,13 +90,14 @@ public partial class ComboBox : Selector
 
 		if (_popup is Popup popup)
 		{
-			//TODO Uno specific: Ensures popup does not take focus when opened.
-			//This can be removed when the actual ComboBox code is fully ported
-			//from WinUI.
-			if (_popupBorder is { } border)
-			{
-				border.AllowFocusOnInteraction = false;
-			}
+			////TODO Uno specific: Ensures popup does not take focus when opened.
+			////This can be removed when the actual ComboBox code is fully ported
+			////from WinUI.
+			//if (_popupBorder is { } border)
+			//{
+			//	border.AllowFocusOnInteraction = false;
+			//	border.Child 
+			//}
 
 			popup.CustomLayouter = new DropDownLayouter(this, popup);
 
@@ -139,6 +140,9 @@ public partial class ComboBox : Selector
 			};
 		}
 
+		m_tpElementPopupChild = m_tpPopupPart?.Child as FrameworkElement;
+		SetupElementPopupChild();
+
 		if (IsEditable)
 		{
 			SetupEditableMode();
@@ -159,10 +163,9 @@ public partial class ComboBox : Selector
 
 		UpdateVisualState();
 
-		if (_popup != null)
+		if (m_tpPopupPart != null)
 		{
-			_popup.Closed += OnPopupClosed;
-			_popup.Opened += OnPopupOpened;
+			m_tpPopupPart.Closed += OnPopupClosed;
 		}
 
 		if (XamlRoot is null)
@@ -177,10 +180,9 @@ public partial class ComboBox : Selector
 	{
 		base.OnUnloaded();
 
-		if (_popup != null)
+		if (m_tpPopupPart != null)
 		{
-			_popup.Closed -= OnPopupClosed;
-			_popup.Opened -= OnPopupOpened;
+			m_tpPopupPart.Closed -= OnPopupClosed;
 		}
 
 		if (XamlRoot is not null)
@@ -190,16 +192,6 @@ public partial class ComboBox : Selector
 	}
 
 	private void OnXamlRootChanged(object sender, XamlRootChangedEventArgs e)
-	{
-		IsDropDownOpen = false;
-	}
-
-	private void OnPopupOpened(object? sender, object e)
-	{
-		IsDropDownOpen = true;
-	}
-
-	private void OnPopupClosed(object? sender, object e)
 	{
 		IsDropDownOpen = false;
 	}
@@ -367,43 +359,6 @@ public partial class ComboBox : Selector
 			&& selectionView.GetVisualTreeParent() != dropdownParent)
 		{
 			dropdownParent.AddChild(selectionView);
-		}
-	}
-
-	partial void OnIsDropDownOpenChangedPartial(bool oldIsDropDownOpen, bool newIsDropDownOpen)
-	{
-		if (_popup != null)
-		{
-			// This method will load the itempresenter children
-#if __ANDROID__
-			SetItemsPresenter((_popup.Child as ViewGroup).FindFirstChild<ItemsPresenter>());
-#elif __IOS__ || __MACOS__
-			SetItemsPresenter(_popup.Child.FindFirstChild<ItemsPresenter>());
-#endif
-
-			_popup.IsOpen = newIsDropDownOpen;
-		}
-
-		if (newIsDropDownOpen)
-		{
-			// Force a refresh of the popup's ItemPresenter
-			Refresh();
-
-			RaiseDropDownOpenChangedEvents(newIsDropDownOpen);
-
-			RestoreSelectedItem();
-
-			var index = SelectedIndex;
-			index = index == -1 ? 0 : index;
-			if (ContainerFromIndex(index) is ComboBoxItem container)
-			{
-				container.Focus(FocusState.Programmatic);
-			}
-		}
-		else
-		{
-			RaiseDropDownOpenChangedEvents(newIsDropDownOpen);
-			UpdateContentPresenter();
 		}
 	}
 

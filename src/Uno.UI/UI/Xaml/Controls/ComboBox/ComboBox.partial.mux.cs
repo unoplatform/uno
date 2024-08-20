@@ -166,6 +166,52 @@ partial class ComboBox
 		m_isEditModeConfigured = false;
 	}
 
+	private void SetupElementPopupChild()
+	{
+		if (m_tpElementPopupChild is null)
+		{
+			m_tpElementPopupChildCanvas = null;
+			return;
+		}
+
+		// Wire up CharacterReceived in our child so that we can handle typeahead if it's enabled.
+		// We know we can do this here, as with the other events, because we explicitly create m_tpElementPopupChild in SetupElementPopup.
+		m_tpElementPopupChild.CharacterReceived += OnPopupCharacterReceived;
+		m_pElementPopupChildCharacterReceivedToken.Disposable = Disposable.Create(() => m_tpElementPopupChild.CharacterReceived -= OnPopupCharacterReceived);
+
+		//Key down event handler.
+		// We have to hook the visual tree in two spots to catch all the keyboard events.  Once at the ComboBox and once for
+		// the visual root of the popup control.
+		m_tpElementPopupChild.KeyDown += OnKeyDownPrivate;
+		m_pElementPopupChildKeyDownToken.Disposable = Disposable.Create(() => m_tpElementPopupChild.KeyDown -= OnKeyDownPrivate);
+
+		m_tpElementPopupChild.KeyUp += OnKeyUpPrivate;
+		m_pElementPopupChildKeyUpToken.Disposable = Disposable.Create(() => m_tpElementPopupChild.KeyUp -= OnKeyUpPrivate);
+
+		// Got focus event handler
+		m_tpElementPopupChild.GotFocus += OnElementPopupChildGotFocus;
+		m_pElementPopupChildGotFocusToken.Disposable = Disposable.Create(() => m_tpElementPopupChild.GotFocus -= OnElementPopupChildGotFocus);
+
+		// Leave focus event handler
+		m_tpElementPopupChild.LostFocus += OnElementPopupChildLostFocus;
+		m_pElementPopupChildLostFocusToken.Disposable = Disposable.Create(() => m_tpElementPopupChild.LostFocus -= OnElementPopupChildLostFocus);
+
+		m_tpElementPopupChild.PointerEntered += OnElementPopupChildPointerEntered;
+		m_pElementPopupChildPointerEnteredToken.Disposable = Disposable.Create(() => m_tpElementPopupChild.PointerEntered -= OnElementPopupChildPointerEntered);
+
+		m_tpElementPopupChild.PointerExited += OnElementPopupChildPointerExited;
+		m_pElementPopupChildPointerExitedToken.Disposable = Disposable.Create(() => m_tpElementPopupChild.PointerExited -= OnElementPopupChildPointerExited);
+
+		m_tpElementPopupChild.SizeChanged += OnElementPopupChildSizeChanged;
+		m_pElementPopupChildISizeChangedToken.Disposable = Disposable.Create(() => m_tpElementPopupChild.SizeChanged -= OnElementPopupChildSizeChanged);
+
+		m_tpElementPopupChild.Loaded += OnElementPopupChildLoaded;
+		m_pElementPopupChildLoadedToken.Disposable = Disposable.Create(() => m_tpElementPopupChild.Loaded -= OnElementPopupChildLoaded);
+
+		Canvas spElementPopupChildCanvas = new();
+		m_tpElementPopupChildCanvas = spElementPopupChildCanvas;
+	}
+
 	private protected override void ChangeVisualState(bool useTransitions)
 	{
 		bool isPointerOver = m_IsPointerOverMain || m_IsPointerOverPopup;
@@ -650,7 +696,7 @@ partial class ComboBox
 		}
 
 		EnsurePropertyPathListener();
-		var strItem = TryGetStringValue(item/*, m_spPropertyPathListener.Get()*/);
+		var strItem = TryGetStringValue(item, m_spPropertyPathListener);
 
 		UpdateEditableTextBox(strItem, selectText, selectAll);
 	}
@@ -745,6 +791,21 @@ partial class ComboBox
 
 	private void OnOpen()
 	{
+
+#if HAS_UNO
+		// Force a refresh of the popup's ItemPresenter
+		Refresh();
+
+		RestoreSelectedItem();
+
+		var index = SelectedIndex;
+		index = index == -1 ? 0 : index;
+		if (ContainerFromIndex(index) is ComboBoxItem container)
+		{
+			container.Focus(FocusState.Programmatic);
+		}
+#endif
+
 		// TODO Uno: BackButton support
 		//if (DXamlCore.Current.BackButtonSupported)
 		//{
@@ -765,6 +826,15 @@ partial class ComboBox
 
 		if (m_tpPopupPart is not null)
 		{
+#if HAS_UNO // Force load children
+			// This method will load the itempresenter children
+#if __ANDROID__
+			SetItemsPresenter((_popup.Child as ViewGroup).FindFirstChild<ItemsPresenter>());
+#elif __IOS__ || __MACOS__
+			SetItemsPresenter(_popup.Child.FindFirstChild<ItemsPresenter>());
+#endif
+#endif
+
 			m_tpPopupPart.IsOpen = true;
 
 			bool isDefaultShadowEnabled = IsDefaultShadowEnabled(this);
@@ -1194,7 +1264,7 @@ partial class ComboBox
 		}
 
 		EnsurePropertyPathListener();
-		var itemString = TryGetStringValue(item); //, m_spPropertyPathListener); TODO Uno: Missing PropertyPathListener support
+		var itemString = TryGetStringValue(item, m_spPropertyPathListener);
 		UpdateEditableContentPresenterTextBlock(itemString);
 	}
 
@@ -1376,17 +1446,10 @@ partial class ComboBox
 
 	protected override void OnKeyDown(KeyRoutedEventArgs args)
 	{
-#if HAS_UNO // TODO Uno: This code is customized version to working navigation handling discrepancies and CharacterReceived support missing.
-		args.Handled = TryHandleKeyDown(args, null);
-
 		if (!args.Handled)
 		{
 			OnKeyDownPrivate(null, args);
 		}
-
-		// Temporary as Uno doesn't yet implement CharacterReceived event.
-		OnCharacterReceived(this, new CharacterReceivedRoutedEventArgs(args.UnicodeKey ?? default, default));
-#endif
 	}
 
 	protected override void OnKeyUp(KeyRoutedEventArgs args) => OnKeyUpPrivate(null, args);
@@ -1394,6 +1457,10 @@ partial class ComboBox
 	private void OnKeyDownPrivate(object? pSender, KeyRoutedEventArgs pArgs)
 	{
 		base.OnKeyDown(pArgs);
+
+#if HAS_UNO // TODO Uno: This code is customized version to working navigation handling discrepancies and CharacterReceived support missing.
+		pArgs.Handled = TryHandleKeyDown(pArgs, null);
+#endif
 
 		var key = pArgs.Key;
 		var originalKey = pArgs.OriginalKey;
@@ -1431,6 +1498,14 @@ partial class ComboBox
 
 		eventHandled = pArgs.Handled;
 		m_handledGamepadOrRemoteKeyDown = eventHandled && XboxUtility.IsGamepadNavigationInput(originalKey);
+
+#if HAS_UNO // CharacterReceived is not supported yet, handle it here.
+		if (!pArgs.Handled)
+		{
+			// Temporary as Uno doesn't yet implement CharacterReceived event.
+			OnCharacterReceived(this, new CharacterReceivedRoutedEventArgs(pArgs.UnicodeKey ?? default, default));
+		}
+#endif
 	}
 
 	private void OnTextBoxPreviewKeyDown(object pSender, KeyRoutedEventArgs pArgs)
@@ -2153,6 +2228,50 @@ partial class ComboBox
 		}
 	}
 
+	private void OnElementPopupChildGotFocus(
+		object pSender,
+		RoutedEventArgs pArgs)
+	{
+
+		global::System.Diagnostics.Debug.Assert(!IsSmallFormFactor, "OnElementPopupChildGotFocus is not used in small form factor mode");
+
+		var hasFocus = HasFocus();
+		FocusChanged(hasFocus);
+	}
+
+	private void OnElementPopupChildLostFocus(
+		 object pSender,
+		 RoutedEventArgs pArgs)
+	{
+
+		global::System.Diagnostics.Debug.Assert(!IsSmallFormFactor, "OnElementPopupChildLostFocus is not used in small form factor mode");
+
+		var hasFocus = HasFocus();
+		FocusChanged(hasFocus);
+	}
+
+	private void OnElementPopupChildPointerEntered(
+		 object pSender,
+		 PointerRoutedEventArgs pArgs)
+	{
+
+		global::System.Diagnostics.Debug.Assert(!IsSmallFormFactor, "OnElementPopupChildPointerEntered is not used in small form factor mode");
+
+		m_IsPointerOverPopup = true;
+		UpdateVisualState();
+	}
+
+	private void OnElementPopupChildPointerExited(
+		 object pSender,
+		 PointerRoutedEventArgs pArgs)
+	{
+
+		m_IsPointerOverPopup = false;
+		global::System.Diagnostics.Debug.Assert(!IsSmallFormFactor, "OnElementPopupChildPointerExited is not used in small form factor mode");
+
+		UpdateVisualState();
+	}
+
 	private void OnDropDownOverlayPointerEntered(object sender, PointerRoutedEventArgs args)
 	{
 		m_IsPointerOverDropDownOverlay = true;
@@ -2163,6 +2282,16 @@ partial class ComboBox
 	{
 		m_IsPointerOverDropDownOverlay = false;
 		UpdateVisualState();
+	}
+
+	private void OnElementPopupChildSizeChanged(
+		object pSender,
+		SizeChangedEventArgs pArgs)
+	{
+
+		global::System.Diagnostics.Debug.Assert(!IsSmallFormFactor, "OnElementPopupChildSizeChanged is not used in small form factor mode");
+
+		ArrangePopup(false);
 	}
 
 	private void OnTextBoxSizeChanged(object sender, SizeChangedEventArgs args) => ArrangePopup(false);
@@ -2179,6 +2308,65 @@ partial class ComboBox
 
 		m_candidateWindowBoundsRect = candidateWindowBounds;
 		ArrangePopup(false);
+	}
+
+	private void OnElementPopupChildLoaded(
+		object pSender,
+		RoutedEventArgs pArgs)
+	{
+		// Ensure searched item gets selected when the popup opens.
+		if (IsEditable)
+		{
+			var selectionChangedTrigger = SelectionChangedTrigger;
+
+			int currentSelectedIndex = 0;
+
+			if (selectionChangedTrigger == ComboBoxSelectionChangedTrigger.Always || !IsSearchResultIndexSet())
+			{
+				int selectedIndex = SelectedIndex;
+
+				currentSelectedIndex = selectedIndex;
+			}
+			else
+			{
+				// Ensure searched item gets selected.
+				OverrideSelectedIndexForVisualStates(m_searchResultIndex);
+
+				currentSelectedIndex = m_searchResultIndex;
+			}
+
+			if (currentSelectedIndex >= 0)
+			{
+				// TODO Uno: Implement ScrollIntoView in Selector
+				//ScrollIntoView(
+				//	currentSelectedIndex,
+				//	false /*isGroupItemIndex*/,
+				//	false /*isHeader*/,
+				//	false /*isFooter*/,
+				//	false /*isFromPublicAPI*/,
+				//	true  /*ensureContainerRealized*/,
+				//	false /*animateIfBringIntoView*/,
+				//	ScrollIntoViewAlignment.Default);
+			}
+		}
+	}
+
+	private void OnPopupClosed(object? sender, object? args)
+	{
+		// Under most circumstances, this is unnecessary as it is ComboBox that closes the Popup. However for certain light-dismiss
+		// scenarios (i.e. window resize) the Popup will close itself, so we need to close the ComboBox here to keep everything in
+		// sync.
+		if (m_tpPopupPart is not null)
+		{
+			// Popup.Closed is an asynchronous event, however, so we should check to make sure that the popup is still closed
+			// before we do anything.
+			var popupIsOpen = m_tpPopupPart.IsOpen;
+
+			if (!popupIsOpen)
+			{
+				IsDropDownOpen = false;
+			}
+		}
 	}
 
 	protected override void OnItemsChanged(object e)
@@ -2252,6 +2440,43 @@ partial class ComboBox
 				parentComboBox.ProcessSearch(keyCode);
 			}
 		}
+	}
+
+	// Given a DependencyObject, attempt to find a ComboBox ancestor in its logical tree.
+	// This method allows us to go from items within the dropdown to the ComboBox, and is useful for
+	// scenarios where we need to get to the ComboBox from the items inside (like TypeAhead).
+	private ComboBox? FindParentComboBoxFromDO(DependencyObject sender)
+	{
+		ComboBox? parentComboBox = null;
+		var current = sender as FrameworkElement;
+
+		while (current is not null)
+		{
+			if (current is ComboBox comboBox)
+			{
+				parentComboBox = comboBox;
+
+				break;
+			}
+
+			DependencyObject parent = current.Parent;
+
+			// Try querying for our templated parent if the logical
+			// parent is null to handle the case where our target
+			// element is a template part.  We don't just use
+			// VisualTreeHelper because that wouldn't return our
+			// parent popup; it would give us the popup root, which
+			// isn't useful.
+			if (parent is null)
+			{
+				DependencyObject parentDO = current.TemplatedParent;
+				parent = parentDO;
+			}
+
+			current = parent as FrameworkElement;
+		}
+
+		return parentComboBox;
 	}
 
 	private bool HasSearchStringTimedOut()

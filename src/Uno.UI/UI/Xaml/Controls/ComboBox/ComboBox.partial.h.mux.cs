@@ -71,6 +71,18 @@ partial class ComboBox
 	private FrameworkElement m_tpElementPopupChild;
 	private FrameworkElement m_tpElementPopupContent;
 
+	private readonly SerialDisposable m_pElementPopupChildKeyDownToken = new();
+	private readonly SerialDisposable m_pElementPopupChildKeyUpToken = new();
+	private readonly SerialDisposable m_pElementPopupChildGotFocusToken = new();
+	private readonly SerialDisposable m_pElementPopupChildLostFocusToken = new();
+	private readonly SerialDisposable m_pElementPopupChildPointerEnteredToken = new();
+	private readonly SerialDisposable m_pElementPopupChildPointerExitedToken = new();
+	private readonly SerialDisposable m_pElementPopupChildISizeChangedToken = new();
+	private readonly SerialDisposable m_pElementOutSidePopupPointerPressedToken = new();
+	private readonly SerialDisposable m_closedStateStoryboardCompletedToken = new();
+	private readonly SerialDisposable m_pElementPopupChildCharacterReceivedToken = new();
+	private readonly SerialDisposable m_pElementPopupChildLoadedToken = new();
+
 	private readonly SerialDisposable m_spEditableTextPointerPressedEventHandler = new();
 	private readonly SerialDisposable m_spEditableTextTappedEventHandler = new();
 	private readonly SerialDisposable m_spEditableTextKeyDownHandler = new();
@@ -84,6 +96,7 @@ partial class ComboBox
 	private object m_tpEmptyContent;
 	private TextBlock m_tpEditableContentPresenterTextBlock;
 	private ComboBoxItem m_tpSwappedOutComboBoxItem;
+	private Canvas m_tpElementPopupChildCanvas;
 
 	private Storyboard m_tpClosedStoryboard;
 	private DependencyObject m_tpGeneratedContainerForContentPresenter;
