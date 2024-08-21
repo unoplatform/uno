@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
 	<PropertyGroup>
 		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
 		<Nullable>enable</Nullable>
@@ -49,9 +48,4 @@
 			<PackagePath>buildTransitive</PackagePath>
 		</Content>
 	</ItemGroup>
-
-	<ItemGroup>
-	  <Compile Remove="DBus\DBusHelper.cs" />
-	</ItemGroup>
-
 </Project>

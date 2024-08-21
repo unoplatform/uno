@@ -1,17 +1,19 @@
-﻿#nullable enable
-
-using System;
+﻿using System;
 using System.Linq;
 using Windows.Media.Playback;
 using LibVLCSharp.Shared;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
-using Uno.Foundation.Logging;
+using Uno.Extensions;
+using Uno.Foundation.Extensibility;
+using Uno.Logging;
 using Uno.UI.Runtime.Skia;
-using LogLevel = Uno.Foundation.Logging.LogLevel;
+using Uno.WinUI.Runtime.Skia.X11;
 
-namespace Uno.WinUI.Runtime.Skia.X11;
+[assembly: ApiExtension(typeof(IMediaPlayerPresenterExtension), typeof(Uno.UI.MediaPlayer.Skia.X11.X11MediaPlayerPresenterExtension), typeof(Windows.Media.Playback.MediaPlayer))]
+
+namespace Uno.UI.MediaPlayer.Skia.X11;
 
 internal class X11MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 {
@@ -53,7 +55,7 @@ internal class X11MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 
 			if (display == IntPtr.Zero)
 			{
-				if (this.Log().IsEnabled(LogLevel.Error))
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
 				{
 					this.Log().Error("XLIB ERROR: Cannot connect to X server");
 				}
@@ -77,7 +79,7 @@ internal class X11MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 
 			_ = XLib.XFlush(display); // unnecessary on most Xlib implementations
 
-			if (this.Log().IsEnabled(LogLevel.Trace))
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Trace))
 			{
 				this.Log().Trace("Created media player window.");
 			}

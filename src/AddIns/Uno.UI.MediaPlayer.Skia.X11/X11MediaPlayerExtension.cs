@@ -11,19 +11,22 @@ using Windows.Storage.Streams;
 using LibVLCSharp.Shared;
 using Microsoft.UI.Xaml;
 using Uno.Extensions;
+using Uno.Foundation.Extensibility;
 using Uno.Helpers;
 using Uno.Media.Playback;
 using Uno.UI.Dispatching;
 using MediaPlayer = Windows.Media.Playback.MediaPlayer;
 
-namespace Uno.WinUI.Runtime.Skia.X11;
+[assembly: ApiExtension(typeof(IMediaPlayerExtension), typeof(Uno.UI.MediaPlayer.Skia.X11.X11MediaPlayerExtension), typeof(MediaPlayer))]
+
+namespace Uno.UI.MediaPlayer.Skia.X11;
 
 internal class X11MediaPlayerExtension : IMediaPlayerExtension
 {
 	private static readonly LibVLC _vlc = new LibVLC(":start-paused");
 
 	private const string MsAppXScheme = "ms-appx";
-	private static readonly ConcurrentDictionary<MediaPlayer, X11MediaPlayerExtension> _mediaPlayerToExtension = new();
+	private static readonly ConcurrentDictionary<Windows.Media.Playback.MediaPlayer, X11MediaPlayerExtension> _mediaPlayerToExtension = new();
 
 	private readonly DispatcherTimer _timer;
 
@@ -88,7 +91,7 @@ internal class X11MediaPlayerExtension : IMediaPlayerExtension
 
 			if (VlcPlayer.Media is { } m)
 			{
-				m.ParsedChanged += (sender, args) => OnLoadedMetadata(args.ParsedStatus);
+				m.ParsedChanged += (_, args) => OnLoadedMetadata(args.ParsedStatus);
 			}
 		}
 	}
@@ -109,11 +112,11 @@ internal class X11MediaPlayerExtension : IMediaPlayerExtension
 		}
 	}
 
-	internal MediaPlayer Player { get; }
+	internal Windows.Media.Playback.MediaPlayer Player { get; }
 
 	internal LibVLCSharp.Shared.MediaPlayer VlcPlayer { get; } = new LibVLCSharp.Shared.MediaPlayer(_vlc);
 
-	public X11MediaPlayerExtension(MediaPlayer player)
+	public X11MediaPlayerExtension(Windows.Media.Playback.MediaPlayer player)
 	{
 		Player = player;
 		_mediaPlayerToExtension.TryAdd(player, this);
@@ -133,7 +136,7 @@ internal class X11MediaPlayerExtension : IMediaPlayerExtension
 		_timer.Start();
 	}
 
-	internal static X11MediaPlayerExtension? GetByMediaPlayer(MediaPlayer player) => _mediaPlayerToExtension.GetValueOrDefault(player);
+	internal static X11MediaPlayerExtension? GetByMediaPlayer(Windows.Media.Playback.MediaPlayer player) => _mediaPlayerToExtension.GetValueOrDefault(player);
 
 	public IMediaPlayerEventsExtension? Events { get; set; }
 

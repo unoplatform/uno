@@ -11,10 +11,12 @@ public sealed class ApiExtensionAttribute : Attribute
 	/// </summary>
 	/// <param name="extendedType">The type to extend</param>
 	/// <param name="extensionType">The type to create an instance from</param>
-	public ApiExtensionAttribute(Type extendedType, Type extensionType)
+	/// <param name="ownerType">The owner type</param>
+	public ApiExtensionAttribute(Type extendedType, Type extensionType, Type ownerType = null)
 	{
 		ExtensionType = extensionType;
 		ExtendedType = extendedType;
+		OwnerType = ownerType;
 	}
 
 	/// <summary>
@@ -26,4 +28,9 @@ public sealed class ApiExtensionAttribute : Attribute
 	/// The Type to create
 	/// </summary>
 	public Type ExtendedType { get; }
+
+	/// <summary>
+	/// The Type to create
+	/// </summary>
+	public Type OwnerType { get; }
 }

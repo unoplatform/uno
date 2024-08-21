@@ -606,7 +606,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			foreach (var registration in query)
 			{
-				writer.AppendLineIndented($"global::Uno.Foundation.Extensibility.ApiExtensibility.Register(typeof(global::{registration.ElementAt(0).Value}), o => new global::{registration.ElementAt(1).Value}(o));");
+				if (registration.Length == 3)
+				{
+					writer.AppendLineIndented($"global::Uno.Foundation.Extensibility.ApiExtensibility.Register(typeof(global::{registration.ElementAt(0).Value}), o => new global::{registration.ElementAt(1).Value}(o));");
+				}
+				else if (registration.Length == 4)
+				{
+					writer.AppendLineIndented($"global::Uno.Foundation.Extensibility.ApiExtensibility.Register<global::{registration.ElementAt(2).Value}>(typeof(global::{registration.ElementAt(0).Value}), o => new global::{registration.ElementAt(1).Value}(o));");
+				}
+				else
+				{
+					throw new InvalidOperationException($"ApiExtensionAttribute should have ");
+				}
 			}
 		}
 
