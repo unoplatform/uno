@@ -95,7 +95,7 @@ namespace Private.Infrastructure
 #endif
 			}
 
-			public static void ScrollMouseWheel(CalendarView cv, int i)
+			public static void ScrollMouseWheel(UIElement cv, int i)
 			{
 				throw new System.NotImplementedException();
 			}
