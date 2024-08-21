@@ -12,7 +12,7 @@ This guide will walk you through the necessary steps to localize an Uno Platform
 > [!TIP]
 > For a step-by-step guide to installing the prerequisites for your preferred IDE and environment, consult the [Get Started guide](../get-started.md).
 
-## Step-by-steps
+## Step-by-step
 
 1. Create a new Uno Platform application, following the instructions in [Get Started guide](../get-started.md).
 1. Modify the content of `MainPage`:

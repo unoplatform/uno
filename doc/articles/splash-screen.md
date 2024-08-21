@@ -13,7 +13,7 @@ While the new templates simplify adding a splash screen, this article covers how
 >
 > See the guide [How-To: Get Started with Uno.Resizetizer](xref:Uno.Resizetizer.GettingStarted#unosplashscreen) for more information.
 
-## Step-by-steps
+## Step-by-step
 
 ### 1. Shared splash screen image resources
 
