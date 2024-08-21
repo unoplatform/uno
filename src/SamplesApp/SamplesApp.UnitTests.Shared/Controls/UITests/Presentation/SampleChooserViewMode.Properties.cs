@@ -24,6 +24,7 @@ using Microsoft.UI.Xaml.Controls;
 #if HAS_UNO
 using Uno.UI.Xaml.Core;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
+using Uno.UI;
 #endif
 
 namespace SampleControl.Presentation
@@ -446,6 +447,18 @@ namespace SampleControl.Presentation
 				}
 			}
 		}
+
+#if HAS_UNO
+		public bool PreventLightDismissOnWindowDeactivated
+		{
+			get => FeatureConfiguration.Popup.PreventLightDismissOnWindowDeactivated;
+			set
+			{
+				FeatureConfiguration.Popup.PreventLightDismissOnWindowDeactivated = value;
+				RaisePropertyChanged();
+			}
+		}
+#endif
 
 		public bool UseDarkTheme
 		{
