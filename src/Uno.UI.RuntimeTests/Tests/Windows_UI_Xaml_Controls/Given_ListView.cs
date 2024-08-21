@@ -31,6 +31,8 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			TestServices.WindowHelper.WindowContent = listViewBase;
 			await TestServices.WindowHelper.WaitForLoaded(listViewBase);
 
+			loggingSelectionInfo.SafeMoveCurrentToPosition(0);
+
 			// We don't use ActualWidth because of https://github.com/unoplatform/uno/issues/15982
 			var tapTarget = listViewBase.TransformToVisual(null).TransformPoint(new Point(112 * 0.9, listViewBase.ActualHeight / 2));
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");

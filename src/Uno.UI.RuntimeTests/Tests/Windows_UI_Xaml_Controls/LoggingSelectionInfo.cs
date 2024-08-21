@@ -90,6 +90,11 @@ internal class LoggingSelectionInfo : CollectionView, ISelectionInfo
 
 	public void SafeMoveCurrentToPosition(int index)
 	{
+		if (index == -1)
+		{
+			MethodLog.Add("MoveCurrentToPosition() - Skipped due to invalid index (-1)");
+			return;
+		}
 		if (IsUsingISelectionInfo)
 		{
 			MethodLog.Add("MoveCurrentToPosition() - Skipped due to ISelectionInfo usage");
