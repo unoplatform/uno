@@ -184,6 +184,22 @@ partial class ComboBox
 	public DataTemplate SelectionBoxItemTemplate { get; private set; }
 
 	/// <summary>
+	/// Gets or sets a value that indicates what action causes a SelectionChanged event to occur.
+	/// </summary>
+	public ComboBoxSelectionChangedTrigger SelectionChangedTrigger
+	{
+		get => (ComboBoxSelectionChangedTrigger)GetValue(SelectionChangedTriggerProperty);
+		set => SetValue(SelectionChangedTriggerProperty, value);
+	}
+
+	public static DependencyProperty SelectionChangedTriggerProperty { get; } =
+		DependencyProperty.Register(
+			nameof(SelectionChangedTrigger),
+			typeof(ComboBoxSelectionChangedTrigger),
+			typeof(ComboBox),
+			new FrameworkPropertyMetadata(default(ComboBoxSelectionChangedTrigger)));
+
+	/// <summary>
 	/// Gets an object that provides calculated values that can be referenced
 	/// as TemplateBinding sources when defining templates for a ComboBox control.
 	/// </summary>
