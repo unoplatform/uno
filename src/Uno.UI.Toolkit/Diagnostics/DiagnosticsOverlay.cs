@@ -11,6 +11,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 
 namespace Uno.Diagnostics.UI;
@@ -110,7 +111,152 @@ public sealed partial class DiagnosticsOverlay : Control
 			overlay.EnqueueUpdate();
 		};
 
-		DefaultStyleKey = typeof(DiagnosticsOverlay);
+		Style = (Style)XamlReader.Load("""
+			<Style
+					xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:local="using:Uno.Diagnostics.UI"
+					xmlns:diag="using:Uno.Diagnostics.UI"
+					xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+					xmlns:mux="using:Microsoft.UI.Xaml.Controls"
+					TargetType="local:DiagnosticsOverlay">
+				<Setter Property="BorderThickness" Value="1" />
+				<Setter Property="CornerRadius" Value="4" />
+				<Setter Property="Height" Value="32" />
+				<Setter Property="Template">
+					<Setter.Value>
+						<ControlTemplate TargetType="local:DiagnosticsOverlay">
+							<Canvas Height="{TemplateBinding Height}">
+								<Canvas.Resources>
+									<ResourceDictionary>
+										<x:String x:Key="AnchorIcon">M0 16.3626V1.36258C0 1.22716 0.0494792 1.10998 0.148438 1.01102C0.247396 0.912059 0.364583 0.862579 0.5 0.862579C0.635417 0.862579 0.752604 0.912059 0.851562 1.01102C0.950521 1.10998 1 1.22716 1 1.36258V16.3626C1 16.498 0.950521 16.6152 0.851562 16.7141C0.752604 16.8131 0.635417 16.8626 0.5 16.8626C0.364583 16.8626 0.247396 16.8131 0.148438 16.7141C0.0494792 16.6152 0 16.498 0 16.3626ZM3 16.3626V1.36258C3 1.22716 3.04948 1.10998 3.14844 1.01102C3.2474 0.912059 3.36458 0.862579 3.5 0.862579C3.63542 0.862579 3.7526 0.912059 3.85156 1.01102C3.95052 1.10998 4 1.22716 4 1.36258V16.3626C4 16.498 3.95052 16.6152 3.85156 16.7141C3.7526 16.8131 3.63542 16.8626 3.5 16.8626C3.36458 16.8626 3.2474 16.8131 3.14844 16.7141C3.04948 16.6152 3 16.498 3 16.3626Z</x:String>
+										<Style TargetType="Button">
+											<Setter Property="Background" Value="Transparent" />
+											<Setter Property="BorderBrush" Value="Transparent" />
+											<Setter Property="Padding" Value="0" />
+											<Setter Property="BorderThickness" Value="0" />
+										</Style>
+										<ResourceDictionary.ThemeDictionaries>
+											<ResourceDictionary x:Name="Light">
+												<SolidColorBrush x:Key="DiagnosticsOverlayBackgroundBrush">#F9F9F9</SolidColorBrush>
+												<SolidColorBrush x:Key="DiagnosticsOverlayBorderBrush">#EBEBEB</SolidColorBrush>
+												<SolidColorBrush x:Key="DiagnosticsAnchorFillBrush" Opacity="0.6">#000000</SolidColorBrush>
+											</ResourceDictionary>
+											<ResourceDictionary x:Name="Dark">
+												<SolidColorBrush x:Key="DiagnosticsOverlayBackgroundBrush">#282828</SolidColorBrush>
+												<SolidColorBrush x:Key="DiagnosticsOverlayBorderBrush">#1C1C1C</SolidColorBrush>
+												<SolidColorBrush x:Key="DiagnosticsAnchorFillBrush" Opacity="0.8">#FFFFFF</SolidColorBrush>
+											</ResourceDictionary>
+										</ResourceDictionary.ThemeDictionaries>
+									</ResourceDictionary>
+								</Canvas.Resources>
+								<VisualStateManager.VisualStateGroups>
+									<VisualStateGroup x:Name="DisplayMode">
+										<VisualState x:Name="Compact">
+											<VisualState.Setters>
+												<Setter Target="PART_Elements.MaxWidth" Value="0" />
+											</VisualState.Setters>
+										</VisualState>
+										<VisualState x:Name="Expanded">
+											<VisualState.Setters>
+												<Setter Target="PART_Elements.MaxWidth" Value="512" />
+											</VisualState.Setters>
+										</VisualState>
+									</VisualStateGroup>
+									<VisualStateGroup x:Name="Notification">
+										<VisualStateGroup.Transitions>
+											<VisualTransition To="Collapsed">
+												<Storyboard>
+													<DoubleAnimation Storyboard.TargetName="PART_Notification"
+																	 Storyboard.TargetProperty="Opacity"
+																	 To="0"
+																	 Duration="0:0:1" />
+												</Storyboard>
+											</VisualTransition>
+											<VisualTransition To="Visible">
+												<Storyboard>
+													<DoubleAnimation Storyboard.TargetName="PART_Notification"
+																	 Storyboard.TargetProperty="Opacity"
+																	 From="0.5"
+																	 To="1"
+																	 Duration="0:0:0.2" />
+												</Storyboard>
+											</VisualTransition>
+										</VisualStateGroup.Transitions>
+										<VisualState x:Name="Collapsed">
+											<VisualState.Setters>
+												<Setter Target="PART_Notification.MaxWidth" Value="0" />
+											</VisualState.Setters>
+										</VisualState>
+										<VisualState x:Name="Visible">
+											<VisualState.Setters>
+												<Setter Target="PART_Notification.MaxWidth" Value="512" />
+												<Setter Target="PART_Notification.Opacity" Value="1" />
+											</VisualState.Setters>
+										</VisualState>
+									</VisualStateGroup>
+									<VisualStateGroup x:Name="HorizontalDirection">
+										<VisualState x:Name="Right" />
+										<VisualState x:Name="Left">
+											<VisualState.Setters>
+												<Setter Target="PART_Anchor.(Grid.Column)" Value="1" />
+												<Setter Target="PART_Elements.(Grid.Column)" Value="0" />
+												<Setter Target="PART_Notification.(local:RelativePlacement.Mode)" Value="Left" />
+											</VisualState.Setters>
+										</VisualState>
+									</VisualStateGroup>
+								</VisualStateManager.VisualStateGroups>
+
+								<Grid
+									x:Name="PART_Toolbar"
+									BorderThickness="{TemplateBinding BorderThickness}"
+									BorderBrush="{ThemeResource DiagnosticsOverlayBorderBrush}"
+									CornerRadius="{TemplateBinding CornerRadius}"
+									Height="{TemplateBinding Height}"
+									Background="{ThemeResource DiagnosticsOverlayBackgroundBrush}">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="Auto" />
+										<ColumnDefinition Width="Auto" />
+									</Grid.ColumnDefinitions>
+
+									<Border
+										x:Name="PART_Anchor"
+										Grid.Column="0"
+										BorderThickness="0,0,1,0"
+										BorderBrush="{ThemeResource DiagnosticsOverlayBorderBrush}"
+										Background="{ThemeResource DiagnosticsOverlayBackgroundBrush}">
+										<Path
+											Stretch="Uniform"
+											Width="12"
+											Height="16"
+											VerticalAlignment="Center"
+											HorizontalAlignment="Center"
+											Data="{StaticResource AnchorIcon}"
+											Fill="{ThemeResource DiagnosticsAnchorFillBrush}" />
+									</Border>
+
+									<StackPanel
+										x:Name="PART_Elements"
+										Grid.Column="1"
+										MaxWidth="0"
+										Spacing="4"
+										Padding="4,0"
+										Orientation="Horizontal"
+										VerticalAlignment="Center"/>
+								</Grid>
+
+								<ContentPresenter
+									x:Name="PART_Notification"
+									local:RelativePlacement.Mode="Right"
+									Opacity="0.5"
+									VerticalAlignment="Center" />
+							</Canvas>
+						</ControlTemplate>
+					</Setter.Value>
+				</Setter>
+			</Style>
+			""");
 	}
 
 	/// <summary>
