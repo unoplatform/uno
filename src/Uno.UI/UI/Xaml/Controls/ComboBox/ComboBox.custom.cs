@@ -1,7 +1,7 @@
 ﻿#nullable enable
 
 using System;
-using Microsoft.UI.Xaml.Automation.Peers;
+using DirectUI;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
@@ -365,6 +365,14 @@ public partial class ComboBox : Selector
 	internal bool TryHandleKeyDown(KeyRoutedEventArgs args, ComboBoxItem? focusedContainer)
 	{
 		if (!IsEnabled)
+		{
+			return false;
+		}
+
+		var nModifierKeys = CoreImports.Input_GetKeyboardModifiers();
+
+		// Editable and Alt key are handled in ported code.
+		if (IsEditable || 0 != (nModifierKeys & VirtualKeyModifiers.Menu))
 		{
 			return false;
 		}

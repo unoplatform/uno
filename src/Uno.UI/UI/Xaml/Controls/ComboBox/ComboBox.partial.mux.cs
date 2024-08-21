@@ -1692,13 +1692,15 @@ partial class ComboBox
 					{
 						newFocusedIndex = newFocusedIndex < 0 ? 0 : newFocusedIndex;
 					}
+					break;
 				}
 				else if (0 != (nModifierKeys & VirtualKeyModifiers.Menu))
 				{
 					IsDropDownOpen = false;
 					handled = true;
+					break;
 				}
-				break;
+				goto case VirtualKey.Home;
 			case VirtualKey.Home:
 			case VirtualKey.End:
 			case VirtualKey.PageUp:
