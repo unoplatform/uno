@@ -118,6 +118,13 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 				InitializePartialReload();
 				InitializeXamlReader();
 
+				if (!_serverMetadataUpdatesEnabled
+					&& !_supportsLightweightHotReload
+					&& !_supportsXamlReader)
+				{
+					_status.ReportInvalidRuntime();
+				}
+
 				ConfigureServer message = new(_projectPath, _xamlPaths, GetMetadataUpdateCapabilities(), _serverMetadataUpdatesEnabled, config.MSBuildProperties);
 
 				await _rcClient.SendMessage(message);

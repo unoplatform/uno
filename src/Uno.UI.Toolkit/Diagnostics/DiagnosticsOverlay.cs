@@ -89,8 +89,8 @@ public sealed partial class DiagnosticsOverlay : Control
 		root.Changed += static (snd, e) =>
 		{
 			var overlay = Get(snd);
-			var context = ViewContext.TryCreate(overlay);
-			if (context != overlay._context) // I.e. dispatcher changed ... is this even possible ???
+
+			if (ViewContext.TryCreate(overlay) is { } context) // I.e. dispatcher changed ... is this even possible ???
 			{
 				lock (overlay._updateGate)
 				{
@@ -103,9 +103,11 @@ public sealed partial class DiagnosticsOverlay : Control
 					{
 						element.Dispose();
 					}
+
 					overlay._elements.Clear();
 				}
 			}
+
 			overlay.UpdatePlacement();
 			overlay.EnqueueUpdate();
 		};
