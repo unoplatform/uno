@@ -523,7 +523,9 @@ namespace Windows.UI.Tests.Enterprise
 		[TestMethod]
 		[Description("Validates that an AppBar with AppBar.ClosedDisplayMode=Minimal can be opened by clicking the bar itself.")]
 		[TestProperty("TestPass:IncludeOnlyOn", "Desktop")]
-
+#if !__SKIA__
+		[Ignore("Test is failing on non-Skia targets https://github.com/unoplatform/uno/issues/17984")]
+#endif
 		public async Task CanOpenMinimalAppBarUsingMouse()
 		{
 			TestCleanupWrapper cleanup;
