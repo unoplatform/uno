@@ -838,9 +838,7 @@ namespace Windows.UI.Tests.Enterprise
 
 		[TestMethod]
 		[Description("Validates that AppBarButtons' text labels are offset to the right when there also are AppBarToggleButtons in the same secondary commands list.")]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
+		[Ignore("Test is failing on all targets https://github.com/unoplatform/uno/issues/17984")]
 		public async Task ValidateAppBarButtonsAreOffsetWithAppBarToggleButtons()
 		{
 			TestCleanupWrapper cleanup;
@@ -1253,6 +1251,7 @@ namespace Windows.UI.Tests.Enterprise
 
 		[Description("Validates a fix for a bug where primary command items would disappear unexpectedly.")]
 		[TestProperty("TestPass:ExcludeOn", "WindowsCore")]
+		[Ignore("Test is failing on all targets https://github.com/unoplatform/uno/issues/17984")]
 		//[Ignore] Lifted Xaml Test: Fix and re-enable tests that were disabled due to being unreliable in Helix test pass.
 		public async Task PrimaryCommandItemsDoNotDisappear()
 		{

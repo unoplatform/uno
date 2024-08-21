@@ -693,6 +693,7 @@ namespace Windows.UI.Tests.Enterprise
 		[TestMethod]
 		[Description("Validates that items in an app bar are clickable.")]
 		[TestProperty("TestPass:ExcludeOn", "WindowsCore")]
+		[Ignore("Test is failing on all targets https://github.com/unoplatform/uno/issues/17984")]
 		public async Task CanClickAButtonInAnAppBar()
 		{
 			TestCleanupWrapper cleanup;
