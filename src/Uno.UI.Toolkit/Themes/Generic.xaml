@@ -9,7 +9,7 @@
 				<ControlTemplate TargetType="toolkit:ElevatedView">
 					<Grid>
 						<Canvas x:Name="PART_ShadowHost" />
-						
+						<Border x:Name="DummyBorder" />
 						<Border x:Name="PART_Border"
 								Background="{TemplateBinding Background}"
 								BorderBrush="{TemplateBinding BorderBrush}"
