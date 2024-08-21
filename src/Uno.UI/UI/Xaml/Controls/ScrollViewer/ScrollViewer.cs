@@ -1088,7 +1088,8 @@ namespace Microsoft.UI.Xaml.Controls
 		private void UpdateSizeChangedSubscription(bool isCleanupRequired = false)
 		{
 			_sizeChangedSubscription.Disposable = null;
-			if (Content is IFrameworkElement element)
+			if (!isCleanupRequired &&
+				Content is IFrameworkElement element)
 			{
 				element.SizeChanged += OnElementSizeChanged;
 				_sizeChangedSubscription.Disposable = Disposable.Create(() =>
