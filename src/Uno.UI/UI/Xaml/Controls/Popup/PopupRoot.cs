@@ -9,6 +9,12 @@ using Uno.UI.DataBinding;
 using Windows.Foundation;
 using Windows.System;
 
+#if HAS_UNO_WINUI
+using _WindowActivatedEventArgs = Microsoft.UI.Xaml.WindowActivatedEventArgs;
+#else
+using _WindowActivatedEventArgs = Windows.UI.Core.WindowActivatedEventArgs;
+#endif
+
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 internal partial class PopupRoot : Panel
@@ -48,7 +54,7 @@ internal partial class PopupRoot : Panel
 		}
 	}
 
-	private void OnWindowActivated(object sender, WindowActivatedEventArgs e)
+	private void OnWindowActivated(object sender, _WindowActivatedEventArgs e)
 	{
 		if (FeatureConfiguration.Popup.PreventLightDismissOnWindowDeactivated)
 		{
