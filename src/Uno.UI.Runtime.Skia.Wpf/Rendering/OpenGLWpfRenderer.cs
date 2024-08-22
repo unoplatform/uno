@@ -49,15 +49,13 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 			throw new InvalidOperationException("The host control is not associated with any Window");
 		}
 
-		var windowInteropHelper = new WindowInteropHelper(window);
-		var hwnd = windowInteropHelper.Handle;
+		var hwnd = new WindowInteropHelper(window).EnsureHandle();
 		if (hwnd == IntPtr.Zero)
 		{
-			windowInteropHelper.EnsureHandle();
-			hwnd = windowInteropHelper.Handle;
+			throw new InvalidOperationException("HWND should be initialized");
 		}
 
-		if (hwnd != IntPtr.Zero && hwnd == _hwnd)
+		if (hwnd == _hwnd)
 		{
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
