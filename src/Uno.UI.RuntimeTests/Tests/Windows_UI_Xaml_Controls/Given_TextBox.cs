@@ -22,7 +22,6 @@ using Colors = Windows.UI.Colors;
 #endif
 
 using static Private.Infrastructure.TestServices;
-using Private.Infrastructure;
 using Microsoft.UI.Xaml.Data;
 
 
@@ -1022,6 +1021,66 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(VerticalAlignment.Top, contentElement.VerticalContentAlignment);
 			Assert.AreEqual(VerticalAlignment.Stretch, placeHolder.VerticalAlignment);
 			Assert.AreEqual(VerticalAlignment.Stretch, contentElement.VerticalAlignment);
+		}
+
+		[TestMethod]
+		public async Task When_Size_Zero_Fluent_Default()
+		{
+			using var styles = StyleHelper.UseFluentStyles();
+
+			var textBox = await LoadZeroSizeTextBoxAsync(null);
+
+			textBox.ActualWidth.Should().BeApproximately(textBox.MinWidth, 0.1);
+			textBox.ActualHeight.Should().BeApproximately(textBox.MinHeight, 0.1);
+		}
+
+		[TestMethod]
+		public async Task When_Size_Zero_Default()
+		{
+			var textBox = await LoadZeroSizeTextBoxAsync(null);
+
+			textBox.ActualWidth.Should().Be(0);
+			textBox.ActualHeight.Should().Be(0);
+		}
+
+		[TestMethod]
+		public async Task When_Size_Zero_Fluent_ComboBoxTextBoxStyle()
+		{
+			using var styles = StyleHelper.UseFluentStyles();
+			var style = Application.Current.Resources["ComboBoxTextBoxStyle"] as Style;
+
+			var textBox = await LoadZeroSizeTextBoxAsync(style);
+
+			textBox.ActualWidth.Should().Be(0);
+			textBox.ActualHeight.Should().Be(0);
+		}
+
+		private static async Task<TextBox> LoadZeroSizeTextBoxAsync(Style style)
+		{
+			var loaded = false;
+			var grid = new Grid()
+			{
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top
+			};
+			var textBox = new TextBox
+			{
+				Text = "",
+				Width = 0,
+				Height = 0
+			};
+			if (style is not null)
+			{
+				textBox.Style = style;
+			}
+
+			grid.Children.Add(textBox);
+			textBox.Loaded += (s, e) => loaded = true;
+
+			WindowHelper.WindowContent = grid;
+			await WindowHelper.WaitFor(() => loaded);
+			await WindowHelper.WaitForIdle(); // Needed to account for lifecycle differences on mobile
+			return textBox;
 		}
 	}
 }
