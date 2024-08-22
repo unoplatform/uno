@@ -11,11 +11,12 @@ public enum RuntimeTestPlatform
 	SkiaWpf = 1 << 1,
 	SkiaX11 = 1 << 2,
 	SkiaMacOS = 1 << 3,
-	SkiaIslands = 1 << 4,
-	Wasm = 1 << 5,
-	Android = 1 << 6,
-	iOS = 1 << 7,
-	macOSCatalyst = 1 << 8,
+	SkiaBrowser = 1 << 4,
+	SkiaIslands = 1 << 5,
+	Wasm = 1 << 6,
+	Android = 1 << 7,
+	iOS = 1 << 8,
+	macOSCatalyst = 1 << 9,
 }
 
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
@@ -58,6 +59,7 @@ public partial class ConditionalTestAttribute : TestMethodAttribute
 			RuntimeTestPlatform.SkiaWpf => IsSkiaWpf(),
 			RuntimeTestPlatform.SkiaX11 => IsSkiaX11(),
 			RuntimeTestPlatform.SkiaMacOS => IsSkiaMacOS(),
+			RuntimeTestPlatform.SkiaBrowser => IsSkiaBrowser(),
 			RuntimeTestPlatform.SkiaIslands => IsSkiaIslands(),
 			RuntimeTestPlatform.Wasm => IsWasm(),
 			RuntimeTestPlatform.Android => IsAndroid(),
@@ -85,6 +87,9 @@ public partial class ConditionalTestAttribute : TestMethodAttribute
 
 	private static bool IsSkiaMacOS()
 		=> IsSkiaHostAssembly("Uno.UI.Runtime.Skia.MacOS");
+
+	private static bool IsSkiaBrowser()
+		=> IsSkiaHostAssembly("Uno.UI.Runtime.Skia.WebAssembly.Browser");
 
 	private static bool IsSkiaIslands()
 #if __SKIA__
