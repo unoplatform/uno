@@ -43,7 +43,19 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 	public bool TryInitialize()
 	{
 		// Get the window from the wpf control
-		var hwnd = new WindowInteropHelper(Window.GetWindow(_hostControl)).Handle;
+		var window = Window.GetWindow(_hostControl);
+		if (window is null)
+		{
+			throw new InvalidOperationException("The host control is not associated with any Window");
+		}
+
+		var windowInteropHelper = new WindowInteropHelper(window);
+		var hwnd = windowInteropHelper.Handle;
+		if (hwnd == IntPtr.Zero)
+		{
+			windowInteropHelper.EnsureHandle();
+			hwnd = windowInteropHelper.Handle;
+		}
 
 		if (hwnd != IntPtr.Zero && hwnd == _hwnd)
 		{
@@ -54,12 +66,6 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 
 			return true;
 		}
-#if DEBUG
-		else if (hwnd == IntPtr.Zero)
-		{
-			throw new InvalidOperationException("Window handle was not available while attempting to initialize OpenGL renderer.");
-		}
-#endif
 		else
 		{
 			Release();
