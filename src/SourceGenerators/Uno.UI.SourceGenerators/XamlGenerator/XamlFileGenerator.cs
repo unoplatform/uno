@@ -5856,6 +5856,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				);
 		}
 
+		private static bool IsNewScope(XamlObjectDefinition xamlObjectDefinition)
+		{
+			var typeName = xamlObjectDefinition.Type.Name;
+			return typeName == "DataTemplate" ||
+				typeName == "ItemsPanelTemplate" ||
+				typeName == "ControlTemplate" ||
+				// This case is specific the custom ListView for iOS. Should be removed
+				// when the list rebuilt to be compatible.
+				typeName == "ListViewBaseLayoutTemplate";
+		}
+
 		private void BuildChild(IIndentedStringBuilder writer, XamlMemberDefinition? owner, XamlObjectDefinition xamlObjectDefinition, string? outerClosure = null)
 		{
 			_generatorContext.CancellationToken.ThrowIfCancellationRequested();
@@ -5881,17 +5892,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			using (TrySetDefaultBindMode(xamlObjectDefinition))
 			{
-				var isItemsPanelTemplate = typeName == "ItemsPanelTemplate";
-
-				if (
-					typeName == "DataTemplate"
-					|| isItemsPanelTemplate
-					|| typeName == "ControlTemplate"
-
-					// This case is specific the custom ListView for iOS. Should be removed
-					// when the list rebuilt to be compatible.
-					|| typeName == "ListViewBaseLayoutTemplate"
-				)
+				if (IsNewScope(xamlObjectDefinition))
 				{
 					writer.AppendIndented($"new {GetGlobalizedTypeName(fullTypeName)}(");
 
@@ -6160,7 +6161,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private List<string> FindNamesIn(XamlObjectDefinition xamlObjectDefinition)
 		{
 			var list = new List<string>();
-			foreach (var element in EnumerateSubElements(xamlObjectDefinition))
+			foreach (var element in EnumerateSubElements(xamlObjectDefinition, stoppingCondition: IsNewScope))
 			{
 				var nameMember = FindMember(element, "Name");
 
@@ -6212,13 +6213,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <param name="xamlObject">The root from which to start the search</param>
 		/// <param name="elementName">The x:Name value to search for</param>
 		/// <returns></returns>
-		private IEnumerable<XamlObjectDefinition> EnumerateSubElements(XamlObjectDefinition xamlObject)
+		private IEnumerable<XamlObjectDefinition> EnumerateSubElements(XamlObjectDefinition xamlObject, Func<XamlObjectDefinition, bool>? stoppingCondition = null)
 		{
 			yield return xamlObject;
 
 			foreach (var member in xamlObject.Members)
 			{
-				foreach (var element in EnumerateSubElements(member.Objects))
+				foreach (var element in EnumerateSubElements(member.Objects, stoppingCondition))
 				{
 					yield return element;
 				}
@@ -6226,20 +6227,30 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			var objects = xamlObject.Objects;
 
-			foreach (var element in EnumerateSubElements(objects))
+			foreach (var element in EnumerateSubElements(objects, stoppingCondition))
 			{
 				yield return element;
 			}
 		}
 
-		private IEnumerable<XamlObjectDefinition> EnumerateSubElements(IEnumerable<XamlObjectDefinition> objects)
+		private IEnumerable<XamlObjectDefinition> EnumerateSubElements(IEnumerable<XamlObjectDefinition> objects, Func<XamlObjectDefinition, bool>? stoppingCondition)
 		{
 			foreach (var child in objects.Safe())
 			{
+				if (stoppingCondition != null && stoppingCondition(child))
+				{
+					continue;
+				}
+
 				yield return child;
 
-				foreach (var innerElement in EnumerateSubElements(child))
+				foreach (var innerElement in EnumerateSubElements(child, stoppingCondition))
 				{
+					if (stoppingCondition != null && stoppingCondition(innerElement))
+					{
+						continue;
+					}
+
 					yield return innerElement;
 				}
 			}
