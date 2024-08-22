@@ -1025,8 +1025,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var textBox = await LoadZeroSizeTextBoxAsync(null);
 
-			Assert.AreEqual(textBox.ActualWidth, textBox.MinWidth, 0.1);
-			Assert.AreEqual(textBox.ActualHeight, textBox.MinHeight, 0.1);
+			textBox.ActualWidth.Should().BeApproximately(textBox.MinWidth, 0.1);
+			textBox.ActualHeight.Should().BeApproximately(textBox.MinHeight, 0.1);
 		}
 
 		[TestMethod]
@@ -1034,8 +1034,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			var textBox = await LoadZeroSizeTextBoxAsync(null);
 
-			Assert.AreEqual(textBox.ActualWidth, 0);
-			Assert.AreEqual(textBox.ActualHeight, 0);
+			textBox.ActualWidth.Should().Be(0);
+			textBox.ActualHeight.Should().Be(0);
 		}
 
 		[TestMethod]
@@ -1046,8 +1046,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var textBox = await LoadZeroSizeTextBoxAsync(style);
 
-			Assert.AreEqual(textBox.ActualWidth, 0);
-			Assert.AreEqual(textBox.ActualHeight, 0);
+			textBox.ActualWidth.Should().Be(0);
+			textBox.ActualHeight.Should().Be(0);
 		}
 
 		private static async Task<TextBox> LoadZeroSizeTextBoxAsync(Style style)
