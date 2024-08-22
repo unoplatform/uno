@@ -10,15 +10,13 @@ uid: Uno.GetStarted.Rider
 > [!IMPORTANT]
 > Depending on the version of Rider you will want to use, here are some additional information that you will want to know:
 >
-> - **Rider (2024.1 and earlier)**: Current versions of Rider (2024.1 and earlier) do not support creating Uno Platform projects using the "New Solution" dialog, even if the Uno Platform project template appears. In this case, creating an Uno Platform project is done [using dotnet new](xref:Uno.GetStarted.dotnet-new), and the <a target="_blank" href="https://aka.platform.uno/app-wizard">Uno Platform Live Wizard</a>.
->   Make sure to follow the directions for **Rider 2024.1** provided below.
+> - **Previous Rider (2024.1)**: Uno Plugin for the previous versions of Rider (2024.1) do not support creating Uno Platform projects using the "New Solution" dialog, even if the Uno Platform project template appears. In this case, creating an Uno Platform project is done [using dotnet new](xref:Uno.GetStarted.dotnet-new), and the <a target="_blank" href="https://aka.platform.uno/app-wizard">Uno Platform Live Wizard</a>.
 >
-> - **Rider (2024.2 and above)**: For Rider (2024.2 and above), we have released a Preview version of the Uno Platform Plugin that supports creating Uno Platform projects using the "New Solution" dialog.
->   Make sure to follow the directions for **Rider 2024.2** provided below.
+> - **Current Rider (2024.2 and above)**: For current Rider version, the Uno Platform plugin supports creating Uno Platform projects using the "New Solution" dialog.
 
 ## Prerequisites
 
-- [**Rider Version 2024.1+**](https://aka.platform.uno/rider-version-2024-1) or [**Rider Version 2024.2+**](https://aka.platform.uno/rider-version-2024-2)
+- [**Rider Version 2024.2+**](https://aka.platform.uno/rider-version-2024-2) or [**Previous Rider Version 2024.1**](https://aka.platform.uno/rider-version-2024-1)
 - [**Rider Xamarin Android Support**](https://plugins.jetbrains.com/plugin/12056-rider-xamarin-android-support/) plugin from Rider in **Settings** / **Plugins**
 
 ## Check your environment
@@ -45,23 +43,11 @@ uid: Uno.GetStarted.Rider
 
 ## Install the Uno Platform plugin
 
-### [**Rider Version 2024.1+**](#tab/rider2024-1)
-
 In Rider, in the **Configure**, **Plugins** menu, open the **Marketplace** tab, then search for **Uno Platform**:
 
 ![Visual Studio Installer - .NET desktop development workload](Assets/ide-rider-plugin-search.png)
 
 Then click the install button.
-
-### [**Rider Version 2024.2+**](#tab/rider2024-2)
-
-Select the **Preview** channel to download the latest preview version for the [Uno Platform plugin on the JetBrains Marketplace](https://aka.platform.uno/rider-extension-marketplace-versions).
-
-![JetBrains Marketplace - Uno Platform plugin Preview channel versions](Assets/quick-start/rider-preview-channel-version.png)
-
-Follow the instructions provided by JetBrains Marketplace to install the plugin.
-
-![JetBrains Marketplace - Uno Platform plugin Preview installation instructions](Assets/quick-start/rider-preview-version-installation-instructions.png)
 
 ---
 
