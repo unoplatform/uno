@@ -8,12 +8,14 @@ using System.Threading;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using Uno;
 using Uno.Extensions;
 using Uno.UI;
 using Uno.UI.Dispatching;
+using Uno.UI.Xaml.Media;
 
 #if __ANDROID__
 using _View = Android.Views.View;
@@ -477,11 +479,44 @@ namespace Microsoft.UI.Xaml
 			return output.ToArray();
 		}
 
+		private bool TryGetDefaultInheritedPropertyValue(out object defaultValue)
+		{
+			if (this == TextElement.ForegroundProperty ||
+				this == TextBlock.ForegroundProperty ||
+				this == Control.ForegroundProperty ||
+				this == RichTextBlock.ForegroundProperty ||
+				this == ContentPresenter.ForegroundProperty ||
+				this == IconElement.ForegroundProperty)
+			{
+				defaultValue = DefaultBrushes.TextForegroundBrush;
+				return true;
+			}
+
+			defaultValue = null;
+			return false;
+		}
+
 		internal object GetDefaultValue(UIElement referenceObject, Type forType)
 		{
 			if (referenceObject?.GetDefaultValue2(this, out var defaultValue) == true)
 			{
 				return defaultValue;
+			}
+
+			if (IsInherited && TryGetDefaultInheritedPropertyValue(out var value))
+			{
+				return value;
+			}
+
+			if (this == FrameworkElement.FocusVisualPrimaryBrushProperty &&
+				ResourceResolver.TryStaticRetrieval("SystemControlFocusVisualPrimaryBrush", null, out var primaryBrush))
+			{
+				return primaryBrush;
+			}
+			else if (this == FrameworkElement.FocusVisualSecondaryBrushProperty &&
+				ResourceResolver.TryStaticRetrieval("SystemControlFocusVisualSecondaryBrush", null, out var secondaryBrush))
+			{
+				return secondaryBrush;
 			}
 
 			if (this == Shape.StretchProperty)

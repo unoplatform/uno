@@ -167,7 +167,7 @@ namespace Microsoft.UI.Xaml.Documents
 
 		public Brush Foreground
 		{
-			get => GetForegroundValue();
+			get => (Brush)GetValue(ForegroundProperty);
 			set
 			{
 				if (value != null && !(value is SolidColorBrush))
@@ -175,14 +175,19 @@ namespace Microsoft.UI.Xaml.Documents
 					throw new InvalidOperationException("Specified brush is not a SolidColorBrush");
 				}
 
-				SetForegroundValue(value);
+				SetValue(ForegroundProperty, value);
 			}
 		}
 
-		[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.Inherits, ChangedCallback = true, ChangedCallbackName = nameof(OnForegroundChanged))]
-		public static DependencyProperty ForegroundProperty { get; } = CreateForegroundProperty();
-
-		private static Brush GetForegroundDefaultValue() => SolidColorBrushHelper.Black;
+		public static DependencyProperty ForegroundProperty { get; } = DependencyProperty.Register(
+			nameof(Foreground),
+			typeof(Brush),
+			typeof(TextElement),
+			new FrameworkPropertyMetadata(
+				defaultValue: SolidColorBrushHelper.Black,
+				options: FrameworkPropertyMetadataOptions.Inherits,
+				propertyChangedCallback: (instance, args) => ((TextElement)instance).OnForegroundChanged()
+		));
 
 		protected virtual void OnForegroundChanged()
 		{
@@ -388,10 +393,6 @@ namespace Microsoft.UI.Xaml.Documents
 				// Hyperlink doesn't appear to inherit foreground from the parent.
 				// So, we set this with ImplicitStyle precedence which is a higher precedence than Inheritance.
 				this.SetValue(foregroundProperty, DefaultTextForegroundBrush, DependencyPropertyValuePrecedences.ImplicitStyle);
-			}
-			else
-			{
-				this.SetValue(foregroundProperty, DefaultTextForegroundBrush, DependencyPropertyValuePrecedences.DefaultValue);
 			}
 
 			((IDependencyObjectStoreProvider)this).Store.SetLastUsedTheme(Application.Current?.RequestedThemeForResources);

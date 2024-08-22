@@ -612,11 +612,7 @@ namespace Microsoft.UI.Xaml
 
 		public Brush FocusVisualSecondaryBrush
 		{
-			get
-			{
-				EnsureFocusVisualBrushDefaults();
-				return GetFocusVisualSecondaryBrushValue();
-			}
+			get => GetFocusVisualSecondaryBrushValue();
 			set => SetFocusVisualSecondaryBrushValue(value);
 		}
 
@@ -633,11 +629,7 @@ namespace Microsoft.UI.Xaml
 
 		public Brush FocusVisualPrimaryBrush
 		{
-			get
-			{
-				EnsureFocusVisualBrushDefaults();
-				return GetFocusVisualPrimaryBrushValue();
-			}
+			get => GetFocusVisualPrimaryBrushValue();
 			set => SetFocusVisualPrimaryBrushValue(value);
 		}
 
@@ -654,21 +646,6 @@ namespace Microsoft.UI.Xaml
 
 		[GeneratedDependencyProperty]
 		public static DependencyProperty FocusVisualMarginProperty { get; } = CreateFocusVisualMarginProperty();
-
-		private bool _focusVisualBrushesInitialized;
-
-		internal void EnsureFocusVisualBrushDefaults()
-		{
-			if (_focusVisualBrushesInitialized)
-			{
-				return;
-			}
-
-			ResourceResolver.ApplyResource(this, FocusVisualPrimaryBrushProperty, new SpecializedResourceDictionary.ResourceKey("SystemControlFocusVisualPrimaryBrush"), ResourceUpdateReason.ThemeResource, null, DependencyPropertyValuePrecedences.DefaultValue);
-			ResourceResolver.ApplyResource(this, FocusVisualSecondaryBrushProperty, new SpecializedResourceDictionary.ResourceKey("SystemControlFocusVisualSecondaryBrush"), ResourceUpdateReason.ThemeResource, null, DependencyPropertyValuePrecedences.DefaultValue);
-
-			_focusVisualBrushesInitialized = true;
-		}
 
 		/// <summary>
 		/// Gets or sets whether a disabled control can receive focus.
@@ -985,9 +962,6 @@ namespace Microsoft.UI.Xaml
 		{
 			Resources?.UpdateThemeBindings(updateReason);
 			(this as IDependencyObjectStoreProvider).Store.UpdateResourceBindings(updateReason);
-
-			// After theme change, the focus visual brushes may not reflect the correct settings
-			_focusVisualBrushesInitialized = false;
 
 			if (updateReason == ResourceUpdateReason.ThemeResource)
 			{
