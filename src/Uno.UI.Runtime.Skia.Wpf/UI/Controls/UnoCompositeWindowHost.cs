@@ -87,12 +87,14 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 	public WpfControl RenderLayer => _renderLayer;
 	public WpfControl BottomLayer => _renderLayer;
 
-	private void WpfHost_Loaded(object _, System.Windows.RoutedEventArgs __)
+	internal void InitializeRenderer()
 	{
 		_renderLayer.Renderer = WpfRendererProvider.CreateForHost(this);
 		UpdateRendererBackground();
-		_renderLayer.InvalidateVisual();
+	}
 
+	private void WpfHost_Loaded(object _, System.Windows.RoutedEventArgs __)
+	{
 		// Avoid dotted border on focus.
 		if (Parent is WpfControl control)
 		{
