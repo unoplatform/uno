@@ -769,7 +769,9 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			// If the AppBar is not live, then wait until it's loaded before
 			// responding to changes to opened state and firing our Opening/Opened events.
-			if (!IsInLiveTree)
+			// Uno Specific: use IsLoaded instead of IsInLiveTree, which matches the logic in OnLoaded that calls OnIsOpenChanged.
+			// if (!IsInLiveTree)
+			if (!IsLoaded)
 			{
 				return;
 			}
