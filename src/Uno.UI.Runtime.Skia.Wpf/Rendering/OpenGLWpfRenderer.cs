@@ -54,6 +54,12 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 
 			return true;
 		}
+#if DEBUG
+		else if (hwnd == IntPtr.Zero)
+		{
+			throw new InvalidOperationException("Window handle was not available while attempting to initialize OpenGL renderer.");
+		}
+#endif
 		else
 		{
 			Release();
