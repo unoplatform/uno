@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Tests.Common;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests;
+using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.MUX.Helpers;
 using Windows.Foundation;
 using static Private.Infrastructure.TestServices;
@@ -27,9 +27,24 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 		CommonTestSetupHelper.CommonTestClassSetup();
 	}
 
-	[TestCleanup]
-	public void TestCleanup()
+	private IDisposable _fluentStyles;
+
+	[TestInitialize]
+	public async Task TestInitialize()
 	{
+		await RunOnUIThread(() =>
+		{
+			_fluentStyles = StyleHelper.UseFluentStyles();
+		});
+	}
+
+	[TestCleanup]
+	public async Task TestCleanup()
+	{
+		await RunOnUIThread(() =>
+		{
+			_fluentStyles?.Dispose();
+		});
 		TestServices.WindowHelper.VerifyTestCleanup();
 	}
 
@@ -268,7 +283,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	//        ComboBox leftHeaderComboBox = null;
 	//#endif
 
-	//		StackPanel ^ rootPanel = null;
+	//		StackPanel rootPanel = null;
 
 	//		await RunOnUIThread(() =>
 
@@ -1827,12 +1842,12 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	//	ComboBox comboBoxWithHeader;
 	//	ComboBox comboBoxWithWideContent;
 	//	ComboBox comboBoxWithWideHeader;
-	//	StackPanel ^ rootPanel;
+	//	StackPanel rootPanel;
 
 	//	await RunOnUIThread(() =>
 
 	//	{
-	//		rootPanel = StackPanel ^> (XamlReader.Load(
+	//		rootPanel = StackPanel> (XamlReader.Load(
 	//			LR"(<StackPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" >
 
 
@@ -2973,13 +2988,13 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	//		});
 
 	//		ComboBox combobox;
-	//		TextBox ^ textbox;
+	//		TextBox textbox;
 	//		ComboBoxItem itemToSelect;
 
 	//		await RunOnUIThread(() =>
 
 	//			{
-	//				var rootPanel = StackPanel ^> (XamlReader.Load(
+	//				var rootPanel = StackPanel> (XamlReader.Load(
 	//					LR"(<StackPanel
 
 
@@ -3106,7 +3121,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 
 
 	//				combobox = ComboBox > (rootPanel.FindName("combobox"));
-	//				textbox = TextBox ^> (rootPanel.FindName("textbox"));
+	//				textbox = (TextBox)(rootPanel.FindName("textbox"));
 	//				itemToSelect = (ComboBoxItem)(rootPanel.FindName("itemToSelect"));
 
 	//				TestServices.WindowHelper.WindowContent = rootPanel;
@@ -3220,7 +3235,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 		await ComboBoxHelper.OpenComboBox(comboBox, ComboBoxHelper.OpenMethod.Programmatic);
 
 		ComboBoxItem selectedItem;
-		await RunOnUIThread(() =>
+		await RunOnUIThread(async () =>
 
 			{
 				// Get the selected item
@@ -3232,11 +3247,11 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 
 				// Ensure that the bounds of the item are rendered within the height of the window,
 				// unless windowed popups are enabled, in which case we're fine with it appearing outside.
-				if (PopupHelper.AreWindowedPopupsEnabled())
-				{
-					VERIFY_IS_GREATER_THAN(selectedItemBounds.Y + selectedItemBounds.Height, heightOfWindow);
-				}
-				else
+				//if (PopupHelper.AreWindowedPopupsEnabled())
+				//{
+				//	VERIFY_IS_GREATER_THAN(selectedItemBounds.Y + selectedItemBounds.Height, heightOfWindow);
+				//}
+				//else
 				{
 					VERIFY_IS_LESS_THAN_OR_EQUAL(selectedItemBounds.Y + selectedItemBounds.Height, heightOfWindow);
 				}
@@ -4249,7 +4264,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 		await RunOnUIThread(() =>
 
 			{
-				WEX.Common.Throw.IfFalse(comboBox.SelectionChangedTrigger == ComboBoxSelectionChangedTrigger.Committed, E_FAIL, "Expected that the ComboBox is in commit mode.");
+				Assert.AreEqual(ComboBoxSelectionChangedTrigger.Committed, comboBox.SelectionChangedTrigger, "Expected that the ComboBox is in commit mode.");
 
 				comboBox.Focus(FocusState.Keyboard);
 			});
@@ -4330,7 +4345,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 		await ComboBoxHelper.OpenComboBox(comboBox, ComboBoxHelper.OpenMethod.Mouse);
 		await TestServices.WindowHelper.WaitForIdle();
 
-		await RunOnUIThread(() =>
+		await RunOnUIThread(async () =>
 
 			{
 				var carouselPanel = TreeHelper.GetVisualChildByTypeFromOpenPopups<CarouselPanel>(comboBox);
@@ -4341,10 +4356,10 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 
 				// Verify that this item is not visible in the popup:
 				var popupBorder = (FrameworkElement)(TreeHelper.GetVisualChildByNameFromOpenPopups("PopupBorder", comboBox));
-				var popupBorderBounds = ControlHelper.GetBounds(popupBorder);
+				var popupBorderBounds = await ControlHelper.GetBounds(popupBorder);
 				LOG_OUTPUT("popupBorder bounds: %f, %f, %f, %f", popupBorderBounds.Left, popupBorderBounds.Top, popupBorderBounds.Width, popupBorderBounds.Height);
 
-				var item92Bounds = ControlHelper.GetBounds(item92);
+				var item92Bounds = await ControlHelper.GetBounds(item92);
 				LOG_OUTPUT("Item92 bounds: %f, %f, %f, %f", item92Bounds.Left, item92Bounds.Top, item92Bounds.Width, item92Bounds.Height);
 				VERIFY_IS_FALSE(ControlHelper.IsContainedIn(item92Bounds, popupBorderBounds));
 			});
@@ -4364,49 +4379,16 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 
 			{
 				var rootPanel = (Grid)(XamlReader.Load(
-					"<Grid x:Name='root' xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' >"
-
-
-
-
-
-					"  <ComboBox x:Name='comboBox' IsEditable='true'>"
-
-
-
-
-
-					"      <ComboBoxItem Content='item one' />"
-
-
-
-
-
-					"      <ComboBoxItem Content='item two' />"
-
-
-
-
-
-					"      <ComboBoxItem Content='item three' />"
-
-
-
-
-
-					"      <ComboBoxItem Content='item four' />"
-
-
-
-
-
-					"  </ComboBox>"
-
-
-
-
-
-					"</Grid>"));
+					""""
+					<Grid x:Name='root' xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'>
+					  <ComboBox x:Name='comboBox' IsEditable='true'>
+					      <ComboBoxItem Content='item one' />
+					      <ComboBoxItem Content='item two' />
+					      <ComboBoxItem Content='item three' />
+					      <ComboBoxItem Content='item four' />
+					  </ComboBox>
+					</Grid>
+					""""));
 
 				comboBox = (ComboBox)(rootPanel.FindName("comboBox"));
 				VERIFY_IS_NOT_NULL(comboBox);
@@ -4437,59 +4419,26 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	[TestMethod]
 	public async Task CanSetComboBoxTextOnNonEditableMode()
 	{
-		Size size(400, 400);
+		Size size = new(400, 400);
 		TestServices.WindowHelper.SetWindowSizeOverride(size);
 
 		ComboBox comboBox = null;
-		TextBox ^ editableTextBox = null;
+		TextBox editableTextBox = null;
 
 		await RunOnUIThread(() =>
 
 			{
 				var rootPanel = (Grid)(XamlReader.Load(
-					"<Grid x:Name='root' xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' >"
-
-
-
-
-
-					"  <ComboBox x:Name='comboBox'>"
-
-
-
-
-
-					"      <ComboBoxItem Content='item one' />"
-
-
-
-
-
-					"      <ComboBoxItem Content='item two' />"
-
-
-
-
-
-					"      <ComboBoxItem Content='item three' />"
-
-
-
-
-
-					"      <ComboBoxItem Content='item four' />"
-
-
-
-
-
-					"  </ComboBox>"
-
-
-
-
-
-					"</Grid>"));
+					""""
+					<Grid x:Name='root' xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'>
+					  <ComboBox x:Name='comboBox'>
+					      <ComboBoxItem Content='item one' />
+					      <ComboBoxItem Content='item two' />
+					      <ComboBoxItem Content='item three' />
+					      <ComboBoxItem Content='item four' />
+					  </ComboBox>
+					</Grid>
+					""""));
 
 				comboBox = (ComboBox)(rootPanel.FindName("comboBox"));
 				VERIFY_IS_NOT_NULL(comboBox);
@@ -4512,22 +4461,23 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 		await RunOnUIThread(() =>
 
 			{
-				editableTextBox = TextBox ^> (TreeHelper.GetVisualChildByName(comboBox, "EditableText"));
+				editableTextBox = (TextBox)(TreeHelper.GetVisualChildByName(comboBox, "EditableText"));
 				VERIFY_IS_NOT_NULL(editableTextBox);
 
 				VERIFY_ARE_EQUAL(editableTextBox.Text, "Test");
 			});
 	}
 
-	void VerifyTabBehavior()
+	[TestMethod]
+	public async Task VerifyTabBehavior()
 	{
-		Size size(400, 400.0;
+		Size size = new(400, 400);
 		TestServices.WindowHelper.SetWindowSizeOverride(size);
 
-		StackPanel ^ stackPanel = null;
+		StackPanel stackPanel = null;
 		Button button1 = null;
 		ComboBox comboBox = null;
-		TextBox ^ textBox = null;
+		TextBox textBox = null;
 		Button button2 = null;
 
 		await RunOnUIThread(() =>
@@ -4535,37 +4485,14 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 			{
 				button1 = new Button();
 				comboBox = (ComboBox)(XamlReader.Load(
-					"<ComboBox x:Name='comboBox' xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'>"
-
-
-
-
-
-					"    <ComboBoxItem Content='item one' />"
-
-
-
-
-
-					"    <ComboBoxItem Content='item two' />"
-
-
-
-
-
-					"    <ComboBoxItem Content='item three' />"
-
-
-
-
-
-					"    <ComboBoxItem Content='item four' />"
-
-
-
-
-
-					"</ComboBox>"));
+					""""
+					<ComboBox x:Name='comboBox' xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'>
+					    <ComboBoxItem Content='item one' />
+					    <ComboBoxItem Content='item two' />
+					    <ComboBoxItem Content='item three' />
+					    <ComboBoxItem Content='item four' />
+					</ComboBox>
+					""""));
 				VERIFY_IS_NOT_NULL(comboBox);
 				button2 = new Button();
 
@@ -4581,7 +4508,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 		await RunOnUIThread(() =>
 
 			{
-				textBox = TextBox ^> (TreeHelper.GetVisualChildByName(comboBox, "EditableText"));
+				textBox = (TextBox)(TreeHelper.GetVisualChildByName(comboBox, "EditableText"));
 				VERIFY_IS_NOT_NULL(textBox);
 
 				button1.Focus(FocusState.Programmatic);
@@ -4644,16 +4571,16 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 			});
 	}
 
-	void InjectKeySequence(List<string> keySequence, int timeBetweenKeyPressesInMs)
+	private async Task InjectKeySequence(List<string> keySequence, int timeBetweenKeyPressesInMs)
 	{
-		for (uint i = 0; i < keySequence.Size; i++)
+		for (int i = 0; i < keySequence.Count; i++)
 		{
 			LOG_OUTPUT("ComboBox: Injecting key sequence");
-			LOG_OUTPUT("%s", keySequence[i].Data());
+			LOG_OUTPUT("%s", keySequence[i]);
 
 			TestServices.KeyboardHelper.PressKeySequence(keySequence[i]);
 
-			Sleep(timeBetweenKeyPressesInMs);
+			await Task.Delay(timeBetweenKeyPressesInMs);
 		}
 	}
 
@@ -4666,7 +4593,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 				textBox = (TextBox)(TreeHelper.GetVisualChildByName(comboBox, "EditableText"));
 				VERIFY_IS_NOT_NULL(textBox);
 			});
-		FocusTestHelper.EnsureFocus(textBox, FocusState.Keyboard);
+		await FocusTestHelper.EnsureFocus(textBox, FocusState.Keyboard);
 		await TestServices.WindowHelper.WaitForIdle();
 	}
 
@@ -4695,7 +4622,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
-	public async Task CanRaiseTextSubmittedEventComboBox(bool open, bool addToItemSource, bool setHandled)
+	public async Task CanRaiseTextSubmittedEventComboBox(bool open, bool addToItemSource = false, bool setHandled = false)
 	{
 
 
@@ -4703,18 +4630,15 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 		ComboBoxItem comboBoxItem = null;
 
 		var comboBoxTextSubmittedEvent = new Event();
-		var textSubmittedRegistration = CreateSafeEventRegistration(ComboBox, TextSubmitted);
+		var textSubmittedRegistration = CreateSafeEventRegistration<ComboBox, TypedEventHandler<ComboBox, ComboBoxTextSubmittedEventArgs>>("TextSubmitted");
 
-		textSubmittedRegistration.Attach(comboBox, new wf.TypedEventHandler<ComboBox, ComboBoxTextSubmittedEventArgs ^> ([comboBoxTextSubmittedEvent, comboBox, addToItemSource, &comboBoxItem, setHandled](ComboBox sender, ComboBoxTextSubmittedEventArgs ^ args)
-
-
+		textSubmittedRegistration.Attach(comboBox, async (s, args) =>
 		{
 			VERIFY_ARE_EQUAL(args.Text, "Custom Value");
 
 			if (addToItemSource)
 			{
 				await RunOnUIThread(() =>
-
 					{
 						comboBoxItem = new ComboBoxItem();
 						comboBoxItem.Content = "Custom Value";
@@ -4729,7 +4653,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 			}
 
 			comboBoxTextSubmittedEvent.Set();
-		}));
+		});
 
 		await RunOnUIThread(() =>
 
@@ -4748,7 +4672,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 			});
 		await TestServices.WindowHelper.WaitForIdle();
 
-		EnsureEditableTextBoxHasFocus(comboBox);
+		await EnsureEditableTextBoxHasFocus(comboBox);
 
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -4766,14 +4690,14 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 		keySequence.Add("u");
 		keySequence.Add("e");
 
-		InjectKeySequence(keySequence, 100.0;
+		await InjectKeySequence(keySequence, 100);
 		await TestServices.WindowHelper.WaitForIdle();
 
 		TestServices.KeyboardHelper.Enter();
 		await TestServices.WindowHelper.WaitForIdle();
 
 		LOG_OUTPUT("Waiting for ComboBox TextSubmitted Event");
-		comboBoxTextSubmittedEvent.WaitForDefault();
+		await comboBoxTextSubmittedEvent.WaitForDefault();
 		await TestServices.WindowHelper.WaitForIdle();
 
 		await RunOnUIThread(() =>
@@ -4795,8 +4719,8 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 				}
 				else
 				{
-					VERIFY_ARE_EQUAL(string > (comboBox.SelectedItem), "Custom Value");
-					VERIFY_ARE_EQUAL(string > (comboBox.SelectedValue), "Custom Value");
+					VERIFY_ARE_EQUAL((comboBox.SelectedItem), "Custom Value");
+					VERIFY_ARE_EQUAL((comboBox.SelectedValue), "Custom Value");
 					VERIFY_ARE_EQUAL(comboBox.SelectedIndex, -1);
 				}
 			});
@@ -4805,13 +4729,13 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	[TestMethod]
 	public async Task ValidateEditableModeSearchAndSelectionComboBoxClosed()
 	{
-		ValidateEditableModeSearchAndSelection(false);
+		await ValidateEditableModeSearchAndSelection(false);
 	}
 
 	[TestMethod]
 	public async Task ValidateEditableModeSearchAndSelectionComboBoxOpened()
 	{
-		ValidateEditableModeSearchAndSelection(true);
+		await ValidateEditableModeSearchAndSelection(true);
 	}
 
 	[TestMethod]
@@ -4819,7 +4743,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	{
 
 
-		Size size(400, 400.0;
+		Size size = new(400, 400);
 		TestServices.WindowHelper.SetWindowSizeOverride(size);
 
 		ComboBox comboBox = null;
@@ -4828,49 +4752,16 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 
 			{
 				var rootPanel = (Grid)(XamlReader.Load(
-					"<Grid x:Name='root' xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' >"
-
-
-
-
-
-					"  <ComboBox x:Name='comboBox' IsEditable='true'>"
-
-
-
-
-
-					"      <ComboBoxItem Content='One' />"
-
-
-
-
-
-					"      <ComboBoxItem Content='Two' />"
-
-
-
-
-
-					"      <ComboBoxItem Content='Three' />"
-
-
-
-
-
-					"      <ComboBoxItem Content='Four' />"
-
-
-
-
-
-					"  </ComboBox>"
-
-
-
-
-
-					"</Grid>"));
+					""""
+					<Grid x:Name='root' xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'>
+					  <ComboBox x:Name='comboBox' IsEditable='true'>
+					      <ComboBoxItem Content='One' />
+					      <ComboBoxItem Content='Two' />
+					      <ComboBoxItem Content='Three' />
+					      <ComboBoxItem Content='Four' />
+					  </ComboBox>
+					</Grid>
+					""""));
 
 				comboBox = (ComboBox)(rootPanel.FindName("comboBox"));
 				VERIFY_IS_NOT_NULL(comboBox);
@@ -4880,7 +4771,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 
 		await TestServices.WindowHelper.WaitForIdle();
 
-		EnsureEditableTextBoxHasFocus(comboBox);
+		await EnsureEditableTextBoxHasFocus(comboBox);
 
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -4900,7 +4791,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 		keySequence.Add("T");
 		keySequence.Add("h");
 
-		InjectKeySequence(keySequence, 200.0;
+		await InjectKeySequence(keySequence, 200);
 		await TestServices.WindowHelper.WaitForIdle();
 
 		TestServices.KeyboardHelper.Enter();
@@ -4945,8 +4836,8 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 		await RunOnUIThread(() =>
 
 			{
-				VERIFY_ARE_EQUAL(string > (comboBox.SelectedItem), "Custom Value");
-				VERIFY_ARE_EQUAL(string > (comboBox.SelectedValue), "Custom Value");
+				VERIFY_ARE_EQUAL((comboBox.SelectedItem), "Custom Value");
+				VERIFY_ARE_EQUAL((comboBox.SelectedValue), "Custom Value");
 				VERIFY_ARE_EQUAL(comboBox.SelectedIndex, -1);
 
 				comboBox.IsEditable = false;
@@ -4968,11 +4859,11 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	{
 
 
-		Size size(400, 400.0;
+		Size size = new(400, 400);
 		TestServices.WindowHelper.SetWindowSizeOverride(size);
 
 		ComboBox comboBox = null;
-		TextBox ^ textBox = null;
+		TextBox textBox = null;
 		ComboBoxItem comboBoxItem1 = null;
 		ComboBoxItem comboBoxItem2 = null;
 
@@ -4980,49 +4871,16 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 
 			{
 				var rootPanel = (Grid)(XamlReader.Load(
-					"<Grid x:Name='root' xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' >"
-
-
-
-
-
-					"  <ComboBox x:Name='comboBox' IsEditable='true'>"
-
-
-
-
-
-					"      <ComboBoxItem x:Name='cbi1' Content='One' />"
-
-
-
-
-
-					"      <ComboBoxItem x:Name='cbi2' Content='Two' />"
-
-
-
-
-
-					"      <ComboBoxItem x:Name='cbi3' Content='Three' />"
-
-
-
-
-
-					"      <ComboBoxItem x:Name='cbi4' Content='Four' />"
-
-
-
-
-
-					"  </ComboBox>"
-
-
-
-
-
-					"</Grid>"));
+					""""
+					<Grid x:Name='root' xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' >
+					  <ComboBox x:Name='comboBox' IsEditable='true'>
+					      <ComboBoxItem x:Name='cbi1' Content='One' />
+					      <ComboBoxItem x:Name='cbi2' Content='Two' />
+					      <ComboBoxItem x:Name='cbi3' Content='Three' />
+					      <ComboBoxItem x:Name='cbi4' Content='Four' />
+					  </ComboBox>
+					</Grid>
+					""""));
 
 				comboBox = (ComboBox)(rootPanel.FindName("comboBox"));
 				VERIFY_IS_NOT_NULL(comboBox);
@@ -5035,7 +4893,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 		await RunOnUIThread(() =>
 
 			{
-				textBox = TextBox ^> (TreeHelper.GetVisualChildByName(comboBox, "EditableText"));
+				textBox = (TextBox)(TreeHelper.GetVisualChildByName(comboBox, "EditableText"));
 				VERIFY_IS_NOT_NULL(textBox);
 
 				// Programmatic/Keyboard/Pointer focus in Editable ComboBox moves the focus to the internal TextBox after the ComboBox is focused.
@@ -5103,9 +4961,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	[TestMethod]
 	public async Task ValidateEditableModePopupOpensUp()
 	{
-
-
-		Size size(400, 400.0;
+		Size size = new(400, 400);
 		TestServices.WindowHelper.SetWindowSizeOverride(size);
 
 		ComboBox comboBox = null;
@@ -5114,43 +4970,15 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 
 			{
 				var rootPanel = (Grid)(XamlReader.Load(
-					"<Grid x:Name='root' xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' >"
-
-
-
-
-
-					"  <ComboBox x:Name='comboBox' IsEditable='true' Margin='0,350,0,0'>"
-
-
-
-
-
-					"      <ComboBoxItem Content='One' />"
-
-
-
-
-
-					"      <ComboBoxItem Content='Two' />"
-
-
-
-
-
-					"      <ComboBoxItem Content='Three' />"
-
-
-
-
-
-					"  </ComboBox>"
-
-
-
-
-
-					"</Grid>"));
+					""""
+					<Grid x:Name='root' xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' >
+					  <ComboBox x:Name='comboBox' IsEditable='true' Margin='0,350,0,0'>
+					      <ComboBoxItem Content='One' />
+					      <ComboBoxItem Content='Two' />
+					      <ComboBoxItem Content='Three' />
+					  </ComboBox>
+					</Grid>
+					""""));
 
 				comboBox = (ComboBox)(rootPanel.FindName("comboBox"));
 				VERIFY_IS_NOT_NULL(comboBox);
@@ -5186,9 +5014,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	[TestMethod]
 	public async Task ValidateEditableModeComboBoxCanScrollToNewItems()
 	{
-
-
-		Size size(400, 400.0;
+		Size size = new(400, 400);
 		TestServices.WindowHelper.SetWindowSizeOverride(size);
 
 		ComboBox comboBox = null;
@@ -5198,139 +5024,31 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 			{
 				// Non latin characters are needed as this consistently virtualizes the last items.
 				var rootPanel = (Grid)(XamlReader.Load(
-					"<Grid x:Name='root' xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' >"
-
-
-
-
-
-					"  <ComboBox x:Name='comboBox' IsEditable='true'>"
-
-
-
-
-
-					"      <ComboBox.Items>"
-
-
-
-
-
-					"          <TextBlock>Text 1</TextBlock>"
-
-
-
-
-
-					"          <TextBlock>Text 2</TextBlock>"
-
-
-
-
-
-					"          <TextBlock>Text 3</TextBlock>"
-
-
-
-
-
-					"          <TextBlock>SuuuuuuperUltraLargeText</TextBlock>"
-
-
-
-
-
-					"          <TextBlock>Text 4</TextBlock>"
-
-
-
-
-
-					"          <TextBlock>Text 5</TextBlock>"
-
-
-
-
-
-					"          <TextBlock>Text 6</TextBlock>"
-
-
-
-
-
-					"          <TextBlock>SuuuuuuperUltraLargeText2</TextBlock>"
-
-
-
-
-
-					"          <TextBlock>Text 7</TextBlock>"
-
-
-
-
-
-					"          <TextBlock>Text 8</TextBlock>"
-
-
-
-
-
-					"          <TextBlock>Text 9</TextBlock>"
-
-
-
-
-
-					"          <TextBlock>????????????</TextBlock>"
-
-
-
-
-
-					"          <TextBlock>?????????</TextBlock>"
-
-
-
-
-
-					"          <TextBlock>??????</TextBlock>"
-
-
-
-
-
-					"          <TextBlock>???</TextBlock>"
-
-
-
-
-
-					"          <TextBlock>??????</TextBlock>"
-
-
-
-
-
-					"          <TextBlock>SuuuuuuperUltraLargeText3</TextBlock>"
-
-
-
-
-
-					"      </ComboBox.Items>"
-
-
-
-
-
-					"  </ComboBox>"
-
-
-
-
-
-					"</Grid>"));
+					""""
+					<Grid x:Name='root' xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' >
+					  <ComboBox x:Name='comboBox' IsEditable='true'>
+					      <ComboBox.Items>
+					          <TextBlock>Text 1</TextBlock>
+					          <TextBlock>Text 2</TextBlock>
+					          <TextBlock>Text 3</TextBlock>
+					          <TextBlock>SuuuuuuperUltraLargeText</TextBlock>
+					          <TextBlock>Text 4</TextBlock>
+					          <TextBlock>Text 5</TextBlock>
+					          <TextBlock>Text 6</TextBlock>
+					          <TextBlock>SuuuuuuperUltraLargeText2</TextBlock>
+					          <TextBlock>Text 7</TextBlock>
+					          <TextBlock>Text 8</TextBlock>
+					          <TextBlock>Text 9</TextBlock>
+					          <TextBlock>????????????</TextBlock>
+					          <TextBlock>?????????</TextBlock>
+					          <TextBlock>??????</TextBlock>
+					          <TextBlock>???</TextBlock>
+					          <TextBlock>??????</TextBlock>
+					          <TextBlock>SuuuuuuperUltraLargeText3</TextBlock>
+					      </ComboBox.Items>
+					  </ComboBox>
+					</Grid>
+					""""));
 
 				comboBox = (ComboBox)(rootPanel.FindName("comboBox"));
 				VERIFY_IS_NOT_NULL(comboBox);
@@ -5341,14 +5059,9 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 		await TestServices.WindowHelper.WaitForIdle();
 
 		var comboBoxTextSubmittedEvent = new Event();
-		var textSubmittedRegistration = CreateSafeEventRegistration(ComboBox, TextSubmitted);
+		var textSubmittedRegistration = CreateSafeEventRegistration<ComboBox, TypedEventHandler<ComboBox, ComboBoxTextSubmittedEventArgs>>("TextSubmitted");
 
-		textSubmittedRegistration.Attach(comboBox,
-			new wf.TypedEventHandler<ComboBox, ComboBoxTextSubmittedEventArgs ^> (
-				[comboBoxTextSubmittedEvent, comboBox]
-				(ComboBox sender, ComboBoxTextSubmittedEventArgs ^ args)
-
-
+		textSubmittedRegistration.Attach(comboBox, async (s, args) =>
 		{
 			VERIFY_ARE_EQUAL(args.Text, "Value");
 
@@ -5363,7 +5076,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 				});
 
 			comboBoxTextSubmittedEvent.Set();
-		}));
+		});
 
 		await RunOnUIThread(() =>
 
@@ -5378,7 +5091,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 		await TestServices.WindowHelper.WaitForIdle();
 
 		LOG_OUTPUT("Waiting for ComboBox TextSubmitted Event");
-		comboBoxTextSubmittedEvent.WaitForDefault();
+		await comboBoxTextSubmittedEvent.WaitForDefault();
 
 		await RunOnUIThread(() =>
 
@@ -5432,16 +5145,16 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 
 		var comboBox = await SetupBasicComboBoxTest(5, true, true);
 
-		TextBox ^ textBox = null;
+		TextBox textBox = null;
 
 		await RunOnUIThread(() =>
 
 			{
-				textBox = TextBox ^> (TreeHelper.GetVisualChildByName(comboBox, "EditableText"));
+				textBox = (TextBox)(TreeHelper.GetVisualChildByName(comboBox, "EditableText"));
 				VERIFY_IS_NOT_NULL(textBox);
 			});
 
-		EnsureEditableTextBoxHasFocus(comboBox);
+		await EnsureEditableTextBoxHasFocus(comboBox);
 
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -5468,9 +5181,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	[TestMethod]
 	public async Task ValidateSelectionTriggerAlwaysCanSetCustomValueAgain()
 	{
-
-
-		Size size(400, 400.0;
+		Size size = new(400, 400);
 		TestServices.WindowHelper.SetWindowSizeOverride(size);
 
 		ComboBox comboBox = null;
@@ -5479,49 +5190,16 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 
 			{
 				var rootPanel = (Grid)(XamlReader.Load(
-					"<Grid x:Name='root' xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' >"
-
-
-
-
-
-					"  <ComboBox x:Name='comboBox' IsEditable='true' SelectionChangedTrigger='Always'>"
-
-
-
-
-
-					"      <ComboBoxItem Content='One' />"
-
-
-
-
-
-					"      <ComboBoxItem Content='Two' />"
-
-
-
-
-
-					"      <ComboBoxItem Content='Three' />"
-
-
-
-
-
-					"      <ComboBoxItem Content='Four' />"
-
-
-
-
-
-					"  </ComboBox>"
-
-
-
-
-
-					"</Grid>"));
+					""""
+					<Grid x:Name='root' xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' >
+					  <ComboBox x:Name='comboBox' IsEditable='true' SelectionChangedTrigger='Always'>
+					      <ComboBoxItem Content='One' />
+					      <ComboBoxItem Content='Two' />
+					      <ComboBoxItem Content='Three' />
+					      <ComboBoxItem Content='Four' />
+					  </ComboBox>
+					</Grid>
+					""""));
 
 				comboBox = (ComboBox)(rootPanel.FindName("comboBox"));
 				VERIFY_IS_NOT_NULL(comboBox);
@@ -5531,7 +5209,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 
 		await TestServices.WindowHelper.WaitForIdle();
 
-		EnsureEditableTextBoxHasFocus(comboBox);
+		await EnsureEditableTextBoxHasFocus(comboBox);
 
 		await TestServices.WindowHelper.WaitForIdle();
 
@@ -5545,7 +5223,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 		await RunOnUIThread(() =>
 
 			{
-				VERIFY_ARE_EQUAL(string > (comboBox.SelectedItem), "Hello");
+				VERIFY_ARE_EQUAL((comboBox.SelectedItem), "Hello");
 				VERIFY_ARE_EQUAL(comboBox.SelectedIndex, -1);
 
 				comboBox.IsDropDownOpen = true;
@@ -5574,7 +5252,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 		await RunOnUIThread(() =>
 
 			{
-				VERIFY_ARE_EQUAL(string > (comboBox.SelectedItem), "Hello");
+				VERIFY_ARE_EQUAL((comboBox.SelectedItem), "Hello");
 				VERIFY_ARE_EQUAL(comboBox.SelectedIndex, -1);
 			});
 	}
@@ -5586,12 +5264,12 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 
 		var comboBox = await SetupBasicComboBoxTest(5, true, true);
 
-		Border ^ dropDownOverlay = null;
+		Border dropDownOverlay = null;
 
 		await RunOnUIThread(() =>
 
 			{
-				dropDownOverlay = Border ^> (TreeHelper.GetVisualChildByName(comboBox, "DropDownOverlay"));
+				dropDownOverlay = (Border)(TreeHelper.GetVisualChildByName(comboBox, "DropDownOverlay"));
 				VERIFY_IS_NOT_NULL(dropDownOverlay);
 
 				comboBox.Focus(FocusState.Keyboard);
@@ -5621,350 +5299,343 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 			});
 	}
 
+	//[TestMethod]
+	//public async Task ValidateDropDownOverlayVisuals()
+	//{
+	//	await ValidateDropDownOverlayVisualsHelper(ElementTheme.Dark, false /*useHighContrast*/, "Dark");
+	//	await ValidateDropDownOverlayVisualsHelper(ElementTheme.Light, false /*useHighContrast*/, "Light");
+	//	await ValidateDropDownOverlayVisualsHelper(ElementTheme.Light, true /*useHighContrast*/, "HC");
+	//}
+
+	//private async Task ValidateDropDownOverlayVisualsHelper(ElementTheme theme, bool useHighContrast, string variation)
+	//{
+	//	Size size = new(400, 400);
+	//	TestServices.WindowHelper.SetWindowSizeOverride(size);
+
+	//	ComboBox comboBox1 = null;
+	//	ComboBox comboBox2 = null;
+	//	ComboBox comboBox3 = null;
+
+	//	var validationRules = new Platform.String(
+	//		LR"(<?xml version='1.0' encoding='UTF-8'?>
+	//			< Rules >
+
+
+
+	//				< Rule Applicability =\"//Element[@Type='Microsoft.UI.Xaml.Controls.ComboBox']\" Inclusion='Blacklist'>
+	//					< Property Name = 'FocusState' />
+
+
+
+	//					< Property Name = 'IsSelectionBoxHighlighted' />
+
+
+
+	//				</ Rule >
+
+
+
+	//			</ Rules >)");
+
+
+
+	//	await RunOnUIThread(() =>
+
+	//	{
+	//		var rootPanel = (Grid)(XamlReader.Load(
+	//			"<Grid x:Name='root' xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' >"
+
+
+
+	//			"  <StackPanel>"
+
+
+
+	//			"      <ComboBox x:Name='comboBox1' Width='200' IsEditable='true' PlaceholderText='Select Option' />"
+
+
+
+	//			"      <ComboBox x:Name='comboBox2' Width='200' IsEditable='true' PlaceholderText='Select Option' />"
+
+
+
+	//			"      <ComboBox x:Name='comboBox3' Width='200' IsEditable='true' PlaceholderText='Select Option' />"
+
+
+
+	//			"  </StackPanel>"
+
+
+
+	//			"</Grid>"));
+
+	//		comboBox1 = (ComboBox)(rootPanel.FindName("comboBox1"));
+	//		comboBox2 = (ComboBox)(rootPanel.FindName("comboBox2"));
+	//		comboBox3 = (ComboBox)(rootPanel.FindName("comboBox3"));
+
+	//		rootPanel.RequestedTheme = theme;
+
+	//		if (useHighContrast)
+	//		{
+	//			TestServices.ThemingHelper.HighContrastTheme = HighContrastTheme.Black;
+	//		}
+	//		else
+	//		{
+	//			TestServices.ThemingHelper.HighContrastTheme = HighContrastTheme.None;
+	//		}
+
+	//		TestServices.WindowHelper.WindowContent = rootPanel;
+	//	});
+
+	//	await TestServices.WindowHelper.WaitForIdle();
+
+	//	await RunOnUIThread(() =>
+
+	//		{
+	//			comboBox1.Focus(FocusState.Keyboard);
+	//		});
+
+	//	await TestServices.WindowHelper.WaitForIdle();
+
+	//	await RunOnUIThread(() =>
+
+	//		{
+	//			VisualStateManager.GoToState(comboBox2, "TextBoxOverlayPointerOver", false);
+	//			VisualStateManager.GoToState(comboBox3, "TextBoxOverlayPressed", false);
+	//		});
+
+	//	await TestServices.WindowHelper.WaitForIdle();
+	//	TestServices.Utilities.VerifyUIElementTreeWithRulesInline(variation + "1", validationRules);
+
+	//	await RunOnUIThread(() =>
+
+	//		{
+	//			VisualStateManager.GoToState(comboBox1, "TextBoxFocusedOverlayPointerOver", false);
+	//		});
+
+	//	await TestServices.WindowHelper.WaitForIdle();
+	//	TestServices.Utilities.VerifyUIElementTreeWithRulesInline(variation + "2", validationRules);
+
+	//	await RunOnUIThread(() =>
+
+	//		{
+	//			VisualStateManager.GoToState(comboBox1, "TextBoxFocusedOverlayPressed", false);
+	//		});
+
+	//	await TestServices.WindowHelper.WaitForIdle();
+	//	TestServices.Utilities.VerifyUIElementTreeWithRulesInline(variation + "3", validationRules);
+	//}
+
+	//void LightDismissLayerOnIslands()
+	//{
+	//	WUCRenderingScopeGuard guard(DCompRendering.WUCCompleteSynchronousCompTree);
+
+	//	// Validate the ComboBox DComp output when ComboBox is opened with the mouse input
+	//	// after opened/closed the ComboBox with the touch input.
+	//	var comboBox = await SetupBasicComboBoxTest(2 /* numberOfItems */, false /* adjustMargin */);
+
+	//	await RunOnUIThread(() =>
+
+	//		{
+	//			comboBox.Height = 50;
+	//			comboBox.VerticalAlignment = VerticalAlignment.Center;
+	//		});
+	//	await TestServices.WindowHelper.WaitForIdle();
+
+	//	await ComboBoxHelper.OpenComboBox(comboBox, ComboBoxHelper.OpenMethod.Mouse);
+
+	//	await RunOnUIThread(() =>
+
+	//		{
+	//			LOG_OUTPUT("> There should be exactly one popup open...");
+	//			XamlRoot ^ xamlRoot = comboBox.XamlRoot;
+	//			var openPopups = VisualTreeHelper.GetOpenPopupsForXamlRoot(xamlRoot);
+	//			VERIFY_ARE_EQUAL(openPopups.Size, 1u);
+
+	//			LOG_OUTPUT("> ...with a Canvas as its Popup.Child...");
+	//			var popup = openPopups.GetAt(0.0;
+	//			var canvas = Canvas ^> (popup.Child);
+	//			VERIFY_IS_NOT_NULL(canvas);
+
+	//			LOG_OUTPUT("> ...and that Canvas should have only a Border inside it and no light dismiss children.");
+	//			VERIFY_ARE_EQUAL(canvas.Children.Size, 1u);
+	//			var border = Border ^> (canvas.Children[0]);
+	//			VERIFY_IS_NOT_NULL(border);
+	//		});
+
+	//	await ComboBoxHelper.CloseComboBox(comboBox);
+	//}
+
+	//	[TestMethod]
+	//	public async Task CanDisableShadow()
+	//	{
+
+
+	//		var comboBox = await SetupBasicComboBoxTest(5, true, true);
+
+	//		await RunOnUIThread(() =>
+
+	//			{
+	//				LOG_OUTPUT("Open the ComboBox");
+	//				comboBox.IsDropDownOpen = true;
+	//			});
+
+	//		await TestServices.WindowHelper.WaitForIdle();
+
+	//		var findShadow = [&]()
+
+
+	//		{
+	//			var shadowTarget = TreeHelper.GetVisualChildByNameFromOpenPopups("PopupBorder", comboBox);
+	//			return shadowTarget.Shadow;
+	//		};
+
+	//		await RunOnUIThread(() =>
+
+	//			{
+	//				LOG_OUTPUT("Make sure it has a shadow");
+	//				var shadow = findShadow();
+	//				VERIFY_IS_NOT_NULL(shadow);
+
+	//				LOG_OUTPUT("Close the ComboBox");
+	//				comboBox.IsDropDownOpen = false;
+	//			});
+
+	//		await TestServices.WindowHelper.WaitForIdle();
+
+	//		await RunOnUIThread(() =>
+
+	//			{
+	//			var dictionary = ResourceDictionary ^> (XamlReader.Load(
+	//				LR"(<ResourceDictionary
+
+
+
+	//						xmlns = "http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+
+
+
+	//						xmlns: x = "http://schemas.microsoft.com/winfx/2006/xaml" >
+
+
+
+	//					< x:Boolean x:Key = "IsDefaultShadowEnabled" > False </ x:Boolean >
+
+
+
+	//				</ ResourceDictionary >)"));
+
+
+
+	//			Application.Current.Resources.MergedDictionaries.Add(dictionary);
+	//	});
+
+	//// To remove the resource dictionary we added above
+	//var resourceCleanup = wil.scope_exit([]()
+	//        {
+
+	//	RunOnUIThread([]()
+	//            {
+
+	//		var mergedDictionaries = Application.Current.Resources.MergedDictionaries;
+	//	mergedDictionaries.RemoveAt(mergedDictionaries.Size - 1);
+	//            });
+	//        });
+
+	//await RunOnUIThread(() =>
+
+	//		{
+	//			LOG_OUTPUT("Open the ComboBox");
+	//			comboBox.IsDropDownOpen = true;
+	//		});
+
+	//await TestServices.WindowHelper.WaitForIdle();
+
+	//await RunOnUIThread(() =>
+
+	//		{
+	//			LOG_OUTPUT("Make sure it does not have a shadow");
+	//			var shadow = findShadow();
+	//			VERIFY_IS_NULL(shadow);
+	//		});
+
+	//await ComboBoxHelper.CloseComboBox(comboBox);
+	//    }
+
 	[TestMethod]
-	public async Task ValidateDropDownOverlayVisuals()
+	public async Task ValidateRestoreOnCancelIndexResetOnClose()
 	{
+		var comboBox = await SetupBasicComboBoxTest();
 
+		var openedEvent = new Event();
+		var openedRegistration = CreateSafeEventRegistration<ComboBox, EventHandler<object>>("DropDownOpened");
+		var closedEvent = new Event();
+		var closedRegistration = CreateSafeEventRegistration<ComboBox, EventHandler<object>>("DropDownClosed");
+		var selectionChangedEvent = new Event();
+		var selectionChangedRegistration = CreateSafeEventRegistration<ComboBox, SelectionChangedEventHandler>("SelectionChanged");
 
-		ValidateDropDownOverlayVisualsHelper(ElementTheme.Dark, false /*useHighContrast*/, "Dark");
-		ValidateDropDownOverlayVisualsHelper(ElementTheme.Light, false /*useHighContrast*/, "Light");
-		ValidateDropDownOverlayVisualsHelper(ElementTheme.Light, true /*useHighContrast*/, "HC");
+		openedRegistration.Attach(comboBox, (s, e) =>
+		{
+			LOG_OUTPUT("ComboBox opened.");
+			openedEvent.Set();
+		});
+
+		closedRegistration.Attach(comboBox, (s, e) =>
+		{
+			LOG_OUTPUT("ComboBox closed.");
+			closedEvent.Set();
+		});
+
+		selectionChangedRegistration.Attach(comboBox, (s, e) =>
+		{
+			LOG_OUTPUT("ComboBox selection changed. Selection is now %d.", comboBox.SelectedIndex);
+			selectionChangedEvent.Set();
+		});
+
+		int originalSelectedIndex = 0;
+
+		await RunOnUIThread(() =>
+
+			{
+				comboBox.SelectedIndex = originalSelectedIndex;
+			});
+
+		await selectionChangedEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await FocusTestHelper.EnsureFocus(comboBox, FocusState.Keyboard);
+
+		LOG_OUTPUT("Pressing space to open the ComboBox.");
+		TestServices.KeyboardHelper.Space();
+
+		await openedEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		LOG_OUTPUT("Pressing down and space to select a new item and close the ComboBox.");
+		TestServices.KeyboardHelper.Down();
+		TestServices.KeyboardHelper.Space();
+
+		await selectionChangedEvent.WaitForDefault();
+		await closedEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await ComboBoxHelper.VerifySelectedIndex(comboBox, originalSelectedIndex + 1);
+
+		selectionChangedEvent.Reset();
+
+		LOG_OUTPUT("Pressing space to open the ComboBox again.");
+		TestServices.KeyboardHelper.Space();
+
+		await openedEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		LOG_OUTPUT("Pressing escape to close the ComboBox without selecting anything.");
+		TestServices.KeyboardHelper.Escape();
+
+		await closedEvent.WaitForDefault();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		VERIFY_IS_FALSE(selectionChangedEvent.HasFired());
+		await ComboBoxHelper.VerifySelectedIndex(comboBox, originalSelectedIndex + 1);
 	}
-
-	[TestMethod]
-	public async Task ValidateDropDownOverlayVisualsHelper(ElementTheme theme, bool useHighContrast, string variation)
-	{
-		Size size(400, 400.0;
-		TestServices.WindowHelper.SetWindowSizeOverride(size);
-
-		ComboBox comboBox1 = null;
-		ComboBox comboBox2 = null;
-		ComboBox comboBox3 = null;
-
-		var validationRules = new Platform.String(
-			LR"(<?xml version='1.0' encoding='UTF-8'?>
-				< Rules >
-
-
-
-					< Rule Applicability =\"//Element[@Type='Microsoft.UI.Xaml.Controls.ComboBox']\" Inclusion='Blacklist'>
-						< Property Name = 'FocusState' />
-
-
-
-						< Property Name = 'IsSelectionBoxHighlighted' />
-
-
-
-					</ Rule >
-
-
-
-				</ Rules >)");
-
-
-
-		await RunOnUIThread(() =>
-
-		{
-			var rootPanel = (Grid)(XamlReader.Load(
-				"<Grid x:Name='root' xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' >"
-
-
-
-				"  <StackPanel>"
-
-
-
-				"      <ComboBox x:Name='comboBox1' Width='200' IsEditable='true' PlaceholderText='Select Option' />"
-
-
-
-				"      <ComboBox x:Name='comboBox2' Width='200' IsEditable='true' PlaceholderText='Select Option' />"
-
-
-
-				"      <ComboBox x:Name='comboBox3' Width='200' IsEditable='true' PlaceholderText='Select Option' />"
-
-
-
-				"  </StackPanel>"
-
-
-
-				"</Grid>"));
-
-			comboBox1 = (ComboBox)(rootPanel.FindName("comboBox1"));
-			comboBox2 = (ComboBox)(rootPanel.FindName("comboBox2"));
-			comboBox3 = (ComboBox)(rootPanel.FindName("comboBox3"));
-
-			rootPanel.RequestedTheme = theme;
-
-			if (useHighContrast)
-			{
-				TestServices.ThemingHelper.HighContrastTheme = HighContrastTheme.Black;
-			}
-			else
-			{
-				TestServices.ThemingHelper.HighContrastTheme = HighContrastTheme.None;
-			}
-
-			TestServices.WindowHelper.WindowContent = rootPanel;
-		});
-
-		await TestServices.WindowHelper.WaitForIdle();
-
-		await RunOnUIThread(() =>
-
-			{
-				comboBox1.Focus(FocusState.Keyboard);
-			});
-
-		await TestServices.WindowHelper.WaitForIdle();
-
-		await RunOnUIThread(() =>
-
-			{
-				VisualStateManager.GoToState(comboBox2, "TextBoxOverlayPointerOver", false);
-				VisualStateManager.GoToState(comboBox3, "TextBoxOverlayPressed", false);
-			});
-
-		await TestServices.WindowHelper.WaitForIdle();
-		TestServices.Utilities.VerifyUIElementTreeWithRulesInline(variation + "1", validationRules);
-
-		await RunOnUIThread(() =>
-
-			{
-				VisualStateManager.GoToState(comboBox1, "TextBoxFocusedOverlayPointerOver", false);
-			});
-
-		await TestServices.WindowHelper.WaitForIdle();
-		TestServices.Utilities.VerifyUIElementTreeWithRulesInline(variation + "2", validationRules);
-
-		await RunOnUIThread(() =>
-
-			{
-				VisualStateManager.GoToState(comboBox1, "TextBoxFocusedOverlayPressed", false);
-			});
-
-		await TestServices.WindowHelper.WaitForIdle();
-		TestServices.Utilities.VerifyUIElementTreeWithRulesInline(variation + "3", validationRules);
-	}
-
-	void LightDismissLayerOnIslands()
-	{
-		WUCRenderingScopeGuard guard(DCompRendering.WUCCompleteSynchronousCompTree);
-
-		// Validate the ComboBox DComp output when ComboBox is opened with the mouse input
-		// after opened/closed the ComboBox with the touch input.
-		var comboBox = await SetupBasicComboBoxTest(2 /* numberOfItems */, false /* adjustMargin */);
-
-		await RunOnUIThread(() =>
-
-			{
-				comboBox.Height = 50;
-				comboBox.VerticalAlignment = VerticalAlignment.Center;
-			});
-		await TestServices.WindowHelper.WaitForIdle();
-
-		await ComboBoxHelper.OpenComboBox(comboBox, ComboBoxHelper.OpenMethod.Mouse);
-
-		await RunOnUIThread(() =>
-
-			{
-				LOG_OUTPUT("> There should be exactly one popup open...");
-				XamlRoot ^ xamlRoot = comboBox.XamlRoot;
-				var openPopups = VisualTreeHelper.GetOpenPopupsForXamlRoot(xamlRoot);
-				VERIFY_ARE_EQUAL(openPopups.Size, 1u);
-
-				LOG_OUTPUT("> ...with a Canvas as its Popup.Child...");
-				var popup = openPopups.GetAt(0.0;
-				var canvas = Canvas ^> (popup.Child);
-				VERIFY_IS_NOT_NULL(canvas);
-
-				LOG_OUTPUT("> ...and that Canvas should have only a Border inside it and no light dismiss children.");
-				VERIFY_ARE_EQUAL(canvas.Children.Size, 1u);
-				var border = Border ^> (canvas.Children[0]);
-				VERIFY_IS_NOT_NULL(border);
-			});
-
-		await ComboBoxHelper.CloseComboBox(comboBox);
-	}
-
-	[TestMethod]
-	public async Task CanDisableShadow()
-	{
-
-
-		var comboBox = await SetupBasicComboBoxTest(5, true, true);
-
-		await RunOnUIThread(() =>
-
-			{
-				LOG_OUTPUT("Open the ComboBox");
-				comboBox.IsDropDownOpen = true;
-			});
-
-		await TestServices.WindowHelper.WaitForIdle();
-
-		var findShadow = [&]()
-
-
-		{
-			var shadowTarget = TreeHelper.GetVisualChildByNameFromOpenPopups("PopupBorder", comboBox);
-			return shadowTarget.Shadow;
-		};
-
-		await RunOnUIThread(() =>
-
-			{
-				LOG_OUTPUT("Make sure it has a shadow");
-				var shadow = findShadow();
-				VERIFY_IS_NOT_NULL(shadow);
-
-				LOG_OUTPUT("Close the ComboBox");
-				comboBox.IsDropDownOpen = false;
-			});
-
-		await TestServices.WindowHelper.WaitForIdle();
-
-		await RunOnUIThread(() =>
-
-			{
-			var dictionary = ResourceDictionary ^> (XamlReader.Load(
-				LR"(<ResourceDictionary
-
-
-
-						xmlns = "http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-
-
-
-						xmlns: x = "http://schemas.microsoft.com/winfx/2006/xaml" >
-
-
-
-					< x:Boolean x:Key = "IsDefaultShadowEnabled" > False </ x:Boolean >
-
-
-
-				</ ResourceDictionary >)"));
-
-
-
-			Application.Current.Resources.MergedDictionaries.Add(dictionary);
-	});
-
-// To remove the resource dictionary we added above
-var resourceCleanup = wil.scope_exit([]()
-        {
-
-	RunOnUIThread([]()
-            {
-
-		var mergedDictionaries = Application.Current.Resources.MergedDictionaries;
-	mergedDictionaries.RemoveAt(mergedDictionaries.Size - 1);
-            });
-        });
-
-await RunOnUIThread(() =>
-
-		{
-			LOG_OUTPUT("Open the ComboBox");
-			comboBox.IsDropDownOpen = true;
-		});
-
-await TestServices.WindowHelper.WaitForIdle();
-
-await RunOnUIThread(() =>
-
-		{
-			LOG_OUTPUT("Make sure it does not have a shadow");
-			var shadow = findShadow();
-			VERIFY_IS_NULL(shadow);
-		});
-
-await ComboBoxHelper.CloseComboBox(comboBox);
-    }
-
-    [TestMethod] public async Task ValidateRestoreOnCancelIndexResetOnClose()
-{
-
-
-	var comboBox = await SetupBasicComboBoxTest();
-
-	var openedEvent = new Event();
-	var openedRegistration = CreateSafeEventRegistration<ComboBox, EventHandler<object>>("DropDownOpened");
-	var closedEvent = new Event();
-	var closedRegistration = CreateSafeEventRegistration<ComboBox, EventHandler<object>>("DropDownClosed");
-	var selectionChangedEvent = new Event();
-	var selectionChangedRegistration = CreateSafeEventRegistration(ComboBox, SelectionChanged);
-
-	openedRegistration.Attach(comboBox, [openedEvent]()
-
-		{
-		LOG_OUTPUT("ComboBox opened.");
-		openedEvent.Set();
-	});
-
-	closedRegistration.Attach(comboBox, [closedEvent]()
-
-		{
-		LOG_OUTPUT("ComboBox closed.");
-		closedEvent.Set();
-	});
-
-	selectionChangedRegistration.Attach(comboBox, [comboBox, selectionChangedEvent]()
-
-		{
-		LOG_OUTPUT("ComboBox selection changed. Selection is now %d.", comboBox.SelectedIndex);
-		selectionChangedEvent.Set();
-	});
-
-	int originalSelectedIndex = 0;
-
-	await RunOnUIThread(() =>
-
-		{
-			comboBox.SelectedIndex = originalSelectedIndex;
-		});
-
-	selectionChangedEvent.WaitForDefault();
-	await TestServices.WindowHelper.WaitForIdle();
-
-	FocusTestHelper.EnsureFocus(comboBox, FocusState.Keyboard);
-
-	LOG_OUTPUT("Pressing space to open the ComboBox.");
-	TestServices.KeyboardHelper.Space();
-
-	openedEvent.WaitForDefault();
-	await TestServices.WindowHelper.WaitForIdle();
-
-	LOG_OUTPUT("Pressing down and space to select a new item and close the ComboBox.");
-	TestServices.KeyboardHelper.Down();
-	TestServices.KeyboardHelper.Space();
-
-	selectionChangedEvent.WaitForDefault();
-	closedEvent.WaitForDefault();
-	await TestServices.WindowHelper.WaitForIdle();
-
-	await ComboBoxHelper.VerifySelectedIndex(comboBox, originalSelectedIndex + 1);
-
-	selectionChangedEvent.Reset();
-
-	LOG_OUTPUT("Pressing space to open the ComboBox again.");
-	TestServices.KeyboardHelper.Space();
-
-	openedEvent.WaitForDefault();
-	await TestServices.WindowHelper.WaitForIdle();
-
-	LOG_OUTPUT("Pressing escape to close the ComboBox without selecting anything.");
-	TestServices.KeyboardHelper.Escape();
-
-	closedEvent.WaitForDefault();
-	await TestServices.WindowHelper.WaitForIdle();
-
-	VERIFY_IS_FALSE(selectionChangedEvent.HasFired());
-	await ComboBoxHelper.VerifySelectedIndex(comboBox, originalSelectedIndex + 1);
-}
 }
