@@ -113,6 +113,8 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		public event EventHandler<ScrollViewerViewChangedEventArgs>? ViewChanged;
 
+		internal event SizeChangedEventHandler? ExtentSizeChanged;
+
 		static ScrollViewer()
 		{
 #if !IS_UNIT_TESTS
@@ -749,6 +751,8 @@ namespace Microsoft.UI.Xaml.Controls
 			ViewportHeight = (_presenter as IFrameworkElement)?.ActualHeight ?? ActualHeight;
 			ViewportWidth = (_presenter as IFrameworkElement)?.ActualWidth ?? ActualWidth;
 
+			var oldSize = new Size(ExtentWidth, ExtentHeight);
+
 			if (_presenter?.CustomContentExtent is { } customExtent)
 			{
 				ExtentHeight = customExtent.Height;
@@ -833,6 +837,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 			TrimOverscroll(Orientation.Vertical);
 			TrimOverscroll(Orientation.Horizontal);
+
+			var newSize = new Size(ExtentWidth, ExtentWidth);
+			if (oldSize != newSize)
+			{
+				ExtentSizeChanged?.Invoke(this, new(this, oldSize, newSize));
+			}
 		}
 
 		private void UpdateComputedVerticalScrollability(bool invalidate)
