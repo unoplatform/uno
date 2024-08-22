@@ -193,20 +193,11 @@ namespace Microsoft.UI.Xaml
 					_entries = entries = newEntries;
 				}
 
-				// Avoid using ref here, as TryResolveDefaultValueFromProviders execution could execute code which
-				// could cause the entries array to be expanded by bucket size and to be reallocated, which would
-				// cause the reference to be invalidated. Example of this is a child property which calls child.SetParent(this).
-				// Even though the _entries size may change, the offset and bucketRemainder will still be valid.
-				var propertyEntry = entries[offset + bucketRemainder];
-				if (propertyEntry is null)
+				ref var propertyEntry = ref entries[offset + bucketRemainder];
+
+				if (propertyEntry == null)
 				{
 					propertyEntry = new DependencyPropertyDetails(property, _ownerType, property == _dataContextProperty || property == _templatedParentProperty);
-					_entries[offset + bucketRemainder] = propertyEntry;
-
-					if (TryResolveDefaultValueFromProviders(property, out var value))
-					{
-						propertyEntry.SetDefaultValue(value);
-					}
 				}
 
 				return propertyEntry;
@@ -228,18 +219,6 @@ namespace Microsoft.UI.Xaml
 
 				return null;
 			}
-		}
-
-		private bool TryResolveDefaultValueFromProviders(DependencyProperty property, out object? value)
-		{
-			// Replicate the WinUI behavior of DependencyObject::GetDefaultValue2 specifically for UIElement.
-			if (Owner is UIElement uiElement)
-			{
-				return uiElement.GetDefaultValue2(property, out value);
-			}
-
-			value = null;
-			return false;
 		}
 
 		private void ReturnEntriesAndOffsetsToPools()

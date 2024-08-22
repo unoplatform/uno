@@ -293,17 +293,18 @@ namespace Microsoft.UI.Xaml
 
 			if (precedence == null)
 			{
-				return propertyDetails.GetValue();
+				return propertyDetails.CurrentHighestValuePrecedence == DependencyPropertyValuePrecedences.DefaultValue
+					? GetDefaultValue(propertyDetails.Property)
+					: propertyDetails.GetValue();
 			}
 
 			if (isPrecedenceSpecific)
 			{
-				return propertyDetails.GetValue(precedence.Value);
+				return GetPrecedenceSpecificValue(propertyDetails, precedence.Value);
 			}
 
 			var highestPriority = GetCurrentHighestValuePrecedence(propertyDetails);
-
-			return propertyDetails.GetValue((DependencyPropertyValuePrecedences)Math.Max((int)highestPriority, (int)precedence.Value));
+			return GetPrecedenceSpecificValue(propertyDetails, (DependencyPropertyValuePrecedences)Math.Max((int)highestPriority, (int)precedence.Value));
 		}
 
 		/// <summary>
@@ -575,7 +576,7 @@ namespace Microsoft.UI.Xaml
 						&& !ReferenceEquals(childProviderClearNewValue.Store.Parent, ActualInstance))
 					{
 						// Sets the DataContext of the new precedence value
-						childProviderClearNewValue.Store.RestoreInheritedDataContext(_properties.DataContextPropertyDetails.GetValue());
+						childProviderClearNewValue.Store.RestoreInheritedDataContext(GetHighestValueFromDetails(_properties.DataContextPropertyDetails));
 					}
 				}
 
@@ -586,7 +587,7 @@ namespace Microsoft.UI.Xaml
 						&& !ReferenceEquals(childProviderSet.Store.Parent, ActualInstance))
 					{
 						// Sets the DataContext of the new precedence value
-						childProviderSet.Store.RestoreInheritedDataContext(_properties.DataContextPropertyDetails.GetValue());
+						childProviderSet.Store.RestoreInheritedDataContext(GetHighestValueFromDetails(_properties.DataContextPropertyDetails));
 					}
 
 					if (previousValue is IDependencyObjectStoreProvider childProviderSetNewValue)
@@ -1087,8 +1088,34 @@ namespace Microsoft.UI.Xaml
 		{
 			var stack = _properties.GetPropertyDetails(property);
 
-			return stack.GetValueUnderPrecedence(precedence);
+			var (value, resultPrecedence) = stack.GetValueUnderPrecedence(precedence);
+			if (resultPrecedence == DependencyPropertyValuePrecedences.DefaultValue)
+			{
+				var actualInstance = ActualInstance;
+				return (GetDefaultValue(property), DependencyPropertyValuePrecedences.DefaultValue);
+			}
+
+			return (value, resultPrecedence);
 		}
+
+		private object GetDefaultValue(DependencyProperty dp)
+		{
+			var actualInstance = ActualInstance;
+			return dp.GetDefaultValue(actualInstance as UIElement, actualInstance?.GetType());
+		}
+
+		private object? GetPrecedenceSpecificValue(DependencyPropertyDetails details, DependencyPropertyValuePrecedences precedence)
+		{
+			if (precedence == DependencyPropertyValuePrecedences.DefaultValue)
+			{
+				return GetDefaultValue(details.Property);
+			}
+
+			return details.GetValue(precedence);
+		}
+
+		private object? GetHighestValueFromDetails(DependencyPropertyDetails details)
+			=> GetPrecedenceSpecificValue(details, details.CurrentHighestValuePrecedence);
 
 		internal DependencyPropertyDetails GetPropertyDetails(DependencyProperty property)
 		{
@@ -2046,7 +2073,7 @@ namespace Microsoft.UI.Xaml
 				}
 			}
 
-			if (AreDifferent(value, propertyDetails.GetValue(precedence)))
+			if (AreDifferent(value, GetPrecedenceSpecificValue(propertyDetails, precedence)))
 			{
 				propertyDetails.SetValue(value, precedence);
 			}
