@@ -1,19 +1,14 @@
 ﻿using System;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MUXControlsTestApp.Utilities;
 using Uno.UI.Helpers;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.ApplicationModel.DataTransfer;
-using Color = Windows.UI.Color;
 
 #if HAS_UNO_WINUI || WINAPPSDK || WINUI
 using Colors = Microsoft.UI.Colors;
@@ -22,7 +17,6 @@ using Colors = Windows.UI.Colors;
 #endif
 
 using static Private.Infrastructure.TestServices;
-using Private.Infrastructure;
 using Microsoft.UI.Xaml.Data;
 
 
@@ -1027,18 +1021,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Size_Zero_Fluent_Default()
 		{
-			var loaded = false;
 			using var styles = StyleHelper.UseFluentStyles();
-			var textBox = new TextBox
-			{
-				Text = "",
-				Width = 0,
-				Height = 0
-			};
-			textBox.Loaded += (s, e) => loaded = true;
 
-			WindowHelper.WindowContent = textBox;
-			await WindowHelper.WaitFor(() => loaded);
+			var textBox = await LoadZeroSizeTextBoxAsync(null);
 
 			Assert.AreEqual(textBox.ActualWidth, textBox.MinWidth, 0.1);
 			Assert.AreEqual(textBox.ActualHeight, textBox.MinHeight, 0.1);
@@ -1047,17 +1032,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Size_Zero_Default()
 		{
-			var loaded = false;
-			var textBox = new TextBox
-			{
-				Text = "",
-				Width = 0,
-				Height = 0
-			};
-			textBox.Loaded += (s, e) => loaded = true;
-
-			WindowHelper.WindowContent = textBox;
-			await WindowHelper.WaitFor(() => loaded);
+			var textBox = await LoadZeroSizeTextBoxAsync(null);
 
 			Assert.AreEqual(textBox.ActualWidth, 0);
 			Assert.AreEqual(textBox.ActualHeight, 0);
@@ -1067,25 +1042,40 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task When_Size_Zero_Fluent_ComboBoxTextBoxStyle()
 		{
 			using var styles = StyleHelper.UseFluentStyles();
-			var loaded = false;
 			var style = Application.Current.Resources["ComboBoxTextBoxStyle"] as Style;
 
-			Assert.IsNotNull(style);
+			var textBox = await LoadZeroSizeTextBoxAsync(style);
 
+			Assert.AreEqual(textBox.ActualWidth, 0);
+			Assert.AreEqual(textBox.ActualHeight, 0);
+		}
+
+		private static async Task<TextBox> LoadZeroSizeTextBoxAsync(Style style)
+		{
+			var loaded = false;
+			var grid = new Grid()
+			{
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top
+			};
 			var textBox = new TextBox
 			{
 				Text = "",
 				Width = 0,
-				Height = 0,
-				Style = style
+				Height = 0
 			};
+			if (style is not null)
+			{
+				textBox.Style = style;
+			}
+
+			grid.Children.Add(textBox);
 			textBox.Loaded += (s, e) => loaded = true;
 
-			WindowHelper.WindowContent = textBox;
+			WindowHelper.WindowContent = grid;
 			await WindowHelper.WaitFor(() => loaded);
-
-			Assert.AreEqual(textBox.ActualWidth, 0);
-			Assert.AreEqual(textBox.ActualHeight, 0);
+			await WindowHelper.WaitForIdle(); // Needed to account for lifecycle differences on mobile
+			return textBox;
 		}
 	}
 }
