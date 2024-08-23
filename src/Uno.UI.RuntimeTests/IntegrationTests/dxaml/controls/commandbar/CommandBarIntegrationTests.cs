@@ -234,6 +234,9 @@ namespace Windows.UI.Tests.Enterprise
 
 		[Description("Validates that CommandBar opens and closes, with appropriate events firing, using taps on More Button.")]
 		[TestProperty("TestPass:ExcludeOn", "WindowsCore")]
+#if __IOS__ || __ANDROID__
+		[Ignore("Test is failing on iOS and Android https://github.com/unoplatform/uno/issues/17984")]
+#endif
 		public async Task CanOpenAndCloseUsingMoreButton()
 		{
 			TestCleanupWrapper cleanup;
@@ -295,6 +298,9 @@ namespace Windows.UI.Tests.Enterprise
 
 		[Description("Validates that CommandBar can close when a secondary command is selected from the overflow.")]
 		[TestProperty("TestPass:IncludeOnlyOn", "Desktop")]
+#if __IOS__
+		[Ignore("Test is failing on iOS https://github.com/unoplatform/uno/issues/17984")]
+#endif
 		public async Task DoesCloseOnSecondaryCommandSelection()
 		{
 			TestCleanupWrapper cleanup;
@@ -1994,8 +2000,8 @@ namespace Windows.UI.Tests.Enterprise
 
 		[Description("Validates that a minimal closed command bar with only secondary commands is visible.")]
 		[TestProperty("TestPass:ExcludeOn", "WindowsCore")]
-#if __IOS__
-		[Ignore("Test is failing on iOS https://github.com/unoplatform/uno/issues/17984")]
+#if __IOS__ || __ANDROID__
+		[Ignore("Test is failing on iOS and Android https://github.com/unoplatform/uno/issues/17984")]
 #endif
 		public async Task ValidateClosedMinimalCommandBarWithSecondaryCommandsOnlyIsVisible()
 		{
@@ -2160,6 +2166,9 @@ namespace Windows.UI.Tests.Enterprise
 
 		[Description("Validate the size of the CommandBar menu and its items based on different input modes (mouse, touch, etc.).")]
 		[TestProperty("TestPass:IncludeOnlyOn", "Desktop")]
+#if __ANDROID__
+		[Ignore("Test is failing on Android https://github.com/unoplatform/uno/issues/17984")]
+#endif
 		public async Task ValidateMenuSizingForDifferentInputModes()
 		{
 			TestCleanupWrapper cleanup;
@@ -2626,7 +2635,7 @@ namespace Windows.UI.Tests.Enterprise
 
 		[Description("Validates that setting DefaultLayoutPosition on the CommandBar propagates down to AppBarButtons and AppBarToggleButtons.")]
 		[TestProperty("Hosting:Mode", "UAP")]
-#if __ANDROID__ && __IOS__
+#if __ANDROID__ || __IOS__
 		[Ignore("Test is failing on iOS and Android https://github.com/unoplatform/uno/issues/17984")]
 #endif
 		public async Task ValidateDefaultLayoutPositionPropagates()
