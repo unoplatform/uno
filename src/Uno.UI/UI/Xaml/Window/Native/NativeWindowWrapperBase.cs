@@ -1,7 +1,6 @@
 ﻿#nullable enable
 
 using System;
-using System.ComponentModel;
 using Microsoft.UI.Content;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
@@ -178,12 +177,14 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 	public event EventHandler<CoreWindowActivationState>? ActivationChanged;
 	public event EventHandler<bool>? VisibilityChanged;
 	public event EventHandler<AppWindowClosingEventArgs>? Closing;
-	public event EventHandler? Closed;
 	public event EventHandler? Shown;
 
 	public virtual void Activate() { }
 
-	public virtual void Close() { }
+	public virtual void Close()
+	{
+		IsVisible = false;
+	}
 
 	public virtual void ExtendContentIntoTitleBar(bool extend) { }
 
@@ -204,8 +205,6 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 		Closing?.Invoke(this, args);
 		return args;
 	}
-
-	protected void RaiseClosed() => Closed?.Invoke(this, EventArgs.Empty);
 
 	public void SetPresenter(AppWindowPresenter presenter)
 	{

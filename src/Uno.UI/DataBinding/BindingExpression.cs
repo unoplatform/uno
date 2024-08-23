@@ -398,7 +398,8 @@ namespace Microsoft.UI.Xaml.Data
 			}
 			else if (useTypeDefaultValue && TargetPropertyDetails != null)
 			{
-				SetTargetValue(TargetPropertyDetails.Property.GetMetadata(_view.Target?.GetType()).DefaultValue);
+				var viewTarget = _view.Target;
+				SetTargetValue(TargetPropertyDetails.Property.GetDefaultValue(viewTarget as UIElement, viewTarget?.GetType()));
 			}
 		}
 

@@ -311,7 +311,12 @@ public partial class Border : FrameworkElement
 	{
 #if UNO_HAS_BORDER_VISUAL
 		this.UpdateBackground();
-		BorderHelper.SetUpBrushTransitionIfAllowed((BorderVisual)this.Visual, e.OldValue as Brush, e.NewValue as Brush, this.BackgroundTransition);
+		BorderHelper.SetUpBrushTransitionIfAllowed(
+			(BorderVisual)this.Visual,
+			e.OldValue as Brush,
+			e.NewValue as Brush,
+			this.BackgroundTransition,
+			((IDependencyObjectStoreProvider)this).Store.GetPropertyDetails(BackgroundProperty).CurrentHighestValuePrecedence == DependencyPropertyValuePrecedences.Animations);
 #else
 		UpdateBorder();
 #endif
@@ -324,14 +329,18 @@ public partial class Border : FrameworkElement
 
 	internal override bool IsViewHit() => IsViewHitImpl(this);
 
-	internal static bool IsViewHitImpl(FrameworkElement element)
+	internal static bool IsViewHitImpl(IBorderInfoProvider element)
 	{
 		_Debug.Assert(element is Panel
 			|| element is Border
 			|| element is ContentPresenter
 		);
 
-		return element.Background != null;
+		return element.Background != null
+#if __SKIA__
+			|| element.BorderBrush != null
+#endif
+			;
 	}
 
 #if !UNO_HAS_BORDER_VISUAL

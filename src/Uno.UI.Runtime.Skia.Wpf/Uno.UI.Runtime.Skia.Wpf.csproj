@@ -23,7 +23,7 @@
 		This allows for building the library with a dependency to WPF while not
 		building with net8-windows.
 		-->
-		<FrameworkReference Include="Microsoft.WindowsDesktop.App.WPF"/>
+		<FrameworkReference Include="Microsoft.WindowsDesktop.App.WPF" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -34,8 +34,10 @@
 		<PackageReference Include="SkiaSharp.Views.WPF" />
 		<PackageReference Include="SkiaSharp.Harfbuzz" />
 
+		<PackageReference Include="Microsoft.Web.WebView2" Aliases="WpfWebView" PrivateAssets="all" />
+
 		<!-- 
-			Required to ensure that this reference is latest and not 
+			Required to ensure that this reference is latest and not
 			transitively flowing through SkiaSharp's dependencies
 		 -->
 		<PackageReference Include="Microsoft.Win32.SystemEvents" />

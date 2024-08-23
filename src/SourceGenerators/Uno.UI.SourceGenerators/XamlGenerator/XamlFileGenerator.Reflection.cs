@@ -196,9 +196,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private bool IsDependencyObject(XamlObjectDefinition component)
 			=> GetType(component.Type).GetAllInterfaces().Any(i => SymbolEqualityComparer.Default.Equals(i, Generation.DependencyObjectSymbol.Value));
 
-		private bool IsDependencyObject(INamedTypeSymbol component)
-			=> component.GetAllInterfaces().Any(i => SymbolEqualityComparer.Default.Equals(i, Generation.DependencyObjectSymbol.Value));
-
 		private bool IsUIElement(INamedTypeSymbol? symbol)
 			=> IsType(symbol, Generation.UIElementSymbol.Value);
 

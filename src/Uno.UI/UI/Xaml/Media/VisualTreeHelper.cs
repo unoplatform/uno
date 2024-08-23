@@ -39,6 +39,7 @@ using _ViewGroup = Android.Views.ViewGroup;
 using _View = Microsoft.UI.Xaml.UIElement;
 using _ViewGroup = Microsoft.UI.Xaml.UIElement;
 using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml.Shapes;
 #endif
 
 namespace Microsoft.UI.Xaml.Media
@@ -659,9 +660,15 @@ namespace Microsoft.UI.Xaml.Media
 				}
 			}
 
-			// We didn't find any child at the given position, validate that element can be touched (i.e. not HitTestability.Invisible),
-			// and the position is in actual bounds (which might be different than the clipping bounds)
-			if (elementHitTestVisibility == HitTestability.Visible && renderingBounds.Contains(testPosition))
+			// We didn't find any child at the given position, validate that element can be touched,
+			// and the position is in actual bounds(which might be different than the clipping bounds)
+			if (elementHitTestVisibility == HitTestability.Visible && renderingBounds.Contains(testPosition)
+#if __SKIA__
+				&& element.HitTest(transformToElement.Inverse().Transform(testPosition))
+#elif __WASM__
+				&& element.HitTest(testPosition)
+#endif
+				)
 			{
 				TRACE($"> LEAF! ({element.GetDebugName()} is the OriginalSource) | stale branch: {stale?.ToString() ?? "-- none --"}");
 				return (element, stale);

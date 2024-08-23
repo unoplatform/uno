@@ -9,6 +9,9 @@ using Microsoft.UI.Xaml;
 using Windows.UI.ViewManagement;
 using Uno.Helpers.Theming;
 using Uno.UI.Core;
+using Microsoft.UI.Windowing;
+using Windows.UI.Core.Preview;
+using Uno.Disposables;
 
 #if !HAS_UNO_WINUI
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
@@ -17,7 +20,6 @@ using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 #if HAS_UNO_WINUI
 using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
 using WindowActivatedEventArgs = Microsoft.UI.Xaml.WindowActivatedEventArgs;
-using Microsoft.UI.Windowing;
 #else
 using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
 using WindowActivatedEventArgs = Windows.UI.Core.WindowActivatedEventArgs;
@@ -31,10 +33,17 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 	private CoreWindowActivationState _lastActivationState = CoreWindowActivationState.Deactivated;
 	private Size _lastSize = new Size(-1, -1);
 
+	private bool _isClosing;
+	private bool _isClosed;
+
+	private AppWindowClosingEventArgs? _appWindowClosingEventArgs;
+
 #pragma warning disable CS0649
 	public BaseWindowImplementation(Window window)
 	{
 		Window = window ?? throw new System.ArgumentNullException(nameof(window));
+
+		ApplicationHelper.AddWindow(window);
 	}
 
 	public event WindowSizeChangedEventHandler? SizeChanged;
@@ -71,6 +80,11 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 
 	public virtual void Activate()
 	{
+		if (_isClosed)
+		{
+			throw new InvalidOperationException("Cannot reactivate a closed window.");
+		}
+
 		if (!_wasShown)
 		{
 			_wasShown = true;
@@ -105,7 +119,6 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 		nativeWindow.VisibilityChanged += OnNativeVisibilityChanged;
 		nativeWindow.SizeChanged += OnNativeSizeChanged;
 		nativeWindow.Closing += OnNativeClosing;
-		nativeWindow.Closed += OnNativeClosed;
 		nativeWindow.Shown += OnNativeShown;
 		nativeWindow.VisibleBoundsChanged += OnNativeVisibleBoundsChanged;
 
@@ -114,11 +127,58 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 		SetVisibleBoundsFromNative();
 	}
 
-	private void OnNativeClosing(object? sender, Microsoft.UI.Windowing.AppWindowClosingEventArgs e) => Window.AppWindow.RaiseClosing(e);
+	private void OnNativeClosing(object? sender, Microsoft.UI.Windowing.AppWindowClosingEventArgs e)
+	{
+		// Only raise AppWindow.Closing if the window is not closed programmatically.
+		if (!_isClosing)
+		{
+			using var cleanup = Disposable.Create(() =>
+			{
+				_appWindowClosingEventArgs = null;
+			});
+
+			_appWindowClosingEventArgs = e;
+
+			Window.AppWindow.RaiseClosing(e);
+
+			if (e.Cancel && NativeWindowFactory.SupportsClosingCancellation)
+			{
+				return;
+			}
+
+#if __SKIA__
+			// Legacy system close handling
+			var manager = SystemNavigationManagerPreview.GetForCurrentView();
+			if (manager is { HasConfirmedClose: false })
+			{
+				if (!manager.RequestAppClose())
+				{
+					// App closing was prevented, handle event
+					e.Cancel = true;
+
+					if (NativeWindowFactory.SupportsClosingCancellation)
+					{
+						return;
+					}
+				}
+			}
+#endif
+
+			if (e.Cancel && !NativeWindowFactory.SupportsClosingCancellation)
+			{
+				if (this.Log().IsWarningEnabled(LogLevel.Warning))
+				{
+					this.Log().Warn("Closing event was cancelled, but the platform does not support cancellation.");
+				}
+			}
+
+
+			// If the closing event was not cancelled, close the window.
+			e.Cancel = !Close();
+		}
+	}
 
 	private void OnNativeShown(object? sender, EventArgs e) => ContentManager.TryLoadRootVisual(XamlRoot!);
-
-	private void OnNativeClosed(object? sender, EventArgs args) => Closed?.Invoke(Window, new WindowEventArgs());
 
 	private void OnNativeSizeChanged(object? sender, Size size)
 	{
@@ -171,10 +231,7 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 			this.Log().LogDebug($"Window visibility changing to {isVisible}");
 		}
 
-		var args = new VisibilityChangedEventArgs() { Visible = isVisible };
-
-		CoreWindow?.OnVisibilityChanged(args);
-		VisibilityChanged?.Invoke(Window, args);
+		RaiseWindowVisibilityChangedEvent(isVisible);
 		SystemThemeHelper.RefreshSystemTheme();
 	}
 
@@ -216,5 +273,99 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 		KeyboardStateTracker.Reset();
 	}
 
-	public void Close() => NativeWindowWrapper?.Close();
+	public bool Close()
+	{
+		if (!_isClosed && !_isClosing)
+		{
+			bool cancelGuard = false;
+			using var guard = Disposable.Create(() =>
+			{
+				if (cancelGuard)
+				{
+					return;
+				}
+				// in case of any failure, closing and closed states
+				// will reset so that closing operation can be attempted again
+				_isClosing = false;
+				_isClosed = false;
+			});
+
+			_isClosing = true;
+			// Create and populate the window closed event args
+			WindowEventArgs windowClosedEventArgs = new WindowEventArgs();
+			windowClosedEventArgs.Handled = false;
+
+			// Raise the window closed event
+			Closed?.Invoke(Window, windowClosedEventArgs);
+
+			if (windowClosedEventArgs.Handled)
+			{
+				// don't proceed to close if closing event has been handled
+				// _isClosing will get reset to false
+
+				if (!NativeWindowFactory.SupportsClosingCancellation)
+				{
+					if (this.Log().IsWarningEnabled(LogLevel.Warning))
+					{
+						this.Log().Warn("Window.Closed event was cancelled, but the platform does not support cancellation.");
+					}
+				}
+				else
+				{
+					return false;
+				}
+			}
+
+			// Window.PrepareToClose();
+
+			// set these to null before marking window as closed as they fail if called after m_bIsClosed is set
+			// because they check if window is closed already
+			Window.SetTitleBar(null);
+			Window.Content = null;
+
+			// _windowChrome.SetDesktopWindow(null);
+
+			// Mark Desktop Window instance as 'closed'
+			_isClosed = true;
+			cancelGuard = true; // success, no need to reset closing and closed states
+
+			// if (!_minimizedOrHidden)
+			{
+				// if this call fails, we don't want to reset shutdown status
+				// beter to crash
+				RaiseWindowVisibilityChangedEvent(false);
+			}
+
+			// Close native window, cleanup, and unregister from hwnd mapping from DXamlCore
+			Shutdown();
+
+			return true;
+		}
+
+		return false;
+	}
+
+	private void Shutdown()
+	{
+		ApplicationHelper.RemoveWindow(Window);
+
+		if (NativeWindowWrapper is null)
+		{
+			throw new InvalidOperationException("Native window is not initialized.");
+		}
+
+		// If AppWindow closing is in progress, we don't need to do anything here.
+		if (_appWindowClosingEventArgs is null)
+		{
+			NativeWindowWrapper.Close();
+		}
+	}
+
+	private void RaiseWindowVisibilityChangedEvent(bool isVisible)
+	{
+		var args = new VisibilityChangedEventArgs() { Visible = isVisible };
+
+		CoreWindow?.OnVisibilityChanged(args);
+		VisibilityChanged?.Invoke(Window, args);
+	}
 }

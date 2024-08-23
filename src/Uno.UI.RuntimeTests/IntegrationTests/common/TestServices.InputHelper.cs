@@ -50,7 +50,7 @@ namespace Private.Infrastructure
 
 			public static void Tap(UIElement element, uint waitBetweenPressRelease = 0)
 			{
-#if WINAPPSDK || __SKIA__
+#if WINAPPSDK || HAS_INPUT_INJECTOR
 				Finger finger = null;
 				MUXControlsTestApp.Utilities.RunOnUIThread.Execute(() =>
 				{

@@ -23,7 +23,6 @@ namespace Microsoft.UI.Xaml
 		private object? _fastLocalValue;
 		private BindingExpression? _binding;
 		private object?[]? _stack;
-		private PropertyMetadata? _metadata;
 		private object? _defaultValue;
 		private Flags _flags;
 		private DependencyPropertyCallbackManager? _callbackManager;
@@ -73,8 +72,6 @@ namespace Microsoft.UI.Xaml
 
 		public DependencyProperty Property { get; }
 
-		public PropertyMetadata Metadata => _metadata ??= Property.GetMetadata(_dependencyObjectType);
-
 		/// <summary>
 		/// Constructor
 		/// </summary>
@@ -84,7 +81,7 @@ namespace Microsoft.UI.Xaml
 			Property = property;
 			_dependencyObjectType = dependencyObjectType;
 
-			GetPropertyInheritanceConfiguration(isTemplatedParentOrDataContext, out var hasInherits, out var hasValueInherits, out var hasValueDoesNotInherits);
+			GetPropertyInheritanceConfiguration(property, isTemplatedParentOrDataContext, out var hasInherits, out var hasValueInherits, out var hasValueDoesNotInherits);
 
 			_flags |= property.HasWeakStorage ? Flags.WeakStorage : Flags.None;
 			_flags |= hasValueInherits ? Flags.ValueInherits : Flags.None;
@@ -99,6 +96,7 @@ namespace Microsoft.UI.Xaml
 			=> _localCanDefeatAnimationSuppressed--;
 
 		private void GetPropertyInheritanceConfiguration(
+			DependencyProperty property,
 			bool isTemplatedParentOrDataContext,
 			out bool hasInherits,
 			out bool hasValueInherits,
@@ -113,7 +111,7 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
-			if (Metadata is FrameworkPropertyMetadata propertyMetadata)
+			if (property.Metadata is FrameworkPropertyMetadata propertyMetadata)
 			{
 				hasValueInherits = propertyMetadata.Options.HasValueInheritsDataContext();
 				hasValueDoesNotInherit = propertyMetadata.Options.HasValueDoesNotInheritDataContext();
@@ -130,7 +128,7 @@ namespace Microsoft.UI.Xaml
 		{
 			if (!HasDefaultValueSet)
 			{
-				_defaultValue = Metadata.DefaultValue;
+				_defaultValue = Property.GetMetadata(_dependencyObjectType).DefaultValue;
 
 				// Ensures that the default value of non-nullable properties is not null
 				if (_defaultValue == null && !Property.IsTypeNullable)
@@ -365,7 +363,9 @@ namespace Microsoft.UI.Xaml
 		/// Gets the current highest value precedence level
 		/// </summary>
 		internal DependencyPropertyValuePrecedences CurrentHighestValuePrecedence
-			=> _highestPrecedence;
+			=> _highestPrecedence == DependencyPropertyValuePrecedences.Animations && (_flags & Flags.LocalValueNewerThanAnimationsValue) != 0
+				? DependencyPropertyValuePrecedences.Local
+				: _highestPrecedence;
 
 		/// <summary>
 		/// Validate the value to prevent setting null to non-nullable dependency properties.

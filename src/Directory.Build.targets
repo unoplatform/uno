@@ -131,6 +131,7 @@
 		<PackageReference Update="CommunityToolkit.Mvvm" Version="$(CommunityToolkitMvvmVersion)" />
 		<PackageReference Update="System.CommandLine" Version="2.0.0-beta4.22272.1" />
 		<PackageReference Update="Microsoft.Win32.SystemEvents" Version="8.0.0" />
+		<PackageReference Update="Microsoft.Web.WebView2" Version="1.0.2592.51" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net8.0-android'">

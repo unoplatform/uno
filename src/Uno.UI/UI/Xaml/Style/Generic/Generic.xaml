@@ -221,10 +221,6 @@
 
 	<Style x:Key="XamlDefaultTextBox"
 		   TargetType="TextBox">
-		<Setter Property="MinWidth"
-				Value="{ThemeResource TextControlThemeMinWidth}" />
-		<Setter Property="MinHeight"
-				Value="{ThemeResource TextControlThemeMinHeight}" />
 		<Setter Property="Foreground"
 				Value="{ThemeResource SystemControlForegroundBaseHighBrush}" />
 		<Setter Property="Background"
@@ -7743,6 +7739,26 @@
 			</Setter.Value>
 		</Setter>
 	</not_netstdref:Style>
+
+	<skia:Style TargetType="WebView">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate>
+					<ContentPresenter x:Name="WebViewTemplateRoot" />
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</skia:Style>
+
+	<skia:Style TargetType="mux:WebView2">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate>
+					<ContentPresenter x:Name="WebViewTemplateRoot" />
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</skia:Style>
 
 	<Style x:Key="TextBlockButtonStyle" TargetType="ButtonBase">
 		<Setter Property="Background" Value="{ThemeResource HyperlinkButtonBackground}" />

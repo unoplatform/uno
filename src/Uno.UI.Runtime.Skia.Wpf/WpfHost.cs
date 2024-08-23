@@ -94,7 +94,7 @@ public class WpfHost : SkiaHost, IWpfApplicationHost
 			app.Host = this;
 		}
 
-		WinUIApplication.StartWithArguments(CreateApp);
+		WinUIApplication.Start(CreateApp);
 	}
 
 	public override string ToString() =>

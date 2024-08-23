@@ -618,10 +618,7 @@ namespace Microsoft.UI.Xaml
 
 		private void TryUpdateInheritedAttachedProperty(DependencyProperty property, DependencyPropertyDetails propertyDetails)
 		{
-			if (
-				property.IsAttached
-				&& propertyDetails.Metadata is FrameworkPropertyMetadata fm
-				&& fm.Options.HasInherits())
+			if (property.IsAttached && property.IsInherited)
 			{
 				// Add inheritable attached properties to the inherited forwarded
 				// properties, so they can be automatically propagated when a child
@@ -642,14 +639,14 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
-			var coerceValueCallback = propertyDetails.Metadata.CoerceValueCallback;
+			var coerceValueCallback = propertyDetails.Property.Metadata.CoerceValueCallback;
 			if (coerceValueCallback == null)
 			{
 				// No coercion to remove or to apply.
 				return;
 			}
 
-			var options = (propertyDetails.Metadata as FrameworkPropertyMetadata)?.Options ?? FrameworkPropertyMetadataOptions.Default;
+			var options = (propertyDetails.Property.Metadata as FrameworkPropertyMetadata)?.Options ?? FrameworkPropertyMetadataOptions.Default;
 
 			if (Equals(previousValue, baseValue) && ((options & FrameworkPropertyMetadataOptions.CoerceOnlyWhenChanged) != 0))
 			{
@@ -1257,17 +1254,9 @@ namespace Microsoft.UI.Xaml
 						return (localProperty, propertyDetails);
 					}
 				}
-
-				// Then look for attached inheritable properties, only if a property details
-				// has been initialized. This avoids creating the details if the property has
-				// not been attached on a child, or if there's no property changed callback
-				// attached to a child.
-				else if (
-					property.IsAttached
-					&& _properties.FindPropertyDetails(property) is DependencyPropertyDetails attachedDetails
-					&& attachedDetails.HasInherits)
+				else if (property.IsAttached && property.IsInherited)
 				{
-					return (property, attachedDetails);
+					return (property, _properties.GetPropertyDetails(property));
 				}
 			}
 
@@ -1853,7 +1842,7 @@ namespace Microsoft.UI.Xaml
 		)
 		{
 			//var propertyChangedParams = new PropertyChangedParams(property, previousValue, newValue);
-			var propertyMetadata = propertyDetails.Metadata;
+			var propertyMetadata = property.Metadata;
 
 			// We can reuse the weak reference, otherwise capture the weak reference to this instance.
 			var instanceRef = _originalObjectRef ?? ThisWeakReference;
@@ -2022,7 +2011,7 @@ namespace Microsoft.UI.Xaml
 		{
 			if (value != null
 				&& value != DependencyProperty.UnsetValue
-				&& ((propertyDetails.Metadata as FrameworkPropertyMetadata)?.Options.HasAutoConvert() ?? false))
+				&& ((propertyDetails.Property.Metadata as FrameworkPropertyMetadata)?.Options.HasAutoConvert() ?? false))
 			{
 				if (value?.GetType() != propertyDetails.Property.Type)
 				{

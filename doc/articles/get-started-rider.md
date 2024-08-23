@@ -6,11 +6,18 @@ uid: Uno.GetStarted.Rider
 
 > [!IMPORTANT]
 > Project templates from Uno Platform 5.3 or later are needed to use Rider. See our [migration guide](xref:Uno.Development.MigratingFromPreviousReleases) to upgrade.
+>
+> [!IMPORTANT]
+> Depending on the version of Rider you will want to use, here are some additional information that you will want to know:
+>
+> - **Previous Rider (2024.1)**: The Uno Plugin for previous versions of Rider (2024.1) does not support creating Uno Platform projects using the "New Solution" dialog, even if the Uno Platform project template appears. In this case, creating an Uno Platform project is done [using dotnet new](xref:Uno.GetStarted.dotnet-new) and the <a target="_blank" href="https://aka.platform.uno/app-wizard">Uno Platform Live Wizard</a>.
+>
+> - **Current Rider (2024.2 and above)**: For the current Rider version, the Uno Platform plugin supports creating Uno Platform projects using the "New Solution" dialog.
 
 ## Prerequisites
 
-* [**Rider Version 2024.1+**](https://www.jetbrains.com/rider/download/)
-* [**Rider Xamarin Android Support**](https://plugins.jetbrains.com/plugin/12056-rider-xamarin-android-support/) plugin from Rider in **Settings** / **Plugins**
+- [**Rider Version 2024.2+**](https://aka.platform.uno/rider-version-2024-2) or [**Previous Rider Version 2024.1**](https://aka.platform.uno/rider-version-2024-1)
+- [**Rider Xamarin Android Support**](https://plugins.jetbrains.com/plugin/12056-rider-xamarin-android-support/) plugin from Rider in **Settings** / **Plugins**
 
 ## Check your environment
 
@@ -30,7 +37,7 @@ uid: Uno.GetStarted.Rider
 <details>
     <summary>† Notes (Click to expand)</summary>
 
-* **WebAssembly**: debugging from the IDE is not available yet on Rider. You can use the [Chromium in-browser debugger](xref:UnoWasmBootstrap.Features.Debugger#how-to-use-the-browser-debugger) instead.
+- **WebAssembly**: debugging from the IDE is not available yet on Rider. You can use the [Chromium in-browser debugger](xref:UnoWasmBootstrap.Features.Debugger#how-to-use-the-browser-debugger) instead.
 
 </details>
 
@@ -41,6 +48,8 @@ In Rider, in the **Configure**, **Plugins** menu, open the **Marketplace** tab, 
 ![Visual Studio Installer - .NET desktop development workload](Assets/ide-rider-plugin-search.png)
 
 Then click the install button.
+
+---
 
 ## Platform specific setup
 

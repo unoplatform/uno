@@ -1,5 +1,7 @@
 ﻿using System.Collections.Immutable;
 using System.Text;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Testing;
 using Microsoft.CodeAnalysis.Testing.Verifiers;
@@ -14,9 +16,51 @@ using Verify = CSharpSourceGeneratorVerifier<DependencyObjectGenerator>;
 [TestClass]
 public class Given_DependencyObjectGenerator
 {
-	private static readonly ImmutableArray<PackageIdentity> _unoPackage = ImmutableArray.Create(new PackageIdentity("Uno.WinUI", "5.0.118"));
-	private static readonly ReferenceAssemblies _Net70AndroidWithUno = ReferenceAssemblies.Net.Net80Android.AddPackages(_unoPackage);
-	private static readonly ReferenceAssemblies _Net70WithUno = ReferenceAssemblies.Net.Net80.AddPackages(_unoPackage);
+	private static readonly ReferenceAssemblies _net80Android = ReferenceAssemblies.Net.Net80Android.AddPackages([new PackageIdentity("Uno.Diagnostics.Eventing", "2.1.0")]);
+	private static readonly ReferenceAssemblies _net80 = ReferenceAssemblies.Net.Net80.AddPackages([new PackageIdentity("Uno.Diagnostics.Eventing", "2.1.0")]);
+
+	private const string Configuration =
+#if DEBUG
+		"Debug";
+#else
+		"Release";
+#endif
+
+	private const string TFM = "net8.0";
+
+	private static MetadataReference[] BuildUnoReferences(bool isAndroid)
+	{
+		string[] availableTargets = isAndroid
+			? [Path.Combine("Uno.UI.netcoremobile", Configuration, $"{TFM}-android")]
+			: [
+				Path.Combine("Uno.UI.Skia", Configuration, TFM),
+				Path.Combine("Uno.UI.Reference", Configuration, TFM),
+				Path.Combine("Uno.UI.Tests", Configuration, TFM),
+			];
+
+		var unoUIBase = Path.Combine(
+			Path.GetDirectoryName(typeof(Given_DependencyObjectGenerator).Assembly.Location)!,
+			"..",
+			"..",
+			"..",
+			"..",
+			"..",
+			"Uno.UI",
+			"bin"
+			);
+		var unoTarget = availableTargets
+			.Select(t => Path.Combine(unoUIBase, t, "Uno.UI.dll"))
+			.FirstOrDefault(File.Exists);
+		if (unoTarget is null)
+		{
+			throw new InvalidOperationException($"Unable to find Uno.UI.dll in {string.Join(",", availableTargets)}");
+		}
+
+		return Directory.GetFiles(Path.GetDirectoryName(unoTarget)!, "*.dll")
+					.Select(f => MetadataReference.CreateFromFile(Path.GetFullPath(f)))
+					.ToArray();
+	}
+
 
 	private async Task TestAndroid(string testCode, params DiagnosticResult[] expectedDiagnostics)
 	{
@@ -26,8 +70,10 @@ public class Given_DependencyObjectGenerator
 			{
 				Sources = { testCode },
 			},
-			ReferenceAssemblies = _Net70AndroidWithUno,
+			ReferenceAssemblies = _net80Android,
 		};
+
+		test.TestState.AdditionalReferences.AddRange(BuildUnoReferences(isAndroid: true));
 		test.ExpectedDiagnostics.AddRange(expectedDiagnostics);
 		await test.RunAsync();
 	}
@@ -65,7 +111,7 @@ public class Given_DependencyObjectGenerator
 	[TestMethod]
 	public async Task TestNested()
 	{
-		var test = """
+		var testCode = """
 			using Windows.UI.Core;
 			using Microsoft.UI.Xaml;
 
@@ -77,11 +123,11 @@ public class Given_DependencyObjectGenerator
 			}
 			""";
 
-		await new Verify.Test
+		var test = new Verify.Test
 		{
 			TestState =
 			{
-				Sources = { test },
+				Sources = { testCode },
 				GeneratedSources =
 				{
 					{ (@"Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.DependencyObject.DependencyObjectGenerator\OuterClass.Inner.cs", SourceText.From("""
@@ -283,7 +329,10 @@ public class Given_DependencyObjectGenerator
 	 """, Encoding.UTF8)) }
 				}
 			},
-			ReferenceAssemblies = _Net70WithUno,
-		}.RunAsync();
+			ReferenceAssemblies = _net80,
+		};
+
+		test.TestState.AdditionalReferences.AddRange(BuildUnoReferences(isAndroid: false));
+		await test.RunAsync();
 	}
 }

@@ -368,4 +368,52 @@ public class Given_Parser
 
 		await test.RunAsync();
 	}
+
+	[TestMethod]
+	public async Task When_Event_On_TopLevel_Not_DependencyObject()
+	{
+		var xamlFile = new XamlFile(
+			"MainWindow.xaml",
+				"""
+				<Window x:Class="TestRepro.MainWindow"
+						xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+						xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+						xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+						Closed="Window_Closed">
+					
+				</Window>
+				""");
+
+		var test = new Verify.Test(xamlFile)
+		{
+			TestState =
+			{
+				Sources =
+				{
+					"""
+					using System;
+					using Microsoft.UI.Xaml;
+					using Microsoft.UI.Xaml.Controls;
+
+					namespace TestRepro
+					{
+						public sealed partial class MainWindow : Window
+						{
+							public MainWindow()
+							{
+								this.InitializeComponent();
+							}
+
+							private void Window_Closed(object sender, WindowEventArgs args) { }
+						}
+					}
+					"""
+				}
+			},
+			DisableBuildReferences = true,
+			ReferenceAssemblies = ReferenceAssemblies.Net.Net80.AddPackages([new PackageIdentity("Uno.WinUI", "5.3.114")]),
+		}.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
 }

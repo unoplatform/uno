@@ -67,6 +67,7 @@ public static class UITestHelper
 	/// <returns></returns>
 	public static async Task<RawBitmap> ScreenShot(FrameworkElement element, bool opaque = false, ScreenShotScalingMode scaling = ScreenShotScalingMode.UsePhysicalPixelsWithImplicitScaling)
 	{
+#if HAS_RENDER_TARGET_BITMAP
 		var renderer = new RenderTargetBitmap();
 		element.UpdateLayout();
 		await TestServices.WindowHelper.WaitForIdle();
@@ -96,6 +97,9 @@ public static class UITestHelper
 		}
 
 		return bitmap;
+#else
+		throw new NotSupportedException("Cannot take screenshot on this platform.");
+#endif
 	}
 
 	public enum ScreenShotScalingMode

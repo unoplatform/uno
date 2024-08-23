@@ -17,18 +17,19 @@ namespace Microsoft.UI.Xaml
 	public partial class Application : IApplicationEvents
 	{
 		private static bool _startInvoked;
-		private static string _arguments = "";
+
+		[ThreadStatic]
+		private static Application _current;
 
 		partial void InitializePartial()
 		{
+			_current = this;
 			SetCurrentLanguage();
 
 			if (!_startInvoked)
 			{
 				throw new InvalidOperationException("The application must be started using Application.Start first, e.g. Microsoft.UI.Xaml.Application.Start(_ => new App());");
 			}
-
-			_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, Initialize);
 
 			CoreApplication.SetInvalidateRender(compositionTarget =>
 			{
@@ -73,12 +74,6 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		internal static void StartWithArguments(global::Microsoft.UI.Xaml.ApplicationInitializationCallback callback)
-		{
-			_arguments = GetCommandLineArgsWithoutExecutable();
-			Start(callback);
-		}
-
 		static partial void StartPartial(ApplicationInitializationCallback callback)
 		{
 			_startInvoked = true;
@@ -88,9 +83,11 @@ namespace Microsoft.UI.Xaml
 			);
 
 			callback(new ApplicationInitializationCallbackParams());
+
+			_current.InvokeOnLaunched();
 		}
 
-		private void Initialize()
+		private void InvokeOnLaunched()
 		{
 			using (WritePhaseEventTrace(TraceProvider.LauchedStart, TraceProvider.LauchedStop))
 			{
@@ -99,7 +96,7 @@ namespace Microsoft.UI.Xaml
 				// OnLaunched should execute only for full apps, not for individual islands.
 				if (CoreApplication.IsFullFledgedApp)
 				{
-					OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, _arguments));
+					OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, GetCommandLineArgsWithoutExecutable()));
 				}
 			}
 		}

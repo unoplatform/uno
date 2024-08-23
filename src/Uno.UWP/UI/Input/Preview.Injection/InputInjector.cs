@@ -2,6 +2,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Uno.Foundation.Logging;
 using Windows.Devices.Input;
 using Windows.System;
@@ -24,7 +26,7 @@ public partial class InputInjector
 		_inputManager ??= manager; // Set only once per thread.
 	}
 
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__", "__MACOS__")]
 	public static InputInjector? TryCreate()
 		=> _inputManager is not null ? new InputInjector(_inputManager) : null;
 
@@ -95,11 +97,52 @@ public partial class InputInjector
 		}
 	}
 
+	// TODO: Move as extension method
+	internal async ValueTask InjectTouchInputAsync(IEnumerable<InjectedInputTouchInfo> input, CancellationToken ct)
+	{
+		if (_touch is null)
+		{
+			InitializeTouchInjection(InjectedInputVisualizationMode.Default);
+		}
+
+		var touch = _touch!.Value.state;
+		foreach (var info in input)
+		{
+			var args = info.ToEventArgs(touch);
+
+			if (_touch is { isAdded: false })
+			{
+				_target.InjectPointerAdded(args);
+				_touch = (touch, isAdded: true);
+				await WaitForIdle(ct);
+			}
+
+			touch.Update(args);
+
+			_target.InjectPointerUpdated(args);
+			await WaitForIdle(ct);
+
+			if (info.PointerInfo.PointerOptions.HasFlag(InjectedInputPointerOptions.PointerUp))
+			{
+				_target.InjectPointerRemoved(args);
+				_touch = (touch, isAdded: false);
+				await WaitForIdle(ct);
+			}
+		}
+	}
+
+	private const InjectedInputMouseOptions _mouseButtonDown = InjectedInputMouseOptions.LeftDown | InjectedInputMouseOptions.MiddleDown | InjectedInputMouseOptions.RightDown | InjectedInputMouseOptions.XDown;
+
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
 	public void InjectMouseInput(IEnumerable<InjectedInputMouseInfo> input)
 	{
 		foreach (var info in input)
 		{
+			if ((info.MouseOptions & _mouseButtonDown) != 0 && !_mouse.Properties.HasPressedButton)
+			{
+				_mouse.StartNewSequence();
+			}
+
 			var args = info.ToEventArgs(_mouse!, VirtualKeyModifiers.None);
 			_mouse!.Update(args);
 
@@ -107,6 +150,25 @@ public partial class InputInjector
 		}
 	}
 
+	// TODO: Move as extension method
+	internal async ValueTask InjectMouseInputAsync(IEnumerable<InjectedInputMouseInfo> input, CancellationToken ct)
+	{
+		foreach (var info in input)
+		{
+			if ((info.MouseOptions & _mouseButtonDown) != 0 && !_mouse.Properties.HasPressedButton)
+			{
+				_mouse.StartNewSequence();
+			}
+
+			var args = info.ToEventArgs(_mouse!, VirtualKeyModifiers.None);
+			_mouse!.Update(args);
+
+			_target.InjectPointerUpdated(args);
+			await WaitForIdle(ct);
+		}
+	}
+
+	// TODO: Move as extension method
 	internal void InjectMouseInput(IEnumerable<(InjectedInputMouseInfo, VirtualKeyModifiers)> input)
 	{
 		foreach (var (info, modifiers) in input)
@@ -115,6 +177,43 @@ public partial class InputInjector
 			_mouse!.Update(args);
 
 			_target.InjectPointerUpdated(args);
+		}
+	}
+
+	// TODO: Move as extension method
+	internal async ValueTask InjectMouseInputAsync(IEnumerable<(InjectedInputMouseInfo, VirtualKeyModifiers)> input, CancellationToken ct)
+	{
+		foreach (var (info, modifiers) in input)
+		{
+			if ((info.MouseOptions & _mouseButtonDown) != 0 && !_mouse.Properties.HasPressedButton)
+			{
+				_mouse.StartNewSequence();
+			}
+
+			var args = info.ToEventArgs(_mouse!, modifiers);
+			_mouse!.Update(args);
+
+			_target.InjectPointerUpdated(args);
+			await WaitForIdle(ct);
+		}
+	}
+
+	private async ValueTask WaitForIdle(CancellationToken ct)
+	{
+		var dispatcher = DispatcherQueue.GetForCurrentThread() ?? throw new InvalidOperationException();
+		var tcs = new TaskCompletionSource();
+		await using var _ = ct.Register(() => tcs.TrySetCanceled());
+
+		Enqueue(() => Enqueue(() => tcs.TrySetResult()));
+
+		await tcs.Task;
+
+		void Enqueue(DispatcherQueueHandler action)
+		{
+			if (!dispatcher.TryEnqueue(DispatcherQueuePriority.Low, action))
+			{
+				tcs.TrySetException(new Exception("Cannot enqueue work item on dispatcher"));
+			}
 		}
 	}
 }

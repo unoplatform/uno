@@ -728,7 +728,7 @@ namespace Microsoft.UI.Xaml
 			PrepareShare(routedArgs.Data); // Gives opportunity to the control to fulfill the data
 			SafeRaiseEvent(DragStartingEvent, routedArgs); // The event won't bubble, cf. PrepareManagedDragAndDropEventBubbling
 
-			// We need to give a chance for  for layout updates, etc. This is particularly problematic with TreeView
+			// We need to give a chance for layout updates, etc. This is particularly problematic with TreeView
 			// dragging where the DragStarting event on the TreeView will "internally" collapse some nodes,
 			// but actually removing them from the visual tree needs a layout cycle. Without waiting here,
 			// we can also get a DragEnter event on one of the to-be-collapsed containers in the same

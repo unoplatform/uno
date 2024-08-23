@@ -1,4 +1,4 @@
-Adds Uno Platform's [Custom Authentication](xref:Learn.Tutorials.Authentication.HowToAuthentication) support to the generated project.
+Adds Uno Platform's [Custom Authentication](xref:Uno.Extensions.Authentication.HowToAuthentication) support to the generated project.
 
 Using Uno's authentication tools you can easily integrate in your app a login screen and authenticate users. It also helps you manage and track the state of the app's authentication, by allowing you to log out or switch users as well as other authentication-related actions.
 
@@ -44,7 +44,7 @@ Uno.Extensions.Authentication currently supports these types of authentication:
     dotnet new unoapp -auth web
     ```
 
-Read the [Authentication documentation](xref:Overview.Authentication) to get more knowledge about Uno Platform's authentication support and the tools it provides.
+Read the [Authentication documentation](xref:Uno.Extensions.Authentication.Overview) to get more knowledge about Uno Platform's authentication support and the tools it provides.
 
 > [!NOTE]
 > The Authentication option is selected by default in the Default template, and not in the Blank one.

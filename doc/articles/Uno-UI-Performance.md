@@ -152,7 +152,7 @@ Here's what to look for:
 
 ### Profiling applications
 
-A profiling guide for Uno Platform apps is [available here](ref:Uno.Tutorials.ProfilingApplications).
+A profiling guide for Uno Platform apps is [available here](xref:Uno.Tutorials.ProfilingApplications).
 
 ### FrameworkTemplatePool
 

@@ -782,10 +782,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					BuildLiteralProperties(blockWriter, topLevelControl, closure);
 				}
 
-				if (IsDependencyObject(topLevelControlType))
-				{
-					BuildExtendedProperties(writer, topLevelControl, useGenericApply: true);
-				}
+				BuildExtendedProperties(writer, topLevelControl, useGenericApply: true);
 			}
 
 			writer.AppendLineIndented(";");
@@ -5867,6 +5864,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				);
 		}
 
+		private static bool IsNewScope(XamlObjectDefinition xamlObjectDefinition)
+		{
+			return xamlObjectDefinition.Type.Name
+				is "DataTemplate"
+				or "ItemsPanelTemplate"
+				or "ControlTemplate"
+
+				// This case is specific the custom ListView for iOS. Should be removed
+				// when the list rebuilt to be compatible.
+				or "ListViewBaseLayoutTemplate";
+		}
+
 		private void BuildChild(IIndentedStringBuilder writer, XamlMemberDefinition? owner, XamlObjectDefinition xamlObjectDefinition, string? outerClosure = null)
 		{
 			_generatorContext.CancellationToken.ThrowIfCancellationRequested();
@@ -5892,15 +5901,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			using (TrySetDefaultBindMode(xamlObjectDefinition))
 			{
-				if (typeName
-					is "DataTemplate"
-					or "ItemsPanelTemplate"
-					or "ControlTemplate"
-
-					// This case is specific the custom ListView for iOS. Should be removed
-					// when the list rebuilt to be compatible.
-					or "ListViewBaseLayoutTemplate"
-				)
+				if (IsNewScope(xamlObjectDefinition))
 				{
 					writer.AppendIndented($"new {GetGlobalizedTypeName(fullTypeName)}(");
 
@@ -6165,6 +6166,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 			}
 		}
+
+		private List<string> FindNamesIn(XamlObjectDefinition xamlObjectDefinition)
+		{
+			var list = new List<string>();
+			foreach (var element in EnumerateSubElements(xamlObjectDefinition, stoppingCondition: IsNewScope))
+			{
+				var nameMember = FindMember(element, "Name");
+
+				if (nameMember?.Value is string name)
+				{
+					list.Add(name);
+				}
+			}
+
+			return list;
+		}
+
 		/// <summary>
 		/// Statically finds a element by name, given a xaml element root
 		/// </summary>
@@ -6204,13 +6222,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <param name="xamlObject">The root from which to start the search</param>
 		/// <param name="elementName">The x:Name value to search for</param>
 		/// <returns></returns>
-		private IEnumerable<XamlObjectDefinition> EnumerateSubElements(XamlObjectDefinition xamlObject)
+		private IEnumerable<XamlObjectDefinition> EnumerateSubElements(XamlObjectDefinition xamlObject, Func<XamlObjectDefinition, bool>? stoppingCondition = null)
 		{
 			yield return xamlObject;
 
 			foreach (var member in xamlObject.Members)
 			{
-				foreach (var element in EnumerateSubElements(member.Objects))
+				foreach (var element in EnumerateSubElements(member.Objects, stoppingCondition))
 				{
 					yield return element;
 				}
@@ -6218,20 +6236,30 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			var objects = xamlObject.Objects;
 
-			foreach (var element in EnumerateSubElements(objects))
+			foreach (var element in EnumerateSubElements(objects, stoppingCondition))
 			{
 				yield return element;
 			}
 		}
 
-		private IEnumerable<XamlObjectDefinition> EnumerateSubElements(IEnumerable<XamlObjectDefinition> objects)
+		private IEnumerable<XamlObjectDefinition> EnumerateSubElements(IEnumerable<XamlObjectDefinition> objects, Func<XamlObjectDefinition, bool>? stoppingCondition)
 		{
 			foreach (var child in objects.Safe())
 			{
+				if (stoppingCondition != null && stoppingCondition(child))
+				{
+					continue;
+				}
+
 				yield return child;
 
-				foreach (var innerElement in EnumerateSubElements(child))
+				foreach (var innerElement in EnumerateSubElements(child, stoppingCondition))
 				{
+					if (stoppingCondition != null && stoppingCondition(innerElement))
+					{
+						continue;
+					}
+
 					yield return innerElement;
 				}
 			}
@@ -6369,6 +6397,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 													if (nameMember?.Value is string xName)
 													{
 														writer.AppendLineIndented($"that.Bindings.NotifyXLoad(\"{xName}\");");
+													}
+												}
+
+												using (writer.BlockInvariant("else"))
+												{
+													var elementNames = FindNamesIn(definition);
+													foreach (var elementName in elementNames)
+													{
+														writer.AppendLineIndented($"_{elementName}Subject.ElementInstance = null;");
 													}
 												}
 											}

@@ -9,5 +9,7 @@ internal interface INativeWindowFactoryExtension
 {
 	bool SupportsMultipleWindows { get; }
 
+	bool SupportsClosingCancellation { get; }
+
 	INativeWindowWrapper CreateWindow(Microsoft.UI.Xaml.Window window, XamlRoot xamlRoot);
 }

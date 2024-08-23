@@ -76,7 +76,7 @@
 
 			<StackPanel Orientation="Horizontal">
 				<Border Background="#86007D" Width="100" Height="100">
-					<ListView x:Name="TestListViewTarget" ItemsSource="0123456789" IsItemClickEnabled="True" />
+					<ListView x:Name="TestListViewTarget" IsItemClickEnabled="True" />
 				</Border>
 				<StackPanel>
 					<Button x:Name="TestListViewReset" Content="Reset" Click="ResetListViewTest" />

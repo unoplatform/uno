@@ -75,7 +75,7 @@ If this is the case:
 - Make sure to build the app once to populate the nuget cache
 - Rebuild the Uno.UI project (or **Uno.UI.WebAssembly**/**Uno.UI.Skia**) to replace the binaries with your debug ones
 - Rebuild your app and debug your again
-- Make sure that you're debugging the right flavor of Uno (Uno.UI vs. Uno.WinUI). You can debug the UWP flavor [using this conversion tool](xref:no.Contributing.UWPConversion).
+- Make sure that you're debugging the right flavor of Uno (Uno.UI vs. Uno.WinUI). You can debug the UWP flavor [using this conversion tool](xref:Uno.Contributing.UWPConversion).
 
 ## Microsoft Source Link support
 

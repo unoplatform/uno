@@ -6,6 +6,10 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
 using Uno;
 using Uno.Extensions;
 using Uno.UI;
@@ -42,7 +46,6 @@ namespace Microsoft.UI.Xaml
 		private readonly static FrameworkPropertiesForTypeDictionary _getFrameworkPropertiesForType = new FrameworkPropertiesForTypeDictionary();
 
 		private readonly PropertyMetadata _ownerTypeMetadata; // For perf consideration, we keep direct ref the metadata for the owner type
-		private readonly PropertyMetadataDictionary _metadata = new PropertyMetadataDictionary();
 
 		private readonly Flags _flags;
 		private string _name;
@@ -62,7 +65,12 @@ namespace Microsoft.UI.Xaml
 			_flags |= attached ? Flags.IsAttached : Flags.None;
 			_flags |= typeof(DependencyObjectCollection).IsAssignableFrom(propertyType) ? Flags.IsDependencyObjectCollection : Flags.None;
 			_flags |= GetIsTypeNullable(propertyType) ? Flags.IsTypeNullable : Flags.None;
-			_flags |= (defaultMetadata as FrameworkPropertyMetadata)?.Options.HasWeakStorage() is true ? Flags.HasWeakStorage : Flags.None;
+			if (defaultMetadata is FrameworkPropertyMetadata frameworkMetadata)
+			{
+				_flags |= frameworkMetadata.Options.HasWeakStorage() ? Flags.HasWeakStorage : Flags.None;
+				_flags |= frameworkMetadata.Options.HasInherits() ? Flags.IsInherited : Flags.None;
+			}
+
 			_flags |= ownerType.Assembly.Equals(typeof(DependencyProperty).Assembly) ? Flags.IsUnoType : Flags.None;
 
 			if (ownerType == typeof(FrameworkElement))
@@ -80,7 +88,6 @@ namespace Microsoft.UI.Xaml
 			_uniqueId = Interlocked.Increment(ref _globalId);
 
 			_ownerTypeMetadata = defaultMetadata ?? new FrameworkPropertyMetadata(null);
-			_metadata.Add(_ownerType, _ownerTypeMetadata);
 		}
 
 		// This is our equivalent of WinUI's ValidateXXX methods in PropertySystem.cpp, e.g, CDependencyObject::ValidateFloatValue
@@ -103,6 +110,8 @@ namespace Microsoft.UI.Xaml
 		/// Provides a unique identifier for the dependency property lookup
 		/// </summary>
 		internal int UniqueId => _uniqueId;
+
+		internal PropertyMetadata Metadata => _ownerTypeMetadata;
 
 		/// <summary>
 		/// Determines if the property storage should be backed by a <see cref="Uno.UI.DataBinding.ManagedWeakReference"/>
@@ -231,79 +240,22 @@ namespace Microsoft.UI.Xaml
 		/// <returns>A property metadata object.</returns>
 		public PropertyMetadata GetMetadata(Type forType)
 		{
+			// NOTE: WinUI always allocates a and returns fresh PropertyMetadata and only sets DefaultValue on the returned instance, and nothing else.
+			// For now, we have internal usages that requires the full info to be returned, so we return the complete info and even the same instance.
+
 			if (forType == _ownerType)
 			{
 				return _ownerTypeMetadata;
 			}
 
-			PropertyMetadata metadata = null;
-			if (!_metadata.TryGetValue(forType, out metadata))
+			var defaultValueForType = GetDefaultValue(null, forType);
+
+			if (!DependencyObjectStore.AreDifferent(_ownerTypeMetadata.DefaultValue, defaultValueForType))
 			{
-				if (
-					!IsTypeDependencyObject(forType)
-#if !UNO_REFERENCE_API
-					// Perf: On generic API the Panel.Children are UIElement, so avoid costly check
-					// This check must be removed when Panel.Children will support only
-					// UIElement as its elements. See #103492
-					&& !forType.Is<_View>()
-#endif
-					&& OwnerType != typeof(AttachedDependencyObject)
-				)
-				{
-					throw new ArgumentException($"'{forType}' type must derive from DependencyObject.", nameof(forType));
-				}
-
-				var baseType = forType.IsSubclassOf(_ownerType)
-					? forType.BaseType
-					: _ownerType;
-
-				ForceInitializeTypeConstructor(forType);
-
-				metadata = _metadata.FindOrCreate(forType, baseType, this);
+				return _ownerTypeMetadata;
 			}
 
-			return metadata;
-		}
-
-		private static bool IsTypeDependencyObject(Type forType) => typeof(DependencyObject).IsAssignableFrom(forType);
-
-		internal void OverrideMetadata(Type forType, PropertyMetadata typeMetadata)
-		{
-			ForceInitializeTypeConstructor(forType);
-
-			if (forType == null)
-			{
-				throw new ArgumentNullException(nameof(forType), "Value cannot be null.");
-			}
-
-			if (typeMetadata == null)
-			{
-				throw new ArgumentNullException(nameof(typeMetadata));
-			}
-
-			if (!(typeof(DependencyObject).IsAssignableFrom(forType)))
-			{
-				throw new ArgumentException($"'{forType}' type must derive from DependencyObject.", nameof(forType));
-			}
-
-			if (_metadata.ContainsKey(forType))
-			{
-				throw new ArgumentException($"PropertyMetadata is already registered for type '{forType}'.", nameof(forType));
-			}
-
-			if (_metadata.ContainsValue(typeMetadata))
-			{
-				throw new ArgumentException($"Metadata is already associated with a type and property. A new one must be created.", nameof(typeMetadata));
-			}
-
-			var baseMetadata = GetMetadata(forType.BaseType);
-			if (!baseMetadata.GetType().IsAssignableFrom(typeMetadata.GetType()))
-			{
-				throw new ArgumentException($"Metadata override and base metadata must be of the same type or derived type.", nameof(typeMetadata));
-			}
-
-			typeMetadata.Merge(baseMetadata, this);
-			_metadata.Add(forType, typeMetadata);
+			return _ownerTypeMetadata.CloneWithOverwrittenDefaultValue(defaultValueForType);
 		}
 
 		internal Type OwnerType
@@ -335,6 +287,12 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		internal bool IsAttached
 			=> (_flags & Flags.IsAttached) != 0;
+
+		/// <summary>
+		/// Determines if the property is an inherited property
+		/// </summary>
+		internal bool IsInherited
+			=> (_flags & Flags.IsInherited) != 0;
 
 		/// <summary>
 		/// Determines if the owner type is declared by Uno.UI
@@ -508,7 +466,7 @@ namespace Microsoft.UI.Xaml
 
 			foreach (var prop in GetPropertiesForType(type))
 			{
-				var propertyOptions = (prop.GetMetadata(type) as FrameworkPropertyMetadata)?.Options;
+				var propertyOptions = (prop.Metadata as FrameworkPropertyMetadata)?.Options;
 
 				if (propertyOptions != null && (propertyOptions & options) != 0)
 				{
@@ -517,6 +475,25 @@ namespace Microsoft.UI.Xaml
 			}
 
 			return output.ToArray();
+		}
+
+		internal object GetDefaultValue(UIElement referenceObject, Type forType)
+		{
+			if (referenceObject?.GetDefaultValue2(this, out var defaultValue) == true)
+			{
+				return defaultValue;
+			}
+
+			if (this == Shape.StretchProperty)
+			{
+				if (forType == typeof(Rectangle) || forType == typeof(Ellipse))
+				{
+					return Stretch.Fill;
+				}
+			}
+
+			// TODO: Handle DependencyProperty.CreateDefaultValueCallback when implemented.
+			return _ownerTypeMetadata.DefaultValue;
 		}
 
 		public override int GetHashCode() => CachedHashCode;
@@ -555,6 +532,11 @@ namespace Microsoft.UI.Xaml
 			IsUnoType = (1 << 4),
 
 			ValidateNotNegativeAndNotNaN = (1 << 5),
+
+			/// <summary>
+			/// Set when the property is an inherited property
+			/// </summary>
+			IsInherited = (1 << 6),
 		}
 	}
 }

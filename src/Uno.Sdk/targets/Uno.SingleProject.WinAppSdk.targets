@@ -53,6 +53,10 @@
 		<RuntimeIdentifier>win-$(_SingleProjectHostArchitecture)</RuntimeIdentifier>
 	</PropertyGroup>
 
+	<PropertyGroup Condition=" '$(_SingleProjectRIDRequired)' == 'true' and $(_IsExecutable) == 'true' ">
+		<PublishProfile Condition=" '$(PublishProfile)' == '' ">win-$(Platform).pubxml</PublishProfile>
+	</PropertyGroup>
+
 	<Target Name="EnsureDefaultPlatformForAnyCPU"
 			BeforeTargets="ResolveReferences;ResolveProjectReferences;BeforeBuild"
 			Condition="'$(Platform)' == 'AnyCPU'">
