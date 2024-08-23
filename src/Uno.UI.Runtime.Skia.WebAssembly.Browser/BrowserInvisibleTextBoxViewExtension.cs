@@ -47,6 +47,7 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 	public void StartEntry()
 	{
 		NativeMethods.Focus(true, _view.IsPasswordBox, _view.TextBox?.Text, _view.TextBox?.AcceptsReturn ?? false);
+		InvalidateLayout(); // we create the native <input /> object in Focus, so we should make sure to update the layout
 		NativeMethods.UpdateSelection(_view.TextBox?.SelectionStart ?? 0, _view.TextBox?.SelectionLength ?? 0, SelectionDirection);
 	}
 

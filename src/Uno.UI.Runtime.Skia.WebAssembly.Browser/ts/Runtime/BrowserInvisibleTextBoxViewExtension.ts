@@ -134,14 +134,18 @@
 
 		public static updateSize(width: number, height: number) {
 			const input = BrowserInvisibleTextBoxViewExtension.inputElement;
-			input.style.width = `${width}`;
-			input.style.height = `${height}`;
+			if (input != null) {
+				input.style.width = `${width}`;
+				input.style.height = `${height}`;
+			}
 		}
 
 		public static updatePosition(x: number, y: number) {
 			const input = BrowserInvisibleTextBoxViewExtension.inputElement;
-			input.style.top = `${Math.round(y)}px`;
-			input.style.left = `${Math.round(x)}px`;
+			if (input != null) {
+				input.style.top = `${Math.round(y)}px`;
+				input.style.left = `${Math.round(x)}px`;
+			}
 		}
 
 		public static updateSelection(start: number, length: number, direction: "forward" | "backward") {
@@ -155,7 +159,7 @@
 					BrowserInvisibleTextBoxViewExtension.nextSelectionDirection = direction;
 				}
 
-				input.setSelectionRange(start, start + length, direction);
+				input?.setSelectionRange(start, start + length, direction);
 			}
 		}
 	}
