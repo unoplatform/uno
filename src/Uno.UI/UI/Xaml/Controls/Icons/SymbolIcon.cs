@@ -10,7 +10,7 @@ namespace Microsoft.UI.Xaml.Controls;
 /// <summary>
 /// Represents an icon that uses a glyph from the Segoe MDL2 Assets font as its content.
 /// </summary>
-public sealed partial class SymbolIcon : IconElement
+public sealed partial class SymbolIcon : IconElement, IThemeChangeAware
 {
 	private double _fontSize = 20.0;
 
@@ -101,6 +101,16 @@ public sealed partial class SymbolIcon : IconElement
 		if (_textBlock is not null)
 		{
 			_textBlock.Foreground = (Brush)e.NewValue;
+		}
+	}
+
+	// The way this works in WinUI is by the MarkInheritedPropertyDirty call in CFrameworkElement::NotifyThemeChangedForInheritedProperties
+	// There is a special handling for Foreground specifically there.
+	void IThemeChangeAware.OnThemeChanged()
+	{
+		if (_textBlock is not null)
+		{
+			_textBlock.Foreground = Foreground;
 		}
 	}
 }

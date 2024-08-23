@@ -12,7 +12,7 @@ namespace Microsoft.UI.Xaml.Controls;
 /// <summary>
 /// Represents an icon that uses a glyph from the specified font.
 /// </summary>
-public partial class FontIcon : IconElement
+public partial class FontIcon : IconElement, IThemeChangeAware
 {
 	private readonly TextBlock _textBlock;
 
@@ -218,6 +218,16 @@ public partial class FontIcon : IconElement
 		if (_textBlock is not null)
 		{
 			_textBlock.Foreground = (Brush)e.NewValue;
+		}
+	}
+
+	// The way this works in WinUI is by the MarkInheritedPropertyDirty call in CFrameworkElement::NotifyThemeChangedForInheritedProperties
+	// There is a special handling for Foreground specifically there.
+	void IThemeChangeAware.OnThemeChanged()
+	{
+		if (_textBlock is not null)
+		{
+			_textBlock.Foreground = Foreground;
 		}
 	}
 }

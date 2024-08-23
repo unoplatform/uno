@@ -1617,7 +1617,10 @@ namespace Microsoft.UI.Xaml
 					var prop = props[propertyIndex];
 					if (!IsTemplatedParentFrozen || prop != TemplatedParentProperty)
 					{
-						store.OnParentPropertyChangedCallback(instanceRef, prop, GetValue(prop));
+						if (GetCurrentHighestValuePrecedence(prop) != DependencyPropertyValuePrecedences.DefaultValue)
+						{
+							store.OnParentPropertyChangedCallback(instanceRef, prop, GetValue(prop));
+						}
 					}
 				}
 			}

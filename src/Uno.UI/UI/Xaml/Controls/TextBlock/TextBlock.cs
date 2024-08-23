@@ -36,7 +36,7 @@ using UIKit;
 namespace Microsoft.UI.Xaml.Controls
 {
 	[ContentProperty(Name = nameof(Inlines))]
-	public partial class TextBlock : DependencyObject
+	public partial class TextBlock : DependencyObject, IThemeChangeAware
 	{
 		private InlineCollection _inlines;
 		private string _inlinesText; // Text derived from the content of Inlines
@@ -1265,5 +1265,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		[SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Used only by some platforms")]
 		partial void UpdateIsTextTrimmed();
+
+		// The way this works in WinUI is by the MarkInheritedPropertyDirty call in CFrameworkElement::NotifyThemeChangedForInheritedProperties
+		// There is a special handling for Foreground specifically there.
+		void IThemeChangeAware.OnThemeChanged() => OnForegroundChanged();
 	}
 }
