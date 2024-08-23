@@ -279,6 +279,12 @@ namespace Microsoft.UI.Xaml
 
 			ValidatePropertyOwner(property);
 
+			if (propertyDetails is null && (precedence is null || precedence == DependencyPropertyValuePrecedences.DefaultValue) && _properties.FindPropertyDetails(property) is null)
+			{
+				// Performance: Avoid force-creating DependencyPropertyDetails when not needed.
+				return GetDefaultValue(property);
+			}
+
 			propertyDetails ??= _properties.GetPropertyDetails(property);
 
 			return GetValue(propertyDetails, precedence, isPrecedenceSpecific);
