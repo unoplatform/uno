@@ -131,11 +131,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = parent;
 			await WindowHelper.WaitForLoaded(parent);
 
-			// droid-specific: the snapshot size is in physical size, NOT logical
 			var snapshot = await TakeScreenshot(parent);
 
 			var coords = parent.GetRelativeCoords(SUT); // logical
-			var center = ViewHelper.LogicalToPhysicalPixels(new Point(coords.CenterX, coords.CenterY)); // physical
+			var center = new Point(coords.CenterX, coords.CenterY); // logical
+#if __ANDROID__
+			// droid-specific: the snapshot size is in physical size, NOT logical
+			// so the coords needs to be converted into physical to be against the snapshot.
+			center = ViewHelper.LogicalToPhysicalPixels(center); // physical
+#endif
 
 			ImageAssert.HasPixels(snapshot, ExpectedPixels
 				.At((int)center.X, (int)center.Y)
