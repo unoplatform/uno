@@ -39,47 +39,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Graphics_Imaging
 
 		public static IEnumerable<object[]> GetEncoders()
 		{
-#if __SKIA__
-			yield return new object[] { BitmapEncoder.BmpEncoderId, false };
-			yield return new object[] { BitmapEncoder.GifEncoderId, false };
-			yield return new object[] { BitmapEncoder.HeifEncoderId, false };
-			yield return new object[] { BitmapEncoder.JpegEncoderId, false };
-			yield return new object[] { BitmapEncoder.JpegXREncoderId, true };
-			yield return new object[] { BitmapEncoder.PngEncoderId, false };
-			yield return new object[] { BitmapEncoder.TiffEncoderId, true };
-#elif __ANDROID__
-			yield return new object[] { BitmapEncoder.BmpEncoderId, true };
-			yield return new object[] { BitmapEncoder.GifEncoderId, true };
-			yield return new object[] { BitmapEncoder.HeifEncoderId, true };
-			yield return new object[] { BitmapEncoder.JpegEncoderId, false };
-			yield return new object[] { BitmapEncoder.JpegXREncoderId, true };
-			yield return new object[] { BitmapEncoder.PngEncoderId, false };
-			yield return new object[] { BitmapEncoder.TiffEncoderId, true };
-#elif __IOS__
-			yield return new object[] { BitmapEncoder.BmpEncoderId, true };
-			yield return new object[] { BitmapEncoder.GifEncoderId, true };
-			yield return new object[] { BitmapEncoder.HeifEncoderId, true };
-			yield return new object[] { BitmapEncoder.JpegEncoderId, false };
-			yield return new object[] { BitmapEncoder.JpegXREncoderId, true };
-			yield return new object[] { BitmapEncoder.PngEncoderId, false };
-			yield return new object[] { BitmapEncoder.TiffEncoderId, true };
-#elif __MACOS__
-			yield return new object[] { BitmapEncoder.BmpEncoderId, true };
-			yield return new object[] { BitmapEncoder.GifEncoderId, false };
-			yield return new object[] { BitmapEncoder.HeifEncoderId, true };
-			yield return new object[] { BitmapEncoder.JpegEncoderId, false };
-			yield return new object[] { BitmapEncoder.JpegXREncoderId, true };
-			yield return new object[] { BitmapEncoder.PngEncoderId, false };
-			yield return new object[] { BitmapEncoder.TiffEncoderId, false };
-#elif HAS_UNO
-			yield return new object[] { BitmapEncoder.BmpEncoderId, true };
-			yield return new object[] { BitmapEncoder.GifEncoderId, true };
-			yield return new object[] { BitmapEncoder.HeifEncoderId, true };
-			yield return new object[] { BitmapEncoder.JpegEncoderId, true };
-			yield return new object[] { BitmapEncoder.JpegXREncoderId, true };
-			yield return new object[] { BitmapEncoder.PngEncoderId, true };
-			yield return new object[] { BitmapEncoder.TiffEncoderId, true };
-#else
+#if WINAPPSDK
 			yield return new object[] { BitmapEncoder.BmpEncoderId, false };
 			yield return new object[] { BitmapEncoder.GifEncoderId, false };
 			yield return new object[] { BitmapEncoder.HeifEncoderId, false };
@@ -87,6 +47,59 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Graphics_Imaging
 			yield return new object[] { BitmapEncoder.JpegXREncoderId, false };
 			yield return new object[] { BitmapEncoder.PngEncoderId, false };
 			yield return new object[] { BitmapEncoder.TiffEncoderId, false };
+#else
+			if (OperatingSystem.IsAndroid())
+			{
+				yield return new object[] { BitmapEncoder.BmpEncoderId, true };
+				yield return new object[] { BitmapEncoder.GifEncoderId, true };
+				yield return new object[] { BitmapEncoder.HeifEncoderId, true };
+				yield return new object[] { BitmapEncoder.JpegEncoderId, false };
+				yield return new object[] { BitmapEncoder.JpegXREncoderId, true };
+				yield return new object[] { BitmapEncoder.PngEncoderId, false };
+				yield return new object[] { BitmapEncoder.TiffEncoderId, true };
+			}
+			else if (OperatingSystem.IsIOS())
+			{
+				yield return new object[] { BitmapEncoder.BmpEncoderId, true };
+				yield return new object[] { BitmapEncoder.GifEncoderId, true };
+				yield return new object[] { BitmapEncoder.HeifEncoderId, true };
+				yield return new object[] { BitmapEncoder.JpegEncoderId, false };
+				yield return new object[] { BitmapEncoder.JpegXREncoderId, true };
+				yield return new object[] { BitmapEncoder.PngEncoderId, false };
+				yield return new object[] { BitmapEncoder.TiffEncoderId, true };
+			}
+#if !__SKIA__
+			else if (OperatingSystem.IsMacOS())
+			{
+				yield return new object[] { BitmapEncoder.BmpEncoderId, true };
+				yield return new object[] { BitmapEncoder.GifEncoderId, false };
+				yield return new object[] { BitmapEncoder.HeifEncoderId, true };
+				yield return new object[] { BitmapEncoder.JpegEncoderId, false };
+				yield return new object[] { BitmapEncoder.JpegXREncoderId, true };
+				yield return new object[] { BitmapEncoder.PngEncoderId, false };
+				yield return new object[] { BitmapEncoder.TiffEncoderId, false };
+			}
+#endif
+			else if (OperatingSystem.IsBrowser())
+			{
+				yield return new object[] { BitmapEncoder.BmpEncoderId, true };
+				yield return new object[] { BitmapEncoder.GifEncoderId, true };
+				yield return new object[] { BitmapEncoder.HeifEncoderId, true };
+				yield return new object[] { BitmapEncoder.JpegEncoderId, true };
+				yield return new object[] { BitmapEncoder.JpegXREncoderId, true };
+				yield return new object[] { BitmapEncoder.PngEncoderId, true };
+				yield return new object[] { BitmapEncoder.TiffEncoderId, true };
+			}
+			else
+			{
+				yield return new object[] { BitmapEncoder.BmpEncoderId, false };
+				yield return new object[] { BitmapEncoder.GifEncoderId, false };
+				yield return new object[] { BitmapEncoder.HeifEncoderId, false };
+				yield return new object[] { BitmapEncoder.JpegEncoderId, false };
+				yield return new object[] { BitmapEncoder.JpegXREncoderId, true };
+				yield return new object[] { BitmapEncoder.PngEncoderId, false };
+				yield return new object[] { BitmapEncoder.TiffEncoderId, true };
+			}
 #endif
 		}
 	}
