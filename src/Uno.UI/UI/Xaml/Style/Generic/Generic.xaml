@@ -7718,7 +7718,7 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate>
-					<ItemsPresenter />
+					<ItemsPresenter Background="{TemplateBinding Background}" />
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>

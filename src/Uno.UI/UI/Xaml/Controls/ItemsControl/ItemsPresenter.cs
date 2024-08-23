@@ -256,21 +256,20 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			// This is only called after (or while) the header and footer are created and added to the visual tree.
+			// We should only reach here, after CreateHeaderAndFooter() was called. Let's sanity-check that.
 			global::System.Diagnostics.Debug.Assert(!HeaderFooterEnabled || HeaderContentControl is { });
 
-			if (_itemsPanel is { })
+			if (_itemsPanel is { } previousPanel)
 			{
-				VisualTreeHelper.RemoveView(this, _itemsPanel);
+				VisualTreeHelper.RemoveView(this, previousPanel);
 			}
 
-			(_itemsPanel as FrameworkElement)?.SetTemplatedParent(null);
-			_itemsPanel = panel;
-			(_itemsPanel as FrameworkElement)?.SetTemplatedParent(this);
-
-			if (_itemsPanel != null)
+			if ((_itemsPanel = panel) is { })
 			{
-				if (HeaderFooterEnabled)
+				// There can be only two scenarios here, with header and footer created or not:
+				// 1. if so, we should have only 2 children: Header + Footer. So, we insert the panel in-between(at index 1)
+				// 2. if not, we should have zero child. So, we just add the panel.
+				if (HeaderContentControl is { })
 				{
 					VisualTreeHelper.AddView(this, _itemsPanel, 1);
 				}
@@ -285,9 +284,14 @@ namespace Microsoft.UI.Xaml.Controls
 			this.InvalidateMeasure();
 		}
 
-		internal void LoadChildren(_ViewGroup panel)
+		internal void CreateHeaderAndFooter()
 		{
-			if (HeaderContentControl is null && HeaderFooterEnabled)
+			if (!HeaderFooterEnabled)
+			{
+				return;
+			}
+
+			if (HeaderContentControl is null)
 			{
 				HeaderContentControl = new ContentControl
 				{
@@ -298,8 +302,9 @@ namespace Microsoft.UI.Xaml.Controls
 					HorizontalContentAlignment = HorizontalAlignment.Stretch,
 					IsTabStop = false
 				};
+				VisualTreeHelper.AddChild(this, HeaderContentControl);
 			}
-			if (FooterContentControl is null && HeaderFooterEnabled)
+			if (FooterContentControl is null)
 			{
 				FooterContentControl = new ContentControl
 				{
@@ -310,14 +315,8 @@ namespace Microsoft.UI.Xaml.Controls
 					HorizontalContentAlignment = HorizontalAlignment.Stretch,
 					IsTabStop = false
 				};
+				VisualTreeHelper.AddChild(this, FooterContentControl);
 			}
-
-			// We want FooterContentControl to be assigned before calling SetItemsPanel,
-			// because it may directly cause an ArrangeOverride to be called in some cases,
-			// where the value is expected to be non-null.
-			if (HeaderContentControl is { }) { VisualTreeHelper.AddChild(this, HeaderContentControl); }
-			SetItemsPanel(panel);
-			if (FooterContentControl is { }) { VisualTreeHelper.AddChild(this, FooterContentControl); }
 		}
 
 		private void PropagateLayoutValues()

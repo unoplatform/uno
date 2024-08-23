@@ -44,7 +44,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private readonly SerialDisposable _notifyCollectionGroupsChanged = new SerialDisposable();
 		private readonly SerialDisposable _cvsViewChanged = new SerialDisposable();
 
-		private bool _isReady; // Template applied
+		private bool _isTemplateApplied;
 		private ItemCollection _items = new ItemCollection();
 		private (object Source, IEnumerable Snapshot)? _cachedItemsSource;
 
@@ -172,7 +172,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnItemsPanelChanged(ItemsPanelTemplate oldItemsPanel, ItemsPanelTemplate newItemsPanel)
 		{
-			if (_isReady && !Equals(oldItemsPanel, newItemsPanel)) // Panel is created on ApplyTemplate, so do not create it twice (first on set PanelTemplate, second on ApplyTemplate)
+			if (_isTemplateApplied && !Equals(oldItemsPanel, newItemsPanel))
 			{
 				UpdateItemsPanelRoot();
 			}
@@ -951,9 +951,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			ScrollViewer = this.GetTemplateChild("ScrollViewer") as ScrollViewer;
 
-			_isReady = true;
-
-			UpdateItemsPanelRoot();
+			_isTemplateApplied = true;
 		}
 
 		private protected override void OnUnloaded()
@@ -963,6 +961,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void UpdateItemsPanelRoot()
 		{
+			// ItemsPanel materialization requires ItemsPresenter as templated-parent,
+			// and this cannot be re-injected late.
+			if (ItemsPresenter is null)
+			{
+				return;
+			}
+
 			// Remove items from the previous ItemsPanelRoot to ensure they can be safely added to the new one
 			if (ShouldItemsControlManageChildren)
 			{
@@ -974,14 +979,24 @@ namespace Microsoft.UI.Xaml.Controls
 				CleanUpInternalItemsPanel(InternalItemsPanelRoot);
 			}
 
-			var itemsPanel = (ItemsPanel as IFrameworkTemplateInternal)?.LoadContent(default) as _ViewGroup ?? new StackPanel();
+			var itemsPanel =
+				(ItemsPanel as IFrameworkTemplateInternal)?.LoadContent(ItemsPresenter) as _ViewGroup ??
+				CreateDefaultItemsPanel(ItemsPresenter);
 			InternalItemsPanelRoot = ResolveInternalItemsPanel(itemsPanel);
 			ItemsPanelRoot = itemsPanel as Panel;
 
 			ItemsPanelRoot?.SetItemsOwner(this);
-			ItemsPresenter?.SetItemsPanel(InternalItemsPanelRoot);
+			ItemsPresenter.SetItemsPanel(InternalItemsPanelRoot);
 
 			UpdateItems(null);
+		}
+
+		private _ViewGroup CreateDefaultItemsPanel(DependencyObject templatedParent)
+		{
+			var panel = new StackPanel();
+			panel.SetTemplatedParent(templatedParent);
+
+			return panel;
 		}
 
 		/// <summary>
@@ -1689,7 +1704,9 @@ namespace Microsoft.UI.Xaml.Controls
 			if (ItemsPresenter != itemsPresenter)
 			{
 				ItemsPresenter = itemsPresenter;
-				ItemsPresenter?.LoadChildren(InternalItemsPanelRoot);
+				ItemsPresenter?.CreateHeaderAndFooter();
+
+				UpdateItemsPanelRoot();
 			}
 		}
 
