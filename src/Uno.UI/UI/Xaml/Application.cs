@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Runtime.InteropServices.JavaScript;
+using System.Text;
+using System.Web;
 using Microsoft.UI.Xaml.Data;
 using Uno;
 using Uno.Diagnostics.Eventing;
@@ -530,6 +533,9 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		[JSImport("globalThis.eval")]
+		private static partial string Eval(string js);
+
 #if __MACOS__ || __SKIA__
 		private static string GetCommandLineArgsWithoutExecutable()
 		{
@@ -540,32 +546,55 @@ namespace Microsoft.UI.Xaml
 			}
 #endif
 
-			var args = Environment.GetCommandLineArgs();
-			if (args.Length <= 1)
+			if (OperatingSystem.IsBrowser()) // Skia-WASM
 			{
-				return "";
+				var parameters = HttpUtility.ParseQueryString(new Uri(Eval("window.location.href")).Query);
+
+				var webArgs = new StringBuilder();
+				foreach (string key in parameters)
+				{
+					var val = parameters.Get(key);
+					if (string.IsNullOrEmpty(val))
+					{
+						webArgs.Append($"{key} ");
+					}
+					else
+					{
+						webArgs.Append($"{key}={val} ");
+					}
+				}
+
+				return webArgs.ToString().Trim();
 			}
-
-			// The first "argument" is actually application name, needs to be removed.
-			// May be wrapped in quotes.
-
-			var executable = args[0];
-			var rawCmd = Environment.CommandLine;
-
-			var index = rawCmd.IndexOf(executable, StringComparison.Ordinal);
-			if (index == 0)
+			else
 			{
-				rawCmd = rawCmd.Substring(executable.Length);
-			}
-			else if (index == 1)
-			{
-				// The executable is wrapped in quotes
-				rawCmd = rawCmd.Substring(executable.Length + 2);
-			}
+				var args = Environment.GetCommandLineArgs();
+				if (args.Length <= 1)
+				{
+					return "";
+				}
 
-			// The whitespace on the start side of Arguments
-			// in UWP is trimmed whereas the ending is not.
-			return rawCmd.TrimStart();
+				// The first "argument" is actually application name, needs to be removed.
+				// May be wrapped in quotes.
+
+				var executable = args[0];
+				var rawCmd = Environment.CommandLine;
+
+				var index = rawCmd.IndexOf(executable, StringComparison.Ordinal);
+				if (index == 0)
+				{
+					rawCmd = rawCmd.Substring(executable.Length);
+				}
+				else if (index == 1)
+				{
+					// The executable is wrapped in quotes
+					rawCmd = rawCmd.Substring(executable.Length + 2);
+				}
+
+				// The whitespace on the start side of Arguments
+				// in UWP is trimmed whereas the ending is not.
+				return rawCmd.TrimStart();
+			}
 		}
 #endif
 	}
