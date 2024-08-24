@@ -1110,6 +1110,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #elif __WASM__
 		[Ignore("Requires authorization to access to the clipboard on WASM.")]
 #endif
+		// Clipboard is currently not available on skia-WASM
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaBrowser)]
 		public async Task When_IsTextSelectionEnabled_SurrogatePair_Copy()
 		{
 			var SUT = new TextBlock
@@ -1144,6 +1146,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #elif __WASM__
 		[Ignore("Requires authorization to access to the clipboard on WASM.")]
 #endif
+		// Clipboard is currently not available on skia-WASM
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaBrowser)]
 		public async Task When_IsTextSelectionEnabled_CRLF()
 		{
 			var SUT = new TextBlock
@@ -1243,6 +1247,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #elif !HAS_RENDER_TARGET_BITMAP
 		[Ignore("Cannot take screenshot on this platform.")]
 #endif
+		// Clipboard is currently not available on skia-WASM
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaBrowser)]
 		public async Task When_IsTextSelectionEnabled_Keyboard_SelectAll_Copy()
 		{
 			var SUT = new TextBlock
@@ -1334,6 +1340,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #elif !__SKIA__
 		[Ignore("The context menu is only implemented on skia.")]
 #endif
+		// Clipboard is currently not available on skia-WASM
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaBrowser)]
 		public async Task When_IsTextSelectionEnabled_ContextMenu_Copy()
 		{
 			var SUT = new TextBlock

@@ -10,6 +10,8 @@
 		<IsUnoHead>true</IsUnoHead>
 		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
 
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
 		<!-- In external apps, this will flow from NuGet package props -->
 		<SupportsFontManifest>true</SupportsFontManifest>
 	</PropertyGroup>

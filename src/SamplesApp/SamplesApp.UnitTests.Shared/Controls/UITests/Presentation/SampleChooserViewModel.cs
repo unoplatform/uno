@@ -36,6 +36,7 @@ using Uno.UI.Extensions;
 using Private.Infrastructure;
 using System.Reflection.Metadata;
 using UITests.Shared.Helpers;
+using Uno.UI.Samples.UITests.Helpers;
 
 namespace SampleControl.Presentation
 {
@@ -494,7 +495,7 @@ namespace SampleControl.Presentation
 
 					await Task.Run(() => unitTests.RunTests(ct, UnitTestEngineConfig.Default));
 
-					File.WriteAllText(testResultsFilePath, unitTests.NUnitTestResultsDocument, System.Text.Encoding.Unicode);
+					await SkiaSamplesAppHelper.SaveFile(testResultsFilePath, unitTests.NUnitTestResultsDocument, ct);
 				}
 			}
 			finally

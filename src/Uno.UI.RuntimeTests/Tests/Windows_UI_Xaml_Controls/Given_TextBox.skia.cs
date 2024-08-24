@@ -856,7 +856,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(OperatingSystem.IsBrowser() ? 4 : 0, sv.ScrollableWidth);
 		}
 
-		[TestMethod]
+		// Clipboard is currently not available on skia-WASM
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaBrowser)]
 		public async Task When_Scrolling_Updates_After_Pasting_Long_Text()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -1812,7 +1813,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, SUT.SelectionLength);
 		}
 
-		[TestMethod]
+		// Clipboard is currently not available on skia-WASM
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaBrowser)]
 		public async Task When_Paste_History_Remains_Intact()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -1858,7 +1860,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual("initial", SUT.Text);
 		}
 
-		[TestMethod]
+		// Clipboard is currently not available on skia-WASM
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaBrowser)]
 		public async Task When_Paste_The_Same_Text()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -2551,7 +2554,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(SUT.Text.Length - 18, SUT.SelectionLength);
 		}
 
-		[TestMethod]
+		// Clipboard is currently not available on skia-WASM
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaBrowser)]
 		public async Task When_SurrogatePair_Copy()
 		{
 			if (OperatingSystem.IsBrowser())
