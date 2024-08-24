@@ -461,7 +461,7 @@ jobs:
   timeoutInMinutes: 180
 
   pool:
-    vmImage: ${{ parameters.vmImage }}
+    vmImage: ${{ parameters.vmLinuxImage }}
 
   container: nv-bionic-wasm
 
