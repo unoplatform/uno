@@ -489,7 +489,28 @@ jobs:
         export PATH="$PATH:$(build.sourcesdirectory)/build/tools"
         python $(build.sourcesdirectory)/build/test-scripts/skia-browserwasm-file-creation-server.py &
         echo ramez "$(build.sourcesdirectory)/build/skia-browserwasm-runtime-tests-results.xml"
-        $(build.sourcesdirectory)/build/tools/dotnet-serve -p 8000 -d "$(SamplesAppArtifactPath)" --open-browser:/?--runtime-tests=$(build.sourcesdirectory)/build/skia-browserwasm-runtime-tests-results.xml  &
+        
+        # https://github.com/sfinktah/bash/blob/master/rawurlencode.inc.sh
+        rawurlencode() {
+            local string="${1}"
+            local strlen=${#string}
+            local encoded=""
+            local pos c o
+
+            for (( pos=0 ; pos<strlen ; pos++ )); do
+                c=${string:$pos:1}
+                case "$c" in
+                  [-_.~a-zA-Z0-9] ) o="${c}" ;;
+                  * )               printf -v o '%%%02x' "'$c"
+                esac
+                encoded+="${o}"
+            done
+            ENCODED_RESULT="${encoded}"
+        }
+        
+        rawurlencode "$(build.sourcesdirectory)/build/skia-browserwasm-runtime-tests-results.xml"
+        echo ramez encoded "--open-browser:/?--runtime-tests=${ENCODED_RESULT}"
+        $(build.sourcesdirectory)/build/tools/dotnet-serve -p 8000 -d "$(SamplesAppArtifactPath)" --open-browser:/?--runtime-tests=${ENCODED_RESULT}  &
         while ! test -f "$(build.sourcesdirectory)/build/skia-browserwasm-runtime-tests-results.xml"; do
             sleep 10
         done
