@@ -19,10 +19,16 @@ public enum RuntimeTestPlatform
 	macOSCatalyst = 1 << 9,
 }
 
-[AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
+[AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = false)]
 public partial class ConditionalTestAttribute : TestMethodAttribute
 {
 	private static readonly RuntimeTestPlatform _currentPlatform;
+
+	public const RuntimeTestPlatform SkiaDesktop = RuntimeTestPlatform.SkiaGtk | RuntimeTestPlatform.SkiaWpf |
+	                                                   RuntimeTestPlatform.SkiaX11 | RuntimeTestPlatform.SkiaMacOS |
+	                                                   RuntimeTestPlatform.SkiaIslands;
+
+	public const RuntimeTestPlatform Skia = SkiaDesktop | RuntimeTestPlatform.SkiaBrowser;
 
 	static ConditionalTestAttribute()
 	{

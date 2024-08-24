@@ -1153,6 +1153,7 @@ namespace Uno.UI.Samples.Tests
 
 			var groupedList =
 				from type in testClasses
+				where type?.GetCustomAttributes<ConditionalTestAttribute>().SingleOrDefault()?.ShouldRun() ?? true
 				from test in GetMethodsWithAttribute(type, typeof(Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute)).OrderBy(m => m.Name)
 				where groupCount == -1 || (groupCount != -1 && (GetTypeTestGroup(test) % (ulong)groupCount) == (ulong)activeGroup)
 				group test by type into g
