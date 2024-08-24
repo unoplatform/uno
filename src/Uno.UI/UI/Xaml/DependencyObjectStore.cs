@@ -2082,6 +2082,14 @@ namespace Microsoft.UI.Xaml
 				}
 			}
 
+			if (value == null && !propertyDetails.Property.IsTypeNullable)
+			{
+				// This probably shouldn't exist. We should fix cases that are broken.
+				// Most (if not all) broken cases appear to be related to TemplatedParent being null incorrectly when applying styles.
+				// This should be re-validated after https://github.com/unoplatform/uno/issues/1621 is fixed.
+				value = GetDefaultValue(propertyDetails.Property);
+			}
+
 			if (AreDifferent(value, GetPrecedenceSpecificValue(propertyDetails, precedence)))
 			{
 				propertyDetails.SetValue(value, precedence);
