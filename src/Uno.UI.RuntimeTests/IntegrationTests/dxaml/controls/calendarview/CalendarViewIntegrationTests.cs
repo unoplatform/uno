@@ -5570,6 +5570,9 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
+#if !__SKIA__
+		[Ignore("Test is failing on non-Skia targets https://github.com/unoplatform/uno/issues/17984")]
+#endif
 		public async Task CanScrollAcrossJapaneseEraOnYearView()
 		{
 			TestCleanupWrapper cleanup;
