@@ -35,6 +35,10 @@ namespace Uno.UI.Samples.UITests.Helpers
 #if __SKIA__
 			if (OperatingSystem.IsBrowser())
 			{
+				// For Skia-Wasm, we assumes a web server for saving files is running at the same hostname and
+				// at a port 1 more than the port that the app is currently served at (usually 8000 and 8001).
+				// The web server accepts a POST request with a json body that includes the path and content of the
+				// file.
 				var json = JsonSerializer.Serialize(new { FilePath = filePath, Content = content });
 				using (var client = new HttpClient())
 				{
@@ -46,7 +50,6 @@ namespace Uno.UI.Samples.UITests.Helpers
 					}
 
 					var payload = new StringContent(json, Encoding.UTF8, "application/json");
-					Console.WriteLine($"ramez requestUri {protocol}//{hostname}:{port + 1} content {content}");
 					var response = await client.PostAsync(
 						$"{protocol}//{hostname}:{port + 1}",
 						payload, ct);
