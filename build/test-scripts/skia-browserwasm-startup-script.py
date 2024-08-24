@@ -10,9 +10,11 @@ if len(sys.argv) != 2:
 
 service = Service(ChromeDriverManager().install())
 options = webdriver.ChromeOptions()
+options.add_argument('--verbose')
+options.add_argument('--no-sandbox')
 options.add_argument('--enable-logging=stderr')
 options.add_argument('--disable-dev-shm-usage')
-options.add_argument("--headless")
+options.add_argument('--headless')
 driver = webdriver.Chrome(service=service, options=options)
 
 driver.get(sys.argv[1])
