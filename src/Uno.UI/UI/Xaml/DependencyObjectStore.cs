@@ -1107,7 +1107,15 @@ namespace Microsoft.UI.Xaml
 		private object GetDefaultValue(DependencyProperty dp)
 		{
 			var actualInstance = ActualInstance;
-			return dp.GetDefaultValue(actualInstance as UIElement, actualInstance?.GetType());
+			var defaultValue = dp.GetDefaultValue(actualInstance as UIElement, actualInstance?.GetType());
+			if (GetCurrentHighestValuePrecedence(dp) == DependencyPropertyValuePrecedences.DefaultValue &&
+				// This should be for OnDemand DPs in general which we don't yet support
+				dp == UIElement.KeyboardAcceleratorsProperty)
+			{
+				_properties.GetPropertyDetails(dp).SetValue(defaultValue, DependencyPropertyValuePrecedences.Local);
+			}
+
+			return defaultValue;
 		}
 
 		private object? GetPrecedenceSpecificValue(DependencyPropertyDetails details, DependencyPropertyValuePrecedences precedence)
