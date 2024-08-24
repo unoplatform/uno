@@ -451,3 +451,57 @@ jobs:
       testResultsFiles: '$(build.sourcesdirectory)/build/skia-linux-runtime-tests-results.xml'
       failTaskOnFailedTests: true
       failTaskOnMissingResultsFile: true
+
+##
+## Skia WebAssembly Browser
+##
+
+- job: Skia_Browser_Runtime_Tests_Build
+  displayName: 'Run Skia Browser Runtime Tests'
+  timeoutInMinutes: 180
+
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+
+  container: nv-bionic-wasm
+
+  dependsOn: Skia_Tests_Build
+
+  variables:
+    SamplesAppArtifactName: skia-browserwasm-samples-app-$(XAML_FLAVOR_BUILD)
+    SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
+
+    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
+    XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
+
+  steps:
+  - task: DownloadBuildArtifacts@0
+    inputs:
+        artifactName: $(SamplesAppArtifactName)
+        downloadPath: '$(build.sourcesdirectory)/build'
+
+  - template: templates/dotnet-install.yml
+
+  - bash: |
+        set -euo pipefail
+        set -x
+        dotnet tool install dotnet-serve --version 1.10.140 --tool-path $(build.sourcesdirectory)/build/tools
+        export PATH="$PATH:$(build.sourcesdirectory)/build/tools"
+        python $(build.sourcesdirectory)/build/test-scripts/skia-browserwasm-file-creation-server.py &
+        echo ramez "$(build.sourcesdirectory)/build/skia-browserwasm-runtime-tests-results.xml"
+        $(build.sourcesdirectory)/build/tools/dotnet-serve -p 8000 -d "$(SamplesAppArtifactPath)" --open-browser:/?--runtime-tests=$(build.sourcesdirectory)/build/skia-browserwasm-runtime-tests-results.xml  &
+        while ! test -f "$(build.sourcesdirectory)/build/skia-browserwasm-runtime-tests-results.xml"; do
+            sleep 10
+        done
+
+
+    displayName: Run Skia Browser $(XAML_FLAVOR_BUILD) Runtime Tests
+
+  - task: PublishTestResults@2
+    condition: always()
+    inputs:
+      testRunTitle: 'Skia Browser $(XAML_FLAVOR_BUILD) Runtime Tests'
+      testResultsFormat: 'NUnit'
+      testResultsFiles: '$(build.sourcesdirectory)/build/skia-browserwasm-runtime-tests-results.xml'
+      failTaskOnFailedTests: true
+      failTaskOnMissingResultsFile: true
