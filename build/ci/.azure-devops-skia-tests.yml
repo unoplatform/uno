@@ -483,6 +483,10 @@ jobs:
   - template: templates/dotnet-install.yml
 
   - bash: |
+        sudo apt update
+        sudo apt install -y chromium-browser
+
+  - bash: |
         set -euo pipefail
         set -x
         dotnet tool install dotnet-serve --version 1.10.140 --tool-path $(build.sourcesdirectory)/build/tools
@@ -510,7 +514,7 @@ jobs:
         $(build.sourcesdirectory)/build/tools/dotnet-serve -p 8000 -d "$(SamplesAppArtifactPath)" &
         sleep 2
         rawurlencode "$(build.sourcesdirectory)/build/skia-browserwasm-runtime-tests-results.xml"
-        xdg-open "http://localhost:8000/?--runtime-tests=${ENCODED_RESULT}" &
+        chromium-browser --headless --enable-logging=stderr "http://localhost:8000/?--runtime-tests=${ENCODED_RESULT}" 2>&1 &
         while ! test -f "$(build.sourcesdirectory)/build/skia-browserwasm-runtime-tests-results.xml"; do
             sleep 10
         done
