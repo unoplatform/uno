@@ -19,18 +19,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_ViewManagement_ApplicationView
 
 		public static string StartupTitle { get; set; }
 
-#if __SKIA__
-		[TestMethod]
+		[ConditionalTest(IgnoredPlatforms = ~ConditionalTestAttribute.Skia | RuntimeTestPlatform.SkiaBrowser | RuntimeTestPlatform.SkiaIslands)]
 		public void When_StartupTitle_Is_Defined()
 		{
-			if (TestServices.WindowHelper.IsXamlIsland)
-			{
-				return;
-			}
-
 			Assert.AreEqual(Windows.ApplicationModel.Package.Current.DisplayName, StartupTitle);
 		}
-#endif
 
 #if __ANDROID__
 		[TestMethod]

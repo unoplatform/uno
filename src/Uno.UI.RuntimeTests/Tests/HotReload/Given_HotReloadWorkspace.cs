@@ -24,9 +24,8 @@ using System.Collections.Immutable;
 namespace Uno.UI.RuntimeTests.Tests.HotReload;
 
 [TestClass]
-#if !__SKIA__
-[Ignore("Hot reload tests are only available on Skia targets")]
-#endif
+// Hot reload tests are only available on Skia desktop targets
+[ConditionalTest(IgnoredPlatforms = ~ConditionalTestAttribute.SkiaDesktop)]
 public partial class Given_HotReloadWorkspace
 {
 	private static Process? _process;
