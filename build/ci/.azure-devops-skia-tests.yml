@@ -483,15 +483,20 @@ jobs:
   - template: templates/dotnet-install.yml
 
   - bash: |
-        sudo apt update
-        sudo apt install -y chromium-browser
+        set -euo pipefail
+        set -x
+        wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+        sudo apt-get update
+        sudo apt-get install -y ./google-chrome-stable_current_amd64.deb
+        sudo apt-get install -y python3-pip
+        google-chrome --version
+        pip3 install selenium
+        pip3 install webdriver-manager
+    displayName: install chrome and selenium
 
   - bash: |
         set -euo pipefail
         set -x
-        dotnet tool install dotnet-serve --version 1.10.140 --tool-path $(build.sourcesdirectory)/build/tools
-        export PATH="$PATH:$(build.sourcesdirectory)/build/tools"
-        python $(build.sourcesdirectory)/build/test-scripts/skia-browserwasm-file-creation-server.py &
         
         # https://github.com/sfinktah/bash/blob/master/rawurlencode.inc.sh
         rawurlencode() {
@@ -510,15 +515,15 @@ jobs:
             done
             ENCODED_RESULT="${encoded}"
         }
-        
-        $(build.sourcesdirectory)/build/tools/dotnet-serve -p 8000 -d "$(SamplesAppArtifactPath)" &
-        sleep 2
         rawurlencode "$(build.sourcesdirectory)/build/skia-browserwasm-runtime-tests-results.xml"
-        chromium-browser --headless --enable-logging=stderr "http://localhost:8000/?--runtime-tests=${ENCODED_RESULT}" 2>&1 &
+        
+        python -m http.server 8000 -d "$(SamplesAppArtifactPath)" &
+        python $(build.sourcesdirectory)/build/test-scripts/skia-browserwasm-file-creation-server.py &
+        sleep 2
+        python $(build.sourcesdirectory)/build/test-scripts/skia-browserwasm-startup-script.py "http://localhost:8000/?--runtime-tests=${ENCODED_RESULT}" &
         while ! test -f "$(build.sourcesdirectory)/build/skia-browserwasm-runtime-tests-results.xml"; do
             sleep 10
         done
-
 
     displayName: Run Skia Browser $(XAML_FLAVOR_BUILD) Runtime Tests
 
