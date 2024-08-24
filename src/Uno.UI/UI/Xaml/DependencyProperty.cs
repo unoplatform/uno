@@ -138,6 +138,11 @@ namespace Microsoft.UI.Xaml
 		/// <exception cref="InvalidOperationException">A property with the same name has already been declared for the ownerType</exception>
 		public static DependencyProperty Register(string name, Type propertyType, Type ownerType, PropertyMetadata typeMetadata)
 		{
+			if (!propertyType.IsNullable() && typeMetadata.DefaultValue is null)
+			{
+				throw new Exception($"Cannot register property {ownerType}.{name} with non-nullable type {propertyType}");
+			}
+
 			var newProperty = new DependencyProperty(name, propertyType, ownerType, typeMetadata, attached: false);
 
 			try
