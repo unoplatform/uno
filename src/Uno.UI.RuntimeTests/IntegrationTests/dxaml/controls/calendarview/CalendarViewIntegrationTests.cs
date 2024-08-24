@@ -1070,6 +1070,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 #endif
 #if __SKIA__
 		[RequiresFullWindow]
+		[Ignore("This test sometimes breaks the state of the app for unknown reasons. This doesn't happen in isolation, but only when run a part of a larger test run.")]
 #endif
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
