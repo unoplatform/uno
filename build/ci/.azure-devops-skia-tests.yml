@@ -488,7 +488,6 @@ jobs:
         dotnet tool install dotnet-serve --version 1.10.140 --tool-path $(build.sourcesdirectory)/build/tools
         export PATH="$PATH:$(build.sourcesdirectory)/build/tools"
         python $(build.sourcesdirectory)/build/test-scripts/skia-browserwasm-file-creation-server.py &
-        echo ramez "$(build.sourcesdirectory)/build/skia-browserwasm-runtime-tests-results.xml"
         
         # https://github.com/sfinktah/bash/blob/master/rawurlencode.inc.sh
         rawurlencode() {
@@ -508,9 +507,10 @@ jobs:
             ENCODED_RESULT="${encoded}"
         }
         
+        $(build.sourcesdirectory)/build/tools/dotnet-serve -p 8000 -d "$(SamplesAppArtifactPath)" &
+        sleep 2
         rawurlencode "$(build.sourcesdirectory)/build/skia-browserwasm-runtime-tests-results.xml"
-        echo ramez encoded "--open-browser:/?--runtime-tests=${ENCODED_RESULT}"
-        $(build.sourcesdirectory)/build/tools/dotnet-serve -p 8000 -d "$(SamplesAppArtifactPath)" --open-browser:/?--runtime-tests=${ENCODED_RESULT}  &
+        xdg-open "http://localhost:8000/?--runtime-tests=${ENCODED_RESULT}" &
         while ! test -f "$(build.sourcesdirectory)/build/skia-browserwasm-runtime-tests-results.xml"; do
             sleep 10
         done

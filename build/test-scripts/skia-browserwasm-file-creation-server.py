@@ -1,7 +1,6 @@
 import os
 from http.server import SimpleHTTPRequestHandler, HTTPServer
 
-# Class to handle dynamic file creation requests
 class FileCreationRequestHandler(SimpleHTTPRequestHandler):
     def do_POST(self):
         content_length = int(self.headers['Content-Length'])
@@ -11,7 +10,6 @@ class FileCreationRequestHandler(SimpleHTTPRequestHandler):
             filename = data.get('FilePath')
             string_to_write = data.get('Content')
 
-            # Create the file and write the string to it
             with open(filename, 'w') as file:
                 file.write(string_to_write)
             
