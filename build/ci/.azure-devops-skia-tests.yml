@@ -482,6 +482,8 @@ jobs:
 
   - template: templates/dotnet-install.yml
 
+  - template: templates/linux-install-xvfb.yml
+
   - bash: |
         set -euo pipefail
         set -x
@@ -519,12 +521,19 @@ jobs:
             done
             ENCODED_RESULT="${encoded}"
         }
-        rawurlencode "$(build.sourcesdirectory)/build/skia-browserwasm-runtime-tests-results.xml"
         
         python -m http.server 8000 -d "$(SamplesAppArtifactPath)" &
         python $(build.sourcesdirectory)/build/test-scripts/skia-browserwasm-file-creation-server.py &
         sleep 2
-        python $(build.sourcesdirectory)/build/test-scripts/skia-browserwasm-startup-script.py "http://localhost:8000/?--runtime-tests=${ENCODED_RESULT}" &
+
+        rawurlencode "$(build.sourcesdirectory)/build/skia-browserwasm-runtime-tests-results.xml"
+        # for some reason, you have to run line twice or else it doesn't work
+        xvfb-run --server-num 99 google-chrome --enable-logging=stderr --no-sandbox "http://localhost:8000/?--runtime-tests=${ENCODED_RESULT}" &
+        sleep 2
+        pkill chrome
+        pkill xvfb-run
+        xvfb-run --server-num 99 google-chrome --enable-logging=stderr --no-sandbox "http://localhost:8000/?--runtime-tests=${ENCODED_RESULT}" &
+
         while ! test -f "$(build.sourcesdirectory)/build/skia-browserwasm-runtime-tests-results.xml"; do
             sleep 10
         done
