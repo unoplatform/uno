@@ -482,8 +482,6 @@ jobs:
 
   - template: templates/dotnet-install.yml
 
-  - template: templates/linux-install-xvfb.yml
-  
   - bash: |
         set -euo pipefail
         set -x
@@ -526,7 +524,7 @@ jobs:
         python -m http.server 8000 -d "$(SamplesAppArtifactPath)" &
         python $(build.sourcesdirectory)/build/test-scripts/skia-browserwasm-file-creation-server.py &
         sleep 2
-        xvfb-run --auto-servernum --server-args='-screen 0 1280x1024x24' sh -c '{ fluxbox & } ; python $(build.sourcesdirectory)/build/test-scripts/skia-browserwasm-startup-script.py '"http://localhost:8000/?--runtime-tests=${ENCODED_RESULT}" &
+        python $(build.sourcesdirectory)/build/test-scripts/skia-browserwasm-startup-script.py "http://localhost:8000/?--runtime-tests=${ENCODED_RESULT}" &
         while ! test -f "$(build.sourcesdirectory)/build/skia-browserwasm-runtime-tests-results.xml"; do
             sleep 10
         done
