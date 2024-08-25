@@ -17,6 +17,7 @@ using Uno.UI;
 using System.Collections;
 using System.Globalization;
 using Windows.ApplicationModel.Calls;
+using Microsoft.UI.Xaml.Controls;
 
 #if __ANDROID__
 using View = Android.Views.View;
@@ -1635,6 +1636,17 @@ namespace Microsoft.UI.Xaml
 						if (GetCurrentHighestValuePrecedence(prop) != DependencyPropertyValuePrecedences.DefaultValue)
 						{
 							store.OnParentPropertyChangedCallback(instanceRef, prop, GetValue(prop));
+						}
+						else
+						{
+							if (prop == _properties.DataContextPropertyDetails.Property || prop == _properties.TemplatedParentPropertyDetails.Property)
+							{
+								// Historically, the GetValue(prop) above was always called regardless of highest precedence.
+								// GetValue has a side effect of calling TryRegisterInheritedProperties.
+								// This tries to keep the original behavior, but it doesn't make sense that we need to do this.
+								// At least for TemplatedParent, this should be re-evaluated once we align TemplatedParent with WinUI.
+								TryRegisterInheritedProperties(force: true);
+							}
 						}
 					}
 				}
