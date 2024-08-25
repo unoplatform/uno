@@ -74,7 +74,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public TextBlock()
 		{
 			IFrameworkElementHelper.Initialize(this);
-			SetDefaultForeground(ForegroundProperty);
+			UpdateLastUsedTheme();
 
 			_hyperlinks.CollectionChanged += HyperlinksOnCollectionChanged;
 
@@ -1230,7 +1230,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.UpdateThemeBindings(updateReason);
 
-			SetDefaultForeground(ForegroundProperty);
+			UpdateLastUsedTheme();
 
 			if (_inlines is not null)
 			{

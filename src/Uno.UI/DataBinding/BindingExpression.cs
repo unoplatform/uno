@@ -370,7 +370,7 @@ namespace Microsoft.UI.Xaml.Data
 			else if (useTypeDefaultValue && TargetPropertyDetails != null)
 			{
 				var viewTarget = _view.Target;
-				SetTargetValue(TargetPropertyDetails.Property.GetDefaultValue(viewTarget as UIElement, viewTarget?.GetType()));
+				SetTargetValue(TargetPropertyDetails.Property.GetDefaultValue(viewTarget as DependencyObject, viewTarget?.GetType()));
 			}
 		}
 

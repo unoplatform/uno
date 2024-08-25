@@ -381,8 +381,8 @@ namespace Microsoft.UI.Xaml.Documents
 
 		private protected virtual Brush DefaultTextForegroundBrush => DefaultBrushes.TextForegroundBrush;
 
-#if __WASM__ // On Wasm, we inherit UIElement, and so we need to shadow UIElement.SetDefaultForeground.
-		private protected new
+#if __WASM__
+		private protected
 #else
 		private
 #endif

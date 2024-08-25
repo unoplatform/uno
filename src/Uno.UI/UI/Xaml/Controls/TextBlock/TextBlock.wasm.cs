@@ -39,7 +39,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public TextBlock() : base("p")
 		{
-			SetDefaultForeground(ForegroundProperty);
+			UpdateLastUsedTheme();
 
 			OnFontStyleChangedPartial();
 			OnFontWeightChangedPartial();

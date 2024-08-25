@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Shapes;
 using Uno;
 using Uno.Extensions;
@@ -501,9 +502,9 @@ namespace Microsoft.UI.Xaml
 			return false;
 		}
 
-		internal object GetDefaultValue(UIElement referenceObject, Type forType)
+		internal object GetDefaultValue(DependencyObject referenceObject, Type forType)
 		{
-			if (referenceObject?.GetDefaultValue2(this, out var defaultValue) == true)
+			if ((referenceObject as UIElement)?.GetDefaultValue2(this, out var defaultValue) == true)
 			{
 				return defaultValue;
 			}
@@ -529,6 +530,34 @@ namespace Microsoft.UI.Xaml
 				if (forType == typeof(Rectangle) || forType == typeof(Ellipse))
 				{
 					return Stretch.Fill;
+				}
+			}
+
+			if (this == Timeline.DurationProperty)
+			{
+				if (referenceObject is FadeInThemeAnimation or FadeOutThemeAnimation)
+				{
+					return FeatureConfiguration.ThemeAnimation.DefaultThemeAnimationDuration;
+				}
+			}
+
+			if (this == Storyboard.TargetPropertyProperty)
+			{
+				if (referenceObject is FadeInThemeAnimation or FadeOutThemeAnimation)
+				{
+					return "Opacity";
+				}
+			}
+
+			if (this == DoubleAnimation.ToProperty)
+			{
+				if (referenceObject is FadeInThemeAnimation)
+				{
+					return (double?)1.0d;
+				}
+				else if (referenceObject is FadeOutThemeAnimation)
+				{
+					return (double?)0.0d;
 				}
 			}
 
