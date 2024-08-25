@@ -20,6 +20,8 @@ namespace Microsoft.UI.Xaml
 	{
 		private Size? _lastLayoutSize;
 		private bool _constraintsChanged;
+		private bool? _stretchAffectsMeasure;
+		private bool _stretchAffectsMeasureDefault;
 
 		/// <summary>
 		/// The parent of the <see cref="FrameworkElement"/> in the visual tree, which may differ from its <see cref="Parent"/> (ie if it's a child of a native view).
@@ -192,18 +194,12 @@ namespace Microsoft.UI.Xaml
 		partial void OnLoadedPartial()
 		{
 			// see StretchAffectsMeasure for details.
-			this.SetValue(
-				StretchAffectsMeasureProperty,
-				!(NativeVisualParent is DependencyObject),
-				DependencyPropertyValuePrecedences.DefaultValue
-			);
+			_stretchAffectsMeasureDefault = NativeVisualParent is not DependencyObject;
 
 			ReconfigureViewportPropagationPartial();
 		}
 
 		private partial void ReconfigureViewportPropagationPartial();
-
-		#region StretchAffectsMeasure DependencyProperty
 
 		/// <summary>
 		/// Indicates whether stretching (HorizontalAlignment.Stretch and VerticalAlignment.Stretch) should affect the measured size of the FrameworkElement.
@@ -211,20 +207,14 @@ namespace Microsoft.UI.Xaml
 		/// Note that this doesn't take Margins into account.
 		/// </summary>
 		/// <remarks>
-		/// The <see cref="DependencyPropertyValuePrecedences.DefaultValue"/> is updated at each <see cref="OnLoadedPartial"/> call, but may
-		/// be overridden by an external called as <see cref="DependencyPropertyValuePrecedences.Local"/>.
+		/// The <see cref="_stretchAffectsMeasureDefault"/> is updated at each <see cref="OnLoadedPartial"/> call, but may
+		/// be overridden by setting this property.
 		/// </remarks>
 		public bool StretchAffectsMeasure
 		{
-			get { return (bool)GetValue(StretchAffectsMeasureProperty); }
-			set { SetValue(StretchAffectsMeasureProperty, value); }
+			get => _stretchAffectsMeasure ?? _stretchAffectsMeasureDefault;
+			set => _stretchAffectsMeasure = value;
 		}
-
-		// Using a DependencyProperty as the backing store for StretchAffectsMeasure.  This enables animation, styling, binding, etc...
-		public static DependencyProperty StretchAffectsMeasureProperty { get; } =
-			DependencyProperty.Register("StretchAffectsMeasure", typeof(bool), typeof(FrameworkElement), new FrameworkPropertyMetadata(false));
-
-		#endregion
 
 		protected override void OnMeasure(int widthMeasureSpec, int heightMeasureSpec)
 		{

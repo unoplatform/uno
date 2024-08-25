@@ -51,18 +51,18 @@ namespace Microsoft.UI.Xaml.Controls
 			OnTextAlignmentChangedPartial();
 			OnTextWrappingChangedPartial();
 			OnIsTextSelectionEnabledChangedPartial();
-			InitializeDefaultValues();
 
 			_hyperlinks.CollectionChanged += HyperlinksOnCollectionChanged;
 		}
 
-		/// <summary>
-		/// Set default properties to vertical top.
-		/// In wasm, this behavior is closer to the default textblock property than stretch.
-		/// </summary>
-		private void InitializeDefaultValues()
+		internal override bool GetDefaultValue2(DependencyProperty property, out object defaultValue)
 		{
-			this.SetValue(VerticalAlignmentProperty, VerticalAlignment.Top, DependencyPropertyValuePrecedences.DefaultValue);
+			if (property == VerticalAlignmentProperty)
+			{
+				// In wasm, this behavior is closer to the default TextBlock property than stretch.
+				defaultValue = VerticalAlignment.Top;
+				return true;
+			}
 		}
 
 		private void ConditionalUpdate(ref bool condition, Action action)
