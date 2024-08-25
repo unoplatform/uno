@@ -537,7 +537,7 @@ namespace Microsoft.UI.Xaml
 			{
 				if (referenceObject is FadeInThemeAnimation or FadeOutThemeAnimation)
 				{
-					return FeatureConfiguration.ThemeAnimation.DefaultThemeAnimationDuration;
+					return new Duration(FeatureConfiguration.ThemeAnimation.DefaultThemeAnimationDuration);
 				}
 			}
 

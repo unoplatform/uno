@@ -1104,7 +1104,8 @@ namespace Microsoft.UI.Xaml
 			return (value, resultPrecedence);
 		}
 
-		private object GetDefaultValue(DependencyProperty dp)
+		// Internal for unit testing
+		internal object GetDefaultValue(DependencyProperty dp)
 		{
 			var actualInstance = ActualInstance;
 			var defaultValue = dp.GetDefaultValue(actualInstance, actualInstance?.GetType());
