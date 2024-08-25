@@ -38,7 +38,7 @@ namespace Uno.UI.Samples.UITests.Helpers
 				// For Skia-Wasm, we assumes a web server for saving files is running at the same hostname and
 				// at a port 1 more than the port that the app is currently served at (usually 8000 and 8001).
 				// The web server accepts a POST request with a json body that includes the path and content of the
-				// file.
+				// file. For more details, look at build/test-scripts/skia-browserwasm-file-creation-server.py
 				var json = JsonSerializer.Serialize(new { FilePath = filePath, Content = content });
 				using (var client = new HttpClient())
 				{
