@@ -1682,7 +1682,7 @@ namespace Microsoft.UI.Xaml
 				var eventManager = this.GetContext().EventManager;
 				eventManager.RemoveRequest(this);
 			}
-			// --------- UNO Specific BEGIN ---------
+			// --------- UNO Specific END ---------
 
 			//var core = this.GetContext();
 			//var isParentEnabled = @params.CoercedIsEnabled;
