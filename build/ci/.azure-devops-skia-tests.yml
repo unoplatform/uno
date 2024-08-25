@@ -532,7 +532,7 @@ jobs:
         sleep 2
         pkill chrome
         pkill xvfb-run
-        xvfb-run --server-num 99 google-chrome --enable-logging=stderr --no-sandbox "http://localhost:8000/?--runtime-tests=${ENCODED_RESULT}" &
+        xvfb-run --server-num 98 google-chrome --enable-logging=stderr --no-sandbox "http://localhost:8000/?--runtime-tests=${ENCODED_RESULT}" &
 
         while ! test -f "$(build.sourcesdirectory)/build/skia-browserwasm-runtime-tests-results.xml"; do
             sleep 10

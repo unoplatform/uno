@@ -10,7 +10,11 @@ class FileCreationRequestHandler(SimpleHTTPRequestHandler):
             filename = data.get('FilePath')
             string_to_write = data.get('Content')
 
-            with open(filename, 'w') as file:
+            # We use utf16 by default because the main use case for this server
+            # is writing the XML test results file, and that XML document specifies
+            # the encoding to be utf16. So far, we haven't had the need to add
+            # a parameter for the encoding in the server API.
+            with open(filename, mode='w', encoding='utf-16') as file:
                 file.write(string_to_write)
             
             self.send_response(200)
