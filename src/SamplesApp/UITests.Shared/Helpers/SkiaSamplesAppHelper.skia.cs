@@ -56,7 +56,7 @@ namespace Uno.UI.Samples.UITests.Helpers
 
 					if (response.StatusCode != HttpStatusCode.OK)
 					{
-						throw new InvalidOperationException("Failed to write test results to disk.");
+						throw new InvalidOperationException($"Failed to write test results to disk with statuc code {response.StatusCode}. Response content: ${await response.Content.ReadAsStringAsync()}");
 					}
 				}
 			}
