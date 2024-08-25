@@ -490,20 +490,12 @@ jobs:
         wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
         sudo apt-get update
         sudo apt-get install -y ./google-chrome-stable_current_amd64.deb
-        sudo apt-get install -y python3-pip
-        google-chrome --version
-        pip3 install selenium
-        pip3 install webdriver-manager
     displayName: install chrome and selenium
 
   - bash: |
         set -euo pipefail
         set -x
 
-        google-chrome --version
-        which google-chrome
-        echo "$PATH"
-        
         # https://github.com/sfinktah/bash/blob/master/rawurlencode.inc.sh
         rawurlencode() {
             local string="${1}"
