@@ -2,6 +2,12 @@ import os
 from http.server import SimpleHTTPRequestHandler, HTTPServer
 
 class FileCreationRequestHandler(SimpleHTTPRequestHandler):
+    def end_headers (self):
+        self.send_header('Access-Control-Allow-Origin', '*')                
+        self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+        self.send_header("Access-Control-Allow-Headers", "Content-Type, X-Requested-With")
+        SimpleHTTPRequestHandler.end_headers(self)
+
     def do_POST(self):
         content_length = int(self.headers['Content-Length'])
         post_data = self.rfile.read(content_length)
@@ -18,9 +24,6 @@ class FileCreationRequestHandler(SimpleHTTPRequestHandler):
                 file.write(string_to_write)
             
             self.send_response(200)
-            self.send_header('Access-Control-Allow-Origin', '*')                
-            self.send_header('Access-Control-Allow-Methods', 'POST, OPTIONS')
-            self.send_header("Access-Control-Allow-Headers", "Content-Type, X-Requested-With")
             self.end_headers()
             self.wfile.write(b"File created successfully.")
         except Exception as e:
@@ -28,10 +31,7 @@ class FileCreationRequestHandler(SimpleHTTPRequestHandler):
             self.end_headers()
 
     def do_OPTIONS(self):           
-        self.send_response(200)       
-        self.send_header('Access-Control-Allow-Origin', '*')                
-        self.send_header('Access-Control-Allow-Methods', 'POST, OPTIONS')
-        self.send_header("Access-Control-Allow-Headers", "Content-Type, X-Requested-With")        
+        self.send_response(200)
         self.end_headers()
 
 if __name__ == "__main__":
