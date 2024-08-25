@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Windows.UI.Core;
 using Uno.UI.RuntimeTests.Extensions;
 using Private.Infrastructure;
+using Uno.UI.Samples.UITests.Helpers;
 
 #if !HAS_UNO
 using Uno.Logging;
@@ -49,7 +50,7 @@ partial class App
 		if (!string.IsNullOrEmpty(runtimeTestResultFilePath))
 		{
 			Console.WriteLine($"Writing canary file {runtimeTestResultFilePath}.canary");
-			System.IO.File.WriteAllText(runtimeTestResultFilePath + ".canary", DateTime.Now.ToString(), System.Text.Encoding.Unicode);
+			await SkiaSamplesAppHelper.SaveFile(runtimeTestResultFilePath + ".canary", DateTime.Now.ToString());
 
 			// let the app finish its startup
 			await Task.Delay(TimeSpan.FromSeconds(5));

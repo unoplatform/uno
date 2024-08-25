@@ -30,7 +30,7 @@ namespace Uno.UI.Samples.UITests.Helpers
 		/// <summary>
 		/// This method is for saving files on Skia-WASM where we don't have disk access.
 		/// </summary>
-		public static async Task SaveFile(string filePath, string content, CancellationToken ct)
+		public static async Task SaveFile(string filePath, string content, CancellationToken? ct = null)
 		{
 #if __SKIA__
 			if (OperatingSystem.IsBrowser())
@@ -50,9 +50,9 @@ namespace Uno.UI.Samples.UITests.Helpers
 					}
 
 					var payload = new StringContent(json, Encoding.UTF8, "application/json");
-					var response = await client.PostAsync(
-						$"{protocol}//{hostname}:{port + 1}",
-						payload, ct);
+					var response = ct is { }
+						? await client.PostAsync($"{protocol}//{hostname}:{port + 1}", payload, ct.Value)
+						: await client.PostAsync($"{protocol}//{hostname}:{port + 1}", payload);
 
 					if (response.StatusCode != HttpStatusCode.OK)
 					{
