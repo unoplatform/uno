@@ -63,6 +63,9 @@ namespace Microsoft.UI.Xaml.Controls
 				defaultValue = VerticalAlignment.Top;
 				return true;
 			}
+
+			defaultValue = null;
+			return false;
 		}
 
 		private void ConditionalUpdate(ref bool condition, Action action)
