@@ -54,16 +54,6 @@ namespace Uno.UI.Samples.Controls
 		{
 			(dependencyObject as SampleControl).ContentTemplate = args.NewValue as DataTemplate;
 		}
-
-#if XAMARIN
-		protected override void OnDataContextChanged()
-		{
-			base.OnDataContextChanged();
-
-			// Workaround to #10396: The DataContext of ContentTemplate should be ContentControl.DataContext if ContentControl.Content is not set.
-			this.SetValue(ContentProperty, DataContext, DependencyPropertyValuePrecedences.DefaultValue);
-		}
-#endif
 	}
 }
 #endif
