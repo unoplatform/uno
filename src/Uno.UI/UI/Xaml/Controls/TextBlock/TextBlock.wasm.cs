@@ -60,7 +60,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (property == VerticalAlignmentProperty)
 			{
 				// In wasm, this behavior is closer to the default TextBlock property than stretch.
-				defaultValue = VerticalAlignment.Top;
+				defaultValue = Uno.UI.Helpers.Boxes.VerticalAlignmentBoxes.Top;
 				return true;
 			}
 

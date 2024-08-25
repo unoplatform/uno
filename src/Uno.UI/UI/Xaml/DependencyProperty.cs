@@ -16,6 +16,7 @@ using Uno;
 using Uno.Extensions;
 using Uno.UI;
 using Uno.UI.Dispatching;
+using Uno.UI.Helpers;
 using Uno.UI.Xaml.Media;
 
 #if __ANDROID__
@@ -39,6 +40,7 @@ namespace Microsoft.UI.Xaml
 
 		private readonly static TypeToPropertiesDictionary _getPropertiesForType = new TypeToPropertiesDictionary();
 		private readonly static NameToPropertyDictionary _getPropertyCache = new NameToPropertyDictionary();
+		private static object DefaultThemeAnimationDurationBox = new Duration(FeatureConfiguration.ThemeAnimation.DefaultThemeAnimationDuration);
 
 		/// <summary>
 		/// A static <see cref="PropertyCacheEntry"/> used for lookups and avoid creating new instances. This assumes that uses are non-reentrant.
@@ -529,7 +531,7 @@ namespace Microsoft.UI.Xaml
 			{
 				if (forType == typeof(Rectangle) || forType == typeof(Ellipse))
 				{
-					return Stretch.Fill;
+					return Boxes.StretchBoxes.Fill;
 				}
 			}
 
@@ -537,7 +539,16 @@ namespace Microsoft.UI.Xaml
 			{
 				if (referenceObject is FadeInThemeAnimation or FadeOutThemeAnimation)
 				{
-					return new Duration(FeatureConfiguration.ThemeAnimation.DefaultThemeAnimationDuration);
+					if (((Duration)DefaultThemeAnimationDurationBox).TimeSpan == FeatureConfiguration.ThemeAnimation.DefaultThemeAnimationDuration)
+					{
+						// Our box is valid, so we can re-use it.
+						return DefaultThemeAnimationDurationBox;
+					}
+
+					// Rare code path, it will be hit only once per change in the feature configuration.
+					// The cached box is not valid. So we create a new box update the cached box.
+					DefaultThemeAnimationDurationBox = new Duration(FeatureConfiguration.ThemeAnimation.DefaultThemeAnimationDuration);
+					return DefaultThemeAnimationDurationBox;
 				}
 			}
 
@@ -553,11 +564,11 @@ namespace Microsoft.UI.Xaml
 			{
 				if (referenceObject is FadeInThemeAnimation)
 				{
-					return (double?)1.0d;
+					return Uno.UI.Helpers.Boxes.NullableDoubleBoxes.One;
 				}
 				else if (referenceObject is FadeOutThemeAnimation)
 				{
-					return (double?)0.0d;
+					return Uno.UI.Helpers.Boxes.NullableDoubleBoxes.Zero;
 				}
 			}
 

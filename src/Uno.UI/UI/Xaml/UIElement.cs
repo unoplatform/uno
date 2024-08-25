@@ -217,7 +217,7 @@ namespace Microsoft.UI.Xaml
 			}
 			else if (property == IsTabStopProperty)
 			{
-				defaultValue = IsTabStopDefaultValue;
+				defaultValue = Uno.UI.Helpers.Boxes.Box(IsTabStopDefaultValue);
 				return true;
 			}
 
