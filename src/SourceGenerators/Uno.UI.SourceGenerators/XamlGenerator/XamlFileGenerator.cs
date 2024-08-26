@@ -546,6 +546,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 			}
 
+			AttachUnhandledExceptionHandler();
+
 			void ApplyLiteralProperties()
 			{
 				writer.AppendLineIndented("this");
@@ -562,6 +564,28 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				writer.AppendLineIndented(";");
+			}
+
+			void AttachUnhandledExceptionHandler()
+			{
+				writer.Append($"#if DEBUG");
+				writer.AppendLine();
+				writer.AppendLineIndented($"UnhandledException += (s, e) =>");
+				writer.AppendLineIndented("{");
+				writer.Indent();
+				using (writer.BlockInvariant("if (global::System.Diagnostics.Debugger.IsAttached)"))
+				{
+					writer.AppendLineIndented("global::System.Diagnostics.Debug.WriteLine(e.Exception);");
+					writer.Append("#if !DISABLE_XAML_GENERATED_BREAK_ON_UNHANDLED_EXCEPTION");
+					writer.AppendLine();
+					writer.AppendLineIndented("global::System.Diagnostics.Debugger.Break();");
+					writer.Append("#endif");
+					writer.AppendLine();
+				}
+				writer.Indent(-1);
+				writer.AppendLineIndented("};");
+				writer.Append($"#endif");
+				writer.AppendLine();
 			}
 		}
 
