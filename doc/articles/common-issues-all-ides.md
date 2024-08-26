@@ -16,6 +16,10 @@ This error may happen for multiple reasons:
   - Open a visual studio instance that does not have any solution opened
   - Go to **Tools**, **Options**, **NuGet Package Manager**, then **Package Source Mappings**
   - If there are entries in the list, click then click **Remove All**
+- Delete the `Uno.Sdk` folder in your development environment's Nuget packages `global-packages` folder:
+  - Windows: %userprofile%\.nuget\packages
+  - Mac/Linux: ~/.nuget/packages
+  [This folder may be overridden](https://learn.microsoft.com/en-us/nuget/consume-packages/managing-the-global-packages-and-cache-folders) using the `NUGET_PACKAGES` environment variable, the `globalPackagesFolder` or `repositoryPath` configuration settings (when using PackageReference and `packages.config`, respectively), or the `RestorePackagesPath` MSBuild property (MSBuild only). The environment variable takes precedence over the configuration setting.
 
 Try building your project again.
 
