@@ -57,7 +57,6 @@ namespace Microsoft.UI.Xaml
 		private Type _propertyType;
 		private Type _ownerType;
 		private readonly int _uniqueId;
-		private object _fallbackDefaultValue;
 
 		private static int _globalId = -1;
 
@@ -141,10 +140,7 @@ namespace Microsoft.UI.Xaml
 		/// <exception cref="InvalidOperationException">A property with the same name has already been declared for the ownerType</exception>
 		public static DependencyProperty Register(string name, Type propertyType, Type ownerType, PropertyMetadata typeMetadata)
 		{
-			if (!propertyType.IsNullable() && typeMetadata.DefaultValue is null)
-			{
-				throw new Exception($"Cannot register property {ownerType}.{name} with non-nullable type {propertyType}");
-			}
+			typeMetadata = FixMetadataIfNeeded(propertyType, typeMetadata);
 
 			var newProperty = new DependencyProperty(name, propertyType, ownerType, typeMetadata, attached: false);
 
@@ -161,6 +157,20 @@ namespace Microsoft.UI.Xaml
 			}
 
 			return newProperty;
+		}
+
+		private static PropertyMetadata FixMetadataIfNeeded(Type propertyType, PropertyMetadata metadata)
+		{
+			if (metadata is null)
+			{
+				return new PropertyMetadata(defaultValue: RuntimeHelpers.GetUninitializedObject(propertyType));
+			}
+			else if (!propertyType.IsNullable() && metadata.DefaultValue is null)
+			{
+				return metadata.CloneWithOverwrittenDefaultValue(RuntimeHelpers.GetUninitializedObject(propertyType));
+			}
+
+			return metadata;
 		}
 
 		/// <summary>
@@ -192,6 +202,8 @@ namespace Microsoft.UI.Xaml
 		/// <exception cref="InvalidOperationException">A property with the same name has already been declared for the ownerType</exception>
 		public static DependencyProperty RegisterAttached(string name, Type propertyType, Type ownerType, PropertyMetadata defaultMetadata)
 		{
+			defaultMetadata = FixMetadataIfNeeded(propertyType, defaultMetadata);
+
 			var newProperty = new DependencyProperty(name, propertyType, ownerType, defaultMetadata, attached: true);
 
 			try
@@ -283,9 +295,6 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		internal bool IsTypeNullable
 			=> (_flags & Flags.IsTypeNullable) != 0;
-
-		internal object GetFallbackDefaultValue()
-			=> _fallbackDefaultValue != null ? _fallbackDefaultValue : _fallbackDefaultValue = Activator.CreateInstance(Type);
 
 		internal string Name
 		{

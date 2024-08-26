@@ -282,6 +282,14 @@ namespace Microsoft.UI.Xaml
 
 			if (propertyDetails is null && (precedence is null || precedence == DependencyPropertyValuePrecedences.DefaultValue) && _properties.FindPropertyDetails(property) is null)
 			{
+				if (_properties.DataContextPropertyDetails.Property == property || _properties.TemplatedParentPropertyDetails.Property == property)
+				{
+					// Historically, we didn't have this fast path for default value.
+					// We add this to maintain the original behavior in GetValue(DependencyPropertyDetails, DependencyPropertyValuePrecedences?, bool) overload.
+					// This should be revisited in future.
+					TryRegisterInheritedProperties(force: true);
+				}
+
 				// Performance: Avoid force-creating DependencyPropertyDetails when not needed.
 				return GetDefaultValue(property);
 			}
@@ -1633,20 +1641,10 @@ namespace Microsoft.UI.Xaml
 					var prop = props[propertyIndex];
 					if (!IsTemplatedParentFrozen || prop != TemplatedParentProperty)
 					{
+						var value = GetValue(prop);
 						if (GetCurrentHighestValuePrecedence(prop) != DependencyPropertyValuePrecedences.DefaultValue)
 						{
-							store.OnParentPropertyChangedCallback(instanceRef, prop, GetValue(prop));
-						}
-						else
-						{
-							if (prop == _properties.DataContextPropertyDetails.Property || prop == _properties.TemplatedParentPropertyDetails.Property)
-							{
-								// Historically, the GetValue(prop) above was always called regardless of highest precedence.
-								// GetValue has a side effect of calling TryRegisterInheritedProperties.
-								// This tries to keep the original behavior, but it doesn't make sense that we need to do this.
-								// At least for TemplatedParent, this should be re-evaluated once we align TemplatedParent with WinUI.
-								TryRegisterInheritedProperties(force: true);
-							}
+							store.OnParentPropertyChangedCallback(instanceRef, prop, value);
 						}
 					}
 				}
