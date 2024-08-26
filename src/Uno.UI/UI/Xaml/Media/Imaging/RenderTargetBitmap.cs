@@ -26,6 +26,16 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		internal const bool IsImplemented = true;
 #endif
 
+		/// <summary>
+		/// Initializes a new instance of the RenderTargetBitmap class.
+		/// </summary>
+#if !HAS_RENDER_TARGET_BITMAP
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
+#endif
+		public RenderTargetBitmap()
+		{
+		}
+
 #if !HAS_RENDER_TARGET_BITMAP
 		// The partial API that has to be implemented in each platform
 
