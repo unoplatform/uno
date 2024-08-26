@@ -201,20 +201,39 @@ namespace Microsoft.UI.Xaml
 
 		private partial void ReconfigureViewportPropagationPartial();
 
+		#region StretchAffectsMeasure DependencyProperty
+
 		/// <summary>
 		/// Indicates whether stretching (HorizontalAlignment.Stretch and VerticalAlignment.Stretch) should affect the measured size of the FrameworkElement.
 		/// Only set on a FrameworkElement if the parent is a native view whose layouting relies on the values of MeasuredWidth and MeasuredHeight to account for stretching.
 		/// Note that this doesn't take Margins into account.
 		/// </summary>
 		/// <remarks>
-		/// The <see cref="_stretchAffectsMeasureDefault"/> is updated at each <see cref="OnLoadedPartial"/> call, but may
-		/// be overridden by setting this property.
+		/// The <see cref="DependencyPropertyValuePrecedences.DefaultValue"/> is updated at each <see cref="OnLoadedPartial"/> call, but may
+		/// be overridden by an external called as <see cref="DependencyPropertyValuePrecedences.Local"/>.
 		/// </remarks>
 		public bool StretchAffectsMeasure
 		{
-			get => _stretchAffectsMeasure ?? _stretchAffectsMeasureDefault;
-			set => _stretchAffectsMeasure = value;
+			get => (bool)GetValue(StretchAffectsMeasureProperty);
+			set => SetValue(StretchAffectsMeasureProperty, value);
 		}
+
+		public static DependencyProperty StretchAffectsMeasureProperty { get; } =
+			DependencyProperty.Register(nameof(StretchAffectsMeasure), typeof(bool), typeof(FrameworkElement), new FrameworkPropertyMetadata(false));
+
+		internal override bool GetDefaultValue2(DependencyProperty property, out object defaultValue)
+		{
+			if (property == StretchAffectsMeasureProperty)
+			{
+				defaultValue = _stretchAffectsMeasureDefault;
+				return true;
+			}
+
+			defaultValue = null;
+			return false;
+		}
+
+		#endregion
 
 		protected override void OnMeasure(int widthMeasureSpec, int heightMeasureSpec)
 		{

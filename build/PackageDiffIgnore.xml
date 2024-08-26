@@ -1874,8 +1874,6 @@
 		</Fields>
 
 		<Properties>
-			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.FrameworkElement::StretchAffectsMeasureProperty()" reason="Not in WinUI. Made a regular property" />
-			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.FrameworkElement::StretchAffectsMeasureProperty()" reason="Not in WinUI. Made a regular property" />
 		</Properties>
 
 		<Methods>
@@ -1891,9 +1889,6 @@
 			<!-- MarkupExtensions\XamlServiceProvider -->
 			<Member fullName="Microsoft.UI.Xaml.IXamlServiceProvider Uno.UI.Helpers.MarkupHelper.CreateParserContext(System.Object target, Microsoft.UI.Xaml.Markup.ProvideValueTargetProperty property)" reason="Not in WinUI; refactored out" />
 			<Member fullName="Windows.UI.Xaml.IXamlServiceProvider Uno.UI.Helpers.MarkupHelper.CreateParserContext(System.Object target, Windows.UI.Xaml.Markup.ProvideValueTargetProperty property)" reason="Not in WinUI; refactored out" />
-
-			<Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.FrameworkElement.get_StretchAffectsMeasureProperty()" reason="Not in WinUI. Made a regular property" />
-			<Member fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.FrameworkElement.get_StretchAffectsMeasureProperty()" reason="Not in WinUI. Made a regular property" />
 
 		</Methods>
 	</IgnoreSet>
