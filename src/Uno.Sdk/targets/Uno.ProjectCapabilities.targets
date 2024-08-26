@@ -32,6 +32,14 @@
 		<ProjectCapability Include="WindowsUniversalMultiViews"/>
 	</ItemGroup>
 
+	<ItemGroup>
+		<!-- Required since VS 2022 17.4 Preview 1 -->
+		<!-- Moved to root capabilities as Visual Studio doesn't like it in the SingleProject specific capabilities -->
+		<ProjectCapability Include="MauiCore" Exclude="@(ProjectCapability)" />
+		<ProjectCapability Include="Maui" Exclude="@(ProjectCapability)" />
+		<ProjectCapability Include="UseMauiCore" Exclude="@(ProjectCapability)" />
+	</ItemGroup>
+
 	<Import Project="Uno.ProjectCapabilities.WinAppSdk.targets" Condition="$(IsWinAppSdk)" />
 
 	<Import Project="Uno.ProjectCapabilities.Wasm.targets" Condition="$(IsBrowserWasm)" />
