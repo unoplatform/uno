@@ -280,28 +280,30 @@ namespace Microsoft.UI.Xaml
 
 			ValidatePropertyOwner(property);
 
+			var callerRegisteredInheritedProperties = false;
+			if (_properties.DataContextPropertyDetails.Property == property || _properties.TemplatedParentPropertyDetails.Property == property)
+			{
+				// Historically, we didn't have this fast path for default value.
+				// We add this to maintain the original behavior in GetValue(DependencyPropertyDetails, DependencyPropertyValuePrecedences?, bool) overload.
+				// This should be revisited in future.
+				TryRegisterInheritedProperties(force: true);
+				callerRegisteredInheritedProperties = true;
+			}
+
 			if (propertyDetails is null && (precedence is null || precedence == DependencyPropertyValuePrecedences.DefaultValue) && _properties.FindPropertyDetails(property) is null)
 			{
-				if (_properties.DataContextPropertyDetails.Property == property || _properties.TemplatedParentPropertyDetails.Property == property)
-				{
-					// Historically, we didn't have this fast path for default value.
-					// We add this to maintain the original behavior in GetValue(DependencyPropertyDetails, DependencyPropertyValuePrecedences?, bool) overload.
-					// This should be revisited in future.
-					TryRegisterInheritedProperties(force: true);
-				}
-
 				// Performance: Avoid force-creating DependencyPropertyDetails when not needed.
 				return GetDefaultValue(property);
 			}
 
 			propertyDetails ??= _properties.GetPropertyDetails(property);
 
-			return GetValue(propertyDetails, precedence, isPrecedenceSpecific);
+			return GetValue(propertyDetails, precedence, isPrecedenceSpecific, callerRegisteredInheritedProperties);
 		}
 
-		private object? GetValue(DependencyPropertyDetails propertyDetails, DependencyPropertyValuePrecedences? precedence = null, bool isPrecedenceSpecific = false)
+		private object? GetValue(DependencyPropertyDetails propertyDetails, DependencyPropertyValuePrecedences? precedence = null, bool isPrecedenceSpecific = false, bool callerRegisteredInheritedProperties = false)
 		{
-			if (propertyDetails == _properties.DataContextPropertyDetails || propertyDetails == _properties.TemplatedParentPropertyDetails)
+			if (!callerRegisteredInheritedProperties && (propertyDetails == _properties.DataContextPropertyDetails || propertyDetails == _properties.TemplatedParentPropertyDetails))
 			{
 				TryRegisterInheritedProperties(force: true);
 			}
