@@ -163,7 +163,8 @@ namespace Microsoft.UI.Xaml
 		{
 			if (metadata is null)
 			{
-				return new PropertyMetadata(defaultValue: RuntimeHelpers.GetUninitializedObject(propertyType));
+				var defaultValue = propertyType.IsNullable() ? null : RuntimeHelpers.GetUninitializedObject(propertyType);
+				return new PropertyMetadata(defaultValue);
 			}
 			else if (!propertyType.IsNullable() && metadata.DefaultValue is null)
 			{
