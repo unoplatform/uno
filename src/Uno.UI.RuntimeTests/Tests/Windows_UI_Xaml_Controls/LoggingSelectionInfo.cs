@@ -1,156 +1,287 @@
 #if HAS_UNO
-using System.Collections.Generic;
-using Microsoft.UI.Xaml.Data;
-using Windows.Foundation;
-using System.Threading.Tasks;
 using System;
 using System.Collections;
-using Microsoft.UI.Xaml;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using Microsoft.UI.Xaml.Data;
+using Windows.Foundation.Collections;
+using Windows.Foundation;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
-internal class LoggingSelectionInfo : CollectionView, ISelectionInfo
+internal class LoggingSelectionInfo : ICollectionView, ISelectionInfo, IList<object>, INotifyCollectionChanged, INotifyPropertyChanged, IObservableVector<object>
 {
-	public List<string> MethodLog { get; } = new List<string>();
+	private readonly List<object> _collection = new List<object>();
+	private readonly HashSet<int> _selectedIndices = new HashSet<int>();
+	private object _currentItem;
+	private int _currentPosition = -1;
 
-	public LoggingSelectionInfo(IEnumerable collection, bool isGrouped, PropertyPath itemsPath)
-		: base(collection, isGrouped, itemsPath)
+	public LoggingSelectionInfo(IEnumerable<object> items)
 	{
+		_collection.AddRange(items);
+		if (_collection.Count > 0)
+		{
+			_currentItem = _collection[0];
+			_currentPosition = 0;
+		}
 	}
+
+	#region ICollectionView Implementation
+
+	public event CurrentChangingEventHandler CurrentChanging;
+	public event EventHandler<object> CurrentChanged;
+
+	public object CurrentItem => _currentItem;
+
+	public int CurrentPosition => _currentPosition;
+
+	public bool IsCurrentAfterLast => _currentPosition >= _collection.Count;
+
+	public bool IsCurrentBeforeFirst => _currentPosition < 0;
+
+	public bool MoveCurrentTo(object item)
+	{
+		int index = _collection.IndexOf(item);
+		return MoveCurrentToPosition(index);
+	}
+
+	public bool MoveCurrentToPosition(int index)
+	{
+		if (index >= 0 && index < _collection.Count)
+		{
+			if (_currentPosition != index)
+			{
+				OnCurrentChanging();
+				_currentItem = _collection[index];
+				_currentPosition = index;
+				OnCurrentChanged();
+			}
+			return true;
+		}
+		return false;
+	}
+
+	public bool MoveCurrentToFirst() => MoveCurrentToPosition(0);
+
+	public bool MoveCurrentToLast() => MoveCurrentToPosition(_collection.Count - 1);
+
+	public bool MoveCurrentToNext() => MoveCurrentToPosition(_currentPosition + 1);
+
+	public bool MoveCurrentToPrevious() => MoveCurrentToPosition(_currentPosition - 1);
+
+	public Predicate<object> Filter { get; set; }
+
+	public bool CanFilter => Filter != null;
+
+	public bool Contains(object item) => _collection.Contains(item);
+
+	public IComparer<object> SortDescriptions { get; set; }
+
+	public bool CanSort => SortDescriptions != null;
+
+	public IObservableVector<object> CollectionGroups { get; } = new ObservableVector<object>();
+
+	public bool CanGroup => false;
+
+	public object GetItemAt(int index) => _collection[index];
+
+	public int IndexOf(object item) => _collection.IndexOf(item);
+
+	public bool HasMoreItems => false;
+
+	public IAsyncOperation<LoadMoreItemsResult> LoadMoreItemsAsync(uint count)
+	{
+		throw new NotImplementedException("LoadMoreItemsAsync is not implemented.");
+	}
+
+	protected virtual void OnCurrentChanged()
+	{
+		CurrentChanged?.Invoke(this, EventArgs.Empty);
+	}
+
+	protected virtual void OnCurrentChanging()
+	{
+		CurrentChanging?.Invoke(this, new CurrentChangingEventArgs(false));
+	}
+
+	#endregion
+
+	#region ISelectionInfo Implementation
 
 	public void SelectRange(ItemIndexRange itemIndexRange)
 	{
-		MethodLog.Add($"SelectRange({itemIndexRange.FirstIndex}, {itemIndexRange.Length})");
+		for (int i = itemIndexRange.FirstIndex; i < itemIndexRange.FirstIndex + itemIndexRange.Length; i++)
+		{
+			if (i >= 0 && i < _collection.Count)
+			{
+				_selectedIndices.Add(i);
+			}
+		}
+		OnSelectionChanged();
 	}
 
 	public void DeselectRange(ItemIndexRange itemIndexRange)
 	{
-		MethodLog.Add($"DeselectRange({itemIndexRange.FirstIndex}, {itemIndexRange.Length})");
+		for (int i = itemIndexRange.FirstIndex; i < itemIndexRange.FirstIndex + itemIndexRange.Length; i++)
+		{
+			_selectedIndices.Remove(i);
+		}
+		OnSelectionChanged();
 	}
 
 	public bool IsSelected(int index)
 	{
-		MethodLog.Add($"IsSelected({index})");
-		return false;
+		return _selectedIndices.Contains(index);
 	}
 
 	public IReadOnlyList<ItemIndexRange> GetSelectedRanges()
 	{
-		MethodLog.Add("GetSelectedRanges()");
-		return new List<ItemIndexRange>();
+		if (_selectedIndices.Count == 0)
+		{
+			return new List<ItemIndexRange>();
+		}
+
+		List<ItemIndexRange> ranges = new List<ItemIndexRange>();
+		List<int> sortedIndices = new List<int>(_selectedIndices);
+		sortedIndices.Sort();
+
+		int rangeStart = sortedIndices[0];
+		int rangeLength = 1;
+
+		for (int i = 1; i < sortedIndices.Count; i++)
+		{
+			if (sortedIndices[i] == sortedIndices[i - 1] + 1)
+			{
+				rangeLength++;
+			}
+			else
+			{
+				ranges.Add(new ItemIndexRange(rangeStart, (uint)rangeLength));
+				rangeStart = sortedIndices[i];
+				rangeLength = 1;
+			}
+		}
+
+		ranges.Add(new ItemIndexRange(rangeStart, (uint)rangeLength));
+		return ranges;
 	}
 
-	public void LogAndMoveCurrentToPosition(int index)
+	protected virtual void OnSelectionChanged()
 	{
-		MethodLog.Add($"MoveCurrentToPosition({index})");
-		base.MoveCurrentToPosition(index);
+		// Raise collection changed event if necessary
+		OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
 	}
 
-	public void LogAndMoveCurrentTo(object item)
+	#endregion
+
+	#region IList<object> and ICollection<object> Implementation
+
+	public int Count => _collection.Count;
+
+	public bool IsReadOnly => false;
+
+	public object this[int index]
 	{
-		MethodLog.Add($"MoveCurrentTo({item})");
-		base.MoveCurrentTo(item);
+		get => _collection[index];
+		set
+		{
+			if (_collection[index] != value)
+			{
+				_collection[index] = value;
+				OnPropertyChanged($"Item[{index}]");
+			}
+		}
 	}
 
-	public void LogAndMoveCurrentToFirst()
+	public void Add(object item)
 	{
-		MethodLog.Add("MoveCurrentToFirst()");
-		base.MoveCurrentToFirst();
+		_collection.Add(item);
+		OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item));
+		OnVectorChanged(CollectionChange.ItemInserted, _collection.Count - 1);
 	}
 
-	public void LogAndMoveCurrentToLast()
+	public void Insert(int index, object item)
 	{
-		MethodLog.Add("MoveCurrentToLast()");
-		base.MoveCurrentToLast();
+		_collection.Insert(index, item);
+		OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index));
+		OnVectorChanged(CollectionChange.ItemInserted, index);
 	}
 
-	public void LogAndMoveCurrentToNext()
+	public void RemoveAt(int index)
 	{
-		MethodLog.Add("MoveCurrentToNext()");
-		base.MoveCurrentToNext();
+		var removedItem = _collection[index];
+		_collection.RemoveAt(index);
+		OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, removedItem, index));
+		OnVectorChanged(CollectionChange.ItemRemoved, index);
 	}
 
-	public void LogAndMoveCurrentToPrevious()
+	public void Clear()
 	{
-		MethodLog.Add("MoveCurrentToPrevious()");
-		base.MoveCurrentToPrevious();
+		_collection.Clear();
+		OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+		OnVectorChanged(CollectionChange.Reset, 0);
 	}
 
-	private bool IsUsingISelectionInfo => true;
-
-	public void SafeMoveCurrentTo(object item)
+	public void CopyTo(object[] array, int arrayIndex)
 	{
-		if (IsUsingISelectionInfo)
-		{
-			MethodLog.Add("MoveCurrentTo() - Skipped due to ISelectionInfo usage");
-		}
-		else
-		{
-			LogAndMoveCurrentTo(item);
-		}
+		_collection.CopyTo(array, arrayIndex);
 	}
 
-	public void SafeMoveCurrentToPosition(int index)
+	public bool Remove(object item)
 	{
-		if (index == -1)
+		var index = _collection.IndexOf(item);
+		if (index >= 0)
 		{
-			MethodLog.Add("MoveCurrentToPosition() - Skipped due to invalid index (-1)");
-			return;
+			_collection.RemoveAt(index);
+			OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index));
+			OnVectorChanged(CollectionChange.ItemRemoved, index);
+			return true;
 		}
-		if (IsUsingISelectionInfo)
-		{
-			MethodLog.Add("MoveCurrentToPosition() - Skipped due to ISelectionInfo usage");
-		}
-		else
-		{
-			LogAndMoveCurrentToPosition(index);
-		}
+		return false;
 	}
 
-	public void SafeMoveCurrentToFirst()
+	#endregion
+
+	#region IEnumerable Implementation
+
+	public IEnumerator<object> GetEnumerator() => _collection.GetEnumerator();
+
+	IEnumerator IEnumerable.GetEnumerator() => _collection.GetEnumerator();
+
+	#endregion
+
+	#region INotifyCollectionChanged Implementation
+
+	public event NotifyCollectionChangedEventHandler CollectionChanged;
+
+	protected virtual void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
 	{
-		if (IsUsingISelectionInfo)
-		{
-			MethodLog.Add("MoveCurrentToFirst() - Skipped due to ISelectionInfo usage");
-		}
-		else
-		{
-			LogAndMoveCurrentToFirst();
-		}
+		CollectionChanged?.Invoke(this, e);
 	}
 
-	public void SafeMoveCurrentToLast()
+	#endregion
+
+	#region INotifyPropertyChanged Implementation
+
+	public event PropertyChangedEventHandler PropertyChanged;
+
+	protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
 	{
-		if (IsUsingISelectionInfo)
-		{
-			MethodLog.Add("MoveCurrentToLast() - Skipped due to ISelectionInfo usage");
-		}
-		else
-		{
-			LogAndMoveCurrentToLast();
-		}
+		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 	}
 
-	public void SafeMoveCurrentToNext()
+	#endregion
+
+	#region IObservableVector<object> Implementation
+
+	public event VectorChangedEventHandler<object> VectorChanged;
+
+	protected virtual void OnVectorChanged(CollectionChange change, int index)
 	{
-		if (IsUsingISelectionInfo)
-		{
-			MethodLog.Add("MoveCurrentToNext() - Skipped due to ISelectionInfo usage");
-		}
-		else
-		{
-			LogAndMoveCurrentToNext();
-		}
+		VectorChanged?.Invoke(this, new VectorChangedEventArgs(change, (uint)index));
 	}
 
-	public void SafeMoveCurrentToPrevious()
-	{
-		if (IsUsingISelectionInfo)
-		{
-			MethodLog.Add("MoveCurrentToPrevious() - Skipped due to ISelectionInfo usage");
-		}
-		else
-		{
-			LogAndMoveCurrentToPrevious();
-		}
-	}
+	#endregion
 }
 #endif
