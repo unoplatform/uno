@@ -21,6 +21,12 @@ namespace Microsoft.UI.Xaml.Controls
 		private readonly bool _isSkiaTextBox = !FeatureConfiguration.TextBox.UseOverlayOnSkia;
 		private static readonly bool _useInvisibleNativeTextView = OperatingSystem.IsBrowser();
 
+		// On Windows, \u25CF is used as password character.
+		// However, this character can't be retrieved on Android (doesn't exist in any system font)
+		// We use \u2022 instead, which is already the one normally used by Android.
+		// See https://github.com/mozilla/gecko-dev/blob/1d4c27f9f166ce6e967fb0e8c8d6e0795dbbd12e/widget/android/nsLookAndFeel.cpp#L441
+		private static char _passwordChar = OperatingSystem.IsAndroid() ? '\u2022' : '\u25CF';
+
 		public TextBoxView(TextBox textBox)
 		{
 			_textBox = WeakReferencePool.RentWeakReference(this, textBox);
@@ -209,7 +215,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (IsPasswordBox && !_isPasswordRevealed)
 			{
 				// TODO: PasswordChar isn't currently implemented. It should be used here when implemented.
-				DisplayBlock.Text = new string('●', text.Length);
+				DisplayBlock.Text = new string(_passwordChar, text.Length);
 			}
 			else
 			{

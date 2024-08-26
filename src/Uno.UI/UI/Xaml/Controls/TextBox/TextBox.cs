@@ -958,7 +958,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnFocusStateChanged(FocusState oldValue, FocusState newValue, bool initial)
 		{
-			OnFocusStateChangedPartial(newValue);
+			OnFocusStateChangedPartial(newValue, initial);
 
 			if (!initial && newValue == FocusState.Unfocused && _hasTextChangedThisFocusSession)
 			{
@@ -982,7 +982,7 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateVisualState();
 		}
 
-		partial void OnFocusStateChangedPartial(FocusState focusState);
+		partial void OnFocusStateChangedPartial(FocusState focusState, bool initial);
 
 		protected override void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
 		{

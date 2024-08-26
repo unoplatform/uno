@@ -307,7 +307,7 @@ public partial class TextBox
 		}
 	}
 
-	partial void OnFocusStateChangedPartial(FocusState focusState)
+	partial void OnFocusStateChangedPartial(FocusState focusState, bool initial)
 	{
 		TextBoxView?.OnFocusStateChanged(focusState);
 
@@ -324,7 +324,10 @@ public partial class TextBox
 				TrySetCurrentlyTyping(false);
 				_showCaret = false;
 				_timer.Stop();
-				_textBoxNotificationsSingleton?.OnUnfocused(this);
+				if (!initial)
+				{
+					_textBoxNotificationsSingleton?.OnUnfocused(this);
+				}
 			}
 			UpdateDisplaySelection();
 		}
