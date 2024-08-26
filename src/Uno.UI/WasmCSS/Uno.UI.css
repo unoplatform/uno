@@ -135,6 +135,7 @@ embed.uno-frameworkelement.uno-unarranged {
   background-clip: text !important;
   /* overflow:hidden is required for text-overflow: ellipsis to work correctly */
   overflow: hidden;
+  display: inline-flex;
 }
 
 /* This fixes the issue for https://github.com/unoplatform/uno/issues/4563, but caused issues for ui tests */
