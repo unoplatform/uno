@@ -54,10 +54,9 @@
 		<PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="4.8.33" />
 		-->
 	</ItemGroup>
-
 	
-	<Import Project="$(MSBuildThisFileDirectory)../../../../../../build/nuget/*.Skia.Gtk.props" />
-	<Import Project="$(MSBuildThisFileDirectory)../../../../../../build/nuget/*.Skia.Gtk.targets" />
+	<Import Project="..\..\..\..\..\Uno.UI.Runtime.Skia.Gtk\buildTransitive\*.Skia.Gtk.props" />
+	<Import Project="..\..\..\..\..\Uno.UI.Runtime.Skia.Gtk\buildTransitive\*.Skia.Gtk.targets" />
 	<Import Project="$(MSBuildThisFileDirectory)../../../../../../build/nuget/uno.winui.runtime-replace.targets" />
 	<Import Project="$(MSBuildThisFileDirectory)../../../../../SourceGenerators/sourcegenerators.local.props" />
 
