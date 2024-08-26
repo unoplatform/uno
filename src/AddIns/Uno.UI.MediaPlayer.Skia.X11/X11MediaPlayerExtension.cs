@@ -33,6 +33,8 @@ internal class X11MediaPlayerExtension : IMediaPlayerExtension
 	private int _playlistIndex = -1; // -1 if no playlist or empty playlist, otherwise the 0-based index of the current track in the playlist
 	private MediaPlaybackList? _playlist; // only set and used if the current _player.Source is a playlist
 
+	private double _vlcPlayerVolume;
+
 	// the current effective url (e.g. current video in playlist) that is set natively
 	// DO NOT READ OR WRITE THIS. It's only used to RaiseSourceChanged.
 	private Uri? _uri;
@@ -126,11 +128,17 @@ internal class X11MediaPlayerExtension : IMediaPlayerExtension
 		VlcPlayer.Playing += OnPlaying;
 		VlcPlayer.Buffering += OnBuffering;
 		VlcPlayer.Paused += OnPaused;
-		VlcPlayer.VolumeChanged += OnVolumeChanged;
+
+		_vlcPlayerVolume = VlcPlayer.Volume;
 
 		// using the native PositionChanged fires way too frequently (probably every frame) and chokes
 		// the event loop, so we limit this to 60 times a second.
+		// Also, for some reason, subscribing to VolumeChanged, even with an empty lambda, causes
+		// a native crash. Here's the crazy part: this only happens when a debugger is attached.
+		// This does not happen when a debugger is not attached even in debug builds. To work around
+		// this, we poll for the volume in OnTick instead.
 		// VlcPlayer.PositionChanged += OnTimeUpdate;
+		// VlcPlayer.VolumeChanged += OnVolumeChanged;
 		_timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(16) };
 		_timer.Tick += (_, _) => OnTick();
 		_timer.Start();
@@ -335,6 +343,13 @@ internal class X11MediaPlayerExtension : IMediaPlayerExtension
 		_updatingPositionFromNative = true; // RaisePositionChanged will set Position, so we need a way to flag this so we can ignore it
 		Events?.RaisePositionChanged();
 		_updatingPositionFromNative = false;
+
+		var volume = VlcPlayer.Volume;
+		if (_vlcPlayerVolume != volume)
+		{
+			_vlcPlayerVolume = volume;
+			Events?.RaiseVolumeChanged();
+		}
 
 		// This is primarily to update the Buffering status, since libVLC doesn't
 		// expose a BufferingEnded event.
