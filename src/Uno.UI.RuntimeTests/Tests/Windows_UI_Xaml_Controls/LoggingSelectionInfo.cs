@@ -9,7 +9,7 @@ using Windows.Foundation;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
-internal class LoggingSelectionInfo : ICollectionView, ISelectionInfo, IList<object>, INotifyCollectionChanged, INotifyPropertyChanged, IObservableVector<object>
+internal class LoggingSelectionInfo : ICollectionView, ISelectionInfo, IList<object>, INotifyCollectionChanged, INotifyPropertyChanged
 {
 	private readonly List<object> _collection = new List<object>();
 	private readonly HashSet<int> _selectedIndices = new HashSet<int>();
@@ -79,7 +79,7 @@ internal class LoggingSelectionInfo : ICollectionView, ISelectionInfo, IList<obj
 
 	public bool CanSort => SortDescriptions != null;
 
-	public IObservableVector<object> CollectionGroups { get; } = new ObservableVector<object>();
+	public IObservableVector<object> CollectionGroups { get; } = null;
 
 	public bool CanGroup => false;
 
@@ -196,14 +196,12 @@ internal class LoggingSelectionInfo : ICollectionView, ISelectionInfo, IList<obj
 	{
 		_collection.Add(item);
 		OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item));
-		OnVectorChanged(CollectionChange.ItemInserted, _collection.Count - 1);
 	}
 
 	public void Insert(int index, object item)
 	{
 		_collection.Insert(index, item);
 		OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index));
-		OnVectorChanged(CollectionChange.ItemInserted, index);
 	}
 
 	public void RemoveAt(int index)
@@ -211,14 +209,12 @@ internal class LoggingSelectionInfo : ICollectionView, ISelectionInfo, IList<obj
 		var removedItem = _collection[index];
 		_collection.RemoveAt(index);
 		OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, removedItem, index));
-		OnVectorChanged(CollectionChange.ItemRemoved, index);
 	}
 
 	public void Clear()
 	{
 		_collection.Clear();
 		OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
-		OnVectorChanged(CollectionChange.Reset, 0);
 	}
 
 	public void CopyTo(object[] array, int arrayIndex)
@@ -233,7 +229,6 @@ internal class LoggingSelectionInfo : ICollectionView, ISelectionInfo, IList<obj
 		{
 			_collection.RemoveAt(index);
 			OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index));
-			OnVectorChanged(CollectionChange.ItemRemoved, index);
 			return true;
 		}
 		return false;
