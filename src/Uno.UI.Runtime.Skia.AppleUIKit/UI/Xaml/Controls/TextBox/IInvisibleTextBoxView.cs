@@ -21,20 +21,4 @@ public interface IInvisibleTextBoxView : ITextInput
 	void SetTextNative(string text);
 
 	void Select(int start, int length);
-
-	UITextAutocapitalizationType AutocapitalizationType { get; set; }
-
-	UITextAutocorrectionType AutocorrectionType { get; set; }
-
-	UIKeyboardType KeyboardType { get; set; }
-
-	UIKeyboardAppearance KeyboardAppearance { get; set; }
-
-	UIReturnKeyType ReturnKeyType { get; set; }
-
-	bool EnablesReturnKeyAutomatically { get; set; }
-
-	bool SecureTextEntry { get; set; }
-
-	UITextSpellCheckingType SpellCheckingType { get; set; }
 }
