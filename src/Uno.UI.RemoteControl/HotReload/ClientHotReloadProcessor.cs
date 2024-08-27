@@ -70,7 +70,7 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 	{
 		if ((
 				_forcedHotReloadMode is null
-				&& !_supportsLightweightHotReload
+				&& !_supportsPartialHotReload
 				&& !_serverMetadataUpdatesEnabled
 				&& _supportsXamlReader)
 			|| _forcedHotReloadMode == HotReloadMode.XamlReader)
@@ -118,8 +118,8 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 				InitializePartialReload();
 				InitializeXamlReader();
 
-				if (!_serverMetadataUpdatesEnabled
-					&& !_supportsLightweightHotReload
+				if (!_supportsMetadataUpdates
+					&& !_supportsPartialHotReload
 					&& !_supportsXamlReader)
 				{
 					_status.ReportInvalidRuntime();

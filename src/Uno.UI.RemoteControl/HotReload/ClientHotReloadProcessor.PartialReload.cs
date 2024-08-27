@@ -19,10 +19,10 @@ namespace Uno.UI.RemoteControl.HotReload
 	{
 		private Dictionary<string, Type>? _mappedTypes;
 
-		private bool _supportsLightweightHotReload;
+		private bool _supportsPartialHotReload;
 
-		private Task? _updatingTypes;
-		private readonly object _updatingTypesGate = new();
+		private Task? _partialReload;
+		private readonly object _partialReloadGate = new();
 
 		private void InitializePartialReload()
 		{
@@ -30,9 +30,9 @@ namespace Uno.UI.RemoteControl.HotReload
 			var targetFramework = GetMSBuildProperty("TargetFramework");
 			var buildingInsideVisualStudio = GetMSBuildProperty("BuildingInsideVisualStudio");
 
-			_supportsLightweightHotReload =
+			_supportsPartialHotReload =
 				buildingInsideVisualStudio.Equals("true", StringComparison.OrdinalIgnoreCase)
-				&& (_forcedHotReloadMode is null || _forcedHotReloadMode == HotReloadMode.Partial)
+				&& _forcedHotReloadMode is null or HotReloadMode.Partial
 				&& (
 					// As of VS 17.8, when the debugger is attached, mobile targets don't invoke MetadataUpdateHandlers
 					// and both targets are not providing updated types. We simulate parts of this process
@@ -50,7 +50,7 @@ namespace Uno.UI.RemoteControl.HotReload
 
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().Trace($"Partial Hot Reload Enabled:{_supportsLightweightHotReload} " +
+				this.Log().Trace($"Partial Hot Reload Enabled:{_supportsPartialHotReload} " +
 					$"unoRuntimeIdentifier:{unoRuntimeIdentifier} " +
 					$"targetFramework:{targetFramework} " +
 					$"buildingInsideVisualStudio:{targetFramework} " +
@@ -58,14 +58,14 @@ namespace Uno.UI.RemoteControl.HotReload
 					$"IsIssue93860Fixed:{IsIssue93860Fixed()}");
 			}
 
-			_mappedTypes = _supportsLightweightHotReload
+			_mappedTypes = _supportsPartialHotReload
 				? BuildMappedTypes()
 				: new();
 		}
 
 		private async Task PartialReload(FileReload fileReload)
 		{
-			if (!_supportsLightweightHotReload)
+			if (!_supportsPartialHotReload)
 			{
 				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
@@ -90,11 +90,11 @@ namespace Uno.UI.RemoteControl.HotReload
 				return;
 			}
 
-			lock (_updatingTypesGate)
+			lock (_partialReloadGate)
 			{
-				if (_updatingTypes == null || _updatingTypes.Status is TaskStatus.RanToCompletion or TaskStatus.Faulted)
+				if (_partialReload is null or { Status: TaskStatus.RanToCompletion or TaskStatus.Faulted })
 				{
-					_updatingTypes = ObserveUpdateTypeMapping();
+					_partialReload = PerformPartialReload();
 				}
 				else
 				{
@@ -105,10 +105,10 @@ namespace Uno.UI.RemoteControl.HotReload
 				}
 			}
 
-			await _updatingTypes;
+			await _partialReload;
 		}
 
-		private async Task ObserveUpdateTypeMapping()
+		private async Task PerformPartialReload()
 		{
 			var originalMappedTypes = _mappedTypes ?? new();
 			var sw = Stopwatch.StartNew();
