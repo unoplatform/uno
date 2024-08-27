@@ -37,7 +37,7 @@ public abstract partial class GLCanvasElement
 				_owner.Render();
 			}
 			// opengl coordinates go bottom-up, so we concat a matrix to flip horizontally and vertically
-			var flip = new SKMatrix(scaleX: -1, scaleY: -1, skewX: 0, skewY: 0, transX: _owner.Visual.Size.X, transY: _owner.Visual.Size.Y, persp0: 0, persp1: 0, persp2: 1);
+			var flip = new SKMatrix(scaleX: 1, scaleY: -1, skewX: 0, skewY: 0, transX: _owner.Visual.Size.X, transY: _owner.Visual.Size.Y, persp0: 0, persp1: 0, persp2: 1);
 			session.Canvas.Concat(ref flip);
 			session.Canvas.DrawImage(SKImage.FromPixels(_pixmap), new SKRect(0, 0, _owner.Visual.Size.X, _owner.Visual.Size.Y));
 			session.Canvas.Restore();

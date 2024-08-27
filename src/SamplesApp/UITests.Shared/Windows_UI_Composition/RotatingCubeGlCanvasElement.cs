@@ -11,7 +11,7 @@
 
 // https://github.com/dotnet/Silk.NET/tree/c27224cce6b8136224c01d40de2d608879d709b5/examples/CSharp/OpenGL%20Tutorials
 
-#if __SKIA__
+#if __SKIA__ || WINAPPSDK
 using System;
 using System.Diagnostics;
 using System.Numerics;
@@ -22,7 +22,11 @@ using Uno.WinUI.Graphics;
 
 namespace UITests.Shared.Windows_UI_Composition
 {
-	public class RotatingCubeGlCanvasElement() : GLCanvasElement(new Size(1200, 800))
+#if WINAPPSDK
+	public class RotatingCubeGlCanvasElement() : GLCanvasElement(1200, 800, SamplesApp.App.MainWindow)
+#elif __SKIA__
+	public class RotatingCubeGlCanvasElement() : GLCanvasElement(1200, 800)
+#endif
 	{
 		private static BufferObject<float> _vbo;
 		private static BufferObject<uint> _ebo;

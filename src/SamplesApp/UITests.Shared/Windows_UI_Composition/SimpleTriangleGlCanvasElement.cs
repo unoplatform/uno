@@ -1,4 +1,4 @@
-#if __SKIA__
+#if __SKIA__ || WINAPPSDK
 using System;
 using System.Drawing;
 using Microsoft.UI.Xaml.Controls;
@@ -9,7 +9,12 @@ using Uno.WinUI.Graphics;
 namespace UITests.Shared.Windows_UI_Composition
 {
 	// https://learnopengl.com/Getting-started/Hello-Triangle
-	public class SimpleTriangleGlCanvasElement() : GLCanvasElement(new Size(1200, 800))
+	public class SimpleTriangleGlCanvasElement()
+#if __SKIA__
+		: GLCanvasElement(1200, 800)
+#elif WINAPPSDK
+		: GLCanvasElement(1200, 800, SamplesApp.App.MainWindow)
+#endif
 	{
 		private uint _vao;
 		private uint _vbo;
@@ -34,8 +39,10 @@ namespace UITests.Shared.Windows_UI_Composition
 			gl.VertexAttribPointer(0, 3, GLEnum.Float, false, 3 * sizeof(float), (void*)0);
 			gl.EnableVertexAttribArray(0);
 
-			var vertexCode = "#version 330" + Environment.NewLine +
-			"""
+			// string.Empty is added so that the version line is not interpreted as a preprocessor command
+			var vertexCode =
+			$$"""
+			{{string.Empty}}#version 330
 
 			layout (location = 0) in vec3 aPosition;
 			out vec4 vertexColor;
@@ -47,8 +54,10 @@ namespace UITests.Shared.Windows_UI_Composition
 			}
 			""";
 
-			var fragmentCode = "#version 330" + Environment.NewLine +
-			"""
+			// string.Empty is added so that the version line is not interpreted as a preprocessor command
+			var fragmentCode =
+			$$"""
+			{{string.Empty}}#version 330
 
 			out vec4 out_color;
 			in vec4 vertexColor;
@@ -56,7 +65,7 @@ namespace UITests.Shared.Windows_UI_Composition
 			void main()
 			{
 				out_color = vertexColor;
-			}                        
+			}
 			""";
 
 			uint vertexShader = gl.CreateShader(ShaderType.VertexShader);

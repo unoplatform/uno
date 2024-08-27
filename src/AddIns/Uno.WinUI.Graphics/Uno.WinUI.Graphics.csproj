@@ -4,45 +4,35 @@
 			$(NetSkiaPreviousAndCurrent);
 			$(NetPrevious)-windows10.0.19041.0
 		</TargetFrameworks>
-        
+
 		<Nullable>enable</Nullable>
-        
 		<RootNamespace>Uno.WinUI.GLCanvasElement</RootNamespace>
-        
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
-
-	<PropertyGroup>
-<!--		<TargetFramework>$(NetPrevious)-windows10.0.19041.0</TargetFramework>-->
-<!--		<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>-->
-<!--		<RootNamespace>SamplesApp.Windows</RootNamespace>-->
-<!--		<ApplicationManifest>app.manifest</ApplicationManifest>-->
-<!--		<Platforms>x86;x64;ARM64</Platforms>-->
-<!--		<RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>-->
-<!--		<PublishProfile>win-$(Platform).pubxml</PublishProfile>-->
-		<UseWinUI>true</UseWinUI>
-<!--		<EnableMsixTooling>true</EnableMsixTooling>-->
-	</PropertyGroup>
 
 	<Import Project="../../targetframework-override.props" />
 
 	<ItemGroup>
 		<PackageReference Include="Silk.NET.OpenGL" Version="2.16.0" />
+		<PackageReference Include="Uno.Core.Extensions.Logging" Version="4.0.1" />
+		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.1" />
 	</ItemGroup>
 
 	<Choose>
 		<When Condition="$(TargetFrameworks.Contains('windows10'))">
 			<PropertyGroup>
+				<RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
 				<DefineConstants>$(DefineConstants);WINAPPSDK</DefineConstants>
+				<UseRidGraph>true</UseRidGraph>
+				<WindowsPackageType>None</WindowsPackageType>
 			</PropertyGroup>
 			<ItemGroup>
 				<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.5.240227000" />
-				<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.756" />
+				<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.756" PrivateAssets="all" />
 			</ItemGroup>
 		</When>
 		<Otherwise>
 			<ItemGroup>
-				<ProjectReference Include="..\..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />
 				<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Skia.csproj" />
 				<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.Wpf\Uno.UI.Runtime.Skia.Wpf.csproj" />
 				<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.X11\Uno.UI.Runtime.Skia.X11.csproj" />
@@ -55,7 +45,7 @@
 	<Target Name="_UnoRemoveTransitiveWPFDependency" BeforeTargets="_CheckForTransitiveWindowsDesktopDependencies">
 		<ItemGroup>
 			<!--
-			This removes the transitive dependency to WPF which has a requirement to 
+			This removes the transitive dependency to WPF which has a requirement to
 			have net8.0-windows and not net8.0.
 			-->
 			<TransitiveFrameworkReference Remove="Microsoft.WindowsDesktop.App.WPF" />
