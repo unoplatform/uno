@@ -9,7 +9,7 @@ using Windows.Foundation;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
-internal class LoggingSelectionInfo : ICollectionView, ISelectionInfo, IList<object>, INotifyCollectionChanged, INotifyPropertyChanged
+internal class LoggingSelectionInfo : ICollectionView, ISelectionInfo, IList<object>, INotifyCollectionChanged, INotifyPropertyChanged, IObservableVector<object>
 {
 	private readonly List<object> _collection = new List<object>();
 	private readonly HashSet<int> _selectedIndices = new HashSet<int>();
