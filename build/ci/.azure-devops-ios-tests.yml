@@ -149,7 +149,7 @@ jobs:
   - bash: |
       cd $(BUILD.SOURCESDIRECTORY)/src/SamplesApp/SamplesApp.netcoremobile
       dotnet publish \
-        -f net8.0-ios17.0 \
+        -f net8.0-ios17.5 \
         -c Release \
         -p:BuildForTestFlight=true \
         -p:UnoTargetFrameworkOverride=net8.0-ios17.0 \
