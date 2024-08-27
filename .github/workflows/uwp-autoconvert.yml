@@ -81,6 +81,14 @@ jobs:
       run: |
         dotnet workload list
 
+    - name: Workloads restore
+      run: |
+        dotnet workload restore
+
+    - name: Workloads list
+      run: |
+        dotnet workload list
+
     - name: Temporary step
       run: |
         dotnet restore build\filters\Uno.UI-top-projects-for-sync-gen.slnf -p:Configuration=Release -bl
