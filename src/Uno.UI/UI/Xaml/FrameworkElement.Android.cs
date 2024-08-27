@@ -229,8 +229,7 @@ namespace Microsoft.UI.Xaml
 				return true;
 			}
 
-			defaultValue = null;
-			return false;
+			return base.GetDefaultValue2(property, out defaultValue);
 		}
 
 		#endregion

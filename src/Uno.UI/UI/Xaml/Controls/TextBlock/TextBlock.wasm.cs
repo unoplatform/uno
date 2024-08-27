@@ -64,8 +64,7 @@ namespace Microsoft.UI.Xaml.Controls
 				return true;
 			}
 
-			defaultValue = null;
-			return false;
+			return base.GetDefaultValue2(property, out defaultValue);
 		}
 
 		private void ConditionalUpdate(ref bool condition, Action action)
