@@ -28,7 +28,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			};
 
 			TestServices.WindowHelper.WindowContent = listViewBase;
-			await TestServices.WindowHelper.WaitForLoaded(listViewBase);
+			await TestServices.WindowHelper.WaitForIdle();
 
 			// We don't use ActualWidth because of https://github.com/unoplatform/uno/issues/15982
 			var tapTarget = listViewBase.TransformToVisual(null).TransformPoint(new Point(112 * 0.9, listViewBase.ActualHeight / 2));
@@ -39,8 +39,9 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			finger.Release();
 
 			Assert.AreEqual(0, listViewBase.SelectedIndex);
-			Assert.IsTrue(loggingSelectionInfo.IsSelected(0), "The item at index 0 should be selected.");
-			Assert.IsTrue(loggingSelectionInfo.MethodLog.All(m => !m.Contains("MoveCurrent", StringComparison.OrdinalIgnoreCase)));
+			Assert.AreEqual(loggingSelectionInfo.IsSelected(0), false, "Items at any index should not be selected by default.");
+			Assert.AreEqual(loggingSelectionInfo.CurrentPosition, 0, "CurrentPosition should be 0 after the tap.");
+			Assert.AreEqual(loggingSelectionInfo.CurrentItem, items[0], "CurrentItem should be 'Item 1' after the tap.");
 		}
 	}
 }
