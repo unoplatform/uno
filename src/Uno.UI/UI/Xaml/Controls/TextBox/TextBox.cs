@@ -1013,11 +1013,19 @@ namespace Microsoft.UI.Xaml.Controls
 				true;
 #endif
 
-			if (ShouldFocusOnPointerPressed(args) // UWP Captures if the pointer is not Touch
-				&& isPointerCaptureRequired
-				&& CapturePointer(args.Pointer))
+			if (ShouldFocusOnPointerPressed(args)) // UWP Captures if the pointer is not Touch
 			{
-				Focus(FocusState.Pointer);
+				if (isPointerCaptureRequired)
+				{
+					if (CapturePointer(args.Pointer))
+					{
+						Focus(FocusState.Pointer);
+					}
+				}
+				else
+				{
+					Focus(FocusState.Pointer);
+				}
 			}
 
 			args.Handled = true;
