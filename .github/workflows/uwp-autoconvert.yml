@@ -77,10 +77,15 @@ jobs:
         cd $env:GITHUB_WORKSPACE\src\Uno.WinUIRevert
         dotnet run "$env:GITHUB_WORKSPACE"
 
+    - name: Temporary step
+      run: |
+        dotnet restore build\filters\Uno.UI-top-projects-for-sync-gen.slnf -p:Configuration=Release -bl
+
     - name: Run API Sync Tool
       run: |
         cd $env:GITHUB_WORKSPACE\build
         msbuild Uno.UI.Build.csproj /v:m "/p:CombinedConfiguration=Release|AnyCPU" /m /t:RunAPISyncTool /bl
+
     - name: Turn script debugging on
       if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
       run: Set-PSDebug -Trace 1
