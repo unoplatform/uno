@@ -81,22 +81,10 @@ jobs:
       run: |
         dotnet workload list
 
-    - name: Workloads restore
-      run: |
-        dotnet workload install ios android maccatalyst macos maui
-
-    - name: Workloads list
-      run: |
-        dotnet workload list
-
-    - name: Temporary step
-      run: |
-        dotnet restore build\filters\Uno.UI-top-projects-for-sync-gen.slnf -p:Configuration=Release -bl
-
     - name: Run API Sync Tool
       run: |
         cd $env:GITHUB_WORKSPACE\build
-        msbuild Uno.UI.Build.csproj /v:m "/p:CombinedConfiguration=Release|AnyCPU" /m /t:RunAPISyncTool /bl
+        msbuild Uno.UI.Build.csproj /v:m "/p:CombinedConfiguration=Release|AnyCPU" /m /t:RunAPISyncTool /bl:.\artifacts-logs\msbuild.binlog
 
     - name: Turn script debugging on
       if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
@@ -112,3 +100,10 @@ jobs:
     - name: Push to repository
       if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
       run: git push origin $env:GITHUB_REF_NAME`:generated/$env:GITHUB_REF_NAME/uwp-autoconvert -f
+
+    - name: Upload Logs
+      uses: actions/upload-artifact@v2
+      if: always()
+      with:
+        name: logs
+        path: .\artifacts-logs
