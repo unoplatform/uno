@@ -105,6 +105,7 @@ internal sealed class TextInputPlugin
 
 	internal void OnProvideAutofillVirtualStructure(ViewStructure? structure)
 	{
+#if false // Removing temporarily. We'll need to add it back.
 		var textBoxes = AndroidSkiaTextBoxNotificationsProviderSingleton.Instance.LiveTextBoxes;
 		var index = structure!.AddChildCount(textBoxes.Count);
 		var parentId = structure.AutofillId!;
@@ -126,6 +127,7 @@ internal sealed class TextInputPlugin
 			var physicalRect = GetPhysicalRect(textBox);
 			child.SetDimens((int)physicalRect.Left, (int)physicalRect.Top, 0, 0, (int)physicalRect.Width, (int)physicalRect.Height);
 		}
+#endif
 	}
 
 	internal void OnCreateInputConnection(EditorInfo editorInfo)

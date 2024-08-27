@@ -333,11 +333,13 @@ public partial class TextBox
 		}
 	}
 
+#if false // Removing temporarily. We'll need to add it back.
 	// TODO: Discuss this public API.
 	public static void FinishAutofillContext(bool shouldSave)
 	{
 		_textBoxNotificationsSingleton?.FinishAutofillContext(shouldSave);
 	}
+#endif
 
 	partial void SelectPartial(int start, int length)
 	{
