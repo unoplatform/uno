@@ -6,6 +6,7 @@
       "AddIns\\Uno.UI.MSAL\\Uno.UI.MSAL.Skia.csproj",
       "AddIns\\Uno.UI.MediaPlayer.Skia.Gtk\\Uno.UI.MediaPlayer.Skia.Gtk.csproj",
       "AddIns\\Uno.UI.Svg\\Uno.UI.Svg.Skia.csproj",
+      "AddIns\\Uno.WinUI.Graphics\\Uno.WinUI.Graphics.csproj",
       "SamplesApp\\Benchmarks.Shared\\SamplesApp.Benchmarks.shproj",
       "SamplesApp\\SamplesApp.Shared\\SamplesApp.Shared.shproj",
       "SamplesApp\\SamplesApp.Skia.Generic\\SamplesApp.Skia.Generic.csproj",

@@ -1,14 +1,15 @@
-#nullable enable
+﻿#if !WINAPPSDK
 
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Windows.Foundation;
+using Microsoft.UI.Xaml;
 using Silk.NET.Core.Contexts;
 using Silk.NET.OpenGL;
 using Uno.Foundation.Extensibility;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Uno.WinUI.Graphics;
 
 /// <summary>
 /// A <see cref="FrameworkElement"/> that exposes the ability to draw 3D graphics using OpenGL and Silk.NET.
@@ -19,8 +20,6 @@ namespace Microsoft.UI.Xaml.Controls;
 /// </remarks>
 public abstract partial class GLCanvasElement : FrameworkElement
 {
-	internal delegate IntPtr GLGetProcAddress(string proc);
-
 	private const int BytesPerPixel = 4;
 
 	private readonly uint _width;
@@ -98,7 +97,7 @@ public abstract partial class GLCanvasElement : FrameworkElement
 		{
 			_gl = GL.GetApi(nativeContext);
 		}
-		else if (ApiExtensibility.CreateInstance<GLGetProcAddress>(this, out var getProcAddress))
+		else if (ApiExtensibility.CreateInstance<Uno.Graphics.GLGetProcAddress>(this, out var getProcAddress))
 		{
 			_gl = GL.GetApi(getProcAddress.Invoke);
 		}
@@ -203,7 +202,7 @@ public abstract partial class GLCanvasElement : FrameworkElement
 			double.IsNaN(finalSize.Width) ||
 			double.IsNaN(finalSize.Height))
 		{
-			throw new ArgumentException($"{nameof(SKCanvasElement)} cannot be arranged with infinite or NaN values, but received finalSize={finalSize}.");
+			throw new ArgumentException($"{nameof(GLCanvasElement)} cannot be arranged with infinite or NaN values, but received finalSize={finalSize}.");
 		}
 		return finalSize;
 	}
@@ -254,3 +253,4 @@ public abstract partial class GLCanvasElement : FrameworkElement
 		}
 	}
 }
+#endif

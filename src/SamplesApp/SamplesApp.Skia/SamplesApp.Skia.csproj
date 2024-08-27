@@ -32,7 +32,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Silk.NET.OpenGL" Version="2.16.0" />
+		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics\Uno.WinUI.Graphics.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -80,4 +80,14 @@
 	<ItemGroup>
 		<EmbeddedResource Include="..\SamplesApp.Windows\Package.appxmanifest" LogicalName="Package.appxmanifest" />
 	</ItemGroup>
+
+	<Target Name="_UnoRemoveTransitiveWPFDependency" BeforeTargets="_CheckForTransitiveWindowsDesktopDependencies">
+		<ItemGroup>
+			<!--
+			This removes the transitive dependency to WPF which has a requirement to
+			have net8.0-windows and not net8.0.
+			-->
+			<TransitiveFrameworkReference Remove="Microsoft.WindowsDesktop.App.WPF" />
+		</ItemGroup>
+	</Target>
 </Project>

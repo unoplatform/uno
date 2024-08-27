@@ -1,8 +1,10 @@
-#nullable enable
+﻿#if !WINAPPSDK
+
 using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml;
 using SkiaSharp;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Uno.WinUI.Graphics;
 
 public abstract partial class GLCanvasElement
 {
@@ -48,3 +50,5 @@ public abstract partial class GLCanvasElement
 		}
 	}
 }
+
+#endif
