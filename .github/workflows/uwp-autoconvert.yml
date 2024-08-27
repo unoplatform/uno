@@ -84,7 +84,7 @@ jobs:
     - name: Run API Sync Tool
       run: |
         cd $env:GITHUB_WORKSPACE\build
-        msbuild Uno.UI.Build.csproj /v:m "/p:CombinedConfiguration=Release|AnyCPU" /m /t:RunAPISyncTool /bl:.\artifacts-logs\msbuild.binlog
+        msbuild Uno.UI.Build.csproj /v:m "/p:CombinedConfiguration=Release|AnyCPU" /m /t:RunAPISyncTool /bl:$env:GITHUB_WORKSPACE\artifacts-logs\msbuild.binlog
 
     - name: Turn script debugging on
       if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
