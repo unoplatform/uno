@@ -16,12 +16,19 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 	private Rect? _lastClipRect;
 	private bool _layoutDirty = true;
 	private readonly ContentPresenter _presenter;
-	private readonly IntPtr _display;
+
+	private readonly Lazy<IntPtr> _display;
+	private IntPtr Display => _display.Value;
 
 	public X11NativeElementHostingExtension(ContentPresenter contentPresenter)
 	{
 		_presenter = contentPresenter;
-		_display = ((X11XamlRootHost)X11Manager.XamlRootMap.GetHostForRoot(_presenter.XamlRoot!)!).RootX11Window.Display;
+
+		// _presenter.XamlRoot might not be set at the time of construction, so we need to make this lazy.
+		// This implicitly means that we expect that the XamlRoot must be set by the time we need to do any
+		// X11 calls (like attaching).
+		_display = new Lazy<IntPtr>(
+			() => ((X11XamlRootHost)X11Manager.XamlRootMap.GetHostForRoot(_presenter.XamlRoot!)!).RootX11Window.Display);
 	}
 
 	private XamlRoot? XamlRoot => _presenter.XamlRoot;
@@ -34,10 +41,10 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 			&& XamlRoot is { } xamlRoot
 			&& X11Manager.XamlRootMap.GetHostForRoot(xamlRoot) is X11XamlRootHost host)
 		{
-			using var lockDiposable = X11Helper.XLock(_display);
+			using var lockDiposable = X11Helper.XLock(Display);
 
 			host.AttachSubWindow(nativeWindow.WindowId);
-			_ = XLib.XMapWindow(_display, nativeWindow.WindowId);
+			_ = XLib.XMapWindow(Display, nativeWindow.WindowId);
 			_ = X11Helper.XRaiseWindow(host.TopX11Window.Display, host.TopX11Window.Window);
 
 			if (!_hostToNativeElementHosts.TryGetValue(host, out var set))
@@ -61,11 +68,11 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 			&& XamlRoot is { } xamlRoot
 			&& X11Manager.XamlRootMap.GetHostForRoot(xamlRoot) is X11XamlRootHost host)
 		{
-			using var lockDiposable = X11Helper.XLock(_display);
-			_ = XLib.XQueryTree(_display, nativeWindow.WindowId, out IntPtr root, out _, out var children, out _);
+			using var lockDiposable = X11Helper.XLock(Display);
+			_ = XLib.XQueryTree(Display, nativeWindow.WindowId, out IntPtr root, out _, out var children, out _);
 			_ = XLib.XFree(children);
-			_ = X11Helper.XReparentWindow(_display, nativeWindow.WindowId, root, 0, 0);
-			_ = XLib.XSync(_display, false);
+			_ = X11Helper.XReparentWindow(Display, nativeWindow.WindowId, root, 0, 0);
+			_ = XLib.XSync(Display, false);
 
 			var set = _hostToNativeElementHosts[host];
 			set.Remove(this);
@@ -109,15 +116,15 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 			XamlRoot is { } xamlRoot &&
 			X11Manager.XamlRootMap.GetHostForRoot(xamlRoot) is X11XamlRootHost host)
 		{
-			using var lockDiposable = X11Helper.XLock(_display);
+			using var lockDiposable = X11Helper.XLock(Display);
 			if (arrangeRect.Width <= 0 || arrangeRect.Height <= 0)
 			{
 				arrangeRect.Size = new Size(1, 1);
 			}
-			_ = XLib.XResizeWindow(_display, nativeWindow.WindowId, (int)arrangeRect.Width, (int)arrangeRect.Height);
-			_ = X11Helper.XMoveWindow(_display, nativeWindow.WindowId, (int)arrangeRect.X, (int)arrangeRect.Y);
+			_ = XLib.XResizeWindow(Display, nativeWindow.WindowId, (int)arrangeRect.Width, (int)arrangeRect.Height);
+			_ = X11Helper.XMoveWindow(Display, nativeWindow.WindowId, (int)arrangeRect.X, (int)arrangeRect.Y);
 
-			XLib.XSync(_display, false);
+			XLib.XSync(Display, false);
 		}
 	}
 
@@ -125,7 +132,7 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 
 	public void ChangeNativeElementVisibility(object content, bool visible)
 	{
-		// no need to do anything here, X11AirspaceRenderHelper will take care of it automatically
+		// no need to do anything here, airspace clipping logic will take care of it automatically
 	}
 
 	// This doesn't seem to work as most (all?) WMs won't change the opacity for subwindows, only top-level windows
