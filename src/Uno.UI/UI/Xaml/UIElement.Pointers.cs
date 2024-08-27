@@ -267,7 +267,7 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		internal HitTestability GetHitTestVisibility()
 		{
-#if __WASM__ || __SKIA__ || __MACOS__
+#if UNO_HAS_ENHANCED_HIT_TEST_PROPERTY
 			return HitTestVisibility;
 #else
 			// This is a coalesced HitTestVisible and should be unified with it
