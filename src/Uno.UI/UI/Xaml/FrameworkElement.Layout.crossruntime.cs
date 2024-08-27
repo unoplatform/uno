@@ -174,12 +174,19 @@ namespace Microsoft.UI.Xaml
 				// (in situation where implicit style is not present or doesn't define a template setter),
 				// preventing template application.
 				// IsContentPresenterBypassEnabled depends on Template==null, which may have changed since, so we can't use that check here.
-				(this is ContentControl cc && cc.Content == GetFirstChild())
+				(this as ContentControl)?.Content == GetFirstChild()
 			)
 			{
 				var template = GetTemplate();
 				if (template is not null)
 				{
+					// BEGIN Uno-specific
+					// Try to clear the ContentPresenter bypass, because the template may generate some setup
+					// that binds onto the .Content itself, and leads to situation
+					// where the .Content is set as the direct child (with the bypass) for multiple parents.
+					(this as ContentControl)?.ClearContentPresenterBypass();
+					// END Uno-specific
+
 					//SetIsUpdatingBindings(true);
 					var child = ((IFrameworkTemplateInternal)template).LoadContent(this);
 

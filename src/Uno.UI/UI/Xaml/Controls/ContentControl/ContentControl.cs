@@ -515,5 +515,15 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #nullable enable
+
+		internal void ClearContentPresenterBypass()
+		{
+			if (Content is UIElement contentAsUIE && ContentTemplateRoot == contentAsUIE)
+			{
+
+				RemoveChild(contentAsUIE);
+				ContentTemplateRoot = null;
+			}
+		}
 	}
 }
