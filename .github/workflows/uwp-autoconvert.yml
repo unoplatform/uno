@@ -77,6 +77,10 @@ jobs:
         cd $env:GITHUB_WORKSPACE\src\Uno.WinUIRevert
         dotnet run "$env:GITHUB_WORKSPACE"
 
+    - name: Workloads list
+      run: |
+        dotnet workload list
+
     - name: Temporary step
       run: |
         dotnet restore build\filters\Uno.UI-top-projects-for-sync-gen.slnf -p:Configuration=Release -bl
