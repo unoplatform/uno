@@ -83,7 +83,7 @@ jobs:
 
     - name: Workloads restore
       run: |
-        dotnet workload restore
+        dotnet workload restore --project build\filters\Uno.UI-top-projects-for-sync-gen.slnf
 
     - name: Workloads list
       run: |
