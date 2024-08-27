@@ -11,6 +11,10 @@
 		<NoWarn>$(NoWarn);SYSLIB1045;CS1998</NoWarn>
 	</PropertyGroup>
 
+	<ItemGroup Condition="'$(Configuration)' == 'Debug'">
+		<Import Project="../../targetframework-override-noplatform.props" />
+	</ItemGroup>
+
 	<ItemGroup>
 		<PackageReference Include="FluentAssertions" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
