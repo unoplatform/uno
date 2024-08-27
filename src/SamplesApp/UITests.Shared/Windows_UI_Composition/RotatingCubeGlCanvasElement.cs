@@ -15,8 +15,6 @@
 using System;
 using System.Diagnostics;
 using System.Numerics;
-using Microsoft.UI.Xaml.Controls;
-using Size = Windows.Foundation.Size;
 using Silk.NET.OpenGL;
 using Uno.WinUI.Graphics;
 

@@ -127,6 +127,14 @@ public abstract partial class GLCanvasElement
 
 		using (var _ = new GLStateDisposable(_gl, _hdc, _glContext))
 		{
+			if (NativeMethods.wglMakeCurrent(_hdc, _glContext) != 1)
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug("Skipping the disposing step because the window is closing. If it's not closing, then this is unexpected.");
+				}
+				return;
+			}
 			OnDestroy(_gl);
 			_gl.DeleteFramebuffer(_framebuffer);
 			_gl.DeleteTexture(_textureColorBuffer);
