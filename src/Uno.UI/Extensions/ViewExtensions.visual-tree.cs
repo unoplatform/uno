@@ -219,6 +219,18 @@ static partial class ViewExtensions
 	/// </summary>
 	/// <typeparam name="T">The type of descendant to find.</typeparam>
 	/// <param name="reference">Any node of the visual tree</param>
+	/// <remarks>The nodes are visited in depth-first order.</remarks>
+	/// <exception cref="Exception">If the specified node could not be found.</exception>
+	public static T FindFirstDescendantOrThrow<T>(this _View? reference) where T : FrameworkElement => EnumerateDescendants(reference)
+		.OfType<T>()
+		.FirstOrDefault() ??
+		throw new Exception($"Unable to find element: {typeof(T).Name}");
+
+	/// <summary>
+	/// Returns the first descendant of a specified type.
+	/// </summary>
+	/// <typeparam name="T">The type of descendant to find.</typeparam>
+	/// <param name="reference">Any node of the visual tree</param>
 	/// <param name="name">x:Name of the node</param>
 	/// <remarks>The nodes are visited in depth-first order.</remarks>
 	/// <exception cref="Exception">If the specified node could not be found.</exception>
