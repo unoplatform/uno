@@ -10,9 +10,9 @@ uid: Uno.GetStarted.Rider
 > [!IMPORTANT]
 > Depending on the version of Rider you will want to use, here are some additional information that you will want to know:
 >
-> - **Previous Rider (2024.1)**: The Uno Plugin for previous versions of Rider (2024.1) does not support creating Uno Platform projects using the "New Solution" dialog, even if the Uno Platform project template appears. In this case, creating an Uno Platform project is done [using dotnet new](xref:Uno.GetStarted.dotnet-new) and the <a target="_blank" href="https://aka.platform.uno/app-wizard">Uno Platform Live Wizard</a>.
->
 > - **Current Rider (2024.2 and above)**: For the current Rider version, the Uno Platform plugin supports creating Uno Platform projects using the "New Solution" dialog.
+>
+> - **Previous Rider (2024.1)**: The Uno Plugin for previous versions of Rider (2024.1) does not support creating Uno Platform projects using the "New Solution" dialog, even if the Uno Platform project template appears. In this case, creating an Uno Platform project is done [using dotnet new](xref:Uno.GetStarted.dotnet-new) and the <a target="_blank" href="https://aka.platform.uno/app-wizard">Uno Platform Live Wizard</a>.
 
 ## Prerequisites
 
@@ -48,8 +48,6 @@ In Rider, in the **Configure**, **Plugins** menu, open the **Marketplace** tab, 
 ![Visual Studio Installer - .NET desktop development workload](Assets/ide-rider-plugin-search.png)
 
 Then click the install button.
-
----
 
 ## Platform specific setup
 
