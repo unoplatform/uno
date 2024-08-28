@@ -34,11 +34,8 @@ using _View = Microsoft.UI.Xaml.UIElement;
 
 namespace TestRepro
 {
-	[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
 	partial class MainPage : global::Microsoft.UI.Xaml.Controls.Page
 	{
-		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		internal string __checksum() => "09e2aaf9274c57d3e9cf35f1ca51514a3a6916ed";
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_prefix_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
@@ -46,94 +43,82 @@ namespace TestRepro
 		private global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 		private void InitializeComponent()
 		{
-			var __resourceLocator = new global::System.Uri("file:///C:/Project/0/MainPage.xaml");
-			if(global::Uno.UI.ApplicationHelper.IsLoadableComponent(__resourceLocator))
-			{
-				global::Microsoft.UI.Xaml.Application.LoadComponent(this, __resourceLocator);
-				return;
-			}
 			NameScope.SetNameScope(this, __nameScope);
 			var __that = this;
 			base.IsParsing = true;
-			Resources[
-			"ImportantNumber"
-			] = 
-			12d
-			;
-			Resources[
-			"ImportantMessage"
-			] = 
-			"Do more testing"
-			;
-			Resources[
-			"MyTextBlockResource"
-			] = 
-			new global::Microsoft.UI.Xaml.Controls.TextBlock
-			{
-				IsParsing = true,
-				Text = "use me",
-				// Source 0\MainPage.xaml (Line 9:3)
-			}
-			.GenericApply(__that, __nameScope, ((c0, __that, __nameScope) => 
-			{
-				global::Uno.UI.FrameworkElementHelper.SetBaseUri(c0, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d, "file:///C:/Project/0/MainPage.xaml", 9, 3);
-				c0.CreationComplete();
-			}
-			))
-			;
 			// Source 0\MainPage.xaml (Line 1:2)
 			base.Content = 
-			new global::Microsoft.UI.Xaml.Controls.TextBlock
+			new global::Microsoft.UI.Xaml.Controls.StackPanel
 			{
 				IsParsing = true,
-				Text = "Some content",
-				// Source 0\MainPage.xaml (Line 11:4)
+				// Source 0\MainPage.xaml (Line 10:3)
+				Children = 
+				{
+					new global::Microsoft.UI.Xaml.Controls.TextBox
+					{
+						IsParsing = true,
+						// Source 0\MainPage.xaml (Line 11:4)
+					}
+					.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(c0 => 
+					{
+						/* _isTopLevelDictionary:False */
+						__that._component_0 = c0;
+						c0.SetBinding(
+							global::Microsoft.UI.Xaml.Controls.TextBox.TextProperty,
+							new Microsoft.UI.Xaml.Data.Binding()
+							{
+								Mode = global::Microsoft.UI.Xaml.Data.BindingMode.TwoWay,
+							}
+								.BindingApply(___b =>  /*defaultBindModeOneTime MyFooInterface.Name*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, __that, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? ((true, ___tctx.MyFooInterface.Name)) : (false, default), (___ctx, __value) => { if(___ctx is global::TestRepro.MainPage ___tctx) ___tctx.MyFooInterface.Name = (string)global::Microsoft.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof(string), __value); } , new [] {"MyFooInterface.Name"}))
+						);
+						global::Uno.UI.FrameworkElementHelper.SetBaseUri(c0, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+						c0.CreationComplete();
+					}
+					))
+					,
+				}
 			}
-			.GenericApply(__that, __nameScope, ((c1, __that, __nameScope) => 
+			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(c1 => 
 			{
-				global::Uno.UI.FrameworkElementHelper.SetBaseUri(c1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d, "file:///C:/Project/0/MainPage.xaml", 11, 4);
+				global::Uno.UI.FrameworkElementHelper.SetBaseUri(c1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
 				c1.CreationComplete();
 			}
 			))
 			;
 			
 			this
-			.GenericApply(__that, __nameScope, ((c2, __that, __nameScope) => 
+			.GenericApply(((c2) => 
 			{
 				// Source 0\MainPage.xaml (Line 1:2)
 				
 				// WARNING Property c2.base does not exist on {http://schemas.microsoft.com/winfx/2006/xaml/presentation}Page, the namespace is http://www.w3.org/XML/1998/namespace. This error was considered irrelevant by the XamlFileGenerator
 			}
 			))
-			.GenericApply(__that, __nameScope, ((c3, __that, __nameScope) => 
+			.GenericApply(((c3) => 
 			{
-				/* _isTopLevelDictionary:False */
-				__that._component_0 = c3;
 				// Class TestRepro.MainPage
-				global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(c3, global::Microsoft.UI.Xaml.Controls.Page.BackgroundProperty, "ApplicationPageBackgroundThemeBrush", isThemeResourceExtension: true, isHotReloadSupported: true, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-				global::Uno.UI.FrameworkElementHelper.SetBaseUri(c3, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d, "file:///C:/Project/0/MainPage.xaml", 1, 2);
+				global::Uno.UI.FrameworkElementHelper.SetBaseUri(c3, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
 				c3.CreationComplete();
 			}
 			))
 			;
 			OnInitializeCompleted();
 
-			Bindings = ((IMainPage_Bindings)global::Uno.UI.Helpers.TypeMappings.CreateInstance<MainPage_Bindings>(this));
-			global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(__that, "owner", __that);
+			Bindings = new MainPage_Bindings(this);
 			((global::Microsoft.UI.Xaml.FrameworkElement)this).Loading += (s, e) =>
 			{
-				var __that = global::Uno.UI.Helpers.MarkupHelper.GetElementProperty<global::TestRepro.MainPage>(s, "owner");
+				__that.Bindings.Update();
 				__that.Bindings.UpdateResources();
 			}
 			;
 		}
 		partial void OnInitializeCompleted();
-		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder { get; } = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-		private global::Microsoft.UI.Xaml.Controls.Page _component_0
+		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder  = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+		private global::Microsoft.UI.Xaml.Controls.TextBox _component_0
 		{
 			get
 			{
-				return (global::Microsoft.UI.Xaml.Controls.Page)_component_0_Holder.Instance;
+				return (global::Microsoft.UI.Xaml.Controls.TextBox)_component_0_Holder.Instance;
 			}
 			set
 			{
@@ -151,7 +136,6 @@ namespace TestRepro
 		#pragma warning disable 0169 //  Suppress unused field warning in case Bindings is not used.
 		private IMainPage_Bindings Bindings;
 		#pragma warning restore 0169
-		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
 		[global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
 		private class MainPage_Bindings : IMainPage_Bindings
 		{
@@ -174,15 +158,36 @@ namespace TestRepro
 			void IMainPage_Bindings.Update()
 			{
 				var owner = Owner;
+				owner._component_0.ApplyXBind();
 			}
 			void IMainPage_Bindings.UpdateResources()
 			{
 				var owner = Owner;
-				owner._component_0.UpdateResourceBindings();
+				owner._component_0.UpdateResourceBindings(resourceContextProvider: null);
 			}
 			void IMainPage_Bindings.StopTracking()
 			{
 			}
+		}
+	}
+}
+namespace MyProject
+{
+	static class MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions
+	{
+		public delegate void XamlApplyHandler0(global::Microsoft.UI.Xaml.Controls.TextBox instance);
+		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+		public static global::Microsoft.UI.Xaml.Controls.TextBox MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Microsoft.UI.Xaml.Controls.TextBox instance, XamlApplyHandler0 handler)
+		{
+			handler(instance);
+			return instance;
+		}
+		public delegate void XamlApplyHandler1(global::Microsoft.UI.Xaml.Controls.StackPanel instance);
+		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+		public static global::Microsoft.UI.Xaml.Controls.StackPanel MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Microsoft.UI.Xaml.Controls.StackPanel instance, XamlApplyHandler1 handler)
+		{
+			handler(instance);
+			return instance;
 		}
 	}
 }
