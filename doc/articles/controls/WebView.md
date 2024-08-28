@@ -2,7 +2,11 @@
 
 > Uno Platform supports two `WebView` controls - a legacy `WebView` and a modernized `WebView2` control. For new development, we strongly recommend `WebView2` as it will get further improvements in the future.
 
+<<<<<<< HEAD
 `WebView2` is currently supported on Windows, Android, iOS, and macOS.
+=======
+`WebView2` is currently supported on Windows, Android, iOS, macOS (Catalyst), and Skia WPF.
+>>>>>>> ca34d55292 (docs: Specify macOS support for WebView2)
 
 ## Basic usage
 
@@ -58,7 +62,7 @@ function postWebViewMessage(message){
             // Android
             unoWebView.postMessage(JSON.stringify(message));
         } else if (window.hasOwnProperty("webkit") && typeof webkit.messageHandlers !== undefined) {
-            // iOS and macOS
+            // iOS and macOS (Catalyst)
             webkit.messageHandlers.unoWebView.postMessage(JSON.stringify(message));
         }
     }
