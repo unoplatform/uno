@@ -4430,8 +4430,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						}
 					}
 
-					if (currentType is null)
-						throw new InvalidOperationException($"Unable to find member [{part}] on type [{currentType}]");
+					throw new InvalidOperationException($"Unable to find member [{part}] on type [{currentType}]");
 				}
 
 				if (isIndexer)
