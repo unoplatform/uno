@@ -13,13 +13,6 @@ using Uno.Logging;
 
 namespace Uno.WinUI.Graphics;
 
-/// <summary>
-/// A <see cref="FrameworkElement"/> that exposes the ability to draw 3D graphics using OpenGL and Silk.NET.
-/// </summary>
-/// <remarks>
-/// This is only available on skia-based targets and when running with hardware acceleration.
-/// This is currently only available on the WPF and X11 targets.
-/// </remarks>
 public abstract partial class GLCanvasElement
 {
 	internal interface INativeOpenGLWrapper
@@ -205,76 +198,76 @@ public abstract partial class GLCanvasElement
 	}
 
 	private static class NativeMethods
-    {
-    	[DllImport("user32.dll")]
-    	internal static extern IntPtr GetDC(IntPtr hWnd);
+	{
+		[DllImport("user32.dll")]
+		internal static extern IntPtr GetDC(IntPtr hWnd);
 
-    	[DllImport("gdi32.dll")]
-    	internal static extern int ChoosePixelFormat(IntPtr hdc, ref PIXELFORMATDESCRIPTOR ppfd);
+		[DllImport("gdi32.dll")]
+		internal static extern int ChoosePixelFormat(IntPtr hdc, ref PIXELFORMATDESCRIPTOR ppfd);
 
-    	[DllImport("gdi32.dll")]
-    	internal static extern int SetPixelFormat(IntPtr hdc, int iPixelFormat, ref PIXELFORMATDESCRIPTOR ppfd);
+		[DllImport("gdi32.dll")]
+		internal static extern int SetPixelFormat(IntPtr hdc, int iPixelFormat, ref PIXELFORMATDESCRIPTOR ppfd);
 
-    	[DllImport("gdi32.dll")]
-    	internal static extern int DescribePixelFormat(IntPtr hdc, int iPixelFormat, uint nBytes, ref PIXELFORMATDESCRIPTOR ppfd);
+		[DllImport("gdi32.dll")]
+		internal static extern int DescribePixelFormat(IntPtr hdc, int iPixelFormat, uint nBytes, ref PIXELFORMATDESCRIPTOR ppfd);
 
-	    [DllImport("opengl32.dll", CharSet = CharSet.Ansi, SetLastError = true, ExactSpelling = true)]
-	    public static extern IntPtr wglGetProcAddress(string functionName);
+		[DllImport("opengl32.dll", CharSet = CharSet.Ansi, SetLastError = true, ExactSpelling = true)]
+		public static extern IntPtr wglGetProcAddress(string functionName);
 
-    	[DllImport("opengl32.dll")]
-    	internal static extern IntPtr wglCreateContext(IntPtr hdc);
+		[DllImport("opengl32.dll")]
+		internal static extern IntPtr wglCreateContext(IntPtr hdc);
 
-    	[DllImport("opengl32.dll")]
-    	public static extern IntPtr wglGetCurrentDC();
+		[DllImport("opengl32.dll")]
+		public static extern IntPtr wglGetCurrentDC();
 
-	    [DllImport("opengl32.dll")]
-	    public static extern IntPtr wglGetCurrentContext();
+		[DllImport("opengl32.dll")]
+		public static extern IntPtr wglGetCurrentContext();
 
-    	[DllImport("opengl32.dll")]
-    	internal static extern int wglDeleteContext(IntPtr hglrc);
+		[DllImport("opengl32.dll")]
+		internal static extern int wglDeleteContext(IntPtr hglrc);
 
-    	[DllImport("opengl32.dll")]
-    	internal static extern int wglMakeCurrent(IntPtr hdc, IntPtr hglrc);
+		[DllImport("opengl32.dll")]
+		internal static extern int wglMakeCurrent(IntPtr hdc, IntPtr hglrc);
 
-    	[StructLayout(LayoutKind.Sequential)]
-    	internal struct PIXELFORMATDESCRIPTOR
-    	{
-    		public ushort nSize;
-    		public ushort nVersion;
-    		public uint dwFlags;
-    		public byte iPixelType;
-    		public byte cColorBits;
-    		public byte cRedBits;
-    		public byte cRedShift;
-    		public byte cGreenBits;
-    		public byte cGreenShift;
-    		public byte cBlueBits;
-    		public byte cBlueShift;
-    		public byte cAlphaBits;
-    		public byte cAlphaShift;
-    		public byte cAccumBits;
-    		public byte cAccumRedBits;
-    		public byte cAccumGreenBits;
-    		public byte cAccumBlueBits;
-    		public byte cAccumAlphaBits;
-    		public byte cDepthBits;
-    		public byte cStencilBits;
-    		public byte cAuxBuffers;
-    		public byte iLayerType;
-    		public byte bReserved;
-    		public uint dwLayerMask;
-    		public uint dwVisibleMask;
-    		public uint dwDamageMask;
-    	}
+		[StructLayout(LayoutKind.Sequential)]
+		internal struct PIXELFORMATDESCRIPTOR
+		{
+			public ushort nSize;
+			public ushort nVersion;
+			public uint dwFlags;
+			public byte iPixelType;
+			public byte cColorBits;
+			public byte cRedBits;
+			public byte cRedShift;
+			public byte cGreenBits;
+			public byte cGreenShift;
+			public byte cBlueBits;
+			public byte cBlueShift;
+			public byte cAlphaBits;
+			public byte cAlphaShift;
+			public byte cAccumBits;
+			public byte cAccumRedBits;
+			public byte cAccumGreenBits;
+			public byte cAccumBlueBits;
+			public byte cAccumAlphaBits;
+			public byte cDepthBits;
+			public byte cStencilBits;
+			public byte cAuxBuffers;
+			public byte iLayerType;
+			public byte bReserved;
+			public uint dwLayerMask;
+			public uint dwVisibleMask;
+			public uint dwDamageMask;
+		}
 
-    	internal const int PFD_DRAW_TO_WINDOW = 0x00000004;
-    	internal const int PFD_SUPPORT_OPENGL = 0x00000020;
-    	internal const int PFD_DOUBLEBUFFER = 0x00000001;
-    	internal const int PFD_TYPE_RGBA = 0;
+		internal const int PFD_DRAW_TO_WINDOW = 0x00000004;
+		internal const int PFD_SUPPORT_OPENGL = 0x00000020;
+		internal const int PFD_DOUBLEBUFFER = 0x00000001;
+		internal const int PFD_TYPE_RGBA = 0;
 
-    	internal const int PFD_MAIN_PLANE = 0;
-    	internal const int WGL_SWAP_MAIN_PLANE = 1;
-    }
+		internal const int PFD_MAIN_PLANE = 0;
+		internal const int WGL_SWAP_MAIN_PLANE = 1;
+	}
 }
 
 #endif
