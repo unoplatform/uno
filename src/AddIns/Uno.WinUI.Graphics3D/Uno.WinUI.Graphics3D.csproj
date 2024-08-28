@@ -30,6 +30,10 @@
 				<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.5.240227000" />
 				<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.756" PrivateAssets="all" />
 				<PackageReference Include="Uno.Core.Extensions.Disposables" Version="4.0.1" />
+
+				<Compile Include="..\..\Uno.UI.Runtime.Skia.Wpf\Rendering\WindowsRenderingNativeMethods.cs" />
+				<Compile Include="..\..\Uno.UI.Runtime.Skia.Wpf\Extensions\WpfNativeOpenGLWrapper.cs" />
+				<Compile Include="..\..\Uno.UI\Graphics\INativeOpenGLWrapper.cs" />
 			</ItemGroup>
 		</When>
 		<Otherwise>

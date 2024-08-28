@@ -7,7 +7,6 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Silk.NET.OpenGL;
-using Buffer = Windows.Storage.Streams.Buffer;
 
 #if WINAPPSDK
 using Microsoft.Extensions.Logging;
@@ -18,6 +17,7 @@ using Uno.Logging;
 using Uno.Foundation.Extensibility;
 using Uno.Graphics;
 using Uno.UI.Dispatching;
+using Buffer = Windows.Storage.Streams.Buffer;
 #endif
 
 namespace Uno.WinUI.Graphics3D;
@@ -33,7 +33,7 @@ public abstract partial class GLCanvasElement : Grid
 {
 	private const int BytesPerPixel = 4;
 
-	private INativeOpenGLWrapper _nativeOpenGlWrapper;
+	private readonly INativeOpenGLWrapper _nativeOpenGlWrapper;
 
 	private readonly uint _width;
 	private readonly uint _height;
@@ -183,7 +183,7 @@ public abstract partial class GLCanvasElement : Grid
 		using (new GLStateDisposable(this))
 		{
 #if WINAPPSDK
-			if (NativeMethods.wglGetCurrentContext() == 0)
+			if (WindowsRenderingNativeMethods.wglGetCurrentContext() == 0)
 			{
 				if (this.Log().IsEnabled(LogLevel.Debug))
 				{

@@ -1,40 +1,68 @@
 #nullable enable
 
+
 using System;
 using System.Runtime.InteropServices;
-using System.Windows.Interop;
-using Microsoft.UI.Xaml;
 using Silk.NET.Core.Contexts;
 using Silk.NET.Core.Loader;
 using Silk.NET.OpenGL;
+
+#if WINAPPSDK
+using Microsoft.UI.Xaml;
+using Microsoft.Extensions.Logging;
+using Uno.Disposables;
+using Uno.Extensions;
+using Uno.Logging;
+#else
+using System.Windows.Interop;
+using Microsoft.UI.Xaml;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.Graphics;
 using Uno.UI.Runtime.Skia.Wpf.Rendering;
 using WpfWindow = System.Windows.Window;
+#endif
 
+#if WINAPPSDK
+using WpfRenderingNativeMethods = Uno.WinUI.Graphics3D.WindowsRenderingNativeMethods;
+#else
+#endif
+
+#if WINAPPSDK
+namespace Uno.WinUI.Graphics3D;
+#else
 namespace Uno.UI.Runtime.Skia.Wpf.Extensions;
+#endif
 
-internal class WpfNativeOpenGLWrapper : INativeOpenGLWrapper
+#if WINAPPSDK
+internal class WinUINativeOpenGLWrapper(Func<Window> getWindowFunc)
+#else
+internal class WpfNativeOpenGLWrapper
+#endif
+	: INativeOpenGLWrapper
 {
 	private nint _hdc;
 	private nint _glContext;
 
 	public void CreateContext(UIElement element)
 	{
+#if WINAPPSDK
+		var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(getWindowFunc());
+#else
 		if (element.XamlRoot?.HostWindow?.NativeWindow is not WpfWindow wpfWindow)
 		{
 			throw new InvalidOperationException($"The XamlRoot and its NativeWindow must be initialized on the element before calling {nameof(CreateContext)}.");
 		}
 		var hwnd = new WindowInteropHelper(wpfWindow).Handle;
+#endif
 
-		_hdc = WpfRenderingNativeMethods.GetDC(hwnd);
+		_hdc = WindowsRenderingNativeMethods.GetDC(hwnd);
 
-		WpfRenderingNativeMethods.PIXELFORMATDESCRIPTOR pfd = new();
+		WindowsRenderingNativeMethods.PIXELFORMATDESCRIPTOR pfd = new();
 		pfd.nSize = (ushort)Marshal.SizeOf(pfd);
 		pfd.nVersion = 1;
-		pfd.dwFlags = WpfRenderingNativeMethods.PFD_DRAW_TO_WINDOW | WpfRenderingNativeMethods.PFD_SUPPORT_OPENGL | WpfRenderingNativeMethods.PFD_DOUBLEBUFFER;
-		pfd.iPixelType = WpfRenderingNativeMethods.PFD_TYPE_RGBA;
+		pfd.dwFlags = WindowsRenderingNativeMethods.PFD_DRAW_TO_WINDOW | WindowsRenderingNativeMethods.PFD_SUPPORT_OPENGL | WindowsRenderingNativeMethods.PFD_DOUBLEBUFFER;
+		pfd.iPixelType = WindowsRenderingNativeMethods.PFD_TYPE_RGBA;
 		pfd.cColorBits = 32;
 		pfd.cRedBits = 8;
 		pfd.cGreenBits = 8;
@@ -42,9 +70,9 @@ internal class WpfNativeOpenGLWrapper : INativeOpenGLWrapper
 		pfd.cAlphaBits = 8;
 		pfd.cDepthBits = 16;
 		pfd.cStencilBits = 1; // anything > 0 is fine, we will most likely get 8
-		pfd.iLayerType = WpfRenderingNativeMethods.PFD_MAIN_PLANE;
+		pfd.iLayerType = WindowsRenderingNativeMethods.PFD_MAIN_PLANE;
 
-		var pixelFormat = WpfRenderingNativeMethods.ChoosePixelFormat(_hdc, ref pfd);
+		var pixelFormat = WindowsRenderingNativeMethods.ChoosePixelFormat(_hdc, ref pfd);
 
 		// To inspect the chosen pixel format:
 		// WpfRenderingNativeMethods.PIXELFORMATDESCRIPTOR temp_pfd = default;
@@ -59,7 +87,7 @@ internal class WpfNativeOpenGLWrapper : INativeOpenGLWrapper
 			throw new InvalidOperationException("ChoosePixelFormat failed");
 		}
 
-		if (WpfRenderingNativeMethods.SetPixelFormat(_hdc, pixelFormat, ref pfd) == 0)
+		if (WindowsRenderingNativeMethods.SetPixelFormat(_hdc, pixelFormat, ref pfd) == 0)
 		{
 			if (this.Log().IsEnabled(LogLevel.Error))
 			{
@@ -68,7 +96,7 @@ internal class WpfNativeOpenGLWrapper : INativeOpenGLWrapper
 			throw new InvalidOperationException("ChoosePixelFormat failed");
 		}
 
-		_glContext = WpfRenderingNativeMethods.wglCreateContext(_hdc);
+		_glContext = WindowsRenderingNativeMethods.wglCreateContext(_hdc);
 
 		if (_glContext == IntPtr.Zero)
 		{
@@ -80,29 +108,29 @@ internal class WpfNativeOpenGLWrapper : INativeOpenGLWrapper
 		}
 	}
 
-	public object CreateGLSilkNETHandle() => GL.GetApi(new WpfGlNativeContext());
+	public object CreateGLSilkNETHandle() => GL.GetApi(new WindowsGlNativeContext());
 
 	public void DestroyContext()
 	{
-		WpfRenderingNativeMethods.wglDeleteContext(_glContext);
+		WindowsRenderingNativeMethods.wglDeleteContext(_glContext);
 		_glContext = default;
 		_hdc = default;
 	}
 
 	public IDisposable MakeCurrent()
 	{
-		var glContext = WpfRenderingNativeMethods.wglGetCurrentContext();
-		var dc = WpfRenderingNativeMethods.wglGetCurrentDC();
-		WpfRenderingNativeMethods.wglMakeCurrent(_hdc, _glContext);
-		return Disposable.Create(() => WpfRenderingNativeMethods.wglMakeCurrent(dc, glContext));
+		var glContext = WindowsRenderingNativeMethods.wglGetCurrentContext();
+		var dc = WindowsRenderingNativeMethods.wglGetCurrentDC();
+		WindowsRenderingNativeMethods.wglMakeCurrent(_hdc, _glContext);
+		return Disposable.Create(() => WindowsRenderingNativeMethods.wglMakeCurrent(dc, glContext));
 	}
 
 	// https://sharovarskyi.com/blog/posts/csharp-win32-opengl-silknet/
-	private class WpfGlNativeContext : INativeContext
+	private class WindowsGlNativeContext : INativeContext
 	{
 		private readonly UnmanagedLibrary _l;
 
-		public WpfGlNativeContext()
+		public WindowsGlNativeContext()
 		{
 			_l = new UnmanagedLibrary("opengl32.dll");
 			if (_l.Handle == IntPtr.Zero)
@@ -118,7 +146,7 @@ internal class WpfNativeOpenGLWrapper : INativeOpenGLWrapper
 				return true;
 			}
 
-			addr = WpfRenderingNativeMethods.wglGetProcAddress(proc);
+			addr = WindowsRenderingNativeMethods.wglGetProcAddress(proc);
 			return addr != IntPtr.Zero;
 		}
 

@@ -3,9 +3,13 @@
 using System;
 using System.Runtime.InteropServices;
 
+#if WINAPPSDK
+namespace Uno.WinUI.Graphics3D;
+#else
 namespace Uno.UI.Runtime.Skia.Wpf.Rendering;
+#endif
 
-internal static class WpfRenderingNativeMethods
+internal static class WindowsRenderingNativeMethods
 {
 	[DllImport("user32.dll")]
 	internal static extern IntPtr GetDC(IntPtr hWnd);

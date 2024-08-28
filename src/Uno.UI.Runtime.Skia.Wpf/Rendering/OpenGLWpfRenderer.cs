@@ -72,14 +72,14 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 		_hwnd = hwnd;
 
 		// Get the device context for the window
-		_hdc = WpfRenderingNativeMethods.GetDC(_hwnd);
+		_hdc = WindowsRenderingNativeMethods.GetDC(_hwnd);
 
 		// Set the pixel format
-		WpfRenderingNativeMethods.PIXELFORMATDESCRIPTOR pfd = new();
+		WindowsRenderingNativeMethods.PIXELFORMATDESCRIPTOR pfd = new();
 		pfd.nSize = (ushort)Marshal.SizeOf(pfd);
 		pfd.nVersion = 1;
-		pfd.dwFlags = WpfRenderingNativeMethods.PFD_DRAW_TO_WINDOW | WpfRenderingNativeMethods.PFD_SUPPORT_OPENGL | WpfRenderingNativeMethods.PFD_DOUBLEBUFFER;
-		pfd.iPixelType = WpfRenderingNativeMethods.PFD_TYPE_RGBA;
+		pfd.dwFlags = WindowsRenderingNativeMethods.PFD_DRAW_TO_WINDOW | WindowsRenderingNativeMethods.PFD_SUPPORT_OPENGL | WindowsRenderingNativeMethods.PFD_DOUBLEBUFFER;
+		pfd.iPixelType = WindowsRenderingNativeMethods.PFD_TYPE_RGBA;
 		pfd.cColorBits = 32;
 		pfd.cRedBits = 8;
 		pfd.cGreenBits = 8;
@@ -87,10 +87,10 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 		pfd.cAlphaBits = 8;
 		pfd.cDepthBits = 16;
 		pfd.cStencilBits = 1; // anything > 0 is fine, we will most likely get 8
-		pfd.iLayerType = WpfRenderingNativeMethods.PFD_MAIN_PLANE;
+		pfd.iLayerType = WindowsRenderingNativeMethods.PFD_MAIN_PLANE;
 
 		// Choose the best matching pixel format
-		_pixelFormat = WpfRenderingNativeMethods.ChoosePixelFormat(_hdc, ref pfd);
+		_pixelFormat = WindowsRenderingNativeMethods.ChoosePixelFormat(_hdc, ref pfd);
 
 		// To inspect the chosen pixel format:
 		// NativeMethods.PIXELFORMATDESCRIPTOR temp_pfd = default;
@@ -107,7 +107,7 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 		}
 
 		// Set the pixel format for the device context
-		if (WpfRenderingNativeMethods.SetPixelFormat(_hdc, _pixelFormat, ref pfd) == 0)
+		if (WindowsRenderingNativeMethods.SetPixelFormat(_hdc, _pixelFormat, ref pfd) == 0)
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
@@ -118,7 +118,7 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 		}
 
 		// Create the OpenGL context
-		_glContext = WpfRenderingNativeMethods.wglCreateContext(_hdc);
+		_glContext = WindowsRenderingNativeMethods.wglCreateContext(_hdc);
 
 		if (_glContext == IntPtr.Zero)
 		{
@@ -131,10 +131,10 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 		}
 
 #pragma warning disable CA1806 // Do not ignore method results
-		WpfRenderingNativeMethods.wglMakeCurrent(_hdc, _glContext);
+		WindowsRenderingNativeMethods.wglMakeCurrent(_hdc, _glContext);
 #pragma warning restore CA1806 // Do not ignore method results
 
-		var version = WpfRenderingNativeMethods.GetOpenGLVersion();
+		var version = WindowsRenderingNativeMethods.GetOpenGLVersion();
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
@@ -143,7 +143,7 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 
 
 #pragma warning disable CA1806 // Do not ignore method results
-		WpfRenderingNativeMethods.wglMakeCurrent(_hdc, _glContext);
+		WindowsRenderingNativeMethods.wglMakeCurrent(_hdc, _glContext);
 #pragma warning restore CA1806 // Do not ignore method results
 
 		return TryCreateGRGLContext(out _grContext);
@@ -186,7 +186,7 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 		}
 
 #pragma warning disable CA1806 // Do not ignore method results
-		WpfRenderingNativeMethods.wglMakeCurrent(_hdc, _glContext);
+		WindowsRenderingNativeMethods.wglMakeCurrent(_hdc, _glContext);
 #pragma warning restore CA1806 // Do not ignore method results
 
 		if (_renderTarget == null || _surface == null || _renderTarget.Width != width || _renderTarget.Height != height)
@@ -218,7 +218,7 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 			}
 		}
 
-		WpfRenderingNativeMethods.glClear(WpfRenderingNativeMethods.GL_COLOR_BUFFER_BIT | WpfRenderingNativeMethods.GL_STENCIL_BUFFER_BIT | WpfRenderingNativeMethods.GL_DEPTH_BUFFER_BIT);
+		WindowsRenderingNativeMethods.glClear(WindowsRenderingNativeMethods.GL_COLOR_BUFFER_BIT | WindowsRenderingNativeMethods.GL_STENCIL_BUFFER_BIT | WindowsRenderingNativeMethods.GL_DEPTH_BUFFER_BIT);
 
 		var canvas = _surface.Canvas;
 
@@ -240,7 +240,7 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 		if (_backBuffer != null)
 		{
 			_backBuffer.Lock();
-			WpfRenderingNativeMethods.glReadPixels(0, 0, width, height, WpfRenderingNativeMethods.GL_BGRA_EXT, WpfRenderingNativeMethods.GL_UNSIGNED_BYTE, _backBuffer.BackBuffer);
+			WindowsRenderingNativeMethods.glReadPixels(0, 0, width, height, WindowsRenderingNativeMethods.GL_BGRA_EXT, WindowsRenderingNativeMethods.GL_UNSIGNED_BYTE, _backBuffer.BackBuffer);
 			_backBuffer.AddDirtyRect(new Int32Rect(0, 0, width, height));
 			_backBuffer.Unlock();
 
@@ -252,9 +252,9 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 
 	private (int framebuffer, int stencil, int samples) GetGLBuffers()
 	{
-		WpfRenderingNativeMethods.glGetIntegerv(WpfRenderingNativeMethods.GL_FRAMEBUFFER_BINDING, out var framebuffer);
-		WpfRenderingNativeMethods.glGetIntegerv(WpfRenderingNativeMethods.GL_STENCIL_BITS, out var stencil);
-		WpfRenderingNativeMethods.glGetIntegerv(WpfRenderingNativeMethods.GL_SAMPLES, out var samples);
+		WindowsRenderingNativeMethods.glGetIntegerv(WindowsRenderingNativeMethods.GL_FRAMEBUFFER_BINDING, out var framebuffer);
+		WindowsRenderingNativeMethods.glGetIntegerv(WindowsRenderingNativeMethods.GL_STENCIL_BITS, out var stencil);
+		WindowsRenderingNativeMethods.glGetIntegerv(WindowsRenderingNativeMethods.GL_SAMPLES, out var samples);
 
 		return (framebuffer, stencil, samples);
 	}
@@ -294,8 +294,8 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 	{
 		// Cleanup resources
 #pragma warning disable CA1806 // Do not ignore method results
-		WpfRenderingNativeMethods.wglDeleteContext(_glContext);
-		WpfRenderingNativeMethods.ReleaseDC(_hwnd, _hdc);
+		WindowsRenderingNativeMethods.wglDeleteContext(_glContext);
+		WindowsRenderingNativeMethods.ReleaseDC(_hwnd, _hdc);
 #pragma warning restore CA1806 // Do not ignore method results
 
 		_glContext = 0;
