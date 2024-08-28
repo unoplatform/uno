@@ -32,12 +32,6 @@ namespace Microsoft.UI.Xaml
 	/// </summary>
 	public partial class PropertyMetadata
 	{
-		private bool _isDefaultValueSet;
-		private object _defaultValue;
-
-		private bool _isCoerceValueCallbackSet;
-		private CoerceValueCallback _coerceValueCallback;
-
 		internal PropertyMetadata() { }
 
 		public PropertyMetadata(
@@ -125,61 +119,13 @@ namespace Microsoft.UI.Xaml
 			BackingFieldUpdateCallback = backingFieldUpdateCallback;
 		}
 
-		public object DefaultValue
-		{
-			get => _defaultValue;
-			internal set
-			{
-				_defaultValue = value;
-				_isDefaultValueSet = true;
-			}
-		}
+		public object DefaultValue { get; }
 
 		public PropertyChangedCallback PropertyChangedCallback { get; internal set; }
 
-		internal CoerceValueCallback CoerceValueCallback
-		{
-			get => _coerceValueCallback;
-			set
-			{
-				_coerceValueCallback = value;
-				_isCoerceValueCallbackSet = true;
-			}
-		}
+		internal CoerceValueCallback CoerceValueCallback { get; set; }
 
 		internal BackingFieldUpdateCallback BackingFieldUpdateCallback { get; set; }
-
-		internal protected virtual void Merge(PropertyMetadata baseMetadata, DependencyProperty dp)
-		{
-			// The supplied metadata is merged with the property metadata for 
-			// the dependency property as it exists on the base owner. Any 
-			// characteristics that were specified in the original base 
-			// metadata will persist; only those characteristics that were 
-			// specifically changed in the new metadata will override the 
-			// characteristics of the base metadata. Some characteristics such
-			// as DefaultValue are replaced if specified in the new metadata. 
-			// Others, such as PropertyChangedCallback, are combined. 
-			// Ultimately, the merge behavior depends on the property metadata 
-			// type being used for the override, so the behavior described here 
-			// is for the existing property metadata classes used by WPF 
-			// dependency properties. For details, see Dependency Property 
-			// Metadata and Framework Property Metadata.
-			// Source: https://msdn.microsoft.com/en-us/library/ms597491(v=vs.110).aspx
-
-			if (!_isCoerceValueCallbackSet)
-			{
-				CoerceValueCallback = baseMetadata.CoerceValueCallback;
-			}
-
-			if (!_isDefaultValueSet)
-			{
-				DefaultValue = baseMetadata.DefaultValue;
-			}
-
-			// Merge PropertyChangedCallback delegates
-			PropertyChangedCallback = baseMetadata.PropertyChangedCallback + PropertyChangedCallback;
-			BackingFieldUpdateCallback = baseMetadata.BackingFieldUpdateCallback + BackingFieldUpdateCallback;
-		}
 
 		internal void MergePropertyChangedCallback(PropertyChangedCallback callback)
 		{
@@ -196,6 +142,12 @@ namespace Microsoft.UI.Xaml
 		internal void RaiseBackingFieldUpdate(DependencyObject source, object newValue)
 		{
 			BackingFieldUpdateCallback?.Invoke(source, newValue);
+		}
+
+		internal virtual PropertyMetadata CloneWithOverwrittenDefaultValue(object newDefaultValue)
+		{
+			// This should clone CreateDefaultValueCallback when it's supported
+			return new PropertyMetadata(newDefaultValue, PropertyChangedCallback, CoerceValueCallback, BackingFieldUpdateCallback);
 		}
 	}
 }

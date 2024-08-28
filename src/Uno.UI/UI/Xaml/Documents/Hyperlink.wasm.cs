@@ -13,9 +13,6 @@ namespace Microsoft.UI.Xaml.Documents
 		{
 			UpdateNavigationProperties(null, _defaultNavigationTarget);
 
-			PointerPressed += TextBlock.OnPointerPressed;
-			PointerReleased += TextBlock.OnPointerReleased;
-			PointerCaptureLost += TextBlock.OnPointerCaptureLost;
 			OnUnderlineStyleChanged();
 		}
 

@@ -25,7 +25,5 @@
   <files>
 	<file src="..\..\src\Common\uno.png" target="/" />
 	<file src="_._" target="lib\netstandard1.0" />
-	<file src="Uno.WinUI.WebAssembly.props" target="build" />
-	<file src="Uno.WinUI.WebAssembly.targets" target="build" />
   </files>
 </package>

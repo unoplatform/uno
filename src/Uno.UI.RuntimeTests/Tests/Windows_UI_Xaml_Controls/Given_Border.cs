@@ -577,7 +577,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if HAS_UNO
 #if !HAS_INPUT_INJECTOR
-		[Ignore("InputInjector is only supported on skia")]
+		[Ignore("InputInjector is not supported on this platform.")]
 #else
 		[TestMethod]
 		[RunsOnUIThread]
@@ -616,7 +616,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 #if !HAS_INPUT_INJECTOR
-		[Ignore("InputInjector is only supported on skia")]
+		[Ignore("InputInjector is not supported on this platform.")]
 #else
 		[TestMethod]
 		[RunsOnUIThread]
@@ -773,7 +773,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow(true, true)]
 		[DataRow(false, true)]
 		[DataRow(false, false)]
-		public async Task When_Border_CorderRadius_HitTesting(bool addBorderChild, bool addGridBackground)
+		public async Task When_Border_CornerRadius_HitTesting(bool addBorderChild, bool addGridBackground)
 		{
 			var borderPressedCount = 0;
 			var rectanglePressedCount = 0;

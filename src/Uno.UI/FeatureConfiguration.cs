@@ -333,6 +333,12 @@ namespace Uno.UI
 			/// legacy behavior, use this property to override it.
 			/// </summary>
 			public static bool EnableLightDismissByDefault { get; set; }
+
+			/// <summary>
+			/// When set to true, light dismiss UI popups will not be dismissed when the window is deactivated.
+			/// This is mainly useful for debugging purposes, we do not recommend using this in production code.
+			/// </summary>
+			public static bool PreventLightDismissOnWindowDeactivated { get; set; }
 		}
 
 		public static class ProgressRing

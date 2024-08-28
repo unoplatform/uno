@@ -71,7 +71,7 @@ namespace Microsoft.UI.Xaml
 			var uiElement = typeof(UIElement);
 			VisibilityProperty.GetMetadata(uiElement).MergePropertyChangedCallback(ClearPointersStateIfNeeded);
 			Microsoft.UI.Xaml.Controls.Control.IsEnabledProperty.GetMetadata(typeof(Microsoft.UI.Xaml.Controls.Control)).MergePropertyChangedCallback(ClearPointersStateIfNeeded);
-#if UNO_HAS_ENHANCED_HIT_TEST_PROPERTY
+#if UNO_HAS_MANAGED_POINTERS
 			HitTestVisibilityProperty.GetMetadata(uiElement).MergePropertyChangedCallback(ClearPointersStateIfNeeded);
 #endif
 		}
@@ -267,7 +267,7 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		internal HitTestability GetHitTestVisibility()
 		{
-#if __WASM__ || __SKIA__ || __MACOS__
+#if UNO_HAS_MANAGED_POINTERS
 			return HitTestVisibility;
 #else
 			// This is a coalesced HitTestVisible and should be unified with it
@@ -728,7 +728,7 @@ namespace Microsoft.UI.Xaml
 			PrepareShare(routedArgs.Data); // Gives opportunity to the control to fulfill the data
 			SafeRaiseEvent(DragStartingEvent, routedArgs); // The event won't bubble, cf. PrepareManagedDragAndDropEventBubbling
 
-			// We need to give a chance for  for layout updates, etc. This is particularly problematic with TreeView
+			// We need to give a chance for layout updates, etc. This is particularly problematic with TreeView
 			// dragging where the DragStarting event on the TreeView will "internally" collapse some nodes,
 			// but actually removing them from the visual tree needs a layout cycle. Without waiting here,
 			// we can also get a DragEnter event on one of the to-be-collapsed containers in the same

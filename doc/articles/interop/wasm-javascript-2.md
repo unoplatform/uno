@@ -10,7 +10,7 @@ Let's create an app to integrate a Syntax Highlighter named [`PrismJS`](https://
 
 ### 0. Before starting
 
-📝 To reproduce the code in this article, you must [prepare development environment using Uno's _Getting Started_ article](../get-started.md).
+📝 To reproduce the code in this article, you must [prepare a development environment using Uno's _Getting Started_ article](xref:Uno.GetStarted).
 
 ### 1. Create the projects
 

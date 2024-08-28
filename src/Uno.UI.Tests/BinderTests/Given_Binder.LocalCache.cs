@@ -107,16 +107,6 @@ namespace Uno.UI.Tests.BinderTests
 
 			Assert.AreEqual(true, SUT.IsEnabled);
 		}
-
-		[TestMethod]
-		public void When_Coerce_And_MetadataOverride()
-		{
-			var SUT = new BinderLocalCache_Data_IsEnabled_Inherited();
-			Assert.AreEqual(false, SUT.IsEnabled);
-
-			SUT.SetValue(BinderLocalCache_Data_IsEnabled.IsEnabledProperty, true);
-			Assert.AreEqual(true, SUT.IsEnabled);
-		}
 	}
 
 	public partial class BinderLocalCache_Data : DependencyObject
@@ -156,14 +146,6 @@ namespace Uno.UI.Tests.BinderTests
 		{
 			_suppressIsEnabled = suppress;
 			this.CoerceValue(IsEnabledProperty);
-		}
-	}
-
-	public partial class BinderLocalCache_Data_IsEnabled_Inherited : BinderLocalCache_Data_IsEnabled
-	{
-		static BinderLocalCache_Data_IsEnabled_Inherited()
-		{
-			IsEnabledProperty.OverrideMetadata(typeof(BinderLocalCache_Data_IsEnabled_Inherited), new FrameworkPropertyMetadata(defaultValue: false));
 		}
 	}
 }

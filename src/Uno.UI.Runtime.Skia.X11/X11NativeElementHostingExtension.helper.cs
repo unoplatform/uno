@@ -86,14 +86,14 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 
 			process.Start();
 
-			using var lockDiposable = X11Helper.XLock(_display);
+			using var lockDiposable = X11Helper.XLock(Display);
 
-			_ = XLib.XQueryTree(_display, host.RootX11Window.Window, out IntPtr root, out _, out var children, out _);
+			_ = XLib.XQueryTree(Display, host.RootX11Window.Window, out IntPtr root, out _, out var children, out _);
 			_ = XLib.XFree(children);
 
 			// Wait for the window to open.
 			Thread.Sleep(500);
-			IntPtr window = FindWindowByTitle(_display, root, title);
+			IntPtr window = FindWindowByTitle(Display, root, title);
 
 			if (window == IntPtr.Zero)
 			{

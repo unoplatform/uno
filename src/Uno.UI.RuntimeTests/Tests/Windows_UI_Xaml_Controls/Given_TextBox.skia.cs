@@ -764,7 +764,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var SUT = new TextBox
 			{
-				Width = 40,
+				Width = 64, // == TextControlThemeMinWidth for UWP styles
 				Text = "This should be a lot longer than the width of the TextBox."
 			};
 

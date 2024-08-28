@@ -70,7 +70,7 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 	{
 		if ((
 				_forcedHotReloadMode is null
-				&& !_supportsLightweightHotReload
+				&& !_supportsPartialHotReload
 				&& !_serverMetadataUpdatesEnabled
 				&& _supportsXamlReader)
 			|| _forcedHotReloadMode == HotReloadMode.XamlReader)
@@ -117,6 +117,13 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 				InitializeMetadataUpdater();
 				InitializePartialReload();
 				InitializeXamlReader();
+
+				if (!_supportsMetadataUpdates
+					&& !_supportsPartialHotReload
+					&& !_supportsXamlReader)
+				{
+					_status.ReportInvalidRuntime();
+				}
 
 				ConfigureServer message = new(_projectPath, _xamlPaths, GetMetadataUpdateCapabilities(), _serverMetadataUpdatesEnabled, config.MSBuildProperties);
 

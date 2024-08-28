@@ -283,6 +283,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (_suggestionsList != null)
 			{
 				_suggestionsList.ItemClick += OnSuggestionListItemClick;
+				_suggestionsList.SelectionChanged += OnSuggestionsListSelectionChanged;
 			}
 
 			if (_popup != null)
@@ -290,6 +291,8 @@ namespace Microsoft.UI.Xaml.Controls
 				_popup.Closed += OnPopupClosed;
 				_popup.Opened += OnPopupOpened;
 			}
+
+			SizeChanged += OnSizeChanged;
 		}
 
 		void UnregisterEvents()
@@ -308,6 +311,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (_suggestionsList != null)
 			{
 				_suggestionsList.ItemClick -= OnSuggestionListItemClick;
+				_suggestionsList.SelectionChanged -= OnSuggestionsListSelectionChanged;
 			}
 
 			if (_popup != null)
@@ -317,6 +321,8 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			_textChangedDisposable?.Dispose();
+
+			SizeChanged -= OnSizeChanged;
 		}
 
 		protected override void OnLostFocus(RoutedEventArgs e)
@@ -332,6 +338,14 @@ namespace Microsoft.UI.Xaml.Controls
 		private void OnPopupOpened(object sender, object e)
 		{
 			LayoutPopup();
+		}
+
+		private void OnSizeChanged(object sender, SizeChangedEventArgs args)
+		{
+			if (_suggestionsContainer is not null)
+			{
+				_suggestionsContainer.Width = ActualWidth;
+			}
 		}
 
 		private void OnIsSuggestionListOpenChanged(DependencyPropertyChangedEventArgs e)
@@ -377,6 +391,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 			ChoseItem(e.ClickedItem);
 			SubmitSearch(e.ClickedItem);
+		}
+
+		private void OnSuggestionsListSelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			_suggestionsList.ScrollIntoView(_suggestionsList.SelectedItem);
 		}
 
 		private void OnQueryButtonClick(object sender, RoutedEventArgs e)

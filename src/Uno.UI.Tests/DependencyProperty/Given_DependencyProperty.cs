@@ -981,41 +981,6 @@ namespace Uno.UI.Tests.BinderTests
 		#endregion
 
 		[TestMethod]
-		[ExpectedException(typeof(ArgumentException))]
-		public void When_OverrideMetadata_With_Metadata_Is_Not_Derived_From_BaseMetadata_Then_Fail()
-		{
-			var testProperty = DependencyProperty.Register(
-				nameof(When_OverrideMetadata_With_Metadata_Is_Not_Derived_From_BaseMetadata_Then_Fail),
-				typeof(string),
-				typeof(MockDependencyObject),
-				new FrameworkPropertyMetadata(null)
-			);
-
-			testProperty.OverrideMetadata(typeof(MockDependencyObject2), new PropertyMetadata(null));
-		}
-
-		[TestMethod]
-		[ExpectedException(typeof(ArgumentException))]
-		public void When_OverrideMetadata_With_ForType_Is_OwnerType_Then_Fail()
-		{
-			var testProperty = DependencyProperty.Register(
-				nameof(When_OverrideMetadata_With_ForType_Is_OwnerType_Then_Fail),
-				typeof(string),
-				typeof(MockDependencyObject),
-				null
-			);
-
-			testProperty.OverrideMetadata(typeof(MockDependencyObject), new PropertyMetadata("test"));
-		}
-
-		[TestMethod]
-		[ExpectedException(typeof(ArgumentException))]
-		public void When_OverrideMetadata_With_Same_ForType_Twice_Then_Fail()
-		{
-			MyDependencyObject1.MyPropertyProperty.OverrideMetadata(typeof(MyDependencyObject2), new PropertyMetadata("test"));
-		}
-
-		[TestMethod]
 		public void When_PropertyMetadata_Is_Null()
 		{
 			var SUT = new MockDependencyObject();
@@ -1050,54 +1015,6 @@ namespace Uno.UI.Tests.BinderTests
 		}
 
 		[TestMethod]
-		public void When_OverrideMetadata_DefaultValue()
-		{
-			var SUT1 = new MyDependencyObject1();
-			var SUT2 = new MyDependencyObject2();
-			var SUT3 = new MyDependencyObject3();
-
-			Assert.AreEqual("default1", MyDependencyObject1.MyPropertyProperty.GetMetadata(typeof(MyDependencyObject1)).DefaultValue);
-			Assert.AreEqual("default2", MyDependencyObject1.MyPropertyProperty.GetMetadata(typeof(MyDependencyObject2)).DefaultValue);
-			Assert.AreEqual("default3", MyDependencyObject1.MyPropertyProperty.GetMetadata(typeof(MyDependencyObject3)).DefaultValue);
-
-			Assert.AreEqual("default1", SUT1.GetValue(MyDependencyObject1.MyPropertyProperty));
-			Assert.AreEqual("default2", SUT2.GetValue(MyDependencyObject1.MyPropertyProperty));
-			Assert.AreEqual("default3", SUT3.GetValue(MyDependencyObject1.MyPropertyProperty));
-		}
-
-		[TestMethod]
-		public void When_OverrideMetadata_CoerceValueCallback()
-		{
-			var SUT1 = new MyDependencyObject1();
-			var SUT2 = new MyDependencyObject2();
-			var SUT3 = new MyDependencyObject3();
-
-			// +1 CoerceValueCallback (1)
-			SUT1.SetValue(MyDependencyObject1.MyPropertyProperty, "A");
-			SUT2.SetValue(MyDependencyObject1.MyPropertyProperty, "A");
-			SUT3.SetValue(MyDependencyObject1.MyPropertyProperty, "A");
-
-			// +1 CoerceValueCallback (2)
-			SUT1.SetValue(MyDependencyObject1.MyPropertyProperty, "A");
-			SUT2.SetValue(MyDependencyObject1.MyPropertyProperty, "A");
-			SUT3.SetValue(MyDependencyObject1.MyPropertyProperty, "A");
-
-			// +1 CoerceValueCallback (3)
-			SUT1.SetValue(MyDependencyObject1.MyPropertyProperty, "B");
-			SUT2.SetValue(MyDependencyObject1.MyPropertyProperty, "B");
-			SUT3.SetValue(MyDependencyObject1.MyPropertyProperty, "B");
-
-			// +1 CoerceValueCallback (4)
-			SUT1.CoerceValue(MyDependencyObject1.MyPropertyProperty);
-			SUT2.CoerceValue(MyDependencyObject1.MyPropertyProperty);
-			SUT3.CoerceValue(MyDependencyObject1.MyPropertyProperty);
-
-			Assert.AreEqual(4, SUT1.CoerceValueCallbackCount);
-			Assert.AreEqual(4, SUT2.CoerceValueCallbackCount);
-			Assert.AreEqual(4, SUT3.CoerceValueCallbackCount);
-		}
-
-		[TestMethod]
 		public void When_SetValue_Inheritance_And_CoerceValue_Then_GetValue_Local_Is_UnsetValue()
 		{
 			var SUT = new MyDependencyObject1();
@@ -1106,77 +1023,6 @@ namespace Uno.UI.Tests.BinderTests
 			SUT.CoerceValue(MyDependencyObject1.MyPropertyProperty);
 
 			Assert.AreEqual(DependencyProperty.UnsetValue, SUT.GetValue(MyDependencyObject1.MyPropertyProperty, DependencyPropertyValuePrecedences.Local));
-		}
-
-		[TestMethod]
-		public void When_OverrideMetadata_PropertyChangedCallback()
-		{
-			var SUT1 = new MyDependencyObject1();
-			var SUT2 = new MyDependencyObject2();
-			var SUT3 = new MyDependencyObject3();
-
-			SUT1.SetValue(MyDependencyObject1.MyPropertyProperty, "A"); // +1 PropertyChangedCallback (1)
-			SUT2.SetValue(MyDependencyObject1.MyPropertyProperty, "A"); // +2 PropertyChangedCallback (2)
-			SUT3.SetValue(MyDependencyObject1.MyPropertyProperty, "A"); // +3 PropertyChangedCallback (3)
-
-			SUT1.SetValue(MyDependencyObject1.MyPropertyProperty, "A"); // +0 PropertyChangedCallback (1)
-			SUT2.SetValue(MyDependencyObject1.MyPropertyProperty, "A"); // +0 PropertyChangedCallback (2)
-			SUT3.SetValue(MyDependencyObject1.MyPropertyProperty, "A"); // +0 PropertyChangedCallback (3)
-
-			SUT1.SetValue(MyDependencyObject1.MyPropertyProperty, "B"); // +1 PropertyChangedCallback (2)
-			SUT2.SetValue(MyDependencyObject1.MyPropertyProperty, "B"); // +2 PropertyChangedCallback (4)
-			SUT3.SetValue(MyDependencyObject1.MyPropertyProperty, "B"); // +3 PropertyChangedCallback (6)
-
-			SUT1.CoerceValue(MyDependencyObject1.MyPropertyProperty); // +0 PropertyChangedCallback (2)
-			SUT1.CoerceValue(MyDependencyObject1.MyPropertyProperty); // +0 PropertyChangedCallback (4)
-			SUT1.CoerceValue(MyDependencyObject1.MyPropertyProperty); // +0 PropertyChangedCallback (6)
-
-			var propertyChangedCallbacks1 = new[]
-			{
-				"changed1: coercion1: A",
-				"changed1: coercion1: B",
-			};
-
-			var propertyChangedCallbacks2 = new[]
-			{
-				"changed1: coercion2: A",
-				"changed2: coercion2: A",
-				"changed1: coercion2: B",
-				"changed2: coercion2: B",
-			};
-
-			var propertyChangedCallbacks3 = new[]
-			{
-				"changed1: coercion3: A",
-				"changed2: coercion3: A",
-				"changed3: coercion3: A",
-				"changed1: coercion3: B",
-				"changed2: coercion3: B",
-				"changed3: coercion3: B",
-			};
-
-			Assert.IsTrue(SUT1.PropertyChangedCallbacks.SequenceEqual(propertyChangedCallbacks1));
-			Assert.IsTrue(SUT2.PropertyChangedCallbacks.SequenceEqual(propertyChangedCallbacks2));
-			Assert.IsTrue(SUT3.PropertyChangedCallbacks.SequenceEqual(propertyChangedCallbacks3));
-		}
-
-		[TestMethod]
-		public void When_OverrideMetadata_FrameworkPropertyMetadata_Options()
-		{
-			var SUT1 = new MyDependencyObject1();
-			var SUT2 = new MyDependencyObject2();
-			var SUT3 = new MyDependencyObject3();
-
-			var metadata1 = MyDependencyObject1.MyPropertyProperty.GetMetadata(typeof(MyDependencyObject1));
-			var metadata2 = MyDependencyObject1.MyPropertyProperty.GetMetadata(typeof(MyDependencyObject2));
-			var metadata3 = MyDependencyObject1.MyPropertyProperty.GetMetadata(typeof(MyDependencyObject3));
-
-			Assert.IsNotInstanceOfType(metadata1, typeof(FrameworkPropertyMetadata));
-			Assert.IsInstanceOfType(metadata2, typeof(FrameworkPropertyMetadata));
-			Assert.IsInstanceOfType(metadata3, typeof(FrameworkPropertyMetadata));
-
-			Assert.AreEqual(FrameworkPropertyMetadataOptions.Default | FrameworkPropertyMetadataOptions.Inherits, (metadata2 as FrameworkPropertyMetadata).Options);
-			Assert.AreEqual(FrameworkPropertyMetadataOptions.Default | FrameworkPropertyMetadataOptions.Inherits, (metadata3 as FrameworkPropertyMetadata).Options);
 		}
 
 		[TestMethod]
@@ -2035,39 +1881,6 @@ namespace Uno.UI.Tests.BinderTests
 
 		public List<string> PropertyChangedCallbacks = new List<string>();
 		public int CoerceValueCallbackCount { get; set; } = 0;
-	}
-
-	partial class MyDependencyObject2 : MyDependencyObject1
-	{
-		static MyDependencyObject2()
-		{
-			var metadata = new FrameworkPropertyMetadata(
-				"default2",
-				FrameworkPropertyMetadataOptions.Inherits,
-				(s, e) => { (s as MyDependencyObject1).PropertyChangedCallbacks.Add("changed2: " + e.NewValue); },
-				(s, baseValue, _) => { (s as MyDependencyObject1).CoerceValueCallbackCount++; return "coercion2: " + baseValue; }
-			);
-
-			MyPropertyProperty.OverrideMetadata(typeof(MyDependencyObject2), metadata);
-		}
-
-		public MyDependencyObject2() { }
-	}
-
-	partial class MyDependencyObject3 : MyDependencyObject2
-	{
-		static MyDependencyObject3()
-		{
-			var metadata = new FrameworkPropertyMetadata(
-				"default3",
-				(s, e) => { (s as MyDependencyObject1).PropertyChangedCallbacks.Add("changed3: " + e.NewValue); },
-				(s, baseValue, _) => { (s as MyDependencyObject1).CoerceValueCallbackCount++; return "coercion3: " + baseValue; }
-			);
-
-			MyPropertyProperty.OverrideMetadata(typeof(MyDependencyObject3), metadata);
-		}
-
-		public MyDependencyObject3() { }
 	}
 
 	partial class NullablePropertyOwner : FrameworkElement

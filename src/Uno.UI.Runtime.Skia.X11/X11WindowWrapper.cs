@@ -86,6 +86,7 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 
 	public override void Close()
 	{
+		base.Close();
 		var x11Window = _host.RootX11Window;
 		if (this.Log().IsEnabled(LogLevel.Information))
 		{
@@ -95,8 +96,6 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 		{
 			X11XamlRootHost.Close(x11Window);
 		}
-
-		RaiseClosed();
 	}
 
 	public override void ExtendContentIntoTitleBar(bool extend)
@@ -111,16 +110,6 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 		if (closingArgs.Cancel)
 		{
 			return;
-		}
-
-		var manager = SystemNavigationManagerPreview.GetForCurrentView();
-		if (!manager.HasConfirmedClose)
-		{
-			if (!manager.RequestAppClose())
-			{
-				// App closing was prevented
-				return;
-			}
 		}
 
 		// All prerequisites passed, can safely close.

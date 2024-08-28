@@ -205,7 +205,7 @@ namespace Microsoft.UI.Xaml.Controls
 			OnIsSpellCheckEnabledChanged(IsSpellCheckEnabled);
 			OnTextAlignmentChanged(TextAlignment);
 			OnTextWrappingChanged();
-			OnFocusStateChanged((FocusState)FocusStateProperty.GetMetadata(GetType()).DefaultValue, FocusState, initial: true);
+			OnFocusStateChanged(FocusState.Unfocused, FocusState, initial: true);
 			OnTextCharacterCasingChanged(CharacterCasing);
 			UpdateDescriptionVisibility(true);
 			var buttonRef = _deleteButton?.GetTarget();

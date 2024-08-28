@@ -52,6 +52,9 @@ public partial class Given_InteractionTracker
 	}
 
 	[TestMethod]
+#if !HAS_COMPOSITION_API
+	[Ignore("Composition APIs are not supported on this platform.")]
+#endif
 	public async Task When_TryUpdatePositionWithAdditionalVelocity_SingleCall()
 	{
 		var border = new Border()
@@ -113,6 +116,9 @@ public partial class Given_InteractionTracker
 	}
 
 	[TestMethod]
+#if !HAS_COMPOSITION_API
+	[Ignore("Composition APIs are not supported on this platform.")]
+#endif
 	public async Task When_TryUpdatePositionWithAdditionalVelocity_TwoCalls()
 	{
 		var border = new Border()
@@ -176,8 +182,10 @@ public partial class Given_InteractionTracker
 
 	[TestMethod]
 	[RequiresFullWindow]
-#if !HAS_INPUT_INJECTOR
-	[Ignore("InputInjector is only supported on skia")]
+#if !HAS_COMPOSITION_API
+	[Ignore("Composition APIs are not supported on this platform.")]
+#elif !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
 #elif !HAS_UNO
 	[Ignore("Test fails on Windows. For some reason, Drag isn't doing what we expect it to for an unknown reason.")]
 #endif
@@ -267,8 +275,10 @@ public partial class Given_InteractionTracker
 #if HAS_UNO
 	[TestMethod]
 	[RequiresFullWindow]
-#if !HAS_INPUT_INJECTOR
-	[Ignore("InputInjector is only supported on skia")]
+#if !HAS_COMPOSITION_API
+	[Ignore("Composition APIs are not supported on this platform.")]
+#elif !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
 #endif
 	public async Task When_MouseWheel()
 	{

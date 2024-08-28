@@ -139,6 +139,11 @@ public partial class RemoteControlClient : IRemoteControlClient
 				.ToArray();
 		}
 
+		// Enable hot-reload
+		// Note: We register the HR processor even if we _serverAddresses is empty. This is to make sure to create the HR indicator.
+		RegisterProcessor(new HotReload.ClientHotReloadProcessor(this));
+		_status.RegisterRequiredServerProcessor("Uno.UI.RemoteControl.Host.HotReload.ServerHotReloadProcessor", VersionHelper.GetVersion(typeof(ClientHotReloadProcessor)));
+
 		if (_serverAddresses is null or { Length: 0 })
 		{
 			this.Log().LogError("Failed to get any remote control server endpoint from the IDE.");
@@ -147,10 +152,6 @@ public partial class RemoteControlClient : IRemoteControlClient
 			_status.Report(ConnectionState.NoServer);
 			return;
 		}
-
-		// Enable hot-reload
-		RegisterProcessor(new HotReload.ClientHotReloadProcessor(this));
-		_status.RegisterRequiredServerProcessor("Uno.UI.RemoteControl.Host.HotReload.ServerHotReloadProcessor", VersionHelper.GetVersion(typeof(ClientHotReloadProcessor)));
 
 		_connection = StartConnection();
 	}

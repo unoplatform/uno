@@ -11,6 +11,7 @@
 [![GitHub Stars](https://img.shields.io/github/stars/unoplatform/uno?style=flat&color=7a67f8)](https://github.com/unoplatform/uno/stargazers/)
 [![All Contributors](https://img.shields.io/github/contributors/unoplatform/uno.svg?style=flat&color=7a67f8)](https://GitHub.com/unoplatform/uno/graphs/contributors)
 [![X/Twitter Followers](https://img.shields.io/twitter/follow/unoplatform?label=follow%20%40unoplatform&style=flat&color=f85977&logo=x)](https://x.com/unoplatform)
+[![Uno Platform Discord](https://img.shields.io/discord/1182775715242967050?label=Discord&color=f85977)](https://platform.uno/discord)
 [![Open Uno in Gitpod](https://img.shields.io/badge/gitpod-setup%20automated-159bff?logo=gitpod&style=flat)](https://gitpod.io/#https://github.com/unoplatform/uno)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg?style=flat)](https://github.com/unoplatform/uno/blob/master/CONTRIBUTING.md)
 

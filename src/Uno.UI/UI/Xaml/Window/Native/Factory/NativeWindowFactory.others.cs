@@ -9,6 +9,8 @@ namespace Uno.UI.Xaml.Controls;
 
 partial class NativeWindowFactory
 {
+	public static bool SupportsClosingCancellation => false;
+
 	public static bool SupportsMultipleWindows => false;
 
 	private static INativeWindowWrapper? CreateWindowPlatform(Microsoft.UI.Xaml.Window window, XamlRoot xamlRoot)

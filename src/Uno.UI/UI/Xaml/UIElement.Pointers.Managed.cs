@@ -79,13 +79,23 @@ namespace Microsoft.UI.Xaml
 
 			// If we're not locally hit-test visible, visible, or enabled, we should be collapsed. Our children will be collapsed as well.
 			if (
-#if !__MACOS__
+#if __WASM__
+				!(IsLoaded || HtmlTagIsSvg) ||
+#elif !__MACOS__
 				!IsLoaded ||
 #endif
 				!IsHitTestVisible || Visibility != Visibility.Visible || !IsEnabledOverride())
 			{
 				return HitTestability.Collapsed;
 			}
+
+#if __WASM__
+			// Special case for external html element, we are always considering them as hit testable.
+			if (HtmlTagIsExternallyDefined && !FeatureConfiguration.FrameworkElement.UseLegacyHitTest)
+			{
+				return HitTestability.Visible;
+			}
+#endif
 
 			// If we're not hit (usually means we don't have a Background/Fill), we're invisible. Our children will be visible or not, depending on their state.
 			if (!IsViewHit())

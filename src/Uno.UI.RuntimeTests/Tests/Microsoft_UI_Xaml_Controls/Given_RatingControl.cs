@@ -19,7 +19,7 @@ public class Given_RatingControl
 	[TestMethod]
 	[RunsOnUIThread]
 #if !HAS_INPUT_INJECTOR
-	[Ignore("InputInjector is only supported on Skia #14948")]
+	[Ignore("InputInjector is not supported on this platform.")]
 #endif
 	public async Task When_Loaded_Then_Unloaded_Tap()
 	{

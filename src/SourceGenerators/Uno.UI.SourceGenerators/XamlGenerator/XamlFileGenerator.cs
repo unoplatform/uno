@@ -546,6 +546,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 			}
 
+			AttachUnhandledExceptionHandler();
+
 			void ApplyLiteralProperties()
 			{
 				writer.AppendLineIndented("this");
@@ -562,6 +564,28 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				writer.AppendLineIndented(";");
+			}
+
+			void AttachUnhandledExceptionHandler()
+			{
+				writer.Append($"#if DEBUG");
+				writer.AppendLine();
+				writer.AppendLineIndented($"UnhandledException += (s, e) =>");
+				writer.AppendLineIndented("{");
+				writer.Indent();
+				using (writer.BlockInvariant("if (global::System.Diagnostics.Debugger.IsAttached)"))
+				{
+					writer.AppendLineIndented("global::System.Diagnostics.Debug.WriteLine(e.Exception);");
+					writer.Append("#if !DISABLE_XAML_GENERATED_BREAK_ON_UNHANDLED_EXCEPTION");
+					writer.AppendLine();
+					writer.AppendLineIndented("global::System.Diagnostics.Debugger.Break();");
+					writer.Append("#endif");
+					writer.AppendLine();
+				}
+				writer.Indent(-1);
+				writer.AppendLineIndented("};");
+				writer.Append($"#endif");
+				writer.AppendLine();
 			}
 		}
 
@@ -4406,8 +4430,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						}
 					}
 
-					if (currentType is null)
-						throw new InvalidOperationException($"Unable to find member [{part}] on type [{currentType}]");
+					throw new InvalidOperationException($"Unable to find member [{part}] on type [{currentType}]");
 				}
 
 				if (isIndexer)
@@ -5856,6 +5879,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				);
 		}
 
+		private static bool IsNewScope(XamlObjectDefinition xamlObjectDefinition)
+		{
+			var typeName = xamlObjectDefinition.Type.Name;
+			return typeName == "DataTemplate" ||
+				typeName == "ItemsPanelTemplate" ||
+				typeName == "ControlTemplate" ||
+				// This case is specific the custom ListView for iOS. Should be removed
+				// when the list rebuilt to be compatible.
+				typeName == "ListViewBaseLayoutTemplate";
+		}
+
 		private void BuildChild(IIndentedStringBuilder writer, XamlMemberDefinition? owner, XamlObjectDefinition xamlObjectDefinition, string? outerClosure = null)
 		{
 			_generatorContext.CancellationToken.ThrowIfCancellationRequested();
@@ -5881,17 +5915,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			using (TrySetDefaultBindMode(xamlObjectDefinition))
 			{
-				var isItemsPanelTemplate = typeName == "ItemsPanelTemplate";
-
-				if (
-					typeName == "DataTemplate"
-					|| isItemsPanelTemplate
-					|| typeName == "ControlTemplate"
-
-					// This case is specific the custom ListView for iOS. Should be removed
-					// when the list rebuilt to be compatible.
-					|| typeName == "ListViewBaseLayoutTemplate"
-				)
+				if (IsNewScope(xamlObjectDefinition))
 				{
 					writer.AppendIndented($"new {GetGlobalizedTypeName(fullTypeName)}(");
 
@@ -6156,6 +6180,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 			}
 		}
+
+		private List<string> FindNamesIn(XamlObjectDefinition xamlObjectDefinition)
+		{
+			var list = new List<string>();
+			foreach (var element in EnumerateSubElements(xamlObjectDefinition, stoppingCondition: IsNewScope))
+			{
+				var nameMember = FindMember(element, "Name");
+
+				if (nameMember?.Value is string name)
+				{
+					list.Add(name);
+				}
+			}
+
+			return list;
+		}
+
 		/// <summary>
 		/// Statically finds a element by name, given a xaml element root
 		/// </summary>
@@ -6195,13 +6236,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <param name="xamlObject">The root from which to start the search</param>
 		/// <param name="elementName">The x:Name value to search for</param>
 		/// <returns></returns>
-		private IEnumerable<XamlObjectDefinition> EnumerateSubElements(XamlObjectDefinition xamlObject)
+		private IEnumerable<XamlObjectDefinition> EnumerateSubElements(XamlObjectDefinition xamlObject, Func<XamlObjectDefinition, bool>? stoppingCondition = null)
 		{
 			yield return xamlObject;
 
 			foreach (var member in xamlObject.Members)
 			{
-				foreach (var element in EnumerateSubElements(member.Objects))
+				foreach (var element in EnumerateSubElements(member.Objects, stoppingCondition))
 				{
 					yield return element;
 				}
@@ -6209,20 +6250,30 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			var objects = xamlObject.Objects;
 
-			foreach (var element in EnumerateSubElements(objects))
+			foreach (var element in EnumerateSubElements(objects, stoppingCondition))
 			{
 				yield return element;
 			}
 		}
 
-		private IEnumerable<XamlObjectDefinition> EnumerateSubElements(IEnumerable<XamlObjectDefinition> objects)
+		private IEnumerable<XamlObjectDefinition> EnumerateSubElements(IEnumerable<XamlObjectDefinition> objects, Func<XamlObjectDefinition, bool>? stoppingCondition)
 		{
 			foreach (var child in objects.Safe())
 			{
+				if (stoppingCondition != null && stoppingCondition(child))
+				{
+					continue;
+				}
+
 				yield return child;
 
-				foreach (var innerElement in EnumerateSubElements(child))
+				foreach (var innerElement in EnumerateSubElements(child, stoppingCondition))
 				{
+					if (stoppingCondition != null && stoppingCondition(innerElement))
+					{
+						continue;
+					}
+
 					yield return innerElement;
 				}
 			}
@@ -6360,6 +6411,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 													if (nameMember?.Value is string xName)
 													{
 														writer.AppendLineIndented($"that.Bindings.NotifyXLoad(\"{xName}\");");
+													}
+												}
+
+												using (writer.BlockInvariant("else"))
+												{
+													var elementNames = FindNamesIn(definition);
+													foreach (var elementName in elementNames)
+													{
+														writer.AppendLineIndented($"_{elementName}Subject.ElementInstance = null;");
 													}
 												}
 											}

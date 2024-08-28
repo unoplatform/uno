@@ -89,12 +89,12 @@ Also, for more information on all the template options, see [Using the Uno Platf
 
 ## Data Binding
 
-Now that we have the **`BindableMainModel`** class, we can update the **`MainPage`** to use data binding to connect the UI to the application logic.
+Now that we have the **`MainViewModel`** class, we can update the **`MainPage`** to use data binding to connect the UI to the application logic.
 
-- Let's add the **`DataContext`** to our page. To do so, add `.DataContext(new BindableMainModel(), (page, vm) => page` before `.Background(...)`. Remember to close the **`DataContext`** expression with a `)` at the end of the code. It should look similar to the code below:
+- Let's add the **`DataContext`** to our page. To do so, add `.DataContext(new MainViewModel(), (page, vm) => page` before `.Background(...)`. Remember to close the **`DataContext`** expression with a `)` at the end of the code. It should look similar to the code below:
 
     ```csharp
-    this.DataContext(new BindableMainModel(), (page, vm) => page
+    this.DataContext(new MainViewModel(), (page, vm) => page
         .Background(ThemeResource.Get<Brush>("ApplicationPageBackgroundThemeBrush"))
         .Content(
             ...
@@ -102,7 +102,7 @@ Now that we have the **`BindableMainModel`** class, we can update the **`MainPag
     );
     ```
 
-- Update the **`TextBlock`** by removing its current text content and replacing it with a binding expression for the **`Countable.Count`** property of the **`BindableMainModel`**. Modify the existing **`Text`** property with `() => vm.Countable.Count, txt => $"Counter: {txt}"`. The adjusted code is as follows:
+- Update the **`TextBlock`** by removing its current text content and replacing it with a binding expression for the **`Countable.Count`** property of the **`MainViewModel`**. Modify the existing **`Text`** property with `() => vm.Countable.Count, txt => $"Counter: {txt}"`. The adjusted code is as follows:
 
     ```csharp
     new TextBlock()
@@ -112,7 +112,7 @@ Now that we have the **`BindableMainModel`** class, we can update the **`MainPag
         .Text(() => vm.Countable.Count, txt => $"Counter: {txt}")
     ```
 
-- Update the **`TextBox`** by binding the **`Text`** property to the **`Countable.Step`** property of the **BindableMainModel**. The **`Mode`** of the binding is set to **`TwoWay`** so that the **`Countable.Step`** property is updated when the user changes the value in the **`TextBox`**.
+- Update the **`TextBox`** by binding the **`Text`** property to the **`Countable.Step`** property of the **MainViewModel**. The **`Mode`** of the binding is set to **`TwoWay`** so that the **`Countable.Step`** property is updated when the user changes the value in the **`TextBox`**.
 
     ```csharp
     new TextBox()
@@ -123,7 +123,7 @@ Now that we have the **`BindableMainModel`** class, we can update the **`MainPag
         .Text(x => x.Binding(() => vm.Countable.Step).TwoWay())
     ```
 
-- Update the **`Button`** to add a **`Command`** property that is bound to the **`IncrementCounter`** task of the **`BindableMainModel`**.
+- Update the **`Button`** to add a **`Command`** property that is bound to the **`IncrementCounter`** task of the **`MainViewModel`**.
 
     ```csharp
     new Button()
@@ -142,7 +142,7 @@ Now that we have the **`BindableMainModel`** class, we can update the **`MainPag
     {
         public MainPage()
         {
-            this.DataContext(new BindableMainModel(), (page, vm) => page
+            this.DataContext(new MainViewModel(), (page, vm) => page
                 .Background(ThemeResource.Get<Brush>("ApplicationPageBackgroundThemeBrush"))
                 .Content(
                     new StackPanel()

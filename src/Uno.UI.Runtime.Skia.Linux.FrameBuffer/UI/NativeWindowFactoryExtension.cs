@@ -7,7 +7,7 @@ using Uno.WinUI.Runtime.Skia.Linux.FrameBuffer;
 using Uno.WinUI.Runtime.Skia.Linux.FrameBuffer.UI;
 using Microsoft.UI.Xaml;
 
-namespace Uno.UI.Runtime.Skia.Gtk.Extensions.UI.Xaml.Controls;
+namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer.UI;
 
 internal class NativeWindowFactoryExtension : INativeWindowFactoryExtension
 {
@@ -19,6 +19,8 @@ internal class NativeWindowFactoryExtension : INativeWindowFactoryExtension
 	{
 		_host = host;
 	}
+
+	public bool SupportsClosingCancellation => false;
 
 	public bool SupportsMultipleWindows => false;
 

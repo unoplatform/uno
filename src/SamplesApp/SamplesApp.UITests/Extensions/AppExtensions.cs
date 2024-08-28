@@ -5,6 +5,8 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Uno.UITest;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
@@ -13,6 +15,14 @@ namespace SamplesApp.UITests.Extensions
 {
 	public static class AppExtensions
 	{
+#if !IS_RUNTIME_UI_TESTS
+		public static async Task<FileInfo> TakeScreenshotAsync(this IApp app, string title)
+			=> app.Screenshot(title);
+
+		public static async ValueTask DragCoordinatesAsync(this IApp app, float fromX, float fromY, float toX, float toY, CancellationToken ct = default)
+			=> app.DragCoordinates(fromX, fromY, toX, toY);
+#endif
+
 		public static void DragCoordinates(this IApp app, PointF from, PointF to) => app.DragCoordinates(from.X, from.Y, to.X, to.Y);
 
 #if !IS_RUNTIME_UI_TESTS

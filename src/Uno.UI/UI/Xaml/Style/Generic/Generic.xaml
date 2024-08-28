@@ -221,10 +221,6 @@
 
 	<Style x:Key="XamlDefaultTextBox"
 		   TargetType="TextBox">
-		<Setter Property="MinWidth"
-				Value="{ThemeResource TextControlThemeMinWidth}" />
-		<Setter Property="MinHeight"
-				Value="{ThemeResource TextControlThemeMinHeight}" />
 		<Setter Property="Foreground"
 				Value="{ThemeResource SystemControlForegroundBaseHighBrush}" />
 		<Setter Property="Background"

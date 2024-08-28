@@ -20,7 +20,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 
 		public static DependencyProperty KeyTimeProperty { get; } =
-			DependencyProperty.Register("KeyTime", typeof(KeyTime), typeof(ObjectKeyFrame), new FrameworkPropertyMetadata(null));
+			DependencyProperty.Register("KeyTime", typeof(KeyTime), typeof(ObjectKeyFrame), new FrameworkPropertyMetadata(default(KeyTime)));
 		#endregion
 
 		#region Value Dependency Property

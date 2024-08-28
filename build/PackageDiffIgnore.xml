@@ -1890,6 +1890,9 @@
 			<Member fullName="Microsoft.UI.Xaml.IXamlServiceProvider Uno.UI.Helpers.MarkupHelper.CreateParserContext(System.Object target, Microsoft.UI.Xaml.Markup.ProvideValueTargetProperty property)" reason="Not in WinUI; refactored out" />
 			<Member fullName="Windows.UI.Xaml.IXamlServiceProvider Uno.UI.Helpers.MarkupHelper.CreateParserContext(System.Object target, Windows.UI.Xaml.Markup.ProvideValueTargetProperty property)" reason="Not in WinUI; refactored out" />
 
+			<Member fullName="System.Void Windows.UI.Xaml.UnhandledExceptionEventArgs..ctor(System.Exception e, System.Boolean fatal)" reason="Not in WinUI" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.UnhandledExceptionEventArgs..ctor(System.Exception e, System.Boolean fatal)" reason="Not in WinUI" />
+
 		</Methods>
 	</IgnoreSet>
 	<![CDATA[

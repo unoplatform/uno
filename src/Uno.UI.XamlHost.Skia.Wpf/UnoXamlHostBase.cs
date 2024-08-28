@@ -13,6 +13,7 @@ using WUX = Microsoft.UI.Xaml;
 using Uno.UI.Xaml.Controls;
 using Microsoft.UI.Content;
 using Uno.UI.Xaml.Core;
+using Microsoft.UI.Windowing;
 
 namespace Uno.UI.XamlHost.Skia.Wpf
 {
@@ -75,6 +76,8 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 						{
 							application = (WUX.Application)Activator.CreateInstance(type);
 						});
+
+						AppWindow.SkipMainWindowId();
 
 						return (WUX.Markup.IXamlMetadataProvider)application;
 					}
