@@ -76,7 +76,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics\Uno.WinUI.Graphics.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics3D\Uno.WinUI.Graphics3D.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.Windows.csproj">
 			<Project>{2569663d-293a-4a1d-bb84-aa8c7b4b7f92}</Project>
 			<Name>Uno.UI.MSAL</Name>

@@ -2,12 +2,12 @@
 uid: Uno.Controls.GLCanvasElement
 ---
 
-## Uno.WinUI.Graphics.GLCanvasElement
+## Uno.WinUI.Graphics3D.GLCanvasElement
 
 > [!IMPORTANT]
 > This functionality is only available on WinUI and Skia Desktop (`netX.0-desktop`) targets that are running with Desktop OpenGL (not GLES) hardware acceleration. This is also not available on MacOS.
 
-`GLCanvasElement` is a `Grid` for drawing 3D graphics with OpenGL. This class comes as a part of the `Uno.WinUI.Graphics` package.
+`GLCanvasElement` is a `Grid` for drawing 3D graphics with OpenGL. This class comes as a part of the `Uno.WinUI.Graphics3D` package.
 
 To use `GLCanvasElement`, create a subclass of `GLCanvasElement` and override the abstract methods `Init`, `RenderOverride` and `OnDestroy`.
 

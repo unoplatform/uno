@@ -315,7 +315,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SamplesApp.Skia.Generic", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.Runtime.Skia.X11", "Uno.UI.Runtime.Skia.X11\Uno.UI.Runtime.Skia.X11.csproj", "{37441DE3-088B-4B63-A1E2-E70E39BF4222}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Uno.WinUI.Graphics", "AddIns\Uno.WinUI.Graphics\Uno.WinUI.Graphics.csproj", "{0F62DA75-6AD9-4F58-B69C-D63CA9053E34}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Uno.WinUI.Graphics3D", "AddIns\Uno.WinUI.Graphics3D\Uno.WinUI.Graphics3D.csproj", "{0F62DA75-6AD9-4F58-B69C-D63CA9053E34}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

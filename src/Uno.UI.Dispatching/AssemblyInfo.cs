@@ -16,7 +16,7 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("SamplesApp.Wasm")]
 [assembly: InternalsVisibleTo("SamplesApp.Skia")]
 
-[assembly: InternalsVisibleTo("Uno.WinUI.Graphics")]
+[assembly: InternalsVisibleTo("Uno.WinUI.Graphics3D")]
 
 [assembly: InternalsVisibleTo("Uno")]
 

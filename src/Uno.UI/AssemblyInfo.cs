@@ -29,7 +29,7 @@ using Uno.Foundation.Diagnostics.CodeAnalysis;
 [assembly: InternalsVisibleTo("Uno.UI.MediaPlayer.Skia.Gtk")]
 [assembly: InternalsVisibleTo("Uno.UI.MediaPlayer.WebAssembly")]
 
-[assembly: InternalsVisibleTo("Uno.WinUI.Graphics")]
+[assembly: InternalsVisibleTo("Uno.WinUI.Graphics3D")]
 
 [assembly: AssemblyMetadata("IsTrimmable", "True")]
 

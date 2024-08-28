@@ -20,7 +20,7 @@ using Uno.Graphics;
 using Uno.UI.Dispatching;
 #endif
 
-namespace Uno.WinUI.Graphics;
+namespace Uno.WinUI.Graphics3D;
 
 /// <summary>
 /// A <see cref="FrameworkElement"/> that exposes the ability to draw 3D graphics using OpenGL and Silk.NET.

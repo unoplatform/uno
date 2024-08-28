@@ -11,7 +11,7 @@ using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Logging;
 
-namespace Uno.WinUI.Graphics;
+namespace Uno.WinUI.Graphics3D;
 
 public abstract partial class GLCanvasElement
 {
