@@ -49,7 +49,6 @@
 										UIElements. On iOS, this means additional weak references
 										backed fields to handle opaque native reference pinning and avoid
 										memory leaks.
-  - UNO_HAS_ENHANCED_HIT_TEST_PROPERTY: Used to mark if the ENUM hit test property is present or not
   - UNO_HAS_MANAGED_SCROLL_PRESENTER: Determines if the platforms supports managed scroll presenter which
 									  uses render transforms instead of native scroll feature (if any)
   - UNO_HAS_MANAGED_POINTERS: Determines if the pointer events are dispatched by uno instead of the system (if any).
@@ -66,12 +65,12 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(UnoRuntimeIdentifier)'=='WebAssembly'">
-		<DefineConstants>$(DefineConstants);__WASM__;UNO_HAS_ENHANCED_HIT_TEST_PROPERTY;UNO_HAS_ENHANCED_LIFECYCLE;UNO_HAS_MANAGED_POINTERS;HAS_INPUT_INJECTOR</DefineConstants>
+		<DefineConstants>$(DefineConstants);__WASM__;UNO_HAS_ENHANCED_LIFECYCLE;UNO_HAS_MANAGED_POINTERS;HAS_INPUT_INJECTOR</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(UnoRuntimeIdentifier)'=='Skia'">
 		<DefineConstants>$(DefineConstants);__SKIA__;SUPPORTS_RTL;UNO_SUPPORTS_NATIVEHOST;UNO_HAS_ENHANCED_LIFECYCLE</DefineConstants>
-		<DefineConstants>$(DefineConstants);UNO_HAS_MANAGED_POINTERS;UNO_HAS_ENHANCED_HIT_TEST_PROPERTY;UNO_HAS_MANAGED_SCROLL_PRESENTER;HAS_INPUT_INJECTOR</DefineConstants>
+		<DefineConstants>$(DefineConstants);UNO_HAS_MANAGED_POINTERS;UNO_HAS_MANAGED_SCROLL_PRESENTER;HAS_INPUT_INJECTOR</DefineConstants>
 		<DefineConstants>$(DefineConstants);HAS_COMPOSITION_API;UNO_HAS_BORDER_VISUAL</DefineConstants>
 		<DefineConstants>$(DefineConstants);HAS_RENDER_TARGET_BITMAP</DefineConstants>
 	</PropertyGroup>
