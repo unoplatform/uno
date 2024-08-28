@@ -39,7 +39,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public TextBlock() : base("p")
 		{
-			SetDefaultForeground(ForegroundProperty);
+			UpdateLastUsedTheme();
 
 			OnFontStyleChangedPartial();
 			OnFontWeightChangedPartial();
@@ -51,18 +51,20 @@ namespace Microsoft.UI.Xaml.Controls
 			OnTextAlignmentChangedPartial();
 			OnTextWrappingChangedPartial();
 			OnIsTextSelectionEnabledChangedPartial();
-			InitializeDefaultValues();
 
 			_hyperlinks.CollectionChanged += HyperlinksOnCollectionChanged;
 		}
 
-		/// <summary>
-		/// Set default properties to vertical top.
-		/// In wasm, this behavior is closer to the default textblock property than stretch.
-		/// </summary>
-		private void InitializeDefaultValues()
+		internal override bool GetDefaultValue2(DependencyProperty property, out object defaultValue)
 		{
-			this.SetValue(VerticalAlignmentProperty, VerticalAlignment.Top, DependencyPropertyValuePrecedences.DefaultValue);
+			if (property == VerticalAlignmentProperty)
+			{
+				// In wasm, this behavior is closer to the default TextBlock property than stretch.
+				defaultValue = Uno.UI.Helpers.Boxes.VerticalAlignmentBoxes.Top;
+				return true;
+			}
+
+			return base.GetDefaultValue2(property, out defaultValue);
 		}
 
 		private void ConditionalUpdate(ref bool condition, Action action)

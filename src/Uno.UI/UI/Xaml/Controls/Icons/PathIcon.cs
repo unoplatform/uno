@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls;
 /// <summary>
 /// Represents an icon that uses a vector path as its content.
 /// </summary>
-public partial class PathIcon : IconElement
+public partial class PathIcon : IconElement, IThemeChangeAware
 {
 	private readonly Path _path;
 
@@ -58,6 +58,16 @@ public partial class PathIcon : IconElement
 		if (_path is not null)
 		{
 			_path.Fill = (Brush)e.NewValue;
+		}
+	}
+
+	// The way this works in WinUI is by the MarkInheritedPropertyDirty call in CFrameworkElement::NotifyThemeChangedForInheritedProperties
+	// There is a special handling for Foreground specifically there.
+	void IThemeChangeAware.OnThemeChanged()
+	{
+		if (_path is not null)
+		{
+			_path.Fill = Foreground;
 		}
 	}
 }

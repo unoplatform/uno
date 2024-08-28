@@ -217,7 +217,7 @@ namespace Microsoft.UI.Xaml
 			}
 			else if (property == IsTabStopProperty)
 			{
-				defaultValue = IsTabStopDefaultValue;
+				defaultValue = Uno.UI.Helpers.Boxes.Box(IsTabStopDefaultValue);
 				return true;
 			}
 
@@ -522,13 +522,8 @@ namespace Microsoft.UI.Xaml
 
 		partial void OnVisibilityChangedPartial(Visibility oldValue, Visibility newValue);
 
-		/// <summary>
-		/// Set correct default foreground for the current theme.
-		/// </summary>
-		/// <param name="foregroundProperty">The appropriate property for the calling instance.</param>
-		private protected void SetDefaultForeground(DependencyProperty foregroundProperty)
+		private protected void UpdateLastUsedTheme()
 		{
-			this.SetValue(foregroundProperty, DefaultBrushes.TextForegroundBrush, DependencyPropertyValuePrecedences.DefaultValue);
 			((IDependencyObjectStoreProvider)this).Store.SetLastUsedTheme(Application.Current?.RequestedThemeForResources);
 		}
 

@@ -32,7 +32,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public TextBlock()
 		{
-			SetDefaultForeground(ForegroundProperty);
+			UpdateLastUsedTheme();
 			_textVisual = new TextVisual(Visual.Compositor, this);
 
 			Visual.Children.InsertAtBottom(_textVisual);
