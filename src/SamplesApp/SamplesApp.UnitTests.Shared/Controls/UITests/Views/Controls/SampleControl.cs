@@ -56,16 +56,12 @@ namespace Uno.UI.Samples.Controls
 		}
 
 #if XAMARIN
-		internal override bool GetDefaultValue2(DependencyProperty property, out object defaultValue)
+		protected override void OnDataContextChanged()
 		{
-			if (property == ContentProperty)
-			{
-				// Workaround to #10396: The DataContext of ContentTemplate should be ContentControl.DataContext if ContentControl.Content is not set.
-				defaultValue = DataContext;
-				return true;
-			}
+			base.OnDataContextChanged();
 
-			return base.GetDefaultValue2(property, out defaultValue);
+			// Workaround to #10396: The DataContext of ContentTemplate should be ContentControl.DataContext if ContentControl.Content is not set.
+			this.SetValue(ContentProperty, DataContext, DependencyPropertyValuePrecedences.DefaultStyle);
 		}
 #endif
 	}
