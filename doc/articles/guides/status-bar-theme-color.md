@@ -6,6 +6,9 @@ uid: Uno.Tutorials.StatusBarThemeColor
 
 The [`UISettings.ColorValuesChanged` event](https://learn.microsoft.com/uwp/api/windows.ui.viewmanagement.uisettings.colorvalueschanged) can be used to listen for notifications when dark mode is enabled or disabled at the system level.
 
+> TIP
+> For easier customization of the StatusBar, consider using the [StatusBar Extensions](xref:Toolkit.Helpers.StatusBarExtensions) from Uno.Toolkit, as it simplifies the process of updating the StatusBar.
+
 ## Example
 
 The complete sample code can be found in the [StatusBarThemeColor sample in Uno.Samples GitHub repository](https://github.com/unoplatform/Uno.Samples/tree/master/UI/StatusBarThemeColor).
