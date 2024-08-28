@@ -24,7 +24,7 @@ internal class WpfNativeOpenGLWrapper : INativeOpenGLWrapper
 	{
 		if (element.XamlRoot?.HostWindow?.NativeWindow is not WpfWindow wpfWindow)
 		{
-			throw new InvalidOperationException($"The XamlRoot and its NativeWindow must be initialzied on the element before calling {nameof(CreateContext)}.");
+			throw new InvalidOperationException($"The XamlRoot and its NativeWindow must be initialized on the element before calling {nameof(CreateContext)}.");
 		}
 		var hwnd = new WindowInteropHelper(wpfWindow).Handle;
 
