@@ -1,17 +1,13 @@
 ﻿#if WINAPPSDK
 
 using System;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Microsoft.Extensions.Logging;
-using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
 using Silk.NET.Core.Contexts;
 using Silk.NET.Core.Loader;
 using Silk.NET.OpenGL;
+using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Logging;
 
@@ -26,112 +22,148 @@ namespace Uno.WinUI.Graphics;
 /// </remarks>
 public abstract partial class GLCanvasElement
 {
-
-	private readonly Window _window;
-	private readonly WriteableBitmap _backBuffer;
-	private readonly Image _image;
-	private readonly ScaleTransform _scaleTransform;
-
-	private nint _hwnd;
-	private nint _hdc;
-	private int _pixelFormat;
-	private nint _glContext;
-
-	/// <param name="width">The width of the backing framebuffer.</param>
-	/// <param name="height">The height of the backing framebuffer.</param>
-	/// <param name="window">The window that this element will belong to.</param>
-	protected GLCanvasElement(uint width, uint height, Window window)
+	internal interface INativeOpenGLWrapper
 	{
-		_width = width;
-		_height = height;
-		_window = window;
+		public delegate IntPtr GLGetProcAddress(string proc);
 
-		_backBuffer = new WriteableBitmap((int)width, (int)height);
+		/// <summary>
+		/// Creates an OpenGL context for a native window/surface that the
+		/// <param name="element"></param> belongs to. The <see cref="NativeOpenGLWrapper"/>
+		/// will be associated with this element until a corresponding call to <see cref="DestroyContext"/>.
+		/// </summary>
+		public void CreateContext(UIElement element);
 
-		_scaleTransform = new ScaleTransform { ScaleX = 1, ScaleY = -1 }; // because OpenGL coordinates go bottom-to-top
-		_image = new Image
+		/// <remarks>This should be cast to a Silk.NET.GL</remarks>
+		public object CreateGLSilkNETHandle();
+
+		/// <summary>
+		/// Destroys the context created in <see cref="CreateContext"/>. This is only called if a preceding
+		/// call to <see cref="CreateContext"/> is made (after the last call to <see cref="DestroyContext"/>).
+		/// </summary>
+		public void DestroyContext();
+
+		/// <summary>
+		/// Makes the OpenGL context created in <see cref="CreateContext"/> the current context for the thread.
+		/// </summary>
+		/// <returns>A disposable that restores the OpenGL context to what it was at the time of this method call.</returns>
+		public IDisposable MakeCurrent();
+	}
+
+	internal class WinUINativeOpenGLWrapper(Func<Window> getWindowFunc) : INativeOpenGLWrapper
+	{
+		private nint _hdc;
+		private nint _glContext;
+
+		public void CreateContext(UIElement element)
 		{
-			Source = _backBuffer,
-			RenderTransform = _scaleTransform
-		};
-		Content = _image;
+			var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(getWindowFunc());
 
-		Loaded += OnLoaded;
-		Unloaded += OnUnloaded;
-		SizeChanged += OnSizeChanged;
-	}
+			_hdc = NativeMethods.GetDC(hwnd);
 
-	private void OnLoaded(object sender, RoutedEventArgs e)
-	{
-		SetupOpenGlContext();
-		OnLoadedShared();
-	}
+			NativeMethods.PIXELFORMATDESCRIPTOR pfd = new();
+			pfd.nSize = (ushort)Marshal.SizeOf(pfd);
+			pfd.nVersion = 1;
+			pfd.dwFlags = NativeMethods.PFD_DRAW_TO_WINDOW | NativeMethods.PFD_SUPPORT_OPENGL | NativeMethods.PFD_DOUBLEBUFFER;
+			pfd.iPixelType = NativeMethods.PFD_TYPE_RGBA;
+			pfd.cColorBits = 32;
+			pfd.cRedBits = 8;
+			pfd.cGreenBits = 8;
+			pfd.cBlueBits = 8;
+			pfd.cAlphaBits = 8;
+			pfd.cDepthBits = 16;
+			pfd.cStencilBits = 1; // anything > 0 is fine, we will most likely get 8
+			pfd.iLayerType = NativeMethods.PFD_MAIN_PLANE;
 
-	private void OnUnloaded(object sender, RoutedEventArgs e) => OnUnloadedShared();
+			var pixelFormat = NativeMethods.ChoosePixelFormat(_hdc, ref pfd);
 
-	private void SetupOpenGlContext()
-	{
-		_hwnd = WinRT.Interop.WindowNative.GetWindowHandle(_window);
+			// To inspect the chosen pixel format:
+			// WpfRenderingNativeMethods.PIXELFORMATDESCRIPTOR temp_pfd = default;
+			// WpfRenderingNativeMethods.DescribePixelFormat(_hdc, _pixelFormat, (uint)Marshal.SizeOf<WpfRenderingNativeMethods.PIXELFORMATDESCRIPTOR>(), ref temp_pfd);
 
-		_hdc = NativeMethods.GetDC(_hwnd);
+			if (pixelFormat == 0)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"ChoosePixelFormat failed");
+				}
+				throw new InvalidOperationException("ChoosePixelFormat failed");
+			}
 
-		NativeMethods.PIXELFORMATDESCRIPTOR pfd = new();
-        pfd.nSize = (ushort)Marshal.SizeOf(pfd);
-        pfd.nVersion = 1;
-        pfd.dwFlags = NativeMethods.PFD_DRAW_TO_WINDOW | NativeMethods.PFD_SUPPORT_OPENGL | NativeMethods.PFD_DOUBLEBUFFER;
-        pfd.iPixelType = NativeMethods.PFD_TYPE_RGBA;
-        pfd.cColorBits = 32;
-        pfd.cRedBits = 8;
-        pfd.cGreenBits = 8;
-        pfd.cBlueBits = 8;
-        pfd.cAlphaBits = 8;
-        pfd.cDepthBits = 16;
-        pfd.cStencilBits = 1; // anything > 0 is fine, we will most likely get 8
-        pfd.iLayerType = NativeMethods.PFD_MAIN_PLANE;
+			if (NativeMethods.SetPixelFormat(_hdc, pixelFormat, ref pfd) == 0)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"SetPixelFormat failed");
+				}
+				throw new InvalidOperationException("ChoosePixelFormat failed");
+			}
 
-        _pixelFormat = NativeMethods.ChoosePixelFormat(_hdc, ref pfd);
+			_glContext = NativeMethods.wglCreateContext(_hdc);
 
-        // To inspect the chosen pixel format:
-        // NativeMethods.PIXELFORMATDESCRIPTOR temp_pfd = default;
-        // NativeMethods.DescribePixelFormat(_hdc, _pixelFormat, (uint)Marshal.SizeOf<NativeMethods.PIXELFORMATDESCRIPTOR>(), ref temp_pfd);
+			if (_glContext == IntPtr.Zero)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"wglCreateContext failed");
+				}
+				throw new InvalidOperationException("ChoosePixelFormat failed");
+			}
+		}
 
-        if (_pixelFormat == 0)
-        {
-	        if (this.Log().IsEnabled(LogLevel.Error))
-	        {
-		        this.Log().Error($"ChoosePixelFormat failed");
-	        }
-	        throw new InvalidOperationException("ChoosePixelFormat failed");
-        }
+		public object CreateGLSilkNETHandle() => GL.GetApi(new WpfGlNativeContext());
 
-        if (NativeMethods.SetPixelFormat(_hdc, _pixelFormat, ref pfd) == 0)
-        {
-	        if (this.Log().IsEnabled(LogLevel.Error))
-	        {
-		        this.Log().Error($"SetPixelFormat failed");
-	        }
-	        throw new InvalidOperationException("ChoosePixelFormat failed");
-        }
+		public void DestroyContext()
+		{
+			NativeMethods.wglDeleteContext(_glContext);
+			_glContext = default;
+			_hdc = default;
+		}
 
-        _glContext = NativeMethods.wglCreateContext(_hdc);
+		public IDisposable MakeCurrent()
+		{
+			var glContext = NativeMethods.wglGetCurrentContext();
+			var dc = NativeMethods.wglGetCurrentDC();
+			NativeMethods.wglMakeCurrent(_hdc, _glContext);
+			return Disposable.Create(() => NativeMethods.wglMakeCurrent(dc, glContext));
+		}
 
-        if (_glContext == IntPtr.Zero)
-        {
-	        if (this.Log().IsEnabled(LogLevel.Error))
-	        {
-		        this.Log().Error($"wglCreateContext failed");
-	        }
-	        throw new InvalidOperationException("ChoosePixelFormat failed");
-        }
+		// https://sharovarskyi.com/blog/posts/csharp-win32-opengl-silknet/
+		private class WpfGlNativeContext : INativeContext
+		{
+			private readonly UnmanagedLibrary _l;
 
-        _gl = GL.GetApi(new WinUINativeContext());
-	}
+			public WpfGlNativeContext()
+			{
+				_l = new UnmanagedLibrary("opengl32.dll");
+				if (_l.Handle == IntPtr.Zero)
+				{
+					throw new PlatformNotSupportedException("Unable to load opengl32.dll. Make sure you're running on a system with OpenGL support");
+				}
+			}
 
-	public partial void Invalidate() => DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, Render);
+			public bool TryGetProcAddress(string proc, out nint addr, int? slot = null)
+			{
+				if (_l.TryLoadFunction(proc, out addr))
+				{
+					return true;
+				}
 
-	private void OnSizeChanged(object sender, SizeChangedEventArgs args)
-	{
-		_scaleTransform.CenterY = args.NewSize.Height / 2;
+				addr = NativeMethods.wglGetProcAddress(proc);
+				return addr != IntPtr.Zero;
+			}
+
+			public nint GetProcAddress(string proc, int? slot = null)
+			{
+				if (TryGetProcAddress(proc, out var address, slot))
+				{
+					return address;
+				}
+
+				throw new InvalidOperationException("No function was found with the name " + proc + ".");
+			}
+
+			public void Dispose() => _l.Dispose();
+		}
 	}
 
 	// https://sharovarskyi.com/blog/posts/csharp-win32-opengl-silknet/

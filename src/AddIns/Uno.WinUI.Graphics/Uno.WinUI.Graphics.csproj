@@ -14,6 +14,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Silk.NET.OpenGL" Version="2.16.0" />
+		<PackageReference Include="Uno.Core.Extensions.Disposables" Version="4.0.1" />
 		<PackageReference Include="Uno.Core.Extensions.Logging" Version="4.0.1" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.1" />
 	</ItemGroup>

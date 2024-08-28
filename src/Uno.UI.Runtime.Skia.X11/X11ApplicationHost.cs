@@ -67,7 +67,7 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 
 		ApiExtensibility.Register<DragDropManager>(typeof(Windows.ApplicationModel.DataTransfer.DragDrop.Core.IDragDropExtension), o => new X11DragDropExtension(o));
 
-		ApiExtensibility.Register(typeof(Uno.Graphics.GLGetProcAddress), _ => new Uno.Graphics.GLGetProcAddress(GlxInterface.glXGetProcAddress));
+		ApiExtensibility.Register(typeof(Uno.Graphics.INativeOpenGLWrapper), _ => new X11NativeOpenGLWrapper());
 	}
 
 	public X11ApplicationHost(Func<Application> appBuilder)

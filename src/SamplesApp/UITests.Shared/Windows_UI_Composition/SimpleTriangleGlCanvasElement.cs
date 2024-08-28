@@ -9,9 +9,9 @@ namespace UITests.Shared.Windows_UI_Composition
 	// https://learnopengl.com/Getting-started/Hello-Triangle
 	public class SimpleTriangleGlCanvasElement()
 #if __SKIA__
-		: GLCanvasElement(1200, 800)
+		: GLCanvasElement(1200, 800, null)
 #elif WINAPPSDK
-		: GLCanvasElement(1200, 800, SamplesApp.App.MainWindow)
+		: GLCanvasElement(1200, 800, () => SamplesApp.App.MainWindow)
 #endif
 	{
 		private uint _vao;

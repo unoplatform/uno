@@ -1,16 +1,22 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using Windows.Foundation;
+using System.Runtime.InteropServices.WindowsRuntime;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Silk.NET.OpenGL;
 
 #if WINAPPSDK
-using System.Runtime.InteropServices.WindowsRuntime;
 using Microsoft.Extensions.Logging;
+using Microsoft.UI.Dispatching;
 using Uno.Extensions;
 using Uno.Logging;
+#else
+using Uno.Foundation.Extensibility;
+using Uno.Graphics;
+using Uno.UI.Dispatching;
 #endif
 
 namespace Uno.WinUI.Graphics;
@@ -22,12 +28,16 @@ namespace Uno.WinUI.Graphics;
 /// This is only available on WinUI and on skia-based targets running with hardware acceleration.
 /// This is currently only available on the WPF and X11 targets (and WinUI).
 /// </remarks>
-public abstract partial class GLCanvasElement : UserControl
+public abstract partial class GLCanvasElement : Grid
 {
 	private const int BytesPerPixel = 4;
 
+	private INativeOpenGLWrapper _nativeOpenGlWrapper;
+
 	private readonly uint _width;
 	private readonly uint _height;
+
+	private readonly WriteableBitmap _backBuffer;
 
 	// These are valid if and only if IsLoaded
 	private GL? _gl;
@@ -69,28 +79,59 @@ public abstract partial class GLCanvasElement : UserControl
 	/// </remarks>
 	protected abstract void RenderOverride(GL gl);
 
+	/// <param name="width">The width of the backing framebuffer.</param>
+	/// <param name="height">The height of the backing framebuffer.</param>
+	/// <param name="getWindowFunc">A function that returns the Window object that this element belongs to. This parameter is only used on WinUI. On Uno Platform, it can be set to null.</param>
+#if WINAPPSDK
+	protected GLCanvasElement(uint width, uint height, Func<Window> getWindowFunc)
+#else
+	protected GLCanvasElement(uint width, uint height, Func<Window>? getWindowFunc)
+#endif
+	{
+		_width = width;
+		_height = height;
+
+#if WINAPPSDK
+		_nativeOpenGlWrapper = new WinUINativeOpenGLWrapper(getWindowFunc);
+#else
+		if (!ApiExtensibility.CreateInstance<INativeOpenGLWrapper>(this, out _nativeOpenGlWrapper!))
+		{
+			throw new InvalidOperationException($"Couldn't create a {nameof(INativeOpenGLWrapper)} object for {nameof(GLCanvasElement)}. Make sure you are running on a platform with {nameof(GLCanvasElement)} support.");
+		}
+#endif
+
+		_backBuffer = new WriteableBitmap((int)width, (int)height);
+
+		Background = new ImageBrush
+		{
+			ImageSource = _backBuffer,
+			RelativeTransform = new ScaleTransform { ScaleX = 1, ScaleY = -1, CenterX = 0.5, CenterY = 0.5 } // because OpenGL coordinates go bottom-to-top
+		};
+
+		Loaded += OnLoaded;
+		Unloaded += OnUnloaded;
+	}
+
 	/// <summary>
-	/// Invalidates the rendering, and calls <see cref="RenderOverride"/> in the next rendering cycle.
+	/// Invalidates the rendering, and queues a call to <see cref="RenderOverride"/>.
 	/// <see cref="RenderOverride"/> will only be called once after <see cref="Invalidate"/> and the output will
 	/// be saved. You need to call <see cref="Invalidate"/> everytime an update is needed. If drawing an
 	/// animation, call <see cref="Invalidate"/> inside <see cref="RenderOverride"/> to continuously invalidate and update.
 	/// </summary>
-	public partial void Invalidate();
-
-	private GLStateDisposable CreateGlStateDisposable()
 #if WINAPPSDK
-		=> new GLStateDisposable(_gl!, _hdc, _glContext);
+	public void Invalidate() => DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, Render);
 #else
-		=> new GLStateDisposable(_gl!);
+	public void Invalidate() => NativeDispatcher.Main.Enqueue(Render, NativeDispatcherPriority.Idle);
 #endif
 
-	private unsafe void OnLoadedShared()
+	private unsafe void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
 	{
-		Debug.Assert(_gl is not null);
+		_nativeOpenGlWrapper.CreateContext(this);
+		_gl = (GL)_nativeOpenGlWrapper.CreateGLSilkNETHandle();
 
 		_pixels = Marshal.AllocHGlobal((int)(_width * _height * BytesPerPixel));
 
-		using (CreateGlStateDisposable())
+		using (new GLStateDisposable(this))
 		{
 			_framebuffer = _gl.GenBuffer();
 			_gl.BindFramebuffer(GLEnum.Framebuffer, _framebuffer);
@@ -126,16 +167,16 @@ public abstract partial class GLCanvasElement : UserControl
 		Invalidate();
 	}
 
-	private void OnUnloadedShared()
+	private void OnUnloaded(object sender, RoutedEventArgs routedEventArgs)
 	{
 		Debug.Assert(_gl is not null); // because OnLoaded creates _gl
 
 		Marshal.FreeHGlobal(_pixels);
 
-		using (CreateGlStateDisposable())
+		using (new GLStateDisposable(this))
 		{
 #if WINAPPSDK
-			if (NativeMethods.wglMakeCurrent(_hdc, _glContext) != 1)
+			if (NativeMethods.wglGetCurrentContext() == 0)
 			{
 				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
@@ -156,11 +197,6 @@ public abstract partial class GLCanvasElement : UserControl
 		_textureColorBuffer = default;
 		_renderBuffer = default;
 		_pixels = default;
-
-#if WINAPPSDK
-		NativeMethods.wglDeleteContext(_glContext);
-		_glContext = default;
-#endif
 	}
 
 	private unsafe void Render()
@@ -172,127 +208,45 @@ public abstract partial class GLCanvasElement : UserControl
 
 		Debug.Assert(_gl is not null); // because _gl exists if loaded
 
-		using var _ = CreateGlStateDisposable();
+		using var _ = new GLStateDisposable(this);
 
 		_gl!.BindFramebuffer(GLEnum.Framebuffer, _framebuffer);
 		{
-			_gl.Viewport(new global::System.Drawing.Size((int)_width, (int)_height));
+			_gl.Viewport(new System.Drawing.Size((int)_width, (int)_height));
 
 			RenderOverride(_gl);
 
-			// Can we do without this copy?
 			_gl.ReadBuffer(GLEnum.ColorAttachment0);
 			_gl.ReadPixels(0, 0, _width, _height, GLEnum.Bgra, GLEnum.UnsignedByte, (void*)_pixels);
 
-#if WINAPPSDK
 			using (var stream = _backBuffer.PixelBuffer.AsStream())
 			{
 				stream.Write(new ReadOnlySpan<byte>((void*)_pixels, (int)(_width * _height * BytesPerPixel)));
 			}
 			_backBuffer.Invalidate();
-#endif
 		}
-	}
-
-	/// <summary>
-	/// By default, <see cref="GLCanvasElement"/> uses all the <see cref="availableSize"/> given. Subclasses of <see cref="GLCanvasElement"/>
-	/// should override this method if they need something different.
-	/// </summary>
-	/// <remarks>An exception will be thrown if availableSize is infinite (e.g. if inside a StackPanel).</remarks>
-	protected override Size MeasureOverride(Size availableSize)
-	{
-		if (availableSize.Width == Double.PositiveInfinity ||
-		    availableSize.Height == Double.PositiveInfinity ||
-		    double.IsNaN(availableSize.Width) ||
-		    double.IsNaN(availableSize.Height))
-		{
-			throw new ArgumentException($"{nameof(GLCanvasElement)} cannot be measured with infinite or NaN values, but received availableSize={availableSize}.");
-		}
-		return availableSize;
-	}
-
-	/// <summary>
-	/// By default, <see cref="GLCanvasElement"/> uses all the <see cref="finalSize"/> given. Subclasses of <see cref="GLCanvasElement"/>
-	/// should override this method if they need something different.
-	/// </summary>
-	/// <remarks>An exception will be thrown if <see cref="finalSize"/> is infinite (e.g. if inside a StackPanel).</remarks>
-	protected override Size ArrangeOverride(Size finalSize)
-	{
-		if (finalSize.Width == Double.PositiveInfinity ||
-		    finalSize.Height == Double.PositiveInfinity ||
-		    double.IsNaN(finalSize.Width) ||
-		    double.IsNaN(finalSize.Height))
-		{
-			throw new ArgumentException($"{nameof(GLCanvasElement)} cannot be arranged with infinite or NaN values, but received finalSize={finalSize}.");
-		}
-#if WINAPPSDK
-		_image.Arrange(new Rect(new Point(), finalSize));
-#endif
-		return finalSize;
 	}
 
 	private readonly struct GLStateDisposable : IDisposable
 	{
-		private readonly GL _gl;
-		private readonly int _oldArrayBuffer;
-		private readonly int _oldVertexArray;
-		private readonly int _oldFramebuffer;
-		private readonly int _oldTextureColorBuffer;
-		private readonly int _oldRbo;
-		private readonly bool _depthTestEnabled;
-		private readonly bool _depthTestMask;
-		private readonly int[] _oldViewport = new int[4];
+		private readonly GLCanvasElement _glCanvasElement;
+		private readonly IDisposable _contextDisposable;
 
-#if WINAPPSDK
-		private readonly IntPtr _dc;
-		private readonly IntPtr _glContext;
-#endif
-
-#if WINAPPSDK
-		public GLStateDisposable(GL gl, IntPtr dc, IntPtr glContext)
-#else
-		public GLStateDisposable(GL gl)
-#endif
+		public GLStateDisposable(GLCanvasElement glCanvasElement)
 		{
-			_gl = gl;
+			_glCanvasElement = glCanvasElement;
+			var gl = _glCanvasElement._gl;
+			Debug.Assert(gl is not null);
 
-#if WINAPPSDK
-			_glContext = NativeMethods.wglGetCurrentContext();
-			_dc = NativeMethods.wglGetCurrentDC();
-			NativeMethods.wglMakeCurrent(dc, glContext);
-#endif
-
-			_depthTestEnabled = gl.GetBoolean(GLEnum.DepthTest);
-			_depthTestMask = gl.GetBoolean(GLEnum.DepthWritemask);
-			_oldArrayBuffer = gl.GetInteger(GLEnum.ArrayBufferBinding);
-			_oldVertexArray = gl.GetInteger(GLEnum.VertexArrayBinding);
-			_oldFramebuffer = gl.GetInteger(GLEnum.FramebufferBinding);
-			_oldTextureColorBuffer = gl.GetInteger(GLEnum.TextureBinding2D);
-			_oldRbo = gl.GetInteger(GLEnum.RenderbufferBinding);
-			gl.GetInteger(GLEnum.Viewport, new Span<int>(_oldViewport));
+			_contextDisposable = _glCanvasElement._nativeOpenGlWrapper.MakeCurrent();
 		}
 
 		public void Dispose()
 		{
-			_gl.BindVertexArray((uint)_oldVertexArray);
-			_gl.BindBuffer(BufferTargetARB.ArrayBuffer, (uint)_oldArrayBuffer);
-			_gl.BindFramebuffer(GLEnum.Framebuffer, (uint)_oldFramebuffer);
-			_gl.BindTexture(GLEnum.Texture2D, (uint)_oldTextureColorBuffer);
-			_gl.BindRenderbuffer(GLEnum.Renderbuffer, (uint)_oldRbo);
-			_gl.Viewport(_oldViewport[0], _oldViewport[1], (uint)_oldViewport[2], (uint)_oldViewport[3]);
-			_gl.DepthMask(_depthTestMask);
-			if (_depthTestEnabled)
-			{
-				_gl.Enable(EnableCap.DepthTest);
-			}
-			else
-			{
-				_gl.Disable(EnableCap.DepthTest);
-			}
+			var gl = _glCanvasElement._gl;
+			Debug.Assert(gl is not null);
 
-#if WINAPPSDK
-			NativeMethods.wglMakeCurrent(_dc, _glContext);
-#endif
+			_contextDisposable.Dispose();
 		}
 	}
 }

@@ -16,6 +16,8 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("SamplesApp.Wasm")]
 [assembly: InternalsVisibleTo("SamplesApp.Skia")]
 
+[assembly: InternalsVisibleTo("Uno.WinUI.Graphics")]
+
 [assembly: InternalsVisibleTo("Uno")]
 
 [assembly: System.Reflection.AssemblyMetadata("IsTrimmable", "True")]

@@ -2,60 +2,38 @@
 uid: Uno.Controls.GLCanvasElement
 ---
 
-## GLCanvasElement
+## Uno.WinUI.Graphics.GLCanvasElement
 
 > [!IMPORTANT]
-> This functionality is only available on Skia Desktop (`netX.0-desktop`) targets that are running with hardware acceleration. This is also not available on MacOS.
+> This functionality is only available on WinUI and Skia Desktop (`netX.0-desktop`) targets that are running with Desktop OpenGL (not GLES) hardware acceleration. This is also not available on MacOS.
 
-`GLCanvasElement` is a `FrameworkElement` for drawing 3D graphics with OpenGL.
+`GLCanvasElement` is a `Grid` for drawing 3D graphics with OpenGL. This class comes as a part of the `Uno.WinUI.Graphics` package.
 
 To use `GLCanvasElement`, create a subclass of `GLCanvasElement` and override the abstract methods `Init`, `RenderOverride` and `OnDestroy`.
 
 ```csharp
-protected GLCanvasElement(Size resolution);
+protected GLCanvasElement(uint width, uint height, Func<Window> getWindowFunc);
 
 protected abstract void Init(GL gl);
 protected abstract void RenderOverride(GL gl);
 protected abstract void OnDestroy(GL gl);
 ```
 
-The protected constructor has a `Size` parameter, which decides the resolution of the offscreen framebuffer that the `GLCanvasElement` will draw onto. Note that the `resolution` parameter is unrelated to the final size of the drawing in the Uno window. After drawing (using `RenderOverride`) is done, the output is resized to fit the arranged size of the `GLCanvasElement`. You can control the final size just like any other `UIelement`, e.g. using `MeasureOverride`, `ArrangeOverride`, the `Width/Height` properties, etc.
+The protected constructor has `width` and `height` parameters, which decide the resolution of the offscreen framebuffer that the `GLCanvasElement` will draw onto. Note that these parameters are unrelated to the final size of the drawing in the window. After drawing (using `RenderOverride`) is done, the output is resized to fit the arranged size of the `GLCanvasElement`. You can control the final size just like any other `Grid`, e.g. using `MeasureOverride`, `ArrangeOverride`, the `Width/Height` properties, etc.
+
+On WinUI, the protected constructor additionally requires a `Func<Window>` argument that fetches the `Microsoft.UI.Xaml.Window` object that the `GLCanvasElement` belongs to. This function is required because WinUI doesn't provide a way to get the `Window` of a `FrameworkElement`. This paramater is ignored on Uno Platform and can be set to null. This function is only called while the `GLCanvasElement` is loaded.
 
 The 3 abstract methods above all take a `Silk.NET.OpenGL.GL` parameter that can be used to make OpenGL calls.
-
-> [!IMPORTANT]
-> If your application uses `GLCanvasElement`, you will need to add a PackageReference to `Silk.NET.OpenGL`.
 
 The `Init` method is a regular OpenGL setup method that you can use to set up the needed OpenGL objects, like textures, Vertex Array Buffers (VAOs), Element Array Buffers (EBOs), etc.
 
 The `OnDestroy` method is the complement of `Init` and is used to clean up any allocated resources.
 
-> [!IMPORTANT]
-> `Init` and `OnDestroy` might be called multiple times in pairs. Every call to `OnDestroy` will be preceded by a call to `Init`.
+The `RenderOverride` is the main render-loop function. When adding your drawing logic in `RenderOverride`, you can assume that the OpenGL viewport rectangle is already set and its dimensions are equal to the `resolution` parameter provided to the `GLCanvasElement` constructor.
 
-The `RenderOverride` is the main render-loop function. When adding your drawing logic in `RenderOverride`, you can assume that the OpenGL viewport rectangle is already set and its dimensions are equal to the `resolution` parameter provided to the `GLCanvasElement` constructor. Due to the fact that both `GLCanvasElement` and the Skia rendering engine used by Uno both use OpenGL, you must make sure to restore all the OpenGL state values to their original values at the end of `RenderOverride`. For example, make sure to save the values for the initially-bound VAO if you intend to bind your own VAO and bind the original VAO at the end of `RenderOverride`.
+To learn more about using Silk.NET as a C# binding for OpenGL, see the examples in the Silk.NET repository [here](https://github.com/dotnet/Silk.NET/tree/main/examples/CSharp). Note that the windowing and inputs APIs in Silk.NET are not relevant to `GLCanvasElement`, since we only use Silk.NET as an OpenGL binding library, not a windowing library.
 
-```csharp
-protected override void RenderOverride(GL gl)
-{
-    var oldVAO = gl.GetInteger(GLEnum.VertexArrayBinding);
-    gl.BindVertexArray(myVAO);
-
-    // draw with myVAO
-
-    gl.BindVertexArray(oldVAO);
-}
-```
-
-Similarly, make sure to disable depth testing at the end if you choose to enable it. To reduce bugs, some of the more common OpenGL state variables are restored automatically for you, but don't depend on this behaviour.
-
-To learn more about using Silk.NET as a C# binding for OpenGL, see the examples in the Silk.NET repository [here](https://github.com/dotnet/Silk.NET/tree/main/examples/CSharp). Note that the windowing and inputs APIs in Silk.NET are not relevant to `GLCanvasElement`, since Uno Platform has its own support for input and windowing.
-
-Additionally, `GLCanvasElement` has an `Invalidate` method that can be used at any time to tell the Uno Platform runtime to redraw the `GLCanvasElement`, calling `RenderOverride` in the process. Note that `RenderOverride` will only be called once per `Invalidate` call and the output will be saved to be used in future frames. To update the output, you must call `Invalidate`. If you need to continuously update the output (e.g. in an animation), you can add an `Invalidate` call inside `RenderOverride`.
-
-By default, a `GLCanvasElement` takes all the available space given to it in the `Measure` cycle. If you want to customize how much space the element takes, you can override its `MeasureOverride` and `ArrangeOverride` methods.
-
-Note that since a `GLCanvasElement` takes as much space as it can, it's not allowed to place a `GLCanvasElement` inside a `StackPanel`, a `Grid` with `Auto` sizing, or any other element that provides its child(ren) with infinite space. To work around this, you can explicitly set the `Width` and/or `Height` of the `GLCanvasElement`.
+Additionally, `GLCanvasElement` has an `Invalidate` method that requests a redrawing of the `GLCanvasElement`, calling `RenderOverride` in the process. Note that `RenderOverride` will only be called once per `Invalidate` call and the output will be saved to be used in future frames. To update the output, you must call `Invalidate`. If you need to continuously update the output (e.g. in an animation), you can add an `Invalidate` call inside `RenderOverride`.
 
 ## Full example
 
@@ -69,17 +47,21 @@ XAML:
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="using:BlankApp"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:skia="http://uno.ui/skia#using:BlankApp"
+             xmlns:skia="http://uno.ui/skia#using:UITests.Shared.Windows_UI_Composition"
              xmlns:not_skia="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             mc:Ignorable="d skia not_skia"
-             d:DesignHeight="300"
-             d:DesignWidth="400">
+             xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:not_win="http://uno.ui/not_win"
+             mc:Ignorable="skia not_win">
 
     <Grid>
-        <skia:GLTriangleElement />
-        <not_skia:TextBlock Text="This sample is only supported on skia." />
+        <skia:SimpleTriangleGlCanvasElement />
+        <win:Grid>
+            <local:SimpleTriangleGlCanvasElement />
+        </win:Grid>
+        <not_win:Grid>
+            <not_skia:TextBlock Text="This sample is only supported on skia targets and WinUI." />
+        </not_win:Grid>
     </Grid>
 </UserControl>
 ```
@@ -98,8 +80,15 @@ public partial class GLCanvasElementExample : UserControl
 ```
 
 ```csharp
-// GLTriangleElement.skia.cs <-- NOTICE the `.skia`
-public class GLTriangleElement() : GLCanvasElement(new Size(1200, 800))
+// GLTriangleElement.cs
+# __SKIA__ || WINAPPSDK
+public class SimpleTriangleGlCanvasElement()
+#if __SKIA__
+		: GLCanvasElement(1200, 800, null)
+#elif WINAPPSDK
+        // getWindowFunc is usually implemented by having a static property that stores the Window object when creating it (usually in App.cs) and then fetching it in getWindowFunc
+		: GLCanvasElement(1200, 800, /* your getWindowFunc */)
+#endif
 {
     private uint _vao;
     private uint _vbo;
@@ -124,28 +113,34 @@ public class GLTriangleElement() : GLCanvasElement(new Size(1200, 800))
         gl.VertexAttribPointer(0, 3, GLEnum.Float, false, 3 * sizeof(float), (void*)0);
         gl.EnableVertexAttribArray(0);
 
-        const string vertexCode = @"
-#version 330 core
+        // string.Empty is added so that the version line is not interpreted as a preprocessor command
+        var vertexCode =
+        $$"""
+        {{string.Empty}}#version 330
 
-layout (location = 0) in vec3 aPosition;
-out vec4 vertexColor;
+        layout (location = 0) in vec3 aPosition;
+        out vec4 vertexColor;
 
-void main()
-{
-gl_Position = vec4(aPosition, 1.0);
-vertexColor = vec4(aPosition.x + 0.5, aPosition.y + 0.5, aPosition.z + 0.5, 1.0);
-}";
+        void main()
+        {
+         gl_Position = vec4(aPosition, 1.0);
+         vertexColor = vec4(aPosition.x + 0.5, aPosition.y + 0.5, aPosition.z + 0.5, 1.0);
+        }
+        """;
 
-        const string fragmentCode = @"
-#version 330 core
+        // string.Empty is added so that the version line is not interpreted as a preprocessor command
+        var fragmentCode =
+        $$"""
+        {{string.Empty}}#version 330
 
-out vec4 out_color;
-in vec4 vertexColor;
+        out vec4 out_color;
+        in vec4 vertexColor;
 
-void main()
-{
-out_color = vertexColor;
-}";
+        void main()
+        {
+            out_color = vertexColor;
+        }
+        """;
 
         uint vertexShader = gl.CreateShader(ShaderType.VertexShader);
         gl.ShaderSource(vertexShader, vertexCode);
@@ -202,4 +197,5 @@ out_color = vertexColor;
         gl.DrawArrays(PrimitiveType.Triangles, 0, 3);
     }
 }
+#endif
 ```

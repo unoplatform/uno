@@ -21,9 +21,9 @@ using Uno.WinUI.Graphics;
 namespace UITests.Shared.Windows_UI_Composition
 {
 #if WINAPPSDK
-	public class RotatingCubeGlCanvasElement() : GLCanvasElement(1200, 800, SamplesApp.App.MainWindow)
+	public class RotatingCubeGlCanvasElement() : GLCanvasElement(1200, 800, () => SamplesApp.App.MainWindow)
 #elif __SKIA__
-	public class RotatingCubeGlCanvasElement() : GLCanvasElement(1200, 800)
+	public class RotatingCubeGlCanvasElement() : GLCanvasElement(1200, 800, null)
 #endif
 	{
 		private static BufferObject<float> _vbo;
