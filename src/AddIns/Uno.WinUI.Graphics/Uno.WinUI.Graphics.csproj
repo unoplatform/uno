@@ -14,7 +14,6 @@
 
 	<ItemGroup>
 		<PackageReference Include="Silk.NET.OpenGL" Version="2.16.0" />
-		<PackageReference Include="Uno.Core.Extensions.Disposables" Version="4.0.1" />
 		<PackageReference Include="Uno.Core.Extensions.Logging" Version="4.0.1" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.1" />
 	</ItemGroup>
@@ -30,6 +29,7 @@
 			<ItemGroup>
 				<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.5.240227000" />
 				<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.756" PrivateAssets="all" />
+				<PackageReference Include="Uno.Core.Extensions.Disposables" Version="4.0.1" />
 			</ItemGroup>
 		</When>
 		<Otherwise>
