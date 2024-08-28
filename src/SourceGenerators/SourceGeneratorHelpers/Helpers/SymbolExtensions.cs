@@ -130,24 +130,42 @@ namespace Microsoft.CodeAnalysis
 
 		public static IEnumerable<ISymbol> GetAllMembersWithName(this ITypeSymbol? symbol, string name)
 		{
-			do
+			if (symbol != null)
 			{
-				if (symbol != null)
+				foreach (var member in symbol.GetMembers(name))
 				{
-					foreach (var member in symbol.GetMembers(name))
+					yield return member;
+				}
+			}
+
+			if (symbol?.TypeKind == TypeKind.Interface)
+			{
+				foreach (var @interface in symbol.AllInterfaces)
+				{
+					foreach (var member in @interface.GetMembers(name))
 					{
 						yield return member;
 					}
 				}
-
-				symbol = symbol?.BaseType;
-
-				if (symbol == null)
+			}
+			else
+			{
+				do
 				{
-					break;
-				}
+					symbol = symbol?.BaseType;
 
-			} while (symbol.SpecialType != SpecialType.System_Object);
+					if (symbol == null)
+					{
+						break;
+					}
+
+					foreach (var member in symbol.GetMembers(name))
+					{
+						yield return member;
+					}
+
+				} while (symbol.SpecialType != SpecialType.System_Object);
+			}
 		}
 
 		/// <summary>
