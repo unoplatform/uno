@@ -1059,6 +1059,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			textBox.ActualHeight.Should().Be(0);
 		}
 
+#if HAS_UNO
 		[TestMethod]
 		[UnoWorkItem("https://github.com/unoplatform/uno/issues/18040")]
 #if !HAS_INPUT_INJECTOR
@@ -1134,6 +1135,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				return null;
 			}
 		}
+#endif
 
 		private static async Task<TextBox> LoadZeroSizeTextBoxAsync(Style style)
 		{
