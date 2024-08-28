@@ -112,7 +112,13 @@ internal class WpfNativeOpenGLWrapper
 
 	public void DestroyContext()
 	{
-		WindowsRenderingNativeMethods.wglDeleteContext(_glContext);
+		if (WindowsRenderingNativeMethods.wglDeleteContext(_glContext) == 0)
+		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error($"{nameof(WindowsRenderingNativeMethods.wglDeleteContext)} failed.");
+			}
+		}
 		_glContext = default;
 		_hdc = default;
 	}
@@ -121,8 +127,23 @@ internal class WpfNativeOpenGLWrapper
 	{
 		var glContext = WindowsRenderingNativeMethods.wglGetCurrentContext();
 		var dc = WindowsRenderingNativeMethods.wglGetCurrentDC();
-		WindowsRenderingNativeMethods.wglMakeCurrent(_hdc, _glContext);
-		return Disposable.Create(() => WindowsRenderingNativeMethods.wglMakeCurrent(dc, glContext));
+		if (WindowsRenderingNativeMethods.wglMakeCurrent(_hdc, _glContext) == 0)
+		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error($"{nameof(WindowsRenderingNativeMethods.wglMakeCurrent)} failed.");
+			}
+		}
+		return Disposable.Create(() =>
+		{
+			if (WindowsRenderingNativeMethods.wglMakeCurrent(dc, glContext) == 0)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"{nameof(WindowsRenderingNativeMethods.wglMakeCurrent)} failed.");
+				}
+			}
+		});
 	}
 
 	// https://sharovarskyi.com/blog/posts/csharp-win32-opengl-silknet/

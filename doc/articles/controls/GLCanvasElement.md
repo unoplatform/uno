@@ -84,10 +84,10 @@ public partial class GLCanvasElementExample : UserControl
 # __SKIA__ || WINAPPSDK
 public class SimpleTriangleGlCanvasElement()
 #if __SKIA__
-		: GLCanvasElement(1200, 800, null)
+        : GLCanvasElement(1200, 800, null)
 #elif WINAPPSDK
         // getWindowFunc is usually implemented by having a static property that stores the Window object when creating it (usually in App.cs) and then fetching it in getWindowFunc
-		: GLCanvasElement(1200, 800, /* your getWindowFunc */)
+        : GLCanvasElement(1200, 800, /* your getWindowFunc */)
 #endif
 {
     private uint _vao;

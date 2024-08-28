@@ -58,7 +58,7 @@ internal class X11NativeOpenGLWrapper : INativeOpenGLWrapper
 		}
 
 		_glContext = GlxInterface.glXCreateNewContext(_display, bestFbc, GlxConsts.GLX_RGBA_TYPE, IntPtr.Zero, /* True */ 1);
-		_pBuffer = GlxInterface.glXCreatePbuffer(_display, bestFbc, new [] { (int)X11Helper.None });
+		_pBuffer = GlxInterface.glXCreatePbuffer(_display, bestFbc, new[] { (int)X11Helper.None });
 	}
 
 	public object CreateGLSilkNETHandle() => GL.GetApi(GlxInterface.glXGetProcAddress);
