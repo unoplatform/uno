@@ -29,6 +29,7 @@ internal partial class BrowserPointerInputSource : IUnoCorePointerInputSource
 	private static readonly Logger? _logTrace = _log.IsTraceEnabled(LogLevel.Trace) ? _log : null;
 
 	private ulong _bootTime;
+	private bool _isOver;
 	private PointerPoint? _lastPoint;
 	private CoreCursor _pointerCursor = new(CoreCursorType.Arrow, 0);
 
@@ -107,11 +108,18 @@ internal partial class BrowserPointerInputSource : IUnoCorePointerInputSource
 
 			switch (evt)
 			{
+				case HtmlPointerEvent.pointerover when that._isOver:
+					// If there isn't any html node that hit-tested, we might get a pointer-over event, but we are interested only in pointer entering over the window
+					_logTrace?.Trace("Ignoring pointer-over event since pointer is already over the window.");
+					break;
+
 				case HtmlPointerEvent.pointerover:
+					that._isOver = true;
 					that.PointerEntered?.Invoke(that, args);
 					break;
 
 				case HtmlPointerEvent.pointerleave:
+					that._isOver = false;
 					that.PointerExited?.Invoke(that, args);
 					break;
 

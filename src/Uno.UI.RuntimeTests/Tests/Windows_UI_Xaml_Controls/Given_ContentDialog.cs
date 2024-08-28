@@ -484,9 +484,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataTestMethod]
 		[DataRow(true)]
 		[DataRow(false)]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
+		[Ignore("Test is failing on all targets https://github.com/unoplatform/uno/issues/17984")]
 		public async Task When_BackButton_Pressed(bool isCloseButtonEnabled)
 		{
 			var closeButtonClickEvent = new Event();

@@ -184,6 +184,8 @@
           href: debugging-wasm.md
         - name: VS Code Advanced Mobile Debugging
           href: xref:uno.vscode.mobile.advanced.debugging
+        - name: Generic Unhandled Exceptions handler
+          href: xref:Uno.Development.UnhandledExceptions
 
     - name: Embedding
       items:

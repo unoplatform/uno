@@ -21,7 +21,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 
 			if (winningTask == timeoutTask)
 			{
-				return false;
+				throw new TimeoutException("Timed out waiting for event to fire");
 			}
 
 			return await tcs.Task;
@@ -37,8 +37,15 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 			//	timeoutValueMs = INFINITE;
 			//}
 
-			// TODO:MZ: Is this ok?
-			return !await WaitForDefault(timeoutValueMs);
+			try
+			{
+				await WaitForDefault(timeoutValueMs);
+				return true;
+			}
+			catch (TimeoutException)
+			{
+				return false;
+			}
 			//return WaitForSingleObject(m_handle, timeoutValueMs) == WAIT_OBJECT_0;
 		}
 

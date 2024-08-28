@@ -781,10 +781,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 		TrySetDataContextFromContent(newValue);
 
-		if (IsInLiveTree)
-		{
-			TryRegisterNativeElement(oldValue, newValue);
-		}
+		TryRegisterNativeElement(oldValue, newValue);
 
 		SetUpdateTemplate();
 	}
@@ -913,11 +910,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 		// We do this in Enter not Loaded since Loaded is a lot more tricky
 		// (e.g. you can have Unloaded without Loaded, you can have multiple loaded events without unloaded in between, etc.)
-		if (!IsNativeHost)
-		{
-			TryRegisterNativeElement(null, Content);
-		}
-		if (IsNativeHost) // IsNativeHost can become true after the above TryRegisterNativeElement call, so this is not an if-else situation
+		if (IsNativeHost)
 		{
 			AttachNativeElement();
 		}
@@ -958,10 +951,6 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 #if !UNO_HAS_ENHANCED_LIFECYCLE
 		UpdateBorder();
 
-		if (!IsNativeHost)
-		{
-			TryRegisterNativeElement(null, Content);
-		}
 		if (IsNativeHost)
 		{
 			AttachNativeElement();

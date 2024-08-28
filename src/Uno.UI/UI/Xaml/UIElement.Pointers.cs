@@ -71,7 +71,7 @@ namespace Microsoft.UI.Xaml
 			var uiElement = typeof(UIElement);
 			VisibilityProperty.GetMetadata(uiElement).MergePropertyChangedCallback(ClearPointersStateIfNeeded);
 			Microsoft.UI.Xaml.Controls.Control.IsEnabledProperty.GetMetadata(typeof(Microsoft.UI.Xaml.Controls.Control)).MergePropertyChangedCallback(ClearPointersStateIfNeeded);
-#if UNO_HAS_ENHANCED_HIT_TEST_PROPERTY
+#if UNO_HAS_MANAGED_POINTERS
 			HitTestVisibilityProperty.GetMetadata(uiElement).MergePropertyChangedCallback(ClearPointersStateIfNeeded);
 #endif
 		}
@@ -267,7 +267,7 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		internal HitTestability GetHitTestVisibility()
 		{
-#if __WASM__ || __SKIA__ || __MACOS__
+#if UNO_HAS_MANAGED_POINTERS
 			return HitTestVisibility;
 #else
 			// This is a coalesced HitTestVisible and should be unified with it

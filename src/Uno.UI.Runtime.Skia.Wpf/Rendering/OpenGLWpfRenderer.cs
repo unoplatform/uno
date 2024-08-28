@@ -43,9 +43,19 @@ internal partial class OpenGLWpfRenderer : IWpfRenderer
 	public bool TryInitialize()
 	{
 		// Get the window from the wpf control
-		var hwnd = new WindowInteropHelper(Window.GetWindow(_hostControl)).Handle;
+		var window = Window.GetWindow(_hostControl);
+		if (window is null)
+		{
+			throw new InvalidOperationException("The host control is not associated with any Window");
+		}
 
-		if (hwnd != IntPtr.Zero && hwnd == _hwnd)
+		var hwnd = new WindowInteropHelper(window).EnsureHandle();
+		if (hwnd == IntPtr.Zero)
+		{
+			throw new InvalidOperationException("HWND should be initialized");
+		}
+
+		if (hwnd == _hwnd)
 		{
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{

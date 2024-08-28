@@ -1927,6 +1927,10 @@
 			<Member fullName="System\.Void Uno\.UI\.Controls\.HorizontalGridView\.set_(Item|Header|Footer)Template\(System\.Func`1&lt;Android\.Views\.View&gt; value\)" reason="Not in UWP" isRegex="true" />
 			
 			<!-- END templated-parent rework -->
+
+			<Member fullName="System.Void Windows.UI.Xaml.UnhandledExceptionEventArgs..ctor(System.Exception e, System.Boolean fatal)" reason="Not in WinUI" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.UnhandledExceptionEventArgs..ctor(System.Exception e, System.Boolean fatal)" reason="Not in WinUI" />
+
 		</Methods>
 	</IgnoreSet>
 	<![CDATA[
