@@ -575,46 +575,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			ImageAssert.HasColorAt(screenshot, textBoxRect.CenterX - (float)(0.45 * textBoxRect.Width), textBoxRect.Y, "#FF0000", tolerance: 20);
 		}
 
-#if HAS_UNO
-#if !HAS_INPUT_INJECTOR
-		[Ignore("InputInjector is not supported on this platform.")]
-#else
-		[TestMethod]
-		[RunsOnUIThread]
-#endif
-		public async Task Nested_Element_Tapped()
-		{
-			var SUT = new Border()
-			{
-				Child = new Button()
-			};
-
-			var outerBorderTaps = 0;
-			var outerBorderRightTaps = 0;
-
-			SUT.Tapped += (_, _) => outerBorderTaps++;
-			SUT.RightTapped += (_, _) => outerBorderRightTaps++;
-			SUT.Child.RightTapped += (_, _) => { };
-
-			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
-			using var mouse = injector.GetMouse();
-
-			WindowHelper.WindowContent = SUT;
-			await WindowHelper.WaitForIdle();
-
-			mouse.Press(SUT.GetAbsoluteBounds().GetCenter());
-			mouse.Release();
-
-			Assert.AreEqual(1, outerBorderTaps);
-			Assert.AreEqual(0, outerBorderRightTaps);
-
-			mouse.PressRight(SUT.GetAbsoluteBounds().GetCenter());
-			mouse.ReleaseRight();
-
-			Assert.AreEqual(1, outerBorderTaps);
-			Assert.AreEqual(1, outerBorderRightTaps);
-		}
-
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_Child_Set_Same_Reference()
@@ -667,6 +627,46 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				ArrangeCount++;
 				return base.ArrangeOverride(finalSize);
 			}
+		}
+
+#if HAS_UNO
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#else
+		[TestMethod]
+		[RunsOnUIThread]
+#endif
+		public async Task Nested_Element_Tapped()
+		{
+			var SUT = new Border()
+			{
+				Child = new Button()
+			};
+
+			var outerBorderTaps = 0;
+			var outerBorderRightTaps = 0;
+
+			SUT.Tapped += (_, _) => outerBorderTaps++;
+			SUT.RightTapped += (_, _) => outerBorderRightTaps++;
+			SUT.Child.RightTapped += (_, _) => { };
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+
+			mouse.Press(SUT.GetAbsoluteBounds().GetCenter());
+			mouse.Release();
+
+			Assert.AreEqual(1, outerBorderTaps);
+			Assert.AreEqual(0, outerBorderRightTaps);
+
+			mouse.PressRight(SUT.GetAbsoluteBounds().GetCenter());
+			mouse.ReleaseRight();
+
+			Assert.AreEqual(1, outerBorderTaps);
+			Assert.AreEqual(1, outerBorderRightTaps);
 		}
 
 #if !HAS_INPUT_INJECTOR
