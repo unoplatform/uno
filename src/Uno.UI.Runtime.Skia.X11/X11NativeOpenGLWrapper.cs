@@ -10,7 +10,7 @@ internal class X11NativeOpenGLWrapper : INativeOpenGLWrapper
 {
 	private IntPtr _display;
 	private IntPtr _glContext;
-	private IntPtr _pbuffer;
+	private IntPtr _pBuffer;
 
 	public unsafe void CreateContext(UIElement element)
 	{
@@ -58,7 +58,7 @@ internal class X11NativeOpenGLWrapper : INativeOpenGLWrapper
 		}
 
 		_glContext = GlxInterface.glXCreateNewContext(_display, bestFbc, GlxConsts.GLX_RGBA_TYPE, IntPtr.Zero, /* True */ 1);
-		_pbuffer = GlxInterface.glXCreatePbuffer(_display, bestFbc, new [] { (int)X11Helper.None });
+		_pBuffer = GlxInterface.glXCreatePbuffer(_display, bestFbc, new [] { (int)X11Helper.None });
 	}
 
 	public object CreateGLSilkNETHandle() => GL.GetApi(GlxInterface.glXGetProcAddress);
@@ -67,19 +67,19 @@ internal class X11NativeOpenGLWrapper : INativeOpenGLWrapper
 	{
 		using var lockDisposable = X11Helper.XLock(_display);
 
-		GlxInterface.glXDestroyPbuffer(_display, _pbuffer);
+		GlxInterface.glXDestroyPbuffer(_display, _pBuffer);
 		GlxInterface.glXDestroyContext(_display, _glContext);
 
 		_display = default;
 		_glContext = default;
-		_pbuffer = default;
+		_pBuffer = default;
 	}
 
 	public IDisposable MakeCurrent()
 	{
 		var glContext = GlxInterface.glXGetCurrentContext();
 		var drawable = GlxInterface.glXGetCurrentDrawable();
-		GlxInterface.glXMakeCurrent(_display, _pbuffer, _glContext);
+		GlxInterface.glXMakeCurrent(_display, _pBuffer, _glContext);
 		return Disposable.Create(() => GlxInterface.glXMakeCurrent(_display, drawable, glContext));
 	}
 }
