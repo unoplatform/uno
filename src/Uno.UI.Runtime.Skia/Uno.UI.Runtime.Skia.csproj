@@ -30,9 +30,5 @@
 		<ProjectReference Include="..\Uno.UI\Uno.UI.Skia.csproj" />
 		<ProjectReference Include="..\Uno.UWP\Uno.Skia.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 	</ItemGroup>
-	
-	<ItemGroup>
-	  <Compile Remove="INativeOpenGLWrapper.cs" />
-	</ItemGroup>
 
 </Project>

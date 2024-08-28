@@ -51,7 +51,7 @@ public sealed partial class XamlRoot
 				_renderQueued = false;
 				InvalidateRender();
 			}
-		}, NativeDispatcherPriority.Idle);
+		});
 	}
 
 	/// <summary>

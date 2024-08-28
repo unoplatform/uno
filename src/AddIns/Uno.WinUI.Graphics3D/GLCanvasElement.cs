@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.WindowsRuntime;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
@@ -9,6 +7,8 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using Silk.NET.OpenGL;
 
 #if WINAPPSDK
+using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.WindowsRuntime;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using Uno.Extensions;
@@ -123,7 +123,7 @@ public abstract partial class GLCanvasElement : Grid
 	/// </summary>
 #if WINAPPSDK
 	public void Invalidate() => DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, Render);
-#else
+#else // WPF hangs if we attempt to enqueue on Low inside RenderOverride
 	public void Invalidate() => NativeDispatcher.Main.Enqueue(Render, NativeDispatcherPriority.Idle);
 #endif
 
