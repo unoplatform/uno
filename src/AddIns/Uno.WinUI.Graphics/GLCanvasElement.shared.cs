@@ -1,8 +1,17 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Silk.NET.OpenGL;
+
+#if WINAPPSDK
+using System.Runtime.InteropServices.WindowsRuntime;
+using Microsoft.Extensions.Logging;
+using Uno.Extensions;
+using Uno.Logging;
+#endif
 
 namespace Uno.WinUI.Graphics;
 
@@ -15,6 +24,18 @@ namespace Uno.WinUI.Graphics;
 /// </remarks>
 public abstract partial class GLCanvasElement : UserControl
 {
+	private const int BytesPerPixel = 4;
+
+	private readonly uint _width;
+	private readonly uint _height;
+
+	// These are valid if and only if IsLoaded
+	private GL? _gl;
+	private uint _framebuffer;
+	private uint _textureColorBuffer;
+	private uint _renderBuffer;
+	private IntPtr _pixels;
+
 	/// <summary>
 	/// Use this function for the initial setup, e.g. setting up VAOs, VBOs, EBOs, etc.
 	/// </summary>
@@ -56,19 +77,159 @@ public abstract partial class GLCanvasElement : UserControl
 	/// </summary>
 	public partial void Invalidate();
 
+	private GLStateDisposable CreateGlStateDisposable()
+#if WINAPPSDK
+		=> new GLStateDisposable(_gl!, _hdc, _glContext);
+#else
+		=> new GLStateDisposable(_gl!);
+#endif
+
+	private unsafe void OnLoadedShared()
+	{
+		Debug.Assert(_gl is not null);
+
+		_pixels = Marshal.AllocHGlobal((int)(_width * _height * BytesPerPixel));
+
+		using (CreateGlStateDisposable())
+		{
+			_framebuffer = _gl.GenBuffer();
+			_gl.BindFramebuffer(GLEnum.Framebuffer, _framebuffer);
+			{
+				_textureColorBuffer = _gl.GenTexture();
+				_gl.BindTexture(GLEnum.Texture2D, _textureColorBuffer);
+				{
+					_gl.TexImage2D(GLEnum.Texture2D, 0, InternalFormat.Rgb, _width, _height, 0, GLEnum.Rgb, GLEnum.UnsignedByte, (void*)0);
+					_gl.TexParameterI(GLEnum.Texture2D, GLEnum.TextureMinFilter, (uint)GLEnum.Linear);
+					_gl.TexParameterI(GLEnum.Texture2D, GLEnum.TextureMagFilter, (uint)GLEnum.Linear);
+					_gl.FramebufferTexture2D(GLEnum.Framebuffer, FramebufferAttachment.ColorAttachment0, GLEnum.Texture2D, _textureColorBuffer, 0);
+				}
+				_gl.BindTexture(GLEnum.Texture2D, 0);
+
+				_renderBuffer = _gl.GenRenderbuffer();
+				_gl.BindRenderbuffer(GLEnum.Renderbuffer, _renderBuffer);
+				{
+					_gl.RenderbufferStorage(GLEnum.Renderbuffer, InternalFormat.Depth24Stencil8, _width, _height);
+					_gl.FramebufferRenderbuffer(GLEnum.Framebuffer, GLEnum.DepthStencilAttachment, GLEnum.Renderbuffer, _renderBuffer);
+				}
+				_gl.BindRenderbuffer(GLEnum.Renderbuffer, 0);
+
+				if (_gl.CheckFramebufferStatus(GLEnum.Framebuffer) != GLEnum.FramebufferComplete)
+				{
+					throw new InvalidOperationException("Offscreen framebuffer is not complete");
+				}
+
+				Init(_gl);
+			}
+			_gl.BindFramebuffer(GLEnum.Framebuffer, 0);
+		}
+
+		Invalidate();
+	}
+
+	private void OnUnloadedShared()
+	{
+		Debug.Assert(_gl is not null); // because OnLoaded creates _gl
+
+		Marshal.FreeHGlobal(_pixels);
+
+		using (CreateGlStateDisposable())
+		{
+#if WINAPPSDK
+			if (NativeMethods.wglMakeCurrent(_hdc, _glContext) != 1)
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug("Skipping the disposing step because the window is closing. If it's not closing, then this is unexpected.");
+				}
+				return;
+			}
+#endif
+			OnDestroy(_gl);
+			_gl.DeleteFramebuffer(_framebuffer);
+			_gl.DeleteTexture(_textureColorBuffer);
+			_gl.DeleteRenderbuffer(_renderBuffer);
+			_gl.Dispose();
+		}
+
+		_gl = default;
+		_framebuffer = default;
+		_textureColorBuffer = default;
+		_renderBuffer = default;
+		_pixels = default;
+
+#if WINAPPSDK
+		NativeMethods.wglDeleteContext(_glContext);
+		_glContext = default;
+#endif
+	}
+
+	private unsafe void Render()
+	{
+		if (!IsLoaded)
+		{
+			return;
+		}
+
+		Debug.Assert(_gl is not null); // because _gl exists if loaded
+
+		using var _ = CreateGlStateDisposable();
+
+		_gl!.BindFramebuffer(GLEnum.Framebuffer, _framebuffer);
+		{
+			_gl.Viewport(new global::System.Drawing.Size((int)_width, (int)_height));
+
+			RenderOverride(_gl);
+
+			// Can we do without this copy?
+			_gl.ReadBuffer(GLEnum.ColorAttachment0);
+			_gl.ReadPixels(0, 0, _width, _height, GLEnum.Bgra, GLEnum.UnsignedByte, (void*)_pixels);
+
+#if WINAPPSDK
+			using (var stream = _backBuffer.PixelBuffer.AsStream())
+			{
+				stream.Write(new ReadOnlySpan<byte>((void*)_pixels, (int)(_width * _height * BytesPerPixel)));
+			}
+			_backBuffer.Invalidate();
+#endif
+		}
+	}
+
 	/// <summary>
 	/// By default, <see cref="GLCanvasElement"/> uses all the <see cref="availableSize"/> given. Subclasses of <see cref="GLCanvasElement"/>
 	/// should override this method if they need something different.
 	/// </summary>
 	/// <remarks>An exception will be thrown if availableSize is infinite (e.g. if inside a StackPanel).</remarks>
-	protected override partial Size MeasureOverride(Size availableSize);
+	protected override Size MeasureOverride(Size availableSize)
+	{
+		if (availableSize.Width == Double.PositiveInfinity ||
+		    availableSize.Height == Double.PositiveInfinity ||
+		    double.IsNaN(availableSize.Width) ||
+		    double.IsNaN(availableSize.Height))
+		{
+			throw new ArgumentException($"{nameof(GLCanvasElement)} cannot be measured with infinite or NaN values, but received availableSize={availableSize}.");
+		}
+		return availableSize;
+	}
 
 	/// <summary>
 	/// By default, <see cref="GLCanvasElement"/> uses all the <see cref="finalSize"/> given. Subclasses of <see cref="GLCanvasElement"/>
 	/// should override this method if they need something different.
 	/// </summary>
 	/// <remarks>An exception will be thrown if <see cref="finalSize"/> is infinite (e.g. if inside a StackPanel).</remarks>
-	protected override partial Size ArrangeOverride(Size finalSize);
+	protected override Size ArrangeOverride(Size finalSize)
+	{
+		if (finalSize.Width == Double.PositiveInfinity ||
+		    finalSize.Height == Double.PositiveInfinity ||
+		    double.IsNaN(finalSize.Width) ||
+		    double.IsNaN(finalSize.Height))
+		{
+			throw new ArgumentException($"{nameof(GLCanvasElement)} cannot be arranged with infinite or NaN values, but received finalSize={finalSize}.");
+		}
+#if WINAPPSDK
+		_image.Arrange(new Rect(new Point(), finalSize));
+#endif
+		return finalSize;
+	}
 
 	private readonly struct GLStateDisposable : IDisposable
 	{

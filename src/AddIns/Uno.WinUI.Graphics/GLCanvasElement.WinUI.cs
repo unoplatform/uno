@@ -3,8 +3,6 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
@@ -16,7 +14,6 @@ using Silk.NET.Core.Loader;
 using Silk.NET.OpenGL;
 using Uno.Extensions;
 using Uno.Logging;
-using InvalidOperationException = System.InvalidOperationException;
 
 namespace Uno.WinUI.Graphics;
 
@@ -29,10 +26,6 @@ namespace Uno.WinUI.Graphics;
 /// </remarks>
 public abstract partial class GLCanvasElement
 {
-	private const int BytesPerPixel = 4;
-
-	private readonly uint _width;
-	private readonly uint _height;
 
 	private readonly Window _window;
 	private readonly WriteableBitmap _backBuffer;
@@ -43,13 +36,6 @@ public abstract partial class GLCanvasElement
 	private nint _hdc;
 	private int _pixelFormat;
 	private nint _glContext;
-
-	// These are valid if and only if IsLoaded
-	private GL? _gl;
-	private uint _framebuffer;
-	private uint _textureColorBuffer;
-	private uint _renderBuffer;
-	private IntPtr _pixels;
 
 	/// <param name="width">The width of the backing framebuffer.</param>
 	/// <param name="height">The height of the backing framebuffer.</param>
@@ -75,81 +61,13 @@ public abstract partial class GLCanvasElement
 		SizeChanged += OnSizeChanged;
 	}
 
-	private unsafe void OnLoaded(object sender, RoutedEventArgs e)
+	private void OnLoaded(object sender, RoutedEventArgs e)
 	{
 		SetupOpenGlContext();
-		Debug.Assert(_gl is not null);
-
-		_pixels = Marshal.AllocHGlobal((int)(_width * _height * BytesPerPixel));
-
-		using (new GLStateDisposable(_gl, _hdc, _glContext))
-		{
-
-			_framebuffer = _gl.GenBuffer();
-			_gl.BindFramebuffer(GLEnum.Framebuffer, _framebuffer);
-			{
-				_textureColorBuffer = _gl.GenTexture();
-				_gl.BindTexture(GLEnum.Texture2D, _textureColorBuffer);
-				{
-					_gl.TexImage2D(GLEnum.Texture2D, 0, InternalFormat.Rgb, _width, _height, 0, GLEnum.Rgb, GLEnum.UnsignedByte, (void*)0);
-					_gl.TexParameterI(GLEnum.Texture2D, GLEnum.TextureMinFilter, (uint)GLEnum.Linear);
-					_gl.TexParameterI(GLEnum.Texture2D, GLEnum.TextureMagFilter, (uint)GLEnum.Linear);
-					_gl.FramebufferTexture2D(GLEnum.Framebuffer, FramebufferAttachment.ColorAttachment0, GLEnum.Texture2D, _textureColorBuffer, 0);
-				}
-				_gl.BindTexture(GLEnum.Texture2D, 0);
-
-				_renderBuffer = _gl.GenRenderbuffer();
-				_gl.BindRenderbuffer(GLEnum.Renderbuffer, _renderBuffer);
-				{
-					_gl.RenderbufferStorage(GLEnum.Renderbuffer, InternalFormat.Depth24Stencil8, _width, _height);
-					_gl.FramebufferRenderbuffer(GLEnum.Framebuffer, GLEnum.DepthStencilAttachment, GLEnum.Renderbuffer, _renderBuffer);
-				}
-				_gl.BindRenderbuffer(GLEnum.Renderbuffer, 0);
-
-				if (_gl.CheckFramebufferStatus(GLEnum.Framebuffer) != GLEnum.FramebufferComplete)
-				{
-					throw new InvalidOperationException("Offscreen framebuffer is not complete");
-				}
-
-				Init(_gl);
-			}
-			_gl.BindFramebuffer(GLEnum.Framebuffer, 0);
-		}
-
-		Invalidate();
+		OnLoadedShared();
 	}
 
-	private void OnUnloaded(object sender, RoutedEventArgs e)
-	{
-		Debug.Assert(_gl is not null); // because OnLoaded creates _gl
-
-		Marshal.FreeHGlobal(_pixels);
-
-		using (var _ = new GLStateDisposable(_gl, _hdc, _glContext))
-		{
-			if (NativeMethods.wglMakeCurrent(_hdc, _glContext) != 1)
-			{
-				if (this.Log().IsEnabled(LogLevel.Debug))
-				{
-					this.Log().Debug("Skipping the disposing step because the window is closing. If it's not closing, then this is unexpected.");
-				}
-				return;
-			}
-			OnDestroy(_gl);
-			_gl.DeleteFramebuffer(_framebuffer);
-			_gl.DeleteTexture(_textureColorBuffer);
-			_gl.DeleteRenderbuffer(_renderBuffer);
-			_gl.Dispose();
-		}
-		NativeMethods.wglDeleteContext(_glContext);
-
-		_gl = default;
-		_framebuffer = default;
-		_textureColorBuffer = default;
-		_renderBuffer = default;
-		_pixels = default;
-		_glContext = default;
-	}
+	private void OnUnloaded(object sender, RoutedEventArgs e) => OnUnloadedShared();
 
 	private void SetupOpenGlContext()
 	{
@@ -210,60 +128,6 @@ public abstract partial class GLCanvasElement
 	}
 
 	public partial void Invalidate() => DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, Render);
-
-	private unsafe void Render()
-	{
-		if (!IsLoaded)
-		{
-			return;
-		}
-
-		Debug.Assert(_gl is not null); // because _gl exists if loaded
-
-		using var _ = new GLStateDisposable(_gl, _hdc, _glContext);
-
-		_gl!.BindFramebuffer(GLEnum.Framebuffer, _framebuffer);
-		{
-			_gl.Viewport(new global::System.Drawing.Size((int)_width, (int)_height));
-
-			RenderOverride(_gl);
-
-			// Can we do without this copy?
-			_gl.ReadBuffer(GLEnum.ColorAttachment0);
-			_gl.ReadPixels(0, 0, _width, _height, GLEnum.Bgra, GLEnum.UnsignedByte, (void*)_pixels);
-
-			using (var stream = _backBuffer.PixelBuffer.AsStream())
-			{
-				stream.Write(new ReadOnlySpan<byte>((void*)_pixels, (int)(_width * _height * BytesPerPixel)));
-			}
-			_backBuffer.Invalidate();
-		}
-	}
-
-	protected override partial Size MeasureOverride(Size availableSize)
-	{
-		if (availableSize.Width == Double.PositiveInfinity ||
-			availableSize.Height == Double.PositiveInfinity ||
-			double.IsNaN(availableSize.Width) ||
-			double.IsNaN(availableSize.Height))
-		{
-			throw new ArgumentException($"{nameof(GLCanvasElement)} cannot be measured with infinite or NaN values, but received availableSize={availableSize}.");
-		}
-		return availableSize;
-	}
-
-	protected override partial Size ArrangeOverride(Size finalSize)
-	{
-		if (finalSize.Width == Double.PositiveInfinity ||
-			finalSize.Height == Double.PositiveInfinity ||
-			double.IsNaN(finalSize.Width) ||
-			double.IsNaN(finalSize.Height))
-		{
-			throw new ArgumentException($"{nameof(GLCanvasElement)} cannot be arranged with infinite or NaN values, but received finalSize={finalSize}.");
-		}
-		_image.Arrange(new Rect(new Point(), finalSize));
-		return finalSize;
-	}
 
 	private void OnSizeChanged(object sender, SizeChangedEventArgs args)
 	{
