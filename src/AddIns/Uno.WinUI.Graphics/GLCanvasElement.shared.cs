@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Silk.NET.OpenGL;
+using Buffer = Windows.Storage.Streams.Buffer;
 
 #if WINAPPSDK
 using Microsoft.Extensions.Logging;
@@ -44,7 +45,9 @@ public abstract partial class GLCanvasElement : Grid
 	private uint _framebuffer;
 	private uint _textureColorBuffer;
 	private uint _renderBuffer;
+#if WINAPPSDK
 	private IntPtr _pixels;
+#endif
 
 	/// <summary>
 	/// Use this function for the initial setup, e.g. setting up VAOs, VBOs, EBOs, etc.
@@ -129,7 +132,9 @@ public abstract partial class GLCanvasElement : Grid
 		_nativeOpenGlWrapper.CreateContext(this);
 		_gl = (GL)_nativeOpenGlWrapper.CreateGLSilkNETHandle();
 
+#if WINAPPSDK
 		_pixels = Marshal.AllocHGlobal((int)(_width * _height * BytesPerPixel));
+#endif
 
 		using (new GLStateDisposable(this))
 		{
@@ -171,7 +176,9 @@ public abstract partial class GLCanvasElement : Grid
 	{
 		Debug.Assert(_gl is not null); // because OnLoaded creates _gl
 
+#if WINAPPSDK
 		Marshal.FreeHGlobal(_pixels);
+#endif
 
 		using (new GLStateDisposable(this))
 		{
@@ -196,7 +203,9 @@ public abstract partial class GLCanvasElement : Grid
 		_framebuffer = default;
 		_textureColorBuffer = default;
 		_renderBuffer = default;
+#if WINAPPSDK
 		_pixels = default;
+#endif
 	}
 
 	private unsafe void Render()
@@ -217,12 +226,20 @@ public abstract partial class GLCanvasElement : Grid
 			RenderOverride(_gl);
 
 			_gl.ReadBuffer(GLEnum.ColorAttachment0);
-			_gl.ReadPixels(0, 0, _width, _height, GLEnum.Bgra, GLEnum.UnsignedByte, (void*)_pixels);
 
+#if WINAPPSDK
+			_gl.ReadPixels(0, 0, _width, _height, GLEnum.Bgra, GLEnum.UnsignedByte, (void*)_pixels);
 			using (var stream = _backBuffer.PixelBuffer.AsStream())
 			{
 				stream.Write(new ReadOnlySpan<byte>((void*)_pixels, (int)(_width * _height * BytesPerPixel)));
 			}
+#else
+			Buffer.Cast(_backBuffer.PixelBuffer).ApplyActionOnRawBufferPtr(ptr =>
+			{
+				_gl.ReadPixels(0, 0, _width, _height, GLEnum.Bgra, GLEnum.UnsignedByte, (void*)ptr);
+			});
+			_backBuffer.PixelBuffer.Length = _width * _height * BytesPerPixel;
+#endif
 			_backBuffer.Invalidate();
 		}
 	}

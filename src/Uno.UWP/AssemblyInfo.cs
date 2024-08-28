@@ -16,6 +16,8 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Uno.UI.MediaPlayer.WebAssembly")]
 [assembly: InternalsVisibleTo("Uno.UI.XamlHost")]
 
+[assembly: InternalsVisibleTo("Uno.WinUI.Graphics")]
+
 [assembly: InternalsVisibleTo("SamplesApp")]
 [assembly: InternalsVisibleTo("SamplesApp.Droid")]
 [assembly: InternalsVisibleTo("SamplesApp.macOS")]
