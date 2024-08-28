@@ -10,6 +10,7 @@ using System.Linq;
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 {
+#if HAS_UNO
 	[TestClass]
 	public class Given_ListView
 	{
@@ -44,4 +45,5 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			Assert.AreEqual(loggingSelectionInfo.CurrentItem, items[0], "CurrentItem should be 'Item 1' after the tap.");
 		}
 	}
+#endif
 }

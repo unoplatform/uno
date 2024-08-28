@@ -1,3 +1,4 @@
+#if HAS_UNO
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -277,3 +278,4 @@ internal class LoggingSelectionInfo : ICollectionView, ISelectionInfo, IList<obj
 
 	#endregion
 }
+#endif
