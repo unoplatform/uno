@@ -23,6 +23,10 @@ using Colors = Windows.UI.Colors;
 
 using static Private.Infrastructure.TestServices;
 using Microsoft.UI.Xaml.Data;
+using SamplesApp.UITests;
+using Windows.UI.Input.Preview.Injection;
+using Windows.Foundation;
+using System.Collections.Generic;
 
 
 #if WINAPPSDK
@@ -1054,6 +1058,84 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			textBox.ActualWidth.Should().Be(0);
 			textBox.ActualHeight.Should().Be(0);
 		}
+
+#if HAS_UNO
+		[TestMethod]
+		[UnoWorkItem("https://github.com/unoplatform/uno/issues/18040")]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Clicking_Outside_ContentElement_Should_Focus()
+		{
+			var tb1 = new TextBox() { Tag = "First" };
+			var tb2 = new TextBox() { Tag = "Second" };
+			var stackPanel = new StackPanel
+			{
+				Children = { tb1, tb2 },
+			};
+
+			await UITestHelper.Load(stackPanel);
+
+			var list = new List<string>();
+
+			FocusManager.GotFocus += FocusManager_GotFocus;
+
+			var scp1 = GetSCP(tb1);
+			var scp2 = GetSCP(tb2);
+
+			var tb1Bounds = tb1.GetAbsoluteBounds();
+			var tb2Bounds = tb2.GetAbsoluteBounds();
+			var scp1Bounds = scp1.GetAbsoluteBounds();
+			var scp2Bounds = scp2.GetAbsoluteBounds();
+
+			Assert.IsTrue(tb1Bounds.X < scp1Bounds.X);
+			Assert.IsTrue(tb2Bounds.X < scp2Bounds.X);
+
+			var clickPosition1 = new Point((tb1Bounds.X + scp1Bounds.X) / 2, (tb1Bounds.Top + tb1Bounds.Bottom) / 2);
+			var clickPosition2 = new Point((tb2Bounds.X + scp2Bounds.X) / 2, (tb2Bounds.Top + tb2Bounds.Bottom) / 2);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			mouse.MoveTo(clickPosition2);
+			Assert.IsTrue(list.Count == 0);
+			mouse.Press(clickPosition2);
+			await WindowHelper.WaitForIdle();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(list.Count == 1);
+			Assert.AreEqual("Second", list[0]);
+
+			mouse.MoveTo(clickPosition1);
+			Assert.IsTrue(list.Count == 1);
+			mouse.Press(clickPosition1);
+			await WindowHelper.WaitForIdle();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(list.Count == 2);
+			Assert.AreEqual("First", list[1]);
+
+			FocusManager.GotFocus -= FocusManager_GotFocus;
+
+			void FocusManager_GotFocus(object sender, FocusManagerGotFocusEventArgs e)
+				=> list.Add((e.NewFocusedElement as TextBox)?.Tag?.ToString() ?? e.NewFocusedElement?.ToString() ?? "null");
+
+			static FrameworkElement GetSCP(TextBox tb)
+			{
+				var grid = (Grid)VisualTreeHelper.GetChild(tb, 0);
+				foreach (var child in grid.Children)
+				{
+					if (child is ScrollViewer { Name: "ContentElement" } sv)
+					{
+						return sv.Content as FrameworkElement;
+					}
+				}
+
+				Assert.Fail("Cannot find SCP inside TextBox");
+				return null;
+			}
+		}
+#endif
 
 		private static async Task<TextBox> LoadZeroSizeTextBoxAsync(Style style)
 		{
