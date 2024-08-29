@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFrameworks>$(NetPrevious)-android;$(NetPrevious)-ios,$(NetPrevious)-maccatalyst</TargetFrameworks>
+		<OutputType>Exe</OutputType>
 	</PropertyGroup>
 
 	<Import Project="../../targetframework-override.props" />
@@ -8,7 +9,6 @@
 	<PropertyGroup>
 		<SingleProject>true</SingleProject>
 
-		<OutputType>Exe</OutputType>
 		<AssemblyName>SamplesApp</AssemblyName>
 		<DefineConstants>$(DefineConstants);XAMARIN;HAS_UNO</DefineConstants>
 		<IsUnoHead>true</IsUnoHead>
