@@ -588,26 +588,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await WindowHelper.WaitForLoaded(child);
 
-#if __SKIA__ || __WASM__ || __IOS__// Uno specific: The initial layout count here is incorrect - should be 1 as in WinUI
-			var initialCount = 2;
-#else
-			var initialCount = 1;
+#if !HAS_UNO // Uno specific: The initial layout count here is incorrect - should be 1 as in WinUI
+			Assert.AreEqual(1, child.MeasureCount);
+			Assert.AreEqual(1, child.ArrangeCount);
 #endif
-			Assert.AreEqual(initialCount, child.MeasureCount);
-			Assert.AreEqual(initialCount, child.ArrangeCount);
+
+			var initialMeasureCount = child.MeasureCount;
+			var initialArrangeCount = child.ArrangeCount;
 
 			SUT.Child = child;
 
-			await WindowHelper.WaitFor(() => child.MeasureCount > initialCount);
+			// Both measure and arrange count must increase
+			await WindowHelper.WaitFor(() => child.MeasureCount > initialMeasureCount);
+			await WindowHelper.WaitFor(() => child.ArrangeCount > initialArrangeCount);
 
-#if __SKIA__ || __WASM__ || __IOS__ // Uno specific: The layout count here is incorrect - should be 2 as in WinUI
-			var newCount = 4;
-#else
-			var newCount = 2;
+#if !HAS_UNO // Uno specific: The initial layout count here is incorrect - should be 1 as in WinUI
+			Assert.AreEqual(2, child.MeasureCount);
+			Assert.AreEqual(2, child.ArrangeCount);
 #endif
-
-			Assert.AreEqual(newCount, child.MeasureCount);
-			Assert.AreEqual(newCount, child.ArrangeCount);
 		}
 
 		internal partial class MeasureArrangeCounterButton : Button
