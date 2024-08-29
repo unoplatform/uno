@@ -45,6 +45,10 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 				ProcessAssemblyReload(frame.GetContent<AssemblyDeltaReload>());
 				break;
 
+			case UpdateFileResponse.Name:
+				ProcessUpdateFileResponse(frame.GetContent<UpdateFileResponse>());
+				break;
+
 			case FileReload.Name:
 				await ProcessFileReload(frame.GetContent<FileReload>());
 				break;
@@ -65,6 +69,8 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 				break;
 		}
 	}
+
+	private partial void ProcessUpdateFileResponse(UpdateFileResponse response);
 
 	private async Task ProcessFileReload(HotReload.Messages.FileReload fileReload)
 	{

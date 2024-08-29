@@ -458,7 +458,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				{
 					if (this.Log().IsEnabled(LogLevel.Debug))
 					{
-						this.Log().LogDebug($"Got an invalid update file frame ({message})");
+						this.Log().LogDebug($"Got an invalid update file frame ({message}) [{message?.RequestId}].");
 					}
 
 					return (FileUpdateResult.BadRequest, "Invalid request");
@@ -468,7 +468,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				{
 					if (this.Log().IsEnabled(LogLevel.Debug))
 					{
-						this.Log().LogDebug($"Requested file '{message.FilePath}' does not exists.");
+						this.Log().LogDebug($"Requested file '{message.FilePath}' does not exists [{message.RequestId}].");
 					}
 
 					return (FileUpdateResult.FileNotFound, $"Requested file '{message.FilePath}' does not exists.");
@@ -476,26 +476,26 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
-					this.Log().LogDebug($"Apply Changes to {message.FilePath}");
+					this.Log().LogDebug($"Apply Changes to {message.FilePath} [{message.RequestId}].");
 				}
 
 				var originalContent = File.ReadAllText(message.FilePath);
 				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().LogTrace($"Original content: {message.FilePath}");
+					this.Log().LogTrace($"Original content: {message.FilePath} [{message.RequestId}].");
 				}
 
 				var updatedContent = originalContent.Replace(message.OldText, message.NewText);
 				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().LogTrace($"Updated content: {message.FilePath}");
+					this.Log().LogTrace($"Updated content: {message.FilePath} [{message.RequestId}].");
 				}
 
 				if (updatedContent == originalContent)
 				{
 					if (this.Log().IsEnabled(LogLevel.Debug))
 					{
-						this.Log().LogDebug($"No changes detected in {message.FilePath}");
+						this.Log().LogDebug($"No changes detected in {message.FilePath} [{message.RequestId}].");
 					}
 
 					return (FileUpdateResult.NoChanges, null);
