@@ -85,19 +85,19 @@ public partial class Border : FrameworkElement
 
 	public UIElement Child
 	{
-		get => (UIElement)this.GetValue(ChildProperty);
+		get => (UIElement)GetValue(ChildProperty);
 		set
 		{
 			// This means that setting Child to the same reference does not trigger PropertyChanged, 
 			// which is a problem, as WinUI always removes the current child and adds it again,
 			// even when dealing with the exact same reference. This also triggers measure/arrange
 			// on the child. To work around this, we force the update here.
-			if (value == this.Child)
+			if (value == Child)
 			{
-				SetChild(value);
+				SetChild(value, value);
 			}
 
-			this.SetValue(ChildProperty, value);
+			SetValue(ChildProperty, value);
 		}
 	}
 
@@ -112,23 +112,25 @@ public partial class Border : FrameworkElement
 				// disable the property-based propagation here to support the case where the Parent property is overridden to simulate
 				// a different inheritance hierarchy, as is done for some controls with native styles.
 				FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
-				(DependencyObject s, DependencyPropertyChangedEventArgs e) => ((Border)s)?.SetChild((UIElement)e.NewValue)
+				(DependencyObject s, DependencyPropertyChangedEventArgs e) => ((Border)s)?.SetChild((UIElement)e.OldValue, (UIElement)e.NewValue)
 			)
 		);
 
-	private void SetChild(UIElement child)
+	private void SetChild(UIElement previousChild, UIElement newChild)
 	{
-		var existingChild = Child;
-		ReAttachChildTransitions(existingChild, child);
-
-		if (existingChild is not null)
+		if (previousChild != newChild)
 		{
-			RemoveChild(existingChild);
+			ReAttachChildTransitions(previousChild, newChild);
 		}
 
-		if (child is not null)
+		if (previousChild is not null)
 		{
-			AddChild(child);
+			RemoveChild(previousChild);
+		}
+
+		if (newChild is not null)
+		{
+			AddChild(newChild);
 		}
 	}
 
