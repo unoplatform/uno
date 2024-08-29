@@ -68,7 +68,10 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 		}
 
 #if __IOS__
-		Inspectable = FeatureConfiguration.WebView2.IsInspectable;
+		if (UIDevice.CurrentDevice.CheckSystemVersion(16, 4))
+		{
+			Inspectable = FeatureConfiguration.WebView2.IsInspectable;
+		}
 #endif
 
 		Configuration.UserContentController.AddScriptMessageHandler(this, WebMessageHandlerName);
