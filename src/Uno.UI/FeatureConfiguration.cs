@@ -703,6 +703,19 @@ namespace Uno.UI
 #endif
 		}
 
+		public static class WebView2
+		{
+#if __IOS__
+			/// <summary>
+			/// Sets wether the <see cref="WebView2"/> object is inspectable or not.
+			/// </summary>
+			/// <remarks>
+			/// On iOS and Catalyst this means that developers can use the Safari Web Developers tools to debug apps with <see cref="WebView2"/>
+			/// </remarks>
+			public static bool IsInspectable { get; set; };
+#endif
+		}
+
 		public static class Xaml
 		{
 			/// <summary>
