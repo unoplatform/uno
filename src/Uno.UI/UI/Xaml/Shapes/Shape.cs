@@ -76,14 +76,13 @@ namespace Microsoft.UI.Xaml.Shapes
 		}
 
 		public static DependencyProperty StrokeProperty { get; } = DependencyProperty.Register(
-			"Stroke",
+			nameof(Stroke),
 			typeof(Brush),
 			typeof(Shape),
 			new FrameworkPropertyMetadata(
 				defaultValue: null,
-				options: FrameworkPropertyMetadataOptions.AffectsMeasure,
 				propertyChangedCallback: (s, e) => ((Shape)s).OnStrokeChanged((Brush)e.OldValue, (Brush)e.NewValue)
-			)
+			) // Perf: WinUI uses AffectsMeasure, we optimize this and only invalidate measure if needed
 		);
 
 		private void OnStrokeChanged(Brush oldValue, Brush newValue)
