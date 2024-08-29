@@ -146,4 +146,4 @@ The local environment is usually located on port `3000` unless another process i
 
 You have to remove the `docs` fragment from the WordPress menu to reach your local documentation server.
 
-There are some additional information on running DocFx locally that can be found [here](https://platform.uno/docs/articles/uno-development/docfx.html?tabs=tabid-1).
+For detailed instructions on how to run DocFx locally, please refer to the [DocFx Local Setup Guide](https://platform.uno/docs/articles/uno-development/docfx.html?tabs=tabid-1).
