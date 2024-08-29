@@ -70,7 +70,7 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 		}
 	}
 
-	private partial void ProcessUpdateFileResponse(UpdateFileResponse response);
+	partial void ProcessUpdateFileResponse(UpdateFileResponse response);
 
 	private async Task ProcessFileReload(HotReload.Messages.FileReload fileReload)
 	{

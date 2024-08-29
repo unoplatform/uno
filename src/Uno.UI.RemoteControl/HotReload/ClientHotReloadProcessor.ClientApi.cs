@@ -160,7 +160,7 @@ public partial class ClientHotReloadProcessor
 		}
 	}
 
-	private partial void ProcessUpdateFileResponse(UpdateFileResponse response)
+	partial void ProcessUpdateFileResponse(UpdateFileResponse response)
 		=> _updateResponse?.Invoke(this, response);
 	#endregion
 
