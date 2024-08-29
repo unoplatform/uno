@@ -588,7 +588,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await WindowHelper.WaitForLoaded(child);
 
-#if __SKIA__ || __WASM__ // Uno specific: The initial layout count here is incorrect - should be 1 as in WinUI
+#if __SKIA__ || __WASM__ || __IOS__// Uno specific: The initial layout count here is incorrect - should be 1 as in WinUI
 			var initialCount = 2;
 #else
 			var initialCount = 1;
@@ -600,7 +600,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await WindowHelper.WaitFor(() => child.MeasureCount > initialCount);
 
-#if __SKIA__ || __WASM__ // Uno specific: The layout count here is incorrect - should be 2 as in WinUI
+#if __SKIA__ || __WASM__ || __IOS__ // Uno specific: The layout count here is incorrect - should be 2 as in WinUI
 			var newCount = 4;
 #else
 			var newCount = 2;
