@@ -98,6 +98,18 @@ namespace Microsoft.UI.Xaml
 
 		internal FrameworkPropertyMetadata(
 			object defaultValue,
+			FrameworkPropertyMetadataOptions options,
+			PropertyChangedCallback propertyChangedCallback,
+			CoerceValueCallback coerceValueCallback,
+			BackingFieldUpdateCallback backingFieldUpdateCallback,
+			CreateDefaultValueCallback createDefaultValueCallback
+		) : base(defaultValue, propertyChangedCallback, coerceValueCallback, backingFieldUpdateCallback, createDefaultValueCallback)
+		{
+			Options = options.WithDefault();
+		}
+
+		internal FrameworkPropertyMetadata(
+			object defaultValue,
 			PropertyChangedCallback propertyChangedCallback
 		) : base(defaultValue, propertyChangedCallback)
 		{
@@ -177,8 +189,7 @@ namespace Microsoft.UI.Xaml
 
 		internal override PropertyMetadata CloneWithOverwrittenDefaultValue(object newDefaultValue)
 		{
-			// This should clone CreateDefaultValueCallback when it's supported
-			return new FrameworkPropertyMetadata(newDefaultValue, Options, PropertyChangedCallback, CoerceValueCallback, BackingFieldUpdateCallback);
+			return new FrameworkPropertyMetadata(newDefaultValue, Options, PropertyChangedCallback, CoerceValueCallback, BackingFieldUpdateCallback, CreateDefaultValueCallback);
 		}
 	}
 }
