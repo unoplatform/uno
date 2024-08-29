@@ -99,8 +99,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.SwipeControlTests
 
 			await RunAsync(testName);
 
-			var sutPhyRect = _app.GetPhysicalRect(sut);
-			var item2PhyPosition = new Point((int)(isLeftAligned ? sutPhyRect.X : sutPhyRect.CenterX), (int)sutPhyRect.Y + 150).LogicalToPhysicalPixels(_app);
+			var sutPhyRect = App.GetPhysicalRect(sut);
+			var item2PhyPosition = new Point((int)(isLeftAligned ? sutPhyRect.X : sutPhyRect.CenterX), (int)sutPhyRect.Y + 150).LogicalToPhysicalPixels(App);
 
 			// Validate initial state
 			var initial = await TakeScreenshotAsync("initial");

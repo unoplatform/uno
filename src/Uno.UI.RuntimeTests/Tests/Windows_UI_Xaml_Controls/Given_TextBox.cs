@@ -24,7 +24,6 @@ using Colors = Windows.UI.Colors;
 #endif
 
 using static Private.Infrastructure.TestServices;
-using Microsoft.UI.Xaml.Data;
 using SamplesApp.UITests;
 using Windows.UI.Input.Preview.Injection;
 using Windows.Foundation;
@@ -1028,8 +1027,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Size_Zero_Fluent_Default()
 		{
-			using var styles = StyleHelper.UseFluentStyles();
-
 			var textBox = await LoadZeroSizeTextBoxAsync(null);
 
 			textBox.ActualWidth.Should().BeApproximately(textBox.MinWidth, 0.1);
@@ -1048,7 +1045,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Size_Zero_Fluent_ComboBoxTextBoxStyle()
 		{
-			using var styles = StyleHelper.UseFluentStyles();
 			var style = Application.Current.Resources["ComboBoxTextBoxStyle"] as Style;
 
 			var textBox = await LoadZeroSizeTextBoxAsync(style);
