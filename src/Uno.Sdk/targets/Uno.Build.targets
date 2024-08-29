@@ -16,7 +16,7 @@
 
 		<Error Code="UNOB0005"
 			HelpLink="https://aka.platform.uno/UNOB0005"
-			Text="The version of Uno.WinUI must match the version of the Uno.Sdk found in global.json (found $(_UnoSdkVersionCheck_Resolved_UnoWinUI) and expected DefaultUnoVersion). For more information about updating Uno Platform packages, visit https://aka.platform.uno/upgrade-uno-packages"
+			Text="The version of Uno.WinUI must match the version of the Uno.Sdk found in global.json (found $(_UnoSdkVersionCheck_Resolved_UnoWinUI) and expected DefaultUnoVersion). If the version was recently changed in global.json, make sure to restart your IDE. For more information about updating Uno Platform packages, visit https://aka.platform.uno/upgrade-uno-packages"
 			Condition="$(_UnoSdkVersionCheck_Resolved_UnoWinUI) != 'DefaultUnoVersion'" />
 	</Target>
 
