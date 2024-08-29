@@ -18,4 +18,9 @@ internal static class DeviceTargetHelper
 		OperatingSystem.IsIOS() ||
 		OperatingSystem.IsMacCatalyst() ||
 		OperatingSystem.IsTvOS();
+
+	internal static bool IsUIKit() =>
+		OperatingSystem.IsIOS() ||
+		OperatingSystem.IsMacCatalyst() ||
+		OperatingSystem.IsTvOS();
 }

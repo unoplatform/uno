@@ -105,7 +105,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 				//         - We do nothing
 				//     Two layer mode:
 				//         - For Wasm Skia, we do nothing.
-				//         - For Android Skia and iOS Skia:
+				//         - For Android Skia, iOS, Mac Catalyst, or tvOS Skia:
 				//             - Adjust both RuntimeCopyLocalItems and ResolvedCompileFileDefinitions such that netX.0 binaries are used instead of netX.0-android, -ios, -maccatalyst, or -tvos
 				//                 - maybe we should prefer netX.0-desktop over netX.0, if exists.
 				//                 - we should only do that for dlls that reference Uno.UI.dll (use Mono.Cecil to detect that)
@@ -124,7 +124,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 				}
 
 				var isTwoLayer = !isSingleLayer && UnoUIRuntimeIdentifier == "skia";
-				if (isTwoLayer && !IsSkiaMobileRuntimeIdentifier(UnoWinRTRuntimeIdentifier))
+				if (isTwoLayer && !IsSkiaMobileOrWasmRuntimeIdentifier(UnoWinRTRuntimeIdentifier))
 				{
 					this.Log.LogError($"The combination of UnoUIRuntimeIdentifier '{UnoUIRuntimeIdentifier}' and UnoWinRTRuntimeIdentifier '{UnoWinRTRuntimeIdentifier}' is not expected");
 					return false;
@@ -535,5 +535,8 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 
 		private bool IsSkiaMobileRuntimeIdentifier(string runtimeIdentifier)
 			=> runtimeIdentifier is "android" or "ios" or "maccatalyst" or "tvos";
+
+		private bool IsSkiaMobileOrWasmRuntimeIdentifier(string runtimeIdentifier) =>
+			IsSkiaMobileRuntimeIdentifier(runtimeIdentifier) || runtimeIdentifier is "webassembly";
 	}
 }
