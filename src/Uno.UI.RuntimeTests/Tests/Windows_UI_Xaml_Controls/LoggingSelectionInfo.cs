@@ -20,11 +20,6 @@ internal class LoggingSelectionInfo : ICollectionView, ISelectionInfo, IList<obj
 	public LoggingSelectionInfo(IEnumerable<object> items)
 	{
 		_collection.AddRange(items);
-		if (_collection.Count > 0)
-		{
-			_currentItem = _collection[0];
-			_currentPosition = 0;
-		}
 	}
 
 	#region ICollectionView Implementation

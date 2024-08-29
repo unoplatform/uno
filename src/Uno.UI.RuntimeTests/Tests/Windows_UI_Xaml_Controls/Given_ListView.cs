@@ -39,10 +39,9 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			finger.Press(tapTarget);
 			finger.Release();
 
-			Assert.AreEqual(0, listViewBase.SelectedIndex);
 			Assert.AreEqual(loggingSelectionInfo.IsSelected(0), false, "Items at any index should not be selected by default.");
-			Assert.AreEqual(loggingSelectionInfo.CurrentPosition, 0, "CurrentPosition should be 0 after the tap.");
-			Assert.AreEqual(loggingSelectionInfo.CurrentItem, items[0], "CurrentItem should be 'Item 1' after the tap.");
+			Assert.AreEqual(loggingSelectionInfo.CurrentPosition, -1, "CurrentPosition should not have been updated by the ListView.");
+			Assert.AreEqual(loggingSelectionInfo.CurrentItem, null, "CurrentItem should not have been updated by the ListView.");
 		}
 	}
 #endif
