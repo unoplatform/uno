@@ -29,7 +29,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Remove="buildTransitive\Uno.UI.MSAL.targets" />
+		<None Remove="buildTransitive\*.MSAL.targets" />
 	</ItemGroup>
 
 	<ItemGroup>
