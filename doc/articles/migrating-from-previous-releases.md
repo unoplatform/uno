@@ -136,7 +136,7 @@ Additionally, here are some specific hints about the migration to Android 12:
     displayName: Select JDK 11
     ```
 
-  - You may need to [add the following property](https://github.com/tdevere/AppCenterSupportDocs/blob/main/Build/Could_not_determine_API_level_for_$TargetFrameworkVersion_of_v12.0.md) to your Android csproj:
+  - You may need to add the following property to your Android csproj:
 
     ```xml
     <PropertyGroup>
