@@ -30,4 +30,6 @@ public sealed partial class BindableNullableValueTypeTestPage : Page, INotifyPro
 			}
 		}
 	}
+
+	public int MyInitOnlyProperty { get; init; }
 }
