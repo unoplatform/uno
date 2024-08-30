@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>$(NetPrevious)-ios;$(NetPrevious)-maccatalyst;$(NetPrevious)-tvos</TargetFrameworks>
+		<TargetFrameworks>$(NetPrevious)-ios;$(NetPrevious)-maccatalyst</TargetFrameworks> <!-- TODO Add tvOS -->
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
