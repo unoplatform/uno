@@ -379,12 +379,7 @@ namespace Microsoft.UI.Xaml.Documents
 
 		public void OnThemeChanged() => SetDefaultForeground(ForegroundProperty);
 
-#if __WASM__ // On Wasm, we inherit UIElement, and so we need to shadow UIElement.SetDefaultForeground.
-		private protected new
-#else
-		private
-#endif
-		void SetDefaultForeground(DependencyProperty foregroundProperty)
+		private void SetDefaultForeground(DependencyProperty foregroundProperty)
 		{
 			if (this is Hyperlink hl)
 			{
