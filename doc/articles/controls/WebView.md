@@ -141,3 +141,7 @@ public App()
 #endif
 }
 ```
+
+> [!IMPORTANT]
+>
+> This feature will only work for security reasons when the application runs in Debug mode.

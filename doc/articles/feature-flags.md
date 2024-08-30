@@ -115,6 +115,10 @@ public App()
 }
 ```
 
+> [!IMPORTANT]
+>
+> This feature will only work for security reasons when the application runs in Debug mode.
+
 ## `ApplicationData`
 
 On Skia Desktop targets, it is possible to override the default `ApplicationData` folder locations using `WinRTFeatureConfiguration.ApplicationData` properties. For more information, see [related docs here](/articles/features/applicationdata.md#data-location-on-skia-desktop)
