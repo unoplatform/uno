@@ -90,9 +90,7 @@ namespace Microsoft.UI.Xaml
 
 		private readonly Type _originalObjectType;
 		private readonly SerialDisposable _inheritedProperties = new SerialDisposable();
-#if UNO_HAS_UIELEMENT_IMPLICIT_PINNING
 		private ManagedWeakReference? _parentRef;
-#endif
 		private object? _hardParentRef;
 		private readonly Dictionary<DependencyProperty, ManagedWeakReference> _inheritedForwardedProperties = new Dictionary<DependencyProperty, ManagedWeakReference>(DependencyPropertyComparer.Default);
 		private Stack<DependencyPropertyValuePrecedences?>? _overriddenPrecedences;
@@ -130,26 +128,16 @@ namespace Microsoft.UI.Xaml
 		/// </remarks>
 		public object? Parent
 		{
-			get =>
-#if UNO_HAS_UIELEMENT_IMPLICIT_PINNING
-				_hardParentRef ?? _parentRef?.Target;
-#else
-				_hardParentRef;
-#endif
+			get => _hardParentRef ?? _parentRef?.Target;
 			set
 			{
-#if UNO_HAS_UIELEMENT_IMPLICIT_PINNING
 				if (
 					!ReferenceEquals(_parentRef?.Target, value)
 					|| (_parentRef != null && value is null)
 				)
-#else
-				if (_hardParentRef != value)
-#endif
 				{
 					DisableHardReferences();
 
-#if UNO_HAS_UIELEMENT_IMPLICIT_PINNING
 					var previousParent = _parentRef?.Target;
 
 					if (_parentRef != null)
@@ -163,10 +151,6 @@ namespace Microsoft.UI.Xaml
 					{
 						_parentRef = WeakReferencePool.RentWeakReference(this, value);
 					}
-#else
-					var previousParent = _hardParentRef;
-					_hardParentRef = value;
-#endif
 
 					_inheritedProperties.Disposable = null;
 
@@ -2220,12 +2204,10 @@ namespace Microsoft.UI.Xaml
 		/// </remarks>
 		internal void TryEnableHardReferences()
 		{
-#if UNO_HAS_UIELEMENT_IMPLICIT_PINNING
 			if (FeatureConfiguration.DependencyObject.IsStoreHardReferenceEnabled)
 			{
 				_hardParentRef = Parent;
 			}
-#endif
 		}
 
 		/// <summary>
@@ -2233,12 +2215,10 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		internal void DisableHardReferences()
 		{
-#if UNO_HAS_UIELEMENT_IMPLICIT_PINNING
 			if (FeatureConfiguration.DependencyObject.IsStoreHardReferenceEnabled)
 			{
 				_hardParentRef = null;
 			}
-#endif
 		}
 
 		/// <summary>
