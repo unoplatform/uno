@@ -30,18 +30,16 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 
 			TestServices.WindowHelper.WindowContent = listViewBase;
 			await TestServices.WindowHelper.WaitForIdle();
-
-			// We don't use ActualWidth because of https://github.com/unoplatform/uno/issues/15982
-			var tapTarget = listViewBase.TransformToVisual(null).TransformPoint(new Point(112 * 0.9, listViewBase.ActualHeight / 2));
+			var tapTarget = listViewBase.TransformToVisual(null).TransformPoint(new Point(listViewBase.ActualWidth / 2, listViewBase.ActualHeight / 6));
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 			using var finger = injector.GetFinger();
 
 			finger.Press(tapTarget);
 			finger.Release();
 
-			Assert.AreEqual(loggingSelectionInfo.IsSelected(0), false, "Items at any index should not be selected by default.");
-			Assert.AreEqual(loggingSelectionInfo.CurrentPosition, -1, "CurrentPosition should not have been updated by the ListView.");
-			Assert.AreEqual(loggingSelectionInfo.CurrentItem, null, "CurrentItem should not have been updated by the ListView.");
+			Assert.AreEqual(loggingSelectionInfo.IsSelected(0), true, "Item 0 should remain unselected.");
+			Assert.AreEqual(loggingSelectionInfo.CurrentPosition, 0, "CurrentPosition should be 0 after the tap.");
+			Assert.AreEqual(loggingSelectionInfo.CurrentItem, items[0], "CurrentItem should be 'Item 1' after the tap.");
 		}
 	}
 #endif
