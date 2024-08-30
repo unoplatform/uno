@@ -20,7 +20,7 @@
 
 		<!-- Override RuntimeIdentifir specifically for smaller builds -->
 		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))!=''">$(UnoSampleAppRuntimeIdentifiers)</RuntimeIdentifier>
-		
+
 		<InvariantGlobalization Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">true</InvariantGlobalization>
 
 		<!--
@@ -39,6 +39,8 @@
 
 		<!-- TODO MZ: Should not be here, remove -->
 		<UnoDisableHotRestartHelperGeneration>true</UnoDisableHotRestartHelperGeneration>
+
+		<IsUIKit Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='ios' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='maccatalyst' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='tvos'">true</IsUIKit>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -52,6 +54,7 @@
 			<DefineConstants>$(DefineConstants);HAS_TESTCLOUD_AGENT</DefineConstants>
 		</PropertyGroup>
 	</Target>
+
 
 	<Choose>
 
@@ -68,7 +71,7 @@
 
 				<!-- iOS 17 compatibility -->
 				<MtouchExtraArgs>$(MtouchExtraArgs) --weak-framework=NewsstandKit</MtouchExtraArgs>
-				
+
 				<!-- TODO:MZ: Build issues  Failed to AOT compile Uno.UI.RuntimeTests.dll, aot-instances.dll, the AOT compiler exited with code 139 / 1. -->
 				<MtouchUseLlvm>false</MtouchUseLlvm>
 				<UseInterpreter>true</UseInterpreter>
@@ -83,11 +86,11 @@
 				<RuntimeIdentifier>ios-arm64</RuntimeIdentifier>
 				<DefineConstants>$(DefineConstants);TESTFLIGHT</DefineConstants>
 			</PropertyGroup>
-			
+
 			<PropertyGroup>
 				<UNOHAS_ARM64>$(RuntimeIdentifier.Contains('arm64'))</UNOHAS_ARM64>
 			</PropertyGroup>
-			
+
 			<ItemGroup>
 				<BundleResource Include="..\LinkedFiles\WebContent\css\site.css" Link="iOS\Resources\WebContent\css\site.css" />
 				<BundleResource Include="..\LinkedFiles\WebContent\index.html" Link="iOS\Resources\WebContent\index.html" />
@@ -98,7 +101,7 @@
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='maccatalyst'">
 			<PropertyGroup>
 				<SupportedOSPlatformVersion>14.2</SupportedOSPlatformVersion>
-				
+
 				<!-- Configure the GC -->
 				<MtouchExtraArgs>$(MtouchExtraArgs) --setenv=MONO_GC_PARAMS=soft-heap-limit=512m,nursery-size=64m,evacuation-threshold=66,major=marksweep,concurrent-sweep</MtouchExtraArgs>
 
@@ -111,13 +114,13 @@
 				<!-- Only the invariant culture is support in globalization-invariant mode. See https://aka.ms/GlobalizationInvariantMode -->
 				<InvariantGlobalization>false</InvariantGlobalization>
 			</PropertyGroup>
-			
+
 			<ItemGroup>
 				<PackageReference Include="Uno.Extensions.Logging.OSLog" Version="1.7.0" />
 				<PackageReference Include="SkiaSharp" />
 				<PackageReference Include="SkiaSharp.NativeAssets.MacCatalyst" />
 			</ItemGroup>
-			
+
 			<PropertyGroup Condition="'$(BuildForTestFlight)'=='true'">
 				<MtouchUseLlvm>true</MtouchUseLlvm>
 				<CodeSigningKey>Apple Distribution: Uno Platform Inc. (PD74CHS9Z5)</CodeSigningKey>
@@ -134,11 +137,11 @@
 				<_LibMonoLinkMode>Static</_LibMonoLinkMode>
 				<_LibXamarinLinkMode>Static</_LibXamarinLinkMode>
 			</PropertyGroup>
-			
+
 			<ItemGroup>
 				<BundleResource Include="..\LinkedFiles\WebContent\css\site.css" Link="MacCatalyst\Resources\WebContent\css\site.css" />
 				<BundleResource Include="..\LinkedFiles\WebContent\index.html" Link="MacCatalyst\Resources\WebContent\index.html" />
-				<BundleResource Include="..\LinkedFiles\WebContent\js\site.js" Link="MacCatalyst\Resources\WebContent\js\site.js" />			
+				<BundleResource Include="..\LinkedFiles\WebContent\js\site.js" Link="MacCatalyst\Resources\WebContent\js\site.js" />
 			</ItemGroup>
 		</When>
 
@@ -151,20 +154,20 @@
 			<PropertyGroup Condition="'$(Configuration)'=='Release'">
 				<RuntimeIdentifiers>android-x64;android-arm64</RuntimeIdentifiers>
 			</PropertyGroup>
-			
+
 			<ItemGroup>
 				<PackageReference Include="Xamarin.Google.Android.Material" Version="1.4.0.4" />
 				<PackageReference Include="Uno.UniversalImageLoader" Version="1.9.36" />
 				<PackageReference Include="SkiaSharp.NativeAssets.Android" />
 			</ItemGroup>
-						
+
 			<ItemGroup>
 				<AndroidAsset Include="Assets\sound.mp3" />
 				<AndroidAsset Include="Assets\Lottie\4770-lady-and-dove.json" />
 				<AndroidAsset Include="Assets\Lottie\4930-checkbox-animation.json" />
 				<AndroidAsset Include="Assets\Lottie\lottie-logo.json" />
 				<AndroidAsset Include="Assets\Lottie\uno.json" />
-				<AndroidAsset Include="Assets\Lottie\LightBulb.json" />				
+				<AndroidAsset Include="Assets\Lottie\LightBulb.json" />
 				<AndroidAsset Include="..\LinkedFiles\WebContent\js\site.js" Link="Android\Assets\WebContent\js\site.js" />
 				<AndroidAsset Include="..\LinkedFiles\WebContent\css\site.css" Link="Android\Assets\WebContent\css\site.css" />
 				<AndroidAsset Include="..\LinkedFiles\WebContent\index.html" Link="Android\Assets\WebContent\index.html" />
@@ -178,7 +181,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
-	  <DefineConstants>$(DefineConstants);DEBUG;TRACE</DefineConstants>
+		<DefineConstants>$(DefineConstants);DEBUG;TRACE</DefineConstants>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -196,22 +199,28 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.netcoremobile.csproj" />
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Dispatching\Uno.UI.Dispatching.netcoremobile.csproj" />
 		<ProjectReference Include="..\..\Uno.UWP\Uno.netcoremobile.csproj" />
 		<ProjectReference Include="..\SamplesApp.Skia\SamplesApp.Skia.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.Android\Uno.UI.Runtime.Skia.Android.csproj" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='android'" />
-		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.AppleUIKit\Uno.UI.Runtime.Skia.AppleUIKit.csproj" 
-                  Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='ios' 
-                          OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='maccatalyst' 
-                          OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='tvos'" />
+		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.AppleUIKit\Uno.UI.Runtime.Skia.AppleUIKit.csproj" Condition="'$(IsUIKit)'=='true'" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Properties\" />
+		<Folder Include="Properties\" />
 	</ItemGroup>
+
 
 	<Import Project="..\..\SourceGenerators\sourcegenerators.local.props" />
 
+	<Import Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='android'" Project="..\..\Uno.UI.Runtime.Skia.Android\buildTransitive\*.Runtime.Skia.Android.props" />
+	<Import Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='android'" Project="..\..\Uno.UI.Runtime.Skia.Android\buildTransitive\*.Runtime.Skia.Android.targets" />
+
+	<Import Condition="$(IsUIKit)=='true'" Project="..\..\Uno.UI.Runtime.Skia.AppleUIKit\buildTransitive\*.Runtime.Skia.AppleUIKit.props" />
+	<Import Condition="$(IsUIKit)=='true'" Project="..\..\Uno.UI.Runtime.Skia.AppleUIKit\buildTransitive\*.Runtime.Skia.AppleUIKit.targets" />
+
 	<Import Project="..\..\..\build\nuget\uno.winui.single-project.targets" />
+	<Import Project="..\..\..\build\nuget\uno.winui.runtime-replace.targets" />
 
 	<Target Name="GenerateVersion" BeforeTargets="BeforeBuild;_CompileAppManifest;_GetAndroidPackageName" Condition="'$(GITVERSION_InformationalVersion)'!=''">
 
