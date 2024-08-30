@@ -159,7 +159,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty TextReadingOrderProperty { get; } =
-			DependencyProperty.Register(nameof(TextReadingOrder), typeof(TextReadingOrder), typeof(NumberBox), new FrameworkPropertyMetadata(null));
+			DependencyProperty.Register(nameof(TextReadingOrder), typeof(TextReadingOrder), typeof(NumberBox), new FrameworkPropertyMetadata(TextReadingOrder.Default));
 
 		public bool PreventKeyboardDisplayOnProgrammaticFocus
 		{
@@ -168,7 +168,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty PreventKeyboardDisplayOnProgrammaticFocusProperty { get; } =
-			DependencyProperty.Register(nameof(PreventKeyboardDisplayOnProgrammaticFocus), typeof(bool), typeof(NumberBox), new FrameworkPropertyMetadata(null));
+			DependencyProperty.Register(nameof(PreventKeyboardDisplayOnProgrammaticFocus), typeof(bool), typeof(NumberBox), new FrameworkPropertyMetadata(false));
 
 		public new object Description
 		{

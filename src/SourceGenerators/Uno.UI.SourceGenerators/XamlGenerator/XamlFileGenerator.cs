@@ -1043,9 +1043,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					writer.AppendLineIndented($"global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(__that, \"owner\", __that);");
 				}
 
+				// Casting to FrameworkElement or Window is important to avoid issues when there
+				// is a member named Loading or Activated that shadows the ones from FrameworkElement/Window
 				var eventSubscription = isFrameworkElement
-					? "Loading += (s, e) =>"
-					: "Activated += (s, e) =>";
+					? "((global::Microsoft.UI.Xaml.FrameworkElement)this).Loading += (s, e) =>"
+					: "((global::Microsoft.UI.Xaml.Window)this).Activated += (s, e) =>";
 
 				using (writer.BlockInvariant(eventSubscription))
 				{
@@ -4438,8 +4440,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						}
 					}
 
-					if (currentType is null)
-						throw new InvalidOperationException($"Unable to find member [{part}] on type [{currentType}]");
+					throw new InvalidOperationException($"Unable to find member [{part}] on type [{currentType}]");
 				}
 
 				if (isIndexer)

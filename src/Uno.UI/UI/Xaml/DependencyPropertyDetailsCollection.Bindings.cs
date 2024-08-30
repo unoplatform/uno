@@ -95,7 +95,15 @@ namespace Microsoft.UI.Xaml
 					bindings[i].ResumeBinding();
 				}
 
-				ApplyDataContext(DataContextPropertyDetails.GetValue());
+				var value = DataContextPropertyDetails.GetValue();
+				if (value == DependencyProperty.UnsetValue)
+				{
+					// If we get UnsetValue, it means this is DefaultValue precedence that's not stored in DependencyPropertyDetails.
+					// In this case, we know for sure that DataContext's default value is null.
+					value = null;
+				}
+
+				ApplyDataContext(value);
 			}
 		}
 
@@ -133,7 +141,15 @@ namespace Microsoft.UI.Xaml
 					}
 					else
 					{
-						ApplyBinding(bindingExpression, DataContextPropertyDetails.GetValue());
+						var value = DataContextPropertyDetails.GetValue();
+						if (value == DependencyProperty.UnsetValue)
+						{
+							// If we get UnsetValue, it means this is DefaultValue precedence that's not stored in DependencyPropertyDetails.
+							// In this case, we know for sure that DataContext's default value is null.
+							value = null;
+						}
+
+						ApplyBinding(bindingExpression, value);
 					}
 				}
 			}

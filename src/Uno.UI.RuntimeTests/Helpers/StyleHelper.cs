@@ -93,27 +93,13 @@ namespace Uno.UI.RuntimeTests.Helpers
 
 			// Force default brushes to be reloaded
 			DefaultBrushes.ResetDefaultThemeBrushes();
-			ResetIslandRootForeground();
 
 			return new DisposableAction(() =>
 			{
 				resources.MergedDictionaries.Remove(xcr);
 				DefaultBrushes.ResetDefaultThemeBrushes();
-				ResetIslandRootForeground();
 			});
 #endif
 		}
-
-#if !WINAPPSDK
-		private static void ResetIslandRootForeground()
-		{
-			if (Uno.UI.Xaml.Core.CoreServices.Instance.InitializationType == Xaml.Core.InitializationType.IslandsOnly &&
-				VisualTreeUtils.FindVisualChildByType<Control>(TestServices.WindowHelper.XamlRoot.VisualTree.RootElement) is { } control)
-			{
-				// Ensure the root element's Foreground is set correctly
-				control.SetValue(Control.ForegroundProperty, DefaultBrushes.TextForegroundBrush, DependencyPropertyValuePrecedences.DefaultValue);
-			}
-		}
-#endif
 	}
 }

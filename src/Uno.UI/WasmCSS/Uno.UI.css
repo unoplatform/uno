@@ -194,6 +194,12 @@ embed.uno-frameworkelement.uno-unarranged {
   -webkit-overflow-scrolling: touch;
 }
 
+  .uno-scrollcontentpresenter > * {
+    /* Force hardware acceleration as per https://stackoverflow.com/q/9807620 */
+    /* Fixes https://github.com/unoplatform/uno/issues/17640 */
+    -webkit-transform: translate3d(0, 0, 0);
+  }
+
   .uno-scrollcontentpresenter.scroll-x-auto {
     overflow-x: auto;
   }

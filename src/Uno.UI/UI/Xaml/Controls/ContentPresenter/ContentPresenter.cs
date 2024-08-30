@@ -77,7 +77,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 #if !UNO_HAS_BORDER_VISUAL
 		_borderRenderer = new BorderLayerRenderer(this);
 #endif
-		SetDefaultForeground(ForegroundProperty);
+		UpdateLastUsedTheme();
 
 		InitializePlatform();
 	}
@@ -1154,7 +1154,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	internal override void UpdateThemeBindings(ResourceUpdateReason updateReason)
 	{
 		base.UpdateThemeBindings(updateReason);
-		SetDefaultForeground(ForegroundProperty);
+		UpdateLastUsedTheme();
 	}
 
 #if __ANDROID__

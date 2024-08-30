@@ -23,12 +23,13 @@ namespace Microsoft.UI.Xaml
 		private object? _fastLocalValue;
 		private BindingExpression? _binding;
 		private object?[]? _stack;
-		private object? _defaultValue;
 		private Flags _flags;
 		private DependencyPropertyCallbackManager? _callbackManager;
 
 		private const int DefaultValueIndex = (int)DependencyPropertyValuePrecedences.DefaultValue;
-		private const int StackSize = DefaultValueIndex + 1;
+
+		// We are not storing DefaultValue here in DependencyPropertyDetails. So StackSize is exactly DefaultValueIndex
+		private const int StackSize = DefaultValueIndex;
 
 		private static readonly LinearArrayPool<object?> _pool = LinearArrayPool<object?>.CreateAutomaticallyManaged(StackSize, 1);
 
@@ -72,10 +73,6 @@ namespace Microsoft.UI.Xaml
 
 		public DependencyProperty Property { get; }
 
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="defaultValue">The default value of the Dependency Property</param>
 		internal DependencyPropertyDetails(DependencyProperty property, Type dependencyObjectType, bool isTemplatedParentOrDataContext)
 		{
 			Property = property;
@@ -122,24 +119,6 @@ namespace Microsoft.UI.Xaml
 			hasValueInherits = false;
 			hasValueDoesNotInherit = false;
 			hasInherits = false;
-		}
-
-		internal object? GetDefaultValue()
-		{
-			if (!HasDefaultValueSet)
-			{
-				_defaultValue = Property.GetMetadata(_dependencyObjectType).DefaultValue;
-
-				// Ensures that the default value of non-nullable properties is not null
-				if (_defaultValue == null && !Property.IsTypeNullable)
-				{
-					_defaultValue = Property.GetFallbackDefaultValue();
-				}
-
-				_flags |= Flags.DefaultValueSet;
-			}
-
-			return _defaultValue;
 		}
 
 		/// <summary>
@@ -247,12 +226,6 @@ namespace Microsoft.UI.Xaml
 			return false;
 		}
 
-		internal void SetDefaultValue(object? defaultValue)
-		{
-			_defaultValue = defaultValue;
-			_flags |= Flags.DefaultValueSet;
-		}
-
 		internal BindingExpression? GetBinding()
 			=> _binding;
 
@@ -293,11 +266,17 @@ namespace Microsoft.UI.Xaml
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal object? GetValue(DependencyPropertyValuePrecedences precedence)
 		{
+			if (precedence == DependencyPropertyValuePrecedences.DefaultValue)
+			{
+				// Caller will calculate the default value.
+				// TODO: Consider refactoring the code such that we don't get to this code path with DefaultValue precedence
+				return UnsetValue.Instance;
+			}
+
 			if (_stack == null)
 			{
 				return precedence switch
 				{
-					DependencyPropertyValuePrecedences.DefaultValue => GetDefaultValue(),
 					DependencyPropertyValuePrecedences.Local when _highestPrecedence == DependencyPropertyValuePrecedences.Local => Unwrap(_fastLocalValue),
 					_ => DependencyProperty.UnsetValue
 				};
@@ -337,7 +316,7 @@ namespace Microsoft.UI.Xaml
 				}
 				else
 				{
-					return (GetDefaultValue(), DependencyPropertyValuePrecedences.DefaultValue);
+					return (UnsetValue.Instance, DependencyPropertyValuePrecedences.DefaultValue);
 				}
 			}
 			else
@@ -355,7 +334,7 @@ namespace Microsoft.UI.Xaml
 					}
 				}
 
-				return (stackAlias[(int)DependencyPropertyValuePrecedences.DefaultValue], DependencyPropertyValuePrecedences.DefaultValue);
+				return (UnsetValue.Instance, DependencyPropertyValuePrecedences.DefaultValue);
 			}
 		}
 
@@ -375,7 +354,7 @@ namespace Microsoft.UI.Xaml
 		private object? Validate(object? value)
 		{
 			return value == null && !Property.IsTypeNullable
-				? GetDefaultValue()
+				? throw new InvalidOperationException("DP cannot be set to null when its type is not nullable.")
 				: Wrap(value);
 		}
 
@@ -387,7 +366,7 @@ namespace Microsoft.UI.Xaml
 		private object? ValidateNoWrap(object? value)
 		{
 			return value == null && !Property.IsTypeNullable
-				? GetDefaultValue()
+				? throw new InvalidOperationException("DP cannot be set to null when its type is not nullable.")
 				: value;
 		}
 
@@ -405,9 +384,6 @@ namespace Microsoft.UI.Xaml
 
 		private bool HasWeakStorage
 			=> (_flags & Flags.WeakStorage) != 0;
-
-		private bool HasDefaultValueSet
-			=> (_flags & Flags.DefaultValueSet) != 0;
 
 		internal bool HasValueInherits
 			=> (_flags & Flags.ValueInherits) != 0;
@@ -428,8 +404,6 @@ namespace Microsoft.UI.Xaml
 
 					MemoryMarshal.CreateSpan(ref MemoryMarshal.GetArrayDataReference(_unsetStack), StackSize)
 						.CopyTo(MemoryMarshal.CreateSpan(ref MemoryMarshal.GetArrayDataReference(_stack)!, StackSize));
-
-					_stack[DefaultValueIndex] = GetDefaultValue();
 
 					if (_highestPrecedence == DependencyPropertyValuePrecedences.Local)
 					{
@@ -484,31 +458,26 @@ namespace Microsoft.UI.Xaml
 			WeakStorage = 1 << 0,
 
 			/// <summary>
-			/// Determines if the default value has been populated
-			/// </summary>
-			DefaultValueSet = 1 << 1,
-
-			/// <summary>
 			/// Determines if the property inherits DataContext from its parent
 			/// </summary>
-			ValueInherits = 1 << 2,
+			ValueInherits = 1 << 1,
 
 			/// <summary>
 			/// Determines if the property must not inherit DataContext from its parent
 			/// </summary>
-			ValueDoesNotInherit = 1 << 3,
+			ValueDoesNotInherit = 1 << 2,
 
 			/// <summary>
 			/// Determines if the property inherits Value from its parent
 			/// </summary>
-			Inherits = 1 << 4,
+			Inherits = 1 << 3,
 
 			/// <summary>
 			/// Normally, Animations has higher precedence than Local. However,
 			/// we want local to take higher precedence if it's newer.
 			/// This flag records this information.
 			/// </summary>
-			LocalValueNewerThanAnimationsValue = 1 << 5,
+			LocalValueNewerThanAnimationsValue = 1 << 4,
 		}
 	}
 }

@@ -17,11 +17,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Remove="buildTransitive\Uno.UI.Lottie.targets" />
+		<None Remove="buildTransitive\*.Lottie.targets" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Include="buildTransitive\Uno.UI.Lottie.targets">
+		<Content Include="buildTransitive\*.Lottie.targets">
 			<PackagePath>build</PackagePath>
 			<Pack>true</Pack>
 		</Content>

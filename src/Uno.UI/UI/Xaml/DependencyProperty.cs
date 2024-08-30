@@ -8,12 +8,16 @@ using System.Threading;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Shapes;
 using Uno;
 using Uno.Extensions;
 using Uno.UI;
 using Uno.UI.Dispatching;
+using Uno.UI.Helpers;
+using Uno.UI.Xaml.Media;
 
 #if __ANDROID__
 using _View = Android.Views.View;
@@ -36,6 +40,7 @@ namespace Microsoft.UI.Xaml
 
 		private readonly static TypeToPropertiesDictionary _getPropertiesForType = new TypeToPropertiesDictionary();
 		private readonly static NameToPropertyDictionary _getPropertyCache = new NameToPropertyDictionary();
+		private static object DefaultThemeAnimationDurationBox = new Duration(FeatureConfiguration.ThemeAnimation.DefaultThemeAnimationDuration);
 
 		/// <summary>
 		/// A static <see cref="PropertyCacheEntry"/> used for lookups and avoid creating new instances. This assumes that uses are non-reentrant.
@@ -52,7 +57,6 @@ namespace Microsoft.UI.Xaml
 		private Type _propertyType;
 		private Type _ownerType;
 		private readonly int _uniqueId;
-		private object _fallbackDefaultValue;
 
 		private static int _globalId = -1;
 
@@ -136,6 +140,8 @@ namespace Microsoft.UI.Xaml
 		/// <exception cref="InvalidOperationException">A property with the same name has already been declared for the ownerType</exception>
 		public static DependencyProperty Register(string name, Type propertyType, Type ownerType, PropertyMetadata typeMetadata)
 		{
+			typeMetadata = FixMetadataIfNeeded(propertyType, typeMetadata);
+
 			var newProperty = new DependencyProperty(name, propertyType, ownerType, typeMetadata, attached: false);
 
 			try
@@ -151,6 +157,21 @@ namespace Microsoft.UI.Xaml
 			}
 
 			return newProperty;
+		}
+
+		private static PropertyMetadata FixMetadataIfNeeded(Type propertyType, PropertyMetadata metadata)
+		{
+			if (metadata is null)
+			{
+				var defaultValue = propertyType.IsNullable() ? null : RuntimeHelpers.GetUninitializedObject(propertyType);
+				return new PropertyMetadata(defaultValue);
+			}
+			else if (!propertyType.IsNullable() && metadata.DefaultValue is null)
+			{
+				return metadata.CloneWithOverwrittenDefaultValue(RuntimeHelpers.GetUninitializedObject(propertyType));
+			}
+
+			return metadata;
 		}
 
 		/// <summary>
@@ -182,6 +203,8 @@ namespace Microsoft.UI.Xaml
 		/// <exception cref="InvalidOperationException">A property with the same name has already been declared for the ownerType</exception>
 		public static DependencyProperty RegisterAttached(string name, Type propertyType, Type ownerType, PropertyMetadata defaultMetadata)
 		{
+			defaultMetadata = FixMetadataIfNeeded(propertyType, defaultMetadata);
+
 			var newProperty = new DependencyProperty(name, propertyType, ownerType, defaultMetadata, attached: true);
 
 			try
@@ -273,9 +296,6 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		internal bool IsTypeNullable
 			=> (_flags & Flags.IsTypeNullable) != 0;
-
-		internal object GetFallbackDefaultValue()
-			=> _fallbackDefaultValue != null ? _fallbackDefaultValue : _fallbackDefaultValue = Activator.CreateInstance(Type);
 
 		internal string Name
 		{
@@ -477,22 +497,96 @@ namespace Microsoft.UI.Xaml
 			return output.ToArray();
 		}
 
-		internal object GetDefaultValue(UIElement referenceObject, Type forType)
+		private bool TryGetDefaultInheritedPropertyValue(out object defaultValue)
 		{
-			if (referenceObject?.GetDefaultValue2(this, out var defaultValue) == true)
+			if (this == TextElement.ForegroundProperty ||
+				this == TextBlock.ForegroundProperty ||
+				this == Control.ForegroundProperty ||
+				this == RichTextBlock.ForegroundProperty ||
+				this == ContentPresenter.ForegroundProperty ||
+				this == IconElement.ForegroundProperty)
+			{
+				defaultValue = DefaultBrushes.TextForegroundBrush;
+				return true;
+			}
+
+			defaultValue = null;
+			return false;
+		}
+
+		internal object GetDefaultValue(DependencyObject referenceObject, Type forType)
+		{
+			if ((referenceObject as UIElement)?.GetDefaultValue2(this, out var defaultValue) == true)
 			{
 				return defaultValue;
+			}
+
+			if (IsInherited && TryGetDefaultInheritedPropertyValue(out var value))
+			{
+				return value;
+			}
+
+			if (this == FrameworkElement.FocusVisualPrimaryBrushProperty &&
+				ResourceResolver.TryStaticRetrieval("SystemControlFocusVisualPrimaryBrush", null, out var primaryBrush))
+			{
+				return primaryBrush;
+			}
+			else if (this == FrameworkElement.FocusVisualSecondaryBrushProperty &&
+				ResourceResolver.TryStaticRetrieval("SystemControlFocusVisualSecondaryBrush", null, out var secondaryBrush))
+			{
+				return secondaryBrush;
 			}
 
 			if (this == Shape.StretchProperty)
 			{
 				if (forType == typeof(Rectangle) || forType == typeof(Ellipse))
 				{
-					return Stretch.Fill;
+					return Boxes.StretchBoxes.Fill;
 				}
 			}
 
-			// TODO: Handle DependencyProperty.CreateDefaultValueCallback when implemented.
+			if (this == Timeline.DurationProperty)
+			{
+				if (referenceObject is FadeInThemeAnimation or FadeOutThemeAnimation)
+				{
+					if (((Duration)DefaultThemeAnimationDurationBox).TimeSpan == FeatureConfiguration.ThemeAnimation.DefaultThemeAnimationDuration)
+					{
+						// Our box is valid, so we can re-use it.
+						return DefaultThemeAnimationDurationBox;
+					}
+
+					// Rare code path, it will be hit only once per change in the feature configuration.
+					// The cached box is not valid. So we create a new box update the cached box.
+					DefaultThemeAnimationDurationBox = new Duration(FeatureConfiguration.ThemeAnimation.DefaultThemeAnimationDuration);
+					return DefaultThemeAnimationDurationBox;
+				}
+			}
+
+			if (this == Storyboard.TargetPropertyProperty)
+			{
+				if (referenceObject is FadeInThemeAnimation or FadeOutThemeAnimation)
+				{
+					return "Opacity";
+				}
+			}
+
+			if (this == DoubleAnimation.ToProperty)
+			{
+				if (referenceObject is FadeInThemeAnimation)
+				{
+					return Uno.UI.Helpers.Boxes.NullableDoubleBoxes.One;
+				}
+				else if (referenceObject is FadeOutThemeAnimation)
+				{
+					return Uno.UI.Helpers.Boxes.NullableDoubleBoxes.Zero;
+				}
+			}
+
+			if (_ownerTypeMetadata.CreateDefaultValueCallback != null)
+			{
+				return _ownerTypeMetadata.CreateDefaultValueCallback();
+			}
+
 			return _ownerTypeMetadata.DefaultValue;
 		}
 
