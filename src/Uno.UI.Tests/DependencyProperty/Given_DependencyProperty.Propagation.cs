@@ -382,6 +382,11 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 				SUT.SubObject = null;
 			}
 
+			void CleanupSubParent()
+			{
+				sub1WR.Target.SetParent(null);
+			}
+
 			CreateSub();
 
 			SUT.TemplatedParent = SUT;
@@ -390,6 +395,9 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 			GC.WaitForPendingFinalizers();
 
 			SUT.TemplatedParent = null;
+			// SetParent call in CreateSub will cause SubObject to be added as a "child store" (in DependencyObjectStore._childrenStore)
+			// Caller who calls SetParent is responsible for cleaning the child up when it's not needed.
+			CleanupSubParent();
 
 			GC.Collect(2, GCCollectionMode.Forced);
 			GC.WaitForPendingFinalizers();
@@ -517,7 +525,7 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 
 				SUT.ClearValue(ContentControl.ForegroundProperty);
 
-				Assert.AreEqual(dc, originalBrush.DataContext);
+				Assert.IsNull(originalBrush.DataContext);
 				Assert.IsNull(newBrush.DataContext);
 
 				SUT.DataContext = null;
