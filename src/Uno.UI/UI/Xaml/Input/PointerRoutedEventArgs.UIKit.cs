@@ -15,6 +15,12 @@ using Windows.UI.Input;
 using Windows.Devices.Input;
 #endif
 
+#if HAS_UNO_WINUI
+using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
+#else
+using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
+#endif
+
 namespace Microsoft.UI.Xaml.Input
 {
 	partial class PointerRoutedEventArgs
@@ -55,7 +61,7 @@ namespace Microsoft.UI.Xaml.Input
 				|| _nativeTouch.Phase == UITouchPhase.Stationary;
 
 			FrameId = PointerHelpers.ToFrameId(_nativeTouch.Timestamp);
-			Pointer = new Pointer(pointerId, (global::Microsoft.UI.Input.PointerDeviceType)deviceType, isInContact, isInRange: true);
+			Pointer = new Pointer(pointerId, (PointerDeviceType)deviceType, isInContact, isInRange: true);
 			KeyModifiers = VirtualKeyModifiers.None;
 			OriginalSource = originalSource;
 
