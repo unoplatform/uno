@@ -17,13 +17,13 @@ public sealed partial class SplashScreen
 	/// <summary>
 	/// Fires when the app's splash screen is dismissed.
 	/// </summary>
-	[NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+	[NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 	public event TypedEventHandler<SplashScreen, object> Dismissed;
 #pragma warning restore CS0067 // The event 'SplashScreen.Dismissed' is never used
 
 	/// <summary>
 	/// The coordinates of the app's splash screen image relative to the window.
 	/// </summary>
-	[NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+	[NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 	public Rect ImageLocation { get; }
 }
