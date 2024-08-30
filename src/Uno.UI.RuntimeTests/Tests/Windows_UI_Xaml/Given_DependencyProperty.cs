@@ -4,8 +4,27 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 
 [TestClass]
 [RunsOnUIThread]
-public class Given_DependencyProperty
+public partial class Given_DependencyProperty
 {
+	private partial class MyButton : Button
+	{
+		private static int _value;
+
+		public int P
+		{
+			get => (int)GetValue(PProperty);
+			set => SetValue(PProperty, value);
+		}
+
+		public static DependencyProperty PProperty { get; } = DependencyProperty.Register(
+			nameof(P),
+			typeof(int),
+			typeof(MyButton),
+			PropertyMetadata.Create(createDefaultValueCallback: CreateDefaultValue));
+
+		private static object CreateDefaultValue() => _value++;
+	}
+
 	[TestMethod]
 	public void When_Unsubscribe_From_PropertyChanges()
 	{
@@ -35,4 +54,14 @@ public class Given_DependencyProperty
 		Assert.AreEqual(DependencyPropertyValuePrecedences.DefaultValue, actualPrecedence2);
 	}
 #endif
+
+	[TestMethod]
+	public void When_CreateDefaultValueCallback()
+	{
+		var myButton = new MyButton();
+		Assert.AreEqual(0, myButton.P);
+		Assert.AreEqual(1, myButton.P);
+		Assert.AreEqual(2, myButton.P);
+		Assert.AreEqual(3, myButton.P);
+	}
 }

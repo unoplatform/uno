@@ -582,7 +582,11 @@ namespace Microsoft.UI.Xaml
 				}
 			}
 
-			// TODO: Handle DependencyProperty.CreateDefaultValueCallback when implemented.
+			if (_ownerTypeMetadata.CreateDefaultValueCallback != null)
+			{
+				return _ownerTypeMetadata.CreateDefaultValueCallback();
+			}
+
 			return _ownerTypeMetadata.DefaultValue;
 		}
 
