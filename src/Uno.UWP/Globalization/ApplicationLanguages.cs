@@ -106,7 +106,7 @@ public static partial class ApplicationLanguages
 		}
 	}
 
-#if !__IOS__ && !__TVOS__
+#if __IOS__ || __TVOS___ && !__TVOS__
 	private static string[] GetManifestLanguages()
 	{
 		if (InvariantCulture)

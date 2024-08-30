@@ -120,7 +120,7 @@ namespace Windows.Devices.Geolocation
 					var accessStatus = default(GeolocationAccessStatus);
 					var tsc = new TaskCompletionSource<CLAuthorizationStatus>();
 
-#if __IOS__
+#if __IOS__ || __TVOS__
 					// Workaround for a bug in Xamarin.iOS https://github.com/unoplatform/uno/issues/4853
 					var @delegate = new CLLocationManagerDelegate();
 
@@ -137,7 +137,7 @@ namespace Windows.Devices.Geolocation
 						}
 					};
 
-#if __IOS__ //required only for iOS
+#if __IOS__ || __TVOS__ //required only for iOS
 					mgr.RequestWhenInUseAuthorization();
 #endif
 
@@ -196,7 +196,7 @@ namespace Windows.Devices.Geolocation
 			}
 		}
 
-#if __IOS__
+#if __IOS__ || __TVOS__
 		private class CLLocationManagerDelegate : NSObject, ICLLocationManagerDelegate
 		{
 			public event EventHandler<CLAuthorizationChangedEventArgs> AuthorizationChanged;
