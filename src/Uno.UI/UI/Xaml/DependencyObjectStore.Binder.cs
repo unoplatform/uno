@@ -141,6 +141,11 @@ namespace Microsoft.UI.Xaml
 		internal void ApplyElementNameBindings()
 			=> _properties.ApplyElementNameBindings();
 
+		internal void ApplyTemplateBindings()
+			// Update the template-bindings when the templated-parent is late injected.
+			// Such as the case with: ElementStub materialization.
+			=> _properties.ApplyTemplateBindings();
+
 		static void InitializeStaticBinder()
 		{
 			// Register the ability for the BindingPath to subscribe to dependency property changes.

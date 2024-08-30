@@ -61,6 +61,16 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		internal void ApplyTemplateBindings()
+		{
+			var bindings = _bindings.Data;
+
+			for (int i = 0; i < bindings.Length; i++)
+			{
+				bindings[i].ApplyTemplateBindingParent();
+			}
+		}
+
 		/// <summary>
 		/// Suspends the <see cref="Binding"/> instances from reacting to DataContext changes
 		/// </summary>

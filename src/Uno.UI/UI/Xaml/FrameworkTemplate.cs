@@ -22,14 +22,35 @@ namespace Microsoft.UI.Xaml
 	/// <summary>
 	/// Defines a builder to be used in <see cref="FrameworkTemplate"/>
 	/// </summary>
+	public delegate View? LegacyFrameworkTemplateBuilder(object? owner);
+
+	/// <summary>
+	/// Defines a builder to be used in <see cref="FrameworkTemplate"/>
+	/// </summary>
 	public delegate View? FrameworkTemplateBuilder(object? owner, TemplateMaterializationSettings settings);
+
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
+	public partial class FrameworkTemplate
+	{
+		private static readonly Stack<MaterializingTemplateInfo> MaterializingTemplateStack = new();
+
+		internal static MaterializingTemplateInfo? GetCurrentTemplate()
+		{
+			return MaterializingTemplateStack.TryPeek(out var result) ? result : null;
+		}
+
+		internal record MaterializingTemplateInfo(DependencyObject? TemplatedParent, bool IsLegacyTemplate);
+	}
+#endif
 
 	[ContentProperty(Name = "Template")]
 	public partial class FrameworkTemplate : DependencyObject, IFrameworkTemplateInternal
 	{
+
 		internal readonly FrameworkTemplateBuilder? _viewFactory;
 		private readonly int _hashCode;
 		private readonly ManagedWeakReference? _ownerRef;
+		private readonly bool _isLegacyTemplate;
 
 		/// <summary>
 		/// The scope at the time of the template's creation, which will be used when its contents are materialized.
@@ -42,10 +63,21 @@ namespace Microsoft.UI.Xaml
 		public FrameworkTemplate(Func<View?>? factory)
 			: this(null, (o, s) => factory?.Invoke())
 		{
-			// fixme@xy: This overload simply should not exist, since the materialized members do not have the tp injected.
+			// TODO: to be removed on next major update.
+			// This overload simply should not exist, since the materialized members do not have the tp injected.
 			// It can lead to issues like template-parent binding not working...
 			// Currently, it seems to be only used in unit tests & runtime tests.
+			this._isLegacyTemplate = true;
 		}
+
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
+		public FrameworkTemplate(object? owner, LegacyFrameworkTemplateBuilder? factory)
+			: this(owner, (o, s) => factory?.Invoke(o))
+		{
+			// TODO: to be removed on next major update.
+			this._isLegacyTemplate = true;
+		}
+#endif
 
 		public FrameworkTemplate(object? owner, FrameworkTemplateBuilder? factory)
 		{
@@ -89,8 +121,11 @@ namespace Microsoft.UI.Xaml
 			try
 			{
 				ResourceResolver.PushNewScope(_xamlScope);
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
+				MaterializingTemplateStack.Push(new(templatedParent, _isLegacyTemplate));
+#endif
 
-				if (!FrameworkTemplatePool.IsPoolingEnabled)
+				if (!FrameworkTemplatePool.IsPoolingEnabled || _isLegacyTemplate)
 				{
 					var settings = new TemplateMaterializationSettings(templatedParent, null);
 
@@ -115,6 +150,9 @@ namespace Microsoft.UI.Xaml
 			}
 			finally
 			{
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
+				MaterializingTemplateStack.Pop();
+#endif
 				ResourceResolver.PopScope();
 			}
 		}

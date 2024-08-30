@@ -212,16 +212,29 @@ namespace Microsoft.UI.Xaml
 					_isMaterializing = true;
 
 					_content = SwapViews(oldView: (FrameworkElement)this, newViewProvider: ContentBuilder);
-					var targetDependencyObject = _content as DependencyObject;
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
+					// note: This can be safely removed, once moving away from legacy impl.
+					// In the new impl, the templated-parent would be immediately available
+					// before any binding is applied, so there is no need to force update.
+					if (_content is ITemplatedParentProvider tpProvider)
+					{
+						tpProvider.SetTemplatedParent(GetTemplatedParent());
+						if (_content is IDependencyObjectStoreProvider dosProvider)
+						{
+							dosProvider.Store.ApplyTemplateBindings();
+						}
+					}
+#endif
 
-					if (isVisibilityChanged && targetDependencyObject != null)
+					if (isVisibilityChanged &&
+						_content is DependencyObject contentAsDO)
 					{
 						var visibilityProperty = GetVisibilityProperty(_content);
 
 						// Set the visibility at the same precedence it was currently set with on the stub.
 						var precedence = this.GetCurrentHighestValuePrecedence(visibilityProperty);
 
-						targetDependencyObject.SetValue(visibilityProperty, Visibility.Visible, precedence);
+						contentAsDO.SetValue(visibilityProperty, Visibility.Visible, precedence);
 					}
 
 					MaterializationChanged?.Invoke(this);

@@ -11,6 +11,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Extensions;
+using Uno.UI.Helpers;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.TemplatedParent.Setup;
 #if HAS_UNO
@@ -126,6 +127,112 @@ public partial class TemplatedParentTests
 		expectations = SkipLines(expectations, 4);
 #endif
 
+		VerifyTree(expectations, setup);
+	}
+
+	[TestMethod]
+	public async Task ContentControl_Content_Test()
+	{
+		var setup = new ContentControl_Content();
+		await UITestHelper.Load(setup, x => x.IsLoaded);
+
+		// direct content members should NOT have content-presenter as templated-parent.
+		var tree = setup.SUT.TreeGraph(DebugVT_TP);
+		var expectations = """
+		0	ContentControl#SUT // TP=<null>
+		1		ContentPresenter // TP=ContentControl#SUT
+		2			StackPanel // TP=<null>
+		3				TextBlock // TP=<null>
+		""";
+		VerifyTree(expectations, setup);
+	}
+
+	[TestMethod]
+	public async Task ContentControl_ContentTemplate_Test()
+	{
+		var setup = new ContentControl_ContentTemplate();
+		await UITestHelper.Load(setup, x => x.IsLoaded);
+
+		// data-template members should have content-presenter as templated-parent.
+		var tree = setup.SUT.TreeGraph(DebugVT_TP);
+		var expectations = """
+		0	ContentControl#SUT // TP=<null>
+		1		ContentPresenter // TP=ContentControl#SUT
+		2			StackPanel // TP=ContentPresenter
+		3				TextBlock // TP=ContentPresenter
+		""";
+		VerifyTree(expectations, setup);
+	}
+
+	[TestMethod]
+	public async Task ItemsControl_HeaderFooter_NoTP_PreCompiledXaml()
+	{
+		var setup = new ItemsControl_HeaderFooter();
+		var sut = setup.SUT;
+
+		await ItemsControl_HeaderFooter_NoTP(setup, sut);
+	}
+
+	[TestMethod]
+	public async Task ItemsControl_HeaderFooter_NoTP_DynamicXaml()
+	{
+		var sut = new ItemsControl()
+		{
+			ItemsPanel = XamlHelper.LoadXaml<ItemsPanelTemplate>("""
+				<ItemsPanelTemplate>
+					<StackPanel />
+				</ItemsPanelTemplate>
+			"""),
+			Template = XamlHelper.LoadXaml<ControlTemplate>("""
+				<ControlTemplate TargetType="ItemsControl">
+					<ItemsPresenter Header="asd" />
+				</ControlTemplate>
+			"""),
+		};
+
+		await ItemsControl_HeaderFooter_NoTP(sut, sut);
+	}
+
+	public async Task ItemsControl_HeaderFooter_NoTP(FrameworkElement setup, ItemsControl sut)
+	{
+		await UITestHelper.Load(setup, x => x.IsLoaded);
+
+		var tree = sut.TreeGraph(DebugVT_TP);
+		var presenter = sut.FindFirstDescendantOrThrow<ItemsPresenter>();
+		var children = presenter.GetChildren().ToArray();
+
+		Assert.IsInstanceOfType<ContentControl>(children[0], "Header ContentControl not found.");
+		Assert.IsInstanceOfType<StackPanel>(children[1], "StackPanel not found.");
+		Assert.IsInstanceOfType<ContentControl>(children[2], "Footer ContentControl not found.");
+
+		Assert.IsNull(GetTemplatedParentCompat(children[0] as FrameworkElement), "Injected Header ContentControl should not have a templated-parent.");
+		Assert.IsNull(GetTemplatedParentCompat(children[2] as FrameworkElement), "Injected Header ContentControl should not have a templated-parent.");
+	}
+
+	[TestMethod]
+	public async Task ItemsControl_ItemTemplate_Test()
+	{
+		var setup = new ItemsControl_ItemTemplate();
+		setup.SUT.ItemsSource = new[] { 1, 2, 3 };
+		await UITestHelper.Load(setup, x => x.IsLoaded);
+
+		// item-template members should have content-presenter as templated-parent.
+		var tree = setup.SUT.TreeGraph(DebugVT_TP);
+		var expectations = """
+		0	ItemsControl#SUT // TP=<null>
+		1		ItemsPresenter // TP=ItemsControl#SUT
+		2			ContentControl // TP=<null>
+		3				ContentPresenter // TP=ContentControl
+		4			StackPanel // TP=ItemsPresenter
+		5				ContentPresenter // TP=<null>
+		6					TextBlock // TP=ContentPresenter
+		7				ContentPresenter // TP=<null>
+		8					TextBlock // TP=ContentPresenter
+		9				ContentPresenter // TP=<null>
+		10					TextBlock // TP=ContentPresenter
+		11			ContentControl // TP=<null>
+		12				ContentPresenter // TP=ContentControl
+		""";
 		VerifyTree(expectations, setup);
 	}
 }

@@ -40,6 +40,13 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 		}
 
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
+		public ControlTemplate(object? owner, LegacyFrameworkTemplateBuilder? factory)
+			: base(owner, factory)
+		{
+		}
+#endif
+
 		public Type? TargetType { get; set; }
 
 		internal View? LoadContentCached(Control templatedParent)
@@ -50,4 +57,3 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 	}
 }
-

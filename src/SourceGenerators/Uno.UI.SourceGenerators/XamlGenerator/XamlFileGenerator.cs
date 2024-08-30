@@ -1,4 +1,7 @@
 ﻿#nullable enable
+#if false // fixme@xy: to remove the constant; temporarily added to test backward compat
+#define USE_NEW_TP_CODEGEN
+#endif
 
 using System;
 using System.Collections.Generic;
@@ -918,12 +921,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 							if (_isHotReloadEnabled)
 							{
-								// fixme@xy: find and update callee(s)
+								// fixme@xy: find and update caller(s)
 								// Build an interface that can be used to hide the actual replaced
 								// implementation of a type during hot reload.
 								using (writer.BlockInvariant($"internal interface {hrInterfaceName}"))
 								{
+#if USE_NEW_TP_CODEGEN
 									writer.AppendLineIndented($"{kvp.Value.ReturnType} Build(object owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings);");
+#else
+									writer.AppendLineIndented($"{kvp.Value.ReturnType} Build(object owner);");
+#endif
 								}
 							}
 
@@ -939,7 +946,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								{
 									writer.AppendLineIndented("global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();");
 
+#if USE_NEW_TP_CODEGEN
 									using (writer.BlockInvariant($"public {kvp.Value.ReturnType} Build(object {CurrentResourceOwner}, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)"))
+#else
+									using (writer.BlockInvariant($"public {kvp.Value.ReturnType} Build(object {CurrentResourceOwner})"))
+#endif
 									{
 										writer.AppendLineIndented($"{kvp.Value.ReturnType} __rootInstance = null;");
 										writer.AppendLineIndented($"var __that = this;");
@@ -3066,12 +3077,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 
 					var isInsideFrameworkTemplate = IsMemberInsideFrameworkTemplate(objectDefinition).isInside;
+#if USE_NEW_TP_CODEGEN
 					var isDependencyObject = IsType(objectDefinitionType, Generation.DependencyObjectSymbol.Value);
 					if (isInsideFrameworkTemplate && isDependencyObject)
 					{
 						writer.AppendLineIndented($"{closureName}.SetTemplatedParent(__settings?.TemplatedParent);");
 						writer.AppendLineIndented($"__settings?.TemplateMemberCreatedCallback?.Invoke({closureName});");
 					}
+#endif
 
 					componentDefinition = CurrentScope.Components.FirstOrDefault(x => x.XamlObject == objectDefinition);
 					if (componentDefinition is { } || // element can also be register for component by a descendant DO as its resource provider
@@ -5938,7 +5951,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						var resourceOwner = CurrentResourceOwnerName;
 
+#if USE_NEW_TP_CODEGEN
 						writer.Append($"{resourceOwner}, (__owner, __settings) => ");
+#else
+						writer.Append($"{resourceOwner}, (__owner) => ");
+#endif
 
 						// This case is to support the layout switching for the ListViewBaseLayout, which is not
 						// a FrameworkTemplate. This will need to be removed when this custom list view is removed.
@@ -6590,8 +6607,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var activator = _isHotReloadEnabled
 				? $"(({namespacePrefix}I{subclassName})global::Uno.UI.Helpers.TypeMappings.CreateInstance<{namespacePrefix}{subclassName}>())"
 				: $"new {namespacePrefix}{subclassName}()";
-
+#if USE_NEW_TP_CODEGEN
 			writer.AppendLineIndented($"{activator}.Build(__owner, __settings)");
+#else
+			writer.AppendLineIndented($"{activator}.Build(__owner)");
+#endif
 		}
 
 		private string GenerateConstructorParameters(INamedTypeSymbol? type)
