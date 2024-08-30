@@ -15,7 +15,7 @@ namespace Windows.ApplicationModel
 
 		public string DisplayName => NSBundle.MainBundle.InfoDictionary[BundleDisplayNameKey]?.ToString() ?? string.Empty;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 		private bool GetInnerIsDevelopmentMode() => IsAdHoc;
 
 		private static bool IsAdHoc

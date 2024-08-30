@@ -18,7 +18,7 @@ namespace Windows.ApplicationModel.Activation
 		{
 		}
 
-#if __IOS__ || __ANDROID__ || __WASM__ || __MACOS__
+#if __APPLE_UIKIT__ || __ANDROID__ || __WASM__ || __MACOS__
 		/// <summary>
 		/// Internal-only constructor for protocol activation.
 		/// </summary>

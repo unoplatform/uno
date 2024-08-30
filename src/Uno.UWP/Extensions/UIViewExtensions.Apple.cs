@@ -1,4 +1,4 @@
-﻿#if __IOS__
+﻿#if __APPLE_UIKIT__
 using _View = UIKit.UIView;
 #elif __MACOS__
 using _View = AppKit.NSView;
@@ -10,7 +10,7 @@ namespace Uno.Extensions
 	{
 		public static _View FindFirstResponder(this _View view)
 		{
-#if __IOS__
+#if __APPLE_UIKIT__
 			if (view.IsFirstResponder)
 #elif __MACOS__
 			if (view.Window.FirstResponder == view)
