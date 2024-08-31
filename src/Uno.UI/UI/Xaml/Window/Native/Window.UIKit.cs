@@ -10,7 +10,6 @@ using Uno.Diagnostics.Eventing;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
-using WebKit;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
@@ -19,6 +18,9 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
+#if !__TVOS__
+using WebKit;
+#endif
 
 namespace Uno.UI.Controls;
 
