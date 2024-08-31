@@ -116,6 +116,7 @@
 		<PackageReference Update="SkiaSharp.NativeAssets.WebAssembly" Version="$(SkiaSharpVersion)" />
 		<PackageReference Update="SkiaSharp.NativeAssets.MacCatalyst" Version="$(SkiaSharpVersion)" />
 		<PackageReference Update="SkiaSharp.NativeAssets.macos" Version="$(SkiaSharpVersion)" />
+		<PackageReference Update="SkiaSharp.NativeAssets.tvOS" Version="$(SkiaSharpVersion)" />
 		
 		<PackageReference Update="HarfBuzzSharp.NativeAssets.macOS" Version="7.3.0.1" />
 		<PackageReference Update="HarfBuzzSharp.NativeAssets.WebAssembly" Version="7.3.0.1" />
