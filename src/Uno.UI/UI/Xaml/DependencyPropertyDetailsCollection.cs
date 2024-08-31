@@ -11,7 +11,7 @@ namespace Microsoft.UI.Xaml
 	/// <summary>
 	/// A <see cref="DependencyPropertyDetails"/> collection
 	/// </summary>
-	partial class DependencyPropertyDetailsCollection : IDisposable
+	partial class DependencyPropertyDetailsCollection
 	{
 		private readonly ManagedWeakReference _ownerReference;
 		private object? _hardOwnerReference;
@@ -21,15 +21,10 @@ namespace Microsoft.UI.Xaml
 		private DependencyPropertyDetails? _dataContextPropertyDetails;
 		private DependencyPropertyDetails? _templatedParentPropertyDetails;
 
-		private readonly static ArrayPool<short> _offsetsPool = ArrayPool<short>.Shared;
-		private readonly static LinearArrayPool<DependencyPropertyDetails?> _pool = LinearArrayPool<DependencyPropertyDetails?>.CreateAutomaticallyManaged(BucketSize, 16);
+		private DependencyPropertyDetails[] _entries = Array.Empty<DependencyPropertyDetails>();
+		private int _entriesCount;
 
-		private static readonly DependencyPropertyDetails?[] _empty = Array.Empty<DependencyPropertyDetails?>();
-
-		private DependencyPropertyDetails?[] _entries;
-		private short[]? _entryOffsets;
-
-		private const int BucketSize = 16;
+		private const int InitialCapacity = 8;
 
 		private object? Owner => _hardOwnerReference ?? _ownerReference.Target;
 
@@ -42,8 +37,6 @@ namespace Microsoft.UI.Xaml
 
 			_dataContextProperty = dataContextProperty;
 			_templatedParentProperty = templatedParentProperty;
-
-			_entries = _empty;
 		}
 
 		internal void CloneToForHotReload(DependencyPropertyDetailsCollection other, DependencyObjectStore store, DependencyObjectStore otherStore)
@@ -91,22 +84,6 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		public void Dispose()
-		{
-			var entries = _entries;
-
-			var entriesLength = entries.Length;
-
-			for (var i = 0; i < entriesLength; i++)
-			{
-				entries[i]?.Dispose();
-			}
-
-			ReturnEntriesAndOffsetsToPools();
-
-			_entries = null!;
-		}
-
 		public DependencyPropertyDetails DataContextPropertyDetails
 			=> _dataContextPropertyDetails ??= GetPropertyDetails(_dataContextProperty);
 
@@ -131,109 +108,100 @@ namespace Microsoft.UI.Xaml
 
 		private DependencyPropertyDetails? TryGetPropertyDetails(DependencyProperty property, bool forceCreate)
 		{
-			if (_entries is null)
-			{
-				return null;
-			}
-
 			if (forceCreate)
 			{
-				// Since BucketSize is a power of 2 we can shift and mask to divide and modulo respectively
-				// Both operations(div/mod) are still expensive on modern hardware (~20+ cycles)
-				// This is not a concern for RyuJIT or LLVM backends as they will emit optimized code for it.
-				// The main concern is the Mono interpreter which may or may not do so.
-				// See: libdivide and fastmod projects
-				var bucketIndex = property.UniqueId >> 4;
-				var bucketRemainder = property.UniqueId & 15;
-
-				var entryOffsets = _entryOffsets;
-
-				// Offsets have not been initialized or need to be resized
-				if (entryOffsets == null || bucketIndex >= entryOffsets.Length)
+				if (_entries.Length == 0)
 				{
-					// Rent the next multiple of BucketSize available : 0 -> 16, 16 -> 32, 32 -> 64 ...
-					var newOffsets = _offsetsPool.Rent((bucketIndex * BucketSize) + 1);
-
-					// Since newOffsets is an Int16 array we can memset it with 0xFFs, 0xFFFF is -1, regardless of endianness
-					// This avoids the slow path in Span<T>.Fill()
-					Unsafe.InitBlockUnaligned(ref Unsafe.As<short, byte>(ref newOffsets[0]), 0xFF, (uint)newOffsets.Length * 2);
-
-					if (entryOffsets != null)
-					{
-						entryOffsets.AsSpan().CopyTo(newOffsets);
-
-						_offsetsPool.Return(entryOffsets);
-					}
-
-					_entryOffsets = entryOffsets = newOffsets;
+					_entries = new DependencyPropertyDetails[InitialCapacity];
 				}
 
-				var entries = _entries;
-
-				var offset = entryOffsets[bucketIndex];
-
-				// Offset -1 represents an unallocated bucket, -1 was chosen because 0 is a valid offset
-				// We need to resize the entries array to fit a new bucket
-				if (offset == -1)
+				// The behavior of BinarySearchForEqualsOrGreater is as follows. Assume unique ids are:
+				// [1, 3, 5]
+				// Searching for 0 produces index 0 (value 0 is not found, and next greater is 1 which is at index 0)
+				// Searching for 1 produces index 0 (value 1 is found and its index is returned)
+				// Searching for 2 produces index 1 (value 2 isn't found, and next greater is 3 which is at index 1)
+				// Searching for 3 produces index 1 (value 3 is found and its index is returned)
+				// Searching for 4 produces index 2 (value 4 isn't found, and next greater is 5 which is at index 2)
+				// Searching for 5 produces index 2 (value 5 is found and its index is returned)
+				// Searching for 6 produces index 3 (value 6 isn't found, and next greater doesn't exist, so it returns an "imaginary" position where the next greater would have existed, which is the count in this case)
+				var index = BinarySearchForEqualsOrGreater(property);
+				if (index < _entriesCount && _entries[index].Property.UniqueId == property.UniqueId)
 				{
-					entryOffsets[bucketIndex] = offset = (short)entries.Length;
-
-					var newEntries = _pool.Rent(entries.Length + BucketSize);
-
-					if (entries != _empty)
-					{
-						entries.AsSpan().CopyTo(newEntries);
-
-						_pool.Return(entries, clearArray: true);
-					}
-
-					_entries = entries = newEntries;
+					// Value already exists.
+					return _entries[index];
 				}
 
-				ref var propertyEntry = ref entries[offset + bucketRemainder];
+				var newEntry = new DependencyPropertyDetails(property, property == _dataContextProperty || property == _templatedParentProperty);
 
-				if (propertyEntry == null)
+				// Value is not found. We need to force create.
+				// If there is a space in the array, we can only shift elements.
+				// If there is no space, we need to resize and copy.
+				if (_entriesCount < _entries.Length)
 				{
-					propertyEntry = new DependencyPropertyDetails(property, property == _dataContextProperty || property == _templatedParentProperty);
+					// We have space in _entries.
+					// We want to insert the new entry at "index".
+					// So, we shift elements starting at index.
+					Array.Copy(sourceArray: _entries, sourceIndex: index, destinationArray: _entries, destinationIndex: index + 1, length: _entriesCount - index);
+					_entries[index] = newEntry;
+				}
+				else
+				{
+					var newEntries = new DependencyPropertyDetails[_entries.Length * 2];
+					Array.Copy(sourceArray: _entries, sourceIndex: 0, destinationArray: newEntries, destinationIndex: 0, length: index);
+					newEntries[index] = newEntry;
+					Array.Copy(sourceArray: _entries, sourceIndex: index, destinationArray: newEntries, destinationIndex: index + 1, length: _entriesCount - index);
+					_entries = newEntries;
 				}
 
-				return propertyEntry;
+				_entriesCount++;
+
+				return newEntry;
 			}
 			else
 			{
-				if (_entries != _empty)
+				var index = BinarySearchForEqualsOrGreater(property);
+				if (index < _entriesCount && _entries[index].Property.UniqueId == property.UniqueId)
 				{
-					// See above
-					var bucketIndex = property.UniqueId >> 4;
-
-					if (bucketIndex < _entryOffsets!.Length)
-					{
-						var offset = _entryOffsets[bucketIndex];
-
-						return offset != -1 ? _entries[offset + (property.UniqueId & 15)] : null;
-					}
+					return _entries[index];
 				}
 
 				return null;
 			}
 		}
 
-		private void ReturnEntriesAndOffsetsToPools()
+		private int BinarySearchForEqualsOrGreater(DependencyProperty property)
 		{
-			if (_entries != _empty)
+			var low = 0;
+			var high = _entriesCount - 1;
+			var target = property.UniqueId;
+			while (low <= high)
 			{
-				_pool.Return(_entries, clearArray: true);
+				var mid = low + ((high - low) >> 1);
+				var current = _entries[mid].Property.UniqueId;
+				if (target == current)
+				{
+					// We found the property!
+					return mid;
+				}
+				else if (target > current)
+				{
+					// The value we are looking for is greater than current.
+					// We should search the right subarray.
+					low = mid + 1;
+				}
+				else
+				{
+					// The value we are looking for is smaller than current.
+					// We should search the left subarray.
+					high = mid - 1;
+				}
 			}
 
-			if (_entryOffsets != null)
-			{
-				_offsetsPool.Return(_entryOffsets);
-			}
+			return low;
 		}
 
-		internal DependencyPropertyDetails?[] GetAllDetails()
-			// If _entries is null, it means we were already disposed. Gracefully return empty so that the caller doesn't have anything to do.
-			=> _entries ?? _empty;
+		internal ReadOnlySpan<DependencyPropertyDetails> GetAllDetails()
+			=> _entries.AsSpan().Slice(0, _entriesCount);
 
 		internal void TryEnableHardReferences()
 		{

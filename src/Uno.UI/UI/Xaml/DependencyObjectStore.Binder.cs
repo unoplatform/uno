@@ -270,7 +270,6 @@ namespace Microsoft.UI.Xaml
 				_isDisposed = true;
 			}
 
-			_properties.Dispose();
 			_childrenBindableMap?.Dispose();
 		}
 
