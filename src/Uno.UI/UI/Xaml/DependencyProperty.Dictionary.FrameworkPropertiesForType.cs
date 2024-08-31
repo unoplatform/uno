@@ -1,19 +1,17 @@
 ﻿#nullable enable
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.UI.Xaml;
-using Uno.Extensions;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using Uno;
-using System.Threading;
-using Uno.Collections;
-
-using _Key = Uno.CachedTuple<System.Type, Microsoft.UI.Xaml.FrameworkPropertyMetadataOptions>;
 using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System.Threading;
+using Microsoft.UI.Xaml;
+using Uno;
+using Uno.Collections;
+using Uno.Extensions;
 
 namespace Microsoft.UI.Xaml
 {
@@ -25,7 +23,7 @@ namespace Microsoft.UI.Xaml
 			// So we don't use pooling to not cause pool exhaustion by renting without returning.
 			private readonly HashtableEx _entries = new HashtableEx(usePooling: false);
 
-			internal bool TryGetValue(_Key key, out DependencyProperty[]? result)
+			internal bool TryGetValue(Type key, out DependencyProperty[]? result)
 			{
 				if (_entries.TryGetValue(key, out var value))
 				{
@@ -38,7 +36,7 @@ namespace Microsoft.UI.Xaml
 				return false;
 			}
 
-			internal void Add(_Key key, DependencyProperty[] value)
+			internal void Add(Type key, DependencyProperty[] value)
 				=> _entries.Add(key, value);
 
 			internal void Clear() => _entries.Clear();

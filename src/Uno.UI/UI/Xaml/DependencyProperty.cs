@@ -38,7 +38,6 @@ namespace Microsoft.UI.Xaml
 	{
 		private readonly static DependencyPropertyRegistry _registry = new DependencyPropertyRegistry();
 
-		private readonly static TypeToPropertiesDictionary _getPropertiesForType = new TypeToPropertiesDictionary();
 		private readonly static NameToPropertyDictionary _getPropertyCache = new NameToPropertyDictionary();
 		private static object DefaultThemeAnimationDurationBox = new Duration(FeatureConfiguration.ThemeAnimation.DefaultThemeAnimationDuration);
 
@@ -48,7 +47,7 @@ namespace Microsoft.UI.Xaml
 		private readonly static PropertyCacheEntry _searchPropertyCacheEntry = new();
 
 
-		private readonly static FrameworkPropertiesForTypeDictionary _getFrameworkPropertiesForType = new FrameworkPropertiesForTypeDictionary();
+		private readonly static FrameworkPropertiesForTypeDictionary _getInheritedPropertiesForType = new FrameworkPropertiesForTypeDictionary();
 
 		private readonly PropertyMetadata _ownerTypeMetadata; // For perf consideration, we keep direct ref the metadata for the owner type
 
@@ -381,36 +380,18 @@ namespace Microsoft.UI.Xaml
 		}
 
 		/// <summary>
-		/// Gets the dependencies properties for the specified type
-		/// </summary>
-		/// <param name="type">A dependency object</param>
-		/// <returns>An array of Dependency Properties.</returns>
-		internal static DependencyProperty[] GetPropertiesForType(Type type)
-		{
-			DependencyProperty[] result = null;
-
-			if (!_getPropertiesForType.TryGetValue(type, out result))
-			{
-				_getPropertiesForType.Add(type, result = InternalGetPropertiesForType(type));
-			}
-
-			return result;
-		}
-
-		/// <summary>
 		/// Gets the dependencies properties for the specified type with specific Framework metadata options
 		/// </summary>
 		/// <param name="type">A dependency object</param>
 		/// <param name="options">A set of flags that must be set</param>
 		/// <returns>An array of Dependency Properties.</returns>
-		internal static DependencyProperty[] GetFrameworkPropertiesForType(Type type, FrameworkPropertyMetadataOptions options)
+		internal static DependencyProperty[] GetInheritedPropertiesForType(Type type)
 		{
 			DependencyProperty[] result = null;
-			var key = CachedTuple.Create(type, options);
 
-			if (!_getFrameworkPropertiesForType.TryGetValue(key, out result))
+			if (!_getInheritedPropertiesForType.TryGetValue(type, out result))
 			{
-				_getFrameworkPropertiesForType.Add(key, result = InternalGetFrameworkPropertiesForType(type, options));
+				_getInheritedPropertiesForType.Add(type, result = InternalGetInheritedPropertiesForType(type));
 			}
 
 			return result;
@@ -422,9 +403,8 @@ namespace Microsoft.UI.Xaml
 		internal static void ClearRegistry()
 		{
 			_registry.Clear();
-			_getPropertiesForType.Clear();
 			_getPropertyCache.Clear();
-			_getFrameworkPropertiesForType.Clear();
+			_getInheritedPropertiesForType.Clear();
 		}
 
 		private static void RegisterProperty(Type ownerType, string name, DependencyProperty newProperty)
@@ -432,29 +412,6 @@ namespace Microsoft.UI.Xaml
 			ResetGetPropertyCache(ownerType, name);
 
 			_registry.Add(ownerType, name, newProperty);
-		}
-
-		private static DependencyProperty[] InternalGetPropertiesForType(Type type)
-		{
-			ForceInitializeTypeConstructor(type);
-
-			var results = new List<DependencyProperty>();
-
-			do
-			{
-				_registry.AppendPropertiesForType(type, results);
-
-				// Dependency properties are inherited
-				type = type.BaseType;
-			}
-			while (type != typeof(object) && type != null);
-
-			var array = results.ToArray();
-
-			// Produce a pre-sorted list, aligned with the initial behavior of DependencyPropertyDetailsCollection
-			Array.Sort(array, (l, r) => l.UniqueId - r.UniqueId);
-
-			return array;
 		}
 
 		/// <summary>
@@ -480,21 +437,27 @@ namespace Microsoft.UI.Xaml
 			while (type != null);
 		}
 
-		private static DependencyProperty[] InternalGetFrameworkPropertiesForType(Type type, FrameworkPropertyMetadataOptions options)
+		private static DependencyProperty[] InternalGetInheritedPropertiesForType(Type type)
 		{
-			var output = new List<DependencyProperty>();
+			ForceInitializeTypeConstructor(type);
 
-			foreach (var prop in GetPropertiesForType(type))
+			var results = new List<DependencyProperty>();
+
+			do
 			{
-				var propertyOptions = (prop.Metadata as FrameworkPropertyMetadata)?.Options;
+				_registry.AppendInheritedPropertiesForType(type, results);
 
-				if (propertyOptions != null && (propertyOptions & options) != 0)
-				{
-					output.Add(prop);
-				}
+				// Dependency properties are inherited
+				type = type.BaseType;
 			}
+			while (type != typeof(object) && type != null);
 
-			return output.ToArray();
+			var array = results.ToArray();
+
+			// Produce a pre-sorted list, aligned with the initial behavior of DependencyPropertyDetailsCollection
+			Array.Sort(array, (l, r) => l.UniqueId - r.UniqueId);
+
+			return array;
 		}
 
 		private bool TryGetDefaultInheritedPropertyValue(out object defaultValue)

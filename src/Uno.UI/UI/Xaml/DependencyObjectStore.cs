@@ -1631,7 +1631,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			// Raise the property change for the current values
-			var props = DependencyProperty.GetFrameworkPropertiesForType(_originalObjectType, FrameworkPropertyMetadataOptions.Inherits);
+			var props = DependencyProperty.GetInheritedPropertiesForType(_originalObjectType);
 
 			// Not using the ActualInstance property here because we need to get a WeakReference instead.
 			var instanceRef = _originalObjectRef != null ? _originalObjectRef : ThisWeakReference;
