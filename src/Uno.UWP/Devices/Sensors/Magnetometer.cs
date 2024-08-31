@@ -1,4 +1,4 @@
-﻿#if __IOS__ || __TVOS__ || __ANDROID__ || __WASM__
+﻿#if __IOS__ || __ANDROID__ || __WASM__
 using System;
 using System.Collections.Generic;
 using System.Linq;

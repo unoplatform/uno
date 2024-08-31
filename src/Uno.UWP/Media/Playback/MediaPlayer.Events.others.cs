@@ -1,4 +1,4 @@
-﻿#if !(__ANDROID__ || __IOS__ || __MACOS__)
+﻿#if !(__ANDROID__ || __IOS__ || __TVOS__ || __MACOS__)
 #nullable enable
 
 using System;

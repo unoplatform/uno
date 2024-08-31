@@ -1,17 +1,16 @@
-#if __ANDROID__ || __IOS__ || __MACOS__
-namespace Windows.Media.Playback
+#if __ANDROID__ || __IOS__ || __TVOS__ || __MACOS__
+namespace Windows.Media.Playback;
+
+public enum MediaPlayerError
 {
-	public enum MediaPlayerError
-	{
-		Unknown,
+	Unknown,
 
-		Aborted,
+	Aborted,
 
-		NetworkError,
+	NetworkError,
 
-		DecodingError,
+	DecodingError,
 
-		SourceNotSupported,
-	}
+	SourceNotSupported,
 }
 #endif

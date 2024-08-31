@@ -3,20 +3,19 @@
 using System;
 using Windows.Foundation;
 
-namespace Windows.Devices.Haptics
+namespace Windows.Devices.Haptics;
+
+public partial class VibrationDevice
 {
-	public partial class VibrationDevice
+	private VibrationDevice()
 	{
-		private VibrationDevice()
-		{
-		}
-
-		public SimpleHapticsController SimpleHapticsController { get; } = new SimpleHapticsController();
-
-		public static IAsyncOperation<VibrationAccessStatus> RequestAccessAsync() =>
-			RequestAccessTaskAsync().AsAsyncOperation();
-
-		public static IAsyncOperation<VibrationDevice?> GetDefaultAsync() =>
-			GetDefaultTaskAsync().AsAsyncOperation();
 	}
+
+	public SimpleHapticsController SimpleHapticsController { get; } = new SimpleHapticsController();
+
+	public static IAsyncOperation<VibrationAccessStatus> RequestAccessAsync() =>
+		RequestAccessTaskAsync().AsAsyncOperation();
+
+	public static IAsyncOperation<VibrationDevice?> GetDefaultAsync() =>
+		GetDefaultTaskAsync().AsAsyncOperation();
 }
