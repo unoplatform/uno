@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using Foundation;
 using Windows.System;
 
-#if !__MACCATALYST__ // catalyst https://github.com/xamarin/xamarin-macios/issues/13935
+#if !__MACCATALYST__ && !__TVOS__ // catalyst https://github.com/xamarin/xamarin-macios/issues/13935
 using MessageUI;
 #endif
 
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.Email
 				throw new ArgumentNullException(nameof(message));
 			}
 
-#if !__MACCATALYST__ // catalyst https://github.com/xamarin/xamarin-macios/issues/13935
+#if !__MACCATALYST__ && !__TVOS__ // catalyst https://github.com/xamarin/xamarin-macios/issues/13935
 			if (MFMailComposeViewController.CanSendMail)
 			{
 				await ComposeEmailWithMFAsync(message);
@@ -36,7 +36,7 @@ namespace Windows.ApplicationModel.Email
 			}
 		}
 
-#if !__MACCATALYST__
+#if !__MACCATALYST__ && !__TVOS__
 		private static async Task ComposeEmailWithMFAsync(EmailMessage message)
 		{
 			if (UIApplication.SharedApplication.KeyWindow?.RootViewController == null)
