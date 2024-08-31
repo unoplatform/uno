@@ -64,4 +64,29 @@ public partial class Given_DependencyProperty
 		Assert.AreEqual(2, myButton.P);
 		Assert.AreEqual(3, myButton.P);
 	}
+
+	private partial class CustomFE : FrameworkElement { }
+	private partial class CustomControl : Control { }
+	private partial class CustomUserControl : UserControl { }
+
+	[TestMethod]
+	public void When_IsTabStop()
+	{
+		var customControl = new CustomControl();
+		Assert.IsTrue(customControl.IsTabStop);
+
+		var userControl = new UserControl();
+		Assert.IsFalse(userControl.IsTabStop);
+
+		var customUserControl = new CustomUserControl();
+		Assert.IsFalse(customUserControl.IsTabStop);
+
+		Assert.IsFalse((bool)Control.IsTabStopProperty.GetMetadata(typeof(UIElement)).DefaultValue);
+		Assert.IsFalse((bool)Control.IsTabStopProperty.GetMetadata(typeof(FrameworkElement)).DefaultValue);
+		Assert.IsFalse((bool)Control.IsTabStopProperty.GetMetadata(typeof(CustomFE)).DefaultValue);
+		Assert.IsTrue((bool)Control.IsTabStopProperty.GetMetadata(typeof(Control)).DefaultValue);
+		Assert.IsTrue((bool)Control.IsTabStopProperty.GetMetadata(typeof(CustomControl)).DefaultValue);
+		Assert.IsFalse((bool)Control.IsTabStopProperty.GetMetadata(typeof(UserControl)).DefaultValue);
+		Assert.IsFalse((bool)Control.IsTabStopProperty.GetMetadata(typeof(CustomUserControl)).DefaultValue);
+	}
 }
