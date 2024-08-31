@@ -78,28 +78,35 @@ public partial class TextBox
 
 	internal ContentControl ContentElement => _contentElement;
 
-	[GeneratedDependencyProperty(DefaultValue = false)]
-	public static DependencyProperty CanUndoProperty { get; } = CreateCanUndoProperty();
+	public static DependencyProperty CanUndoProperty { get; } = DependencyProperty.Register(
+		nameof(CanUndo),
+		typeof(bool),
+		typeof(TextBox),
+		new FrameworkPropertyMetadata(defaultValue: false)
+		{
+			PropMethodCall = GetCanUndo,
+		});
 
-	public bool CanUndo
+	public bool CanUndo => (bool)GetValue(CanUndoProperty);
+
+	private static object GetCanUndo(DependencyObject @do, bool isGet, object valueToSet)
+		=> Uno.UI.Helpers.Boxes.Box(((TextBox)@do)._historyIndex > 0);
+
+	public static DependencyProperty CanRedoProperty { get; } = DependencyProperty.Register(
+		nameof(CanRedo),
+		typeof(bool),
+		typeof(TextBox),
+		new FrameworkPropertyMetadata(defaultValue: false)
+		{
+			PropMethodCall = GetCanRedo,
+		});
+
+	public bool CanRedo => (bool)GetValue(CanRedoProperty);
+
+	private static object GetCanRedo(DependencyObject @do, bool isGet, object valueToSet)
 	{
-		get => GetCanUndoValue();
-		private set => SetCanUndoValue(value);
-	}
-
-	[GeneratedDependencyProperty(DefaultValue = false)]
-	public static DependencyProperty CanRedoProperty { get; } = CreateCanRedoProperty();
-
-	public bool CanRedo
-	{
-		get => GetCanRedoValue();
-		private set => SetCanRedoValue(value);
-	}
-
-	private void UpdateCanUndoRedo()
-	{
-		CanUndo = _historyIndex > 0;
-		CanRedo = _historyIndex < _history.Count - 1;
+		var @this = (TextBox)@do;
+		return Uno.UI.Helpers.Boxes.Box(@this._historyIndex < @this._history.Count - 1);
 	}
 
 	private void TrySetCurrentlyTyping(bool newValue)
@@ -127,7 +134,6 @@ public partial class TextBox
 				_selectionWhenTypingStarted.selectionStart,
 				_selectionWhenTypingStarted.selectionLength,
 				_selectionWhenTypingStarted.selectionEndsAtTheStart));
-			UpdateCanUndoRedo();
 		}
 
 		_currentlyTyping = newValue;
@@ -1317,7 +1323,6 @@ public partial class TextBox
 			_history.Add(new HistoryRecord(SentinelAction.Instance, _selection.start, _selection.length, _selectionEndsAtTheStart));
 		}
 		_historyIndex = Math.Max(0, Math.Min(_history.Count - 1, _historyIndex));
-		UpdateCanUndoRedo();
 	}
 
 	public void ClearUndoRedoHistory()
@@ -1335,7 +1340,6 @@ public partial class TextBox
 		_historyIndex++;
 		_history.RemoveAllAt(_historyIndex);
 		_history.Add(new HistoryRecord(action, _selection.start, _selection.length, _selectionEndsAtTheStart));
-		UpdateCanUndoRedo();
 	}
 
 	public void Undo()
@@ -1375,7 +1379,6 @@ public partial class TextBox
 				break;
 		}
 		_clearHistoryOnTextChanged = true;
-		UpdateCanUndoRedo();
 	}
 
 	public void Redo()
@@ -1413,7 +1416,6 @@ public partial class TextBox
 				break;
 		}
 		_clearHistoryOnTextChanged = true;
-		UpdateCanUndoRedo();
 	}
 
 	private record struct HistoryRecord(TextBoxAction Action, int SelectionStart, int SelectionLength, bool SelectionEndsAtTheStart);

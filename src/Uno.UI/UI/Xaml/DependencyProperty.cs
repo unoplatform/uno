@@ -73,6 +73,7 @@ namespace Microsoft.UI.Xaml
 			{
 				_flags |= frameworkMetadata.Options.HasWeakStorage() ? Flags.HasWeakStorage : Flags.None;
 				_flags |= frameworkMetadata.Options.HasInherits() ? Flags.IsInherited : Flags.None;
+				_flags |= frameworkMetadata.IsPropMethodCall ? Flags.IsPropMethodCall : Flags.None;
 			}
 
 			_flags |= ownerType.Assembly.Equals(typeof(DependencyProperty).Assembly) ? Flags.IsUnoType : Flags.None;
@@ -313,6 +314,9 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		internal bool IsInherited
 			=> (_flags & Flags.IsInherited) != 0;
+
+		internal bool IsPropMethodCall
+			=> (_flags & Flags.IsPropMethodCall) != 0;
 
 		/// <summary>
 		/// Determines if the owner type is declared by Uno.UI
@@ -645,6 +649,8 @@ namespace Microsoft.UI.Xaml
 			/// Set when the property is an inherited property
 			/// </summary>
 			IsInherited = (1 << 6),
+
+			IsPropMethodCall = (1 << 7),
 		}
 	}
 }
