@@ -2,6 +2,7 @@
 
 using System;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using Microsoft.UI.Xaml.Data;
 using Uno.Buffers;
 using Uno.UI.DataBinding;
@@ -141,15 +142,25 @@ namespace Microsoft.UI.Xaml
 					// We have space in _entries.
 					// We want to insert the new entry at "index".
 					// So, we shift elements starting at index.
-					Array.Copy(sourceArray: _entries, sourceIndex: index, destinationArray: _entries, destinationIndex: index + 1, length: _entriesCount - index);
+					var source = MemoryMarshal.CreateSpan(ref Unsafe.Add(ref MemoryMarshal.GetArrayDataReference(_entries), index), _entriesCount - index);
+					var dest = MemoryMarshal.CreateSpan(ref Unsafe.Add(ref MemoryMarshal.GetArrayDataReference(_entries), index + 1), _entries.Length - index - 1);
+					source.CopyTo(dest);
 					_entries[index] = newEntry;
 				}
 				else
 				{
-					var newEntries = new DependencyPropertyDetails[_entries.Length * 2];
-					Array.Copy(sourceArray: _entries, sourceIndex: 0, destinationArray: newEntries, destinationIndex: 0, length: index);
+					var newEntries = GC.AllocateUninitializedArray<DependencyPropertyDetails>(_entries.Length * 2);
+
+					var sourceLeft = MemoryMarshal.CreateSpan(ref MemoryMarshal.GetArrayDataReference(_entries), index);
+					var destLeft = MemoryMarshal.CreateSpan(ref MemoryMarshal.GetArrayDataReference(newEntries), newEntries.Length);
+					sourceLeft.CopyTo(destLeft);
+
 					newEntries[index] = newEntry;
-					Array.Copy(sourceArray: _entries, sourceIndex: index, destinationArray: newEntries, destinationIndex: index + 1, length: _entriesCount - index);
+
+					var sourceRight = MemoryMarshal.CreateSpan(ref Unsafe.Add(ref MemoryMarshal.GetArrayDataReference(_entries), index), _entriesCount - index);
+					var destRight = MemoryMarshal.CreateSpan(ref Unsafe.Add(ref MemoryMarshal.GetArrayDataReference(newEntries), index + 1), newEntries.Length - index - 1);
+					sourceRight.CopyTo(destRight);
+
 					_entries = newEntries;
 				}
 
