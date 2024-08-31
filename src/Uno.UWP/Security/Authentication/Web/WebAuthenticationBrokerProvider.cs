@@ -1,4 +1,5 @@
-﻿#nullable enable
+﻿#if !__TVOS__
+#nullable enable
 using System;
 using System.Linq;
 using System.Threading;
@@ -67,3 +68,4 @@ namespace Uno.AuthenticationBroker
 
 	}
 }
+#endif
