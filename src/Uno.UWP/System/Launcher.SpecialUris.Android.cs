@@ -106,4 +106,3 @@ namespace Windows.System
 		}
 	}
 }
-#endif

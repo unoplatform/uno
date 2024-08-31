@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
 #else
 using AppKit;
@@ -13,14 +13,14 @@ namespace Windows.System
 	public static partial class Launcher
 	{
 		public static
-#if __IOS__
+#if __APPLE_UIKIT__
 			async
 #endif
 			Task<bool> LaunchUriPlatformAsync(Uri uri)
 		{
 			if (IsSpecialUri(uri) && CanHandleSpecialUri(uri))
 			{
-#if __IOS__
+#if __APPLE_UIKIT__
 				return await HandleSpecialUri(uri);
 #else
 				return Task.FromResult(HandleSpecialUri(uri));
@@ -28,7 +28,7 @@ namespace Windows.System
 			}
 
 			var appleUrl = new AppleUrl(uri.OriginalString);
-#if __IOS__
+#if __APPLE_UIKIT__
 			return await UIApplication.SharedApplication.OpenUrlAsync(appleUrl, new UIApplicationOpenUrlOptions());
 #else
 			return Task.FromResult(NSWorkspace.SharedWorkspace.OpenUrl(
@@ -44,7 +44,7 @@ namespace Windows.System
 			bool canOpenUri;
 			if (!IsSpecialUri(uri))
 			{
-#if __IOS__
+#if __APPLE_UIKIT__
 				canOpenUri = UIApplication.SharedApplication.CanOpenUrl(
 					new AppleUrl(uri.OriginalString));
 #else

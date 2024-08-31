@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using Foundation;
 using UIKit;
-using Windows.Foundation;
 
 namespace Windows.Graphics.Display
 {
@@ -12,6 +8,7 @@ namespace Windows.Graphics.Display
 	{
 		private NSObject _didChangeStatusBarOrientationObserver;
 
+#if __IOS__
 		private static readonly UIInterfaceOrientationMask[] _preferredOrientations =
 		{
 			UIInterfaceOrientationMask.Portrait,
@@ -19,6 +16,7 @@ namespace Windows.Graphics.Display
 			UIInterfaceOrientationMask.LandscapeLeft,
 			UIInterfaceOrientationMask.PortraitUpsideDown
 		};
+#endif
 
 		public DisplayOrientations CurrentOrientation => GetCurrentOrientation();
 
@@ -79,6 +77,7 @@ namespace Windows.Graphics.Display
 
 		private DisplayOrientations GetCurrentOrientation()
 		{
+#if __IOS__
 			var currentOrientationMask = UIApplication.SharedApplication
 			   .StatusBarOrientation;
 
@@ -90,6 +89,9 @@ namespace Windows.Graphics.Display
 				UIInterfaceOrientation.PortraitUpsideDown => DisplayOrientations.PortraitFlipped,
 				_ => DisplayOrientations.None,
 			};
+#else
+			return DisplayOrientations.None;
+#endif
 		}
 
 		private void Update()
@@ -133,6 +135,7 @@ namespace Windows.Graphics.Display
 		{
 			_lastKnownOrientation = CurrentOrientation;
 			_lastKnownDpi = LogicalDpi;
+#if __IOS__
 			if (_didChangeStatusBarOrientationObserver == null)
 			{
 				_didChangeStatusBarOrientationObserver = NSNotificationCenter
@@ -145,6 +148,7 @@ namespace Windows.Graphics.Display
 						}
 					);
 			}
+#endif
 		}
 
 		private void UnobserveDisplayMetricsChanges()
@@ -158,6 +162,7 @@ namespace Windows.Graphics.Display
 
 		static partial void SetOrientationPartial(DisplayOrientations orientations)
 		{
+#if __IOS__
 			var toOrientationMask = orientations.ToUIInterfaceOrientationMask();
 
 			//Rotate to the most preferred orientation that is requested
@@ -197,6 +202,7 @@ namespace Windows.Graphics.Display
 				//Forces the rotation if the physical device is being held in an orientation that has now become supported
 				UIViewController.AttemptRotationToDeviceOrientation();
 			}
+#endif
 		}
 	}
 }

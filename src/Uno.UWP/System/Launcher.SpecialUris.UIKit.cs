@@ -1,5 +1,4 @@
-﻿#if __IOS__
-using Foundation;
+﻿using Foundation;
 using UIKit;
 using System;
 using System.Threading.Tasks;
@@ -34,4 +33,3 @@ namespace Windows.System
 				new UIApplicationOpenUrlOptions());
 	}
 }
-#endif

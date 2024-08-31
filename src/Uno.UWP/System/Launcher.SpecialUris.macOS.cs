@@ -1,5 +1,4 @@
-﻿#if __MACOS__
-using Foundation;
+﻿using Foundation;
 using AppKit;
 using System;
 using System.Threading.Tasks;
@@ -101,4 +100,3 @@ namespace Windows.System
 		}
 	}
 }
-#endif

@@ -2,7 +2,7 @@
 using AVFoundation;
 using CoreGraphics;
 using Foundation;
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
 using _View = UIKit.UIView;
 #else
@@ -24,7 +24,7 @@ namespace Uno.Media.Playback
 		}
 #endif
 
-#if __IOS__
+#if __APPLE_UIKIT__
 		public override void LayoutSubviews()
 		{
 			base.LayoutSubviews();
