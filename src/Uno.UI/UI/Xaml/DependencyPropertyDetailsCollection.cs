@@ -12,7 +12,7 @@ namespace Microsoft.UI.Xaml
 	/// <summary>
 	/// A <see cref="DependencyPropertyDetails"/> collection
 	/// </summary>
-	partial class DependencyPropertyDetailsCollection
+	partial class DependencyPropertyDetailsCollection : IDisposable
 	{
 		private readonly ManagedWeakReference _ownerReference;
 		private object? _hardOwnerReference;
@@ -85,6 +85,19 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		public void Dispose()
+		{
+			var entries = _entries;
+
+			for (var i = 0; i < _entriesCount; i++)
+			{
+				entries[i].Dispose();
+			}
+
+			_entries = null!;
+			_entriesCount = 0;
+		}
+
 		public DependencyPropertyDetails DataContextPropertyDetails
 			=> _dataContextPropertyDetails ??= GetPropertyDetails(_dataContextProperty);
 
@@ -109,6 +122,11 @@ namespace Microsoft.UI.Xaml
 
 		private DependencyPropertyDetails? TryGetPropertyDetails(DependencyProperty property, bool forceCreate)
 		{
+			if (_entries is null)
+			{
+				return null;
+			}
+
 			if (forceCreate)
 			{
 				if (_entries.Length == 0)
@@ -212,7 +230,7 @@ namespace Microsoft.UI.Xaml
 		}
 
 		internal ReadOnlySpan<DependencyPropertyDetails> GetAllDetails()
-			=> _entries.AsSpan().Slice(0, _entriesCount);
+			=> (_entries ?? Array.Empty<DependencyPropertyDetails>()).AsSpan().Slice(0, _entriesCount);
 
 		internal void TryEnableHardReferences()
 		{
