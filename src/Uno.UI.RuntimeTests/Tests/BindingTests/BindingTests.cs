@@ -9,7 +9,6 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using SamplesApp.UITests;
 using Uno.UI.RuntimeTests.Helpers;
-using Uno.UI.Xaml.Controls;
 
 namespace Uno.UI.RuntimeTests.Tests;
 
@@ -58,7 +57,7 @@ public class BindingTests
 	[UnoWorkItem("https://github.com/unoplatform/uno/issues/16520")]
 	public async Task When_XBind_In_Window()
 	{
-		if (!NativeWindowFactory.SupportsMultipleWindows)
+		if (!Uno.UI.Xaml.Controls.NativeWindowFactory.SupportsMultipleWindows)
 		{
 			Assert.Inconclusive("This test can only run in an environment with multiwindow support");
 		}

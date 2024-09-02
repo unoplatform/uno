@@ -20,7 +20,9 @@ namespace Uno.UI.Samples.UITests.Helpers
 		/// <summary>
 		/// This method is for saving files on Skia-WASM where we don't have disk access.
 		/// </summary>
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
 		public static async Task SaveFile(string filePath, string content, CancellationToken? ct = null)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
 		{
 #if __SKIA__
 			if (OperatingSystem.IsBrowser())
