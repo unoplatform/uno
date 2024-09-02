@@ -36,7 +36,7 @@ class FileCreationRequestHandler(SimpleHTTPRequestHandler):
         self.end_headers()
 
 if __name__ == "__main__":
-    server_address = ('', sys.argv[1] if len(sys.argv) > 1 else 8001)
+    server_address = ('', int(sys.argv[1]) if len(sys.argv) > 1 else 8001)
     httpd = HTTPServer(server_address, FileCreationRequestHandler)
     print(f"Creating files on port {server_address[1]}...")
     httpd.serve_forever()
