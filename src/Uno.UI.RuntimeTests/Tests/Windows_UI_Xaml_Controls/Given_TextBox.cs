@@ -1036,6 +1036,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Size_Zero_Default()
 		{
+			using var uwpStyles = StyleHelper.UseUwpStyles();
 			var textBox = await LoadZeroSizeTextBoxAsync(null);
 
 			textBox.ActualWidth.Should().Be(0);
