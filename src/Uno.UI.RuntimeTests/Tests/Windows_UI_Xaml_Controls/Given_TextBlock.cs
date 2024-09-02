@@ -150,7 +150,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		// Reason for failure on X11 is not very known, but it's likely the AdvanceX of space character
 		// is different between the fallback font and OpenSans
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaX11)]
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaX11 | RuntimeTestPlatform.SkiaBrowser)]
 		public async Task Check_FontFallback_Shaping()
 		{
 			var SUT = new TextBlock

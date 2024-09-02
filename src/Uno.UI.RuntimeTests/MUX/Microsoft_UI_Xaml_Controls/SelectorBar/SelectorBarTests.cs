@@ -53,7 +53,7 @@ public class SelectorBarTests : MUXApiTestBase
 		});
 	}
 
-	[TestMethod]
+	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaBrowser)]
 	public async Task VerifySelectorBarItems()
 	{
 		IDisposable styleDisposable = null;

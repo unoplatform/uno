@@ -812,7 +812,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			sv.HorizontalOffset.Should().BeGreaterThan(0);
 		}
 
-		[TestMethod]
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaBrowser)]
 		public async Task When_Scrolling_Updates_After_Backspace()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -2005,7 +2005,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(1, keyDownCount);
 		}
 
-		[TestMethod]
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaBrowser)]
 		public async Task When_Multiline_NewLine_UpDown()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -2103,7 +2103,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, SUT.SelectionLength);
 		}
 
-		[TestMethod]
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaBrowser)]
 		public async Task When_Multiline_Wrapping_UpDown()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();

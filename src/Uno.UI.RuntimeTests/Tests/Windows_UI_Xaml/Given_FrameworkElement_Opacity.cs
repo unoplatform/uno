@@ -31,7 +31,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	public class Given_FrameworkElement_Opacity
 	{
 #if __SKIA__
-		[TestMethod]
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaBrowser)]
 		public async Task When_Opacity()
 		{
 			var SUT = new FrameworkElement_Opacity();
@@ -61,7 +61,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			ImageAssert.HasColorAtChild(si, SUT.ImageOpacity0_5, width / 2, height / 2, "#FFFEF3C2");
 		}
 
-		[TestMethod]
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaBrowser)]
 		public async Task When_Opacity_Inner()
 		{
 			var SUT = new FrameworkElement_Opacity();

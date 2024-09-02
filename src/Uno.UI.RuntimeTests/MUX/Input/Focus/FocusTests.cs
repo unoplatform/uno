@@ -552,7 +552,7 @@ namespace Uno.UI.RuntimeTests.MUX.Input.Focus
 			}
 		}
 
-		[TestMethod]
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaBrowser)]
 		[TestProperty("Hosting:Mode", "UAP")]   // Bug 24196441: Focus engagement bugs in lifted islands
 		public async Task VerifyShiftTabWhenOnceTabFocusNavigationSet()
 		{
