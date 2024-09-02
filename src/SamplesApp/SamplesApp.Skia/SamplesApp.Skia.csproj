@@ -32,7 +32,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics3D\Uno.WinUI.Graphics3D.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics3DGL\Uno.WinUI.Graphics3DGL.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

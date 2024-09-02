@@ -2,7 +2,7 @@
 using Microsoft.UI.Xaml;
 
 #if WINAPPSDK
-namespace Uno.WinUI.Graphics3D;
+namespace Uno.WinUI.Graphics3DGL;
 #else
 namespace Uno.Graphics;
 #endif

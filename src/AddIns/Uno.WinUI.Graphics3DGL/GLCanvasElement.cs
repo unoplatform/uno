@@ -20,7 +20,7 @@ using Uno.UI.Dispatching;
 using Buffer = Windows.Storage.Streams.Buffer;
 #endif
 
-namespace Uno.WinUI.Graphics3D;
+namespace Uno.WinUI.Graphics3DGL;
 
 /// <summary>
 /// A <see cref="FrameworkElement"/> that exposes the ability to draw 3D graphics using OpenGL and Silk.NET.

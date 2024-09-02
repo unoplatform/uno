@@ -4,7 +4,7 @@ using System;
 using System.Runtime.InteropServices;
 
 #if WINAPPSDK
-namespace Uno.WinUI.Graphics3D;
+namespace Uno.WinUI.Graphics3DGL;
 #else
 namespace Uno.UI.Runtime.Skia.Wpf.Rendering;
 #endif

@@ -2,7 +2,7 @@
 using System;
 using System.Drawing;
 using Silk.NET.OpenGL;
-using Uno.WinUI.Graphics3D;
+using Uno.WinUI.Graphics3DGL;
 
 namespace UITests.Shared.Windows_UI_Composition
 {

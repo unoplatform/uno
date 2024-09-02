@@ -24,12 +24,12 @@ using WpfWindow = System.Windows.Window;
 #endif
 
 #if WINAPPSDK
-using WpfRenderingNativeMethods = Uno.WinUI.Graphics3D.WindowsRenderingNativeMethods;
+using WpfRenderingNativeMethods = Uno.WinUI.Graphics3DGL.WindowsRenderingNativeMethods;
 #else
 #endif
 
 #if WINAPPSDK
-namespace Uno.WinUI.Graphics3D;
+namespace Uno.WinUI.Graphics3DGL;
 #else
 namespace Uno.UI.Runtime.Skia.Wpf.Extensions;
 #endif
