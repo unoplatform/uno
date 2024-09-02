@@ -12,20 +12,10 @@ namespace Uno.UI.Samples.UITests.Helpers
 {
 	public static partial class SkiaSamplesAppHelper
 	{
-		[JSImport("globalThis.eval")]
-		private static partial string EvalPrivate(string js);
-
-		public static string Eval(string js)
-		{
 #if __SKIA__
-			if (!OperatingSystem.IsBrowser())
+		[JSImport("globalThis.eval")]
+		private static partial string Eval(string js);
 #endif
-			{
-				throw new InvalidOperationException($"{nameof(Eval)} is only available on the Skia-WebAssembly target.");
-			}
-
-			return EvalPrivate(js);
-		}
 
 		/// <summary>
 		/// This method is for saving files on Skia-WASM where we don't have disk access.
@@ -56,7 +46,7 @@ namespace Uno.UI.Samples.UITests.Helpers
 
 					if (response.StatusCode != HttpStatusCode.OK)
 					{
-						throw new InvalidOperationException($"Failed to write test results to disk with statuc code {response.StatusCode}. Response content: ${await response.Content.ReadAsStringAsync()}");
+						throw new InvalidOperationException($"Failed to write test results to disk with status code {response.StatusCode}. Response content: ${await response.Content.ReadAsStringAsync()}");
 					}
 				}
 			}
