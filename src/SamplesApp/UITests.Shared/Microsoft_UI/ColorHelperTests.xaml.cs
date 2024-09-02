@@ -36,7 +36,7 @@ internal class ColorHelperTestsViewModel(UnitTestDispatcherCompat dispatcher) : 
 
 	public Command ConvertCommand => new((p) =>
 	{
-		ColorName = ColorHelper.ToDisplayName(ColorHelper.ConvertColorFromHexString(ColorValue));
+		ColorName = ColorHelper.ToDisplayName(Microsoft.UI.ColorHelper.ConvertColorFromHexString(ColorValue));
 	});
 
 	public string ColorName

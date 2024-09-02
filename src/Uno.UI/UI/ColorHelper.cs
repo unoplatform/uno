@@ -15,34 +15,8 @@ public static partial class ColorHelper
 	/// <returns>The localized display name of the color.</returns>
 	public static string ToDisplayName(WindowsColor color)
 	{
-		//uno specific
-
-		var closestKnownColor = Enum.GetValues<KnownColors>()
-			.OrderBy(c => ColorDistance(new WindowsColor((uint)c), color))
-			.First();
-
-		var resourceId = closestKnownColor.ToString();
-		var resource = DXamlCore.Current.GetLocalizedResourceString(resourceId);
-
-		if (string.IsNullOrEmpty(resource))
-		{
-			return closestKnownColor.ToString();
-		}
-
-		return resource;
-	}
-
-	//uno specific
-	static double ColorDistance(WindowsColor color1, WindowsColor color2)
-	{
-		var r1 = (int)(color1.R);
-		var g1 = (int)(color1.G);
-		var b1 = (int)(color1.B);
-		var r2 = (int)(color2.R);
-		var g2 = (int)(color2.G);
-		var b2 = (int)(color2.B);
-
-		return Math.Sqrt(Math.Pow(r1 - r2, 2) + Math.Pow(g1 - g2, 2) + Math.Pow(b1 - b2, 2));
+		var id = GetColorNameResourceId(color);
+		return DXamlCore.Current.GetLocalizedResourceString($"{id}");
 	}
 
 	/// <summary>
