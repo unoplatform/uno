@@ -463,6 +463,8 @@ jobs:
   pool:
     vmImage: ${{ parameters.vmLinuxImage }}
 
+  container: nv-bionic-wasm
+
   dependsOn: Skia_Tests_Build
 
   variables:
