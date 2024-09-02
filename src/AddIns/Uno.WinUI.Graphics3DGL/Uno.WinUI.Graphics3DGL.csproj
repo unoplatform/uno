@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
 		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
-		<TargetFrameworks Condition="$(BuildGraphics3DGLForWindows) != ''">$(NetPrevious)-windows10.0.19041.0</TargetFrameworks>
+		<TargetFrameworks Condition="$(BuildGraphics3DGLForWindows) != ''">$(NetUWPOrWinUI)</TargetFrameworks>
 
 		<Nullable>enable</Nullable>
 		<RootNamespace>Uno.WinUI.GLCanvasElement</RootNamespace>
