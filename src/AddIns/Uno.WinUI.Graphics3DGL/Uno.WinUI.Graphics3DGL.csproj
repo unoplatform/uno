@@ -3,8 +3,10 @@
 		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
 		<TargetFrameworks Condition="$(BuildGraphics3DGLForWindows) != ''">$(NetUWPOrWinUI)</TargetFrameworks>
 
-		<Nullable>enable</Nullable>
 		<RootNamespace>Uno.WinUI.GLCanvasElement</RootNamespace>
+		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
+
+		<Nullable>enable</Nullable>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
