@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.UI.Xaml;
 
-#if WINAPPSDK
+#if WINAPPSDK || WINDOWS_UWP
 namespace Uno.WinUI.Graphics3DGL;
 #else
 namespace Uno.Graphics;

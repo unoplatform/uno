@@ -7,7 +7,7 @@ using Silk.NET.Core.Contexts;
 using Silk.NET.Core.Loader;
 using Silk.NET.OpenGL;
 
-#if WINAPPSDK
+#if WINDOWS_UWP || WINAPPSDK
 using Microsoft.UI.Xaml;
 using Microsoft.Extensions.Logging;
 using Uno.Disposables;
@@ -23,18 +23,13 @@ using Uno.UI.Runtime.Skia.Wpf.Rendering;
 using WpfWindow = System.Windows.Window;
 #endif
 
-#if WINAPPSDK
-using WpfRenderingNativeMethods = Uno.WinUI.Graphics3DGL.WindowsRenderingNativeMethods;
-#else
-#endif
-
-#if WINAPPSDK
+#if WINDOWS_UWP || WINAPPSDK
 namespace Uno.WinUI.Graphics3DGL;
 #else
 namespace Uno.UI.Runtime.Skia.Wpf.Extensions;
 #endif
 
-#if WINAPPSDK
+#if WINDOWS_UWP || WINAPPSDK
 internal class WinUINativeOpenGLWrapper(Func<Window> getWindowFunc)
 #else
 internal class WpfNativeOpenGLWrapper
@@ -46,7 +41,7 @@ internal class WpfNativeOpenGLWrapper
 
 	public void CreateContext(UIElement element)
 	{
-#if WINAPPSDK
+#if WINDOWS_UWP || WINAPPSDK
 		var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(getWindowFunc());
 #else
 		if (element.XamlRoot?.HostWindow?.NativeWindow is not WpfWindow wpfWindow)
@@ -75,8 +70,8 @@ internal class WpfNativeOpenGLWrapper
 		var pixelFormat = WindowsRenderingNativeMethods.ChoosePixelFormat(_hdc, ref pfd);
 
 		// To inspect the chosen pixel format:
-		// WpfRenderingNativeMethods.PIXELFORMATDESCRIPTOR temp_pfd = default;
-		// WpfRenderingNativeMethods.DescribePixelFormat(_hdc, _pixelFormat, (uint)Marshal.SizeOf<WpfRenderingNativeMethods.PIXELFORMATDESCRIPTOR>(), ref temp_pfd);
+		// WindowsRenderingNativeMethods.PIXELFORMATDESCRIPTOR temp_pfd = default;
+		// WindowsRenderingNativeMethods.DescribePixelFormat(_hdc, _pixelFormat, (uint)Marshal.SizeOf<WindowsRenderingNativeMethods.PIXELFORMATDESCRIPTOR>(), ref temp_pfd);
 
 		if (pixelFormat == 0)
 		{
