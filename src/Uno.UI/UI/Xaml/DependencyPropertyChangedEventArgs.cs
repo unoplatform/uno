@@ -30,8 +30,7 @@ namespace Microsoft.UI.Xaml
 			object newValue
 #if __IOS__ || __MACOS__ || IS_UNIT_TESTS
 			, DependencyPropertyValuePrecedences oldPrecedence,
-			DependencyPropertyValuePrecedences newPrecedence,
-			bool bypassesPropagation
+			DependencyPropertyValuePrecedences newPrecedence
 #endif
 			)
 		{
@@ -41,7 +40,6 @@ namespace Microsoft.UI.Xaml
 #if __IOS__ || __MACOS__ || IS_UNIT_TESTS
 			OldPrecedence = oldPrecedence;
 			NewPrecedence = newPrecedence;
-			BypassesPropagation = bypassesPropagation;
 #endif
 		}
 
@@ -71,17 +69,6 @@ namespace Microsoft.UI.Xaml
 		/// Gets the dependency property value precedence of the old value
 		/// </summary>
 		internal DependencyPropertyValuePrecedences OldPrecedence
-		{
-			get;
-			private set;
-		}
-
-		/// <summary>
-		/// Is true if an animated value should be ignored when setting the native
-		/// value associated to it.  Happens in the scenario of GPU bound animations
-		/// in iOS.
-		/// </summary>
-		internal bool BypassesPropagation
 		{
 			get;
 			private set;

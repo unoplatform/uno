@@ -23,14 +23,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		/// </summary>
 		partial void OnFrame(IValueAnimator currentAnimator)
 		{
-			if (!this.GetIsHardwareAnimated() || currentAnimator is DiscreteFloatValueAnimator)
-			{
-				SetValue(currentAnimator.AnimatedValue);
-			}
-			else
-			{
-				this.SetValueBypassPropagation(currentAnimator.AnimatedValue);
-			}
+			SetValue(currentAnimator.AnimatedValue);
 		}
 
 		partial void HoldValue()

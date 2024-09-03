@@ -383,36 +383,6 @@ namespace Microsoft.UI.Xaml
 			});
 		}
 
-		private static readonly List<DependencyPropertyPath> _propagationBypass =
-			new List<DependencyPropertyPath>();
-
-		private static readonly Dictionary<DependencyPropertyPath, object?> _propagationBypassed =
-			new Dictionary<DependencyPropertyPath, object?>(DependencyPropertyPath.Comparer.Default);
-
-		internal static IDisposable? BypassPropagation(DependencyObject instance, DependencyProperty property)
-		{
-			var obj = instance;
-
-			if (obj == null)
-			{
-				return null;
-			}
-
-			var path = new DependencyPropertyPath(obj, property);
-
-			if (_propagationBypass.Contains(path, DependencyPropertyPath.Comparer.Default))
-			{
-				// Keep the current propagation bypass, which affects application of animated values
-				return null;
-			}
-			else
-			{
-				_propagationBypass.Add(path);
-
-				return Disposable.Create(() => _propagationBypass.Remove(path));
-			}
-		}
-
 		/// <summary>
 		/// Sets the local value of a dependency property on a <see cref="DependencyObject" />.
 		/// </summary>
@@ -1877,34 +1847,9 @@ namespace Microsoft.UI.Xaml
 			DependencyPropertyValuePrecedences newPrecedence
 		)
 		{
-			var hasPropagationBypass = _propagationBypass.Count != 0 || _propagationBypassed.Count != 0;
-
-			// This check is present to avoid allocating if there is no bypass.
-			var propertyPath = hasPropagationBypass ? new DependencyPropertyPath(actualInstanceAlias, propertyDetails.Property) : null;
-
 			if (AreDifferent(newValue, previousValue))
 			{
-				var bypassesPropagation = hasPropagationBypass && _propagationBypass.Contains(propertyPath!);
-
-				if (bypassesPropagation)
-				{
-					_propagationBypassed[propertyPath!] = previousValue;
-				}
-
-				InvokeCallbacks(actualInstanceAlias, propertyDetails.Property, propertyDetails, previousValue, previousPrecedence, newValue, newPrecedence, bypassesPropagation);
-			}
-			else if (
-				hasPropagationBypass
-				&& _propagationBypassed.ContainsKey(propertyPath!)
-				&& !_propagationBypass.Contains(propertyPath, DependencyPropertyPath.Comparer.Default)
-			)
-			{
-				// If unchanged, but previous value was set with propagation bypass enabled (and we are currently being set without bypass enabled),
-				// then we should invoke callbacks so that the value can be propagated. This arises in animation scenarios.
-				var unpropagatedPrevious = _propagationBypassed[propertyPath!];
-				_propagationBypassed.Remove(propertyPath!);
-
-				InvokeCallbacks(actualInstanceAlias, propertyDetails.Property, propertyDetails, unpropagatedPrevious, previousPrecedence, newValue, newPrecedence);
+				InvokeCallbacks(actualInstanceAlias, propertyDetails.Property, propertyDetails, previousValue, previousPrecedence, newValue, newPrecedence);
 			}
 			else if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
@@ -1921,8 +1866,7 @@ namespace Microsoft.UI.Xaml
 			object? previousValue,
 			DependencyPropertyValuePrecedences previousPrecedence,
 			object? newValue,
-			DependencyPropertyValuePrecedences newPrecedence,
-			bool bypassesPropagation = false
+			DependencyPropertyValuePrecedences newPrecedence
 		)
 		{
 			//var propertyChangedParams = new PropertyChangedParams(property, previousValue, newValue);
@@ -1993,7 +1937,7 @@ namespace Microsoft.UI.Xaml
 			{
 				eventArgs ??= new DependencyPropertyChangedEventArgs(property, previousValue, newValue
 #if __IOS__ || __MACOS__ || IS_UNIT_TESTS
-					, previousPrecedence, newPrecedence, bypassesPropagation
+					, previousPrecedence, newPrecedence
 #endif
 				);
 				propertyMetadata.RaisePropertyChangedNoNullCheck(actualInstanceAlias, eventArgs);
@@ -2009,7 +1953,7 @@ namespace Microsoft.UI.Xaml
 			{
 				eventArgs ??= new DependencyPropertyChangedEventArgs(property, previousValue, newValue
 #if __IOS__ || __MACOS__ || IS_UNIT_TESTS
-					, previousPrecedence, newPrecedence, bypassesPropagation
+					, previousPrecedence, newPrecedence
 #endif
 );
 				doInternal.OnPropertyChanged2(eventArgs);
@@ -2020,7 +1964,7 @@ namespace Microsoft.UI.Xaml
 			{
 				eventArgs ??= new DependencyPropertyChangedEventArgs(property, previousValue, newValue
 #if __IOS__ || __MACOS__ || IS_UNIT_TESTS
-					, previousPrecedence, newPrecedence, bypassesPropagation
+					, previousPrecedence, newPrecedence
 #endif
 				);
 				propertyDetails.RaisePropertyChangedNoNullCheck(actualInstanceAlias, eventArgs);
@@ -2033,7 +1977,7 @@ namespace Microsoft.UI.Xaml
 				var callback = currentCallbacks[callbackIndex];
 				eventArgs ??= new DependencyPropertyChangedEventArgs(property, previousValue, newValue
 #if __IOS__ || __MACOS__ || IS_UNIT_TESTS
-					, previousPrecedence, newPrecedence, bypassesPropagation
+					, previousPrecedence, newPrecedence
 #endif
 				);
 				callback.Invoke(instanceRef, property, eventArgs);
