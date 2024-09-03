@@ -818,12 +818,10 @@
                             </local:AnimatedIcon>
 
                         </Grid>
-						<!-- Uno workaround: template-bind ContentTemplateSelector because it's not automatically propagated from the ContentControl -->
                         <ContentPresenter
                             x:Name="ContentPresenter"
                             Grid.Column="1"
                             ContentTemplate="{TemplateBinding ContentTemplate}"
-                            ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
                             ContentTransitions="{TemplateBinding ContentTransitions}"
                             Content="{TemplateBinding Content}"
                             Margin="{TemplateBinding Padding}"
