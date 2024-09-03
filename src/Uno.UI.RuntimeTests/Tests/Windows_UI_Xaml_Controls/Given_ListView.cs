@@ -37,9 +37,12 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			finger.Press(tapTarget);
 			finger.Release();
 
-			Assert.AreEqual(loggingSelectionInfo.IsSelected(0), true, "Item 0 should remain unselected.");
-			Assert.AreEqual(loggingSelectionInfo.CurrentPosition, 0, "CurrentPosition should be 0 after the tap.");
-			Assert.AreEqual(loggingSelectionInfo.CurrentItem, items[0], "CurrentItem should be 'Item 1' after the tap.");
+			// Confirm that selection has been pushed to the source using the ISelectionInfo
+			Assert.AreEqual(loggingSelectionInfo.IsSelected(0), true, "Item 0 should be selected now.");
+
+			// Confirm that the selection HAS NOT been pushed using the `ICollectionView`
+			Assert.AreEqual(loggingSelectionInfo.CurrentPosition, -1, "CurrentPosition should not have been updated.");
+			Assert.AreEqual(loggingSelectionInfo.CurrentItem, null, "CurrentItem should be not have been updated.");
 		}
 	}
 #endif
