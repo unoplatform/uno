@@ -3,9 +3,8 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Windows.Storage;
 
 namespace Uno.Storage;
@@ -13,7 +12,7 @@ namespace Uno.Storage;
 /// <summary>
 /// Provides access to raw application settings.
 /// </summary>
-internal partial class NativeApplicationSettings
+internal partial class NativeApplicationSettings : INativeApplicationSettings
 {
 	private static readonly ConcurrentDictionary<ApplicationDataLocality, NativeApplicationSettings> _instances = new();
 
@@ -44,7 +43,7 @@ internal partial class NativeApplicationSettings
 	{
 		get
 		{
-			if (GetSetting(key) is { } value)
+			if (TryGetSetting(key, out var value))
 			{
 				return DataTypeSerializer.Deserialize(value);
 			}
@@ -66,7 +65,7 @@ internal partial class NativeApplicationSettings
 
 	private partial void SetSetting(string key, string value);
 
-	private partial string? GetSetting(string key);
+	private partial bool TryGetSetting(string key, out string? value);
 
 	internal IEnumerable<string> GetKeysWithPrefix(string prefix)
 	{

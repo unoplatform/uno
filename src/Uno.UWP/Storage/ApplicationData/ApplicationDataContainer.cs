@@ -12,7 +12,7 @@ namespace Windows.Storage;
 /// <remarks>
 /// Settings are stored in platform-specific preference stores. Some keys are used internally by Uno Platform,
 /// and are not surfaced via the public API. These keys are prefixed with "__".
-/// To provide the concept of nested containers, we use the "__/" prefix in key names as the container path separator.
+/// To provide the concept of nested containers, we use the "__¬" prefix in key names as the container path separator.
 /// </remarks>
 public partial class ApplicationDataContainer : IDisposable
 {
@@ -40,7 +40,7 @@ public partial class ApplicationDataContainer : IDisposable
 		_parent = parent ?? throw new ArgumentNullException(nameof(parent));
 	}
 
-	internal string ContainerPath => _parent is null ? "" : _parent.ContainerPath + InternalSettingPrefix + Name + ContainerPathSeparator;
+	internal string ContainerPath => _parent is null ? "" : _parent.ContainerPath + InternalSettingPrefix + Name + ContainerSeparator;
 
 	public ApplicationDataLocality Locality { get; }
 
@@ -58,7 +58,7 @@ public partial class ApplicationDataContainer : IDisposable
 		foreach (var key in keysWithPrefix)
 		{
 			var relativeKey = key.AsSpan(prefix.Length);
-			if (relativeKey.IndexOf(ContainerPathSeparator) is { } separatorIndex && separatorIndex == relativeKey.Length - 1)
+			if (relativeKey.IndexOf(ContainerSeparator) is { } separatorIndex && separatorIndex == relativeKey.Length - 1)
 			{
 				var containerName = relativeKey.Slice(0, relativeKey.Length - 1).ToString();
 				var container = new ApplicationDataContainer(this, containerName);
@@ -110,7 +110,7 @@ public partial class ApplicationDataContainer : IDisposable
 			throw new KeyNotFoundException("Container does not exist.");
 		}
 
-		container.ClearIncludingInternal();
+		container.ClearIncludingInternals();
 
 		// Remove the container marker entry from the settings store
 		RemoveContainerFromList(name);
@@ -139,8 +139,8 @@ public partial class ApplicationDataContainer : IDisposable
 	private void RemoveContainerFromList(string containerName)
 	{
 		var containerList = _nativeApplicationSettings.Get(ContainerPath + ContainerListKey) ?? "";
-		var containerListParts = containerList.Split(ContainerListSeparator);
-		var newContainerList = string.Join(ContainerListSeparator, containerListParts.Where(c => c != containerName));
+		var containerListParts = containerList.Split(ContainerSeparator);
+		var newContainerList = string.Join(ContainerSeparator, containerListParts.Where(c => c != containerName));
 		_nativeApplicationSettings.Set(ContainerPath + ContainerListKey) = newContainerList;
 	}
 
