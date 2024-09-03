@@ -1,4 +1,4 @@
-﻿#if __SKIA__
+﻿#if HAS_UNO_WINUI && __SKIA__
 
 using System;
 using System.IO;
