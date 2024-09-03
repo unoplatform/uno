@@ -30,11 +30,11 @@ public partial class ContainerVisual : Visual
 	{
 		_childrenInRenderOrder?.Clear();
 		_hasCustomRenderOrder = false;
-		if (Children.Any(c => c.ZIndex != 0))
+		if (Children.InnerList.Any(c => c.ZIndex != 0))
 		{
 			_childrenInRenderOrder ??= new List<Visual>();
 			// We need to sort children in ZIndex order
-			foreach (var child in Children.OrderBy(c => c.ZIndex))
+			foreach (var child in Children.InnerList.OrderBy(c => c.ZIndex))
 			{
 				_childrenInRenderOrder.Add(child);
 			}
