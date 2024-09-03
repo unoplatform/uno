@@ -234,9 +234,7 @@ namespace Windows.UI.Tests.Enterprise
 
 		[Description("Validates that CommandBar opens and closes, with appropriate events firing, using taps on More Button.")]
 		[TestProperty("TestPass:ExcludeOn", "WindowsCore")]
-#if __IOS__ || __ANDROID__
-		[Ignore("Test is failing on iOS and Android https://github.com/unoplatform/uno/issues/17984")]
-#endif
+		[Ignore("Test is failing on iOS and Android due to https://github.com/unoplatform/uno/issues/17984, and also due to #18105 everywhere")]
 		public async Task CanOpenAndCloseUsingMoreButton()
 		{
 			TestCleanupWrapper cleanup;
@@ -274,9 +272,7 @@ namespace Windows.UI.Tests.Enterprise
 		[TestMethod]
 
 		[Description("Validates that CommandBar can close when a primary command is selected from the overflow.")]
-#if __IOS__
-		[Ignore("Test is failing on iOS https://github.com/unoplatform/uno/issues/17984")]
-#endif
+		[Ignore("Test is failing on iOS due to https://github.com/unoplatform/uno/issues/17984, and also due to #18105 everywhere")]
 		public async Task DoesCloseOnPrimaryCommandSelection()
 		{
 			TestCleanupWrapper cleanup;
