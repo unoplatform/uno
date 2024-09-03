@@ -72,10 +72,11 @@
 				<!-- iOS 17 compatibility -->
 				<MtouchExtraArgs>$(MtouchExtraArgs) --weak-framework=NewsstandKit</MtouchExtraArgs>
 
-				<!-- TODO:MZ: Build issues  Failed to AOT compile Uno.UI.RuntimeTests.dll, aot-instances.dll, the AOT compiler exited with code 139 / 1. -->
+				<!-- BEGIN Workaround - AOT fails currently uno-private #648 -->
 				<MtouchUseLlvm>false</MtouchUseLlvm>
 				<UseInterpreter>true</UseInterpreter>
 				<MtouchInterpreter>all</MtouchInterpreter>
+				<!-- END Workaround -->
 			</PropertyGroup>
 
 			<PropertyGroup Condition="'$(BuildForTestFlight)'=='true'">
