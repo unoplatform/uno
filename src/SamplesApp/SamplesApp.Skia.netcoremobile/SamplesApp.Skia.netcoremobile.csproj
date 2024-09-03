@@ -37,7 +37,7 @@
 
 		<AndroidEnableMultiDex>true</AndroidEnableMultiDex>
 
-		<!-- TODO MZ: Should not be here, remove -->
+		<!-- Temporarily disabled due to uno-private #647 -->
 		<UnoDisableHotRestartHelperGeneration>true</UnoDisableHotRestartHelperGeneration>
 
 		<IsUIKit Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='ios' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='maccatalyst' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='tvos'">true</IsUIKit>
