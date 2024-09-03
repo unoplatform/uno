@@ -9,17 +9,19 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 	public class Given_ApplicationDataContainer
 	{
 		[TestCleanup]
-		public void Cleanup()
-		{
-			var SUT = ApplicationData.Current.LocalSettings;
-			SUT.Values.Clear();
-		}
+		public void Cleanup() => ClearAllSettings();
 
 		[TestInitialize]
-		public void Initialize()
+		public void Initialize() => ClearAllSettings();
+
+		private void ClearAllSettings()
 		{
 			var SUT = ApplicationData.Current.LocalSettings;
 			SUT.Values.Clear();
+			foreach (var container in SUT.Containers)
+			{
+				SUT.DeleteContainer(container.Key);
+			}
 		}
 
 		[TestMethod]
