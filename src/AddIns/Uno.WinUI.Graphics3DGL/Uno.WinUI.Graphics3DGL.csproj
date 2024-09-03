@@ -48,6 +48,10 @@
 		</Otherwise>
 	</Choose>
 
+	<ItemGroup>
+		<None Include="..\..\Common\uno.png" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
 	<Target Name="_UnoRemoveTransitiveWPFDependency" BeforeTargets="_CheckForTransitiveWindowsDesktopDependencies">
 		<ItemGroup>
 			<!--
