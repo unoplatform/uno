@@ -430,5 +430,99 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 			Assert.AreEqual("value2", result["key2"]);
 			Assert.AreEqual("value4", result["key3"]);
 		}
+
+		[TestMethod]
+		public void When_Nested_Container_Create()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			var container = SUT.CreateContainer("nested", ApplicationDataCreateDisposition.Always);
+			Assert.IsNotNull(container);
+			Assert.AreEqual("nested", container.Name);
+			Assert.AreEqual(1, SUT.Containers.Count);
+		}
+
+		[TestMethod]
+		public void When_Nested_Container_Create_Existing_Always()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			var container = SUT.CreateContainer("nested", ApplicationDataCreateDisposition.Always);
+			container.Values["test"] = "42";
+			Assert.IsNotNull(container);
+			Assert.AreEqual("nested", container.Name);
+			Assert.AreEqual(1, SUT.Containers.Count);
+			var container2 = SUT.CreateContainer("nested", ApplicationDataCreateDisposition.Always);
+			Assert.IsNotNull(container2);
+			Assert.AreEqual("nested", container2.Name);
+			Assert.AreEqual(1, SUT.Containers.Count);
+			Assert.AreEqual("42", container2.Values["test"]);
+		}
+
+		[TestMethod]
+		public void When_Multiple_Nesting_Containers_Structure()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			var container = SUT.CreateContainer("nested", ApplicationDataCreateDisposition.Always);
+			Assert.IsNotNull(container);
+			Assert.AreEqual("nested", container.Name);
+			Assert.AreEqual(1, SUT.Containers.Count);
+			var container2 = container.CreateContainer("nested2", ApplicationDataCreateDisposition.Always);
+			Assert.IsNotNull(container2);
+			Assert.AreEqual("nested2", container2.Name);
+			Assert.AreEqual(1, container.Containers.Count);
+
+			var container3 = container.CreateContainer("nested3", ApplicationDataCreateDisposition.Always);
+			Assert.IsNotNull(container3);
+			Assert.AreEqual("nested3", container3.Name);
+			Assert.AreEqual(2, container.Containers.Count);
+
+			Assert.AreEqual(1, SUT.Containers.Count);
+
+			var containerRoot2 = SUT.CreateContainer("nestedRoot2", ApplicationDataCreateDisposition.Always);
+			Assert.IsNotNull(containerRoot2);
+			Assert.AreEqual("nestedRoot2", containerRoot2.Name);
+			Assert.AreEqual(2, SUT.Containers.Count);
+		}
+
+		[TestMethod]
+		public void When_Nested_Container_Delete()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			var container = SUT.CreateContainer("nested", ApplicationDataCreateDisposition.Always);
+			Assert.IsNotNull(container);
+			Assert.AreEqual("nested", container.Name);
+			Assert.AreEqual(1, SUT.Containers.Count);
+			SUT.DeleteContainer("nested");
+			Assert.AreEqual(0, SUT.Containers.Count);
+		}
+
+		[TestMethod]
+		public void When_Nested_Container_Value_Not_In_Root()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			var container = SUT.CreateContainer("nested", ApplicationDataCreateDisposition.Always);
+			Assert.IsNotNull(container);
+			Assert.AreEqual("nested", container.Name);
+			Assert.AreEqual(1, SUT.Containers.Count);
+			container.Values["test"] = "42";
+			Assert.AreEqual("42", container.Values["test"]);
+			Assert.IsFalse(SUT.Values.ContainsKey("test"));
+
+			SUT.Values["test"] = "43";
+			Assert.AreEqual("43", SUT.Values["test"]);
+			Assert.AreEqual("42", container.Values["test"]);
+		}
+
+		[TestMethod]
+		public void When_Nested_Container_Not_Included_In_Values()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			var container = SUT.CreateContainer("nested", ApplicationDataCreateDisposition.Always);
+			Assert.IsNotNull(container);
+			Assert.AreEqual("nested", container.Name);
+			Assert.AreEqual(1, SUT.Containers.Count);
+			container.Values["test"] = "42";
+			Assert.AreEqual(1, SUT.Containers.Count);
+			Assert.AreEqual(0, SUT.Values.Count);
+		}
 	}
 }
