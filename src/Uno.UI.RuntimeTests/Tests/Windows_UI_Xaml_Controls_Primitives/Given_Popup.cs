@@ -78,7 +78,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 		}
 
 		[TestMethod]
-		public async Task When_Child_Visual_Parents_Include_Popup()
+		public async Task When_Child_Visual_Parents_Does_Not_Include_Popup()
 		{
 			var popup = new Popup();
 			popup.XamlRoot = TestServices.WindowHelper.XamlRoot;
