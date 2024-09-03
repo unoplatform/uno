@@ -713,7 +713,7 @@ namespace Uno.UI
 			/// On iOS and Catalyst this means that developers can use the Safari Web Developers tools to debug apps with <see cref="WebView2"/>
 			/// Important: It will only work when the app runs in Debug mode.
 			/// </remarks>
-			public static bool IsInspectable { get; set; };
+			public static bool IsInspectable { get; set; }
 #endif
 		}
 
