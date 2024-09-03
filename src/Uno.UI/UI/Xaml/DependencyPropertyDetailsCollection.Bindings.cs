@@ -227,7 +227,7 @@ namespace Microsoft.UI.Xaml
 
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
-				this.Log().DebugFormat("Set binding value [{0}] from [{1}].", details.Property.Name, _ownerType);
+				this.Log().DebugFormat("Set binding value [{0}].", details.Property.Name);
 			}
 		}
 
