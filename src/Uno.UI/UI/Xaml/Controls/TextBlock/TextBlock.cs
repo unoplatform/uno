@@ -151,7 +151,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 			OnInlinesChangedPartial();
 			InvalidateTextBlock();
-			InvalidateMeasure();
 		}
 
 		partial void OnInlinesChangedPartial();
@@ -314,7 +313,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 			OnTextChangedPartial();
 			InvalidateTextBlock();
-			InvalidateMeasure();
 		}
 
 		partial void OnTextChangedPartial();
@@ -503,7 +501,6 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				OnForegroundChangedPartial();
 				InvalidateTextBlock();
-				InvalidateMeasure();
 			}
 			catch (Exception e)
 			{
@@ -1228,7 +1225,11 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 		#endregion
 
-		private void InvalidateTextBlock() => InvalidateTextBlockPartial();
+		private void InvalidateTextBlock()
+		{
+			InvalidateTextBlockPartial();
+			InvalidateMeasure();
+		}
 
 		partial void InvalidateTextBlockPartial();
 
