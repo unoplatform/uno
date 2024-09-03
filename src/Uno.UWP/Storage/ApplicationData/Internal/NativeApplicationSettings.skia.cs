@@ -25,33 +25,69 @@ partial class NativeApplicationSettings
 
 		_folderPath = settingsFolderPath;
 		_filePath = Path.Combine(settingsFolderPath, $"{_locality}.dat");
+
 		ReadFromFile();
 	}
 
-	public string? this[string key]
+	public ICollection<string> Keys => _values.Keys;
+
+	public ICollection<object> Values
+		=> _values.Values.Select(DataTypeSerializer.Deserialize).ToList();
+
+	public int Count
+		=> _values.Count;
+
+	public void Add(string key, object value)
 	{
-		get
+		if (ContainsKey(key))
 		{
-			if (_values.TryGetValue(key, out var value))
-			{
-				return DataTypeSerializer.Deserialize(value);
-			}
-
-			return null;
+			throw new ArgumentException("An item with the same key has already been added.");
 		}
-		set
+		if (value != null)
 		{
-			if (value != null)
-			{
-				_values[key] = DataTypeSerializer.Serialize(value);
-			}
-			else
-			{
-				Remove(key);
-			}
-
+			_values.Add(key, DataTypeSerializer.Serialize(value));
 			WriteToFile();
 		}
+	}
+
+	public void Add(KeyValuePair<string, object> item)
+		=> Add(item.Key, item.Value);
+
+	public void Clear()
+	{
+		_values.Clear();
+		WriteToFile();
+	}
+
+	public bool Contains(KeyValuePair<string, object> item)
+		=> throw new NotSupportedException();
+
+	public bool ContainsKey(string key)
+		=> _values.ContainsKey(key);
+
+	public void CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
+		=> throw new NotSupportedException();
+
+	public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
+		=> _values.Select(v => new KeyValuePair<string, object>(v.Key, v.Value)).GetEnumerator();
+
+	public bool Remove(string key)
+	{
+		var ret = _values.Remove(key);
+
+		WriteToFile();
+
+		return ret;
+	}
+
+	#region Validated
+
+	private partial bool TryGetSetting(string key, out string? value) => _values.TryGetValue(key, out value);
+
+	private partial void SetSetting(string key, string value)
+	{
+		_values[key] = value;
+		WriteToFile();
 	}
 
 	private void ReadFromFile()
@@ -127,67 +163,6 @@ partial class NativeApplicationSettings
 		}
 	}
 
-	public ICollection<string> Keys
-		=> _values.Keys;
 
-	public ICollection<object> Values
-		=> _values.Values.Select(DataTypeSerializer.Deserialize).ToList();
-
-	public int Count
-		=> _values.Count;
-
-	public void Add(string key, object value)
-	{
-		if (ContainsKey(key))
-		{
-			throw new ArgumentException("An item with the same key has already been added.");
-		}
-		if (value != null)
-		{
-			_values.Add(key, DataTypeSerializer.Serialize(value));
-			WriteToFile();
-		}
-	}
-
-	public void Add(KeyValuePair<string, object> item)
-		=> Add(item.Key, item.Value);
-
-	public void Clear()
-	{
-		_values.Clear();
-		WriteToFile();
-	}
-
-	public bool Contains(KeyValuePair<string, object> item)
-		=> throw new NotSupportedException();
-
-	public bool ContainsKey(string key)
-		=> _values.ContainsKey(key);
-
-	public void CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
-		=> throw new NotSupportedException();
-
-	public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
-		=> _values.Select(v => new KeyValuePair<string, object>(v.Key, v.Value)).GetEnumerator();
-
-	public bool Remove(string key)
-	{
-		var ret = _values.Remove(key);
-
-		WriteToFile();
-
-		return ret;
-	}
-
-	public bool TryGetValue(string key, out object? value)
-	{
-		if (_values.TryGetValue(key, out var innervalue))
-		{
-			value = DataTypeSerializer.Deserialize(innervalue);
-			return true;
-		}
-
-		value = null;
-		return false;
-	}
+	#endregion
 }
