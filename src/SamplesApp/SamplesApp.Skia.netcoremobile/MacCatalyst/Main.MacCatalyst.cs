@@ -2,14 +2,14 @@
 using UIKit;
 using Uno.UI.Runtime.Skia.AppleUIKit;
 
-namespace SamplesApp.MacCatalyst
+namespace SamplesApp.MacCatalyst;
+
+public class Application
 {
-	public class Application
+	// This is the main entry point of the application.
+	public static async Task Main(string[] args)
 	{
-		// This is the main entry point of the application.
-		static async Task Main(string[] args)
-		{
-			await (new AppleUIKitSkiaHost(() => new SamplesApp.App(), args)).Run();
-		}
+		var host = new PlatformHost(() => new SamplesApp.App());
+		await host.Run();
 	}
 }

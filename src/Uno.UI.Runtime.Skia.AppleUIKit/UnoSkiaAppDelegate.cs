@@ -14,6 +14,6 @@ internal partial class UnoSkiaAppDelegate : UIApplicationDelegate
 {
 	public override void FinishedLaunching(UIApplication application)
 	{
-		Application.Start(_ => AppleUIKitSkiaHost.AppBuilder?.Invoke());
+		Application.Start(_ => PlatformHost.AppBuilder?.Invoke());
 	}
 }
