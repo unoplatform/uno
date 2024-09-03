@@ -251,25 +251,4 @@
 	</PropertyGroup>
 
 
-	<Target Name="ReplaceUnoRuntime" AfterTargets="ResolveReferences">
-
-		<ItemGroup>
-			<_AssemblyCopyLocalPaths Include="@(ReferenceCopyLocalPaths)" Condition="'%(ReferenceCopyLocalPaths.FusionName)' != '' and '%(ReferenceCopyLocalPaths.FusionName)'=='Uno, Version=255.255.255.255, Culture=neutral, PublicKeyToken=null'" />
-			<_AssemblyCopyLocalPaths Include="@(ReferenceCopyLocalPaths)" Condition="'%(ReferenceCopyLocalPaths.FusionName)' != '' and '%(ReferenceCopyLocalPaths.FusionName)'=='Uno.UI.Dispatching, Version=255.255.255.255, Culture=neutral, PublicKeyToken=null'" />
-
-			<!-- Remove them from the files to be copied to the output -->
-			<ReferenceCopyLocalPaths Remove="@(_AssemblyCopyLocalPaths)" />
-
-			<_redirectedReferences Include="..\..\Uno.UWP\bin\Uno.netcoremobile\$(Configuration)\$(TargetFramework)\Uno.dll" />
-			<_redirectedReferences Include="..\..\Uno.UI.Dispatching\bin\Uno.UI.Dispatching.netcoremobile\$(Configuration)\$(TargetFramework)\Uno.UI.Dispatching.dll" />
-
-			<ReferenceCopyLocalPaths Include="@(_redirectedReferences)" />
-
-			<_UnoWasmBootstrapAssembliesForReferenceCopyLocalPaths Include="$(MSBuildProjectDirectory)\..\..\Uno.UWP\bin\Uno.netcoremobile\$(Configuration)\$(TargetFramework)\Uno.dll" />
-			<_UnoWasmBootstrapAssembliesForReferenceCopyLocalPaths Include="$(MSBuildProjectDirectory)\..\..\Uno.UI.Dispatching\bin\Uno.UI.Dispatching.netcoremobile\$(Configuration)\$(TargetFramework)\Uno.UI.Dispatching.dll" />
-		</ItemGroup>
-
-	</Target>
-
-
 </Project>
