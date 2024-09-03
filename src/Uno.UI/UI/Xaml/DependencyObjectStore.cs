@@ -1936,8 +1936,8 @@ namespace Microsoft.UI.Xaml
 			if (propertyMetadata.HasPropertyChanged)
 			{
 				eventArgs ??= new DependencyPropertyChangedEventArgs(property, previousValue, newValue
-#if __IOS__ || __MACOS__ || IS_UNIT_TESTS
-					, previousPrecedence, newPrecedence
+#if IS_UNIT_TESTS
+					, newPrecedence
 #endif
 				);
 				propertyMetadata.RaisePropertyChangedNoNullCheck(actualInstanceAlias, eventArgs);
@@ -1952,8 +1952,8 @@ namespace Microsoft.UI.Xaml
 			if (actualInstanceAlias is IDependencyObjectInternal doInternal)
 			{
 				eventArgs ??= new DependencyPropertyChangedEventArgs(property, previousValue, newValue
-#if __IOS__ || __MACOS__ || IS_UNIT_TESTS
-					, previousPrecedence, newPrecedence
+#if IS_UNIT_TESTS
+					, newPrecedence
 #endif
 );
 				doInternal.OnPropertyChanged2(eventArgs);
@@ -1963,8 +1963,8 @@ namespace Microsoft.UI.Xaml
 			if (propertyDetails.CanRaisePropertyChanged)
 			{
 				eventArgs ??= new DependencyPropertyChangedEventArgs(property, previousValue, newValue
-#if __IOS__ || __MACOS__ || IS_UNIT_TESTS
-					, previousPrecedence, newPrecedence
+#if IS_UNIT_TESTS
+					, newPrecedence
 #endif
 				);
 				propertyDetails.RaisePropertyChangedNoNullCheck(actualInstanceAlias, eventArgs);
@@ -1976,8 +1976,8 @@ namespace Microsoft.UI.Xaml
 			{
 				var callback = currentCallbacks[callbackIndex];
 				eventArgs ??= new DependencyPropertyChangedEventArgs(property, previousValue, newValue
-#if __IOS__ || __MACOS__ || IS_UNIT_TESTS
-					, previousPrecedence, newPrecedence
+#if IS_UNIT_TESTS
+					, newPrecedence
 #endif
 				);
 				callback.Invoke(instanceRef, property, eventArgs);
