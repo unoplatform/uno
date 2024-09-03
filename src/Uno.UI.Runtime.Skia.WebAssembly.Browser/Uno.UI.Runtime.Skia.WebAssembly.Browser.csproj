@@ -72,7 +72,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Content Include="tsconfig.json" />
+	  <ConfigFiles Include="tsconfig.json" />
 	</ItemGroup>
 
 	<PropertyGroup>
