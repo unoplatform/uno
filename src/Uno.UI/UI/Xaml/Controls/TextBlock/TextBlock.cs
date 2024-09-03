@@ -196,7 +196,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetFontStretchValue(value);
 		}
 
-		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnFontStretchChanged), DefaultValue = FontStretch.Normal, Options = FrameworkPropertyMetadataOptions.Inherits)]
+		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnFontStretchChanged), DefaultValue = FontStretch.Normal, Options = FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure)]
 		public static DependencyProperty FontStretchProperty { get; } = CreateFontStretchProperty();
 
 		private void OnFontStretchChanged()
@@ -314,6 +314,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			OnTextChangedPartial();
 			InvalidateTextBlock();
+			InvalidateMeasure();
 		}
 
 		partial void OnTextChangedPartial();
@@ -502,6 +503,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				OnForegroundChangedPartial();
 				InvalidateTextBlock();
+				InvalidateMeasure();
 			}
 			catch (Exception e)
 			{
