@@ -19,7 +19,6 @@ namespace Microsoft.UI.Xaml
 	internal class DependencyPropertyDetails : IEnumerable<object?>, IEnumerable, IDisposable
 	{
 		private DependencyPropertyValuePrecedences _highestPrecedence = DependencyPropertyValuePrecedences.DefaultValue;
-		private readonly Type _dependencyObjectType;
 		private object? _fastLocalValue;
 		private BindingExpression? _binding;
 		private object?[]? _stack;
@@ -73,10 +72,9 @@ namespace Microsoft.UI.Xaml
 
 		public DependencyProperty Property { get; }
 
-		internal DependencyPropertyDetails(DependencyProperty property, Type dependencyObjectType, bool isTemplatedParentOrDataContext)
+		internal DependencyPropertyDetails(DependencyProperty property, bool isTemplatedParentOrDataContext)
 		{
 			Property = property;
-			_dependencyObjectType = dependencyObjectType;
 
 			GetPropertyInheritanceConfiguration(property, isTemplatedParentOrDataContext, out var hasInherits, out var hasValueInherits, out var hasValueDoesNotInherits);
 
