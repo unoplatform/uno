@@ -1104,7 +1104,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SUT.SelectionHighlightColor.Color);
 		}
 
-		[TestMethod]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #elif __WASM__
@@ -1140,7 +1139,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual("Hello ", await Clipboard.GetContent()!.GetTextAsync());
 		}
 
-		[TestMethod]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #elif __WASM__
@@ -1241,7 +1239,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(isTextSelectionEnabled ? 1 : 0, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count);
 		}
 
-		[TestMethod]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #elif !HAS_RENDER_TARGET_BITMAP
@@ -1334,7 +1331,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
-		[TestMethod]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #elif !__SKIA__
