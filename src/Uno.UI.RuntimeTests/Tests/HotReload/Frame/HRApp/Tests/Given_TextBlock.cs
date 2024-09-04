@@ -75,25 +75,21 @@ public class Given_TextBlock : BaseTestClass
 
 		var hr = Uno.UI.RemoteControl.RemoteControlClient.Instance?.Processors.OfType<Uno.UI.RemoteControl.HotReload.ClientHotReloadProcessor>().Single();
 		var ctx = Uno.UI.RuntimeTests.Tests.HotReload.FrameworkElementExtensions.GetDebugParseContext(new HR_Frame_Pages_Page1());
+		var req = new Uno.UI.RemoteControl.HotReload.ClientHotReloadProcessor.UpdateRequest(
+			ctx.FileName,
+			FirstPageTextBlockOriginalText,
+			FirstPageTextBlockChangedText,
+			true)
+			.WithExtendedTimeouts(); // Required for CI
 		try
 		{
-			await hr.UpdateFileAsync(
-				ctx.FileName,
-				FirstPageTextBlockOriginalText,
-				FirstPageTextBlockChangedText,
-				true,
-				ct);
+			await hr.UpdateFileAsync(req, ct);
 
 			await UnitTestsUIContentHelper.Content.ValidateTextOnChildTextBlock(FirstPageTextBlockChangedText);
 		}
 		finally
 		{
-			await hr.UpdateFileAsync(
-				ctx.FileName,
-				FirstPageTextBlockChangedText,
-				FirstPageTextBlockOriginalText,
-				false,
-				CancellationToken.None);
+			await hr.UpdateFileAsync(req.Undo(waitForHotReload: false), CancellationToken.None);
 		}
 	}
 }

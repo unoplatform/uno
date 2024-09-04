@@ -1,6 +1,7 @@
 ﻿#if HAS_UNO_WINUI && __SKIA__
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.ExceptionServices;
@@ -28,33 +29,92 @@ public partial class ClientHotReloadProcessor
 		bool? ApplicationUpdated,
 		Exception? Error = null);
 
-	public async Task UpdateFileAsync(string filePath, string oldText, string newText, bool waitForHotReload, CancellationToken ct)
+	/// <summary>
+	/// Request details of a file update
+	/// </summary>
+	/// <param name="FilePath">Path of the file to update, relative to the solution root dir.</param>
+	/// <param name="OldText">Current text to replace in the file.</param>
+	/// <param name="NewText">Replacement text.</param>
+	/// <param name="WaitForHotReload">Indicates if we should also wait for the change to be applied in the application before completing the resulting task.</param>
+	public record struct UpdateRequest(
+		string FilePath,
+		string OldText,
+		string NewText,
+		bool WaitForHotReload = true)
 	{
-		if (await TryUpdateFileAsync(filePath, oldText, newText, waitForHotReload, ct) is { Error: { } error })
+		/// <summary>
+		/// The max delay to wait for the server to process a file update request.
+		/// </summary>
+		/// <remarks>This includes the time to send the request to the server, the server to process it and send a reply.</remarks>
+		public TimeSpan ServerUpdateTimeout { get; set; } = TimeSpan.FromSeconds(10);
+
+		/// <summary>
+		/// The max delay to wait for the server to process a hot-reload and send completion messages after a file has been updated.
+		/// </summary>
+		/// <remarks>
+		/// Once a file has been updated on the server, this includes the time for the IDE/dev-server to detect the file update,
+		/// roslyn to generate delta (or error), send it to the app, and then the dev-server to send notification of HR completion.
+		/// </remarks>
+		public TimeSpan ServerHotReloadTimeout { get; set; } = TimeSpan.FromSeconds(10);
+
+		/// <summary>
+		/// The max delay to wait for the local application to process a hot-reload delta.
+		/// </summary>
+		/// <remarks>This includes the time to apply the delta locally and then to run all local handlers.</remarks>
+		public TimeSpan LocalHotReloadTimeout { get; set; } = TimeSpan.FromSeconds(3);
+
+		public UpdateRequest WithExtendedTimeouts(float? factor = null)
+		{
+			factor ??= Debugger.IsAttached ? 30 : 10;
+
+			return this with
+			{
+				ServerUpdateTimeout = ServerUpdateTimeout * factor.Value,
+				ServerHotReloadTimeout = ServerHotReloadTimeout * factor.Value,
+				LocalHotReloadTimeout = LocalHotReloadTimeout * factor.Value
+			};
+		}
+
+		public UpdateRequest Undo()
+			=> this with { OldText = NewText, NewText = OldText };
+
+		public UpdateRequest Undo(bool waitForHotReload)
+			=> this with { OldText = NewText, NewText = OldText, WaitForHotReload = waitForHotReload };
+	}
+
+	public Task UpdateFileAsync(string filePath, string oldText, string newText, bool waitForHotReload, CancellationToken ct)
+		=> UpdateFileAsync(new UpdateRequest(filePath, oldText, newText, waitForHotReload), ct);
+
+	public async Task UpdateFileAsync(UpdateRequest req, CancellationToken ct)
+	{
+		if (await TryUpdateFileAsync(req, ct) is { Error: { } error })
 		{
 			ExceptionDispatchInfo.Throw(error);
 		}
 	}
 
-	public async Task<UpdateResult> TryUpdateFileAsync(string filePath, string oldText, string newText, bool waitForHotReload, CancellationToken ct)
+	public Task TryUpdateFileAsync(string filePath, string oldText, string newText, bool waitForHotReload, CancellationToken ct)
+		=> TryUpdateFileAsync(new UpdateRequest(filePath, oldText, newText, waitForHotReload), ct);
+
+	public async Task<UpdateResult> TryUpdateFileAsync(UpdateRequest req, CancellationToken ct)
 	{
 		var result = default(UpdateResult);
 		try
 		{
-			if (string.IsNullOrWhiteSpace(filePath))
+			if (string.IsNullOrWhiteSpace(req.FilePath))
 			{
-				return result with { Error = new ArgumentOutOfRangeException(nameof(filePath), "File path is invalid (null or empty).") };
+				return result with { Error = new ArgumentOutOfRangeException(nameof(req.FilePath), "File path is invalid (null or empty).") };
 			}
 
 			var log = this.Log();
 			var trace = log.IsTraceEnabled(LogLevel.Trace) ? log : default;
 			var debug = log.IsDebugEnabled(LogLevel.Debug) ? log : default;
-			var tag = $"[{Interlocked.Increment(ref _reqId):D2}-{Path.GetFileName(filePath)}]";
+			var tag = $"[{Interlocked.Increment(ref _reqId):D2}-{Path.GetFileName(req.FilePath)}]";
 
-			debug?.Debug($"{tag} Updating file {filePath} (from: {oldText[..100]} | to: {newText[..100]}.");
+			debug?.Debug($"{tag} Updating file {req.FilePath} (from: {req.OldText[..100]} | to: {req.NewText[..100]}.");
 
-			var request = new UpdateFile { FilePath = filePath, OldText = oldText, NewText = newText };
-			var response = await UpdateFileCoreAsync(request, ct);
+			var request = new UpdateFile { FilePath = req.FilePath, OldText = req.OldText, NewText = req.NewText };
+			var response = await UpdateFileCoreAsync(request, req.ServerUpdateTimeout, ct);
 
 			if (response.Result is FileUpdateResult.NoChanges)
 			{
@@ -65,12 +125,12 @@ public partial class ClientHotReloadProcessor
 			if (response.Result is not FileUpdateResult.Success)
 			{
 				debug?.Debug($"{tag} Server failed to update file: {response.Result} (srv error: {response.Error}).");
-				return result with { Error = new InvalidOperationException($"Failed to update file {filePath}: {response.Result} (see inner exception for more details)", new InvalidOperationException(response.Error)) };
+				return result with { Error = new InvalidOperationException($"Failed to update file {req.FilePath}: {response.Result} (see inner exception for more details)", new InvalidOperationException(response.Error)) };
 			}
 
 			result.FileUpdated = true;
 
-			if (!waitForHotReload)
+			if (!req.WaitForHotReload)
 			{
 				trace?.Trace($"{tag} File updated successfully and do not wait for HR, completing.");
 				return result;
@@ -84,8 +144,8 @@ public partial class ClientHotReloadProcessor
 
 			trace?.Trace($"{tag} Successfully updated file on server ({response.Result}), waiting for server HR id {response.HotReloadCorrelationId}.");
 
-			var localHrTask = WaitForNextLocalHotReload(ct);
-			var serverHr = await WaitForServerHotReloadAsync(response.HotReloadCorrelationId.Value, ct);
+			var localHrTask = WaitForNextLocalHotReload(req.LocalHotReloadTimeout, ct);
+			var serverHr = await WaitForServerHotReloadAsync(response.HotReloadCorrelationId.Value, req.ServerHotReloadTimeout, ct);
 			if (serverHr.Result is HotReloadServerResult.NoChanges)
 			{
 				trace?.Trace($"{tag} Server didn't detected any changes in code, do not wait for local HR.");
@@ -97,7 +157,7 @@ public partial class ClientHotReloadProcessor
 			if (serverHr.Result is not HotReloadServerResult.Success)
 			{
 				debug?.Debug($"{tag} Server failed to applied changes in code: {serverHr.Result}.");
-				return result with { Error = new InvalidOperationException($"Failed to update file {filePath}, hot-reload failed on server: {serverHr.Result}.") };
+				return result with { Error = new InvalidOperationException($"Failed to update file {req.FilePath}, hot-reload failed on server: {serverHr.Result}.") };
 			}
 
 			trace?.Trace($"{tag} Successfully got HR from server ({serverHr.Result}), waiting for local HR to complete.");
@@ -106,7 +166,7 @@ public partial class ClientHotReloadProcessor
 			if (localHr.Result is HotReloadClientResult.Failed)
 			{
 				debug?.Debug($"{tag} Failed to apply HR locally: {localHr.Result}.");
-				return result with { Error = new InvalidOperationException($"Failed to update file {filePath}, hot-reload failed locally: {localHr.Result}.") };
+				return result with { Error = new InvalidOperationException($"Failed to update file {req.FilePath}, hot-reload failed locally: {localHr.Result}.") };
 			}
 
 			await Task.Delay(100, ct); // Wait a bit to make sure to let the dispatcher to resume, this is just for safety.
@@ -128,9 +188,9 @@ public partial class ClientHotReloadProcessor
 	#region File updates messaging
 	private EventHandler<UpdateFileResponse>? _updateResponse;
 
-	private async ValueTask<UpdateFileResponse> UpdateFileCoreAsync(UpdateFile request, CancellationToken ct)
+	private async ValueTask<UpdateFileResponse> UpdateFileCoreAsync(UpdateFile request, TimeSpan timeout, CancellationToken ct)
 	{
-		var timeout = Task.Delay(10_000, ct);
+		var timeoutTask = Task.Delay(timeout, ct);
 		var responseAsync = new TaskCompletionSource<UpdateFileResponse>();
 
 		try
@@ -139,7 +199,7 @@ public partial class ClientHotReloadProcessor
 
 			await _rcClient.SendMessage(request);
 
-			if (await Task.WhenAny(responseAsync.Task, timeout) == timeout)
+			if (await Task.WhenAny(responseAsync.Task, timeoutTask) == timeoutTask)
 			{
 				throw new TimeoutException("Failed to get response from the server in the given delay.");
 			}
@@ -164,9 +224,9 @@ public partial class ClientHotReloadProcessor
 		=> _updateResponse?.Invoke(this, response);
 	#endregion
 
-	private async ValueTask<HotReloadServerOperationData> WaitForServerHotReloadAsync(long hotReloadId, CancellationToken ct)
+	private async ValueTask<HotReloadServerOperationData> WaitForServerHotReloadAsync(long hotReloadId, TimeSpan timeout, CancellationToken ct)
 	{
-		var timeout = Task.Delay(10_000, ct);
+		var timeoutTask = Task.Delay(timeout, ct);
 		var operationAsync = new TaskCompletionSource<HotReloadServerOperationData>();
 
 		try
@@ -174,7 +234,7 @@ public partial class ClientHotReloadProcessor
 			StatusChanged += OnStatusChanged;
 			CheckIfCompleted(CurrentStatus);
 
-			if (await Task.WhenAny(operationAsync.Task, timeout) == timeout)
+			if (await Task.WhenAny(operationAsync.Task, timeoutTask) == timeoutTask)
 			{
 				throw new TimeoutException($"Failed to get hot-reload (id: {hotReloadId}) from the server in the given delay.");
 			}
@@ -199,9 +259,9 @@ public partial class ClientHotReloadProcessor
 		}
 	}
 
-	private async ValueTask<HotReloadClientOperation> WaitForNextLocalHotReload(CancellationToken ct)
+	private async ValueTask<HotReloadClientOperation> WaitForNextLocalHotReload(TimeSpan timeout, CancellationToken ct)
 	{
-		var timeout = Task.Delay(10_000, ct);
+		var timeoutTask = Task.Delay(timeout, ct);
 		var operationAsync = new TaskCompletionSource<HotReloadClientOperation>();
 		var previousId = CurrentStatus.Local.Operations is { Count: > 0 } ops ? ops.Max(op => op.Id) : -1;
 
@@ -209,7 +269,7 @@ public partial class ClientHotReloadProcessor
 		{
 			StatusChanged += OnStatusChanged;
 
-			if (await Task.WhenAny(operationAsync.Task, timeout) == timeout)
+			if (await Task.WhenAny(operationAsync.Task, timeoutTask) == timeoutTask)
 			{
 				throw new TimeoutException($"Failed to get a local hot-reload (id: {previousId}+) in the given delay.");
 			}
