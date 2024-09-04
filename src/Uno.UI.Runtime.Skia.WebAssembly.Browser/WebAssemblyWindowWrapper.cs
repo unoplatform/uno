@@ -69,8 +69,6 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 
 	internal void OnNativeActivated(CoreWindowActivationState state) => ActivationState = state;
 
-	internal void OnNativeClosed() => RaiseClosed();
-
 	[JSExport]
 	private static void OnResize([JSMarshalAs<JSType.Any>] object instance, double width, double height)
 	{
