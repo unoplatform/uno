@@ -9,7 +9,7 @@ using Windows.Devices.Sensors;
 
 namespace UITests.Shared.Microsoft_UI;
 
-[SampleControlInfo("Microsoft.UI", "ColorHelper", description: "Demonstrates use of Microsoft.UI.ColorHelper", viewModelType: typeof(ColorHelperTestsViewModel), ignoreInSnapshotTests: true)]
+[SampleControlInfo("Microsoft.UI", "ColorHelper", description: "Demonstrates use of Microsoft.UI.ColorHelper. Until WinUI3 1.6+ this currently only works on Uno targets", viewModelType: typeof(ColorHelperTestsViewModel), ignoreInSnapshotTests: true)]
 public sealed partial class ColorHelperTests : UserControl
 {
 	public ColorHelperTests()
@@ -36,7 +36,10 @@ internal class ColorHelperTestsViewModel(UnitTestDispatcherCompat dispatcher) : 
 
 	public Command ConvertCommand => new((p) =>
 	{
+		//UNO TODO: Remove after updating to WinUI 1.6+
+#if HAS_UNO
 		ColorName = ColorHelper.ToDisplayName(Windows.UI.ColorHelper.ConvertColorFromHexString(ColorValue));
+#endif
 	});
 
 	public string ColorName

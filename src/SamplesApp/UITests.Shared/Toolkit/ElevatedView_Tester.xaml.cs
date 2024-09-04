@@ -54,10 +54,31 @@ namespace UITests.Toolkit
 
 		private void OnValuesChanged()
 		{
-			Color color = Windows.UI.ColorHelper.ConvertColorFromHexString(ColorString);
+			Color color = ConvertColorFromHexString(ColorString);
 			ElevatedElement.ShadowColor = color;
 			ElevatedElement.Elevation = Elevation;
 			ElevatedElement.CornerRadius = new CornerRadius(Radius);
+		}
+
+		//UNO TODO: After updating to WinUI 1.6+, the Windows.UI.ColorHelper.ConvertColorFromHexString can be used
+		private Color ConvertColorFromHexString(string colorString)
+		{
+			try
+			{
+				//Target hex string
+				colorString = colorString.Replace("#", string.Empty);
+				// from #RRGGBB string
+				var a = (byte)System.Convert.ToUInt32(colorString.Substring(0, 2), 16);
+				var r = (byte)System.Convert.ToUInt32(colorString.Substring(2, 2), 16);
+				var g = (byte)System.Convert.ToUInt32(colorString.Substring(4, 2), 16);
+				var b = (byte)System.Convert.ToUInt32(colorString.Substring(6, 2), 16);
+				//get the color
+				return Color.FromArgb(a, r, g, b);
+			}
+			catch
+			{
+				return Colors.Black;
+			}
 		}
 	}
 }
