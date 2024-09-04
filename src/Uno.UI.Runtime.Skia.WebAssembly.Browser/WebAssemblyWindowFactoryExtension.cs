@@ -20,6 +20,8 @@ internal class WebAssemblyWindowFactoryExtension : INativeWindowFactoryExtension
 
 	public bool SupportsMultipleWindows => false;
 
+	public bool SupportsClosingCancellation => false;
+
 	public INativeWindowWrapper CreateWindow(Window window, XamlRoot xamlRoot)
 	{
 		if (_initialWindow is not null && _initialWindow != window)
