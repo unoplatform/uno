@@ -4,7 +4,6 @@ using System;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
-using Windows.Foundation;
 using SkiaSharp;
 using Uno.UI.Composition;
 using Windows.Foundation;

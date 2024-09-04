@@ -9,5 +9,9 @@ public partial class SystemNavigationManagerPreview
 	private SystemNavigationManagerPreview()
 	{
 	}
+
+	internal bool HasConfirmedClose { get; private set; }
+
+	internal bool RequestAppClose() { return false; }
 }
 #endif

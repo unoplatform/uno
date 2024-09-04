@@ -158,7 +158,7 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 
 	private class RenderingLayerHost(IWpfRenderer renderer) : WpfControl
 	{
-		public IWpfRenderer? Renderer { get; set; }
+		public IWpfRenderer? Renderer { get; set; } = renderer;
 
 		protected override void OnRender(System.Windows.Media.DrawingContext drawingContext)
 		{
