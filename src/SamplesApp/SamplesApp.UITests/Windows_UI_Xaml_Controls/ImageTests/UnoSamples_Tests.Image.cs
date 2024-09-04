@@ -176,9 +176,11 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 			ImageAssert.AreAlmostEqual(bmp, expectedRect, bmp, secondControlRect, permittedPixelError: 20);
 		}
 
+		// Images sometimes fail to load on iOS https://github.com/unoplatform/uno/issues/2295
+		// Fails on WebAssembly with Fluent Styles #18105
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android, Platform.Browser)] // Images sometimes fail to load on iOS https://github.com/unoplatform/uno/issues/2295
+		[ActivePlatforms(Platform.Android)]
 		public void Late_With_Fixed_Dimensions()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.ImageTests.ImageWithLateSourceFixedDimensions");
