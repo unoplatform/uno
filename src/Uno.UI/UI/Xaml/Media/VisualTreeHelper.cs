@@ -222,14 +222,28 @@ namespace Microsoft.UI.Xaml.Media
 			return Array.Empty<Popup>();
 		}
 
-		private static IReadOnlyList<Popup> GetOpenFlyoutPopups(XamlRoot xamlRoot) =>
-			GetOpenPopups(xamlRoot.VisualTree)
+		private static IReadOnlyList<Popup> GetOpenFlyoutPopups(XamlRoot xamlRoot)
+		{
+			if (xamlRoot is null)
+			{
+				throw new ArgumentNullException(nameof(xamlRoot));
+			}
+
+			return GetOpenPopups(xamlRoot.VisualTree)
 				.Where(p => p.IsForFlyout)
 				.ToList()
 				.AsReadOnly();
+		}
 
-		public static IReadOnlyList<Popup> GetOpenPopupsForXamlRoot(XamlRoot xamlRoot) =>
-			GetOpenPopups(xamlRoot.VisualTree);
+		public static IReadOnlyList<Popup> GetOpenPopupsForXamlRoot(XamlRoot xamlRoot)
+		{
+			if (xamlRoot is null)
+			{
+				throw new ArgumentNullException(nameof(xamlRoot));
+			}
+
+			return GetOpenPopups(xamlRoot.VisualTree);
+		}
 
 		private static IReadOnlyList<Popup> GetOpenPopups(VisualTree visualTree)
 		{
@@ -261,6 +275,11 @@ namespace Microsoft.UI.Xaml.Media
 
 		internal static void CloseAllPopups(XamlRoot xamlRoot)
 		{
+			if (xamlRoot is null)
+			{
+				throw new ArgumentNullException(nameof(xamlRoot));
+			}
+
 			foreach (var popup in GetOpenPopups(xamlRoot.VisualTree))
 			{
 				popup.IsOpen = false;
@@ -269,6 +288,11 @@ namespace Microsoft.UI.Xaml.Media
 
 		internal static void CloseLightDismissPopups(XamlRoot xamlRoot)
 		{
+			if (xamlRoot is null)
+			{
+				throw new ArgumentNullException(nameof(xamlRoot));
+			}
+
 			foreach (var popup in GetOpenPopups(xamlRoot.VisualTree).Where(p => p.IsLightDismissEnabled))
 			{
 				popup.IsOpen = false;
