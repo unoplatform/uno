@@ -54,7 +54,7 @@ namespace UITests.Toolkit
 
 		private void OnValuesChanged()
 		{
-			Color color = Microsoft.UI.ColorHelper.ConvertColorFromHexString(ColorString);
+			Color color = Windows.UI.ColorHelper.ConvertColorFromHexString(ColorString);
 			ElevatedElement.ShadowColor = color;
 			ElevatedElement.Elevation = Elevation;
 			ElevatedElement.CornerRadius = new CornerRadius(Radius);
