@@ -52,8 +52,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// TODO: Should use DefaultStyleKeyProperty DP
 		protected object DefaultStyleKey { get; set; }
 
-		private protected override bool IsTabStopDefaultValue => true;
-
 		protected override bool IsSimpleLayout => true;
 
 		internal override bool IsEnabledOverride() => IsEnabled && base.IsEnabledOverride();
