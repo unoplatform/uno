@@ -38,7 +38,7 @@ jobs:
   - task: CopyFiles@2
     displayName: 'Copy macOS artifacts'
     inputs:
-      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.netcoremobile/bin/Release/net8.0-macos14.0/osx-x64
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.netcoremobile/bin/Release/net8.0-macos/osx-x64
       Contents: '**/*.pkg'
       TargetFolder: $(build.artifactstagingdirectory)
       CleanTargetFolder: false
