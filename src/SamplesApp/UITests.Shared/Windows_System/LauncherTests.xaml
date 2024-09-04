@@ -20,5 +20,7 @@
 		<TextBlock Foreground="Red" Text="{Binding Error}" />
         <Button Command="{Binding OpenFolderCommand}">Open sample folder</Button>
         <Button Command="{Binding OpenFileCommand}">Open sample file</Button>
+		<TextBlock>Special Uris (Windows/Android only)</TextBlock>
+		<Button Command="{Binding OpenAppNotificationSettingsCommand}">Open System Notification Settings</Button>
 	</StackPanel>
 </UserControl>
