@@ -1,17 +1,11 @@
 ﻿using System;
-using System.Windows.Input;
+using System.IO;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.UITests.Helpers;
-using Windows.System;
-using Windows.UI.Core;
-using Microsoft.UI.Xaml.Controls;
-
-using ICommand = System.Windows.Input.ICommand;
-using EventHandler = System.EventHandler;
-using Windows.ApplicationModel;
-using System.IO;
 using Windows.Storage;
-using BenchmarkDotNet.Code;
+using Windows.System;
+using ICommand = System.Windows.Input.ICommand;
 
 namespace UITests.Shared.Windows_System
 {
