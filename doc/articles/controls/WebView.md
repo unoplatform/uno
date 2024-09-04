@@ -127,3 +127,21 @@ The web files can reference each other in a relative path fashion, for example, 
 ```
 
 Is referencing a `site.js` file inside the `js` subfolder.
+
+## iOS and macOS (Catalyst) specifics
+
+From MacOS, inspecting applications using `WebView2` controls using the Safari Developer Tools is possible. [Here's](https://developer.apple.com/documentation/safari-developer-tools/inspecting-ios) a detailed guide on how to do it. To make this work, enable this feature in your app by adding the following capabilities in your `App.Xaml.cs`:
+
+```csharp
+public App()
+{
+    this.InitializeComponent();
+#if __IOS__
+    Uno.UI.FeatureConfiguration.WebView2.IsInspectable = true;
+#endif
+}
+```
+
+> [!IMPORTANT]
+>
+> This feature will only work for security reasons when the application runs in Debug mode.
