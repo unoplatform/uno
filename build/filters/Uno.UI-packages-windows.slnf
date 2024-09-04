@@ -3,7 +3,6 @@
     "path": "..\\..\\src\\Uno.UI.sln",
     "projects": [
       "AddIns\\Uno.UI.MSAL\\Uno.UI.MSAL.Windows.csproj",
-      "AddIns\\Uno.WinUI.Graphics3DGL\\Uno.WinUI.Graphics3DGL.csproj",
       "Uno.UI.Toolkit\\Uno.UI.Toolkit.Windows.csproj"
     ]
   }
