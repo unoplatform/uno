@@ -47,8 +47,6 @@ public partial class CoreWindow
 
 	internal IUnoCorePointerInputSource? PointersSource => _pointerSource;
 
-	// Wasm partial has the property. We should unify the implementation.
-#if !__WASM__
 	public CoreCursor PointerCursor
 	{
 		get => _pointerSource?.PointerCursor ?? new CoreCursor(CoreCursorType.Arrow, 0);
@@ -60,5 +58,4 @@ public partial class CoreWindow
 			}
 		}
 	}
-#endif
 }
