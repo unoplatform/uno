@@ -7,6 +7,8 @@ internal sealed class AndroidSkiaWindowFactory : INativeWindowFactoryExtension
 {
 	public bool SupportsMultipleWindows => false;
 
+	public bool SupportsClosingCancellation => false;
+
 	public INativeWindowWrapper CreateWindow(Window window, XamlRoot xamlRoot)
 	{
 		// While we are currently not having something very useful in the root host, instantiating it has side effects that we need.
