@@ -93,7 +93,7 @@ internal static class FontDetailsCache
 
 		SKTypeface? skTypeFace;
 		bool temporaryDefaultFont = false;
-
+		var originalName = name;
 		var hashIndex = name.IndexOf('#');
 		if (hashIndex > 0)
 		{
@@ -112,7 +112,7 @@ internal static class FontDetailsCache
 				else
 				{
 					// Load failed.
-					OnFontLoaded(name, null);
+					OnFontLoaded(originalName, null);
 					skTypeFace = null;
 				}
 			}
@@ -128,12 +128,12 @@ internal static class FontDetailsCache
 						{
 							if (task.IsCompletedSuccessfully)
 							{
-								OnFontLoaded(name, task.Result);
+								OnFontLoaded(originalName, task.Result);
 							}
 							else
 							{
 								// Load failed.
-								OnFontLoaded(name, null);
+								OnFontLoaded(originalName, null);
 							}
 						}
 						catch (Exception e)
