@@ -9,6 +9,8 @@ namespace Uno.Storage;
 internal interface INativeApplicationSettings
 {
 	object this[string key] { get; set; }
-	ICollection<string> Keys { get; }
-	ICollection<object> Values { get; }
+
+	IEnumerable<string> Keys { get; }
+
+
 }
