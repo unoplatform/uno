@@ -63,7 +63,7 @@ public partial class TextBox
 	private int _historyIndex;
 	private readonly List<HistoryRecord> _history = new(); // the selection of an action is what was selected right before it happened. Might turn out to be unnecessary.
 
-	private (int start, int length, bool tripleTap)? _multiTapChunk;
+	private (int start, int length, bool tripleTap)? _mouseMultiTapChunk;
 	private (int hashCode, List<(int start, int length)> chunks) _cachedChunks = (-1, new());
 
 	private readonly DispatcherTimer _timer = new DispatcherTimer
@@ -807,7 +807,7 @@ public partial class TextBox
 			var displayBlock = TextBoxView.DisplayBlock;
 			var point = e.GetCurrentPoint(displayBlock);
 			var index = Math.Max(0, displayBlock.Inlines.GetIndexAt(point.Position, false, true));
-			if (_multiTapChunk is { } mtc)
+			if (_mouseMultiTapChunk is { } mtc)
 			{
 				(int start, int length) chunk;
 				if (mtc.tripleTap)
@@ -940,7 +940,7 @@ public partial class TextBox
 
 						var startOfLine = StartOfLine(index);
 						Select(startOfLine, EndOfLine(index) + 1 - startOfLine);
-						_multiTapChunk = (SelectionStart, SelectionLength, true);
+						_mouseMultiTapChunk = (SelectionStart, SelectionLength, true);
 						_lastPointerDown = (currentPoint, 2);
 					}
 					else // _lastPointerDown.repeatedPresses == 0 or 2
@@ -948,7 +948,7 @@ public partial class TextBox
 						// double tap
 						var chunk = FindChunkAt(index, true);
 						Select(chunk.start, chunk.length);
-						_multiTapChunk = (chunk.start, chunk.length, false);
+						_mouseMultiTapChunk = (chunk.start, chunk.length, false);
 						_lastPointerDown = (currentPoint, 1);
 					}
 				}
@@ -969,7 +969,7 @@ public partial class TextBox
 	partial void OnPointerReleasedPartial(PointerRoutedEventArgs args)
 	{
 		_caretDraggingPointerType = null;
-		_multiTapChunk = null;
+		_mouseMultiTapChunk = null;
 	}
 
 	protected override void OnDoubleTapped(DoubleTappedRoutedEventArgs args)
