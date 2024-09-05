@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Uno.Extensions.Specialized;
 using Uno.Storage;
 using Windows.Foundation.Collections;
 
@@ -36,8 +38,8 @@ public partial class ApplicationDataContainerSettings : IPropertySet, IObservabl
 	/// <returns></returns>
 	public object this[string key]
 	{
-		get => _nativeApplicationSettings[key];
-		set => _nativeApplicationSettings[key] = value;
+		get => _nativeApplicationSettings[_container.GetSettingKey(key)];
+		set => _nativeApplicationSettings[_container.GetSettingKey(key)] = value;
 	}
 
 	/// <summary>
@@ -49,19 +51,22 @@ public partial class ApplicationDataContainerSettings : IPropertySet, IObservabl
 	{
 		get
 		{
-			throw new global::System.NotSupportedException();
+			// Public settings count is equal to the total number of settings in the container excluding internal settings.
+			var allSettingsCount = _nativeApplicationSettings.GetKeysWithPrefix(_container.ContainerPath).Count();
+			var internalSettingsPath = _container.GetSettingKey(ApplicationDataContainer.InternalSettingPrefix);
+			var internalSettingsCount = _nativeApplicationSettings.GetKeysWithPrefix(internalSettingsPath).Count();
+
+			return allSettingsCount - internalSettingsCount;
 		}
 	}
 
 	public bool IsReadOnly => false;
 
-	public global::System.Collections.Generic.ICollection<string> Keys
-	{
-		get
-		{
-			throw new global::System.NotSupportedException();
-		}
-	}
+	public ICollection<string> Keys => _nativeApplicationSettings
+		.GetKeysWithPrefix(_container.ContainerPath)
+		.Except(
+			_nativeApplicationSettings.GetKeysWithPrefix(_container.GetSettingKey(ApplicationDataContainer.InternalSettingPrefix))
+		);
 
 	public global::System.Collections.Generic.ICollection<object> Values
 	{
@@ -139,4 +144,8 @@ public partial class ApplicationDataContainerSettings : IPropertySet, IObservabl
 	}
 
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+	private object DeserializeValue(string value) => DataTypeSerializer.Deserialize(value);
+
+	private string SerializeValue(object value) => DataTypeSerializer.Serialize(value);
 }
