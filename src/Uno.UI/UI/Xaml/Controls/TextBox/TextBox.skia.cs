@@ -35,7 +35,20 @@ public partial class TextBox
 	private (int start, int length) _selection;
 	private bool _selectionEndsAtTheStart;
 	private float _caretXOffset; // this is not necessarily the visual offset of the caret, but where the caret is logically supposed to be when moving up and down with the keyboard, even if the caret is temporarily elsewhere
-	private bool _showCaret = true;
+	private CaretDisplayMode _caretMode = CaretDisplayMode.NoCaret;
+
+	private CaretDisplayMode CaretMode
+	{
+		get => _caretMode;
+		set
+		{
+			_caretMode = value;
+			if (value is CaretDisplayMode.ThumblessCaretShowing)
+			{
+				_timer.Start(); // restart
+			}
+		}
+	}
 
 	private bool _inSelectInternal;
 
@@ -237,14 +250,12 @@ public partial class TextBox
 		{
 			if (focusState != FocusState.Unfocused)
 			{
-				_showCaret = true;
-				_timer.Start();
+				CaretMode = CaretDisplayMode.ThumblessCaretShowing;
 			}
 			else
 			{
 				TrySetCurrentlyTyping(false);
-				_showCaret = false;
-				_timer.Stop();
+				CaretMode = CaretDisplayMode.ThumblessCaretHidden;
 			}
 			UpdateDisplaySelection();
 		}
@@ -267,9 +278,10 @@ public partial class TextBox
 		}
 		else
 		{
-			_timer.Stop();
-			_showCaret = true;
-			_timer.Start();
+			if (length == 0)
+			{
+				CaretMode = CaretDisplayMode.ThumblessCaretShowing;
+			}
 			UpdateDisplaySelection();
 			UpdateScrolling();
 		}
@@ -295,8 +307,9 @@ public partial class TextBox
 		{
 			inlines.Selection = (SelectionStart, SelectionStart + SelectionLength);
 			inlines.RenderSelection = FocusState != FocusState.Unfocused || (_contextMenu?.IsOpen ?? false);
-			inlines.RenderCaret = inlines.RenderSelection && _showCaret && !FeatureConfiguration.TextBox.HideCaret && !IsReadOnly && _selection.length == 0;
-			inlines.CaretMode = _selectionEndsAtTheStart ? InlineCollection.CaretRenderMode.CaretAtSelectionStart : InlineCollection.CaretRenderMode.CaretAtSelectionEnd;
+			var caretShowing = CaretMode is CaretDisplayMode.ThumblessCaretShowing or CaretDisplayMode.CaretWithThumbsOnlyEndShowing or CaretDisplayMode.CaretWithThumbsBothEndsShowing;
+			inlines.RenderCaret = inlines.RenderSelection && caretShowing && !FeatureConfiguration.TextBox.HideCaret && !IsReadOnly && _selection.length == 0;
+			inlines.CaretMode = _selectionEndsAtTheStart ? InlineCollection.CaretLocation.CaretAtSelectionStart : InlineCollection.CaretLocation.CaretAtSelectionEnd;
 		}
 	}
 
@@ -784,7 +797,14 @@ public partial class TextBox
 
 	private void TimerOnTick(object sender, object e)
 	{
-		_showCaret = !_showCaret;
+		if (CaretMode == CaretDisplayMode.ThumblessCaretHidden)
+		{
+			CaretMode = CaretDisplayMode.ThumblessCaretShowing;
+		}
+		else if (CaretMode == CaretDisplayMode.ThumblessCaretShowing)
+		{
+			CaretMode = CaretDisplayMode.ThumblessCaretHidden;
+		}
 		UpdateDisplaySelection();
 	}
 
@@ -1364,6 +1384,15 @@ public partial class TextBox
 		}
 		_clearHistoryOnTextChanged = true;
 		UpdateCanUndoRedo();
+	}
+
+	private enum CaretDisplayMode
+	{
+		NoCaret,
+		ThumblessCaretHidden,
+		ThumblessCaretShowing,
+		CaretWithThumbsOnlyEndShowing,
+		CaretWithThumbsBothEndsShowing
 	}
 
 	private record struct HistoryRecord(TextBoxAction Action, int SelectionStart, int SelectionLength, bool SelectionEndsAtTheStart);

@@ -18,7 +18,7 @@ namespace Microsoft.UI.Xaml.Documents
 {
 	partial class InlineCollection
 	{
-		internal enum CaretRenderMode
+		internal enum CaretLocation
 		{
 			CaretAtSelectionStart,
 			CaretAtSelectionEnd,
@@ -49,9 +49,9 @@ namespace Microsoft.UI.Xaml.Documents
 
 		private SelectionDetails _selection = new(0, 0, 0, 0);
 		private bool _renderSelection;
-		private CaretRenderMode _caretMode;
+		private CaretLocation _caretMode;
 		private bool _renderCaret;
-		internal CaretRenderMode CaretMode
+		internal CaretLocation CaretMode
 		{
 			get => _caretMode;
 			set
@@ -478,13 +478,13 @@ namespace Microsoft.UI.Xaml.Documents
 				{
 					switch (CaretMode)
 					{
-						case CaretRenderMode.CaretAtSelectionStart:
+						case CaretLocation.CaretAtSelectionStart:
 							CaretFound?.Invoke((new Rect(new Point(0, 0), new Point(CaretThickness, _lastDefaultLineHeight)), session.Canvas, false));
 							break;
-						case CaretRenderMode.CaretAtSelectionEnd:
+						case CaretLocation.CaretAtSelectionEnd:
 							CaretFound?.Invoke((new Rect(new Point(0, 0), new Point(CaretThickness, _lastDefaultLineHeight)), session.Canvas, true));
 							break;
-						case CaretRenderMode.CaretAtBothSelectionEnds:
+						case CaretLocation.CaretAtBothSelectionEnds:
 							CaretFound?.Invoke((new Rect(new Point(0, 0), new Point(CaretThickness, _lastDefaultLineHeight)), session.Canvas, false));
 							CaretFound?.Invoke((new Rect(new Point(0, 0), new Point(CaretThickness, _lastDefaultLineHeight)), session.Canvas, true));
 							break;
@@ -809,9 +809,9 @@ namespace Microsoft.UI.Xaml.Documents
 			{
 				ReadOnlySpan<(int, int, bool)> span = CaretMode switch
 				{
-					CaretRenderMode.CaretAtSelectionStart => [(_selection.StartLine, _selection.StartIndex, false)],
-					CaretRenderMode.CaretAtSelectionEnd => [(_selection.EndLine, _selection.EndIndex, true)],
-					CaretRenderMode.CaretAtBothSelectionEnds => [(_selection.StartLine, _selection.StartIndex, false), (_selection.EndLine, _selection.EndIndex, true)],
+					CaretLocation.CaretAtSelectionStart => [(_selection.StartLine, _selection.StartIndex, false)],
+					CaretLocation.CaretAtSelectionEnd => [(_selection.EndLine, _selection.EndIndex, true)],
+					CaretLocation.CaretAtBothSelectionEnds => [(_selection.StartLine, _selection.StartIndex, false), (_selection.EndLine, _selection.EndIndex, true)],
 					_ => throw new ArgumentOutOfRangeException()
 				};
 				foreach (var (l, i, caretAtSelectionEnd) in span)
