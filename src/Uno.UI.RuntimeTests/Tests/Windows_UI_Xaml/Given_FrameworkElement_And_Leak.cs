@@ -59,8 +59,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(ScrollViewer), 15)]
 		[DataRow(typeof(CheckBox), 15)]
 		[DataRow(typeof(ListView), 15)]
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.ProgressBar), 15)]
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.ProgressBar), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.ProgressBar), 15,
+#if __IOS__
+			LeakTestStyles.Uwp // Fluent styles disabled - #18105
+#else
+			LeakTestStyles.All
+#endif
+			)]
+		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.ProgressBar), 15,
+#if __IOS__
+			LeakTestStyles.Uwp // Fluent styles disabled - #18105
+#else
+			LeakTestStyles.All
+#endif
+			)]
 #if !__IOS__ // Disabled https://github.com/unoplatform/uno/pull/15540
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.ProgressRing), 15)]
 #endif
@@ -194,7 +206,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		{
 			if (leakTestStyles.HasFlag(LeakTestStyles.Fluent))
 			{
-				// Test for leaks both without and with fluent styles
 				await When_Add_Remove_Inner(controlTypeRaw, count);
 			}
 
