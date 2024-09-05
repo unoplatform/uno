@@ -24,16 +24,7 @@ namespace Microsoft.UI.Windowing
 		}
 #endif
 		// Skipping already declared property Id
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool IsVisible
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool AppWindow.IsVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppWindow.IsVisible");
-			}
-		}
-#endif
+		// Skipping already declared property IsVisible
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Microsoft.UI.WindowId OwnerWindowId
@@ -44,7 +35,7 @@ namespace Microsoft.UI.Windowing
 			}
 		}
 #endif
-#if false
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Windows.Graphics.PointInt32 Position
 		{
@@ -55,7 +46,7 @@ namespace Microsoft.UI.Windowing
 		}
 #endif
 		// Skipping already declared property Presenter
-#if false
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Windows.Graphics.SizeInt32 Size
 		{
@@ -66,7 +57,7 @@ namespace Microsoft.UI.Windowing
 		}
 #endif
 		// Skipping already declared property TitleBar
-#if false
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Windows.Graphics.SizeInt32 ClientSize
 		{
@@ -76,16 +67,7 @@ namespace Microsoft.UI.Windowing
 			}
 		}
 #endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Dispatching.DispatcherQueue DispatcherQueue
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DispatcherQueue AppWindow.DispatcherQueue is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DispatcherQueue%20AppWindow.DispatcherQueue");
-			}
-		}
-#endif
+		// Skipping already declared property DispatcherQueue
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.Closing.add
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.IsShownInSwitchers.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.IsShownInSwitchers.set
@@ -111,7 +93,7 @@ namespace Microsoft.UI.Windowing
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindow", "void AppWindow.Hide()");
 		}
 #endif
-#if false
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public void Move(global::Windows.Graphics.PointInt32 position)
 		{
@@ -132,7 +114,7 @@ namespace Microsoft.UI.Windowing
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindow", "void AppWindow.MoveAndResize(RectInt32 rect, DisplayArea displayarea)");
 		}
 #endif
-#if false
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public void Resize(global::Windows.Graphics.SizeInt32 size)
 		{
