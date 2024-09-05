@@ -8,7 +8,7 @@ using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Automation.Peers;
 
-internal partial class ScrollPresenterAutomationPeer : FrameworkElementAutomationPeer
+public partial class ScrollPresenterAutomationPeer : FrameworkElementAutomationPeer
 {
 	private const double s_minimumPercent = 0.0;
 	private const double s_maximumPercent = 100.0;
