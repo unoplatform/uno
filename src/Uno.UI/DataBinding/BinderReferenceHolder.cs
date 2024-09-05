@@ -118,8 +118,17 @@ namespace Uno.UI.DataBinding
 			}
 		}
 
+		public static void PurgeHolders()
+		{
+			lock (_holders)
+			{
+				_nativeHolders.Clear();
+				_holders.Clear();
+			}
+		}
+
 		/// <summary>
-		/// Retreives a list of binders that are native views that
+		/// Retrieves a list of binders that are native views that
 		/// don't have a parent, and are not attached to the window.
 		/// An inactive binder may be a memory leak.
 		/// </summary>
@@ -178,8 +187,21 @@ namespace Uno.UI.DataBinding
 			}
 		}
 
+		public static object[] GetLeakedObjects()
+		{
+			lock (_holders)
+			{
+				return _holders.Concat(_nativeHolders.Values)
+					.Select(x => x.Target)
+					.OfType<BinderReferenceHolder>()
+					.Select(x => x._target.Target)
+					.Where(x => x != null)
+					.ToArray();
+			}
+		}
+
 		/// <summary>
-		/// Retreives statistics about the live instances.
+		/// Retrieves statistics about the live instances.
 		/// </summary>
 		public static void LogReferenceStatsWithDetails()
 		{
@@ -215,21 +237,21 @@ namespace Uno.UI.DataBinding
 			}
 		}
 
-		public static void LogActiveViewReferencesStatsDiff(Tuple<Type, int>[] activeStats)
+		public static string LogActiveViewReferencesStatsDiff(Tuple<Type, int>[] activeStats)
 		{
 			var newActiveStats = GetReferenceStats();
 
-			LogDiff(activeStats, newActiveStats, "Active");
+			return LogDiff(activeStats, newActiveStats, "Active");
 		}
 
-		public static void LogInactiveViewReferencesStatsDiff(Tuple<Type, int>[] inactiveStats)
+		public static string LogInactiveViewReferencesStatsDiff(Tuple<Type, int>[] inactiveStats)
 		{
 			var newInactiveStats = GetInactiveViewReferencesStats();
 
-			LogDiff(inactiveStats, newInactiveStats, "Inactive");
+			return LogDiff(inactiveStats, newInactiveStats, "Inactive");
 		}
 
-		private static void LogDiff(Tuple<Type, int>[] oldInactiveStats, Tuple<Type, int>[] newInactiveStats, string referenceType)
+		private static string LogDiff(Tuple<Type, int>[] oldInactiveStats, Tuple<Type, int>[] newInactiveStats, string referenceType)
 		{
 			var q = from oldInactiveStat in oldInactiveStats
 					from newInactiveStat in newInactiveStats
@@ -250,14 +272,18 @@ namespace Uno.UI.DataBinding
 				sb.AppendFormatInvariant("\t{0}: {1}\r\n", activref.Type, activref.Diff);
 			}
 
+			var result = sb.ToString();
+
 			if (IsEnabled && typeof(BinderReferenceHolder).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Information))
 			{
-				typeof(BinderReferenceHolder).Log().Info(sb.ToString());
+				typeof(BinderReferenceHolder).Log().Info(result);
 			}
+
+			return result;
 		}
 
 		/// <summary>
-		/// Retreives statistics about the live inactive instances.
+		/// Retrieves statistics about the live inactive instances.
 		/// </summary>
 		public static System.Tuple<Type, int>[] GetInactiveViewReferencesStats()
 		{

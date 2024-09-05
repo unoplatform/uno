@@ -31,6 +31,13 @@ public static class PrettyPrint
 		.ToDictionary(x => (Color)x.GetValue(null)!, x => x.Name)
 	);
 
+	public static string FormatType(object o)
+	{
+		if (o is null) return $"null";
+		if (o is FrameworkElement { Name: { Length: > 0 } xName }) return $"{o.GetType().Name}#{xName}";
+
+		return o.GetType().Name;
+	}
 	public static string FormatObject(object o)
 	{
 		if (o is null) return $"null";
