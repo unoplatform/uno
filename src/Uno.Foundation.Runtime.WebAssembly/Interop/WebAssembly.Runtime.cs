@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.ComponentModel;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -17,7 +19,7 @@ namespace WebAssembly
 		internal static partial string InvokeJS(string value);
 
 		[JSImport("globalThis.MonoSupport.jsCallDispatcher.invokeJSUnmarshalled")]
-		internal static partial IntPtr InvokeJSUnmarshalled(string functionIdentifier, IntPtr arg0, IntPtr arg1, IntPtr arg2);
+		internal static partial IntPtr InvokeJSUnmarshalled(string? functionIdentifier, IntPtr arg0, IntPtr arg1, IntPtr arg2);
 	}
 
 	namespace JSInterop
