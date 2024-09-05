@@ -5,10 +5,12 @@ using System.Text;
 using System.Windows.Input;
 using Windows.Foundation;
 using Windows.System;
+using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
+using SkiaSharp;
 using Uno.Extensions;
 using Uno.UI;
 using Uno.UI.Helpers.WinUI;
@@ -189,8 +191,8 @@ public partial class TextBox
 						Name = "TextBoxViewGrid",
 						Children =
 						{
+							displayBlock,
 							canvas,
-							displayBlock
 						},
 						RowDefinitions =
 						{
@@ -200,118 +202,16 @@ public partial class TextBox
 
 					displayBlock.DesiredSizeChangedCallback = () => canvas.Width = Math.Ceiling(displayBlock.ActualWidth + InlineCollection.CaretThickness);
 
-					var lastStartingFoundCaret = false;
-					var lastEndingFoundCaret = false;
-					var currentStartingFoundCaret = false;
-					var currentEndingFoundCaret = false;
-
 					var inlines = displayBlock.Inlines;
 
-					var caretRect = new Rectangle();
-					var cachedRects = new List<Rectangle>();
-					var usedRects = 0;
-					var rectsChanged = false;
-
-					inlines.DrawingStarted += () =>
+					inlines.CaretFound += args =>
 					{
-						currentStartingFoundCaret = false;
-						currentEndingFoundCaret = false;
-						rectsChanged = false;
-						usedRects = 0;
-					};
-
-					inlines.DrawingFinished += () =>
-					{
-						// we don't add rectangles to the canvas as they come. Instead,
-						// we accumulate all the rects and compare with the preexisting canvas.Children
-						// We only update if there is actually a change. This avoids a lot of problems
-						// that lead to an infinite layout-invalidate-layout-invalidate loop
-						if (rectsChanged
-							|| cachedRects.Count != usedRects
-							|| lastStartingFoundCaret != currentStartingFoundCaret
-							|| lastEndingFoundCaret != currentEndingFoundCaret)
-						{
-							// Might be better to use some table-doubling logic, but shouldn't matter very much.
-							// If so, don't forget to also change canvas.Children.AddRange(_cachedRects) below, which
-							// assumes that _cachedRects now only has the needed Rectangles.
-							cachedRects.RemoveRange(usedRects, cachedRects.Count - usedRects);
-
-							canvas.Children.Clear();
-							canvas.Children.AddRange(cachedRects);
-
-							if (currentStartingFoundCaret)
-							{
-								canvas.Children.Add(caretRect);
-							}
-
-							if (currentEndingFoundCaret)
-							{
-								canvas.Children.Add(caretRect);
-							}
-						}
-
-						lastStartingFoundCaret = currentStartingFoundCaret;
-						lastEndingFoundCaret = currentEndingFoundCaret;
-					};
-
-					inlines.SelectionFound += t =>
-					{
-						var rect = t.rect;
-						if (cachedRects.Count <= usedRects)
-						{
-							rectsChanged = true;
-							cachedRects.Add(new Rectangle());
-						}
-						var rectangle = cachedRects[usedRects++];
-
-						if (!ReferenceEquals(rectangle.Fill, SelectionHighlightColor))
-						{
-							rectsChanged = true;
-							rectangle.Fill = SelectionHighlightColor;
-						}
-						if (rectangle.Width != rect.Width)
-						{
-							rectsChanged = true;
-							rectangle.Width = rect.Width;
-						}
-						if (rectangle.Height != rect.Height)
-						{
-							rectsChanged = true;
-							rectangle.Height = rect.Height;
-						}
-						if ((double)rectangle.GetValue(Canvas.LeftProperty) != rect.Left)
-						{
-							rectsChanged = true;
-							rectangle.SetValue(Canvas.LeftProperty, rect.Left);
-						}
-						if ((double)rectangle.GetValue(Canvas.TopProperty) != rect.Top)
-						{
-							rectsChanged = true;
-							rectangle.SetValue(Canvas.TopProperty, rect.Top);
-						}
-					};
-
-					inlines.CaretFound += (rect, caretAtSelectionEnd) =>
-					{
-						var oldCaretState = (caretRect.Width, caretRect.Height, (double)caretRect.GetValue(Canvas.LeftProperty), (double)caretRect.GetValue(Canvas.TopProperty), caretRect.Fill);
-						if (oldCaretState != (Math.Ceiling(rect.Width), Math.Ceiling(rect.Height), rect.Left, rect.Top, DefaultBrushes.TextForegroundBrush))
-						{
-							rectsChanged = true;
-							caretRect.Width = Math.Ceiling(rect.Width);
-							caretRect.Height = Math.Ceiling(rect.Height);
-							caretRect.SetValue(Canvas.LeftProperty, rect.Left);
-							caretRect.SetValue(Canvas.TopProperty, rect.Top);
-							caretRect.Fill = DefaultBrushes.TextForegroundBrush;
-						}
-
-						if (caretAtSelectionEnd)
-						{
-							currentEndingFoundCaret = true;
-						}
-						else
-						{
-							currentStartingFoundCaret = true;
-						}
+						var caretRect = args.rect;
+						var compositor = _visual.Compositor;
+						var brush = DefaultBrushes.TextForegroundBrush.GetOrCreateCompositionBrush(compositor);
+						var caretPaint = new SKPaint { Style = SKPaintStyle.Fill, IsAntialias = true, IsAutohinted = true };
+						brush.UpdatePaint(caretPaint, caretRect.ToSKRect());
+						args.canvas.DrawRect(new SKRect((float)caretRect.Left, (float)caretRect.Top, (float)caretRect.Right, (float)caretRect.Bottom), caretPaint);
 					};
 
 					ContentElement.Content = grid;
