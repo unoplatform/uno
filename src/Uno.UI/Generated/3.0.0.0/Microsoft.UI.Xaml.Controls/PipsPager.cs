@@ -19,6 +19,20 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property NextButtonStyle
 		// Skipping already declared property MaxVisiblePips
 		// Skipping already declared property TemplateSettings
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public global::Microsoft.UI.Xaml.Controls.PipsPagerWrapMode WrapMode
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.Controls.PipsPagerWrapMode)this.GetValue(WrapModeProperty);
+			}
+			set
+			{
+				this.SetValue(WrapModeProperty, value);
+			}
+		}
+#endif
 		// Skipping already declared property MaxVisiblePipsProperty
 		// Skipping already declared property NextButtonStyleProperty
 		// Skipping already declared property NextButtonVisibilityProperty
@@ -29,6 +43,14 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property PreviousButtonVisibilityProperty
 		// Skipping already declared property SelectedPageIndexProperty
 		// Skipping already declared property SelectedPipStyleProperty
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public static global::Microsoft.UI.Xaml.DependencyProperty WrapModeProperty { get; } =
+		Microsoft.UI.Xaml.DependencyProperty.Register(
+			nameof(WrapMode), typeof(global::Microsoft.UI.Xaml.Controls.PipsPagerWrapMode),
+			typeof(global::Microsoft.UI.Xaml.Controls.PipsPager),
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.PipsPagerWrapMode)));
+#endif
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.PipsPager.PipsPager()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPager.PipsPager()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPager.NumberOfPages.get
@@ -54,6 +76,9 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPager.SelectedIndexChanged.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPager.SelectedIndexChanged.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPager.TemplateSettings.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPager.WrapMode.get
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPager.WrapMode.set
+		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPager.WrapModeProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPager.NumberOfPagesProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPager.SelectedPageIndexProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.PipsPager.MaxVisiblePipsProperty.get
