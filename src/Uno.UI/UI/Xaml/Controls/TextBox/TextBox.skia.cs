@@ -1081,6 +1081,10 @@ public partial class TextBox
 		{
 			return 0; // first line, goes to the beginning
 		}
+		else if (!up && shift && endLineIndex == lines.Count - 1)
+		{
+			return text.Length; // last line, goes to the end
+		}
 		else if (!up && !shift && (startLineIndex == lines.Count - 1 || endLineIndex == lines.Count - 1))
 		{
 			return text.Length; // last line, goes to the end
