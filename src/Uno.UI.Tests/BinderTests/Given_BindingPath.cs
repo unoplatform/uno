@@ -31,8 +31,6 @@ namespace Uno.UI.Tests.BinderTests
 			sut.Value = "Animations"; // Animations
 
 			Assert.AreEqual("Animations", target.Value);
-
-			Assert.AreEqual("Animations", target.GetPrecedenceSpecificValue(MyTarget.ValueProperty, DependencyPropertyValuePrecedences.Animations));
 		}
 
 		[TestMethod]
@@ -45,9 +43,6 @@ namespace Uno.UI.Tests.BinderTests
 
 			// Local value takes over Animations if it's newer.
 			Assert.AreEqual("Local", target.Value);
-
-			Assert.AreEqual("Local", target.GetPrecedenceSpecificValue(MyTarget.ValueProperty, DependencyPropertyValuePrecedences.Animations));
-			Assert.AreEqual("Local", target.GetPrecedenceSpecificValue(MyTarget.ValueProperty, DependencyPropertyValuePrecedences.Local));
 		}
 
 		[TestMethod]
@@ -60,9 +55,6 @@ namespace Uno.UI.Tests.BinderTests
 			sut.ClearValue();
 
 			Assert.AreEqual("Local", target.Value);
-
-			Assert.AreEqual(DependencyProperty.UnsetValue, target.GetPrecedenceSpecificValue(MyTarget.ValueProperty, DependencyPropertyValuePrecedences.Animations));
-			Assert.AreEqual("Local", target.GetPrecedenceSpecificValue(MyTarget.ValueProperty, DependencyPropertyValuePrecedences.Local));
 		}
 
 		[TestMethod]
@@ -76,9 +68,6 @@ namespace Uno.UI.Tests.BinderTests
 			target.Value = "TargetLocalValue";
 
 			Assert.AreEqual("TargetLocalValue", target.Value);
-
-			Assert.AreEqual(DependencyProperty.UnsetValue, target.GetPrecedenceSpecificValue(MyTarget.ValueProperty, DependencyPropertyValuePrecedences.Animations));
-			Assert.AreEqual("TargetLocalValue", target.GetPrecedenceSpecificValue(MyTarget.ValueProperty, DependencyPropertyValuePrecedences.Local));
 		}
 
 		[TestMethod]
@@ -90,8 +79,6 @@ namespace Uno.UI.Tests.BinderTests
 			sut.Value = "Inherit";
 
 			Assert.AreEqual("CustomDefaultLocalValue", target.Value);
-
-			Assert.AreEqual("Inherit", target.GetPrecedenceSpecificValue(MyTarget.ValueProperty, DependencyPropertyValuePrecedences.Inheritance));
 		}
 
 		[TestMethod]
@@ -103,9 +90,6 @@ namespace Uno.UI.Tests.BinderTests
 			sut.SetLocalValue("Local");
 
 			Assert.AreEqual("Local", target.Value);
-
-			Assert.AreEqual("Local", target.GetPrecedenceSpecificValue(MyTarget.ValueProperty, DependencyPropertyValuePrecedences.Local));
-			Assert.AreEqual("Inherit", target.GetPrecedenceSpecificValue(MyTarget.ValueProperty, DependencyPropertyValuePrecedences.Inheritance));
 		}
 
 		[TestMethod]
@@ -118,9 +102,6 @@ namespace Uno.UI.Tests.BinderTests
 			sut.ClearValue();
 
 			Assert.AreEqual("Local", target.Value);
-
-			Assert.AreEqual(DependencyProperty.UnsetValue, target.GetPrecedenceSpecificValue(MyTarget.ValueProperty, DependencyPropertyValuePrecedences.Animations));
-			Assert.AreEqual("Local", target.GetPrecedenceSpecificValue(MyTarget.ValueProperty, DependencyPropertyValuePrecedences.Local));
 		}
 
 		[TestMethod]
@@ -134,9 +115,6 @@ namespace Uno.UI.Tests.BinderTests
 			target.Value = "TargetLocalValue";
 
 			Assert.AreEqual("TargetLocalValue", target.Value);
-
-			Assert.AreEqual(DependencyProperty.UnsetValue, target.GetPrecedenceSpecificValue(MyTarget.ValueProperty, DependencyPropertyValuePrecedences.Animations));
-			Assert.AreEqual("TargetLocalValue", target.GetPrecedenceSpecificValue(MyTarget.ValueProperty, DependencyPropertyValuePrecedences.Local));
 		}
 
 		[TestMethod]

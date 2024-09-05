@@ -50,22 +50,6 @@ namespace Microsoft.UI.Xaml
 		public Style AppliedDefaultStyle { get; protected set; }
 
 		/// <summary>
-		/// Debugging helper method to get a list of the set value at each precedence for a DependencyProperty.
-		/// </summary>
-		/// <param name="propertyName">The property to get values by precedence for.</param>
-		internal (object value, DependencyPropertyValuePrecedences precedence)[] GetValuesByPrecedence(string propertyName)
-		{
-
-			var dp = GetDPByName(propertyName);
-			if (dp == null)
-			{
-				return null;
-			}
-
-			return this.GetValueForEachPrecedences(dp);
-		}
-
-		/// <summary>
 		/// A helper method while debugging to get the theme resource, if any, assigned to <paramref name="propertyName"/>.
 		/// </summary>
 		internal string GetThemeSource(string propertyName)
