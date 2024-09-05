@@ -16,7 +16,7 @@ namespace Windows.Storage;
 /// </remarks>
 public partial class ApplicationDataContainer : IDisposable
 {
-	private const string InternalSettingPrefix = "__";
+	internal const string InternalSettingPrefix = "__";
 	private const string ContainerSeparator = "¬";
 	private const string ContainerListKey = InternalSettingPrefix + "UnoContainers";
 
@@ -41,6 +41,8 @@ public partial class ApplicationDataContainer : IDisposable
 	}
 
 	internal string ContainerPath => _parent is null ? "" : _parent.ContainerPath + InternalSettingPrefix + Name + ContainerSeparator;
+
+	internal string GetSettingKey(string key) => ContainerPath + key;
 
 	public ApplicationDataLocality Locality { get; }
 
