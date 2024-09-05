@@ -1,11 +1,11 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-#nullable enable
-
 using Uno.Foundation.Logging;
 using Windows.Storage;
 
@@ -16,8 +16,8 @@ partial class NativeApplicationSettings
 	private static partial bool SupportsLocality() => true;
 
 	private readonly Dictionary<string, string> _values = new();
-	private string _folderPath;
-	private string _filePath;
+	private string _folderPath = null!;
+	private string _filePath = null!;
 
 	partial void InitializePlatform()
 	{
@@ -30,12 +30,6 @@ partial class NativeApplicationSettings
 	}
 
 	public ICollection<string> Keys => _values.Keys;
-
-	public ICollection<object> Values
-		=> _values.Values.Select(DataTypeSerializer.Deserialize).ToList();
-
-	public int Count
-		=> _values.Count;
 
 	public void Add(string key, object value)
 	{
@@ -94,7 +88,6 @@ partial class NativeApplicationSettings
 	{
 		try
 		{
-
 			if (File.Exists(_filePath))
 			{
 				using (var reader = new BinaryReader(File.OpenRead(_filePath)))
