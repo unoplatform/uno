@@ -27,8 +27,6 @@ namespace Microsoft.UI.Input
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.PointerPredictor.PredictionTime.get
-		// Forced skipping of method Microsoft.UI.Input.PointerPredictor.PredictionTime.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Microsoft.UI.Input.PointerPoint[] GetPredictedPoints(global::Microsoft.UI.Input.PointerPoint point)
@@ -36,6 +34,8 @@ namespace Microsoft.UI.Input
 			throw new global::System.NotImplementedException("The member PointerPoint[] PointerPredictor.GetPredictedPoints(PointerPoint point) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PointerPoint%5B%5D%20PointerPredictor.GetPredictedPoints%28PointerPoint%20point%29");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Input.PointerPredictor.PredictionTime.set
+		// Forced skipping of method Microsoft.UI.Input.PointerPredictor.PredictionTime.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public void Dispose()

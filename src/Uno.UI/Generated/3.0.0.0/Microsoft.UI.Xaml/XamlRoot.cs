@@ -22,6 +22,16 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public global::Microsoft.UI.Content.ContentCoordinateConverter CoordinateConverter
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ContentCoordinateConverter XamlRoot.CoordinateConverter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContentCoordinateConverter%20XamlRoot.CoordinateConverter");
+			}
+		}
+#endif
 		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.Content.get
 		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.Size.get
 		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.RasterizationScale.get
@@ -29,6 +39,7 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.Changed.add
 		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.Changed.remove
 		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.ContentIslandEnvironment.get
+		// Forced skipping of method Microsoft.UI.Xaml.XamlRoot.CoordinateConverter.get
 		// Skipping already declared event Microsoft.UI.Xaml.XamlRoot.Changed
 	}
 }

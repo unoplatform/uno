@@ -13,8 +13,8 @@ namespace Microsoft.UI.Content
 		// Skipping already declared property DidRasterizationScaleChange
 		// Skipping already declared property DidSiteEnabledChange
 		// Skipping already declared property DidSiteVisibleChange
-		// Forced skipping of method Microsoft.UI.Content.ContentIslandStateChangedEventArgs.DidActualSizeChange.get
 		// Forced skipping of method Microsoft.UI.Content.ContentIslandStateChangedEventArgs.DidSiteEnabledChange.get
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandStateChangedEventArgs.DidActualSizeChange.get
 		// Forced skipping of method Microsoft.UI.Content.ContentIslandStateChangedEventArgs.DidSiteVisibleChange.get
 		// Forced skipping of method Microsoft.UI.Content.ContentIslandStateChangedEventArgs.DidLayoutDirectionChange.get
 		// Forced skipping of method Microsoft.UI.Content.ContentIslandStateChangedEventArgs.DidRasterizationScaleChange.get

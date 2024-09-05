@@ -112,9 +112,9 @@ namespace Microsoft.UI.Content
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.CoordinateConverter.get
-		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.ClientSize.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.ActualSize.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.ClientSize.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.CoordinateConverter.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.DispatcherQueue.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.EnvironmentView.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSiteView.IsConnected.get

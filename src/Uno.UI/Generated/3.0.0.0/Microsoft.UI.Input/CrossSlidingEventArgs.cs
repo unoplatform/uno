@@ -43,8 +43,8 @@ namespace Microsoft.UI.Input
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.CrossSlidingEventArgs.CrossSlidingState.get
 		// Forced skipping of method Microsoft.UI.Input.CrossSlidingEventArgs.PointerDeviceType.get
+		// Forced skipping of method Microsoft.UI.Input.CrossSlidingEventArgs.CrossSlidingState.get
 		// Forced skipping of method Microsoft.UI.Input.CrossSlidingEventArgs.Position.get
 	}
 }
