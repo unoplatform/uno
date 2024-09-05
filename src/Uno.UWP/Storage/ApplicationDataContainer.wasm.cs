@@ -237,7 +237,7 @@ namespace Windows.Storage
 			}
 		}
 
-		[JSImport("globalThis.Windows.Storage.ApplicationDataContainer.tryGetValue")]
+		[JSImport("globalThis.Windows.Storage.ApplicationDataContainer.getValue")]
 		private static partial string GetValue(string locality, string key);
 
 		internal static void SetValue(ApplicationDataLocality locality, string key, string value)
