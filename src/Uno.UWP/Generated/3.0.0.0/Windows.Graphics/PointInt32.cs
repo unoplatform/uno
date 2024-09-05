@@ -3,17 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Graphics
 {
-#if false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial struct PointInt32
 	{
 		// Forced skipping of method Windows.Graphics.PointInt32.PointInt32()
-#if false
-		public int X;
-#endif
-#if false
-		public int Y;
-#endif
+		// Skipping already declared field Windows.Graphics.PointInt32.X
+		// Skipping already declared field Windows.Graphics.PointInt32.Y
 	}
 }

@@ -8,6 +8,8 @@ namespace Microsoft.UI.Xaml
 #endif
 	public partial class BrushTransition
 	{
+		// Skipping already declared property Duration
+		// Skipping already declared method Microsoft.UI.Xaml.BrushTransition.BrushTransition()
 		// Forced skipping of method Microsoft.UI.Xaml.BrushTransition.BrushTransition()
 		// Forced skipping of method Microsoft.UI.Xaml.BrushTransition.Duration.get
 		// Forced skipping of method Microsoft.UI.Xaml.BrushTransition.Duration.set

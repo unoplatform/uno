@@ -8,20 +8,7 @@ namespace Microsoft.UI.Xaml
 #endif
 	public partial class UIElement : global::Microsoft.UI.Composition.IAnimationObject, global::Microsoft.UI.Composition.IVisualElement, global::Microsoft.UI.Composition.IVisualElement2
 	{
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Xaml.Input.KeyboardAcceleratorPlacementMode KeyboardAcceleratorPlacementMode
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Input.KeyboardAcceleratorPlacementMode)this.GetValue(KeyboardAcceleratorPlacementModeProperty);
-			}
-			set
-			{
-				this.SetValue(KeyboardAcceleratorPlacementModeProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property KeyboardAcceleratorPlacementMode
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Microsoft.UI.Xaml.ScalarTransition RotationTransition
@@ -239,20 +226,7 @@ namespace Microsoft.UI.Xaml
 		}
 #endif
 		// Skipping already declared property AllowDrop
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Xaml.DependencyObject KeyboardAcceleratorPlacementTarget
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.DependencyObject)this.GetValue(KeyboardAcceleratorPlacementTargetProperty);
-			}
-			set
-			{
-				this.SetValue(KeyboardAcceleratorPlacementTargetProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property KeyboardAcceleratorPlacementTarget
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Microsoft.UI.Xaml.DependencyObject AccessKeyScopeOwner
@@ -645,22 +619,8 @@ namespace Microsoft.UI.Xaml
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 		// Skipping already declared property KeyUpEvent
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty KeyboardAcceleratorPlacementModeProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(KeyboardAcceleratorPlacementMode), typeof(global::Microsoft.UI.Xaml.Input.KeyboardAcceleratorPlacementMode),
-			typeof(global::Microsoft.UI.Xaml.UIElement),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Input.KeyboardAcceleratorPlacementMode)));
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty KeyboardAcceleratorPlacementTargetProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(KeyboardAcceleratorPlacementTarget), typeof(global::Microsoft.UI.Xaml.DependencyObject),
-			typeof(global::Microsoft.UI.Xaml.UIElement),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.DependencyObject)));
-#endif
+		// Skipping already declared property KeyboardAcceleratorPlacementModeProperty
+		// Skipping already declared property KeyboardAcceleratorPlacementTargetProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty LightsProperty { get; } =
@@ -994,13 +954,7 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.UIElement.StartDragAsync(Microsoft.UI.Input.PointerPoint)
 		// Skipping already declared method Microsoft.UI.Xaml.UIElement.StartBringIntoView()
 		// Skipping already declared method Microsoft.UI.Xaml.UIElement.StartBringIntoView(Microsoft.UI.Xaml.BringIntoViewOptions)
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void TryInvokeKeyboardAccelerator(global::Microsoft.UI.Xaml.Input.ProcessKeyboardAcceleratorEventArgs args)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.UIElement", "void UIElement.TryInvokeKeyboardAccelerator(ProcessKeyboardAcceleratorEventArgs args)");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.UIElement.TryInvokeKeyboardAccelerator(Microsoft.UI.Xaml.Input.ProcessKeyboardAcceleratorEventArgs)
 		// Skipping already declared method Microsoft.UI.Xaml.UIElement.Focus(Microsoft.UI.Xaml.FocusState)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -1034,20 +988,8 @@ namespace Microsoft.UI.Xaml
 		}
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.UIElement.GetChildrenInTabFocusOrder()
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		protected virtual void OnKeyboardAcceleratorInvoked(global::Microsoft.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs args)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.UIElement", "void UIElement.OnKeyboardAcceleratorInvoked(KeyboardAcceleratorInvokedEventArgs args)");
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		protected virtual void OnProcessKeyboardAccelerators(global::Microsoft.UI.Xaml.Input.ProcessKeyboardAcceleratorEventArgs args)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.UIElement", "void UIElement.OnProcessKeyboardAccelerators(ProcessKeyboardAcceleratorEventArgs args)");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.UIElement.OnKeyboardAcceleratorInvoked(Microsoft.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs)
+		// Skipping already declared method Microsoft.UI.Xaml.UIElement.OnProcessKeyboardAccelerators(Microsoft.UI.Xaml.Input.ProcessKeyboardAcceleratorEventArgs)
 		// Skipping already declared method Microsoft.UI.Xaml.UIElement.OnBringIntoViewRequested(Microsoft.UI.Xaml.BringIntoViewRequestedEventArgs)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -1300,22 +1242,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.UIElement, global::Microsoft.UI.Xaml.Input.ProcessKeyboardAcceleratorEventArgs> ProcessKeyboardAccelerators
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.UIElement", "event TypedEventHandler<UIElement, ProcessKeyboardAcceleratorEventArgs> UIElement.ProcessKeyboardAccelerators");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.UIElement", "event TypedEventHandler<UIElement, ProcessKeyboardAcceleratorEventArgs> UIElement.ProcessKeyboardAccelerators");
-			}
-		}
-#endif
+		// Skipping already declared event Microsoft.UI.Xaml.UIElement.ProcessKeyboardAccelerators
 		// Skipping already declared event Microsoft.UI.Xaml.UIElement.RightTapped
 		// Skipping already declared event Microsoft.UI.Xaml.UIElement.Tapped
 		// Processing: Microsoft.UI.Composition.IAnimationObject
