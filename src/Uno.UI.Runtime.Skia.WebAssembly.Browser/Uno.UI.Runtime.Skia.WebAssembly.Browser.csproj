@@ -25,12 +25,6 @@
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
-	<ItemDefinitionGroup>
-		<ProjectReference>
-			<Private Condition="'$(OutputType)' == 'library'">false</Private>
-		</ProjectReference>
-	</ItemDefinitionGroup>
-
 	<ItemGroup>
 		<None Include="..\Common\uno.png" Pack="true" PackagePath="\" />
 	</ItemGroup>

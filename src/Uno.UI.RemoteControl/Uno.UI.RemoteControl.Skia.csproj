@@ -22,12 +22,6 @@
 
 		<PackageId Condition="'$(UNO_UWP_BUILD)'=='false'">Uno.WinUI.DevServer</PackageId>
 	</PropertyGroup>
-	
-	<ItemDefinitionGroup>
-		<ProjectReference>
-			<Private Condition="'$(OutputType)' == 'library'">false</Private>
-		</ProjectReference>
-	</ItemDefinitionGroup>
 
 	<ItemGroup>
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" />

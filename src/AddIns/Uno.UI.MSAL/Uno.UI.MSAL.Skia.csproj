@@ -24,12 +24,6 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Identity.Client" Version="4.61.3" />
 	</ItemGroup>
-	<ItemDefinitionGroup>
-		<ProjectReference>
-			<Private Condition="'$(OutputType)' == 'library'">false</Private>
-		</ProjectReference>
-	</ItemDefinitionGroup>
-
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj">

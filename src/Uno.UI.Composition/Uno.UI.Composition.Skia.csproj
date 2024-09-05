@@ -11,12 +11,6 @@
 		<DefineConstants>$(DefineConstants);IS_UNO_COMPOSITION</DefineConstants>
 	</PropertyGroup>
 
-	<ItemDefinitionGroup>
-		<ProjectReference>
-			<Private Condition="'$(OutputType)' == 'library'">false</Private>
-		</ProjectReference>
-	</ItemDefinitionGroup>
-
 	<PropertyGroup>
 		<RootNamespace>Uno.UI.Composition</RootNamespace>
 		<DefineConstants>$(DefineConstants);XAMARIN;IS_UNO</DefineConstants>
