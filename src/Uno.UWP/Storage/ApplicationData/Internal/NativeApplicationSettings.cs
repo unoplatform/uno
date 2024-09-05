@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Windows.Storage;
 
@@ -45,7 +44,7 @@ internal partial class NativeApplicationSettings : INativeApplicationSettings
 		{
 			if (TryGetSetting(key, out var value))
 			{
-				return DataTypeSerializer.Deserialize(value);
+				return DeserializeValue(value);
 			}
 
 			return null;
@@ -54,7 +53,7 @@ internal partial class NativeApplicationSettings : INativeApplicationSettings
 		{
 			if (value is not null)
 			{
-				SetSetting(key, DataTypeSerializer.Serialize(value));
+				SetSetting(key, SerializeValue(value));
 			}
 			else
 			{
@@ -67,8 +66,10 @@ internal partial class NativeApplicationSettings : INativeApplicationSettings
 
 	private partial bool TryGetSetting(string key, out string? value);
 
-	internal IEnumerable<string> GetKeysWithPrefix(string prefix)
-	{
-		return Keys.Where(kvp => kvp.StartsWith(prefix, StringComparison.InvariantCulture));
-	}
+	internal IEnumerable<string> GetKeysWithPrefix(string prefix) =>
+		Keys.Where(kvp => kvp.StartsWith(prefix, StringComparison.InvariantCulture));
+
+	private object? DeserializeValue(string? value) => DataTypeSerializer.Deserialize(value);
+
+	private string SerializeValue(object value) => DataTypeSerializer.Serialize(value);
 }
