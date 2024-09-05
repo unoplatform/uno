@@ -9,7 +9,6 @@ using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Shapes;
 using SkiaSharp;
 using Uno.Extensions;
 using Uno.UI;
@@ -43,7 +42,11 @@ public partial class TextBox
 	private (int start, int length)? _pendingSelection;
 
 	private (PointerPoint point, int repeatedPresses) _lastPointerDown; // point is null before first press
-	private bool _isPressed; // can still be false if the pointer is still pressed but Escape is pressed.
+
+	/// <summary>Determines whether the caret is currently being dragged through touch or mouse input. null if no pointer is pressed (also see remark).</summary>
+	/// <remarks>can be null if the pointer is still pressed but Escape is pressed.</remarks>>
+	private PointerDeviceType? _caretDraggingPointerType;
+	private bool IsDraggingCaretWithPointer => _caretDraggingPointerType != null;
 
 	private bool _clearHistoryOnTextChanged = true;
 
@@ -367,7 +370,7 @@ public partial class TextBox
 				KeyDownDelete(args, ref text, ctrl, shift, ref selectionStart, ref selectionLength);
 				break;
 			case VirtualKey.A when ctrl:
-				if (!_isPressed)
+				if (!IsDraggingCaretWithPointer)
 				{
 					args.Handled = true;
 					TrySetCurrentlyTyping(false);
@@ -376,16 +379,16 @@ public partial class TextBox
 				}
 				break;
 			case VirtualKey.Z when ctrl:
-				if (!_isPressed)
+				if (!IsDraggingCaretWithPointer)
 				{
 					args.Handled = true;
 					Undo();
 				}
 				return;
 			case VirtualKey.Y when ctrl:
-				if (!_isPressed)
+				if (!IsDraggingCaretWithPointer)
 				{
-					args.Handled = !_isPressed;
+					args.Handled = !IsDraggingCaretWithPointer;
 					Redo();
 				}
 				return;
@@ -403,14 +406,14 @@ public partial class TextBox
 				CopySelectionToClipboard();
 				break;
 			case VirtualKey.Escape:
-				if (_isPressed)
+				if (IsDraggingCaretWithPointer)
 				{
 					args.Handled = true;
-					_isPressed = false;
+					_caretDraggingPointerType = null;
 				}
 				break;
 			default:
-				if (!IsReadOnly && !_isPressed && args.UnicodeKey is { } c && (AcceptsReturn || args.UnicodeKey != '\r'))
+				if (!IsReadOnly && !IsDraggingCaretWithPointer && args.UnicodeKey is { } c && (AcceptsReturn || args.UnicodeKey != '\r'))
 				{
 					TrySetCurrentlyTyping(true);
 					var start = Math.Min(selectionStart, selectionStart + selectionLength);
@@ -430,7 +433,7 @@ public partial class TextBox
 
 		_suppressCurrentlyTyping = true;
 		_clearHistoryOnTextChanged = false;
-		if (!_isPressed)
+		if (!IsDraggingCaretWithPointer)
 		{
 			_pendingSelection = (selectionStart, selectionLength);
 		}
@@ -449,7 +452,7 @@ public partial class TextBox
 
 	private void KeyDownBack(KeyRoutedEventArgs args, ref string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
-		if (_isPressed)
+		if (IsDraggingCaretWithPointer)
 		{
 			return;
 		}
@@ -493,7 +496,7 @@ public partial class TextBox
 	private void KeyDownUpArrow(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
 		// TODO ctrl+up
-		if (_isPressed)
+		if (IsDraggingCaretWithPointer)
 		{
 			return;
 		}
@@ -521,7 +524,7 @@ public partial class TextBox
 	private void KeyDownDownArrow(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
 		// TODO ctrl+down
-		if (_isPressed)
+		if (IsDraggingCaretWithPointer)
 		{
 			return;
 		}
@@ -548,7 +551,7 @@ public partial class TextBox
 
 	private void KeyDownLeftArrow(KeyRoutedEventArgs args, string text, bool shift, bool ctrl, ref int selectionStart, ref int selectionLength)
 	{
-		if (_isPressed)
+		if (IsDraggingCaretWithPointer)
 		{
 			return;
 		}
@@ -594,7 +597,7 @@ public partial class TextBox
 
 	private void KeyDownRightArrow(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
-		if (_isPressed)
+		if (IsDraggingCaretWithPointer)
 		{
 			return;
 		}
@@ -648,7 +651,7 @@ public partial class TextBox
 
 	private void KeyDownHome(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
-		if (_isPressed)
+		if (IsDraggingCaretWithPointer)
 		{
 			return;
 		}
@@ -673,7 +676,7 @@ public partial class TextBox
 
 	private void KeyDownEnd(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
-		if (_isPressed)
+		if (IsDraggingCaretWithPointer)
 		{
 			return;
 		}
@@ -719,7 +722,7 @@ public partial class TextBox
 
 	private void KeyDownDelete(KeyRoutedEventArgs args, ref string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
-		if (_isPressed)
+		if (IsDraggingCaretWithPointer)
 		{
 			return;
 		}
@@ -788,7 +791,16 @@ public partial class TextBox
 		base.OnPointerMoved(e);
 		e.Handled = true;
 
-		if (_isSkiaTextBox && _isPressed)
+		if (!_isSkiaTextBox || !IsDraggingCaretWithPointer)
+		{
+			return;
+		}
+
+		if (e.Pointer.PointerDeviceType == PointerDeviceType.Touch)
+		{
+			// TODO
+		}
+		else
 		{
 			var displayBlock = TextBoxView.DisplayBlock;
 			var point = e.GetCurrentPoint(displayBlock);
@@ -896,53 +908,65 @@ public partial class TextBox
 	partial void OnPointerPressedPartial(PointerRoutedEventArgs args)
 	{
 		TrySetCurrentlyTyping(false);
-		if (_isSkiaTextBox
-			&& args.GetCurrentPoint(null) is var currentPoint
-			&& (!currentPoint.Properties.IsRightButtonPressed || SelectionLength == 0))
+
+		if (!_isSkiaTextBox)
 		{
-			if (currentPoint.Properties.IsLeftButtonPressed
-				&& _lastPointerDown.point is { } p
-				&& IsMultiTapGesture((p.PointerId, p.Timestamp, p.Position), currentPoint))
+			return;
+		}
+
+		if (args.Pointer.PointerDeviceType == PointerDeviceType.Touch)
+		{
+			// TODO
+		}
+		else
+		{
+			if (args.GetCurrentPoint(null) is var currentPoint
+				&& (!currentPoint.Properties.IsRightButtonPressed || SelectionLength == 0))
 			{
-				// multiple left presses
-
-				var displayBlock = TextBoxView.DisplayBlock;
-				var index = Math.Max(0, displayBlock.Inlines.GetIndexAt(args.GetCurrentPoint(displayBlock).Position, false, true));
-
-				if (_lastPointerDown.repeatedPresses == 1)
+				if (currentPoint.Properties.IsLeftButtonPressed
+					&& _lastPointerDown.point is { } p
+					&& IsMultiTapGesture((p.PointerId, p.Timestamp, p.Position), currentPoint))
 				{
-					// triple tap
+					// multiple left presses
 
-					var startOfLine = StartOfLine(index);
-					Select(startOfLine, EndOfLine(index) + 1 - startOfLine);
-					_multiTapChunk = (SelectionStart, SelectionLength, true);
-					_lastPointerDown = (currentPoint, 2);
+					var displayBlock = TextBoxView.DisplayBlock;
+					var index = Math.Max(0, displayBlock.Inlines.GetIndexAt(args.GetCurrentPoint(displayBlock).Position, false, true));
+
+					if (_lastPointerDown.repeatedPresses == 1)
+					{
+						// triple tap
+
+						var startOfLine = StartOfLine(index);
+						Select(startOfLine, EndOfLine(index) + 1 - startOfLine);
+						_multiTapChunk = (SelectionStart, SelectionLength, true);
+						_lastPointerDown = (currentPoint, 2);
+					}
+					else // _lastPointerDown.repeatedPresses == 0 or 2
+					{
+						// double tap
+						var chunk = FindChunkAt(index, true);
+						Select(chunk.start, chunk.length);
+						_multiTapChunk = (chunk.start, chunk.length, false);
+						_lastPointerDown = (currentPoint, 1);
+					}
 				}
-				else // _lastPointerDown.repeatedPresses == 0 or 2
+				else
 				{
-					// double tap
-					var chunk = FindChunkAt(index, true);
-					Select(chunk.start, chunk.length);
-					_multiTapChunk = (chunk.start, chunk.length, false);
-					_lastPointerDown = (currentPoint, 1);
+					// single click
+					var displayBlock = TextBoxView.DisplayBlock;
+					var index = Math.Max(0, displayBlock.Inlines.GetIndexAt(args.GetCurrentPoint(displayBlock).Position, true, true));
+					Select(index, 0);
+					_lastPointerDown = (currentPoint, 0);
 				}
-			}
-			else
-			{
-				// single click
-				var displayBlock = TextBoxView.DisplayBlock;
-				var index = Math.Max(0, displayBlock.Inlines.GetIndexAt(args.GetCurrentPoint(displayBlock).Position, true, true));
-				Select(index, 0);
-				_lastPointerDown = (currentPoint, 0);
-			}
 
-			_isPressed = currentPoint.Properties.IsLeftButtonPressed;
+				_caretDraggingPointerType = PointerDeviceType.Mouse;
+			}
 		}
 	}
 
 	partial void OnPointerReleasedPartial(PointerRoutedEventArgs args)
 	{
-		_isPressed = false;
+		_caretDraggingPointerType = null;
 		_multiTapChunk = null;
 	}
 
@@ -1270,7 +1294,7 @@ public partial class TextBox
 		}
 
 		TrySetCurrentlyTyping(false);
-		if (_historyIndex == 0 || _isPressed)
+		if (_historyIndex == 0 || IsDraggingCaretWithPointer)
 		{
 			return;
 		}
@@ -1309,7 +1333,7 @@ public partial class TextBox
 			return;
 		}
 
-		if (_historyIndex == _history.Count - 1 || _isPressed)
+		if (_historyIndex == _history.Count - 1 || IsDraggingCaretWithPointer)
 		{
 			return;
 		}
