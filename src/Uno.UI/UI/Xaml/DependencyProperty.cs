@@ -537,6 +537,20 @@ namespace Microsoft.UI.Xaml
 				return secondaryBrush;
 			}
 
+			if (this == UIElement.IsTabStopProperty)
+			{
+				if (forType.IsAssignableTo(typeof(UserControl)))
+				{
+					return Boxes.BooleanBoxes.BoxedFalse;
+				}
+				else if (forType.IsAssignableTo(typeof(Control)))
+				{
+					return Boxes.BooleanBoxes.BoxedTrue;
+				}
+
+				return Boxes.BooleanBoxes.BoxedFalse;
+			}
+
 			if (this == Shape.StretchProperty)
 			{
 				if (forType == typeof(Rectangle) || forType == typeof(Ellipse))

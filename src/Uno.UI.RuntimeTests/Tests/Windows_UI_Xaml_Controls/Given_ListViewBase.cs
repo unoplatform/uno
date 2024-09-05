@@ -3500,6 +3500,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_TemplateSelector_And_List_Reloaded_Fluent()
+		{
+			using var fluentStyles = StyleHelper.UseFluentStyles();
+			await When_TemplateSelector_And_List_Reloaded();
+		}
+
+		[TestMethod]
 		public async Task When_List_Given_More_Space()
 		{
 

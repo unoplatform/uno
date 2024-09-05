@@ -1,21 +1,16 @@
 ﻿using System;
-using System.Windows.Input;
+using System.IO;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.UITests.Helpers;
-using Windows.System;
-using Windows.UI.Core;
-using Microsoft.UI.Xaml.Controls;
-
-using ICommand = System.Windows.Input.ICommand;
-using EventHandler = System.EventHandler;
-using Windows.ApplicationModel;
-using System.IO;
 using Windows.Storage;
+using Windows.System;
+using ICommand = System.Windows.Input.ICommand;
 
 namespace UITests.Shared.Windows_System
 {
 	[SampleControlInfo("Windows.System", "Launcher",
-		description: "Tests the Launcher. Some special URIs are supported on some platforms (Android, iOS - ms-settings:)",
+		description: "Tests the Launcher. Some special URIs are supported on certain platforms (Windows, Android, iOS—such as ms-settings:). On Android, the 'Open System Notification Settings' option should take you directly to the 'App Notifications' section in the system settings.",
 		viewModelType: typeof(LauncherTestsViewModel))]
 	public sealed partial class LauncherTests : UserControl
 	{
@@ -67,7 +62,7 @@ namespace UITests.Shared.Windows_System
 
 		public ICommand QuerySupportCommand => GetOrCreateCommand(QuerySupport);
 
-		public ICommand LaunchCommand => GetOrCreateCommand(Launch);
+		public ICommand LaunchCommand => GetOrCreateCommand(() => Launch());
 
 		public ICommand OpenFileCommand => GetOrCreateCommand(OpenFile);
 
@@ -87,12 +82,12 @@ namespace UITests.Shared.Windows_System
 			await Launcher.LaunchFolderPathAsync(path);
 		}
 
-		private async void Launch()
+		private async void Launch(string uriParam = null)
 		{
 			Error = "";
 			try
 			{
-				if (System.Uri.TryCreate(Uri, UriKind.Absolute, out var parsedUri))
+				if (System.Uri.TryCreate(uriParam ?? Uri, UriKind.Absolute, out var parsedUri))
 				{
 					await Launcher.LaunchUriAsync(parsedUri);
 				}
@@ -126,5 +121,9 @@ namespace UITests.Shared.Windows_System
 				Error = ex.ToString();
 			}
 		}
+
+		public ICommand OpenAppNotificationSettingsCommand => GetOrCreateCommand(OpenAppNotificationSettings);
+
+		private void OpenAppNotificationSettings() => Launch("ms-settings:notifications");
 	}
 }

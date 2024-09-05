@@ -99,6 +99,26 @@ Uno.UI.FeatureConfiguration.ToolTip.UseToolTips = true;
 
 It is also possible to adjust the delay in milliseconds (`Uno.UI.FeatureConfiguration.ToolTip.ShowDelay` - defaults to `1000`) and show duration in milliseconds (`Uno.UI.FeatureConfiguration.ToolTip.ShowDuration` - defaults to `5000`). This configuration only applies to Uno Platform targets. Windows App SDK/UWP will not adhere to this configuration.
 
+## WebView2
+
+### Inspectable (iOS and Mac Catalyst)
+
+To enable inspecting applications using `WebView2` controls from macOS with the Safari Developer Tools, set the `IsInspectable` configuration flag to `true` in your `App.Xaml.cs`:
+
+```csharp
+public App()
+{
+    this.InitializeComponent();
+#if __IOS__
+    Uno.UI.FeatureConfiguration.WebView2.IsInspectable = true;
+#endif
+}
+```
+
+> [!IMPORTANT]
+>
+> This feature will only work for security reasons when the application runs in Debug mode.
+
 ## `ApplicationData`
 
 On Skia Desktop targets, it is possible to override the default `ApplicationData` folder locations using `WinRTFeatureConfiguration.ApplicationData` properties. For more information, see [related docs here](/articles/features/applicationdata.md#data-location-on-skia-desktop)

@@ -13,7 +13,6 @@ namespace Microsoft.UI.Xaml
 	/// </summary>
 	partial class DependencyPropertyDetailsCollection : IDisposable
 	{
-		private readonly Type _ownerType;
 		private readonly ManagedWeakReference _ownerReference;
 		private object? _hardOwnerReference;
 		private readonly DependencyProperty _dataContextProperty;
@@ -34,10 +33,8 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Creates an instance using the specified DependencyObject <see cref="Type"/>
 		/// </summary>
-		/// <param name="ownerType">The owner type</param>
-		public DependencyPropertyDetailsCollection(Type ownerType, ManagedWeakReference ownerReference, DependencyProperty dataContextProperty)
+		public DependencyPropertyDetailsCollection(ManagedWeakReference ownerReference, DependencyProperty dataContextProperty)
 		{
-			_ownerType = ownerType;
 			_ownerReference = ownerReference;
 
 			_dataContextProperty = dataContextProperty;
@@ -190,7 +187,7 @@ namespace Microsoft.UI.Xaml
 
 				if (propertyEntry == null)
 				{
-					propertyEntry = new DependencyPropertyDetails(property, _ownerType, property == _dataContextProperty);
+					propertyEntry = new DependencyPropertyDetails(property, property == _dataContextPropertyDetails);
 				}
 
 				return propertyEntry;

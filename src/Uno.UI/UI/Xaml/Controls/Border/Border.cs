@@ -103,7 +103,7 @@ public partial class Border : FrameworkElement
 
 	public static DependencyProperty ChildProperty { get; } =
 		DependencyProperty.Register(
-			"Child",
+			nameof(Child),
 			typeof(UIElement),
 			typeof(Border),
 			new FrameworkPropertyMetadata(
@@ -111,7 +111,7 @@ public partial class Border : FrameworkElement
 				// Since this is a view, inheritance is handled through the visual tree, rather than via the property. We explicitly
 				// disable the property-based propagation here to support the case where the Parent property is overridden to simulate
 				// a different inheritance hierarchy, as is done for some controls with native styles.
-				FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
+				FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.AffectsMeasure,
 				(DependencyObject s, DependencyPropertyChangedEventArgs e) => ((Border)s)?.SetChild((UIElement)e.OldValue, (UIElement)e.NewValue)
 			)
 		);
@@ -208,7 +208,7 @@ public partial class Border : FrameworkElement
 	#region Padding DependencyProperty
 	private static Thickness GetPaddingDefaultValue() => Thickness.Empty;
 
-	[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange)]
+	[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
 	public static DependencyProperty PaddingProperty { get; } = CreatePaddingProperty();
 
 	public Thickness Padding
@@ -251,7 +251,7 @@ public partial class Border : FrameworkElement
 	#region BorderThickness DependencyProperty
 	private static Thickness GetBorderThicknessDefaultValue() => Thickness.Empty;
 
-	[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange)]
+	[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
 	public static DependencyProperty BorderThicknessProperty { get; } = CreateBorderThicknessProperty();
 
 	public Thickness BorderThickness

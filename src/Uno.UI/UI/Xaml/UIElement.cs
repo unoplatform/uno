@@ -204,8 +204,6 @@ namespace Microsoft.UI.Xaml
 				&& method.DeclaringType != typeof(Control);
 		}
 
-		private protected virtual bool IsTabStopDefaultValue => false;
-
 		/// <summary>
 		/// Provide an instance-specific default value for the specified property
 		/// </summary>
@@ -217,11 +215,6 @@ namespace Microsoft.UI.Xaml
 			if (property == KeyboardAcceleratorsProperty)
 			{
 				defaultValue = new KeyboardAcceleratorCollection(this);
-				return true;
-			}
-			else if (property == IsTabStopProperty)
-			{
-				defaultValue = Uno.UI.Helpers.Boxes.Box(IsTabStopDefaultValue);
 				return true;
 			}
 

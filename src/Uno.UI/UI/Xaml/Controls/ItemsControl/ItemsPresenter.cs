@@ -198,6 +198,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(ItemsPresenter),
 				new FrameworkPropertyMetadata(
 					(Thickness)Thickness.Empty,
+					FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((ItemsPresenter)s)?.OnPaddingChanged((Thickness)e.OldValue, (Thickness)e.NewValue)
 				)
 			);
