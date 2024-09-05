@@ -12,6 +12,8 @@
 		<EnableMsixTooling>true</EnableMsixTooling>
 		<DefineConstants>$(DefineConstants);WINAPPSDK</DefineConstants>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
+		<WindowsSdkPackageVersion>10.0.19041.38</WindowsSdkPackageVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
