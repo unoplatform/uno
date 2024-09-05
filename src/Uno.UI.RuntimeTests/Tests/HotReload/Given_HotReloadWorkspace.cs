@@ -51,7 +51,8 @@ public partial class Given_HotReloadWorkspace
 	/// in the Core CLR, making all HR runtime tests fail.
 	/// 
 	/// </remarks>
-	[TestMethod]
+	// Hot reload tests are only available on Skia desktop targets
+	[ConditionalTest(IgnoredPlatforms = ~ConditionalTestAttribute.SkiaDesktop)]
 	[Timeout(10 * 60 * 1000)]
 	[Filters]
 	public async Task When_HotReloadScenario(string filters)
