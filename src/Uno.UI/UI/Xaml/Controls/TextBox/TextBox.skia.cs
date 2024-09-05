@@ -200,8 +200,10 @@ public partial class TextBox
 
 					displayBlock.DesiredSizeChangedCallback = () => canvas.Width = Math.Ceiling(displayBlock.ActualWidth + InlineCollection.CaretThickness);
 
-					bool lastFoundCaret = false;
-					bool currentFoundCaret = false;
+					var lastStartingFoundCaret = false;
+					var lastEndingFoundCaret = false;
+					var currentStartingFoundCaret = false;
+					var currentEndingFoundCaret = false;
 
 					var inlines = displayBlock.Inlines;
 
@@ -212,7 +214,8 @@ public partial class TextBox
 
 					inlines.DrawingStarted += () =>
 					{
-						currentFoundCaret = false;
+						currentStartingFoundCaret = false;
+						currentEndingFoundCaret = false;
 						rectsChanged = false;
 						usedRects = 0;
 					};
@@ -223,7 +226,10 @@ public partial class TextBox
 						// we accumulate all the rects and compare with the preexisting canvas.Children
 						// We only update if there is actually a change. This avoids a lot of problems
 						// that lead to an infinite layout-invalidate-layout-invalidate loop
-						if (rectsChanged || cachedRects.Count != usedRects || lastFoundCaret != currentFoundCaret)
+						if (rectsChanged
+							|| cachedRects.Count != usedRects
+							|| lastStartingFoundCaret != currentStartingFoundCaret
+							|| lastEndingFoundCaret != currentEndingFoundCaret)
 						{
 							// Might be better to use some table-doubling logic, but shouldn't matter very much.
 							// If so, don't forget to also change canvas.Children.AddRange(_cachedRects) below, which
@@ -233,13 +239,19 @@ public partial class TextBox
 							canvas.Children.Clear();
 							canvas.Children.AddRange(cachedRects);
 
-							if (currentFoundCaret)
+							if (currentStartingFoundCaret)
+							{
+								canvas.Children.Add(caretRect);
+							}
+
+							if (currentEndingFoundCaret)
 							{
 								canvas.Children.Add(caretRect);
 							}
 						}
 
-						lastFoundCaret = currentFoundCaret;
+						lastStartingFoundCaret = currentStartingFoundCaret;
+						lastEndingFoundCaret = currentEndingFoundCaret;
 					};
 
 					inlines.SelectionFound += t =>
@@ -279,7 +291,7 @@ public partial class TextBox
 						}
 					};
 
-					inlines.CaretFound += rect =>
+					inlines.CaretFound += (rect, caretAtSelectionEnd) =>
 					{
 						var oldCaretState = (caretRect.Width, caretRect.Height, (double)caretRect.GetValue(Canvas.LeftProperty), (double)caretRect.GetValue(Canvas.TopProperty), caretRect.Fill);
 						if (oldCaretState != (Math.Ceiling(rect.Width), Math.Ceiling(rect.Height), rect.Left, rect.Top, DefaultBrushes.TextForegroundBrush))
@@ -292,7 +304,14 @@ public partial class TextBox
 							caretRect.Fill = DefaultBrushes.TextForegroundBrush;
 						}
 
-						currentFoundCaret = true;
+						if (caretAtSelectionEnd)
+						{
+							currentEndingFoundCaret = true;
+						}
+						else
+						{
+							currentStartingFoundCaret = true;
+						}
 					};
 
 					ContentElement.Content = grid;
@@ -372,7 +391,7 @@ public partial class TextBox
 			inlines.Selection = (SelectionStart, SelectionStart + SelectionLength);
 			inlines.RenderSelection = FocusState != FocusState.Unfocused || (_contextMenu?.IsOpen ?? false);
 			inlines.RenderCaret = inlines.RenderSelection && _showCaret && !FeatureConfiguration.TextBox.HideCaret && !IsReadOnly && _selection.length == 0;
-			inlines.CaretAtEndOfSelection = !_selectionEndsAtTheStart;
+			inlines.CaretMode = _selectionEndsAtTheStart ? InlineCollection.CaretRenderMode.CaretAtSelectionStart : InlineCollection.CaretRenderMode.CaretAtSelectionEnd;
 		}
 	}
 

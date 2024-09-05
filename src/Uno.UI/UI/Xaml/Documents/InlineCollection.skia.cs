@@ -18,6 +18,13 @@ namespace Microsoft.UI.Xaml.Documents
 {
 	partial class InlineCollection
 	{
+		internal enum CaretRenderMode
+		{
+			CaretAtSelectionStart,
+			CaretAtSelectionEnd,
+			CaretAtBothSelectionEnds
+		}
+
 		// The caret thickness is actually always 1-pixel wide regardless of how big the text is
 		internal const float CaretThickness = 1;
 
@@ -47,20 +54,20 @@ namespace Microsoft.UI.Xaml.Documents
 		/// measure and draw once after each invalidation.
 		/// </summary>
 		private (bool wentThroughMeasure, bool wentThroughDraw) _drawingValid;
-		private (SelectionDetails? selection, bool caretAtEndOfSelection, bool renderSelection, bool renderCaret) _lastDrawingState;
+		private (SelectionDetails selection, CaretRenderMode CaretMode, bool renderSelection, bool renderCaret) _lastDrawingState;
 
-		private SelectionDetails? _selection;
+		private SelectionDetails _selection = new(0, 0, 0, 0);
 		private bool _renderSelection;
-		private bool _caretAtEndOfSelection;
+		private CaretRenderMode _caretMode;
 		private bool _renderCaret;
-		internal bool CaretAtEndOfSelection
+		internal CaretRenderMode CaretMode
 		{
-			get => _caretAtEndOfSelection;
+			get => _caretMode;
 			set
 			{
-				if (_caretAtEndOfSelection != value)
+				if (_caretMode != value)
 				{
-					_caretAtEndOfSelection = value;
+					_caretMode = value;
 					((IBlock)_collection.GetParent()).Invalidate(false);
 				}
 			}
@@ -102,7 +109,12 @@ namespace Microsoft.UI.Xaml.Documents
 		internal event Action DrawingStarted;
 		internal event Action<(Rect rect, SKCanvas canvas)> SelectionFound;
 		internal event Action DrawingFinished;
-		internal event Action<Rect> CaretFound;
+
+		/// <summary>
+		/// The second argument is whether this caret is the one at the start (false) or the end (true)
+		/// of the selection.
+		/// </summary>
+		internal event Action<Rect, bool> CaretFound;
 
 		internal (int start, int end) Selection
 		{
@@ -476,7 +488,7 @@ namespace Microsoft.UI.Xaml.Documents
 		/// </summary>
 		internal void Draw(in Visual.PaintingSession session)
 		{
-			var newDrawingState = (_selection, CaretAtEndOfSelection, RenderSelection, RenderCaret);
+			var newDrawingState = (_selection, CaretMode, RenderSelection, RenderCaret);
 			var somethingChanged = _drawingValid is not { wentThroughDraw: true, wentThroughMeasure: true } || !_lastDrawingState.Equals(newDrawingState);
 			var fireEvents = FireDrawingEventsOnEveryRedraw || somethingChanged;
 			_drawingValid.wentThroughDraw = true;
@@ -495,7 +507,19 @@ namespace Microsoft.UI.Xaml.Documents
 					// empty, so caret is at the beginning
 					if (RenderCaret)
 					{
-						CaretFound?.Invoke(new Rect(new Point(0, 0), new Point(CaretThickness, _lastDefaultLineHeight)));
+						switch (CaretMode)
+						{
+							case CaretRenderMode.CaretAtSelectionStart:
+								CaretFound?.Invoke(new Rect(new Point(0, 0), new Point(CaretThickness, _lastDefaultLineHeight)), false);
+								break;
+							case CaretRenderMode.CaretAtSelectionEnd:
+								CaretFound?.Invoke(new Rect(new Point(0, 0), new Point(CaretThickness, _lastDefaultLineHeight)), true);
+								break;
+							case CaretRenderMode.CaretAtBothSelectionEnds:
+								CaretFound?.Invoke(new Rect(new Point(0, 0), new Point(CaretThickness, _lastDefaultLineHeight)), false);
+								CaretFound?.Invoke(new Rect(new Point(0, 0), new Point(CaretThickness, _lastDefaultLineHeight)), true);
+								break;
+						}
 					}
 					DrawingFinished?.Invoke();
 				}
@@ -813,50 +837,58 @@ namespace Microsoft.UI.Xaml.Documents
 		private void HandleCaret(int characterCountSoFar, int lineIndex, RenderSegmentSpan segmentSpan, Span<SKPoint> positions, float x, float justifySpaceOffset, bool fireEvents, float y, RenderLine line)
 		{
 			var spanStartingIndex = characterCountSoFar;
-			if (RenderCaret && _selection is { } selection)
+			if (RenderCaret)
 			{
-				var (l, i) = CaretAtEndOfSelection ? (selection.EndLine, selection.EndIndex) : (selection.StartLine, selection.StartIndex);
-
-				float caretLocation = float.MinValue;
-
-				if (l == lineIndex && i >= spanStartingIndex && i <= spanStartingIndex + segmentSpan.GlyphsLength)
+				ReadOnlySpan<(int, int, bool)> span = CaretMode switch
 				{
-					if (i >= spanStartingIndex + positions.Length)
+					CaretRenderMode.CaretAtSelectionStart => [(_selection.StartLine, _selection.StartIndex, false)],
+					CaretRenderMode.CaretAtSelectionEnd => [(_selection.EndLine, _selection.EndIndex, true)],
+					CaretRenderMode.CaretAtBothSelectionEnds => [(_selection.StartLine, _selection.StartIndex, false), (_selection.EndLine, _selection.EndIndex, true)],
+					_ => throw new ArgumentOutOfRangeException()
+				};
+				foreach (var (l, i, caretAtSelectionEnd) in span)
+				{
+					float caretLocation = float.MinValue;
+
+					if (l == lineIndex && i >= spanStartingIndex && i <= spanStartingIndex + segmentSpan.GlyphsLength)
 					{
-						caretLocation = x + justifySpaceOffset * (i - (spanStartingIndex + positions.Length));
+						if (i >= spanStartingIndex + positions.Length)
+						{
+							caretLocation = x + justifySpaceOffset * (i - (spanStartingIndex + positions.Length));
+						}
+						else
+						{
+							caretLocation = positions[i - spanStartingIndex].X;
+						}
 					}
-					else
+					else if (l == lineIndex && i >= spanStartingIndex && i <= spanStartingIndex + segmentSpan.FullGlyphsLength)
 					{
-						caretLocation = positions[i - spanStartingIndex].X;
+						// In case of non-rendered trailing spaces, the caret should theoretically be beyond the width of the TextBox,
+						// but we still render the caret at the end of the visible area like WinUI does.
+						caretLocation = x + justifySpaceOffset * segmentSpan.TrailingSpaces;
 					}
-				}
-				else if (l == lineIndex && i >= spanStartingIndex && i <= spanStartingIndex + segmentSpan.FullGlyphsLength)
-				{
-					// In case of non-rendered trailing spaces, the caret should theoretically be beyond the width of the TextBox,
-					// but we still render the caret at the end of the visible area like WinUI does.
-					caretLocation = x + justifySpaceOffset * segmentSpan.TrailingSpaces;
-				}
 
-				if (Math.Round(caretLocation + CaretThickness) > _lastArrangedSize.Width)
-				{
-					// WinUI draws the caret one-pixel early if the text takes (almost) all the available width.
-					// Try this and move the caret to the end (after the l):
-					// new TextBox
-					// {
-					// 	Width = 94,
-					// 	TextWrapping = TextWrapping.Wrap,
-					// 	Text = "abcdefghijkl",
-					// 	FontFamily = new FontFamily("/Assets/Roboto-Regular.ttf#Roboto")
-					// }
-					// and try again with
-					// 	Width = 95,
-					// Notice how the caret is drawn one pixel later in the second case even though the text is the exact same.
-					caretLocation--;
-				}
+					if (Math.Round(caretLocation + CaretThickness) > _lastArrangedSize.Width)
+					{
+						// WinUI draws the caret one-pixel early if the text takes (almost) all the available width.
+						// Try this and move the caret to the end (after the l):
+						// new TextBox
+						// {
+						// 	Width = 94,
+						// 	TextWrapping = TextWrapping.Wrap,
+						// 	Text = "abcdefghijkl",
+						// 	FontFamily = new FontFamily("/Assets/Roboto-Regular.ttf#Roboto")
+						// }
+						// and try again with
+						// 	Width = 95,
+						// Notice how the caret is drawn one pixel later in the second case even though the text is the exact same.
+						caretLocation -= CaretThickness;
+					}
 
-				if (caretLocation != float.MinValue && fireEvents)
-				{
-					CaretFound?.Invoke(new Rect(new Point(caretLocation, y - line.Height), new Point(caretLocation + CaretThickness, y)));
+					if (caretLocation != float.MinValue && fireEvents)
+					{
+						CaretFound?.Invoke(new Rect(new Point(caretLocation, y - line.Height), new Point(caretLocation + CaretThickness, y)), caretAtSelectionEnd);
+					}
 				}
 			}
 		}
