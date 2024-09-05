@@ -90,5 +90,8 @@ public enum UnoFeature
 	Lottie,
 
 	[UnoArea(UnoArea.Core)]
-	Svg
+	Svg,
+
+	[UnoArea(UnoArea.Core)]
+	Canvas3DGL
 }
