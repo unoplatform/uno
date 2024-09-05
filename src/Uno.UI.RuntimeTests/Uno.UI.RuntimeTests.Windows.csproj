@@ -9,6 +9,8 @@
 		<NoWarn>$(NoWarn);CS1998</NoWarn>
 		<UseWinUI>true</UseWinUI>
 		<RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
+
+		<WindowsSdkPackageVersion>10.0.19041.38</WindowsSdkPackageVersion>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override.props" />
