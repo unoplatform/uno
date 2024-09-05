@@ -212,7 +212,9 @@ public partial class TextBox
 						var caretRect = args.rect;
 						var compositor = _visual.Compositor;
 						var brush = DefaultBrushes.TextForegroundBrush.GetOrCreateCompositionBrush(compositor);
-						var caretPaint = new SKPaint { Style = SKPaintStyle.Fill, IsAntialias = true, IsAutohinted = true };
+						// IsAntiAlias = false is important because we want the caret to be exactly a single pixel.
+						// If antialiased, it might bleed into the neighbouring pixels.
+						var caretPaint = new SKPaint { Style = SKPaintStyle.Fill, IsAntialias = false, IsAutohinted = true };
 						brush.UpdatePaint(caretPaint, caretRect.ToSKRect());
 						args.canvas.DrawRect(new SKRect((float)caretRect.Left, (float)caretRect.Top, (float)caretRect.Right, (float)caretRect.Bottom), caretPaint);
 					};
