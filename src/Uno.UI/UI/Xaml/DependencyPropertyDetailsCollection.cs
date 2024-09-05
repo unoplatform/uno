@@ -187,7 +187,7 @@ namespace Microsoft.UI.Xaml
 
 				if (propertyEntry == null)
 				{
-					propertyEntry = new DependencyPropertyDetails(property, property == _dataContextPropertyDetails);
+					propertyEntry = new DependencyPropertyDetails(property, property == _dataContextProperty);
 				}
 
 				return propertyEntry;
