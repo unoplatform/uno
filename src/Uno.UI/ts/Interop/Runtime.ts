@@ -5,5 +5,9 @@
 		private static init(): any {
 			return "";
 		}
+
+		public static InvokeJS(command: string) : string {
+			return eval(command);
+		}
 	}
 }
