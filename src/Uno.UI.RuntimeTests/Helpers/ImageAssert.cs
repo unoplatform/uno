@@ -106,8 +106,9 @@ public static partial class ImageAssert
 				.AppendLine($"Color at ({x},{y}) is not expected")
 				.AppendLine($"expected: {ToArgbCode(expectedColor)} {expectedColor}")
 				.AppendLine($"actual  : {ToArgbCode(pixel)} {pixel}")
-				.AppendLine($"tolerance: {tolerance}")
+				.AppendLine($"tolerance : {tolerance}")
 				.AppendLine($"difference: {difference}")
+				.AppendLine($"screenshot size: {bitmap.Width}x{bitmap.Height}")
 			));
 		}
 
