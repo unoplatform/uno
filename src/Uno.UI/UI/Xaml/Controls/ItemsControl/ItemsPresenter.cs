@@ -347,6 +347,17 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 		}
 
+		internal override bool WantsScrollViewerToObscureAvailableSizeBasedOnScrollBarVisibility(Orientation orientation)
+		{
+			return WantsScrollViewerToObscureAvailableSizeBasedOnScrollBarVisibility(orientation, Panel);
+		}
+
+		private bool WantsScrollViewerToObscureAvailableSizeBasedOnScrollBarVisibility(Orientation orientation, _ViewGroup spPanel)
+		{
+			return (spPanel as FrameworkElement)?.WantsScrollViewerToObscureAvailableSizeBasedOnScrollBarVisibility(orientation) ?? true;
+		}
+
+
 		protected override Size ArrangeOverride(Size finalSize)
 		{
 			// Most of this is inspired by StackPanel's ArrangeOverride
