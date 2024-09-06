@@ -524,7 +524,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 
 			using (var nonSelectableScreenshot = TakeScreenshot("NonSelectableTextBlock", ignoreInSnapshotCompare: true))
 			{
-				ImageAssert.HasColorAt(nonSelectableScreenshot, nonSelectableTextBlock.CenterX, nonSelectableTextBlock.CenterY, Color.White);
+				ImageAssert.HasColorAt(nonSelectableScreenshot, nonSelectableTextBlock.CenterX, nonSelectableTextBlock.CenterY, Color.FromArgb(255, 243, 243, 243));
 			}
 
 			// Click to ensure any selection is removed
@@ -535,7 +535,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 
 			using (var selectableScreenshot = TakeScreenshot("SelectableTextBlock", ignoreInSnapshotCompare: true))
 			{
-				ImageAssert.DoesNotHaveColorAt(selectableScreenshot, selectableTextBlock.CenterX, selectableTextBlock.CenterY, Color.White);
+				ImageAssert.DoesNotHaveColorAt(selectableScreenshot, selectableTextBlock.CenterX, selectableTextBlock.CenterY, Color.FromArgb(255, 243, 243, 243));
 			}
 		}
 

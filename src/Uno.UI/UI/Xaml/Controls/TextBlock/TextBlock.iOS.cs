@@ -70,7 +70,10 @@ namespace Microsoft.UI.Xaml.Controls
 				_attributedString?.DrawString(_drawRect, NSStringDrawingOptions.UsesLineFragmentOrigin, null);
 			}
 
-			UpdateIsTextTrimmed();
+			if (_attributedString is not null)
+			{
+				UpdateIsTextTrimmed();
+			}
 		}
 
 		/// <summary>

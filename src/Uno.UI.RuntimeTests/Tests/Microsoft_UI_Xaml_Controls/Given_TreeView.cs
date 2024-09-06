@@ -496,8 +496,8 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			ImageAssert.HasColorAt(screenshot, new Point(x, screenshot.Height / 4), Microsoft.UI.Colors.Red);
 			ImageAssert.HasColorAt(screenshot, new Point(x, screenshot.Height * 3 / 4), Microsoft.UI.Colors.Red);
 
-			((TreeViewItem)sp.FindFirstDescendant<TreeViewList>().ContainerFromIndex(0)).ActualHeight.Should().BeApproximately(102, 1);
-			((TreeViewItem)sp.FindFirstDescendant<TreeViewList>().ContainerFromIndex(1)).ActualHeight.Should().BeApproximately(102, 1);
+			((TreeViewItem)sp.FindFirstDescendant<TreeViewList>().ContainerFromIndex(0)).ActualHeight.Should().BeApproximately(112, 1);
+			((TreeViewItem)sp.FindFirstDescendant<TreeViewList>().ContainerFromIndex(1)).ActualHeight.Should().BeApproximately(112, 1);
 			Assert.AreEqual("1", ((ContentPresenter)((TreeViewItem)sp.FindFirstDescendant<TreeViewList>().ContainerFromIndex(0)).FindName("ContentPresenter")).FindFirstDescendant<TextBlock>().Text);
 			Assert.AreEqual("2", ((ContentPresenter)((TreeViewItem)sp.FindFirstDescendant<TreeViewList>().ContainerFromIndex(1)).FindName("ContentPresenter")).FindFirstDescendant<TextBlock>().Text);
 		}

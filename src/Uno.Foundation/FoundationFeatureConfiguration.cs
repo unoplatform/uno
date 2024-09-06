@@ -38,8 +38,9 @@ public static class FoundationFeatureConfiguration
 		/// </summary>
 		public static bool RethrowNativeExceptions
 		{
-			get => WebAssembly.Runtime.RethrowNativeExceptions;
-			set => WebAssembly.Runtime.RethrowNativeExceptions = value;
+			// Obsolete, remove in next major
+			get => true;
+			set { }
 		}
 	}
 #endif
