@@ -69,7 +69,9 @@ public partial class Popup : FrameworkElement, IPopup
 	/// <inheritdoc />
 	protected override Size ArrangeOverride(Size finalSize)
 	{
-		// As the Child is NOT part of the visual tree, it does not have to be arranged
+		// As the Child is NOT part of the visual tree, it does not have to be arranged,
+		// but we need to manually propagate Translation
+		PopupPanel.Translation = Translation;
 		return finalSize;
 	}
 

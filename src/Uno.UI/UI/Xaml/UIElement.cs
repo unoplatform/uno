@@ -258,6 +258,7 @@ namespace Microsoft.UI.Xaml
 				{
 					_translation = value;
 					UpdateShadow();
+					InvalidateArrange();
 				}
 			}
 		}
