@@ -394,5 +394,25 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				SkipToFill();
 			}
 		}
+
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
+		internal override void PropagateTemplatedParent(DependencyObject tp)
+		{
+			TemplatedParentScope.UpdateTemplatedParent(this, tp, reapplyTemplateBindings: true);
+
+			foreach (var timeline in Children)
+			{
+				timeline.PropagateTemplatedParent(tp);
+
+				if ((timeline as IKeyFramesProvider)?.GetKeyFrames() is { } frames)
+				{
+					foreach (var frame in frames)
+					{
+						TemplatedParentScope.UpdateTemplatedParent(frame as DependencyObject, tp, reapplyTemplateBindings: true);
+					}
+				}
+			}
+		}
+#endif
 	}
 }

@@ -9,7 +9,9 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.Extensions;
 using Uno.UI.Extensions;
 using Uno.UI.Helpers;
 using Uno.UI.RuntimeTests.Helpers;
@@ -235,6 +237,31 @@ public partial class TemplatedParentTests
 		""";
 		VerifyTree(expectations, setup);
 	}
+
+	[TestMethod]
+	public async Task VisualStateGroup_TP_Inheritance()
+	{
+		var setup = new VisualStateGroup_Full();
+		await UITestHelper.Load(setup, x => x.IsLoaded);
+
+		var tree = setup.SUT.TreeGraph(DebugVT_TPTV, TraverseVSG);
+		var expectations = """
+		0	ContentControl#SUT // TP=<null>, TV=<null>
+		1		VisualStateGroup // TV=ContentControl#SUT
+		2			VisualState // TV=ContentControl#SUT
+		3			VisualState // TV=String
+		4				Setter // TV=ContentControl#SUT
+		5				Storyboard // TV=ContentControl#SUT
+		6					ObjectAnimationUsingKeyFrames // TV=ContentControl#SUT
+		7					DoubleAnimation // TV=ContentControl#SUT
+		8			VisualTransition // TV=ContentControl#SUT
+		9				Storyboard // TV=ContentControl#SUT
+		10					DoubleAnimation // TV=ContentControl#SUT
+		11		Border#TemplateRoot // TP=ContentControl#SUT, TV=<null>
+		12			Grid#ContentElement // TP=ContentControl#SUT, TV=<null>
+		""";
+		VerifyTree(expectations, setup, checkVSG: true);
+	}
 }
 public partial class TemplatedParentTests
 {
@@ -245,23 +272,39 @@ public partial class TemplatedParentTests
 		);
 	}
 
-	private static void VerifyTree(string expectedTree, FrameworkElement root)
+	private static IEnumerable<T> FlattenHierarchy<T>(T node, Func<T, IEnumerable<T>> getChildren)
+	{
+		foreach (var child in getChildren(node))
+		{
+			yield return child;
+			foreach (var nested in FlattenHierarchy(child, getChildren))
+			{
+				yield return nested;
+			}
+		}
+	}
+
+	private static void VerifyTree(string expectedTree, FrameworkElement root, bool checkVSG = false)
 	{
 		var expectations = expectedTree.Split('\n', StringSplitOptions.TrimEntries);
-		var descendants = root.EnumerateDescendants().ToArray();
+		var descendants = checkVSG
+			? FlattenHierarchy<object>(root, TraverseChildrenAndVSG).ToArray()
+			: root.EnumerateDescendants().ToArray();
+		Func<object, IEnumerable<string>> debugVT = checkVSG ? DebugVT_TPTV : DebugVT_TP;
 
-		Assert.AreEqual(expectations.Length, descendants.Length);
+
+		Assert.AreEqual(expectations.Length, descendants.Length, "Mismatched descendant size");
 		for (int i = 0; i < expectations.Length; i++)
 		{
 			var line = expectations[i].TrimStart("\t 0123456789.".ToArray());
-			var match = line.Split(" // TP=", count: 2);
+			var parts = line.Split(" // ", count: 2);
 
 			var node = descendants[i];
-			var tp = GetTemplatedParentCompat(node as FrameworkElement);
+			var actual = string.Join(", ", debugVT(node));
 
-			Assert.AreEqual(2, match.Length, $"Failed to parse expectation on line {i}");
-			Assert.AreEqual(match[0], DescribeObject(node), $"Invalid node on line {i}");
-			Assert.AreEqual(match[1], DescribeObject(tp), $"Invalid templated-parent on line {i}");
+			Assert.AreEqual(2, parts.Length, $"Failed to parse expectation on line {i}: {expectations[i]}");
+			Assert.AreEqual(parts[0], DescribeObject(node), $"Invalid node on line {i}");
+			Assert.AreEqual(parts[1], actual, $"Invalid property(ies) on line {i}");
 		}
 	}
 
@@ -294,6 +337,73 @@ public partial class TemplatedParentTests
 		if (x is FrameworkElement fe)
 		{
 			yield return $"TP={DescribeObject(GetTemplatedParentCompat(fe))}";
+		}
+	}
+	private static IEnumerable<string> DebugVT_TPTV(object x)
+	{
+		if (x is FrameworkElement fe)
+		{
+			yield return $"TP={DescribeObject(GetTemplatedParentCompat(fe))}";
+		}
+		if (x is DependencyObject @do)
+		{
+			yield return $"TV={DescribeObject(TestDP.GetTestValue(@do))}";
+		}
+	}
+
+	private static IEnumerable<object> TraverseChildrenAndVSG(object o)
+	{
+		return TraverseVSG(o, o.AsNativeView()?.EnumerateChildren());
+	}
+	private static IEnumerable<object> TraverseVSG(object o, IEnumerable<object> children)
+	{
+		if (o is Control c && c.EnumerateChildren().FirstOrDefault() is FrameworkElement root)
+		{
+			foreach (var item in VisualStateManager.GetVisualStateGroups(root).Safe())
+			{
+				yield return item;
+			}
+		}
+		if (o is VisualStateGroup vsg)
+		{
+			foreach (var item in vsg.States.Safe())
+			{
+				yield return item;
+			}
+			foreach (var item in vsg.Transitions.Safe())
+			{
+				yield return item;
+			}
+		}
+		if (o is VisualState vs)
+		{
+			foreach (var item in vs.Setters.Safe())
+			{
+				yield return item;
+			}
+			if (vs.Storyboard is { })
+			{
+				yield return vs.Storyboard;
+			}
+		}
+		if (o is VisualTransition vt)
+		{
+			if (vt.Storyboard is { })
+			{
+				yield return vt.Storyboard;
+			}
+		}
+		if (o is Storyboard sb)
+		{
+			foreach (var item in sb.Children.Safe())
+			{
+				yield return item;
+			}
+		}
+
+		foreach (var child in children.Safe())
+		{
+			yield return child;
 		}
 	}
 

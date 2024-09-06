@@ -29,24 +29,9 @@ namespace Microsoft.UI.Xaml
 	/// </summary>
 	public delegate View? FrameworkTemplateBuilder(object? owner, TemplateMaterializationSettings settings);
 
-#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
-	public partial class FrameworkTemplate
-	{
-		private static readonly Stack<MaterializingTemplateInfo> MaterializingTemplateStack = new();
-
-		internal static MaterializingTemplateInfo? GetCurrentTemplate()
-		{
-			return MaterializingTemplateStack.TryPeek(out var result) ? result : null;
-		}
-
-		internal record MaterializingTemplateInfo(DependencyObject? TemplatedParent, bool IsLegacyTemplate);
-	}
-#endif
-
 	[ContentProperty(Name = "Template")]
 	public partial class FrameworkTemplate : DependencyObject, IFrameworkTemplateInternal
 	{
-
 		internal readonly FrameworkTemplateBuilder? _viewFactory;
 		private readonly int _hashCode;
 		private readonly ManagedWeakReference? _ownerRef;
@@ -122,7 +107,7 @@ namespace Microsoft.UI.Xaml
 			{
 				ResourceResolver.PushNewScope(_xamlScope);
 #if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
-				MaterializingTemplateStack.Push(new(templatedParent, _isLegacyTemplate));
+				TemplatedParentScope.PushScope(templatedParent, _isLegacyTemplate);
 #endif
 
 				if (!FrameworkTemplatePool.IsPoolingEnabled || _isLegacyTemplate)
@@ -151,7 +136,7 @@ namespace Microsoft.UI.Xaml
 			finally
 			{
 #if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
-				MaterializingTemplateStack.Pop();
+				TemplatedParentScope.PopScope();
 #endif
 				ResourceResolver.PopScope();
 			}

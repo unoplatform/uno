@@ -19,6 +19,10 @@ namespace Microsoft.UI.Xaml
 		{
 			IsAutoPropertyInheritanceEnabled = false;
 			InitializeBinder();
+
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
+			TemplatedParentScope.UpdateTemplatedParentIfNeeded(this);
+#endif
 		}
 
 		public string From { get; set; }
@@ -46,12 +50,22 @@ namespace Microsoft.UI.Xaml
 				LazyBuilder = null;
 				builder.Invoke();
 
+				PropagateTemplatedParent();
+
 				if (Storyboard is IDependencyObjectStoreProvider storyboardProvider)
 				{
 					// Set the theme changed flag on so the update processes
 					// the children.
 					storyboardProvider.Store.UpdateResourceBindings(ResourceUpdateReason.ThemeResource);
 				}
+			}
+		}
+
+		private void PropagateTemplatedParent()
+		{
+			if (GetTemplatedParent() is { } tp)
+			{
+				Storyboard?.PropagateTemplatedParent(tp);
 			}
 		}
 

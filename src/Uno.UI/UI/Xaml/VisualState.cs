@@ -22,6 +22,10 @@ namespace Microsoft.UI.Xaml
 		{
 			InitializeBinder();
 			IsAutoPropertyInheritanceEnabled = false;
+
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
+			TemplatedParentScope.UpdateTemplatedParentIfNeeded(this);
+#endif
 		}
 
 		public string Name { get; set; }
@@ -170,12 +174,29 @@ namespace Microsoft.UI.Xaml
 				LazyBuilder = null;
 				builder.Invoke();
 
+				PropagateTemplatedParent();
 
 				// Resolve all theme resources from storyboard children
 				// and setters values. This step is needed to ensure that
 				// Theme Resources are resolved using the proper visual tree
 				// parents, particularly when resources a locally overriden.
 				this.UpdateResourceBindings();
+			}
+		}
+
+		private void PropagateTemplatedParent()
+		{
+			if (GetTemplatedParent() is { } tp)
+			{
+				foreach (var setter in Setters)
+				{
+					setter.PropagateTemplatedParent(tp);
+				}
+				foreach (var trigger in StateTriggers)
+				{
+					trigger.PropagateTemplatedParent(tp);
+				}
+				Storyboard?.PropagateTemplatedParent(tp);
 			}
 		}
 

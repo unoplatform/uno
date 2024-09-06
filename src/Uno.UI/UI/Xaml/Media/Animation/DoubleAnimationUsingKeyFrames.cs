@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Uno.Disposables;
 using System.Text;
@@ -12,7 +13,7 @@ using System.Diagnostics;
 namespace Microsoft.UI.Xaml.Media.Animation
 {
 	[ContentProperty(Name = "KeyFrames")]
-	public partial class DoubleAnimationUsingKeyFrames : Timeline, ITimeline
+	public partial class DoubleAnimationUsingKeyFrames : Timeline, ITimeline, IKeyFramesProvider
 	{
 		private readonly Stopwatch _activeDuration = new Stopwatch();
 		private bool _wasBeginScheduled;
@@ -40,6 +41,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 
 		public DoubleKeyFrameCollection KeyFrames { get; }
+
 		internal override TimeSpan GetCalculatedDuration()
 		{
 			var duration = Duration;
@@ -378,5 +380,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #if IS_UNIT_TESTS
 		private bool ReportEachFrame() => true;
 #endif
+
+		IEnumerable IKeyFramesProvider.GetKeyFrames() => KeyFrames;
 	}
 }

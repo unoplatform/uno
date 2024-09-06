@@ -13,6 +13,13 @@ namespace Microsoft.UI.Xaml
 			IsAutoPropertyInheritanceEnabled = false;
 		}
 
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
+		internal virtual void PropagateTemplatedParent(DependencyObject tp)
+		{
+			TemplatedParentScope.UpdateTemplatedParent(this, tp, reapplyTemplateBindings: true);
+		}
+#endif
+
 		internal abstract void ApplyTo(DependencyObject o);
 
 		/// <summary>

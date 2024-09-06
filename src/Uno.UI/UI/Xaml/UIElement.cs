@@ -95,10 +95,7 @@ namespace Microsoft.UI.Xaml
 			SubscribeToOverridenRoutedEvents();
 
 #if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
-			if (FrameworkTemplate.GetCurrentTemplate() is { IsLegacyTemplate: true, TemplatedParent: { } tp })
-			{
-				SetTemplatedParentImpl(tp);
-			}
+			TemplatedParentScope.UpdateTemplatedParentIfNeeded(this);
 #endif
 		}
 

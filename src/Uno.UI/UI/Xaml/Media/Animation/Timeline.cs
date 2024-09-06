@@ -424,6 +424,13 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		private protected virtual void OnThemeChanged() { }
 
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
+		internal virtual void PropagateTemplatedParent(DependencyObject tp)
+		{
+			TemplatedParentScope.UpdateTemplatedParent(this, tp, reapplyTemplateBindings: true);
+		}
+#endif
+
 		~Timeline()
 		{
 			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => Dispose(false));

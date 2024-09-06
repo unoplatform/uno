@@ -9,11 +9,13 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
 using Windows.Foundation;
 using Uno.Extensions;
 
@@ -51,27 +53,40 @@ static partial class ViewExtensions
 	public static string TreeGraph(this _View reference, Func<object, IEnumerable<string>> describeProperties) =>
 		TreeGraph(reference, x => DescribeVTNode(x, describeProperties));
 
+	public static string TreeGraph(
+		this object reference,
+		Func<object, IEnumerable<string>> describeProperties,
+		Func<object, IEnumerable<object>, IEnumerable<object>>? getMembers = null
+	) => TreeGraph(reference, x => DescribeVTNode(x, describeProperties), getMembers);
+
 	/// <summary>
 	/// Produces a text representation of the visual tree, using the provided method of description.
 	/// </summary>
 	/// <param name="reference">Any node of the visual tree</param>
 	/// <param name="describe">A function to describe a visual tree node in a single line.</param>
 	/// <returns></returns>
-	public static string TreeGraph(this _View reference, Func<_View, string> describe)
+	public static string TreeGraph(
+		this object reference,
+		Func<object, string> describe,
+		Func<object, IEnumerable<object>, IEnumerable<object>>? getMembers = null
+	)
 	{
 		var buffer = new StringBuilder();
 		Walk(reference);
 		return buffer.ToString();
 
-		void Walk(_View o, int depth = 0)
+		void Walk(object o, int depth = 0)
 		{
 			Print(o, depth);
-			foreach (var child in EnumerateChildren(o))
+
+			var children = (o as _View)?.EnumerateChildren().Cast<object>() ?? Array.Empty<object>();
+			children = getMembers?.Invoke(o, children) ?? children;
+			foreach (var child in children)
 			{
 				Walk(child, depth + 1);
 			}
 		}
-		void Print(_View o, int depth)
+		void Print(object o, int depth)
 		{
 			buffer
 				.Append(new string(' ', depth * 4))
@@ -86,10 +101,30 @@ static partial class ViewExtensions
 
 		static IEnumerable<string> GetDetails(object x)
 		{
+			if (x is FrameworkElement { Parent: Grid } fe3)
+			{
+				int c = Grid.GetColumn(fe3), cspan = Grid.GetColumnSpan(fe3),
+					r = Grid.GetRow(fe3), rspan = Grid.GetRowSpan(fe3);
+
+				yield return $"R{FormatRange(r, rspan)}C{FormatRange(c, cspan)}";
+				string FormatRange(int x, int span) => span > 1 ? $"{x}-{x + span - 1}" : $"{x}";
+			}
+			if (x is Grid g)
+			{
+				if (g.ColumnDefinitions is { Count: > 0 } columns)
+				{
+					yield return $"Columns={string.Join(',', columns.Select(FormatGridDefinition))}";
+				}
+				if (g.RowDefinitions is { Count: > 0 } rows)
+				{
+					yield return $"Rows={string.Join(',', rows.Select(FormatGridDefinition))}";
+				}
+			}
 			if (x is ListViewItem lvi)
 			{
 				yield return $"Index={(ItemsControl.ItemsControlFromItemContainer(lvi)?.IndexFromContainer(lvi) ?? -1)}";
 			}
+			// =====
 #if __ANDROID__
 			if (x is Android.Views.View v)
 			{
@@ -105,13 +140,25 @@ static partial class ViewExtensions
 			if (x is FrameworkElement fe)
 			{
 				yield return $"Actual={fe.ActualWidth}x{fe.ActualHeight}";
+#if HAS_UNO
+				//yield return $"Available={FormatSize(fe.m_previousAvailableSize)}";
+#endif
+				//yield return $"Desired={FormatSize(fe.DesiredSize)}";
+				//yield return $"Render={FormatSize(fe.RenderSize)}";
+#if HAS_UNO
+				//if ($"{(fe.IsMeasureDirty ? "M" : null)}{(fe.IsMeasureDirtyPath ? "m" : null)}{(fe.IsArrangeDirty ? "A" : null)}{(fe.IsArrangeDirtyPath ? "a" : null)}" is { Length: > 0 } dirty)
+				//	yield return $"Dirty={dirty}";
+#endif
+				yield return $"Constraints=[{fe.MinWidth},{fe.Width},{fe.MaxWidth}]x[{fe.MinHeight},{fe.Height},{fe.MaxHeight}]";
 				yield return $"HV={fe.HorizontalAlignment}/{fe.VerticalAlignment}";
 			}
 			if (x is ScrollViewer sv)
 			{
-				yield return $"Offset=({sv.HorizontalOffset},{sv.VerticalOffset}), Viewport=({sv.ViewportWidth},{sv.ViewportHeight}), Extent=({sv.ExtentWidth},{sv.ExtentHeight})";
+				yield return $"Offset={sv.HorizontalOffset:0.#},{sv.VerticalOffset:0.#}";
+				yield return $"Viewport={sv.ViewportWidth:0.#}x{sv.ViewportHeight:0.#}";
+				yield return $"Extent={sv.ExtentWidth:0.#}x{sv.ExtentHeight:0.#}";
 			}
-			if (TryGetDpValue<CornerRadius>(x, "CornerRadius", out var cr)) yield return $"CornerRadius={FormatCornerRadius(cr)}";
+			//if (TryGetDpValue<CornerRadius>(x, "CornerRadius", out var cr)) yield return $"CornerRadius={FormatCornerRadius(cr)}";
 			if (TryGetDpValue<Thickness>(x, "Margin", out var margin)) yield return $"Margin={FormatThickness(margin)}";
 			if (TryGetDpValue<Thickness>(x, "Padding", out var padding)) yield return $"Padding={FormatThickness(padding)}";
 
@@ -275,6 +322,9 @@ static partial class ViewExtensions
 			}
 		}
 	}
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static _View? AsNativeView(this object o) => o as _View;
 
 	// note: methods for retrieving children/ancestors exist with varying signatures.
 	// re-implementing them with unified & more inclusive signature for convenience.
