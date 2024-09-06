@@ -24,6 +24,8 @@ using Windows.UI.Input;
 
 namespace Microsoft.UI.Xaml.Controls;
 
+using SelectionDetails = (int start, int length, bool selectionEndsAtTheStart);
+
 public partial class TextBox
 {
 	private static readonly VirtualKeyModifiers _platformCtrlKey = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? VirtualKeyModifiers.Windows : VirtualKeyModifiers.Control;
@@ -33,8 +35,7 @@ public partial class TextBox
 	private bool _deleteButtonVisibilityChangedSinceLastUpdateScrolling = true;
 	private bool _clearHistoryOnTextChanged = true;
 
-	private (int start, int length) _selection;
-	private bool _selectionEndsAtTheStart;
+	private SelectionDetails _selection;
 
 	private float _caretXOffset; // this is not necessarily the visual offset of the caret, but where the caret is logically supposed to be when moving up and down with the keyboard, even if the caret is temporarily elsewhere
 	private CaretDisplayMode _caretMode = CaretDisplayMode.NoCaret;
@@ -54,7 +55,7 @@ public partial class TextBox
 	// will be one "run"/"action". However, there are some arbitrary exceptions, so that is only a rule of thumb.
 	private bool _currentlyTyping;
 	private bool _suppressCurrentlyTyping;
-	private (int selectionStart, int selectionLength, bool selectionEndsAtTheStart) _selectionWhenTypingStarted;
+	private SelectionDetails _selectionWhenTypingStarted;
 	private string _textWhenTypingStarted;
 
 	private (int hashCode, List<(int start, int length)> chunks) _cachedChunks = (-1, new());
@@ -122,7 +123,7 @@ public partial class TextBox
 			_selectionWhenTypingStarted = (
 				_selection.start,
 				_selection.length,
-				_selectionEndsAtTheStart);
+				_selection.selectionEndsAtTheStart);
 		}
 		else
 		{
@@ -131,8 +132,8 @@ public partial class TextBox
 			_history.RemoveAllAt(_historyIndex);
 			_history.Add(new HistoryRecord(
 				new ReplaceAction(_textWhenTypingStarted, Text, _selection.start),
-				_selectionWhenTypingStarted.selectionStart,
-				_selectionWhenTypingStarted.selectionLength,
+				_selectionWhenTypingStarted.start,
+				_selectionWhenTypingStarted.length,
 				_selectionWhenTypingStarted.selectionEndsAtTheStart));
 			UpdateCanUndoRedo();
 		}
@@ -262,10 +263,10 @@ public partial class TextBox
 		if (!_inSelectInternal)
 		{
 			// SelectInternal sets _selectionEndsAtTheStart and _caretXOffset on its own
-			_selectionEndsAtTheStart = false;
+			_selection.selectionEndsAtTheStart = false;
 			_caretXOffset = (float)(DisplayBlockInlines?.GetRectForIndex(start + length).Left ?? 0);
 		}
-		_selection = (start, length);
+		_selection = (start, length, _selection.selectionEndsAtTheStart);
 		if (!_isSkiaTextBox)
 		{
 			TextBoxView?.Select(start, length);
@@ -303,7 +304,7 @@ public partial class TextBox
 			inlines.RenderSelection = FocusState != FocusState.Unfocused || (_contextMenu?.IsOpen ?? false);
 			var caretShowing = CaretMode is CaretDisplayMode.ThumblessCaretShowing or CaretDisplayMode.CaretWithThumbsOnlyEndShowing or CaretDisplayMode.CaretWithThumbsBothEndsShowing;
 			inlines.RenderCaret = inlines.RenderSelection && caretShowing && !FeatureConfiguration.TextBox.HideCaret && !IsReadOnly && _selection.length == 0;
-			inlines.CaretMode = _selectionEndsAtTheStart ? InlineCollection.CaretLocation.CaretAtSelectionStart : InlineCollection.CaretLocation.CaretAtSelectionEnd;
+			inlines.CaretMode = _selection.selectionEndsAtTheStart ? InlineCollection.CaretLocation.CaretAtSelectionStart : InlineCollection.CaretLocation.CaretAtSelectionEnd;
 		}
 	}
 
@@ -318,7 +319,7 @@ public partial class TextBox
 				DispatcherQueue.TryEnqueue(UpdateScrolling);
 			}
 
-			var selectionEnd = _selectionEndsAtTheStart ? _selection.start : _selection.start + _selection.length;
+			var selectionEnd = _selection.selectionEndsAtTheStart ? _selection.start : _selection.start + _selection.length;
 
 			var horizontalOffset = sv.HorizontalOffset;
 			var verticalOffset = sv.VerticalOffset;
@@ -346,7 +347,7 @@ public partial class TextBox
 		// Note: On windows ** only KeyDown ** is handled (not KeyUp)
 
 		// move to possibly-negative selection length format
-		var (selectionStart, selectionLength) = _selectionEndsAtTheStart ? (_selection.start + _selection.length, -_selection.length) : (_selection.start, _selection.length);
+		var (selectionStart, selectionLength) = _selection.selectionEndsAtTheStart ? (_selection.start + _selection.length, -_selection.length) : (_selection.start, _selection.length);
 
 		var text = Text;
 		var shift = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Shift);
@@ -778,7 +779,7 @@ public partial class TextBox
 	private void SelectInternal(int selectionStart, int selectionLength)
 	{
 		_inSelectInternal = true;
-		_selectionEndsAtTheStart = selectionLength < 0;
+		_selection.selectionEndsAtTheStart = selectionLength < 0;
 		if (DisplayBlockInlines is { }) // this check is important because on start up, the Inlines haven't been created yet.
 		{
 			_caretXOffset = selectionLength >= 0 ?
@@ -848,7 +849,7 @@ public partial class TextBox
 			}
 			else
 			{
-				var selectionInternalStart = _selectionEndsAtTheStart ? _selection.start + _selection.length : _selection.start;
+				var selectionInternalStart = _selection.selectionEndsAtTheStart ? _selection.start + _selection.length : _selection.start;
 				SelectInternal(selectionInternalStart, index - selectionInternalStart);
 			}
 		}
@@ -1278,7 +1279,7 @@ public partial class TextBox
 	{
 		if (_history.Count == 0)
 		{
-			_history.Add(new HistoryRecord(SentinelAction.Instance, _selection.start, _selection.length, _selectionEndsAtTheStart));
+			_history.Add(new HistoryRecord(SentinelAction.Instance, _selection.start, _selection.length, _selection.selectionEndsAtTheStart));
 		}
 		_historyIndex = Math.Max(0, Math.Min(_history.Count - 1, _historyIndex));
 		UpdateCanUndoRedo();
@@ -1298,7 +1299,7 @@ public partial class TextBox
 	{
 		_historyIndex++;
 		_history.RemoveAllAt(_historyIndex);
-		_history.Add(new HistoryRecord(action, _selection.start, _selection.length, _selectionEndsAtTheStart));
+		_history.Add(new HistoryRecord(action, _selection.start, _selection.length, _selection.selectionEndsAtTheStart));
 		UpdateCanUndoRedo();
 	}
 
