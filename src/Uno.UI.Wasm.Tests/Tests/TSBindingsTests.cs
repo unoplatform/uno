@@ -136,78 +136,12 @@ namespace SamplesApp.UnitTests.TSBindings
 
 			Assert.AreEqual("true", ret.Value);
 		}
-
-		[TestMethod]
-		public void When_ArrayOfStrings()
-		{
-			var param = new When_ArrayOfStringsParams()
-			{
-				MyArray_Length = 4,
-				MyArray = new[] { "1", "2", "3", "42" }
-			};
-
-			var ret = (GenericReturn)TSInteropMarshaller.InvokeJS("TSBindingsUnitTests:When_ArrayOfStrings", param, typeof(GenericReturn));
-
-			Assert.AreEqual("1;2;3;42", ret.Value);
-		}
-
-		[TestMethod]
-		public void When_ArrayOfUnicodeStrings()
-		{
-			var param = new When_ArrayOfStringsParams()
-			{
-				MyArray_Length = 1,
-				MyArray = new[] { "🎉🤣😊👆🎁" }
-			};
-
-			var ret = (GenericReturn)TSInteropMarshaller.InvokeJS("TSBindingsUnitTests:When_ArrayOfUnicodeStrings", param, typeof(GenericReturn));
-
-			Assert.AreEqual(param.MyArray[0], ret.Value);
-		}
-
-		[TestMethod]
-		public void When_NullArrayOfStrings()
-		{
-			var param = new When_ArrayOfStringsParams()
-			{
-				MyArray_Length = 0,
-				MyArray = null
-			};
-
-			var ret = (GenericReturn)TSInteropMarshaller.InvokeJS("TSBindingsUnitTests:When_NullArrayOfStrings", param, typeof(GenericReturn));
-
-			Assert.AreEqual("true", ret.Value);
-		}
-
-		[TestMethod]
-		public void When_ArrayOfNullStrings()
-		{
-			var param = new When_ArrayOfStringsParams()
-			{
-				MyArray_Length = 4,
-				MyArray = new string[4]
-			};
-
-			var ret = (GenericReturn)TSInteropMarshaller.InvokeJS("TSBindingsUnitTests:When_ArrayOfNullStrings", param, typeof(GenericReturn));
-
-			Assert.AreEqual("true;true;true;true", ret.Value);
-		}
 	}
 
 	partial class TestImport
 	{
 		[JSImport("globalThis.When_SingleStringNet7")]
 		internal static partial string When_SingleStringNet7(string value);
-	}
-
-	[TSInteropMessage]
-	[StructLayout(LayoutKind.Sequential, Pack = 4)]
-	public struct When_ArrayOfStringsParams
-	{
-		public int MyArray_Length;
-
-		[MarshalAs(UnmanagedType.LPArray, ArraySubType = TSInteropMarshaller.LPUTF8Str)]
-		public string[] MyArray;
 	}
 
 	[TSInteropMessage]

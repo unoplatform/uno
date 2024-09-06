@@ -249,24 +249,6 @@ namespace Uno.UI {
 			*
 			* You need to call addView to connect it to the DOM.
 			*/
-		public createContentNative(pParams: number): boolean {
-
-			const params = WindowManagerCreateContentParams.unmarshal(pParams);
-
-			const def = {
-				id: this.handleToString(params.HtmlId),
-				handle: params.Handle,
-				isFocusable: params.IsFocusable,
-				isSvg: params.IsSvg,
-				tagName: params.TagName,
-				uiElementRegistrationId: params.UIElementRegistrationId,
-			} as IContentDefinition;
-
-			this.createContentInternal(def);
-
-			return true;
-		}
-
 		public createContentNativeFast(
 			htmlId: number,
 			tagName: string,
@@ -336,19 +318,6 @@ namespace Uno.UI {
 			return registrationId;
 		}
 
-		public registerUIElementNative(pParams: number, pReturn: number): boolean {
-			const params = WindowManagerRegisterUIElementParams.unmarshal(pParams);
-
-			const registrationId = this.registerUIElement(params.TypeName, params.IsFrameworkElement, params.Classes);
-
-			const ret = new WindowManagerRegisterUIElementReturn();
-			ret.RegistrationId = registrationId;
-
-			ret.marshal(pReturn);
-
-			return true;
-		}
-
 		public getView(elementHandle: number): HTMLElement | SVGElement {
 			const element = this.allActiveElementsById[this.handleToString(elementHandle)];
 			if (!element) {
@@ -387,12 +356,6 @@ namespace Uno.UI {
 			this.getView(elementId).setAttribute("xuid", name);
 		}
 
-		public setVisibilityNative(pParam: number): boolean {
-			const params = WindowManagerSetVisibilityParams.unmarshal(pParam);
-			this.setVisibilityInternal(params.HtmlId, params.Visible);
-			return true;
-		}
-
 		public setVisibilityNativeFast(htmlId: number, visible: boolean) {
 
 			this.setVisibilityInternal(htmlId, visible);
@@ -412,18 +375,6 @@ namespace Uno.UI {
 		/**
 			* Set an attribute for an element.
 			*/
-		public setAttributesNative(pParams: number): boolean {
-
-			const params = WindowManagerSetAttributesParams.unmarshal(pParams);
-			const element = this.getView(params.HtmlId);
-
-			for (let i = 0; i < params.Pairs_Length; i += 2) {
-				element.setAttribute(params.Pairs[i], params.Pairs[i + 1]);
-			}
-
-			return true;
-		}
-
 		public setAttributesNativeFast(htmlId: number, pairs: string[]) {
 
 			const element = this.getView(htmlId);
@@ -438,13 +389,9 @@ namespace Uno.UI {
 		/**
 			* Set an attribute for an element.
 			*/
-		public setAttributeNative(pParams: number): boolean {
-
-			const params = WindowManagerSetAttributeParams.unmarshal(pParams);
-			const element = this.getView(params.HtmlId);
-			element.setAttribute(params.Name, params.Value);
-
-			return true;
+		public setAttribute(htmlId: number, name: string, value: string) {
+			const element = this.getView(htmlId);
+			element.setAttribute(name, value);
 		}
 
 		/**
@@ -470,15 +417,6 @@ namespace Uno.UI {
 		/**
 			* Set a property for an element.
 			*/
-		public setPropertyNative(pParams: number): boolean {
-
-			const params = WindowManagerSetPropertyParams.unmarshal(pParams);
-
-			this.setPropertyNativeFast(params.HtmlId, params.Pairs);
-
-			return true;
-		}
-
 		public setPropertyNativeFast(htmlId: number, pairs: string[]) {
 
 			const element = this.getView(htmlId);
@@ -499,15 +437,6 @@ namespace Uno.UI {
 					(element as any)[pairs[i]] = setVal;
 				}
 			}
-		}
-
-		public setSinglePropertyNative(pParams: number): boolean {
-
-			const params = WindowManagerSetSinglePropertyParams.unmarshal(pParams);
-
-			this.setSinglePropertyNativeFast(params.HtmlId, params.Name, params.Value);
-
-			return true;
 		}
 
 		public setSinglePropertyNativeFast(htmlId: number, name: string, value: string) {
@@ -539,24 +468,6 @@ namespace Uno.UI {
 		* To remove a value, set it to empty string.
 		* @param styles A dictionary of styles to apply on html element.
 		*/
-		public setStyleNative(pParams: number): boolean {
-
-			const params = WindowManagerSetStylesParams.unmarshal(pParams);
-			const element = this.getView(params.HtmlId);
-
-			const elementStyle = element.style;
-			const pairs = params.Pairs;
-
-			for (let i = 0; i < params.Pairs_Length; i += 2) {
-				const key = pairs[i];
-				const value = pairs[i + 1];
-
-				elementStyle.setProperty(key, value);
-			}
-
-			return true;
-		}
-
 		public setStyleNativeFast(htmlId: number, styles: string[]) {
 
 			const elementStyle = this.getView(htmlId).style;
@@ -582,15 +493,6 @@ namespace Uno.UI {
 			return true;
 		}
 
-		public setStyleStringNative(pParams: number): boolean {
-
-			const params = WindowManagerSetStyleStringParams.unmarshal(pParams);
-
-			this.getView(params.HtmlId).style.setProperty(params.Name, params.Value);
-
-			return true;
-		}
-
 		public setStyleStringNativeFast(htmlId: number, name: string, value: string) {
 
 			this.getView(htmlId).style.setProperty(name, value);
@@ -599,13 +501,7 @@ namespace Uno.UI {
 		/**
 			* Remove the CSS style of a html element.
 			*/
-		public resetStyleNative(pParams: number): boolean {
-			const params = WindowManagerResetStyleParams.unmarshal(pParams);
-			this.resetStyleInternal(params.HtmlId, params.Styles);
-			return true;
-		}
-
-		private resetStyleInternal(elementId: number, names: string[]): void {
+		public resetStyle(elementId: number, names: string[]): void {
 			const element = this.getView(elementId);
 
 			for (const name of names) {
@@ -616,11 +512,11 @@ namespace Uno.UI {
 		public isCssConditionSupported(supportCondition: string): boolean {
 			return CSS.supports(supportCondition);
 		}
+
 		/**
 		 * Set + Unset CSS classes on an element
 		 */
-
-		public setUnsetClasses(elementId: number, cssClassesToSet: string[], cssClassesToUnset: string[]) {
+		public setUnsetCssClasses(elementId: number, cssClassesToSet: string[], cssClassesToUnset: string[]) {
 			const element = this.getView(elementId);
 
 			if (cssClassesToSet) {
@@ -635,16 +531,10 @@ namespace Uno.UI {
 			}
 		}
 
-		public setUnsetClassesNative(pParams: number): boolean {
-			const params = WindowManagerSetUnsetClassesParams.unmarshal(pParams);
-			this.setUnsetClasses(params.HtmlId, params.CssClassesToSet, params.CssClassesToUnset);
-			return true;
-		}
-
 		/**
 		 * Set CSS classes on an element from a specified list
 		 */
-		public setClasses(elementId: number, cssClassesList: string[], classIndex: number): string {
+		public setClasses(elementId: number, cssClassesList: string[], classIndex: number) {
 			const element = this.getView(elementId);
 
 			for (let i = 0; i < cssClassesList.length; i++) {
@@ -654,38 +544,12 @@ namespace Uno.UI {
 					element.classList.remove(cssClassesList[i]);
 				}
 			}
-			return "ok";
-		}
-
-		public setClassesNative(pParams: number): boolean {
-			const params = WindowManagerSetClassesParams.unmarshal(pParams);
-			this.setClasses(params.HtmlId, params.CssClasses, params.Index);
-			return true;
 		}
 
 		/**
 		* Arrange and clips a native elements 
 		*
 		*/
-		public arrangeElementNative(pParams: number): boolean {
-
-			const params = WindowManagerArrangeElementParams.unmarshal(pParams);
-
-			this.arrangeElementNativeFast(
-				params.HtmlId,
-				params.Top,
-				params.Left,
-				params.Width,
-				params.Height,
-				params.Clip,
-				params.ClipTop,
-				params.ClipLeft,
-				params.ClipBottom,
-				params.ClipRight);
-
-			return true;
-		}
-
 		public arrangeElementNativeFast(
 			htmlId: number,
 			top: number,
@@ -829,15 +693,6 @@ namespace Uno.UI {
 		* Sets the transform matrix of an element
 		*
 		*/
-		public setElementTransformNative(pParams: number): boolean {
-
-			const params = WindowManagerSetElementTransformParams.unmarshal(pParams);
-
-			this.setElementTransformNativeFast(params.HtmlId, params.M11, params.M12, params.M21, params.M22, params.M31, params.M32);
-
-			return true;
-		}
-
 		public setElementTransformNativeFast(
 			htmlId: number,
 			m11: number,
@@ -1199,21 +1054,6 @@ namespace Uno.UI {
 			* @param maxWidth string containing width in pixels. Empty string means infinite.
 			* @param maxHeight string containing height in pixels. Empty string means infinite.
 			*/
-		public measureViewNative(pParams: number, pReturn: number): boolean {
-
-			const params = WindowManagerMeasureViewParams.unmarshal(pParams);
-
-			const ret = this.measureViewInternal(params.HtmlId, params.AvailableWidth, params.AvailableHeight, params.MeasureContent);
-
-			const ret2 = new WindowManagerMeasureViewReturn();
-			ret2.DesiredWidth = ret[0];
-			ret2.DesiredHeight = ret[1];
-
-			ret2.marshal(pReturn);
-
-			return true;
-		}
-
 		public measureViewNativeFast(htmlId: number, availableWidth: number, availableHeight: number, measureContent: boolean, pReturn: number) {
 
 			const result = this.measureViewInternal(htmlId, availableWidth, availableHeight, measureContent);
