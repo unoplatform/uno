@@ -26,16 +26,51 @@ namespace Microsoft.UI.Xaml.Controls;
 
 public partial class TextBox
 {
+	private static readonly VirtualKeyModifiers _platformCtrlKey = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? VirtualKeyModifiers.Windows : VirtualKeyModifiers.Control;
 	private readonly bool _isSkiaTextBox = !FeatureConfiguration.TextBox.UseOverlayOnSkia;
 
-	private TextBoxView _textBoxView;
-
+	private bool _inSelectInternal;
 	private bool _deleteButtonVisibilityChangedSinceLastUpdateScrolling = true;
+	private bool _clearHistoryOnTextChanged = true;
 
 	private (int start, int length) _selection;
 	private bool _selectionEndsAtTheStart;
+
 	private float _caretXOffset; // this is not necessarily the visual offset of the caret, but where the caret is logically supposed to be when moving up and down with the keyboard, even if the caret is temporarily elsewhere
 	private CaretDisplayMode _caretMode = CaretDisplayMode.NoCaret;
+
+	private (int start, int length)? _pendingSelection;
+
+	// Pointer state
+	private (PointerPoint point, int repeatedPresses) _lastPointerDown; // point is null before first press
+	private (int start, int length, bool tripleTap)? _mouseMultiTapChunk;
+	/// <summary>Determines whether the caret is currently being dragged through touch or mouse input. null if no pointer is pressed (also see remark).</summary>
+	/// <remarks>can be null if the pointer is still pressed but Escape is pressed.</remarks>>
+	private PointerDeviceType? _caretDraggingPointerType;
+	private bool IsDraggingCaretWithPointer => _caretDraggingPointerType != null;
+
+	// We track what constitutes one typing "action" that can be undone/redone. The general gist is that
+	// any sequence of characters (with backspace allowed) without any navigation moves (pointer click, arrow keys, etc.)
+	// will be one "run"/"action". However, there are some arbitrary exceptions, so that is only a rule of thumb.
+	private bool _currentlyTyping;
+	private bool _suppressCurrentlyTyping;
+	private (int selectionStart, int selectionLength, bool selectionEndsAtTheStart) _selectionWhenTypingStarted;
+	private string _textWhenTypingStarted;
+
+	private (int hashCode, List<(int start, int length)> chunks) _cachedChunks = (-1, new());
+
+	private int _historyIndex;
+	private readonly List<HistoryRecord> _history = new(); // the selection of an action is what was selected right before it happened. Might turn out to be unnecessary.
+
+	private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromSeconds(0.5) };
+
+	private TextBoxView _textBoxView;
+	private MenuFlyout _contextMenu;
+	private readonly Dictionary<ContextMenuItem, MenuFlyoutItem> _flyoutItems = new();
+
+	internal TextBoxView TextBoxView => _textBoxView;
+
+	internal ContentControl ContentElement => _contentElement;
 
 	private CaretDisplayMode CaretMode
 	{
@@ -49,47 +84,6 @@ public partial class TextBox
 			}
 		}
 	}
-
-	private bool _inSelectInternal;
-
-	private (int start, int length)? _pendingSelection;
-
-	private (PointerPoint point, int repeatedPresses) _lastPointerDown; // point is null before first press
-
-	/// <summary>Determines whether the caret is currently being dragged through touch or mouse input. null if no pointer is pressed (also see remark).</summary>
-	/// <remarks>can be null if the pointer is still pressed but Escape is pressed.</remarks>>
-	private PointerDeviceType? _caretDraggingPointerType;
-	private bool IsDraggingCaretWithPointer => _caretDraggingPointerType != null;
-
-	private bool _clearHistoryOnTextChanged = true;
-
-	private readonly VirtualKeyModifiers _platformCtrlKey = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? VirtualKeyModifiers.Windows : VirtualKeyModifiers.Control;
-
-	// We track what constitutes one typing "action" that can be undone/redone. The general gist is that
-	// any sequence of characters (with backspace allowed) without any navigation moves (pointer click, arrow keys, etc.)
-	// will be one "run"/"action". However, there are some arbitrary exceptions, so that is only a rule of thumb.
-	private bool _currentlyTyping;
-	private bool _suppressCurrentlyTyping;
-	private (int selectionStart, int selectionLength, bool selectionEndsAtTheStart) _selectionWhenTypingStarted;
-	private string _textWhenTypingStarted;
-
-	private int _historyIndex;
-	private readonly List<HistoryRecord> _history = new(); // the selection of an action is what was selected right before it happened. Might turn out to be unnecessary.
-
-	private (int start, int length, bool tripleTap)? _mouseMultiTapChunk;
-	private (int hashCode, List<(int start, int length)> chunks) _cachedChunks = (-1, new());
-
-	private readonly DispatcherTimer _timer = new DispatcherTimer
-	{
-		Interval = TimeSpan.FromSeconds(0.5)
-	};
-
-	private MenuFlyout _contextMenu;
-	private readonly Dictionary<ContextMenuItem, MenuFlyoutItem> _flyoutItems = new();
-
-	internal TextBoxView TextBoxView => _textBoxView;
-
-	internal ContentControl ContentElement => _contentElement;
 
 	[GeneratedDependencyProperty(DefaultValue = false)]
 	public static DependencyProperty CanUndoProperty { get; } = CreateCanUndoProperty();
