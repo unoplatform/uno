@@ -1929,5 +1929,8 @@ namespace Microsoft.UI.Xaml
 
 		}
 #endif
+
+		internal virtual bool WantsScrollViewerToObscureAvailableSizeBasedOnScrollBarVisibility(Orientation horizontal)
+			=> true;
 	}
 }
