@@ -20,7 +20,6 @@ namespace Uno.UI.DataBinding
 			private readonly SerialDisposable _propertyChanged = new SerialDisposable();
 			private readonly DependencyPropertyValuePrecedences? _precedence;
 			private ValueGetterHandler? _valueGetter;
-			private ValueGetterHandler? _precedenceSpecificGetter;
 			private ValueGetterHandler? _substituteValueGetter;
 			private ValueSetterHandler? _valueSetter;
 			private ValueSetterHandler? _localValueSetter;
@@ -139,13 +138,6 @@ namespace Uno.UI.DataBinding
 				}
 			}
 
-			internal object? GetPrecedenceSpecificValue()
-			{
-				BuildPrecedenceSpecificValueGetter();
-
-				return GetSourceValue(_precedenceSpecificGetter!);
-			}
-
 			internal object? GetSubstituteValue()
 			{
 				BuildSubstituteValueGetter();
@@ -232,7 +224,6 @@ namespace Uno.UI.DataBinding
 				{
 					IsDependencyPropertyValueSet = false;
 					_valueGetter = null;
-					_precedenceSpecificGetter = null;
 					_substituteValueGetter = null;
 					_localValueSetter = null;
 					_valueSetter = null;
@@ -302,14 +293,6 @@ namespace Uno.UI.DataBinding
 				}
 			}
 
-			private void BuildPrecedenceSpecificValueGetter()
-			{
-				if (_precedenceSpecificGetter == null && _dataContextType != null)
-				{
-					_precedenceSpecificGetter = BindingPropertyHelper.GetValueGetter(_dataContextType, PropertyName, _precedence, AllowPrivateMembers);
-				}
-			}
-
 			private void BuildSubstituteValueGetter()
 			{
 				if (_substituteValueGetter == null && _dataContextType != null)
@@ -324,7 +307,7 @@ namespace Uno.UI.DataBinding
 				}
 			}
 
-			private object? GetSourceValue()
+			internal object? GetSourceValue()
 			{
 				BuildValueGetter();
 

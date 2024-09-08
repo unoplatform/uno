@@ -247,7 +247,7 @@ namespace Microsoft.UI.Xaml
 		/// <returns>Returns the current effective value.</returns>
 		public object? GetValue(DependencyProperty property)
 		{
-			return GetValue(property: property, propertyDetails: null, precedence: null);
+			return GetValue(property: property, precedence: null);
 		}
 
 		/// <summary>
@@ -325,39 +325,29 @@ namespace Microsoft.UI.Xaml
 			return (details.GetModifiedValue(), details);
 		}
 
-		internal object? GetValue(DependencyProperty property, DependencyPropertyDetails? propertyDetails, DependencyPropertyValuePrecedences? precedence = null)
+		internal object? GetValue(DependencyProperty property, DependencyPropertyValuePrecedences? precedence = null)
 		{
 			WritePropertyEventTrace(TraceProvider.GetValue, property, precedence);
 
 			ValidatePropertyOwner(property);
 
-			var callerRegisteredInheritedProperties = false;
 			if (_properties.DataContextPropertyDetails.Property == property || _properties.TemplatedParentPropertyDetails.Property == property)
 			{
 				// Historically, we didn't have this fast path for default value.
 				// We add this to maintain the original behavior in GetValue(DependencyPropertyDetails, DependencyPropertyValuePrecedences?, bool) overload.
 				// This should be revisited in future.
 				TryRegisterInheritedProperties(force: true);
-				callerRegisteredInheritedProperties = true;
 			}
 
-			if (propertyDetails is null && (precedence is null || precedence == DependencyPropertyValuePrecedences.DefaultValue) && _properties.FindPropertyDetails(property) is null)
+			DependencyPropertyDetails? propertyDetails = null;
+			if (precedence == DependencyPropertyValuePrecedences.DefaultValue ||
+				(!precedence.HasValue && ((propertyDetails = _properties.FindPropertyDetails(property)) is null)))
 			{
 				// Performance: Avoid force-creating DependencyPropertyDetails when not needed.
 				return GetDefaultValue(property);
 			}
 
 			propertyDetails ??= _properties.GetPropertyDetails(property);
-
-			return GetValue(propertyDetails, precedence, callerRegisteredInheritedProperties);
-		}
-
-		private object? GetValue(DependencyPropertyDetails propertyDetails, DependencyPropertyValuePrecedences? precedence = null, bool callerRegisteredInheritedProperties = false)
-		{
-			if (!callerRegisteredInheritedProperties && (propertyDetails == _properties.DataContextPropertyDetails || propertyDetails == _properties.TemplatedParentPropertyDetails))
-			{
-				TryRegisterInheritedProperties(force: true);
-			}
 
 			if (precedence == null)
 			{
@@ -378,6 +368,18 @@ namespace Microsoft.UI.Xaml
 			}
 
 			return DependencyProperty.UnsetValue;
+		}
+
+		private object? GetValue(DependencyPropertyDetails propertyDetails)
+		{
+			if (propertyDetails == _properties.DataContextPropertyDetails || propertyDetails == _properties.TemplatedParentPropertyDetails)
+			{
+				TryRegisterInheritedProperties(force: true);
+			}
+
+			return propertyDetails.CurrentHighestValuePrecedence == DependencyPropertyValuePrecedences.DefaultValue
+				? GetDefaultValue(propertyDetails.Property)
+				: propertyDetails.GetEffectiveValue();
 		}
 
 		/// <summary>
