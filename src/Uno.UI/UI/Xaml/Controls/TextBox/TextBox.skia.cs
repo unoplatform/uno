@@ -5,10 +5,12 @@ using System.Text;
 using System.Windows.Input;
 using Windows.Foundation;
 using Windows.System;
+using Windows.UI;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
 using SkiaSharp;
 using Uno.Extensions;
 using Uno.UI;
@@ -38,7 +40,7 @@ public partial class TextBox
 	private SelectionDetails _selection;
 
 	private float _caretXOffset; // this is not necessarily the visual offset of the caret, but where the caret is logically supposed to be when moving up and down with the keyboard, even if the caret is temporarily elsewhere
-	private CaretDisplayMode _caretMode = CaretDisplayMode.NoCaret;
+	private CaretDisplayMode _caretMode = CaretDisplayMode.ThumblessCaretHidden;
 
 	private (int start, int length)? _pendingSelection;
 
@@ -57,6 +59,8 @@ public partial class TextBox
 
 	private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromSeconds(0.5) };
 
+	private readonly CaretWithStemAndThumb _selectionStartThumbfulCaret = new CaretWithStemAndThumb() { Visibility = Visibility.Collapsed };
+	private readonly CaretWithStemAndThumb _selectionEndThumbfulCaret = new CaretWithStemAndThumb() { Visibility = Visibility.Collapsed };
 	private TextBoxView _textBoxView;
 	private MenuFlyout _contextMenu;
 	private readonly Dictionary<ContextMenuItem, MenuFlyoutItem> _flyoutItems = new();
@@ -70,10 +74,20 @@ public partial class TextBox
 		get => _caretMode;
 		set
 		{
-			_caretMode = value;
-			if (value is CaretDisplayMode.ThumblessCaretShowing)
+			if (_caretMode != value)
 			{
-				_timer.Start(); // restart
+				_caretMode = value;
+				UpdateDisplaySelection();
+				TextBoxView?.DisplayBlock.InvalidateInlines(false);
+				if (value is CaretDisplayMode.ThumblessCaretShowing)
+				{
+					_timer.Start(); // restart
+				}
+				else if (value is CaretDisplayMode.CaretWithThumbsBothEndsShowing
+						 or CaretDisplayMode.CaretWithThumbsOnlyEndShowing)
+				{
+					_timer.Stop();
+				}
 			}
 		}
 	}
@@ -203,20 +217,57 @@ public partial class TextBox
 						}
 					};
 
+					canvas.AddChild(_selectionStartThumbfulCaret);
+					canvas.AddChild(_selectionEndThumbfulCaret);
+
 					displayBlock.DesiredSizeChangedCallback = () => canvas.Width = Math.Ceiling(displayBlock.ActualWidth + InlineCollection.CaretThickness);
 
 					var inlines = displayBlock.Inlines;
 
+					var startThumbCaretVisible = false;
+					var endThumbCaretVisible = false;
+
+					inlines.DrawingFinished += () =>
+					{
+						_selectionStartThumbfulCaret.Visibility = startThumbCaretVisible ? Visibility.Visible : Visibility.Collapsed;
+						_selectionEndThumbfulCaret.Visibility = endThumbCaretVisible ? Visibility.Visible : Visibility.Collapsed;
+						startThumbCaretVisible = false;
+						endThumbCaretVisible = false;
+					};
+
 					inlines.CaretFound += args =>
 					{
-						var caretRect = args.rect;
-						var compositor = _visual.Compositor;
-						var brush = DefaultBrushes.TextForegroundBrush.GetOrCreateCompositionBrush(compositor);
-						// IsAntiAlias = false is important because we want the caret to be exactly a single pixel.
-						// If antialiased, it might bleed into the neighbouring pixels.
-						var caretPaint = new SKPaint { Style = SKPaintStyle.Fill, IsAntialias = false, IsAutohinted = true };
-						brush.UpdatePaint(caretPaint, caretRect.ToSKRect());
-						args.canvas.DrawRect(new SKRect((float)caretRect.Left, (float)caretRect.Top, (float)caretRect.Right, (float)caretRect.Bottom), caretPaint);
+						switch (CaretMode)
+						{
+							case CaretDisplayMode.ThumblessCaretHidden:
+								break;
+							case CaretDisplayMode.ThumblessCaretShowing:
+								var caretRect = args.rect;
+								var compositor = _visual.Compositor;
+								var brush = DefaultBrushes.TextForegroundBrush.GetOrCreateCompositionBrush(compositor);
+								var caretPaint = new SKPaint(); // we create a new caret everytime to dodge the complications that occur when trying to "reset" an SKPaint.
+								brush.UpdatePaint(caretPaint, caretRect.ToSKRect());
+								args.canvas.DrawRect(new SKRect((float)caretRect.Left, (float)caretRect.Top, (float)caretRect.Right, (float)caretRect.Bottom), caretPaint);
+								break;
+							case CaretDisplayMode.CaretWithThumbsOnlyEndShowing when args.endCaret:
+							case CaretDisplayMode.CaretWithThumbsBothEndsShowing:
+								{
+									var caret = args.endCaret ? _selectionEndThumbfulCaret : _selectionStartThumbfulCaret;
+									var left = args.rect.GetMidX() - caret.Width / 2;
+									Canvas.SetLeft(caret, left);
+									Canvas.SetTop(caret, args.rect.Top);
+									caret.Height = args.rect.Height + 16;
+									if (args.endCaret)
+									{
+										endThumbCaretVisible = true;
+									}
+									else
+									{
+										startThumbCaretVisible = true;
+									}
+								}
+								break;
+						}
 					};
 
 					ContentElement.Content = grid;
@@ -252,22 +303,32 @@ public partial class TextBox
 	{
 		_pendingSelection = null;
 		TrySetCurrentlyTyping(false);
+
+		if (CaretMode is CaretDisplayMode.ThumblessCaretShowing or CaretDisplayMode.ThumblessCaretHidden)
+		{
+			CaretMode = CaretDisplayMode.ThumblessCaretShowing;
+			_timer.Start(); // restart
+		}
+
 		if (!_inSelectInternal)
 		{
 			// SelectInternal sets _selectionEndsAtTheStart and _caretXOffset on its own
 			_selection.selectionEndsAtTheStart = false;
 			_caretXOffset = (float)(DisplayBlockInlines?.GetRectForIndex(start + length).Left ?? 0);
 		}
+
 		_selection = (start, length, _selection.selectionEndsAtTheStart);
+
 		if (!_isSkiaTextBox)
 		{
 			TextBoxView?.Select(start, length);
 		}
 		else
 		{
-			if (length == 0)
+			if (length == 0 && CaretMode == CaretDisplayMode.CaretWithThumbsBothEndsShowing)
 			{
-				CaretMode = CaretDisplayMode.ThumblessCaretShowing;
+				// It doesn't make sense to have 2 caret ends when there's no selection.
+				CaretMode = CaretDisplayMode.CaretWithThumbsOnlyEndShowing;
 			}
 			UpdateDisplaySelection();
 			UpdateScrolling();
@@ -293,10 +354,10 @@ public partial class TextBox
 		if (_isSkiaTextBox && TextBoxView?.DisplayBlock.Inlines is { } inlines)
 		{
 			inlines.Selection = (SelectionStart, SelectionStart + SelectionLength);
-			inlines.RenderSelection = FocusState != FocusState.Unfocused || (_contextMenu?.IsOpen ?? false);
-			var caretShowing = CaretMode is CaretDisplayMode.ThumblessCaretShowing or CaretDisplayMode.CaretWithThumbsOnlyEndShowing or CaretDisplayMode.CaretWithThumbsBothEndsShowing;
-			inlines.RenderCaret = inlines.RenderSelection && caretShowing && !FeatureConfiguration.TextBox.HideCaret && !IsReadOnly && _selection.length == 0;
-			inlines.CaretMode = _selection.selectionEndsAtTheStart ? InlineCollection.CaretLocation.CaretAtSelectionStart : InlineCollection.CaretLocation.CaretAtSelectionEnd;
+			var isFocused = FocusState != FocusState.Unfocused || (_contextMenu?.IsOpen ?? false);
+			inlines.RenderSelection = isFocused;
+			var caretShowing = (CaretMode is CaretDisplayMode.ThumblessCaretShowing && _selection.length == 0) || CaretMode is CaretDisplayMode.CaretWithThumbsOnlyEndShowing or CaretDisplayMode.CaretWithThumbsBothEndsShowing;
+			inlines.RenderCaret = isFocused && caretShowing && !FeatureConfiguration.TextBox.HideCaret && !IsReadOnly;
 		}
 	}
 
@@ -336,6 +397,14 @@ public partial class TextBox
 
 		base.OnKeyDown(args);
 
+		if (_selection.length != 0 &&
+			args.Key is not (VirtualKey.Up or VirtualKey.Down or VirtualKey.Left or VirtualKey.Right))
+		{
+			// On WinUI, pressing anything except arrow keys will immediately make the caret thumbless.
+			// Even shift + arrow keys will make the caret thumbless (because it's a shift _then_ an arrow key).
+			CaretMode = CaretDisplayMode.ThumblessCaretShowing;
+		}
+
 		// Note: On windows ** only KeyDown ** is handled (not KeyUp)
 
 		// move to possibly-negative selection length format
@@ -372,7 +441,7 @@ public partial class TextBox
 				KeyDownDelete(args, ref text, ctrl, shift, ref selectionStart, ref selectionLength);
 				break;
 			case VirtualKey.A when ctrl:
-				if (!IsDraggingCaretWithPointer)
+				if (!_pointerCaptured)
 				{
 					args.Handled = true;
 					TrySetCurrentlyTyping(false);
@@ -381,16 +450,16 @@ public partial class TextBox
 				}
 				break;
 			case VirtualKey.Z when ctrl:
-				if (!IsDraggingCaretWithPointer)
+				if (!_pointerCaptured)
 				{
 					args.Handled = true;
 					Undo();
 				}
 				return;
 			case VirtualKey.Y when ctrl:
-				if (!IsDraggingCaretWithPointer)
+				if (!_pointerCaptured)
 				{
-					args.Handled = !IsDraggingCaretWithPointer;
+					args.Handled = true;
 					Redo();
 				}
 				return;
@@ -408,14 +477,15 @@ public partial class TextBox
 				CopySelectionToClipboard();
 				break;
 			case VirtualKey.Escape:
-				if (IsDraggingCaretWithPointer)
+				if (_pointerCaptured)
 				{
 					args.Handled = true;
-					_caretDraggingPointerType = null;
+					ReleasePointerCaptures();
+					_pointerCaptured = false;
 				}
 				break;
 			default:
-				if (!IsReadOnly && !IsDraggingCaretWithPointer && args.UnicodeKey is { } c && (AcceptsReturn || args.UnicodeKey != '\r'))
+				if (!IsReadOnly && !_pointerCaptured && args.UnicodeKey is { } c && (AcceptsReturn || args.UnicodeKey != '\r'))
 				{
 					TrySetCurrentlyTyping(true);
 					var start = Math.Min(selectionStart, selectionStart + selectionLength);
@@ -435,7 +505,7 @@ public partial class TextBox
 
 		_suppressCurrentlyTyping = true;
 		_clearHistoryOnTextChanged = false;
-		if (!IsDraggingCaretWithPointer)
+		if (!_pointerCaptured)
 		{
 			_pendingSelection = (selectionStart, selectionLength);
 		}
@@ -454,7 +524,7 @@ public partial class TextBox
 
 	private void KeyDownBack(KeyRoutedEventArgs args, ref string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
-		if (IsDraggingCaretWithPointer)
+		if (_pointerCaptured)
 		{
 			return;
 		}
@@ -498,7 +568,7 @@ public partial class TextBox
 	private void KeyDownUpArrow(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
 		// TODO ctrl+up
-		if (IsDraggingCaretWithPointer)
+		if (_pointerCaptured)
 		{
 			return;
 		}
@@ -526,7 +596,7 @@ public partial class TextBox
 	private void KeyDownDownArrow(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
 		// TODO ctrl+down
-		if (IsDraggingCaretWithPointer)
+		if (_pointerCaptured)
 		{
 			return;
 		}
@@ -553,7 +623,7 @@ public partial class TextBox
 
 	private void KeyDownLeftArrow(KeyRoutedEventArgs args, string text, bool shift, bool ctrl, ref int selectionStart, ref int selectionLength)
 	{
-		if (IsDraggingCaretWithPointer)
+		if (_pointerCaptured)
 		{
 			return;
 		}
@@ -599,7 +669,7 @@ public partial class TextBox
 
 	private void KeyDownRightArrow(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
-		if (IsDraggingCaretWithPointer)
+		if (_pointerCaptured)
 		{
 			return;
 		}
@@ -653,7 +723,7 @@ public partial class TextBox
 
 	private void KeyDownHome(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
-		if (IsDraggingCaretWithPointer)
+		if (_pointerCaptured)
 		{
 			return;
 		}
@@ -678,7 +748,7 @@ public partial class TextBox
 
 	private void KeyDownEnd(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
-		if (IsDraggingCaretWithPointer)
+		if (_pointerCaptured)
 		{
 			return;
 		}
@@ -724,7 +794,7 @@ public partial class TextBox
 
 	private void KeyDownDelete(KeyRoutedEventArgs args, ref string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
-		if (IsDraggingCaretWithPointer)
+		if (_pointerCaptured)
 		{
 			return;
 		}
@@ -1113,7 +1183,7 @@ public partial class TextBox
 		}
 
 		TrySetCurrentlyTyping(false);
-		if (_historyIndex == 0 || IsDraggingCaretWithPointer)
+		if (_historyIndex == 0 || _pointerCaptured)
 		{
 			return;
 		}
@@ -1152,7 +1222,7 @@ public partial class TextBox
 			return;
 		}
 
-		if (_historyIndex == _history.Count - 1 || IsDraggingCaretWithPointer)
+		if (_historyIndex == _history.Count - 1 || _pointerCaptured)
 		{
 			return;
 		}
@@ -1185,7 +1255,6 @@ public partial class TextBox
 
 	private enum CaretDisplayMode
 	{
-		NoCaret,
 		ThumblessCaretHidden,
 		ThumblessCaretShowing,
 		CaretWithThumbsOnlyEndShowing,
@@ -1228,5 +1297,59 @@ public partial class TextBox
 #pragma warning disable 67 // An event was declared but never used in the class in which it was declared.
 		public event EventHandler CanExecuteChanged;
 #pragma warning restore 67 // An event was declared but never used in the class in which it was declared.
+	}
+
+	private class CaretWithStemAndThumb : Grid
+	{
+		// This is equal to the default system accent color on Windows.
+		// This is, however, a constant color that doesn't depend on the
+		// current system accent color. Changing the accent color does NOT
+		// change the thumb color on WinUI, only the selection color.
+		private static readonly Color ThumbFillColor = Colors.FromARGB("FF0078D7");
+
+		private readonly Ellipse _thumb;
+		private readonly Ellipse _thumbRing;
+		private readonly Rectangle _stem;
+
+		public CaretWithStemAndThumb()
+		{
+			Width = 16;
+
+			RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+			RowDefinitions.Add(new RowDefinition { Height = new GridLength(16, GridUnitType.Pixel) });
+
+			_thumb = new Ellipse
+			{
+				IsHitTestVisible = false,
+				Fill = new SolidColorBrush(Colors.Red),
+				Width = 16,
+				Height = 16
+			};
+
+			_thumbRing = new Ellipse
+			{
+				IsHitTestVisible = false,
+				Stroke = new SolidColorBrush(ThumbFillColor),
+				Width = 14,
+				Height = 14,
+				Margin = new Thickness(1)
+			};
+
+			_stem = new Rectangle
+			{
+				IsHitTestVisible = false,
+				HorizontalAlignment = HorizontalAlignment.Center,
+				Stroke = new SolidColorBrush(ThumbFillColor),
+				Width = 2
+			};
+
+			Grid.SetRow(_stem, 0);
+			Grid.SetRow(_thumb, 1);
+			Grid.SetRow(_thumbRing, 1);
+
+			Children.Add(_stem);
+			Children.Add(_thumb);
+			Children.Add(_thumbRing);
+		}
 	}
 }

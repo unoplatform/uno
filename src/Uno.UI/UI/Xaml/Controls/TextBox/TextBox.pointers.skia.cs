@@ -1,21 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Windows.Input;
 using Windows.Foundation;
-using Windows.System;
-using Microsoft.UI.Composition;
-using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Shapes;
-using SkiaSharp;
 using Uno.Extensions;
-using Uno.UI;
 using Uno.UI.Helpers.WinUI;
-using Uno.UI.Xaml;
-using Uno.UI.Xaml.Media;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -25,23 +12,21 @@ using Windows.UI.Input;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-using SelectionDetails = (int start, int length, bool selectionEndsAtTheStart);
-
 public partial class TextBox
 {
-	private (PointerPoint point, int repeatedPresses) _lastPointerDown; // point is null before first press
+	/// <summary>
+	/// point is null before first press. repeatedPresses is only valid if point.Pointer.PointerDeviceType
+	/// is Mouse.
+	/// </summary>
+	private (PointerPoint point, int repeatedPresses) _lastPointerDown;
 	private (int start, int length, bool tripleTap)? _mouseMultiTapChunk;
-	/// <summary>Determines whether the caret is currently being dragged through touch or mouse input. null if no pointer is pressed (also see remark).</summary>
-	/// <remarks>can be null if the pointer is still pressed but Escape is pressed.</remarks>>
-	private PointerDeviceType? _caretDraggingPointerType;
-	private bool IsDraggingCaretWithPointer => _caretDraggingPointerType != null;
 
 	protected override void OnPointerMoved(PointerRoutedEventArgs e)
 	{
 		base.OnPointerMoved(e);
 		e.Handled = true;
 
-		if (!_isSkiaTextBox || !IsDraggingCaretWithPointer)
+		if (!_isSkiaTextBox || !_pointerCaptured)
 		{
 			return;
 		}
@@ -54,7 +39,7 @@ public partial class TextBox
 		{
 			var displayBlock = TextBoxView.DisplayBlock;
 			var point = e.GetCurrentPoint(displayBlock);
-			var index = Math.Max(0, displayBlock.Inlines.GetIndexAt(point.Position, false, true));
+			var index = Math.Max(0, DisplayBlockInlines.GetIndexAt(point.Position, false, true));
 			if (_mouseMultiTapChunk is { } mtc)
 			{
 				(int start, int length) chunk;
@@ -94,6 +79,11 @@ public partial class TextBox
 		base.OnRightTapped(e);
 		e.Handled = true;
 
+		OpenContextMenu(e.GetPosition(this));
+	}
+
+	private void OpenContextMenu(Point p)
+	{
 		if (_isSkiaTextBox)
 		{
 			if (_contextMenu is null)
@@ -140,7 +130,7 @@ public partial class TextBox
 				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.SelectAll]);
 			}
 
-			_contextMenu.ShowAt(this, e.GetPosition(this));
+			_contextMenu.ShowAt(this, p);
 		}
 	}
 
@@ -158,65 +148,109 @@ public partial class TextBox
 	partial void OnPointerPressedPartial(PointerRoutedEventArgs args)
 	{
 		TrySetCurrentlyTyping(false);
+		_contextMenu?.Close();
 
 		if (!_isSkiaTextBox)
 		{
 			return;
 		}
 
+		var currentPoint = args.GetCurrentPoint(null);
 		if (args.Pointer.PointerDeviceType == PointerDeviceType.Touch)
 		{
-			// TODO
+			// we handle touch on the PointerReleased end
+			_lastPointerDown = (currentPoint, 0);
 		}
-		else
+		else if (!currentPoint.Properties.IsRightButtonPressed) // Mouse (a pen is considered a mouse for now)
 		{
-			if (args.GetCurrentPoint(null) is var currentPoint
-				&& (!currentPoint.Properties.IsRightButtonPressed || SelectionLength == 0))
+			var displayBlock = TextBoxView.DisplayBlock;
+			var index = Math.Max(0, DisplayBlockInlines.GetIndexAt(args.GetCurrentPoint(displayBlock).Position, true, true));
+
+			if (currentPoint.Properties.IsLeftButtonPressed
+				&& _lastPointerDown.point is { } p
+				&& IsMultiTapGesture((p.PointerId, p.Timestamp, p.Position), currentPoint))
 			{
-				if (currentPoint.Properties.IsLeftButtonPressed
-					&& _lastPointerDown.point is { } p
-					&& IsMultiTapGesture((p.PointerId, p.Timestamp, p.Position), currentPoint))
+				// multiple left presses
+
+				if (_lastPointerDown.repeatedPresses == 1)
 				{
-					// multiple left presses
+					// triple tap
 
-					var displayBlock = TextBoxView.DisplayBlock;
-					var index = Math.Max(0, displayBlock.Inlines.GetIndexAt(args.GetCurrentPoint(displayBlock).Position, false, true));
-
-					if (_lastPointerDown.repeatedPresses == 1)
-					{
-						// triple tap
-
-						var startOfLine = StartOfLine(index);
-						Select(startOfLine, EndOfLine(index) + 1 - startOfLine);
-						_mouseMultiTapChunk = (SelectionStart, SelectionLength, true);
-						_lastPointerDown = (currentPoint, 2);
-					}
-					else // _lastPointerDown.repeatedPresses == 0 or 2
-					{
-						// double tap
-						var chunk = FindChunkAt(index, true);
-						Select(chunk.start, chunk.length);
-						_mouseMultiTapChunk = (chunk.start, chunk.length, false);
-						_lastPointerDown = (currentPoint, 1);
-					}
+					var startOfLine = StartOfLine(index);
+					Select(startOfLine, EndOfLine(index) + 1 - startOfLine);
+					_mouseMultiTapChunk = (SelectionStart, SelectionLength, true);
+					_lastPointerDown = (currentPoint, 2);
 				}
-				else
+				else // _lastPointerDown.repeatedPresses == 0 or 2
 				{
-					// single click
-					var displayBlock = TextBoxView.DisplayBlock;
-					var index = Math.Max(0, displayBlock.Inlines.GetIndexAt(args.GetCurrentPoint(displayBlock).Position, true, true));
-					Select(index, 0);
-					_lastPointerDown = (currentPoint, 0);
+					// double tap
+					var chunk = FindChunkAt(index, true);
+					Select(chunk.start, chunk.length);
+					_mouseMultiTapChunk = (chunk.start, chunk.length, false);
+					_lastPointerDown = (currentPoint, 1);
 				}
-
-				_caretDraggingPointerType = PointerDeviceType.Mouse;
+			}
+			else
+			{
+				// single click
+				CaretMode = CaretDisplayMode.ThumblessCaretShowing;
+				Select(index, 0);
+				_lastPointerDown = (currentPoint, 0);
 			}
 		}
 	}
 
 	partial void OnPointerReleasedPartial(PointerRoutedEventArgs args)
 	{
-		_caretDraggingPointerType = null;
+		_mouseMultiTapChunk = null;
+
+		if (args.Pointer.PointerDeviceType is not PointerDeviceType.Touch)
+		{
+			// Mouse is handled on the PointerPressed side
+			return;
+		}
+
+		if ((args.GetCurrentPoint(null).Timestamp - _lastPointerDown.point.Timestamp) >= GestureRecognizer.HoldMinDelayTicks)
+		{
+			// Touch holding
+			OpenContextMenu(args.GetCurrentPoint(this).Position);
+		}
+		else if (!Text.IsNullOrEmpty()) // Touch tap
+		{
+			var displayBlock = TextBoxView.DisplayBlock;
+			var point = args.GetCurrentPoint(displayBlock).Position;
+			var index = Math.Max(0, DisplayBlockInlines.GetIndexAt(point, true, true));
+
+			var tappedChunk = FindChunkAt(index, true);
+
+			var tappedInsideSelection = _selection.start <= index && index < _selection.start + _selection.length;
+			if (tappedInsideSelection && CaretMode != CaretDisplayMode.CaretWithThumbsBothEndsShowing)
+			{
+				CaretMode = CaretDisplayMode.CaretWithThumbsBothEndsShowing;
+			}
+			else if (_selection.length == 0 && FindChunkAt(_selection.start, true) is var currentChunk && currentChunk.start <= index && index < currentChunk.start + currentChunk.length)
+			{
+				Select(tappedChunk.start, tappedChunk.length); // touch selection doesn't go backwards (no "negative length")
+				CaretMode = CaretDisplayMode.CaretWithThumbsBothEndsShowing;
+			}
+			else
+			{
+				var lastNonSpanCharIndex = Text[tappedChunk.start..(tappedChunk.start + tappedChunk.length)].IndexOf(' ');
+				var rightEndIndex = lastNonSpanCharIndex == -1 ? tappedChunk.start + tappedChunk.length - 1 : tappedChunk.start + lastNonSpanCharIndex;
+				var leftEndIndex = tappedChunk.start;
+				var leftEnd = DisplayBlockInlines.GetRectForIndex(leftEndIndex);
+				var rightEnd = DisplayBlockInlines.GetRectForIndex(rightEndIndex);
+
+				var closerEnd = Math.Abs(point.X - leftEnd.Left) < Math.Abs(point.X - rightEnd.Right) ? leftEndIndex : rightEndIndex;
+
+				CaretMode = CaretDisplayMode.CaretWithThumbsOnlyEndShowing;
+				Select(closerEnd, 0);
+			}
+		}
+	}
+
+	partial void OnPointerCaptureLostPartial(PointerRoutedEventArgs e)
+	{
 		_mouseMultiTapChunk = null;
 	}
 

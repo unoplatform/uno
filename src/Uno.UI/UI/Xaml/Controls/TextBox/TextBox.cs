@@ -55,6 +55,8 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool _suppressTextChanged;
 		private bool _wasTemplateRecycled;
 
+		private bool _pointerCaptured;
+
 #pragma warning disable CS0067, CS0649
 		private IFrameworkElement _placeHolder;
 		private ContentControl _contentElement;
@@ -1011,7 +1013,10 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.OnPointerCaptureLost(e);
 			_isPointerOver = false;
+			ReleasePointerCaptures();
+			_pointerCaptured = false;
 			UpdateVisualState();
+			OnPointerCaptureLostPartial(e);
 		}
 
 		protected override void OnPointerPressed(PointerRoutedEventArgs args)
@@ -1031,6 +1036,7 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					if (CapturePointer(args.Pointer))
 					{
+						_pointerCaptured = true;
 						Focus(FocusState.Pointer);
 					}
 				}
@@ -1049,6 +1055,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void OnPointerReleasedPartial(PointerRoutedEventArgs args);
 
+		partial void OnPointerCaptureLostPartial(PointerRoutedEventArgs e);
+
 		/// <inheritdoc />
 		protected override void OnPointerReleased(PointerRoutedEventArgs args)
 		{
@@ -1060,6 +1068,8 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			args.Handled = true;
+			ReleasePointerCaptures();
+			_pointerCaptured = false;
 
 			OnPointerReleasedPartial(args);
 		}
@@ -1340,6 +1350,11 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					_suppressCurrentlyTyping = false;
 					_clearHistoryOnTextChanged = true;
+					if (Text.IsNullOrEmpty())
+					{
+						// On WinUI, the caret never has thumbs if there is no text
+						CaretMode = CaretDisplayMode.ThumblessCaretShowing;
+					}
 				}
 #endif
 

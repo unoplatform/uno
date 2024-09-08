@@ -18,13 +18,6 @@ namespace Microsoft.UI.Xaml.Documents
 {
 	partial class InlineCollection
 	{
-		internal enum CaretLocation
-		{
-			CaretAtSelectionStart,
-			CaretAtSelectionEnd,
-			CaretAtBothSelectionEnds
-		}
-
 		// The caret thickness is actually always 1-pixel wide regardless of how big the text is
 		internal const float CaretThickness = 1;
 
@@ -49,20 +42,7 @@ namespace Microsoft.UI.Xaml.Documents
 
 		private SelectionDetails _selection = new(0, 0, 0, 0);
 		private bool _renderSelection;
-		private CaretLocation _caretMode;
 		private bool _renderCaret;
-		internal CaretLocation CaretMode
-		{
-			get => _caretMode;
-			set
-			{
-				if (_caretMode != value)
-				{
-					_caretMode = value;
-					((IBlock)_collection.GetParent()).Invalidate(false);
-				}
-			}
-		}
 		internal bool RenderSelection
 		{
 			get => _renderSelection;
@@ -476,19 +456,8 @@ namespace Microsoft.UI.Xaml.Documents
 				// empty, so caret is at the beginning
 				if (RenderCaret)
 				{
-					switch (CaretMode)
-					{
-						case CaretLocation.CaretAtSelectionStart:
-							CaretFound?.Invoke((new Rect(new Point(0, 0), new Point(CaretThickness, _lastDefaultLineHeight)), session.Canvas, false));
-							break;
-						case CaretLocation.CaretAtSelectionEnd:
-							CaretFound?.Invoke((new Rect(new Point(0, 0), new Point(CaretThickness, _lastDefaultLineHeight)), session.Canvas, true));
-							break;
-						case CaretLocation.CaretAtBothSelectionEnds:
-							CaretFound?.Invoke((new Rect(new Point(0, 0), new Point(CaretThickness, _lastDefaultLineHeight)), session.Canvas, false));
-							CaretFound?.Invoke((new Rect(new Point(0, 0), new Point(CaretThickness, _lastDefaultLineHeight)), session.Canvas, true));
-							break;
-					}
+					CaretFound?.Invoke((new Rect(new Point(0, 0), new Point(CaretThickness, _lastDefaultLineHeight)), session.Canvas, false));
+					CaretFound?.Invoke((new Rect(new Point(0, 0), new Point(CaretThickness, _lastDefaultLineHeight)), session.Canvas, true));
 				}
 				DrawingFinished?.Invoke();
 
@@ -807,14 +776,7 @@ namespace Microsoft.UI.Xaml.Documents
 			var spanStartingIndex = characterCountSoFar;
 			if (RenderCaret)
 			{
-				ReadOnlySpan<(int, int, bool)> span = CaretMode switch
-				{
-					CaretLocation.CaretAtSelectionStart => [(_selection.StartLine, _selection.StartIndex, false)],
-					CaretLocation.CaretAtSelectionEnd => [(_selection.EndLine, _selection.EndIndex, true)],
-					CaretLocation.CaretAtBothSelectionEnds => [(_selection.StartLine, _selection.StartIndex, false), (_selection.EndLine, _selection.EndIndex, true)],
-					_ => throw new ArgumentOutOfRangeException()
-				};
-				foreach (var (l, i, caretAtSelectionEnd) in span)
+				foreach (var (l, i, caretAtSelectionEnd) in (ReadOnlySpan<(int, int, bool)>)[(_selection.StartLine, _selection.StartIndex, false), (_selection.EndLine, _selection.EndIndex, true)])
 				{
 					float caretLocation = float.MinValue;
 
