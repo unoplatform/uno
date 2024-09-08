@@ -53,7 +53,6 @@ namespace Uno.UI.DataBinding
 		private static Dictionary<GetValueSetterCacheKey, ValueSetterHandler> _getValueSetter = new(GetValueSetterCacheKey.Comparer);
 		private static Dictionary<GenericPropertyCacheKey, ValueGetterHandler> _getSubstituteValueGetter = new(GenericPropertyCacheKey.Comparer);
 		private static Dictionary<GenericPropertyCacheKey, ValueUnsetterHandler> _getValueUnsetter = new(GenericPropertyCacheKey.Comparer);
-		private static Dictionary<EventCacheKey, bool> _isEvent = new(EventCacheKey.Comparer);
 
 		private static HashtableEx _getPropertyType = new HashtableEx(GetPropertyTypeKey.Comparer, usePooling: false);
 		private static GetPropertyTypeKey _getPropertyTypeKey = new();
@@ -72,7 +71,6 @@ namespace Uno.UI.DataBinding
 			_getValueSetter.Clear();
 			_getSubstituteValueGetter.Clear();
 			_getValueUnsetter.Clear();
-			_isEvent.Clear();
 			_getPropertyType.Clear();
 		}
 
@@ -91,23 +89,6 @@ namespace Uno.UI.DataBinding
 		/// Sets an external metadata provider.
 		/// </summary>
 		public static IBindableMetadataProvider? BindableMetadataProvider { get; set; }
-
-		public static bool IsEvent(Type type, string property)
-		{
-			var key = new EventCacheKey(type, property);
-
-			bool result;
-
-			lock (_isEvent)
-			{
-				if (!_isEvent.TryGetValue(key, out result))
-				{
-					_isEvent.Add(key, result = InternalIsEvent(type, property));
-				}
-			}
-
-			return result;
-		}
 
 		public static Type? GetPropertyType(Type type, string property, bool allowPrivateMembers)
 		{
@@ -209,15 +190,6 @@ namespace Uno.UI.DataBinding
 			}
 
 			return result;
-		}
-
-		private static bool InternalIsEvent(Type type, string property)
-		{
-#if METRO
-			return type.GetTypeInfo().GetDeclaredEvent(property) != null;
-#else
-			return type.GetEvent(property) != null;
-#endif
 		}
 
 		private static Type? InternalGetPropertyType(Type type, string property, bool allowPrivateMembers)
