@@ -32,7 +32,8 @@ internal sealed class ModifiedValue
 	{
 		if (_localCanDefeatAnimationSuppressed == 0 &&
 			baseValueSource == DependencyPropertyValuePrecedences.Local &&
-			value != DependencyProperty.UnsetValue)
+			value != DependencyProperty.UnsetValue &&
+			DependencyObjectStore.AreDifferent(_baseValue, value))
 		{
 			LocalValueNewerThanAnimatedValue = true;
 		}
