@@ -16,6 +16,7 @@ using Microsoft.UI.Xaml.Shapes;
 using Uno.UI.RuntimeTests.Helpers;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Windows.Foundation.Metadata;
+using FluentAssertions;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes;
 
@@ -164,5 +165,49 @@ public class Given_Rectangle
 
 		Assert.AreEqual(greenBounds.Top - redBounds.Top, redBounds.Bottom - greenBounds.Bottom);
 	}
+
+#if __IOS__
+	[TestMethod]
+	public async Task When_Fill_Is_AcrylicBrush()
+	{
+		var unhandledExceptionFired = false;
+		void OnUnhandled(object sender, global::Microsoft.UI.Xaml.UnhandledExceptionEventArgs args)
+		{
+			unhandledExceptionFired = true;
+			args.Handled = true;
+		}
+		try
+		{
+			global::Microsoft.UI.Xaml.Application.Current.UnhandledException += OnUnhandled;
+			var rectangle = new Rectangle()
+			{
+				Width = 100,
+				Height = 100,
+				Fill = new AcrylicBrush()
+				{
+					BackgroundSource = AcrylicBackgroundSource.Backdrop,
+					TintColor = Microsoft.UI.Colors.Red,
+					TintOpacity = 0.5,
+					FallbackColor = Microsoft.UI.Colors.Green,
+				},
+			};
+			var root = new Grid
+			{
+				Children =
+				{
+					rectangle,
+				},
+			};
+			await UITestHelper.Load(root);
+			var screenshot = await UITestHelper.ScreenShot(root);
+			ImageAssert.HasColorAt(screenshot, new(50, 50), Microsoft.UI.Colors.Green, tolerance: 0);
+			unhandledExceptionFired.Should().BeFalse();
+		}
+		finally
+		{
+			Application.Current.UnhandledException -= OnUnhandled;
+		}
+	}
+#endif
 }
 #endif
