@@ -18,6 +18,8 @@ using System.Collections;
 using System.Globalization;
 using Windows.ApplicationModel.Calls;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+
 
 #if __ANDROID__
 using View = Android.Views.View;
@@ -537,6 +539,12 @@ namespace Microsoft.UI.Xaml
 				throw new ArgumentException("SetValue must not be called with precedence DependencyPropertyValuePrecedences.Coercion, as it expects a non-coerced value to function properly.");
 			}
 
+			if (precedence == DependencyPropertyValuePrecedences.DefaultValue)
+			{
+				Debug.Assert(!AreDifferent(value, GetDefaultValue(property)));
+				return;
+			}
+
 			var actualInstanceAlias = ActualInstance;
 
 			if (actualInstanceAlias != null)
@@ -545,11 +553,6 @@ namespace Microsoft.UI.Xaml
 
 				try
 				{
-					if ((value == DependencyProperty.UnsetValue) && precedence == DependencyPropertyValuePrecedences.DefaultValue)
-					{
-						throw new InvalidOperationException("The default value must be a valid value");
-					}
-
 					ValidatePropertyOwner(property);
 
 					// Resolve the stack once for the instance, for performance.
