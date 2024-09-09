@@ -26,7 +26,7 @@ namespace Uno.UI.Tests.BinderTests
 		[TestMethod]
 		public void When_WithHigherPrecedence_SetValue_Then_ValueUpdated()
 		{
-			var (target, sut) = Arrange(DependencyPropertyValuePrecedences.Animations);
+			var (target, sut) = Arrange(forAnimations: true);
 
 			sut.Value = "Animations"; // Animations
 
@@ -36,33 +36,9 @@ namespace Uno.UI.Tests.BinderTests
 		[TestMethod]
 		public void When_WithHigherPrecedence_SetValueAndClear_SetTargetValue_Then_ValueUpdated()
 		{
-			var (target, sut) = Arrange(DependencyPropertyValuePrecedences.Animations);
+			var (target, sut) = Arrange(forAnimations: true);
 
 			sut.Value = "Animations";
-			sut.ClearValue();
-
-			target.Value = "TargetLocalValue";
-
-			Assert.AreEqual("TargetLocalValue", target.Value);
-		}
-
-		[TestMethod]
-		public void When_WithLowerPrecedence_SetValue_Then_ValueUpdated()
-		{
-			var (target, sut) = Arrange(DependencyPropertyValuePrecedences.Inheritance);
-			target.Value = "CustomDefaultLocalValue";
-
-			sut.Value = "Inherit";
-
-			Assert.AreEqual("CustomDefaultLocalValue", target.Value);
-		}
-
-		[TestMethod]
-		public void When_WithLowerPrecedence_SetValueAndClear_SetTargetValue_Then_ValueUpdated()
-		{
-			var (target, sut) = Arrange(DependencyPropertyValuePrecedences.Inheritance);
-
-			sut.Value = "Inherit";
 			sut.ClearValue();
 
 			target.Value = "TargetLocalValue";
@@ -173,10 +149,10 @@ namespace Uno.UI.Tests.BinderTests
 			result[3].PropertyName.Should().Be("value");
 		}
 
-		private static (MyTarget target, BindingPath binding) Arrange(DependencyPropertyValuePrecedences? precedence = null)
+		private static (MyTarget target, BindingPath binding) Arrange(bool forAnimations = false)
 		{
 			var target = new MyTarget();
-			var binding = new BindingPath(nameof(MyTarget.Value), MyTarget.FallbackValue, precedence, false)
+			var binding = new BindingPath(nameof(MyTarget.Value), MyTarget.FallbackValue, forAnimations, false)
 			{
 				DataContext = target
 			};
@@ -184,10 +160,10 @@ namespace Uno.UI.Tests.BinderTests
 			return (target, binding);
 		}
 
-		private static (object target, BindingPath binding) ArrangeIncorrect(DependencyPropertyValuePrecedences? precedence = null)
+		private static (object target, BindingPath binding) ArrangeIncorrect(bool forAnimations = false)
 		{
 			var target = new object();
-			var binding = new BindingPath(nameof(MyTarget.Value), MyTarget.FallbackValue, precedence, false)
+			var binding = new BindingPath(nameof(MyTarget.Value), MyTarget.FallbackValue, forAnimations, false)
 			{
 				DataContext = target
 			};
