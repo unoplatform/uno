@@ -26,7 +26,7 @@ internal class WebAssemblyWindowFactoryExtension : INativeWindowFactoryExtension
 	{
 		if (_initialWindow is not null && _initialWindow != window)
 		{
-			throw new InvalidOperationException("FrameBuffer currently supports single window only");
+			throw new InvalidOperationException("Wasm Skia currently supports single window only");
 		}
 
 		_initialWindow = window;
