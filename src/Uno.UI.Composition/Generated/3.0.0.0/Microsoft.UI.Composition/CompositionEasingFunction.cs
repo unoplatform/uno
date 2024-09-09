@@ -3,23 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Composition
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class CompositionEasingFunction : global::Microsoft.UI.Composition.CompositionObject
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		internal CompositionEasingFunction()
-		{
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.UI.Composition.CubicBezierEasingFunction CreateCubicBezierEasingFunction(global::Microsoft.UI.Composition.Compositor owner, global::System.Numerics.Vector2 controlPoint1, global::System.Numerics.Vector2 controlPoint2)
-		{
-			throw new global::System.NotImplementedException("The member CubicBezierEasingFunction CompositionEasingFunction.CreateCubicBezierEasingFunction(Compositor owner, Vector2 controlPoint1, Vector2 controlPoint2) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CubicBezierEasingFunction%20CompositionEasingFunction.CreateCubicBezierEasingFunction%28Compositor%20owner%2C%20Vector2%20controlPoint1%2C%20Vector2%20controlPoint2%29");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Composition.CompositionEasingFunction.CreateCubicBezierEasingFunction(Microsoft.UI.Composition.Compositor, System.Numerics.Vector2, System.Numerics.Vector2)
+
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Composition.LinearEasingFunction CreateLinearEasingFunction(global::Microsoft.UI.Composition.Compositor owner)
