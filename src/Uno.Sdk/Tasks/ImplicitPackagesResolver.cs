@@ -266,9 +266,6 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 			.UpdateManifest(PackageManifest.Group.Maui, MauiVersion);
 	}
 
-	private bool HasFeature(UnoFeature feature) =>
-		_unoFeatures.Any(x => x == feature);
-
 	private UnoFeature[] GetFeatures()
 	{
 		if (string.IsNullOrEmpty(UnoFeatures))
