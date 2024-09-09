@@ -766,6 +766,11 @@ namespace Microsoft.UI.Xaml
 		{
 			// Trigger the coercion mechanism of SetValue, by re-applying the base value (non-coerced value).
 			var (baseValue, basePrecedence) = GetBaseValue(property);
+			if (basePrecedence == DependencyPropertyValuePrecedences.DefaultValue && property.IsInherited)
+			{
+				basePrecedence = DependencyPropertyValuePrecedences.Inheritance;
+			}
+
 			SetValue(property, baseValue, basePrecedence);
 		}
 

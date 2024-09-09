@@ -387,10 +387,6 @@ namespace Microsoft.UI.Xaml.Documents
 				// So, we set this with ImplicitStyle precedence which is a higher precedence than Inheritance.
 				hl.SetCurrentForeground();
 			}
-			else
-			{
-				this.SetValue(foregroundProperty, DefaultBrushes.TextForegroundBrush, DependencyPropertyValuePrecedences.DefaultValue);
-			}
 
 			((IDependencyObjectStoreProvider)this).Store.SetLastUsedTheme(Application.Current?.RequestedThemeForResources);
 		}
