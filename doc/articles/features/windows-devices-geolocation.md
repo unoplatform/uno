@@ -23,6 +23,18 @@ The following `Geolocator` APIs are implemented on Android, iOS, macOS, and WASM
 * `DesiredAccuracy`
 * `DesiredAccuracyInMeters`
 
+### Platform-specific Requirements
+
+#### Android
+
+When using the `RequestAccessAsync` method on Android, you must configure one permission before using this API in your project. To do so, add the following to your `AndroidManifest.xml` file:
+
+```xml
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+```
+
+Additionally, when checking for this permission, ensure that `IsLocationEnabled` returns `true`; otherwise, the method will return `GeolocationAccessStatus.Denied`.
+
 ### Implementation notes
 
 `StatusChanged` event is delivered to all `Geolocator` instances which have subscribers as a "broadcast". This is unusual, but in line with the UWP implementation.
