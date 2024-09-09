@@ -198,13 +198,7 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateColorBrush()
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateColorBrush(Windows.UI.Color)
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateContainerVisual()
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Composition.CubicBezierEasingFunction CreateCubicBezierEasingFunction(global::System.Numerics.Vector2 controlPoint1, global::System.Numerics.Vector2 controlPoint2)
-		{
-			throw new global::System.NotImplementedException("The member CubicBezierEasingFunction Compositor.CreateCubicBezierEasingFunction(Vector2 controlPoint1, Vector2 controlPoint2) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CubicBezierEasingFunction%20Compositor.CreateCubicBezierEasingFunction%28Vector2%20controlPoint1%2C%20Vector2%20controlPoint2%29");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateCubicBezierEasingFunction(System.Numerics.Vector2, System.Numerics.Vector2)
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateEffectFactory(Windows.Graphics.Effects.IGraphicsEffect)
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateEffectFactory(Windows.Graphics.Effects.IGraphicsEffect, System.Collections.Generic.IEnumerable<string>)
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateExpressionAnimation()
