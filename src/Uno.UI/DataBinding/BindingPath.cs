@@ -242,18 +242,6 @@ namespace Uno.UI.DataBinding
 		}
 
 		/// <summary>
-		/// Sets the value of the <see cref="DependencyPropertyValuePrecedences.Local"/>
-		/// </summary>
-		/// <param name="value">The value to set</param>
-		internal void SetLocalValue(object value)
-		{
-			if (!_disposed)
-			{
-				_value?.SetLocalValue(value);
-			}
-		}
-
-		/// <summary>
 		/// Clears the value of the current precedence.
 		/// </summary>
 		/// <remarks>After this call, the value returned

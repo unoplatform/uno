@@ -22,7 +22,6 @@ namespace Uno.UI.DataBinding
 			private ValueGetterHandler? _valueGetter;
 			private ValueGetterHandler? _substituteValueGetter;
 			private ValueSetterHandler? _valueSetter;
-			private ValueSetterHandler? _localValueSetter;
 			private ValueUnsetterHandler? _valueUnsetter;
 
 			private Type? _dataContextType;
@@ -111,16 +110,6 @@ namespace Uno.UI.DataBinding
 			{
 				BuildValueSetter();
 				SetSourceValue(_valueSetter!, value);
-			}
-
-			/// <summary>
-			/// Sets the value using the <see cref="DependencyPropertyValuePrecedences.Local"/>
-			/// </summary>
-			/// <param name="value">The value to set</param>
-			public void SetLocalValue(object value)
-			{
-				BuildLocalValueSetter();
-				SetSourceValue(_localValueSetter!, value);
 			}
 
 			public Type? PropertyType
@@ -225,7 +214,6 @@ namespace Uno.UI.DataBinding
 					IsDependencyPropertyValueSet = false;
 					_valueGetter = null;
 					_substituteValueGetter = null;
-					_localValueSetter = null;
 					_valueSetter = null;
 					_valueUnsetter = null;
 				}
@@ -237,23 +225,8 @@ namespace Uno.UI.DataBinding
 			{
 				if (_valueSetter == null && _dataContextType != null)
 				{
-					if (!_forAnimations)
-					{
-						BuildLocalValueSetter();
-						_valueSetter = _localValueSetter;
-					}
-					else
-					{
-						_valueSetter = BindingPropertyHelper.GetValueSetter(_dataContextType, PropertyName, convert: true, precedence: DependencyPropertyValuePrecedences.Animations);
-					}
-				}
-			}
-
-			private void BuildLocalValueSetter()
-			{
-				if (_localValueSetter == null && _dataContextType != null)
-				{
-					_localValueSetter = BindingPropertyHelper.GetValueSetter(_dataContextType, PropertyName, convert: true);
+					var precedence = _forAnimations ? DependencyPropertyValuePrecedences.Animations : DependencyPropertyValuePrecedences.Local;
+					_valueSetter = BindingPropertyHelper.GetValueSetter(_dataContextType, PropertyName, convert: true, precedence: precedence);
 				}
 			}
 

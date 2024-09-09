@@ -34,30 +34,6 @@ namespace Uno.UI.Tests.BinderTests
 		}
 
 		[TestMethod]
-		public void When_WithHigherPrecedence_SetValueAndLocalValue_Then_ValueUpdated()
-		{
-			var (target, sut) = Arrange(DependencyPropertyValuePrecedences.Animations);
-
-			sut.Value = "Animations";
-			sut.SetLocalValue("Local");
-
-			// Local value takes over Animations if it's newer.
-			Assert.AreEqual("Local", target.Value);
-		}
-
-		[TestMethod]
-		public void When_WithHigherPrecedence_SetValueAndLocalValueAndClear_Then_ValueUpdated()
-		{
-			var (target, sut) = Arrange(DependencyPropertyValuePrecedences.Animations);
-
-			sut.Value = "Animations";
-			sut.SetLocalValue("Local");
-			sut.ClearValue();
-
-			Assert.AreEqual("Local", target.Value);
-		}
-
-		[TestMethod]
 		public void When_WithHigherPrecedence_SetValueAndClear_SetTargetValue_Then_ValueUpdated()
 		{
 			var (target, sut) = Arrange(DependencyPropertyValuePrecedences.Animations);
@@ -82,29 +58,6 @@ namespace Uno.UI.Tests.BinderTests
 		}
 
 		[TestMethod]
-		public void When_WithLowerPrecedence_SetValueAndLocalValue_Then_ValueUpdated()
-		{
-			var (target, sut) = Arrange(DependencyPropertyValuePrecedences.Inheritance);
-
-			sut.Value = "Inherit";
-			sut.SetLocalValue("Local");
-
-			Assert.AreEqual("Local", target.Value);
-		}
-
-		[TestMethod]
-		public void When_WithLowerPrecedence_SetValueAndLocalValueAndClear_Then_ValueUpdated()
-		{
-			var (target, sut) = Arrange(DependencyPropertyValuePrecedences.Inheritance);
-
-			sut.Value = "Inherit";
-			sut.SetLocalValue("Local");
-			sut.ClearValue();
-
-			Assert.AreEqual("Local", target.Value);
-		}
-
-		[TestMethod]
 		public void When_WithLowerPrecedence_SetValueAndClear_SetTargetValue_Then_ValueUpdated()
 		{
 			var (target, sut) = Arrange(DependencyPropertyValuePrecedences.Inheritance);
@@ -115,25 +68,6 @@ namespace Uno.UI.Tests.BinderTests
 			target.Value = "TargetLocalValue";
 
 			Assert.AreEqual("TargetLocalValue", target.Value);
-		}
-
-		[TestMethod]
-		public void When_Initially_Incorrect_DataContext()
-		{
-			var (target, sut) = ArrangeIncorrect(DependencyPropertyValuePrecedences.Local);
-
-			// Expecting this to fail because the DataContext does not match expectations
-			sut.SetLocalValue("Initial");
-
-			// Fix the DataContext, which should also fix the setters and allow the BindingPath to work correctly
-			var vm = new MyTarget();
-			sut.DataContext = vm;
-
-			// Expecting this to succeed
-			sut.SetLocalValue("Initial2");
-
-			Assert.AreEqual("Initial2", sut.Value);
-			Assert.AreEqual("Initial2", vm.Value);
 		}
 
 		[TestMethod]
