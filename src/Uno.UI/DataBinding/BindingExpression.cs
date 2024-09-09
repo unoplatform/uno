@@ -462,12 +462,12 @@ namespace Microsoft.UI.Xaml.Data
 					// It may be related to https://github.com/unoplatform/uno/issues/190
 					try
 					{
-						DependencyPropertyDetails.SuppressLocalCanDefeatAnimations();
+						ModifiedValue.SuppressLocalCanDefeatAnimations();
 						GetValueSetter()(viewTarget, value);
 					}
 					finally
 					{
-						DependencyPropertyDetails.ContinueLocalCanDefeatAnimations();
+						ModifiedValue.ContinueLocalCanDefeatAnimations();
 					}
 				}
 				else

@@ -1717,18 +1717,6 @@ namespace Uno.UI.Tests.BinderTests
 			sut.PropA.Should().Be("LocalValue");
 			sut.PropB.Should().Be("StyleValueForB");
 
-#if !NETFX_CORE // this part of the test not possible on UWP - extensive check for Uno
-			sut.GetValueForEachPrecedences(MyDependencyObject.PropAProperty).Select(v => v.value)
-				.Should().HaveElementAt((int)DependencyPropertyValuePrecedences.DefaultValue, null)
-				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.ExplicitStyle, "StyleValue")
-				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.Local, "LocalValue");
-
-			sut.GetValueForEachPrecedences(MyDependencyObject.PropBProperty).Select(v => v.value)
-				.Should().HaveElementAt((int)DependencyPropertyValuePrecedences.DefaultValue, null)
-				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.ExplicitStyle, "StyleValueForB")
-				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.Local, UnsetValue.Instance);
-#endif
-
 			sut.ClearValue(MyDependencyObject.PropBProperty);
 			sut.PropB.Should().Be("StyleValueForB");
 
@@ -1746,18 +1734,6 @@ namespace Uno.UI.Tests.BinderTests
 
 			sut.PropA.Should().Be(null);
 			sut.PropB.Should().Be(null);
-
-#if !NETFX_CORE // this part of the test not possible on UWP - extensive check for Uno
-			sut.GetValueForEachPrecedences(MyDependencyObject.PropAProperty).Select(v => v.value)
-				.Should().HaveElementAt((int)DependencyPropertyValuePrecedences.DefaultValue, null)
-				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.ExplicitStyle, UnsetValue.Instance)
-				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.Local, UnsetValue.Instance);
-
-			sut.GetValueForEachPrecedences(MyDependencyObject.PropBProperty).Select(v => v.value)
-				.Should().HaveElementAt((int)DependencyPropertyValuePrecedences.DefaultValue, null)
-				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.ExplicitStyle, UnsetValue.Instance)
-				.And.HaveElementAt((int)DependencyPropertyValuePrecedences.Local, null); // because of the callback ;-)
-#endif
 		}
 
 		[TestMethod]
