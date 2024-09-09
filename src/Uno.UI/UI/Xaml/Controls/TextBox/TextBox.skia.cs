@@ -59,8 +59,8 @@ public partial class TextBox
 
 	private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromSeconds(0.5) };
 
-	private readonly CaretWithStemAndThumb _selectionStartThumbfulCaret = new CaretWithStemAndThumb() { Visibility = Visibility.Collapsed };
-	private readonly CaretWithStemAndThumb _selectionEndThumbfulCaret = new CaretWithStemAndThumb() { Visibility = Visibility.Collapsed };
+	private CaretWithStemAndThumb _selectionStartThumbfulCaret = new CaretWithStemAndThumb() { Visibility = Visibility.Collapsed };
+	private CaretWithStemAndThumb _selectionEndThumbfulCaret = new CaretWithStemAndThumb() { Visibility = Visibility.Collapsed };
 	private TextBoxView _textBoxView;
 	private MenuFlyout _contextMenu;
 	private readonly Dictionary<ContextMenuItem, MenuFlyoutItem> _flyoutItems = new();
@@ -217,8 +217,15 @@ public partial class TextBox
 						}
 					};
 
-					canvas.AddChild(_selectionStartThumbfulCaret);
-					canvas.AddChild(_selectionEndThumbfulCaret);
+					foreach (var caret in (ReadOnlySpan<CaretWithStemAndThumb>)[_selectionStartThumbfulCaret, _selectionEndThumbfulCaret])
+					{
+						canvas.AddChild(caret);
+						caret.PointerPressed += CaretOnPointerPressed;
+						caret.PointerReleased += ClearCaretPointerState;
+						caret.PointerMoved += CaretOnPointerMoved;
+						caret.PointerCanceled += ClearCaretPointerState;
+						caret.PointerCaptureLost += ClearCaretPointerState;
+					}
 
 					displayBlock.DesiredSizeChangedCallback = () => canvas.Width = Math.Ceiling(displayBlock.ActualWidth + InlineCollection.CaretThickness);
 
@@ -237,36 +244,37 @@ public partial class TextBox
 
 					inlines.CaretFound += args =>
 					{
-						switch (CaretMode)
+						if ((CaretMode == CaretDisplayMode.CaretWithThumbsOnlyEndShowing && args.endCaret) ||
+							CaretMode == CaretDisplayMode.ThumblessCaretShowing)
 						{
-							case CaretDisplayMode.ThumblessCaretHidden:
-								break;
-							case CaretDisplayMode.ThumblessCaretShowing:
-								var caretRect = args.rect;
-								var compositor = _visual.Compositor;
-								var brush = DefaultBrushes.TextForegroundBrush.GetOrCreateCompositionBrush(compositor);
-								var caretPaint = new SKPaint(); // we create a new caret everytime to dodge the complications that occur when trying to "reset" an SKPaint.
-								brush.UpdatePaint(caretPaint, caretRect.ToSKRect());
-								args.canvas.DrawRect(new SKRect((float)caretRect.Left, (float)caretRect.Top, (float)caretRect.Right, (float)caretRect.Bottom), caretPaint);
-								break;
-							case CaretDisplayMode.CaretWithThumbsOnlyEndShowing when args.endCaret:
-							case CaretDisplayMode.CaretWithThumbsBothEndsShowing:
+							var caretRect = args.rect;
+							var compositor = _visual.Compositor;
+							var brush = DefaultBrushes.TextForegroundBrush.GetOrCreateCompositionBrush(compositor);
+							var caretPaint = new SKPaint(); // we create a new caret everytime to dodge the complications that occur when trying to "reset" an SKPaint.
+							brush.UpdatePaint(caretPaint, caretRect.ToSKRect());
+							args.canvas.DrawRect(
+								new SKRect((float)caretRect.Left, (float)caretRect.Top, (float)caretRect.Right,
+									(float)caretRect.Bottom), caretPaint);
+						}
+
+						if ((CaretMode == CaretDisplayMode.CaretWithThumbsOnlyEndShowing && args.endCaret) ||
+							CaretMode == CaretDisplayMode.CaretWithThumbsBothEndsShowing)
+						{
+							{
+								var caret = args.endCaret ? _selectionEndThumbfulCaret : _selectionStartThumbfulCaret;
+								var left = args.rect.GetMidX() - caret.Width / 2;
+								Canvas.SetLeft(caret, left);
+								Canvas.SetTop(caret, args.rect.Top);
+								caret.Height = args.rect.Height + 16;
+								if (args.endCaret)
 								{
-									var caret = args.endCaret ? _selectionEndThumbfulCaret : _selectionStartThumbfulCaret;
-									var left = args.rect.GetMidX() - caret.Width / 2;
-									Canvas.SetLeft(caret, left);
-									Canvas.SetTop(caret, args.rect.Top);
-									caret.Height = args.rect.Height + 16;
-									if (args.endCaret)
-									{
-										endThumbCaretVisible = true;
-									}
-									else
-									{
-										startThumbCaretVisible = true;
-									}
+									endThumbCaretVisible = true;
 								}
-								break;
+								else
+								{
+									startThumbCaretVisible = true;
+								}
+							}
 						}
 					};
 
@@ -1313,6 +1321,10 @@ public partial class TextBox
 
 		public CaretWithStemAndThumb()
 		{
+			// Numbers and colors below are partially measured by hand from WinUI and partially made up to be reasonable.
+
+			Background = new SolidColorBrush(Colors.Transparent); // to hit-test positively everywhere in the grid
+
 			Width = 16;
 
 			RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
@@ -1320,16 +1332,15 @@ public partial class TextBox
 
 			_thumb = new Ellipse
 			{
-				IsHitTestVisible = false,
-				Fill = new SolidColorBrush(Colors.Red),
+				Fill = new SolidColorBrush(Colors.White),
 				Width = 16,
 				Height = 16
 			};
 
 			_thumbRing = new Ellipse
 			{
-				IsHitTestVisible = false,
 				Stroke = new SolidColorBrush(ThumbFillColor),
+				StrokeThickness = 2,
 				Width = 14,
 				Height = 14,
 				Margin = new Thickness(1)
@@ -1337,6 +1348,7 @@ public partial class TextBox
 
 			_stem = new Rectangle
 			{
+				Visibility = Visibility.Collapsed,
 				IsHitTestVisible = false,
 				HorizontalAlignment = HorizontalAlignment.Center,
 				Stroke = new SolidColorBrush(ThumbFillColor),
@@ -1351,5 +1363,7 @@ public partial class TextBox
 			Children.Add(_thumb);
 			Children.Add(_thumbRing);
 		}
+
+		public void SetStemVisible(bool visible) => _stem.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
 	}
 }

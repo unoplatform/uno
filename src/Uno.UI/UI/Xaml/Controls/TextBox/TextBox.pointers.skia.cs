@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Input;
 using Uno.Extensions;
@@ -33,7 +34,8 @@ public partial class TextBox
 
 		if (e.Pointer.PointerDeviceType == PointerDeviceType.Touch)
 		{
-			// TODO
+			// do nothing whether the touch pointer is pressed on not.
+			// Moving while pressing the caret thumb or stem will move it. Anything else won't do anything.
 		}
 		else
 		{
@@ -258,5 +260,70 @@ public partial class TextBox
 	{
 		base.OnDoubleTapped(args);
 		args.Handled = true;
+	}
+
+	private void CaretOnPointerPressed(object sender, PointerRoutedEventArgs args)
+	{
+		args.Handled = true;
+
+		var caret = (CaretWithStemAndThumb)sender;
+		if (caret.CapturePointer(args.Pointer))
+		{
+			caret.SetStemVisible(true);
+		}
+	}
+
+	private void CaretOnPointerMoved(object sender, PointerRoutedEventArgs args)
+	{
+		var caret = (CaretWithStemAndThumb)sender;
+		if (!caret.HasPointerCapture)
+		{
+			return;
+		}
+		args.Handled = true;
+
+		var displayBlock = TextBoxView.DisplayBlock;
+		var point = args.GetCurrentPoint(displayBlock).Position - new Point(0, caret.Height / 2);
+		var index = Math.Max(0, DisplayBlockInlines.GetIndexAt(point, false, true));
+
+		if (_selection.length == 0)
+		{
+			Debug.Assert(caret == _selectionEndThumbfulCaret);
+			Select(index, 0);
+		}
+		else
+		{
+			Debug.Assert(CaretMode == CaretDisplayMode.CaretWithThumbsBothEndsShowing);
+			var (start, end) = (_selection.start, _selection.start + _selection.length);
+			if (sender == _selectionStartThumbfulCaret)
+			{
+				start = index;
+			}
+			else
+			{
+				end = index;
+			}
+
+			if (start != end) // if start == end, we do nothing like WinUI. This means that the 2 carets won't be on top of one another
+			{
+				SelectInternal(start, end - start);
+
+				if (end < start)
+				{
+					// If we're here this means that the "selection end caret" was dragging "behind" the "selection start caret".
+					// We swap which caret we consider the "selection start caret" now that the "end caret" is actually before the
+					// "start caret".
+					(_selectionStartThumbfulCaret, _selectionEndThumbfulCaret) = (_selectionEndThumbfulCaret, _selectionStartThumbfulCaret);
+				}
+			}
+		}
+	}
+
+	private void ClearCaretPointerState(object sender, PointerRoutedEventArgs args)
+	{
+		args.Handled = true;
+		var caret = (CaretWithStemAndThumb)sender;
+		caret.SetStemVisible(false);
+		caret.ReleasePointerCaptures();
 	}
 }
