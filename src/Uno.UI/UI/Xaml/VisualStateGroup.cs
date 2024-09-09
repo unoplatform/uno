@@ -43,10 +43,6 @@ namespace Microsoft.UI.Xaml
 			IsAutoPropertyInheritanceEnabled = false;
 			InitializeBinder();
 
-#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
-			TemplatedParentScope.UpdateTemplatedParentIfNeeded(this);
-#endif
-
 			this.RegisterParentChangedCallbackStrong(this, OnParentChanged);
 		}
 

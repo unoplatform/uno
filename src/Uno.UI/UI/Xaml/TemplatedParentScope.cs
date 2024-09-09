@@ -15,15 +15,16 @@ internal static class TemplatedParentScope
 	/// <summary>Set the templated-parent for the dependency-object based on the currently materializing template.</summary>
 	/// <param name="do"></param>
 	/// <param name="reapplyTemplateBindings">Should be true, if not called from ctor.</param>
-	internal static void UpdateTemplatedParentIfNeeded(DependencyObject @do, bool reapplyTemplateBindings = false)
+	internal static void UpdateTemplatedParentIfNeeded(DependencyObject? @do, bool reapplyTemplateBindings = false)
 	{
+		if (@do is null) return;
 		if (GetCurrentTemplate() is { IsLegacyTemplate: true, TemplatedParent: { } tp })
 		{
 			UpdateTemplatedParent(@do, tp, reapplyTemplateBindings);
 		}
 	}
 
-	internal static void UpdateTemplatedParent(DependencyObject @do, DependencyObject tp, bool reapplyTemplateBindings = true)
+	internal static void UpdateTemplatedParent(DependencyObject? @do, DependencyObject tp, bool reapplyTemplateBindings = true)
 	{
 		if (@do is ITemplatedParentProvider tpProvider)
 		{
@@ -39,7 +40,7 @@ internal static class TemplatedParentScope
 		}
 	}
 
-	private static MaterializingTemplateInfo? GetCurrentTemplate()
+	internal static MaterializingTemplateInfo? GetCurrentTemplate()
 	{
 		return MaterializingTemplateStack.TryPeek(out var result) ? result : null;
 	}
@@ -49,6 +50,6 @@ internal static class TemplatedParentScope
 
 	internal static void PopScope() => MaterializingTemplateStack.Pop();
 
-	private record MaterializingTemplateInfo(DependencyObject? TemplatedParent, bool IsLegacyTemplate);
+	internal record MaterializingTemplateInfo(DependencyObject? TemplatedParent, bool IsLegacyTemplate);
 }
 #endif

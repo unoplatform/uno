@@ -66,13 +66,19 @@ namespace Uno.UI.Helpers
 		/// Sets a builder for markup-lazy properties in <see cref="VisualState"/>
 		/// </summary>
 		public static void SetVisualStateLazy(VisualState target, Action builder)
-			=> target.LazyBuilder = builder;
+		{
+			target.LazyBuilder = builder;
+			target.FromLegacyTemplate = TemplatedParentScope.GetCurrentTemplate() is { IsLegacyTemplate: true };
+		}
 
 		/// <summary>
 		/// Sets a builder for markup-lazy properties in <see cref="VisualTransition"/>
 		/// </summary>
 		public static void SetVisualTransitionLazy(VisualTransition target, Action builder)
-			=> target.LazyBuilder = builder;
+		{
+			target.LazyBuilder = builder;
+			target.FromLegacyTemplate = TemplatedParentScope.GetCurrentTemplate() is { IsLegacyTemplate: true };
+		}
 
 		public static IXamlServiceProvider CreateParserContext(object? target, Type propertyDeclaringType, string propertyName, Type propertyType) =>
 			CreateParserContext(target, propertyDeclaringType, propertyName, propertyType, null);

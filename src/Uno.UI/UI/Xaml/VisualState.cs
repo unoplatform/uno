@@ -16,16 +16,17 @@ namespace Microsoft.UI.Xaml
 	[ContentProperty(Name = nameof(Storyboard))]
 	public sealed partial class VisualState : DependencyObject
 	{
-		private Action lazyBuilder;
+		/// <summary>
+		/// Lazy builder provided by the source generator. Invoking this will
+		/// optionally fill <see cref="Storyboard"/> and <see cref="Setters"/>.
+		/// </summary>
+		internal Action LazyBuilder { get; set; }
+		internal bool? FromLegacyTemplate { get; set; }
 
 		public VisualState()
 		{
 			InitializeBinder();
 			IsAutoPropertyInheritanceEnabled = false;
-
-#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
-			TemplatedParentScope.UpdateTemplatedParentIfNeeded(this);
-#endif
 		}
 
 		public string Name { get; set; }
@@ -154,16 +155,6 @@ namespace Microsoft.UI.Xaml
 		internal VisualStateGroup Owner => this.GetParent() as VisualStateGroup;
 
 		/// <summary>
-		/// Lazy builder provided by the source generator. Invoking this will
-		/// optionally fill <see cref="Storyboard"/> and <see cref="Setters"/>.
-		/// </summary>
-		internal Action LazyBuilder
-		{
-			get => lazyBuilder;
-			set => lazyBuilder = value;
-		}
-
-		/// <summary>
 		/// Ensures that the lazy builder has been invoked
 		/// </summary>
 		private void EnsureMaterialized()
@@ -172,31 +163,21 @@ namespace Microsoft.UI.Xaml
 			{
 				var builder = LazyBuilder;
 				LazyBuilder = null;
-				builder.Invoke();
-
-				PropagateTemplatedParent();
+				try
+				{
+					TemplatedParentScope.PushScope(GetTemplatedParent(), FromLegacyTemplate == true);
+					builder.Invoke();
+				}
+				finally
+				{
+					TemplatedParentScope.PopScope();
+				}
 
 				// Resolve all theme resources from storyboard children
 				// and setters values. This step is needed to ensure that
 				// Theme Resources are resolved using the proper visual tree
 				// parents, particularly when resources a locally overriden.
 				this.UpdateResourceBindings();
-			}
-		}
-
-		private void PropagateTemplatedParent()
-		{
-			if (GetTemplatedParent() is { } tp)
-			{
-				foreach (var setter in Setters)
-				{
-					setter.PropagateTemplatedParent(tp);
-				}
-				foreach (var trigger in StateTriggers)
-				{
-					trigger.PropagateTemplatedParent(tp);
-				}
-				Storyboard?.PropagateTemplatedParent(tp);
 			}
 		}
 

@@ -93,10 +93,6 @@ namespace Microsoft.UI.Xaml
 		private void Initialize()
 		{
 			SubscribeToOverridenRoutedEvents();
-
-#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
-			TemplatedParentScope.UpdateTemplatedParentIfNeeded(this);
-#endif
 		}
 
 #if SUPPORTS_RTL

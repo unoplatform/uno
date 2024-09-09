@@ -68,12 +68,5 @@ namespace Microsoft.UI.Xaml
 		internal virtual void OnOwnerElementUnloaded()
 		{
 		}
-
-#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
-		internal virtual void PropagateTemplatedParent(DependencyObject tp)
-		{
-			TemplatedParentScope.UpdateTemplatedParent(this, tp, reapplyTemplateBindings: true);
-		}
-#endif
 	}
 }
