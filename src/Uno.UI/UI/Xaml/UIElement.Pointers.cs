@@ -1556,10 +1556,9 @@ namespace Microsoft.UI.Xaml
 			relatedArgs ??= lastDispatched;
 			if (relatedArgs == null)
 			{
-				return false; // TODO: We should create a new instance of event args with dummy location
+				return false;
 			}
-			relatedArgs.Handled = false;
-			return RaisePointerEvent(PointerCaptureLostEvent, relatedArgs);
+			return RaisePointerEvent(PointerCaptureLostEvent, new PointerRoutedEventArgs(relatedArgs.CoreArgs, relatedArgs.OriginalSource as UIElement));
 		}
 		#endregion
 
