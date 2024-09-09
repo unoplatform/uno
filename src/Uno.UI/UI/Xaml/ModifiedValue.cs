@@ -28,6 +28,9 @@ internal sealed class ModifiedValue
 		_animatedValue = value;
 	}
 
+	public object GetAnimatedValue()
+		=> _animatedValue;
+
 	public void SetBaseValue(object value, DependencyPropertyValuePrecedences baseValueSource)
 	{
 		if (_localCanDefeatAnimationSuppressed == 0 &&

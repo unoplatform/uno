@@ -173,7 +173,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 			// otherwise use the more local value
 			var store = ((IDependencyObjectStoreProvider)this).Store;
-			var (localValue, localPrecedence) = store.GetBaseValue(IsEnabledProperty);
+
+			var (localValue, localPrecedence) = (store.GetAnimatedValue(IsEnabledProperty), DependencyPropertyValuePrecedences.Animations);
+			if (localValue == DependencyProperty.UnsetValue)
+			{
+				(localValue, localPrecedence) = store.GetBaseValue(IsEnabledProperty);
+			}
 
 			if (localPrecedence >= precedence) // > means weaker precedence
 			{

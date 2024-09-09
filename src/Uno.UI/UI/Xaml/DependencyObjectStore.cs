@@ -18,7 +18,6 @@ using System.Collections;
 using System.Globalization;
 using Windows.ApplicationModel.Calls;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
 
 
 #if __ANDROID__
@@ -539,12 +538,6 @@ namespace Microsoft.UI.Xaml
 				throw new ArgumentException("SetValue must not be called with precedence DependencyPropertyValuePrecedences.Coercion, as it expects a non-coerced value to function properly.");
 			}
 
-			if (precedence == DependencyPropertyValuePrecedences.DefaultValue)
-			{
-				Debug.Assert(!AreDifferent(value, GetDefaultValue(property)));
-				return;
-			}
-
 			var actualInstanceAlias = ActualInstance;
 
 			if (actualInstanceAlias != null)
@@ -553,6 +546,11 @@ namespace Microsoft.UI.Xaml
 
 				try
 				{
+					if ((value == DependencyProperty.UnsetValue) && precedence == DependencyPropertyValuePrecedences.DefaultValue)
+					{
+						throw new InvalidOperationException("The default value must be a valid value");
+					}
+
 					ValidatePropertyOwner(property);
 
 					// Resolve the stack once for the instance, for performance.
@@ -1184,6 +1182,17 @@ namespace Microsoft.UI.Xaml
 			}
 
 			return (details.GetBaseValue(), baseValueSource);
+		}
+
+		internal object? GetAnimatedValue(DependencyProperty property)
+		{
+			var (modifiedValue, _) = GetModifiedValue(property);
+			if (modifiedValue is not null)
+			{
+				return modifiedValue.GetAnimatedValue();
+			}
+
+			return DependencyProperty.UnsetValue;
 		}
 
 		// Internal for unit testing
