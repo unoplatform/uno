@@ -18,7 +18,7 @@ namespace Uno.UI.DataBinding
 			private Flags _flags;
 
 			private readonly SerialDisposable _propertyChanged = new SerialDisposable();
-			private readonly DependencyPropertyValuePrecedences? _precedence;
+			private readonly bool _forAnimations;
 			private ValueGetterHandler? _valueGetter;
 			private ValueGetterHandler? _substituteValueGetter;
 			private ValueSetterHandler? _valueSetter;
@@ -38,15 +38,15 @@ namespace Uno.UI.DataBinding
 			}
 
 			public BindingItem(BindingItem next, string property) :
-				this(next, property, null, false)
+				this(next, property, false, false)
 			{
 			}
 
-			internal BindingItem(BindingItem? next, string property, DependencyPropertyValuePrecedences? precedence, bool allowPrivateMembers)
+			internal BindingItem(BindingItem? next, string property, bool forAnimations, bool allowPrivateMembers)
 			{
 				Next = next;
 				PropertyName = property;
-				_precedence = precedence;
+				_forAnimations = forAnimations;
 				AllowPrivateMembers = allowPrivateMembers;
 			}
 
@@ -104,7 +104,7 @@ namespace Uno.UI.DataBinding
 			}
 
 			/// <summary>
-			/// Sets the value using the <see cref="_precedence"/>
+			/// Sets the value using Animations precedence, if the binding item is for animations, or using Local precedence otherwise.
 			/// </summary>
 			/// <param name="value">The value to set</param>
 			private void SetValue(object? value)
@@ -237,14 +237,14 @@ namespace Uno.UI.DataBinding
 			{
 				if (_valueSetter == null && _dataContextType != null)
 				{
-					if (_precedence == null)
+					if (!_forAnimations)
 					{
 						BuildLocalValueSetter();
 						_valueSetter = _localValueSetter;
 					}
 					else
 					{
-						_valueSetter = BindingPropertyHelper.GetValueSetter(_dataContextType, PropertyName, convert: true, precedence: _precedence.Value);
+						_valueSetter = BindingPropertyHelper.GetValueSetter(_dataContextType, PropertyName, convert: true, precedence: DependencyPropertyValuePrecedences.Animations);
 					}
 				}
 			}
@@ -289,7 +289,7 @@ namespace Uno.UI.DataBinding
 			{
 				if (_valueGetter == null && _dataContextType != null)
 				{
-					_valueGetter = BindingPropertyHelper.GetValueGetter(_dataContextType, PropertyName, _precedence, AllowPrivateMembers);
+					_valueGetter = BindingPropertyHelper.GetValueGetter(_dataContextType, PropertyName, AllowPrivateMembers);
 				}
 			}
 
@@ -297,7 +297,7 @@ namespace Uno.UI.DataBinding
 			{
 				if (_substituteValueGetter == null && _dataContextType != null)
 				{
-					if (_precedence != DependencyPropertyValuePrecedences.Animations)
+					if (!_forAnimations)
 					{
 						throw new InvalidOperationException("Substitute value is currently used only for Timeline's PropertyInfo which should be using Animations precedence.");
 					}
@@ -350,9 +350,9 @@ namespace Uno.UI.DataBinding
 			{
 				if (_valueUnsetter == null && _dataContextType != null)
 				{
-					_valueUnsetter = _precedence == null ?
-						BindingPropertyHelper.GetValueUnsetter(_dataContextType, PropertyName) :
-						BindingPropertyHelper.GetValueUnsetter(_dataContextType, PropertyName, precedence: _precedence.Value);
+					_valueUnsetter = _forAnimations ?
+						BindingPropertyHelper.GetValueUnsetter(_dataContextType, PropertyName, precedence: DependencyPropertyValuePrecedences.Animations) :
+						BindingPropertyHelper.GetValueUnsetter(_dataContextType, PropertyName);
 				}
 			}
 

@@ -11,17 +11,12 @@ namespace Uno.UI.DataBinding;
 internal static partial class BindingPropertyHelper
 {
 
-	private sealed class GetValueGetterCacheKey(Type type, string name, DependencyPropertyValuePrecedences? precedence, bool allowPrivateMembers)
+	private sealed class GetValueGetterCacheKey(Type type, string name, bool allowPrivateMembers)
 	{
-		private readonly int _hashCode =
-				type.GetHashCode()
-				^ name.GetHashCode()
-				^ (precedence is not null ? (int)precedence : -1)
-				^ (allowPrivateMembers ? 1 : 0);
+		private readonly int _hashCode = HashCode.Combine(type, name, allowPrivateMembers);
 
 		public Type Type { get; } = type;
 		public string Name { get; } = name;
-		public DependencyPropertyValuePrecedences? Precedence { get; } = precedence;
 		public bool PrivateMembers { get; } = allowPrivateMembers;
 
 		internal static IEqualityComparer<GetValueGetterCacheKey> Comparer { get; } = new EqualityComparer();
@@ -41,7 +36,6 @@ internal static partial class BindingPropertyHelper
 				{
 					return x.Type.GetType().Equals(y.Type.GetType())
 						&& x.Name.Equals(y.Name, StringComparison.Ordinal)
-						&& x.Precedence == y.Precedence
 						&& x.PrivateMembers == y.PrivateMembers;
 				}
 

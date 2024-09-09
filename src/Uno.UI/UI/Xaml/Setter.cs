@@ -234,7 +234,7 @@ namespace Microsoft.UI.Xaml
 				this.Log().Debug($"Using Target [{Target.Target}] for Setter [{Target.TargetName}] from [{owner}]");
 			}
 
-			_bindingPath = new BindingPath(path: Target.Path, fallbackValue: null, precedence: DependencyPropertyValuePrecedences.Animations, allowPrivateMembers: false);
+			_bindingPath = new BindingPath(path: Target.Path, fallbackValue: null, forAnimations: true, allowPrivateMembers: false);
 
 			if (Target.Target is ElementNameSubject subject)
 			{
