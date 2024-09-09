@@ -85,9 +85,9 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			catch (Exception ex)
 			{
-				if (this.Log().IsEnabled(LogLevel.Warning))
+				if (this.Log().IsEnabled(LogLevel.Error))
 				{
-					this.Log().LogWarning("[ShouldReturn] Exception caught while executing method", ex);
+					this.Log().LogError("[ShouldReturn] Exception caught while executing method", ex);
 				}
 
 				return false;
