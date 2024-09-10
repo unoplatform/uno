@@ -568,7 +568,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			void AttachUnhandledExceptionHandler()
 			{
-				writer.Append($"#if DEBUG");
+				writer.Append($"#if DEBUG && !DISABLE_GENERATED_UNHANDLED_EXCEPTION_HANDLER");
 				writer.AppendLine();
 				writer.AppendLineIndented($"UnhandledException += (s, e) =>");
 				writer.AppendLineIndented("{");
