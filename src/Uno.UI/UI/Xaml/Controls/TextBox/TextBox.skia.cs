@@ -321,12 +321,6 @@ public partial class TextBox
 		_pendingSelection = null;
 		TrySetCurrentlyTyping(false);
 
-		if (CaretMode is CaretDisplayMode.ThumblessCaretShowing or CaretDisplayMode.ThumblessCaretHidden)
-		{
-			CaretMode = CaretDisplayMode.ThumblessCaretShowing;
-			_timer.Start(); // restart
-		}
-
 		if (!_inSelectInternal)
 		{
 			// SelectInternal sets _selectionEndsAtTheStart and _caretXOffset on its own
@@ -347,6 +341,15 @@ public partial class TextBox
 				// It doesn't make sense to have 2 caret ends when there's no selection.
 				CaretMode = CaretDisplayMode.CaretWithThumbsOnlyEndShowing;
 			}
+			else if (CaretMode is CaretDisplayMode.ThumblessCaretHidden)
+			{
+				CaretMode = CaretDisplayMode.ThumblessCaretShowing;
+			}
+			else if (CaretMode is CaretDisplayMode.ThumblessCaretShowing)
+			{
+				_timer.Start(); // restart
+			}
+
 			UpdateScrolling();
 			UpdateDisplaySelection();
 		}
