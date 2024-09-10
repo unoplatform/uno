@@ -129,7 +129,7 @@ public partial class Popup : FrameworkElement, IPopup
 	partial void OnChildChangedPartial(UIElement oldChild, UIElement newChild)
 	{
 		if (oldChild is IDependencyObjectStoreProvider provider &&
-			provider.Store.GetValue(provider.Store.DataContextProperty, DependencyPropertyValuePrecedences.Local, true) != DependencyProperty.UnsetValue)
+			provider.Store.ReadLocalValue(provider.Store.DataContextProperty) != DependencyProperty.UnsetValue)
 		{
 			provider.Store.ClearValue(AllowFocusOnInteractionProperty, DependencyPropertyValuePrecedences.Local);
 			provider.Store.ClearValue(AllowFocusWhenDisabledProperty, DependencyPropertyValuePrecedences.Local);

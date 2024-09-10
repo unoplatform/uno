@@ -320,7 +320,7 @@ namespace Uno.UI.DataBinding
 					}
 
 					_substituteValueGetter =
-						BindingPropertyHelper.GetSubstituteValueGetter(_dataContextType, PropertyName, DependencyPropertyValuePrecedences.Animations);
+						BindingPropertyHelper.GetSubstituteValueGetter(_dataContextType, PropertyName);
 				}
 			}
 

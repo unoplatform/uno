@@ -40,6 +40,13 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		internal override bool TryGetSetterValue(out object value, DependencyObject @do)
+		{
+			Action?.Invoke((T)@do);
+			value = null;
+			return false;
+		}
+
 		/// <summary>
 		/// The action to be executed when the setter is applied
 		/// </summary>

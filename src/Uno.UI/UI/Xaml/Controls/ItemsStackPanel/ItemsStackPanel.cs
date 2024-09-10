@@ -102,6 +102,12 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 		}
+
+		// In WinUI, this is actually for ModernCollectionBasePanel
+		internal override bool WantsScrollViewerToObscureAvailableSizeBasedOnScrollBarVisibility(Orientation orientation)
+		{
+			return Orientation == orientation;
+		}
 	}
 }
 

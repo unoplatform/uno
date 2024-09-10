@@ -157,7 +157,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			var parentValue = precedence == DependencyPropertyValuePrecedences.Inheritance ?
 				baseValue :
-				this.GetValue(IsEnabledProperty, DependencyPropertyValuePrecedences.Inheritance);
+				((IDependencyObjectStoreProvider)this).Store.ReadInheritedValueOrDefaultValue(IsEnabledProperty);
 
 			// If the parent is disabled, this control must be disabled as well
 			if (parentValue is false)
@@ -166,7 +166,13 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			// otherwise use the more local value
-			var (localValue, localPrecedence) = this.GetValueUnderPrecedence(IsEnabledProperty, DependencyPropertyValuePrecedences.Coercion);
+			var store = ((IDependencyObjectStoreProvider)this).Store;
+
+			var (localValue, localPrecedence) = (store.GetAnimatedValue(IsEnabledProperty), DependencyPropertyValuePrecedences.Animations);
+			if (localValue == DependencyProperty.UnsetValue)
+			{
+				(localValue, localPrecedence) = store.GetBaseValue(IsEnabledProperty);
+			}
 
 			if (localPrecedence >= precedence) // > means weaker precedence
 			{

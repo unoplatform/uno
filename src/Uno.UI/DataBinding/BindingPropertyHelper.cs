@@ -51,7 +51,6 @@ namespace Uno.UI.DataBinding
 		//
 		private static Dictionary<GetValueGetterCacheKey, ValueGetterHandler> _getValueGetter = new(GetValueGetterCacheKey.Comparer);
 		private static Dictionary<GetValueSetterCacheKey, ValueSetterHandler> _getValueSetter = new(GetValueSetterCacheKey.Comparer);
-		private static Dictionary<GenericPropertyCacheKey, ValueGetterHandler> _getPrecedenceSpecificValueGetter = new(GenericPropertyCacheKey.Comparer);
 		private static Dictionary<GenericPropertyCacheKey, ValueGetterHandler> _getSubstituteValueGetter = new(GenericPropertyCacheKey.Comparer);
 		private static Dictionary<GenericPropertyCacheKey, ValueUnsetterHandler> _getValueUnsetter = new(GenericPropertyCacheKey.Comparer);
 		private static Dictionary<EventCacheKey, bool> _isEvent = new(EventCacheKey.Comparer);
@@ -71,7 +70,6 @@ namespace Uno.UI.DataBinding
 		{
 			_getValueGetter.Clear();
 			_getValueSetter.Clear();
-			_getPrecedenceSpecificValueGetter.Clear();
 			_getSubstituteValueGetter.Clear();
 			_getValueUnsetter.Clear();
 			_isEvent.Clear();
@@ -174,26 +172,9 @@ namespace Uno.UI.DataBinding
 			return result;
 		}
 
-		internal static ValueGetterHandler GetPrecedenceSpecificValueGetter(Type type, string property, DependencyPropertyValuePrecedences precedence)
+		internal static ValueGetterHandler GetSubstituteValueGetter(Type type, string property)
 		{
-			var key = new GenericPropertyCacheKey(type, property, precedence);
-
-			ValueGetterHandler? result;
-
-			lock (_getPrecedenceSpecificValueGetter)
-			{
-				if (!_getPrecedenceSpecificValueGetter.TryGetValue(key, out result))
-				{
-					_getPrecedenceSpecificValueGetter.Add(key, result = InternalGetPrecedenceSpecificValueGetter(type, property, precedence));
-				}
-			}
-
-			return result;
-		}
-
-		internal static ValueGetterHandler GetSubstituteValueGetter(Type type, string property, DependencyPropertyValuePrecedences precedence)
-		{
-			var key = new GenericPropertyCacheKey(type, property, precedence);
+			var key = new GenericPropertyCacheKey(type, property, DependencyPropertyValuePrecedences.Animations);
 
 			ValueGetterHandler? result;
 
@@ -201,7 +182,7 @@ namespace Uno.UI.DataBinding
 			{
 				if (!_getSubstituteValueGetter.TryGetValue(key, out result))
 				{
-					_getSubstituteValueGetter.Add(key, result = InternalGetSubstituteValueGetter(type, property, precedence));
+					_getSubstituteValueGetter.Add(key, result = InternalGetSubstituteValueGetter(type, property));
 				}
 			}
 
@@ -1109,7 +1090,7 @@ namespace Uno.UI.DataBinding
 			}
 		}
 
-		private static ValueGetterHandler InternalGetPrecedenceSpecificValueGetter(Type type, string property, DependencyPropertyValuePrecedences precedence)
+		private static ValueGetterHandler InternalGetSubstituteValueGetter(Type type, string property)
 		{
 			if (type == typeof(UnsetValue))
 			{
@@ -1122,35 +1103,7 @@ namespace Uno.UI.DataBinding
 
 			if (dp != null)
 			{
-				return (instance) => DependencyObjectExtensions.GetPrecedenceSpecificValue((DependencyObject)instance, dp, precedence);
-			}
-
-			{
-				// No getter has been found
-				var empty = Funcs.CreateMemoized<object>(() =>
-				{
-					_log.ErrorFormat("The [{0}] precedence specific property getter does not exist on type [{1}]", property, type);
-					return DependencyProperty.UnsetValue;
-				});
-
-				return instance => empty();
-			}
-		}
-
-		private static ValueGetterHandler InternalGetSubstituteValueGetter(Type type, string property, DependencyPropertyValuePrecedences precedence)
-		{
-			if (type == typeof(UnsetValue))
-			{
-				return UnsetValueGetter;
-			}
-
-			property = SanitizePropertyName(type, property);
-
-			var dp = FindDependencyProperty(type, property);
-
-			if (dp != null)
-			{
-				return (instance) => DependencyObjectExtensions.GetValueUnderPrecedence((DependencyObject)instance, dp, precedence).value;
+				return (instance) => DependencyObjectExtensions.GetBaseValue(instance, dp);
 			}
 
 			{

@@ -105,7 +105,7 @@ namespace Microsoft.UI.Xaml
 					bindings[i].ResumeBinding();
 				}
 
-				var value = DataContextPropertyDetails.GetValue();
+				var value = DataContextPropertyDetails.GetEffectiveValue();
 				if (value == DependencyProperty.UnsetValue)
 				{
 					// If we get UnsetValue, it means this is DefaultValue precedence that's not stored in DependencyPropertyDetails.
@@ -147,11 +147,11 @@ namespace Microsoft.UI.Xaml
 				{
 					if (bindingExpression.TargetPropertyDetails.Property.UniqueId == DataContextPropertyDetails.Property.UniqueId)
 					{
-						bindingExpression.DataContext = details.GetValue(DependencyPropertyValuePrecedences.Inheritance);
+						bindingExpression.DataContext = details.GetInheritedValue();
 					}
 					else
 					{
-						var value = DataContextPropertyDetails.GetValue();
+						var value = DataContextPropertyDetails.GetEffectiveValue();
 						if (value == DependencyProperty.UnsetValue)
 						{
 							// If we get UnsetValue, it means this is DefaultValue precedence that's not stored in DependencyPropertyDetails.
