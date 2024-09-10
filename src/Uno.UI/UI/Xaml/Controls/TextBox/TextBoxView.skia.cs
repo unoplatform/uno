@@ -2,6 +2,7 @@
 
 using System;
 using Windows.System;
+using Microsoft.UI.Xaml.Documents;
 using Uno.Extensions;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
@@ -26,7 +27,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_textBox = WeakReferencePool.RentWeakReference(this, textBox);
 			_isPasswordBox = textBox is PasswordBox;
 
-			DisplayBlock = new TextBlock();
+			DisplayBlock = new TextBlock { MinWidth = InlineCollection.CaretThickness };
 			SetFlowDirectionAndTextAlignment();
 
 			if (!_isSkiaTextBox && !ApiExtensibility.CreateInstance(this, out _textBoxExtension))
