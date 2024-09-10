@@ -74,7 +74,6 @@ namespace Windows.UI.Core
 		{
 			var action = () => agileCallback?.Invoke();
 			var ag = (NativeDispatcherPriority)(~priority + 2);
-			Debug.WriteLine("Here");
 			return _inner.EnqueueOperation(action, ag);
 		}
 
