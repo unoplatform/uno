@@ -1558,7 +1558,13 @@ namespace Microsoft.UI.Xaml
 			{
 				return false;
 			}
+
+#if UNO_HAS_MANAGED_POINTERS
 			return RaisePointerEvent(PointerCaptureLostEvent, new PointerRoutedEventArgs(relatedArgs.CoreArgs, relatedArgs.OriginalSource as UIElement));
+#else // TODO: do the same for unmanaged pointers
+			relatedArgs.Handled = false;
+			return RaisePointerEvent(PointerCaptureLostEvent, relatedArgs);
+#endif
 		}
 		#endregion
 
