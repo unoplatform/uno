@@ -15,9 +15,7 @@ internal static class DeviceTargetHelper
 
 	internal static bool IsMobile() =>
 		OperatingSystem.IsAndroid() ||
-		OperatingSystem.IsIOS() ||
-		OperatingSystem.IsMacCatalyst() ||
-		OperatingSystem.IsTvOS();
+		IsUIKit();
 
 	internal static bool IsUIKit() =>
 		OperatingSystem.IsIOS() ||

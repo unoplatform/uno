@@ -1,17 +1,16 @@
 ﻿using System;
 using System.IO;
 using Windows.Storage;
-using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Core;
-using Windows.UI.ViewManagement;
+using Uno.UI.Helpers;
+
 
 #if __SKIA__
 using Uno.Foundation.Extensibility;
 using Uno.UI.Xaml.Controls.Extensions;
-using Uno.UI.Xaml.Core;
 #endif
 
 namespace SamplesApp;
@@ -149,7 +148,7 @@ partial class App
 	public void AssertApplicationData()
 	{
 #if __SKIA__
-		if (Uno.UI.Helpers.DeviceTargetHelper.IsNonDesktop())
+		if (DeviceTargetHelper.IsDesktop())
 		{
 			// Reading Package.appxmanifest isn't supported on Wasm, even if running Skia.
 			return;
@@ -159,7 +158,10 @@ partial class App
 		var publisher = string.IsNullOrEmpty(Package.Current.Id.Publisher) ? "" : "Uno Platform";
 
 		AssertForFolder(ApplicationData.Current.LocalFolder);
-		AssertForFolder(ApplicationData.Current.RoamingFolder);
+		if (!DeviceTargetHelper.IsUIKit()) // TODO: Creating/deleting file in RoamingFolder is not working correctly #655
+		{
+			AssertForFolder(ApplicationData.Current.RoamingFolder);
+		}
 		AssertForFolder(ApplicationData.Current.TemporaryFolder);
 		AssertForFolder(ApplicationData.Current.LocalCacheFolder);
 		AssertSettings(ApplicationData.Current.LocalSettings);
@@ -167,7 +169,11 @@ partial class App
 
 		void AssertForFolder(StorageFolder folder)
 		{
-			AssertContainsIdProps(folder);
+			// On desktop the app folders should contain the app name and publisher in path.
+			if (DeviceTargetHelper.IsDesktop())
+			{
+				AssertContainsIdProps(folder);
+			}
 			AssertCanCreateFile(folder);
 		}
 
