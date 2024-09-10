@@ -359,25 +359,25 @@ public partial class TemplatedParentTests
 	{
 		if (o is Control c && c.EnumerateChildren().FirstOrDefault() is FrameworkElement root)
 		{
-			foreach (var item in VisualStateManager.GetVisualStateGroups(root).Safe())
+			foreach (var item in VisualStateManager.GetVisualStateGroups(root) ?? Array.Empty<VisualStateGroup>())
 			{
 				yield return item;
 			}
 		}
 		if (o is VisualStateGroup vsg)
 		{
-			foreach (var item in vsg.States.Safe())
+			foreach (var item in vsg.States ?? Array.Empty<VisualState>())
 			{
 				yield return item;
 			}
-			foreach (var item in vsg.Transitions.Safe())
+			foreach (var item in vsg.Transitions ?? Array.Empty<VisualTransition>())
 			{
 				yield return item;
 			}
 		}
 		if (o is VisualState vs)
 		{
-			foreach (var item in vs.Setters.Safe())
+			foreach (var item in vs.Setters?.AsEnumerable() ?? Array.Empty<Setter>())
 			{
 				yield return item;
 			}
@@ -395,13 +395,13 @@ public partial class TemplatedParentTests
 		}
 		if (o is Storyboard sb)
 		{
-			foreach (var item in sb.Children.Safe())
+			foreach (var item in sb.Children.AsEnumerable() ?? Array.Empty<Timeline>())
 			{
 				yield return item;
 			}
 		}
 
-		foreach (var child in children.Safe())
+		foreach (var child in children ?? Array.Empty<object>())
 		{
 			yield return child;
 		}

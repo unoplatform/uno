@@ -259,7 +259,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			for (int i = 0; i < count; i++)
 			{
-				await MaterializeControl(controlType, _holders, maxCounter, rootContainer, forest);
+				await MaterializeControl(controlType, _holders, maxCounter, rootContainer);
 			}
 
 			TestServices.WindowHelper.WindowContent = null;
@@ -373,14 +373,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				}
 			}
 #endif
-			static IEnumerable<string> DescribeView(object x)
-			{
-				if (x is FrameworkElement fe)
-				{
-					yield return $"TP={PrettyPrint.FormatType(fe.GetTemplatedParent())}, DC={PrettyPrint.FormatObject(fe.DataContext)}";
-				}
-			}
-			async Task MaterializeControl(Type controlType, ConditionalWeakTable<DependencyObject, Holder> _holders, int maxCounter, ContentControl rootContainer, List<string> forest)
+			async Task MaterializeControl(Type controlType, ConditionalWeakTable<DependencyObject, Holder> _holders, int maxCounter, ContentControl rootContainer)
 			{
 				var item = (FrameworkElement)Activator.CreateInstance(controlType)!;
 				TrackDependencyObject(item);
@@ -399,9 +392,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 						.GroupBy(x => x.Item1, x => x.Item2)
 						.ToDictionary(g => g.Key, g => g.Sum());
 				}
-#endif
 
 				forest.Add(Uno.UI.Extensions.ViewExtensions.TreeGraph(rootContainer, DescribeView));
+				static IEnumerable<string> DescribeView(object x)
+				{
+					if (x is FrameworkElement fe)
+					{
+						yield return $"TP={PrettyPrint.FormatType(fe.GetTemplatedParent())}, DC={PrettyPrint.FormatObject(fe.DataContext)}";
+					}
+				}
+#endif
 
 				#region Add all children to the tracking
 #if WINAPPSDK
