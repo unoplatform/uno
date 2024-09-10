@@ -17,23 +17,40 @@ public class NativeWebView : FrameworkElement, INativeWebView
 		this.HorizontalAlignment = HorizontalAlignment.Stretch;
 		this.VerticalAlignment = VerticalAlignment.Stretch;
 
-		this.RegisterEventHandler("load", OnNavigationCompleted, GenericEventHandlers.RaiseRoutedEventHandler);
+		IFrameLoaded += OnNavigationCompleted;
 	}
 
-	public string DocumentTitle =>
-		WebAssemblyRuntime.InvokeJS($"document.getElementById('{HtmlId}').contentWindow.document.title");
-
-	private void OnNavigationCompleted(object sender, RoutedEventArgs e)
+	private event EventHandler IFrameLoaded
 	{
+		add => RegisterEventHandler("load", value, GenericEventHandlers.RaiseEventHandler);
+		remove => UnregisterEventHandler("load", value, GenericEventHandlers.RaiseEventHandler);
+	}
+
+	public string DocumentTitle
+	{
+		get
+		{
+			var title = WebAssemblyRuntime.InvokeJS($"document.getElementById('{HtmlId}').contentWindow.document.title");
+			return title ?? "";
+		}
+	}
+
+	private void OnNavigationCompleted(object sender, EventArgs e)
+	{
+		if (_coreWebView is null)
+		{
+			return;
+		}
+
 		var uriString = this.GetAttribute("src");
 		Uri uri = null;
 		if (!string.IsNullOrEmpty(uriString))
 		{
 			uri = new Uri(uriString);
 		}
+
 		_coreWebView.OnDocumentTitleChanged();
 		_coreWebView.RaiseNavigationCompleted(uri, true, 200, CoreWebView2WebErrorStatus.Unknown);
-
 	}
 
 	public void SetOwner(CoreWebView2 coreWebView)
@@ -66,10 +83,14 @@ public class NativeWebView : FrameworkElement, INativeWebView
 	{
 		var uriString = uri.OriginalString;
 		ScheduleNavigationStarting(uriString, () => this.SetAttribute("src", uriString));
+		OnNavigationCompleted(this, EventArgs.Empty);
 	}
 
-	public void ProcessNavigation(string html) =>
+	public void ProcessNavigation(string html)
+	{
 		ScheduleNavigationStarting(null, () => this.SetAttribute("srcdoc", html));
+		OnNavigationCompleted(this, EventArgs.Empty);
+	}
 
 	public void ProcessNavigation(HttpRequestMessage httpRequestMessage)
 	{

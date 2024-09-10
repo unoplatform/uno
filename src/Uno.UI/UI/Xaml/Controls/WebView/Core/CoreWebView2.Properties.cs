@@ -5,7 +5,6 @@ namespace Microsoft.Web.WebView2.Core;
 #pragma warning disable CS0067 // TODO:MZ: Undo this
 public partial class CoreWebView2
 {
-	private string _documentTitle = "";
 	private string _source = "";
 
 	/// <summary>
@@ -21,7 +20,7 @@ public partial class CoreWebView2
 	/// <summary>
 	/// Gets the title for the current top-level document.
 	/// </summary>
-	public string DocumentTitle => _nativeWebView.DocumentTitle;
+	public string DocumentTitle => _nativeWebView?.DocumentTitle ?? "";
 
 	/// <summary>
 	/// Gets the URI of the current top level document.
