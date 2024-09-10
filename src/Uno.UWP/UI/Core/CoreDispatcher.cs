@@ -71,11 +71,7 @@ namespace Windows.UI.Core
 		/// <param name="agileCallback">The handler to execute</param>
 		/// <returns>An async operation for the scheduled handler.</returns>
 		public IAsyncAction RunAsync(CoreDispatcherPriority priority, DispatchedHandler agileCallback)
-		{
-			var action = () => agileCallback?.Invoke();
-			var ag = (NativeDispatcherPriority)(~priority + 2);
-			return _inner.EnqueueOperation(action, ag);
-		}
+			=> _inner.EnqueueOperation(Unsafe.As<Action>(agileCallback), (NativeDispatcherPriority)(~priority + 2));
 
 		/// <summary>
 		/// Schedules the provided handler using the idle priority
