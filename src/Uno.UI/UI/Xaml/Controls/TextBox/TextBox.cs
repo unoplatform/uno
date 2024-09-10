@@ -1068,10 +1068,11 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			args.Handled = true;
-			ReleasePointerCaptures();
-			_pointerCaptured = false;
 
 			OnPointerReleasedPartial(args);
+
+			ReleasePointerCaptures();
+			_pointerCaptured = false;
 		}
 
 		protected override void OnTapped(TappedRoutedEventArgs e)

@@ -7,6 +7,7 @@ using Windows.Foundation;
 using Windows.System;
 using Windows.UI;
 using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
@@ -59,8 +60,8 @@ public partial class TextBox
 
 	private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromSeconds(0.5) };
 
-	private CaretWithStemAndThumb _selectionStartThumbfulCaret = new CaretWithStemAndThumb() { Visibility = Visibility.Collapsed };
-	private CaretWithStemAndThumb _selectionEndThumbfulCaret = new CaretWithStemAndThumb() { Visibility = Visibility.Collapsed };
+	private CaretWithStemAndThumb _selectionStartThumbfulCaret;
+	private CaretWithStemAndThumb _selectionEndThumbfulCaret;
 	private TextBoxView _textBoxView;
 	private MenuFlyout _contextMenu;
 	private readonly Dictionary<ContextMenuItem, MenuFlyoutItem> _flyoutItems = new();
@@ -217,11 +218,13 @@ public partial class TextBox
 						}
 					};
 
+					_selectionStartThumbfulCaret = new();
+					_selectionEndThumbfulCaret = new();
+
 					foreach (var caret in (ReadOnlySpan<CaretWithStemAndThumb>)[_selectionStartThumbfulCaret, _selectionEndThumbfulCaret])
 					{
-						canvas.AddChild(caret);
 						caret.PointerPressed += CaretOnPointerPressed;
-						caret.PointerReleased += ClearCaretPointerState;
+						caret.PointerReleased += CaretOnPointerReleased;
 						caret.PointerMoved += CaretOnPointerMoved;
 						caret.PointerCanceled += ClearCaretPointerState;
 						caret.PointerCaptureLost += ClearCaretPointerState;
@@ -236,8 +239,14 @@ public partial class TextBox
 
 					inlines.DrawingFinished += () =>
 					{
-						_selectionStartThumbfulCaret.Visibility = startThumbCaretVisible ? Visibility.Visible : Visibility.Collapsed;
-						_selectionEndThumbfulCaret.Visibility = endThumbCaretVisible ? Visibility.Visible : Visibility.Collapsed;
+						if (!startThumbCaretVisible)
+						{
+							_selectionStartThumbfulCaret.Hide();
+						}
+						if (!endThumbCaretVisible)
+						{
+							_selectionEndThumbfulCaret.Hide();
+						}
 						startThumbCaretVisible = false;
 						endThumbCaretVisible = false;
 					};
@@ -260,12 +269,13 @@ public partial class TextBox
 						if ((CaretMode == CaretDisplayMode.CaretWithThumbsOnlyEndShowing && args.endCaret) ||
 							CaretMode == CaretDisplayMode.CaretWithThumbsBothEndsShowing)
 						{
+							var caret = args.endCaret ? _selectionEndThumbfulCaret : _selectionStartThumbfulCaret;
+							var left = args.rect.GetMidX() - caret.Width / 2;
+							caret.Height = args.rect.Height + 16;
+							var transform = displayBlock.TransformToVisual(null);
+							if (transform.TransformBounds(args.rect).IntersectWith(this.GetAbsoluteBoundsRect()) is not null)
 							{
-								var caret = args.endCaret ? _selectionEndThumbfulCaret : _selectionStartThumbfulCaret;
-								var left = args.rect.GetMidX() - caret.Width / 2;
-								Canvas.SetLeft(caret, left);
-								Canvas.SetTop(caret, args.rect.Top);
-								caret.Height = args.rect.Height + 16;
+								caret.ShowAt(transform.TransformPoint(new Point(left, args.rect.Top)));
 								if (args.endCaret)
 								{
 									endThumbCaretVisible = true;
@@ -338,8 +348,8 @@ public partial class TextBox
 				// It doesn't make sense to have 2 caret ends when there's no selection.
 				CaretMode = CaretDisplayMode.CaretWithThumbsOnlyEndShowing;
 			}
-			UpdateDisplaySelection();
 			UpdateScrolling();
+			UpdateDisplaySelection();
 		}
 	}
 
@@ -369,7 +379,14 @@ public partial class TextBox
 		}
 	}
 
-	private void UpdateScrolling()
+	private void UpdateScrolling() => UpdateScrolling(true);
+
+	/// <remarks>
+	/// By default, only the selection end moves, while the selection start stays fixed. This is not the
+	/// case when dragging the caret thumb, in which case both ends can move. This case requires an
+	/// explicit call to this method with <see cref="putSelectionEndInVisibleViewport"/> = false.
+	/// </remarks>>
+	private void UpdateScrolling(bool putSelectionEndInVisibleViewport)
 	{
 		if (_isSkiaTextBox && _contentElement is ScrollViewer sv)
 		{
@@ -380,16 +397,20 @@ public partial class TextBox
 				DispatcherQueue.TryEnqueue(UpdateScrolling);
 			}
 
-			var selectionEnd = _selection.selectionEndsAtTheStart ? _selection.start : _selection.start + _selection.length;
-
 			var horizontalOffset = sv.HorizontalOffset;
 			var verticalOffset = sv.VerticalOffset;
 
-			var rect = DisplayBlockInlines.GetRectForIndex(selectionEnd);
+			var (selectionStart, selectionEnd) = _selection.selectionEndsAtTheStart ? (_selection.start + _selection.length, _selection.start) : (_selection.start, _selection.start + _selection.length);
+			var index = putSelectionEndInVisibleViewport ? selectionEnd : selectionStart;
 
-			// TODO: we are sometimes horizontally overscrolling, but it's more visually pleasant that underscrolling as we want the caret to be fully showing.
-			var newHorizontalOffset = horizontalOffset.AtMost(rect.Left).AtLeast(Math.Ceiling(rect.Left - sv.ViewportWidth + InlineCollection.CaretThickness));
-			var newVerticalOffset = verticalOffset.AtMost(rect.Top).AtLeast(rect.Top - sv.ViewportHeight);
+			var rect = DisplayBlockInlines.GetRectForIndex(index);
+
+			// Because the caret is only a single-pixel wide, and because screens can't draw in fractions of a pixel,
+			// we need to add Math.Ceiling to ensure that the caret is (fully) included in the visible viewport. This
+			// Math.Ceiling sometimes horizontal overscrolling, but it's more acceptable than sometimes not showing the caret.
+			var newHorizontalOffset = horizontalOffset.AtMost(rect.Left).AtLeast(Math.Ceiling(rect.Right - sv.ViewportWidth + InlineCollection.CaretThickness));
+
+			var newVerticalOffset = verticalOffset.AtMost(rect.Top).AtLeast(rect.Bottom - sv.ViewportHeight);
 
 			sv.ChangeView(newHorizontalOffset, newVerticalOffset, null);
 		}
@@ -1318,6 +1339,9 @@ public partial class TextBox
 		private readonly Ellipse _thumb;
 		private readonly Ellipse _thumbRing;
 		private readonly Rectangle _stem;
+		private Popup _popup;
+
+		public PointerPoint LastPointerDown { get; set; }
 
 		public CaretWithStemAndThumb()
 		{
@@ -1365,5 +1389,26 @@ public partial class TextBox
 		}
 
 		public void SetStemVisible(bool visible) => _stem.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
+
+		public void ShowAt(Point p)
+		{
+			_popup ??= new Popup
+			{
+				Child = this,
+				IsLightDismissEnabled = false
+			};
+
+			_popup.HorizontalOffset = p.X;
+			_popup.VerticalOffset = p.Y;
+			_popup.IsOpen = true;
+		}
+
+		public void Hide()
+		{
+			if (_popup is not null)
+			{
+				_popup.IsOpen = false;
+			}
+		}
 	}
 }

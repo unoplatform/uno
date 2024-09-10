@@ -21,6 +21,9 @@ public partial class TextBox
 	/// </summary>
 	private (PointerPoint point, int repeatedPresses) _lastPointerDown;
 	private (int start, int length, bool tripleTap)? _mouseMultiTapChunk;
+	// this is necessary because we can receive a PointerReleased without a PointerPressed (e.g. clicking on the
+	// TextBox while the context menu is open to dismiss it). We want to ignore such PointerPressed's.
+	private bool _isPressed;
 
 	protected override void OnPointerMoved(PointerRoutedEventArgs e)
 	{
@@ -84,58 +87,6 @@ public partial class TextBox
 		OpenContextMenu(e.GetPosition(this));
 	}
 
-	private void OpenContextMenu(Point p)
-	{
-		if (_isSkiaTextBox)
-		{
-			if (_contextMenu is null)
-			{
-				_contextMenu = new MenuFlyout();
-				_contextMenu.Opened += (_, _) => UpdateDisplaySelection();
-
-				_flyoutItems.Add(ContextMenuItem.Cut, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_CUT"), Command = new StandardUICommand(StandardUICommandKind.Cut) { Command = new TextBoxCommand(CutSelectionToClipboard) } });
-				_flyoutItems.Add(ContextMenuItem.Copy, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_COPY"), Command = new StandardUICommand(StandardUICommandKind.Copy) { Command = new TextBoxCommand(CopySelectionToClipboard) } });
-				_flyoutItems.Add(ContextMenuItem.Paste, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_PASTE"), Command = new StandardUICommand(StandardUICommandKind.Paste) { Command = new TextBoxCommand(PasteFromClipboard) } });
-				_flyoutItems.Add(ContextMenuItem.Undo, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_UNDO"), Command = new StandardUICommand(StandardUICommandKind.Undo) { Command = new TextBoxCommand(Undo) } });
-				_flyoutItems.Add(ContextMenuItem.Redo, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_REDO"), Command = new StandardUICommand(StandardUICommandKind.Redo) { Command = new TextBoxCommand(Redo) } });
-				_flyoutItems.Add(ContextMenuItem.SelectAll, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_SELECT_ALL"), Command = new StandardUICommand(StandardUICommandKind.SelectAll) { Command = new TextBoxCommand(SelectAll) } });
-			}
-
-			_contextMenu.Items.Clear();
-
-			if (_selection.length == 0)
-			{
-				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Paste]);
-				if (CanUndo)
-				{
-					_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Undo]);
-				}
-				if (CanRedo)
-				{
-					_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Redo]);
-				}
-				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.SelectAll]);
-			}
-			else
-			{
-				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Cut]);
-				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Copy]);
-				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Paste]);
-				if (CanUndo)
-				{
-					_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Undo]);
-				}
-				if (CanRedo)
-				{
-					_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Redo]);
-				}
-				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.SelectAll]);
-			}
-
-			_contextMenu.ShowAt(this, p);
-		}
-	}
-
 	private static bool IsMultiTapGesture((ulong id, ulong ts, Point position) previousTap, PointerPoint down)
 	{
 		var currentId = down.PointerId;
@@ -149,6 +100,7 @@ public partial class TextBox
 
 	partial void OnPointerPressedPartial(PointerRoutedEventArgs args)
 	{
+		_isPressed = true;
 		TrySetCurrentlyTyping(false);
 		_contextMenu?.Close();
 
@@ -206,11 +158,13 @@ public partial class TextBox
 	{
 		_mouseMultiTapChunk = null;
 
-		if (args.Pointer.PointerDeviceType is not PointerDeviceType.Touch)
+		if (!_isPressed || args.Pointer.PointerDeviceType is not PointerDeviceType.Touch)
 		{
 			// Mouse is handled on the PointerPressed side
 			return;
 		}
+
+		_isPressed = false;
 
 		if ((args.GetCurrentPoint(null).Timestamp - _lastPointerDown.point.Timestamp) >= GestureRecognizer.HoldMinDelayTicks)
 		{
@@ -219,40 +173,44 @@ public partial class TextBox
 		}
 		else if (!Text.IsNullOrEmpty()) // Touch tap
 		{
-			var displayBlock = TextBoxView.DisplayBlock;
-			var point = args.GetCurrentPoint(displayBlock).Position;
-			var index = Math.Max(0, DisplayBlockInlines.GetIndexAt(point, true, true));
+			TouchTap(args.GetCurrentPoint(TextBoxView.DisplayBlock).Position);
+		}
+	}
 
-			var tappedChunk = FindChunkAt(index, true);
+	private void TouchTap(Point point)
+	{
+		var index = Math.Max(0, DisplayBlockInlines.GetIndexAt(point, true, true));
 
-			var tappedInsideSelection = _selection.start <= index && index < _selection.start + _selection.length;
-			if (tappedInsideSelection && CaretMode != CaretDisplayMode.CaretWithThumbsBothEndsShowing)
-			{
-				CaretMode = CaretDisplayMode.CaretWithThumbsBothEndsShowing;
-			}
-			else if (_selection.length == 0 && FindChunkAt(_selection.start, true) is var currentChunk && currentChunk.start <= index && index < currentChunk.start + currentChunk.length)
-			{
-				Select(tappedChunk.start, tappedChunk.length); // touch selection doesn't go backwards (no "negative length")
-				CaretMode = CaretDisplayMode.CaretWithThumbsBothEndsShowing;
-			}
-			else
-			{
-				var lastNonSpanCharIndex = Text[tappedChunk.start..(tappedChunk.start + tappedChunk.length)].IndexOf(' ');
-				var rightEndIndex = lastNonSpanCharIndex == -1 ? tappedChunk.start + tappedChunk.length - 1 : tappedChunk.start + lastNonSpanCharIndex;
-				var leftEndIndex = tappedChunk.start;
-				var leftEnd = DisplayBlockInlines.GetRectForIndex(leftEndIndex);
-				var rightEnd = DisplayBlockInlines.GetRectForIndex(rightEndIndex);
+		var tappedChunk = FindChunkAt(index, true);
 
-				var closerEnd = Math.Abs(point.X - leftEnd.Left) < Math.Abs(point.X - rightEnd.Right) ? leftEndIndex : rightEndIndex;
+		var tappedInsideSelection = _selection.start <= index && index < _selection.start + _selection.length;
+		if (tappedInsideSelection && CaretMode != CaretDisplayMode.CaretWithThumbsBothEndsShowing)
+		{
+			CaretMode = CaretDisplayMode.CaretWithThumbsBothEndsShowing;
+		}
+		else if (_selection.length == 0 && FindChunkAt(_selection.start, true) is var currentChunk && currentChunk.start <= index && index < currentChunk.start + currentChunk.length)
+		{
+			Select(tappedChunk.start, tappedChunk.length); // touch selection doesn't go backwards (no "negative length")
+			CaretMode = CaretDisplayMode.CaretWithThumbsBothEndsShowing;
+		}
+		else
+		{
+			var lastNonSpanCharIndex = Text[tappedChunk.start..(tappedChunk.start + tappedChunk.length)].IndexOf(' ');
+			var rightEndIndex = lastNonSpanCharIndex == -1 ? tappedChunk.start + tappedChunk.length - 1 : tappedChunk.start + lastNonSpanCharIndex;
+			var leftEndIndex = tappedChunk.start;
+			var leftEnd = DisplayBlockInlines.GetRectForIndex(leftEndIndex);
+			var rightEnd = DisplayBlockInlines.GetRectForIndex(rightEndIndex);
 
-				CaretMode = CaretDisplayMode.CaretWithThumbsOnlyEndShowing;
-				Select(closerEnd, 0);
-			}
+			var closerEnd = Math.Abs(point.X - leftEnd.Left) < Math.Abs(point.X - rightEnd.Right) ? leftEndIndex : rightEndIndex;
+
+			CaretMode = CaretDisplayMode.CaretWithThumbsOnlyEndShowing;
+			Select(closerEnd, 0);
 		}
 	}
 
 	partial void OnPointerCaptureLostPartial(PointerRoutedEventArgs e)
 	{
+		_isPressed = false;
 		_mouseMultiTapChunk = null;
 	}
 
@@ -271,6 +229,8 @@ public partial class TextBox
 		{
 			caret.SetStemVisible(true);
 		}
+
+		caret.LastPointerDown = args.GetCurrentPoint(null);
 	}
 
 	private void CaretOnPointerMoved(object sender, PointerRoutedEventArgs args)
@@ -283,7 +243,7 @@ public partial class TextBox
 		args.Handled = true;
 
 		var displayBlock = TextBoxView.DisplayBlock;
-		var point = args.GetCurrentPoint(displayBlock).Position - new Point(0, caret.Height / 2);
+		var point = args.GetCurrentPoint(displayBlock).Position - new Point(0, (caret.Height - 16) / 2);
 		var index = Math.Max(0, DisplayBlockInlines.GetIndexAt(point, false, true));
 
 		if (_selection.length == 0)
@@ -317,6 +277,22 @@ public partial class TextBox
 				}
 			}
 		}
+
+		UpdateScrolling(caret == _selectionEndThumbfulCaret);
+	}
+
+	private void CaretOnPointerReleased(object sender, PointerRoutedEventArgs e)
+	{
+		ClearCaretPointerState(sender, e);
+
+		var caret = (CaretWithStemAndThumb)sender;
+
+		var previous = caret.LastPointerDown;
+		if (IsMultiTapGesture((previous.PointerId, previous.Timestamp, previous.Position), e.GetCurrentPoint(null)))
+		{
+			e.Handled = true;
+			TouchTap(e.GetCurrentPoint(TextBoxView.DisplayBlock).Position);
+		}
 	}
 
 	private void ClearCaretPointerState(object sender, PointerRoutedEventArgs args)
@@ -325,5 +301,57 @@ public partial class TextBox
 		var caret = (CaretWithStemAndThumb)sender;
 		caret.SetStemVisible(false);
 		caret.ReleasePointerCaptures();
+	}
+
+	private void OpenContextMenu(Point p)
+	{
+		if (_isSkiaTextBox)
+		{
+			if (_contextMenu is null)
+			{
+				_contextMenu = new MenuFlyout();
+				_contextMenu.Opened += (_, _) => UpdateDisplaySelection();
+
+				_flyoutItems.Add(ContextMenuItem.Cut, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_CUT"), Command = new StandardUICommand(StandardUICommandKind.Cut) { Command = new TextBoxCommand(CutSelectionToClipboard) } });
+				_flyoutItems.Add(ContextMenuItem.Copy, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_COPY"), Command = new StandardUICommand(StandardUICommandKind.Copy) { Command = new TextBoxCommand(CopySelectionToClipboard) } });
+				_flyoutItems.Add(ContextMenuItem.Paste, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_PASTE"), Command = new StandardUICommand(StandardUICommandKind.Paste) { Command = new TextBoxCommand(PasteFromClipboard) } });
+				_flyoutItems.Add(ContextMenuItem.Undo, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_UNDO"), Command = new StandardUICommand(StandardUICommandKind.Undo) { Command = new TextBoxCommand(Undo) } });
+				_flyoutItems.Add(ContextMenuItem.Redo, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_REDO"), Command = new StandardUICommand(StandardUICommandKind.Redo) { Command = new TextBoxCommand(Redo) } });
+				_flyoutItems.Add(ContextMenuItem.SelectAll, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_SELECT_ALL"), Command = new StandardUICommand(StandardUICommandKind.SelectAll) { Command = new TextBoxCommand(SelectAll) } });
+			}
+
+			_contextMenu.Items.Clear();
+
+			if (_selection.length == 0)
+			{
+				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Paste]);
+				if (CanUndo)
+				{
+					_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Undo]);
+				}
+				if (CanRedo)
+				{
+					_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Redo]);
+				}
+				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.SelectAll]);
+			}
+			else
+			{
+				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Cut]);
+				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Copy]);
+				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Paste]);
+				if (CanUndo)
+				{
+					_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Undo]);
+				}
+				if (CanRedo)
+				{
+					_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Redo]);
+				}
+				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.SelectAll]);
+			}
+
+			_contextMenu.ShowAt(this, p);
+		}
 	}
 }
