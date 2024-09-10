@@ -111,7 +111,7 @@
 			"Microsoft.Extensions.Logging.Console"
 		],
 		"versionOverride": {
-			"net9.0": "9.0.0-preview.7.24405.7"
+			"net9.0": "9.0.0-rc.1.24431.7"
 		}
 	},
 	{
@@ -121,7 +121,7 @@
 			"Microsoft.Windows.Compatibility"
 		],
 		"versionOverride": {
-			"net9.0": "9.0.0-preview.7.24405.2"
+			"net9.0": "9.0.0-rc.1.24452.1"
 		}
 	},
 	{
@@ -233,7 +233,7 @@
 			"Microsoft.Maui.Graphics"
 		],
 		"versionOverride": {
-			"net9.0": "9.0.0-preview.7.24407.4"
+			"net9.0": "9.0.0-rc.1.24453.9"
 		}
 	},
 	{
