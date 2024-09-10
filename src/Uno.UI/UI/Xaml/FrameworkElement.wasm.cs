@@ -30,8 +30,6 @@ namespace Microsoft.UI.Xaml
 			=> Parent != null;
 
 		private event TypedEventHandler<FrameworkElement, object> _loading;
-
-		[global::Uno.UI.Xaml.GeneratedWeakEvent]
 		public event TypedEventHandler<FrameworkElement, object> Loading
 		{
 			add
@@ -45,8 +43,6 @@ namespace Microsoft.UI.Xaml
 		}
 
 		private event RoutedEventHandler _loaded;
-
-		[global::Uno.UI.Xaml.GeneratedWeakEvent]
 		public event RoutedEventHandler Loaded
 		{
 			add
