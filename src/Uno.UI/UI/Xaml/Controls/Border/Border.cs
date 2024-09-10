@@ -331,7 +331,7 @@ public partial class Border : FrameworkElement
 			e.OldValue as Brush,
 			e.NewValue as Brush,
 			this.BackgroundTransition,
-			((IDependencyObjectStoreProvider)this).Store.GetPropertyDetails(BackgroundProperty).CurrentHighestValuePrecedence == DependencyPropertyValuePrecedences.Animations);
+			((IDependencyObjectStoreProvider)this).Store.GetCurrentHighestValuePrecedence(BackgroundProperty) == DependencyPropertyValuePrecedences.Animations);
 #else
 		UpdateBorder();
 #endif
