@@ -383,6 +383,9 @@ public partial class TextBox
 
 	private void UpdateScrolling() => UpdateScrolling(true);
 
+	/// <summary>
+	/// Scrolls the <see cref="_contentElement"/> so that the caret is inside the visible viewport
+	/// </summary>
 	/// <remarks>
 	/// By default, only the selection end moves, while the selection start stays fixed. This is not the
 	/// case when dragging the caret thumb, in which case both ends can move. This case requires an
@@ -405,14 +408,14 @@ public partial class TextBox
 			var (selectionStart, selectionEnd) = _selection.selectionEndsAtTheStart ? (_selection.start + _selection.length, _selection.start) : (_selection.start, _selection.start + _selection.length);
 			var index = putSelectionEndInVisibleViewport ? selectionEnd : selectionStart;
 
-			var rect = DisplayBlockInlines.GetRectForIndex(index);
+			var caretRect = DisplayBlockInlines.GetRectForIndex(index) with { Width = InlineCollection.CaretThickness };
 
 			// Because the caret is only a single-pixel wide, and because screens can't draw in fractions of a pixel,
 			// we need to add Math.Ceiling to ensure that the caret is (fully) included in the visible viewport. This
 			// Math.Ceiling sometimes horizontal overscrolling, but it's more acceptable than sometimes not showing the caret.
-			var newHorizontalOffset = horizontalOffset.AtMost(rect.Left).AtLeast(Math.Ceiling(rect.Right - sv.ViewportWidth + InlineCollection.CaretThickness));
+			var newHorizontalOffset = horizontalOffset.AtMost(caretRect.Left).AtLeast(Math.Ceiling(caretRect.Right - sv.ViewportWidth + InlineCollection.CaretThickness));
 
-			var newVerticalOffset = verticalOffset.AtMost(rect.Top).AtLeast(rect.Bottom - sv.ViewportHeight);
+			var newVerticalOffset = verticalOffset.AtMost(caretRect.Top).AtLeast(caretRect.Bottom - sv.ViewportHeight);
 
 			sv.ChangeView(newHorizontalOffset, newVerticalOffset, null);
 		}
