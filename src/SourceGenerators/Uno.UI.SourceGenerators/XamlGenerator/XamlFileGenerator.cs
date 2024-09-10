@@ -2738,7 +2738,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			var bodyDisposable = writer.BlockInvariant($"new global::Uno.UI.Xaml.WeakResourceInitializer({currentScope}, {CurrentResourceOwner} => ");
 
-			writer.AppendLineInvariantIndented($"var __that = ({CurrentScope.ClassName}){CurrentResourceOwner};");
+			//writer.AppendLineInvariantIndented($"var __that = ({CurrentScope.ClassName}){CurrentResourceOwner};");
 
 			writer.AppendLineInvariantIndented($"return ");
 
