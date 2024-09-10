@@ -193,13 +193,15 @@ public class Given_Rectangle
 			};
 			var root = new Grid
 			{
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
 				Children =
 				{
 					rectangle,
 				},
 			};
 			await UITestHelper.Load(root);
-			var screenshot = await UITestHelper.ScreenShot(root);
+			var screenshot = await UITestHelper.ScreenShot(rectangle);
 			ImageAssert.HasColorAt(screenshot, new(50, 50), Microsoft.UI.Colors.Green, tolerance: 0);
 			unhandledExceptionFired.Should().BeFalse();
 		}
