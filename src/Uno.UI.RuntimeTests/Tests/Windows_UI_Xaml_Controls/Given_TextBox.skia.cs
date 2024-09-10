@@ -2595,7 +2595,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 			await Task.Delay(100);
 
-			var canvas = SUT.FindVisualChildByType<Canvas>();
+			var canvas = SUT.FindVisualChildByType<ScrollViewer>();
 			var initial = await UITestHelper.ScreenShot(canvas);
 			ImageAssert.HasColorInRectangle(initial, new Rectangle(System.Drawing.Point.Empty, initial.Size), SUT.SelectionHighlightColor.Color);
 

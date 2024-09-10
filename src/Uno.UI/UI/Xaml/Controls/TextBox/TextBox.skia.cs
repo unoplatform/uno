@@ -188,35 +188,12 @@ public partial class TextBox
 		if (ContentElement != null)
 		{
 			var displayBlock = TextBoxView.DisplayBlock;
-			if (!_isSkiaTextBox)
+			if (ContentElement.Content != displayBlock)
 			{
-				if (ContentElement.Content != displayBlock)
-				{
-					ContentElement.Content = displayBlock;
-				}
-			}
-			else
-			{
-				if (ContentElement.Content is not Grid { Name: "TextBoxViewGrid" })
-				{
-					var canvas = new Canvas
-					{
-						HorizontalAlignment = HorizontalAlignment.Left
-					};
-					var grid = new Grid
-					{
-						Name = "TextBoxViewGrid",
-						Children =
-						{
-							displayBlock,
-							canvas,
-						},
-						RowDefinitions =
-						{
-							new RowDefinition { Height = GridLengthHelper.OneStar }
-						}
-					};
+				ContentElement.Content = displayBlock;
 
+				if (_isSkiaTextBox)
+				{
 					_selectionStartThumbfulCaret = new();
 					_selectionEndThumbfulCaret = new();
 
@@ -228,8 +205,6 @@ public partial class TextBox
 						caret.PointerCanceled += ClearCaretPointerState;
 						caret.PointerCaptureLost += ClearCaretPointerState;
 					}
-
-					displayBlock.DesiredSizeChangedCallback = () => canvas.Width = Math.Ceiling(displayBlock.ActualWidth + InlineCollection.CaretThickness);
 
 					var inlines = displayBlock.Inlines;
 
@@ -286,8 +261,6 @@ public partial class TextBox
 							}
 						}
 					};
-
-					ContentElement.Content = grid;
 				}
 			}
 
