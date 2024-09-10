@@ -15,7 +15,6 @@ using Microsoft.UI.Xaml.Shapes;
 using SkiaSharp;
 using Uno.Extensions;
 using Uno.UI;
-using Uno.UI.Helpers.WinUI;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Media;
 
@@ -470,7 +469,7 @@ public partial class TextBox
 				KeyDownDelete(args, ref text, ctrl, shift, ref selectionStart, ref selectionLength);
 				break;
 			case VirtualKey.A when ctrl:
-				if (!_pointerCaptured)
+				if (!HasPointerCapture)
 				{
 					args.Handled = true;
 					TrySetCurrentlyTyping(false);
@@ -479,14 +478,14 @@ public partial class TextBox
 				}
 				break;
 			case VirtualKey.Z when ctrl:
-				if (!_pointerCaptured)
+				if (!HasPointerCapture)
 				{
 					args.Handled = true;
 					Undo();
 				}
 				return;
 			case VirtualKey.Y when ctrl:
-				if (!_pointerCaptured)
+				if (!HasPointerCapture)
 				{
 					args.Handled = true;
 					Redo();
@@ -506,15 +505,14 @@ public partial class TextBox
 				CopySelectionToClipboard();
 				break;
 			case VirtualKey.Escape:
-				if (_pointerCaptured)
+				if (HasPointerCapture)
 				{
 					args.Handled = true;
 					ReleasePointerCaptures();
-					_pointerCaptured = false;
 				}
 				break;
 			default:
-				if (!IsReadOnly && !_pointerCaptured && args.UnicodeKey is { } c && (AcceptsReturn || args.UnicodeKey != '\r'))
+				if (!IsReadOnly && !HasPointerCapture && args.UnicodeKey is { } c && (AcceptsReturn || args.UnicodeKey != '\r'))
 				{
 					TrySetCurrentlyTyping(true);
 					var start = Math.Min(selectionStart, selectionStart + selectionLength);
@@ -534,7 +532,7 @@ public partial class TextBox
 
 		_suppressCurrentlyTyping = true;
 		_clearHistoryOnTextChanged = false;
-		if (!_pointerCaptured)
+		if (!HasPointerCapture)
 		{
 			_pendingSelection = (selectionStart, selectionLength);
 		}
@@ -553,7 +551,7 @@ public partial class TextBox
 
 	private void KeyDownBack(KeyRoutedEventArgs args, ref string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
-		if (_pointerCaptured)
+		if (HasPointerCapture)
 		{
 			return;
 		}
@@ -597,7 +595,7 @@ public partial class TextBox
 	private void KeyDownUpArrow(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
 		// TODO ctrl+up
-		if (_pointerCaptured)
+		if (HasPointerCapture)
 		{
 			return;
 		}
@@ -625,7 +623,7 @@ public partial class TextBox
 	private void KeyDownDownArrow(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
 		// TODO ctrl+down
-		if (_pointerCaptured)
+		if (HasPointerCapture)
 		{
 			return;
 		}
@@ -652,7 +650,7 @@ public partial class TextBox
 
 	private void KeyDownLeftArrow(KeyRoutedEventArgs args, string text, bool shift, bool ctrl, ref int selectionStart, ref int selectionLength)
 	{
-		if (_pointerCaptured)
+		if (HasPointerCapture)
 		{
 			return;
 		}
@@ -698,7 +696,7 @@ public partial class TextBox
 
 	private void KeyDownRightArrow(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
-		if (_pointerCaptured)
+		if (HasPointerCapture)
 		{
 			return;
 		}
@@ -752,7 +750,7 @@ public partial class TextBox
 
 	private void KeyDownHome(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
-		if (_pointerCaptured)
+		if (HasPointerCapture)
 		{
 			return;
 		}
@@ -777,7 +775,7 @@ public partial class TextBox
 
 	private void KeyDownEnd(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
-		if (_pointerCaptured)
+		if (HasPointerCapture)
 		{
 			return;
 		}
@@ -823,7 +821,7 @@ public partial class TextBox
 
 	private void KeyDownDelete(KeyRoutedEventArgs args, ref string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
-		if (_pointerCaptured)
+		if (HasPointerCapture)
 		{
 			return;
 		}
@@ -1212,7 +1210,7 @@ public partial class TextBox
 		}
 
 		TrySetCurrentlyTyping(false);
-		if (_historyIndex == 0 || _pointerCaptured)
+		if (_historyIndex == 0 || HasPointerCapture)
 		{
 			return;
 		}
@@ -1251,7 +1249,7 @@ public partial class TextBox
 			return;
 		}
 
-		if (_historyIndex == _history.Count - 1 || _pointerCaptured)
+		if (_historyIndex == _history.Count - 1 || HasPointerCapture)
 		{
 			return;
 		}

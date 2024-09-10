@@ -30,7 +30,7 @@ public partial class TextBox
 		base.OnPointerMoved(e);
 		e.Handled = true;
 
-		if (!_isSkiaTextBox || !_pointerCaptured)
+		if (!_isSkiaTextBox || !HasPointerCapture)
 		{
 			return;
 		}

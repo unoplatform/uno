@@ -55,8 +55,6 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool _suppressTextChanged;
 		private bool _wasTemplateRecycled;
 
-		private bool _pointerCaptured;
-
 #pragma warning disable CS0067, CS0649
 		private IFrameworkElement _placeHolder;
 		private ContentControl _contentElement;
@@ -1013,8 +1011,6 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.OnPointerCaptureLost(e);
 			_isPointerOver = false;
-			ReleasePointerCaptures();
-			_pointerCaptured = false;
 			UpdateVisualState();
 			OnPointerCaptureLostPartial(e);
 		}
@@ -1036,7 +1032,6 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					if (CapturePointer(args.Pointer))
 					{
-						_pointerCaptured = true;
 						Focus(FocusState.Pointer);
 					}
 				}
@@ -1070,9 +1065,6 @@ namespace Microsoft.UI.Xaml.Controls
 			args.Handled = true;
 
 			OnPointerReleasedPartial(args);
-
-			ReleasePointerCaptures();
-			_pointerCaptured = false;
 		}
 
 		protected override void OnTapped(TappedRoutedEventArgs e)
