@@ -43,7 +43,12 @@
 		LogicalName metadata's behavior.
 		-->
 		<AssignTargetPathsDependsOn>$(AssignTargetPathsDependsOn);AssignLinkMetadata</AssignTargetPathsDependsOn>
-	</PropertyGroup>
+
+		<_UnoUnderlyingPlatform Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">android</_UnoUnderlyingPlatform>
+		<_UnoUnderlyingPlatform Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">ios</_UnoUnderlyingPlatform>
+		<_UnoUnderlyingPlatform Condition="'$(UnoRuntimeIdentifier)'=='WebAssembly'">wasm</_UnoUnderlyingPlatform>
+		<_UnoUnderlyingPlatform Condition="'$(_UnoUnderlyingPlatform)'=='' AND '$(UnoRuntimeIdentifier)'=='Skia'">skia</_UnoUnderlyingPlatform>
+</PropertyGroup>
 
 	<!--
 	  This task transforms all the Content files and PRIResources into resources files compatible for each platform.
@@ -60,7 +65,7 @@
 
 		<PropertyGroup>
 			<!-- String resources -->
-			<XamarinProjectType Condition="'$(UnoForceProcessPRIResource)'!=''"></XamarinProjectType>
+			<_UnoUnderlyingPlatform Condition="'$(UnoForceProcessPRIResource)'!=''"></_UnoUnderlyingPlatform>
 
 			<!-- Determine UnoHead (with xamarin heads detection) -->
 			<_IsUnoHead>false</_IsUnoHead>
@@ -97,7 +102,7 @@
 
 		<ResourcesGenerationTask_v0 Resources="@(PRIResourceWithTargetPath)"
 									 TargetProjectDirectory="$(ProjectDir)"
-									 TargetPlatform="$(XamarinProjectType)"
+									 TargetPlatform="$(_UnoUnderlyingPlatform)"
 									 OutputPath="$(_ResourceOutputPath)"
 									 DefaultLanguage="$(DefaultLanguage)"
 									 IsUnoHead="$(_IsUnoHead)"
@@ -156,13 +161,13 @@
 		</PropertyGroup>
 		
 		<RetargetAssets_v0 UseHighDPIResources="$(UseHighDPIResources)"
-							TargetPlatform="$(XamarinProjectType)"
+							TargetPlatform="$(_UnoUnderlyingPlatform)"
 							DefaultLanguage="$(DefaultLanguage)"
 							IntermediateOutputPath="$(IntermediateOutputPath)"
 							ContentItems="@(ContentWithTargetPath);@(_SourceItemsToCopyToOutputDirectory)"
 							AndroidAssetsPrefix="$(MonoAndroidAssetsPrefix)"
 							IosAppManifest="$(_UnoIosAppManifest)"
-							Condition="'$(XamarinProjectType)'!=''">
+							Condition="'$(_UnoUnderlyingPlatform)'!=''">
 			<Output TaskParameter="Assets"
 							ItemName="Assets" />
 			<Output TaskParameter="RetargetedAssets"
@@ -173,14 +178,14 @@
 		<ItemGroup>
 			<Content Remove="@(Assets)" />
 		</ItemGroup>
-		<ItemGroup Condition="'$(XamarinProjectType)'=='ios'">
+		<ItemGroup Condition="'$(_UnoUnderlyingPlatform)'=='ios'">
 			<BundleResource Condition="'%(RetargetedAssets.AssetType)' == 'image'" Include="@(RetargetedAssets)" />
 			<BundleResource Condition="'%(RetargetedAssets.AssetType)' == 'generic'" Include="@(RetargetedAssets)" />
 
 			<FileWrites Condition="'%(RetargetedAssets.AssetType)' == 'image'" Include="@(RetargetedAssets)" />
 			<FileWrites Condition="'%(RetargetedAssets.AssetType)' == 'generic'" Include="@(RetargetedAssets)" />
 		</ItemGroup>
-		<ItemGroup Condition="'$(XamarinProjectType)'=='android'">
+		<ItemGroup Condition="'$(_UnoUnderlyingPlatform)'=='android'">
 			<AndroidResource Condition="'%(RetargetedAssets.AssetType)' =='image'" Include="@(RetargetedAssets)" />
 			<AndroidAsset Condition="'%(RetargetedAssets.AssetType)' =='generic'" Include="@(RetargetedAssets)" />
 
