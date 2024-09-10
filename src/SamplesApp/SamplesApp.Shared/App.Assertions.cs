@@ -148,7 +148,7 @@ partial class App
 	public void AssertApplicationData()
 	{
 #if __SKIA__
-		if (DeviceTargetHelper.IsDesktop())
+		if (OperatingSystem.IsBrowser())
 		{
 			// Reading Package.appxmanifest isn't supported on Wasm, even if running Skia.
 			return;
