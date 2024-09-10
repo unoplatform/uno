@@ -230,7 +230,7 @@ partial class App
 	private void AssertIssue15521()
 	{
 #if __ANDROID__
-		Uno.UI.RuntimeTests.Tests.Windows_UI_ViewManagement_ApplicationView.Given_ApplicationView.StartupVisibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
+		Uno.UI.RuntimeTests.Tests.Windows_UI_ViewManagement_ApplicationView.Given_ApplicationView.StartupVisibleBounds = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().VisibleBounds;
 #endif
 	}
 }
