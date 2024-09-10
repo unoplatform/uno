@@ -439,7 +439,6 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 			// For Android Skia and iOS Skia, we want to resolve netX.0 instead of netX.0-[android|ios] for non-RuntimeEnabled packages.
 			// The idea here is that we loop over ResolvedCompileFileDefinitionsInput, look for dlls from NuGet package cache,
 			// and then try to find the right dll.
-			// TODO: Do this only if the dll has a reference to Uno.UI.dll
 			if (IsSkiaMobileRuntimeIdentifier(UnoWinRTRuntimeIdentifier))
 			{
 				var runtimeEnabledPackages = UnoRuntimeEnabledPackage.Select(p => p.GetMetadata("Identity")).ToImmutableHashSet(StringComparer.OrdinalIgnoreCase);
@@ -479,6 +478,13 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 									var adjustedPath = $"{nugetCacheRoot}{packageName}/{packageVersion}/lib/{adjustedTargetFramework}/{dllFileName}";
 									if (File.Exists(adjustedPath))
 									{
+										var originalAssembly = AssemblyDefinition.ReadAssembly(identityNormalized);
+										if (!originalAssembly.MainModule.AssemblyReferences.Any(m => m.Name == "Uno.UI"))
+										{
+											this.Log.LogMessage($"Skipping {originalAssembly} replacement");
+											continue;
+										}
+										this.Log.LogMessage("Replacing " + packageName + " " + adjustedPath);
 										var fullAdjustedPath = Path.GetFullPath(adjustedPath);
 										runtimeCopyLocalItemsToAdd.Add(new TaskItem(
 											fullAdjustedPath,
