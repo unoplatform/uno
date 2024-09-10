@@ -1693,10 +1693,16 @@ namespace Microsoft.UI.Xaml
 				for (var propertyIndex = 0; propertyIndex < props.Length; propertyIndex++)
 				{
 					var prop = props[propertyIndex];
+
+					// The GetValue call here needs to happen regardless of the precedence check.
+					// Yes, it may appear like unnecessary work, but it's actually not.
+					// The side effect is coming from TryRegisterInheritedProperties call in GetValue.
+					var value = GetValue(prop);
+
 					var precedence = GetCurrentHighestValuePrecedence(prop);
 					if (precedence is not DependencyPropertyValuePrecedences.DefaultValue)
 					{
-						store.OnParentPropertyChangedCallback(instanceRef, prop, GetValue(prop));
+						store.OnParentPropertyChangedCallback(instanceRef, prop, value);
 					}
 				}
 			}
