@@ -50,6 +50,7 @@ jobs:
       includeRootFolder: true
       archiveType: 'zip'
       archiveFile: '$(Build.ArtifactStagingDirectory)/snapshot-compare-results-$(Build.BuildId).zip'
+    condition: not(startsWith(variables['Build.SourceBranch'], 'refs/heads/feature'))
 
   - task: PublishBuildArtifacts@1
     retryCountOnTaskFailure: 3
