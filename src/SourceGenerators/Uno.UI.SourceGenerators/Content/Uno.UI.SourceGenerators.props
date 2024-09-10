@@ -158,18 +158,18 @@
 		<ExcludeXamlNamespaces Condition="!$(_IsNetStdRef)" Include="netstdref" />
 
 		<IncludeXamlNamespaces Condition="$(_IsAndroidSkia)" Include="androidskia" />
-		<ExcludeXamlNamespaces Condition="$(_IsAndroidSkia)" Include="androidskia" />
-		<IncludeXamlNamespaces Condition="!$(_IsAndroidSkia)" Include="androidskia" />
+		<ExcludeXamlNamespaces Condition="$(_IsAndroidSkia)" Include="not_androidskia" />
+		<IncludeXamlNamespaces Condition="!$(_IsAndroidSkia)" Include="not_androidskia" />
 		<ExcludeXamlNamespaces Condition="!$(_IsAndroidSkia)" Include="androidskia" />
 
 		<IncludeXamlNamespaces Condition="$(_IsIOSSkia)" Include="iosskia" />
-		<ExcludeXamlNamespaces Condition="$(_IsIOSSkia)" Include="iosskia" />
-		<IncludeXamlNamespaces Condition="!$(_IsIOSSkia)" Include="iosskia" />
+		<ExcludeXamlNamespaces Condition="$(_IsIOSSkia)" Include="not_iosskia" />
+		<IncludeXamlNamespaces Condition="!$(_IsIOSSkia)" Include="not_iosskia" />
 		<ExcludeXamlNamespaces Condition="!$(_IsIOSSkia)" Include="iosskia" />
 
 		<IncludeXamlNamespaces Condition="$(_IsWasmSkia)" Include="wasmskia" />
-		<ExcludeXamlNamespaces Condition="$(_IsWasmSkia)" Include="wasmskia" />
-		<IncludeXamlNamespaces Condition="!$(_IsWasmSkia)" Include="wasmskia" />
+		<ExcludeXamlNamespaces Condition="$(_IsWasmSkia)" Include="not_wasmskia" />
+		<IncludeXamlNamespaces Condition="!$(_IsWasmSkia)" Include="not_wasmskia" />
 		<ExcludeXamlNamespaces Condition="!$(_IsWasmSkia)" Include="wasmskia" />
 
 		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='IS_UNIT_TESTS'" Include="unittests" />

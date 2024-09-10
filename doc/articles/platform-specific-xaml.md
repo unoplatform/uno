@@ -103,20 +103,32 @@ Consider the following XAML which is using the Windows Community Toolkit's [Blur
 
 The pre-defined prefixes are listed below:
 
-| Prefix        | Included platforms                 | Excluded platforms                 | Namespace                                                   | Put in `mc:Ignorable`? |
-|---------------|------------------------------------|------------------------------------|-------------------------------------------------------------|------------------------|
-| `win`         | WinUI/UWP                            | Android, iOS, web, macOS, Skia     | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
-| `not_win`     | Android, iOS, web, macOS, Skia    | WinUI/UWP                            | `http://uno.ui/not_win`                                      | yes                    |
-| `android`     | Android                            | WinUI/UWP, iOS, web, macOS, Skia     | `http://uno.ui/android`                                      | yes                    |
-| `ios`         | iOS                                | WinUI/UWP, Android, web, macOS, Skia | `http://uno.ui/ios`                                          | yes                    |
-| `wasm`        | web                                | WinUI/UWP, Android, iOS, macOS, Skia | `http://uno.ui/wasm`                                         | yes                    |
-| `macos`       | macOS                              | WinUI/UWP, Android, iOS, web, Skia   | `http://uno.ui/macos`                                        | yes                    |
-| `skia`        | Skia                               | WinUI/UWP, Android, iOS, web, macOS  | `http://uno.ui/skia`            | yes                     |
-| `not_android` | WinUI/UWP, iOS, web, macOS, Skia     | Android                            | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
-| `not_ios`     | WinUI/UWP, Android, web, macOS, Skia | iOS                                | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
-| `not_wasm`    | WinUI/UWP, Android, iOS, macOS, Skia | web                                | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
-| `not_macos`   | WinUI/UWP, Android, iOS, web, Skia   | macOS                              | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
-| `not_skia`    | WinUI/UWP, Android, iOS, web, macOS  | Skia                               | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
+> [!NOTE]
+> Skia in the context of this table refers to all Skia targets, including when Android, iOS, or Wasm are running with Skia rendering.
+>
+> [!NOTE]
+> Unless explicitly stated, Android, iOS, and web in the context of this table refer specifically to the old native platforms and not when running with Skia rendering.
+
+| Prefix            | Included platforms                             | Excluded platforms                   | Namespace                                                   | Put in `mc:Ignorable`? |
+|-------------------|------------------------------------------------|--------------------------------------|-------------------------------------------------------------|------------------------|
+| `win`             | WinUI/UWP                                      | Android, iOS, web, macOS, Skia       | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
+| `not_win`         | Android, iOS, web, macOS, Skia                 | WinUI/UWP                            | `http://uno.ui/not_win`                                     | yes                    |
+| `android`         | Android                                        | WinUI/UWP, iOS, web, macOS, Skia     | `http://uno.ui/android`                                     | yes                    |
+| `ios`             | iOS                                            | WinUI/UWP, Android, web, macOS, Skia | `http://uno.ui/ios`                                         | yes                    |
+| `wasm`            | web                                            | WinUI/UWP, Android, iOS, macOS, Skia | `http://uno.ui/wasm`                                        | yes                    |
+| `macos`           | macOS                                          | WinUI/UWP, Android, iOS, web, Skia   | `http://uno.ui/macos`                                       | yes                    |
+| `skia`            | Skia                                           | WinUI/UWP, Android, iOS, web, macOS  | `http://uno.ui/skia`                                        | yes                    |
+| `androidskia`     | Android running with Skia rendering            | Everything else                      | `http://uno.ui/androidskia`                                 | yes                    |
+| `iosskia`         | iOS running with Skia rendering                | Everything else                      | `http://uno.ui/iosskia`                                     | yes                    |
+| `wasmskia`        | Web running with Skia rendering                | Everything else                      | `http://uno.ui/wasmskia`                                    | yes                    |
+| `not_android`     | WinUI/UWP, iOS, web, macOS, Skia               | Android                              | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
+| `not_ios`         | WinUI/UWP, Android, web, macOS, Skia           | iOS                                  | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
+| `not_wasm`        | WinUI/UWP, Android, iOS, macOS, Skia           | web                                  | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
+| `not_macos`       | WinUI/UWP, Android, iOS, web, Skia             | macOS                                | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
+| `not_skia`        | WinUI/UWP, Android, iOS, web, macOS            | Skia                                 | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
+| `not_androidskia` | All except Android running with Skia rendering | Android running with Skia rendering  | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
+| `not_iosskia`     | All except iOS running with Skia rendering     | iOS running with Skia rendering      | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
+| `not_wasmskia`    | All except web running with Skia rendering     | web running with Skia rendering      | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
 
 More visually, platform support for the pre-defined prefixes is shown in the below table:
 
