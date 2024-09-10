@@ -11,6 +11,8 @@ namespace Uno.WinUI.Runtime.Skia.AppleUIKit.UI.Xaml;
 
 internal class NativeWindowFactoryExtension : INativeWindowFactoryExtension
 {
+	public bool SupportsClosingCancellation => false;
+
 	public bool SupportsMultipleWindows => UIApplication.SharedApplication.SupportsMultipleScenes;
 
 	public INativeWindowWrapper CreateWindow(Window window, XamlRoot xamlRoot) =>

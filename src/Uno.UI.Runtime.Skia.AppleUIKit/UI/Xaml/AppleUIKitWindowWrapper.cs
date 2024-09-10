@@ -63,7 +63,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	internal void OnNativeActivated(CoreWindowActivationState state) => ActivationState = state;
 
-	internal void OnNativeClosed() => RaiseClosed(); // TODO: Handle closing when multiwindow #13847
+	internal void OnNativeClosed() => RaiseClosing(); // TODO: Handle closing when multiwindow #13847
 
 	internal void RaiseNativeSizeChanged()
 	{
