@@ -981,17 +981,22 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.MoveTo(bounds.GetCenter());
 			await WindowHelper.WaitForIdle();
 
+			// Right tapping should move the caret to the current pointer location and open the context menu
 			mouse.PressRight();
 			mouse.ReleaseRight();
 			await WindowHelper.WaitForIdle();
 
-			mouse.MoveBy(100, 0); // click out
+			Assert.AreEqual(9, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			mouse.MoveBy(-100, 0); // click out
 			mouse.Press();
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(2, SUT.SelectionStart);
-			Assert.AreEqual(2, SUT.SelectionLength);
+			// clicking inside the TextBox to dismiss the context menu should NOT move the caret
+			Assert.AreEqual(9, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
 		}
 
 		[TestMethod]

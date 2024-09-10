@@ -84,7 +84,15 @@ public partial class TextBox
 		base.OnRightTapped(e);
 		e.Handled = true;
 
-		OpenContextMenu(e.GetPosition(this));
+		var displayBlock = TextBoxView.DisplayBlock;
+		// There is a bug with gesture events where the position stored in the RightTappedRoutedEventArgs is relative to
+		// this textbox but GetPosition assumes that it is relative to the displayBlock, so we compensate.
+		// var position = e.GetPosition(displayBlock);
+		var position = displayBlock.TransformToVisual(this).Inverse.TransformPoint(e.GetPosition(displayBlock));
+		var index = Math.Max(0, displayBlock.Inlines.GetIndexAt(position, true, true));
+		Select(index, 0);
+
+		OpenContextMenu(position);
 	}
 
 	private static bool IsMultiTapGesture((ulong id, ulong ts, Point position) previousTap, PointerPoint down)
