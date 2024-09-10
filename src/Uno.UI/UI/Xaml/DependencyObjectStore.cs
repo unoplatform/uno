@@ -258,7 +258,7 @@ namespace Microsoft.UI.Xaml
 		public object? ReadLocalValue(DependencyProperty property)
 		{
 			var details = _properties.FindPropertyDetails(property);
-			if (property == _dataContextProperty || property == _templatedParentProperty)
+			if (property == _dataContextProperty)
 			{
 				TryRegisterInheritedProperties(force: true);
 			}
@@ -274,7 +274,7 @@ namespace Microsoft.UI.Xaml
 		public object? ReadInheritedValueOrDefaultValue(DependencyProperty property)
 		{
 			var details = _properties.FindPropertyDetails(property);
-			if (property == _dataContextProperty || property == _templatedParentProperty)
+			if (property == _dataContextProperty)
 			{
 				TryRegisterInheritedProperties(force: true);
 			}
@@ -298,7 +298,7 @@ namespace Microsoft.UI.Xaml
 			var (modifiedValue, details) = GetModifiedValue(property);
 			if (modifiedValue?.IsAnimated == true)
 			{
-				if (property == _dataContextProperty || property == _templatedParentProperty)
+				if (property == _dataContextProperty)
 				{
 					TryRegisterInheritedProperties(force: true);
 				}
@@ -1160,7 +1160,7 @@ namespace Microsoft.UI.Xaml
 		internal (object? value, DependencyPropertyValuePrecedences precedence) GetBaseValue(DependencyProperty property)
 		{
 			var details = _properties.FindPropertyDetails(property);
-			if (property == _dataContextProperty || property == _templatedParentProperty)
+			if (property == _dataContextProperty)
 			{
 				TryRegisterInheritedProperties(force: true);
 			}
@@ -1696,7 +1696,7 @@ namespace Microsoft.UI.Xaml
 					var precedence = GetCurrentHighestValuePrecedence(prop);
 					if (precedence is not DependencyPropertyValuePrecedences.DefaultValue)
 					{
-						store.OnParentPropertyChangedCallback(instanceRef, prop, GetValue(prop, precedence));
+						store.OnParentPropertyChangedCallback(instanceRef, prop, GetValue(prop));
 					}
 				}
 			}
