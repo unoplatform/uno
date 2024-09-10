@@ -6,6 +6,8 @@
 	<string>Uno SamplesApp</string>
 	<key>CFBundleIdentifier</key>
 	<string>uno.platform.samplesdev</string>
+	<key>MinimumOSVersion</key>
+	<string>14.2</string>
 	<key>UIDeviceFamily</key>
 	<array>
 		<integer>2</integer>
