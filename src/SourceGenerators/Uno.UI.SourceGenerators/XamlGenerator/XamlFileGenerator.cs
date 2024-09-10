@@ -6398,12 +6398,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 													}
 												}
 
-												using (writer.BlockInvariant("else"))
+												using (innerWriter.BlockInvariant("else"))
 												{
 													var elementNames = FindNamesIn(definition);
 													foreach (var elementName in elementNames)
 													{
-														writer.AppendLineIndented($"_{elementName}Subject.ElementInstance = null;");
+														innerWriter.AppendLineIndented($"_{elementName}Subject.ElementInstance = null;");
 													}
 												}
 											}
