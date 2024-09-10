@@ -8,14 +8,15 @@ using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-public class NativeWebView : FrameworkElement, INativeWebView
+public class NativeWebView : UIElement, INativeWebView
 {
 	private CoreWebView2 _coreWebView;
 
-	public NativeWebView() : base("iframe")
+	public NativeWebView(CoreWebView2 coreWebView) : base("iframe")
 	{
-		this.HorizontalAlignment = HorizontalAlignment.Stretch;
-		this.VerticalAlignment = VerticalAlignment.Stretch;
+		_coreWebView = coreWebView;
+
+		SetAttribute("background-color", "transparent");
 
 		IFrameLoaded += OnNavigationCompleted;
 	}
@@ -51,11 +52,6 @@ public class NativeWebView : FrameworkElement, INativeWebView
 
 		_coreWebView.OnDocumentTitleChanged();
 		_coreWebView.RaiseNavigationCompleted(uri, true, 200, CoreWebView2WebErrorStatus.Unknown);
-	}
-
-	public void SetOwner(CoreWebView2 coreWebView)
-	{
-		_coreWebView = coreWebView;
 	}
 
 	public Task<string> ExecuteScriptAsync(string script, CancellationToken token)

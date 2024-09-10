@@ -7744,7 +7744,7 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate>
-					<NativeWebView />
+					<ContentPresenter x:Name="WebViewTemplateRoot" />
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
@@ -7754,7 +7754,7 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate>
-					<NativeWebView />
+					<ContentPresenter x:Name="WebViewTemplateRoot" />
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
