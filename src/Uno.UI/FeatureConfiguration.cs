@@ -837,7 +837,7 @@ namespace Uno.UI
 			/// Accessing the dependency property system isn't thread safe and should only
 			/// happen on the UI thread.
 			/// By default, attempting to access it from non UI thread will throw an exception.
-			/// Setting this flag to false will prevent the exception from being thrown at the risk
+			/// Setting this flag to true will prevent the exception from being thrown at the risk
 			/// of having an undefined behavior and/or race conditions.
 			/// </summary>
 			public static bool DisableThreadingCheck { get; set; }
