@@ -1,16 +1,15 @@
 ---
-
 uid: Uno.Tutorials.CreatingCustomControls  
 ---  
 
 # Creating Custom Controls
 
-Custom controls in the Uno Platform enable developers to create reusable UI components that work seamlessly across iOS, Android, WebAssembly, and Windows. Uno Platform supports the same approach as WinUI/WinAppSDK and UWP, with a few specific considerations for cross-platform compatibility.
+Custom controls in the Uno Platform enable developers to create reusable UI components that work seamlessly across iOS, Android, WebAssembly, Linux, macOS, and Windows. Uno Platform supports the same approach as WinUI/WinAppSDK and UWP, with a few specific considerations for cross-platform compatibility.
 
 > [!NOTE]  
-> For a more detailed explanation of creating custom controls, including dependency properties and control templates, refer to the official WinUI documentation: [Build XAML controls with C# | Microsoft Learn](https://learn.microsoft.com/en-us/windows/apps/winui/winui3/xaml-templated-controls-csharp-winui-3).
+> For a more detailed explanation of creating custom controls, including dependency properties and control templates, refer to the official WinUI documentation: [Build XAML controls with C# | Microsoft Learn](https://learn.microsoft.com/windows/apps/winui/winui3/xaml-templated-controls-csharp-winui-3).
 
-If you're not familiar with UWP concepts such as **dependency properties**, **control templates**, and **visual states**, it might be useful to explore those topics before diving into custom controls. These are fundamental concepts for creating reusable, maintainable UI components:
+If you're not familiar with concepts such as **dependency properties**, **control templates**, and **visual states**, it might be useful to explore those topics before diving into custom controls. These are fundamental concepts for creating reusable, maintainable UI components:
 
 - **Dependency Properties**: These are properties that enable you to define and bind data across multiple platforms efficiently. For more information, see [Dependency properties overview | Microsoft Learn](https://learn.microsoft.com/en-us/windows/uwp/xaml-platform/dependency-properties-overview).
 - **Control Templates**: These define the visual structure and behavior of a control, allowing you to separate design from logic. Check out [Control templates | Microsoft Learn](https://learn.microsoft.com/en-us/windows/apps/design/style/xaml-control-templates) for further reading.
