@@ -61,12 +61,6 @@ namespace Microsoft.UI.Xaml
 
 		private static readonly IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 
-		/// <summary>
-		/// A global static counter that is used to uniquely identify objects.
-		/// This is primarily used during trace profiling.
-		/// </summary>
-		private static long _objectIdCounter;
-
 		private bool _isDisposed;
 
 		private readonly DependencyPropertyDetailsCollection _properties;
@@ -184,8 +178,6 @@ namespace Microsoft.UI.Xaml
 		/// <param name="originalObject"></param>
 		public DependencyObjectStore(object originalObject, DependencyProperty dataContextProperty, DependencyProperty templatedParentProperty)
 		{
-			ObjectId = Interlocked.Increment(ref _objectIdCounter);
-
 			_originalObjectRef = WeakReferencePool.RentWeakReference(this, originalObject);
 			_originalObjectType = originalObject is AttachedDependencyObject a ? a.Owner.GetType() : originalObject.GetType();
 
@@ -198,7 +190,7 @@ namespace Microsoft.UI.Xaml
 			{
 				_trace.WriteEvent(
 					DependencyObjectStore.TraceProvider.CreationTask,
-					new object[] { ObjectId, _originalObjectType.Name }
+					new object[] { GetHashCode(), _originalObjectType.Name }
 				);
 			}
 		}
@@ -234,11 +226,6 @@ namespace Microsoft.UI.Xaml
 		public bool IsAutoPropertyInheritanceEnabled { get; set; } = true;
 
 		internal bool IsTemplatedParentFrozen { get; set; }
-
-		/// <summary>
-		/// Gets a unique identifier for the current DependencyObject.
-		/// </summary>
-		internal long ObjectId { get; }
 
 		/// <summary>
 		/// Returns the current effective value of a dependency property from a DependencyObject.
@@ -776,7 +763,7 @@ namespace Microsoft.UI.Xaml
 		{
 			if (_trace.IsEnabled)
 			{
-				_trace.WriteEvent(eventId, new object[] { ObjectId, property.OwnerType.Name, property.Name, precedence?.ToString() ?? "Local" });
+				_trace.WriteEvent(eventId, new object[] { GetHashCode(), property.OwnerType.Name, property.Name, precedence?.ToString() ?? "Local" });
 			}
 		}
 
@@ -787,7 +774,7 @@ namespace Microsoft.UI.Xaml
 				return _trace.WriteEventActivity(
 					startEventId,
 					stopEventId,
-					new object[] { ObjectId, property.OwnerType.Name, property.Name, precedence.ToString() }
+					new object[] { GetHashCode(), property.OwnerType.Name, property.Name, precedence.ToString() }
 				);
 			}
 			else
