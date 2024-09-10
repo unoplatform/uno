@@ -96,7 +96,7 @@ namespace Microsoft.UI.Xaml.Data
 			_bindingPath = new BindingPath(
 				path: ParentBinding.Path,
 				fallbackValue: ParentBinding.FallbackValue,
-				precedence: null,
+				forAnimations: false,
 				allowPrivateMembers: ParentBinding.IsXBind
 			);
 			_boundPropertyType = targetPropertyDetails.Property.Type;
@@ -113,7 +113,7 @@ namespace Microsoft.UI.Xaml.Data
 			{
 				_updateSources = ParentBinding
 					.XBindPropertyPaths
-					.Select(p => new BindingPath(path: p, fallbackValue: null, precedence: null, allowPrivateMembers: true)
+					.Select(p => new BindingPath(path: p, fallbackValue: null, forAnimations: false, allowPrivateMembers: true)
 					{
 					})
 					.ToArray();

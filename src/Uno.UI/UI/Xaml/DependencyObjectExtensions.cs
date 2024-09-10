@@ -208,7 +208,7 @@ namespace Microsoft.UI.Xaml
 		/// <returns></returns>
 		public static object GetValue(this object instance, DependencyProperty property, DependencyPropertyValuePrecedences? precedence)
 		{
-			return GetStore(instance).GetValue(property, null, precedence);
+			return GetStore(instance).GetValue(property);
 		}
 
 		/// <summary>

@@ -1022,7 +1022,7 @@ namespace Uno.UI.Tests.BinderTests
 			SUT.SetValue(MyDependencyObject1.MyPropertyProperty, "value", DependencyPropertyValuePrecedences.Inheritance);
 			SUT.CoerceValue(MyDependencyObject1.MyPropertyProperty);
 
-			Assert.AreEqual(DependencyProperty.UnsetValue, SUT.GetValue(MyDependencyObject1.MyPropertyProperty, DependencyPropertyValuePrecedences.Local));
+			Assert.AreEqual(DependencyProperty.UnsetValue, SUT.ReadLocalValue(MyDependencyObject1.MyPropertyProperty));
 		}
 
 		[TestMethod]
