@@ -34,7 +34,7 @@ public class AndroidSkiaHost : ISkiaApplicationHost
 			ApiExtensibility.Register(typeof(INativeWindowFactoryExtension), o => new AndroidSkiaWindowFactory());
 			ApiExtensibility.Register(typeof(IUnoCorePointerInputSource), o => AndroidCorePointerInputSource.Instance);
 			ApiExtensibility.Register(typeof(IUnoKeyboardInputSource), o => AndroidKeyboardInputSource.Instance);
-			ApiExtensibility.Register<TextBoxView>(typeof(IOverlayTextBoxViewExtension), o => new AndroidInvisibleTextBoxViewExtension(o));
+			ApiExtensibility.Register(typeof(ITextBoxNotificationsProviderSingleton), _ => AndroidSkiaTextBoxNotificationsProviderSingleton.Instance);
 			ApiExtensibility.Register<ContentPresenter>(typeof(ContentPresenter.INativeElementHostingExtension), o => new AndroidSkiaNativeElementHostingExtension(o));
 			ApiExtensibility.Register<CoreWebView2>(typeof(INativeWebViewProvider), o => new AndroidNativeWebViewProvider(o));
 			ApiExtensibility.Register(typeof(ISkiaNativeDatePickerProviderExtension), _ => new AndroidSkiaDatePickerProvider());

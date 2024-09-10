@@ -26,7 +26,7 @@ namespace Microsoft.UI.Xaml.Controls
 			OnTextAlignmentChanged(TextAlignment);
 		}
 
-		partial void OnFocusStateChangedPartial(FocusState focusState)
+		partial void OnFocusStateChangedPartial(FocusState focusState, bool initial)
 		{
 			if (_textBoxView != null)
 			{

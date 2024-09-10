@@ -1,4 +1,5 @@
-﻿using Uno.UI.Xaml.Input;
+﻿using InputUtility;
+using Uno.UI.Xaml.Input;
 using Windows.Foundation.Metadata;
 using Windows.System;
 using Windows.UI.Core;
@@ -12,7 +13,7 @@ namespace Microsoft.UI.Xaml.Input
 		internal KeyRoutedEventArgs(object originalSource, VirtualKey key, VirtualKeyModifiers modifiers, CorePhysicalKeyStatus? keyStatus = null, char? unicodeKey = null)
 			: base(originalSource)
 		{
-			Key = key;
+			Key = RemapVirtualKeyHelper.RemapVirtualKey(key);
 			OriginalKey = key;
 			KeyboardModifiers = modifiers;
 			_keyStatus = keyStatus;

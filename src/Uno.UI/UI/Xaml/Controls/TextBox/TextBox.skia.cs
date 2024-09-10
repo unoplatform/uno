@@ -10,9 +10,11 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using Uno.Extensions;
+using Uno.Foundation.Extensibility;
 using Uno.UI;
 using Uno.UI.Helpers.WinUI;
 using Uno.UI.Xaml;
+using Uno.UI.Xaml.Controls.Extensions;
 using Uno.UI.Xaml.Media;
 
 #if HAS_UNO_WINUI
@@ -28,6 +30,7 @@ public partial class TextBox
 	private readonly bool _isSkiaTextBox = !FeatureConfiguration.TextBox.UseOverlayOnSkia;
 
 	private TextBoxView _textBoxView;
+	private static ITextBoxNotificationsProviderSingleton _textBoxNotificationsSingleton;
 
 	private bool _deleteButtonVisibilityChangedSinceLastUpdateScrolling = true;
 
@@ -304,7 +307,7 @@ public partial class TextBox
 		}
 	}
 
-	partial void OnFocusStateChangedPartial(FocusState focusState)
+	partial void OnFocusStateChangedPartial(FocusState focusState, bool initial)
 	{
 		TextBoxView?.OnFocusStateChanged(focusState);
 
@@ -314,16 +317,29 @@ public partial class TextBox
 			{
 				_showCaret = true;
 				_timer.Start();
+				_textBoxNotificationsSingleton?.OnFocused(this);
 			}
 			else
 			{
 				TrySetCurrentlyTyping(false);
 				_showCaret = false;
 				_timer.Stop();
+				if (!initial)
+				{
+					_textBoxNotificationsSingleton?.OnUnfocused(this);
+				}
 			}
 			UpdateDisplaySelection();
 		}
 	}
+
+#if false // Removing temporarily. We'll need to add it back.
+	// TODO: Discuss this public API.
+	public static void FinishAutofillContext(bool shouldSave)
+	{
+		_textBoxNotificationsSingleton?.FinishAutofillContext(shouldSave);
+	}
+#endif
 
 	partial void SelectPartial(int start, int length)
 	{
@@ -966,6 +982,26 @@ public partial class TextBox
 		}
 	}
 
+	private protected override void EnterImpl(bool live)
+	{
+		base.EnterImpl(live);
+
+		if (live)
+		{
+			_textBoxNotificationsSingleton?.OnEnteredVisualTree(this);
+		}
+	}
+
+	private protected override void LeaveImpl(bool live)
+	{
+		base.LeaveImpl(live);
+
+		if (live)
+		{
+			_textBoxNotificationsSingleton?.OnLeaveVisualTree(this);
+		}
+	}
+
 	private static bool IsMultiTapGesture((ulong id, ulong ts, Point position) previousTap, PointerPoint down)
 	{
 		var currentId = down.PointerId;
@@ -1217,6 +1253,11 @@ public partial class TextBox
 		return index == -1 ? Text.Length - 1 : index;
 	}
 
+	partial void InitializePartial()
+	{
+		_ = ApiExtensibility.CreateInstance(null, out _textBoxNotificationsSingleton);
+	}
+
 	partial void OnTextChangedPartial()
 	{
 		if (_isSkiaTextBox)
@@ -1234,6 +1275,8 @@ public partial class TextBox
 			{
 				ClearUndoRedoHistory();
 			}
+
+			_textBoxNotificationsSingleton?.NotifyValueChanged(this);
 		}
 	}
 

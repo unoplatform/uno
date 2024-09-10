@@ -143,7 +143,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		partial void OnFocusStateChangedPartial(FocusState focusState)
+		partial void OnFocusStateChangedPartial(FocusState focusState, bool initial)
 		{
 			if (_textBoxView == null)
 			{
