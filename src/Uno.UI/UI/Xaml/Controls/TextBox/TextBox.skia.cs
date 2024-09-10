@@ -30,19 +30,26 @@ using SelectionDetails = (int start, int length, bool selectionEndsAtTheStart);
 
 public partial class TextBox
 {
-	private static readonly VirtualKeyModifiers _platformCtrlKey = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? VirtualKeyModifiers.Windows : VirtualKeyModifiers.Control;
 	private readonly bool _isSkiaTextBox = !FeatureConfiguration.TextBox.UseOverlayOnSkia;
 
-	private bool _inSelectInternal;
+	private CaretWithStemAndThumb _selectionStartThumbfulCaret;
+	private CaretWithStemAndThumb _selectionEndThumbfulCaret;
+	private TextBoxView _textBoxView;
+
 	private bool _deleteButtonVisibilityChangedSinceLastUpdateScrolling = true;
-	private bool _clearHistoryOnTextChanged = true;
+
 
 	private SelectionDetails _selection;
-
 	private float _caretXOffset; // this is not necessarily the visual offset of the caret, but where the caret is logically supposed to be when moving up and down with the keyboard, even if the caret is temporarily elsewhere
 	private CaretDisplayMode _caretMode = CaretDisplayMode.ThumblessCaretHidden;
 
+	private bool _inSelectInternal;
+
 	private (int start, int length)? _pendingSelection;
+
+	private bool _clearHistoryOnTextChanged = true;
+
+	private readonly VirtualKeyModifiers _platformCtrlKey = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? VirtualKeyModifiers.Windows : VirtualKeyModifiers.Control;
 
 	// We track what constitutes one typing "action" that can be undone/redone. The general gist is that
 	// any sequence of characters (with backspace allowed) without any navigation moves (pointer click, arrow keys, etc.)
@@ -52,16 +59,16 @@ public partial class TextBox
 	private SelectionDetails _selectionWhenTypingStarted;
 	private string _textWhenTypingStarted;
 
-	private (int hashCode, List<(int start, int length)> chunks) _cachedChunks = (-1, new());
-
 	private int _historyIndex;
 	private readonly List<HistoryRecord> _history = new(); // the selection of an action is what was selected right before it happened. Might turn out to be unnecessary.
 
-	private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromSeconds(0.5) };
+	private (int hashCode, List<(int start, int length)> chunks) _cachedChunks = (-1, new());
 
-	private CaretWithStemAndThumb _selectionStartThumbfulCaret;
-	private CaretWithStemAndThumb _selectionEndThumbfulCaret;
-	private TextBoxView _textBoxView;
+	private readonly DispatcherTimer _timer = new DispatcherTimer
+	{
+		Interval = TimeSpan.FromSeconds(0.5)
+	};
+
 	private MenuFlyout _contextMenu;
 	private readonly Dictionary<ContextMenuItem, MenuFlyoutItem> _flyoutItems = new();
 
