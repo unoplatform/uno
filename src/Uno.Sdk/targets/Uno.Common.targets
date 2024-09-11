@@ -122,6 +122,11 @@
 		<None Include="@(_IgnorePlatformFiles)" Sdk="Uno" />
 	</ItemGroup>
 
+	<PropertyGroup>
+		<!-- Make breaking on Application.UnhandledException opt-in only -->
+		<DefineConstants Condition="!$(DefineConstants.Contains(DISABLE_XAML_GENERATED_BREAK_ON_UNHANDLED_EXCEPTION)) and '$(BreakOnUnhandledExceptions)' != 'true' and $(IsWinAppSdk) != 'true' ">$(DefineConstants);DISABLE_XAML_GENERATED_BREAK_ON_UNHANDLED_EXCEPTION</DefineConstants>		
+	</PropertyGroup>
+
 	<ItemGroup Condition="$(UnoFeatures.Contains(';dsp;'))">
 		<!-- New Material Theme Builder export format (Uno.Dsp 1.3+) -->
 		<UnoDspImportColors Include="Styles\*.json" Generator="Xaml" Condition="!$(UnoFeatures.Contains(';csharpmarkup;'))" />
