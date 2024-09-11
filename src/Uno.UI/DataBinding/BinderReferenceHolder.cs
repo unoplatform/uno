@@ -237,21 +237,21 @@ namespace Uno.UI.DataBinding
 			}
 		}
 
-		public static string LogActiveViewReferencesStatsDiff(Tuple<Type, int>[] activeStats)
+		public static void LogActiveViewReferencesStatsDiff(Tuple<Type, int>[] activeStats)
 		{
 			var newActiveStats = GetReferenceStats();
 
-			return LogDiff(activeStats, newActiveStats, "Active");
+			LogDiff(activeStats, newActiveStats, "Active");
 		}
 
-		public static string LogInactiveViewReferencesStatsDiff(Tuple<Type, int>[] inactiveStats)
+		public static void LogInactiveViewReferencesStatsDiff(Tuple<Type, int>[] inactiveStats)
 		{
 			var newInactiveStats = GetInactiveViewReferencesStats();
 
-			return LogDiff(inactiveStats, newInactiveStats, "Inactive");
+			LogDiff(inactiveStats, newInactiveStats, "Inactive");
 		}
 
-		private static string LogDiff(Tuple<Type, int>[] oldInactiveStats, Tuple<Type, int>[] newInactiveStats, string referenceType)
+		private static void LogDiff(Tuple<Type, int>[] oldInactiveStats, Tuple<Type, int>[] newInactiveStats, string referenceType)
 		{
 			var q = from oldInactiveStat in oldInactiveStats
 					from newInactiveStat in newInactiveStats
@@ -272,14 +272,10 @@ namespace Uno.UI.DataBinding
 				sb.AppendFormatInvariant("\t{0}: {1}\r\n", activref.Type, activref.Diff);
 			}
 
-			var result = sb.ToString();
-
 			if (IsEnabled && typeof(BinderReferenceHolder).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Information))
 			{
-				typeof(BinderReferenceHolder).Log().Info(result);
+				typeof(BinderReferenceHolder).Log().Info(sb.ToString());
 			}
-
-			return result;
 		}
 
 		/// <summary>

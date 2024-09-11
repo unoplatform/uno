@@ -1925,7 +1925,10 @@
 			<!-- HorizontalGridView -->
 			<Member fullName="System\.Func`1&lt;Android\.Views\.View&gt; Uno\.UI\.Controls\.HorizontalGridView\.get_(Item|Header|Footer)Template\(\)" reason="Not in UWP" isRegex="true" />
 			<Member fullName="System\.Void Uno\.UI\.Controls\.HorizontalGridView\.set_(Item|Header|Footer)Template\(System\.Func`1&lt;Android\.Views\.View&gt; value\)" reason="Not in UWP" isRegex="true" />
-			
+
+			<!-- ViewExtensions -->
+			<Member fullName="System.String Uno.UI.Extensions.ViewExtensions.TreeGraph(Windows.UI.Xaml.DependencyObject reference, System.Func`2&lt;Windows.UI.Xaml.DependencyObject,System.String&gt; describe)" reason="Not in UWP" />
+
 			<!-- END templated-parent rework -->
 
 			<Member fullName="System.Void Windows.UI.Xaml.UnhandledExceptionEventArgs..ctor(System.Exception e, System.Boolean fatal)" reason="Not in WinUI" />
