@@ -142,7 +142,8 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 			|| touch.Phase == UITouchPhase.Moved
 			|| touch.Phase == UITouchPhase.Stationary;
 		var pointerDevice = PointerDevice.For(pointerDeviceType);
-		var pointerIdentifier = new PointerIdentifier(pointerDeviceType, 0); // TODO:MZ: Pointer identifiers
+		var id = (uint)touch.GetNativeHash();
+		var pointerIdentifier = new PointerIdentifier(pointerDeviceType, id);
 		var properties = new PointerPointProperties
 		{
 			IsLeftButtonPressed = isInContact,
