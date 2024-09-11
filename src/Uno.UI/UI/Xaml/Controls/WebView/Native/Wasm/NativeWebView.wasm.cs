@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Web.WebView2.Core;
 using Uno.Foundation;
 using Uno.UI.Xaml.Controls;
+using static __Microsoft.UI.Xaml.Controls.NativeWebView;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -27,14 +28,7 @@ public class NativeWebView : UIElement, INativeWebView
 		remove => UnregisterEventHandler("load", value, GenericEventHandlers.RaiseEventHandler);
 	}
 
-	public string DocumentTitle
-	{
-		get
-		{
-			var title = WebAssemblyRuntime.InvokeJS($"document.getElementById('{HtmlId}').contentWindow.document.title");
-			return title ?? "";
-		}
-	}
+	public string DocumentTitle => NativeMethods.GetDocumentTitle(HtmlId) ?? "";
 
 	private void OnNavigationCompleted(object sender, EventArgs e)
 	{
@@ -44,7 +38,7 @@ public class NativeWebView : UIElement, INativeWebView
 		}
 
 		var uriString = this.GetAttribute("src");
-		Uri uri = null;
+		Uri uri = CoreWebView2.BlankUri;
 		if (!string.IsNullOrEmpty(uriString))
 		{
 			uri = new Uri(uriString);
@@ -54,11 +48,7 @@ public class NativeWebView : UIElement, INativeWebView
 		_coreWebView.RaiseNavigationCompleted(uri, true, 200, CoreWebView2WebErrorStatus.Unknown);
 	}
 
-	public Task<string> ExecuteScriptAsync(string script, CancellationToken token)
-	{
-		var scriptString = WebAssemblyRuntime.EscapeJs(script);
-		return Task.FromResult(WebAssemblyRuntime.InvokeJS($"document.getElementById('{HtmlId}').contentWindow.eval(\"{scriptString}\")"));
-	}
+	public Task<string> ExecuteScriptAsync(string script, CancellationToken token) => Task.FromResult(NativeMethods.ExecuteScript(HtmlId, script));
 
 	public Task<string> InvokeScriptAsync(string script, string[] arguments, CancellationToken token) => Task.FromResult<string>("");
 
@@ -92,17 +82,13 @@ public class NativeWebView : UIElement, INativeWebView
 	{
 	}
 
-	public void Reload() =>
-		WebAssemblyRuntime.InvokeJS($"document.getElementById('{HtmlId}').contentWindow.location.reload()");
+	public void Reload() => NativeMethods.Reload(HtmlId);
 
-	public void Stop() =>
-		WebAssemblyRuntime.InvokeJS($"document.getElementById('{HtmlId}').contentWindow.stop();");
+	public void Stop() => NativeMethods.Stop(HtmlId);
 
-	public void GoBack() =>
-		WebAssemblyRuntime.InvokeJS($"document.getElementById('{HtmlId}').contentWindow.history.back()");
+	public void GoBack() => NativeMethods.GoBack(HtmlId);
 
-	public void GoForward() =>
-		WebAssemblyRuntime.InvokeJS($"document.getElementById('{HtmlId}').contentWindow.history.forward()");
+	public void GoForward() => NativeMethods.GoForward(HtmlId);
 
 	public void SetScrollingEnabled(bool isScrollingEnabled) { }
 
