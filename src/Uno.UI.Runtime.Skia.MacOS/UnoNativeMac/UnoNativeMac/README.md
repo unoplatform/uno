@@ -15,7 +15,7 @@ Run the following script to download and copy `libSkiaSharp.dylib` inside the Xc
 Set `VERSION` to the specific version you want then call `./getSkiaSharpDylib.sh`. E.g.
 
 ```bash
-VERSION=2.88.7 ./getSkiaSharpDylib.sh
+VERSION=2.88.8 ./getSkiaSharpDylib.sh
 ```
 
 ### Updating `libSkiaSharp.dylib`

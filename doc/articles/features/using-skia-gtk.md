@@ -92,10 +92,10 @@ If you want to upgrade **SkiaSharp** to a later version, you'll need to specify 
 
 ```xml
 <ItemGroup>
-   <PackagReference Include="SkiaSharp" Version="2.88.7" />
-   <PackagReference Include="SkiaSharp.Harfbuzz" Version="2.88.7" />
-   <PackagReference Include="SkiaSharp.NativeAssets.Linux" Version="2.88.7" />
-   <PackageReference Update="SkiaSharp.NativeAssets.macOS" Version="2.88.7" />
+   <PackagReference Include="SkiaSharp" Version="2.88.8" />
+   <PackagReference Include="SkiaSharp.Harfbuzz" Version="2.88.8" />
+   <PackagReference Include="SkiaSharp.NativeAssets.Linux" Version="2.88.8" />
+   <PackageReference Update="SkiaSharp.NativeAssets.macOS" Version="2.88.8" />
 </ItemGroup>
 ```
 

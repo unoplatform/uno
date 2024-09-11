@@ -61,7 +61,7 @@
 	</Target>
 
 	<PropertyGroup>
-		<SkiaSharpVersion>2.88.7</SkiaSharpVersion>
+		<SkiaSharpVersion>2.88.8</SkiaSharpVersion>
 		<!-- TODO: Uncomment when we're net8.0+ to have SamplesApp serve as a good test for SkiaSharp 3 support -->
 		<!-- <SkiaSharpVersion Condition="'$(IsTestProject)' == 'true' or '$(IsSampleProject)' == 'true'">3.0.0-preview.3.1</SkiaSharpVersion> -->
 	</PropertyGroup>
@@ -110,9 +110,9 @@
 		<PackageReference Update="SkiaSharp.NativeAssets.MacCatalyst" Version="$(SkiaSharpVersion)" />
 		<PackageReference Update="SkiaSharp.NativeAssets.macos" Version="$(SkiaSharpVersion)" />
 		
-		<PackageReference Update="HarfBuzzSharp.NativeAssets.macOS" Version="7.3.0.1" />
-		<PackageReference Update="HarfBuzzSharp.NativeAssets.Linux" Version="7.3.0.1" />
-		<PackageReference Update="harfbuzzsharp.nativeassets.ios" Version="7.3.0.1" />
+		<PackageReference Update="HarfBuzzSharp.NativeAssets.macOS" Version="7.3.0.2" />
+		<PackageReference Update="HarfBuzzSharp.NativeAssets.Linux" Version="7.3.0.2" />
+		<PackageReference Update="harfbuzzsharp.nativeassets.ios" Version="7.3.0.2" />
 		<PackageReference Update="SkiaSharp.HarfBuzz" Version="$(SkiaSharpVersion)" />
 
 		<PackageReference Update="Svg.Skia" Version="1.0.0.1" />
