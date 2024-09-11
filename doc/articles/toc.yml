@@ -157,6 +157,8 @@
         href: platform-specific-csharp.md
       - name: Platform-specific XAML markup
         href: platform-specific-xaml.md
+      - name: Creating Custom Controls
+        href: guides/creating-custom-controls.md
       - name: Control Libraries
         href: guides/how-to-create-control-libraries.md
       - name: Adding New Platforms
