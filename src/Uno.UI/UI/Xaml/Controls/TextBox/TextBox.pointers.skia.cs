@@ -7,8 +7,10 @@ using Uno.UI.Helpers.WinUI;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
+using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 #else
 using Windows.UI.Input;
+using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 #endif
 
 namespace Microsoft.UI.Xaml.Controls;
