@@ -51,7 +51,7 @@ namespace Microsoft.UI.Xaml
 		/// <returns>A unique ID</returns>
 		internal static long GetDependencyObjectId(this object dependencyObject)
 		{
-			return GetStore(dependencyObject).ObjectId;
+			return GetStore(dependencyObject).GetHashCode();
 		}
 
 		/// <summary>
@@ -208,7 +208,7 @@ namespace Microsoft.UI.Xaml
 		/// <returns></returns>
 		public static object GetValue(this object instance, DependencyProperty property, DependencyPropertyValuePrecedences? precedence)
 		{
-			return GetStore(instance).GetValue(property, null, precedence);
+			return GetStore(instance).GetValue(property);
 		}
 
 		/// <summary>

@@ -283,7 +283,7 @@ namespace Microsoft.UI.Xaml
 		}
 
 		private object?[] GetTraceProperties()
-			=> new object?[] { ObjectId, _originalObjectType?.ToString() };
+			=> new object?[] { GetHashCode(), _originalObjectType?.ToString() };
 
 
 		public void SetBinding(object target, string dependencyProperty, BindingBase binding)

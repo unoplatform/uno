@@ -61,12 +61,6 @@ namespace Microsoft.UI.Xaml
 
 		private static readonly IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 
-		/// <summary>
-		/// A global static counter that is used to uniquely identify objects.
-		/// This is primarily used during trace profiling.
-		/// </summary>
-		private static long _objectIdCounter;
-
 		private bool _isDisposed;
 
 		private readonly DependencyPropertyDetailsCollection _properties;
@@ -183,8 +177,6 @@ namespace Microsoft.UI.Xaml
 		/// <param name="originalObject"></param>
 		public DependencyObjectStore(object originalObject, DependencyProperty dataContextProperty)
 		{
-			ObjectId = Interlocked.Increment(ref _objectIdCounter);
-
 			_originalObjectRef = WeakReferencePool.RentWeakReference(this, originalObject);
 			_originalObjectType = originalObject is AttachedDependencyObject a ? a.Owner.GetType() : originalObject.GetType();
 
@@ -200,7 +192,7 @@ namespace Microsoft.UI.Xaml
 			{
 				_trace.WriteEvent(
 					DependencyObjectStore.TraceProvider.CreationTask,
-					new object[] { ObjectId, _originalObjectType.Name }
+					new object[] { GetHashCode(), _originalObjectType.Name }
 				);
 			}
 		}
@@ -236,18 +228,36 @@ namespace Microsoft.UI.Xaml
 		public bool IsAutoPropertyInheritanceEnabled { get; set; } = true;
 
 		/// <summary>
-		/// Gets a unique identifier for the current DependencyObject.
-		/// </summary>
-		internal long ObjectId { get; }
-
-		/// <summary>
 		/// Returns the current effective value of a dependency property from a DependencyObject.
 		/// </summary>
 		/// <param name="property">The <see cref="DependencyProperty" /> identifier of the property for which to retrieve the value. </param>
 		/// <returns>Returns the current effective value.</returns>
 		public object? GetValue(DependencyProperty property)
 		{
-			return GetValue(property: property, propertyDetails: null, precedence: null);
+			WritePropertyEventTrace(TraceProvider.GetValue, property, null);
+
+			ValidatePropertyOwner(property);
+
+			if (_properties.DataContextPropertyDetails.Property == property || _properties.TemplatedParentPropertyDetails.Property == property)
+			{
+				// Historically, we didn't have this fast path for default value.
+				// We add this to maintain the original behavior in GetValue(DependencyPropertyDetails) overload.
+				// This should be revisited in future.
+				TryRegisterInheritedProperties(force: true);
+			}
+
+			DependencyPropertyDetails? propertyDetails = _properties.FindPropertyDetails(property);
+			if (propertyDetails is null)
+			{
+				// Performance: Avoid force-creating DependencyPropertyDetails when not needed.
+				return GetDefaultValue(property);
+			}
+
+			propertyDetails = _properties.GetPropertyDetails(property);
+
+			return propertyDetails.CurrentHighestValuePrecedence == DependencyPropertyValuePrecedences.DefaultValue
+				? GetDefaultValue(propertyDetails.Property)
+				: propertyDetails.GetEffectiveValue();
 		}
 
 		/// <summary>
@@ -325,59 +335,16 @@ namespace Microsoft.UI.Xaml
 			return (details.GetModifiedValue(), details);
 		}
 
-		internal object? GetValue(DependencyProperty property, DependencyPropertyDetails? propertyDetails, DependencyPropertyValuePrecedences? precedence = null)
+		private object? GetValue(DependencyPropertyDetails propertyDetails)
 		{
-			WritePropertyEventTrace(TraceProvider.GetValue, property, precedence);
-
-			ValidatePropertyOwner(property);
-
-			var callerRegisteredInheritedProperties = false;
-			if (_properties.DataContextPropertyDetails.Property == property)
-			{
-				// Historically, we didn't have this fast path for default value.
-				// We add this to maintain the original behavior in GetValue(DependencyPropertyDetails, DependencyPropertyValuePrecedences?, bool) overload.
-				// This should be revisited in future.
-				TryRegisterInheritedProperties(force: true);
-				callerRegisteredInheritedProperties = true;
-			}
-
-			if (propertyDetails is null && (precedence is null || precedence == DependencyPropertyValuePrecedences.DefaultValue) && _properties.FindPropertyDetails(property) is null)
-			{
-				// Performance: Avoid force-creating DependencyPropertyDetails when not needed.
-				return GetDefaultValue(property);
-			}
-
-			propertyDetails ??= _properties.GetPropertyDetails(property);
-
-			return GetValue(propertyDetails, precedence, callerRegisteredInheritedProperties);
-		}
-
-		private object? GetValue(DependencyPropertyDetails propertyDetails, DependencyPropertyValuePrecedences? precedence = null, bool callerRegisteredInheritedProperties = false)
-		{
-			if (!callerRegisteredInheritedProperties && (propertyDetails == _properties.DataContextPropertyDetails))
+			if (propertyDetails == _properties.DataContextPropertyDetails || propertyDetails == _properties.TemplatedParentPropertyDetails)
 			{
 				TryRegisterInheritedProperties(force: true);
 			}
 
-			if (precedence == null)
-			{
-				return propertyDetails.CurrentHighestValuePrecedence == DependencyPropertyValuePrecedences.DefaultValue
-					? GetDefaultValue(propertyDetails.Property)
-					: propertyDetails.GetEffectiveValue();
-			}
-
-			var highestPriority = GetCurrentHighestValuePrecedence(propertyDetails);
-			if (highestPriority == DependencyPropertyValuePrecedences.DefaultValue)
-			{
-				return GetDefaultValue(propertyDetails.Property);
-			}
-
-			if (highestPriority >= precedence.Value)
-			{
-				return propertyDetails.GetEffectiveValue();
-			}
-
-			return DependencyProperty.UnsetValue;
+			return propertyDetails.CurrentHighestValuePrecedence == DependencyPropertyValuePrecedences.DefaultValue
+				? GetDefaultValue(propertyDetails.Property)
+				: propertyDetails.GetEffectiveValue();
 		}
 
 		/// <summary>
@@ -771,7 +738,7 @@ namespace Microsoft.UI.Xaml
 		{
 			if (_trace.IsEnabled)
 			{
-				_trace.WriteEvent(eventId, new object[] { ObjectId, property.OwnerType.Name, property.Name, precedence?.ToString() ?? "Local" });
+				_trace.WriteEvent(eventId, new object[] { GetHashCode(), property.OwnerType.Name, property.Name, precedence?.ToString() ?? "Local" });
 			}
 		}
 
@@ -782,7 +749,7 @@ namespace Microsoft.UI.Xaml
 				return _trace.WriteEventActivity(
 					startEventId,
 					stopEventId,
-					new object[] { ObjectId, property.OwnerType.Name, property.Name, precedence.ToString() }
+					new object[] { GetHashCode(), property.OwnerType.Name, property.Name, precedence.ToString() }
 				);
 			}
 			else

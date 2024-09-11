@@ -534,7 +534,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (TextMemberPath != null)
 			{
-				using var bindingPath = new BindingPath(TextMemberPath, "", null, allowPrivateMembers: true) { DataContext = o };
+				using var bindingPath = new BindingPath(TextMemberPath, "", forAnimations: false, allowPrivateMembers: true) { DataContext = o };
 				value = bindingPath.Value;
 			}
 
