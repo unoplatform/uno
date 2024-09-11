@@ -238,7 +238,7 @@ namespace Microsoft.UI.Xaml
 
 			ValidatePropertyOwner(property);
 
-			if (_properties.DataContextPropertyDetails.Property == property || _properties.TemplatedParentPropertyDetails.Property == property)
+			if (_properties.DataContextPropertyDetails.Property == property)
 			{
 				// Historically, we didn't have this fast path for default value.
 				// We add this to maintain the original behavior in GetValue(DependencyPropertyDetails) overload.
@@ -337,7 +337,7 @@ namespace Microsoft.UI.Xaml
 
 		private object? GetValue(DependencyPropertyDetails propertyDetails)
 		{
-			if (propertyDetails == _properties.DataContextPropertyDetails || propertyDetails == _properties.TemplatedParentPropertyDetails)
+			if (propertyDetails == _properties.DataContextPropertyDetails)
 			{
 				TryRegisterInheritedProperties(force: true);
 			}
