@@ -3604,12 +3604,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				await Task.Delay(random.Next(75, 126));
 				var screenshot = await UITestHelper.ScreenShot(SUT);
-				// For some reason, the caret sometimes appears black, and sometimes as very dark grey (#FF1B1B1B), so we check for both
-				var hasBlackCaretInLeftHalf = HasColorInRectangle(screenshot, new Rectangle(0, 0, screenshot.Width / 2, screenshot.Height), Colors.Black) ||
-					HasColorInRectangle(screenshot, new Rectangle(0, 0, screenshot.Width / 2, screenshot.Height), Color.FromArgb(255, 27, 27, 27));
-				var hasBlackInRightHalf = HasColorInRectangle(screenshot, new Rectangle(screenshot.Width / 2, 0, screenshot.Width / 2, screenshot.Height), Colors.Black) ||
-					HasColorInRectangle(screenshot, new Rectangle(screenshot.Width / 2, 0, screenshot.Width / 2, screenshot.Height), Color.FromArgb(255, 27, 27, 27));
-				if (hasBlackCaretInLeftHalf && !hasBlackInRightHalf)
+				// For some reason, the caret sometimes appears black, and sometimes as very dark grey (#FF030303), so we check for both
+				Color[] blacks = [Colors.Black, Colors.FromARGB(0xFF, 0x03, 0x03, 0x03)];
+				if (blacks.Any(b => HasColorInRectangle(screenshot, new Rectangle(0, 0, screenshot.Width / 2, screenshot.Height), b)) &&
+					blacks.All(b => !HasColorInRectangle(screenshot, new Rectangle(screenshot.Width / 2, 0, screenshot.Width / 2, screenshot.Height), Colors.Black)))
 				{
 					break;
 				}
