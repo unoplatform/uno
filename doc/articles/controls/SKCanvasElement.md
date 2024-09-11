@@ -6,10 +6,10 @@ uid: Uno.Controls.SKCanvasElement
 
 When creating an Uno Platform application, developers might want to create elaborate 2D graphics using a library such as [Skia](https://skia.org) or [Cairo](https://www.cairographics.org), rather than using, for example, a simple [Canvas](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.canvas). To support this use case, SkiaSharp comes with an [SKXamlCanvas](https://learn.microsoft.com/dotnet/api/skiasharp.views.windows.skxamlcanvas) element that allows for drawing in an area using SkiaSharp.
 
-On Uno Platform Skia Desktop targets, we can utilize the pre-existing internal Skia canvas used to render the application window instead of creating additional Skia surfaces. This way, a lot of Skia functionally can be acquired "for free". For example, unlike `SKXamlCanvas` which doesn't support hardware acceleration on Skia targets, hardware acceleration comes out of the box if the Uno application is already using OpenGL to render. Moreover, `SKXamlCanvas` has to make additional buffer copying, which can be skipped with this implementation.
+On Uno Platform Skia Desktop targets, we can utilize the pre-existing internal Skia canvas used to render the application window instead of creating additional Skia surfaces. Unlike `SKXamlCanvas` which doesn't support hardware acceleration on Skia targets, hardware acceleration comes out of the box if the Uno application is already using OpenGL to render. Moreover, `SKXamlCanvas` has to make additional buffer copying, which can be skipped with this implementation.
 
 > [!IMPORTANT]
-> This functionality is only available on Skia Desktop (`netX.0-desktop`) targets.
+> This functionality is only available on Skia targets.
 
 ## SKCanvasElement
 
@@ -19,13 +19,11 @@ On Uno Platform Skia Desktop targets, we can utilize the pre-existing internal S
 protected abstract void RenderOverride(SKCanvas canvas, Size area);
 ```
 
-When adding your drawing logic in `RenderOverride` on the provided canvas, you can assume that the origin is already translated so that `0,0` is the origin of the visual, not the entire window. Drawing outside this area will be clipped.
+When adding your drawing logic in `RenderOverride` on the provided canvas, you can assume that the origin is already translated so that `0,0` is the origin of the element, not the entire window. Drawing outside this area will be clipped.
 
-Additionally, `SKCanvasElement` has an `Invalidate` method that can be used at any time to tell the Uno Platform runtime to redraw the visual, calling `RenderOverride` in the process.
+Additionally, `SKCanvasElement` has an `Invalidate` method that can be used at any time to tell the Uno Platform runtime to redraw the window, calling `RenderOverride` in the process.
 
-By default, an `SKCanvasElement` takes all the available space given to it in the `Measure` cycle. If you want to customize how much space the element takes, you can override its `MeasureOverride` and `ArrangeOverride` methods.
-
-Note that since an `SKCanvasElement` takes as much space as it can, it's not allowed to place an `SKCanvasElement` inside a `StackPanel`, a `Grid` with `Auto` sizing, or any other element that provides its child(ren) with infinite space. To work around this, you can explicitly set the `Width` and/or `Height` of the `SKCanvasElement`.
+Since `SKCanvasElement` is just a FrameworkElement, controlling the dimensions of the drawing area is done by manipulating the layout of the element, e.g. by overriding MeasureOverride and ArrangeOverride.
 
 ## Full example
 
@@ -43,7 +41,7 @@ XAML:
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:skia="http://uno.ui/skia"
              xmlns:not_skia="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             mc:Ignorable="d skia not_skia"
+             mc:Ignorable="d skia"
              d:DesignHeight="300"
              d:DesignWidth="400">
 
@@ -65,21 +63,35 @@ Code-behind:
 
 ```csharp
 // SKCanvasElementExample.xaml.cs
-public partial class SKCanvasElementExample : UserControl
+using Uno.UI.Samples.Controls;
+using Microsoft.UI.Xaml.Controls;
+
+namespace BlankApp
 {
+    public sealed partial class SKCanvasElement_Simple : UserControl
+    {
 #if __SKIA__
-    public int MaxSampleIndex => SKCanvasElementImpl.SampleCount - 1;
+        public int MaxSampleIndex => SKCanvasElementImpl.SampleCount - 1;
 #endif
 
-    public SKCanvasElementExample()
-    {
-        this.InitializeComponent();
+        public SKCanvasElement_Simple()
+        {
+            this.InitializeComponent();
+        }
     }
 }
 ```
 
 ```csharp
 // SKCanvasElementImpl.skia.cs <-- NOTICE the `.skia`
+using System;
+using Windows.Foundation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using SkiaSharp;
+
+namespace BlankApp;
+
 public class SKCanvasElementImpl : SKCanvasElement
 {
     public static int SampleCount => 3;
@@ -104,7 +116,7 @@ public class SKCanvasElementImpl : SKCanvasElement
     protected override void RenderOverride(SKCanvas canvas, Size area)
     {
         var minDim = Math.Min(area.Width, area.Height);
-        // rescale to fit the given area, assuming each drawing takes is 260x260
+        // rescale to fit the given area, assuming each drawing is 260x260
         canvas.Scale((float)(minDim / 260), (float)(minDim / 260));
 
         switch (Sample)
@@ -124,8 +136,6 @@ public class SKCanvasElementImpl : SKCanvasElement
     // https://fiddle.skia.org/c/@shapes
     private void SkiaDrawing0(SKCanvas canvas)
     {
-        canvas.DrawColor(SKColors.White);
-
         var paint = new SKPaint();
         paint.Style = SKPaintStyle.Fill;
         paint.IsAntialias = true;
@@ -153,8 +163,6 @@ public class SKCanvasElementImpl : SKCanvasElement
     // https://fiddle.skia.org/c/@bezier_curves
     private void SkiaDrawing1(SKCanvas canvas)
     {
-        canvas.DrawColor(SKColors.White);
-
         var paint = new SKPaint();
         paint.Style = SKPaintStyle.Stroke;
         paint.StrokeWidth = 8;
@@ -187,7 +195,6 @@ public class SKCanvasElementImpl : SKCanvasElement
         };
         paint.Shader = SKShader.CreateLinearGradient(points[0], points[1], colors, SKShaderTileMode.Clamp);
         paint.IsAntialias = true;
-        canvas.Clear(SKColors.White);
         var path = Star();
         canvas.DrawPath(path, paint);
 
