@@ -841,8 +841,7 @@ namespace Uno.UI
 			/// Setting this flag to false will prevent the exception from being thrown at the risk
 			/// of having an undefined behavior and/or race conditions.
 			/// </summary>
-			public static bool DisableThreadingCheck { get; }
-				= OperatingSystem.IsBrowser();
+			public static bool DisableThreadingCheck { get; set; }
 		}
 	}
 }
