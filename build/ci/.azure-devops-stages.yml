@@ -177,6 +177,7 @@ stages:
       vmImage: '$(windows2022HostedVMImage)'
       vmMacImage: '$(macOSVMImage)'
       vmLinuxImage: '$(linuxVMImage)'
+      vmLinuxPool: '$(linuxScaledPool)'
       poolName: '$(windowsScaledPool)'
       UNO_UWP_BUILD: true
       XAML_FLAVOR_BUILD: UWP
@@ -192,7 +193,10 @@ stages:
       vmImage: '$(windows2022HostedVMImage)'
       vmMacImage: '$(macOSVMImage)'
       vmLinuxImage: '$(linuxVMImage)'
+      vmLinuxPool: '$(linuxScaledPool)'
       poolName: '$(windowsScaledPool)'
+      xCodeRootBuild: '$(xCodeRoot)'
+      xCodeRootTest: '$(xCodeRoot_iOS_UITests)'
       UNO_UWP_BUILD: false
       XAML_FLAVOR_BUILD: WinUI
 

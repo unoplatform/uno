@@ -2,9 +2,31 @@ parameters:
   vmImage: ''
   vmMacImage: ''
   vmLinuxImage: ''
+  vmLinuxPool: ''
+  xCodeRoot: ''
   poolName: ''
   UNO_UWP_BUILD: ''
   XAML_FLAVOR_BUILD: ''
+
+  # Runtime Test Groups
+  IOS_RUNTIME_TEST_GROUP_COUNT: 8
+  IOS_RUNTIME_TESTS_GROUPS:
+  - key: '0'
+    value: '01'
+  - key: '1'
+    value: '02'
+  - key: '2'
+    value: '03'
+  - key: '3'
+    value: '04'
+  - key: '4'
+    value: '05'
+  - key: '5'
+    value: '06'
+  - key: '6'
+    value: '07'
+  - key: '7'
+    value: '08'
 
   snapshotGroups:
     - 0
@@ -105,6 +127,38 @@ jobs:
       PathtoPublish: $(Build.SourcesDirectory)\src\SamplesApp\SamplesApp.Skia.WebAssembly.Browser\bin\Release\net9.0\publish\wwwroot
       ArtifactName: skia-browserwasm-samples-app-$(XAML_FLAVOR_BUILD)
       ArtifactType: Container
+
+  # iOS
+
+  - template: templates/ios-build-select-version.yml
+    parameters:
+      xCodeRoot: ${{ parameters.xCodeRootBuild }}
+
+  - bash: |
+      $(build.sourcesdirectory)/build/test-scripts/ios-uitest-build.shD:\Work\uno-private\build\test-scripts\skia-ios-uitest-build.sh
+    displayName: Build iOS Skia Head
+    env:
+      BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
+      BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
+
+
+  - task: CopyFiles@2
+    inputs:
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Skia.netcoremobile/bin/Release/net8.0-ios/iossimulator-x64/SamplesApp.app
+      Contents: '**'
+      TargetFolder: $(build.artifactstagingdirectory)/SamplesApp.app
+      CleanTargetFolder: false
+      OverWrite: false
+      flattenFolders: false
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    retryCountOnTaskFailure: 3
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: uitests-ios-skia-build
+      ArtifactType: Container
+
 
   - task: PublishBuildArtifacts@1
     retryCountOnTaskFailure: 3
@@ -572,3 +626,29 @@ jobs:
       testResultsFiles: '$(build.sourcesdirectory)/build/skia-browserwasm-runtime-tests-results.xml'
       failTaskOnFailedTests: true
       failTaskOnMissingResultsFile: true
+
+##
+## iOS Skia
+##
+
+##
+## Runtime tests
+##
+- ${{ each RuntimeTestGroup in parameters.RUNTIME_TESTS_GROUPS }}:
+  - template: .azure-devops-ios-tests-run.yml
+    dependsOn:
+    - Skia_Tests_Build
+    parameters:
+      nugetPackages: $(NUGET_PACKAGES)
+      JobName: 'Skia_iOS_Runtime_Tests_group_${{ RuntimeTestGroup.value }}'
+      JobDisplayName: 'Skia iOS Runtime Tests ${{ RuntimeTestGroup.value }}'
+      JobTimeoutInMinutes: 120
+      vmImage: ${{ parameters.vmImageTest }}
+      SamplesAppArtifactName: 'uitests-ios-skia-build'
+      UITEST_SNAPSHOTS_ONLY: false
+      UITEST_TEST_TIMEOUT: '90m'
+      UITEST_AUTOMATED_GROUP: RuntimeTests
+      UITEST_RUNTIME_TEST_GROUP: ${{ RuntimeTestGroup.key }}
+      UITEST_RUNTIME_TEST_GROUP_COUNT: ${{ parameters.UITEST_RUNTIME_TEST_GROUP_COUNT }}
+      UITEST_ALLOW_RERUN: 'false'
+      xCodeRoot: ${{ parameters.xCodeRootTest }}

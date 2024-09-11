@@ -8,6 +8,7 @@ parameters:
   UITEST_SNAPSHOTS_GROUP: ''
   UITEST_ALLOW_RERUN: ''
   nugetPackages: ''
+  SamplesAppArtifactName: ''
 
 jobs:
 - job: ${{ parameters.JobName }}
@@ -36,7 +37,7 @@ jobs:
   - task: DownloadBuildArtifacts@0
     displayName: 'Download iOS Samples App'
     inputs:
-        artifactName: ios-uitest-build
+        artifactName: '${{ parameters.SamplesAppArtifactName }}'
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - task: DownloadBuildArtifacts@0
