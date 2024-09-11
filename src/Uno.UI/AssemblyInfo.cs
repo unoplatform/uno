@@ -30,6 +30,7 @@ using Uno.Foundation.Diagnostics.CodeAnalysis;
 [assembly: InternalsVisibleTo("Uno.UI.MediaPlayer.WebAssembly")]
 
 [assembly: InternalsVisibleTo("Uno.WinUI.Graphics3DGL")]
+[assembly: InternalsVisibleTo("Uno.WinUI.Graphics2DSK")]
 
 [assembly: AssemblyMetadata("IsTrimmable", "True")]
 

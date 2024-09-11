@@ -1,11 +1,10 @@
 ﻿using System.Drawing;
 using System.Threading.Tasks;
-using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Private.Infrastructure;
 using SkiaSharp;
 using Uno.UI.RuntimeTests.Helpers;
+using Uno.WinUI.Graphics2DSK;
 using Size = Windows.Foundation.Size;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 

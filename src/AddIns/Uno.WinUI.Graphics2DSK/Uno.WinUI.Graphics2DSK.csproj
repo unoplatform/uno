@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
+
+		<RootNamespace>Uno.WinUI.Graphics2DSK</RootNamespace>
+		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
+
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<Import Project="../../targetframework-override.props" />
+
+	<ItemGroup>
+		<PackageReference Include="SkiaSharp" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj" />
+		<ProjectReference Include="..\..\Uno.UWP\Uno.Skia.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\..\Common\uno.png" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Include="SKCanvasElement.skia.cs" />
+	</ItemGroup>
+</Project>

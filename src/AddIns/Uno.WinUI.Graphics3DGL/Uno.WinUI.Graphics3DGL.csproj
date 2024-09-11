@@ -3,7 +3,7 @@
 		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
 		<TargetFrameworks Condition="$(BuildGraphics3DGLForWindows) != ''">$(NetUWPOrWinUI)</TargetFrameworks>
 
-		<RootNamespace>Uno.WinUI.GLCanvasElement</RootNamespace>
+		<RootNamespace>Uno.WinUI.Graphics3DGL</RootNamespace>
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
 
 		<Nullable>enable</Nullable>
@@ -51,14 +51,4 @@
 	<ItemGroup>
 		<None Include="..\..\Common\uno.png" Pack="true" PackagePath="\" />
 	</ItemGroup>
-
-	<Target Name="_UnoRemoveTransitiveWPFDependency" BeforeTargets="_CheckForTransitiveWindowsDesktopDependencies">
-		<ItemGroup>
-			<!--
-			This removes the transitive dependency to WPF which has a requirement to
-			have net8.0-windows and not net8.0.
-			-->
-			<TransitiveFrameworkReference Remove="Microsoft.WindowsDesktop.App.WPF" />
-		</ItemGroup>
-	</Target>
 </Project>

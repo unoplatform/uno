@@ -2,7 +2,7 @@
 using System;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Uno.WinUI.Graphics2DSK;
 using SkiaSharp;
 
 namespace UITests.Shared.Windows_UI_Composition;
