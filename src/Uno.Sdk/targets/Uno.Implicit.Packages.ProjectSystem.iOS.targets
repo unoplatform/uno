@@ -9,4 +9,8 @@
 	<ItemGroup Condition="$(_IsExecutable) == 'true'">
 		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Logging.OSLog" ProjectSystem="true" />
 	</ItemGroup>
+
+	<ItemGroup Condition=" $(_IsExecutable) == 'true' AND $(UnoFeatures.Contains(';appleuikitskiarenderer;')) ">
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.Skia.AppleUIKit" ProjectSystem="true" />
+	</ItemGroup>
 </Project>
