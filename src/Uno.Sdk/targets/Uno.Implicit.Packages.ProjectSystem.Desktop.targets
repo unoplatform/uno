@@ -10,6 +10,10 @@
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Graphics3DGL" ProjectSystem="true" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Graphics2DSK" ProjectSystem="true" />
+	</ItemGroup>
+
 	<ItemGroup Condition="$(_IsExecutable) == 'true'">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Skia.Linux.FrameBuffer" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Skia.MacOS" ProjectSystem="true" />
