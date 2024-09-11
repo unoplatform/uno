@@ -102,7 +102,7 @@ jobs:
       run: git push origin $env:GITHUB_REF_NAME`:generated/$env:GITHUB_REF_NAME/uwp-autoconvert -f
 
     - name: Upload Logs
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: logs
