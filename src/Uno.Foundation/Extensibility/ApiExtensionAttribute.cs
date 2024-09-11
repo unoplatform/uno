@@ -24,7 +24,7 @@ public sealed class ApiExtensionAttribute : Attribute
 	/// <param name="extendedType">The type to extend</param>
 	/// <param name="extensionType">The type to create an instance from</param>
 	/// <param name="ownerType">The owner type</param>
-	public ApiExtensionAttribute(Type extendedType, Type extensionType, Type ownerType)
+	public ApiExtensionAttribute(Type extendedType, Type extensionType, Type ownerType = null)
 	{
 		ExtensionType = extensionType;
 		ExtendedType = extendedType;
