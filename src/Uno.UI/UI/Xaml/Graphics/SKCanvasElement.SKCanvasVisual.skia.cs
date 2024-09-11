@@ -10,7 +10,7 @@ namespace Microsoft.UI.Xaml.Controls;
 /// <remarks>This is only available on skia-based targets.</remarks>
 public abstract partial class SKCanvasElement
 {
-	private class SKCanvasVisual(SKCanvasElement owner, Compositor compositor) : Visual(compositor)
+	private class SKCanvasVisual(SKCanvasElement owner, Compositor compositor) : ShapeVisual(compositor)
 	{
 		internal override void Paint(in PaintingSession session)
 		{
@@ -20,7 +20,5 @@ public abstract partial class SKCanvasElement
 			owner.RenderOverride(session.Canvas, Size.ToSize());
 			session.Canvas.Restore();
 		}
-
-		public void Invalidate() => Compositor.InvalidateRender(this);
 	}
 }

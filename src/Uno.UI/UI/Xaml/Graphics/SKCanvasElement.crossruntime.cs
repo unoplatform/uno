@@ -12,12 +12,6 @@ public abstract partial class SKCanvasElement : FrameworkElement
 		throw new PlatformNotSupportedException($"${nameof(SKCanvasElement)} is only available on skia targets.");
 	}
 
-	public void Invalidate() { }
-
 	protected abstract void RenderOverride(SKCanvas canvas, Size area);
-
-	protected override Size MeasureOverride(Size availableSize) => availableSize;
-
-	protected override Size ArrangeOverride(Size finalSize) => finalSize;
 }
 #endif

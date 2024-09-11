@@ -1,6 +1,5 @@
-using System;
-using System.Numerics;
 using Windows.Foundation;
+using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Hosting;
 using SkiaSharp;
 
@@ -12,20 +11,12 @@ namespace Microsoft.UI.Xaml.Controls;
 /// <remarks>This is only available on skia-based targets.</remarks>
 public abstract partial class SKCanvasElement : FrameworkElement
 {
-	private readonly SKCanvasVisual _skiaVisual;
-
-	protected SKCanvasElement()
-	{
-		_skiaVisual = new SKCanvasVisual(this, ElementCompositionPreview.GetElementVisual(this).Compositor);
-		Visual.Children.InsertAtTop(_skiaVisual);
-
-		SizeChanged += OnSizeChanged;
-	}
+	private protected override ShapeVisual CreateElementVisual() => new SKCanvasVisual(this, Compositor.GetSharedCompositor());
 
 	/// <summary>
 	/// Queue a rendering cycle that will call <see cref="RenderOverride"/>.
 	/// </summary>
-	public void Invalidate() => _skiaVisual.Invalidate();
+	public void Invalidate() => _visual.Compositor.InvalidateRender(_visual);
 
 	/// <summary>
 	/// The SkiaSharp drawing logic goes here.
@@ -37,41 +28,4 @@ public abstract partial class SKCanvasElement : FrameworkElement
 	/// Drawing outside this area (i.e. outside the (0, 0, area.Width, area.Height rectangle) will be clipped out.
 	/// </remarks>
 	protected abstract void RenderOverride(SKCanvas canvas, Size area);
-
-	/// <summary>
-	/// By default, <see cref="SKCanvasElement"/> uses all the <see cref="availableSize"/> given. Subclasses of <see cref="SKCanvasElement"/>
-	/// should override this method if they need something different.
-	/// </summary>
-	/// <remarks>An exception will be thrown if availableSize is infinite (e.g. if inside a StackPanel).</remarks>
-	protected override Size MeasureOverride(Size availableSize)
-	{
-		if (availableSize.Width == Double.PositiveInfinity ||
-			availableSize.Height == Double.PositiveInfinity ||
-			double.IsNaN(availableSize.Width) ||
-			double.IsNaN(availableSize.Height))
-		{
-			throw new ArgumentException($"{nameof(SKCanvasElement)} cannot be measured with infinite or NaN values, but received availableSize={availableSize}.");
-		}
-
-		return availableSize;
-	}
-
-	/// <summary>
-	/// By default, <see cref="SKCanvasElement"/> uses all the <see cref="finalSize"/> given. Subclasses of <see cref="SKCanvasElement"/>
-	/// should override this method if they need something different.
-	/// </summary>
-	/// <remarks>An exception will be thrown if <see cref="finalSize"/> is infinite (e.g. if inside a StackPanel).</remarks>
-	protected override Size ArrangeOverride(Size finalSize)
-	{
-		if (finalSize.Width == double.PositiveInfinity ||
-			finalSize.Height == double.PositiveInfinity ||
-			double.IsNaN(finalSize.Width) ||
-			double.IsNaN(finalSize.Height))
-		{
-			throw new ArgumentException($"{nameof(SKCanvasElement)} cannot be arranged with infinite or NaN values, but received finalSize={finalSize}.");
-		}
-		return finalSize;
-	}
-
-	private void OnSizeChanged(object sender, SizeChangedEventArgs args) => _skiaVisual.Size = args.NewSize.ToVector2();
 }
