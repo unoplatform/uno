@@ -51,8 +51,6 @@ public class SKCanvasElementImpl : SKCanvasElement
 	// https://fiddle.skia.org/c/@shapes
 	private void SkiaDrawing0(SKCanvas canvas)
 	{
-		canvas.DrawColor(SKColors.White);
-
 		var paint = new SKPaint();
 		paint.Style = SKPaintStyle.Fill;
 		paint.IsAntialias = true;
@@ -80,8 +78,6 @@ public class SKCanvasElementImpl : SKCanvasElement
 	// https://fiddle.skia.org/c/@bezier_curves
 	private void SkiaDrawing1(SKCanvas canvas)
 	{
-		canvas.DrawColor(SKColors.White);
-
 		var paint = new SKPaint();
 		paint.Style = SKPaintStyle.Stroke;
 		paint.StrokeWidth = 8;
@@ -114,7 +110,6 @@ public class SKCanvasElementImpl : SKCanvasElement
 		};
 		paint.Shader = SKShader.CreateLinearGradient(points[0], points[1], colors, SKShaderTileMode.Clamp);
 		paint.IsAntialias = true;
-		canvas.Clear(SKColors.White);
 		var path = Star();
 		canvas.DrawPath(path, paint);
 
