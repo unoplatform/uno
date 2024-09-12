@@ -17,6 +17,6 @@ steps:
 
   - bash: |
       dotnet tool update --global uno.check --version ${{ parameters.UnoCheck_Version }} --add-source https://api.nuget.org/v3/index.json
-      uno-check --ci --non-interactive --fix --skip gtk3 --pre-major
+      uno-check --ci --non-interactive --fix --skip gtk3 --skip androidsdk --pre-major
     displayName: Install .NET Workloads
     retryCountOnTaskFailure: 3
