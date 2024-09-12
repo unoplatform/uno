@@ -1,0 +1,35 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.UI.Xaml.Controls;
+using Uno.Foundation.Extensibility;
+using Uno.UI.Hosting;
+using Uno.UI.Xaml.Controls.Extensions;
+using Uno.UI.Xaml.Controls;
+using Windows.UI.Core;
+using Uno.WinUI.Runtime.Skia.AppleUIKit.UI.Xaml;
+using Uno.UI.Runtime.Skia.AppleUIKit;
+
+namespace Uno.WinUI.Runtime.Skia.AppleUIKit.Extensions;
+
+internal class ExtensionsRegistrar
+{
+	private static bool _registered;
+
+	internal static void Register()
+	{
+		if (_registered)
+		{
+			return;
+		}
+
+		ApiExtensibility.Register(typeof(INativeWindowFactoryExtension), o => new NativeWindowFactoryExtension());
+		ApiExtensibility.Register<IXamlRootHost>(typeof(IUnoCorePointerInputSource), o => AppleUIKitCorePointerInputSource.Instance);
+		ApiExtensibility.Register<IXamlRootHost>(typeof(IUnoKeyboardInputSource), o => UnoKeyboardInputSource.Instance);
+		ApiExtensibility.Register<TextBoxView>(typeof(IOverlayTextBoxViewExtension), o => new InvisibleTextBoxViewExtension(o));
+
+		_registered = true;
+	}
+}

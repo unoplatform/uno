@@ -11,6 +11,8 @@
 		<TargetFrameworks Condition="'$(TargetFrameworks)'=='net9.0-ios' and '$(OutputType)'!='Exe'">net9.0-ios17.2</TargetFrameworks>
 		<TargetFrameworks Condition="'$(TargetFrameworks)'=='net8.0-maccatalyst' and '$(OutputType)'!='Exe'">net8.0-maccatalyst17.0</TargetFrameworks>
 		<TargetFrameworks Condition="'$(TargetFrameworks)'=='net9.0-maccatalyst' and '$(OutputType)'!='Exe'">net9.0-maccatalyst17.2</TargetFrameworks>
+		<TargetFrameworks Condition="'$(TargetFrameworks)'=='net8.0-tvos' and '$(OutputType)'!='Exe'">net8.0-tvos17.0</TargetFrameworks>
+		<TargetFrameworks Condition="'$(TargetFrameworks)'=='net9.0-tvos' and '$(OutputType)'!='Exe'">net9.0-tvos17.2</TargetFrameworks>
 		<TargetFrameworks Condition="'$(TargetFrameworks)'=='net8.0-macos' and '$(OutputType)'!='Exe'">net8.0-macos14.0</TargetFrameworks>
 		<TargetFrameworks Condition="'$(TargetFrameworks)'=='net9.0-macos' and '$(OutputType)'!='Exe'">net9.0-macos14.2</TargetFrameworks>
 	</PropertyGroup>

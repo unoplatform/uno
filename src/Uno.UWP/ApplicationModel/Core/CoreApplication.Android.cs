@@ -10,7 +10,6 @@ partial class CoreApplication
 
 	private static void ExitPlatform() => Android.OS.Process.KillProcess(Android.OS.Process.MyPid());
 
-
 	internal static void SetInvalidateRender(Action<object?> invalidateRender)
 		// Currently we don't support multi-windowing, so we invalidate all XamlRoots
 		=> _invalidateRender ??= invalidateRender;

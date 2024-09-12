@@ -105,8 +105,8 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 				//         - We do nothing
 				//     Two layer mode:
 				//         - For Wasm Skia, we do nothing.
-				//         - For Android Skia and iOS Skia:
-				//             - Adjust both RuntimeCopyLocalItems and ResolvedCompileFileDefinitions such that netX.0 binaries are used instead of netX.0-android or netX.0-ios
+				//         - For Android Skia, iOS, Mac Catalyst, or tvOS Skia:
+				//             - Adjust both RuntimeCopyLocalItems and ResolvedCompileFileDefinitions such that netX.0 binaries are used instead of netX.0-android, -ios, -maccatalyst, or -tvos
 				//                 - maybe we should prefer netX.0-desktop over netX.0, if exists.
 				//                 - we should only do that for dlls that reference Uno.UI.dll (use Mono.Cecil to detect that)
 
@@ -124,7 +124,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 				}
 
 				var isTwoLayer = !isSingleLayer && UnoUIRuntimeIdentifier == "skia";
-				if (isTwoLayer && UnoWinRTRuntimeIdentifier is not ("android" or "ios" or "webassembly"))
+				if (isTwoLayer && !IsSkiaMobileOrWasmRuntimeIdentifier(UnoWinRTRuntimeIdentifier))
 				{
 					this.Log.LogError($"The combination of UnoUIRuntimeIdentifier '{UnoUIRuntimeIdentifier}' and UnoWinRTRuntimeIdentifier '{UnoWinRTRuntimeIdentifier}' is not expected");
 					return false;
@@ -272,7 +272,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 				return Path.GetFullPath(Path.Combine(unoRuntimeTfmDirectory, "webassembly", Path.GetFileName(assembly)));
 			}
 
-			if (UnoWinRTRuntimeIdentifier is not ("android" or "ios"))
+			if (!IsSkiaMobileRuntimeIdentifier(UnoWinRTRuntimeIdentifier))
 			{
 				throw new Exception($"Unexpected UnoWinRTRuntimeIdentifier '{UnoWinRTRuntimeIdentifier}'");
 			}
@@ -373,7 +373,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 						}));
 				}
 
-				if (isTwoLayer && UnoWinRTRuntimeIdentifier is "android" or "ios")
+				if (isTwoLayer && IsSkiaMobileRuntimeIdentifier(UnoWinRTRuntimeIdentifier))
 				{
 					var compileTimeAssembly = adjustedAssembly;
 					if (!isWinRTAssembly)
@@ -439,8 +439,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 			// For Android Skia and iOS Skia, we want to resolve netX.0 instead of netX.0-[android|ios] for non-RuntimeEnabled packages.
 			// The idea here is that we loop over ResolvedCompileFileDefinitionsInput, look for dlls from NuGet package cache,
 			// and then try to find the right dll.
-			// TODO: Do this only if the dll has a reference to Uno.UI.dll
-			if (UnoWinRTRuntimeIdentifier is "android" or "ios")
+			if (IsSkiaMobileRuntimeIdentifier(UnoWinRTRuntimeIdentifier))
 			{
 				var runtimeEnabledPackages = UnoRuntimeEnabledPackage.Select(p => p.GetMetadata("Identity")).ToImmutableHashSet(StringComparer.OrdinalIgnoreCase);
 				var nugetCacheRoot = NuGetPackageRoot.Replace('\\', '/');
@@ -466,7 +465,9 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 							{
 								var targetFramework = split[3];
 								if (targetFramework.Contains("-android") ||
-									targetFramework.Contains("-ios"))
+									targetFramework.Contains("-ios") ||
+									targetFramework.Contains("-maccatalyst") |
+									targetFramework.Contains("-tvos"))
 								{
 									var packageVersion = split[1];
 
@@ -477,6 +478,13 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 									var adjustedPath = $"{nugetCacheRoot}{packageName}/{packageVersion}/lib/{adjustedTargetFramework}/{dllFileName}";
 									if (File.Exists(adjustedPath))
 									{
+										var originalAssembly = AssemblyDefinition.ReadAssembly(identityNormalized);
+										if (!originalAssembly.MainModule.AssemblyReferences.Any(m => m.Name == "Uno.UI"))
+										{
+											this.Log.LogMessage($"Skipping {originalAssembly} replacement");
+											continue;
+										}
+										this.Log.LogMessage("Replacing " + packageName + " " + adjustedPath);
 										var fullAdjustedPath = Path.GetFullPath(adjustedPath);
 										runtimeCopyLocalItemsToAdd.Add(new TaskItem(
 											fullAdjustedPath,
@@ -530,5 +538,11 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 				}
 			}
 		}
+
+		private bool IsSkiaMobileRuntimeIdentifier(string runtimeIdentifier)
+			=> runtimeIdentifier is "android" or "ios" or "maccatalyst" or "tvos";
+
+		private bool IsSkiaMobileOrWasmRuntimeIdentifier(string runtimeIdentifier) =>
+			IsSkiaMobileRuntimeIdentifier(runtimeIdentifier) || runtimeIdentifier is "webassembly";
 	}
 }

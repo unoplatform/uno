@@ -20,5 +20,5 @@
 	<ItemGroup Condition=" $(_IsExecutable) == 'true' AND $(UnoFeatures.Contains(';androidskiarenderer;')) ">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.Skia.Android" ProjectSystem="true" />
 	</ItemGroup>
-	
+
 </Project>

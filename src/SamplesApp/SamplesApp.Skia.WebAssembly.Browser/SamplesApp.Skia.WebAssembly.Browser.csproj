@@ -94,29 +94,6 @@
 
 	<Import Project="..\..\..\build\nuget\uno.winui.runtime-replace.targets" />
 
-	<!-- Name it as ReplaceUnoRuntime2 so that it doesn't overwrite ReplaceUnoRuntime from uno.winui.runtime-replace.targets -->
-	<Target Name="ReplaceUnoRuntime2" AfterTargets="ResolveReferences">
-
-		<ItemGroup>
-			<_AssemblyCopyLocalPaths Include="@(ReferenceCopyLocalPaths)" Condition="'%(ReferenceCopyLocalPaths.FusionName)' != '' and '%(ReferenceCopyLocalPaths.FusionName)'=='Uno, Version=255.255.255.255, Culture=neutral, PublicKeyToken=null'" />
-			<_AssemblyCopyLocalPaths Include="@(ReferenceCopyLocalPaths)" Condition="'%(ReferenceCopyLocalPaths.FusionName)' != '' and '%(ReferenceCopyLocalPaths.FusionName)'=='Uno.UI.Dispatching, Version=255.255.255.255, Culture=neutral, PublicKeyToken=null'" />
-
-			<!-- Remove them from the files to be copied to the output -->
-			<ReferenceCopyLocalPaths Remove="@(_AssemblyCopyLocalPaths)" />
-
-			<_redirectedReferences Include="..\..\Uno.UWP\bin\Uno.Wasm\$(Configuration)\$(TargetFramework)\Uno.dll" />
-			<_redirectedReferences Include="..\..\Uno.UI.Dispatching\bin\Uno.UI.Dispatching.Wasm\$(Configuration)\$(TargetFramework)\Uno.UI.Dispatching.dll" />
-			
-			<ReferenceCopyLocalPaths Include="@(_redirectedReferences)" />
-
-			<_UnoWasmBootstrapAssembliesForReferenceCopyLocalPaths
-				Include="$(MSBuildProjectDirectory)\..\..\Uno.UWP\bin\Uno.Wasm\$(Configuration)\$(TargetFramework)\Uno.dll"/>
-			<_UnoWasmBootstrapAssembliesForReferenceCopyLocalPaths
-				Include="$(MSBuildProjectDirectory)\..\..\Uno.UI.Dispatching\bin\Uno.UI.Dispatching.Wasm\$(Configuration)\$(TargetFramework)\Uno.UI.Dispatching.dll"/>
-		</ItemGroup>
-
-	</Target>
-
 	<Target Name="_ValidatePublishedItems" AfterTargets="Publish">
 		<ItemGroup>
 			<_validationPath Include="Uno.Fonts.Fluent/Fonts/uno-fluentui-assets.ttf" />

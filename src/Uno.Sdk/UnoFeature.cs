@@ -96,6 +96,9 @@ public enum UnoFeature
 	AndroidSkiaRenderer,
 
 	[UnoArea(UnoArea.Core)]
+	AppleUIKitSkiaRenderer,
+
+	[UnoArea(UnoArea.Core)]
 	Lottie,
 
 	[UnoArea(UnoArea.Core)]

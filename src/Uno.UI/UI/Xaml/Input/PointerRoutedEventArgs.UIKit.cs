@@ -5,12 +5,20 @@ using Windows.Foundation;
 using Windows.System;
 using Foundation;
 using UIKit;
+using Uno.UI.Extensions;
+using Uno.UI.Xaml.Extensions;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
 #else
 using Windows.UI.Input;
 using Windows.Devices.Input;
+#endif
+
+#if HAS_UNO_WINUI
+using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
+#else
+using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 #endif
 
 namespace Microsoft.UI.Xaml.Input
@@ -47,13 +55,13 @@ namespace Microsoft.UI.Xaml.Input
 			_nativeTouch = nativeTouch;
 			_nativeEvent = nativeEvent;
 
-			var deviceType = GetPointerDeviceType(nativeTouch.Type);
+			var deviceType = nativeTouch.Type.ToPointerDeviceType();
 			var isInContact = _nativeTouch.Phase == UITouchPhase.Began
 				|| _nativeTouch.Phase == UITouchPhase.Moved
 				|| _nativeTouch.Phase == UITouchPhase.Stationary;
 
-			FrameId = ToFrameId(_nativeTouch.Timestamp);
-			Pointer = new Pointer(pointerId, deviceType, isInContact, isInRange: true);
+			FrameId = PointerHelpers.ToFrameId(_nativeTouch.Timestamp);
+			Pointer = new Pointer(pointerId, (PointerDeviceType)deviceType, isInContact, isInRange: true);
 			KeyModifiers = VirtualKeyModifiers.None;
 			OriginalSource = originalSource;
 
@@ -62,7 +70,7 @@ namespace Microsoft.UI.Xaml.Input
 
 		public PointerPoint GetCurrentPoint(UIElement relativeTo)
 		{
-			var timestamp = ToTimeStamp(_nativeTouch.Timestamp);
+			var timestamp = PointerHelpers.ToTimeStamp(_nativeTouch.Timestamp);
 			var device = global::Windows.Devices.Input.PointerDevice.For((global::Windows.Devices.Input.PointerDeviceType)Pointer.PointerDeviceType);
 			var rawPosition = (Point)_nativeTouch.GetPreciseLocation(null);
 			var position = relativeTo == null
@@ -71,15 +79,6 @@ namespace Microsoft.UI.Xaml.Input
 
 			return new PointerPoint(FrameId, timestamp, device, Pointer.PointerId, rawPosition, position, Pointer.IsInContact, _properties);
 		}
-
-		private PointerDeviceType GetPointerDeviceType(UITouchType touchType) =>
-			touchType switch
-			{
-				UITouchType.Stylus => PointerDeviceType.Pen,
-				UITouchType.IndirectPointer => PointerDeviceType.Mouse,
-				UITouchType.Indirect => PointerDeviceType.Mouse,
-				_ => PointerDeviceType.Touch // Use touch as default fallback.
-			};
 
 		private PointerPointProperties GetProperties()
 			=> new()
@@ -95,30 +94,5 @@ namespace Microsoft.UI.Xaml.Input
 					_ => PointerUpdateKind.Other
 				}
 			};
-
-		#region Misc static helpers
-		private static long? _bootTime;
-
-		private static ulong ToTimeStamp(double timestamp)
-		{
-			_bootTime ??= DateTime.UtcNow.Ticks - (long)(TimeSpan.TicksPerSecond * new NSProcessInfo().SystemUptime);
-
-			return (ulong)_bootTime.Value + (ulong)(TimeSpan.TicksPerSecond * timestamp);
-		}
-
-		private static double? _firstTimestamp;
-
-		private static uint ToFrameId(double timestamp)
-		{
-			_firstTimestamp ??= timestamp;
-
-			var relativeTimestamp = timestamp - _firstTimestamp;
-			var frameId = relativeTimestamp * 120.0; // we allow a precision of 120Hz (8.333 ms per frame)
-
-			// When we cast, we are not overflowing but instead capping to uint.MaxValue.
-			// We use modulo to make sure to reset to 0 in that case (1.13 years of app run-time, but we prefer to be safe).
-			return (uint)(frameId % uint.MaxValue);
-		}
-		#endregion
 	}
 }

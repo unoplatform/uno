@@ -58,6 +58,7 @@ namespace Uno.UI.RemoteControl.HotReload
 				!IsIssue93860Fixed()
 				&& (targetFramework.Contains("-android", StringComparison.OrdinalIgnoreCase)
 					|| targetFramework.Contains("-ios", StringComparison.OrdinalIgnoreCase)
+					|| targetFramework.Contains("-tvos", StringComparison.OrdinalIgnoreCase)
 					|| targetFramework.Contains("-maccatalyst", StringComparison.OrdinalIgnoreCase));
 
 			if (this.Log().IsEnabled(LogLevel.Trace))

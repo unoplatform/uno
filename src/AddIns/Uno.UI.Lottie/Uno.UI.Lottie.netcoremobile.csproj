@@ -52,6 +52,10 @@
 		<PackageReference Include="SkiaSharp.NativeAssets.iOS" />
 	</ItemGroup>
 
+	<ItemGroup Condition="$(IsTvOS)">
+		<PackageReference Include="SkiaSharp.NativeAssets.tvOS" />
+	</ItemGroup>
+
 	<ItemGroup Condition="$(IsCatalyst)">
 		<PackageReference Include="SkiaSharp.NativeAssets.MacCatalyst" />
 	</ItemGroup>

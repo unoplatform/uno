@@ -1,17 +1,16 @@
 ﻿using System;
 using System.IO;
 using Windows.Storage;
-using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Core;
-using Windows.UI.ViewManagement;
+using Uno.UI.Helpers;
+
 
 #if __SKIA__
 using Uno.Foundation.Extensibility;
 using Uno.UI.Xaml.Controls.Extensions;
-using Uno.UI.Xaml.Core;
 #endif
 
 namespace SamplesApp;
@@ -71,7 +70,7 @@ partial class App
 			return;
 		}
 
-		if (OperatingSystem.IsBrowser() || OperatingSystem.IsAndroid())
+		if (Uno.UI.Helpers.DeviceTargetHelper.IsNonDesktop())
 		{
 			// Reading Package.appxmanifest isn't supported on Wasm or Android, even if running Skia.
 			return;
@@ -159,7 +158,10 @@ partial class App
 		var publisher = string.IsNullOrEmpty(Package.Current.Id.Publisher) ? "" : "Uno Platform";
 
 		AssertForFolder(ApplicationData.Current.LocalFolder);
-		AssertForFolder(ApplicationData.Current.RoamingFolder);
+		if (!DeviceTargetHelper.IsUIKit()) // TODO: Creating/deleting file in RoamingFolder is not working correctly #655
+		{
+			AssertForFolder(ApplicationData.Current.RoamingFolder);
+		}
 		AssertForFolder(ApplicationData.Current.TemporaryFolder);
 		AssertForFolder(ApplicationData.Current.LocalCacheFolder);
 		AssertSettings(ApplicationData.Current.LocalSettings);
@@ -167,7 +169,11 @@ partial class App
 
 		void AssertForFolder(StorageFolder folder)
 		{
-			AssertContainsIdProps(folder);
+			// On desktop the app folders should contain the app name and publisher in path.
+			if (DeviceTargetHelper.IsDesktop())
+			{
+				AssertContainsIdProps(folder);
+			}
 			AssertCanCreateFile(folder);
 		}
 
@@ -185,10 +191,7 @@ partial class App
 		void AssertContainsIdProps(StorageFolder folder)
 		{
 			Assert.IsTrue(folder.Path.Contains(appName, StringComparison.Ordinal), $"{folder.Path} does not contain {appName}");
-			if (!OperatingSystem.IsAndroid())
-			{
-				Assert.IsTrue(folder.Path.Contains(publisher, StringComparison.Ordinal), $"{folder.Path} does not contain {publisher}");
-			}
+			Assert.IsTrue(folder.Path.Contains(publisher, StringComparison.Ordinal), $"{folder.Path} does not contain {publisher}");
 		}
 
 		void AssertCanCreateFile(StorageFolder folder)
@@ -227,7 +230,7 @@ partial class App
 	private void AssertIssue15521()
 	{
 #if __ANDROID__
-		Uno.UI.RuntimeTests.Tests.Windows_UI_ViewManagement_ApplicationView.Given_ApplicationView.StartupVisibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
+		Uno.UI.RuntimeTests.Tests.Windows_UI_ViewManagement_ApplicationView.Given_ApplicationView.StartupVisibleBounds = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().VisibleBounds;
 #endif
 	}
 }

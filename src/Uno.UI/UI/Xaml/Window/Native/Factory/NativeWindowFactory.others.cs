@@ -1,6 +1,5 @@
 ﻿#nullable enable
 #if !__SKIA__
-
 using System;
 using Uno.Foundation.Extensibility;
 using Microsoft.UI.Xaml;

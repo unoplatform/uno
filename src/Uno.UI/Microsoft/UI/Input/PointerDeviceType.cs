@@ -2,24 +2,23 @@
 using System;
 using System.Text;
 
-namespace Microsoft.UI.Input
+namespace Microsoft.UI.Input;
+
+public enum PointerDeviceType
 {
-	public enum PointerDeviceType
-	{
-		/// <summary>
-		/// A touch-enabled device
-		/// </summary>
-		Touch = 0,
+	/// <summary>
+	/// A touch-enabled device
+	/// </summary>
+	Touch = 0,
 
-		/// <summary>
-		/// Pen
-		/// </summary>
-		Pen = 1,
+	/// <summary>
+	/// Pen
+	/// </summary>
+	Pen = 1,
 
-		/// <summary>
-		/// Mouse
-		/// </summary>
-		Mouse = 2,
-	}
+	/// <summary>
+	/// Mouse
+	/// </summary>
+	Mouse = 2,
 }
 #endif

@@ -9,6 +9,7 @@ using Uno.UI.Xaml.Controls.Extensions;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI;
 using Uno.UI.DataBinding;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -19,8 +20,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private readonly ManagedWeakReference _textBox;
 		private bool _isPasswordRevealed;
 		private readonly bool _isSkiaTextBox = !FeatureConfiguration.TextBox.UseOverlayOnSkia;
-		private static readonly bool _useInvisibleNativeTextView = OperatingSystem.IsBrowser();
-
+		private static readonly bool _useInvisibleNativeTextView = OperatingSystem.IsBrowser() || DeviceTargetHelper.IsUIKit();
 		// On Windows, \u25CF is used as password character.
 		// However, this character can't be retrieved on Android (doesn't exist in any system font)
 		// We use \u2022 instead, which is already the one normally used by Android.

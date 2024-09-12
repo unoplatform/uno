@@ -19,7 +19,7 @@
 
 		<Compile Include="$(MSBuildThisFileDirectory)Mixins\DependencyPropertyMixins.g.cs" />
 		<Compile Include="$(MSBuildThisFileDirectory)Mixins\Android\*.g.cs" Condition="$(IsAndroid)" />
-		<Compile Include="$(MSBuildThisFileDirectory)Mixins\iOS\*.g.cs" Condition="$(IsIOSOrCatalyst)" />
+		<Compile Include="$(MSBuildThisFileDirectory)Mixins\AppleUIKit\*.g.cs" Condition="$(IsAppleUIKit)" />
 		<Compile Include="$(MSBuildThisFileDirectory)Mixins\macOS\*.g.cs" Condition="$(IsMacOS)" />
 
 		<None Remove="$(MSBuildThisFileDirectory)UI\Xaml\DependencyPropertiesImplementation.cs" />
@@ -49,15 +49,15 @@
 		<MixinInput Include="$(MSBuildThisFileDirectory)Mixins\DependencyPropertyMixins.tt" />
 		<MixinInput Include="$(MSBuildThisFileDirectory)UI\Xaml\DependencyPropertiesImplementation.tt" />
 		<MixinInput Include="$(MSBuildThisFileDirectory)UI\Xaml\IFrameworkElementImplementation.Android.tt" Condition="$(IsAndroid)" />
-		<MixinInput Include="$(MSBuildThisFileDirectory)Mixins\iOS\FrameworkElementMixins.tt" Condition="$(IsIOSOrCatalyst)" />
+		<MixinInput Include="$(MSBuildThisFileDirectory)Mixins\AppleUIKit\FrameworkElementMixins.tt" Condition="$(IsAppleUIKit)" />
 		<MixinInput Include="$(MSBuildThisFileDirectory)Mixins\macOS\FrameworkElementMixins.tt" Condition="$(IsMacOS)" />
-		<MixinInput Include="$(MSBuildThisFileDirectory)UI\Xaml\IFrameworkElementImplementation.iOS.tt" Condition="$(IsIOSOrCatalyst)" />
+		<MixinInput Include="$(MSBuildThisFileDirectory)UI\Xaml\IFrameworkElementImplementation.uikit.tt" Condition="$(IsAppleUIKit)" />
 		<MixinInput Include="$(MSBuildThisFileDirectory)UI\Xaml\IFrameworkElementImplementation.macOS.tt" Condition="$(IsMacOS)" />
 
 		<MixinOutput Include="$(MSBuildThisFileDirectory)Mixins\Android\BaseActivity.Callbacks.g.cs" Condition="$(IsAndroid)" />
 		<MixinOutput Include="$(MSBuildThisFileDirectory)Mixins\Android\FrameworkElementMixins.g.cs" Condition="$(IsAndroid)" />
 		<MixinOutput Include="$(MSBuildThisFileDirectory)Mixins\DependencyPropertyMixins.g.cs" />
-		<MixinOutput Include="$(MSBuildThisFileDirectory)Mixins\iOS\FrameworkElementMixins.g.cs" Condition="$(IsIOSOrCatalyst)" />
+		<MixinOutput Include="$(MSBuildThisFileDirectory)Mixins\AppleUIKit\FrameworkElementMixins.g.cs" Condition="$(IsAppleUIKit)" />
 		<MixinOutput Include="$(MSBuildThisFileDirectory)Mixins\macOS\FrameworkElementMixins.g.cs" Condition="$(IsMacOS)" />
 	</ItemGroup>
 
@@ -83,8 +83,8 @@
 			<MixinDefinition Include="$(MSBuildThisFileDirectory)MixinGenerationCore.targets">
 				<Properties>_t4Path=@(_t4Path);InputFile=$(MSBuildThisFileDirectory)Mixins\DependencyPropertyMixins.tt;OutputPath=$(MSBuildThisFileDirectory)Mixins\DependencyPropertyMixins.g.cs</Properties>
 			</MixinDefinition>
-			<MixinDefinition Include="$(MSBuildThisFileDirectory)MixinGenerationCore.targets" Condition="$(IsIOSOrCatalyst) or $(TargetFrameworks.Contains('-ios')) or $(TargetFrameworks.Contains('-maccatalyst'))">
-				<Properties>_t4Path=@(_t4Path);InputFile=$(MSBuildThisFileDirectory)Mixins\iOS\FrameworkElementMixins.tt;OutputPath=$(MSBuildThisFileDirectory)Mixins\iOS\FrameworkElementMixins.g.cs</Properties>
+			<MixinDefinition Include="$(MSBuildThisFileDirectory)MixinGenerationCore.targets" Condition="$(IsAppleUIKit) or $(TargetFrameworks.Contains('-ios')) or $(TargetFrameworks.Contains('-maccatalyst')) or $(TargetFrameworks.Contains('-tvos'))">
+				<Properties>_t4Path=@(_t4Path);InputFile=$(MSBuildThisFileDirectory)Mixins\AppleUIKit\FrameworkElementMixins.tt;OutputPath=$(MSBuildThisFileDirectory)Mixins\AppleUIKit\FrameworkElementMixins.g.cs</Properties>
 			</MixinDefinition>
 			<MixinDefinition Include="$(MSBuildThisFileDirectory)MixinGenerationCore.targets" Condition="$(IsMacOS) or $(TargetFrameworks.Contains('-macos'))">
 				<Properties>_t4Path=@(_t4Path);InputFile=$(MSBuildThisFileDirectory)Mixins\macOS\FrameworkElementMixins.tt;OutputPath=$(MSBuildThisFileDirectory)Mixins\macOS\FrameworkElementMixins.g.cs</Properties>
@@ -104,7 +104,7 @@
 			<Compile Remove="$(MSBuildThisFileDirectory)Mixins/**/*.cs" />
 			<Compile Include="$(MSBuildThisFileDirectory)Mixins\DependencyPropertyMixins.g.cs" />
 			<Compile Include="$(MSBuildThisFileDirectory)Mixins\Android\*.g.cs" Condition="$(IsAndroid)" />
-			<Compile Include="$(MSBuildThisFileDirectory)Mixins\iOS\*.g.cs" Condition="$(IsIOSOrCatalyst)" />
+			<Compile Include="$(MSBuildThisFileDirectory)Mixins\AppleUIKit\*.g.cs" Condition="$(IsAppleUIKit)" />
 			<Compile Include="$(MSBuildThisFileDirectory)Mixins\macOS\*.g.cs" Condition="$(IsMacOS)" />
 		</ItemGroup>
 	</Target>

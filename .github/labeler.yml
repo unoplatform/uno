@@ -36,6 +36,10 @@ area/skia ✏️:
   - src/Uno.UI.Runtime.Skia.Tizen/**/*
   - src/Uno.UI.Runtime.Skia.Wpf/*
   - src/Uno.UI.Runtime.Skia.Wpf/**/*
+  - src/Uno.UI.Runtime.Skia.Android/*
+  - src/Uno.UI.Runtime.Skia.Android/**/*
+  - src/Uno.UI.Runtime.Skia.AppleUIKit/*
+  - src/Uno.UI.Runtime.Skia.AppleUIKit/**/*
   - src/Uno.UI.XamlHost.Skia.Wpf/**/*
   - src/Uno.UI.XamlHost.Skia.Wpf/**/*
 
@@ -53,6 +57,8 @@ platform/android 🤖:
   - src/Uno.UI.BindingHelper.Android/**/*
   - '**/*.Android.cs'
   - '**/*.Xamarin.cs'
+  - src/Uno.UI.Runtime.Skia.Android/*
+  - src/Uno.UI.Runtime.Skia.Android/**/*
   
 platform/wasm 🌐:
   - '**/*.wasm.cs'
@@ -62,13 +68,30 @@ platform/wasm 🌐:
   - src/Uno.Foundation.Runtime.WebAssembly/**/*
   - src/Uno.UI.Runtime.WebAssembly/*
   - src/Uno.UI.Runtime.WebAssembly/**/*
+  - src/Uno.UI.Runtime.Skia.WebAssembly.Browser/*
+  - src/Uno.UI.Runtime.Skia.WebAssembly.Browser/**/*
 
 platform/ios 🍎:
   - '**/*.iOS.cs'
+  - '**/*.UIKit.cs'
   - '**/*.iOSmacOS.cs'
+  - '**/*.Apple.cs'
   - '**/*.Xamarin.cs'
+  - src/Uno.UI.Runtime.Skia.AppleUIKit/*
+  - src/Uno.UI.Runtime.Skia.AppleUIKit/**/*
 
 platform/macos 🍏:
   - '**/*.macOS.cs'
   - '**/*.iOSmacOS.cs'
+  - '**/*.Apple.cs'
   - '**/*.Xamarin.cs'
+  - src/Uno.UI.Runtime.Skia.MacOS/*
+  - src/Uno.UI.Runtime.Skia.MacOS/**/*
+
+platform/x11 🐧:
+  - src/Uno.UI.Runtime.Skia.X11/*
+  - src/Uno.UI.Runtime.Skia.X11/**/*
+
+platform/wpf 🪟:
+  - src/Uno.UI.Runtime.Skia.Wpf/*
+  - src/Uno.UI.Runtime.Skia.Wpf/**/*
