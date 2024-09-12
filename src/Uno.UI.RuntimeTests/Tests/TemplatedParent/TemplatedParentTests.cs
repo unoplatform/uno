@@ -1,4 +1,10 @@
-﻿using System;
+﻿#if __ANDROID__ || __IOS__
+// On droid and ios, ContentPresenter bypass can be potentially enabled (based on if a base control template is present, or not).
+// As such, ContentPresenter may be omitted, and altering its descendants templated-parent too.
+#define NEED_CUSTOM_ADJUSTMENTS_FOR_CP_BYPASS
+#endif
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -93,7 +99,7 @@ public partial class TemplatedParentTests
 		11.							ContentPresenter // TP=ContentControl#LeftRightControl_Template_RightContent
 		12.								TextBlock#LeftRightControl_Right // TP=<null>
 		""";
-#if __ANDROID__ || __IOS__
+#if NEED_CUSTOM_ADJUSTMENTS_FOR_CP_BYPASS
 		// skip ContentControls' ContentPresenter that were bypassed
 		expectations = SkipLines(expectations, 4, 6, 9, 11);
 #endif
@@ -123,7 +129,7 @@ public partial class TemplatedParentTests
 		11				ContentPresenter // TP=Uno17313_Expander
 		12					Border // TP=Uno17313_SettingsExpander
 		""";
-#if __ANDROID__ || __IOS__
+#if NEED_CUSTOM_ADJUSTMENTS_FOR_CP_BYPASS
 		// skip ContentControls' ContentPresenter that were bypassed
 		// ContentPresenter on line#11 is from the control template, so that doesn't count
 		expectations = SkipLines(expectations, 4);
@@ -146,6 +152,10 @@ public partial class TemplatedParentTests
 		2			StackPanel // TP=<null>
 		3				TextBlock // TP=<null>
 		""";
+#if NEED_CUSTOM_ADJUSTMENTS_FOR_CP_BYPASS
+		// skip ContentControls' ContentPresenter that were bypassed
+		expectations = SkipLines(expectations, 1);
+#endif
 		VerifyTree(expectations, setup);
 	}
 
@@ -157,12 +167,24 @@ public partial class TemplatedParentTests
 
 		// data-template members should have content-presenter as templated-parent.
 		var tree = setup.SUT.TreeGraph(DebugVT_TP);
-		var expectations = """
+		var expectations =
+#if !NEED_CUSTOM_ADJUSTMENTS_FOR_CP_BYPASS
+		"""
 		0	ContentControl#SUT // TP=<null>
 		1		ContentPresenter // TP=ContentControl#SUT
 		2			StackPanel // TP=ContentPresenter
 		3				TextBlock // TP=ContentPresenter
 		""";
+#else
+		// because of content-presenter bypass,
+		// we wont have ContentPresenter in the tree,
+		// and the ContentTemplate descendants will not have a templated-parent.
+		"""
+		0	ContentControl#SUT // TP=<null>
+		1		StackPanel // TP=<null>
+		2			TextBlock // TP=<null>
+		""";
+#endif
 		VerifyTree(expectations, setup);
 	}
 
@@ -235,6 +257,10 @@ public partial class TemplatedParentTests
 		11			ContentControl // TP=<null>
 		12				ContentPresenter // TP=ContentControl
 		""";
+#if NEED_CUSTOM_ADJUSTMENTS_FOR_CP_BYPASS
+		// skip ContentControls' ContentPresenter that were bypassed
+		expectations = SkipLines(expectations, 3, 12);
+#endif
 		VerifyTree(expectations, setup);
 	}
 
