@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Radios
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false || false
 	public enum RadioAccessStatus
 	{
 		// Skipping already declared field Windows.Devices.Radios.RadioAccessStatus.Unspecified

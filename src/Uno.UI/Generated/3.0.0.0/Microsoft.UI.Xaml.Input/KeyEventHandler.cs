@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Input
 {
-#if false || false || IS_UNIT_TESTS || false || false || false || false
+#if false || false || false || IS_UNIT_TESTS || false || false || false || false
 	public delegate void KeyEventHandler(object sender, global::Microsoft.UI.Xaml.Input.KeyRoutedEventArgs e);
 #endif
 }

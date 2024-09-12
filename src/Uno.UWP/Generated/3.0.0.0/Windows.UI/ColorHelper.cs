@@ -3,12 +3,18 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class ColorHelper
 	{
-		// Skipping already declared method Windows.UI.ColorHelper.ToDisplayName(Windows.UI.Color)
+#if false || false || __TVOS__ || false || false || false || false || false
+		[global::Uno.NotImplemented("__TVOS__")]
+		public static string ToDisplayName(global::Windows.UI.Color color)
+		{
+			throw new global::System.NotImplementedException("The member string ColorHelper.ToDisplayName(Color color) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ColorHelper.ToDisplayName%28Color%20color%29");
+		}
+#endif
 		// Skipping already declared method Windows.UI.ColorHelper.FromArgb(byte, byte, byte, byte)
 	}
 }

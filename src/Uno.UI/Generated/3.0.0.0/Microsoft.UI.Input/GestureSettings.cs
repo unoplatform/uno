@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Input
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false || false
 	public enum GestureSettings : uint
 	{
 		// Skipping already declared field Microsoft.UI.Input.GestureSettings.None
