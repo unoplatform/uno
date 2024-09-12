@@ -36,7 +36,7 @@ internal class WpfHostBuilder : IPlatformHostBuilder, IWindowsSkiaHostBuilder
 		// This is a quite hacky to get to the right path where we don't exactly know the version beforehand.
 		var indexOfPreview = runtimeVersion.IndexOf("-preview", StringComparison.Ordinal);
 
-		if(indexOfPreview == -1)
+		if (indexOfPreview == -1)
 		{
 			indexOfPreview = runtimeVersion.IndexOf("-rc", StringComparison.Ordinal);
 		}
@@ -50,7 +50,7 @@ internal class WpfHostBuilder : IPlatformHostBuilder, IWindowsSkiaHostBuilder
 				var possibleVersion = Path.GetFileName(directory);
 				var possibleIndexOfPreview = possibleVersion?.IndexOf("-preview", StringComparison.Ordinal) ?? -1;
 
-				if(possibleIndexOfPreview == -1)
+				if (possibleIndexOfPreview == -1)
 				{
 					possibleIndexOfPreview = possibleVersion?.IndexOf("-rc", StringComparison.Ordinal) ?? -1;
 				}
