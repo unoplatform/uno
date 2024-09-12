@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>$(NetCurrent)-android;$(NetCurrent)-ios;$(NetCurrent)-maccatalyst</TargetFrameworks>
+		<TargetFrameworks>$(NetCurrent)-android;$(NetCurrent)-ios;$(NetCurrent)-maccatalyst;$(NetCurrent)-tvos</TargetFrameworks>
 		<OutputType>Exe</OutputType>
 	</PropertyGroup>
 
@@ -17,6 +17,7 @@
 
 		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">iossimulator-x64</RuntimeIdentifier>
 		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">maccatalyst-x64</RuntimeIdentifier>
+		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tvos'">tvossimulator-x64</RuntimeIdentifier>
 
 		<!-- Override RuntimeIdentifir specifically for smaller builds -->
 		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))!=''">$(UnoSampleAppRuntimeIdentifiers)</RuntimeIdentifier>
@@ -146,6 +147,46 @@
 				<BundleResource Include="..\LinkedFiles\WebContent\css\site.css" Link="MacCatalyst\Resources\WebContent\css\site.css" />
 				<BundleResource Include="..\LinkedFiles\WebContent\index.html" Link="MacCatalyst\Resources\WebContent\index.html" />
 				<BundleResource Include="..\LinkedFiles\WebContent\js\site.js" Link="MacCatalyst\Resources\WebContent\js\site.js" />
+			</ItemGroup>
+		</When>
+
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='tvos'">
+			<ItemGroup>
+				<!--<PackageReference Include="Uno.Extensions.Logging.OSLog" Version="1.7.0" />-->
+				<PackageReference Include="SkiaSharp" />
+				<PackageReference Include="SkiaSharp.NativeAssets.TvOS" />
+			</ItemGroup>
+
+			<PropertyGroup>
+				<SupportedOSPlatformVersion>12.2</SupportedOSPlatformVersion>
+
+				<!-- iOS 17 compatibility -->
+				<MtouchExtraArgs>$(MtouchExtraArgs) --weak-framework=NewsstandKit</MtouchExtraArgs>
+
+				<!-- BEGIN Workaround - AOT fails currently uno-private #648 -->
+				<MtouchUseLlvm>false</MtouchUseLlvm>
+				<UseInterpreter>true</UseInterpreter>
+				<MtouchInterpreter>all</MtouchInterpreter>
+				<!-- END Workaround -->
+			</PropertyGroup>
+
+			<PropertyGroup Condition="'$(BuildForTestFlight)'=='true'">
+				<UseInterpreter>true</UseInterpreter>
+				<MtouchInterpreter>all</MtouchInterpreter>
+
+				<CodesignKey>iPhone Distribution</CodesignKey>
+				<RuntimeIdentifier>ios-arm64</RuntimeIdentifier>
+				<DefineConstants>$(DefineConstants);TESTFLIGHT</DefineConstants>
+			</PropertyGroup>
+
+			<PropertyGroup>
+				<UNOHAS_ARM64>$(RuntimeIdentifier.Contains('arm64'))</UNOHAS_ARM64>
+			</PropertyGroup>
+
+			<ItemGroup>
+				<BundleResource Include="..\LinkedFiles\WebContent\css\site.css" Link="iOS\Resources\WebContent\css\site.css" />
+				<BundleResource Include="..\LinkedFiles\WebContent\index.html" Link="iOS\Resources\WebContent\index.html" />
+				<BundleResource Include="..\LinkedFiles\WebContent\js\site.js" Link="iOS\Resources\WebContent\js\site.js" />
 			</ItemGroup>
 		</When>
 
