@@ -161,11 +161,11 @@ namespace Windows.Graphics.Display
 		}
 #pragma warning restore CS0067
 
-#if __ANDROID__ || __IOS__ || __TVOS__ || __MACOS__ || __WASM__ || __SKIA__
+#if __ANDROID__ || __IOS__ || __MACOS__ || __WASM__ || __SKIA__
 		private void OnDpiChanged() => _dpiChanged?.Invoke(this, null);
 #endif
 
-#if __ANDROID__ || __IOS__ || __TVOS__ || __MACOS__ || __WASM__
+#if __ANDROID__ || __IOS__ || __MACOS__ || __WASM__
 		private void OnDisplayMetricsChanged()
 		{
 			var newOrientation = CurrentOrientation;

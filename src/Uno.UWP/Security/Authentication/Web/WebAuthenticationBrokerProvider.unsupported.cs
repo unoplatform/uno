@@ -1,4 +1,4 @@
-﻿#if !__ANDROID__ && __IOS__ || __TVOS___ && !__TVOS__ && !__MACOS__ && !__SKIA__ && !__WASM__
+﻿#if !__ANDROID__ && !__IOS__ && !__MACOS__ && !__SKIA__ && !__WASM__
 #nullable enable
 using System;
 using System.Collections.Generic;

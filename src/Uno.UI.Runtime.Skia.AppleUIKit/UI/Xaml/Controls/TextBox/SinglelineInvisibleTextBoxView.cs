@@ -57,7 +57,9 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 
 	public override void PasteAndSearch(NSObject? sender) => HandlePaste(() => base.PasteAndSearch(sender));
 
+#if !__TVOS__
 	public override void Paste(NSItemProvider[] itemProviders) => HandlePaste(() => base.Paste(itemProviders));
+#endif
 
 	private void HandlePaste(Action baseAction)
 	{

@@ -112,7 +112,7 @@ namespace Windows.Devices.Sensors
 		}
 #pragma warning restore CS0067 // The event 'SimpleOrientationSensor.OrientationChanged' is never used
 
-#if __ANDROID__ || __IOS__ || __TVOS__
+#if __ANDROID__ || __IOS__
 		private void SetCurrentOrientation(SimpleOrientation orientation)
 		{
 			if (_currentOrientation != orientation)

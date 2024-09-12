@@ -4,7 +4,6 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using ObjCRuntime;
 using SkiaSharp;
-using SkiaSharp.Views.iOS;
 using UIKit;
 using Uno.Helpers.Theming;
 using Uno.UI.Controls;
@@ -15,6 +14,12 @@ using Uno.UI.Xaml.Core;
 using Windows.Devices.Sensors;
 using Windows.Graphics.Display;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
+
+#if __IOS__
+using SkiaSharp.Views.iOS;
+#else
+using SkiaSharp.Views.tvOS;
+#endif
 
 namespace Uno.UI.Runtime.Skia.AppleUIKit;
 
@@ -74,10 +79,12 @@ internal class RootViewController : UINavigationController, IRotationAwareViewCo
 
 		// TODO Uno: When we support multi-window, this should close popups for the appropriate XamlRoot #13847.
 
+#if !__TVOS__
 		// Dismiss on device rotation: this reproduces the windows behavior
 		UIApplication.Notifications
 			.ObserveDidChangeStatusBarOrientation((sender, args) =>
 				VisualTreeHelper.CloseLightDismissPopups(WinUICoreServices.Instance.ContentRootCoordinator!.CoreWindowContentRoot!.XamlRoot));
+#endif
 
 		// Dismiss when the app is entering background
 		UIApplication.Notifications
@@ -118,17 +125,21 @@ internal class RootViewController : UINavigationController, IRotationAwareViewCo
 		VisibleBoundsChanged?.Invoke();
 	}
 
+#if !__TVOS__
 	public override UIInterfaceOrientationMask GetSupportedInterfaceOrientations()
 	{
 		return DisplayInformation.AutoRotationPreferences.ToUIInterfaceOrientationMask();
 	}
+#endif
 
 	public override void MotionEnded(UIEventSubtype motion, UIEvent? evt)
 	{
+#if !__TVOS__
 		if (motion == UIEventSubtype.MotionShake)
 		{
 			Accelerometer.HandleShake();
 		}
+#endif
 		base.MotionEnded(motion, evt);
 	}
 
@@ -137,7 +148,9 @@ internal class RootViewController : UINavigationController, IRotationAwareViewCo
 	public UIView? NativeOverlayLayer => _nativeOverlayLayer;
 
 #pragma warning disable CA1422 // Validate platform compatibility
+#if !__TVOS__
 	public override bool ShouldAutorotate() => CanAutorotate && base.ShouldAutorotate();
+#endif
 
 	public override void TraitCollectionDidChange(UITraitCollection? previousTraitCollection)
 	{
