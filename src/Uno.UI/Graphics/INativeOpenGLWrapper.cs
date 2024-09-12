@@ -18,7 +18,14 @@ internal interface INativeOpenGLWrapper
 	/// </summary>
 	public void CreateContext(UIElement element);
 
-	/// <remarks>This should be cast to a Silk.NET.GL</remarks>
+	/// <remarks>
+	/// This should be cast to a Silk.NET.OpenGL.GL (even on devices with GLES, not Desktop GL).
+	/// The Silk.NET.OpenGL.GL API surface is a almost a complete superset of the Silk.NET.OpenGLES.GL API
+	/// surface (with the exception of BlendBarrier and PrimitiveBoundingBox which are OpenGL ES 3.2-only APIs).
+	/// So, we always expose an OpenGL.GL object even on GLES devices, with the caveat that the user is only
+	/// allowed to make calls that are available on this GL (or GLES) version (just like OpenGL 4-only APIs
+	/// aren't allowed on OpenGL 3 implementations).
+	/// </remarks>
 	public object CreateGLSilkNETHandle();
 
 	/// <summary>

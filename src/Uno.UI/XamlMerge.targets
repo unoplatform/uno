@@ -9,7 +9,7 @@
   </ItemGroup>
 
   <PropertyGroup>
-	<XamlMergeOutputFile>$(MSBuildProjectDirectory)\UI\Xaml\Style\mergedstyles.xaml</XamlMergeOutputFile>
+	<XamlMergeOutputFile>$(MSBuildProjectDirectory)\obj\$(MSBuildProjectName)\$(Configuration)\$(TargetFramework)\mergedstyles.xaml</XamlMergeOutputFile>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Diagnostics;
+using Silk.NET.OpenGL;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
-using Silk.NET.OpenGL;
+using Window = Microsoft.UI.Xaml.Window;
 
 #if WINAPPSDK
 using System.Runtime.InteropServices;
@@ -174,7 +174,7 @@ public abstract partial class GLCanvasElement : Grid
 
 	private void OnUnloaded(object sender, RoutedEventArgs routedEventArgs)
 	{
-		Debug.Assert(_gl is not null); // because OnLoaded creates _gl
+		global::System.Diagnostics.Debug.Assert(_gl is not null); // because OnLoaded creates _gl
 
 #if WINAPPSDK
 		Marshal.FreeHGlobal(_pixels);
@@ -215,7 +215,7 @@ public abstract partial class GLCanvasElement : Grid
 			return;
 		}
 
-		Debug.Assert(_gl is not null); // because _gl exists if loaded
+		global::System.Diagnostics.Debug.Assert(_gl is not null); // because _gl exists if loaded
 
 		using var _ = new GLStateDisposable(this);
 
@@ -253,7 +253,7 @@ public abstract partial class GLCanvasElement : Grid
 		{
 			_glCanvasElement = glCanvasElement;
 			var gl = _glCanvasElement._gl;
-			Debug.Assert(gl is not null);
+			global::System.Diagnostics.Debug.Assert(gl is not null);
 
 			_contextDisposable = _glCanvasElement._nativeOpenGlWrapper.MakeCurrent();
 		}
@@ -261,7 +261,7 @@ public abstract partial class GLCanvasElement : Grid
 		public void Dispose()
 		{
 			var gl = _glCanvasElement._gl;
-			Debug.Assert(gl is not null);
+			global::System.Diagnostics.Debug.Assert(gl is not null);
 
 			_contextDisposable.Dispose();
 		}
