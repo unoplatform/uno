@@ -253,8 +253,6 @@ namespace Microsoft.UI.Xaml
 				return GetDefaultValue(property);
 			}
 
-			propertyDetails = _properties.GetPropertyDetails(property);
-
 			return propertyDetails.CurrentHighestValuePrecedence == DependencyPropertyValuePrecedences.DefaultValue
 				? GetDefaultValue(propertyDetails.Property)
 				: propertyDetails.GetEffectiveValue();
