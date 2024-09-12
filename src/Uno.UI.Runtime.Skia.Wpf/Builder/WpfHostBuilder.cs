@@ -34,7 +34,8 @@ internal class WpfHostBuilder : IPlatformHostBuilder, IWindowsSkiaHostBuilder
 		// ASP.NET Core Runtime 9.0.0-preview.4.24267.6
 		//.NET Desktop Runtime 9.0.0-preview.4.24267.11
 		// This is a quite hacky to get to the right path where we don't exactly know the version beforehand.
-		var indexOfPreview = runtimeVersion.IndexOf("-preview", StringComparison.Ordinal);
+		var indexOfPreview = runtimeVersion.IndexOf("-preview", StringComparison.Ordinal) 
+			|| runtimeVersion.IndexOf("-rc", StringComparison.Ordinal);
 		if (indexOfPreview > -1)
 		{
 			var mainVersion = runtimeVersion.Substring(0, indexOfPreview);
@@ -42,7 +43,10 @@ internal class WpfHostBuilder : IPlatformHostBuilder, IWindowsSkiaHostBuilder
 			foreach (var directory in directories)
 			{
 				var possibleVersion = Path.GetFileName(directory);
-				var possibleIndexOfPreview = possibleVersion?.IndexOf("-preview", StringComparison.Ordinal) ?? -1;
+				var possibleIndexOfPreview = 
+					possibleVersion?.IndexOf("-preview", StringComparison.Ordinal) 
+					?? possibleVersion?.IndexOf("-rc", StringComparison.Ordinal)
+					?? -1;
 				if (possibleIndexOfPreview > -1)
 				{
 					var desktopRuntimeVersion = possibleVersion!.Substring(0, possibleIndexOfPreview);
