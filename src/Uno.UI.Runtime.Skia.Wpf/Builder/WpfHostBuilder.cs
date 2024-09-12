@@ -43,10 +43,13 @@ internal class WpfHostBuilder : IPlatformHostBuilder, IWindowsSkiaHostBuilder
 			foreach (var directory in directories)
 			{
 				var possibleVersion = Path.GetFileName(directory);
-				var possibleIndexOfPreview = 
-					possibleVersion?.IndexOf("-preview", StringComparison.Ordinal) 
-					?? possibleVersion?.IndexOf("-rc", StringComparison.Ordinal)
-					?? -1;
+				var possibleIndexOfPreview = possibleVersion?.IndexOf("-preview", StringComparison.Ordinal) ?? -1;
+
+				if(possibleIndexOfPreview > -1)
+				{
+					possibleIndexOfPreview = possibleVersion?.IndexOf("-rc", StringComparison.Ordinal) ?? -1;
+				}
+
 				if (possibleIndexOfPreview > -1)
 				{
 					var desktopRuntimeVersion = possibleVersion!.Substring(0, possibleIndexOfPreview);
