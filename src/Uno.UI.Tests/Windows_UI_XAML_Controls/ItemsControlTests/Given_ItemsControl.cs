@@ -15,7 +15,6 @@ using FluentAssertions;
 using FluentAssertions.Execution;
 using Uno.UI.Helpers;
 using Uno.UI.Extensions;
-using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.Tests.ItemsControlTests
 {
