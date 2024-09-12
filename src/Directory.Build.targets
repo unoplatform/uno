@@ -122,6 +122,7 @@
 		<PackageReference Update="HarfBuzzSharp.NativeAssets.WebAssembly" Version="7.3.0.1" />
 		<PackageReference Update="HarfBuzzSharp.NativeAssets.Linux" Version="7.3.0.1" />
 		<PackageReference Update="harfbuzzsharp.nativeassets.ios" Version="7.3.0.1" />
+		<PackageReference Update="harfbuzzsharp.nativeassets.tvos" Version="7.3.0.1" />
 
 		<PackageReference Condition=" '$(TargetFramework)' == '$(NetPrevious)' " Update="Microsoft.Win32.SystemEvents" Version="8.0.0" />
 		<PackageReference Condition=" '$(TargetFramework)' == '$(NetCurrent)' " Update="Microsoft.Win32.SystemEvents" Version="9.0.0" />

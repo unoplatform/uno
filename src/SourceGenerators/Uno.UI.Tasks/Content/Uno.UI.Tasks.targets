@@ -45,7 +45,7 @@
 		<AssignTargetPathsDependsOn>$(AssignTargetPathsDependsOn);AssignLinkMetadata</AssignTargetPathsDependsOn>
 
 		<_UnoUnderlyingPlatform Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">android</_UnoUnderlyingPlatform>
-		<_UnoUnderlyingPlatform Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">ios</_UnoUnderlyingPlatform>
+		<_UnoUnderlyingPlatform Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tvos'">ios</_UnoUnderlyingPlatform>
 		<_UnoUnderlyingPlatform Condition="'$(UnoRuntimeIdentifier)'=='WebAssembly'">wasm</_UnoUnderlyingPlatform>
 		<_UnoUnderlyingPlatform Condition="'$(_UnoUnderlyingPlatform)'=='' AND '$(UnoRuntimeIdentifier)'=='Skia'">skia</_UnoUnderlyingPlatform>
 </PropertyGroup>
