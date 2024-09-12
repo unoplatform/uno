@@ -539,7 +539,6 @@ namespace Microsoft.UI.Xaml.Controls
 			if (m_tpCommandBar is not null)
 			{
 				m_tpCommandBar.Loaded -= OnCommandBarLoaded;
-				this.LayoutUpdated += MediaTransportControls_LayoutUpdated;
 				m_tpCommandBar.SizeChanged += Container_SizeChanged;
 				m_tpCommandBar.DynamicOverflowItemsChanging += M_tpCommandBar_DynamicOverflowItemsChanging;
 			}
@@ -551,10 +550,6 @@ namespace Microsoft.UI.Xaml.Controls
 			HideCastButtonIfNecessary();
 		}
 
-		private void MediaTransportControls_LayoutUpdated(object? sender, object e)
-		{
-			SetMeasureCommandBar();
-		}
 		private void M_tpCommandBar_DynamicOverflowItemsChanging(CommandBar sender, DynamicOverflowItemsChangingEventArgs args)
 		{
 			SetMeasureCommandBar();

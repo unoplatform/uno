@@ -111,7 +111,15 @@ namespace Microsoft.UI.Xaml
 					bindings[i].ResumeBinding();
 				}
 
-				ApplyDataContext(DataContextPropertyDetails.GetValue());
+				var value = DataContextPropertyDetails.GetEffectiveValue();
+				if (value == DependencyProperty.UnsetValue)
+				{
+					// If we get UnsetValue, it means this is DefaultValue precedence that's not stored in DependencyPropertyDetails.
+					// In this case, we know for sure that DataContext's default value is null.
+					value = null;
+				}
+
+				ApplyDataContext(value);
 			}
 		}
 
@@ -144,7 +152,15 @@ namespace Microsoft.UI.Xaml
 				{
 					_templateBindings = _templateBindings.Add(bindingExpression);
 
-					ApplyBinding(bindingExpression, TemplatedParentPropertyDetails.GetValue());
+					var templatedParent = TemplatedParentPropertyDetails.GetEffectiveValue();
+					if (templatedParent == DependencyProperty.UnsetValue)
+					{
+						// If we get UnsetValue, it means this is DefaultValue precedence that's not stored in DependencyPropertyDetails.
+						// In this case, we know for sure that TemplatedParent's default value is null.
+						templatedParent = null;
+					}
+
+					ApplyBinding(bindingExpression, templatedParent);
 				}
 				else
 				{
@@ -152,11 +168,19 @@ namespace Microsoft.UI.Xaml
 
 					if (bindingExpression.TargetPropertyDetails.Property.UniqueId == DataContextPropertyDetails.Property.UniqueId)
 					{
-						bindingExpression.DataContext = details.GetValue(DependencyPropertyValuePrecedences.Inheritance);
+						bindingExpression.DataContext = details.GetInheritedValue();
 					}
 					else
 					{
-						ApplyBinding(bindingExpression, DataContextPropertyDetails.GetValue());
+						var value = DataContextPropertyDetails.GetEffectiveValue();
+						if (value == DependencyProperty.UnsetValue)
+						{
+							// If we get UnsetValue, it means this is DefaultValue precedence that's not stored in DependencyPropertyDetails.
+							// In this case, we know for sure that DataContext's default value is null.
+							value = null;
+						}
+
+						ApplyBinding(bindingExpression, value);
 					}
 				}
 			}
@@ -203,7 +227,7 @@ namespace Microsoft.UI.Xaml
 
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
-				this.Log().DebugFormat("Set binding value [{0}] from [{1}].", details.Property.Name, _ownerType);
+				this.Log().DebugFormat("Set binding value [{0}].", details.Property.Name);
 			}
 		}
 

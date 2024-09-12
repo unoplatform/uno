@@ -28,7 +28,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private static GridLength GetHeightDefaultValue() => GridLengthHelper.OneStar;
 
-		[GeneratedDependencyProperty]
+		[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
 		public static DependencyProperty HeightProperty { get; } = CreateHeightProperty();
 
 		public GridLength Height
@@ -44,7 +44,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return new RowDefinition { Height = GridLength.ParseGridLength(value).First() };
 		}
 
-		[GeneratedDependencyProperty(DefaultValue = 0d)]
+		[GeneratedDependencyProperty(DefaultValue = 0d, Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
 		public static DependencyProperty MinHeightProperty { get; } = CreateMinHeightProperty();
 
 		public double MinHeight
@@ -53,7 +53,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetMinHeightValue(value);
 		}
 
-		[GeneratedDependencyProperty(DefaultValue = double.PositiveInfinity)]
+		[GeneratedDependencyProperty(DefaultValue = double.PositiveInfinity, Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
 		public static DependencyProperty MaxHeightProperty { get; } = CreateMaxHeightProperty();
 		public double MaxHeight
 		{

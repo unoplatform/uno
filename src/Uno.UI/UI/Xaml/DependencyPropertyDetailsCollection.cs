@@ -13,7 +13,6 @@ namespace Microsoft.UI.Xaml
 	/// </summary>
 	partial class DependencyPropertyDetailsCollection : IDisposable
 	{
-		private readonly Type _ownerType;
 		private readonly ManagedWeakReference _ownerReference;
 		private object? _hardOwnerReference;
 		private readonly DependencyProperty _dataContextProperty;
@@ -37,10 +36,8 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Creates an instance using the specified DependencyObject <see cref="Type"/>
 		/// </summary>
-		/// <param name="ownerType">The owner type</param>
-		public DependencyPropertyDetailsCollection(Type ownerType, ManagedWeakReference ownerReference, DependencyProperty dataContextProperty, DependencyProperty templatedParentProperty)
+		public DependencyPropertyDetailsCollection(ManagedWeakReference ownerReference, DependencyProperty dataContextProperty, DependencyProperty templatedParentProperty)
 		{
-			_ownerType = ownerType;
 			_ownerReference = ownerReference;
 
 			_dataContextProperty = dataContextProperty;
@@ -193,20 +190,11 @@ namespace Microsoft.UI.Xaml
 					_entries = entries = newEntries;
 				}
 
-				// Avoid using ref here, as TryResolveDefaultValueFromProviders execution could execute code which
-				// could cause the entries array to be expanded by bucket size and to be reallocated, which would
-				// cause the reference to be invalidated. Example of this is a child property which calls child.SetParent(this).
-				// Even though the _entries size may change, the offset and bucketRemainder will still be valid.
-				var propertyEntry = entries[offset + bucketRemainder];
-				if (propertyEntry is null)
-				{
-					propertyEntry = new DependencyPropertyDetails(property, _ownerType, property == _dataContextProperty || property == _templatedParentProperty);
-					_entries[offset + bucketRemainder] = propertyEntry;
+				ref var propertyEntry = ref entries[offset + bucketRemainder];
 
-					if (TryResolveDefaultValueFromProviders(property, out var value))
-					{
-						propertyEntry.SetDefaultValue(value);
-					}
+				if (propertyEntry == null)
+				{
+					propertyEntry = new DependencyPropertyDetails(property, property == _dataContextProperty || property == _templatedParentProperty);
 				}
 
 				return propertyEntry;
@@ -228,18 +216,6 @@ namespace Microsoft.UI.Xaml
 
 				return null;
 			}
-		}
-
-		private bool TryResolveDefaultValueFromProviders(DependencyProperty property, out object? value)
-		{
-			// Replicate the WinUI behavior of DependencyObject::GetDefaultValue2 specifically for UIElement.
-			if (Owner is UIElement uiElement)
-			{
-				return uiElement.GetDefaultValue2(property, out value);
-			}
-
-			value = null;
-			return false;
 		}
 
 		private void ReturnEntriesAndOffsetsToPools()

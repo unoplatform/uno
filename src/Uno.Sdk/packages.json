@@ -19,7 +19,8 @@
 			"Uno.WinUI.Svg",
 			"Uno.WinUI.WebAssembly",
 			"Uno.WinUI.Runtime.WebAssembly",
-			"Uno.WinUI.MediaPlayer.WebAssembly"
+			"Uno.WinUI.MediaPlayer.WebAssembly",
+			"Uno.WinUI.Graphics3DGL"
 		]
 	},
 	{
@@ -65,7 +66,7 @@
 	},
 	{
 		"group": "Resizetizer",
-		"version": "1.6.0-dev.22",
+		"version": "1.6.0-dev.24",
 		"packages": [
 			"Uno.Resizetizer"
 		]

@@ -7,7 +7,7 @@
 
 	<Style TargetType="local:ProgressRing">
 		<Setter Property="Foreground" Value="{ThemeResource ProgressRingForegroundThemeBrush}" />
-		<!--<Setter Property="Background" Value="{ThemeResource ProgressRingBackgroundThemeBrush}" />-->
+		<Setter Property="Background" Value="{ThemeResource ProgressRingBackgroundThemeBrush}" />
 		<Setter Property="IsHitTestVisible" Value="False" />
 		<Setter Property="HorizontalAlignment" Value="Center" />
 		<Setter Property="VerticalAlignment" Value="Center" />

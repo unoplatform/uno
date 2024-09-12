@@ -17,8 +17,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PasswordBoxTests
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.PasswordBoxTests.PasswordBoxPage");
 			var passwordBox = _app.Marked("redPasswordBox");
 			passwordBox.EnterText("         ");
+
+			// PasswordBox has to be unfocused for Foreground to be red.
+			// Otherwise, animations from template would take precedence and set the Foreground to black.
+			var rect = _app.Query("redPasswordBox").Single().Rect;
+			_app.TapCoordinates(rect.CenterX, rect.Bottom + 5);
 			using var screenshot = TakeScreenshot("Spaces typed in PasswordBox.");
-			ImageAssert.HasColorInRectangle(screenshot, _app.Query("redPasswordBox").Single().Rect.ToRectangle(), Color.Red);
+			ImageAssert.HasColorInRectangle(screenshot, rect.ToRectangle(), Color.Red);
 		}
 
 		[Test]

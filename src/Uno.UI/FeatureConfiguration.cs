@@ -703,6 +703,20 @@ namespace Uno.UI
 #endif
 		}
 
+		public static class WebView2
+		{
+#if __IOS__
+			/// <summary>
+			/// Sets whether the <see cref="WebView2"/> object is inspectable or not.
+			/// </summary>
+			/// <remarks>
+			/// On iOS and Catalyst this means that developers can use the Safari Web Developers tools to debug apps with <see cref="WebView2"/>
+			/// Important: It will only work when the app runs in Debug mode.
+			/// </remarks>
+			public static bool IsInspectable { get; set; }
+#endif
+		}
+
 		public static class Xaml
 		{
 			/// <summary>
@@ -823,7 +837,7 @@ namespace Uno.UI
 			/// Accessing the dependency property system isn't thread safe and should only
 			/// happen on the UI thread.
 			/// By default, attempting to access it from non UI thread will throw an exception.
-			/// Setting this flag to false will prevent the exception from being thrown at the risk
+			/// Setting this flag to true will prevent the exception from being thrown at the risk
 			/// of having an undefined behavior and/or race conditions.
 			/// </summary>
 			public static bool DisableThreadingCheck { get; set; }

@@ -19,7 +19,7 @@ namespace Uno.UI.Tests.DependencyPropertyTests
 		{
 			var test = new DefaultValueProviderSample();
 
-			var value = test.GetPrecedenceSpecificValue(DefaultValueProviderSample.TestProperty, DependencyPropertyValuePrecedences.DefaultValue);
+			var value = test.Test;
 			Assert.AreEqual(3, value);
 		}
 
@@ -28,7 +28,7 @@ namespace Uno.UI.Tests.DependencyPropertyTests
 		{
 			var test = new DefaultValueProviderSample();
 
-			var value = test.GetPrecedenceSpecificValue(DefaultValueProviderSample.OtherProperty, DependencyPropertyValuePrecedences.DefaultValue);
+			var value = test.Other;
 			Assert.AreEqual(0, value);
 		}
 
@@ -37,7 +37,7 @@ namespace Uno.UI.Tests.DependencyPropertyTests
 		{
 			var test = new InheritedDefaultValueProviderSample();
 
-			var value = test.GetPrecedenceSpecificValue(DefaultValueProviderSample.TestProperty, DependencyPropertyValuePrecedences.DefaultValue);
+			var value = test.Test;
 			Assert.AreEqual(17, value);
 		}
 
@@ -46,7 +46,7 @@ namespace Uno.UI.Tests.DependencyPropertyTests
 		{
 			var test = new InheritedDefaultValueProviderSample2();
 
-			var value = test.GetPrecedenceSpecificValue(DefaultValueProviderSample.TestProperty, DependencyPropertyValuePrecedences.DefaultValue);
+			var value = test.Test;
 			Assert.AreEqual(3, value); // GetDefaultValue should apply
 		}
 
@@ -55,21 +55,8 @@ namespace Uno.UI.Tests.DependencyPropertyTests
 		{
 			var expected = 42;
 			var defaultValueTest = new DefaultValueTest();
-			Assert.AreEqual(expected, defaultValueTest.GetPrecedenceSpecificValue(DefaultValueTest.TestValueProperty, DependencyPropertyValuePrecedences.DefaultValue));
 			Assert.AreEqual(expected, defaultValueTest.GetValue(DefaultValueTest.TestValueProperty));
-			Assert.AreEqual(expected, (defaultValueTest as IDependencyObjectStoreProvider).Store.GetPropertyDetails(DefaultValueTest.TestValueProperty).GetDefaultValue());
-			Assert.AreEqual(expected, defaultValueTest.TestValue);
-		}
-
-		[TestMethod]
-		public void When_SetDefaultValue()
-		{
-			var expected = 24;
-			var defaultValueTest = new DefaultValueTest();
-			((IDependencyObjectStoreProvider)defaultValueTest).Store.GetPropertyDetails(DefaultValueTest.TestValueProperty).SetDefaultValue(expected);
-			Assert.AreEqual(expected, defaultValueTest.GetPrecedenceSpecificValue(DefaultValueTest.TestValueProperty, DependencyPropertyValuePrecedences.DefaultValue));
-			Assert.AreEqual(expected, defaultValueTest.GetValue(DefaultValueTest.TestValueProperty));
-			Assert.AreEqual(expected, ((IDependencyObjectStoreProvider)defaultValueTest).Store.GetPropertyDetails(DefaultValueTest.TestValueProperty).GetDefaultValue());
+			Assert.AreEqual(expected, (defaultValueTest as IDependencyObjectStoreProvider).Store.GetDefaultValue(DefaultValueTest.TestValueProperty));
 			Assert.AreEqual(expected, defaultValueTest.TestValue);
 		}
 

@@ -17,6 +17,8 @@ using Uno.UI;
 using System.Collections;
 using System.Globalization;
 using Windows.ApplicationModel.Calls;
+using Microsoft.UI.Xaml.Controls;
+
 
 #if __ANDROID__
 using View = Android.Views.View;
@@ -58,12 +60,6 @@ namespace Microsoft.UI.Xaml
 		}
 
 		private static readonly IEventProvider _trace = Tracing.Get(TraceProvider.Id);
-
-		/// <summary>
-		/// A global static counter that is used to uniquely identify objects.
-		/// This is primarily used during trace profiling.
-		/// </summary>
-		private static long _objectIdCounter;
 
 		private bool _isDisposed;
 
@@ -182,12 +178,10 @@ namespace Microsoft.UI.Xaml
 		/// <param name="originalObject"></param>
 		public DependencyObjectStore(object originalObject, DependencyProperty dataContextProperty, DependencyProperty templatedParentProperty)
 		{
-			ObjectId = Interlocked.Increment(ref _objectIdCounter);
-
 			_originalObjectRef = WeakReferencePool.RentWeakReference(this, originalObject);
 			_originalObjectType = originalObject is AttachedDependencyObject a ? a.Owner.GetType() : originalObject.GetType();
 
-			_properties = new DependencyPropertyDetailsCollection(_originalObjectType, _originalObjectRef, dataContextProperty, templatedParentProperty);
+			_properties = new DependencyPropertyDetailsCollection(_originalObjectRef, dataContextProperty, templatedParentProperty);
 
 			_dataContextProperty = dataContextProperty;
 			_templatedParentProperty = templatedParentProperty;
@@ -196,7 +190,7 @@ namespace Microsoft.UI.Xaml
 			{
 				_trace.WriteEvent(
 					DependencyObjectStore.TraceProvider.CreationTask,
-					new object[] { ObjectId, _originalObjectType.Name }
+					new object[] { GetHashCode(), _originalObjectType.Name }
 				);
 			}
 		}
@@ -234,18 +228,34 @@ namespace Microsoft.UI.Xaml
 		internal bool IsTemplatedParentFrozen { get; set; }
 
 		/// <summary>
-		/// Gets a unique identifier for the current DependencyObject.
-		/// </summary>
-		internal long ObjectId { get; }
-
-		/// <summary>
 		/// Returns the current effective value of a dependency property from a DependencyObject.
 		/// </summary>
 		/// <param name="property">The <see cref="DependencyProperty" /> identifier of the property for which to retrieve the value. </param>
 		/// <returns>Returns the current effective value.</returns>
 		public object? GetValue(DependencyProperty property)
 		{
-			return GetValue(property: property, propertyDetails: null, precedence: null, isPrecedenceSpecific: false);
+			WritePropertyEventTrace(TraceProvider.GetValue, property, null);
+
+			ValidatePropertyOwner(property);
+
+			if (_properties.DataContextPropertyDetails.Property == property || _properties.TemplatedParentPropertyDetails.Property == property)
+			{
+				// Historically, we didn't have this fast path for default value.
+				// We add this to maintain the original behavior in GetValue(DependencyPropertyDetails) overload.
+				// This should be revisited in future.
+				TryRegisterInheritedProperties(force: true);
+			}
+
+			DependencyPropertyDetails? propertyDetails = _properties.FindPropertyDetails(property);
+			if (propertyDetails is null)
+			{
+				// Performance: Avoid force-creating DependencyPropertyDetails when not needed.
+				return GetDefaultValue(property);
+			}
+
+			return propertyDetails.CurrentHighestValuePrecedence == DependencyPropertyValuePrecedences.DefaultValue
+				? GetDefaultValue(propertyDetails.Property)
+				: propertyDetails.GetEffectiveValue();
 		}
 
 		/// <summary>
@@ -255,7 +265,35 @@ namespace Microsoft.UI.Xaml
 		/// <returns></returns>
 		public object? ReadLocalValue(DependencyProperty property)
 		{
-			return GetValue(property, precedence: DependencyPropertyValuePrecedences.Local, isPrecedenceSpecific: true);
+			var details = _properties.FindPropertyDetails(property);
+			if (property == _dataContextProperty || property == _templatedParentProperty)
+			{
+				TryRegisterInheritedProperties(force: true);
+			}
+
+			if (details?.GetBaseValueSource() == DependencyPropertyValuePrecedences.Local)
+			{
+				return details.GetBaseValue();
+			}
+
+			return DependencyProperty.UnsetValue;
+		}
+
+		public object? ReadInheritedValueOrDefaultValue(DependencyProperty property)
+		{
+			var details = _properties.FindPropertyDetails(property);
+			if (property == _dataContextProperty || property == _templatedParentProperty)
+			{
+				TryRegisterInheritedProperties(force: true);
+			}
+
+			if (details is null)
+			{
+				return GetDefaultValue(property);
+			}
+
+			var inheritedValue = details.GetInheritedValue();
+			return inheritedValue == DependencyProperty.UnsetValue ? GetDefaultValue(property) : inheritedValue;
 		}
 
 		/// <summary>
@@ -265,45 +303,46 @@ namespace Microsoft.UI.Xaml
 		/// <returns></returns>
 		public object? GetAnimationBaseValue(DependencyProperty property)
 		{
-			return GetValue(property, precedence: DependencyPropertyValuePrecedences.Local);
+			var (modifiedValue, details) = GetModifiedValue(property);
+			if (modifiedValue?.IsAnimated == true)
+			{
+				if (property == _dataContextProperty || property == _templatedParentProperty)
+				{
+					TryRegisterInheritedProperties(force: true);
+				}
+
+				if (details!.GetBaseValueSource() == DependencyPropertyValuePrecedences.DefaultValue)
+				{
+					return GetDefaultValue(property);
+				}
+
+				return modifiedValue.GetBaseValue();
+			}
+
+			return GetValue(property);
 		}
 
-		internal object? GetValue(DependencyProperty property, DependencyPropertyValuePrecedences? precedence = null, bool isPrecedenceSpecific = false)
+		private (ModifiedValue? modifiedValue, DependencyPropertyDetails? details) GetModifiedValue(DependencyProperty property)
 		{
-			return GetValue(property, null, precedence, isPrecedenceSpecific);
+			var details = _properties.FindPropertyDetails(property);
+			if (details is null)
+			{
+				return (null, null);
+			}
+
+			return (details.GetModifiedValue(), details);
 		}
 
-		internal object? GetValue(DependencyProperty property, DependencyPropertyDetails? propertyDetails, DependencyPropertyValuePrecedences? precedence = null, bool isPrecedenceSpecific = false)
-		{
-			WritePropertyEventTrace(TraceProvider.GetValue, property, precedence);
-
-			ValidatePropertyOwner(property);
-
-			propertyDetails ??= _properties.GetPropertyDetails(property);
-
-			return GetValue(propertyDetails, precedence, isPrecedenceSpecific);
-		}
-
-		private object? GetValue(DependencyPropertyDetails propertyDetails, DependencyPropertyValuePrecedences? precedence = null, bool isPrecedenceSpecific = false)
+		private object? GetValue(DependencyPropertyDetails propertyDetails)
 		{
 			if (propertyDetails == _properties.DataContextPropertyDetails || propertyDetails == _properties.TemplatedParentPropertyDetails)
 			{
 				TryRegisterInheritedProperties(force: true);
 			}
 
-			if (precedence == null)
-			{
-				return propertyDetails.GetValue();
-			}
-
-			if (isPrecedenceSpecific)
-			{
-				return propertyDetails.GetValue(precedence.Value);
-			}
-
-			var highestPriority = GetCurrentHighestValuePrecedence(propertyDetails);
-
-			return propertyDetails.GetValue((DependencyPropertyValuePrecedences)Math.Max((int)highestPriority, (int)precedence.Value));
+			return propertyDetails.CurrentHighestValuePrecedence == DependencyPropertyValuePrecedences.DefaultValue
+				? GetDefaultValue(propertyDetails.Property)
+				: propertyDetails.GetEffectiveValue();
 		}
 
 		/// <summary>
@@ -575,7 +614,7 @@ namespace Microsoft.UI.Xaml
 						&& !ReferenceEquals(childProviderClearNewValue.Store.Parent, ActualInstance))
 					{
 						// Sets the DataContext of the new precedence value
-						childProviderClearNewValue.Store.RestoreInheritedDataContext(_properties.DataContextPropertyDetails.GetValue());
+						childProviderClearNewValue.Store.RestoreInheritedDataContext(GetHighestValueFromDetails(_properties.DataContextPropertyDetails));
 					}
 				}
 
@@ -586,7 +625,7 @@ namespace Microsoft.UI.Xaml
 						&& !ReferenceEquals(childProviderSet.Store.Parent, ActualInstance))
 					{
 						// Sets the DataContext of the new precedence value
-						childProviderSet.Store.RestoreInheritedDataContext(_properties.DataContextPropertyDetails.GetValue());
+						childProviderSet.Store.RestoreInheritedDataContext(GetHighestValueFromDetails(_properties.DataContextPropertyDetails));
 					}
 
 					if (previousValue is IDependencyObjectStoreProvider childProviderSetNewValue)
@@ -689,7 +728,12 @@ namespace Microsoft.UI.Xaml
 		internal void CoerceValue(DependencyProperty property)
 		{
 			// Trigger the coercion mechanism of SetValue, by re-applying the base value (non-coerced value).
-			var (baseValue, basePrecedence) = GetValueUnderPrecedence(property, DependencyPropertyValuePrecedences.Coercion);
+			var (baseValue, basePrecedence) = GetBaseValue(property);
+			if (basePrecedence == DependencyPropertyValuePrecedences.DefaultValue && property.IsInherited)
+			{
+				basePrecedence = DependencyPropertyValuePrecedences.Inheritance;
+			}
+
 			SetValue(property, baseValue, basePrecedence);
 		}
 
@@ -697,7 +741,7 @@ namespace Microsoft.UI.Xaml
 		{
 			if (_trace.IsEnabled)
 			{
-				_trace.WriteEvent(eventId, new object[] { ObjectId, property.OwnerType.Name, property.Name, precedence?.ToString() ?? "Local" });
+				_trace.WriteEvent(eventId, new object[] { GetHashCode(), property.OwnerType.Name, property.Name, precedence?.ToString() ?? "Local" });
 			}
 		}
 
@@ -708,7 +752,7 @@ namespace Microsoft.UI.Xaml
 				return _trace.WriteEventActivity(
 					startEventId,
 					stopEventId,
-					new object[] { ObjectId, property.OwnerType.Name, property.Name, precedence.ToString() }
+					new object[] { GetHashCode(), property.OwnerType.Name, property.Name, precedence.ToString() }
 				);
 			}
 			else
@@ -1083,12 +1127,58 @@ namespace Microsoft.UI.Xaml
 		internal void RegisterParentChangedCallbackStrong(object key, ParentChangedCallback callback)
 			=> _parentChangedCallbacks = _parentChangedCallbacks.Add((s, _, e) => callback(s, key, e));
 
-		internal (object? value, DependencyPropertyValuePrecedences precedence) GetValueUnderPrecedence(DependencyProperty property, DependencyPropertyValuePrecedences precedence)
+		internal (object? value, DependencyPropertyValuePrecedences precedence) GetBaseValue(DependencyProperty property)
 		{
-			var stack = _properties.GetPropertyDetails(property);
+			var details = _properties.FindPropertyDetails(property);
+			if (property == _dataContextProperty || property == _templatedParentProperty)
+			{
+				TryRegisterInheritedProperties(force: true);
+			}
 
-			return stack.GetValueUnderPrecedence(precedence);
+			if (details is null)
+			{
+				return (GetDefaultValue(property), DependencyPropertyValuePrecedences.DefaultValue);
+			}
+
+			var baseValueSource = details.GetBaseValueSource();
+			if (baseValueSource == DependencyPropertyValuePrecedences.DefaultValue)
+			{
+				return (GetDefaultValue(property), DependencyPropertyValuePrecedences.DefaultValue);
+			}
+
+			return (details.GetBaseValue(), baseValueSource);
 		}
+
+		internal object? GetAnimatedValue(DependencyProperty property)
+		{
+			var (modifiedValue, _) = GetModifiedValue(property);
+			if (modifiedValue is not null)
+			{
+				return modifiedValue.GetAnimatedValue();
+			}
+
+			return DependencyProperty.UnsetValue;
+		}
+
+		// Internal for unit testing
+		internal object GetDefaultValue(DependencyProperty dp)
+		{
+			var actualInstance = ActualInstance;
+			var defaultValue = dp.GetDefaultValue(actualInstance, actualInstance?.GetType());
+			if (GetCurrentHighestValuePrecedence(dp) == DependencyPropertyValuePrecedences.DefaultValue &&
+				// This should be for OnDemand DPs in general which we don't yet support
+				dp == UIElement.KeyboardAcceleratorsProperty)
+			{
+				_properties.GetPropertyDetails(dp).SetValue(defaultValue, DependencyPropertyValuePrecedences.Local);
+			}
+
+			return defaultValue;
+		}
+
+		private object? GetHighestValueFromDetails(DependencyPropertyDetails details)
+			=> details.CurrentHighestValuePrecedence == DependencyPropertyValuePrecedences.DefaultValue
+				? GetDefaultValue(details.Property)
+				: details.GetEffectiveValue();
 
 		internal DependencyPropertyDetails GetPropertyDetails(DependencyProperty property)
 		{
@@ -1269,7 +1359,7 @@ namespace Microsoft.UI.Xaml
 				{
 					var propertyDetails = _properties.GetPropertyDetails(localProperty);
 
-					if (propertyDetails.HasInherits)
+					if (localProperty.IsInherited)
 					{
 						return (localProperty, propertyDetails);
 					}
@@ -1590,7 +1680,11 @@ namespace Microsoft.UI.Xaml
 					var prop = props[propertyIndex];
 					if (!IsTemplatedParentFrozen || prop != TemplatedParentProperty)
 					{
-						store.OnParentPropertyChangedCallback(instanceRef, prop, GetValue(prop));
+						var value = GetValue(prop);
+						if (GetCurrentHighestValuePrecedence(prop) != DependencyPropertyValuePrecedences.DefaultValue)
+						{
+							store.OnParentPropertyChangedCallback(instanceRef, prop, value);
+						}
 					}
 				}
 			}
@@ -2046,9 +2140,36 @@ namespace Microsoft.UI.Xaml
 				}
 			}
 
-			if (AreDifferent(value, propertyDetails.GetValue(precedence)))
+			if (value == null && !propertyDetails.Property.IsTypeNullable)
 			{
-				propertyDetails.SetValue(value, precedence);
+				// This probably shouldn't exist. We should fix cases that are broken.
+				// Most (if not all) broken cases appear to be related to TemplatedParent being null incorrectly when applying styles.
+				// This should be re-validated after https://github.com/unoplatform/uno/issues/1621 is fixed.
+				value = GetDefaultValue(propertyDetails.Property);
+			}
+
+			propertyDetails.SetValue(value, precedence);
+
+			if (value == DependencyProperty.UnsetValue && precedence >= DependencyPropertyValuePrecedences.Local)
+			{
+				ReevaluateBaseValue(propertyDetails);
+			}
+		}
+
+		private void ReevaluateBaseValue(DependencyPropertyDetails propertyDetails)
+		{
+			// When local value or style value are cleared, we want to re-evaluate base value and set the value with the right precedence.
+			// The new base value will either be Style (explicit or implicit) or DefaultStyle (aka built-in style)
+			var actualInstance = ActualInstance;
+			if (actualInstance is FrameworkElement fe && fe.TryGetValueFromStyle(propertyDetails.Property, out var valueFromStyle))
+			{
+				// NOTE: ExplicitStyle here actually means ExplicitOrImplicitStyle. This will be fixed with https://github.com/unoplatform/uno/pull/15684/
+				propertyDetails.SetValue(valueFromStyle, DependencyPropertyValuePrecedences.ExplicitStyle);
+			}
+			else if (actualInstance is Control control && control.TryGetValueFromBuiltInStyle(propertyDetails.Property, out var valueFromBuiltInStyle))
+			{
+				// NOTE: ImplicitStyle here actually means DefaultStyle. This will be fixed with https://github.com/unoplatform/uno/pull/15684/
+				propertyDetails.SetValue(valueFromBuiltInStyle, DependencyPropertyValuePrecedences.ImplicitStyle);
 			}
 		}
 

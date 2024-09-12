@@ -210,7 +210,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 					_propertyInfo = new BindingPath(
 						path: targetPropertyPath,
 						fallbackValue: null,
-						precedence: DependencyPropertyValuePrecedences.Animations,
+						forAnimations: true,
 						allowPrivateMembers: false
 					)
 					{

@@ -157,6 +157,8 @@
         href: platform-specific-csharp.md
       - name: Platform-specific XAML markup
         href: platform-specific-xaml.md
+      - name: Creating Custom Controls
+        href: guides/creating-custom-controls.md
       - name: Control Libraries
         href: guides/how-to-create-control-libraries.md
       - name: Adding New Platforms
@@ -432,8 +434,10 @@
               href: controls/DatePicker.md
             - name: Flyout
               href: controls/Flyout.md
-            - name: Flyout
+            - name: Frame
               href: controls/Frame.md
+            - name: GLCanvasElement
+              href: controls/GLCanvasElement.md
             - name: Image
               href: xref:Uno.Features.Image
             - name: ListView and GridView

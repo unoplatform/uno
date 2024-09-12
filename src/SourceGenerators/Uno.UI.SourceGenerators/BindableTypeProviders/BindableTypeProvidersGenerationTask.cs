@@ -364,7 +364,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 
 							if (
 								property.SetMethod != null
-								&& property.SetMethod != null
+								&& !property.SetMethod.IsInitOnly
 								&& property.SetMethod.IsLocallyPublic(_currentModule!)
 								)
 							{

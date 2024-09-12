@@ -1292,8 +1292,8 @@
       <StaticResource x:Key="ProgressBarBorderBrush" ResourceKey="ControlStrokeColorDefaultBrush" />
       <StaticResource x:Key="ProgressBarPausedForegroundColor" ResourceKey="SystemFillColorCaution" />
       <StaticResource x:Key="ProgressBarErrorForegroundColor" ResourceKey="SystemFillColorCritical" />
-      <StaticResource x:Key="ProgressRingForegroundThemeBrush" ResourceKey="SystemControlHighlightAccentBrush" />
-      <StaticResource x:Key="ProgressRingBackgroundThemeBrush" ResourceKey="SystemControlBackgroundBaseLowBrush" />
+      <StaticResource x:Key="ProgressRingForegroundThemeBrush" ResourceKey="AccentFillColorDefaultBrush" />
+      <StaticResource x:Key="ProgressRingBackgroundThemeBrush" ResourceKey="ControlFillColorTransparentBrush" />
       <StaticResource x:Key="RadioButtonsHeaderForeground" ResourceKey="TextFillColorPrimaryBrush" />
       <StaticResource x:Key="RadioButtonsHeaderForegroundDisabled" ResourceKey="TextFillColorDisabledBrush" />
       <x:Double x:Key="RadioButtonBorderThemeThickness">1</x:Double>
@@ -3093,8 +3093,8 @@
       <StaticResource x:Key="ProgressBarBorderBrush" ResourceKey="ControlStrokeColorDefaultBrush" />
       <StaticResource x:Key="ProgressBarPausedForegroundColor" ResourceKey="SystemFillColorCaution" />
       <StaticResource x:Key="ProgressBarErrorForegroundColor" ResourceKey="SystemFillColorCritical" />
-      <StaticResource x:Key="ProgressRingForegroundThemeBrush" ResourceKey="SystemControlHighlightAccentBrush" />
-      <StaticResource x:Key="ProgressRingBackgroundThemeBrush" ResourceKey="SystemControlBackgroundBaseLowBrush" />
+      <StaticResource x:Key="ProgressRingForegroundThemeBrush" ResourceKey="AccentFillColorDefaultBrush" />
+      <StaticResource x:Key="ProgressRingBackgroundThemeBrush" ResourceKey="ControlFillColorTransparentBrush" />
       <StaticResource x:Key="RadioButtonsHeaderForeground" ResourceKey="TextFillColorPrimaryBrush" />
       <StaticResource x:Key="RadioButtonsHeaderForegroundDisabled" ResourceKey="TextFillColorDisabledBrush" />
       <x:Double x:Key="RadioButtonBorderThemeThickness">1</x:Double>
@@ -10333,8 +10333,7 @@
         <ControlTemplate TargetType="Button">
           <!-- Uno specific (LinearGradientBrush borders): Additional Grid as template root needed #6457 -->
           <Grid>
-            <!-- Uno workaround: template-bind ContentTemplateSelector because it's not automatically propagated from the ContentControl #6452 -->
-            <ContentPresenter x:Name="ContentPresenter" Background="{TemplateBinding Background}" BackgroundSizing="{TemplateBinding BackgroundSizing}" Foreground="{TemplateBinding Foreground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" ContentTransitions="{TemplateBinding ContentTransitions}" CornerRadius="{TemplateBinding CornerRadius}" Padding="{TemplateBinding Padding}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" AutomationProperties.AccessibilityView="Raw">
+            <ContentPresenter x:Name="ContentPresenter" Background="{TemplateBinding Background}" BackgroundSizing="{TemplateBinding BackgroundSizing}" Foreground="{TemplateBinding Foreground}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTransitions="{TemplateBinding ContentTransitions}" CornerRadius="{TemplateBinding CornerRadius}" Padding="{TemplateBinding Padding}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" AutomationProperties.AccessibilityView="Raw">
               <ContentPresenter.BackgroundTransition>
                 <BrushTransition Duration="0:0:0.083" />
               </ContentPresenter.BackgroundTransition>
@@ -11722,8 +11721,7 @@
                 </controls:AnimatedIcon.FallbackIconSource>
               </controls:AnimatedIcon>
             </Grid>
-            <!-- Uno workaround: template-bind ContentTemplateSelector because it's not automatically propagated from the ContentControl -->
-            <ContentPresenter x:Name="ContentPresenter" Grid.Column="1" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" ContentTransitions="{TemplateBinding ContentTransitions}" Content="{TemplateBinding Content}" Margin="{TemplateBinding Padding}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" AutomationProperties.AccessibilityView="Raw" TextWrapping="Wrap" />
+            <ContentPresenter x:Name="ContentPresenter" Grid.Column="1" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTransitions="{TemplateBinding ContentTransitions}" Content="{TemplateBinding Content}" Margin="{TemplateBinding Padding}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" AutomationProperties.AccessibilityView="Raw" TextWrapping="Wrap" />
           </Grid>
         </ControlTemplate>
       </Setter.Value>
@@ -15597,8 +15595,7 @@
               <ColumnDefinition Width="*" />
               <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <!-- Uno workaround: template-bind ContentTemplateSelector because it's not automatically propagated from the ContentControl -->
-            <ContentPresenter x:Name="ContentPresenter" Content="{TemplateBinding Content}" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" AutomationProperties.AccessibilityView="Raw" />
+            <ContentPresenter x:Name="ContentPresenter" Content="{TemplateBinding Content}" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" AutomationProperties.AccessibilityView="Raw" />
             <controls:AnimatedIcon x:Name="ChevronIcon" Grid.Column="1" Margin="8,0,0,0" Width="12" Height="12" Foreground="{ThemeResource DropDownButtonForegroundSecondary}" AutomationProperties.AccessibilityView="Raw" local:AnimatedIcon.State="Normal" xmlns:local="using:Microsoft.UI.Xaml.Controls">
               <animatedvisuals:AnimatedChevronDownSmallVisualSource />
               <controls:AnimatedIcon.FallbackIconSource>
@@ -16175,8 +16172,7 @@
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="FlipViewItem">
-          <!-- Uno specific - Explicitly setting ContentTemplateSelector -->
-          <ContentPresenter Content="{TemplateBinding Content}" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding CornerRadius}" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" Padding="{TemplateBinding Padding}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+          <ContentPresenter Content="{TemplateBinding Content}" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding CornerRadius}" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" Padding="{TemplateBinding Padding}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
         </ControlTemplate>
       </Setter.Value>
     </Setter>
@@ -17064,8 +17060,7 @@
               <Grid.RenderTransform>
                 <TranslateTransform x:Name="ContentPresenterTranslateTransform" />
               </Grid.RenderTransform>
-              <!-- Uno workaround: template-bind ContentTemplateSelector because it's not automatically propagated from the ContentControl -->
-              <ContentPresenter x:Name="ContentPresenter" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="{TemplateBinding Padding}" />
+              <ContentPresenter x:Name="ContentPresenter" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="{TemplateBinding Padding}" />
             </Grid>
             <!-- The 'Xg' text simulates the amount of space one line of text will occupy.
                              In the DataPlaceholder state, the Content is not loaded yet so we
@@ -20825,8 +20820,7 @@
                 </VisualState>
               </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
-            <!-- Uno workaround: template-bind ContentTemplateSelector because it's not automatically propagated from the ContentControl -->
-            <ContentPresenter x:Name="HeaderContentPresenter" Content="{TemplateBinding Header}" ContentTemplate="{TemplateBinding HeaderTemplate}" ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" Foreground="{ThemeResource RadioButtonsHeaderForeground}" Margin="{ThemeResource RadioButtonsTopHeaderMargin}" />
+            <ContentPresenter x:Name="HeaderContentPresenter" Content="{TemplateBinding Header}" ContentTemplate="{TemplateBinding HeaderTemplate}" Foreground="{ThemeResource RadioButtonsHeaderForeground}" Margin="{ThemeResource RadioButtonsTopHeaderMargin}" />
             <controls:ItemsRepeater x:Name="InnerRepeater">
               <controls:ItemsRepeater.Layout>
                 <primitives:ColumnMajorUniformToLargestGridLayout MaxColumns="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=MaxColumns}" ColumnSpacing="{ThemeResource RadioButtonsColumnSpacing}" RowSpacing="{ThemeResource RadioButtonsRowSpacing}" />
@@ -21038,8 +21032,7 @@
               <!-- A seperate element is added since the two orthogonal state groups that cannot touch the same property -->
               <Border x:Name="PressedCheckGlyph" Width="4" Height="4" CornerRadius="6" UseLayoutRounding="False" Opacity="0" Background="{ThemeResource RadioButtonCheckGlyphFill}" BackgroundSizing="OuterBorderEdge" BorderBrush="{ThemeResource RadioButtonCheckGlyphStroke}" />
             </Grid>
-            <!-- Uno workaround: template-bind ContentTemplateSelector because it's not automatically propagated from the ContentControl #6452 -->
-            <ContentPresenter x:Name="ContentPresenter" Content="{TemplateBinding Content}" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" Foreground="{TemplateBinding Foreground}" Margin="{TemplateBinding Padding}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Grid.Column="1" AutomationProperties.AccessibilityView="Raw" TextWrapping="Wrap" />
+            <ContentPresenter x:Name="ContentPresenter" Content="{TemplateBinding Content}" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" Foreground="{TemplateBinding Foreground}" Margin="{TemplateBinding Padding}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Grid.Column="1" AutomationProperties.AccessibilityView="Raw" TextWrapping="Wrap" />
           </Grid>
         </ControlTemplate>
       </Setter.Value>
@@ -21145,7 +21138,7 @@
         <ControlTemplate TargetType="RepeatButton">
           <!-- Uno specific (LinearGradientBrush borders): Additional Grid as template root needed #6457 -->
           <Grid>
-            <ContentPresenter x:Name="ContentPresenter" Background="{TemplateBinding Background}" Foreground="{TemplateBinding Foreground}" BackgroundSizing="{TemplateBinding BackgroundSizing}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" ContentTransitions="{TemplateBinding ContentTransitions}" CornerRadius="{TemplateBinding CornerRadius}" Padding="{TemplateBinding Padding}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" AutomationProperties.AccessibilityView="Raw">
+            <ContentPresenter x:Name="ContentPresenter" Background="{TemplateBinding Background}" Foreground="{TemplateBinding Foreground}" BackgroundSizing="{TemplateBinding BackgroundSizing}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTransitions="{TemplateBinding ContentTransitions}" CornerRadius="{TemplateBinding CornerRadius}" Padding="{TemplateBinding Padding}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" AutomationProperties.AccessibilityView="Raw">
               <ContentPresenter.BackgroundTransition>
                 <BrushTransition Duration="0:0:0.083" />
               </ContentPresenter.BackgroundTransition>
@@ -22312,8 +22305,7 @@
                             </VisualState>
                           </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
-                        <!-- Uno workaround: template-bind ContentTemplateSelector because it's not automatically propagated from the ContentControl #6452 -->
-                        <ContentPresenter x:Name="ContentPresenter" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Content="{TemplateBinding Content}" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" Padding="{TemplateBinding Padding}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" AutomationProperties.AccessibilityView="Raw" />
+                        <ContentPresenter x:Name="ContentPresenter" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Content="{TemplateBinding Content}" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" Padding="{TemplateBinding Padding}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" AutomationProperties.AccessibilityView="Raw" />
                       </Grid>
                     </ControlTemplate>
                   </Setter.Value>
@@ -23750,8 +23742,7 @@
         <ControlTemplate TargetType="ToggleButton">
           <!-- Uno specific (LinearGradientBrush borders): Additional Grid as template root needed #6457 -->
           <Grid>
-            <!-- Uno workaround: template-bind ContentTemplateSelector because it's not automatically propagated from the ContentControl #6452 -->
-            <ContentPresenter x:Name="ContentPresenter" Background="{TemplateBinding Background}" Foreground="{TemplateBinding Foreground}" BackgroundSizing="{TemplateBinding BackgroundSizing}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" ContentTransitions="{TemplateBinding ContentTransitions}" CornerRadius="{TemplateBinding CornerRadius}" Padding="{TemplateBinding Padding}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" AutomationProperties.AccessibilityView="Raw">
+            <ContentPresenter x:Name="ContentPresenter" Background="{TemplateBinding Background}" Foreground="{TemplateBinding Foreground}" BackgroundSizing="{TemplateBinding BackgroundSizing}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTransitions="{TemplateBinding ContentTransitions}" CornerRadius="{TemplateBinding CornerRadius}" Padding="{TemplateBinding Padding}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" AutomationProperties.AccessibilityView="Raw">
               <ContentPresenter.BackgroundTransition>
                 <BrushTransition Duration="0:0:0.083" />
               </ContentPresenter.BackgroundTransition>

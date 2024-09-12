@@ -31,31 +31,28 @@ public class Given_NumberBox
 	[TestMethod]
 	public async Task When_Fluent_And_Theme_Changed()
 	{
-		using (StyleHelper.UseFluentStyles())
+		var textBox = new NumberBox
 		{
-			var textBox = new NumberBox
-			{
-				PlaceholderText = "Enter..."
-			};
+			PlaceholderText = "Enter..."
+		};
 
-			WindowHelper.WindowContent = textBox;
-			await WindowHelper.WaitForLoaded(textBox);
+		WindowHelper.WindowContent = textBox;
+		await WindowHelper.WaitForLoaded(textBox);
 
-			var placeholderTextContentPresenter = textBox.FindFirstChild<TextBlock>(tb => tb.Name == "PlaceholderTextContentPresenter");
-			Assert.IsNotNull(placeholderTextContentPresenter);
+		var placeholderTextContentPresenter = textBox.FindFirstChild<TextBlock>(tb => tb.Name == "PlaceholderTextContentPresenter");
+		Assert.IsNotNull(placeholderTextContentPresenter);
 
-			var lightThemeForeground = TestsColorHelper.ToColor("#9E000000");
-			var darkThemeForeground = TestsColorHelper.ToColor("#C5FFFFFF");
+		var lightThemeForeground = TestsColorHelper.ToColor("#9E000000");
+		var darkThemeForeground = TestsColorHelper.ToColor("#C5FFFFFF");
 
-			Assert.AreEqual(lightThemeForeground, (placeholderTextContentPresenter.Foreground as SolidColorBrush)?.Color);
+		Assert.AreEqual(lightThemeForeground, (placeholderTextContentPresenter.Foreground as SolidColorBrush)?.Color);
 
-			using (ThemeHelper.UseDarkTheme())
-			{
-				Assert.AreEqual(darkThemeForeground, (placeholderTextContentPresenter.Foreground as SolidColorBrush)?.Color);
-			}
-
-			Assert.AreEqual(lightThemeForeground, (placeholderTextContentPresenter.Foreground as SolidColorBrush)?.Color);
+		using (ThemeHelper.UseDarkTheme())
+		{
+			Assert.AreEqual(darkThemeForeground, (placeholderTextContentPresenter.Foreground as SolidColorBrush)?.Color);
 		}
+
+		Assert.AreEqual(lightThemeForeground, (placeholderTextContentPresenter.Foreground as SolidColorBrush)?.Color);
 	}
 }
 #endif

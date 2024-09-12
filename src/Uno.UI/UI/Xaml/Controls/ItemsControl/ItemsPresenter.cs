@@ -214,6 +214,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(ItemsPresenter),
 				new FrameworkPropertyMetadata(
 					(Thickness)Thickness.Empty,
+					FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((ItemsPresenter)s)?.OnPaddingChanged((Thickness)e.OldValue, (Thickness)e.NewValue)
 				)
 			);
@@ -346,6 +347,17 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 #endif
 		}
+
+		internal override bool WantsScrollViewerToObscureAvailableSizeBasedOnScrollBarVisibility(Orientation orientation)
+		{
+			return WantsScrollViewerToObscureAvailableSizeBasedOnScrollBarVisibility(orientation, Panel);
+		}
+
+		private bool WantsScrollViewerToObscureAvailableSizeBasedOnScrollBarVisibility(Orientation orientation, _ViewGroup spPanel)
+		{
+			return (spPanel as FrameworkElement)?.WantsScrollViewerToObscureAvailableSizeBasedOnScrollBarVisibility(orientation) ?? true;
+		}
+
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{

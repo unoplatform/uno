@@ -200,8 +200,6 @@ namespace Microsoft.UI.Xaml
 				&& method.DeclaringType != typeof(Control);
 		}
 
-		private protected virtual bool IsTabStopDefaultValue => false;
-
 		/// <summary>
 		/// Provide an instance-specific default value for the specified property
 		/// </summary>
@@ -213,11 +211,6 @@ namespace Microsoft.UI.Xaml
 			if (property == KeyboardAcceleratorsProperty)
 			{
 				defaultValue = new KeyboardAcceleratorCollection(this);
-				return true;
-			}
-			else if (property == IsTabStopProperty)
-			{
-				defaultValue = IsTabStopDefaultValue;
 				return true;
 			}
 
@@ -265,6 +258,7 @@ namespace Microsoft.UI.Xaml
 				{
 					_translation = value;
 					UpdateShadow();
+					InvalidateArrange();
 				}
 			}
 		}
@@ -522,13 +516,8 @@ namespace Microsoft.UI.Xaml
 
 		partial void OnVisibilityChangedPartial(Visibility oldValue, Visibility newValue);
 
-		/// <summary>
-		/// Set correct default foreground for the current theme.
-		/// </summary>
-		/// <param name="foregroundProperty">The appropriate property for the calling instance.</param>
-		private protected void SetDefaultForeground(DependencyProperty foregroundProperty)
+		private protected void UpdateLastUsedTheme()
 		{
-			this.SetValue(foregroundProperty, DefaultBrushes.TextForegroundBrush, DependencyPropertyValuePrecedences.DefaultValue);
 			((IDependencyObjectStoreProvider)this).Store.SetLastUsedTheme(Application.Current?.RequestedThemeForResources);
 		}
 

@@ -119,6 +119,34 @@ namespace Microsoft.UI.Xaml
 			BackingFieldUpdateCallback = backingFieldUpdateCallback;
 		}
 
+		internal PropertyMetadata(
+			object defaultValue,
+			PropertyChangedCallback propertyChangedCallback,
+			CoerceValueCallback coerceValueCallback,
+			BackingFieldUpdateCallback backingFieldUpdateCallback,
+			CreateDefaultValueCallback createDefaultValueCallback
+		)
+		{
+			DefaultValue = defaultValue;
+			PropertyChangedCallback = propertyChangedCallback;
+			CoerceValueCallback = coerceValueCallback;
+			BackingFieldUpdateCallback = backingFieldUpdateCallback;
+			CreateDefaultValueCallback = createDefaultValueCallback;
+		}
+
+		private PropertyMetadata(CreateDefaultValueCallback createDefaultValueCallback)
+		{
+			CreateDefaultValueCallback = createDefaultValueCallback;
+		}
+
+		private PropertyMetadata(CreateDefaultValueCallback createDefaultValueCallback, PropertyChangedCallback propertyChangedCallback)
+		{
+			CreateDefaultValueCallback = createDefaultValueCallback;
+			PropertyChangedCallback = propertyChangedCallback;
+		}
+
+		public CreateDefaultValueCallback CreateDefaultValueCallback { get; }
+
 		public object DefaultValue { get; }
 
 		public PropertyChangedCallback PropertyChangedCallback { get; internal set; }
@@ -126,6 +154,18 @@ namespace Microsoft.UI.Xaml
 		internal CoerceValueCallback CoerceValueCallback { get; set; }
 
 		internal BackingFieldUpdateCallback BackingFieldUpdateCallback { get; set; }
+
+		public static PropertyMetadata Create(object defaultValue)
+			=> new PropertyMetadata(defaultValue: defaultValue);
+
+		public static PropertyMetadata Create(object defaultValue, PropertyChangedCallback propertyChangedCallback)
+			=> new PropertyMetadata(defaultValue: defaultValue, propertyChangedCallback: propertyChangedCallback);
+
+		public static PropertyMetadata Create(CreateDefaultValueCallback createDefaultValueCallback)
+			=> new PropertyMetadata(createDefaultValueCallback: createDefaultValueCallback);
+
+		public static PropertyMetadata Create(CreateDefaultValueCallback createDefaultValueCallback, PropertyChangedCallback propertyChangedCallback)
+			=> new PropertyMetadata(createDefaultValueCallback: createDefaultValueCallback, propertyChangedCallback: propertyChangedCallback);
 
 		internal void MergePropertyChangedCallback(PropertyChangedCallback callback)
 		{
@@ -146,8 +186,7 @@ namespace Microsoft.UI.Xaml
 
 		internal virtual PropertyMetadata CloneWithOverwrittenDefaultValue(object newDefaultValue)
 		{
-			// This should clone CreateDefaultValueCallback when it's supported
-			return new PropertyMetadata(newDefaultValue, PropertyChangedCallback, CoerceValueCallback, BackingFieldUpdateCallback);
+			return new PropertyMetadata(newDefaultValue, PropertyChangedCallback, CoerceValueCallback, BackingFieldUpdateCallback, CreateDefaultValueCallback);
 		}
 	}
 }

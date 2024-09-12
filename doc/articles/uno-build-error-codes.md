@@ -35,7 +35,7 @@ Follow this guide in order to [update the Uno Platform packages](xref:Uno.Develo
 
 ### UNOB0005: The Version of Uno.WinUI must match the version of the Uno.Sdk found in global.json
 
-The build process has determined that the version of the Uno.WinUI NuGet package does not match the Uno.Sdk package version. This generally happens when the Uno.WinUI.* packages are updated through Visual Studio's NuGet Package manager.
+The build process has determined that the version of the Uno.WinUI NuGet package does not match the Uno.Sdk version. In general, restarting your IDE and compiling again will fix this issue.
 
 Follow this guide in order to [update the Uno Platform packages](xref:Uno.Development.UpgradeUnoNuget).
 

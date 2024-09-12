@@ -85,13 +85,25 @@ public partial class Border : FrameworkElement
 
 	public UIElement Child
 	{
-		get => (UIElement)this.GetValue(ChildProperty);
-		set => this.SetValue(ChildProperty, value);
+		get => (UIElement)GetValue(ChildProperty);
+		set
+		{
+			// This means that setting Child to the same reference does not trigger PropertyChanged, 
+			// which is a problem, as WinUI always removes the current child and adds it again,
+			// even when dealing with the exact same reference. This also triggers measure/arrange
+			// on the child. To work around this, we force the update here.
+			if (value == Child)
+			{
+				SetChild(value, value);
+			}
+
+			SetValue(ChildProperty, value);
+		}
 	}
 
 	public static DependencyProperty ChildProperty { get; } =
 		DependencyProperty.Register(
-			"Child",
+			nameof(Child),
 			typeof(UIElement),
 			typeof(Border),
 			new FrameworkPropertyMetadata(
@@ -99,23 +111,26 @@ public partial class Border : FrameworkElement
 				// Since this is a view, inheritance is handled through the visual tree, rather than via the property. We explicitly
 				// disable the property-based propagation here to support the case where the Parent property is overridden to simulate
 				// a different inheritance hierarchy, as is done for some controls with native styles.
-				FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
-				(s, e) => ((Border)s)?.OnChildChanged((UIElement)e.OldValue, (UIElement)e.NewValue)
+				FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.AffectsMeasure,
+				(DependencyObject s, DependencyPropertyChangedEventArgs e) => ((Border)s)?.SetChild((UIElement)e.OldValue, (UIElement)e.NewValue)
 			)
 		);
 
-	private void OnChildChanged(UIElement oldValue, UIElement newValue)
+	private void SetChild(UIElement previousChild, UIElement newChild)
 	{
-		ReAttachChildTransitions(oldValue, newValue);
-
-		if (oldValue is not null)
+		if (previousChild != newChild)
 		{
-			RemoveChild(oldValue);
+			ReAttachChildTransitions(previousChild, newChild);
 		}
 
-		if (newValue is not null)
+		if (previousChild is not null)
 		{
-			AddChild(newValue);
+			RemoveChild(previousChild);
+		}
+
+		if (newChild is not null)
+		{
+			AddChild(newChild);
 		}
 	}
 
@@ -193,7 +208,7 @@ public partial class Border : FrameworkElement
 	#region Padding DependencyProperty
 	private static Thickness GetPaddingDefaultValue() => Thickness.Empty;
 
-	[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange)]
+	[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
 	public static DependencyProperty PaddingProperty { get; } = CreatePaddingProperty();
 
 	public Thickness Padding
@@ -236,7 +251,7 @@ public partial class Border : FrameworkElement
 	#region BorderThickness DependencyProperty
 	private static Thickness GetBorderThicknessDefaultValue() => Thickness.Empty;
 
-	[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange)]
+	[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
 	public static DependencyProperty BorderThicknessProperty { get; } = CreateBorderThicknessProperty();
 
 	public Thickness BorderThickness
@@ -316,7 +331,7 @@ public partial class Border : FrameworkElement
 			e.OldValue as Brush,
 			e.NewValue as Brush,
 			this.BackgroundTransition,
-			((IDependencyObjectStoreProvider)this).Store.GetPropertyDetails(BackgroundProperty).CurrentHighestValuePrecedence == DependencyPropertyValuePrecedences.Animations);
+			((IDependencyObjectStoreProvider)this).Store.GetCurrentHighestValuePrecedence(BackgroundProperty) == DependencyPropertyValuePrecedences.Animations);
 #else
 		UpdateBorder();
 #endif

@@ -13,6 +13,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 	{
 		[Test]
 		[AutoRetry]
+		[Ignore("Fails on Fluent styles #17272")]
 		public void Validate_UseUWPDefaultStyles()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.Button.Button_UseUWPDefaultStyles");

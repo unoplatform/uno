@@ -379,7 +379,7 @@ namespace Uno.UI
 		/// <summary>
 		/// Try to retrieve a resource statically (at parse time). This will check resources in 'xaml scope' first, then top-level resources.
 		/// </summary>
-		private static bool TryStaticRetrieval(in SpecializedResourceDictionary.ResourceKey resourceKey, object context, out object value)
+		internal static bool TryStaticRetrieval(in SpecializedResourceDictionary.ResourceKey resourceKey, object context, out object value)
 		{
 			// This block is a manual enumeration to avoid the foreach pattern
 			// See https://github.com/dotnet/runtime/issues/56309 for details

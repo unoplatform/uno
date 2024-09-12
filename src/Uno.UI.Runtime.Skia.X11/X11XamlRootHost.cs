@@ -42,6 +42,21 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		(IntPtr)EventMask.FocusChangeMask |
 		(IntPtr)EventMask.NoEventMask;
 
+	private static readonly int[] _glxAttribs = {
+		GlxConsts.GLX_X_RENDERABLE    , /* True */ 1,
+		GlxConsts.GLX_DRAWABLE_TYPE   , GlxConsts.GLX_WINDOW_BIT,
+		GlxConsts.GLX_RENDER_TYPE     , GlxConsts.GLX_RGBA_BIT,
+		GlxConsts.GLX_X_VISUAL_TYPE   , GlxConsts.GLX_TRUE_COLOR,
+		GlxConsts.GLX_RED_SIZE        , 8,
+		GlxConsts.GLX_GREEN_SIZE      , 8,
+		GlxConsts.GLX_BLUE_SIZE       , 8,
+		GlxConsts.GLX_ALPHA_SIZE      , 8,
+		GlxConsts.GLX_DEPTH_SIZE      , 8,
+		GlxConsts.GLX_STENCIL_SIZE    , 8,
+		GlxConsts.GLX_DOUBLEBUFFER    , /* True */ 1,
+		(int)X11Helper.None
+	};
+
 	private static bool _firstWindowCreated;
 	private static readonly object _x11WindowToXamlRootHostMutex = new();
 	private static readonly Dictionary<X11Window, X11XamlRootHost> _x11WindowToXamlRootHost = new();
@@ -394,24 +409,9 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	// https://learnopengl.com/Advanced-OpenGL/Framebuffers
 	private unsafe static X11Window CreateGLXWindow(IntPtr display, int screen, Size size, IntPtr parent)
 	{
-		int[] glxAttribs = {
-			GlxConsts.GLX_X_RENDERABLE    , /* True */ 1,
-			GlxConsts.GLX_DRAWABLE_TYPE   , GlxConsts.GLX_WINDOW_BIT,
-			GlxConsts.GLX_RENDER_TYPE     , GlxConsts.GLX_RGBA_BIT,
-			GlxConsts.GLX_X_VISUAL_TYPE   , GlxConsts.GLX_TRUE_COLOR,
-			GlxConsts.GLX_RED_SIZE        , 8,
-			GlxConsts.GLX_GREEN_SIZE      , 8,
-			GlxConsts.GLX_BLUE_SIZE       , 8,
-			GlxConsts.GLX_ALPHA_SIZE      , 8,
-			GlxConsts.GLX_DEPTH_SIZE      , 24,
-			GlxConsts.GLX_STENCIL_SIZE    , 8,
-			GlxConsts.GLX_DOUBLEBUFFER    , /* True */ 1,
-			(int)X11Helper.None
-		};
-
 		IntPtr bestFbc = IntPtr.Zero;
 		XVisualInfo* visual = null;
-		var ptr = GlxInterface.glXChooseFBConfig(display, screen, glxAttribs, out var count);
+		var ptr = GlxInterface.glXChooseFBConfig(display, screen, _glxAttribs, out var count);
 		if (ptr == null || *ptr == IntPtr.Zero)
 		{
 			throw new InvalidOperationException($"{nameof(GlxInterface.glXChooseFBConfig)} failed to retrieve GLX frambuffer configurations.");

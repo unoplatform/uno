@@ -69,7 +69,9 @@ public partial class Popup : FrameworkElement, IPopup
 	/// <inheritdoc />
 	protected override Size ArrangeOverride(Size finalSize)
 	{
-		// As the Child is NOT part of the visual tree, it does not have to be arranged
+		// As the Child is NOT part of the visual tree, it does not have to be arranged,
+		// but we need to manually propagate Translation
+		PopupPanel.Translation = Translation;
 		return finalSize;
 	}
 
@@ -127,7 +129,7 @@ public partial class Popup : FrameworkElement, IPopup
 	partial void OnChildChangedPartial(UIElement oldChild, UIElement newChild)
 	{
 		if (oldChild is IDependencyObjectStoreProvider provider &&
-			provider.Store.GetValue(provider.Store.DataContextProperty, DependencyPropertyValuePrecedences.Local, true) != DependencyProperty.UnsetValue)
+			provider.Store.ReadLocalValue(provider.Store.DataContextProperty) != DependencyProperty.UnsetValue)
 		{
 			provider.Store.ClearValue(provider.Store.TemplatedParentProperty, DependencyPropertyValuePrecedences.Local);
 			provider.Store.ClearValue(AllowFocusOnInteractionProperty, DependencyPropertyValuePrecedences.Local);

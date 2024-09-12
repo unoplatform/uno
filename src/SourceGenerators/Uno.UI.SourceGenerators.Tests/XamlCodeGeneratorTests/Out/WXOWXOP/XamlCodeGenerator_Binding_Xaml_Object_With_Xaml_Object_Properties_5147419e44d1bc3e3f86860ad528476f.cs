@@ -119,7 +119,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 			OnInitializeCompleted();
 
 			Bindings = new Binding_Xaml_Object_With_Xaml_Object_Properties_Bindings(this);
-			Loading += (s, e) =>
+			((global::Microsoft.UI.Xaml.FrameworkElement)this).Loading += (s, e) =>
 			{
 				__that.Bindings.UpdateResources();
 			}
