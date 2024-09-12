@@ -160,7 +160,7 @@
 		<PackageReference Update="Xamarin.AndroidX.SwipeRefreshLayout" Version="1.1.0.10" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos'">
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tvos'">
 		<!-- Workaround: For iOS/macOS builds, System.Private.Uri is pulled implicitly with a vulnerable version -->
 		<!-- There is a bit of related discussions in https://github.com/dotnet/sdk/issues/30659 -->
 		<PackageReference Include="System.Private.Uri" Version="4.3.2" />
