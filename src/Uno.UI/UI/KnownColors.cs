@@ -3,6 +3,9 @@
 
 // MUX Reference KnownColors.h, tag winui3/release/1.6-stable
 
+
+// May be used in the future, currently in sync with WinUI, but not used 
+#if false
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -156,3 +159,4 @@ internal enum KnownColors : uint
 	YellowGreen = 0xFF9ACD32,
 	UnknownColor = 0x00000001,
 };
+#endif
