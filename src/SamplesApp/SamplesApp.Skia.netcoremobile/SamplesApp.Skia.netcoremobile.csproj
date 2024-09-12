@@ -158,6 +158,7 @@
 			</ItemGroup>
 
 			<PropertyGroup>
+				<MtouchUseLlvm>true</MtouchUseLlvm>
 				<SupportedOSPlatformVersion>12.2</SupportedOSPlatformVersion>
 
 				<!-- iOS 17 compatibility -->
@@ -168,6 +169,12 @@
 				<UseInterpreter>true</UseInterpreter>
 				<MtouchInterpreter>all</MtouchInterpreter>
 				<!-- END Workaround -->
+
+				<CodesignProvision>Uno Dev Samples</CodesignProvision>
+
+				<!-- https://github.com/xamarin/xamarin-macios/issues/14686 -->
+				<_LibMonoLinkMode>Static</_LibMonoLinkMode>
+				<_LibXamarinLinkMode>Static</_LibXamarinLinkMode>
 			</PropertyGroup>
 
 			<PropertyGroup Condition="'$(BuildForTestFlight)'=='true'">

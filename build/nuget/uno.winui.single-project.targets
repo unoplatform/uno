@@ -34,6 +34,15 @@
 		<BundleResource Include="$(MacCatalystProjectFolder)Resources\**" Exclude="$(_SingleProjectMacCatalystExcludes)" Link="%(RecursiveDir)%(FileName)%(Extension)" IsDefaultItem="true" />
 	</ItemGroup>
 
+	<!-- tvOS -->
+	<ItemGroup Condition=" '$(EnableDefaultItems)' == 'true' and '$(SingleProject)' == 'true' and '$(TargetPlatformIdentifier)' == 'tvos' and '$(tvOSProjectFolder)' != '' ">
+		<None Include="$(tvOSProjectFolder)Info.plist" LogicalName="Info.plist" />
+		<ImageAsset Include="$(tvOSProjectFolder)**/*.xcassets/**/*.png;$(tvOSProjectFolder)**/*.xcassets/*/*.jpg;$(tvOSProjectFolder)**/*.xcassets/**/*.pdf;$(tvOSProjectFolder)**/*.xcassets/**/*.json" Exclude="$(_SingleProjecttvOSExcludes)" Link="%(RecursiveDir)%(FileName)%(Extension)" Visible="false" IsDefaultItem="true" />
+		<SceneKitAsset Include="$(tvOSProjectFolder)**/*.scnassets/*" Exclude="$(_SingleProjecttvOSExcludes)" Link="%(RecursiveDir)%(FileName)%(Extension)" IsDefaultItem="true" />
+		<InterfaceDefinition Include="$(tvOSProjectFolder)**/*.storyboard;$(tvOSProjectFolder)**/*.xib" Exclude="$(_SingleProjecttvOSExcludes)" Link="%(RecursiveDir)%(FileName)%(Extension)" IsDefaultItem="true" />
+		<BundleResource Include="$(tvOSProjectFolder)Resources\**" Exclude="$(_SingleProjecttvOSExcludes)" Link="%(RecursiveDir)%(FileName)%(Extension)" IsDefaultItem="true" />
+	</ItemGroup>
+
 	<!-- macOS -->
 	<ItemGroup Condition=" '$(EnableDefaultItems)' == 'true' and '$(SingleProject)' == 'true' and '$(TargetPlatformIdentifier)' == 'macos' and '$(MacOSProjectFolder)' != '' ">
 		<None Include="$(MacOSProjectFolder)Info.plist" LogicalName="Info.plist" />
