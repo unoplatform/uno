@@ -706,7 +706,7 @@ namespace Uno.UI
 
 		public static class WebView2
 		{
-#if __IOS__
+#if __IOS__ || __SKIA__
 			/// <summary>
 			/// Sets whether the <see cref="WebView2"/> object is inspectable or not.
 			/// </summary>

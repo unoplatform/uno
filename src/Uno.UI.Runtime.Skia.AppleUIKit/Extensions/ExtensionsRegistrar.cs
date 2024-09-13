@@ -11,6 +11,7 @@ using Uno.UI.Xaml.Controls;
 using Windows.UI.Core;
 using Uno.WinUI.Runtime.Skia.AppleUIKit.UI.Xaml;
 using Uno.UI.Runtime.Skia.AppleUIKit;
+using Microsoft.Web.WebView2.Core;
 
 namespace Uno.WinUI.Runtime.Skia.AppleUIKit.Extensions;
 
@@ -28,6 +29,7 @@ internal class ExtensionsRegistrar
 		ApiExtensibility.Register(typeof(INativeWindowFactoryExtension), o => new NativeWindowFactoryExtension());
 		ApiExtensibility.Register<IXamlRootHost>(typeof(IUnoCorePointerInputSource), o => AppleUIKitCorePointerInputSource.Instance);
 		ApiExtensibility.Register<IXamlRootHost>(typeof(IUnoKeyboardInputSource), o => UnoKeyboardInputSource.Instance);
+		ApiExtensibility.Register<CoreWebView2>(typeof(INativeWebViewProvider), o => new UIKitNativeWebViewProvider(o));
 		ApiExtensibility.Register<TextBoxView>(typeof(IOverlayTextBoxViewExtension), o => new InvisibleTextBoxViewExtension(o));
 
 		_registered = true;
