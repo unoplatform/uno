@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk.WebAssembly">
 	<PropertyGroup>
-		<TargetFrameworks>$(NetWasmPreviousAndCurrent)</TargetFrameworks>
+		<TargetFramework>$(NetCurrent)</TargetFramework>
 	</PropertyGroup>
 
 	<Import Project="../../targetframework-override.props" />
