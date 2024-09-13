@@ -35,16 +35,16 @@ jobs:
       nugetPackages: $(NUGET_PACKAGES)
 
   - bash: |
-      dotnet msbuild /r /nr:false /p:Configuration=Release /p:UnoTargetFrameworkOverride=net8.0 src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj /bl:$(build.artifactstagingdirectory)/build-wasm-$(XAML_FLAVOR_BUILD)-uitest-net8-$(GitVersion.FullSemVer).binlog
+      dotnet publish /r /nr:false /p:Configuration=Release /p:UnoTargetFrameworkOverride=net9.0 src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj /bl:$(build.artifactstagingdirectory)/build-wasm-$(XAML_FLAVOR_BUILD)-uitest-net9-$(GitVersion.FullSemVer).binlog
 
-    displayName: 'Build sample app (net8.0)'
+    displayName: 'Build sample app (net9.0)'
 
   - task: CopyFiles@2
-    displayName: 'Publish Wasm Site (net8.0)'
+    displayName: 'Publish Wasm Site (net9.0)'
     inputs:
-      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Wasm/bin/Release/net8.0/dist
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Wasm/bin/Release/net9.0/publish/wwwroot
       Contents: '**/*.*'
-      TargetFolder: $(build.artifactstagingdirectory)/site-net8.0-$(XAML_FLAVOR_BUILD)
+      TargetFolder: $(build.artifactstagingdirectory)/site-net9.0-$(XAML_FLAVOR_BUILD)
       CleanTargetFolder: false
       OverWrite: false
       flattenFolders: false
@@ -69,7 +69,7 @@ jobs:
 
   variables:
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
-    SITE_SUFFIX: 'net8.0'
+    SITE_SUFFIX: 'net9.0'
 
   steps:
   - checkout: self
@@ -90,7 +90,7 @@ jobs:
       dotnet tool uninstall dotnet-serve --tool-path $BUILD_SOURCESDIRECTORY/build/tools || true
       dotnet tool install dotnet-serve --version 1.10.140 --tool-path $BUILD_SOURCESDIRECTORY/build/tools || true
       export PATH="$PATH:$BUILD_SOURCESDIRECTORY/build/tools"
-      $BUILD_SOURCESDIRECTORY/build/tools/dotnet-serve -p 8000 -d "$BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/site-net8.0-UWP" &
+      $BUILD_SOURCESDIRECTORY/build/tools/dotnet-serve -p 8000 -d "$BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/site-net9.0-UWP" &
       cd $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.Wasm.UITests
       npm install
       node app
@@ -129,22 +129,22 @@ jobs:
 
   strategy:
     matrix:
-      net8_default:
-        SITE_SUFFIX: 'net8.0-UWP'
+      net9_default:
+        SITE_SUFFIX: 'net9.0-UWP'
         UITEST_AUTOMATED_GROUP: 'Default'
         UITEST_TEST_TIMEOUT: '120s'
         IS_RUNTIME_TESTS: false
         IS_UI_TESTS: true
 
-      net8_benchmarks:
-        SITE_SUFFIX: 'net8.0-WinUI'
+      net9_benchmarks:
+        SITE_SUFFIX: 'net9.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'Benchmarks'
         UITEST_TEST_TIMEOUT: '15m'
         IS_RUNTIME_TESTS: false
         IS_UI_TESTS: true
 
-      net8_uwp_runtimetests_group_00:
-        SITE_SUFFIX: 'net8.0-UWP'
+      net9_uwp_runtimetests_group_00:
+        SITE_SUFFIX: 'net9.0-UWP'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
         UITEST_TEST_TIMEOUT: '20m'
         UITEST_RUNTIME_TEST_GROUP: 0
@@ -152,8 +152,8 @@ jobs:
         IS_RUNTIME_TESTS: true
         IS_UI_TESTS: false
 
-      net8_uwp_runtimetests_group_01:
-        SITE_SUFFIX: 'net8.0-UWP'
+      net9_uwp_runtimetests_group_01:
+        SITE_SUFFIX: 'net9.0-UWP'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
         UITEST_TEST_TIMEOUT: '20m'
         UITEST_RUNTIME_TEST_GROUP: 1
@@ -161,8 +161,8 @@ jobs:
         IS_RUNTIME_TESTS: true
         IS_UI_TESTS: false
 
-      net8_uwp_runtimetests_group_02:
-        SITE_SUFFIX: 'net8.0-UWP'
+      net9_uwp_runtimetests_group_02:
+        SITE_SUFFIX: 'net9.0-UWP'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
         UITEST_TEST_TIMEOUT: '20m'
         UITEST_RUNTIME_TEST_GROUP: 2
@@ -170,8 +170,8 @@ jobs:
         IS_RUNTIME_TESTS: true
         IS_UI_TESTS: false
 
-      net8_winui_runtimetests_group_00:
-        SITE_SUFFIX: 'net8.0-WinUI'
+      net9_winui_runtimetests_group_00:
+        SITE_SUFFIX: 'net9.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
         UITEST_TEST_TIMEOUT: '20m'
         UITEST_RUNTIME_TEST_GROUP: 0
@@ -179,8 +179,8 @@ jobs:
         IS_RUNTIME_TESTS: true
         IS_UI_TESTS: false
 
-      net8_winui_runtimetests_group_01:
-        SITE_SUFFIX: 'net8.0-WinUI'
+      net9_winui_runtimetests_group_01:
+        SITE_SUFFIX: 'net9.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
         UITEST_TEST_TIMEOUT: '20m'
         UITEST_RUNTIME_TEST_GROUP: 1
@@ -188,8 +188,8 @@ jobs:
         IS_RUNTIME_TESTS: true
         IS_UI_TESTS: false
 
-      net8_winui_runtimetests_group_02:
-        SITE_SUFFIX: 'net8.0-WinUI'
+      net9_winui_runtimetests_group_02:
+        SITE_SUFFIX: 'net9.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
         UITEST_TEST_TIMEOUT: '20m'
         UITEST_RUNTIME_TEST_GROUP: 2
