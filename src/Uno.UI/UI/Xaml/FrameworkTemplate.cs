@@ -46,7 +46,7 @@ namespace Microsoft.UI.Xaml
 			=> throw new NotSupportedException("Use the factory constructors");
 
 		public FrameworkTemplate(Func<View?>? factory)
-			: this(null, (o, s) => factory?.Invoke())
+			: this(null, (o, s) => factory?.Invoke(), factory)
 		{
 			// TODO: to be removed on next major update.
 			// This overload simply should not exist, since the materialized members do not have the tp injected.
@@ -57,7 +57,7 @@ namespace Microsoft.UI.Xaml
 
 #if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
 		public FrameworkTemplate(object? owner, LegacyFrameworkTemplateBuilder? factory)
-			: this(owner, (o, s) => factory?.Invoke(o))
+			: this(owner, (o, s) => factory?.Invoke(o), factory)
 		{
 			// TODO: to be removed on next major update.
 			this._isLegacyTemplate = true;
@@ -65,6 +65,11 @@ namespace Microsoft.UI.Xaml
 #endif
 
 		public FrameworkTemplate(object? owner, FrameworkTemplateBuilder? factory)
+			: this(owner, factory, factory)
+		{
+		}
+
+		private FrameworkTemplate(object? owner, FrameworkTemplateBuilder? factory, Delegate? rawFactory)
 		{
 			InitializeBinder();
 
@@ -73,7 +78,12 @@ namespace Microsoft.UI.Xaml
 
 			// Compute the hash for this template once, it will be used a lot
 			// in the ControlPool's internal dictionary.
-			_hashCode = (factory?.Target?.GetHashCode() ?? 0) ^ (factory?.Method.GetHashCode() ?? 0);
+			_hashCode = HashCode.Combine(rawFactory?.Target, rawFactory?.Method);
+#if DEBUG
+			// `rawFactory` is guarantee to contains the actual factory method,
+			// `factory` can sometime be the lambda from the overloads
+			TemplateSource = $"{rawFactory?.Method.DeclaringType}.{rawFactory?.Method.Name}";
+#endif
 
 			_xamlScope = ResourceResolver.CurrentScope;
 		}
@@ -160,7 +170,7 @@ namespace Microsoft.UI.Xaml
 		public override int GetHashCode() => _hashCode;
 
 #if DEBUG
-		public string TemplateSource => $"{_viewFactory?.Method.DeclaringType}.{_viewFactory?.Method.Name}";
+		public string TemplateSource { get; init; }
 #endif
 
 		internal class FrameworkTemplateEqualityComparer : IEqualityComparer<FrameworkTemplate>
