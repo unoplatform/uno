@@ -48,3 +48,11 @@ jobs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: DocumentationArtifacts
       ArtifactType: Container
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    retryCountOnTaskFailure: 3
+    inputs:
+      PathtoPublish: $(Build.SourcesDirectory)/doc
+      ArtifactName: GeneratedDocDirectory
+      ArtifactType: Container
