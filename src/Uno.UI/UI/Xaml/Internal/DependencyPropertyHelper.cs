@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml.Controls;
-using Uno.Extensions;
 
 namespace Uno.UI.Xaml.Core;
 
@@ -92,13 +91,13 @@ internal static class DependencyPropertyHelper
 	/// <summary>
 	/// Get the value type of the property. 
 	/// </summary>
-	public static Type GetPropertyType(DependencyProperty dependencyProperty)
+	public static Type GetValueType(DependencyProperty dependencyProperty)
 		=> dependencyProperty.Type;
 
 	/// <summary>
 	/// Get the name of the property.
 	/// </summary>
-	public static string GetPropertyName(DependencyProperty dependencyProperty)
+	public static string GetName(DependencyProperty dependencyProperty)
 		=> dependencyProperty.Name;
 
 	/// <summary>
@@ -108,13 +107,13 @@ internal static class DependencyPropertyHelper
 	/// This is the property that defines the property, not the type that uses it.
 	/// It may also be overridden by a derived type.
 	/// </remarks>
-	public static Type GetPropertyOwnerType(DependencyProperty dependencyProperty)
+	public static Type GetOwnerType(DependencyProperty dependencyProperty)
 		=> dependencyProperty.OwnerType;
 
 	/// <summary>
 	/// Get whether the property is an Attached Property.
 	/// </summary>
-	public static bool GetPropertyIsAttached(DependencyProperty dependencyProperty)
+	public static bool GetIsAttached(DependencyProperty dependencyProperty)
 		=> dependencyProperty.IsAttached;
 
 	/// <summary>
@@ -148,18 +147,18 @@ internal static class DependencyPropertyHelper
 			return (valueFromImplicitStyle, DependencyPropertyValuePrecedences.ImplicitStyle);
 		}
 
-		if(obj is IDependencyObjectStoreProvider { Store: { } store } && store.GetPropertyDetails(dependencyProperty) is { } details)
+		if (obj is IDependencyObjectStoreProvider { Store: { } store } && store.GetPropertyDetails(dependencyProperty) is { } details)
 		{
 			// 3rd: Check inherited value
 			var inheritedValue = details.GetInheritedValue();
-			if(inheritedValue != DependencyProperty.UnsetValue)
+			if (inheritedValue != DependencyProperty.UnsetValue)
 			{
 				return (details.GetInheritedValue(), DependencyPropertyValuePrecedences.Inheritance);
 			}
 
 			// 4th: Check default value
 			var defaultValue = store.GetDefaultValue(dependencyProperty);
-			if(defaultValue != DependencyProperty.UnsetValue)
+			if (defaultValue != DependencyProperty.UnsetValue)
 			{
 				return (defaultValue, DependencyPropertyValuePrecedences.DefaultValue);
 			}
@@ -186,20 +185,25 @@ internal static class DependencyPropertyHelper
 	/// <summary>
 	/// Get if the property value is inherited through the visual tree. 
 	/// </summary>
-	public static bool GetPropertyIsInherited(DependencyProperty dependencyProperty)
+	public static bool GetIsInherited(DependencyProperty dependencyProperty)
 		=> dependencyProperty.GetMetadata(dependencyProperty.OwnerType) is FrameworkPropertyMetadata metadata
 		   && metadata.Options.HasFlag(FrameworkPropertyMetadataOptions.Inherits);
 
 	/// <summary>
 	/// Get the multiple aspects of a given property at the same time.
 	/// </summary>
-	public static (Type ValueType, Type OwnerType, string Name, bool IsTypeNullable, bool IsAttached, bool IsInherited, object? defaultValue) GetPropertyDetails(
+	public static (Type ValueType, Type OwnerType, string Name, bool IsTypeNullable, bool IsAttached, bool IsInherited, object? defaultValue) GetDetails(
 		DependencyProperty property)
-		=> (property.Type,
+	{
+		var propertyMetadata = property.GetMetadata(property.OwnerType);
+
+		return (property.Type,
 			property.OwnerType,
 			property.Name,
 			property.IsTypeNullable,
 			property.IsAttached,
-			property.GetMetadata(property.OwnerType) is FrameworkPropertyMetadata metadata && metadata.Options.HasFlag(FrameworkPropertyMetadataOptions.Inherits),
-			property.GetMetadata(property.OwnerType)?.DefaultValue);
+			propertyMetadata is FrameworkPropertyMetadata metadata &&
+			metadata.Options.HasFlag(FrameworkPropertyMetadataOptions.Inherits),
+			propertyMetadata?.DefaultValue);
+	}
 }

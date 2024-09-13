@@ -122,7 +122,7 @@ public partial class Given_DependencyPropertyHelper
 		var property = TestClass.TestProperty;
 
 		// Act
-		var propertyType = DependencyPropertyHelper.GetPropertyType(property);
+		var propertyType = DependencyPropertyHelper.GetValueType(property);
 
 		// Assert
 		propertyType.Should().Be(typeof(string));
@@ -135,7 +135,7 @@ public partial class Given_DependencyPropertyHelper
 		var property = TestClass.TestProperty;
 
 		// Act
-		var (valueType, ownerType, name, isTypeNullable, isAttached, inInherited, defaultValue) = DependencyPropertyHelper.GetPropertyDetails(property);
+		var (valueType, ownerType, name, isTypeNullable, isAttached, inInherited, defaultValue) = DependencyPropertyHelper.GetDetails(property);
 
 		// Assert
 		using var _ = new AssertionScope();
@@ -155,7 +155,7 @@ public partial class Given_DependencyPropertyHelper
 		var property = UIElement.DataContextProperty;
 
 		// Act
-		var (valueType, _, name, isTypeNullable, isAttached, inInherited, defaultValue) = DependencyPropertyHelper.GetPropertyDetails(property);
+		var (valueType, _, name, isTypeNullable, isAttached, inInherited, defaultValue) = DependencyPropertyHelper.GetDetails(property);
 
 		// Assert
 		using var _ = new AssertionScope();
@@ -175,7 +175,7 @@ public partial class Given_DependencyPropertyHelper
 		var property = Grid.RowProperty;
 
 		// Act
-		var (valueType, ownerType, name, isTypeNullable, isAttached, inInherited, defaultValue) = DependencyPropertyHelper.GetPropertyDetails(property);
+		var (valueType, ownerType, name, isTypeNullable, isAttached, inInherited, defaultValue) = DependencyPropertyHelper.GetDetails(property);
 
 		// Assert
 		using var _ = new AssertionScope();
@@ -208,7 +208,7 @@ public partial class Given_DependencyPropertyHelper
 		// Assert
 		defaultValue.Should().Be("TestValue");
 	}
-	
+
 	[TestMethod]
 	public void When_GetDefaultUnsetValue_FromStyle()
 	{
@@ -223,7 +223,7 @@ public partial class Given_DependencyPropertyHelper
 		unsetValue.Should().Be("StyledTestValue");
 		precedence.Should().Be(DependencyPropertyValuePrecedences.ExplicitStyle);
 	}
-	
+
 	[TestMethod]
 	public void When_GetDefaultUnsetValue()
 	{
