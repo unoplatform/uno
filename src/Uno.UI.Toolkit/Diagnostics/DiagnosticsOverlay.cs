@@ -381,11 +381,15 @@ public sealed partial class DiagnosticsOverlay : Control
 			//_anchor.Tapped += OnAnchorTapped;
 			_anchor.ManipulationDelta += OnAnchorManipulated;
 			_anchor.ManipulationCompleted += OnAnchorManipulatedCompleted;
-#if !__SKIA__
-			_anchor.ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY | ManipulationModes.TranslateInertia;
-#else
-		_anchor.ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY;
-#endif
+
+			if (ManipulationModesExtensions.IsSupported(ManipulationModes.TranslateInertia))
+			{
+				_anchor.ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY | ManipulationModes.TranslateInertia;
+			}
+			else
+			{
+				_anchor.ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY;
+			}
 
 			RenderTransform = new TranslateTransform();
 		}
