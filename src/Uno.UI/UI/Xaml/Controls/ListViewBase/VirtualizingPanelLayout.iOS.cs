@@ -1437,9 +1437,19 @@ namespace Microsoft.UI.Xaml.Controls
 
 			nfloat GetBaseOffset()
 			{
-				var frame = LayoutAttributesForItem(item).Frame;
+				if (LayoutAttributesForItem(item)?.Frame is not { } frame)
+				{
+					if (this.Log().IsEnabled(LogLevel.Warning))
+					{
+						this.Log().Warn($"Item {item} not found in layout attributes.");
+					}
+
+					return 0;
+				}
+
 				var headerCorrection = GetStickyHeaderExtent(item.Section);
 				var frameExtentStart = GetExtentStart(frame) - headerCorrection;
+
 				if (alignment == ScrollIntoViewAlignment.Leading)
 				{
 					// Alignment=Leading snaps item to same position no matter where it currently is
