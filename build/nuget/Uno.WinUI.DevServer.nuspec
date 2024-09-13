@@ -164,16 +164,20 @@
 		<file src="..\..\src\Uno.UI.RemoteControl\buildTransitive\*" target="buildTransitive" />
 
 		<!-- net8.0 WebAssembly -->
-		<file src="..\..\src\Uno.UI.RemoteControl\Bin\Uno.UI.RemoteControl.Wasm\Release\net8.0\Uno.UI.RemoteControl.*" target="uno-runtime\net8.0\webassembly" />
+		<file src="..\..\src\Uno.UI.RemoteControl\Bin\Uno.UI.RemoteControl.Wasm\Release\net8.0\Uno.UI.RemoteControl.dll" target="uno-runtime\net8.0\webassembly" />
+		<file src="..\..\src\Uno.UI.RemoteControl\Bin\Uno.UI.RemoteControl.Wasm\Release\net8.0\Uno.UI.RemoteControl.pdb" target="uno-runtime\net8.0\webassembly" />
 
 		<!-- net8.0 Skia -->
-		<file src="..\..\src\Uno.UI.RemoteControl\Bin\Uno.UI.RemoteControl.Skia\Release\net8.0\Uno.UI.RemoteControl.*" target="uno-runtime\net8.0\skia" />
+		<file src="..\..\src\Uno.UI.RemoteControl\Bin\Uno.UI.RemoteControl.Skia\Release\net8.0\Uno.UI.RemoteControl.dll" target="uno-runtime\net8.0\skia" />
+		<file src="..\..\src\Uno.UI.RemoteControl\Bin\Uno.UI.RemoteControl.Skia\Release\net8.0\Uno.UI.RemoteControl.pdb" target="uno-runtime\net8.0\skia" />
 
 		<!-- net9.0 WebAssembly -->
-		<file src="..\..\src\Uno.UI.RemoteControl\Bin\Uno.UI.RemoteControl.Wasm\Release\net9.0\Uno.UI.RemoteControl.*" target="uno-runtime\net9.0\webassembly" />
+		<file src="..\..\src\Uno.UI.RemoteControl\Bin\Uno.UI.RemoteControl.Wasm\Release\net9.0\Uno.UI.RemoteControl.dll" target="uno-runtime\net9.0\webassembly" />
+		<file src="..\..\src\Uno.UI.RemoteControl\Bin\Uno.UI.RemoteControl.Wasm\Release\net9.0\Uno.UI.RemoteControl.pdb" target="uno-runtime\net9.0\webassembly" />
 
 		<!-- net9.0 Skia -->
-		<file src="..\..\src\Uno.UI.RemoteControl\Bin\Uno.UI.RemoteControl.Skia\Release\net9.0\Uno.UI.RemoteControl.*" target="uno-runtime\net9.0\skia" />
+		<file src="..\..\src\Uno.UI.RemoteControl\Bin\Uno.UI.RemoteControl.Skia\Release\net9.0\Uno.UI.RemoteControl.dll" target="uno-runtime\net9.0\skia" />
+		<file src="..\..\src\Uno.UI.RemoteControl\Bin\Uno.UI.RemoteControl.Skia\Release\net9.0\Uno.UI.RemoteControl.pdb" target="uno-runtime\net9.0\skia" />
 
 		<!-- Remote Control host and integration -->
 		<file src="..\..\src\Uno.UI.RemoteControl.Host\bin\Release\net8.0\*.*" target="tools\rc\host\net8.0" />
