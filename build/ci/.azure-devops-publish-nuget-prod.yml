@@ -12,3 +12,4 @@ jobs:
           patterns: '**/.nupkg'
           displayName: Download artifact WebApp
         - template: templates/nuget-publish-public.yml
+
