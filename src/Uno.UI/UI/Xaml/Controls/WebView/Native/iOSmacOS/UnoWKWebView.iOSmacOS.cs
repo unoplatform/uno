@@ -67,7 +67,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 			}
 		}
 
-#if __IOS__ && DEBUG
+#if __IOS__
 		if (UIDevice.CurrentDevice.CheckSystemVersion(16, 4))
 		{
 			Inspectable = FeatureConfiguration.WebView2.IsInspectable;
