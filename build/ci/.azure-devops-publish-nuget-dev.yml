@@ -13,3 +13,4 @@ jobs:
 
         - template: templates/nuget-publish-dev.yml
         - template: templates/nuget-publish-public.yml
+
