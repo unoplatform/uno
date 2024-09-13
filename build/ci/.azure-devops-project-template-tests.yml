@@ -49,9 +49,6 @@ jobs:
   pool:
     vmImage: ${{ parameters.macOSImageName }}
 
-  dependsOn:
-    - Generate_Packages
-
   steps:
   - task: DownloadBuildArtifacts@0
     inputs:
@@ -84,9 +81,6 @@ jobs:
 
 - job: Dotnet_Template_Tests_net7_Linux
   displayName: 'Run dotnet new Templates Tests - Linux (net7)'
-
-  dependsOn:
-    - Generate_Packages
 
   pool: ${{ parameters.vmPoolLinux }}
 
