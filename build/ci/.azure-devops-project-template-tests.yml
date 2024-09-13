@@ -12,9 +12,6 @@ jobs:
 
   pool: ${{ parameters.poolName }}
 
-  dependsOn:
-    - Generate_Packages
-
   steps:
   - task: DownloadBuildArtifacts@0
     inputs:
