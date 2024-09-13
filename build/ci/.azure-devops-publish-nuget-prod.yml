@@ -1,8 +1,4 @@
 jobs:
-- download: current
-  artifact: 'NuGet Packages'
-  patterns: '**/.nupkg'
-  displayName: Download artifact WebApp
 
 - deployment: 'Nuget_Prod_Nuget_Org'
   displayName: 'Nuget Publish Prod NuGet.org'
@@ -11,4 +7,8 @@ jobs:
     runOnce:
       deploy:
         steps:
+        - download: current
+          artifact: 'NuGet Packages'
+          patterns: '**/.nupkg'
+          displayName: Download artifact WebApp
         - template: templates/nuget-publish-public.yml
