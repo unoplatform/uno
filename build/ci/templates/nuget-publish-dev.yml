@@ -1,0 +1,9 @@
+steps:
+  - task: NuGetCommand@2
+    inputs:
+      command: 'push'
+      packagesToPush: '$(Pipeline.Workspace)/$(Build.DefinitionName)-Signed/**/*.nupkg'
+      nuGetFeedType: 'internal'
+      publishVstsFeed: '1dd81cbd-cb35-41de-a570-b0df3571a196/e7ce08df-613a-41a3-8449-d42784dd45ce'
+      allowPackageConflicts: true
+      verbosityPush: 'Normal'

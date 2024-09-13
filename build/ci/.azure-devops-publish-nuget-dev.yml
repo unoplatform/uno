@@ -1,0 +1,15 @@
+jobs:
+- download: current
+  artifact: 'NuGet Packages'
+  patterns: '**/.nupkg'
+  displayName: Download artifact WebApp
+
+- deployment: 'Nuget'
+  displayName: 'Nuget Publish Dev'
+  environment: 'Uno UI Development'
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+        - template: templates/nuget-publish-dev.yml
+        - template: templates/nuget-publish-public.yml

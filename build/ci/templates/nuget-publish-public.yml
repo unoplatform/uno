@@ -1,0 +1,8 @@
+steps:
+  - task: NuGetCommand@2
+    inputs:
+      command: 'push'
+      packagesToPush: '$(Pipeline.Workspace)/$(Build.DefinitionName)-Signed/**/*.nupkg'
+      nuGetFeedType: 'external'
+      publishFeedCredentials: 'nuget.org uno packages'
+      verbosityPush: 'Normal'
