@@ -14,7 +14,14 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 		<!-- Legacy Project System Support -->
 		<_DefaultMicrosoftNETSdk Condition="$(SingleProject) != 'true' AND $(UnoSingleProject) != 'true' AND ($(MSBuildProjectName.EndsWith('.Wasm')) or $(MSBuildProjectName.EndsWith('.WebAssembly')))">Microsoft.NET.Sdk.Web</_DefaultMicrosoftNETSdk>
 
-		<_DefaultMicrosoftNETSdk Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm'" >Microsoft.NET.Sdk.Web</_DefaultMicrosoftNETSdk>
+		<_UnoUseMicrosoftNETSdkWebAssembly Condition="
+				$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm'
+				AND $([MSBuild]::GetTargetFrameworkVersion('$(TargetFramework)')) &lt; 9.0
+			">true</_UnoUseMicrosoftNETSdkWebAssembly>
+		
+		<_DefaultMicrosoftNETSdk Condition=" '$(_UnoUseMicrosoftNETSdkWebAssembly)' == '' ">Microsoft.NET.Sdk.Web</_DefaultMicrosoftNETSdk>
+		<_DefaultMicrosoftNETSdk Condition=" '$(_UnoUseMicrosoftNETSdkWebAssembly)' == 'true' " >Microsoft.NET.Sdk.WebAssembly</_DefaultMicrosoftNETSdk>
+
 		<_DefaultMicrosoftNETSdk Condition=" $(_DefaultMicrosoftNETSdk) == '' ">Microsoft.NET.Sdk</_DefaultMicrosoftNETSdk>
 
 		<_DefaultWasmOutputType Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm'">$(OutputType)</_DefaultWasmOutputType>
@@ -73,7 +80,7 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 		VS to read the global properties and avoid showing a yellow icon being the result of a mismatch 
 		between runs of design-time builds (one build defining a FrameworkReference and another one not).
 	-->
-	<ItemGroup>
+	<ItemGroup Condition=" '$(_UnoUseMicrosoftNETSdkWebAssembly)' == 'false' ">
 		<FrameworkReference Remove="Microsoft.AspNetCore.App" />
 	</ItemGroup>
 </Project>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.WebAssembly">
 	<PropertyGroup>
 		<TargetFrameworks>$(NetWasmPreviousAndCurrent)</TargetFrameworks>
 	</PropertyGroup>
@@ -9,7 +9,7 @@
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
 		<DefineConstants>$(DefineConstants);__WASM__;HAS_UNO;UNO_REFERENCE_API</DefineConstants>
-		<NoWarn>$(NoWarn);NU1701;CS1998;NU1504;UXAML0002</NoWarn>
+		<NoWarn>$(NoWarn);NU1701;CS1998;NU1504;UXAML0002;NU1903;NU1902;IL2026;IL2072;IL2067;IL2075;IL2070;IL2077;IL2057</NoWarn>
 		<IsUiAutomationMappingEnabled>true</IsUiAutomationMappingEnabled>
 		<UseUnoXamlParser>true</UseUnoXamlParser>
 		<UnoRuntimeIdentifier>WebAssembly</UnoRuntimeIdentifier>

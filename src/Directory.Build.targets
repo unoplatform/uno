@@ -75,8 +75,8 @@
 		<PackageReference Update="Uno.Core.Extensions.Disposables" Version="4.0.1" />
 		<PackageReference Update="Uno.Core.Extensions.Compatibility" Version="4.0.1" />
 		<PackageReference Update="Uno.Diagnostics.Eventing" Version="2.0.1" />
-		<PackageReference Update="Uno.Wasm.Bootstrap" Version="9.0.0-dev.86" />
-		<PackageReference Update="Uno.Wasm.Bootstrap.DevServer" Version="9.0.0-dev.86" />
+		<PackageReference Update="Uno.Wasm.Bootstrap" Version="9.0.0-dev.270" />
+		<PackageReference Update="Uno.Wasm.Bootstrap.DevServer" Version="9.0.0-dev.270" />
 		<PackageReference Update="MSTest" Version="3.3.1" />
 		<PackageReference Update="MSTest.TestFramework" Version="3.3.1" />
 		<PackageReference Update="MSTest.TestAdapter" Version="3.3.1" />

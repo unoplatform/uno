@@ -107,13 +107,21 @@
 		</ItemGroup>
 	</Target>
 
+	<PropertyGroup>
+		<_UnoAddLibraryAssetsBeforeTargets>
+			$(_UnoAddLibraryAssetsBeforeTargets);
+			GetCopyToOutputDirectoryItems;
+			GenerateUnoWasmAssets;
+		</_UnoAddLibraryAssetsBeforeTargets>
+	</PropertyGroup>
+
 	<!--
 	Populate output groups when building heads
 	-->
 	<Target Name="_UnoAddLibraryAssets"
 			Condition="'$(IsUnoHead)'=='true' or '$(AndroidApplication)'=='true' or '$(ProjectTypeGuids)'!=''"
 			DependsOnTargets="_UnoFindPackageAssetMarkers"
-			BeforeTargets="GetCopyToOutputDirectoryItems">
+			BeforeTargets="$(_UnoAddLibraryAssetsBeforeTargets)">
 
 		<ExpandPackageAssets_v0 MarkerFiles="@(_UnoPriFiles)">
 			<Output TaskParameter="Assets" ItemName="_UnoAssetsFilesExpanded" />
