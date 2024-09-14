@@ -1927,7 +1927,7 @@
 			<Member fullName="System\.Void Uno\.UI\.Controls\.HorizontalGridView\.set_(Item|Header|Footer)Template\(System\.Func`1&lt;Android\.Views\.View&gt; value\)" reason="Not in UWP" isRegex="true" />
 
 			<!-- ViewExtensions -->
-			<Member fullName="System.String Uno.UI.Extensions.ViewExtensions.TreeGraph(Windows.UI.Xaml.DependencyObject reference, System.Func`2&lt;Windows.UI.Xaml.DependencyObject,System.String&gt; describe)" reason="Not in UWP" />
+			<Member fullName="System\.String Uno\.UI\.Extensions\.ViewExtensions\.TreeGraph\((?&lt;_View&gt;.+) reference, System\.Func`2&lt;\k&lt;_View&gt;,System\.String&gt; describe\)" isRegex="true" reason="Not in UWP" />
 
 			<!-- END templated-parent rework -->
 
