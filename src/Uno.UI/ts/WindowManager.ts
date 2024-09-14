@@ -1395,7 +1395,7 @@ namespace Uno.UI {
 				if ((<any>globalThis).DotnetExports !== undefined) {
 					WindowManager.setDependencyPropertyValueMethod = (<any>globalThis).DotnetExports.UnoUI.Uno.UI.Helpers.Automation.SetDependencyPropertyValue;
 				} else {
-					WindowManager.setDependencyPropertyValueMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Uno.UI.Helpers.Automation:SetDependencyPropertyValue");
+					throw `Unable to find dotnet exports`;
 				}
 			}
 
@@ -1438,21 +1438,7 @@ namespace Uno.UI {
 				WindowManager.focusInMethod = exports.Microsoft.UI.Xaml.Input.FocusManager.ReceiveFocusNative;
 				WindowManager.dispatchSuspendingMethod = exports.Microsoft.UI.Xaml.Application.DispatchSuspending;
 			} else {
-				if (!WindowManager.resizeMethod) {
-					WindowManager.resizeMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Microsoft.UI.Xaml.Window:Resize");
-				}
-
-				if (!WindowManager.dispatchEventMethod) {
-					WindowManager.dispatchEventMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Microsoft.UI.Xaml.UIElement:DispatchEvent");
-				}
-
-				if (!WindowManager.focusInMethod) {
-					WindowManager.focusInMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Microsoft.UI.Xaml.Input.FocusManager:ReceiveFocusNative");
-				}
-
-				if (!WindowManager.dispatchSuspendingMethod) {
-					WindowManager.dispatchSuspendingMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Microsoft.UI.Xaml.Application:DispatchSuspending");
-				}
+				throw `Unable to find dotnet exports`;
 			}
 		}
 

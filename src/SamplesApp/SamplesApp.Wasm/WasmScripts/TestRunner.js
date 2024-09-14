@@ -1,23 +1,15 @@
 ﻿class SampleRunner {
 
-    static init() {
+    static async init() {
 
         if (!this._getAllTests) {
-            this._getAllTests = this.getMethod("[SamplesApp.Wasm] SamplesApp.App:GetAllTests");
-            this._runTest = this.getMethod("[SamplesApp.Wasm] SamplesApp.App:RunTest");
-            this._isTestDone = this.getMethod("[SamplesApp.Wasm] SamplesApp.App:IsTestDone");
-            this._getDisplayScreenScaling = this.getMethod("[SamplesApp.Wasm] SamplesApp.App:GetDisplayScreenScaling");
+            const sampleAppExports = await Module.getAssemblyExports("SamplesApp.Wasm");
+
+            this._getAllTests = sampleAppExports.SamplesApp.App.GetAllTests;
+            this._runTest = sampleAppExports.SamplesApp.App.RunTest;
+            this._isTestDone = sampleAppExports.SamplesApp.App.IsTestDone;
+            this._getDisplayScreenScaling = sampleAppExports.SamplesApp.App.GetDisplayScreenScaling;
         }
-    }
-
-    static getMethod(methodName) {
-        var method = Module.mono_bind_static_method(methodName);
-
-        if (!method) {
-            throw new `Method ${methodName} does not exist`;
-        }
-
-        return method;
     }
 
     static IsTestDone(test) {

@@ -63,9 +63,7 @@ namespace Uno.Utils {
 				if ((<any>globalThis).DotnetExports !== undefined) {
 					Clipboard.dispatchContentChanged = (<any>globalThis).DotnetExports.Uno.Windows.ApplicationModel.DataTransfer.Clipboard.DispatchContentChanged;
 				} else {
-					Clipboard.dispatchContentChanged = 
-						(<any>Module).mono_bind_static_method(
-							"[Uno] Windows.ApplicationModel.DataTransfer.Clipboard:DispatchContentChanged");
+					throw `Unable to find dotnet exports`;
 				}
 			}
 			Clipboard.dispatchContentChanged();

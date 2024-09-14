@@ -14,9 +14,7 @@
 
 		constructor() {
 			var that = this;
-			var dispatchBackRequest = (<any>globalThis).DotnetExports !== undefined ?
-				(<any>globalThis).DotnetExports.Uno.Windows.UI.Core.SystemNavigationManager.DispatchBackRequest :
-					(<any>Module).mono_bind_static_method("[Uno] Windows.UI.Core.SystemNavigationManager:DispatchBackRequest");
+			var dispatchBackRequest = (<any>globalThis).DotnetExports.Uno.Windows.UI.Core.SystemNavigationManager.DispatchBackRequest;
 
 			window.history.replaceState(0, document.title, null);
 			window.addEventListener("popstate", function (evt) {

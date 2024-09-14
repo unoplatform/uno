@@ -28,8 +28,7 @@
 				if ((<any>globalThis).DotnetExports !== undefined) {
 					FocusVisual.dispatchPositionChange = (<any>globalThis).DotnetExports.UnoUI.Uno.UI.Xaml.Controls.SystemFocusVisual.DispatchNativePositionChange;
 				} else {
-					FocusVisual.dispatchPositionChange = (<any>Module).mono_bind_static_method(
-						"[Uno.UI] Uno.UI.Xaml.Controls.SystemFocusVisual:DispatchNativePositionChange");
+					throw `Unable to find dotnet exports`;
 				}
 			}
 

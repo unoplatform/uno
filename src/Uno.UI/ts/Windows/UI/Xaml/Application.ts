@@ -8,7 +8,7 @@
 				if ((<any>globalThis).DotnetExports !== undefined) {
 					Application.dispatchVisibilityChange = (<any>globalThis).DotnetExports.UnoUI.Microsoft.UI.Xaml.Application.DispatchVisibilityChange;
 				} else {
-					Application.dispatchVisibilityChange = (<any>Module).mono_bind_static_method("[Uno.UI] Microsoft.UI.Xaml.Application:DispatchVisibilityChange");
+					throw `Unable to find dotnet exports`;
 				}
 			}
 
