@@ -42,7 +42,7 @@ jobs:
   - task: CopyFiles@2
     displayName: 'Publish Wasm Site (net9.0)'
     inputs:
-      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Wasm/bin/Release/net9.0/publish/wwwroot
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Wasm/bin/Release/net9.0/browser-wasm/publish/wwwroot
       Contents: '**/*.*'
       TargetFolder: $(build.artifactstagingdirectory)/site-net9.0-$(XAML_FLAVOR_BUILD)
       CleanTargetFolder: false
