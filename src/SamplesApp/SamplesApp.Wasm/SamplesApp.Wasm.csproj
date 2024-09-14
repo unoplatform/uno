@@ -14,7 +14,8 @@
 		<UseUnoXamlParser>true</UseUnoXamlParser>
 		<UnoRuntimeIdentifier>WebAssembly</UnoRuntimeIdentifier>
 		<WasmShellIncludeWindowsCompatibility>false</WasmShellIncludeWindowsCompatibility>
-
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		
 		<!-- To build with AOT, uncomment these two lines -->
 		<!--<WasmShellEnableEmccProfiling>true</WasmShellEnableEmccProfiling>
 		<WasmShellMonoRuntimeExecutionMode>InterpreterAndAOT</WasmShellMonoRuntimeExecutionMode>-->

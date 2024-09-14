@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Windows.UI.Core;
 using Uno.UI.RuntimeTests.Extensions;
 using Private.Infrastructure;
+using System.Runtime.InteropServices.JavaScript;
 
 #if !HAS_UNO
 using Uno.Logging;
@@ -30,8 +31,14 @@ partial class App
 	private static ImmutableHashSet<int> _doneTests = ImmutableHashSet<int>.Empty;
 	private static int _testIdCounter = 0;
 
+#if __WASM__
+	[System.Runtime.InteropServices.JavaScript.JSExport]
+#endif
 	public static string GetAllTests() => SampleControl.Presentation.SampleChooserViewModel.Instance.GetAllSamplesNames();
 
+#if __WASM__
+	[System.Runtime.InteropServices.JavaScript.JSExport]
+#endif
 	public static bool IsTestDone(string testId) => int.TryParse(testId, out var id) ? _doneTests.Contains(id) : false;
 
 	public static async Task<bool> HandleRuntimeTests(string args)
@@ -65,6 +72,9 @@ partial class App
 		return false;
 	}
 
+#if __WASM__
+	[System.Runtime.InteropServices.JavaScript.JSExport]
+#endif
 	public static string RunTest(string metadataName)
 	{
 		if (_mainWindow is null)
@@ -243,5 +253,10 @@ partial class App
 
 	[Foundation.Export("getDisplayScreenScaling:")] // notice the colon at the end of the method name
 	public Foundation.NSString GetDisplayScreenScalingBackdoor(Foundation.NSString value) => new Foundation.NSString(GetDisplayScreenScaling(value).ToString());
+#endif
+
+#if __WASM__
+	[JSImport("globalThis.SampleRunner.init")]
+	public static partial void InitWasmSampleRunner();
 #endif
 }

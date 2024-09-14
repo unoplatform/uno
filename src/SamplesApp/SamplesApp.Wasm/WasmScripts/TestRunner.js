@@ -2,37 +2,39 @@
 
     static async init() {
 
-        if (!this._getAllTests) {
+        if (!SampleRunner._getAllTests) {
             const sampleAppExports = await Module.getAssemblyExports("SamplesApp.Wasm");
 
-            this._getAllTests = sampleAppExports.SamplesApp.App.GetAllTests;
-            this._runTest = sampleAppExports.SamplesApp.App.RunTest;
-            this._isTestDone = sampleAppExports.SamplesApp.App.IsTestDone;
-            this._getDisplayScreenScaling = sampleAppExports.SamplesApp.App.GetDisplayScreenScaling;
+            SampleRunner._getAllTests = sampleAppExports.SamplesApp.App.GetAllTests;
+            SampleRunner._runTest = sampleAppExports.SamplesApp.App.RunTest;
+            SampleRunner._isTestDone = sampleAppExports.SamplesApp.App.IsTestDone;
+            SampleRunner._getDisplayScreenScaling = sampleAppExports.SamplesApp.App.GetDisplayScreenScaling;
         }
     }
 
     static IsTestDone(test) {
-        SampleRunner.init();
-        return this._isTestDone(test);
+        SampleRunner.init();    
+        return SampleRunner._isTestDone(test);
     }
 
     static RunTest(test) {
         SampleRunner.init();
-        return this._runTest(test);
+        return SampleRunner._runTest(test);
     } 
 
     static GetAllTests() {
         SampleRunner.init();
-        return this._getAllTests();
+        return SampleRunner._getAllTests();
     } 
 
     static GetDisplayScreenScaling(displayId) {
         SampleRunner.init();
-        return this._getDisplayScreenScaling(displayId);
+        return SampleRunner._getDisplayScreenScaling(displayId);
     }
 
     static RefreshBrowser(unused) {
         window.location.reload();
     } 
 }
+
+globalThis.SampleRunner = SampleRunner;
