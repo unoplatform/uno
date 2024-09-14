@@ -35,7 +35,7 @@ jobs:
       nugetPackages: $(NUGET_PACKAGES)
 
   - bash: |
-      dotnet publish -f net9.0 /r /nr:false /p:Configuration=Release /p:UnoTargetFrameworkOverride=net9.0 src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj /bl:$(build.artifactstagingdirectory)/build-wasm-$(XAML_FLAVOR_BUILD)-uitest-net9-$(GitVersion.FullSemVer).binlog
+      dotnet publish /r /nr:false /p:Configuration=Release /p:UnoTargetFrameworkOverride=net9.0 src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj /bl:$(build.artifactstagingdirectory)/build-wasm-$(XAML_FLAVOR_BUILD)-uitest-net9-$(GitVersion.FullSemVer).binlog
 
     displayName: 'Build sample app (net9.0)'
 
