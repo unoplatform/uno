@@ -988,7 +988,13 @@ namespace Microsoft.UI.Xaml.Controls
 			ItemsPanelRoot?.SetItemsOwner(this);
 			ItemsPresenter.SetItemsPanel(InternalItemsPanelRoot);
 
+			OnItemsPanelRootPrepared();
+
 			UpdateItems(null);
+		}
+
+		private protected virtual void OnItemsPanelRootPrepared()
+		{
 		}
 
 		private _ViewGroup CreateDefaultItemsPanel(DependencyObject templatedParent)
