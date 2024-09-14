@@ -91,6 +91,8 @@ jobs:
     inputs:
       artifactName: NugetPackages
 
+  - template: templates/gitversion.yml
+
   - template: templates/dotnet-mobile-install-linux.yml
 
   - template: templates/gitversion.yml

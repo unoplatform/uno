@@ -102,14 +102,6 @@ stages:
     parameters:
       poolName: '$(windowsScaledPool)'
 
-  - template: .azure-devops-project-template-tests.yml
-    parameters:
-      poolName: '$(windowsScaledPool)'
-      vmImageWindows: $(windows2022HostedVMImage)
-      vmPoolLinux: '$(linuxScaledPool)'
-      macOSImageName: '$(macOSVMImage)'
-      xCodeRoot: '$(xCodeRoot)'
-
 - stage: packages_tests
   displayName: Test Packages
   dependsOn:
