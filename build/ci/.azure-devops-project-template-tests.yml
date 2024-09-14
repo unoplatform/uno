@@ -15,7 +15,7 @@ jobs:
   steps:
   - task: DownloadBuildArtifacts@0
     inputs:
-      artifactName: NugetPackages
+      artifactName: 'Nuget Packages'
 
   - template: templates/gitversion.yml
 
@@ -52,7 +52,7 @@ jobs:
   steps:
   - task: DownloadBuildArtifacts@0
     inputs:
-      artifactName: NugetPackages
+      artifactName: 'Nuget Packages'
 
   - template: templates/gitversion.yml
 
@@ -89,7 +89,7 @@ jobs:
   steps:
   - task: DownloadBuildArtifacts@0
     inputs:
-      artifactName: NugetPackages
+      artifactName: 'Nuget Packages'
 
   - template: templates/gitversion.yml
 
