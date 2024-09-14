@@ -393,6 +393,31 @@ namespace Microsoft.UI.Xaml.Media
 		{
 #if __ANDROID__
 			view.AddView(child);
+
+			// Reset to original (invalidated) state
+			child.ResetLayoutFlags();
+			if (view.IsMeasureDirtyPathDisabled)
+			{
+				FrameworkElementHelper.SetUseMeasurePathDisabled(child); // will invalidate too
+			}
+			else
+			{
+				child.InvalidateMeasure();
+			}
+
+			if (view.IsArrangeDirtyPathDisabled)
+			{
+				FrameworkElementHelper.SetUseArrangePathDisabled(child); // will invalidate too
+			}
+			else
+			{
+				child.InvalidateArrange();
+			}
+
+			// Force a new measure of this element (the parent of the new child)
+			view.InvalidateMeasure();
+			view.InvalidateArrange();
+
 #elif __IOS__ || __MACOS__
 			view.AddSubview(child);
 #elif __CROSSRUNTIME__
