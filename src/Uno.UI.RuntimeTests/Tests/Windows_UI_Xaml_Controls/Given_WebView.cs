@@ -39,7 +39,7 @@ public class Given_WebView
 		Assert.AreEqual("https://bing.com", uri.OriginalString);
 	}
 
-#if __ANDROID__ || __IOS__ || __MACOS__
+#if __ANDROID__ || __IOS__ || __MACOS__ || __WASM__
 	[TestMethod]
 	public void When_NavigateWithHttpRequestMessage()
 	{
