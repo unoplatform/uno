@@ -28,8 +28,11 @@ using Microsoft.UI.Xaml.Data;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Controls.Primitives;
+
 
 #if __ANDROID__
+using Android.Views;
 using View = Android.Views.View;
 #elif __IOS__
 using View = UIKit.UIView;
@@ -46,9 +49,6 @@ using View = Microsoft.UI.Xaml.UIElement;
 namespace Microsoft.UI.Xaml
 {
 	public partial class FrameworkElement : UIElement, IFrameworkElement, IFrameworkElementInternal, ILayoutConstraints, IDependencyObjectParse
-#if !UNO_REFERENCE_API
-		, ILayouterElement
-#endif
 	{
 		public static class TraceProvider
 		{
@@ -60,16 +60,6 @@ namespace Microsoft.UI.Xaml
 			public const int FrameworkElement_ArrangeStop = 4;
 			public const int FrameworkElement_InvalidateMeasure = 5;
 		}
-
-#if !UNO_REFERENCE_API
-		private FrameworkElementLayouter _layouter;
-
-		ILayouter ILayouterElement.Layouter => _layouter;
-		Size ILayouterElement.LastAvailableSize => m_previousAvailableSize;
-		bool ILayouterElement.IsMeasureDirty => IsMeasureDirty;
-		bool ILayouterElement.IsFirstMeasureDoneAndManagedElement => IsFirstMeasureDone;
-		bool ILayouterElement.IsMeasureDirtyPathDisabled => IsMeasureDirtyPathDisabled;
-#endif
 
 		private bool _defaultStyleApplied;
 
@@ -246,9 +236,6 @@ namespace Microsoft.UI.Xaml
 
 		partial void Initialize()
 		{
-#if !UNO_REFERENCE_API
-			_layouter = new FrameworkElementLayouter(this, MeasureOverride, ArrangeOverride);
-#endif
 			Resources = new Microsoft.UI.Xaml.ResourceDictionary();
 
 			IFrameworkElementHelper.Initialize(this);
@@ -373,11 +360,11 @@ namespace Microsoft.UI.Xaml
 		/// <returns>The measured size - INCLUDES THE MARGIN</returns>
 		protected Size MeasureElement(View view, Size availableSize)
 		{
-#if UNO_REFERENCE_API
+#if __CROSSRUNTIME__ || IS_UNIT_TESTS
 			view.Measure(availableSize);
 			return view.DesiredSize;
 #else
-			return _layouter.MeasureElement(view, availableSize);
+			return MobileLayoutingHelpers.MeasureElement(view, availableSize);
 #endif
 		}
 
@@ -388,10 +375,10 @@ namespace Microsoft.UI.Xaml
 		/// <param name="finalRect">The final size that the parent computes for the child in layout, provided as a <see cref="Windows.Foundation.Rect"/> value.</param>
 		protected void ArrangeElement(View view, Rect finalRect)
 		{
-#if UNO_REFERENCE_API
+#if __CROSSRUNTIME__ || IS_UNIT_TESTS
 			view.Arrange(finalRect);
 #else
-			_layouter.ArrangeElement(view, finalRect);
+			MobileLayoutingHelpers.ArrangeElement(view, finalRect);
 #endif
 		}
 
@@ -400,10 +387,10 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		protected Size GetElementDesiredSize(View view)
 		{
-#if UNO_REFERENCE_API
+#if __CROSSRUNTIME__ || IS_UNIT_TESTS
 			return view.DesiredSize;
 #else
-			return (_layouter as ILayouter).GetDesiredSize(view);
+			return LayoutInformation.GetDesiredSize(view);
 #endif
 		}
 
@@ -1021,37 +1008,6 @@ namespace Microsoft.UI.Xaml
 #endif
 
 		#endregion
-
-#if !UNO_REFERENCE_API
-		private class FrameworkElementLayouter : Layouter
-		{
-			private readonly MeasureOverrideHandler _measureOverrideHandler;
-			private readonly ArrangeOverrideHandler _arrangeOverrideHandler;
-
-			public delegate Size ArrangeOverrideHandler(Size finalSize);
-			public delegate Size MeasureOverrideHandler(Size availableSize);
-
-			public FrameworkElementLayouter(IFrameworkElement element, MeasureOverrideHandler measureOverrideHandler, ArrangeOverrideHandler arrangeOverrigeHandler) : base(element)
-			{
-				_measureOverrideHandler = measureOverrideHandler;
-				_arrangeOverrideHandler = arrangeOverrigeHandler;
-			}
-
-			public Size MeasureElement(View element, Size availableSize) => MeasureChild(element, availableSize);
-
-			public void ArrangeElement(View element, Rect finalRect) => ArrangeChild(element, finalRect);
-
-			protected override string Name => Panel.Name;
-
-			protected override Size ArrangeOverride(Size finalSize) => _arrangeOverrideHandler(finalSize);
-
-#if __ANDROID__
-			protected override void MeasureChild(View view, int widthSpec, int heightSpec) => view.Measure(widthSpec, heightSpec);
-#endif
-
-			protected override Size MeasureOverride(Size availableSize) => _measureOverrideHandler(availableSize);
-		}
-#endif
 
 		private protected virtual FrameworkTemplate/*?*/ GetTemplate()
 		{
