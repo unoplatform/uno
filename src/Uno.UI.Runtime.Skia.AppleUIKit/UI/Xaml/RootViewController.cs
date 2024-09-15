@@ -23,6 +23,7 @@ internal class RootViewController : UINavigationController, IRotationAwareViewCo
 	private SKCanvasView? _skCanvasView;
 	private XamlRoot? _xamlRoot;
 	private UIView? _textInputLayer;
+	private UIView? _nativeOverlayLayer;
 
 	public RootViewController()
 	{
@@ -63,6 +64,11 @@ internal class RootViewController : UINavigationController, IRotationAwareViewCo
 		_skCanvasView.PaintSurface += OnPaintSurface;
 		View!.AddSubview(_textInputLayer);
 		View!.AddSubview(_skCanvasView);
+
+		_nativeOverlayLayer = new UIView();
+		_nativeOverlayLayer.Frame = View!.Bounds;
+		_nativeOverlayLayer.AutoresizingMask = UIViewAutoresizing.All;
+		View!.AddSubview(_nativeOverlayLayer);
 
 		// TODO Uno: When we support multi-window, this should close popups for the appropriate XamlRoot #13847.
 
@@ -125,6 +131,8 @@ internal class RootViewController : UINavigationController, IRotationAwareViewCo
 	}
 
 	public bool CanAutorotate { get; set; } = true;
+
+	public UIView? NativeOverlayLayer => _nativeOverlayLayer;
 
 #pragma warning disable CA1422 // Validate platform compatibility
 	public override bool ShouldAutorotate() => CanAutorotate && base.ShouldAutorotate();
