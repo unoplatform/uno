@@ -66,15 +66,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 
 			using (new AssertionScope())
 			{
-#if __ANDROID__
-				// Android has an issue where LayoutUpdate is called twice, caused by the presence
-				// of two calls to arrange (Arrange, ArrangeElement(this)) in FrameworkElement.
-				// Failing to call the first Arrange makes some elements fail to have a proper size in
-				// some yet unknown conditions.
-				// Issue: https://github.com/unoplatform/uno/issues/2769
-				sutLayoutUpdate1.Should().Be(2, "sut-before");
-				sutLayoutUpdate2.Should().Be(4, "sut-after");
-#elif UNO_HAS_ENHANCED_LIFECYCLE || WINAPPSDK
+#if UNO_HAS_ENHANCED_LIFECYCLE || WINAPPSDK
 				sutLayoutUpdate1.Should().Be(0, "sut-1");
 				sutLayoutUpdate2.Should().Be(0, "sut-2");
 				sutLayoutUpdate3.Should().Be(0, "sut-3");

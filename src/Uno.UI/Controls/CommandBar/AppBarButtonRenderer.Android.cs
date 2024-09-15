@@ -172,27 +172,5 @@ namespace Uno.UI.Controls
 
 	internal partial class AppBarButtonWrapper : Border
 	{
-		// By default, the custom view of a MenuItem fills up the whole available area unless you 
-		// explicitly collapse it by calling Native.CollapseActionView or calling SetShowAsAction with the extra flag
-		// ShowAsAction.CollapseActionView. This is for instance the case of the search view used in a lot of scenarios.
-		// To avoid this use case, we must explicitly set the size of the action view based on the real size of its content.
-		// That being said, at some point in the future, we will need to support advanced scenarios where the AppBarButton needs to be expandable.
-		private Size _measuredLogicalSize;
-
-		protected override void OnMeasure(int widthMeasureSpec, int heightMeasureSpec)
-		{
-			base.OnMeasure(widthMeasureSpec, heightMeasureSpec);
-
-			var realSize = _measuredLogicalSize.LogicalToPhysicalPixels();
-
-			this.SetMeasuredDimension((int)realSize.Width, (int)realSize.Height);
-		}
-
-		protected override Size MeasureOverride(Size availableSize)
-		{
-			_measuredLogicalSize = base.MeasureOverride(availableSize);
-
-			return _measuredLogicalSize;
-		}
 	}
 }

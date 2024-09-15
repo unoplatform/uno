@@ -42,10 +42,9 @@ namespace <#= mixin.NamespaceName #>
 {
 	partial class <#= mixin.ClassName #> : IFrameworkElement, IXUidProvider, IFrameworkElementInternal
 	{
-		private readonly static IEventProvider _trace = Tracing.Get(FrameworkElement.TraceProvider.Id);
-
 #if !<#= mixin.IsFrameworkElement #> // IsFrameworkElement
 		public event DependencyPropertyChangedEventHandler IsEnabledChanged;
+		private readonly static IEventProvider _trace = Tracing.Get(FrameworkElement.TraceProvider.Id);
 #endif
 
 		public event TypedEventHandler<FrameworkElement, object> Loading;

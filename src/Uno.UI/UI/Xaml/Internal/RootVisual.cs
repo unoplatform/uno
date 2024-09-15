@@ -6,6 +6,7 @@
 
 using System;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Uno.UI.Extensions;
 using Windows.Foundation;
 using Windows.UI;

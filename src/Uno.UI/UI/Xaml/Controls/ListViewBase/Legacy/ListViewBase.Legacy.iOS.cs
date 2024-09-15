@@ -301,7 +301,7 @@ namespace Uno.UI.Controls.Legacy
 		#region Overrides
 		public override CGSize SizeThatFits(CGSize size)
 		{
-			return IFrameworkElementHelper.SizeThatFits(this, base.SizeThatFits(size));
+			return base.SizeThatFits(size);
 		}
 		#endregion
 

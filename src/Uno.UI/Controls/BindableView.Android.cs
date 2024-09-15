@@ -246,6 +246,32 @@ namespace Uno.UI.Controls
 		/// <param name="view">The view being added</param>
 		protected virtual void OnChildViewAdded(View view)
 		{
+			if (view is UIElement child && this.FindFirstParent<UIElement>() is { } parent)
+			{
+				// Reset to original (invalidated) state
+				parent.ResetLayoutFlags();
+				if (parent.IsMeasureDirtyPathDisabled)
+				{
+					FrameworkElementHelper.SetUseMeasurePathDisabled(child); // will invalidate too
+				}
+				else
+				{
+					child.InvalidateMeasure();
+				}
+
+				if (parent.IsArrangeDirtyPathDisabled)
+				{
+					FrameworkElementHelper.SetUseArrangePathDisabled(child); // will invalidate too
+				}
+				else
+				{
+					child.InvalidateArrange();
+				}
+
+				// Force a new measure of this element (the parent of the new child)
+				parent.InvalidateMeasure();
+				parent.InvalidateArrange();
+			}
 		}
 
 		/// <summary>

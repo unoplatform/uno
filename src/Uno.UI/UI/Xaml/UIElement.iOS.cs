@@ -47,18 +47,6 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		internal bool IsMeasureDirtyPath
-		{
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			get => false; // Not implemented on iOS yet
-		}
-
-		internal bool IsArrangeDirtyPath
-		{
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			get => false; // Not implemented on iOS yet
-		}
-
 		internal bool ClippingIsSetByCornerRadius { get; set; }
 
 		partial void ApplyNativeClip(Rect rect)
@@ -131,6 +119,29 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		public override void SetNeedsLayout()
+		{
+			base.SetNeedsLayout();
+
+			InvalidateMeasure();
+			InvalidateNativeOnlyChildrenRecursive(this);
+		}
+
+		private static void InvalidateNativeOnlyChildrenRecursive(UIView view)
+		{
+			foreach (var child in view.GetChildren())
+			{
+				if (child is not UIElement)
+				{
+					LayoutInformation.SetMeasureDirtyPath(child, true);
+					if (child is UIView childAsViewGroup)
+					{
+						InvalidateNativeOnlyChildrenRecursive(childAsViewGroup);
+					}
+				}
+			}
+		}
+
 		public void SetSubviewsNeedLayout()
 		{
 			base.SetNeedsLayout();
@@ -150,6 +161,24 @@ namespace Microsoft.UI.Xaml
 				{
 					(view as IFrameworkElement)?.SetSubviewsNeedLayout();
 				}
+			}
+		}
+
+
+		private protected bool _isSettingFrameByArrangeVisual;
+
+		internal void ArrangeVisual(Rect finalRect, Rect? clippedFrame = default)
+		{
+			LayoutSlotWithMarginsAndAlignments = finalRect;
+			// TODO: clipped frame?
+			_isSettingFrameByArrangeVisual = true;
+			try
+			{
+				this.Frame = ViewHelper.LogicalToPhysicalPixels(finalRect);
+			}
+			finally
+			{
+				_isSettingFrameByArrangeVisual = false;
 			}
 		}
 

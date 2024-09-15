@@ -44,6 +44,9 @@ namespace AppKit
 			return view.Superview != null;
 		}
 
+		internal static _View FindParent(this _View view)
+			=> view.Superview;
+
 		/// <summary>
 		/// Return First parent of the view of specified T type.
 		/// </summary>
