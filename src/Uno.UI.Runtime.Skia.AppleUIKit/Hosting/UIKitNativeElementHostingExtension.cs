@@ -22,8 +22,7 @@ internal sealed class UIKitNativeElementHostingExtension : ContentPresenter.INat
 	{
 		if (content is UIView view)
 		{
-			var physicalRect = arrangeRect.LogicalToPhysicalPixels();
-			view.Frame = physicalRect.ToCGRect();
+			view.Frame = arrangeRect.ToCGRect();
 		}
 	}
 
@@ -105,7 +104,7 @@ internal sealed class UIKitNativeElementHostingExtension : ContentPresenter.INat
 		{
 			var availablePhysical = availableSize.LogicalToPhysicalPixels();
 			var size = view.SizeThatFits(new CoreGraphics.CGSize((int)availablePhysical.Width, (int)availablePhysical.Height));
-			return new Size(size.Width, size.Height).PhysicalToLogicalPixels();
+			return new Size(size.Width, size.Height);
 		}
 
 		return default;
