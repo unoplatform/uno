@@ -53,19 +53,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public override CGSize SizeThatFits(CGSize size)
 		{
-			size = IFrameworkElementHelper.SizeThatFits(this, size);
-
-			if (nfloat.IsPositiveInfinity(size.Height) || nfloat.IsPositiveInfinity(size.Width))
-			{
-				// Changes from IOS 9 doc.
-				// See following
-				// https://jira.appcelerator.org/browse/TIMOB-19203
-				// https://developer.apple.com/library/prerelease/ios/releasenotes/General/RN-iOSSDK-9.0/
-				size = base.SizeThatFits(size);
-			}
-
-
-			return size;
+			return base.SizeThatFits(size);
 		}
 
 		public object[] Items { get; private set; } = new object[] { null }; // Ensure there's always a null present to allow the empty selection at the beginning.

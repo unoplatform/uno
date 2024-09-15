@@ -1,18 +1,19 @@
-﻿using Uno.UI.Controls;
-using Windows.Foundation;
-using Microsoft.UI.Xaml.Input;
-using Windows.System;
-using System;
+﻿using System;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Uno.UI.Extensions;
 using AppKit;
 using CoreAnimation;
 using CoreGraphics;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 using ObjCRuntime;
+using Uno.UI;
+using Uno.UI.Extensions;
+using Uno.UI.Controls;
+using Windows.Foundation;
+using Windows.System;
 
 namespace Microsoft.UI.Xaml
 {
@@ -24,18 +25,6 @@ namespace Microsoft.UI.Xaml
 			InitializePointers();
 
 			UpdateHitTest();
-		}
-
-		internal bool IsMeasureDirtyPath
-		{
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			get => false; // Not implemented on macOS yet
-		}
-
-		internal bool IsArrangeDirtyPath
-		{
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			get => false; // Not implemented on macOS yet
 		}
 
 		internal bool ClippingIsSetByCornerRadius { get; set; }
@@ -90,6 +79,13 @@ namespace Microsoft.UI.Xaml
 				// the change.
 				Visibility = value ? Visibility.Collapsed : Visibility.Visible;
 			}
+		}
+
+		internal void ArrangeVisual(Rect finalRect, Rect? clippedFrame = default)
+		{
+			LayoutSlotWithMarginsAndAlignments = finalRect;
+			// TODO: clipped frame?
+			this.Frame = ViewHelper.LogicalToPhysicalPixels(finalRect);
 		}
 
 		public void SetSubviewsNeedLayout()

@@ -16,108 +16,35 @@ namespace Microsoft.UI.Xaml
 {
 	public partial class FrameworkElement
 	{
-		/// <summary>
-		/// When set, measure and invalidate requests will not be propagated further up the visual tree, ie they won't trigger a relayout.
-		/// Used where repeated unnecessary measure/arrange passes would be unacceptable for performance (eg scrolling in a list).
-		/// </summary>
-		internal bool ShouldInterceptInvalidate { get; set; }
-
 		public override void SetNeedsLayout()
 		{
-			if (ShouldInterceptInvalidate)
-			{
-				return;
-			}
-
-			if (!_inLayoutSubviews)
-			{
-				base.SetNeedsLayout();
-			}
-
-			SetLayoutFlags(LayoutFlag.MeasureDirty | LayoutFlag.ArrangeDirty);
-
-			if (FeatureConfiguration.FrameworkElement.IOsAllowSuperviewNeedsLayoutWhileInLayoutSubViews || !_inLayoutSubviews)
-			{
-				SetSuperviewNeedsLayout();
-			}
+			base.SetNeedsLayout();
 		}
 
 		public override void LayoutSubviews()
 		{
-			try
+			base.LayoutSubviews();
+
+			if (!IsVisualTreeRoot && !_isSettingFrameByArrangeVisual)
 			{
-				try
-				{
-					_inLayoutSubviews = true;
-
-					if (IsMeasureDirty)
-					{
-						// Add back the Margin (which is normally 'outside' the view's bounds) - the layouter will subtract it again
-						var availableSizeWithMargins = Bounds.Size.Add(Margin);
-						XamlMeasure(availableSizeWithMargins);
-					}
-
-					//if (IsArrangeDirty) // commented until the MEASURE_DIRTY_PATH is properly implemented for iOS
-					{
-						ClearLayoutFlags(LayoutFlag.ArrangeDirty);
-
-						OnBeforeArrange();
-
-						Rect finalRect;
-						var parent = Superview;
-						if (parent is UIElement or ISetLayoutSlots)
-						{
-							finalRect = LayoutSlotWithMarginsAndAlignments;
-						}
-						else
-						{
-							// Here the "arrange" is coming from a native element,
-							// so we convert those measurements to logical ones.
-							finalRect = RectFromUIRect(Frame);
-
-							// We also need to set the LayoutSlot as it was not by the parent.
-							// Note: This is only an approximation of the LayoutSlot as margin and alignment might already been applied at this point.
-							LayoutInformation.SetLayoutSlot(this, finalRect);
-							LayoutSlotWithMarginsAndAlignments = finalRect;
-						}
-
-						_layouter.Arrange(finalRect);
-
-						OnAfterArrange();
-					}
-				}
-				finally
-				{
-					_inLayoutSubviews = false;
-				}
-			}
-			catch (Exception e)
-			{
-				this.Log().Error($"Layout failed in {GetType()}", e);
+				// This handles native-only elements with managed child/children.
+				// When the parent is native-only element, it will layout its children with the proper rect.
+				// So we response to the requested bounds and do the managed arrange.
+				var logical = this.Frame.PhysicalToLogicalPixels();
+				this.Arrange(logical);
 			}
 		}
 
 		public override CGSize SizeThatFits(CGSize size)
 		{
-			try
+			if (IsVisualTreeRoot)
 			{
-				_inLayoutSubviews = true;
-
-				var xamlMeasure = XamlMeasure(size);
-
-				if (xamlMeasure != null)
-				{
-					return _lastMeasure = xamlMeasure.Value;
-				}
-				else
-				{
-					return _lastMeasure = base.SizeThatFits(size);
-				}
+				return base.SizeThatFits(size);
 			}
-			finally
-			{
-				_inLayoutSubviews = false;
-			}
+
+			var availableSize = ViewHelper.PhysicalToLogicalPixels(size);
+			this.Measure(availableSize);
+			return this.DesiredSize.LogicalToPhysicalPixels();
 		}
 
 		public override void AddSubview(UIView view)

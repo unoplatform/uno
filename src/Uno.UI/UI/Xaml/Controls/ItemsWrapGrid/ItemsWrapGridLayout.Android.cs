@@ -79,7 +79,7 @@ namespace Microsoft.UI.Xaml.Controls
 				AddView(view, direction);
 
 				var slotSize = new Size(availableWidth, availableHeight).PhysicalToLogicalPixels();
-				var measuredSize = _layouter.MeasureChild(view, slotSize);
+				var measuredSize = MobileLayoutingHelpers.MeasureElement(view, slotSize);
 				var physicalMeasuredSize = measuredSize.LogicalToPhysicalPixels();
 				var measuredWidth = (int)physicalMeasuredSize.Width;
 				var measuredHeight = (int)physicalMeasuredSize.Height;

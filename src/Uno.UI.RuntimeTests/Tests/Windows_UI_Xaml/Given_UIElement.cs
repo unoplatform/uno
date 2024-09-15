@@ -938,11 +938,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			using var _ = new AssertionScope();
 
-#if __ANDROID__
-			ctl1.MeasureCount.Should().Be(2);
-#else
 			ctl1.MeasureCount.Should().Be(1);
-#endif
 			ctl2.MeasureCount.Should().Be(2);
 			ctl3.MeasureCount.Should().Be(1);
 
@@ -1161,6 +1157,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		{
 			internal int MeasureCount;
 			internal int ArrangeCount;
+
 			protected override Size MeasureOverride(Size availableSize)
 			{
 				MeasureCount++;

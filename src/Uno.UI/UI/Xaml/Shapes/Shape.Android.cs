@@ -31,23 +31,6 @@ namespace Microsoft.UI.Xaml.Shapes
 		protected override void OnDraw(Canvas canvas)
 		{
 			base.OnDraw(canvas);
-			if (_path == null)
-			{
-				return;
-			}
-
-			//Drawing paths on the canvas does not respect the canvas' ClipBounds
-			if (ClippedFrame is { } clippedFrame)
-			{
-				clippedFrame = clippedFrame.LogicalToPhysicalPixels();
-				if (FrameRoundingAdjustment is { } fra)
-				{
-					clippedFrame.Width += fra.Width;
-					clippedFrame.Height += fra.Height;
-				}
-
-				canvas.ClipRect(clippedFrame.ToRectF());
-			}
 
 			DrawFill(canvas);
 			DrawStroke(canvas);

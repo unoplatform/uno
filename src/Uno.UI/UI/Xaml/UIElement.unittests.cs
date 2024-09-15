@@ -22,10 +22,6 @@ namespace Microsoft.UI.Xaml
 
 		public string Name { get; set; }
 
-		internal bool IsMeasureDirtyPath => false;
-
-		internal bool IsArrangeDirtyPath => false;
-
 		public int MeasureCallCount { get; protected set; }
 		public int ArrangeCallCount { get; protected set; }
 

@@ -21,7 +21,6 @@ using System.Threading.Tasks;
 using Android.Views.Animations;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Controls;
-using Microsoft.UI.Xaml.Media;
 
 namespace Uno.UI
 {
@@ -46,6 +45,8 @@ namespace Uno.UI
 
 			return view.Parent != null;
 		}
+
+		internal static IViewParent? FindParent(this IViewParent view) => view.Parent;
 
 		/// <summary>
 		/// Return First parent of the view of specified T type.
@@ -705,10 +706,6 @@ namespace Uno.UI
 				if (root.Parent is ViewGroup parent)
 				{
 					root = parent;
-				}
-				else if (root is DependencyObject @do && VisualTreeHelper.GetParent(@do) is ViewGroup managedParent)
-				{
-					root = managedParent;
 				}
 				else
 				{

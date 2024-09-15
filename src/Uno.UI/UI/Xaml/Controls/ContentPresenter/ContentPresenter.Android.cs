@@ -44,6 +44,7 @@ partial class ContentPresenter
 
 	protected override void OnDraw(Android.Graphics.Canvas canvas)
 	{
+		base.OnDraw(canvas);
 		AdjustCornerRadius(canvas, CornerRadius);
 	}
 }

@@ -11,7 +11,6 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Controls.Primitives;
-using Uno.UI.Services;
 using Uno.Diagnostics.Eventing;
 
 namespace Microsoft.UI.Xaml
@@ -236,12 +235,16 @@ namespace Microsoft.UI.Xaml
 
 		protected override void OnMeasure(int widthMeasureSpec, int heightMeasureSpec)
 		{
-			((ILayouterElement)this).OnMeasureInternal(widthMeasureSpec, heightMeasureSpec);
-		}
+			if (IsVisualTreeRoot)
+			{
+				base.OnMeasure(widthMeasureSpec, heightMeasureSpec);
+				return;
+			}
 
-		void ILayouterElement.SetMeasuredDimensionInternal(int width, int height)
-		{
-			SetMeasuredDimension(width, height);
+			var availableSize = ViewHelper.LogicalSizeFromSpec(widthMeasureSpec, heightMeasureSpec);
+			this.Measure(availableSize);
+			var desiredPhysical = this.DesiredSize.LogicalToPhysicalPixels();
+			SetMeasuredDimension((int)desiredPhysical.Width, (int)desiredPhysical.Height);
 		}
 
 		protected override void OnLayoutCore(bool changed, int left, int top, int right, int bottom, bool localIsLayoutRequested)
@@ -249,56 +252,13 @@ namespace Microsoft.UI.Xaml
 			try
 			{
 				base.OnLayoutCore(changed, left, top, right, bottom, localIsLayoutRequested);
-
-				Rect finalRect;
-				if (TransientArrangeFinalRect is Rect tafr)
+				if (!IsVisualTreeRoot && !_isInArrangeVisualLayout)
 				{
-					// If the parent element is from managed code,
-					// we can recover the "Arrange" with double accuracy.
-					// We use that because the conversion to android's "int" is loosing too much precision.
-					finalRect = tafr;
-				}
-				else
-				{
-					// Here the "arrange" is coming from a native element,
-					// so we convert those measurements to logical ones.
-					finalRect = new Rect(left, top, right - left, bottom - top).PhysicalToLogicalPixels();
-
-					// We also need to set the LayoutSlot as it was not set by the parent.
-					// Note: This is only an approximation of the LayoutSlot as margin and alignment might already been applied at this point.
-					LayoutInformation.SetLayoutSlot(this, finalRect);
-					LayoutSlotWithMarginsAndAlignments = finalRect;
-				}
-
-				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-				{
-					this.Log().DebugFormat(
-						"[{0}/{1}] OnLayoutCore({2}, {3}, {4}, {5}) (parent: {5},{6})",
-						GetType(),
-						Name,
-						left, top, right, bottom,
-						MeasuredWidth,
-						MeasuredHeight
-					);
-				}
-
-				if (
-					// If the layout has changed, but the final size has not, this is just a translation.
-					// So unless there was a layout requested, we can skip arranging the children.
-					(changed && _lastLayoutSize != finalRect.Size)
-
-					// Even if nothing changed, but a layout was requested, arrange the children.
-					// Use the copy grabbed from the native invocation to avoid an additional interop call
-					|| localIsLayoutRequested
-				)
-				{
-					_lastLayoutSize = finalRect.Size;
-
-					OnBeforeArrange();
-
-					_layouter.Arrange(finalRect);
-
-					OnAfterArrange();
+					// This handles native-only elements with managed child/children.
+					// When the parent is native-only element, it will layout its children with the proper rect.
+					// So we response to the requested bounds and do the managed arrange.
+					var logical = new Rect(left, top, right - left, bottom - top);
+					this.Arrange(logical);
 				}
 			}
 			catch (Exception e)
@@ -353,7 +313,7 @@ namespace Microsoft.UI.Xaml
 				//This view and the visual tree above it won't change size. Send the view to the LayoutManager to be remeasured and rearranged.
 				if (!IsLayoutRequested)
 				{
-					LayoutManager.InvalidateArrange(this);
+					//LayoutManager.InvalidateArrange(this);
 					// Call ForceLayout, otherwise View.measure() & View.layout() won't do anything
 					this.ForceLayout();
 				}
