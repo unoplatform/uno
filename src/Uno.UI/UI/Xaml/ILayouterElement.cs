@@ -74,6 +74,7 @@ internal static class LayouterElementExtensions
 			if (isDirty || frameworkElement is null)
 			{
 				// We must reset the flag **BEFORE** doing the actual measure, so the elements are able to re-invalidate themselves
+				// TODO: We are not controlling measure dirty path on Android. If we did in future, we must clear it here as well.
 				frameworkElement?.ClearLayoutFlags(UIElement.LayoutFlag.MeasureDirty);
 
 				// The dirty flag is explicitly set on this element
@@ -91,7 +92,9 @@ internal static class LayouterElementExtensions
 					LayoutInformation.SetAvailableSize(element, availableSize);
 				}
 
-				return true; // end of isDirty processing
+				// TODO: This is NOT correct.
+				// We shouldn't return here. Skipping children measure is incorrect but fixing it on Android isn't trivial.
+				return true;
 			}
 
 			// The measure dirty flag is set on one of the descendents:
@@ -110,6 +113,8 @@ internal static class LayouterElementExtensions
 				{
 					var previousDesiredSize = childAsUIElement.m_desiredSize;
 					childAsUIElement.EnsureLayoutStorage();
+
+					// TODO: This is NOT correct. This should call DoMeasure (the same method we are in currently!)
 					element.Layouter.MeasureChild(child, childAsUIElement.m_previousAvailableSize);
 					var newDesiredSize = childAsUIElement.m_desiredSize;
 					if (newDesiredSize != previousDesiredSize)
