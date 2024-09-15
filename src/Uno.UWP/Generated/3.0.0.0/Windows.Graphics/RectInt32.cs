@@ -3,23 +3,15 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Graphics
 {
-#if false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial struct RectInt32
 	{
 		// Forced skipping of method Windows.Graphics.RectInt32.RectInt32()
-#if false
-		public int X;
-#endif
-#if false
-		public int Y;
-#endif
-#if false
-		public int Width;
-#endif
-#if false
-		public int Height;
-#endif
+		// Skipping already declared field Windows.Graphics.RectInt32.X
+		// Skipping already declared field Windows.Graphics.RectInt32.Y
+		// Skipping already declared field Windows.Graphics.RectInt32.Width
+		// Skipping already declared field Windows.Graphics.RectInt32.Height
 	}
 }

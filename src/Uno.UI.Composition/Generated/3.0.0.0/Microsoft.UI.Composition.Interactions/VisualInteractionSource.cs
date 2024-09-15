@@ -127,14 +127,7 @@ namespace Microsoft.UI.Composition.Interactions
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.PositionYChainingMode.set
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void ConfigureDeltaScaleModifiers(global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Composition.Interactions.CompositionConditionalValue> conditionalValues)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Interactions.VisualInteractionSource", "void VisualInteractionSource.ConfigureDeltaScaleModifiers(IEnumerable<CompositionConditionalValue> conditionalValues)");
-		}
-#endif
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.TryRedirectForManipulation(Microsoft.UI.Input.PointerPoint)
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.PositionVelocity.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.Scale.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.ScaleVelocity.get
@@ -166,6 +159,13 @@ namespace Microsoft.UI.Composition.Interactions
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Interactions.VisualInteractionSource", "void VisualInteractionSource.ConfigureDeltaPositionYModifiers(IEnumerable<CompositionConditionalValue> conditionalValues)");
 		}
 #endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public void ConfigureDeltaScaleModifiers(global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Composition.Interactions.CompositionConditionalValue> conditionalValues)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Interactions.VisualInteractionSource", "void VisualInteractionSource.ConfigureDeltaScaleModifiers(IEnumerable<CompositionConditionalValue> conditionalValues)");
+		}
+#endif
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.PointerWheelConfig.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.IsPositionXRailsEnabled.set
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.IsPositionYRailsEnabled.get
@@ -177,7 +177,7 @@ namespace Microsoft.UI.Composition.Interactions
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.PositionXSourceMode.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.PositionXSourceMode.set
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.PositionYChainingMode.get
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.IsPositionXRailsEnabled.get
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.PositionYChainingMode.set
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.PositionYSourceMode.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.PositionYSourceMode.set
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.ScaleChainingMode.get
@@ -185,7 +185,7 @@ namespace Microsoft.UI.Composition.Interactions
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.ScaleSourceMode.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.ScaleSourceMode.set
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.Source.get
-		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.TryRedirectForManipulation(Microsoft.UI.Input.PointerPoint)
+		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.IsPositionXRailsEnabled.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.DeltaPosition.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.DeltaScale.get
 		// Forced skipping of method Microsoft.UI.Composition.Interactions.VisualInteractionSource.Position.get

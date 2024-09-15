@@ -1865,6 +1865,7 @@
 			<Member fullName="Uno.Foundation.Logging" reason="Already pulled transitively"/>
 		</Assemblies>
 		<Types>
+			<Member fullName="Microsoft.UI.Xaml.Core.Direct.XamlDirectContract" reason="Not in WinUI" />
 		</Types>
 
 		<Events>

@@ -16,5 +16,9 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.PropertyMetadata.PropertyMetadata(object, Microsoft.UI.Xaml.PropertyChangedCallback)
 		// Forced skipping of method Microsoft.UI.Xaml.PropertyMetadata.DefaultValue.get
 		// Forced skipping of method Microsoft.UI.Xaml.PropertyMetadata.CreateDefaultValueCallback.get
+		// Skipping already declared method Microsoft.UI.Xaml.PropertyMetadata.Create(object)
+		// Skipping already declared method Microsoft.UI.Xaml.PropertyMetadata.Create(object, Microsoft.UI.Xaml.PropertyChangedCallback)
+		// Skipping already declared method Microsoft.UI.Xaml.PropertyMetadata.Create(Microsoft.UI.Xaml.CreateDefaultValueCallback)
+		// Skipping already declared method Microsoft.UI.Xaml.PropertyMetadata.Create(Microsoft.UI.Xaml.CreateDefaultValueCallback, Microsoft.UI.Xaml.PropertyChangedCallback)
 	}
 }

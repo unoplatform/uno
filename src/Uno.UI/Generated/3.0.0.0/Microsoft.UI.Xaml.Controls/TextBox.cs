@@ -8,6 +8,69 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class TextBox
 	{
+		// Skipping already declared property TextWrapping
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public global::Microsoft.UI.Xaml.TextReadingOrder TextReadingOrder
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.TextReadingOrder)this.GetValue(TextReadingOrderProperty);
+			}
+			set
+			{
+				this.SetValue(TextReadingOrderProperty, value);
+			}
+		}
+#endif
+		// Skipping already declared property TextAlignment
+		// Skipping already declared property Text
+		// Skipping already declared property SelectionStart
+		// Skipping already declared property SelectionLength
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public global::Microsoft.UI.Xaml.Media.SolidColorBrush SelectionHighlightColorWhenNotFocused
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.Media.SolidColorBrush)this.GetValue(SelectionHighlightColorWhenNotFocusedProperty);
+			}
+			set
+			{
+				this.SetValue(SelectionHighlightColorWhenNotFocusedProperty, value);
+			}
+		}
+#endif
+		// Skipping already declared property SelectionHighlightColor
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase SelectionFlyout
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase)this.GetValue(SelectionFlyoutProperty);
+			}
+			set
+			{
+				this.SetValue(SelectionFlyoutProperty, value);
+			}
+		}
+#endif
+		// Skipping already declared property SelectedText
+#if false || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public bool PreventKeyboardDisplayOnProgrammaticFocus
+		{
+			get
+			{
+				return (bool)this.GetValue(PreventKeyboardDisplayOnProgrammaticFocusProperty);
+			}
+			set
+			{
+				this.SetValue(PreventKeyboardDisplayOnProgrammaticFocusProperty, value);
+			}
+		}
+#endif
 		// Skipping already declared property PlaceholderText
 		// Skipping already declared property PlaceholderForeground
 		// Skipping already declared property MaxLength
@@ -61,77 +124,14 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 		// Skipping already declared property Description
 		// Skipping already declared property CharacterCasing
-#if false || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool PreventKeyboardDisplayOnProgrammaticFocus
-		{
-			get
-			{
-				return (bool)this.GetValue(PreventKeyboardDisplayOnProgrammaticFocusProperty);
-			}
-			set
-			{
-				this.SetValue(PreventKeyboardDisplayOnProgrammaticFocusProperty, value);
-			}
-		}
-#endif
 		// Skipping already declared property AcceptsReturn
-		// Skipping already declared property SelectedText
-		// Skipping already declared property TextWrapping
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Xaml.TextReadingOrder TextReadingOrder
+		public bool CanPasteClipboardContent
 		{
 			get
 			{
-				return (global::Microsoft.UI.Xaml.TextReadingOrder)this.GetValue(TextReadingOrderProperty);
-			}
-			set
-			{
-				this.SetValue(TextReadingOrderProperty, value);
-			}
-		}
-#endif
-		// Skipping already declared property TextAlignment
-		// Skipping already declared property Text
-		// Skipping already declared property SelectionStart
-		// Skipping already declared property SelectionLength
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Xaml.Media.SolidColorBrush SelectionHighlightColorWhenNotFocused
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Media.SolidColorBrush)this.GetValue(SelectionHighlightColorWhenNotFocusedProperty);
-			}
-			set
-			{
-				this.SetValue(SelectionHighlightColorWhenNotFocusedProperty, value);
-			}
-		}
-#endif
-		// Skipping already declared property SelectionHighlightColor
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase SelectionFlyout
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase)this.GetValue(SelectionFlyoutProperty);
-			}
-			set
-			{
-				this.SetValue(SelectionFlyoutProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool CanUndo
-		{
-			get
-			{
-				return (bool)this.GetValue(CanUndoProperty);
+				return (bool)this.GetValue(CanPasteClipboardContentProperty);
 			}
 		}
 #endif
@@ -145,13 +145,13 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool CanPasteClipboardContent
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public bool CanUndo
 		{
 			get
 			{
-				return (bool)this.GetValue(CanPasteClipboardContentProperty);
+				return (bool)this.GetValue(CanUndoProperty);
 			}
 		}
 #endif

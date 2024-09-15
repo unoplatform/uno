@@ -3,17 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Graphics
 {
-#if false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial struct SizeInt32
 	{
 		// Forced skipping of method Windows.Graphics.SizeInt32.SizeInt32()
-#if false
-		public int Width;
-#endif
-#if false
-		public int Height;
-#endif
+		// Skipping already declared field Windows.Graphics.SizeInt32.Width
+		// Skipping already declared field Windows.Graphics.SizeInt32.Height
 	}
 }

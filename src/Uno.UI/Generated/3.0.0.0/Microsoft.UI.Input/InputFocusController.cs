@@ -9,6 +9,14 @@ namespace Microsoft.UI.Input
 	public partial class InputFocusController : global::Microsoft.UI.Input.InputObject
 	{
 		// Skipping already declared property HasFocus
+		// Forced skipping of method Microsoft.UI.Input.InputFocusController.HasFocus.get
+		// Forced skipping of method Microsoft.UI.Input.InputFocusController.GotFocus.add
+		// Forced skipping of method Microsoft.UI.Input.InputFocusController.GotFocus.remove
+		// Forced skipping of method Microsoft.UI.Input.InputFocusController.LostFocus.add
+		// Forced skipping of method Microsoft.UI.Input.InputFocusController.LostFocus.remove
+		// Skipping already declared method Microsoft.UI.Input.InputFocusController.DepartFocus(Microsoft.UI.Input.FocusNavigationRequest)
+		// Forced skipping of method Microsoft.UI.Input.InputFocusController.NavigateFocusRequested.add
+		// Forced skipping of method Microsoft.UI.Input.InputFocusController.NavigateFocusRequested.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public bool TrySetFocus()
@@ -16,14 +24,6 @@ namespace Microsoft.UI.Input
 			throw new global::System.NotImplementedException("The member bool InputFocusController.TrySetFocus() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20InputFocusController.TrySetFocus%28%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.InputFocusController.HasFocus.get
-		// Forced skipping of method Microsoft.UI.Input.InputFocusController.GotFocus.remove
-		// Forced skipping of method Microsoft.UI.Input.InputFocusController.LostFocus.add
-		// Forced skipping of method Microsoft.UI.Input.InputFocusController.LostFocus.remove
-		// Skipping already declared method Microsoft.UI.Input.InputFocusController.DepartFocus(Microsoft.UI.Input.FocusNavigationRequest)
-		// Forced skipping of method Microsoft.UI.Input.InputFocusController.NavigateFocusRequested.add
-		// Forced skipping of method Microsoft.UI.Input.InputFocusController.NavigateFocusRequested.remove
-		// Forced skipping of method Microsoft.UI.Input.InputFocusController.GotFocus.add
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Input.InputFocusController GetForIsland(global::Microsoft.UI.Content.ContentIsland island)
