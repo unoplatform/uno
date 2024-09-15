@@ -84,7 +84,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public override CGSize SizeThatFits(CGSize size)
 		{
-			return IFrameworkElementHelper.SizeThatFits(this, base.SizeThatFits(size));
+			return base.SizeThatFits(size);
 		}
 
 		public void UpdateFont()

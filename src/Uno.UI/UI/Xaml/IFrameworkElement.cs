@@ -310,52 +310,6 @@ namespace Microsoft.UI.Xaml
 			return null;
 		}
 
-		public static CGSize Measure(this IFrameworkElement element, _Size availableSize)
-		{
-#if __IOS__ || __MACOS__
-			return ((View)element).SizeThatFits(new CoreGraphics.CGSize(availableSize.Width, availableSize.Height));
-#elif __ANDROID__
-			var widthSpec = ViewHelper.SpecFromLogicalSize(availableSize.Width);
-			var heightSpec = ViewHelper.SpecFromLogicalSize(availableSize.Height);
-
-			var view = ((View)element);
-			view.Measure(widthSpec, heightSpec);
-
-			return Uno.UI.Controls.BindableView.GetNativeMeasuredDimensionsFast(view)
-				.PhysicalToLogicalPixels();
-#else
-			return default(CGSize);
-#endif
-		}
-
-#if __MACOS__
-		public static CGSize SizeThatFits(this View element, _Size availableSize)
-		{
-			switch (element)
-			{
-				case NSControl nsControl:
-					return nsControl.SizeThatFits(availableSize);
-
-				case FrameworkElement fe:
-					{
-						fe.XamlMeasure(availableSize);
-						var desiredSize = fe.DesiredSize;
-						return new CGSize(desiredSize.Width, desiredSize.Height);
-					}
-
-				case IHasSizeThatFits scp:
-					return scp.SizeThatFits(availableSize);
-
-				case View nsview:
-					return nsview.FittingSize;
-
-				default:
-					throw new NotSupportedException($"Unsupported measure for {element}");
-			}
-		}
-
-#endif
-
 		public static CGSize SizeThatFits(IFrameworkElement e, CGSize size)
 		{
 			// Note that on iOS, the computation is intentionally kept as nfloat
@@ -397,7 +351,6 @@ namespace Microsoft.UI.Xaml
 		{
 			return NMath.Min(left, right);
 		}
-
 		/// <summary>
 		/// Gets the max value being left or right.
 		/// </summary>
@@ -412,6 +365,7 @@ namespace Microsoft.UI.Xaml
 		{
 			return NMath.Max(left, right);
 		}
+
 
 		private static IFrameworkElement ConvertFromStubToElement(this IFrameworkElement element, IFrameworkElement originalRootElement, string name)
 		{
@@ -430,49 +384,6 @@ namespace Microsoft.UI.Xaml
 				? defaultValue
 				: number;
 		}
-
-		public static void MaybeOrNot<TInstance>(this TInstance instance, Action nonNullAction, Action nullAction)
-		{
-			// Analysis disable once CompareNonConstrainedGenericWithNull
-			if (instance != null)
-			{
-				nonNullAction.Invoke();
-			}
-			else
-			{
-				nullAction.Invoke();
-			}
-		}
-
-#if __ANDROID__
-		/// <summary>
-		/// Applies the framework element constraints like the size and max size, using an already measured view.
-		/// </summary>
-		/// <param name="view"></param>
-		public static void OnMeasureOverride<T>(T view)
-			where T : View, IFrameworkElement
-		{
-			var updated = IFrameworkElementHelper
-				.SizeThatFits(view, new _Size(view.MeasuredWidth, view.MeasuredHeight).PhysicalToLogicalPixels())
-				.LogicalToPhysicalPixels();
-
-			Microsoft.UI.Xaml.Controls.Layouter.SetMeasuredDimensions(view, (int)updated.Width, (int)updated.Height);
-		}
-
-		/// <summary>
-		/// Applies the framework element constraints like the size and max size, using the provided measured size.
-		/// </summary>
-		/// <param name="view"></param>
-		public static void OnMeasureOverride<T>(T view, _Size measuredSize)
-			where T : View, IFrameworkElement
-		{
-			var updated = IFrameworkElementHelper
-				.SizeThatFits(view, new _Size(measuredSize.Width, measuredSize.Height).PhysicalToLogicalPixels())
-				.LogicalToPhysicalPixels();
-
-			Microsoft.UI.Xaml.Controls.Layouter.SetMeasuredDimensions(view, (int)updated.Width, (int)updated.Height);
-		}
-#endif
 
 		/// <summary>
 		/// Base constraint reasoning for simple containers that always respect the stretch of their children.

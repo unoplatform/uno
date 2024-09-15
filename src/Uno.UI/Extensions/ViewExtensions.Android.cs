@@ -46,6 +46,8 @@ namespace Uno.UI
 			return view.Parent != null;
 		}
 
+		internal static IViewParent? FindParent(this IViewParent view) => view.Parent;
+
 		/// <summary>
 		/// Return First parent of the view of specified T type.
 		/// </summary>

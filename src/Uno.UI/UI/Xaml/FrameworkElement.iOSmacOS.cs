@@ -21,7 +21,6 @@ namespace Microsoft.UI.Xaml
 {
 	public partial class FrameworkElement
 	{
-		private bool _inLayoutSubviews;
 		private CGSize? _lastAvailableSize;
 		private CGSize _lastMeasure;
 
@@ -38,18 +37,6 @@ namespace Microsoft.UI.Xaml
 		}
 
 		private partial void ReconfigureViewportPropagationPartial();
-
-		internal CGSize? XamlMeasure(CGSize availableSize)
-		{
-			if (((ILayouterElement)this).XamlMeasureInternal(availableSize, _lastAvailableSize, out var measuredSize))
-			{
-				_lastAvailableSize = availableSize;
-				_lastMeasure = measuredSize;
-				SetLayoutFlags(LayoutFlag.ArrangeDirty);
-			}
-
-			return _lastMeasure;
-		}
 
 		/// <summary>
 		/// Called before Arrange is called, this method will be deprecated

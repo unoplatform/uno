@@ -48,6 +48,36 @@ namespace Uno.UI.Controls
 			// to properly walk the tree up and down (cf. EffectiveViewport).
 			_shadowChildren.Add(view);
 			base.AddSubview(view);
+
+			var parent = this as UIElement ?? this.FindFirstParent<UIElement>();
+			if (parent is not null)
+			{
+				if (view is UIElement child)
+				{
+					// Reset to original (invalidated) state
+					parent.ResetLayoutFlags();
+					if (parent.IsMeasureDirtyPathDisabled)
+					{
+						FrameworkElementHelper.SetUseMeasurePathDisabled(child); // will invalidate too
+					}
+					else
+					{
+						child.InvalidateMeasure();
+					}
+
+					if (parent.IsArrangeDirtyPathDisabled)
+					{
+						FrameworkElementHelper.SetUseArrangePathDisabled(child); // will invalidate too
+					}
+					else
+					{
+						child.InvalidateArrange();
+					}
+				}
+
+				parent.InvalidateMeasure();
+				parent.InvalidateArrange();
+			}
 		}
 
 		public override void InsertSubview(UIView view, nint atIndex)

@@ -502,6 +502,21 @@ namespace Microsoft.UI.Xaml.Controls
 				var contentBreadth = _groups.Count > 0 ? _groups.Max(g => g.Breadth) : 0;
 				var measuredBreadth = contentBreadth + InitialBreadthPadding + FinalBreadthPadding;
 
+				// At this point, measuredBreadth doesn't include header/footer, which would cause the measure width to be 0 if only header and/or footer exist.
+				// To get the right measure width, we account for header/footer here.
+				// TODO: Discuss with Xiao if this is the right place to account for header/footer.
+				if (HeaderViewCount > 0)
+				{
+					var header = GetChildAt(GetHeaderViewIndex());
+					measuredBreadth = Math.Max(measuredBreadth, ViewHelper.LogicalToPhysicalPixels(LayoutInformation.GetDesiredSize(header).Width));
+				}
+
+				if (FooterViewCount > 0)
+				{
+					var footer = GetChildAt(GetFooterViewIndex());
+					measuredBreadth = Math.Max(measuredBreadth, ViewHelper.LogicalToPhysicalPixels(LayoutInformation.GetDesiredSize(footer).Width));
+				}
+
 				if (ScrollOrientation == Orientation.Vertical)
 				{
 					measuredWidth = Math.Min(measuredBreadth, availableWidth);
@@ -1019,7 +1034,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (child.IsLayoutRequested || slotSize != previousAvailableSize)
 			{
-				var size = _layouter.MeasureChild(child, slotSize);
+				var size = MobileLayoutingHelpers.MeasureElement(child, slotSize);
 
 				if (ShouldApplyChildStretch)
 				{
@@ -1094,7 +1109,7 @@ namespace Microsoft.UI.Xaml.Controls
 				top = logicalBreadthOffset;
 			}
 			var frame = new global::Windows.Foundation.Rect(new global::Windows.Foundation.Point(left, top), size);
-			_layouter.ArrangeChild(child, frame);
+			MobileLayoutingHelpers.ArrangeElement(child, frame);
 
 			// Due to conversions between physical and logical coordinates, the actual child end can differ from the end we sent to the layouter by a little bit.
 			Debug.Assert(direction == GeneratorDirection.Forward || Math.Abs(GetChildEndWithMargin(child) - extentOffset) < 2, GetAssertMessage("Extent offset not applied correctly"));

@@ -1103,11 +1103,7 @@ public partial class Given_GridLayouting
 
 		SUT.Arrange(new Rect(0, 0, 20, 20));
 
-#if __ANDROID__ || __IOS__ || __MACOS__
-		c1.SizePassedToArrangeOverride.Should().Be(new Size(6, 10));
-#else
 		c1.SizePassedToArrangeOverride.Should().Be(new Size(10, 10));
-#endif
 		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 6, 10));
 
 		c2.SizePassedToArrangeOverride.Should().Be(new Size(10, 11));
@@ -1885,17 +1881,11 @@ public partial class Given_GridLayouting
 		SUT.Measure(new Size(8, 8));
 
 		SUT.DesiredSize.Should().Be(new Size(8, 8));
-#if UNO_REFERENCE_API
+#if !WINAPPSDK
 		GetUnclippedDesiredSize(SUT).Should().Be(new Size(8, 8));
-#elif !WINAPPSDK
-		GetUnclippedDesiredSize(SUT).Should().Be(new Size(8, 10));
 #endif
 
-#if UNO_REFERENCE_API
 		c1.DesiredSize.Should().Be(new Size(4, 4));
-#else
-		c1.DesiredSize.Should().Be(new Size(4, 6));
-#endif
 #if !WINAPPSDK
 		GetUnclippedDesiredSize(c1).Should().Be(new Size(0, 0)); // UnclippedDesiredSize excludes margins
 #endif
@@ -1908,11 +1898,7 @@ public partial class Given_GridLayouting
 		c1.SizePassedToArrangeOverride.Should().Be(default);
 		c1.SizePassedToMeasureOverride.Should().Be(default);
 		LayoutInformation.GetAvailableSize(c1).Should().Be(new Size(4, 4));
-#if UNO_REFERENCE_API || WINAPPSDK
 		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(2, 2, 4, 4));
-#else
-		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(2, 2, 4, 6));
-#endif
 
 		SUT.Children.Should().HaveCount(1);
 	}
@@ -1939,16 +1925,11 @@ public partial class Given_GridLayouting
 		SUT.Measure(new Size(20, 20));
 		SUT.DesiredSize.Should().Be(new Size(10, 20), because: "SUT.DesiredSize");
 
-#if UNO_REFERENCE_API
+#if !WINAPPSDK
 		GetUnclippedDesiredSize(SUT).Should().Be(new Size(10, 20), because: "SUT UnclippedDesiredSize");
 #endif
 
-#if UNO_REFERENCE_API || WINAPPSDK
 		c1.DesiredSize.Should().Be(new Size(10, 20), because: "c1.DesiredSize");
-#else
-		GetUnclippedDesiredSize(SUT).Should().Be(new Size(10, 30), because: "SUT UnclippedDesiredSize");
-		c1.DesiredSize.Should().Be(new Size(10, 30), because: "c1.DesiredSize");
-#endif
 
 #if !WINAPPSDK
 		GetUnclippedDesiredSize(c1).Should().Be(new Size(10, 10), because: "c1 UnclippedDesiredSize"); // UnclippedDesiredSize excludes margins
@@ -1962,11 +1943,7 @@ public partial class Given_GridLayouting
 		c1.SizePassedToArrangeOverride.Should().Be(new Size(10, 10), because: "c1.SizePassedToArrangeOverride");
 #endif
 
-#if UNO_REFERENCE_API
 		c1.SizePassedToMeasureOverride.Should().Be(new Size(10, 10), because: "c1.SizePassedToMeasureOverride");
-#else
-		c1.SizePassedToMeasureOverride.Should().Be(new Size(10, 0), because: "c1.SizePassedToMeasureOverride");
-#endif
 		LayoutInformation.GetAvailableSize(c1).Should().Be(new Size(20, 20), because: "c1 AvailableSize");
 		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 50, 50), because: "c1 LayoutSlot");
 
@@ -1995,17 +1972,11 @@ public partial class Given_GridLayouting
 		SUT.Measure(new Size(20, 20));
 
 		SUT.DesiredSize.Should().Be(new Size(10, 20), because: "SUT.DesiredSize");
-#if UNO_REFERENCE_API
+#if !WINAPPSDK
 		GetUnclippedDesiredSize(SUT).Should().Be(new Size(10, 20), because: "SUT UnclippedDesiredSize");
-#elif !WINAPPSDK
-		GetUnclippedDesiredSize(SUT).Should().Be(new Size(10, 30), because: "SUT.UnclippedDesiredSize");
 #endif
 
-#if UNO_REFERENCE_API || WINAPPSDK
 		c1.DesiredSize.Should().Be(new Size(10, 20), because: "c1.DesiredSize");
-#else
-		c1.DesiredSize.Should().Be(new Size(10, 30), because: "c1.DesiredSize");
-#endif
 
 #if !WINAPPSDK
 		GetUnclippedDesiredSize(c1).Should().Be(new Size(10, 10), because: "c1 UnclippedDesiredSize"); // UnclippedDesiredSize excludes margins
@@ -2022,11 +1993,7 @@ public partial class Given_GridLayouting
 		c1.SizePassedToArrangeOverride.Should().Be(new Size(10, 10), because: "c1.SizePassedToArrangeOverride");
 #endif
 
-#if UNO_REFERENCE_API
 		c1.SizePassedToMeasureOverride.Should().Be(new Size(10, 10), because: "c1.SizePassedToMeasureOverride");
-#else
-		c1.SizePassedToMeasureOverride.Should().Be(new Size(10, 0), because: "c1.SizePassedToMeasureOverride");
-#endif
 		LayoutInformation.GetAvailableSize(c1).Should().Be(new Size(20, 20), because: "c1 AvailableSize");
 		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 50, 50), because: "c1 LayoutSlot");
 
@@ -2055,13 +2022,11 @@ public partial class Given_GridLayouting
 		SUT.Measure(new Size(20, 20));
 
 		SUT.DesiredSize.Should().Be(new Size(10, 20), because: "SUT.DesiredSize");
-#if UNO_REFERENCE_API
+#if !WINAPPSDK
 		GetUnclippedDesiredSize(SUT).Should().Be(new Size(10, 20), because: "SUT UnclippedDesiredSize");
-		c1.DesiredSize.Should().Be(new Size(10, 20), because: "c1.DesiredSize");
-#elif !WINAPPSDK
-		GetUnclippedDesiredSize(SUT).Should().Be(new Size(10, 30), because: "SUT UnclippedDesiredSize");
-		c1.DesiredSize.Should().Be(new Size(10, 30), because: "c1.DesiredSize");
 #endif
+
+		c1.DesiredSize.Should().Be(new Size(10, 20), because: "c1.DesiredSize");
 
 #if !WINAPPSDK
 		GetUnclippedDesiredSize(c1).Should().Be(new Size(10, 10), because: "c1 UnclippedDesiredSize"); // UnclippedDesiredSize excludes margins
@@ -2075,11 +2040,7 @@ public partial class Given_GridLayouting
 		c1.SizePassedToArrangeOverride.Should().Be(new Size(10, 10), because: "c1.SizePassedToArrangeOverride");
 #endif
 
-#if UNO_REFERENCE_API
 		c1.SizePassedToMeasureOverride.Should().Be(new Size(10, 10), because: "c1.SizePassedToMeasureOverride");
-#else
-		c1.SizePassedToMeasureOverride.Should().Be(new Size(10, 0), because: "c1.SizePassedToMeasureOverride");
-#endif
 		LayoutInformation.GetAvailableSize(c1).Should().Be(new Size(20, 20), because: "c1 AvailableSize");
 		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 50, 50), because: "c1 LayoutSlot");
 
@@ -2133,13 +2094,7 @@ public partial class Given_GridLayouting
 #if !WINAPPSDK
 	private static Size GetUnclippedDesiredSize(UIElement element)
 	{
-#if UNO_REFERENCE_API
 		return element.m_unclippedDesiredSize;
-#else
-		var layouterElement = (ILayouterElement)element;
-		var layouter = (Layouter)layouterElement.Layouter;
-		return layouter._unclippedDesiredSize;
-#endif
 	}
 #endif
 

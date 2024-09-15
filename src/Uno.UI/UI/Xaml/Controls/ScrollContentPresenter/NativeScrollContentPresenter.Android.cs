@@ -46,7 +46,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private ILayouter _layouter;
 		private readonly WeakReference<ScrollViewer> _scrollViewer;
 
 		public NativeScrollContentPresenter(ScrollViewer scroller) : this()
@@ -64,8 +63,6 @@ namespace Microsoft.UI.Xaml.Controls
 			SetClipToPadding(false);
 			SetClipChildren(false);
 			ScrollBarStyle = ScrollbarStyles.OutsideOverlay; // prevents padding from affecting scrollbar position
-
-			_layouter = new ScrollViewerLayouter(this);
 		}
 
 		private void InitializeScrollbars()
@@ -103,34 +100,78 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		ILayouter ILayouterElement.Layouter => _layouter;
-		Size ILayouterElement.LastAvailableSize => LayoutInformation.GetAvailableSize(this);
-		bool ILayouterElement.IsMeasureDirty => true;
-		bool ILayouterElement.IsFirstMeasureDoneAndManagedElement => false;
-		bool ILayouterElement.StretchAffectsMeasure => false;
-		bool ILayouterElement.IsMeasureDirtyPathDisabled => true;
-
 		protected override void OnMeasure(int widthMeasureSpec, int heightMeasureSpec)
 		{
-			((ILayouterElement)this).OnMeasureInternal(widthMeasureSpec, heightMeasureSpec);
+			var availableSize = ViewHelper.LogicalSizeFromSpec(widthMeasureSpec, heightMeasureSpec);
+			var child = this.GetChildren().FirstOrDefault();
+
+			var desiredChildSize = default(Size);
+			if (child != null)
+			{
+				var scrollSpace = availableSize;
+				if (VerticalScrollBarVisibility != ScrollBarVisibility.Disabled)
+				{
+					scrollSpace.Height = double.PositiveInfinity;
+				}
+				if (HorizontalScrollBarVisibility != ScrollBarVisibility.Disabled)
+				{
+					scrollSpace.Width = double.PositiveInfinity;
+				}
+
+				if (child is FrameworkElement childAsFrameworkElement)
+				{
+					var childMargin = childAsFrameworkElement.Margin;
+					SetChildMargin(childMargin);
+				}
+
+				desiredChildSize = MobileLayoutingHelpers.MeasureElement(child, scrollSpace);
+
+				// Give opportunity to the the content to define the viewport size itself
+				(child as ICustomScrollInfo)?.ApplyViewport(ref desiredChildSize);
+			}
+
+			var measuredDimension = new Size(Math.Min(availableSize.Width, desiredChildSize.Width), Math.Min(availableSize.Height, desiredChildSize.Height)).LogicalToPhysicalPixels();
+			SetMeasuredDimension((int)measuredDimension.Width, (int)measuredDimension.Height);
 		}
 
-		void ILayouterElement.SetMeasuredDimensionInternal(int width, int height)
+		Size ILayouterElement.Measure(Size availableSize)
 		{
-			SetMeasuredDimension(width, height);
+			this.Measure(ViewHelper.SpecFromLogicalSize(availableSize.Width), ViewHelper.SpecFromLogicalSize(availableSize.Height));
+			return Uno.UI.Controls.BindableView.GetNativeMeasuredDimensionsFast(this).PhysicalToLogicalPixels();
 		}
+
+		void ILayouterElement.Arrange(Rect finalRect)
+		{
+			var child = this.GetChildren().FirstOrDefault();
+			if (child != null)
+			{
+				var desiredChildSize = LayoutInformation.GetDesiredSize(child);
+
+				var occludedPadding = _padding;
+				var slotSize = finalRect.Size;
+				slotSize.Width -= occludedPadding.Left + occludedPadding.Right;
+				slotSize.Height -= occludedPadding.Top + occludedPadding.Bottom;
+
+				var width = Math.Max(slotSize.Width, desiredChildSize.Width);
+				var height = Math.Max(slotSize.Height, desiredChildSize.Height);
+
+				MobileLayoutingHelpers.ArrangeElement(child, new Rect(0, 0, width, height));
+
+				ScrollOwner?.TryApplyPendingScrollTo();
+
+				// Give opportunity to the the content to define the viewport size itself
+				(child as ICustomScrollInfo)?.ApplyViewport(ref slotSize);
+
+				var logicalRect = new Rect(0, 0, slotSize.Width, slotSize.Height);
+				var physical = logicalRect.LogicalToPhysicalPixels();
+				this.Layout((int)physical.Left, (int)physical.Top, (int)physical.Right, (int)physical.Bottom);
+			}
+		}
+
+		bool ILayouterElement.StretchAffectsMeasure => false;
 
 		partial void OnLayoutPartial(bool changed, int left, int top, int right, int bottom)
 		{
-			var newSize = new Rect(0, 0, right - left, bottom - top).PhysicalToLogicalPixels();
-
-			// WARNING: The layouter must be called every time here,
-			// even if the size has not changed. Failing to call the layouter
-			// may leave the default ScrollViewer implementation place 
-			// the child at an invalid location when the visibility changes.
-
-			_layouter.Arrange(newSize);
-
 			// base.OnLayout is not invoked in the mixin to allow for the clipping algorithms
 			base.OnLayout(changed, left, top, right, bottom);
 		}
@@ -147,83 +188,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 			// TODO: for now there's no way to only disable scrolling in one direction
 			IsScrollingEnabled = verticalScrollEnabled || horizontalScrollEnabled;
-		}
-
-		private class ScrollViewerLayouter : Layouter
-		{
-			public ScrollViewerLayouter(NativeScrollContentPresenter view) : base(view)
-			{
-			}
-
-			private NativeScrollContentPresenter ScrollContentPresenter => Panel as NativeScrollContentPresenter;
-
-			protected override void MeasureChild(View child, int widthSpec, int heightSpec)
-			{
-				var childMargin = (child as FrameworkElement)?.Margin ?? Thickness.Empty;
-				ScrollContentPresenter.SetChildMargin(childMargin);
-
-				this.GetChildren().FirstOrDefault()?.Measure(widthSpec, heightSpec);
-			}
-
-			protected override Size MeasureOverride(Size availableSize)
-			{
-				var child = this.GetChildren().FirstOrDefault();
-
-				var desiredChildSize = default(Size);
-				if (child != null)
-				{
-					var scrollSpace = availableSize;
-					if (ScrollContentPresenter.VerticalScrollBarVisibility != ScrollBarVisibility.Disabled)
-					{
-						scrollSpace.Height = double.PositiveInfinity;
-					}
-					if (ScrollContentPresenter.HorizontalScrollBarVisibility != ScrollBarVisibility.Disabled)
-					{
-						scrollSpace.Width = double.PositiveInfinity;
-					}
-
-					desiredChildSize = MeasureChild(child, scrollSpace);
-
-					// Give opportunity to the the content to define the viewport size itself
-					(child as ICustomScrollInfo)?.ApplyViewport(ref desiredChildSize);
-				}
-
-				return desiredChildSize;
-			}
-
-			protected override Size ArrangeOverride(Size slotSize)
-			{
-				var child = this.GetChildren().FirstOrDefault();
-
-				if (child != null)
-				{
-					var desiredChildSize = LayoutInformation.GetDesiredSize(child);
-
-					var occludedPadding = ScrollContentPresenter._padding;
-					slotSize.Width -= occludedPadding.Left + occludedPadding.Right;
-					slotSize.Height -= occludedPadding.Top + occludedPadding.Bottom;
-
-					var width = Math.Max(slotSize.Width, desiredChildSize.Width);
-					var height = Math.Max(slotSize.Height, desiredChildSize.Height);
-
-					ArrangeChild(child, new Rect(
-						0,
-						0,
-						width,
-						height
-					));
-
-					ScrollContentPresenter.ScrollOwner?.TryApplyPendingScrollTo();
-
-					// Give opportunity to the the content to define the viewport size itself
-					(child as ICustomScrollInfo)?.ApplyViewport(ref slotSize);
-
-				}
-
-				return slotSize;
-			}
-
-			protected override string Name => Panel.Name;
 		}
 
 		#region Managed to native

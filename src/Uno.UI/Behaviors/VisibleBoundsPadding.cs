@@ -173,7 +173,7 @@ namespace Uno.UI.Toolkit
 
 				_originalPadding = owner.GetPadding();
 
-				_visibleBoundsChanged = (s2, e2) => UpdatePadding();
+				_visibleBoundsChanged = (s2, e2) => Owner?.InvalidateArrange();
 
 #if __IOS__
 				// For iOS, it's required to react on SizeChanged to prevent weird alignment
