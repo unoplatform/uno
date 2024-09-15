@@ -21,7 +21,7 @@ using UnoScrollViewer = Microsoft.UI.Xaml.Controls.ScrollViewer;
 
 namespace Uno.UI.Xaml.Controls;
 
-public partial class NativeRefreshControl : SwipeRefreshLayout, IShadowChildrenProvider, DependencyObject, ILayouterElement
+public partial class NativeRefreshControl : SwipeRefreshLayout, IShadowChildrenProvider, DependencyObject
 {
 	// Distance in pixels a touch can wander before we think the user is scrolling
 	// https://developer.android.com/reference/android/view/ViewConfiguration.html#getScaledTouchSlop()
@@ -36,7 +36,6 @@ public partial class NativeRefreshControl : SwipeRefreshLayout, IShadowChildrenP
 
 	public NativeRefreshControl() : base(ContextHelper.Current)
 	{
-		_layouter = new NativeRefreshControlLayouter(this);
 	}
 
 	internal Android.Views.View Content
@@ -162,93 +161,9 @@ public partial class NativeRefreshControl : SwipeRefreshLayout, IShadowChildrenP
 
 	List<View> IShadowChildrenProvider.ChildrenShadow => Content != null ? new List<View>(1) { Content as View } : _emptyList;
 
-	private ILayouter _layouter;
-
-	ILayouter ILayouterElement.Layouter => _layouter;
-	Size ILayouterElement.LastAvailableSize => LayoutInformation.GetAvailableSize(this);
-	bool ILayouterElement.IsMeasureDirty => true;
-	bool ILayouterElement.IsFirstMeasureDoneAndManagedElement => false;
-	bool ILayouterElement.StretchAffectsMeasure => true;
-	bool ILayouterElement.IsMeasureDirtyPathDisabled => true;
-
 	public override void OnMeasure(int widthMeasureSpec, int heightMeasureSpec)
 	{
 		base.OnMeasure(widthMeasureSpec, heightMeasureSpec);
-		((ILayouterElement)this).OnMeasureInternal(widthMeasureSpec, heightMeasureSpec);
-	}
-
-	void ILayouterElement.SetMeasuredDimensionInternal(int width, int height)
-	{
-		SetMeasuredDimension(width, height);
-	}
-
-	partial void OnLayoutPartial(bool changed, int left, int top, int right, int bottom)
-	{
-		var newSize = new Rect(0, 0, right - left, bottom - top).PhysicalToLogicalPixels();
-
-		// WARNING: The layouter must be called every time here,
-		// even if the size has not changed. Failing to call the layouter
-		// may leave the default ScrollViewer implementation place 
-		// the child at an invalid location when the visibility changes.
-
-		_layouter.Arrange(newSize);
-	}
-
-	private class NativeRefreshControlLayouter : Layouter
-	{
-		public NativeRefreshControlLayouter(NativeRefreshControl view) : base(view)
-		{
-		}
-
-		private NativeRefreshControl RefreshControl => Panel as NativeRefreshControl;
-
-		protected override void MeasureChild(View child, int widthSpec, int heightSpec)
-		{
-			var childMargin = (child as FrameworkElement)?.Margin ?? Thickness.Empty;
-
-			RefreshControl.Content?.Measure(widthSpec, heightSpec);
-		}
-
-		protected override Size MeasureOverride(Size availableSize)
-		{
-			var child = RefreshControl.Content;
-
-			var desiredChildSize = default(Size);
-			if (child != null)
-			{
-				var scrollSpace = availableSize;
-
-				desiredChildSize = MeasureChild(child, scrollSpace);
-
-				// Give opportunity to the the content to define the viewport size itself
-				(child as ICustomScrollInfo)?.ApplyViewport(ref desiredChildSize);
-			}
-
-			return desiredChildSize;
-		}
-
-		protected override Size ArrangeOverride(Size slotSize)
-		{
-			var child = RefreshControl.Content;
-
-			if (child != null)
-			{
-				ArrangeChild(child, new Rect(
-					0,
-					0,
-					slotSize.Width,
-					slotSize.Height
-				));
-
-				// Give opportunity to the the content to define the viewport size itself
-				(child as ICustomScrollInfo)?.ApplyViewport(ref slotSize);
-
-			}
-
-			return slotSize;
-		}
-
-		protected override string Name => Panel.Name;
 	}
 
 	private ViewGroup GetDescendantScrollable()

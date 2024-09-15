@@ -71,6 +71,10 @@ namespace Microsoft.UI.Xaml
 				_nativeChildrenCount++;
 			}
 
+			// Force a new measure of this element (the parent of the new child)
+			InvalidateMeasure();
+			InvalidateArrange();
+
 			ComputeAreChildrenNativeViewsOnly();
 		}
 
@@ -91,12 +95,27 @@ namespace Microsoft.UI.Xaml
 			Shutdown();
 		}
 
-		private void OnChildManagedViewAddedOrRemoved(UIElement uiElement)
+		private void OnChildManagedViewAddedOrRemoved(UIElement child)
 		{
-			uiElement.ResetLayoutFlags();
-			SetLayoutFlags(LayoutFlag.MeasureDirty);
-			uiElement.SetLayoutFlags(LayoutFlag.MeasureDirty);
-			uiElement.IsMeasureDirtyPathDisabled = IsMeasureDirtyPathDisabled;
+			// Reset to original (invalidated) state
+			ResetLayoutFlags();
+			if (IsMeasureDirtyPathDisabled)
+			{
+				FrameworkElementHelper.SetUseMeasurePathDisabled(child); // will invalidate too
+			}
+			else
+			{
+				child.InvalidateMeasure();
+			}
+
+			if (IsArrangeDirtyPathDisabled)
+			{
+				FrameworkElementHelper.SetUseArrangePathDisabled(child); // will invalidate too
+			}
+			else
+			{
+				child.InvalidateArrange();
+			}
 		}
 
 		public UIElement()
@@ -105,36 +124,6 @@ namespace Microsoft.UI.Xaml
 			Initialize();
 			InitializePointers();
 		}
-
-		/// <summary>
-		/// On Android, the equivalent of the "Dirty Path" is the native
-		/// "Layout Requested" mechanism.
-		/// </summary>
-		internal bool IsMeasureDirtyPath
-		{
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			get => IsLayoutRequested;
-		}
-
-		/// <summary>
-		/// Determines if InvalidateArrange has been called
-		/// </summary>
-		internal bool IsArrangeDirty => IsLayoutRequested;
-
-		/// <summary>
-		/// Not implemented yet on this platform.
-		/// </summary>
-		internal bool IsArrangeDirtyPath
-		{
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			get => false;
-		}
-
-		/// <summary>
-		/// Gets the **logical** frame (a.k.a. 'finalRect') of the element while it's being arranged by a managed parent.
-		/// </summary>
-		/// <remarks>Used to keep "double" precision of arrange phase.</remarks>
-		private protected Rect? TransientArrangeFinalRect { get; private set; }
 
 		/// <summary>
 		/// The difference between the physical layout width and height taking the origin into account,
@@ -147,22 +136,6 @@ namespace Microsoft.UI.Xaml
 		/// The FrameRoundingAdjustment values will be (0,0), (0,1), and (0,0) respectively.
 		/// </summary>
 		internal Size? FrameRoundingAdjustment { get; set; }
-
-		internal void SetFramePriorArrange(Rect frame /* a.k.a 'finalRect' */, Rect physicalFrame)
-		{
-			var physicalWidth = ViewHelper.LogicalToPhysicalPixels(frame.Width);
-			var physicalHeight = ViewHelper.LogicalToPhysicalPixels(frame.Height);
-
-			TransientArrangeFinalRect = frame;
-			FrameRoundingAdjustment = new Size(
-				(int)physicalFrame.Width - physicalWidth,
-				(int)physicalFrame.Height - physicalHeight);
-		}
-
-		internal void ResetFramePostArrange()
-		{
-			TransientArrangeFinalRect = null;
-		}
 
 		partial void ApplyNativeClip(Rect rect)
 		{
@@ -201,6 +174,26 @@ namespace Microsoft.UI.Xaml
 				// This is closer to the XAML way of doing clipping.
 				SetClipToPadding(NeedsClipToSlot);
 			}
+		}
+
+		internal void ArrangeVisual(Rect finalRect, Rect? clippedFrame = default)
+		{
+			LayoutSlotWithMarginsAndAlignments = finalRect;
+
+			var physical = finalRect.LogicalToPhysicalPixels();
+			FrameRoundingAdjustment = new Size(
+				(int)physical.Width - physical.Width,
+				(int)physical.Height - physical.Height);
+
+			this.Layout(
+				(int)physical.Left,
+				(int)physical.Top,
+				(int)physical.Right,
+				(int)physical.Bottom
+			);
+
+			ApplyNativeClip(clippedFrame ?? Rect.Empty);
+			OnViewportUpdated(clippedFrame ?? Rect.Empty);
 		}
 
 		/// <summary>

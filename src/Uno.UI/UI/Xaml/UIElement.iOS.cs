@@ -47,18 +47,6 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		internal bool IsMeasureDirtyPath
-		{
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			get => false; // Not implemented on iOS yet
-		}
-
-		internal bool IsArrangeDirtyPath
-		{
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			get => false; // Not implemented on iOS yet
-		}
-
 		internal bool ClippingIsSetByCornerRadius { get; set; }
 
 		partial void ApplyNativeClip(Rect rect)
@@ -151,6 +139,13 @@ namespace Microsoft.UI.Xaml
 					(view as IFrameworkElement)?.SetSubviewsNeedLayout();
 				}
 			}
+		}
+
+		internal void ArrangeVisual(Rect finalRect, Rect? clippedFrame = default)
+		{
+			LayoutSlotWithMarginsAndAlignments = finalRect;
+			// TODO: clipped frame?
+			this.Frame = ViewHelper.LogicalToPhysicalPixels(finalRect);
 		}
 
 		internal global::Windows.Foundation.Point GetPosition(Point position, global::Microsoft.UI.Xaml.UIElement relativeTo)

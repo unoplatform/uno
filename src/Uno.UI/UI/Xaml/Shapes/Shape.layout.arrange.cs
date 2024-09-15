@@ -1,6 +1,6 @@
-﻿#nullable enable
+﻿#if !__NETSTD_REFERENCE__
+#nullable enable
 
-#if __SKIA__ || __WASM__
 using System;
 using System.Linq;
 using Windows.Foundation;
@@ -19,6 +19,20 @@ using NativeSingle = System.Double;
 #elif __WASM__
 using NativePath = Microsoft.UI.Xaml.Shapes.Shape;
 using NativeSingle = System.Double;
+#elif __IOS__
+using NativePath = CoreGraphics.CGPath;
+using ObjCRuntime;
+using NativeSingle = System.Runtime.InteropServices.NFloat;
+#elif __MACOS__
+using AppKit;
+using NativePath = CoreGraphics.CGPath;
+using ObjCRuntime;
+using NativeSingle = System.Runtime.InteropServices.NFloat;
+
+#elif __ANDROID__
+using NativePath = Android.Graphics.Path;
+using NativeSingle = System.Double;
+
 #endif
 
 namespace Microsoft.UI.Xaml.Shapes;
@@ -53,8 +67,17 @@ partial class Shape
 
 #if __SKIA__
 		Render(path, xScale, yScale, dX, dY);
-#elif __WASM__
+#elif __WASM__ || __ANDROID__
 		Render(path, stretchedSize, xScale, yScale, dX, dY);
+#elif __IOS__ || __MACOS__
+		// Finally render the shape in a Layer
+		var renderTransform = new CoreGraphics.CGAffineTransform(
+			(nfloat)xScale, 0,
+			0, (nfloat)yScale,
+			(nfloat)dX, (nfloat)dY);
+		var renderPath = new CoreGraphics.CGPath(path, renderTransform);
+
+		Render(renderPath, fillRule);
 #endif
 
 		return stretchedSize;

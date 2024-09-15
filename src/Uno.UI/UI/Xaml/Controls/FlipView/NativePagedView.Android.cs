@@ -25,36 +25,21 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			InitializeBinder();
 			LayoutParameters = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.MatchParent);
-			_layouter = new NativePagedViewLayouter(this);
 		}
-
-		private ILayouter _layouter;
-
-		ILayouter ILayouterElement.Layouter => _layouter;
-		Size ILayouterElement.LastAvailableSize => LayoutInformation.GetAvailableSize(this);
-		bool ILayouterElement.IsMeasureDirty => true;
-		bool ILayouterElement.IsFirstMeasureDoneAndManagedElement => false;
-		bool ILayouterElement.StretchAffectsMeasure => false;
-		bool ILayouterElement.IsMeasureDirtyPathDisabled => true;
 
 		protected override void OnMeasure(int widthMeasureSpec, int heightMeasureSpec)
 		{
-			var measuredSize = ((ILayouterElement)this).OnMeasureInternal(widthMeasureSpec, heightMeasureSpec);
-
-			var logicalMeasuredSize = measuredSize.PhysicalToLogicalPixels();
-
-			//We call ViewPager.OnMeasure here, because it creates the page views.
-			base.OnMeasure(
-				ViewHelper.SpecFromLogicalSize(logicalMeasuredSize.Width),
-				ViewHelper.SpecFromLogicalSize(logicalMeasuredSize.Height)
-			);
-
-			IFrameworkElementHelper.OnMeasureOverride(this);
+			base.OnMeasure(widthMeasureSpec, heightMeasureSpec);
 		}
 
-		void ILayouterElement.SetMeasuredDimensionInternal(int width, int height)
+		Size ILayouterElement.Measure(Size availableSize)
 		{
-			SetMeasuredDimension(width, height);
+			return default; // TODO
+		}
+
+		void ILayouterElement.Arrange(Rect finalRect)
+		{
+			// TODO
 		}
 
 		//TODO generated code
@@ -73,7 +58,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				_lastLayoutSize = newSize;
 
-				_layouter.Arrange(new global::Windows.Foundation.Rect(0, 0, newSize.Width, newSize.Height));
+				//_layouter.Arrange(new global::Windows.Foundation.Rect(0, 0, newSize.Width, newSize.Height));
 			}
 		}
 
@@ -99,48 +84,48 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public bool IsHeightConstrained(View requester) => (Parent as ILayoutConstraints)?.IsHeightConstrained(this) ?? false;
 
-		private class NativePagedViewLayouter : Layouter
-		{
+		//private class NativePagedViewLayouter : Layouter
+		//{
 
-			public NativePagedViewLayouter(NativePagedView view) : base(view) { }
+		//	public NativePagedViewLayouter(NativePagedView view) : base(view) { }
 
-			protected override string Name => Panel.Name;
+		//	protected override string Name => Panel.Name;
 
 
-			protected override void MeasureChild(View view, int widthSpec, int heightSpec)
-			{
-				(Panel as NativePagedView).MeasureChild(view, widthSpec, heightSpec);
-			}
+		//	protected override void MeasureChild(View view, int widthSpec, int heightSpec)
+		//	{
+		//		(Panel as NativePagedView).MeasureChild(view, widthSpec, heightSpec);
+		//	}
 
-			protected override Size ArrangeOverride(Size finalSize)
-			{
-				//Do nothing here. FrameworkElementMixins.OnLayout calls ViewPager.OnLayout, which lays out its visible page.
-				return finalSize;
-			}
+		//	protected override Size ArrangeOverride(Size finalSize)
+		//	{
+		//		//Do nothing here. FrameworkElementMixins.OnLayout calls ViewPager.OnLayout, which lays out its visible page.
+		//		return finalSize;
+		//	}
 
-			protected override Size MeasureOverride(Size availableSize)
-			{
-				var sizeThatFits = IFrameworkElementHelper.SizeThatFits(Panel, availableSize);
+		//	protected override Size MeasureOverride(Size availableSize)
+		//	{
+		//		var sizeThatFits = IFrameworkElementHelper.SizeThatFits(Panel, availableSize);
 
-				double maxChildWidth = 0f, maxChildHeight = 0f;
+		//		double maxChildWidth = 0f, maxChildHeight = 0f;
 
-				//Per the link, if the NativePagedView has no fixed size in a dimension, wrap it to the size of its largest child. - http://stackoverflow.com/questions/8394681/android-i-am-unable-to-have-viewpager-wrap-content
-				//This might be brittle if items have varying dimensions along the unfixed axis; one (hackish) solution would be to increase OffscreenPageLimit (the number of offscreen pages that are kept).
-				if (double.IsPositiveInfinity(sizeThatFits.Width) || double.IsPositiveInfinity(sizeThatFits.Height))
-				{
-					foreach (var child in this.GetChildren())
-					{
-						var desiredChildSize = MeasureChild(child, sizeThatFits);
-						maxChildWidth = Math.Max(maxChildWidth, desiredChildSize.Width);
-						maxChildHeight = Math.Max(maxChildHeight, desiredChildSize.Height);
-					}
-				}
+		//		//Per the link, if the NativePagedView has no fixed size in a dimension, wrap it to the size of its largest child. - http://stackoverflow.com/questions/8394681/android-i-am-unable-to-have-viewpager-wrap-content
+		//		//This might be brittle if items have varying dimensions along the unfixed axis; one (hackish) solution would be to increase OffscreenPageLimit (the number of offscreen pages that are kept).
+		//		if (double.IsPositiveInfinity(sizeThatFits.Width) || double.IsPositiveInfinity(sizeThatFits.Height))
+		//		{
+		//			foreach (var child in this.GetChildren())
+		//			{
+		//				var desiredChildSize = MeasureChild(child, sizeThatFits);
+		//				maxChildWidth = Math.Max(maxChildWidth, desiredChildSize.Width);
+		//				maxChildHeight = Math.Max(maxChildHeight, desiredChildSize.Height);
+		//			}
+		//		}
 
-				return new Size(
-					!double.IsPositiveInfinity(sizeThatFits.Width) ? sizeThatFits.Width : maxChildWidth,
-					!double.IsPositiveInfinity(sizeThatFits.Height) ? sizeThatFits.Height : maxChildHeight
-				);
-			}
-		}
+		//		return new Size(
+		//			!double.IsPositiveInfinity(sizeThatFits.Width) ? sizeThatFits.Width : maxChildWidth,
+		//			!double.IsPositiveInfinity(sizeThatFits.Height) ? sizeThatFits.Height : maxChildHeight
+		//		);
+		//	}
+		//}
 	}
 }

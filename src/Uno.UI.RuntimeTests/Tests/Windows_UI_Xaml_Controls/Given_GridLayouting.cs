@@ -2133,13 +2133,7 @@ public partial class Given_GridLayouting
 #if !WINAPPSDK
 	private static Size GetUnclippedDesiredSize(UIElement element)
 	{
-#if UNO_REFERENCE_API
 		return element.m_unclippedDesiredSize;
-#else
-		var layouterElement = (ILayouterElement)element;
-		var layouter = (Layouter)layouterElement.Layouter;
-		return layouter._unclippedDesiredSize;
-#endif
 	}
 #endif
 

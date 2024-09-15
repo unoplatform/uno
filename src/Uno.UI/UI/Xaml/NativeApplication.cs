@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Text;
 using Android.App;
 using Java.Interop;
-using Uno.UI.Services;
 using Windows.ApplicationModel.Activation;
 using Windows.UI.StartScreen;
 using Android.Content;

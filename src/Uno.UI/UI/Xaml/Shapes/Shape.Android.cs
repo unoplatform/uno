@@ -37,17 +37,17 @@ namespace Microsoft.UI.Xaml.Shapes
 			}
 
 			//Drawing paths on the canvas does not respect the canvas' ClipBounds
-			if (ClippedFrame is { } clippedFrame)
-			{
-				clippedFrame = clippedFrame.LogicalToPhysicalPixels();
-				if (FrameRoundingAdjustment is { } fra)
-				{
-					clippedFrame.Width += fra.Width;
-					clippedFrame.Height += fra.Height;
-				}
+			//if (ClippedFrame is { } clippedFrame)
+			//{
+			//	clippedFrame = clippedFrame.LogicalToPhysicalPixels();
+			//	if (FrameRoundingAdjustment is { } fra)
+			//	{
+			//		clippedFrame.Width += fra.Width;
+			//		clippedFrame.Height += fra.Height;
+			//	}
 
-				canvas.ClipRect(clippedFrame.ToRectF());
-			}
+			//	canvas.ClipRect(clippedFrame.ToRectF());
+			//}
 
 			DrawFill(canvas);
 			DrawStroke(canvas);

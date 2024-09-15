@@ -22,10 +22,9 @@ partial class UIElement
 	internal Size m_desiredSize;
 	internal Rect m_finalRect;
 	//internal Point m_offset;
-#if UNO_REFERENCE_API
-	// On mobile, stored in Layouter
+
 	internal Size m_unclippedDesiredSize;
-#endif
+
 	internal Size m_size;
 
 	// Stores the layout clip, which is always an axis-aligned rect.
