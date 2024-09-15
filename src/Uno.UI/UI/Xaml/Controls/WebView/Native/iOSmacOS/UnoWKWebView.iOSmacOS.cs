@@ -332,6 +332,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 		 */
 		var controller = webview.FindViewController();
 
+#if __IOS__
 		var alert = UIKit.UIAlertController.Create(string.Empty, message, UIKit.UIAlertControllerStyle.Alert);
 		alert.AddAction(UIKit.UIAlertAction.Create(OkString, UIKit.UIAlertActionStyle.Default,
 			okAction => completionHandler(true)));
@@ -340,6 +341,20 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 			cancelAction => completionHandler(false)));
 
 		controller?.PresentViewController(alert, true, null);
+#else
+		var alert = new NSAlert()
+		{
+			AlertStyle = NSAlertStyle.Informational,
+			InformativeText = message,
+		};
+		alert.AddButton(OkString);
+		alert.AddButton(CancelString);
+		alert.BeginSheetForResponse(webview.Window, (result) =>
+		{
+			var okButtonClicked = result == 1000;
+			completionHandler(okButtonClicked);
+		});
+#endif
 	}
 
 	private void OnRunJavaScriptTextInputPanel(WKWebView webview, string prompt, string? defaultText, WKFrameInfo frame, Action<string> completionHandler)
@@ -349,6 +364,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 			this.Log().Debug($"OnRunJavaScriptTextInputPanel: {prompt}, {defaultText}");
 		}
 
+#if __IOS__
 		var alert = UIKit.UIAlertController.Create(string.Empty, prompt, UIKit.UIAlertControllerStyle.Alert);
 		UITextField? alertTextField = null;
 
@@ -366,6 +382,25 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 
 		var controller = webview.FindViewController();
 		controller?.PresentViewController(alert, true, null);
+#else
+		var alert = new NSAlert()
+		{
+			AlertStyle = NSAlertStyle.Informational,
+			InformativeText = prompt,
+		};
+		var textField = new NSTextField(new CGRect(0, 0, 300, 20))
+		{
+			PlaceholderString = defaultText,
+		};
+		alert.AccessoryView = textField;
+		alert.AddButton(OkString);
+		alert.AddButton(CancelString);
+		alert.BeginSheetForResponse(webview.Window, (result) =>
+		{
+			var okButtonClicked = result == 1000;
+			completionHandler(okButtonClicked ? textField.StringValue : null);
+		});
+#endif
 	}
 
 	/// <summary>
