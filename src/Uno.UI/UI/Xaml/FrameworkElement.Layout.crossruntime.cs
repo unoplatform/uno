@@ -994,7 +994,8 @@ namespace Microsoft.UI.Xaml
 			// The property we currently know it has an effect is Resources
 			if (Resources is not null)
 			{
-				foreach (var resource in Resources.Values)
+				// Using ValuesInternal to avoid Enumerator boxing
+				foreach (var resource in Resources.ValuesInternal)
 				{
 					if (resource is FrameworkElement resourceAsUIElement)
 					{

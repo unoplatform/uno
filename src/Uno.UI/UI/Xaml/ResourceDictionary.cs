@@ -522,6 +522,8 @@ namespace Microsoft.UI.Xaml
 		// TODO: this doesn't handle lazy initializers or aliases
 		public global::System.Collections.Generic.ICollection<object> Values => _values.Values;
 
+		internal SpecializedResourceDictionary.ValueCollection ValuesInternal => _values.Values;
+
 		public void Add(global::System.Collections.Generic.KeyValuePair<object, object> item) => Add(item.Key, item.Value);
 
 		public bool Contains(global::System.Collections.Generic.KeyValuePair<object, object> item) => _values.ContainsKey(new ResourceKey(item.Key));
