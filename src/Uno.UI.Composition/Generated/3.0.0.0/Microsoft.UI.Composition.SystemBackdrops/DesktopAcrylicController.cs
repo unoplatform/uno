@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Composition.SystemBackdrops
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class DesktopAcrylicController : global::Microsoft.UI.Composition.SystemBackdrops.ISystemBackdropController, global::System.IDisposable, global::Microsoft.UI.Composition.SystemBackdrops.ISystemBackdropControllerWithTargets, global::Microsoft.UI.IClosableNotifier
@@ -180,7 +180,7 @@ namespace Microsoft.UI.Composition.SystemBackdrops
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController.DesktopAcrylicController()
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static bool IsSupported()
 		{
