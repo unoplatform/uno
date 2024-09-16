@@ -16,7 +16,7 @@ $external_docs = @{
     "uno.resizetizer"    = "dce3eabef076e37b38fe058b427eb84f1d19b881" #latest main commit
     "uno.uitest"         = "9669fd2783187d06c36dd6a717c1b9f08d1fa29c" #latest master commit
     "uno.extensions"     = "9dd31137f4aeed1f004613387f4edf2b5f08e609" #latest release branch commit
-    "workshops"          = "e3c2a11a588b184d8cd3a6f88813e5615cca891d" #latest master commit
+    "workshops"          = "df05737f9e3088a4e60179f6fa2cd2fc6866d2c7" #latest master commit
     "uno.samples"        = "ef30b74b84bd470521ae1383b49ced4afcfeab1d" #latest master commit
 }
 
