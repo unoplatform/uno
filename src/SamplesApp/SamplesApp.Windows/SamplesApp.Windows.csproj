@@ -11,6 +11,9 @@
 		<UseWinUI>true</UseWinUI>
 		<EnableMsixTooling>true</EnableMsixTooling>
 		<DefineConstants>$(DefineConstants);WINAPPSDK</DefineConstants>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
+		<WindowsSdkPackageVersion>10.0.19041.38</WindowsSdkPackageVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -40,8 +43,8 @@
 		<PackageReference Include="Microsoft.Graph" Version="5.56.0" />
 		<PackageReference Include="Microsoft.Identity.Client" Version="4.61.3" />
 
-		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.5.240227000" />
-		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.756" />
+		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.6.240829007" />
+		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1" />
 		<Manifest Include="$(ApplicationManifest)" />
 	</ItemGroup>
 
@@ -75,6 +78,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics3DGL\Uno.WinUI.Graphics3DGL.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.Windows.csproj">
 			<Project>{2569663d-293a-4a1d-bb84-aa8c7b4b7f92}</Project>
 			<Name>Uno.UI.MSAL</Name>

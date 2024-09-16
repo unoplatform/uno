@@ -1,10 +1,7 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Uno.UI.RuntimeTests.Helpers;
-using MUXControlsTestApp.Utilities;
-using Private.Infrastructure;
+﻿using Common;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
-using Common;
+using Private.Infrastructure;
 using Uno.UI.RuntimeTests;
 using System.Threading.Tasks;
 
@@ -22,16 +19,13 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 		public async Task VerifyFontFamilyForChevron()
 		{
 			Microsoft/* UWP don't rename */.UI.Xaml.Controls.ToggleSplitButton toggleSplitButton = null;
-			using (StyleHelper.UseFluentStyles())
-			{
-				toggleSplitButton = new Microsoft/* UWP don't rename */.UI.Xaml.Controls.ToggleSplitButton();
-				TestServices.WindowHelper.WindowContent = toggleSplitButton;
-				await TestServices.WindowHelper.WaitForIdle();
+			toggleSplitButton = new Microsoft/* UWP don't rename */.UI.Xaml.Controls.ToggleSplitButton();
+			TestServices.WindowHelper.WindowContent = toggleSplitButton;
+			await TestServices.WindowHelper.WaitForIdle();
 
-				var secondayButton = toggleSplitButton.GetTemplateChild("SecondaryButton");
-				var font = ((secondayButton as Button).Content as TextBlock).FontFamily;
-				Verify.AreEqual((FontFamily)Application.Current.Resources["SymbolThemeFontFamily"], font);
-			}
+			var secondayButton = toggleSplitButton.GetTemplateChild("SecondaryButton");
+			var font = ((secondayButton as Button).Content as TextBlock).FontFamily;
+			Verify.AreEqual((FontFamily)Application.Current.Resources["SymbolThemeFontFamily"], font);
 		}
 	}
 }

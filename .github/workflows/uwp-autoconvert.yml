@@ -13,7 +13,7 @@ concurrency:
   cancel-in-progress: true
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  UnoCheck_Version: '1.26.0-dev.6'
+  UnoCheck_Version: '1.26.0-dev.28'
 
 jobs:
   build:
@@ -69,7 +69,7 @@ jobs:
         & dotnet tool update --global uno.check --version $env:UnoCheck_Version --add-source https://api.nuget.org/v3/index.json
       name: Install Uno Check
     - run: | 
-        & uno-check -v --ci --non-interactive --fix --skip androidsdk --skip androidemulator --skip xcode --skip gtk3 --skip vswin --skip vsmac --pre-major
+        & uno-check -v --ci --non-interactive --fix --skip androidemulator --skip xcode --skip gtk3 --skip vswin --skip vsmac --pre-major
       name: Run uno-check
 
     - name: Convert source tree to UWP
@@ -77,10 +77,15 @@ jobs:
         cd $env:GITHUB_WORKSPACE\src\Uno.WinUIRevert
         dotnet run "$env:GITHUB_WORKSPACE"
 
+    - name: Workloads list
+      run: |
+        dotnet workload list
+
     - name: Run API Sync Tool
       run: |
         cd $env:GITHUB_WORKSPACE\build
-        msbuild Uno.UI.Build.csproj /v:m "/p:CombinedConfiguration=Release|AnyCPU" /m /t:RunAPISyncTool /bl
+        msbuild Uno.UI.Build.csproj /v:m "/p:CombinedConfiguration=Release|AnyCPU" /m /t:RunAPISyncTool /bl:$env:GITHUB_WORKSPACE\artifacts-logs\msbuild.binlog
+
     - name: Turn script debugging on
       if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
       run: Set-PSDebug -Trace 1
@@ -95,3 +100,10 @@ jobs:
     - name: Push to repository
       if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
       run: git push origin $env:GITHUB_REF_NAME`:generated/$env:GITHUB_REF_NAME/uwp-autoconvert -f
+
+    - name: Upload Logs
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: logs
+        path: .\artifacts-logs

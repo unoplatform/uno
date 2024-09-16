@@ -288,15 +288,8 @@ namespace Uno.UI.SourceGenerators.TSBindings
 
 									if (isElementString)
 									{
-										using (sb.BlockInvariant("if(value !== 0)"))
-										{
-											sb.AppendLineIndented($"ret.{field.Name}.push({elementTSType}(MonoRuntime.conv_string(value)));");
-										}
-										sb.AppendLineIndented("else");
-										using (sb.BlockInvariant(""))
-										{
-											sb.AppendLineIndented($"ret.{field.Name}.push(null);");
-										}
+										// array string conversion has been removed from net9
+										throw new NotSupportedException("String is not supported anymore");
 									}
 									else
 									{

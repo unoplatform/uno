@@ -1865,6 +1865,7 @@
 			<Member fullName="Uno.Foundation.Logging" reason="Already pulled transitively"/>
 		</Assemblies>
 		<Types>
+			<Member fullName="Microsoft.UI.Xaml.Core.Direct.XamlDirectContract" reason="Not in WinUI" />
 		</Types>
 
 		<Events>
@@ -1893,6 +1894,7 @@
 			<Member fullName="System.Void Windows.UI.Xaml.UnhandledExceptionEventArgs..ctor(System.Exception e, System.Boolean fatal)" reason="Not in WinUI" />
 			<Member fullName="System.Void Microsoft.UI.Xaml.UnhandledExceptionEventArgs..ctor(System.Exception e, System.Boolean fatal)" reason="Not in WinUI" />
 
+			<Member fullName="System.Void Microsoft.Web.WebView2.Core.CoreWebView2.set_DocumentTitle(System.String value)" reason="Does not exist in UWP" />
 		</Methods>
 	</IgnoreSet>
 	<![CDATA[

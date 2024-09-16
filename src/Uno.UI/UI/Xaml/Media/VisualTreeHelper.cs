@@ -222,14 +222,28 @@ namespace Microsoft.UI.Xaml.Media
 			return Array.Empty<Popup>();
 		}
 
-		private static IReadOnlyList<Popup> GetOpenFlyoutPopups(XamlRoot xamlRoot) =>
-			GetOpenPopups(xamlRoot.VisualTree)
+		private static IReadOnlyList<Popup> GetOpenFlyoutPopups(XamlRoot xamlRoot)
+		{
+			if (xamlRoot is null)
+			{
+				throw new ArgumentNullException(nameof(xamlRoot));
+			}
+
+			return GetOpenPopups(xamlRoot.VisualTree)
 				.Where(p => p.IsForFlyout)
 				.ToList()
 				.AsReadOnly();
+		}
 
-		public static IReadOnlyList<Popup> GetOpenPopupsForXamlRoot(XamlRoot xamlRoot) =>
-			GetOpenPopups(xamlRoot.VisualTree);
+		public static IReadOnlyList<Popup> GetOpenPopupsForXamlRoot(XamlRoot xamlRoot)
+		{
+			if (xamlRoot is null)
+			{
+				throw new ArgumentNullException(nameof(xamlRoot));
+			}
+
+			return GetOpenPopups(xamlRoot.VisualTree);
+		}
 
 		private static IReadOnlyList<Popup> GetOpenPopups(VisualTree visualTree)
 		{
@@ -261,6 +275,11 @@ namespace Microsoft.UI.Xaml.Media
 
 		internal static void CloseAllPopups(XamlRoot xamlRoot)
 		{
+			if (xamlRoot is null)
+			{
+				throw new ArgumentNullException(nameof(xamlRoot));
+			}
+
 			foreach (var popup in GetOpenPopups(xamlRoot.VisualTree))
 			{
 				popup.IsOpen = false;
@@ -269,6 +288,11 @@ namespace Microsoft.UI.Xaml.Media
 
 		internal static void CloseLightDismissPopups(XamlRoot xamlRoot)
 		{
+			if (xamlRoot is null)
+			{
+				throw new ArgumentNullException(nameof(xamlRoot));
+			}
+
 			foreach (var popup in GetOpenPopups(xamlRoot.VisualTree).Where(p => p.IsLightDismissEnabled))
 			{
 				popup.IsOpen = false;
@@ -369,6 +393,31 @@ namespace Microsoft.UI.Xaml.Media
 		{
 #if __ANDROID__
 			view.AddView(child);
+
+			// Reset to original (invalidated) state
+			child.ResetLayoutFlags();
+			if (view.IsMeasureDirtyPathDisabled)
+			{
+				FrameworkElementHelper.SetUseMeasurePathDisabled(child); // will invalidate too
+			}
+			else
+			{
+				child.InvalidateMeasure();
+			}
+
+			if (view.IsArrangeDirtyPathDisabled)
+			{
+				FrameworkElementHelper.SetUseArrangePathDisabled(child); // will invalidate too
+			}
+			else
+			{
+				child.InvalidateArrange();
+			}
+
+			// Force a new measure of this element (the parent of the new child)
+			view.InvalidateMeasure();
+			view.InvalidateArrange();
+
 #elif __IOS__ || __MACOS__
 			view.AddSubview(child);
 #elif __CROSSRUNTIME__

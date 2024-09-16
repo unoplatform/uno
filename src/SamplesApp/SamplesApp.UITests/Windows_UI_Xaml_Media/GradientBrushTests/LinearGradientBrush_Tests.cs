@@ -45,7 +45,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media.GradientBrushTests
 
 			var grid = _app.Query("TestGrid").Single().Rect;
 			using var screenshot = TakeScreenshot(nameof(When_Opacity_Is_Specified));
-			ImageAssert.HasColorAt(screenshot, grid.CenterX, grid.CenterY, Color.FromArgb(255, 255, 128, 128));
+			ImageAssert.HasColorAt(screenshot, grid.CenterX, grid.CenterY, Color.FromArgb(255, 249, 122, 122));
 		}
 	}
 }

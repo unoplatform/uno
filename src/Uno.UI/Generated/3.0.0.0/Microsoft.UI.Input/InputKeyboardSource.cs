@@ -10,6 +10,8 @@ namespace Microsoft.UI.Input
 	{
 		// Forced skipping of method Microsoft.UI.Input.InputKeyboardSource.KeyDown.remove
 		// Forced skipping of method Microsoft.UI.Input.InputKeyboardSource.CharacterReceived.add
+		// Forced skipping of method Microsoft.UI.Input.InputKeyboardSource.CharacterReceived.remove
+		// Forced skipping of method Microsoft.UI.Input.InputKeyboardSource.ContextMenuKey.add
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Microsoft.UI.Input.VirtualKeyStates GetCurrentKeyState(global::Windows.System.VirtualKey virtualKey)
@@ -17,10 +19,8 @@ namespace Microsoft.UI.Input
 			throw new global::System.NotImplementedException("The member VirtualKeyStates InputKeyboardSource.GetCurrentKeyState(VirtualKey virtualKey) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VirtualKeyStates%20InputKeyboardSource.GetCurrentKeyState%28VirtualKey%20virtualKey%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.InputKeyboardSource.ContextMenuKey.add
-		// Forced skipping of method Microsoft.UI.Input.InputKeyboardSource.ContextMenuKey.remove
 		// Forced skipping of method Microsoft.UI.Input.InputKeyboardSource.KeyDown.add
-		// Forced skipping of method Microsoft.UI.Input.InputKeyboardSource.CharacterReceived.remove
+		// Forced skipping of method Microsoft.UI.Input.InputKeyboardSource.ContextMenuKey.remove
 		// Forced skipping of method Microsoft.UI.Input.InputKeyboardSource.KeyUp.add
 		// Forced skipping of method Microsoft.UI.Input.InputKeyboardSource.KeyUp.remove
 		// Forced skipping of method Microsoft.UI.Input.InputKeyboardSource.SystemKeyDown.add

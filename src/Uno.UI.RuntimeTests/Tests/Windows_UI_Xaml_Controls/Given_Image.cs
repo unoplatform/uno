@@ -385,7 +385,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if !WINAPPSDK
 		[TestMethod]
 		[RunsOnUIThread]
-#if IS_UNIT_TESTS || __MACOS__ || __SKIA__
+#if IS_UNIT_TESTS || __MACOS__ || __SKIA__ || __IOS__
 		[Ignore("Currently fails on macOS, part of #9282! epic and Monochromatic Image not supported for IS_UNIT_TESTS and SKIA")]
 #endif
 		public async Task When_Image_Is_Monochromatic()

@@ -1311,7 +1311,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.ReleaseRight();
 			await WindowHelper.WaitForIdle();
 
-			mouse.MoveBy(5, 5); // should be over first menu item now
+			mouse.MoveBy(10, 10); // should be over first menu item now
 			mouse.Press();
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
@@ -1358,7 +1358,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.ReleaseRight();
 			await WindowHelper.WaitForIdle();
 
-			mouse.MoveBy(5, 5); // should be over first menu item now
+			mouse.MoveBy(10, 10); // should be over first menu item now
 			mouse.Press();
 			mouse.Release();
 			await WindowHelper.WaitForIdle();

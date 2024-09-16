@@ -18,11 +18,17 @@ namespace Microsoft.UI.Xaml
 {
 	public sealed partial class DependencyProperty
 	{
-		private class DependencyPropertyRegistry
+		internal class DependencyPropertyRegistry
 		{
+			public static DependencyPropertyRegistry Instance { get; } = new DependencyPropertyRegistry();
+
 			// This dictionary has a single static instance that is kept for the lifetime of the whole app.
 			// So we don't use pooling to not cause pool exhaustion by renting without returning.
 			private readonly HashtableEx _entries = new HashtableEx(FastTypeComparer.Default, usePooling: false);
+
+			private DependencyPropertyRegistry()
+			{
+			}
 
 			internal bool TryGetValue(Type type, string name, out DependencyProperty? result)
 			{
@@ -38,8 +44,6 @@ namespace Microsoft.UI.Xaml
 				result = null;
 				return false;
 			}
-
-			internal void Clear() => _entries.Clear();
 
 			internal void Add(Type type, string name, DependencyProperty property)
 			{
@@ -67,7 +71,7 @@ namespace Microsoft.UI.Xaml
 				}
 			}
 
-			private bool TryGetTypeTable(Type type, out HashtableEx? table)
+			internal bool TryGetTypeTable(Type type, out HashtableEx? table)
 			{
 				if (_entries.TryGetValue(type, out var dictionaryObject))
 				{

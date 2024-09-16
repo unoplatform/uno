@@ -195,4 +195,6 @@
 			<ServerAddress></ServerAddress>
 		</PropertyGroup>
 	</Target>
+
+	<Import Project="Workaround-43339.targets" />
 </Project>

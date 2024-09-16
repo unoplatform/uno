@@ -14,88 +14,58 @@ using Microsoft.UI.Xaml.Data;
 namespace Microsoft.UI.Xaml
 {
 	/// <summary>
-	/// Represents the stack of values used by the Dependency Property Value Precedence system
+	/// Represents the the value for a given dependency property on a specific DependencyObject instance.
 	/// </summary>
-	internal class DependencyPropertyDetails : IEnumerable<object?>, IEnumerable, IDisposable
+	/// <remarks>
+	/// This class always stores the inherited value.
+	/// For the rest of precedences, they are not all stored.
+	/// NOTE: ModifiedValue means either coerced or animated.
+	/// BaseValue means not coerced and not animated.
+	/// _value could be an instance of ModifiedValue (which holds animated and coercion values, as well as the base value).
+	/// Or if it's not ModifiedValue, then it's directly the base value.
+	/// </remarks>
+	internal class DependencyPropertyDetails : IDisposable
 	{
-		private DependencyPropertyValuePrecedences _highestPrecedence = DependencyPropertyValuePrecedences.DefaultValue;
-		private readonly Type _dependencyObjectType;
-		private object? _fastLocalValue;
+		private DependencyPropertyValuePrecedences _baseValueSource = DependencyPropertyValuePrecedences.DefaultValue;
+		private object? _value = DependencyProperty.UnsetValue;
+		private object? _inheritedValue = DependencyProperty.UnsetValue;
 		private BindingExpression? _binding;
-		private object?[]? _stack;
 		private Flags _flags;
 		private DependencyPropertyCallbackManager? _callbackManager;
-
-		private const int DefaultValueIndex = (int)DependencyPropertyValuePrecedences.DefaultValue;
-
-		// We are not storing DefaultValue here in DependencyPropertyDetails. So StackSize is exactly DefaultValueIndex
-		private const int StackSize = DefaultValueIndex;
-
-		private static readonly LinearArrayPool<object?> _pool = LinearArrayPool<object?>.CreateAutomaticallyManaged(StackSize, 1);
-
-		private static readonly object[] _unsetStack;
-
-		private static int _localCanDefeatAnimationSuppressed;
-
-		static DependencyPropertyDetails()
-		{
-			_unsetStack = new object[StackSize];
-			for (var i = 0; i < StackSize; i++)
-			{
-				_unsetStack[i] = DependencyProperty.UnsetValue;
-			}
-		}
 
 		internal void CloneToForHotReload(DependencyPropertyDetails other)
 		{
 			// If the old instance has a local value **and** the new instance doesn't, then copy the local value.
 			// We shouldn't be copying local value if the new instance already has it set. The new value in the new instance
 			// should not be overwritten as it's more likely to be more correct.
-			var oldValue = this.GetValue(DependencyPropertyValuePrecedences.Local);
-			if (oldValue != DependencyProperty.UnsetValue &&
-				other.GetValue(DependencyPropertyValuePrecedences.Local) == DependencyProperty.UnsetValue)
+			if (this._baseValueSource == DependencyPropertyValuePrecedences.Local &&
+				other._baseValueSource > DependencyPropertyValuePrecedences.Local)
 			{
-				other.SetValue(oldValue, DependencyPropertyValuePrecedences.Local);
+				other.SetValue(this.GetBaseValue(), DependencyPropertyValuePrecedences.Local);
 			}
 		}
 
 		public void Dispose()
 		{
 			_callbackManager?.Dispose();
-
-			if (_stack != null)
-			{
-				// Note that `clearArray` is required here to avoid pooled arrays to leak
-				// instances from set property values.
-				_pool.Return(_stack, clearArray: true);
-			}
 		}
 
 		public DependencyProperty Property { get; }
 
-		internal DependencyPropertyDetails(DependencyProperty property, Type dependencyObjectType, bool isTemplatedParentOrDataContext)
+		internal DependencyPropertyDetails(DependencyProperty property, bool isTemplatedParentOrDataContext)
 		{
 			Property = property;
-			_dependencyObjectType = dependencyObjectType;
 
-			GetPropertyInheritanceConfiguration(property, isTemplatedParentOrDataContext, out var hasInherits, out var hasValueInherits, out var hasValueDoesNotInherits);
+			GetPropertyInheritanceConfiguration(property, isTemplatedParentOrDataContext, out var hasValueInherits, out var hasValueDoesNotInherits);
 
 			_flags |= property.HasWeakStorage ? Flags.WeakStorage : Flags.None;
 			_flags |= hasValueInherits ? Flags.ValueInherits : Flags.None;
 			_flags |= hasValueDoesNotInherits ? Flags.ValueDoesNotInherit : Flags.None;
-			_flags |= hasInherits ? Flags.Inherits : Flags.None;
 		}
-
-		internal static void SuppressLocalCanDefeatAnimations()
-			=> _localCanDefeatAnimationSuppressed++;
-
-		internal static void ContinueLocalCanDefeatAnimations()
-			=> _localCanDefeatAnimationSuppressed--;
 
 		private void GetPropertyInheritanceConfiguration(
 			DependencyProperty property,
 			bool isTemplatedParentOrDataContext,
-			out bool hasInherits,
 			out bool hasValueInherits,
 			out bool hasValueDoesNotInherit)
 		{
@@ -104,7 +74,6 @@ namespace Microsoft.UI.Xaml
 				// TemplatedParent is a DependencyObject but does not propagate datacontext
 				hasValueInherits = false;
 				hasValueDoesNotInherit = true;
-				hasInherits = true;
 				return;
 			}
 
@@ -112,13 +81,79 @@ namespace Microsoft.UI.Xaml
 			{
 				hasValueInherits = propertyMetadata.Options.HasValueInheritsDataContext();
 				hasValueDoesNotInherit = propertyMetadata.Options.HasValueDoesNotInheritDataContext();
-				hasInherits = propertyMetadata.Options.HasInherits();
 				return;
 			}
 
 			hasValueInherits = false;
 			hasValueDoesNotInherit = false;
-			hasInherits = false;
+		}
+
+		private ModifiedValue EnsureModifiedValue()
+		{
+			// If we already have ModifiedValue, then return it.
+			if (_value is ModifiedValue modifiedValue)
+			{
+				return modifiedValue;
+			}
+
+			// Otherwise, create a new ModifiedValue, and move the BaseValue to it.
+			modifiedValue = new ModifiedValue();
+			modifiedValue.SetBaseValue(GetBaseValue(), _baseValueSource);
+			_value = modifiedValue;
+			return modifiedValue;
+		}
+
+		private void SetBaseValue(object? value, DependencyPropertyValuePrecedences precedence)
+		{
+			// Always set inherited value.
+			// This is needed for now to always be able to restore inherited value efficiently when higher precedences are cleared.
+			if (precedence == DependencyPropertyValuePrecedences.Inheritance)
+			{
+				_inheritedValue = value;
+			}
+
+			// We are setting or unsetting a value for precedence lower than our current.
+			// We need to do nothing.
+			if (precedence > _baseValueSource)
+			{
+				return;
+			}
+
+			if (value != DependencyProperty.UnsetValue)
+			{
+				// If we are setting a value with precedence higher than our current. Then update the current precedence.
+				_baseValueSource = precedence;
+			}
+			else
+			{
+				// If we are unsetting the current highest precedence, then
+				// update the highest precedence to either DefaultValue or Inheritance depending on whether we have an inherited value.
+				// Caller will re-evaluate base value. For example, if we are unsetting Local value, the base value could be a style.
+				// It's the caller responsibility to evaluate styles and set the base value again.
+				if (_baseValueSource == precedence)
+				{
+					// Caller will re-evaluate base value.
+					_baseValueSource = _inheritedValue == DependencyProperty.UnsetValue
+						? DependencyPropertyValuePrecedences.DefaultValue
+						: DependencyPropertyValuePrecedences.Inheritance;
+				}
+			}
+
+			if (_value is ModifiedValue modifiedValue)
+			{
+				// If our value is ModifiedValue, then the BaseValue is stored there.
+				modifiedValue.SetBaseValue(value, precedence);
+
+				if (_baseValueSource == DependencyPropertyValuePrecedences.Inheritance)
+				{
+					modifiedValue.SetBaseValue(_inheritedValue, DependencyPropertyValuePrecedences.Inheritance);
+				}
+			}
+			else
+			{
+				// Otherwise, the BaseValue is stored directly in the _value field.
+				_value = _baseValueSource == DependencyPropertyValuePrecedences.Inheritance ? _inheritedValue : value;
+			}
 		}
 
 		/// <summary>
@@ -130,100 +165,29 @@ namespace Microsoft.UI.Xaml
 		{
 			Property.ValidateValue(value);
 
-			if (_localCanDefeatAnimationSuppressed == 0 &&
-				precedence == DependencyPropertyValuePrecedences.Local &&
-				_highestPrecedence == DependencyPropertyValuePrecedences.Animations &&
-				value is not UnsetValue)
-			{
-				_flags |= Flags.LocalValueNewerThanAnimationsValue;
-			}
-			else
-			{
-				// This might not make much sense, but this is what we are seeing in WinUI code.
-				// See https://github.com/unoplatform/uno/issues/5168#issuecomment-1948115761
-				// If it turned out there is more complexity going on in WinUI, we can adjust as needed.
-				_flags &= ~Flags.LocalValueNewerThanAnimationsValue;
-			}
-
-			if (!SetValueFast(value, precedence))
-			{
-				SetValueFull(value, precedence);
-			}
-		}
-
-		private void SetValueFull(object? value, DependencyPropertyValuePrecedences precedence)
-		{
-			var valueIsUnsetValue = value == DependencyProperty.UnsetValue;
-
-			var stackAlias = Stack;
-
 			if (HasWeakStorage)
 			{
-				if (stackAlias[(int)precedence] is ManagedWeakReference mwr)
-				{
-					WeakReferencePool.ReturnWeakReference(this, mwr);
-				}
-
-				stackAlias[(int)precedence] = Validate(value);
+				value = Validate(value);
 			}
 			else
 			{
-				stackAlias[(int)precedence] = ValidateNoWrap(value);
+				value = ValidateNoWrap(value);
 			}
 
-			// After setting the value, we need to update the current highest precedence if needed
-			// If a higher value precedence was set, then this is the new highest
-			if (!valueIsUnsetValue && precedence < _highestPrecedence)
+			switch (precedence)
 			{
-				_highestPrecedence = precedence;
-				return;
+				case DependencyPropertyValuePrecedences.Coercion:
+					EnsureModifiedValue().CoercedValue = value;
+					break;
+
+				case DependencyPropertyValuePrecedences.Animations:
+					EnsureModifiedValue().SetAnimatedValue(value);
+					break;
+
+				default:
+					SetBaseValue(value, precedence);
+					break;
 			}
-
-			// If we were unsetting the current highest precedence value, we need to find the next highest
-			if (valueIsUnsetValue && precedence == _highestPrecedence)
-			{
-				// Start from current precedence and find next highest
-				for (int i = (int)precedence; i < (int)DependencyPropertyValuePrecedences.DefaultValue; i++)
-				{
-					if (stackAlias[i] != DependencyProperty.UnsetValue)
-					{
-						_highestPrecedence = (DependencyPropertyValuePrecedences)i;
-						return;
-					}
-				}
-
-				_highestPrecedence = DependencyPropertyValuePrecedences.DefaultValue;
-			}
-		}
-
-		private bool SetValueFast(object? value, DependencyPropertyValuePrecedences precedence)
-		{
-			if (_stack == null && precedence == DependencyPropertyValuePrecedences.Local)
-			{
-				var valueIsUnsetValue = value == DependencyProperty.UnsetValue;
-
-				if (HasWeakStorage)
-				{
-					if (_fastLocalValue is ManagedWeakReference mwr2)
-					{
-						WeakReferencePool.ReturnWeakReference(this, mwr2);
-					}
-
-					_fastLocalValue = Validate(value);
-				}
-				else
-				{
-					_fastLocalValue = ValidateNoWrap(value);
-				}
-
-				_highestPrecedence = valueIsUnsetValue
-					? DependencyPropertyValuePrecedences.DefaultValue
-					: DependencyPropertyValuePrecedences.Local;
-
-				return true;
-			}
-
-			return false;
 		}
 
 		internal BindingExpression? GetBinding()
@@ -246,105 +210,47 @@ namespace Microsoft.UI.Xaml
 		/// Gets the value at the current highest precedence level
 		/// </summary>
 		/// <returns>The value at the current highest precedence level</returns>
-		internal object? GetValue()
-			// Comment originates from WinUI source code (CModifiedValue::GetEffectiveValue)
-			// If a local value has been set after an animated value, the local
-			// value has precedence. This is different from WPF and is done because
-			// some legacy SL apps depend on this and because SL Animation thinks that
-			// it is better design for an animation in filling period to be trumped by a
-			// local value. In the active period of an animation, the next animated
-			// value will take precedence over the old local value.
-			=> GetValue(_highestPrecedence == DependencyPropertyValuePrecedences.Animations && (_flags & Flags.LocalValueNewerThanAnimationsValue) != 0
-				? DependencyPropertyValuePrecedences.Local
-				: _highestPrecedence);
+		internal object? GetEffectiveValue()
+			=> Unwrap(_value is ModifiedValue modifiedValue ? modifiedValue.GetEffectiveValue() : _value);
 
-		/// <summary>
-		/// Gets the value at a given precedence level
-		/// </summary>
-		/// <param name="precedence">The precedence level to get the value at</param>
-		/// <returns>The value at a given precedence level</returns>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		internal object? GetValue(DependencyPropertyValuePrecedences precedence)
-		{
-			if (precedence == DependencyPropertyValuePrecedences.DefaultValue)
-			{
-				// Caller will calculate the default value.
-				// TODO: Consider refactoring the code such that we don't get to this code path with DefaultValue precedence
-				return UnsetValue.Instance;
-			}
+		internal object? GetBaseValue()
+			=> Unwrap(_value is ModifiedValue modifiedValue ? modifiedValue.GetBaseValue() : _value);
 
-			if (_stack == null)
-			{
-				return precedence switch
-				{
-					DependencyPropertyValuePrecedences.Local when _highestPrecedence == DependencyPropertyValuePrecedences.Local => Unwrap(_fastLocalValue),
-					_ => DependencyProperty.UnsetValue
-				};
-			}
-			else
-			{
-				if (precedence == DependencyPropertyValuePrecedences.Animations && (_flags & Flags.LocalValueNewerThanAnimationsValue) != 0)
-				{
-					// When setting BindingPath.Value, we do the following check:
-					// DependencyObjectStore.AreDifferent(value, _value.GetPrecedenceSpecificValue())
-					// Now, consider the following case:
-					// Animation value set to some value x, then Local value is set to some value y,
-					// then BindingPath.Value is trying to set Animation value to x
-					// in this case, we want to consider the values as different.
-					// So, we need to return the Local value when we are asked for Animation as the Local value is effectively overwriting the animation value.
-					precedence = DependencyPropertyValuePrecedences.Local;
-				}
+		internal DependencyPropertyValuePrecedences GetBaseValueSource()
+			=> _baseValueSource;
 
-				return Unwrap(Stack[(int)precedence]);
-			}
-		}
+		internal object? GetInheritedValue()
+			=> _inheritedValue;
 
-		/// <summary>
-		/// Gets the value at the highest precedence level under the specified one
-		/// E.G. If a property has a value both on the Animation, Local and Default
-		/// precedences, and the given precedence is Animation, then the Local value is returned.
-		/// </summary>
-		/// <param name="precedence">The value precedence under which to fetch a value</param>
-		/// <returns>The value at the highest precedence level under the specified one</returns>
-		internal (object? value, DependencyPropertyValuePrecedences precedence) GetValueUnderPrecedence(DependencyPropertyValuePrecedences precedence)
-		{
-			if (_stack == null)
-			{
-				if (_highestPrecedence == DependencyPropertyValuePrecedences.Local && precedence < DependencyPropertyValuePrecedences.Local)
-				{
-					return (Unwrap(_fastLocalValue), DependencyPropertyValuePrecedences.Local);
-				}
-				else
-				{
-					return (UnsetValue.Instance, DependencyPropertyValuePrecedences.DefaultValue);
-				}
-			}
-			else
-			{
-				var stackAlias = Stack;
-
-				// Start from current precedence and find next highest
-				for (int i = (int)precedence + 1; i < (int)DependencyPropertyValuePrecedences.DefaultValue; i++)
-				{
-					object? value = Unwrap(stackAlias[i]);
-
-					if (value != DependencyProperty.UnsetValue)
-					{
-						return (value, (DependencyPropertyValuePrecedences)i);
-					}
-				}
-
-				return (UnsetValue.Instance, DependencyPropertyValuePrecedences.DefaultValue);
-			}
-		}
+		internal ModifiedValue? GetModifiedValue()
+			=> _value as ModifiedValue;
 
 		/// <summary>
 		/// Gets the current highest value precedence level
 		/// </summary>
 		internal DependencyPropertyValuePrecedences CurrentHighestValuePrecedence
-			=> _highestPrecedence == DependencyPropertyValuePrecedences.Animations && (_flags & Flags.LocalValueNewerThanAnimationsValue) != 0
-				? DependencyPropertyValuePrecedences.Local
-				: _highestPrecedence;
+		{
+			get
+			{
+				if (_value is ModifiedValue modifiedValue)
+				{
+					if (modifiedValue.IsCoerced)
+					{
+						return DependencyPropertyValuePrecedences.Coercion;
+					}
+					else if (modifiedValue.IsAnimated && !modifiedValue.LocalValueNewerThanAnimatedValue)
+					{
+						return DependencyPropertyValuePrecedences.Animations;
+					}
+
+					return _baseValueSource;
+				}
+				else
+				{
+					return _baseValueSource;
+				}
+			}
+		}
 
 		/// <summary>
 		/// Validate the value to prevent setting null to non-nullable dependency properties.
@@ -391,46 +297,6 @@ namespace Microsoft.UI.Xaml
 		internal bool HasValueDoesNotInherit
 			=> (_flags & Flags.ValueDoesNotInherit) != 0;
 
-		internal bool HasInherits
-			=> (_flags & Flags.Inherits) != 0;
-
-		private object?[] Stack
-		{
-			get
-			{
-				if (_stack == null)
-				{
-					_stack = _pool.Rent(StackSize);
-
-					MemoryMarshal.CreateSpan(ref MemoryMarshal.GetArrayDataReference(_unsetStack), StackSize)
-						.CopyTo(MemoryMarshal.CreateSpan(ref MemoryMarshal.GetArrayDataReference(_stack)!, StackSize));
-
-					if (_highestPrecedence == DependencyPropertyValuePrecedences.Local)
-					{
-						_stack[(int)DependencyPropertyValuePrecedences.Local] = _fastLocalValue;
-					}
-
-					_fastLocalValue = null;
-				}
-
-				return _stack;
-			}
-		}
-
-		#region IEnumerable implementation
-
-		public IEnumerator<object?> GetEnumerator()
-		{
-			return Stack.Cast<object?>().GetEnumerator();
-		}
-
-		IEnumerator IEnumerable.GetEnumerator()
-		{
-			return Stack.GetEnumerator();
-		}
-
-		#endregion
-
 		public override string ToString()
 		{
 			return $"DependencyPropertyDetails({Property.Name})";
@@ -466,18 +332,6 @@ namespace Microsoft.UI.Xaml
 			/// Determines if the property must not inherit DataContext from its parent
 			/// </summary>
 			ValueDoesNotInherit = 1 << 2,
-
-			/// <summary>
-			/// Determines if the property inherits Value from its parent
-			/// </summary>
-			Inherits = 1 << 3,
-
-			/// <summary>
-			/// Normally, Animations has higher precedence than Local. However,
-			/// we want local to take higher precedence if it's newer.
-			/// This flag records this information.
-			/// </summary>
-			LocalValueNewerThanAnimationsValue = 1 << 4,
 		}
 	}
 }

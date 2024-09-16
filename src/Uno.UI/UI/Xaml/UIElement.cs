@@ -200,8 +200,6 @@ namespace Microsoft.UI.Xaml
 				&& method.DeclaringType != typeof(Control);
 		}
 
-		private protected virtual bool IsTabStopDefaultValue => false;
-
 		/// <summary>
 		/// Provide an instance-specific default value for the specified property
 		/// </summary>
@@ -213,11 +211,6 @@ namespace Microsoft.UI.Xaml
 			if (property == KeyboardAcceleratorsProperty)
 			{
 				defaultValue = new KeyboardAcceleratorCollection(this);
-				return true;
-			}
-			else if (property == IsTabStopProperty)
-			{
-				defaultValue = Uno.UI.Helpers.Boxes.Box(IsTabStopDefaultValue);
 				return true;
 			}
 
@@ -265,6 +258,7 @@ namespace Microsoft.UI.Xaml
 				{
 					_translation = value;
 					UpdateShadow();
+					InvalidateArrange();
 				}
 			}
 		}
@@ -1155,6 +1149,9 @@ namespace Microsoft.UI.Xaml
 			// Use a non-virtual version of the RequestLayout method, for performance.
 			base.RequestLayout();
 			SetLayoutFlags(LayoutFlag.MeasureDirty);
+
+			// HACK: Android's implementation of measure/arrange is not accurate. See comments in LayouterElementExtensions.DoMeasure
+			(VisualTreeHelper.GetParent(this) as UIElement)?.InvalidateMeasure();
 #elif __IOS__
 			SetNeedsLayout();
 			SetLayoutFlags(LayoutFlag.MeasureDirty);

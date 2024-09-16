@@ -3,6 +3,7 @@
 
 #pragma warning disable 168 // for cleanup imported member
 
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation;
@@ -16,6 +17,7 @@ using FluentAssertions;
 using FluentAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
+using Uno.Disposables;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.MUX.Helpers;
 
@@ -202,6 +204,15 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 #endif
 		public async Task CanOpenFlyoutByKeyboard()
 		{
+			// The test using fluent styles is broken due to lifecycle issues. https://github.com/unoplatform/uno/issues/16433
+			IDisposable styleDisposable = null;
+			await RunOnUIThread(() =>
+			{
+				var undoUseUwpStyles = StyleHelper.UseUwpStyles();
+				styleDisposable = Disposable.Create(() => RunOnUIThread(() => undoUseUwpStyles.Dispose()));
+			});
+
+
 			TestCleanupWrapper cleanup;
 
 			Grid rootPanel = null;
@@ -255,6 +266,8 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 			// escape to close the flyout
 			TestServices.KeyboardHelper.Escape();
 			await TestServices.WindowHelper.WaitForIdle();
+
+			styleDisposable?.Dispose();
 		}
 
 

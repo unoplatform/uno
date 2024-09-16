@@ -206,23 +206,11 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.ShowAt(Microsoft.UI.Xaml.FrameworkElement)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.ShowAt(Microsoft.UI.Xaml.DependencyObject, Microsoft.UI.Xaml.Controls.Primitives.FlyoutShowOptions)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.Hide()
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void TryInvokeKeyboardAccelerator(global::Microsoft.UI.Xaml.Input.ProcessKeyboardAcceleratorEventArgs args)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase", "void FlyoutBase.TryInvokeKeyboardAccelerator(ProcessKeyboardAcceleratorEventArgs args)");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.TryInvokeKeyboardAccelerator(Microsoft.UI.Xaml.Input.ProcessKeyboardAcceleratorEventArgs)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.SystemBackdrop.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.SystemBackdrop.set
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.CreatePresenter()
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		protected virtual void OnProcessKeyboardAccelerators(global::Microsoft.UI.Xaml.Input.ProcessKeyboardAcceleratorEventArgs args)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase", "void FlyoutBase.OnProcessKeyboardAccelerators(ProcessKeyboardAcceleratorEventArgs args)");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.OnProcessKeyboardAccelerators(Microsoft.UI.Xaml.Input.ProcessKeyboardAcceleratorEventArgs)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.SystemBackdropProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.TargetProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase.PlacementProperty.get

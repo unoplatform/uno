@@ -1,11 +1,11 @@
 ﻿#if __ANDROID__
-using System.Linq;
-using System.Threading.Tasks;
-using Android.Content;
 using System;
-using Android.Provider;
 using System.Collections.Generic;
+using System.Linq;
+using Android.App;
+using Android.Content;
 using Android.OS;
+using Android.Provider;
 
 namespace Windows.System
 {
@@ -96,6 +96,11 @@ namespace Windows.System
 			}
 
 			var intent = new Intent(launchAction ?? Settings.ActionSettings);
+			if (launchAction == Settings.ActionAppNotificationSettings)
+			{
+				intent.PutExtra(Settings.ExtraAppPackage, Application.Context.PackageName);
+			}
+
 			StartActivity(intent);
 			return true;
 		}

@@ -18,6 +18,7 @@ namespace Microsoft.UI.Composition.Core
 			}
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Composition.Core.CompositorController.Compositor.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Windows.Foundation.IAsyncAction EnsurePreviousCommitCompletedAsync()
@@ -33,7 +34,6 @@ namespace Microsoft.UI.Composition.Core
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Core.CompositorController", "void CompositorController.Dispose()");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.Core.CompositorController.Compositor.get
 		// Forced skipping of method Microsoft.UI.Composition.Core.CompositorController.CommitNeeded.add
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]

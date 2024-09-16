@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Private.Infrastructure;
-using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives.PopupPages;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Media;
-using static Private.Infrastructure.TestServices;
-using Windows.Media.Capture.Core;
-using Windows.System;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives.PopupPages;
+using Windows.System;
+using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 {
@@ -74,6 +73,68 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 			var popup = new Popup();
 			popup.XamlRoot = TestServices.WindowHelper.XamlRoot;
 			popup.IsOpen = true;
+			// Should not throw
+			popup.IsOpen = false;
+		}
+
+		[TestMethod]
+		public async Task When_Child_Visual_Parents_Does_Not_Include_Popup()
+		{
+			var popup = new Popup();
+			popup.XamlRoot = TestServices.WindowHelper.XamlRoot;
+			var button = new Button()
+			{
+				Content = "test"
+			};
+			popup.Child = button;
+			popup.IsOpen = true;
+			await WindowHelper.WaitForLoaded(button);
+			bool found = false;
+			DependencyObject current = popup.Child;
+			while (current != null)
+			{
+				if (current == popup)
+				{
+					found = true;
+					break;
+				}
+
+				current = VisualTreeHelper.GetParent(current);
+			}
+
+			Assert.IsFalse(found);
+
+			// Should not throw
+			popup.IsOpen = false;
+		}
+
+		[TestMethod]
+		public async Task When_Child_Logical_Parents_Include_Popup()
+		{
+			var popup = new Popup();
+			popup.XamlRoot = TestServices.WindowHelper.XamlRoot;
+			var button = new Button()
+			{
+				Content = "test"
+			};
+			popup.Child = button;
+			popup.IsOpen = true;
+			await WindowHelper.WaitForLoaded(button);
+			bool found = false;
+			DependencyObject current = button;
+			while (current != null)
+			{
+				if (current == popup)
+				{
+					found = true;
+					break;
+				}
+
+				current = (current as FrameworkElement)?.Parent;
+			}
+
+			Assert.IsTrue(found);
+
 			// Should not throw
 			popup.IsOpen = false;
 		}

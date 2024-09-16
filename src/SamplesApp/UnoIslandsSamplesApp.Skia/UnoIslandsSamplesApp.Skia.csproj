@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
 	<Import Project="../../targetframework-override.props" />
@@ -17,12 +18,14 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics3DGL\Uno.WinUI.Graphics3DGL.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.Skia.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.Skia.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.Svg\Uno.UI.Svg.Skia.csproj" />
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Skia.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.Skia.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.Skia.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia\Uno.UI.Runtime.Skia.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.Skia.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.XamlHost\Uno.UI.XamlHost.Skia.csproj" />
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj" />
@@ -51,6 +54,8 @@
 		<PackageReference Include="System.Management" Version="8.0.0" />
 		<PackageReference Include="BenchmarkDotNet" Version="0.11.4-develop" />
 		<PackageReference Include="System.CommandLine" />
+
+		<PackageReference Include="Silk.NET.OpenGL" Version="2.16.0" />
 	</ItemGroup>
 
 	<Import Project="..\..\SourceGenerators\sourcegenerators.local.props" />

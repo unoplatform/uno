@@ -24,6 +24,8 @@ namespace Microsoft.UI.Input
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Input.InputFocusNavigationHost.DepartFocusRequested.add
+		// Forced skipping of method Microsoft.UI.Input.InputFocusNavigationHost.ContainsFocus.get
+		// Forced skipping of method Microsoft.UI.Input.InputFocusNavigationHost.DepartFocusRequested.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Microsoft.UI.Input.FocusNavigationResult NavigateFocus(global::Microsoft.UI.Input.FocusNavigationRequest request)
@@ -31,8 +33,6 @@ namespace Microsoft.UI.Input
 			throw new global::System.NotImplementedException("The member FocusNavigationResult InputFocusNavigationHost.NavigateFocus(FocusNavigationRequest request) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FocusNavigationResult%20InputFocusNavigationHost.NavigateFocus%28FocusNavigationRequest%20request%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.InputFocusNavigationHost.DepartFocusRequested.remove
-		// Forced skipping of method Microsoft.UI.Input.InputFocusNavigationHost.ContainsFocus.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Input.InputFocusNavigationHost GetForSiteBridge(global::Microsoft.UI.Content.IContentSiteBridge site)

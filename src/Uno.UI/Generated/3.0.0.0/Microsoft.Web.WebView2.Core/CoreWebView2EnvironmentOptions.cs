@@ -136,6 +136,48 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public global::Microsoft.Web.WebView2.Core.CoreWebView2ReleaseChannels ReleaseChannels
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member CoreWebView2ReleaseChannels CoreWebView2EnvironmentOptions.ReleaseChannels is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2ReleaseChannels%20CoreWebView2EnvironmentOptions.ReleaseChannels");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "CoreWebView2ReleaseChannels CoreWebView2EnvironmentOptions.ReleaseChannels");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public global::Microsoft.Web.WebView2.Core.CoreWebView2ChannelSearchKind ChannelSearchKind
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member CoreWebView2ChannelSearchKind CoreWebView2EnvironmentOptions.ChannelSearchKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2ChannelSearchKind%20CoreWebView2EnvironmentOptions.ChannelSearchKind");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "CoreWebView2ChannelSearchKind CoreWebView2EnvironmentOptions.ChannelSearchKind");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public global::Microsoft.Web.WebView2.Core.CoreWebView2ScrollbarStyle ScrollBarStyle
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member CoreWebView2ScrollbarStyle CoreWebView2EnvironmentOptions.ScrollBarStyle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2ScrollbarStyle%20CoreWebView2EnvironmentOptions.ScrollBarStyle");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "CoreWebView2ScrollbarStyle CoreWebView2EnvironmentOptions.ScrollBarStyle");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public CoreWebView2EnvironmentOptions()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions", "CoreWebView2EnvironmentOptions.CoreWebView2EnvironmentOptions()");
@@ -150,6 +192,12 @@ namespace Microsoft.Web.WebView2.Core
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions.EnableTrackingPrevention.set
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions.AreBrowserExtensionsEnabled.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions.AreBrowserExtensionsEnabled.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions.ChannelSearchKind.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions.ChannelSearchKind.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions.ReleaseChannels.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions.ReleaseChannels.set
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions.ScrollBarStyle.get
+		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions.ScrollBarStyle.set
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions.CustomSchemeRegistrations.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions.CustomSchemeRegistrations.set
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions.AdditionalBrowserArguments.get

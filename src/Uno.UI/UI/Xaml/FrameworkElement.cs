@@ -165,16 +165,12 @@ namespace Microsoft.UI.Xaml
 #if !SUPPORTS_RTL
 		[NotImplemented("__ANDROID__", "__IOS__", "__WASM__", "__MACOS__")]
 #endif
-		[GeneratedDependencyProperty(DefaultValue = FlowDirection.LeftToRight, Options = FrameworkPropertyMetadataOptions.Inherits, ChangedCallback = true)]
-		public static DependencyProperty FlowDirectionProperty { get; } = CreateFlowDirectionProperty();
-
-		private void OnFlowDirectionChanged(FlowDirection oldValue, FlowDirection newValue)
-		{
+		[GeneratedDependencyProperty(DefaultValue = FlowDirection.LeftToRight, Options =
 #if SUPPORTS_RTL
-			this.InvalidateArrange();
-			VisualTreeHelper.GetParent(this)?.InvalidateArrange();
+			FrameworkPropertyMetadataOptions.AffectsMeasure |
 #endif
-		}
+			FrameworkPropertyMetadataOptions.Inherits)]
+		public static DependencyProperty FlowDirectionProperty { get; } = CreateFlowDirectionProperty();
 
 		#endregion
 		internal void RaiseSizeChanged(SizeChangedEventArgs args)
@@ -275,9 +271,7 @@ namespace Microsoft.UI.Xaml
 		new
 #endif
 		DependencyObject Parent =>
-#if UNO_HAS_MANAGED_POINTERS || __WASM__
 			LogicalParentOverride ??
-#endif
 			((IDependencyObjectStoreProvider)this).Store.Parent as DependencyObject;
 
 		public global::System.Uri BaseUri
@@ -293,12 +287,10 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-#if UNO_HAS_MANAGED_POINTERS || __WASM__
 		/// <summary>
 		/// Allows to override the publicly-visible <see cref="Parent"/> without modifying DP propagation.
 		/// </summary>
 		internal DependencyObject LogicalParentOverride { get; set; }
-#endif
 
 		/// <summary>
 		/// Provides the managed visual parent of the element. This property can be overriden for specific
@@ -526,7 +518,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		private Style ResolveImplicitStyle() => this.StoreGetImplicitStyle(ThisTypeResourceKey);
+		private protected Style ResolveImplicitStyle() => this.StoreGetImplicitStyle(ThisTypeResourceKey);
 
 		#region Requested theme dependency property
 

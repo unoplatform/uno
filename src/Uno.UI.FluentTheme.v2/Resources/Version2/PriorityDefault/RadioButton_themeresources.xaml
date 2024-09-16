@@ -376,8 +376,7 @@
                             <!-- A seperate element is added since the two orthogonal state groups that cannot touch the same property -->
                             <Border x:Name="PressedCheckGlyph" Width="4" Height="4" CornerRadius="6" UseLayoutRounding="False" Opacity="0" Background="{ThemeResource RadioButtonCheckGlyphFill}" BackgroundSizing="OuterBorderEdge" BorderBrush="{ThemeResource RadioButtonCheckGlyphStroke}" />
                         </Grid>
-                        <!-- Uno workaround: template-bind ContentTemplateSelector because it's not automatically propagated from the ContentControl #6452 -->
-                        <ContentPresenter x:Name="ContentPresenter" Content="{TemplateBinding Content}" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" Foreground="{TemplateBinding Foreground}" Margin="{TemplateBinding Padding}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Grid.Column="1" AutomationProperties.AccessibilityView="Raw" TextWrapping="Wrap" />
+                        <ContentPresenter x:Name="ContentPresenter" Content="{TemplateBinding Content}" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" Foreground="{TemplateBinding Foreground}" Margin="{TemplateBinding Padding}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Grid.Column="1" AutomationProperties.AccessibilityView="Raw" TextWrapping="Wrap" />
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>

@@ -85,7 +85,7 @@ namespace Microsoft.UI.Xaml.Controls
 			nameof(SizesContentToTemplatedParent),
 			typeof(bool),
 			typeof(ScrollContentPresenter),
-			new FrameworkPropertyMetadata(false));
+			new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
 		public bool SizesContentToTemplatedParent
 		{
@@ -189,14 +189,16 @@ namespace Microsoft.UI.Xaml.Controls
 
 				if (CanVerticallyScroll)
 				{
-					if (!sizesContentToTemplatedParent)
+					var childPreventsInfiniteAvailableHeight = !child.WantsScrollViewerToObscureAvailableSizeBasedOnScrollBarVisibility(Orientation.Vertical);
+					if (!sizesContentToTemplatedParent && !childPreventsInfiniteAvailableHeight)
 					{
 						slotSize.Height = double.PositiveInfinity;
 					}
 				}
 				if (CanHorizontallyScroll)
 				{
-					if (!sizesContentToTemplatedParent)
+					var childPreventsInfiniteAvailableWidth = !child.WantsScrollViewerToObscureAvailableSizeBasedOnScrollBarVisibility(Orientation.Horizontal);
+					if (!sizesContentToTemplatedParent && !childPreventsInfiniteAvailableWidth)
 					{
 						slotSize.Width = double.PositiveInfinity;
 					}

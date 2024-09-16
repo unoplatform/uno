@@ -25,7 +25,7 @@ You can find the [full ControlLibrary sample code](https://github.com/unoplatfor
    > Choose the template flavor based on your library's flavor: UWP or WinUI. If your project uses the `Uno.UI` NuGet package, it's **UWP** otherwise **Windows App SDK** if it uses `Uno.WinUI`.
 
 1. Right click on the project library again, then **Add**, **New Folder**, call it `Themes` (case sentitive)
-1. Right click on the `Generic` folder, then **Add**, **New Item**
+1. Right click on the `Themes` folder, then **Add**, **New Item**
 1. In the **Uno Platform** section of **C# Items**, select **Resource Dictionary**, name it `Generic.xaml` (case sensitive)
 1. In the new created file, paste the following:
 

@@ -38,23 +38,6 @@ public partial class Given_DependencyProperty
 		Assert.AreEqual(0, changedCount);
 	}
 
-#if HAS_UNO
-	[TestMethod]
-	public void When_GetValueUnderPrecedence()
-	{
-		var grid = new Grid();
-		grid.Tag = "LocalValue";
-
-		var (actualValue1, actualPrecedence1) = grid.GetValueUnderPrecedence(FrameworkElement.TagProperty, DependencyPropertyValuePrecedences.Coercion);
-		Assert.AreEqual("LocalValue", (string)actualValue1);
-		Assert.AreEqual(DependencyPropertyValuePrecedences.Local, actualPrecedence1);
-
-		var (actualValue2, actualPrecedence2) = grid.GetValueUnderPrecedence(FrameworkElement.TagProperty, DependencyPropertyValuePrecedences.Local);
-		Assert.IsNull(actualValue2);
-		Assert.AreEqual(DependencyPropertyValuePrecedences.DefaultValue, actualPrecedence2);
-	}
-#endif
-
 	[TestMethod]
 	public void When_CreateDefaultValueCallback()
 	{
@@ -63,5 +46,30 @@ public partial class Given_DependencyProperty
 		Assert.AreEqual(1, myButton.P);
 		Assert.AreEqual(2, myButton.P);
 		Assert.AreEqual(3, myButton.P);
+	}
+
+	private partial class CustomFE : FrameworkElement { }
+	private partial class CustomControl : Control { }
+	private partial class CustomUserControl : UserControl { }
+
+	[TestMethod]
+	public void When_IsTabStop()
+	{
+		var customControl = new CustomControl();
+		Assert.IsTrue(customControl.IsTabStop);
+
+		var userControl = new UserControl();
+		Assert.IsFalse(userControl.IsTabStop);
+
+		var customUserControl = new CustomUserControl();
+		Assert.IsFalse(customUserControl.IsTabStop);
+
+		Assert.IsFalse((bool)Control.IsTabStopProperty.GetMetadata(typeof(UIElement)).DefaultValue);
+		Assert.IsFalse((bool)Control.IsTabStopProperty.GetMetadata(typeof(FrameworkElement)).DefaultValue);
+		Assert.IsFalse((bool)Control.IsTabStopProperty.GetMetadata(typeof(CustomFE)).DefaultValue);
+		Assert.IsTrue((bool)Control.IsTabStopProperty.GetMetadata(typeof(Control)).DefaultValue);
+		Assert.IsTrue((bool)Control.IsTabStopProperty.GetMetadata(typeof(CustomControl)).DefaultValue);
+		Assert.IsFalse((bool)Control.IsTabStopProperty.GetMetadata(typeof(UserControl)).DefaultValue);
+		Assert.IsFalse((bool)Control.IsTabStopProperty.GetMetadata(typeof(CustomUserControl)).DefaultValue);
 	}
 }
