@@ -67,7 +67,7 @@ internal static class DependencyPropertyHelper
 	/// </summary>
 	public static IReadOnlyCollection<DependencyProperty>? GetDependencyPropertiesForType<T>()
 		where T : DependencyObject
-		=> DependencyProperty.GetPropertiesForType(typeof(T));
+		=> GetPropertiesForTypeCore(typeof(T));
 
 	/// <summary>
 	/// Try to get all the <see cref="DependencyProperty"/> defined for a given type.
@@ -84,14 +84,45 @@ internal static class DependencyPropertyHelper
 			return false;
 		}
 
-		properties = DependencyProperty.GetPropertiesForType(forType);
+		properties = GetPropertiesForTypeCore(forType);
 		return true;
 	}
 
+	private static DependencyProperty[] GetPropertiesForTypeCore(Type type)
+	{
+		DependencyProperty.ForceInitializeTypeConstructor(type);
+
+		var results = new List<DependencyProperty>();
+
+		var currentType = type;
+
+		do
+		{
+			if (DependencyProperty.DependencyPropertyRegistry.Instance.TryGetTypeTable(currentType, out var typeTable))
+			{
+				foreach (var value in typeTable!.Values)
+				{
+					results.Add((DependencyProperty)value);
+				}
+			}
+
+			// Dependency properties are inherited
+			currentType = currentType.BaseType;
+		}
+		while (currentType != typeof(object) && currentType != null);
+
+		var array = results.ToArray();
+
+		// Produce a pre-sorted list, aligned with the initial behavior of DependencyPropertyDetailsCollection
+		Array.Sort(array, (l, r) => l.UniqueId - r.UniqueId);
+
+		return array;
+	}
+
 	/// <summary>
-	/// Get the value type of the property. 
+	/// Get the type of the property. 
 	/// </summary>
-	public static Type GetValueType(DependencyProperty dependencyProperty)
+	public static Type GetPropertyType(DependencyProperty dependencyProperty)
 		=> dependencyProperty.Type;
 
 	/// <summary>
@@ -105,7 +136,6 @@ internal static class DependencyPropertyHelper
 	/// </summary>
 	/// <remarks>
 	/// This is the property that defines the property, not the type that uses it.
-	/// It may also be overridden by a derived type.
 	/// </remarks>
 	public static Type GetOwnerType(DependencyProperty dependencyProperty)
 		=> dependencyProperty.OwnerType;
@@ -147,13 +177,15 @@ internal static class DependencyPropertyHelper
 			return (valueFromImplicitStyle, DependencyPropertyValuePrecedences.ImplicitStyle);
 		}
 
-		if (obj is IDependencyObjectStoreProvider { Store: { } store } && store.GetPropertyDetails(dependencyProperty) is { } details)
+		if (obj is IDependencyObjectStoreProvider { Store: { } store })
 		{
+			var details = store.GetPropertyDetails(dependencyProperty);
+
 			// 3rd: Check inherited value
 			var inheritedValue = details.GetInheritedValue();
 			if (inheritedValue != DependencyProperty.UnsetValue)
 			{
-				return (details.GetInheritedValue(), DependencyPropertyValuePrecedences.Inheritance);
+				return (inheritedValue, DependencyPropertyValuePrecedences.Inheritance);
 			}
 
 			// 4th: Check default value
@@ -164,9 +196,8 @@ internal static class DependencyPropertyHelper
 			}
 		}
 
-		// 5th: Return default value of the type (should not happen)
-		var propertyType = dependencyProperty.Type;
-		return (propertyType.IsValueType ? Activator.CreateInstance(propertyType) : null, DependencyPropertyValuePrecedences.DefaultValue);
+		// 5th: Return default value of the DP (should not happen)
+		return (dependencyProperty.GetDefaultValue(obj, obj.GetType()), DependencyPropertyValuePrecedences.DefaultValue);
 	}
 
 	/// <summary>
@@ -186,24 +217,20 @@ internal static class DependencyPropertyHelper
 	/// Get if the property value is inherited through the visual tree. 
 	/// </summary>
 	public static bool GetIsInherited(DependencyProperty dependencyProperty)
-		=> dependencyProperty.GetMetadata(dependencyProperty.OwnerType) is FrameworkPropertyMetadata metadata
-		   && metadata.Options.HasFlag(FrameworkPropertyMetadataOptions.Inherits);
+		=> dependencyProperty.IsInherited;
 
 	/// <summary>
 	/// Get the multiple aspects of a given property at the same time.
 	/// </summary>
-	public static (Type ValueType, Type OwnerType, string Name, bool IsTypeNullable, bool IsAttached, bool IsInherited, object? defaultValue) GetDetails(
+	public static (Type PropertyType, Type OwnerType, string Name, bool IsTypeNullable, bool IsAttached, bool IsInherited, object? defaultValue) GetDetails(
 		DependencyProperty property)
 	{
-		var propertyMetadata = property.GetMetadata(property.OwnerType);
-
 		return (property.Type,
 			property.OwnerType,
 			property.Name,
 			property.IsTypeNullable,
 			property.IsAttached,
-			propertyMetadata is FrameworkPropertyMetadata metadata &&
-			metadata.Options.HasFlag(FrameworkPropertyMetadataOptions.Inherits),
-			propertyMetadata?.DefaultValue);
+			property.IsInherited,
+			property.GetDefaultValue(referenceObject: null, property.Type));
 	}
 }

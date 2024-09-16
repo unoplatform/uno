@@ -122,7 +122,7 @@ public partial class Given_DependencyPropertyHelper
 		var property = TestClass.TestProperty;
 
 		// Act
-		var propertyType = DependencyPropertyHelper.GetValueType(property);
+		var propertyType = DependencyPropertyHelper.GetPropertyType(property);
 
 		// Assert
 		propertyType.Should().Be(typeof(string));
