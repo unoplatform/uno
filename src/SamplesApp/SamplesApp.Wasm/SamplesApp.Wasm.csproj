@@ -9,7 +9,8 @@
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
 		<DefineConstants>$(DefineConstants);__WASM__;HAS_UNO;UNO_REFERENCE_API</DefineConstants>
-		<NoWarn>$(NoWarn);NU1701;CS1998;NU1504;UXAML0002;NU1903;NU1902;IL2026;IL2072;IL2067;IL2075;IL2070;IL2077;IL2057</NoWarn>
+		<NoWarn>$(NoWarn);NU1701;CS1998;NU1504;UXAML0002;NU1903;NU1902</NoWarn>
+		<NoWarn>$(NoWarn);IL2026;IL2072;IL2067;IL2075;IL2070;IL2077;IL2057;IL2045</NoWarn>
 		<IsUiAutomationMappingEnabled>true</IsUiAutomationMappingEnabled>
 		<UseUnoXamlParser>true</UseUnoXamlParser>
 		<UnoRuntimeIdentifier>WebAssembly</UnoRuntimeIdentifier>
@@ -22,6 +23,14 @@
 
 		<!-- For faster AOT build, uncomment this line -->
 		<!--<WasmShellEmccLinkOptimization>false</WasmShellEmccLinkOptimization>-->
+		
+		<PublishTrimmed>false</PublishTrimmed>
+		
+		<!--
+		IL Linking is disabled in Debug configuration.
+		When building in Release, see https://platform.uno/docs/articles/features/using-il-linker-webassembly.html
+		-->
+		<WasmShellILLinkerEnabled>false</WasmShellILLinkerEnabled>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
@@ -30,11 +39,6 @@
 		<DebugType>portable</DebugType>
 		<DebugSymbols>true</DebugSymbols>
 
-		<!--
-		IL Linking is disabled in Debug configuration.
-		When building in Release, see https://platform.uno/docs/articles/features/using-il-linker-webassembly.html
-		-->
-		<WasmShellILLinkerEnabled>false</WasmShellILLinkerEnabled>
 	</PropertyGroup>
 	<ItemGroup>
 		<Content Update="..\SamplesApp.Windows\Assets\*.png" Link="Assets\%(FileName)%(Extension)" />
