@@ -7,7 +7,7 @@ jobs:
       deploy:
         steps:
         - download: current
-          artifact: 'NuGet Packages'
+          artifact: 'NuGet_Packages'
           patterns: '**/.nupkg'
           displayName: Download artifact WebApp
 
