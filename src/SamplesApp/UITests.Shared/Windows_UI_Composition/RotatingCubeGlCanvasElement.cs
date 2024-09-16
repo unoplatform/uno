@@ -67,15 +67,8 @@ namespace UITests.Shared.Windows_UI_Composition
 			0, 4, 5,
 		};
 
-#if ANDROID
-		const string glslVersion = "#version 300 es";
-#else
-		const string glslVersion = "#version 330";
-#endif
 		private readonly string _vertexShaderSource =
-		$$"""
-		{{glslVersion}}
-
+		"""
 		layout(location = 0) in vec3 pos;
 		layout(location = 1) in vec3 vertex_color;
 
@@ -90,9 +83,7 @@ namespace UITests.Shared.Windows_UI_Composition
 		""";
 
 		private readonly string FragmentShaderSource =
-		$$"""
-		{{glslVersion}}
-
+		"""
 		in vec3 color;
 
 		out vec4 frag_color;
@@ -111,7 +102,11 @@ namespace UITests.Shared.Windows_UI_Composition
 			_vao.VertexAttributePointer(0, 3, VertexAttribPointerType.Float, 6, 0);
 			_vao.VertexAttributePointer(1, 3, VertexAttribPointerType.Float, 6, 3);
 
-			_shader = new Shader(Gl, _vertexShaderSource, FragmentShaderSource);
+			var slVersion = Gl.GetStringS(StringName.ShadingLanguageVersion);
+			var versionDef = slVersion.Contains("OpenGL ES", StringComparison.InvariantCultureIgnoreCase)
+				? "#version 300 es"
+				: "#version 330";
+			_shader = new Shader(Gl, versionDef + Environment.NewLine + _vertexShaderSource, versionDef + Environment.NewLine + FragmentShaderSource);
 		}
 
 		protected override void OnDestroy(GL Gl)

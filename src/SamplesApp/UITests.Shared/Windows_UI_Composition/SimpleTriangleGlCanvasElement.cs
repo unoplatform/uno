@@ -37,14 +37,13 @@ namespace UITests.Shared.Windows_UI_Composition
 			gl.VertexAttribPointer(0, 3, GLEnum.Float, false, 3 * sizeof(float), (void*)0);
 			gl.EnableVertexAttribArray(0);
 
-#if ANDROID
-			const string glslVersion = "#version 300 es";
-#else
-			const string glslVersion = "#version 330";
-#endif
+			var slVersion = gl.GetStringS(StringName.ShadingLanguageVersion);
+			var versionDef = slVersion.Contains("OpenGL ES", StringComparison.InvariantCultureIgnoreCase)
+				? "#version 300 es"
+				: "#version 330";
 			var vertexCode =
 			$$"""
-			{{glslVersion}}
+			{{versionDef}}
 
 			layout (location = 0) in vec3 aPosition;
 			out vec4 vertexColor;
@@ -58,7 +57,7 @@ namespace UITests.Shared.Windows_UI_Composition
 
 			var fragmentCode =
 			$$"""
-			{{glslVersion}}
+			{{versionDef}}
 
 			out vec4 out_color;
 			in vec4 vertexColor;
