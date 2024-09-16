@@ -70,11 +70,6 @@ namespace TestRepro
 				// WARNING Property c1.base does not exist on {using:TestRepro}BaseWindow, the namespace is http://www.w3.org/XML/1998/namespace. This error was considered irrelevant by the XamlFileGenerator
 			}
 			))
-			.GenericApply(((c2) => 
-			{
-				// Class TestRepro.MainWindow
-			}
-			))
 			;
 			if (__that.Content != null)
 			{
@@ -139,7 +134,7 @@ namespace TestRepro
 			void IMainWindow_Bindings.UpdateResources()
 			{
 				var owner = Owner;
-				owner._component_0.UpdateResourceBindings(resourceContextProvider: null);
+				owner._component_0.UpdateResourceBindings();
 			}
 			void IMainWindow_Bindings.StopTracking()
 			{
