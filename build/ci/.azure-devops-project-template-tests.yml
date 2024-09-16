@@ -21,7 +21,7 @@ jobs:
 
   - template: templates/dotnet-mobile-install-windows.yml
 
-  - script: copy "$(System.ArtifactsDirectory)\Nuget_Packages\vslatest\*.nupkg" $(Build.SourcesDirectory)\src\PackageCache
+  - script: copy $(System.ArtifactsDirectory)\Nuget_Packages\vslatest\*.nupkg $(Build.SourcesDirectory)\src\PackageCache
     displayName: Copy Artifacts to PackageCache
 
   - task: PowerShell@2
@@ -62,7 +62,7 @@ jobs:
 
   - template: templates/dotnet-mobile-install-mac.yml
 
-  - powershell: cp "$(System.ArtifactsDirectory)/Nuget_Packages/vslatest/*.nupkg" $(Build.SourcesDirectory)/src/PackageCache
+  - powershell: cp $(System.ArtifactsDirectory)/Nuget_Packages/vslatest/*.nupkg $(Build.SourcesDirectory)/src/PackageCache
     displayName: Copy Artifacts to PackageCache
 
   - powershell: build/test-scripts/run-netcore-mobile-template-tests.ps1
@@ -97,7 +97,7 @@ jobs:
 
   - template: templates/gitversion.yml
   
-  - script: cp "$(System.ArtifactsDirectory)/Nuget_Packages/vslatest/*.nupkg" $(Build.SourcesDirectory)/src/PackageCache
+  - script: cp $(System.ArtifactsDirectory)/Nuget_Packages/vslatest/*.nupkg $(Build.SourcesDirectory)/src/PackageCache
     displayName: Copy Artifacts to PackageCache
 
   - template: templates/dotnet-install.yml
