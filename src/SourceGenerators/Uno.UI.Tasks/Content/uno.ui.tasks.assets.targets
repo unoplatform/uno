@@ -209,7 +209,7 @@
 
 	<!--
 	Adjust support for build output for Uno.Wasm.Bootstrap, because earlier
-	versions (3.x) don't support TargetPath metadata.
+	versions (3.x) don't support TargetPath metadata.	
 	-->
 	<Target Name="_UnoWasmContentAdjust"
 			Condition="'$(WasmShellSupportsBuildOutputGroups)'!='true'"
@@ -227,13 +227,53 @@
 	as nuget packages content.
 	-->
 	<Target Name="_UnoAssetsGetCopyToPublishDirectory"
-			BeforeTargets="GetCopyToPublishDirectoryItems">
-		<ItemGroup>
+			BeforeTargets="GetCopyToPublishDirectoryItems"
+			Condition=" '$(UsingMicrosoftNETSdkWebAssembly)' != 'true' ">
+		<ItemGroup>	
 			<ContentWithTargetPath Include="@(_TransitiveItemsToCopyToOutputDirectory)">
 				<TargetPath>%(TargetPath)</TargetPath>
 				<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 			</ContentWithTargetPath>
 		</ItemGroup>
 	</Target>
+	
+	<!--
+	Ensure that project transitive references are copied to the publish directory, as well
+	as nuget packages content.
+	-->
+	<Target Name="_UnoAssetsGetCopyToPublishDirectoryItems"
+			BeforeTargets="GetCopyToPublishDirectoryItems"
+			Condition=" '$(UsingMicrosoftNETSdkWebAssembly)' == 'true' ">
 
+		<ItemGroup>
+			<_UnoTransitiveItems Include="@(_TransitiveItemsToCopyToOutputDirectory)">
+				<!-- set the ContentRoot using GetDirectoryName -->
+				<ContentRoot>$([System.IO.Path]::GetDirectoryName('%(FullPath)'))</ContentRoot>
+				<Link>wwwroot/%(TargetPath)</Link>
+			</_UnoTransitiveItems>
+			<_UnoTransitiveItems Remove="@(StaticWebAsset)" />
+		</ItemGroup>
+
+		<DefineStaticWebAssets
+			CandidateAssets="@(_UnoTransitiveItems)"
+			FingerprintCandidates="$(StaticWebAssetsFingerprintContent)"
+			FingerprintPatterns="@(StaticWebAssetFingerprintPattern)"
+			RelativePathPattern="wwwroot/**"
+			SourceType="Discovered"
+			SourceId="$(PackageId)"
+			ContentRoot="$(MSBuildProjectDirectory)\wwwroot\"
+			BasePath="$(StaticWebAssetBasePath)"
+			AssetMergeSource="$(StaticWebAssetMergeTarget)">
+			<Output TaskParameter="Assets" ItemName="StaticWebAsset" />
+		</DefineStaticWebAssets>
+
+		<DefineStaticWebAssetEndpoints
+			  CandidateAssets="@(StaticWebAsset)"
+			  ExistingEndpoints="@(StaticWebAssetEndpoint)"
+			  ContentTypeMappings="@(StaticWebAssetContentTypeMapping)"
+				>	
+			<Output TaskParameter="Endpoints" ItemName="StaticWebAssetEndpoint" />
+		</DefineStaticWebAssetEndpoints>
+
+	</Target>
 </Project>
