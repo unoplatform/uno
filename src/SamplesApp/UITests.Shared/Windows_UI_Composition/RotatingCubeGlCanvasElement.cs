@@ -11,7 +11,7 @@
 
 // https://github.com/dotnet/Silk.NET/tree/c27224cce6b8136224c01d40de2d608879d709b5/examples/CSharp/OpenGL%20Tutorials
 
-#if __SKIA__ || WINAPPSDK
+#if __SKIA__ || WINAPPSDK || ANDROID
 using System;
 using System.Diagnostics;
 using System.Numerics;
@@ -22,7 +22,7 @@ namespace UITests.Shared.Windows_UI_Composition
 {
 #if WINAPPSDK
 	public class RotatingCubeGlCanvasElement() : GLCanvasElement(1200, 800, () => SamplesApp.App.MainWindow)
-#elif __SKIA__
+#else
 	public class RotatingCubeGlCanvasElement() : GLCanvasElement(1200, 800, null)
 #endif
 	{
@@ -67,8 +67,14 @@ namespace UITests.Shared.Windows_UI_Composition
 			0, 4, 5,
 		};
 
-		private readonly string _vertexShaderSource = "#version 330" + Environment.NewLine +
-		"""
+#if ANDROID
+		const string glslVersion = "#version 300 es";
+#else
+		const string glslVersion = "#version 330";
+#endif
+		private readonly string _vertexShaderSource =
+		$$"""
+		{{glslVersion}}
 
 		layout(location = 0) in vec3 pos;
 		layout(location = 1) in vec3 vertex_color;
@@ -83,8 +89,9 @@ namespace UITests.Shared.Windows_UI_Composition
 		}                                      
 		""";
 
-		private readonly string FragmentShaderSource = "#version 330" + Environment.NewLine +
-		"""
+		private readonly string FragmentShaderSource =
+		$$"""
+		{{glslVersion}}
 
 		in vec3 color;
 
