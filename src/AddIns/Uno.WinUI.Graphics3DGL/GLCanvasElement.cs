@@ -1,8 +1,10 @@
 ﻿using System;
+using Silk.NET.OpenGL;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
+using Window = Microsoft.UI.Xaml.Window;
 
 #if WINAPPSDK
 using System.Runtime.InteropServices;
@@ -18,11 +20,6 @@ using Uno.UI.Dispatching;
 using Buffer = Windows.Storage.Streams.Buffer;
 #endif
 
-#if ANDROID
-using Silk.NET.OpenGLES;
-#else
-using Silk.NET.OpenGL;
-#endif
 
 namespace Uno.WinUI.Graphics3DGL;
 
@@ -244,23 +241,13 @@ public abstract partial class GLCanvasElement : Grid
 #else
 			Buffer.Cast(_backBuffer.PixelBuffer).ApplyActionOnRawBufferPtr(ptr =>
 			{
+				_gl.ReadPixels(0, 0, _width, _height,
 #if ANDROID
-				_gl.ReadPixels(0, 0, _width, _height, GLEnum.Rgba, GLEnum.UnsignedByte, (void*)ptr);
-				var span = new Span<int>((void*)ptr, (int)(_width * _height * BytesPerPixel));
-				int* intPtr = (int*)ptr;
-				// RGBA to BGRA
-				for (var i = 0; i < span.Length; i++)
-				{
-					var r = intPtr[i * 4 + 0];
-					var g = intPtr[i * 4 + 1];
-					var b = intPtr[i * 4 + 2];
-					var a = intPtr[i * 4 + 3];
-
-					intPtr[i] = (b << 24) | (g << 16) | (r << 8) | a;
-				}
+					GLEnum.Rgba,
 #else
-				_gl.ReadPixels(0, 0, _width, _height, GLEnum.Bgra, GLEnum.UnsignedByte, (void*)ptr);
+					GLEnum.Bgra,
 #endif
+					GLEnum.UnsignedByte, (void*)ptr);
 			});
 			_backBuffer.PixelBuffer.Length = _width * _height * BytesPerPixel;
 #endif
