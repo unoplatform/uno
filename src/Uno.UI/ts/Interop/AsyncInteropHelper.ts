@@ -4,15 +4,13 @@
 		private static dispatchResultMethod: (handle: number, result: string) => string;
 		private static dispatchErrorMethod: (handle: number, error: string) => string;
 
-		private static init() {
+		private static async init() {
 			if (AsyncInteropHelper.dispatchErrorMethod) {
 				return; // already initialized
 			}
-			const w = window as any;
-			AsyncInteropHelper.dispatchResultMethod =
-				w.Module.mono_bind_static_method("[Uno.Foundation.Runtime.WebAssembly] Uno.Foundation.WebAssemblyRuntime:DispatchAsyncResult");
-			AsyncInteropHelper.dispatchErrorMethod =
-				w.Module.mono_bind_static_method("[Uno.Foundation.Runtime.WebAssembly] Uno.Foundation.WebAssemblyRuntime:DispatchAsyncError");
+
+			AsyncInteropHelper.dispatchResultMethod = (<any>globalThis).DotnetExports.UnoFoundationRuntimeWebAssembly.Uno.Foundation.WebAssemblyRuntime.DispatchAsyncResult;
+			AsyncInteropHelper.dispatchErrorMethod = (<any>globalThis).DotnetExports.UnoFoundationRuntimeWebAssembly.Uno.Foundation.WebAssemblyRuntime.DispatchAsyncError;
 		}
 
 		public static Invoke(handle: number, promiseFunction: () => Promise<string>): void {
