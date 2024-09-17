@@ -31,10 +31,6 @@ namespace Microsoft.UI.Xaml
 {
 	public partial class DependencyObjectStore
 	{
-		private delegate void DataContextProviderAction(IDataContextProvider provider);
-		private delegate void ObjectAction(object instance);
-		internal delegate bool DefaultValueProvider(DependencyProperty property, out object defaultValue);
-
 		private readonly object _gate = new object();
 
 		private HashtableEx? _childrenBindableMap;
@@ -344,7 +340,7 @@ namespace Microsoft.UI.Xaml
 		}
 
 		private object?[] GetTraceProperties()
-			=> new object?[] { ObjectId, _originalObjectType?.ToString() };
+			=> new object?[] { GetHashCode(), _originalObjectType?.ToString() };
 
 
 		public void SetBinding(object target, string dependencyProperty, BindingBase binding)

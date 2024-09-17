@@ -21,7 +21,8 @@
 			"Uno.WinUI.Runtime.Skia.Android",
 			"Uno.WinUI.Runtime.Skia.WebAssembly.Browser",
 			"Uno.WinUI.Runtime.WebAssembly",
-			"Uno.WinUI.MediaPlayer.WebAssembly"
+			"Uno.WinUI.MediaPlayer.WebAssembly",
+			"Uno.WinUI.Graphics3DGL"
 		]
 	},
 	{
@@ -112,7 +113,7 @@
 			"Microsoft.Extensions.Logging.Console"
 		],
 		"versionOverride": {
-			"net9.0": "9.0.0-preview.6.24327.7"
+			"net9.0": "9.0.0-rc.1.24431.7"
 		}
 	},
 	{
@@ -122,7 +123,7 @@
 			"Microsoft.Windows.Compatibility"
 		],
 		"versionOverride": {
-			"net9.0": "9.0.0-preview.6.24327.6"
+			"net9.0": "9.0.0-rc.1.24452.1"
 		}
 	},
 	{
@@ -234,7 +235,7 @@
 			"Microsoft.Maui.Graphics"
 		],
 		"versionOverride": {
-			"net9.0": "9.0.0-preview.6.24327.7"
+			"net9.0": "9.0.0-rc.1.24453.9"
 		}
 	},
 	{

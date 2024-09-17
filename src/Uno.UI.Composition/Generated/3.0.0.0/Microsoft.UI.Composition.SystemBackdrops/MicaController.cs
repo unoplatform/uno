@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Composition.SystemBackdrops
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class MicaController : global::Microsoft.UI.Composition.SystemBackdrops.ISystemBackdropController, global::System.IDisposable, global::Microsoft.UI.Composition.SystemBackdrops.ISystemBackdropControllerWithTargets, global::Microsoft.UI.IClosableNotifier
@@ -100,47 +100,12 @@ namespace Microsoft.UI.Composition.SystemBackdrops
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool RemoveSystemBackdropTarget(global::Microsoft.UI.Composition.ICompositionSupportsSystemBackdrop systemBackdropTarget)
+		public bool SetTarget(global::Windows.UI.Core.CoreWindow coreWindow, global::Windows.UI.Composition.CompositionTarget compositionTarget)
 		{
-			throw new global::System.NotImplementedException("The member bool MicaController.RemoveSystemBackdropTarget(ICompositionSupportsSystemBackdrop systemBackdropTarget) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MicaController.RemoveSystemBackdropTarget%28ICompositionSupportsSystemBackdrop%20systemBackdropTarget%29");
+			throw new global::System.NotImplementedException("The member bool MicaController.SetTarget(CoreWindow coreWindow, CompositionTarget compositionTarget) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MicaController.SetTarget%28CoreWindow%20coreWindow%2C%20CompositionTarget%20compositionTarget%29");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.State.get
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetSystemBackdropConfiguration(global::Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration configuration)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.SystemBackdrops.MicaController", "void MicaController.SetSystemBackdropConfiguration(SystemBackdropConfiguration configuration)");
-		}
-#endif
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.StateChanged.add
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.StateChanged.remove
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.IsClosed.get
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.Closed.add
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.Closed.remove
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.FrameworkClosed.add
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.FrameworkClosed.remove
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool AddSystemBackdropTarget(global::Microsoft.UI.Composition.ICompositionSupportsSystemBackdrop systemBackdropTarget)
-		{
-			throw new global::System.NotImplementedException("The member bool MicaController.AddSystemBackdropTarget(ICompositionSupportsSystemBackdrop systemBackdropTarget) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MicaController.AddSystemBackdropTarget%28ICompositionSupportsSystemBackdrop%20systemBackdropTarget%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void RemoveAllSystemBackdropTargets()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.SystemBackdrops.MicaController", "void MicaController.RemoveAllSystemBackdropTargets()");
-		}
-#endif
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.FallbackColor.set
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.LuminosityOpacity.get
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.LuminosityOpacity.set
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.TintColor.get
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.TintColor.set
 		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.TintOpacity.get
-		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.FallbackColor.get
 		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.TintOpacity.set
 		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.Kind.get
 		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.Kind.set
@@ -158,13 +123,7 @@ namespace Microsoft.UI.Composition.SystemBackdrops
 			throw new global::System.NotImplementedException("The member bool MicaController.SetTarget(WindowId windowId, CompositionTarget desktopWindowTarget) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MicaController.SetTarget%28WindowId%20windowId%2C%20CompositionTarget%20desktopWindowTarget%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool SetTarget(global::Windows.UI.Core.CoreWindow coreWindow, global::Windows.UI.Composition.CompositionTarget compositionTarget)
-		{
-			throw new global::System.NotImplementedException("The member bool MicaController.SetTarget(CoreWindow coreWindow, CompositionTarget compositionTarget) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MicaController.SetTarget%28CoreWindow%20coreWindow%2C%20CompositionTarget%20compositionTarget%29");
-		}
-#endif
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.FallbackColor.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public void Dispose()
@@ -172,6 +131,47 @@ namespace Microsoft.UI.Composition.SystemBackdrops
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.SystemBackdrops.MicaController", "void MicaController.Dispose()");
 		}
 #endif
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.State.get
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public bool AddSystemBackdropTarget(global::Microsoft.UI.Composition.ICompositionSupportsSystemBackdrop systemBackdropTarget)
+		{
+			throw new global::System.NotImplementedException("The member bool MicaController.AddSystemBackdropTarget(ICompositionSupportsSystemBackdrop systemBackdropTarget) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MicaController.AddSystemBackdropTarget%28ICompositionSupportsSystemBackdrop%20systemBackdropTarget%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public void RemoveAllSystemBackdropTargets()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.SystemBackdrops.MicaController", "void MicaController.RemoveAllSystemBackdropTargets()");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public bool RemoveSystemBackdropTarget(global::Microsoft.UI.Composition.ICompositionSupportsSystemBackdrop systemBackdropTarget)
+		{
+			throw new global::System.NotImplementedException("The member bool MicaController.RemoveSystemBackdropTarget(ICompositionSupportsSystemBackdrop systemBackdropTarget) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MicaController.RemoveSystemBackdropTarget%28ICompositionSupportsSystemBackdrop%20systemBackdropTarget%29");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public void SetSystemBackdropConfiguration(global::Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration configuration)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.SystemBackdrops.MicaController", "void MicaController.SetSystemBackdropConfiguration(SystemBackdropConfiguration configuration)");
+		}
+#endif
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.StateChanged.add
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.StateChanged.remove
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.IsClosed.get
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.Closed.add
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.Closed.remove
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.FrameworkClosed.add
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.FrameworkClosed.remove
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.FallbackColor.set
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.LuminosityOpacity.get
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.LuminosityOpacity.set
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.TintColor.get
+		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.TintColor.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public MicaController()
@@ -180,7 +180,7 @@ namespace Microsoft.UI.Composition.SystemBackdrops
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.MicaController.MicaController()
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static bool IsSupported()
 		{

@@ -1074,7 +1074,8 @@ namespace Microsoft.UI.Xaml
 			// In WinUI, it happens in CDependencyObject::EnterImpl (the call to EnterSparseProperties)
 			if (this is FrameworkElement { Resources: { } resources })
 			{
-				foreach (var resource in resources.Values)
+				// Using ValuesInternal to avoid Enumerator boxing
+				foreach (var resource in resources.ValuesInternal)
 				{
 					if (resource is FrameworkElement resourceAsUIElement)
 					{
@@ -1929,5 +1930,8 @@ namespace Microsoft.UI.Xaml
 
 		}
 #endif
+
+		internal virtual bool WantsScrollViewerToObscureAvailableSizeBasedOnScrollBarVisibility(Orientation horizontal)
+			=> true;
 	}
 }

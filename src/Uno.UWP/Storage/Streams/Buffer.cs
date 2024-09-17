@@ -12,6 +12,7 @@ namespace Windows.Storage.Streams
 		/// </summary>
 		internal const int DefaultCapacity = 1024 * 1024; // 1M
 
+		private readonly byte[] _buffer;
 		private readonly Memory<byte> _data;
 		private uint _length;
 
@@ -33,7 +34,8 @@ namespace Windows.Storage.Streams
 
 		public Buffer(uint capacity)
 		{
-			_data = new Memory<byte>(new byte[capacity]);
+			_buffer = new byte[capacity];
+			_data = new Memory<byte>(_buffer);
 		}
 
 		internal Buffer(byte[] data)
@@ -72,6 +74,17 @@ namespace Windows.Storage.Streams
 		/// you have to make sure to update the <see cref="Length"/> of this buffer accordingly.
 		/// </remarks>
 		internal Span<byte> Span => _data.Span;
+
+		/// <summary>
+		/// This is as dangerous as <see cref="Span"/>. Read the remarks there.
+		/// </summary>
+		unsafe internal void ApplyActionOnRawBufferPtr(Action<IntPtr> action)
+		{
+			fixed (void* asd = _buffer)
+			{
+				action((IntPtr)asd);
+			}
+		}
 
 		/// <summary>
 		/// Retrieve the underlying data array.

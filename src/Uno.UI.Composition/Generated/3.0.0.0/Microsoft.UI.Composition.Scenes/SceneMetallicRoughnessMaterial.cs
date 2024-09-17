@@ -84,9 +84,9 @@ namespace Microsoft.UI.Composition.Scenes
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.BaseColorFactor.set
-		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.BaseColorInput.set
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.MetallicFactor.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.MetallicFactor.set
+		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.BaseColorInput.set
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.MetallicRoughnessInput.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.BaseColorFactor.get
 		// Forced skipping of method Microsoft.UI.Composition.Scenes.SceneMetallicRoughnessMaterial.MetallicRoughnessInput.set
