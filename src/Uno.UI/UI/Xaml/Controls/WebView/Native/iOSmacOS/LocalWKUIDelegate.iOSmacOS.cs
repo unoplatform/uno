@@ -3,7 +3,6 @@
 using System;
 using WebKit;
 using Uno.Foundation.Logging;
-using Uno.UI.Extensions;
 using Uno.Extensions;
 
 namespace Microsoft.UI.Xaml.Controls;

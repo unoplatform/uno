@@ -14,7 +14,6 @@ using Windows.ApplicationModel.Resources;
 using Uno.UI.Xaml.Controls;
 using System.Net.Http;
 using Microsoft.Web.WebView2.Core;
-using Uno.UI.Extensions;
 using System.Collections.Generic;
 using System.Globalization;
 using Windows.UI.Core;
@@ -398,7 +397,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 		alert.BeginSheetForResponse(webview.Window, (result) =>
 		{
 			var okButtonClicked = result == 1000;
-			completionHandler(okButtonClicked ? textField.StringValue : null);
+			completionHandler(okButtonClicked ? textField.StringValue : "");
 		});
 #endif
 	}

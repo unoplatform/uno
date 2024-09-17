@@ -15,7 +15,6 @@ using Windows.ApplicationModel.Resources;
 using Uno.UI.Xaml.Controls;
 using System.Net.Http;
 using Microsoft.Web.WebView2.Core;
-using Uno.UI.Extensions;
 using System.Collections.Generic;
 using Windows.Foundation;
 using System.Globalization;
