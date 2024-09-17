@@ -21,8 +21,6 @@ using Uno.UI;
 
 #if !__MACOS__ && !__MACCATALYST__ // catalyst https://github.com/xamarin/xamarin-macios/issues/13935
 using MessageUI;
-using Uno.UI;
-
 #endif
 
 #if __IOS__
