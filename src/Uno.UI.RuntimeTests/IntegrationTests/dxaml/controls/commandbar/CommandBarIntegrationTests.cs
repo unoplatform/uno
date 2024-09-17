@@ -304,6 +304,9 @@ namespace Windows.UI.Tests.Enterprise
 			Func<CommandBar, Task> openFunc = async (cmdBar) => await RunOnUIThread(() => cmdBar.IsOpen = true);
 			Func<CommandBar, Task> closeFunc = async (cmdBar) =>
 			{
+				await Task.Delay(2000);
+				await WindowHelper.WaitForIdle();
+
 				FrameworkElement tapTarget = null;
 
 				await RunOnUIThread(() => tapTarget = (FrameworkElement)cmdBar.SecondaryCommands[0]);
@@ -1141,6 +1144,16 @@ namespace Windows.UI.Tests.Enterprise
 				secondaryCount = cmdBar.SecondaryCommands.Count;
 			});
 			await WindowHelper.WaitForIdle();
+
+#if true
+			// workaround for initial focus already on MoreButton on certain platforms,
+			// causing the next step unable to re-focus MoreButton again.
+			await RunOnUIThread(() =>
+			{
+				(cmdBar.PrimaryCommands[0] as AppBarButton)?.Focus(FocusState.Programmatic);
+			});
+			await WindowHelper.WaitForIdle();
+#endif
 
 			focusSequence = "";
 
