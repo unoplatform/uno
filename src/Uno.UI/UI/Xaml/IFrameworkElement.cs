@@ -380,6 +380,13 @@ namespace Microsoft.UI.Xaml
 			return element;
 		}
 
+		private static nfloat NumberOrDefault(this nfloat number, nfloat defaultValue)
+		{
+			return nfloat.IsNaN(number)
+				? defaultValue
+				: number;
+		}
+
 		/// <summary>
 		/// Base constraint reasoning for simple containers that always respect the stretch of their children.
 		/// </summary>
