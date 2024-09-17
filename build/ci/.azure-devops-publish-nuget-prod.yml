@@ -9,9 +9,9 @@ jobs:
         steps:
         - download: current
           artifact: 'NuGet_Packages'
-          patterns: 
-            - '**/.nupkg'
-            - '!*Private*.nupkg'
+          patterns: |
+            **/.nupkg
+            !*Private*.nupkg
           displayName: Download artifact WebApp
         - template: templates/nuget-publish-public.yml
 
