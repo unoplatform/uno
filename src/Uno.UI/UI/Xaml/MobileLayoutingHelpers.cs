@@ -43,8 +43,8 @@ internal static partial class MobileLayoutingHelpers
 
 #if __ANDROID__
 		var physical = availableSize.LogicalToPhysicalPixels();
-		var widthSpec = ViewHelper.MakeMeasureSpec((int)physical.Width, Android.Views.MeasureSpecMode.AtMost);
-		var heightSpec = ViewHelper.MakeMeasureSpec((int)physical.Height, Android.Views.MeasureSpecMode.AtMost);
+		var widthSpec = ViewHelper.SpecFromLogicalSize(availableSize.Width);
+		var heightSpec = ViewHelper.SpecFromLogicalSize(availableSize.Height);
 		view.Measure(widthSpec, heightSpec);
 		var desiredSize = Uno.UI.Controls.BindableView.GetNativeMeasuredDimensionsFast(view).PhysicalToLogicalPixels();
 		LayoutInformation.SetDesiredSize(view, desiredSize);
