@@ -130,8 +130,8 @@ namespace Microsoft.UI.Xaml.Controls
 				(child as ICustomScrollInfo)?.ApplyViewport(ref desiredChildSize);
 			}
 
-			var physical = availableSize.LogicalToPhysicalPixels();
-			SetMeasuredDimension((int)physical.Width, (int)physical.Height);
+			var measuredDimension = new Size(Math.Min(availableSize.Width, desiredChildSize.Width), Math.Min(availableSize.Height, desiredChildSize.Height)).LogicalToPhysicalPixels();
+			SetMeasuredDimension((int)measuredDimension.Width, (int)measuredDimension.Height);
 		}
 
 		Size ILayouterElement.Measure(Size availableSize)
