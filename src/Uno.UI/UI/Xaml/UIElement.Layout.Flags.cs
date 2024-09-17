@@ -160,11 +160,7 @@ namespace Microsoft.UI.Xaml
 		/// Set one or many flags (set to 1)
 		/// </summary>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		internal void SetLayoutFlags(LayoutFlag flags)
-		{
-			global::System.Diagnostics.Debug.WriteLine($"Setting {flags} on {this},{this.GetDebugName()}");
-			_layoutFlags |= flags;
-		}
+		internal void SetLayoutFlags(LayoutFlag flags) => _layoutFlags |= flags;
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal void SetLayoutFlags(LayoutFlag flags, bool state)
@@ -183,11 +179,7 @@ namespace Microsoft.UI.Xaml
 		/// Reset one or many flags (set flag to zero)
 		/// </summary>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		internal void ClearLayoutFlags(LayoutFlag flags)
-		{
-			_layoutFlags &= ~flags;
-			global::System.Diagnostics.Debug.WriteLine($"Clearing {flags} on {this},{this.GetDebugName()}");
-		}
+		internal void ClearLayoutFlags(LayoutFlag flags) => _layoutFlags &= ~flags;
 
 		/// <summary>
 		/// Reset flags to original state
