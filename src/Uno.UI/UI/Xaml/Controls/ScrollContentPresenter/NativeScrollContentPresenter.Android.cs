@@ -102,11 +102,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override void OnMeasure(int widthMeasureSpec, int heightMeasureSpec)
 		{
-			base.OnMeasure(widthMeasureSpec, heightMeasureSpec);
-		}
-
-		Size ILayouterElement.Measure(Size availableSize)
-		{
+			var availableSize = ViewHelper.LogicalSizeFromSpec(widthMeasureSpec, heightMeasureSpec);
 			var child = this.GetChildren().FirstOrDefault();
 
 			var desiredChildSize = default(Size);
@@ -128,13 +124,20 @@ namespace Microsoft.UI.Xaml.Controls
 					SetChildMargin(childMargin);
 				}
 
-				MobileLayoutingHelpers.MeasureElement(child, availableSize);
+				desiredChildSize = MobileLayoutingHelpers.MeasureElement(child, scrollSpace);
 
 				// Give opportunity to the the content to define the viewport size itself
 				(child as ICustomScrollInfo)?.ApplyViewport(ref desiredChildSize);
 			}
 
-			return desiredChildSize;
+			var physical = availableSize.LogicalToPhysicalPixels();
+			SetMeasuredDimension((int)physical.Width, (int)physical.Height);
+		}
+
+		Size ILayouterElement.Measure(Size availableSize)
+		{
+			this.Measure(ViewHelper.SpecFromLogicalSize(availableSize.Width), ViewHelper.SpecFromLogicalSize(availableSize.Height));
+			return Uno.UI.Controls.BindableView.GetNativeMeasuredDimensionsFast(this).PhysicalToLogicalPixels();
 		}
 
 		void ILayouterElement.Arrange(Rect finalRect)
