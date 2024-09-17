@@ -28,8 +28,12 @@ namespace WebAssembly
 		{
 			// Uno-Specific implementation for https://github.com/dotnet/runtime/issues/69409.
 			// To be removed when the runtime will support the main SynchronizationContext.
-			[MethodImplAttribute(MethodImplOptions.InternalCall)]
-			public static extern void InvokeOnMainThread();
+			// [MethodImplAttribute(MethodImplOptions.InternalCall)]
+			public static void InvokeOnMainThread()
+			{
+				Console.WriteLine("invoking InvokeOnMainThread");
+				throw new Exception("InvokeOnMainThread not supported");
+			}
 		}
 	}
 }

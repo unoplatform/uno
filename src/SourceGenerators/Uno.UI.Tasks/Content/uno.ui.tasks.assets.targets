@@ -259,7 +259,8 @@
 				<Link>wwwroot/%(TargetPath)</Link>
 				<TargetPath></TargetPath>
 			</_UnoTransitiveItems>
-			<_UnoTransitiveItems Remove="@(StaticWebAsset)" />
+		
+			<_UnoTransitiveItems Remove="@(StaticWebAsset)" Condition="'%(StaticWebAsset.Link)' == '%(_UnoTransitiveItems.Link)'" />
 		</ItemGroup>
 
 		<DefineStaticWebAssets
