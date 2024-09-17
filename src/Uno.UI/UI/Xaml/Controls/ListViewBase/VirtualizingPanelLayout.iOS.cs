@@ -68,7 +68,7 @@ namespace Microsoft.UI.Xaml.Controls
 			public const int ListViewBaseLayout_PrepareLayoutStop = 2;
 		}
 
-		private NativeListViewBase Owner => (CollectionView as NativeListViewBase)!;
+		private NativeListViewBase Owner => (NativeListViewBase)CollectionView;
 
 		private enum DirtyState
 		{
@@ -398,12 +398,9 @@ namespace Microsoft.UI.Xaml.Controls
 					cell.Layer.RemoveAllAnimations();
 				}
 
-				if (Owner is { } owner)
+				foreach (var cell in Owner.VisibleSupplementaryViews)
 				{
-					foreach (var cell in owner.VisibleSupplementaryViews)
-					{
-						cell.Layer.RemoveAllAnimations();
-					}
+					cell.Layer.RemoveAllAnimations();
 				}
 			}
 
@@ -508,7 +505,7 @@ namespace Microsoft.UI.Xaml.Controls
 						}
 						_pendingCollectionChanges.Clear();
 						_dirtyState = DirtyState.None;
-						Owner?.SetLayoutCreated();
+						Owner.SetLayoutCreated();
 
 						if (AreStickyGroupHeadersEnabled)
 						{
@@ -1738,18 +1735,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private bool DoesLayoutAttributesContainDraggedPoint(Point point, _LayoutAttributes layoutAttributes)
 		{
-			if (Owner is { } owner)
-			{
-				var adjustedPoint = AdjustExtentOffset(point, GetExtent(Owner.ContentOffset));
-				return layoutAttributes.Frame.Contains(adjustedPoint);
-			}
-
-			if (this.Log().IsEnabled(LogLevel.Error))
-			{
-				this.Log().Error("Owner is null, cannot determine if layout attributes contain dragged point.");
-			}
-
-			return false;
+			var adjustedPoint = AdjustExtentOffset(point, GetExtent(Owner.ContentOffset));
+			return layoutAttributes.Frame.Contains(adjustedPoint);
 		}
 
 		private protected Uno.UI.IndexPath? GetAndUpdateReorderingIndex() => throw new NotSupportedException("Not used on iOS");
