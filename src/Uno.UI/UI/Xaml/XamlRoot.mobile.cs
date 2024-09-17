@@ -14,6 +14,8 @@ public sealed partial class XamlRoot
 			rootVisual.SetNeedsLayout();
 #elif __MACOS__
 			rootVisual.NeedsLayout = true;
+#elif IS_UNIT_TESTS
+			// Nothing
 #else
 #error Unrecognized platform
 #endif
@@ -30,6 +32,8 @@ public sealed partial class XamlRoot
 			rootVisual.SetNeedsLayout();
 #elif __MACOS__
 			rootVisual.NeedsLayout = true;
+#elif IS_UNIT_TESTS
+			// Nothing
 #else
 #error Unrecognized platform
 #endif

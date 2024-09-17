@@ -179,6 +179,7 @@ namespace Microsoft.UI.Xaml
 		internal void ArrangeVisual(Rect finalRect, Rect? clippedFrame = default)
 		{
 			LayoutSlotWithMarginsAndAlignments = finalRect;
+			ClippedFrame = clippedFrame;
 
 			var physical = finalRect.LogicalToPhysicalPixels();
 			FrameRoundingAdjustment = new Size(

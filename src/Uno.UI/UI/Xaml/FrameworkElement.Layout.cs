@@ -708,7 +708,7 @@ namespace Microsoft.UI.Xaml
 				if (needToClipSlot || needToClipLocally)
 				{
 					if (ShouldApplyLayoutClipAsAncestorClip()
-#if __WASM__
+#if !__SKIA__
 						&& RenderTransform is { } renderTransform
 #endif
 						)
@@ -716,7 +716,7 @@ namespace Microsoft.UI.Xaml
 #if __SKIA__
 						clipRect.X += visualOffset.X;
 						clipRect.Y += visualOffset.Y;
-#elif __WASM__
+#else
 						clipRect.X -= renderTransform.MatrixCore.M31;
 						clipRect.Y -= renderTransform.MatrixCore.M32;
 #endif

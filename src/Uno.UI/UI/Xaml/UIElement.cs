@@ -933,14 +933,8 @@ namespace Microsoft.UI.Xaml
 
 			OnViewportUpdated();
 
-#elif __WASM__
+#else
 			InvalidateArrange();
-#elif __ANDROID__
-			// TODO:
-#elif __IOS__
-			// TODO:
-#elif __MACOS__
-			// TODO:
 #endif
 		}
 
@@ -1055,6 +1049,13 @@ namespace Microsoft.UI.Xaml
 			get => HasLayoutStorage ? m_size : default;
 			internal set => m_size = value;
 		}
+#endif
+
+#if !UNO_REFERENCE_API
+		/// <summary>
+		/// This is the Frame that should be used as "available Size" for the Arrange phase.
+		/// </summary>
+		internal Rect? ClippedFrame;
 #endif
 
 		/// <summary>

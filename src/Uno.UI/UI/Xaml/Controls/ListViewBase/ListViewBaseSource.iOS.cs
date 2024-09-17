@@ -279,6 +279,13 @@ namespace Microsoft.UI.Xaml.Controls
 					// Normally this happens when the SelectorItem.Content is set, but there's an edge case where after a refresh, a
 					// container can be dequeued which happens to have had exactly the same DataContext as the new item.
 					cell.ClearMeasuredSize();
+
+					// Ensure ClippedFrame from a previous recycled item doesn't persist which can happen in some cases,
+					// and cause it to be clipped when either axis was smaller.
+					if (cell.Content is { } contentControl)
+					{
+						contentControl.ClippedFrame = null;
+					}
 				}
 
 				Owner?.XamlParent?.TryLoadMoreItems(index);
