@@ -31,6 +31,10 @@
 		<WindowsPackageType Condition="'$(WindowsPackageType)'==''">None</WindowsPackageType>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(WindowsPackageType)' == 'MSIX'">
+		<DefineConstants>$(DefineConstants);WINAPPSDK_PACKAGED</DefineConstants>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<!-- Exclude Manifest items that have already been added to avoid duplicates -->
 		<Manifest Include="$(ApplicationManifest)"
