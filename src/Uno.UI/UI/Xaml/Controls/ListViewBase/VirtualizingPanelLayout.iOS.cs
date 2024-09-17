@@ -227,7 +227,8 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		internal global::System.WeakReference<ListViewBaseSource> Source
+		// TODO: Validate Can Source be null? I not even know where this is set
+		internal global::System.WeakReference<ListViewBaseSource>? Source
 		{
 			get;
 			set;
@@ -322,7 +323,7 @@ namespace Microsoft.UI.Xaml.Controls
 				this.Log().Debug($"Returning null layout attributes for {kind} at {indexPath}");
 			}
 
-			return layoutAttributes;
+			return layoutAttributes!;
 		}
 
 		public override CGSize CollectionViewContentSize
@@ -437,13 +438,13 @@ namespace Microsoft.UI.Xaml.Controls
 			if (!isUpdatingItem)
 			{
 				var unoCachedAttributes = LayoutAttributesForItem(itemIndexPath);
-				if (unoCachedAttributes != null && attributes != null)
+				if (unoCachedAttributes is not null && attributes is not null)
 				{
 					attributes.Frame = unoCachedAttributes.Frame;
 				}
 			}
 
-			return attributes;
+			return attributes!;
 		}
 		#endregion
 
@@ -591,21 +592,40 @@ namespace Microsoft.UI.Xaml.Controls
 				oldFooterSize = null;
 			}
 
-			(NSIndexPath Path, string? Kind, nfloat Offset)? anchorItem = null;
+			(NSIndexPath? Path, string? Kind, nfloat Offset)? anchorItem = null;
 			if (isCollectionChanged)
 			{
 				// We are layouting after an INotifyCollectionChanged operation(s). Cache the previous element sizes, under their new index 
 				// paths, so we can reuse them in order not to have to lay out elements with different databound sizes with their static size.
 				oldItemSizes = _itemLayoutInfos.SelectMany(kvp => kvp.Value)
+					.Select(kvp =>
+					{
+						return
+						(
+							key: OffsetIndexForPendingChanges(kvp.Key, NativeListViewBase.ListViewItemElementKind),
+							size: kvp.Value.Size
+						);
+					})
+					.Where(kvp => kvp.key is not null)
 					.ToDictionaryKeepLast(
-						kvp => OffsetIndexForPendingChanges(kvp.Key, NativeListViewBase.ListViewItemElementKind),
-						kvp => (CGSize?)kvp.Value.Size
+						kvp => kvp.key!,
+						kvp => (CGSize?)kvp.size
 					);
+
 				oldGroupHeaderSizes = _supplementaryLayoutInfos
 					.UnoGetValueOrDefault(NativeListViewBase.ListViewSectionHeaderElementKind)?
+					.Select(kvp =>
+					{
+						return
+						(
+							key: OffsetIndexForPendingChanges(kvp.Key, NativeListViewBase.ListViewSectionHeaderElementKind),
+							size: kvp.Value.Size
+						);
+					})
+					.Where(kvp => kvp.key is not null)
 					.ToDictionaryKeepLast(
-						kvp => OffsetIndexForPendingChanges(kvp.Key, NativeListViewBase.ListViewSectionHeaderElementKind).Section,
-						kvp => (CGSize?)kvp.Value.Size
+						kvp => kvp.key!.Section,
+						kvp => (CGSize?)kvp.size
 					);
 
 				anchorItem = FindAnchorItem();
@@ -734,14 +754,14 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			//Apply anchor if doing a partial relayout
-			if (anchorItem?.Path != null && CollectionView != null)
+			if (anchorItem?.Path is NSIndexPath indexPath && CollectionView is not null)
 			{
-				var newAnchor = _itemLayoutInfos.UnoGetValueOrDefault(anchorItem.Value.Path.Section)?.UnoGetValueOrDefault(anchorItem.Value.Path);
+				var newAnchor = _itemLayoutInfos.UnoGetValueOrDefault(indexPath.Section)?.UnoGetValueOrDefault(indexPath);
 				if (newAnchor == null)
 				{
 					if (this.Log().IsEnabled(LogLevel.Warning))
 					{
-						this.Log().Warn($"No anchor found after layout at {anchorItem.Value.Path}");
+						this.Log().Warn($"No anchor found after layout at {indexPath}");
 					}
 				}
 				else
@@ -785,6 +805,12 @@ namespace Microsoft.UI.Xaml.Controls
 					// RepresentedElementKind is null for items
 					var kind = layout.RepresentedElementKind ?? NativeListViewBase.ListViewItemElementKind;
 					var indexPath = OffsetIndexForPendingChanges(layout.IndexPath, kind);
+
+					// TODO: Validate before merge: should we return false if indexPath is null?
+					if (indexPath is null)
+					{
+						return GetExtentEnd(layout.Frame) > scrollOffset;
+					}
 
 					return GetExtentEnd(layout.Frame) > scrollOffset &&
 					// Exclude items that are being removed or replaced. (These items are set to row or section of int.MaxValue / 2, but 
@@ -921,7 +947,18 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
-			return GetNSIndexPathFromRowSection(row, section);
+			// TODO: valdiadate if we should return null or fail
+			var indexPath = GetNSIndexPathFromRowSection(row, section);
+
+			if (indexPath is null)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"Failed to offset index for {kind} at row {row}, section {section}. IndexPath is null");
+				}
+			}
+
+			return indexPath!;
 		}
 
 		/// <summary>
@@ -991,22 +1028,22 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private protected CGSize GetItemSizeForIndexPath(NSIndexPath indexPath, nfloat availableBreadth)
 		{
-			return Source.GetTarget()?.GetItemSize(CollectionView, indexPath, GetAvailableChildSize(availableBreadth)) ?? CGSize.Empty;
+			return Source?.GetTarget()?.GetItemSize(CollectionView, indexPath, GetAvailableChildSize(availableBreadth)) ?? CGSize.Empty;
 		}
 
 		private CGSize GetHeaderSize(CGSize availableViewportSize)
 		{
-			return Source.GetTarget()?.GetHeaderSize(GetAvailableChildSize(availableViewportSize)) ?? CGSize.Empty;
+			return Source?.GetTarget()?.GetHeaderSize(GetAvailableChildSize(availableViewportSize)) ?? CGSize.Empty;
 		}
 
 		private CGSize GetFooterSize(CGSize availableViewportSize)
 		{
-			return Source.GetTarget()?.GetFooterSize(GetAvailableChildSize(availableViewportSize)) ?? CGSize.Empty;
+			return Source?.GetTarget()?.GetFooterSize(GetAvailableChildSize(availableViewportSize)) ?? CGSize.Empty;
 		}
 
 		private CGSize GetSectionHeaderSize(int section, CGSize availableViewportSize)
 		{
-			return Source.GetTarget()?.GetSectionHeaderSize(section, GetAvailableChildSize(availableViewportSize)) ?? CGSize.Empty;
+			return Source?.GetTarget()?.GetSectionHeaderSize(section, GetAvailableChildSize(availableViewportSize)) ?? CGSize.Empty;
 		}
 
 		/// <summary>
@@ -1236,15 +1273,13 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 				}
 
-				var footerLayout = null;
 				if (GetNSIndexPathFromRowSection(0, 0) is NSIndexPath path)
 				{
-					footerLayout = _supplementaryLayoutInfos.UnoGetValueOrDefault(NativeListViewBase.ListViewFooterElementKind)?.UnoGetValueOrDefault(path);
-				}
-
-				if (footerLayout is not null)
-				{
-					footerLayout.Frame = AdjustExtentOffset(footerLayout.Frame, extentDifference);
+					var layout = _supplementaryLayoutInfos.UnoGetValueOrDefault(NativeListViewBase.ListViewFooterElementKind)?.UnoGetValueOrDefault(path);
+					if (layout is _LayoutAttributes footerLayout)
+					{
+						footerLayout.Frame = AdjustExtentOffset(footerLayout.Frame, extentDifference);
+					}
 				}
 			}
 
