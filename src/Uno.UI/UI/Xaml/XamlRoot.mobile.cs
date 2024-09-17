@@ -5,7 +5,6 @@ public sealed partial class XamlRoot
 {
 	internal void InvalidateMeasure()
 	{
-		global::System.Diagnostics.Debug.WriteLine("Requesting layout on XamlRoot");
 		if (VisualTree.RootVisual is { } rootVisual)
 		{
 #if __ANDROID__

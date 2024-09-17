@@ -312,6 +312,63 @@ namespace Microsoft.UI.Xaml
 			return null;
 		}
 
+		public static CGSize SizeThatFits(IFrameworkElement e, CGSize size)
+		{
+			// Note that on iOS, the computation is intentionally kept as nfloat
+			// to handle discrepancies with the nfloat.NaN and double.NaN.
+
+			if (e.Visibility == Visibility.Collapsed)
+			{
+				return new CGSize(0, 0);
+			}
+
+			var (min, max) = e.GetMinMax();
+
+			var width = size
+				.Width
+				.NumberOrDefault(nfloat.PositiveInfinity)
+				.LocalMin((nfloat)max.Width)
+				.LocalMax((nfloat)min.Width);
+
+			var height = size
+				.Height
+				.NumberOrDefault(nfloat.PositiveInfinity)
+				.LocalMin((nfloat)max.Height)
+				.LocalMax((nfloat)min.Height);
+
+			return new CGSize(width, height);
+		}
+
+		/// <summary>
+		/// Gets the min value being left or right.
+		/// </summary>
+		/// <remarks>
+		/// This method kept here for readbility
+		/// of <see cref="SizeThatFits(IFrameworkElement, CGSize)"/> the keep its
+		/// fluent aspect.
+		/// It also does not use the generic extension that may create an very
+		/// short lived <see cref="IConvertible"/> instance.
+		/// </remarks>
+		private static nfloat LocalMin(this nfloat left, nfloat right)
+		{
+			return NMath.Min(left, right);
+		}
+		/// <summary>
+		/// Gets the max value being left or right.
+		/// </summary>
+		/// <remarks>
+		/// This method kept here for readability
+		/// of <see cref="SizeThatFits(IFrameworkElement, CGSize)"/> the keep its
+		/// fluent aspect.
+		/// It also does not use the generic extension that may create an very
+		/// short lived <see cref="IConvertible"/> instance.
+		/// </remarks>
+		private static nfloat LocalMax(this nfloat left, nfloat right)
+		{
+			return NMath.Max(left, right);
+		}
+
+
 		private static IFrameworkElement ConvertFromStubToElement(this IFrameworkElement element, IFrameworkElement originalRootElement, string name)
 		{
 			var elementStub = element as ElementStub;

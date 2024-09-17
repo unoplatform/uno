@@ -32,18 +32,19 @@ namespace Microsoft.UI.Xaml.Controls
 
 		Size ILayouterElement.Measure(Size availableSize)
 		{
+			var sizeThatFits = IFrameworkElementHelper.SizeThatFits(this, availableSize);
+
+			this.Measure(ViewHelper.SpecFromLogicalSize(sizeThatFits.Width), ViewHelper.SpecFromLogicalSize(sizeThatFits.Height));
+
 			double maxChildWidth = 0f, maxChildHeight = 0f;
 
 			//Per the link, if the NativePagedView has no fixed size in a dimension, wrap it to the size of its largest child. - http://stackoverflow.com/questions/8394681/android-i-am-unable-to-have-viewpager-wrap-content
 			//This might be brittle if items have varying dimensions along the unfixed axis; one (hackish) solution would be to increase OffscreenPageLimit (the number of offscreen pages that are kept).
-			if (double.IsPositiveInfinity(availableSize.Width) || double.IsPositiveInfinity(availableSize.Height))
+			foreach (var child in this.GetChildren())
 			{
-				foreach (var child in this.GetChildren())
-				{
-					var desiredChildSize = MobileLayoutingHelpers.MeasureElement(child, availableSize);
-					maxChildWidth = Math.Max(maxChildWidth, desiredChildSize.Width);
-					maxChildHeight = Math.Max(maxChildHeight, desiredChildSize.Height);
-				}
+				var desiredChildSize = MobileLayoutingHelpers.MeasureElement(child, availableSize);
+				maxChildWidth = Math.Max(maxChildWidth, desiredChildSize.Width);
+				maxChildHeight = Math.Max(maxChildHeight, desiredChildSize.Height);
 			}
 
 			return new Size(
@@ -54,6 +55,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 		void ILayouterElement.Arrange(Rect finalRect)
 		{
+			foreach (var child in this.GetChildren())
+			{
+				MobileLayoutingHelpers.ArrangeElement(child, finalRect);
+			}
+
+			var physical = finalRect.LogicalToPhysicalPixels();
+			this.Layout((int)physical.Left, (int)physical.Top, (int)physical.Right, (int)physical.Bottom);
 		}
 
 		public override void AddView(View child)
