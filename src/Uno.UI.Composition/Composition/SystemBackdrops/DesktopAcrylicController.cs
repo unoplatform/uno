@@ -2,7 +2,10 @@ using System;
 
 namespace Microsoft.UI.Composition.SystemBackdrops;
 
-public partial class DesktopAcrylicController : ISystemBackdropController, IDisposable, ISystemBackdropControllerWithTargets, IClosableNotifier
+public partial class DesktopAcrylicController
+#if HAS_UNO_WINUI
+	: ISystemBackdropController, IDisposable, ISystemBackdropControllerWithTargets, IClosableNotifier
+#endif
 {
 	/// <summary>
 	/// Determines whether the acrylic material is supported on the current operating system.
