@@ -276,4 +276,7 @@
 		</When>
 	</Choose>
 
+	<!-- empty placeholder -->
+	<Target Name="_UnoGetCopyToOutputItems" />
+
 </Project>

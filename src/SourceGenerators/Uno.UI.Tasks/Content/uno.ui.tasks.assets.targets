@@ -237,19 +237,27 @@
 		</ItemGroup>
 	</Target>
 	
+	<PropertyGroup>
+		<UnoGenerateAssetsManifestDependsOn>
+			$(UnoGenerateAssetsManifestDependsOn);
+			_UnoAssetsGetCopyToPublishDirectoryItems
+		</UnoGenerateAssetsManifestDependsOn>
+	</PropertyGroup>
+	
 	<!--
 	Ensure that project transitive references are copied to the publish directory, as well
 	as nuget packages content.
 	-->
 	<Target Name="_UnoAssetsGetCopyToPublishDirectoryItems"
-			BeforeTargets="GetCopyToPublishDirectoryItems"
+			DependsOnTargets="_UnoGetCopyToOutputItems"
 			Condition=" '$(UsingMicrosoftNETSdkWebAssembly)' == 'true' ">
 
 		<ItemGroup>
-			<_UnoTransitiveItems Include="@(_TransitiveItemsToCopyToOutputDirectory)">
+			<_UnoTransitiveItems Include="@(UnoAllCopyToOutputItems)">
 				<!-- set the ContentRoot using GetDirectoryName -->
 				<ContentRoot>$([System.IO.Path]::GetDirectoryName('%(FullPath)'))</ContentRoot>
 				<Link>wwwroot/%(TargetPath)</Link>
+				<TargetPath></TargetPath>
 			</_UnoTransitiveItems>
 			<_UnoTransitiveItems Remove="@(StaticWebAsset)" />
 		</ItemGroup>
@@ -275,5 +283,42 @@
 			<Output TaskParameter="Endpoints" ItemName="StaticWebAssetEndpoint" />
 		</DefineStaticWebAssetEndpoints>
 
+	</Target>
+
+	<!-- 
+	Recursively get all copy to publish items.
+	
+	This is a clone of GetCopyToPublishDirectoryItems, but without the original 
+	dependencies that may cause invalid chains of targets evaluations.
+	-->
+	<Target Name="_UnoGetCopyToOutputItems"
+				Returns="@(UnoAllCopyToOutputItems)"
+				KeepDuplicateOutputs="false"
+				DependsOnTargets="AssignTargetPaths;AssignTargetPaths;_GetProjectReferenceTargetFrameworkProperties">
+		
+		<PropertyGroup>
+		  <_UnoGCKeepMetadata>CopyToPublishDirectory;ExcludeFromSingleFile;TargetPath</_UnoGCKeepMetadata>
+		</PropertyGroup>
+
+		<MSBuild Projects="@(_MSBuildProjectReferenceExistent)"
+			Targets="GetCopyToPublishDirectoryItems"
+			BuildInParallel="$(BuildInParallel)"
+			Properties="%(_MSBuildProjectReferenceExistent.SetConfiguration); %(_MSBuildProjectReferenceExistent.SetPlatform); %(_MSBuildProjectReferenceExistent.SetTargetFramework)"
+			Condition="'@(_MSBuildProjectReferenceExistent)' != '' and '$(_GetChildProjectCopyToPublishDirectoryItems)' == 'true' and '%(_MSBuildProjectReferenceExistent.Private)' != 'false'"
+			ContinueOnError="$(ContinueOnError)"
+			RemoveProperties="%(_MSBuildProjectReferenceExistent.GlobalPropertiesToRemove)$(_GlobalPropertiesToRemoveFromProjectReferences)">
+
+			<Output TaskParameter="TargetOutputs" ItemName="_UnoAllChildProjectItemsWithTargetPath"/>
+		</MSBuild>
+
+		<ItemGroup>
+			<_UnoSourceItemsToCopy
+				KeepDuplicates="false"
+				KeepMetadata="$(_UnoGCKeepMetadata)"
+				Include="@(_UnoAllChildProjectItemsWithTargetPath->'%(FullPath)')"
+				Condition="'%(_UnoAllChildProjectItemsWithTargetPath.CopyToPublishDirectory)'!='Never'"/>
+
+			<UnoAllCopyToOutputItems Include="@(_UnoSourceItemsToCopy->'%(FullPath)')"/>
+		</ItemGroup>
 	</Target>
 </Project>
