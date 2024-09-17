@@ -25,7 +25,9 @@
 		<!--<WasmShellEmccLinkOptimization>false</WasmShellEmccLinkOptimization>-->
 		
 		<PublishTrimmed>false</PublishTrimmed>
-		
+		<WasmIncludeFullIcuData>true</WasmIncludeFullIcuData>
+		<InvariantGlobalization>false</InvariantGlobalization>
+
 		<!-- Include all satellite	assemblies -->
 		<WasmShellLoadAllSatelliteResources>true</WasmShellLoadAllSatelliteResources>
 
