@@ -8,8 +8,7 @@ jobs:
         steps:
         - download: current
           artifact: 'NuGet_Packages'
-          patterns: 
-            - '**/.nupkg'
+          patterns: '**/.nupkg'
           displayName: Download artifact WebApp
 
         - template: templates/nuget-publish-dev.yml
