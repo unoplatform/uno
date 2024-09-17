@@ -17,6 +17,7 @@ using Microsoft.Web.WebView2.Core;
 using System.Collections.Generic;
 using System.Globalization;
 using Windows.UI.Core;
+using Uno.UI;
 
 #if !__MACOS__ && !__MACCATALYST__ // catalyst https://github.com/xamarin/xamarin-macios/issues/13935
 using MessageUI;
@@ -28,7 +29,6 @@ using Uno.UI;
 using UIKit;
 #else
 using AppKit;
-using Uno.UI;
 #endif
 
 #pragma warning disable CA1422 // TODO Uno: Deprecated APIs in iOS 17
@@ -79,7 +79,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 #if __IOS__
 		if (UIDevice.CurrentDevice.CheckSystemVersion(16, 4))
 		{
-			Inspectable = FeatureConfiguration.WebView2.IsInspectable;
+			Inspectable = Uno.UI.FeatureConfiguration.WebView2.IsInspectable;
 		}
 #endif
 
