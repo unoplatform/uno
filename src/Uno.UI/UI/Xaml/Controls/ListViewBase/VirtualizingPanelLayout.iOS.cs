@@ -602,13 +602,13 @@ namespace Microsoft.UI.Xaml.Controls
 					{
 						return
 						(
-							key: OffsetIndexForPendingChanges(kvp.Key, NativeListViewBase.ListViewItemElementKind),
+							indexPath: OffsetIndexForPendingChanges(kvp.Key, NativeListViewBase.ListViewItemElementKind),
 							size: kvp.Value.Size
 						);
 					})
-					.Where(kvp => kvp.key is not null)
+					.Where(kvp => kvp.indexPath is not null)
 					.ToDictionaryKeepLast(
-						kvp => kvp.key!,
+						kvp => kvp.indexPath!,
 						kvp => (CGSize?)kvp.size
 					);
 
@@ -618,13 +618,13 @@ namespace Microsoft.UI.Xaml.Controls
 					{
 						return
 						(
-							key: OffsetIndexForPendingChanges(kvp.Key, NativeListViewBase.ListViewSectionHeaderElementKind),
+							indexPath: OffsetIndexForPendingChanges(kvp.Key, NativeListViewBase.ListViewSectionHeaderElementKind),
 							size: kvp.Value.Size
 						);
 					})
-					.Where(kvp => kvp.key is not null)
+					.Where(kvp => kvp.indexPath is not null)
 					.ToDictionaryKeepLast(
-						kvp => kvp.key!.Section,
+						kvp => kvp.indexPath!.Section,
 						kvp => (CGSize?)kvp.size
 					);
 
