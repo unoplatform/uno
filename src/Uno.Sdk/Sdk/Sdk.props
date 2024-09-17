@@ -13,15 +13,17 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 	<PropertyGroup>
 		<!-- Legacy Project System Support -->
 		<_DefaultMicrosoftNETSdk Condition="$(SingleProject) != 'true' AND $(UnoSingleProject) != 'true' AND ($(MSBuildProjectName.EndsWith('.Wasm')) or $(MSBuildProjectName.EndsWith('.WebAssembly')))">Microsoft.NET.Sdk.Web</_DefaultMicrosoftNETSdk>
+	</PropertyGroup>
 
-		<_UnoUseMicrosoftNETSdkWebAssembly Condition="
-				$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm'
-				AND $([MSBuild]::GetTargetFrameworkVersion('$(TargetFramework)')) &lt; 9.0
-			">true</_UnoUseMicrosoftNETSdkWebAssembly>
-		
-		<_DefaultMicrosoftNETSdk Condition=" '$(_UnoUseMicrosoftNETSdkWebAssembly)' == '' ">Microsoft.NET.Sdk.Web</_DefaultMicrosoftNETSdk>
+	<!-- Switch to net9's Microsoft.NET.Sdk.WebAssembly, otherwise keep compatibility with Uno.Wasm.Bootstrap's net8 support -->
+	<PropertyGroup Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm' ">
+		<_UnoUseMicrosoftNETSdkWebAssembly Condition="$([MSBuild]::GetTargetFrameworkVersion('$(TargetFramework)')) &lt; 9.0">true</_UnoUseMicrosoftNETSdkWebAssembly>
+
+		<_DefaultMicrosoftNETSdk Condition=" '$(_UnoUseMicrosoftNETSdkWebAssembly)' != 'true' ">Microsoft.NET.Sdk.Web</_DefaultMicrosoftNETSdk>
 		<_DefaultMicrosoftNETSdk Condition=" '$(_UnoUseMicrosoftNETSdkWebAssembly)' == 'true' " >Microsoft.NET.Sdk.WebAssembly</_DefaultMicrosoftNETSdk>
+	</PropertyGroup>
 
+	<PropertyGroup>
 		<_DefaultMicrosoftNETSdk Condition=" $(_DefaultMicrosoftNETSdk) == '' ">Microsoft.NET.Sdk</_DefaultMicrosoftNETSdk>
 
 		<_DefaultWasmOutputType Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm'">$(OutputType)</_DefaultWasmOutputType>
