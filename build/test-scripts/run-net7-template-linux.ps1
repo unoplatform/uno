@@ -88,8 +88,15 @@ $projects =
 
 for($i = 0; $i -lt $projects.Length; $i++)
 {
-    $projectPath=$projects[$i][0];
-    $projectOptions=$projects[$i][1];
+    $projectTestGroup=$projects[$i][0];
+    $projectPath=$projects[$i][1];
+    $projectOptions=$projects[$i][2];
+
+    if ($TestGroup -ne $projectTestGroup)
+    {
+        Write-Host "Skipping test $projectPath for group $projectTestGroup"
+        continue
+    }
 
     Write-Host "Building Debug $projectPath with $projectOptions"
     dotnet build $debug "$projectPath" $projectOptions -bl:binlogs/$projectPath/debug.binlog
