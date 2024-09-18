@@ -78,7 +78,7 @@ $projects =
     @(1, "5.2/uno52AppWithLib/uno52AppWithLib/uno52AppWithLib.csproj", ""),
 
     # 5.3 Blank with net9
-    @(2, "5.2/uno53net9blank/uno53net9blank/uno53net9blank.csproj", "")
+    @(2, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", "")
 
     ## Note for contributors
     ##

@@ -29,6 +29,8 @@ if ($IsWindows)
 $debug = $default + '/p:Configuration=Debug' + '/r'
 $release = $default + '/p:Configuration=Release' + '/r'
 
+cd src/SolutionTemplate
+
 if ($TestGroup -eq 0)
 {
     ## Configurations are split to work around UWP not building with .NET new
@@ -47,8 +49,6 @@ if ($TestGroup -eq 0)
     {
         $dotnetBuildConfigurations += , @("Skia.WPF", "", "");
     }
-
-    cd src/SolutionTemplate
 
     # Debug Config
     pushd UnoAppAll
