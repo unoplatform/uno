@@ -32,6 +32,13 @@ internal static partial class MobileLayoutingHelpers
 			return viewAsUIElement.DesiredSize;
 		}
 
+		var isDirty = LayoutInformation.GetMeasureDirtyPath(view);
+		var previousSize = LayoutInformation.GetAvailableSize(view);
+		if (!isDirty && previousSize == availableSize)
+		{
+			return LayoutInformation.GetDesiredSize(view);
+		}
+
 		LayoutInformation.SetMeasureDirtyPath(view, false);
 		if (view is ILayouterElement layouterElement)
 		{
@@ -52,10 +59,15 @@ internal static partial class MobileLayoutingHelpers
 
 		if (view is ViewGroup viewGroup)
 		{
-			var childCount = viewGroup.ChildCount;
-			for (int i = 0; i < childCount; i++)
+			foreach (var child in viewGroup.GetChildren())
 			{
-				MeasureElement(viewGroup.GetChildAt(i), desiredSize);
+				var isChildDirty = child is UIElement childAsUIElement
+					? childAsUIElement.IsMeasureDirtyOrMeasureDirtyPath
+					: LayoutInformation.GetMeasureDirtyPath(child);
+				if (isChildDirty)
+				{
+					MeasureElement(child, desiredSize);
+				}
 			}
 		}
 
@@ -100,8 +112,23 @@ internal static partial class MobileLayoutingHelpers
 			return;
 		}
 
-		LayoutInformation.SetLayoutSlot(view, finalRect);
-		LayoutInformation.SetArrangeDirtyPath(view, false);
+		var isDirty = LayoutInformation.GetArrangeDirtyPath(view);
+		var previousRect = LayoutInformation.GetLayoutSlot(view);
+		if (!isDirty && previousRect == finalRect)
+		{
+			return;
+		}
+
+		if (previousRect != finalRect)
+		{
+			LayoutInformation.SetLayoutSlot(view, finalRect);
+		}
+
+		if (isDirty)
+		{
+			LayoutInformation.SetArrangeDirtyPath(view, false);
+		}
+
 		if (view is ILayouterElement layouterElement)
 		{
 			layouterElement.Arrange(finalRect);
@@ -111,6 +138,20 @@ internal static partial class MobileLayoutingHelpers
 			var physicalRect = ViewHelper.LogicalToPhysicalPixels(finalRect);
 #if __ANDROID__
 			view.Layout((int)physicalRect.Left, (int)physicalRect.Top, (int)physicalRect.Right, (int)physicalRect.Bottom);
+			if (view is ViewGroup viewGroup)
+			{
+				foreach (var child in viewGroup.GetChildren())
+				{
+					var isChildDirty = child is UIElement childAsUIElement
+						? childAsUIElement.IsArrangeDirtyOrArrangeDirtyPath
+						: LayoutInformation.GetArrangeDirtyPath(child);
+
+					if (isChildDirty)
+					{
+						ArrangeElement(child, finalRect);
+					}
+				}
+			}
 #elif __IOS__ || __MACOS__
 			view.Frame = physicalRect;
 #endif
