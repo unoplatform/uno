@@ -29,8 +29,6 @@ namespace Microsoft.UI.Xaml
 		private int _nativeChildrenCount;
 		private bool _nativeClipChildren;
 
-		private Rect _previousClip = Rect.Empty;
-
 		private void ComputeAreChildrenNativeViewsOnly()
 		{
 			var nativeClipChildren = (this as IShadowChildrenProvider).ChildrenShadow.Count == _nativeChildrenCount;
@@ -137,43 +135,39 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		internal Size? FrameRoundingAdjustment { get; set; }
 
-		partial void ApplyNativeClip(Rect rect)
+		protected override void OnDraw(Android.Graphics.Canvas canvas)
+		{
+			if (m_pLayoutClipGeometry is { } clipRectLogical)
+			{
+				var physicalRect = ViewHelper.LogicalToPhysicalPixels(clipRectLogical);
+				if (FrameRoundingAdjustment is { } fra)
+				{
+					physicalRect.Width += fra.Width;
+					physicalRect.Height += fra.Height;
+				}
+
+				var physical = physicalRect.ToRectF();
+				canvas.ClipRect(physical, Region.Op.Intersect);
+			}
+
+			base.OnDraw(canvas);
+		}
+
+		partial void ApplyNativeClip(Rect rect, Transform transform)
 		{
 			if (rect.IsEmpty)
 			{
-				if (_previousClip != rect)
-				{
-					_previousClip = rect;
-
-					ViewCompat.SetClipBounds(this, null);
-				}
-
 				return;
 			}
 
-			_previousClip = rect;
-
-			var physicalRect = rect.LogicalToPhysicalPixels();
-			if (FrameRoundingAdjustment is { } fra)
+			if (transform != null)
 			{
-				physicalRect.Width += fra.Width;
-				physicalRect.Height += fra.Height;
+				rect = transform.TransformBounds(rect);
 			}
 
-			ViewCompat.SetClipBounds(this, physicalRect);
-
-			if (FeatureConfiguration.UIElement.UseLegacyClipping)
-			{
-				// Old way: apply the clipping for each child on their assigned slot
-				SetClipChildren(NeedsClipToSlot);
-			}
-			else
-			{
-				// "New" correct way: apply the clipping on the parent,
-				// and let the children overflow inside the parent's bounds
-				// This is closer to the XAML way of doing clipping.
-				SetClipToPadding(NeedsClipToSlot);
-			}
+			var physicalRect = ViewHelper.LogicalToPhysicalPixels(rect);
+			var physical = new Android.Graphics.Rect((int)physicalRect.Left, (int)physicalRect.Top, (int)physicalRect.Right, (int)physicalRect.Bottom);
+			ViewCompat.SetClipBounds(this, physical);
 		}
 
 		private protected bool _isInArrangeVisualLayout;
@@ -181,7 +175,6 @@ namespace Microsoft.UI.Xaml
 		internal void ArrangeVisual(Rect finalRect, Rect? clippedFrame = default)
 		{
 			LayoutSlotWithMarginsAndAlignments = finalRect;
-			ClippedFrame = clippedFrame;
 
 			var physical = finalRect.LogicalToPhysicalPixels();
 			FrameRoundingAdjustment = new Size(
@@ -203,8 +196,6 @@ namespace Microsoft.UI.Xaml
 				_isInArrangeVisualLayout = false;
 			}
 
-
-			ApplyNativeClip(clippedFrame ?? Rect.Empty);
 			OnViewportUpdated(clippedFrame ?? Rect.Empty);
 		}
 

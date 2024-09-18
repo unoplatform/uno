@@ -36,7 +36,11 @@ partial class UIElement
 	// What this does is puts the layout clip above the Child's render transforms, but below its offset.
 	// Note that this definition requires that the layout clip not be applied when animating the Child Offset,
 	// since this is only possible with children of a Canvas, which does not apply any layout clip, this works out fine.
-	//private RectangleGeometry m_pLayoutClipGeometry;
+	// Uno docs: We use a simple Rect rather than RectangleGeometry
+	// Uno docs: This doesn't include clipping from UIElement.Clip dependency property. It's all about the layout clipping calculated by the arrange logic.
+#if __ANDROID__
+	internal Rect? m_pLayoutClipGeometry;
+#endif
 
 #if LAYOUTER_WORKAROUND
 	// Causes issues for Layouter-based platforms.
@@ -57,7 +61,9 @@ partial class UIElement
 		m_unclippedDesiredSize = default;
 #endif
 		m_size = default;
-		//m_pLayoutClipGeometry = default;
+#if __ANDROID__
+		m_pLayoutClipGeometry = default;
+#endif
 #endif
 	}
 

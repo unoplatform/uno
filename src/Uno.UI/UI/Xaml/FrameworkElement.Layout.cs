@@ -736,6 +736,10 @@ namespace Microsoft.UI.Xaml
 		/// <param name="clippedFrame">Zone to clip, if clipping is required</param>
 		private void ArrangeNative(Point offset, Rect? clippedFrame)
 		{
+#if __ANDROID__
+			m_pLayoutClipGeometry = clippedFrame;
+#endif
+
 			var newRect = new Rect(offset, RenderSize);
 
 			if (
@@ -750,11 +754,12 @@ namespace Microsoft.UI.Xaml
 				throw new InvalidOperationException($"{FormatDebugName()}: Invalid frame size {newRect}. No dimension should be NaN or negative value.");
 			}
 
-#if __SKIA__
+#if __SKIA__ || __ANDROID__
 			// clippedFrame here is the one calculated by FrameworkElement.GetClipRect
-			// which propagates to ShapeVisual.ViewBox.
+			// which propagates to ShapeVisual.ViewBox (on Skia) or used in OnDraw through m_pLayoutClipGeometry (on Android).
 			// The UIElement.Clip public property isn't considered here on Skia because
 			// it's propagated to Visual.Clip and is set when UIElement.Clip changes.
+			// And on Android, it propagates through SetClipBounds
 			ArrangeVisual(newRect, clippedFrame);
 #else
 			var clip = Clip;

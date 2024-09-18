@@ -915,12 +915,13 @@ namespace Microsoft.UI.Xaml
 
 		internal void ApplyClip()
 		{
-#if __SKIA__
-			// On Skia specifically, we separate the two types of clipping.
+#if __SKIA__ || __ANDROID__
+			// On Skia and Android specifically, we separate the two types of clipping.
 			// First, from Clip DP (handled in this code path)
-			// That clipping propagates to Visual.Clip through ApplyNativeClip.
+			// That clipping propagates through ApplyNativeClip to Visual.Clip (on Skia) or ViewCompat.SetClipBounds (on Android):
 			// Second is clipping calculated from FrameworkElement.GetClipRect during arrange.
-			// That clipping propagates to ViewBox during arrange.
+			// On Skia, that clipping propagates to ViewBox during arrange.
+			// On Android, that clipping is handled in OnDraw override in UIElement by applying it to Android's canvas directly.
 			var clip = Clip;
 			if (clip is null)
 			{
@@ -931,7 +932,22 @@ namespace Microsoft.UI.Xaml
 				ApplyNativeClip(clip.Rect, clip.Transform);
 			}
 
+#if __SKIA__
 			OnViewportUpdated();
+#else
+			var clipRect = clip?.Rect;
+			if (clipRect.HasValue && clip?.Transform is { } transform)
+			{
+				clipRect = transform.TransformBounds(clipRect.Value);
+			}
+
+			if (clipRect.HasValue || m_pLayoutClipGeometry.HasValue)
+			{
+				clipRect = (clipRect ?? Rect.Infinite).IntersectWith(m_pLayoutClipGeometry ?? Rect.Infinite);
+			}
+
+			OnViewportUpdated(clipRect ?? Rect.Empty);
+#endif
 
 #else
 			InvalidateArrange();
@@ -939,7 +955,7 @@ namespace Microsoft.UI.Xaml
 		}
 
 		partial void ApplyNativeClip(Rect rect
-#if __SKIA__
+#if __SKIA__ || __ANDROID__
 			, Transform transform
 #endif
 			);
@@ -1049,13 +1065,6 @@ namespace Microsoft.UI.Xaml
 			get => HasLayoutStorage ? m_size : default;
 			internal set => m_size = value;
 		}
-#endif
-
-#if !UNO_REFERENCE_API
-		/// <summary>
-		/// This is the Frame that should be used as "available Size" for the Arrange phase.
-		/// </summary>
-		internal Rect? ClippedFrame;
 #endif
 
 		/// <summary>
