@@ -235,7 +235,16 @@ namespace Microsoft.UI.Xaml
 
 		protected override void OnMeasure(int widthMeasureSpec, int heightMeasureSpec)
 		{
-			base.OnMeasure(widthMeasureSpec, heightMeasureSpec);
+			if (IsVisualTreeRoot)
+			{
+				base.OnMeasure(widthMeasureSpec, heightMeasureSpec);
+				return;
+			}
+
+			var availableSize = ViewHelper.LogicalSizeFromSpec(widthMeasureSpec, heightMeasureSpec);
+			this.Measure(availableSize);
+			var desiredPhysical = this.DesiredSize.LogicalToPhysicalPixels();
+			SetMeasuredDimension((int)desiredPhysical.Width, (int)desiredPhysical.Height);
 		}
 
 		protected override void OnLayoutCore(bool changed, int left, int top, int right, int bottom, bool localIsLayoutRequested)
@@ -243,6 +252,14 @@ namespace Microsoft.UI.Xaml
 			try
 			{
 				base.OnLayoutCore(changed, left, top, right, bottom, localIsLayoutRequested);
+				if (!IsVisualTreeRoot && !_isInArrangeVisualLayout)
+				{
+					// This handles native-only elements with managed child/children.
+					// When the parent is native-only element, it will layout its children with the proper rect.
+					// So we response to the requested bounds and do the managed arrange.
+					var logical = new Rect(left, top, right - left, bottom - top);
+					this.Arrange(logical);
+				}
 			}
 			catch (Exception e)
 			{

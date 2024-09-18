@@ -176,6 +176,8 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		private protected bool _isInArrangeVisualLayout;
+
 		internal void ArrangeVisual(Rect finalRect, Rect? clippedFrame = default)
 		{
 			LayoutSlotWithMarginsAndAlignments = finalRect;
@@ -186,12 +188,21 @@ namespace Microsoft.UI.Xaml
 				(int)physical.Width - physical.Width,
 				(int)physical.Height - physical.Height);
 
-			this.Layout(
-				(int)physical.Left,
-				(int)physical.Top,
-				(int)physical.Right,
-				(int)physical.Bottom
-			);
+			try
+			{
+				_isInArrangeVisualLayout = true;
+				this.Layout(
+					(int)physical.Left,
+					(int)physical.Top,
+					(int)physical.Right,
+					(int)physical.Bottom
+				);
+			}
+			finally
+			{
+				_isInArrangeVisualLayout = false;
+			}
+
 
 			ApplyNativeClip(clippedFrame ?? Rect.Empty);
 			OnViewportUpdated(clippedFrame ?? Rect.Empty);

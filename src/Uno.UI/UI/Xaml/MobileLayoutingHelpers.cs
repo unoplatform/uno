@@ -61,12 +61,18 @@ internal static partial class MobileLayoutingHelpers
 		{
 			foreach (var child in viewGroup.GetChildren())
 			{
-				var isChildDirty = child is UIElement childAsUIElement
-					? childAsUIElement.IsMeasureDirtyOrMeasureDirtyPath
-					: LayoutInformation.GetMeasureDirtyPath(child);
-				if (isChildDirty)
+				if (child is UIElement childAsUIElement)
 				{
-					MeasureElement(child, desiredSize);
+					if (childAsUIElement.IsMeasureDirtyOrMeasureDirtyPath)
+					{
+						MeasureElement(child, desiredSize);
+					}
+				}
+				else
+				{
+					// Both view and child are native-only. So, skip native measure on the child.
+					// The "view" (i.e, the parent) is responsible for measuring its child
+					// If the child contains a managed element, we get back to measuring it via FrameworkElement.OnMeasure
 				}
 			}
 		}
@@ -142,13 +148,18 @@ internal static partial class MobileLayoutingHelpers
 			{
 				foreach (var child in viewGroup.GetChildren())
 				{
-					var isChildDirty = child is UIElement childAsUIElement
-						? childAsUIElement.IsArrangeDirtyOrArrangeDirtyPath
-						: LayoutInformation.GetArrangeDirtyPath(child);
-
-					if (isChildDirty)
+					if (child is UIElement childAsUIElement)
 					{
-						ArrangeElement(child, finalRect);
+						if (childAsUIElement.IsArrangeDirtyOrArrangeDirtyPath)
+						{
+							ArrangeElement(child, finalRect);
+						}
+					}
+					else
+					{
+						// Both view and child are native-only. So, skip native layout on the child.
+						// The "view" (i.e, the parent) is responsible for layouting its child
+						// If the child contains a managed element, we get back to arranging it via FrameworkElement.OnLayoutCore
 					}
 				}
 			}
