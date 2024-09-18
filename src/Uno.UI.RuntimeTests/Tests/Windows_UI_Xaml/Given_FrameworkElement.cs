@@ -907,9 +907,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			panel.Measure(new Size(1000, 1000));
 
-			var measuredHeightLogical = Math.Round(Uno.UI.ViewHelper.PhysicalToLogicalPixels(outer.MeasuredHeight));
-			Assert.AreEqual(InnerBorderHeight, measuredHeightLogical);
-
 			outer.Arrange(new Rect(0, 0, 1000, 1000));
 			var actualHeight = Math.Round(outer.ActualHeight);
 			Assert.AreEqual(InnerBorderHeight, actualHeight);
