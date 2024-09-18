@@ -40,6 +40,13 @@ internal static partial class MobileLayoutingHelpers
 		}
 
 		LayoutInformation.SetMeasureDirtyPath(view, false);
+
+#if __ANDROID__
+		// Calling the native Measure method may not always trigger OnMeasure
+		// We should do RequestLayout()
+		view.RequestLayout();
+#endif
+
 		if (view is ILayouterElement layouterElement)
 		{
 			var desiredSizeFromLayouterElement = layouterElement.Measure(availableSize);
