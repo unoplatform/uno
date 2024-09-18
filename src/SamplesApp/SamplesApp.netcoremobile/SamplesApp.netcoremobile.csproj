@@ -155,6 +155,7 @@
 			
 			<ItemGroup>
 				<ProjectReference Include="..\..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.netcoremobile.csproj" />
+				<ProjectReference Include="..\..\AddIns\Uno.UI.GooglePlay\Uno.UI.GooglePlay.netcoremobile.csproj" />
 			</ItemGroup>
 			
 			<ItemGroup>
@@ -237,16 +238,10 @@
 
 	<Import Project="..\..\..\build\nuget\uno.winui.single-project.targets" />
 
-	<Target Name="GenerateVersion" 
-			BeforeTargets="BeforeBuild;_CompileAppManifest;_GetAndroidPackageName" 
-			Condition="'$(GITVERSION_InformationalVersion)'!=''">
+	<Target Name="GenerateVersion" BeforeTargets="BeforeBuild;_CompileAppManifest;_GetAndroidPackageName" Condition="'$(GITVERSION_InformationalVersion)'!=''">
 
-		<Exec
-			Command="git rev-list --count HEAD"
-			ConsoleToMSBuild="true">
-			<Output
-				TaskParameter="ConsoleOutput"
-				PropertyName="_VersionCode" />
+		<Exec Command="git rev-list --count HEAD" ConsoleToMSBuild="true">
+			<Output TaskParameter="ConsoleOutput" PropertyName="_VersionCode" />
 		</Exec>
 
 		<PropertyGroup>
@@ -259,7 +254,7 @@
 
 	</Target>
 
-	<PropertyGroup >
+	<PropertyGroup>
 		<!-- Versions -->
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
 		<ApplicationVersion>1</ApplicationVersion>

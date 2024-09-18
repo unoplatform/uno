@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Windows.Services.Store.Internal;
 
-internal interface IStoreContextExtension
+public interface IStoreContextExtension
 {
 	Task<StoreRateAndReviewResult> RequestRateAndReviewAsync(CancellationToken token);
 }

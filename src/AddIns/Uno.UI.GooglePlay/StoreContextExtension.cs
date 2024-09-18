@@ -19,8 +19,15 @@ using Xamarin.Google.Android.Play.Core.Tasks;
 
 namespace Uno.UI.GooglePlay;
 
-internal class StoreContextExtension : IStoreContextExtension
+public class StoreContextExtension : IStoreContextExtension
 {
+	private readonly StoreContext _storeContext;
+
+	public StoreContextExtension(object storeContext)
+	{
+		_storeContext = storeContext as StoreContext ?? throw new ArgumentNullException(nameof(storeContext));
+	}
+
 	public async Task<StoreRateAndReviewResult> RequestRateAndReviewAsync(CancellationToken token)
 	{
 		TaskCompletionSource<StoreRateAndReviewResult>? inAppRateTcs;
@@ -33,7 +40,8 @@ internal class StoreContextExtension : IStoreContextExtension
 
 		using var request = reviewManager.RequestReviewFlow();
 
-		request.AddOnCompleteListener(new InAppReviewListener(reviewManager, inAppRateTcs));
+		using var listener = new InAppReviewListener(reviewManager, inAppRateTcs);
+		request.AddOnCompleteListener(listener);
 
 		return await inAppRateTcs.Task;
 	}
@@ -56,10 +64,9 @@ internal class StoreContextExtension : IStoreContextExtension
 			var context = ContextHelper.Current;
 			var activity = (Activity)context;
 
-			if (!task.IsSuccessful)
+			if (!task.IsSuccessful || _forceReturn)
 			{
-				_inAppRateTcs?.TrySetResult(new StoreRateAndReviewResult(StoreRateAndReviewStatus.Error));
-
+				_inAppRateTcs?.TrySetResult(new(_forceReturn ? StoreRateAndReviewStatus.Succeeded : StoreRateAndReviewStatus.Error));
 				_launchTask?.Dispose();
 
 				return;
