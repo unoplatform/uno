@@ -9,7 +9,10 @@ public sealed partial class StoreContext
 
 	private StoreContext()
 	{
+		InitializePlatform();
 	}
+
+	partial void InitializePlatform();
 
 	/// <summary>
 	/// Gets a StoreContext object that can be used to access
