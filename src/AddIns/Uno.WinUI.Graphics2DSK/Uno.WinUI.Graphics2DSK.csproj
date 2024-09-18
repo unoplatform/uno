@@ -16,14 +16,9 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj" />
-		<ProjectReference Include="..\..\Uno.UWP\Uno.Skia.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<None Include="..\..\Common\uno.png" Pack="true" PackagePath="\" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Compile Include="SKCanvasElement.skia.cs" />
 	</ItemGroup>
 </Project>
