@@ -28,8 +28,6 @@ namespace Microsoft.UI.Xaml.Controls
 		private MenuFlyout? _contextMenu;
 		private readonly Dictionary<ContextMenuItem, MenuFlyoutItem> _flyoutItems = new();
 
-		internal Action? DesiredSizeChangedCallback { get; set; }
-
 		public TextBlock()
 		{
 			UpdateLastUsedTheme();
@@ -45,12 +43,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 			GotFocus += (_, _) => UpdateSelectionRendering();
 			LostFocus += (_, _) => UpdateSelectionRendering();
-		}
-
-		private protected override void OnDesiredSizeChanged()
-		{
-			base.OnDesiredSizeChanged();
-			DesiredSizeChangedCallback?.Invoke();
 		}
 
 #if DEBUG
@@ -94,11 +86,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void OnIsTextSelectionEnabledChangedPartial()
 		{
-			if (_inlines is { })
-			{
-				_inlines.FireDrawingEventsOnEveryRedraw = IsTextSelectionEnabled;
-			}
-
 			RecalculateSubscribeToPointerEvents();
 			UpdateSelectionRendering();
 		}
@@ -208,7 +195,6 @@ namespace Microsoft.UI.Xaml.Controls
 				});
 			};
 
-			_inlines.FireDrawingEventsOnEveryRedraw = IsTextSelectionEnabled;
 			_inlines.RenderSelection = IsTextSelectionEnabled;
 		}
 

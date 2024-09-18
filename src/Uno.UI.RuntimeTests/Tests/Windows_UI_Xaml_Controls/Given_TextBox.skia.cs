@@ -797,11 +797,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(0, sv.HorizontalOffset);
 
-			for (var i = 0; i < 7; i++)
+			for (var i = 0; i < 6; i++)
 			{
 				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.None));
 				await WindowHelper.WaitForIdle();
-				sv.HorizontalOffset.Should().BeApproximately(0, 3); // CI reports different numbers than local, probably because of scaling difference, hence the tolerance
+				Assert.AreEqual(0, sv.HorizontalOffset);
 			}
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.None));
@@ -981,17 +981,22 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.MoveTo(bounds.GetCenter());
 			await WindowHelper.WaitForIdle();
 
+			// Right tapping should move the caret to the current pointer location and open the context menu
 			mouse.PressRight();
 			mouse.ReleaseRight();
 			await WindowHelper.WaitForIdle();
 
-			mouse.MoveBy(100, 0); // click out
+			Assert.AreEqual(9, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			mouse.MoveBy(-100, 0); // click out
 			mouse.Press();
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(2, SUT.SelectionStart);
-			Assert.AreEqual(2, SUT.SelectionLength);
+			// clicking inside the TextBox to dismiss the context menu should NOT move the caret
+			Assert.AreEqual(9, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
 		}
 
 		[TestMethod]
@@ -2595,7 +2600,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 			await Task.Delay(100);
 
-			var canvas = SUT.FindVisualChildByType<Canvas>();
+			var canvas = SUT.FindVisualChildByType<ScrollViewer>();
 			var initial = await UITestHelper.ScreenShot(canvas);
 			ImageAssert.HasColorInRectangle(initial, new Rectangle(System.Drawing.Point.Empty, initial.Size), SUT.SelectionHighlightColor.Color);
 
@@ -3599,12 +3604,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				await Task.Delay(random.Next(75, 126));
 				var screenshot = await UITestHelper.ScreenShot(SUT);
-				// For some reason, the caret sometimes appears black, and sometimes as very dark grey (#FF1B1B1B), so we check for both
-				var hasBlackCaretInLeftHalf = HasColorInRectangle(screenshot, new Rectangle(0, 0, screenshot.Width / 2, screenshot.Height), Colors.Black) ||
-					HasColorInRectangle(screenshot, new Rectangle(0, 0, screenshot.Width / 2, screenshot.Height), Color.FromArgb(255, 27, 27, 27));
-				var hasBlackInRightHalf = HasColorInRectangle(screenshot, new Rectangle(screenshot.Width / 2, 0, screenshot.Width / 2, screenshot.Height), Colors.Black) ||
-					HasColorInRectangle(screenshot, new Rectangle(screenshot.Width / 2, 0, screenshot.Width / 2, screenshot.Height), Color.FromArgb(255, 27, 27, 27));
-				if (hasBlackCaretInLeftHalf && !hasBlackInRightHalf)
+				// For some reason, the caret sometimes appears black, and sometimes as very dark grey (#FF030303), so we check for both
+				Color[] blacks = [Colors.Black, Colors.FromARGB(0xFF, 0x03, 0x03, 0x03)];
+				if (blacks.Any(b => HasColorInRectangle(screenshot, new Rectangle(0, 0, screenshot.Width / 2, screenshot.Height), b)) &&
+					blacks.All(b => !HasColorInRectangle(screenshot, new Rectangle(screenshot.Width / 2, 0, screenshot.Width / 2, screenshot.Height), Colors.Black)))
 				{
 					break;
 				}
