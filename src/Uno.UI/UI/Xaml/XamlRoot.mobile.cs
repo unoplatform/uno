@@ -1,42 +1,18 @@
 ﻿#if !__CROSSRUNTIME__
+using Uno.UI.Xaml.Core;
+
 namespace Microsoft.UI.Xaml;
 
 public sealed partial class XamlRoot
 {
 	internal void InvalidateMeasure()
 	{
-		if (VisualTree.RootVisual is { } rootVisual)
-		{
-#if __ANDROID__
-			rootVisual.RequestLayout();
-#elif __IOS__
-			rootVisual.SetNeedsLayout();
-#elif __MACOS__
-			rootVisual.NeedsLayout = true;
-#elif IS_UNIT_TESTS
-			// Nothing
-#else
-#error Unrecognized platform
-#endif
-		}
+		CoreServices.RequestAdditionalFrame();
 	}
 
 	internal void InvalidateArrange()
 	{
-		if (VisualTree.RootVisual is { } rootVisual)
-		{
-#if __ANDROID__
-			rootVisual.RequestLayout();
-#elif __IOS__
-			rootVisual.SetNeedsLayout();
-#elif __MACOS__
-			rootVisual.NeedsLayout = true;
-#elif IS_UNIT_TESTS
-			// Nothing
-#else
-#error Unrecognized platform
-#endif
-		}
+		CoreServices.RequestAdditionalFrame();
 	}
 }
 #endif

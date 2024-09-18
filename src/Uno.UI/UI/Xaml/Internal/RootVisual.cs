@@ -105,32 +105,4 @@ internal partial class RootVisual : Panel, IRootElement
 
 		return finalSize;
 	}
-
-#if __ANDROID__ || __IOS__ || __MACOS__
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	private void UpdateWindowContentLayout()
-	{
-		if (XamlRoot?.HostWindow?.Content is { } content)
-		{
-			content.UpdateLayout();
-		}
-	}
-
-#if __ANDROID__
-	protected override void OnLayoutCore(bool changed, int left, int top, int right, int bottom, bool localIsLayoutRequested)
-	{
-		base.OnLayoutCore(changed, left, top, right, bottom, localIsLayoutRequested);
-#elif __IOS__
-	public override void LayoutSubviews()
-	{
-		base.LayoutSubviews();
-#else
-	public override void Layout()
-	{
-		base.Layout();
-#endif
-		UpdateWindowContentLayout();
-	}
-
-#endif
 }
