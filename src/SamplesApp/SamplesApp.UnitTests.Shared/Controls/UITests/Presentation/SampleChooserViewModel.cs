@@ -440,7 +440,7 @@ namespace SampleControl.Presentation
 
 		internal async Task OpenSample(CancellationToken ct, SampleChooserContent content)
 		{
-			(ContentPhone, _) = UpdateContent(ct, content);
+			(ContentPhone, _) = await UpdateContent(ct, content);
 		}
 
 		internal async Task OpenRuntimeTests(CancellationToken ct)
