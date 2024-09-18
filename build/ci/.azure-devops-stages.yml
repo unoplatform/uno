@@ -102,6 +102,12 @@ stages:
     parameters:
       poolName: '$(windowsScaledPool)'
 
+- stage: packages_tests
+  displayName: Test Packages
+  dependsOn:
+    - packages_build
+
+  jobs: 
   - template: .azure-devops-project-template-tests.yml
     parameters:
       poolName: '$(windowsScaledPool)'
@@ -227,3 +233,24 @@ stages:
   - template: .azure-devops-screenshot-compare.yml
     parameters:
       poolName: '$(windowsScaledPool)'
+
+##
+## Publishing
+##
+- stage: Publish_Dev
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'), not(eq(variables['build.reason'], 'PullRequest')))
+  dependsOn: packages_build
+  jobs:
+  - template: .azure-devops-publish-nuget-dev.yml
+
+- stage: Publish_Prod_Dev
+  condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'), not(eq(variables['build.reason'], 'PullRequest')))
+  dependsOn: packages_build
+  jobs:
+  - template: .azure-devops-publish-nuget-prod-dev.yml
+  
+- stage: Publish_Prod_Public
+  condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'), not(eq(variables['build.reason'], 'PullRequest')))
+  dependsOn: Publish_Prod_Dev
+  jobs:
+  - template: .azure-devops-publish-nuget-prod.yml

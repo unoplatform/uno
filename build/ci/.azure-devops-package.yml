@@ -112,5 +112,5 @@ jobs:
     retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: NugetPackages
+      ArtifactName: 'Nuget_Packages'
       ArtifactType: Container

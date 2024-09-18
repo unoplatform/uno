@@ -12,19 +12,16 @@ jobs:
 
   pool: ${{ parameters.poolName }}
 
-  dependsOn:
-    - Generate_Packages
-
   steps:
   - task: DownloadBuildArtifacts@0
     inputs:
-      artifactName: NugetPackages
+      artifactName: 'Nuget_Packages'
 
   - template: templates/gitversion.yml
 
   - template: templates/dotnet-mobile-install-windows.yml
 
-  - script: copy $(System.ArtifactsDirectory)\NugetPackages\vslatest\*.nupkg $(Build.SourcesDirectory)\src\PackageCache
+  - script: copy $(System.ArtifactsDirectory)\Nuget_Packages\vslatest\*.nupkg $(Build.SourcesDirectory)\src\PackageCache
     displayName: Copy Artifacts to PackageCache
 
   - task: PowerShell@2
@@ -52,13 +49,10 @@ jobs:
   pool:
     vmImage: ${{ parameters.macOSImageName }}
 
-  dependsOn:
-    - Generate_Packages
-
   steps:
   - task: DownloadBuildArtifacts@0
     inputs:
-      artifactName: NugetPackages
+      artifactName: 'Nuget_Packages'
 
   - template: templates/gitversion.yml
 
@@ -68,7 +62,7 @@ jobs:
 
   - template: templates/dotnet-mobile-install-mac.yml
 
-  - powershell: cp $(System.ArtifactsDirectory)/NugetPackages/vslatest/*.nupkg $(Build.SourcesDirectory)/src/PackageCache
+  - powershell: cp $(System.ArtifactsDirectory)/Nuget_Packages/vslatest/*.nupkg $(Build.SourcesDirectory)/src/PackageCache
     displayName: Copy Artifacts to PackageCache
 
   - powershell: build/test-scripts/run-netcore-mobile-template-tests.ps1
@@ -88,9 +82,6 @@ jobs:
 - job: Dotnet_Template_Tests_net7_Linux
   displayName: 'Run dotnet new Templates Tests - Linux (net7)'
 
-  dependsOn:
-    - Generate_Packages
-
   pool: ${{ parameters.vmPoolLinux }}
 
   container: unoplatform/wasm-build:2.3
@@ -98,13 +89,15 @@ jobs:
   steps:
   - task: DownloadBuildArtifacts@0
     inputs:
-      artifactName: NugetPackages
+      artifactName: 'Nuget_Packages'
+
+  - template: templates/gitversion.yml
 
   - template: templates/dotnet-mobile-install-linux.yml
 
   - template: templates/gitversion.yml
   
-  - script: cp $(System.ArtifactsDirectory)/NugetPackages/vslatest/*.nupkg $(Build.SourcesDirectory)/src/PackageCache
+  - script: cp $(System.ArtifactsDirectory)/Nuget_Packages/vslatest/*.nupkg $(Build.SourcesDirectory)/src/PackageCache
     displayName: Copy Artifacts to PackageCache
 
   - template: templates/dotnet-install.yml
