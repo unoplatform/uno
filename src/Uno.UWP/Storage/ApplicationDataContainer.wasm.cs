@@ -10,6 +10,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.JavaScript;
 using Uno.Extensions;
 using Uno.Foundation;
+using Uno.Foundation.Interop;
 using Uno.Foundation.Logging;
 using Windows.Foundation.Collections;
 
@@ -22,7 +23,7 @@ namespace Windows.Storage
 			Values = new FilePropertySet(owner, Locality);
 		}
 
-		private partial class FilePropertySet : IPropertySet
+		private class FilePropertySet : IPropertySet
 		{
 			private readonly ApplicationDataLocality _locality;
 			private readonly ApplicationData _owner;
@@ -49,7 +50,7 @@ namespace Windows.Storage
 				{
 					if (value != null)
 					{
-						NativeSetValue(_locality.ToStringInvariant(), key, DataTypeSerializer.Serialize(value));
+						ApplicationDataContainerInterop.SetValue(_locality, key, DataTypeSerializer.Serialize(value));
 					}
 					else
 					{
@@ -66,7 +67,7 @@ namespace Windows.Storage
 
 					for (int i = 0; i < Count; i++)
 					{
-						keys.Add(NativeGetKeyByIndex(_locality.ToStringInvariant(), i));
+						keys.Add(ApplicationDataContainerInterop.GetKeyByIndex(_locality, i));
 					}
 
 					return keys.AsReadOnly();
@@ -81,8 +82,11 @@ namespace Windows.Storage
 
 					for (int i = 0; i < Count; i++)
 					{
-						var rawValue = NativeGetValueByIndex(_locality.ToStringInvariant(), i);
-						values.Add(DataTypeSerializer.Deserialize(rawValue) ?? "");
+						var rawValue = ApplicationDataContainerInterop.GetValueByIndex(_locality, i);
+						if (DataTypeSerializer.Deserialize(rawValue) is { } value)
+						{
+							values.Add(value);
+						}
 					}
 
 					return values.AsReadOnly();
@@ -90,7 +94,7 @@ namespace Windows.Storage
 			}
 
 			public int Count
-				=> NativeGetCount(_locality.ToStringInvariant());
+				=> ApplicationDataContainerInterop.GetCount(_locality);
 
 			public bool IsReadOnly => false;
 
@@ -104,7 +108,7 @@ namespace Windows.Storage
 				}
 				if (value != null)
 				{
-					NativeSetValue(_locality.ToStringInvariant(), key, DataTypeSerializer.Serialize(value));
+					ApplicationDataContainerInterop.SetValue(_locality, key, DataTypeSerializer.Serialize(value));
 					MapChanged?.Invoke(this, null);
 				}
 			}
@@ -114,14 +118,14 @@ namespace Windows.Storage
 
 			public void Clear()
 			{
-				NativeClear(_locality.ToStringInvariant());
+				ApplicationDataContainerInterop.Clear(_locality);
 			}
 
 			public bool Contains(KeyValuePair<string, object> item)
 				=> throw new NotSupportedException();
 
 			public bool ContainsKey(string key)
-				=> NativeContainsKey(_locality.ToStringInvariant(), key);
+				=> ApplicationDataContainerInterop.ContainsKey(_locality, key);
 
 			public void CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
 				=> throw new NotSupportedException();
@@ -132,8 +136,8 @@ namespace Windows.Storage
 
 				for (int index = 0; index < Count; index++)
 				{
-					var key = NativeGetKeyByIndex(_locality.ToStringInvariant(), index);
-					var value = NativeGetValueByIndex(_locality.ToStringInvariant(), index);
+					var key = ApplicationDataContainerInterop.GetKeyByIndex(_locality, index);
+					var value = ApplicationDataContainerInterop.GetValueByIndex(_locality, index);
 					kvps.Add(new KeyValuePair<string, object>(key, value));
 				}
 
@@ -142,7 +146,7 @@ namespace Windows.Storage
 
 			public bool Remove(string key)
 			{
-				var ret = NativeRemove(_locality.ToStringInvariant(), key);
+				var ret = ApplicationDataContainerInterop.Remove(_locality, key);
 				return ret;
 			}
 
@@ -150,11 +154,9 @@ namespace Windows.Storage
 
 			public bool TryGetValue(string key, out object? value)
 			{
-				if (NativeTryGetValue(_locality.ToStringInvariant(), key) is { } result
-										&& result.GetPropertyAsBoolean("hasValue")
-										&& result.GetPropertyAsString("value") is { } rawValue)
+				if (ApplicationDataContainerInterop.TryGetValue(_locality, key, out var innervalue))
 				{
-					value = DataTypeSerializer.Deserialize(rawValue);
+					value = DataTypeSerializer.Deserialize(innervalue);
 					return true;
 				}
 
