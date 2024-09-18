@@ -15,6 +15,9 @@
 
 		<OutputType Condition=" $(OutputType) == 'Exe' AND $(OutputType) != $(_InitialOutputType)">$([MSBuild]::ValueOrDefault('$(_InitialOutputType)', 'Library'))</OutputType>
 
+		<!-- Disable assets generation for libraries -->
+		<StaticWebAssetsEnabled Condition=" $(OutputType) != 'Exe' ">false</StaticWebAssetsEnabled>
+
 		<IsMSALSupported>true</IsMSALSupported>
 
 		<!-- net9.0 validation of CA1418 is case sensitive -->
