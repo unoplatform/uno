@@ -242,15 +242,21 @@ stages:
   dependsOn: packages_build
   jobs:
   - template: .azure-devops-publish-nuget-dev.yml
+    parameters:
+      vmImage: '$(windows2022HostedVMImage)'
 
 - stage: Publish_Prod_Dev
   condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'), not(eq(variables['build.reason'], 'PullRequest')))
   dependsOn: packages_build
   jobs:
   - template: .azure-devops-publish-nuget-prod-dev.yml
+    parameters:
+      vmImage: '$(windows2022HostedVMImage)'
   
 - stage: Publish_Prod_Public
   condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'), not(eq(variables['build.reason'], 'PullRequest')))
   dependsOn: Publish_Prod_Dev
   jobs:
   - template: .azure-devops-publish-nuget-prod.yml
+    parameters:
+      vmImage: '$(windows2022HostedVMImage)'

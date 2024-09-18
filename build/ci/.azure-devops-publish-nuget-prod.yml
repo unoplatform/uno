@@ -1,17 +1,22 @@
 jobs:
 
-- deployment: 'Nuget_Prod_Nuget_Org'
-  displayName: 'Nuget Publish Prod NuGet.org'
-  environment: 'Uno UI Production'
-  strategy:
-    runOnce:
-      deploy:
-        steps:
-        - download: current
-          artifact: 'NuGet_Packages'
-          patterns: |
-            **/.nupkg
-            !*Private*.nupkg
-          displayName: Download artifact WebApp
-        - template: templates/nuget-publish-public.yml
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+
+  steps:
+
+  - deployment: 'Nuget_Prod_Nuget_Org'
+    displayName: 'Nuget Publish Prod NuGet.org'
+    environment: 'Uno UI Production'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - download: current
+            artifact: 'NuGet_Packages'
+            patterns: |
+              **/.nupkg
+              !*Private*.nupkg
+            displayName: Download artifact WebApp
+          - template: templates/nuget-publish-public.yml
 
