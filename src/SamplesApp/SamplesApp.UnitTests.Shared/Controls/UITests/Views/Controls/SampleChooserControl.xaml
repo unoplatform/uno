@@ -7,6 +7,7 @@
 	xmlns:ub="using:Uno.UI.Samples.Behaviors"
 	xmlns:uc="using:Uno.UI.Samples.Converters"
 	xmlns:helper="using:Uno.UI.Samples.Behaviors"
+	xmlns:entities="using:SampleControl.Entities"
 	xmlns:ios="http://umbrella/ios"
 	xmlns:not_win="http://uno.ui/not_win"
 	xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -31,7 +32,7 @@
 			<x:Double x:Key="TitleContainerHeight">45</x:Double>
 
 			<uc:FromNullableBoolToReverseBoolConverter x:Key="reverseBoolConverter" />
-			
+
 			<!-- Styles -->
 			<Style x:Key="BaseTitleGridContainerStyle"
 				   TargetType="Grid">
@@ -246,6 +247,7 @@
 
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
 					<RowDefinition Height="*" />
 					<RowDefinition Height="Auto" />
 				</Grid.RowDefinitions>
@@ -276,7 +278,7 @@
 						<u:PathControl Style="{StaticResource Icon_RuntimeTests}"
 									   Margin="5,0" />
 					</Button>
-					
+
 					<!-- Playground button -->
 					<Button Style="{StaticResource IconButtonStyle}"
 							Foreground="{ThemeResource AccentFillColorDefaultBrush}"
@@ -318,8 +320,10 @@
 					<CheckBox Grid.Row="1" Grid.ColumnSpan="5" HorizontalAlignment="Center" 
 							  IsChecked="{Binding ManualTestsOnly, Mode=TwoWay}" Content="Manual tests only" />
 				</Grid>
+
+
 				<ContentControl ContentTemplate="{StaticResource CategoriesList}"
-								Grid.Row="1"
+								Grid.Row="2"
 								HorizontalContentAlignment="Stretch"
 								VerticalContentAlignment="Stretch"
 								Visibility="{Binding CategoryVisibility, Converter={StaticResource TrueToVisible}}" />
@@ -329,9 +333,11 @@
 								VerticalContentAlignment="Stretch"
 								Visibility="{Binding SampleVisibility, Converter={StaticResource TrueToVisible}}"
 								ContentTemplate="{StaticResource SamplesTitle}" />
+
+
 				<ContentControl HorizontalContentAlignment="Stretch"
 								VerticalContentAlignment="Stretch"
-								Grid.Row="1"
+								Grid.Row="2"
 								Visibility="{Binding SampleVisibility, Converter={StaticResource TrueToVisible}}"
 								ContentTemplate="{StaticResource SamplesList}" />
 
@@ -345,7 +351,7 @@
 				</Grid>
 				<ContentControl HorizontalContentAlignment="Stretch"
 								VerticalContentAlignment="Stretch"
-								Grid.Row="1"
+								Grid.Row="2"
 								Visibility="{Binding FavoritesVisibility, Converter={StaticResource TrueToVisible}}"
 								ContentTemplate="{StaticResource FavoritesList}" />
 
@@ -359,23 +365,27 @@
 				</Grid>
 				<ContentControl HorizontalContentAlignment="Stretch"
 								VerticalContentAlignment="Stretch"
-								Grid.Row="1"
+								Grid.Row="2"
 								Visibility="{Binding RecentsVisibility, Converter={StaticResource TrueToVisible}}"
 								ContentTemplate="{StaticResource RecentSamplesList}" />
 
-				<!--SEARCH-->
-				<Grid Style="{StaticResource BaseTitleGridContainerStyle}"
-					  Visibility="{Binding SearchVisibility, Converter={StaticResource TrueToVisible}}">
-					<TextBlock Style="{StaticResource Typo03}"
-							   VerticalAlignment="Center"
-							   HorizontalAlignment="Center"
-							   Text="Search" />
-				</Grid>
-				<ContentControl HorizontalContentAlignment="Stretch"
-								VerticalContentAlignment="Stretch"
-								Grid.Row="1"
-								Visibility="{Binding SearchVisibility, Converter={StaticResource TrueToVisible}}"
-								ContentTemplate="{StaticResource SearchList}" />
+				<!-- Search -->
+				<AutoSuggestBox PlaceholderText="Search..."
+					TextChanged="SearchBox_TextChanged"
+					TextMemberPath="ControlName"
+					QueryIcon="Find"
+					Grid.Row="1"
+					Margin="4,8"
+					ItemsSource="{Binding FilteredSamples}"
+					HorizontalAlignment="Stretch"
+					QuerySubmitted="SearchBox_QuerySubmitted"
+					SuggestionChosen="SearchBox_SuggestionChosen">
+					<AutoSuggestBox.ItemTemplate>
+						<DataTemplate x:DataType="entities:SampleChooserContent">
+							<TextBlock Text="{x:Bind ControlName}" />
+						</DataTemplate>
+					</AutoSuggestBox.ItemTemplate>
+				</AutoSuggestBox>
 
 				<!--NAVIGATION BUTTONS-->
 				<Border Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
@@ -383,9 +393,9 @@
 						BorderThickness="0,1,0,0"
 						BorderBrush="{StaticResource Color05Brush}"
 						Height="50"
-						Grid.Row="2">
+						Grid.Row="3">
 					<u:StarStackPanel VerticalAlignment="Stretch"
-									  Sizes="*,*,*,*"
+									  Sizes="*,*,*"
 									  Orientation="Horizontal">
 						<!--Button foreground has to be set by converter instead of Button's visual state
 							because path foreground doesn't change through visual states.-->
@@ -425,20 +435,6 @@
 								<TextBlock Style="{StaticResource Typo06}"
 										   VerticalAlignment="Bottom"
 										   Text="Recents" />
-							</StackPanel>
-						</RadioButton>
-
-						<RadioButton GroupName="SelectedSectionPhone"
-									 Style="{StaticResource SampleChooserNavRadioButtonStyle}"
-									 VerticalContentAlignment="Stretch"
-									 IsChecked="{Binding SearchSelected, Mode=TwoWay}"
-									 Command="{Binding ShowNewSectionCommand}"
-									 CommandParameter="Search">
-							<StackPanel VerticalAlignment="Center" Orientation="Vertical">
-								<FontIcon Glyph="&#xE721;" />
-								<TextBlock Style="{StaticResource Typo06}"
-										   VerticalAlignment="Bottom"
-										   Text="Search" />
 							</StackPanel>
 						</RadioButton>
 					</u:StarStackPanel>
@@ -540,7 +536,7 @@
 							<FontIcon Glyph="&#xE734;" Visibility="{Binding CurrentSelectedSample.IsFavorite, Mode=OneWay, Converter={StaticResource TrueToCollapsed}}" />
 							<FontIcon Foreground="{ThemeResource AccentFillColorDefaultBrush}" Glyph="&#xE735;" Visibility="{Binding CurrentSelectedSample.IsFavorite, Mode=OneWay, Converter={StaticResource TrueToVisible}}" />
 						</Grid>
-						
+
 					</Button>
 
 					<!-- Dark theme check box -->
