@@ -16,6 +16,9 @@
 		<OutputType Condition=" $(OutputType) == 'Exe' AND $(OutputType) != $(_InitialOutputType)">$([MSBuild]::ValueOrDefault('$(_InitialOutputType)', 'Library'))</OutputType>
 
 		<IsMSALSupported>true</IsMSALSupported>
+
+		<!-- net9.0 validation of CA1418 is case sensitive -->
+		<NoWarn>$(NoWarn);CA1418</NoWarn>
 	</PropertyGroup>
 
 	<PropertyGroup>
