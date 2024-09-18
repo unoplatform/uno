@@ -140,12 +140,6 @@ namespace Microsoft.UI.Xaml
 			if (m_pLayoutClipGeometry is { } clipRectLogical)
 			{
 				var physicalRect = ViewHelper.LogicalToPhysicalPixels(clipRectLogical);
-				if (FrameRoundingAdjustment is { } fra)
-				{
-					physicalRect.Width += fra.Width;
-					physicalRect.Height += fra.Height;
-				}
-
 				var physical = physicalRect.ToRectF();
 				canvas.ClipRect(physical, Region.Op.Intersect);
 			}
