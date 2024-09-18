@@ -1,8 +1,11 @@
 jobs:
-
 - deployment: 'Nuget_Prod_Dev'
   displayName: 'Nuget Publish Prod Dev'
   environment: 'Uno UI Production'
+
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+
   strategy:
     runOnce:
       deploy:
