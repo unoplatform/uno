@@ -12,7 +12,6 @@ using Uno.Extensions;
 using Uno.Foundation;
 using Uno.Foundation.Logging;
 using Windows.Foundation.Collections;
-using static __Windows.Storage.ApplicationDataContainerNative;
 
 namespace Windows.Storage
 {
