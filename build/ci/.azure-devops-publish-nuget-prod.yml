@@ -9,11 +9,16 @@ jobs:
     runOnce:
       deploy:
         steps:
-        - download: current
-          artifact: 'NuGet_Packages'
-          patterns: |
-            **/.nupkg
-            !*Private*.nupkg
-          displayName: Download artifact WebApp
+        - download: none
+
+        # https://github.com/microsoft/azure-pipelines-tasks/issues/17207
+        - task: DownloadPipelineArtifact@2
+          inputs:
+            artifactName: 'NuGet_Packages'
+            itemPattern: |
+              **/.nupkg
+              !*Private*.nupkg
+          displayName: Download artifacts
+
         - template: templates/nuget-publish-public.yml
 
