@@ -57,6 +57,7 @@ public class Given_TextBlock : BaseTestClass
 			ct);
 	}
 
+#if HAS_UNO_WINUI
 	/// <summary>
 	/// Checks that a simple change to a XAML element (change Text on TextBlock) will be applied to
 	/// the currently visible page:
@@ -92,4 +93,5 @@ public class Given_TextBlock : BaseTestClass
 			await hr.UpdateFileAsync(req.Undo(waitForHotReload: false), CancellationToken.None);
 		}
 	}
+#endif
 }
