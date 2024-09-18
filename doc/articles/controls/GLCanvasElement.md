@@ -5,7 +5,7 @@ uid: Uno.Controls.GLCanvasElement
 ## Uno.WinUI.Graphics3D.GLCanvasElement
 
 > [!IMPORTANT]
-> This functionality is only available on WinUI and Skia Desktop (`netX.0-desktop`) targets that are running with Desktop OpenGL (not GLES) hardware acceleration. This is also not available on MacOS.
+> This functionality is only available on WinUI, Android and Skia Desktop (`netX.0-desktop`) and targets that are running on platforms with OpenGL support. This is also not available on MacOS.
 
 `GLCanvasElement` is a `Grid` for drawing 3D graphics with OpenGL. This class comes as a part of the `Uno.WinUI.Graphics3D` package.
 
@@ -31,7 +31,7 @@ The `OnDestroy` method is the complement of `Init` and is used to clean up any a
 
 The `RenderOverride` is the main render-loop function. When adding your drawing logic in `RenderOverride`, you can assume that the OpenGL viewport rectangle is already set and its dimensions are equal to the `resolution` parameter provided to the `GLCanvasElement` constructor.
 
-To learn more about using Silk.NET as a C# binding for OpenGL, see the examples in the Silk.NET repository [here](https://github.com/dotnet/Silk.NET/tree/main/examples/CSharp). Note that the windowing and inputs APIs in Silk.NET are not relevant to `GLCanvasElement`, since we only use Silk.NET as an OpenGL binding library, not a windowing library.
+To learn more about using [Silk.NET](https://www.nuget.org/packages/Silk.NET.OpenGL/) as a C# binding for OpenGL, see the examples in the Silk.NET repository [here](https://github.com/dotnet/Silk.NET/tree/main/examples/CSharp). Note that the windowing and inputs APIs in Silk.NET are not relevant to `GLCanvasElement`, since we only use Silk.NET as an OpenGL binding library, not a windowing library.
 
 Additionally, `GLCanvasElement` has an `Invalidate` method that requests a redrawing of the `GLCanvasElement`, calling `RenderOverride` in the process. Note that `RenderOverride` will only be called once per `Invalidate` call and the output will be saved to be used in future frames. To update the output, you must call `Invalidate`. If you need to continuously update the output (e.g. in an animation), you can add an `Invalidate` call inside `RenderOverride`.
 
