@@ -37,7 +37,8 @@ jobs:
     displayName: Run Project Templates Tests
     inputs:
       targetType: 'filePath'
-      filePath: build\test-scripts\run-netcore-mobile-template-tests.ps1 -TestGroup "$(TestGroup)"
+      script: |
+        build\test-scripts\run-netcore-mobile-template-tests.ps1 -TestGroup "$(TestGroup)"
       pwsh: true # Use PowerShell core (required for IsWindows to run)
     env:
       BUILD_SOURCESDIRECTORY: $(BUILD.SOURCESDIRECTORY)
