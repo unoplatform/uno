@@ -34,6 +34,7 @@ using Uno.UI.Extensions;
 using Private.Infrastructure;
 using System.Reflection.Metadata;
 using UITests.Shared.Helpers;
+using System.Runtime.CompilerServices;
 
 namespace SampleControl.Presentation
 {
@@ -437,6 +438,11 @@ namespace SampleControl.Presentation
 			SetSelectedSample(CancellationToken.None, "Playground", "Playground");
 		}
 
+		internal async Task OpenSample(CancellationToken ct, SampleChooserContent content)
+		{
+			(ContentPhone, _) = UpdateContent(ct, content);
+		}
+
 		internal async Task OpenRuntimeTests(CancellationToken ct)
 		{
 			IsSplitVisible = false;
@@ -629,13 +635,16 @@ namespace SampleControl.Presentation
 			});
 		}
 
-		public void TryOpenSample()
+		public bool TryOpenSingleSearchResult()
 		{
 			if (FilteredSamples is { } samples
 				&& samples.Count is 1)
 			{
 				SelectedSearchSample = samples[0];
+				return true;
 			}
+
+			return false;
 		}
 
 		/// <summary>
