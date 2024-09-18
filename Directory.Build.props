@@ -28,6 +28,7 @@
 		<NetCurrentWpf>$(NetCurrent)-windows</NetCurrentWpf>
 
 		<NetMobilePreviousAndCurrent>$(NetPreviousNetCoreMobile);$(NetCurrentNetCoreMobile)</NetMobilePreviousAndCurrent>
+		<NetAndroidPreviousAndCurrent>$(NetPrevious)-android;$(NetCurrent)-android</NetAndroidPreviousAndCurrent>
 		<NetWpfPreviousAndCurrent>$(NetPreviousWpf);$(NetCurrentWpf)</NetWpfPreviousAndCurrent>
 		<NetWasmPreviousAndCurrent>$(NetPrevious);$(NetCurrent)</NetWasmPreviousAndCurrent>
 		<NetSkiaPreviousAndCurrent>$(NetPrevious);$(NetCurrent)</NetSkiaPreviousAndCurrent>

@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<ItemGroup>
+		<UnoRuntimeEnabledPackage Include="Uno.UI.GooglePlay"  PackageBasePath="$(MSBuildThisFileDirectory)" Condition="'$(MSBuildThisFile)'=='uno.ui.googleplay.targets'" />
+		<UnoRuntimeEnabledPackage Include="Uno.WinUI.GooglePlay"  PackageBasePath="$(MSBuildThisFileDirectory)" Condition="'$(MSBuildThisFile)'=='uno.winui.googleplay.targets'" />
+	</ItemGroup>
+</Project>
