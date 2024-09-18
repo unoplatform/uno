@@ -409,13 +409,6 @@ public partial class TreeView : Control
 				m_rootNode = new TreeViewNode();
 			}
 
-#if __IOS__
-			// Workaround for NSInternalInconsistencyException caused by PrepareView
-			// inserting on an empty not-ready UICollectionView.
-			// TODO: We shouldn't need this here. It should've been handled by ListView/NativeListViewBase.
-			listControl.NativePanel.SetNeedsReloadData();
-#endif
-
 			if (ItemsSource != null)
 			{
 				viewModel.IsContentMode = true;
