@@ -1,6 +1,13 @@
 <Project Sdk="Uno.Sdk.Private">
   <PropertyGroup>
-    <TargetFrameworks>net9.0-android;net9.0-ios;net9.0-maccatalyst;net9.0-windows10.0.19041;net9.0-browserwasm;net9.0-desktop</TargetFrameworks>
+    <TargetFrameworks>net9.0-browserwasm;net9.0-desktop;net9.0</TargetFrameworks>
+    <TargetFrameworks Condition="!$([MSBuild]::IsOSPlatform('linux'))">$(TargetFrameworks);net9.0-android;net9.0-ios;net9.0-maccatalyst;net9.0-desktop</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net9.0-windows10.0.19041</TargetFrameworks>
+
+    <!-- Disable android on msbuild .NET Framework until android 35 is supported -->
+    <TargetFrameworks Condition="'$(MSBuildRuntimeType)' == 'Full'">$(TargetFrameworks.Replace('net9.0-android',''))</TargetFrameworks>
+    <TargetFrameworks Condition="'$(MSBuildRuntimeType)' == 'Full'">$(TargetFrameworks.Replace('net9.0-ios',''))</TargetFrameworks>
+    <TargetFrameworks Condition="'$(MSBuildRuntimeType)' == 'Full'">$(TargetFrameworks.Replace('net9.0-maccatalyst',''))</TargetFrameworks>
 
     <OutputType>Exe</OutputType>
     <UnoSingleProject>true</UnoSingleProject>

@@ -20,6 +20,8 @@ jobs:
         TestGroup: '1'
       group_2:
         TestGroup: '2'
+      group_2:
+        TestGroup: '3'
 
   steps:
   - task: DownloadBuildArtifacts@0
@@ -67,6 +69,8 @@ jobs:
         TestGroup: '1'
       group_2:
         TestGroup: '2'
+      group_3:
+        TestGroup: '3'
 
   steps:
   - task: DownloadBuildArtifacts@0
