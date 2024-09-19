@@ -66,6 +66,22 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(typeof(Grid))]
+		[DataRow(typeof(StackPanel))]
+		[DataRow(typeof(Border))]
+		[DataRow(typeof(ContentPresenter))]
+		public async Task When_SelfLoading(Type type)
+		{
+			var control = (FrameworkElement)Activator.CreateInstance(type);
+
+			control.Width = 200;
+			control.Height = 200;
+
+			await UITestHelper.Load(control);
+		}
+
+		[TestMethod]
 		public async Task When_Binding_Within_Control_Template()
 		{
 			var contentControl = new ContentControl
