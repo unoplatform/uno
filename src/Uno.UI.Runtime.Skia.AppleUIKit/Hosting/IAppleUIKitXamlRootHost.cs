@@ -11,4 +11,6 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit.Hosting;
 internal interface IAppleUIKitXamlRootHost : IXamlRootHost
 {
 	UIView TextInputLayer { get; }
+
+	UIView? NativeOverlayLayer { get; }
 }
