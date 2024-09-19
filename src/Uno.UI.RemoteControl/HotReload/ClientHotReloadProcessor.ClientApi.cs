@@ -65,7 +65,7 @@ public partial class ClientHotReloadProcessor
 
 		public UpdateRequest WithExtendedTimeouts(float? factor = null)
 		{
-			factor ??= Debugger.IsAttached ? 30 : 10;
+			factor ??= Debugger.IsAttached ? 10 : 30;
 
 			return this with
 			{
