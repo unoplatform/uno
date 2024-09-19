@@ -113,6 +113,9 @@ public partial class ClientHotReloadProcessor
 
 			debug?.Debug($"{tag} Updating file {req.FilePath} (from: {req.OldText[..100]} | to: {req.NewText[..100]}.");
 
+			// As the local HR is not really ID trackable (trigger by VS without any ID), we capture the current ID here to make sure that if HR completes locally before we get info from the server, we won't miss it.
+			var currentLocalHrId = GetCurrentLocalHotReloadId();
+
 			var request = new UpdateFile { FilePath = req.FilePath, OldText = req.OldText, NewText = req.NewText };
 			var response = await UpdateFileCoreAsync(request, req.ServerUpdateTimeout, ct);
 
@@ -144,7 +147,6 @@ public partial class ClientHotReloadProcessor
 
 			trace?.Trace($"{tag} Successfully updated file on server ({response.Result}), waiting for server HR id {response.HotReloadCorrelationId}.");
 
-			var localHrTask = WaitForNextLocalHotReload(req.LocalHotReloadTimeout, ct);
 			var serverHr = await WaitForServerHotReloadAsync(response.HotReloadCorrelationId.Value, req.ServerHotReloadTimeout, ct);
 			if (serverHr.Result is HotReloadServerResult.NoChanges)
 			{
@@ -162,7 +164,7 @@ public partial class ClientHotReloadProcessor
 
 			trace?.Trace($"{tag} Successfully got HR from server ({serverHr.Result}), waiting for local HR to complete.");
 
-			var localHr = await localHrTask;
+			var localHr = await WaitForLocalHotReloadAsync(currentLocalHrId + 1, req.LocalHotReloadTimeout, ct);
 			if (localHr.Result is HotReloadClientResult.Failed)
 			{
 				debug?.Debug($"{tag} Failed to apply HR locally: {localHr.Result}.");
@@ -201,7 +203,7 @@ public partial class ClientHotReloadProcessor
 
 			if (await Task.WhenAny(responseAsync.Task, timeoutTask) == timeoutTask)
 			{
-				throw new TimeoutException("Failed to get response from the server in the given delay.");
+				throw new TimeoutException($"Failed to get response from the server in the given delay ({timeout:g}).");
 			}
 
 			return await responseAsync.Task;
@@ -236,7 +238,7 @@ public partial class ClientHotReloadProcessor
 
 			if (await Task.WhenAny(operationAsync.Task, timeoutTask) == timeoutTask)
 			{
-				throw new TimeoutException($"Failed to get hot-reload (id: {hotReloadId}) from the server in the given delay.");
+				throw new TimeoutException($"Failed to get hot-reload (id: {hotReloadId}) from the server in the given delay ({timeout:g}).");
 			}
 
 			return await operationAsync.Task;
@@ -259,19 +261,22 @@ public partial class ClientHotReloadProcessor
 		}
 	}
 
-	private async ValueTask<HotReloadClientOperation> WaitForNextLocalHotReload(TimeSpan timeout, CancellationToken ct)
+	private int GetCurrentLocalHotReloadId()
+		=> CurrentStatus.Local.Operations is { Count: > 0 } ops ? ops.Max(op => op.Id) : -1;
+
+	private async ValueTask<HotReloadClientOperation> WaitForLocalHotReloadAsync(int hotReloadId, TimeSpan timeout, CancellationToken ct)
 	{
 		var timeoutTask = Task.Delay(timeout, ct);
 		var operationAsync = new TaskCompletionSource<HotReloadClientOperation>();
-		var previousId = CurrentStatus.Local.Operations is { Count: > 0 } ops ? ops.Max(op => op.Id) : -1;
 
 		try
 		{
 			StatusChanged += OnStatusChanged;
+			CheckIfCompleted(CurrentStatus);
 
 			if (await Task.WhenAny(operationAsync.Task, timeoutTask) == timeoutTask)
 			{
-				throw new TimeoutException($"Failed to get a local hot-reload (id: {previousId}+) in the given delay.");
+				throw new TimeoutException($"Failed to get a local hot-reload (id: {hotReloadId}) in the given delay ({timeout:g}).");
 			}
 
 			return await operationAsync.Task;
@@ -286,7 +291,7 @@ public partial class ClientHotReloadProcessor
 
 		void CheckIfCompleted(Status status)
 		{
-			var operation = status.Local.Operations.FirstOrDefault(op => op.Id > previousId && op.Result is not null);
+			var operation = status.Local.Operations.FirstOrDefault(op => op.Id >= hotReloadId && op.Result is not null);
 			if (operation is not null)
 			{
 				operationAsync.TrySetResult(operation);
