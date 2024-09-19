@@ -662,6 +662,9 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 #if ANDROID || __IOS__
 				&& this is not NativeCommandBarPresenter // Uno specific: NativeCommandBarPresenter breaks if you inherit from the TP
 #endif
+				// Uno Specific: Workaround to avoid creating a circular reference when TemplatedParent
+				// is incorrectly inherited. See https://github.com/unoplatform/uno/issues/17470.
+				&& !pTemplatedParent.IsLoaded
 				)
 			{
 				// bool needsRefresh = false;
