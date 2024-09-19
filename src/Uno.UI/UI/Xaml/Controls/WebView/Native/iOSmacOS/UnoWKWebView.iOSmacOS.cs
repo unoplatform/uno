@@ -105,7 +105,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 	}
 #endif
 
-	public string? DocumentTitle => Title;
+	public string DocumentTitle => Title;
 
 	public void Stop() => StopLoading();
 
