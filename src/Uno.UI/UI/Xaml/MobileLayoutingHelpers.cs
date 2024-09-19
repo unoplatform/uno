@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.UI;
 using Windows.Foundation;
@@ -164,6 +165,12 @@ internal static partial class MobileLayoutingHelpers
 		{
 			var physicalRect = ViewHelper.LogicalToPhysicalPixels(finalRect);
 #if __ANDROID__
+
+			// This is unfortunate, but, for NativeListViewBase, the native measuring is actually responsible for both managed measure and managed arrange.
+			// In this case, calling view.Layout without MeasureElement will not arrange the managed children with dirty arrange.
+			// We workaround this by passing the previous LayoutSlot which is the correct rect that was set during native measure.
+			var workaroundThatManagedArrangeHappensDuringNativeMeasure = view is NativeListViewBase;
+
 			view.Layout((int)physicalRect.Left, (int)physicalRect.Top, (int)physicalRect.Right, (int)physicalRect.Bottom);
 			if (view is ViewGroup viewGroup)
 			{
@@ -173,7 +180,7 @@ internal static partial class MobileLayoutingHelpers
 					{
 						if (childAsUIElement.IsArrangeDirtyOrArrangeDirtyPath)
 						{
-							ArrangeElement(child, finalRect);
+							ArrangeElement(child, workaroundThatManagedArrangeHappensDuringNativeMeasure ? childAsUIElement.m_finalRect : finalRect);
 						}
 					}
 					else
