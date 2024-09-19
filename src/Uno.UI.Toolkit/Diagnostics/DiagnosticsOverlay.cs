@@ -383,10 +383,12 @@ public sealed partial class DiagnosticsOverlay : Control
 			_anchor.ManipulationCompleted += OnAnchorManipulatedCompleted;
 
 			_anchor.ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY;
+#if HAS_UNO
 			if (ManipulationModesExtensions.IsSupported(ManipulationModes.TranslateInertia))
 			{
 				_anchor.ManipulationMode |= ManipulationModes.TranslateInertia;
 			}
+#endif
 
 			RenderTransform = new TranslateTransform();
 		}
