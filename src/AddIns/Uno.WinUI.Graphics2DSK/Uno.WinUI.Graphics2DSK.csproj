@@ -3,7 +3,7 @@
 		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
 
 		<RootNamespace>Uno.WinUI.Graphics2DSK</RootNamespace>
-		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
+		<GeneratePackageOnBuild Condition="'$(UNO_UWP_BUILD)'!='true' And '$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
 
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
