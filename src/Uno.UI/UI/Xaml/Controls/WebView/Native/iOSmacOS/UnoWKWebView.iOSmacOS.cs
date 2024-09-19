@@ -38,7 +38,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 	, IHasSizeThatFits
 #endif
 {
-	private string _previousTitle;
+	private string? _previousTitle;
 	private CoreWebView2? _coreWebView;
 	private bool _isCancelling;
 
@@ -105,7 +105,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 	}
 #endif
 
-	public string DocumentTitle => Title;
+	public string? DocumentTitle => Title;
 
 	public void Stop() => StopLoading();
 
@@ -880,7 +880,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 		if (_previousTitle != currentTitle)
 		{
 			_previousTitle = currentTitle;
-			_coreWebView.OnDocumentTitleChanged();
+			_coreWebView!.OnDocumentTitleChanged();
 		}
 	}
 }
