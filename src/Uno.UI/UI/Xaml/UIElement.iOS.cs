@@ -119,6 +119,29 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		public override void SetNeedsLayout()
+		{
+			base.SetNeedsLayout();
+
+			InvalidateMeasure();
+			InvalidateNativeOnlyChildrenRecursive(this);
+		}
+
+		private static void InvalidateNativeOnlyChildrenRecursive(UIView view)
+		{
+			foreach (var child in view.GetChildren())
+			{
+				if (child is not UIElement)
+				{
+					LayoutInformation.SetMeasureDirtyPath(child, true);
+					if (child is UIView childAsViewGroup)
+					{
+						InvalidateNativeOnlyChildrenRecursive(childAsViewGroup);
+					}
+				}
+			}
+		}
+
 		public void SetSubviewsNeedLayout()
 		{
 			base.SetNeedsLayout();
@@ -141,11 +164,22 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+
+		private protected bool _isSettingFrameByArrangeVisual;
+
 		internal void ArrangeVisual(Rect finalRect, Rect? clippedFrame = default)
 		{
 			LayoutSlotWithMarginsAndAlignments = finalRect;
 			// TODO: clipped frame?
-			this.Frame = ViewHelper.LogicalToPhysicalPixels(finalRect);
+			_isSettingFrameByArrangeVisual = true;
+			try
+			{
+				this.Frame = ViewHelper.LogicalToPhysicalPixels(finalRect);
+			}
+			finally
+			{
+				_isSettingFrameByArrangeVisual = false;
+			}
 		}
 
 		internal global::Windows.Foundation.Point GetPosition(Point position, global::Microsoft.UI.Xaml.UIElement relativeTo)

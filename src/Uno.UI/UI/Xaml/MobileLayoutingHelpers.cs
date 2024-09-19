@@ -46,6 +46,8 @@ internal static partial class MobileLayoutingHelpers
 		// Calling the native Measure method may not always trigger OnMeasure
 		// We should do RequestLayout()
 		view.RequestLayout();
+#elif __IOS__
+		view.SetNeedsLayout();
 #endif
 
 		if (view is ILayouterElement layouterElement)
@@ -56,8 +58,9 @@ internal static partial class MobileLayoutingHelpers
 			return desiredSizeFromLayouterElement;
 		}
 
-#if __ANDROID__
 		var physical = availableSize.LogicalToPhysicalPixels();
+
+#if __ANDROID__
 		var widthSpec = ViewHelper.SpecFromLogicalSize(availableSize.Width);
 		var heightSpec = ViewHelper.SpecFromLogicalSize(availableSize.Height);
 		view.Measure(widthSpec, heightSpec);
@@ -89,7 +92,6 @@ internal static partial class MobileLayoutingHelpers
 
 		return desiredSize;
 #elif __IOS__ || __MACOS__
-		var physical = availableSize.LogicalToPhysicalPixels();
 
 #if __IOS__
 		var desiredSize = view.SizeThatFits(physical).PhysicalToLogicalPixels();
@@ -105,9 +107,18 @@ internal static partial class MobileLayoutingHelpers
 
 		LayoutInformation.SetDesiredSize(view, desiredSize);
 		LayoutInformation.SetAvailableSize(view, availableSize);
+
+		view.InvalidateArrangeOnNativeOnly();
+
 		foreach (var child in view.Subviews)
 		{
-			MeasureElement(child, desiredSize);
+			if (child is UIElement childAsUIElement)
+			{
+				if (childAsUIElement.IsMeasureDirtyOrMeasureDirtyPath)
+				{
+					MeasureElement(child, desiredSize);
+				}
+			}
 		}
 
 		return desiredSize;
@@ -175,6 +186,17 @@ internal static partial class MobileLayoutingHelpers
 			}
 #elif __IOS__ || __MACOS__
 			view.Frame = physicalRect;
+
+			foreach (var child in view.Subviews)
+			{
+				if (child is UIElement childAsUIElement)
+				{
+					if (childAsUIElement.IsArrangeDirtyOrArrangeDirtyPath)
+					{
+						ArrangeElement(child, finalRect);
+					}
+				}
+			}
 #endif
 		}
 
