@@ -185,6 +185,7 @@ internal static partial class MobileLayoutingHelpers
 #endif
 	}
 
+#if __ANDROID__ || __IOS__ || __MACOS__
 	private static void InvalidateArrangeOnNativeOnly(this View view)
 	{
 		Debug.Assert(view is not UIElement);
@@ -199,4 +200,5 @@ internal static partial class MobileLayoutingHelpers
 			InvalidateArrangeOnNativeOnly(parentView);
 		}
 	}
+#endif
 }

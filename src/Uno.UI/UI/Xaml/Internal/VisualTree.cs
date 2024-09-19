@@ -739,6 +739,7 @@ namespace Uno.UI.Xaml.Core
 				else
 				{
 					nextAncestor = currentAncestor.GetParentInternal(false /* public parent only */);
+					nextAncestor ??= (currentAncestor as FrameworkElement)?.LogicalParentOverride;
 				}
 
 				//TODO Uno: Uncomment and implement

@@ -391,10 +391,14 @@ namespace Microsoft.UI.Xaml.Controls
 					UpdateNativeTextBlockLayout();
 				}
 
-				UpdateIsTextTrimmed();
-
 				return finalSize;
 			}
+		}
+
+		internal override void AfterArrange()
+		{
+			base.AfterArrange();
+			UpdateIsTextTrimmed();
 		}
 
 		private void UpdateNativeTextBlockLayout()
@@ -467,10 +471,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void UpdateIsTextTrimmed()
 		{
-			IsTextTrimmed = IsTextTrimmable && (
-				_measureLayout.MeasuredSize.Width > _arrangeLayout.MeasuredSize.Width ||
-				_measureLayout.MeasuredSize.Height > _arrangeLayout.MeasuredSize.Height
-			);
+			IsTextTrimmed = IsTextTrimmable && NeedsClipToSlot;
 		}
 
 		/// <summary>

@@ -68,7 +68,6 @@ public partial class Popup
 			}
 		}
 
-		newPanel.IsVisualTreeRoot = true;
 		_popupWindow.ContentView = newPanel;
 
 		UpdatePopupPanelDismissibleBackground(IsLightDismissEnabled);

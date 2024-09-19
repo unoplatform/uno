@@ -274,7 +274,11 @@ namespace Microsoft.UI.Xaml
 		{
 			global::System.Diagnostics.Debug.Assert(parentViewport.Reference == this || parentViewport.Reference == null);
 
-			if (IsVisualTreeRoot)
+			if (IsVisualTreeRoot
+#if !IS_NATIVE_ELEMENT
+				|| this is PopupPanel
+#endif
+			)
 			{
 				var slot = LayoutInformation.GetLayoutSlot(this);
 
