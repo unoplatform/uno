@@ -188,9 +188,15 @@ internal static partial class MobileLayoutingHelpers
 #if __ANDROID__ || __IOS__ || __MACOS__
 	private static void InvalidateArrangeOnNativeOnly(this View view)
 	{
+		// This method is intended to be given a "native-only" view.
+		// It will mark the view as arrange dirty, and propagate arrange dirty all the way up in the tree
 		Debug.Assert(view is not UIElement);
 		LayoutInformation.SetArrangeDirtyPath(view, true);
+#if __ANDROID__
 		var parent = view.Parent;
+#else
+		var parent = view.Superview;
+#endif
 		if (parent is UIElement uiElement)
 		{
 			uiElement.InvalidateArrangeDirtyPath();

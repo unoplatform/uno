@@ -1,18 +1,16 @@
 ﻿#if !__CROSSRUNTIME__
-using Uno.UI.Xaml.Core;
-
 namespace Microsoft.UI.Xaml;
 
 public sealed partial class XamlRoot
 {
 	internal void InvalidateMeasure()
 	{
-		CoreServices.RequestAdditionalFrame();
+		global::Uno.UI.Xaml.Core.CoreServices.RequestAdditionalFrame();
 	}
 
 	internal void InvalidateArrange()
 	{
-		CoreServices.RequestAdditionalFrame();
+		global::Uno.UI.Xaml.Core.CoreServices.RequestAdditionalFrame();
 	}
 }
 #endif
