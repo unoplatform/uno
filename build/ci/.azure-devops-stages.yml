@@ -238,6 +238,7 @@ stages:
 ## Publishing
 ##
 - stage: Publish_Dev
+  displayName: 'Publish Dev NuGet'
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'), not(eq(variables['build.reason'], 'PullRequest')))
   dependsOn: packages_build
   jobs:
@@ -246,6 +247,7 @@ stages:
       vmImage: '$(windows2022HostedVMImage)'
 
 - stage: Publish_Prod_Dev
+  displayName: 'Publish Prod Dev NuGet'
   condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'), not(eq(variables['build.reason'], 'PullRequest')))
   dependsOn: packages_build
   jobs:
@@ -254,6 +256,7 @@ stages:
       vmImage: '$(windows2022HostedVMImage)'
   
 - stage: Publish_Prod_Public
+  displayName: 'Publish Prod NuGet.org'
   condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'), not(eq(variables['build.reason'], 'PullRequest')))
   dependsOn: Publish_Prod_Dev
   jobs:
