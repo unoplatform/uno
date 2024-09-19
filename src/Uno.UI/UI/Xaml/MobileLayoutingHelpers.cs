@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Xaml.Controls.Primitives;
+﻿using System.Diagnostics;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.UI;
 using Windows.Foundation;
 
@@ -63,6 +64,8 @@ internal static partial class MobileLayoutingHelpers
 		var desiredSize = Uno.UI.Controls.BindableView.GetNativeMeasuredDimensionsFast(view).PhysicalToLogicalPixels();
 		LayoutInformation.SetDesiredSize(view, desiredSize);
 		LayoutInformation.SetAvailableSize(view, availableSize);
+
+		view.InvalidateArrangeOnNativeOnly();
 
 		if (view is ViewGroup viewGroup)
 		{
@@ -180,5 +183,20 @@ internal static partial class MobileLayoutingHelpers
 			evp.OnLayoutUpdated();
 		}
 #endif
+	}
+
+	private static void InvalidateArrangeOnNativeOnly(this View view)
+	{
+		Debug.Assert(view is not UIElement);
+		LayoutInformation.SetArrangeDirtyPath(view, true);
+		var parent = view.Parent;
+		if (parent is UIElement uiElement)
+		{
+			uiElement.InvalidateArrangeDirtyPath();
+		}
+		else if (parent is View parentView)
+		{
+			InvalidateArrangeOnNativeOnly(parentView);
+		}
 	}
 }

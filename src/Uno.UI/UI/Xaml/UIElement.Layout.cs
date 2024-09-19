@@ -153,7 +153,7 @@ namespace Microsoft.UI.Xaml
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private void InvalidateArrangeDirtyPath()
+		internal void InvalidateArrangeDirtyPath()
 		{
 			if (IsArrangeDirtyOrArrangeDirtyPath)
 			{
