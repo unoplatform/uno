@@ -1,5 +1,6 @@
 steps:
   - task: NuGetCommand@2
+    displayName: 'Publish to Uno Dev Feed'
     inputs:
       command: 'push'
       packagesToPush: '$(Pipeline.Workspace)/Nuget_Packages/**/*.nupkg'
