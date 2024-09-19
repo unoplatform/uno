@@ -6,25 +6,24 @@ using System.Threading.Tasks;
 using Uno.UI;
 using Windows.Foundation;
 
-namespace Windows.Services.Store
-{
-	public sealed partial class StoreContext
-	{
-		public IAsyncOperation<StoreProductResult> GetStoreProductForCurrentAppAsync()
-		{
-			return AsyncOperation.FromTask(ct =>
-			{
-				var storeId = ContextHelper.Current.PackageName;
+namespace Windows.Services.Store;
 
-				return Task.FromResult(new StoreProductResult
+public sealed partial class StoreContext
+{
+	public IAsyncOperation<StoreProductResult> GetStoreProductForCurrentAppAsync()
+	{
+		return AsyncOperation.FromTask(ct =>
+		{
+			var storeId = ContextHelper.Current.PackageName;
+
+			return Task.FromResult(new StoreProductResult
+			{
+				Product = new StoreProduct
 				{
-					Product = new StoreProduct
-					{
-						StoreId = storeId,
-						LinkUri = new Uri($"https://play.google.com/store/apps/details?id={storeId}")
-					}
-				});
+					StoreId = storeId,
+					LinkUri = new Uri($"https://play.google.com/store/apps/details?id={storeId}")
+				}
 			});
-		}
+		});
 	}
 }

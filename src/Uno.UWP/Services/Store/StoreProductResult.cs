@@ -4,15 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Windows.Services.Store
+namespace Windows.Services.Store;
+
+public sealed partial class StoreProductResult
 {
-	public sealed partial class StoreProductResult
-	{
-		internal StoreProductResult() { }
+	internal StoreProductResult() { }
 
-		public StoreProduct Product { get; internal set; }
+	public StoreProduct Product { get; internal set; }
 
-		public Exception ExtendedError { get; internal set; }
+	public Exception ExtendedError { get; internal set; }
 
-	}
 }
