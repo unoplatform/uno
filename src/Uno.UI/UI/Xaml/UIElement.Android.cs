@@ -19,6 +19,7 @@ using Rect = Windows.Foundation.Rect;
 using Java.Interop;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Uno.Extensions;
 
 namespace Microsoft.UI.Xaml
 {
@@ -140,6 +141,13 @@ namespace Microsoft.UI.Xaml
 		{
 			if (m_pLayoutClipGeometry is { } clipRectLogical)
 			{
+				// IMPORTANT: For some elements that use BorderLayerRenderer, the clipping here doesn't apply properly.
+				// This logic is replicated in BorderLayerRenderer. So, make sure to sync both versions if any changes are to be done.
+				if (ShouldApplyLayoutClipAsAncestorClip() && VisualTreeHelper.GetParent(this) is UIElement parent)
+				{
+					clipRectLogical = GetTransform(from: this, to: parent).Inverse().Transform(clipRectLogical);
+				}
+
 				var physicalRect = ViewHelper.LogicalToPhysicalPixels(clipRectLogical);
 				var physical = physicalRect.ToRectF();
 				canvas.ClipRect(physical, Region.Op.Intersect);

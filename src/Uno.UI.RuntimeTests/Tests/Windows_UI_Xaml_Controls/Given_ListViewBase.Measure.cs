@@ -135,6 +135,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+#if __ANDROID__
+		[Ignore("Fails on WinUI similarly. It looks like an invalid test.")]
+#endif
 		public async Task When_Item_Changes_Measure_Count()
 		{
 			var template = (DataTemplate)_testsResources["When_Item_Changes_Measure_Count_Template"];

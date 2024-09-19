@@ -708,12 +708,12 @@ namespace Microsoft.UI.Xaml
 				if (needToClipSlot || needToClipLocally)
 				{
 					if (ShouldApplyLayoutClipAsAncestorClip()
-#if !__SKIA__
+#if !__SKIA__ && !__ANDROID__
 						&& RenderTransform is { } renderTransform
 #endif
 						)
 					{
-#if __SKIA__
+#if __SKIA__ || __ANDROID__
 						clipRect.X += visualOffset.X;
 						clipRect.Y += visualOffset.Y;
 #else

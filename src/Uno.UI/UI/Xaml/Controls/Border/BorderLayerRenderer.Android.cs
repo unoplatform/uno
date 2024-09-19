@@ -125,6 +125,11 @@ namespace Uno.UI.Xaml.Controls
 			var viewUIElement = (UIElement)view;
 			if (viewUIElement.m_pLayoutClipGeometry is { } clipRectLogical)
 			{
+				if (viewUIElement.ShouldApplyLayoutClipAsAncestorClip() && VisualTreeHelper.GetParent(viewUIElement) is UIElement parent)
+				{
+					clipRectLogical = UIElement.GetTransform(from: viewUIElement, to: parent).Inverse().Transform(clipRectLogical);
+				}
+
 				var physicalRect = ViewHelper.LogicalToPhysicalPixels(clipRectLogical);
 				physicalClip = physicalRect.ToRectF();
 			}
