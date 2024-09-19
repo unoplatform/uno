@@ -1158,11 +1158,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			internal int MeasureCount;
 			internal int ArrangeCount;
 
-			protected internal override void OnInvalidateMeasure()
-			{
-				base.OnInvalidateMeasure();
-			}
-
 			protected override Size MeasureOverride(Size availableSize)
 			{
 				MeasureCount++;
