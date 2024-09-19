@@ -64,6 +64,11 @@ namespace Uno.UI.Tasks.EmbeddedResourceInjector
 						{
 							var logicalName = embeddedResource.GetMetadata("LogicalName");
 
+							if (string.IsNullOrEmpty(logicalName))
+							{
+								logicalName = embeddedResource.GetMetadata("ManifestResourceName");
+							}
+
 							Log.LogMessage(MessageImportance.Low, $"Embedding file {embeddedResource.ItemSpec} as {logicalName}");
 
 							// Remove existing resources with the same name
