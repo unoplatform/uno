@@ -30,9 +30,9 @@ partial class LayoutInformation
 	}
 
 	internal static bool GetArrangeDirtyPath(object view)
-	=> view is UIElement uiElement
-		? uiElement.IsArrangeDirtyPath
-		: _layoutProperties.GetValue(view, "arrangedirtypath", () => true);
+		=> view is UIElement uiElement
+			? uiElement.IsArrangeDirtyPath
+			: _layoutProperties.GetValue(view, "arrangedirtypath", () => true);
 
 	internal static void SetArrangeDirtyPath(object view, bool value)
 	{

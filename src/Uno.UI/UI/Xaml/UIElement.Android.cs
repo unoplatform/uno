@@ -18,6 +18,7 @@ using Point = Windows.Foundation.Point;
 using Rect = Windows.Foundation.Rect;
 using Java.Interop;
 using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
 namespace Microsoft.UI.Xaml
 {
@@ -145,6 +146,35 @@ namespace Microsoft.UI.Xaml
 			}
 
 			base.OnDraw(canvas);
+		}
+
+		protected override bool NativeRequestLayout()
+		{
+			InvalidateMeasure();
+
+			// Native components could call RequestLayout to invalidate themselves.
+			// Internally, Android will keep calling RequestLayout on parents, then we get to the first managed element in this code path.
+			// However, the native elements in between the managed element and the original RequestLayout call were not marked as measure dirty path.
+			// We take the chance to mark them as measure dirty path here.
+			// Note that this code may mark more than needed, but we don't have a way to know which element initiated
+			// the RequestLayout call, we only know of the first managed parent
+			InvalidateNativeOnlyChildrenRecursive(this);
+			return base.NativeRequestLayout();
+		}
+
+		private static void InvalidateNativeOnlyChildrenRecursive(ViewGroup view)
+		{
+			foreach (var child in view.GetChildren())
+			{
+				if (child is not UIElement)
+				{
+					LayoutInformation.SetMeasureDirtyPath(child, true);
+					if (child is ViewGroup childAsViewGroup)
+					{
+						InvalidateNativeOnlyChildrenRecursive(childAsViewGroup);
+					}
+				}
+			}
 		}
 
 		partial void ApplyNativeClip(Rect rect, Transform transform)
