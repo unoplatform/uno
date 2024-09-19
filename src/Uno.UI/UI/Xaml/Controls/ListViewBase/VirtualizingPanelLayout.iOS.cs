@@ -68,7 +68,7 @@ namespace Microsoft.UI.Xaml.Controls
 			public const int ListViewBaseLayout_PrepareLayoutStop = 2;
 		}
 
-		private NativeListViewBase Owner => (NativeListViewBase)CollectionView;
+		private NativeListViewBase? Owner => CollectionView as NativeListViewBase;
 
 		private enum DirtyState
 		{
@@ -398,9 +398,12 @@ namespace Microsoft.UI.Xaml.Controls
 					cell.Layer.RemoveAllAnimations();
 				}
 
-				foreach (var cell in Owner.VisibleSupplementaryViews)
+				if (Owner is { } owner)
 				{
-					cell.Layer.RemoveAllAnimations();
+					foreach (var cell in owner.VisibleSupplementaryViews)
+					{
+						cell.Layer.RemoveAllAnimations();
+					}
 				}
 			}
 
@@ -505,7 +508,7 @@ namespace Microsoft.UI.Xaml.Controls
 						}
 						_pendingCollectionChanges.Clear();
 						_dirtyState = DirtyState.None;
-						Owner.SetLayoutCreated();
+						Owner?.SetLayoutCreated();
 
 						if (AreStickyGroupHeadersEnabled)
 						{
@@ -1318,11 +1321,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void NeedsRelayout()
 		{
-			var nativePanel = (CollectionView as NativeListViewBase)!;
-
-			nativePanel.SetNeedsLayout();
-			// NativeListViewBase swallows layout requests by design
-			nativePanel.SetSuperviewNeedsLayout();
+			if (Owner is { } owner)
+			{
+				owner.SetNeedsLayout();
+				// NativeListViewBase swallows layout requests by design
+				owner.SetSuperviewNeedsLayout();
+			}
 		}
 
 		/// <summary>
@@ -1437,8 +1441,7 @@ namespace Microsoft.UI.Xaml.Controls
 		internal CGPoint? GetSnapTo(CGPoint velocity, CGPoint targetContentOffset)
 		{
 			var scrollVelocity = (float)GetExtent(velocity);
-			var currentOffset = (float)GetExtent(Owner.ContentOffset);
-
+			var currentOffset = (float)GetExtent(Owner?.ContentOffset);
 			var snapTo = GetSnapTo(scrollVelocity, currentOffset);
 
 			return snapTo.HasValue ? GetSnapToAsOffset(snapTo.Value) : (CGPoint?)null;
@@ -1514,7 +1517,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 				else // Alignment=Default
 				{
-					var currentOffset = GetExtent(Owner.ContentOffset);
+					var currentOffset = GetExtent(Owner?.ContentOffset);
 					var targetOffset = currentOffset;
 					var frameExtentEnd = GetExtentEnd(frame);
 					var viewportHeight = GetExtent(CollectionView.Bounds.Size);
@@ -1706,7 +1709,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private _LayoutAttributes? FindLayoutAttributesClosestOfPoint(Point point)
 		{
-			var adjustedPoint = AdjustExtentOffset(point, GetExtent(Owner.ContentOffset));
+			var adjustedPoint = AdjustExtentOffset(point, GetExtent(Owner?.ContentOffset));
 
 			var closestDistance = double.MaxValue;
 			var closestElement = default(_LayoutAttributes);
@@ -1735,7 +1738,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private bool DoesLayoutAttributesContainDraggedPoint(Point point, _LayoutAttributes layoutAttributes)
 		{
-			var adjustedPoint = AdjustExtentOffset(point, GetExtent(Owner.ContentOffset));
+			var adjustedPoint = AdjustExtentOffset(point, GetExtent(Owner?.ContentOffset));
 			return layoutAttributes.Frame.Contains(adjustedPoint);
 		}
 
@@ -1802,6 +1805,11 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				return size.Width;
 			}
+		}
+
+		private nfloat GetExtent(CGPoint? point)
+		{
+			return point is { } p ? GetExtent(p) : 0f;
 		}
 
 		private nfloat GetExtent(CGPoint point)
