@@ -327,7 +327,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				{
 					// We should not throw/assert here, as this event is coming straight from native without any exception-guard.
 					// Throwing in this context will cause the app to crash directly.
-					snapshots.Add((previous.Index, previous.Container.ClippedFrame));
+					snapshots.Add((previous.Index, previous.Container.m_pLayoutClipGeometry));
 				}
 
 				previousContainer = (e.ItemIndex, (ListViewItem)e.ItemContainer);
