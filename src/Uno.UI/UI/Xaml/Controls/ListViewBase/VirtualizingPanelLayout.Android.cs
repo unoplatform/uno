@@ -502,6 +502,21 @@ namespace Microsoft.UI.Xaml.Controls
 				var contentBreadth = _groups.Count > 0 ? _groups.Max(g => g.Breadth) : 0;
 				var measuredBreadth = contentBreadth + InitialBreadthPadding + FinalBreadthPadding;
 
+				// At this point, measuredBreadth doesn't include header/footer, which would cause the measure width to be 0 if only header and/or footer exist.
+				// To get the right measure width, we account for header/footer here.
+				// TODO: Discuss with Xiao if this is the right place to account for header/footer.
+				if (HeaderViewCount > 0)
+				{
+					var header = GetChildAt(GetHeaderViewIndex());
+					measuredBreadth = Math.Max(measuredBreadth, ViewHelper.LogicalToPhysicalPixels(LayoutInformation.GetDesiredSize(header).Width));
+				}
+
+				if (FooterViewCount > 0)
+				{
+					var footer = GetChildAt(GetFooterViewIndex());
+					measuredBreadth = Math.Max(measuredBreadth, ViewHelper.LogicalToPhysicalPixels(LayoutInformation.GetDesiredSize(footer).Width));
+				}
+
 				if (ScrollOrientation == Orientation.Vertical)
 				{
 					measuredWidth = Math.Min(measuredBreadth, availableWidth);
