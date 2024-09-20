@@ -35,13 +35,13 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		/// <param name="owner">The owner of the ControlTemplate</param>
 		/// <param name="factory">The factory to be called to build the template content</param>
-		public ControlTemplate(object? owner, FrameworkTemplateBuilder? factory)
+		public ControlTemplate(object? owner, NewFrameworkTemplateBuilder? factory)
 			: base(owner, factory)
 		{
 		}
 
 #if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
-		public ControlTemplate(object? owner, LegacyFrameworkTemplateBuilder? factory)
+		public ControlTemplate(object? owner, FrameworkTemplateBuilder? factory)
 			: base(owner, factory)
 		{
 		}

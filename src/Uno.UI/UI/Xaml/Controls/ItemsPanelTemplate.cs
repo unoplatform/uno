@@ -34,13 +34,13 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		/// <param name="owner">The owner of the ItemsPanelTemplate</param>
 		/// <param name="factory">The factory to be called to build the template content</param>
-		public ItemsPanelTemplate(object? owner, FrameworkTemplateBuilder? factory)
+		public ItemsPanelTemplate(object? owner, NewFrameworkTemplateBuilder? factory)
 			: base(owner, factory)
 		{
 		}
 
 #if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
-		public ItemsPanelTemplate(object? owner, LegacyFrameworkTemplateBuilder? factory)
+		public ItemsPanelTemplate(object? owner, FrameworkTemplateBuilder? factory)
 			: base(owner, factory)
 		{
 		}

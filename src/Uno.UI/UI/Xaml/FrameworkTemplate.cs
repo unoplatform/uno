@@ -22,23 +22,23 @@ namespace Microsoft.UI.Xaml
 	/// <summary>
 	/// Defines a builder to be used in <see cref="FrameworkTemplate"/>
 	/// </summary>
-	public delegate View? LegacyFrameworkTemplateBuilder(object? owner);
+	public delegate View? FrameworkTemplateBuilder(object? owner);
 
 	/// <summary>
 	/// Defines a builder to be used in <see cref="FrameworkTemplate"/>
 	/// </summary>
-	public delegate View? FrameworkTemplateBuilder(object? owner, TemplateMaterializationSettings settings);
+	public delegate View? NewFrameworkTemplateBuilder(object? owner, TemplateMaterializationSettings settings);
 
 	[ContentProperty(Name = "Template")]
 	public partial class FrameworkTemplate : DependencyObject, IFrameworkTemplateInternal
 	{
-		internal readonly FrameworkTemplateBuilder? _viewFactory;
+		internal readonly NewFrameworkTemplateBuilder? _viewFactory;
 		private readonly int _hashCode;
 		private readonly ManagedWeakReference? _ownerRef;
 		private readonly bool _isLegacyTemplate;
 
 		/// <summary>
-		/// The scope at the time of the template's creation, which will be used when its contents are materialized.
+		/// The scope at the time of the template's creataion, which will be used when its contents are materialized.
 		/// </summary>
 		private readonly XamlScope _xamlScope;
 
@@ -56,7 +56,7 @@ namespace Microsoft.UI.Xaml
 		}
 
 #if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
-		public FrameworkTemplate(object? owner, LegacyFrameworkTemplateBuilder? factory)
+		public FrameworkTemplate(object? owner, FrameworkTemplateBuilder? factory)
 			: this(owner, (o, s) => factory?.Invoke(o), factory)
 		{
 			// TODO: to be removed on next major update.
@@ -64,12 +64,12 @@ namespace Microsoft.UI.Xaml
 		}
 #endif
 
-		public FrameworkTemplate(object? owner, FrameworkTemplateBuilder? factory)
+		public FrameworkTemplate(object? owner, NewFrameworkTemplateBuilder? factory)
 			: this(owner, factory, factory)
 		{
 		}
 
-		private FrameworkTemplate(object? owner, FrameworkTemplateBuilder? factory, Delegate? rawFactory)
+		private FrameworkTemplate(object? owner, NewFrameworkTemplateBuilder? factory, Delegate? rawFactory)
 		{
 			InitializeBinder();
 

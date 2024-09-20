@@ -33,13 +33,13 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		/// <param name="owner">The owner of the DataTemplate</param>
 		/// <param name="factory">The factory to be called to build the template content</param>
-		public DataTemplate(object? owner, FrameworkTemplateBuilder? factory)
+		public DataTemplate(object? owner, NewFrameworkTemplateBuilder? factory)
 			: base(owner, factory)
 		{
 		}
 
 #if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
-		public DataTemplate(object? owner, LegacyFrameworkTemplateBuilder? factory)
+		public DataTemplate(object? owner, FrameworkTemplateBuilder? factory)
 			: base(owner, factory)
 		{
 		}

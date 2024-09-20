@@ -612,6 +612,8 @@ global::Uno.UI.DataBinding.ManagedWeakReference IWeakReferenceProvider.WeakRefer
 			{
 				var virtualModifier = typeSymbol.IsSealed ? "" : "virtual";
 				var protectedModifier = typeSymbol.IsSealed ? "private" : "internal protected";
+				var legacyNonBrowsable = "[EditorBrowsable(EditorBrowsableState.Never)]";
+
 				string dataContextChangedInvokeArgument;
 				if (typeSymbol.Is(_frameworkElementSymbol))
 				{
@@ -663,6 +665,37 @@ public static DependencyProperty DataContextProperty {{ get ; }} =
 
 #endregion
 
+#region TemplatedParent DependencyProperty // legacy api, should no longer to be used.
+
+{legacyNonBrowsable}public DependencyObject TemplatedParent
+{{
+	get => (DependencyObject)GetValue(TemplatedParentProperty);
+	set => SetValue(TemplatedParentProperty, value);
+}}
+
+// Using a DependencyProperty as the backing store for TemplatedParent.  This enables animation, styling, binding, etc...
+{legacyNonBrowsable}
+public static DependencyProperty TemplatedParentProperty {{ get ; }} =
+	DependencyProperty.Register(
+		name: nameof(TemplatedParent),
+		propertyType: typeof(DependencyObject),
+		ownerType: typeof({typeSymbol.Name}),
+		typeMetadata: new FrameworkPropertyMetadata(
+			defaultValue: null,
+			options: /*FrameworkPropertyMetadataOptions.Inherits | */FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.WeakStorage,
+			propertyChangedCallback: (s, e) => (({typeSymbol.Name})s).OnTemplatedParentChanged(e)
+		)
+	);
+
+
+{legacyNonBrowsable}
+{protectedModifier} {virtualModifier} void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
+{{
+	OnTemplatedParentChangedPartial(e);
+}}
+
+#endregion
+
 public void SetBinding(object target, string dependencyProperty, global::Microsoft.UI.Xaml.Data.BindingBase binding)
 {{
 	__Store.SetBinding(target, dependencyProperty, binding);
@@ -687,6 +720,9 @@ public void SetBindingValue(object value, [CallerMemberName] string propertyName
 internal bool IsAutoPropertyInheritanceEnabled {{ get => __Store.IsAutoPropertyInheritanceEnabled; set => __Store.IsAutoPropertyInheritanceEnabled = value; }}
 
 partial void OnDataContextChangedPartial(DependencyPropertyChangedEventArgs e);
+
+{legacyNonBrowsable}
+partial void OnTemplatedParentChangedPartial(DependencyPropertyChangedEventArgs e);
 
 public global::Microsoft.UI.Xaml.Data.BindingExpression GetBindingExpression(DependencyProperty dependencyProperty)
 	=>  __Store.GetBindingExpression(dependencyProperty);

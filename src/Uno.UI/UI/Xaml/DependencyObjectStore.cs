@@ -197,6 +197,11 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		public DependencyObjectStore(object originalObject, DependencyProperty dcProperty, DependencyProperty tpProperty)
+			: this(originalObject, dcProperty)
+		{
+		}
+
 		~DependencyObjectStore()
 		{
 			Dispose(false);
