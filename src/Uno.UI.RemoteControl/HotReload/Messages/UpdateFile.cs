@@ -14,7 +14,7 @@ public class UpdateFile : IMessage
 	/// ID of this file update request.
 	/// </summary>
 	[JsonProperty]
-	public string RequestId { get; } = Guid.NewGuid().ToString();
+	public string RequestId { get; set; } = Guid.NewGuid().ToString();
 
 	[JsonProperty]
 	public string FilePath { get; set; } = string.Empty;
