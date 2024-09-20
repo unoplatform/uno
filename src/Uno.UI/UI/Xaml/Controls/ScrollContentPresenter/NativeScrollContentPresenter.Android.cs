@@ -168,8 +168,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		bool ILayouterElement.StretchAffectsMeasure => false;
-
 		partial void OnLayoutPartial(bool changed, int left, int top, int right, int bottom)
 		{
 			// base.OnLayout is not invoked in the mixin to allow for the clipping algorithms

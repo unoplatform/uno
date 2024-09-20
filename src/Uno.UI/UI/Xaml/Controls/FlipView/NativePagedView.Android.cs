@@ -25,8 +25,6 @@ namespace Microsoft.UI.Xaml.Controls
 			LayoutParameters = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.MatchParent);
 		}
 
-		bool ILayouterElement.StretchAffectsMeasure => false;
-
 		protected override void OnMeasure(int widthMeasureSpec, int heightMeasureSpec)
 		{
 			base.OnMeasure(widthMeasureSpec, heightMeasureSpec);

@@ -15,7 +15,14 @@ using Uno.Diagnostics.Eventing;
 
 namespace Microsoft.UI.Xaml
 {
-	public partial class FrameworkElement
+	// Hack for keeping binary compatibility related to StretchAffectsMeasure.
+	// This interface can be removed in next major.
+	internal interface IWorkaround
+	{
+		bool StretchAffectsMeasure { get; }
+	}
+
+	public partial class FrameworkElement : IWorkaround
 	{
 		private Size? _lastLayoutSize;
 		private bool _constraintsChanged;
