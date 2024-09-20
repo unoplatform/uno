@@ -43,7 +43,7 @@
     </UnoFeatures>
   </PropertyGroup>
 
-	<Target Name="_ValidateNetSdkWasm" BeforeTargets="BeforeBuild">
+	<Target Name="_ValidateNetSdkWasm" BeforeTargets="BeforeBuild" Condition=" '$(TargetFramework)' == 'net9.0-browserwasm' ">
 		<Error Text="The Wasm SDK is not enabled" Condition=" '$(_UnoUseMicrosoftNETSdkWebAssembly)' != 'true' OR '$(UsingMicrosoftNETSdkWebAssembly)' != 'true' " />
 	</Target>
 
