@@ -113,7 +113,7 @@ internal class X11DragDropExtension : IDragDropExtension
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
-			this.Log().Trace($"XDndEnter: version={version}, sourceWindow={sourceWindow}, types in message: [{XLib.GetAtomName(_host.RootX11Window.Display, ev.ptr3)}, {XLib.GetAtomName(_host.RootX11Window.Display, ev.ptr4)}, {XLib.GetAtomName(_host.RootX11Window.Display, ev.ptr5)}]");
+			this.Log().Trace($"XDndEnter: version={version}, sourceWindow={sourceWindow}, types in message: [{GetAtomNameSafe(ev.ptr3)}, {GetAtomNameSafe(ev.ptr4)}, {GetAtomNameSafe(ev.ptr5)}]");
 		}
 
 		var moreThan3Types = ev.ptr2 & 1;
@@ -121,10 +121,11 @@ internal class X11DragDropExtension : IDragDropExtension
 		var types = moreThan3Types == IntPtr.Zero ?
 			new[] { ev.ptr3, ev.ptr4, ev.ptr5 } :
 			X11ClipboardExtension.WaitForFormats(_host.RootX11Window, XdndSelection);
+		types = types.Where(t => t != IntPtr.Zero).ToArray();
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
-			this.Log().Trace($"XDndEnter: total types received {types.Select(t => XLib.GetAtomName(_host.RootX11Window.Display, t)).ToList()}");
+			this.Log().Trace($"XDndEnter: total types received {string.Join(", ", types.Select(GetAtomNameSafe))}");
 		}
 
 		_currentSession = new XdndSession(version, sourceWindow, types, false, null, null, null);
@@ -158,6 +159,7 @@ internal class X11DragDropExtension : IDragDropExtension
 			// Note how we synchronously retrieve and cache the data, unlike copying/pasting from CLIPBOARD, which asynchronously gets the data only when used.
 			var package = new DataPackage();
 			var formats = _currentSession.Value.AvailableFormats;
+			X11ClipboardExtension.FillDataPackage(_host.RootX11Window, X11Helper.GetAtom(display, X11Helper.XdndSelection), package, formats);
 			if (formats.FirstOrDefault(f => X11ClipboardExtension.TextFormats.ContainsKey(XLib.GetAtomName(display, f))) is var f2 && f2 != IntPtr.Zero)
 			{
 				package.SetText(X11ClipboardExtension.WaitForText(_host.RootX11Window, f2, XdndSelection));
@@ -171,7 +173,7 @@ internal class X11DragDropExtension : IDragDropExtension
 
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().Trace($"XDndPosition: first position event, firing DragStarted with available operations {operations}. Found available formats {formats.Select(f => XLib.GetAtomName(display, f)).ToList()}.");
+				this.Log().Trace($"XDndPosition: first position event, firing DragStarted with available operations {operations}. Found available formats {string.Join(", ", formats.Select(GetAtomNameSafe))}.");
 			}
 
 			_coreDragDropManager.DragStarted(info);
@@ -298,6 +300,8 @@ internal class X11DragDropExtension : IDragDropExtension
 			throw new InvalidOperationException("The relative to must be a UIElement.");
 		}
 	}
+
+	private string GetAtomNameSafe(IntPtr atom) => atom == IntPtr.Zero ? "NULL" : XLib.GetAtomName(_host.RootX11Window.Display, atom);
 
 	// From the spec: "If (the target window) retrieved the data, it should cache it so it does not need to be retrieved again when the actual drop occurs.
 	// XdndEnter doesn't provide pointer coords, so we fire DragEntered with the first XdndPosition that comes after XdndEnter
