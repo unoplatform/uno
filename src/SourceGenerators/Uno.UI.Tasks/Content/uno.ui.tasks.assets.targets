@@ -252,7 +252,7 @@
 			DependsOnTargets="_UnoGetCopyToOutputItems"
 			Condition=" '$(UsingMicrosoftNETSdkWebAssembly)' == 'true' ">
 
-		<ItemGroup>
+		<ItemGroup Condition=" @(UnoAllCopyToOutputItems->Count()) > 0">
 			<_UnoTransitiveItems Include="@(UnoAllCopyToOutputItems)">
 				<!-- set the ContentRoot using GetDirectoryName -->
 				<ContentRoot>$([System.IO.Path]::GetDirectoryName('%(FullPath)'))</ContentRoot>
