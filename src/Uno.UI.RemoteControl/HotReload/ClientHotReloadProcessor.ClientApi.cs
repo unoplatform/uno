@@ -38,8 +38,8 @@ public partial class ClientHotReloadProcessor
 	/// <param name="WaitForHotReload">Indicates if we should also wait for the change to be applied in the application before completing the resulting task.</param>
 	public record struct UpdateRequest(
 		string FilePath,
-		string OldText,
-		string NewText,
+		string? OldText,
+		string? NewText,
 		bool WaitForHotReload = true)
 	{
 		/// <summary>
@@ -82,7 +82,7 @@ public partial class ClientHotReloadProcessor
 			=> this with { OldText = NewText, NewText = OldText, WaitForHotReload = waitForHotReload };
 	}
 
-	public Task UpdateFileAsync(string filePath, string oldText, string newText, bool waitForHotReload, CancellationToken ct)
+	public Task UpdateFileAsync(string filePath, string? oldText, string newText, bool waitForHotReload, CancellationToken ct)
 		=> UpdateFileAsync(new UpdateRequest(filePath, oldText, newText, waitForHotReload), ct);
 
 	public async Task UpdateFileAsync(UpdateRequest req, CancellationToken ct)
@@ -93,7 +93,7 @@ public partial class ClientHotReloadProcessor
 		}
 	}
 
-	public Task TryUpdateFileAsync(string filePath, string oldText, string newText, bool waitForHotReload, CancellationToken ct)
+	public Task TryUpdateFileAsync(string filePath, string? oldText, string newText, bool waitForHotReload, CancellationToken ct)
 		=> TryUpdateFileAsync(new UpdateRequest(filePath, oldText, newText, waitForHotReload), ct);
 
 	public async Task<UpdateResult> TryUpdateFileAsync(UpdateRequest req, CancellationToken ct)
@@ -111,7 +111,7 @@ public partial class ClientHotReloadProcessor
 			var debug = log.IsDebugEnabled(LogLevel.Debug) ? log : default;
 			var tag = $"[{Interlocked.Increment(ref _reqId):D2}-{Path.GetFileName(req.FilePath)}]";
 
-			debug?.Debug($"{tag} Updating file {req.FilePath} (from: {req.OldText[..100]} | to: {req.NewText[..100]}.");
+			debug?.Debug($"{tag} Updating file {req.FilePath} (from: {req.OldText?[..100]} | to: {req.NewText?[..100]}.");
 
 			// As the local HR is not really ID trackable (trigger by VS without any ID), we capture the current ID here to make sure that if HR completes locally before we get info from the server, we won't miss it.
 			var currentLocalHrId = GetCurrentLocalHotReloadId();
