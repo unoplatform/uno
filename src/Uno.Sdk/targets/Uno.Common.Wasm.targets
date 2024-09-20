@@ -43,6 +43,19 @@
 		<SdkSupportedTargetPlatformIdentifier Include="browserwasm" DisplayName="BrowserWasm" />
 	</ItemGroup>
 
+	<!-- 
+		Duplicate backwards compatibility with:
+		https://github.com/unoplatform/Uno.Wasm.Bootstrap/blob/f0cb358c25d3048680c8dd3d15e455aa5d13b532/src/Uno.Wasm.Bootstrap/build/Uno.Wasm.Bootstrap.targets#L59
+
+		This is required because the evaluation of props/targets files from the SDK discards imports of
+		the AOT compiler if RunAOTCompilation is not set ahead of time, and the bootstrapper cannot set
+		that propery if it's not an SDK.
+	 -->
+	<PropertyGroup Condition=" '$(WasmShellMonoRuntimeExecutionMode)' == 'InterpreterAndAOT' AND '$(WasmShellGenerateAOTProfile)' != 'true' ">
+		<RunAOTCompilation>true</RunAOTCompilation>
+		<WasmBuildNative>true</WasmBuildNative>
+	</PropertyGroup>
+
 	<Target Name="_UnoRemoveWebSdkConfigContent"
 			Condition=" '$(UnoDisableRemoveWebSdkConfigContent)' != 'true' "
 			BeforeTargets="BeforeBuild;CheckForDuplicateItems">
