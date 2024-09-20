@@ -579,7 +579,7 @@ internal class X11ClipboardExtension : IClipboardExtension
 	{
 		using var _ = X11Helper.XLock(x11Window.Display);
 
-		var formats = (formatAtoms)
+		var formats = formatAtoms
 			.Select(a => (name: XLib.GetAtomName(x11Window.Display, a), atom: a))
 			.ToList();
 		// Bmp will fail on Linux since skia isn't compiled with a Bmp codec by default. https://github.com/mono/SkiaSharp/issues/320#issuecomment-310805723

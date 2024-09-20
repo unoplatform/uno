@@ -33,6 +33,7 @@ using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
+using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
@@ -106,7 +107,7 @@ internal class X11DragDropExtension : IDragDropExtension
 		}
 	}
 
-	private void ProcessXdndEnter(XClientMessageEvent ev)
+	private unsafe void ProcessXdndEnter(XClientMessageEvent ev)
 	{
 		var sourceWindow = ev.ptr1;
 		var version = ev.ptr2 >> 24;
@@ -116,19 +117,46 @@ internal class X11DragDropExtension : IDragDropExtension
 			this.Log().Trace($"XDndEnter: version={version}, sourceWindow={sourceWindow}, types in message: [{GetAtomNameSafe(ev.ptr3)}, {GetAtomNameSafe(ev.ptr4)}, {GetAtomNameSafe(ev.ptr5)}]");
 		}
 
-		var moreThan3Types = ev.ptr2 & 1;
+		IntPtr[] formats;
+		if ((ev.ptr2 & 1) == 0)
+		{
+			formats = new[] { ev.ptr3, ev.ptr4, ev.ptr5 };
+		}
+		else
+		{
+			_ = XLib.XGetWindowProperty(
+				_host.RootX11Window.Display,
+				sourceWindow,
+				X11Helper.GetAtom(_host.RootX11Window.Display, X11Helper.XdndTypeList),
+				IntPtr.Zero,
+				X11Helper.LONG_LENGTH,
+				true,
+				X11Helper.AnyPropertyType,
+				out IntPtr actualType,
+				out var actualFormat,
+				out var nitems,
+				out var _,
+				out var prop);
+			using var propDisposable = new DisposableStruct<IntPtr>(static p => { _ = XLib.XFree(p); }, prop);
 
-		var types = moreThan3Types == IntPtr.Zero ?
-			new[] { ev.ptr3, ev.ptr4, ev.ptr5 } :
-			X11ClipboardExtension.WaitForFormats(_host.RootX11Window, XdndSelection);
-		types = types.Where(t => t != IntPtr.Zero).ToArray();
+			if (nitems == 0 || actualFormat != 32 || actualType != X11Helper.GetAtom(_host.RootX11Window.Display, X11Helper.XA_ATOM))
+			{
+				formats = Array.Empty<IntPtr>();
+			}
+			else
+			{
+				formats = new Span<IntPtr>((void*)prop, (int)nitems).ToArray();
+			}
+		}
+
+		formats = formats.Where(t => t != IntPtr.Zero).ToArray();
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
-			this.Log().Trace($"XDndEnter: total types received {string.Join(", ", types.Select(GetAtomNameSafe))}");
+			this.Log().Trace($"XDndEnter: total types received {string.Join(", ", formats.Select(GetAtomNameSafe))}");
 		}
 
-		_currentSession = new XdndSession(version, sourceWindow, types, false, null, null, null);
+		_currentSession = new XdndSession(version, sourceWindow, formats, false, null, null, null);
 	}
 
 	private void ProcessXdndPosition(XClientMessageEvent ev)
