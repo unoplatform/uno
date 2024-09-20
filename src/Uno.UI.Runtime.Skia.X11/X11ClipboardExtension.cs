@@ -982,7 +982,9 @@ internal class X11ClipboardExtension : IClipboardExtension
 		{
 			_logger.Trace("Parsing uri-list started");
 		}
-		var files = text.Split("\r\n");
+		var files = text
+			.TrimEnd('\0') // PCmanFM seems to add a NUL byte at the end, which seems to be against the spec, but we deal with it anyway.
+			.Split("\r\n");
 		for (var index = 0; index < files.Length; index++)
 		{
 			var file = files[index];
