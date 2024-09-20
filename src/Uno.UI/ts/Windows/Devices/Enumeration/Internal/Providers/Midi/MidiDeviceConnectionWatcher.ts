@@ -17,9 +17,7 @@
 				if ((<any>globalThis).DotnetExports !== undefined) {
 					MidiDeviceConnectionWatcher.dispatchStateChanged = (<any>globalThis).DotnetExports.Uno.Uno.Devices.Enumeration.Internal.Providers.Midi.MidiDeviceConnectionWatcher.DispatchStateChanged;
 				} else {
-					MidiDeviceConnectionWatcher.dispatchStateChanged =
-						(<any>Module).mono_bind_static_method(
-							"[Uno] Uno.Devices.Enumeration.Internal.Providers.Midi.MidiDeviceConnectionWatcher:DispatchStateChanged");
+					throw `Unable to find dotnet exports`;
 				}
 			}
 
