@@ -20,7 +20,8 @@
 			"Uno.WinUI.WebAssembly",
 			"Uno.WinUI.Runtime.WebAssembly",
 			"Uno.WinUI.MediaPlayer.WebAssembly",
-			"Uno.WinUI.Graphics3DGL"
+			"Uno.WinUI.Graphics3DGL",
+			"Uno.WinUI.Graphics2DSK"
 		]
 	},
 	{
