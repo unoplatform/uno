@@ -136,12 +136,6 @@ namespace Uno.UI.Xaml.Controls
 
 			if (!fullCornerRadius.IsEmpty)
 			{
-				if (viewUIElement.FrameRoundingAdjustment is { } fra)
-				{
-					drawArea.Height += fra.Height;
-					drawArea.Width += fra.Width;
-				}
-
 				// This needs to be adjusted if multiple UI threads are used in the future for multi-window
 				fullCornerRadius.Outer.GetRadii(_outerRadiiStore);
 				fullCornerRadius.Inner.GetRadii(_innerRadiiStore);
