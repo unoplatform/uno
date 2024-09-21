@@ -193,6 +193,19 @@ namespace Microsoft.UI.Xaml
 			var physicalRect = ViewHelper.LogicalToPhysicalPixels(rect);
 			var physical = new Android.Graphics.Rect((int)physicalRect.Left, (int)physicalRect.Top, (int)physicalRect.Right, (int)physicalRect.Bottom);
 			ViewCompat.SetClipBounds(this, physical);
+
+			if (FeatureConfiguration.UIElement.UseLegacyClipping)
+			{
+				// Old way: apply the clipping for each child on their assigned slot
+				SetClipChildren(NeedsClipToSlot);
+			}
+			else
+			{
+				// "New" correct way: apply the clipping on the parent,
+				// and let the children overflow inside the parent's bounds
+				// This is closer to the XAML way of doing clipping.
+				SetClipToPadding(NeedsClipToSlot);
+			}
 		}
 
 		private protected bool _isInArrangeVisualLayout;
@@ -208,10 +221,10 @@ namespace Microsoft.UI.Xaml
 				_isInArrangeVisualLayout = true;
 				global::System.Diagnostics.Debug.WriteLine($"Logical rect of {this.GetDebugName()}: {finalRect}, physical: {physical}");
 				this.Layout(
-					(int)Math.Round(physical.Left),
-					(int)Math.Round(physical.Top),
-					(int)Math.Round(physical.Right),
-					(int)Math.Round(physical.Bottom)
+					(int)physical.Left,
+					(int)physical.Top,
+					(int)physical.Right,
+					(int)physical.Bottom
 				);
 			}
 			finally
