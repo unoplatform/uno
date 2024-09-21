@@ -848,7 +848,7 @@ namespace Microsoft.UI.Xaml
 			// it's propagated to Visual.Clip and is set when UIElement.Clip changes.
 			// And on Android, it propagates through SetClipBounds
 			ArrangeVisual(newRect, clippedFrame);
-#else
+#elif !IS_UNIT_TESTS
 			var clip = Clip;
 			var clipRect = clip?.Rect;
 			if (clipRect.HasValue && clip?.Transform is { } transform)

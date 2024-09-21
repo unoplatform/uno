@@ -225,7 +225,15 @@ namespace Microsoft.UI.Xaml
 				// If possible we avoid the try/finally which might be costly on some platforms
 				DoMeasure(availableSize);
 			}
+
+#if IS_UNIT_TESTS
+			OnMeasurePartial(availableSize);
+#endif
 		}
+
+#if IS_UNIT_TESTS
+		partial void OnMeasurePartial(Size slotSize);
+#endif
 
 		/// <remarks>
 		/// This method contains or is called by a try/catch containing method and

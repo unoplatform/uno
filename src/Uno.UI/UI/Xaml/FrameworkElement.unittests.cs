@@ -16,8 +16,6 @@ namespace Microsoft.UI.Xaml
 
 		internal List<View> _children = new List<View>();
 
-		internal bool ShouldInterceptInvalidate { get; set; }
-
 		internal void UpdateHitTest() { }
 
 		private protected virtual void OnPostLoading() { }
@@ -120,7 +118,7 @@ namespace Microsoft.UI.Xaml
 
 		public double ActualHeight => Arranged.Height;
 
-		public Size UnclippedDesiredSize => _layouter._unclippedDesiredSize;
+		public Size UnclippedDesiredSize => m_unclippedDesiredSize;
 
 		private protected override double GetActualWidth() => ActualWidth;
 		private protected override double GetActualHeight() => ActualHeight;
