@@ -237,7 +237,7 @@ namespace Uno.UI
 				return int.MinValue;
 			}
 
-			return (int)Math.Round(value * Scale);
+			return (int)Math.Round(value * Scale, MidpointRounding.AwayFromZero);
 		}
 
 		/// <summary>
