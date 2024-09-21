@@ -1,4 +1,4 @@
-﻿#if !__NETSTD_REFERENCE__
+﻿#if !__NETSTD_REFERENCE__ && !IS_UNIT_TESTS
 #nullable enable
 
 using System;
