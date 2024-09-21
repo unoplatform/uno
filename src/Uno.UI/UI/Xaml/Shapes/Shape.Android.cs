@@ -204,34 +204,15 @@ namespace Microsoft.UI.Xaml.Shapes
 			return _path ?? new Android.Graphics.Path();
 		}
 
-		protected global::Windows.Foundation.Rect TransformToLogical(global::Windows.Foundation.Rect renderingArea)
-		{
-			//Android's path rendering logic rounds values down to the nearest int, make sure we round up here instead using the ViewHelper scaling logic
-			var physicalRenderingArea = renderingArea.LogicalToPhysicalPixels();
-			if (FrameRoundingAdjustment is { } fra)
-			{
-				physicalRenderingArea.Height += fra.Height;
-				physicalRenderingArea.Width += fra.Width;
-			}
-
-			var logicalRenderingArea = physicalRenderingArea.PhysicalToLogicalPixels();
-			logicalRenderingArea.X = renderingArea.X;
-			logicalRenderingArea.Y = renderingArea.Y;
-
-			return logicalRenderingArea;
-		}
-
 		protected global::Windows.Foundation.Size BasicArrangeOverride(global::Windows.Foundation.Size finalSize, Action<Android.Graphics.Path> action)
 		{
 			var (shapeSize, renderingArea) = ArrangeRelativeShape(finalSize);
 
 			if (renderingArea.Width > 0 && renderingArea.Height > 0)
 			{
-				var logicalRenderingArea = TransformToLogical(renderingArea);
-
-				if (!_logicalRenderingArea.Equals(logicalRenderingArea))
+				if (!_logicalRenderingArea.Equals(renderingArea))
 				{
-					_logicalRenderingArea = logicalRenderingArea;
+					_logicalRenderingArea = renderingArea;
 					Android.Graphics.Path path = GetOrCreatePath();
 					action(path);
 					Render(path);

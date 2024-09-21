@@ -59,10 +59,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 			Assert.AreEqual(146, nativeViewRect.Top);
 			Assert.AreEqual(293, nativeViewRect.Bottom);
 			Assert.AreEqual(293, nativeViewBottomBorder.Top);
-
-			Assert.IsNotNull(rect.FrameRoundingAdjustment);
-			Assert.AreEqual(1, rect.FrameRoundingAdjustment.Value.Height);
-			Assert.AreEqual(0, rect.FrameRoundingAdjustment.Value.Width);
 		}
 	}
 }

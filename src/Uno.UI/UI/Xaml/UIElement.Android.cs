@@ -125,18 +125,6 @@ namespace Microsoft.UI.Xaml
 			InitializePointers();
 		}
 
-		/// <summary>
-		/// The difference between the physical layout width and height taking the origin into account,
-		/// and the physical width and height that would've been calculated for an origin of (0,0).
-		/// The difference may be -1,0, or +1 pixels due to different roundings.
-		///
-		/// (Eg, consider a Grid that is 31 logical pixels high, with 3 children with alignment Stretch in successive Star-sized rows.
-		/// Each child will be measured with a logical height of 10.3, and logical origins of 0, 10.3, and 20.6.  Assume the device scale is 1.
-		/// The child origins will be converted to 0, 10, and 21 respectively in integer pixel values; this will give heights of 10, 11, and 10 pixels.
-		/// The FrameRoundingAdjustment values will be (0,0), (0,1), and (0,0) respectively.
-		/// </summary>
-		internal Size? FrameRoundingAdjustment { get; set; }
-
 		protected override void OnDraw(Android.Graphics.Canvas canvas)
 		{
 			if (m_pLayoutClipGeometry is { } clipRectLogical)
@@ -213,18 +201,16 @@ namespace Microsoft.UI.Xaml
 			LayoutSlotWithMarginsAndAlignments = finalRect;
 
 			var physical = finalRect.LogicalToPhysicalPixels();
-			FrameRoundingAdjustment = new Size(
-				(int)physical.Width - physical.Width,
-				(int)physical.Height - physical.Height);
 
 			try
 			{
 				_isInArrangeVisualLayout = true;
+				global::System.Diagnostics.Debug.WriteLine($"Logical rect of {this.GetDebugName()}: {finalRect}, physical: {physical}");
 				this.Layout(
-					(int)physical.Left,
-					(int)physical.Top,
-					(int)physical.Right,
-					(int)physical.Bottom
+					(int)Math.Round(physical.Left),
+					(int)Math.Round(physical.Top),
+					(int)Math.Round(physical.Right),
+					(int)Math.Round(physical.Bottom)
 				);
 			}
 			finally
