@@ -7,25 +7,20 @@
 	<Import Project="../../targetframework-override.props" />
 
 	<PropertyGroup>
-		<NoWarn>$(NoWarn);Uno0001</NoWarn>
-		<Deterministic>true</Deterministic>
-		<Nullable>enable</Nullable>
 		<AssemblyName>Uno.UI.GooglePlay</AssemblyName>
 		<RootNamespace>Uno.UI.GooglePlay</RootNamespace>
+		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.GooglePlay</PackageId>
 
-		<DefineConstants Condition="'$(UNO_UWP_BUILD)'!='true'">$(DefineConstants);HAS_SKOTTIE</DefineConstants>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<NoWarn>$(NoWarn);Uno0001</NoWarn>
+		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+		<Deterministic>true</Deterministic>
+		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
-	<ItemGroup>
-		<None Remove="buildTransitive\*.GooglePlay.targets" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Content Include="buildTransitive\*.GooglePlay.targets">
-			<PackagePath>build</PackagePath>
-			<Pack>true</Pack>
-		</Content>
-	</ItemGroup>
+	<PropertyGroup>
+		<Description>This package Google Play functionality for Uno Platform based apps on Android</Description>
+	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Xamarin.Google.Android.Play.Core" Version="1.10.3.14" />
@@ -36,23 +31,10 @@
 
 	<Import Project="..\..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
 
-	<Target Name="_CleanupReferences" BeforeTargets="CoreCompile">
-		<!-- Required when building under VS to remove analyzer references coming from the Uno.UI/Uno.WinUI transitive references -->
-		<ItemGroup>
-			<Analyzer Remove="@(Analyzer)" Condition="'%(Analyzer.NugetPackageId)'=='Uno.UI'" />
-			<Analyzer Remove="@(Analyzer)" Condition="'%(Analyzer.NugetPackageId)'=='Uno.WinUI'" />
-		</ItemGroup>
-	</Target>
-
 	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 
 		<PropertyGroup>
-			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			
-			<!-- Current nuget publishing uses netX.0-android30.0 -->
-			<_OverrideTargetFramework Condition="$(_OverrideTargetFramework.EndsWith('.0-android'))">$(_OverrideTargetFramework)30.0</_OverrideTargetFramework>
-
-			<_TargetNugetFolder>$(NuGetPackageRoot)\uno.ui.GooglePlay\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
+			<_TargetNugetFolder>$(NuGetPackageRoot)\uno.ui.googleplay\$(UnoNugetOverrideVersion)\lib\$(TargetFramework)</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)**" />
@@ -64,4 +46,8 @@
 		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
 		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
 	</Target>
+
+	<ItemGroup>
+		<None Include=".\..\Common\uno.png" Pack="true" PackagePath="\" Visible="false"/>
+	</ItemGroup>
 </Project>

@@ -123,6 +123,8 @@
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Toolkit.Reference.csproj</_AdjustedOutputProjects>
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Toolkit.Windows.csproj</_AdjustedOutputProjects>
 
+		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.GooglePlay.netcoremobile.csproj</_AdjustedOutputProjects>
+
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Foldable.netcoremobile.csproj</_AdjustedOutputProjects>
 
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.FluentTheme.Tests.csproj</_AdjustedOutputProjects>
