@@ -208,6 +208,15 @@ namespace Microsoft.UI.Composition
 		public CubicBezierEasingFunction CreateCubicBezierEasingFunction(Vector2 controlPoint1, Vector2 controlPoint2)
 			=> new(this, controlPoint1, controlPoint2);
 
+		public LinearEasingFunction CreateLinearEasingFunction()
+			=> new(this);
+
+		public StepEasingFunction CreateStepEasingFunction()
+			=> new(this);
+
+		public StepEasingFunction CreateStepEasingFunction(int stepCount)
+			=> new(this, stepCount);
+
 		partial void InvalidateRenderPartial(Visual visual);
 	}
 }
