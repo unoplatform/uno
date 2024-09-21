@@ -41,7 +41,8 @@ namespace Uno.UI.Xaml.Controls
 
 		partial void UpdatePlatform(bool forceUpdate)
 		{
-			var drawArea = new Rect(default, _owner.LayoutSlotWithMarginsAndAlignments.Size.LogicalToPhysicalPixels());
+			// NOTE: This can LayoutSlot.LogicalToPhysicalPixels().Size can be different from LayoutSlot.Size.LogicalToPhysicalPixels() due to rounding.
+			var drawArea = new Rect(default, _owner.LayoutSlotWithMarginsAndAlignments.LogicalToPhysicalPixels().Size);
 			var newState = new BorderLayerState(drawArea.Size, _borderInfoProvider);
 			var previousLayoutState = _currentState;
 
