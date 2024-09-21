@@ -56,6 +56,8 @@ internal static partial class MobileLayoutingHelpers
 			var desiredSizeFromLayouterElement = layouterElement.Measure(availableSize);
 			LayoutInformation.SetDesiredSize(view, desiredSizeFromLayouterElement);
 			LayoutInformation.SetAvailableSize(view, availableSize);
+
+			view.InvalidateArrangeOnNativeOnly();
 			return desiredSizeFromLayouterElement;
 		}
 
