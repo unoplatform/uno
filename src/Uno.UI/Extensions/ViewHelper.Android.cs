@@ -237,18 +237,7 @@ namespace Uno.UI
 				return int.MinValue;
 			}
 
-			// The rounding is explained here : http://developer.android.com/guide/practices/screens_support.html#dips-pels
-			// 
-			//  "This figure is the factor by which you should multiply the dp units on order to get the actual 
-			//   pixel count for the current screen. (Then add 0.5f to round the figure up to the nearest whole number,
-			//   when converting to an integer.)"
-
-			if (value < 0)
-			{
-				return (int)Math.Ceiling(value * Scale);
-			}
-
-			return (int)((value * Scale) + .5f);
+			return (int)Math.Round(value * Scale);
 		}
 
 		/// <summary>
