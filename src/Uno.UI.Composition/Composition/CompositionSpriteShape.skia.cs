@@ -53,7 +53,7 @@ namespace Microsoft.UI.Composition
 						fill = wrapper.WrappedBrush;
 					}
 
-					if (Geometry.TrimStart != default || Geometry.TrimEnd != default)
+					if (Geometry is not null && (Geometry.TrimStart != default || Geometry.TrimEnd != default))
 					{
 						fillPaint.PathEffect = SKPathEffect.CreateTrim(Geometry.TrimStart, Geometry.TrimEnd);
 					}
@@ -85,7 +85,7 @@ namespace Microsoft.UI.Composition
 						strokePaint.PathEffect = SKPathEffect.CreateDash(strokeDashArray.ToEvenArray(), 0);
 					}
 
-					if (Geometry.TrimStart != default || Geometry.TrimEnd != default)
+					if (Geometry is not null && (Geometry.TrimStart != default || Geometry.TrimEnd != default))
 					{
 						var pathEffect = SKPathEffect.CreateTrim(Geometry.TrimStart, Geometry.TrimEnd);
 						if (strokePaint.PathEffect is SKPathEffect effect)
