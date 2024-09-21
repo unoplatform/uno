@@ -16,6 +16,8 @@ namespace Microsoft.UI.Xaml.Shapes
 		private static Paint _strokePaint;
 		private static Paint _fillPaint;
 
+		private bool _isAbsoluteShape;
+
 		protected bool HasStroke
 		{
 			get { return Stroke != null && ActualStrokeThickness > 0; }
@@ -26,11 +28,41 @@ namespace Microsoft.UI.Xaml.Shapes
 		public Shape()
 		{
 			SetWillNotDraw(false);
+			_isAbsoluteShape = this is not Rectangle and not Ellipse;
 		}
 
 		protected override void OnDraw(Canvas canvas)
 		{
 			base.OnDraw(canvas);
+			if (_isAbsoluteShape)
+			{
+				if (_path != null)
+				{
+					DrawFill(canvas);
+					DrawStroke(canvas);
+				}
+
+				return;
+			}
+
+			_path = GetOrCreatePath();
+			var logicalRenderingArea = _logicalRenderingArea;
+
+			var physicalSize1 = LayoutSlotWithMarginsAndAlignments.Size.LogicalToPhysicalPixels();
+			var physicalSize2 = LayoutSlotWithMarginsAndAlignments.LogicalToPhysicalPixels().Size;
+
+			logicalRenderingArea.Width += (physicalSize2.Width - physicalSize1.Width);
+			logicalRenderingArea.Height += (physicalSize2.Height - physicalSize1.Height);
+
+			SetupPath(_path, logicalRenderingArea);
+
+			var matrix = new Android.Graphics.Matrix();
+
+			matrix.SetScale((float)ViewHelper.Scale, (float)ViewHelper.Scale);
+
+			_path.Transform(matrix);
+
+			_drawArea = GetPathBoundingBox(_path);
 
 			DrawFill(canvas);
 			DrawStroke(canvas);
@@ -204,7 +236,16 @@ namespace Microsoft.UI.Xaml.Shapes
 			return _path ?? new Android.Graphics.Path();
 		}
 
-		protected global::Windows.Foundation.Size BasicArrangeOverride(global::Windows.Foundation.Size finalSize, Action<Android.Graphics.Path> action)
+		protected global::Windows.Foundation.Rect TransformToLogical(global::Windows.Foundation.Rect renderingArea)
+		{
+			return renderingArea;
+		}
+
+		private protected virtual void SetupPath(Android.Graphics.Path path, global::Windows.Foundation.Rect logicalRenderingArea)
+		{
+		}
+
+		protected global::Windows.Foundation.Size BasicArrangeOverride(global::Windows.Foundation.Size finalSize)
 		{
 			var (shapeSize, renderingArea) = ArrangeRelativeShape(finalSize);
 
@@ -213,14 +254,12 @@ namespace Microsoft.UI.Xaml.Shapes
 				if (!_logicalRenderingArea.Equals(renderingArea))
 				{
 					_logicalRenderingArea = renderingArea;
-					Android.Graphics.Path path = GetOrCreatePath();
-					action(path);
-					Render(path);
+					Invalidate();
 				}
 			}
 			else if (_path != null)
 			{
-				Render(null);
+				Invalidate();
 			}
 
 			return shapeSize;
