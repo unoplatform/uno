@@ -181,6 +181,7 @@ namespace Microsoft.UI.Xaml
 		{
 			if (rect.IsEmpty)
 			{
+				ViewCompat.SetClipBounds(this, null);
 				return;
 			}
 
