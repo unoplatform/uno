@@ -34,8 +34,9 @@ public static class FoundationFeatureConfiguration
 	public static class Runtime
 	{
 		/// <summary>
-		/// Indicates if exception thrown in javascript should be rethrown in managed code.
+		/// [Deprecated] Indicates if exception thrown in javascript should be rethrown in managed code.
 		/// </summary>
+		[System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
 		public static bool RethrowNativeExceptions
 		{
 			// Obsolete, remove in next major

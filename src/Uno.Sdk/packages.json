@@ -20,7 +20,8 @@
 			"Uno.WinUI.WebAssembly",
 			"Uno.WinUI.Runtime.WebAssembly",
 			"Uno.WinUI.MediaPlayer.WebAssembly",
-			"Uno.WinUI.Graphics3DGL"
+			"Uno.WinUI.Graphics3DGL",
+			"Uno.WinUI.Graphics2DSK"
 		]
 	},
 	{
@@ -32,7 +33,7 @@
 			"Uno.Wasm.Bootstrap.Server"
 		],
 		"versionOverride": {
-			"net9.0": "9.0.0-dev.104"
+			"net9.0": "9.0.0-dev.296"
 		}
 	},
 	{

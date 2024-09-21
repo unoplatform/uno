@@ -25,6 +25,11 @@ public partial class ClientHotReloadProcessor
 	/// </summary>
 	internal EventHandler<Status>? StatusChanged;
 
+	/// <summary>
+	/// The current status of the hot-reload engine.
+	/// </summary>
+	internal Status CurrentStatus => _status.Current;
+
 	private readonly StatusSink _status;
 
 	internal enum HotReloadSource
@@ -74,6 +79,8 @@ public partial class ClientHotReloadProcessor
 		private ImmutableDictionary<long, HotReloadServerOperationData> _serverOperations = ImmutableDictionary<long, HotReloadServerOperationData>.Empty;
 		private ImmutableList<HotReloadClientOperation> _localOperations = ImmutableList<HotReloadClientOperation>.Empty;
 		private HotReloadSource _source;
+
+		public Status Current { get; private set; } = null!;
 
 		public void ReportInvalidRuntime()
 		{
@@ -133,6 +140,8 @@ public partial class ClientHotReloadProcessor
 		private void NotifyStatusChanged()
 		{
 			var status = BuildStatus();
+
+			Current = status;
 #if HAS_UNO_WINUI
 			_view.Update(status);
 #endif

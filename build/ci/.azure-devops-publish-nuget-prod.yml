@@ -1,0 +1,25 @@
+jobs:
+- deployment: 'Nuget_Prod_Nuget_Org'
+  displayName: 'Nuget Publish Prod NuGet.org'
+  environment: 'Uno UI Production'
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+        - download: none
+
+        # https://github.com/microsoft/azure-pipelines-tasks/issues/17207
+        - task: DownloadPipelineArtifact@2
+          inputs:
+            artifactName: 'NuGet_Packages'
+            itemPattern: |
+              **/.nupkg
+              !*Private*.nupkg
+            targetPath: '$(Pipeline.Workspace)/NuGet_Packages'
+          displayName: Download artifacts
+
+        - template: templates/nuget-publish-public.yml
+
