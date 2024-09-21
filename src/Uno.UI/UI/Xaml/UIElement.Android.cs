@@ -219,7 +219,6 @@ namespace Microsoft.UI.Xaml
 			try
 			{
 				_isInArrangeVisualLayout = true;
-				global::System.Diagnostics.Debug.WriteLine($"Logical rect of {this.GetDebugName()}: {finalRect}, physical: {physical}");
 				this.Layout(
 					(int)physical.Left,
 					(int)physical.Top,
