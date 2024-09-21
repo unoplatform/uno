@@ -23,18 +23,35 @@ public sealed partial class Vector3KeyFrameAnimationSample : Page
 
 	private void OnStartAnimation(object sender, RoutedEventArgs args)
 	{
-		var animation = _borderVisual.Compositor.CreateVector3KeyFrameAnimation();
+		var compositor = _borderVisual.Compositor;
+
+		var easingFunction = easingFunctionBox.SelectedIndex switch
+		{
+			0 => Compositor.GetDefaultEasingFunction(),
+			1 => CompositionEasingFunction.CreateLinearEasingFunction(compositor),
+			2 => CompositionEasingFunction.CreateBackEasingFunction(compositor, CompositionEasingFunctionMode.InOut, 0.9f),
+			3 => CompositionEasingFunction.CreateBounceEasingFunction(compositor, CompositionEasingFunctionMode.Out, 3, 2),
+			4 => CompositionEasingFunction.CreateCircleEasingFunction(compositor, CompositionEasingFunctionMode.InOut),
+			5 => CompositionEasingFunction.CreateElasticEasingFunction(compositor, CompositionEasingFunctionMode.Out, 2, 1),
+			6 => CompositionEasingFunction.CreateExponentialEasingFunction(compositor, CompositionEasingFunctionMode.Out, 6),
+			7 => CompositionEasingFunction.CreatePowerEasingFunction(compositor, CompositionEasingFunctionMode.Out, 10),
+			8 => CompositionEasingFunction.CreateSineEasingFunction(compositor, CompositionEasingFunctionMode.InOut),
+			9 => CompositionEasingFunction.CreateStepEasingFunction(compositor, 3),
+			_ => Compositor.GetDefaultEasingFunction()
+		};
+
+		var animation = compositor.CreateVector3KeyFrameAnimation();
 		var y = _borderVisual.Offset.Y;
 		var maxX = _pageVisual.Size.X - _borderVisual.Size.X;
 		if ((bool)hasFrameAtZeroCheckBox.IsChecked)
 		{
-			animation.InsertKeyFrame(0.0f, new Vector3(0.0f, y, 0.0f));
+			animation.InsertKeyFrame(0.0f, new Vector3(0.0f, y, 0.0f), easingFunction);
 		}
 
-		animation.InsertKeyFrame(0.5f, new Vector3(maxX / 4.0f, y, 0.0f));
-		animation.InsertKeyFrame(0.6f, new Vector3(maxX / 4.0f, y, 0.0f));
-		animation.InsertKeyFrame(1.0f, new Vector3(maxX, y, 0.0f));
-		animation.Duration = TimeSpan.FromSeconds(1);
+		animation.InsertKeyFrame(0.5f, new Vector3(maxX / 4.0f, y, 0.0f), easingFunction);
+		animation.InsertKeyFrame(0.6f, new Vector3(maxX / 4.0f, y, 0.0f), easingFunction);
+		animation.InsertKeyFrame(1.0f, new Vector3(maxX, y, 0.0f), easingFunction);
+		animation.Duration = TimeSpan.FromSeconds(2);
 		animation.IterationCount = (int)iterationCountNumberBox.Value;
 		animation.IterationBehavior = (bool)isForeverCheckBox.IsChecked ? AnimationIterationBehavior.Forever : AnimationIterationBehavior.Count;
 		_borderVisual.StartAnimation("Offset", animation);
