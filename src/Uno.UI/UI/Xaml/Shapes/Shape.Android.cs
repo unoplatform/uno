@@ -247,7 +247,7 @@ namespace Microsoft.UI.Xaml.Shapes
 
 		protected global::Windows.Foundation.Size BasicArrangeOverride(global::Windows.Foundation.Size finalSize)
 		{
-			var (shapeSize, renderingArea) = ArrangeRelativeShape(finalSize);
+			var (_, renderingArea) = ArrangeRelativeShape(finalSize);
 
 			if (renderingArea.Width > 0 && renderingArea.Height > 0)
 			{
@@ -262,7 +262,7 @@ namespace Microsoft.UI.Xaml.Shapes
 				Invalidate();
 			}
 
-			return shapeSize;
+			return finalSize;
 		}
 
 		private void OnFillBrushChanged() => InvalidateCommon();

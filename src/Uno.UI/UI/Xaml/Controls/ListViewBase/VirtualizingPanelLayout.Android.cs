@@ -504,7 +504,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 				// At this point, measuredBreadth doesn't include header/footer, which would cause the measure width to be 0 if only header and/or footer exist.
 				// To get the right measure width, we account for header/footer here.
-				// TODO: Discuss with Xiao if this is the right place to account for header/footer.
 				if (HeaderViewCount > 0)
 				{
 					var header = GetChildAt(GetHeaderViewIndex());
