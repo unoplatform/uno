@@ -122,19 +122,6 @@ namespace Uno.UI.Xaml.Controls
 
 			var fullCornerRadius = cornerRadius.GetRadii(drawArea.Size, borderThickness);
 
-			RectF? physicalClip = null;
-			var viewUIElement = (UIElement)view;
-			if (viewUIElement.m_pLayoutClipGeometry is { } clipRectLogical)
-			{
-				if (viewUIElement.ShouldApplyLayoutClipAsAncestorClip() && VisualTreeHelper.GetParent(viewUIElement) is UIElement parent)
-				{
-					clipRectLogical = UIElement.GetTransform(from: viewUIElement, to: parent).Inverse().Transform(clipRectLogical);
-				}
-
-				var physicalRect = ViewHelper.LogicalToPhysicalPixels(clipRectLogical);
-				physicalClip = physicalRect.ToRectF();
-			}
-
 			if (!fullCornerRadius.IsEmpty)
 			{
 				// This needs to be adjusted if multiple UI threads are used in the future for multi-window
@@ -171,7 +158,7 @@ namespace Uno.UI.Xaml.Controls
 								_fillPaint.Reset();
 								_fillPaint.Color = Android.Graphics.Color.Transparent;
 							}
-							ExecuteWithNoRelayout(view, v => v.SetBackgroundDrawable(Brush.GetBackgroundDrawable(background, drawArea, physicalClip, _fillPaint, backgroundPath)));
+							ExecuteWithNoRelayout(view, v => v.SetBackgroundDrawable(Brush.GetBackgroundDrawable(background, drawArea, _fillPaint, backgroundPath)));
 						}
 						disposables.Add(() => ExecuteWithNoRelayout(view, v => v.SetBackgroundDrawable(null)));
 					}
@@ -235,7 +222,7 @@ namespace Uno.UI.Xaml.Controls
 							_fillPaint.Reset();
 							_fillPaint.Color = Android.Graphics.Color.Transparent;
 						}
-						ExecuteWithNoRelayout(view, v => v.SetBackgroundDrawable(Brush.GetBackgroundDrawable(background, drawArea, physicalClip, _fillPaint, backgroundPath, antiAlias: false)));
+						ExecuteWithNoRelayout(view, v => v.SetBackgroundDrawable(Brush.GetBackgroundDrawable(background, drawArea, _fillPaint, backgroundPath, antiAlias: false)));
 					}
 					disposables.Add(() => ExecuteWithNoRelayout(view, v => v.SetBackgroundDrawable(null)));
 				}

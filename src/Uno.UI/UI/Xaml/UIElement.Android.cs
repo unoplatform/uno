@@ -127,21 +127,63 @@ namespace Microsoft.UI.Xaml
 
 		protected override void OnDraw(Android.Graphics.Canvas canvas)
 		{
-			if (m_pLayoutClipGeometry is { } clipRectLogical)
+			if (m_pLayoutClipGeometry.HasValue)
 			{
-				// IMPORTANT: For some elements that use BorderLayerRenderer, the clipping here doesn't apply properly.
-				// This logic is replicated in BorderLayerRenderer. So, make sure to sync both versions if any changes are to be done.
-				if (ShouldApplyLayoutClipAsAncestorClip() && VisualTreeHelper.GetParent(this) is UIElement parent)
-				{
-					clipRectLogical = GetTransform(from: this, to: parent).Inverse().Transform(clipRectLogical);
-				}
-
-				var physicalRect = ViewHelper.LogicalToPhysicalPixels(clipRectLogical);
-				var physical = physicalRect.ToRectF();
-				canvas.ClipRect(physical, Region.Op.Intersect);
+				SetTotalClipRect(out var clipRectLogical);
+				Android.Graphics.Rect physicalRect = ViewHelper.LogicalToPhysicalPixels(clipRectLogical.Value);
+				canvas.ClipRect(physicalRect, Region.Op.Intersect);
 			}
 
 			base.OnDraw(canvas);
+		}
+
+		private protected void SetTotalClipRect()
+			=> SetTotalClipRect(out _);
+
+		private protected void SetTotalClipRect(out Rect? logicalLayoutClip)
+		{
+			// This method calculates and sets the intersection of the layout clip and the clip provided using UIElement.Clip dependency property.
+			var clip = Clip;
+			var clipRect = clip?.Rect;
+			if (clipRect.HasValue && clip?.Transform is { } transform)
+			{
+				clipRect = transform.TransformBounds(clipRect.Value);
+			}
+
+			var layoutClip = m_pLayoutClipGeometry;
+			if (layoutClip.HasValue &&
+				ShouldApplyLayoutClipAsAncestorClip() &&
+				VisualTreeHelper.GetParent(this) is UIElement parent)
+			{
+				layoutClip = GetTransform(from: this, to: parent).Inverse().Transform(layoutClip.Value);
+			}
+
+			logicalLayoutClip = layoutClip;
+
+			if (clipRect.HasValue || layoutClip.HasValue)
+			{
+				var totalClip = (clipRect ?? Rect.Infinite).IntersectWith(layoutClip ?? Rect.Infinite) ?? default(Rect);
+
+				Android.Graphics.Rect physicalRect = totalClip.LogicalToPhysicalPixels();
+				ViewCompat.SetClipBounds(this, physicalRect);
+
+				if (FeatureConfiguration.UIElement.UseLegacyClipping)
+				{
+					// Old way: apply the clipping for each child on their assigned slot
+					SetClipChildren(NeedsClipToSlot);
+				}
+				else
+				{
+					// "New" correct way: apply the clipping on the parent,
+					// and let the children overflow inside the parent's bounds
+					// This is closer to the XAML way of doing clipping.
+					SetClipToPadding(NeedsClipToSlot);
+				}
+			}
+			else
+			{
+				ViewCompat.SetClipBounds(this, null);
+			}
 		}
 
 		protected override bool NativeRequestLayout()
@@ -174,37 +216,6 @@ namespace Microsoft.UI.Xaml
 						InvalidateNativeOnlyChildrenRecursive(childAsViewGroup);
 					}
 				}
-			}
-		}
-
-		partial void ApplyNativeClip(Rect rect, Transform transform)
-		{
-			if (rect.IsEmpty)
-			{
-				ViewCompat.SetClipBounds(this, null);
-				return;
-			}
-
-			if (transform != null)
-			{
-				rect = transform.TransformBounds(rect);
-			}
-
-			var physicalRect = ViewHelper.LogicalToPhysicalPixels(rect);
-			var physical = new Android.Graphics.Rect((int)physicalRect.Left, (int)physicalRect.Top, (int)physicalRect.Right, (int)physicalRect.Bottom);
-			ViewCompat.SetClipBounds(this, physical);
-
-			if (FeatureConfiguration.UIElement.UseLegacyClipping)
-			{
-				// Old way: apply the clipping for each child on their assigned slot
-				SetClipChildren(NeedsClipToSlot);
-			}
-			else
-			{
-				// "New" correct way: apply the clipping on the parent,
-				// and let the children overflow inside the parent's bounds
-				// This is closer to the XAML way of doing clipping.
-				SetClipToPadding(NeedsClipToSlot);
 			}
 		}
 
