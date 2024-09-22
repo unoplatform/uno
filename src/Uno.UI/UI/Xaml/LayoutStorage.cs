@@ -38,7 +38,7 @@ partial class UIElement
 	// since this is only possible with children of a Canvas, which does not apply any layout clip, this works out fine.
 	// Uno docs: We use a simple Rect rather than RectangleGeometry
 	// Uno docs: This doesn't include clipping from UIElement.Clip dependency property. It's all about the layout clipping calculated by the arrange logic.
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __IOS__ || __MACOS__
 	internal Rect? m_pLayoutClipGeometry;
 #endif
 
@@ -61,7 +61,7 @@ partial class UIElement
 		m_unclippedDesiredSize = default;
 #endif
 		m_size = default;
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __IOS__ || __MACOS__
 		m_pLayoutClipGeometry = default;
 #endif
 #endif

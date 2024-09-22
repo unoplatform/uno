@@ -823,7 +823,7 @@ namespace Microsoft.UI.Xaml
 		/// <param name="clippedFrame">Zone to clip, if clipping is required</param>
 		private void ArrangeNative(Point offset, Rect? clippedFrame)
 		{
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __IOS__ || __MACOS__
 			m_pLayoutClipGeometry = clippedFrame;
 #endif
 
