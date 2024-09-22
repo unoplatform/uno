@@ -11,10 +11,10 @@ using Android.Widget;
 using AndroidX.Core.Content;
 using AndroidX.Core.Graphics;
 using Java.Lang.Reflect;
+using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
-using Microsoft.UI.Xaml.Media;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -269,6 +269,20 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			base.RequestLayout();
+
+			// Sometimes, RequestLayout doesn't propagate up (presumably when Android is already in layout pass?)
+			var parent = ((EditText)this).Parent;
+			while (parent is not null)
+			{
+				if (parent is UIElement firstManagedAncestor)
+				{
+					firstManagedAncestor.InvalidateMeasure();
+					UIElement.InvalidateNativeOnlyChildrenRecursive(firstManagedAncestor);
+					break;
+				}
+
+				parent = parent.Parent;
+			}
 		}
 
 		protected override void OnMeasure(int widthMeasureSpec, int heightMeasureSpec)
