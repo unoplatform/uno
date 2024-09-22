@@ -55,27 +55,6 @@ namespace Microsoft.UI.Xaml.Media
 
 		private protected virtual void ApplyToPaintInner(Rect destinationRect, Paint paint) => throw new InvalidOperationException();
 
-
-		internal sealed class UnoDrawable : DrawableWrapper
-		{
-			private readonly RectF _physicalClip;
-
-			public UnoDrawable(Drawable drawable, RectF physicalClip) : base(drawable)
-			{
-				_physicalClip = physicalClip;
-			}
-
-			public override void Draw(Canvas canvas)
-			{
-				if (_physicalClip is not null)
-				{
-					canvas.ClipRect(_physicalClip, Region.Op.Intersect);
-				}
-
-				base.Draw(canvas);
-			}
-		}
-
 		internal static Drawable GetBackgroundDrawable(Brush background, Rect drawArea, Paint fillPaint, Path maskingPath = null, bool antiAlias = true)
 		{
 			if (background is ImageBrush)
@@ -108,17 +87,6 @@ namespace Microsoft.UI.Xaml.Media
 			BrushNative.BuildBackgroundCornerRadius(drawable, maskingPath, fillPaint, antiAlias, (float)drawArea.Width, (float)drawArea.Height);
 
 			return drawable;
-		}
-
-		internal static Drawable GetBackgroundDrawable(Brush background, Rect drawArea, RectF physicalClip, Paint fillPaint, Path maskingPath = null, bool antiAlias = true)
-		{
-			var drawable = GetBackgroundDrawable(background, drawArea, fillPaint, maskingPath, antiAlias);
-			if (physicalClip is null)
-			{
-				return drawable;
-			}
-
-			return new UnoDrawable(drawable, physicalClip);
 		}
 	}
 }
