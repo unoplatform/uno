@@ -169,7 +169,7 @@ internal static partial class MobileLayoutingHelpers
 #if __ANDROID__
 
 			// This is unfortunate, but, for NativeListViewBase, the native measuring is actually responsible for both managed measure and managed arrange.
-			// In this case, calling view.Layout without MeasureElement will not arrange the managed children with dirty arrange.
+			// In this case, calling view.Layout will not arrange the managed children with dirty arrange.
 			// We workaround this by passing the previous LayoutSlot which is the correct rect that was set during native measure.
 			var workaroundThatManagedArrangeHappensDuringNativeMeasure = view is NativeListViewBase;
 
@@ -220,7 +220,7 @@ internal static partial class MobileLayoutingHelpers
 	private static void InvalidateArrangeOnNativeOnly(this View view)
 	{
 		// This method is intended to be given a "native-only" view.
-		// It will mark the view as arrange dirty, and propagate arrange dirty all the way up in the tree
+		// It will mark the view as arrange dirty path, and propagate arrange dirty path all the way up in the tree
 		Debug.Assert(view is not UIElement);
 		LayoutInformation.SetArrangeDirtyPath(view, true);
 #if __ANDROID__
