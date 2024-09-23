@@ -192,8 +192,8 @@ namespace Microsoft.UI.Xaml
 			{
 				// Native components could call RequestLayout to invalidate themselves.
 				// Internally, Android will keep calling RequestLayout on parents, then we get to the first managed element in this code path.
-				// However, the native elements in between the managed element and the original RequestLayout call were not marked as measure/arrange dirty path.
-				// We take the chance to mark them as measure/arrange dirty path here.
+				// However, the native elements in between the managed element and the original RequestLayout call were not marked as measure dirty path.
+				// We take the chance to mark them as measure dirty path here.
 				// Note that this code may mark more than needed, but we don't have a way to know which element initiated
 				// the RequestLayout call, we only know of the first managed parent
 				InvalidateMeasure();
