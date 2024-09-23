@@ -9,17 +9,27 @@ using static __Microsoft.UI.Xaml.Controls.NativeWebView;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-public class NativeWebView : UIElement, INativeWebView
+public partial class NativeWebView
+#if __WASM__
+	: UIElement, INativeWebView
+#endif
 {
 	private CoreWebView2 _coreWebView;
 
-	public NativeWebView(CoreWebView2 coreWebView) : base("iframe")
+	public NativeWebView(CoreWebView2 coreWebView)
+#if __WASM__
+		: base("iframe")
+#endif
 	{
 		_coreWebView = coreWebView;
 
 		SetAttribute("background-color", "transparent");
 
 		IFrameLoaded += OnNavigationCompleted;
+
+#if __WASM_SKIA__
+		Html
+#endif
 	}
 
 	private event EventHandler IFrameLoaded
@@ -92,4 +102,8 @@ public class NativeWebView : UIElement, INativeWebView
 
 	public void SetScrollingEnabled(bool isScrollingEnabled) { }
 
+#if __SKIA__
+	
+
+#endif
 }

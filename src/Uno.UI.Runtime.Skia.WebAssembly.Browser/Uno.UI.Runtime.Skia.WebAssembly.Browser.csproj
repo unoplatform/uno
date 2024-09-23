@@ -69,6 +69,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\Wasm\NativeWebView.Interop.wasm.cs" Link="UI\Xaml\Controls\WebView\NativeWebView.Interop.wasm.cs" />
+	  <Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\Wasm\NativeWebView.wasm.cs" Link="UI\Xaml\Controls\WebView\NativeWebView.wasm.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <ConfigFiles Include="tsconfig.json" />
 	</ItemGroup>
 
@@ -113,6 +118,12 @@
 
 	<ItemGroup>
 		<_UnoEmbeddedResourcesInjectionAfterTargets Include="CompileTypeScriptWithTSConfig" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <TypeScriptCompile Include="..\Uno.UI\ts\Windows\UI\Xaml\Controls\WebView.ts">
+	    <Link>ts\Runtime\WebView.ts</Link>
+	  </TypeScriptCompile>
 	</ItemGroup>
 
 </Project>
