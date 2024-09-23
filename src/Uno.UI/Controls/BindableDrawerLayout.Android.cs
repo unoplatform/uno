@@ -429,7 +429,6 @@ namespace Uno.UI.Controls
 			if (newValue)
 			{
 				OpenDrawer(_leftPane);
-				_leftPane?.InvalidateMeasure();
 			}
 			else
 			{
@@ -533,6 +532,8 @@ namespace Uno.UI.Controls
 			base.OnMeasure(
 				ViewHelper.MakeMeasureSpec((int)sizeForChildren.Width, MeasureSpecMode.AtMost),
 				ViewHelper.MakeMeasureSpec((int)sizeForChildren.Height, MeasureSpecMode.AtMost));
+
+			SetMeasuredDimension((int)sizeForChildren.Width, (int)sizeForChildren.Height);
 		}
 
 		/// <inheritdoc />
