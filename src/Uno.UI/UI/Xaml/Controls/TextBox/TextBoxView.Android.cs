@@ -11,6 +11,7 @@ using Android.Widget;
 using AndroidX.Core.Content;
 using AndroidX.Core.Graphics;
 using Java.Lang.Reflect;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 using Uno.UI;
@@ -277,8 +278,11 @@ namespace Microsoft.UI.Xaml.Controls
 				if (parent is UIElement firstManagedAncestor)
 				{
 					firstManagedAncestor.InvalidateMeasure();
-					UIElement.InvalidateNativeOnlyChildrenRecursive(firstManagedAncestor);
 					break;
+				}
+				else
+				{
+					LayoutInformation.SetMeasureDirtyPath(parent, true);
 				}
 
 				parent = parent.Parent;
