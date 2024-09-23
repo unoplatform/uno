@@ -204,7 +204,7 @@ namespace Microsoft.UI.Xaml
 			return false;
 		}
 
-		internal static void InvalidateNativeOnlyChildrenRecursive(ViewGroup view)
+		private static void InvalidateNativeOnlyChildrenRecursive(ViewGroup view)
 		{
 			foreach (var child in view.GetChildren())
 			{

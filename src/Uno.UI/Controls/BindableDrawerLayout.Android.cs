@@ -429,6 +429,7 @@ namespace Uno.UI.Controls
 			if (newValue)
 			{
 				OpenDrawer(_leftPane);
+				_leftPane?.InvalidateMeasure();
 			}
 			else
 			{
