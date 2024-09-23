@@ -270,36 +270,19 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			base.RequestLayout();
-
-			// Sometimes, RequestLayout doesn't propagate up (presumably when Android is already in layout pass?)
-			var parent = ((EditText)this).Parent;
-			while (parent is not null)
-			{
-				if (parent is UIElement firstManagedAncestor)
-				{
-					firstManagedAncestor.InvalidateMeasure();
-					break;
-				}
-				else
-				{
-					LayoutInformation.SetMeasureDirtyPath(parent, true);
-				}
-
-				parent = parent.Parent;
-			}
 		}
 
 		protected override void OnMeasure(int widthMeasureSpec, int heightMeasureSpec)
 		{
-			base.OnMeasure(widthMeasureSpec, heightMeasureSpec);
-
 			// On some devices (LG G3), the cursor doesn't appear if the Text is empty.
 			// This is due to the TextBoxView's content having a width of 0 if the Text is empty.
 			// This code ensures that the TextBoxView's content always has a minimum width, allowing the cursor to be visible.
 			var minContentWidth = ViewHelper.LogicalToPhysicalPixels(10d); // arbitrary number, large enough to accommodate cursor
-			var minWidth = PaddingLeft + minContentWidth + PaddingRight;
-			var newMeasuredWidth = Math.Max(MeasuredWidth, minWidth);
-			SetMeasuredDimension(newMeasuredWidth, MeasuredHeight);
+			var physicalWidth = Math.Max(PaddingLeft + minContentWidth + PaddingRight, ViewHelper.PhysicalSizeFromSpec(widthMeasureSpec));
+
+			base.OnMeasure(
+				ViewHelper.MakeMeasureSpec(physicalWidth, Android.Views.MeasureSpecMode.AtMost),
+				heightMeasureSpec);
 		}
 
 		public
