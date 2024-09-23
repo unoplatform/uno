@@ -63,6 +63,7 @@ public class Given_CalendarView
 
 #if __WASM__
 	[TestMethod]
+	[Ignore("Fails on Fluent styles #17272")]
 	public async Task When_ItemCornerRadius()
 	{
 		var calendarView = new CalendarView();

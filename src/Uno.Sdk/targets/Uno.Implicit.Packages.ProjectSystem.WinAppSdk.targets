@@ -13,4 +13,8 @@
 	<ItemGroup Condition="$(UnoFeatures.Contains(';skia;')) OR $(UnoFeatures.Contains(';lottie;')) OR $(UnoFeatures.Contains(';svg;'))">
 		<_UnoProjectSystemPackageReference Include="SkiaSharp.Views.WinUI" ProjectSystem="true" />
 	</ItemGroup>
+
+	<ItemGroup Condition="$(UnoFeatures.Contains(';canvas3dgl;'))">
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Graphics3DGL" ProjectSystem="true" />
+	</ItemGroup>
 </Project>

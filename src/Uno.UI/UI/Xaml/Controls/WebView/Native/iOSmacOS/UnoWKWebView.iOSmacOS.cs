@@ -38,6 +38,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 	, IHasSizeThatFits
 #endif
 {
+	private string? _previousTitle;
 	private CoreWebView2? _coreWebView;
 	private bool _isCancelling;
 
@@ -104,6 +105,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 	}
 #endif
 
+	public string DocumentTitle => Title!;
 
 	public void Stop() => StopLoading();
 
@@ -217,7 +219,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 			return;
 		}
 
-		_coreWebView.DocumentTitle = Title;
+		CheckForTitleChange();
 		RaiseNavigationCompleted(destinationUrl, true, 200, CoreWebView2WebErrorStatus.Unknown);
 		_lastNavigationData = destinationUrl;
 	}
@@ -637,7 +639,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 
 		if (forKey.Equals(nameof(Title), StringComparison.OrdinalIgnoreCase))
 		{
-			_coreWebView.DocumentTitle = Title;
+			CheckForTitleChange();
 		}
 		else if (
 			forKey.Equals(nameof(Url), StringComparison.OrdinalIgnoreCase) ||
@@ -869,6 +871,16 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 		if (message.Name == WebMessageHandlerName)
 		{
 			_coreWebView?.RaiseWebMessageReceived((message.Body as NSString)?.ToString()!);
+		}
+	}
+
+	private void CheckForTitleChange()
+	{
+		var currentTitle = Title;
+		if (_previousTitle != currentTitle)
+		{
+			_previousTitle = currentTitle;
+			_coreWebView!.OnDocumentTitleChanged();
 		}
 	}
 }

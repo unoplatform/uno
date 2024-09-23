@@ -9,7 +9,7 @@ using Uno.Foundation.Interop;
 using Uno.Extensions;
 using System.Threading.Tasks;
 using Uno.Foundation.Logging;
-using static __Windows.Storage.StorageFolderNative;
+using NativeMethods = __Windows.Storage.StorageFolder.NativeMethods;
 
 namespace Windows.Storage
 {
@@ -36,9 +36,7 @@ namespace Windows.Storage
 		}
 
 		internal static void MakePersistent(params StorageFolder[] folders)
-		{
-			NativeMakePersistent(folders.SelectToArray(f => f.Path));
-		}
+			=> NativeMethods.MakePersistent(folders.SelectToArray(f => f.Path));
 
 		[JSExport]
 		internal static void DispatchStorageInitialized()

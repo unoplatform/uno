@@ -29,6 +29,8 @@ using Uno.Foundation.Diagnostics.CodeAnalysis;
 [assembly: InternalsVisibleTo("Uno.UI.MediaPlayer.Skia.Gtk")]
 [assembly: InternalsVisibleTo("Uno.UI.MediaPlayer.WebAssembly")]
 
+[assembly: InternalsVisibleTo("Uno.WinUI.Graphics3DGL")]
+
 [assembly: AssemblyMetadata("IsTrimmable", "True")]
 
 [assembly: System.Reflection.Metadata.MetadataUpdateHandler(typeof(Uno.UI.RuntimeTypeMetadataUpdateHandler))]

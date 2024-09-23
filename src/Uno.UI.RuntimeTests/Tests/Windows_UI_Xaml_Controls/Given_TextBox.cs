@@ -6,13 +6,15 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MUXControlsTestApp.Utilities;
 using Uno.UI.Helpers;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.ApplicationModel.DataTransfer;
+using Windows.UI;
+
 using Color = Windows.UI.Color;
 
 #if HAS_UNO_WINUI || WINAPPSDK || WINUI
@@ -22,7 +24,6 @@ using Colors = Windows.UI.Colors;
 #endif
 
 using static Private.Infrastructure.TestServices;
-using Microsoft.UI.Xaml.Data;
 using SamplesApp.UITests;
 using Windows.UI.Input.Preview.Injection;
 using Windows.Foundation;
@@ -115,7 +116,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		public async Task When_BorderThickness_Zero()
 		{
-			using var fluent = StyleHelper.UseFluentStyles();
 			var grid = new Grid
 			{
 				Width = 120,
@@ -187,31 +187,28 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Fluent_And_Theme_Changed()
 		{
-			using (StyleHelper.UseFluentStyles())
+			var textBox = new TextBox
 			{
-				var textBox = new TextBox
-				{
-					PlaceholderText = "Enter..."
-				};
+				PlaceholderText = "Enter..."
+			};
 
-				WindowHelper.WindowContent = textBox;
-				await WindowHelper.WaitForLoaded(textBox);
+			WindowHelper.WindowContent = textBox;
+			await WindowHelper.WaitForLoaded(textBox);
 
-				var placeholderTextContentPresenter = textBox.FindFirstChild<TextBlock>(tb => tb.Name == "PlaceholderTextContentPresenter");
-				Assert.IsNotNull(placeholderTextContentPresenter);
+			var placeholderTextContentPresenter = textBox.FindFirstChild<TextBlock>(tb => tb.Name == "PlaceholderTextContentPresenter");
+			Assert.IsNotNull(placeholderTextContentPresenter);
 
-				var lightThemeForeground = TestsColorHelper.ToColor("#9E000000");
-				var darkThemeForeground = TestsColorHelper.ToColor("#C5FFFFFF");
+			var lightThemeForeground = TestsColorHelper.ToColor("#9E000000");
+			var darkThemeForeground = TestsColorHelper.ToColor("#C5FFFFFF");
 
-				Assert.AreEqual(lightThemeForeground, (placeholderTextContentPresenter.Foreground as SolidColorBrush)?.Color);
+			Assert.AreEqual(lightThemeForeground, (placeholderTextContentPresenter.Foreground as SolidColorBrush)?.Color);
 
-				using (ThemeHelper.UseDarkTheme())
-				{
-					Assert.AreEqual(darkThemeForeground, (placeholderTextContentPresenter.Foreground as SolidColorBrush)?.Color);
-				}
-
-				Assert.AreEqual(lightThemeForeground, (placeholderTextContentPresenter.Foreground as SolidColorBrush)?.Color);
+			using (ThemeHelper.UseDarkTheme())
+			{
+				Assert.AreEqual(darkThemeForeground, (placeholderTextContentPresenter.Foreground as SolidColorBrush)?.Color);
 			}
+
+			Assert.AreEqual(lightThemeForeground, (placeholderTextContentPresenter.Foreground as SolidColorBrush)?.Color);
 		}
 
 		[TestMethod]
@@ -1038,8 +1035,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Size_Zero_Fluent_Default()
 		{
-			using var styles = StyleHelper.UseFluentStyles();
-
 			var textBox = await LoadZeroSizeTextBoxAsync(null);
 
 			textBox.ActualWidth.Should().BeApproximately(textBox.MinWidth, 0.1);
@@ -1049,6 +1044,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Size_Zero_Default()
 		{
+			using var uwpStyles = StyleHelper.UseUwpStyles();
 			var textBox = await LoadZeroSizeTextBoxAsync(null);
 
 			textBox.ActualWidth.Should().Be(0);
@@ -1058,7 +1054,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Size_Zero_Fluent_ComboBoxTextBoxStyle()
 		{
-			using var styles = StyleHelper.UseFluentStyles();
 			var style = Application.Current.Resources["ComboBoxTextBoxStyle"] as Style;
 
 			var textBox = await LoadZeroSizeTextBoxAsync(style);

@@ -459,7 +459,7 @@ namespace Microsoft.UI.Xaml
 				// with the newly evaluated ThemeResource value.
 				// In this case, if we previously had Animation value in effect, we don't want the new Local value to take effect.
 				// So, we avoid setting LocalValueNewerThanAnimationsValue
-				DependencyPropertyDetails.SuppressLocalCanDefeatAnimations();
+				ModifiedValue.SuppressLocalCanDefeatAnimations();
 				DefaultBrushes.ResetDefaultThemeBrushes();
 				foreach (var contentRoot in WinUICoreServices.Instance.ContentRootCoordinator.ContentRoots)
 				{
@@ -490,7 +490,7 @@ namespace Microsoft.UI.Xaml
 			}
 			finally
 			{
-				DependencyPropertyDetails.ContinueLocalCanDefeatAnimations();
+				ModifiedValue.ContinueLocalCanDefeatAnimations();
 			}
 		}
 

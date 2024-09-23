@@ -58,6 +58,9 @@ $projects =
     # 5.2 Blank SkiaSharp 3
     @("5.2/uno52blank/uno52blank/uno52blank.csproj", "-p:SkiaSharpVersion=3.0.0-preview.3.1"),
 
+    # 5.2 Blank Canvas3DGL
+    @("5.2/uno52blank/uno52blank/uno52blank.csproj", "-p:UnoFeatures=Canvas3DGL"),
+
     # 5.2 Uno Lib
     @("5.2/uno52Lib/uno52Lib.csproj", ""),
 

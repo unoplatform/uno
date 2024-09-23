@@ -24,16 +24,7 @@ namespace Microsoft.UI.Windowing
 		}
 #endif
 		// Skipping already declared property Id
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool IsVisible
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool AppWindow.IsVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AppWindow.IsVisible");
-			}
-		}
-#endif
+		// Skipping already declared property IsVisible
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Microsoft.UI.WindowId OwnerWindowId
@@ -44,49 +35,19 @@ namespace Microsoft.UI.Windowing
 			}
 		}
 #endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Graphics.PointInt32 Position
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member PointInt32 AppWindow.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PointInt32%20AppWindow.Position");
-			}
-		}
-#endif
+		// Skipping already declared property Position
 		// Skipping already declared property Presenter
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Graphics.SizeInt32 Size
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member SizeInt32 AppWindow.Size is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SizeInt32%20AppWindow.Size");
-			}
-		}
-#endif
+		// Skipping already declared property Size
 		// Skipping already declared property TitleBar
-#if false
+		// Skipping already declared property ClientSize
+		// Skipping already declared property DispatcherQueue
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Graphics.SizeInt32 ClientSize
+		public void Show(bool activateWindow)
 		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member SizeInt32 AppWindow.ClientSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SizeInt32%20AppWindow.ClientSize");
-			}
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindow", "void AppWindow.Show(bool activateWindow)");
 		}
 #endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Dispatching.DispatcherQueue DispatcherQueue
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DispatcherQueue AppWindow.DispatcherQueue is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DispatcherQueue%20AppWindow.DispatcherQueue");
-			}
-		}
-#endif
-		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.Closing.add
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.IsShownInSwitchers.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.IsShownInSwitchers.set
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.IsVisible.get
@@ -96,14 +57,8 @@ namespace Microsoft.UI.Windowing
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.Size.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.Title.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.Title.set
+		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.TitleBar.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.Id.get
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Destroy()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindow", "void AppWindow.Destroy()");
-		}
-#endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public void Hide()
@@ -111,13 +66,7 @@ namespace Microsoft.UI.Windowing
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindow", "void AppWindow.Hide()");
 		}
 #endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Move(global::Windows.Graphics.PointInt32 position)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindow", "void AppWindow.Move(PointInt32 position)");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Windowing.AppWindow.Move(Windows.Graphics.PointInt32)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public void MoveAndResize(global::Windows.Graphics.RectInt32 rect)
@@ -132,13 +81,7 @@ namespace Microsoft.UI.Windowing
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindow", "void AppWindow.MoveAndResize(RectInt32 rect, DisplayArea displayarea)");
 		}
 #endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Resize(global::Windows.Graphics.SizeInt32 size)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindow", "void AppWindow.Resize(SizeInt32 size)");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Windowing.AppWindow.Resize(Windows.Graphics.SizeInt32)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public void SetIcon(string iconPath)
@@ -164,14 +107,14 @@ namespace Microsoft.UI.Windowing
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Show(bool activateWindow)
+		public void Destroy()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindow", "void AppWindow.Show(bool activateWindow)");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindow", "void AppWindow.Destroy()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.Changed.add
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.Changed.remove
-		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.TitleBar.get
+		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.Closing.add
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.Closing.remove
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.Destroying.add
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.Destroying.remove

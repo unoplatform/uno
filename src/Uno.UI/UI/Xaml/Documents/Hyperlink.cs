@@ -27,7 +27,7 @@ namespace Microsoft.UI.Xaml.Documents
 
 		private const string HyperlinkForegroundPressedKey = "HyperlinkForegroundPressed";
 		private const string HyperlinkForegroundPointerOverKey = "HyperlinkForegroundPointerOver";
-		private protected override Brush DefaultTextForegroundBrush => DefaultBrushes.HyperlinkForegroundBrush;
+		private const string HyperlinkForeground = nameof(HyperlinkForeground);
 
 		public
 #if __WASM__
@@ -232,7 +232,7 @@ namespace Microsoft.UI.Xaml.Documents
 		}
 		#endregion
 
-		private void SetCurrentForeground()
+		internal void SetCurrentForeground()
 		{
 			if (_pressedPointer is { }
 				&& Application.Current.Resources.TryGetValue(HyperlinkForegroundPressedKey, out var pressedBrush))
@@ -244,9 +244,18 @@ namespace Microsoft.UI.Xaml.Documents
 			{
 				this.SetValue(ForegroundProperty, hoveredBrush, DependencyPropertyValuePrecedences.Animations);
 			}
-			else
+			else // normal
 			{
+				// this is close, although not identical, to what the WinUI source does
 				this.ClearValue(ForegroundProperty, DependencyPropertyValuePrecedences.Animations);
+				if (this.GetCurrentHighestValuePrecedence(ForegroundProperty) == DependencyPropertyValuePrecedences.Local)
+				{
+					this.SetValue(ForegroundProperty, this.GetValue(ForegroundProperty), DependencyPropertyValuePrecedences.Animations);
+				}
+				else if (Application.Current.Resources.TryGetValue(HyperlinkForeground, out var defaultBrush))
+				{
+					this.SetValue(ForegroundProperty, defaultBrush, DependencyPropertyValuePrecedences.Animations);
+				}
 			}
 		}
 

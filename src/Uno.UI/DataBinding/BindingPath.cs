@@ -97,7 +97,7 @@ namespace Uno.UI.DataBinding
 		/// <param name="path"></param>
 		/// <param name="fallbackValue">Provides the fallback value to apply when the source is invalid.</param>
 		public BindingPath(string path, object? fallbackValue) :
-			this(path, fallbackValue, null, false)
+			this(path, fallbackValue, forAnimations: false, false)
 		{
 		}
 
@@ -106,13 +106,12 @@ namespace Uno.UI.DataBinding
 		/// </summary>
 		/// <param name="path">The path to the property</param>
 		/// <param name="fallbackValue">Provides the fallback value to apply when the source is invalid.</param>
-		/// <param name="precedence">The precedence value to manipulate if the path matches to a DependencyProperty.</param>
 		/// <param name="allowPrivateMembers">Allows for the binding engine to include private properties in the lookup</param>
-		internal BindingPath(string path, object? fallbackValue, DependencyPropertyValuePrecedences? precedence, bool allowPrivateMembers)
+		internal BindingPath(string path, object? fallbackValue, bool forAnimations, bool allowPrivateMembers)
 		{
 			_path = path ?? "";
 
-			Parse(_path, fallbackValue, precedence, allowPrivateMembers, ref _chain, ref _value);
+			Parse(_path, fallbackValue, forAnimations, allowPrivateMembers, ref _chain, ref _value);
 
 			if (_value != null)
 			{
@@ -211,7 +210,7 @@ namespace Uno.UI.DataBinding
 						// Don't get the source value if we're not accessing a dependency property.
 						// WinUI does not read the property value before setting the value for a
 						// non-dependency property source.
-						|| DependencyObjectStore.AreDifferent(value, _value.GetPrecedenceSpecificValue())
+						|| DependencyObjectStore.AreDifferent(value, _value.GetSourceValue())
 					))
 				{
 					_value.Value = value;
@@ -239,18 +238,6 @@ namespace Uno.UI.DataBinding
 			else
 			{
 				return DataContext;
-			}
-		}
-
-		/// <summary>
-		/// Sets the value of the <see cref="DependencyPropertyValuePrecedences.Local"/>
-		/// </summary>
-		/// <param name="value">The value to set</param>
-		internal void SetLocalValue(object value)
-		{
-			if (!_disposed)
-			{
-				_value?.SetLocalValue(value);
 			}
 		}
 
@@ -375,7 +362,7 @@ namespace Uno.UI.DataBinding
 		/// </summary>
 		private static void Parse(
 			string path,
-			object? fallbackValue, DependencyPropertyValuePrecedences? precedence, bool allowPrivateMembers,
+			object? fallbackValue, bool forAnimations, bool allowPrivateMembers,
 			ref BindingItem? head, ref BindingItem? tail)
 		{
 			var propertyLength = 0;
@@ -386,32 +373,32 @@ namespace Uno.UI.DataBinding
 				switch (c)
 				{
 					case ')':
-						TryPrependItem(path, i + 1, propertyLength, fallbackValue, precedence, allowPrivateMembers, ref head, ref tail);
+						TryPrependItem(path, i + 1, propertyLength, fallbackValue, forAnimations, allowPrivateMembers, ref head, ref tail);
 						isInAttachedProperty = true;
 						propertyLength = 0;
 						break;
 
 					case '(' when isInAttachedProperty:
-						TryPrependItem(path, i + 1, propertyLength, fallbackValue, precedence, allowPrivateMembers, ref head, ref tail);
+						TryPrependItem(path, i + 1, propertyLength, fallbackValue, forAnimations, allowPrivateMembers, ref head, ref tail);
 						isInAttachedProperty = false;
 						propertyLength = 0;
 						break;
 
 					case ']':
-						TryPrependItem(path, i + 1, propertyLength, fallbackValue, precedence, allowPrivateMembers, ref head, ref tail);
+						TryPrependItem(path, i + 1, propertyLength, fallbackValue, forAnimations, allowPrivateMembers, ref head, ref tail);
 						isInItemIndex = true;
 						propertyLength = 1; // We include the brackets for itemIndex properties
 						break;
 
 					case '[' when isInItemIndex:
 						// Note: We use 'start = i' and '++propertyLength' here for 'TryPrependItem' as we include the brackets for itemIndex properties
-						TryPrependItem(path, i, ++propertyLength, fallbackValue, precedence, allowPrivateMembers, ref head, ref tail);
+						TryPrependItem(path, i, ++propertyLength, fallbackValue, forAnimations, allowPrivateMembers, ref head, ref tail);
 						isInItemIndex = false;
 						propertyLength = 0;
 						break;
 
 					case '.' when !isInAttachedProperty:
-						TryPrependItem(path, i + 1, propertyLength, fallbackValue, precedence, allowPrivateMembers, ref head, ref tail);
+						TryPrependItem(path, i + 1, propertyLength, fallbackValue, forAnimations, allowPrivateMembers, ref head, ref tail);
 						propertyLength = 0;
 						break;
 
@@ -424,7 +411,7 @@ namespace Uno.UI.DataBinding
 				}
 			}
 
-			TryPrependItem(path, 0, propertyLength, fallbackValue, precedence, allowPrivateMembers, ref head, ref tail);
+			TryPrependItem(path, 0, propertyLength, fallbackValue, forAnimations, allowPrivateMembers, ref head, ref tail);
 		}
 
 		/// <summary>
@@ -432,7 +419,7 @@ namespace Uno.UI.DataBinding
 		/// </summary>
 		private static void TryPrependItem(
 			string path, int start, int length,
-			object? fallbackValue, DependencyPropertyValuePrecedences? precedence, bool allowPrivateMembers,
+			object? fallbackValue, bool forAnimations, bool allowPrivateMembers,
 			ref BindingItem? head, ref BindingItem? tail)
 		{
 			if (length <= 0)
@@ -455,7 +442,7 @@ namespace Uno.UI.DataBinding
 			}
 
 			var itemPath = path.Substring(start, length);
-			var item = new BindingItem(head, itemPath, precedence, allowPrivateMembers);
+			var item = new BindingItem(head, itemPath, forAnimations, allowPrivateMembers);
 
 			head = item;
 			tail ??= item;

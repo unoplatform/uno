@@ -150,9 +150,14 @@ if ($IsWindows)
     & $msbuild "@build.rsp"
     Assert-ExitCodeIsZero
 
-    # Uno Cross-Runtime Library
-    & $msbuild $debug /t:Pack MyCrossRuntimeLib\MyCrossRuntimeLib.sln
-    Assert-ExitCodeIsZero
+    if (!$IsWindows)
+    {
+        # disabled on windows until android 35 is supported in the installed VS instance
+
+        # Uno Cross-Runtime Library
+        & $msbuild $debug /t:Pack MyCrossRuntimeLib\MyCrossRuntimeLib.sln -bl:binlogs/MyCrossRuntimeLib/msbuild.binlog
+        Assert-ExitCodeIsZero
+    }
 
     #
     # Uno Library with assets, Validate assets count
@@ -222,13 +227,18 @@ $projects =
     @("5.1/uno51blank/uno51blank.Skia.Linux.FrameBuffer/uno51blank.Skia.Linux.FrameBuffer.csproj", "", $true, $true),
     @("5.1/uno51blank/uno51blank.Skia.Wpf/uno51blank.Skia.Wpf.csproj", "", $true, $false),
     @("5.1/uno51blank/uno51blank.Wasm/uno51blank.Wasm.csproj", "", $true, $false),
-    @("5.1/uno51blank/uno51blank.Windows/uno51blank.Windows.csproj", "", $false, $false),
+
+    # disabled on windows until android 35 is supported in the installed VS instance
+    # @("5.1/uno51blank/uno51blank.Windows/uno51blank.Windows.csproj", "", $false, $false),
 
     #
     # 5.1 Recommended
     #
     @("5.1/uno51recommended/uno51recommended.Mobile/uno51recommended.Mobile.csproj", "", $true, $true),
-    @("5.1/uno51recommended/uno51recommended.Windows/uno51recommended.Windows.csproj", "", $false, $false),
+
+    # disabled on windows until android 35 is supported in the installed VS instance
+    # @("5.1/uno51recommended/uno51recommended.Windows/uno51recommended.Windows.csproj", "", $false, $false),
+
     @("5.1/uno51recommended/uno51recommended.Skia.Gtk/uno51recommended.Skia.Gtk.csproj", "", $true, $true),
     @("5.1/uno51recommended/uno51recommended.Skia.Linux.FrameBuffer/uno51recommended.Skia.Linux.FrameBuffer.csproj", "", $true, $true),
     @("5.1/uno51recommended/uno51recommended.Skia.Wpf/uno51recommended.Skia.Wpf.csproj", "", $true, $false),

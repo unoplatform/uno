@@ -60,6 +60,7 @@ namespace UITests.Toolkit
 			ElevatedElement.CornerRadius = new CornerRadius(Radius);
 		}
 
+		//UNO TODO: After updating to WinUI 1.6+, the Windows.UI.ColorHelper.ConvertColorFromHexString can be used
 		private Color ConvertColorFromHexString(string colorString)
 		{
 			try

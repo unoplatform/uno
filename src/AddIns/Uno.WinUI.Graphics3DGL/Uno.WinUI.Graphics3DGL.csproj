@@ -1,0 +1,64 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
+		<TargetFrameworks Condition="$(BuildGraphics3DGLForWindows) != ''">$(NetUWPOrWinUI)</TargetFrameworks>
+
+		<RootNamespace>Uno.WinUI.GLCanvasElement</RootNamespace>
+		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
+
+		<Nullable>enable</Nullable>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
+
+	<Import Project="../../targetframework-override.props" />
+
+	<ItemGroup>
+		<PackageReference Include="Silk.NET.OpenGL" Version="2.16.0" />
+		<PackageReference Include="Uno.Core.Extensions.Logging" Version="4.0.1" />
+		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.1" />
+	</ItemGroup>
+
+	<Choose>
+		<When Condition="$(TargetFramework) == $(NetUWPOrWinUI)">
+			<PropertyGroup>
+				<RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
+
+				<DefineConstants Condition="'$(UNO_UWP_BUILD)'!='true'">$(DefineConstants);WINDOWS_UWP</DefineConstants>
+				<DefineConstants Condition="'$(UNO_UWP_BUILD)'=='true'">$(DefineConstants);WINAPPSDK</DefineConstants>
+				<DefineConstants>$(DefineConstants);WINAPPSDK</DefineConstants>
+				<UseRidGraph>true</UseRidGraph>
+				<WindowsPackageType>None</WindowsPackageType>
+			</PropertyGroup>
+			<ItemGroup>
+				<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.5.240227000" Condition="'$(UNO_UWP_BUILD)'!='true'" />
+				<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.756" PrivateAssets="all" Condition="'$(UNO_UWP_BUILD)'!='true'" />
+				<PackageReference Include="Uno.Core.Extensions.Disposables" Version="4.0.1" />
+
+				<Compile Include="..\..\Uno.UI.Runtime.Skia.Wpf\Rendering\WindowsRenderingNativeMethods.cs" />
+				<Compile Include="..\..\Uno.UI.Runtime.Skia.Wpf\Extensions\WpfNativeOpenGLWrapper.cs" />
+				<Compile Include="..\..\Uno.UI\Graphics\INativeOpenGLWrapper.cs" />
+			</ItemGroup>
+		</When>
+		<Otherwise>
+			<ItemGroup>
+				<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Skia.csproj" />
+				<ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj" />
+				<ProjectReference Include="..\..\Uno.UWP\Uno.Skia.csproj" />
+			</ItemGroup>
+		</Otherwise>
+	</Choose>
+
+	<ItemGroup>
+		<None Include="..\..\Common\uno.png" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
+	<Target Name="_UnoRemoveTransitiveWPFDependency" BeforeTargets="_CheckForTransitiveWindowsDesktopDependencies">
+		<ItemGroup>
+			<!--
+			This removes the transitive dependency to WPF which has a requirement to
+			have net8.0-windows and not net8.0.
+			-->
+			<TransitiveFrameworkReference Remove="Microsoft.WindowsDesktop.App.WPF" />
+		</ItemGroup>
+	</Target>
+</Project>

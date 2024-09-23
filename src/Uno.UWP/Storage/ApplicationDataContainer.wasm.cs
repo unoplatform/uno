@@ -5,13 +5,14 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.JavaScript;
 using Uno.Extensions;
 using Uno.Foundation;
+using Uno.Foundation.Interop;
 using Uno.Foundation.Logging;
 using Windows.Foundation.Collections;
-using static __Windows.Storage.ApplicationDataContainerNative;
 
 namespace Windows.Storage
 {
@@ -22,7 +23,7 @@ namespace Windows.Storage
 			Values = new FilePropertySet(owner, Locality);
 		}
 
-		private partial class FilePropertySet : IPropertySet
+		private class FilePropertySet : IPropertySet
 		{
 			private readonly ApplicationDataLocality _locality;
 			private readonly ApplicationData _owner;
@@ -49,7 +50,7 @@ namespace Windows.Storage
 				{
 					if (value != null)
 					{
-						NativeSetValue(_locality.ToStringInvariant(), key, DataTypeSerializer.Serialize(value));
+						ApplicationDataContainerInterop.SetValue(_locality, key, DataTypeSerializer.Serialize(value));
 					}
 					else
 					{
@@ -66,7 +67,7 @@ namespace Windows.Storage
 
 					for (int i = 0; i < Count; i++)
 					{
-						keys.Add(NativeGetKeyByIndex(_locality.ToStringInvariant(), i));
+						keys.Add(ApplicationDataContainerInterop.GetKeyByIndex(_locality, i));
 					}
 
 					return keys.AsReadOnly();
@@ -81,8 +82,11 @@ namespace Windows.Storage
 
 					for (int i = 0; i < Count; i++)
 					{
-						var rawValue = NativeGetValueByIndex(_locality.ToStringInvariant(), i);
-						values.Add(DataTypeSerializer.Deserialize(rawValue) ?? "");
+						var rawValue = ApplicationDataContainerInterop.GetValueByIndex(_locality, i);
+						if (DataTypeSerializer.Deserialize(rawValue) is { } value)
+						{
+							values.Add(value);
+						}
 					}
 
 					return values.AsReadOnly();
@@ -90,7 +94,7 @@ namespace Windows.Storage
 			}
 
 			public int Count
-				=> NativeGetCount(_locality.ToStringInvariant());
+				=> ApplicationDataContainerInterop.GetCount(_locality);
 
 			public bool IsReadOnly => false;
 
@@ -104,7 +108,7 @@ namespace Windows.Storage
 				}
 				if (value != null)
 				{
-					NativeSetValue(_locality.ToStringInvariant(), key, DataTypeSerializer.Serialize(value));
+					ApplicationDataContainerInterop.SetValue(_locality, key, DataTypeSerializer.Serialize(value));
 					MapChanged?.Invoke(this, null);
 				}
 			}
@@ -114,14 +118,14 @@ namespace Windows.Storage
 
 			public void Clear()
 			{
-				NativeClear(_locality.ToStringInvariant());
+				ApplicationDataContainerInterop.Clear(_locality);
 			}
 
 			public bool Contains(KeyValuePair<string, object> item)
 				=> throw new NotSupportedException();
 
 			public bool ContainsKey(string key)
-				=> NativeContainsKey(_locality.ToStringInvariant(), key);
+				=> ApplicationDataContainerInterop.ContainsKey(_locality, key);
 
 			public void CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
 				=> throw new NotSupportedException();
@@ -132,8 +136,8 @@ namespace Windows.Storage
 
 				for (int index = 0; index < Count; index++)
 				{
-					var key = NativeGetKeyByIndex(_locality.ToStringInvariant(), index);
-					var value = NativeGetValueByIndex(_locality.ToStringInvariant(), index);
+					var key = ApplicationDataContainerInterop.GetKeyByIndex(_locality, index);
+					var value = ApplicationDataContainerInterop.GetValueByIndex(_locality, index);
 					kvps.Add(new KeyValuePair<string, object>(key, value));
 				}
 
@@ -142,7 +146,7 @@ namespace Windows.Storage
 
 			public bool Remove(string key)
 			{
-				var ret = NativeRemove(_locality.ToStringInvariant(), key);
+				var ret = ApplicationDataContainerInterop.Remove(_locality, key);
 				return ret;
 			}
 
@@ -150,11 +154,9 @@ namespace Windows.Storage
 
 			public bool TryGetValue(string key, out object? value)
 			{
-				if (NativeTryGetValue(_locality.ToStringInvariant(), key) is { } result
-										&& result.GetPropertyAsBoolean("hasValue")
-										&& result.GetPropertyAsString("value") is { } rawValue)
+				if (ApplicationDataContainerInterop.TryGetValue(_locality, key, out var innervalue))
 				{
-					value = DataTypeSerializer.Deserialize(rawValue);
+					value = DataTypeSerializer.Deserialize(innervalue);
 					return true;
 				}
 
@@ -217,5 +219,67 @@ namespace Windows.Storage
 				}
 			}
 		}
+	}
+
+	static partial class ApplicationDataContainerInterop
+	{
+		internal static bool TryGetValue(ApplicationDataLocality locality, string key, out string? value)
+		{
+			if (!ContainsKey(locality, key))
+			{
+				value = null;
+				return false;
+			}
+			else
+			{
+				value = GetValue(locality.ToStringInvariant(), key);
+				return true;
+			}
+		}
+
+		[JSImport("globalThis.Windows.Storage.ApplicationDataContainer.getValue")]
+		private static partial string GetValue(string locality, string key);
+
+		internal static void SetValue(ApplicationDataLocality locality, string key, string value)
+			=> SetValue(locality.ToStringInvariant(), key, value);
+
+		[JSImport("globalThis.Windows.Storage.ApplicationDataContainer.setValue")]
+		private static partial void SetValue(string locality, string key, string value);
+
+		internal static bool ContainsKey(ApplicationDataLocality locality, string key)
+			=> ContainsKey(locality.ToStringInvariant(), key);
+
+		[JSImport("globalThis.Windows.Storage.ApplicationDataContainer.containsKey")]
+		private static partial bool ContainsKey(string locality, string key);
+
+		internal static string GetKeyByIndex(ApplicationDataLocality locality, int index)
+			=> GetKeyByIndex(locality.ToStringInvariant(), index);
+
+		[JSImport("globalThis.Windows.Storage.ApplicationDataContainer.getKeyByIndex")]
+		private static partial string GetKeyByIndex(string locality, int index);
+
+		internal static int GetCount(ApplicationDataLocality locality)
+			=> GetCount(locality.ToStringInvariant());
+
+		[JSImport("globalThis.Windows.Storage.ApplicationDataContainer.getCount")]
+		private static partial int GetCount(string locality);
+
+		internal static void Clear(ApplicationDataLocality locality)
+			=> Clear(locality.ToStringInvariant());
+
+		[JSImport("globalThis.Windows.Storage.ApplicationDataContainer.clear")]
+		private static partial void Clear(string locality);
+
+		internal static bool Remove(ApplicationDataLocality locality, string key)
+			=> Remove(locality.ToStringInvariant(), key);
+
+		[JSImport("globalThis.Windows.Storage.ApplicationDataContainer.remove")]
+		private static partial bool Remove(string locality, string key);
+
+		internal static string GetValueByIndex(ApplicationDataLocality locality, int index)
+			=> GetValueByIndex(locality.ToStringInvariant(), index);
+
+		[JSImport("globalThis.Windows.Storage.ApplicationDataContainer.getValueByIndex")]
+		private static partial string GetValueByIndex(string locality, int index);
 	}
 }

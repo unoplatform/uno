@@ -33,10 +33,10 @@ namespace Microsoft.UI.Content
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Content.ContentIslandEnvironment.SettingChanged.remove
 		// Forced skipping of method Microsoft.UI.Content.ContentIslandEnvironment.DisplayId.get
-		// Forced skipping of method Microsoft.UI.Content.ContentIslandEnvironment.SettingChanged.add
 		// Forced skipping of method Microsoft.UI.Content.ContentIslandEnvironment.AppWindowId.get
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandEnvironment.SettingChanged.add
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandEnvironment.SettingChanged.remove
 		// Forced skipping of method Microsoft.UI.Content.ContentIslandEnvironment.StateChanged.add
 		// Forced skipping of method Microsoft.UI.Content.ContentIslandEnvironment.StateChanged.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

@@ -36,7 +36,7 @@ namespace Microsoft.UI.Xaml
 	[DebuggerDisplay("Name={Name}, Type={Type.FullName}, Owner={OwnerType.FullName}")]
 	public sealed partial class DependencyProperty
 	{
-		private readonly static DependencyPropertyRegistry _registry = new DependencyPropertyRegistry();
+		private readonly static DependencyPropertyRegistry _registry = DependencyPropertyRegistry.Instance;
 
 		private readonly static TypeToPropertiesDictionary _getPropertiesForType = new TypeToPropertiesDictionary();
 		private readonly static NameToPropertyDictionary _getPropertyCache = new NameToPropertyDictionary();
@@ -416,17 +416,6 @@ namespace Microsoft.UI.Xaml
 			return result;
 		}
 
-		/// <summary>
-		/// Clears all the property registrations, when used in unit tests.
-		/// </summary>
-		internal static void ClearRegistry()
-		{
-			_registry.Clear();
-			_getPropertiesForType.Clear();
-			_getPropertyCache.Clear();
-			_getFrameworkPropertiesForType.Clear();
-		}
-
 		private static void RegisterProperty(Type ownerType, string name, DependencyProperty newProperty)
 		{
 			ResetGetPropertyCache(ownerType, name);
@@ -469,7 +458,7 @@ namespace Microsoft.UI.Xaml
 		///
 		/// See: http://stackoverflow.com/questions/6729841/why-did-the-beforefieldinit-behavior-change-in-net-4
 		/// </remarks>
-		private static void ForceInitializeTypeConstructor(Type type)
+		internal static void ForceInitializeTypeConstructor(Type type)
 		{
 			do
 			{

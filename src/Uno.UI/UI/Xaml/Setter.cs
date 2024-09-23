@@ -173,6 +173,27 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		internal override bool TryGetSetterValue(out object? value, DependencyObject _)
+		{
+			if (ThemeResourceKey.HasValue)
+			{
+				if (ResourceResolver.TryStaticRetrieval(ThemeResourceKey.Value, ThemeResourceContext, out value))
+				{
+					value = BindingPropertyHelper.Convert(Property!.Type, value);
+					return true;
+				}
+
+				value = null;
+				return false;
+			}
+			else
+			{
+				value = _valueProvider != null ? _valueProvider() : _value;
+				value = BindingPropertyHelper.Convert(Property!.Type, value);
+				return true;
+			}
+		}
+
 		private void RefreshBindingPath()
 			// force binding value to re-evaluate the source and use converters
 			=> GetBindingExpression(InternalValueProperty)?.RefreshTarget();
@@ -213,7 +234,7 @@ namespace Microsoft.UI.Xaml
 				this.Log().Debug($"Using Target [{Target.Target}] for Setter [{Target.TargetName}] from [{owner}]");
 			}
 
-			_bindingPath = new BindingPath(path: Target.Path, fallbackValue: null, precedence: DependencyPropertyValuePrecedences.Animations, allowPrivateMembers: false);
+			_bindingPath = new BindingPath(path: Target.Path, fallbackValue: null, forAnimations: true, allowPrivateMembers: false);
 
 			if (Target.Target is ElementNameSubject subject)
 			{

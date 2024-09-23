@@ -9,6 +9,7 @@ using Uno.Foundation.Logging;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI;
 using Uno;
+using Uno.Disposables;
 using Uno.UI.DataBinding;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
@@ -16,6 +17,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives;
 [ContentProperty(Name = nameof(Child))]
 public partial class Popup
 {
+	private IDisposable _renderTransformChangedRegistration;
 	private PopupPlacementMode _actualPlacement;
 
 	internal bool IsSubMenu { get; set; }
@@ -59,6 +61,28 @@ public partial class Popup
 	{
 		Initialize();
 		KeyDown += OnKeyDown;
+		this.RegisterDisposablePropertyChangedCallback(RenderTransformProperty, (dO, _) => ((Popup)dO).OnRenderTransformChanged());
+	}
+
+	private void OnRenderTransformChanged()
+	{
+		_renderTransformChangedRegistration?.Dispose();
+		// since the Child is not a visual child, any visual properties set on the Popup won't apply, so
+		// we have to apply them manually. To avoid interference with a RenderTransform on the child,
+		// we set it on the uno-internal PopupPanel
+		var renderTransform = RenderTransform;
+		PopupPanel.RenderTransform = renderTransform;
+		// RenderTransform could get its value by a binding with a relative source (e.g. a TemplateBinding).
+		// In that case, directly setting `PopupPanel.RenderTransform = RenderTransform` wouldn't propagate
+		// the value correctly to the PopupPanel.
+		var matrixTransform = new MatrixTransform { Matrix = new Matrix(renderTransform.MatrixCore) };
+		PopupPanel.RenderTransform = matrixTransform;
+		PopupPanel.InvalidateArrange();
+		// we set the anchor point of the child in PopupPanel.ArrangeOverride, so even though RenderTransform normally doesn't
+		// AffectArrange, in this situation, it does.
+		var callback = new EventHandler((_, _) => PopupPanel.InvalidateArrange());
+		renderTransform.Changed += callback;
+		_renderTransformChangedRegistration = Disposable.Create(() => renderTransform.Changed -= callback);
 	}
 
 	private void OnKeyDown(object sender, KeyRoutedEventArgs args)

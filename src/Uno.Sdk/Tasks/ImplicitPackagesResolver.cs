@@ -232,6 +232,8 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 	private void SetupRuntimePackageManifestUpdates(PackageManifest manifest)
 	{
 		// Checks any MSBuild parameters passed to the task to override the default versions from the bundled packages.json
+		// This set of updates must not be conditional to features, as those may not be defined yet when the task
+		// is invoked early.
 		manifest.UpdateManifest(PackageManifest.Group.WasmBootstrap, UnoWasmBootstrapVersion)
 			.UpdateManifest(PackageManifest.Group.OSLogging, UnoLoggingVersion)
 			.UpdateManifest(PackageManifest.Group.CoreLogging, UnoCoreLoggingSingletonVersion)
@@ -260,16 +262,9 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 			.UpdateManifest(PackageManifest.Group.CSharpMarkup, UnoCSharpMarkupVersion)
 			.UpdateManifest(PackageManifest.Group.Extensions, UnoExtensionsVersion)
 			.UpdateManifest(PackageManifest.Group.Toolkit, UnoToolkitVersion)
-			.UpdateManifest(PackageManifest.Group.Themes, UnoThemesVersion);
-
-		if (HasFeature(UnoFeature.MauiEmbedding))
-		{
-			manifest.UpdateManifest(PackageManifest.Group.Maui, MauiVersion);
-		}
+			.UpdateManifest(PackageManifest.Group.Themes, UnoThemesVersion)
+			.UpdateManifest(PackageManifest.Group.Maui, MauiVersion);
 	}
-
-	private bool HasFeature(UnoFeature feature) =>
-		_unoFeatures.Any(x => x == feature);
 
 	private UnoFeature[] GetFeatures()
 	{

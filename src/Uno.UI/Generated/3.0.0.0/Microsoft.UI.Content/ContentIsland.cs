@@ -180,7 +180,8 @@ namespace Microsoft.UI.Content
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Content.ContentIsland.IsIslandEnabled.set
+		// Forced skipping of method Microsoft.UI.Content.ContentIsland.IsIslandVisible.set
+		// Forced skipping of method Microsoft.UI.Content.ContentIsland.AppData.get
 		// Forced skipping of method Microsoft.UI.Content.ContentIsland.AppData.set
 		// Forced skipping of method Microsoft.UI.Content.ContentIsland.CoordinateConverter.get
 		// Forced skipping of method Microsoft.UI.Content.ContentIsland.CustomProperties.get
@@ -191,9 +192,9 @@ namespace Microsoft.UI.Content
 		// Forced skipping of method Microsoft.UI.Content.ContentIsland.IsHitTestVisibleWhenTransparent.get
 		// Forced skipping of method Microsoft.UI.Content.ContentIsland.IsHitTestVisibleWhenTransparent.set
 		// Forced skipping of method Microsoft.UI.Content.ContentIsland.IsIslandEnabled.get
-		// Forced skipping of method Microsoft.UI.Content.ContentIsland.AppData.get
+		// Forced skipping of method Microsoft.UI.Content.ContentIsland.IsIslandEnabled.set
 		// Forced skipping of method Microsoft.UI.Content.ContentIsland.IsIslandVisible.get
-		// Forced skipping of method Microsoft.UI.Content.ContentIsland.IsIslandVisible.set
+		// Forced skipping of method Microsoft.UI.Content.ContentIsland.IsClosed.get
 		// Forced skipping of method Microsoft.UI.Content.ContentIsland.IsSiteEnabled.get
 		// Forced skipping of method Microsoft.UI.Content.ContentIsland.IsSiteVisible.get
 		// Forced skipping of method Microsoft.UI.Content.ContentIsland.LayoutDirection.get
@@ -223,7 +224,6 @@ namespace Microsoft.UI.Content
 		// Forced skipping of method Microsoft.UI.Content.ContentIsland.AutomationProviderRequested.remove
 		// Forced skipping of method Microsoft.UI.Content.ContentIsland.StateChanged.add
 		// Forced skipping of method Microsoft.UI.Content.ContentIsland.StateChanged.remove
-		// Forced skipping of method Microsoft.UI.Content.ContentIsland.ActualSize.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public void Dispose()
@@ -231,7 +231,7 @@ namespace Microsoft.UI.Content
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Content.ContentIsland", "void ContentIsland.Dispose()");
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Content.ContentIsland.IsClosed.get
+		// Forced skipping of method Microsoft.UI.Content.ContentIsland.ActualSize.get
 		// Forced skipping of method Microsoft.UI.Content.ContentIsland.Closed.add
 		// Forced skipping of method Microsoft.UI.Content.ContentIsland.Closed.remove
 		// Forced skipping of method Microsoft.UI.Content.ContentIsland.FrameworkClosed.add

@@ -3,14 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Graphics
 {
-#if false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial struct DisplayId
 	{
 		// Forced skipping of method Windows.Graphics.DisplayId.DisplayId()
-#if false
-		public ulong Value;
-#endif
+		// Skipping already declared field Windows.Graphics.DisplayId.Value
 	}
 }

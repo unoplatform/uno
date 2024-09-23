@@ -94,48 +94,45 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		public async Task When_Expanded_Then_Collapsed_MoreButton_VerticalAlignment()
 		{
-			using (StyleHelper.UseFluentStyles()) // numbers are different between legacy and fluent styles
+			var SUT = new CommandBar
 			{
-				var SUT = new CommandBar
+				PrimaryCommands =
 				{
-					PrimaryCommands =
+					new AppBarButton
 					{
-						new AppBarButton
-						{
-							Content = "PrimaryCommand"
-						}
-					},
-					SecondaryCommands =
-					{
-						new AppBarButton
-						{
-							Content="SecondaryCommand"
-						}
+						Content = "PrimaryCommand"
 					}
-				};
+				},
+				SecondaryCommands =
+				{
+					new AppBarButton
+					{
+						Content="SecondaryCommand"
+					}
+				}
+			};
 
-				await UITestHelper.Load(SUT);
+			await UITestHelper.Load(SUT);
 
-				var moreButton = (Button)SUT.FindName("MoreButton");
+			var moreButton = (Button)SUT.FindName("MoreButton");
 #if !__ANDROID__ // layout timings are different on android
-				Assert.AreEqual(moreButton.ActualHeight, 48);
+			Assert.AreEqual(moreButton.ActualHeight, 48);
 #endif
-				Assert.AreEqual(moreButton.VerticalAlignment, VerticalAlignment.Top);
+			Assert.AreEqual(moreButton.VerticalAlignment, VerticalAlignment.Top);
 
-				SUT.IsOpen = true;
-				await WindowHelper.WaitForIdle();
+			SUT.IsOpen = true;
+			await WindowHelper.WaitForIdle();
 #if !__ANDROID__ // layout timings are different on android
-				Assert.AreEqual(moreButton.ActualHeight, 64);
+			Assert.AreEqual(moreButton.ActualHeight, 64);
 #endif
-				Assert.AreEqual(moreButton.VerticalAlignment, VerticalAlignment.Stretch);
+			Assert.AreEqual(moreButton.VerticalAlignment, VerticalAlignment.Stretch);
 
-				SUT.IsOpen = false;
-				await Task.Delay(1000); // wait for animations
+			SUT.IsOpen = false;
+			await Task.Delay(1000); // wait for animations
 #if !__ANDROID__ // layout timings are different on android
-				Assert.AreEqual(moreButton.ActualHeight, 48);
+			Assert.AreEqual(moreButton.ActualHeight, 48);
 #endif
-				Assert.AreEqual(moreButton.VerticalAlignment, VerticalAlignment.Top);
-			}
+			Assert.AreEqual(moreButton.VerticalAlignment, VerticalAlignment.Top);
 		}
 
 #if __IOS__

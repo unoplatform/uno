@@ -6,6 +6,10 @@
 	-->
 	<Import Project="$(MSBuildThisFileDirectory)Uno.Implicit.Packages.ProjectSystem.Uno.targets" />
 
+	<ItemGroup Condition="$(UnoFeatures.Contains(';canvas3dgl;'))">
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Graphics3DGL" ProjectSystem="true" />
+	</ItemGroup>
+
 	<ItemGroup Condition="$(_IsExecutable) == 'true'">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Skia.Linux.FrameBuffer" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Skia.MacOS" ProjectSystem="true" />

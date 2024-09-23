@@ -195,6 +195,18 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		// There shouldn't be a DependencyObject parameter. This can be removed in Uno 6 once we remove `Setter<T>`
+		internal bool TryGetPropertyValue(DependencyProperty dp, out object? value, DependencyObject @do)
+		{
+			if (EnsureSetterMap().TryGetValue(dp, out var setter) && setter.TryGetSetterValue(out value, @do) && value != DependencyProperty.UnsetValue)
+			{
+				return true;
+			}
+
+			value = null;
+			return false;
+		}
+
 		/// <summary>
 		/// Creates a flattened list of setter methods for the whole hierarchy of
 		/// styles.
