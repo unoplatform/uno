@@ -43,6 +43,17 @@ public sealed partial class BrowserHtmlElement : IDisposable
 	}
 
 	/// <summary>
+	/// Creates an element with the given tag name and a random id.
+	/// </summary>
+	/// <param name="tagName">Tag name.</param>
+	/// <returns>Element instance.</returns>
+	public static BrowserHtmlElement CreateHtmlElement(string tagName)
+	{
+		var id = new string(Random.Shared.GetItems("abcdefghijklmnopqrstuvwxyz".ToCharArray(), 10));
+		return CreateHtmlElement(id, tagName);
+	}
+
+	/// <summary>
 	/// Wraps a preexisting HTML element in the DOM in a <see cref="BrowserHtmlElement"/>
 	/// instance to be managed by Uno's native element hosting logic. After this call,
 	/// the HTML element is considered owned by the returned <see cref="BrowserHtmlElement"/>
