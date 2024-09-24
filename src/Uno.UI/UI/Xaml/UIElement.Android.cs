@@ -125,17 +125,19 @@ namespace Microsoft.UI.Xaml
 			InitializePointers();
 		}
 
-		protected override void OnDraw(Android.Graphics.Canvas canvas)
-		{
-			if (m_pLayoutClipGeometry.HasValue)
-			{
-				SetTotalClipRect(out var clipRectLogical);
-				Android.Graphics.Rect physicalRect = ViewHelper.LogicalToPhysicalPixels(clipRectLogical.Value);
-				canvas.ClipRect(physicalRect, Region.Op.Intersect);
-			}
+		//protected override void OnDraw(Android.Graphics.Canvas canvas)
+		//{
+		//	// Ancestor clipping support on Android is causing trouble.
+		//	// Keeping this code for reference.
+		//	if (m_pLayoutClipGeometry.HasValue)
+		//	{
+		//		SetTotalClipRect(out var clipRectLogical);
+		//		Android.Graphics.Rect physicalRect = ViewHelper.LogicalToPhysicalPixels(clipRectLogical.Value);
+		//		canvas.ClipRect(physicalRect, Region.Op.Intersect);
+		//	}
 
-			base.OnDraw(canvas);
-		}
+		//	base.OnDraw(canvas);
+		//}
 
 		private protected void SetTotalClipRect()
 			=> SetTotalClipRect(out _);
@@ -151,12 +153,13 @@ namespace Microsoft.UI.Xaml
 			}
 
 			var layoutClip = m_pLayoutClipGeometry;
-			if (layoutClip.HasValue &&
-				ShouldApplyLayoutClipAsAncestorClip() &&
-				VisualTreeHelper.GetParent(this) is UIElement parent)
-			{
-				layoutClip = GetTransform(from: this, to: parent).Inverse().Transform(layoutClip.Value);
-			}
+			// Ancestor clip is not yet supported properly.
+			//if (layoutClip.HasValue &&
+			//	ShouldApplyLayoutClipAsAncestorClip() &&
+			//	VisualTreeHelper.GetParent(this) is UIElement parent)
+			//{
+			//	layoutClip = GetTransform(from: this, to: parent).Inverse().Transform(layoutClip.Value);
+			//}
 
 			logicalLayoutClip = layoutClip;
 
@@ -225,6 +228,8 @@ namespace Microsoft.UI.Xaml
 		{
 			LayoutSlotWithMarginsAndAlignments = finalRect;
 
+			//SetTotalClipRect(out var clipRectLogical);
+
 			var physical = finalRect.LogicalToPhysicalPixels();
 
 			try
@@ -243,6 +248,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			OnViewportUpdated(clippedFrame ?? Rect.Empty);
+			Invalidate();
 		}
 
 		/// <summary>
