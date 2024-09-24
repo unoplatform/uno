@@ -123,7 +123,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			var wasSelectionUnset = oldSelectedItem == null && (!GetItems()?.Contains(null) ?? false);
 			var isSelectionUnset = false;
 			var items = GetItems();
-			if (!items?.Contains(selectedItem) ?? false)
+			if ((!items?.Contains(selectedItem) ?? false) && !AreCustomValuesAllowed())
 			{
 				if (selectedItem == null)
 				{
@@ -415,7 +415,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			{
 				return baseValue; // Setting the SelectedValue won't update the index when a _path is used.
 			}
-			return selector.GetItems()?.Contains(baseValue) ?? false ? baseValue : null;
+			return (selector.GetItems()?.Contains(baseValue) ?? false) || selector.AreCustomValuesAllowed() ? baseValue : null;
 		}
 
 		public bool? IsSynchronizedWithCurrentItem
