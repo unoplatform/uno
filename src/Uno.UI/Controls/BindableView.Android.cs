@@ -292,6 +292,17 @@ namespace Uno.UI.Controls
 			return true;
 		}
 
+		public override void ForceLayout()
+		{
+			// Following is explanation of what will happen if we **don't** call RequestLayout:
+			// Android's ForceLayout will set internal flag PFLAG_FORCE_LAYOUT
+			// Later, if RequestLayout is called on a descendant, it will keep propagating up but stops when an element has PFLAG_FORCE_LAYOUT set.
+			// If this happens, then the managed measure invalidation will not propagate up properly and we will not call RequestAdditionalFrame.
+			// So, we do RequestLayout so that everything is propagated all the way up.
+			RequestLayout();
+			base.ForceLayout();
+		}
+
 		/// <summary>
 		/// Determines if the native call to RequestLayout should call its base.
 		/// </summary>
