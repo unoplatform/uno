@@ -883,7 +883,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			if (index >= 0)
 			{
-				// SetLastFocusedIndex(index);
+				SetLastFocusedIndex(index);
 			}
 
 			if (!forceFocus)

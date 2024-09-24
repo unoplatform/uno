@@ -31,6 +31,41 @@ partial class ComboBox
 		TemplateSettings.SelectedItemDirection = AnimationDirection.Top;
 	}
 
+	private void ReleaseMembers()
+	{
+		m_tpElementPopupChild = null;
+		m_tpEmptyContent = null;
+		m_tpElementPopupChildCanvas = null;
+		//m_tpElementOutsidePopup = null;
+
+		//if (m_tpFlyoutButtonPart)
+		//{
+		//	IFC(DetachHandler(m_epFlyoutButtonClickHandler, m_tpFlyoutButtonPart));
+		//	// Cleared by ComboBoxGenerated::OnApplyTemplate
+		//}
+		//if (m_tpItemsPresenterHostParent)
+		//{
+		//	IFC(DetachHandler(m_epHostParentSizeChangedHandler, m_tpItemsPresenterHostParent));
+		//	m_tpItemsPresenterHostParent = null;
+		//}
+		//if (m_tpItemsPresenterPart)
+		//{
+		//	IFC(DetachHandler(m_epItemsPresenterSizeChangedHandler, m_tpItemsPresenterPart));
+		//	// Cleared by ComboBoxGenerated::OnApplyTemplate
+		//}
+		//if (m_tpClosedStoryboard)
+		//{
+		//	IFC(m_tpClosedStoryboard.Cast<Storyboard>()->remove_Completed(m_closedStateStoryboardCompletedToken));
+		//	m_tpClosedStoryboard = null;
+		//}
+		//if (m_tpPopupPart && m_epPopupClosedHandler)
+		//{
+		//	IFC(m_epPopupClosedHandler.DetachEventHandler(m_tpPopupPart.Get()));
+		//}
+
+		m_tpHeaderContentPresenterPart = null;
+	}
+
 	private void SetupEditableMode()
 	{
 		if (m_isEditModeConfigured || m_tpEditableTextPart is null)

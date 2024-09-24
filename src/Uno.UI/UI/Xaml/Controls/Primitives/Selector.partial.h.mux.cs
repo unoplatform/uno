@@ -10,7 +10,10 @@ partial class Selector
 	protected bool m_skipFocusSuggestion;
 
 	// Can be negative. (-1) means nothing focused.
-	private int m_focusedIndex;
+	private int m_focusedIndex = -1;
+
+	// Holds the last focused index just before focusing out of the selector.
+	private int m_lastFocusedIndex;
 
 	// GetFocusedIndex and SetFocusedIndex are consistently used instead of 
 	// m_focusedIndex to make it easier to track when this field is read & written.
@@ -21,6 +24,14 @@ partial class Selector
 		if (m_focusedIndex != focusedIndex)
 		{
 			m_focusedIndex = focusedIndex;
+		}
+	}
+
+	private void SetLastFocusedIndex(int lastFocusedIndex)
+	{
+		if (m_lastFocusedIndex != lastFocusedIndex)
+		{
+			m_lastFocusedIndex = lastFocusedIndex;
 		}
 	}
 }
