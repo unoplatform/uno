@@ -137,6 +137,8 @@ namespace Private.Infrastructure
 					return;
 				}
 
+				VirtualKeyModifiers activeModifiers = VirtualKeyModifiers.None;
+
 				// In RS3, alt+shift is a hotkey and XAML will not be notified of the
 				// 'shift' key. We have the same behavior for the opposite sequence: if
 				// the sequence is shift+alt, XAML will not be notified of the 'alt' key.
@@ -164,7 +166,39 @@ namespace Private.Infrastructure
 						var key = keyInstruction.Substring(4, keyInstruction.Length - 4);
 						if (m_vKeyMapping.TryGetValue(key, out var vKey))
 						{
-							await RaiseOnElementDispatcherAsync(element, keyDownCodePos == 0 ? UIElement.KeyDownEvent : UIElement.KeyUpEvent, new KeyRoutedEventArgs(element, vKey, VirtualKeyModifiers.None));
+							await RaiseOnElementDispatcherAsync(element, keyDownCodePos == 0 ? UIElement.KeyDownEvent : UIElement.KeyUpEvent, new KeyRoutedEventArgs(element, vKey, activeModifiers));
+						}
+
+						// If modifiers were changed, update modifiers variable
+						if (keyDownCodePos == 0)
+						{
+							if (key == "shift")
+							{
+								activeModifiers |= VirtualKeyModifiers.Shift;
+							}
+							else if (key == "ctrl")
+							{
+								activeModifiers |= VirtualKeyModifiers.Control;
+							}
+							else if (key == "alt")
+							{
+								activeModifiers |= VirtualKeyModifiers.Menu;
+							}
+						}
+						else if (keyUpCodePos == 0)
+						{
+							if (key == "shift")
+							{
+								activeModifiers &= ~VirtualKeyModifiers.Shift;
+							}
+							else if (key == "ctrl")
+							{
+								activeModifiers &= ~VirtualKeyModifiers.Control;
+							}
+							else if (key == "alt")
+							{
+								activeModifiers &= ~VirtualKeyModifiers.Menu;
+							}
 						}
 					}
 					else
