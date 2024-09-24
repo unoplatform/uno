@@ -794,13 +794,14 @@ namespace Microsoft.UI.Xaml
 
 				if (needToClipSlot || needToClipLocally)
 				{
+#if __SKIA__ || __WASM__ // ancestor clip is supported properly on Skia, and partially supported on Wasm, but not supported anywhere else.
 					if (ShouldApplyLayoutClipAsAncestorClip()
-#if !__SKIA__ && !__ANDROID__
+#if !__SKIA__
 						&& RenderTransform is { } renderTransform
 #endif
 						)
 					{
-#if __SKIA__ || __ANDROID__
+#if __SKIA__
 						clipRect.X += visualOffset.X;
 						clipRect.Y += visualOffset.Y;
 #else
@@ -808,6 +809,7 @@ namespace Microsoft.UI.Xaml
 						clipRect.Y -= renderTransform.MatrixCore.M32;
 #endif
 					}
+#endif
 
 					return clipRect;
 				}
