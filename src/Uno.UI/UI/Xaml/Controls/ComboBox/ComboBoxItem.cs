@@ -18,7 +18,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (ItemsControl.ItemsControlFromItemContainer(this) is ComboBox comboBox)
 			{
-				if (args.Key == VirtualKey.Enter && comboBox.IsDropDownOpen)
+				if ((args.Key is VirtualKey.Enter or VirtualKey.Space) && comboBox.IsDropDownOpen)
 				{
 					var item = comboBox.ItemFromContainer(this);
 					if (item != null)
