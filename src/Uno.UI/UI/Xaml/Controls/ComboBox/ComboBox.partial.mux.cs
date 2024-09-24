@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 using Uno.Disposables;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
@@ -832,13 +833,6 @@ partial class ComboBox
 		Refresh();
 
 		RestoreSelectedItem();
-
-		var index = SelectedIndex;
-		index = index == -1 ? 0 : index;
-		if (ContainerFromIndex(index) is ComboBoxItem container)
-		{
-			container.Focus(FocusState.Programmatic);
-		}
 #endif
 
 		// TODO Uno: BackButton support
