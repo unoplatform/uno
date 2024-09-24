@@ -180,8 +180,8 @@ internal partial class PopupPanel : Panel
 			// Temporary workaround to avoid layout cycle on iOS. This block was added specifically for a bug on Android's
 			// MenuFlyout so, for now, we restrict to to only Android
 			// This can be re-evaluated and removed after https://github.com/unoplatform/uno/pull/18261 merges
-#if __ANDROID__
-			var updatedFinalFrame = new Rect(
+#if !__IOS__
+				var updatedFinalFrame = new Rect(
 				anchorLocation.X + (float)Popup.HorizontalOffset,
 				anchorLocation.Y + (float)Popup.VerticalOffset,
 				size.Width,
