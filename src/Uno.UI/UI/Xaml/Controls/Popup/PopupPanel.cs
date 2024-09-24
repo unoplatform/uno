@@ -195,7 +195,7 @@ internal partial class PopupPanel : Panel
 				// We re-arrange with the new updated finalFrame.
 				// Note: This might be a lifecycle issue, so this workaround needs to be revised in the future and deleted if possible.
 				// See MenuFlyoutSubItem_Placement sample.
-				//ArrangeElement(child, updatedFinalFrame);
+				ArrangeElement(child, updatedFinalFrame);
 			}
 #endif
 
