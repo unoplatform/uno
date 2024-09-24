@@ -1,4 +1,4 @@
-﻿#if HAS_UNO_WINUI && __SKIA__
+﻿#if HAS_UNO_WINUI
 
 using System;
 using System.Diagnostics;
