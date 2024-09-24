@@ -1192,6 +1192,13 @@ public class UnoTwoDScrollView extends FrameLayout {
 	}
 
 	@Override
+	public void forceLayout() {
+		// See comment in managed BindableView.ForceLayout override for why we call requestLayout.
+		this.requestLayout();
+		super.forceLayout();
+	}
+
+	@Override
 	protected void onLayout(boolean changed, int l, int t, int r, int b) {
 		mIsLayoutDirty = false;
 		// Give a child focus if it needs it

@@ -271,6 +271,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			base.RequestLayout();
+			Invalidate();
 		}
 
 		protected override void OnMeasure(int widthMeasureSpec, int heightMeasureSpec)
