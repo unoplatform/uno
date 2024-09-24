@@ -125,19 +125,17 @@ namespace Microsoft.UI.Xaml
 			InitializePointers();
 		}
 
-		//protected override void OnDraw(Android.Graphics.Canvas canvas)
-		//{
-		//	// Ancestor clipping support on Android is causing trouble.
-		//	// Keeping this code for reference.
-		//	if (m_pLayoutClipGeometry.HasValue)
-		//	{
-		//		SetTotalClipRect(out var clipRectLogical);
-		//		Android.Graphics.Rect physicalRect = ViewHelper.LogicalToPhysicalPixels(clipRectLogical.Value);
-		//		canvas.ClipRect(physicalRect, Region.Op.Intersect);
-		//	}
+		protected override void OnDraw(Android.Graphics.Canvas canvas)
+		{
+			if (m_pLayoutClipGeometry.HasValue)
+			{
+				SetTotalClipRect(out var clipRectLogical);
+				Android.Graphics.Rect physicalRect = ViewHelper.LogicalToPhysicalPixels(clipRectLogical.Value);
+				canvas.ClipRect(physicalRect, Region.Op.Intersect);
+			}
 
-		//	base.OnDraw(canvas);
-		//}
+			base.OnDraw(canvas);
+		}
 
 		private protected void SetTotalClipRect()
 			=> SetTotalClipRect(out _);
@@ -222,13 +220,39 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+#if __ANDROID__ || __IOS__ || __MACOS__
+		private void InvalidateChildrenClipIfNeeded()
+		{
+			foreach (var child in this.GetChildren())
+			{
+				if (child is UIElement { m_pLayoutClipGeometry: not null } childAsUIElement &&
+					childAsUIElement.ShouldApplyLayoutClipAsAncestorClip())
+				{
+#if __ANDROID__
+					child.Invalidate();
+#else
+					// TODO
+#endif
+				}
+			}
+		}
+#endif
+
 		private protected bool _isInArrangeVisualLayout;
 
 		internal void ArrangeVisual(Rect finalRect, Rect? clippedFrame = default)
 		{
+			var previousFinalRect = LayoutSlotWithMarginsAndAlignments;
 			LayoutSlotWithMarginsAndAlignments = finalRect;
 
+#if __ANDROID__ || __IOS__ || __MACOS__
 			SetTotalClipRect(out var clipRectLogical);
+
+			if (previousFinalRect != finalRect)
+			{
+				InvalidateChildrenClipIfNeeded();
+			}
+#endif
 
 			var physical = finalRect.LogicalToPhysicalPixels();
 
