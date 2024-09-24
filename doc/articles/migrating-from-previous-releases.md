@@ -6,6 +6,10 @@ uid: Uno.Development.MigratingFromPreviousReleases
 
 This article details the migration steps required to migrate from one version to the next when breaking changes are being introduced.
 
+## Uno Platform 5.4
+
+Uno Platform 5.4 does not contain breaking changes that require attention when upgrading from previous versions.
+
 ## Uno Platform 5.3
 
 Uno Platform 5.3 contains an improved template and Uno.SDK versioning, new default text font, and Rider support.
