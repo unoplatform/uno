@@ -27,27 +27,6 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 		CommonTestSetupHelper.CommonTestClassSetup();
 	}
 
-	private IDisposable _fluentStyles;
-
-	[TestInitialize]
-	public async Task TestInitialize()
-	{
-		await RunOnUIThread(() =>
-		{
-			_fluentStyles = StyleHelper.UseFluentStyles();
-		});
-	}
-
-	[TestCleanup]
-	public async Task TestCleanup()
-	{
-		await RunOnUIThread(() =>
-		{
-			_fluentStyles?.Dispose();
-		});
-		TestServices.WindowHelper.VerifyTestCleanup();
-	}
-
 	// TODO Uno tests: PersonObject
 
 	[TestMethod]
@@ -1228,12 +1207,12 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 
 
 	[TestMethod]
+	[Ignore("ScrollMouseWheel is not supported yet #17988")]
 	public async Task CanCycleThroughItemsWithMouseWheel()
 	{
 		var comboBox = await SetupBasicComboBoxTest();
 
 		await RunOnUIThread(() =>
-
 		{
 			comboBox.Focus(FocusState.Programmatic);
 		});
@@ -4621,11 +4600,8 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 		await CanRaiseTextSubmittedEventComboBox(false, false, true);
 	}
 
-	[TestMethod]
-	public async Task CanRaiseTextSubmittedEventComboBox(bool open, bool addToItemSource = false, bool setHandled = false)
+	private async Task CanRaiseTextSubmittedEventComboBox(bool open, bool addToItemSource = false, bool setHandled = false)
 	{
-
-
 		var comboBox = await SetupBasicComboBoxTest(5, true, true);
 		ComboBoxItem comboBoxItem = null;
 

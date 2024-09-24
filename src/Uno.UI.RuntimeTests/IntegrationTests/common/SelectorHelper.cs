@@ -15,7 +15,7 @@ internal static class SelectorHelper
 		await RunOnUIThread(() =>
 		{
 			LOG_OUTPUT("Selected Index = %d", selector.SelectedIndex);
-			VERIFY_ARE_EQUAL(expected, selector.SelectedIndex);
+			VERIFY_ARE_EQUAL(selector.SelectedIndex, expected);
 		});
 	}
 }
