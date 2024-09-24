@@ -1,298 +1,299 @@
 [
 	{
-		"group": "Core",
-		"version": "DefaultUnoVersion",
-		"packages": [
-			"Uno.WinUI",
-			"Uno.UI.Adapter.Microsoft.Extensions.Logging",
-			"Uno.WinUI.Maps",
-			"Uno.WinUI.Foldable",
-			"Uno.WinUI.MSAL",
-			"Uno.WinUI.Svg",
-			"Uno.WinUI.Lottie",
-			"Uno.WinUI.DevServer",
-			"Uno.WinUI.Skia.Gtk",
-			"Uno.WinUI.Skia.Linux.FrameBuffer",
-			"Uno.WinUI.Skia.MacOS",
-			"Uno.WinUI.Skia.Wpf",
-			"Uno.WinUI.Skia.X11",
-			"Uno.WinUI.Svg",
-			"Uno.WinUI.WebAssembly",
-			"Uno.WinUI.Runtime.WebAssembly",
-			"Uno.WinUI.MediaPlayer.WebAssembly",
-			"Uno.WinUI.Graphics3DGL",
-			"Uno.WinUI.Graphics2DSK"
-		]
+	  "group": "Core",
+	  "version": "DefaultUnoVersion",
+	  "packages": [
+		"Uno.WinUI",
+		"Uno.UI.Adapter.Microsoft.Extensions.Logging",
+		"Uno.WinUI.Maps",
+		"Uno.WinUI.Foldable",
+		"Uno.WinUI.MSAL",
+		"Uno.WinUI.Svg",
+		"Uno.WinUI.Lottie",
+		"Uno.WinUI.DevServer",
+		"Uno.WinUI.Skia.Gtk",
+		"Uno.WinUI.Skia.Linux.FrameBuffer",
+		"Uno.WinUI.Skia.MacOS",
+		"Uno.WinUI.Skia.Wpf",
+		"Uno.WinUI.Skia.X11",
+		"Uno.WinUI.Svg",
+		"Uno.WinUI.WebAssembly",
+		"Uno.WinUI.Runtime.WebAssembly",
+		"Uno.WinUI.MediaPlayer.WebAssembly",
+		"Uno.WinUI.Graphics3DGL",
+		"Uno.WinUI.Graphics2DSK"
+	  ]
 	},
 	{
-		"group": "WasmBootstrap",
-		"version": "8.0.20",
-		"packages": [
-			"Uno.Wasm.Bootstrap",
-			"Uno.Wasm.Bootstrap.DevServer",
-			"Uno.Wasm.Bootstrap.Server"
-		],
-		"versionOverride": {
-			"net9.0": "9.0.0-dev.301"
-		}
+	  "group": "WasmBootstrap",
+	  "version": "8.0.21",
+	  "packages": [
+		"Uno.Wasm.Bootstrap",
+		"Uno.Wasm.Bootstrap.DevServer",
+		"Uno.Wasm.Bootstrap.Server"
+	  ],
+	  "versionOverride": {
+		"net9.0": "9.0.0-dev.301"
+	  }
 	},
 	{
-		"group": "OSLogging",
-		"version": "1.7.0",
-		"packages": [
-			"Uno.Extensions.Logging.OSLog",
-			"Uno.Extensions.Logging.WebAssembly.Console"
-		]
+	  "group": "OSLogging",
+	  "version": "1.7.0",
+	  "packages": [
+		"Uno.Extensions.Logging.OSLog",
+		"Uno.Extensions.Logging.WebAssembly.Console"
+	  ]
 	},
 	{
-		"group": "CoreLogging",
-		"version": "4.1.1",
-		"packages": [
-			"Uno.Core.Extensions.Logging.Singleton"
-		]
+	  "group": "CoreLogging",
+	  "version": "4.1.1",
+	  "packages": [
+		"Uno.Core.Extensions.Logging.Singleton"
+	  ]
 	},
 	{
-		"group": "UniversalImageLoading",
-		"version": "1.9.37",
-		"packages": [
-			"Uno.UniversalImageLoader"
-		]
+	  "group": "UniversalImageLoading",
+	  "version": "1.9.37",
+	  "packages": [
+		"Uno.UniversalImageLoader"
+	  ]
 	},
 	{
-		"group": "Dsp",
-		"version": "1.4.0-dev.12",
-		"packages": [
-			"Uno.Dsp.Tasks"
-		]
+	  "group": "Dsp",
+	  "version": "1.4.0-dev.12",
+	  "packages": [
+		"Uno.Dsp.Tasks"
+	  ]
 	},
 	{
-		"group": "Resizetizer",
-		"version": "1.6.0-dev.24",
-		"packages": [
-			"Uno.Resizetizer"
-		]
+	  "group": "Resizetizer",
+	  "version": "1.6.0-dev.31",
+	  "packages": [
+		"Uno.Resizetizer"
+	  ]
 	},
 	{
-		"group": "SkiaSharp",
-		"version": "2.88.8",
-		"packages": [
-			"SkiaSharp.Skottie",
-			"SkiaSharp.Views.Uno.WinUI",
-			"SkiaSharp.Views.WinUI",
-			"SkiaSharp.NativeAssets.Linux",
-			"SkiaSharp.NativeAssets.macOS",
-			"SkiaSharp.NativeAssets.Win32"
-		]
+	  "group": "SkiaSharp",
+	  "version": "2.88.8",
+	  "packages": [
+		"SkiaSharp.Skottie",
+		"SkiaSharp.Views.Uno.WinUI",
+		"SkiaSharp.Views.WinUI",
+		"SkiaSharp.NativeAssets.Linux",
+		"SkiaSharp.NativeAssets.macOS",
+		"SkiaSharp.NativeAssets.Win32"
+	  ]
 	},
 	{
-		"group": "SvgSkia",
-		"version": "1.0.0.19",
-		"packages": [
-			"Svg.Skia"
-		]
+	  "group": "SvgSkia",
+	  "version": "1.0.0.19",
+	  "packages": [
+		"Svg.Skia"
+	  ]
 	},
 	{
-		"group": "WinAppSdk",
-		"version": "1.5.240627000",
-		"packages": [
-			"Microsoft.WindowsAppSDK"
-		]
+	  "group": "WinAppSdk",
+	  "version": "1.5.240627000",
+	  "packages": [
+		"Microsoft.WindowsAppSDK"
+	  ]
 	},
 	{
-		"group": "WinAppSdkBuildTools",
-		"version": "10.0.26100.1",
-		"packages": [
-			"Microsoft.Windows.SDK.BuildTools"
-		]
+	  "group": "WinAppSdkBuildTools",
+	  "version": "10.0.26100.1",
+	  "packages": [
+		"Microsoft.Windows.SDK.BuildTools"
+	  ]
 	},
 	{
-		"group": "MicrosoftLoggingConsole",
-		"version": "8.0.0",
-		"packages": [
-			"Microsoft.Extensions.Logging.Console"
-		],
-		"versionOverride": {
-			"net9.0": "9.0.0-rc.1.24431.7"
-		}
+	  "group": "MicrosoftLoggingConsole",
+	  "version": "8.0.0",
+	  "packages": [
+		"Microsoft.Extensions.Logging.Console"
+	  ],
+	  "versionOverride": {
+		"net9.0": "9.0.0-rc.1.24431.7"
+	  }
 	},
 	{
-		"group": "WindowsCompatibility",
-		"version": "8.0.7",
-		"packages": [
-			"Microsoft.Windows.Compatibility"
-		],
-		"versionOverride": {
-			"net9.0": "9.0.0-rc.1.24452.1"
-		}
+	  "group": "WindowsCompatibility",
+	  "version": "8.0.8",
+	  "packages": [
+		"Microsoft.Windows.Compatibility"
+	  ],
+	  "versionOverride": {
+		"net9.0": "9.0.0-rc.1.24452.1"
+	  }
 	},
 	{
-		"group": "MsalClient",
-		"version": "4.61.3",
-		"packages": [
-			"Microsoft.Identity.Client",
-			"Microsoft.Identity.Client.Extensions.Msal"
-		]
+	  "group": "MsalClient",
+	  "version": "4.64.1",
+	  "packages": [
+		"Microsoft.Identity.Client",
+		"Microsoft.Identity.Client.Extensions.Msal"
+	  ]
 	},
 	{
-		"group": "Mvvm",
-		"version": "8.2.2",
-		"packages": [
-			"CommunityToolkit.Mvvm"
-		]
+	  "group": "Mvvm",
+	  "version": "8.3.2",
+	  "packages": [
+		"CommunityToolkit.Mvvm"
+	  ]
 	},
 	{
-		"group": "Prism",
-		"version": "9.0.401-pre",
-		"packages": [
-			"Prism.DryIoc.Uno.WinUI",
-			"Prism.Uno.WinUI",
-			"Prism.Uno.WinUI.Markup"
-		]
+	  "group": "Prism",
+	  "version": "9.0.537",
+	  "packages": [
+		"Prism.DryIoc.Uno.WinUI",
+		"Prism.Uno.WinUI",
+		"Prism.Uno.WinUI.Markup"
+	  ]
 	},
 	{
-		"group": "UnoFonts",
-		"version": "2.4.5",
-		"packages": [
-			"Uno.Fonts.OpenSans",
-			"Uno.Fonts.Fluent",
-			"Uno.Fonts.Roboto"
-		]
+	  "group": "UnoFonts",
+	  "version": "2.5.0-dev.9",
+	  "packages": [
+		"Uno.Fonts.OpenSans",
+		"Uno.Fonts.Fluent",
+		"Uno.Fonts.Roboto"
+	  ]
 	},
 	{
-		"group": "AndroidMaterial",
-		"version": "1.10.0.3",
-		"packages": [
-			"Xamarin.Google.Android.Material"
-		]
+	  "group": "AndroidMaterial",
+	  "version": "1.11.0.2",
+	  "packages": [
+		"Xamarin.Google.Android.Material"
+	  ]
 	},
 	{
-		"group": "AndroidXLegacySupportV4",
-		"version": "1.0.0.23",
-		"packages": [
-			"Xamarin.AndroidX.Legacy.Support.V4"
-		]
+	  "group": "AndroidXLegacySupportV4",
+	  "version": "1.0.0.23",
+	  "packages": [
+		"Xamarin.AndroidX.Legacy.Support.V4"
+	  ]
 	},
 	{
-		"group": "AndroidXAppCompat",
-		"version": "1.6.1.7",
-		"packages": [
-			"Xamarin.AndroidX.AppCompat"
-		]
+	  "group": "AndroidXAppCompat",
+	  "version": "1.7.0.2",
+	  "packages": [
+		"Xamarin.AndroidX.AppCompat"
+	  ]
 	},
 	{
-		"group": "AndroidXRecyclerView",
-		"version": "1.3.2.2",
-		"packages": [
-			"Xamarin.AndroidX.RecyclerView"
-		]
+	  "group": "AndroidXRecyclerView",
+	  "version": "1.3.2.7",
+	  "packages": [
+		"Xamarin.AndroidX.RecyclerView"
+	  ]
 	},
 	{
-		"group": "AndroidXActivity",
-		"version": "1.8.2.1",
-		"packages": [
-			"Xamarin.AndroidX.Activity"
-		]
+	  "group": "AndroidXActivity",
+	  "version": "1.9.1.1",
+	  "packages": [
+		"Xamarin.AndroidX.Activity"
+	  ]
 	},
 	{
-		"group": "AndroidXBrowser",
-		"version": "1.8.0",
-		"packages": [
-			"Xamarin.AndroidX.Browser"
-		]
+	  "group": "AndroidXBrowser",
+	  "version": "1.8.0.4",
+	  "packages": [
+		"Xamarin.AndroidX.Browser"
+	  ]
 	},
 	{
-		"group": "AndroidXSwipeRefreshLayout",
-		"version": "1.1.0.18",
-		"packages": [
-			"Xamarin.AndroidX.SwipeRefreshLayout"
-		]
+	  "group": "AndroidXSwipeRefreshLayout",
+	  "version": "1.1.0.22",
+	  "packages": [
+		"Xamarin.AndroidX.SwipeRefreshLayout"
+	  ]
 	},
 	{
-		"group": "AndroidXNavigation",
-		"version": "2.7.7.1",
-		"packages": [
-			"Xamarin.AndroidX.Navigation.UI",
-			"Xamarin.AndroidX.Navigation.Fragment",
-			"Xamarin.AndroidX.Navigation.Runtime",
-			"Xamarin.AndroidX.Navigation.Common"
-		]
+	  "group": "AndroidXNavigation",
+	  "version": "2.7.7.6",
+	  "packages": [
+		"Xamarin.AndroidX.Navigation.UI",
+		"Xamarin.AndroidX.Navigation.Fragment",
+		"Xamarin.AndroidX.Navigation.Runtime",
+		"Xamarin.AndroidX.Navigation.Common"
+	  ]
 	},
 	{
-		"group": "AndroidXCollection",
-		"version": "1.4.0.1",
-		"packages": [
-			"Xamarin.AndroidX.Collection",
-			"Xamarin.AndroidX.Collection.Ktx"
-		]
+	  "group": "AndroidXCollection",
+	  "version": "1.4.2.1",
+	  "packages": [
+		"Xamarin.AndroidX.Collection",
+		"Xamarin.AndroidX.Collection.Ktx"
+	  ]
 	},
 	{
-		"group": "Maui",
-		"version": "8.0.70",
-		"packages": [
-			"Microsoft.Maui.Controls",
-			"Microsoft.Maui.Controls.Compatibility",
-			"Microsoft.Maui.Graphics"
-		],
-		"versionOverride": {
-			"net9.0": "9.0.0-rc.1.24453.9"
-		}
+	  "group": "Maui",
+	  "version": "8.0.90",
+	  "packages": [
+		"Microsoft.Maui.Controls",
+		"Microsoft.Maui.Controls.Compatibility",
+		"Microsoft.Maui.Graphics"
+	  ],
+	  "versionOverride": {
+		"net9.0": "9.0.0-rc.1.24453.9"
+	  }
 	},
 	{
-		"group": "CSharpMarkup",
-		"version": "5.4.0-dev.35",
-		"packages": [
-			"Uno.WinUI.Markup",
-			"Uno.Extensions.Markup.Generators"
-		]
+	  "group": "CSharpMarkup",
+	  "version": "5.4.0-dev.43",
+	  "packages": [
+		"Uno.WinUI.Markup",
+		"Uno.Extensions.Markup.Generators"
+	  ]
 	},
 	{
-		"group": "Extensions",
-		"version": "4.3.0-dev.12",
-		"packages": [
-			"Uno.Extensions.Authentication.WinUI",
-			"Uno.Extensions.Authentication.MSAL.WinUI",
-			"Uno.Extensions.Authentication.Oidc.WinUI",
-			"Uno.Extensions.Configuration",
-			"Uno.Extensions.Core.WinUI",
-			"Uno.Extensions.Hosting.WinUI",
-			"Uno.Extensions.Http.WinUI",
-			"Uno.Extensions.Http.Refit",
-			"Uno.Extensions.Localization.WinUI",
-			"Uno.Extensions.Logging.WinUI",
-			"Uno.Extensions.Maui.WinUI",
-			"Uno.Extensions.Maui.WinUI.Markup",
-			"Uno.Extensions.Navigation.WinUI",
-			"Uno.Extensions.Navigation.WinUI.Markup",
-			"Uno.Extensions.Navigation.Toolkit.WinUI",
-			"Uno.Extensions.Reactive.WinUI",
-			"Uno.Extensions.Reactive.Messaging",
-			"Uno.Extensions.Reactive.WinUI.Markup",
-			"Uno.Extensions.Serialization.Http",
-			"Uno.Extensions.Serialization.Refit",
-			"Uno.Extensions.Logging.Serilog",
-			"Uno.Extensions.Storage.WinUI"
-		]
+	  "group": "Extensions",
+	  "version": "5.0.0-dev.431",
+	  "packages": [
+		"Uno.Extensions.Authentication.WinUI",
+		"Uno.Extensions.Authentication.MSAL.WinUI",
+		"Uno.Extensions.Authentication.Oidc.WinUI",
+		"Uno.Extensions.Configuration",
+		"Uno.Extensions.Core.WinUI",
+		"Uno.Extensions.Hosting.WinUI",
+		"Uno.Extensions.Http.WinUI",
+		"Uno.Extensions.Http.Refit",
+		"Uno.Extensions.Localization.WinUI",
+		"Uno.Extensions.Logging.WinUI",
+		"Uno.Extensions.Maui.WinUI",
+		"Uno.Extensions.Maui.WinUI.Markup",
+		"Uno.Extensions.Navigation.WinUI",
+		"Uno.Extensions.Navigation.WinUI.Markup",
+		"Uno.Extensions.Navigation.Toolkit.WinUI",
+		"Uno.Extensions.Reactive.WinUI",
+		"Uno.Extensions.Reactive.Messaging",
+		"Uno.Extensions.Reactive.WinUI.Markup",
+		"Uno.Extensions.Serialization.Http",
+		"Uno.Extensions.Serialization.Refit",
+		"Uno.Extensions.Logging.Serilog",
+		"Uno.Extensions.Storage.WinUI"
+	  ]
 	},
 	{
-		"group": "Toolkit",
-		"version": "6.2.0-dev.12",
-		"packages": [
-			"Uno.Toolkit.WinUI",
-			"Uno.Toolkit.WinUI.Cupertino",
-			"Uno.Toolkit.WinUI.Material",
-			"Uno.Toolkit.WinUI.Material.Markup",
-			"Uno.Toolkit.WinUI.Markup",
-			"Uno.Toolkit.Skia.WinUI"
-		]
+	  "group": "Toolkit",
+	  "version": "6.3.0-dev.6",
+	  "packages": [
+		"Uno.Toolkit.WinUI",
+		"Uno.Toolkit.WinUI.Cupertino",
+		"Uno.Toolkit.WinUI.Material",
+		"Uno.Toolkit.WinUI.Material.Markup",
+		"Uno.Toolkit.WinUI.Markup",
+		"Uno.Toolkit.Skia.WinUI"
+	  ]
 	},
 	{
-		"group": "Themes",
-		"version": "5.2.0-dev.13",
-		"packages": [
-			"Uno.Material.WinUI",
-			"Uno.Material.WinUI.Markup",
-			"Uno.Themes.WinUI.Markup",
-			"Uno.Cupertino.WinUI"
-		]
+	  "group": "Themes",
+	  "version": "5.3.0-dev.8",
+	  "packages": [
+		"Uno.Material.WinUI",
+		"Uno.Material.WinUI.Markup",
+		"Uno.Themes.WinUI.Markup",
+		"Uno.Cupertino.WinUI"
+	  ]
 	}
-]
+  ]
+  
