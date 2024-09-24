@@ -67,6 +67,16 @@ public partial class ComboBox : Selector
 
 	protected override void OnApplyTemplate()
 	{
+		ReleaseMembers();
+
+		// bring Content back to swapped container
+		if (m_tpContentPresenterPart is not null && m_tpSwappedOutComboBoxItem is not null)
+		{
+			SetContentPresenter(-1);
+		}
+
+		IsDropDownOpen = false;
+
 		if (IsEditable)
 		{
 			DisableEditableMode();
@@ -107,8 +117,6 @@ public partial class ComboBox : Selector
 			popup.BindToEquivalentProperty(this, nameof(LightDismissOverlayBackground));
 		}
 
-		//Initialize header visibility
-		UpdateHeaderPresenterVisibility();
 
 		UpdateContentPresenter();
 		UpdateDescriptionVisibility(true);
@@ -139,6 +147,10 @@ public partial class ComboBox : Selector
 				}
 			};
 		}
+
+
+		//Initialize header visibility
+		UpdateHeaderPresenterVisibility();
 
 		m_tpElementPopupChild = m_tpPopupPart?.Child as FrameworkElement;
 		SetupElementPopupChild();
