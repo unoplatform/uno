@@ -111,6 +111,11 @@ public partial class Popup : FrameworkElement, IPopup
 					Focus(FocusState.Programmatic);
 				}
 			}
+
+			if (IsLightDismissEnabled || IsForFlyout)
+			{
+				m_fIsLightDismiss = true;
+			}
 		}
 		else
 		{
@@ -123,6 +128,8 @@ public partial class Popup : FrameworkElement, IPopup
 					_lastFocusedElement = null;
 				}
 			}
+
+			m_fIsLightDismiss = false;
 		}
 	}
 
