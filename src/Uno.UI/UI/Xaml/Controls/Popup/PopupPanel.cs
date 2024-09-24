@@ -177,6 +177,10 @@ internal partial class PopupPanel : Panel
 
 			ArrangeElement(child, finalFrame);
 
+			// Temporary workaround to avoid layout cycle on iOS. This block was added specifically for a bug on Android's
+			// MenuFlyout so, for now, we restrict to to only Android
+			// This can be re-evaluated and removed after https://github.com/unoplatform/uno/pull/18261 merges
+#if __ANDROID__
 			var updatedFinalFrame = new Rect(
 				anchorLocation.X + (float)Popup.HorizontalOffset,
 				anchorLocation.Y + (float)Popup.VerticalOffset,
@@ -191,8 +195,9 @@ internal partial class PopupPanel : Panel
 				// We re-arrange with the new updated finalFrame.
 				// Note: This might be a lifecycle issue, so this workaround needs to be revised in the future and deleted if possible.
 				// See MenuFlyoutSubItem_Placement sample.
-				ArrangeElement(child, updatedFinalFrame);
+				//ArrangeElement(child, updatedFinalFrame);
 			}
+#endif
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
