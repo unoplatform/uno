@@ -47,7 +47,9 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 
 	public ContentSiteView ContentSiteView => _contentSite.View;
 
-	protected XamlRoot? XamlRoot => _xamlRoot;
+	internal protected XamlRoot? XamlRoot => _xamlRoot;
+
+	internal protected Window? Window => _window;
 
 	internal void SetWindow(Window window, XamlRoot xamlRoot)
 	{
