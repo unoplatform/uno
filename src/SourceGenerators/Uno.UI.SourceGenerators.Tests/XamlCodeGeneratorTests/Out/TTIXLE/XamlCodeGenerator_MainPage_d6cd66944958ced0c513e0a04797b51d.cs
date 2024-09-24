@@ -99,7 +99,7 @@ namespace TestRepro
 							{
 								IsParsing = true,
 								Name = "inner2",
-								Template = 								new global::Microsoft.UI.Xaml.Controls.ControlTemplate(this , __owner => 								new _MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPageSC0().Build(__owner)
+								Template = 								new global::Microsoft.UI.Xaml.Controls.ControlTemplate(this, (__owner) => 								new _MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPageSC0().Build(__owner)
 								)								,
 								// Source 0\MainPage.xaml (Line 15:5)
 							}

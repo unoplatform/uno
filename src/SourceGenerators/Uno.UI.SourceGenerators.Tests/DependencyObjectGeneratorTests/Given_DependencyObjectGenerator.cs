@@ -289,6 +289,37 @@ public class Given_DependencyObjectGenerator
 	 		
 	 		#endregion
 	 		
+	 		#region TemplatedParent DependencyProperty // legacy api, should no longer to be used.
+	 		
+	 		[EditorBrowsable(EditorBrowsableState.Never)]public DependencyObject TemplatedParent
+	 		{
+	 			get => (DependencyObject)GetValue(TemplatedParentProperty);
+	 			set => SetValue(TemplatedParentProperty, value);
+	 		}
+	 		
+	 		// Using a DependencyProperty as the backing store for TemplatedParent.  This enables animation, styling, binding, etc...
+	 		[EditorBrowsable(EditorBrowsableState.Never)]
+	 		public static DependencyProperty TemplatedParentProperty { get ; } =
+	 			DependencyProperty.Register(
+	 				name: nameof(TemplatedParent),
+	 				propertyType: typeof(DependencyObject),
+	 				ownerType: typeof(Inner),
+	 				typeMetadata: new FrameworkPropertyMetadata(
+	 					defaultValue: null,
+	 					options: /*FrameworkPropertyMetadataOptions.Inherits | */FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.WeakStorage,
+	 					propertyChangedCallback: (s, e) => ((Inner)s).OnTemplatedParentChanged(e)
+	 				)
+	 			);
+	 		
+	 		
+	 		[EditorBrowsable(EditorBrowsableState.Never)]
+	 		internal protected virtual void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
+	 		{
+	 			OnTemplatedParentChangedPartial(e);
+	 		}
+	 		
+	 		#endregion
+	 		
 	 		public void SetBinding(object target, string dependencyProperty, global::Microsoft.UI.Xaml.Data.BindingBase binding)
 	 		{
 	 			__Store.SetBinding(target, dependencyProperty, binding);
@@ -313,6 +344,9 @@ public class Given_DependencyObjectGenerator
 	 		internal bool IsAutoPropertyInheritanceEnabled { get => __Store.IsAutoPropertyInheritanceEnabled; set => __Store.IsAutoPropertyInheritanceEnabled = value; }
 	 		
 	 		partial void OnDataContextChangedPartial(DependencyPropertyChangedEventArgs e);
+	 		
+	 		[EditorBrowsable(EditorBrowsableState.Never)]
+	 		partial void OnTemplatedParentChangedPartial(DependencyPropertyChangedEventArgs e);
 	 		
 	 		public global::Microsoft.UI.Xaml.Data.BindingExpression GetBindingExpression(DependencyProperty dependencyProperty)
 	 			=>  __Store.GetBindingExpression(dependencyProperty);
