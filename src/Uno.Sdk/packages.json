@@ -33,7 +33,7 @@
 			"Uno.Wasm.Bootstrap.Server"
 		],
 		"versionOverride": {
-			"net9.0": "9.0.0-dev.296"
+			"net9.0": "9.0.0-dev.301"
 		}
 	},
 	{
