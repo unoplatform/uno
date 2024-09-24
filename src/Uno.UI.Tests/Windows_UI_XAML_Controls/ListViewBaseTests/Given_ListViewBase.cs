@@ -42,7 +42,7 @@ namespace Uno.UI.Tests.ListViewBaseTests
 				}
 			};
 
-			SUT.ApplyTemplate();
+			SUT.ForceLoaded();
 
 			// Search on the panel for now, as the name lookup is not properly
 			// aligned on net46.
@@ -92,7 +92,7 @@ namespace Uno.UI.Tests.ListViewBaseTests
 				}
 			);
 
-			SUT.ApplyTemplate();
+			SUT.ForceLoaded();
 
 			// Search on the panel for now, as the name lookup is not properly
 			// aligned on net46.
