@@ -32,7 +32,7 @@
 	<ItemGroup>
 		<SupportedPlatform Remove="@(SupportedPlatform)" />
 		<SupportedPlatform Include="browserwasm" />
-		
+
 		<!-- net9.0 validation of CA1418 is case sensitive -->
 		<SupportedPlatform Include="BrowserWasm" />
 		<SdkSupportedTargetPlatformVersion Include="$(TargetPlatformVersion)" />
@@ -66,7 +66,7 @@
 
 			See https://github.com/dotnet/sdk/blob/e3c62139dd25af2b7593a2cde702261f20822e47/src/StaticWebAssetsSdk/Sdk/Sdk.StaticWebAssets.StaticAssets.ProjectSystem.props#L36
 				-->
-			
+
 			<!-- Get all files included by the Web Sdk, except ones from the Assets folder -->
 			<_ContentToUpdate
 				Include="@(Content)"
@@ -83,13 +83,33 @@
 			<!-- Remove the files Web SDK included files. This will also remove duplicates, regardless of the metadata -->
 			<Content Remove="@(_ContentToUpdate)"
 					 Condition="'%(_ContentToUpdate.IsWebSdk)'=='true' AND '%(_ContentToUpdate.IsDefaultItem)'!='true'" />
-			
+
 			<!-- Add back the non-websdk content -->
 			<Content Include="@(_NonWebSdkContent)" KeepDuplicates="false" />
 
 			<!-- Cleanup -->
 			<_ContentToUpdate Remove="@(_ContentToUpdate)"/>
 			<_NonWebSdkContent Remove="@(_NonWebSdkContent)"/>
+
+		</ItemGroup>
+	</Target>
+
+	<Target Name="_UnoAdjustWwwrootContent"
+			BeforeTargets="AssignTargetPaths">
+
+		<ItemGroup>
+			<_wwwRootContentToUpdate Include="$(MSBuildProjectDirectory)/$(WasmProjectFolder)/wwwroot/**" />
+
+			<Content Remove="@(_wwwRootContentToUpdate)" />
+
+			<Content Include="@(_wwwRootContentToUpdate)">
+				<Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
+				<UnoDeploy>Root</UnoDeploy>
+				<!-- net9+ compatibility -->
+				<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			</Content>
+
+			<_wwwRootContentToUpdate Remove="@(_wwwRootContentToUpdate)" />
 		</ItemGroup>
 	</Target>
 
