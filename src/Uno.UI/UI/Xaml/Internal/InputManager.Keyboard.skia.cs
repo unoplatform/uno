@@ -5,6 +5,9 @@ using Uno.Foundation.Logging;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
+using Windows.System;
+using DirectUI;
+using Uno.UI.Xaml.Input;
 
 namespace Uno.UI.Xaml.Core;
 
@@ -50,7 +53,14 @@ partial class InputManager
 
 		private void OnKey(KeyEventArgs args, bool down)
 		{
-			_inputManager.LastInputDeviceType = Input.InputDeviceType.Keyboard;
+			if (XboxUtility.IsGamepadNavigationInput(args.VirtualKey))
+			{
+				_inputManager.LastInputDeviceType = InputDeviceType.GamepadOrRemote;
+			}
+			else
+			{
+				_inputManager.LastInputDeviceType = InputDeviceType.Keyboard;
+			}
 
 			var originalSource1 = FocusManager.GetFocusedElement(_inputManager.ContentRoot.XamlRoot) as UIElement ?? _inputManager.ContentRoot.VisualTree.RootElement;
 
