@@ -590,6 +590,22 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		internal bool SafeRaiseTunnelingEvent(RoutedEvent routedEvent, RoutedEventArgs args)
+		{
+			try
+			{
+				RaiseTunnelingEvent(routedEvent, args);
+				return true;
+			}
+			catch (Exception e)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"Failed to raise '{routedEvent.Name}': {e}");
+				}
+				return false;
+			}
+		}
 
 		/// <summary>
 		/// Raise a routed event
