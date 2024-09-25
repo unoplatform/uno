@@ -429,6 +429,10 @@ public partial class ComboBox : Selector
 		{
 			focusedIndex = IndexFromContainer(focusedContainer);
 		}
+		else if (XamlRoot is not null && FocusManager.GetFocusedElement(XamlRoot) is ComboBoxItem currentlyFocusedItem)
+		{
+			focusedIndex = IndexFromContainer(currentlyFocusedItem);
+		}
 
 		var index = focusedIndex + offset;
 		if (!IsIndexValid(index))
@@ -447,6 +451,8 @@ public partial class ComboBox : Selector
 			AnimationDesired = false
 		});
 		item.Focus(FocusState.Keyboard);
+
+		SetFocusedIndex(index);
 		return true;
 	}
 
