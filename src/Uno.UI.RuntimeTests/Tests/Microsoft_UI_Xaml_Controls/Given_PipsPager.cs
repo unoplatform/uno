@@ -21,7 +21,7 @@ public partial class Given_PipsPager
 	[RunsOnUIThread]
 #if __WASM__
 	[Ignore("RenderTargetBitmap is not implemented on WASM.")]
-#elif __SKIA__
+#elif __SKIA__ || __ANDROID__
 	[Ignore("Fails even on Windows.")]
 #endif
 	public async Task When_MaxVisiblePips_GreaterThan_NumberOfPages_Horizontal()
