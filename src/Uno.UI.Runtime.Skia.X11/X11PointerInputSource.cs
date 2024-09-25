@@ -188,7 +188,7 @@ internal partial class X11PointerInputSource : IUnoCorePointerInputSource
 		// This matches the format of WinUI. See also: https://github.com/unoplatform/uno/issues/14535
 		var point = new PointerPoint(
 			frameId: (uint)time, // UNO TODO: How should set the frame, timestamp may overflow.
-			timestamp: (uint)time,
+			timestamp: (ulong)(time * TimeSpan.TicksPerMillisecond),
 			PointerDevice.For(PointerDeviceType.Mouse),
 			0, // TODO: XInput
 			new Point(_mousePosition.X / scale, _mousePosition.Y / scale),
