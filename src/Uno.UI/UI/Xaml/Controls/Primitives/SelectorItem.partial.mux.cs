@@ -92,6 +92,14 @@ partial class SelectorItem
 			}
 		}
 
+		// Fallback is to call the ancestor's GetPlainText. SelectorItemGenerated doesn't have a GetPlainText
+		// implementation, so it would find something in the parent. As of this writing, it should be the
+		// ContentControl.
+		if (string.IsNullOrEmpty(strPlainText))
+		{
+			return base.GetPlainText();
+		}
+
 		return strPlainText;
 	}
 }
