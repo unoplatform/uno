@@ -1529,7 +1529,7 @@ partial class ComboBox
 		m_handledGamepadOrRemoteKeyDown = eventHandled && XboxUtility.IsGamepadNavigationInput(originalKey);
 
 #if HAS_UNO // CharacterReceived is not supported yet, handle it here.
-		if (!pArgs.Handled)
+		if (!pArgs.Handled && pArgs.UnicodeKey is not null)
 		{
 			// Temporary as Uno doesn't yet implement CharacterReceived event.
 			OnCharacterReceived(this, new CharacterReceivedRoutedEventArgs(pArgs.UnicodeKey ?? default, default));
