@@ -96,6 +96,7 @@ internal partial class PopupRoot : Panel
 	protected override Size MeasureOverride(Size availableSize)
 	{
 		Size size = default;
+		Size visibleBounds = XamlRoot?.VisualTree.TrueVisibleBounds.Size ?? availableSize;
 		foreach (var child in Children)
 		{
 			if (!(child is PopupPanel))
@@ -103,13 +104,14 @@ internal partial class PopupRoot : Panel
 				continue;
 			}
 			// Note that we should always be arranged with the full size of the window, so we don't care too much about the return value here.
-			size = MeasureElement(child, availableSize);
+			size = MeasureElement(child, visibleBounds);
 		}
 		return size;
 	}
 
 	protected override Size ArrangeOverride(Size finalSize)
 	{
+		Rect visibleBounds = XamlRoot?.VisualTree.TrueVisibleBounds ?? new Rect(new Point(), finalSize);
 		foreach (var child in Children)
 		{
 			if (!(child is PopupPanel panel))
@@ -119,7 +121,7 @@ internal partial class PopupRoot : Panel
 
 			child.EnsureLayoutStorage();
 			// Note: The popup alignment is ensure by the PopupPanel itself
-			ArrangeElement(child, new Rect(new Point(), finalSize));
+			ArrangeElement(child, visibleBounds);
 		}
 
 		return finalSize;
