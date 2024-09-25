@@ -24,8 +24,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override Size MeasureOverride(Size availableSize)
 		{
-			var actualAvailableSize = CalculateDialogAvailableSize(availableSize);
-			return base.MeasureOverride(actualAvailableSize);
+			return base.MeasureOverride(availableSize);
 		}
 
 		protected override Size ArrangeOverride(Size finalSize)
@@ -56,45 +55,14 @@ namespace Microsoft.UI.Xaml.Controls
 			return finalSize;
 		}
 
-		private Size CalculateDialogAvailableSize(Size availableSize)
-		{
-			// Skip calculation if in the context of Uno Islands.
-			if (!CoreApplication.IsFullFledgedApp)
-			{
-				return availableSize;
-			}
-
-			var visibleBounds = XamlRoot?.VisualTree.TrueVisibleBounds ?? default;
-
-			if (availableSize.Width > visibleBounds.Width)
-			{
-				availableSize.Width = visibleBounds.Width;
-			}
-			if (availableSize.Height > visibleBounds.Height)
-			{
-				availableSize.Height = visibleBounds.Height;
-			}
-
-			return availableSize;
-		}
-
 		private Rect CalculateDialogPlacement(Size desiredSize, Size finalSize)
 		{
-			Rect visibleBounds = XamlRoot?.VisualTree.TrueVisibleBounds ?? default;
-
-			var maximumWidth = Math.Min(visibleBounds.Width, finalSize.Width);
-			var maximumHeight = Math.Min(visibleBounds.Height, finalSize.Height);
-
-			// Make sure the desiredSize fits in visibleBounds
-			var actualWidth = Math.Min(desiredSize.Width, maximumWidth);
-			var actualHeight = Math.Min(desiredSize.Height, maximumHeight);
-
-			var xOffset = Math.Max((maximumWidth - actualWidth) / 2, visibleBounds.X);
-			var yOffset = Math.Max((maximumHeight - actualHeight) / 2, visibleBounds.Y);
+			var actualWidth = Math.Min(desiredSize.Width, finalSize.Width);
+			var actualHeight = Math.Min(desiredSize.Height, finalSize.Height);
 
 			var finalRect = new Rect(
-				xOffset,
-				yOffset,
+				(finalSize.Width - actualWidth) / 2,
+				(finalSize.Height - actualHeight) / 2,
 				actualWidth,
 				actualHeight
 			);
