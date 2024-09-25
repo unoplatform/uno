@@ -80,7 +80,45 @@ This class can be used as follows in the XAML:
 
 ### IRootObjectProvider
 
-Not supported as of Uno 4.3
+With access to IRootObjectProvider becomes possible for a Markup extension to browse the visual tree, starting from the root of the XAML file.
+
+This following example [from the WinUI specifications](https://github.com/microsoft/microsoft-ui-xaml-specs/blob/34b14114af141ceb843413bedb85705c9a2e9204/active/XamlServiceProvider/XamlServiceProviderApi.md#irootobjectprovider) give a glimpse of this feature.
+
+Using the following XAML:
+
+```csharp
+public class DynamicBindExtension : MarkupExtension
+{
+    public DynamicBindExtension(string propertyName)
+    {
+        _propertyName = propertyName;
+    }
+    string _propertyName;
+
+    public override object ProvideValue(IXamlServiceProvider serviceProvider)
+    {
+        var root = ((IRootObjectProvider)serviceProvider.GetService(typeof(IRootObjectProvider))).RootObject;
+        var info = root.GetType().GetProperty(_propertyName);
+        return info.GetValue(root);
+    }
+}
+```
+
+The following XAML will display “Page Tag”:
+
+```xml
+<Page Tag='Page tag' 
+      x:Class="App1.MainPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:App52"
+      Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <TextBlock Text="{local:DynamicBind Tag}" />
+    </Grid>
+</Page>
+```
 
 ### IUriContext
 
