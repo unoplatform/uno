@@ -181,7 +181,7 @@ internal partial class PopupPanel : Panel
 			// MenuFlyout so, for now, we restrict to to only Android
 			// This can be re-evaluated and removed after https://github.com/unoplatform/uno/pull/18261 merges
 #if !__IOS__
-				var updatedFinalFrame = new Rect(
+			var updatedFinalFrame = new Rect(
 				anchorLocation.X + (float)Popup.HorizontalOffset,
 				anchorLocation.Y + (float)Popup.VerticalOffset,
 				size.Width,
