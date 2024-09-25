@@ -101,7 +101,7 @@ For additional information about UI Tests creation, visit the [Uno.UITest](https
 Using a command line or terminal, run the following command:
 
 ```dotnetcli
-dotnet new -u Uno.Templates
+dotnet new uninstall Uno.Templates
 ```
 
 [!include[getting-help](includes/getting-help.md)]
