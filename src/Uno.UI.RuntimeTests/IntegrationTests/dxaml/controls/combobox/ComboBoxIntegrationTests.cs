@@ -4720,11 +4720,8 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 		await ValidateEditableModeSearchAndSelection(true);
 	}
 
-	[TestMethod]
-	public async Task ValidateEditableModeSearchAndSelection(bool open)
+	private async Task ValidateEditableModeSearchAndSelection(bool open)
 	{
-
-
 		Size size = new(400, 400);
 		TestServices.WindowHelper.SetWindowSizeOverride(size);
 
