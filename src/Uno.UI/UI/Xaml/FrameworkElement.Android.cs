@@ -254,6 +254,9 @@ namespace Microsoft.UI.Xaml
 			SetMeasuredDimension((int)desiredPhysical.Width, (int)desiredPhysical.Height);
 		}
 
+		private protected virtual Rect AdjustArrangeRectForNativeChild(Rect logicalRect)
+			=> logicalRect;
+
 		protected override void OnLayoutCore(bool changed, int left, int top, int right, int bottom, bool localIsLayoutRequested)
 		{
 			try
@@ -265,6 +268,7 @@ namespace Microsoft.UI.Xaml
 					// When the parent is native-only element, it will layout its children with the proper rect.
 					// So we response to the requested bounds and do the managed arrange.
 					var logical = new Rect(left, top, right - left, bottom - top).PhysicalToLogicalPixels();
+					logical = AdjustArrangeRectForNativeChild(logical);
 					this.Arrange(logical);
 				}
 			}
