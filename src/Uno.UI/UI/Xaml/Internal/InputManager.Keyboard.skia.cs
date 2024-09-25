@@ -50,6 +50,8 @@ partial class InputManager
 
 		private void OnKey(KeyEventArgs args, bool down)
 		{
+			_inputManager.LastInputDeviceType = Input.InputDeviceType.Keyboard;
+
 			var originalSource1 = FocusManager.GetFocusedElement(_inputManager.ContentRoot.XamlRoot) as UIElement ?? _inputManager.ContentRoot.VisualTree.RootElement;
 
 			var routedArgs = new KeyRoutedEventArgs(originalSource1, args.VirtualKey, args.KeyboardModifiers, args.KeyStatus, args.UnicodeKey)
