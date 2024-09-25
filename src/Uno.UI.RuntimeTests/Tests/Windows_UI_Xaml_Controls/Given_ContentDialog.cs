@@ -448,9 +448,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __SKIA__ || __WASM__
-		[Ignore("Currently fails on Skia/WASM, tracked by #15981")]
-#endif
 		public async Task When_Has_VisibleBounds_LayoutRoot_Respects_VisibleBounds()
 		{
 			var nativeUnsafeArea = ScreenHelper.GetUnsafeArea();
