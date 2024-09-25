@@ -991,7 +991,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				            </Style>
 				        </Grid.Resources>
 
-				        <TextBox Style="{StaticResource TextBoxAlignmentTestStyle}" />
+				        <TextBox Style="{StaticResource TextBoxAlignmentTestStyle}" Width="10" />
 				    </Grid>
 				""";
 			var grid = XamlHelper.LoadXaml<Grid>(xaml);
