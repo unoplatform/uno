@@ -1086,7 +1086,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
-	[Ignore("The first verify fails as ComboBox pre-selects index 0 due to SelectionChangedTrigger.Always #17988")]
+	[Ignore("The first verify fails as ComboBox pre-selects index 0 due to SelectionChangedTrigger.Always. This is likely a new behavior! #17988")]
 	public async Task ValidateKeyboardInteraction()
 	{
 		var comboBox = await SetupBasicComboBoxTest();

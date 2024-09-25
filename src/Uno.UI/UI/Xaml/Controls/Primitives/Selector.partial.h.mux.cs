@@ -19,7 +19,7 @@ partial class Selector
 	// m_focusedIndex to make it easier to track when this field is read & written.
 	private protected int GetFocusedIndex() => m_focusedIndex;
 
-	void SetFocusedIndex(int focusedIndex)
+	internal void SetFocusedIndex(int focusedIndex)
 	{
 		if (m_focusedIndex != focusedIndex)
 		{
