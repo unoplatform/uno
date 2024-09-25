@@ -2,11 +2,6 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference LayoutStorage.h and LayoutStorage.cpp
 
-#if !UNO_REFERENCE_API
-// Layout storage causes issues on Android at least. We disable it on layouter-based platforms for now.
-#define LAYOUTER_WORKAROUND
-#endif
-
 using System.Diagnostics;
 using Microsoft.UI.Xaml.Media;
 using Windows.Foundation;
@@ -42,43 +37,28 @@ partial class UIElement
 	internal Rect? m_pLayoutClipGeometry;
 #endif
 
-#if LAYOUTER_WORKAROUND
-	// Causes issues for Layouter-based platforms.
-	internal bool HasLayoutStorage => true;
-#else
 	internal bool HasLayoutStorage;
-#endif
 
-	[Conditional("UNO_REFERENCE_API")]
 	internal void ResetLayoutInformation()
 	{
-#if !LAYOUTER_WORKAROUND
 		m_previousAvailableSize = default;
 		m_desiredSize = default;
 		m_finalRect = default;
 		//m_offset = default;
-#if UNO_REFERENCE_API
 		m_unclippedDesiredSize = default;
-#endif
 		m_size = default;
 #if __ANDROID__ || __IOS__ || __MACOS__
 		m_pLayoutClipGeometry = default;
 #endif
-#endif
 	}
 
-	[Conditional("UNO_REFERENCE_API")]
 	internal void EnsureLayoutStorage()
 	{
-#if !LAYOUTER_WORKAROUND
 		HasLayoutStorage = true;
-#endif
 	}
 
-	[Conditional("UNO_REFERENCE_API")]
 	internal void Shutdown()
 	{
-#if !LAYOUTER_WORKAROUND
 		// Cancel all active transitions.
 		//if (Transition.HasActiveTransition(this) && this.GetContext() is not null)
 		//{
@@ -107,6 +87,5 @@ partial class UIElement
 
 		// note we do not change the life cycle of an element here. it will get
 		// the left tree value from the LeaveImpl call
-#endif
 	}
 }
