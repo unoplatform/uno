@@ -1893,10 +1893,30 @@
 
 			<Member fullName="System.Void Windows.UI.Xaml.UnhandledExceptionEventArgs..ctor(System.Exception e, System.Boolean fatal)" reason="Not in WinUI" />
 			<Member fullName="System.Void Microsoft.UI.Xaml.UnhandledExceptionEventArgs..ctor(System.Exception e, System.Boolean fatal)" reason="Not in WinUI" />
+		</Methods>
+	</IgnoreSet>
 
+	<IgnoreSet baseVersion="5.4">
+		<Assemblies>
+		</Assemblies>
+
+		<Types>
+		</Types>
+
+		<Events>
+		</Events>
+		
+		<Fields>
+		</Fields>
+
+		<Properties>
+		</Properties>
+
+		<Methods>
 			<Member fullName="System.Void Microsoft.Web.WebView2.Core.CoreWebView2.set_DocumentTitle(System.String value)" reason="Does not exist in UWP" />
 		</Methods>
 	</IgnoreSet>
+	
 	<![CDATA[
 		The 'baseVersion' should be the current latest stable version published on nuget, 
 		NOT what will be published by the PR in progress.
