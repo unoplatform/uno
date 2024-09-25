@@ -7,6 +7,9 @@ using Windows.System;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
+using DirectUI;
+using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml.Input;
 
 namespace Private.Infrastructure
 {
@@ -166,7 +169,15 @@ namespace Private.Infrastructure
 						var key = keyInstruction.Substring(4, keyInstruction.Length - 4);
 						if (m_vKeyMapping.TryGetValue(key, out var vKey))
 						{
-							await RaiseOnElementDispatcherAsync(element, keyDownCodePos == 0 ? UIElement.KeyDownEvent : UIElement.KeyUpEvent, new KeyRoutedEventArgs(element, vKey, activeModifiers));
+							var keyArgs = new KeyRoutedEventArgs(element, vKey, activeModifiers);
+
+							var previewEvent = keyDownCodePos == 0 ? UIElement.PreviewKeyDownEvent : UIElement.PreviewKeyUpEvent;
+							var mainEvent = keyDownCodePos == 0 ? UIElement.KeyDownEvent : UIElement.KeyUpEvent;
+							await RaiseOnElementDispatcherAsync(element, previewEvent, keyArgs, true);
+							if (!keyArgs.Handled)
+							{
+								await RaiseOnElementDispatcherAsync(element, mainEvent, keyArgs);
+							}
 						}
 
 						// If modifiers were changed, update modifiers variable
@@ -214,22 +225,42 @@ namespace Private.Infrastructure
 							{
 								if (m_vKeyMapping.TryGetValue("shift", out var vShiftKey))
 								{
-									await RaiseOnElementDispatcherAsync(element, UIElement.KeyDownEvent, new KeyRoutedEventArgs(element, vShiftKey, VirtualKeyModifiers.None));
+									var keyDownArgs = new KeyRoutedEventArgs(element, vShiftKey, VirtualKeyModifiers.None);
+									await RaiseOnElementDispatcherAsync(element, UIElement.PreviewKeyDownEvent, keyDownArgs);
+									if (!keyDownArgs.Handled)
+									{
+										await RaiseOnElementDispatcherAsync(element, UIElement.KeyDownEvent, keyDownArgs);
+									}
 								}
 							}
 
 							if (m_vKeyMapping.TryGetValue(key, out var vKey))
 							{
 								var modifiers = shouldShift ? VirtualKeyModifiers.Shift : VirtualKeyModifiers.None;
-								await RaiseOnElementDispatcherAsync(element, UIElement.KeyDownEvent, new KeyRoutedEventArgs(element, vKey, modifiers));
-								await RaiseOnElementDispatcherAsync(element, UIElement.KeyUpEvent, new KeyRoutedEventArgs(element, vKey, modifiers));
+								var keyDownArgs = new KeyRoutedEventArgs(element, vKey, modifiers);
+								await RaiseOnElementDispatcherAsync(element, UIElement.PreviewKeyDownEvent, keyDownArgs);
+								if (!keyDownArgs.Handled)
+								{
+									await RaiseOnElementDispatcherAsync(element, UIElement.KeyDownEvent, keyDownArgs);
+								}
+								var keyUpArgs = new KeyRoutedEventArgs(element, vKey, modifiers);
+								await RaiseOnElementDispatcherAsync(element, UIElement.PreviewKeyDownEvent, keyUpArgs);
+								if (!keyUpArgs.Handled)
+								{
+									await RaiseOnElementDispatcherAsync(element, UIElement.KeyUpEvent, keyUpArgs);
+								}
 							}
 
 							if (shouldShift)
 							{
 								if (m_vKeyMapping.TryGetValue("shift", out var vShiftKey))
 								{
-									await RaiseOnElementDispatcherAsync(element, UIElement.KeyUpEvent, new KeyRoutedEventArgs(element, vShiftKey, VirtualKeyModifiers.None));
+									var keyUpArgs = new KeyRoutedEventArgs(element, vShiftKey, VirtualKeyModifiers.None);
+									await RaiseOnElementDispatcherAsync(element, UIElement.PreviewKeyDownEvent, keyUpArgs);
+									if (!keyUpArgs.Handled)
+									{
+										await RaiseOnElementDispatcherAsync(element, UIElement.KeyUpEvent, keyUpArgs);
+									}
 								}
 							}
 						}
@@ -239,17 +270,42 @@ namespace Private.Infrastructure
 					posEnd = keys.IndexOf("#", posStart);
 				}
 
-				async Task RaiseOnElementDispatcherAsync(UIElement element, RoutedEvent routedEvent, RoutedEventArgs args)
+				async Task RaiseOnElementDispatcherAsync(UIElement element, RoutedEvent routedEvent, KeyRoutedEventArgs args, bool isTunneling = false)
 				{
 					bool raiseSynchronously = element.Dispatcher.HasThreadAccess;
 
-					if (raiseSynchronously)
+					// Workaround for not simulating the last input device type correctly yet.
+					var inputManager = VisualTree.GetContentRootForElement(element).InputManager;
+					if (XboxUtility.IsGamepadNavigationInput(args.OriginalKey))
 					{
-						element.SafeRaiseEvent(routedEvent, args);
+						inputManager.LastInputDeviceType = InputDeviceType.GamepadOrRemote;
 					}
 					else
 					{
-						await element.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => element.SafeRaiseEvent(routedEvent, args));
+						inputManager.LastInputDeviceType = InputDeviceType.Keyboard;
+					}
+
+					if (isTunneling)
+					{
+						if (raiseSynchronously)
+						{
+							element.SafeRaiseTunnelingEvent(routedEvent, args);
+						}
+						else
+						{
+							await element.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => element.SafeRaiseTunnelingEvent(routedEvent, args));
+						}
+					}
+					else
+					{
+						if (raiseSynchronously)
+						{
+							element.SafeRaiseEvent(routedEvent, args);
+						}
+						else
+						{
+							await element.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => element.SafeRaiseEvent(routedEvent, args));
+						}
 					}
 				}
 #endif
