@@ -228,7 +228,7 @@ namespace Microsoft.UI.Xaml
 		{
 			LayoutSlotWithMarginsAndAlignments = finalRect;
 
-			SetTotalClipRect(out var clipRectLogical);
+			SetTotalClipRect(out _);
 
 			var physical = finalRect.LogicalToPhysicalPixels();
 
