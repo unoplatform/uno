@@ -119,7 +119,7 @@ internal static partial class MobileLayoutingHelpers
 			{
 				if (childAsUIElement.IsMeasureDirtyOrMeasureDirtyPath)
 				{
-					MeasureElement(child, childAsUIElement.m_previousAvailableSizedSize);
+					MeasureElement(child, childAsUIElement.m_previousAvailableSize);
 				}
 			}
 		}
