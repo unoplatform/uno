@@ -10,6 +10,7 @@ using Uno.Extensions;
 using Uno.Extensions.Specialized;
 using Uno.UI.DataBinding;
 using Uno.UI.Extensions;
+using Uno.UI.Helpers;
 using Uno.UI.Xaml.Input;
 using Windows.Foundation.Collections;
 using Windows.System;
