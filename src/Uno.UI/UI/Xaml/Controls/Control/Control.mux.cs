@@ -236,7 +236,7 @@ namespace Microsoft.UI.Xaml.Controls
 			value = null;
 			return false;
 		}
-		
+
 		private protected void EnsureValidationVisuals()
 		{
 			// TODO Uno: Not supported yet #4839
