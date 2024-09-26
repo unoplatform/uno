@@ -26,12 +26,6 @@
 	<ItemGroup>
 		<SupportedPlatform Remove="@(SupportedPlatform)" />
 		<SupportedPlatform Include="browserwasm" />
-<<<<<<< HEAD
-=======
-
-		<!-- net9.0 validation of CA1418 is case sensitive -->
-		<SupportedPlatform Include="BrowserWasm" />
->>>>>>> b2062476a3 (fix: Ensure wwwroot assets are copied properly)
 		<SdkSupportedTargetPlatformVersion Include="$(TargetPlatformVersion)" />
 	</ItemGroup>
 
