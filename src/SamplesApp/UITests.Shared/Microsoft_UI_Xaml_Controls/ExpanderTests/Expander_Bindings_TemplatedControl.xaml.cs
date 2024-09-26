@@ -11,7 +11,7 @@ using System;
 
 namespace UITests.Shared.Microsoft_UI_Xaml_Controls.ExpanderTests;
 
-[Sample("Expander", "MUX", Name = "Expander_Bindings_TemplatedControl", isManualTest: true)]
+[Sample("Expander", "MUX", Name = "Expander_Bindings_TemplatedControl", IsManualTest = true)]
 public sealed partial class Expander_Bindings_TemplatedControl : UserControl
 {
 	public Expander_Bindings_TemplatedControl()
