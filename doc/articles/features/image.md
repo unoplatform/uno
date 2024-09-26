@@ -39,3 +39,17 @@ MyImage.UriSource = new BitmapImage { UriSource = new($"ms-appdata:///local/imag
 
 > [!IMPORTANT]
 > When using WinAppSDK Unpackaged mode, `ms-appdata:///` is not supported on `Image`. In this case, you can use [`BitmapImage.SetSourceAsync`](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.media.imaging.bitmapsource.setsourceasync) to set the image programmatically.
+
+## Gif Support
+
+Displaying animated GIFs is supported on:
+
+- netX.0-desktop (5.4 and later)
+- netX.0-windows
+- netX.0-browserwasm
+
+Unsupported targets, where only the first frame is shown, as of Uno Platform 5.4:
+
+- netX.0-ios
+- netX.0-android
+- netX.0-maccatalyst
