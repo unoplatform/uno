@@ -126,7 +126,7 @@ namespace Private.Infrastructure
 			};
 
 
-			public static async void PressKeySequence(string keys, UIElement element = null)
+			public static async Task PressKeySequence(string keys, UIElement element = null)
 			{
 #if !WINAPPSDK
 				if (string.IsNullOrEmpty(keys))
@@ -311,107 +311,101 @@ namespace Private.Infrastructure
 #endif
 			}
 
-			public static void Down(UIElement element = null)
+			public static async Task Down(UIElement element = null)
 			{
-				PressKeySequence("$d$_down#$u$_down", element);
+				await PressKeySequence("$d$_down#$u$_down", element);
 			}
 
-			public static void Up(UIElement element = null)
+			public static async Task Up(UIElement element = null)
 			{
-				PressKeySequence("$d$_up#$u$_up", element);
-
+				await PressKeySequence("$d$_up#$u$_up", element);
 			}
 
-			public static void Left(UIElement element = null)
+			public static async Task Left(UIElement element = null)
 			{
-				PressKeySequence("$d$_left#$u$_left", element);
-
+				await PressKeySequence("$d$_left#$u$_left", element);
 			}
 
-			public static void Right(UIElement element = null)
+			public static async Task Right(UIElement element = null)
 			{
-				PressKeySequence("$d$_right#$u$_right", element);
-
+				await PressKeySequence("$d$_right#$u$_right", element);
 			}
 
-			internal static void ShiftTab(UIElement element = null)
+			internal static async Task ShiftTab(UIElement element = null)
 			{
-				PressKeySequence("$d$_shift#$d$_tab#$u$_tab#$u$_shift", element);
+				await PressKeySequence("$d$_shift#$d$_tab#$u$_tab#$u$_shift", element);
 			}
 
-			public static void Tab(UIElement element = null)
+			public static async Task Tab(UIElement element = null)
 			{
-				PressKeySequence("$d$_tab#$u$_tab", element);
-
+				await PressKeySequence("$d$_tab#$u$_tab", element);
 			}
 
-			public static void PageDown(UIElement element = null)
+			public static async Task PageDown(UIElement element = null)
 			{
-				PressKeySequence("$d$_pagedown#$u$_pagedown", element);
-
+				await PressKeySequence("$d$_pagedown#$u$_pagedown", element);
 			}
 
-			public static void Escape(UIElement element = null)
+			public static async Task Escape(UIElement element = null)
 			{
-				PressKeySequence("$d$_esc#$u$_esc", element);
-
+				await PressKeySequence("$d$_esc#$u$_esc", element);
 			}
 
-			public static void Enter(UIElement element = null)
+			public static async Task Enter(UIElement element = null)
 			{
-				PressKeySequence("$d$_enter#$u$_enter", element);
+				await PressKeySequence("$d$_enter#$u$_enter", element);
 			}
 
-			public static void Space(UIElement element = null)
+			public static async Task Space(UIElement element = null)
 			{
-				PressKeySequence("$d$_space#$u$_space", element);
+				await PressKeySequence("$d$_space#$u$_space", element);
 
 			}
-			public static void Backspace(UIElement element = null)
+			public static async Task Backspace(UIElement element = null)
 			{
-				PressKeySequence("$d$_backspace#$u$_backspace", element);
+				await PressKeySequence("$d$_backspace#$u$_backspace", element);
 			}
 
-			public static void Delete(UIElement element = null)
+			public static async Task Delete(UIElement element = null)
 			{
-				PressKeySequence("$d$_delete#$u$_delete", element);
+				await PressKeySequence("$d$_delete#$u$_delete", element);
 			}
 
-			public static void CtrlTab(UIElement element = null)
+			public static async Task CtrlTab(UIElement element = null)
 			{
-				PressKeySequence("$d$_ctrlscan#$d$_tab#$u$_tab#$u$_ctrlscan", element);
+				await PressKeySequence("$d$_ctrlscan#$d$_tab#$u$_tab#$u$_ctrlscan", element);
 			}
 
-			public static void GamepadA(UIElement element = null)
+			public static async Task GamepadA(UIElement element = null)
 			{
-				PressKeySequence("$d$_GamepadA#$u$_GamepadA", element);
+				await PressKeySequence("$d$_GamepadA#$u$_GamepadA", element);
 			}
 
-			public static void GamepadB(UIElement element = null)
+			public static async Task GamepadB(UIElement element = null)
 			{
-				PressKeySequence("$d$_GamepadB#$u$_GamepadB", element);
+				await PressKeySequence("$d$_GamepadB#$u$_GamepadB", element);
 			}
 
-			public static void GamepadDpadRight(UIElement element = null)
+			public static async Task GamepadDpadRight(UIElement element = null)
 			{
-				PressKeySequence("$d$_GamepadDpadRight#$u$_GamepadDpadRight", element);
+				await PressKeySequence("$d$_GamepadDpadRight#$u$_GamepadDpadRight", element);
 			}
 
-			public static void GamepadDpadLeft(UIElement element = null)
+			public static async Task GamepadDpadLeft(UIElement element = null)
 			{
-				PressKeySequence("$d$_GamepadDpadLeft#$u$_GamepadDpadLeft", element);
+				await PressKeySequence("$d$_GamepadDpadLeft#$u$_GamepadDpadLeft", element);
 			}
-			public static void GamepadDpadUp(UIElement element = null)
+			public static async Task GamepadDpadUp(UIElement element = null)
 			{
-				PressKeySequence("$d$_GamepadDpadUp#$u$_GamepadDpadUp", element);
+				await PressKeySequence("$d$_GamepadDpadUp#$u$_GamepadDpadUp", element);
 			}
-			public static void GamepadDpadDown(UIElement element = null)
+			public static async Task GamepadDpadDown(UIElement element = null)
 			{
-				PressKeySequence("$d$_GamepadDpadDown#$u$_GamepadDpadDown", element);
+				await PressKeySequence("$d$_GamepadDpadDown#$u$_GamepadDpadDown", element);
 			}
 
 			/// <param name="text">Assuming lowercase text. To add capitalization, use <see cref="PressKeySequence"/></param>
-			public static void InputText(string text, UIElement element = null)
+			public static async Task InputText(string text, UIElement element = null)
 			{
 				var sequence = text
 					.ToLower()
@@ -419,7 +413,7 @@ namespace Private.Infrastructure
 					.Aggregate("", (a, b) => a + b)
 					[..^1]; // drop last #
 
-				PressKeySequence(sequence, element);
+				await PressKeySequence(sequence, element);
 			}
 		}
 	}
