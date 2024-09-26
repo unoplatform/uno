@@ -275,7 +275,6 @@ namespace Microsoft.UI.Xaml
 			}
 			else
 			{
-				// fixme@xy?: Stack::TryPop?
 				int position = info.PooledInstances.Count - 1;
 				instance = info.PooledInstances[position].Control;
 				info.PooledInstances.RemoveAt(position);

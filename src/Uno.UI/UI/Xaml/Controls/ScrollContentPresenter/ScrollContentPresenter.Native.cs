@@ -13,7 +13,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private object RealContent => Native?.Content;
 
-		public void OnTemplateRecycled() // fixme@xy: review
+		public void OnTemplateRecycled() // #18317 re-impl template recycling
 		{
 			// If the template is being recycled and it's TemplatedParent is null, this means that
 			// this instance was part of the ControlTemplate of a ScrollViewer instance that was GC'ed.

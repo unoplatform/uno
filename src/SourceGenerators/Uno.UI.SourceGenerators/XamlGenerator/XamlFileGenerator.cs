@@ -1,7 +1,4 @@
 ﻿#nullable enable
-#if false // fixme@xy: to remove the constant; temporarily added to test backward compat
-#define USE_NEW_TP_CODEGEN
-#endif
 
 using System;
 using System.Collections.Generic;
@@ -921,7 +918,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 							if (_isHotReloadEnabled)
 							{
-								// fixme@xy: find and update caller(s)
 								// Build an interface that can be used to hide the actual replaced
 								// implementation of a type during hot reload.
 								using (writer.BlockInvariant($"internal interface {hrInterfaceName}"))

@@ -96,7 +96,6 @@ namespace Uno.UI.Controls
 
 		private protected override void SetTemplatedParentImpl(DependencyObject parent)
 		{
-			// todo@xy: review if this makes sense?
 			base.SetTemplatedParentImpl(parent);
 
 			InitializeController(parent as Frame);
