@@ -139,7 +139,7 @@ namespace Microsoft.UI.Xaml
 		//	base.OnDraw(canvas);
 		//}
 
-		private void SetClipPlatform(out Rect? totalLogicalClip)
+		private void SetClipPlatform(Rect? totalLogicalClip)
 		{
 			if (totalLogicalClip is null)
 			{
@@ -147,7 +147,7 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
-			Android.Graphics.Rect physicalRect = totalLogicalClip.LogicalToPhysicalPixels();
+			Android.Graphics.Rect physicalRect = totalLogicalClip.Value.LogicalToPhysicalPixels();
 			ViewCompat.SetClipBounds(this, physicalRect);
 
 			if (FeatureConfiguration.UIElement.UseLegacyClipping)

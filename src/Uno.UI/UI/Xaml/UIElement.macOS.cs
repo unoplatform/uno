@@ -236,7 +236,7 @@ namespace Microsoft.UI.Xaml
 			base.OnNativeKeyUp(evt);
 		}
 
-		private void ApplyNativeClip(Rect? totalLogicalClip)
+		private void SetClipPlatform(Rect? totalLogicalClip)
 		{
 			if (totalLogicalClip is null)
 			{
