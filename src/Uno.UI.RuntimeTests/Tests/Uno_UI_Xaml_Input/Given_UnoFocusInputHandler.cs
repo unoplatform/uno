@@ -64,7 +64,7 @@ public class Given_UnoFocusInputHandler
 		await WindowHelper.WaitForIdle();
 		Assert.AreEqual(0, SUT.VerticalOffset);
 
-		KeyboardHelper.Tab();
+		await KeyboardHelper.Tab();
 		await WindowHelper.WaitForIdle();
 		Assert.AreEqual(SUT.ScrollableHeight, SUT.VerticalOffset);
 	}

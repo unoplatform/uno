@@ -298,22 +298,22 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var SUT = border.FindVisualChildByType<ScrollViewer>();
 
-			KeyboardHelper.Down();
+			await KeyboardHelper.Down();
 			await WindowHelper.WaitForIdle();
-			KeyboardHelper.Down();
+			await KeyboardHelper.Down();
 			await WindowHelper.WaitForIdle();
-			KeyboardHelper.Right();
+			await KeyboardHelper.Right();
 			await WindowHelper.WaitForIdle();
-			KeyboardHelper.Right();
+			await KeyboardHelper.Right();
 			await WindowHelper.WaitForIdle();
 
 			// Horizontal and vertical scrolling amounts should be independent, and each depend on the corresponding ActualSize dimension
 			Assert.AreEqual(verticalDelta * 2, SUT.VerticalOffset);
 			Assert.AreEqual(horizontalDelta * 2, SUT.HorizontalOffset);
 
-			KeyboardHelper.Up();
+			await KeyboardHelper.Up();
 			await WindowHelper.WaitForIdle();
-			KeyboardHelper.Left();
+			await KeyboardHelper.Left();
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(verticalDelta, SUT.VerticalOffset);
@@ -391,27 +391,27 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var SUT = border.FindVisualChildByType<ScrollViewer>();
 
-			KeyboardHelper.PageDown();
+			await KeyboardHelper.PageDown();
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(175, SUT.VerticalOffset);
 			Assert.AreEqual(0, SUT.HorizontalOffset);
 
-			KeyboardHelper.PageDown();
+			await KeyboardHelper.PageDown();
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(350, SUT.VerticalOffset);
 			Assert.AreEqual(0, SUT.HorizontalOffset);
 
-			KeyboardHelper.PressKeySequence("$d$_pageup#$u$_pageup");
+			await KeyboardHelper.PressKeySequence("$d$_pageup#$u$_pageup");
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(175, SUT.VerticalOffset);
 			Assert.AreEqual(0, SUT.HorizontalOffset);
 
-			KeyboardHelper.PressKeySequence("$d$_home#$u$_home");
+			await KeyboardHelper.PressKeySequence("$d$_home#$u$_home");
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(0, SUT.VerticalOffset);
 			Assert.AreEqual(0, SUT.HorizontalOffset);
 
-			KeyboardHelper.PressKeySequence("$d$_end#$u$_end");
+			await KeyboardHelper.PressKeySequence("$d$_end#$u$_end");
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(1825, SUT.VerticalOffset);
 			Assert.AreEqual(0, SUT.HorizontalOffset);
@@ -451,35 +451,35 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			border.FindVisualChildByType<ItemsControl>().Focus(FocusState.Programmatic);
 			await WindowHelper.WaitForIdle();
 
-			KeyboardHelper.PressKeySequence("$d$_pageup#$u$_pageup");
+			await KeyboardHelper.PressKeySequence("$d$_pageup#$u$_pageup");
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(0, keyDownCount);
 
-			KeyboardHelper.PageDown();
+			await KeyboardHelper.PageDown();
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(0, keyDownCount);
 
-			KeyboardHelper.PressKeySequence("$d$_pageup#$u$_pageup");
+			await KeyboardHelper.PressKeySequence("$d$_pageup#$u$_pageup");
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(0, keyDownCount);
 
-			KeyboardHelper.PressKeySequence("$d$_home#$u$_home");
+			await KeyboardHelper.PressKeySequence("$d$_home#$u$_home");
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(1, keyDownCount);
 
-			KeyboardHelper.PressKeySequence("$d$_end#$u$_end");
+			await KeyboardHelper.PressKeySequence("$d$_end#$u$_end");
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(1, keyDownCount);
 
-			KeyboardHelper.PressKeySequence("$d$_end#$u$_end");
+			await KeyboardHelper.PressKeySequence("$d$_end#$u$_end");
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(2, keyDownCount);
 
-			KeyboardHelper.PageDown();
+			await KeyboardHelper.PageDown();
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(3, keyDownCount);
 
-			KeyboardHelper.PressKeySequence("$d$_home#$u$_home");
+			await KeyboardHelper.PressKeySequence("$d$_home#$u$_home");
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(3, keyDownCount);
 		}
@@ -518,38 +518,38 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			border.FindVisualChildByType<ItemsControl>().Focus(FocusState.Programmatic);
 			await WindowHelper.WaitForIdle();
 
-			KeyboardHelper.Left();
+			await KeyboardHelper.Left();
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(1, keyDownCount);
 
-			KeyboardHelper.Up();
+			await KeyboardHelper.Up();
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(2, keyDownCount);
 
-			KeyboardHelper.Down();
+			await KeyboardHelper.Down();
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(2, keyDownCount);
 
-			KeyboardHelper.Up();
+			await KeyboardHelper.Up();
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(2, keyDownCount);
 
-			KeyboardHelper.Right();
+			await KeyboardHelper.Right();
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(2, keyDownCount);
 
-			KeyboardHelper.Left();
+			await KeyboardHelper.Left();
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(2, keyDownCount);
 
 			SUT.FindVisualChildByType<ScrollContentPresenter>().SetHorizontalOffset(999999);
 			SUT.FindVisualChildByType<ScrollContentPresenter>().SetVerticalOffset(999999);
 
-			KeyboardHelper.Down();
+			await KeyboardHelper.Down();
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(2, keyDownCount);
 
-			KeyboardHelper.Right();
+			await KeyboardHelper.Right();
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(3, keyDownCount);
 		}
@@ -742,7 +742,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			// This test is targeted at WASM, but this doesn't simulate a real space (like e.g. puppeteer would),
 			// so the test is not really validating much, merely documenting behaviour
-			KeyboardHelper.Space();
+			await KeyboardHelper.Space();
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(0, SUT.VerticalOffset);

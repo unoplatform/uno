@@ -385,7 +385,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		{
 			Log.Comment("Press accelerator sequence: Ctrl + A");
 			//Key up order should not affect accelerators
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_a#$u$_ctrlscan#$u$_a");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_a#$u$_ctrlscan#$u$_a");
 			await keyboardAcceleratorInvoked.Wait();
 			Log.Comment("Validating button automation action invoked.");
 			await buttonClickTester.Wait();
@@ -439,7 +439,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		{
 			Log.Comment("Press accelerator sequence: Ctrl + A");
 			//Key up order should not affect accelerators
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_a#$u$_ctrlscan#$u$_a");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_a#$u$_ctrlscan#$u$_a");
 			await keyboardAcceleratorInvoked.WaitForNoThrow(TimeSpan.FromMilliseconds(100));
 			await buttonClickTester.WaitForNoThrow(TimeSpan.FromMilliseconds(100));
 			await TestServices.WindowHelper.WaitForIdle();
@@ -457,7 +457,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		{
 			Log.Comment("Press accelerator sequence: Ctrl + A");
 			//Key up order should not affect accelerators
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_a#$u$_ctrlscan#$u$_a");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_a#$u$_ctrlscan#$u$_a");
 			await keyboardAcceleratorInvoked.Wait();
 			await buttonClickTester.Wait();
 		}
@@ -512,7 +512,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		{
 			Log.Comment("Press accelerator sequence: Ctrl + =");
 			//Key up order should not affect accelerators
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_equal#$u$_ctrlscan#$u$_equal");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_equal#$u$_ctrlscan#$u$_equal");
 			await keyboardAcceleratorInvoked.Wait();
 			Log.Comment("Validating button automation action invoked.");
 			await buttonClickTester.Wait();
@@ -563,7 +563,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		using (var keyboardAcceleratorInvoked = new EventTester<KeyboardAccelerator, KeyboardAcceleratorInvokedEventArgs>(f5Accelerator, "Invoked", keyboardAcceleratorInvokedHandler))
 		{
 			Log.Comment("Press accelerator sequence: F5");
-			TestServices.KeyboardHelper.PressKeySequence("$d$_f5#$u$_f5");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_f5#$u$_f5");
 			await keyboardAcceleratorInvoked.Wait();
 		}
 	}
@@ -613,7 +613,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		using (var buttonClickTester = new EventTester<Button, RoutedEventArgs>(button, "Click"))
 		{
 			Log.Comment("Press accelerator : Backspace");
-			TestServices.KeyboardHelper.Backspace();
+			await TestServices.KeyboardHelper.Backspace();
 			await keyboardAcceleratorInvoked.Wait();
 		}
 	}
@@ -662,20 +662,20 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		using (var keyboardAcceleratorInvoked = new EventTester<KeyboardAccelerator, KeyboardAcceleratorInvokedEventArgs>(ctrlShiftSAccelerator, "Invoked", keyboardAcceleratorInvokedHandler))
 		{
 			Log.Comment("Press sequence: Ctrl + S");
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_s#$u$_s#$u$_ctrlscan");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_s#$u$_s#$u$_ctrlscan");
 			await keyboardAcceleratorInvoked.WaitForNoThrow(TimeSpan.FromMilliseconds(100));
 			await TestServices.WindowHelper.WaitForIdle();
 			Verify.IsFalse(keyboardAcceleratorInvoked.HasFired);
 
 
 			Log.Comment("Press sequence: Shift + S");
-			TestServices.KeyboardHelper.PressKeySequence("$d$_shift#$d$_s#$u$_s#$u$_shift");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_shift#$d$_s#$u$_s#$u$_shift");
 			await keyboardAcceleratorInvoked.WaitForNoThrow(TimeSpan.FromMilliseconds(100));
 			await TestServices.WindowHelper.WaitForIdle();
 			Verify.IsFalse(keyboardAcceleratorInvoked.HasFired);
 
 			Log.Comment("Press sequence: Control + Shift + S");
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_shift#$d$_s#$u$_s#$u$_shift#$u$_ctrlscan");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_shift#$d$_s#$u$_s#$u$_shift#$u$_ctrlscan");
 			await keyboardAcceleratorInvoked.Wait();
 		}
 	}
@@ -728,7 +728,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		{
 			Log.Comment("Press accelerator sequence: Ctrl + Tab");
 			//Key up order should not affect accelerators
-			TestServices.KeyboardHelper.CtrlTab();
+			await TestServices.KeyboardHelper.CtrlTab();
 			await keyboardAcceleratorInvoked.Wait();
 			Log.Comment("Validating button automation action invoked.");
 			await buttonClickTester.Wait();
@@ -804,7 +804,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		using (var eventTester3 = new EventTester<Pivot, SelectionChangedEventArgs>(pivot, "SelectionChanged", selectionChangedEventHandler_3))
 		{
 			Log.Comment("Press ctrl+3");
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_3#$u$_3#$u$_ctrlscan");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_3#$u$_3#$u$_ctrlscan");
 			await eventTester3.Wait();
 			await TestServices.WindowHelper.WaitForIdle();
 		}
@@ -812,7 +812,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		using (var eventTester1 = new EventTester<Pivot, SelectionChangedEventArgs>(pivot, "SelectionChanged", selectionChangedEventHandler_1))
 		{
 			Log.Comment("Press 1");
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_1#$u$_1#$u$_ctrlscan");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_1#$u$_1#$u$_ctrlscan");
 			await eventTester1.Wait();
 			await TestServices.WindowHelper.WaitForIdle();
 		}
@@ -820,7 +820,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		using (var eventTester2 = new EventTester<Pivot, SelectionChangedEventArgs>(pivot, "SelectionChanged", selectionChangedEventHandler_2))
 		{
 			Log.Comment("Press 2");
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_2#$u$_2#$u$_ctrlscan");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_2#$u$_2#$u$_ctrlscan");
 			await eventTester2.Wait();
 			await TestServices.WindowHelper.WaitForIdle();
 		}
@@ -870,7 +870,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		{
 			Log.Comment("Press accelerator sequence: Ctrl + A");
 			//Key up order should not affect accelerators
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_a#$u$_ctrlscan#$u$_a");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_a#$u$_ctrlscan#$u$_a");
 			await button.Wait();
 			await rootPanelKeyDown.Wait();
 			await TestServices.WindowHelper.WaitForIdle();
@@ -921,7 +921,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		{
 			Log.Comment("Press accelerator sequence: Ctrl + A");
 			//Key up order should not affect accelerators
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_a#$u$_ctrlscan#$u$_a");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_a#$u$_ctrlscan#$u$_a");
 			await button.Wait();
 			await rootPanelKeyDown.Wait();
 			await TestServices.WindowHelper.WaitForIdle();
@@ -1009,7 +1009,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 			using (var rootPanelKeyDown = EventTester<UIElement, KeyRoutedEventArgs>.FromRoutedEvent(rootPanel, "KeyDown", (t, u) => { } /*No action required*/))
 			{
 				Log.Comment("Press accelerator sequence: Ctrl + A");
-				TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_a#$u$_ctrlscan#$u$_a");
+				await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_a#$u$_ctrlscan#$u$_a");
 				await keyboardAcceleratorInvoked.Wait();
 				await button.WaitForNoThrow(TimeSpan.FromMilliseconds(100));
 				await rootPanelKeyDown.Wait();
@@ -1031,7 +1031,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 				await TestServices.WindowHelper.WaitForIdle();
 
 				Log.Comment("Press accelerator sequence: Ctrl + A");
-				TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_a#$u$_ctrlscan#$u$_a");
+				await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_a#$u$_ctrlscan#$u$_a");
 				await ownedKeyboardAcceleratorInvoked.Wait();
 				await keyboardAcceleratorInvoked.WaitForNoThrow(TimeSpan.FromMilliseconds(100));
 				await button.WaitForNoThrow(TimeSpan.FromMilliseconds(100));
@@ -1056,7 +1056,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 					await TestServices.WindowHelper.WaitForIdle();
 
 					Log.Comment("Press accelerator sequence: Ctrl + A");
-					TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_a#$u$_ctrlscan#$u$_a");
+					await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_a#$u$_ctrlscan#$u$_a");
 
 					await ownedKeyboardAcceleratorInvoked.WaitForNoThrow(TimeSpan.FromMilliseconds(100));
 					await keyboardAcceleratorInvoked.WaitForNoThrow(TimeSpan.FromMilliseconds(100));
@@ -1082,7 +1082,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 					Log.Comment("Press accelerator sequence: Ctrl + A");
 
-					TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_a#$u$_ctrlscan#$u$_a");
+					await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_a#$u$_ctrlscan#$u$_a");
 					await ownedKeyboardAcceleratorInvoked.WaitForNoThrow(TimeSpan.FromMilliseconds(100));
 					await keyboardAcceleratorInvoked.WaitForNoThrow(TimeSpan.FromMilliseconds(100));
 					await buttonProcessKeyboardAccelerators.Wait();
@@ -1155,7 +1155,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		using (var rootPanelKeyUp = EventTester<UIElement, KeyRoutedEventArgs>.FromRoutedEvent(rootPanel, "KeyUp", (t, u) => { } /*No action required*/))
 		{
 			Log.Comment("Press accelerator sequence: Ctrl + A");
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_a#$u$_ctrlscan#$u$_a");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_a#$u$_ctrlscan#$u$_a");
 			await keyboardAcceleratorInvoked.Wait();
 			await rootPanelKeyUp.Wait();
 			await rootPanelProcessKeyboardAccelerators.Wait();
@@ -1208,7 +1208,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		using (var keyboardAcceleratorInvoked = new EventTester<KeyboardAccelerator, KeyboardAcceleratorInvokedEventArgs>(ctrlAAccelerator, "Invoked", keyboardAcceleratorInvokedHandler))
 		{
 			Log.Comment("Press accelerator sequence: Ctrl + A");
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_a#$u$_a#$u$_ctrlscan");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_a#$u$_a#$u$_ctrlscan");
 			await keyboardAcceleratorInvoked.WaitForNoThrow(TimeSpan.FromMilliseconds(100));
 			await TestServices.WindowHelper.WaitForIdle();
 			Verify.IsFalse(keyboardAcceleratorInvoked.HasFired);
@@ -1255,7 +1255,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		using (var keyboardAcceleratorInvoked = new EventTester<KeyboardAccelerator, KeyboardAcceleratorInvokedEventArgs>(ctrlAAccelerator, "Invoked", keyboardAcceleratorInvokedHandler))
 		{
 			Log.Comment("Press accelerator sequence: Ctrl + A");
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_a#$u$_a#$u$_ctrlscan");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_a#$u$_a#$u$_ctrlscan");
 			await keyboardAcceleratorInvoked.WaitForNoThrow(TimeSpan.FromMilliseconds(100));
 			await TestServices.WindowHelper.WaitForIdle();
 			Verify.IsFalse(keyboardAcceleratorInvoked.HasFired);
@@ -1294,7 +1294,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		using (var buttonClick = new EventTester<MyButton, RoutedEventArgs>(button, "Click"))
 		{
 			Log.Comment("Press accelerator sequence: Alt + A");
-			TestServices.KeyboardHelper.PressKeySequence("$d$_alt#$d$_a#$u$_a#$u$_alt");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_alt#$d$_a#$u$_a#$u$_alt");
 			//Wait on the overridden action
 			await button.Wait();
 			await buttonClick.WaitForNoThrow(TimeSpan.FromMilliseconds(100));
@@ -1354,7 +1354,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		using (var buttonClickTester = new EventTester<Button, RoutedEventArgs>(button, "Click", clickEventHandler))
 		{
 			Log.Comment("Press accelerator sequence: Ctrl + A");
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_a#$u$_a#$u$_ctrlscan");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_a#$u$_a#$u$_ctrlscan");
 			await keyboardAcceleratorInvoked.Wait();
 			Log.Comment("Validating button automation action invoked.");
 			await buttonClickTester.WaitForNoThrow(TimeSpan.FromMilliseconds(100));
@@ -1419,7 +1419,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 			using (var keyboardAcceleratorInvoked = new EventTester<KeyboardAccelerator, KeyboardAcceleratorInvokedEventArgs>(ctrlQAccelerator, "Invoked", keyboardAcceleratorInvokedHandler))
 			{
 				Log.Comment("Press accelerator sequence: Ctrl + Q");
-				TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_q#$u$_q#$u$_ctrlscan");
+				await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_q#$u$_q#$u$_ctrlscan");
 				await keyboardAcceleratorInvoked.Wait();
 				await buttonClickTester.Wait();
 
@@ -1492,7 +1492,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		using (var keyboardAcceleratorInvoked = new EventTester<KeyboardAccelerator, KeyboardAcceleratorInvokedEventArgs>(ctrl1Accelerator, "Invoked", keyboardAcceleratorInvokedHandler))
 		{
 			Log.Comment("Press accelerator sequence: Ctrl + 1");
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_1#$u$_1#$u$_ctrlscan");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_1#$u$_1#$u$_ctrlscan");
 			await keyboardAcceleratorInvoked.Wait();
 		}
 
@@ -1557,19 +1557,19 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		using (var keyboardAcceleratorInvoked = new EventTester<KeyboardAccelerator, KeyboardAcceleratorInvokedEventArgs>(MenuItem_KA, "Invoked"))
 		{
 			Log.Comment("Press accelerator sequence for MenuItem_KA: Ctrl + 1");
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_1#$u$_1#$u$_ctrlscan");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_1#$u$_1#$u$_ctrlscan");
 			await keyboardAcceleratorInvoked.Wait();
 		}
 		using (var keyboardAcceleratorInvoked = new EventTester<KeyboardAccelerator, KeyboardAcceleratorInvokedEventArgs>(Sub_MenuItem_KA, "Invoked"))
 		{
 			Log.Comment("Press accelerator sequence for Sub_MenuItem_KA: Ctrl + 2");
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_2#$u$_2#$u$_ctrlscan");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_2#$u$_2#$u$_ctrlscan");
 			await keyboardAcceleratorInvoked.Wait();
 		}
 		using (var keyboardAcceleratorInvoked = new EventTester<KeyboardAccelerator, KeyboardAcceleratorInvokedEventArgs>(Sub_Sub_MenuItem_KA, "Invoked"))
 		{
 			Log.Comment("Press accelerator sequence for Sub_Sub_MenuItem_KA: Ctrl + 3");
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_3#$u$_3#$u$_ctrlscan");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_3#$u$_3#$u$_ctrlscan");
 			await keyboardAcceleratorInvoked.Wait();
 		}
 
@@ -1634,19 +1634,19 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		using (var keyboardAcceleratorInvoked = new EventTester<KeyboardAccelerator, KeyboardAcceleratorInvokedEventArgs>(MenuItem_KA, "Invoked"))
 		{
 			Log.Comment("Press accelerator sequence for MenuItem_KA: Ctrl + 1");
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_1#$u$_1#$u$_ctrlscan");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_1#$u$_1#$u$_ctrlscan");
 			await keyboardAcceleratorInvoked.Wait();
 		}
 		using (var keyboardAcceleratorInvoked = new EventTester<KeyboardAccelerator, KeyboardAcceleratorInvokedEventArgs>(Sub_MenuItem_KA, "Invoked"))
 		{
 			Log.Comment("Press accelerator sequence for Sub_MenuItem_KA: Ctrl + 2");
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_2#$u$_2#$u$_ctrlscan");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_2#$u$_2#$u$_ctrlscan");
 			await keyboardAcceleratorInvoked.Wait();
 		}
 		using (var keyboardAcceleratorInvoked = new EventTester<KeyboardAccelerator, KeyboardAcceleratorInvokedEventArgs>(Sub_Sub_MenuItem_KA, "Invoked"))
 		{
 			Log.Comment("Press accelerator sequence for Sub_Sub_MenuItem_KA: Ctrl + 3");
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_3#$u$_3#$u$_ctrlscan");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_3#$u$_3#$u$_ctrlscan");
 			await keyboardAcceleratorInvoked.Wait();
 		}
 
@@ -1706,7 +1706,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		using (var keyboardAcceleratorInvoked = new EventTester<KeyboardAccelerator, KeyboardAcceleratorInvokedEventArgs>(ctrlSAccelerator, "Invoked", keyboardAcceleratorInvokedHandler))
 		{
 			Log.Comment("Press accelerator sequence: Ctrl + S");
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_s#$u$_s#$u$_ctrlscan");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_s#$u$_s#$u$_ctrlscan");
 			await keyboardAcceleratorInvoked.Wait();
 		}
 
@@ -1766,13 +1766,13 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 		await FocusHelper.EnsureFocusAsync(fileMenu, FocusState.Keyboard);
 		Log.Comment("Press Space to open-up MenuBarItem Flyout");
-		TestServices.KeyboardHelper.Space();
+		await TestServices.KeyboardHelper.Space();
 		await TestServices.WindowHelper.WaitForIdle();
 
 		using (var keyboardAcceleratorInvoked = new EventTester<KeyboardAccelerator, KeyboardAcceleratorInvokedEventArgs>(ctrlSAccelerator, "Invoked", keyboardAcceleratorInvokedHandler))
 		{
 			Log.Comment("Press accelerator sequence: Ctrl + S");
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_s#$u$_s#$u$_ctrlscan");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_s#$u$_s#$u$_ctrlscan");
 			await keyboardAcceleratorInvoked.Wait();
 		}
 
@@ -1832,16 +1832,16 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 		await FocusHelper.EnsureFocusAsync(fileMenu, FocusState.Keyboard);
 		Log.Comment("Press Spacebar to open-up File MenuBarItem Flyout");
-		TestServices.KeyboardHelper.Space();
+		await TestServices.KeyboardHelper.Space();
 		await TestServices.WindowHelper.WaitForIdle();
 		Log.Comment("Press Spacebar again to close File MenuBarItem Flyout");
-		TestServices.KeyboardHelper.Space();
+		await TestServices.KeyboardHelper.Space();
 		await TestServices.WindowHelper.WaitForIdle();
 
 		using (var keyboardAcceleratorInvoked = new EventTester<KeyboardAccelerator, KeyboardAcceleratorInvokedEventArgs>(ctrlSAccelerator, "Invoked", keyboardAcceleratorInvokedHandler))
 		{
 			Log.Comment("Press accelerator sequence: Ctrl + S");
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_s#$u$_s#$u$_ctrlscan");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_s#$u$_s#$u$_ctrlscan");
 			await keyboardAcceleratorInvoked.Wait();
 		}
 
@@ -1892,7 +1892,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		using (var standardUICommandInvoked = new EventTester<StandardUICommand, ExecuteRequestedEventArgs>(deleteCommand, "ExecuteRequested"))
 		{
 			Log.Comment("Press accelerator sequence: Delete");
-			TestServices.KeyboardHelper.Delete();
+			await TestServices.KeyboardHelper.Delete();
 			await standardUICommandInvoked.Wait();
 		}
 
@@ -1940,7 +1940,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		using (var standardUICommandInvoked = new EventTester<StandardUICommand, ExecuteRequestedEventArgs>(deleteCommand, "ExecuteRequested"))
 		{
 			Log.Comment("Press accelerator sequence: Delete");
-			TestServices.KeyboardHelper.Delete();
+			await TestServices.KeyboardHelper.Delete();
 			await standardUICommandInvoked.Wait();
 		}
 
@@ -1988,13 +1988,13 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 		await FocusHelper.EnsureFocusAsync(fileMenu, FocusState.Keyboard);
 		Log.Comment("Press Space to open-up MenuBarItem Flyout");
-		TestServices.KeyboardHelper.Space();
+		await TestServices.KeyboardHelper.Space();
 		await TestServices.WindowHelper.WaitForIdle();
 
 		using (var standardUICommandInvoked = new EventTester<StandardUICommand, ExecuteRequestedEventArgs>(deleteCommand, "ExecuteRequested"))
 		{
 			Log.Comment("Press accelerator sequence: Delete");
-			TestServices.KeyboardHelper.Delete();
+			await TestServices.KeyboardHelper.Delete();
 			await standardUICommandInvoked.Wait();
 		}
 
@@ -2042,16 +2042,16 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 
 		await FocusHelper.EnsureFocusAsync(fileMenu, FocusState.Keyboard);
 		Log.Comment("Press Spacebar to open-up File MenuBarItem Flyout");
-		TestServices.KeyboardHelper.Space();
+		await TestServices.KeyboardHelper.Space();
 		await TestServices.WindowHelper.WaitForIdle();
 		Log.Comment("Press Spacebar again to close File MenuBarItem Flyout");
-		TestServices.KeyboardHelper.Space();
+		await TestServices.KeyboardHelper.Space();
 		await TestServices.WindowHelper.WaitForIdle();
 
 		using (var standardUICommandInvoked = new EventTester<StandardUICommand, ExecuteRequestedEventArgs>(deleteCommand, "ExecuteRequested"))
 		{
 			Log.Comment("Press accelerator sequence: Delete");
-			TestServices.KeyboardHelper.Delete();
+			await TestServices.KeyboardHelper.Delete();
 			await standardUICommandInvoked.Wait();
 		}
 
@@ -2133,11 +2133,11 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		using (var keyboardAcceleratorInvoked2 = new EventTester<KeyboardAccelerator, KeyboardAcceleratorInvokedEventArgs>(ctrl2Accelerator, "Invoked", keyboardAcceleratorInvokedHandler2))
 		{
 			Log.Comment("Press accelerator sequence: Ctrl + 1");
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_1#$u$_1#$u$_ctrlscan");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_1#$u$_1#$u$_ctrlscan");
 			await keyboardAcceleratorInvoked1.WaitForNoThrow(TimeSpan.FromMilliseconds(100));
 
 			Log.Comment("Press accelerator sequence: Ctrl + 2");
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_2#$u$_2#$u$_ctrlscan");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_2#$u$_2#$u$_ctrlscan");
 			await keyboardAcceleratorInvoked2.Wait();
 		}
 
@@ -2218,11 +2218,11 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		using (var keyboardAcceleratorInvoked2 = new EventTester<KeyboardAccelerator, KeyboardAcceleratorInvokedEventArgs>(ctrl2Accelerator, "Invoked", keyboardAcceleratorInvokedHandler2))
 		{
 			Log.Comment("Press accelerator sequence: Ctrl + 1");
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_1#$u$_1#$u$_ctrlscan");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_1#$u$_1#$u$_ctrlscan");
 			await keyboardAcceleratorInvoked1.WaitForNoThrow(TimeSpan.FromMilliseconds(100));
 
 			Log.Comment("Press accelerator sequence: Ctrl + 2");
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_2#$u$_2#$u$_ctrlscan");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_2#$u$_2#$u$_ctrlscan");
 			await keyboardAcceleratorInvoked2.Wait();
 		}
 
@@ -2280,7 +2280,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		using (var keyboardAcceleratorInvoked1 = new EventTester<KeyboardAccelerator, KeyboardAcceleratorInvokedEventArgs>(ctrl1Accelerator, "Invoked", keyboardAcceleratorInvokedHandler1))
 		{
 			Log.Comment("Press accelerator sequence: Ctrl + 1");
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_1#$u$_1#$u$_ctrlscan");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_1#$u$_1#$u$_ctrlscan");
 			await keyboardAcceleratorInvoked1.WaitForNoThrow(TimeSpan.FromMilliseconds(100));
 		}
 
@@ -2345,7 +2345,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		using (var keyboardAcceleratorInvoked = new EventTester<KeyboardAccelerator, KeyboardAcceleratorInvokedEventArgs>(ctrl1Accelerator, "Invoked", keyboardAcceleratorInvokedHandler))
 		{
 			Log.Comment("Press accelerator sequence: Ctrl + 1");
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_1#$u$_1#$u$_ctrlscan");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_1#$u$_1#$u$_ctrlscan");
 			await keyboardAcceleratorInvoked.Wait();
 		}
 
@@ -2406,7 +2406,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		using (var keyboardAcceleratorInvoked = new EventTester<KeyboardAccelerator, KeyboardAcceleratorInvokedEventArgs>(ctrlQAccelerator, "Invoked", keyboardAcceleratorInvokedHandler))
 		{
 			Log.Comment("Press accelerator sequence: Ctrl + Q");
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_q#$u$_q#$u$_ctrlscan");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_q#$u$_q#$u$_ctrlscan");
 			await keyboardAcceleratorInvoked.Wait();
 		}
 	}
@@ -2465,24 +2465,24 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		using (var keyboardAcceleratorInvoked = new EventTester<KeyboardAccelerator, KeyboardAcceleratorInvokedEventArgs>(ctrlQAccelerator, "Invoked", keyboardAcceleratorInvokedHandler))
 		{
 			Log.Comment("Press accelerator sequence: Ctrl + Q");
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_q#$u$_q#$u$_ctrlscan");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_q#$u$_q#$u$_ctrlscan");
 			await keyboardAcceleratorInvoked.Wait();
 		}
 
 		// Tab will move focus to the secondaryButton
-		TestServices.KeyboardHelper.PressKeySequence("$d$_tab#$u$_tab");
+		await TestServices.KeyboardHelper.PressKeySequence("$d$_tab#$u$_tab");
 		await TestServices.WindowHelper.WaitForIdle();
 		// Space will open the secondary command flyout
-		TestServices.KeyboardHelper.PressKeySequence("$d$_space#$u$_space");
+		await TestServices.KeyboardHelper.PressKeySequence("$d$_space#$u$_space");
 		await TestServices.WindowHelper.WaitForIdle();
 		// Another space will dismiss the secondary command flyout
-		TestServices.KeyboardHelper.PressKeySequence("$d$_space#$u$_space");
+		await TestServices.KeyboardHelper.PressKeySequence("$d$_space#$u$_space");
 		await TestServices.WindowHelper.WaitForIdle();
 
 		using (var keyboardAcceleratorInvoked = new EventTester<KeyboardAccelerator, KeyboardAcceleratorInvokedEventArgs>(ctrlQAccelerator, "Invoked", keyboardAcceleratorInvokedHandler))
 		{
 			Log.Comment("Press accelerator sequence: Ctrl + Q");
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_q#$u$_q#$u$_ctrlscan");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_q#$u$_q#$u$_ctrlscan");
 			await keyboardAcceleratorInvoked.Wait();
 		}
 
@@ -2536,7 +2536,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		using (var keyboardAcceleratorInvoked = new EventTester<KeyboardAccelerator, KeyboardAcceleratorInvokedEventArgs>(ctrlQAccelerator, "Invoked", keyboardAcceleratorInvokedHandler))
 		{
 			Log.Comment("Press accelerator sequence: Ctrl + Q");
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_q#$u$_q#$u$_ctrlscan");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_q#$u$_q#$u$_ctrlscan");
 			await keyboardAcceleratorInvoked.WaitForNoThrow(TimeSpan.FromMilliseconds(200));
 		}
 	}
@@ -2592,7 +2592,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		using (var keyboardAcceleratorInvoked = new EventTester<KeyboardAccelerator, KeyboardAcceleratorInvokedEventArgs>(ctrlQAccelerator, "Invoked", keyboardAcceleratorInvokedHandler))
 		{
 			Log.Comment("Press accelerator sequence: Ctrl + Q");
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_q#$u$_q#$u$_ctrlscan");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_q#$u$_q#$u$_ctrlscan");
 			await keyboardAcceleratorInvoked.Wait();
 		}
 	}
@@ -2648,7 +2648,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		using (var keyboardAcceleratorInvoked = new EventTester<KeyboardAccelerator, KeyboardAcceleratorInvokedEventArgs>(ctrlQAccelerator, "Invoked", keyboardAcceleratorInvokedHandler))
 		{
 			Log.Comment("Press accelerator sequence: Ctrl + Q");
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_q#$u$_q#$u$_ctrlscan");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_q#$u$_q#$u$_ctrlscan");
 			await keyboardAcceleratorInvoked.WaitForNoThrow(TimeSpan.FromMilliseconds(200));
 			await TestServices.WindowHelper.WaitForIdle();
 		}
@@ -2704,7 +2704,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		using (var keyboardAcceleratorInvoked = new EventTester<KeyboardAccelerator, KeyboardAcceleratorInvokedEventArgs>(ctrlQAccelerator, "Invoked", keyboardAcceleratorInvokedHandler))
 		{
 			Log.Comment("Press accelerator sequence: Ctrl + Q");
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_q#$u$_q#$u$_ctrlscan");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_q#$u$_q#$u$_ctrlscan");
 			await keyboardAcceleratorInvoked.Wait();
 			await parentPanelProcessKeyboardAccelerators.WaitForNoThrow(TimeSpan.FromMilliseconds(200));
 			await TestServices.WindowHelper.WaitForIdle();
@@ -2761,7 +2761,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		using (var keyboardAcceleratorInvoked = new EventTester<KeyboardAccelerator, KeyboardAcceleratorInvokedEventArgs>(ctrlQAccelerator, "Invoked", keyboardAcceleratorInvokedHandler))
 		{
 			Log.Comment("Press accelerator sequence: Ctrl + Q");
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_q#$u$_q#$u$_ctrlscan");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_q#$u$_q#$u$_ctrlscan");
 			await keyboardAcceleratorInvoked.Wait();
 			await button1ProcessKeyboardAccelerators.WaitForNoThrow(TimeSpan.FromMilliseconds(200));
 			await TestServices.WindowHelper.WaitForIdle();
@@ -2822,7 +2822,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		using (var keyboardAccelerator2Invoked = new EventTester<KeyboardAccelerator, KeyboardAcceleratorInvokedEventArgs>(ctrlAAccelerator2, "Invoked", keyboardAcceleratorInvokedHandler))
 		{
 			Log.Comment("Press accelerator sequence: Ctrl + A");
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_a#$u$_a#$u$_ctrlscan");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_a#$u$_a#$u$_ctrlscan");
 			await keyboardAccelerator1Invoked.Wait();
 			await keyboardAccelerator2Invoked.WaitForNoThrow(TimeSpan.FromMilliseconds(100));
 			Verify.IsFalse(keyboardAccelerator2Invoked.HasFired);
@@ -2887,7 +2887,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		using (var keyboardAcceleratorInvoked = new EventTester<KeyboardAccelerator, KeyboardAcceleratorInvokedEventArgs>(ctrl1Accelerator1, "Invoked", keyboardAcceleratorInvokedHandler))
 		{
 			Log.Comment("Press accelerator sequence: Ctrl + 1");
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_1#$u$_1#$u$_ctrlscan");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_1#$u$_1#$u$_ctrlscan");
 			await keyboardAcceleratorInvoked.Wait();
 			await TestServices.WindowHelper.WaitForIdle();
 		}
@@ -2956,7 +2956,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		using (var keyboardAcceleratorInvoked = new EventTester<KeyboardAccelerator, KeyboardAcceleratorInvokedEventArgs>(ctrl1Accelerator, "Invoked", keyboardAcceleratorInvokedHandler))
 		{
 			Log.Comment("Press accelerator sequence: Ctrl + 2, not Ctrl + 1");
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_2#$u$_2#$u$_ctrlscan");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_2#$u$_2#$u$_ctrlscan");
 			await keyboardAcceleratorInvoked.WaitForNoThrow(TimeSpan.FromMilliseconds(200));
 			await rootPanel.Wait();
 			Verify.IsTrue(rootPanel.HasFired);
@@ -3073,7 +3073,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		using (var button2KeyboardAcceleratorInvoked = new EventTester<KeyboardAccelerator, KeyboardAcceleratorInvokedEventArgs>(ctrl1Button2Accelerator, "Invoked", button2KeyboardAcceleratorInvokedHandler))
 		{
 			Log.Comment("Press accelerator sequence: Ctrl + 1");
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_1#$u$_1#$u$_ctrlscan");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_1#$u$_1#$u$_ctrlscan");
 			await button1KeyboardAcceleratorInvoked.WaitForNoThrow(TimeSpan.FromMilliseconds(200));
 			await button1GlobalKeyboardAcceleratorInvoked.Wait();
 			await button2KeyboardAcceleratorInvoked.WaitForNoThrow(TimeSpan.FromMilliseconds(200));
@@ -3152,7 +3152,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 			new EventTester<KeyboardAccelerator, KeyboardAcceleratorInvokedEventArgs>(ctrl1AcceleratorScopedtoListView, "Invoked", keyboardAcceleratorInvokedForListViewHandler))
 		{
 			Log.Comment("Press accelerator sequence: Ctrl + 1");
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_1#$u$_1#$u$_ctrlscan");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_1#$u$_1#$u$_ctrlscan");
 			await keyboardAcceleratorScopedtoContextFlyoutInvoked.WaitForNoThrow(TimeSpan.FromMilliseconds(200));
 			await keyboardAcceleratorScopedtoListViewInvoked.Wait();
 			await TestServices.WindowHelper.WaitForIdle();
@@ -3219,7 +3219,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		{
 			Log.Comment("Press accelerator sequence: Ctrl + A");
 			//Key up order should not affect accelerators
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_a#$u$_ctrlscan#$u$_a");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_a#$u$_ctrlscan#$u$_a");
 			await keyboardAcceleratorInvoked.WaitForNoThrow(TimeSpan.FromMilliseconds(200));
 			await TestServices.WindowHelper.WaitForIdle();
 			Verify.IsFalse(keyboardAcceleratorInvoked.HasFired);
@@ -3300,7 +3300,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		using (var keyboardAcceleratorInvoked = new EventTester<KeyboardAccelerator, KeyboardAcceleratorInvokedEventArgs>(acceleratorA, "Invoked", keyboardAcceleratorInvokedHandler))
 		using (var textChangedTester = new EventTester<TextBox, TextChangedEventArgs>(textBox, "TextChanged", textBoxTextChangedHandler))
 		{
-			TestServices.KeyboardHelper.PressKeySequence("aTester");
+			await TestServices.KeyboardHelper.PressKeySequence("aTester");
 			await keyboardAcceleratorInvoked.Wait();
 			await textChangedTester.Wait();
 			await TestServices.WindowHelper.WaitForIdle();
@@ -3373,7 +3373,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		using (var keyboardAcceleratorAInvoked = new EventTester<KeyboardAccelerator, KeyboardAcceleratorInvokedEventArgs>(acceleratorA, "Invoked", keyboardAcceleratorInvokedHandler))
 		using (var textChangedTester = new EventTester<TextBox, TextChangedEventArgs>(textBox, "TextChanged", textBoxTextChangedHandler))
 		{
-			TestServices.KeyboardHelper.PressKeySequence("a");
+			await TestServices.KeyboardHelper.PressKeySequence("a");
 			await keyboardAcceleratorAInvoked.WaitForNoThrow(TimeSpan.FromMilliseconds(100));
 			await TestServices.WindowHelper.WaitForIdle();
 			Verify.IsFalse(keyboardAcceleratorAInvoked.HasFired);
@@ -3391,7 +3391,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		Log.Comment("Left will move the cursor and handled by RichEdit, it should not generate accelerator event.");
 		using (var keyboardAcceleratorInvoked = new EventTester<KeyboardAccelerator, KeyboardAcceleratorInvokedEventArgs>(acceleratorLeft, "Invoked", keyboardAcceleratorInvokedHandler))
 		{
-			TestServices.KeyboardHelper.Left();
+			await TestServices.KeyboardHelper.Left();
 			await keyboardAcceleratorInvoked.WaitForNoThrow(TimeSpan.FromMilliseconds(100));
 			await TestServices.WindowHelper.WaitForIdle();
 			Verify.IsFalse(keyboardAcceleratorInvoked.HasFired);
@@ -3400,7 +3400,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		Log.Comment("Second left key will not move the cursor, but it should still not generate accelerator event.");
 		using (var keyboardAcceleratorInvoked = new EventTester<KeyboardAccelerator, KeyboardAcceleratorInvokedEventArgs>(acceleratorLeft, "Invoked", keyboardAcceleratorInvokedHandler))
 		{
-			TestServices.KeyboardHelper.Left();
+			await TestServices.KeyboardHelper.Left();
 			await keyboardAcceleratorInvoked.WaitForNoThrow(TimeSpan.FromMilliseconds(100));
 			await TestServices.WindowHelper.WaitForIdle();
 			Verify.IsFalse(keyboardAcceleratorInvoked.HasFired);
@@ -3409,7 +3409,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		Log.Comment("Press F3 key should generate accelerator event.");
 		using (var keyboardAcceleratorInvoked = new EventTester<KeyboardAccelerator, KeyboardAcceleratorInvokedEventArgs>(acceleratorF3, "Invoked", keyboardAcceleratorInvokedHandler))
 		{
-			TestServices.KeyboardHelper.PressKeySequence("$d$_f3#$u$_f3");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_f3#$u$_f3");
 			await keyboardAcceleratorInvoked.Wait();
 			await TestServices.WindowHelper.WaitForIdle();
 		}
@@ -3417,7 +3417,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 		Log.Comment("Press Ctrl-S key should generate accelerator event.");
 		using (var keyboardAcceleratorInvoked = new EventTester<KeyboardAccelerator, KeyboardAcceleratorInvokedEventArgs>(acceleratorCtrlS, "Invoked", keyboardAcceleratorInvokedHandler))
 		{
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrl#$d$_s#$u$_s#$u$_ctrl");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrl#$d$_s#$u$_s#$u$_ctrl");
 			await keyboardAcceleratorInvoked.Wait();
 			await TestServices.WindowHelper.WaitForIdle();
 		}
@@ -3478,7 +3478,7 @@ public partial class KeyboardAcceleratorTests : MUXApiTestBase
 			});
 			Log.Comment("Press accelerator sequence: Ctrl + A");
 			//Key up order should not affect accelerators
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_a#$u$_ctrlscan#$u$_a");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrlscan#$d$_a#$u$_ctrlscan#$u$_a");
 
 			await keyboardAcceleratorInvoked.Wait();
 			Log.Comment("Validating SelectionChanged event was not fired");

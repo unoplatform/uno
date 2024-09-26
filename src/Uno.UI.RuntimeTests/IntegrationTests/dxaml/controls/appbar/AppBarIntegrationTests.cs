@@ -277,13 +277,13 @@ namespace Windows.UI.Tests.Enterprise
 			AttachOpenedAndClosedHandlers(inlineAppBar, inlineOpenedEvent, inlineOpenedRegistration, inlineClosedEvent, inlineClosedRegistration);
 
 			LOG_OUTPUT("Pressing the CONTEXTMENU key opens the top and bottom AppBars only (and not the inline AppBar).");
-			KeyboardHelper.PressKeySequence(contextMenuKeySequence);
+			await KeyboardHelper.PressKeySequence(contextMenuKeySequence);
 			await topOpenedEvent.WaitForDefault();
 			await bottomOpenedEvent.WaitForDefault();
 			VERIFY_IS_FALSE(inlineOpenedEvent.HasFired());
 
 			LOG_OUTPUT("Pressing the CONTEXTMENU key closes the top and bottom AppBars only (and not the inline AppBar).");
-			KeyboardHelper.PressKeySequence(contextMenuKeySequence);
+			await KeyboardHelper.PressKeySequence(contextMenuKeySequence);
 			await topClosedEvent.WaitForDefault();
 			await bottomClosedEvent.WaitForDefault();
 			VERIFY_IS_FALSE(inlineClosedEvent.HasFired());
@@ -399,16 +399,16 @@ namespace Windows.UI.Tests.Enterprise
 				bottomExpandButton.Focus(FocusState.Programmatic);
 			});
 
-			KeyboardHelper.Tab();
+			await KeyboardHelper.Tab();
 			await WindowHelper.WaitForIdle();
 
 			LOG_OUTPUT("Try closing the non-sticky bottom AppBar using ESC key.");
-			KeyboardHelper.PressKeySequence(escapeKeySequence);
+			await KeyboardHelper.PressKeySequence(escapeKeySequence);
 			await bottomClosedEvent.WaitForDefault();
 
 
 			LOG_OUTPUT("Try closing the non-sticky inline Appbar using ESC key.");
-			KeyboardHelper.PressKeySequence(escapeKeySequence);
+			await KeyboardHelper.PressKeySequence(escapeKeySequence);
 			await inlineClosedEvent.WaitForDefault();
 
 			await RunOnUIThread(() =>
@@ -2188,7 +2188,7 @@ namespace Windows.UI.Tests.Enterprise
 					pageKeyDownEvent.Set();
 				});
 
-				CommonInputHelper.Cancel(device);
+				await CommonInputHelper.Cancel(device);
 
 				await pageKeyDownEvent.WaitForDefault();
 			},

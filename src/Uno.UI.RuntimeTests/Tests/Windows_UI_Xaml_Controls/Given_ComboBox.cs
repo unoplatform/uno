@@ -582,7 +582,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(SUT, FocusManager.GetFocusedElement(SUT.XamlRoot));
 
-			KeyboardHelper.Tab();
+			await KeyboardHelper.Tab();
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(btn, FocusManager.GetFocusedElement(SUT.XamlRoot));
@@ -617,13 +617,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(SUT, FocusManager.GetFocusedElement(SUT.XamlRoot));
 
-			KeyboardHelper.Space();
+			await KeyboardHelper.Space();
 			await WindowHelper.WaitForIdle();
 
 			Assert.IsTrue(SUT.IsDropDownOpen);
 			Assert.IsTrue(FocusManager.GetFocusedElement(SUT.XamlRoot) is ComboBoxItem);
 
-			KeyboardHelper.Tab();
+			await KeyboardHelper.Tab();
 			await WindowHelper.WaitForIdle();
 
 			Assert.IsFalse(SUT.IsDropDownOpen);
@@ -1193,7 +1193,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(-1, comboBox.SelectedIndex);
 			Assert.AreEqual(false, comboBox.IsDropDownOpen);
-			KeyboardHelper.PressKeySequence("$d$_r#$u$_r");
+			await KeyboardHelper.PressKeySequence("$d$_r#$u$_r");
 
 			var expectedSelectedIndex = isTextSearchEnabled ? 2 : -1;
 			var expectedSelectedItem = isTextSearchEnabled ? "Rabbit" : null;
@@ -1226,7 +1226,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			comboBox.Focus(FocusState.Programmatic);
 
 			Assert.AreEqual(3, comboBox.SelectedIndex);
-			KeyboardHelper.PressKeySequence("$d$_r#$u$_r");
+			await KeyboardHelper.PressKeySequence("$d$_r#$u$_r");
 
 			var expectedSelectedIndex = isTextSearchEnabled ? 2 : 3;
 			var expectedSelectedItem = isTextSearchEnabled ? "Rabbit" : "Elephant";
@@ -1234,12 +1234,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(expectedSelectedItem, comboBox.SelectedItem);
 
 			Assert.IsTrue(comboBox.IsDropDownOpen);
-			KeyboardHelper.Space();
+			await KeyboardHelper.Space();
 			Assert.AreEqual(isTextSearchEnabled, comboBox.IsDropDownOpen);
 
 			await Task.Delay(1100); // Make sure to wait enough so that HasSearchStringTimedOut becomes true.
 
-			KeyboardHelper.Space();
+			await KeyboardHelper.Space();
 
 			Assert.AreEqual(!isTextSearchEnabled, comboBox.IsDropDownOpen);
 		}

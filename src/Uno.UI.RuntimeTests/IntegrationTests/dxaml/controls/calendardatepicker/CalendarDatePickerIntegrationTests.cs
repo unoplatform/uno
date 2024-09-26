@@ -242,12 +242,12 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 			await TestServices.WindowHelper.WaitForIdle();
 
 			// press enter to open flyout
-			TestServices.KeyboardHelper.Enter();
+			await TestServices.KeyboardHelper.Enter();
 
 			await helper.WaitForOpened();
 
 			// escape to close the flyout
-			TestServices.KeyboardHelper.Escape();
+			await TestServices.KeyboardHelper.Escape();
 
 			await TestServices.WindowHelper.WaitForIdle();
 			await helper.PrepareOpenedEvent();
@@ -259,12 +259,12 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 			await TestServices.WindowHelper.WaitForIdle();
 
 			// press space to open flyout
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ #$u$_ ");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ #$u$_ ");
 
 			await helper.WaitForOpened();
 
 			// escape to close the flyout
-			TestServices.KeyboardHelper.Escape();
+			await TestServices.KeyboardHelper.Escape();
 			await TestServices.WindowHelper.WaitForIdle();
 
 			styleDisposable?.Dispose();

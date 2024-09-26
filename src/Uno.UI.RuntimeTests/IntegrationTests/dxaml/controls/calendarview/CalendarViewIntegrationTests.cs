@@ -1769,7 +1769,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 				firstItem.Focus(FocusState.Programmatic);
 			});
 
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrl#$d$_up#$u$_up#$u$_ctrl");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrl#$d$_up#$u$_up#$u$_ctrl");
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
@@ -1822,8 +1822,8 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, minDate));
 			});
 
-			TestServices.KeyboardHelper.Down();
-			TestServices.KeyboardHelper.Down();
+			await TestServices.KeyboardHelper.Down();
+			await TestServices.KeyboardHelper.Down();
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
@@ -1832,7 +1832,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 9, 17)));
 			});
 
-			TestServices.KeyboardHelper.PressKeySequence(
+			await TestServices.KeyboardHelper.PressKeySequence(
 				"$d$_left#$u$_left#$d$_left#$u$_left#$d$_left#$u$_left#$d$_left#$u$_left");
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
@@ -1842,7 +1842,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 9, 13)));
 			});
 
-			TestServices.KeyboardHelper.PressKeySequence("$d$_right#$u$_right");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_right#$u$_right");
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
@@ -1851,7 +1851,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 9, 14)));
 			});
 
-			TestServices.KeyboardHelper.Up();
+			await TestServices.KeyboardHelper.Up();
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
@@ -1860,7 +1860,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 9, 7)));
 			});
 
-			TestServices.KeyboardHelper.PressKeySequence("$d$_home#$u$_home");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_home#$u$_home");
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
@@ -1870,7 +1870,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 9, 3)));
 			});
 
-			TestServices.KeyboardHelper.PressKeySequence("$d$_home#$u$_home");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_home#$u$_home");
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
@@ -1879,7 +1879,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 9, 3)));
 			});
 
-			TestServices.KeyboardHelper.PressKeySequence("$d$_end#$u$_end");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_end#$u$_end");
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
@@ -1888,7 +1888,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 9, 30)));
 			});
 
-			TestServices.KeyboardHelper.PressKeySequence("$d$_end#$u$_end");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_end#$u$_end");
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
@@ -1897,7 +1897,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 9, 30)));
 			});
 
-			TestServices.KeyboardHelper.PressKeySequence("$d$_pagedown#$u$_pagedown");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_pagedown#$u$_pagedown");
 			// sometime the following right key press event is not handled by App, can't repro this issue locally with or without stress.
 			// try an additional UpdateLayout to see if it helps.
 			await RunOnUIThread(() =>
@@ -1905,7 +1905,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 				cv.UpdateLayout();
 			});
 			await WindowHelper.WaitForIdle();
-			TestServices.KeyboardHelper.PressKeySequence("$d$_right#$u$_right");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_right#$u$_right");
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
@@ -1915,7 +1915,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 10, 31)));
 			});
 
-			TestServices.KeyboardHelper.PressKeySequence("$d$_pageup#$u$_pageup");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_pageup#$u$_pageup");
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
@@ -1925,7 +1925,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, ConvertToDateTime(1, 2014, 9, 30)));
 			});
 
-			TestServices.KeyboardHelper.PressKeySequence("$d$_pagedown#$u$_pagedown");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_pagedown#$u$_pagedown");
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
@@ -2045,7 +2045,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		//}
 
 		[TestMethod]
-		[Ignore("TestServices.KeyboardHelper.PressKeySequence() not supported yet")]
+		[Ignore("await TestServices.KeyboardHelper.PressKeySequence() not supported yet")]
 		public async Task KeyboardNavigationTestCanTryToNavigateOutOfBoundary()
 		{
 			TestCleanupWrapper cleanup;
@@ -2089,7 +2089,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, minDate));
 			});
 
-			TestServices.KeyboardHelper.Down();
+			await TestServices.KeyboardHelper.Down();
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
@@ -2101,7 +2101,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, minDate));
 			});
 
-			TestServices.KeyboardHelper.Up();
+			await TestServices.KeyboardHelper.Up();
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
@@ -2112,7 +2112,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 			});
 
 
-			TestServices.KeyboardHelper.PressKeySequence("$d$_right#$u$_right");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_right#$u$_right");
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
@@ -2122,7 +2122,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 				VERIFY_IS_TRUE(comparer(focusedElement.Date, minDate));
 			});
 
-			TestServices.KeyboardHelper.PressKeySequence("$d$_left#$u$_left");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_left#$u$_left");
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
@@ -2218,7 +2218,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 				await WindowHelper.WaitForIdle();
 
 				// tab out
-				TestServices.KeyboardHelper.Tab();
+				await TestServices.KeyboardHelper.Tab();
 				await WindowHelper.WaitForIdle();
 				await RunOnUIThread(() =>
 				{
@@ -2227,7 +2227,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 				});
 
 				// shift tab back
-				TestServices.KeyboardHelper.ShiftTab();
+				await TestServices.KeyboardHelper.ShiftTab();
 				await WindowHelper.WaitForIdle();
 				await RunOnUIThread(() =>
 				{
@@ -2236,7 +2236,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 				});
 
 				// shift tab out
-				TestServices.KeyboardHelper.ShiftTab();
+				await TestServices.KeyboardHelper.ShiftTab();
 				await WindowHelper.WaitForIdle();
 				await RunOnUIThread(() =>
 				{
@@ -2245,7 +2245,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 				});
 
 				// tab back
-				TestServices.KeyboardHelper.Tab();
+				await TestServices.KeyboardHelper.Tab();
 				await WindowHelper.WaitForIdle();
 				await RunOnUIThread(() =>
 				{
@@ -2256,7 +2256,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
-		[Ignore("TestServices.KeyboardHelper.PressKeySequence() not supported yet")]
+		[Ignore("await TestServices.KeyboardHelper.PressKeySequence() not supported yet")]
 		public async Task KeyboardNavigationTestSpaceEnterTest()
 		{
 			TestCleanupWrapper cleanup;
@@ -2302,7 +2302,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 			});
 
 			// ctrl + up
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrl#$d$_up#$u$_up#$u$_ctrl");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrl#$d$_up#$u$_up#$u$_ctrl");
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
@@ -2313,7 +2313,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 			});
 
 			// ctrl + up
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrl#$d$_up#$u$_up#$u$_ctrl");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrl#$d$_up#$u$_up#$u$_ctrl");
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
@@ -2324,7 +2324,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 			});
 
 			// ctrl + up
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrl#$d$_up#$u$_up#$u$_ctrl");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrl#$d$_up#$u$_up#$u$_ctrl");
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
@@ -2335,7 +2335,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 			});
 
 			// right, ctrl + down - > to select year 2015 and switch back to Year mode
-			TestServices.KeyboardHelper.PressKeySequence("$d$_right#$u$_right#$d$_ctrl#$d$_down#$u$_down#$u$_ctrl");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_right#$u$_right#$d$_ctrl#$d$_down#$u$_down#$u$_ctrl");
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
@@ -2346,7 +2346,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 
 			// right, ctrl + down - > to select month Feburary and switch back to month mode
 			// we should on 2/28/2015
-			TestServices.KeyboardHelper.PressKeySequence("$d$_right#$u$_right#$d$_ctrl#$d$_down#$u$_down#$u$_ctrl");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_right#$u$_right#$d$_ctrl#$d$_down#$u$_down#$u$_ctrl");
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
@@ -2358,7 +2358,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 			});
 
 			// ctrl + down . nothing should happen
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ctrl#$d$_down#$u$_down#$u$_ctrl");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_ctrl#$d$_down#$u$_down#$u$_ctrl");
 			await WindowHelper.WaitForIdle();
 			await RunOnUIThread(() =>
 			{
@@ -3297,7 +3297,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
-		[Ignore("TestServices.KeyboardHelper.PressKeySequence() not supported yet")]
+		[Ignore("await TestServices.KeyboardHelper.PressKeySequence() not supported yet")]
 		public async Task CanChangeDecadeCalendarIdentifier()
 		{
 			await VerifyChangingCalendarIdentifier(CalendarViewDisplayMode.Decade);
@@ -3360,13 +3360,13 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 			// press Right once, Left twice,
 			// press PgDn once, PgUp twice
 
-			TestServices.KeyboardHelper.Down();
-			TestServices.KeyboardHelper.Up();
-			TestServices.KeyboardHelper.Up();
+			await TestServices.KeyboardHelper.Down();
+			await TestServices.KeyboardHelper.Up();
+			await TestServices.KeyboardHelper.Up();
 			await WindowHelper.WaitForIdle();
-			TestServices.KeyboardHelper.PressKeySequence("$d$_right#$u$_right#$d$_left#$u$_left#$d$_left#$u$_left");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_right#$u$_right#$d$_left#$u$_left#$d$_left#$u$_left");
 			await WindowHelper.WaitForIdle();
-			TestServices.KeyboardHelper.PressKeySequence("$d$_pagedown#$u$_pagedown#$d$_pageup#$u$_pageup#$d$_pageup#$u$_pageup");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_pagedown#$u$_pagedown#$d$_pageup#$u$_pageup#$d$_pageup#$u$_pageup");
 			await WindowHelper.WaitForIdle();
 
 			await RunOnUIThread(() =>
@@ -3390,13 +3390,13 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 			// press Left once, Right twice,
 			// press PgUp once, PgDown twice
 
-			TestServices.KeyboardHelper.Up();
-			TestServices.KeyboardHelper.Down();
-			TestServices.KeyboardHelper.Down();
+			await TestServices.KeyboardHelper.Up();
+			await TestServices.KeyboardHelper.Down();
+			await TestServices.KeyboardHelper.Down();
 			await WindowHelper.WaitForIdle();
-			TestServices.KeyboardHelper.PressKeySequence("$d$_left#$u$_left#$d$_right#$u$_right#$d$_right#$u$_right");
+			await TestServices.KeyboardHelper.PressKeySequence("$d$_left#$u$_left#$d$_right#$u$_right#$d$_right#$u$_right");
 			await WindowHelper.WaitForIdle();
-			TestServices.KeyboardHelper.PressKeySequence(
+			await TestServices.KeyboardHelper.PressKeySequence(
 				"$d$_pageup#$u$_pageup#$d$_pagedown#$u$_pagedown#$d$_pagedown#$u$_pagedown");
 			await WindowHelper.WaitForIdle();
 
@@ -4589,7 +4589,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 
 			await WindowHelper.WaitForIdle();
 
-			TestServices.KeyboardHelper.Down();
+			await TestServices.KeyboardHelper.Down();
 
 			await WindowHelper.WaitForIdle();
 
