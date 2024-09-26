@@ -103,7 +103,7 @@ Hot Reload features vary between platforms and IDE, you can check below the list
         </tr>
         <tr>
             <td>WinAppSDK</td>
-            <td>✅🐞<a href="#hr-footnotes">[5]</a></td><td>✅🐞</td>
+            <td>✅<sup><a href="#hr-footnotes">[5]</a></sup>🐞</td><td>✅🐞</td>
             <td>🔳</td><td>🔳</td>
             <td>🔳</td><td>🔳</td>
         </tr>
