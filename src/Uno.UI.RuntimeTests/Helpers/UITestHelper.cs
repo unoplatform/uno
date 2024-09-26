@@ -12,6 +12,7 @@ using Windows.Storage.Streams;
 using Windows.System;
 using Windows.UI.Input.Preview.Injection;
 using Windows.UI.Popups;
+using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -323,6 +324,16 @@ public partial class DynamicDataTemplatePresenter : ContentPresenter
 
 public static class InputInjectorExtensions
 {
+	public static IInjectedPointer GetPointer(this InputInjector injector, PointerDeviceType pointer)
+		=> pointer switch
+		{
+			PointerDeviceType.Touch => GetFinger(injector),
+#if !WINAPPSDK
+			PointerDeviceType.Mouse => GetMouse(injector),
+#endif
+			_ => throw new NotSupportedException($"Injection of {pointer} is not supported on this platform.")
+		};
+
 	public static Finger GetFinger(this InputInjector injector, uint id = 42)
 		=> new(injector, id);
 
@@ -336,7 +347,7 @@ public interface IInjectedPointer
 {
 	void Press(Point position);
 
-	void MoveTo(Point position);
+	void MoveTo(Point position, uint? steps = null);
 
 	void MoveBy(double deltaX = 0, double deltaY = 0);
 
@@ -400,7 +411,7 @@ public partial class Finger : IInjectedPointer, IDisposable
 		}
 	}
 
-	void IInjectedPointer.MoveTo(Point position) => MoveTo(position);
+	void IInjectedPointer.MoveTo(Point position, uint? steps) => MoveTo(position, steps ?? _defaultMoveSteps);
 	public void MoveTo(Point position, uint steps = _defaultMoveSteps)
 	{
 		if (_currentPosition is { } current)
@@ -460,6 +471,7 @@ public partial class Finger : IInjectedPointer, IDisposable
 			{
 				PointerInfo = new()
 				{
+					TimeOffsetInMilliseconds = 1,
 					PixelLocation = At(fromPosition.X + step * stepX, fromPosition.Y + step * stepY),
 					PointerOptions = InjectedInputPointerOptions.Update
 						| InjectedInputPointerOptions.FirstButton
@@ -604,7 +616,6 @@ public class Mouse : IInjectedPointer, IDisposable
 	public void MoveBy(double deltaX, double deltaY)
 		=> Inject(GetMoveBy(deltaX, deltaY));
 
-	void IInjectedPointer.MoveTo(Point position) => MoveTo(position);
 	public void MoveTo(Point position, uint? steps = null)
 		=> Inject(GetMoveTo(position.X, position.Y, steps));
 
