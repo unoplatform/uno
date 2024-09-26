@@ -72,12 +72,12 @@ internal static class ComboBoxHelper
 		else if (openMethod == OpenMethod.Keyboard)
 		{
 			await FocusComboBoxIfNecessary(comboBox);
-			TestServices.KeyboardHelper.PressKeySequence(" ");
+			await TestServices.KeyboardHelper.PressKeySequence(" ");
 		}
 		else if (openMethod == OpenMethod.Gamepad)
 		{
 			await FocusComboBoxIfNecessary(comboBox);
-			CommonInputHelper.Accept(InputDevice.Gamepad);
+			await CommonInputHelper.Accept(InputDevice.Gamepad);
 		}
 		else if (openMethod == OpenMethod.Programmatic)
 		{
@@ -119,11 +119,11 @@ internal static class ComboBoxHelper
 		}
 		else if (closeMethod == CloseMethod.Keyboard)
 		{
-			CommonInputHelper.Cancel(InputDevice.Keyboard);
+			await CommonInputHelper.Cancel(InputDevice.Keyboard);
 		}
 		else if (closeMethod == CloseMethod.Gamepad)
 		{
-			CommonInputHelper.Cancel(InputDevice.Gamepad);
+			await CommonInputHelper.Cancel(InputDevice.Gamepad);
 		}
 		else if (closeMethod == CloseMethod.Programmatic)
 		{

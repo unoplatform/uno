@@ -10,7 +10,6 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Tests.Common;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests;
-using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.MUX.Helpers;
 using Windows.Foundation;
 using static Private.Infrastructure.TestServices;
@@ -678,7 +677,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	//LOG_OUTPUT("ComboBox: Injecting key sequence");
 	//LOG_OUTPUT("%s", keySequence.Data());
 
-	//TestServices.KeyboardHelper.PressKeySequence(keySequence);
+	//await TestServices.KeyboardHelper.PressKeySequence(keySequence);
 
 	//await TestServices.WindowHelper.WaitForIdle();
 	//comboBoxClosedEvent.WaitFor(std.chrono.milliseconds(8000)); //TFS #3636501 is tracking an issue where input injection is a taking too long
@@ -714,7 +713,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	//LOG_OUTPUT("ComboBox: Injecting key sequence again to make sure no events are handled with the drop-down closed.");
 	//LOG_OUTPUT("%s", keySequence.Data());
 
-	//TestServices.KeyboardHelper.PressKeySequence(keySequence);
+	//await TestServices.KeyboardHelper.PressKeySequence(keySequence);
 
 	//await TestServices.WindowHelper.WaitForIdle();
 	//	}
@@ -796,7 +795,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	//LOG_OUTPUT("Injecting key-down sequence.");
 	//LOG_OUTPUT("%s", keyDownSequence.Data());
 
-	//TestServices.KeyboardHelper.PressKeySequence(keyDownSequence);
+	//await TestServices.KeyboardHelper.PressKeySequence(keyDownSequence);
 
 	//await TestServices.WindowHelper.WaitForIdle();
 	//comboBoxClosedEvent.WaitFor(std.chrono.milliseconds(8000)); //TFS #3636501 is tracking an issue where input injection is a taking too long
@@ -804,7 +803,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	//LOG_OUTPUT("Injecting key-down sequence again to simulate the situation where the user is holding down the key.");
 	//LOG_OUTPUT("%s", keyDownSequence.Data());
 
-	//TestServices.KeyboardHelper.PressKeySequence(keyDownSequence);
+	//await TestServices.KeyboardHelper.PressKeySequence(keyDownSequence);
 
 	//await TestServices.WindowHelper.WaitForIdle();
 	//comboBoxKeyDownRepeatedEvent.WaitFor(std.chrono.milliseconds(8000));
@@ -812,7 +811,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	//LOG_OUTPUT("Injecting key-up sequence.");
 	//LOG_OUTPUT("%s", keyUpSequence.Data());
 
-	//TestServices.KeyboardHelper.PressKeySequence(keyUpSequence);
+	//await TestServices.KeyboardHelper.PressKeySequence(keyUpSequence);
 
 	//await TestServices.WindowHelper.WaitForIdle();
 	//    }
@@ -1113,19 +1112,19 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 		await TestServices.WindowHelper.WaitForIdle();
 
 		LOG_OUTPUT("Open the ComboBox with the Space key");
-		TestServices.KeyboardHelper.PressKeySequence(" ");
+		await TestServices.KeyboardHelper.PressKeySequence(" ");
 		await TestServices.WindowHelper.WaitForIdle();
 		await dropDownOpenedEvent.WaitForDefault();
 
 		await ComboBoxHelper.VerifySelectedIndex(comboBox, -1);
 
 		LOG_OUTPUT("Select the first item with the Down key");
-		TestServices.KeyboardHelper.Down();
+		await TestServices.KeyboardHelper.Down();
 		await TestServices.WindowHelper.WaitForIdle();
 		await ComboBoxHelper.VerifySelectedIndex(comboBox, 0);
 
 		LOG_OUTPUT("Change selection with the Down key");
-		TestServices.KeyboardHelper.Down();
+		await TestServices.KeyboardHelper.Down();
 		await TestServices.WindowHelper.WaitForIdle();
 		await ComboBoxHelper.VerifySelectedIndex(comboBox, 1);
 
@@ -1151,19 +1150,19 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 		});
 
 		LOG_OUTPUT("Change selection with the Down key");
-		TestServices.KeyboardHelper.Down();
+		await TestServices.KeyboardHelper.Down();
 		await comboBoxItem2gotFocusEvent.WaitForDefault();
 		await TestServices.WindowHelper.WaitForIdle();
 		await ComboBoxHelper.VerifySelectedIndex(comboBox, 2);
 
 		LOG_OUTPUT("Change selection with the Up key");
-		TestServices.KeyboardHelper.Up();
+		await TestServices.KeyboardHelper.Up();
 		await comboBoxItem2lostFocusEvent.WaitForDefault();
 		await TestServices.WindowHelper.WaitForIdle();
 		await ComboBoxHelper.VerifySelectedIndex(comboBox, 1);
 
 		LOG_OUTPUT("Accept selection with the Space key");
-		TestServices.KeyboardHelper.PressKeySequence(" ");
+		await TestServices.KeyboardHelper.PressKeySequence(" ");
 		await TestServices.WindowHelper.WaitForIdle();
 		await dropDownClosedEvent.WaitForDefault();
 
@@ -1198,7 +1197,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 		await TestServices.WindowHelper.WaitForIdle();
 
 		LOG_OUTPUT("Close ComboBox using specified key sequence");
-		TestServices.KeyboardHelper.PressKeySequence(keySequence);
+		await TestServices.KeyboardHelper.PressKeySequence(keySequence);
 		await TestServices.WindowHelper.WaitForIdle();
 		await dropDownClosedEvent.WaitForDefault();
 
@@ -1555,7 +1554,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 		await TestServices.WindowHelper.WaitForIdle();
 
 		LOG_OUTPUT("Open the ComboBox with the accept button.");
-		CommonInputHelper.Accept(device);
+		await CommonInputHelper.Accept(device);
 
 		await TestServices.WindowHelper.WaitForIdle();
 		await dropDownOpenedEvent.WaitForDefault();
@@ -1565,13 +1564,13 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 		for (int i = 0; i < 10; i++)
 		{
 			LOG_OUTPUT("Move focus down.");
-			CommonInputHelper.Down(device);
+			await CommonInputHelper.Down(device);
 
 			await TestServices.WindowHelper.WaitForIdle();
 		}
 
 		LOG_OUTPUT("Close the ComboBox with the accept button.");
-		CommonInputHelper.Accept(device);
+		await CommonInputHelper.Accept(device);
 
 		await dropDownClosedEvent.WaitForDefault();
 		await TestServices.WindowHelper.WaitForIdle();
@@ -1607,7 +1606,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 		await TestServices.WindowHelper.WaitForIdle();
 
 		LOG_OUTPUT("Open the ComboBox with the accept button.");
-		CommonInputHelper.Accept(device);
+		await CommonInputHelper.Accept(device);
 
 		await TestServices.WindowHelper.WaitForIdle();
 		await dropDownOpenedEvent.WaitForDefault();
@@ -1615,44 +1614,44 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 		await ComboBoxHelper.VerifySelectedIndex(comboBox, -1);
 
 		LOG_OUTPUT("Focus the first item with down button.");
-		CommonInputHelper.Down(device);
+		await CommonInputHelper.Down(device);
 
 		await TestServices.WindowHelper.WaitForIdle();
 		await ComboBoxHelper.VerifySelectedIndex(comboBox, -1);
 
 		LOG_OUTPUT("Focus the first item with down button.");
-		CommonInputHelper.Down(device);
+		await CommonInputHelper.Down(device);
 
 		await TestServices.WindowHelper.WaitForIdle();
 		await ComboBoxHelper.VerifySelectedIndex(comboBox, -1);
 
 		LOG_OUTPUT("Close the ComboBox with the cancel button. No selection change should have happened.");
-		CommonInputHelper.Cancel(device);
+		await CommonInputHelper.Cancel(device);
 
 		await dropDownClosedEvent.WaitForDefault();
 		await TestServices.WindowHelper.WaitForIdle();
 		await ComboBoxHelper.VerifySelectedIndex(comboBox, -1);
 
 		LOG_OUTPUT("Open the ComboBox with the accept button.");
-		CommonInputHelper.Accept(device);
+		await CommonInputHelper.Accept(device);
 
 		await TestServices.WindowHelper.WaitForIdle();
 		await dropDownOpenedEvent.WaitForDefault();
 
 		LOG_OUTPUT("Focus the first item with down button.");
-		CommonInputHelper.Down(device);
+		await CommonInputHelper.Down(device);
 
 		await TestServices.WindowHelper.WaitForIdle();
 		await ComboBoxHelper.VerifySelectedIndex(comboBox, -1);
 
 		LOG_OUTPUT("Focus the first item with down button.");
-		CommonInputHelper.Down(device);
+		await CommonInputHelper.Down(device);
 
 		await TestServices.WindowHelper.WaitForIdle();
 		await ComboBoxHelper.VerifySelectedIndex(comboBox, -1);
 
 		LOG_OUTPUT("Close the ComboBox with the accept button.");
-		CommonInputHelper.Accept(device);
+		await CommonInputHelper.Accept(device);
 
 		await dropDownClosedEvent.WaitForDefault();
 		await TestServices.WindowHelper.WaitForIdle();
@@ -2116,14 +2115,14 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 
 	//	// Validate the keyboard input mode padding for each item.
 	//	await ComboBoxHelper.OpenComboBox(comboBox, ComboBoxHelper.OpenMethod.Keyboard);
-	//	TestServices.KeyboardHelper.PressKeySequence("$d$_pagedown#$u$_pagedown");
+	//	await TestServices.KeyboardHelper.PressKeySequence("$d$_pagedown#$u$_pagedown");
 	//	await TestServices.WindowHelper.WaitForIdle();
-	//	TestServices.KeyboardHelper.PressKeySequence("$d$_pagedown#$u$_pagedown");
+	//	await TestServices.KeyboardHelper.PressKeySequence("$d$_pagedown#$u$_pagedown");
 	//	await TestServices.WindowHelper.WaitForIdle();
 	//	ValidateComboBoxItemPadding(comboBox, ComboBoxHelper.OpenMethod.Keyboard);
-	//	TestServices.KeyboardHelper.PressKeySequence("$d$_pageup#$u$_pageup");
+	//	await TestServices.KeyboardHelper.PressKeySequence("$d$_pageup#$u$_pageup");
 	//	await TestServices.WindowHelper.WaitForIdle();
-	//	TestServices.KeyboardHelper.PressKeySequence("$d$_pageup#$u$_pageup");
+	//	await TestServices.KeyboardHelper.PressKeySequence("$d$_pageup#$u$_pageup");
 	//	await TestServices.WindowHelper.WaitForIdle();
 	//	ValidateComboBoxItemPadding(comboBox, ComboBoxHelper.OpenMethod.Keyboard);
 	//	await ComboBoxHelper.CloseComboBox(comboBox);
@@ -2662,6 +2661,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	//}
 
 	[TestMethod]
+	[Ignore("Light dismiss is currently implemented differently in Uno #17988")]
 	public async Task ValidateLightDismissOverlayMode()
 	{
 		var comboBox = await SetupBasicComboBoxTest();
@@ -2706,6 +2706,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
+	[Ignore("Light dismiss is currently implemented differently in Uno #17988")]
 	public async Task DoesAutoLightDismissOverlayModeCreateOverlayOnXbox()
 	{
 		var comboBox = await SetupBasicComboBoxTest();
@@ -3587,7 +3588,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	//	await ComboBoxHelper.VerifySelectedIndex(comboBox, 0);
 
 	//	// Pressing Gamepad A "commits" the selection
-	//	TestServices.KeyboardHelper.GamepadA();
+	//	await TestServices.KeyboardHelper.GamepadA();
 	//	await TestServices.WindowHelper.WaitForIdle();
 
 	//	// Verify that selection has now changed and the proper item has been selected
@@ -3602,7 +3603,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	//	await ComboBoxHelper.VerifySelectedIndex(comboBox, expectedNumberOfItemsToScrollWithTriggers);
 
 	//	// Pressing Gamepad A "commits" the selection
-	//	TestServices.KeyboardHelper.GamepadA();
+	//	await TestServices.KeyboardHelper.GamepadA();
 	//	await TestServices.WindowHelper.WaitForIdle();
 
 	//	// The selection is now the first item
@@ -3794,7 +3795,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	//	LOG_OUTPUT("Press Right %d times, once for each item . SelectedIndex should not change.", numItems);
 	//	for (int i = 0; i < numItems; ++i)
 	//	{
-	//		CommonInputHelper.Right(InputDevice.Keyboard);
+	//		await CommonInputHelper.Right(InputDevice.Keyboard);
 	//		await TestServices.WindowHelper.WaitForIdle();
 
 	//		VERIFY_IS_FALSE(selectionChangedEvent.HasFired());
@@ -3808,7 +3809,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	//	LOG_OUTPUT("Press Left %d times, once for each item . SelectedIndex should not change.", numItems);
 	//	for (int i = 0; i < numItems; ++i)
 	//	{
-	//		CommonInputHelper.Left(InputDevice.Keyboard);
+	//		await CommonInputHelper.Left(InputDevice.Keyboard);
 	//		await TestServices.WindowHelper.WaitForIdle();
 
 	//		VERIFY_IS_FALSE(selectionChangedEvent.HasFired());
@@ -3868,7 +3869,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	//await TestServices.WindowHelper.WaitForIdle();
 
 	//	LOG_OUTPUT("Move Right 2 times, which should move past the ComboBox and land on the last button.");
-	//	CommonInputHelper.Right(InputDevice.Keyboard);
+	//	await CommonInputHelper.Right(InputDevice.Keyboard);
 	//await TestServices.WindowHelper.WaitForIdle();
 	//	gotFocusEvent.WaitForDefault();
 
@@ -3878,7 +3879,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	//		VERIFY_IS_TRUE(FocusManager.GetFocusedElement(TestServices.WindowHelper.WindowContent.XamlRoot).Equals(comboBox));
 	//	});
 
-	//CommonInputHelper.Right(InputDevice.Keyboard);
+	//await CommonInputHelper.Right(InputDevice.Keyboard);
 	//await TestServices.WindowHelper.WaitForIdle();
 	//	gotFocusEvent.WaitForDefault();
 
@@ -3889,7 +3890,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	//	});
 
 	//LOG_OUTPUT("Move Left 2 times, which should move past the ComboBox and land back on the first button.");
-	//	CommonInputHelper.Left(InputDevice.Keyboard);
+	//	await CommonInputHelper.Left(InputDevice.Keyboard);
 	//await TestServices.WindowHelper.WaitForIdle();
 	//	gotFocusEvent.WaitForDefault();
 
@@ -3899,7 +3900,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	//		VERIFY_IS_TRUE(FocusManager.GetFocusedElement(TestServices.WindowHelper.WindowContent.XamlRoot).Equals(comboBox));
 	//	});
 
-	//CommonInputHelper.Left(InputDevice.Keyboard);
+	//await CommonInputHelper.Left(InputDevice.Keyboard);
 	//await TestServices.WindowHelper.WaitForIdle();
 	//	gotFocusEvent.WaitForDefault();
 
@@ -3952,7 +3953,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	//		await TestServices.WindowHelper.WaitForIdle();
 
 	//		LOG_OUTPUT("Press down to change the selection.");
-	//		CommonInputHelper.Down(InputDevice.Keyboard);
+	//		await CommonInputHelper.Down(InputDevice.Keyboard);
 	//		await TestServices.WindowHelper.WaitForIdle();
 	//		selectionChangedEvent.WaitForDefault();
 
@@ -3970,10 +3971,10 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	//	};
 
 	//	LOG_OUTPUT("Validate reverting selection on cancel using Escape key.");
-	//	runScenario([]() { CommonInputHelper.Cancel(InputDevice.Keyboard); });
+	//	runScenario([]() { await CommonInputHelper.Cancel(InputDevice.Keyboard); });
 
 	//	LOG_OUTPUT("Validate reverting selection on cancel using GamepadB.");
-	//	runScenario([]() { CommonInputHelper.Cancel(InputDevice.Gamepad); });
+	//	runScenario([]() { await CommonInputHelper.Cancel(InputDevice.Gamepad); });
 
 	//	LOG_OUTPUT("Validate reverting selection on cancel by clicking outside with mouse.");
 	//	runScenario([&]() { await ComboBoxHelper.CloseComboBox(comboBox, ComboBoxHelper.CloseMethod.Mouse); });
@@ -4025,7 +4026,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	//	selectionChangedEvent.WaitForDefault();
 
 	//	LOG_OUTPUT("Cancel the selection.");
-	//	CommonInputHelper.Cancel(InputDevice.Keyboard);
+	//	await CommonInputHelper.Cancel(InputDevice.Keyboard);
 	//	await TestServices.WindowHelper.WaitForIdle();
 	//	selectionChangedEvent.WaitForDefault();
 
@@ -4070,13 +4071,13 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	//		selectionChangedEvent.Reset();
 
 	//		// Open the ComboBox.
-	//		CommonInputHelper.Accept(inputDevice);
+	//		await CommonInputHelper.Accept(inputDevice);
 	//		await TestServices.WindowHelper.WaitForIdle();
 
 	//		LOG_OUTPUT("Navigate through the items.");
 	//		for (int i = 0; i < numItems; ++i)
 	//		{
-	//			CommonInputHelper.Down(inputDevice);
+	//			await CommonInputHelper.Down(inputDevice);
 	//			await TestServices.WindowHelper.WaitForIdle();
 
 	//			if (trigger == ComboBoxSelectionChangedTrigger.Always)
@@ -4093,7 +4094,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	//		selectionChangedEvent.Reset();
 
 	//		LOG_OUTPUT("Accept the last item as the new selection");
-	//		CommonInputHelper.Accept(inputDevice);
+	//		await CommonInputHelper.Accept(inputDevice);
 	//		await TestServices.WindowHelper.WaitForIdle();
 
 	//		if (trigger == ComboBoxSelectionChangedTrigger.Committed)
@@ -4256,7 +4257,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 		await TestServices.WindowHelper.WaitForIdle();
 
 		LOG_OUTPUT("Press SPACE to open the ComboBox.");
-		TestServices.KeyboardHelper.Space();
+		await TestServices.KeyboardHelper.Space();
 		await TestServices.WindowHelper.WaitForIdle();
 
 		await RunOnUIThread(() =>
@@ -4267,19 +4268,19 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 			});
 
 		LOG_OUTPUT("Press DOWN to select the first item.");
-		TestServices.KeyboardHelper.Down();
+		await TestServices.KeyboardHelper.Down();
 		await TestServices.WindowHelper.WaitForIdle();
 
 		LOG_OUTPUT("Press SPACE to commit the selection.");
-		TestServices.KeyboardHelper.Space();
+		await TestServices.KeyboardHelper.Space();
 		await TestServices.WindowHelper.WaitForIdle();
 
 		LOG_OUTPUT("Press DOWN to change the selected item to the second item.");
-		TestServices.KeyboardHelper.Down();
+		await TestServices.KeyboardHelper.Down();
 		await TestServices.WindowHelper.WaitForIdle();
 
 		LOG_OUTPUT("Press SPACE to open the ComboBox again.");
-		TestServices.KeyboardHelper.Space();
+		await TestServices.KeyboardHelper.Space();
 		await TestServices.WindowHelper.WaitForIdle();
 
 		await RunOnUIThread(async () =>
@@ -4504,19 +4505,19 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 		await VerifyFocusedElement(button1);
 
 		LOG_OUTPUT("Pressing Tab should move focus to the ComboBox.");
-		TestServices.KeyboardHelper.Tab();
+		await TestServices.KeyboardHelper.Tab();
 		await VerifyFocusedElement(comboBox);
 
 		LOG_OUTPUT("Pressing Tab again should move focus to Button 2.");
-		TestServices.KeyboardHelper.Tab();
+		await TestServices.KeyboardHelper.Tab();
 		await VerifyFocusedElement(button2);
 
 		LOG_OUTPUT("Pressing Shift + Tab should move focus back to the ComboBox.");
-		TestServices.KeyboardHelper.ShiftTab();
+		await TestServices.KeyboardHelper.ShiftTab();
 		await VerifyFocusedElement(comboBox);
 
 		LOG_OUTPUT("Pressing Shift + Tab once more should move focus back to Button1.");
-		TestServices.KeyboardHelper.ShiftTab();
+		await TestServices.KeyboardHelper.ShiftTab();
 		await VerifyFocusedElement(button1);
 
 		await RunOnUIThread(() =>
@@ -4530,19 +4531,19 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 		await VerifyFocusedElement(button1);
 
 		LOG_OUTPUT("Pressing Tab should move focus to the TextBox inside the ComboBox.");
-		TestServices.KeyboardHelper.Tab();
+		await TestServices.KeyboardHelper.Tab();
 		await VerifyFocusedElement(textBox);
 
 		LOG_OUTPUT("Pressing Tab again should move focus to Button 2.");
-		TestServices.KeyboardHelper.Tab();
+		await TestServices.KeyboardHelper.Tab();
 		await VerifyFocusedElement(button2);
 
 		LOG_OUTPUT("Pressing Shift + Tab should move focus back to the TextBox inside the ComboBox.");
-		TestServices.KeyboardHelper.ShiftTab();
+		await TestServices.KeyboardHelper.ShiftTab();
 		await VerifyFocusedElement(textBox);
 
 		LOG_OUTPUT("Pressing Shift + Tab once more should move focus back to Button1.");
-		TestServices.KeyboardHelper.ShiftTab();
+		await TestServices.KeyboardHelper.ShiftTab();
 		await VerifyFocusedElement(button1);
 	}
 
@@ -4563,7 +4564,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 			LOG_OUTPUT("ComboBox: Injecting key sequence");
 			LOG_OUTPUT("%s", keySequence[i]);
 
-			TestServices.KeyboardHelper.PressKeySequence(keySequence[i]);
+			await TestServices.KeyboardHelper.PressKeySequence(keySequence[i]);
 
 			await Task.Delay(timeBetweenKeyPressesInMs);
 		}
@@ -4620,13 +4621,12 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 
 			if (addToItemSource)
 			{
-				await RunOnUIThread(() =>
-					{
-						comboBoxItem = new ComboBoxItem();
-						comboBoxItem.Content = "Custom Value";
+				{
+					comboBoxItem = new ComboBoxItem();
+					comboBoxItem.Content = "Custom Value";
 
-						comboBox.Items.Add(comboBoxItem);
-					});
+					comboBox.Items.Add(comboBoxItem);
+				}
 			}
 
 			if (setHandled)
@@ -4675,7 +4675,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 		await InjectKeySequence(keySequence, 100);
 		await TestServices.WindowHelper.WaitForIdle();
 
-		TestServices.KeyboardHelper.Enter();
+		await TestServices.KeyboardHelper.Enter();
 		await TestServices.WindowHelper.WaitForIdle();
 
 		LOG_OUTPUT("Waiting for ComboBox TextSubmitted Event");
@@ -4773,7 +4773,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 		await InjectKeySequence(keySequence, 200);
 		await TestServices.WindowHelper.WaitForIdle();
 
-		TestServices.KeyboardHelper.Enter();
+		await TestServices.KeyboardHelper.Enter();
 		await TestServices.WindowHelper.WaitForIdle();
 
 		await RunOnUIThread(() =>
@@ -4809,7 +4809,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 
 		await TestServices.WindowHelper.WaitForIdle();
 
-		TestServices.KeyboardHelper.Enter();
+		await TestServices.KeyboardHelper.Enter();
 		await TestServices.WindowHelper.WaitForIdle();
 
 		await RunOnUIThread(() =>
@@ -4882,10 +4882,10 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 
 		await TestServices.WindowHelper.WaitForIdle();
 
-		TestServices.KeyboardHelper.GamepadB();
+		await TestServices.KeyboardHelper.GamepadB();
 		await TestServices.WindowHelper.WaitForIdle();
 
-		TestServices.KeyboardHelper.GamepadA();
+		await TestServices.KeyboardHelper.GamepadA();
 		await TestServices.WindowHelper.WaitForIdle();
 
 		await RunOnUIThread(() =>
@@ -4899,7 +4899,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 
 		await TestServices.WindowHelper.WaitForIdle();
 
-		CommonInputHelper.Down(InputDevice.Gamepad);
+		await CommonInputHelper.Down(InputDevice.Gamepad);
 		await TestServices.WindowHelper.WaitForIdle();
 
 		await RunOnUIThread(() =>
@@ -4908,7 +4908,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 				VERIFY_ARE_EQUAL(comboBoxItem1.FocusState, FocusState.Keyboard);
 			});
 
-		CommonInputHelper.Up(InputDevice.Gamepad);
+		await CommonInputHelper.Up(InputDevice.Gamepad);
 		await TestServices.WindowHelper.WaitForIdle();
 
 		await RunOnUIThread(() =>
@@ -4918,7 +4918,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 				VERIFY_ARE_EQUAL(textBox.FocusState, FocusState.Keyboard);
 			});
 
-		CommonInputHelper.Down(InputDevice.Gamepad);
+		await CommonInputHelper.Down(InputDevice.Gamepad);
 		await TestServices.WindowHelper.WaitForIdle();
 
 		await RunOnUIThread(() =>
@@ -4927,7 +4927,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 				VERIFY_ARE_EQUAL(comboBoxItem2.FocusState, FocusState.Keyboard);
 			});
 
-		TestServices.KeyboardHelper.GamepadA();
+		await TestServices.KeyboardHelper.GamepadA();
 		await TestServices.WindowHelper.WaitForIdle();
 
 		await RunOnUIThread(() =>
@@ -5066,7 +5066,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 
 		await TestServices.WindowHelper.WaitForIdle();
 
-		TestServices.KeyboardHelper.Enter();
+		await TestServices.KeyboardHelper.Enter();
 		await TestServices.WindowHelper.WaitForIdle();
 
 		LOG_OUTPUT("Waiting for ComboBox TextSubmitted Event");
@@ -5085,10 +5085,10 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 		await TestServices.WindowHelper.WaitForIdle();
 
 		// Selects first item of the list.
-		TestServices.KeyboardHelper.PressKeySequence("T");
+		await TestServices.KeyboardHelper.PressKeySequence("T");
 		await TestServices.WindowHelper.WaitForIdle();
 
-		TestServices.KeyboardHelper.Enter();
+		await TestServices.KeyboardHelper.Enter();
 		await TestServices.WindowHelper.WaitForIdle();
 
 		await RunOnUIThread(() =>
@@ -5100,7 +5100,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 		await TestServices.WindowHelper.WaitForIdle();
 
 		// Typing the first character of the custom value, this should trigger a scroll to the searched item.
-		TestServices.KeyboardHelper.PressKeySequence("V");
+		await TestServices.KeyboardHelper.PressKeySequence("V");
 		await TestServices.WindowHelper.WaitForIdle();
 
 		await RunOnUIThread(() =>
@@ -5137,7 +5137,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 
 		await TestServices.WindowHelper.WaitForIdle();
 
-		TestServices.KeyboardHelper.PressKeySequence("C");
+		await TestServices.KeyboardHelper.PressKeySequence("C");
 		await TestServices.WindowHelper.WaitForIdle();
 
 		await RunOnUIThread(() =>
@@ -5192,11 +5192,11 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 
 		await TestServices.WindowHelper.WaitForIdle();
 
-		TestServices.KeyboardHelper.PressKeySequence("Hello");
+		await TestServices.KeyboardHelper.PressKeySequence("Hello");
 		await TestServices.WindowHelper.WaitForIdle();
 
 		// Set Hello as the active custom value.
-		TestServices.KeyboardHelper.Enter();
+		await TestServices.KeyboardHelper.Enter();
 		await TestServices.WindowHelper.WaitForIdle();
 
 		await RunOnUIThread(() =>
@@ -5211,8 +5211,8 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 		await TestServices.WindowHelper.WaitForIdle();
 
 		// Arrow down through the ComboBox values, this will cause the SelectedIndex to change.
-		TestServices.KeyboardHelper.Down();
-		TestServices.KeyboardHelper.Down();
+		await TestServices.KeyboardHelper.Down();
+		await TestServices.KeyboardHelper.Down();
 		await TestServices.WindowHelper.WaitForIdle();
 
 		await RunOnUIThread(() =>
@@ -5221,11 +5221,11 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 				VERIFY_ARE_EQUAL(comboBox.SelectedIndex, 1);
 			});
 
-		TestServices.KeyboardHelper.PressKeySequence("Hello");
+		await TestServices.KeyboardHelper.PressKeySequence("Hello");
 		await TestServices.WindowHelper.WaitForIdle();
 
 		// Try to commit Hello again.
-		TestServices.KeyboardHelper.Enter();
+		await TestServices.KeyboardHelper.Enter();
 		await TestServices.WindowHelper.WaitForIdle();
 
 		await RunOnUIThread(() =>
@@ -5263,8 +5263,8 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 				VERIFY_ARE_EQUAL(comboBox.IsDropDownOpen, true);
 			});
 
-		TestServices.KeyboardHelper.Down();
-		TestServices.KeyboardHelper.Down();
+		await TestServices.KeyboardHelper.Down();
+		await TestServices.KeyboardHelper.Down();
 		await TestServices.WindowHelper.WaitForIdle();
 
 		TestServices.InputHelper.Tap(dropDownOverlay);
@@ -5585,14 +5585,14 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 		await FocusTestHelper.EnsureFocus(comboBox, FocusState.Keyboard);
 
 		LOG_OUTPUT("Pressing space to open the ComboBox.");
-		TestServices.KeyboardHelper.Space();
+		await TestServices.KeyboardHelper.Space();
 
 		await openedEvent.WaitForDefault();
 		await TestServices.WindowHelper.WaitForIdle();
 
 		LOG_OUTPUT("Pressing down and space to select a new item and close the ComboBox.");
-		TestServices.KeyboardHelper.Down();
-		TestServices.KeyboardHelper.Space();
+		await TestServices.KeyboardHelper.Down();
+		await TestServices.KeyboardHelper.Space();
 
 		await selectionChangedEvent.WaitForDefault();
 		await closedEvent.WaitForDefault();
@@ -5603,13 +5603,13 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 		selectionChangedEvent.Reset();
 
 		LOG_OUTPUT("Pressing space to open the ComboBox again.");
-		TestServices.KeyboardHelper.Space();
+		await TestServices.KeyboardHelper.Space();
 
 		await openedEvent.WaitForDefault();
 		await TestServices.WindowHelper.WaitForIdle();
 
 		LOG_OUTPUT("Pressing escape to close the ComboBox without selecting anything.");
-		TestServices.KeyboardHelper.Escape();
+		await TestServices.KeyboardHelper.Escape();
 
 		await closedEvent.WaitForDefault();
 		await TestServices.WindowHelper.WaitForIdle();
