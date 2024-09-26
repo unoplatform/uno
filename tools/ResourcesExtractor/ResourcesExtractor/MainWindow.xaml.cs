@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft/* UWP don't rename */.UI.Xaml;
 
@@ -12,8 +13,22 @@ public sealed partial class MainWindow : Window
 	private static List<(string ResourceName, int ResourceId)> GetResources()
 	{
 		var allResources = new List<(string ResourceName, int ResourceId)>();
+
+		for (var i = 5114; i <= 5155; i++)
+		{
+			var resource = Magic.GetLocalizedResource(i);
+			var trimmedResource = resource.Trim();
+
+			var textInfo = CultureInfo.CurrentCulture.TextInfo;
+			var titleCase = textInfo.ToTitleCase(trimmedResource.ToLower(new CultureInfo("en-US")));
+			var noWhitespace = string.Concat(titleCase.Where(c => !char.IsWhiteSpace(c)));
+
+			allResources.Add((noWhitespace, i));
+		}
+
 		allResources.AddRange(GetResourcesFromFile("dxaml\\phone\\lib\\PhoneResource.h"));
 		allResources.AddRange(GetResourcesFromFile("dxaml\\xcp\\inc\\localizedResource.h"));
+
 		return allResources;
 	}
 
