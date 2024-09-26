@@ -30,8 +30,12 @@ $external_docs = @{
 =======
     "uno.extensions"     = "f2871cf4aa93bce96d8a19ede2b1417776589093" #latest release/stable/5.0 branch commit
     "workshops"          = "e3c2a11a588b184d8cd3a6f88813e5615cca891d" #latest master commit
+<<<<<<< HEAD
     "uno.samples"        = "ef30b74b84bd470521ae1383b49ced4afcfeab1d" #latest master commit
 >>>>>>> 283215aab8 (docs: Update documentation with latest updates)
+=======
+    "uno.samples"        = "cf96230ed902e18335411683cb07321eae125df2" #latest master commit
+>>>>>>> 53b792eb9c (docs: Update Uno.Samples documentation with latest changes)
 }
 
 $uno_git_url = "https://github.com/unoplatform/"
