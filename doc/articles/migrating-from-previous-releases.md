@@ -18,7 +18,7 @@ All the other features of Uno Platform 5.4 continue to be compatible with both U
 
 ### Updates in Uno.Extensions.Reactive
 
-The generated code has changed, make sure to [review our docs to upgrade](xuid:Extensions.Migration.Reactive) to Uno Platform 5.4.
+The generated code has changed. Make sure to [review our docs to upgrade](xuid:Uno.Extensions.Reactive.Upgrading) to Uno Platform 5.4.
 
 ## Uno Platform 5.3
 
