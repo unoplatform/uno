@@ -10,7 +10,7 @@ This article details the migration steps required to migrate from one version to
 
 Uno Platform 5.4 contains breaking changes for Uno.Extensions.
 
-## WinAppSDK 1.6 considerations
+### WinAppSDK 1.6 considerations
 
 Uno Platform 5.4 updates to WinAppSDK 1.6 if you using the [`Uno.SDK`](xref:Uno.Features.Uno.Sdk), which requires a temporary version adjustment until newer versions of the .NET 8 SDKs are released.
 
@@ -31,7 +31,7 @@ All the other features of Uno Platform 5.4 continue to be compatible with both U
 
 ### Updates in Uno.Extensions.Reactive
 
-The generated code has changed. Make sure to [review our docs to upgrade](xuid:Uno.Extensions.Reactive.Upgrading) to Uno Platform 5.4.
+The generated code has changed. Make sure to [review our docs to upgrade](xref:Uno.Extensions.Reactive.Upgrading) to Uno Platform 5.4.
 
 ## Uno Platform 5.3
 
