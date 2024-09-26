@@ -139,53 +139,28 @@ namespace Microsoft.UI.Xaml
 		//	base.OnDraw(canvas);
 		//}
 
-		private protected void SetTotalClipRect()
-			=> SetTotalClipRect(out _);
-
-		private protected void SetTotalClipRect(out Rect? logicalLayoutClip)
+		private void SetClipPlatform(out Rect? totalLogicalClip)
 		{
-			// This method calculates and sets the intersection of the layout clip and the clip provided using UIElement.Clip dependency property.
-			var clip = Clip;
-			var clipRect = clip?.Rect;
-			if (clipRect.HasValue && clip?.Transform is { } transform)
+			if (totalLogicalClip is null)
 			{
-				clipRect = transform.TransformBounds(clipRect.Value);
+				ViewCompat.SetClipBounds(this, null);
+				return;
 			}
 
-			var layoutClip = m_pLayoutClipGeometry;
-			// Ancestor clip is not yet supported properly.
-			//if (layoutClip.HasValue &&
-			//	ShouldApplyLayoutClipAsAncestorClip() &&
-			//	VisualTreeHelper.GetParent(this) is UIElement parent)
-			//{
-			//	layoutClip = GetTransform(from: this, to: parent).Inverse().Transform(layoutClip.Value);
-			//}
+			Android.Graphics.Rect physicalRect = totalLogicalClip.LogicalToPhysicalPixels();
+			ViewCompat.SetClipBounds(this, physicalRect);
 
-			logicalLayoutClip = layoutClip;
-
-			if (clipRect.HasValue || layoutClip.HasValue)
+			if (FeatureConfiguration.UIElement.UseLegacyClipping)
 			{
-				var totalClip = (clipRect ?? Rect.Infinite).IntersectWith(layoutClip ?? Rect.Infinite) ?? default(Rect);
-
-				Android.Graphics.Rect physicalRect = totalClip.LogicalToPhysicalPixels();
-				ViewCompat.SetClipBounds(this, physicalRect);
-
-				if (FeatureConfiguration.UIElement.UseLegacyClipping)
-				{
-					// Old way: apply the clipping for each child on their assigned slot
-					SetClipChildren(NeedsClipToSlot);
-				}
-				else
-				{
-					// "New" correct way: apply the clipping on the parent,
-					// and let the children overflow inside the parent's bounds
-					// This is closer to the XAML way of doing clipping.
-					SetClipToPadding(NeedsClipToSlot);
-				}
+				// Old way: apply the clipping for each child on their assigned slot
+				SetClipChildren(NeedsClipToSlot);
 			}
 			else
 			{
-				ViewCompat.SetClipBounds(this, null);
+				// "New" correct way: apply the clipping on the parent,
+				// and let the children overflow inside the parent's bounds
+				// This is closer to the XAML way of doing clipping.
+				SetClipToPadding(NeedsClipToSlot);
 			}
 		}
 

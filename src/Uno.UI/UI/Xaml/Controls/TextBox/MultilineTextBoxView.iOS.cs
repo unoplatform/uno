@@ -183,7 +183,7 @@ namespace Microsoft.UI.Xaml.Controls
 					expectedSize.Width = size.Width;//Take all the space given
 				}
 
-				var result = SizeThatFits(expectedSize);//Adjust for NaN and MaxHeight..
+				var result = IFrameworkElementHelper.SizeThatFits(this, expectedSize);//Adjust for NaN and MaxHeight..
 
 				return result;
 			}

@@ -30,8 +30,9 @@ namespace Microsoft.UI.Xaml
 				// This handles native-only elements with managed child/children.
 				// When the parent is native-only element, it will layout its children with the proper rect.
 				// So we response to the requested bounds and do the managed arrange.
-				var logical = this.Frame.PhysicalToLogicalPixels();
-				this.Arrange(logical);
+				// TODO:
+				//var logical = this.Frame.PhysicalToLogicalPixels();
+				//this.Arrange(logical);
 			}
 		}
 
