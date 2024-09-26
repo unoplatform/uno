@@ -989,24 +989,24 @@ internal class X11ClipboardExtension : IClipboardExtension
 		{
 			var file = files[index];
 			file = HttpUtility.UrlDecode(file);
-			if (!file.StartsWith("file:"))
+			if (!file.StartsWith("file:", StringComparison.InvariantCulture))
 			{
 				continue;
 			}
 
-			if (file.StartsWith("file://localhost/"))
+			if (file.StartsWith("file://localhost/", StringComparison.InvariantCulture))
 			{
 				file = file[("file://localhost/".Length - 1)..];
 			}
-			else if (file.StartsWith("file:///"))
+			else if (file.StartsWith("file:///", StringComparison.InvariantCulture))
 			{
 				file = file[("file:///".Length - 1)..];
 			}
-			else if (file.StartsWith("file://"))
+			else if (file.StartsWith("file://", StringComparison.InvariantCulture))
 			{
 				file = file[("file://".Length - 1)..];
 			}
-			else if (file.StartsWith("file:/"))
+			else if (file.StartsWith("file:/", StringComparison.InvariantCulture))
 			{
 				file = file[("file:/".Length - 1)..];
 			}

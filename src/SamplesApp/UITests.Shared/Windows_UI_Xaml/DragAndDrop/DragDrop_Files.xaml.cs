@@ -27,7 +27,7 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 			this.InitializeComponent();
 		}
 
-		private void OnDragOver(object sender, DragEventArgs e)
+		private void OnDragOver(object sender, Microsoft.UI.Xaml.DragEventArgs e)
 		{
 			e.AcceptedOperation = e.DataView.Contains(StandardDataFormats.StorageItems) ? DataPackageOperation.Copy : DataPackageOperation.None;
 
@@ -35,7 +35,7 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 			e.DragUIOverride.IsGlyphVisible = false;
 		}
 
-		private async void OnDrop(object sender, DragEventArgs e)
+		private async void OnDrop(object sender, Microsoft.UI.Xaml.DragEventArgs e)
 		{
 			if (e.DataView.Contains(StandardDataFormats.StorageItems))
 			{
