@@ -2270,7 +2270,7 @@ partial class ComboBox
 		RoutedEventArgs pArgs)
 	{
 
-		global::System.Diagnostics.global::System.Diagnostics.Debug.Assert(!IsSmallFormFactor, "OnElementPopupChildGotFocus is not used in small form factor mode");
+		global::System.Diagnostics.Debug.Assert(!IsSmallFormFactor, "OnElementPopupChildGotFocus is not used in small form factor mode");
 
 		var hasFocus = HasFocus();
 		FocusChanged(hasFocus);
@@ -2281,7 +2281,7 @@ partial class ComboBox
 		 RoutedEventArgs pArgs)
 	{
 
-		global::System.Diagnostics.global::System.Diagnostics.Debug.Assert(!IsSmallFormFactor, "OnElementPopupChildLostFocus is not used in small form factor mode");
+		global::System.Diagnostics.Debug.Assert(!IsSmallFormFactor, "OnElementPopupChildLostFocus is not used in small form factor mode");
 
 		var hasFocus = HasFocus();
 		FocusChanged(hasFocus);
@@ -2292,7 +2292,7 @@ partial class ComboBox
 		 PointerRoutedEventArgs pArgs)
 	{
 
-		global::System.Diagnostics.global::System.Diagnostics.Debug.Assert(!IsSmallFormFactor, "OnElementPopupChildPointerEntered is not used in small form factor mode");
+		global::System.Diagnostics.Debug.Assert(!IsSmallFormFactor, "OnElementPopupChildPointerEntered is not used in small form factor mode");
 
 		m_IsPointerOverPopup = true;
 		UpdateVisualState();
@@ -2304,7 +2304,7 @@ partial class ComboBox
 	{
 
 		m_IsPointerOverPopup = false;
-		global::System.Diagnostics.global::System.Diagnostics.Debug.Assert(!IsSmallFormFactor, "OnElementPopupChildPointerExited is not used in small form factor mode");
+		global::System.Diagnostics.Debug.Assert(!IsSmallFormFactor, "OnElementPopupChildPointerExited is not used in small form factor mode");
 
 		UpdateVisualState();
 	}
@@ -2326,7 +2326,7 @@ partial class ComboBox
 		SizeChangedEventArgs pArgs)
 	{
 
-		global::System.Diagnostics.global::System.Diagnostics.Debug.Assert(!IsSmallFormFactor, "OnElementPopupChildSizeChanged is not used in small form factor mode");
+		global::System.Diagnostics.Debug.Assert(!IsSmallFormFactor, "OnElementPopupChildSizeChanged is not used in small form factor mode");
 
 		ArrangePopup(false);
 	}
@@ -2650,7 +2650,7 @@ partial class ComboBox
 			searchIndex = 0;
 		}
 
-		global::System.Diagnostics.global::System.Diagnostics.Debug.Assert(searchIndex >= 0);
+		global::System.Diagnostics.Debug.Assert(searchIndex >= 0);
 
 		object item;
 		string strItem;
