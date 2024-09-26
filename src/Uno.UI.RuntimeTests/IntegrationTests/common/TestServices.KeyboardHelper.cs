@@ -226,7 +226,7 @@ namespace Private.Infrastructure
 								if (m_vKeyMapping.TryGetValue("shift", out var vShiftKey))
 								{
 									var keyDownArgs = new KeyRoutedEventArgs(element, vShiftKey, VirtualKeyModifiers.None);
-									await RaiseOnElementDispatcherAsync(element, UIElement.PreviewKeyDownEvent, keyDownArgs);
+									await RaiseOnElementDispatcherAsync(element, UIElement.PreviewKeyDownEvent, keyDownArgs, true);
 									if (!keyDownArgs.Handled)
 									{
 										await RaiseOnElementDispatcherAsync(element, UIElement.KeyDownEvent, keyDownArgs);
@@ -238,13 +238,13 @@ namespace Private.Infrastructure
 							{
 								var modifiers = shouldShift ? VirtualKeyModifiers.Shift : VirtualKeyModifiers.None;
 								var keyDownArgs = new KeyRoutedEventArgs(element, vKey, modifiers);
-								await RaiseOnElementDispatcherAsync(element, UIElement.PreviewKeyDownEvent, keyDownArgs);
+								await RaiseOnElementDispatcherAsync(element, UIElement.PreviewKeyDownEvent, keyDownArgs, true);
 								if (!keyDownArgs.Handled)
 								{
 									await RaiseOnElementDispatcherAsync(element, UIElement.KeyDownEvent, keyDownArgs);
 								}
 								var keyUpArgs = new KeyRoutedEventArgs(element, vKey, modifiers);
-								await RaiseOnElementDispatcherAsync(element, UIElement.PreviewKeyDownEvent, keyUpArgs);
+								await RaiseOnElementDispatcherAsync(element, UIElement.PreviewKeyUpEvent, keyUpArgs, true);
 								if (!keyUpArgs.Handled)
 								{
 									await RaiseOnElementDispatcherAsync(element, UIElement.KeyUpEvent, keyUpArgs);
@@ -256,7 +256,7 @@ namespace Private.Infrastructure
 								if (m_vKeyMapping.TryGetValue("shift", out var vShiftKey))
 								{
 									var keyUpArgs = new KeyRoutedEventArgs(element, vShiftKey, VirtualKeyModifiers.None);
-									await RaiseOnElementDispatcherAsync(element, UIElement.PreviewKeyDownEvent, keyUpArgs);
+									await RaiseOnElementDispatcherAsync(element, UIElement.PreviewKeyUpEvent, keyUpArgs, true);
 									if (!keyUpArgs.Handled)
 									{
 										await RaiseOnElementDispatcherAsync(element, UIElement.KeyUpEvent, keyUpArgs);
