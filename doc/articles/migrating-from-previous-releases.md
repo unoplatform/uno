@@ -18,7 +18,7 @@ In your project, you may need to add the following lines (or uncomment them if y
 
 ```xml
 <PropertyGroup>
-    <!-- Temove when the .NET SDK 8.0.403 or later has been released -->
+    <!-- Remove when the .NET SDK 8.0.403 or later has been released -->
     <WindowsSdkPackageVersion>10.0.19041.38</WindowsSdkPackageVersion>
 </PropertyGroup>
 ```
