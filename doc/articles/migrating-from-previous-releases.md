@@ -8,7 +8,7 @@ This article details the migration steps required to migrate from one version to
 
 ## Uno Platform 5.4
 
-Uno Platform 5.4 contains one breaking change. The [`Uno.Extensions`](https://aka.platform.uno/uno-extensions)  compatibility with legacy UWP apps has been removed. If your app is UWP based and uses Uno.Extensions, in order to migrate to Uno Platform 5.4, you can keep using [previous releases of Uno.Extensions](https://github.com/unoplatform/uno.extensions/releases), or [migrate your app to WinUI](https://platform.uno/docs/articles/updating-to-winui3.html).
+Uno Platform 5.4 contains one breaking change. The [`Uno.Extensions`](https://aka.platform.uno/uno-extensions) compatibility with legacy UWP apps has been removed. If your app is UWP-based and uses Uno.Extensions, in order to migrate to Uno Platform 5.4, you can keep using [previous releases of Uno.Extensions](https://github.com/unoplatform/uno.extensions/releases), or [migrate your app to WinUI](https://platform.uno/docs/articles/updating-to-winui3.html).
 
 All the other features of Uno Platform 5.4 continue to be compatible with both UWP and WinUI apps.
 
