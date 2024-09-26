@@ -78,7 +78,6 @@ internal class X11ClipboardExtension : IClipboardExtension
 		{ "text/plain;charset=utf-16", Encoding.Unicode },
 		{ "XA_STRING", Encoding.ASCII },
 		{ "OEMTEXT", Encoding.ASCII },
-		{ "text/uri-list", Encoding.ASCII } // URI encoding only uses ASCII
 	}.ToImmutableDictionary();
 
 	// We can mostly get away with having a single x11 window for selection events because Clipboard methods are only
@@ -575,7 +574,7 @@ internal class X11ClipboardExtension : IClipboardExtension
 		return dataPackage.GetView();
 	}
 
-	public static void FillDataPackage(X11Window x11Window, IntPtr clipboardAtom, DataPackage dataPackage, IntPtr[] formatAtoms)
+	public static void FillDataPackage(X11Window x11Window, IntPtr selectionAtom, DataPackage dataPackage, IntPtr[] formatAtoms)
 	{
 		using var _ = X11Helper.XLock(x11Window.Display);
 
@@ -586,7 +585,7 @@ internal class X11ClipboardExtension : IClipboardExtension
 		// So on X11, we only support image/png and image/jpeg for images.
 		foreach (var format in formats)
 		{
-			dataPackage.SetDataProvider(format.name, async ct => await Task.Run(() => WaitForBytes(x11Window, format.atom, clipboardAtom), ct));
+			dataPackage.SetDataProvider(format.name, async ct => await Task.Run(() => WaitForBytes(x11Window, format.atom, selectionAtom), ct));
 			// For easier deadlock debugging, replace Task.Run with
 			// return await Task.Factory.StartNew(() =>
 			// {
@@ -597,12 +596,13 @@ internal class X11ClipboardExtension : IClipboardExtension
 
 		if (formats.FirstOrDefault(f => TextFormats.ContainsKey(f.name)) is var f2 && f2.atom != IntPtr.Zero)
 		{
-			dataPackage.SetText(WaitForText(x11Window, f2.atom, clipboardAtom));
+			dataPackage.SetText(WaitForText(x11Window, f2.atom, selectionAtom));
 		}
 
 		if (formats.FirstOrDefault(f => f.name == "text/uri-list") is var f3 && f3.atom != IntPtr.Zero)
 		{
-			dataPackage.SetStorageItems(ProcessUriList(WaitForText(x11Window, f3.atom, clipboardAtom)));
+			// Actually, Encoding.ASCII should be enough, but using UTF8 (which is an ASCII superset) is safer.
+			dataPackage.SetStorageItems(ProcessUriList(Encoding.UTF8.GetString(WaitForBytes(x11Window, f3.atom, selectionAtom))));
 		}
 	}
 
