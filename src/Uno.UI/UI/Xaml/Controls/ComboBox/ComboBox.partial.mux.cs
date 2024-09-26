@@ -19,6 +19,12 @@ using Windows.Foundation;
 using Windows.System;
 using static DirectUI.ElevationHelper;
 
+#if HAS_UNO_WINUI
+using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
+#else
+using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
+#endif
+
 namespace Microsoft.UI.Xaml.Controls;
 
 partial class ComboBox
@@ -377,7 +383,7 @@ partial class ComboBox
 		//DataTemplateSelector spDataTemplateSelector;
 		//GeneratorPosition generatorPosition;
 
-		//Debug.Assert(!IsInline, "ContentPresenter is not used in inline mode.");
+		//global::System.Diagnostics.Debug.Assert(!IsInline, "ContentPresenter is not used in inline mode.");
 
 		//// Avoid reentrancy.
 		//if (m_preparingContentPresentersElement)
@@ -525,7 +531,7 @@ partial class ComboBox
 
 	internal void UpdateSelectionBoxItemProperties(int index)
 	{
-		Debug.Assert(IsInline, "When not in inline mode SetContentPresenter should be used instead of UpdateSelectionBoxItemProperties.");
+		global::System.Diagnostics.Debug.Assert(IsInline, "When not in inline mode SetContentPresenter should be used instead of UpdateSelectionBoxItemProperties.");
 
 		if (-1 == index)
 		{
@@ -584,7 +590,7 @@ partial class ComboBox
 
 		if (!isItemsHostInvalid && sPassedElement == m_tpSwappedOutComboBoxItem)
 		{
-			Debug.Assert(!IsInline, "m_tpSwappedOutComboBoxItem is not used in inline mode.");
+			global::System.Diagnostics.Debug.Assert(!IsInline, "m_tpSwappedOutComboBoxItem is not used in inline mode.");
 			SetContentPresenter(-1);
 		}
 
@@ -684,7 +690,7 @@ partial class ComboBox
 	{
 		var isDropDownOpen = IsDropDownOpen;
 
-		Debug.Assert(!(m_isDropDownClosing && !isDropDownOpen), "The drop down cannot already be closing if IsDropDownOpen was just changed to false.");
+		global::System.Diagnostics.Debug.Assert(!(m_isDropDownClosing && !isDropDownOpen), "The drop down cannot already be closing if IsDropDownOpen was just changed to false.");
 
 		m_skipFocusSuggestion = !isDropDownOpen;
 
@@ -1635,7 +1641,7 @@ partial class ComboBox
 			case VirtualKey.Tab:
 				// Need to enable this to support focusing out of combobox using tab key.
 				bFocused = Focus(focusState);
-				Debug.Assert(bFocused, "Focus could not leave ComboBox.");
+				global::System.Diagnostics.Debug.Assert(bFocused, "Focus could not leave ComboBox.");
 
 				IsDropDownOpen = false;
 				break;
@@ -1758,7 +1764,7 @@ partial class ComboBox
 				}
 				break;
 			default:
-				Debug.Assert(!handled);
+				global::System.Diagnostics.Debug.Assert(!handled);
 				break;
 		}
 
@@ -2264,7 +2270,7 @@ partial class ComboBox
 		RoutedEventArgs pArgs)
 	{
 
-		global::System.Diagnostics.Debug.Assert(!IsSmallFormFactor, "OnElementPopupChildGotFocus is not used in small form factor mode");
+		global::System.Diagnostics.global::System.Diagnostics.Debug.Assert(!IsSmallFormFactor, "OnElementPopupChildGotFocus is not used in small form factor mode");
 
 		var hasFocus = HasFocus();
 		FocusChanged(hasFocus);
@@ -2275,7 +2281,7 @@ partial class ComboBox
 		 RoutedEventArgs pArgs)
 	{
 
-		global::System.Diagnostics.Debug.Assert(!IsSmallFormFactor, "OnElementPopupChildLostFocus is not used in small form factor mode");
+		global::System.Diagnostics.global::System.Diagnostics.Debug.Assert(!IsSmallFormFactor, "OnElementPopupChildLostFocus is not used in small form factor mode");
 
 		var hasFocus = HasFocus();
 		FocusChanged(hasFocus);
@@ -2286,7 +2292,7 @@ partial class ComboBox
 		 PointerRoutedEventArgs pArgs)
 	{
 
-		global::System.Diagnostics.Debug.Assert(!IsSmallFormFactor, "OnElementPopupChildPointerEntered is not used in small form factor mode");
+		global::System.Diagnostics.global::System.Diagnostics.Debug.Assert(!IsSmallFormFactor, "OnElementPopupChildPointerEntered is not used in small form factor mode");
 
 		m_IsPointerOverPopup = true;
 		UpdateVisualState();
@@ -2298,7 +2304,7 @@ partial class ComboBox
 	{
 
 		m_IsPointerOverPopup = false;
-		global::System.Diagnostics.Debug.Assert(!IsSmallFormFactor, "OnElementPopupChildPointerExited is not used in small form factor mode");
+		global::System.Diagnostics.global::System.Diagnostics.Debug.Assert(!IsSmallFormFactor, "OnElementPopupChildPointerExited is not used in small form factor mode");
 
 		UpdateVisualState();
 	}
@@ -2320,7 +2326,7 @@ partial class ComboBox
 		SizeChangedEventArgs pArgs)
 	{
 
-		global::System.Diagnostics.Debug.Assert(!IsSmallFormFactor, "OnElementPopupChildSizeChanged is not used in small form factor mode");
+		global::System.Diagnostics.global::System.Diagnostics.Debug.Assert(!IsSmallFormFactor, "OnElementPopupChildSizeChanged is not used in small form factor mode");
 
 		ArrangePopup(false);
 	}
@@ -2445,7 +2451,7 @@ partial class ComboBox
 			{
 				// Space should have been handled by now because we handle the Space key in the KeyDown event handler.
 				// NOTE: The 2 below specifies the map type, and maps VK to CHAR
-				Debug.Assert(' ' != keyCode);
+				global::System.Diagnostics.Debug.Assert(' ' != keyCode);
 			}
 
 			if (!ShouldIgnoreKeyCode(keyCode))
@@ -2644,7 +2650,7 @@ partial class ComboBox
 			searchIndex = 0;
 		}
 
-		global::System.Diagnostics.Debug.Assert(searchIndex >= 0);
+		global::System.Diagnostics.global::System.Diagnostics.Debug.Assert(searchIndex >= 0);
 
 		object item;
 		string strItem;
@@ -2968,7 +2974,7 @@ partial class ComboBox
 
 	private void OverrideSelectedIndexForVisualStates(int selectedIndexOverride)
 	{
-		//Debug.Assert(!CanSelectMultiple);
+		//global::System.Diagnostics.Debug.Assert(!CanSelectMultiple);
 
 		ClearSelectedIndexOverrideForVisualStates();
 
@@ -3010,7 +3016,7 @@ partial class ComboBox
 
 	private void ClearSelectedIndexOverrideForVisualStates()
 	{
-		//Debug.Assert(!CanSelectMultiple);
+		//global::System.Diagnostics.Debug.Assert(!CanSelectMultiple);
 
 		DependencyObject? container;
 		ComboBoxItem? comboBoxItem;
