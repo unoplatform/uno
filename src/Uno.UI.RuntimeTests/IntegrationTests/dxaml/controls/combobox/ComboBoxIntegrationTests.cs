@@ -2883,8 +2883,6 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 
 	private async Task ValidateFocusStateOfClosedComboBoxWorker(ComboBoxHelper.OpenMethod openMethod, ComboBoxHelper.CloseMethod closeMethod, FocusState expectedFocusState)
 	{
-
-
 		ComboBox comboBox = await SetupBasicComboBoxTest();
 
 		await RunOnUIThread(() =>
