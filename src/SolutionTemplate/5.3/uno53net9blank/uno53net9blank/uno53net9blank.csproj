@@ -47,4 +47,45 @@
 		<Error Text="The Wasm SDK is not enabled" Condition=" '$(_UnoUseMicrosoftNETSdkWebAssembly)' != 'true' OR '$(UsingMicrosoftNETSdkWebAssembly)' != 'true' " />
 	</Target>
 
+  <Target Name="_UnoValidateSelfAssets"
+        BeforeTargets="AfterBuild">
+
+    <ItemGroup
+        Condition=" '$(TargetFramework)' == 'net9.0-windows10.0.19041' OR '$(TargetFramework)' == 'net9.0-desktop' ">
+      <!-- Validates that assets are properly propagated to the output folder, regardless of their "copy to output" value -->
+      <_AssetsToValidate Include="$(OutputPath)Assets\SharedAssets.md" />
+      <_AssetsToValidate Include="$(OutputPath)Assets\Icons\icon_foreground.png" />
+      <_AssetsToValidate Include="$(OutputPath)Assets\Icons\icon_foreground.scale-100.png" />
+      <_AssetsToValidate Include="$(OutputPath)Assets\Icons\icon_foreground.scale-125.png" />
+      <_AssetsToValidate Include="$(OutputPath)Assets\Icons\icon_foreground.scale-150.png" />
+      <_AssetsToValidate Include="$(OutputPath)Assets\Icons\icon_foreground.scale-200.png" />
+      <_AssetsToValidate Include="$(OutputPath)Assets\Icons\icon_foreground.scale-300.png" />
+      <_AssetsToValidate Include="$(OutputPath)Assets\Icons\icon_foreground.scale-400.png" />
+    </ItemGroup>
+
+    <ItemGroup
+        Condition="'$(TargetFramework)'=='net9.0-browserwasm'">
+
+      <_AssetsToValidate Include="$(OutputPath)wwwroot\Assets\SharedAssets.md" />
+      <_AssetsToValidate Include="$(OutputPath)wwwroot\Assets\Icons\icon_foreground.png" />
+      <_AssetsToValidate Include="$(OutputPath)wwwroot\Assets\Icons\icon_foreground.scale-100.png" />
+      <_AssetsToValidate Include="$(OutputPath)wwwroot\Assets\Icons\icon_foreground.scale-125.png" />
+      <_AssetsToValidate Include="$(OutputPath)wwwroot\Assets\Icons\icon_foreground.scale-150.png" />
+      <_AssetsToValidate Include="$(OutputPath)wwwroot\Assets\Icons\icon_foreground.scale-200.png" />
+      <_AssetsToValidate Include="$(OutputPath)wwwroot\Assets\Icons\icon_foreground.scale-300.png" />
+      <_AssetsToValidate Include="$(OutputPath)wwwroot\Assets\Icons\icon_foreground.scale-400.png" />
+
+      <!-- wwwroot -->
+      <_AssetsToValidate Include="$(OutputPath)\wwwroot\staticwebapp.config.json" />
+      <_AssetsToValidate Include="$(OutputPath)\wwwroot\web.config" />
+    </ItemGroup>
+
+    <Error Text="Missing asset %(_AssetsToValidate.Identity)"
+          Condition="'@(_AssetsToValidate)'!='' AND '%(_AssetsToValidate.MustNotExist)'!='true' AND !exists('%(_AssetsToValidate.Identity)')" />
+
+    <Error Text="Invalid existing asset %(_AssetsToValidate.Identity)"
+          Condition="'@(_AssetsToValidate)'!='' AND '%(_AssetsToValidate.MustNotExist)'=='true'  AND exists('%(_AssetsToValidate.Identity)')" />
+
+  </Target>
+
 </Project>
