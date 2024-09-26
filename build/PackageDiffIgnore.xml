@@ -1951,12 +1951,6 @@
 			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.Selector.SetFocusedItem(System.Int32 index, System.Boolean shouldScrollIntoView, System.Boolean animateIfBringIntoView, Microsoft.UI.Xaml.Input.FocusNavigationDirection focusNavigationDirection)" reason="Does not exist in WinUI" />
 			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.Selector.SetFocusedItem(System.Int32 index, System.Boolean shouldScrollIntoView)" reason="Does not exist in WinUI" />
 			<!-- END ComboBox.IsEditable -->
-
-			<!-- BEGIN TypeMappings -->
-			<Member fullName="System.Threading.Tasks.Task Uno.UI.Helpers.TypeMappings.WaitForMappingsToResume()" reason="Not really considered a public API, used by internal tooling" />
-			<Member fullName="System.Threading.Tasks.Task`1&lt;System.Boolean&gt; Uno.UI.Helpers.TypeMappings.WaitForResume()" reason="Not really considered a public API, used by internal tooling" />
-			<Member fullName="System.Void Uno.UI.Helpers.TypeMappings.Resume(System.Boolean updateLayout)" reason="Not really considered a public API, used by internal tooling" />
-			<!-- END TypeMappings -->
 		</Methods>
 	</IgnoreSet>
 
@@ -1986,6 +1980,8 @@
 			<!-- BEGIN DiagnosticsOverlay -->
 			<Member fullName="System.Void Uno.Diagnostics.UI.DiagnosticsOverlay.Add(System.String id, System.String name, Microsoft.UI.Xaml.UIElement preview, System.Func`1&lt;Microsoft.UI.Xaml.UIElement&gt; details)" reason="Recently public, nobody uses it yet." />
 			<!-- END DiagnosticsOverlay -->
+
+			<Member fullName="Windows.Foundation.Size Microsoft.UI.Xaml.Shapes.Shape.BasicArrangeOverride(Windows.Foundation.Size finalSize, System.Action`1&lt;Android.Graphics.Path&gt; action)" reason="Does not exist in WinAppSDK, and isn't relevant for users" />
 		</Methods>
 	</IgnoreSet>
 
