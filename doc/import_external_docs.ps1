@@ -8,6 +8,7 @@ Set-PSDebug -Trace 1
 $external_docs = @{
     # use either commit, or branch name to use its latest commit
 <<<<<<< HEAD
+<<<<<<< HEAD
     "uno.wasm.bootstrap" = "6a034bdd23a8be6882b0d05e8b017e49f655e89d" #latest main commit
     "uno.themes"         = "38d6bf005a2637f77bb052d92be88ac567479811" #latest release branch commit
     "uno.toolkit.ui"     = "27c6e65094a8e9a53e6a4f33b846f4d98c118fc4" #latest release branch commit
@@ -15,6 +16,9 @@ $external_docs = @{
     "uno.xamlmerge.task" = "21f02c98702b875a9942047ca042e41810b6fe56" #latest main commit
 =======
     "uno.wasm.bootstrap" = "69dd0ead0c99cc11f559d44cb67f20fa215de316" #latest main commit
+=======
+    "uno.wasm.bootstrap" = "abcb066159e3a089019032fbd4befda836336296" #latest release/stable/8.0 branch commit
+>>>>>>> 510546bd74 (chore: Restore bootstrapper update)
     "uno.themes"         = "1da7240824a1bc5ddaf5efc1ed6e22ea5a41abd9" #latest release/stable/5.2 branch commit
     "uno.toolkit.ui"     = "a79e83cb260c17f59be6a843ce90038cb2479a61" #latest release/stable/6.2 branch commit
     "uno.check"          = "27e686d9205654375fd2c7861c3ebe5f2ad69e93" #latest main commit
