@@ -119,7 +119,7 @@ namespace Microsoft.UI.Xaml.Controls
 			FocusRingType = NSFocusRingType.None;
 		}
 
-		public override CGSize SizeThatFits(CGSize size) => base.SizeThatFits(size);
+		public override CGSize SizeThatFits(CGSize size) => IFrameworkElementHelper.SizeThatFits(this, base.SizeThatFits(size));
 
 		public void UpdateFont()
 		{

@@ -49,14 +49,9 @@ namespace Microsoft.UI.Xaml
 
 		internal bool ClippingIsSetByCornerRadius { get; set; }
 
-		partial void ApplyNativeClip(Rect rect)
+		private void SetClipPlatform(Rect? totalLogicalClip)
 		{
-			if (rect.IsEmpty
-				|| double.IsPositiveInfinity(rect.X)
-				|| double.IsPositiveInfinity(rect.Y)
-				|| double.IsPositiveInfinity(rect.Width)
-				|| double.IsPositiveInfinity(rect.Height)
-			)
+			if (totalLogicalClip is null)
 			{
 				if (!ClippingIsSetByCornerRadius)
 				{
@@ -67,7 +62,7 @@ namespace Microsoft.UI.Xaml
 
 			this.Layer.Mask = new CAShapeLayer
 			{
-				Path = CGPath.FromRect(rect.ToCGRect())
+				Path = CGPath.FromRect(totalLogicalClip.Value.ToCGRect())
 			};
 		}
 
