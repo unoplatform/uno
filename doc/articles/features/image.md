@@ -44,7 +44,7 @@ MyImage.UriSource = new BitmapImage { UriSource = new($"ms-appdata:///local/imag
 
 Displaying animated GIFs is supported on:
 
-- netX.0-desktop (5.4 ad later)
+- netX.0-desktop (5.4 and later)
 - netX.0-windows
 - netX.0-browserwasm
 
