@@ -451,10 +451,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Has_VisibleBounds_LayoutRoot_Respects_VisibleBounds()
 		{
+#if __SKIA__
 			if (!CoreApplication.IsFullFledgedApp)
 			{
 				Assert.Inconclusive("Test fails on Islands. It seems like CalculateDialogAvailableSize is skipping Islands, we should remove the condition there.");
 			}
+#endif
 
 			var nativeUnsafeArea = ScreenHelper.GetUnsafeArea();
 
