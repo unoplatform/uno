@@ -1951,6 +1951,8 @@
 			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.Selector.SetFocusedItem(System.Int32 index, System.Boolean shouldScrollIntoView, System.Boolean animateIfBringIntoView, Microsoft.UI.Xaml.Input.FocusNavigationDirection focusNavigationDirection)" reason="Does not exist in WinUI" />
 			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.Selector.SetFocusedItem(System.Int32 index, System.Boolean shouldScrollIntoView)" reason="Does not exist in WinUI" />
 			<!-- END ComboBox.IsEditable -->
+
+			<Member fullName="Windows.Foundation.Size Microsoft.UI.Xaml.Shapes.Shape.BasicArrangeOverride(Windows.Foundation.Size finalSize, System.Action`1&lt;Android.Graphics.Path&gt; action)" reason="Does not exist in WinAppSDK, and isn't relevant for users" />
 		</Methods>
 	</IgnoreSet>
 	
