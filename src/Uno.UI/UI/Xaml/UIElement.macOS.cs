@@ -236,14 +236,9 @@ namespace Microsoft.UI.Xaml
 			base.OnNativeKeyUp(evt);
 		}
 
-		partial void ApplyNativeClip(Rect rect)
+		private void ApplyNativeClip(Rect? totalLogicalClip)
 		{
-			if (rect.IsEmpty
-				|| double.IsPositiveInfinity(rect.X)
-				|| double.IsPositiveInfinity(rect.Y)
-				|| double.IsPositiveInfinity(rect.Width)
-				|| double.IsPositiveInfinity(rect.Height)
-			)
+			if (totalLogicalClip is null)
 			{
 				if (!ClippingIsSetByCornerRadius)
 				{
@@ -262,7 +257,7 @@ namespace Microsoft.UI.Xaml
 			{
 				layer.Mask = new CAShapeLayer
 				{
-					Path = CGPath.FromRect(rect.ToCGRect())
+					Path = CGPath.FromRect(totalLogicalClip.Value.ToCGRect())
 				};
 			}
 		}
