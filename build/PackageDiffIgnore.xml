@@ -1982,6 +1982,7 @@
 			<!-- END DiagnosticsOverlay -->
 
 			<Member fullName="Windows.Foundation.Size Microsoft.UI.Xaml.Shapes.Shape.BasicArrangeOverride(Windows.Foundation.Size finalSize, System.Action`1&lt;Android.Graphics.Path&gt; action)" reason="Does not exist in WinAppSDK, and isn't relevant for users" />
+			<Member fullName="Windows.Foundation.Size Windows.UI.Xaml.Shapes.Shape.BasicArrangeOverride(Windows.Foundation.Size finalSize, System.Action`1&lt;Android.Graphics.Path&gt; action)" reason="Does not exist in WinAppSDK, and isn't relevant for users" />
 		</Methods>
 	</IgnoreSet>
 
