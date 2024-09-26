@@ -139,6 +139,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			root.ForceLoaded();
 			root.Children.Add(SUT);
 
+			var contentPresenter = (ContentPresenter)VisualTreeHelper.GetChild(SUT, 0);
+
 			Assert.AreEqual(1, TemplateCreated);
 
 			SUT.ContentTemplate = null;
@@ -147,13 +149,15 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			Assert.AreEqual(1, _created.Count);
 			Assert.AreEqual(1, _created[0].TemplateRecycled);
 			Assert.IsNull(SUT.ContentTemplateRoot);
+			Assert.IsNull(contentPresenter.ContentTemplateRoot);
 
 			SUT.ContentTemplate = dataTemplate;
 
 			Assert.AreEqual(1, TemplateCreated);
 			Assert.AreEqual(1, _created.Count);
 			Assert.AreEqual(1, _created[0].TemplateRecycled);
-			Assert.IsNotNull(SUT.ContentTemplateRoot);
+			Assert.IsNull(SUT.ContentTemplateRoot);
+			Assert.IsNotNull(contentPresenter.ContentTemplateRoot);
 		}
 
 		[TestMethod]
@@ -178,6 +182,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			root.ForceLoaded();
 			root.Children.Add(SUT);
 
+			var contentPresenter = (ContentPresenter)VisualTreeHelper.GetChild(SUT, 0);
+
 			Assert.AreEqual(1, _created.Count);
 
 			SUT.ContentTemplate = null;
@@ -185,6 +191,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			Assert.AreEqual(1, _created.Count);
 			Assert.AreEqual(1, _created[0].TemplateRecycled);
 			Assert.IsNull(SUT.ContentTemplateRoot);
+			Assert.IsNull(contentPresenter.ContentTemplateRoot);
 
 			_mockProvider.Now = TimeSpan.FromMinutes(2);
 			FrameworkTemplatePool.Instance.Scavenge(false);
@@ -193,7 +200,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			Assert.AreEqual(2, _created.Count);
 			Assert.AreEqual(1, _created[0].TemplateRecycled);
-			Assert.IsNotNull(SUT.ContentTemplateRoot);
+			Assert.IsNull(SUT.ContentTemplateRoot);
+			Assert.IsNotNull(contentPresenter.ContentTemplateRoot);
 		}
 
 		[TestMethod]
@@ -219,6 +227,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			root.ForceLoaded();
 			root.Children.Add(SUT);
 
+			var contentPresenter = (ContentPresenter)VisualTreeHelper.GetChild(SUT, 0);
+
 			Assert.AreEqual(1, _created.Count);
 
 			_mockProvider.AppMemoryUsage = 81;
@@ -228,6 +238,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			Assert.AreEqual(1, _created.Count);
 			Assert.AreEqual(0, _created[0].TemplateRecycled);
 			Assert.IsNull(SUT.ContentTemplateRoot);
+			Assert.IsNull(contentPresenter.ContentTemplateRoot);
 
 			_mockProvider.Now = TimeSpan.FromMinutes(2);
 			FrameworkTemplatePool.Instance.Scavenge(false);
@@ -236,7 +247,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			Assert.AreEqual(2, _created.Count);
 			Assert.AreEqual(0, _created[0].TemplateRecycled);
-			Assert.IsNotNull(SUT.ContentTemplateRoot);
+			Assert.IsNull(SUT.ContentTemplateRoot);
+			Assert.IsNotNull(contentPresenter.ContentTemplateRoot);
 
 			_mockProvider.AppMemoryUsage = 79;
 
@@ -246,6 +258,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			Assert.AreEqual(0, _created[0].TemplateRecycled);
 			Assert.AreEqual(1, _created[1].TemplateRecycled);
 			Assert.IsNull(SUT.ContentTemplateRoot);
+			Assert.IsNull(contentPresenter.ContentTemplateRoot);
 		}
 
 		private class FrameworkTemplatePoolMockPlatformProvider : IFrameworkTemplatePoolPlatformProvider
