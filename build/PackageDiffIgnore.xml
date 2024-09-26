@@ -1914,6 +1914,8 @@
 
 		<Methods>
 			<Member fullName="System.Void Microsoft.Web.WebView2.Core.CoreWebView2.set_DocumentTitle(System.String value)" reason="Does not exist in UWP" />
+
+			<Member fullName="Windows.Foundation.Size Microsoft.UI.Xaml.Shapes.Shape.BasicArrangeOverride(Windows.Foundation.Size finalSize, System.Action`1&lt;Android.Graphics.Path&gt; action)" reason="Does not exist in WinAppSDK, and isn't relevant for users" />
 		</Methods>
 	</IgnoreSet>
 	
