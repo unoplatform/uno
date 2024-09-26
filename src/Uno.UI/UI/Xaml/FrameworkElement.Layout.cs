@@ -864,6 +864,9 @@ namespace Microsoft.UI.Xaml
 			}
 
 			ArrangeVisual(newRect, clipRect);
+#else // unit tests
+			LayoutSlotWithMarginsAndAlignments = newRect;
+			Arranged = newRect;
 #endif
 		}
 
