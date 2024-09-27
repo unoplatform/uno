@@ -16,6 +16,10 @@ using Windows.Foundation;
 using Windows.System;
 using static DirectUI.ElevationHelper;
 
+#if __ANDROID__
+using Uno.UI;
+#endif
+
 #if HAS_UNO_WINUI
 using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 #else
@@ -922,7 +926,7 @@ partial class ComboBox
 #if HAS_UNO // Force load children
 			// This method will load the itempresenter children
 #if __ANDROID__
-			SetItemsPresenter((m_tpPopupPart.Child as ViewGroup).FindFirstChild<ItemsPresenter>()!);
+			SetItemsPresenter((m_tpPopupPart.Child as Android.Views.ViewGroup).FindFirstChild<ItemsPresenter>()!);
 #elif __IOS__ || __MACOS__
 			SetItemsPresenter(m_tpPopupPart.Child.FindFirstChild<ItemsPresenter>()!);
 #endif
