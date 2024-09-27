@@ -4,7 +4,10 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Microsoft/* UWP don't rename */.UI.Xaml;
+using Windows.Storage;
+using Windows.System;
 
 namespace ResourcesExtractor;
 
@@ -54,21 +57,27 @@ public sealed partial class MainWindow : Window
 	{
 		this.InitializeComponent();
 
+		var rootDirectory = "C:\\GeneratedResources\\";
+
 		var resources = GetResources();
 		foreach (var lang in Enum.GetValues<Magic.Languages>())
 		{
-			var filePath = $"C:\\GeneratedResources\\{lang.ToString().Replace('_', '-')}\\Resources.resw";
+			var filePath = $"{rootDirectory}{lang.ToString().Replace('_', '-')}\\Resources.resw";
 			var directory = Path.GetDirectoryName(filePath);
 			Directory.CreateDirectory(directory);
 			var writer = new StreamWriter(new FileStream(filePath, FileMode.CreateNew));
 			writer.Write(Constants.ReswFileStart);
 			foreach (var resource in resources)
 			{
-				string resourceValue = Magic.GetLocalizedResource(resource.ResourceId, (int)lang);
+				var resourceValue = Magic.GetLocalizedResource(resource.ResourceId, (int)lang);
+
+				var name = (resource.ResourceId >= 5114 && resource.ResourceId <= 5155)
+					? resource.ResourceId.ToString(new CultureInfo("en-US"))
+					: resource.ResourceName;
 				if (resourceValue != null)
 				{
 					writer.Write($"""
-                      <data name="{resource.ResourceName}" xml:space="preserve">
+                      <data name="{name}" xml:space="preserve">
                         <value>{resourceValue}</value>
                       </data>
 
@@ -78,6 +87,21 @@ public sealed partial class MainWindow : Window
 
 			writer.Write(Constants.ReswFileEnd);
 			writer.Close();
+		}
+
+		OpenFileManagerAsync(rootDirectory).ConfigureAwait(false);
+	}
+
+	private async Task OpenFileManagerAsync(string directoryPath)
+	{
+		try
+		{
+			var folder = await StorageFolder.GetFolderFromPathAsync(directoryPath);
+			await Launcher.LaunchFolderAsync(folder);
+		}
+		catch (Exception ex)
+		{
+			System.Diagnostics.Debug.WriteLine($"Error: {ex.Message}");
 		}
 	}
 }
