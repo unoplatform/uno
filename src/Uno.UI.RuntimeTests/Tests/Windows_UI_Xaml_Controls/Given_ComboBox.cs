@@ -46,10 +46,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[RunsOnUIThread]
 	public class Given_ComboBox
 	{
-#if HAS_UNO
-		private static readonly FieldInfo _editableTextField = typeof(ComboBox).GetField("_editableText", BindingFlags.Instance | BindingFlags.NonPublic);
-#endif
-
 		private ResourceDictionary _testsResources;
 
 		private Style CounterComboBoxContainerStyle => _testsResources["CounterComboBoxContainerStyle"] as Style;
@@ -101,6 +97,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual("Selected", VisualStateManager.GetCurrentState(container, "CommonStates").Name);
 #endif
 		}
+#endif
 
 		[TestMethod]
 		public async Task When_IsEditable_False()
@@ -110,7 +107,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await UITestHelper.Load(SUT);
 
 			Assert.IsFalse(SUT.IsEditable);
-			Assert.IsNull(_editableTextField.GetValue(SUT));
+			Assert.AreEqual(Visibility.Collapsed, GetEditableText(SUT).Visibility);
 		}
 
 		[TestMethod]
@@ -121,7 +118,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await UITestHelper.Load(SUT);
 
 			Assert.IsTrue(SUT.IsEditable);
-			Assert.IsNotNull(_editableTextField.GetValue(SUT));
+			Assert.AreEqual(Visibility.Visible, GetEditableText(SUT).Visibility);
 		}
 
 		[TestMethod]
@@ -137,14 +134,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await UITestHelper.Load(SUT);
 
 			Assert.IsFalse(SUT.IsEditable);
-			Assert.IsNull(_editableTextField.GetValue(SUT));
+			Assert.AreEqual(Visibility.Collapsed, GetEditableText(SUT).Visibility);
 
 			SUT.IsEditable = true;
 
 			Assert.IsTrue(SUT.IsEditable);
-			Assert.IsNotNull(_editableTextField.GetValue(SUT));
+			Assert.AreEqual(Visibility.Visible, GetEditableText(SUT).Visibility);
 		}
-#endif
+
+		private TextBox GetEditableText(ComboBox comboBox) => comboBox.GetTemplateChild("EditableText") as TextBox;
 
 		[TestMethod]
 #if __MACOS__
