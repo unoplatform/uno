@@ -43,6 +43,13 @@ namespace Microsoft.UI.Xaml
 		private bool _bindingsSuspended;
 		private readonly DependencyProperty _dataContextProperty;
 
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
+		public void SetTemplatedParent(FrameworkElement? templatedParent)
+		{
+			// do nothing, this only exist to keep public api the same.
+		}
+#endif
+
 		private bool IsCandidateChild([NotNullWhen(true)] object? child)
 		{
 			if (child is IDependencyObjectStoreProvider)

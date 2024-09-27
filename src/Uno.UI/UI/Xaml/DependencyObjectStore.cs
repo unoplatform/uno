@@ -197,8 +197,8 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		public DependencyObjectStore(object originalObject, DependencyProperty dcProperty, DependencyProperty tpProperty)
-			: this(originalObject, dcProperty)
+		public DependencyObjectStore(object originalObject, DependencyProperty dataContextProperty, DependencyProperty templatedParentProperty)
+			: this(originalObject, dataContextProperty)
 		{
 		}
 
