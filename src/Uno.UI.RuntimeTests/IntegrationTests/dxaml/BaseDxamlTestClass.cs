@@ -22,6 +22,11 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 			return TestServices.RunOnUIThread(action);
 		}
 
+		protected static Task RunOnUIThread(Func<Task> action)
+		{
+			return TestServices.RunOnUIThread(action);
+		}
+
 		protected static void VERIFY_IS_TRUE(bool value, string message = null)
 		{
 			TestServices.VERIFY_IS_TRUE(value, message);
