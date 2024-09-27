@@ -1,6 +1,5 @@
-﻿using System.Linq;
+﻿using System;
 using Microsoft.UI.Xaml.Input;
-using Uno.UI.Extensions;
 using Uno.UI.Xaml.Input;
 using Windows.System;
 
@@ -78,15 +77,252 @@ partial class Selector
 		m_customValuesAllowed = allow;
 	}
 
+	private void ElementScrollViewerScrollInDirection(
+		VirtualKey key,
+		bool animate = false)
+	{
+		//// When moving to C++20 this probably needs to change to the following:
+		//// if (nullptr != m_tpScrollViewer)
+		//// There is ambiguity as to which comparison operator should be used and that warning is treated as a break.
+		//if (null != m_tpScrollViewer)
+		//{
+		//	if (animate)
+		//	{
+		//		// This is a move request within a header or footer. Only perform an animated move when the hosting panel is a modern panel. Moves from item to item
+		//		// are only animated for modern panels. So for consistency, moves within headers are only animated for modern panels as well.
+
+		//		ctl::ComPtr<IPanel> spPanel;
+		//		ctl::ComPtr<IModernCollectionBasePanel> spModernPanel;
+
+		//		IFC(get_ItemsHost(&spPanel));
+		//		spModernPanel = spPanel.AsOrNull<IModernCollectionBasePanel>();
+
+		//		animate = spModernPanel != nullptr;
+		//	}
+
+		//	if (animate)
+		//	{
+		//		IFC(m_tpScrollViewer.Cast<ScrollViewer>()->ScrollInDirection(key, true /*animate*/));
+		//	}
+
+		//	else
+		//	{
+		//		xaml_controls::Orientation physicalOrientation = xaml_controls::Orientation_Vertical;
+		//		xaml::FlowDirection direction = xaml::FlowDirection_LeftToRight;
+		//		BOOLEAN isVertical = FALSE;
+		//		BOOLEAN invert = FALSE;
+
+		//		IFC(GetItemsHostOrientations(&physicalOrientation, NULL /*pLogicalOrientation*/));
+		//		isVertical = (physicalOrientation == xaml_controls::Orientation_Vertical);
+
+		//		IFC(get_FlowDirection(&direction));
+		//		invert = direction == xaml::FlowDirection_RightToLeft;
+
+		//		switch (key)
+		//		{
+		//			case wsy::VirtualKey_PageUp:
+		//				if (isVertical)
+		//				{
+		//					IFC(m_tpScrollViewer.Cast<ScrollViewer>()->PageUp());
+		//				}
+		//				else
+		//				{
+		//					if (invert)
+		//					{
+		//						IFC(m_tpScrollViewer.Cast<ScrollViewer>()->PageRight());
+		//					}
+		//					else
+		//					{
+		//						IFC(m_tpScrollViewer.Cast<ScrollViewer>()->PageLeft());
+		//					}
+		//				}
+		//				break;
+		//			case wsy::VirtualKey_PageDown:
+		//				if (isVertical)
+		//				{
+		//					IFC(m_tpScrollViewer.Cast<ScrollViewer>()->PageDown());
+		//				}
+		//				else
+		//				{
+		//					if (invert)
+		//					{
+		//						IFC(m_tpScrollViewer.Cast<ScrollViewer>()->PageLeft());
+		//					}
+		//					else
+		//					{
+		//						IFC(m_tpScrollViewer.Cast<ScrollViewer>()->PageRight());
+		//					}
+		//				}
+		//				break;
+		//			case wsy::VirtualKey_Home:
+		//				if (isVertical)
+		//				{
+		//					IFC(m_tpScrollViewer.Cast<ScrollViewer>()->HandleVerticalScroll(xaml_primitives::ScrollEventType_First));
+		//				}
+		//				else
+		//				{
+		//					IFC(m_tpScrollViewer.Cast<ScrollViewer>()->HandleHorizontalScroll(xaml_primitives::ScrollEventType_First));
+		//				}
+		//				break;
+		//			case wsy::VirtualKey_End:
+		//				if (isVertical)
+		//				{
+		//					IFC(m_tpScrollViewer.Cast<ScrollViewer>()->HandleVerticalScroll(xaml_primitives::ScrollEventType_Last));
+		//				}
+		//				else
+		//				{
+		//					IFC(m_tpScrollViewer.Cast<ScrollViewer>()->HandleHorizontalScroll(xaml_primitives::ScrollEventType_Last));
+		//				}
+		//				break;
+		//			default:
+		//				IFC(m_tpScrollViewer.Cast<ScrollViewer>()->ScrollInDirection(key, false /*animate*/));
+		//				break;
+		//		}
+		//	}
+		//}
+	}
+
 	internal void HandleNavigationKey(
 		VirtualKey key,
 		bool scrollViewport,
 		ref int newFocusedIndex)
 	{
-		// TODO Uno: Not implemented yet.
+		bool bInvertForRTL = false;
+		bool isVertical = false;
+		FlowDirection direction = FlowDirection.LeftToRight;
+		Orientation physicalOrientation = Orientation.Vertical;
+		int nCount = 0;
+
+		var spItems = Items;
+		nCount = spItems.Count;
+
+		direction = FlowDirection;
+		bInvertForRTL = (direction == FlowDirection.RightToLeft);
+		(physicalOrientation, _ /*pLogicalOrientation*/) = GetItemsHostOrientations();
+		isVertical = (physicalOrientation == Orientation.Vertical);
+		switch (key)
+		{
+			case VirtualKey.Left:
+				if (isVertical && scrollViewport)
+				{
+					ElementScrollViewerScrollInDirection(VirtualKey.Left);
+				}
+				else
+				{
+					if (bInvertForRTL)
+					{
+						SelectNext(ref newFocusedIndex);
+					}
+					else
+					{
+						SelectPrev(ref newFocusedIndex);
+					}
+
+					if (GetFocusedIndex() == newFocusedIndex && scrollViewport)
+					{
+						ElementScrollViewerScrollInDirection(VirtualKey.Left);
+					}
+				}
+				break;
+			case VirtualKey.Up:
+				if (!isVertical && scrollViewport)
+				{
+					ElementScrollViewerScrollInDirection(VirtualKey.Up);
+				}
+				else
+				{
+					SelectPrev(ref newFocusedIndex);
+				}
+
+				if (GetFocusedIndex() == newFocusedIndex && scrollViewport)
+				{
+					ElementScrollViewerScrollInDirection(VirtualKey.Up);
+				}
+				break;
+			case VirtualKey.Right:
+				if (isVertical && scrollViewport)
+				{
+					ElementScrollViewerScrollInDirection(VirtualKey.Right);
+				}
+				else
+				{
+					if (bInvertForRTL)
+					{
+						SelectPrev(ref newFocusedIndex);
+					}
+					else
+					{
+						SelectNext(ref newFocusedIndex);
+					}
+
+					if (GetFocusedIndex() == newFocusedIndex && scrollViewport)
+					{
+						ElementScrollViewerScrollInDirection(VirtualKey.Right);
+					}
+				}
+				break;
+			case VirtualKey.Down:
+				if (!isVertical && scrollViewport)
+				{
+					ElementScrollViewerScrollInDirection(VirtualKey.Down);
+				}
+				else
+				{
+					SelectNext(ref newFocusedIndex);
+				}
+
+				if (GetFocusedIndex() == newFocusedIndex && scrollViewport)
+				{
+					ElementScrollViewerScrollInDirection(VirtualKey.Down);
+				}
+				break;
+			case VirtualKey.Home:
+				newFocusedIndex = 0;
+				break;
+			case VirtualKey.End:
+				newFocusedIndex = nCount - 1;
+				break;
+			case VirtualKey.PageUp:
+				NavigateByPage(/*forward*/false, ref newFocusedIndex);
+				break;
+			case VirtualKey.GamepadLeftTrigger:
+				if (isVertical)
+				{
+					NavigateByPage(/*forward*/false, ref newFocusedIndex);
+				}
+				break;
+			case VirtualKey.GamepadLeftShoulder:
+				if (!isVertical)
+				{
+					NavigateByPage(/*forward*/false, ref newFocusedIndex);
+				}
+				break;
+			case VirtualKey.PageDown:
+				NavigateByPage(/*forward*/true, ref newFocusedIndex);
+				break;
+			case VirtualKey.GamepadRightTrigger:
+				if (isVertical)
+				{
+					NavigateByPage(/*forward*/true, ref newFocusedIndex);
+				}
+				break;
+			case VirtualKey.GamepadRightShoulder:
+				if (!isVertical)
+				{
+					NavigateByPage(/*forward*/true, ref newFocusedIndex);
+				}
+				break;
+		}
+		newFocusedIndex = Math.Min(newFocusedIndex, nCount - 1);
+		newFocusedIndex = Math.Max(newFocusedIndex, -1);
 	}
 
-	private void OnSelectionChanged(
+	private void NavigateByPage(bool forward, ref int newFocusedIndex)
+	{
+		// TODO: Uno
+	}
+
+	private protected virtual void OnSelectionChanged(
 		int oldSelectedIndex,
 		int newSelectedIndex,
 		object pOldSelectedItem,
