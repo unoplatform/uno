@@ -2447,7 +2447,9 @@ partial class ComboBox
 			char keyCode;
 			keyCode = pArgs.Character;
 
-			if (!IsEditable)
+			// Uno specific: In WinUI this condition is only !IsEditable - however this seems to be wrong
+			// as the KeyDown handling also considers IsInSearchingMode.
+			if (!IsEditable && !IsInSearchingMode())
 			{
 				// Space should have been handled by now because we handle the Space key in the KeyDown event handler.
 				// NOTE: The 2 below specifies the map type, and maps VK to CHAR
