@@ -23,6 +23,14 @@ In your project, you may need to add the following lines (or uncomment them if y
 </PropertyGroup>
 ```
 
+Additionally, you may also get the following error message:
+
+```text
+NETSDK1198: A publish profile with the name 'win-AnyCPU.pubxml' was not found in the project.
+```
+
+In order to fix this warning in your existing project, you can create a new file named `Properties/PublishProfiles/win-AnyCPU.pubxml`, with [this content](https://github.com/unoplatform/uno.templates/blob/5196433a5e0a8a4d2efffd118d575ed03e30dcf0/src/Uno.Templates/content/unoapp/MyExtensionsApp.1/Properties/PublishProfiles/win-AnyCPU.pubxml).
+
 ### UWP Support for Uno.Extensions
 
 The [`Uno.Extensions`](https://aka.platform.uno/uno-extensions) compatibility with legacy UWP apps has been removed. If your app is UWP-based and uses Uno.Extensions, in order to migrate to Uno Platform 5.4, you can keep using [previous releases of Uno.Extensions](https://github.com/unoplatform/uno.extensions/releases), or [migrate your app to WinUI](https://platform.uno/docs/articles/updating-to-winui3.html).
