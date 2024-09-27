@@ -19,6 +19,7 @@ namespace UITests.Windows_UI_Xaml.DragAndDrop
 	[Sample(
 		Description =
 			"This test showcases the common scenario of dragging files and/or folders from another window (usually a file explorer) into a specific rectangle that accepts the drop. The files that were dragged and dropped should be seen as a list.",
+		IsManualTest = true,
 		IgnoreInSnapshotTests = true)]
 	public sealed partial class DragDrop_Files : UserControl
 	{
