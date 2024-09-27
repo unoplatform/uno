@@ -2,15 +2,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using DirectUI;
-using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Animation;
 using Uno.Disposables;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
@@ -730,6 +727,67 @@ partial class ComboBox
 		ElementSoundPlayerService.RequestInteractionSoundForElementStatic(isDropDownOpen ? ElementSoundKind.Show : ElementSoundKind.Hide, this);
 	}
 
+	private protected override void OnSelectionChanged(
+		int oldSelectedIndex,
+		int newSelectedIndex,
+		object pOldSelectedItem,
+		object pNewSelectedItem,
+		bool animateIfBringIntoView = false,
+		FocusNavigationDirection focusNavigationDirection = FocusNavigationDirection.None)
+	{
+		bool bIsDropDownOpen = IsDropDownOpen;
+
+		if (bIsDropDownOpen)
+		{
+			// If is Editable skip focusing the selected item.
+			if (!IsEditable)
+			{
+				base.OnSelectionChanged(oldSelectedIndex, newSelectedIndex, pOldSelectedItem, pNewSelectedItem, animateIfBringIntoView, focusNavigationDirection);
+			}
+		}
+		else
+		{
+			if (IsInline)
+			{
+				// In inline mode, we need to update layout in case the size of the selected item
+				// has changed
+				UpdateSelectionBoxItemProperties(newSelectedIndex);
+				ForceApplyInlineLayoutUpdate();
+			}
+			else if (m_tpContentPresenterPart is not null)
+			{
+				// The user is cycling through values in the SelectionBox
+				SetContentPresenter(newSelectedIndex);
+			}
+
+			var spElement = m_tpEmptyContent as UIElement;
+			if (spElement is not null)
+			{
+				int selectedIndex = SelectedIndex;
+
+				// Hide the default placeholder text if we have any selected item,
+				// or show it if we don't.
+				spElement.Opacity = selectedIndex >= 0 ? 0 : 1;
+			}
+
+			// When ComboBox is Editable we need to keep track of the restore index as soon as selection changes, not only
+			// on Open as non-editable ComboBox does. This allows us to revert when Selection Trigger is set to Always.
+			if (IsEditable)
+			{
+				if (!m_restoreIndexSet)
+				{
+					m_restoreIndexSet = true;
+					m_indexToRestoreOnCancel = oldSelectedIndex;
+				}
+			}
+
+			// In Phone 8.1, we relied on visual states to show or hide the default placeholder text.
+			// Though that's no longer the case in Threshold, we still call this here for app compat,
+			// since existing apps need this call to show or hide the placeholder text.
+			UpdateVisualState(false);
+		}
+	}
+
 	private void UpdateEditableTextBox(object? item, bool selectText, bool selectAll)
 	{
 		if (item is null)
@@ -1103,7 +1161,6 @@ partial class ComboBox
 		var pbHasFocus = false;
 
 		if (VisualTree.GetFocusManagerForElement(this) is { } focusManager)
-
 		{
 			if (focusManager.FocusedElement is { } spFocused)
 			{
@@ -1926,7 +1983,7 @@ partial class ComboBox
 				{
 					int currentSelectedIndex = SelectedIndex;
 					newSelectedIndex = currentSelectedIndex;
-					HandleNavigationKey(keyObject,  /*scrollViewport*/ false, ref newSelectedIndex);
+					HandleNavigationKey(keyObject, /*scrollViewport*/ false, ref newSelectedIndex);
 				}
 				break;
 
