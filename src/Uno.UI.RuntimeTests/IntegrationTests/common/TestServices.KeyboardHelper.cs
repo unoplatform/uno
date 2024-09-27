@@ -7,6 +7,8 @@ using Windows.System;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
+using Windows.Foundation.Metadata;
+
 #if HAS_UNO
 using DirectUI;
 using Uno.UI.Xaml.Core;
@@ -127,6 +129,7 @@ namespace Private.Infrastructure
 				{"GamePadMenu",                 VirtualKey.GamepadMenu},
 			};
 
+			private static bool TargetSupportsPreviewKeyEvents() => ApiInformation.IsPropertyPresent("Microsoft.UI.Xaml.UIElement", "PreviewKeyDownEvent");
 
 			public static async Task PressKeySequence(string keys, UIElement element = null)
 			{
@@ -173,9 +176,12 @@ namespace Private.Infrastructure
 						{
 							var keyArgs = new KeyRoutedEventArgs(element, vKey, activeModifiers);
 
-							var previewEvent = keyDownCodePos == 0 ? UIElement.PreviewKeyDownEvent : UIElement.PreviewKeyUpEvent;
 							var mainEvent = keyDownCodePos == 0 ? UIElement.KeyDownEvent : UIElement.KeyUpEvent;
-							await RaiseOnElementDispatcherAsync(element, previewEvent, keyArgs, true);
+							if (TargetSupportsPreviewKeyEvents())
+							{
+								var previewEvent = keyDownCodePos == 0 ? UIElement.PreviewKeyDownEvent : UIElement.PreviewKeyUpEvent;
+								await RaiseOnElementDispatcherAsync(element, previewEvent, keyArgs, true);
+							}
 							if (!keyArgs.Handled)
 							{
 								await RaiseOnElementDispatcherAsync(element, mainEvent, keyArgs);
@@ -228,7 +234,10 @@ namespace Private.Infrastructure
 								if (m_vKeyMapping.TryGetValue("shift", out var vShiftKey))
 								{
 									var keyDownArgs = new KeyRoutedEventArgs(element, vShiftKey, VirtualKeyModifiers.None);
-									await RaiseOnElementDispatcherAsync(element, UIElement.PreviewKeyDownEvent, keyDownArgs, true);
+									if (TargetSupportsPreviewKeyEvents())
+									{
+										await RaiseOnElementDispatcherAsync(element, UIElement.PreviewKeyDownEvent, keyDownArgs, true);
+									}
 									if (!keyDownArgs.Handled)
 									{
 										await RaiseOnElementDispatcherAsync(element, UIElement.KeyDownEvent, keyDownArgs);
@@ -240,13 +249,19 @@ namespace Private.Infrastructure
 							{
 								var modifiers = shouldShift ? VirtualKeyModifiers.Shift : VirtualKeyModifiers.None;
 								var keyDownArgs = new KeyRoutedEventArgs(element, vKey, modifiers);
-								await RaiseOnElementDispatcherAsync(element, UIElement.PreviewKeyDownEvent, keyDownArgs, true);
+								if (TargetSupportsPreviewKeyEvents())
+								{
+									await RaiseOnElementDispatcherAsync(element, UIElement.PreviewKeyDownEvent, keyDownArgs, true);
+								}
 								if (!keyDownArgs.Handled)
 								{
 									await RaiseOnElementDispatcherAsync(element, UIElement.KeyDownEvent, keyDownArgs);
 								}
 								var keyUpArgs = new KeyRoutedEventArgs(element, vKey, modifiers);
-								await RaiseOnElementDispatcherAsync(element, UIElement.PreviewKeyUpEvent, keyUpArgs, true);
+								if (TargetSupportsPreviewKeyEvents())
+								{
+									await RaiseOnElementDispatcherAsync(element, UIElement.PreviewKeyUpEvent, keyUpArgs, true);
+								}
 								if (!keyUpArgs.Handled)
 								{
 									await RaiseOnElementDispatcherAsync(element, UIElement.KeyUpEvent, keyUpArgs);
@@ -258,7 +273,10 @@ namespace Private.Infrastructure
 								if (m_vKeyMapping.TryGetValue("shift", out var vShiftKey))
 								{
 									var keyUpArgs = new KeyRoutedEventArgs(element, vShiftKey, VirtualKeyModifiers.None);
-									await RaiseOnElementDispatcherAsync(element, UIElement.PreviewKeyUpEvent, keyUpArgs, true);
+									if (TargetSupportsPreviewKeyEvents())
+									{
+										await RaiseOnElementDispatcherAsync(element, UIElement.PreviewKeyUpEvent, keyUpArgs, true);
+									}
 									if (!keyUpArgs.Handled)
 									{
 										await RaiseOnElementDispatcherAsync(element, UIElement.KeyUpEvent, keyUpArgs);
