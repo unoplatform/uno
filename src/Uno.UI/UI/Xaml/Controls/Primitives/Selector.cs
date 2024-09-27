@@ -336,6 +336,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			try
 			{
+				var wasAlreadyUpdatingSelection = _isUpdatingSelection;
+
 				_changingSelectedIndex = true;
 				var shouldRaiseSelectionChanged = !_isUpdatingSelection;
 				_isUpdatingSelection = true;
@@ -347,7 +349,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 					collectionView.MoveCurrentToPosition(newSelectedIndex);
 					//TODO: we should check if CurrentPosition actually changes, and set SelectedIndex back if not.
 				}
-				if (!object.ReferenceEquals(oldSelectedItem, newSelectedItem))
+				if (!object.ReferenceEquals(oldSelectedItem, newSelectedItem) && !wasAlreadyUpdatingSelection)
 				{
 					SelectedItem = newSelectedItem;
 				}
@@ -356,7 +358,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 				OnSelectionChanged(oldSelectedIndex, newSelectedIndex, oldSelectedItem, newSelectedItem);
 
-				_isUpdatingSelection = false;
+				if (!wasAlreadyUpdatingSelection)
+				{
+					_isUpdatingSelection = false;
+				}
 				if (shouldRaiseSelectionChanged)
 				{
 					InvokeSelectionChanged(
