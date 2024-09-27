@@ -617,6 +617,17 @@ public partial class ComboBox : Selector
 
 			var unoPlacement = Uno.UI.Xaml.Controls.ComboBox.GetDropDownPreferredPlacement(combo);
 			var winUIPlacement = popup.DesiredPlacement;
+
+			if (combo.IsEditable)
+			{
+				unoPlacement = DropDownPlacement.Below;
+
+				if (comboRect.Bottom + frame.Height > visibleBounds.Bottom)
+				{
+					unoPlacement = DropDownPlacement.Above;
+				}
+			}
+
 			if (unoPlacement == DropDownPlacement.Auto)
 			{
 				// If the Uno placement is Auto, we use the WinUI placement
