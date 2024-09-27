@@ -124,7 +124,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_IsEditable_False_Changes_To_True()
 		{
-			if (!ApiInformation.IsPropertyPresent(typeof(ComboBox), "IsEditable"))
+			if (!ApiInformation.IsPropertyPresent("ComboBox", "IsEditable"))
 			{
 				Assert.Inconclusive();
 			}
@@ -142,7 +142,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(Visibility.Visible, GetEditableText(SUT).Visibility);
 		}
 
-		private TextBox GetEditableText(ComboBox comboBox) => comboBox.GetTemplateChild("EditableText") as TextBox;
+		private TextBox GetEditableText(ComboBox comboBox) => comboBox.FindFirstChild<TextBox>(c => c.Name == "EditableText");
 
 		[TestMethod]
 #if __MACOS__
@@ -1085,6 +1085,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			// Take a screenshot of the comboBox before opening
 			var screenshotBefore = await TakeScreenshot(stackPanel);
+			await Task.Delay(5000);
 
 			// Use input injection to tap the comboBox and open the popup
 			var comboBoxCenter = comboBox.GetAbsoluteBounds().GetCenter();
@@ -1098,6 +1099,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// Wait for the popup to load and render
 			await WindowHelper.WaitFor(() => VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count > 0);
 			await WindowHelper.WaitForIdle();
+
+			await Task.Delay(5000);
 
 			// Take a screenshot of the UI after opening the comboBox
 			var screenshotOpened = await TakeScreenshot(stackPanel);
@@ -1217,11 +1220,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// Set the isTextSearchEnabled value being tested.
 			comboBox.IsTextSearchEnabled = isTextSearchEnabled;
 
-			comboBox.IsDropDownOpen = true;
-
 			await UITestHelper.Load(comboBox);
 
 			comboBox.Focus(FocusState.Programmatic);
+
+			comboBox.IsDropDownOpen = true;
+
+			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(3, comboBox.SelectedIndex);
 			await KeyboardHelper.PressKeySequence("$d$_r#$u$_r");
@@ -1233,6 +1238,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.IsTrue(comboBox.IsDropDownOpen);
 			await KeyboardHelper.Space();
+
 			Assert.AreEqual(isTextSearchEnabled, comboBox.IsDropDownOpen);
 
 			await Task.Delay(1100); // Make sure to wait enough so that HasSearchStringTimedOut becomes true.

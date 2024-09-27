@@ -7,9 +7,11 @@ using Windows.System;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
+#if HAS_UNO
 using DirectUI;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
+#endif
 
 namespace Private.Infrastructure
 {
