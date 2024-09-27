@@ -3190,6 +3190,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 
 
 	[TestMethod]
+	[Ignore("We are now layouting ComboBox Popup differently than WinUI. #17988")]
 	public async Task ValidatePopupPlacementAtBottomOfScreen()
 	{
 		int numberOfItems = 8;
@@ -4293,6 +4294,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
+	[Ignore("We are now layouting ComboBox Popup differently than WinUI. #17988")]
 	public async Task VerifyItemBeforeVisibleItemsInPopupIsRealized()
 	{
 		ComboBox comboBox = null;
