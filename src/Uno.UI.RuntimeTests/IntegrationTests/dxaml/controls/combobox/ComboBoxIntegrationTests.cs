@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if HAS_UNO
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -5616,3 +5617,4 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 		await ComboBoxHelper.VerifySelectedIndex(comboBox, originalSelectedIndex + 1);
 	}
 }
+#endif
