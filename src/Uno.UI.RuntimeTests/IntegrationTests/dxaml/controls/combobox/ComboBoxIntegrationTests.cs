@@ -4306,7 +4306,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 				var rootPanel = new Grid();
 				rootPanel.Children.Add(comboBox);
 
-				for (int i = 0; i < 10.0; i++)
+				for (int i = 0; i < 100; i++)
 				{
 					var item = new ComboBoxItem();
 					var stringItem = "ComboBoxItem";
