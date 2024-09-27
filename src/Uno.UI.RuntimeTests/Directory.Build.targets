@@ -5,7 +5,7 @@
 	<Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.targets', '$(MSBuildThisFileDirectory)../'))" />
 
 	<ItemGroup>
-		<Content Include="$(MSBuildThisFileDirectory)..\SamplesApp\UITests.Shared\Assets\colors300.png" Link="Assets\TransitiveTest\colors300.png" />
+		<Content Include="$(MSBuildThisFileDirectory)..\SamplesApp\UITests.Shared\Assets\colors300-transitive.png" Link="Assets\TransitiveTest\colors300.png" />
 	</ItemGroup>
 
 	<!-- 

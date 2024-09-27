@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Diagnostics.Contracts;
 using System.IO;
-using System.IO.Pipes;
 using System.Linq;
 using System.Net.WebSockets;
 using System.Reflection;
@@ -13,7 +11,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using StreamJsonRpc;
 using Uno.Extensions;
 using Uno.UI.RemoteControl.Helpers;
 using Uno.UI.RemoteControl.Host.IdeChannel;
@@ -27,10 +24,10 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 {
 	private readonly object _loadContextGate = new();
 	private static readonly Dictionary<string, (AssemblyLoadContext Context, int Count)> _loadContexts = new();
+	private static readonly Dictionary<string, string> _resolveAssemblyLocations = new();
 	private readonly Dictionary<string, IServerProcessor> _processors = new();
 	private readonly CancellationTokenSource _ct = new();
 
-	private string? _resolveAssemblyLocation;
 	private WebSocket? _socket;
 	private IdeChannelServer? _ideChannelServer;
 	private readonly List<string> _appInstanceIds = new();
@@ -77,7 +74,8 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 			// is built for a different .net version than the host process.
 			loadContext.Resolving += (context, assemblyName) =>
 			{
-				if (!string.IsNullOrWhiteSpace(_resolveAssemblyLocation))
+				if (_resolveAssemblyLocations.TryGetValue(applicationId, out var _resolveAssemblyLocation) &&
+					!string.IsNullOrWhiteSpace(_resolveAssemblyLocation))
 				{
 					try
 					{
@@ -276,8 +274,6 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 			var msg = JsonConvert.DeserializeObject<ProcessorsDiscovery>(frame.Content)!;
 			var serverAssemblyName = typeof(IServerProcessor).Assembly.GetName().Name;
 
-			_resolveAssemblyLocation = string.Empty;
-
 			if (!_appInstanceIds.Contains(msg.AppInstanceId))
 			{
 				_appInstanceIds.Add(msg.AppInstanceId);
@@ -290,10 +286,10 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 			{
 				try
 				{
+					_resolveAssemblyLocations[msg.AppInstanceId] = msg.BasePath;
+
 					using var fs = File.Open(msg.BasePath, FileMode.Open, FileAccess.Read, FileShare.Read);
 					assemblies.Add((msg.BasePath, assemblyLoadContext.LoadFromStream(fs)));
-
-					_resolveAssemblyLocation = msg.BasePath;
 				}
 				catch (Exception exc)
 				{
@@ -351,9 +347,11 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 			{
 				try
 				{
-					if (assemblies.Count > 1 || string.IsNullOrEmpty(_resolveAssemblyLocation))
+					if (assemblies.Count > 1 ||
+						!_resolveAssemblyLocations.TryGetValue(msg.AppInstanceId, out var _resolveAssemblyLocation) ||
+						string.IsNullOrEmpty(_resolveAssemblyLocation))
 					{
-						_resolveAssemblyLocation = asm.path;
+						_resolveAssemblyLocations[msg.AppInstanceId] = asm.path;
 					}
 
 					var attributes = asm.assembly.GetCustomAttributes(typeof(ServerProcessorAttribute), false);

@@ -107,7 +107,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
-			<Version>6.1.9</Version>
+			<Version>6.2.14</Version>
 		</PackageReference>
 		<SDKReference Include="WindowsDesktop, Version=10.0.22000.0">
 			<Name>Windows Desktop Extensions for the UWP</Name>
@@ -120,13 +120,13 @@
 		<When Condition="'$(UNO_UWP_BUILD)'=='false'">
 			<ItemGroup>
 				<PackageReference Include="Microsoft.WindowsAppSDK">
-					<Version>1.5.240227000</Version>
+					<Version>1.6.240829007</Version>
 				</PackageReference>
 			</ItemGroup>
 		</When>
 		<Otherwise>
 			<ItemGroup>
-				<PackageReference Include="Microsoft.UI.Xaml" Version="2.8.2" />
+				<PackageReference Include="Microsoft.UI.Xaml" Version="2.8.6" />
 			</ItemGroup>
 		</Otherwise>
 	</Choose>
@@ -145,7 +145,7 @@
 	</Target>
 
 	<!-- Hack to avoid error: "This version of the Windows App SDK requires .NET 6. -->
-	<Target Name="WindowsAppSDKVerifyWinrtRuntimeVersion" />
+	<Target Name="WindowsAppSDKVerifyCsWinRtVersions" />
 
 	<Target Name="WorkaroundMissingWinAppSDKDLL_2" BeforeTargets="BeforeBuild">
 		<!-- Workaround for

@@ -54,7 +54,7 @@ internal record EngineEntry() : HotReloadLogEntry(EntrySource.Engine, -1, DateTi
 		=> (oldStatus?.State ?? HotReloadState.Initializing, status.State) switch
 		{
 			( < HotReloadState.Ready, HotReloadState.Ready) => new EngineEntry { Title = "Connected", Icon = EntryIcon.Connection | EntryIcon.Success },
-			(not HotReloadState.Disabled, HotReloadState.Disabled) => new EngineEntry { Title = "Cannot initialize", Icon = EntryIcon.Connection | EntryIcon.Error },
+			(not HotReloadState.Disabled, HotReloadState.Disabled) => new EngineEntry { Title = "Cannot initialize with debugger attached", Icon = EntryIcon.Connection | EntryIcon.Error },
 			_ => null
 		};
 }
@@ -151,7 +151,7 @@ public enum EntryIcon
 
 
 [Microsoft.UI.Xaml.Data.Bindable]
-internal record HotReloadLogEntry(EntrySource Source, long Id, DateTimeOffset Timestamp) : INotifyPropertyChanged
+public record HotReloadLogEntry(EntrySource Source, long Id, DateTimeOffset Timestamp) : INotifyPropertyChanged
 {
 	/// <inheritdoc />
 	public event PropertyChangedEventHandler? PropertyChanged;

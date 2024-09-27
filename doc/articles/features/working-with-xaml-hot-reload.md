@@ -103,7 +103,7 @@ Hot Reload features vary between platforms and IDE, you can check below the list
         </tr>
         <tr>
             <td>WinAppSDK</td>
-            <td>✅🐞</td><td>✅🐞</td>
+            <td>✅<sup><a href="#hr-footnotes">[5]</a></sup>🐞</td><td>✅🐞</td>
             <td>🔳</td><td>🔳</td>
             <td>🔳</td><td>🔳</td>
         </tr>
@@ -243,6 +243,7 @@ Legend:
 - [2]: Support is [not available](https://youtrack.jetbrains.com/issue/RIDER-53302/launchSettings.json-WSL2-command-support).
 - [3]: C# Hot Reload is affected by a [.NET Runtime issue](https://github.com/dotnet/android/issues/9120).
 - [4]: XAML Hot Reload is using the XAML Reader, [pending C# Hot Reload update](https://github.com/unoplatform/uno/issues/15918) and a [VS/VS Code update](https://developercommunity.visualstudio.com/t/net70-iosnet70-android-MetadataUpd/10279604).
+- [5]: C# Markup Hot Reload is supported when running in Unpackaged mode only
 
 ## Supported features per Platform
 

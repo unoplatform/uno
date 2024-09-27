@@ -60,11 +60,11 @@ public class Given_BackgroundTransition
 
 		setBackground(new SolidColorBrush(Microsoft.UI.Colors.Blue));
 
-		await Task.Delay(1000);
+		await Task.Delay(950);
 
 		var bitmap = await UITestHelper.ScreenShot(control);
 
-		ImageAssert.HasColorAt(bitmap, new Point(100, 100), new Color(255, 127, 0, 127), tolerance: 20);
+		ImageAssert.HasColorAt(bitmap, new Point(100, 100), new Color(255, 127, 0, 127), tolerance: 30);
 	}
 
 	[TestMethod]

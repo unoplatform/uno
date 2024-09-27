@@ -258,8 +258,6 @@ namespace Microsoft.UI.Xaml
 				return GetDefaultValue(property);
 			}
 
-			propertyDetails = _properties.GetPropertyDetails(property);
-
 			return propertyDetails.CurrentHighestValuePrecedence == DependencyPropertyValuePrecedences.DefaultValue
 				? GetDefaultValue(propertyDetails.Property)
 				: propertyDetails.GetEffectiveValue();
@@ -454,9 +452,7 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Clears the value for the specified dependency property on the specified instance.
 		/// </summary>
-		/// <param name="instance">The instance on which the property is attached</param>
 		/// <param name="property">The dependency property to get</param>
-		/// <param name="precedence">The value precedence to assign</param>
 		public void ClearValue(DependencyProperty property)
 		{
 			SetValue(property, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Local);

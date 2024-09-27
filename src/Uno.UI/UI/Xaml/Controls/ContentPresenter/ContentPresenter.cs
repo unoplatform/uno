@@ -662,6 +662,10 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 #if ANDROID || __IOS__
 				&& this is not NativeCommandBarPresenter // Uno specific: NativeCommandBarPresenter breaks if you inherit from the TP
 #endif
+				// Uno Specific: Workaround to avoid creating a circular reference when TemplatedParent's
+				// Content being a FrameworkElement is incorrectly inherited.
+				// See https://github.com/unoplatform/uno/issues/17470.
+				&& !(pTemplatedParent.Content is FrameworkElement { IsLoaded: true })
 				)
 			{
 				// bool needsRefresh = false;
@@ -1146,7 +1150,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			e.OldValue as Brush,
 			e.NewValue as Brush,
 			this.BackgroundTransition,
-			((IDependencyObjectStoreProvider)this).Store.GetPropertyDetails(BackgroundProperty).CurrentHighestValuePrecedence == DependencyPropertyValuePrecedences.Animations);
+			((IDependencyObjectStoreProvider)this).Store.GetCurrentHighestValuePrecedence(BackgroundProperty) == DependencyPropertyValuePrecedences.Animations);
 #else
 		UpdateBorder();
 #endif

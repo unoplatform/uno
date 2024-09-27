@@ -21,6 +21,7 @@ internal class NativeWebViewWrapper : INativeWebView
 	private readonly WebView _webView;
 	private readonly CoreWebView2 _coreWebView;
 
+	private string _documentTitle;
 	internal bool _wasLoadedFromString;
 
 	public NativeWebViewWrapper(WebView webView, CoreWebView2 coreWebView)
@@ -63,6 +64,19 @@ internal class NativeWebViewWrapper : INativeWebView
 			//http://developer.android.com/guide/topics/graphics/hardware-accel.html
 			//http://stackoverflow.com/questions/27172217/android-systemui-glitches-in-lollipop
 			_webView.SetLayerType(LayerType.Software, null);
+		}
+	}
+
+	public string DocumentTitle
+	{
+		get => _documentTitle;
+		internal set
+		{
+			if (_documentTitle != value)
+			{
+				_documentTitle = value;
+				_coreWebView?.OnDocumentTitleChanged();
+			}
 		}
 	}
 

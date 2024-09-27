@@ -116,9 +116,10 @@
 		<!-- Restore the nuget packages for packages-* solution filters -->
 		<!-- These filters contain Uno.UI project and its dependencies, which are what needs to be restored -->
 		<!-- In addition, the reference project needs to be restored as well. -->
+		<Exec Command="dotnet restore filters\Uno.UI-top-projects-for-sync-gen.slnf -p:Configuration=Release -p:InformationalVersion=$(GITVERSION_InformationalVersion) -p:CI_Build=true -p:_IsCIBuild=true" />
 		<MSBuild
 			Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true"
-			Projects="filters\Uno.UI-top-projects-for-sync-gen.slnf;..\src\Uno.UWPSyncGenerator\Uno.UWPSyncGenerator.csproj;..\src\Uno.UWPSyncGenerator.Reference\Uno.UWPSyncGenerator.Reference.csproj"
+			Projects="..\src\Uno.UWPSyncGenerator\Uno.UWPSyncGenerator.csproj;..\src\Uno.UWPSyncGenerator.Reference\Uno.UWPSyncGenerator.Reference.csproj"
 			Targets="Restore;Clean"
 			RebaseOutputs="false"
 			BuildInParallel="true" />
@@ -388,7 +389,9 @@
 		</ItemGroup>
 
 		<Exec Command="dotnet tool install --tool-path $(MSBuildThisFileDirectory)\tools Uno.PackageDiff --version 1.1.0-dev.25" IgnoreExitCode="true" />
-		<Exec Command="$(MSBuildThisFileDirectory)\tools\generatepkgdiff.exe --base=%(_diffPackage.Identity) --other=%(_diffPackage.Other) --diffignore=PackageDiffIgnore.xml --outfile=$(OutputDir)\ApiDiff.%(_diffPackage.Identity).$(GITVERSION_SemVer).md" />
+
+		<MakeDir Directories="$(OutputDir)\ApiDiff" />
+		<Exec Command="$(MSBuildThisFileDirectory)\tools\generatepkgdiff.exe --base=%(_diffPackage.Identity) --other=%(_diffPackage.Other) --diffignore=PackageDiffIgnore.xml --outfile=$(OutputDir)\ApiDiff\ApiDiff.%(_diffPackage.Identity).$(GITVERSION_SemVer).md" />
 	</Target>
 
 	<Target Name="ValidatePackageReferenceAPI" AfterTargets="BuildNuGetPackage">

@@ -438,70 +438,99 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 			try
 			{
-				var (result, error) = DoUpdateFile();
+				var (result, error) = message switch
+				{
+					{ FilePath: null or { Length: 0 } } => (FileUpdateResult.BadRequest, "Invalid request (file path is empty)"),
+					{ OldText: not null, NewText: not null } => DoUpdate(message.OldText, message.NewText),
+					{ OldText: null, NewText: not null } => DoWrite(message.NewText),
+					{ NewText: null, IsCreateDeleteAllowed: true } => DoDelete(),
+					_ => (FileUpdateResult.BadRequest, "Invalid request")
+				};
 				if ((int)result < 300 && !message.IsForceHotReloadDisabled)
 				{
 					await RequestHotReloadToIde(hotReload.Id);
 				}
 
-				await _remoteControlServer.SendFrame(new UpdateFileResponse(message.RequestId, message.FilePath, result, error, hotReload.Id));
+				await _remoteControlServer.SendFrame(new UpdateFileResponse(message.RequestId, message.FilePath ?? "", result, error, hotReload.Id));
 			}
 			catch (Exception ex)
 			{
 				await hotReload.Complete(HotReloadServerResult.InternalError, ex);
-				await _remoteControlServer.SendFrame(new UpdateFileResponse(message.RequestId, message.FilePath, FileUpdateResult.Failed, ex.Message));
+				await _remoteControlServer.SendFrame(new UpdateFileResponse(message.RequestId, message.FilePath ?? "", FileUpdateResult.Failed, ex.Message));
 			}
 
-			(FileUpdateResult, string?) DoUpdateFile()
+			(FileUpdateResult, string?) DoUpdate(string oldText, string newText)
 			{
-				if (message?.IsValid() is not true)
-				{
-					if (this.Log().IsEnabled(LogLevel.Debug))
-					{
-						this.Log().LogDebug($"Got an invalid update file frame ({message})");
-					}
-
-					return (FileUpdateResult.BadRequest, "Invalid request");
-				}
-
 				if (!File.Exists(message.FilePath))
 				{
 					if (this.Log().IsEnabled(LogLevel.Debug))
 					{
-						this.Log().LogDebug($"Requested file '{message.FilePath}' does not exists.");
+						this.Log().LogDebug($"Requested file '{message.FilePath}' does not exists [{message.RequestId}].");
 					}
 
 					return (FileUpdateResult.FileNotFound, $"Requested file '{message.FilePath}' does not exists.");
 				}
 
-				if (this.Log().IsEnabled(LogLevel.Debug))
-				{
-					this.Log().LogDebug($"Apply Changes to {message.FilePath}");
-				}
-
 				var originalContent = File.ReadAllText(message.FilePath);
 				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().LogTrace($"Original content: {message.FilePath}");
+					this.Log().LogTrace($"Original content: {originalContent} [{message.RequestId}].");
 				}
 
-				var updatedContent = originalContent.Replace(message.OldText, message.NewText);
+				var updatedContent = originalContent.Replace(oldText, newText);
 				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().LogTrace($"Updated content: {message.FilePath}");
+					this.Log().LogTrace($"Updated content: {updatedContent} [{message.RequestId}].");
 				}
 
 				if (updatedContent == originalContent)
 				{
 					if (this.Log().IsEnabled(LogLevel.Debug))
 					{
-						this.Log().LogDebug($"No changes detected in {message.FilePath}");
+						this.Log().LogDebug($"No changes detected in {message.FilePath} [{message.RequestId}].");
 					}
 
 					return (FileUpdateResult.NoChanges, null);
 				}
 
 				File.WriteAllText(message.FilePath, updatedContent);
+				return (FileUpdateResult.Success, null);
+			}
+
+			(FileUpdateResult, string?) DoWrite(string newText)
+			{
+				if (!message.IsCreateDeleteAllowed && !File.Exists(message.FilePath))
+				{
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().LogDebug($"Requested file '{message.FilePath}' does not exists [{message.RequestId}].");
+					}
+
+					return (FileUpdateResult.FileNotFound, $"Requested file '{message.FilePath}' does not exists.");
+				}
+
+				if (this.Log().IsEnabled(LogLevel.Trace))
+				{
+					this.Log().LogTrace($"Write content: {newText} [{message.RequestId}].");
+				}
+
+				File.WriteAllText(message.FilePath, newText);
+				return (FileUpdateResult.Success, null);
+			}
+
+			(FileUpdateResult, string?) DoDelete()
+			{
+				if (!File.Exists(message.FilePath))
+				{
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().LogDebug($"Requested file '{message.FilePath}' does not exists [{message.RequestId}].");
+					}
+
+					return (FileUpdateResult.FileNotFound, $"Requested file '{message.FilePath}' does not exists.");
+				}
+
+				File.Delete(message.FilePath);
 				return (FileUpdateResult.Success, null);
 			}
 		}

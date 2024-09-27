@@ -148,14 +148,13 @@ namespace Microsoft.UI.Composition
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Composition.Visual.RelativeOffsetAdjustment.set
+		// Forced skipping of method Microsoft.UI.Composition.Visual.IsPixelSnappingEnabled.set
 		// Forced skipping of method Microsoft.UI.Composition.Visual.RelativeOffsetAdjustment.get
 		// Forced skipping of method Microsoft.UI.Composition.Visual.RelativeSizeAdjustment.get
 		// Forced skipping of method Microsoft.UI.Composition.Visual.RelativeSizeAdjustment.set
 		// Forced skipping of method Microsoft.UI.Composition.Visual.IsHitTestVisible.get
 		// Forced skipping of method Microsoft.UI.Composition.Visual.IsHitTestVisible.set
 		// Forced skipping of method Microsoft.UI.Composition.Visual.IsPixelSnappingEnabled.get
-		// Forced skipping of method Microsoft.UI.Composition.Visual.Opacity.get
-		// Forced skipping of method Microsoft.UI.Composition.Visual.ParentForTransform.set
 		// Forced skipping of method Microsoft.UI.Composition.Visual.BackfaceVisibility.set
 		// Forced skipping of method Microsoft.UI.Composition.Visual.AnchorPoint.set
 		// Forced skipping of method Microsoft.UI.Composition.Visual.BackfaceVisibility.get
@@ -172,7 +171,7 @@ namespace Microsoft.UI.Composition
 		// Forced skipping of method Microsoft.UI.Composition.Visual.IsVisible.set
 		// Forced skipping of method Microsoft.UI.Composition.Visual.Offset.get
 		// Forced skipping of method Microsoft.UI.Composition.Visual.Offset.set
-		// Forced skipping of method Microsoft.UI.Composition.Visual.IsPixelSnappingEnabled.set
+		// Forced skipping of method Microsoft.UI.Composition.Visual.Opacity.get
 		// Forced skipping of method Microsoft.UI.Composition.Visual.Opacity.set
 		// Forced skipping of method Microsoft.UI.Composition.Visual.Orientation.get
 		// Forced skipping of method Microsoft.UI.Composition.Visual.Orientation.set
@@ -190,5 +189,6 @@ namespace Microsoft.UI.Composition
 		// Forced skipping of method Microsoft.UI.Composition.Visual.TransformMatrix.get
 		// Forced skipping of method Microsoft.UI.Composition.Visual.TransformMatrix.set
 		// Forced skipping of method Microsoft.UI.Composition.Visual.ParentForTransform.get
+		// Forced skipping of method Microsoft.UI.Composition.Visual.ParentForTransform.set
 	}
 }
