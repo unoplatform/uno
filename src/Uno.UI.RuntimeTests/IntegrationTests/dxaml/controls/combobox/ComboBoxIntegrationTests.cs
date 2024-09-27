@@ -4937,6 +4937,8 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
+	[RequiresFullWindow]
+	[Ignore("We are now layouting ComboBox Popup differently than WinUI. #17988")]
 	public async Task ValidateEditableModePopupOpensUp()
 	{
 		Size size = new(400, 400);
@@ -4949,8 +4951,8 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 			{
 				var rootPanel = (Grid)(XamlReader.Load(
 					""""
-					<Grid x:Name='root' xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' >
-					  <ComboBox x:Name='comboBox' IsEditable='true' Margin='0,350,0,0'>
+					<Grid x:Name='root' VerticalAlignment="Stretch" xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' >
+					  <ComboBox x:Name='comboBox' IsEditable='true' VerticalAlignment="Bottom">
 					      <ComboBoxItem Content='One' />
 					      <ComboBoxItem Content='Two' />
 					      <ComboBoxItem Content='Three' />
@@ -5238,8 +5240,6 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	[TestMethod]
 	public async Task ValidateDropDownArrowClosesPopupOnEditableComboBox()
 	{
-
-
 		var comboBox = await SetupBasicComboBoxTest(5, true, true);
 
 		Border dropDownOverlay = null;
