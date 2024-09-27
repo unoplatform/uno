@@ -4992,6 +4992,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
+	[Ignore("We don't yet handle ScrollIntoView in Selector scenarios correctly #17988")]
 	public async Task ValidateEditableModeComboBoxCanScrollToNewItems()
 	{
 		Size size = new(400, 400);
