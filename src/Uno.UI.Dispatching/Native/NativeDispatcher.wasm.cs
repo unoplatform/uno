@@ -2,13 +2,17 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices.JavaScript;
-
+using System.Threading;
 using Uno.Foundation.Logging;
 
 namespace Uno.UI.Dispatching
 {
 	internal sealed partial class NativeDispatcher
 	{
+#if NET9_0_OR_GREATER
+		private static SynchronizationContext _jsContext = SynchronizationContext.Current;
+#endif
+
 #pragma warning disable IDE0051 // Remove unused private members
 		[JSExport]
 		private static void DispatcherCallback()
@@ -63,6 +67,9 @@ namespace Uno.UI.Dispatching
 				}
 				else
 				{
+#if NET9_0_OR_GREATER
+					_jsContext.Post(_ => DispatcherCallback(), null);
+#else
 					// This is a separate function to avoid enclosing early resolution
 					// by the interpreter/JIT, in case we're running the non-threaded
 					// runtime.
@@ -70,6 +77,7 @@ namespace Uno.UI.Dispatching
 						=> WebAssembly.JSInterop.InternalCalls.InvokeOnMainThread();
 
 					InvokeOnMainThread();
+#endif
 				}
 			}
 			else

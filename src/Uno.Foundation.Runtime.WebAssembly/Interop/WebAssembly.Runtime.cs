@@ -26,17 +26,10 @@ namespace WebAssembly
 	{
 		internal static class InternalCalls
 		{
-#if NET9_0_OR_GREATER
-			public static void InvokeOnMainThread()
-			{
-				throw new NotSupportedException($"Uno Platform net9.0 does not support threading yet.");
-			}
-#else
 			// Uno-Specific implementation for https://github.com/dotnet/runtime/issues/69409.
 			// To be removed when the runtime will support the main SynchronizationContext.
 			[MethodImplAttribute(MethodImplOptions.InternalCall)]
 			public static extern void InvokeOnMainThread();
-#endif
 		}
 	}
 }
