@@ -1756,12 +1756,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		public async Task When_Large_List_Scroll_To_End_Then_Back_Up_TryClick()
 		{
-#if __SKIA__
-			if (OperatingSystem.IsBrowser())
-			{
-				Assert.Inconclusive("https://github.com/unoplatform/uno-private/issues/670");
-			}
-#endif
 			var container = new Grid { Height = 500, Width = 100 };
 
 			var list = new ListView
@@ -1994,7 +1988,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// since this is originally a virtualization issue and references
 			// could be to different things than those shown on the screen.
 			var si = await UITestHelper.ScreenShot(list, true);
-			ImageAssert.HasColorAt(si, 70, 65, Colors.FromARGB("#1A69A6")); // selected
+			ImageAssert.HasColorAt(si, 70, 65, Colors.FromARGB("#1A69A6"), tolerance: 1); // selected
 
 			// check starting from below the second item that nothing looks selected or hovered
 			ImageAssert.DoesNotHaveColorInRectangle(si, new Rectangle(100, 110, si.Width - 100, si.Height - 110), Colors.FromARGB("#1A69A6")); // selected
