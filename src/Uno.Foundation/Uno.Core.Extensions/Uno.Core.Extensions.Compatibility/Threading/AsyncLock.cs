@@ -27,7 +27,7 @@ namespace Uno.Threading;
 internal sealed class AsyncLock
 {
 	private readonly SemaphoreSlim _semaphore = new(1, 1);
-	private ulong _handleId;
+	private long _handleId;
 
 	/// <summary>
 	/// Acquires the lock, then provides a disposable to release it.
@@ -42,7 +42,7 @@ internal sealed class AsyncLock
 		return new Handle(this, _handleId);
 	}
 
-	public record struct Handle(AsyncLock Lock, ulong Id) : IDisposable
+	public record struct Handle(AsyncLock Lock, long Id) : IDisposable
 	{
 		public void Dispose()
 		{
