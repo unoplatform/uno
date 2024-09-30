@@ -220,6 +220,8 @@ public partial class CompositionPathGeometry : CompositionGeometry, ID2D1Geometr
 	{
 		_geometrySource2D?.Dispose();
 		base.DisposeInternal();
+
+		_geometrySource2D = null;
 	}
 
 	void ID2D1GeometrySink.AddLine(Point point) => _commands.Add(CompositionPathCommand.Create(point));
