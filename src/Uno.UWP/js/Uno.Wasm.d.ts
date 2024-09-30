@@ -209,7 +209,7 @@ declare namespace Windows.Storage {
         /**
          * Try to get a value from localStorage
          * */
-        private static tryGetValue;
+        private static getValue;
         /**
          * Set a value to localStorage
          * */
