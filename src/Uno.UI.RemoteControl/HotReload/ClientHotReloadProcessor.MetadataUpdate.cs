@@ -32,7 +32,7 @@ namespace Uno.UI.RemoteControl.HotReload;
 partial class ClientHotReloadProcessor
 {
 	private static int _isWaitingForTypeMapping;
-	private static readonly AsyncLock _uiUpdateGate = new();
+	private static readonly AsyncLock _uiUpdateGate = new(); // We can use the simple AsyncLock here as we don't need reentrancy.
 
 	private static ElementUpdateAgent? _elementAgent;
 
