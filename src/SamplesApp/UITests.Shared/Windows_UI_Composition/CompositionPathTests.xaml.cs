@@ -6,6 +6,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Uno.UI.Samples.Controls;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -52,7 +53,7 @@ namespace UITests.Shared.Windows_UI_Composition
 				var geometry = compositor.CreatePathGeometry(path);
 				var shape = compositor.CreateSpriteShape(geometry);
 
-				shape.FillBrush = compositor.CreateColorBrush(Windows.UI.Colors.LightGreen);
+				shape.FillBrush = compositor.CreateColorBrush(Colors.LightGreen);
 
 				visual.Shapes.Add(shape);
 				visual.Size = new(200);
@@ -108,8 +109,8 @@ namespace UITests.Shared.Windows_UI_Composition
 				var geometry = compositor.CreatePathGeometry(path);
 				var shape = compositor.CreateSpriteShape(geometry);
 
-				shape.FillBrush = compositor.CreateColorBrush(Windows.UI.Colors.Transparent);
-				shape.StrokeBrush = compositor.CreateColorBrush(Windows.UI.Colors.LightGreen);
+				shape.FillBrush = compositor.CreateColorBrush(Colors.Transparent);
+				shape.StrokeBrush = compositor.CreateColorBrush(Colors.LightGreen);
 				shape.StrokeThickness = 0.8f;
 				shape.Scale = new(200f / 570f);
 				shape.Offset = -112.5f * shape.Scale;
@@ -750,7 +751,7 @@ namespace UITests.Shared.Windows_UI_Composition
 			var circleGeometry = compositor.CreatePathGeometry(circlePath);
 			var circleShape = compositor.CreateSpriteShape(circleGeometry);
 
-			circleShape.FillBrush = compositor.CreateColorBrush(Windows.UI.Colors.LightPink);
+			circleShape.FillBrush = compositor.CreateColorBrush(Colors.LightPink);
 
 			circleVisual.Shapes.Add(circleShape);
 			circleVisual.Size = new(200);
@@ -764,7 +765,7 @@ namespace UITests.Shared.Windows_UI_Composition
 			var rectGeometry = compositor.CreatePathGeometry(rectPath);
 			var rectShape = compositor.CreateSpriteShape(rectGeometry);
 
-			rectShape.FillBrush = compositor.CreateColorBrush(Windows.UI.Colors.LightBlue);
+			rectShape.FillBrush = compositor.CreateColorBrush(Colors.LightBlue);
 
 			rectVisual.Shapes.Add(rectShape);
 			rectVisual.Size = new(200);
@@ -778,7 +779,7 @@ namespace UITests.Shared.Windows_UI_Composition
 			var polyGeometry = compositor.CreatePathGeometry(polyPath);
 			var polyShape = compositor.CreateSpriteShape(polyGeometry);
 
-			polyShape.FillBrush = compositor.CreateColorBrush(Windows.UI.Colors.PaleVioletRed);
+			polyShape.FillBrush = compositor.CreateColorBrush(Colors.PaleVioletRed);
 
 			polyVisual.Shapes.Add(polyShape);
 			polyVisual.Size = new(200);
@@ -810,7 +811,7 @@ namespace UITests.Shared.Windows_UI_Composition
 			var polyGeometry2 = compositor.CreatePathGeometry(polyPath);
 			var polyShape2 = compositor.CreateSpriteShape(polyGeometry2);
 
-			polyShape2.StrokeBrush = compositor.CreateColorBrush(Windows.UI.Colors.PaleVioletRed);
+			polyShape2.StrokeBrush = compositor.CreateColorBrush(Colors.PaleVioletRed);
 			polyShape2.StrokeDashCap = CompositionStrokeCap.Round;
 			polyShape2.StrokeEndCap = CompositionStrokeCap.Round;
 			polyShape2.StrokeStartCap = CompositionStrokeCap.Round;

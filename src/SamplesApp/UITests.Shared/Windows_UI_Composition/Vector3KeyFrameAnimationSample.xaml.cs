@@ -25,9 +25,11 @@ public sealed partial class Vector3KeyFrameAnimationSample : Page
 	{
 		var compositor = _borderVisual.Compositor;
 
+		CompositionEasingFunction defaultEasingFunction = compositor.CreateCubicBezierEasingFunction(new(0.41f, 0.52f), new(0.0f, 0.94f));
+
 		var easingFunction = easingFunctionBox.SelectedIndex switch
 		{
-			0 => Compositor.GetDefaultEasingFunction(),
+			0 => defaultEasingFunction,
 			1 => CompositionEasingFunction.CreateLinearEasingFunction(compositor),
 			2 => CompositionEasingFunction.CreateBackEasingFunction(compositor, CompositionEasingFunctionMode.InOut, 0.9f),
 			3 => CompositionEasingFunction.CreateBounceEasingFunction(compositor, CompositionEasingFunctionMode.Out, 3, 2),
@@ -37,7 +39,7 @@ public sealed partial class Vector3KeyFrameAnimationSample : Page
 			7 => CompositionEasingFunction.CreatePowerEasingFunction(compositor, CompositionEasingFunctionMode.Out, 10),
 			8 => CompositionEasingFunction.CreateSineEasingFunction(compositor, CompositionEasingFunctionMode.InOut),
 			9 => CompositionEasingFunction.CreateStepEasingFunction(compositor, 3),
-			_ => Compositor.GetDefaultEasingFunction()
+			_ => defaultEasingFunction
 		};
 
 		var animation = compositor.CreateVector3KeyFrameAnimation();
