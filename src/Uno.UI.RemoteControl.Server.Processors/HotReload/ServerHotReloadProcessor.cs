@@ -509,7 +509,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					return (FileUpdateResult.NoChanges, null);
 				}
 
-				var effectiveUpdate = WaitForFileUpdated(message.FilePath);
+				var effectiveUpdate = WaitForFileUpdated();
 				await File.WriteAllTextAsync(message.FilePath, updatedContent);
 				await effectiveUpdate;
 
@@ -533,7 +533,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					this.Log().LogTrace($"Write content: {newText} [{message.RequestId}].");
 				}
 
-				var effectiveUpdate = WaitForFileUpdated(message.FilePath);
+				var effectiveUpdate = WaitForFileUpdated();
 				await File.WriteAllTextAsync(message.FilePath, newText);
 				await effectiveUpdate;
 
@@ -552,16 +552,16 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					return (FileUpdateResult.FileNotFound, $"Requested file '{message.FilePath}' does not exists.");
 				}
 
-				var effectiveUpdate = WaitForFileUpdated(message.FilePath);
+				var effectiveUpdate = WaitForFileUpdated();
 				File.Delete(message.FilePath);
 				await effectiveUpdate;
 
 				return (FileUpdateResult.Success, null);
 			}
 
-			static async Task WaitForFileUpdated(string path)
+			async Task WaitForFileUpdated()
 			{
-				var file = new FileInfo(path);
+				var file = new FileInfo(message.FilePath);
 				var dir = file.Directory;
 				while (dir is { Exists: false })
 				{
@@ -585,7 +585,11 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				};
 				watcher.EnableRaisingEvents = true;
 
-				await Task.WhenAny(tcs.Task, Task.Delay(TimeSpan.FromSeconds(2)));
+				if (await Task.WhenAny(tcs.Task, Task.Delay(TimeSpan.FromSeconds(2))) != tcs.Task
+					&& this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().LogDebug($"File update event not received for '{message.FilePath}', continuing anyway [{message.RequestId}].");
+				}
 			}
 		}
 
