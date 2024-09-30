@@ -43,7 +43,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Converters\FromNullableToDefaultValueConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Converters\StringEmptyToVisibilityConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Converters\StringFormatConverter.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)controls\uitests\views\entities\SampleSearchResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Entities\SampleSearchResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Entities\Section.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Extensions\InputPanelExtensions.PanIntoView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Helper\ContentNavigationBehavior.cs" />
