@@ -9,6 +9,10 @@ using RuntimeTests.Tests.Windows_UI_Xaml_Input.TestPages;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 
+#if WINAPPSDK
+using Uno.UI.Toolkit.Extensions;
+#endif
+
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 {
 	[TestClass]
