@@ -209,9 +209,9 @@ public class Given_CompositionSpriteShape
 	private async Task RenderPath(CompositionPath path, FrameworkElement expected, Vector2? scale = null, Vector2? offset = null, Windows.UI.Color? color = null)
 	{
 		var compositor = Compositor.GetSharedCompositor();
-		using var visual = compositor.CreateShapeVisual();
-		using var pathGeometry = compositor.CreatePathGeometry(path);
-		using var shape = compositor.CreateSpriteShape(pathGeometry);
+		var visual = compositor.CreateShapeVisual();
+		var pathGeometry = compositor.CreatePathGeometry(path);
+		var shape = compositor.CreateSpriteShape(pathGeometry);
 
 		if (scale is not null)
 		{
