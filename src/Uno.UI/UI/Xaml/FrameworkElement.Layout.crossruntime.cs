@@ -314,9 +314,7 @@ namespace Microsoft.UI.Xaml
 
 				// only clip and constrain if the tree wants that.
 				// currently only listviewitems do not want clipping
-				// UNO TODO
-
-				//if (!pLayoutManager->GetIsInNonClippingTree())
+				if (!IsInNonClippingTree)
 				{
 					// In overconstrained scenario, parent wins and measured size of the child,
 					// including any sizes set or computed, can not be larger then

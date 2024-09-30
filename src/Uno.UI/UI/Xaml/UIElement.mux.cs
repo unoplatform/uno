@@ -694,5 +694,7 @@ namespace Microsoft.UI.Xaml
 
 		internal virtual bool WantsScrollViewerToObscureAvailableSizeBasedOnScrollBarVisibility(Orientation horizontal)
 			=> true;
+
+		internal bool IsNonClippingSubtree { get; set; }
 	}
 }

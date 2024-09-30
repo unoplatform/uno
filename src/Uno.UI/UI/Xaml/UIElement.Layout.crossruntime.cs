@@ -22,6 +22,9 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		internal bool ShouldInterceptInvalidate { get; set; }
 
+		// In WinUI, this is in LayoutManager. For Uno, we make it static in FE for now.
+		private protected static bool IsInNonClippingTree { get; set; }
+
 		public void InvalidateMeasure()
 		{
 			if (ShouldInterceptInvalidate || IsMeasureDirty || IsLayoutFlagSet(LayoutFlag.MeasuringSelf))
@@ -207,6 +210,12 @@ namespace Microsoft.UI.Xaml
 
 			var remainingTries = MaxLayoutIterations;
 
+			// remember whether we need to set this value back
+			var wasInNonClippingTree = IsInNonClippingTree;
+			// once entering a tree that is non-clipping, we don't get out of it
+			// remember this for down-stream
+			IsInNonClippingTree = IsNonClippingSubtree || wasInNonClippingTree;
+
 			while (--remainingTries > 0)
 			{
 				if (isDirty)
@@ -299,6 +308,8 @@ namespace Microsoft.UI.Xaml
 
 				break;
 			}
+
+			IsInNonClippingTree = wasInNonClippingTree;
 		}
 
 		internal virtual void MeasureCore(Size availableSize)
