@@ -270,6 +270,8 @@
           href: xref:Build.Solution.TargetFramework-override
         - name: Performance tips
           href: Uno-UI-Performance.md
+        - name: Memory Profiling
+          href: xref:Uno.Contributing.MemoryIssues
         - name: How to profile applications
           href: guides/profiling-applications.md
         - name: IL Linker for WebAssembly
