@@ -313,7 +313,7 @@ public partial class EntryPoint : IDisposable
 			var pipeGuid = Guid.NewGuid();
 
 			var hostBinPath = Path.Combine(_toolsPath, "host", $"net{version}.0", "Uno.UI.RemoteControl.Host.dll");
-			var arguments = $"\"{hostBinPath}\" --httpPort {_remoteControlServerPort} --ppid {System.Diagnostics.Process.GetCurrentProcess().Id} --ideChannel \"{pipeGuid}\"";
+			var arguments = $"\"{hostBinPath}\" --httpPort {_remoteControlServerPort} --ppid {System.Diagnostics.Process.GetCurrentProcess().Id} --ideChannel \"{pipeGuid}\" --solution \"{_dte.Solution.FullName}\"";
 			var pi = new ProcessStartInfo("dotnet", arguments)
 			{
 				UseShellExecute = false,

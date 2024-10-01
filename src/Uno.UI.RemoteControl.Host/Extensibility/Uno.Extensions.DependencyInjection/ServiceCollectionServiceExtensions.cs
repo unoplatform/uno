@@ -1,0 +1,63 @@
+﻿using System;
+using System.Collections.Immutable;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Uno.UI.RemoteControl.Host.Extensibility;
+
+namespace Uno.Extensions.DependencyInjection;
+
+public static class ServiceCollectionServiceExtensions
+{
+	public static IServiceCollection AddFromAttribute(this IServiceCollection svc)
+	{
+		var attribute = typeof(ServiceAttribute);
+		var services = AppDomain
+			.CurrentDomain
+			.GetAssemblies()
+			.SelectMany(assembly => assembly.GetCustomAttributesData())
+			.Select(attrData => attrData.TryCreate(attribute) as ServiceAttribute)
+			.Where(attr => attr is not null)
+			.ToImmutableList();
+
+		foreach (var service in services)
+		{
+			svc.Add(new ServiceDescriptor(service!.Contract, service.Implementation, service.LifeTime));
+		}
+		svc.AddHostedService(s => new AutoInitService(s, services!));
+
+		return svc;
+	}
+
+	private class AutoInitService(IServiceProvider services, IImmutableList<ServiceAttribute> types) : BackgroundService, IHostedService
+	{
+		/// <inheritdoc />
+		protected override Task ExecuteAsync(CancellationToken stoppingToken)
+		{
+			foreach (var attr in types.Where(attr => attr.IsAutoInit))
+			{
+				try
+				{
+					var svc = services.GetService(attr.Contract);
+
+					if (this.Log().IsEnabled(LogLevel.Information))
+					{
+						this.Log().Log(LogLevel.Information, $"Successfully created an instance of {attr.Contract} (impl: {svc?.GetType()})");
+					}
+				}
+				catch (Exception error)
+				{
+					if (this.Log().IsEnabled(LogLevel.Error))
+					{
+						this.Log().Log(LogLevel.Error, error, $"Failed to create an instance of {attr.Contract}.");
+					}
+				}
+			}
+
+			return Task.CompletedTask;
+		}
+	}
+}

@@ -7,7 +7,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using Uno.Extensions;
-using Uno.UI.RemoteControl.Server.Processors.Helpers;
+using Uno.UI.RemoteControl.Helpers;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 
