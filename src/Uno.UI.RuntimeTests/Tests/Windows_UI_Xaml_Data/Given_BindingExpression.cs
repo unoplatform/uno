@@ -4,13 +4,14 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
 using Uno.Disposables;
+using Uno.UI.RuntimeTests.Helpers;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Data;
 
 [TestClass]
+[RunsOnUIThread]
 public class Given_BindingExpression
 {
 	[TestMethod]
-	[RunsOnUIThread]
 	public async Task When_Binding_Should_Have_Correct_Default()
 	{
 		var binding = new Binding();
@@ -19,7 +20,6 @@ public class Given_BindingExpression
 	}
 
 	[TestMethod]
-	[RunsOnUIThread]
 	public async Task When_Binding_Outer_Inner_DC_Null()
 	{
 		BoolToVisibilityConverter.ReceivedNull = false;
@@ -51,7 +51,6 @@ public class Given_BindingExpression
 	}
 
 	[TestMethod]
-	[RunsOnUIThread]
 	public async Task When_Binding_Outer_Inner_DC_Not_Null_Outer_Null()
 	{
 		BoolToVisibilityConverter.ReceivedNull = false;
@@ -83,7 +82,6 @@ public class Given_BindingExpression
 	}
 
 	[TestMethod]
-	[RunsOnUIThread]
 	[DataRow(true)]
 	[DataRow(false)]
 	public async Task When_Binding_Outer_Inner_DC_Not_Null_Outer_Not_Null_Inner_Null(bool canReturnNull)
@@ -118,7 +116,6 @@ public class Given_BindingExpression
 	}
 
 	[TestMethod]
-	[RunsOnUIThread]
 	public async Task When_Binding_Outer_DC_Null()
 	{
 		BoolToVisibilityConverter.ReceivedNull = false;
@@ -150,7 +147,6 @@ public class Given_BindingExpression
 	}
 
 	[TestMethod]
-	[RunsOnUIThread]
 	[DataRow(true)]
 	[DataRow(false)]
 	public async Task When_Binding_Outer_DC_Not_Null_Outer_Null(bool canReturnNull)
@@ -185,7 +181,6 @@ public class Given_BindingExpression
 	}
 
 	[TestMethod]
-	[RunsOnUIThread]
 	public async Task When_Binding_EmptyPath_DC_Null()
 	{
 		BoolToVisibilityConverter.ReceivedNull = false;
@@ -217,7 +212,6 @@ public class Given_BindingExpression
 	}
 
 	[TestMethod]
-	[RunsOnUIThread]
 	public async Task When_xBindNoDataTemplate_Outer_Inner_DC_Null()
 	{
 		BoolToVisibilityConverter.ReceivedNull = false;
@@ -249,7 +243,6 @@ public class Given_BindingExpression
 	}
 
 	[TestMethod]
-	[RunsOnUIThread]
 	public async Task When_xBindNoDataTemplate_Outer_Inner_DC_Not_Null_Outer_Null()
 	{
 		BoolToVisibilityConverter.ReceivedNull = false;
@@ -281,7 +274,6 @@ public class Given_BindingExpression
 	}
 
 	[TestMethod]
-	[RunsOnUIThread]
 	[DataRow(true)]
 	[DataRow(false)]
 	public async Task When_xBindNoDataTemplate_Outer_Inner_DC_Not_Null_Outer_Not_Null_Inner_Null(bool canReturnNull)
@@ -316,7 +308,6 @@ public class Given_BindingExpression
 	}
 
 	[TestMethod]
-	[RunsOnUIThread]
 	[DataRow(true)]
 	[DataRow(false)]
 	public async Task When_xBindNoDataTemplate_Outer_DC_Not_Null_Outer_Null(bool canReturnNull)
@@ -351,7 +342,6 @@ public class Given_BindingExpression
 	}
 
 	[TestMethod]
-	[RunsOnUIThread]
 	public async Task When_xBindNoDataTemplate_Outer_DC_Null()
 	{
 		BoolToVisibilityConverter.ReceivedNull = false;
@@ -383,7 +373,6 @@ public class Given_BindingExpression
 	}
 
 	[TestMethod]
-	[RunsOnUIThread]
 	public async Task When_xBindInDataTemplate_Outer_Inner_DC_Null()
 	{
 		BoolToVisibilityConverter.ReceivedNull = false;
@@ -417,7 +406,6 @@ public class Given_BindingExpression
 	}
 
 	[TestMethod]
-	[RunsOnUIThread]
 	public async Task When_xBindInDataTemplate_Outer_DC_Null()
 	{
 		BoolToVisibilityConverter.ReceivedNull = false;
@@ -451,7 +439,6 @@ public class Given_BindingExpression
 	}
 
 	[TestMethod]
-	[RunsOnUIThread]
 	public async Task When_xBindInDataTemplate_EmptyPath_DC_Null()
 	{
 		BoolToVisibilityConverter.ReceivedNull = false;
@@ -485,7 +472,6 @@ public class Given_BindingExpression
 	}
 
 	[TestMethod]
-	[RunsOnUIThread]
 	public async Task When_xBindInDataTemplate_Outer_Inner_DC_Not_Null_Outer_Null()
 	{
 		BoolToVisibilityConverter.ReceivedNull = false;
@@ -519,7 +505,6 @@ public class Given_BindingExpression
 	}
 
 	[TestMethod]
-	[RunsOnUIThread]
 	[DataRow(true)]
 	[DataRow(false)]
 	public async Task When_xBindInDataTemplate_Outer_Inner_DC_Not_Null_Outer_Not_Null_Inner_Null(bool canReturnNull)
@@ -557,7 +542,6 @@ public class Given_BindingExpression
 	}
 
 	[TestMethod]
-	[RunsOnUIThread]
 	[DataRow(true)]
 	[DataRow(false)]
 	public async Task When_xBindInDataTemplate_Outer_DC_Not_Null_Outer_Null(bool canReturnNull)
@@ -591,5 +575,28 @@ public class Given_BindingExpression
 
 		Assert.IsTrue(BoolToVisibilityConverter.ReceivedNull);
 		Assert.AreEqual(BoolToVisibilityConverter.CanReturnNull ? "targetnullvalue" : "convertervalue", SUT.Prop);
+	}
+
+	[TestMethod]
+	public async Task When_Binding_To_Non_DP()
+	{
+		var page = new Binding_DP_TestCases();
+		await UITestHelper.Load(page);
+		var SUT = page.SUT;
+
+		var nonDP1 = SUT.NonDP1;
+		Assert.IsNotNull(nonDP1);
+		Assert.AreEqual("Path1", ((Binding)nonDP1).Path.Path);
+
+		var nonDP2 = SUT.NonDP2;
+		Assert.IsNotNull(nonDP2);
+		Assert.AreEqual("Path2", ((Binding)nonDP2).Path.Path);
+		Assert.IsNull(SUT.GetBindingExpression(CustomPanel.NonDP2Property));
+
+		var dp = SUT.DP;
+		Assert.IsNull(dp);
+		var expression = SUT.GetBindingExpression(CustomPanel.DPProperty);
+		Assert.IsNotNull(expression);
+		Assert.AreEqual("Path3", expression.ParentBinding.Path.Path);
 	}
 }
