@@ -6,7 +6,7 @@ using Windows.Graphics;
 
 namespace Microsoft.UI.Composition
 {
-	public class SkiaGeometrySource2D : IGeometrySource2D, IDisposable
+	internal class SkiaGeometrySource2D : IGeometrySource2D, IDisposable
 	{
 		private readonly SKPath _geometry;
 
