@@ -36,7 +36,7 @@ namespace UITests.Shared.Windows_UI_Composition
 
 		private void CompositionPathTests_Loaded(object sender, RoutedEventArgs e)
 		{
-			var compositor = Compositor.GetSharedCompositor();
+			var compositor = ElementCompositionPreview.GetElementVisual(this).Compositor;
 			var device = CanvasDevice.GetSharedDevice();
 
 			// Simple shape
