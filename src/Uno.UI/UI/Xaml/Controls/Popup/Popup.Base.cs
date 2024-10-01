@@ -93,6 +93,11 @@ public partial class Popup : FrameworkElement, IPopup
 
 			if (IsLightDismissEnabled || AssociatedFlyout is { })
 			{
+				if (IsLightDismissEnabled)
+				{
+					m_fIsLightDismiss = true;
+				}
+
 				// Store last focused element
 				var focusManager = VisualTree.GetFocusManagerForElement(this);
 				var focusedElement = focusManager?.FocusedElement as UIElement;
@@ -110,11 +115,6 @@ public partial class Popup : FrameworkElement, IPopup
 					// Give the child focus if allowed
 					Focus(FocusState.Programmatic);
 				}
-			}
-
-			if (IsLightDismissEnabled || IsForFlyout)
-			{
-				m_fIsLightDismiss = true;
 			}
 		}
 		else
