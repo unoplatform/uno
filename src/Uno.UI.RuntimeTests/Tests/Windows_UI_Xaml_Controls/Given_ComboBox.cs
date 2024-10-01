@@ -1049,11 +1049,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RequiresFullWindow]
 		[RunsOnUIThread]
-#if !HAS_INPUT_INJECTOR
-		[Ignore("InputInjector is not supported on this platform.")]
-#elif !HAS_RENDER_TARGET_BITMAP
-		[Ignore("Cannot take screenshot on this platform.")]
-#endif
+		[Ignore("Test is not valid - the Popup is not actually rendered in the screenshots")]
 		public async Task When_Mouse_Opened_And_Closed()
 		{
 			// Create a comboBox with some sample items
@@ -1085,7 +1081,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			// Take a screenshot of the comboBox before opening
 			var screenshotBefore = await TakeScreenshot(stackPanel);
-			await Task.Delay(5000);
 
 			// Use input injection to tap the comboBox and open the popup
 			var comboBoxCenter = comboBox.GetAbsoluteBounds().GetCenter();
@@ -1099,8 +1094,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// Wait for the popup to load and render
 			await WindowHelper.WaitFor(() => VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count > 0);
 			await WindowHelper.WaitForIdle();
-
-			await Task.Delay(5000);
 
 			// Take a screenshot of the UI after opening the comboBox
 			var screenshotOpened = await TakeScreenshot(stackPanel);
@@ -1125,11 +1118,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RequiresFullWindow]
 		[RunsOnUIThread]
-#if !HAS_INPUT_INJECTOR
-		[Ignore("InputInjector is not supported on this platform.")]
-#elif !HAS_RENDER_TARGET_BITMAP
-		[Ignore("Cannot take screenshot on this platform.")]
-#endif
+		[Ignore("Test is not valid - the Popup is not actually rendered in the screenshots")]
 		public async Task When_Mouse_Opened_And_Closed_Uwp()
 		{
 			using var _ = StyleHelper.UseUwpStyles();
