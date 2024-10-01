@@ -517,9 +517,11 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 
 		[JsonSerializable(typeof(DataEntry[]))]
 		[JsonSerializable(typeof(DataEntry))]
+#if __WASM__
 		[JsonSerializable(typeof(NativeStorageItemInfo[]))]
 		[JsonSerializable(typeof(NativeStorageItemInfo))]
-		internal partial class DragDropSerializationContext : JsonSerializerContext
+#endif
+		private partial class DragDropSerializationContext : JsonSerializerContext
 		{
 		}
 	}
