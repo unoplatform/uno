@@ -420,12 +420,19 @@ namespace Microsoft.UI.Xaml
 
 			if (fullBinding != null)
 			{
-				var boundProperty = DependencyProperty.GetProperty(_originalObjectType, dependencyProperty)
-					?? FindStandardProperty(_originalObjectType, dependencyProperty, fullBinding.IsXBind);
+				var boundProperty = DependencyProperty.GetProperty(_originalObjectType, dependencyProperty);
 
 				if (boundProperty != null)
 				{
 					_properties.SetBinding(boundProperty, fullBinding, _originalObjectRef);
+				}
+				else if (FindPropertySetter(_originalObjectType, dependencyProperty, allowPrivateMembers: fullBinding.IsXBind) is { } propertySetter)
+				{
+					propertySetter(ActualInstance!, fullBinding);
+				}
+				else
+				{
+					throw new NotSupportedException($"Property '{dependencyProperty}' was not found in type '{_originalObjectType}'.");
 				}
 			}
 			else
@@ -449,7 +456,7 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Finds a DependencyProperty for the specified C# property
 		/// </summary>
-		private DependencyProperty? FindStandardProperty(Type originalObjectType, string dependencyProperty, bool allowPrivateMembers)
+		private ValueSetterHandler? FindPropertySetter(Type originalObjectType, string dependencyProperty, bool allowPrivateMembers)
 		{
 			var propertyType = BindingPropertyHelper.GetPropertyType(originalObjectType, dependencyProperty, allowPrivateMembers);
 
@@ -457,23 +464,7 @@ namespace Microsoft.UI.Xaml
 			{
 				// This line populates the cache for the getter in the BindingPropertyHelper, making the binder
 				// pick it up later on.
-				var setter = BindingPropertyHelper.GetValueSetter(originalObjectType, dependencyProperty, true);
-
-				var property = DependencyProperty.GetProperty(originalObjectType, dependencyProperty);
-
-				if (property == null)
-				{
-					// Create a stub property so the BindingPropertyHelper is able to pick up
-					// the plain C# properties.
-					property = DependencyProperty.Register(
-						dependencyProperty,
-						propertyType,
-						originalObjectType,
-						new FrameworkPropertyMetadata(null)
-					);
-				}
-
-				return property;
+				return BindingPropertyHelper.GetValueSetter(originalObjectType, dependencyProperty, true);
 			}
 			else
 			{
@@ -485,11 +476,6 @@ namespace Microsoft.UI.Xaml
 		public void SetBindingValue(object value, [CallerMemberName] string? propertyName = null)
 		{
 			var property = DependencyProperty.GetProperty(_originalObjectType, propertyName);
-
-			if (property == null && propertyName != null)
-			{
-				property = FindStandardProperty(_originalObjectType, propertyName, false);
-			}
 
 			if (property != null)
 			{
