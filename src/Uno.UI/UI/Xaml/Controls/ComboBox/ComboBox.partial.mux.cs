@@ -204,7 +204,12 @@ partial class ComboBox
 		// Tells the selector to prevent Custom Values.
 		SetAllowCustomValues(false /*allow*/);
 
-		m_tpEditableTextPart.Text = null;
+		m_tpEditableTextPart.Text =
+#if HAS_UNO_WINUI
+			null;
+#else // In UWP, setting Text to null will throw an exception.
+			"";
+#endif
 
 		m_isEditModeConfigured = false;
 	}
