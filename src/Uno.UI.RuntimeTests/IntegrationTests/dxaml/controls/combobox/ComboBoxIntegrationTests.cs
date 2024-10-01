@@ -4456,6 +4456,9 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
+#if !HAS_UNO_WINUI
+	[Ignore("This test is failing on UWP. #17988")]
+#endif
 	public async Task VerifyTabBehavior()
 	{
 		Size size = new(400, 400);
