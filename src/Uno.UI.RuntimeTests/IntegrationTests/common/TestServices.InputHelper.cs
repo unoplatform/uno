@@ -10,6 +10,10 @@ using Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
 using System.Threading;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.Xaml.Input;
+using Uno.UI.Xaml.Core;
+
+
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -70,6 +74,11 @@ namespace Private.Infrastructure
 				});
 
 #else
+				var inputManager = VisualTree.GetContentRootForElement(element).InputManager;
+				if (inputManager is not null)
+				{
+					inputManager.LastInputDeviceType = InputDeviceType.Touch;
+				}
 				// fall back to a tap event on platforms where InputInjector isn't implemented. Ideally tap should be triggered
 				// by GestureRecognizer when a pointer is pressed and released, but here we do a hacky workaround
 				var args = new TappedEventArgs(1, PointerDeviceType.Touch, default, 1);
