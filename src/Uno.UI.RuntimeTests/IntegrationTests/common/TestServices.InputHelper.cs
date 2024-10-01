@@ -10,10 +10,11 @@ using Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
 using System.Threading;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.RuntimeTests.Helpers;
+
+#if HAS_UNO
 using Uno.UI.Xaml.Input;
 using Uno.UI.Xaml.Core;
-
-
+#endif
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
