@@ -174,7 +174,7 @@ internal partial class X11XamlRootHost
 					}
 				}
 				else if (@event.AnyEvent.window == x11Window.Window ||
-				         (@event.type is XEventName.GenericEvent && @event.GenericEventCookie.extension == GetXI2Details(x11Window.Window).opcode))
+					(@event.type is XEventName.GenericEvent && @event.GenericEventCookie.extension == GetXI2Details(x11Window.Window).opcode))
 				{
 					switch (@event.type)
 					{

@@ -528,7 +528,7 @@ internal partial class X11PointerInputSource
 						}
 					}
 					else if (xiAnyClassInfo->Type == XiDeviceClass.XIValuatorClass &&
-					         ((XIValuatorClassInfo*)xiAnyClassInfo)->Label == X11Helper.GetAtom(display, "Abs MT Pressure"))
+						((XIValuatorClassInfo*)xiAnyClassInfo)->Label == X11Helper.GetAtom(display, "Abs MT Pressure"))
 					{
 						pressureValuator = ((XIValuatorClassInfo*)xiAnyClassInfo)->Number;
 					}
