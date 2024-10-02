@@ -1,4 +1,10 @@
-﻿using System;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference src\dxaml\xcp\dxaml\lib\ComboBox_Partial.h, tag winui3/release/1.6.1, commit f31293f
+
+// The file is not ported completely, some methods are still missing!
+
+using System;
 using DirectUI;
 using Microsoft.UI.Xaml.Media.Animation;
 using Uno.Disposables;
@@ -11,7 +17,6 @@ partial class ComboBox
 {
 	private const char VK_ESCAPE = (char)0x1B;
 
-	// TODO MZ: These disablings should not be required
 #pragma warning disable CS0067 // Unused
 #pragma warning disable CS0649 // Unused
 #pragma warning disable CS0169 // Unused
