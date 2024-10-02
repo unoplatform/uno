@@ -1,4 +1,10 @@
-﻿#nullable enable
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference src\dxaml\xcp\dxaml\lib\ComboBox_Partial.cpp, tag winui3/release/1.6.1, commit f31293f
+
+// The file is not ported completely, some methods are still missing!
+
+#nullable enable
 
 using System;
 using System.Collections.Generic;

@@ -1,4 +1,7 @@
-﻿#nullable enable
+﻿// This contains Uno-specific logic for ComboBox. Ideally, it will be possible to remove when we port further portions
+// of the control from WinUI
+
+#nullable enable
 
 using System;
 using DirectUI;
