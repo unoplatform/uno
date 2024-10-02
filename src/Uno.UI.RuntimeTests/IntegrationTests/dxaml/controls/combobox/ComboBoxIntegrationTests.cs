@@ -186,7 +186,6 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 		var growingList = new List<string>();
 
 		await RunOnUIThread(() =>
-
 		{
 			var rootPanel = new Grid();
 			VERIFY_IS_NOT_NULL(rootPanel);
@@ -197,7 +196,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 			comboBox.Margin = ThicknessHelper.FromUniformLength(25);
 
 			rootPanel.Children.Add(comboBox);
-			TestServices.WindowHelper.WindowContent = comboBox;
+			TestServices.WindowHelper.WindowContent = rootPanel;
 
 			growingList.Add("StartingItem");
 			comboBox.ItemsSource = growingList;
@@ -1041,6 +1040,9 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
+#if !__SKIA__ && !__WASM__
+	[Ignore("We currently only support InputHelper.Tap properly on input injector targets. #17988")]
+#endif
 	public async Task CanOpenWithTouch()
 	{
 		var comboBox = await SetupBasicComboBoxTest(20 /* itemSize */);
@@ -1240,6 +1242,9 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
+#if !__SKIA__ && !__WASM__
+	[Ignore("We currently only support InputHelper.Tap properly on input injector targets. #17988")]
+#endif
 	public async Task CanLightDismissDropdown()
 	{
 		ComboBox comboBox = null;
@@ -1941,6 +1946,9 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	//}
 
 	[TestMethod]
+#if !__SKIA__ && !__WASM__
+	[Ignore("We currently only support InputHelper.Tap properly on input injector targets. #17988")]
+#endif
 	public async Task CanSelectItemWithTap()
 	{
 		ComboBoxItem comboBoxItem = null;
@@ -2783,12 +2791,18 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
+#if !__SKIA__ && !__WASM__
+	[Ignore("We currently only support InputHelper.Tap properly on input injector targets. #17988")]
+#endif
 	public async Task ValidateFocusStateForComboBoxOpenedWithTouch()
 	{
 		await ValidateFocusStateForComboBoxWorker(ComboBoxHelper.OpenMethod.Touch, FocusState.Pointer);
 	}
 
 	[TestMethod]
+#if !__SKIA__ && !__WASM__
+	[Ignore("We currently only support InputHelper.LeftMouseClick properly on input injector targets. #17988")]
+#endif
 	public async Task ValidateFocusStateForComboBoxOpenedWithMouse()
 	{
 		await ValidateFocusStateForComboBoxWorker(ComboBoxHelper.OpenMethod.Mouse, FocusState.Pointer);
@@ -2808,8 +2822,6 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 
 	private async Task ValidateFocusStateForComboBoxWorker(ComboBoxHelper.OpenMethod openMethod, FocusState expectedFocusState)
 	{
-
-
 		ComboBox comboBox = await SetupBasicComboBoxTest();
 
 		await RunOnUIThread(() =>
@@ -2835,12 +2847,18 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
+#if !__SKIA__
+	[Ignore("We currently only support InputHelper.LeftMouseClick on Skia targets. #17988")]
+#endif
 	public async Task ValidateFocusStateOfClosedComboBoxWhenOpenedAndClosedWithMouse()
 	{
 		await ValidateFocusStateOfClosedComboBoxWorker(ComboBoxHelper.OpenMethod.Mouse, ComboBoxHelper.CloseMethod.Mouse, FocusState.Pointer);
 	}
 
 	[TestMethod]
+#if !__SKIA__
+	[Ignore("We currently only support InputHelper.LeftMouseClick on Skia targets. #17988")]
+#endif
 	public async Task ValidateFocusStateOfClosedComboBoxWhenOpenedAndClosedWithTouch()
 	{
 		await ValidateFocusStateOfClosedComboBoxWorker(ComboBoxHelper.OpenMethod.Touch, ComboBoxHelper.CloseMethod.Touch, FocusState.Pointer);
@@ -2859,24 +2877,36 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
+#if !__SKIA__ && !__WASM__
+	[Ignore("We currently only support InputHelper.Tap properly on input injector targets. #17988")]
+#endif
 	public async Task ValidateFocusStateOfClosedComboBoxWhenOpenedWithTouchAndClosedWithKeyboard()
 	{
 		await ValidateFocusStateOfClosedComboBoxWorker(ComboBoxHelper.OpenMethod.Touch, ComboBoxHelper.CloseMethod.Keyboard, FocusState.Keyboard);
 	}
 
 	[TestMethod]
+#if !__SKIA__ && !__WASM__
+	[Ignore("We currently only support InputHelper.Tap properly on input injector targets. #17988")]
+#endif
 	public async Task ValidateFocusStateOfClosedComboBoxWhenOpenedWithTouchAndClosedWithGamepad()
 	{
 		await ValidateFocusStateOfClosedComboBoxWorker(ComboBoxHelper.OpenMethod.Touch, ComboBoxHelper.CloseMethod.Gamepad, FocusState.Keyboard);
 	}
 
 	[TestMethod]
+#if !__SKIA__ && !__WASM__
+	[Ignore("We currently only support InputHelper.LeftMouseClick properly on input injector targets. #17988")]
+#endif
 	public async Task ValidateFocusStateOfClosedComboBoxWhenOpenedWithMouseAndClosedWithKeyboard()
 	{
 		await ValidateFocusStateOfClosedComboBoxWorker(ComboBoxHelper.OpenMethod.Mouse, ComboBoxHelper.CloseMethod.Keyboard, FocusState.Keyboard);
 	}
 
 	[TestMethod]
+#if !__SKIA__ && !__WASM__
+	[Ignore("We currently only support InputHelper.LeftMouseClick properly on input injector targets. #17988")]
+#endif
 	public async Task ValidateFocusStateOfClosedComboBoxWhenOpenedWithMouseAndClosedWithGamepad()
 	{
 		await ValidateFocusStateOfClosedComboBoxWorker(ComboBoxHelper.OpenMethod.Mouse, ComboBoxHelper.CloseMethod.Gamepad, FocusState.Keyboard);
@@ -4858,8 +4888,6 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	[TestMethod]
 	public async Task ValidateEditableModeGamePadInteraction()
 	{
-
-
 		Size size = new(400, 400);
 		TestServices.WindowHelper.SetWindowSizeOverride(size);
 
@@ -5266,6 +5294,9 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
+#if !__SKIA__ && !__WASM__
+	[Ignore("We currently only support InputHelper.Tap properly on input injector targets. #17988")]
+#endif
 	public async Task ValidateDropDownArrowClosesPopupOnEditableComboBox()
 	{
 		var comboBox = await SetupBasicComboBoxTest(5, true, true);
