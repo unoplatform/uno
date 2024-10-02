@@ -188,6 +188,8 @@
           href: xref:uno.vscode.mobile.advanced.debugging
         - name: Generic Unhandled Exceptions handler
           href: xref:Uno.Development.UnhandledExceptions
+        - name: Debugging Troubleshooting
+          href: xref:Uno.Debugging.Troubleshooting
 
     - name: Embedding
       items:
