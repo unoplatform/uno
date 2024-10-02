@@ -1297,7 +1297,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
-#if __ANDROID__
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 	[Ignore("Due to lifecycle differences, the selection gets updated before the index is reset. Probably fixed by #18261. #17988")]
 #endif
 	public async Task ValidateResetItemsSource()
