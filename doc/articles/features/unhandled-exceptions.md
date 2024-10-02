@@ -1,5 +1,5 @@
 ---
-uid: xref:Uno.Development.UnhandledExceptions
+uid: Uno.Development.UnhandledExceptions
 ---
 
 # Generic Unhandled Exceptions handler
