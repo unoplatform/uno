@@ -51,7 +51,7 @@ public abstract partial class GLCanvasElement
 
 			// over 95% of android phone have >= OpenGL ES 3.0 support https://developer.android.com/about/dashboards#OpenGL
 			_glContext = EGL14.EglCreateContext(_eglDisplay, configs[0], EGL14.EglNoContext, new[] { EGL14.EglContextClientVersion, 2, EGL14.EglNone }, 0);
-			_pBufferSurface = EGL14.EglCreatePbufferSurface(_eglDisplay, configs[0], new []{ EGL14.EglNone }, 0);
+			_pBufferSurface = EGL14.EglCreatePbufferSurface(_eglDisplay, configs[0], new[] { EGL14.EglNone }, 0);
 
 			if (_glContext is null)
 			{
@@ -64,13 +64,13 @@ public abstract partial class GLCanvasElement
 		}
 
 		public object CreateGLSilkNETHandle() => GL.GetApi(new DefaultNativeContext("libGLESv2.so"));
-		
+
 		public void DestroyContext()
 		{
 			if (_eglDisplay is { } && _pBufferSurface is { })
-            {
-            	EGL14.EglDestroySurface(_eglDisplay, _pBufferSurface);
-            }
+			{
+				EGL14.EglDestroySurface(_eglDisplay, _pBufferSurface);
+			}
 			if (_eglDisplay is { } && _glContext is { })
 			{
 				EGL14.EglDestroyContext(_eglDisplay, _glContext);

@@ -125,11 +125,7 @@ public abstract partial class GLCanvasElement : Grid
 #if WINAPPSDK
 	public void Invalidate() => DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, Render);
 #else // WPF hangs if we attempt to enqueue on Low inside RenderOverride
-	public
-#if ANDROID
-		new
-#endif
-		void Invalidate() => NativeDispatcher.Main.Enqueue(Render, NativeDispatcherPriority.Idle);
+	public void Invalidate() => NativeDispatcher.Main.Enqueue(Render, NativeDispatcherPriority.Idle);
 #endif
 
 	private unsafe void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
