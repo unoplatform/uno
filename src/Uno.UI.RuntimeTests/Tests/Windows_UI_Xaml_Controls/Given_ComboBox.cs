@@ -213,7 +213,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				{
 					await WindowHelper.WaitFor(() => (cbi = SUT.ContainerFromItem(item) as ComboBoxItem) != null);
 					await WindowHelper.WaitForLoaded(cbi); // Required on Android
-					Assert.AreEqual(expectedItemWidth, cbi.ActualWidth);
+					Assert.AreEqual(expectedItemWidth, cbi.ActualWidth, 0.5); // Account for layout rounding
 				}
 			}
 			finally
