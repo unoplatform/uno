@@ -3,6 +3,7 @@ using OpenTK.Graphics.Egl;
 using Silk.NET.Core.Contexts;
 using Silk.NET.OpenGL;
 using Uno.Disposables;
+using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.Graphics;
 
@@ -98,4 +99,5 @@ public class MacOSNativeOpenGLWrapper : INativeOpenGLWrapper
 			}
 		});
 	}
+	public static void Register() => ApiExtensibility.Register(typeof(INativeOpenGLWrapper), _ => new MacOSNativeOpenGLWrapper());
 }
