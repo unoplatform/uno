@@ -153,13 +153,13 @@ namespace Microsoft.UI.Xaml.Data
 
 		private ManagedWeakReference GetWeakDataContext()
 		{
-			if (ParentBinding.IsTemplateBinding)
-			{
-				return GetWeakTemplatedParent();
-			}
 			if (_isElementNameSource || (_explicitSourceStore?.IsAlive ?? false))
 			{
 				return _explicitSourceStore;
+			}
+			if (ParentBinding.IsTemplateBinding)
+			{
+				return GetWeakTemplatedParent();
 			}
 
 			return _dataContext;
