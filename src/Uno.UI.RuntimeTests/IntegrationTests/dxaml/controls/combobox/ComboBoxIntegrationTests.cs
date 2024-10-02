@@ -4892,6 +4892,9 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
+#if __ANDROID__
+	[Ignore("Focus does not behave correctly in this case because we move it asynchronously in TextBox.ProcessFocusChanged #17988")]
+#endif
 	public async Task ValidateEditableModeGamePadInteraction()
 	{
 		Size size = new(400, 400);
