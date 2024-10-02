@@ -335,7 +335,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private int GetCharacterIndexAtPoint(Point point)
 		{
-			if (!_drawRect.Contains(point))
+			if (!_drawRect.Contains(point) || _layoutManager is null)
 			{
 				return -1;
 			}
