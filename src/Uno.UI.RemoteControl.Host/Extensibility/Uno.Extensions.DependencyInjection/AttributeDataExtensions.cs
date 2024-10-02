@@ -11,7 +11,7 @@ internal static class AttributeDataExtensions
 
 	public static object? TryCreate(this CustomAttributeData data, Type attribute)
 	{
-		if (!data.AttributeType.FullName?.Equals(attribute.FullName, StringComparison.Ordinal) ?? false)
+		if ((!data.AttributeType.FullName?.Equals(attribute.FullName, StringComparison.Ordinal)) ?? true)
 		{
 			return null;
 		}
@@ -45,12 +45,12 @@ internal static class AttributeDataExtensions
 				instance = ctor.Invoke(args);
 				break;
 			}
-			catch { }
+			catch { /* Nothing to do, lets try another constructor */ }
 		}
 
 		if (instance is null)
 		{
-			return null;
+			return null; // Failed to find a valid constructor.
 		}
 
 		try

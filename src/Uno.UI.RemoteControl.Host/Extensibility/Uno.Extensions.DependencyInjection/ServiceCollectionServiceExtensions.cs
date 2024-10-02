@@ -6,12 +6,16 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Uno.UI.RemoteControl.Host.Extensibility;
 
 namespace Uno.Extensions.DependencyInjection;
 
 public static class ServiceCollectionServiceExtensions
 {
+	/// <summary>
+	/// Register services configured with the <see cref="ServiceAttribute"/> attribute from all loaded assemblies.
+	/// </summary>
+	/// <param name="svc">The service collection on which services should be registered.</param>
+	/// <returns>The service collection for fluent usage.</returns>
 	public static IServiceCollection AddFromAttribute(this IServiceCollection svc)
 	{
 		var attribute = typeof(ServiceAttribute);
@@ -45,14 +49,14 @@ public static class ServiceCollectionServiceExtensions
 
 					if (this.Log().IsEnabled(LogLevel.Information))
 					{
-						this.Log().Log(LogLevel.Information, $"Successfully created an instance of {attr.Contract} (impl: {svc?.GetType()})");
+						this.Log().Log(LogLevel.Information, $"Successfully created an instance of {attr.Contract} for auto-init (impl: {svc?.GetType()})");
 					}
 				}
 				catch (Exception error)
 				{
 					if (this.Log().IsEnabled(LogLevel.Error))
 					{
-						this.Log().Log(LogLevel.Error, error, $"Failed to create an instance of {attr.Contract}.");
+						this.Log().Log(LogLevel.Error, error, $"Failed to create an instance of {attr.Contract} for auto-init.");
 					}
 				}
 			}
