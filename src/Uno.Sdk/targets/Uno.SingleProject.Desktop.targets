@@ -10,7 +10,7 @@
 		<ApplicationDisplayVersion Condition=" '$(ApplicationDisplayVersion)' == '' ">$(Version)</ApplicationDisplayVersion>
 	</PropertyGroup>
 	
-	<PropertyGroup Condition=" '$(IsUnoHead)' == 'true' ">
+	<PropertyGroup Condition=" '$(IsUnoHead)' == 'true' AND $(Optimize) == 'true' ">
 		<OutputType>WinExe</OutputType>
 	</PropertyGroup>
 
