@@ -77,6 +77,8 @@ Starting from [Uno.Wasm.Bootstrap](https://github.com/unoplatform/Uno.Wasm.Boots
     <PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="4.0.13" />
     ```
 
+It is also possible to create diffs between memory snapshots by using the `BinderReferenceHolder.LogInactiveViewReferencesStatsDiff` method.
+
 ## Interpreting the statistics output
 
 The output provides two sets of DependencyObject in memory:
