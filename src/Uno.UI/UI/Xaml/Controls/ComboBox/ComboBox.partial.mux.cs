@@ -1162,6 +1162,15 @@ partial class ComboBox
 		UpdateSelectionBoxHighlighted();
 		IsSelectionActive = hasFocus;
 
+#if __IOS__
+		if (_popup is Popup popup && popup.Child.FindFirstChild<Picker>() is not null)
+		{
+			// If the ComboBox is in a Picker, we don't want to close the ComboBox when it loses focus.
+			// The Picker will handle the closing of the ComboBox.
+			hasFocus = true;
+		}
+#endif
+
 		if (!hasFocus && !IsFullMode)
 		{
 			m_isClosingDueToCancel = true;
