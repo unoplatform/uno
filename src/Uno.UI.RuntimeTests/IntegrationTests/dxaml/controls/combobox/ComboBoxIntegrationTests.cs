@@ -487,6 +487,9 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
+#if !__SKIA__ && !__WASM__
+	[Ignore("We currently only support InputHelper.Tap properly on input injector targets. #17988")]
+#endif
 	public async Task ValidateOpenComboBoxWithAllItemsLongWidth()
 	{
 		// This ComboBox items is the block shape that has all long item width instead of having one item width.
