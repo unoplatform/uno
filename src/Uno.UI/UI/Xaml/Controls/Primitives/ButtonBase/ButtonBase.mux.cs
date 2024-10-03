@@ -7,6 +7,7 @@
 using System;
 using System.Windows.Input;
 using Uno.Disposables;
+using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Core;
 using Windows.Devices.Input;
 using Windows.Foundation;
@@ -86,7 +87,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 			else if (args.Property == CommandParameterProperty)
 			{
-				UpdateCanExecute();
+				UpdateCanExecuteSafe();
 			}
 			else if (args.Property == VisibilityProperty)
 			{
@@ -273,7 +274,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 
 			// Coerce the button enabled state with the CanExecute state of the command.
-			UpdateCanExecute();
+			UpdateCanExecuteSafe();
 		}
 
 		/// <summary>
@@ -295,6 +296,24 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			// If command is present and cannot be executed, disable the button.
 			var suppress = !canExecute;
 			SuppressIsEnabled(suppress);
+		}
+
+		private void UpdateCanExecuteSafe()
+		{
+			// uno specific workaround:
+			// If Button::Command binding produces an ICommand value that throws Exception in its CanExecute,
+			// this value will be canceled and replaced by the Binding::FallbackValue.
+			try
+			{
+				UpdateCanExecute();
+			}
+			catch (Exception e)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"Failed to update CanExecute", e);
+				}
+			}
 		}
 
 		/// <summary>
