@@ -235,8 +235,8 @@ else
 	# new parameters must include the ":" to separate parameter options
 	# the response file contains only the filters, in order to get proper stderr
 	echo "--filter:\"$UNO_TESTS_FILTER\"" > tests.rsp
-	echo "-v m" >> tests.rsp	
 
+	## Run NUnit tests
 	dotnet test \
 		-c Release \
 		-l:"console;verbosity=normal" \
@@ -244,7 +244,6 @@ else
 		--blame-hang-timeout 120m \
 		-v m \
 		@tests.rsp || true
-	dotnet @tests.rsp || true
 fi
 
 ## Dump the emulator's system log
