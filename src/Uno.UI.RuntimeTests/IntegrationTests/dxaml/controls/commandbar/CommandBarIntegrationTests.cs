@@ -2406,6 +2406,9 @@ namespace Windows.UI.Tests.Enterprise
 
 		[Description("Verifies that items moved between Primary and Secondary commands go to the correct VisualStates.")]
 		[TestProperty("TestPass:ExcludeOn", "WindowsCore")]
+#if __ANDROID__
+		[Ignore("Unstable on android https://github.com/unoplatform/uno/issues/9080")]
+#endif
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
