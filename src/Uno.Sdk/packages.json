@@ -19,6 +19,7 @@
 			"Uno.WinUI.Svg",
 			"Uno.WinUI.WebAssembly",
 			"Uno.WinUI.Runtime.Skia.Android",
+			"Uno.WinUI.Runtime.Skia.AppleUIKit",
 			"Uno.WinUI.Runtime.Skia.WebAssembly.Browser",
 			"Uno.WinUI.Runtime.WebAssembly",
 			"Uno.WinUI.MediaPlayer.WebAssembly",
