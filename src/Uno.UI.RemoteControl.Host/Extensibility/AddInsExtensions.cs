@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.AspNetCore.Hosting;
-using Uno.Extensions.DependencyInjection;
+using Uno.Utils.DependencyInjection;
 using Uno.UI.RemoteControl.Helpers;
 
 namespace Uno.UI.RemoteControl.Host.Extensibility;

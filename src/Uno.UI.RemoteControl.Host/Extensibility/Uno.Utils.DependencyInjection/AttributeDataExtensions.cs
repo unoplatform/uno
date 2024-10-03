@@ -2,13 +2,26 @@
 using System.Linq;
 using System.Reflection;
 
-namespace Uno.Extensions.DependencyInjection;
+namespace Uno.Utils.DependencyInjection;
 
 internal static class AttributeDataExtensions
 {
+	/// <summary>
+	/// Attempts to create an instance of the specified <typeparamref name="TAttribute"/> type from the provided <see cref="CustomAttributeData"/>.
+	/// </summary>
+	/// <remarks>This offers the ability to a project to implements their own compatible version of the given <typeparamref name="TAttribute"/> type to reduce dependencies.</remarks>
+	/// <param name="data">Data of an attribute.</param>
+	/// <returns>An instance of <typeparamref name="TAttribute"/> if the provided <paramref name="data"/> was compatible, `null` otherwise.</returns>
 	public static TAttribute? TryCreate<TAttribute>(this CustomAttributeData data)
 		=> (TAttribute?)TryCreate(data, typeof(TAttribute));
 
+	/// <summary>
+	/// Attempts to create an instance of the specified <paramref name="attribute"/> type from the provided <see cref="CustomAttributeData"/>.
+	/// </summary>
+	/// <remarks>This offers the ability to a project to implements their own compatible version of the given <paramref name="attribute"/> type to reduce dependencies.</remarks>
+	/// <param name="data">Data of an attribute.</param>
+	/// <param name="attribute">Type of the attribute to try to instantiate.</param>
+	/// <returns>An instance of <paramref name="attribute"/> if the provided <paramref name="data"/> was compatible, `null` otherwise.</returns>
 	public static object? TryCreate(this CustomAttributeData data, Type attribute)
 	{
 		if ((!data.AttributeType.FullName?.Equals(attribute.FullName, StringComparison.Ordinal)) ?? true)

@@ -11,7 +11,7 @@ namespace Uno.UI.RemoteControl.Host.Extensibility;
 
 public class AddIns
 {
-	private static ILogger _log = typeof(AddIns).Log();
+	private static readonly ILogger _log = typeof(AddIns).Log();
 
 	public static IImmutableList<string> Discover(string solutionFile)
 	{
@@ -30,7 +30,7 @@ public class AddIns
 				_log.Log(LogLevel.Warning, new Exception(result.error), $"Failed to get target frameworks of solution '{solutionFile}' (cf. inner exception for details).");
 			}
 
-			return new ImmutableArray<string>();
+			return ImmutableArray<string>.Empty;
 		}
 
 
@@ -64,7 +64,7 @@ public class AddIns
 			_log.Log(LogLevel.Information, $"Didn't find any add-ins for solution '{solutionFile}'.");
 		}
 
-		return ImmutableList<string>.Empty;
+		return ImmutableArray<string>.Empty;
 	}
 
 	private static IEnumerable<string> GetConfigurationValue(string msbuildResult, string nodeName)

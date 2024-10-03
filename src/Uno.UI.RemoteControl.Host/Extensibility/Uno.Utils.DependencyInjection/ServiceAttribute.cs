@@ -2,7 +2,7 @@
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Uno.Extensions.DependencyInjection;
+namespace Uno.Utils.DependencyInjection;
 
 /// <summary>
 /// Attribute to define a service registration in the service collection.

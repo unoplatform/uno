@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Uno.Extensions;
 
-namespace Uno.Extensions.DependencyInjection;
+namespace Uno.Utils.DependencyInjection;
 
 public static class ServiceCollectionServiceExtensions
 {
