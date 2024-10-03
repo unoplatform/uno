@@ -294,37 +294,52 @@ namespace Private.Infrastructure
 				{
 					bool raiseSynchronously = element.Dispatcher.HasThreadAccess;
 
-					// Workaround for not simulating the last input device type correctly yet.
-					var inputManager = VisualTree.GetContentRootForElement(element).InputManager;
-					if (XboxUtility.IsGamepadNavigationInput(args.OriginalKey))
+					static void UpdateLastInputDeviceType(UIElement element, VirtualKey originalKey)
 					{
-						inputManager.LastInputDeviceType = InputDeviceType.GamepadOrRemote;
+						// Workaround for not simulating the last input device type correctly yet.
+						var inputManager = VisualTree.GetContentRootForElement(element).InputManager;
+						if (XboxUtility.IsGamepadNavigationInput(originalKey))
+						{
+							inputManager.LastInputDeviceType = InputDeviceType.GamepadOrRemote;
+						}
+						else
+						{
+							inputManager.LastInputDeviceType = InputDeviceType.Keyboard;
+						}
 					}
-					else
+
+					static void RaiseTunnelingEvent(UIElement element, RoutedEvent routedEvent, KeyRoutedEventArgs args)
 					{
-						inputManager.LastInputDeviceType = InputDeviceType.Keyboard;
+						UpdateLastInputDeviceType(element, args.OriginalKey);
+						element.SafeRaiseTunnelingEvent(routedEvent, args);
+					}
+
+					static void RaiseBubblingEvent(UIElement element, RoutedEvent routedEvent, KeyRoutedEventArgs args)
+					{
+						UpdateLastInputDeviceType(element, args.OriginalKey);
+						element.SafeRaiseEvent(routedEvent, args);
 					}
 
 					if (isTunneling)
 					{
 						if (raiseSynchronously)
 						{
-							element.SafeRaiseTunnelingEvent(routedEvent, args);
+							RaiseTunnelingEvent(element, routedEvent, args);
 						}
 						else
 						{
-							await element.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => element.SafeRaiseTunnelingEvent(routedEvent, args));
+							await element.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => RaiseTunnelingEvent(element, routedEvent, args));
 						}
 					}
 					else
 					{
 						if (raiseSynchronously)
 						{
-							element.SafeRaiseEvent(routedEvent, args);
+							RaiseBubblingEvent(element, routedEvent, args);
 						}
 						else
 						{
-							await element.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => element.SafeRaiseEvent(routedEvent, args));
+							await element.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => RaiseBubblingEvent(element, routedEvent, args));
 						}
 					}
 				}

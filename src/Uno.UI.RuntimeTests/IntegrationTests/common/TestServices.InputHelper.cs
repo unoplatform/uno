@@ -75,15 +75,18 @@ namespace Private.Infrastructure
 				});
 
 #else
-				var inputManager = VisualTree.GetContentRootForElement(element).InputManager;
-				if (inputManager is not null)
+				MUXControlsTestApp.Utilities.RunOnUIThread.Execute(() =>
 				{
-					inputManager.LastInputDeviceType = InputDeviceType.Touch;
-				}
-				// fall back to a tap event on platforms where InputInjector isn't implemented. Ideally tap should be triggered
-				// by GestureRecognizer when a pointer is pressed and released, but here we do a hacky workaround
-				var args = new TappedEventArgs(1, PointerDeviceType.Touch, default, 1);
-				element.SafeRaiseEvent(UIElement.TappedEvent, new TappedRoutedEventArgs(element, args));
+					var inputManager = VisualTree.GetContentRootForElement(element).InputManager;
+					if (inputManager is not null)
+					{
+						inputManager.LastInputDeviceType = InputDeviceType.Touch;
+					}
+					// fall back to a tap event on platforms where InputInjector isn't implemented. Ideally tap should be triggered
+					// by GestureRecognizer when a pointer is pressed and released, but here we do a hacky workaround
+					var args = new TappedEventArgs(1, PointerDeviceType.Touch, default, 1);
+					element.SafeRaiseEvent(UIElement.TappedEvent, new TappedRoutedEventArgs(element, args));
+				});
 #endif
 			}
 			public static void Tap(Point point)
