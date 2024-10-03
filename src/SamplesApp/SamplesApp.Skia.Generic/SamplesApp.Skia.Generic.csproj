@@ -97,6 +97,16 @@
 			DestinationFolder="$(MSBuildThisFileDirectory)bin/$(Configuration)/$(TargetFramework)/runtimes/osx/native/" />
 	</Target>
 
+	<Target Name="CopyGLdylibs" BeforeTargets="Compile">
+		<ItemGroup>
+			<_libGLESdylibPath Include="$(MSBuildThisFileDirectory)../../AddIns/Uno.WinUI.Graphics3DGL/angle_binaries/**/libEGL.*" />
+			<_libGLESdylibPath Include="$(MSBuildThisFileDirectory)../../AddIns/Uno.WinUI.Graphics3DGL/angle_binaries/**/libGLESv2.*" />
+		</ItemGroup>
+		<Copy
+			SourceFiles="@(_libGLESdylibPath)"
+			DestinationFiles="$(MSBuildThisFileDirectory)bin/$(Configuration)/$(TargetFramework)/runtimes/%(RecursiveDir)native/%(Filename)%(Extension)" />
+	</Target>
+
 	<Target Name="_ValidatePublishedItems" AfterTargets="Publish">
 		<ItemGroup>
 			<_validationPath Include="Uno.Fonts.Fluent/Fonts/uno-fluentui-assets.ttf" />

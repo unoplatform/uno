@@ -58,7 +58,16 @@
 		</When>
 	</Choose>
 
+	<Target Name="BuildAngle" BeforeTargets="CoreCompile" Condition="$([MSBuild]::IsOsPlatform('OSX'))">
+		<Exec Command="$(MSBuildThisFileDirectory)/build_angle.sh" WorkingDirectory="$(MSBuildThisFileDirectory)" />
+	</Target>
+
 	<ItemGroup>
 		<None Include="..\..\Common\uno.png" Pack="true" PackagePath="\" />
+
+		<None Include="$(MSBuildThisFileDirectory)angle_binaries/osx/lib*"
+				PackagePath="runtimes/osx/native"
+				Pack="true"
+				Visible="False" />
 	</ItemGroup>
 </Project>

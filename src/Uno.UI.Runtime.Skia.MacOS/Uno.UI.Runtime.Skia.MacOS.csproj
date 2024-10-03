@@ -33,7 +33,6 @@
 		<PackageReference Include="SkiaSharp" />
 
 		<PackageReference Include="Silk.NET.OpenGL" Version="2.16.0" PrivateAssets="All" />
-		<PackageReference Include="OpenTK.Graphics" Version="4.8.2" />
 	</ItemGroup>
 
 	<PropertyGroup>
@@ -49,7 +48,7 @@
 				PackagePath="runtimes/osx/native"
 				Pack="true"
 				Visible="False" />
-			</ItemGroup>
+	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Skia.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
