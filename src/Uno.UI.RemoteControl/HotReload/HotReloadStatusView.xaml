@@ -299,7 +299,8 @@
 								<VisualState x:Name="Failed" />
 							</VisualStateGroup>
 						</VisualStateManager.VisualStateGroups>
-						<Button Height="24">
+						<Button x:Name="HotReloadButton"
+								Height="24">
 							<Button.Resources>
 								<Style x:Key="HotReloadFlyoutPresenterStyle"
 									   TargetType="FlyoutPresenter">
