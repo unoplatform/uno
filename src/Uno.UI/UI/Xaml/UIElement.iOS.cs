@@ -165,7 +165,7 @@ namespace Microsoft.UI.Xaml
 		internal void ArrangeVisual(Rect finalRect, Rect? clippedFrame = default)
 		{
 			LayoutSlotWithMarginsAndAlignments = finalRect;
-			// TODO: clipped frame?
+			SetTotalClipRect();
 			_isSettingFrameByArrangeVisual = true;
 			try
 			{
@@ -175,6 +175,8 @@ namespace Microsoft.UI.Xaml
 			{
 				_isSettingFrameByArrangeVisual = false;
 			}
+
+			OnViewportUpdated(clippedFrame ?? Rect.Empty);
 		}
 
 		internal global::Windows.Foundation.Point GetPosition(Point position, global::Microsoft.UI.Xaml.UIElement relativeTo)

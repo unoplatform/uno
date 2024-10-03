@@ -81,11 +81,24 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		private protected bool _isSettingFrameByArrangeVisual;
+
 		internal void ArrangeVisual(Rect finalRect, Rect? clippedFrame = default)
 		{
 			LayoutSlotWithMarginsAndAlignments = finalRect;
-			// TODO: clipped frame?
-			this.Frame = ViewHelper.LogicalToPhysicalPixels(finalRect);
+			SetTotalClipRect();
+
+			_isSettingFrameByArrangeVisual = true;
+			try
+			{
+				this.Frame = ViewHelper.LogicalToPhysicalPixels(finalRect);
+			}
+			finally
+			{
+				_isSettingFrameByArrangeVisual = false;
+			}
+
+			OnViewportUpdated(clippedFrame ?? Rect.Empty);
 		}
 
 		public void SetSubviewsNeedLayout()
