@@ -49,6 +49,9 @@ using View = Microsoft.UI.Xaml.UIElement;
 namespace Microsoft.UI.Xaml
 {
 	public partial class FrameworkElement : UIElement, IFrameworkElement, IFrameworkElementInternal, ILayoutConstraints, IDependencyObjectParse
+#if UNO_USES_LAYOUTER
+		, ILayouterElement
+#endif
 	{
 		public static class TraceProvider
 		{
@@ -60,6 +63,16 @@ namespace Microsoft.UI.Xaml
 			public const int FrameworkElement_ArrangeStop = 4;
 			public const int FrameworkElement_InvalidateMeasure = 5;
 		}
+
+#if UNO_USES_LAYOUTER
+		private FrameworkElementLayouter _layouter;
+
+		ILayouter ILayouterElement.Layouter => _layouter;
+		Size ILayouterElement.LastAvailableSize => m_previousAvailableSize;
+		bool ILayouterElement.IsMeasureDirty => IsMeasureDirty;
+		bool ILayouterElement.IsFirstMeasureDoneAndManagedElement => IsFirstMeasureDone;
+		bool ILayouterElement.IsMeasureDirtyPathDisabled => IsMeasureDirtyPathDisabled;
+#endif
 
 		private bool _defaultStyleApplied;
 
@@ -236,6 +249,10 @@ namespace Microsoft.UI.Xaml
 
 		partial void Initialize()
 		{
+#if UNO_USES_LAYOUTER
+			_layouter = new FrameworkElementLayouter(this, MeasureOverride, ArrangeOverride);
+#endif
+
 			Resources = new Microsoft.UI.Xaml.ResourceDictionary();
 
 			IFrameworkElementHelper.Initialize(this);
@@ -359,8 +376,10 @@ namespace Microsoft.UI.Xaml
 #if __CROSSRUNTIME__ || IS_UNIT_TESTS
 			view.Measure(availableSize);
 			return view.DesiredSize;
-#else
+#elif !UNO_USES_LAYOUTER
 			return MobileLayoutingHelpers.MeasureElement(view, availableSize);
+#else
+			return _layouter.MeasureElement(view, availableSize);
 #endif
 		}
 
@@ -373,8 +392,10 @@ namespace Microsoft.UI.Xaml
 		{
 #if __CROSSRUNTIME__ || IS_UNIT_TESTS
 			view.Arrange(finalRect);
-#else
+#elif !UNO_USES_LAYOUTER
 			MobileLayoutingHelpers.ArrangeElement(view, finalRect);
+#else
+			_layouter.ArrangeElement(view, finalRect);
 #endif
 		}
 
@@ -385,8 +406,10 @@ namespace Microsoft.UI.Xaml
 		{
 #if __CROSSRUNTIME__ || IS_UNIT_TESTS
 			return view.DesiredSize;
-#else
+#elif !UNO_USES_LAYOUTER
 			return LayoutInformation.GetDesiredSize(view);
+#else
+			return (_layouter as ILayouter).GetDesiredSize(view);
 #endif
 		}
 
@@ -1004,5 +1027,32 @@ namespace Microsoft.UI.Xaml
 #endif
 
 		#endregion
+
+#if UNO_USES_LAYOUTER
+		private class FrameworkElementLayouter : Layouter
+		{
+			private readonly MeasureOverrideHandler _measureOverrideHandler;
+			private readonly ArrangeOverrideHandler _arrangeOverrideHandler;
+
+			public delegate Size ArrangeOverrideHandler(Size finalSize);
+			public delegate Size MeasureOverrideHandler(Size availableSize);
+
+			public FrameworkElementLayouter(IFrameworkElement element, MeasureOverrideHandler measureOverrideHandler, ArrangeOverrideHandler arrangeOverrigeHandler) : base(element)
+			{
+				_measureOverrideHandler = measureOverrideHandler;
+				_arrangeOverrideHandler = arrangeOverrigeHandler;
+			}
+
+			public Size MeasureElement(View element, Size availableSize) => MeasureChild(element, availableSize);
+
+			public void ArrangeElement(View element, Rect finalRect) => ArrangeChild(element, finalRect);
+
+			protected override string Name => Panel.Name;
+
+			protected override Size ArrangeOverride(Size finalSize) => _arrangeOverrideHandler(finalSize);
+
+			protected override Size MeasureOverride(Size availableSize) => _measureOverrideHandler(availableSize);
+		}
+#endif
 	}
 }

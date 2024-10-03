@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿#if !UNO_USES_LAYOUTER
+using System.Diagnostics;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.UI;
@@ -233,3 +234,4 @@ internal static partial class MobileLayoutingHelpers
 	}
 #endif
 }
+#endif

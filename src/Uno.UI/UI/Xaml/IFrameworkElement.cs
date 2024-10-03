@@ -312,6 +312,41 @@ namespace Microsoft.UI.Xaml
 			return null;
 		}
 
+#if UNO_USES_LAYOUTER
+		public static CGSize Measure(this IFrameworkElement element, _Size availableSize)
+		{
+			return ((View)element).SizeThatFits(new CoreGraphics.CGSize(availableSize.Width, availableSize.Height));
+		}
+
+#if __MACOS__
+		public static CGSize SizeThatFits(this View element, _Size availableSize)
+		{
+			switch (element)
+			{
+				case NSControl nsControl:
+					return nsControl.SizeThatFits(availableSize);
+
+				case FrameworkElement fe:
+					{
+						fe.XamlMeasure(availableSize);
+						var desiredSize = fe.DesiredSize;
+						return new CGSize(desiredSize.Width, desiredSize.Height);
+					}
+
+				case IHasSizeThatFits scp:
+					return scp.SizeThatFits(availableSize);
+
+				case View nsview:
+					return nsview.FittingSize;
+
+				default:
+					throw new NotSupportedException($"Unsupported measure for {element}");
+			}
+		}
+
+#endif
+#endif
+
 		public static CGSize SizeThatFits(IFrameworkElement e, CGSize size)
 		{
 			// Note that on iOS, the computation is intentionally kept as nfloat

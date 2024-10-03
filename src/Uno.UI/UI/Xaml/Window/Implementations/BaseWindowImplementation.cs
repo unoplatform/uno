@@ -190,7 +190,9 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 		_lastSize = size;
 
 		OnSizeChanged(size);
+#if !UNO_USES_LAYOUTER
 		XamlRoot?.InvalidateMeasure(); //TODO:MZ: Should notify before or after?
+#endif
 		var windowSizeChanged = new WindowSizeChangedEventArgs(size);
 #if HAS_UNO_WINUI
 		// There are two "versions" of WindowSizeChangedEventArgs in Uno currently

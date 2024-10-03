@@ -1,4 +1,4 @@
-﻿#if !__NETSTD_REFERENCE__
+﻿#if !__NETSTD_REFERENCE__ && !UNO_USES_LAYOUTER
 using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;

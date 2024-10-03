@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !UNO_USES_LAYOUTER
+using System;
 using System.Runtime.CompilerServices;
 using Uno.UI.Extensions;
 
@@ -206,3 +207,4 @@ namespace Microsoft.UI.Xaml
 		}
 	}
 }
+#endif

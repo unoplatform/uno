@@ -2,6 +2,11 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference LayoutStorage.h and LayoutStorage.cpp
 
+#if UNO_USES_LAYOUTER
+// Layout storage causes issues on Android at least. We disable it on layouter-based platforms for now.
+#define LAYOUTER_WORKAROUND
+#endif
+
 using System.Diagnostics;
 using Microsoft.UI.Xaml.Media;
 using Windows.Foundation;
@@ -17,9 +22,10 @@ partial class UIElement
 	internal Size m_desiredSize;
 	internal Rect m_finalRect;
 	//internal Point m_offset;
-
+#if !UNO_USES_LAYOUTER
+	// On iOS and macOS, stored in Layouter
 	internal Size m_unclippedDesiredSize;
-
+#endif
 	internal Size m_size;
 
 	// Stores the layout clip, which is always an axis-aligned rect.
@@ -33,32 +39,42 @@ partial class UIElement
 	// since this is only possible with children of a Canvas, which does not apply any layout clip, this works out fine.
 	// Uno docs: We use a simple Rect rather than RectangleGeometry
 	// Uno docs: This doesn't include clipping from UIElement.Clip dependency property. It's all about the layout clipping calculated by the arrange logic.
-#if __ANDROID__ || __IOS__ || __MACOS__
+#if __ANDROID__
 	internal Rect? m_pLayoutClipGeometry;
 #endif
 
+#if LAYOUTER_WORKAROUND
+	// Causes issues for Layouter-based platforms.
+	internal bool HasLayoutStorage => true;
+#else
 	internal bool HasLayoutStorage;
+#endif
 
 	internal void ResetLayoutInformation()
 	{
+#if !LAYOUTER_WORKAROUND
 		m_previousAvailableSize = default;
 		m_desiredSize = default;
 		m_finalRect = default;
 		//m_offset = default;
 		m_unclippedDesiredSize = default;
 		m_size = default;
-#if __ANDROID__ || __IOS__ || __MACOS__
+#if __ANDROID__
 		m_pLayoutClipGeometry = default;
+#endif
 #endif
 	}
 
 	internal void EnsureLayoutStorage()
 	{
+#if !LAYOUTER_WORKAROUND
 		HasLayoutStorage = true;
+#endif
 	}
 
 	internal void Shutdown()
 	{
+#if !LAYOUTER_WORKAROUND
 		// Cancel all active transitions.
 		//if (Transition.HasActiveTransition(this) && this.GetContext() is not null)
 		//{
@@ -87,5 +103,6 @@ partial class UIElement
 
 		// note we do not change the life cycle of an element here. it will get
 		// the left tree value from the LeaveImpl call
+#endif
 	}
 }

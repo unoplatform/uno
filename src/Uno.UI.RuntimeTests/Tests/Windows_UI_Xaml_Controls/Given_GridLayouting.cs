@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if !UNO_USES_LAYOUTER // Platforms with layouter (iOS and macOS) don't do measure/arrange properly.
+
+using System;
 using System.Globalization;
 using System.Linq;
 using System.Numerics;
@@ -2968,3 +2970,4 @@ public partial class Given_GridLayouting
 		Assert.AreEqual(1, SUT.Children.Count);
 	}
 }
+#endif

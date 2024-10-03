@@ -793,8 +793,10 @@ namespace Microsoft.UI.Xaml
 			}
 
 			var bounds = root.XamlRoot.Bounds;
-
-#if __ANDROID__ || __IOS__ || __MACOS__
+#if UNO_USES_LAYOUTER // IsMeasureDirty and IsArrangeDirty are not available on iOS / macOS
+			root.Measure(bounds.Size);
+			root.Arrange(bounds);
+#elif __ANDROID__ || __IOS__ || __MACOS__
 			for (var i = 0; i < MaxLayoutIterations; i++)
 			{
 				if (root.IsMeasureDirtyOrMeasureDirtyPath)
@@ -1045,6 +1047,88 @@ namespace Microsoft.UI.Xaml
 		{
 			get => HasLayoutStorage ? m_size : default;
 			internal set => m_size = value;
+		}
+#endif
+
+#if UNO_USES_LAYOUTER
+
+		/// <summary>
+		/// This is the Frame that should be used as "available Size" for the Arrange phase.
+		/// </summary>
+		internal Rect? ClippedFrame;
+
+		/// <summary>
+		/// Updates the DesiredSize of a UIElement. Typically, objects that implement custom layout for their
+		/// layout children call this method from their own MeasureOverride implementations to form a recursive layout update.
+		/// </summary>
+		/// <param name="availableSize">
+		/// The available space that a parent can allocate to a child object. A child object can request a larger
+		/// space than what is available; the provided size might be accommodated if scrolling or other resize behavior is
+		/// possible in that particular container.
+		/// </param>
+		/// <returns>The measured size.</returns>
+		/// <remarks>
+		/// Under Uno.UI, this method should not be called during the normal layouting phase. Instead, use the
+		/// <see cref="MeasureElement(View, Size)"/> methods, which handles native view properly.
+		/// </remarks>
+		public void Measure(Size availableSize)
+		{
+			EnsureLayoutStorage();
+
+			if (this is not FrameworkElement fwe)
+			{
+				return;
+			}
+
+			if (double.IsNaN(availableSize.Width) || double.IsNaN(availableSize.Height))
+			{
+				throw new InvalidOperationException($"Cannot measure [{GetType()}] with NaN");
+			}
+
+			((ILayouterElement)fwe).Layouter.Measure(availableSize);
+		}
+
+		/// <summary>
+		/// Positions child objects and determines a size for a UIElement. Parent objects that implement custom layout
+		/// for their child elements should call this method from their layout override implementations to form a recursive layout update.
+		/// </summary>
+		/// <param name="finalRect">The final size that the parent computes for the child in layout, provided as a <see cref="Windows.Foundation.Rect"/> value.</param>
+		public void Arrange(Rect finalRect)
+		{
+			EnsureLayoutStorage();
+
+			if (this is not FrameworkElement fwe)
+			{
+				return;
+			}
+
+			var layouter = ((ILayouterElement)fwe).Layouter;
+			layouter.Arrange(finalRect.DeflateBy(fwe.Margin));
+			layouter.ArrangeChild(fwe, finalRect);
+		}
+
+		public void InvalidateMeasure()
+		{
+#if __IOS__
+			SetNeedsLayout();
+			SetLayoutFlags(LayoutFlag.MeasureDirty);
+#elif __MACOS__
+			base.NeedsLayout = true;
+			SetLayoutFlags(LayoutFlag.MeasureDirty);
+#endif
+
+			OnInvalidateMeasure();
+		}
+
+		protected internal virtual void OnInvalidateMeasure()
+		{
+		}
+
+		[global::Uno.NotImplemented]
+		public void InvalidateArrange()
+		{
+			InvalidateMeasure();
+			SetLayoutFlags(LayoutFlag.ArrangeDirty);
 		}
 #endif
 

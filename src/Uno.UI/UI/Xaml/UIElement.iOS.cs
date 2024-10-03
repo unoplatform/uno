@@ -49,6 +49,29 @@ namespace Microsoft.UI.Xaml
 
 		internal bool ClippingIsSetByCornerRadius { get; set; }
 
+#if UNO_USES_LAYOUTER
+partial void ApplyNativeClip(Rect rect)
+		{
+			if (rect.IsEmpty
+				|| double.IsPositiveInfinity(rect.X)
+				|| double.IsPositiveInfinity(rect.Y)
+				|| double.IsPositiveInfinity(rect.Width)
+				|| double.IsPositiveInfinity(rect.Height)
+			)
+			{
+				if (!ClippingIsSetByCornerRadius)
+				{
+					this.Layer.Mask = null;
+				}
+				return;
+			}
+
+			this.Layer.Mask = new CAShapeLayer
+			{
+				Path = CGPath.FromRect(rect.ToCGRect())
+			};
+		}
+#else
 		private void SetClipPlatform(Rect? totalLogicalClip)
 		{
 			if (totalLogicalClip is null)
@@ -65,6 +88,7 @@ namespace Microsoft.UI.Xaml
 				Path = CGPath.FromRect(totalLogicalClip.Value.ToCGRect())
 			};
 		}
+#endif
 
 		partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
 		{
@@ -114,6 +138,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+#if !UNO_USES_LAYOUTER
 		public override void SetNeedsLayout()
 		{
 			base.SetNeedsLayout();
@@ -136,6 +161,7 @@ namespace Microsoft.UI.Xaml
 				}
 			}
 		}
+#endif
 
 		public void SetSubviewsNeedLayout()
 		{
@@ -159,7 +185,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-
+#if !UNO_USES_LAYOUTER
 		private protected bool _isSettingFrameByArrangeVisual;
 
 		internal void ArrangeVisual(Rect finalRect, Rect? clippedFrame = default)
@@ -178,6 +204,7 @@ namespace Microsoft.UI.Xaml
 
 			OnViewportUpdated(clippedFrame ?? Rect.Empty);
 		}
+#endif
 
 		internal global::Windows.Foundation.Point GetPosition(Point position, global::Microsoft.UI.Xaml.UIElement relativeTo)
 		{

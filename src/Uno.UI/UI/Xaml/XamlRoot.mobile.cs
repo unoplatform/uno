@@ -1,4 +1,4 @@
-﻿#if !__CROSSRUNTIME__
+﻿#if !__CROSSRUNTIME__ && !UNO_USES_LAYOUTER
 namespace Microsoft.UI.Xaml;
 
 public sealed partial class XamlRoot

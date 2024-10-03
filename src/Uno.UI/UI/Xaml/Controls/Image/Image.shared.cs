@@ -41,7 +41,7 @@ partial class Image
 		get => string.Empty;
 	}
 
-#if !__NETSTD_REFERENCE__
+#if !__NETSTD_REFERENCE__ && !UNO_USES_LAYOUTER
 	private protected override Rect? GetClipRect(bool needsClipToSlot, Point visualOffset, Rect finalRect, Size maxSize, Thickness margin)
 		=> base.GetClipRect(needsClipToSlot, visualOffset, finalRect, maxSize, margin) ?? new Rect(default, RenderSize);
 #endif

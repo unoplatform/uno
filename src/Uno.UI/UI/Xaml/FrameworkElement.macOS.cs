@@ -14,11 +14,31 @@ namespace Microsoft.UI.Xaml
 {
 	public partial class FrameworkElement
 	{
+#if UNO_USES_LAYOUTER
+		/// <summary>
+		/// When set, measure and invalidate requests will not be propagated further up the visual tree, ie they won't trigger a relayout.
+		/// Used where repeated unnecessary measure/arrange passes would be unacceptable for performance (eg scrolling in a list).
+		/// </summary>
+		internal bool ShouldInterceptInvalidate { get; set; }
+#endif
+
 		public override bool NeedsLayout
 		{
 			set
 			{
+#if UNO_USES_LAYOUTER
+				if (!_inLayoutSubviews)
+				{
+					base.NeedsLayout = value;
+				}
+
+				if (ShouldInterceptInvalidate)
+				{
+					return;
+				}
+#else
 				base.NeedsLayout = value;
+#endif
 			}
 		}
 
@@ -52,6 +72,36 @@ namespace Microsoft.UI.Xaml
 
 		public override void Layout()
 		{
+#if UNO_USES_LAYOUTER
+			try
+			{
+				_inLayoutSubviews = true;
+
+				var bounds = Bounds.Size;
+				if (IsMeasureDirty)
+				{
+					XamlMeasure(bounds);
+				}
+
+				OnBeforeArrange();
+
+				var size = SizeFromUISize(bounds);
+
+				_layouter.Arrange(new Rect(0, 0, size.Width, size.Height));
+
+				OnAfterArrange();
+			}
+			catch (Exception e)
+			{
+				this.Log().Error($"Layout failed in {GetType()}", e);
+			}
+			finally
+			{
+				_inLayoutSubviews = false;
+
+				ClearLayoutFlags(LayoutFlag.MeasureDirty | LayoutFlag.ArrangeDirty);
+			}
+#else
 			base.Layout();
 
 			if (!IsVisualTreeRoot && !_isSettingFrameByArrangeVisual)
@@ -63,6 +113,7 @@ namespace Microsoft.UI.Xaml
 				var logical = this.Frame.PhysicalToLogicalPixels();
 				this.Arrange(logical);
 			}
+#endif
 		}
 
 		public CGSize SizeThatFits(CGSize size)

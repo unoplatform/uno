@@ -138,11 +138,21 @@ namespace Microsoft.UI.Xaml.Controls
 			var padding = Padding;
 
 			// final size considering padding
+#if UNO_USES_LAYOUTER
+			size = size.Subtract(padding);
+
+			var result = LayoutTypography(size);
+
+			result = result.Add(padding);
+
+			return new Size(Math.Ceiling(result.Width), Math.Ceiling(result.Height));
+#else
 			var innerSize = size.Subtract(padding);
 
 			LayoutTypography(innerSize);
 
 			return size;
+#endif
 		}
 
 		#endregion

@@ -1,4 +1,4 @@
-﻿#if !__NETSTD_REFERENCE__ && !IS_UNIT_TESTS
+﻿#if !__NETSTD_REFERENCE__ && !IS_UNIT_TESTS && !UNO_USES_LAYOUTER
 #nullable enable
 
 using System;

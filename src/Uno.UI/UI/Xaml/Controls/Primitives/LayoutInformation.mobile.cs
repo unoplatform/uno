@@ -12,6 +12,7 @@ partial class LayoutInformation
 
 	#region AvailableSize
 
+#if !UNO_USES_LAYOUTER
 	internal static bool GetMeasureDirtyPath(object view)
 		=> view is UIElement uiElement
 			? uiElement.IsMeasureDirtyPath
@@ -45,6 +46,7 @@ partial class LayoutInformation
 			_layoutProperties.SetValue(view, "arrangedirtypath", value);
 		}
 	}
+#endif
 
 	internal static Size GetAvailableSize(object view)
 		=> view is UIElement iue

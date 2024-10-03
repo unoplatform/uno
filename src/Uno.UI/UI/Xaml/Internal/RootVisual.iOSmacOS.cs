@@ -1,4 +1,5 @@
-﻿#nullable enable
+﻿#if !UNO_USES_LAYOUTER
+#nullable enable
 
 using CoreGraphics;
 using Windows.Foundation;
@@ -28,3 +29,4 @@ partial class RootVisual
 		}
 	}
 }
+#endif

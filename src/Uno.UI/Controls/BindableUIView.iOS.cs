@@ -49,6 +49,7 @@ namespace Uno.UI.Controls
 			_shadowChildren.Add(view);
 			base.AddSubview(view);
 
+#if !UNO_USES_LAYOUTER
 			var parent = this as UIElement ?? this.FindFirstParent<UIElement>();
 			if (parent is not null)
 			{
@@ -78,6 +79,7 @@ namespace Uno.UI.Controls
 				parent.InvalidateMeasure();
 				parent.InvalidateArrange();
 			}
+#endif
 		}
 
 		public override void InsertSubview(UIView view, nint atIndex)

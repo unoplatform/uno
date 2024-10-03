@@ -34,6 +34,11 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <remarks>For <see cref="ItemsStackPanel"/> layouting this is identical to <see cref="Orientation"/> but for <see cref="ItemsWrapGrid"/> it is the opposite of <see cref="Orientation"/>.</remarks>
 		public abstract Orientation ScrollOrientation { get; }
 
+#if UNO_USES_LAYOUTER
+		private protected readonly ILayouter _layouter = new VirtualizingPanelLayouter();
+		internal ILayouter Layouter => _layouter;
+#endif
+
 #pragma warning disable 67 // Unused member
 		[NotImplemented]
 		public event EventHandler<object>? HorizontalSnapPointsChanged;
@@ -276,6 +281,28 @@ namespace Microsoft.UI.Xaml.Controls
 
 			return (minItem, min);
 		}
+
+#if UNO_USES_LAYOUTER
+		private class VirtualizingPanelLayouter : Layouter
+		{
+
+			public VirtualizingPanelLayouter() : base(null)
+			{
+
+			}
+			protected override string Name => "VirtualizingPanelLayout";
+
+			protected override Size ArrangeOverride(Size finalSize)
+			{
+				throw new NotSupportedException($"{nameof(VirtualizingPanelLayouter)} is only used for measuring and arranging child views.");
+			}
+
+			protected override Size MeasureOverride(Size availableSize)
+			{
+				throw new NotSupportedException($"{nameof(VirtualizingPanelLayouter)} is only used for measuring and arranging child views.");
+			}
+		}
+#endif
 	}
 }
 

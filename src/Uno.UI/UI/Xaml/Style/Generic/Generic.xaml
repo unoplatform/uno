@@ -40,7 +40,7 @@
 				Value="Left" />
 		<Setter Property="VerticalContentAlignment"
 				Value="Top" />
-		<Setter Property="Template">
+		<netstdref:Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="ContentControl">
 					<ContentPresenter Content="{TemplateBinding Content}"
@@ -52,7 +52,33 @@
 									  VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
 				</ControlTemplate>
 			</Setter.Value>
-		</Setter>
+		</netstdref:Setter>
+		<macos:Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="ContentControl">
+					<ContentPresenter Content="{TemplateBinding Content}"
+									  ContentTemplate="{TemplateBinding ContentTemplate}"
+									  ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+									  Margin="{TemplateBinding Padding}"
+									  ContentTransitions="{TemplateBinding ContentTransitions}"
+									  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+									  VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+				</ControlTemplate>
+			</Setter.Value>
+		</macos:Setter>
+		<android:Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="ContentControl">
+					<ContentPresenter Content="{TemplateBinding Content}"
+									  ContentTemplate="{TemplateBinding ContentTemplate}"
+									  ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+									  Margin="{TemplateBinding Padding}"
+									  ContentTransitions="{TemplateBinding ContentTransitions}"
+									  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+									  VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+				</ControlTemplate>
+			</Setter.Value>
+		</android:Setter>
 	</Style>
 
 	<!-- FRAMEWORK STYLES -->

@@ -81,6 +81,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+#if !UNO_USES_LAYOUTER
 		private protected bool _isSettingFrameByArrangeVisual;
 
 		internal void ArrangeVisual(Rect finalRect, Rect? clippedFrame = default)
@@ -100,6 +101,7 @@ namespace Microsoft.UI.Xaml
 
 			OnViewportUpdated(clippedFrame ?? Rect.Empty);
 		}
+#endif
 
 		public void SetSubviewsNeedLayout()
 		{
@@ -249,6 +251,37 @@ namespace Microsoft.UI.Xaml
 			base.OnNativeKeyUp(evt);
 		}
 
+#if UNO_USES_LAYOUTER
+		partial void ApplyNativeClip(Rect rect)
+		{
+			if (rect.IsEmpty
+				|| double.IsPositiveInfinity(rect.X)
+				|| double.IsPositiveInfinity(rect.Y)
+				|| double.IsPositiveInfinity(rect.Width)
+				|| double.IsPositiveInfinity(rect.Height)
+			)
+			{
+				if (!ClippingIsSetByCornerRadius)
+				{
+					var emptyClipLayer = Layer;
+					if (emptyClipLayer != null)
+					{
+						emptyClipLayer.Mask = null;
+					}
+				}
+				return;
+			}
+			WantsLayer = true;
+			var layer = Layer;
+			if (layer != null)
+			{
+				layer.Mask = new CAShapeLayer
+				{
+					Path = CGPath.FromRect(rect.ToCGRect())
+				};
+			}
+		}
+#else
 		private void SetClipPlatform(Rect? totalLogicalClip)
 		{
 			if (totalLogicalClip is null)
@@ -274,5 +307,6 @@ namespace Microsoft.UI.Xaml
 				};
 			}
 		}
+#endif
 	}
 }
