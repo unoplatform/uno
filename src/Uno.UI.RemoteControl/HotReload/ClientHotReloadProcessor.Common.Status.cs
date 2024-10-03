@@ -287,7 +287,7 @@ public partial class ClientHotReloadProcessor
 				EndTime = DateTimeOffset.Now;
 				_onUpdated();
 			}
-			else
+			else if (_result != (int)HotReloadClientResult.Ignored) // ReportIgnored auto completes but caller usually does not expect it (use ReportCompleted in finally)
 			{
 				Debug.Fail("The result should not have already been set.");
 			}

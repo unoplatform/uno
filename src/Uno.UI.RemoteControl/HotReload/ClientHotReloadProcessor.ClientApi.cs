@@ -61,7 +61,7 @@ public partial class ClientHotReloadProcessor
 		/// The max delay to wait for the local application to process a hot-reload delta.
 		/// </summary>
 		/// <remarks>This includes the time to apply the delta locally and then to run all local handlers.</remarks>
-		public TimeSpan LocalHotReloadTimeout { get; set; } = TimeSpan.FromSeconds(3);
+		public TimeSpan LocalHotReloadTimeout { get; set; } = TimeSpan.FromSeconds(5);
 
 		public UpdateRequest WithExtendedTimeouts(float? factor = null)
 		{
