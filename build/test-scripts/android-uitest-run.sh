@@ -232,14 +232,16 @@ else
 	cd $UNO_TESTS_LOCAL_TESTS_FILE
 
 	# Response file for testing to avoid the command line length limitation
-	echo "-l:\"console;verbosity=normal\" " > tests.rsp
-	echo "--logger \"nunit;LogFileName=$UNO_ORIGINAL_TEST_RESULTS\" " >> tests.rsp
-	echo "--filter \"$UNO_TESTS_FILTER\" " >> tests.rsp
-	echo "--blame-hang-timeout 120m " >> tests.rsp
-	echo "-v m " >> tests.rsp
+	# new parameters must include the ":" to separate parameter options
+	echo "test" > tests.rsp
+	echo "-l:\"console;verbosity=normal\"" >> tests.rsp
+	echo "--logger:\"nunit;LogFileName=$UNO_ORIGINAL_TEST_RESULTS\"" >> tests.rsp
+	echo "--filter:\"$UNO_TESTS_FILTER\"" >> tests.rsp
+	echo "--blame-hang-timeout:120m" >> tests.rsp
+	echo "-v:m " >> tests.rsp
 
 	## Run NUnit tests
-	dotnet test @tests.rsp || true
+	dotnet @tests.rsp || true
 fi
 
 ## Dump the emulator's system log
