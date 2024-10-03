@@ -11,7 +11,14 @@ using System;
 
 namespace UITests.Shared.Microsoft_UI_Xaml_Controls.ExpanderTests;
 
-[Sample("Expander", "MUX", Name = "Expander_Bindings_TemplatedControl", IsManualTest = true)]
+[Sample("Expander", "MUX",
+	Name = "Expander_Bindings_TemplatedControl",
+	IsManualTest = true,
+	Description = 
+	"Validates that the Expander control can be templated and that bindings work correctly. \r\n" +
+	"When the Content property is bound to a templated control, the control should be displayed correctly. \r\n" +
+	"When expanded the control should display two TextBlocks with the text 'Hello From Header in Custom Control' and 'On the Content'."
+	)]
 public sealed partial class Expander_Bindings_TemplatedControl : UserControl
 {
 	public Expander_Bindings_TemplatedControl()
