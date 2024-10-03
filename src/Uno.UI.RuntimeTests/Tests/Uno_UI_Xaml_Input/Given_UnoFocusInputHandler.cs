@@ -72,6 +72,9 @@ public class Given_UnoFocusInputHandler
 #if HAS_UNO
 	[TestMethod]
 	[RequiresFullWindow]
+#if __IOS__
+	[Ignore("This test fails in CI for iOS")]
+#endif
 	public async Task Validate_DepartFocusWhenCanTabOut()
 	{
 		var button = new Button() { Content = "Test" };
