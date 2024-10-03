@@ -1157,7 +1157,23 @@ namespace Microsoft.UI.Xaml
 			SetLayoutFlags(LayoutFlag.MeasureDirty);
 
 			// HACK: Android's implementation of measure/arrange is not accurate. See comments in LayouterElementExtensions.DoMeasure
-			(VisualTreeHelper.GetParent(this) as UIElement)?.InvalidateMeasure();
+			global::Android.Views.IViewParent parent = this;
+			parent = parent.Parent;
+			while (parent is not null)
+			{
+				if (parent is UIElement parentAsUIElement)
+				{
+					parentAsUIElement.InvalidateMeasure();
+					break;
+				}
+				else
+				{
+					parent.RequestLayout();
+				}
+
+				parent = parent.Parent;
+			}
+
 #elif __IOS__
 			SetNeedsLayout();
 			SetLayoutFlags(LayoutFlag.MeasureDirty);
