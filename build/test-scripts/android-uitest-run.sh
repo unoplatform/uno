@@ -233,15 +233,17 @@ else
 
 	# Response file for testing to avoid the command line length limitation
 	# new parameters must include the ":" to separate parameter options
-	echo "test" > tests.rsp
-	echo "-l:\"console;verbosity=normal\"" >> tests.rsp
-	echo "--logger:\"nunit;LogFileName=$UNO_ORIGINAL_TEST_RESULTS\"" >> tests.rsp
-	echo "--filter:\"$UNO_TESTS_FILTER\"" >> tests.rsp
-	echo "--blame-hang-timeout:120m" >> tests.rsp
-	echo "-v:m " >> tests.rsp
+	# the response file contains only the filters, in order to get proper stderr
+	echo "--filter:\"$UNO_TESTS_FILTER\"" > tests.rsp
 
 	## Run NUnit tests
-	dotnet @tests.rsp || true
+	dotnet test \
+		-c Release \
+		-l:"console;verbosity=normal" \
+		--logger "nunit;LogFileName=$UNO_ORIGINAL_TEST_RESULTS" \
+		--blame-hang-timeout 120m \
+		-v m \
+		@tests.rsp || true
 fi
 
 ## Dump the emulator's system log
