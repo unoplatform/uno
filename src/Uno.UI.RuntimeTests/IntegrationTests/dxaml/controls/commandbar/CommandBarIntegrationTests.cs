@@ -5231,7 +5231,11 @@ namespace Windows.UI.Tests.Enterprise
 			var closedRegistration = CreateSafeEventRegistration<CommandBar, EventHandler<object>>("Closed");
 			closedRegistration.Attach(cmdBar, (s, e) => closedEvent.Set());
 
-			await RunOnUIThread(() => cmdBar.IsOpen = false);
+			await RunOnUIThread(() =>
+			{
+				Assert.IsTrue(cmdBar.IsOpen, "Command bar is not opened");
+				cmdBar.IsOpen = false;
+			});
 			await closedEvent.WaitForDefault();
 			await WindowHelper.WaitForIdle();
 		}
