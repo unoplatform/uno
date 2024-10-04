@@ -710,7 +710,9 @@ namespace <#= mixin.NamespaceName #>
 
 			if (newSize != previousSize)
 			{
+#if !<#= mixin.IsFrameworkElement #> // IsFrameworkElement
 				SizeChanged?.Invoke(this, new SizeChangedEventArgs(this, previousSize, newSize));
+#endif
 				_renderTransform?.UpdateSize(newSize); // TODO: Move ** BEFORE ** base.OnLayout() ???
 			}
 		}
