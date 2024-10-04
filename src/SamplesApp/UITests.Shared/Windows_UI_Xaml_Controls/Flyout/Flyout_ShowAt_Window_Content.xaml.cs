@@ -21,12 +21,14 @@ namespace UITests.Windows_UI_Xaml_Controls.FlyoutTests
 		{
 			this.InitializeComponent();
 
+#if HAS_UNO
 			Unloaded += (s, e) => _xamlRoot = XamlRoot;
 			Unloaded += (s, e) =>
 			{
 				// close all popups at the end of the test.
 				VisualTreeHelper.CloseAllPopups(_xamlRoot);
 			};
+#endif
 		}
 
 		private void ButtonButton_Click(object sender, RoutedEventArgs e)
