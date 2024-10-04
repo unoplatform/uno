@@ -85,7 +85,7 @@ public class StoreContextExtension : IStoreContextExtension
 			{
 				if (this.Log().IsEnabled(LogLevel.Error))
 				{
-					this.Log().LogError(ex, "There was an error launching in-app review. Please try again.");
+					this.Log().LogError("There was an error launching in-app review. Please try again. Exception: {0}", ex);
 				}
 
 				_inAppRateTcs?.TrySetResult(new(StoreRateAndReviewStatus.Error));
