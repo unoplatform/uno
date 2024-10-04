@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace ResourcesExtractor;
@@ -154,12 +153,5 @@ public static class Magic
 
 		[DllImport("kernel32.dll", SetLastError = true)]
 		public static extern IntPtr LoadResource(IntPtr hModule, IntPtr hResInfo);
-
-
-		[DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-		public static extern nint GetModuleHandleW(string lpModuleName);
-
-		[DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-		public static extern nint FindResourceExW(nint hModule, nint lpType, nint lpName, int wLanguage);
 	}
 }
