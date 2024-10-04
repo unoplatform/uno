@@ -244,9 +244,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (_content != null)
 			{
-				size = AdjustSize(size);
-
-				var availableSizeForChild = size;
+				var availableSizeForChild = AdjustSize(size);
 
 				//No need to add margin at this level. It's already taken care of during the Layouter measuring.
 				_measuredSize = _content.SizeThatFits(availableSizeForChild);
@@ -254,8 +252,8 @@ namespace Microsoft.UI.Xaml.Controls
 				// The dimensions are constrained to the size of the ScrollViewer, if available
 				// otherwise to the size of the child.
 				return new CGSize(
-					Math.Min(nfloat.IsNaN(size.Width) ? nfloat.MaxValue : size.Width, _measuredSize.Width),
-					Math.Min(nfloat.IsNaN(size.Height) ? nfloat.MaxValue : size.Height, _measuredSize.Height)
+					Math.Min(size.Width, _measuredSize.Width),
+					Math.Min(size.Height, _measuredSize.Height)
 				);
 			}
 			else
