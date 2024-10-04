@@ -357,6 +357,37 @@ namespace Microsoft.UI.Xaml.Controls
 			return (spPanel as FrameworkElement)?.WantsScrollViewerToObscureAvailableSizeBasedOnScrollBarVisibility(orientation) ?? true;
 		}
 
+		// Itemspresenter is the lynchpin in deciding whether we want to be in a non clipping subtree.
+		// Basically, when he decided to not want infinity, even though we were in a scrolling configuration,
+		// we want the measures underneath it to not constrain the desiredsize to the availablesize. That will allow
+		// wrapping uielements (like textblock) to size correctly, and still allow containers that want to be bigger
+		// to look good.
+		// Itemspresenter will set the value on himself (used during layout) and on the panel. Listview will set it on the
+		// items (so that individual measure on them will work).
+		internal bool EvaluateAndSetNonClippingBehavior(bool isNotBeingPassedInfinity)
+		{
+			bool result = false;
+			if (Panel is ItemsStackPanel panel)
+			{
+				// we only want the behavior in an isp at the moment
+
+				// first set it to ourselves
+				IsNonClippingSubtree = isNotBeingPassedInfinity;
+
+				// in the case of a modernpanel, lets have this itemspresenter not clip to the available size
+				// in overconstrained scenarios
+				// we're just passing through the setting to the panel here in an effort to make itemspresenter behave like a
+				// 'dumb' passthrough. The real logic was performed when measuring the scrollcontentpresenter
+
+				// we pass it along - the reason we want these individual elements also to have the correct value is because
+				// they could potentially be measured independently
+				panel.IsNonClippingSubtree = isNotBeingPassedInfinity;
+
+				result = isNotBeingPassedInfinity;
+			}
+
+			return result;
+		}
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{
