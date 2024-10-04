@@ -1,3 +1,4 @@
+#nullable enable
 // ******************************************************************
 // Copyright � 2015-2018 Uno Platform Inc. All rights reserved.
 //
@@ -18,27 +19,37 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Uno.Disposables;
+namespace Uno.Threading;
 
-namespace Uno.Threading
+/// <summary>
+/// An asynchronous lock, that can be used in conjuction with C# async/await
+/// </summary>
+internal sealed class AsyncLock
 {
+	private readonly SemaphoreSlim _semaphore = new(1, 1);
+	private long _handleId;
+
 	/// <summary>
-	/// An asynchronous lock, that can be used in conjuction with C# async/await
+	/// Acquires the lock, then provides a disposable to release it.
+	/// WARNING: This DOES NOT support reentrancy.
 	/// </summary>
-	internal sealed class AsyncLock
+	/// <param name="ct">A cancellation token to cancel the lock</param>
+	/// <returns>An IDisposable instance that allows the release of the lock.</returns>
+	public async ValueTask<Handle> LockAsync(CancellationToken ct)
 	{
-		private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
+		await _semaphore.WaitAsync(ct);
 
-		/// <summary>
-		/// Acquires the lock, then provides a disposable to release it.
-		/// </summary>
-		/// <param name="ct">A cancellation token to cancel the lock</param>
-		/// <returns>An IDisposable instance that allows the release of the lock.</returns>
-		public async Task<IDisposable> LockAsync(CancellationToken ct)
+		return new Handle(this, _handleId);
+	}
+
+	public record struct Handle(AsyncLock Lock, long Id) : IDisposable
+	{
+		public void Dispose()
 		{
-			await _semaphore.WaitAsync(ct);
-
-			return Disposable.Create(() => _semaphore.Release());
+			if (Interlocked.CompareExchange(ref Lock._handleId, Id + 1, Id) == Id) // This avoids (concurrent) double dispose / release
+			{
+				Lock._semaphore.Release();
+			}
 		}
 	}
 }

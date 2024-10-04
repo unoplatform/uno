@@ -28,7 +28,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 	{
 		private FileSystemWatcher[]? _watchers;
 		private CompositeDisposable? _watcherEventsDisposable;
-		private IRemoteControlServer _remoteControlServer;
+		private readonly IRemoteControlServer _remoteControlServer;
 
 		public ServerHotReloadProcessor(IRemoteControlServer remoteControlServer)
 		{
@@ -219,6 +219,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			private ImmutableHashSet<string> _filePaths;
 			private int /* HotReloadResult */ _result = -1;
 			private CancellationTokenSource? _deferredCompletion;
+			private int _noChangesRetry;
 
 			public long Id { get; } = Interlocked.Increment(ref _count);
 
@@ -291,6 +292,12 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			}
 
 			/// <summary>
+			/// Configure a simple auto-retry strategy if no changes are detected.
+			/// </summary>
+			public void EnableAutoRetryIfNoChanges()
+				=> _noChangesRetry = 1;
+
+			/// <summary>
 			/// As errors might get a bit after the complete from the IDE, we can defer the completion of the operation.
 			/// </summary>
 			public async ValueTask DeferComplete(HotReloadServerResult result, Exception? exception = null)
@@ -313,6 +320,14 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 			private async ValueTask Complete(HotReloadServerResult result, Exception? exception, bool isFromNext)
 			{
+				if (_result is -1
+					&& result is HotReloadServerResult.NoChanges
+					&& Interlocked.Decrement(ref _noChangesRetry) >= 0
+					&& await _owner.RequestHotReloadToIde(Id))
+				{
+					return;
+				}
+
 				Debug.Assert(result != HotReloadServerResult.InternalError || exception is not null); // For internal error we should always provide an exception!
 
 				// Remove this from current
@@ -441,13 +456,14 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				var (result, error) = message switch
 				{
 					{ FilePath: null or { Length: 0 } } => (FileUpdateResult.BadRequest, "Invalid request (file path is empty)"),
-					{ OldText: not null, NewText: not null } => DoUpdate(message.OldText, message.NewText),
-					{ OldText: null, NewText: not null } => DoWrite(message.NewText),
-					{ NewText: null, IsCreateDeleteAllowed: true } => DoDelete(),
+					{ OldText: not null, NewText: not null } => await DoUpdate(message.OldText, message.NewText),
+					{ OldText: null, NewText: not null } => await DoWrite(message.NewText),
+					{ NewText: null, IsCreateDeleteAllowed: true } => await DoDelete(),
 					_ => (FileUpdateResult.BadRequest, "Invalid request")
 				};
 				if ((int)result < 300 && !message.IsForceHotReloadDisabled)
 				{
+					hotReload.EnableAutoRetryIfNoChanges();
 					await RequestHotReloadToIde(hotReload.Id);
 				}
 
@@ -459,7 +475,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				await _remoteControlServer.SendFrame(new UpdateFileResponse(message.RequestId, message.FilePath ?? "", FileUpdateResult.Failed, ex.Message));
 			}
 
-			(FileUpdateResult, string?) DoUpdate(string oldText, string newText)
+			async ValueTask<(FileUpdateResult, string?)> DoUpdate(string oldText, string newText)
 			{
 				if (!File.Exists(message.FilePath))
 				{
@@ -471,7 +487,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					return (FileUpdateResult.FileNotFound, $"Requested file '{message.FilePath}' does not exists.");
 				}
 
-				var originalContent = File.ReadAllText(message.FilePath);
+				var originalContent = await File.ReadAllTextAsync(message.FilePath);
 				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
 					this.Log().LogTrace($"Original content: {originalContent} [{message.RequestId}].");
@@ -493,11 +509,14 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					return (FileUpdateResult.NoChanges, null);
 				}
 
-				File.WriteAllText(message.FilePath, updatedContent);
+				var effectiveUpdate = WaitForFileUpdated();
+				await File.WriteAllTextAsync(message.FilePath, updatedContent);
+				await effectiveUpdate;
+
 				return (FileUpdateResult.Success, null);
 			}
 
-			(FileUpdateResult, string?) DoWrite(string newText)
+			async ValueTask<(FileUpdateResult, string?)> DoWrite(string newText)
 			{
 				if (!message.IsCreateDeleteAllowed && !File.Exists(message.FilePath))
 				{
@@ -514,11 +533,14 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					this.Log().LogTrace($"Write content: {newText} [{message.RequestId}].");
 				}
 
-				File.WriteAllText(message.FilePath, newText);
+				var effectiveUpdate = WaitForFileUpdated();
+				await File.WriteAllTextAsync(message.FilePath, newText);
+				await effectiveUpdate;
+
 				return (FileUpdateResult.Success, null);
 			}
 
-			(FileUpdateResult, string?) DoDelete()
+			async ValueTask<(FileUpdateResult, string?)> DoDelete()
 			{
 				if (!File.Exists(message.FilePath))
 				{
@@ -530,8 +552,44 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					return (FileUpdateResult.FileNotFound, $"Requested file '{message.FilePath}' does not exists.");
 				}
 
+				var effectiveUpdate = WaitForFileUpdated();
 				File.Delete(message.FilePath);
+				await effectiveUpdate;
+
 				return (FileUpdateResult.Success, null);
+			}
+
+			async Task WaitForFileUpdated()
+			{
+				var file = new FileInfo(message.FilePath);
+				var dir = file.Directory;
+				while (dir is { Exists: false })
+				{
+					dir = dir.Parent;
+				}
+
+				if (dir is null)
+				{
+					return;
+				}
+
+				var tcs = new TaskCompletionSource();
+				using var watcher = new FileSystemWatcher(dir.FullName);
+				watcher.Changed += async (snd, e) =>
+				{
+					if (e.FullPath.Equals(file.FullName, StringComparison.OrdinalIgnoreCase))
+					{
+						await Task.Delay(500);
+						tcs.TrySetResult();
+					}
+				};
+				watcher.EnableRaisingEvents = true;
+
+				if (await Task.WhenAny(tcs.Task, Task.Delay(TimeSpan.FromSeconds(2))) != tcs.Task
+					&& this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().LogDebug($"File update event not received for '{message.FilePath}', continuing anyway [{message.RequestId}].");
+				}
 			}
 		}
 
@@ -545,6 +603,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(2));
 				await using var ctReg = cts.Token.Register(() => hrRequested.TrySetCanceled());
 
+				_pendingHotReloadRequestToIde.TryAdd(hrRequest.CorrelationId, hrRequested);
 				await _remoteControlServer.SendMessageToIDEAsync(hrRequest);
 
 				return await hrRequested.Task is { IsSuccess: true };
