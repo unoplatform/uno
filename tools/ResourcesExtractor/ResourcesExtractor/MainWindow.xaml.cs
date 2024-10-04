@@ -19,14 +19,7 @@ public sealed partial class MainWindow : Window
 
 		for (var i = 5114; i <= 5155; i++)
 		{
-			var resource = Magic.GetLocalizedResource(i);
-			var trimmedResource = resource.Trim();
-
-			var textInfo = CultureInfo.CurrentCulture.TextInfo;
-			var titleCase = textInfo.ToTitleCase(trimmedResource.ToLower(new CultureInfo("en-US")));
-			var noWhitespace = string.Concat(titleCase.Where(c => !char.IsWhiteSpace(c)));
-
-			allResources.Add((noWhitespace, i));
+			allResources.Add((i.ToString(CultureInfo.InvariantCulture), i));
 		}
 
 		allResources.AddRange(GetResourcesFromFile("dxaml\\phone\\lib\\PhoneResource.h"));
@@ -69,15 +62,11 @@ public sealed partial class MainWindow : Window
 			writer.Write(Constants.ReswFileStart);
 			foreach (var resource in resources)
 			{
-				var resourceValue = Magic.GetLocalizedResource(resource.ResourceId, (int)lang);
-
-				var name = (resource.ResourceId >= 5114 && resource.ResourceId <= 5155)
-					? resource.ResourceId.ToString(new CultureInfo("en-US"))
-					: resource.ResourceName;
+				string resourceValue = Magic.GetLocalizedResource(resource.ResourceId, (int)lang);
 				if (resourceValue != null)
 				{
 					writer.Write($"""
-                      <data name="{name}" xml:space="preserve">
+                      <data name="{resource.ResourceName}" xml:space="preserve">
                         <value>{resourceValue}</value>
                       </data>
 
