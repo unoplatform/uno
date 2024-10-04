@@ -882,5 +882,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			element = GetTemplateChild(name) as T;
 		}
+
+		public void SetSubMenuDirection(bool isSubMenuDirectionUp) { }
 	}
 }
