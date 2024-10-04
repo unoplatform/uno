@@ -366,10 +366,6 @@ namespace <#= mixin.NamespaceName #>
 					var previousSize = _actualSize;
 					_actualSize = value.Size.ToFoundationSize().PhysicalToLogicalPixels();
 
-#if <#= mixin.IsFrameworkElement #> // IsFrameworkElement
-					RenderSize = _actualSize;
-#endif
-
 					CGAffineTransform? oldTransform = null;
 					if (!Transform.IsIdentity)
 					{
@@ -384,8 +380,9 @@ namespace <#= mixin.NamespaceName #>
 
 					if (previousSize != _actualSize)
 					{
+#if !<#= mixin.IsFrameworkElement #> // IsFrameworkElement
 						SizeChanged?.Invoke(this, new SizeChangedEventArgs(this, previousSize, _actualSize));
-
+#endif
 						if (_renderTransform != null)
 						{
 							// This will set the updated Transform
@@ -396,16 +393,6 @@ namespace <#= mixin.NamespaceName #>
 							// We grudgingly support setting the native transform directly without going through RenderTransform.
 							Transform = oldTransform.Value;
 						}
-
-#if <#= mixin.IsFrameworkElement #> // IsFrameworkElement
-						if (Superview != null && !(Superview is DependencyObject))
-						{
-							// If this FrameworkElement has a native parent, then it probably wasn't measured prior to having its Frame changed.
-							// Set RequiresMeasure flag so that this branch of the visual tree will be measured before being arranged, this is
-							// required for some views (eg Image) to display correctly.
-							SetLayoutFlags(LayoutFlag.MeasureDirty);
-						}
-#endif
 					}
 					else if (oldTransform.HasValue)
 					{
