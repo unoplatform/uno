@@ -82,7 +82,6 @@ namespace Microsoft.UI.Xaml.Controls
 		protected internal override void OnInvalidateMeasure()
 		{
 			base.OnInvalidateMeasure();
-			SetNeedsDisplay();
 			_measureInvalidated = true;
 		}
 
@@ -128,6 +127,8 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 
 				result = result.Add(padding);
+
+				SetNeedsDisplay();
 
 				return _previousDesiredSize = new Size(Math.Ceiling(result.Width), Math.Ceiling(result.Height));
 			}
