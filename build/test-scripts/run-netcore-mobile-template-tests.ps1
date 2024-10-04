@@ -15,7 +15,7 @@ function CleanupTree()
     git clean -fdx -e *.binlog
 }
 
-$default = @('/ds', '/v:m', '/p:UseDotNetNativeToolchain=false', '/p:PackageCertificateKeyFile=')
+$default = @('/ds', '/v:m', '/p:UseDotNetNativeToolchain=false', '/p:PackageCertificateKeyFile=', '/p:RunAOTCompilation=false')
 
 if ($IsWindows) 
 {
