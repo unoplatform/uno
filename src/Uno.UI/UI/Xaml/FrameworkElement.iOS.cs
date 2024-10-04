@@ -24,16 +24,6 @@ namespace Microsoft.UI.Xaml
 		public override void LayoutSubviews()
 		{
 			base.LayoutSubviews();
-
-			if (!IsVisualTreeRoot && !_isSettingFrameByArrangeVisual)
-			{
-				// This handles native-only elements with managed child/children.
-				// When the parent is native-only element, it will layout its children with the proper rect.
-				// So we response to the requested bounds and do the managed arrange.
-				// TODO:
-				//var logical = this.Frame.PhysicalToLogicalPixels();
-				//this.Arrange(logical);
-			}
 		}
 
 		public override CGSize SizeThatFits(CGSize size)
