@@ -1361,13 +1361,18 @@ namespace Windows.UI.Tests.Enterprise
 			KeyboardHelper.Down(secondaryItemsPresenter);
 			await WindowHelper.WaitForIdle();
 
-			await RunOnUIThread(() =>
+			await TestHelper.RetryAssert(async () =>
 			{
-				var item = (AppBarButton)cmdBar.SecondaryCommands[0];
-				var transform = item.TransformToVisual(null);
-				var firstItemNewPosition = transform.TransformPoint(new Point(0, 0));
+				// This keyboard and animation driven, it may need a few retries to get the right position.
 
-				VERIFY_ARE_EQUAL(firstItemNewPosition, firstItemOriginalPosition);
+				await RunOnUIThread(() =>
+				{
+					var item = (AppBarButton)cmdBar.SecondaryCommands[0];
+					var transform = item.TransformToVisual(null);
+					var firstItemNewPosition = transform.TransformPoint(new Point(0, 0));
+
+					VERIFY_ARE_EQUAL(firstItemNewPosition, firstItemOriginalPosition);
+				});
 			});
 		}
 
