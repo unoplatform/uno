@@ -360,7 +360,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			};
 
 			var imageOpened = false;
-			image.ImageOpened += (_, _) => imageOpened = true;
+			SUT.ImageOpened += (_, _) => imageOpened = true;
 
 			SUT.Source = new BitmapImage(new Uri("ms-appx:///Assets/square100.png"));
 
