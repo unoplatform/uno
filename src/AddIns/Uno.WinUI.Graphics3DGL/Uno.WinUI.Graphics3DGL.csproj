@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-		<TargetFrameworks>$(NetPrevious);$(NetPrevious)-android</TargetFrameworks>
+		<TargetFrameworks>$(NetPrevious)</TargetFrameworks>
 		<TargetFrameworks Condition="'$(BuildGraphics3DGLForWindows)' != ''">$(NetUWPOrWinUI)</TargetFrameworks>
 
 		<RootNamespace>Uno.WinUI.Graphics3DGL</RootNamespace>
@@ -10,8 +10,7 @@
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
-	<!-- Do NOT override the target framework -->
-	<!--<Import Project="../../targetframework-override.props" />-->
+	<Import Project="../../targetframework-override.props" />
 
 	<ItemGroup>
 		<PackageReference Include="Silk.NET.OpenGL" Version="2.16.0" />
