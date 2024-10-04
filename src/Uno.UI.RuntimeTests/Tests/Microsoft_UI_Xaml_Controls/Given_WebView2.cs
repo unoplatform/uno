@@ -75,14 +75,14 @@ public class Given_WebView2
 		webView.NavigationCompleted += (s, e) => navigationDone = true;
 		webView.Source = uri;
 		Assert.IsNotNull(webView.Source);
-		await TestServices.WindowHelper.WaitFor(() => navigationStarting, 3000);
-		await TestServices.WindowHelper.WaitFor(() => navigationDone, 3000);
+		await TestServices.WindowHelper.WaitFor(() => navigationStarting, 10000);
+		await TestServices.WindowHelper.WaitFor(() => navigationDone, 10000);
 		Assert.IsNotNull(webView.Source);
 		navigationStarting = false;
 		navigationDone = false;
 		webView.NavigateToString("<html></html>");
-		await TestServices.WindowHelper.WaitFor(() => navigationStarting, 3000);
-		await TestServices.WindowHelper.WaitFor(() => navigationDone, 3000);
+		await TestServices.WindowHelper.WaitFor(() => navigationStarting, 10000);
+		await TestServices.WindowHelper.WaitFor(() => navigationDone, 10000);
 		Assert.AreEqual(new Uri("about:blank"), webView.Source);
 	}
 
@@ -106,8 +106,13 @@ public class Given_WebView2
 		Assert.IsFalse(webView.CanGoForward);
 
 		webView.NavigationCompleted += (sender, e) => navigated = true;
+<<<<<<< HEAD
 		webView.CoreWebView2.Navigate("https://example.com/1");
 		await TestServices.WindowHelper.WaitFor(() => navigated, 3000);
+=======
+		webView.CoreWebView2.Navigate("https://uno-assets.platform.uno/tests/docs/WebView_NavigateToAnchor.html");
+		await TestServices.WindowHelper.WaitFor(() => navigated, 10000);
+>>>>>>> 696e3bc96d (test: Adjust test duration for navigation)
 
 		Assert.IsFalse(webView.CoreWebView2.CanGoBack);
 		Assert.IsFalse(webView.CanGoBack);
@@ -115,15 +120,20 @@ public class Given_WebView2
 		Assert.IsFalse(webView.CanGoForward);
 
 		navigated = false;
+<<<<<<< HEAD
 		webView.CoreWebView2.Navigate("https://example.com/2");
 		await TestServices.WindowHelper.WaitFor(() => navigated, 3000);
+=======
+		webView.CoreWebView2.Navigate("https://platform.uno");
+		await TestServices.WindowHelper.WaitFor(() => navigated, 10000);
+>>>>>>> 696e3bc96d (test: Adjust test duration for navigation)
 
 		Assert.IsTrue(webView.CoreWebView2.CanGoBack);
 		Assert.IsTrue(webView.CanGoBack);
 
 		navigated = false;
 		webView.GoBack();
-		await TestServices.WindowHelper.WaitFor(() => navigated, 3000);
+		await TestServices.WindowHelper.WaitFor(() => navigated, 10000);
 
 		Assert.IsFalse(webView.CoreWebView2.CanGoBack);
 		Assert.IsFalse(webView.CanGoBack);
