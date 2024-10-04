@@ -175,7 +175,7 @@
 			Duplicate the fluent button style to remove the default animation
 			that breaks screenshot tests.
 			-->
-			<Style TargetType="Button">
+			<not_win:Style TargetType="Button">
 				<Setter Property="Background"
 						Value="{ThemeResource ButtonBackground}" />
 				<Setter Property="BackgroundSizing"
@@ -310,7 +310,7 @@
 						</ControlTemplate>
 					</Setter.Value>
 				</Setter>
-			</Style>
+			</not_win:Style>
 
 
 		</ResourceDictionary>
