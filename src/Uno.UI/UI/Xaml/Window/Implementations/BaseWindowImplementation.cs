@@ -80,7 +80,7 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 
 	public virtual void Activate()
 	{
-		if (_isClosed)
+		if (NativeWindowFactory.SupportsMultipleWindows && _isClosed)
 		{
 			throw new InvalidOperationException("Cannot reactivate a closed window.");
 		}
@@ -318,10 +318,18 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 
 			// Window.PrepareToClose();
 
-			// set these to null before marking window as closed as they fail if called after m_bIsClosed is set
-			// because they check if window is closed already
-			Window.SetTitleBar(null);
-			Window.Content = null;
+			if (NativeWindowFactory.SupportsMultipleWindows)
+			{
+				// set these to null before marking window as closed as they fail if called after m_bIsClosed is set
+				// because they check if window is closed already
+				Window.SetTitleBar(null);
+				Window.Content = null;
+			}
+			else
+			{
+				// Just reset the window to not shown state so it can be reactivated
+				_wasShown = false;
+			}
 
 			// _windowChrome.SetDesktopWindow(null);
 
@@ -336,8 +344,11 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 				RaiseWindowVisibilityChangedEvent(false);
 			}
 
-			// Close native window, cleanup, and unregister from hwnd mapping from DXamlCore
-			Shutdown();
+			if (NativeWindowFactory.SupportsMultipleWindows)
+			{
+				// Close native window, cleanup, and unregister from hwnd mapping from DXamlCore
+				Shutdown();
+			}
 
 			return true;
 		}
