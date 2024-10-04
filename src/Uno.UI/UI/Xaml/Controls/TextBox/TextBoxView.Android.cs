@@ -314,7 +314,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 				void ApplyColor()
 				{
-					if (_isDisposed)
+					if (_isDisposed
+
+						// This is based on `Java.Interop.JniPeerMembers.AssertSelf`
+						|| !this.PeerReference.IsValid)
 					{
 						// Binding changes may happen after the
 						// underlying control has been disposed
