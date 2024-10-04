@@ -11,6 +11,8 @@ using Microsoft.UI.Xaml;
 using Uno.Foundation.Logging;
 using Uno.UI.Controls;
 using ObjCRuntime;
+using LayoutInformation = Microsoft.UI.Xaml.Controls.Primitives.LayoutInformation;
+
 
 #if __IOS__
 using CoreGraphics;
@@ -629,7 +631,7 @@ namespace AppKit
 				var namePart = string.IsNullOrEmpty(name) ? "" : $"-'{name}'";
 
 				var uiElement = innerView as UIElement;
-				var desiredSize = uiElement?.DesiredSize.ToString() ?? "<native/unk>";
+				var desiredSize = LayoutInformation.GetDesiredSize(innerView);
 				var fe = innerView as IFrameworkElement;
 
 				return sb
@@ -638,10 +640,15 @@ namespace AppKit
 						.Append(innerView.ToString() + namePart)
 						.Append($"-({innerView.Frame.Width}x{innerView.Frame.Height})@({innerView.Frame.X},{innerView.Frame.Y})")
 						.Append($" ds:{desiredSize}")
+						.Append($" LayoutSlot:{LayoutInformation.GetLayoutSlot(innerView)}")
 #if __IOS__
 							.Append($" {(innerView.Hidden ? "Hidden" : "Visible")}")
 #endif
 						.Append(fe != null ? $" HA={fe.HorizontalAlignment},VA={fe.VerticalAlignment}" : "")
+						.Append(uiElement != null && uiElement.IsMeasureDirty ? $" MEASURE_DIRTY" : "")
+						.Append(LayoutInformation.GetMeasureDirtyPath(innerView) ? $" MEASURE_DIRTY_PATH" : "")
+						.Append(uiElement != null && uiElement.IsArrangeDirty ? $" ARRANGE_DIRTY" : "")
+						.Append(LayoutInformation.GetArrangeDirtyPath(innerView) ? $" ARRANGE_DIRTY_PATH" : "")
 						.Append(fe != null && (!double.IsNaN(fe.Width) || !double.IsNaN(fe.Height)) ? $"FE.Width={fe.Width},FE.Height={fe.Height}" : "")
 						.Append(fe != null && fe.Margin != default ? $" Margin={fe.Margin}" : "")
 						.Append(fe != null && fe.TryGetBorderThickness(out var b) && b != default ? $" Border={b}" : "")
