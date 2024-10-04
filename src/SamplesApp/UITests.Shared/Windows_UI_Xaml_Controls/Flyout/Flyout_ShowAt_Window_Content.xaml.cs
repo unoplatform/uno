@@ -15,13 +15,12 @@ namespace UITests.Windows_UI_Xaml_Controls.FlyoutTests
 	[Sample("Flyouts")]
 	public sealed partial class Flyout_ShowAt_Window_Content : Page
 	{
-		private XamlRoot _xamlRoot;
-
 		public Flyout_ShowAt_Window_Content()
 		{
 			this.InitializeComponent();
 
 #if HAS_UNO
+			XamlRoot _xamlRoot = null;
 			Unloaded += (s, e) => _xamlRoot = XamlRoot;
 			Unloaded += (s, e) =>
 			{
