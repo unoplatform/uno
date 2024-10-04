@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 using Android.Views.Animations;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
 namespace Uno.UI
 {
@@ -675,7 +676,7 @@ namespace Uno.UI
 					.Append(fe is not null && fe.Opacity < 1 ? $" Opacity={fe.Opacity}" : "")
 					.Append(fe is not null && fe.TryGetBorderThickness(out var b) && b != default ? $" Border={b}" : "")
 					.Append(fe is not null && fe.TryGetPadding(out var p) && p != default ? $" Padding={p}" : "")
-					.Append(u is not null ? $" DesiredSize={u.DesiredSize.ToString("F1")}" : "")
+					.Append($" DesiredSize={LayoutInformation.GetDesiredSize(innerView).ToString("F1")}")
 					.Append(u is { NeedsClipToSlot: true } ? " CLIPPED_TO_SLOT" : "")
 					.Append(vg is { ClipToOutline: true } ? " vg.CLIP_OUTLINE" : "")
 					.Append(vg is { ClipChildren: true } ? " vg.CLIP_CHILDREN" : "")
