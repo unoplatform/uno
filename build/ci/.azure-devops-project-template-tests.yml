@@ -12,26 +12,35 @@ jobs:
 
   pool: ${{ parameters.poolName }}
 
-  dependsOn:
-    - Generate_Packages
+  strategy:
+    matrix:
+      group_0:
+        TestGroup: '0'
+      group_1:
+        TestGroup: '1'
+      group_2:
+        TestGroup: '2'
+      group_3:
+        TestGroup: '3'
 
   steps:
   - task: DownloadBuildArtifacts@0
     inputs:
-      artifactName: NugetPackages
+      artifactName: 'Nuget_Packages'
 
   - template: templates/gitversion.yml
 
   - template: templates/dotnet-mobile-install-windows.yml
 
-  - script: copy $(System.ArtifactsDirectory)\NugetPackages\vslatest\*.nupkg $(Build.SourcesDirectory)\src\PackageCache
+  - script: copy $(System.ArtifactsDirectory)\Nuget_Packages\vslatest\*.nupkg $(Build.SourcesDirectory)\src\PackageCache
     displayName: Copy Artifacts to PackageCache
 
   - task: PowerShell@2
     displayName: Run Project Templates Tests
     inputs:
-      targetType: 'filePath'
-      filePath: build\test-scripts\run-netcore-mobile-template-tests.ps1
+      targetType: 'inline'
+      script: |
+        build\test-scripts\run-netcore-mobile-template-tests.ps1 -TestGroup "$(TestGroup)"
       pwsh: true # Use PowerShell core (required for IsWindows to run)
     env:
       BUILD_SOURCESDIRECTORY: $(BUILD.SOURCESDIRECTORY)
@@ -52,13 +61,21 @@ jobs:
   pool:
     vmImage: ${{ parameters.macOSImageName }}
 
-  dependsOn:
-    - Generate_Packages
+  strategy:
+    matrix:
+      group_0:
+        TestGroup: '0'
+      group_1:
+        TestGroup: '1'
+      group_2:
+        TestGroup: '2'
+      group_3:
+        TestGroup: '3'
 
   steps:
   - task: DownloadBuildArtifacts@0
     inputs:
-      artifactName: NugetPackages
+      artifactName: 'Nuget_Packages'
 
   - template: templates/gitversion.yml
 
@@ -68,10 +85,10 @@ jobs:
 
   - template: templates/dotnet-mobile-install-mac.yml
 
-  - powershell: cp $(System.ArtifactsDirectory)/NugetPackages/vslatest/*.nupkg $(Build.SourcesDirectory)/src/PackageCache
+  - powershell: cp $(System.ArtifactsDirectory)/Nuget_Packages/vslatest/*.nupkg $(Build.SourcesDirectory)/src/PackageCache
     displayName: Copy Artifacts to PackageCache
 
-  - powershell: build/test-scripts/run-netcore-mobile-template-tests.ps1
+  - powershell: build/test-scripts/run-netcore-mobile-template-tests.ps1 -TestGroup "$(TestGroup)"
     displayName: Run Project Templates Tests
     env:
       BUILD_SOURCESDIRECTORY: $(BUILD.SOURCESDIRECTORY)
@@ -88,28 +105,36 @@ jobs:
 - job: Dotnet_Template_Tests_net7_Linux
   displayName: 'Run dotnet new Templates Tests - Linux (net7)'
 
-  dependsOn:
-    - Generate_Packages
-
   pool: ${{ parameters.vmPoolLinux }}
 
   container: unoplatform/wasm-build:2.3
 
+  strategy:
+    matrix:
+      group_0:
+        TestGroup: '0'
+      group_1:
+        TestGroup: '1'
+      group_2:
+        TestGroup: '2'
+
   steps:
   - task: DownloadBuildArtifacts@0
     inputs:
-      artifactName: NugetPackages
+      artifactName: 'Nuget_Packages'
+
+  - template: templates/gitversion.yml
 
   - template: templates/dotnet-mobile-install-linux.yml
 
   - template: templates/gitversion.yml
   
-  - script: cp $(System.ArtifactsDirectory)/NugetPackages/vslatest/*.nupkg $(Build.SourcesDirectory)/src/PackageCache
+  - script: cp $(System.ArtifactsDirectory)/Nuget_Packages/vslatest/*.nupkg $(Build.SourcesDirectory)/src/PackageCache
     displayName: Copy Artifacts to PackageCache
 
   - template: templates/dotnet-install.yml
 
-  - pwsh: build/test-scripts/run-net7-template-linux.ps1
+  - pwsh: build/test-scripts/run-net7-template-linux.ps1 -TestGroup "$(TestGroup)"
     displayName: Run Project Templates Tests
     env:
       BUILD_SOURCESDIRECTORY: $(BUILD.SOURCESDIRECTORY)

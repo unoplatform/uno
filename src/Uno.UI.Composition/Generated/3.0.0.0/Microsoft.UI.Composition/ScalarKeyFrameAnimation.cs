@@ -8,7 +8,7 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class ScalarKeyFrameAnimation : global::Microsoft.UI.Composition.KeyFrameAnimation
 	{
-		// Skipping already declared method Microsoft.UI.Composition.ScalarKeyFrameAnimation.InsertKeyFrame(float, float)
 		// Skipping already declared method Microsoft.UI.Composition.ScalarKeyFrameAnimation.InsertKeyFrame(float, float, Microsoft.UI.Composition.CompositionEasingFunction)
+		// Skipping already declared method Microsoft.UI.Composition.ScalarKeyFrameAnimation.InsertKeyFrame(float, float)
 	}
 }

@@ -9,7 +9,7 @@
 			if (exports !== undefined) {
 				ManagedObject.dispatchMethod = exports.Dispatch;
 			} else {
-				ManagedObject.dispatchMethod = (<any>Module).mono_bind_static_method("[Uno.Foundation.Runtime.WebAssembly] Uno.Foundation.Interop.JSObject:Dispatch");
+				throw `Unable to find dotnet exports`;
 			}
 		}
 

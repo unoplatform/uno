@@ -11,8 +11,8 @@ namespace Microsoft.UI.Input
 		// Skipping already declared property PointerDeviceType
 		// Skipping already declared property Position
 		// Skipping already declared property TapCount
-		// Forced skipping of method Microsoft.UI.Input.TappedEventArgs.Position.get
 		// Forced skipping of method Microsoft.UI.Input.TappedEventArgs.PointerDeviceType.get
+		// Forced skipping of method Microsoft.UI.Input.TappedEventArgs.Position.get
 		// Forced skipping of method Microsoft.UI.Input.TappedEventArgs.TapCount.get
 	}
 }

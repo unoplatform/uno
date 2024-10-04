@@ -309,9 +309,7 @@ namespace Microsoft.UI.Xaml
 
 				// only clip and constrain if the tree wants that.
 				// currently only listviewitems do not want clipping
-				// UNO TODO
-
-				//if (!pLayoutManager->GetIsInNonClippingTree())
+				if (!IsInNonClippingTree)
 				{
 					// In overconstrained scenario, parent wins and measured size of the child,
 					// including any sizes set or computed, can not be larger then
@@ -356,23 +354,10 @@ namespace Microsoft.UI.Xaml
 				this.Log().LogWarning($"[LayoutCycleTracing] Measured {this},{this.GetDebugName()}: desiredSize is {desiredSize}.");
 			}
 
-#if __SKIA__
-			if (desiredSize != DesiredSize)
-#endif
-			{
-				// DesiredSize must include margins
-				m_desiredSize = desiredSize;
-#if __SKIA__
-				this.OnDesiredSizeChanged();
-#endif
-			}
+			// DesiredSize must include margins
+			m_desiredSize = desiredSize;
 
 			_logDebug?.Debug($"{DepthIndentation}[{FormatDebugName()}] Measure({Name}/{availableSize}/{Margin}) = {desiredSize} _unclippedDesiredSize={m_unclippedDesiredSize}");
-		}
-
-		private protected virtual void OnDesiredSizeChanged()
-		{
-
 		}
 
 		private void RaiseLoadingEventIfNeeded()
@@ -994,7 +979,8 @@ namespace Microsoft.UI.Xaml
 			// The property we currently know it has an effect is Resources
 			if (Resources is not null)
 			{
-				foreach (var resource in Resources.Values)
+				// Using ValuesInternal to avoid Enumerator boxing
+				foreach (var resource in Resources.ValuesInternal)
 				{
 					if (resource is FrameworkElement resourceAsUIElement)
 					{

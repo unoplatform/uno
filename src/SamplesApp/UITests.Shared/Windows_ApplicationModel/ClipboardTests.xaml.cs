@@ -106,6 +106,8 @@ namespace UITests.Windows_ApplicationModel
 
 		public ICommand PasteImageCommand => GetOrCreateCommand(PasteImage);
 
+		public ICommand PasteStorageItemsCommand => GetOrCreateCommand(PasteStorageItems);
+
 		public ICommand FlushCommand => GetOrCreateCommand(Flush);
 
 		public ICommand ToggleContentChangedCommand => GetOrCreateCommand(ToggleContentChange);
@@ -180,6 +182,21 @@ namespace UITests.Windows_ApplicationModel
 				var bitmapImage = new BitmapImage();
 				bitmapImage.SetSource(await bitmapReference.OpenReadAsync());
 				Bitmap = bitmapImage;
+			}
+		}
+
+		private async void PasteStorageItems()
+		{
+			var dataPackageView = Clipboard.GetContent();
+
+			if (dataPackageView is null)
+			{
+				return;
+			}
+
+			if (dataPackageView.Contains(StandardDataFormats.StorageItems))
+			{
+				Text = string.Join("\n", (await dataPackageView.GetStorageItemsAsync()).Select(si => si.Path));
 			}
 		}
 	}

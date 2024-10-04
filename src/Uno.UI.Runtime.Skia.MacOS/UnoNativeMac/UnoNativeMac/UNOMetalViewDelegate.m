@@ -19,7 +19,7 @@
         _device = mtkView.device;
         self.queue = [_device newCommandQueue];
         
-        mtkView.colorPixelFormat = MTLPixelFormatBGRA8Unorm;
+        mtkView.colorPixelFormat = MTLPixelFormatRGBA8Unorm;
         mtkView.depthStencilPixelFormat = MTLPixelFormatDepth32Float_Stencil8;
         mtkView.sampleCount = 1;
         // this property has no effect on x86_64, only on arm64, and is required for sampling (which acrylicbrush does)

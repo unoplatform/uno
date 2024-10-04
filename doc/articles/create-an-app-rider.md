@@ -11,7 +11,7 @@ uid: Uno.GettingStarted.CreateAnApp.Rider
 
 > [!IMPORTANT]
 >
-> - **Rider (2024.2 and above)**: For Rider (2024.2 and above), we have released a Preview version of the Uno Platform Plugin that supports creating Uno Platform projects using the "New Solution" dialog.
+> - **Rider (2024.2 and above)**: For Rider (2024.2 and above), we have released versions of the Uno Platform Plugin that support creating Uno Platform projects using the "New Solution" dialog.
 >   Make sure to follow the directions for **Rider 2024.2** provided below.
 >
 > - **Rider (2024.1 and earlier)**: Current versions of Rider (2024.1 and earlier) do not support creating Uno Platform projects using the "New Solution" dialog, even if the Uno Platform project template appears.

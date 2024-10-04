@@ -139,23 +139,23 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Composition.PointLight.LinearAttenuation.get
-		// Forced skipping of method Microsoft.UI.Composition.PointLight.Offset.set
+		// Forced skipping of method Microsoft.UI.Composition.PointLight.LinearAttenuation.set
 		// Forced skipping of method Microsoft.UI.Composition.PointLight.Color.get
 		// Forced skipping of method Microsoft.UI.Composition.PointLight.Color.set
 		// Forced skipping of method Microsoft.UI.Composition.PointLight.ConstantAttenuation.get
 		// Forced skipping of method Microsoft.UI.Composition.PointLight.ConstantAttenuation.set
 		// Forced skipping of method Microsoft.UI.Composition.PointLight.CoordinateSpace.get
 		// Forced skipping of method Microsoft.UI.Composition.PointLight.CoordinateSpace.set
-		// Forced skipping of method Microsoft.UI.Composition.PointLight.LinearAttenuation.set
-		// Forced skipping of method Microsoft.UI.Composition.PointLight.Offset.get
+		// Forced skipping of method Microsoft.UI.Composition.PointLight.LinearAttenuation.get
 		// Forced skipping of method Microsoft.UI.Composition.PointLight.Intensity.set
+		// Forced skipping of method Microsoft.UI.Composition.PointLight.Offset.get
+		// Forced skipping of method Microsoft.UI.Composition.PointLight.Offset.set
 		// Forced skipping of method Microsoft.UI.Composition.PointLight.QuadraticAttenuation.get
 		// Forced skipping of method Microsoft.UI.Composition.PointLight.QuadraticAttenuation.set
 		// Forced skipping of method Microsoft.UI.Composition.PointLight.Intensity.get
-		// Forced skipping of method Microsoft.UI.Composition.PointLight.MinAttenuationCutoff.set
-		// Forced skipping of method Microsoft.UI.Composition.PointLight.MinAttenuationCutoff.get
 		// Forced skipping of method Microsoft.UI.Composition.PointLight.MaxAttenuationCutoff.get
+		// Forced skipping of method Microsoft.UI.Composition.PointLight.MinAttenuationCutoff.get
+		// Forced skipping of method Microsoft.UI.Composition.PointLight.MinAttenuationCutoff.set
 		// Forced skipping of method Microsoft.UI.Composition.PointLight.MaxAttenuationCutoff.set
 	}
 }

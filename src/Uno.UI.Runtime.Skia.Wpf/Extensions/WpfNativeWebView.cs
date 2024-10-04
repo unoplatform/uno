@@ -28,6 +28,7 @@ internal sealed class WpfNativeWebView : INativeWebView, ISupportsVirtualHostMap
 	private CoreWebView2 _coreWebView2;
 	private List<Func<Task>> _actions = new();
 	private Dictionary<ulong, string> _navigationIdToUriMap = new();
+	private string _documentTitle = string.Empty;
 
 	public WpfNativeWebView(WpfWebView2 nativeWebView, CoreWebView2 coreWebView2)
 	{
@@ -39,6 +40,19 @@ internal sealed class WpfNativeWebView : INativeWebView, ISupportsVirtualHostMap
 		nativeWebView.NavigationStarting += NativeWebView_NavigationStarting;
 		nativeWebView.CoreWebView2InitializationCompleted += NativeWebView_CoreWebView2InitializationCompleted;
 		nativeWebView.EnsureCoreWebView2Async();
+	}
+
+	public string DocumentTitle
+	{
+		get => _documentTitle;
+		private set
+		{
+			if (_documentTitle != value)
+			{
+				_documentTitle = value;
+				_coreWebView2.OnDocumentTitleChanged();
+			}
+		}
 	}
 
 	private void NativeWebView_SourceChanged(object? sender, WpfCoreWebView2SourceChangedEventArgs e)
@@ -80,12 +94,22 @@ internal sealed class WpfNativeWebView : INativeWebView, ISupportsVirtualHostMap
 	private async void NativeWebView_CoreWebView2InitializationCompleted(object? sender, WpfCoreWebView2InitializationCompletedEventArgs e)
 	{
 		_nativeWebView.CoreWebView2.HistoryChanged += CoreWebView2_HistoryChanged;
+		_nativeWebView.CoreWebView2.DocumentTitleChanged += OnNativeTitleChanged;
+		UpdateDocumentTitle();
+
 		foreach (var action in _actions)
 		{
 			await action();
 		}
 
 		_actions.Clear();
+	}
+
+	private void OnNativeTitleChanged(object? sender, object e) => UpdateDocumentTitle();
+
+	private void UpdateDocumentTitle()
+	{
+		DocumentTitle = _nativeWebView.CoreWebView2.DocumentTitle;
 	}
 
 	private void CoreWebView2_HistoryChanged(object? sender, object e)

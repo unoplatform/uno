@@ -10,6 +10,10 @@
     <Import_RootNamespace>UITests</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI\ColorHelperTests.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Lottie\LottieEmbeddedJson.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -35,6 +39,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Windowing\AppWindowClosing.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Windowing\SingleWindowClose.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1051,6 +1059,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\DragAndDrop\DragDrop_Basics.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\DragAndDrop\DragDrop_Files.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -4694,6 +4706,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\SKCanvasElement_Simple.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\GLCanvasElement_Simple.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -5456,6 +5472,9 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI\ColorHelperTests.xaml.cs">
+      <DependentUpon>ColorHelperTests.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\BindableBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\IWaitableSample.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\UWPViewHelper.cs" />
@@ -5480,6 +5499,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Windowing\AppWindowClosing.xaml.cs">
       <DependentUpon>AppWindowClosing.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Windowing\SingleWindowClose.xaml.cs">
+      <DependentUpon>SingleWindowClose.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Windowing\OverlappedPresenterTests.xaml.cs">
       <DependentUpon>OverlappedPresenterTests.xaml</DependentUpon>
@@ -6037,6 +6059,7 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\RotatingCubeGlCanvasElement.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\SimpleTriangleGlCanvasElement.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\SKCanvasElementImpl.skia.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Core\CloseRequestedTests.xaml.cs">
       <DependentUpon>CloseRequestedTests.xaml</DependentUpon>
     </Compile>
@@ -6267,6 +6290,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\DragAndDrop\DragDropTestHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\DragAndDrop\DragDrop_Basics.xaml.cs">
       <DependentUpon>DragDrop_Basics.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\DragAndDrop\DragDrop_Files.xaml.cs">
+      <DependentUpon>DragDrop_Files.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\DragAndDrop\DragDrop_ListView.xaml.cs">
       <DependentUpon>DragDrop_ListView.xaml</DependentUpon>
@@ -8288,6 +8314,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\VisualSurfaceTests.xaml.cs">
       <DependentUpon>VisualSurfaceTests.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\SKCanvasElement_Simple.xaml.cs">
+      <DependentUpon>SKCanvasElement_Simple.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\GLCanvasElement_Simple.xaml.cs">
       <DependentUpon>GLCanvasElement_Simple.xaml</DependentUpon>
     </Compile>
@@ -9617,6 +9646,7 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\closeIcon.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\colored-ellipse.jpg" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\ColorPicker.png" />
+    <None Include="$(MSBuildThisFileDirectory)Assets\colors300-transitive.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\colors300.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\ComboBox.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\CommandBarFlyout.png" />
@@ -9752,6 +9782,7 @@
     <PRIResource Include="$(MSBuildThisFileDirectory)UITestsStrings\en-US\Resources.resw" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)Microsoft_UI\" />
     <Folder Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ChatBox\" />
     <Folder Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\DatePicker\Models\" />
     <Folder Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\PersonPictureTests\" />

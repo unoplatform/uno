@@ -68,6 +68,10 @@
 		<ProjectReference Include="..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.Skia.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<ProjectReference Include="..\AddIns\Uno.WinUI.Graphics2DSK\Uno.WinUI.Graphics2DSK.csproj" />
+	</ItemGroup>
+
 	<PropertyGroup>
 		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
 	</PropertyGroup>

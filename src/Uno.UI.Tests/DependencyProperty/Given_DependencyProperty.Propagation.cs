@@ -507,7 +507,14 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 				var dc = new object();
 				SUT.DataContext = dc;
 
+				SUT.SetValue(
+					ContentControl.ForegroundProperty,
+					new SolidColorBrush(new Windows.UI.Color(1, 2, 3, 4)),
+					DependencyPropertyValuePrecedences.Inheritance);
+
 				var originalBrush = SUT.Foreground as Brush;
+				Assert.AreEqual(dc, originalBrush.DataContext);
+
 				var newBrush = new SolidColorBrush(Microsoft.UI.Colors.Red);
 
 				SUT.SetValue(ContentControl.ForegroundProperty, newBrush);

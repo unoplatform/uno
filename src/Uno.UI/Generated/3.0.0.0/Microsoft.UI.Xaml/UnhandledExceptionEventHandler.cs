@@ -3,7 +3,5 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml
 {
-#if false
-	public delegate void UnhandledExceptionEventHandler(object sender, global::Microsoft.UI.Xaml.UnhandledExceptionEventArgs e);
-#endif
+	// Skipping already declared delegate Microsoft.UI.Xaml.UnhandledExceptionEventHandler
 }

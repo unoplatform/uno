@@ -54,11 +54,10 @@
 		<MixinInput Include="$(MSBuildThisFileDirectory)UI\Xaml\IFrameworkElementImplementation.iOS.tt" Condition="$(IsIOSOrCatalyst)" />
 		<MixinInput Include="$(MSBuildThisFileDirectory)UI\Xaml\IFrameworkElementImplementation.macOS.tt" Condition="$(IsMacOS)" />
 
-		<MixinOutput Include="$(MSBuildThisFileDirectory)Mixins\Android\BaseActivity.Callbacks.g.cs" Condition="$(IsAndroid)" />
-		<MixinOutput Include="$(MSBuildThisFileDirectory)Mixins\Android\FrameworkElementMixins.g.cs" Condition="$(IsAndroid)" />
+		<MixinOutput Include="$(MSBuildThisFileDirectory)Mixins\Android\*.g.cs" Condition="$(IsAndroid)" />
 		<MixinOutput Include="$(MSBuildThisFileDirectory)Mixins\DependencyPropertyMixins.g.cs" />
-		<MixinOutput Include="$(MSBuildThisFileDirectory)Mixins\iOS\FrameworkElementMixins.g.cs" Condition="$(IsIOSOrCatalyst)" />
-		<MixinOutput Include="$(MSBuildThisFileDirectory)Mixins\macOS\FrameworkElementMixins.g.cs" Condition="$(IsMacOS)" />
+		<MixinOutput Include="$(MSBuildThisFileDirectory)Mixins\iOS\*.g.cs" Condition="$(IsIOSOrCatalyst)" />
+		<MixinOutput Include="$(MSBuildThisFileDirectory)Mixins\macOS\*.g.cs" Condition="$(IsMacOS)" />
 	</ItemGroup>
 
 	<!--

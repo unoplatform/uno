@@ -8,7 +8,7 @@ namespace Uno.UI.RuntimeTests.Tests.HotReload
 {
 	internal static class FrameworkElementExtensions
 	{
-		private static (string FileName, int FileLine, int LinePosition) GetDebugParseContext(this FrameworkElement element)
+		public static (string FileName, int FileLine, int LinePosition) GetDebugParseContext(this FrameworkElement element)
 		{
 			var dpcProp = typeof(FrameworkElement).GetProperty("DebugParseContext", BindingFlags.Instance | BindingFlags.NonPublic);
 

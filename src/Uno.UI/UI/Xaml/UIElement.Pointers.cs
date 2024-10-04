@@ -1556,10 +1556,15 @@ namespace Microsoft.UI.Xaml
 			relatedArgs ??= lastDispatched;
 			if (relatedArgs == null)
 			{
-				return false; // TODO: We should create a new instance of event args with dummy location
+				return false;
 			}
+
+#if UNO_HAS_MANAGED_POINTERS
+			return RaisePointerEvent(PointerCaptureLostEvent, new PointerRoutedEventArgs(relatedArgs.CoreArgs, relatedArgs.OriginalSource as UIElement));
+#else // TODO: do the same for unmanaged pointers
 			relatedArgs.Handled = false;
 			return RaisePointerEvent(PointerCaptureLostEvent, relatedArgs);
+#endif
 		}
 		#endregion
 
