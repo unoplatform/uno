@@ -19,7 +19,7 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="!$(TargetFramework.Contains('windows10'))">
-		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Reference.csproj" PrivateAssets="all" />
+		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj" PrivateAssets="all" />
 	</ItemGroup>
 
 	<Choose>
