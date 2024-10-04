@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 using Windows.Foundation;
 using Uno.Collections;
 using System;
+using Uno.Foundation.Logging;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
@@ -25,6 +26,7 @@ partial class LayoutInformation
 		}
 		else
 		{
+			typeof(LayoutInformation).Log().LogWarning($"Setting MeasureDirtyPath on {view}-{view.GetHashCode()} to {value}");
 			_layoutProperties.SetValue(view, "measuredirtypath", value);
 		}
 	}
@@ -42,6 +44,7 @@ partial class LayoutInformation
 		}
 		else
 		{
+			typeof(LayoutInformation).Log().LogWarning($"Setting ArrangeDirtyPath on {view}-{view.GetHashCode()} to {value}");
 			_layoutProperties.SetValue(view, "arrangedirtypath", value);
 		}
 	}
