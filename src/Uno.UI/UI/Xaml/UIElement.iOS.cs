@@ -119,22 +119,6 @@ namespace Microsoft.UI.Xaml
 			base.SetNeedsLayout();
 
 			InvalidateMeasure();
-			InvalidateNativeOnlyChildrenRecursive(this);
-		}
-
-		private static void InvalidateNativeOnlyChildrenRecursive(UIView view)
-		{
-			foreach (var child in view.GetChildren())
-			{
-				if (child is not UIElement)
-				{
-					LayoutInformation.SetMeasureDirtyPath(child, true);
-					if (child is UIView childAsViewGroup)
-					{
-						InvalidateNativeOnlyChildrenRecursive(childAsViewGroup);
-					}
-				}
-			}
 		}
 
 		public void SetSubviewsNeedLayout()
