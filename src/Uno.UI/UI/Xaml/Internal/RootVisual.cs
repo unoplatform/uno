@@ -92,7 +92,7 @@ internal partial class RootVisual : Panel, IRootElement
 			var x = child.GetOffsetX();
 			var y = child.GetOffsetY();
 
-			if (true)//child.GetIsArrangeDirty() || child.GetIsOnArrangeDirtyPath())
+			if (child.IsArrangeDirtyOrArrangeDirtyPath)
 			{
 				child.EnsureLayoutStorage();
 
