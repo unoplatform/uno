@@ -482,11 +482,13 @@ namespace SampleControl.Presentation
 #endif
 
 					// Used to perform test grouping on CI to reduce the impact of re-runs
-					if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable(TestGroupVariable)))
-					{
-						unitTests.CITestGroup = int.Parse(Environment.GetEnvironmentVariable(TestGroupVariable));
-						unitTests.CITestGroupCount = int.Parse(Environment.GetEnvironmentVariable(TestGroupCountVariable));
-					}
+					//if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable(TestGroupVariable)))
+					//{
+					//	unitTests.CITestGroup = int.Parse(Environment.GetEnvironmentVariable(TestGroupVariable));
+					//	unitTests.CITestGroupCount = int.Parse(Environment.GetEnvironmentVariable(TestGroupCountVariable));
+					//}
+					unitTests.CITestGroup = 0;
+					unitTests.CITestGroupCount = 8;
 
 					await Task.Run(() => unitTests.RunTests(ct, UnitTestEngineConfig.Default));
 

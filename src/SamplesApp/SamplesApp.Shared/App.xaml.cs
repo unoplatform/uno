@@ -36,6 +36,7 @@ using Uno.Logging;
 using DispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue;
 using DispatcherQueuePriority = Microsoft.UI.Dispatching.DispatcherQueuePriority;
 using LaunchActivatedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.LaunchActivatedEventArgs;
+using Windows.Storage;
 #else
 using DispatcherQueue = Windows.System.DispatcherQueue;
 using DispatcherQueuePriority = Windows.System.DispatcherQueuePriority;
@@ -120,7 +121,7 @@ namespace SamplesApp
 #if HAS_UNO
 			internal
 #endif
-		override void OnLaunched(LaunchActivatedEventArgs e)
+		override async void OnLaunched(LaunchActivatedEventArgs e)
 		{
 #if __SKIA__
 			_gotOnLaunched = true;
@@ -187,6 +188,14 @@ namespace SamplesApp
 			HandleLaunchArguments(e);
 
 			Console.WriteLine("Done loading " + sw.Elapsed);
+
+
+			await Task.Delay(1000);
+			var file = await ApplicationData.Current.LocalFolder.CreateFileAsync("output.txt");
+			_ = SampleControl.Presentation.SampleChooserViewModel.Instance.RunRuntimeTests(
+				CancellationToken.None,
+				file.Path,
+				() => System.Environment.Exit(0));
 		}
 
 #if __SKIA__ && DEBUG
