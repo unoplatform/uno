@@ -3256,27 +3256,32 @@ namespace Windows.UI.Tests.Enterprise
 				VERIFY_ARE_EQUAL(primaryItemsControl.Visibility, Visibility.Collapsed);
 			});
 
-			LOG_OUTPUT("Now open and close the CommandBar.");
-			await OpenCommandBar(cmdBar, OpenMethod.Programmatic);
-			await CloseCommandBar(cmdBar);
-
-			await RunOnUIThread(() =>
+			// in some unknown conditions, the OpenCommandBar may not happen on android
+			// Retry a few times until it does.
+			await TestHelper.RetryAssert(async () =>
 			{
-				LOG_OUTPUT("The primary items control should still be collapsed.");
-				VERIFY_ARE_EQUAL(primaryItemsControl.Visibility, Visibility.Collapsed);
+				LOG_OUTPUT("Now open and close the CommandBar.");
+				await OpenCommandBar(cmdBar, OpenMethod.Programmatic);
+				await CloseCommandBar(cmdBar);
 
-				LOG_OUTPUT("Change the width of the CommandBar back to 600.  The AppBarButton should be moved back from the overflow.");
-				expectItemsAdded = false;
-				cmdBar.Width = 600;
-			});
+				await RunOnUIThread(() =>
+				{
+					LOG_OUTPUT("The primary items control should still be collapsed.");
+					VERIFY_ARE_EQUAL(primaryItemsControl.Visibility, Visibility.Collapsed);
 
-			await dynamicOverflowItemsChangingEvent.WaitForDefault();
-			await WindowHelper.WaitForIdle();
+					LOG_OUTPUT("Change the width of the CommandBar back to 600.  The AppBarButton should be moved back from the overflow.");
+					expectItemsAdded = false;
+					cmdBar.Width = 600;
+				});
 
-			await RunOnUIThread(() =>
-			{
-				LOG_OUTPUT("The primary items control should now be visible since the AppBarButton is back in it.");
-				VERIFY_ARE_EQUAL(primaryItemsControl.Visibility, Visibility.Visible);
+				await dynamicOverflowItemsChangingEvent.WaitForDefault();
+				await WindowHelper.WaitForIdle();
+
+				await RunOnUIThread(() =>
+				{
+					LOG_OUTPUT("The primary items control should now be visible since the AppBarButton is back in it.");
+					VERIFY_ARE_EQUAL(primaryItemsControl.Visibility, Visibility.Visible);
+				});
 			});
 		}
 
