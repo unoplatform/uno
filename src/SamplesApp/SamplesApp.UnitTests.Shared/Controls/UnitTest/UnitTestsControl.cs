@@ -1047,10 +1047,15 @@ namespace Uno.UI.Samples.Tests
 		private static void ResetLastInputDeviceType()
 		{
 			// Some tests inject keyboard input, which can then mean that subsequent tests will display
-			// system focus visuals which are unexpected. This resets the last input device type to touch.
+			// system focus visuals which are unexpected. This resets the last input device type to mouse.
+			// Mouse is to stay in line with WinUI integration tests, as some rely on the fact that on
+			// initial focus of a TextBox the last input device type is not touch (this device type does not
+			// select all text on initial focus, only on second tap of the input).
+			// If this is changed ComboBoxIntegrationTests.ValidateTextSubmittedHandledProperty will probably
+			// start to fail for example.
 			if (TestServices.WindowHelper.XamlRoot?.VisualTree?.ContentRoot?.InputManager is { } inputManager)
 			{
-				inputManager.LastInputDeviceType = Xaml.Input.InputDeviceType.Touch;
+				inputManager.LastInputDeviceType = Xaml.Input.InputDeviceType.Mouse;
 			}
 		}
 #endif

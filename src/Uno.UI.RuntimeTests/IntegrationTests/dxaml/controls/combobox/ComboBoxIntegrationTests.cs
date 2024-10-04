@@ -4614,7 +4614,6 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	{
 		TextBox textBox = null;
 		await RunOnUIThread(() =>
-
 			{
 				textBox = (TextBox)(TreeHelper.GetVisualChildByName(comboBox, "EditableText"));
 				VERIFY_IS_NOT_NULL(textBox);
