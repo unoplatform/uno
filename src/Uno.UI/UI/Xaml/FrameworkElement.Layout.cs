@@ -843,7 +843,7 @@ namespace Microsoft.UI.Xaml
 				throw new InvalidOperationException($"{FormatDebugName()}: Invalid frame size {newRect}. No dimension should be NaN or negative value.");
 			}
 
-#if __SKIA__ || __ANDROID__
+#if __SKIA__ || __ANDROID__ || __IOS__ || __MACOS__
 			// clippedFrame here is the one calculated by FrameworkElement.GetClipRect
 			// which propagates to ShapeVisual.ViewBox (on Skia) or used in OnDraw through m_pLayoutClipGeometry (on Android).
 			// The UIElement.Clip public property isn't considered here on Skia because
