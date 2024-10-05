@@ -1800,11 +1800,7 @@ public partial class Given_GridLayouting
 		LayoutInformation.GetAvailableSize(SUT).Should().Be(new Size(20, 20), because: "SUT AvailableSize");
 		LayoutInformation.GetLayoutSlot(SUT).Should().Be(new Rect(0, 0, 20, 20), because: "SUT LayoutSlot");
 
-#if __IOS__
-		c1.SizePassedToArrangeOverride.Should().Be(new Size(0, 0), because: "c1.SizePassedToArrangeOverride");
-#else
 		c1.SizePassedToArrangeOverride.Should().Be(new Size(10, 10), because: "c1.SizePassedToArrangeOverride");
-#endif
 		c1.SizePassedToMeasureOverride.Should().Be(new Size(10, 10), because: "c1.SizePassedToMeasureOverride");
 		LayoutInformation.GetAvailableSize(c1).Should().Be(new Size(20, 20), because: "c1 AvailableSize");
 		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 20, 20), because: "c1 LayoutSlot");
@@ -1846,11 +1842,7 @@ public partial class Given_GridLayouting
 		LayoutInformation.GetAvailableSize(SUT).Should().Be(new Size(20, 20), because: "SUT AvailableSize");
 		LayoutInformation.GetLayoutSlot(SUT).Should().Be(new Rect(0, 0, 20, 20), because: "SUT LayoutSlot");
 
-#if __IOS__
-		c1.SizePassedToArrangeOverride.Should().Be(new Size(0, 0), because: "c1.SizePassedToArrangeOverride");
-#else
 		c1.SizePassedToArrangeOverride.Should().Be(new Size(12, 10), because: "c1.SizePassedToArrangeOverride");
-#endif
 
 		c1.SizePassedToMeasureOverride.Should().Be(new Size(12, 10), because: "c1.SizePassedToMeasureOverride");
 		LayoutInformation.GetAvailableSize(c1).Should().Be(new Size(16, 16), because: "c1 AvailableSize");
@@ -1937,11 +1929,7 @@ public partial class Given_GridLayouting
 
 		SUT.Arrange(new Rect(0, 0, 50, 50));
 
-#if __IOS__
-		c1.SizePassedToArrangeOverride.Should().Be(new Size(0, 0), because: "c1.SizePassedToArrangeOverride");
-#else
 		c1.SizePassedToArrangeOverride.Should().Be(new Size(10, 10), because: "c1.SizePassedToArrangeOverride");
-#endif
 
 		c1.SizePassedToMeasureOverride.Should().Be(new Size(10, 10), because: "c1.SizePassedToMeasureOverride");
 		LayoutInformation.GetAvailableSize(c1).Should().Be(new Size(20, 20), because: "c1 AvailableSize");
@@ -1987,11 +1975,7 @@ public partial class Given_GridLayouting
 		LayoutInformation.GetAvailableSize(SUT).Should().Be(new Size(20, 20), because: "SUT AvailableSize");
 		LayoutInformation.GetLayoutSlot(SUT).Should().Be(new Rect(0, 0, 50, 50), because: "SUT LayoutSlot");
 
-#if __IOS__
-		c1.SizePassedToArrangeOverride.Should().Be(new Size(0, 0), because: "c1.SizePassedToArrangeOverride");
-#else
 		c1.SizePassedToArrangeOverride.Should().Be(new Size(10, 10), because: "c1.SizePassedToArrangeOverride");
-#endif
 
 		c1.SizePassedToMeasureOverride.Should().Be(new Size(10, 10), because: "c1.SizePassedToMeasureOverride");
 		LayoutInformation.GetAvailableSize(c1).Should().Be(new Size(20, 20), because: "c1 AvailableSize");
@@ -2034,11 +2018,7 @@ public partial class Given_GridLayouting
 
 		SUT.Arrange(new Rect(0, 0, 50, 50));
 
-#if __IOS__
-		c1.SizePassedToArrangeOverride.Should().Be(new Size(0, 0), because: "c1.SizePassedToArrangeOverride");
-#else
 		c1.SizePassedToArrangeOverride.Should().Be(new Size(10, 10), because: "c1.SizePassedToArrangeOverride");
-#endif
 
 		c1.SizePassedToMeasureOverride.Should().Be(new Size(10, 10), because: "c1.SizePassedToMeasureOverride");
 		LayoutInformation.GetAvailableSize(c1).Should().Be(new Size(20, 20), because: "c1 AvailableSize");
@@ -2082,11 +2062,9 @@ public partial class Given_GridLayouting
 
 		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(100, 0, 100, 300), because: "c1 LayoutSlot");
 		LayoutInformation.GetAvailableSize(c1).Should().Be(new Size(double.PositiveInfinity, 300), because: "c1 AvailableSize");
-#if __IOS__
-		c1.SizePassedToArrangeOverride.Should().Be(new Size(0, 0), because: "c1.SizePassedToArrangeOverride");
-#else
+
 		c1.SizePassedToArrangeOverride.Should().Be(new Size(50, 50), because: "c1.SizePassedToArrangeOverride");
-#endif
+
 		c1.SizePassedToMeasureOverride.Should().Be(new Size(50, 50), because: "c1.SizePassedToMeasureOverride");
 		SUT.Children.Should().HaveCount(1);
 	}
@@ -2836,13 +2814,9 @@ public partial class Given_GridLayouting
 		Assert.AreEqual(new Rect(0, 0, 11, 11), LayoutInformation.GetLayoutSlot(c2));
 		Assert.AreEqual(1, c1.MeasureCallCount, "c1.MeasureCallCount");
 		Assert.AreEqual(1, c2.MeasureCallCount, "c2.MeasureCallCount"); // The measure count is 1 because the grid has a recognized pattern (Nx1). It would be 2 otherwise.
-#if __IOS__
-		Assert.AreEqual(0, c1.ArrangeCallCount, "c1.ArrangeCallCount");
-		Assert.AreEqual(0, c2.ArrangeCallCount, "c2.ArrangeCallCount");
-#else
+
 		Assert.AreEqual(1, c1.ArrangeCallCount, "c1.ArrangeCallCount");
 		Assert.AreEqual(1, c2.ArrangeCallCount, "c2.ArrangeCallCount");
-#endif
 
 		Assert.AreEqual(2, SUT.Children.Count);
 	}
