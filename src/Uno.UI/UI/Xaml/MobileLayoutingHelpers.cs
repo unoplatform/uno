@@ -188,7 +188,10 @@ internal static partial class MobileLayoutingHelpers
 				}
 			}
 #elif __IOS__ || __MACOS__
-			view.Frame = physicalRect;
+			using (view.SettingFrame())
+			{
+				view.Frame = physicalRect;
+			}
 
 			foreach (var child in view.Subviews)
 			{
