@@ -155,7 +155,7 @@ namespace Microsoft.UI.Xaml
 			{
 				using (this.SettingFrame())
 				{
-					this.Frame = ViewHelper.LogicalToPhysicalPixels(finalRect);
+					this.Frame = finalRect;
 				}
 			}
 			finally

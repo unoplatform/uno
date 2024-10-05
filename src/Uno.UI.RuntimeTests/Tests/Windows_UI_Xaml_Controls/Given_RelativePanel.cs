@@ -150,8 +150,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(17.0, button.Frame.Width / DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel);
-			Assert.AreEqual(17.0, button.Frame.Height / DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel);
+			// UIView.Frame is in logical pixels. Scaling shouldn't affect it.
+			Assert.AreEqual(17.0, button.Frame.Width);
+			Assert.AreEqual(17.0, button.Frame.Height);
 #endif
 		}
 	}
