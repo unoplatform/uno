@@ -153,7 +153,10 @@ namespace Microsoft.UI.Xaml
 			_isSettingFrameByArrangeVisual = true;
 			try
 			{
-				this.Frame = ViewHelper.LogicalToPhysicalPixels(finalRect);
+				using (this.SettingFrame())
+				{
+					this.Frame = ViewHelper.LogicalToPhysicalPixels(finalRect);
+				}
 			}
 			finally
 			{
