@@ -85,6 +85,11 @@ namespace Private.Infrastructure
 			Assert.IsNotNull(value);
 		}
 
+		public static void VERIFY_IS_NOT_NULL(object value, string msg)
+		{
+			Assert.IsNotNull(value, msg);
+		}
+
 		public static void VERIFY_IS_NULL(object value)
 		{
 			Assert.IsNull(value);

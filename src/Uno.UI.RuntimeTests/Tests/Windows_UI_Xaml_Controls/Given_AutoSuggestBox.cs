@@ -172,7 +172,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var textBox = (TextBox)SUT.GetTemplateChild("TextBox");
 			var popup = (Popup)SUT.GetTemplateChild("SuggestionsPopup");
 			textBox.Focus(FocusState.Programmatic);
-			KeyboardHelper.PressKeySequence("$d$_a#$u$_a");
+			await KeyboardHelper.PressKeySequence("$d$_a#$u$_a");
 
 			await WindowHelper.WaitForIdle();
 			Assert.IsTrue(eventRaised);
@@ -195,7 +195,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var popup = (Popup)SUT.GetTemplateChild("SuggestionsPopup");
 
 			textBox.Focus(FocusState.Programmatic);
-			KeyboardHelper.InputText("a");
+			await KeyboardHelper.InputText("a");
 			await WindowHelper.WaitForIdle();
 			Assert.IsTrue(popup.IsOpen);
 
@@ -203,7 +203,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, sv.VerticalOffset);
 			for (int i = 0; i < 10; i++)
 			{
-				KeyboardHelper.Down();
+				await KeyboardHelper.Down();
 				await WindowHelper.WaitForIdle();
 			}
 			Assert.AreNotEqual(0, sv.VerticalOffset);
@@ -227,7 +227,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			textBox.Focus(FocusState.Programmatic);
 #if __SKIA__
-			KeyboardHelper.InputText("a");
+			await KeyboardHelper.InputText("a");
 #else
 			textBox.ProcessTextInput("a");
 #endif
@@ -268,7 +268,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var textBox = (TextBox)SUT.GetTemplateChild("TextBox");
 			var popup = (Popup)SUT.GetTemplateChild("SuggestionsPopup");
 			textBox.Focus(FocusState.Programmatic);
-			KeyboardHelper.PressKeySequence("$d$_a#$u$_a");
+			await KeyboardHelper.PressKeySequence("$d$_a#$u$_a");
 
 			var dataPackage = new DataPackage();
 			dataPackage.SetText("a");
@@ -310,16 +310,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var textBox = (TextBox)SUT.GetTemplateChild("TextBox");
 			var popup = (Popup)SUT.GetTemplateChild("SuggestionsPopup");
 			textBox.Focus(FocusState.Programmatic);
-			KeyboardHelper.PressKeySequence("$d$_a#$u$_a");
+			await KeyboardHelper.PressKeySequence("$d$_a#$u$_a");
 
 			var dataPackage = new DataPackage();
 			dataPackage.SetText("a");
 			Clipboard.SetContent(dataPackage);
 
-			KeyboardHelper.PressKeySequence("$d$_a#$u$_a");
+			await KeyboardHelper.PressKeySequence("$d$_a#$u$_a");
 			await WindowHelper.WaitForIdle();
 
-			KeyboardHelper.Escape(); // close the popup
+			await KeyboardHelper.Escape(); // close the popup
 			await WindowHelper.WaitForIdle();
 			Assert.IsFalse(popup.IsOpen);
 
@@ -333,7 +333,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			eventRaised = default;
 			reason = default;
 
-			KeyboardHelper.Escape(); // close the popup
+			await KeyboardHelper.Escape(); // close the popup
 			await WindowHelper.WaitForIdle();
 			Assert.IsFalse(popup.IsOpen);
 
@@ -422,7 +422,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			expectations.Add(UserInput);
 			SUT.Focus(FocusState.Programmatic);
 #if __SKIA__
-			KeyboardHelper.InputText("manual");
+			await KeyboardHelper.InputText("manual");
 #else
 			textBox.ProcessTextInput("manual");
 #endif
@@ -435,7 +435,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			expectations.Add(UserInput);
 			SUT.Focus(FocusState.Programmatic);
 #if __SKIA__ // We want to test the behaviour of "typing individual characters in sequence", not setting the Text in one shot. The behaviour is currently only accurate on skia.
-			KeyboardHelper.InputText("manual");
+			await KeyboardHelper.InputText("manual");
 #else
 			textBox.ProcessTextInput("manual");
 #endif
@@ -651,35 +651,35 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.AreEqual(-1, lv.SelectedIndex);
 				Assert.IsTrue(popup.IsOpen);
 
-				KeyboardHelper.Down();
+				await KeyboardHelper.Down();
 				await WindowHelper.WaitForIdle();
 				Assert.AreEqual(0, lv.SelectedIndex);
 				Assert.IsTrue(popup.IsOpen);
 				Assert.AreEqual(keyDownHandled, 1);
 				Assert.AreEqual(keyDownNotHandled, 0);
 
-				KeyboardHelper.Down();
+				await KeyboardHelper.Down();
 				await WindowHelper.WaitForIdle();
 				Assert.AreEqual(1, lv.SelectedIndex);
 				Assert.IsTrue(popup.IsOpen);
 				Assert.AreEqual(keyDownHandled, 2);
 				Assert.AreEqual(keyDownNotHandled, 0);
 
-				KeyboardHelper.Right();
+				await KeyboardHelper.Right();
 				await WindowHelper.WaitForIdle();
 				Assert.AreEqual(1, lv.SelectedIndex);
 				Assert.IsTrue(popup.IsOpen);
 				Assert.AreEqual(keyDownHandled, 2);
 				Assert.AreEqual(keyDownNotHandled, 1);
 
-				KeyboardHelper.Left();
+				await KeyboardHelper.Left();
 				await WindowHelper.WaitForIdle();
 				Assert.AreEqual(1, lv.SelectedIndex);
 				Assert.IsTrue(popup.IsOpen);
 				Assert.AreEqual(keyDownHandled, 3); // actually handled in textbox
 				Assert.AreEqual(keyDownNotHandled, 1);
 
-				KeyboardHelper.Up();
+				await KeyboardHelper.Up();
 				await WindowHelper.WaitForIdle();
 				Assert.AreEqual(0, lv.SelectedIndex);
 				Assert.IsTrue(popup.IsOpen);
@@ -767,16 +767,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.AreEqual(-1, lv.SelectedIndex);
 				Assert.IsTrue(popup.IsOpen);
 
-				KeyboardHelper.Down();
+				await KeyboardHelper.Down();
 				await WindowHelper.WaitForIdle();
-				KeyboardHelper.Down();
+				await KeyboardHelper.Down();
 				await WindowHelper.WaitForIdle();
 				Assert.AreEqual(1, lv.SelectedIndex);
 				Assert.IsTrue(popup.IsOpen);
 				Assert.AreEqual(keyDownHandled, 2);
 				Assert.AreEqual(keyDownNotHandled, 0);
 
-				KeyboardHelper.Enter();
+				await KeyboardHelper.Enter();
 				Assert.AreEqual(keyDownHandled, 3);
 				Assert.AreEqual(keyDownNotHandled, 0);
 			}
@@ -863,9 +863,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.AreEqual(-1, lv.SelectedIndex);
 				Assert.IsTrue(popup.IsOpen);
 
-				KeyboardHelper.Down();
+				await KeyboardHelper.Down();
 				await WindowHelper.WaitForIdle();
-				KeyboardHelper.Down();
+				await KeyboardHelper.Down();
 				await WindowHelper.WaitForIdle();
 				Assert.AreEqual(1, lv.SelectedIndex);
 				Assert.IsTrue(popup.IsOpen);
@@ -874,11 +874,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				if (escape)
 				{
-					KeyboardHelper.Escape();
+					await KeyboardHelper.Escape();
 				}
 				else
 				{
-					KeyboardHelper.Enter();
+					await KeyboardHelper.Enter();
 				}
 				Assert.AreEqual(keyDownHandled, 3);
 				Assert.AreEqual(keyDownNotHandled, 0);
@@ -948,15 +948,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.AreEqual(-1, lv.SelectedIndex);
 				Assert.IsTrue(popup.IsOpen);
 
-				KeyboardHelper.Down();
+				await KeyboardHelper.Down();
 				await WindowHelper.WaitForIdle();
-				KeyboardHelper.Down();
+				await KeyboardHelper.Down();
 				await WindowHelper.WaitForIdle();
 				Assert.AreEqual(1, lv.SelectedIndex);
 				Assert.IsTrue(popup.IsOpen);
 				Assert.AreEqual(tb.Text.Length, tb.SelectionStart);
 
-				KeyboardHelper.Up();
+				await KeyboardHelper.Up();
 				await WindowHelper.WaitForIdle();
 				Assert.AreEqual(0, lv.SelectedIndex);
 				Assert.IsTrue(popup.IsOpen);

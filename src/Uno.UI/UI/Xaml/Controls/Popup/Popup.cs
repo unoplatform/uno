@@ -218,6 +218,15 @@ public partial class Popup
 			typeof(Popup),
 			new FrameworkPropertyMetadata(PopupPlacementMode.Auto, FrameworkPropertyMetadataOptions.AffectsArrange));
 
+	internal DependencyObject OverlayInputPassThroughElement
+	{
+		get => (DependencyObject)GetValue(OverlayInputPassThroughElementProperty);
+		set => SetValue(OverlayInputPassThroughElementProperty, value);
+	}
+
+	internal static DependencyProperty OverlayInputPassThroughElementProperty { get; } =
+		DependencyProperty.Register(nameof(OverlayInputPassThroughElement), typeof(DependencyObject), typeof(Popup), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
+
 	/// <summary>
 	/// Gets the actual placement of the popup, in relation to its placement target.
 	/// </summary>
@@ -342,7 +351,4 @@ public partial class Popup
 
 	internal static DependencyProperty LightDismissOverlayBackgroundProperty { get; } =
 		DependencyProperty.Register(nameof(LightDismissOverlayBackground), typeof(Brush), typeof(Popup), new FrameworkPropertyMetadata(defaultValue: null, propertyChangedCallback: (o, e) => ((Popup)o).ApplyLightDismissOverlayMode()));
-
-	// On WinUi, a popup is not IsTabStop but is somehow focusable. This is a workaround to match that behaviour.
-	internal override bool IsFocusableForFocusEngagement() => true;
 }

@@ -7,6 +7,13 @@ using Windows.System;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
+using Windows.Foundation.Metadata;
+
+#if HAS_UNO
+using DirectUI;
+using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml.Input;
+#endif
 
 namespace Private.Infrastructure
 {
@@ -122,8 +129,9 @@ namespace Private.Infrastructure
 				{"GamePadMenu",                 VirtualKey.GamepadMenu},
 			};
 
+			private static bool TargetSupportsPreviewKeyEvents() => ApiInformation.IsPropertyPresent("Microsoft.UI.Xaml.UIElement", "PreviewKeyDownEvent");
 
-			public static async void PressKeySequence(string keys, UIElement element = null)
+			public static async Task PressKeySequence(string keys, UIElement element = null)
 			{
 #if !WINAPPSDK
 				if (string.IsNullOrEmpty(keys))
@@ -136,6 +144,8 @@ namespace Private.Infrastructure
 				{
 					return;
 				}
+
+				VirtualKeyModifiers activeModifiers = VirtualKeyModifiers.None;
 
 				// In RS3, alt+shift is a hotkey and XAML will not be notified of the
 				// 'shift' key. We have the same behavior for the opposite sequence: if
@@ -164,7 +174,50 @@ namespace Private.Infrastructure
 						var key = keyInstruction.Substring(4, keyInstruction.Length - 4);
 						if (m_vKeyMapping.TryGetValue(key, out var vKey))
 						{
-							await RaiseOnElementDispatcherAsync(element, keyDownCodePos == 0 ? UIElement.KeyDownEvent : UIElement.KeyUpEvent, new KeyRoutedEventArgs(element, vKey, VirtualKeyModifiers.None));
+							var keyArgs = new KeyRoutedEventArgs(element, vKey, activeModifiers);
+
+							var mainEvent = keyDownCodePos == 0 ? UIElement.KeyDownEvent : UIElement.KeyUpEvent;
+							if (TargetSupportsPreviewKeyEvents())
+							{
+								var previewEvent = keyDownCodePos == 0 ? UIElement.PreviewKeyDownEvent : UIElement.PreviewKeyUpEvent;
+								await RaiseOnElementDispatcherAsync(element, previewEvent, keyArgs, true);
+							}
+							if (!keyArgs.Handled)
+							{
+								await RaiseOnElementDispatcherAsync(element, mainEvent, keyArgs);
+							}
+						}
+
+						// If modifiers were changed, update modifiers variable
+						if (keyDownCodePos == 0)
+						{
+							if (key == "shift")
+							{
+								activeModifiers |= VirtualKeyModifiers.Shift;
+							}
+							else if (key == "ctrl")
+							{
+								activeModifiers |= VirtualKeyModifiers.Control;
+							}
+							else if (key == "alt")
+							{
+								activeModifiers |= VirtualKeyModifiers.Menu;
+							}
+						}
+						else if (keyUpCodePos == 0)
+						{
+							if (key == "shift")
+							{
+								activeModifiers &= ~VirtualKeyModifiers.Shift;
+							}
+							else if (key == "ctrl")
+							{
+								activeModifiers &= ~VirtualKeyModifiers.Control;
+							}
+							else if (key == "alt")
+							{
+								activeModifiers &= ~VirtualKeyModifiers.Menu;
+							}
 						}
 					}
 					else
@@ -180,22 +233,54 @@ namespace Private.Infrastructure
 							{
 								if (m_vKeyMapping.TryGetValue("shift", out var vShiftKey))
 								{
-									await RaiseOnElementDispatcherAsync(element, UIElement.KeyDownEvent, new KeyRoutedEventArgs(element, vShiftKey, VirtualKeyModifiers.None));
+									var keyDownArgs = new KeyRoutedEventArgs(element, vShiftKey, VirtualKeyModifiers.None);
+									if (TargetSupportsPreviewKeyEvents())
+									{
+										await RaiseOnElementDispatcherAsync(element, UIElement.PreviewKeyDownEvent, keyDownArgs, true);
+									}
+									if (!keyDownArgs.Handled)
+									{
+										await RaiseOnElementDispatcherAsync(element, UIElement.KeyDownEvent, keyDownArgs);
+									}
 								}
 							}
 
 							if (m_vKeyMapping.TryGetValue(key, out var vKey))
 							{
 								var modifiers = shouldShift ? VirtualKeyModifiers.Shift : VirtualKeyModifiers.None;
-								await RaiseOnElementDispatcherAsync(element, UIElement.KeyDownEvent, new KeyRoutedEventArgs(element, vKey, modifiers));
-								await RaiseOnElementDispatcherAsync(element, UIElement.KeyUpEvent, new KeyRoutedEventArgs(element, vKey, modifiers));
+								var keyDownArgs = new KeyRoutedEventArgs(element, vKey, modifiers);
+								if (TargetSupportsPreviewKeyEvents())
+								{
+									await RaiseOnElementDispatcherAsync(element, UIElement.PreviewKeyDownEvent, keyDownArgs, true);
+								}
+								if (!keyDownArgs.Handled)
+								{
+									await RaiseOnElementDispatcherAsync(element, UIElement.KeyDownEvent, keyDownArgs);
+								}
+								var keyUpArgs = new KeyRoutedEventArgs(element, vKey, modifiers);
+								if (TargetSupportsPreviewKeyEvents())
+								{
+									await RaiseOnElementDispatcherAsync(element, UIElement.PreviewKeyUpEvent, keyUpArgs, true);
+								}
+								if (!keyUpArgs.Handled)
+								{
+									await RaiseOnElementDispatcherAsync(element, UIElement.KeyUpEvent, keyUpArgs);
+								}
 							}
 
 							if (shouldShift)
 							{
 								if (m_vKeyMapping.TryGetValue("shift", out var vShiftKey))
 								{
-									await RaiseOnElementDispatcherAsync(element, UIElement.KeyUpEvent, new KeyRoutedEventArgs(element, vShiftKey, VirtualKeyModifiers.None));
+									var keyUpArgs = new KeyRoutedEventArgs(element, vShiftKey, VirtualKeyModifiers.None);
+									if (TargetSupportsPreviewKeyEvents())
+									{
+										await RaiseOnElementDispatcherAsync(element, UIElement.PreviewKeyUpEvent, keyUpArgs, true);
+									}
+									if (!keyUpArgs.Handled)
+									{
+										await RaiseOnElementDispatcherAsync(element, UIElement.KeyUpEvent, keyUpArgs);
+									}
 								}
 							}
 						}
@@ -205,123 +290,157 @@ namespace Private.Infrastructure
 					posEnd = keys.IndexOf("#", posStart);
 				}
 
-				async Task RaiseOnElementDispatcherAsync(UIElement element, RoutedEvent routedEvent, RoutedEventArgs args)
+				async Task RaiseOnElementDispatcherAsync(UIElement element, RoutedEvent routedEvent, KeyRoutedEventArgs args, bool isTunneling = false)
 				{
 					bool raiseSynchronously = element.Dispatcher.HasThreadAccess;
 
-					if (raiseSynchronously)
+					static void UpdateLastInputDeviceType(UIElement element, VirtualKey originalKey)
 					{
+						// Workaround for not simulating the last input device type correctly yet.
+						var inputManager = VisualTree.GetContentRootForElement(element).InputManager;
+						if (XboxUtility.IsGamepadNavigationInput(originalKey))
+						{
+							inputManager.LastInputDeviceType = InputDeviceType.GamepadOrRemote;
+						}
+						else
+						{
+							inputManager.LastInputDeviceType = InputDeviceType.Keyboard;
+						}
+					}
+
+					static void RaiseTunnelingEvent(UIElement element, RoutedEvent routedEvent, KeyRoutedEventArgs args)
+					{
+						UpdateLastInputDeviceType(element, args.OriginalKey);
+						element.SafeRaiseTunnelingEvent(routedEvent, args);
+					}
+
+					static void RaiseBubblingEvent(UIElement element, RoutedEvent routedEvent, KeyRoutedEventArgs args)
+					{
+						UpdateLastInputDeviceType(element, args.OriginalKey);
 						element.SafeRaiseEvent(routedEvent, args);
+					}
+
+					if (isTunneling)
+					{
+						if (raiseSynchronously)
+						{
+							RaiseTunnelingEvent(element, routedEvent, args);
+						}
+						else
+						{
+							await element.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => RaiseTunnelingEvent(element, routedEvent, args));
+						}
 					}
 					else
 					{
-						await element.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => element.SafeRaiseEvent(routedEvent, args));
+						if (raiseSynchronously)
+						{
+							RaiseBubblingEvent(element, routedEvent, args);
+						}
+						else
+						{
+							await element.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => RaiseBubblingEvent(element, routedEvent, args));
+						}
 					}
 				}
 #endif
 			}
 
-			public static void Down(UIElement element = null)
+			public static async Task Down(UIElement element = null)
 			{
-				PressKeySequence("$d$_down#$u$_down", element);
+				await PressKeySequence("$d$_down#$u$_down", element);
 			}
 
-			public static void Up(UIElement element = null)
+			public static async Task Up(UIElement element = null)
 			{
-				PressKeySequence("$d$_up#$u$_up", element);
-
+				await PressKeySequence("$d$_up#$u$_up", element);
 			}
 
-			public static void Left(UIElement element = null)
+			public static async Task Left(UIElement element = null)
 			{
-				PressKeySequence("$d$_left#$u$_left", element);
-
+				await PressKeySequence("$d$_left#$u$_left", element);
 			}
 
-			public static void Right(UIElement element = null)
+			public static async Task Right(UIElement element = null)
 			{
-				PressKeySequence("$d$_right#$u$_right", element);
-
+				await PressKeySequence("$d$_right#$u$_right", element);
 			}
 
-			internal static void ShiftTab(UIElement element = null)
+			internal static async Task ShiftTab(UIElement element = null)
 			{
-				PressKeySequence("$d$_shift#$d$_tab#$u$_tab#$u$_shift", element);
+				await PressKeySequence("$d$_shift#$d$_tab#$u$_tab#$u$_shift", element);
 			}
 
-			public static void Tab(UIElement element = null)
+			public static async Task Tab(UIElement element = null)
 			{
-				PressKeySequence("$d$_tab#$u$_tab", element);
-
+				await PressKeySequence("$d$_tab#$u$_tab", element);
 			}
 
-			public static void PageDown(UIElement element = null)
+			public static async Task PageDown(UIElement element = null)
 			{
-				PressKeySequence("$d$_pagedown#$u$_pagedown", element);
-
+				await PressKeySequence("$d$_pagedown#$u$_pagedown", element);
 			}
 
-			public static void Escape(UIElement element = null)
+			public static async Task Escape(UIElement element = null)
 			{
-				PressKeySequence("$d$_esc#$u$_esc", element);
-
+				await PressKeySequence("$d$_esc#$u$_esc", element);
 			}
 
-			public static void Enter(UIElement element = null)
+			public static async Task Enter(UIElement element = null)
 			{
-				PressKeySequence("$d$_enter#$u$_enter", element);
+				await PressKeySequence("$d$_enter#$u$_enter", element);
 			}
 
-			public static void Space(UIElement element = null)
+			public static async Task Space(UIElement element = null)
 			{
-				PressKeySequence("$d$_space#$u$_space", element);
+				await PressKeySequence("$d$_space#$u$_space", element);
 
 			}
-			public static void Backspace(UIElement element = null)
+			public static async Task Backspace(UIElement element = null)
 			{
-				PressKeySequence("$d$_backspace#$u$_backspace", element);
+				await PressKeySequence("$d$_backspace#$u$_backspace", element);
 			}
 
-			public static void Delete(UIElement element = null)
+			public static async Task Delete(UIElement element = null)
 			{
-				PressKeySequence("$d$_delete#$u$_delete", element);
+				await PressKeySequence("$d$_delete#$u$_delete", element);
 			}
 
-			public static void CtrlTab(UIElement element = null)
+			public static async Task CtrlTab(UIElement element = null)
 			{
-				PressKeySequence("$d$_ctrlscan#$d$_tab#$u$_tab#$u$_ctrlscan", element);
+				await PressKeySequence("$d$_ctrlscan#$d$_tab#$u$_tab#$u$_ctrlscan", element);
 			}
 
-			public static void GamepadA(UIElement element = null)
+			public static async Task GamepadA(UIElement element = null)
 			{
-				PressKeySequence("$d$_GamepadA#$u$_GamepadA", element);
+				await PressKeySequence("$d$_GamepadA#$u$_GamepadA", element);
 			}
 
-			public static void GamepadB(UIElement element = null)
+			public static async Task GamepadB(UIElement element = null)
 			{
-				PressKeySequence("$d$_GamepadB#$u$_GamepadB", element);
+				await PressKeySequence("$d$_GamepadB#$u$_GamepadB", element);
 			}
 
-			public static void GamepadDpadRight(UIElement element = null)
+			public static async Task GamepadDpadRight(UIElement element = null)
 			{
-				PressKeySequence("$d$_GamepadDpadRight#$u$_GamepadDpadRight", element);
+				await PressKeySequence("$d$_GamepadDpadRight#$u$_GamepadDpadRight", element);
 			}
 
-			public static void GamepadDpadLeft(UIElement element = null)
+			public static async Task GamepadDpadLeft(UIElement element = null)
 			{
-				PressKeySequence("$d$_GamepadDpadLeft#$u$_GamepadDpadLeft", element);
+				await PressKeySequence("$d$_GamepadDpadLeft#$u$_GamepadDpadLeft", element);
 			}
-			public static void GamepadDpadUp(UIElement element = null)
+			public static async Task GamepadDpadUp(UIElement element = null)
 			{
-				PressKeySequence("$d$_GamepadDpadUp#$u$_GamepadDpadUp", element);
+				await PressKeySequence("$d$_GamepadDpadUp#$u$_GamepadDpadUp", element);
 			}
-			public static void GamepadDpadDown(UIElement element = null)
+			public static async Task GamepadDpadDown(UIElement element = null)
 			{
-				PressKeySequence("$d$_GamepadDpadDown#$u$_GamepadDpadDown", element);
+				await PressKeySequence("$d$_GamepadDpadDown#$u$_GamepadDpadDown", element);
 			}
 
 			/// <param name="text">Assuming lowercase text. To add capitalization, use <see cref="PressKeySequence"/></param>
-			public static void InputText(string text, UIElement element = null)
+			public static async Task InputText(string text, UIElement element = null)
 			{
 				var sequence = text
 					.ToLower()
@@ -329,7 +448,7 @@ namespace Private.Infrastructure
 					.Aggregate("", (a, b) => a + b)
 					[..^1]; // drop last #
 
-				PressKeySequence(sequence, element);
+				await PressKeySequence(sequence, element);
 			}
 		}
 	}

@@ -688,19 +688,19 @@ namespace Windows.UI.Tests.Enterprise
 			await WindowHelper.WaitForIdle();
 
 			LOG_OUTPUT("Tabbing into the BottomAppBar's SecondaryCommands.");
-			KeyboardHelper.Tab();
+			await KeyboardHelper.Tab();
 			await WindowHelper.WaitForIdle();
 
 			LOG_OUTPUT("Opening the BottomAppBar's SecondaryCommands.");
-			KeyboardHelper.Enter();
+			await KeyboardHelper.Enter();
 			await WindowHelper.WaitForIdle();
 
 			LOG_OUTPUT("Tabbing into the tall AppBarButton.");
-			KeyboardHelper.Tab();
+			await KeyboardHelper.Tab();
 			await WindowHelper.WaitForIdle();
 
 			LOG_OUTPUT("Scrolling down within the AppBarButton.");
-			KeyboardHelper.PageDown();
+			await KeyboardHelper.PageDown();
 			await WindowHelper.WaitForIdle();
 
 			LOG_OUTPUT("Moving mouse over the AppBarButton.");
@@ -1151,28 +1151,28 @@ namespace Windows.UI.Tests.Enterprise
 			// Press left arrow key (number of primary commands + 1) times
 			for (int i = 0; i <= primaryCount; i++)
 			{
-				KeyboardHelper.PressKeySequence(leftKeySequence, cmdBar);
+				await KeyboardHelper.PressKeySequence(leftKeySequence, cmdBar);
 				await WindowHelper.WaitForIdle();
 			}
 
 			// Press right arrow key (number of primary commands + 1) times
 			for (int i = 0; i <= primaryCount; i++)
 			{
-				KeyboardHelper.PressKeySequence(rightKeySequence, cmdBar);
+				await KeyboardHelper.PressKeySequence(rightKeySequence, cmdBar);
 				await WindowHelper.WaitForIdle();
 			}
 
 			// Press down arrow key (number of secondary commands - 1) times
 			for (int i = 0; i < secondaryCount; i++)
 			{
-				KeyboardHelper.Down(i == 0 ? cmdBar : secondaryItemsPresenter);
+				await KeyboardHelper.Down(i == 0 ? cmdBar : secondaryItemsPresenter);
 				await WindowHelper.WaitForIdle();
 			}
 
 			// Press up arrow key (number of secondary commands - 1) times
 			for (int i = 0; i < secondaryCount; i++)
 			{
-				KeyboardHelper.Up(i == 0 ? cmdBar : secondaryItemsPresenter);
+				await KeyboardHelper.Up(i == 0 ? cmdBar : secondaryItemsPresenter);
 				await WindowHelper.WaitForIdle();
 			}
 
@@ -1358,7 +1358,7 @@ namespace Windows.UI.Tests.Enterprise
 
 			// Press down arrow key
 			await RunOnUIThread(() => secondaryItemsPresenter = GetSecondaryItemsPresenter(cmdBar));
-			KeyboardHelper.Down(secondaryItemsPresenter);
+			await KeyboardHelper.Down(secondaryItemsPresenter);
 			await WindowHelper.WaitForIdle();
 
 			await TestHelper.RetryAssert(async () =>
@@ -1917,14 +1917,14 @@ namespace Windows.UI.Tests.Enterprise
 			// Tab several times to cycle focus through the CommandBar.
 			for (int i = 0; i < numTabs; ++i)
 			{
-				KeyboardHelper.Tab(i == 1 ? secondaryItemsPresenter : cmdBar);
+				await KeyboardHelper.Tab(i == 1 ? secondaryItemsPresenter : cmdBar);
 				await WindowHelper.WaitForIdle();
 			}
 
 			// Shift-Tab several times to cycle focus through the CommandBar in reverse.
 			for (int i = 0; i < numTabs; ++i)
 			{
-				KeyboardHelper.ShiftTab(i == (numTabs - 1) ? secondaryItemsPresenter : cmdBar);
+				await KeyboardHelper.ShiftTab(i == (numTabs - 1) ? secondaryItemsPresenter : cmdBar);
 				await WindowHelper.WaitForIdle();
 			}
 
@@ -1968,7 +1968,7 @@ namespace Windows.UI.Tests.Enterprise
 			await WindowHelper.WaitForIdle();
 
 			// Tab once to move into the overflow menu.
-			KeyboardHelper.Tab(WindowHelper.WindowContent);
+			await KeyboardHelper.Tab(WindowHelper.WindowContent);
 			await WindowHelper.WaitForIdle();
 
 			await RunOnUIThread(() =>
@@ -1987,7 +1987,7 @@ namespace Windows.UI.Tests.Enterprise
 			await WindowHelper.WaitForIdle();
 
 			// Tab once to move into the overflow menu.
-			KeyboardHelper.Tab(WindowHelper.WindowContent);
+			await KeyboardHelper.Tab(WindowHelper.WindowContent);
 			await WindowHelper.WaitForIdle();
 
 			await RunOnUIThread(() =>
@@ -2136,7 +2136,7 @@ namespace Windows.UI.Tests.Enterprise
 				});
 			});
 			await WindowHelper.WaitForIdle();
-			KeyboardHelper.Enter(rootPage);
+			await KeyboardHelper.Enter(rootPage);
 			await openedEvent.WaitForDefault();
 
 			var gotFocusRegistration = CreateSafeEventRegistration<UIElement, RoutedEventHandler>("GotFocus");
@@ -2154,12 +2154,12 @@ namespace Windows.UI.Tests.Enterprise
 					gotFocusEvent.Set();
 				});
 			});
-			KeyboardHelper.Up(secondaryItemsPresenter);  //expandButton->bottomOverflowAppBarBtn1
-			KeyboardHelper.Up(secondaryItemsPresenter);  //bottomOverflowAppBarBtn1->bottomOverflowAppBarBtn0
+			await KeyboardHelper.Up(secondaryItemsPresenter);  //expandButton->bottomOverflowAppBarBtn1
+			await KeyboardHelper.Up(secondaryItemsPresenter);  //bottomOverflowAppBarBtn1->bottomOverflowAppBarBtn0
 			await WindowHelper.WaitForIdle();
 			await gotFocusEvent.WaitForDefault();
 
-			KeyboardHelper.Escape(secondaryItemsPresenter);
+			await KeyboardHelper.Escape(secondaryItemsPresenter);
 			await closedEvent.WaitForDefault();
 			await RunOnUIThread(() => VERIFY_IS_TRUE(expandButton.FocusState == FocusState.Keyboard));
 		}
@@ -3516,7 +3516,7 @@ namespace Windows.UI.Tests.Enterprise
 			Func<InputDevice, Task> runScenario = async (inputDevice) =>
 			{
 				LOG_OUTPUT("Navigate Right to move focus onto the primary command button.");
-				CommonInputHelper.Right(inputDevice, cmdBar);
+				await CommonInputHelper.Right(inputDevice, cmdBar);
 				await WindowHelper.WaitForIdle();
 
 				await RunOnUIThread(() =>
@@ -3526,7 +3526,7 @@ namespace Windows.UI.Tests.Enterprise
 				});
 
 				LOG_OUTPUT("Navigate Right to move focus onto the More button.");
-				CommonInputHelper.Right(inputDevice, cmdBar);
+				await CommonInputHelper.Right(inputDevice, cmdBar);
 				await WindowHelper.WaitForIdle();
 
 				await RunOnUIThread(async () =>
@@ -3537,7 +3537,7 @@ namespace Windows.UI.Tests.Enterprise
 				});
 
 				LOG_OUTPUT("Navigate Left to move focus onto the primary command button.");
-				CommonInputHelper.Left(inputDevice, cmdBar);
+				await CommonInputHelper.Left(inputDevice, cmdBar);
 				await WindowHelper.WaitForIdle();
 
 				await RunOnUIThread(() =>
@@ -3547,7 +3547,7 @@ namespace Windows.UI.Tests.Enterprise
 				});
 
 				LOG_OUTPUT("Navigate Left to move focus onto custom content button.");
-				CommonInputHelper.Left(inputDevice, cmdBar);
+				await CommonInputHelper.Left(inputDevice, cmdBar);
 				await WindowHelper.WaitForIdle();
 
 				await RunOnUIThread(() =>
@@ -3602,7 +3602,7 @@ namespace Windows.UI.Tests.Enterprise
 			await WindowHelper.WaitForIdle();
 
 			LOG_OUTPUT("Press the Up arrow key to open the CommandBar and focus the last overflow item.");
-			CommonInputHelper.Up(InputDevice.Keyboard, cmdBar);
+			await CommonInputHelper.Up(InputDevice.Keyboard, cmdBar);
 			await openedEvent.WaitForDefault();
 
 			await RunOnUIThread(() =>
@@ -3613,7 +3613,7 @@ namespace Windows.UI.Tests.Enterprise
 			await CloseCommandBar(cmdBar);
 
 			LOG_OUTPUT("Press the Down arrow key to open the CommandBar and focus the first overflow item.");
-			CommonInputHelper.Down(InputDevice.Keyboard, cmdBar);
+			await CommonInputHelper.Down(InputDevice.Keyboard, cmdBar);
 			await openedEvent.WaitForDefault();
 
 			await RunOnUIThread(() =>
@@ -3627,12 +3627,12 @@ namespace Windows.UI.Tests.Enterprise
 			openedEvent.Reset();
 
 			LOG_OUTPUT("Press the Gamepad Up button and validate that the CommandBar doesn't open the overflow.");
-			CommonInputHelper.Up(InputDevice.Gamepad, cmdBar);
+			await CommonInputHelper.Up(InputDevice.Gamepad, cmdBar);
 			await WindowHelper.WaitForIdle();
 			VERIFY_IS_FALSE(openedEvent.HasFired());
 
 			LOG_OUTPUT("Press the Gamepad Down button and validate that the CommandBar doesn't open the overflow.");
-			CommonInputHelper.Down(InputDevice.Gamepad, cmdBar);
+			await CommonInputHelper.Down(InputDevice.Gamepad, cmdBar);
 			await WindowHelper.WaitForIdle();
 			VERIFY_IS_FALSE(openedEvent.HasFired());
 		}
@@ -5211,13 +5211,13 @@ namespace Windows.UI.Tests.Enterprise
 			{
 				await RunOnUIThread(() => moreButton.Focus(FocusState.Keyboard));
 				await WindowHelper.WaitForIdle();
-				KeyboardHelper.PressKeySequence(" ", moreButton);
+				await KeyboardHelper.PressKeySequence(" ", moreButton);
 			}
 			else if (openMethod == OpenMethod.Gamepad)
 			{
 				await RunOnUIThread(() => moreButton.Focus(FocusState.Keyboard));
 				await WindowHelper.WaitForIdle();
-				CommonInputHelper.Accept(InputDevice.Gamepad, moreButton);
+				await CommonInputHelper.Accept(InputDevice.Gamepad, moreButton);
 			}
 			else if (openMethod == OpenMethod.Programmatic)
 			{

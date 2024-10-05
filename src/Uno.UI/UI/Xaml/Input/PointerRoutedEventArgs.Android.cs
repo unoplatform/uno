@@ -8,6 +8,9 @@ using Windows.System;
 using Microsoft.UI.Xaml.Extensions;
 using Android.OS;
 using Uno.Extensions;
+using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml.Input;
+
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -60,13 +63,25 @@ namespace Microsoft.UI.Xaml.Input
 			var nativePointerButtons = nativeEvent.ButtonState;
 			var nativePointerType = nativeEvent.GetToolType(_pointerIndex);
 			var pointerType = nativePointerType.ToPointerDeviceType();
-			var isInContact = IsInContact(nativeEvent, (PointerDeviceType)pointerType, nativePointerAction, nativePointerButtons);
+			var basePointerType = (PointerDeviceType)pointerType;
+			var isInContact = IsInContact(nativeEvent, basePointerType, nativePointerAction, nativePointerButtons);
 			var keys = nativeEvent.MetaState.ToVirtualKeyModifiers();
 
 			FrameId = (uint)_nativeEvent.EventTime;
-			Pointer = new Pointer(pointerId, (PointerDeviceType)pointerType, isInContact, isInRange: true);
+			Pointer = new Pointer(pointerId, basePointerType, isInContact, isInRange: true);
 			KeyModifiers = keys;
 			OriginalSource = originalSource;
+
+			var inputManager = VisualTree.GetContentRootForElement(originalSource)?.InputManager;
+			if (inputManager is not null)
+			{
+				inputManager.LastInputDeviceType = basePointerType switch
+				{
+					PointerDeviceType.Mouse => InputDeviceType.Mouse,
+					PointerDeviceType.Pen => InputDeviceType.Pen,
+					_ => InputDeviceType.Touch
+				};
+			}
 
 			_properties = GetProperties(nativePointerType, nativePointerAction, nativePointerButtons); // Last: we need the Pointer property to be set!
 		}
