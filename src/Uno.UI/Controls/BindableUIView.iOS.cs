@@ -49,35 +49,7 @@ namespace Uno.UI.Controls
 			_shadowChildren.Add(view);
 			base.AddSubview(view);
 
-			var parent = this as UIElement ?? this.FindFirstParent<UIElement>();
-			if (parent is not null)
-			{
-				if (view is UIElement child)
-				{
-					// Reset to original (invalidated) state
-					parent.ResetLayoutFlags();
-					if (parent.IsMeasureDirtyPathDisabled)
-					{
-						FrameworkElementHelper.SetUseMeasurePathDisabled(child); // will invalidate too
-					}
-					else
-					{
-						child.InvalidateMeasure();
-					}
-
-					if (parent.IsArrangeDirtyPathDisabled)
-					{
-						FrameworkElementHelper.SetUseArrangePathDisabled(child); // will invalidate too
-					}
-					else
-					{
-						child.InvalidateArrange();
-					}
-				}
-
-				parent.InvalidateMeasure();
-				parent.InvalidateArrange();
-			}
+			OnChildAdded(this, view);
 		}
 
 		public override void InsertSubview(UIView view, nint atIndex)
@@ -85,6 +57,41 @@ namespace Uno.UI.Controls
 			// cf. AddSubview comment!
 			_shadowChildren.Insert((int)atIndex, view);
 			base.InsertSubview(view, atIndex);
+
+			OnChildAdded(this, view);
+		}
+
+		private static void OnChildAdded(UIView parent, UIView child)
+		{
+			var managedParent = parent as UIElement ?? parent.FindFirstParent<UIElement>();
+			if (managedParent is not null)
+			{
+				if (child is UIElement managedChild)
+				{
+					// Reset to original (invalidated) state
+					managedParent.ResetLayoutFlags();
+					if (managedParent.IsMeasureDirtyPathDisabled)
+					{
+						FrameworkElementHelper.SetUseMeasurePathDisabled(managedChild); // will invalidate too
+					}
+					else
+					{
+						child.InvalidateMeasure();
+					}
+
+					if (managedParent.IsArrangeDirtyPathDisabled)
+					{
+						FrameworkElementHelper.SetUseArrangePathDisabled(managedChild); // will invalidate too
+					}
+					else
+					{
+						child.InvalidateArrange();
+					}
+				}
+
+				managedParent.InvalidateArrange();
+				managedParent.InvalidateMeasure();
+			}
 		}
 
 		public override void WillRemoveSubview(UIView uiview)
