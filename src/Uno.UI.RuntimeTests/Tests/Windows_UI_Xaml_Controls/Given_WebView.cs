@@ -141,25 +141,15 @@ public class Given_WebView
 		Assert.IsFalse(webView.CanGoForward);
 
 		webView.NavigationCompleted += (sender, e) => navigated = true;
-<<<<<<< HEAD
-		webView.Navigate(new Uri("https://example.com/1"));
-		await TestServices.WindowHelper.WaitFor(() => navigated, 3000);
-=======
 		webView.Navigate(new Uri("https://uno-assets.platform.uno/tests/docs/WebView_NavigateToAnchor.html"));
 		await TestServices.WindowHelper.WaitFor(() => navigated, 10000);
->>>>>>> 696e3bc96d (test: Adjust test duration for navigation)
 
 		Assert.IsFalse(webView.CanGoBack);
 		Assert.IsFalse(webView.CanGoForward);
 
 		navigated = false;
-<<<<<<< HEAD
-		webView.Navigate(new Uri("https://example.com/2"));
-		await TestServices.WindowHelper.WaitFor(() => navigated, 3000);
-=======
 		webView.Navigate(new Uri("https://platform.uno"));
 		await TestServices.WindowHelper.WaitFor(() => navigated, 10000);
->>>>>>> 696e3bc96d (test: Adjust test duration for navigation)
 
 		Assert.IsTrue(webView.CanGoBack);
 
