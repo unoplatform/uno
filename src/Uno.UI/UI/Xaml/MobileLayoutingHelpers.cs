@@ -165,8 +165,8 @@ internal static partial class MobileLayoutingHelpers
 		}
 		else
 		{
-			var physicalRect = ViewHelper.LogicalToPhysicalPixels(finalRect);
 #if __ANDROID__
+			var physicalRect = ViewHelper.LogicalToPhysicalPixels(finalRect);
 			view.Layout((int)physicalRect.Left, (int)physicalRect.Top, (int)physicalRect.Right, (int)physicalRect.Bottom);
 			if (view is ViewGroup viewGroup)
 			{
@@ -190,7 +190,7 @@ internal static partial class MobileLayoutingHelpers
 #elif __IOS__ || __MACOS__
 			using (view.SettingFrame())
 			{
-				view.Frame = physicalRect;
+				view.Frame = finalRect;
 			}
 
 			foreach (var child in view.Subviews)
