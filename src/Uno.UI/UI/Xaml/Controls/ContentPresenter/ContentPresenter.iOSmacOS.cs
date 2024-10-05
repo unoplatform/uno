@@ -44,11 +44,6 @@ partial class ContentPresenter
 			throw new Exception("A Xaml control may not contain more than one child.");
 		}
 
-#if __IOS__
-		ContentTemplateRoot.AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight;
-#else
-		ContentTemplateRoot.AutoresizingMask = NSViewResizingMask.HeightSizable | NSViewResizingMask.WidthSizable;
-#endif
 		AddSubview(ContentTemplateRoot);
 	}
 
