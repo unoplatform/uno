@@ -8,7 +8,7 @@
 			 xmlns:local="using:SamplesApp"
 			 xmlns:toolkit="using:Uno.UI.Toolkit"
 			 xmlns:uc="using:Uno.UI.Controls"
-			 mc:Ignorable="ios"
+			 mc:Ignorable="ios not_win"
 			 RequestedTheme="Light">
 	<Application.Resources>
 		<ResourceDictionary>
