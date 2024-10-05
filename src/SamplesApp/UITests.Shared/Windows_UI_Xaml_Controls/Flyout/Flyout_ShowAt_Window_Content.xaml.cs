@@ -21,7 +21,7 @@ namespace UITests.Windows_UI_Xaml_Controls.FlyoutTests
 
 #if HAS_UNO
 			XamlRoot _xamlRoot = null;
-			Unloaded += (s, e) => _xamlRoot = XamlRoot;
+			Loaded += (s, e) => _xamlRoot = XamlRoot;
 			Unloaded += (s, e) =>
 			{
 				// close all popups at the end of the test.
