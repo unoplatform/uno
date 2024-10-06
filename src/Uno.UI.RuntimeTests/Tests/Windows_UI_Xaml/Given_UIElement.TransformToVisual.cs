@@ -743,7 +743,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 10, 0, false, false)]
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 0, 10, false, false)]
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 10, 10, false, false)]
-#if !__SKIA__ && !__WASM__ && !__ANDROID__
+#if !__SKIA__ && !__WASM__ && !__ANDROID__ && !__IOS__
 		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 0, 0, false, false)]
 		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 10, 0, false, false)]
 		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 0, 10, false, false)]
@@ -757,7 +757,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 10, 0, false, false)]
 		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 0, 10, false, false)]
 		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 10, 10, false, false)]
-#if !__SKIA__ && !__WASM__ && !__ANDROID__
+#if !__SKIA__ && !__WASM__ && !__ANDROID__ && !__IOS__
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 0, 0, false, false)]
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 10, 0, false, false)]
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 0, 10, false, false)]
@@ -795,7 +795,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 10, 0, false, false)]
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 0, 10, false, false)]
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 10, 10, false, false)]
-#if !__SKIA__ && !__WASM__ && !__ANDROID__
+#if !__SKIA__ && !__WASM__ && !__ANDROID__ && !__IOS__
 		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 0, 0, false, false)]
 		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 10, 0, false, false)]
 		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 0, 10, false, false)]
@@ -826,7 +826,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 10, 0, true, false)]
 		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 0, 10, true, false)]
 		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 10, 10, true, false)]
-#if !__SKIA__ && !__WASM__ && !__ANDROID__
+#if !__SKIA__ && !__WASM__ && !__ANDROID__ && !__IOS__
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 0, 0, true, false)]
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 10, 0, true, false)]
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 0, 10, true, false)]
@@ -882,7 +882,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 10, 0, false, true)]
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 0, 10, false, true)]
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 10, 10, false, true)]
-#if !__SKIA__ && !__WASM__ && !__ANDROID__
+#if !__SKIA__ && !__WASM__ && !__ANDROID__ && !__IOS__
 		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 0, 0, false, true)]
 		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 10, 0, false, true)]
 		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 0, 10, false, true)]
@@ -900,7 +900,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 10, 0, false, true)]
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 0, 10, false, true)]
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 10, 10, false, true)]
-#if !__SKIA__ && !__WASM__ && !__ANDROID__
+#if !__SKIA__ && !__WASM__ && !__ANDROID__ && !__IOS__
 		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 0, 0, false, true)]
 		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 10, 0, false, true)]
 		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 0, 10, false, true)]
@@ -918,7 +918,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 10, 0, false, true)]
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 0, 10, false, true)]
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 10, 10, false, true)]
-#if !__SKIA__ && !__WASM__ && !__ANDROID__
+#if !__SKIA__ && !__WASM__ && !__ANDROID__ && !__IOS__
 		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 0, 0, false, true)]
 		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 10, 0, false, true)]
 		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 0, 10, false, true)]
@@ -936,7 +936,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 10, 0, false, true)]
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 0, 10, false, true)]
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 10, 10, false, true)]
-#if !__SKIA__ && !__WASM__ && !__ANDROID__
+#if !__SKIA__ && !__WASM__ && !__ANDROID__ && !__IOS__
 		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 0, 0, false, true)]
 		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 10, 0, false, true)]
 		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 0, 10, false, true)]
