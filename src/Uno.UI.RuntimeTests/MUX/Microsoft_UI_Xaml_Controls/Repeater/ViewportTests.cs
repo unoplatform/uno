@@ -78,7 +78,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				Content = repeater;
 				Content.UpdateLayout();
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
+#if UNO_HAS_ENHANCED_LIFECYCLE || __IOS__
 				Verify.AreEqual(2, realizationRects.Count);
 				Verify.AreEqual(new Rect(0, 0, 0, 0), realizationRects[0]);
 #else
