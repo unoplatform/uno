@@ -80,36 +80,40 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			WindowHelper.WindowContent = SUT;
 			await WindowHelper.WaitForLoaded(SUT);
 
-			float BorderOffset =
-#if __SKIA__
-				useRectangle ? 4 : 7;
-#elif __IOS__
-				6;
-#else
-				3;
-#endif
-			float width = (float)SUT.Width, height = (float)SUT.Height;
-			float centerX = width / 2, centerY = height / 2;
-			var expectations = stretch switch
+			// Retry is required because the brush even is not always raised
+			await TestHelper.RetryAssert(async () =>
 			{
-				// All edges are red-ish
-				Stretch.Fill => (Top: Redish, Bottom: Redish, Left: Redish, Right: Redish),
-				// Top and bottom are red-ish. Left and right are yellow-ish
-				Stretch.UniformToFill => (Top: Redish, Bottom: Redish, Left: Yellowish, Right: Yellowish),
-				// Top and bottom are same as background. Left and right are red-ish
-				Stretch.Uniform => (Top: Transparent, Bottom: Transparent, Left: Redish, Right: Redish),
-				// Everything is green-ish
-				Stretch.None => (Top: Greenish, Bottom: Greenish, Left: Greenish, Right: Greenish),
+				float BorderOffset =
+#if __SKIA__
+					useRectangle ? 4 : 7;
+#elif __IOS__
+					6;
+#else
+					3;
+#endif
+				float width = (float)SUT.Width, height = (float)SUT.Height;
+				float centerX = width / 2, centerY = height / 2;
+				var expectations = stretch switch
+				{
+					// All edges are red-ish
+					Stretch.Fill => (Top: Redish, Bottom: Redish, Left: Redish, Right: Redish),
+					// Top and bottom are red-ish. Left and right are yellow-ish
+					Stretch.UniformToFill => (Top: Redish, Bottom: Redish, Left: Yellowish, Right: Yellowish),
+					// Top and bottom are same as background. Left and right are red-ish
+					Stretch.Uniform => (Top: Transparent, Bottom: Transparent, Left: Redish, Right: Redish),
+					// Everything is green-ish
+					Stretch.None => (Top: Greenish, Bottom: Greenish, Left: Greenish, Right: Greenish),
 
-				_ => throw new ArgumentOutOfRangeException($"unexpected stretch: {stretch}"),
-			};
+					_ => throw new ArgumentOutOfRangeException($"unexpected stretch: {stretch}"),
+				};
 
-			var bitmap = await UITestHelper.ScreenShot(SUT);
+				var bitmap = await UITestHelper.ScreenShot(SUT);
 
-			ImageAssert.HasColorAt(bitmap, centerX, BorderOffset, expectations.Top, tolerance: 28);
-			ImageAssert.HasColorAt(bitmap, centerX, height - BorderOffset, expectations.Bottom, tolerance: 28);
-			ImageAssert.HasColorAt(bitmap, BorderOffset, centerY, expectations.Left, tolerance: 28);
-			ImageAssert.HasColorAt(bitmap, width - BorderOffset, centerY, expectations.Right, tolerance: 28);
+				ImageAssert.HasColorAt(bitmap, centerX, BorderOffset, expectations.Top, tolerance: 28);
+				ImageAssert.HasColorAt(bitmap, centerX, height - BorderOffset, expectations.Bottom, tolerance: 28);
+				ImageAssert.HasColorAt(bitmap, BorderOffset, centerY, expectations.Left, tolerance: 28);
+				ImageAssert.HasColorAt(bitmap, width - BorderOffset, centerY, expectations.Right, tolerance: 28);
+			}, 10);
 		}
 
 #if __SKIA__

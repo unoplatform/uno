@@ -287,7 +287,7 @@ if [ ! -f "$UNO_ORIGINAL_TEST_RESULTS" ]; then
 fi
 
 echo "Copying crash reports"
-cp -R ~/Library/Logs/DiagnosticReports/* $LOG_FILE_DIRECTORY
+cp -R ~/Library/Logs/DiagnosticReports/* $LOG_FILE_DIRECTORY || true
 
 pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
 mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})

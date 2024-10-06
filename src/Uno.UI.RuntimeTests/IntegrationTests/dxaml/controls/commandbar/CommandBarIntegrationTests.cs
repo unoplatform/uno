@@ -1364,13 +1364,18 @@ namespace Windows.UI.Tests.Enterprise
 			KeyboardHelper.Down(secondaryItemsPresenter);
 			await WindowHelper.WaitForIdle();
 
-			await RunOnUIThread(() =>
+			await TestHelper.RetryAssert(async () =>
 			{
-				var item = (AppBarButton)cmdBar.SecondaryCommands[0];
-				var transform = item.TransformToVisual(null);
-				var firstItemNewPosition = transform.TransformPoint(new Point(0, 0));
+				// This keyboard and animation driven, it may need a few retries to get the right position.
 
-				VERIFY_ARE_EQUAL(firstItemNewPosition, firstItemOriginalPosition);
+				await RunOnUIThread(() =>
+				{
+					var item = (AppBarButton)cmdBar.SecondaryCommands[0];
+					var transform = item.TransformToVisual(null);
+					var firstItemNewPosition = transform.TransformPoint(new Point(0, 0));
+
+					VERIFY_ARE_EQUAL(firstItemNewPosition, firstItemOriginalPosition);
+				});
 			});
 		}
 
@@ -3251,27 +3256,32 @@ namespace Windows.UI.Tests.Enterprise
 				VERIFY_ARE_EQUAL(primaryItemsControl.Visibility, Visibility.Collapsed);
 			});
 
-			LOG_OUTPUT("Now open and close the CommandBar.");
-			await OpenCommandBar(cmdBar, OpenMethod.Programmatic);
-			await CloseCommandBar(cmdBar);
-
-			await RunOnUIThread(() =>
+			// in some unknown conditions, the OpenCommandBar may not happen on android
+			// Retry a few times until it does.
+			await TestHelper.RetryAssert(async () =>
 			{
-				LOG_OUTPUT("The primary items control should still be collapsed.");
-				VERIFY_ARE_EQUAL(primaryItemsControl.Visibility, Visibility.Collapsed);
+				LOG_OUTPUT("Now open and close the CommandBar.");
+				await OpenCommandBar(cmdBar, OpenMethod.Programmatic);
+				await CloseCommandBar(cmdBar);
 
-				LOG_OUTPUT("Change the width of the CommandBar back to 600.  The AppBarButton should be moved back from the overflow.");
-				expectItemsAdded = false;
-				cmdBar.Width = 600;
-			});
+				await RunOnUIThread(() =>
+				{
+					LOG_OUTPUT("The primary items control should still be collapsed.");
+					VERIFY_ARE_EQUAL(primaryItemsControl.Visibility, Visibility.Collapsed);
 
-			await dynamicOverflowItemsChangingEvent.WaitForDefault();
-			await WindowHelper.WaitForIdle();
+					LOG_OUTPUT("Change the width of the CommandBar back to 600.  The AppBarButton should be moved back from the overflow.");
+					expectItemsAdded = false;
+					cmdBar.Width = 600;
+				});
 
-			await RunOnUIThread(() =>
-			{
-				LOG_OUTPUT("The primary items control should now be visible since the AppBarButton is back in it.");
-				VERIFY_ARE_EQUAL(primaryItemsControl.Visibility, Visibility.Visible);
+				await dynamicOverflowItemsChangingEvent.WaitForDefault();
+				await WindowHelper.WaitForIdle();
+
+				await RunOnUIThread(() =>
+				{
+					LOG_OUTPUT("The primary items control should now be visible since the AppBarButton is back in it.");
+					VERIFY_ARE_EQUAL(primaryItemsControl.Visibility, Visibility.Visible);
+				});
 			});
 		}
 
@@ -5226,7 +5236,11 @@ namespace Windows.UI.Tests.Enterprise
 			var closedRegistration = CreateSafeEventRegistration<CommandBar, EventHandler<object>>("Closed");
 			closedRegistration.Attach(cmdBar, (s, e) => closedEvent.Set());
 
-			await RunOnUIThread(() => cmdBar.IsOpen = false);
+			await RunOnUIThread(() =>
+			{
+				Assert.IsTrue(cmdBar.IsOpen, "Command bar is not opened");
+				cmdBar.IsOpen = false;
+			});
 			await closedEvent.WaitForDefault();
 			await WindowHelper.WaitForIdle();
 		}
