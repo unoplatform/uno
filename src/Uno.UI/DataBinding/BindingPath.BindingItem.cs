@@ -361,7 +361,7 @@ namespace Uno.UI.DataBinding
 			/// <returns>A disposable to be called when the subscription is disposed.</returns>
 			private IDisposable SubscribeToPropertyChanged()
 			{
-				if (_precedence == DependencyPropertyValuePrecedences.Animations)
+				if (_forAnimations)
 				{
 					// ThemeResource and animations don't need to listen to changes
 					return Disposable.Empty;
