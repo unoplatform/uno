@@ -12,7 +12,7 @@
 		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Foldable</PackageId>
 
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
-		
+
 		<!-- Required for the empty net7.0 target -->
 		<NoWarn>$(NoWarn);NU5128</NoWarn>
 
@@ -46,14 +46,14 @@
 
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			
+
 			<!-- Current nuget publishing uses netX.0-android30.0 -->
 			<_OverrideTargetFramework Condition="$(_OverrideTargetFramework.EndsWith('.0-android'))">$(_OverrideTargetFramework)30.0</_OverrideTargetFramework>
 
 			<_TargetNugetFolder>$(NuGetPackageRoot)\uno.ui.foldable\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
 		</PropertyGroup>
 
-	<ItemGroup>
+		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)**" />
 		</ItemGroup>
 		<MakeDir Directories="$(_TargetNugetFolder)" />

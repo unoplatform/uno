@@ -9,7 +9,10 @@ public sealed partial class StoreContext
 
 	private StoreContext()
 	{
+		InitializePlatform();
 	}
+
+	partial void InitializePlatform();
 
 	/// <summary>
 	/// Gets a StoreContext object that can be used to access
@@ -20,7 +23,7 @@ public sealed partial class StoreContext
 	/// store-related data for the current user.</returns>
 	public static StoreContext GetDefault() => _instance.Value;
 
-#if __IOS__
+#if __IOS__ || __ANDROID__
 	/// <summary>
 	/// Requests the user to rate and review the app. This method will
 	/// display the UI for the user to select a store rating and add

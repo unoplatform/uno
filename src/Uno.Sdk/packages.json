@@ -1,28 +1,29 @@
 [
 	{
-	  "group": "Core",
-	  "version": "DefaultUnoVersion",
-	  "packages": [
-		"Uno.WinUI",
-		"Uno.UI.Adapter.Microsoft.Extensions.Logging",
-		"Uno.WinUI.Maps",
-		"Uno.WinUI.Foldable",
-		"Uno.WinUI.MSAL",
-		"Uno.WinUI.Svg",
-		"Uno.WinUI.Lottie",
-		"Uno.WinUI.DevServer",
-		"Uno.WinUI.Skia.Gtk",
-		"Uno.WinUI.Skia.Linux.FrameBuffer",
-		"Uno.WinUI.Skia.MacOS",
-		"Uno.WinUI.Skia.Wpf",
-		"Uno.WinUI.Skia.X11",
-		"Uno.WinUI.Svg",
-		"Uno.WinUI.WebAssembly",
-		"Uno.WinUI.Runtime.WebAssembly",
-		"Uno.WinUI.MediaPlayer.WebAssembly",
-		"Uno.WinUI.Graphics3DGL",
-		"Uno.WinUI.Graphics2DSK"
-	  ]
+		"group": "Core",
+		"version": "DefaultUnoVersion",
+		"packages": [
+			"Uno.WinUI",
+			"Uno.UI.Adapter.Microsoft.Extensions.Logging",
+			"Uno.WinUI.Maps",
+			"Uno.WinUI.GooglePlay",
+			"Uno.WinUI.Foldable",
+			"Uno.WinUI.MSAL",
+			"Uno.WinUI.Svg",
+			"Uno.WinUI.Lottie",
+			"Uno.WinUI.DevServer",
+			"Uno.WinUI.Skia.Gtk",
+			"Uno.WinUI.Skia.Linux.FrameBuffer",
+			"Uno.WinUI.Skia.MacOS",
+			"Uno.WinUI.Skia.Wpf",
+			"Uno.WinUI.Skia.X11",
+			"Uno.WinUI.Svg",
+			"Uno.WinUI.WebAssembly",
+			"Uno.WinUI.Runtime.WebAssembly",
+			"Uno.WinUI.MediaPlayer.WebAssembly",
+			"Uno.WinUI.Graphics3DGL",
+			"Uno.WinUI.Graphics2DSK"
+		]
 	},
 	{
 	  "group": "WasmBootstrap",
