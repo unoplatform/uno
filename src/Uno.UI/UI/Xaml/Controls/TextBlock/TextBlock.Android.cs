@@ -294,14 +294,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region Layout
 
-		internal protected override void OnInvalidateMeasure()
-		{
-			base.OnInvalidateMeasure();
-
-			// We want to invalidate both the layout and the rendering
-			Invalidate();
-		}
-
 		protected override Size MeasureOverride(Size availableSize)
 		{
 			IDisposable measureActivity = null;
@@ -326,7 +318,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var measuredSize = UpdateLayout(ref _measureLayout, availableSize, false);
 
 				measuredSize = measuredSize.Add(padding);
-
+				Invalidate();
 				return measuredSize;
 			}
 		}
@@ -398,6 +390,7 @@ namespace Microsoft.UI.Xaml.Controls
 					UpdateNativeTextBlockLayout();
 				}
 
+				Invalidate();
 				return finalSize;
 			}
 		}
@@ -416,7 +409,6 @@ namespace Microsoft.UI.Xaml.Controls
 				LogicalToPhysicalPixels(padding.Left),
 				LogicalToPhysicalPixels(padding.Top)
 			);
-			Invalidate(); // This ensures that OnDraw() will be called, which is typically the case anyway after OnLayout() but not always (eg, if device is being unlocked).
 		}
 
 		/// <summary>
