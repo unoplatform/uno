@@ -1,9 +1,6 @@
 ﻿#nullable enable
 
 using System;
-using Microsoft.UI.Xaml;
-using Uno.Foundation.Extensibility;
-using Uno.Foundation.Logging;
 
 #if WINAPPSDK || WINDOWS_UWP
 namespace Uno.WinUI.Graphics3DGL;

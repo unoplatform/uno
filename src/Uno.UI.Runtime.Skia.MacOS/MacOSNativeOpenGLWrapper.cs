@@ -107,7 +107,6 @@ internal class MacOSNativeOpenGLWrapper : INativeOpenGLWrapper
 
 	public void Dispose()
 	{
-		using var _ = MakeCurrent();
 		if (_eglDisplay != IntPtr.Zero && _pBufferSurface != IntPtr.Zero)
 		{
 			EglDestroySurface(_eglDisplay, _pBufferSurface);

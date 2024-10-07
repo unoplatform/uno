@@ -73,7 +73,6 @@ internal class X11NativeOpenGLWrapper : INativeOpenGLWrapper
 	public void Dispose()
 	{
 		using var lockDisposable = X11Helper.XLock(_display);
-		using var _ = MakeCurrent();
 
 		if (_display != IntPtr.Zero && _pBuffer != IntPtr.Zero)
 		{

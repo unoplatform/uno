@@ -51,13 +51,13 @@ internal class WpfNativeOpenGLWrapper
 	});
 
 #if WINDOWS_UWP || WINAPPSDK
-	private readonly Func<Window> _getWindowFunc
+	private readonly Func<Window> _getWindowFunc;
 #endif
 	private nint _hdc;
 	private nint _glContext;
 
 #if WINDOWS_UWP || WINAPPSDK
-	public WinUINativeOpenGLWrapper(XamlRoot xamlRoot, Func<Window> getWindowFunc) : base(xamlRoot)
+	public WinUINativeOpenGLWrapper(XamlRoot xamlRoot, Func<Window> getWindowFunc)
 	{
 		_getWindowFunc = getWindowFunc;
 #else
@@ -118,12 +118,7 @@ internal class WpfNativeOpenGLWrapper
 	// https://sharovarskyi.com/blog/posts/csharp-win32-opengl-silknet/
 	public bool TryGetProcAddress(string proc, out nint addr)
 	{
-		if (_opengl32.Value == IntPtr.Zero)
-		{
-			addr = IntPtr.Zero;
-			return false;
-		}
-		if (NativeLibrary.TryGetExport(_opengl32.Value, proc, out addr))
+		if (_opengl32.Value != IntPtr.Zero && NativeLibrary.TryGetExport(_opengl32.Value, proc, out addr))
 		{
 			return true;
 		}
