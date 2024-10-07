@@ -68,10 +68,13 @@
 
 	<ItemGroup>
 		<None Include="..\..\Common\uno.png" Pack="true" PackagePath="\" />
-
+		<Content Include="Assets\**\*.*" />
+	</ItemGroup>
+	
+	<ItemGroup>
 		<None Include="$(MSBuildThisFileDirectory)angle_binaries/osx/lib*"
-				PackagePath="runtimes/osx/native"
-				Pack="true"
-				Visible="False" />
+			  PackagePath="runtimes/osx/native"
+			  Pack="true"
+			  Visible="False" />
 	</ItemGroup>
 </Project>
