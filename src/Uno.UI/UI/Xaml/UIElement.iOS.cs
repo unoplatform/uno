@@ -47,22 +47,50 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		internal bool ClippingIsSetByCornerRadius { get; set; }
+		private CGPath _borderLayerRendererClip;
+
+		internal CGPath BorderLayerRendererClip
+		{
+			get => _borderLayerRendererClip;
+			set
+			{
+				_borderLayerRendererClip = value;
+				SetTotalClipRect();
+			}
+		}
 
 		private void SetClipPlatform(Rect? totalLogicalClip)
 		{
-			if (totalLogicalClip is null)
+			if (totalLogicalClip is null && _borderLayerRendererClip is null)
 			{
-				if (!ClippingIsSetByCornerRadius)
-				{
-					this.Layer.Mask = null;
-				}
+				// No clip is given by totalLogicalClip nor BorderLayerRenderer
+				this.Layer.Mask = null;
 				return;
+			}
+
+			CGPath totalPath = null;
+			if (totalLogicalClip is not null)
+			{
+				// We are given a clip by totalLogicalClip, so set it to totalPath
+				totalPath = CGPath.FromRect(totalLogicalClip.Value.ToCGRect());
+			}
+
+			if (_borderLayerRendererClip is not null)
+			{
+				// We are given a clip by BorderLayerRenderer, intersect it with the existing path (if there is one), otherwise, set it to totalPath directly.
+				if (totalPath is null)
+				{
+					totalPath = _borderLayerRendererClip;
+				}
+				else
+				{
+					totalPath = totalPath.CreateByIntersectingPath(_borderLayerRendererClip, evenOddFillRule: false);
+				}
 			}
 
 			this.Layer.Mask = new CAShapeLayer
 			{
-				Path = CGPath.FromRect(totalLogicalClip.Value.ToCGRect())
+				Path = totalPath,
 			};
 		}
 
