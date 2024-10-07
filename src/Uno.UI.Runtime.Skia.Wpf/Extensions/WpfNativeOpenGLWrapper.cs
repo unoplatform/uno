@@ -39,16 +39,16 @@ internal class WpfNativeOpenGLWrapper
 	private static readonly Type _type = typeof(WpfNativeOpenGLWrapper);
 #endif
 	private static readonly Lazy<IntPtr> _opengl32 = new Lazy<IntPtr>(() =>
-    {
-    	if (!NativeLibrary.TryLoad("opengl32.dll", _type.Assembly, DllImportSearchPath.UserDirectories, out var _handle))
-    	{
-    		if (_type.Log().IsEnabled(LogLevel.Error))
-    		{
-    			_type.Log().Error("opengl32.dll was not loaded successfully.");
-    		}
-    	}
-    	return _handle;
-    });
+	{
+		if (!NativeLibrary.TryLoad("opengl32.dll", _type.Assembly, DllImportSearchPath.UserDirectories, out var _handle))
+		{
+			if (_type.Log().IsEnabled(LogLevel.Error))
+			{
+				_type.Log().Error("opengl32.dll was not loaded successfully.");
+			}
+		}
+		return _handle;
+	});
 
 #if WINDOWS_UWP || WINAPPSDK
 	private readonly Func<Window> _getWindowFunc
@@ -57,7 +57,7 @@ internal class WpfNativeOpenGLWrapper
 	private nint _glContext;
 
 #if WINDOWS_UWP || WINAPPSDK
-    public WinUINativeOpenGLWrapper(XamlRoot xamlRoot, Func<Window> getWindowFunc) : base(xamlRoot)
+	public WinUINativeOpenGLWrapper(XamlRoot xamlRoot, Func<Window> getWindowFunc) : base(xamlRoot)
 	{
 		_getWindowFunc = getWindowFunc;
 #else
@@ -117,7 +117,7 @@ internal class WpfNativeOpenGLWrapper
 
 	// https://sharovarskyi.com/blog/posts/csharp-win32-opengl-silknet/
 	public bool TryGetProcAddress(string proc, out nint addr)
-    {
+	{
 		if (_opengl32.Value == IntPtr.Zero)
 		{
 			addr = IntPtr.Zero;
@@ -125,22 +125,22 @@ internal class WpfNativeOpenGLWrapper
 		}
 		if (NativeLibrary.TryGetExport(_opengl32.Value, proc, out addr))
 		{
-        	return true;
+			return true;
 		}
 
-        addr = WindowsRenderingNativeMethods.wglGetProcAddress(proc);
-        return addr != IntPtr.Zero;
-    }
+		addr = WindowsRenderingNativeMethods.wglGetProcAddress(proc);
+		return addr != IntPtr.Zero;
+	}
 
 	public nint GetProcAddress(string proc)
-    {
-        if (TryGetProcAddress(proc, out var address))
-        {
-        	return address;
-        }
+	{
+		if (TryGetProcAddress(proc, out var address))
+		{
+			return address;
+		}
 
-        throw new InvalidOperationException("No function was found with the name " + proc + ".");
-    }
+		throw new InvalidOperationException("No function was found with the name " + proc + ".");
+	}
 
 	public void Dispose()
 	{

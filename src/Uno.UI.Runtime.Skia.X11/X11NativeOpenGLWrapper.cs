@@ -13,7 +13,7 @@ internal class X11NativeOpenGLWrapper : INativeOpenGLWrapper
 	private IntPtr _pBuffer;
 
 	public unsafe X11NativeOpenGLWrapper(XamlRoot xamlRoot)
-    {
+	{
 		if (X11Manager.XamlRootMap.GetHostForRoot(xamlRoot) is not X11XamlRootHost xamlRootHost)
 		{
 			throw new InvalidOperationException($"The XamlRoot and its XamlRootHost must be initialized on the element before constructing an {nameof(X11NativeOpenGLWrapper)}.");
@@ -98,7 +98,7 @@ internal class X11NativeOpenGLWrapper : INativeOpenGLWrapper
 	}
 
 	public IntPtr GetProcAddress(string proc) => GlxInterface.glXGetProcAddress(proc);
-    public bool TryGetProcAddress(string proc, out IntPtr addr)
+	public bool TryGetProcAddress(string proc, out IntPtr addr)
 	{
 		addr = GlxInterface.glXGetProcAddress(proc);
 		return addr != IntPtr.Zero;

@@ -44,6 +44,7 @@ namespace UITests.Shared.Windows_UI_Composition
 			var vertexCode =
 			$$"""
 			{{versionDef}}
+			precision highp float;
 
 			layout (location = 0) in vec3 aPosition;
 			out vec4 vertexColor;
@@ -58,6 +59,7 @@ namespace UITests.Shared.Windows_UI_Composition
 			var fragmentCode =
 			$$"""
 			{{versionDef}}
+			precision highp float;
 
 			out vec4 out_color;
 			in vec4 vertexColor;

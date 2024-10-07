@@ -98,10 +98,10 @@ internal class MacOSNativeOpenGLWrapper : INativeOpenGLWrapper
 	public bool TryGetProcAddress(string proc, out IntPtr addr)
 	{
 		if (_libGLES.Value == IntPtr.Zero)
-        {
+		{
 			addr = IntPtr.Zero;
-        	return false;
-        }
+			return false;
+		}
 		return NativeLibrary.TryGetExport(_libGLES.Value, proc, out addr);
 	}
 

@@ -69,6 +69,8 @@ namespace UITests.Shared.Windows_UI_Composition
 
 		private readonly string _vertexShaderSource =
 		"""
+		precision highp float;
+
 		layout(location = 0) in vec3 pos;
 		layout(location = 1) in vec3 vertex_color;
 
@@ -84,6 +86,8 @@ namespace UITests.Shared.Windows_UI_Composition
 
 		private readonly string FragmentShaderSource =
 		"""
+		precision highp float;
+
 		in vec3 color;
 
 		out vec4 frag_color;
