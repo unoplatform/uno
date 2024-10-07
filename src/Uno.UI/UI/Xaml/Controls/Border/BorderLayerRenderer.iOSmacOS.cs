@@ -415,8 +415,6 @@ partial class BorderLayerRenderer
 			sublayers.Add(backgroundLayer);
 			parent.InsertSublayer(backgroundLayer, insertionIndex);
 
-			owner.BorderLayerRendererClip = outerPath;
-
 			updatedBoundsPath = outerPath;
 		}
 
