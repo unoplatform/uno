@@ -289,19 +289,7 @@ partial class BorderLayerRenderer
 				}
 			}
 
-			parent.Mask = new CAShapeLayer()
-			{
-				Path = outerPath,
-				Frame = area,
-				// We only use the fill color to create the mask area
-				FillColor = _Color.White.CGColor,
-			};
-
-			if (owner != null)
-			{
-				owner.ClippingIsSetByCornerRadius = true;
-			}
-
+			owner.BorderLayerRendererClip = outerPath;
 			updatedBoundsPath = outerPath;
 		}
 		else
@@ -427,13 +415,7 @@ partial class BorderLayerRenderer
 			sublayers.Add(backgroundLayer);
 			parent.InsertSublayer(backgroundLayer, insertionIndex);
 
-			parent.Mask = new CAShapeLayer()
-			{
-				Path = outerPath,
-				Frame = area,
-				// We only use the fill color to create the mask area
-				FillColor = _Color.White.CGColor,
-			};
+			owner.BorderLayerRendererClip = outerPath;
 
 			updatedBoundsPath = outerPath;
 		}
@@ -448,7 +430,7 @@ partial class BorderLayerRenderer
 
 			if (owner != null)
 			{
-				owner.ClippingIsSetByCornerRadius = false;
+				owner.BorderLayerRendererClip = null;
 			}
 		}
 		);
