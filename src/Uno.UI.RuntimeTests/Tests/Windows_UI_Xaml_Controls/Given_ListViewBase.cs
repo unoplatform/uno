@@ -941,12 +941,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			selected.AddRange(items.Where((_, i) => i is > 1 and <= 3).ToList());
 			await AssertSelected();
 
-			KeyboardHelper.Down(list);
-			KeyboardHelper.Down(list);
+			await KeyboardHelper.Down(list);
+			await KeyboardHelper.Down(list);
 
 			await AssertSelected();
 
-			KeyboardHelper.Space(list);
+			await KeyboardHelper.Space(list);
 			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Shift));
 			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Shift));
 			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Shift));
@@ -954,7 +954,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			selected.AddRange(items.Where((_, i) => i is >= 5 and <= 8).ToList());
 			await AssertSelected();
 
-			KeyboardHelper.Down(list);
+			await KeyboardHelper.Down(list);
 			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Up, VirtualKeyModifiers.Shift));
 			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Up, VirtualKeyModifiers.Shift));
 
@@ -1083,13 +1083,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			selected.AddRange(items.Where((_, i) => i is > 1 and <= 3).ToList());
 			await AssertSelected();
 
-			KeyboardHelper.Down(list);
+			await KeyboardHelper.Down(list);
 
 			items.Where((_, i) => i is >= 1 and <= 3).ForEach(item => selected.Remove(item));
 			selected.Add(items[4]);
 			await AssertSelected();
 
-			KeyboardHelper.Down(list);
+			await KeyboardHelper.Down(list);
 
 			selected.Remove(items[4]);
 			selected.Add(items[5]);
@@ -1273,13 +1273,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(1, SUT.SelectedIndex);
 
-			KeyboardHelper.Right();
-			KeyboardHelper.Right();
+			await KeyboardHelper.Right();
+			await KeyboardHelper.Right();
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(3, SUT.SelectedIndex);
 
-			KeyboardHelper.Left();
+			await KeyboardHelper.Left();
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(2, SUT.SelectedIndex);
@@ -1315,7 +1315,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			lvi1.Focus(FocusState.Programmatic);
 			await WindowHelper.WaitForIdle();
 
-			KeyboardHelper.Space();
+			await KeyboardHelper.Space();
 			await WindowHelper.WaitForIdle();
 
 			Assert.IsTrue(lvi1.IsSelected);
@@ -1325,7 +1325,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.SelectedIndex = -1;
 
-			KeyboardHelper.Enter();
+			await KeyboardHelper.Enter();
 			await WindowHelper.WaitForIdle();
 
 			Assert.IsTrue(handled);
@@ -2066,12 +2066,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(0, sv.VerticalOffset);
 
-			KeyboardHelper.Down();
+			await KeyboardHelper.Down();
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(0, sv.VerticalOffset);
 
-			KeyboardHelper.Down();
+			await KeyboardHelper.Down();
 			await WindowHelper.WaitForIdle();
 
 			sv.VerticalOffset.Should().BeApproximately(lvi.ActualHeight * 3 - 120, 2);

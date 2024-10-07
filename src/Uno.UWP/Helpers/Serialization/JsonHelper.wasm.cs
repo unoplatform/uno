@@ -2,27 +2,25 @@
 using System.IO;
 using System.Runtime.Serialization.Json;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace Uno.Helpers.Serialization
 {
 	internal static class JsonHelper
 	{
-		public static T Deserialize<T>(string json)
+		public static T Deserialize<T>(string json, JsonSerializerContext context)
 		{
-			if (json is null)
-			{
-				throw new ArgumentNullException(nameof(json));
-			}
+			ArgumentNullException.ThrowIfNull(json);
 
-			return System.Text.Json.JsonSerializer.Deserialize<T>(json);
+			return (T)System.Text.Json.JsonSerializer.Deserialize(json, typeof(T), context);
 		}
 
-		public static bool TryDeserialize<T>(string json, out T value)
+		public static bool TryDeserialize<T>(string json, out T value, JsonSerializerContext context)
 		{
 			value = default;
 			try
 			{
-				value = Deserialize<T>(json);
+				value = Deserialize<T>(json, context);
 				return true;
 			}
 			catch (Exception)
@@ -31,9 +29,7 @@ namespace Uno.Helpers.Serialization
 			}
 		}
 
-		public static string Serialize<T>(T value)
-		{
-			return System.Text.Json.JsonSerializer.Serialize(value);
-		}
+		public static string Serialize<T>(T value, JsonSerializerContext context)
+			=> System.Text.Json.JsonSerializer.Serialize(value, typeof(T), context);
 	}
 }

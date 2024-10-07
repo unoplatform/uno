@@ -178,6 +178,8 @@ jobs:
 
   ## First tests run (https://github.com/unoplatform/uno/issues/6714)
   - bash: |
+      # always set execute bit, as git has a tendency to remove it
+      chmod +x $(build.sourcesdirectory)/build/test-scripts/android-uitest-run.sh
       $(build.sourcesdirectory)/build/test-scripts/android-uitest-run.sh
 
     displayName: Run Android Tests
