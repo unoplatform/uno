@@ -56,13 +56,17 @@ namespace Microsoft.UI.Xaml
 				typeTable!.Add(name, property);
 			}
 
-			internal void AppendPropertiesForType(Type type, List<DependencyProperty> properties)
+			internal void AppendInheritedPropertiesForType(Type type, List<DependencyProperty> properties)
 			{
 				if (TryGetTypeTable(type, out var typeTable))
 				{
 					foreach (var value in typeTable!.Values)
 					{
-						properties.Add((DependencyProperty)value);
+						var dp = (DependencyProperty)value;
+						if (dp.IsInherited)
+						{
+							properties.Add(dp);
+						}
 					}
 				}
 			}

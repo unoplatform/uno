@@ -43,7 +43,7 @@ namespace Windows.Storage.Pickers
 				return null;
 			}
 
-			var info = JsonHelper.Deserialize<NativeStorageItemInfo>(pickedFolderJson);
+			var info = JsonHelper.Deserialize<NativeStorageItemInfo>(pickedFolderJson, StorageSerializationContext.Default);
 
 			return StorageFolder.GetFromNativeInfo(info, null);
 		}

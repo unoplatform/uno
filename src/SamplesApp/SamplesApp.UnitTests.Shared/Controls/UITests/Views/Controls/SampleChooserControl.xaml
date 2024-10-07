@@ -551,7 +551,10 @@
 						<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xEC46;" />
 					</CheckBox>
 
-					<Button Grid.Column="10" Margin="0,0,8,0">
+					<!-- Overflow More(...) Button -->
+					<Button Grid.Column="10"
+							Margin="0,0,8,0"
+							Style="{StaticResource SampleControlButtonStyle}">
 						<SymbolIcon Symbol="More" />
 						<Button.Flyout>
 							<MenuFlyout>

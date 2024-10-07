@@ -19,6 +19,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Uno.Diagnostics.UI;
+using Uno.Threading;
 
 #if HAS_UNO_WINUI
 using _WindowActivatedEventArgs = Microsoft.UI.Xaml.WindowActivatedEventArgs;
@@ -31,6 +32,7 @@ namespace Uno.UI.RemoteControl.HotReload;
 partial class ClientHotReloadProcessor
 {
 	private static int _isWaitingForTypeMapping;
+	private static readonly AsyncLock _uiUpdateGate = new(); // We can use the simple AsyncLock here as we don't need reentrancy.
 
 	private static ElementUpdateAgent? _elementAgent;
 
@@ -105,6 +107,8 @@ partial class ClientHotReloadProcessor
 	/// </summary>
 	private static async Task ReloadWithUpdatedTypes(HotReloadClientOperation? hrOp, Window window, Type[] updatedTypes)
 	{
+		using var sequentialUiUpdateLock = await _uiUpdateGate.LockAsync(default);
+
 		var handlerActions = ElementAgent?.ElementHandlerActions;
 
 		var uiUpdating = true;

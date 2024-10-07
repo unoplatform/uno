@@ -110,6 +110,8 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	/// <remarks>This is used to alter the propagation of the templated parent.</remarks>
 	internal bool IsNativeHost { get; set; }
 
+	internal DataTemplate SelectedContentTemplate => _dataTemplateUsedLastUpdate;
+
 	protected override bool IsSimpleLayout => true;
 
 	#region Content DependencyProperty
@@ -1342,4 +1344,14 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	}
 
 	partial void SetUpdateTemplatePartial();
+
+	internal string GetTextBlockText()
+	{
+		if (IsUsingDefaultTemplate && ContentTemplateRoot is ImplicitTextBlock tb)
+		{
+			return tb.Text;
+		}
+
+		return null;
+	}
 }

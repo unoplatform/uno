@@ -10,7 +10,7 @@ This article details the migration steps required to migrate from one version to
 
 Uno Platform 5.4 contains breaking changes for Uno.Extensions.
 
-## WinAppSDK 1.6 considerations
+### WinAppSDK 1.6 considerations
 
 Uno Platform 5.4 updates to WinAppSDK 1.6 if you using the [`Uno.SDK`](xref:Uno.Features.Uno.Sdk), which requires a temporary version adjustment until newer versions of the .NET 8 SDKs are released.
 
@@ -23,6 +23,14 @@ In your project, you may need to add the following lines (or uncomment them if y
 </PropertyGroup>
 ```
 
+Additionally, you may also get the following error message:
+
+```text
+NETSDK1198: A publish profile with the name 'win-AnyCPU.pubxml' was not found in the project.
+```
+
+In order to fix this warning in your existing project, you can create a new file named `Properties/PublishProfiles/win-AnyCPU.pubxml`, with [this content](https://github.com/unoplatform/uno.templates/blob/5196433a5e0a8a4d2efffd118d575ed03e30dcf0/src/Uno.Templates/content/unoapp/MyExtensionsApp.1/Properties/PublishProfiles/win-AnyCPU.pubxml).
+
 ### UWP Support for Uno.Extensions
 
 The [`Uno.Extensions`](https://aka.platform.uno/uno-extensions) compatibility with legacy UWP apps has been removed. If your app is UWP-based and uses Uno.Extensions, in order to migrate to Uno Platform 5.4, you can keep using [previous releases of Uno.Extensions](https://github.com/unoplatform/uno.extensions/releases), or [migrate your app to WinUI](https://platform.uno/docs/articles/updating-to-winui3.html).
@@ -31,7 +39,7 @@ All the other features of Uno Platform 5.4 continue to be compatible with both U
 
 ### Updates in Uno.Extensions.Reactive
 
-The generated code has changed. Make sure to [review our docs to upgrade](xuid:Uno.Extensions.Reactive.Upgrading) to Uno Platform 5.4.
+The generated code has changed. Make sure to [review our docs to upgrade](xref:Uno.Extensions.Reactive.Upgrading) to Uno Platform 5.4.
 
 ## Uno Platform 5.3
 

@@ -93,6 +93,11 @@ public partial class Popup : FrameworkElement, IPopup
 
 			if (IsLightDismissEnabled || AssociatedFlyout is { })
 			{
+				if (IsLightDismissEnabled)
+				{
+					m_fIsLightDismiss = true;
+				}
+
 				// Store last focused element
 				var focusManager = VisualTree.GetFocusManagerForElement(this);
 				var focusedElement = focusManager?.FocusedElement as UIElement;
@@ -117,12 +122,17 @@ public partial class Popup : FrameworkElement, IPopup
 			_openPopupRegistration?.Dispose();
 			if (IsLightDismissEnabled)
 			{
-				if (_lastFocusedElement != null && _lastFocusedElement.Target is UIElement target)
+				var focusManager = VisualTree.GetFocusManagerForElement(this);
+				var focusedElement = focusManager?.FocusedElement as UIElement;
+
+				if (_lastFocusedElement != null && _lastFocusedElement.Target is UIElement target && focusedElement != target)
 				{
 					target.Focus(_lastFocusState);
 					_lastFocusedElement = null;
 				}
 			}
+
+			m_fIsLightDismiss = false;
 		}
 	}
 

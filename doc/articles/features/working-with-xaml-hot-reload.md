@@ -374,7 +374,7 @@ Here's a summary of what icons and statuses you can expect:
     #endif
     ```
 
-### [**Visual Studio 2022**](#tab/vswin)
+### [**Visual Studio 2022**](#tab/vswints)
 
 - Make sure that **C# Hot Reload** is not disabled in Visual Studio
   - Open Tools / Options
@@ -386,9 +386,10 @@ The output window in Visual Studio has an output named `Uno Platform` in its dro
 - For `net8.0-windows10.xx`:
   - Ensure that the `net8.0-windows10.xxx` target framework **is selected in the top-left dropdown list of the XAML editor**. Selecting any other platform will break hot reload.
   - [A VS issue for WinUI may be hit](https://developercommunity.visualstudio.com/t/net80-windows10-needs-to-be-first-for-W/10643724). If XAML hot reload does not work, ensure that the `Uno Platform` output window exists, and that it mentions that the extension has successfully loaded. To do so, try closing and reopening the solution, and make sure that the [Visual Studio extension is installed](xref:Uno.GetStarted.vs2022).
+  - [A known VS issue for WinUI](https://github.com/microsoft/microsoft-ui-xaml/issues/5944) breaks hot reload when using "simplified" `RowDefinitions`/`ColumnDefinitions`.
 - If the indicator is red and indicates that connection failed, make sure that you have the latests versions of Uno.SDK and the VS extension, then rebuild your application.
 
-### [**Visual Studio Code**](#tab/vscode)
+### [**Visual Studio Code**](#tab/vscodets)
 
 - Hot Reload **is not supported for WebAssembly and Skia Desktop** when using the debugger. Start your app using `Ctrl+F5`.
 - The output window in Code has an output named **Uno Platform - Hot Reload** in its drop-down. Diagnostics messages from the extension appear there.
@@ -400,7 +401,7 @@ The output window in Visual Studio has an output named `Uno Platform` in its dro
 - When working on Skia Desktop apps, make sure to start the app without the debugger, and make sure that in the debugger tab, the `Uno Platform Desktop (Debug)` target is selected.
 - The TCP port number used by the app to connect back to the IDE is located in the `obj/Debug/net8.0-XXX/RemoteControl.config` file. If the port number does not match with the one found in the **Uno Platform - Hot Reload** output window, restart Code or use `Developer: Reload Window` in the command palette.
 
-### [**Rider**](#tab/rider)
+### [**Rider**](#tab/riderts)
 
 - Hot Reload **is not supported** when using the debugger. Start your app without the debugger.
 - The output window in Rider has an output named **Uno Platform** in its sidebar. Diagnostics messages from the extension appear there.

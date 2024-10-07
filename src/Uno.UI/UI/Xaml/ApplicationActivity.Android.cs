@@ -23,6 +23,9 @@ using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
+using Uno.UI.Xaml.Core;
+using DirectUI;
+using Uno.UI.Xaml.Input;
 
 
 namespace Microsoft.UI.Xaml
@@ -123,6 +126,16 @@ namespace Microsoft.UI.Xaml
 				{
 					CanBubbleNatively = false,
 				};
+
+				var inputManager = VisualTree.GetContentRootForElement(element)?.InputManager;
+				if (inputManager is not null && XboxUtility.IsGamepadNavigationInput(virtualKey))
+				{
+					inputManager.LastInputDeviceType = InputDeviceType.GamepadOrRemote;
+				}
+				else
+				{
+					inputManager.LastInputDeviceType = InputDeviceType.Keyboard;
+				}
 
 				RoutedEvent routedEvent = e.Action == KeyEventActions.Down ?
 					UIElement.KeyDownEvent :

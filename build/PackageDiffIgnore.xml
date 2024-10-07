@@ -1941,6 +1941,16 @@
 
 			<!-- END templated-parent rework -->
 
+			<!-- BEGIN ComboBox.IsEditable -->
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.Primitives.Selector.SetFocusedItem(System.Int32 index, System.Boolean shouldScrollIntoView, System.Boolean forceFocus, Windows.UI.Xaml.FocusState focusState, System.Boolean animateIfBringIntoView)" reason="Does not exist in UWP" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.Primitives.Selector.SetFocusedItem(System.Int32 index, System.Boolean shouldScrollIntoView, System.Boolean forceFocus, Windows.UI.Xaml.FocusState focusState, System.Boolean animateIfBringIntoView, Windows.UI.Xaml.Input.FocusNavigationDirection focusNavigationDirection)" reason="Does not exist in UWP" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.Primitives.Selector.SetFocusedItem(System.Int32 index, System.Boolean shouldScrollIntoView, System.Boolean animateIfBringIntoView, Windows.UI.Xaml.Input.FocusNavigationDirection focusNavigationDirection)" reason="Does not exist in UWP" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.Primitives.Selector.SetFocusedItem(System.Int32 index, System.Boolean shouldScrollIntoView)" reason="Does not exist in UWP" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.Selector.SetFocusedItem(System.Int32 index, System.Boolean shouldScrollIntoView, System.Boolean forceFocus, Microsoft.UI.Xaml.FocusState focusState, System.Boolean animateIfBringIntoView)" reason="Does not exist in WinUI" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.Selector.SetFocusedItem(System.Int32 index, System.Boolean shouldScrollIntoView, System.Boolean forceFocus, Microsoft.UI.Xaml.FocusState focusState, System.Boolean animateIfBringIntoView, Microsoft.UI.Xaml.Input.FocusNavigationDirection focusNavigationDirection)" reason="Does not exist in WinUI" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.Selector.SetFocusedItem(System.Int32 index, System.Boolean shouldScrollIntoView, System.Boolean animateIfBringIntoView, Microsoft.UI.Xaml.Input.FocusNavigationDirection focusNavigationDirection)" reason="Does not exist in WinUI" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.Selector.SetFocusedItem(System.Int32 index, System.Boolean shouldScrollIntoView)" reason="Does not exist in WinUI" />
+			<!-- END ComboBox.IsEditable -->
 		</Methods>
 	</IgnoreSet>
 	
