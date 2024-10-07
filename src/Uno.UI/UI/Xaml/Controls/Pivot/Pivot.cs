@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using System.Collections.Specialized;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -71,6 +72,13 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 
 			SynchronizeItems();
+		}
+
+		private protected override void UpdateItems(NotifyCollectionChangedEventArgs args)
+		{
+			base.UpdateItems(args);
+
+			SynchronizeSelectedItem();
 		}
 
 		private void UnregisterHeaderEvents()
