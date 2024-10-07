@@ -31,8 +31,6 @@
 		<PackageReference Include="HarfBuzzSharp.NativeAssets.macOS" Version="2.8.2.3" />
 		<PackageReference Include="SkiaSharp.Harfbuzz" />
 		<PackageReference Include="SkiaSharp" />
-
-		<PackageReference Include="Silk.NET.OpenGL" Version="2.16.0" PrivateAssets="All" />
 	</ItemGroup>
 
 	<PropertyGroup>

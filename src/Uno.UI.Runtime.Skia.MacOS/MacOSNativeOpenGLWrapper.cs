@@ -1,7 +1,5 @@
 using System.Runtime.InteropServices;
 using Microsoft.UI.Xaml;
-using Silk.NET.Core.Contexts;
-using Silk.NET.OpenGL;
 using Uno.Disposables;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
@@ -16,6 +14,17 @@ namespace Uno.UI.Runtime.Skia.MacOS;
 internal class MacOSNativeOpenGLWrapper : INativeOpenGLWrapper
 {
 	private const string libEGL = "libEGL.dylib";
+	private static readonly Lazy<IntPtr> _libGLES = new Lazy<IntPtr>(() =>
+	{
+		if (!NativeLibrary.TryLoad("libGLESv2.dylib", typeof(MacOSNativeOpenGLWrapper).Assembly, DllImportSearchPath.UserDirectories, out var _handle))
+		{
+			if (typeof(MacOSNativeOpenGLWrapper).Log().IsEnabled(LogLevel.Error))
+			{
+				typeof(MacOSNativeOpenGLWrapper).Log().Error("libGLESv2.dylib was not loaded successfully.");
+			}
+		}
+		return _handle;
+	});
 
 	private const int EGL_DEFAULT_DISPLAY = 0;
 	private const int EGL_NO_CONTEXT = 0;
@@ -34,11 +43,16 @@ internal class MacOSNativeOpenGLWrapper : INativeOpenGLWrapper
 	private IntPtr _glContext;
 	private IntPtr _pBufferSurface;
 
-	public void CreateContext(UIElement element)
+	public MacOSNativeOpenGLWrapper(XamlRoot xamlRoot)
 	{
 		_eglDisplay = EglGetDisplay(EGL_DEFAULT_DISPLAY);
 		EglInitialize(_eglDisplay, out var major, out var minor);
-		int[] pi32ConfigAttribs =
+		if (this.Log().IsEnabled(LogLevel.Information))
+		{
+			this.Log().Info($"Found EGL version {major}.{minor}.");
+		}
+
+		int[] attribList =
 		{
 			EGL_RED_SIZE, 8,
 			EGL_GREEN_SIZE, 8,
@@ -50,9 +64,9 @@ internal class MacOSNativeOpenGLWrapper : INativeOpenGLWrapper
 		};
 
 		var configs = new IntPtr[1];
-		var success = EglChooseConfig(_eglDisplay, pi32ConfigAttribs, configs, configs.Length, out var numConfig);
+		var success = EglChooseConfig(_eglDisplay, attribList, configs, configs.Length, out var numConfig);
 
-		if (!success)
+		if (!success || numConfig < 1)
 		{
 			throw new InvalidOperationException($"{nameof(EglChooseConfig)} failed: {EglGetError()}");
 		}
@@ -70,9 +84,30 @@ internal class MacOSNativeOpenGLWrapper : INativeOpenGLWrapper
 			throw new InvalidOperationException($"EGL pbuffer surface creation failed: {EglGetError()}");
 		}
 	}
-	public object CreateGLSilkNETHandle() => GL.GetApi(new MacOSAngleNativeContext());
-	public void DestroyContext()
+
+	public IntPtr GetProcAddress(string proc)
 	{
+		if (TryGetProcAddress(proc, out var addr))
+		{
+			return addr;
+		}
+
+		throw new InvalidOperationException($"A procedure named {proc} was not found in libGLES");
+	}
+
+	public bool TryGetProcAddress(string proc, out IntPtr addr)
+	{
+		if (_libGLES.Value == IntPtr.Zero)
+        {
+			addr = IntPtr.Zero;
+        	return false;
+        }
+		return NativeLibrary.TryGetExport(_libGLES.Value, proc, out addr);
+	}
+
+	public void Dispose()
+	{
+		using var _ = MakeCurrent();
 		if (_eglDisplay != IntPtr.Zero && _pBufferSurface != IntPtr.Zero)
 		{
 			EglDestroySurface(_eglDisplay, _pBufferSurface);
@@ -86,6 +121,7 @@ internal class MacOSNativeOpenGLWrapper : INativeOpenGLWrapper
 		_glContext = IntPtr.Zero;
 		_eglDisplay = IntPtr.Zero;
 	}
+
 	public IDisposable MakeCurrent()
 	{
 		var glContext = EglGetCurrentContext();
@@ -111,34 +147,7 @@ internal class MacOSNativeOpenGLWrapper : INativeOpenGLWrapper
 		});
 	}
 
-	public static void Register() => ApiExtensibility.Register(typeof(INativeOpenGLWrapper), _ => new MacOSNativeOpenGLWrapper());
-
-	private class MacOSAngleNativeContext : INativeContext
-	{
-		private readonly IntPtr _handle;
-
-		public MacOSAngleNativeContext()
-		{
-			if (!NativeLibrary.TryLoad("libGLESv2.dylib", typeof(MacOSNativeOpenGLWrapper).Assembly, DllImportSearchPath.UserDirectories, out _handle) || _handle == IntPtr.Zero)
-			{
-				throw new PlatformNotSupportedException("Unable to load libGLESv2.dylib.");
-			}
-		}
-
-		public bool TryGetProcAddress(string proc, out nint addr, int? slot = null) => NativeLibrary.TryGetExport(_handle, proc, out addr);
-
-		public nint GetProcAddress(string proc, int? slot = null)
-		{
-			if (TryGetProcAddress(proc, out var address, slot))
-			{
-				return address;
-			}
-
-			throw new InvalidOperationException($"No function was found with the name '{proc}'.");
-		}
-
-		public void Dispose() => NativeLibrary.Free(_handle);
-	}
+	public static void Register() => ApiExtensibility.Register<XamlRoot>(typeof(INativeOpenGLWrapper), xamlRoot => new MacOSNativeOpenGLWrapper(xamlRoot));
 
 	// Copyright (c) 2006-2019 Stefanos Apostolopoulos for the Open Toolkit project.
 	// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
