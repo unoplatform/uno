@@ -44,8 +44,8 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 	private readonly WriteableBitmap _backBuffer;
 
 	private bool _loadedAtleastOnce;
-	// These are valid if and only if _loadedAtleastOnce and _glAvailable
-	private INativeOpenGLWrapper? _nativeOpenGlWrapper;
+	private INativeOpenGLWrapper? _nativeOpenGlWrapper; // valid if and only if _loadedAtleastOnce and _glAvailable
+	// These are valid if and only if IsLoaded and _glAvailable
 	private GL? _gl;
 	private uint _framebuffer;
 	private uint _textureColorBuffer;
@@ -145,7 +145,7 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 			DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
 			{
 				using var _ = _nativeOpenGlWrapper!.MakeCurrent();
-				_nativeOpenGlWrapper?.Dispose();
+				_nativeOpenGlWrapper.Dispose();
 			});
 		}
 	}
