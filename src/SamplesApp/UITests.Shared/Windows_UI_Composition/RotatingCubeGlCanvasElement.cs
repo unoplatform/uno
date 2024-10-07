@@ -69,7 +69,7 @@ namespace UITests.Shared.Windows_UI_Composition
 
 		private readonly string _vertexShaderSource =
 		"""
-		precision highp float;
+		precision highp float; # for OpenGL ES compatibility
 
 		layout(location = 0) in vec3 pos;
 		layout(location = 1) in vec3 vertex_color;
@@ -86,7 +86,7 @@ namespace UITests.Shared.Windows_UI_Composition
 
 		private readonly string FragmentShaderSource =
 		"""
-		precision highp float;
+		precision highp float; # for OpenGL ES compatibility
 
 		in vec3 color;
 
