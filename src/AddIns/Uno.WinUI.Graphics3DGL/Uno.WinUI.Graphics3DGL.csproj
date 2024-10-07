@@ -68,7 +68,7 @@
 
 	<ItemGroup>
 		<None Include="..\..\Common\uno.png" Pack="true" PackagePath="\" />
-		<Content Include="Assets\**\*.*" />
+		<Content Include="Assets\**\*.*" CopyToOutputDirectory="PreserveNewest" />
 	</ItemGroup>
 	
 	<ItemGroup>

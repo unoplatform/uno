@@ -34,7 +34,7 @@ namespace Uno.WinUI.Graphics3DGL;
 public abstract partial class GLCanvasElement : Grid, INativeContext
 {
 	private const int BytesPerPixel = 4;
-	private static readonly BitmapImage _fallbackImage = new BitmapImage(new Uri("https://uno-assets.platform.uno/logos/uno.png"));
+	private static readonly BitmapImage _fallbackImage = new BitmapImage(new Uri("ms-appx:///Assets/error.png"));
 	private static bool? _glAvailable;
 
 	private readonly uint _width;
