@@ -223,12 +223,10 @@ namespace Microsoft.UI.Xaml.Documents
 		{
 			Click?.Invoke(this, new HyperlinkClickEventArgs { OriginalSource = this });
 
-#if !__WASM__  // handled natively in WASM/Html
 			if (NavigateUri != null)
 			{
 				_ = Launcher.LaunchUriAsync(NavigateUri);
 			}
-#endif
 		}
 		#endregion
 

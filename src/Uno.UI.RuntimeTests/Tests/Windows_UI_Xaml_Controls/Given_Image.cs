@@ -356,13 +356,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				Width = 100,
 				Height = 100,
-				Source = new BitmapImage(new Uri("ms-appx:///Assets/square100.png")),
 				Stretch = Stretch.Fill
 			};
+
+			var imageOpened = false;
+			SUT.ImageOpened += (_, _) => imageOpened = true;
+
+			SUT.Source = new BitmapImage(new Uri("ms-appx:///Assets/square100.png"));
 
 			parent.Child = SUT;
 			WindowHelper.WindowContent = parent;
 			await WindowHelper.WaitForLoaded(parent);
+
+			await TestServices.WindowHelper.WaitFor(() => imageOpened, 3000);
+
 			var result = await TakeScreenshot(parent);
 
 			var sample = parent.GetRelativeCoords(SUT);

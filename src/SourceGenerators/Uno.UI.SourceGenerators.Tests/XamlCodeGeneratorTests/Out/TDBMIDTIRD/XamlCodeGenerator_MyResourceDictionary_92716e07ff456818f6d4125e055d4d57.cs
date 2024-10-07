@@ -84,7 +84,7 @@ namespace TestRepro
 						{
 							Mode = BindingMode.OneWay,
 						}
-							.BindingApply(___b => /*defaultBindModeOneWay*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, null, ___ctx => ___ctx is TestRepro.MyModel ___tctx ? (TryGetInstance_xBind_1(___tctx, out var bindResult1) ? (true, bindResult1) : (false, default)) : (false, default), null , new [] {"MyString"}))
+							.BindingApply(___b => /*defaultBindModeOneWay*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, null, ___ctx => ___ctx is global::TestRepro.MyModel ___tctx ? (TryGetInstance_xBind_1(___tctx, out var bindResult1) ? (true, bindResult1) : (false, default)) : (false, default), null , new [] {"MyString"}))
 					);
 					global::Uno.UI.FrameworkElementHelper.SetBaseUri(c0, __baseUri_MyResourceDictionary_92716e07ff456818f6d4125e055d4d57);
 					c0.CreationComplete();
@@ -250,7 +250,7 @@ namespace MyProject.__Resources
 					{
 						Mode = BindingMode.OneWay,
 					}
-						.BindingApply(___b => /*defaultBindModeOneWay*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, null, ___ctx => ___ctx is TestRepro.MyModel ___tctx ? (TryGetInstance_xBind_2(___tctx, out var bindResult2) ? (true, bindResult2) : (false, default)) : (false, default), null , new [] {"MyString"}))
+						.BindingApply(___b => /*defaultBindModeOneWay*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, null, ___ctx => ___ctx is global::TestRepro.MyModel ___tctx ? (TryGetInstance_xBind_2(___tctx, out var bindResult2) ? (true, bindResult2) : (false, default)) : (false, default), null , new [] {"MyString"}))
 				);
 				global::Uno.UI.FrameworkElementHelper.SetBaseUri(c1, __baseUri_MyResourceDictionary_92716e07ff456818f6d4125e055d4d57);
 				c1.CreationComplete();
@@ -339,7 +339,7 @@ namespace MyProject.__Resources
 					{
 						Mode = BindingMode.OneWay,
 					}
-						.BindingApply(___b => /*defaultBindModeOneWay*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, null, ___ctx => ___ctx is TestRepro.MyModel ___tctx ? (TryGetInstance_xBind_3(___tctx, out var bindResult3) ? (true, bindResult3) : (false, default)) : (false, default), null , new [] {"MyString"}))
+						.BindingApply(___b => /*defaultBindModeOneWay*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, null, ___ctx => ___ctx is global::TestRepro.MyModel ___tctx ? (TryGetInstance_xBind_3(___tctx, out var bindResult3) ? (true, bindResult3) : (false, default)) : (false, default), null , new [] {"MyString"}))
 				);
 				global::Uno.UI.FrameworkElementHelper.SetBaseUri(c2, __baseUri_MyResourceDictionary_92716e07ff456818f6d4125e055d4d57);
 				c2.CreationComplete();

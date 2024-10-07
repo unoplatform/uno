@@ -1016,6 +1016,7 @@ namespace Microsoft.UI.Xaml.Controls
 			base.OnPointerCaptureLost(e);
 			_isPointerOver = false;
 			UpdateVisualState();
+			OnPointerCaptureLostPartial(e);
 		}
 
 		protected override void OnPointerPressed(PointerRoutedEventArgs args)
@@ -1061,6 +1062,8 @@ namespace Microsoft.UI.Xaml.Controls
 		partial void OnPointerPressedPartial(PointerRoutedEventArgs args);
 
 		partial void OnPointerReleasedPartial(PointerRoutedEventArgs args);
+
+		partial void OnPointerCaptureLostPartial(PointerRoutedEventArgs e);
 
 		/// <inheritdoc />
 		protected override void OnPointerReleased(PointerRoutedEventArgs args)
@@ -1369,6 +1372,11 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					_suppressCurrentlyTyping = false;
 					_clearHistoryOnTextChanged = true;
+					if (Text.IsNullOrEmpty())
+					{
+						// On WinUI, the caret never has thumbs if there is no text
+						CaretMode = CaretDisplayMode.ThumblessCaretShowing;
+					}
 				}
 #endif
 

@@ -624,16 +624,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForLoaded(textBox);
 
 			var contentControl = VisualTreeUtils.FindVisualChildByType<ContentControl>(textBox);
-			if (FeatureConfiguration.TextBox.UseOverlayOnSkia)
-			{
-				Assert.IsInstanceOfType(contentControl.Content, typeof(TextBlock));
-				Assert.AreEqual(initialText, ((TextBlock)contentControl.Content).Text);
-			}
-			else
-			{
-				Assert.IsInstanceOfType(contentControl.Content, typeof(Grid));
-				Assert.AreEqual(initialText, contentControl.FindFirstChild<TextBlock>().Text);
-			}
+			Assert.IsInstanceOfType(contentControl.Content, typeof(TextBlock));
+			Assert.AreEqual(initialText, ((TextBlock)contentControl.Content).Text);
 		}
 #endif
 

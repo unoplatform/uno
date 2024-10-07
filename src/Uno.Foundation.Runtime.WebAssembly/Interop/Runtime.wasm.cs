@@ -15,10 +15,11 @@ using Uno.Foundation.Runtime.WebAssembly.Interop;
 using Uno.Foundation.Logging;
 using System.Globalization;
 using Uno.Foundation.Runtime.WebAssembly.Helpers;
+using System.Runtime.InteropServices.JavaScript;
 
 namespace Uno.Foundation
 {
-	public static class WebAssemblyRuntime
+	public static partial class WebAssemblyRuntime
 	{
 		private static Dictionary<string, IntPtr> MethodMap = new Dictionary<string, IntPtr>();
 
@@ -360,11 +361,13 @@ namespace Uno.Foundation
 		}
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static void DispatchAsyncResult(long handle, string result)
+		[JSExport]
+		public static void DispatchAsyncResult([JSMarshalAs<JSType.Number>] long handle, string result)
 			=> RemoveAsyncTask(handle)?.TrySetResult(result);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static void DispatchAsyncError(long handle, string error)
+		[JSExport]
+		public static void DispatchAsyncError([JSMarshalAs<JSType.Number>] long handle, string error)
 			=> RemoveAsyncTask(handle)?.TrySetException(new ApplicationException(error));
 
 		private static TaskCompletionSource<string>? RemoveAsyncTask(long handle)

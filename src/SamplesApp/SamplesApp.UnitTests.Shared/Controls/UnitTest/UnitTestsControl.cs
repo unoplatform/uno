@@ -769,7 +769,7 @@ namespace Uno.UI.Samples.Tests
 						canRetry = false;
 						var cleanupActions = new List<Func<Task>>
 						{
-							CloseRemainingPopupsAsync
+							GenericCleanupAsync
 						};
 
 						try
@@ -976,18 +976,14 @@ namespace Uno.UI.Samples.Tests
 				}
 			}
 
-			async Task CloseRemainingPopupsAsync()
+			async Task GenericCleanupAsync()
 			{
 				await TestServices.WindowHelper.RootElementDispatcher.RunAsync(() =>
 				{
-					var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot);
-					if (popups.Count > 0)
-					{
-						foreach (var popup in popups)
-						{
-							popup.IsOpen = false;
-						}
-					}
+					CloseRemainingPopups();
+#if HAS_UNO
+					ResetLastInputDeviceType();
+#endif
 				});
 			}
 
@@ -1034,6 +1030,35 @@ namespace Uno.UI.Samples.Tests
 				}
 			}
 		}
+
+		private static void CloseRemainingPopups()
+		{
+			var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot);
+			if (popups.Count > 0)
+			{
+				foreach (var popup in popups)
+				{
+					popup.IsOpen = false;
+				}
+			}
+		}
+
+#if HAS_UNO
+		private static void ResetLastInputDeviceType()
+		{
+			// Some tests inject keyboard input, which can then mean that subsequent tests will display
+			// system focus visuals which are unexpected. This resets the last input device type to mouse.
+			// Mouse is to stay in line with WinUI integration tests, as some rely on the fact that on
+			// initial focus of a TextBox the last input device type is not touch (this device type does not
+			// select all text on initial focus, only on second tap of the input).
+			// If this is changed ComboBoxIntegrationTests.ValidateTextSubmittedHandledProperty will probably
+			// start to fail for example.
+			if (TestServices.WindowHelper.XamlRoot?.VisualTree?.ContentRoot?.InputManager is { } inputManager)
+			{
+				inputManager.LastInputDeviceType = Xaml.Input.InputDeviceType.Mouse;
+			}
+		}
+#endif
 
 		private async ValueTask ExecuteOnDispatcher(Func<Task> asyncAction, CancellationToken ct = default)
 		{

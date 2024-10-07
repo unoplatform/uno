@@ -18,7 +18,7 @@
 				if ((<any>globalThis).DotnetExports !== undefined) {
 					DragDropExtension._dispatchDropEventMethod = (<any>globalThis).DotnetExports.UnoUI.Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension.OnNativeDropEvent;
 				} else {
-					DragDropExtension._dispatchDropEventMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension:OnNativeDropEvent");
+					throw `Unable to find dotnet exports`;
 				}
 			}
 

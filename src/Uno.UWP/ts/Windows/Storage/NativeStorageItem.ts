@@ -78,7 +78,7 @@
 				if ((<any>globalThis).DotnetExports !== undefined) {
 					NativeStorageItem.generateGuidBinding = (<any>globalThis).DotnetExports.Uno.Uno.Storage.NativeStorageItem.GenerateGuids;
 				} else {
-					NativeStorageItem.generateGuidBinding = (<any>Module).mono_bind_static_method("[Uno] Uno.Storage.NativeStorageItem:GenerateGuids");
+					throw `Unable to find dotnet exports`;
 				}
 			}
 

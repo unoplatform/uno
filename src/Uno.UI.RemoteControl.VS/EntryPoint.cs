@@ -10,11 +10,13 @@ using System.Net.Sockets;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.Build.Evaluation;
 using Microsoft.Internal.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
 using Uno.UI.RemoteControl.VS.DebuggerHelper;
 using Uno.UI.RemoteControl.VS.Helpers;
@@ -47,6 +49,7 @@ public partial class EntryPoint : IDisposable
 	private int _msBuildLogLevel;
 	private System.Diagnostics.Process? _process;
 	private SemaphoreSlim _processGate = new(1);
+	private IServiceProvider? _visualStudioServiceProvider;
 
 	private int _remoteControlServerPort;
 	private string? _remoteControlConfigCookie;
@@ -527,6 +530,44 @@ public partial class EntryPoint : IDisposable
 		{
 			_debugAction?.Invoke($"Failed to dispose Remote Control server: {e}");
 		}
+	}
+
+	protected IServiceProvider VisualStudioServiceProvider
+	{
+		get
+		{
+			ThreadHelper.ThrowIfNotOnUIThread();
+
+			if (_visualStudioServiceProvider == null)
+			{
+				_visualStudioServiceProvider = _dte as IServiceProvider;
+				if (_visualStudioServiceProvider == null)
+				{
+					var serviceProvider = (Microsoft.VisualStudio.OLE.Interop.IServiceProvider?)((_dte is Microsoft.VisualStudio.OLE.Interop.IServiceProvider) ? _dte : null);
+					_visualStudioServiceProvider = (IServiceProvider)new Microsoft.VisualStudio.Shell.ServiceProvider(serviceProvider);
+				}
+			}
+			return _visualStudioServiceProvider;
+		}
+	}
+
+	private Version? GetVisualStudioReleaseVersion()
+	{
+		ThreadHelper.ThrowIfNotOnUIThread();
+
+		if (VisualStudioServiceProvider?.GetService(typeof(SVsShell)) is IVsShell service)
+		{
+			if (service.GetProperty(-9068, out var releaseVersion) != 0)
+			{
+				return null;
+			}
+			if (releaseVersion is string releaseVersionAsText && Version.TryParse(releaseVersionAsText.Split(' ')[0], out var result))
+			{
+				return result;
+			}
+		}
+
+		return null;
 	}
 
 	private class Logger(EntryPoint entryPoint) : ILogger

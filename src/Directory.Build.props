@@ -48,7 +48,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<MicrosoftNetCompilersToolsetVersion>4.11.0-2.final</MicrosoftNetCompilersToolsetVersion>
+		<MicrosoftNetCompilersToolsetVersion>4.12.0-1.final</MicrosoftNetCompilersToolsetVersion>
 	</PropertyGroup>
 
   <ItemGroup>
@@ -290,5 +290,8 @@
 			</ItemGroup>
 		</When>
 	</Choose>
+
+	<!-- empty placeholder -->
+	<Target Name="_UnoGetCopyToOutputItems" />
 
 </Project>

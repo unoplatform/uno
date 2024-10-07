@@ -7,54 +7,76 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 
 using Foundation;
+using System.Threading.Tasks;
+using System.Threading;
+using Windows.System;
+using Windows.UI.Core;
+using CoreFoundation;
+using StoreKit;
 
-namespace Windows.Services.Store
+namespace Windows.Services.Store;
+
+public sealed partial class StoreContext
 {
-	public sealed partial class StoreContext
+	private static HttpClient _httpClient;
+
+	public IAsyncOperation<StoreProductResult> GetStoreProductForCurrentAppAsync()
 	{
-		private static HttpClient _httpClient;
-
-		public IAsyncOperation<StoreProductResult> GetStoreProductForCurrentAppAsync()
+		return AsyncOperation.FromTask(async ct =>
 		{
-			return AsyncOperation.FromTask(async ct =>
+			try
 			{
-				try
+				var bundleId = NSBundle.MainBundle.BundleIdentifier;
+				var url = $"http://itunes.apple.com/lookup?bundleId={bundleId}";
+
+				_httpClient ??= new HttpClient();
+				var json = await _httpClient.GetStringAsync(url);
+
+				var regex = TrackParser();
+				var match = regex.Match(json);
+				if (!match.Success)
 				{
-					var bundleId = NSBundle.MainBundle.BundleIdentifier;
-					var url = $"http://itunes.apple.com/lookup?bundleId={bundleId}";
+					throw new InvalidOperationException("Failed to retrieve trackId from bundleId.");
+				}
 
-					_httpClient ??= new HttpClient();
-					var json = await _httpClient.GetStringAsync(url);
+				var storeId = match.Groups[1].Value;
 
-					var regex = TrackParser();
-					var match = regex.Match(json);
-					if (!match.Success)
+				return new StoreProductResult
+				{
+					Product = new StoreProduct
 					{
-						throw new InvalidOperationException("Failed to retrieve trackId from bundleId.");
+						StoreId = storeId,
+						LinkUri = new Uri($"https://itunes.apple.com/app/id{storeId}")
 					}
-
-					var storeId = match.Groups[1].Value;
-
-					return new StoreProductResult
-					{
-						Product = new StoreProduct
-						{
-							StoreId = storeId,
-							LinkUri = new Uri($"https://itunes.apple.com/app/id{storeId}")
-						}
-					};
-				}
-				catch (Exception exception)
+				};
+			}
+			catch (Exception exception)
+			{
+				return new StoreProductResult
 				{
-					return new StoreProductResult
-					{
-						ExtendedError = exception
-					};
-				}
-			});
-		}
+					ExtendedError = exception
+				};
+			}
+		});
+	}
 
-		[GeneratedRegex("trackId[^0-9]*([0-9]*)")]
-		private static partial Regex TrackParser();
+	[GeneratedRegex("trackId[^0-9]*([0-9]*)")]
+	private static partial Regex TrackParser();
+
+	private async Task<StoreRateAndReviewResult> RequestRateAndReviewAppTaskAsync(CancellationToken cancellationToken)
+	{
+		try
+		{
+			await CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
+			{
+				SKStoreReviewController.RequestReview(UIApplication.SharedApplication.KeyWindow.WindowScene);
+			});
+
+			return new StoreRateAndReviewResult(StoreRateAndReviewStatus.Succeeded);
+		}
+		catch (Exception ex)
+		{
+			return new StoreRateAndReviewResult(StoreRateAndReviewStatus.Error, ex);
+		}
 	}
 }
