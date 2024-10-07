@@ -25,7 +25,7 @@ The protected constructor additionally requires a `Func<Window>` argument that f
 
 The 3 abstract methods above all take a `Silk.NET.OpenGL.GL` parameter that can be used to make OpenGL calls.
 
-The `Init` method is a regular OpenGL setup method that you can use to set up the needed OpenGL objects, like textures, Vertex Array Buffers (VAOs), Element Array Buffers (EBOs), etc.  The `OnDestroy` method is the complement of `Init` and is used to clean up any allocated resources. `Init` and `OnDestroy` might be called multiple times alternatingly. In other words, 2 `OnDestroy` calls are guaranteed to have an `Init` call in between and vice versa. 
+The `Init` method is a regular OpenGL setup method that you can use to set up the needed OpenGL objects, like textures, Vertex Array Buffers (VAOs), Element Array Buffers (EBOs), etc.  The `OnDestroy` method is the complement of `Init` and is used to clean up any allocated resources. `Init` and `OnDestroy` might be called multiple times alternatingly. In other words, 2 `OnDestroy` calls are guaranteed to have an `Init` call in between and vice versa.
 
 The `RenderOverride` is the main render-loop function. When adding your drawing logic in `RenderOverride`, you can assume that the OpenGL viewport rectangle is already set and its dimensions are equal to the `resolution` parameter provided to the `GLCanvasElement` constructor.
 

@@ -44,7 +44,8 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 	private readonly WriteableBitmap _backBuffer;
 
 	private bool _loadedAtleastOnce;
-	private INativeOpenGLWrapper? _nativeOpenGlWrapper; // valid if and only if _loadedAtleastOnce and _glAvailable
+	// valid if and only if _loadedAtleastOnce and _glAvailable
+	private INativeOpenGLWrapper? _nativeOpenGlWrapper;
 	// These are valid if and only if IsLoaded and _glAvailable
 	private GL? _gl;
 	private uint _framebuffer;
