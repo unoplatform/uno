@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
-using Microsoft.UI.Dispatching;
 using Silk.NET.OpenGL;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -11,6 +10,12 @@ using Silk.NET.Core.Contexts;
 using Uno.Extensions;
 using Uno.Logging;
 using Window = Microsoft.UI.Xaml.Window;
+
+#if !UNO_UWP_BUILD
+using Microsoft.UI.Dispatching;
+#else
+using Windows.System;
+#endif
 
 #if WINAPPSDK
 using System.Runtime.InteropServices;
@@ -137,7 +142,7 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 		}
 	}
 
-	private void OnClosed(object o, WindowEventArgs windowEventArgs)
+	private void OnClosed(object _, object __)
 	{
 		if (GlAvailable!.Value)
 		{

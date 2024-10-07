@@ -59,6 +59,10 @@
 	</Choose>
 
 	<PropertyGroup>
+		<DefineConstants Condition="$(UNO_UWP_BUILD) == true">$(DefineConstants);UNO_UWP_BUILD</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup>
 		<DefaultItemExcludes>$(DefaultItemExcludes);angle/**</DefaultItemExcludes>
 	</PropertyGroup>
 
