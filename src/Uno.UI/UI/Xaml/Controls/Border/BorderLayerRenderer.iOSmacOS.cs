@@ -400,7 +400,10 @@ partial class BorderLayerRenderer
 					Action onInvalidateRender = () => layer.FillColor = Brush.GetFallbackColor(borderBrush);
 
 					onInvalidateRender();
-					borderBrush.RegisterInvalidateRender(onInvalidateRender).DisposeWith(disposables);
+					if (borderBrush is not null)
+					{
+						borderBrush.RegisterInvalidateRender(onInvalidateRender).DisposeWith(disposables);
+					}
 				}
 			}
 
