@@ -120,7 +120,7 @@ public class SimpleTriangleGlCanvasElement()
         var vertexCode =
         $$"""
         {{versionDef}}
-        precision highp float; # for OpenGL ES compatibility
+        precision highp float; // for OpenGL ES compatibility
 
         layout (location = 0) in vec3 aPosition;
         out vec4 vertexColor;
@@ -135,7 +135,7 @@ public class SimpleTriangleGlCanvasElement()
         var fragmentCode =
         $$"""
         {{versionDef}}
-        precision highp float; # for OpenGL ES compatibility
+        precision highp float; // for OpenGL ES compatibility
 
         out vec4 out_color;
         in vec4 vertexColor;
