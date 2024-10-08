@@ -66,8 +66,8 @@
 		<DefaultItemExcludes>$(DefaultItemExcludes);angle/**</DefaultItemExcludes>
 	</PropertyGroup>
 
-	<Target Name="BuildAngle" BeforeTargets="CoreCompile" Condition="$([MSBuild]::IsOsPlatform('OSX'))">
-		<Exec Command="$(MSBuildThisFileDirectory)/build_angle.sh" WorkingDirectory="$(MSBuildThisFileDirectory)" />
+	<Target Name="BuildAngle" BeforeTargets="CoreCompile">
+		<Exec Command="$(MSBuildThisFileDirectory)/get_angle_binaries.sh" WorkingDirectory="$(MSBuildThisFileDirectory)" />
 	</Target>
 
 	<ItemGroup>
