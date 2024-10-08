@@ -537,7 +537,7 @@ public sealed partial class DiagnosticsOverlay : Control
 		{
 			DiagnosticViewRegistrationMode.All => true,
 			DiagnosticViewRegistrationMode.OnDemand => false,
-			_ => _overlays.Count(overlay => overlay.Value.IsMaterialized(registration.View)) is 0
+			_ => !_overlays.Any(overlay => overlay.Value.IsMaterialized(registration.View))
 		};
 	}
 
