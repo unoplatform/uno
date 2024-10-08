@@ -313,24 +313,16 @@ namespace Microsoft.UI.Xaml.Controls
 			return Math.Max(minOffset, Math.Min(offset, maxOffset));
 		}
 
-#elif __IOS__ // Note: No __ANDROID__, the ICustomScrollInfo support is made directly in the NativeScrollContentPresenter                                                                                                                                                                                                                                                                                                                                                            
+#elif __IOS__ // Kept for API back compat
 		protected override Size MeasureOverride(Size size)
 		{
-			var result = base.MeasureOverride(size);
-
-			(RealContent as ICustomScrollInfo).ApplyViewport(ref result);
-
-			return result;
+			return base.MeasureOverride(size);
 		}
 
 		/// <inheritdoc />
 		protected override Size ArrangeOverride(Size finalSize)
 		{
-			var result = base.ArrangeOverride(finalSize);
-
-			(RealContent as ICustomScrollInfo).ApplyViewport(ref result);
-
-			return result;
+			return base.ArrangeOverride(finalSize);
 		}
 #endif
 
