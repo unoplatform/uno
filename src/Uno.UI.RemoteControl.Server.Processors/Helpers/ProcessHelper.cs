@@ -7,7 +7,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Uno.UI.RemoteControl.Server.Processors.Helpers
+namespace Uno.UI.RemoteControl.Helpers
 {
 	internal class ProcessHelper
 	{
@@ -24,6 +24,8 @@ namespace Uno.UI.RemoteControl.Server.Processors.Helpers
 				StartInfo =
 				{
 					UseShellExecute = false,
+					CreateNoWindow = true,
+					WindowStyle = ProcessWindowStyle.Hidden,
 					RedirectStandardOutput = true,
 					RedirectStandardError = true,
 					FileName = executable,
