@@ -10,18 +10,21 @@ using System.Net.Sockets;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.Build.Evaluation;
 using Microsoft.Internal.VisualStudio.Shell;
+using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Threading;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.Threading;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
+using Uno.UI.RemoteControl.Messaging.IDEChannel;
 using Uno.UI.RemoteControl.VS.DebuggerHelper;
 using Uno.UI.RemoteControl.VS.Helpers;
 using Uno.UI.RemoteControl.VS.IdeChannel;
+using Uno.UI.RemoteControl.VS.Notifications;
 using ILogger = Uno.UI.RemoteControl.VS.Helpers.ILogger;
 using Task = System.Threading.Tasks.Task;
 
@@ -344,6 +347,7 @@ public partial class EntryPoint : IDisposable
 
 				_ideChannelClient = new IdeChannelClient(pipeGuid, new Logger(this));
 				_ideChannelClient.ForceHotReloadRequested += OnForceHotReloadRequestedAsync;
+				_ideChannelClient.InfoBarNotificationRequested += OnInfoBarNotificationRequestedAsync;
 				_ideChannelClient.ConnectToHost();
 
 				// Set the port to the projects
@@ -416,6 +420,67 @@ public partial class EntryPoint : IDisposable
 			}
 
 			await EnsureServerAsync();
+		}
+	}
+
+	private async Task OnInfoBarNotificationRequestedAsync(object? sender, NotificationIdeMessage message)
+	{
+		try
+		{
+			await _asyncPackage.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+			if (await _asyncPackage.GetServiceAsync(typeof(SVsShell)) is IVsShell shell &&
+				await _asyncPackage.GetServiceAsync(typeof(SVsInfoBarUIFactory)) is IVsInfoBarUIFactory infoBarFactory)
+			{
+				await CreateInfoBarFactoryAsync(message, shell, infoBarFactory);
+			}
+		}
+		catch (Exception e) when (_ideChannelClient is not null)
+		{
+			_debugAction?.Invoke($"Failed to handle InfoBar Notification Requested with message {e.Message}");
+			throw;
+		}
+	}
+
+	private async Task CreateInfoBarFactoryAsync(NotificationIdeMessage e, IVsShell shell, IVsInfoBarUIFactory infoBarFactory)
+	{
+		if (_ideChannelClient is null)
+		{
+			return;
+		}
+		var factory = new InfoBarFactory(infoBarFactory, shell);
+
+		var infoBar = await factory.CreateAsync(
+			new InfoBarModel(
+				e.Message,
+				e.Commands.Select(Commands => new ActionBarItem
+				{
+					Text = Commands.Text,
+					Name = Commands.Name,
+					ActionContext = Commands.Parameter,
+					IsButton = true,
+				}).ToArray(),
+				e.Kind == NotificationKind.Information ? KnownMonikers.StatusInformation : KnownMonikers.StatusError,
+				isCloseButtonVisible: true));
+
+		if (infoBar is not null)
+		{
+			infoBar.ActionItemClicked += (s, e) =>
+			{
+				_asyncPackage.JoinableTaskFactory.Run(async () =>
+				{
+					if (e.ActionItem is ActionBarItem action &&
+						action.Name is { } command &&
+						await GetActiveWindowHandleAsync() is { } windowID &&
+						windowID != IntPtr.Zero
+						)
+					{
+						;
+						await _ideChannelClient.SendToDevServerAsync(new CommandRequestIdeMessage(windowID.ToInt64(), command, action.ActionContext?.ToString()), _ct.Token);
+					}
+				});
+			};
+			await infoBar.TryShowInfoBarUIAsync();
 		}
 	}
 
@@ -581,5 +646,26 @@ public partial class EntryPoint : IDisposable
 		public void Info(string message) => entryPoint._infoAction?.Invoke(message);
 		public void Warn(string message) => entryPoint._warningAction?.Invoke(message);
 		public void Verbose(string message) => entryPoint._verboseAction?.Invoke(message);
+	}
+
+	public async Task<IntPtr> GetActiveWindowHandleAsync()
+	{
+		await _asyncPackage.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+		var vsMonitorSelection = await _asyncPackage.GetServiceAsync(typeof(SVsShellMonitorSelection)) as IVsMonitorSelection;
+		if (vsMonitorSelection == null)
+		{
+			throw new InvalidOperationException("Cannot retrieve IVsMonitorSelection.");
+		}
+
+		vsMonitorSelection.GetCurrentElementValue((uint)VSConstants.VSSELELEMID.SEID_WindowFrame, out object windowFrameObj);
+
+		if (windowFrameObj is IVsWindowFrame windowFrame)
+		{
+			windowFrame.GetProperty((int)__VSFPROPID2.VSFPROPID_ParentHwnd, out object windowHandle);
+			return (IntPtr)windowHandle;
+		}
+
+		return IntPtr.Zero; // Retorna 0 se nenhuma janela ativa foi encontrada
 	}
 }
