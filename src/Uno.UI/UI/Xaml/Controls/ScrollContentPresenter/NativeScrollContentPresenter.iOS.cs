@@ -292,8 +292,8 @@ namespace Microsoft.UI.Xaml.Controls
 					if (ZoomScale == 1)
 					{
 						_content.Frame = new CGRect(
-							GetAdjustedArrangeX(iFwElt, adjustedMeasure, (nfloat)contentMargin.Horizontal()),
-							GetAdjustedArrangeY(iFwElt, adjustedMeasure, (nfloat)contentMargin.Vertical()),
+							0,
+							0,
 							Math.Max(0, adjustedMeasure.Width),
 							Math.Max(0, adjustedMeasure.Height)
 						);
@@ -336,70 +336,6 @@ namespace Microsoft.UI.Xaml.Controls
 			var adjustedHeight = isVerticalScrollDisabled ? this.Frame.Height : measuredSize.Height;
 
 			return new CGSize(adjustedWidth, adjustedHeight);
-		}
-
-		private nfloat GetAdjustedArrangeX(IFrameworkElement child, CGSize adjustedMeasuredSize, double horizontalMargin)
-		{
-			var frameSize = Frame.Size;
-
-			switch (child?.HorizontalAlignment ?? HorizontalAlignment.Stretch)
-			{
-				case HorizontalAlignment.Left:
-					return (nfloat)child.Margin.Left;
-
-				case HorizontalAlignment.Right:
-					return (adjustedMeasuredSize.Width + horizontalMargin) <= frameSize.Width ?
-						frameSize.Width - adjustedMeasuredSize.Width - (nfloat)child.Margin.Right :
-						(nfloat)child.Margin.Left;
-
-				case HorizontalAlignment.Stretch: //Treat Stretch the same as Center here even if the child is not the same Width as the container, adjustments have already been applied
-				case HorizontalAlignment.Center:
-					var layoutWidth = adjustedMeasuredSize.Width + horizontalMargin;
-					if (layoutWidth <= frameSize.Width)
-					{
-						var marginToFrame = (frameSize.Width - layoutWidth) / 2;
-						return (nfloat)(marginToFrame + child.Margin.Left);
-					}
-					else
-					{
-						return (nfloat)child.Margin.Left;
-					}
-
-				default:
-					throw new NotSupportedException("Invalid HorizontalAlignment");
-			}
-		}
-
-		private nfloat GetAdjustedArrangeY(IFrameworkElement child, CGSize adjustedMeasuredSize, double verticalMargin)
-		{
-			var frameSize = Frame.Size;
-
-			switch (child?.VerticalAlignment ?? VerticalAlignment.Stretch)
-			{
-				case VerticalAlignment.Top:
-					return (nfloat)child.Margin.Top;
-
-				case VerticalAlignment.Bottom:
-					return (adjustedMeasuredSize.Height + verticalMargin) <= frameSize.Height ?
-						frameSize.Height - adjustedMeasuredSize.Height - (nfloat)child.Margin.Bottom :
-						(nfloat)child.Margin.Top;
-
-				case VerticalAlignment.Stretch: //Treat Stretch the same as Center even if the child is not the same Height as the container, adjustments have already been applied
-				case VerticalAlignment.Center:
-					var layoutHeight = adjustedMeasuredSize.Height + verticalMargin;
-					if (layoutHeight <= frameSize.Height)
-					{
-						var marginToFrame = (frameSize.Height - layoutHeight) / 2;
-						return (nfloat)(marginToFrame + child.Margin.Top);
-					}
-					else
-					{
-						return (nfloat)child.Margin.Top;
-					}
-
-				default:
-					throw new NotSupportedException("Invalid VerticalAlignment");
-			}
 		}
 
 		private nfloat GetAdjustedArrangeWidth(IFrameworkElement child, nfloat horizontalMargin)
