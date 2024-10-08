@@ -6,7 +6,7 @@ using Windows.Graphics;
 
 namespace Microsoft.UI.Composition
 {
-	internal class SkiaGeometrySource2D : IGeometrySource2D
+	internal class SkiaGeometrySource2D : IGeometrySource2D, IDisposable
 	{
 		public SkiaGeometrySource2D(SKPath source)
 		{
@@ -18,5 +18,7 @@ namespace Microsoft.UI.Composition
 		/// This can lead to nasty invalidation bugs where the SKPath changes without notifying anyone.
 		/// </remarks>
 		public SKPath Geometry { get; }
+
+		public void Dispose() => Geometry.Dispose();
 	}
 }
