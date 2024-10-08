@@ -21,7 +21,6 @@ using System.Threading.Tasks;
 using Android.Views.Animations;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Controls;
-using Microsoft.UI.Xaml.Media;
 
 namespace Uno.UI
 {
@@ -705,10 +704,6 @@ namespace Uno.UI
 				if (root.Parent is ViewGroup parent)
 				{
 					root = parent;
-				}
-				else if (root is DependencyObject @do && VisualTreeHelper.GetParent(@do) is ViewGroup managedParent)
-				{
-					root = managedParent;
 				}
 				else
 				{
