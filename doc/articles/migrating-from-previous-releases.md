@@ -73,7 +73,7 @@ If you are upgrading from an Uno Platform 5.2 project, you can remove the follow
 
 ### Default Text Font
 
-Starting from Uno Platform 5.3, the [default text font](xref:Uno.Features.CustomFonts#default-text-font) has been changed to [Open Sans](https://github.com/unoplatform/uno.fonts#open-sans-font) in the templates. This is because Uno.Sdk sets `UnoDefaultFont` MSBuild property to `OpenSans` when it's not set to something else. For more information, see [Custom fonts](../features/custom-fonts.md).
+Starting from Uno Platform 5.3, the [default text font](xref:Uno.Features.CustomFonts#default-text-font) has been changed to [Open Sans](https://github.com/unoplatform/uno.fonts#open-sans-font) in the templates. This is because Uno.Sdk sets `UnoDefaultFont` MSBuild property to `OpenSans` when it's not set to something else. For more information, see [Custom fonts](xref:Uno.Features.CustomFonts).
 
 ### Rider support
 
