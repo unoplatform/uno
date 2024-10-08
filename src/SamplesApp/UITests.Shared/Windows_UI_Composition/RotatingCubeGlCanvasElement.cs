@@ -22,7 +22,7 @@ namespace UITests.Shared.Windows_UI_Composition
 {
 #if WINAPPSDK
 	public class RotatingCubeGlCanvasElement() : GLCanvasElement(1200, 800, () => SamplesApp.App.MainWindow)
-#else
+#elif __SKIA__
 	public class RotatingCubeGlCanvasElement() : GLCanvasElement(1200, 800, null)
 #endif
 	{
@@ -67,9 +67,8 @@ namespace UITests.Shared.Windows_UI_Composition
 			0, 4, 5,
 		};
 
-		private readonly string _vertexShaderSource =
+		private readonly string _vertexShaderSource = "#version 330" + Environment.NewLine +
 		"""
-		precision highp float; # for OpenGL ES compatibility
 
 		layout(location = 0) in vec3 pos;
 		layout(location = 1) in vec3 vertex_color;
@@ -84,9 +83,8 @@ namespace UITests.Shared.Windows_UI_Composition
 		}                                      
 		""";
 
-		private readonly string FragmentShaderSource =
+		private readonly string FragmentShaderSource = "#version 330" + Environment.NewLine +
 		"""
-		precision highp float; # for OpenGL ES compatibility
 
 		in vec3 color;
 
@@ -106,11 +104,7 @@ namespace UITests.Shared.Windows_UI_Composition
 			_vao.VertexAttributePointer(0, 3, VertexAttribPointerType.Float, 6, 0);
 			_vao.VertexAttributePointer(1, 3, VertexAttribPointerType.Float, 6, 3);
 
-			var slVersion = Gl.GetStringS(StringName.ShadingLanguageVersion);
-			var versionDef = slVersion.Contains("OpenGL ES", StringComparison.InvariantCultureIgnoreCase)
-				? "#version 300 es"
-				: "#version 330";
-			_shader = new Shader(Gl, versionDef + Environment.NewLine + _vertexShaderSource, versionDef + Environment.NewLine + FragmentShaderSource);
+			_shader = new Shader(Gl, _vertexShaderSource, FragmentShaderSource);
 		}
 
 		protected override void OnDestroy(GL Gl)

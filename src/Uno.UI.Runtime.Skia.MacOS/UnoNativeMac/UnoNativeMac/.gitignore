@@ -1,3 +1,2 @@
-skiasharp_*_nativeassets.zip
-skiasharp_*_nativeassets/
+SkiaSharp.NativeAssets.macOS.*/
 libSkiaSharp.dylib

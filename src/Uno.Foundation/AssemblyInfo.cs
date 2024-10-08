@@ -43,5 +43,4 @@ using global::System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.WebAssembly")]
 [assembly: InternalsVisibleTo("Uno.UI.Composition")]
 [assembly: InternalsVisibleTo("Uno.UI.Dispatching")]
-[assembly: InternalsVisibleTo("Uno.WinUI.Graphics3DGL")]
 [assembly: System.Reflection.AssemblyMetadata("IsTrimmable", "True")]

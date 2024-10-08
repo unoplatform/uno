@@ -5,7 +5,7 @@ uid: Uno.Controls.GLCanvasElement
 ## Uno.WinUI.Graphics3D.GLCanvasElement
 
 > [!IMPORTANT]
-> This functionality is only available on WinUI and Skia Desktop (`netX.0-desktop`) targets that are running on platforms with support for hardware acceleration. On Windows and Linux, this means having (desktop) OpenGL support. On Mac OS X, this means having Vulkan support (to be used by [ANGLE](https://en.wikipedia.org/wiki/ANGLE_(software))).
+> This functionality is only available on WinUI and Skia Desktop (`netX.0-desktop`) targets that are running with Desktop OpenGL (not GLES) hardware acceleration. This is also not available on MacOS.
 
 `GLCanvasElement` is a `Grid` for drawing 3D graphics with OpenGL. This class comes as a part of the `Uno.WinUI.Graphics3D` package.
 
@@ -21,17 +21,17 @@ protected abstract void OnDestroy(GL gl);
 
 The protected constructor has `width` and `height` parameters, which decide the resolution of the offscreen framebuffer that the `GLCanvasElement` will draw onto. Note that these parameters are unrelated to the final size of the drawing in the window. After drawing (using `RenderOverride`) is done, the output is resized to fit the arranged size of the `GLCanvasElement`. You can control the final size just like any other `Grid`, e.g. using `MeasureOverride`, `ArrangeOverride`, the `Width/Height` properties, etc.
 
-The protected constructor additionally requires a `Func<Window>` argument that fetches the `Microsoft.UI.Xaml.Window` object that the `GLCanvasElement` belongs to. This function is required because WinUI doesn't provide a way to get the `Window` of a `FrameworkElement`. This paramater is ignored on Uno Platform and can be set to null. This function is only called while the `GLCanvasElement` is still in the visual tree.
+On WinUI, the protected constructor additionally requires a `Func<Window>` argument that fetches the `Microsoft.UI.Xaml.Window` object that the `GLCanvasElement` belongs to. This function is required because WinUI doesn't provide a way to get the `Window` of a `FrameworkElement`. This paramater is ignored on Uno Platform and can be set to null. This function is only called while the `GLCanvasElement` is loaded.
 
 The 3 abstract methods above all take a `Silk.NET.OpenGL.GL` parameter that can be used to make OpenGL calls.
 
-The `Init` method is a regular OpenGL setup method that you can use to set up the needed OpenGL objects, like textures, Vertex Array Buffers (VAOs), Element Array Buffers (EBOs), etc.  The `OnDestroy` method is the complement of `Init` and is used to clean up any allocated resources. `Init` and `OnDestroy` might be called multiple times alternatingly. In other words, 2 `OnDestroy` calls are guaranteed to have an `Init` call in between and vice versa.
+The `Init` method is a regular OpenGL setup method that you can use to set up the needed OpenGL objects, like textures, Vertex Array Buffers (VAOs), Element Array Buffers (EBOs), etc.
+
+The `OnDestroy` method is the complement of `Init` and is used to clean up any allocated resources.
 
 The `RenderOverride` is the main render-loop function. When adding your drawing logic in `RenderOverride`, you can assume that the OpenGL viewport rectangle is already set and its dimensions are equal to the `resolution` parameter provided to the `GLCanvasElement` constructor.
 
-On MacOS, since OpenGL support is not natively present, we use [ANGLE](https://en.wikipedia.org/wiki/ANGLE_(software)) to provide OpenGL ES support. This means that we're actually using OpenGL ES 3.00, not OpenGL. Due to the similarity between desktop OpenGL and OpenGL ES, (almost) all the OpenGL ES functions are present in the `Silk.NET.OpenGL.GL` API surface and therefore we can use the same class to represent both the OpenGL and OpenGL ES APIs. To run the same `GLCanvasElement` subclasses on all supported platforms, make sure to use a subset of functions that are present in both APIs (which is almost all of OpenGL ES).
-
-To learn more about using [Silk.NET](https://www.nuget.org/packages/Silk.NET.OpenGL/) as a C# binding for OpenGL, see the examples in the Silk.NET repository [here](https://github.com/dotnet/Silk.NET/tree/main/examples/CSharp). Note that the windowing and inputs APIs in Silk.NET are not relevant to `GLCanvasElement`, since we only use Silk.NET as an OpenGL binding library, not a windowing library.
+To learn more about using Silk.NET as a C# binding for OpenGL, see the examples in the Silk.NET repository [here](https://github.com/dotnet/Silk.NET/tree/main/examples/CSharp). Note that the windowing and inputs APIs in Silk.NET are not relevant to `GLCanvasElement`, since we only use Silk.NET as an OpenGL binding library, not a windowing library.
 
 Additionally, `GLCanvasElement` has an `Invalidate` method that requests a redrawing of the `GLCanvasElement`, calling `RenderOverride` in the process. Note that `RenderOverride` will only be called once per `Invalidate` call and the output will be saved to be used in future frames. To update the output, you must call `Invalidate`. If you need to continuously update the output (e.g. in an animation), you can add an `Invalidate` call inside `RenderOverride`.
 
@@ -82,12 +82,12 @@ public partial class GLCanvasElementExample : UserControl
 ```csharp
 // GLTriangleElement.cs
 # __SKIA__ || WINAPPSDK
-// https://learnopengl.com/Getting-started/Hello-Triangle
 public class SimpleTriangleGlCanvasElement()
-#if WINAPPSDK
-    : GLCanvasElement(1200, 800, () => SamplesApp.App.MainWindow)
-#else
-    : GLCanvasElement(1200, 800, null)
+#if __SKIA__
+        : GLCanvasElement(1200, 800, null)
+#elif WINAPPSDK
+        // getWindowFunc is usually implemented by having a static property that stores the Window object when creating it (usually in App.cs) and then fetching it in getWindowFunc
+        : GLCanvasElement(1200, 800, /* your getWindowFunc */)
 #endif
 {
     private uint _vao;
@@ -113,14 +113,10 @@ public class SimpleTriangleGlCanvasElement()
         gl.VertexAttribPointer(0, 3, GLEnum.Float, false, 3 * sizeof(float), (void*)0);
         gl.EnableVertexAttribArray(0);
 
-        var slVersion = gl.GetStringS(StringName.ShadingLanguageVersion);
-        var versionDef = slVersion.Contains("OpenGL ES", StringComparison.InvariantCultureIgnoreCase)
-            ? "#version 300 es"
-            : "#version 330";
+        // string.Empty is added so that the version line is not interpreted as a preprocessor command
         var vertexCode =
         $$"""
-        {{versionDef}}
-        precision highp float; # for OpenGL ES compatibility
+        {{string.Empty}}#version 330
 
         layout (location = 0) in vec3 aPosition;
         out vec4 vertexColor;
@@ -132,10 +128,10 @@ public class SimpleTriangleGlCanvasElement()
         }
         """;
 
+        // string.Empty is added so that the version line is not interpreted as a preprocessor command
         var fragmentCode =
         $$"""
-        {{versionDef}}
-        precision highp float; # for OpenGL ES compatibility
+        {{string.Empty}}#version 330
 
         out vec4 out_color;
         in vec4 vertexColor;
