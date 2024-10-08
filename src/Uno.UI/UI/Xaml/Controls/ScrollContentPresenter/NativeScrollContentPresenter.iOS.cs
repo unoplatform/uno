@@ -30,7 +30,7 @@ using Windows.Devices.Input;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	partial class NativeScrollContentPresenter : UIScrollView, DependencyObject, ISetLayoutSlots
+	partial class NativeScrollContentPresenter : UIScrollView, DependencyObject, ILayouterElement
 	{
 		private readonly WeakReference<ScrollViewer> _scrollViewer;
 
@@ -207,14 +207,9 @@ namespace Microsoft.UI.Xaml.Controls
 		public override void SetNeedsLayout()
 		{
 			base.SetNeedsLayout();
-
-			_requiresMeasure = true;
-			Superview?.SetNeedsLayout();
 		}
 
 		#region Layouting
-		private CGSize _measuredSize;
-		private bool _requiresMeasure;
 
 		private ScrollBarVisibility _verticalScrollBarVisibility;
 		private ScrollBarVisibility _horizotalScrollBarVisibility;
@@ -242,230 +237,67 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public override CGSize SizeThatFits(CGSize size)
 		{
-			if (_content != null)
+			Size availableSize = size;
+			var child = this.GetChildren().FirstOrDefault();
+
+			var desiredChildSize = default(Size);
+			if (child != null)
 			{
-				var availableSizeForChild = AdjustSize(size);
+				var scrollSpace = availableSize;
+				if (VerticalScrollBarVisibility != ScrollBarVisibility.Disabled)
+				{
+					scrollSpace.Height = double.PositiveInfinity;
+				}
+				if (HorizontalScrollBarVisibility != ScrollBarVisibility.Disabled)
+				{
+					scrollSpace.Width = double.PositiveInfinity;
+				}
 
-				//No need to add margin at this level. It's already taken care of during the Layouter measuring.
-				_measuredSize = _content.SizeThatFits(availableSizeForChild);
+				desiredChildSize = MobileLayoutingHelpers.MeasureElement(child, scrollSpace);
 
-				// The dimensions are constrained to the size of the ScrollViewer, if available
-				// otherwise to the size of the child.
-				return new CGSize(
-					Math.Min(size.Width, _measuredSize.Width),
-					Math.Min(size.Height, _measuredSize.Height)
-				);
+				// Give opportunity to the the content to define the viewport size itself
+				(child as ICustomScrollInfo)?.ApplyViewport(ref desiredChildSize);
 			}
-			else
+
+			return new Size(Math.Min(availableSize.Width, desiredChildSize.Width), Math.Min(availableSize.Height, desiredChildSize.Height));
+		}
+
+		Size ILayouterElement.Measure(Size availableSize)
+		{
+			return this.SizeThatFits(availableSize);
+		}
+
+		void ILayouterElement.Arrange(Rect finalRect)
+		{
+			var child = this.GetChildren().FirstOrDefault();
+			if (child != null)
 			{
-				return _measuredSize = CGSize.Empty;
+				var desiredChildSize = LayoutInformation.GetDesiredSize(child);
+
+				var slotSize = finalRect.Size;
+
+				var width = Math.Max(slotSize.Width, desiredChildSize.Width);
+				var height = Math.Max(slotSize.Height, desiredChildSize.Height);
+
+				MobileLayoutingHelpers.ArrangeElement(child, new Rect(0, 0, width, height));
+
+				ContentSize = child.Frame.Size;
+
+				// Give opportunity to the the content to define the viewport size itself
+				(child as ICustomScrollInfo)?.ApplyViewport(ref slotSize);
+
+				this.Frame = new Rect(0, 0, slotSize.Width, slotSize.Height);
+
+				// This prevents unnecessary touch delays (which affects the pressed visual states of buttons) when user can't scroll.
+				UpdateDelayedTouches();
 			}
 		}
 
 		public override void LayoutSubviews()
 		{
-			try
-			{
-				if (_content is null)
-				{
-					return;
-				}
-
-				var frame = Frame;
-				if (_requiresMeasure)
-				{
-					_requiresMeasure = false;
-					SizeThatFits(frame.Size);
-				}
-
-				var contentMargin = default(Thickness);
-				if (_content is IFrameworkElement iFwElt)
-				{
-					contentMargin = iFwElt.Margin;
-
-					var adjustedMeasure = new CGSize(
-						GetAdjustedArrangeWidth(iFwElt, (nfloat)contentMargin.Horizontal()),
-						GetAdjustedArrangeHeight(iFwElt, (nfloat)contentMargin.Vertical())
-					);
-
-					// Zoom works by applying a transform to the child view. If a view has a non-identity transform, its Frame shouldn't be set.
-					if (ZoomScale == 1)
-					{
-						_content.Frame = new CGRect(
-							0,
-							0,
-							Math.Max(0, adjustedMeasure.Width),
-							Math.Max(0, adjustedMeasure.Height)
-						);
-					}
-				}
-
-				// Sets the scroll extents using the effective Frame of the content
-				// (which might be different than the frame set above if the '_content' has some layouting constraints).
-				// Noticeably, it will be the case if the '_content' is bigger than the viewport.
-				var finalRect = (Rect)_content.Frame;
-				var extentSize = AdjustContentSize(finalRect.InflateBy(contentMargin).Size);
-
-				ContentSize = extentSize;
-
-				// ISetLayoutSlots contract implementation
-				LayoutInformation.SetLayoutSlot(_content, new Rect(default, ((Size)extentSize).AtLeast(frame.Size)));
-				if (_content is UIElement uiElt)
-				{
-					uiElt.LayoutSlotWithMarginsAndAlignments = finalRect;
-				}
-
-				// This prevents unnecessary touch delays (which affects the pressed visual states of buttons) when user can't scroll.
-				UpdateDelayedTouches();
-			}
-			catch (Exception e)
-			{
-				this.Log().Error(e.ToString());
-			}
+			base.LayoutSubviews();
 		}
 
-		private CGSize AdjustContentSize(CGSize measuredSize)
-		{
-			//ScrollMode does not affect the measure pass, so we only take it into account when setting the ContentSize of the UIScrollView and not in the SizeThatFits
-			var isHorizontalScrollDisabled = HorizontalScrollBarVisibility == ScrollBarVisibility.Disabled;
-			var isVerticalScrollDisabled = VerticalScrollBarVisibility == ScrollBarVisibility.Disabled;
-
-			//UIScrollView will not scroll if its ContentSize is smaller than the available size
-			//Therefore, force the ContentSize dimension to 0 when we do not want to scroll
-			var adjustedWidth = isHorizontalScrollDisabled ? this.Frame.Width : measuredSize.Width;
-			var adjustedHeight = isVerticalScrollDisabled ? this.Frame.Height : measuredSize.Height;
-
-			return new CGSize(adjustedWidth, adjustedHeight);
-		}
-
-		private nfloat GetAdjustedArrangeWidth(IFrameworkElement child, nfloat horizontalMargin)
-		{
-			var adjustedWidth = _measuredSize.Width - horizontalMargin;
-			var viewPortWidth = Frame.Size.Width - horizontalMargin;
-
-			// Apply Stretch
-			if (child.HorizontalAlignment == HorizontalAlignment.Stretch)
-			{
-				// Make it at least as big as the view port
-				adjustedWidth = (nfloat)Math.Max(adjustedWidth, viewPortWidth);
-			}
-
-			// Apply ScrollMode
-			if (HorizontalScrollBarVisibility == ScrollBarVisibility.Disabled)
-			{
-				// Make it at most as big as the view port
-				adjustedWidth = (nfloat)Math.Min(adjustedWidth, viewPortWidth);
-			}
-
-			var childDesiredWidth = GetDesiredValue(child.MinWidth, child.Width, child.MaxWidth);
-			childDesiredWidth = double.IsNaN(childDesiredWidth) ? double.MaxValue : childDesiredWidth;  //Because Math.Min with a NaN will return NaN.
-			adjustedWidth = (nfloat)Math.Min(adjustedWidth, childDesiredWidth); //Take the smallest between the child desired Width and the measured width
-
-			return adjustedWidth;
-		}
-
-		/// <summary>
-		/// Returns the biggest value it can based on if the different arguments are set or not (double.NaN)
-		/// </summary>
-		/// <param name="minimumValue"></param>
-		/// <param name="desiredValue"></param>
-		/// <param name="maximumValue"></param>
-		/// <returns></returns>
-		private double GetDesiredValue(double minimumValue, double desiredValue, double maximumValue)
-		{
-			//If nothing is defined return NaN as to indicate that no values was determine
-			if (double.IsNaN(minimumValue) && double.IsNaN(desiredValue) && double.IsNaN(maximumValue))
-			{
-				return double.NaN;
-			}
-
-			//Make sure we have something to compare with, '>' or '<' does not work with NaN.
-			var innerMinimumValue = double.IsNaN(minimumValue) ? double.MinValue : minimumValue;
-			var innerDesiredValue = double.IsNaN(desiredValue) ? double.MinValue : desiredValue;
-			var innerMaximumValue = double.IsNaN(maximumValue) ? double.MaxValue : maximumValue; //Set to Max of double
-
-			// Case 10, NaN, 30 returns 30
-			if (double.IsNaN(desiredValue) && //desiredValue was not set 
-			   !double.IsNaN(maximumValue) && //maximumValue was set
-			   innerMinimumValue < innerMaximumValue)
-			{
-				return innerMaximumValue;
-			}
-
-			// 20   10    30  = 20
-			// 30   10    10  = 30
-			// 20   NaN   NaN = 20
-			// 50   NaN  30   = 50 
-			if (innerMinimumValue > innerDesiredValue) // if minimumValue always wins over desiredValue and maximumValue
-			{
-				return innerMinimumValue;
-			}
-
-			// NaN  NaN   10  = 10 
-			// NaN  50    20  = 30
-
-			if (double.IsNaN(desiredValue) ||           // If desiredValue was not set
-				innerDesiredValue > innerMaximumValue)  // or desireValue is bigger than maximumValue take maximumValue
-			{
-				return maximumValue;
-			}
-
-			// 10   20    30 = 20
-			// NaN  20    NaN = 20
-			// NaN  20    30 = 20
-			return desiredValue;
-
-		}
-
-		private nfloat GetAdjustedArrangeHeight(IFrameworkElement child, nfloat verticalMargin)
-		{
-			var adjustedHeight = _measuredSize.Height - verticalMargin;
-			var viewPortHeight = Frame.Size.Height - verticalMargin;
-
-			// Apply Stretch
-			if (child.VerticalAlignment == VerticalAlignment.Stretch)
-			{
-				// Make it at least as big as the view port
-				adjustedHeight = (nfloat)Math.Max(adjustedHeight, viewPortHeight);
-			}
-
-			// Apply ScrollMode
-			if (VerticalScrollBarVisibility == ScrollBarVisibility.Disabled)
-			{
-				// Make it at most as big as the view port
-				adjustedHeight = (nfloat)Math.Min(adjustedHeight, viewPortHeight);
-			}
-
-			var childDesiredHeight = GetDesiredValue(child.MinHeight, child.Height, child.MaxHeight);
-			childDesiredHeight = double.IsNaN(childDesiredHeight) ? double.MaxValue : childDesiredHeight;  //Because Math.Min with a NaN will return NaN.
-
-			adjustedHeight = (nfloat)Math.Min(adjustedHeight, childDesiredHeight);
-
-			return adjustedHeight;
-		}
-
-		private CGSize AdjustSize(CGSize size)
-		{
-			var width = GetMeasureValue(size.Width, HorizontalScrollBarVisibility);
-			var height = GetMeasureValue(size.Height, VerticalScrollBarVisibility);
-
-			return new CGSize(width, height);
-		}
-
-		private nfloat GetMeasureValue(nfloat value, ScrollBarVisibility scrollBarVisibility)
-		{
-			switch (scrollBarVisibility)
-			{
-				case ScrollBarVisibility.Auto:
-				case ScrollBarVisibility.Hidden:
-				case ScrollBarVisibility.Visible:
-					return nfloat.PositiveInfinity;
-
-				default:
-				case ScrollBarVisibility.Disabled:
-					return value;
-			}
-		}
 		#endregion
 
 		bool INativeScrollContentPresenter.Set(
