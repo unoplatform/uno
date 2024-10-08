@@ -1362,7 +1362,13 @@ namespace Microsoft.UI.Xaml
 						return (localProperty, propertyDetails);
 					}
 				}
-				else if (property.IsAttached && property.IsInherited)
+				else if (property.IsAttached
+					&& property.IsInherited
+
+#if __ANDROID__
+					&& _properties.GetPropertyDetails(property) is { }
+#endif
+				)
 				{
 					return (property, _properties.GetPropertyDetails(property));
 				}
