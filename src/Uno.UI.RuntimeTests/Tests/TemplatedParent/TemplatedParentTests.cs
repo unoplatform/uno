@@ -24,6 +24,7 @@ using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.TemplatedParent.Setup;
 #if HAS_UNO
 using Uno.UI.Xaml;
+using Uno.UI.DataBinding;
 #endif
 using WindowHelper = Private.Infrastructure.TestServices.WindowHelper;
 
@@ -31,7 +32,7 @@ namespace Uno.UI.RuntimeTests.Tests.TemplatedParent;
 
 [TestClass]
 [RunsOnUIThread]
-public partial class TemplatedParentTests
+public partial class TemplatedParentTests // tests
 {
 	[TestMethod]
 	public async Task Uno8049_Test()
@@ -288,8 +289,29 @@ public partial class TemplatedParentTests
 		""";
 		VerifyTree(expectations, setup, checkVSG: true);
 	}
+
+#if HAS_UNO
+	[TestMethod]
+	public async Task LegacyDO_StillSupports_TP_Injection()
+	{
+		var setup = new BehaviorSetup();
+		await UITestHelper.Load(setup, x => x.IsLoaded);
+
+		var button = setup.Content as Button ?? throw new Exception("button not found");
+		var grid = button.GetTemplateRoot() ?? throw new Exception("template root not found");
+		var collection = Interaction.GetBehaviors(grid) ?? throw new Exception("behavior collection not found");
+
+		var sut0 = collection.ElementAtOrDefault(0) as LegacyDOBehavior;
+
+		// Verify that "legacy DepObj"(DO from library built before templated-parent rework)
+		// 1. is simulated correctly via the "INotTemplatedParentProvider" blocker
+		Assert.IsNotInstanceOfType<ITemplatedParentProvider>(sut0, "sut0 shouldnt impl ITemplatedParentProvider");
+		// 2. still supports tp-injection.
+		Assert.AreEqual(button.Tag, sut0.TestValue, "sut0.TestValue template-binding failed");
+	}
+#endif
 }
-public partial class TemplatedParentTests
+public partial class TemplatedParentTests // helper methods
 {
 	private static string SkipLines(string tree, params int[] lines)
 	{
@@ -356,7 +378,7 @@ public partial class TemplatedParentTests
 #endif
 	}
 }
-public partial class TemplatedParentTests
+public partial class TemplatedParentTests // TreeGraph helper methods
 {
 	private static IEnumerable<string> DebugVT_TP(object x)
 	{

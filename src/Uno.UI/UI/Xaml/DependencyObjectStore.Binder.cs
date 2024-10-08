@@ -1,5 +1,10 @@
 ﻿#nullable enable
 
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
+// fallback option for legacy DepObj from external library generated before templated-parent rework.
+#define ENABLE_LEGACY_DO_TP_SUPPORT
+#endif
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -43,11 +48,21 @@ namespace Microsoft.UI.Xaml
 		private bool _bindingsSuspended;
 		private readonly DependencyProperty _dataContextProperty;
 
+#if ENABLE_LEGACY_DO_TP_SUPPORT
+		private ManagedWeakReference? _templatedParentWeakRef;
+		internal ManagedWeakReference? GetTemplatedParentWeakRef() => _templatedParentWeakRef;
+#endif
+
 #if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
 		public void SetTemplatedParent(FrameworkElement? templatedParent)
 		{
 			// do nothing, this only exist to keep public api the same.
 		}
+#endif
+
+#if ENABLE_LEGACY_DO_TP_SUPPORT
+		internal DependencyObject? GetTemplatedParent2() => _templatedParentWeakRef?.Target as DependencyObject;
+		internal void SetTemplatedParent2(DependencyObject parent) => _templatedParentWeakRef = (parent as IWeakReferenceProvider)?.WeakReference;
 #endif
 
 		private bool IsCandidateChild([NotNullWhen(true)] object? child)

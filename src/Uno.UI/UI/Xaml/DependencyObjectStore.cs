@@ -185,7 +185,7 @@ namespace Microsoft.UI.Xaml
 			_dataContextProperty = dataContextProperty;
 
 #if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
-			TemplatedParentScope.UpdateTemplatedParentIfNeeded(originalObject as DependencyObject);
+			TemplatedParentScope.UpdateTemplatedParentIfNeeded(originalObject as DependencyObject, store: this);
 #endif
 
 			if (_trace.IsEnabled)

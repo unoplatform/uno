@@ -17,3 +17,12 @@ public interface ITemplatedParentProvider
 
 	void SetTemplatedParent(DependencyObject parent);
 }
+
+[EditorBrowsable(EditorBrowsableState.Never)]
+/// <summary>
+/// Marker interface used to block DependencyObjectGenerator
+/// from injecting <see cref="ITemplatedParentProvider"/> and its implementations.
+/// </summary>
+public interface INotTemplatedParentProvider
+{
+}

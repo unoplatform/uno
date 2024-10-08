@@ -15,16 +15,16 @@ internal static class TemplatedParentScope
 	/// <summary>Set the templated-parent for the dependency-object based on the currently materializing template.</summary>
 	/// <param name="do"></param>
 	/// <param name="reapplyTemplateBindings">Should be true, if not called from ctor.</param>
-	internal static void UpdateTemplatedParentIfNeeded(DependencyObject? @do, bool reapplyTemplateBindings = false)
+	internal static void UpdateTemplatedParentIfNeeded(DependencyObject? @do, bool reapplyTemplateBindings = false, DependencyObjectStore? store = null)
 	{
 		if (@do is null) return;
 		if (GetCurrentTemplate() is { IsLegacyTemplate: true, TemplatedParent: { } tp })
 		{
-			UpdateTemplatedParent(@do, tp, reapplyTemplateBindings);
+			UpdateTemplatedParent(@do, tp, reapplyTemplateBindings, store);
 		}
 	}
 
-	internal static void UpdateTemplatedParent(DependencyObject? @do, DependencyObject tp, bool reapplyTemplateBindings = true)
+	internal static void UpdateTemplatedParent(DependencyObject? @do, DependencyObject tp, bool reapplyTemplateBindings = true, DependencyObjectStore? store = null)
 	{
 		if (@do is ITemplatedParentProvider tpProvider)
 		{
@@ -35,8 +35,12 @@ internal static class TemplatedParentScope
 			// before any binding is applied, so there is no need to force update.
 			if (reapplyTemplateBindings && @do is IDependencyObjectStoreProvider dosProvider)
 			{
-				dosProvider.Store.ApplyTemplateBindings();
+				(store ?? dosProvider.Store).ApplyTemplateBindings();
 			}
+		}
+		else if (@do is IDependencyObjectStoreProvider dosProvider)
+		{
+			(store ?? dosProvider.Store).SetTemplatedParent2(tp);
 		}
 	}
 
