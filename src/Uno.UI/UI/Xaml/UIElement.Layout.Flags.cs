@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
-using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 
 namespace Microsoft.UI.Xaml
@@ -161,11 +160,7 @@ namespace Microsoft.UI.Xaml
 		/// Set one or many flags (set to 1)
 		/// </summary>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		internal void SetLayoutFlags(LayoutFlag flags)
-		{
-			_layoutFlags |= flags;
-			this.Log().LogWarning($"Setting flags {flags} on {this}-{GetHashCode()}");
-		}
+		internal void SetLayoutFlags(LayoutFlag flags) => _layoutFlags |= flags;
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal void SetLayoutFlags(LayoutFlag flags, bool state)
@@ -184,11 +179,7 @@ namespace Microsoft.UI.Xaml
 		/// Reset one or many flags (set flag to zero)
 		/// </summary>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		internal void ClearLayoutFlags(LayoutFlag flags)
-		{
-			_layoutFlags &= ~flags;
-			this.Log().LogWarning($"Clearing flags {flags} on {this}-{GetHashCode()}");
-		}
+		internal void ClearLayoutFlags(LayoutFlag flags) => _layoutFlags &= ~flags;
 
 		/// <summary>
 		/// Reset flags to original state
