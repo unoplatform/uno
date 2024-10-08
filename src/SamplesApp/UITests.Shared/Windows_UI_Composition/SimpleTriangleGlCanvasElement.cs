@@ -8,10 +8,10 @@ namespace UITests.Shared.Windows_UI_Composition
 {
 	// https://learnopengl.com/Getting-started/Hello-Triangle
 	public class SimpleTriangleGlCanvasElement()
-#if __SKIA__
-		: GLCanvasElement(1200, 800, null)
-#elif WINAPPSDK
+#if WINAPPSDK
 		: GLCanvasElement(1200, 800, () => SamplesApp.App.MainWindow)
+#else
+		: GLCanvasElement(1200, 800, null)
 #endif
 	{
 		private uint _vao;
@@ -37,10 +37,14 @@ namespace UITests.Shared.Windows_UI_Composition
 			gl.VertexAttribPointer(0, 3, GLEnum.Float, false, 3 * sizeof(float), (void*)0);
 			gl.EnableVertexAttribArray(0);
 
-			// string.Empty is added so that the version line is not interpreted as a preprocessor command
+			var slVersion = gl.GetStringS(StringName.ShadingLanguageVersion);
+			var versionDef = slVersion.Contains("OpenGL ES", StringComparison.InvariantCultureIgnoreCase)
+				? "#version 300 es"
+				: "#version 330";
 			var vertexCode =
 			$$"""
-			{{string.Empty}}#version 330
+			{{versionDef}}
+			precision highp float; # for OpenGL ES compatibility
 
 			layout (location = 0) in vec3 aPosition;
 			out vec4 vertexColor;
@@ -52,10 +56,10 @@ namespace UITests.Shared.Windows_UI_Composition
 			}
 			""";
 
-			// string.Empty is added so that the version line is not interpreted as a preprocessor command
 			var fragmentCode =
 			$$"""
-			{{string.Empty}}#version 330
+			{{versionDef}}
+			precision highp float; # for OpenGL ES compatibility
 
 			out vec4 out_color;
 			in vec4 vertexColor;
