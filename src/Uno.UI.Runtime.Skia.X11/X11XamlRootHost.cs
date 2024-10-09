@@ -380,7 +380,9 @@ internal partial class X11XamlRootHost : IXamlRootHost
 			? CreateGLXWindow(topWindowDisplay, screen, size, RootX11Window.Window)
 			: CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
 
-		var usingXi2 = GetXI2Details(display).version is not XIVersion.Unsupported;
+		// Only XI2.2 has touch events, and that's pretty much the only reason we're using XI2,
+		// so to make our assumptions simpler, we assume XI >= 2.2 or no XI at all.
+		var usingXi2 = GetXI2Details(display).version >= XIVersion.XI2_2;
 		if (usingXi2)
 		{
 			SetXIEventMask(TopX11Window);

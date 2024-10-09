@@ -84,12 +84,12 @@ internal partial class X11XamlRootHost
 {
 	private enum XIVersion
 	{
+		Unsupported,
 		XI2_0,
 		XI2_1,
 		XI2_2,
 		XI2_3,
-		XI2_4,
-		Unsupported
+		XI2_4
 	}
 
 	// These should match X11XamlRootHost.EventsHandledByXI2Mask
