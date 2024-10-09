@@ -224,6 +224,9 @@
 		<!-- Workaround for https://github.com/dotnet/runtime/issues/103205 -->
 		<NoWarn>$(NoWarn);CS0436</NoWarn>
 
+		<!-- Disable checks as we're on a release branch -->
+		<NoWarn>$(NoWarn);NU1903</NoWarn>
+
 		<!-- On CI, UWP source is generated in a job running on Windows (CRLF EOLs). -->
 		<!-- When the artifacts are downloaded in a job running on Linux, IDE0055 will complain (expecting LF EOLs) -->
 		<!-- For now, we skip formatting in CI UWP builds not running on Windows -->
