@@ -75,7 +75,8 @@ public partial class TextBox
 	private MenuFlyout _contextMenu;
 	private readonly Dictionary<ContextMenuItem, MenuFlyoutItem> _flyoutItems = new();
 
-	internal bool IsBackwardSelection => _selectionEndsAtTheStart;
+
+	internal bool IsBackwardSelection => _selection.selectionEndsAtTheStart;
 
 	internal TextBoxView TextBoxView => _textBoxView;
 
@@ -145,7 +146,6 @@ public partial class TextBox
 		}
 		else
 		{
-			global::System.Diagnostics.CI.Assert(!_isSkiaTextBox || _selection.length == 0);
 			_historyIndex++;
 			_history.RemoveAllAt(_historyIndex);
 			_history.Add(new HistoryRecord(
@@ -289,16 +289,12 @@ public partial class TextBox
 			if (focusState != FocusState.Unfocused)
 			{
 				CaretMode = CaretDisplayMode.ThumblessCaretShowing;
-				_showCaret = true;
-				_timer.Start();
 				_textBoxNotificationsSingleton?.OnFocused(this);
 			}
 			else
 			{
 				TrySetCurrentlyTyping(false);
 				CaretMode = CaretDisplayMode.ThumblessCaretHidden;
-				_showCaret = false;
-				_timer.Stop();
 				if (!initial)
 				{
 					_textBoxNotificationsSingleton?.OnUnfocused(this);
@@ -327,7 +323,7 @@ public partial class TextBox
 			_selection.selectionEndsAtTheStart = false;
 			_caretXOffset = (float)(DisplayBlockInlines?.GetRectForIndex(start + length).Left ?? 0);
 		}
-		_selection = (start, length);
+		_selection = (start, length, _selection.selectionEndsAtTheStart);
 
 		// Even when using Skia TextBox, we may need to call Select,
 		// which will update the native input in case of Wasm Skia for example.
@@ -900,195 +896,6 @@ public partial class TextBox
 		UpdateDisplaySelection();
 	}
 
-	protected override void OnPointerMoved(PointerRoutedEventArgs e)
-	{
-		base.OnPointerMoved(e);
-		e.Handled = true;
-
-		if (_isSkiaTextBox && _isPressed)
-		{
-			var displayBlock = TextBoxView.DisplayBlock;
-			var point = e.GetCurrentPoint(displayBlock);
-			var index = Math.Max(0, displayBlock.Inlines.GetIndexAt(point.Position, false, true));
-			if (_multiTapChunk is { } mtc)
-			{
-				(int start, int length) chunk;
-				if (mtc.tripleTap)
-				{
-					chunk = (StartOfLine(index), EndOfLine(index) + 1 - StartOfLine(index));
-				}
-				else
-				{
-					chunk = FindChunkAt(index, true);
-				}
-
-				if (chunk.start < mtc.start)
-				{
-					var start = mtc.start + mtc.length;
-					var end = chunk.start;
-					SelectInternal(start, end - start);
-				}
-				else if (chunk.start + chunk.length >= mtc.start + mtc.length)
-				{
-					var start = mtc.start;
-					var end = chunk.start + chunk.length;
-					SelectInternal(start, end - start);
-				}
-			}
-			else
-			{
-				var selectionInternalStart = _selectionEndsAtTheStart ? _selection.start + _selection.length : _selection.start;
-				SelectInternal(selectionInternalStart, index - selectionInternalStart);
-			}
-		}
-	}
-
-	// TODO: remove this context menu when TextCommandBarFlyout is implemented
-	protected override void OnRightTapped(RightTappedRoutedEventArgs e)
-	{
-		base.OnRightTapped(e);
-		e.Handled = true;
-
-		if (_isSkiaTextBox)
-		{
-			if (_contextMenu is null)
-			{
-				_contextMenu = new MenuFlyout();
-				_contextMenu.Opened += (_, _) => UpdateDisplaySelection();
-
-				_flyoutItems.Add(ContextMenuItem.Cut, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_CUT"), Command = new StandardUICommand(StandardUICommandKind.Cut) { Command = new TextBoxCommand(CutSelectionToClipboard) } });
-				_flyoutItems.Add(ContextMenuItem.Copy, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_COPY"), Command = new StandardUICommand(StandardUICommandKind.Copy) { Command = new TextBoxCommand(CopySelectionToClipboard) } });
-				_flyoutItems.Add(ContextMenuItem.Paste, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_PASTE"), Command = new StandardUICommand(StandardUICommandKind.Paste) { Command = new TextBoxCommand(PasteFromClipboard) } });
-				_flyoutItems.Add(ContextMenuItem.Undo, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_UNDO"), Command = new StandardUICommand(StandardUICommandKind.Undo) { Command = new TextBoxCommand(Undo) } });
-				_flyoutItems.Add(ContextMenuItem.Redo, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_REDO"), Command = new StandardUICommand(StandardUICommandKind.Redo) { Command = new TextBoxCommand(Redo) } });
-				_flyoutItems.Add(ContextMenuItem.SelectAll, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TEXT_CONTEXT_MENU_SELECT_ALL"), Command = new StandardUICommand(StandardUICommandKind.SelectAll) { Command = new TextBoxCommand(SelectAll) } });
-			}
-
-			_contextMenu.Items.Clear();
-
-			if (_selection.length == 0)
-			{
-				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Paste]);
-				if (CanUndo)
-				{
-					_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Undo]);
-				}
-				if (CanRedo)
-				{
-					_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Redo]);
-				}
-				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.SelectAll]);
-			}
-			else
-			{
-				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Cut]);
-				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Copy]);
-				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Paste]);
-				if (CanUndo)
-				{
-					_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Undo]);
-				}
-				if (CanRedo)
-				{
-					_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Redo]);
-				}
-				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.SelectAll]);
-			}
-
-			_contextMenu.ShowAt(this, e.GetPosition(this));
-		}
-	}
-
-	private protected override void EnterImpl(bool live)
-	{
-		base.EnterImpl(live);
-
-		if (live)
-		{
-			_textBoxNotificationsSingleton?.OnEnteredVisualTree(this);
-		}
-	}
-
-	private protected override void LeaveImpl(bool live)
-	{
-		base.LeaveImpl(live);
-
-		if (live)
-		{
-			_textBoxNotificationsSingleton?.OnLeaveVisualTree(this);
-		}
-	}
-
-	private static bool IsMultiTapGesture((ulong id, ulong ts, Point position) previousTap, PointerPoint down)
-	{
-		var currentId = down.PointerId;
-		var currentTs = down.Timestamp;
-		var currentPosition = down.Position;
-
-		return previousTap.id == currentId
-			&& currentTs - previousTap.ts <= GestureRecognizer.MultiTapMaxDelayTicks
-			&& !GestureRecognizer.Gesture.IsOutOfTapRange(previousTap.position, currentPosition);
-	}
-
-	partial void OnPointerPressedPartial(PointerRoutedEventArgs args)
-	{
-		TrySetCurrentlyTyping(false);
-		if (_isSkiaTextBox
-			&& args.GetCurrentPoint(null) is var currentPoint
-			&& (!currentPoint.Properties.IsRightButtonPressed || SelectionLength == 0))
-		{
-			if (currentPoint.Properties.IsLeftButtonPressed
-				&& _lastPointerDown.point is { } p
-				&& IsMultiTapGesture((p.PointerId, p.Timestamp, p.Position), currentPoint))
-			{
-				// multiple left presses
-
-				var displayBlock = TextBoxView.DisplayBlock;
-				var index = Math.Max(0, displayBlock.Inlines.GetIndexAt(args.GetCurrentPoint(displayBlock).Position, false, true));
-
-				if (_lastPointerDown.repeatedPresses == 1)
-				{
-					// triple tap
-
-					var startOfLine = StartOfLine(index);
-					Select(startOfLine, EndOfLine(index) + 1 - startOfLine);
-					_multiTapChunk = (SelectionStart, SelectionLength, true);
-					_lastPointerDown = (currentPoint, 2);
-				}
-				else // _lastPointerDown.repeatedPresses == 0 or 2
-				{
-					// double tap
-					var chunk = FindChunkAt(index, true);
-					Select(chunk.start, chunk.length);
-					_multiTapChunk = (chunk.start, chunk.length, false);
-					_lastPointerDown = (currentPoint, 1);
-				}
-			}
-			else
-			{
-				// single click
-				var displayBlock = TextBoxView.DisplayBlock;
-				var index = Math.Max(0, displayBlock.Inlines.GetIndexAt(args.GetCurrentPoint(displayBlock).Position, true, true));
-				Select(index, 0);
-				_lastPointerDown = (currentPoint, 0);
-			}
-
-			_isPressed = currentPoint.Properties.IsLeftButtonPressed;
-		}
-	}
-
-	partial void OnPointerReleasedPartial(PointerRoutedEventArgs args)
-	{
-		_isPressed = false;
-		_multiTapChunk = null;
-	}
-
-	protected override void OnDoubleTapped(DoubleTappedRoutedEventArgs args)
-	{
-		base.OnDoubleTapped(args);
-		args.Handled = true;
-	}
-
 	/// <summary>
 	/// The parameters here use the possibly-negative length format
 	/// </summary>
@@ -1486,6 +1293,14 @@ public partial class TextBox
 
 	internal override bool IsDelegatingFocusToTemplateChild()
 		=> OperatingSystem.IsBrowser();
+
+	private enum CaretDisplayMode
+	{
+		ThumblessCaretHidden,
+		ThumblessCaretShowing,
+		CaretWithThumbsOnlyEndShowing,
+		CaretWithThumbsBothEndsShowing
+	}
 
 	private record struct HistoryRecord(TextBoxAction Action, int SelectionStart, int SelectionLength, bool SelectionEndsAtTheStart);
 
