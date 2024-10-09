@@ -92,6 +92,57 @@ internal partial class X11PointerInputSource
 	private readonly Dictionary<int, double> _lastVerticalTouchpadWheelPosition = new();
 	private readonly Dictionary<int, DeviceInfo> _deviceInfoCache = new();
 
+	// Excerpt from https://www.x.org/releases/X11R7.7/doc/inputproto/XI2proto.txt
+	// Pointer control of dependent devices
+	// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+	// On a dependent device, the device may differ between a pointer-controlling
+	// touch and a non-pointer-controlling touch. For example, on a touchpad the
+	// first touch is pointer-controlling (i.e. serves only to move the visible
+	// pointer). Multi-finger gestures on a touchpad cause all touches to be
+	// non-pointer-controlling.
+	//
+	// For pointer-controlling touches, no touch events are sent; the touch
+	// generates regular pointer events instead. Non-pointer-controlling touches
+	// send touch events. A touch may change from pointer-controlling to
+	// non-pointer-controlling, or vice versa.
+	//
+	// - If a touch changes from pointer-controlling to non-pointer-controlling,
+	//  a new touch ID is assigned and a TouchBegin is sent for the last known
+	//  position of the touch. Further events are sent as TouchUpdate events, or as
+	//  TouchEnd event if the touch terminates.
+	//
+	// - If a touch changes from non-pointer-controlling to pointer-controlling, a
+	//   TouchEnd is sent for that touch at the last known position of the touch.
+	//   Further events are sent as pointer events.
+	//
+	// The conditions to switch from pointer-controlling to non-pointer-controlling
+	// touch is implementation-dependent. A device may support touches that are
+	// both pointer-controlling and a touch event.
+	//
+	// In the dependent touch example event sequence below, touches are marked when
+	// switching to pointer-controlling (pc) or to non-pointer-controlling (np).
+	//
+	// .Dependent touch example event sequence on a touchpad
+	// [width="50%", options="header"]
+	// |====================================================
+	// | Finger 1 | Finger 2 | Event generated(touchid)
+	// |  down    |          | Motion
+	// |  move    |          | Motion
+	// |  move    |          | Motion
+	// |  (np)    |   down   | TouchBegin(0), TouchBegin(1)
+	// |  move    |    --    | TouchUpdate(0)
+	// |   --     |   move   | TouchUpdate(1)
+	// |   up     |   (pc)   | TouchEnd(0), TouchEnd(1)
+	// |          |   move   | Motion
+	// |  down    |   (np)   | TouchBegin(2), TouchBegin(3)
+	// |  move    |    --    | TouchUpdate(2)
+	// |   up     |   (pc)   | TouchEnd(2), TouchEnd(3)
+	// |          |    up    | Motion
+	// |  down    |          | Motion
+	// |  (np)    |   down   | TouchBegin(4), TouchBegin(5)
+	// |  (pc)    |    up    | TouchEnd(4), TouchEnd(5)
+	// |  move    |          | Motion
+	// |   up     |          | Motion
 	public unsafe PointerEventArgs CreatePointerEventArgsFromDeviceEvent(XIDeviceEvent data)
 	{
 		(double wheelDelta, bool isHorizontalMouseWheel) = (0, false);
