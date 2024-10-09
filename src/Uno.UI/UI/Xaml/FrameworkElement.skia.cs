@@ -22,12 +22,6 @@ namespace Microsoft.UI.Xaml
 
 		partial void Initialize();
 
-
-		internal bool HasParent()
-		{
-			return Parent != null;
-		}
-
 		private bool IsTopLevelXamlView() => false;
 
 		internal void SuspendRendering() => throw new NotSupportedException();

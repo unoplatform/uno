@@ -1,7 +1,7 @@
 ﻿namespace Microsoft.UI.Xaml
 {
 	/// <summary>
-	/// Internal implemenation for <see cref="DependencyObject"/>
+	/// Internal implementation for <see cref="DependencyObject"/>
 	/// </summary>
 	internal partial interface IDependencyObjectInternal
 	{

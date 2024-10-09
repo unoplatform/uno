@@ -42,7 +42,7 @@ public partial class ListViewBase
 	{
 		foreach (var item in GetItemsPanelChildren().OfType<SelectorItem>())
 		{
-			ApplyMultiSelectState(item);
+			item.UpdateMultiSelectStates(useTransitions: item.IsLoaded);
 		}
 	}
 }

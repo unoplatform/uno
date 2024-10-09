@@ -26,9 +26,6 @@ namespace Microsoft.UI.Xaml
 	{
 		bool IFrameworkElementInternal.HasLayouter => true;
 
-		internal bool HasParent()
-			=> Parent != null;
-
 		private event TypedEventHandler<FrameworkElement, object> _loading;
 		public event TypedEventHandler<FrameworkElement, object> Loading
 		{

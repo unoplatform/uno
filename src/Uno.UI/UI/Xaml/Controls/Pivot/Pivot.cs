@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using System.Collections.Specialized;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -71,6 +72,13 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 
 			SynchronizeItems();
+		}
+
+		private protected override void UpdateItems(NotifyCollectionChangedEventArgs args)
+		{
+			base.UpdateItems(args);
+
+			SynchronizeSelectedItem();
 		}
 
 		private void UnregisterHeaderEvents()
@@ -174,15 +182,6 @@ namespace Microsoft.UI.Xaml.Controls
 					{
 						headerItem.Content = item;
 					}
-
-					headerItem.SetBinding(
-						ContentControl.ContentTemplateProperty,
-						new Binding
-						{
-							Path = "HeaderTemplate",
-							RelativeSource = RelativeSource.TemplatedParent
-						}
-					);
 
 					// Materialize template to ensure visual states are set correctly.
 					headerItem.EnsureTemplate();

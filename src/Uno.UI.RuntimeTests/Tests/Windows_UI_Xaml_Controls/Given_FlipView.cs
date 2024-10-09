@@ -19,6 +19,7 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using static Private.Infrastructure.TestServices;
 using Windows.UI.Input.Preview.Injection;
 using Uno.Extensions;
+using Windows.Foundation;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -105,8 +106,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#elif __IOS__
-		[Ignore("Currently fails on iOS, will be handled on #12780")]
 #endif
 		public async Task When_Background_Color()
 		{
@@ -114,35 +113,39 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.
 			}
+
 			var parent = new Border()
 			{
 				Width = 300,
 				Height = 300,
 				Background = new SolidColorBrush(Colors.Green)
 			};
-
 			var SUT = new FlipView
 			{
 				Background = new SolidColorBrush(Colors.Red),
 				Width = 200,
 				Height = 200
 			};
-
 			parent.Child = SUT;
 
 			WindowHelper.WindowContent = parent;
-
 			await WindowHelper.WaitForLoaded(parent);
 
 			var snapshot = await TakeScreenshot(parent);
 
-			var sample = parent.GetRelativeCoords(SUT);
-			var centerX = sample.X + sample.Width / 2;
-			var centerY = sample.Y + sample.Height / 2;
+			var coords = parent.GetRelativeCoords(SUT); // logical
+			var center = new Point(coords.CenterX, coords.CenterY); // logical
+#if __ANDROID__
+			// droid-specific: the snapshot size is in physical size, NOT logical
+			// so the coords needs to be converted into physical to be against the snapshot.
+			center = ViewHelper.LogicalToPhysicalPixels(center); // physical
+#endif
 
-			ImageAssert.HasPixels(
-				snapshot,
-				ExpectedPixels.At(centerX, centerY).Named("center with color").Pixel(Colors.Red));
+			ImageAssert.HasPixels(snapshot, ExpectedPixels
+				.At((int)center.X, (int)center.Y)
+				.Named("center with color")
+				.Pixel(Colors.Red)
+			);
 		}
 
 		[TestMethod]

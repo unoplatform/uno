@@ -94,10 +94,11 @@ namespace Uno.UI.Controls
 		protected override Size ArrangeOverride(Size finalSize)
 			=> ArrangeFirstChild(finalSize);
 
-		internal protected override void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
+		private protected override void SetTemplatedParentImpl(DependencyObject parent)
 		{
-			base.OnTemplatedParentChanged(e);
-			InitializeController(TemplatedParent as Frame);
+			base.SetTemplatedParentImpl(parent);
+
+			InitializeController(parent as Frame);
 		}
 
 		/// <summary>

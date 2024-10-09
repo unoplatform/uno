@@ -13,6 +13,8 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using Uno.UI.Helpers;
+using Uno.UI.Extensions;
 
 namespace Uno.UI.Tests.ItemsControlTests
 {
@@ -22,37 +24,39 @@ namespace Uno.UI.Tests.ItemsControlTests
 	[TestClass]
 	public class Given_ItemsControl
 	{
+#if __CROSSRUNTIME__
 		[TestMethod]
-		public void When_EarlyItems()
+		public async Task When_EarlyItems()
 		{
-			var style = new Style(typeof(Microsoft.UI.Xaml.Controls.ItemsControl))
-			{
-				Setters =  {
-					new Setter<ItemsControl>("Template", t =>
-						t.Template = Funcs.Create(() =>
-							new ItemsPresenter()
-						)
-					)
-				}
-			};
-
-			var panel = new StackPanel();
-
+			var style = new Style(typeof(ItemsControl));
+			style.Setters.Add(new Setter<ItemsControl>("Template", x => x.Template = XamlHelper.LoadXaml<ControlTemplate>("""
+				<ControlTemplate>
+					<ItemsPresenter />
+				</ControlTemplate>
+			""")));
+			var panelTemplate = XamlHelper.LoadXaml<ItemsPanelTemplate>("""
+				<ItemsPanelTemplate>
+					<StackPanel x:Name="SutPanel" />
+				</ItemsPanelTemplate>
+			""");
 			var SUT = new ItemsControl()
 			{
 				Style = style,
-				ItemsPanel = new ItemsPanelTemplate(() => panel),
+				ItemsPanel = panelTemplate,
 				Items = {
 					new Border { Name = "b1" }
 				}
 			};
 
+			// ItemsPanelTemplate won't materialized until ItemsPresenter is loaded.
 			SUT.ApplyTemplate();
+			SUT.FindFirstDescendantOrThrow<ItemsPresenter>().RaiseLoaded();
 
 			// Search on the panel for now, as the name lookup is not properly
 			// aligned on net46.
-			Assert.IsNotNull(panel.FindName("b1"));
+			Assert.IsNotNull(SUT.FindName("b1"));
 		}
+#endif
 
 		[TestMethod]
 		public void When_ItemsChanged()
@@ -89,7 +93,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 			{
 				Setters =  {
 					new Setter<ItemsControl>("Template", t =>
-						t.Template = Funcs.Create(() => itemsPresenter)
+						t.Template = new ControlTemplate(() => itemsPresenter)
 					)
 				}
 			};
@@ -574,17 +578,16 @@ namespace Uno.UI.Tests.ItemsControlTests
 		private Style BuildBasicContainerStyle() =>
 			new Style(typeof(Microsoft.UI.Xaml.Controls.ListViewItem))
 			{
-				Setters =  {
+				Setters = {
 					new Setter<ListViewItem>("Template", t =>
-						t.Template = Funcs.Create(() =>
+						t.Template = new ControlTemplate(() =>
 							new Grid
 							{
 								Children = {
-									new ContentPresenter()
-										.Apply(p => {
-											p.SetBinding(ContentPresenter.ContentTemplateProperty, new Binding(){ Path = "ContentTemplate", RelativeSource = RelativeSource.TemplatedParent });
-											p.SetBinding(ContentPresenter.ContentProperty, new Binding(){ Path = "Content", RelativeSource = RelativeSource.TemplatedParent });
-										})
+									new ContentPresenter().Apply(p => {
+										p.SetBinding(ContentPresenter.ContentTemplateProperty, new Binding(){ Path = "ContentTemplate", RelativeSource = RelativeSource.TemplatedParent });
+										p.SetBinding(ContentPresenter.ContentProperty, new Binding(){ Path = "Content", RelativeSource = RelativeSource.TemplatedParent });
+									})
 								}
 							}
 						)

@@ -118,8 +118,17 @@ namespace Uno.UI.DataBinding
 			}
 		}
 
+		public static void PurgeHolders()
+		{
+			lock (_holders)
+			{
+				_nativeHolders.Clear();
+				_holders.Clear();
+			}
+		}
+
 		/// <summary>
-		/// Retreives a list of binders that are native views that
+		/// Retrieves a list of binders that are native views that
 		/// don't have a parent, and are not attached to the window.
 		/// An inactive binder may be a memory leak.
 		/// </summary>
@@ -178,8 +187,21 @@ namespace Uno.UI.DataBinding
 			}
 		}
 
+		public static object[] GetLeakedObjects()
+		{
+			lock (_holders)
+			{
+				return _holders.Concat(_nativeHolders.Values)
+					.Select(x => x.Target)
+					.OfType<BinderReferenceHolder>()
+					.Select(x => x._target.Target)
+					.Where(x => x != null)
+					.ToArray();
+			}
+		}
+
 		/// <summary>
-		/// Retreives statistics about the live instances.
+		/// Retrieves statistics about the live instances.
 		/// </summary>
 		public static void LogReferenceStatsWithDetails()
 		{
@@ -257,7 +279,7 @@ namespace Uno.UI.DataBinding
 		}
 
 		/// <summary>
-		/// Retreives statistics about the live inactive instances.
+		/// Retrieves statistics about the live inactive instances.
 		/// </summary>
 		public static System.Tuple<Type, int>[] GetInactiveViewReferencesStats()
 		{
