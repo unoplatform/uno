@@ -23,7 +23,7 @@ namespace UITests.Shared.Windows_UI_Composition
 #if WINAPPSDK
 	public class RotatingCubeGlCanvasElement() : GLCanvasElement(1200, 800, () => SamplesApp.App.MainWindow)
 #else
-	public class RotatingCubeGlCanvasElement() : GLCanvasElement(1200, 800, null)
+	public class RotatingCubeGlCanvasElement() : GLCanvasElement(null)
 #endif
 	{
 		private static BufferObject<float> _vbo;
