@@ -61,9 +61,8 @@ internal static partial class MobileLayoutingHelpers
 			return desiredSizeFromLayouterElement;
 		}
 
-		var physical = availableSize.LogicalToPhysicalPixels();
-
 #if __ANDROID__
+		var physical = availableSize.LogicalToPhysicalPixels();
 		var widthSpec = ViewHelper.SpecFromLogicalSize(availableSize.Width);
 		var heightSpec = ViewHelper.SpecFromLogicalSize(availableSize.Height);
 		view.Measure(widthSpec, heightSpec);
@@ -97,7 +96,7 @@ internal static partial class MobileLayoutingHelpers
 #elif __IOS__ || __MACOS__
 
 #if __IOS__
-		var desiredSize = view.SizeThatFits(physical).PhysicalToLogicalPixels();
+		var desiredSize = view.SizeThatFits(availableSize);
 #else
 		CGSize desiredSize = view switch
 		{
@@ -105,7 +104,6 @@ internal static partial class MobileLayoutingHelpers
 			IHasSizeThatFits hasSizeThatFits => hasSizeThatFits.SizeThatFits(physical),
 			_ => view.FittingSize,
 		};
-		desiredSize = desiredSize.PhysicalToLogicalPixels();
 #endif
 
 		LayoutInformation.SetDesiredSize(view, desiredSize);
