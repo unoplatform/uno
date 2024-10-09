@@ -178,8 +178,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public override CGSize SizeThatFits(CGSize size)
 		{
-			var result = NativeLayout.SizeThatFits(size);
-			return result;
+			_ = NativeLayout.SizeThatFits(size);
+			return size;
 		}
 
 		internal void Refresh()
