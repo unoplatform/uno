@@ -19,6 +19,7 @@ namespace Microsoft.UI.Xaml
 		public override void SetNeedsLayout()
 		{
 			base.SetNeedsLayout();
+			InvalidateMeasure();
 		}
 
 		public override void LayoutSubviews()
@@ -33,9 +34,8 @@ namespace Microsoft.UI.Xaml
 				return base.SizeThatFits(size);
 			}
 
-			var availableSize = ViewHelper.PhysicalToLogicalPixels(size);
-			this.Measure(availableSize);
-			return this.DesiredSize.LogicalToPhysicalPixels();
+			this.Measure(size);
+			return this.DesiredSize;
 		}
 
 		public override void AddSubview(UIView view)
