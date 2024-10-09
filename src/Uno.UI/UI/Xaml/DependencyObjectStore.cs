@@ -1366,7 +1366,7 @@ namespace Microsoft.UI.Xaml
 					&& property.IsInherited
 
 #if __ANDROID__
-					&& _properties.GetPropertyDetails(property) is { }
+					&& _properties.FindPropertyDetails(property) is { }
 #endif
 				)
 				{
