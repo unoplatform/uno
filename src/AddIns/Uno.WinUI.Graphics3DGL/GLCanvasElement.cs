@@ -117,7 +117,7 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 			if (!_xamlRootToWrapper.TryGetValue(xamlRoot, out var nativeOpenGlWrapper))
 			{
 #if WINAPPSDK
-				var nativeOpenGlWrapper = new WinUINativeOpenGLWrapper(xamlRoot, getWindowFunc!);
+				nativeOpenGlWrapper = new WinUINativeOpenGLWrapper(xamlRoot, getWindowFunc!);
 #else
 				if (!ApiExtensibility.CreateInstance<INativeOpenGLWrapper>(xamlRoot, out nativeOpenGlWrapper))
 				{
@@ -308,10 +308,10 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 			_gl.ReadBuffer(GLEnum.ColorAttachment0);
 
 #if WINAPPSDK
-			_gl.ReadPixels(0, 0, _width, _height, GLEnum.Bgra, GLEnum.UnsignedByte, (void*)_pixels);
+			_gl.ReadPixels(0, 0, (uint)RenderSize.Width, (uint)RenderSize.Height, GLEnum.Bgra, GLEnum.UnsignedByte, (void*)_pixels);
 			using (var stream = _backBuffer.PixelBuffer.AsStream())
 			{
-				stream.Write(new ReadOnlySpan<byte>((void*)_pixels, (int)(_width * _height * BytesPerPixel)));
+				stream.Write(new ReadOnlySpan<byte>((void*)_pixels, (int)RenderSize.Width * (int)RenderSize.Height * BytesPerPixel));
 			}
 #else
 			Buffer.Cast(_backBuffer.PixelBuffer).ApplyActionOnRawBufferPtr(ptr =>
