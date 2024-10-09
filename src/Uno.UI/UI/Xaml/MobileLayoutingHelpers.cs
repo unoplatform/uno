@@ -100,8 +100,8 @@ internal static partial class MobileLayoutingHelpers
 #else
 		CGSize desiredSize = view switch
 		{
-			NSControl nsControl => nsControl.SizeThatFits(physical),
-			IHasSizeThatFits hasSizeThatFits => hasSizeThatFits.SizeThatFits(physical),
+			NSControl nsControl => nsControl.SizeThatFits(availableSize),
+			IHasSizeThatFits hasSizeThatFits => hasSizeThatFits.SizeThatFits(availableSize),
 			_ => view.FittingSize,
 		};
 #endif
