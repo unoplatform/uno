@@ -321,6 +321,14 @@ internal partial class X11PointerInputSource
 						break;
 					}
 
+					if ((data.flags & XiDeviceEventFlags.XIPointerEmulated) != 0)
+					{
+						if (this.Log().IsEnabled(LogLevel.Trace))
+						{
+							this.Log().Trace($"Ignoring emulated {evtype} event.");
+						}
+					}
+
 					var args = CreatePointerEventArgsFromDeviceEvent(data);
 					switch (evtype)
 					{

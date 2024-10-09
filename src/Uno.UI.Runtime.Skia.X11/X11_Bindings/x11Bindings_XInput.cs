@@ -294,7 +294,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 	internal enum XiDeviceEventFlags : int
 	{
 		None = 0,
-		XIPointfocuserEmulated = (1 << 16)
+		XIPointerEmulated = (1 << 16)
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
