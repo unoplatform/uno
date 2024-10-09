@@ -69,13 +69,19 @@
 
 	<Target Name="GetAngle" BeforeTargets="Build">
 		<DownloadFile
+			Condition="!exists('$(MSBuildThisFileDirectory)angle_binaries/osx/libEGL.dylib')"
 			SourceUrl="https://github.com/dotnet/Silk.NET/raw/a9c75a61528ee7b4e55442f5141cb132f10d72ff/src/Native/Silk.NET.OpenGLES.ANGLE.Native/runtimes/osx/native/libEGL.dylib"
 			DestinationFolder="$(MSBuildThisFileDirectory)angle_binaries/osx">
 		</DownloadFile>
 		<DownloadFile
+			Condition="!exists('$(MSBuildThisFileDirectory)angle_binaries/osx/libGLESv2.dylib')"
 			SourceUrl="https://github.com/dotnet/Silk.NET/raw/a9c75a61528ee7b4e55442f5141cb132f10d72ff/src/Native/Silk.NET.OpenGLES.ANGLE.Native/runtimes/osx/native/libGLESv2.dylib"
 			DestinationFolder="$(MSBuildThisFileDirectory)angle_binaries/osx">
 		</DownloadFile>
+	</Target>
+
+	<Target Name="CleanAngle" AfterTargets="Clean">
+		<RemoveDir Directories="$(MSBuildThisFileDirectory)angle_binaries" />
 	</Target>
 
 	<ItemGroup>
