@@ -1,9 +1,8 @@
 ﻿#nullable enable
 using System;
 using System.Linq;
-using Uno.UI.RemoteControl.Messaging.IdeChannel;
 
-namespace Uno.UI.RemoteControl.Messaging.IDEChannel;
+namespace Uno.UI.RemoteControl.Messaging.IdeChannel;
 
 /// <summary>
 /// A message sent by the sev-server to the IDE to notify the user.

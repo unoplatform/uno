@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
 
-namespace Uno.UI.RemoteControl.Host.IDEChannel;
+namespace Uno.UI.RemoteControl.Host.IdeChannel;
 
 internal static class IdeMessageSerializer
 {
