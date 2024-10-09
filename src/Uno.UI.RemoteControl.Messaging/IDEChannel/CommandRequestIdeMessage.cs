@@ -14,5 +14,5 @@ public record CommandRequestIdeMessage(long WindowId, string Command, string? Co
 	/// <summary>
 	/// A unique identifier of this command execution request that could be used to track the response (if any produced by the remote handler).
 	/// </summary>
-	public Guid Id {get; } = Guid.NewGuid();
+	public Guid Id { get; } = Guid.NewGuid();
 }
