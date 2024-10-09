@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 using Silk.NET.OpenGL;
@@ -40,7 +41,7 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 {
 	private const int BytesPerPixel = 4;
 	private static readonly BitmapImage _fallbackImage = new BitmapImage(new Uri("ms-appx:///Assets/error.png"));
-	private static bool? _glAvailable;
+	private static readonly Dictionary<XamlRoot, INativeOpenGLWrapper> _xamlRootToWrapper = new();
 
 	private readonly uint _width;
 	private readonly uint _height;
@@ -48,7 +49,6 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 
 	private readonly WriteableBitmap _backBuffer;
 
-	private bool _loadedAtleastOnce;
 	// valid if and only if _loadedAtleastOnce and _glAvailable
 	private INativeOpenGLWrapper? _nativeOpenGlWrapper;
 	// These are valid if and only if IsLoaded and _glAvailable
@@ -118,18 +118,24 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 		Unloaded += OnUnloaded;
 	}
 
-	private static INativeOpenGLWrapper? CreateNativeOpenGlWrapper(XamlRoot xamlRoot, Func<Window>? getWindowFunc)
+	private static INativeOpenGLWrapper? GetOrCreateNativeOpenGlWrapper(XamlRoot xamlRoot, Func<Window>? getWindowFunc)
 	{
 		try
 		{
-#if WINAPPSDK
-			var nativeOpenGlWrapper = new WinUINativeOpenGLWrapper(xamlRoot, getWindowFunc!);
-#else
-			if (!ApiExtensibility.CreateInstance<INativeOpenGLWrapper>(xamlRoot, out var nativeOpenGlWrapper))
+			// This is done on the UI thread, so no concurrency concerns.
+			if (!_xamlRootToWrapper.TryGetValue(xamlRoot, out var nativeOpenGlWrapper))
 			{
-				throw new InvalidOperationException($"Couldn't create a {nameof(INativeOpenGLWrapper)} object. Make sure you are running on a platform with OpenGL support.");
-			}
+#if WINAPPSDK
+				var nativeOpenGlWrapper = new WinUINativeOpenGLWrapper(xamlRoot, getWindowFunc!);
+#else
+				if (!ApiExtensibility.CreateInstance<INativeOpenGLWrapper>(xamlRoot, out nativeOpenGlWrapper))
+				{
+					throw new InvalidOperationException($"Couldn't create a {nameof(INativeOpenGLWrapper)} object. Make sure you are running on a platform with OpenGL support.");
+				}
 #endif
+
+				_xamlRootToWrapper.Add(xamlRoot, nativeOpenGlWrapper);
+			}
 			return nativeOpenGlWrapper;
 		}
 		catch (Exception e)
@@ -144,16 +150,16 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 
 	private void OnClosed(object _, object __)
 	{
-		if (GlAvailable!.Value)
+		// OnUnloaded is called after OnClosed, which leads to disposing the context first and then trying to
+		// delete the framebuffer, etc. and this causes exceptions.
+		DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
 		{
-			// OnUnloaded is called after OnClosed, which leads to disposing the context first and then trying to
-			// delete the framebuffer, etc. and this causes exceptions.
-			DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+			if (_xamlRootToWrapper.Remove(XamlRoot!, out var wrapper))
 			{
-				using var _ = _nativeOpenGlWrapper!.MakeCurrent();
-				_nativeOpenGlWrapper.Dispose();
-			});
-		}
+				using var _ = wrapper.MakeCurrent();
+				wrapper.Dispose();
+			}
+		});
 	}
 
 	/// <summary>
@@ -168,44 +174,25 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 	public void Invalidate() => NativeDispatcher.Main.Enqueue(Render, NativeDispatcherPriority.Idle);
 #endif
 
-	/// <remarks>not null after the first <see cref="GLCanvasElement"/> instance is loaded.</remarks>
-	private bool? GlAvailable
-	{
-		get => _glAvailable;
-		set
-		{
-			if (!value!.Value)
-			{
-				((ImageBrush)Background).ImageSource = _fallbackImage;
-			}
-			_glAvailable = value;
-		}
-	}
-
 	private unsafe void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
 	{
-		if (!_loadedAtleastOnce)
+		if (GetOrCreateNativeOpenGlWrapper(XamlRoot!, _getWindowFunc) is { } glWrapper)
 		{
-			_loadedAtleastOnce = true;
-
-			if ((!GlAvailable ?? false) || CreateNativeOpenGlWrapper(XamlRoot!, _getWindowFunc) is not { } glWrapper)
-			{
-				GlAvailable = false;
-			}
-			else
-			{
-				GlAvailable = true;
-				_nativeOpenGlWrapper = glWrapper;
-			}
+			_nativeOpenGlWrapper = glWrapper;
+			((ImageBrush)Background).ImageSource = _backBuffer;
+		}
+		else
+		{
+			_nativeOpenGlWrapper = null;
+			((ImageBrush)Background).ImageSource = _fallbackImage;
 		}
 
-		if (!GlAvailable!.Value)
+		if (_nativeOpenGlWrapper is null)
 		{
 			return;
 		}
 
 		_gl = GL.GetApi(this);
-		GlAvailable = true;
 
 #if WINAPPSDK
 		_pixels = Marshal.AllocHGlobal((int)(_width * _height * BytesPerPixel));
@@ -251,16 +238,23 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 #if WINAPPSDK
 			_getWindowFunc!();
 #else
-			XamlRoot?.HostWindow;
+			XamlRoot!.HostWindow;
 #endif
-		window!.Closed += OnClosed;
+		if (window is not null)
+		{
+			window.Closed += OnClosed;
+		}
+		else if (XamlRoot.Content is FrameworkElement fe) // for Uno Islands
+		{
+			fe.Unloaded += OnClosed;
+		}
 
 		Invalidate();
 	}
 
 	private void OnUnloaded(object sender, RoutedEventArgs routedEventArgs)
 	{
-		if (!GlAvailable!.Value)
+		if (_nativeOpenGlWrapper is null)
 		{
 			return;
 		}
@@ -302,9 +296,16 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 #if WINAPPSDK
 			_getWindowFunc!();
 #else
-			XamlRoot?.HostWindow;
+			XamlRoot!.HostWindow;
 #endif
-		window!.Closed -= OnClosed;
+		if (window is not null)
+		{
+			window.Closed -= OnClosed;
+		}
+		else if (XamlRoot.Content is FrameworkElement fe) // for Uno Islands
+		{
+			fe.Unloaded -= OnClosed;
+		}
 	}
 
 	private unsafe void Render()

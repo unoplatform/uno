@@ -67,7 +67,7 @@
 		<DefaultItemExcludes>$(DefaultItemExcludes);angle/**</DefaultItemExcludes>
 	</PropertyGroup>
 
-	<Target Name="GetAngle" BeforeTargets="CoreCompile">
+	<Target Name="GetAngle" BeforeTargets="Build">
 		<DownloadFile
 			SourceUrl="https://github.com/dotnet/Silk.NET/raw/a9c75a61528ee7b4e55442f5141cb132f10d72ff/src/Native/Silk.NET.OpenGLES.ANGLE.Native/runtimes/osx/native/libEGL.dylib"
 			DestinationFolder="$(MSBuildThisFileDirectory)angle_binaries/osx">
