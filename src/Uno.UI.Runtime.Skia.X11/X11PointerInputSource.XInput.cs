@@ -194,11 +194,9 @@ internal partial class X11PointerInputSource
 			? XamlRoot.GetDisplayInformation(root).RawPixelsPerViewPixel
 			: 1;
 
-		// Time is given in milliseconds since system boot
-		// This doesn't match the format of WinUI. See also: https://github.com/unoplatform/uno/issues/14535
 		var point = new PointerPoint(
 			frameId: (uint)data.time, // UNO TODO: How should we set the frame, timestamp may overflow.
-			timestamp: (ulong)data.time,
+			timestamp: (uint)(data.time * TimeSpan.TicksPerMillisecond), // Time is given in milliseconds since system boot. See also: https://github.com/unoplatform/uno/issues/14535
 			data.evtype is XiEventType.XI_TouchBegin or XiEventType.XI_TouchEnd or XiEventType.XI_TouchUpdate ? PointerDevice.For(PointerDeviceType.Touch) : PointerDevice.For(PointerDeviceType.Mouse),
 			(uint)data.sourceid,
 			new Point(data.event_x / scale, data.event_y / scale),
