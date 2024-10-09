@@ -197,8 +197,8 @@ internal partial class X11PointerInputSource
 		var point = new PointerPoint(
 			frameId: (uint)data.time, // UNO TODO: How should we set the frame, timestamp may overflow.
 			timestamp: (uint)(data.time * TimeSpan.TicksPerMillisecond), // Time is given in milliseconds since system boot. See also: https://github.com/unoplatform/uno/issues/14535
-			data.evtype is XiEventType.XI_TouchBegin or XiEventType.XI_TouchEnd or XiEventType.XI_TouchUpdate ? PointerDevice.For(PointerDeviceType.Touch) : PointerDevice.For(PointerDeviceType.Mouse),
-			(uint)data.sourceid,
+			PointerDevice.For(data.evtype is XiEventType.XI_TouchBegin or XiEventType.XI_TouchEnd or XiEventType.XI_TouchUpdate ? PointerDeviceType.Touch : PointerDeviceType.Mouse),
+			(uint)(data.evtype is XiEventType.XI_TouchBegin or XiEventType.XI_TouchEnd or XiEventType.XI_TouchUpdate ? data.detail : data.sourceid), // for touch, data.detail is the touch ID
 			new Point(data.event_x / scale, data.event_y / scale),
 			new Point(data.event_x / scale, data.event_y / scale),
 			properties.HasPressedButton,
