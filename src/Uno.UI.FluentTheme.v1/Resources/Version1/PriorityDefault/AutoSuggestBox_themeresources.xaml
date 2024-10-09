@@ -406,9 +406,6 @@
                             Margin="0"
                             DesiredCandidateWindowAlignment="BottomEdge"
                             UseSystemFocusVisuals="{TemplateBinding UseSystemFocusVisuals}"
-                            InputValidationMode="{TemplateBinding InputValidationMode}"
-                            InputValidationKind="{TemplateBinding InputValidationKind}"
-                            ValidationContext="{TemplateBinding ValidationContext}"
                             CornerRadius="{TemplateBinding CornerRadius}"/>
 
                         <Popup x:Name="SuggestionsPopup">

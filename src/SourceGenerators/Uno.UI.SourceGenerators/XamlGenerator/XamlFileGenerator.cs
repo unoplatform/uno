@@ -4000,7 +4000,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					TryAnnotateWithGeneratorSource(writer, suffix: "HasBindingOptions");
 					var isDependencyProperty = IsDependencyProperty(declaringType, member.Member.Name);
-					var isBindingType = SymbolEqualityComparer.Default.Equals(_metadataHelper.FindPropertyTypeByOwnerSymbol(declaringType, member.Member.Name), Generation.DataBindingSymbol.Value);
+					var isBindingType = Generation.DataBindingSymbol.Value.Is(_metadataHelper.FindPropertyTypeByOwnerSymbol(declaringType, member.Member.Name));
 					var isOwnerDependencyObject = member.Owner != null && GetType(member.Owner.Type) is { } ownerType &&
 						(
 							(_xamlTypeToXamlTypeBaseMap.TryGetValue(ownerType, out var baseTypeSymbol) && FindType(baseTypeSymbol)?.GetAllInterfaces().Any(i => SymbolEqualityComparer.Default.Equals(i, Generation.DependencyObjectSymbol.Value)) == true) ||
@@ -4010,13 +4010,36 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					if (isDependencyProperty)
 					{
 						var propertyOwner = declaringType;
-
-						using (writer.Indent($"{prefix}SetBinding(", $"){postfix}"))
+						var staticDPAccess = $"{propertyOwner!.GetFullyQualifiedTypeIncludingGlobal()}.{member.Member.Name}Property";
+						var isTemplateBindingAttachedProperty = templateBindingNode is not null && IsAttachedProperty(declaringType, member.Member.Name);
+						using (writer.BlockInvariant($"if ({staticDPAccess}.Name == \"{member.Member.Name}\")"))
 						{
-							writer.AppendLineIndented($"{propertyOwner!.GetFullyQualifiedTypeIncludingGlobal()}.{member.Member.Name}Property,");
-							WriteBinding(isTemplateBindingAttachedProperty: templateBindingNode is not null && IsAttachedProperty(declaringType, member.Member.Name));
+							using (writer.Indent($"{prefix}SetBinding(", $"){postfix}"))
+							{
+								writer.AppendLineIndented($"{staticDPAccess},");
+								WriteBinding(isTemplateBindingAttachedProperty: isTemplateBindingAttachedProperty);
+							}
+						}
+						using (writer.BlockInvariant("else"))
+						{
+							if (isBindingType)
+							{
+								WriteBinding(isTemplateBindingAttachedProperty: isTemplateBindingAttachedProperty, prefix: $"{prefix}{member.Member.Name} = ");
+								writer.AppendLineIndented(postfix);
+							}
+							else
+							{
+								writer.AppendLineIndented($"throw new global::System.InvalidOperationException(\"The property '{member.Member.Name}' is not a DP and Binding type cannot be assigned to it.\");");
+							}
 						}
 					}
+					// NOTE: This is not very accurate.
+					// If a DP of type Binding is declared, and the "static" property with "Property" suffix is internal, we can end up
+					// in this code path, while we are not supposed to.
+					// The correct flow should be:
+					// 1. Lookup the DP through the DP registry
+					// 2. If found, use the DP to set the value
+					// 3. If not found, treat it as setting a regular property. So, if the property is of binding type, set it, otherwise, fail.
 					else if (isBindingType)
 					{
 						WriteBinding(isTemplateBindingAttachedProperty: false, prefix: $"{prefix}{member.Member.Name} = ");
@@ -4025,7 +4048,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					else
 					{
 						var pocoBuilder = isOwnerDependencyObject ? "" : $"GetDependencyObjectForXBind().";
-
 						using (writer.Indent($"{prefix}{pocoBuilder}SetBinding(", $"){postfix}"))
 						{
 							writer.AppendLineIndented($"\"{member.Member.Name}\",");
