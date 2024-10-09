@@ -79,14 +79,11 @@ public partial class GLCanvasElementExample : UserControl
 
 ```csharp
 // GLTriangleElement.cs
-# __SKIA__ || WINAPPSDK
+#if DESKTOP || WINDOWS
 // https://learnopengl.com/Getting-started/Hello-Triangle
 public class SimpleTriangleGlCanvasElement()
-#if WINAPPSDK
-    : GLCanvasElement(() => SamplesApp.App.MainWindow)
-#else
-    : GLCanvasElement(null)
-#endif
+    // Assuming that App.xaml.cs has a static property named MainWindow
+    : GLCanvasElement(() => App.MainWindow)
 {
     private uint _vao;
     private uint _vbo;
