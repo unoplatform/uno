@@ -13,7 +13,7 @@
 		<DefineConstants>$(DefineConstants);WINAPPSDK</DefineConstants>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
-		<WindowsSdkPackageVersion>10.0.19041.38</WindowsSdkPackageVersion>
+		<WindowsSdkPackageVersion>10.0.19041.48</WindowsSdkPackageVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
