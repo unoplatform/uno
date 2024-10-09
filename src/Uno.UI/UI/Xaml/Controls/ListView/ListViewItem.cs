@@ -20,20 +20,11 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		[global::Uno.NotImplemented]
-		public global::Microsoft.UI.Xaml.Controls.Primitives.ListViewItemTemplateSettings TemplateSettings { get; } = new Primitives.ListViewItemTemplateSettings();
+		public ListViewItemTemplateSettings TemplateSettings { get; } = new();
 
 		protected override AutomationPeer OnCreateAutomationPeer()
 		{
 			return new ListViewItemAutomationPeer(this);
-		}
-
-		private protected override void OnLoaded()
-		{
-			base.OnLoaded();
-			if (Selector is ListView lv)
-			{
-				ApplyMultiSelectState(lv.SelectionMode == ListViewSelectionMode.Multiple);
-			}
 		}
 	}
 }

@@ -36,6 +36,12 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			public const string Disabled = "Disabled";
 		}
 
+		private static class MultiSelectStates
+		{
+			public const string MultiSelectEnabled = "MultiSelectEnabled";
+			public const string MultiSelectDisabled = "MultiSelectDisabled";
+		}
+
 		private enum ManipulationUpdateKind
 		{
 			None = 0,
@@ -93,7 +99,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			base.OnApplyTemplate();
 
-			UpdateVisualStates(false);
+			UpdateVisualStates(useTransitions: IsLoaded);
 		}
 
 		private protected Selector Selector => ItemsControl.ItemsControlFromItemContainer(this) as Selector;
@@ -115,38 +121,14 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs e)
 		{
-			UpdateDisabledStates(IsLoaded);
+			UpdateDisabledStates(useTransitions: IsLoaded);
 
 			base.OnIsEnabledChanged(e);
 		}
 
-		/// <summary>
-		/// Set appropriate visual state from MultiSelectStates group. (https://msdn.microsoft.com/en-us/library/windows/apps/mt299136.aspx)
-		/// </summary>
-		internal void ApplyMultiSelectState(bool isSelectionMultiple)
-		{
-			if (isSelectionMultiple && Selector is not ListViewBase { IsMultiSelectCheckBoxEnabled: false })
-			{
-				// We can safely always go to multiselect state
-				VisualStateManager.GoToState(this, "MultiSelectEnabled", useTransitions: true);
-			}
-			else
-			{
-				// Retrieve the current state (which 'lives' on the SelectorItem's template root, and may change if it is retemplated)
-				var currentState = VisualStateManager.GetCurrentState(this, "MultiSelectStates")?.Name;
-
-				if (currentState == "MultiSelectEnabled")
-				{
-					// The MultiSelectDisabled state goes through VisibleRect then collapsed, which means Disabled state can't be
-					// invoked if the state is already disabled without having the selected check box appearing briefly. (Issue #403)
-					VisualStateManager.GoToState(this, "MultiSelectDisabled", useTransitions: true);
-				}
-			}
-		}
-
 		partial void OnIsSelectedChangedPartial(bool oldIsSelected, bool newIsSelected)
 		{
-			UpdateCommonStates(IsLoaded);
+			UpdateCommonStates(useTransitions: IsLoaded);
 			OnIsSelectedChanged();
 
 			Selector?.NotifyListItemSelected(this, oldIsSelected, newIsSelected);
@@ -168,6 +150,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			{
 				UpdateCommonStates(useTransitions);
 				UpdateDisabledStates(useTransitions);
+				UpdateMultiSelectStates(useTransitions);
 			}
 		}
 
@@ -254,6 +237,26 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			// TODO: This may need to be adjusted later when we remove the Visual State mixins.
 			var state = IsEnabled ? DisabledStates.Enabled : DisabledStates.Disabled;
 			VisualStateManager.GoToState(this, state, useTransitions);
+		}
+
+		internal void UpdateMultiSelectStates(bool useTransitions)
+		{
+			if (Selector is ListViewBase { SelectionMode: ListViewSelectionMode.Multiple, IsMultiSelectCheckBoxEnabled: true })
+			{
+				// We can safely always go to multiselect state
+				VisualStateManager.GoToState(this, MultiSelectStates.MultiSelectEnabled, useTransitions);
+			}
+			else
+			{
+				// Retrieve the current state (which 'lives' on the SelectorItem's template root, and may change if it is re-templated)
+				var currentState = VisualStateManager.GetCurrentState(this, nameof(MultiSelectStates))?.Name;
+				if (currentState == MultiSelectStates.MultiSelectEnabled)
+				{
+					// The MultiSelectDisabled state goes through VisibleRect then collapsed, which means Disabled state can't be
+					// invoked if the state is already disabled without having the selected check box appearing briefly. (Issue #403)
+					VisualStateManager.GoToState(this, MultiSelectStates.MultiSelectDisabled, useTransitions);
+				}
+			}
 		}
 
 		private string GetCommonState(bool isEnabled, bool isSelected, bool isOver, bool isPressed)
