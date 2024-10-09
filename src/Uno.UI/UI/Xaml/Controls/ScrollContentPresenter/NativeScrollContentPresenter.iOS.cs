@@ -281,7 +281,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 				MobileLayoutingHelpers.ArrangeElement(child, new Rect(0, 0, width, height));
 
-				ContentSize = child.Frame.Size;
+				var marginSize = child is FrameworkElement { Margin: { } margin }
+					? new Size(margin.Left + margin.Right, margin.Top + margin.Bottom)
+					: default;
+
+				ContentSize = child.Frame.Size + marginSize;
 
 				// Give opportunity to the the content to define the viewport size itself
 				(child as ICustomScrollInfo)?.ApplyViewport(ref slotSize);
