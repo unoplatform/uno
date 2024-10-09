@@ -114,7 +114,7 @@ internal static class LayouterElementExtensions
 				{
 					var previousDesiredSize = childAsUIElement.m_desiredSize;
 					childAsUIElement.EnsureLayoutStorage();
-					
+
 					// TODO: This is NOT correct. This should call DoMeasure (the same method we are in currently!)
 					element.Layouter.MeasureChild(child, childAsUIElement.m_previousAvailableSize);
 					var newDesiredSize = childAsUIElement.m_desiredSize;
