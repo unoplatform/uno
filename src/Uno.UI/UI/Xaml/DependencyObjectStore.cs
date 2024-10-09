@@ -1366,6 +1366,11 @@ namespace Microsoft.UI.Xaml
 					&& property.IsInherited
 
 #if __ANDROID__
+					// This is a workaround related to property inheritance and
+					// https://github.com/unoplatform/uno/pull/18261.
+					// Removing this line can randomly produce elements not rendering 
+					// properly, such as TextBlock not measure/arrange properly 
+					// even when invalidated.
 					&& _properties.FindPropertyDetails(property) is { }
 #endif
 				)
