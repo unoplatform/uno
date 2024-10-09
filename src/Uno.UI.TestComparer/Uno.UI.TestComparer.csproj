@@ -25,7 +25,7 @@
 		<PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.0.1" />
 		<PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.0.1" />
-		<PackageReference Include="System.Text.Json" Version="8.0.4" />
+		<PackageReference Include="System.Text.Json" Version="8.0.5" />
 		<PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
 		<!-- END WORKAROUND -->
 	</ItemGroup>
