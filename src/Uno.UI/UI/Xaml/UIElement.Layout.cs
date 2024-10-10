@@ -420,7 +420,11 @@ namespace Microsoft.UI.Xaml
 			// find the command bar through TemplatedParent
 			if (this is Control thisAsControl)
 			{
+#if UNO_HAS_ENHANCED_LIFECYCLE
+				thisAsControl.ApplyTemplate();
+#else
 				thisAsControl.TryCallOnApplyTemplate();
+#endif
 
 				// Update bindings to ensure resources defined
 				// in visual parents get applied.
