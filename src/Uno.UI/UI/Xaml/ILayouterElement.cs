@@ -95,6 +95,7 @@ internal static class LayouterElementExtensions
 				// TODO: This is NOT correct.
 				// We shouldn't return here. Skipping children measure is incorrect but fixing it on Android isn't trivial.
 				return true;
+
 			}
 
 			// The measure dirty flag is set on one of the descendents:
