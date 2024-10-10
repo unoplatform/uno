@@ -46,8 +46,6 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 
 	public override object? NativeWindow => null;
 
-	internal Window? Window => _window;
-
 	public override string Title
 	{
 		get => NativeMethods.GetWindowTitle();
