@@ -30,20 +30,20 @@ namespace Microsoft.UI.Xaml
 			// In this case, parents aren't automagically invalidated. For example, while typing in TextBox in a way that makes it grow.
 			// So, once we get LayoutSubviews, we go through the native-only children. If we found any of them has
 			// changed, we do invalidate the current managed element (the parent of the native-only child)
-			foreach (var child in this.GetChildren())
-			{
-				if (child is UIView nativeOnlyChild && child is not UIElement)
-				{
-					var oldDesiredSize = LayoutInformation.GetDesiredSize(nativeOnlyChild);
-					var desiredSize = (Size)nativeOnlyChild.SizeThatFits(LayoutInformation.GetAvailableSize(nativeOnlyChild));
-					if (oldDesiredSize != desiredSize)
-					{
-						LayoutInformation.SetDesiredSize(nativeOnlyChild, desiredSize);
-						this.InvalidateMeasure();
-						this.InvalidateArrange();
-					}
-				}
-			}
+			//foreach (var child in this.GetChildren())
+			//{
+			//	if (child is UIView nativeOnlyChild && child is not UIElement)
+			//	{
+			//		var oldDesiredSize = LayoutInformation.GetDesiredSize(nativeOnlyChild);
+			//		var desiredSize = (Size)nativeOnlyChild.SizeThatFits(LayoutInformation.GetAvailableSize(nativeOnlyChild));
+			//		if (oldDesiredSize != desiredSize)
+			//		{
+			//			LayoutInformation.SetDesiredSize(nativeOnlyChild, desiredSize);
+			//			this.InvalidateMeasure();
+			//			this.InvalidateArrange();
+			//		}
+			//	}
+			//}
 		}
 
 		public override CGSize SizeThatFits(CGSize size)
