@@ -15,6 +15,7 @@ using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.Helpers;
 using Uno.Helpers.Theming;
+using Uno.UI.Helpers;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia;
 using Uno.UI.Runtime.Skia.Extensions.System;
@@ -128,6 +129,7 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 		// We do not have a display timer on this target, we can use
 		// a constant timer.
 		CompositionTargetTimer.Start();
+		PlatformRuntimeHelper.SkiaPlatform = UnoRuntimePlatform.SkiaX11;
 	}
 
 	internal static int RenderFrameRate { get; private set; }
