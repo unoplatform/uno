@@ -11,7 +11,6 @@ using Microsoft.VisualStudio.Threading;
 using StreamJsonRpc;
 using Uno.UI.RemoteControl.Host.IdeChannel;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
-using Uno.UI.RemoteControl.Messaging.IDEChannel;
 using Uno.UI.RemoteControl.VS.Helpers;
 using Uno.UI.RemoteControl.VS.Notifications;
 
@@ -27,7 +26,7 @@ internal class IdeChannelClient
 	private readonly ILogger _logger;
 
 	public event AsyncEventHandler<ForceHotReloadIdeMessage>? ForceHotReloadRequested;
-	public event AsyncEventHandler<NotificationIdeMessage>? InfoBarNotificationRequested;
+	public event AsyncEventHandler<NotificationRequestIdeMessage>? InfoBarNotificationRequested;
 
 	public IdeChannelClient(Guid pipeGuid, ILogger logger)
 	{
@@ -105,7 +104,7 @@ internal class IdeChannelClient
 				case KeepAliveIdeMessage:
 					_logger.Verbose($"Keep alive from Dev Server");
 					break;
-				case NotificationIdeMessage e when e is { } message:
+				case NotificationRequestIdeMessage e when e is { } message:
 					_logger.Verbose($"Dev Server will open the Notification Message with message {e.Message}");
 					process = InfoBarNotificationRequested.InvokeAsync(this, message);
 					break;

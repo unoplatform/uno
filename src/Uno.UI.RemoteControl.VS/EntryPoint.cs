@@ -20,7 +20,6 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Threading;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
-using Uno.UI.RemoteControl.Messaging.IDEChannel;
 using Uno.UI.RemoteControl.VS.DebuggerHelper;
 using Uno.UI.RemoteControl.VS.Helpers;
 using Uno.UI.RemoteControl.VS.IdeChannel;
@@ -423,7 +422,7 @@ public partial class EntryPoint : IDisposable
 		}
 	}
 
-	private async Task OnInfoBarNotificationRequestedAsync(object? sender, NotificationIdeMessage message)
+	private async Task OnInfoBarNotificationRequestedAsync(object? sender, NotificationRequestIdeMessage message)
 	{
 		try
 		{
@@ -442,7 +441,7 @@ public partial class EntryPoint : IDisposable
 		}
 	}
 
-	private async Task CreateInfoBarFactoryAsync(NotificationIdeMessage e, IVsShell shell, IVsInfoBarUIFactory infoBarFactory)
+	private async Task CreateInfoBarFactoryAsync(NotificationRequestIdeMessage e, IVsShell shell, IVsInfoBarUIFactory infoBarFactory)
 	{
 		if (_ideChannelClient is null)
 		{
@@ -475,7 +474,6 @@ public partial class EntryPoint : IDisposable
 						windowID != IntPtr.Zero
 						)
 					{
-						;
 						await _ideChannelClient.SendToDevServerAsync(new CommandRequestIdeMessage(windowID.ToInt64(), command, action.ActionContext?.ToString()), _ct.Token);
 					}
 				});
@@ -650,22 +648,14 @@ public partial class EntryPoint : IDisposable
 
 	public async Task<IntPtr> GetActiveWindowHandleAsync()
 	{
-		await _asyncPackage.JoinableTaskFactory.SwitchToMainThreadAsync();
+		//System.Diagnostics.Process.GetCurrentProcess().Id
+		IntPtr hWnd = IntPtr.Zero;
+		IVsUIShell? uiShell = await _asyncPackage.GetServiceAsync(typeof(SVsUIShell)) as IVsUIShell;
 
-		var vsMonitorSelection = await _asyncPackage.GetServiceAsync(typeof(SVsShellMonitorSelection)) as IVsMonitorSelection;
-		if (vsMonitorSelection == null)
+		if (uiShell != null)
 		{
-			throw new InvalidOperationException("Cannot retrieve IVsMonitorSelection.");
+			uiShell.GetDialogOwnerHwnd(out hWnd);
 		}
-
-		vsMonitorSelection.GetCurrentElementValue((uint)VSConstants.VSSELELEMID.SEID_WindowFrame, out object windowFrameObj);
-
-		if (windowFrameObj is IVsWindowFrame windowFrame)
-		{
-			windowFrame.GetProperty((int)__VSFPROPID2.VSFPROPID_ParentHwnd, out object windowHandle);
-			return (IntPtr)windowHandle;
-		}
-
-		return IntPtr.Zero; // Retorna 0 se nenhuma janela ativa foi encontrada
+		return hWnd;
 	}
 }
