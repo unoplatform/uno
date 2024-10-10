@@ -1,7 +1,15 @@
+using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using MUXControlsTestApp.Utilities;
+using Uno.Extensions;
+using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 
@@ -29,5 +37,46 @@ public class Given_VisualStateManager
 		VisualStateManager.GoToState(control, "Red", true);
 		await Task.Delay(1000);
 		Assert.AreEqual(Microsoft.UI.Colors.Red, ((SolidColorBrush)border.Background).Color);
+	}
+
+	[TestMethod]
+	public async Task SelectorItem_SelectedState()
+	{
+		var items = Enumerable.Range(0, 3).ToArray();
+		var setup = new GridView
+		{
+			ItemsSource = items,
+			SelectedItem = items.Last(),
+		};
+		await UITestHelper.Load(setup);
+
+		var container2 = setup.ContainerFromIndex(2) as GridViewItem ?? throw new Exception("Failed to retrieve container at index 2");
+
+		// check if the visual-state is set
+		var states = VisualStateHelper.GetCurrentVisualStateName(container2).ToArray();
+		Assert.IsTrue(states.Contains("Selected"), $"container2 is not in 'Selected' state: states={states.JoinBy(",")}");
+	}
+
+	[TestMethod]
+	public Task SelectorItem_MultiSelectState_GV() => SelectorItem_MultiSelectState_Impl<GridView>();
+
+	[TestMethod]
+	public Task SelectorItem_MultiSelectState_LV() => SelectorItem_MultiSelectState_Impl<ListView>();
+
+	public async Task SelectorItem_MultiSelectState_Impl<T>() where T : ListViewBase, new()
+	{
+		var items = Enumerable.Range(0, 3).ToArray();
+		var setup = new T
+		{
+			ItemsSource = items,
+			SelectionMode = ListViewSelectionMode.Multiple,
+		};
+		await UITestHelper.Load(setup);
+
+		var container2 = setup.ContainerFromIndex(2) as SelectorItem ?? throw new Exception("Failed to retrieve container at index 2");
+
+		// check if the visual-state is set
+		var states = VisualStateHelper.GetCurrentVisualStateName(container2).ToArray();
+		Assert.IsTrue(states.Contains("MultiSelectEnabled"), $"container2 is not in 'MultiSelectEnabled' state: states={states.JoinBy(",")}");
 	}
 }
