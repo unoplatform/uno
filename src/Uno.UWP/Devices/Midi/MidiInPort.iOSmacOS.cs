@@ -24,6 +24,8 @@ namespace Windows.Devices.Midi
 			_endpoint = endpoint;
 			_client = new MidiClient(Guid.NewGuid().ToString());
 			_port = _client.CreateInputPort(_endpoint.EndpointName);
+
+			InitializeMessageReceived();
 		}
 
 		partial void StartMessageReceived()
