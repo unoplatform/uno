@@ -15,16 +15,13 @@
 using System;
 using System.Diagnostics;
 using System.Numerics;
+using SamplesApp;
 using Silk.NET.OpenGL;
 using Uno.WinUI.Graphics3DGL;
 
 namespace UITests.Shared.Windows_UI_Composition
 {
-#if WINAPPSDK
-	public class RotatingCubeGlCanvasElement() : GLCanvasElement(1200, 800, () => SamplesApp.App.MainWindow)
-#else
-	public class RotatingCubeGlCanvasElement() : GLCanvasElement(1200, 800, null)
-#endif
+	public class RotatingCubeGlCanvasElement() : GLCanvasElement(() => App.MainWindow)
 	{
 		private static BufferObject<float> _vbo;
 		private static BufferObject<uint> _ebo;
