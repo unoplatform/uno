@@ -204,11 +204,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		public override void SetNeedsLayout()
-		{
-			base.SetNeedsLayout();
-		}
-
 		#region Layouting
 
 		private ScrollBarVisibility _verticalScrollBarVisibility;
