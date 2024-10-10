@@ -2,12 +2,12 @@
 uid: Uno.Controls.GLCanvasElement
 ---
 
-## Uno.WinUI.Graphics3D.GLCanvasElement
-
 > [!IMPORTANT]
-> This functionality is only available on WinUI and Skia Desktop (`netX.0-desktop`) targets that are running on platforms with support for hardware acceleration. On Windows and Linux, this means having (desktop) OpenGL support. On Mac OS X, this means having Vulkan support (to be used by [ANGLE](https://en.wikipedia.org/wiki/ANGLE_(software))).
+> This functionality is only available on WinAppSDK and Skia Desktop (`netX.0-desktop`) targets that are running on platforms with support for hardware acceleration. On Windows and Linux, OpenGL is used directly and on macOS, Metal is used through the [ANGLE](https://en.wikipedia.org/wiki/ANGLE_(software)) library.
 
-`GLCanvasElement` is a `Grid` for drawing 3D graphics with OpenGL. This class comes as a part of the `Uno.WinUI.Graphics3D` package.
+`GLCanvasElement` is a control for drawing 3D graphics with OpenGL. It can be enabled by adding the [`GLCanvas` UnoFeature](xref:Uno.Features.Uno.Sdk). The OpenGL APIs provided are provided by [Silk.NET](https://dotnet.github.io/Silk.NET/).
+
+## Using the GLCanvasElement
 
 To use `GLCanvasElement`, create a subclass of `GLCanvasElement` and override the abstract methods `Init`, `RenderOverride` and `OnDestroy`.
 
@@ -19,19 +19,31 @@ protected abstract void RenderOverride(GL gl);
 protected abstract void OnDestroy(GL gl);
 ```
 
-The protected constructor requires a `Func<Window>` argument that fetches the `Microsoft.UI.Xaml.Window` object that the `GLCanvasElement` belongs to. This function is required because WinUI doesn't provide a way to get the `Window` of a `FrameworkElement`. This paramater is ignored on Uno Platform and can be set to null. This function is only called while the `GLCanvasElement` is still in the visual tree.
+These three abstract methods take a `Silk.NET.OpenGL.GL` parameter that can be used to make OpenGL calls.
 
-The 3 abstract methods above all take a `Silk.NET.OpenGL.GL` parameter that can be used to make OpenGL calls.
+### The GLCanvasElement constructor
+
+The protected constructor requires a `Func<Window>` argument that fetches the `Microsoft.UI.Xaml.Window` object that the `GLCanvasElement` belongs to. This function is required because WinUI doesn't yet provide a way to get the `Window` of a `FrameworkElement`. This paramater is ignored on Uno Platform and must be set to null. This function is only called while the `GLCanvasElement` is still in the visual tree.
+
+### The `Init` method
 
 The `Init` method is a regular OpenGL setup method that you can use to set up the needed OpenGL objects, like textures, Vertex Array Buffers (VAOs), Element Array Buffers (EBOs), etc.  The `OnDestroy` method is the complement of `Init` and is used to clean up any allocated resources. `Init` and `OnDestroy` might be called multiple times alternatingly. In other words, 2 `OnDestroy` calls are guaranteed to have an `Init` call in between and vice versa.
 
+### The `RenderOverride` method
+
 The `RenderOverride` is the main render-loop function. When adding your drawing logic in `RenderOverride`, you can assume that the OpenGL viewport rectangle is already set and its dimensions are equal to the `RenderSize` of the `GLCanvasElement`.
+
+### macOS Specifics
 
 On MacOS, since OpenGL support is not natively present, we use [ANGLE](https://en.wikipedia.org/wiki/ANGLE_(software)) to provide OpenGL ES support. This means that we're actually using OpenGL ES 3.00, not OpenGL. Due to the similarity between desktop OpenGL and OpenGL ES, (almost) all the OpenGL ES functions are present in the `Silk.NET.OpenGL.GL` API surface and therefore we can use the same class to represent both the OpenGL and OpenGL ES APIs. To run the same `GLCanvasElement` subclasses on all supported platforms, make sure to use a subset of functions that are present in both APIs (which is almost all of OpenGL ES).
 
-To learn more about using [Silk.NET](https://www.nuget.org/packages/Silk.NET.OpenGL/) as a C# binding for OpenGL, see the examples in the Silk.NET repository [here](https://github.com/dotnet/Silk.NET/tree/main/examples/CSharp). Note that the windowing and inputs APIs in Silk.NET are not relevant to `GLCanvasElement`, since we only use Silk.NET as an OpenGL binding library, not a windowing library.
+## Invalidating the canvas
 
 Additionally, `GLCanvasElement` has an `Invalidate` method that requests a redrawing of the `GLCanvasElement`, calling `RenderOverride` in the process. Note that `RenderOverride` will only be called once per `Invalidate` call and the output will be saved to be used in future frames. To update the output, you must call `Invalidate`. If you need to continuously update the output (e.g. in an animation), you can add an `Invalidate` call inside `RenderOverride`.
+
+## How to use Silk.NET
+
+To learn more about using [Silk.NET](https://www.nuget.org/packages/Silk.NET.OpenGL/) as a C# binding for OpenGL, see the examples in the Silk.NET repository [here](https://github.com/dotnet/Silk.NET/tree/main/examples/CSharp). Note that the windowing and inputs APIs in Silk.NET are not relevant to `GLCanvasElement`, since we only use Silk.NET as an OpenGL binding library, not a windowing library.
 
 ## Full example
 
