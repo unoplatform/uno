@@ -15,6 +15,7 @@ using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.Helpers;
 using Uno.Helpers.Theming;
+using Uno.UI.Helpers;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia;
 using Uno.UI.Runtime.Skia.Extensions.System;
@@ -126,6 +127,8 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 		});
 		CoreDispatcher.DispatchOverride = (a, p) => _eventLoop.Schedule(a);
 		CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
+
+		PlatformRuntimeHelper.SkiaPlatform = UnoRuntimePlatform.SkiaX11;
 	}
 
 	internal static int RenderFrameRate { get; private set; }

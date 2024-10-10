@@ -13,6 +13,8 @@ using Uno.Helpers;
 using WUX = Microsoft.UI.Xaml;
 using System.Threading.Tasks;
 using Uno.UI.Runtime.Skia.Linux.FrameBuffer.UI;
+using Microsoft.UI.Xaml.Media;
+using Uno.UI.Helpers;
 
 namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 {
@@ -48,6 +50,8 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 
 			_eventLoop = new EventLoop();
 			_coreApplicationExtension = new CoreApplicationExtension(_terminationGate);
+
+			PlatformRuntimeHelper.SkiaPlatform = UnoRuntimePlatform.SkiaFrameBuffer;
 		}
 
 		/// <summary>

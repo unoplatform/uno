@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml;
 
 using Uno.Foundation.Logging;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Helpers;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
 
@@ -42,6 +43,8 @@ public class MacSkiaHost : SkiaHost, ISkiaApplicationHost
 	{
 		_current = this;
 		_appBuilder = appBuilder;
+
+		PlatformRuntimeHelper.SkiaPlatform = UnoRuntimePlatform.SkiaMacOS;
 	}
 
 	internal static MacSkiaHost Current => _current!;
