@@ -34,7 +34,7 @@ steps:
       echo "##vso[task.setvariable variable=uncommittedChanges]$[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.uncommittedChanges'] ]"
       echo "##vso[task.setvariable variable=commitDate]$[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.commitDate'] ]"
     
-    name: Set GitVersion Environment
+    displayName: Set GitVersion Environment
 
   
   
