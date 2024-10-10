@@ -9,6 +9,7 @@ using System.Runtime.Loader;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Uno.Extensions;
@@ -355,7 +356,7 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 
 							try
 							{
-								if (asm.assembly.CreateInstance(processor.ProcessorType.FullName!, ignoreCase: false, bindingAttr: BindingFlags.Instance | BindingFlags.Public, binder: null, args: new[] { this }, culture: null, activationAttributes: null) is IServerProcessor serverProcessor)
+								if (ActivatorUtilities.CreateInstance(_serviceProvider, processor.ProcessorType, parameters: new[] { this }) is IServerProcessor serverProcessor)
 								{
 									discoveredProcessors.Add(new(asm.path, processor.ProcessorType.FullName!, VersionHelper.GetVersion(processor.ProcessorType), IsLoaded: true));
 									RegisterProcessor(serverProcessor);

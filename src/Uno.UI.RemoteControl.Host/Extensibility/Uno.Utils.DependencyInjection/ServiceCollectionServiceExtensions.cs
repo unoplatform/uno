@@ -30,7 +30,7 @@ public static class ServiceCollectionServiceExtensions
 
 		foreach (var service in services)
 		{
-			svc.Add(new ServiceDescriptor(service!.Contract, service.Implementation, service.LifeTime));
+			svc.Add(new ServiceDescriptor(service!.Contract, service.Key, service.Implementation, service.LifeTime));
 		}
 		svc.AddHostedService(s => new AutoInitService(s, services!));
 

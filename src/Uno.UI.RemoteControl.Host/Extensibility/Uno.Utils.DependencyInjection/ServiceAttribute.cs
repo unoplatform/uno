@@ -9,7 +9,7 @@ namespace Uno.Utils.DependencyInjection;
 /// </summary>
 /// <param name="contract">Type of the contract (i.e. interface) implemented by the concrete <see cref="Implementation"/> type.</param>
 /// <param name="implementation">Concrete type to register in the service collection.</param>
-[AttributeUsage(AttributeTargets.Assembly)]
+[AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
 public class ServiceAttribute(Type contract, Type implementation) : Attribute
 {
 	/// <summary>
@@ -37,7 +37,12 @@ public class ServiceAttribute(Type contract, Type implementation) : Attribute
 	public ServiceLifetime LifeTime { get; set; } = ServiceLifetime.Singleton;
 
 	/// <summary>
-	/// Indicates if the service should be automatically initialized at startup.
+	/// Indicates if the service should be automatically initialized at startup (a.k.a. hosted service).
 	/// </summary>
 	public bool IsAutoInit { get; set; }
+
+	/// <summary>
+	/// Provides a key to identify the service (service will be registered as keyed service if not null).
+	/// </summary>
+	public object? Key { get; set; }
 }
