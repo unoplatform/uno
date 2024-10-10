@@ -25,4 +25,9 @@ public static class WellKnownScopes
 	/// For messages used for testing purpose (e.g. UpdateFile)
 	/// </summary>
 	public const string Testing = "UnoRuntimeTests";
+
+	/// <summary>
+	/// For generic messages initiated by the IDE (like a command)
+	/// </summary>
+	public const string Ide = "IDE";
 }

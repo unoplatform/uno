@@ -31,7 +31,7 @@
 		<Message Text="&lt;IsRCClientRemote&gt;$(_IsRCClientRemote)&lt;/IsRCClientRemote&gt;" Importance="High" />
 	</Target>
 
-	<Target Name="GetRemoteControlAddIns">
+	<Target Name="UnoDumpRemoteControlAddIns">
 		<Message Text="&lt;RemoteControlAddIns&gt;@(UnoRemoteControlAddIns)&lt;/RemoteControlAddIns&gt;" Importance="High" />
 	</Target>
 

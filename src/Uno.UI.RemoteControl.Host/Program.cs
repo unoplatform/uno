@@ -11,6 +11,7 @@ using System.ComponentModel;
 using System.Threading.Tasks;
 using Uno.UI.RemoteControl.Host.Extensibility;
 using Uno.UI.RemoteControl.Host.IdeChannel;
+using Uno.UI.RemoteControl.Services;
 
 namespace Uno.UI.RemoteControl.Host
 {
@@ -77,7 +78,7 @@ namespace Uno.UI.RemoteControl.Host
 				})
 				.ConfigureServices(services =>
 				{
-					services.AddSingleton<IIdeChannelServerProvider, IdeChannelServerProvider>();
+					services.AddSingleton<IIdeChannel, IdeChannelServer>();
 				});
 
 			if (solution is not null)
@@ -88,7 +89,7 @@ namespace Uno.UI.RemoteControl.Host
 
 			var host = builder.Build();
 
-			host.Services.GetService<IIdeChannelServerProvider>();
+			host.Services.GetService<IIdeChannel>();
 
 			using var parentObserver = ParentProcessObserver.Observe(host, parentPID);
 

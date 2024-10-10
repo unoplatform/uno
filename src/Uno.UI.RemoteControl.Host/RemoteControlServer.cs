@@ -17,6 +17,7 @@ using Uno.UI.RemoteControl.Host.IdeChannel;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.UI.RemoteControl.Messages;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
+using Uno.UI.RemoteControl.Services;
 
 namespace Uno.UI.RemoteControl.Host;
 
@@ -29,22 +30,23 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 	private readonly CancellationTokenSource _ct = new();
 
 	private WebSocket? _socket;
-	private IdeChannelServer? _ideChannelServer;
 	private readonly List<string> _appInstanceIds = new();
 	private readonly IConfiguration _configuration;
-	private readonly IIdeChannelServerProvider _ideChannelProvider;
+	private readonly IIdeChannel _ideChannel;
 	private readonly IServiceProvider _serviceProvider;
 
-	public RemoteControlServer(IConfiguration configuration, IIdeChannelServerProvider ideChannelProvider, IServiceProvider serviceProvider)
+	public RemoteControlServer(IConfiguration configuration, IIdeChannel ideChannel, IServiceProvider serviceProvider)
 	{
 		_configuration = configuration;
-		_ideChannelProvider = ideChannelProvider;
+		_ideChannel = ideChannel;
 		_serviceProvider = serviceProvider;
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
 			this.Log().LogDebug("Starting RemoteControlServer");
 		}
+
+		_ideChannel.MessageFromIde += ProcessIdeMessage;
 	}
 
 	string IRemoteControlServer.GetServerConfiguration(string key)
@@ -131,13 +133,14 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 	private void RegisterProcessor(IServerProcessor hotReloadProcessor)
 		=> _processors[hotReloadProcessor.Scope] = hotReloadProcessor;
 
-	public IdeChannelServer? IDEChannelServer => _ideChannelServer;
-
 	public async Task RunAsync(WebSocket socket, CancellationToken ct)
 	{
 		_socket = socket;
 
-		await TryStartIDEChannelAsync();
+		if (_ideChannel is IdeChannelServer srv)
+		{
+			await srv.WaitForReady(ct);
+		}
 
 		while (await WebSocketHelper.ReadFrame(socket, ct) is Frame frame)
 		{
@@ -183,21 +186,6 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 					this.Log().LogDebug("Unknown Frame [{Scope} / {Name}]", frame.Scope, frame.Name);
 				}
 			}
-		}
-	}
-
-	private async Task TryStartIDEChannelAsync()
-	{
-		if (_ideChannelServer is { } oldChannel)
-		{
-			oldChannel.MessageFromIDE -= ProcessIdeMessage;
-		}
-
-		_ideChannelServer = await _ideChannelProvider.GetIdeChannelServerAsync();
-
-		if (_ideChannelServer is { } newChannel)
-		{
-			newChannel.MessageFromIDE += ProcessIdeMessage;
 		}
 	}
 
@@ -442,13 +430,8 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 		}
 	}
 
-	public async Task SendMessageToIDEAsync(IdeMessage message)
-	{
-		if (IDEChannelServer is not null)
-		{
-			await IDEChannelServer.SendToIdeAsync(message);
-		}
-	}
+	public Task SendMessageToIDEAsync(IdeMessage message)
+		=> _ideChannel.SendToIdeAsync(message, default);
 
 	public void Dispose()
 	{
