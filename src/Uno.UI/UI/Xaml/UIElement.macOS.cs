@@ -1,18 +1,19 @@
-﻿using Uno.UI.Controls;
-using Windows.Foundation;
-using Microsoft.UI.Xaml.Input;
-using Windows.System;
-using System;
+﻿using System;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Uno.UI.Extensions;
 using AppKit;
 using CoreAnimation;
 using CoreGraphics;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 using ObjCRuntime;
+using Uno.UI;
+using Uno.UI.Extensions;
+using Uno.UI.Controls;
+using Windows.Foundation;
+using Windows.System;
 
 namespace Microsoft.UI.Xaml
 {
@@ -24,18 +25,6 @@ namespace Microsoft.UI.Xaml
 			InitializePointers();
 
 			UpdateHitTest();
-		}
-
-		internal bool IsMeasureDirtyPath
-		{
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			get => false; // Not implemented on macOS yet
-		}
-
-		internal bool IsArrangeDirtyPath
-		{
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			get => false; // Not implemented on macOS yet
 		}
 
 		internal bool ClippingIsSetByCornerRadius { get; set; }
@@ -90,6 +79,26 @@ namespace Microsoft.UI.Xaml
 				// the change.
 				Visibility = value ? Visibility.Collapsed : Visibility.Visible;
 			}
+		}
+
+		private protected bool _isSettingFrameByArrangeVisual;
+
+		internal void ArrangeVisual(Rect finalRect, Rect? clippedFrame = default)
+		{
+			LayoutSlotWithMarginsAndAlignments = finalRect;
+			SetTotalClipRect();
+
+			_isSettingFrameByArrangeVisual = true;
+			try
+			{
+				this.Frame = ViewHelper.LogicalToPhysicalPixels(finalRect);
+			}
+			finally
+			{
+				_isSettingFrameByArrangeVisual = false;
+			}
+
+			OnViewportUpdated(clippedFrame ?? Rect.Empty);
 		}
 
 		public void SetSubviewsNeedLayout()
@@ -240,14 +249,9 @@ namespace Microsoft.UI.Xaml
 			base.OnNativeKeyUp(evt);
 		}
 
-		partial void ApplyNativeClip(Rect rect)
+		private void SetClipPlatform(Rect? totalLogicalClip)
 		{
-			if (rect.IsEmpty
-				|| double.IsPositiveInfinity(rect.X)
-				|| double.IsPositiveInfinity(rect.Y)
-				|| double.IsPositiveInfinity(rect.Width)
-				|| double.IsPositiveInfinity(rect.Height)
-			)
+			if (totalLogicalClip is null)
 			{
 				if (!ClippingIsSetByCornerRadius)
 				{
@@ -266,7 +270,7 @@ namespace Microsoft.UI.Xaml
 			{
 				layer.Mask = new CAShapeLayer
 				{
-					Path = CGPath.FromRect(rect.ToCGRect())
+					Path = CGPath.FromRect(totalLogicalClip.Value.ToCGRect())
 				};
 			}
 		}

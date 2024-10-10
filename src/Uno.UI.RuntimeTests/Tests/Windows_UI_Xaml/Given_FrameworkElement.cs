@@ -542,12 +542,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			TestServices.WindowHelper.WindowContent = sut;
 			await TestServices.WindowHelper.WaitForIdle();
 
-			// count == 1 on WinUI
-#if __SKIA__ || __WASM__
 			Assert.AreEqual(1, count);
-#else
-			Assert.AreEqual(2, count);
-#endif
 		}
 
 		[TestMethod]
@@ -638,16 +633,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.AreEqual(new Size(double.PositiveInfinity, double.PositiveInfinity), SUT.MeasureOverrides.Last());
 				Assert.AreEqual(new Size(0, 0), SUT.DesiredSize);
 
-#if __CROSSRUNTIME__
 				// Unlike WinUI, we don't crash.
 				SUT.Measure(new Size(double.NaN, double.NaN));
 				SUT.Measure(new Size(42.0, double.NaN));
 				SUT.Measure(new Size(double.NaN, 42.0));
-#else
-				Assert.ThrowsException<InvalidOperationException>(() => SUT.Measure(new Size(double.NaN, double.NaN)));
-				Assert.ThrowsException<InvalidOperationException>(() => SUT.Measure(new Size(42.0, double.NaN)));
-				Assert.ThrowsException<InvalidOperationException>(() => SUT.Measure(new Size(double.NaN, 42.0)));
-#endif
 			});
 
 		[TestMethod]
@@ -912,9 +901,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await TestServices.WindowHelper.WaitForIdle(); //StretchAffectsMeasure is set when Loaded is called
 
 			panel.Measure(new Size(1000, 1000));
-
-			var measuredHeightLogical = Math.Round(Uno.UI.ViewHelper.PhysicalToLogicalPixels(outer.MeasuredHeight));
-			Assert.AreEqual(InnerBorderHeight, measuredHeightLogical);
 
 			outer.Arrange(new Rect(0, 0, 1000, 1000));
 			var actualHeight = Math.Round(outer.ActualHeight);

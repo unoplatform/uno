@@ -285,7 +285,7 @@ namespace Uno.UI.Tests.StackPanelTest
 
 			SUT.Arrange(finalRect: new Rect(x: 0, y: 0, width: 30, height: 30));
 			SUT.Arranged.Should().Be((Rect)"0,0,30,30");
-			c1.Arranged.Should().Be((Rect)"10,10,10,0"); // size is 10x0 because of margins (w= 30-(10+10), h=10-(10+10))
+			c1.Arranged.Should().Be((Rect)"10,10,10,10");
 
 			SUT.GetChildren().Should().HaveCount(1);
 		}

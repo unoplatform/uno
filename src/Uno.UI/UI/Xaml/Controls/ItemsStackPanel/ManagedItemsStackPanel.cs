@@ -17,10 +17,6 @@ namespace Uno.UI.Controls
 	{
 		ManagedVirtualizingPanelLayout _layout;
 
-#if !__IOS__
-		internal bool ShouldInterceptInvalidate { get; set; }
-#endif
-
 		public ManagedItemsStackPanel()
 		{
 			if (FeatureConfiguration.ListViewBase.DefaultCacheLength.HasValue)
