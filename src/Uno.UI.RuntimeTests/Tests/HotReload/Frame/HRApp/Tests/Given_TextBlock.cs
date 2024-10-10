@@ -13,6 +13,7 @@ using Uno.UI.RuntimeTests.Tests.HotReload.Frame.Pages;
 using Uno.UI.RuntimeTests.Tests.HotReload;
 using Uno.UI.RuntimeTests.Tests.HotReload.Frame;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.UI.Helpers;
 using Uno.UI.RemoteControl.HotReload;
 
 namespace Uno.UI.RuntimeTests.Tests.HotReload.Frame.HRApp.Tests;
@@ -71,6 +72,37 @@ public class Given_TextBlock : BaseTestClass
 
 		UnitTestsUIContentHelper.Content = new ContentControl
 		{
+			Content = new HR_Frame_Pages_Page2()
+		};
+
+		var hr = Uno.UI.RemoteControl.RemoteControlClient.Instance?.Processors.OfType<Uno.UI.RemoteControl.HotReload.ClientHotReloadProcessor>().Single();
+		var ctx = Uno.UI.RuntimeTests.Tests.HotReload.FrameworkElementExtensions.GetDebugParseContext(new HR_Frame_Pages_Page2());
+		var req = new Uno.UI.RemoteControl.HotReload.ClientHotReloadProcessor.UpdateRequest(
+			ctx.FileName,
+			SecondPageTextBlockOriginalText,
+			SecondPageTextBlockChangedText,
+			true)
+			.WithExtendedTimeouts(); // Required for CI
+		try
+		{
+			await hr.UpdateFileAsync(req, ct);
+
+			await UnitTestsUIContentHelper.Content.ValidateTextOnChildTextBlock(SecondPageTextBlockChangedText);
+		}
+		finally
+		{
+			await hr.UpdateFileAsync(req.Undo(waitForHotReload: false), CancellationToken.None);
+		}
+	}
+	
+	// Another version of the test above, but pausing the TypeMapping before calling the file update
+	[TestMethod]
+	public async Task When_Changing_TextBlock_UsingHRClient_PausingTypeMapping()
+	{
+		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(25)).Token;
+
+		UnitTestsUIContentHelper.Content = new ContentControl
+		{
 			Content = new HR_Frame_Pages_Page1()
 		};
 
@@ -84,12 +116,14 @@ public class Given_TextBlock : BaseTestClass
 			.WithExtendedTimeouts(); // Required for CI
 		try
 		{
+			TypeMappings.Pause();
 			await hr.UpdateFileAsync(req, ct);
 
-			await UnitTestsUIContentHelper.Content.ValidateTextOnChildTextBlock(FirstPageTextBlockChangedText);
+			await UnitTestsUIContentHelper.Content.ValidateTextOnChildTextBlock(FirstPageTextBlockOriginalText); // should NOT be changed
 		}
 		finally
 		{
+			TypeMappings.Resume();
 			await hr.UpdateFileAsync(req.Undo(waitForHotReload: false), CancellationToken.None);
 		}
 	}

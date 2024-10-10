@@ -160,7 +160,7 @@ public class Given_Frame : BaseTestClass
 		finally
 		{
 			// Resume HR
-			TypeMappings.Resume(false);
+			TypeMappings.Resume();
 		}
 
 		// Although HR has been un-paused (resumed) the UI should not have updated at this point
@@ -211,7 +211,7 @@ public class Given_Frame : BaseTestClass
 				FirstPageTextBlockChangedText,
 				async () =>
 				{
-					// Confirm that reload compeleted has fired
+					// Confirm that reload completed has fired
 					var uiUpdated = await waitingTask.WaitAsync(ct);
 					Assert.IsFalse(uiUpdated, "UI should not have updated whilst ui updates paused");
 					await frame.ValidateTextOnChildTextBlock(FirstPageTextBlockOriginalText);
@@ -221,7 +221,7 @@ public class Given_Frame : BaseTestClass
 		finally
 		{
 			// Resume HR
-			TypeMappings.Resume(false);
+			TypeMappings.Resume();
 		}
 
 		// Although HR has been un-paused (resumed) the UI should not have updated at this point
