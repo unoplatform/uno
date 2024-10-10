@@ -166,7 +166,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private void InvalidateInlineAndRequireRepaint()
 		{
 			Inlines.InvalidateMeasure();
-			_textVisual.Compositor.InvalidateRender(_textVisual);
+			_textVisual.InvalidatePaint();
 		}
 
 		partial void OnInlinesChangedPartial() => InvalidateInlineAndRequireRepaint();

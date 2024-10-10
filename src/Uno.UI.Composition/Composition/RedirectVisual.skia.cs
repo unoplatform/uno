@@ -12,5 +12,8 @@ namespace Microsoft.UI.Composition
 			base.Paint(in session);
 			Source?.Paint(session);
 		}
+
+		internal override bool CanPaint => Source?.CanPaint ?? false;
+		internal override bool RequiresRepaintOnEveryFrame => Source?.RequiresRepaintOnEveryFrame ?? false;
 	}
 }
