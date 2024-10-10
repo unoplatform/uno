@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.Threading;
-using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
 
@@ -176,7 +173,8 @@ internal partial class X11XamlRootHost
 							break;
 					}
 				}
-				else if (@event.AnyEvent.window == x11Window.Window)
+				else if (@event.AnyEvent.window == x11Window.Window ||
+					(@event.type is XEventName.GenericEvent && @event.GenericEventCookie.extension == GetXI2Details(x11Window.Window).opcode))
 				{
 					switch (@event.type)
 					{
@@ -227,6 +225,26 @@ internal partial class X11XamlRootHost
 							break;
 						case XEventName.EnterNotify:
 							_pointerSource?.ProcessEnterEvent(@event.CrossingEvent);
+							break;
+						case XEventName.GenericEvent:
+							var eventWithData = @event;
+							var cookiePtr = &eventWithData.GenericEventCookie;
+							var getEventDataSucceeded = XLib.XGetEventData(TopX11Window.Display, cookiePtr);
+
+							try
+							{
+								if (getEventDataSucceeded && _pointerSource is { } pointerSource)
+								{
+									pointerSource.HandleXI2Event(eventWithData);
+								}
+							}
+							finally
+							{
+								if (getEventDataSucceeded)
+								{
+									XLib.XFreeEventData(TopX11Window.Display, cookiePtr);
+								}
+							}
 							break;
 						case XEventName.KeyPress:
 							_keyboardSource?.ProcessKeyboardEvent(@event.KeyEvent, true);

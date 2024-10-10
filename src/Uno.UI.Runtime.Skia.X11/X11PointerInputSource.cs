@@ -26,6 +26,7 @@ internal partial class X11PointerInputSource : IUnoCorePointerInputSource
 
 	private readonly X11XamlRootHost _host;
 	private CoreCursor _pointerCursor;
+	private PointerPointProperties? _previousPointerPointProperties;
 
 	public X11PointerInputSource(IXamlRootHost host)
 	{
@@ -136,70 +137,5 @@ internal partial class X11PointerInputSource : IUnoCorePointerInputSource
 		{
 			this.Log().Debug($"{member} not supported on Skia for X11.");
 		}
-	}
-
-	public void ProcessLeaveEvent(XCrossingEvent ev)
-	{
-		_mousePosition = new Point(ev.x, ev.y);
-
-		var point = CreatePointFromCurrentState(ev.time);
-		var modifiers = X11XamlRootHost.XModifierMaskToVirtualKeyModifiers(ev.state);
-
-		var args = new PointerEventArgs(point, modifiers);
-
-		CreatePointFromCurrentState(ev.time);
-		X11XamlRootHost.QueueAction(_host, () => RaisePointerExited(args));
-	}
-
-	public void ProcessEnterEvent(XCrossingEvent ev)
-	{
-		_mousePosition = new Point(ev.x, ev.y);
-
-		var args = CreatePointerEventArgsFromCurrentState(ev.time, ev.state);
-		X11XamlRootHost.QueueAction(_host, () => RaisePointerEntered(args));
-	}
-
-	private PointerEventArgs CreatePointerEventArgsFromCurrentState(IntPtr time, XModifierMask state)
-	{
-		var point = CreatePointFromCurrentState(time);
-		var modifiers = X11XamlRootHost.XModifierMaskToVirtualKeyModifiers(state);
-
-		return new PointerEventArgs(point, modifiers);
-	}
-
-	/// <summary>
-	/// Create a new PointerPoint from the current state of the PointerInputSource
-	/// </summary>
-	private PointerPoint CreatePointFromCurrentState(IntPtr time)
-	{
-		var properties = new PointerPointProperties
-		{
-			// TODO: fill this comprehensively like GTK's AsPointerArgs
-			IsLeftButtonPressed = (_pressedButtons & (1 << LEFT)) != 0,
-			IsMiddleButtonPressed = (_pressedButtons & (1 << MIDDLE)) != 0,
-			IsRightButtonPressed = (_pressedButtons & (1 << RIGHT)) != 0
-		};
-
-		var scale = ((IXamlRootHost)_host).RootElement?.XamlRoot is { } root
-			? root.RasterizationScale
-			: 1;
-
-		// Time is given in milliseconds since system boot
-		// This matches the format of WinUI. See also: https://github.com/unoplatform/uno/issues/14535
-		var point = new PointerPoint(
-			frameId: (uint)time, // UNO TODO: How should set the frame, timestamp may overflow.
-			timestamp: (ulong)(time * TimeSpan.TicksPerMillisecond),
-			PointerDevice.For(PointerDeviceType.Mouse),
-			0, // TODO: XInput
-			new Point(_mousePosition.X / scale, _mousePosition.Y / scale),
-			new Point(_mousePosition.X / scale, _mousePosition.Y / scale),
-			// TODO: is isInContact correct?
-			(_pressedButtons & 0b1111) != 0,
-			properties.SetUpdateKindFromPrevious(_previousPointerPointProperties)
-		);
-
-		_previousPointerPointProperties = properties;
-
-		return point;
 	}
 }

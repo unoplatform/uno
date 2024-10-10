@@ -45,6 +45,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 	{
 		private const string libX11 = "libX11.so.6";
 		private const string libX11Randr = "libXrandr.so.2";
+		private const string libXInput = "libXi.so.6";
 
 		[LibraryImport(libX11)]
 		public static partial IntPtr XOpenDisplay(IntPtr display);
@@ -80,6 +81,37 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 		[LibraryImport(libX11)]
 		public static partial int XPending(IntPtr diplay);
+
+		[LibraryImport(libX11)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		internal static partial bool XQueryExtension(IntPtr display, [MarshalAs(UnmanagedType.LPStr)] string name,
+			out int majorOpcode, out int firstEvent, out int firstError);
+
+		[LibraryImport(libXInput)]
+		internal static partial int XIQueryVersion(IntPtr dpy, ref int major, ref int minor);
+
+		[LibraryImport(libXInput)]
+		internal static unsafe partial XIDeviceInfo* XIQueryDevice(IntPtr dpy, int deviceid, out int ndevices_return);
+
+		[LibraryImport(libXInput)]
+		internal static unsafe partial void XIFreeDeviceInfo(XIDeviceInfo* info);
+
+		internal static bool XIMaskIsSet(void* ptr, int shift) =>
+			(((byte*)ptr)[shift >> 3] & (1 << (shift & 7))) != 0;
+
+		[LibraryImport(libXInput)]
+		internal static unsafe partial int XISelectEvents(
+			IntPtr dpy,
+			IntPtr win,
+			XIEventMask* masks,
+			int num_masks
+		);
+
+		[DllImport(libX11)]
+		internal static extern unsafe bool XGetEventData(IntPtr display, XGenericEventCookie* cookie);
+
+		[LibraryImport(libX11)]
+		internal static unsafe partial void XFreeEventData(IntPtr display, void* cookie);
 
 		[LibraryImport(libX11)]
 		public static partial IntPtr XSelectInput(IntPtr display, IntPtr window, IntPtr mask);
