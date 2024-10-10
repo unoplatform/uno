@@ -292,11 +292,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		public override void LayoutSubviews()
-		{
-			base.LayoutSubviews();
-		}
-
 		#endregion
 
 		bool INativeScrollContentPresenter.Set(
