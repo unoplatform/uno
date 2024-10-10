@@ -63,14 +63,16 @@ namespace Microsoft.UI.Xaml.Input
 				|| _nativeTouch.Phase == UITouchPhase.Stationary;
 
 			FrameId = PointerHelpers.ToFrameId(_nativeTouch.Timestamp);
-			Pointer = new Pointer(pointerId, (PointerDeviceType)deviceType, isInContact, isInRange: true);
+
+			var muxPointerType = (PointerDeviceType)deviceType;
+			Pointer = new Pointer(pointerId, muxPointerType, isInContact, isInRange: true);
 			KeyModifiers = VirtualKeyModifiers.None;
 			OriginalSource = originalSource;
 
 			var inputManager = VisualTree.GetContentRootForElement(originalSource)?.InputManager;
 			if (inputManager is not null)
 			{
-				inputManager.LastInputDeviceType = deviceType switch
+				inputManager.LastInputDeviceType = muxPointerType switch
 				{
 					PointerDeviceType.Mouse => InputDeviceType.Mouse,
 					PointerDeviceType.Pen => InputDeviceType.Pen,
