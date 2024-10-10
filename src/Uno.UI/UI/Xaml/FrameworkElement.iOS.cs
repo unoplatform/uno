@@ -19,7 +19,6 @@ namespace Microsoft.UI.Xaml
 		public override void SetNeedsLayout()
 		{
 			base.SetNeedsLayout();
-			InvalidateMeasure();
 		}
 
 		public override void LayoutSubviews()
