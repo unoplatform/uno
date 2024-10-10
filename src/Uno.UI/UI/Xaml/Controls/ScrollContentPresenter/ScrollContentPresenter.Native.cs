@@ -18,7 +18,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// If the template is being recycled and it's TemplatedParent is null, this means that
 			// this instance was part of the ControlTemplate of a ScrollViewer instance that was GC'ed.
 			// We need to ensure that we're not keeping any content coming from ScrollView.Content.
-			if (GetTemplatedParent() is null && Native is { })
+			if (this.GetTemplatedParent() is null && Native is { })
 			{
 				Native.Content = null;
 				Native = null;

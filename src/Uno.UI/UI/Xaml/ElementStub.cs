@@ -7,6 +7,7 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
+using Uno.UI.Extensions;
 using Uno.UI.Xaml;
 using Windows.Foundation;
 
@@ -216,7 +217,7 @@ namespace Microsoft.UI.Xaml
 					// note: This can be safely removed, once moving away from legacy impl.
 					// In the new impl, the templated-parent would be immediately available
 					// before any binding is applied, so there is no need to force update.
-					TemplatedParentScope.UpdateTemplatedParent(_content as DependencyObject, GetTemplatedParent(), reapplyTemplateBindings: true);
+					TemplatedParentScope.UpdateTemplatedParent(_content as DependencyObject, this.GetTemplatedParent(), reapplyTemplateBindings: true);
 #endif
 
 					if (isVisibilityChanged &&

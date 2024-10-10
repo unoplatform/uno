@@ -14,6 +14,7 @@ using Uno.Diagnostics.Eventing;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
+using Uno.UI.Extensions;
 using Uno.UI.DataBinding;
 using Uno.UI.Dispatching;
 using Windows.Foundation.Metadata;

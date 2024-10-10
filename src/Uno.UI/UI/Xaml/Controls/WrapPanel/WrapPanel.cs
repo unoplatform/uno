@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Uno.UI.Extensions;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -12,7 +13,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				if (GetTemplatedParent() is ItemsPresenter presenter &&
+				if (this.GetTemplatedParent() is ItemsPresenter presenter &&
 					presenter.GetTemplatedParent() is GridView gv &&
 					gv.GetCurrentHighestValuePrecedence(Control.TemplateProperty) == DependencyPropertyValuePrecedences.ImplicitStyle)
 				{

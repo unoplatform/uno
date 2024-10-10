@@ -1,20 +1,21 @@
-﻿using Android.Views;
-using Android.Widget;
-using Uno.Extensions;
-using Uno.Foundation.Logging;
-using Uno.UI.DataBinding;
-using Microsoft.UI.Xaml.Data;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using Uno.Disposables;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
-using System.Linq;
-using Uno.UI.Controls;
-using Uno.UI;
-using Windows.Foundation;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Windows.Foundation;
+using Android.Views;
+using Android.Widget;
+using Uno.Disposables;
+using Uno.Extensions;
+using Uno.Foundation.Logging;
+using Uno.UI;
+using Uno.UI.Controls;
+using Uno.UI.DataBinding;
+using Uno.UI.Extensions;
 
 namespace Microsoft.UI.Xaml.Controls
 {

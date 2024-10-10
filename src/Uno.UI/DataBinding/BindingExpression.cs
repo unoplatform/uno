@@ -54,13 +54,7 @@ namespace Microsoft.UI.Xaml.Data
 			{
 				if (ParentBinding.IsTemplateBinding)
 				{
-					return _view?.Target switch
-					{
-						ITemplatedParentProvider tpProvider => tpProvider.GetTemplatedParent(),
-						IDependencyObjectStoreProvider dosProvider => dosProvider.Store.GetTemplatedParent2(),
-
-						_ => null,
-					};
+					return (_view?.Target as IDependencyObjectStoreProvider)?.Store.GetTemplatedParent2();
 				}
 				if (_isElementNameSource || ExplicitSource != null)
 				{
@@ -157,13 +151,7 @@ namespace Microsoft.UI.Xaml.Data
 
 		private ManagedWeakReference GetWeakTemplatedParent()
 		{
-			return _view?.Target switch
-			{
-				ITemplatedParentProvider tpProvider => tpProvider.GetTemplatedParentWeakRef(),
-				IDependencyObjectStoreProvider dosProvider => dosProvider.Store.GetTemplatedParentWeakRef(),
-
-				_ => null,
-			};
+			return (_view?.Target as IDependencyObjectStoreProvider)?.Store.GetTemplatedParentWeakRef();
 		}
 
 		private ManagedWeakReference GetWeakDataContext()

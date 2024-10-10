@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
 using System.Linq;
-using Uno.UI.DataBinding;
-using Uno.UI;
-using Windows.Foundation;
+using System.Text;
 using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Media.Animation;
-using Uno.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
+using Windows.Foundation;
+using Uno.UI;
+using Uno.UI.DataBinding;
+using Uno.UI.Extensions;
+using Uno.UI.Xaml;
 
 #if __ANDROID__
 using Android.Widget;
@@ -34,7 +35,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// TODO: support for Header/Footer when inside a ListViewBase
 		private bool HeaderFooterEnabled =>
 #if __ANDROID__ || __IOS__
-			GetTemplatedParent() is not ListViewBase;
+			this.GetTemplatedParent() is not ListViewBase;
 #else
 			true;
 #endif

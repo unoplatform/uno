@@ -1,20 +1,21 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
-using Uno.UI;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Controls;
-using Windows.UI;
-using Microsoft.UI.Xaml;
-using System.IO;
 using System.Threading.Tasks;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Windows.Foundation;
-using Windows.UI.ViewManagement;
-using Uno.Disposables;
 using Windows.Graphics.Display;
+using Windows.UI;
+using Windows.UI.ViewManagement;
 using UIKit;
+using Uno.Disposables;
+using Uno.UI;
+using Uno.UI.Extensions;
 
 namespace Uno.UI.Controls
 {
@@ -37,7 +38,7 @@ namespace Uno.UI.Controls
 
 			if (_commandBar == null)
 			{
-				commandBar = GetTemplatedParent() as CommandBar;
+				commandBar = this.GetTemplatedParent() as CommandBar;
 				_commandBar = new WeakReference<CommandBar?>(commandBar);
 			}
 
