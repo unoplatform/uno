@@ -1,18 +1,13 @@
 ﻿using System;
 using System.IO.Pipes;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using EnvDTE;
-using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Threading;
 using StreamJsonRpc;
 using Uno.UI.RemoteControl.Host.IdeChannel;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
 using Uno.UI.RemoteControl.VS.Helpers;
-using Uno.UI.RemoteControl.VS.Notifications;
 
 namespace Uno.UI.RemoteControl.VS.IdeChannel;
 
