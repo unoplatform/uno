@@ -441,7 +441,7 @@
             - name: Frame
               href: controls/Frame.md
             - name: GLCanvasElement
-              href: controls/GLCanvasElement.md
+              href: xref:Uno.Controls.GLCanvasElement
             - name: Image
               href: xref:Uno.Features.Image
             - name: ListView and GridView
@@ -464,6 +464,8 @@
               href: controls/RefreshContainer.md
             - name: ScrollViewer
               href: controls/ScrollViewer.md
+            - name: SKCanvasElement
+              href: xref:Uno.Controls.SKCanvasElement
             - name: TextBox
               href: controls/TextBox.md
             - name: TimePicker

@@ -1,6 +1,8 @@
 #if __SKIA__ || WINAPPSDK
 using System;
 using System.Drawing;
+using Microsoft.UI.Xaml;
+using SamplesApp;
 using Silk.NET.OpenGL;
 using Uno.WinUI.Graphics3DGL;
 
@@ -8,11 +10,7 @@ namespace UITests.Shared.Windows_UI_Composition
 {
 	// https://learnopengl.com/Getting-started/Hello-Triangle
 	public class SimpleTriangleGlCanvasElement()
-#if WINAPPSDK
-		: GLCanvasElement(1200, 800, () => SamplesApp.App.MainWindow)
-#else
-		: GLCanvasElement(1200, 800, null)
-#endif
+		: GLCanvasElement(() => App.MainWindow)
 	{
 		private uint _vao;
 		private uint _vbo;

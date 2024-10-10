@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 using Silk.NET.OpenGL;
@@ -40,22 +41,16 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 {
 	private const int BytesPerPixel = 4;
 	private static readonly BitmapImage _fallbackImage = new BitmapImage(new Uri("ms-appx:///Assets/error.png"));
-	private static bool? _glAvailable;
+	private static readonly Dictionary<XamlRoot, INativeOpenGLWrapper> _xamlRootToWrapper = new();
 
-	private readonly uint _width;
-	private readonly uint _height;
 	private readonly Func<Window>? _getWindowFunc;
 
-	private readonly WriteableBitmap _backBuffer;
-
-	private bool _loadedAtleastOnce;
-	// valid if and only if _loadedAtleastOnce and _glAvailable
+	// valid if and only if _loadedAtleastOnce and OpenGL is available on the running platform
 	private INativeOpenGLWrapper? _nativeOpenGlWrapper;
-	// These are valid if and only if IsLoaded and _glAvailable
+	// These are valid if and only if IsLoaded
 	private GL? _gl;
-	private uint _framebuffer;
-	private uint _textureColorBuffer;
-	private uint _renderBuffer;
+	private WriteableBitmap? _backBuffer;
+	private FrameBufferDetails? _details;
 #if WINAPPSDK
 	private IntPtr _pixels;
 #endif
@@ -97,46 +92,48 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 	/// <param name="height">The height of the backing framebuffer.</param>
 	/// <param name="getWindowFunc">A function that returns the Window object that this element belongs to. This parameter is only used on WinUI. On Uno Platform, it can be set to null.</param>
 #if WINAPPSDK
-	protected GLCanvasElement(uint width, uint height, Func<Window> getWindowFunc)
+	protected GLCanvasElement(Func<Window> getWindowFunc)
 #else
-	protected GLCanvasElement(uint width, uint height, Func<Window>? getWindowFunc)
+	protected GLCanvasElement(Func<Window>? getWindowFunc)
 #endif
 	{
-		_width = width;
-		_height = height;
 		_getWindowFunc = getWindowFunc;
-
-		_backBuffer = new WriteableBitmap((int)width, (int)height);
 
 		Background = new ImageBrush
 		{
-			ImageSource = _backBuffer,
 			RelativeTransform = new ScaleTransform { ScaleX = 1, ScaleY = -1, CenterX = 0.5, CenterY = 0.5 } // because OpenGL coordinates go bottom-to-top
 		};
 
 		Loaded += OnLoaded;
 		Unloaded += OnUnloaded;
+		SizeChanged += (_, _) => UpdateFramebuffer();
 	}
 
-	private static INativeOpenGLWrapper? CreateNativeOpenGlWrapper(XamlRoot xamlRoot, Func<Window>? getWindowFunc)
+	private static INativeOpenGLWrapper? GetOrCreateNativeOpenGlWrapper(XamlRoot xamlRoot, Func<Window>? getWindowFunc)
 	{
 		try
 		{
-#if WINAPPSDK
-			var nativeOpenGlWrapper = new WinUINativeOpenGLWrapper(xamlRoot, getWindowFunc!);
-#else
-			if (!ApiExtensibility.CreateInstance<INativeOpenGLWrapper>(xamlRoot, out var nativeOpenGlWrapper))
+			// This is done on the UI thread, so no concurrency concerns.
+			if (!_xamlRootToWrapper.TryGetValue(xamlRoot, out var nativeOpenGlWrapper))
 			{
-				throw new InvalidOperationException($"Couldn't create a {nameof(INativeOpenGLWrapper)} object. Make sure you are running on a platform with OpenGL support.");
-			}
+#if WINAPPSDK
+				nativeOpenGlWrapper = new WinUINativeOpenGLWrapper(xamlRoot, getWindowFunc!);
+#else
+				if (!ApiExtensibility.CreateInstance<INativeOpenGLWrapper>(xamlRoot, out nativeOpenGlWrapper))
+				{
+					throw new InvalidOperationException($"Couldn't create a {nameof(INativeOpenGLWrapper)} object. Make sure you are running on a platform with OpenGL support.");
+				}
 #endif
+
+				_xamlRootToWrapper.Add(xamlRoot, nativeOpenGlWrapper);
+			}
 			return nativeOpenGlWrapper;
 		}
 		catch (Exception e)
 		{
-			if (typeof(INativeOpenGLWrapper).Log().IsEnabled(LogLevel.Error))
+			if (typeof(GLCanvasElement).Log().IsEnabled(LogLevel.Error))
 			{
-				typeof(INativeOpenGLWrapper).Log().Error($"{nameof(INativeOpenGLWrapper)} creation failed.", e);
+				typeof(GLCanvasElement).Log().Error($"{nameof(INativeOpenGLWrapper)} creation failed.", e);
 			}
 			return null;
 		}
@@ -144,16 +141,20 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 
 	private void OnClosed(object _, object __)
 	{
-		if (GlAvailable!.Value)
+		// OnUnloaded is called after OnClosed, which leads to disposing the context first and then trying to
+		// delete the framebuffer, etc. and this causes exceptions.
+		DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
 		{
-			// OnUnloaded is called after OnClosed, which leads to disposing the context first and then trying to
-			// delete the framebuffer, etc. and this causes exceptions.
-			DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				using var _ = _nativeOpenGlWrapper!.MakeCurrent();
-				_nativeOpenGlWrapper.Dispose();
-			});
-		}
+				this.Log().Debug($"Window is closing. Destroying the {nameof(INativeOpenGLWrapper)} for this window");
+			}
+			if (_xamlRootToWrapper.Remove(XamlRoot!, out var wrapper))
+			{
+				using var _ = wrapper.MakeCurrent();
+				wrapper.Dispose();
+			}
+		});
 	}
 
 	/// <summary>
@@ -168,99 +169,42 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 	public void Invalidate() => NativeDispatcher.Main.Enqueue(Render, NativeDispatcherPriority.Idle);
 #endif
 
-	/// <remarks>not null after the first <see cref="GLCanvasElement"/> instance is loaded.</remarks>
-	private bool? GlAvailable
+	private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
 	{
-		get => _glAvailable;
-		set
-		{
-			if (!value!.Value)
-			{
-				((ImageBrush)Background).ImageSource = _fallbackImage;
-			}
-			_glAvailable = value;
-		}
-	}
+		_nativeOpenGlWrapper = GetOrCreateNativeOpenGlWrapper(XamlRoot!, _getWindowFunc);
 
-	private unsafe void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
-	{
-		if (!_loadedAtleastOnce)
-		{
-			_loadedAtleastOnce = true;
-
-			if ((!GlAvailable ?? false) || CreateNativeOpenGlWrapper(XamlRoot!, _getWindowFunc) is not { } glWrapper)
-			{
-				GlAvailable = false;
-			}
-			else
-			{
-				GlAvailable = true;
-				_nativeOpenGlWrapper = glWrapper;
-			}
-		}
-
-		if (!GlAvailable!.Value)
+		if (_nativeOpenGlWrapper is null)
 		{
 			return;
 		}
 
 		_gl = GL.GetApi(this);
-		GlAvailable = true;
-
-#if WINAPPSDK
-		_pixels = Marshal.AllocHGlobal((int)(_width * _height * BytesPerPixel));
-#endif
 
 		using (_nativeOpenGlWrapper!.MakeCurrent())
 		{
-			_framebuffer = _gl.GenBuffer();
-			_gl.BindFramebuffer(GLEnum.Framebuffer, _framebuffer);
-			{
-				_textureColorBuffer = _gl.GenTexture();
-				_gl.BindTexture(GLEnum.Texture2D, _textureColorBuffer);
-				{
-					_gl.TexImage2D(GLEnum.Texture2D, 0, InternalFormat.Rgb, _width, _height, 0, GLEnum.Rgb,
-						GLEnum.UnsignedByte, (void*)0);
-					_gl.TexParameterI(GLEnum.Texture2D, GLEnum.TextureMinFilter, (uint)GLEnum.Linear);
-					_gl.TexParameterI(GLEnum.Texture2D, GLEnum.TextureMagFilter, (uint)GLEnum.Linear);
-					_gl.FramebufferTexture2D(GLEnum.Framebuffer, FramebufferAttachment.ColorAttachment0,
-						GLEnum.Texture2D, _textureColorBuffer, 0);
-				}
-				_gl.BindTexture(GLEnum.Texture2D, 0);
-
-				_renderBuffer = _gl.GenRenderbuffer();
-				_gl.BindRenderbuffer(GLEnum.Renderbuffer, _renderBuffer);
-				{
-					_gl.RenderbufferStorage(GLEnum.Renderbuffer, InternalFormat.Depth24Stencil8, _width, _height);
-					_gl.FramebufferRenderbuffer(GLEnum.Framebuffer, GLEnum.DepthStencilAttachment,
-						GLEnum.Renderbuffer, _renderBuffer);
-				}
-				_gl.BindRenderbuffer(GLEnum.Renderbuffer, 0);
-
-				if (_gl.CheckFramebufferStatus(GLEnum.Framebuffer) != GLEnum.FramebufferComplete)
-				{
-					throw new InvalidOperationException("Offscreen framebuffer is not complete");
-				}
-
-				Init(_gl);
-			}
-			_gl.BindFramebuffer(GLEnum.Framebuffer, 0);
+			UpdateFramebuffer();
+			Init(_gl);
 		}
 
 		var window =
 #if WINAPPSDK
 			_getWindowFunc!();
 #else
-			XamlRoot?.HostWindow;
+			XamlRoot!.HostWindow;
 #endif
-		window!.Closed += OnClosed;
-
-		Invalidate();
+		if (window is not null)
+		{
+			window.Closed += OnClosed;
+		}
+		else if (XamlRoot.Content is FrameworkElement fe) // for Uno Islands
+		{
+			fe.Unloaded += OnClosed;
+		}
 	}
 
 	private void OnUnloaded(object sender, RoutedEventArgs routedEventArgs)
 	{
-		if (!GlAvailable!.Value)
+		if (_nativeOpenGlWrapper is null)
 		{
 			return;
 		}
@@ -284,16 +228,12 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 			}
 #endif
 			OnDestroy(_gl);
-			_gl.DeleteFramebuffer(_framebuffer);
-			_gl.DeleteTexture(_textureColorBuffer);
-			_gl.DeleteRenderbuffer(_renderBuffer);
+			_details?.Dispose();
 			_gl.Dispose();
 		}
 
 		_gl = default;
-		_framebuffer = default;
-		_textureColorBuffer = default;
-		_renderBuffer = default;
+		_details = default;
 #if WINAPPSDK
 		_pixels = default;
 #endif
@@ -302,9 +242,50 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 #if WINAPPSDK
 			_getWindowFunc!();
 #else
-			XamlRoot?.HostWindow;
+			XamlRoot!.HostWindow;
 #endif
-		window!.Closed -= OnClosed;
+		if (window is not null)
+		{
+			window.Closed -= OnClosed;
+		}
+		else if (XamlRoot.Content is FrameworkElement fe) // for Uno Islands
+		{
+			fe.Unloaded -= OnClosed;
+		}
+	}
+
+	private void UpdateFramebuffer()
+	{
+		if (!IsLoaded)
+		{
+			return;
+		}
+
+		global::System.Diagnostics.Debug.Assert(_gl is not null);
+
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug($"Updating backing framebuffer with size={RenderSize}");
+		}
+
+		using (_nativeOpenGlWrapper!.MakeCurrent())
+		{
+			_details?.Dispose();
+			_details = new FrameBufferDetails(_gl, RenderSize);
+		}
+
+#if WINAPPSDK
+		if (_pixels != IntPtr.Zero)
+		{
+			Marshal.FreeHGlobal(_pixels);
+		}
+		_pixels = Marshal.AllocHGlobal(((int)RenderSize.Width * (int)RenderSize.Height * BytesPerPixel));
+#endif
+
+		_backBuffer = new WriteableBitmap((int)RenderSize.Width, (int)RenderSize.Height);
+		((ImageBrush)Background).ImageSource = _backBuffer;
+
+		Invalidate();
 	}
 
 	private unsafe void Render()
@@ -314,30 +295,30 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 			return;
 		}
 
-		global::System.Diagnostics.Debug.Assert(_gl is not null); // because _gl exists if loaded
+		global::System.Diagnostics.Debug.Assert(_gl is not null && _details is not null && _backBuffer is not null);
 
 		using var _ = _nativeOpenGlWrapper!.MakeCurrent();
 
-		_gl!.BindFramebuffer(GLEnum.Framebuffer, _framebuffer);
+		_gl!.BindFramebuffer(GLEnum.Framebuffer, _details.Framebuffer);
 		{
-			_gl.Viewport(new System.Drawing.Size((int)_width, (int)_height));
+			_gl.Viewport(new System.Drawing.Size((int)RenderSize.Width, (int)RenderSize.Height));
 
 			RenderOverride(_gl);
 
 			_gl.ReadBuffer(GLEnum.ColorAttachment0);
 
 #if WINAPPSDK
-			_gl.ReadPixels(0, 0, _width, _height, GLEnum.Bgra, GLEnum.UnsignedByte, (void*)_pixels);
+			_gl.ReadPixels(0, 0, (uint)RenderSize.Width, (uint)RenderSize.Height, GLEnum.Bgra, GLEnum.UnsignedByte, (void*)_pixels);
 			using (var stream = _backBuffer.PixelBuffer.AsStream())
 			{
-				stream.Write(new ReadOnlySpan<byte>((void*)_pixels, (int)(_width * _height * BytesPerPixel)));
+				stream.Write(new ReadOnlySpan<byte>((void*)_pixels, (int)RenderSize.Width * (int)RenderSize.Height * BytesPerPixel));
 			}
 #else
 			Buffer.Cast(_backBuffer.PixelBuffer).ApplyActionOnRawBufferPtr(ptr =>
 			{
-				_gl.ReadPixels(0, 0, _width, _height, GLEnum.Bgra, GLEnum.UnsignedByte, (void*)ptr);
+				_gl.ReadPixels(0, 0, (uint)RenderSize.Width, (uint)RenderSize.Height, GLEnum.Bgra, GLEnum.UnsignedByte, (void*)ptr);
 			});
-			_backBuffer.PixelBuffer.Length = _width * _height * BytesPerPixel;
+			_backBuffer.PixelBuffer.Length = (uint)RenderSize.Width * (uint)RenderSize.Height * BytesPerPixel;
 #endif
 			_backBuffer.Invalidate();
 		}
