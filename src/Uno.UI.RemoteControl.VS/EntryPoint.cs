@@ -10,18 +10,19 @@ using System.Net.Sockets;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.Build.Evaluation;
 using Microsoft.Internal.VisualStudio.Shell;
+using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Threading;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.Threading;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
 using Uno.UI.RemoteControl.VS.DebuggerHelper;
 using Uno.UI.RemoteControl.VS.Helpers;
 using Uno.UI.RemoteControl.VS.IdeChannel;
+using Uno.UI.RemoteControl.VS.Notifications;
 using ILogger = Uno.UI.RemoteControl.VS.Helpers.ILogger;
 using Task = System.Threading.Tasks.Task;
 
@@ -344,6 +345,7 @@ public partial class EntryPoint : IDisposable
 
 				_ideChannelClient = new IdeChannelClient(pipeGuid, new Logger(this));
 				_ideChannelClient.ForceHotReloadRequested += OnForceHotReloadRequestedAsync;
+				_ideChannelClient.OnMessageReceived += OnMessageReceivedAsync;
 				_ideChannelClient.ConnectToHost();
 
 				// Set the port to the projects
@@ -416,6 +418,68 @@ public partial class EntryPoint : IDisposable
 			}
 
 			await EnsureServerAsync();
+		}
+	}
+
+	private async Task OnMessageReceivedAsync(object? sender, NotificationRequestIdeMessage message)
+	{
+		try
+		{
+			await _asyncPackage.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+			if (await _asyncPackage.GetServiceAsync(typeof(SVsShell)) is IVsShell shell &&
+				await _asyncPackage.GetServiceAsync(typeof(SVsInfoBarUIFactory)) is IVsInfoBarUIFactory infoBarFactory)
+			{
+				await CreateInfoBarAsync(message, shell, infoBarFactory);
+			}
+		}
+		catch (Exception e) when (_ideChannelClient is not null)
+		{
+			_debugAction?.Invoke($"Failed to handle InfoBar Notification Requested with message {e.Message}");
+			throw;
+		}
+	}
+
+	private async Task CreateInfoBarAsync(NotificationRequestIdeMessage e, IVsShell shell, IVsInfoBarUIFactory infoBarFactory)
+	{
+		if (_ideChannelClient is null)
+		{
+			return;
+		}
+		var factory = new InfoBarFactory(infoBarFactory, shell);
+
+		var infoBar = await factory.CreateAsync(
+			new InfoBarModel(
+				e.Message,
+				e.Commands.Select(Commands => new ActionBarItem
+				{
+					Text = Commands.Text,
+					Name = Commands.Name,
+					ActionContext = Commands.Parameter,
+					IsButton = true,
+				}).ToArray(),
+				e.Kind == NotificationKind.Information ? KnownMonikers.StatusInformation : KnownMonikers.StatusError,
+				isCloseButtonVisible: true));
+
+		if (infoBar is not null)
+		{
+			infoBar.ActionItemClicked += (s, e) =>
+			{
+				_asyncPackage.JoinableTaskFactory.Run(async () =>
+				{
+					if (e.ActionItem is ActionBarItem action &&
+						action.Name is { } command)
+					{
+						var cmd =
+							new CommandRequestIdeMessage(
+								System.Diagnostics.Process.GetCurrentProcess().MainWindowHandle.ToInt64(),
+								command,
+								action.ActionContext?.ToString());
+						await _ideChannelClient.SendToDevServerAsync(cmd, _ct.Token);
+					}
+				});
+			};
+			await infoBar.TryShowInfoBarUIAsync();
 		}
 	}
 

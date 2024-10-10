@@ -120,6 +120,8 @@ class ActionBarItem : IVsInfoBarActionItem
 {
 	public string? Text { get; set; }
 
+	public string? Name { get; set; }
+
 	public bool Bold { get; set; }
 
 	public bool Italic { get; set; }
