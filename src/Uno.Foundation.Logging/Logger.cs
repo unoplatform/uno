@@ -46,29 +46,29 @@ namespace Uno.Foundation.Logging
 
 		public void LogWarn(string message) => Log(LogLevel.Warning, message);
 		public void LogWarning(string message) => Log(LogLevel.Warning, message);
-		public void LogWarning(string message, Exception ex) => Log(LogLevel.Warning, message);
+		public void LogWarning(string message, Exception? ex) => Log(LogLevel.Warning, message);
 		public void Warn(string message) => Log(LogLevel.Warning, message);
-		public void Warn(string message, Exception ex) => Log(LogLevel.Warning, message);
+		public void Warn(string message, Exception? ex) => Log(LogLevel.Warning, message);
 		public void Warn(IFormattable formattable) => Log(LogLevel.Warning, formattable.ToString());
 
 		public void LogError(string message, params object?[] items) => Log(LogLevel.Error, string.Format(CultureInfo.InvariantCulture, message, items));
 		public void LogError(string message) => Log(LogLevel.Error, message);
-		public void LogError(string message, Exception ex) => Log(LogLevel.Error, message, ex);
+		public void LogError(string message, Exception? ex) => Log(LogLevel.Error, message, ex);
 		public void Error(string message) => Log(LogLevel.Error, message);
-		public void Error(string message, Exception ex) => Log(LogLevel.Error, message, ex);
-		public void ErrorFormat(string message, Exception ex) => Log(LogLevel.Error, message, ex);
+		public void Error(string message, Exception? ex) => Log(LogLevel.Error, message, ex);
+		public void ErrorFormat(string message, Exception? ex) => Log(LogLevel.Error, message, ex);
 		public void ErrorFormat(string message, params object[] items) => Log(LogLevel.Error, string.Format(CultureInfo.InvariantCulture, message, items));
 		public void Error(IFormattable formattable) => Log(LogLevel.Error, formattable.ToString());
-		public void Error(IFormattable formattable, Exception ex) => Log(LogLevel.Error, formattable.ToString(), ex);
+		public void Error(IFormattable formattable, Exception? ex) => Log(LogLevel.Error, formattable.ToString(), ex);
 
 		public void Critical(string message) => Log(LogLevel.Critical, message);
 		public void Critical(IFormattable formattable) => Log(LogLevel.Critical, formattable.ToString());
 
 		public void LogInfo(string message) => Log(LogLevel.Information, message);
-		public void LogInfo(string message, Exception ex) => Log(LogLevel.Information, message, ex);
+		public void LogInfo(string message, Exception? ex) => Log(LogLevel.Information, message, ex);
 		public void InfoFormat(string message, params object?[] items) => Log(LogLevel.Information, string.Format(CultureInfo.InvariantCulture, message, items));
 		public void Info(string message) => Log(LogLevel.Information, message);
-		public void Info(string message, Exception ex) => Log(LogLevel.Information, message, ex);
+		public void Info(string message, Exception? ex) => Log(LogLevel.Information, message, ex);
 		public void Info(IFormattable formattable) => Log(LogLevel.Information, formattable.ToString());
 
 		public bool IsEnabled(LogLevel logLevel) => _level <= logLevel;
