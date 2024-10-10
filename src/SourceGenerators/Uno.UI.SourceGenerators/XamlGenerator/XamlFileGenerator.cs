@@ -367,7 +367,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					var controlBaseType = GetType(topLevelControl.Type);
 
-					WriteMetadataNewTypeAttribute(writer);
+					WriteMetadataNewTypeAttributeOnMarkerIfNativeView(writer, controlBaseType);
 
 					using (writer.BlockInvariant("partial class {0} : {1}", _xClassName.ClassName, controlBaseType.GetFullyQualifiedTypeIncludingGlobal()))
 					{
@@ -1420,8 +1420,34 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void WriteMetadataNewTypeAttribute(IIndentedStringBuilder writer)
 		{
-			if (_isHotReloadEnabled)
+			if (_isHotReloadEnabled && !Generation.IsSkia)
 			{
+				// On Skia, we don't use CreateNewOnMetadataUpdate at all.
+				writer.AppendLineIndented("[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]");
+			}
+		}
+
+		private void WriteMetadataNewTypeAttributeOnMarkerIfNativeView(IIndentedStringBuilder writer, INamedTypeSymbol originalType)
+		{
+			if (!_isHotReloadEnabled || Generation.IsSkia)
+			{
+				return;
+			}
+
+			if (IsNativeView(originalType))
+			{
+				var originalTypeFullyQualified = originalType.GetFullyQualifiedTypeIncludingGlobal();
+				// On non-Skia, we add the attribute to the marker class when the type is a native view
+				writer.AppendLineIndented("[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]");
+				writer.AppendLineIndented($"[global::Uno.Foundation.UnoOriginalType(typeof({originalTypeFullyQualified}))]");
+				using (writer.BlockInvariant($"internal sealed class __Uno_HotReload_Marker_{originalType.Name}_{_fileDefinition.UniqueID}_{HashBuilder.Build(originalTypeFullyQualified)}"))
+				{
+					writer.AppendLineIndented($"private const string HashCode = \"{_fileDefinition.Checksum}\";");
+				}
+			}
+			else
+			{
+				// On non-Skia, we add the attribute directly if the type is not a native view
 				writer.AppendLineIndented("[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]");
 			}
 		}
@@ -3862,12 +3888,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			writer.AppendLineInvariantIndented("// UI automation id: {0}", uiAutomationId);
 
 			// ContentDescription and AccessibilityIdentifier are used by Xamarin.UITest (Test Cloud) to identify visual elements
-			if (IsAndroidView(parent.Type))
+			var parentType = FindType(parent.Type);
+			if (IsAndroidView(parentType))
 			{
 				writer.AppendLineInvariantIndented("{0}.ContentDescription = \"{1}\";", closureName, uiAutomationId);
 			};
 
-			if (IsIOSUIView(parent.Type))
+			if (IsIOSUIView(parentType))
 			{
 				writer.AppendLineInvariantIndented("{0}.AccessibilityIdentifier = \"{1}\";", closureName, uiAutomationId);
 			}
