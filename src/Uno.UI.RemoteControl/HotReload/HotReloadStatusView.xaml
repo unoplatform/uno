@@ -159,7 +159,7 @@
 		</Grid>
 	</DataTemplate>
 
-	<Style TargetType="local:HotReloadStatusView">
+	<Style TargetType="local:HotReloadStatusView" x:Key="DefaultHotReloadStatusViewStyle">
 		<Setter Property="ProcessingNotification">
 			<Setter.Value>
 				<diag:DiagnosticViewNotification Duration="0:0:0"
@@ -344,4 +344,6 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
+
+	<Style TargetType="local:HotReloadStatusView" BasedOn="{StaticResource DefaultHotReloadStatusViewStyle}" />
 </ResourceDictionary>
