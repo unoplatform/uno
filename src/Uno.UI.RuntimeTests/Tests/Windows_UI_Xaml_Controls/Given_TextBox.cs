@@ -185,7 +185,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 
 		[TestMethod]
-		public async Task When_Fluent_And_Theme_Changed()
+		public async Task When_TB_Fluent_And_Theme_Changed()
 		{
 			var textBox = new TextBox
 			{

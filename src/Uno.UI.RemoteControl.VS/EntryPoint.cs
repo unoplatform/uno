@@ -16,6 +16,7 @@ using EnvDTE80;
 using Microsoft.Build.Evaluation;
 using Microsoft.Internal.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Threading;
 using Microsoft.VisualStudio.Shell.Interop;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
 using Uno.UI.RemoteControl.VS.DebuggerHelper;
@@ -313,7 +314,7 @@ public partial class EntryPoint : IDisposable
 			var pipeGuid = Guid.NewGuid();
 
 			var hostBinPath = Path.Combine(_toolsPath, "host", $"net{version}.0", "Uno.UI.RemoteControl.Host.dll");
-			var arguments = $"\"{hostBinPath}\" --httpPort {_remoteControlServerPort} --ppid {System.Diagnostics.Process.GetCurrentProcess().Id} --ideChannel \"{pipeGuid}\"";
+			var arguments = $"\"{hostBinPath}\" --httpPort {_remoteControlServerPort} --ppid {System.Diagnostics.Process.GetCurrentProcess().Id} --ideChannel \"{pipeGuid}\" --solution \"{_dte.Solution.FullName}\"";
 			var pi = new ProcessStartInfo("dotnet", arguments)
 			{
 				UseShellExecute = false,
@@ -348,17 +349,20 @@ public partial class EntryPoint : IDisposable
 				// Set the port to the projects
 				// This LEGACY as port should be set through the global properties (cf. OnProvideGlobalPropertiesAsync)
 				var portString = _remoteControlServerPort.ToString(CultureInfo.InvariantCulture);
-				foreach (var p in await _dte.GetProjectsAsync())
+				await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+				var projects = (await _dte.GetProjectsAsync()).ToArray(); // EnumerateProjects must be called on the UI thread.
+				await TaskScheduler.Default;
+				foreach (var project in projects)
 				{
 					var filename = string.Empty;
 					try
 					{
-						filename = p.FileName;
+						filename = project.FileName;
 					}
 					catch (Exception ex)
 					{
-						_debugAction?.Invoke($"Exception on retrieving {p.UniqueName} details. Err: {ex}.");
-						_warningAction?.Invoke($"Cannot read {p.UniqueName} project details (It may be unloaded).");
+						_debugAction?.Invoke($"Exception on retrieving {project.UniqueName} details. Err: {ex}.");
+						_warningAction?.Invoke($"Cannot read {project.UniqueName} project details (It may be unloaded).");
 					}
 					if (string.IsNullOrWhiteSpace(filename) == false
 						&& GetMsbuildProject(filename) is Microsoft.Build.Evaluation.Project msbProject
@@ -478,7 +482,7 @@ public partial class EntryPoint : IDisposable
 		}
 	}
 
-	private static Microsoft.Build.Evaluation.Project GetMsbuildProject(string projectFullName)
+	private static Microsoft.Build.Evaluation.Project? GetMsbuildProject(string projectFullName)
 		=> ProjectCollection.GlobalProjectCollection.GetLoadedProjects(projectFullName).FirstOrDefault();
 
 	public void SetGlobalProperties(string projectFullName, IDictionary<string, string> properties)

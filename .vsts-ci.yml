@@ -58,8 +58,8 @@ variables:
   linuxScaledPool: 'Ubuntu2204-20230918'
   macOSVMImage: 'macOS-14'
   macOSVMImage_UITests: 'macOS-14'
-  xCodeRoot: '/Applications/Xcode_15.4.app'
-  xCodeRoot_iOS_UITests: '/Applications/Xcode_15.4.app'
+  xCodeRoot: '/Applications/Xcode_16.app'
+  xCodeRoot_iOS_UITests: '/Applications/Xcode_16.app'
 
   # Offline validation to improve build performance
   NUGET_CERT_REVOCATION_MODE: offline

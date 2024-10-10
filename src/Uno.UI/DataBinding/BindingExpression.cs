@@ -50,10 +50,31 @@ namespace Microsoft.UI.Xaml.Data
 
 		public object DataContext
 		{
-			get => _isElementNameSource || ExplicitSource != null ? ExplicitSource : _dataContext?.Target;
+			get
+			{
+				if (ParentBinding.IsTemplateBinding)
+				{
+					return _view?.Target switch
+					{
+						ITemplatedParentProvider tpProvider => tpProvider.GetTemplatedParent(),
+						IDependencyObjectStoreProvider dosProvider => dosProvider.Store.GetTemplatedParent2(),
+
+						_ => null,
+					};
+				}
+				if (_isElementNameSource || ExplicitSource != null)
+				{
+					return ExplicitSource;
+				}
+
+				return _dataContext?.Target;
+			}
 			set
 			{
-				if (ExplicitSource == null && !_disposed && DependencyObjectStore.AreDifferent(_dataContext?.Target, value))
+				if (!_disposed &&
+					!ParentBinding.IsTemplateBinding &&
+					ExplicitSource == null &&
+					DependencyObjectStore.AreDifferent(_dataContext?.Target, value))
 				{
 					var previousContext = _dataContext;
 
@@ -129,12 +150,35 @@ namespace Microsoft.UI.Xaml.Data
 				ApplyFallbackValue();
 			}
 
+			ApplyTemplateBindingParent();
 			ApplyExplicitSource();
 			ApplyElementName();
 		}
 
+		private ManagedWeakReference GetWeakTemplatedParent()
+		{
+			return _view?.Target switch
+			{
+				ITemplatedParentProvider tpProvider => tpProvider.GetTemplatedParentWeakRef(),
+				IDependencyObjectStoreProvider dosProvider => dosProvider.Store.GetTemplatedParentWeakRef(),
+
+				_ => null,
+			};
+		}
+
 		private ManagedWeakReference GetWeakDataContext()
-			=> _isElementNameSource || (_explicitSourceStore?.IsAlive ?? false) ? _explicitSourceStore : _dataContext;
+		{
+			if (_isElementNameSource || (_explicitSourceStore?.IsAlive ?? false))
+			{
+				return _explicitSourceStore;
+			}
+			if (ParentBinding.IsTemplateBinding)
+			{
+				return GetWeakTemplatedParent();
+			}
+
+			return _dataContext;
+		}
 
 		/// <summary>
 		/// Sends the current binding target value to the binding source property in TwoWay bindings.
@@ -394,6 +438,19 @@ namespace Microsoft.UI.Xaml.Data
 				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().DebugFormat("Applying compiled source {0} on {1}", ExplicitSource.GetType(), _view.Target?.GetType());
+				}
+
+				ApplyBinding();
+			}
+		}
+
+		internal void ApplyTemplateBindingParent()
+		{
+			if (ParentBinding.IsTemplateBinding)
+			{
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+				{
+					this.Log().DebugFormat("Applying template binding parent {0} on {1}", GetWeakTemplatedParent()?.Target?.GetType(), _view.Target?.GetType());
 				}
 
 				ApplyBinding();
@@ -782,7 +839,6 @@ namespace Microsoft.UI.Xaml.Data
 		}
 
 		private string GetCurrentCulture() => CultureInfo.CurrentCulture.ToString();
-
 
 		private object ConvertValue(object value)
 		{

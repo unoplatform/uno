@@ -1917,10 +1917,36 @@
 		</Fields>
 
 		<Properties>
+			<!-- BEGIN templated-parent rework -->
+
+			<!-- HorizontalGridView -->
+			<Member fullName="System\.Func`1&lt;Android\.Views\.View&gt; Uno\.UI\.Controls\.HorizontalGridView::(Item|Header|Footer)Template\(\)" reason="Not in UWP" isRegex="true" />
+
+			<!-- END templated-parent rework -->
 		</Properties>
 
 		<Methods>
 			<Member fullName="System.Void Microsoft.Web.WebView2.Core.CoreWebView2.set_DocumentTitle(System.String value)" reason="Does not exist in UWP" />
+
+			<!-- BEGIN templated-parent rework -->
+
+			<!-- DependencyObject (codegen for all descendants) -->
+			<Member fullName=".*DependencyProperty .*\.get_TemplatedParentProperty\(\)" reason="Not in UWP" isRegex="true" />
+			<Member fullName=".*DependencyObject .*\.get_TemplatedParent\(\)" reason="Not in UWP" isRegex="true" />
+			<Member fullName="System\.Void .*\.set_TemplatedParent\((Microsoft|Windows)\.UI\.Xaml\.DependencyObject value\)" reason="Not in UWP" isRegex="true" />
+
+			<!-- templates: FrameworkTemplate, DataTemplate, ControlTemplate, ItemsPanelTemplate -->
+			<Member fullName="(?&lt;ReturnType&gt;(Microsoft|Windows)\.UI\.Xaml\.(DataTemplate|Controls\.(ControlTemplate|ItemsPanelTemplate))) \k&lt;ReturnType&gt;\.op_Implicit\(System\.Func`1&lt;.*&gt; obj\)" reason="Not in UWP" isRegex="true" />
+			<Member fullName="System\.Func`1&lt;.*&gt; (?&lt;DeclaringType&gt;(Microsoft|Windows)\.UI\.Xaml\.(FrameworkTemplate|DataTemplate|Controls\.(ControlTemplate|ItemsPanelTemplate)))\.op_Implicit\(\k&lt;DeclaringType&gt; obj\)" reason="Not in UWP" isRegex="true" />
+
+			<!-- HorizontalGridView -->
+			<Member fullName="System\.Func`1&lt;Android\.Views\.View&gt; Uno\.UI\.Controls\.HorizontalGridView\.get_(Item|Header|Footer)Template\(\)" reason="Not in UWP" isRegex="true" />
+			<Member fullName="System\.Void Uno\.UI\.Controls\.HorizontalGridView\.set_(Item|Header|Footer)Template\(System\.Func`1&lt;Android\.Views\.View&gt; value\)" reason="Not in UWP" isRegex="true" />
+
+			<!-- ViewExtensions -->
+			<Member fullName="System\.String Uno\.UI\.Extensions\.ViewExtensions\.TreeGraph\((?&lt;_View&gt;.+) reference, System\.Func`2&lt;\k&lt;_View&gt;,System\.String&gt; describe\)" isRegex="true" reason="Not in UWP" />
+
+			<!-- END templated-parent rework -->
 
 			<!-- BEGIN ComboBox.IsEditable -->
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.Primitives.Selector.SetFocusedItem(System.Int32 index, System.Boolean shouldScrollIntoView, System.Boolean forceFocus, Windows.UI.Xaml.FocusState focusState, System.Boolean animateIfBringIntoView)" reason="Does not exist in UWP" />

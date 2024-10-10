@@ -31,6 +31,7 @@
 
 	<ItemGroup>
 		<Compile Include="..\Uno.UI.RemoteControl\Helpers\**\*.cs" Link="Helpers/%(Filename)" />
+		<Compile Include="..\Uno.UI.RemoteControl.Server.Processors\Helpers\**\*.cs" Link="Helpers/%(Filename)" />
 	</ItemGroup>
 
 	<ItemGroup>

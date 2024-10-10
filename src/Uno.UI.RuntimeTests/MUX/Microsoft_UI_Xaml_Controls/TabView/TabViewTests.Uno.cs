@@ -5,6 +5,7 @@ using Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
+using Uno.UI.RuntimeTests.Helpers;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 {
@@ -24,7 +25,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 			await RunOnUIThread.ExecuteAsync(async () =>
 			{
 				tabView = new TabView();
-				TestServices.WindowHelper.WindowContent = tabView;
+				await UITestHelper.Load(tabView);
 
 				var items = new ObservableCollection<int>()
 				{

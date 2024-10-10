@@ -58,7 +58,7 @@ internal static class WpfExtensionsRegistrar
 		ApiExtensibility.Register(typeof(IAnalyticsInfoExtension), o => new AnalyticsInfoExtension());
 		ApiExtensibility.Register(typeof(ISystemNavigationManagerPreviewExtension), o => new SystemNavigationManagerPreviewExtension());
 		ApiExtensibility.Register<CoreWebView2>(typeof(INativeWebViewProvider), o => new WpfNativeWebViewProvider(o));
-		ApiExtensibility.Register(typeof(INativeOpenGLWrapper), _ => new WpfNativeOpenGLWrapper());
+		ApiExtensibility.Register<XamlRoot>(typeof(INativeOpenGLWrapper), xamlRoot => new WpfNativeOpenGLWrapper(xamlRoot));
 
 		_registered = true;
 	}

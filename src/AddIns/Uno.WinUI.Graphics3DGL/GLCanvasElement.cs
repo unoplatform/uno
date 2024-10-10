@@ -1,18 +1,25 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.Logging;
+using Silk.NET.OpenGL;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
-using Silk.NET.OpenGL;
+using Silk.NET.Core.Contexts;
+using Uno.Extensions;
+using Uno.Logging;
+using Window = Microsoft.UI.Xaml.Window;
+
+#if !UNO_UWP_BUILD
+using Microsoft.UI.Dispatching;
+#else
+using Windows.System;
+#endif
 
 #if WINAPPSDK
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.WindowsRuntime;
-using Microsoft.Extensions.Logging;
-using Microsoft.UI.Dispatching;
-using Uno.Extensions;
-using Uno.Logging;
 #else
 using Uno.Foundation.Extensibility;
 using Uno.Graphics;
@@ -29,18 +36,22 @@ namespace Uno.WinUI.Graphics3DGL;
 /// This is only available on WinUI and on skia-based targets running with hardware acceleration.
 /// This is currently only available on the WPF and X11 targets (and WinUI).
 /// </remarks>
-public abstract partial class GLCanvasElement : Grid
+public abstract partial class GLCanvasElement : Grid, INativeContext
 {
 	private const int BytesPerPixel = 4;
-
-	private readonly INativeOpenGLWrapper _nativeOpenGlWrapper;
+	private static readonly BitmapImage _fallbackImage = new BitmapImage(new Uri("ms-appx:///Assets/error.png"));
+	private static bool? _glAvailable;
 
 	private readonly uint _width;
 	private readonly uint _height;
+	private readonly Func<Window>? _getWindowFunc;
 
 	private readonly WriteableBitmap _backBuffer;
 
-	// These are valid if and only if IsLoaded
+	private bool _loadedAtleastOnce;
+	// valid if and only if _loadedAtleastOnce and _glAvailable
+	private INativeOpenGLWrapper? _nativeOpenGlWrapper;
+	// These are valid if and only if IsLoaded and _glAvailable
 	private GL? _gl;
 	private uint _framebuffer;
 	private uint _textureColorBuffer;
@@ -93,15 +104,7 @@ public abstract partial class GLCanvasElement : Grid
 	{
 		_width = width;
 		_height = height;
-
-#if WINAPPSDK
-		_nativeOpenGlWrapper = new WinUINativeOpenGLWrapper(getWindowFunc);
-#else
-		if (!ApiExtensibility.CreateInstance<INativeOpenGLWrapper>(this, out _nativeOpenGlWrapper!))
-		{
-			throw new InvalidOperationException($"Couldn't create a {nameof(INativeOpenGLWrapper)} object for {nameof(GLCanvasElement)}. Make sure you are running on a platform with {nameof(GLCanvasElement)} support.");
-		}
-#endif
+		_getWindowFunc = getWindowFunc;
 
 		_backBuffer = new WriteableBitmap((int)width, (int)height);
 
@@ -113,6 +116,44 @@ public abstract partial class GLCanvasElement : Grid
 
 		Loaded += OnLoaded;
 		Unloaded += OnUnloaded;
+	}
+
+	private static INativeOpenGLWrapper? CreateNativeOpenGlWrapper(XamlRoot xamlRoot, Func<Window>? getWindowFunc)
+	{
+		try
+		{
+#if WINAPPSDK
+			var nativeOpenGlWrapper = new WinUINativeOpenGLWrapper(xamlRoot, getWindowFunc!);
+#else
+			if (!ApiExtensibility.CreateInstance<INativeOpenGLWrapper>(xamlRoot, out var nativeOpenGlWrapper))
+			{
+				throw new InvalidOperationException($"Couldn't create a {nameof(INativeOpenGLWrapper)} object. Make sure you are running on a platform with OpenGL support.");
+			}
+#endif
+			return nativeOpenGlWrapper;
+		}
+		catch (Exception e)
+		{
+			if (typeof(INativeOpenGLWrapper).Log().IsEnabled(LogLevel.Error))
+			{
+				typeof(INativeOpenGLWrapper).Log().Error($"{nameof(INativeOpenGLWrapper)} creation failed.", e);
+			}
+			return null;
+		}
+	}
+
+	private void OnClosed(object _, object __)
+	{
+		if (GlAvailable!.Value)
+		{
+			// OnUnloaded is called after OnClosed, which leads to disposing the context first and then trying to
+			// delete the framebuffer, etc. and this causes exceptions.
+			DispatcherQueue.TryEnqueue(DispatcherQueuePriority.Low, () =>
+			{
+				using var _ = _nativeOpenGlWrapper!.MakeCurrent();
+				_nativeOpenGlWrapper.Dispose();
+			});
+		}
 	}
 
 	/// <summary>
@@ -127,16 +168,50 @@ public abstract partial class GLCanvasElement : Grid
 	public void Invalidate() => NativeDispatcher.Main.Enqueue(Render, NativeDispatcherPriority.Idle);
 #endif
 
+	/// <remarks>not null after the first <see cref="GLCanvasElement"/> instance is loaded.</remarks>
+	private bool? GlAvailable
+	{
+		get => _glAvailable;
+		set
+		{
+			if (!value!.Value)
+			{
+				((ImageBrush)Background).ImageSource = _fallbackImage;
+			}
+			_glAvailable = value;
+		}
+	}
+
 	private unsafe void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
 	{
-		_nativeOpenGlWrapper.CreateContext(this);
-		_gl = (GL)_nativeOpenGlWrapper.CreateGLSilkNETHandle();
+		if (!_loadedAtleastOnce)
+		{
+			_loadedAtleastOnce = true;
+
+			if ((!GlAvailable ?? false) || CreateNativeOpenGlWrapper(XamlRoot!, _getWindowFunc) is not { } glWrapper)
+			{
+				GlAvailable = false;
+			}
+			else
+			{
+				GlAvailable = true;
+				_nativeOpenGlWrapper = glWrapper;
+			}
+		}
+
+		if (!GlAvailable!.Value)
+		{
+			return;
+		}
+
+		_gl = GL.GetApi(this);
+		GlAvailable = true;
 
 #if WINAPPSDK
 		_pixels = Marshal.AllocHGlobal((int)(_width * _height * BytesPerPixel));
 #endif
 
-		using (new GLStateDisposable(this))
+		using (_nativeOpenGlWrapper!.MakeCurrent())
 		{
 			_framebuffer = _gl.GenBuffer();
 			_gl.BindFramebuffer(GLEnum.Framebuffer, _framebuffer);
@@ -144,10 +219,12 @@ public abstract partial class GLCanvasElement : Grid
 				_textureColorBuffer = _gl.GenTexture();
 				_gl.BindTexture(GLEnum.Texture2D, _textureColorBuffer);
 				{
-					_gl.TexImage2D(GLEnum.Texture2D, 0, InternalFormat.Rgb, _width, _height, 0, GLEnum.Rgb, GLEnum.UnsignedByte, (void*)0);
+					_gl.TexImage2D(GLEnum.Texture2D, 0, InternalFormat.Rgb, _width, _height, 0, GLEnum.Rgb,
+						GLEnum.UnsignedByte, (void*)0);
 					_gl.TexParameterI(GLEnum.Texture2D, GLEnum.TextureMinFilter, (uint)GLEnum.Linear);
 					_gl.TexParameterI(GLEnum.Texture2D, GLEnum.TextureMagFilter, (uint)GLEnum.Linear);
-					_gl.FramebufferTexture2D(GLEnum.Framebuffer, FramebufferAttachment.ColorAttachment0, GLEnum.Texture2D, _textureColorBuffer, 0);
+					_gl.FramebufferTexture2D(GLEnum.Framebuffer, FramebufferAttachment.ColorAttachment0,
+						GLEnum.Texture2D, _textureColorBuffer, 0);
 				}
 				_gl.BindTexture(GLEnum.Texture2D, 0);
 
@@ -155,7 +232,8 @@ public abstract partial class GLCanvasElement : Grid
 				_gl.BindRenderbuffer(GLEnum.Renderbuffer, _renderBuffer);
 				{
 					_gl.RenderbufferStorage(GLEnum.Renderbuffer, InternalFormat.Depth24Stencil8, _width, _height);
-					_gl.FramebufferRenderbuffer(GLEnum.Framebuffer, GLEnum.DepthStencilAttachment, GLEnum.Renderbuffer, _renderBuffer);
+					_gl.FramebufferRenderbuffer(GLEnum.Framebuffer, GLEnum.DepthStencilAttachment,
+						GLEnum.Renderbuffer, _renderBuffer);
 				}
 				_gl.BindRenderbuffer(GLEnum.Renderbuffer, 0);
 
@@ -169,18 +247,31 @@ public abstract partial class GLCanvasElement : Grid
 			_gl.BindFramebuffer(GLEnum.Framebuffer, 0);
 		}
 
+		var window =
+#if WINAPPSDK
+			_getWindowFunc!();
+#else
+			XamlRoot?.HostWindow;
+#endif
+		window!.Closed += OnClosed;
+
 		Invalidate();
 	}
 
 	private void OnUnloaded(object sender, RoutedEventArgs routedEventArgs)
 	{
-		Debug.Assert(_gl is not null); // because OnLoaded creates _gl
+		if (!GlAvailable!.Value)
+		{
+			return;
+		}
+
+		global::System.Diagnostics.Debug.Assert(_gl is not null); // because OnLoaded creates _gl
 
 #if WINAPPSDK
 		Marshal.FreeHGlobal(_pixels);
 #endif
 
-		using (new GLStateDisposable(this))
+		using (_nativeOpenGlWrapper!.MakeCurrent())
 		{
 #if WINAPPSDK
 			if (WindowsRenderingNativeMethods.wglGetCurrentContext() == 0)
@@ -206,6 +297,14 @@ public abstract partial class GLCanvasElement : Grid
 #if WINAPPSDK
 		_pixels = default;
 #endif
+
+		var window =
+#if WINAPPSDK
+			_getWindowFunc!();
+#else
+			XamlRoot?.HostWindow;
+#endif
+		window!.Closed -= OnClosed;
 	}
 
 	private unsafe void Render()
@@ -215,9 +314,9 @@ public abstract partial class GLCanvasElement : Grid
 			return;
 		}
 
-		Debug.Assert(_gl is not null); // because _gl exists if loaded
+		global::System.Diagnostics.Debug.Assert(_gl is not null); // because _gl exists if loaded
 
-		using var _ = new GLStateDisposable(this);
+		using var _ = _nativeOpenGlWrapper!.MakeCurrent();
 
 		_gl!.BindFramebuffer(GLEnum.Framebuffer, _framebuffer);
 		{
@@ -244,26 +343,7 @@ public abstract partial class GLCanvasElement : Grid
 		}
 	}
 
-	private readonly struct GLStateDisposable : IDisposable
-	{
-		private readonly GLCanvasElement _glCanvasElement;
-		private readonly IDisposable _contextDisposable;
-
-		public GLStateDisposable(GLCanvasElement glCanvasElement)
-		{
-			_glCanvasElement = glCanvasElement;
-			var gl = _glCanvasElement._gl;
-			Debug.Assert(gl is not null);
-
-			_contextDisposable = _glCanvasElement._nativeOpenGlWrapper.MakeCurrent();
-		}
-
-		public void Dispose()
-		{
-			var gl = _glCanvasElement._gl;
-			Debug.Assert(gl is not null);
-
-			_contextDisposable.Dispose();
-		}
-	}
+	IntPtr INativeContext.GetProcAddress(string proc, int? slot) => _nativeOpenGlWrapper!.GetProcAddress(proc);
+	bool INativeContext.TryGetProcAddress(string proc, [UnscopedRef] out IntPtr addr, int? slot) => _nativeOpenGlWrapper!.TryGetProcAddress(proc, out addr);
+	void IDisposable.Dispose() { /* Keep this empty. This is only for INativeContext and will be called by Silk.NET, not us. */ }
 }

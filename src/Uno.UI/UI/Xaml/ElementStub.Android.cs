@@ -26,10 +26,10 @@ namespace Microsoft.UI.Xaml
 
 				if (unoViewGroup != null)
 				{
-					var newContentAsFrameworkElement = newView as IFrameworkElement;
+					var newContentAsFrameworkElement = newView as FrameworkElement;
 					if (newContentAsFrameworkElement != null)
 					{
-						newContentAsFrameworkElement.TemplatedParent = (unoViewGroup as IFrameworkElement)?.TemplatedParent;
+						newContentAsFrameworkElement.SetTemplatedParent((unoViewGroup as FrameworkElement)?.GetTemplatedParent());
 					}
 					unoViewGroup.AddView(newView, currentPosition.Value);
 				}

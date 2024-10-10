@@ -143,6 +143,7 @@ public class Given_DependencyObjectGenerator
 	 using System.Linq;
 	 using System.Collections.Generic;
 	 using System.Collections;
+	 using System.ComponentModel;
 	 using System.Diagnostics.CodeAnalysis;
 	 using Uno.Disposables;
 	 using System.Runtime.CompilerServices;
@@ -158,7 +159,7 @@ public class Given_DependencyObjectGenerator
 	 partial class OuterClass
 	 {
 	 	[global::Microsoft.UI.Xaml.Data.Bindable]
-	 	partial class Inner : IDependencyObjectStoreProvider, IWeakReferenceProvider
+	 	partial class Inner : IDependencyObjectStoreProvider, ITemplatedParentProvider, IWeakReferenceProvider
 	 	{
 	 		private DependencyObjectStore __storeBackingField;
 	 		public global::Windows.UI.Core.CoreDispatcher Dispatcher => global::Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher;
@@ -169,7 +170,7 @@ public class Given_DependencyObjectGenerator
 	 			{
 	 				if(__storeBackingField == null)
 	 				{
-	 					__storeBackingField = new DependencyObjectStore(this, DataContextProperty, TemplatedParentProperty);
+	 					__storeBackingField = new DependencyObjectStore(this, DataContextProperty);
 	 					__InitializeBinder();
 	 				}
 	 				return __storeBackingField;
@@ -184,6 +185,28 @@ public class Given_DependencyObjectGenerator
 	 		public object GetAnimationBaseValue(DependencyProperty dp) => __Store.GetAnimationBaseValue(dp);
 	 		public long RegisterPropertyChangedCallback(DependencyProperty dp, DependencyPropertyChangedCallback callback) => __Store.RegisterPropertyChangedCallback(dp, callback);
 	 		public void UnregisterPropertyChangedCallback(DependencyProperty dp, long token) => __Store.UnregisterPropertyChangedCallback(dp, token);
+
+	 		[EditorBrowsable(EditorBrowsableState.Never)]private ManagedWeakReference _templatedParentWeakRef;
+	 		[EditorBrowsable(EditorBrowsableState.Never)]public ManagedWeakReference GetTemplatedParentWeakRef() => _templatedParentWeakRef;
+	 		
+	 		[EditorBrowsable(EditorBrowsableState.Never)]public DependencyObject GetTemplatedParent() => _templatedParentWeakRef?.Target as DependencyObject;
+	 		[EditorBrowsable(EditorBrowsableState.Never)]public void SetTemplatedParent(DependencyObject parent)
+	 		{
+	 			//if (parent != null)
+	 			//{
+	 			//	global::System.Diagnostics.Debug.Assert(parent
+	 			//		is global::Windows.UI.Xaml.Controls.Control
+	 			//		or global::Windows.UI.Xaml.Controls.ContentPresenter
+	 			//		or global::Windows.UI.Xaml.Controls.ItemsPresenter);
+	 			//	global::System.Diagnostics.Debug.Assert(GetTemplatedParent() == null);
+	 			//}
+	 		
+	 			SetTemplatedParentImpl(parent);
+	 		}
+	 		[EditorBrowsable(EditorBrowsableState.Never)]private protected virtual void SetTemplatedParentImpl(DependencyObject parent)
+	 		{
+	 			_templatedParentWeakRef = (parent as IWeakReferenceProvider)?.WeakReference;
+	 		}
 	 		
 	 		private readonly static IEventProvider _binderTrace = Tracing.Get(DependencyObjectStore.TraceProvider.Id);
 	 		private BinderReferenceHolder _refHolder;
@@ -266,15 +289,16 @@ public class Given_DependencyObjectGenerator
 	 		
 	 		#endregion
 	 		
-	 		#region TemplatedParent DependencyProperty
+	 		#region TemplatedParent DependencyProperty // legacy api, should no longer to be used.
 	 		
-	 		public DependencyObject TemplatedParent
+	 		[EditorBrowsable(EditorBrowsableState.Never)]public DependencyObject TemplatedParent
 	 		{
 	 			get => (DependencyObject)GetValue(TemplatedParentProperty);
 	 			set => SetValue(TemplatedParentProperty, value);
 	 		}
 	 		
 	 		// Using a DependencyProperty as the backing store for TemplatedParent.  This enables animation, styling, binding, etc...
+	 		[EditorBrowsable(EditorBrowsableState.Never)]
 	 		public static DependencyProperty TemplatedParentProperty { get ; } =
 	 			DependencyProperty.Register(
 	 				name: nameof(TemplatedParent),
@@ -282,15 +306,15 @@ public class Given_DependencyObjectGenerator
 	 				ownerType: typeof(Inner),
 	 				typeMetadata: new FrameworkPropertyMetadata(
 	 					defaultValue: null,
-	 					options: FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.WeakStorage,
+	 					options: /*FrameworkPropertyMetadataOptions.Inherits | */FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.WeakStorage,
 	 					propertyChangedCallback: (s, e) => ((Inner)s).OnTemplatedParentChanged(e)
 	 				)
 	 			);
 	 		
 	 		
+	 		[EditorBrowsable(EditorBrowsableState.Never)]
 	 		internal protected virtual void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
 	 		{
-	 			__Store.SetTemplatedParent(e.NewValue as FrameworkElement);
 	 			OnTemplatedParentChangedPartial(e);
 	 		}
 	 		
@@ -321,6 +345,7 @@ public class Given_DependencyObjectGenerator
 	 		
 	 		partial void OnDataContextChangedPartial(DependencyPropertyChangedEventArgs e);
 	 		
+	 		[EditorBrowsable(EditorBrowsableState.Never)]
 	 		partial void OnTemplatedParentChangedPartial(DependencyPropertyChangedEventArgs e);
 	 		
 	 		public global::Microsoft.UI.Xaml.Data.BindingExpression GetBindingExpression(DependencyProperty dependencyProperty)

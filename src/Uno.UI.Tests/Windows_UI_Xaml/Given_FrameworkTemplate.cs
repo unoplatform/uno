@@ -75,7 +75,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
-		public void When_ContentPresenter_Recylced()
+		[Ignore("Pooling has been disabled")]
+		public void When_ContentPresenter_Recycled()
 		{
 			_mockProvider.CanUseMemoryManager = false;
 
@@ -91,6 +92,9 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var template = new ControlTemplate(() =>
 			{
 				var presenter = new ContentPresenter();
+				presenter.DataContextChanged += (s, e) =>
+				{
+				};
 				presenter.Loaded += (s, e) =>
 				{
 					var field = presenter.GetType().GetField("_firstLoadResetDone", BindingFlags.NonPublic | BindingFlags.Instance)

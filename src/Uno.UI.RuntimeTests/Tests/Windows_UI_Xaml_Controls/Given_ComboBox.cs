@@ -476,7 +476,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
-		public async Task When_Fluent_And_Theme_Changed()
+		public async Task When_CB_Fluent_And_Theme_Changed()
 		{
 			var comboBox = new ComboBox
 			{
@@ -1002,7 +1002,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
-#if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_SelectedItem_Active_VisualState()
@@ -1019,30 +1018,35 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = SUT;
 			await WindowHelper.WaitForLoaded(SUT);
 
-			SUT.IsDropDownOpen = true;
-			await WindowHelper.WaitForIdle();
+			try
+			{
+				// force ItemsPanel to materialized, otherwise ContainerFromIndex will always return 0
+				// and also while closed, the CBI's "CommonStates" will be forced to "Normal".
+				// at least, _should be_ forced to "Normal" as winui suggests.
+				SUT.IsDropDownOpen = true;
+				await WindowHelper.WaitForIdle();
 
-			var containerForTwo = SUT.ContainerFromItem(SUT.SelectedItem) as SelectorItem;
-			Assert.IsNotNull(containerForTwo);
-			var h = VisualStateHelper.GetCurrentVisualStateName(containerForTwo);
-			Assert.IsTrue(h.Contains("Selected"));
+				var container2 = SUT.ContainerFromItem(SUT.SelectedItem) as SelectorItem;
+				Assert.IsNotNull(container2, "failed to resolve container#2");
+				var container2States = VisualStateHelper.GetCurrentVisualStateName(container2).ToArray();
+				Assert.IsTrue(container2States.Any(x => x.Contains("Selected")), $"container#2 is not selected: states={container2States.JoinBy("|")}");
 
-			SUT.IsDropDownOpen = false;
-			await WindowHelper.WaitForIdle();
+				// changing selection to 6
+				SUT.SelectedItem = 6;
+				await WindowHelper.WaitForIdle();
 
-			SUT.SelectedItem = 6;
-			await WindowHelper.WaitForIdle();
-
-			SUT.IsDropDownOpen = true;
-			await WindowHelper.WaitForIdle();
-
-			var containerForSix = SUT.ContainerFromItem(SUT.SelectedItem) as SelectorItem;
-			Assert.IsNotNull(containerForSix);
-
-			Assert.IsTrue(VisualStateHelper.GetCurrentVisualStateName(containerForTwo).Contains("Normal"));
-			Assert.IsTrue(VisualStateHelper.GetCurrentVisualStateName(containerForSix).Contains("Selected"));
+				var container6 = SUT.ContainerFromItem(SUT.SelectedItem) as SelectorItem;
+				Assert.IsNotNull(container6, "failed to resolve container#6");
+				var container2PostStates = VisualStateHelper.GetCurrentVisualStateName(container2).ToArray();
+				var container6PostStates = VisualStateHelper.GetCurrentVisualStateName(container6).ToArray();
+				Assert.IsFalse(container2PostStates.Any(x => x.Contains("Selected")), $"container#2 is still selected: states={container2PostStates.JoinBy("|")}");
+				Assert.IsTrue(container6PostStates.Any(x => x.Contains("Selected")), $"container#6 is not selected: states={container6PostStates.JoinBy("|")}");
+			}
+			finally
+			{
+				SUT.IsDropDownOpen = false;
+			}
 		}
-#endif
 
 #if HAS_UNO
 		[TestMethod]
