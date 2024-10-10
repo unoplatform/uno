@@ -36,37 +36,37 @@ steps:
     
     displayName: Set GitVersion Environment
     env:
-      GitVersion_major: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.major'] ]"
-      GitVersion_minor: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.minor'] ]"
-      GitVersion_patch: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.patch'] ]"
-      GitVersion_preReleaseTag: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.preReleaseTag'] ]"
-      GitVersion_preReleaseTagWithDash: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.preReleaseTagWithDash'] ]"
-      GitVersion_preReleaseLabel: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.preReleaseLabel'] ]"
-      GitVersion_preReleaseNumber: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.preReleaseNumber'] ]"
-      GitVersion_weightedPreReleaseNumber: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.weightedPreReleaseNumber'] ]"
-      GitVersion_buildMetaData: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.buildMetaData'] ]"
-      GitVersion_fullBuildMetaData: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.fullBuildMetaData'] ]"
-      GitVersion_majorMinorPatch: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.majorMinorPatch'] ]"
-      GitVersion_semVer: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.semVer'] ]"
-      GitVersion_legacySemVer: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.legacySemVer'] ]"
-      GitVersion_legacySemVerPadded: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.legacySemVerPadded'] ]"
-      GitVersion_assemblySemVer: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.assemblySemVer'] ]"
-      GitVersion_assemblySemFileVer: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.assemblySemFileVer'] ]"
+      GitVersion_major: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.major'] ]
+      GitVersion_minor: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.minor'] ]
+      GitVersion_patch: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.patch'] ]
+      GitVersion_preReleaseTag: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.preReleaseTag'] ]
+      GitVersion_preReleaseTagWithDash: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.preReleaseTagWithDash'] ]
+      GitVersion_preReleaseLabel: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.preReleaseLabel'] ]
+      GitVersion_preReleaseNumber: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.preReleaseNumber'] ]
+      GitVersion_weightedPreReleaseNumber: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.weightedPreReleaseNumber'] ]
+      GitVersion_buildMetaData: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.buildMetaData'] ]
+      GitVersion_fullBuildMetaData: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.fullBuildMetaData'] ]
+      GitVersion_majorMinorPatch: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.majorMinorPatch'] ]
+      GitVersion_semVer: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.semVer'] ]
+      GitVersion_legacySemVer: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.legacySemVer'] ]
+      GitVersion_legacySemVerPadded: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.legacySemVerPadded'] ]
+      GitVersion_assemblySemVer: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.assemblySemVer'] ]
+      GitVersion_assemblySemFileVer: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.assemblySemFileVer'] ]
       GitVersion_fullSemVer: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.fullSemVer'] ]"
-      GitVersion_informationalVersion: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.informationalVersion'] ]"
-      GitVersion_branchName: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.branchName'] ]"
-      GitVersion_escapedBranchName: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.escapedBranchName'] ]"
-      GitVersion_sha: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.sha'] ]"
-      GitVersion_shortSha: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.shortSha'] ]"
-      GitVersion_nuGetVersionV2: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.nuGetVersionV2'] ]"
-      GitVersion_nuGetVersion: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.nuGetVersion'] ]"
-      GitVersion_nuGetPreReleaseTagV2: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.nuGetPreReleaseTagV2'] ]"
-      GitVersion_nuGetPreReleaseTag: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.nuGetPreReleaseTag'] ]"
-      GitVersion_versionSourceSha: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.versionSourceSha'] ]"
-      GitVersion_commitsSinceVersionSource: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.commitsSinceVersionSource'] ]"
-      GitVersion_commitsSinceVersionSourcePadded: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.commitsSinceVersionSourcePadded'] ]"
-      GitVersion_uncommittedChanges: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.uncommittedChanges'] ]"
-      GitVersion_commitDate: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.commitDate'] ]"
+      GitVersion_informationalVersion: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.informationalVersion'] ]
+      GitVersion_branchName: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.branchName'] ]
+      GitVersion_escapedBranchName: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.escapedBranchName'] ]
+      GitVersion_sha: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.sha'] ]
+      GitVersion_shortSha: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.shortSha'] ]
+      GitVersion_nuGetVersionV2: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.nuGetVersionV2'] ]
+      GitVersion_nuGetVersion: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.nuGetVersion'] ]
+      GitVersion_nuGetPreReleaseTagV2: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.nuGetPreReleaseTagV2'] ]
+      GitVersion_nuGetPreReleaseTag: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.nuGetPreReleaseTag'] ]
+      GitVersion_versionSourceSha: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.versionSourceSha'] ]
+      GitVersion_commitsSinceVersionSource: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.commitsSinceVersionSource'] ]
+      GitVersion_commitsSinceVersionSourcePadded: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.commitsSinceVersionSourcePadded'] ]
+      GitVersion_uncommittedChanges: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.uncommittedChanges'] ]
+      GitVersion_commitDate: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.commitDate'] ]
 
 
   
