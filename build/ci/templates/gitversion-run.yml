@@ -1,0 +1,34 @@
+parameters:
+  skipCacheDownload: ''
+
+steps:
+  # This step changes the PR version ID so that produced nuget packages can be tied
+  # to specific builds. This can be used to create canaries from PR artifacts.
+  - powershell: |
+      $PR_VERSION="PullRequest-$env:SYSTEM_PULLREQUEST_PULLREQUESTNUMBER-$env:BUILD_BUILDID-"
+      echo "Updating PR Version Tag in GitVersion to $PR_VERSION"
+      (Get-Content gitversion.yml).replace("'PullRequest'", "$PR_VERSION") | Set-Content gitversion.yml
+
+    condition: eq(variables['Build.Reason'], 'PullRequest')
+    displayName: Update GitVersion file for PullRequests
+
+  - task: gitversion/setup@0
+    retryCountOnTaskFailure: 3
+    inputs:
+      versionSpec: '5.10.3'
+
+  - task: gitversion/execute@0
+    retryCountOnTaskFailure: 3
+    inputs:
+      updateAssemblyInfo: 'False'
+      useConfigFile: true
+      configFilePath: gitversion.yml
+    displayName: Use GitVersion
+    name: gitversion
+
+  - task: PublishBuildArtifacts@1
+    retryCountOnTaskFailure: 3
+    inputs:
+      PathtoPublish: $(build.sourcesdirectory)/.git/gitversion_cache
+      ArtifactName: gitversion_cache
+      ArtifactType: Container

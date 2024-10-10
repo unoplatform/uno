@@ -1,58 +1,102 @@
 parameters:
-  skipCacheDownload: ''
+  GitVersion_major: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.major'] ]
+  GitVersion_minor: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.minor'] ]
+  GitVersion_patch: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.patch'] ]
+  GitVersion_preReleaseTag: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.preReleaseTag'] ]
+  GitVersion_preReleaseTagWithDash: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.preReleaseTagWithDash'] ]
+  GitVersion_preReleaseLabel: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.preReleaseLabel'] ]
+  GitVersion_preReleaseNumber: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.preReleaseNumber'] ]
+  GitVersion_weightedPreReleaseNumber: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.weightedPreReleaseNumber'] ]
+  GitVersion_buildMetaData: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.buildMetaData'] ]
+  GitVersion_fullBuildMetaData: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.fullBuildMetaData'] ]
+  GitVersion_majorMinorPatch: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.majorMinorPatch'] ]
+  GitVersion_semVer: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.semVer'] ]
+  GitVersion_legacySemVer: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.legacySemVer'] ]
+  GitVersion_legacySemVerPadded: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.legacySemVerPadded'] ]
+  GitVersion_assemblySemVer: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.assemblySemVer'] ]
+  GitVersion_assemblySemFileVer: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.assemblySemFileVer'] ]
+  GitVersion_fullSemVer: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.fullSemVer'] ] }}"
+  GitVersion_informationalVersion: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.informationalVersion'] ]
+  GitVersion_branchName: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.branchName'] ]
+  GitVersion_escapedBranchName: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.escapedBranchName'] ]
+  GitVersion_sha: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.sha'] ]
+  GitVersion_shortSha: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.shortSha'] ]
+  GitVersion_nuGetVersionV2: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.nuGetVersionV2'] ]
+  GitVersion_nuGetVersion: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.nuGetVersion'] ]
+  GitVersion_nuGetPreReleaseTagV2: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.nuGetPreReleaseTagV2'] ]
+  GitVersion_nuGetPreReleaseTag: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.nuGetPreReleaseTag'] ]
+  GitVersion_versionSourceSha: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.versionSourceSha'] ]
+  GitVersion_commitsSinceVersionSource: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.commitsSinceVersionSource'] ]
+  GitVersion_commitsSinceVersionSourcePadded: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.commitsSinceVersionSourcePadded'] ]
+  GitVersion_uncommittedChanges: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.uncommittedChanges'] ]
+  GitVersion_commitDate: $[ stageDependencies.Setup.Pipeline_Validations.outputs['gitversion.commitDate'] ]
 
 steps:
-
-  - task: DownloadBuildArtifacts@0
-    condition: ne('${{parameters.skipCacheDownload}}', 'true')
-    displayName: 'Download GitVersion Cache'
-    retryCountOnTaskFailure: 3
-    inputs:
-        artifactName: gitversion_cache
-        downloadPath: '$(build.sourcesdirectory)/.git'
-
   # This step changes the PR version ID so that produced nuget packages can be tied
   # to specific builds. This can be used to create canaries from PR artifacts.
   - powershell: |
-      $PR_VERSION="PullRequest-$env:SYSTEM_PULLREQUEST_PULLREQUESTNUMBER-$env:BUILD_BUILDID-"
-      echo "Updating PR Version Tag in GitVersion to $PR_VERSION"
-      (Get-Content gitversion.yml).replace("'PullRequest'", "$PR_VERSION") | Set-Content gitversion.yml
+      echo "##vso[task.setvariable variable=GitVersion.major]${{ parameters.GitVersion_major }}"
+      echo "##vso[task.setvariable variable=GitVersion.minor]${{ parameters.GitVersion_minor }}"
+      echo "##vso[task.setvariable variable=GitVersion.patch]${{ parameters.GitVersion_patch }}"
+      echo "##vso[task.setvariable variable=GitVersion.preReleaseTag]${{ parameters.GitVersion_preReleaseTag }}"
+      echo "##vso[task.setvariable variable=GitVersion.preReleaseTagWithDash]${{ parameters.GitVersion_preReleaseTagWithDash }}"
+      echo "##vso[task.setvariable variable=GitVersion.preReleaseLabel]${{ parameters.GitVersion_preReleaseLabel }}"
+      echo "##vso[task.setvariable variable=GitVersion.preReleaseNumber]${{ parameters.GitVersion_preReleaseNumber }}"
+      echo "##vso[task.setvariable variable=GitVersion.weightedPreReleaseNumber]${{ parameters.GitVersion_weightedPreReleaseNumber }}"
+      echo "##vso[task.setvariable variable=GitVersion.buildMetaData]${{ parameters.GitVersion_buildMetaData }}"
+      echo "##vso[task.setvariable variable=GitVersion.fullBuildMetaData]${{ parameters.GitVersion_fullBuildMetaData }}"
+      echo "##vso[task.setvariable variable=GitVersion.majorMinorPatch]${{ parameters.GitVersion_majorMinorPatch }}"
+      echo "##vso[task.setvariable variable=GitVersion.semVer]${{ parameters.GitVersion_semVer }}"
+      echo "##vso[task.setvariable variable=GitVersion.legacySemVer]${{ parameters.GitVersion_legacySemVer }}"
+      echo "##vso[task.setvariable variable=GitVersion.legacySemVerPadded]${{ parameters.GitVersion_legacySemVerPadded }}"
+      echo "##vso[task.setvariable variable=GitVersion.assemblySemVer]${{ parameters.GitVersion_assemblySemVer }}"
+      echo "##vso[task.setvariable variable=GitVersion.assemblySemFileVer]${{ parameters.GitVersion_assemblySemFileVer }}"
+      echo "##vso[task.setvariable variable=GitVersion.fullSemVer]${{ parameters.GitVersion_fullSemVer }}"
+      echo "##vso[task.setvariable variable=GitVersion.informationalVersion]${{ parameters.GitVersion_informationalVersion }}"
+      echo "##vso[task.setvariable variable=GitVersion.branchName]${{ parameters.GitVersion_branchName }}"
+      echo "##vso[task.setvariable variable=GitVersion.escapedBranchName]${{ parameters.GitVersion_escapedBranchName }}"
+      echo "##vso[task.setvariable variable=GitVersion.sha]${{ parameters.GitVersion_sha }}"
+      echo "##vso[task.setvariable variable=GitVersion.shortSha]${{ parameters.GitVersion_shortSha }}"
+      echo "##vso[task.setvariable variable=GitVersion.nuGetVersionV2]${{ parameters.GitVersion_nuGetVersionV2 }}"
+      echo "##vso[task.setvariable variable=GitVersion.nuGetVersion]${{ parameters.GitVersion_nuGetVersion }}"
+      echo "##vso[task.setvariable variable=GitVersion.nuGetPreReleaseTagV2]${{ parameters.GitVersion_nuGetPreReleaseTagV2 }}"
+      echo "##vso[task.setvariable variable=GitVersion.nuGetPreReleaseTag]${{ parameters.GitVersion_nuGetPreReleaseTag }}"
+      echo "##vso[task.setvariable variable=GitVersion.versionSourceSha]${{ parameters.GitVersion_versionSourceSha }}"
+      echo "##vso[task.setvariable variable=GitVersion.commitsSinceVersionSource]${{ parameters.GitVersion_commitsSinceVersionSource }}"
+      echo "##vso[task.setvariable variable=GitVersion.commitsSinceVersionSourcePadded]${{ parameters.GitVersion_commitsSinceVersionSourcePadded }}"
+      echo "##vso[task.setvariable variable=GitVersion.uncommittedChanges]${{ parameters.GitVersion_uncommittedChanges }}"
+      echo "##vso[task.setvariable variable=GitVersion.commitDate]${{ parameters.GitVersion_commitDate }}"
+    
+    displayName: Set GitVersion Environment
 
-    condition: eq(variables['Build.Reason'], 'PullRequest')
-    displayName: Update GitVersion file for PullRequests
 
-  - task: gitversion/setup@0
-    retryCountOnTaskFailure: 3
-    inputs:
-      versionSpec: '5.10.3'
-
-  - task: gitversion/execute@0
-    retryCountOnTaskFailure: 3
-    inputs:
-      updateAssemblyInfo: 'False'
-      useConfigFile: true
-      configFilePath: gitversion.yml
-    displayName: Use GitVersion
-
-  - powershell: |
-      $PR_VERSION="$(GITVERSION.SemVer)"
-      $PR_VERSION=$PR_VERSION.replace('.$(GitVersion.PreReleaseNumber)','')
-
-      ## Updating the semver value is required to avoid race conditions with multiple
-      ## jobs creating packages, and update pushed to the main branch.
-      echo "Updating PR Version from [$(GITVERSION.SemVer)] to [$PR_VERSION]"
-      echo "##vso[task.setvariable variable=GITVERSION.SemVer]$PR_VERSION"
-      ## Uno.UI.Build.csproj uses GITVERSION_SemVer, so we update it.
-      ## Previously, we didn't have this line and Uno.UI.Build.csproj used to work
-      ## But, it's no longer working (probably due to an update in agents)
-      echo "##vso[task.setvariable variable=GITVERSION_SemVer]$PR_VERSION"
-
-    condition: eq(variables['Build.Reason'], 'PullRequest')
-    displayName: Update GITVERSION.SemVer for PullRequests
-
-  - task: PublishBuildArtifacts@1
-    retryCountOnTaskFailure: 3
-    inputs:
-      PathtoPublish: $(build.sourcesdirectory)/.git/gitversion_cache
-      ArtifactName: gitversion_cache
-      ArtifactType: Container
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
