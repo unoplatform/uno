@@ -150,16 +150,16 @@ namespace Microsoft.UI.Xaml
 			InvalidateMeasureOnNativeOnlyChildrenRecursive(this);
 		}
 
-		private static void InvalidateMeasureOnNativeOnlyChildrenRecursive(ViewGroup view)
+		private static void InvalidateMeasureOnNativeOnlyChildrenRecursive(UIView view)
 		{
 			foreach (var child in view.GetChildren())
 			{
 				if (child is not UIElement)
 				{
 					LayoutInformation.SetMeasureDirtyPath(child, true);
-					if (child is ViewGroup childAsViewGroup)
+					if (child is UIView childAsUIView)
 					{
-						InvalidateMeasureOnNativeOnlyChildrenRecursive(childAsViewGroup);
+						InvalidateMeasureOnNativeOnlyChildrenRecursive(childAsUIView);
 					}
 				}
 			}
