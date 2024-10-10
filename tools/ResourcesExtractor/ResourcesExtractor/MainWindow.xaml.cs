@@ -2,8 +2,12 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Microsoft/* UWP don't rename */.UI.Xaml;
+using Windows.Storage;
+using Windows.System;
 
 namespace ResourcesExtractor;
 
@@ -12,8 +16,15 @@ public sealed partial class MainWindow : Window
 	private static List<(string ResourceName, int ResourceId)> GetResources()
 	{
 		var allResources = new List<(string ResourceName, int ResourceId)>();
+
+		for (var i = 5114; i <= 5155; i++)
+		{
+			allResources.Add((i.ToString(CultureInfo.InvariantCulture), i));
+		}
+
 		allResources.AddRange(GetResourcesFromFile("dxaml\\phone\\lib\\PhoneResource.h"));
 		allResources.AddRange(GetResourcesFromFile("dxaml\\xcp\\inc\\localizedResource.h"));
+
 		return allResources;
 	}
 
@@ -39,10 +50,12 @@ public sealed partial class MainWindow : Window
 	{
 		this.InitializeComponent();
 
+		var rootDirectory = "C:\\GeneratedResources\\";
+
 		var resources = GetResources();
 		foreach (var lang in Enum.GetValues<Magic.Languages>())
 		{
-			var filePath = $"C:\\GeneratedResources\\{lang.ToString().Replace('_', '-')}\\Resources.resw";
+			var filePath = $"{rootDirectory}{lang.ToString().Replace('_', '-')}\\Resources.resw";
 			var directory = Path.GetDirectoryName(filePath);
 			Directory.CreateDirectory(directory);
 			var writer = new StreamWriter(new FileStream(filePath, FileMode.CreateNew));
@@ -63,6 +76,21 @@ public sealed partial class MainWindow : Window
 
 			writer.Write(Constants.ReswFileEnd);
 			writer.Close();
+		}
+
+		OpenFileManagerAsync(rootDirectory).ConfigureAwait(false);
+	}
+
+	private async Task OpenFileManagerAsync(string directoryPath)
+	{
+		try
+		{
+			var folder = await StorageFolder.GetFolderFromPathAsync(directoryPath);
+			await Launcher.LaunchFolderAsync(folder);
+		}
+		catch (Exception ex)
+		{
+			System.Diagnostics.Debug.WriteLine($"Error: {ex.Message}");
 		}
 	}
 }
