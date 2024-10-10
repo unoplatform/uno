@@ -259,10 +259,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		public SourceText GenerateFile()
 		{
-#if DEBUG
-			Console.WriteLine("Processing file {0} (cs: {1})".InvariantCultureFormat(_fileDefinition.FilePath, _fileDefinition.Checksum));
-#endif
-
 			try
 			{
 				return InnerGenerateFile();
@@ -4612,9 +4608,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (declaringType == null || propertyType == null)
 			{
-#if DEBUG
-				Console.WriteLine($"Unable to determine the target dependency property for the markup extension ('{member.Member}' cannot be found).");
-#endif
 				return string.Empty;
 			}
 
@@ -6757,9 +6750,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 			else if (memberValue.EndsWith("px", StringComparison.OrdinalIgnoreCase))
 			{
-#if DEBUG
-				Console.WriteLine($"The value [{memberValue}] is specified in pixel and is not yet supported. ({owner?.LineNumber}, {owner?.LinePosition} in {_fileDefinition.FilePath})");
-#endif
 				return "{0}{1}".InvariantCultureFormat(memberValue.TrimEnd("px"), isDouble ? "d" : "f");
 			}
 
