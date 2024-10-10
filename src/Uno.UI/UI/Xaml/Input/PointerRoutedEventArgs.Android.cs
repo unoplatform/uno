@@ -8,12 +8,8 @@ using Uno.UI;
 using Uno.UI.Xaml.Extensions;
 using Windows.Foundation;
 using Windows.System;
-using Microsoft.UI.Xaml.Extensions;
-using Android.OS;
-using Uno.Extensions;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
-
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -67,7 +63,7 @@ namespace Microsoft.UI.Xaml.Input
 			var nativePointerType = nativeEvent.GetToolType(_pointerIndex);
 			var pointerType = nativePointerType.ToPointerDeviceType();
 			var basePointerType = (PointerDeviceType)pointerType;
-			var isInContact = IsInContact(nativeEvent, basePointerType, nativePointerAction, nativePointerButtons);
+			var isInContact = PointerHelpers.IsInContact(nativeEvent, pointerType, nativePointerAction, nativePointerButtons);
 			var keys = nativeEvent.MetaState.ToVirtualKeyModifiers();
 
 			FrameId = (uint)_nativeEvent.EventTime;
