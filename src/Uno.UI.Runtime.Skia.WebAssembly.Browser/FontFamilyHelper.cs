@@ -22,51 +22,18 @@ public static class FontFamilyHelper
 	/// <summary>
 	/// Pre-loads a font to minimize loading time and prevent potential text re-layouts.
 	/// </summary>
-	/// <returns>True is the font loaded successfully, otherwise false.</returns>
+	/// <returns>True if the font loaded successfully, otherwise false.</returns>
 	public static Task<bool> PreloadAsync(FontFamily family)
 	{
+		Task<SKTypeface> task;
 		if (Uri.TryCreate(family.Source, UriKind.Absolute, out var uri) && uri.Scheme == "ms-appx")
 		{
-			var task = LoadTypefaceAsync(uri);
+			task = LoadTypefaceAsync(uri);
 
-			if (task.IsCompleted)
-			{
-				if (task.IsCompletedSuccessfully)
-				{
-					// The font is loaded synchronously. This is very unlikely (impossible?) to happen on Wasm?
-					var stream = task.Result;
-					FontDetailsCache.OnFontLoaded(family.Source, stream);
-				}
-				else
-				{
-					if (typeof(FontFamilyHelper).Log().IsEnabled(LogLevel.Error))
-					{
-						typeof(FontFamilyHelper).Log().LogError($"Font {family.Source} could not be loaded. {task.Exception}");
-					}
-					FontDetailsCache.OnFontLoaded(family.Source, null);
-				}
-			}
-			else
-			{
-				task.ContinueWith(task =>
-				{
-					if (task.IsCompletedSuccessfully)
-					{
-						var stream = task.Result;
-						FontDetailsCache.OnFontLoaded(family.Source, stream);
-					}
-					else
-					{
-						if (typeof(FontFamilyHelper).Log().IsEnabled(LogLevel.Error))
-						{
-							typeof(FontFamilyHelper).Log().LogError($"Font {family.Source} could not be loaded. {task.Exception}");
-						}
-						FontDetailsCache.OnFontLoaded(family.Source, null);
-					}
-				});
-			}
-
-			return Task.FromResult(true);
+			// We won't find the details of the typeface until it has already loaded (unlike FontDetailsCache),
+			// so unfortunately, we can't register a Task with FontDetailsCache (again, unlike FontDetailsCache) and
+			// instead we register the typeface directly after it has already been loaded.
+			return task.ContinueWith(t => t.IsCompletedSuccessfully && FontDetailsCache.RegisterTypeface(t.Result));
 		}
 		else
 		{
@@ -82,8 +49,7 @@ public static class FontFamilyHelper
 	/// <summary>
 	/// Pre-loads a font to minimize loading time and prevent potential text re-layouts.
 	/// </summary>
-	/// <returns>True is the font loaded successfully, otherwise false.</returns>
+	/// <returns>True if the font loaded successfully, otherwise false.</returns>
 	public static Task<bool> PreloadAsync(string familyName)
 		=> PreloadAsync(new FontFamily(familyName));
-
 }

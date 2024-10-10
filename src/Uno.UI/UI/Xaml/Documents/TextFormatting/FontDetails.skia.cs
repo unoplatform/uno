@@ -54,40 +54,41 @@ internal record FontDetails(SKFont SKFont, float SKFontSize, float SKFontScaleX,
 		return value;
 	}
 
-	internal void Update(SKTypeface skTypeFace)
+	/// <param name="skTypeFace">null if the loading failed</param>
+	internal void FontLoaded(SKTypeface? skTypeFace)
 	{
-		SKFont = CreateSKFont(skTypeFace, SKFontSize);
-		SKFontScaleX = SKFont.ScaleX;
-		SKFontMetrics = SKFont.Metrics;
-		Font = CreateHarfBuzzFont(skTypeFace);
+		// this method should only be called once.
+		global::System.Diagnostics.Debug.Assert(CanChange);
+		CanChange = false;
 
-		if (_waitingList is not null)
+		if (skTypeFace is not null)
 		{
-			foreach (var element in _waitingList)
+			SKFont = CreateSKFont(skTypeFace, SKFontSize);
+			SKFontScaleX = SKFont.ScaleX;
+			SKFontMetrics = SKFont.Metrics;
+			Font = CreateHarfBuzzFont(skTypeFace);
+
+			if (_waitingList is not null)
 			{
-				if (element is TextElement textElement)
+				foreach (var element in _waitingList)
 				{
-					textElement.OnFontLoaded();
-				}
-				else if (element is TextBlock textBlock)
-				{
-					textBlock.OnFontLoaded();
-				}
-				else
-				{
-					throw new InvalidOperationException($"Unknown element type '{element}' in waiting list");
+					if (element is TextElement textElement)
+					{
+						textElement.OnFontLoaded();
+					}
+					else if (element is TextBlock textBlock)
+					{
+						textBlock.OnFontLoaded();
+					}
+					else
+					{
+						throw new InvalidOperationException($"Unknown element type '{element}' in waiting list");
+					}
 				}
 			}
 		}
 
 		_waitingList = null;
-		CanChange = false;
-	}
-
-	internal void LoadFailed()
-	{
-		_waitingList = null;
-		CanChange = false;
 	}
 
 	internal static FontDetails Create(SKTypeface skTypeFace, float fontSize, bool canChange)
