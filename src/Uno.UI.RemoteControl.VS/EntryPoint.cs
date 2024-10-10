@@ -345,7 +345,7 @@ public partial class EntryPoint : IDisposable
 
 				_ideChannelClient = new IdeChannelClient(pipeGuid, new Logger(this));
 				_ideChannelClient.ForceHotReloadRequested += OnForceHotReloadRequestedAsync;
-				_ideChannelClient.InfoBarNotificationRequested += OnInfoBarNotificationRequestedAsync;
+				_ideChannelClient.OnMessageReceived += OnMessageReceivedAsync;
 				_ideChannelClient.ConnectToHost();
 
 				// Set the port to the projects
@@ -421,7 +421,7 @@ public partial class EntryPoint : IDisposable
 		}
 	}
 
-	private async Task OnInfoBarNotificationRequestedAsync(object? sender, NotificationRequestIdeMessage message)
+	private async Task OnMessageReceivedAsync(object? sender, NotificationRequestIdeMessage message)
 	{
 		try
 		{
@@ -430,7 +430,7 @@ public partial class EntryPoint : IDisposable
 			if (await _asyncPackage.GetServiceAsync(typeof(SVsShell)) is IVsShell shell &&
 				await _asyncPackage.GetServiceAsync(typeof(SVsInfoBarUIFactory)) is IVsInfoBarUIFactory infoBarFactory)
 			{
-				await CreateInfoBarFactoryAsync(message, shell, infoBarFactory);
+				await CreateInfoBarAsync(message, shell, infoBarFactory);
 			}
 		}
 		catch (Exception e) when (_ideChannelClient is not null)
@@ -440,7 +440,7 @@ public partial class EntryPoint : IDisposable
 		}
 	}
 
-	private async Task CreateInfoBarFactoryAsync(NotificationRequestIdeMessage e, IVsShell shell, IVsInfoBarUIFactory infoBarFactory)
+	private async Task CreateInfoBarAsync(NotificationRequestIdeMessage e, IVsShell shell, IVsInfoBarUIFactory infoBarFactory)
 	{
 		if (_ideChannelClient is null)
 		{

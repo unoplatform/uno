@@ -26,7 +26,7 @@ internal class IdeChannelClient
 	private readonly ILogger _logger;
 
 	public event AsyncEventHandler<ForceHotReloadIdeMessage>? ForceHotReloadRequested;
-	public event AsyncEventHandler<NotificationRequestIdeMessage>? InfoBarNotificationRequested;
+	public event AsyncEventHandler<NotificationRequestIdeMessage>? OnMessageReceived;
 
 	public IdeChannelClient(Guid pipeGuid, ILogger logger)
 	{
@@ -106,7 +106,7 @@ internal class IdeChannelClient
 					break;
 				case NotificationRequestIdeMessage e when e is { } message:
 					_logger.Verbose($"Dev Server will open the Notification Message with message {e.Message}");
-					process = InfoBarNotificationRequested.InvokeAsync(this, message);
+					process = OnMessageReceived.InvokeAsync(this, message);
 					break;
 				default:
 					_logger.Verbose($"Unknown message type {devServerMessage?.GetType()} from DevServer");
