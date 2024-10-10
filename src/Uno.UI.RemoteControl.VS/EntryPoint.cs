@@ -24,6 +24,13 @@ using Uno.UI.RemoteControl.VS.Helpers;
 using Uno.UI.RemoteControl.VS.IdeChannel;
 using ILogger = Uno.UI.RemoteControl.VS.Helpers.ILogger;
 using Task = System.Threading.Tasks.Task;
+using System.ComponentModel.Design;
+using Newtonsoft.Json.Linq;
+using System.Xml.Linq;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+
+
+
 
 #pragma warning disable VSTHRD010
 #pragma warning disable VSTHRD109
@@ -344,6 +351,7 @@ public partial class EntryPoint : IDisposable
 
 				_ideChannelClient = new IdeChannelClient(pipeGuid, new Logger(this));
 				_ideChannelClient.ForceHotReloadRequested += OnForceHotReloadRequestedAsync;
+				_ideChannelClient.OnCommandIdeMessageRequested += OnCommandIdeMessageRequestedAsync;
 				_ideChannelClient.ConnectToHost();
 
 				// Set the port to the projects
@@ -419,6 +427,166 @@ public partial class EntryPoint : IDisposable
 		}
 	}
 
+	private async Task OnCommandIdeMessageRequestedAsync(object? sender, CommandRequestIdeMessage cr)
+	{
+		try
+		{
+			if (await _asyncPackage.GetServiceAsync(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
+			{
+				//TODO: should display uno studio id or use other?
+				var packGuid = new Guid("e2245c5b-bbe5-40c8-96d6-94ea655a5ff7");
+
+				var menuUnoCommand = 0x0866;
+				if (!IsCommandRegistered(commandService, packGuid, menuUnoCommand))
+				{
+					//MainVisualStudioPackage
+					var guidSHLMainMenu = new Guid("d309f791-903f-11d0-9efc-00a0c911004f");
+					var menuExtensionCommand = 0x0091;
+					var extensionVSCommandID = new CommandID(guidSHLMainMenu, menuExtensionCommand);
+
+					if (commandService.FindCommand(extensionVSCommandID) is { } cmd)
+					{
+						VsShellUtilities.ShowMessageBox(
+							_asyncPackage,
+							"extensionVSCommandID found",
+							"Warning",
+							OLEMSGICON.OLEMSGICON_WARNING,
+							OLEMSGBUTTON.OLEMSGBUTTON_OK,
+							OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+
+						var unoMainMenuId = new CommandID(packGuid, cmd.CommandID.ID);
+						var unoMainMenuItem = new OleMenuCommand(ExecuteCommand, unoMainMenuId);
+						unoMainMenuItem.BeforeQueryStatus += (s, e) =>
+						{
+							if (s is OleMenuCommand command)
+							{
+								command.Text = "Uno Platform";
+							}
+						};
+						VsShellUtilities.ShowMessageBox(
+													_asyncPackage,
+													"added Uno Platform",
+													"Warning",
+													OLEMSGICON.OLEMSGICON_WARNING,
+													OLEMSGBUTTON.OLEMSGBUTTON_OK,
+													OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+
+						var mainMenuId = new CommandID(packGuid, unoMainMenuId.ID);
+						var mainMenuItem = new OleMenuCommand(ExecuteCommand, mainMenuId);
+						mainMenuItem.BeforeQueryStatus += (s, e) =>
+						{
+							if (s is OleMenuCommand command)
+							{
+								command.Text = "License";
+							}
+						};
+						VsShellUtilities.ShowMessageBox(
+													_asyncPackage,
+													"added License",
+													"Warning",
+													OLEMSGICON.OLEMSGICON_WARNING,
+													OLEMSGBUTTON.OLEMSGBUTTON_OK,
+													OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+
+						commandService.AddCommand(unoMainMenuItem);
+						commandService.AddCommand(mainMenuItem);
+
+						VsShellUtilities.ShowMessageBox(
+							_asyncPackage,
+							"AddCommand",
+							"Warning",
+							OLEMSGICON.OLEMSGICON_WARNING,
+							OLEMSGBUTTON.OLEMSGBUTTON_OK,
+							OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+
+					}
+					else
+					{
+						VsShellUtilities.ShowMessageBox(
+							_asyncPackage,
+							"NOT find extensionVSCommand",
+							"Warning",
+							OLEMSGICON.OLEMSGICON_WARNING,
+							OLEMSGBUTTON.OLEMSGBUTTON_OK,
+							OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+					}
+					//var cmdID = new CommandID(packGuid, 0x0801);
+					//var menuItem = new MenuCommand(this.ExecuteCommand, cmdID);
+					//commandService.AddCommand(menuItem);
+
+					//var mainMenuId = new CommandID(packGuid, 0x1100);  // UnoMainMenu
+					//var mainMenuItem = new MenuCommand(packGuid, mainMenuId);
+					//commandService.AddCommand(mainMenuItem);
+
+					//// Criar grupos de menus
+					//var submenuGroupId = new CommandID(packGuid, 0x0101);  // UnoSubMenuGroup
+					//var submenuItem = new MenuCommand(OnSubMenuCommand, submenuGroupId);
+					//commandService.AddCommand(submenuItem);
+
+					//var helpGroupId = new CommandID(packGuid, 0x0102);  // UnoSubMenuHelpGroup
+					//var helpMenuItem = new MenuCommand(OnHelpSubMenuCommand, helpGroupId);
+					//commandService.AddCommand(helpMenuItem);
+
+					//// Adicionar o botão "License" como filho do menu "Uno Platform"
+					//var licenseCmdID = new CommandID(packGuid, 0x0801);  // LicenseCommandId
+					//var licenseMenuItem = new MenuCommand(OnLicenseCommand, licenseCmdID);
+					//commandService.AddCommand(licenseMenuItem);
+
+					//// Para organizar a hierarquia corretamente
+					//commandService.AddCommand(new MenuCommand(OnLicenseCommand, licenseCmdID)
+					//{
+					//	CommandID = new CommandID(packGuid, 0x0801),
+					//	Parent = submenuGroupId
+					//});
+
+				}
+				else
+				{
+					//Todo: Command already registered. Should remove and add again?
+					VsShellUtilities.ShowMessageBox(
+						_asyncPackage,
+						"Command already registered!",
+						"Warning",
+						OLEMSGICON.OLEMSGICON_WARNING,
+						OLEMSGBUTTON.OLEMSGBUTTON_OK,
+						OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			_debugAction?.Invoke($"Using Command Ide Message Requested fail {e.Message}");
+			throw;
+		}
+	}
+
+	private bool IsCommandRegistered(OleMenuCommandService commandService, Guid packGuid, int commandId)
+	{
+		var cmdID = new CommandID(packGuid, commandId);
+		var command = commandService.FindCommand(cmdID);
+		return command != null;
+	}
+
+	private void ExecuteUnoCommand(object sender, EventArgs e)
+	{
+		VsShellUtilities.ShowMessageBox(
+			_asyncPackage,
+			"Uno cmd!",
+			"Title",
+			OLEMSGICON.OLEMSGICON_INFO,
+			OLEMSGBUTTON.OLEMSGBUTTON_OK,
+			OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+	}
+	private void ExecuteCommand(object sender, EventArgs e)
+	{
+		VsShellUtilities.ShowMessageBox(
+			_asyncPackage,
+			"cmd!",
+			"Title",
+			OLEMSGICON.OLEMSGICON_INFO,
+			OLEMSGBUTTON.OLEMSGBUTTON_OK,
+			OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+	}
 	private async Task OnForceHotReloadRequestedAsync(object? sender, ForceHotReloadIdeMessage request)
 	{
 		try

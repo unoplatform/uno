@@ -21,6 +21,7 @@ internal class IdeChannelClient
 	private readonly ILogger _logger;
 
 	public event AsyncEventHandler<ForceHotReloadIdeMessage>? ForceHotReloadRequested;
+	public event AsyncEventHandler<CommandRequestIdeMessage>? OnCommandIdeMessageRequested;
 
 	public IdeChannelClient(Guid pipeGuid, ILogger logger)
 	{
@@ -91,6 +92,11 @@ internal class IdeChannelClient
 			var process = Task.CompletedTask;
 			switch (devServerMessage)
 			{
+				case CommandRequestIdeMessage cr:
+					_logger.Debug("Command Ide Message Requested");
+					process = OnCommandIdeMessageRequested.InvokeAsync(this, cr);
+					break;
+
 				case ForceHotReloadIdeMessage forceHotReloadMessage when ForceHotReloadRequested is { } hrRequested:
 					_logger.Debug("Hot reload requested");
 					process = hrRequested.InvokeAsync(this, forceHotReloadMessage);
