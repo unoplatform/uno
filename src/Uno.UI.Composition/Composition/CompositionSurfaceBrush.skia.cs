@@ -9,7 +9,7 @@ using System.Diagnostics.CodeAnalysis;
 using Windows.Graphics.Display;
 using Uno.Extensions;
 
-namespace Microsoft.UI.Composition
+namespace Windows.UI.Composition
 {
 	public partial class CompositionSurfaceBrush : CompositionBrush, IOnlineBrush, ISizedBrush
 	{

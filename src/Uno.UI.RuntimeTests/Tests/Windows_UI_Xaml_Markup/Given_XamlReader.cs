@@ -3,12 +3,12 @@ using System.Linq;
 using Uno.UI.Extensions;
 using Uno.UI.Helpers;
 using Uno.Xaml;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Shapes;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 {
@@ -19,14 +19,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 		[TestMethod]
 		public void When_DoubleCollection()
 		{
-			var rectangle = (Rectangle)Microsoft.UI.Xaml.Markup.XamlReader.Load("""
+			var rectangle = (Rectangle)Windows.UI.Xaml.Markup.XamlReader.Load("""
 				<Rectangle xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" StrokeDashArray="1,2" />
 				""");
 			Assert.AreEqual(2, rectangle.StrokeDashArray.Count);
 			Assert.AreEqual(1, rectangle.StrokeDashArray[0]);
 			Assert.AreEqual(2, rectangle.StrokeDashArray[1]);
 
-			var value = Microsoft.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof(DoubleCollection), "1,2") as DoubleCollection;
+			var value = Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof(DoubleCollection), "1,2") as DoubleCollection;
 			Assert.IsNotNull(value);
 			Assert.AreEqual(2, value.Count);
 			Assert.AreEqual(1, value[0]);
@@ -36,7 +36,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 		[TestMethod]
 		public void When_PointCollection()
 		{
-			var polygon = (Polygon)Microsoft.UI.Xaml.Markup.XamlReader.Load("""
+			var polygon = (Polygon)Windows.UI.Xaml.Markup.XamlReader.Load("""
 				<Polygon xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Points="0,1 2,3 4,5" />
 				""");
 			Assert.AreEqual(3, polygon.Points.Count);
@@ -44,7 +44,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 			Assert.AreEqual(new Point(2, 3), polygon.Points[1]);
 			Assert.AreEqual(new Point(4, 5), polygon.Points[2]);
 
-			var value = Microsoft.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof(PointCollection), "0,1 2,3 4,5") as PointCollection;
+			var value = Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof(PointCollection), "0,1 2,3 4,5") as PointCollection;
 			Assert.IsNotNull(value);
 			Assert.AreEqual(3, value.Count);
 			Assert.AreEqual(new Point(0, 1), value[0]);
@@ -304,7 +304,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 			var sut = setup.FindFirstDescendant<ScrollViewer>(x => x.Name == "SUT");
 			var expr = sut.GetBindingExpression(ScrollViewer.HorizontalScrollModeProperty);
 
-			Assert.AreEqual(expr.ParentBinding.Path.Path, "(Microsoft.UI.Xaml.Controls:ScrollViewer.HorizontalScrollMode)");
+			Assert.AreEqual(expr.ParentBinding.Path.Path, "(Windows.UI.Xaml.Controls:ScrollViewer.HorizontalScrollMode)");
 			Assert.AreEqual(ScrollMode.Disabled, sut.HorizontalScrollMode);
 			ScrollViewer.SetHorizontalScrollMode(setup, ScrollMode.Enabled);
 			Assert.AreEqual(ScrollMode.Enabled, sut.HorizontalScrollMode);
@@ -320,7 +320,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	Kind="Copy" />
 """;
-			var xaml = Microsoft.UI.Xaml.Markup.XamlReader.Load(xamlString);
+			var xaml = Windows.UI.Xaml.Markup.XamlReader.Load(xamlString);
 			Assert.IsInstanceOfType(xaml, typeof(StandardUICommand));
 		}
 

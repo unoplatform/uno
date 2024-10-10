@@ -18,10 +18,10 @@ using Uno.UI.Xaml.Media;
 using Uno.UI.Xaml.Media.Imaging.Svg;
 using Windows.Storage;
 using Windows.Storage.Streams;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Xaml.Shapes;
 using static Android.Provider.DocumentsContract;
 
-namespace Microsoft.UI.Xaml.Media.Imaging;
+namespace Windows.UI.Xaml.Media.Imaging;
 
 partial class SvgImageSource
 {

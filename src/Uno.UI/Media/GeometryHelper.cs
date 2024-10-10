@@ -1,6 +1,6 @@
 ﻿using Uno.Extensions;
 using Uno.Media;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 using System;
 using System.Collections.Generic;
 using System.Text;

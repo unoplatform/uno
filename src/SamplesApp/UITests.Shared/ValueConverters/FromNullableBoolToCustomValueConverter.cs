@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Globalization;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Data;
 
 namespace UITests.ValueConverters
 {

@@ -7,8 +7,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Extensions;
 using Uno.UI.Tests.Windows_UI_XAML_Controls.PopupTests.Controls;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Uno.UI.Tests.PivotTests
 {
@@ -20,7 +20,7 @@ namespace Uno.UI.Tests.PivotTests
 		{
 			var SUT = new When_Popup();
 
-			Assert.IsTrue(SUT.FindName("myPopup")?.GetType() == typeof(Microsoft.UI.Xaml.Controls.Primitives.Popup));
+			Assert.IsTrue(SUT.FindName("myPopup")?.GetType() == typeof(Windows.UI.Xaml.Controls.Primitives.Popup));
 		}
 	}
 }

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using Uno.UI.DataBinding;
 
-namespace Microsoft.UI.Xaml;
+namespace Windows.UI.Xaml;
 
 #if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
 internal static class TemplatedParentScope

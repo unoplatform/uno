@@ -1,7 +1,7 @@
 ﻿using Android.Graphics;
 using Android.Media;
 
-namespace Microsoft.UI.Xaml.Media.Imaging;
+namespace Windows.UI.Xaml.Media.Imaging;
 
 public partial class BitmapSource
 {

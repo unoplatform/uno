@@ -44,7 +44,7 @@
 
 	</ResourceDictionary.ThemeDictionaries>
 
-	<!-- Default style for Microsoft.UI.Xaml.Controls.ToolTip -->
+	<!-- Default style for Windows.UI.Xaml.Controls.ToolTip -->
 	<Style TargetType="ToolTip">
 		<Setter Property="Foreground" Value="{ThemeResource ToolTipForeground}" />
 		<Setter Property="Background" Value="{ThemeResource ToolTipBackground}" />

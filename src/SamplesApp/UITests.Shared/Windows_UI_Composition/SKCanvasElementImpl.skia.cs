@@ -1,7 +1,7 @@
-#if __SKIA__
+﻿#if __SKIA__
 using System;
 using Windows.Foundation;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Uno.WinUI.Graphics2DSK;
 using SkiaSharp;
 

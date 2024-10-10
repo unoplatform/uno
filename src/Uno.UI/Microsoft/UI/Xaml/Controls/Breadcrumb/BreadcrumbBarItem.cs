@@ -8,15 +8,15 @@ using System.Collections.ObjectModel;
 using Uno.Disposables;
 using Uno.UI.DataBinding;
 using Windows.System;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Automation;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Automation;
 using Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers;
 #if !HAS_UNO_WINUI // Avoid duplicate using for WinUI build
-using Microsoft.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Automation.Peers;
 #endif
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Input;
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
 #if HAS_UNO_WINUI
@@ -55,7 +55,7 @@ public partial class BreadcrumbBarItem : ContentControl
 		HookListeners(m_isEllipsisDropDownItem);
 	}
 
-	private void BreadcrumbBarItem_Unloaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+	private void BreadcrumbBarItem_Unloaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
 	{
 		RevokeListeners();
 		m_ellipsisRepeaterElementPreparedRevoker.Disposable = null;

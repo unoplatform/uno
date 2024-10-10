@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	abstract partial class VirtualizingPanelLayout
 	{

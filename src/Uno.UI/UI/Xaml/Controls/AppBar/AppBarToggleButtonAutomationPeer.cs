@@ -3,9 +3,9 @@
 // MUX reference AppBarToggleButtonAutomationPeer_Partial.cpp, tag winui3/release/1.4.2
 
 using DirectUI;
-using AppBarToggleButton = Microsoft.UI.Xaml.Controls.AppBarToggleButton;
+using AppBarToggleButton = Windows.UI.Xaml.Controls.AppBarToggleButton;
 
-namespace Microsoft.UI.Xaml.Automation.Peers;
+namespace Windows.UI.Xaml.Automation.Peers;
 
 /// <summary>
 /// Exposes AppBarToggleButton types to Microsoft UI Automation.

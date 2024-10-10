@@ -1,17 +1,17 @@
 ﻿<linker>
 	<assembly fullname="Uno.UI">
-		<type fullname="Microsoft.UI.Xaml.UIElement" />
-		<type fullname="Microsoft.UI.Xaml.Window" />
-		<type fullname="Microsoft.UI.Xaml.Media.BrushConverter" />
-		<type fullname="Microsoft.UI.Xaml.Media.ImageSourceConverter" />
-		<type fullname="Microsoft.UI.Xaml.CornerRadiusConverter" />
+		<type fullname="Windows.UI.Xaml.UIElement" />
+		<type fullname="Windows.UI.Xaml.Window" />
+		<type fullname="Windows.UI.Xaml.Media.BrushConverter" />
+		<type fullname="Windows.UI.Xaml.Media.ImageSourceConverter" />
+		<type fullname="Windows.UI.Xaml.CornerRadiusConverter" />
 		<type fullname="Uno.Media.GeometryConverter" />
-		<type fullname="Microsoft.UI.Xaml.ThicknessConverter" />
-		<type fullname="Microsoft.UI.Xaml.ObservableVectorWrapper" />
-		<type fullname="Microsoft.UI.Xaml.Input.FocusManager">
+		<type fullname="Windows.UI.Xaml.ThicknessConverter" />
+		<type fullname="Windows.UI.Xaml.ObservableVectorWrapper" />
+		<type fullname="Windows.UI.Xaml.Input.FocusManager">
 			<method name="ReceiveFocusNative" />
 		</type>
-		<type fullname="Microsoft.UI.Xaml.Application">
+		<type fullname="Windows.UI.Xaml.Application">
 			<method name="DispatchSuspending" />
 			<method name="DispatchVisibilityChange" />
 		</type>
@@ -20,7 +20,7 @@
 			<method name="DispatchNativePositionChange" />
 		</type>
 
-		<type fullname="Microsoft.UI.Xaml.Media.FontFamilyLoader">
+		<type fullname="Windows.UI.Xaml.Media.FontFamilyLoader">
 			<method name="NotifyFontLoaded" />
 			<method name="NotifyFontLoadFailed" />
 		</type>

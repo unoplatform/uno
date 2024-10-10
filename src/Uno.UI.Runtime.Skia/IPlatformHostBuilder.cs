@@ -4,5 +4,5 @@ internal interface IPlatformHostBuilder
 {
 	bool IsSupported { get; }
 
-	SkiaHost Create(Func<Microsoft.UI.Xaml.Application> appBuilder);
+	SkiaHost Create(Func<Windows.UI.Xaml.Application> appBuilder);
 }

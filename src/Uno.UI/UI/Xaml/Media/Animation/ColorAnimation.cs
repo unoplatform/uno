@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Uno;
 using Windows.UI;
 
-namespace Microsoft.UI.Xaml.Media.Animation
+namespace Windows.UI.Xaml.Media.Animation
 {
 	public partial class ColorAnimation : Timeline, ITimeline, IAnimation<ColorOffset>
 	{

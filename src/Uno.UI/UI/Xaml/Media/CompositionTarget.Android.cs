@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Android.Views;
 
-namespace Microsoft.UI.Xaml.Media
+namespace Windows.UI.Xaml.Media
 {
 	public partial class CompositionTarget
 	{

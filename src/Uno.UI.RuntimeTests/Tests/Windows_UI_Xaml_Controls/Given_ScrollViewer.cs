@@ -5,12 +5,12 @@ using System.Numerics;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Shapes;
 using MUXControlsTestApp.Utilities;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
@@ -558,7 +558,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Scrolled_ViewportSizeLargerThanContent()
 		{
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 			{
 				Assert.Inconclusive();
 			}
@@ -1155,7 +1155,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Spacing = 5,
 				Children =
 				{
-					new Microsoft.UI.Xaml.Shapes.Rectangle() { Height = 200, Fill = SolidColorBrushHelper.SkyBlue },
+					new Windows.UI.Xaml.Shapes.Rectangle() { Height = 200, Fill = SolidColorBrushHelper.SkyBlue },
 					SUT,
 				},
 			};
@@ -1228,7 +1228,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Spacing = 5,
 				Children =
 				{
-					new Microsoft.UI.Xaml.Shapes.Rectangle() { Height = 200, Fill = SolidColorBrushHelper.SkyBlue },
+					new Windows.UI.Xaml.Shapes.Rectangle() { Height = 200, Fill = SolidColorBrushHelper.SkyBlue },
 					SUT,
 				},
 			};
@@ -1418,10 +1418,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 						GradientStops = new GradientStopCollection()
 							.Apply(stops => stops.AddRange(new[]
 							{
-								new GradientStop { Color = Microsoft.UI.Colors.Yellow, Offset = 0.0 },
-								new GradientStop { Color = Microsoft.UI.Colors.Red, Offset = 0.25 },
-								new GradientStop { Color = Microsoft.UI.Colors.Blue, Offset = 0.75 },
-								new GradientStop { Color = Microsoft.UI.Colors.LimeGreen, Offset = 1.0 },
+								new GradientStop { Color = Windows.UI.Colors.Yellow, Offset = 0.0 },
+								new GradientStop { Color = Windows.UI.Colors.Red, Offset = 0.25 },
+								new GradientStop { Color = Windows.UI.Colors.Blue, Offset = 0.75 },
+								new GradientStop { Color = Windows.UI.Colors.LimeGreen, Offset = 1.0 },
 							}))
 					},
 					Height = 200,

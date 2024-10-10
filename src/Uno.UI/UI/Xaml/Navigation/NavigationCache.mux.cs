@@ -13,8 +13,8 @@
 //      determine which content to replace.
 
 using System;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Navigation;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Navigation;
 
 namespace DirectUI;
 

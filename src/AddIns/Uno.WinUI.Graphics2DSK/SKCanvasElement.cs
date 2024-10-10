@@ -1,7 +1,7 @@
-using System.Numerics;
+﻿using System.Numerics;
 using Windows.Foundation;
-using Microsoft.UI.Composition;
-using Microsoft.UI.Xaml;
+using Windows.UI.Composition;
+using Windows.UI.Xaml;
 using SkiaSharp;
 
 namespace Uno.WinUI.Graphics2DSK;

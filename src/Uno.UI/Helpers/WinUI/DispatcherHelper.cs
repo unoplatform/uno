@@ -3,7 +3,7 @@
 // MUX Reference DispatcherHelper.h, tag winui3/release/1.4.2
 
 using System;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 namespace Uno.UI.Helpers.WinUI;
 

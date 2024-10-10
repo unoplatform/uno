@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Numerics;
@@ -6,7 +6,7 @@ using Windows.Foundation;
 using SkiaSharp;
 using Uno.UI.Composition;
 
-namespace Microsoft.UI.Composition;
+namespace Windows.UI.Composition;
 
 /// <summary>
 /// A ShapeVisual that has a border and a background.

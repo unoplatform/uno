@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
 
 namespace Uno.UI.Tests.BinderTests
 {
@@ -20,7 +20,7 @@ namespace Uno.UI.Tests.BinderTests
 			var border = new Border();
 			var dc = new MySimpleObject();
 			dc.InnerObject.MyTag = "June";
-			border.SetBinding(FrameworkElement.TagProperty, new Microsoft.UI.Xaml.Data.Binding(new PropertyPath("InnerObject.MyTag")));
+			border.SetBinding(FrameworkElement.TagProperty, new Windows.UI.Xaml.Data.Binding(new PropertyPath("InnerObject.MyTag")));
 			border.DataContext = dc;
 			Assert.AreEqual("June", border.Tag);
 

@@ -1,8 +1,8 @@
 ﻿using CoreGraphics;
 using System;
 using Uno.Extensions;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Media;
 using Uno.UI.Controls;
 using Uno.UI.Helpers;
 using Foundation;
@@ -13,7 +13,7 @@ using _TextField = AppKit.NSTextField;
 using Windows.UI;
 using Uno.Disposables;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	internal partial class TextBoxView : _TextField, ITextBoxView, DependencyObject, IFontScalable
 	{

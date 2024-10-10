@@ -4,7 +4,7 @@ using System.Collections.Immutable;
 using System.Text;
 using Uno.UI.DataBinding;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	/// <summary>
 	/// This is a helper to support resolution of StaticResource/ThemeResource references using the 'Xaml-tree scope' similar to UWP, as

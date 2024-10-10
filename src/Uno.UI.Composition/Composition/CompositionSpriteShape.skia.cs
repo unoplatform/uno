@@ -5,7 +5,7 @@ using SkiaSharp;
 using Uno;
 using Uno.Extensions;
 
-namespace Microsoft.UI.Composition
+namespace Windows.UI.Composition
 {
 	public partial class CompositionSpriteShape : CompositionShape
 	{

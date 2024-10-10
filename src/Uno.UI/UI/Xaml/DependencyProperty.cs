@@ -5,13 +5,13 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Documents;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Animation;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Documents;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Shapes;
 using Uno;
 using Uno.Extensions;
 using Uno.UI;
@@ -24,10 +24,10 @@ using _View = Android.Views.View;
 #elif __IOS__
 using _View = UIKit.UIView;
 #else
-using _View = Microsoft.UI.Xaml.UIElement;
+using _View = Windows.UI.Xaml.UIElement;
 #endif
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	/// <summary>
 	/// Defines a dependency property for a <see cref="DependencyObject"/>.
@@ -253,7 +253,7 @@ namespace Microsoft.UI.Xaml
 		/// Specifies a static value that is used by the dependency property system rather than null to indicate that
 		/// the property exists, but does not have its value set by the dependency property system.
 		/// </summary>
-		public static object UnsetValue { get; } = Microsoft.UI.Xaml.UnsetValue.Instance;
+		public static object UnsetValue { get; } = Windows.UI.Xaml.UnsetValue.Instance;
 
 		/// <summary>
 		/// Retrieves the property metadata value for the dependency property as registered to a type. You specify the type you want info from as a type reference.
