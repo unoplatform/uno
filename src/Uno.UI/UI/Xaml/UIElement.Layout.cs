@@ -420,7 +420,7 @@ namespace Microsoft.UI.Xaml
 			// find the command bar through TemplatedParent
 			if (this is Control thisAsControl)
 			{
-				thisAsControl.ApplyTemplate();
+				thisAsControl.TryCallOnApplyTemplate();
 
 				// Update bindings to ensure resources defined
 				// in visual parents get applied.
