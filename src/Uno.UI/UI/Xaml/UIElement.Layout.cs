@@ -309,7 +309,6 @@ namespace Microsoft.UI.Xaml
 						if (this.Visibility == Visibility.Collapsed)
 						{
 							m_desiredSize = default;
-							RecursivelyApplyTemplateWorkaround();
 							return;
 						}
 
@@ -408,38 +407,6 @@ namespace Microsoft.UI.Xaml
 		{
 			return this is Panel; // Restrict to Panels, to limit app-compat risk
 								  //&& !GetIsScrollViewerHeader(); // Special-case:  ScrollViewer Headers, which can zoom, must scale the LayoutClip too
-		}
-
-		private void RecursivelyApplyTemplateWorkaround()
-		{
-			// Uno workaround. The template should NOT be applied here.
-			// But, without this workaround, VerifyVisibilityChangeUpdatesCommandBarVisualState test will fail.
-			// The real root cause for the test failure is that FindParentCommandBarForElement will
-			// return null, that is because Uno doesn't yet properly have a "logical parent" concept.
-			// We eagerly apply the template so that FindParentCommandBarForElement will
-			// find the command bar through TemplatedParent
-			if (this is Control thisAsControl)
-			{
-				thisAsControl.ApplyTemplate();
-
-				// Update bindings to ensure resources defined
-				// in visual parents get applied.
-				this.UpdateResourceBindings();
-			}
-
-#if __CROSSRUNTIME__
-			foreach (var child in _children)
-#else
-			foreach (var childView in this.GetChildren())
-#endif
-			{
-#if !__CROSSRUNTIME__
-				if (childView is UIElement child)
-#endif
-				{
-					child.RecursivelyApplyTemplateWorkaround();
-				}
-			}
 		}
 
 		public void Arrange(Rect finalRect)
