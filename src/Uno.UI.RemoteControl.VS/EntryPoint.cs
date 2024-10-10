@@ -469,12 +469,14 @@ public partial class EntryPoint : IDisposable
 				_asyncPackage.JoinableTaskFactory.Run(async () =>
 				{
 					if (e.ActionItem is ActionBarItem action &&
-						action.Name is { } command &&
-						await GetActiveWindowHandleAsync() is { } windowID &&
-						windowID != IntPtr.Zero
-						)
+						action.Name is { } command)
 					{
-						await _ideChannelClient.SendToDevServerAsync(new CommandRequestIdeMessage(windowID.ToInt64(), command, action.ActionContext?.ToString()), _ct.Token);
+						var cmd =
+							new CommandRequestIdeMessage(
+								System.Diagnostics.Process.GetCurrentProcess().Id,
+								command,
+								action.ActionContext?.ToString());
+						await _ideChannelClient.SendToDevServerAsync(cmd, _ct.Token);
 					}
 				});
 			};
@@ -644,18 +646,5 @@ public partial class EntryPoint : IDisposable
 		public void Info(string message) => entryPoint._infoAction?.Invoke(message);
 		public void Warn(string message) => entryPoint._warningAction?.Invoke(message);
 		public void Verbose(string message) => entryPoint._verboseAction?.Invoke(message);
-	}
-
-	public async Task<IntPtr> GetActiveWindowHandleAsync()
-	{
-		//System.Diagnostics.Process.GetCurrentProcess().Id
-		IntPtr hWnd = IntPtr.Zero;
-		IVsUIShell? uiShell = await _asyncPackage.GetServiceAsync(typeof(SVsUIShell)) as IVsUIShell;
-
-		if (uiShell != null)
-		{
-			uiShell.GetDialogOwnerHwnd(out hWnd);
-		}
-		return hWnd;
 	}
 }
