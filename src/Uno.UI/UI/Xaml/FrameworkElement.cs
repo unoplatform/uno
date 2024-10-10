@@ -1020,7 +1020,7 @@ namespace Microsoft.UI.Xaml
 			return GetFirstChild() is not null;
 		}
 
-		private UIElement/*?*/ GetFirstChild()
+		private View/*?*/ GetFirstChild()
 		{
 #if __CROSSRUNTIME__ && !__NETSTD_REFERENCE__
 			if (GetChildren() is { Count: > 0 } children)
@@ -1030,13 +1030,13 @@ namespace Microsoft.UI.Xaml
 #elif XAMARIN
 			if (this is IShadowChildrenProvider { ChildrenShadow: { Count: > 0 } childrenShadow })
 			{
-				return childrenShadow[0] as UIElement;
+				return childrenShadow[0];
 			}
 #endif
 
 			if (VisualTreeHelper.GetChildrenCount(this) > 0)
 			{
-				return VisualTreeHelper.GetChild(this, 0) as UIElement;
+				return VisualTreeHelper.GetChild(this, 0) as View;
 			}
 
 			return null;
