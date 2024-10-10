@@ -127,7 +127,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task Check_FontFallback()
 		{
 			var SUT = new TextBlock { Text = "示例文本", FontSize = 24 };
-			var skFont = FontDetailsCache.GetFont(SUT.FontFamily?.Source, (float)SUT.FontSize, SUT.FontWeight, SUT.FontStretch, SUT.FontStyle).SKFont;
+			var skFont = FontDetailsCache.GetFont(SUT.FontFamily?.Source, (float)SUT.FontSize, SUT.FontWeight, SUT.FontStretch, SUT.FontStyle).details.SKFont;
 			Assert.IsFalse(skFont.ContainsGlyph(SUT.Text[0]));
 
 			var fallbackFont = SKFontManager.Default.MatchCharacter(SUT.Text[0]);
@@ -160,7 +160,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				LineHeight = 34,
 			};
 
-			var skFont = FontDetailsCache.GetFont(SUT.FontFamily?.Source, (float)SUT.FontSize, SUT.FontWeight, SUT.FontStretch, SUT.FontStyle).SKFont;
+			var skFont = FontDetailsCache.GetFont(SUT.FontFamily?.Source, (float)SUT.FontSize, SUT.FontWeight, SUT.FontStretch, SUT.FontStyle).details.SKFont;
 			var familyName = skFont.Typeface.FamilyName;
 			Assert.IsFalse(skFont.ContainsGlyph(SUT.Text[0]));
 

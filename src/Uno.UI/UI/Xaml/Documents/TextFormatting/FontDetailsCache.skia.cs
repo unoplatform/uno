@@ -90,7 +90,7 @@ internal static class FontDetailsCache
 		}
 	}
 
-	private static readonly Func<string?, float, FontWeight, FontStretch, FontStyle, FontDetails> _getFont = FuncMemoizeExtensions.AsMemoized((
+	private static readonly Func<string?, float, FontWeight, FontStretch, FontStyle, (FontDetails details, Task<SKTypeface?> loadedTask)> _getFont = FuncMemoizeExtensions.AsMemoized((
 		string? name,
 		float fontSize,
 		FontWeight weight,
@@ -157,34 +157,13 @@ internal static class FontDetailsCache
 			});
 		}
 
-		return details;
+		return (details, typefaceTask);
 	});
 
-	public static FontDetails GetFont(
+	public static (FontDetails details, Task<SKTypeface?> loadedTask) GetFont(
 		string? name,
 		float fontSize,
 		FontWeight weight,
 		FontStretch stretch,
 		FontStyle style) => _getFont(name, fontSize, weight, stretch, style);
-
-	public static bool RegisterTypeface(SKTypeface typeface)
-	{
-		var key = new FontEntry(typeface.FamilyName, (SKFontStyleWeight)typeface.FontWeight, (SKFontStyleWidth)typeface.FontWidth, typeface.FontSlant);
-		lock (_fontCacheGate)
-		{
-			if (_fontCache.TryAdd(key, Task.FromResult<SKTypeface?>(typeface)))
-			{
-				if (typeof(FontDetailsCache).Log().IsEnabled(LogLevel.Error))
-				{
-					typeof(FontDetailsCache).Log().Error($"Attempted to register {key}, but a font with that name and style was already registered.");
-				}
-
-				return true;
-			}
-			else
-			{
-				return false;
-			}
-		}
-	}
 }

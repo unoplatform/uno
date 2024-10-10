@@ -142,7 +142,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else
 			{
-				var font = FontDetailsCache.GetFont(FontFamily?.Source, (float)FontSize, FontWeight, FontStretch, FontStyle);
+				var font = FontDetailsCache.GetFont(FontFamily?.Source, (float)FontSize, FontWeight, FontStretch, FontStyle).details;
 				if (font.CanChange)
 				{
 					font.RegisterElementForFontLoaded(this);
