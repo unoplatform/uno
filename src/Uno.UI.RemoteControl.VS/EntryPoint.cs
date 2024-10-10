@@ -14,7 +14,6 @@ using EnvDTE;
 using EnvDTE80;
 using Microsoft.Build.Evaluation;
 using Microsoft.Internal.VisualStudio.Shell;
-using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
