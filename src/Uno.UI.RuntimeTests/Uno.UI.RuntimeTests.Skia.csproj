@@ -27,6 +27,9 @@
 		<PackageReference Include="FluentAssertions" />
 		<PackageReference Include="MSTest.TestFramework" />
 		<PackageReference Include="MSTest.Analyzers" />
+
+		<PackageReference Include="SkiaSharp"  />
+		<PackageReference Include="SkiaSharp.Harfbuzz" />
 	</ItemGroup>
 
 	<ItemGroup>
