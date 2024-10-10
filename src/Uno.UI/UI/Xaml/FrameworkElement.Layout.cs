@@ -17,6 +17,7 @@ using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Core.Scaling;
 using Uno.UI.Extensions;
+using Microsoft.UI.Xaml.Media;
 
 namespace Microsoft.UI.Xaml
 {
@@ -102,7 +103,11 @@ namespace Microsoft.UI.Xaml
 					}
 
 					addedVisuals = true;
+#if __CROSSRUNTIME__ || IS_UNIT_TESTS
 					AddChild(child);
+#else
+					VisualTreeHelper.AddView(this, child);
+#endif
 				}
 			}
 		}
