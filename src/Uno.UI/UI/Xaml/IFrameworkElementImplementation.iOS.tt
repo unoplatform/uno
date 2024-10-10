@@ -159,6 +159,7 @@ namespace <#= mixin.NamespaceName #>
 
 		public event RoutedEventHandler Unloaded;
 
+		[global::Uno.UI.Xaml.GeneratedWeakEvent]
 		public event SizeChangedEventHandler SizeChanged;
 
 #if <#= mixin.DefineLayoutSubviews #> || <#= mixin.DefineSetNeedsLayout #> // DefineLayoutSubviews || DefineSetNeedsLayout
