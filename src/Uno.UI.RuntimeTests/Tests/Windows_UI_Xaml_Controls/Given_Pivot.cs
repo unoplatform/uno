@@ -12,6 +12,7 @@ using FluentAssertions.Execution;
 using static Private.Infrastructure.TestServices;
 using Uno.UI.Extensions;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -124,6 +125,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.SelectedIndex.Should().Be(1);
 			SUT.SelectedItem.Should().Be(pivotItem2);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task Pivot_Single_ItemContent_Visible()
+		{
+			var items = Enumerable.Range(0, 3).ToArray();
+			var setup = new Pivot
+			{
+				ItemsSource = items,
+				SelectedItem = items.Last(),
+			};
+			await UITestHelper.Load(setup);
+
+			var containers = items.Select((x, i) => setup.ContainerFromIndex(i)).OfType<PivotItem>().ToArray();
+
+			Assert.AreEqual(3, containers.Length, "Should have 3 containers");
+			Assert.AreEqual(1, containers.Count(x => x.Visibility == Visibility.Visible), "Only one PivotItem should be visible");
 		}
 
 		private class MyContext
