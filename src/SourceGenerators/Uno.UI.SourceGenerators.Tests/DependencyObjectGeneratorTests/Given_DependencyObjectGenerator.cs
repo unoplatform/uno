@@ -159,7 +159,7 @@ public class Given_DependencyObjectGenerator
 	 partial class OuterClass
 	 {
 	 	[global::Microsoft.UI.Xaml.Data.Bindable]
-	 	partial class Inner : IDependencyObjectStoreProvider, ITemplatedParentProvider, IWeakReferenceProvider
+	 	partial class Inner : IDependencyObjectStoreProvider, IWeakReferenceProvider
 	 	{
 	 		private DependencyObjectStore __storeBackingField;
 	 		public global::Windows.UI.Core.CoreDispatcher Dispatcher => global::Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher;
@@ -185,28 +185,6 @@ public class Given_DependencyObjectGenerator
 	 		public object GetAnimationBaseValue(DependencyProperty dp) => __Store.GetAnimationBaseValue(dp);
 	 		public long RegisterPropertyChangedCallback(DependencyProperty dp, DependencyPropertyChangedCallback callback) => __Store.RegisterPropertyChangedCallback(dp, callback);
 	 		public void UnregisterPropertyChangedCallback(DependencyProperty dp, long token) => __Store.UnregisterPropertyChangedCallback(dp, token);
-
-	 		[EditorBrowsable(EditorBrowsableState.Never)]private ManagedWeakReference _templatedParentWeakRef;
-	 		[EditorBrowsable(EditorBrowsableState.Never)]public ManagedWeakReference GetTemplatedParentWeakRef() => _templatedParentWeakRef;
-	 		
-	 		[EditorBrowsable(EditorBrowsableState.Never)]public DependencyObject GetTemplatedParent() => _templatedParentWeakRef?.Target as DependencyObject;
-	 		[EditorBrowsable(EditorBrowsableState.Never)]public void SetTemplatedParent(DependencyObject parent)
-	 		{
-	 			//if (parent != null)
-	 			//{
-	 			//	global::System.Diagnostics.Debug.Assert(parent
-	 			//		is global::Windows.UI.Xaml.Controls.Control
-	 			//		or global::Windows.UI.Xaml.Controls.ContentPresenter
-	 			//		or global::Windows.UI.Xaml.Controls.ItemsPresenter);
-	 			//	global::System.Diagnostics.Debug.Assert(GetTemplatedParent() == null);
-	 			//}
-	 		
-	 			SetTemplatedParentImpl(parent);
-	 		}
-	 		[EditorBrowsable(EditorBrowsableState.Never)]private protected virtual void SetTemplatedParentImpl(DependencyObject parent)
-	 		{
-	 			_templatedParentWeakRef = (parent as IWeakReferenceProvider)?.WeakReference;
-	 		}
 	 		
 	 		private readonly static IEventProvider _binderTrace = Tracing.Get(DependencyObjectStore.TraceProvider.Id);
 	 		private BinderReferenceHolder _refHolder;

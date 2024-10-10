@@ -1,10 +1,11 @@
-﻿using Android.Views;
-using Uno.Extensions;
-using Microsoft.UI.Xaml.Controls;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Uno.Extensions;
+using Microsoft.UI.Xaml.Controls;
+using Android.Views;
 using Uno.UI;
+using Uno.UI.Extensions;
 
 namespace Microsoft.UI.Xaml
 {

@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using Microsoft.UI.Xaml.Automation.Peers;
+using Uno.UI.Extensions;
 
 namespace Microsoft.UI.Xaml.Controls
 {

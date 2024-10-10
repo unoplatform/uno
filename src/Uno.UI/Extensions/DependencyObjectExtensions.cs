@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using Windows.ApplicationModel.Background;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.DataBinding;
 
 namespace Uno.UI.Extensions
 {
@@ -30,6 +32,21 @@ namespace Uno.UI.Extensions
 
 	internal static partial class DependencyObjectExtensions
 	{
+#if HAS_UNO
+		public static DependencyObject GetTemplatedParent(this DependencyObject @do)
+		{
+			return (@do as IDependencyObjectStoreProvider)?.Store.GetTemplatedParent2();
+		}
+		public static void SetTemplatedParent(this DependencyObject @do, DependencyObject tp)
+		{
+			(@do as IDependencyObjectStoreProvider)?.Store.SetTemplatedParent2(tp);
+		}
+		public static ManagedWeakReference GetTemplatedParentWeakRef(this DependencyObject @do)
+		{
+			return (@do as IDependencyObjectStoreProvider)?.Store.GetTemplatedParentWeakRef();
+		}
+#endif
+
 		/// <summary>
 		/// ** Recursively ** gets an enumerable sequence of all the parent objects of a given element.
 		/// Parents are ordered from bottom to the top, i.e. from direct parent to the root of the window.

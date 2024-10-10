@@ -1,15 +1,16 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
-using Uno.UI;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Controls;
-using Windows.UI;
 using Microsoft.UI.Xaml;
-using System.IO;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Windows.UI;
 using Uno.Collections;
+using Uno.UI;
+using Uno.UI.Extensions;
 
 namespace Uno.UI.Controls
 {
@@ -19,7 +20,7 @@ namespace Uno.UI.Controls
 		{
 			base.OnLoaded();
 
-			var commandBar = GetTemplatedParent() as CommandBar;
+			var commandBar = this.GetTemplatedParent() as CommandBar;
 			Content = commandBar?.GetRenderer(() => new CommandBarRenderer(commandBar)).Native;
 		}
 	}

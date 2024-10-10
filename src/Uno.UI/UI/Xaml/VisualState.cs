@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media.Animation;
 using Uno.UI.Xaml;
+using Uno.UI.Extensions;
 
 namespace Microsoft.UI.Xaml
 {
@@ -165,7 +166,7 @@ namespace Microsoft.UI.Xaml
 				LazyBuilder = null;
 				try
 				{
-					TemplatedParentScope.PushScope(GetTemplatedParent(), FromLegacyTemplate == true);
+					TemplatedParentScope.PushScope(this.GetTemplatedParent(), FromLegacyTemplate == true);
 					builder.Invoke();
 				}
 				finally

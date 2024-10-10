@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using Uno.Extensions;
-using Uno.UI;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Media;
-using Uno.UI.DataBinding;
+using Uno.Extensions;
 using Uno.Foundation.Logging;
-using Microsoft.UI.Xaml.Input;
+using Uno.UI;
+using Uno.UI.DataBinding;
+using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
 
 #if __IOS__

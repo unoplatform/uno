@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.Xaml.Core;
+using Uno.UI.Extensions;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
@@ -233,7 +234,7 @@ public sealed partial class Thumb
 
 				var pointerDeviceType = pointerPoint.PointerDevice.PointerDeviceType;
 
-				var spTemplatedParent = GetTemplatedParent();
+				var spTemplatedParent = this.GetTemplatedParent();
 
 				if (spTemplatedParent is Slider spTemplatedParentAsSlider)
 				{

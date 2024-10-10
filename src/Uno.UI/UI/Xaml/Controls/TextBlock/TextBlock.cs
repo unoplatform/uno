@@ -28,6 +28,7 @@ using Uno.Foundation.Logging;
 using RadialGradientBrush = Microsoft/* UWP don't rename */.UI.Xaml.Media.RadialGradientBrush;
 using Uno.UI.Helpers;
 using Uno.UI.Xaml;
+using Uno.UI.Extensions;
 
 #if __IOS__
 using UIKit;
@@ -304,7 +305,7 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateInlines(newValue);
 
 #if __SKIA__
-			if (GetTemplatedParent() is not TextBox textBox || textBox.TextBoxView?.DisplayBlock != this)
+			if (this.GetTemplatedParent() is not TextBox textBox || textBox.TextBoxView?.DisplayBlock != this)
 #endif
 			{
 				// On skia, we don't want to set the selection here in case TextBox is managing the selection.

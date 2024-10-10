@@ -4,23 +4,25 @@ using System.Text;
 using System.Collections;
 using System.Diagnostics;
 using System.Linq;
+using Uno.UI;
+using Uno.UI.Controls;
+using Uno.UI.Extensions;
+using Uno.UI.Xaml;
+using Uno.UI.Xaml.Controls;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
 using Uno.Foundation.Logging;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Markup;
-using Windows.Foundation;
-using Uno.UI;
 using Microsoft.UI.Xaml.Media;
-using Windows.UI.Text;
 using Microsoft.UI.Composition;
-using Uno.UI.Controls;
-using Uno.UI.Xaml;
-using Uno.UI.Xaml.Controls;
+using Windows.Foundation;
+using Windows.UI.Text;
 
 using Point = Windows.Foundation.Point;
 using Rect = Windows.Foundation.Rect;
+
 
 #if __ANDROID__
 using View = Android.Views.View;
@@ -656,7 +658,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		// Uno specific: since we don't call this early enough, we have to comment out the condition
 		// if (GetChildren().Count == 0)
 		{
-			ContentControl pTemplatedParent = GetTemplatedParent() as ContentControl;
+			ContentControl pTemplatedParent = this.GetTemplatedParent() as ContentControl;
 
 			// Only ContentControl has the two properties below.  Other parents would just fail to bind since they don't have these
 			// two content related properties.
@@ -1099,7 +1101,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			return;
 		}
 
-		if (GetTemplatedParent() is not ContentControl)
+		if (this.GetTemplatedParent() is not ContentControl)
 		{
 			ClearImplicitBindings();
 			return; // Not applicable: no TemplatedParent or it's not a ContentControl
