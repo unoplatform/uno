@@ -5,13 +5,8 @@ jobs:
 - job: Pipeline_Validations
   displayName: 'Pipeline Validations'
 
-  strategy:
-    matrix:
-      Ubuntu:
-        localVmImage: 'ubuntu-latest'
-
   pool:
-    vmImage: $(localVmImage)
+    vmImage: ubuntu-latest
 
   steps:
   - checkout: self
