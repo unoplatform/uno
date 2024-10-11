@@ -10,12 +10,6 @@ jobs:
       Ubuntu:
         localVmImage: 'ubuntu-latest'
 
-      Windows:
-        localVmImage: 'windows-latest'
-
-      macOS:
-        localVmImage: 'macos-latest'
-
   pool:
     vmImage: $(localVmImage)
 
@@ -23,6 +17,4 @@ jobs:
   - checkout: self
     clean: true
 
-  - template: templates/gitversion.yml
-    parameters:
-      skipCacheDownload: true
+  - template: templates/gitversion-run.yml
