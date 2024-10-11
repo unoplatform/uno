@@ -384,6 +384,8 @@ internal partial class X11PointerInputSource
 						{
 							this.Log().Trace($"Ignoring emulated {evtype} event.");
 						}
+
+						return;
 					}
 
 					var args = CreatePointerEventArgsFromDeviceEvent(data);
