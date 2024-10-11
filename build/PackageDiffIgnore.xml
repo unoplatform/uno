@@ -1954,7 +1954,7 @@
 
 			<!-- BEGIN TypeMappings -->
 			<Member fullName="System.Threading.Tasks.Task Uno.UI.Helpers.TypeMappings.WaitForMappingsToResume()" reason="Not really considered a public API, used by internal tooling" />
-			<Member fullName="System.Threading.Tasks.Task`1<System.Boolean> Uno.UI.Helpers.TypeMappings.WaitForResume()" reason="Not really considered a public API, used by internal tooling" />
+			<Member fullName="System.Threading.Tasks.Task`1&lt;System.Boolean&gt; Uno.UI.Helpers.TypeMappings.WaitForResume()" reason="Not really considered a public API, used by internal tooling" />
 			<Member fullName="System.Void Uno.UI.Helpers.TypeMappings.Resume(System.Boolean updateLayout)" reason="Not really considered a public API, used by internal tooling" />
 			<!-- END TypeMappings -->
 		</Methods>
@@ -1972,14 +1972,14 @@
 
 		<Fields>
 		</Fields>
-	
+
 		<Properties>
 		</Properties>
-	
+
 		<Methods>
 			<!-- BEGIN TypeMappings -->
 			<Member fullName="System.Threading.Tasks.Task Uno.UI.Helpers.TypeMappings.WaitForMappingsToResume()" reason="Not really considered a public API, used by internal tooling" />
-			<Member fullName="System.Threading.Tasks.Task`1<System.Boolean> Uno.UI.Helpers.TypeMappings.WaitForResume()" reason="Not really considered a public API, used by internal tooling" />
+			<Member fullName="System.Threading.Tasks.Task`1&lt;System.Boolean&gt; Uno.UI.Helpers.TypeMappings.WaitForResume()" reason="Not really considered a public API, used by internal tooling" />
 			<Member fullName="System.Void Uno.UI.Helpers.TypeMappings.Resume(System.Boolean updateLayout)" reason="Not really considered a public API, used by internal tooling" />
 			<!-- END TypeMappings -->
 		</Methods>
