@@ -1781,7 +1781,7 @@
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.TimePickerFlyout.OnClockIdentifierChanged(System.String oldClockIdentifier, System.String newClockIdentifier)" reason="Not present in WinUI" />
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.TimePickerFlyoutPresenter..ctor()" reason="Not present in WinUI" />
 			<!-- END TimePicker -->
-			
+
 			<!-- Multiple XamlRoots -->
 			<Member fullName="System.Void Windows.UI.Core.CoreWindow..ctor(UIKit.UIWindow window)" reason="Does not exist in UWP" />
 			<Member fullName="System.Void Windows.UI.Core.CoreWindow..ctor(AppKit.NSWindow window)" reason="Does not exist in UWP" />
@@ -1801,7 +1801,7 @@
 			<Member fullName="Microsoft.UI.Dispatching.DispatcherQueueTimer" reason="Only in UWP build. It shouldn't have existed." />
 
 			<Member fullName="Microsoft.UI.Xaml.Hosting.HostingContract" reason="No longer exists in WinAppSDK 1.4" />
-			
+
 			<Member fullName="Uno.WinUI.Runtime.Skia.LinuxFB.EventLoop" reason="Should be internal" />
 		</Types>
 
@@ -1827,7 +1827,7 @@
 			<Member fullName="System.Void Windows.ApplicationModel.Activation.SplashScreen..ctor()" reason="The signature differs in MUX" />
 			<Member fullName="System.Void Microsoft.UI.Xaml.Input.PointerRoutedEventArgs..ctor()" reason="Does not exist in WinUI" />
 			<Member fullName="System.Void Windows.UI.Xaml.Input.PointerRoutedEventArgs..ctor()" reason="Does not exist in WinUI" />
-			
+
 			<!-- Begin Skia Builder-->
 			<Member fullName="System.Void Uno.UI.Runtime.Skia.Linux.FrameBuffer.FrameBufferHost.Run()" reason="Non-breaking API, moved to SkiaHost" />
 			<!-- End Skia Builder-->
@@ -1905,7 +1905,7 @@
 
 		<Events>
 		</Events>
-		
+
 		<Fields>
 		</Fields>
 
@@ -1951,9 +1951,40 @@
 			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.Selector.SetFocusedItem(System.Int32 index, System.Boolean shouldScrollIntoView, System.Boolean animateIfBringIntoView, Microsoft.UI.Xaml.Input.FocusNavigationDirection focusNavigationDirection)" reason="Does not exist in WinUI" />
 			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.Selector.SetFocusedItem(System.Int32 index, System.Boolean shouldScrollIntoView)" reason="Does not exist in WinUI" />
 			<!-- END ComboBox.IsEditable -->
+
+			<!-- BEGIN TypeMappings -->
+			<Member fullName="System.Threading.Tasks.Task Uno.UI.Helpers.TypeMappings.WaitForMappingsToResume()" reason="Not really considered a public API, used by internal tooling" />
+			<Member fullName="System.Threading.Tasks.Task`1<System.Boolean> Uno.UI.Helpers.TypeMappings.WaitForResume()" reason="Not really considered a public API, used by internal tooling" />
+			<Member fullName="System.Void Uno.UI.Helpers.TypeMappings.Resume(System.Boolean updateLayout)" reason="Not really considered a public API, used by internal tooling" />
+			<!-- END TypeMappings -->
 		</Methods>
 	</IgnoreSet>
+
+	<IgnoreSet baseVersion="5.5">
+		<Assemblies>
+		</Assemblies>
+
+		<Types>
+		</Types>
+
+		<Events>
+		</Events>
+
+		<Fields>
+		</Fields>
 	
+		<Properties>
+		</Properties>
+	
+		<Methods>
+			<!-- BEGIN TypeMappings -->
+			<Member fullName="System.Threading.Tasks.Task Uno.UI.Helpers.TypeMappings.WaitForMappingsToResume()" reason="Not really considered a public API, used by internal tooling" />
+			<Member fullName="System.Threading.Tasks.Task`1<System.Boolean> Uno.UI.Helpers.TypeMappings.WaitForResume()" reason="Not really considered a public API, used by internal tooling" />
+			<Member fullName="System.Void Uno.UI.Helpers.TypeMappings.Resume(System.Boolean updateLayout)" reason="Not really considered a public API, used by internal tooling" />
+			<!-- END TypeMappings -->
+		</Methods>
+	</IgnoreSet>
+
 	<![CDATA[
 		The 'baseVersion' should be the current latest stable version published on nuget, 
 		NOT what will be published by the PR in progress.
