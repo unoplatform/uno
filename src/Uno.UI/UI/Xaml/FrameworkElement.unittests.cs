@@ -73,11 +73,6 @@ namespace Microsoft.UI.Xaml
 			return _children;
 		}
 
-		protected internal override void OnInvalidateMeasure()
-		{
-			base.OnInvalidateMeasure();
-		}
-
 		public bool IsLoaded { get; private set; }
 
 		public void ForceLoaded()
