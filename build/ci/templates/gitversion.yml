@@ -9,7 +9,7 @@ steps:
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - powershell: |
-      $gitVersionVariables = Get-Content $(build.sourcesdirectory)/build/git_variables
+      $gitVersionVariables = Get-Content $(build.sourcesdirectory)/build/gitversion_cache/git_variables
       foreach ($line in $gitVersionVariables)
       {
         Write-Host $line
