@@ -4,10 +4,9 @@ using System.Collections.Generic;
 using Microsoft.UI.Xaml;
 using System;
 using Uno.UI.Controls;
+using CoreAnimation;
 using CoreGraphics;
 using Uno.Disposables;
-
-
 
 #if __IOS__
 using UIKit;
@@ -16,7 +15,6 @@ using View = UIKit.UIView;
 using AppKit;
 using View = AppKit.NSView;
 #endif
-
 
 namespace Uno.UI
 {
