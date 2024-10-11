@@ -47,6 +47,17 @@ namespace Microsoft.UI.Xaml.Controls
 			Superview?.SetNeedsLayout();
 		}
 
+		public override CGSize SizeThatFits(CGSize size)
+		{
+			var desiredSize = base.SizeThatFits(size);
+			foreach (var cell in VisibleCells)
+			{
+				_ = cell.SizeThatFits(desiredSize);
+			}
+
+			return desiredSize;
+		}
+
 		public UICollectionViewScrollDirection Orientation
 		{
 			get { return _layout.ScrollDirection; }
