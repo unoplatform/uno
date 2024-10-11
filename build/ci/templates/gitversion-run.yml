@@ -27,7 +27,7 @@ steps:
     displayName: Use GitVersion
 
   - powershell: |
-      $outputFile=$(build.sourcesdirectory)/git_variables
+      $outputFile="$(build.sourcesdirectory)/git_variables"
       echo "##vso[task.setvariable variable=GitVersion.major]$(GitVersion.major)" > $outputFile
       echo "##vso[task.setvariable variable=GitVersion.minor]$(GitVersion.minor)" >> $outputFile
       echo "##vso[task.setvariable variable=GitVersion.patch]$(GitVersion.patch)" >> $outputFile
