@@ -1085,5 +1085,14 @@ namespace Microsoft.UI.Xaml
 
 			return null;
 		}
+
+		internal DependencyObject GetTemplatedParent()
+		{
+			return (this as IDependencyObjectStoreProvider)?.Store.GetTemplatedParent2();
+		}
+		internal void SetTemplatedParent(DependencyObject tp)
+		{
+			(this as IDependencyObjectStoreProvider)?.Store.SetTemplatedParent2(tp);
+		}
 	}
 }
