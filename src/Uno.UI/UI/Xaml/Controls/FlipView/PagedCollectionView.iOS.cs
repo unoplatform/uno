@@ -41,6 +41,12 @@ namespace Microsoft.UI.Xaml.Controls
 			ContentInset = new UIEdgeInsets();
 		}
 
+		public override void SetNeedsLayout()
+		{
+			base.SetNeedsLayout();
+			Superview?.SetNeedsLayout();
+		}
+
 		public UICollectionViewScrollDirection Orientation
 		{
 			get { return _layout.ScrollDirection; }
