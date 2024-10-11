@@ -212,10 +212,14 @@ internal partial class X11PointerInputSource
 		{
 			mask &= ~(1 << data.detail); // the newly released button is not removed from the mask yet.
 		}
+		else if (data.evtype is XiEventType.XI_TouchBegin or XiEventType.XI_TouchUpdate)
+		{
+			mask = 1 << data.detail; // touch events only have one button.
+		}
 
 		var properties = new PointerPointProperties
 		{
-			IsLeftButtonPressed = (mask & (1 << LEFT)) != 0,
+			IsLeftButtonPressed = (mask & (1 << LEFT)) != 0 || (data.evtype is XiEventType.XI_TouchBegin or XiEventType.XI_TouchUpdate),
 			IsMiddleButtonPressed = (mask & (1 << MIDDLE)) != 0,
 			IsRightButtonPressed = (mask & (1 << RIGHT)) != 0,
 			IsXButton1Pressed = (mask & (1 << XButton1)) != 0,
@@ -237,6 +241,8 @@ internal partial class X11PointerInputSource
 				XButton1 when data.evtype == XiEventType.XI_ButtonRelease => PointerUpdateKind.XButton1Released,
 				XButton2 when data.evtype == XiEventType.XI_ButtonPress => PointerUpdateKind.XButton2Pressed,
 				XButton2 when data.evtype == XiEventType.XI_ButtonRelease => PointerUpdateKind.XButton2Released,
+				_ when data.evtype == XiEventType.XI_TouchBegin => PointerUpdateKind.LeftButtonPressed,
+				_ when data.evtype == XiEventType.XI_TouchEnd => PointerUpdateKind.LeftButtonReleased,
 				_ => PointerUpdateKind.Other
 			}
 		};
