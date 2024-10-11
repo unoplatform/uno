@@ -72,6 +72,8 @@ jobs:
   - Android_Build_NetCoreMobile_For_Tests
 
   timeoutInMinutes: 45
+  cancelTimeoutInMinutes: 1
+
   variables:
     CI_Build: true
     SourceLinkEnabled: false
