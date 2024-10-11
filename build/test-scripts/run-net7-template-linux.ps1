@@ -78,19 +78,28 @@ $projects =
     @(1, "5.2/uno52AppWithLib/uno52AppWithLib/uno52AppWithLib.csproj", ""),
 
     # 5.3 Blank with net9
-    @(2, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", "")
+    @(2, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", ""),
 
     # 5.4 Wasm+Skia
-    @(2, "5.4/uno54wasmskia/uno54wasmskia/uno54wasmskia.csproj", "")
+    @(2, "5.4/uno54wasmskia/uno54wasmskia/uno54wasmskia.csproj", ""),
 
     ## Note for contributors
     ##
     ## When adding new template versions, create them in a separate version named folder
     ## using all the specific features that can be impacted by the use of the Uno.SDK
+    
+    ## Empty array to avoid having to deal last line with ending commas
+    @()
 );
 
 for($i = 0; $i -lt $projects.Length; $i++)
 {
+    if ($projects[$i].Length -eq 0)
+    {
+        # Empty end line support, see above.
+        continue
+    }
+
     $projectTestGroup=$projects[$i][0];
     $projectPath=$projects[$i][1];
     $projectOptions=$projects[$i][2];

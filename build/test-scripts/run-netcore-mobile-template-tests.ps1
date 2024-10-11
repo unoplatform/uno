@@ -342,7 +342,7 @@ $projects =
     @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-desktop", $sdkFeatures), $true, $true),
 
     # 5.4 Wasm+Skia
-    @("5.4/uno54wasmskia/uno54wasmskia/uno54wasmskia.csproj", @("-f", "net8.0-browserwasm"), $true, $true),
+    @(3, "5.4/uno54wasmskia/uno54wasmskia/uno54wasmskia.csproj", @("-f", "net8.0-browserwasm"), $true, $true),
 
     ## Note for contributors
     ##
