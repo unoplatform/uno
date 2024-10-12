@@ -69,11 +69,9 @@ namespace Microsoft.UI.Xaml
 			else
 			{
 				_nativeChildrenCount++;
+				InvalidateMeasure();
+				InvalidateArrange();
 			}
-
-			// Force a new measure of this element (the parent of the new child)
-			InvalidateMeasure();
-			InvalidateArrange();
 
 			ComputeAreChildrenNativeViewsOnly();
 		}
@@ -88,6 +86,8 @@ namespace Microsoft.UI.Xaml
 			else
 			{
 				_nativeChildrenCount--;
+				InvalidateMeasure();
+				InvalidateArrange();
 			}
 
 			ComputeAreChildrenNativeViewsOnly();
@@ -98,7 +98,7 @@ namespace Microsoft.UI.Xaml
 		private void OnChildManagedViewAddedOrRemoved(UIElement child)
 		{
 			// Reset to original (invalidated) state
-			ResetLayoutFlags();
+			child.ResetLayoutFlags();
 			if (IsMeasureDirtyPathDisabled)
 			{
 				FrameworkElementHelper.SetUseMeasurePathDisabled(child); // will invalidate too
@@ -116,6 +116,10 @@ namespace Microsoft.UI.Xaml
 			{
 				child.InvalidateArrange();
 			}
+
+			// Force a new measure of this element (the parent of the new child)
+			InvalidateMeasure();
+			InvalidateArrange();
 		}
 
 		public UIElement()

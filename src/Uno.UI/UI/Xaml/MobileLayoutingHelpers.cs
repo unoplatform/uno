@@ -47,8 +47,6 @@ internal static partial class MobileLayoutingHelpers
 		// Calling the native Measure method may not always trigger OnMeasure
 		// We should do RequestLayout()
 		view.RequestLayout();
-#elif __IOS__
-		view.SetNeedsLayout();
 #endif
 
 		if (view is ILayouterElement layouterElement)
