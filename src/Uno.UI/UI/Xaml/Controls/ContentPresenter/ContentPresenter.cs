@@ -1078,7 +1078,7 @@ public partial class ContentPresenter : FrameworkElement
 
 	internal string GetTextBlockText()
 	{
-		if (IsUsingDefaultTemplate && ContentTemplateRoot is ImplicitTextBlock tb)
+		if (IsUsingDefaultTemplate && ContentTemplateRoot is TextBlock tb)
 		{
 			return tb.Text;
 		}
