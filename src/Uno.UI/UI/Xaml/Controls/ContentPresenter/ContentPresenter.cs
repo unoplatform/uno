@@ -877,50 +877,6 @@ public partial class ContentPresenter : FrameworkElement
 #endif
 	}
 
-	private bool _isBoundImplicitlyToContent;
-
-	private void SetImplicitContent()
-	{
-		if (!FeatureConfiguration.ContentPresenter.UseImplicitContentFromTemplatedParent)
-		{
-			return;
-		}
-
-		if (GetTemplatedParent() is not ContentControl)
-		{
-			ClearImplicitBindings();
-			return; // Not applicable: no TemplatedParent or it's not a ContentControl
-		}
-
-		// Check if the Content is set to something
-		var store = ((IDependencyObjectStoreProvider)this).Store;
-		if (store.GetCurrentHighestValuePrecedence(ContentProperty) != DependencyPropertyValuePrecedences.DefaultValue)
-		{
-			ClearImplicitBindings();
-			return; // Nope, there's a value somewhere
-		}
-
-		// Check if the Content property is bound to something
-		var b = GetBindingExpression(ContentProperty);
-		if (b != null)
-		{
-			ClearImplicitBindings();
-			return; // Yep, there's a binding: a value "will" come eventually
-		}
-
-		// Create an implicit binding of Content to Content property of the TemplatedParent (which is a ContentControl)
-		SetBinding(ContentProperty, new Binding("Content") { RelativeSource = RelativeSource.TemplatedParent });
-		_isBoundImplicitlyToContent = true;
-
-		void ClearImplicitBindings()
-		{
-			if (_isBoundImplicitlyToContent)
-			{
-				SetBinding(ContentProperty, new Binding());
-			}
-		}
-	}
-
 	partial void RegisterContentTemplateRoot();
 
 	/// <remarks>
