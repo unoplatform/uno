@@ -26,7 +26,12 @@ Below is a simple example of how you can add the Apple Sign-In Button to your pr
    var appleSignInButton = new ASAuthorizationAppleIdButton(ASAuthorizationAppleIdButtonType.Default, ASAuthorizationAppleIdButtonStyle.WhiteOutline);
    appleSignInButton.TouchUpInside += HandleAuthorizationAppleIDButtonPress;
    appleSignInButton.CornerRadius = 50;
+
+   // Retain the delegate to prevent garbage collection
+   _appleSignInDelegate = new AuthorizationControllerDelegate(this);
    ```
+
+   **Note**: It's important to retain a reference to the delegate (`_appleSignInDelegate`) to avoid garbage collection issues. This ensures that the authorization process completes without interruption.
 
 3. Inject the Apple Sign-In button into the visual tree using `VisualTreeHelper.AdaptNative`:
 
@@ -83,6 +88,45 @@ public class AuthorizationControllerDelegate : ASAuthorizationControllerDelegate
 
             var userIdentifier = appleIdCredential?.User;
             // Handle successful authorization, retrieve user details
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Authorization failed: {ex.Message}");
+        }
+    }
+}
+```
+
+### Managing Delegate in MVVM
+
+If you're using an MVVM architecture, the delegate should handle sign-in logic indirectly by passing the necessary data to the ViewModel. This keeps the code clean and follows MVVM principles. For example:
+
+- Instead of passing the user control (`MyUserControl`) to the `AuthorizationControllerDelegate`, pass a reference to the ViewModel or a dedicated service.
+- In the delegate, you can call methods on the ViewModel to handle the authorization flow, such as storing user information or navigating to another page.
+
+Example:
+
+```csharp
+public class AuthorizationControllerDelegate : ASAuthorizationControllerDelegate
+{
+    private readonly MyViewModel _viewModel;
+
+    public AuthorizationControllerDelegate(MyViewModel viewModel)
+    {
+        _viewModel = viewModel;
+    }
+
+    public override void DidComplete(ASAuthorizationController controller, ASAuthorization authorization)
+    {
+        System.Diagnostics.Debug.WriteLine("Authorization successful.");
+
+        try
+        {
+            var appleIdCredential = authorization.GetCredential<ASAuthorizationAppleIdCredential>();
+            var userIdentifier = appleIdCredential?.User;
+
+            // Pass the user info to the ViewModel for further processing
+            _viewModel.HandleSuccessfulAuthorization(userIdentifier);
         }
         catch (Exception ex)
         {
