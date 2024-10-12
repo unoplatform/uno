@@ -51,7 +51,7 @@ internal static partial class MobileLayoutingHelpers
 
 		if (view is ILayouterElement layouterElement)
 		{
-			var desiredSizeFromLayouterElement = layouterElement.Measure(availableSize);
+			var desiredSizeFromLayouterElement = layouterElement.Measure(availableSize).AtMost(availableSize);
 			LayoutInformation.SetDesiredSize(view, desiredSizeFromLayouterElement);
 			LayoutInformation.SetAvailableSize(view, availableSize);
 
@@ -64,7 +64,7 @@ internal static partial class MobileLayoutingHelpers
 		var widthSpec = ViewHelper.SpecFromLogicalSize(availableSize.Width);
 		var heightSpec = ViewHelper.SpecFromLogicalSize(availableSize.Height);
 		view.Measure(widthSpec, heightSpec);
-		var desiredSize = Uno.UI.Controls.BindableView.GetNativeMeasuredDimensionsFast(view).PhysicalToLogicalPixels();
+		var desiredSize = Uno.UI.Controls.BindableView.GetNativeMeasuredDimensionsFast(view).PhysicalToLogicalPixels().AtMost(availableSize);
 		LayoutInformation.SetDesiredSize(view, desiredSize);
 		LayoutInformation.SetAvailableSize(view, availableSize);
 
@@ -94,14 +94,16 @@ internal static partial class MobileLayoutingHelpers
 #elif __IOS__ || __MACOS__
 
 #if __IOS__
-		var desiredSize = view.SizeThatFits(availableSize);
+		Size desiredSize = view.SizeThatFits(availableSize);
+		desiredSize = desiredSize.AtMost(availableSize);
 #else
-		CGSize desiredSize = view switch
+		Size desiredSize = view switch
 		{
 			NSControl nsControl => nsControl.SizeThatFits(availableSize),
 			IHasSizeThatFits hasSizeThatFits => hasSizeThatFits.SizeThatFits(availableSize),
 			_ => view.FittingSize,
 		};
+		desiredSize = desiredSize.AtMost(availableSize);
 #endif
 
 		LayoutInformation.SetDesiredSize(view, desiredSize);
