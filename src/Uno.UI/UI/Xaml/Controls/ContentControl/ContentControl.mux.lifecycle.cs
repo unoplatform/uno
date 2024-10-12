@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
+using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -311,5 +312,9 @@ public partial class ContentControl : Control
 	}
 
 	#endregion
+
+#if __CROSSRUNTIME__ // Uno-specific: Keeps API compat.
+	protected override Size MeasureOverride(Size availableSize) => base.MeasureOverride(availableSize);
+#endif
 }
 #endif

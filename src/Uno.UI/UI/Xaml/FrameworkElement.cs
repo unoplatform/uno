@@ -283,9 +283,7 @@ namespace Microsoft.UI.Xaml
 			LogicalParentOverride ??
 			((IDependencyObjectStoreProvider)this).Store.Parent as DependencyObject;
 
-#if !__NETSTD_REFERENCE__
 		internal bool HasParent() => Parent != null;
-#endif
 
 		public global::System.Uri BaseUri
 		{
