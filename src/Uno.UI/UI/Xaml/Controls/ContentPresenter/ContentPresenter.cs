@@ -48,7 +48,7 @@ namespace Microsoft.UI.Xaml.Controls;
 /// but the ContentSource property is not available, because there are ControlTemplates for now.
 /// </remarks>
 [ContentProperty(Name = nameof(Content))]
-public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePoolAware
+public partial class ContentPresenter : FrameworkElement
 #if !__CROSSRUNTIME__ && !IS_UNIT_TESTS
 	, ICustomClippingElement
 #endif
@@ -57,14 +57,12 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	private readonly BorderLayerRenderer _borderRenderer;
 #endif
 
-	private bool _firstLoadResetDone;
 	private View _contentTemplateRoot;
-	private bool _appliedTemplate;
 
 	/// <summary>
 	/// Will be set to either the result of ContentTemplateSelector or to ContentTemplate, depending on which is used
 	/// </summary>
-	private DataTemplate _dataTemplateUsedLastUpdate;
+	private FrameworkTemplate _dataTemplateUsedLastUpdate;
 
 	public ContentPresenter()
 	{
@@ -104,8 +102,6 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	/// <remarks>This is used to alter the propagation of the templated parent.</remarks>
 	internal bool IsNativeHost { get; set; }
 
-	internal DataTemplate SelectedContentTemplate => _dataTemplateUsedLastUpdate;
-
 	protected override bool IsSimpleLayout => true;
 
 	#region Content DependencyProperty
@@ -123,7 +119,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			typeof(ContentPresenter),
 			new FrameworkPropertyMetadata(
 				defaultValue: null,
-				options: FrameworkPropertyMetadataOptions.AffectsMeasure,
+				options: ContentPropertyOptions,
 				propertyChangedCallback: (s, e) => ((ContentPresenter)s)?.OnContentChanged(e.OldValue, e.NewValue)
 			)
 		);
@@ -641,90 +637,6 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	#endregion
 
-	protected override void OnApplyTemplate()
-	{
-		base.OnApplyTemplate();
-
-		// Applying the template will not delete existing visuals. This will be done conditionally
-		// when the template is invalidated.
-		// Uno specific: since we don't call this early enough, we have to comment out the condition
-		// if (GetChildren().Count == 0)
-		{
-			ContentControl pTemplatedParent = GetTemplatedParent() as ContentControl;
-
-			// Only ContentControl has the two properties below.  Other parents would just fail to bind since they don't have these
-			// two content related properties.
-			if (pTemplatedParent != null
-#if ANDROID || __APPLE_UIKIT__
-				&& this is not NativeCommandBarPresenter // Uno specific: NativeCommandBarPresenter breaks if you inherit from the TP
-#endif
-				)
-			{
-				// bool needsRefresh = false;
-				DependencyProperty pdpTarget;
-
-				// By default Content and ContentTemplate are template are bound.
-				// If no template binding exists already then hook them up now
-				// pdpTarget = GetPropertyByIndexInline(KnownPropertyIndex::ContentPresenter_SelectedContentTemplate);
-				// IFCEXPECT(pdpTarget);
-				// if (IsPropertyDefault(pdpTarget) && !IsPropertyTemplateBound(pdpTarget))
-				// {
-				// 	const CDependencyProperty* pdpSource = pTemplatedParent->GetPropertyByIndexInline(KnownPropertyIndex::ContentControl_SelectedContentTemplate);
-				// 	IFCEXPECT(pdpSource);
-				//
-				// 	IFC(SetTemplateBinding(pdpTarget, pdpSource));
-				// 	needsRefresh = true;
-				// }
-
-				// UNO Specific: SelectedContentTemplate is not implemented, we hook ContentTemplateSelector instead
-				pdpTarget = ContentPresenter.ContentTemplateSelectorProperty;
-				global::System.Diagnostics.Debug.Assert(pdpTarget is { });
-				var store = ((IDependencyObjectStoreProvider)this).Store;
-				if (store.GetCurrentHighestValuePrecedence(pdpTarget) == DependencyPropertyValuePrecedences.DefaultValue &&
-					!store.IsPropertyTemplateBound(pdpTarget))
-				{
-					DependencyProperty pdpSource = ContentControl.ContentTemplateSelectorProperty;
-					global::System.Diagnostics.Debug.Assert(pdpSource is { });
-
-					store.SetTemplateBinding(pdpTarget, pdpSource);
-					// needsRefresh = true;
-				}
-
-				pdpTarget = ContentPresenter.ContentTemplateProperty;
-				global::System.Diagnostics.Debug.Assert(pdpTarget is { });
-				if (store.GetCurrentHighestValuePrecedence(pdpTarget) == DependencyPropertyValuePrecedences.DefaultValue &&
-					!store.IsPropertyTemplateBound(pdpTarget))
-				{
-					DependencyProperty pdpSource = ContentControl.ContentTemplateProperty;
-					global::System.Diagnostics.Debug.Assert(pdpSource is { });
-
-					store.SetTemplateBinding(pdpTarget, pdpSource);
-					// needsRefresh = true;
-				}
-
-				pdpTarget = ContentPresenter.ContentProperty;
-				global::System.Diagnostics.Debug.Assert(pdpTarget is { });
-				if (store.GetCurrentHighestValuePrecedence(pdpTarget) == DependencyPropertyValuePrecedences.DefaultValue &&
-					!store.IsPropertyTemplateBound(pdpTarget))
-				{
-					DependencyProperty pdpSource = ContentControl.ContentProperty;
-					global::System.Diagnostics.Debug.Assert(pdpSource is { });
-
-					store.SetTemplateBinding(pdpTarget, pdpSource);
-					// needsRefresh = true;
-				}
-
-				// Uno specific: uno bindings don't work this way
-				// Setting up the binding doesn't get you the values.  We need to call refresh to get the latest value
-				// for m_pContentTemplate, SelectedContentTemplate and/or m_pContent for the tests below.
-				// if (needsRefresh)
-				// {
-				// 	IFC(pTemplatedParent->RefreshTemplateBindings(TemplateBindingsRefreshType::All));
-				// }
-			}
-		}
-	}
-
 	protected virtual void OnForegroundColorChanged(Brush oldValue, Brush newValue)
 	{
 		OnForegroundColorChangedPartial(oldValue, newValue);
@@ -769,63 +681,74 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	protected virtual void OnContentChanged(object oldValue, object newValue)
 	{
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		if (GetTemplatedParent() is ContentControl contentControl)
+		{
+			contentControl.ConsiderContentPresenterForContentTemplateRoot(this, newValue);
+		}
+#endif
 		if (oldValue is View || newValue is View)
 		{
 			// Make sure not to reuse the previous Content as a ContentTemplateRoot (i.e., in case there's no data template)
 			// If setting Content to a new View, recreate the template
 			ContentTemplateRoot = null;
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			Invalidate(true);
+#endif
 		}
 
-		// We need to overrides the local value of DataContext with Content's value here.
-		// But if the content value is the result of a binding without explicit sources: TemplatedParent, ElementName...
-		// Then we can't do so, because updating the DC will cause the binding to evaluate again, and yield invalid value.
-		if (GetBindingExpression(ContentProperty) is not { } expression ||
-			expression.IsExplicitlySourced ||
-			expression.ParentBinding.IsTemplateBinding)
-		{
-			TrySetDataContextFromContent(newValue);
-		}
+#if !UNO_HAS_ENHANCED_LIFECYCLE
+		TrySetDataContextFromContent(newValue);
 
 		TryRegisterNativeElement(oldValue, newValue);
 
 		SetUpdateTemplate();
+#endif
 	}
 
 	private void TrySetDataContextFromContent(object value)
 	{
-		if (value == null)
+		if (value == null || value is View)
 		{
 			this.ClearValue(DataContextProperty, DependencyPropertyValuePrecedences.Local);
 		}
 		else
 		{
-			if (!(value is View))
-			{
-				// If the content is not a view, we apply the content as the
-				// DataContext of the materialized content.
-				DataContext = value;
-			}
-			else
-			{
-				// Restore DataContext propagation if the content is a view
-				this.ClearValue(DataContextProperty, DependencyPropertyValuePrecedences.Local);
-			}
+			DataContext = value;
 		}
 	}
 
 	protected virtual void OnContentTemplateChanged(DataTemplate oldContentTemplate, DataTemplate newContentTemplate)
 	{
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		Invalidate(true);
+#else
 		if (ContentTemplateRoot != null)
 		{
 			ContentTemplateRoot = null;
 		}
 
 		SetUpdateTemplate();
+#endif
 	}
 
 	protected virtual void OnContentTemplateSelectorChanged(DataTemplateSelector oldContentTemplateSelector, DataTemplateSelector newContentTemplateSelector)
 	{
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		var contentTemplate = ContentTemplate;
+		if (contentTemplate is null)
+		{
+			if (newContentTemplateSelector is not null)
+			{
+				var content = Content;
+				contentTemplate = newContentTemplateSelector.SelectTemplate(content);
+			}
+
+			SelectedContentTemplate = contentTemplate;
+		}
+#else
 		SetUpdateTemplate();
+#endif
 	}
 
 	partial void UnregisterContentTemplateRoot();
@@ -843,9 +766,11 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 			if (previousValue != null)
 			{
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 				CleanupView(previousValue);
 
 				UnregisterContentTemplateRoot();
+#endif
 
 				UpdateContentTransitions(this.ContentTransitions, null);
 			}
@@ -854,7 +779,9 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 			if (_contentTemplateRoot != null)
 			{
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 				RegisterContentTemplateRoot();
+#endif
 
 				UpdateContentTransitions(null, this.ContentTransitions);
 			}
@@ -899,44 +826,11 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		}
 	}
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
-	internal override void EnterImpl(EnterParams @params, int depth)
-	{
-		base.EnterImpl(@params, depth);
-
-		if (ResetDataContextOnFirstLoad() || ContentTemplateRoot == null)
-		{
-			SetUpdateTemplate();
-		}
-
-#if !UNO_HAS_BORDER_VISUAL
-		UpdateBorder();
-#endif
-
-		// We do this in Enter not Loaded since Loaded is a lot more tricky
-		// (e.g. you can have Unloaded without Loaded, you can have multiple loaded events without unloaded in between, etc.)
-		if (IsNativeHost)
-		{
-			AttachNativeElement();
-		}
-	}
-
-	internal override void LeaveImpl(LeaveParams @params)
-	{
-		base.LeaveImpl(@params);
-
-		if (IsNativeHost)
-		{
-			DetachNativeElement(Content);
-		}
-	}
-#endif
-
 	private protected override void OnLoaded()
 	{
 		base.OnLoaded();
 
-
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 		// WinUI has some special handling for ContentPresenter and ContentControl where even though they aren't Controls,
 		// they use OnApplyTemplate. As a workaround for now, we just call OnApplyTemplate here.
 		if (!_appliedTemplate)
@@ -945,15 +839,11 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			OnApplyTemplate();
 		}
 
-
-#if !UNO_HAS_ENHANCED_LIFECYCLE
 		if (ResetDataContextOnFirstLoad() || ContentTemplateRoot == null)
 		{
 			SetUpdateTemplate();
 		}
-#endif
 
-#if !UNO_HAS_ENHANCED_LIFECYCLE
 		UpdateBorder();
 
 		if (IsNativeHost)
@@ -975,134 +865,59 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 #endif
 	}
 
-	private bool ResetDataContextOnFirstLoad()
-	{
-		if (!_firstLoadResetDone)
-		{
-			_firstLoadResetDone = true;
-
-			// This test avoids the ContentPresenter from resetting
-			// the DataContext to null (or the inherited value) and then back to
-			// the content and have two-way bindings propagating the null value
-			// back to the source.
-			if (!ReferenceEquals(DataContext, Content) &&
-				this.GetCurrentHighestValuePrecedence(DataContextProperty) != DependencyPropertyValuePrecedences.Inheritance)
-			{
-				// On first load UWP clears the local value of a ContentPresenter.
-				// The reason for this behavior is unknown.
-				this.ClearValue(DataContextProperty, DependencyPropertyValuePrecedences.Local);
-
-				TrySetDataContextFromContent(Content);
-			}
-
-			return true;
-		}
-
-		return false;
-	}
-
-	void IFrameworkTemplatePoolAware.OnTemplateRecycled()
-	{
-		// This needs to be cleared on recycle, to prevent
-		// SetUpdateTemplate from being skipped in OnLoaded.
-		_firstLoadResetDone = false;
-	}
-
 	protected override void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
 	{
 		base.OnVisibilityChanged(oldValue, newValue);
 
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 		if (oldValue == Visibility.Collapsed && newValue == Visibility.Visible)
 		{
 			SetUpdateTemplate();
 		}
+#endif
 	}
 
-	public void UpdateContentTemplateRoot()
+	private bool _isBoundImplicitlyToContent;
+
+	private void SetImplicitContent()
 	{
-		if (Visibility == Visibility.Collapsed)
+		if (!FeatureConfiguration.ContentPresenter.UseImplicitContentFromTemplatedParent)
 		{
 			return;
 		}
 
-		//If ContentTemplateRoot is null, it must be updated even if the templates haven't changed
-		if (ContentTemplateRoot == null)
+		if (GetTemplatedParent() is not ContentControl)
 		{
-			_dataTemplateUsedLastUpdate = null;
+			ClearImplicitBindings();
+			return; // Not applicable: no TemplatedParent or it's not a ContentControl
 		}
 
-		//ContentTemplate/ContentTemplateSelector will only be applied to a control with no Template, normally the innermost element
-		var dataTemplate = this.ResolveContentTemplate();
-
-		// Subscribe to template updates so presenter can refresh when factory changes (when feature is activated)
-		if (TemplateManager.IsDataTemplateDynamicUpdateEnabled)
+		// Check if the Content is set to something
+		var store = ((IDependencyObjectStoreProvider)this).Store;
+		if (store.GetCurrentHighestValuePrecedence(ContentProperty) != DependencyPropertyValuePrecedences.DefaultValue)
 		{
-			void OnCurrentTemplateUpdated()
+			ClearImplicitBindings();
+			return; // Nope, there's a value somewhere
+		}
+
+		// Check if the Content property is bound to something
+		var b = GetBindingExpression(ContentProperty);
+		if (b != null)
+		{
+			ClearImplicitBindings();
+			return; // Yep, there's a binding: a value "will" come eventually
+		}
+
+		// Create an implicit binding of Content to Content property of the TemplatedParent (which is a ContentControl)
+		SetBinding(ContentProperty, new Binding("Content") { RelativeSource = RelativeSource.TemplatedParent });
+		_isBoundImplicitlyToContent = true;
+
+		void ClearImplicitBindings()
+		{
+			if (_isBoundImplicitlyToContent)
 			{
-				// Force re-materialization on template update
-				_dataTemplateUsedLastUpdate = null;
-				SetUpdateTemplate();
+				SetBinding(ContentProperty, new Binding());
 			}
-
-			Uno.UI.TemplateUpdateSubscription.Attach(this, dataTemplate, OnCurrentTemplateUpdated);
-		}
-
-		// Only apply the template if it has changed
-		if (!object.Equals(dataTemplate, _dataTemplateUsedLastUpdate))
-		{
-			_dataTemplateUsedLastUpdate = dataTemplate;
-			ContentTemplateRoot = dataTemplate?.LoadContentCached(this) ?? Content as View;
-			if (ContentTemplateRoot != null)
-			{
-				IsUsingDefaultTemplate = false;
-			}
-		}
-
-		if (Content != null
-			&& !(Content is View)
-			&& ContentTemplateRoot == null
-		)
-		{
-			// Use basic default root for non-View Content if no template is supplied
-			SetContentTemplateRootToPlaceholder();
-		}
-
-		if (ContentTemplateRoot == null && Content is View contentView && dataTemplate == null)
-		{
-			// No template and Content is a View, set it directly as root
-			ContentTemplateRoot = contentView as View;
-		}
-
-		IsUsingDefaultTemplate = ContentTemplateRoot is ImplicitTextBlock;
-	}
-
-	private void SetContentTemplateRootToPlaceholder()
-	{
-		if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-		{
-			this.Log().DebugFormat("No ContentTemplate was specified for {0} and content is not a UIView, defaulting to TextBlock.", GetType().Name);
-		}
-
-		if (!IsNativeHost)
-		{
-			var textBlock = new ImplicitTextBlock(this);
-			textBlock.SetTemplatedParent(this);
-
-			TemplateBind(TextBlock.TextProperty, nameof(Content));
-			TemplateBind(TextBlock.HorizontalAlignmentProperty, nameof(HorizontalContentAlignment));
-			TemplateBind(TextBlock.VerticalAlignmentProperty, nameof(VerticalContentAlignment));
-			TemplateBind(TextBlock.TextWrappingProperty, nameof(TextWrapping));
-			TemplateBind(TextBlock.MaxLinesProperty, nameof(MaxLines));
-			TemplateBind(TextBlock.TextAlignmentProperty, nameof(TextAlignment));
-
-			void TemplateBind(DependencyProperty property, string path) =>
-				textBlock.SetBinding(property, new Binding(path)
-				{
-					RelativeSource = RelativeSource.TemplatedParent
-				});
-
-			ContentTemplateRoot = textBlock;
-			IsUsingDefaultTemplate = true;
 		}
 	}
 
@@ -1304,14 +1119,6 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 #if !UNO_HAS_BORDER_VISUAL
 	private void UpdateBorder() => _borderRenderer.Update();
 #endif
-
-	private void SetUpdateTemplate()
-	{
-		UpdateContentTemplateRoot();
-		SetUpdateTemplatePartial();
-	}
-
-	partial void SetUpdateTemplatePartial();
 
 	internal string GetTextBlockText()
 	{

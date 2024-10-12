@@ -1570,6 +1570,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return IsItemItsOwnContainer(ItemFromIndex(index));
 		}
 
+#if __ANDROID__ || __IOS__
 		/// <summary>
 		/// Return control which acts as container for group header for this ItemsControl subtype.
 		/// </summary>
@@ -1577,6 +1578,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			return ContentControl.CreateItemContainer();
 		}
+#endif
 
 		public static ItemsControl ItemsControlFromItemContainer(DependencyObject container)
 		{

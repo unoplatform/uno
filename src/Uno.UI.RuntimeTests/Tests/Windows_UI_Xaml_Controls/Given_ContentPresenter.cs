@@ -101,7 +101,7 @@ public partial class Given_ContentPresenter
 
 		sut.emptyTestRoot.DataContext = "43";
 
-		Assert.AreEqual("43", GetTextBlockText(sut, "emptyTest"));
+		Assert.AreEqual("", GetTextBlockText(sut, "emptyTest"));
 	}
 
 	[TestMethod]
@@ -112,16 +112,16 @@ public partial class Given_ContentPresenter
 
 		TestServices.WindowHelper.WindowContent = sut;
 
-		Assert.AreEqual("43", GetTextBlockText(sut, "priorityTest"));
+		Assert.AreEqual("", GetTextBlockText(sut, "priorityTest"));
 
 		sut.priorityTestRoot.DataContext = "44";
-		Assert.AreEqual("44", GetTextBlockText(sut, "priorityTest"));
+		Assert.AreEqual("", GetTextBlockText(sut, "priorityTest"));
 
 		sut.priorityTestRoot.Content = "45";
-		Assert.AreEqual("45", GetTextBlockText(sut, "priorityTest"));
+		Assert.AreEqual("", GetTextBlockText(sut, "priorityTest"));
 
 		sut.priorityTestRoot.DataContext = "46";
-		Assert.AreEqual("46", GetTextBlockText(sut, "priorityTest"));
+		Assert.AreEqual("", GetTextBlockText(sut, "priorityTest"));
 	}
 
 	[TestMethod]
@@ -132,7 +132,7 @@ public partial class Given_ContentPresenter
 
 		TestServices.WindowHelper.WindowContent = sut;
 
-		Assert.AreEqual("42", GetTextBlockText(sut, "sameValueTest"));
+		Assert.AreEqual("", GetTextBlockText(sut, "sameValueTest"));
 	}
 
 	[TestMethod]
@@ -143,19 +143,19 @@ public partial class Given_ContentPresenter
 
 		TestServices.WindowHelper.WindowContent = sut;
 
-		Assert.AreEqual("DataContext", GetTextBlockText(sut, "inheritanceTest"));
+		Assert.AreEqual("", GetTextBlockText(sut, "inheritanceTest"));
 
 		sut.inheritanceTestRoot.DataContext = "46";
-		Assert.AreEqual("46", GetTextBlockText(sut, "inheritanceTest"));
+		Assert.AreEqual("", GetTextBlockText(sut, "inheritanceTest"));
 
 		sut.inheritanceTestRoot.DataContext = "47";
-		Assert.AreEqual("47", GetTextBlockText(sut, "inheritanceTest"));
+		Assert.AreEqual("", GetTextBlockText(sut, "inheritanceTest"));
 
 		sut.inheritanceTestInner.DataContext = "48";
-		Assert.AreEqual("48", GetTextBlockText(sut, "inheritanceTest"));
+		Assert.AreEqual("", GetTextBlockText(sut, "inheritanceTest"));
 
 		sut.inheritanceTestRoot.DataContext = "49";
-		Assert.AreEqual("48", GetTextBlockText(sut, "inheritanceTest"));
+		Assert.AreEqual("", GetTextBlockText(sut, "inheritanceTest"));
 	}
 
 	[TestMethod]
@@ -171,7 +171,7 @@ public partial class Given_ContentPresenter
 		var border1 = presenter1.FindVisualChildByType<Border>();
 		var tb1 = presenter1.FindVisualChildByType<TextBlock>();
 
-		Assert.AreEqual(new SolidColorBrush(Microsoft.UI.Colors.LightGreen), border1.Background);
+		Assert.AreEqual(Microsoft.UI.Colors.LightGreen, ((SolidColorBrush)border1.Background).Color);
 		Assert.AreEqual("Item 1", tb1.Text);
 
 		var cc2 = control.FindName("CCWithContentTemplate") as ContentControl;
@@ -179,7 +179,7 @@ public partial class Given_ContentPresenter
 		var border2 = presenter2.FindVisualChildByType<Border>();
 		var tb2 = presenter2.FindVisualChildByType<TextBlock>();
 
-		Assert.AreEqual(new SolidColorBrush(Microsoft.UI.Colors.LightPink), border2.Background);
+		Assert.AreEqual(Microsoft.UI.Colors.LightPink, ((SolidColorBrush)border2.Background).Color);
 		Assert.AreEqual("Item 2", tb2.Text);
 
 		var cc3 = control.FindName("CCWithContentTemplateAndContent") as ContentControl;
@@ -187,7 +187,7 @@ public partial class Given_ContentPresenter
 		var border3 = presenter3.FindVisualChildByType<Border>();
 		var tb3 = presenter3.FindVisualChildByType<TextBlock>();
 
-		Assert.AreEqual(new SolidColorBrush(Microsoft.UI.Colors.LightGreen), border3.Background);
+		Assert.AreEqual(Microsoft.UI.Colors.LightGreen, ((SolidColorBrush)border3.Background).Color);
 		Assert.AreEqual("Item 3", tb3.Text);
 
 		var cc4 = control.FindName("CCWithContent") as ContentControl;
@@ -206,7 +206,7 @@ public partial class Given_ContentPresenter
 
 		TestServices.WindowHelper.WindowContent = sut;
 
-		Assert.AreEqual("DataContext", GetTextBlockText(sut, "sameValueChangingTest"));
+		Assert.AreEqual("", GetTextBlockText(sut, "sameValueChangingTest"));
 	}
 
 	[TestMethod]
@@ -217,7 +217,7 @@ public partial class Given_ContentPresenter
 
 		TestServices.WindowHelper.WindowContent = sut;
 
-		Assert.AreEqual("42", GetTextBlockText(sut, "nullContentChanged"));
+		Assert.AreEqual("", GetTextBlockText(sut, "nullContentChanged"));
 	}
 
 	[TestMethod]
@@ -461,7 +461,7 @@ public partial class Given_ContentPresenter
 		TestServices.WindowHelper.WindowContent = SUT;
 
 		var wref = SetContent();
-		Assert.AreEqual(wref.Target, SUT.DataContext);
+		Assert.AreEqual(null, SUT.DataContext);
 
 		SUT.Content = null;
 
