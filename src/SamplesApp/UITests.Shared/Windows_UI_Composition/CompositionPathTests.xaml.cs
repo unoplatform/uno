@@ -16,10 +16,13 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Composition;
-using Microsoft.Graphics.Canvas.Geometry;
-using Microsoft.Graphics.Canvas;
 using System.Numerics;
 using System.Threading.Tasks;
+
+#if __SKIA__
+using Microsoft.Graphics.Canvas.Geometry;
+using Microsoft.Graphics.Canvas;
+#endif
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -36,6 +39,7 @@ namespace UITests.Shared.Windows_UI_Composition
 
 		private void CompositionPathTests_Loaded(object sender, RoutedEventArgs e)
 		{
+#if __SKIA__
 			var compositor = ElementCompositionPreview.GetElementVisual(this).Compositor;
 			var device = CanvasDevice.GetSharedDevice();
 
@@ -144,7 +148,7 @@ namespace UITests.Shared.Windows_UI_Composition
 				var geometry = compositor.CreatePathGeometry(path);
 				var shape = compositor.CreateSpriteShape(geometry);
 
-				shape.FillBrush = compositor.CreateColorBrush(new(255, 223, 237, 255));
+				shape.FillBrush = compositor.CreateColorBrush(new() { A = 255, R = 223, G = 237, B = 255 });
 
 				multiShapeVisual.Shapes.Add(shape);
 			}
@@ -180,7 +184,7 @@ namespace UITests.Shared.Windows_UI_Composition
 				var geometry = compositor.CreatePathGeometry(path);
 				var shape = compositor.CreateSpriteShape(geometry);
 
-				shape.FillBrush = compositor.CreateColorBrush(new(255, 102, 169, 247));
+				shape.FillBrush = compositor.CreateColorBrush(new() { A = 255, R = 102, G = 169, B = 247 });
 
 				multiShapeVisual.Shapes.Add(shape);
 			}
@@ -206,7 +210,7 @@ namespace UITests.Shared.Windows_UI_Composition
 				var geometry = compositor.CreatePathGeometry(path);
 				var shape = compositor.CreateSpriteShape(geometry);
 
-				shape.FillBrush = compositor.CreateColorBrush(new(255, 255, 255, 255));
+				shape.FillBrush = compositor.CreateColorBrush(new() { A = 255, R = 255, G = 255, B = 255 });
 
 				multiShapeVisual.Shapes.Add(shape);
 			}
@@ -242,7 +246,7 @@ namespace UITests.Shared.Windows_UI_Composition
 				var geometry = compositor.CreatePathGeometry(path);
 				var shape = compositor.CreateSpriteShape(geometry);
 
-				shape.FillBrush = compositor.CreateColorBrush(new(255, 102, 169, 247));
+				shape.FillBrush = compositor.CreateColorBrush(new() { A = 255, R = 102, G = 169, B = 247 });
 
 				multiShapeVisual.Shapes.Add(shape);
 			}
@@ -266,7 +270,7 @@ namespace UITests.Shared.Windows_UI_Composition
 				var geometry = compositor.CreatePathGeometry(path);
 				var shape = compositor.CreateSpriteShape(geometry);
 
-				shape.FillBrush = compositor.CreateColorBrush(new(255, 255, 255, 255));
+				shape.FillBrush = compositor.CreateColorBrush(new() { A = 255, R = 255, G = 255, B = 255 });
 
 				multiShapeVisual.Shapes.Add(shape);
 			}
@@ -297,7 +301,7 @@ namespace UITests.Shared.Windows_UI_Composition
 				var geometry = compositor.CreatePathGeometry(path);
 				var shape = compositor.CreateSpriteShape(geometry);
 
-				shape.FillBrush = compositor.CreateColorBrush(new(255, 102, 169, 247));
+				shape.FillBrush = compositor.CreateColorBrush(new() { A = 255, R = 102, G = 169, B = 247 });
 
 				multiShapeVisual.Shapes.Add(shape);
 			}
@@ -321,7 +325,7 @@ namespace UITests.Shared.Windows_UI_Composition
 				var geometry = compositor.CreatePathGeometry(path);
 				var shape = compositor.CreateSpriteShape(geometry);
 
-				shape.FillBrush = compositor.CreateColorBrush(new(255, 223, 237, 255));
+				shape.FillBrush = compositor.CreateColorBrush(new() { A = 255, R = 223, G = 237, B = 255 });
 
 				multiShapeVisual.Shapes.Add(shape);
 			}
@@ -508,7 +512,7 @@ namespace UITests.Shared.Windows_UI_Composition
 				var geometry = compositor.CreatePathGeometry(path);
 				var shape = compositor.CreateSpriteShape(geometry);
 
-				shape.FillBrush = compositor.CreateColorBrush(new(255, 102, 169, 247));
+				shape.FillBrush = compositor.CreateColorBrush(new() { A = 255, R = 102, G = 169, B = 247 });
 
 				multiShapeVisual.Shapes.Add(shape);
 			}
@@ -531,7 +535,7 @@ namespace UITests.Shared.Windows_UI_Composition
 				var geometry = compositor.CreatePathGeometry(path);
 				var shape = compositor.CreateSpriteShape(geometry);
 
-				shape.FillBrush = compositor.CreateColorBrush(new(255, 223, 237, 255));
+				shape.FillBrush = compositor.CreateColorBrush(new() { A = 255, R = 223, G = 237, B = 255 });
 
 				multiShapeVisual.Shapes.Add(shape);
 			}
@@ -565,7 +569,7 @@ namespace UITests.Shared.Windows_UI_Composition
 				var geometry = compositor.CreatePathGeometry(path);
 				var shape = compositor.CreateSpriteShape(geometry);
 
-				shape.FillBrush = compositor.CreateColorBrush(new(255, 102, 169, 247));
+				shape.FillBrush = compositor.CreateColorBrush(new() { A = 255, R = 102, G = 169, B = 247 });
 
 				multiShapeVisual.Shapes.Add(shape);
 			}
@@ -588,7 +592,7 @@ namespace UITests.Shared.Windows_UI_Composition
 				var geometry = compositor.CreatePathGeometry(path);
 				var shape = compositor.CreateSpriteShape(geometry);
 
-				shape.FillBrush = compositor.CreateColorBrush(new(255, 223, 237, 255));
+				shape.FillBrush = compositor.CreateColorBrush(new() { A = 255, R = 223, G = 237, B = 255 });
 
 				multiShapeVisual.Shapes.Add(shape);
 			}
@@ -622,7 +626,7 @@ namespace UITests.Shared.Windows_UI_Composition
 				var geometry = compositor.CreatePathGeometry(path);
 				var shape = compositor.CreateSpriteShape(geometry);
 
-				shape.FillBrush = compositor.CreateColorBrush(new(255, 102, 169, 247));
+				shape.FillBrush = compositor.CreateColorBrush(new() { A = 255, R = 102, G = 169, B = 247 });
 
 				multiShapeVisual.Shapes.Add(shape);
 			}
@@ -645,7 +649,7 @@ namespace UITests.Shared.Windows_UI_Composition
 				var geometry = compositor.CreatePathGeometry(path);
 				var shape = compositor.CreateSpriteShape(geometry);
 
-				shape.FillBrush = compositor.CreateColorBrush(new(255, 223, 237, 255));
+				shape.FillBrush = compositor.CreateColorBrush(new() { A = 255, R = 223, G = 237, B = 255 });
 
 				multiShapeVisual.Shapes.Add(shape);
 			}
@@ -679,7 +683,7 @@ namespace UITests.Shared.Windows_UI_Composition
 				var geometry = compositor.CreatePathGeometry(path);
 				var shape = compositor.CreateSpriteShape(geometry);
 
-				shape.FillBrush = compositor.CreateColorBrush(new(255, 102, 169, 247));
+				shape.FillBrush = compositor.CreateColorBrush(new() { A = 255, R = 102, G = 169, B = 247 });
 
 				multiShapeVisual.Shapes.Add(shape);
 			}
@@ -703,7 +707,7 @@ namespace UITests.Shared.Windows_UI_Composition
 				var geometry = compositor.CreatePathGeometry(path);
 				var shape = compositor.CreateSpriteShape(geometry);
 
-				shape.FillBrush = compositor.CreateColorBrush(new(255, 223, 237, 255));
+				shape.FillBrush = compositor.CreateColorBrush(new() { A = 255, R = 223, G = 237, B = 255 });
 
 				multiShapeVisual.Shapes.Add(shape);
 			}
@@ -734,7 +738,7 @@ namespace UITests.Shared.Windows_UI_Composition
 				var geometry = compositor.CreatePathGeometry(path);
 				var shape = compositor.CreateSpriteShape(geometry);
 
-				shape.FillBrush = compositor.CreateColorBrush(new(255, 102, 169, 247));
+				shape.FillBrush = compositor.CreateColorBrush(new() { A = 255, R = 102, G = 169, B = 247 });
 
 				multiShapeVisual.Shapes.Add(shape);
 			}
@@ -844,6 +848,7 @@ namespace UITests.Shared.Windows_UI_Composition
 			polyGeometry2.StartAnimation(nameof(CompositionGeometry.TrimEnd), trimEndAnimation);
 
 			ElementCompositionPreview.SetElementChildVisual(compPresenter8, polyVisual2);
+#endif
 		}
 
 		private Vector2[] GetStarPoints(Vector2 center, float radius, int numPoints, float innerRadiusFactor)
