@@ -16,15 +16,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void Initialize();
 
-		public global::Microsoft.UI.Xaml.Controls.Primitives.GridViewItemTemplateSettings TemplateSettings { get; } = new Primitives.GridViewItemTemplateSettings();
-
-		private protected override void OnLoaded()
-		{
-			base.OnLoaded();
-			if (Selector is GridView gv)
-			{
-				ApplyMultiSelectState(gv.SelectionMode == ListViewSelectionMode.Multiple);
-			}
-		}
+		public GridViewItemTemplateSettings TemplateSettings { get; } = new();
 	}
 }

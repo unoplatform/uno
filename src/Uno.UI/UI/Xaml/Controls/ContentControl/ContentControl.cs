@@ -192,7 +192,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else if (CanCreateTemplateWithoutParent)
 			{
-				SetUpdateControlTemplate();
+				ApplyTemplate();
 			}
 		}
 
@@ -350,7 +350,13 @@ namespace Microsoft.UI.Xaml.Controls
 				if (!object.Equals(dataTemplate, _dataTemplateUsedLastUpdate))
 				{
 					_dataTemplateUsedLastUpdate = dataTemplate;
-					ContentTemplateRoot = dataTemplate?.LoadContentCached() ?? Content as View;
+
+					ContentTemplateRoot =
+						// Typically the ContentTemplate subtree should all have the ContentPresenter as templated-parent,
+						// but because we are doing without it, let's be explicit here.
+						// Generally, this is fine since we don't usually template-bind from a DataTemplate.
+						dataTemplate?.LoadContentCached(templatedParent: null) ??
+						Content as View;
 				}
 
 				if (Content != null
@@ -515,5 +521,15 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #nullable enable
+
+		internal void ClearContentPresenterBypass()
+		{
+			if (Content is UIElement contentAsUIE && ContentTemplateRoot == contentAsUIE)
+			{
+
+				RemoveChild(contentAsUIE);
+				ContentTemplateRoot = null;
+			}
+		}
 	}
 }

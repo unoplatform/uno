@@ -34,11 +34,10 @@ namespace Microsoft.UI.Xaml.Controls
 		// TODO: support for Header/Footer when inside a ListViewBase
 		private bool HeaderFooterEnabled =>
 #if __ANDROID__ || __IOS__
-		TemplatedParent is not ListViewBase
+			GetTemplatedParent() is not ListViewBase;
 #else
-		true
+			true;
 #endif
-		;
 
 		internal ContentControl FooterContentControl { get; private set; }
 
@@ -164,39 +163,24 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		protected internal override void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnTemplatedParentChanged(e);
-
-			if (TemplatedParent is ItemsControl itemsControl
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-				&& IsLoaded
-#endif
-				)
-			{
-				itemsControl.SetItemsPresenter(this);
-			}
-		}
-
-#if !UNO_HAS_ENHANCED_LIFECYCLE
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
-			if (TemplatedParent is ItemsControl itemsControl && IsLoaded)
+
+			if (IsLoaded)
 			{
-				itemsControl.SetItemsPresenter(this);
+				var itemsControl =
+					this.FindFirstParent<ItemsControl>() ??
+					// The items-control may not exist in the direct visual-tree,
+					// if it is defined within a popup/flyout, as in the case of ComboBox.
+					this.FindFirstParent<PopupPanel>()?.Popup?.FindFirstParent<ItemsControl>();
+
+				itemsControl?.SetItemsPresenter(this);
 			}
 		}
-#endif
 
 		public ItemsPresenter()
 		{
-			// A content presenter does not propagate its own templated
-			// parent. The content's TemplatedParent has already been set by the
-			// content presenter to its own templated parent.
-
-			//TODO TEMPLATED PARENT
-			// PropagateTemplatedParent = false;
 		}
 
 		#region Padding DependencyProperty
@@ -273,19 +257,20 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			// This is only called after (or while) the header and footer are created and added to the visual tree.
+			// We should only reach here, after CreateHeaderAndFooter() was called. Let's sanity-check that.
 			global::System.Diagnostics.Debug.Assert(!HeaderFooterEnabled || HeaderContentControl is { });
 
-			if (_itemsPanel is { })
+			if (_itemsPanel is { } previousPanel)
 			{
-				VisualTreeHelper.RemoveView(this, _itemsPanel);
+				VisualTreeHelper.RemoveView(this, previousPanel);
 			}
 
-			_itemsPanel = panel;
-
-			if (_itemsPanel != null)
+			if ((_itemsPanel = panel) is { })
 			{
-				if (HeaderFooterEnabled)
+				// There can be only two scenarios here, with header and footer created or not:
+				// 1. if so, we should have only 2 children: Header + Footer. So, we insert the panel in-between(at index 1)
+				// 2. if not, we should have zero child. So, we just add the panel.
+				if (HeaderContentControl is { })
 				{
 					VisualTreeHelper.AddView(this, _itemsPanel, 1);
 				}
@@ -300,9 +285,14 @@ namespace Microsoft.UI.Xaml.Controls
 			this.InvalidateMeasure();
 		}
 
-		internal void LoadChildren(_ViewGroup panel)
+		internal void CreateHeaderAndFooter()
 		{
-			if (HeaderContentControl is null && HeaderFooterEnabled)
+			if (!HeaderFooterEnabled)
+			{
+				return;
+			}
+
+			if (HeaderContentControl is null)
 			{
 				HeaderContentControl = new ContentControl
 				{
@@ -313,8 +303,9 @@ namespace Microsoft.UI.Xaml.Controls
 					HorizontalContentAlignment = HorizontalAlignment.Stretch,
 					IsTabStop = false
 				};
+				VisualTreeHelper.AddChild(this, HeaderContentControl);
 			}
-			if (FooterContentControl is null && HeaderFooterEnabled)
+			if (FooterContentControl is null)
 			{
 				FooterContentControl = new ContentControl
 				{
@@ -325,14 +316,8 @@ namespace Microsoft.UI.Xaml.Controls
 					HorizontalContentAlignment = HorizontalAlignment.Stretch,
 					IsTabStop = false
 				};
+				VisualTreeHelper.AddChild(this, FooterContentControl);
 			}
-
-			// We want FooterContentControl to be assigned before calling SetItemsPanel,
-			// because it may directly cause an ArrangeOverride to be called in some cases,
-			// where the value is expected to be non-null.
-			if (HeaderContentControl is { }) { VisualTreeHelper.AddChild(this, HeaderContentControl); }
-			SetItemsPanel(panel);
-			if (FooterContentControl is { }) { VisualTreeHelper.AddChild(this, FooterContentControl); }
 		}
 
 		private void PropagateLayoutValues()
@@ -358,6 +343,37 @@ namespace Microsoft.UI.Xaml.Controls
 			return (spPanel as FrameworkElement)?.WantsScrollViewerToObscureAvailableSizeBasedOnScrollBarVisibility(orientation) ?? true;
 		}
 
+		// Itemspresenter is the lynchpin in deciding whether we want to be in a non clipping subtree.
+		// Basically, when he decided to not want infinity, even though we were in a scrolling configuration,
+		// we want the measures underneath it to not constrain the desiredsize to the availablesize. That will allow
+		// wrapping uielements (like textblock) to size correctly, and still allow containers that want to be bigger
+		// to look good.
+		// Itemspresenter will set the value on himself (used during layout) and on the panel. Listview will set it on the
+		// items (so that individual measure on them will work).
+		internal bool EvaluateAndSetNonClippingBehavior(bool isNotBeingPassedInfinity)
+		{
+			bool result = false;
+			if (Panel is ItemsStackPanel panel)
+			{
+				// we only want the behavior in an isp at the moment
+
+				// first set it to ourselves
+				IsNonClippingSubtree = isNotBeingPassedInfinity;
+
+				// in the case of a modernpanel, lets have this itemspresenter not clip to the available size
+				// in overconstrained scenarios
+				// we're just passing through the setting to the panel here in an effort to make itemspresenter behave like a
+				// 'dumb' passthrough. The real logic was performed when measuring the scrollcontentpresenter
+
+				// we pass it along - the reason we want these individual elements also to have the correct value is because
+				// they could potentially be measured independently
+				panel.IsNonClippingSubtree = isNotBeingPassedInfinity;
+
+				result = isNotBeingPassedInfinity;
+			}
+
+			return result;
+		}
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{

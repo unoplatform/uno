@@ -1,7 +1,9 @@
-﻿using Uno.UI.Samples.Controls;
+﻿
+using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -16,6 +18,16 @@ namespace UITests.Windows_UI_Xaml_Controls.FlyoutTests
 		public Flyout_ShowAt_Window_Content()
 		{
 			this.InitializeComponent();
+
+#if HAS_UNO
+			XamlRoot _xamlRoot = null;
+			Loaded += (s, e) => _xamlRoot = XamlRoot;
+			Unloaded += (s, e) =>
+			{
+				// close all popups at the end of the test.
+				VisualTreeHelper.CloseAllPopups(_xamlRoot);
+			};
+#endif
 		}
 
 		private void ButtonButton_Click(object sender, RoutedEventArgs e)

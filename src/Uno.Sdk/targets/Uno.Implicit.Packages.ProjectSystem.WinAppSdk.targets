@@ -14,7 +14,7 @@
 		<_UnoProjectSystemPackageReference Include="SkiaSharp.Views.WinUI" ProjectSystem="true" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(UnoFeatures.Contains(';canvas3dgl;'))">
+	<ItemGroup Condition="$(UnoFeatures.Contains(';glcanvas;'))">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Graphics3DGL" ProjectSystem="true" />
 	</ItemGroup>
 </Project>

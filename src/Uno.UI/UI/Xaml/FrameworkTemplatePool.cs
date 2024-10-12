@@ -6,13 +6,15 @@
 
 using System;
 using System.Collections.Generic;
-using Uno.Diagnostics.Eventing;
+using System.Linq;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Uno.Buffers;
+using Uno.Diagnostics.Eventing;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
-using Microsoft.UI.Xaml.Controls;
+using Uno.UI.DataBinding;
 using Uno.UI.Dispatching;
 using Windows.Foundation.Metadata;
 using Windows.System;
@@ -66,7 +68,7 @@ namespace Microsoft.UI.Xaml
 	/// content template of a ContentControl, as well as the template of a Control. This forces recycled controls to re-create their
 	/// templates even if it was previously the same. This can make lists particularly jittery.
 	/// This class allows for templates to be reused, based on the fact that controls created via a FrameworkTemplate that lose their
-	/// DependencyObject.Parent value are considered orhpans. Those instances can then later on be reused.
+	/// DependencyObject.Parent value are considered orphans. Those instances can then later on be reused.
 	///
 	///	This behavior is not following windows' implementation, as this requires a control to be stateless. This is pretty easy to do when controls
 	///	are strictly databound, but not if the control is using stateful code-behind. This is why this behavior can be disabled via <see cref="IsPoolingEnabled"/>
@@ -75,6 +77,7 @@ namespace Microsoft.UI.Xaml
 	public partial class FrameworkTemplatePool
 	{
 		internal static FrameworkTemplatePool Instance { get; } = new FrameworkTemplatePool();
+
 		public static class TraceProvider
 		{
 			public readonly static Guid Id = Guid.Parse("{266B850B-674C-4D3E-9B58-F680BE653E18}");
@@ -87,7 +90,7 @@ namespace Microsoft.UI.Xaml
 
 		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 
-		private readonly Dictionary<FrameworkTemplate, List<TemplateEntry>> _pooledInstances = new Dictionary<FrameworkTemplate, List<TemplateEntry>>(FrameworkTemplate.FrameworkTemplateEqualityComparer.Default);
+		private readonly Dictionary<FrameworkTemplate, TemplateInfo> _templates = new(FrameworkTemplate.FrameworkTemplateEqualityComparer.Default);
 		private IFrameworkTemplatePoolPlatformProvider _platformProvider = new FrameworkTemplatePoolDefaultPlatformProvider();
 		private static bool _isPoolingEnabled;
 
@@ -96,7 +99,7 @@ namespace Microsoft.UI.Xaml
 		/// List of instances managed by the pool
 		/// </summary>
 		/// <remarks>
-		/// This list is required to avoid the GC to collect the instances. Othewise, the pooled instance
+		/// This list is required to avoid the GC to collect the instances. Otherwise, the pooled instance
 		/// may never get its Parent property set to null, and the pool will never get notified that an instance
 		/// can be reused.
 		///
@@ -144,7 +147,7 @@ namespace Microsoft.UI.Xaml
 		internal static bool IsRecycling { get; private set; }
 
 		/// <summary>
-		/// Defines the ratio of memory usage at which the pools starts to stop pooling elligible views.
+		/// Defines the ratio of memory usage at which the pools starts to stop pooling eligible views.
 		/// </summary>
 		internal static float HighMemoryThreshold { get; set; } = .8f;
 
@@ -185,9 +188,9 @@ namespace Microsoft.UI.Xaml
 			var now = _platformProvider.Now;
 			var removedInstancesCount = 0;
 
-			foreach (var list in _pooledInstances.Values)
+			foreach (var template in _templates.Values)
 			{
-				removedInstancesCount += list.RemoveAll(t =>
+				removedInstancesCount += template.PooledInstances.RemoveAll(t =>
 				{
 					var remove = isManual || now - t.CreationTime > TimeToLive;
 
@@ -200,6 +203,7 @@ namespace Microsoft.UI.Xaml
 
 					return remove;
 				});
+				template.MaterializedInstance.RemoveAll(x => !x.TemplateRoot.IsAlive);
 			}
 
 			if (removedInstancesCount > 0)
@@ -236,25 +240,25 @@ namespace Microsoft.UI.Xaml
 		{
 			int count = 0;
 
-			foreach (var list in _pooledInstances.Values)
+			foreach (var info in _templates.Values)
 			{
-				count += list.Count;
+				count += info.PooledInstances.Count;
 			}
 
 			return count;
 		}
 
-		internal View? DequeueTemplate(FrameworkTemplate template)
+		internal View? DequeueTemplate(FrameworkTemplate template, DependencyObject? templatedParent)
 		{
-			var list = GetTemplatePool(template);
+			var info = GetTemplatePool(template);
 
 			View? instance;
 
-			if (list.Count == 0)
+			if (info.PooledInstances.Count == 0)
 			{
 				if (_trace.IsEnabled)
 				{
-					_trace.WriteEventActivity(TraceProvider.CreateTemplate, EventOpcode.Send, new[] { ((Func<View>)template).Method.DeclaringType?.ToString() });
+					_trace.WriteEventActivity(TraceProvider.CreateTemplate, EventOpcode.Send, new[] { template._viewFactory?.Method.DeclaringType?.FullName });
 				}
 
 				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
@@ -262,7 +266,7 @@ namespace Microsoft.UI.Xaml
 					this.Log().Debug($"Creating new template, id={GetTemplateDebugId(template)} IsPoolingEnabled:{_isPoolingEnabled}");
 				}
 
-				instance = ((IFrameworkTemplateInternal)template).LoadContent();
+				instance = ((IFrameworkTemplateInternal)template).LoadContent(templatedParent);
 
 				if (_isPoolingEnabled && instance is IFrameworkElement)
 				{
@@ -271,18 +275,25 @@ namespace Microsoft.UI.Xaml
 			}
 			else
 			{
-				int position = list.Count - 1;
-				instance = list[position].Control;
-				list.RemoveAt(position);
+				int position = info.PooledInstances.Count - 1;
+				instance = info.PooledInstances[position].Control;
+				info.PooledInstances.RemoveAt(position);
 
 				if (_trace.IsEnabled)
 				{
-					_trace.WriteEventActivity(TraceProvider.ReuseTemplate, EventOpcode.Send, new[] { instance.GetType().ToString() });
+					this.Log().Debug($"Recycling template,    id={GetTemplateDebugId(template)}, {info.PooledInstances.Count} items remaining in cache");
 				}
 
-				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+				if (info.MaterializedInstance.FirstOrDefault(x => x.TemplateRoot.Target == instance) is { } materializedInfo)
 				{
-					this.Log().Debug($"Recycling template,    id={GetTemplateDebugId(template)}, {list.Count} items remaining in cache");
+					materializedInfo.UpdateTemplatedParent(templatedParent);
+				}
+				else
+				{
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+					{
+						this.Log().Debug($"Failed update templated-parent for recycled template,    id={GetTemplateDebugId(template)}");
+					}
 				}
 			}
 
@@ -295,16 +306,22 @@ namespace Microsoft.UI.Xaml
 			return instance;
 		}
 
-		private List<TemplateEntry> GetTemplatePool(FrameworkTemplate template)
+		internal void TrackMaterializedTemplate(FrameworkTemplate template, View templateRoot, IEnumerable<DependencyObject> templateMembers)
 		{
-			List<TemplateEntry>? instances;
+			var info = GetTemplatePool(template);
+			var entry = new MaterializedEntry(templateRoot, templateMembers);
 
-			if (!_pooledInstances.TryGetValue(template, out instances))
+			info.MaterializedInstance.Add(entry);
+		}
+
+		private TemplateInfo GetTemplatePool(FrameworkTemplate template)
+		{
+			if (!_templates.TryGetValue(template, out var info))
 			{
-				_pooledInstances[template] = instances = new List<TemplateEntry>();
+				_templates[template] = info = new(new(), new());
 			}
 
-			return instances;
+			return info;
 		}
 
 		private Stack<object> _instancesToRecycle = new();
@@ -400,7 +417,7 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
-			var list = GetTemplatePool(key as FrameworkTemplate ?? throw new InvalidOperationException($"Received {key} but expecting {typeof(FrameworkElement)}"));
+			var info = GetTemplatePool(key as FrameworkTemplate ?? throw new InvalidOperationException($"Received {key} but expecting {typeof(FrameworkElement)}"));
 
 			if (newParent == null)
 			{
@@ -411,9 +428,7 @@ namespace Microsoft.UI.Xaml
 
 				if (instance is IDependencyObjectStoreProvider provider)
 				{
-					// Make sure the TemplatedParent is disconnected
 					provider.Store.Parent = null;
-					provider.Store.ClearValue(provider.Store.TemplatedParentProperty, DependencyPropertyValuePrecedences.Local);
 				}
 				if (shouldCleanUpTemplateRoot)
 				{
@@ -424,7 +439,7 @@ namespace Microsoft.UI.Xaml
 
 				if (item != null)
 				{
-					list.Add(new TemplateEntry(_platformProvider.Now, item));
+					info.PooledInstances.Add(new TemplateEntry(_platformProvider.Now, item));
 #if USE_HARD_REFERENCES
 					_activeInstances.Remove(item);
 #endif
@@ -434,21 +449,20 @@ namespace Microsoft.UI.Xaml
 					this.Log().Warn($"Enqueued template root was not a view");
 				}
 
-
 				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
-					(this).Log().Debug($"Caching template,      id={GetTemplateDebugId(key as FrameworkTemplate)}, {list.Count} items now in cache");
+					(this).Log().Debug($"Caching template,      id={GetTemplateDebugId(key as FrameworkTemplate)}, {info.PooledInstances.Count} items now in cache");
 				}
 			}
 			else
 			{
 				InstanceTracker.Add(newParent, instance);
 
-				var index = list.FindIndex(e => ReferenceEquals(e.Control, instance));
+				var index = info.PooledInstances.FindIndex(e => ReferenceEquals(e.Control, instance));
 
 				if (index != -1)
 				{
-					list.RemoveAt(index);
+					info.PooledInstances.RemoveAt(index);
 				}
 			}
 		}
@@ -499,20 +513,17 @@ namespace Microsoft.UI.Xaml
 
 		private string GetTemplateDebugId(FrameworkTemplate? template)
 		{
-			//Grossly inefficient, should only be used for debug logging
-			int i = -1;
-			foreach (var kvp in _pooledInstances)
+			// Grossly inefficient, should only be used for debug logging
+			if (template?._viewFactory is { } func &&
+				_templates.Keys.IndexOf(template) is { } index && index != -1)
 			{
-				i++;
-				var pooledTemplate = kvp.Key;
-				if ((template?.Equals(pooledTemplate) ?? false) && template._viewFactory is { } func)
-				{
-					return $"{i}({func.Method.DeclaringType}.{func.Method.Name})";
-				}
+				return $"{index}({func.Method.DeclaringType}.{func.Method.Name})";
 			}
 
 			return "Unknown";
 		}
+
+		private record TemplateInfo(List<MaterializedEntry> MaterializedInstance, List<TemplateEntry> PooledInstances);
 
 		private class TemplateEntry
 		{
@@ -525,6 +536,31 @@ namespace Microsoft.UI.Xaml
 			public TimeSpan CreationTime { get; private set; }
 
 			public View Control { get; private set; }
+		}
+
+		private class MaterializedEntry
+		{
+			public MaterializedEntry(View templateRoot, IEnumerable<DependencyObject> templateMembers)
+			{
+				this.TemplateRoot = WeakReferencePool.RentWeakReference(this, templateRoot);
+				this.TemplateMembers = templateMembers
+					.Select(x => WeakReferencePool.RentWeakReference(this, x))
+					.ToArray();
+			}
+
+			public ManagedWeakReference TemplateRoot { get; init; }
+			public ManagedWeakReference[] TemplateMembers { get; init; }
+
+			public void UpdateTemplatedParent(DependencyObject? templatedParent)
+			{
+				foreach (var memberWR in TemplateMembers)
+				{
+					if (memberWR.Target is FrameworkElement member)
+					{
+						member.SetTemplatedParent(templatedParent);
+					}
+				}
+			}
 		}
 	}
 }

@@ -515,7 +515,7 @@
 					"description": "Adds support for SVG images.",
 					"helpUrl": "https://aka.platform.uno/feature-svg"
 				},
-				"Canvas3DGL": {
+				"GLCanvas": {
 					"description": "Adds support for 3D graphics APIs based on OpenGL."
 				}
 			}

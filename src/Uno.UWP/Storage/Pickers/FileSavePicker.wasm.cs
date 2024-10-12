@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno;
@@ -53,7 +54,7 @@ namespace Windows.Storage.Pickers
 
 		private async Task<StorageFile?> NativePickerPickSaveFileAsync(CancellationToken token)
 		{
-			var fileTypeMapParameter = JsonHelper.Serialize(BuildFileTypesMap());
+			var fileTypeMapParameter = JsonHelper.Serialize(BuildFileTypesMap(), StorageSerializationContext.Default);
 			var startIn = SuggestedStartLocation.ToStartInDirectory();
 
 			var nativeStorageItemInfo = await NativeMethods.PickSaveFileAsync(true, fileTypeMapParameter, SuggestedFileName, SettingsIdentifier, startIn);
@@ -62,7 +63,7 @@ namespace Windows.Storage.Pickers
 				return null;
 			}
 
-			var info = JsonHelper.Deserialize<NativeStorageItemInfo>(nativeStorageItemInfo);
+			var info = JsonHelper.Deserialize<NativeStorageItemInfo>(nativeStorageItemInfo, StorageSerializationContext.Default);
 			return StorageFile.GetFromNativeInfo(info);
 		}
 

@@ -36,7 +36,9 @@ Then, here are the steps to use a local build of Uno.WinUI in another applicatio
 1. By default the Uno.UI solution on the master branch is building using the WinUI API set. If you want to build against the UWP API set, you can checkout the `generated/master/uwp-autoconvert` branch. See [this section](xref:Uno.Contributing.UWPConversion) for details on this branch.
 1. Close any instances of Visual Studio with the Uno.UI solution opened.
 1. Open the solution containing the application you wish to debug to ensure the package is restored & cached.
-1. Note the NuGet version of Uno.WinUI (or Uno.WinUI.WebAssembly/Uno.WinUI.Skia) being used by the application (eg `5.1.0-dev.432`).
+1. Prepare the application
+   1. Replace the Uno.Sdk references to `Uno.Sdk.Private` everywhere in the app (e.g. `global.json`, `props`, `csproj` and `targets` files). Make sure to wait for the nuget packages to be restored entirely.
+   1. Note the NuGet version of Uno.WinUI (or Uno.WinUI.WebAssembly/Uno.WinUI.Skia) or Uno.Sdk being used by the application (eg `5.1.0-dev.432`).
 1. Make a copy of `src/crosstargeting_override.props.sample` and name it as `src/crosstargeting_override.props`.
 1. In `src/crosstargeting_override.props`, uncomment the line `<!--<UnoNugetOverrideVersion>xx.xx.xx-dev.xxx</UnoNugetOverrideVersion>-->` as well as the `UnoTargetFrameworkOverride` to match your app's debugging target.
 1. Replace the version number with the version being used by the application you wish to debug.

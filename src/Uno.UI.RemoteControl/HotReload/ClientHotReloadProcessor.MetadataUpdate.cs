@@ -19,6 +19,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Uno.Diagnostics.UI;
+using Uno.Threading;
 
 #if HAS_UNO_WINUI
 using _WindowActivatedEventArgs = Microsoft.UI.Xaml.WindowActivatedEventArgs;
@@ -30,7 +31,7 @@ namespace Uno.UI.RemoteControl.HotReload;
 
 partial class ClientHotReloadProcessor
 {
-	private static int _isWaitingForTypeMapping;
+	private static readonly AsyncLock _uiUpdateGate = new(); // We can use the simple AsyncLock here as we don't need reentrancy.
 
 	private static ElementUpdateAgent? _elementAgent;
 
@@ -51,23 +52,12 @@ partial class ClientHotReloadProcessor
 		}
 	}
 
-	private static async Task<(bool value, string reason)> ShouldReload()
+	private static (bool value, string reason) ShouldReload()
 	{
-		if (Interlocked.CompareExchange(ref _isWaitingForTypeMapping, 1, 0) == 1)
-		{
-			return (false, "another reload is already waiting for type mapping to resume");
-		}
-		try
-		{
-			var shouldReload = await TypeMappings.WaitForResume();
-			return shouldReload
-				? (true, string.Empty)
-				: (false, "type mapping prevent reload");
-		}
-		finally
-		{
-			Interlocked.Exchange(ref _isWaitingForTypeMapping, 0);
-		}
+		var isPaused = TypeMappings.IsPaused;
+		return isPaused
+			? (false, "type mapping prevent reload")
+			: (true, string.Empty);
 	}
 
 	internal static void SetWindow(Window window, bool disableIndicator)
@@ -105,6 +95,8 @@ partial class ClientHotReloadProcessor
 	/// </summary>
 	private static async Task ReloadWithUpdatedTypes(HotReloadClientOperation? hrOp, Window window, Type[] updatedTypes)
 	{
+		using var sequentialUiUpdateLock = await _uiUpdateGate.LockAsync(default);
+
 		var handlerActions = ElementAgent?.ElementHandlerActions;
 
 		var uiUpdating = true;
@@ -112,7 +104,7 @@ partial class ClientHotReloadProcessor
 		{
 			hrOp?.SetCurrent();
 
-			if (await ShouldReload() is { value: false } prevent)
+			if (ShouldReload() is { value: false } prevent)
 			{
 				uiUpdating = false;
 				hrOp?.ReportIgnored(prevent.reason);

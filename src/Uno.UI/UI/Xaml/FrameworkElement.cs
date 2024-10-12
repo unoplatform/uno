@@ -274,6 +274,10 @@ namespace Microsoft.UI.Xaml
 			LogicalParentOverride ??
 			((IDependencyObjectStoreProvider)this).Store.Parent as DependencyObject;
 
+#if !__NETSTD_REFERENCE__
+		internal bool HasParent() => Parent != null;
+#endif
+
 		public global::System.Uri BaseUri
 		{
 			get
@@ -669,7 +673,7 @@ namespace Microsoft.UI.Xaml
 		[GeneratedDependencyProperty(DefaultValue = true, Options = FrameworkPropertyMetadataOptions.Inherits)]
 		public static DependencyProperty AllowFocusOnInteractionProperty { get; } = CreateAllowFocusOnInteractionProperty();
 
-		internal
+		internal virtual
 #if __ANDROID__
 			new
 #endif
@@ -1048,5 +1052,38 @@ namespace Microsoft.UI.Xaml
 			protected override Size MeasureOverride(Size availableSize) => _measureOverrideHandler(availableSize);
 		}
 #endif
+
+		private protected virtual FrameworkTemplate/*?*/ GetTemplate()
+		{
+			return null;
+		}
+
+		// WinUI overrides this in CalendarViewBaseItemChrome, ListViewBaseItemChrome, and MediaPlayerElement.
+		private protected virtual bool HasTemplateChild()
+		{
+			return GetFirstChild() is not null;
+		}
+
+		private UIElement/*?*/ GetFirstChild()
+		{
+#if __CROSSRUNTIME__ && !__NETSTD_REFERENCE__
+			if (GetChildren() is { Count: > 0 } children)
+			{
+				return children[0] as UIElement;
+			}
+#elif XAMARIN
+			if (this is IShadowChildrenProvider { ChildrenShadow: { Count: > 0 } childrenShadow })
+			{
+				return childrenShadow[0] as UIElement;
+			}
+#endif
+
+			if (VisualTreeHelper.GetChildrenCount(this) > 0)
+			{
+				return VisualTreeHelper.GetChild(this, 0) as UIElement;
+			}
+
+			return null;
+		}
 	}
 }

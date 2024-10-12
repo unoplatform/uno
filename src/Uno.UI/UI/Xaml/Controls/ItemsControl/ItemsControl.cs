@@ -16,6 +16,8 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Uno.UI.Extensions;
+using System.Runtime.InteropServices.JavaScript;
+
 
 #if __ANDROID__
 using _View = Android.Views.View;
@@ -44,7 +46,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private readonly SerialDisposable _notifyCollectionGroupsChanged = new SerialDisposable();
 		private readonly SerialDisposable _cvsViewChanged = new SerialDisposable();
 
-		private bool _isReady; // Template applied
+		private bool _isTemplateApplied;
 		private ItemCollection _items = new ItemCollection();
 		private (object Source, IEnumerable Snapshot)? _cachedItemsSource;
 
@@ -172,7 +174,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnItemsPanelChanged(ItemsPanelTemplate oldItemsPanel, ItemsPanelTemplate newItemsPanel)
 		{
-			if (_isReady && !Equals(oldItemsPanel, newItemsPanel)) // Panel is created on ApplyTemplate, so do not create it twice (first on set PanelTemplate, second on ApplyTemplate)
+			if (_isTemplateApplied && !Equals(oldItemsPanel, newItemsPanel))
 			{
 				UpdateItemsPanelRoot();
 			}
@@ -291,6 +293,8 @@ namespace Microsoft.UI.Xaml.Controls
 				return items?.Count() ?? 0;
 			}
 		}
+
+		private protected int GetItemCount() => NumberOfItems;
 
 		internal bool HasItems
 		{
@@ -951,9 +955,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			ScrollViewer = this.GetTemplateChild("ScrollViewer") as ScrollViewer;
 
-			_isReady = true;
-
-			UpdateItemsPanelRoot();
+			_isTemplateApplied = true;
 		}
 
 		private protected override void OnUnloaded()
@@ -963,6 +965,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void UpdateItemsPanelRoot()
 		{
+			// ItemsPanel materialization requires ItemsPresenter as templated-parent,
+			// and this cannot be re-injected late.
+			if (ItemsPresenter is null)
+			{
+				return;
+			}
+
 			// Remove items from the previous ItemsPanelRoot to ensure they can be safely added to the new one
 			if (ShouldItemsControlManageChildren)
 			{
@@ -974,14 +983,30 @@ namespace Microsoft.UI.Xaml.Controls
 				CleanUpInternalItemsPanel(InternalItemsPanelRoot);
 			}
 
-			var itemsPanel = (ItemsPanel as IFrameworkTemplateInternal)?.LoadContent() as _ViewGroup ?? new StackPanel();
+			var itemsPanel =
+				(ItemsPanel as IFrameworkTemplateInternal)?.LoadContent(ItemsPresenter) as _ViewGroup ??
+				CreateDefaultItemsPanel(ItemsPresenter);
 			InternalItemsPanelRoot = ResolveInternalItemsPanel(itemsPanel);
 			ItemsPanelRoot = itemsPanel as Panel;
 
 			ItemsPanelRoot?.SetItemsOwner(this);
-			ItemsPresenter?.SetItemsPanel(InternalItemsPanelRoot);
+			ItemsPresenter.SetItemsPanel(InternalItemsPanelRoot);
+
+			OnItemsPanelRootPrepared();
 
 			UpdateItems(null);
+		}
+
+		private protected virtual void OnItemsPanelRootPrepared()
+		{
+		}
+
+		private _ViewGroup CreateDefaultItemsPanel(DependencyObject templatedParent)
+		{
+			var panel = new StackPanel();
+			panel.SetTemplatedParent(templatedParent);
+
+			return panel;
 		}
 
 		/// <summary>
@@ -1684,15 +1709,14 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <summary>
 		/// Sets the ItemsPresenter that should be used by ItemsControl.
 		/// </summary>
-		/// <remarks>
-		/// This is usually called from ItemsPresenter when its TemplatedParent (an ItemsControl) gets set.
-		/// </remarks>
 		internal void SetItemsPresenter(ItemsPresenter itemsPresenter)
 		{
 			if (ItemsPresenter != itemsPresenter)
 			{
 				ItemsPresenter = itemsPresenter;
-				ItemsPresenter?.LoadChildren(InternalItemsPanelRoot);
+				ItemsPresenter?.CreateHeaderAndFooter();
+
+				UpdateItemsPanelRoot();
 			}
 		}
 
@@ -1743,8 +1767,56 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 		}
-
 		internal void SetNeedsUpdateItems()
 			=> UpdateItems(null);
+
+		private protected virtual bool IsHostForItemContainer(DependencyObject pContainer)
+		{
+			bool hasParent = false;
+
+			var pIsHost = false;
+
+			// If ItemsControlFromItemContainer can determine who owns the element,
+			// use its decision.
+			var spItemsControl = ItemsControlFromItemContainer(pContainer);
+
+			if (spItemsControl is not null)
+			{
+				pIsHost = (spItemsControl == this);
+				return pIsHost;
+			}
+
+			// If the element is in my items view, and if it can be its own ItemContainer,
+			// it's mine.  Contains may be expensive, so we avoid calling it in cases
+			// where we already know the answer - namely when the element has a
+			// logical parent (ItemsControlFromItemContainer handles this case).  This
+			// leaves only those cases where the element belongs to my items
+			// without having a logical parent (e.g. via ItemsSource) and without
+			// having been generated yet. HasItem indicates if anything has been generated.
+
+			if (pContainer is FrameworkElement fe)
+			{
+				hasParent = fe.Parent != null;
+			}
+
+			if (!hasParent)
+			{
+				pIsHost = IsItemItsOwnContainer(pContainer);
+				if (pIsHost)
+				{
+					int nCount = Items?.Count ?? 0;
+					pIsHost = nCount > 0;
+					if (pIsHost)
+					{
+						pIsHost = Items.IndexOf(pContainer) >= 0;
+					}
+				}
+			}
+
+			return pIsHost;
+		}
+
+		// TODO Uno: Implement from WinUI
+		private protected bool IsItemsHostInvalid => false;
 	}
 }

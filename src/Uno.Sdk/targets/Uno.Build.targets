@@ -141,6 +141,14 @@
 
 	</Target>
 
+	<Target Name="UnoDumpTargetFrameworks">
+		<!--
+			This target is used to dump the target frameworks to the output window.
+			It is useful to determine all target frameworks used by all projects of a solution.
+		-->
+		<Message Text="&lt;TargetFrameworks&gt;$(TargetFramework);$(TargetFrameworks)&lt;/TargetFrameworks&gt;" Importance="High" />
+	</Target>
+
 	<Import Project="Uno.SingleProject.VS.Build.targets"
 			Condition=" '$(UnoSingleProject)' == 'true' AND '$(BuildingInsideVisualStudio)' == 'true' " />
 </Project>

@@ -177,6 +177,10 @@ internal partial class PopupPanel : Panel
 
 			ArrangeElement(child, finalFrame);
 
+			// Temporary workaround to avoid layout cycle on iOS. This block was added specifically for a bug on Android's
+			// MenuFlyout so, for now, we restrict to to only Android
+			// This can be re-evaluated and removed after https://github.com/unoplatform/uno/pull/18261 merges
+#if !__IOS__
 			var updatedFinalFrame = new Rect(
 				anchorLocation.X + (float)Popup.HorizontalOffset,
 				anchorLocation.Y + (float)Popup.VerticalOffset,
@@ -193,6 +197,7 @@ internal partial class PopupPanel : Panel
 				// See MenuFlyoutSubItem_Placement sample.
 				ArrangeElement(child, updatedFinalFrame);
 			}
+#endif
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
@@ -255,7 +260,7 @@ internal partial class PopupPanel : Panel
 			// Instead of handling it here, CommandBar should handle it using an LTE (look at the comment
 			// in AppBar.SetupOverlayState) but we don't have the logic implemented in Uno yet, so we
 			// rely on this workaround to close CommandBar's popup.
-			if (popup.TemplatedParent is CommandBar cb)
+			if (popup.GetTemplatedParent() is CommandBar cb)
 			{
 				cb.TryDismissInlineAppBarInternal();
 			}
@@ -289,7 +294,7 @@ internal partial class PopupPanel : Panel
 		// Instead of handling it here, CommandBar should handle it using an LTE (look at the comment
 		// in AppBar.SetupOverlayState) but we don't have the logic implemented in Uno yet, so we
 		// rely on this workaround to close CommandBar's popup.
-		if (Popup is { TemplatedParent: CommandBar { IsSticky: false } })
+		if (Popup?.GetTemplatedParent() is CommandBar { IsSticky: false })
 		{
 			return true;
 		}
