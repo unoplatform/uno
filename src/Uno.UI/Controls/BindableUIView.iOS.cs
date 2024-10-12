@@ -15,6 +15,7 @@ using ObjCRuntime;
 
 using Foundation;
 using UIKit;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
 namespace Uno.UI.Controls
 {
@@ -63,20 +64,32 @@ namespace Uno.UI.Controls
 
 		private static void OnChildAdded(UIView parent, UIView child)
 		{
-			var managedParent = parent as UIElement ?? parent.FindFirstParent<UIElement>();
-			if (managedParent is not null)
+			if (child is not UIElement)
+			{
+				LayoutInformation.SetMeasureDirtyPath(child, true);
+				LayoutInformation.SetArrangeDirtyPath(child, true);
+			}
+
+			while (parent is not null && parent is not UIElement)
+			{
+				LayoutInformation.SetMeasureDirtyPath(parent, true);
+				LayoutInformation.SetMeasureDirtyPath(parent, true);
+				parent = parent.Superview;
+			}
+
+			if (parent is UIElement managedParent)
 			{
 				if (child is UIElement managedChild)
 				{
 					// Reset to original (invalidated) state
-					managedParent.ResetLayoutFlags();
+					managedChild.ResetLayoutFlags();
 					if (managedParent.IsMeasureDirtyPathDisabled)
 					{
 						FrameworkElementHelper.SetUseMeasurePathDisabled(managedChild); // will invalidate too
 					}
 					else
 					{
-						child.InvalidateMeasure();
+						managedChild.InvalidateMeasure();
 					}
 
 					if (managedParent.IsArrangeDirtyPathDisabled)
@@ -85,7 +98,7 @@ namespace Uno.UI.Controls
 					}
 					else
 					{
-						child.InvalidateArrange();
+						managedChild.InvalidateArrange();
 					}
 				}
 

@@ -249,7 +249,7 @@ namespace Uno.UI.Controls
 			if (view is UIElement child && this.FindFirstParent<UIElement>() is { } parent)
 			{
 				// Reset to original (invalidated) state
-				parent.ResetLayoutFlags();
+				child.ResetLayoutFlags();
 				if (parent.IsMeasureDirtyPathDisabled)
 				{
 					FrameworkElementHelper.SetUseMeasurePathDisabled(child); // will invalidate too
