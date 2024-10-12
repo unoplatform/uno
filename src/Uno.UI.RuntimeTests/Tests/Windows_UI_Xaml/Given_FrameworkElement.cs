@@ -1071,11 +1071,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(1, sut.Subviews.Length);
 
-			Assert.AreEqual(100, nativeView.Frame.Width);
-			Assert.AreEqual(100, nativeView.Frame.Height);
+			var failureMessage = $"AvailableSize: {LayoutInformation.GetAvailableSize(nativeView)}, DesiredSize: {LayoutInformation.GetDesiredSize(nativeView)}, LayoutSlot: {LayoutInformation.GetLayoutSlot(nativeView)}";
+			Assert.AreEqual(100, nativeView.Frame.Width, failureMessage);
+			Assert.AreEqual(100, nativeView.Frame.Height, failureMessage);
 
-			Assert.AreEqual(0, nativeView.Frame.X);
-			Assert.AreEqual(0, nativeView.Frame.Y);
+			Assert.AreEqual(0, nativeView.Frame.X, failureMessage);
+			Assert.AreEqual(0, nativeView.Frame.Y, failureMessage);
 		}
 #endif
 
