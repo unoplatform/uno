@@ -109,10 +109,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForLoaded(gridView);
 			await WindowHelper.WaitForIdle();
 
-			RectAssert.AreEqual(new Rect(0, 0, 100, 100), LayoutInformation.GetLayoutSlot(gvi));
-			RectAssert.AreEqual(new Rect(0, 0, 100, 100), gvi.LayoutSlotWithMarginsAndAlignments);
-			RectAssert.AreEqual(new Rect(0, 0, 100, 100), LayoutInformation.GetLayoutSlot(gvi2));
-			RectAssert.AreEqual(new Rect(0, 0, 100, 100), gvi2.LayoutSlotWithMarginsAndAlignments);
+			RectAssert.AreEqual(new Rect(0, 0, 100, 100), LayoutInformation.GetLayoutSlot(gvi), message: $"LayoutInformation.GetLayoutSlot(gvi) failed. Actual: {LayoutInformation.GetLayoutSlot(gvi)}");
+			RectAssert.AreEqual(new Rect(0, 0, 100, 100), gvi.LayoutSlotWithMarginsAndAlignments, message: $"gvi.LayoutSlotWithMarginsAndAlignments failed. Actual: {gvi.LayoutSlotWithMarginsAndAlignments}");
+			RectAssert.AreEqual(new Rect(0, 0, 100, 100), LayoutInformation.GetLayoutSlot(gvi2), message: $"LayoutInformation.GetLayoutSlot(gvi2) failed. Actual: {LayoutInformation.GetLayoutSlot(gvi2)}");
+			RectAssert.AreEqual(new Rect(0, 0, 100, 100), gvi2.LayoutSlotWithMarginsAndAlignments, message: $"gvi2.LayoutSlotWithMarginsAndAlignments failed. Actual: {gvi2.LayoutSlotWithMarginsAndAlignments}");
 		}
 	}
 	#region Helper Behaviour Class
