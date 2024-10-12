@@ -61,7 +61,7 @@ partial class ContentPresenter
 		// when the template is invalidated.
 		if (!HasTemplateChild())
 		{
-			var templatedParent = GetTemplatedParent();
+			var templatedParent = GetTemplatedParent() as ContentControl;
 			if (templatedParent is not null)
 			{
 				bool needsRefresh = false;
