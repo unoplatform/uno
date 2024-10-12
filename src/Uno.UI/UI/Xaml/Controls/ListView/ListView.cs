@@ -21,9 +21,11 @@ namespace Microsoft.UI.Xaml.Controls
 			return new ListViewItem() { IsGeneratedContainer = true };
 		}
 
+#if __ANDROID__ || __IOS__
 		internal override ContentControl GetGroupHeaderContainer(object groupHeader)
 		{
 			return new ListViewHeaderItem() { IsGeneratedContainer = true };
 		}
+#endif
 	}
 }

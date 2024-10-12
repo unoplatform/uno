@@ -16,7 +16,11 @@ public class Given_BindableNullableValueType
 		var x = new BindableNullableValueTypeTestPage();
 		var tb = x.textBlock;
 		tb.Tag = "10";
+#if WINAPPSDK
+		Assert.AreEqual(null, x.MyProperty);
+#else
 		Assert.AreEqual(10, x.MyProperty);
+#endif
 		tb.Tag = null;
 		Assert.IsNull(x.MyProperty);
 	}

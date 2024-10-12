@@ -6,7 +6,6 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ContentControl
 	{
-		internal void SetUpdateControlTemplate() { }
 		private bool HasParent() => true;
 
 		partial void RegisterContentTemplateRoot()

@@ -8,6 +8,8 @@ using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
+using Private.Infrastructure;
+using Microsoft.UI.Dispatching;
 
 #if USING_TAEF
 using WEX.TestExecution;
@@ -26,14 +28,13 @@ namespace MUXControlsTestApp.Utilities
 	{
 		public static void Execute(Action action)
 		{
-			Execute(CoreApplication.MainView, action);
+			Execute(TestServices.WindowHelper.CurrentTestWindow.DispatcherQueue, action);
 		}
 
-		public static void Execute(CoreApplicationView whichView, Action action)
+		public static void Execute(DispatcherQueue dispatcherQueue, Action action)
 		{
 			Exception exception = null;
-			var dispatcher = whichView.Dispatcher;
-			if (dispatcher.HasThreadAccess)
+			if (dispatcherQueue.HasThreadAccess)
 			{
 				action();
 			}
@@ -47,7 +48,7 @@ namespace MUXControlsTestApp.Utilities
 #endif
 				{
 					// If the Splash screen dismissal happens on the UI thread, run the action right now.
-					if (dispatcher.HasThreadAccess)
+					if (dispatcherQueue.HasThreadAccess)
 					{
 						try
 						{
@@ -66,7 +67,7 @@ namespace MUXControlsTestApp.Utilities
 					else
 					{
 						// Otherwise queue the work to the UI thread and then set the completion event on that thread.
-						var ignore = dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+						var ignore = dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal,
 							() =>
 							{
 								try
@@ -98,27 +99,26 @@ namespace MUXControlsTestApp.Utilities
 		}
 
 		public static async Task ExecuteAsync(Action action) =>
-			await ExecuteAsync(CoreApplication.MainView, () =>
+			await ExecuteAsync(TestServices.WindowHelper.CurrentTestWindow.DispatcherQueue, () =>
 			{
 				action();
 				return Task.CompletedTask;
 			});
 
 		public static async Task ExecuteAsync(Func<Task> task) =>
-			await ExecuteAsync(CoreApplication.MainView, task);
+			await ExecuteAsync(TestServices.WindowHelper.CurrentTestWindow.DispatcherQueue, task);
 
-		public static async Task ExecuteAsync(CoreApplicationView whichView, Action action) =>
-			await ExecuteAsync(whichView, () =>
+		public static async Task ExecuteAsync(DispatcherQueue dispatcherQueue, Action action) =>
+			await ExecuteAsync(dispatcherQueue, () =>
 			{
 				action();
 				return Task.CompletedTask;
 			});
 
-		public static async Task ExecuteAsync(CoreApplicationView whichView, Func<Task> task)
+		public static async Task ExecuteAsync(DispatcherQueue dispatcherQueue, Func<Task> task)
 		{
 			Exception exception = null;
-			var dispatcher = whichView.Dispatcher;
-			if (dispatcher.HasThreadAccess)
+			if (dispatcherQueue.HasThreadAccess)
 			{
 				await task();
 			}
@@ -132,7 +132,7 @@ namespace MUXControlsTestApp.Utilities
 #endif
 				{
 					// If the Splash screen dismissal happens on the UI thread, run the action right now.
-					if (dispatcher.HasThreadAccess)
+					if (dispatcherQueue.HasThreadAccess)
 					{
 						try
 						{
@@ -151,7 +151,7 @@ namespace MUXControlsTestApp.Utilities
 					else
 					{
 						// Otherwise queue the work to the UI thread and then set the completion event on that thread.
-						await dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+						dispatcherQueue.TryEnqueue(DispatcherQueuePriority.Normal,
 							async () =>
 							{
 								try

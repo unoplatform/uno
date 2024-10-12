@@ -67,6 +67,9 @@
 
 		<!-- We remove Unit tests imported from MUX on UAP as they are usualy heavily relying on internal classes.-->
 		<Compile Remove="$(MSBuildThisFileDirectory)MUX\Microsoft_UI_XAML_Controls\**\*.cs" />
+		<Compile Include="$(MSBuildThisFileDirectory)MUX\Microsoft_UI_XAML_Controls\**\*.Uno.cs" />
+		<Compile Include="$(MSBuildThisFileDirectory)MUX\Microsoft_UI_XAML_Controls\Expander\ExpanderTests_APITests.cs" />
+		<Compile Include="$(MSBuildThisFileDirectory)MUX\Microsoft_UI_XAML_Controls\TeachingTip/TeachingTipTests.cs" />
 	</ItemGroup>
 	
 	<PropertyGroup>
