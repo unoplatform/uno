@@ -1,3 +1,16 @@
+using Microsoft.UI.Xaml.Data;
+using Uno.Foundation.Logging;
+
+#if __ANDROID__
+using View = Android.Views.View;
+#elif __IOS__
+using View = UIKit.UIView;
+#elif __MACOS__
+using View = AppKit.NSView;
+#else
+using View = Microsoft.UI.Xaml.UIElement;
+#endif
+
 #if !UNO_HAS_ENHANCED_LIFECYCLE
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -14,7 +27,7 @@ partial class ContentPresenter : IFrameworkTemplatePoolAware
 		_firstLoadResetDone = false;
 	}
 
-	internal DataTemplate SelectedContentTemplate => _dataTemplateUsedLastUpdate;
+	internal FrameworkTemplate SelectedContentTemplate => _dataTemplateUsedLastUpdate;
 
 	protected virtual void OnContentChanged(object oldValue, object newValue)
 	{
