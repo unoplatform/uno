@@ -179,6 +179,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			ContentPresenter cp = null;
 			await WindowHelper.WaitFor(() => (cp = SUT.ContainerFromItem(source[0]) as ContentPresenter) != null);
+			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual("Item 1", cp.Content);
 
