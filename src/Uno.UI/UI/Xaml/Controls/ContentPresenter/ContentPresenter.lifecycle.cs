@@ -77,11 +77,11 @@ partial class ContentPresenter
 		// 3. content is a string and this contentpresenter has contenttransitions
 		// in these cases we also need to invalidate our first child in order to show that
 		// the transitions on our child should seemingly 'bubble up' to this cp.
-		if (oldValue is UIElement)
+		if (oldValue is View)
 		{
 			fInvalidationNeeded = fInvalidationWorthwhile;
 		}
-		else if (newValue is UIElement)
+		else if (newValue is View)
 		{
 			fInvalidationNeeded = fInvalidationWorthwhile;
 		}
@@ -232,7 +232,7 @@ partial class ContentPresenter
 			// we don't want ContentPresenter to create visuals
 			else if (Content is { } content)
 			{
-				if (content is UIElement ui)
+				if (content is View ui)
 				{
 					AddChild(ui);
 				}
@@ -317,7 +317,7 @@ partial class ContentPresenter
 
 	Cleanup:
 		// Uno-specific
-		ContentTemplateRoot = VisualTreeHelper.GetChild(this, 0) as UIElement;
+		ContentTemplateRoot = VisualTreeHelper.GetChild(this, 0) as View;
 		_dataContextInvalid = false;
 		_inOnApplyTemplate = false;
 	}
@@ -327,7 +327,7 @@ partial class ContentPresenter
 	{
 		var content = Content;
 		// Make sure we are indeed using the default template (i.e. content is non-null and is not a UIElement).
-		if (allowNullContent || (content is not null && content is not UIElement))
+		if (allowNullContent || (content is not null && content is not View))
 		{
 			var children = this.GetChildren();
 			if (children is { Count: >= 1 })
