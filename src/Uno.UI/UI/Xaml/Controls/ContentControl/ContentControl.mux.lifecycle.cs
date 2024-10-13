@@ -161,7 +161,8 @@ public partial class ContentControl : Control
 
 	private DataTemplate RefreshSelectedTemplate(DataTemplateSelector contentTemplateSelector, object content, bool reloadContent)
 	{
-		return contentTemplateSelector.SelectTemplate(reloadContent ? Content : content, this);
+		return contentTemplateSelector.SelectTemplate(reloadContent ? Content : content, this)
+			?? contentTemplateSelector.SelectTemplate(reloadContent ? Content : content) /*Uno specific*/;
 	}
 
 	private protected override void OnTemplateChanged(DependencyPropertyChangedEventArgs e)
