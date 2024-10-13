@@ -77,7 +77,7 @@ public partial class ContentControl : Control
 			)
 		);
 
-	protected void OnContentTemplateChanged(DataTemplate oldContentTemplate, DataTemplate newContentTemplate)
+	protected virtual void OnContentTemplateChanged(DataTemplate oldContentTemplate, DataTemplate newContentTemplate)
 	{
 		Invalidate(Template is null);
 
@@ -115,7 +115,7 @@ public partial class ContentControl : Control
 			)
 		);
 
-	protected void OnContentTemplateSelectorChanged(DataTemplateSelector oldContentTemplateSelector, DataTemplateSelector newContentTemplateSelector)
+	protected virtual void OnContentTemplateSelectorChanged(DataTemplateSelector oldContentTemplateSelector, DataTemplateSelector newContentTemplateSelector)
 	{
 		var contentTemplate = ContentTemplate;
 		if (contentTemplate is null)
