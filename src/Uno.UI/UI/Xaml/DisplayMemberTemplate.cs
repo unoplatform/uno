@@ -1,3 +1,4 @@
+#if UNO_HAS_ENHANCED_LIFECYCLE
 #nullable enable
 
 using Microsoft.UI.Xaml.Controls;
@@ -19,3 +20,4 @@ internal partial class DisplayMemberTemplate : DataTemplate
 		}
 	}
 }
+#endif
