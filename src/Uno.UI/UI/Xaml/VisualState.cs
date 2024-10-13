@@ -165,7 +165,7 @@ namespace Microsoft.UI.Xaml
 				LazyBuilder = null;
 				try
 				{
-					TemplatedParentScope.PushScope(GetTemplatedParent(), FromLegacyTemplate == true);
+					TemplatedParentScope.PushScope(this.GetTemplatedParent(), FromLegacyTemplate == true);
 					builder.Invoke();
 				}
 				finally
