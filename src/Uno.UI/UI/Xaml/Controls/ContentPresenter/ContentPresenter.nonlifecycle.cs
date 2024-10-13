@@ -1,5 +1,6 @@
 using Microsoft.UI.Xaml.Data;
 using Uno.Foundation.Logging;
+using Uno.UI.Controls;
 
 #if __ANDROID__
 using View = Android.Views.View;
