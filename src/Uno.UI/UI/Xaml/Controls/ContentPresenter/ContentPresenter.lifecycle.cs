@@ -90,6 +90,8 @@ partial class ContentPresenter
 			// For this case we also validate if there are ContentTransitions since the tree has to be invalidated in order for them to be processed.
 			fInvalidationNeeded = fInvalidationWorthwhile || (ContentTransitions != null && ContentTransitions.Count > 0);
 		}
+		// Uno docs: MOR is likely Managed Object Reference
+		// Uno docs: This ported code may not fully match WinUI and could be revised in future.
 		// 4. Content change should trigger template invalidation if the types of
 		// old and new content do not match. Exception to this rule is when the
 		// old and new content are both of type valueObject, in which case some special
