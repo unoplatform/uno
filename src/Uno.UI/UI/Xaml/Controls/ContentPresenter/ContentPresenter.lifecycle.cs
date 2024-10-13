@@ -5,12 +5,18 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.Xaml;
 
+#if __CROSSRUNTIME__
+using View = Microsoft.UI.Xaml.UIElement;
+// In case other platforms supported enhanced lifecycle, add the corresponding 'using View = ...' for them.
+#endif
+
 namespace Microsoft.UI.Xaml.Controls;
 
 partial class ContentPresenter
 {
 	private bool _inOnApplyTemplate;
 	private bool _dataContextInvalid = true;
+	private object _cachedContent;
 	private const FrameworkPropertyMetadataOptions ContentPropertyOptions = FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.AffectsMeasure;
 
 	public FrameworkTemplate SelectedContentTemplate
@@ -41,6 +47,121 @@ partial class ContentPresenter
 	private static DataTemplate GetDefaultContentPresenterTemplate()
 	{
 		return _defaultContentPresenterTemplate ??= new DisplayMemberTemplate();
+	}
+
+	protected virtual void OnContentChanged(object oldValue, object newValue)
+	{
+		if (GetTemplatedParent() is ContentControl contentControl)
+		{
+			contentControl.ConsiderContentPresenterForContentTemplateRoot(this, newValue);
+		}
+
+		// BEGIN Uno-specific
+		if (oldValue is View || newValue is View)
+		{
+			// Make sure not to reuse the previous Content as a ContentTemplateRoot (i.e., in case there's no data template)
+			// If setting Content to a new View, recreate the template
+			ContentTemplateRoot = null;
+		}
+		// END Uno-specific
+
+		bool fInvalidationNeeded = false;
+		bool participatesInUnloading = this.ParticipatesInUnloadingContentTransition();
+		// Invalidating the tree is only "worthwhile" if we don't have a locally defined content template or selected template,
+		// Checking this early prevents unnecessary calls to FrameworkCallbacks_AreObjectsOfSameType, which is expensive,
+		// and causes a performance hit in long list (Xbox store results) scrolling scenarios
+		bool fInvalidationWorthwhile = ContentTemplate == null && SelectedContentTemplate == null;
+
+		// 1. content (old) is a uielement
+		// 2. content (new) is a uielement
+		// 3. content is a string and this contentpresenter has contenttransitions
+		// in these cases we also need to invalidate our first child in order to show that
+		// the transitions on our child should seemingly 'bubble up' to this cp.
+		if (oldValue is UIElement)
+		{
+			fInvalidationNeeded = fInvalidationWorthwhile;
+		}
+		else if (newValue is UIElement)
+		{
+			fInvalidationNeeded = fInvalidationWorthwhile;
+		}
+		else if (participatesInUnloading)
+		{
+			// For this case we also validate if there are ContentTransitions since the tree has to be invalidated in order for them to be processed.
+			fInvalidationNeeded = fInvalidationWorthwhile || (ContentTransitions != null && ContentTransitions.Count > 0);
+		}
+		// 4. Content change should trigger template invalidation if the types of
+		// old and new content do not match. Exception to this rule is when the
+		// old and new content are both of type valueObject, in which case some special
+		// rules apply -
+		// 4a. Content(MOR) -> NULL.
+		// 4b. NULL -> Content(MOR) where cached content is MOR with same type object.
+		// 4c. If neither the old nor the new content is UIElement, compare the types of the two objects.
+		//     If the types do not match, invalidate the template.
+		else
+		{
+			fInvalidationNeeded = fInvalidationWorthwhile;
+			if (newValue is null)
+			{
+				var child = this.GetFirstChild();
+				if (child is not null)
+				{
+					if (oldValue is not null && (oldValue is not DependencyObject /*|| ((DependencyObject)oldValue).GetTypeIndex() == ExternalObjectReference*/))
+					{
+						// Cache reference to old content value.
+						_cachedContent = oldValue;
+						child.Visibility = Visibility.Collapsed;
+						fInvalidationNeeded = false;
+					}
+				}
+				else
+				{
+					fInvalidationNeeded = false;
+				}
+			}
+			else if (oldValue is null && newValue is not null && _cachedContent is not null)
+			{
+				var child = GetFirstChild();
+				child.Visibility = Visibility.Visible;
+				if (newValue.GetType() == _cachedContent.GetType())
+				{
+					fInvalidationNeeded = false;
+				}
+
+				_cachedContent = null;
+			}
+			else
+			{
+				if (newValue.GetType() == oldValue?.GetType())
+				{
+					fInvalidationNeeded = false;
+				}
+			}
+			// If we got all the way here, this means that there are no content transitions
+			// that participate in unloading. However, if we do have other content transitions,
+			// one of these might participate in loading. If we are not invalidating our visual
+			// child, though, we won't create a new tree and instead we'll just reuse the old one
+			// which has already being loaded, so the load trigger will never fire. Given that, we
+			// will lie to the layout manager and make it look like the visual child just entered
+			// during this tick. When CTransition::OnLayoutChanged gets called as part of the arrange
+			// pass, we will detect this and process the load trigger for this element.
+			//if (!fInvalidationNeeded && ContentTransitions is not null && ContentTransitions.Count > 0)
+			//{
+			//	var child = this.GetFirstChild();
+			//	if (child is not null)
+			//	{
+			//		var layoutManager = VisualTree.GetLayoutManagerForElement(child);
+			//		if (layoutManager is not null)
+			//		{
+			//			child.m_enteredTreeCounter = layoutManager.GetLayoutCounter();
+			//		}
+			//	}
+			//}
+		}
+
+		this.Invalidate(fInvalidationNeeded);
+
+		TryRegisterNativeElement(oldValue, newValue);
 	}
 
 	private protected override void ApplyTemplate(out bool addedVisuals)
@@ -244,6 +365,9 @@ partial class ContentPresenter
 		{
 			ClearChildren();
 
+			// Clear cached reference to the old content value.
+			_cachedContent = null;
+
 			IsUsingDefaultTemplate = false;
 		}
 		else
@@ -305,6 +429,23 @@ partial class ContentPresenter
 		var binding = new Binding();
 		binding.Mode = BindingMode.OneWay;
 		textBlock.SetBinding(TextBlock.TextProperty, binding);
+	}
+
+	private bool ParticipatesInUnloadingContentTransition()
+	{
+		//var contentTransitions = ContentTransitions;
+		//if (contentTransitions is not null && contentTransitions.Count > 0)
+		//{
+		//	foreach (var transition in contentTransitions)
+		//	{
+		//		bool participate = transition.ParticipateInTransitions(this, TransitionTrigger.Unload);
+		//		if (participate)
+		//		{
+		//			return true;
+		//		}
+		//	}
+		//}
+		return false;
 	}
 }
 #endif

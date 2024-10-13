@@ -1064,25 +1064,25 @@ namespace Microsoft.UI.Xaml
 			return GetFirstChild() is not null;
 		}
 
-		internal UIElement GetFirstChildNoAddRef() => GetFirstChild();
+		internal View GetFirstChildNoAddRef() => GetFirstChild();
 
-		internal virtual UIElement/*?*/ GetFirstChild()
+		internal virtual View/*?*/ GetFirstChild()
 		{
 #if __CROSSRUNTIME__ && !__NETSTD_REFERENCE__
 			if (GetChildren() is { Count: > 0 } children)
 			{
-				return children[0] as UIElement;
+				return children[0];
 			}
 #elif XAMARIN
 			if (this is IShadowChildrenProvider { ChildrenShadow: { Count: > 0 } childrenShadow })
 			{
-				return childrenShadow[0] as UIElement;
+				return childrenShadow[0] as View;
 			}
 #endif
 
 			if (VisualTreeHelper.GetChildrenCount(this) > 0)
 			{
-				return VisualTreeHelper.GetChild(this, 0) as UIElement;
+				return VisualTreeHelper.GetChild(this, 0) as View;
 			}
 
 			return null;

@@ -679,35 +679,6 @@ public partial class ContentPresenter : FrameworkElement
 
 	partial void OnFontStretchChangedPartial(FontStretch oldValue, FontStretch newValue);
 
-	protected virtual void OnContentChanged(object oldValue, object newValue)
-	{
-#if UNO_HAS_ENHANCED_LIFECYCLE
-		if (GetTemplatedParent() is ContentControl contentControl)
-		{
-			contentControl.ConsiderContentPresenterForContentTemplateRoot(this, newValue);
-		}
-#endif
-		if (oldValue is View || newValue is View)
-		{
-			// Make sure not to reuse the previous Content as a ContentTemplateRoot (i.e., in case there's no data template)
-			// If setting Content to a new View, recreate the template
-			ContentTemplateRoot = null;
-#if UNO_HAS_ENHANCED_LIFECYCLE
-			Invalidate(true);
-#endif
-		}
-
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-		TrySetDataContextFromContent(newValue);
-#endif
-
-		TryRegisterNativeElement(oldValue, newValue);
-
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-		SetUpdateTemplate();
-#endif
-	}
-
 	private void TrySetDataContextFromContent(object value)
 	{
 		if (value == null || value is View)

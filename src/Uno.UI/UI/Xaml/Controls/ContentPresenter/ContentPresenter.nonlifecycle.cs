@@ -16,6 +16,22 @@ partial class ContentPresenter : IFrameworkTemplatePoolAware
 
 	internal DataTemplate SelectedContentTemplate => _dataTemplateUsedLastUpdate;
 
+	protected virtual void OnContentChanged(object oldValue, object newValue)
+	{
+		if (oldValue is View || newValue is View)
+		{
+			// Make sure not to reuse the previous Content as a ContentTemplateRoot (i.e., in case there's no data template)
+			// If setting Content to a new View, recreate the template
+			ContentTemplateRoot = null;
+		}
+
+		TrySetDataContextFromContent(newValue);
+
+		TryRegisterNativeElement(oldValue, newValue);
+
+		SetUpdateTemplate();
+	}
+
 	protected override void OnApplyTemplate()
 	{
 		base.OnApplyTemplate();
