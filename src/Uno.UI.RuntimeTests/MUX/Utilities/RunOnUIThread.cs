@@ -9,7 +9,12 @@ using Windows.UI.Core;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
+
+#if HAS_UNO_WINUI
 using Microsoft.UI.Dispatching;
+#else
+using Windows.System;
+#endif
 
 #if USING_TAEF
 using WEX.TestExecution;
