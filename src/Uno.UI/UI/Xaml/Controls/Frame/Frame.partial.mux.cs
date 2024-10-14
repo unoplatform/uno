@@ -51,7 +51,7 @@ partial class Frame
 		base.OnApplyTemplate();
 
 #if HAS_UNO
-		if (this.TemplatedRoot?.GetType().Name?.Contains("NativeFramePresenter", StringComparison.OrdinalIgnoreCase) == true)
+		if (this.TemplatedRoot?.GetType().Name?.Contains("NativeFramePresenter", StringComparison.Ordinal) == true)
 		{
 			// It is not possible to use the WinUI behavior with a NativeFramePresenter.
 			if (this.Log().IsEnabled(LogLevel.Error))
