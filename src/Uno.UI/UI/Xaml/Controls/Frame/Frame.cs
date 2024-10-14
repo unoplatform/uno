@@ -181,7 +181,7 @@ public partial class Frame : ContentControl
 
 	internal PageStackEntry GetCurrentPageStackEntry() => _useWinUIBehavior ? m_tpNavigationHistory.GetCurrentPageStackEntry() : CurrentEntry;
 
-	internal Page EnsurePageInitialized(PageStackEntry entry) => _useWinUIBehavior ? entry.Instance : EnsurePageInitializedLegacy(entry);
+	internal Page EnsurePageInitialized(PageStackEntry entry) => _useWinUIBehavior ? m_upNavigationCache.GetContent(m_tpNavigationHistory.GetCurrentPageStackEntry()) as Page : EnsurePageInitializedLegacy(entry);
 
 	internal void SetContent(object content)
 	{

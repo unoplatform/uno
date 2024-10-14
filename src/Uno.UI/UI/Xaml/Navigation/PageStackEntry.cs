@@ -103,7 +103,7 @@ public sealed partial class PageStackEntry : DependencyObject
 		}
 	}
 
-	private Frame GetFrame() => m_wrFrame?.IsAlive == true ? m_wrFrame.Target as Frame : null;
+	internal Frame GetFrame() => m_wrFrame?.IsAlive == true ? m_wrFrame.Target as Frame : null;
 
 	//------------------------------------------------------------------------
 	//
