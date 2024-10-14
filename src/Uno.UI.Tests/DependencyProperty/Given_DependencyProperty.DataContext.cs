@@ -178,10 +178,8 @@ namespace Uno.UI.Tests.BinderTests_DataContext
 			SUT.MyList = new List<MyObject>() { sub1 };
 
 			SUT.DataContext = 42;
-			SUT.TemplatedParent = templatedParent;
 
 			Assert.AreEqual(42, sub1.DataContext);
-			Assert.AreEqual(templatedParent, sub1.TemplatedParent);
 		}
 
 		[TestMethod]
@@ -194,10 +192,8 @@ namespace Uno.UI.Tests.BinderTests_DataContext
 			SUT.MyList = new NonEnumerableList<MyObject>() { sub1 };
 
 			SUT.DataContext = 42;
-			SUT.TemplatedParent = templatedParent;
 
 			Assert.AreEqual(42, sub1.DataContext);
-			Assert.AreEqual(templatedParent, sub1.TemplatedParent);
 		}
 
 		[TestMethod]

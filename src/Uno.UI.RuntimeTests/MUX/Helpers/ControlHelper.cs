@@ -121,6 +121,19 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 			return rect;
 		}
 
+		public static bool IsContainedIn(Rect inner, Rect outer)
+		{
+			var outerRight = outer.X + outer.Width;
+			var outerBottom = outer.Y + outer.Height;
+			var innerRight = inner.X + inner.Width;
+			var innerBottom = inner.Y + inner.Height;
+
+			return outer.X <= inner.X
+				&& outer.Y <= inner.Y
+				&& outerRight >= innerRight
+				&& outerBottom >= innerBottom;
+		}
+
 		public static async Task<bool> IsInVisualState(Control control, string visualStateGroupName, string visualStateName)
 		{
 			bool result = false;

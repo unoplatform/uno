@@ -16,6 +16,7 @@ using Uno.Foundation.Diagnostics.CodeAnalysis;
 [assembly: InternalsVisibleTo("Uno.UI.Svg")]
 [assembly: InternalsVisibleTo("Uno.UI.Svg.Skia")]
 [assembly: InternalsVisibleTo("Uno.UI.XamlHost")]
+[assembly: InternalsVisibleTo("Uno.UI.Maps")]
 [assembly: InternalsVisibleTo("SamplesApp")]
 [assembly: InternalsVisibleTo("SamplesApp.Droid")]
 [assembly: InternalsVisibleTo("SamplesApp.macOS")]

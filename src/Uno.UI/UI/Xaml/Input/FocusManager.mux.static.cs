@@ -488,7 +488,8 @@ namespace Microsoft.UI.Xaml.Input
 				focusState,
 				animateIfBringIntoView,
 				forceBringIntoView,
-				focusNavigationDirection);
+				focusNavigationDirection,
+				false);
 
 			return pFocusUpdated;
 		}
@@ -507,7 +508,8 @@ namespace Microsoft.UI.Xaml.Input
 			 FocusState focusState,
 			 bool animateIfBringIntoView,
 			 bool forceBringIntoView,
-			 FocusNavigationDirection focusNavigationDirection)
+			 FocusNavigationDirection focusNavigationDirection,
+			 bool requestInputActivation) // TODO Uno: Add support for input activation
 		{
 			DependencyObject? spElementToFocus = pElement;
 			Control? spControlToFocus;

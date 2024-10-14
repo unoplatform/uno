@@ -259,10 +259,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		public SourceText GenerateFile()
 		{
-#if DEBUG
-			Console.WriteLine("Processing file {0} (cs: {1})".InvariantCultureFormat(_fileDefinition.FilePath, _fileDefinition.Checksum));
-#endif
-
 			try
 			{
 				return InnerGenerateFile();
@@ -922,7 +918,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								// implementation of a type during hot reload.
 								using (writer.BlockInvariant($"internal interface {hrInterfaceName}"))
 								{
+#if USE_NEW_TP_CODEGEN
+									writer.AppendLineIndented($"{kvp.Value.ReturnType} Build(object owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings);");
+#else
 									writer.AppendLineIndented($"{kvp.Value.ReturnType} Build(object owner);");
+#endif
 								}
 							}
 
@@ -938,7 +938,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								{
 									writer.AppendLineIndented("global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();");
 
+#if USE_NEW_TP_CODEGEN
+									using (writer.BlockInvariant($"public {kvp.Value.ReturnType} Build(object {CurrentResourceOwner}, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)"))
+#else
 									using (writer.BlockInvariant($"public {kvp.Value.ReturnType} Build(object {CurrentResourceOwner})"))
+#endif
 									{
 										writer.AppendLineIndented($"{kvp.Value.ReturnType} __rootInstance = null;");
 										writer.AppendLineIndented($"var __that = this;");
@@ -951,9 +955,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 										BuildCompiledBindingsInitializerForTemplate(writer);
 
-										using (writer.BlockInvariant("if (__rootInstance is DependencyObject d)", kvp.Value.ReturnType))
+										using (writer.BlockInvariant("if (__rootInstance is DependencyObject d)"))
 										{
-											using (writer.BlockInvariant("if (global::Microsoft.UI.Xaml.NameScope.GetNameScope(d) == null)", kvp.Value.ReturnType))
+											using (writer.BlockInvariant("if (global::Microsoft.UI.Xaml.NameScope.GetNameScope(d) == null)"))
 											{
 												writer.AppendLineIndented("global::Microsoft.UI.Xaml.NameScope.SetNameScope(d, __nameScope);");
 												writer.AppendLineIndented("__nameScope.Owner = d;");
@@ -3064,13 +3068,22 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						writer.AppendIndented(GenerateRootPhases(objectDefinition, closureName) ?? "");
 					}
 
+					var isInsideFrameworkTemplate = IsMemberInsideFrameworkTemplate(objectDefinition).isInside;
+#if USE_NEW_TP_CODEGEN
+					var isDependencyObject = IsType(objectDefinitionType, Generation.DependencyObjectSymbol.Value);
+					if (isInsideFrameworkTemplate && isDependencyObject)
+					{
+						writer.AppendLineIndented($"{closureName}.SetTemplatedParent(__settings?.TemplatedParent);");
+						writer.AppendLineIndented($"__settings?.TemplateMemberCreatedCallback?.Invoke({closureName});");
+					}
+#endif
+
 					componentDefinition = CurrentScope.Components.FirstOrDefault(x => x.XamlObject == objectDefinition);
 					if (componentDefinition is { } || // element can also be register for component by a descendant DO as its resource provider
 						HasXBindMarkupExtension(objectDefinition) ||
 						HasMarkupExtensionNeedingComponent(objectDefinition))
 					{
 						writer.AppendLineIndented($"/* _isTopLevelDictionary:{_isTopLevelDictionary} */");
-						var isInsideFrameworkTemplate = IsMemberInsideFrameworkTemplate(objectDefinition).isInside;
 						if (!_isTopLevelDictionary || isInsideFrameworkTemplate)
 						{
 							componentDefinition ??= AddComponentForCurrentScope(objectDefinition);
@@ -4595,9 +4608,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (declaringType == null || propertyType == null)
 			{
-#if DEBUG
-				Console.WriteLine($"Unable to determine the target dependency property for the markup extension ('{member.Member}' cannot be found).");
-#endif
 				return string.Empty;
 			}
 
@@ -5899,13 +5909,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private static bool IsNewScope(XamlObjectDefinition xamlObjectDefinition)
 		{
-			var typeName = xamlObjectDefinition.Type.Name;
-			return typeName == "DataTemplate" ||
-				typeName == "ItemsPanelTemplate" ||
-				typeName == "ControlTemplate" ||
+			return xamlObjectDefinition.Type.Name
+				is "DataTemplate"
+				or "ItemsPanelTemplate"
+				or "ControlTemplate"
+
 				// This case is specific the custom ListView for iOS. Should be removed
 				// when the list rebuilt to be compatible.
-				typeName == "ListViewBaseLayoutTemplate";
+				or "ListViewBaseLayoutTemplate";
 		}
 
 		private void BuildChild(IIndentedStringBuilder writer, XamlMemberDefinition? owner, XamlObjectDefinition xamlObjectDefinition, string? outerClosure = null)
@@ -5945,11 +5956,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						var resourceOwner = CurrentResourceOwnerName;
 
-						writer.Append($"{resourceOwner} , __owner => ");
+#if USE_NEW_TP_CODEGEN
+						writer.Append($"{resourceOwner}, (__owner, __settings) => ");
+#else
+						writer.Append($"{resourceOwner}, (__owner) => ");
+#endif
+
 						// This case is to support the layout switching for the ListViewBaseLayout, which is not
 						// a FrameworkTemplate. This will need to be removed when this custom list view is removed.
 						var returnType = typeName == "ListViewBaseLayoutTemplate" ? "global::Uno.UI.Controls.Legacy.ListViewBaseLayout" : "_View";
-
 						BuildChildThroughSubclass(writer, contentOwner, returnType);
 
 						writer.AppendIndented(")");
@@ -6597,8 +6612,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var activator = _isHotReloadEnabled
 				? $"(({namespacePrefix}I{subclassName})global::Uno.UI.Helpers.TypeMappings.CreateInstance<{namespacePrefix}{subclassName}>())"
 				: $"new {namespacePrefix}{subclassName}()";
-
+#if USE_NEW_TP_CODEGEN
+			writer.AppendLineIndented($"{activator}.Build(__owner, __settings)");
+#else
 			writer.AppendLineIndented($"{activator}.Build(__owner)");
+#endif
 		}
 
 		private string GenerateConstructorParameters(INamedTypeSymbol? type)
@@ -6732,9 +6750,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 			else if (memberValue.EndsWith("px", StringComparison.OrdinalIgnoreCase))
 			{
-#if DEBUG
-				Console.WriteLine($"The value [{memberValue}] is specified in pixel and is not yet supported. ({owner?.LineNumber}, {owner?.LinePosition} in {_fileDefinition.FilePath})");
-#endif
 				return "{0}{1}".InvariantCultureFormat(memberValue.TrimEnd("px"), isDouble ? "d" : "f");
 			}
 

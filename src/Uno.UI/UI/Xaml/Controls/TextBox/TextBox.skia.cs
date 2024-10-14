@@ -140,7 +140,6 @@ public partial class TextBox
 		}
 		else
 		{
-			global::System.Diagnostics.CI.Assert(!_isSkiaTextBox || _selection.length == 0);
 			_historyIndex++;
 			_history.RemoveAllAt(_historyIndex);
 			_history.Add(new HistoryRecord(

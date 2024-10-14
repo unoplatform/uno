@@ -26,7 +26,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.EventsTests.Controls
 		{
 			this.InitializeComponent();
 
-			myContentPresenter.ContentTemplate = testControl.GetTemplate();
+			myContentPresenter.ContentTemplate = testControl.GetTestTemplate();
 		}
 	}
 }

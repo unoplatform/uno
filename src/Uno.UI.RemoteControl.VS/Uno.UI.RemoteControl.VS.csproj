@@ -23,6 +23,7 @@
 	<ItemGroup>
 		<!-- Avoid transitive dependency from Microsoft.VisualStudio.ProjectSystem → Microsoft.Build on 4.7.1 which has a vulnerability -->
 		<PackageReference Include="Microsoft.IO.Redist" Version="6.0.1" />
+		<PackageReference Include="System.Text.Json" Version="8.0.5" />
 
 		<PackageReference Include="Microsoft.VisualStudio.ProjectSystem.Managed" Version="2.0.6142705" />
 		<PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.4.33103.184" ExcludeAssets="runtime" />

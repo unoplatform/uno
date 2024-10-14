@@ -21,7 +21,7 @@
 		<NetCurrent>net9.0</NetCurrent>
 		<NetPrevious>net8.0</NetPrevious>
 
-		<NetCurrentNetCoreMobile>$(NetCurrent)-android;$(NetCurrent)-ios17.5;$(NetCurrent)-maccatalyst17.5;$(NetCurrent)-macos14.5</NetCurrentNetCoreMobile>
+		<NetCurrentNetCoreMobile>$(NetCurrent)-android;$(NetCurrent)-ios18.0;$(NetCurrent)-maccatalyst18.0;$(NetCurrent)-macos15.0</NetCurrentNetCoreMobile>
 		<NetPreviousNetCoreMobile>$(NetPrevious)-android;$(NetPrevious)-ios17.0;$(NetPrevious)-maccatalyst17.0;$(NetPrevious)-macos14.0</NetPreviousNetCoreMobile>
 
 		<NetPreviousWpf>$(NetPrevious)-windows</NetPreviousWpf>

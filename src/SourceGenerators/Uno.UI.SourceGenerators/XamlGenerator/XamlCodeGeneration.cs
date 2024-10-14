@@ -617,9 +617,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.WithCancellation(ct)
 				.SelectMany(file =>
 				{
-#if DEBUG
-					Console.WriteLine("Parse resource file : " + file.Identity);
-#endif
 					try
 					{
 						var sourceText = file.File.GetText(ct)!;
@@ -667,9 +664,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.Distinct()
 				.ToArray();
 
-#if DEBUG
-			Console.WriteLine(resourceKeys.Length + " localization keys found");
-#endif
 			return resourceKeys;
 		}
 

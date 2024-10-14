@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Windows.UI;
@@ -12,7 +13,7 @@ using System.Diagnostics;
 namespace Microsoft.UI.Xaml.Media.Animation
 {
 	[ContentProperty(Name = nameof(KeyFrames))]
-	partial class ColorAnimationUsingKeyFrames : Timeline, ITimeline
+	partial class ColorAnimationUsingKeyFrames : Timeline, ITimeline, IKeyFramesProvider
 	{
 		private readonly Stopwatch _activeDuration = new Stopwatch();
 		private bool _wasBeginScheduled;
@@ -434,5 +435,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 #if IS_UNIT_TESTS
 		private bool ReportEachFrame() => true;
 #endif
+
+		IEnumerable IKeyFramesProvider.GetKeyFrames() => KeyFrames;
 	}
 }

@@ -7,6 +7,7 @@ jobs:
 - job: netcoremobile_win_build
   displayName: '.NET Mobile Package Binaries'
   timeoutInMinutes: 90
+  cancelTimeoutInMinutes: 1
 
   pool: ${{ parameters.poolName }}
 
@@ -74,7 +75,7 @@ jobs:
       msbuildLocationMethod: version
       msbuildVersion: latest
       msbuildArchitecture: x86
-      msbuildArguments: /r /m /v:m /p:Configuration=Release /p:BuildGraphics3DGLForWindows=true /detailedsummary /bl:$(build.artifactstagingdirectory)/build-$(GitVersion.FullSemVer)-graphics3dgl-windows-$(XAML_FLAVOR_BUILD)-binaries.binlog
+      msbuildArguments: /r /m /v:m /p:Configuration=Release /p:BuildGraphics3DGLForWindows=true /p:PackageVersion=$(GITVERSION.SemVer) /p:InformationalVersion=$(GITVERSION.InformationalVersion) /p:PackageOutputPath=$(build.artifactstagingdirectory)\vslatest-netcoremobile /detailedsummary /bl:$(build.artifactstagingdirectory)/build-$(GitVersion.FullSemVer)-graphics3dgl-windows-$(XAML_FLAVOR_BUILD)-binaries.binlog
       clean: false
       restoreNugetPackages: false
       logProjectEvents: false

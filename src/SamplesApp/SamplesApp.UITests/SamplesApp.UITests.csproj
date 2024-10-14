@@ -1,7 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>$(NetCurrent)</TargetFramework>
+		<!-- We keep TFM as NetPrevious to allow local build to work with "Previous" SDK -->
+		<!-- However, in CI, we run with "Current" SDK and so "Previous" .NET runtime may not be installed, so we set RollForward -->
+		<TargetFramework>$(NetPrevious)</TargetFramework>
+		<RollForward>Major</RollForward>
 
 		<DefineConstants Condition="$(UnoTargetFrameworkOverride.ToLowerInvariant().EndsWith('-android'))">$(DefineConstants);TARGET_FRAMEWORK_OVERRIDE_ANDROID</DefineConstants>
 
@@ -24,7 +27,7 @@
 		<PackageReference Include="Uno.UITest.Helpers" />
 		<PackageReference Include="SkiaSharp" />
 		<PackageReference Include="SkiaSharp.NativeAssets.Linux" />
-		<PackageReference Include="System.Text.Json" Version="8.0.4" />
+		<PackageReference Include="System.Text.Json" Version="8.0.5" />
 	</ItemGroup>
 
 	<ItemGroup>

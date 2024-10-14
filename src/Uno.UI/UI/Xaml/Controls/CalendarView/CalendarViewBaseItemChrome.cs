@@ -87,7 +87,7 @@ namespace Microsoft.UI.Xaml.Controls
 			m_hasLabel = false;
 		}
 
-		private bool HasTemplateChild()
+		private protected override bool HasTemplateChild()
 		{
 			return GetFirstChildNoAddRef() != null;
 		}

@@ -4,6 +4,9 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
 using Uno.Disposables;
+using Uno.UI.Extensions;
+using Uno.UI.Helpers;
+using Uno.UI.RuntimeTests.Helpers;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Data;
 
 [TestClass]
@@ -591,5 +594,45 @@ public class Given_BindingExpression
 
 		Assert.IsTrue(BoolToVisibilityConverter.ReceivedNull);
 		Assert.AreEqual(BoolToVisibilityConverter.CanReturnNull ? "targetnullvalue" : "convertervalue", SUT.Prop);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[DataRow("SUT_S")]
+	[DataRow("SUT_RS")]
+	[DataRow("SUT_S_RS")]
+	public async Task When_Binding_Sources(string sutName)
+	{
+		var host = new When_Binding_Sources_Setup();
+		//	<Button x:Name="HostButton" Content="ButtonContent" Tag="ButtonTag">
+		//		<Button.Resources>
+		//			<x:String x:Key="LocalResStringA">LocalResStringA</x:String>
+		//		</Button.Resources>
+		//		<Button.Template>
+		//			<ControlTemplate TargetType="Button">
+		//				<StackPanel>
+		//					<TextBlock x:Name="SUT_S" Tag="{Binding Source={StaticResource LocalResStringA}}" Text="string:LocalResStringA" />
+		//					<TextBlock x:Name="SUT_RS" Tag="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}}" Text="Button#HostButton" />
+		//					<TextBlock x:Name="SUT_S_RS" Tag="{Binding Source={StaticResource LocalResStringA}, RelativeSource={RelativeSource Mode=TemplatedParent}}" Text="string:LocalResStringA" />
+		//				</StackPanel>
+		//			</ControlTemplate>
+		//		</Button.Template>
+		//	</Button>
+		await UITestHelper.Load(host);
+
+		var sut = host.FindFirstDescendantOrThrow<TextBlock>(sutName);
+		if (sut.Text == "string:LocalResStringA")
+		{
+			Assert.IsInstanceOfType<string>(sut.Tag, $"[{sut.Name}]Expecting binding result to be 'LocalResStringA'");
+			Assert.AreEqual("LocalResStringA", sut.Tag as string, $"[{sut.Name}]Expecting binding result to be 'LocalResStringA'");
+		}
+		else if (sut.Text == "Button#HostButton")
+		{
+			Assert.AreEqual(host, sut.Tag, $"[{sut.Name}]Expecting the binding result to be the templated-parent(Button#HostButton)");
+		}
+		else
+		{
+			Assert.Fail($"Invalid expectation: [{sut.Name}]{sut.Text}");
+		}
 	}
 }

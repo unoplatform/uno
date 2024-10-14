@@ -1,21 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
-using System.Text;
-using Microsoft.UI.Xaml.Media.Imaging;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Text;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml.Controls;
+using Windows.Foundation;
 using Windows.UI;
 using Microsoft.UI.Xaml;
-using Windows.Foundation;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 
 namespace Uno.UI.RuntimeTests.Helpers
 {
 	/// <summary>
 	/// Class that make it possible to find a specific child position in a parent FrameworkElement
 	/// </summary>
+	[DebuggerDisplay("{DebugDisplay,nq}")]
 	public class RelativeCoords// renamed to RelativeCoords
 	{
 		private readonly GeneralTransform _transform;
@@ -32,6 +34,8 @@ namespace Uno.UI.RuntimeTests.Helpers
 		{
 			return new RelativeCoords(child.TransformToVisual(parent), child.Width, child.Height);
 		}
+
+		internal string DebugDisplay => $"{Width:0.#}x{Height:0.#}@{Left:0.#},{Top:0.#}";
 
 		// note: the transformed (0, 0) position is based the top-left.
 		public float X => (float)_transform.TransformPoint(new Windows.Foundation.Point(0, 0)).X;

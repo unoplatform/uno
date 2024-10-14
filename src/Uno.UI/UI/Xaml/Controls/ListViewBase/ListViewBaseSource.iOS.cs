@@ -331,7 +331,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (selectorItem != null)
 			{
 				selectorItem.IsSelected = Owner?.XamlParent?.IsSelected(index) ?? false;
-				Owner?.XamlParent?.ApplyMultiSelectState(selectorItem);
+				selectorItem.UpdateMultiSelectStates(useTransitions: selectorItem.IsLoaded);
 			}
 
 			FrameworkElement.RegisterPhaseBinding(container.Content, a => RegisterForRecycled(container, a));

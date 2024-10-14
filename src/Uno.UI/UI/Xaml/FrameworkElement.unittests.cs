@@ -75,11 +75,6 @@ namespace Microsoft.UI.Xaml
 			return _children;
 		}
 
-		internal bool HasParent()
-		{
-			return Parent != null;
-		}
-
 		protected internal override void OnInvalidateMeasure()
 		{
 			base.OnInvalidateMeasure();

@@ -181,8 +181,21 @@ public partial class EntryPoint : IDisposable
 					(
 						previousFramework is not null
 						&& GetTargetFrameworkIdentifier(previousFramework) is { } previousTargetFrameworkIdentifier
-						&& (previousTargetFrameworkIdentifier is WasmTargetFrameworkIdentifier or DesktopTargetFrameworkIdentifier or Windows10TargetFrameworkIdentifier
-							|| targetFrameworkIdentifier is WasmTargetFrameworkIdentifier or DesktopTargetFrameworkIdentifier or Windows10TargetFrameworkIdentifier)
+						&& (
+							(
+								// 17.12 or later properly supports having their TFM anywhere in the
+								// TFMs lists, except Wasm.
+								GetVisualStudioReleaseVersion() >= new Version(17, 12)
+								&& (
+									previousTargetFrameworkIdentifier is WasmTargetFrameworkIdentifier
+									|| targetFrameworkIdentifier is WasmTargetFrameworkIdentifier))
+
+							|| (
+								// 17.11 or earlier needs reloading most TFMs
+								GetVisualStudioReleaseVersion() < new Version(17, 12)
+								&& (previousTargetFrameworkIdentifier is WasmTargetFrameworkIdentifier or DesktopTargetFrameworkIdentifier or Windows10TargetFrameworkIdentifier
+									|| targetFrameworkIdentifier is WasmTargetFrameworkIdentifier or DesktopTargetFrameworkIdentifier or Windows10TargetFrameworkIdentifier))
+						)
 					)
 				)
 			)

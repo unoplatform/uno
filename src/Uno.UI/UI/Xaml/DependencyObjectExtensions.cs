@@ -448,5 +448,15 @@ namespace Microsoft.UI.Xaml
 		// allows for some customization - e.g. glyphs should not respect this.
 		internal static bool IsRightToLeft(this DependencyObject dependencyObject) =>
 			dependencyObject is FrameworkElement fw && fw.FlowDirection == FlowDirection.RightToLeft;
+
+		internal static DependencyObject GetTemplatedParent(this DependencyObject @do)
+		{
+			return (@do as IDependencyObjectStoreProvider)?.Store.GetTemplatedParent2();
+		}
+
+		internal static void SetTemplatedParent(this DependencyObject @do, DependencyObject tp)
+		{
+			(@do as IDependencyObjectStoreProvider)?.Store.SetTemplatedParent2(tp);
+		}
 	}
 }
