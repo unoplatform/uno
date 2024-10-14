@@ -35,6 +35,13 @@ namespace Uno.UI.Helpers
 		public static Page? EnsurePageInitialized(Frame? frame, PageStackEntry? entry) => frame?.EnsurePageInitialized(entry);
 
 		/// <summary>
+		/// Checks whether the given Frame uses the WinUI behavior (respecting NavigationCacheMode).
+		/// </summary>
+		/// <param name="frame">Frame.</param>
+		/// <returns>True if WinUI behavior is used.</returns>
+		public static bool HasWinUIBehavior(Frame frame) => frame?.HasWinUIBehavior ?? throw new ArgumentNullException(nameof(frame));
+
+		/// <summary>
 		/// Creates a new instance of <see cref="NavigationEventArgs"/>
 		/// </summary>
 		/// <param name="content"></param>

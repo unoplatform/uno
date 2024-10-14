@@ -183,7 +183,7 @@ partial class Frame
 
 	private void OnSourcePageTypeChanged(DependencyPropertyChangedEventArgs e)
 	{
-		if (!_useWinUIBehavior)
+		if (!_hasWinUIBehavior)
 		{
 			OnSourcePageTypeChangedLegacy(e);
 		}

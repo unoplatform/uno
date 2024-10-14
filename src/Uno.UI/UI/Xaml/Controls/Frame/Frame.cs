@@ -23,15 +23,15 @@ namespace Microsoft.UI.Xaml.Controls;
 /// </summary>
 public partial class Frame : ContentControl
 {
-	private bool _useWinUIBehavior;
+	private bool _hasWinUIBehavior;
 
 	/// <summary>
 	/// Initializes a new instance of the Frame class.
 	/// </summary>
 	public Frame()
 	{
-		_useWinUIBehavior = FeatureConfiguration.Frame.UseWinUIBehavior;
-		if (_useWinUIBehavior)
+		_hasWinUIBehavior = FeatureConfiguration.Frame.UseWinUIBehavior;
+		if (_hasWinUIBehavior)
 		{
 			CtorWinUI();
 		}
@@ -41,18 +41,20 @@ public partial class Frame : ContentControl
 		}
 	}
 
+	internal bool HasWinUIBehavior => _hasWinUIBehavior;
+
 	/// <summary>
 	/// Serializes the Frame navigation history into a string.
 	/// </summary>
 	public string GetNavigationState() =>
-		_useWinUIBehavior ? GetNavigationStateImpl() : GetNavigationStateLegacy();
+		_hasWinUIBehavior ? GetNavigationStateImpl() : GetNavigationStateLegacy();
 
 	/// <summary>
 	/// Navigates to the most recent item in back navigation history, if a Frame manages its own navigation history.
 	/// </summary>
 	public void GoBack()
 	{
-		if (_useWinUIBehavior)
+		if (_hasWinUIBehavior)
 		{
 			GoBackImpl();
 		}
@@ -69,7 +71,7 @@ public partial class Frame : ContentControl
 	/// <param name="transitionInfoOverride">Info about the animated transition to use.</param>
 	public void GoBack(NavigationTransitionInfo transitionInfoOverride)
 	{
-		if (_useWinUIBehavior)
+		if (_hasWinUIBehavior)
 		{
 			GoBackWithTransitionInfoImpl(transitionInfoOverride);
 		}
@@ -84,7 +86,7 @@ public partial class Frame : ContentControl
 	/// </summary>
 	public void GoForward()
 	{
-		if (_useWinUIBehavior)
+		if (_hasWinUIBehavior)
 		{
 			GoForwardImpl();
 		}
@@ -99,7 +101,7 @@ public partial class Frame : ContentControl
 	/// </summary>
 	/// <param name="sourcePageType">The page to navigate to, specified as a type reference to its partial class type.</param>
 	/// <returns>False if a NavigationFailed event handler has set Handled to true; otherwise, true. See Remarks for more info.</returns>
-	public bool Navigate(Type sourcePageType) => _useWinUIBehavior ? NavigateImpl(sourcePageType) : NavigateLegacy(sourcePageType);
+	public bool Navigate(Type sourcePageType) => _hasWinUIBehavior ? NavigateImpl(sourcePageType) : NavigateLegacy(sourcePageType);
 
 	/// <summary>
 	/// Causes the Frame to load content represented by the specified Page, also passing a parameter to be interpreted by the target of the navigation.
@@ -107,7 +109,7 @@ public partial class Frame : ContentControl
 	/// <param name="sourcePageType">The page to navigate to, specified as a type reference to its partial class type.</param>
 	/// <param name="parameter">The navigation parameter to pass to the target page.</param>
 	/// <returns>False if a NavigationFailed event handler has set Handled to true; otherwise, true. See Remarks for more info.</returns>
-	public bool Navigate(Type sourcePageType, object parameter) => _useWinUIBehavior ? NavigateImpl(sourcePageType, parameter) : NavigateLegacy(sourcePageType, parameter);
+	public bool Navigate(Type sourcePageType, object parameter) => _hasWinUIBehavior ? NavigateImpl(sourcePageType, parameter) : NavigateLegacy(sourcePageType, parameter);
 
 	/// <summary>
 	/// Causes the Frame to load content represented by the specified Page-derived data type, also passing a parameter to be interpreted by the target of the navigation,
@@ -118,7 +120,7 @@ public partial class Frame : ContentControl
 	/// <param name="infoOverride">Info about the animated transition.</param>
 	/// <returns></returns>
 	public bool Navigate(Type sourcePageType, object parameter, NavigationTransitionInfo infoOverride) =>
-		_useWinUIBehavior ? NavigateWithTransitionInfoImpl(sourcePageType, parameter, infoOverride) : NavigateWithTransitionInfoLegacy(sourcePageType, parameter, infoOverride);
+		_hasWinUIBehavior ? NavigateWithTransitionInfoImpl(sourcePageType, parameter, infoOverride) : NavigateWithTransitionInfoLegacy(sourcePageType, parameter, infoOverride);
 
 	/// <summary>
 	/// Causes the Frame to load content represented by the specified Page, also passing a parameter to be interpreted by the target of the navigation.
@@ -128,7 +130,7 @@ public partial class Frame : ContentControl
 	/// <param name="navigationOptions">Options for the navigation, including whether it is recorded in the navigation stack and what transition animation is used.</param>
 	/// <returns></returns>
 	public bool NavigateToType(Type sourcePageType, object parameter, FrameNavigationOptions navigationOptions) =>
-		_useWinUIBehavior ? NavigateToTypeImpl(sourcePageType, parameter, navigationOptions) : NavigateToTypeLegacy(sourcePageType, parameter, navigationOptions);
+		_hasWinUIBehavior ? NavigateToTypeImpl(sourcePageType, parameter, navigationOptions) : NavigateToTypeLegacy(sourcePageType, parameter, navigationOptions);
 
 	/// <summary>
 	/// Reads and restores the navigation history of a Frame from a provided serialization string.
@@ -136,7 +138,7 @@ public partial class Frame : ContentControl
 	/// <param name="navigationState">The serialization string that supplies the restore point for navigation history.</param>
 	public void SetNavigationState(string navigationState)
 	{
-		if (_useWinUIBehavior)
+		if (_hasWinUIBehavior)
 		{
 			SetNavigationStateImpl(navigationState);
 		}
@@ -153,7 +155,7 @@ public partial class Frame : ContentControl
 	/// <param name="suppressNavigate">True to restore navigation history without navigating to the current page; otherwise, false.</param>
 	public void SetNavigationState(string navigationState, bool suppressNavigate)
 	{
-		if (_useWinUIBehavior)
+		if (_hasWinUIBehavior)
 		{
 			SetNavigationStateWithNavigationControlImpl(navigationState, suppressNavigate);
 		}
@@ -179,9 +181,9 @@ public partial class Frame : ContentControl
 		return Activator.CreateInstance(replacementType);
 	}
 
-	internal PageStackEntry GetCurrentPageStackEntry() => _useWinUIBehavior ? m_tpNavigationHistory.GetCurrentPageStackEntry() : CurrentEntry;
+	internal PageStackEntry GetCurrentPageStackEntry() => _hasWinUIBehavior ? m_tpNavigationHistory.GetCurrentPageStackEntry() : CurrentEntry;
 
-	internal Page EnsurePageInitialized(PageStackEntry entry) => _useWinUIBehavior ? m_upNavigationCache.GetContent(m_tpNavigationHistory.GetCurrentPageStackEntry()) as Page : EnsurePageInitializedLegacy(entry);
+	internal Page EnsurePageInitialized(PageStackEntry entry) => _hasWinUIBehavior ? m_upNavigationCache.GetContent(m_tpNavigationHistory.GetCurrentPageStackEntry()) as Page : EnsurePageInitializedLegacy(entry);
 
 	internal void SetContent(object content)
 	{

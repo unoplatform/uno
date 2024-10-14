@@ -88,7 +88,7 @@ partial class Frame
 		base.OnPropertyChanged2(args);
 
 #if HAS_UNO // Make sure we don't overrule legacy behavior if required
-		if (!_useWinUIBehavior)
+		if (!_hasWinUIBehavior)
 		{
 			return;
 		}
@@ -411,7 +411,7 @@ partial class Frame
 	internal void RemovePageFromCache(string descriptor)
 	{
 #if HAS_UNO // Do not use this method when legacy behavior is preferred
-		if (!_useWinUIBehavior)
+		if (!_hasWinUIBehavior)
 		{
 			return;
 		}
