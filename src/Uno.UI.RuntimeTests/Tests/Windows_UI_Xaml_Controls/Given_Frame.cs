@@ -4,6 +4,8 @@ using Private.Infrastructure;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 using Microsoft.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml;
+using Uno.UI.Xaml;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
@@ -437,6 +439,30 @@ public class Given_Frame
 		Assert.IsTrue(_navigateOrderTracker.FrameNavigated);
 	}
 
+	[TestMethod]
+	public async Task When_NativeFrame_WinUI_Mode()
+	{
+		var originalFrameKind = FeatureConfiguration.Frame.UseWinUIBehavior;
+		FeatureConfiguration.Frame.UseWinUIBehavior = true;
+		try
+		{
+			var SUT = new Frame()
+			{
+				Style = (Style)Application.Current.Resources["NativeDefaultFrame"]
+			};
+			TestServices.WindowHelper.WindowContent = SUT;
+			await TestServices.WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Navigate(typeof(NativeFrameLoadedPage));
+
+			await TestServices.WindowHelper.WaitFor(() => (SUT.Content as NativeFrameLoadedPage)?.WasLoaded == true);
+		}
+		finally
+		{
+			FeatureConfiguration.Frame.UseWinUIBehavior = originalFrameKind;
+		}
+	}
+
 	[TestCleanup]
 	public void Cleanup()
 	{
@@ -612,4 +638,16 @@ public partial class FrameNavigateFirstPage : Page
 
 public partial class FrameNavigateSecondPage : Page
 {
+}
+
+public partial class NativeFrameLoadedPage : Page
+{
+	public NativeFrameLoadedPage()
+	{
+		Loaded += NativeFrameLoadedPage_Loaded;
+	}
+
+	public bool WasLoaded { get; private set; }
+
+	private void NativeFrameLoadedPage_Loaded(object sender, RoutedEventArgs e) => WasLoaded = true;
 }
