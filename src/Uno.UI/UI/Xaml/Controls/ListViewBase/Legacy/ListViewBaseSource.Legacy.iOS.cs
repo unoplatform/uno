@@ -658,8 +658,10 @@ namespace Uno.UI.Controls.Legacy
 				get => base.Frame;
 				set
 				{
+					var content = Content;
+					content?.Measure(value.Size);
 					base.Frame = value;
-					Content?.Arrange(value);
+					content?.Arrange(value);
 				}
 			}
 
