@@ -88,11 +88,57 @@ namespace Uno.WinUI.Runtime.Skia.X11;
 
 internal partial class X11PointerInputSource
 {
-	private readonly Dictionary<int, double> _lastHorizontalTouchpadWheelPosition = new();
-	private readonly Dictionary<int, double> _lastVerticalTouchpadWheelPosition = new();
-	private readonly Dictionary<int, DeviceInfo> _deviceInfoCache = new();
+	private const int BitsPerByte = 8;
+	
+	// These are only written and read inside HandleXI2(), so no synchronization needed.
+	private readonly Dictionary<int, Dictionary<int, double>> _valuatorValues = new(); // device id -> valuator number -> value
+	private readonly Dictionary<int, DeviceInfo> _deviceInfoCache = new(); // device id -> device info
 
 	// Excerpt from https://www.x.org/releases/X11R7.7/doc/inputproto/XI2proto.txt
+	// [[multitouch-device-modes]]
+	// Touch device modes
+	// ~~~~~~~~~~~~~~~~~~
+	//
+	// Touch devices come in many different forms with varying capabilities. The
+	// following device modes are defined for this protocol:
+	//
+	// 'DirectTouch':
+	// These devices map their input region to a subset of the screen region. Touch
+	// events are delivered to window at the location of the touch. "direct"
+	// here refers to the user manipulating objects at their screen location.
+	// An example of a DirectTouch device is a touchscreen.
+	//
+	// 'DependentTouch':
+	// These devices do not have a direct correlation between a touch location and
+	// a position on the screen. Touch events are delivered according to the
+	// location of the device's cursor and often need to be interpreted
+	// relative to the current position of that cursor. Such interactions are
+	// usually the result of a gesture performed on the device, rather than
+	// direct manipulation. An example of a DependentTouch device is a
+	// trackpad.
+	//
+	// A device is identified as only one of the device modes above at any time, and
+	// the touch mode may change at any time. If a device's touch mode changes, an
+	// XIDeviceChangedEvent is generated.
+	//
+	// [[multitouch-processing]]
+	// Touch event delivery
+	// ~~~~~~~~~~~~~~~~~~~~
+	//
+	// For direct touch devices, the window set for event propagation is the set of
+	// windows from the root window to the topmost window lying at the co-ordinates
+	// of the touch.
+	//
+	// For dependent devices, the window set for event propagation is the set of
+	// windows from the root window to the window that contains the device's
+	// pointer. A dependent device may only have one window set at a time, for all
+	// touches. Any future touch sequence will use the same window set. The window set
+	// is cleared when all touch sequences on the device end.
+	//
+	// A window set is calculated on TouchBegin and remains constant until the end
+	// of the sequence. Modifications to the window hierarchy, new grabs or changed
+	// event selection do not affect the window set.
+	//
 	// Pointer control of dependent devices
 	// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 	// On a dependent device, the device may differ between a pointer-controlling
@@ -107,13 +153,13 @@ internal partial class X11PointerInputSource
 	// non-pointer-controlling, or vice versa.
 	//
 	// - If a touch changes from pointer-controlling to non-pointer-controlling,
-	//  a new touch ID is assigned and a TouchBegin is sent for the last known
-	//  position of the touch. Further events are sent as TouchUpdate events, or as
-	//  TouchEnd event if the touch terminates.
+	// a new touch ID is assigned and a TouchBegin is sent for the last known
+	// position of the touch. Further events are sent as TouchUpdate events, or as
+	// TouchEnd event if the touch terminates.
 	//
 	// - If a touch changes from non-pointer-controlling to pointer-controlling, a
-	//   TouchEnd is sent for that touch at the last known position of the touch.
-	//   Further events are sent as pointer events.
+	// TouchEnd is sent for that touch at the last known position of the touch.
+	// Further events are sent as pointer events.
 	//
 	// The conditions to switch from pointer-controlling to non-pointer-controlling
 	// touch is implementation-dependent. A device may support touches that are
@@ -169,65 +215,73 @@ internal partial class X11PointerInputSource
 		// with the new position. This also means that the first "tick" will not result in a WheelChanged event,
 		// but will only be used to set the initial wheel position.
 		// Also, we can get a "diagonal scroll" where both the horizontal and the vertical positions change.
-		// Our PointerEventArgs don't support this, so we arbitrarily choose to make diagonal scrolling
-		// result in a vertical scroll.
+		// Our PointerEventArgs don't support this, so in that case, we arbitrarily choose the direction to
+		// be the direction of the last scroller class to be present in data.valuators.
 		// IMPORTANT: DO NOT FORGET TO RESET POSITIONS ON LEAVE.
 		if (data.evtype is XiEventType.XI_Motion && info is { } info_)
 		{
-			var valuators = data.valuators;
-			var values = valuators.Values;
-			for (var i = 0; i < valuators.MaskLen * 8; i++)
+			var maskLen = data.valuators.MaskLen * BitsPerByte;
+			var valuatorMask = data.valuators.Mask;
+			var values = data.valuators.Values;
+			for (var i = 0; i < maskLen; i++)
 			{
-				if (XLib.XIMaskIsSet(valuators.Mask, i))
+				if (XLib.XIMaskIsSet(valuatorMask, i))
 				{
-					var (valuator, value) = (i, *values++);
-					if (valuator == info_.HorizontalValuator || valuator == info_.VerticalValuator)
+					var value = *(values++);
+					// Update valuator
+					if (!_valuatorValues.TryGetValue(data.sourceid, out var valuatorsDict))
 					{
-						isHorizontalMouseWheel = valuator == info_.HorizontalValuator;
-						var (dict, increment) = isHorizontalMouseWheel ?
-							(_lastHorizontalTouchpadWheelPosition, info_.HorizontalIncrement!.Value) :
-							(_lastVerticalTouchpadWheelPosition, info_.VerticalIncrement!.Value);
-						if (dict.TryGetValue(data.sourceid, out var oldValue))
-						{
-							wheelDelta = (oldValue - value) * ScrollContentPresenter.ScrollViewerDefaultMouseWheelDelta / increment;
-						}
-						dict[data.sourceid] = value;
+						valuatorsDict = _valuatorValues[data.sourceid] = new Dictionary<int, double>();
 					}
-					// DO NOT BREAK OUT OF THE FOR LOOP. We still need to update the other valuator positions.
+					var oldValueExisted = valuatorsDict.TryGetValue(i, out var oldValue);
+					valuatorsDict[i] = value;
+
+					// Act on new value
+					if (oldValueExisted && info_.Scrollers.TryGetValue(i, out var scrollInfo))
+					{
+						isHorizontalMouseWheel = scrollInfo.ScrollType == XiScrollType.Horizontal;
+						wheelDelta = (oldValue - value) * ScrollContentPresenter.ScrollViewerDefaultMouseWheelDelta / scrollInfo.Increment;
+					}
+					// We currently don't support Linux's MT protocol valuators.
+					// More at https://www.kernel.org/doc/html/v4.14/input/multi-touch-protocol.html
+					// else if (info_.Valuators.TryGetValue(i, out var valuatorInfo) && valuatorInfo.Label == X11Helper.GetAtom(display, "Abs MT Pressure"))
+					// {
+					// 	pressureValuator = valuatorInfo.Value;
+					// }
 				}
 			}
 		}
 
-		var mask = 0;
+		var buttonMask = 0;
 		for (var i = 0; i < data.buttons.MaskLen; i++) // masklen <= 4
 		{
-			mask |= data.buttons.Mask[i] << (8 * i);
+			buttonMask |= data.buttons.Mask[i] << (BitsPerByte * i);
 		}
 
 		if (data.evtype is XiEventType.XI_ButtonPress)
 		{
-			mask |= (1 << data.detail); // the newly pressed button is not added to the mask yet.
+			buttonMask |= (1 << data.detail); // the newly pressed button is not added to the mask yet.
 		}
 		else if (data.evtype is XiEventType.XI_ButtonRelease)
 		{
-			mask &= ~(1 << data.detail); // the newly released button is not removed from the mask yet.
+			buttonMask &= ~(1 << data.detail); // the newly released button is not removed from the mask yet.
 		}
 		else if (data.evtype is XiEventType.XI_TouchBegin or XiEventType.XI_TouchUpdate)
 		{
-			mask = 1 << data.detail; // touch events only have one button.
+			buttonMask = 1 << data.detail; // touch events only have one button.
 		}
 
 		var properties = new PointerPointProperties
 		{
-			IsLeftButtonPressed = (mask & (1 << LEFT)) != 0 || (data.evtype is XiEventType.XI_TouchBegin or XiEventType.XI_TouchUpdate),
-			IsMiddleButtonPressed = (mask & (1 << MIDDLE)) != 0,
-			IsRightButtonPressed = (mask & (1 << RIGHT)) != 0,
-			IsXButton1Pressed = (mask & (1 << XButton1)) != 0,
-			IsXButton2Pressed = (mask & (1 << XButton2)) != 0,
+			IsLeftButtonPressed = (buttonMask & (1 << LEFT)) != 0 || (data.evtype is XiEventType.XI_TouchBegin or XiEventType.XI_TouchUpdate),
+			IsMiddleButtonPressed = (buttonMask & (1 << MIDDLE)) != 0,
+			IsRightButtonPressed = (buttonMask & (1 << RIGHT)) != 0,
+			IsXButton1Pressed = (buttonMask & (1 << XButton1)) != 0,
+			IsXButton2Pressed = (buttonMask & (1 << XButton2)) != 0,
 			IsHorizontalMouseWheel = isHorizontalMouseWheel,
 			IsInRange = true,
 			IsPrimary = true,
-			IsTouchPad = info is { } && IsTouchpad(info.Value.Properties),
+			IsTouchPad = info?.IsTouchpad ?? false,
 			MouseWheelDelta = (int)Math.Round(wheelDelta),
 			PointerUpdateKind = data.detail switch
 			{
@@ -276,7 +330,7 @@ internal partial class X11PointerInputSource
 		var mask = 0;
 		for (var i = 0; i < data.buttons.MaskLen; i++) // masklen <= 4
 		{
-			mask |= data.buttons.Mask[i] << (8 * i);
+			mask |= data.buttons.Mask[i] << (BitsPerByte * i);
 		}
 
 		var properties = new PointerPointProperties
@@ -287,7 +341,7 @@ internal partial class X11PointerInputSource
 			IsXButton1Pressed = (mask & (1 << XButton1)) != 0,
 			IsXButton2Pressed = (mask & (1 << XButton2)) != 0,
 			IsInRange = true,
-			IsTouchPad = GetDevicePropertiesFromId(data.sourceid) is { } info && IsTouchpad(info.Properties),
+			IsTouchPad = GetDevicePropertiesFromId(data.sourceid)?.IsTouchpad ?? false,
 			IsHorizontalMouseWheel = false,
 		};
 
@@ -318,15 +372,17 @@ internal partial class X11PointerInputSource
 		{
 			this.Log().Trace($"XI2 EVENT: {evtype}");
 		}
+
 		switch (evtype)
 		{
 			case XiEventType.XI_Enter:
 			case XiEventType.XI_Leave:
 				{
-					_lastHorizontalTouchpadWheelPosition.Clear();
-					_lastVerticalTouchpadWheelPosition.Clear();
+					var enterLeaveEvent = ev.GenericEventCookie.GetEvent<XIEnterLeaveEvent>();
+					_valuatorValues.Remove(enterLeaveEvent.sourceid);
+
 					var args = CreatePointerEventArgsFromEnterLeaveEvent(
-						ev.GenericEventCookie.GetEvent<XIEnterLeaveEvent>(),
+						enterLeaveEvent,
 						PointerDeviceType.Mouse); // https://www.x.org/releases/X11R7.7/doc/inputproto/XI2proto.txt: Touch events do not generate enter/leave events.
 					if (evtype is XiEventType.XI_Enter)
 					{
@@ -378,6 +434,105 @@ internal partial class X11PointerInputSource
 						break;
 					}
 
+					// The spec mandates that X servers and devices supporting XI2 touch events and/or smooth scrolling
+					// must keep backward compatibility by emulating corresponding core-protocol events for these XI2-specific
+					// features. This means emulated ButtonPress/ButtonRelease/Motion events for touch and emulated
+					// ButtonPress/ButtonRelease on button 4,5,6 and 7. We make sure to ignore such emulated events.
+					// Excerpts from the spec:
+					// Smooth scrolling
+					// ~~~~~~~~~~~~~~~~
+					//
+					// Historically, X implemented scrolling events by using button press events:
+					// button 4 was one â€œclickâ€ of the scroll wheel upwards, button 5 was downwards,
+					// button 6 was one unit of scrolling left, and button 7 was one unit of scrolling
+					// right.  This is insufficient for e.g. touchpads which are able to provide
+					// scrolling events through multi-finger drag gestures, or simply dragging your
+					// finger along a designated strip along the side of the touchpad.
+					//
+					// Newer X servers may provide scrolling information through valuators to
+					// provide clients with more precision than the legacy button events. This
+					// scrolling information is part of the valuator data in device events.
+					// Scrolling events do not have a specific event type.
+					//
+					// Valuators for axes sending scrolling information must have one
+					// ScrollClass for each scrolling axis. If scrolling valuators are present on a
+					// device, the server must provide two-way emulation between these valuators
+					// and the legacy button events for each delta unit of scrolling.
+					//
+					// One unit of scrolling in either direction is considered to be equivalent to
+					// one button event, e.g. for a unit size of 1.0, -2.0 on an valuator type
+					// Vertical sends two button press/release events for button 4. Likewise, a
+					// button press event for button 7 generates an event on the Horizontal
+					// valuator with a value of +1.0. The server may accumulate deltas of less than
+					// one unit of scrolling.
+					//
+					// Any server providing this behaviour marks emulated button or valuator events
+					// with the XIPointerEmulated flag for DeviceEvents, and the XIRawEmulated flag
+					// for raw events, to hint at applications which event is a hardware event.
+					//
+					// If more than one scroll valuator of the same type is present on a device,
+					// the valuator marked with Preferred for the same scroll direction is used to
+					// convert legacy button events into scroll valuator events. If no valuator is
+					// marked Preferred or more than one valuator is marked with Preferred for this
+					// scroll direction, this should be considered a driver bug and the behaviour
+					// is implementation-dependent.
+					// ------------------------------------------------------------------
+					// [[multitouch-emulation]]
+					// Pointer emulation from multitouch events
+					// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+					//
+					// Touch sequences from direct touch devices may emulate pointer events. Only one
+					// touch sequence from a device may emulate pointer events at a time; which touch
+					// sequence emulates pointer events is implementation-dependent.
+					//
+					// Pointer events are emulated as follows:
+					//
+					// - A TouchBegin event generates a pointer motion event to the location of the
+					// touch with the same axis values of the touch event, followed by a button press
+					// event for button 1.
+					// - A TouchUpdate event generates a pointer motion event to the location of the
+					// touch and/or to update axis values of the pointer device. The button state
+					// as seen from the protocol includes button 1 set.
+					// - A TouchEnd event generates a pointer motion event to the location of the touch
+					// and/or to update the axis values if either have changed, followed by a button
+					// release event for button 1. The button state as seen from the protocol
+					// includes button 1 set.
+					//
+					// If a touch sequence emulates pointer events and an emulated pointer event
+					// triggers the activation of a passive grab, the grabbing client becomes the
+					// owner of the touch sequence.
+					//
+					// The touch sequence is considered to have been accepted if
+					//
+					// - the grab mode is asynchronous, or
+					// - the grab mode is synchronous and the device is thawed as a result of
+					// AllowEvents with AsyncPointer or AsyncDevice
+					//
+					// Otherwise, if the button press is replayed by the client, the touch sequence
+					// is considered to be rejected.
+					//
+					// Touch event delivery precedes pointer event delivery. A touch event emulating
+					// pointer events is delivered:
+					//
+					// - as a touch event to the top-most window of the current window set if a
+					// client has a touch grab on this window,
+					// - otherwise, as a pointer event to the top-most window of the current window
+					// set if a client has a pointer grab on this window,
+					// - otherwise, to the next child window in the window set until a grab has been
+					// found.
+					//
+					// If no touch or pointer grab on any window is active and the last window in the
+					// window set has been reached, the event is delivered:
+					//
+					// - as a touch event to the window if a client has selected for touch events
+					// on this window
+					// - otherwise, as a pointer event to the window if a client has selected for
+					// pointer events.
+					// - otherwise, to the next parent window in the window set until a selection has
+					// been found.
+					//
+					// Emulated pointer events will have the PointerEmulated flag set. A touch
+					// event that emulates pointer events has the TouchEmulatingPointer flag set.
 					if ((data.flags & XiDeviceEventFlags.XIPointerEmulated) != 0)
 					{
 						if (this.Log().IsEnabled(LogLevel.Trace))
@@ -437,11 +592,7 @@ internal partial class X11PointerInputSource
 		}
 	}
 
-	// for some stupid reason, the device id can be reused for other devices if
-	// the original device is unplugged. For example, if device D1 is assigned device id 1
-	// but is then unplugged, another device D2 can be assigned id 1. This means that we
-	// can't cache the lookups, and instead are forced to make this call every single time :(
-	private bool IsTouchpad(IEnumerable<string> props)
+	private static bool IsTouchpad(IEnumerable<string> props)
 	{
 		// X Input cannot distinguish between trackpads and mice. We do this
 		// by testing for properties that should be available on trackpads.
@@ -572,41 +723,24 @@ internal partial class X11PointerInputSource
 					}
 				}
 
-				int? pressureValuator = null;
-				int? horizontalValuator = null;
-				double? horizontalIncrement = null;
-				int? verticalValuator = null;
-				double? verticalIncrement = null;
-				for (var index = 0; index < info.NumClasses; index++)
-				{
-					var xiAnyClassInfo = info.Classes[index];
-					if (xiAnyClassInfo->Type == XiDeviceClass.XIScrollClass)
-					{
-						var classInfo = (XIScrollClassInfo*)xiAnyClassInfo;
-						if (classInfo->ScrollType == XiScrollType.Horizontal)
-						{
-							(horizontalValuator, horizontalIncrement) = (classInfo->Number, classInfo->Increment);
-						}
-						else
-						{
-							(verticalValuator, verticalIncrement) = (classInfo->Number, classInfo->Increment);
-						}
-					}
-					else if (xiAnyClassInfo->Type == XiDeviceClass.XIValuatorClass &&
-						((XIValuatorClassInfo*)xiAnyClassInfo)->Label == X11Helper.GetAtom(display, "Abs MT Pressure"))
-					{
-						pressureValuator = ((XIValuatorClassInfo*)xiAnyClassInfo)->Number;
-					}
-				}
-
-				var @out = new DeviceInfo(new ImmutableList<string>(propsResult), pressureValuator, horizontalValuator, horizontalIncrement, verticalValuator, verticalIncrement);
-				_deviceInfoCache[id] = @out;
-				return @out;
+				var classes = new Span<IntPtr>(info.Classes, info.NumClasses).ToArray();
+				var scollers = classes
+					.Where(classPointer => ((XIAnyClassInfo*)classPointer)->Type == XiDeviceClass.XIScrollClass)
+					.Select(classPointer => *(XIScrollClassInfo*)classPointer)
+					.Select(scrollClassInfo => (scrollClassInfo.Number, scrollClassInfo))
+					.ToDictionary();
+				var valuators = classes
+					.Where(classPointer => ((XIAnyClassInfo*)classPointer)->Type == XiDeviceClass.XIValuatorClass)
+					.Select(classPointer => *(XIValuatorClassInfo*)classPointer)
+					.Select(valuatorClassInfo => (valuatorClassInfo.Number, scrollClassInfo: valuatorClassInfo))
+					.ToDictionary();
+				var @out = new DeviceInfo(new ImmutableList<string>(propsResult), IsTouchpad(propsResult), scollers, valuators);
+				return _deviceInfoCache[id] = @out;
 			}
 		}
 
 		return null;
 	}
 
-	private record struct DeviceInfo(ImmutableList<string> Properties, int? PressureValuator, int? HorizontalValuator, double? HorizontalIncrement, int? VerticalValuator, double? VerticalIncrement);
+	private record struct DeviceInfo(ImmutableList<string> Properties, bool IsTouchpad, Dictionary<int, XIScrollClassInfo> Scrollers, Dictionary<int, XIValuatorClassInfo> Valuators);
 }
