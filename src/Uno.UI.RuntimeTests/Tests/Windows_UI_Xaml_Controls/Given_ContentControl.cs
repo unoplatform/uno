@@ -59,6 +59,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if !UNO_HAS_ENHANCED_LIFECYCLE && !WINAPPSDK
+		[Ignore("This works only for the ContentControl/ContentPresenter that are ported from WinUI, which is so far for lifecycle only")]
+#endif
 		public async Task When_ContentTemplateSelector_Then_Content_Changes()
 		{
 			var selector = new LoggingContentTemplateSelector();
@@ -70,8 +73,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				ContentTemplateSelector = selector,
 			};
 
+#if HAS_UNO
+			// Because we support both overloads of SelectTemplate.
+			// We should better align with WinUI, but not very important for now.
+			Assert.AreEqual(2, selector.Logs.Count);
+			Assert.AreEqual("Dummy", selector.Logs[0]);
+			Assert.AreEqual("Dummy", selector.Logs[1]);
+#else
 			Assert.AreEqual(1, selector.Logs.Count);
 			Assert.AreEqual("Dummy", selector.Logs[0]);
+#endif
 
 			await UITestHelper.Load(SUT);
 
@@ -80,19 +91,41 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Content = "Content2";
 			await WindowHelper.WaitForIdle();
 
+#if HAS_UNO
+			Assert.AreEqual(6, selector.Logs.Count);
+			Assert.AreEqual("Dummy", selector.Logs[0]);
+			Assert.AreEqual("Dummy", selector.Logs[1]);
+			Assert.AreEqual("Content1", selector.Logs[2]);
+			Assert.AreEqual("Content1", selector.Logs[3]);
+			Assert.AreEqual("Content2", selector.Logs[4]);
+			Assert.AreEqual("Content2", selector.Logs[5]);
+#else
 			Assert.AreEqual(3, selector.Logs.Count);
 			Assert.AreEqual("Dummy", selector.Logs[0]);
 			Assert.AreEqual("Content1", selector.Logs[1]);
 			Assert.AreEqual("Content2", selector.Logs[2]);
+#endif
 
 			SUT.ContentTemplateSelector = null;
 			SUT.ContentTemplateSelector = selector;
 
+#if HAS_UNO
+			Assert.AreEqual(8, selector.Logs.Count);
+			Assert.AreEqual("Dummy", selector.Logs[0]);
+			Assert.AreEqual("Dummy", selector.Logs[1]);
+			Assert.AreEqual("Content1", selector.Logs[2]);
+			Assert.AreEqual("Content1", selector.Logs[3]);
+			Assert.AreEqual("Content2", selector.Logs[4]);
+			Assert.AreEqual("Content2", selector.Logs[5]);
+			Assert.AreEqual("Content2", selector.Logs[6]);
+			Assert.AreEqual("Content2", selector.Logs[7]);
+#else
 			Assert.AreEqual(4, selector.Logs.Count);
 			Assert.AreEqual("Dummy", selector.Logs[0]);
 			Assert.AreEqual("Content1", selector.Logs[1]);
 			Assert.AreEqual("Content2", selector.Logs[2]);
 			Assert.AreEqual("Content2", selector.Logs[3]);
+#endif
 		}
 
 		[TestMethod]
