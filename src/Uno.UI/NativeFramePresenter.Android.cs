@@ -54,10 +54,7 @@ namespace Uno.UI.Controls
 
 			_frame = frame;
 			_frame.Navigated += OnNavigated;
-			if (_frame.BackStack is ObservableCollection<PageStackEntry> backStack)
-			{
-				backStack.CollectionChanged += OnBackStackChanged;
-			}
+			_frame.RegisterPropertyChangedCallback(Frame.CanGoBackProperty, OnCanGoBackChanged);
 
 			if (_frame.Content is Page startPage)
 			{
@@ -66,10 +63,7 @@ namespace Uno.UI.Controls
 			}
 		}
 
-		private void OnBackStackChanged(object sender, NotifyCollectionChangedEventArgs e)
-		{
-			UpdateBackButtonVisibility();
-		}
+		private void OnCanGoBackChanged(DependencyObject sender, DependencyProperty dp) => UpdateBackButtonVisibility();
 
 		private void UpdateBackButtonVisibility()
 		{
