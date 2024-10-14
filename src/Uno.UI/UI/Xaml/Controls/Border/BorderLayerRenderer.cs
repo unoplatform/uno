@@ -1,5 +1,6 @@
 ﻿#if !UNO_HAS_BORDER_VISUAL
 using System;
+using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Uno.Disposables;
 
@@ -15,6 +16,7 @@ internal partial class BorderLayerRenderer
 
 #pragma warning disable CS0414 // _currentState is not used on reference build
 	private BorderLayerState _currentState;
+	private Size _sizeOnLastUpdate;
 #pragma warning restore CS0414
 
 	public BorderLayerRenderer(FrameworkElement owner)
@@ -35,7 +37,13 @@ internal partial class BorderLayerRenderer
 		// Using SizeChanged on other platforms SHOULD work. But it didn't work on Android
 		// for unknown reason. For now, we are using SizeChanged only on enhanced lifecycle
 		// platforms where we are sure it works correctly.
-		_owner.LayoutUpdated += (_, _) => Update();
+		_owner.LayoutUpdated += (_, _) =>
+		{
+			if (_owner.RenderSize != _sizeOnLastUpdate)
+			{
+				Update();
+			}
+		};
 #endif
 	}
 
@@ -46,6 +54,7 @@ internal partial class BorderLayerRenderer
 	{
 		if (_owner.IsLoaded)
 		{
+			_sizeOnLastUpdate = _owner.RenderSize;
 			UpdatePlatform();
 		}
 	}
