@@ -39,9 +39,16 @@ public partial class Given_ContentPresenter
 			ContentTemplateSelector = selector,
 		};
 
+#if HAS_UNO
+		// Because we support both overloads of SelectTemplate.
+		// We should better align with WinUI, but not very important for now.
+		Assert.AreEqual(2, selector.Logs.Count);
+		Assert.AreEqual("Dummy", selector.Logs[0]);
+		Assert.AreEqual("Dummy", selector.Logs[1]);
+#else
 		Assert.AreEqual(1, selector.Logs.Count);
 		Assert.AreEqual("Dummy", selector.Logs[0]);
-
+#endif
 		await UITestHelper.Load(SUT);
 
 		SUT.Content = "Content1";
@@ -59,15 +66,24 @@ public partial class Given_ContentPresenter
 		// However, with the workaround, things will go wrong because changing ContentTemplateSelector will
 		// set SelectedContentTemplate to a local value, breaking the template-binding for SelectedContentTemplate.
 		// And then, ContentPresenter alone will not basically re-select the template when the Content changes.
-		Assert.AreEqual(1, selector.Logs.Count);
+		Assert.AreEqual(2, selector.Logs.Count);
 		Assert.AreEqual("Dummy", selector.Logs[0]);
+		Assert.AreEqual("Dummy", selector.Logs[1]);
 
 		SUT.ContentTemplateSelector = null;
 		SUT.ContentTemplateSelector = selector;
 
+#if HAS_UNO
+		Assert.AreEqual(4, selector.Logs.Count);
+		Assert.AreEqual("Dummy", selector.Logs[0]);
+		Assert.AreEqual("Dummy", selector.Logs[1]);
+		Assert.AreEqual("Content2", selector.Logs[2]);
+		Assert.AreEqual("Content2", selector.Logs[3]);
+#else
 		Assert.AreEqual(2, selector.Logs.Count);
 		Assert.AreEqual("Dummy", selector.Logs[0]);
 		Assert.AreEqual("Content2", selector.Logs[1]);
+#endif
 	}
 
 	[TestMethod]
