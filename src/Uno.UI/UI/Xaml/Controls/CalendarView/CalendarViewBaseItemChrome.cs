@@ -282,7 +282,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			// Get the child to measure it - if any.
-			View pChildNoRef = GetFirstChildNoAddRef();
+			var pChildNoRef = GetFirstChildNoAddRef() as UIElement;
 
 			//If we have a child
 			if (pChildNoRef is { })
@@ -359,7 +359,7 @@ namespace Microsoft.UI.Xaml.Controls
 				m_pLabelTextBlock.Arrange(finalBounds);
 			}
 
-			View pChildNoRef = GetFirstChildNoAddRef();
+			var pChildNoRef = GetFirstChildNoAddRef() as UIElement;
 
 			if (pChildNoRef is { })
 			{
