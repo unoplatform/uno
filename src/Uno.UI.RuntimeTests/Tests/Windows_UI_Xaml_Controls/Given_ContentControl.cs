@@ -59,6 +59,43 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_ContentTemplateSelector_Then_Content_Changes()
+		{
+			var selector = new LoggingContentTemplateSelector();
+			var SUT = new ContentControl()
+			{
+				Width = 200,
+				Height = 200,
+				Content = "Dummy",
+				ContentTemplateSelector = selector,
+			};
+
+			Assert.AreEqual(1, selector.Logs.Count);
+			Assert.AreEqual("Dummy", selector.Logs[0]);
+
+			await UITestHelper.Load(SUT);
+
+			SUT.Content = "Content1";
+			await WindowHelper.WaitForIdle();
+			SUT.Content = "Content2";
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(3, selector.Logs.Count);
+			Assert.AreEqual("Dummy", selector.Logs[0]);
+			Assert.AreEqual("Content1", selector.Logs[1]);
+			Assert.AreEqual("Content2", selector.Logs[2]);
+
+			SUT.ContentTemplateSelector = null;
+			SUT.ContentTemplateSelector = selector;
+
+			Assert.AreEqual(4, selector.Logs.Count);
+			Assert.AreEqual("Dummy", selector.Logs[0]);
+			Assert.AreEqual("Content1", selector.Logs[1]);
+			Assert.AreEqual("Content2", selector.Logs[2]);
+			Assert.AreEqual("Content2", selector.Logs[3]);
+		}
+
+		[TestMethod]
 		[RunsOnUIThread]
 		[DataRow(typeof(Grid))]
 		[DataRow(typeof(StackPanel))]
