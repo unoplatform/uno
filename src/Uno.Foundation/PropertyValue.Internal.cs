@@ -90,7 +90,8 @@ partial class PropertyValue
 						//}
 						if (oldValueType.IsEnum)
 						{
-							return oldValue switch
+							var oldValueUnwrapped = Convert.ChangeType(oldValue, oldValueType.GetEnumUnderlyingType());
+							return oldValueUnwrapped switch
 							{
 								byte oldValueAsByte => oldValueAsByte == (byte)newValue,
 								sbyte oldValueAsSByte => oldValueAsSByte == (sbyte)newValue,
