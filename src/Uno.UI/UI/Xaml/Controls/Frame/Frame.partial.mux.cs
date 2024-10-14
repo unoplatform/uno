@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
 using Uno.Disposables;
+using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Core;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -48,6 +49,17 @@ partial class Frame
 		//// CheckThread();
 
 		base.OnApplyTemplate();
+
+#if HAS_UNO
+		if (this.TemplatedRoot?.GetType().Name?.Contains("NativeFramePresenter", StringComparison.OrdinalIgnoreCase) == true)
+		{
+			// It is not possible to use the WinUI behavior with a NativeFramePresenter.
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().LogError("WinUI Frame behavior is not compatible with NativeFramePresenter. Set the Frame.Style to '{StaticResource XamlDefaultFrame}' instead.");
+			}
+		}
+#endif
 
 		if (m_tpNext is not null)
 		{
