@@ -695,6 +695,18 @@ public partial class ContentPresenter : FrameworkElement
 	{
 #if UNO_HAS_ENHANCED_LIFECYCLE
 		Invalidate(true);
+
+		DataTemplate contentTemplate = null;
+		if (newContentTemplate is null)
+		{
+			var contentTemplateSelector = ContentTemplateSelector;
+			if (contentTemplateSelector is not null)
+			{
+				var content = Content;
+				contentTemplate = contentTemplateSelector.SelectTemplate(content, this) ?? contentTemplateSelector.SelectTemplate(content) /*Uno-specific*/;
+			}
+			SelectedContentTemplate = contentTemplate;
+		}
 #else
 		if (ContentTemplateRoot != null)
 		{
@@ -714,7 +726,7 @@ public partial class ContentPresenter : FrameworkElement
 			if (newContentTemplateSelector is not null)
 			{
 				var content = Content;
-				contentTemplate = newContentTemplateSelector.SelectTemplate(content);
+				contentTemplate = newContentTemplateSelector.SelectTemplate(content, this) ?? newContentTemplateSelector.SelectTemplate(content)/*Uno-specific*/;
 			}
 
 			SelectedContentTemplate = contentTemplate;
