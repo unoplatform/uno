@@ -155,6 +155,7 @@ namespace Windows.UI.Input
 			// Pen
 			if (IsBarrelButtonPressed) builder.Append("barrel ");
 			if (IsEraser) builder.Append("eraser ");
+			if (IsTouchPad) builder.Append("touchpad ");
 
 			// Misc
 			builder.Append('(');

@@ -89,7 +89,7 @@ namespace Uno.WinUI.Runtime.Skia.X11;
 internal partial class X11PointerInputSource
 {
 	private const int BitsPerByte = 8;
-	
+
 	// These are only written and read inside HandleXI2(), so no synchronization needed.
 	private readonly Dictionary<int, Dictionary<int, double>> _valuatorValues = new(); // device id -> valuator number -> value
 	private readonly Dictionary<int, DeviceInfo> _deviceInfoCache = new(); // device id -> device info
@@ -544,6 +544,10 @@ internal partial class X11PointerInputSource
 					}
 
 					var args = CreatePointerEventArgsFromDeviceEvent(data);
+					if (this.Log().IsEnabled(LogLevel.Trace))
+					{
+						this.Log().Trace($"Created event args: {args}");
+					}
 					switch (evtype)
 					{
 						case XiEventType.XI_Motion when args.CurrentPoint.Properties.MouseWheelDelta != 0:
@@ -581,6 +585,7 @@ internal partial class X11PointerInputSource
 				{
 					var data = ev.GenericEventCookie.GetEvent<XIDeviceEvent>();
 					_deviceInfoCache.Remove(data.sourceid);
+					_valuatorValues.Remove(data.sourceid);
 					break;
 				}
 			default:
