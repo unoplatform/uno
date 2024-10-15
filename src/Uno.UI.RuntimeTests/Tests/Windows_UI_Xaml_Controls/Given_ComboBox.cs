@@ -25,10 +25,9 @@ using Windows.Storage.Pickers;
 using Windows.UI.Input.Preview.Injection;
 using static Private.Infrastructure.TestServices;
 using ComboBoxHelper = Microsoft.UI.Xaml.Tests.Common.ComboBoxHelper;
-
-#if WINAPPSDK
 using Uno.UI.Extensions;
-#elif __IOS__
+
+#if __IOS__
 using UIKit;
 using _UIViewController = UIKit.UIViewController;
 using Uno.UI.Controls;
