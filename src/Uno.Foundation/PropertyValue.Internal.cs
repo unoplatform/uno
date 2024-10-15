@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace Windows.Foundation;
 
@@ -90,7 +91,7 @@ partial class PropertyValue
 						//}
 						if (oldValueType.IsEnum)
 						{
-							var oldValueUnwrapped = Convert.ChangeType(oldValue, oldValueType.GetEnumUnderlyingType());
+							var oldValueUnwrapped = Convert.ChangeType(oldValue, oldValueType.GetEnumUnderlyingType(), CultureInfo.InvariantCulture);
 							return oldValueUnwrapped switch
 							{
 								byte oldValueAsByte => oldValueAsByte == (byte)newValue,
