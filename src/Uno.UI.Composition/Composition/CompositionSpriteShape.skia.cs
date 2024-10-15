@@ -94,27 +94,37 @@ namespace Microsoft.UI.Composition
 		private SKPaint TryCreateAndClearFillPaint(SKColorFilter? colorFilter)
 			=> TryCreateAndClearPaint(ref _fillPaint, false, colorFilter, CompositionConfiguration.UseBrushAntialiasing);
 
+		// TODO: profile the impact of this optimization and consider removing it
+		// It's hacky and can break if SkiaSharp exposes new properties that
+		// are then used and modified in CompositionBrush.UpdatePaint().
 		private static SKPaint TryCreateAndClearPaint(ref SKPaint? paint, bool isStroke, SKColorFilter? colorFilter, bool isHighQuality = false)
 		{
 			if (paint == null)
 			{
-				// Initialization
 				paint = new SKPaint();
-				paint.IsStroke = isStroke;
-				paint.IsAntialias = true;
-				paint.IsAutohinted = true;
-
-				if (isHighQuality)
-				{
-					paint.FilterQuality = SKFilterQuality.High;
-				}
 			}
 			else
 			{
+				// defaults
+				paint.IsAntialias = false;
+				paint.BlendMode = SKBlendMode.SrcOver;
+				paint.FakeBoldText = false;
+				paint.HintingLevel = SKPaintHinting.Normal;
+				paint.IsDither = false;
+				paint.IsEmbeddedBitmapText = false;
+				paint.IsLinearText = false;
+				paint.LcdRenderText = false;
+				paint.StrokeCap = SKStrokeCap.Butt;
+				paint.StrokeJoin = SKStrokeJoin.Miter;
+				paint.StrokeMiter = 4;
+				paint.StrokeWidth = 0;
+				paint.SubpixelText = false;
+				paint.TextAlign = SKTextAlign.Left;
+				paint.TextEncoding = SKTextEncoding.Utf8;
+				paint.TextScaleX = 1;
+				paint.TextSize = 12;
+
 				// Cleanup
-				// - Brushes can change, we cant leave color and shader garbage
-				//	 from last rendering around for the next pass.
-				paint.Color = SKColors.White;   // Transparent color wouldn't draw anything
 				if (paint.Shader is { } shader)
 				{
 					shader.Dispose();
@@ -126,9 +136,38 @@ namespace Microsoft.UI.Composition
 					pathEffect.Dispose();
 					paint.PathEffect = null;
 				}
+
+				if (paint.ImageFilter is { } imageFilter)
+				{
+					imageFilter.Dispose();
+					paint.ImageFilter = null;
+				}
+
+				if (paint.MaskFilter is { } maskFilter)
+				{
+					maskFilter.Dispose();
+					paint.MaskFilter = null;
+				}
+
+				if (paint.Typeface is { } typeface)
+				{
+					typeface.Dispose();
+					paint.Typeface = null;
+				}
 			}
 
+			paint.IsStroke = isStroke;
+
+			// uno-specific defaults
+			paint.Color = SKColors.White;   // Transparent color wouldn't draw anything
+			paint.IsAutohinted = true;
+			// paint.IsAntialias = true; // IMPORTANT: don't set this to true by default. It breaks canvas clipping on Linux for some reason.
+
 			paint.ColorFilter = colorFilter;
+			if (isHighQuality)
+			{
+				paint.FilterQuality = SKFilterQuality.High;
+			}
 
 			return paint;
 		}
