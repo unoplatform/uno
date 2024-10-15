@@ -21,7 +21,7 @@ partial class BorderLayerRenderer
 	private Action _backgroundChanged;
 	private Action _borderChanged;
 
-	partial void UpdatePlatform()
+	partial void UpdatePlatform(bool forceUpdate)
 	{
 		var newState = new BorderLayerState(
 			new Size(_owner.RenderSize.Width, _owner.RenderSize.Height),
@@ -31,7 +31,7 @@ partial class BorderLayerRenderer
 			_borderInfoProvider.BorderThickness,
 			_borderInfoProvider.CornerRadius);
 		var previousLayoutState = _currentState;
-		if (!newState.Equals(previousLayoutState))
+		if (!newState.Equals(previousLayoutState) || forceUpdate)
 		{
 			if (previousLayoutState.Background != newState.Background && _owner is FrameworkElement fwElt)
 			{
