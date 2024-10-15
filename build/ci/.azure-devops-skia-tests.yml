@@ -24,6 +24,7 @@ jobs:
 - job: Skia_Tests_Build
   displayName: 'Build Skia Samples App UI Tests'
   timeoutInMinutes: 60
+  cancelTimeoutInMinutes: 1
   dependsOn: skia_package_macos_native_build
 
   pool: ${{ parameters.poolName }}
@@ -118,6 +119,7 @@ jobs:
 - job: Skia_Gtk_Screenshot_Tests
   displayName: 'Run Skia GTK Snapshot Tests'
   timeoutInMinutes: 60
+  cancelTimeoutInMinutes: 1
 
   pool:
     vmImage: ${{ parameters.vmImage }}
@@ -164,6 +166,7 @@ jobs:
 - job: Skia_Gtk_Runtime_Tests_Build
   displayName: 'Run Skia GTK Runtime Tests'
   timeoutInMinutes: 60
+  cancelTimeoutInMinutes: 1
 
   pool:
     vmImage: ${{ parameters.vmImage }}
@@ -250,6 +253,7 @@ jobs:
 - job: Skia_Windows_Screenshot_Tests
   displayName: 'Run Skia Windows Snapshot Tests'
   timeoutInMinutes: 60
+  cancelTimeoutInMinutes: 1
 
   pool:
     vmImage: ${{ parameters.vmImage }}
@@ -288,6 +292,7 @@ jobs:
 - job: Skia_Windows_Runtime_Tests_Build
   displayName: 'Run Skia Windows Runtime Tests'
   timeoutInMinutes: 60
+  cancelTimeoutInMinutes: 1
 
   pool:
     vmImage: ${{ parameters.vmImage }}
@@ -327,6 +332,7 @@ jobs:
 - job: Uno_Islands_Skia_Wpf_Runtime_Tests_Build
   displayName: 'Run Uno Islands Skia WPF Runtime Tests'
   timeoutInMinutes: 45
+  cancelTimeoutInMinutes: 1
   condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'false'))
   pool:
     vmImage: ${{ parameters.vmImage }}
@@ -370,6 +376,7 @@ jobs:
 - job: Skia_Linux_Screenshot_Tests
   displayName: 'Run Skia Linux Snapshot Tests'
   timeoutInMinutes: 60
+  cancelTimeoutInMinutes: 1
 
   pool:
     vmImage: ${{ parameters.vmLinuxImage }}
@@ -409,6 +416,7 @@ jobs:
 - job: Skia_Linux_Runtime_Tests_Build
   displayName: 'Run Skia Linux Runtime Tests'
   timeoutInMinutes: 60
+  cancelTimeoutInMinutes: 1
 
   pool:
     vmImage: ${{ parameters.vmLinuxImage }}

@@ -105,5 +105,5 @@ public enum UnoFeature
 	Svg,
 
 	[UnoArea(UnoArea.Core)]
-	Canvas3DGL
+	GLCanvas
 }

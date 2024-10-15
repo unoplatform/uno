@@ -7,6 +7,7 @@ jobs:
   displayName: 'UI Tests Screenshots Comparison'
   
   timeoutInMinutes: 90
+  cancelTimeoutInMinutes: 1
   
   condition: or(succeeded(), and(failed(), ge(variables['System.StageAttempt'], 5)))
 

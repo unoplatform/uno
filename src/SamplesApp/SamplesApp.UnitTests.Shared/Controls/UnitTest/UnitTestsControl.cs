@@ -769,7 +769,7 @@ namespace Uno.UI.Samples.Tests
 						canRetry = false;
 						var cleanupActions = new List<Func<Task>>
 						{
-							GenericCleanupAsync
+							GeneralCleanupAsync
 						};
 
 						try
@@ -799,6 +799,8 @@ namespace Uno.UI.Samples.Tests
 									});
 								});
 							}
+
+							await GeneralInitAsync();
 
 							object returnValue = null;
 							var methodArguments = testCase.Parameters;
@@ -976,14 +978,24 @@ namespace Uno.UI.Samples.Tests
 				}
 			}
 
-			async Task GenericCleanupAsync()
+			async Task GeneralInitAsync()
+			{
+#if HAS_UNO
+				await TestServices.WindowHelper.RootElementDispatcher.RunAsync(() =>
+				{
+					ResetLastInputDeviceType();
+				});
+#else
+				await Task.CompletedTask;
+#endif
+			}
+
+			async Task GeneralCleanupAsync()
 			{
 				await TestServices.WindowHelper.RootElementDispatcher.RunAsync(() =>
 				{
 					CloseRemainingPopups();
-#if HAS_UNO
-					ResetLastInputDeviceType();
-#endif
+
 				});
 			}
 

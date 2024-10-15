@@ -206,29 +206,35 @@ public sealed partial class HotReloadStatusView : Control
 	private void UpdateLog(Status? oldStatus, Status status)
 	{
 		// Add or update the entries for the **operations** (server and the application).
-		foreach (var srvOp in status.Server.Operations)
+		if (status.Server.Operations is { }) // can be null during loading, creating a NRE
 		{
-			ref var entry = ref CollectionsMarshal.GetValueRefOrAddDefault(_serverHrEntries, srvOp.Id, out var exists);
-			if (exists)
+			foreach (var srvOp in status.Server.Operations)
 			{
-				entry!.Update(srvOp);
-			}
-			else
-			{
-				entry = new ServerEntry(srvOp);
+				ref var entry = ref CollectionsMarshal.GetValueRefOrAddDefault(_serverHrEntries, srvOp.Id, out var exists);
+				if (exists)
+				{
+					entry!.Update(srvOp);
+				}
+				else
+				{
+					entry = new ServerEntry(srvOp);
+				}
 			}
 		}
 
-		foreach (var localOp in status.Local.Operations)
+		if (status.Local.Operations is { }) // can be null during loading, creating a NRE
 		{
-			ref var entry = ref CollectionsMarshal.GetValueRefOrAddDefault(_appHrEntries, localOp.Id, out var exists);
-			if (exists)
+			foreach (var localOp in status.Local.Operations)
 			{
-				entry!.Update(localOp);
-			}
-			else
-			{
-				entry = new ApplicationEntry(localOp);
+				ref var entry = ref CollectionsMarshal.GetValueRefOrAddDefault(_appHrEntries, localOp.Id, out var exists);
+				if (exists)
+				{
+					entry!.Update(localOp);
+				}
+				else
+				{
+					entry = new ApplicationEntry(localOp);
+				}
 			}
 		}
 
