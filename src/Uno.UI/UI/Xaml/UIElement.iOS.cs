@@ -146,8 +146,21 @@ namespace Microsoft.UI.Xaml
 		{
 			base.SetNeedsLayout();
 
+			if (Superview is not UIElement)
+			{
+				var firstManaged = this.FindFirstParent<UIElement>();
+				if (firstManaged != null)
+				{
+					firstManaged.InvalidateMeasure();
+					firstManaged.InvalidateArrange();
+				}
+			}
+
 			InvalidateMeasure();
 			InvalidateMeasureOnNativeOnlyChildrenRecursive(this);
+
+			InvalidateArrange();
+			InvalidateArrangeOnNativeOnlyChildrenRecursive(this);
 		}
 
 		private static void InvalidateMeasureOnNativeOnlyChildrenRecursive(UIView view)
@@ -160,6 +173,21 @@ namespace Microsoft.UI.Xaml
 					if (child is UIView childAsUIView)
 					{
 						InvalidateMeasureOnNativeOnlyChildrenRecursive(childAsUIView);
+					}
+				}
+			}
+		}
+
+		private static void InvalidateArrangeOnNativeOnlyChildrenRecursive(UIView view)
+		{
+			foreach (var child in view.GetChildren())
+			{
+				if (child is not UIElement)
+				{
+					LayoutInformation.SetArrangeDirtyPath(child, true);
+					if (child is UIView childAsUIView)
+					{
+						InvalidateArrangeOnNativeOnlyChildrenRecursive(childAsUIView);
 					}
 				}
 			}

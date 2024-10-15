@@ -682,7 +682,7 @@ namespace Uno.UI.Controls.Legacy
 					//value.AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight;
 
 					ContentView.AddSubview(value);
-					value.InvalidateMeasure();
+					value.SetNeedsLayout();
 				}
 			}
 

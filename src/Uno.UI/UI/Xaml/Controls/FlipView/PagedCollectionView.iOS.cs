@@ -47,6 +47,12 @@ namespace Microsoft.UI.Xaml.Controls
 			Superview?.SetNeedsLayout();
 		}
 
+		public override void SubviewAdded(UIView uiview)
+		{
+			base.SubviewAdded(uiview);
+			SetNeedsLayout();
+		}
+
 		public override CGSize SizeThatFits(CGSize size)
 		{
 			var desiredSize = base.SizeThatFits(size);
