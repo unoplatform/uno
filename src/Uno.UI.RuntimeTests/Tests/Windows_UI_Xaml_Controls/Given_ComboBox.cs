@@ -16,7 +16,6 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 using SamplesApp.UITests;
-using SkiaSharp;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.ComboBoxTests;
@@ -1318,7 +1317,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsNotNull(popup);
 
 			var child = (FrameworkElement)popup.Child;
-			var comboBoxItems = child.FindChildren<ComboBoxItem>().ToArray();
+			var comboBoxItems = child.GetAllChildren().OfType<ComboBoxItem>().ToArray();
 			Assert.AreEqual(Enum.GetValues(typeof(PickerLocationId)).Length, comboBoxItems.Length);
 		}
 
