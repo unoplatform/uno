@@ -100,7 +100,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		_configureCallback = configureCallback;
 
 		_renderTimer = new DispatcherTimer();
-		_renderTimer.Interval = TimeSpan.FromMilliseconds(16.66); // 60 hz
+		_renderTimer.Interval = TimeSpan.FromSeconds(1.0 / X11ApplicationHost.TargetFps); // we're on the UI thread
 		_renderTimer.Tick += (sender, o) =>
 		{
 			if (Interlocked.Exchange(ref _needsConfigureCallback, 0) == 1)
