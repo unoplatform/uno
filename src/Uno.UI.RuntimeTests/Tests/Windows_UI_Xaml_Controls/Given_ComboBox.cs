@@ -5,6 +5,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -15,13 +16,16 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 using SamplesApp.UITests;
+using SkiaSharp;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.ComboBoxTests;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
+using Windows.Storage.Pickers;
 using Windows.UI.Input.Preview.Injection;
 using static Private.Infrastructure.TestServices;
+using ComboBoxHelper = Microsoft.UI.Xaml.Tests.Common.ComboBoxHelper;
 
 #if WINAPPSDK
 using Uno.UI.Extensions;
@@ -1291,6 +1295,31 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				comboBox.IsDropDownOpen = false;
 			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Items_Are_Enum_Values()
+		{
+			var comboBox = new ComboBox();
+			comboBox.ItemsSource = Enum.GetValues(typeof(PickerLocationId)).Cast<PickerLocationId>();
+			comboBox.SelectedIndex = 0;
+			TestServices.WindowHelper.WindowContent = comboBox;
+			await TestServices.WindowHelper.WaitForLoaded(comboBox);
+
+			await ComboBoxHelper.OpenComboBox(comboBox, ComboBoxHelper.OpenMethod.Programmatic);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(comboBox.IsDropDownOpen);
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(comboBox.XamlRoot).FirstOrDefault();
+			Assert.IsNotNull(popup);
+
+			var child = (FrameworkElement)popup.Child;
+			var comboBoxItems = child.FindChildren<ComboBoxItem>().ToArray();
+			Assert.AreEqual(Enum.GetValues(typeof(PickerLocationId)).Length, comboBoxItems.Length);
 		}
 
 #if HAS_UNO
