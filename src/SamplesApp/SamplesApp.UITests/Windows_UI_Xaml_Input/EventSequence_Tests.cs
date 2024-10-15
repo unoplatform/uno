@@ -19,6 +19,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.iOS)] // Wasm is disabled https://github.com/unoplatform/uno-private/issues/684
 		public void TestClick()
 			=> RunSequence("Click");
 
