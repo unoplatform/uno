@@ -678,7 +678,7 @@ namespace Uno.UI.Controls.Legacy
 						ContentView.Subviews[0].RemoveFromSuperview();
 					}
 
-					//value.Frame = ContentView.Bounds;
+					value.Frame = ContentView.Bounds;
 					//value.AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight;
 
 					ContentView.AddSubview(value);
