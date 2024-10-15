@@ -128,7 +128,8 @@ namespace Windows.Storage.Pickers
 
 			var files = await completionSource.Task;
 
-			rootController.DismissViewController(true, null);
+			// Dismiss if still shown
+			viewController.DismissViewController(true, null);
 
 			if (files is null || files.Length == 0)
 			{
@@ -150,6 +151,7 @@ namespace Windows.Storage.Pickers
 
 			public override void FinishedPickingMedia(UIImagePickerController picker, NSDictionary info)
 			{
+
 				if (info.ValueForKey(new NSString("UIImagePickerControllerImageURL")) is NSUrl nSUrl)
 				{
 					var file = StorageFile.GetFromSecurityScopedUrl(nSUrl, null);
@@ -171,12 +173,16 @@ namespace Windows.Storage.Pickers
 
 			public override async void DidFinishPicking(PHPickerViewController picker, PHPickerResult[] results)
 			{
+				// Dismiss the picker early to get the user back to the app as soon as possible.
+				picker.DismissViewController(true, null);
+
 				var storageFiles = await ConvertPickerResults(results);
 
 				// This callback can be called multiple times, user tapping multiple times over the "add" button,
 				// we need to ensure that we only set the result once.
 				_taskCompletionSource.TrySetResult(storageFiles.ToArray());
 			}
+
 			private async Task<IEnumerable<StorageFile>> ConvertPickerResults(PHPickerResult[] results)
 			{
 				List<StorageFile> storageFiles = new List<StorageFile>();
@@ -198,8 +204,8 @@ namespace Windows.Storage.Pickers
 					var extension = GetExtension(identifier);
 
 					var destinationUrl = NSFileManager.DefaultManager
-													  .GetTemporaryDirectory()
-													  .Append($"{NSProcessInfo.ProcessInfo.GloballyUniqueString}.{extension}", false);
+						.GetTemporaryDirectory()
+						.Append($"{NSProcessInfo.ProcessInfo.GloballyUniqueString}.{extension}", false);
 					data.Save(destinationUrl, false);
 
 					storageFiles.Add(StorageFile.GetFromSecurityScopedUrl(destinationUrl, null));
