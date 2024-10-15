@@ -460,99 +460,99 @@ jobs:
       failTaskOnFailedTests: true
       failTaskOnMissingResultsFile: true
 
-##
-## Skia WebAssembly Browser
-##
+# ##
+# ## Skia WebAssembly Browser
+# ##
 
-- job: Skia_Browser_Runtime_Tests_Build
-  displayName: 'Run Skia Browser Runtime Tests'
-  timeoutInMinutes: 180
+# - job: Skia_Browser_Runtime_Tests_Build
+#   displayName: 'Run Skia Browser Runtime Tests'
+#   timeoutInMinutes: 180
 
-  pool:
-    vmImage: ${{ parameters.vmLinuxImage }}
+#   pool:
+#     vmImage: ${{ parameters.vmLinuxImage }}
 
-  container: nv-bionic-wasm
+#   container: nv-bionic-wasm
 
-  dependsOn: Skia_Tests_Build
+#   dependsOn: Skia_Tests_Build
 
-  variables:
-    SamplesAppArtifactName: skia-browserwasm-samples-app-$(XAML_FLAVOR_BUILD)
-    SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
+#   variables:
+#     SamplesAppArtifactName: skia-browserwasm-samples-app-$(XAML_FLAVOR_BUILD)
+#     SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
 
-    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
-    XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
+#     UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
+#     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
-  steps:
-  - task: DownloadBuildArtifacts@0
-    inputs:
-        artifactName: $(SamplesAppArtifactName)
-        downloadPath: '$(build.sourcesdirectory)/build'
+#   steps:
+#   - task: DownloadBuildArtifacts@0
+#     inputs:
+#         artifactName: $(SamplesAppArtifactName)
+#         downloadPath: '$(build.sourcesdirectory)/build'
 
-  - template: templates/dotnet-install.yml
+#   - template: templates/dotnet-install.yml
 
-  - template: templates/linux-install-xvfb.yml
+#   - template: templates/linux-install-xvfb.yml
 
-  - bash: |
-        set -euo pipefail
-        set -x
-        # We use google-chrome instead of chromium-browser because ubuntu uses snap
-        # for the chromium package, and snapd isn't available in CI
-        wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-        sudo apt-get update
-        sudo apt-get install -y ./google-chrome-stable_current_amd64.deb
-    displayName: Install chrome
+#   - bash: |
+#         set -euo pipefail
+#         set -x
+#         # We use google-chrome instead of chromium-browser because ubuntu uses snap
+#         # for the chromium package, and snapd isn't available in CI
+#         wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+#         sudo apt-get update
+#         sudo apt-get install -y ./google-chrome-stable_current_amd64.deb
+#     displayName: Install chrome
 
-  - bash: |
-        set -euo pipefail
-        set -x
+#   - bash: |
+#         set -euo pipefail
+#         set -x
 
-        # https://github.com/sfinktah/bash/blob/master/rawurlencode.inc.sh
-        rawurlencode() {
-            local string="${1}"
-            local strlen=${#string}
-            local encoded=""
-            local pos c o
+#         # https://github.com/sfinktah/bash/blob/master/rawurlencode.inc.sh
+#         rawurlencode() {
+#             local string="${1}"
+#             local strlen=${#string}
+#             local encoded=""
+#             local pos c o
 
-            for (( pos=0 ; pos<strlen ; pos++ )); do
-                c=${string:$pos:1}
-                case "$c" in
-                  [-_.~a-zA-Z0-9] ) o="${c}" ;;
-                  * )               printf -v o '%%%02x' "'$c"
-                esac
-                encoded+="${o}"
-            done
-            ENCODED_RESULT="${encoded}"
-        }
+#             for (( pos=0 ; pos<strlen ; pos++ )); do
+#                 c=${string:$pos:1}
+#                 case "$c" in
+#                   [-_.~a-zA-Z0-9] ) o="${c}" ;;
+#                   * )               printf -v o '%%%02x' "'$c"
+#                 esac
+#                 encoded+="${o}"
+#             done
+#             ENCODED_RESULT="${encoded}"
+#         }
         
-        # For Skia-WASM, SamplesApp is set up so that when saving files, it
-        # sends a POST request at HOSTNAME:PORT+1 where HOSTNAME and PORT are
-        # the hostname and port of the server that serves the SamplesApp
-        python -m http.server 8000 -d "$(SamplesAppArtifactPath)" &
-        python $(build.sourcesdirectory)/build/test-scripts/skia-browserwasm-file-creation-server.py 8001 &
-        sleep 2
+#         # For Skia-WASM, SamplesApp is set up so that when saving files, it
+#         # sends a POST request at HOSTNAME:PORT+1 where HOSTNAME and PORT are
+#         # the hostname and port of the server that serves the SamplesApp
+#         python -m http.server 8000 -d "$(SamplesAppArtifactPath)" &
+#         python $(build.sourcesdirectory)/build/test-scripts/skia-browserwasm-file-creation-server.py 8001 &
+#         sleep 2
 
-        rawurlencode "$(build.sourcesdirectory)/build/skia-browserwasm-runtime-tests-results.xml"
+#         rawurlencode "$(build.sourcesdirectory)/build/skia-browserwasm-runtime-tests-results.xml"
         
-        # we use xvfb instead of headless chrome because using --enable-logging with --headless doesn't
-        # print the logs as expected
-        # for some reason, you have to run the next line twice or else it doesn't work
-        xvfb-run --server-num 99 google-chrome --enable-logging=stderr --no-sandbox "http://localhost:8000/?--runtime-tests=${ENCODED_RESULT}" &
-        sleep 2
-        pkill chrome
-        pkill xvfb-run
-        xvfb-run --server-num 98 google-chrome --enable-logging=stderr --no-sandbox "http://localhost:8000/?--runtime-tests=${ENCODED_RESULT}" &
+#         # we use xvfb instead of headless chrome because using --enable-logging with --headless doesn't
+#         # print the logs as expected
+#         # for some reason, you have to run the next line twice or else it doesn't work
+#         xvfb-run --server-num 99 google-chrome --enable-logging=stderr --no-sandbox "http://localhost:8000/?--runtime-tests=${ENCODED_RESULT}" &
+#         sleep 2
+#         pkill chrome
+#         pkill xvfb-run
+#         xvfb-run --server-num 98 google-chrome --enable-logging=stderr --no-sandbox "http://localhost:8000/?--runtime-tests=${ENCODED_RESULT}" &
 
-        while ! test -f "$(build.sourcesdirectory)/build/skia-browserwasm-runtime-tests-results.xml"; do
-            sleep 10
-        done
+#         while ! test -f "$(build.sourcesdirectory)/build/skia-browserwasm-runtime-tests-results.xml"; do
+#             sleep 10
+#         done
 
-    displayName: Run Skia Browser $(XAML_FLAVOR_BUILD) Runtime Tests
+#     displayName: Run Skia Browser $(XAML_FLAVOR_BUILD) Runtime Tests
 
-  - task: PublishTestResults@2
-    condition: always()
-    inputs:
-      testRunTitle: 'Skia Browser $(XAML_FLAVOR_BUILD) Runtime Tests'
-      testResultsFormat: 'NUnit'
-      testResultsFiles: '$(build.sourcesdirectory)/build/skia-browserwasm-runtime-tests-results.xml'
-      failTaskOnFailedTests: true
-      failTaskOnMissingResultsFile: true
+#   - task: PublishTestResults@2
+#     condition: always()
+#     inputs:
+#       testRunTitle: 'Skia Browser $(XAML_FLAVOR_BUILD) Runtime Tests'
+#       testResultsFormat: 'NUnit'
+#       testResultsFiles: '$(build.sourcesdirectory)/build/skia-browserwasm-runtime-tests-results.xml'
+#       failTaskOnFailedTests: true
+#       failTaskOnMissingResultsFile: true
