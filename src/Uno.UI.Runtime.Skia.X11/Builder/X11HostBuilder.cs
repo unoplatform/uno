@@ -10,8 +10,19 @@ internal partial class X11HostBuilder : IPlatformHostBuilder
 	[GeneratedRegex(@"^(?:(?<hostname>[\w\.-]+))?:(?<displaynumber>\d+)(?:\.(?<screennumber>\d+))?$")]
 	private static partial Regex DisplayRegex();
 
+	private int _targetFps = 60;
+
 	public X11HostBuilder()
 	{
+	}
+
+	/// <summary>
+	/// Sets the FPS that the application should try to achieve.
+	/// </summary>
+	public X11HostBuilder TargetFps(int targetFps)
+	{
+		_targetFps = targetFps;
+		return this;
 	}
 
 	public bool IsSupported
@@ -20,5 +31,5 @@ internal partial class X11HostBuilder : IPlatformHostBuilder
 			DisplayRegex().Match(displayString).Success;
 
 	public SkiaHost Create(Func<Microsoft.UI.Xaml.Application> appBuilder)
-		=> new X11ApplicationHost(appBuilder);
+		=> new X11ApplicationHost(appBuilder, _targetFps);
 }
