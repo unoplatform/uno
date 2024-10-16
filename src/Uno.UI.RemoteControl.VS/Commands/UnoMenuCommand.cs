@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.VisualStudio.Shell;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
@@ -12,32 +13,25 @@ namespace Uno.UI.RemoteControl.VS;
 
 internal sealed class UnoMenuCommand
 {
-	private int rootItemId;
 	private readonly AsyncPackage _package;
-	//private IAsyncServiceProvider ServiceProvider { get { return this._package; } }
-
+	private OleMenuCommandService CommandService { get; set; }
 	private IdeChannelClient IdeChannelClient;
 
-	public static UnoMenuCommand? Instance { get; private set; }
+	private static readonly Guid UnoStudioPackageCmdSet = new Guid("6c532d75-ee35-4726-a1cd-338c5243e38f");
+	private static readonly int UnoMainMenu = 0x4100;
+	private static readonly int DynamicMenuCommandId = 0x4103;
 
 	public List<CommandRequestIdeMessage> CommandList { get; set; } = [];
+	public static UnoMenuCommand? Instance { get; private set; }
 
-	public OleMenuCommandService CommandService { get; private set; }
-
-	public static readonly Guid PackageUnoGuidString = new Guid("e2245c5b-bbe5-40c8-96d6-94ea655a5ff7");
-	public static readonly Guid UnoStudioPackageCmdSet = new Guid("6c532d75-ee35-4726-a1cd-338c5243e38f");
-	public static readonly int UnoMainMenu = 0x4100;
-	public static readonly int DynamicMenuCommandId = 0x4103;
-	public static readonly int AnchorMenuCommandId = 0x4104;
-
-	private UnoMenuCommand(AsyncPackage package, IdeChannelClient ideChannelClient, OleMenuCommandService commandService)
+	private UnoMenuCommand(AsyncPackage package, IdeChannelClient ideChannelClient, OleMenuCommandService commandService, CommandRequestIdeMessage cr)
 	{
 		_package = package ?? throw new ArgumentNullException(nameof(_package));
 		CommandService = commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
 		IdeChannelClient = ideChannelClient ?? throw new ArgumentNullException(nameof(ideChannelClient));
+		CommandList.Add(cr);
 
 		CommandID dynamicItemRootId = new CommandID(UnoStudioPackageCmdSet, DynamicMenuCommandId);
-		rootItemId = dynamicItemRootId.ID;
 		if (commandService.FindCommand(dynamicItemRootId) is not DynamicItemMenuCommand)
 		{
 			DynamicItemMenuCommand dynamicMenuCommand = new DynamicItemMenuCommand(
@@ -53,19 +47,11 @@ internal sealed class UnoMenuCommand
 	{
 		// Switch to the main thread - the call to AddCommand in DynamicMenu's constructor requires the UI thread.
 		await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
+
 		if (Instance is null
 			&& await package.GetServiceAsync(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
 		{
-			Instance = new UnoMenuCommand(package, ideChannelClient, commandService);
-			Instance.CommandList.Add(cr);
-
-			CommandID initialCommandId = new CommandID(UnoStudioPackageCmdSet, AnchorMenuCommandId);
-			if (Instance.CommandService.FindCommand(initialCommandId) is not OleMenuCommand)
-			{
-				var menuItem = new OleMenuCommand(null, initialCommandId);
-				menuItem.BeforeQueryStatus += Instance.OnBeforeQueryStatusHide;
-				commandService.AddCommand(menuItem);
-			}
+			Instance = new UnoMenuCommand(package, ideChannelClient, commandService, cr);
 
 			CommandID unoMainMenuId = new CommandID(UnoStudioPackageCmdSet, UnoMainMenu);
 			if (Instance.CommandService.FindCommand(unoMainMenuId) is not OleMenuCommand)
@@ -93,36 +79,21 @@ internal sealed class UnoMenuCommand
 		}
 	}
 
-	private void OnBeforeQueryStatusHide(object sender, EventArgs e)
-	{
-		var command = sender as OleMenuCommand;
-		if (command != null && command.Visible == true)
-		{
-			command.Visible = false;
-		}
-	}
-
+	/// <summary>
+	/// True if the command ID is a valid dynamic item
+	/// [inside the range of itens, from DynamicMenuCommandId to CommandList.Count]
+	/// </summary>
 	private bool IsValidDynamicItem(int commandId)
-	{
-		ThreadHelper.ThrowIfNotOnUIThread();
-
-		// The match is valid if the command ID is >= the id of our root dynamic start item
-		// and the command ID minus the ID of our root dynamic start item
-		// is less than or equal to the number of projects in the solution.
-		return (commandId >= (int)DynamicMenuCommandId) &&
-			((commandId - (int)DynamicMenuCommandId - 1) < CommandList.Count);
-	}
+		=> (commandId >= (int)DynamicMenuCommandId) &&
+			((commandId - (int)DynamicMenuCommandId) < CommandList.Count);
 
 	private void OnInvokedDynamicItem(object sender, EventArgs args)
 	{
-		DynamicItemMenuCommand matchedCommand = (DynamicItemMenuCommand)sender;
-
-		// The position of the command is the command ID minus the ID of the root dynamic start item.
-		// And -1 because the first command is at position 0.
-		int commandPosition = matchedCommand.MatchedCommandId - (int)DynamicMenuCommandId - 1;
-		if (IdeChannelClient != null && CommandList.Skip(commandPosition).First() is CommandRequestIdeMessage currentCommand)
+		if (IdeChannelClient != null &&
+				sender is DynamicItemMenuCommand matchedCommand &&
+				TryGetCommandRequestIdeMessage(matchedCommand, out var currentCommand))
 		{
-			//ignoring the async call as the OleMenuCommand.execHandler is private and not async
+			// Ignoring the async call as the OleMenuCommand.execHandler is private and not async
 			_ = IdeChannelClient.SendToDevServerAsync(currentCommand, _package.DisposalToken);
 		}
 	}
@@ -138,15 +109,18 @@ internal sealed class UnoMenuCommand
 		matchedCommand.Enabled = true;
 		matchedCommand.Visible = true;
 
-		// The position of the command is the command ID minus the ID of the root dynamic start item.
-		// And -1 because the first command is at position 0.
-		int commandPosition = matchedCommand.MatchedCommandId - (int)DynamicMenuCommandId - 1;
-
-		var currentCommand = CommandList.Skip(commandPosition).First();
-		matchedCommand.Text = currentCommand.Command;
-
+		if (TryGetCommandRequestIdeMessage(matchedCommand, out var currentCommand))
+		{
+			matchedCommand.Text = currentCommand.Command;
+		}
 		// Clear the ID because we are done with this item.
 		matchedCommand.MatchedCommandId = 0;
 	}
 
+	private static int GetCurrentPosition(DynamicItemMenuCommand matchedCommand) =>
+			// The position of the command is the command ID minus the ID of the root dynamic start item.
+			matchedCommand.MatchedCommandId == 0 ? 0 : matchedCommand.MatchedCommandId - (int)DynamicMenuCommandId;
+
+	private bool TryGetCommandRequestIdeMessage(DynamicItemMenuCommand matchedCommand, [NotNullWhen(true)] out CommandRequestIdeMessage result)
+		=> (result = CommandList.Skip(GetCurrentPosition(matchedCommand)).FirstOrDefault()) != null;
 }
