@@ -35,7 +35,7 @@ namespace Microsoft.UI.Composition
 
 		void IOnlineBrush.Paint(in Visual.PaintingSession session, SKRect bounds)
 		{
-			var resultPaint = SkiaExtensions.GetTempSKPaint();
+			var resultPaint = SkiaHelper.GetTempSKPaint();
 			resultPaint.IsAntialias = true;
 
 			UpdatePaint(resultPaint, bounds);

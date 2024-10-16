@@ -76,7 +76,7 @@ namespace Microsoft.UI.Composition
 					// On Windows, the stroke is simply 1px, it doesn't scale with the height.
 					// So, to get a correct stroke geometry, we must apply the transformations first.
 
-					var strokeFillPath = SkiaExtensions.GetTempSKPath();
+					var strokeFillPath = SkiaHelper.GetTempSKPath();
 					// Get the stroke geometry, after scaling has been applied.
 					strokePaint.GetFillPath(geometryWithTransformations, strokeFillPath);
 
@@ -95,7 +95,7 @@ namespace Microsoft.UI.Composition
 
 		private static SKPaint GetTempPaint(bool isStroke, SKColorFilter? colorFilter, bool isHighQuality = false)
 		{
-			var paint = SkiaExtensions.GetTempSKPaint();
+			var paint = isStroke ? SkiaHelper.GetTempSKPaint() : SkiaHelper.GetAnotherTempSKPaint();
 			paint.IsAntialias = true;
 			paint.ColorFilter = colorFilter;
 
@@ -162,7 +162,7 @@ namespace Microsoft.UI.Composition
 					var strokePaint = GetTempStrokePaint(null);
 					strokePaint.StrokeWidth = StrokeThickness;
 
-					var hitTestStrokeFillPath = SkiaExtensions.GetTempSKPath();
+					var hitTestStrokeFillPath = SkiaHelper.GetTempSKPath();
 					strokePaint.GetFillPath(geometryWithTransformations, hitTestStrokeFillPath);
 					if (hitTestStrokeFillPath.Contains((float)point.X, (float)point.Y))
 					{

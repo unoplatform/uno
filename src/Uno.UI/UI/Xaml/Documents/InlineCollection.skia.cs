@@ -501,7 +501,7 @@ namespace Microsoft.UI.Xaml.Documents
 					var inline = segment.Inline;
 					var fontInfo = segment.FallbackFont ?? inline.FontInfo;
 
-					var paint = SkiaExtensions.GetTempSKPaint();
+					var paint = SkiaHelper.GetTempSKPaint();
 					paint.TextEncoding = SKTextEncoding.Utf16;
 					paint.IsStroke = false;
 					paint.IsAntialias = true;

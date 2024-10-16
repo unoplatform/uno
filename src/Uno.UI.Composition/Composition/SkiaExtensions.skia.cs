@@ -12,9 +12,6 @@ namespace Microsoft.UI.Composition
 {
 	public static class SkiaExtensions
 	{
-		[ThreadStatic] private static readonly SKPath _tempPath = new SKPath();
-		[ThreadStatic] private static readonly SKPaint _tempPaint = new SKPaint();
-
 		public static SKRect ToSKRect(this Rect rect)
 			=> new SKRect((float)rect.Left, (float)rect.Top, (float)rect.Right, (float)rect.Bottom);
 
@@ -143,22 +140,6 @@ namespace Microsoft.UI.Composition
 			}
 
 			return bmp!;
-		}
-
-		public static SKPath GetTempSKPath()
-		{
-			// Note the difference between Rewind and Reset
-			// https://api.skia.org/classSkPath.html#a8dc858ee4c95a59b3dd4bdd3f7b85fdc : "Use rewind() instead of reset() if SkPath storage will be reused and performance is critical."
-			_tempPath.Rewind();
-			return _tempPath;
-		}
-
-		public static SKPaint GetTempSKPaint()
-		{
-			// https://api.skia.org/classSkPaint.html#a6c7118c97a0e8819d75aa757afbc4c49
-			// "This is equivalent to replacing SkPaint with the result of SkPaint()."
-			_tempPaint.Reset();
-			return _tempPaint;
 		}
 	}
 }

@@ -190,7 +190,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var canvas = t.canvas;
 				var rect = t.rect;
 
-				var paint = SkiaExtensions.GetTempSKPaint();
+				var paint = SkiaHelper.GetTempSKPaint();
 				paint.Color = SelectionHighlightColor.Color.ToSKColor();
 				paint.Style = SKPaintStyle.Fill;
 				canvas.DrawRect(new SKRect((float)rect.Left, (float)rect.Top, (float)rect.Right, (float)rect.Bottom), paint);

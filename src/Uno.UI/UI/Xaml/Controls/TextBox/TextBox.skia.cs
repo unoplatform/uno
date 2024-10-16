@@ -239,7 +239,7 @@ public partial class TextBox
 							var caretRect = args.rect;
 							var compositor = _visual.Compositor;
 							var brush = DefaultBrushes.TextForegroundBrush.GetOrCreateCompositionBrush(compositor);
-							var caretPaint = Microsoft.UI.Composition.SkiaExtensions.GetTempSKPaint();
+							var caretPaint = SkiaHelper.GetTempSKPaint();
 							brush.UpdatePaint(caretPaint, caretRect.ToSKRect());
 							args.canvas.DrawRect(
 								new SKRect((float)caretRect.Left, (float)caretRect.Top, (float)caretRect.Right,
