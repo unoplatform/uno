@@ -136,6 +136,7 @@ internal class PackageManifest
 		public const string UniversalImageLoading = nameof(UniversalImageLoading);
 		public const string Dsp = nameof(Dsp);
 		public const string Resizetizer = nameof(Resizetizer);
+		public const string SdkExtras = nameof(SdkExtras);
 		public const string SkiaSharp = nameof(SkiaSharp);
 		public const string SvgSkia = nameof(SvgSkia);
 		public const string WinAppSdk = nameof(WinAppSdk);

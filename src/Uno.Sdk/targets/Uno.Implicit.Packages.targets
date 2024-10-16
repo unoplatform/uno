@@ -61,6 +61,7 @@
 				AndroidXBrowserVersion="@(AndroidXBrowserVersion)"
 				AndroidXSwipeRefreshLayoutVersion="@(AndroidXSwipeRefreshLayoutVersion)"
 				UnoResizetizerVersion="$(UnoResizetizerVersion)"
+				UnoSdkExtrasVersion="$(UnoSdkExtrasVersion)"
 				MicrosoftLoggingVersion="$(MicrosoftLoggingVersion)"
 				WinAppSdkVersion="$(WinAppSdkVersion)"
 				WinAppSdkBuildToolsVersion="$(WinAppSdkBuildToolsVersion)"
