@@ -1267,27 +1267,17 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 		private int GetItemCount()
 		{
-			var itemsSource = TabItemsSource;
-			if (itemsSource != null)
+			if (TabItemsSource is { } itemsSource)
 			{
-				var iterable = itemsSource as IEnumerable;
-				if (iterable != null)
+				if (itemsSource is IEnumerable iterable)
 				{
-					//int i = 1;
-					//var iter = iterable.First();
-					//while (iter.MoveNext())
-					//{
-					//	i++;
-					//}
-					//return i;
 					return iterable.Count();
 				}
 				return 0;
 			}
-
 			else
 			{
-				return (int)TabItems.Count;
+				return TabItems.Count;
 			}
 		}
 
