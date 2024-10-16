@@ -35,7 +35,9 @@ namespace Uno.UI.Xaml.Input
 			{
 				// TODO Uno: Should call a specific version of the GetFocusChildren, for now fall back to UIElement behavior
 				//focusChildren = GetFocusChildren<CDOCollection>(static_cast<CTextBlock*>(object));
-				return VisualTreeHelper.GetChildren(textBlock);
+				// Uno Doc: the IReadOnlyList check makes it so that on __CROSSRUNTIME__, we don't create a new list
+				var children = VisualTreeHelper.GetChildren(textBlock);
+				return children as IReadOnlyList<DependencyObject> ?? children.ToList();
 			}
 #if __ANDROID__ || __IOS__ // TODO Uno specific: NativeScrollContentPresenter does not return its children
 			else if (dependencyObject is NativeScrollContentPresenter scrollContentPresenter)
@@ -48,7 +50,9 @@ namespace Uno.UI.Xaml.Input
 #endif
 			else if (dependencyObject is UIElement uiElement)
 			{
-				return VisualTreeHelper.GetChildren(uiElement);
+				// Uno Doc: the IReadOnlyList check makes it so that on __CROSSRUNTIME__, we don't create a new list
+				var children = VisualTreeHelper.GetChildren(uiElement);
+				return children as IReadOnlyList<DependencyObject> ?? children.ToList();
 			}
 
 			return Array.Empty<DependencyObject>();
