@@ -93,7 +93,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		_configureCallback = configureCallback;
 
 		_renderTimer = new DispatcherTimer();
-		_renderTimer.Interval = new TimeSpan(1000 / 16);
+		_renderTimer.Interval = TimeSpan.FromSeconds(1.0 / X11ApplicationHost.RenderFrameRate); // we're on the UI thread
 		_renderTimer.Tick += (sender, o) =>
 		{
 			if (Interlocked.Exchange(ref _needsConfigureCallback, 0) == 1)
@@ -103,8 +103,8 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 			if (_renderDirty)
 			{
-				_renderer?.Render();
 				_renderDirty = false;
+				_renderer?.Render();
 			}
 		};
 		_renderTimer.Start();
