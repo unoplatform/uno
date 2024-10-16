@@ -47,6 +47,20 @@
 		<Error Text="The Wasm SDK is not enabled" Condition=" '$(_UnoUseMicrosoftNETSdkWebAssembly)' != 'true' OR '$(UsingMicrosoftNETSdkWebAssembly)' != 'true' " />
 	</Target>
 
+  <Target Name="_UnoValidateMacPublish"
+        AfterTargets="_UnoPublishAppBundle">
+
+    <ItemGroup
+        Condition=" '$(TargetFramework)' == 'net9.0-desktop' and '$(PackageFormat)' == 'app' ">
+      <!-- Validates that assets are properly propagated to the output folder, regardless of their "copy to output" value -->
+      <_AssetsToValidate Include="$(PublishDir)$(AssemblyName).app" />
+    </ItemGroup>
+
+    <Error Text="Missing asset %(_AssetsToValidate.Identity)"
+          Condition="'@(_AssetsToValidate)'!='' AND '%(_AssetsToValidate.MustNotExist)'!='true' AND !exists('%(_AssetsToValidate.Identity)')" />
+
+  </Target>
+
   <Target Name="_UnoValidateSelfAssets"
         BeforeTargets="AfterBuild">
 
