@@ -226,6 +226,10 @@
 			"description": "Provides an explicit override for the version of Uno.Resizetizer to use.",
 			"type": "nuget-version"
 		},
+		"UnoSdkExtrasVersion": {
+			"description": "Provides an explicit override for the version of Uno.Sdk.Extras to use.",
+			"type": "nuget-version"
+		},
 		"MicrosoftLoggingVersion": {
 			"description": "Provides an explicit override for the version of Microsoft.Extensions.Logging to use.",
 			"type": "nuget-version"
