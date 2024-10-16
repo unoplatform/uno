@@ -10,16 +10,15 @@ namespace Microsoft.UI.Composition;
 
 public partial class ShapeVisual
 {
-	[ThreadStatic] // safety
-	private static SKPath? _prePaintingClipPath;
-
 	private protected override void ApplyPrePaintingClipping(in SKCanvas canvas)
 	{
 		base.ApplyPrePaintingClipping(in canvas);
-		_prePaintingClipPath ??= new SKPath();
-		if (GetViewBoxPathInElementCoordinateSpace(_prePaintingClipPath))
+		using (SkiaHelper.GetTempSKPath(out var prePaintingClipPath))
 		{
-			canvas.ClipPath(_prePaintingClipPath, antialias: true);
+			if (GetViewBoxPathInElementCoordinateSpace(prePaintingClipPath))
+			{
+				canvas.ClipPath(prePaintingClipPath, antialias: true);
+			}
 		}
 	}
 
@@ -37,7 +36,7 @@ public partial class ShapeVisual
 		base.Paint(in session);
 	}
 
-	/// <returns>The same <see cref="dst"/> object.</returns>
+	/// <returns>true if a ViewBox exists</returns>
 	internal bool GetViewBoxPathInElementCoordinateSpace(SKPath dst)
 	{
 		if (ViewBox is not { } viewBox)
