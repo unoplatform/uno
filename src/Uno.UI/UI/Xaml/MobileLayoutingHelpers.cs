@@ -191,7 +191,11 @@ internal static partial class MobileLayoutingHelpers
 				view.Frame = finalRect;
 			}
 
+#if __IOS__
 			view.LayoutIfNeeded();
+#else
+			view.LayoutSubtreeIfNeeded();
+#endif
 
 			foreach (var child in view.Subviews)
 			{
