@@ -16,6 +16,7 @@ using Uno.UI.Helpers.WinUI;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Media;
 using Uno.UI.Xaml.Core.Scaling;
+using SkiaExtensions = Microsoft.UI.Composition.SkiaExtensions;
 
 #nullable enable
 
@@ -188,11 +189,11 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				var canvas = t.canvas;
 				var rect = t.rect;
-				canvas.DrawRect(new SKRect((float)rect.Left, (float)rect.Top, (float)rect.Right, (float)rect.Bottom), new SKPaint
-				{
-					Color = SelectionHighlightColor.Color.ToSKColor(),
-					Style = SKPaintStyle.Fill
-				});
+
+				var paint = SkiaExtensions.GetTempSKPaint();
+				paint.Color = SelectionHighlightColor.Color.ToSKColor();
+				paint.Style = SKPaintStyle.Fill;
+				canvas.DrawRect(new SKRect((float)rect.Left, (float)rect.Top, (float)rect.Right, (float)rect.Bottom), paint);
 			};
 
 			_inlines.RenderSelection = IsTextSelectionEnabled;

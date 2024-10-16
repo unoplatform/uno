@@ -46,6 +46,11 @@ namespace Microsoft.UI.Xaml.Media
 {
 	public partial class VisualTreeHelper
 	{
+#if __SKIA__
+		[ThreadStatic] // just in case SearchDownForTopMostElement is called from multiple threads somehow
+		private static readonly SkiaSharp.SKPath _hitTestViewBoxPath = new();
+#endif
+
 		[Uno.NotImplemented]
 		public static void DisconnectChildrenRecursive(UIElement element)
 		{
@@ -517,8 +522,8 @@ namespace Microsoft.UI.Xaml.Media
 
 			// The maximum region where the current element and its children might draw themselves
 			// This is expressed in the window (absolute) coordinate space.
-			var clippingBounds = element.Visual.GetViewBoxPathInElementCoordinateSpace() is { } path
-				? transformToElement.Transform(path.TightBounds.ToRect())
+			var clippingBounds = element.Visual.GetViewBoxPathInElementCoordinateSpace(_hitTestViewBoxPath)
+				? transformToElement.Transform(_hitTestViewBoxPath.TightBounds.ToRect())
 				: Rect.Infinite;
 
 			if (element.Visual.Clip?.GetBounds(element.Visual) is { } clip)

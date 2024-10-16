@@ -9,8 +9,6 @@ namespace Microsoft.UI.Composition
 {
 	public partial class CompositionSpriteShape : CompositionShape
 	{
-		private SKPaint? _strokePaint;
-		private SKPaint? _fillPaint;
 		private SKPath? _geometryWithTransformations;
 
 		internal override void Paint(in Visual.PaintingSession session)
@@ -19,7 +17,7 @@ namespace Microsoft.UI.Composition
 			{
 				if (FillBrush is { } fill)
 				{
-					var fillPaint = TryCreateAndClearFillPaint(session.Filters.OpacityColorFilter);
+					var fillPaint = GetTempFillPaint(session.Filters.OpacityColorFilter);
 
 					if (Compositor.TryGetEffectiveBackgroundColor(this, out var colorFromTransition))
 					{
@@ -52,8 +50,8 @@ namespace Microsoft.UI.Composition
 
 				if (StrokeBrush is { } stroke && StrokeThickness > 0)
 				{
-					var fillPaint = TryCreateAndClearFillPaint(session.Filters.OpacityColorFilter);
-					var strokePaint = TryCreateAndClearStrokePaint(session.Filters.OpacityColorFilter);
+					var fillPaint = GetTempFillPaint(session.Filters.OpacityColorFilter);
+					var strokePaint = GetTempStrokePaint(session.Filters.OpacityColorFilter);
 
 					// Set stroke thickness
 					strokePaint.StrokeWidth = StrokeThickness;
@@ -78,83 +76,28 @@ namespace Microsoft.UI.Composition
 					// On Windows, the stroke is simply 1px, it doesn't scale with the height.
 					// So, to get a correct stroke geometry, we must apply the transformations first.
 
+					var strokeFillPath = SkiaExtensions.GetTempSKPath();
 					// Get the stroke geometry, after scaling has been applied.
-					var strokeGeometry = strokePaint.GetFillPath(geometryWithTransformations);
+					strokePaint.GetFillPath(geometryWithTransformations, strokeFillPath);
 
-					stroke.UpdatePaint(fillPaint, strokeGeometry.Bounds);
+					stroke.UpdatePaint(fillPaint, strokeFillPath.Bounds);
 
-					session.Canvas.DrawPath(strokeGeometry, fillPaint);
+					session.Canvas.DrawPath(strokeFillPath, fillPaint);
 				}
 			}
 		}
 
-		private SKPaint TryCreateAndClearStrokePaint(SKColorFilter? colorFilter)
-			=> TryCreateAndClearPaint(ref _strokePaint, true, colorFilter, CompositionConfiguration.UseBrushAntialiasing);
+		private SKPaint GetTempStrokePaint(SKColorFilter? colorFilter)
+			=> GetTempPaint(true, colorFilter, CompositionConfiguration.UseBrushAntialiasing);
 
-		private SKPaint TryCreateAndClearFillPaint(SKColorFilter? colorFilter)
-			=> TryCreateAndClearPaint(ref _fillPaint, false, colorFilter, CompositionConfiguration.UseBrushAntialiasing);
+		private SKPaint GetTempFillPaint(SKColorFilter? colorFilter)
+			=> GetTempPaint(false, colorFilter, CompositionConfiguration.UseBrushAntialiasing);
 
-		// TODO: profile the impact of this optimization and consider removing it
-		// It's hacky and can break if SkiaSharp exposes new properties that
-		// are then used and modified in CompositionBrush.UpdatePaint().
-		private static SKPaint TryCreateAndClearPaint(ref SKPaint? paint, bool isStroke, SKColorFilter? colorFilter, bool isHighQuality = false)
+		private static SKPaint GetTempPaint(bool isStroke, SKColorFilter? colorFilter, bool isHighQuality = false)
 		{
-			if (paint == null)
-			{
-				paint = new SKPaint();
-			}
-			else
-			{
-				// defaults
-				paint.IsAntialias = false;
-				paint.BlendMode = SKBlendMode.SrcOver;
-				paint.FakeBoldText = false;
-				paint.HintingLevel = SKPaintHinting.Normal;
-				paint.IsDither = false;
-				paint.IsEmbeddedBitmapText = false;
-				paint.IsLinearText = false;
-				paint.LcdRenderText = false;
-				paint.StrokeCap = SKStrokeCap.Butt;
-				paint.StrokeJoin = SKStrokeJoin.Miter;
-				paint.StrokeMiter = 4;
-				paint.StrokeWidth = 0;
-				paint.SubpixelText = false;
-				paint.TextAlign = SKTextAlign.Left;
-				paint.TextEncoding = SKTextEncoding.Utf8;
-				paint.TextScaleX = 1;
-				paint.TextSize = 12;
-
-				// Cleanup
-				if (paint.Shader is { } shader)
-				{
-					shader.Dispose();
-					paint.Shader = null;
-				}
-
-				if (paint.PathEffect is { } pathEffect)
-				{
-					pathEffect.Dispose();
-					paint.PathEffect = null;
-				}
-
-				if (paint.ImageFilter is { } imageFilter)
-				{
-					imageFilter.Dispose();
-					paint.ImageFilter = null;
-				}
-
-				if (paint.MaskFilter is { } maskFilter)
-				{
-					maskFilter.Dispose();
-					paint.MaskFilter = null;
-				}
-
-				if (paint.Typeface is { } typeface)
-				{
-					typeface.Dispose();
-					paint.Typeface = null;
-				}
-			}
+			var paint = SkiaExtensions.GetTempSKPaint();
+			paint.IsAntialias = true;
+			paint.ColorFilter = colorFilter;
 
 			paint.IsStroke = isStroke;
 
@@ -216,10 +159,12 @@ namespace Microsoft.UI.Composition
 
 				if (StrokeBrush is { } stroke && StrokeThickness > 0)
 				{
-					var strokePaint = TryCreateAndClearStrokePaint(null);
+					var strokePaint = GetTempStrokePaint(null);
 					strokePaint.StrokeWidth = StrokeThickness;
-					var strokeGeometry = strokePaint.GetFillPath(geometryWithTransformations);
-					if (strokeGeometry.Contains((float)point.X, (float)point.Y))
+
+					var hitTestStrokeFillPath = SkiaExtensions.GetTempSKPath();
+					strokePaint.GetFillPath(geometryWithTransformations, hitTestStrokeFillPath);
+					if (hitTestStrokeFillPath.Contains((float)point.X, (float)point.Y))
 					{
 						return true;
 					}
