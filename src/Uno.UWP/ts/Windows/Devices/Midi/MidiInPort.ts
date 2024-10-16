@@ -30,8 +30,7 @@
 				if ((<any>globalThis).DotnetExports !== undefined) {
 					MidiInPort.dispatchMessage = (<any>globalThis).DotnetExports.Uno.Windows.Devices.Midi.MidiInPort.DispatchMessage;
 				} else {
-					MidiInPort.dispatchMessage = (<any>Module).mono_bind_static_method(
-						"[Uno] Windows.Devices.Midi.MidiInPort:DispatchMessage");
+					throw `Unable to find dotnet exports`;
 				}
 			}
 

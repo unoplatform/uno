@@ -14,16 +14,28 @@ public class UpdateFile : IMessage
 	/// ID of this file update request.
 	/// </summary>
 	[JsonProperty]
-	public string RequestId { get; } = Guid.NewGuid().ToString();
+	public string RequestId { get; set; } = Guid.NewGuid().ToString();
 
 	[JsonProperty]
 	public string FilePath { get; set; } = string.Empty;
 
+	/// <summary>
+	/// The old text to replace in the file, or `null` to create a new file (only if <see cref="IsCreateDeleteAllowed"/> is true).
+	/// </summary>
 	[JsonProperty]
-	public string OldText { get; set; } = string.Empty;
+	public string? OldText { get; set; }
 
+	/// <summary>
+	/// The new text to replace in the file, or `null` to delete the file (only if <see cref="IsCreateDeleteAllowed"/> is true).
+	/// </summary>
 	[JsonProperty]
-	public string NewText { get; set; } = string.Empty;
+	public string? NewText { get; set; }
+
+	/// <summary>
+	/// Indicates if the file can be created or deleted.
+	/// </summary>
+	[JsonProperty]
+	public bool IsCreateDeleteAllowed { get; set; }
 
 	/// <summary>
 	/// Disable the forced hot-reload requested on VS after the file has been modified.
@@ -37,6 +49,10 @@ public class UpdateFile : IMessage
 	[JsonIgnore]
 	string IMessage.Name => Name;
 
+	/// <summary>
+	/// LEGACY, indicates if valid for the legacy processor to handle it.
+	/// </summary>
+	/// <returns></returns>
 	[MemberNotNullWhen(true, nameof(FilePath), nameof(OldText), nameof(NewText))]
 	public bool IsValid()
 		=> !FilePath.IsNullOrEmpty() &&

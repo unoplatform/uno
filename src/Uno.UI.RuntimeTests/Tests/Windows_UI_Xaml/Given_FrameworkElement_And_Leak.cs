@@ -1,5 +1,5 @@
-﻿// Uncomment to get additional reference tracking
-// #define TRACK_REFS
+// Uncomment to get additional reference tracking
+//#define TRACK_REFS
 #nullable enable
 
 using System;
@@ -15,6 +15,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Uno.UI.Extensions;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
@@ -218,10 +219,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		private async Task When_Add_Remove_Inner(object controlTypeRaw, int count)
 		{
-#if TRACK_REFS
-			var initialInactiveStats = Uno.UI.DataBinding.BinderReferenceHolder.GetInactiveViewReferencesStats();
-			var initialActiveStats = Uno.UI.DataBinding.BinderReferenceHolder.GetReferenceStats();
-#endif
 
 			Type GetType(string s)
 				=> AppDomain.CurrentDomain.GetAssemblies().Select(a => a.GetType(s)).Where(t => t != null).First()!;
@@ -236,6 +233,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			var _holders = new ConditionalWeakTable<DependencyObject, Holder>();
 			void TrackDependencyObject(DependencyObject target) => _holders.Add(target, new Holder(HolderUpdate));
 
+			var forest = new List<string>();
 			var maxCounter = 0;
 			var activeControls = 0;
 			var maxActiveControls = 0;
@@ -249,17 +247,28 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			await TestServices.WindowHelper.WaitForIdle();
 
+#if TRACK_REFS
+			Uno.UI.DataBinding.BinderReferenceHolder.IsEnabled = true;
+
+			Uno.UI.DataBinding.BinderReferenceHolder.PurgeHolders();
+			var preStats = Uno.UI.DataBinding.BinderReferenceHolder.GetReferenceStats()
+				.GroupBy(x => x.Item1, x => x.Item2)
+				.ToDictionary(g => g.Key, g => g.Sum());
+			Dictionary<Type, int>? run0Stats = null;
+#endif
+
 			for (int i = 0; i < count; i++)
 			{
 				await MaterializeControl(controlType, _holders, maxCounter, rootContainer);
 			}
 
 			TestServices.WindowHelper.WindowContent = null;
+			rootContainer = null;
 
 			void HolderUpdate(int value)
 			{
 #if HAS_UNO
-				_ = rootContainer!.Dispatcher.RunAsync(CoreDispatcherPriority.High,
+				_ = TestServices.WindowHelper.RootElement.Dispatcher.RunAsync(CoreDispatcherPriority.High,
 #else
 				_ = TestServices.WindowHelper.CurrentTestWindow.DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.High,
 #endif
@@ -274,6 +283,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			var sw = Stopwatch.StartNew();
 
+			//var endTime = TimeSpan.FromSeconds(10);
 			var endTime = TimeSpan.FromSeconds(5);
 			var maxTime = TimeSpan.FromSeconds(30);
 
@@ -299,20 +309,45 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			}
 
 #if TRACK_REFS
-			Uno.UI.DataBinding.BinderReferenceHolder.LogInactiveViewReferencesStatsDiff(initialInactiveStats);
-			Uno.UI.DataBinding.BinderReferenceHolder.LogActiveViewReferencesStatsDiff(initialActiveStats);
+			var postStats = Uno.UI.DataBinding.BinderReferenceHolder.GetReferenceStats()
+				.GroupBy(x => x.Item1, x => x.Item2)
+				.ToDictionary(g => g.Key, g => g.Sum());
+			var delta = preStats.Keys.Concat(postStats.Keys).Distinct()
+				.Select(x => $"{x.Name}: {(preStats.TryGetValue(x, out var pre) ? pre : 0)} -> {(postStats.TryGetValue(x, out var post) ? post : 0)}")
+				.ToArray();
+
+			// GetLeakedObjects contain more objects than tracked by _holder
+			//var leaks = Uno.UI.DataBinding.BinderReferenceHolder.GetLeakedObjects();
 #endif
 
 			var retainedMessage = "";
 
 #if __IOS__ || __ANDROID__
+			var retainedTypes = _holders.AsEnumerable().Select(ExtractTargetName).ToArray();
 			if (activeControls != 0)
 			{
-				var retainedTypes = _holders.AsEnumerable().Select(ExtractTargetName).JoinBy(";");
-				Console.WriteLine($"Retained types: {retainedTypes}");
+				Console.WriteLine($"\n --- Retained types ---\n{string.Join("\n", retainedTypes)}");
 
-				retainedMessage = $"Retained types: {retainedTypes}";
+				Console.WriteLine($"\n ========== first run: tree-graph ============\n{forest.FirstOrDefault()}");
+
+#if TRACK_REFS
+				Console.WriteLine($"\n ========== first run: total objects created ============");
+				foreach (var kvp in run0Stats ?? new Dictionary<Type, int>())
+				{
+					Console.WriteLine($"{kvp.Key.Name}: {kvp.Value}");
+				}
+				Console.WriteLine();
+
+				Console.WriteLine($"\n ========== post-run: ref count ============");
+				foreach (var item in delta)
+				{
+					Console.WriteLine(item);
+				}
+				Console.WriteLine();
+#endif
 			}
+			retainedMessage = retainedTypes.JoinBy(";");
+			//var retained = _holders.Select(x => x.Key).ToArray();
 #endif
 
 #if __IOS__
@@ -328,17 +363,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #if __IOS__ || __ANDROID__
 			static string? ExtractTargetName(KeyValuePair<DependencyObject, Holder> p)
 			{
-				if (p.Key is FrameworkElement fe)
+				if (p.Key is FrameworkElement { Name: { Length: > 0 } name } fe)
 				{
-					return $"{fe}/{fe.Name}";
+					return $"{fe.GetType().Name}/{name}";
 				}
 				else
 				{
-					return p.Key?.ToString();
+					return p.Key?.ToString() ?? "null";
 				}
 			}
 #endif
-
 			async Task MaterializeControl(Type controlType, ConditionalWeakTable<DependencyObject, Holder> _holders, int maxCounter, ContentControl rootContainer)
 			{
 				var item = (FrameworkElement)Activator.CreateInstance(controlType)!;
@@ -351,7 +385,25 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 					await extendedTest.WaitForTestToComplete();
 				}
 
-				// Add all children to the tracking
+#if TRACK_REFS
+				if (run0Stats is not { })
+				{
+					run0Stats = Uno.UI.DataBinding.BinderReferenceHolder.GetReferenceStats()
+						.GroupBy(x => x.Item1, x => x.Item2)
+						.ToDictionary(g => g.Key, g => g.Sum());
+				}
+
+				forest.Add(Uno.UI.Extensions.ViewExtensions.TreeGraph(rootContainer, DescribeView));
+				static IEnumerable<string> DescribeView(object x)
+				{
+					if (x is FrameworkElement fe)
+					{
+						yield return $"TP={PrettyPrint.FormatType(fe.GetTemplatedParent())}, DC={PrettyPrint.FormatObject(fe.DataContext)}";
+					}
+				}
+#endif
+
+				#region Add all children to the tracking
 #if WINAPPSDK
 				for (int i = 0; i < VisualTreeHelper.GetChildrenCount(item); i++)
 				{
@@ -408,7 +460,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 						}
 					}
 				}
+				#endregion
 
+				item = null;
 				rootContainer.Content = null;
 				GC.Collect();
 				GC.WaitForPendingFinalizers();

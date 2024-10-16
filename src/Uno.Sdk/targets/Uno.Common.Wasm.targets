@@ -14,7 +14,13 @@
 
 		<OutputType Condition=" $(OutputType) == 'Exe' AND $(OutputType) != $(_InitialOutputType)">$([MSBuild]::ValueOrDefault('$(_InitialOutputType)', 'Library'))</OutputType>
 
+		<!-- Disable assets generation for libraries -->
+		<StaticWebAssetsEnabled Condition=" $(OutputType) != 'Exe' ">false</StaticWebAssetsEnabled>
+
 		<IsMSALSupported>true</IsMSALSupported>
+
+		<!-- net9.0 validation of CA1418 is case sensitive -->
+		<NoWarn>$(NoWarn);CA1418</NoWarn>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -25,6 +31,9 @@
 	<ItemGroup>
 		<SupportedPlatform Remove="@(SupportedPlatform)" />
 		<SupportedPlatform Include="browserwasm" />
+
+		<!-- net9.0 validation of CA1418 is case sensitive -->
+		<SupportedPlatform Include="BrowserWasm" />
 		<SdkSupportedTargetPlatformVersion Include="$(TargetPlatformVersion)" />
 	</ItemGroup>
 
@@ -32,6 +41,19 @@
 	<ItemGroup Condition=" '$(TargetFrameworkIdentifier)' == '.NETCoreApp' and $([MSBuild]::VersionGreaterThanOrEquals($(TargetFrameworkVersion), '8.0')) ">
 		<SdkSupportedTargetPlatformIdentifier Include="browserwasm" DisplayName="BrowserWasm" />
 	</ItemGroup>
+
+	<!-- 
+		Duplicate backwards compatibility with:
+		https://github.com/unoplatform/Uno.Wasm.Bootstrap/blob/f0cb358c25d3048680c8dd3d15e455aa5d13b532/src/Uno.Wasm.Bootstrap/build/Uno.Wasm.Bootstrap.targets#L59
+
+		This is required because the evaluation of props/targets files from the SDK discards imports of
+		the AOT compiler if RunAOTCompilation is not set ahead of time, and the bootstrapper cannot set
+		that propery if it's not an SDK.
+	 -->
+	<PropertyGroup Condition=" '$(WasmShellMonoRuntimeExecutionMode)' == 'InterpreterAndAOT' AND '$(WasmShellGenerateAOTProfile)' != 'true' ">
+		<RunAOTCompilation>true</RunAOTCompilation>
+		<WasmBuildNative>true</WasmBuildNative>
+	</PropertyGroup>
 
 	<Target Name="_UnoRemoveWebSdkConfigContent"
 			Condition=" '$(UnoDisableRemoveWebSdkConfigContent)' != 'true' "
@@ -43,7 +65,7 @@
 
 			See https://github.com/dotnet/sdk/blob/e3c62139dd25af2b7593a2cde702261f20822e47/src/StaticWebAssetsSdk/Sdk/Sdk.StaticWebAssets.StaticAssets.ProjectSystem.props#L36
 				-->
-			
+
 			<!-- Get all files included by the Web Sdk, except ones from the Assets folder -->
 			<_ContentToUpdate
 				Include="@(Content)"
@@ -60,13 +82,33 @@
 			<!-- Remove the files Web SDK included files. This will also remove duplicates, regardless of the metadata -->
 			<Content Remove="@(_ContentToUpdate)"
 					 Condition="'%(_ContentToUpdate.IsWebSdk)'=='true' AND '%(_ContentToUpdate.IsDefaultItem)'!='true'" />
-			
+
 			<!-- Add back the non-websdk content -->
 			<Content Include="@(_NonWebSdkContent)" KeepDuplicates="false" />
 
 			<!-- Cleanup -->
 			<_ContentToUpdate Remove="@(_ContentToUpdate)"/>
 			<_NonWebSdkContent Remove="@(_NonWebSdkContent)"/>
+
+		</ItemGroup>
+	</Target>
+
+	<Target Name="_UnoAdjustWwwrootContent"
+			BeforeTargets="AssignTargetPaths">
+
+		<ItemGroup>
+			<_wwwRootContentToUpdate Include="$(MSBuildProjectDirectory)/$(WasmProjectFolder)/wwwroot/**" />
+
+			<Content Remove="@(_wwwRootContentToUpdate)" />
+
+			<Content Include="@(_wwwRootContentToUpdate)">
+				<Link>%(RecursiveDir)%(Filename)%(Extension)</Link>
+				<UnoDeploy>Root</UnoDeploy>
+				<!-- net9+ compatibility -->
+				<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			</Content>
+
+			<_wwwRootContentToUpdate Remove="@(_wwwRootContentToUpdate)" />
 		</ItemGroup>
 	</Target>
 

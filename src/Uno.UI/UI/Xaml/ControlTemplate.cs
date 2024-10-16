@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using Microsoft.UI.Xaml.Media;
 
 #if __ANDROID__
 using View = Android.Views.View;
@@ -34,19 +35,25 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		/// <param name="owner">The owner of the ControlTemplate</param>
 		/// <param name="factory">The factory to be called to build the template content</param>
-		public ControlTemplate(object? owner, FrameworkTemplateBuilder? factory)
+		public ControlTemplate(object? owner, NewFrameworkTemplateBuilder? factory)
 			: base(owner, factory)
 		{
 		}
 
-		public static implicit operator ControlTemplate(Func<View>? obj)
-			=> new ControlTemplate(obj);
-
-		public Type? TargetType
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
+		public ControlTemplate(object? owner, FrameworkTemplateBuilder? factory)
+			: base(owner, factory)
 		{
-			get;
-			set;
+		}
+#endif
+
+		public Type? TargetType { get; set; }
+
+		internal View? LoadContentCached(Control templatedParent)
+		{
+			var root = base.LoadContentCachedCore(templatedParent);
+
+			return root;
 		}
 	}
 }
-

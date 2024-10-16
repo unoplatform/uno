@@ -12,6 +12,7 @@ parameters:
 jobs:
 - job: ${{ parameters.JobName }}
   timeoutInMinutes: ${{ parameters.JobTimeoutInMinutes }}
+  cancelTimeoutInMinutes: 1
   dependsOn:
   - iOS_Build
 

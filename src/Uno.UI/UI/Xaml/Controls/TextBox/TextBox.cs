@@ -431,6 +431,21 @@ namespace Microsoft.UI.Xaml.Controls
 			BeforeTextChanging?.Invoke(this, args);
 			if (args.Cancel)
 			{
+#if __SKIA__
+				if (_isSkiaTextBox)
+				{
+					// On WinUI, when a selection is canceled, the TextBox invokes a bunch of weird
+					// SelectionChanging events followed by a bunch of matching SelectionChanged.
+					// Probing for the value of SelectionStart and SelectionLength during these SelectionChanging
+					// events will give incorrect transient values and the SelectionChanged events will end up
+					// with the selection where it started (before the text change). Also, the direction of
+					// of the selection will be reset, i.e. if the selection end was "at the start", then it won't be
+					// so anymore.
+					// In Uno, we choose a simpler sequence. We just reset the selection direction (like WinUI) and
+					// we don't invoke any selection change events (since selection was in fact not changed).
+					_pendingSelection = (SelectionStart, SelectionLength);
+				}
+#endif
 				return DependencyProperty.UnsetValue;
 			}
 
@@ -1016,6 +1031,7 @@ namespace Microsoft.UI.Xaml.Controls
 			base.OnPointerCaptureLost(e);
 			_isPointerOver = false;
 			UpdateVisualState();
+			OnPointerCaptureLostPartial(e);
 		}
 
 		protected override void OnPointerPressed(PointerRoutedEventArgs args)
@@ -1061,6 +1077,8 @@ namespace Microsoft.UI.Xaml.Controls
 		partial void OnPointerPressedPartial(PointerRoutedEventArgs args);
 
 		partial void OnPointerReleasedPartial(PointerRoutedEventArgs args);
+
+		partial void OnPointerCaptureLostPartial(PointerRoutedEventArgs e);
 
 		/// <inheritdoc />
 		protected override void OnPointerReleased(PointerRoutedEventArgs args)
@@ -1369,6 +1387,11 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					_suppressCurrentlyTyping = false;
 					_clearHistoryOnTextChanged = true;
+					if (Text.IsNullOrEmpty())
+					{
+						// On WinUI, the caret never has thumbs if there is no text
+						CaretMode = CaretDisplayMode.ThumblessCaretShowing;
+					}
 				}
 #endif
 

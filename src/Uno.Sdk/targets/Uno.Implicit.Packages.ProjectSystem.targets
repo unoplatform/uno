@@ -9,7 +9,7 @@
 		<_UnoProjectSystemPackageReference Include="Uno.Resizetizer" ProjectSystem="true" PrivateAssets="all" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(_ImplicitRestoreOutputType) == 'Exe'">
+	<ItemGroup Condition=" '$(_ImplicitRestoreOutputType)' == 'WinExe' OR '$(_ImplicitRestoreOutputType)' == 'Exe' ">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.DevServer" ProjectSystem="true" Condition="$(Optimize) != 'true'" />
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.DevServer" ProjectSystem="true" Exclude="all" Condition="$(Optimize) == 'true'" />
 	</ItemGroup>

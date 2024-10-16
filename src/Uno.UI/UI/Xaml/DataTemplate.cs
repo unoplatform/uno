@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.ComponentModel;
 
 #if __ANDROID__
 using View = Android.Views.View;
@@ -32,23 +33,24 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		/// <param name="owner">The owner of the DataTemplate</param>
 		/// <param name="factory">The factory to be called to build the template content</param>
-		public DataTemplate(object? owner, FrameworkTemplateBuilder? factory)
+		public DataTemplate(object? owner, NewFrameworkTemplateBuilder? factory)
 			: base(owner, factory)
 		{
 		}
 
-		public static implicit operator DataTemplate?(Func<View?>? obj)
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
+		public DataTemplate(object? owner, FrameworkTemplateBuilder? factory)
+			: base(owner, factory)
 		{
-			if (obj == null)
-			{
-				return null;
-			}
-
-			return new DataTemplate(obj);
 		}
+#endif
 
-		public View? LoadContent()
-			=> ((IFrameworkTemplateInternal)this).LoadContent();
+		public View? LoadContent() => ((IFrameworkTemplateInternal)this).LoadContent(templatedParent: null);
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public View? LoadContent(DependencyObject templatedParent) => ((IFrameworkTemplateInternal)this).LoadContent(templatedParent);
+
+		internal View? LoadContentCached(DependencyObject? templatedParent = null) => base.LoadContentCachedCore(templatedParent);
 	}
 }
 

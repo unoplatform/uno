@@ -34,6 +34,7 @@ using NativeMethods = __Windows.ApplicationModel.DataTransfer.DragDrop.Core.Drag
 using System.Runtime.InteropServices.JavaScript;
 using Uno.UI.Runtime;
 using _HtmlPointerButtonsState = Uno.UI.Runtime.BrowserPointerInputSource.HtmlPointerButtonsState;
+using System.Text.Json.Serialization;
 
 // As IDragDropExtension is internal, the generated registration cannot be used.
 // [assembly: ApiExtension(typeof(Windows.ApplicationModel.DataTransfer.DragDrop.Core.IDragDropExtension), typeof(Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension))]
@@ -265,7 +266,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 			//		We however support to propagate any "string" that does not have a standard MIME type so we don't restrict too much applications.
 
 			var package = new DataPackage();
-			var entries = JsonHelper.Deserialize<DataEntry[]>(dataItems);
+			var entries = JsonHelper.Deserialize<DataEntry[]>(dataItems, DragDropSerializationContext.Default);
 
 			var files = entries.Where(entry => entry.kind.Equals("file", StringComparison.OrdinalIgnoreCase)).ToList();
 			var texts = entries.Where(entry => entry.kind.Equals("string", StringComparison.OrdinalIgnoreCase)).ToList();
@@ -320,7 +321,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 		private static async Task<IReadOnlyList<IStorageItem>> RetrieveFiles(CancellationToken ct, params int[] itemsIds)
 		{
 			var infosRaw = await NativeMethods.RetrieveFilesAsync(itemsIds);
-			var infos = JsonHelper.Deserialize<NativeStorageItemInfo[]>(infosRaw);
+			var infos = JsonHelper.Deserialize<NativeStorageItemInfo[]>(infosRaw, DragDropSerializationContext.Default);
 			var items = infos.Select(StorageFile.GetFromNativeInfo).ToList();
 
 			return items;
@@ -471,7 +472,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 					+ $" | modifiers: {string.Join(", ", GetModifiers(this))}"
 					+ $" | allowed: {allowedOperations} ({ToDataPackageOperation(allowedOperations)})"
 					+ $" | accepted: {acceptedOperation}"
-					+ $" | entries: {dataItems} ({(!dataItems.IsNullOrWhiteSpace() ? string.Join(", ", JsonHelper.Deserialize<DataEntry[]>(dataItems)) : "")})";
+					+ $" | entries: {dataItems} ({(!dataItems.IsNullOrWhiteSpace() ? string.Join(", ", JsonHelper.Deserialize<DataEntry[]>(dataItems, DragDropSerializationContext.Default)) : "")})";
 
 				IEnumerable<string> GetModifiers(DragDropExtensionEventArgs that)
 				{
@@ -512,6 +513,16 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 			/// <inheritdoc />
 			public override string ToString()
 				=> $"[#{id}: {kind} {type}]";
+		}
+
+		[JsonSerializable(typeof(DataEntry[]))]
+		[JsonSerializable(typeof(DataEntry))]
+#if __WASM__
+		[JsonSerializable(typeof(NativeStorageItemInfo[]))]
+		[JsonSerializable(typeof(NativeStorageItemInfo))]
+#endif
+		private partial class DragDropSerializationContext : JsonSerializerContext
+		{
 		}
 	}
 }

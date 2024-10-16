@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno;
@@ -67,12 +68,12 @@ namespace Windows.Storage.Pickers
 		private async Task<FilePickerSelectedFilesArray> NativePickerPickFilesAsync(bool multiple, CancellationToken token)
 		{
 			var fileTypeAcceptTypes = BuildFileTypesMap();
-			var fileTypeAcceptTypesJson = JsonHelper.Serialize(fileTypeAcceptTypes);
+			var fileTypeAcceptTypesJson = JsonHelper.Serialize(fileTypeAcceptTypes, StorageSerializationContext.Default);
 			var startIn = SuggestedStartLocation.ToStartInDirectory();
 
 			var nativeStorageItemInfosJson = await NativeMethods.PickFilesAsync(multiple, FileTypeFilter.Contains("*"), fileTypeAcceptTypesJson, SettingsIdentifier, startIn);
 
-			var infos = JsonHelper.Deserialize<NativeStorageItemInfo[]>(nativeStorageItemInfosJson);
+			var infos = JsonHelper.Deserialize<NativeStorageItemInfo[]>(nativeStorageItemInfosJson, StorageSerializationContext.Default);
 
 			var results = new List<StorageFile>();
 			foreach (var info in infos)

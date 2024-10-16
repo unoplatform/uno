@@ -16,7 +16,7 @@ namespace Windows.Devices.Sensors {
 					Accelerometer.dispatchReading = exports.DispatchReading;
 				}
 				else {
-					this.dispatchReading = (<any>Module).mono_bind_static_method("[Uno] Uno.Devices.Sensors.Accelerometer:DispatchReading");
+					throw `Unable to find dotnet exports`;
 				}
 
 				return true;

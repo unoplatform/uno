@@ -3,9 +3,6 @@
 
 using System;
 using System.Runtime.InteropServices;
-using Silk.NET.Core.Contexts;
-using Silk.NET.Core.Loader;
-using Silk.NET.OpenGL;
 
 #if WINDOWS_UWP || WINAPPSDK
 using Microsoft.UI.Xaml;
@@ -21,6 +18,7 @@ using Uno.Foundation.Logging;
 using Uno.Graphics;
 using Uno.UI.Runtime.Skia.Wpf.Rendering;
 using WpfWindow = System.Windows.Window;
+using WpfControl = System.Windows.Controls.Control;
 #endif
 
 #if WINDOWS_UWP || WINAPPSDK
@@ -30,23 +28,50 @@ namespace Uno.UI.Runtime.Skia.Wpf.Extensions;
 #endif
 
 #if WINDOWS_UWP || WINAPPSDK
-internal class WinUINativeOpenGLWrapper(Func<Window> getWindowFunc)
+internal class WinUINativeOpenGLWrapper
 #else
 internal class WpfNativeOpenGLWrapper
 #endif
 	: INativeOpenGLWrapper
 {
+#if WINDOWS_UWP || WINAPPSDK
+	private static readonly Type _type = typeof(WinUINativeOpenGLWrapper);
+#else
+	private static readonly Type _type = typeof(WpfNativeOpenGLWrapper);
+#endif
+	private static readonly Lazy<IntPtr> _opengl32 = new Lazy<IntPtr>(() =>
+	{
+		if (!NativeLibrary.TryLoad("opengl32.dll", _type.Assembly, DllImportSearchPath.UserDirectories, out var _handle))
+		{
+			if (_type.Log().IsEnabled(LogLevel.Error))
+			{
+				_type.Log().Error("opengl32.dll was not loaded successfully.");
+			}
+		}
+		return _handle;
+	});
+
+#if WINDOWS_UWP || WINAPPSDK
+	private readonly Func<Window> _getWindowFunc;
+#endif
 	private nint _hdc;
 	private nint _glContext;
 
-	public void CreateContext(UIElement element)
-	{
 #if WINDOWS_UWP || WINAPPSDK
-		var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(getWindowFunc());
+	public WinUINativeOpenGLWrapper(XamlRoot xamlRoot, Func<Window> getWindowFunc)
+	{
+		_getWindowFunc = getWindowFunc;
 #else
-		if (element.XamlRoot?.HostWindow?.NativeWindow is not WpfWindow wpfWindow)
+	public WpfNativeOpenGLWrapper(XamlRoot xamlRoot)
+	{
+#endif
+
+#if WINDOWS_UWP || WINAPPSDK
+		var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(_getWindowFunc());
+#else
+		if (WpfManager.XamlRootMap.GetHostForRoot(xamlRoot) is not WpfControl wpfControl || WpfWindow.GetWindow(wpfControl) is not { } wpfWindow)
 		{
-			throw new InvalidOperationException($"The XamlRoot and its NativeWindow must be initialized on the element before calling {nameof(CreateContext)}.");
+			throw new InvalidOperationException($"The XamlRoot and the XamlRootMap must be initialized before constructing a {_type.Name}.");
 		}
 		var hwnd = new WindowInteropHelper(wpfWindow).Handle;
 #endif
@@ -75,19 +100,11 @@ internal class WpfNativeOpenGLWrapper
 
 		if (pixelFormat == 0)
 		{
-			if (this.Log().IsEnabled(LogLevel.Error))
-			{
-				this.Log().Error($"ChoosePixelFormat failed");
-			}
 			throw new InvalidOperationException("ChoosePixelFormat failed");
 		}
 
 		if (WindowsRenderingNativeMethods.SetPixelFormat(_hdc, pixelFormat, ref pfd) == 0)
 		{
-			if (this.Log().IsEnabled(LogLevel.Error))
-			{
-				this.Log().Error($"SetPixelFormat failed");
-			}
 			throw new InvalidOperationException("ChoosePixelFormat failed");
 		}
 
@@ -95,17 +112,33 @@ internal class WpfNativeOpenGLWrapper
 
 		if (_glContext == IntPtr.Zero)
 		{
-			if (this.Log().IsEnabled(LogLevel.Error))
-			{
-				this.Log().Error($"wglCreateContext failed");
-			}
 			throw new InvalidOperationException("ChoosePixelFormat failed");
 		}
 	}
 
-	public object CreateGLSilkNETHandle() => GL.GetApi(new WindowsGlNativeContext());
+	// https://sharovarskyi.com/blog/posts/csharp-win32-opengl-silknet/
+	public bool TryGetProcAddress(string proc, out nint addr)
+	{
+		if (_opengl32.Value != IntPtr.Zero && NativeLibrary.TryGetExport(_opengl32.Value, proc, out addr))
+		{
+			return true;
+		}
 
-	public void DestroyContext()
+		addr = WindowsRenderingNativeMethods.wglGetProcAddress(proc);
+		return addr != IntPtr.Zero;
+	}
+
+	public nint GetProcAddress(string proc)
+	{
+		if (TryGetProcAddress(proc, out var address))
+		{
+			return address;
+		}
+
+		throw new InvalidOperationException("No function was found with the name " + proc + ".");
+	}
+
+	public void Dispose()
 	{
 		if (WindowsRenderingNativeMethods.wglDeleteContext(_glContext) == 0)
 		{
@@ -139,43 +172,5 @@ internal class WpfNativeOpenGLWrapper
 				}
 			}
 		});
-	}
-
-	// https://sharovarskyi.com/blog/posts/csharp-win32-opengl-silknet/
-	private class WindowsGlNativeContext : INativeContext
-	{
-		private readonly UnmanagedLibrary _l;
-
-		public WindowsGlNativeContext()
-		{
-			_l = new UnmanagedLibrary("opengl32.dll");
-			if (_l.Handle == IntPtr.Zero)
-			{
-				throw new PlatformNotSupportedException("Unable to load opengl32.dll. Make sure you're running on a system with OpenGL support");
-			}
-		}
-
-		public bool TryGetProcAddress(string proc, out nint addr, int? slot = null)
-		{
-			if (_l.TryLoadFunction(proc, out addr))
-			{
-				return true;
-			}
-
-			addr = WindowsRenderingNativeMethods.wglGetProcAddress(proc);
-			return addr != IntPtr.Zero;
-		}
-
-		public nint GetProcAddress(string proc, int? slot = null)
-		{
-			if (TryGetProcAddress(proc, out var address, slot))
-			{
-				return address;
-			}
-
-			throw new InvalidOperationException("No function was found with the name " + proc + ".");
-		}
-
-		public void Dispose() => _l.Dispose();
 	}
 }

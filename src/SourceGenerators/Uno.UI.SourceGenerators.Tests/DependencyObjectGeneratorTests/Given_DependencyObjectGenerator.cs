@@ -143,6 +143,7 @@ public class Given_DependencyObjectGenerator
 	 using System.Linq;
 	 using System.Collections.Generic;
 	 using System.Collections;
+	 using System.ComponentModel;
 	 using System.Diagnostics.CodeAnalysis;
 	 using Uno.Disposables;
 	 using System.Runtime.CompilerServices;
@@ -169,7 +170,7 @@ public class Given_DependencyObjectGenerator
 	 			{
 	 				if(__storeBackingField == null)
 	 				{
-	 					__storeBackingField = new DependencyObjectStore(this, DataContextProperty, TemplatedParentProperty);
+	 					__storeBackingField = new DependencyObjectStore(this, DataContextProperty);
 	 					__InitializeBinder();
 	 				}
 	 				return __storeBackingField;
@@ -266,15 +267,16 @@ public class Given_DependencyObjectGenerator
 	 		
 	 		#endregion
 	 		
-	 		#region TemplatedParent DependencyProperty
+	 		#region TemplatedParent DependencyProperty // legacy api, should no longer to be used.
 	 		
-	 		public DependencyObject TemplatedParent
+	 		[EditorBrowsable(EditorBrowsableState.Never)]public DependencyObject TemplatedParent
 	 		{
 	 			get => (DependencyObject)GetValue(TemplatedParentProperty);
 	 			set => SetValue(TemplatedParentProperty, value);
 	 		}
 	 		
 	 		// Using a DependencyProperty as the backing store for TemplatedParent.  This enables animation, styling, binding, etc...
+	 		[EditorBrowsable(EditorBrowsableState.Never)]
 	 		public static DependencyProperty TemplatedParentProperty { get ; } =
 	 			DependencyProperty.Register(
 	 				name: nameof(TemplatedParent),
@@ -282,15 +284,15 @@ public class Given_DependencyObjectGenerator
 	 				ownerType: typeof(Inner),
 	 				typeMetadata: new FrameworkPropertyMetadata(
 	 					defaultValue: null,
-	 					options: FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.WeakStorage,
+	 					options: /*FrameworkPropertyMetadataOptions.Inherits | */FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.WeakStorage,
 	 					propertyChangedCallback: (s, e) => ((Inner)s).OnTemplatedParentChanged(e)
 	 				)
 	 			);
 	 		
 	 		
+	 		[EditorBrowsable(EditorBrowsableState.Never)]
 	 		internal protected virtual void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
 	 		{
-	 			__Store.SetTemplatedParent(e.NewValue as FrameworkElement);
 	 			OnTemplatedParentChangedPartial(e);
 	 		}
 	 		
@@ -321,6 +323,7 @@ public class Given_DependencyObjectGenerator
 	 		
 	 		partial void OnDataContextChangedPartial(DependencyPropertyChangedEventArgs e);
 	 		
+	 		[EditorBrowsable(EditorBrowsableState.Never)]
 	 		partial void OnTemplatedParentChangedPartial(DependencyPropertyChangedEventArgs e);
 	 		
 	 		public global::Microsoft.UI.Xaml.Data.BindingExpression GetBindingExpression(DependencyProperty dependencyProperty)

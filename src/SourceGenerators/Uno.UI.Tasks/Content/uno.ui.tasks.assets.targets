@@ -108,13 +108,21 @@
 		</ItemGroup>
 	</Target>
 
+	<PropertyGroup>
+		<_UnoAddLibraryAssetsBeforeTargets>
+			$(_UnoAddLibraryAssetsBeforeTargets);
+			GetCopyToOutputDirectoryItems;
+			GenerateUnoWasmAssets;
+		</_UnoAddLibraryAssetsBeforeTargets>
+	</PropertyGroup>
+
 	<!--
 	Populate output groups when building heads
 	-->
 	<Target Name="_UnoAddLibraryAssets"
 			Condition="'$(IsUnoHead)'=='true' or '$(AndroidApplication)'=='true' or '$(ProjectTypeGuids)'!=''"
 			DependsOnTargets="_UnoFindPackageAssetMarkers"
-			BeforeTargets="GetCopyToOutputDirectoryItems">
+			BeforeTargets="$(_UnoAddLibraryAssetsBeforeTargets)">
 
 		<ExpandPackageAssets_v0 MarkerFiles="@(_UnoPriFiles)">
 			<Output TaskParameter="Assets" ItemName="_UnoAssetsFilesExpanded" />
@@ -202,7 +210,7 @@
 
 	<!--
 	Adjust support for build output for Uno.Wasm.Bootstrap, because earlier
-	versions (3.x) don't support TargetPath metadata.
+	versions (3.x) don't support TargetPath metadata.	
 	-->
 	<Target Name="_UnoWasmContentAdjust"
 			Condition="'$(WasmShellSupportsBuildOutputGroups)'!='true'"
@@ -220,13 +228,99 @@
 	as nuget packages content.
 	-->
 	<Target Name="_UnoAssetsGetCopyToPublishDirectory"
-			BeforeTargets="GetCopyToPublishDirectoryItems">
-		<ItemGroup>
+			BeforeTargets="GetCopyToPublishDirectoryItems"
+			Condition=" '$(UsingMicrosoftNETSdkWebAssembly)' != 'true' ">
+		<ItemGroup>	
 			<ContentWithTargetPath Include="@(_TransitiveItemsToCopyToOutputDirectory)">
 				<TargetPath>%(TargetPath)</TargetPath>
 				<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 			</ContentWithTargetPath>
 		</ItemGroup>
 	</Target>
+	
+	<PropertyGroup>
+		<UnoGenerateAssetsManifestDependsOn>
+			$(UnoGenerateAssetsManifestDependsOn);
+			_UnoAssetsGetCopyToPublishDirectoryItems
+		</UnoGenerateAssetsManifestDependsOn>
+	</PropertyGroup>
+	
+	<!--
+	Ensure that project transitive references are copied to the publish directory, as well
+	as nuget packages content.
+	-->
+	<Target Name="_UnoAssetsGetCopyToPublishDirectoryItems"
+			DependsOnTargets="_UnoGetCopyToOutputItems"
+			Condition=" '$(UsingMicrosoftNETSdkWebAssembly)' == 'true' ">
 
+		<ItemGroup Condition=" @(UnoAllCopyToOutputItems->Count()) > 0">
+			<_UnoTransitiveItems Include="@(UnoAllCopyToOutputItems)">
+				<!-- set the ContentRoot using GetDirectoryName -->
+				<ContentRoot>$([System.IO.Path]::GetDirectoryName('%(FullPath)'))</ContentRoot>
+				<Link>wwwroot/%(TargetPath)</Link>
+				<TargetPath></TargetPath>
+			</_UnoTransitiveItems>
+		
+			<_UnoTransitiveItems Remove="@(StaticWebAsset)" Condition="'%(StaticWebAsset.Link)' == '%(_UnoTransitiveItems.Link)'" />
+		</ItemGroup>
+
+		<DefineStaticWebAssets
+			CandidateAssets="@(_UnoTransitiveItems)"
+			FingerprintCandidates="$(StaticWebAssetsFingerprintContent)"
+			FingerprintPatterns="@(StaticWebAssetFingerprintPattern)"
+			RelativePathPattern="wwwroot/**"
+			SourceType="Discovered"
+			SourceId="$(PackageId)"
+			ContentRoot="$(MSBuildProjectDirectory)\wwwroot\"
+			BasePath="$(StaticWebAssetBasePath)"
+			AssetMergeSource="$(StaticWebAssetMergeTarget)">
+			<Output TaskParameter="Assets" ItemName="StaticWebAsset" />
+		</DefineStaticWebAssets>
+
+		<DefineStaticWebAssetEndpoints
+			  CandidateAssets="@(StaticWebAsset)"
+			  ExistingEndpoints="@(StaticWebAssetEndpoint)"
+			  ContentTypeMappings="@(StaticWebAssetContentTypeMapping)"
+				>	
+			<Output TaskParameter="Endpoints" ItemName="StaticWebAssetEndpoint" />
+		</DefineStaticWebAssetEndpoints>
+
+	</Target>
+
+	<!-- 
+	Recursively get all copy to publish items.
+	
+	This is a clone of GetCopyToPublishDirectoryItems, but without the original 
+	dependencies that may cause invalid chains of targets evaluations.
+	-->
+	<Target Name="_UnoGetCopyToOutputItems"
+				Returns="@(UnoAllCopyToOutputItems)"
+				KeepDuplicateOutputs="false"
+				DependsOnTargets="AssignTargetPaths;AssignTargetPaths;_GetProjectReferenceTargetFrameworkProperties">
+		
+		<PropertyGroup>
+		  <_UnoGCKeepMetadata>CopyToPublishDirectory;ExcludeFromSingleFile;TargetPath</_UnoGCKeepMetadata>
+		</PropertyGroup>
+
+		<MSBuild Projects="@(_MSBuildProjectReferenceExistent)"
+			Targets="GetCopyToPublishDirectoryItems"
+			BuildInParallel="$(BuildInParallel)"
+			Properties="%(_MSBuildProjectReferenceExistent.SetConfiguration); %(_MSBuildProjectReferenceExistent.SetPlatform); %(_MSBuildProjectReferenceExistent.SetTargetFramework)"
+			Condition="'@(_MSBuildProjectReferenceExistent)' != '' and '$(_GetChildProjectCopyToPublishDirectoryItems)' == 'true' and '%(_MSBuildProjectReferenceExistent.Private)' != 'false'"
+			ContinueOnError="$(ContinueOnError)"
+			RemoveProperties="%(_MSBuildProjectReferenceExistent.GlobalPropertiesToRemove)$(_GlobalPropertiesToRemoveFromProjectReferences)">
+
+			<Output TaskParameter="TargetOutputs" ItemName="_UnoAllChildProjectItemsWithTargetPath"/>
+		</MSBuild>
+
+		<ItemGroup>
+			<_UnoSourceItemsToCopy
+				KeepDuplicates="false"
+				KeepMetadata="$(_UnoGCKeepMetadata)"
+				Include="@(_UnoAllChildProjectItemsWithTargetPath->'%(FullPath)')"
+				Condition="'%(_UnoAllChildProjectItemsWithTargetPath.CopyToPublishDirectory)'!='Never'"/>
+
+			<UnoAllCopyToOutputItems Include="@(_UnoSourceItemsToCopy->'%(FullPath)')"/>
+		</ItemGroup>
+	</Target>
 </Project>

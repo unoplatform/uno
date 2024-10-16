@@ -16,6 +16,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Threading.Tasks;
 using ObjCRuntime;
+using Uno.UI.Extensions;
 
 namespace Uno.UI.Controls
 {
@@ -88,17 +89,18 @@ namespace Uno.UI.Controls
 			NavigationController.NavigationBarHidden = true;
 		}
 
+		private protected override void OnLoaded()
+		{
+			base.OnLoaded();
+
+			InitializeController(this.GetTemplatedParent() as Frame);
+		}
+
 		protected override Size MeasureOverride(Size availableSize)
 			=> MeasureFirstChild(availableSize);
 
 		protected override Size ArrangeOverride(Size finalSize)
 			=> ArrangeFirstChild(finalSize);
-
-		internal protected override void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnTemplatedParentChanged(e);
-			InitializeController(TemplatedParent as Frame);
-		}
 
 		/// <summary>
 		/// Exposes the underlying <see cref="UINavigationController"/> instance used to display this frame presenter.

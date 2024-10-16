@@ -7,6 +7,7 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
+using Uno.UI.Xaml;
 using Windows.Foundation;
 
 #if __ANDROID__
@@ -161,6 +162,19 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		internal override void EnterImpl(EnterParams @params, int depth)
+		{
+			// the base impl would cause immediately materialization by loading this stub
+			// which is not something we want here.
+		}
+
+		internal override void LeaveImpl(LeaveParams @params)
+		{
+			// do nothing
+		}
+#endif
+
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
@@ -198,16 +212,22 @@ namespace Microsoft.UI.Xaml
 					_isMaterializing = true;
 
 					_content = SwapViews(oldView: (FrameworkElement)this, newViewProvider: ContentBuilder);
-					var targetDependencyObject = _content as DependencyObject;
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
+					// note: This can be safely removed, once moving away from legacy impl.
+					// In the new impl, the templated-parent would be immediately available
+					// before any binding is applied, so there is no need to force update.
+					TemplatedParentScope.UpdateTemplatedParent(_content as DependencyObject, GetTemplatedParent(), reapplyTemplateBindings: true);
+#endif
 
-					if (isVisibilityChanged && targetDependencyObject != null)
+					if (isVisibilityChanged &&
+						_content is DependencyObject contentAsDO)
 					{
 						var visibilityProperty = GetVisibilityProperty(_content);
 
 						// Set the visibility at the same precedence it was currently set with on the stub.
 						var precedence = this.GetCurrentHighestValuePrecedence(visibilityProperty);
 
-						targetDependencyObject.SetValue(visibilityProperty, Visibility.Visible, precedence);
+						contentAsDO.SetValue(visibilityProperty, Visibility.Visible, precedence);
 					}
 
 					MaterializationChanged?.Invoke(this);

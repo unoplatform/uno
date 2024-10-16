@@ -93,6 +93,11 @@ public partial class Popup : FrameworkElement, IPopup
 
 			if (IsLightDismissEnabled || AssociatedFlyout is { })
 			{
+				if (IsLightDismissEnabled)
+				{
+					m_fIsLightDismiss = true;
+				}
+
 				// Store last focused element
 				var focusManager = VisualTree.GetFocusManagerForElement(this);
 				var focusedElement = focusManager?.FocusedElement as UIElement;
@@ -117,12 +122,17 @@ public partial class Popup : FrameworkElement, IPopup
 			_openPopupRegistration?.Dispose();
 			if (IsLightDismissEnabled)
 			{
-				if (_lastFocusedElement != null && _lastFocusedElement.Target is UIElement target)
+				var focusManager = VisualTree.GetFocusManagerForElement(this);
+				var focusedElement = focusManager?.FocusedElement as UIElement;
+
+				if (_lastFocusedElement != null && _lastFocusedElement.Target is UIElement target && focusedElement != target)
 				{
 					target.Focus(_lastFocusState);
 					_lastFocusedElement = null;
 				}
 			}
+
+			m_fIsLightDismiss = false;
 		}
 	}
 
@@ -131,13 +141,11 @@ public partial class Popup : FrameworkElement, IPopup
 		if (oldChild is IDependencyObjectStoreProvider provider &&
 			provider.Store.ReadLocalValue(provider.Store.DataContextProperty) != DependencyProperty.UnsetValue)
 		{
-			provider.Store.ClearValue(provider.Store.TemplatedParentProperty, DependencyPropertyValuePrecedences.Local);
 			provider.Store.ClearValue(AllowFocusOnInteractionProperty, DependencyPropertyValuePrecedences.Local);
 			provider.Store.ClearValue(AllowFocusWhenDisabledProperty, DependencyPropertyValuePrecedences.Local);
 		}
 
 		UpdateDataContext(null);
-		UpdateTemplatedParent();
 		PropagateFocusProperties();
 	}
 
@@ -148,26 +156,11 @@ public partial class Popup : FrameworkElement, IPopup
 		UpdateDataContext(e);
 	}
 
-	protected internal override void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
-	{
-		base.OnTemplatedParentChanged(e);
-
-		UpdateTemplatedParent();
-	}
-
 	private void UpdateDataContext(DependencyPropertyChangedEventArgs e)
 	{
 		if (PropagatesDataContextToChild)
 		{
 			((IDependencyObjectStoreProvider)PopupPanel).Store.SetValue(((IDependencyObjectStoreProvider)PopupPanel).Store.DataContextProperty, DataContext, DependencyPropertyValuePrecedences.Local);
-		}
-	}
-
-	private void UpdateTemplatedParent()
-	{
-		if (Child is IDependencyObjectStoreProvider provider)
-		{
-			provider.Store.SetValue(provider.Store.TemplatedParentProperty, this.TemplatedParent, DependencyPropertyValuePrecedences.Local);
 		}
 	}
 

@@ -153,6 +153,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Collections;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using Uno.Disposables;
 using System.Runtime.CompilerServices;
@@ -174,8 +175,13 @@ using AppKit;
 						}
 					};
 
-					var internalDependencyObject = _isUnoSolution && !typeSymbol.IsSealed ? ", IDependencyObjectInternal" : "";
-					using (typeSymbol.AddToIndentedStringBuilder(builder, beforeClassHeaderAction, afterClassHeader: $" : IDependencyObjectStoreProvider, IWeakReferenceProvider{internalDependencyObject}"))
+					var implementations = new string?[]
+					{
+						"IDependencyObjectStoreProvider",
+						_isUnoSolution && !typeSymbol.IsSealed ? "IDependencyObjectInternal" : null,
+						"IWeakReferenceProvider",
+					}.Where(x => x is not null);
+					using (typeSymbol.AddToIndentedStringBuilder(builder, beforeClassHeaderAction, afterClassHeader: " : " + string.Join(", ", implementations)))
 					{
 						GenerateDependencyObjectImplementation(typeSymbol, builder, hasDispatcherQueue: _dependencyObjectSymbol!.GetMembers("DispatcherQueue").Any());
 						GenerateIBinderImplementation(typeSymbol, builder);
@@ -236,19 +242,9 @@ public override void WillMoveToSuperview(UIKit.UIView newsuper)
 	base.WillMoveToSuperview(newsuper);
 
 	WillMoveToSuperviewPartial(newsuper);
-
-	SyncBinder(newsuper, Window);
 }
 
 partial void WillMoveToSuperviewPartial(UIKit.UIView newsuper);
-
-private void SyncBinder(UIKit.UIView superview, UIKit.UIWindow window)
-{
-	if(superview == null && window == null)
-	{
-		TemplatedParent = null;
-	}
-}
 					");
 				}
 				else
@@ -274,19 +270,9 @@ public override void ViewWillMoveToSuperview(AppKit.NSView newsuper)
 	base.ViewWillMoveToSuperview(newsuper);
 
 	WillMoveToSuperviewPartial(newsuper);
-
-	SyncBinder(newsuper, Window);
 }
 
 partial void WillMoveToSuperviewPartial(AppKit.NSView newsuper);
-
-private void SyncBinder(AppKit.NSView superview, AppKit.NSWindow window)
-{
-	if(superview == null && window == null)
-	{
-		TemplatedParent = null;
-	}
-}
 					");
 				}
 				else
@@ -625,6 +611,8 @@ global::Uno.UI.DataBinding.ManagedWeakReference IWeakReferenceProvider.WeakRefer
 			{
 				var virtualModifier = typeSymbol.IsSealed ? "" : "virtual";
 				var protectedModifier = typeSymbol.IsSealed ? "private" : "internal protected";
+				var legacyNonBrowsable = "[EditorBrowsable(EditorBrowsableState.Never)]";
+
 				string dataContextChangedInvokeArgument;
 				if (typeSymbol.Is(_frameworkElementSymbol))
 				{
@@ -676,15 +664,16 @@ public static DependencyProperty DataContextProperty {{ get ; }} =
 
 #endregion
 
-#region TemplatedParent DependencyProperty
+#region TemplatedParent DependencyProperty // legacy api, should no longer to be used.
 
-public DependencyObject TemplatedParent
+{legacyNonBrowsable}public DependencyObject TemplatedParent
 {{
 	get => (DependencyObject)GetValue(TemplatedParentProperty);
 	set => SetValue(TemplatedParentProperty, value);
 }}
 
 // Using a DependencyProperty as the backing store for TemplatedParent.  This enables animation, styling, binding, etc...
+{legacyNonBrowsable}
 public static DependencyProperty TemplatedParentProperty {{ get ; }} =
 	DependencyProperty.Register(
 		name: nameof(TemplatedParent),
@@ -692,15 +681,15 @@ public static DependencyProperty TemplatedParentProperty {{ get ; }} =
 		ownerType: typeof({typeSymbol.Name}),
 		typeMetadata: new FrameworkPropertyMetadata(
 			defaultValue: null,
-			options: FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.WeakStorage,
+			options: /*FrameworkPropertyMetadataOptions.Inherits | */FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.WeakStorage,
 			propertyChangedCallback: (s, e) => (({typeSymbol.Name})s).OnTemplatedParentChanged(e)
 		)
 	);
 
 
+{legacyNonBrowsable}
 {protectedModifier} {virtualModifier} void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
 {{
-	__Store.SetTemplatedParent(e.NewValue as FrameworkElement);
 	OnTemplatedParentChangedPartial(e);
 }}
 
@@ -731,6 +720,7 @@ internal bool IsAutoPropertyInheritanceEnabled {{ get => __Store.IsAutoPropertyI
 
 partial void OnDataContextChangedPartial(DependencyPropertyChangedEventArgs e);
 
+{legacyNonBrowsable}
 partial void OnTemplatedParentChangedPartial(DependencyPropertyChangedEventArgs e);
 
 public global::Microsoft.UI.Xaml.Data.BindingExpression GetBindingExpression(DependencyProperty dependencyProperty)
@@ -791,7 +781,7 @@ public override bool Equals(object other)
 					{
 						using (builder.BlockInvariant($"if(__storeBackingField == null)"))
 						{
-							builder.AppendLineIndented("__storeBackingField = new DependencyObjectStore(this, DataContextProperty, TemplatedParentProperty);");
+							builder.AppendLineIndented("__storeBackingField = new DependencyObjectStore(this, DataContextProperty);");
 							builder.AppendLineIndented("__InitializeBinder();");
 						}
 

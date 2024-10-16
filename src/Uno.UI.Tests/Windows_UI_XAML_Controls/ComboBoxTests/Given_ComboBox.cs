@@ -46,7 +46,7 @@ namespace Uno.UI.Tests.ComboBoxTests
 			{
 				Setters =  {
 					new Setter<ComboBox>("Template", t =>
-						t.Template = Funcs.Create(() => grid)
+						t.Template = new ControlTemplate(() => grid)
 					)
 				}
 			};

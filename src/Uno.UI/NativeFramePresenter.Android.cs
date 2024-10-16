@@ -38,10 +38,11 @@ namespace Uno.UI.Controls
 			_pageStack = this;
 		}
 
-		protected internal override void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
+		private protected override void OnLoaded()
 		{
-			base.OnTemplatedParentChanged(e);
-			Initialize(TemplatedParent as Frame);
+			base.OnLoaded();
+
+			Initialize(this.GetTemplatedParent() as Frame);
 		}
 
 		private void Initialize(Frame frame)

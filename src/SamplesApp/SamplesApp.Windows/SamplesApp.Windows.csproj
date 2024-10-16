@@ -12,8 +12,11 @@
 		<EnableMsixTooling>true</EnableMsixTooling>
 		<DefineConstants>$(DefineConstants);WINAPPSDK</DefineConstants>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		
+		<!-- Disabled because of https://github.com/dotnet/sdk/issues/43680#issuecomment-2401193028 -->
+		<CsWinRTAotOptimizerEnabled>false</CsWinRTAotOptimizerEnabled>
 
-		<WindowsSdkPackageVersion>10.0.19041.38</WindowsSdkPackageVersion>
+		<WindowsSdkPackageVersion>10.0.19041.48</WindowsSdkPackageVersion>
 	</PropertyGroup>
 
 	<ItemGroup>

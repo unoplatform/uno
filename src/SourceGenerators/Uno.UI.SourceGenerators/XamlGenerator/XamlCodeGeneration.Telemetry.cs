@@ -33,10 +33,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				|| _isDesignTimeBuild;
 
 			_telemetry = new Telemetry.Telemetry(isTelemetryOptout);
-
-#if DEBUG
-			Console.WriteLine($"Telemetry enabled: {_telemetry.Enabled}");
-#endif
 		}
 
 		private bool IsTelemetryEnabled => _telemetry?.Enabled ?? false;

@@ -58,9 +58,6 @@ namespace Microsoft.UI.Xaml
 		private InputCursor _protectedCursor;
 		private SerialDisposable _disposedEventDisposable = new();
 
-		internal void FreezeTemplatedParent() =>
-			((IDependencyObjectStoreProvider)this).Store.IsTemplatedParentFrozen = true;
-
 		public Size DesiredSize => Visibility == Visibility.Visible && HasLayoutStorage ? m_desiredSize : default;
 
 		//private protected virtual void PrepareState()
@@ -747,7 +744,7 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
-			var root = XamlRoot?.VisualTree.RootElement;
+			var root = XamlRoot?.VisualTree.RootElement ?? this.GetContext().MainVisualTree?.RootElement;
 			if (root is null)
 			{
 				return;
@@ -1149,9 +1146,6 @@ namespace Microsoft.UI.Xaml
 			// Use a non-virtual version of the RequestLayout method, for performance.
 			base.RequestLayout();
 			SetLayoutFlags(LayoutFlag.MeasureDirty);
-
-			// HACK: Android's implementation of measure/arrange is not accurate. See comments in LayouterElementExtensions.DoMeasure
-			(VisualTreeHelper.GetParent(this) as UIElement)?.InvalidateMeasure();
 #elif __IOS__
 			SetNeedsLayout();
 			SetLayoutFlags(LayoutFlag.MeasureDirty);

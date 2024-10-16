@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
 		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
-		<TargetFrameworks Condition="$(BuildGraphics3DGLForWindows) != ''">$(NetUWPOrWinUI)</TargetFrameworks>
+		<TargetFrameworks Condition="'$(BuildGraphics3DGLForWindows)' != ''">$(TargetFrameworks);$(NetUWPOrWinUI)</TargetFrameworks>
 
-		<RootNamespace>Uno.WinUI.GLCanvasElement</RootNamespace>
+		<RootNamespace>Uno.WinUI.Graphics3DGL</RootNamespace>
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
 
 		<Nullable>enable</Nullable>
@@ -16,10 +16,28 @@
 		<PackageReference Include="Silk.NET.OpenGL" Version="2.16.0" />
 		<PackageReference Include="Uno.Core.Extensions.Logging" Version="4.0.1" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.1" />
+		<PackageReference Include="System.Text.Json" Version="8.0.5" />
+	</ItemGroup>
+
+	<ItemGroup Condition="!$(TargetFramework.Contains('windows10'))">
+		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj" PrivateAssets="all" />
 	</ItemGroup>
 
 	<Choose>
-		<When Condition="$(TargetFramework) == $(NetUWPOrWinUI)">
+		<!-- Android -->
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='android'">
+			<PropertyGroup>
+				<DefineConstants>$(DefineConstants);ANDROID</DefineConstants>
+			</PropertyGroup>
+		</When>
+		<!-- Skia Desktop -->
+		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))==''">
+			<PropertyGroup>
+				<DefineConstants>$(DefineConstants);CROSSRUNTIME</DefineConstants>
+			</PropertyGroup>
+		</When>
+		<!-- WinUI -->
+		<When Condition="$(TargetFramework.Contains('windows10'))">
 			<PropertyGroup>
 				<RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
 
@@ -39,26 +57,42 @@
 				<Compile Include="..\..\Uno.UI\Graphics\INativeOpenGLWrapper.cs" />
 			</ItemGroup>
 		</When>
-		<Otherwise>
-			<ItemGroup>
-				<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Skia.csproj" />
-				<ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj" />
-				<ProjectReference Include="..\..\Uno.UWP\Uno.Skia.csproj" />
-			</ItemGroup>
-		</Otherwise>
 	</Choose>
+
+	<PropertyGroup>
+		<DefineConstants Condition="$(UNO_UWP_BUILD) == true">$(DefineConstants);UNO_UWP_BUILD</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<DefaultItemExcludes>$(DefaultItemExcludes);angle/**</DefaultItemExcludes>
+	</PropertyGroup>
+
+	<Target Name="GetAngle" BeforeTargets="Build">
+		<DownloadFile
+			Condition="!exists('$(MSBuildThisFileDirectory)angle_binaries/osx/libEGL.dylib')"
+			SourceUrl="https://github.com/dotnet/Silk.NET/raw/a9c75a61528ee7b4e55442f5141cb132f10d72ff/src/Native/Silk.NET.OpenGLES.ANGLE.Native/runtimes/osx/native/libEGL.dylib"
+			DestinationFolder="$(MSBuildThisFileDirectory)angle_binaries/osx">
+		</DownloadFile>
+		<DownloadFile
+			Condition="!exists('$(MSBuildThisFileDirectory)angle_binaries/osx/libGLESv2.dylib')"
+			SourceUrl="https://github.com/dotnet/Silk.NET/raw/a9c75a61528ee7b4e55442f5141cb132f10d72ff/src/Native/Silk.NET.OpenGLES.ANGLE.Native/runtimes/osx/native/libGLESv2.dylib"
+			DestinationFolder="$(MSBuildThisFileDirectory)angle_binaries/osx">
+		</DownloadFile>
+	</Target>
+
+	<Target Name="CleanAngle" AfterTargets="Clean">
+		<RemoveDir Directories="$(MSBuildThisFileDirectory)angle_binaries" />
+	</Target>
 
 	<ItemGroup>
 		<None Include="..\..\Common\uno.png" Pack="true" PackagePath="\" />
+		<Content Include="Assets\**\*.*" CopyToOutputDirectory="PreserveNewest" />
 	</ItemGroup>
-
-	<Target Name="_UnoRemoveTransitiveWPFDependency" BeforeTargets="_CheckForTransitiveWindowsDesktopDependencies">
-		<ItemGroup>
-			<!--
-			This removes the transitive dependency to WPF which has a requirement to
-			have net8.0-windows and not net8.0.
-			-->
-			<TransitiveFrameworkReference Remove="Microsoft.WindowsDesktop.App.WPF" />
-		</ItemGroup>
-	</Target>
+	
+	<ItemGroup>
+		<None Include="$(MSBuildThisFileDirectory)angle_binaries/osx/lib*"
+			  PackagePath="runtimes/osx/native"
+			  Pack="true"
+			  Visible="False" />
+	</ItemGroup>
 </Project>

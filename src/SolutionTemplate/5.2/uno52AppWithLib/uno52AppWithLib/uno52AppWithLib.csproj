@@ -85,6 +85,10 @@
         <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\Assets\Icons\icon_foreground.scale-300.png" />
         <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\Assets\Icons\icon_foreground.scale-400.png" />
 
+        <!-- wwwroot -->
+        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\..\staticwebapp.config.json" />
+        <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\..\web.config" />
+
         <!-- Validate json files handling -->
         <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\test_root_asset.json" />
         <_AssetsToValidate Include="$(WasmShellOutputPackagePath)\test_root_asset_not_included.json" MustNotExist="true" />

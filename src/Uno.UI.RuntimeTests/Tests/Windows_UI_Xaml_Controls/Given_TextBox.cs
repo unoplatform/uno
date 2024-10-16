@@ -185,7 +185,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 
 		[TestMethod]
-		public async Task When_Fluent_And_Theme_Changed()
+		public async Task When_TB_Fluent_And_Theme_Changed()
 		{
 			var textBox = new TextBox
 			{
@@ -624,16 +624,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForLoaded(textBox);
 
 			var contentControl = VisualTreeUtils.FindVisualChildByType<ContentControl>(textBox);
-			if (FeatureConfiguration.TextBox.UseOverlayOnSkia)
-			{
-				Assert.IsInstanceOfType(contentControl.Content, typeof(TextBlock));
-				Assert.AreEqual(initialText, ((TextBlock)contentControl.Content).Text);
-			}
-			else
-			{
-				Assert.IsInstanceOfType(contentControl.Content, typeof(Grid));
-				Assert.AreEqual(initialText, contentControl.FindFirstChild<TextBlock>().Text);
-			}
+			Assert.IsInstanceOfType(contentControl.Content, typeof(TextBlock));
+			Assert.AreEqual(initialText, ((TextBlock)contentControl.Content).Text);
 		}
 #endif
 

@@ -11,6 +11,7 @@ using Uno.Storage.Internal;
 using SystemPath = global::System.IO.Path;
 
 using NativeMethods = __Windows.Storage.StorageFolder.NativeMethods;
+using Windows.Storage.Pickers;
 
 namespace Windows.Storage
 {
@@ -52,7 +53,7 @@ namespace Windows.Storage
 					return null;
 				}
 
-				var item = JsonHelper.Deserialize<NativeStorageItemInfo>(itemInfoJson);
+				var item = JsonHelper.Deserialize<NativeStorageItemInfo>(itemInfoJson, StorageSerializationContext.Default);
 				return GetFromNativeInfo(item, null);
 			}
 
@@ -110,7 +111,7 @@ namespace Windows.Storage
 					throw new UnauthorizedAccessException("Could not create file.");
 				}
 
-				var info = JsonHelper.Deserialize<NativeStorageItemInfo>(newFolderNativeInfo);
+				var info = JsonHelper.Deserialize<NativeStorageItemInfo>(newFolderNativeInfo, StorageSerializationContext.Default);
 				return GetFromNativeInfo(info, Owner);
 			}
 
@@ -133,7 +134,7 @@ namespace Windows.Storage
 					}
 				}
 
-				var info = JsonHelper.Deserialize<NativeStorageItemInfo>(folderInfoJson);
+				var info = JsonHelper.Deserialize<NativeStorageItemInfo>(folderInfoJson, StorageSerializationContext.Default);
 				var storageFolder = GetFromNativeInfo(info, Owner);
 
 				return storageFolder;
@@ -143,7 +144,7 @@ namespace Windows.Storage
 			{
 				var itemInfosJson = await NativeMethods.GetItemsAsync(_id.ToString());
 
-				var itemInfos = JsonHelper.Deserialize<NativeStorageItemInfo[]>(itemInfosJson);
+				var itemInfos = JsonHelper.Deserialize<NativeStorageItemInfo[]>(itemInfosJson, StorageSerializationContext.Default);
 				var results = new List<IStorageItem>();
 				foreach (var info in itemInfos)
 				{
@@ -163,7 +164,7 @@ namespace Windows.Storage
 			{
 				var itemInfosJson = await NativeMethods.GetFilesAsync(_id.ToString());
 
-				var itemInfos = JsonHelper.Deserialize<NativeStorageItemInfo[]>(itemInfosJson);
+				var itemInfos = JsonHelper.Deserialize<NativeStorageItemInfo[]>(itemInfosJson, StorageSerializationContext.Default);
 				var results = new List<StorageFile>();
 				foreach (var info in itemInfos)
 				{
@@ -176,7 +177,7 @@ namespace Windows.Storage
 			{
 				var itemInfosJson = await NativeMethods.GetFoldersAsync(_id.ToString());
 
-				var itemInfos = JsonHelper.Deserialize<NativeStorageItemInfo[]>(itemInfosJson);
+				var itemInfos = JsonHelper.Deserialize<NativeStorageItemInfo[]>(itemInfosJson, StorageSerializationContext.Default);
 				var results = new List<StorageFolder>();
 				foreach (var info in itemInfos)
 				{
@@ -239,7 +240,7 @@ namespace Windows.Storage
 					throw new UnauthorizedAccessException("Could not create file.");
 				}
 
-				var info = JsonHelper.Deserialize<NativeStorageItemInfo>(newFolderNativeInfo);
+				var info = JsonHelper.Deserialize<NativeStorageItemInfo>(newFolderNativeInfo, StorageSerializationContext.Default);
 				return StorageFile.GetFromNativeInfo(info, Owner);
 			}
 
@@ -263,7 +264,7 @@ namespace Windows.Storage
 				}
 
 				// File exists
-				var fileInfo = JsonHelper.Deserialize<NativeStorageItemInfo>(fileInfoJson);
+				var fileInfo = JsonHelper.Deserialize<NativeStorageItemInfo>(fileInfoJson, StorageSerializationContext.Default);
 				return StorageFile.GetFromNativeInfo(fileInfo, Owner);
 			}
 
@@ -288,7 +289,7 @@ namespace Windows.Storage
 				if (fileInfoJson != null)
 				{
 					// File exists
-					var fileInfo = JsonHelper.Deserialize<NativeStorageItemInfo>(fileInfoJson);
+					var fileInfo = JsonHelper.Deserialize<NativeStorageItemInfo>(fileInfoJson, StorageSerializationContext.Default);
 					return StorageFile.GetFromNativeInfo(fileInfo, Owner);
 				}
 
@@ -297,7 +298,7 @@ namespace Windows.Storage
 				if (folderInfoJson != null)
 				{
 					// Folder exists
-					var folderInfo = JsonHelper.Deserialize<NativeStorageItemInfo>(folderInfoJson);
+					var folderInfo = JsonHelper.Deserialize<NativeStorageItemInfo>(folderInfoJson, StorageSerializationContext.Default);
 					return GetFromNativeInfo(folderInfo, Owner);
 				}
 

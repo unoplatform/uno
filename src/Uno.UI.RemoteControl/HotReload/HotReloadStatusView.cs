@@ -20,7 +20,7 @@ namespace Uno.UI.RemoteControl.HotReload;
 [TemplateVisualState(GroupName = "Result", Name = ResultNoneVisualStateName)]
 [TemplateVisualState(GroupName = "Result", Name = ResultSuccessVisualStateName)]
 [TemplateVisualState(GroupName = "Result", Name = ResultFailedVisualStateName)]
-internal sealed partial class HotReloadStatusView : Control
+public sealed partial class HotReloadStatusView : Control
 {
 	private const string StatusUnknownVisualStateName = "Unknown";
 	private const string StatusInitializingVisualStateName = "Initializing";
@@ -110,10 +110,24 @@ internal sealed partial class HotReloadStatusView : Control
 
 	private readonly Dictionary<long, ServerEntry> _serverHrEntries = new();
 	private readonly Dictionary<long, ApplicationEntry> _appHrEntries = new();
+	private readonly ClientHotReloadProcessor? _processor; // Only when used by external tool like HD.
 
-	public HotReloadStatusView(IDiagnosticViewContext ctx)
+	public static HotReloadStatusView Create(IDiagnosticViewContext ctx)
+	{
+		var processor = RemoteControlClient.Instance?.Processors?.OfType<ClientHotReloadProcessor>().FirstOrDefault();
+		if (processor is null)
+		{
+			throw new InvalidOperationException("Cannot resolve the hot-reload client.");
+		}
+
+		return new HotReloadStatusView(ctx, processor);
+	}
+
+	internal HotReloadStatusView(IDiagnosticViewContext ctx, ClientHotReloadProcessor? processor = null)
 	{
 		_ctx = ctx;
+		_processor = processor;
+
 		DefaultStyleKey = typeof(HotReloadStatusView);
 		History = [];
 
@@ -130,14 +144,27 @@ internal sealed partial class HotReloadStatusView : Control
 					devServer.StatusChanged += that.OnDevServerStatusChanged;
 					that.OnDevServerStatusChanged(null, devServer.Status);
 				}
+
+				if (that._processor is not null)
+				{
+					that._processor.StatusChanged += that.OnHotReloadStatusChanged;
+					that.OnHotReloadStatusChanged(that._processor.CurrentStatus);
+				}
 			}
 		};
 		Unloaded += static (snd, _) =>
 		{
-			if (snd is HotReloadStatusView that
-				&& RemoteControlClient.Instance is { } devServer)
+			if (snd is HotReloadStatusView that)
 			{
-				devServer.StatusChanged -= that.OnDevServerStatusChanged;
+				if (RemoteControlClient.Instance is { } devServer)
+				{
+					devServer.StatusChanged -= that.OnDevServerStatusChanged;
+				}
+
+				if (that._processor is not null)
+				{
+					that._processor.StatusChanged -= that.OnHotReloadStatusChanged;
+				}
 			}
 		};
 	}
@@ -155,7 +182,10 @@ internal sealed partial class HotReloadStatusView : Control
 		});
 	}
 
-	public void OnHotReloadStatusChanged(Status status)
+	private void OnHotReloadStatusChanged(object? sender, Status status)
+		=> OnHotReloadStatusChanged(status);
+
+	internal void OnHotReloadStatusChanged(Status status)
 	{
 		var oldStatus = _hotReloadStatus;
 		_hotReloadStatus = status;
@@ -176,29 +206,35 @@ internal sealed partial class HotReloadStatusView : Control
 	private void UpdateLog(Status? oldStatus, Status status)
 	{
 		// Add or update the entries for the **operations** (server and the application).
-		foreach (var srvOp in status.Server.Operations)
+		if (status.Server.Operations is { }) // can be null during loading, creating a NRE
 		{
-			ref var entry = ref CollectionsMarshal.GetValueRefOrAddDefault(_serverHrEntries, srvOp.Id, out var exists);
-			if (exists)
+			foreach (var srvOp in status.Server.Operations)
 			{
-				entry!.Update(srvOp);
-			}
-			else
-			{
-				entry = new ServerEntry(srvOp);
+				ref var entry = ref CollectionsMarshal.GetValueRefOrAddDefault(_serverHrEntries, srvOp.Id, out var exists);
+				if (exists)
+				{
+					entry!.Update(srvOp);
+				}
+				else
+				{
+					entry = new ServerEntry(srvOp);
+				}
 			}
 		}
 
-		foreach (var localOp in status.Local.Operations)
+		if (status.Local.Operations is { }) // can be null during loading, creating a NRE
 		{
-			ref var entry = ref CollectionsMarshal.GetValueRefOrAddDefault(_appHrEntries, localOp.Id, out var exists);
-			if (exists)
+			foreach (var localOp in status.Local.Operations)
 			{
-				entry!.Update(localOp);
-			}
-			else
-			{
-				entry = new ApplicationEntry(localOp);
+				ref var entry = ref CollectionsMarshal.GetValueRefOrAddDefault(_appHrEntries, localOp.Id, out var exists);
+				if (exists)
+				{
+					entry!.Update(localOp);
+				}
+				else
+				{
+					entry = new ApplicationEntry(localOp);
+				}
 			}
 		}
 

@@ -46,10 +46,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[RunsOnUIThread]
 	public class Given_ComboBox
 	{
-#if HAS_UNO
-		private static readonly FieldInfo _editableTextField = typeof(ComboBox).GetField("_editableText", BindingFlags.Instance | BindingFlags.NonPublic);
-#endif
-
 		private ResourceDictionary _testsResources;
 
 		private Style CounterComboBoxContainerStyle => _testsResources["CounterComboBoxContainerStyle"] as Style;
@@ -95,12 +91,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.IsDropDownOpen = true;
 			await TestServices.WindowHelper.WaitForIdle();
 			var container = (ComboBoxItem)SUT.ContainerFromItem(items[selectedIndex]);
-#if __ANDROID__ || __IOS__
-			Assert.AreEqual("SelectedUnfocused", VisualStateManager.GetCurrentState(container, "CommonStates").Name);
-#else
 			Assert.AreEqual("Selected", VisualStateManager.GetCurrentState(container, "CommonStates").Name);
-#endif
 		}
+#endif
 
 		[TestMethod]
 		public async Task When_IsEditable_False()
@@ -110,7 +103,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await UITestHelper.Load(SUT);
 
 			Assert.IsFalse(SUT.IsEditable);
-			Assert.IsNull(_editableTextField.GetValue(SUT));
+			Assert.AreEqual(Visibility.Collapsed, GetEditableText(SUT).Visibility);
 		}
 
 		[TestMethod]
@@ -121,13 +114,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await UITestHelper.Load(SUT);
 
 			Assert.IsTrue(SUT.IsEditable);
-			Assert.IsNotNull(_editableTextField.GetValue(SUT));
+			Assert.AreEqual(Visibility.Visible, GetEditableText(SUT).Visibility);
 		}
 
 		[TestMethod]
 		public async Task When_IsEditable_False_Changes_To_True()
 		{
-			if (!ApiInformation.IsPropertyPresent(typeof(ComboBox), "IsEditable"))
+			if (!ApiInformation.IsPropertyPresent("ComboBox", "IsEditable"))
 			{
 				Assert.Inconclusive();
 			}
@@ -137,14 +130,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await UITestHelper.Load(SUT);
 
 			Assert.IsFalse(SUT.IsEditable);
-			Assert.IsNull(_editableTextField.GetValue(SUT));
+			Assert.AreEqual(Visibility.Collapsed, GetEditableText(SUT).Visibility);
 
 			SUT.IsEditable = true;
 
 			Assert.IsTrue(SUT.IsEditable);
-			Assert.IsNotNull(_editableTextField.GetValue(SUT));
+			Assert.AreEqual(Visibility.Visible, GetEditableText(SUT).Visibility);
 		}
-#endif
+
+		private TextBox GetEditableText(ComboBox comboBox) => comboBox.FindFirstChild<TextBox>(c => c.Name == "EditableText");
 
 		[TestMethod]
 #if __MACOS__
@@ -219,7 +213,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				{
 					await WindowHelper.WaitFor(() => (cbi = SUT.ContainerFromItem(item) as ComboBoxItem) != null);
 					await WindowHelper.WaitForLoaded(cbi); // Required on Android
-					Assert.AreEqual(expectedItemWidth, cbi.ActualWidth);
+					Assert.AreEqual(expectedItemWidth, cbi.ActualWidth, 0.5); // Account for layout rounding
 				}
 			}
 			finally
@@ -482,7 +476,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
-		public async Task When_Fluent_And_Theme_Changed()
+		public async Task When_CB_Fluent_And_Theme_Changed()
 		{
 			var comboBox = new ComboBox
 			{
@@ -582,7 +576,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(SUT, FocusManager.GetFocusedElement(SUT.XamlRoot));
 
-			KeyboardHelper.Tab();
+			await KeyboardHelper.Tab();
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(btn, FocusManager.GetFocusedElement(SUT.XamlRoot));
@@ -617,13 +611,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(SUT, FocusManager.GetFocusedElement(SUT.XamlRoot));
 
-			KeyboardHelper.Space();
+			await KeyboardHelper.Space();
 			await WindowHelper.WaitForIdle();
 
 			Assert.IsTrue(SUT.IsDropDownOpen);
 			Assert.IsTrue(FocusManager.GetFocusedElement(SUT.XamlRoot) is ComboBoxItem);
 
-			KeyboardHelper.Tab();
+			await KeyboardHelper.Tab();
 			await WindowHelper.WaitForIdle();
 
 			Assert.IsFalse(SUT.IsDropDownOpen);
@@ -1008,7 +1002,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
-#if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_SelectedItem_Active_VisualState()
@@ -1025,37 +1018,41 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = SUT;
 			await WindowHelper.WaitForLoaded(SUT);
 
-#if __SKIA__ || __WASM__ // Will fix on: https://github.com/unoplatform/uno/issues/14801
-			SUT.IsDropDownOpen = true;
-			await WindowHelper.WaitForIdle();
-			SUT.IsDropDownOpen = false;
-			await WindowHelper.WaitForIdle();
-#endif
-			var containerForTwo = SUT.ContainerFromItem(SUT.SelectedItem) as SelectorItem;
-			Assert.IsNotNull(containerForTwo);
-			var h = VisualStateHelper.GetCurrentVisualStateName(containerForTwo);
-			Assert.IsTrue(h.Contains("Selected"));
+			try
+			{
+				// force ItemsPanel to materialized, otherwise ContainerFromIndex will always return 0
+				// and also while closed, the CBI's "CommonStates" will be forced to "Normal".
+				// at least, _should be_ forced to "Normal" as winui suggests.
+				SUT.IsDropDownOpen = true;
+				await WindowHelper.WaitForIdle();
 
-			SUT.SelectedItem = 6;
-			await WindowHelper.WaitForIdle();
+				var container2 = SUT.ContainerFromItem(SUT.SelectedItem) as SelectorItem;
+				Assert.IsNotNull(container2, "failed to resolve container#2");
+				var container2States = VisualStateHelper.GetCurrentVisualStateName(container2).ToArray();
+				Assert.IsTrue(container2States.Any(x => x.Contains("Selected")), $"container#2 is not selected: states={container2States.JoinBy("|")}");
 
-			var containerForSix = SUT.ContainerFromItem(SUT.SelectedItem) as SelectorItem;
-			Assert.IsNotNull(containerForSix);
+				// changing selection to 6
+				SUT.SelectedItem = 6;
+				await WindowHelper.WaitForIdle();
 
-			Assert.IsTrue(VisualStateHelper.GetCurrentVisualStateName(containerForTwo).Contains("Normal"));
-			Assert.IsTrue(VisualStateHelper.GetCurrentVisualStateName(containerForSix).Contains("Selected"));
+				var container6 = SUT.ContainerFromItem(SUT.SelectedItem) as SelectorItem;
+				Assert.IsNotNull(container6, "failed to resolve container#6");
+				var container2PostStates = VisualStateHelper.GetCurrentVisualStateName(container2).ToArray();
+				var container6PostStates = VisualStateHelper.GetCurrentVisualStateName(container6).ToArray();
+				Assert.IsFalse(container2PostStates.Any(x => x.Contains("Selected")), $"container#2 is still selected: states={container2PostStates.JoinBy("|")}");
+				Assert.IsTrue(container6PostStates.Any(x => x.Contains("Selected")), $"container#6 is not selected: states={container6PostStates.JoinBy("|")}");
+			}
+			finally
+			{
+				SUT.IsDropDownOpen = false;
+			}
 		}
-#endif
 
 #if HAS_UNO
 		[TestMethod]
 		[RequiresFullWindow]
 		[RunsOnUIThread]
-#if !HAS_INPUT_INJECTOR
-		[Ignore("InputInjector is not supported on this platform.")]
-#elif !HAS_RENDER_TARGET_BITMAP
-		[Ignore("Cannot take screenshot on this platform.")]
-#endif
+		[Ignore("Test is not valid - the Popup is not actually rendered in the screenshots")]
 		public async Task When_Mouse_Opened_And_Closed()
 		{
 			// Create a comboBox with some sample items
@@ -1124,11 +1121,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RequiresFullWindow]
 		[RunsOnUIThread]
-#if !HAS_INPUT_INJECTOR
-		[Ignore("InputInjector is not supported on this platform.")]
-#elif !HAS_RENDER_TARGET_BITMAP
-		[Ignore("Cannot take screenshot on this platform.")]
-#endif
+		[Ignore("Test is not valid - the Popup is not actually rendered in the screenshots")]
 		public async Task When_Mouse_Opened_And_Closed_Uwp()
 		{
 			using var _ = StyleHelper.UseUwpStyles();
@@ -1193,7 +1186,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(-1, comboBox.SelectedIndex);
 			Assert.AreEqual(false, comboBox.IsDropDownOpen);
-			KeyboardHelper.PressKeySequence("$d$_r#$u$_r");
+			await KeyboardHelper.PressKeySequence("$d$_r#$u$_r");
 
 			var expectedSelectedIndex = isTextSearchEnabled ? 2 : -1;
 			var expectedSelectedItem = isTextSearchEnabled ? "Rabbit" : null;
@@ -1219,14 +1212,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// Set the isTextSearchEnabled value being tested.
 			comboBox.IsTextSearchEnabled = isTextSearchEnabled;
 
-			comboBox.IsDropDownOpen = true;
-
 			await UITestHelper.Load(comboBox);
 
 			comboBox.Focus(FocusState.Programmatic);
 
+			comboBox.IsDropDownOpen = true;
+
+			await WindowHelper.WaitForIdle();
+
 			Assert.AreEqual(3, comboBox.SelectedIndex);
-			KeyboardHelper.PressKeySequence("$d$_r#$u$_r");
+			await KeyboardHelper.PressKeySequence("$d$_r#$u$_r");
 
 			var expectedSelectedIndex = isTextSearchEnabled ? 2 : 3;
 			var expectedSelectedItem = isTextSearchEnabled ? "Rabbit" : "Elephant";
@@ -1234,12 +1229,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(expectedSelectedItem, comboBox.SelectedItem);
 
 			Assert.IsTrue(comboBox.IsDropDownOpen);
-			KeyboardHelper.Space();
+			await KeyboardHelper.Space();
+
 			Assert.AreEqual(isTextSearchEnabled, comboBox.IsDropDownOpen);
 
 			await Task.Delay(1100); // Make sure to wait enough so that HasSearchStringTimedOut becomes true.
 
-			KeyboardHelper.Space();
+			await KeyboardHelper.Space();
 
 			Assert.AreEqual(!isTextSearchEnabled, comboBox.IsDropDownOpen);
 		}
