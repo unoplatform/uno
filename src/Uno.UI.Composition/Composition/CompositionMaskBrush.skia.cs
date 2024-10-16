@@ -35,11 +35,13 @@ namespace Microsoft.UI.Composition
 
 		void IOnlineBrush.Paint(in Visual.PaintingSession session, SKRect bounds)
 		{
-			var resultPaint = SkiaHelper.GetTempSKPaint();
-			resultPaint.IsAntialias = true;
+			using (SkiaHelper.GetTempSKPaint(out var resultPaint))
+			{
+				resultPaint.IsAntialias = true;
 
-			UpdatePaint(resultPaint, bounds);
-			session.Canvas?.DrawRect(bounds, resultPaint);
+				UpdatePaint(resultPaint, bounds);
+				session.Canvas?.DrawRect(bounds, resultPaint);
+			}
 		}
 
 		private protected override void DisposeInternal()

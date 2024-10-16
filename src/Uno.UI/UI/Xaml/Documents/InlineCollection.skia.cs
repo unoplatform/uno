@@ -13,7 +13,6 @@ using Uno.UI.Composition;
 using Windows.Foundation;
 using Windows.UI.Text;
 using Microsoft.UI.Composition;
-using SkiaExtensions = Microsoft.UI.Composition.SkiaExtensions;
 
 namespace Microsoft.UI.Xaml.Documents
 {
@@ -501,7 +500,7 @@ namespace Microsoft.UI.Xaml.Documents
 					var inline = segment.Inline;
 					var fontInfo = segment.FallbackFont ?? inline.FontInfo;
 
-					var paint = SkiaHelper.GetTempSKPaint();
+					using var paintDisposable = SkiaHelper.GetTempSKPaint(out var paint);
 					paint.TextEncoding = SKTextEncoding.Utf16;
 					paint.IsStroke = false;
 					paint.IsAntialias = true;
