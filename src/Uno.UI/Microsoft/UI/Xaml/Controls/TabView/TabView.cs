@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference TabView.cpp, commit ed31e13
 
@@ -551,19 +551,6 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 					TabItems = lvItems;
 				}
 
-				if (ReadLocalValue(SelectedItemProperty) != DependencyProperty.UnsetValue)
-				{
-					UpdateSelectedItem();
-				}
-				else
-				{
-					// If SelectedItem wasn't set, default to selecting the first tab
-					UpdateSelectedIndex();
-				}
-
-				SelectedIndex = listView.SelectedIndex;
-				SelectedItem = listView.SelectedItem;
-
 				// Find TabsItemsPresenter and listen for SizeChanged
 				ItemsPresenter GetItemsPresenter(ListView listView)
 				{
@@ -608,6 +595,18 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 						scrollViewer.UnregisterPropertyChangedCallback(ScrollViewer.ScrollableWidthProperty, scrollViewerScrollableWidthToken);
 					});
 				}
+
+				if (ReadLocalValue(SelectedItemProperty) != DependencyProperty.UnsetValue)
+				{
+					UpdateSelectedItem();
+				}
+				else
+				{
+					UpdateSelectedIndex();
+				}
+
+				SelectedIndex = listView.SelectedIndex;
+				SelectedItem = listView.SelectedItem;
 			}
 		}
 
