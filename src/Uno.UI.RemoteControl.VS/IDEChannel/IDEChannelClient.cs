@@ -22,7 +22,7 @@ internal class IdeChannelClient
 
 	public event AsyncEventHandler<ForceHotReloadIdeMessage>? ForceHotReloadRequested;
 	public event AsyncEventHandler<NotificationRequestIdeMessage>? OnMessageReceived;
-	public event AsyncEventHandler<CommandRequestIdeMessage>? OnCommandIdeMessageRequested;
+	public event AsyncEventHandler<AddMenuItemRequestIdeMessage>? OnAddMenuItemIdeMessageRequested;
 
 	public IdeChannelClient(Guid pipeGuid, ILogger logger)
 	{
@@ -93,9 +93,9 @@ internal class IdeChannelClient
 			var process = Task.CompletedTask;
 			switch (devServerMessage)
 			{
-				case CommandRequestIdeMessage cr:
+				case AddMenuItemRequestIdeMessage cr:
 					_logger.Debug("Command Ide Message Requested");
-					process = OnCommandIdeMessageRequested.InvokeAsync(this, cr);
+					process = OnAddMenuItemIdeMessageRequested.InvokeAsync(this, cr);
 					break;
 
 				case ForceHotReloadIdeMessage forceHotReloadMessage when ForceHotReloadRequested is { } hrRequested:

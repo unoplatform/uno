@@ -346,7 +346,7 @@ public partial class EntryPoint : IDisposable
 				_ideChannelClient = new IdeChannelClient(pipeGuid, new Logger(this));
 				_ideChannelClient.ForceHotReloadRequested += OnForceHotReloadRequestedAsync;
 				_ideChannelClient.OnMessageReceived += OnMessageReceivedAsync;
-				_ideChannelClient.OnCommandIdeMessageRequested += OnCommandIdeMessageRequestedAsync;
+				_ideChannelClient.OnAddMenuItemIdeMessageRequested += OnAddMenuItemRequestIdeMessageAsync;
 				_ideChannelClient.ConnectToHost();
 
 				// Set the port to the projects
@@ -441,7 +441,7 @@ public partial class EntryPoint : IDisposable
 		}
 	}
 
-	private async Task OnCommandIdeMessageRequestedAsync(object? sender, CommandRequestIdeMessage cr)
+	private async Task OnAddMenuItemRequestIdeMessageAsync(object? sender, AddMenuItemRequestIdeMessage cr)
 	{
 		try
 		{
@@ -461,7 +461,7 @@ public partial class EntryPoint : IDisposable
 		}
 		catch (Exception e)
 		{
-			_debugAction?.Invoke($"Using Command Ide Message Requested fail {e.Message}");
+			_debugAction?.Invoke($"Using AddMenuItem Ide Message Requested fail {e.Message}");
 			throw;
 		}
 	}
