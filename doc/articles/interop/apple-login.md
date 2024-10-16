@@ -31,7 +31,7 @@ Below is a simple example of how you can add the Apple Sign-In Button to your pr
    _appleSignInDelegate = new AuthorizationControllerDelegate(this);
    ```
 
-   **Note**: It's important to retain a reference to the delegate (`_appleSignInDelegate`) to avoid garbage collection issues. This ensures that the authorization process completes without interruption.
+   **Note**: It's important to retain a reference to the delegate (`_appleSignInDelegate`) to avoid garbage collection issues. This ensures that the authorization process is completed without interruption.
 
 3. Inject the Apple Sign-In button into the visual tree using `VisualTreeHelper.AdaptNative`:
 
