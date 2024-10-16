@@ -35,10 +35,10 @@ namespace Uno.UI.Xaml.Input
 				return focusList;
 			}
 
-			var kidCount = collection.Length;
+			var kidCount = collection.Count;
 
 			//Iterate though every node in the tree that is focusable
-			for (uint i = 0; i < kidCount; i++)
+			for (int i = 0; i < kidCount; i++)
 			{
 				DependencyObject child = collection[i];
 

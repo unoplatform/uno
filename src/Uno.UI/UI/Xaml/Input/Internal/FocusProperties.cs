@@ -17,7 +17,7 @@ namespace Uno.UI.Xaml.Input
 {
 	internal static class FocusProperties
 	{
-		internal static DependencyObject[] GetFocusChildren(DependencyObject? dependencyObject)
+		internal static IReadOnlyList<DependencyObject> GetFocusChildren(DependencyObject? dependencyObject)
 		{
 			if (dependencyObject is RichTextBlock)
 			{
@@ -35,7 +35,7 @@ namespace Uno.UI.Xaml.Input
 			{
 				// TODO Uno: Should call a specific version of the GetFocusChildren, for now fall back to UIElement behavior
 				//focusChildren = GetFocusChildren<CDOCollection>(static_cast<CTextBlock*>(object));
-				return VisualTreeHelper.GetChildren(textBlock).ToArray();
+				return VisualTreeHelper.GetChildren(textBlock);
 			}
 #if __ANDROID__ || __IOS__ // TODO Uno specific: NativeScrollContentPresenter does not return its children
 			else if (dependencyObject is NativeScrollContentPresenter scrollContentPresenter)
@@ -48,7 +48,7 @@ namespace Uno.UI.Xaml.Input
 #endif
 			else if (dependencyObject is UIElement uiElement)
 			{
-				return VisualTreeHelper.GetChildren(uiElement).ToArray();
+				return VisualTreeHelper.GetChildren(uiElement);
 			}
 
 			return Array.Empty<DependencyObject>();
@@ -179,7 +179,7 @@ namespace Uno.UI.Xaml.Input
 
 			if (collection != null) // && !collection.IsLeaving())
 			{
-				var kidCount = collection.Length;
+				var kidCount = collection.Count;
 
 				for (var i = 0; i < kidCount && isFocusable == false; i++)
 				{
@@ -277,9 +277,9 @@ namespace Uno.UI.Xaml.Input
 
 				var collection = GetFocusChildren(element);
 
-				if (collection != null && collection.Length > 0)
+				if (collection != null && collection.Count > 0)
 				{
-					for (var i = 0; i < collection.Length; i++)
+					for (var i = 0; i < collection.Count; i++)
 					{
 						var child = collection[i];
 
