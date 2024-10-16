@@ -21,10 +21,10 @@ internal sealed class UnoMenuCommand
 	private static readonly int UnoMainMenu = 0x4100;
 	private static readonly int DynamicMenuCommandId = 0x4103;
 
-	public List<CommandRequestIdeMessage> CommandList { get; set; } = [];
+	public List<AddMenuItemRequestIdeMessage> CommandList { get; set; } = [];
 	public static UnoMenuCommand? Instance { get; private set; }
 
-	private UnoMenuCommand(AsyncPackage package, IdeChannelClient ideChannelClient, OleMenuCommandService commandService, CommandRequestIdeMessage cr)
+	private UnoMenuCommand(AsyncPackage package, IdeChannelClient ideChannelClient, OleMenuCommandService commandService, AddMenuItemRequestIdeMessage cr)
 	{
 		_package = package ?? throw new ArgumentNullException(nameof(_package));
 		CommandService = commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
@@ -43,7 +43,7 @@ internal sealed class UnoMenuCommand
 		}
 	}
 
-	public static async Task InitializeAsync(AsyncPackage package, IdeChannelClient ideChannelClient, CommandRequestIdeMessage cr)
+	public static async Task InitializeAsync(AsyncPackage package, IdeChannelClient ideChannelClient, AddMenuItemRequestIdeMessage cr)
 	{
 		// Switch to the main thread - the call to AddCommand in DynamicMenu's constructor requires the UI thread.
 		await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
@@ -91,10 +91,17 @@ internal sealed class UnoMenuCommand
 	{
 		if (IdeChannelClient != null &&
 				sender is DynamicItemMenuCommand matchedCommand &&
-				TryGetCommandRequestIdeMessage(matchedCommand, out var currentCommand))
+				TryGetCommandRequestIdeMessage(matchedCommand, out var currentMenu) &&
+				currentMenu.Command is Command cmd)
 		{
+			var cmdMessage =
+				new CommandRequestIdeMessage(
+					System.Diagnostics.Process.GetCurrentProcess().MainWindowHandle.ToInt64(),
+					cmd.Name,
+					cmd.Parameter);
+
 			// Ignoring the async call as the OleMenuCommand.execHandler is private and not async
-			_ = IdeChannelClient.SendToDevServerAsync(currentCommand, _package.DisposalToken);
+			_ = IdeChannelClient.SendToDevServerAsync(cmdMessage, _package.DisposalToken);
 		}
 	}
 
@@ -109,9 +116,9 @@ internal sealed class UnoMenuCommand
 		matchedCommand.Enabled = true;
 		matchedCommand.Visible = true;
 
-		if (TryGetCommandRequestIdeMessage(matchedCommand, out var currentCommand))
+		if (TryGetCommandRequestIdeMessage(matchedCommand, out var currentMenu))
 		{
-			matchedCommand.Text = currentCommand.Command;
+			matchedCommand.Text = currentMenu.Command.Text;
 		}
 		// Clear the ID because we are done with this item.
 		matchedCommand.MatchedCommandId = 0;
@@ -121,6 +128,6 @@ internal sealed class UnoMenuCommand
 			// The position of the command is the command ID minus the ID of the root dynamic start item.
 			matchedCommand.MatchedCommandId == 0 ? 0 : matchedCommand.MatchedCommandId - (int)DynamicMenuCommandId;
 
-	private bool TryGetCommandRequestIdeMessage(DynamicItemMenuCommand matchedCommand, [NotNullWhen(true)] out CommandRequestIdeMessage result)
+	private bool TryGetCommandRequestIdeMessage(DynamicItemMenuCommand matchedCommand, [NotNullWhen(true)] out AddMenuItemRequestIdeMessage result)
 		=> (result = CommandList.Skip(GetCurrentPosition(matchedCommand)).FirstOrDefault()) != null;
 }
