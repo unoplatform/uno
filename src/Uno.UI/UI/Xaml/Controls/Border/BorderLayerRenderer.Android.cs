@@ -37,13 +37,13 @@ namespace Uno.UI.Xaml.Controls
 		private static ImageSource? GetBackgroundImageSource(BorderLayerState? state)
 			=> (state?.Background as ImageBrush)?.ImageSource;
 
-		partial void UpdatePlatform()
+		partial void UpdatePlatform(bool forceUpdate)
 		{
 			var drawArea = new Rect(default, _owner.LayoutSlotWithMarginsAndAlignments.Size.LogicalToPhysicalPixels());
 			var newState = new BorderLayerState(drawArea.Size, _borderInfoProvider);
 			var previousLayoutState = _currentState;
 
-			if (newState.Equals(previousLayoutState))
+			if (newState.Equals(previousLayoutState) && !forceUpdate)
 			{
 				return;
 			}
@@ -261,8 +261,8 @@ namespace Uno.UI.Xaml.Controls
 			// because even though the brush instance is the same, there are additional properties
 			// that BorderLayerState tracks on Android. This is not ideal and we should avoid it by refactoring
 			// this file to handle brush changes on the same brush instance on its own instead.
-			Brush.SetupBrushChanged(_currentState.Background, background, ref _backgroundChanged, () => Update(), false);
-			Brush.SetupBrushChanged(_currentState.BorderBrush, borderBrush, ref _borderChanged, () => Update(), false);
+			Brush.SetupBrushChanged(_currentState.Background, background, ref _backgroundChanged, () => Update(true), false);
+			Brush.SetupBrushChanged(_currentState.BorderBrush, borderBrush, ref _borderChanged, () => Update(true), false);
 
 			return disposables;
 		}
