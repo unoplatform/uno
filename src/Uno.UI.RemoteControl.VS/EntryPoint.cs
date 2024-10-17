@@ -344,9 +344,7 @@ public partial class EntryPoint : IDisposable
 				_process.BeginErrorReadLine();
 
 				_ideChannelClient = new IdeChannelClient(pipeGuid, new Logger(this));
-				_ideChannelClient.ForceHotReloadRequested += OnForceHotReloadRequestedAsync;
 				_ideChannelClient.OnMessageReceived += OnMessageReceivedAsync;
-				_ideChannelClient.OnAddMenuItemIdeMessageRequested += OnAddMenuItemRequestIdeMessageAsync;
 				_ideChannelClient.ConnectToHost();
 
 				// Set the port to the projects
@@ -422,7 +420,37 @@ public partial class EntryPoint : IDisposable
 		}
 	}
 
-	private async Task OnMessageReceivedAsync(object? sender, NotificationRequestIdeMessage message)
+	private async Task OnMessageReceivedAsync(object? sender, IdeMessage devServerMessage)
+	{
+		try
+		{
+			switch (devServerMessage)
+			{
+				case KeepAliveIdeMessage:
+					_debugAction?.Invoke($"Keep alive from Dev Server");
+					break;
+				case AddMenuItemRequestIdeMessage amir:
+					await OnAddMenuItemRequestIdeMessageAsync(sender, amir);
+					break;
+				case ForceHotReloadIdeMessage fhr:
+					await OnForceHotReloadRequestedAsync(sender, fhr);
+					break;
+				case NotificationRequestIdeMessage nr:
+					await NotificationRequestIdeMessageAsync(sender, nr);
+					break;
+				default:
+					_debugAction?.Invoke($"Unknown message type {devServerMessage?.GetType()} from DevServer");
+					break;
+			}
+		}
+		catch (Exception e) when (_ideChannelClient is not null)
+		{
+			_debugAction?.Invoke($"Failed to handle IdeMessage with message {e.Message}");
+			throw;
+		}
+	}
+
+	private async Task NotificationRequestIdeMessageAsync(object? sender, NotificationRequestIdeMessage message)
 	{
 		try
 		{
