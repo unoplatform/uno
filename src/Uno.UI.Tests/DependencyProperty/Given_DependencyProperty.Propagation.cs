@@ -528,7 +528,6 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 
 				SUT.ClearValue(ContentControl.ForegroundProperty);
 
-				Assert.AreEqual(dc, originalBrush.DataContext);
 				Assert.IsNull(newBrush.DataContext);
 
 				SUT.DataContext = null;

@@ -360,10 +360,6 @@ namespace <#= mixin.NamespaceName #>
 				var previousSize = _actualSize;
 				_actualSize = value.Size.ToFoundationSize().PhysicalToLogicalPixels();
 
-#if <#= mixin.IsFrameworkElement #> // IsFrameworkElement
-				RenderSize = _actualSize;
-#endif
-
 				CoreAnimation.CATransform3D? oldTransform = null;
 				var layer = Layer;
 				if (layer != null && !layer.Transform.IsIdentity)
@@ -379,7 +375,9 @@ namespace <#= mixin.NamespaceName #>
 
 				if (previousSize != _actualSize)
 				{
+#if !<#= mixin.IsFrameworkElement #> // IsFrameworkElement
 					SizeChanged?.Invoke(this, new SizeChangedEventArgs(this, previousSize, _actualSize));
+#endif
 
 					if (_renderTransform != null)
 					{

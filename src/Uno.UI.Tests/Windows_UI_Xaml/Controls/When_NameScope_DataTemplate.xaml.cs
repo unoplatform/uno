@@ -25,7 +25,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.Controls
 			this.InitializeComponent();
 			Loaded += delegate
 			{
-				OuterElementName = (content01.ContentTemplateRoot as FrameworkElement).FindName("OuterElementName") as When_NameScope_Inner;
+				OuterElementName = (((ContentPresenter)VisualTreeHelper.GetChild(content01, 0)).ContentTemplateRoot as FrameworkElement).FindName("OuterElementName") as When_NameScope_Inner;
 			};
 		}
 

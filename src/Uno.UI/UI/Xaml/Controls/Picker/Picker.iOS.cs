@@ -64,7 +64,6 @@ namespace Microsoft.UI.Xaml.Controls
 				size = base.SizeThatFits(size);
 			}
 
-
 			return size;
 		}
 

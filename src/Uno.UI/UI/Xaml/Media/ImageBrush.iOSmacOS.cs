@@ -71,6 +71,7 @@ namespace Microsoft.UI.Xaml.Media
 		private void SetImage(_Image image, bool failIfNull = true)
 		{
 			ImageChanged?.Invoke(image);
+			OnInvalidateRender();
 
 			if (image != null)
 			{

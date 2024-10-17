@@ -82,7 +82,6 @@ namespace Microsoft.UI.Xaml.Controls
 		protected internal override void OnInvalidateMeasure()
 		{
 			base.OnInvalidateMeasure();
-			SetNeedsDisplay();
 			_measureInvalidated = true;
 		}
 
@@ -129,6 +128,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 				result = result.Add(padding);
 
+				SetNeedsDisplay();
+
 				return _previousDesiredSize = new Size(Math.Ceiling(result.Width), Math.Ceiling(result.Height));
 			}
 		}
@@ -138,13 +139,11 @@ namespace Microsoft.UI.Xaml.Controls
 			var padding = Padding;
 
 			// final size considering padding
-			size = size.Subtract(padding);
+			var innerSize = size.Subtract(padding);
 
-			var result = LayoutTypography(size);
+			LayoutTypography(innerSize);
 
-			result = result.Add(padding);
-
-			return new Size(Math.Ceiling(result.Width), Math.Ceiling(result.Height));
+			return size;
 		}
 
 		#endregion

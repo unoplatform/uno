@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using Uno.Disposables;
 using Uno.UI.Extensions;
+using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI;
 using Windows.UI.Core;
@@ -64,6 +65,24 @@ namespace Uno.UI.Controls
 
 		public CommandBarRenderer(CommandBar element) : base(element) { }
 
+		private sealed partial class CommandBarRendererContentHolderBorder : Border
+		{
+			private protected override Rect AdjustArrangeRectForNativeChild(Rect logicalRect)
+			{
+				if (HorizontalAlignment == HorizontalAlignment.Stretch)
+				{
+					logicalRect.Width = m_previousAvailableSize.Width;
+				}
+
+				if (VerticalAlignment == VerticalAlignment.Stretch)
+				{
+					logicalRect.Height = m_previousAvailableSize.Height;
+				}
+
+				return logicalRect;
+			}
+		}
+
 		protected override Toolbar CreateNativeInstance() => new Toolbar(ContextHelper.Current);
 
 		protected override IEnumerable<IDisposable> Initialize()
@@ -74,7 +93,7 @@ namespace Uno.UI.Controls
 
 			// Content
 			// This allows custom Content to be properly laid out inside the native Toolbar.
-			_contentContainer = new Border()
+			_contentContainer = new CommandBarRendererContentHolderBorder()
 			{
 				Visibility = Visibility.Collapsed,
 				// This container requires a fixed height to be properly laid out by its native parent.

@@ -1,4 +1,5 @@
 ﻿using Microsoft.UI.Xaml.Automation.Peers;
+using Windows.Foundation;
 using Color = Windows.UI.Color;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -39,4 +40,9 @@ partial class Image
 		// UNO TODO: Description on Image is not implemented
 		get => string.Empty;
 	}
+
+#if !__NETSTD_REFERENCE__
+	private protected override Rect? GetClipRect(bool needsClipToSlot, Point visualOffset, Rect finalRect, Size maxSize, Thickness margin)
+		=> base.GetClipRect(needsClipToSlot, visualOffset, finalRect, maxSize, margin) ?? new Rect(default, RenderSize);
+#endif
 }
