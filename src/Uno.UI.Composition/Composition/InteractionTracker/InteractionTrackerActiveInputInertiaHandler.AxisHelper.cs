@@ -2,6 +2,7 @@
 
 using System;
 using System.Numerics;
+using Uno.UI.Composition;
 
 namespace Microsoft.UI.Composition.Interactions;
 
@@ -46,12 +47,6 @@ internal sealed partial class InteractionTrackerActiveInputInertiaHandler
 			FinalModifiedValue = Math.Clamp(FinalValue, GetValue(Handler._interactionTracker.MinPosition), GetValue(Handler._interactionTracker.MaxPosition));
 		}
 
-		private static bool IsCloseReal(float a, float b, float epsilon)
-			=> MathF.Abs(a - b) <= epsilon;
-
-		private static bool IsCloseRealZero(float a, float epsilon)
-			=> MathF.Abs(a) < epsilon;
-
 		private float GetValue(Vector3 vector)
 		{
 			return Axis switch
@@ -76,9 +71,9 @@ internal sealed partial class InteractionTrackerActiveInputInertiaHandler
 				var time = 0.0f;
 				if (initialVelocity > minimumVelocity)
 				{
-					if (!IsCloseReal(decayRate, 1.0f, epsilon))
+					if (!CompositionMathHelpers.IsCloseReal(decayRate, 1.0f, epsilon))
 					{
-						if (IsCloseRealZero(decayRate, epsilon) /*|| !_isInertiaEnabled*/)
+						if (CompositionMathHelpers.IsCloseRealZero(decayRate, epsilon) /*|| !_isInertiaEnabled*/)
 						{
 							return 0.0f;
 						}
@@ -104,11 +99,11 @@ internal sealed partial class InteractionTrackerActiveInputInertiaHandler
 		{
 			float epsilon = 0.0000011920929f;
 
-			if (IsCloseReal(DecayRate, 1.0f, epsilon))
+			if (CompositionMathHelpers.IsCloseReal(DecayRate, 1.0f, epsilon))
 			{
 				return InitialVelocity * time;
 			}
-			else if (IsCloseRealZero(DecayRate, epsilon) /*|| !_isInertiaEnabled*/)
+			else if (CompositionMathHelpers.IsCloseRealZero(DecayRate, epsilon) /*|| !_isInertiaEnabled*/)
 			{
 				return 0.0f;
 			}
