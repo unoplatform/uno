@@ -11,16 +11,11 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 
 namespace Microsoft.UI.Xaml;
 
-public partial class Application
+partial class Application
 {
 	partial void InitializePartial()
 	{
 		PermissionsHelper.Initialize();
-	}
-
-	static partial void StartPartial(ApplicationInitializationCallback callback)
-	{
-		callback(new ApplicationInitializationCallbackParams());
 	}
 
 	/// <remarks>
