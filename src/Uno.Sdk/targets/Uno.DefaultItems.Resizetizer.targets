@@ -13,6 +13,9 @@
 		<UnoSplashScreenBaseSize Condition="$(UnoSplashScreenBaseSize) == ''">128,128</UnoSplashScreenBaseSize>
 		<UnoSplashScreenColor Condition="$(UnoSplashScreenColor) == ''">#FFFFFF</UnoSplashScreenColor>
 
+		<UnoUseIconBackgroundFile Condition="$(UnoUseIconBackgroundFile) == '' and ($(IsWinAppSdk) or $(IsDesktop) or $(IsBrowserWasm))">false</UnoUseIconBackgroundFile>
+		<UnoUseIconBackgroundFile Condition="$(UnoUseIconBackgroundFile) == ''">true</UnoUseIconBackgroundFile>
+
 		<!-- Support net8.0, without a platform identifier -->
 		<_UnoResizetizerIsCompatibleApp Condition=" 
 			$(_IsUnoSingleProjectAndLegacy) == 'true' 
@@ -25,6 +28,7 @@
 			ForegroundFile="$(UnoIconForegroundFile)"
 			ForegroundScale="$(UnoIconForegroundScale)"
 			Color="$(UnoIconBackgroundColor)"
+			UseBackgroundFile="$(UnoUseIconBackgroundFile)"
 			IsDefaultItem="true"
 			Exclude="@(UnoIcon)"
 			Condition="Exists('$(UnoIconBackgroundFile)') and Exists('$(UnoIconForegroundFile)')" />
