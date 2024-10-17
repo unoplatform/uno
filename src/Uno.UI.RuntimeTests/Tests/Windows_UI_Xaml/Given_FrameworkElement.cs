@@ -984,6 +984,35 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		public async Task When_Change_Parent()
+		{
+			var SUT = new Button() { Content = "Hello" };
+			var parent = new Grid();
+			parent.Children.Add(SUT);
+			var act = () => TestServices.WindowHelper.WindowContent = SUT;
+			act.Should().Throw<Exception>();
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Change_Parent_Loaded()
+		{
+			var SUT = new Button() { Content = "Hello" };
+			var parent = new Grid();
+			var inner = new StackPanel();
+			var inner2 = new StackPanel();
+			parent.Children.Add(inner);
+			parent.Children.Add(inner2);
+			inner.Children.Add(SUT);
+			TestServices.WindowHelper.WindowContent = parent;
+			await TestServices.WindowHelper.WaitForLoaded(SUT);
+
+			var act = () => inner2.Children.Add(SUT);
+			act.Should().Throw<Exception>();
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 		public async Task When_Add_Element_Then_Load_Raised()
 		{
 			var sut = new Border();
