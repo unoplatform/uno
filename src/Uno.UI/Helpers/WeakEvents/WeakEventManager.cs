@@ -4,139 +4,135 @@ using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Reflection;
+using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
-// Mostly from https://github.com/dotnet/maui/blob/c92d44c68fe81c57ef8caec2506e6788309b8ff4/src/Core/src/WeakEventManager.cs
-// But adjusted a little bit
+namespace Uno.UI.Helpers;
 
-namespace Uno.UI.Helpers
+internal sealed class WeakEventManager
 {
-	internal sealed class WeakEventManager
+	private readonly ConditionalWeakTable<object, Dictionary<string, List<Action>>> _handlersPerTarget = new();
+	private Dictionary<string, List<Action>>? _staticHandlers;
+	private string? _enumeratingHandlersOfEvent;
+	private Stack<string>? _enumeratingHandlersOfEventStack;
+
+	public void AddEventHandler(Action? handler, [CallerMemberName] string eventName = "")
 	{
-		private readonly Dictionary<string, List<Subscription>> _eventHandlers = new(StringComparer.Ordinal);
+		ArgumentException.ThrowIfNullOrEmpty(eventName);
 
-		public void AddEventHandler(Action? handler, [CallerMemberName] string eventName = "")
+		if (handler is null)
 		{
-			if (string.IsNullOrEmpty(eventName))
-				throw new ArgumentNullException(nameof(eventName));
-
-			if (handler == null)
-				throw new ArgumentNullException(nameof(handler));
-
-			AddEventHandler(eventName, handler.Target, handler.GetMethodInfo());
+			// Allow handler to be nullable to not have to deal with nullability checks in callsites, but this indicates a bug.
+			Debug.Fail($"Got a null event handler for event {eventName}.");
+			return;
 		}
 
-		public void HandleEvent(string eventName)
+		var target = handler.Target;
+		if (target is null)
 		{
-			if (_eventHandlers.TryGetValue(eventName, out List<Subscription>? target))
+			AddTo(_staticHandlers ??= new(), eventName, handler);
+		}
+		else
+		{
+			AddTo(_handlersPerTarget.GetValue(target, static _ => new()), eventName, handler);
+		}
+	}
+
+	public void RemoveEventHandler(Action? handler, [CallerMemberName] string eventName = "")
+	{
+		ArgumentException.ThrowIfNullOrEmpty(eventName);
+
+		if (handler is null)
+		{
+			// Allow handler to be nullable to not have to deal with nullability checks in callsites, but this indicates a bug.
+			Debug.Fail($"Got a null event handler for event {eventName}.");
+			return;
+		}
+
+		var target = handler.Target;
+		if (target is null)
+		{
+			if (_staticHandlers is not null)
 			{
-				// clone the target array just in case one of the subscriptions calls RemoveEventHandler
-				var targetClone = ArrayPool<Subscription>.Shared.Rent(target.Count);
-				target.CopyTo(targetClone, 0);
-				var count = target.Count;
-				for (int i = 0; i < count; i++)
+				RemoveFrom(_staticHandlers, eventName, handler);
+			}
+		}
+		else if (_handlersPerTarget.TryGetValue(target, out var handlersPerEvent))
+		{
+			RemoveFrom(handlersPerEvent, eventName, handler);
+		}
+	}
+
+	public void HandleEvent(string eventName)
+	{
+		if (_enumeratingHandlersOfEvent is not null)
+		{
+			_enumeratingHandlersOfEventStack ??= new();
+			_enumeratingHandlersOfEventStack.Push(_enumeratingHandlersOfEvent);
+		}
+		_enumeratingHandlersOfEvent = eventName;
+
+		try
+		{
+			foreach (var kvp in _handlersPerTarget)
+			{
+				if (!kvp.Value.TryGetValue(eventName, out var handlers))
 				{
-					Subscription subscription = targetClone[i];
-					bool isStatic = subscription.Subscriber == null;
-					if (isStatic)
-					{
-						// For a static method, we'll just pass null as the first parameter of MethodInfo.Invoke
-						subscription.Handler.Invoke(null, null);
-						continue;
-					}
-
-					object? subscriber = subscription.Subscriber?.Target;
-
-					if (subscriber == null)
-					{
-						// The subscriber was collected, so there's no need to keep this subscription around
-						target.Remove(subscription);
-					}
-					else
-					{
-						subscription.Handler.Invoke(subscriber, null);
-					}
-				}
-
-				ArrayPool<Subscription>.Shared.Return(targetClone);
-			}
-		}
-
-		public void RemoveEventHandler(Action? handler, [CallerMemberName] string eventName = "")
-		{
-			if (string.IsNullOrEmpty(eventName))
-				throw new ArgumentNullException(nameof(eventName));
-
-			if (handler == null)
-				throw new ArgumentNullException(nameof(handler));
-
-			RemoveEventHandler(eventName, handler.Target, handler.GetMethodInfo());
-		}
-
-		private void AddEventHandler(string eventName, object? handlerTarget, MethodInfo methodInfo)
-		{
-			if (!_eventHandlers.TryGetValue(eventName, out List<Subscription>? targets))
-			{
-				targets = new List<Subscription>();
-				_eventHandlers.Add(eventName, targets);
-			}
-			else
-			{
-				targets.RemoveAll(subscription => subscription.Subscriber is { IsAlive: false });
-			}
-
-			if (handlerTarget == null)
-			{
-				// This event handler is a static method
-				targets.Add(new Subscription(null, methodInfo));
-				return;
-			}
-
-			targets.Add(new Subscription(new WeakReference(handlerTarget), methodInfo));
-		}
-
-		private void RemoveEventHandler(string eventName, object? handlerTarget, MethodInfo methodInfo)
-		{
-			if (!_eventHandlers.TryGetValue(eventName, out List<Subscription>? subscriptions))
-				return;
-
-			for (int n = subscriptions.Count - 1; n >= 0; n--)
-			{
-				Subscription current = subscriptions[n];
-
-				if (current.Subscriber != null && !current.Subscriber.IsAlive)
-				{
-					// If not alive, remove and continue
-					subscriptions.RemoveAt(n);
+					// Event handlers not found for this target
 					continue;
 				}
 
-				if (current.Subscriber?.Target == handlerTarget && current.Handler == methodInfo)
+				var count = handlers.Count;
+				for (var i = 0; i < count; i++)
 				{
-					// Found the match, we can break
-					subscriptions.RemoveAt(n);
-					break;
+					handlers[i]();
 				}
 			}
 		}
-
-		private readonly struct Subscription : IEquatable<Subscription>
+		finally
 		{
-			public Subscription(WeakReference? subscriber, MethodInfo handler)
+			_enumeratingHandlersOfEvent = (_enumeratingHandlersOfEventStack?.TryPop(out var previous) ?? false) ? previous : null;
+		}
+	}
+
+	private void AddTo(Dictionary<string, List<Action>> handlersPerEvent, string eventName, Action handler)
+	{
+		ref var handlers = ref CollectionsMarshal.GetValueRefOrAddDefault(handlersPerEvent, eventName, out var exists);
+		if (exists)
+		{
+			if (_enumeratingHandlersOfEvent == eventName)
 			{
-				Subscriber = subscriber;
-				Handler = handler ?? throw new ArgumentNullException(nameof(handler));
+#if NET8_0_OR_GREATER
+				handlers = handlers![..];
+#else
+				handlers = handlers!.ToList();
+#endif
 			}
 
-			public readonly WeakReference? Subscriber;
-			public readonly MethodInfo Handler;
+			handlers!.Add(handler);
+		}
+		else
+		{
+			handlers = [handler];
+		}
+	}
 
-			public bool Equals(Subscription other) => Subscriber == other.Subscriber && Handler == other.Handler;
+	private void RemoveFrom(Dictionary<string, List<Action>> handlersPerEvent, string eventName, Action handler)
+	{
+		ref var handlers = ref CollectionsMarshal.GetValueRefOrNullRef(handlersPerEvent, eventName);
+		if (!Unsafe.IsNullRef(ref handlers))
+		{
+			if (_enumeratingHandlersOfEvent == eventName)
+			{
+#if NET8_0_OR_GREATER
+				handlers = handlers[..];
+#else
+				handlers = handlers!.ToList();
+#endif
+			}
 
-			public override bool Equals(object? obj) => obj is Subscription other && Equals(other);
-
-			public override int GetHashCode() => Subscriber?.GetHashCode() ?? 0 ^ Handler.GetHashCode();
+			handlers.Remove(handler);
 		}
 	}
 }
