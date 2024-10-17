@@ -22,13 +22,7 @@ internal readonly record struct DrawingFilters(float Opacity)
 	//       However since this Filter is copied (pushed to the stack) only when something changes, it should still catch most cases.
 	public SKColorFilter? OpacityColorFilter => Opacity is 1.0f
 		? null
-		: _opacityToColorFilter.Invoke((byte)(255 * Opacity));
+		: _opacityToColorFilter[(byte)(0xFF * Opacity)] ??= SKColorFilter.CreateBlendMode(new SKColor(0xFF, 0xFF, 0xFF, (byte)(0xFF * Opacity)), SKBlendMode.Modulate);
 
-	// only 255 possible values
-	private static readonly Func<byte, SKColorFilter> _opacityToColorFilter = FuncMemoizeExtensions.AsMemoized((byte opacity)
-		=>
-	{
-		Console.WriteLine($"Ramez created a new color filter for opacity {opacity}");
-		return SKColorFilter.CreateBlendMode(new SKColor(0xFF, 0xFF, 0xFF, opacity), SKBlendMode.Modulate);
-	});
+	private static readonly SKColorFilter?[] _opacityToColorFilter = new SKColorFilter?[256];
 }
