@@ -64,6 +64,9 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 		set => SetProperty(ref _borderBrush, value);
 	}
 
+	internal override bool CanPaint => BorderBrush is { } || BackgroundBrush is { };
+	internal override bool RequiresRepaintOnEveryFrame => (_backgroundBrush?.RequiresRepaintOnEveryFrame ?? false) || (_borderBrush?.RequiresRepaintOnEveryFrame ?? false);
+
 	private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
 	{
 		// Call base implementation - Visual calls Compositor.InvalidateRender().
@@ -140,7 +143,12 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 	}
 
 	private protected override void ApplyPostPaintingClipping(in SKCanvas canvas)
-		=> _childClipCausedByCornerRadius?.Apply(canvas, this);
+	{
+		// We need the explicit call to UpdatePathsAndCornerClip in case CanPaint is false (e.g.,
+		// because brushes are null). In that case, we still need to update the CornerClip
+		UpdatePathsAndCornerClip();
+		_childClipCausedByCornerRadius?.Apply(canvas, this);
+	}
 
 	private void UpdatePathsAndCornerClip()
 	{

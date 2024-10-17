@@ -17,6 +17,8 @@ namespace Microsoft.UI.Composition
 
 		bool ISizedBrush.IsSized => true;
 
+		internal override bool RequiresRepaintOnEveryFrame => ((IOnlineBrush)this).IsOnline;
+
 		Vector2? ISizedBrush.Size
 		{
 			get => Surface switch
