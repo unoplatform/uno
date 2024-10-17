@@ -89,15 +89,6 @@ namespace Microsoft.UI.Xaml
 
 		public void Dispose()
 		{
-			var entries = _entries;
-
-			var entriesLength = entries.Length;
-
-			for (var i = 0; i < entriesLength; i++)
-			{
-				entries[i]?.Dispose();
-			}
-
 			ReturnEntriesAndOffsetsToPools();
 
 			_entries = null!;
