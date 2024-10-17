@@ -10,22 +10,6 @@ namespace Microsoft.UI.Xaml.Documents
 	partial class Inline
 	{
 		private FontDetails? _fontInfo;
-		private SKPaint? _paint;
-
-		internal SKPaint Paint
-		{
-			get
-			{
-				var paint = _paint ??= new SKPaint()
-				{
-					TextEncoding = SKTextEncoding.Utf16,
-					IsStroke = false,
-					IsAntialias = true,
-				};
-
-				return paint;
-			}
-		}
 
 		internal FontDetails FontInfo
 		{
