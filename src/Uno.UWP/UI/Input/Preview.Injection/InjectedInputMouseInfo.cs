@@ -1,5 +1,6 @@
 #nullable enable
 
+using System;
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.System;
@@ -102,7 +103,7 @@ public partial class InjectedInputMouseInfo
 
 		var point = new PointerPoint(
 			state.FrameId + TimeOffsetInMilliseconds,
-			state.Timestamp + TimeOffsetInMilliseconds,
+			state.Timestamp + TimeOffsetInMilliseconds * (ulong)TimeSpan.TicksPerMillisecond, // Should be microseconds, not ticks, cf. https://github.com/unoplatform/uno/issues/14535
 			PointerDevice.For(PointerDeviceType.Mouse),
 			uint.MaxValue - 42, // Try to avoid conflict with the real mouse pointer
 			position,
