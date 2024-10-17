@@ -16,7 +16,6 @@ using TabViewItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TabViewItem
 
 using static Uno.UI.Extensions.ViewExtensions;
 using static Private.Infrastructure.TestServices;
-using UIKit;
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 
