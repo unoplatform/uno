@@ -435,8 +435,27 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 					return false;
 				}
 
-				var property = currentType.GetProperties().FirstOrDefault(p => p.Name == name);
-				var setMethod = currentType.GetMethods().FirstOrDefault(p => p.Name == "Set" + name);
+				// Converted from LINQ to reduce allocations: var property = currentType.GetProperties().FirstOrDefault(p => p.Name == name);
+				PropertyInfo? property = null;
+				foreach (var p in currentType.GetProperties())
+				{
+					if (p.Name == name)
+					{
+						property = p;
+						break;
+					}
+				}
+
+				// Converted from LINQ to reduce allocations: var setMethod = currentType.GetMethods().FirstOrDefault(p => p.Name == "Set" + name);
+				MethodInfo? setMethod = null;
+				foreach (var p in currentType.GetMethods())
+				{
+					if (p.Name == "Set" + name)
+					{
+						setMethod = p;
+						break;
+					}
+				}
 
 				if (property?.GetMethod?.IsStatic ?? false)
 				{

@@ -587,7 +587,7 @@ namespace Microsoft.UI.Xaml
 		protected virtual IEnumerable<DependencyObject>? GetChildrenInTabFocusOrder()
 		{
 			var children = FocusProperties.GetFocusChildren(this);
-			if (children != null && /*!children.IsLeaving() && */children.Length > 0)
+			if (children != null && /*!children.IsLeaving() && */children.Count > 0)
 			{
 				return children;
 			}
