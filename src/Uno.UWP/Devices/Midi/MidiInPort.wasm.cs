@@ -27,6 +27,8 @@ namespace Windows.Devices.Midi
 		{
 			DeviceId = deviceId;
 			_managedId = managedId;
+
+			InitializeMessageReceived();
 		}
 
 		partial void StartMessageReceived()
