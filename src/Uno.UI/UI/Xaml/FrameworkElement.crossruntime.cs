@@ -27,6 +27,7 @@ namespace Microsoft.UI.Xaml
 	public partial class FrameworkElement : IEnumerable
 	{
 #pragma warning disable CS0067 // Unused only in reference API.
+		[global::Uno.UI.Xaml.GeneratedWeakEvent]
 		public event SizeChangedEventHandler SizeChanged;
 #pragma warning restore CS0067
 

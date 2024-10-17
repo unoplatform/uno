@@ -54,6 +54,7 @@ namespace <#= mixin.NamespaceName #>
 
 		public event RoutedEventHandler Unloaded;
 
+		[global::Uno.UI.Xaml.GeneratedWeakEvent]
 		public event SizeChangedEventHandler SizeChanged;
 
 		string IXUidProvider.Uid { get; set; }
