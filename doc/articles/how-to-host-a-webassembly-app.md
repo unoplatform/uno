@@ -205,11 +205,8 @@ Windows Server IIS is supported, and needs some manual installation steps to be 
 Here are some steps:
 
 - Install the [URL Rewriter module](https://learn.microsoft.com/iis/extensions/url-rewrite-module/url-rewrite-module-configuration-reference)
-- Add an application to the local web site in IIS and set its physical path to: `...\MyApp\MyApp.Wasm\bin\Debug\netstandard2.0\dist` or `...\MyApp\MyApp.Wasm\bin\Debug\net5.0\dist`
-- Add MIME type `application/octet-stream .clr` to IIS.
-- Add MIME type `application/wasm .wasm` to IIS.
-- Add MIME type `application/octet-stream .dat` to IIS.
-- Add MIME type `application/woff2 .woff2` to IIS
-- Add MIME type `application/pdb .pdb` to IIS
-
-Run `http:localhost/Myapp` for testing
+- Add an application to the local web site in IIS
+- Deploy using Visual Studio
+- Set the physical path of the site to the "wwwroot"-subfolder of the site (the physical path can be changed in the extended settings of the site)
+  
+Run `http:localhost/Myapp` for testing. For updating the app simply deploy the current state again from within Visual Studio.
