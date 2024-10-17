@@ -452,7 +452,11 @@ public partial class EntryPoint : IDisposable
 
 			if (UnoMenuCommand.Instance is { } instance)
 			{
-				instance.CommandList.Add(cr);
+				//ignore when duplicated
+				if (!instance.CommandList.Contains(cr))
+				{
+					instance.CommandList.Add(cr);
+				}
 			}
 			else
 			{
