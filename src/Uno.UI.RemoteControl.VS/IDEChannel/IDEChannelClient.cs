@@ -20,9 +20,7 @@ internal class IdeChannelClient
 	private IIdeChannelServer? _devServer;
 	private readonly ILogger _logger;
 
-	public event AsyncEventHandler<ForceHotReloadIdeMessage>? ForceHotReloadRequested;
-	public event AsyncEventHandler<NotificationRequestIdeMessage>? OnMessageReceived;
-	public event AsyncEventHandler<AddMenuItemRequestIdeMessage>? OnAddMenuItemIdeMessageRequested;
+	public event AsyncEventHandler<IdeMessage>? OnMessageReceived;
 
 	public IdeChannelClient(Guid pipeGuid, ILogger logger)
 	{
@@ -91,27 +89,14 @@ internal class IdeChannelClient
 			_logger.Verbose($"IDE: IDEChannel message received {devServerMessage}");
 
 			var process = Task.CompletedTask;
-			switch (devServerMessage)
+			if (devServerMessage is IdeMessage message)
 			{
-				case AddMenuItemRequestIdeMessage cr:
-					_logger.Debug("Command Ide Message Requested");
-					process = OnAddMenuItemIdeMessageRequested.InvokeAsync(this, cr);
-					break;
-
-				case ForceHotReloadIdeMessage forceHotReloadMessage when ForceHotReloadRequested is { } hrRequested:
-					_logger.Debug("Hot reload requested");
-					process = hrRequested.InvokeAsync(this, forceHotReloadMessage);
-					break;
-				case KeepAliveIdeMessage:
-					_logger.Verbose($"Keep alive from Dev Server");
-					break;
-				case NotificationRequestIdeMessage e when e is { } message:
-					_logger.Verbose($"Dev Server will open the Notification Message with message {e.Message}");
-					process = OnMessageReceived.InvokeAsync(this, message);
-					break;
-				default:
-					_logger.Verbose($"Unknown message type {devServerMessage?.GetType()} from DevServer");
-					break;
+				_logger.Verbose($"Dev Server Message {message.GetType()} requested");
+				process = OnMessageReceived.InvokeAsync(this, message);
+			}
+			else
+			{
+				_logger.Verbose($"Unknown message type {devServerMessage?.GetType()} from DevServer");
 			}
 
 			_ = process.ContinueWith(
