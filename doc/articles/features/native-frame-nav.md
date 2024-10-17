@@ -62,11 +62,11 @@ Method|Return Type|Description
 
 ## Platform Specifics
 
-- Android: Tapping the CommandBar's back button, system back button, or performing the sweep gesture will trigger `SystemNavigationService.BackRequested`. It's the responsibility of the application's navigation controller to eventually call `Frame.GoBack()`.
+- Android: Tapping the CommandBar's back button, system back button, or performing the sweep gesture will trigger `SystemNavigationManager.BackRequested`. It's the responsibility of the application's navigation controller to eventually call `Frame.GoBack()`.
 - iOS: Tapping the back button automatically triggers a back navigation on the native `UINavigationController` (which is part of the native `Frame` implementation). The `Frame` will raise the `Navigated` event, and its state will automatically be updated to reflect the navigation. The navigation can't be intercepted or canceled.
 - all non-Windows platforms: `Uno.UI.FeatureConfiguration.Page.IsPoolingEnabled` can be set to enable reuse of `Page` instances. Enabling this allows the pages in the forward stack to be recycled when stack is modified, which can improve performance of `Frame` navigation.
 - Android: On mobile, the pages in the back stack are still preserved in the visual tree for performance reasons. This feature can be disabled on Android by setting `Uno.UI.FeatureConfiguration.NativeFramePresenter.AndroidUnloadInactivePages = true`.
-- WASM: `SystemNavigationManager.AppViewBackButtonVisibility` needs to be set to `Visible` to intercept the browser back navigation. The intercepted event is forwarded to `SystemNavigationService.BackRequested`. It's the responsibility of the application's navigation controller to eventually call `Frame.GoBack()`.
+- WASM: `SystemNavigationManager.AppViewBackButtonVisibility` needs to be set to `Visible` to intercept the browser back navigation. The intercepted event is forwarded to `SystemNavigationManager.BackRequested`. It's the responsibility of the application's navigation controller to eventually call `Frame.GoBack()`.
 
 ## Additional Resources
 

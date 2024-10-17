@@ -71,7 +71,7 @@ An important difference with this mode is the presence of a back button. Wheneve
 
 ![CommandBar Example - iOS - Back button](assets/commandbar/ios/back.png)
 
-On **Android**, tapping the back button triggers `SystemNavigationService.BackRequested`. It's the responsibility of the application's navigation controller to eventually call `Frame.GoBack()`.
+On **Android**, tapping the back button triggers `SystemNavigationManager.BackRequested`. It's the responsibility of the application's navigation controller to eventually call `Frame.GoBack()`.
 
 On **iOS**, tapping the back button automatically triggers a back navigation on the native `UINavigationController` (which is part of the native `Frame` implementation). The `Frame` will raise the `Navigated` event, and its state will automatically be updated to reflect the navigation. The navigation can't be intercepted or canceled. To intercept back navigation, you must replace the native back button with your own custom button using `NavigationCommand` (see below).
 
