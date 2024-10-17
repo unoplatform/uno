@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace UITests.Windows_UI_Xaml_Shapes
 {
-	[Sample("Shapes")]
+	[Sample("Shapes", IsManualTest = true)]
 	public sealed partial class Path_Clipping : Page
 	{
 		public Path_Clipping()

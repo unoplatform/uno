@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Threading.Tasks;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Markup;
+using Windows.Foundation;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
-using MUXControlsTestApp.Utilities;
 using SamplesApp.UITests;
-using Uno.UI.RuntimeTests.Helpers;
-using Size = Windows.Foundation.Size;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 {
