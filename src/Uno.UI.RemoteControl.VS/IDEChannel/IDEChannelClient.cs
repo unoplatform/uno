@@ -89,14 +89,18 @@ internal class IdeChannelClient
 			_logger.Verbose($"IDE: IDEChannel message received {devServerMessage}");
 
 			var process = Task.CompletedTask;
-			if (devServerMessage is IdeMessage message)
+			switch (devServerMessage)
 			{
-				_logger.Verbose($"Dev Server Message {message.GetType()} requested");
-				process = OnMessageReceived.InvokeAsync(this, message);
-			}
-			else
-			{
-				_logger.Verbose($"Unknown message type {devServerMessage?.GetType()} from DevServer");
+				case KeepAliveIdeMessage:
+					_logger.Verbose($"Keep alive from Dev Server");
+					break;
+				case IdeMessage message:
+					_logger.Verbose($"Dev Server Message {message.GetType()} requested");
+					process = OnMessageReceived.InvokeAsync(this, message);
+					break;
+				default:
+					_logger.Verbose($"Unknown message type {devServerMessage?.GetType()} from DevServer");
+					break;
 			}
 
 			_ = process.ContinueWith(

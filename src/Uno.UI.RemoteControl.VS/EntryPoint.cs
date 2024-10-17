@@ -426,9 +426,6 @@ public partial class EntryPoint : IDisposable
 		{
 			switch (devServerMessage)
 			{
-				case KeepAliveIdeMessage:
-					_debugAction?.Invoke($"Keep alive from Dev Server");
-					break;
 				case AddMenuItemRequestIdeMessage amir:
 					await OnAddMenuItemRequestIdeMessageAsync(sender, amir);
 					break;
