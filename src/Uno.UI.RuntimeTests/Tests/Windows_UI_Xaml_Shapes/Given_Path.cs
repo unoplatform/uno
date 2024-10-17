@@ -1,5 +1,6 @@
 ﻿using System;
 using Windows.Foundation;
+using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using SamplesApp.UITests;
@@ -7,10 +8,10 @@ using SamplesApp.UITests;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 {
 	[TestClass]
-	[RunsOnUIThread]
 	public class Given_Path
 	{
 		[TestMethod]
+		[RunsOnUIThread]
 		[UnoWorkItem("https://github.com/unoplatform/uno/issues/6846")]
 		public void Should_not_throw_if_Path_Data_is_set_to_null()
 		{
@@ -22,6 +23,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 		}
 
 		[TestMethod]
+		[RunsOnUIThread]
 		public void Should_Not_Include_Control_Points_Bounds()
 		{
 #if WINAPPSDK
