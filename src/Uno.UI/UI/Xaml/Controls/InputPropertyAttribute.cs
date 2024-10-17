@@ -1,6 +1,6 @@
-using System;
+﻿using System;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 /// <summary>
 /// Represents an attribute that indicates which property of a type is the XAML input property.

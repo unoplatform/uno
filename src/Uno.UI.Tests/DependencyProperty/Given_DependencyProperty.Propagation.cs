@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Data;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,12 +14,12 @@ using System.Runtime.CompilerServices;
 using Uno.Disposables;
 using System.ComponentModel;
 using Uno.UI;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Uno.UI.Converters;
 using Microsoft.Extensions.Logging;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media.Animation;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Media;
 using System.Diagnostics;
 
 namespace Uno.UI.Tests.BinderTests.Propagation
@@ -490,7 +490,7 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 			{
 				var dc = new object();
 				SUT.DataContext = dc;
-				SUT.SetValue(ContentControl.ForegroundProperty, new SolidColorBrush(Microsoft.UI.Colors.Red));
+				SUT.SetValue(ContentControl.ForegroundProperty, new SolidColorBrush(Windows.UI.Colors.Red));
 
 				SUT.DataContext = null;
 
@@ -519,7 +519,7 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 				var originalBrush = SUT.Foreground as Brush;
 				Assert.AreEqual(dc, originalBrush.DataContext);
 
-				var newBrush = new SolidColorBrush(Microsoft.UI.Colors.Red);
+				var newBrush = new SolidColorBrush(Windows.UI.Colors.Red);
 
 				SUT.SetValue(ContentControl.ForegroundProperty, newBrush);
 

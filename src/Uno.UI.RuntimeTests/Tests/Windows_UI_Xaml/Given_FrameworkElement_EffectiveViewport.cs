@@ -9,10 +9,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Media;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -23,7 +23,7 @@ using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices.WindowHelper;
 using static Windows.Foundation.Rect;
-using EffectiveViewportChangedEventArgs = Microsoft.UI.Xaml.EffectiveViewportChangedEventArgs;
+using EffectiveViewportChangedEventArgs = Windows.UI.Xaml.EffectiveViewportChangedEventArgs;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {

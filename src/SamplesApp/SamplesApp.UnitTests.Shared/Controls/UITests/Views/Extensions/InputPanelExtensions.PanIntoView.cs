@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using Windows.UI.ViewManagement;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Media;
 
 namespace SamplesApp.UnitTests.Controls.UITests.Views.Extensions
 {

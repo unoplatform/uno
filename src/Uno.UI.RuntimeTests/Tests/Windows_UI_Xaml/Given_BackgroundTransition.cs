@@ -1,13 +1,13 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml.Markup;
 using Uno.Extensions;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
@@ -52,13 +52,13 @@ public class Given_BackgroundTransition
 			Assert.Fail("Unexpected input");
 		}
 
-		setBackground(new SolidColorBrush(Microsoft.UI.Colors.Red));
+		setBackground(new SolidColorBrush(Windows.UI.Colors.Red));
 
 		setTransition(new BrushTransition { Duration = TimeSpan.FromMilliseconds(2000) });
 
 		await UITestHelper.Load(control);
 
-		setBackground(new SolidColorBrush(Microsoft.UI.Colors.Blue));
+		setBackground(new SolidColorBrush(Windows.UI.Colors.Blue));
 
 		await Task.Delay(950);
 
@@ -122,7 +122,7 @@ public class Given_BackgroundTransition
 
 		// Instantly Red even though the transition is 2 seconds long
 		var bitmap = await UITestHelper.ScreenShot(SUT);
-		ImageAssert.HasColorAt(bitmap, new Point(bitmap.Width / 2, bitmap.Height / 2), Microsoft.UI.Colors.Red);
+		ImageAssert.HasColorAt(bitmap, new Point(bitmap.Width / 2, bitmap.Height / 2), Windows.UI.Colors.Red);
 
 		VisualStateManager.GoToState(SUT, "Normal", true);
 		await Task.Delay(1000);

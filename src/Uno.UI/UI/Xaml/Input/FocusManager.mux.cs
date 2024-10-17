@@ -11,10 +11,10 @@ using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 using Windows.Foundation;
 using Uno.UI.Extensions;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Documents;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Documents;
 using Uno.UI.Xaml.Rendering;
 using Uno.UI.Xaml.Core.Rendering;
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
@@ -26,7 +26,7 @@ using Microsoft.UI.Input;
 
 //TODO:MZ: Handle parameters in/out
 
-namespace Microsoft.UI.Xaml.Input
+namespace Windows.UI.Xaml.Input
 {
 	public partial class FocusManager : IFocusManager
 	{
@@ -1732,7 +1732,7 @@ namespace Microsoft.UI.Xaml.Input
 
 			lastInputDeviceType = _contentRoot.InputManager.LastInputDeviceType;
 
-			if (lastInputDeviceType == InputDeviceType.GamepadOrRemote && __LinkerHints.Is_Microsoft_UI_Xaml_Controls_TextBox_Available)
+			if (lastInputDeviceType == InputDeviceType.GamepadOrRemote && __LinkerHints.Is_Windows_UI_Xaml_Controls_TextBox_Available)
 			{
 				var pElementAsTextBox = newFocusTarget as TextBox;
 				if (pElementAsTextBox != null)
@@ -2606,7 +2606,7 @@ namespace Microsoft.UI.Xaml.Input
 		private void OnAccessKeyDisplayModeChanged()
 		{
 			// We should update the caret to visible/collapsed depending on if AK mode is active
-			if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_TextBox_Available && _focusedElement is TextBox pTextBox)
+			if (__LinkerHints.Is_Windows_UI_Xaml_Controls_TextBox_Available && _focusedElement is TextBox pTextBox)
 			{
 				//TODO Uno: We don't support caret show/hide in TextBoxView yet
 				//pTextBox.GetView().ShowOrHideCaret();

@@ -6,7 +6,7 @@ using Uno.UI.DataBinding;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	public sealed partial class TargetPropertyPath
 	{

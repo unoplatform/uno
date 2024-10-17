@@ -6,7 +6,7 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Windows.UI;
 
-namespace Microsoft.UI.Xaml.Media.Animation
+namespace Windows.UI.Xaml.Media.Animation
 {
 	internal static partial class AnimatorFactory
 	{

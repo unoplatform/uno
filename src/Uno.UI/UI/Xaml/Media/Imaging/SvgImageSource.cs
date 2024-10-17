@@ -9,7 +9,7 @@ using Windows.UI.Core;
 using Uno;
 using Uno.UI.Xaml.Media;
 
-namespace Microsoft.UI.Xaml.Media.Imaging;
+namespace Windows.UI.Xaml.Media.Imaging;
 
 /// <summary>
 /// Provides a source object for properties that use a Scalable Vector Graphics (SVG) source. You can define a SvgImageSource

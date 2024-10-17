@@ -1,6 +1,6 @@
-#nullable enable
+﻿#nullable enable
 
-namespace Microsoft.UI.Composition.Interactions;
+namespace Windows.UI.Composition.Interactions;
 
 public enum InteractionChainingMode
 {

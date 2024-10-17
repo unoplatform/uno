@@ -14,13 +14,13 @@ using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls.Primitives;
 using Uno;
 using Uno.Disposables;
 using Uno.UI;
 using Uno.UI.Extensions;
-using Microsoft.UI.Xaml;
-using _This = Microsoft.UI.Xaml.FrameworkElement;
+using Windows.UI.Xaml;
+using _This = Windows.UI.Xaml.FrameworkElement;
 
 #if __IOS__
 using UIKit;
@@ -31,10 +31,10 @@ using _View = AppKit.NSView;
 #elif __ANDROID__
 using _View = Android.Views.View;
 #else
-using _View = Microsoft.UI.Xaml.DependencyObject;
+using _View = Windows.UI.Xaml.DependencyObject;
 #endif
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	partial class FrameworkElement : IFrameworkElement_EffectiveViewport
 	{

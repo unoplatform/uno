@@ -5,16 +5,16 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Navigation;
 using Uno.UI.Samples.Controls;
 using Uno.Extensions;
-using Microsoft.UI.Xaml.Automation;
+using Windows.UI.Xaml.Automation;
 
 namespace UITests.Windows_UI_Xaml_Controls.SplitView
 {
@@ -38,8 +38,8 @@ namespace UITests.Windows_UI_Xaml_Controls.SplitView
 
 			RootSplitView.Pane = tag switch
 			{
-				"SkyBlue" => CreateGrid(Microsoft.UI.Colors.SkyBlue),
-				"Pink" => CreateGrid(Microsoft.UI.Colors.Pink),
+				"SkyBlue" => CreateGrid(Windows.UI.Colors.SkyBlue),
+				"Pink" => CreateGrid(Windows.UI.Colors.Pink),
 
 				_ => null,
 			};
@@ -56,7 +56,7 @@ namespace UITests.Windows_UI_Xaml_Controls.SplitView
 		{
 			RootSplitView.Pane = new Grid
 			{
-				Background = new SolidColorBrush(Microsoft.UI.Colors.Pink),
+				Background = new SolidColorBrush(Windows.UI.Colors.Pink),
 				HorizontalAlignment = HorizontalAlignment.Stretch,
 				VerticalAlignment = VerticalAlignment.Stretch,
 			};

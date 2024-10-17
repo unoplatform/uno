@@ -4,7 +4,7 @@ using SkiaSharp;
 using System;
 using Windows.Graphics;
 
-namespace Microsoft.UI.Composition
+namespace Windows.UI.Composition
 {
 	internal class SkiaGeometrySource2D : IGeometrySource2D
 	{

@@ -3,7 +3,7 @@
 using System.Numerics;
 using SkiaSharp;
 
-namespace Microsoft.UI.Composition
+namespace Windows.UI.Composition
 {
 	public partial class CompositionGradientBrush
 	{

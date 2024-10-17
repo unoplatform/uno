@@ -9,12 +9,12 @@ using Windows.Foundation;
 using Windows.Globalization;
 using Windows.Globalization.DateTimeFormatting;
 using Windows.UI;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Markup;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Tests.Enterprise;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Tests.Enterprise;
 using Uno.UI.RuntimeTests.Helpers;
 
 using static Private.Infrastructure.TestServices;

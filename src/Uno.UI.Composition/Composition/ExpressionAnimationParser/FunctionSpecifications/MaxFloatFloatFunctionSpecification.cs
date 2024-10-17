@@ -3,7 +3,7 @@
 using System;
 using System.Globalization;
 
-namespace Microsoft.UI.Composition;
+namespace Windows.UI.Composition;
 
 internal sealed class MaxFloatFloatFunctionSpecification : IAnimationFunctionSpecification
 {

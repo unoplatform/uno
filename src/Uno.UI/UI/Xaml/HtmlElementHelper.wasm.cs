@@ -7,7 +7,7 @@ using System.Reflection;
 using Uno.Core.Comparison;
 using Uno.Foundation.Runtime.WebAssembly.Interop;
 
-namespace Microsoft.UI.Xaml;
+namespace Windows.UI.Xaml;
 
 internal static class HtmlElementHelper
 {

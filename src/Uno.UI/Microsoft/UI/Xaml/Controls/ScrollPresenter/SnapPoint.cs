@@ -2,14 +2,14 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
-using Microsoft.UI.Composition;
-using Microsoft.UI.Composition.Interactions;
+using Windows.UI.Composition;
+using Windows.UI.Composition.Interactions;
 using Uno.UI.Helpers.WinUI;
 using Windows.UI;
 
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
-namespace Microsoft.UI.Xaml.Controls.Primitives;
+namespace Windows.UI.Xaml.Controls.Primitives;
 
 public partial class SnapPointBase
 {

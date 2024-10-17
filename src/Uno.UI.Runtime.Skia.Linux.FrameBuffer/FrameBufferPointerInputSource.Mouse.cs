@@ -11,7 +11,7 @@ using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.Input;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using Uno.UI.Runtime.Skia.Native;
 using static Uno.UI.Runtime.Skia.Native.LibInput;
 using static Windows.UI.Input.PointerUpdateKind;

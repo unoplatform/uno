@@ -19,12 +19,12 @@ using Windows.Foundation.Metadata;
 using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Input.Preview.Injection;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Shapes;
 using SamplesApp.UITests;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
@@ -32,7 +32,7 @@ using Point = System.Drawing.Point;
 using Uno.UI;
 using Windows.UI;
 using Windows.ApplicationModel.Appointments;
-using Microsoft.UI.Xaml.Hosting;
+using Windows.UI.Xaml.Hosting;
 using Uno.UI.Toolkit.Extensions;
 
 #if __IOS__
@@ -85,14 +85,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(10)]
 		public async Task When_Both_Layouting_Clip_And_Clip_DP(double newClipValue)
 		{
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
 
 			var SUT = new Rectangle()
 			{
-				Fill = new SolidColorBrush(Microsoft.UI.Colors.Red),
+				Fill = new SolidColorBrush(Windows.UI.Colors.Red),
 				Width = 100,
 				Height = 100,
 			};
@@ -105,7 +105,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				{
 					new Rectangle()
 					{
-						Fill = new SolidColorBrush(Microsoft.UI.Colors.Green),
+						Fill = new SolidColorBrush(Windows.UI.Colors.Green),
 					},
 					SUT,
 				},
@@ -114,10 +114,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			await UITestHelper.Load(grid);
 			var screenshot = await UITestHelper.ScreenShot(grid);
 
-			var greenBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Green, tolerance: 5);
+			var greenBounds = ImageAssert.GetColorBounds(screenshot, Windows.UI.Colors.Green, tolerance: 5);
 			Assert.AreEqual(new Size(199, 74), new Size(greenBounds.Width, greenBounds.Height));
 
-			var redBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Red, tolerance: 5);
+			var redBounds = ImageAssert.GetColorBounds(screenshot, Windows.UI.Colors.Red, tolerance: 5);
 			Assert.AreEqual(new Size(99, 74), new Size(redBounds.Width, redBounds.Height));
 
 			SUT.Clip = new RectangleGeometry()
@@ -128,10 +128,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			await TestServices.WindowHelper.WaitForIdle();
 
 			screenshot = await UITestHelper.ScreenShot(grid);
-			greenBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Green, tolerance: 5);
+			greenBounds = ImageAssert.GetColorBounds(screenshot, Windows.UI.Colors.Green, tolerance: 5);
 			Assert.AreEqual(new Size(199, 74), new Size(greenBounds.Width, greenBounds.Height));
 
-			redBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Red, tolerance: 5);
+			redBounds = ImageAssert.GetColorBounds(screenshot, Windows.UI.Colors.Red, tolerance: 5);
 			Assert.AreEqual(new Size(Math.Min(100, newClipValue) - 1, Math.Min(75, newClipValue) - 1), new Size(redBounds.Width, redBounds.Height));
 		}
 
@@ -142,7 +142,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #endif
 		public async Task When_TranslateTransform_And_Clip()
 		{
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
@@ -151,14 +151,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			{
 				Width = 100,
 				Height = 100,
-				Background = new SolidColorBrush(Microsoft.UI.Colors.Chartreuse),
+				Background = new SolidColorBrush(Windows.UI.Colors.Chartreuse),
 				Children =
 				{
 					new Grid()
 					{
 						Width = 50,
 						Height = 50,
-						Background = new SolidColorBrush(Microsoft.UI.Colors.DeepPink),
+						Background = new SolidColorBrush(Windows.UI.Colors.DeepPink),
 						Children =
 						{
 							new Grid()
@@ -167,7 +167,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 								Height = 100,
 								HorizontalAlignment = HorizontalAlignment.Center,
 								VerticalAlignment = VerticalAlignment.Center,
-								Background = new SolidColorBrush(Microsoft.UI.Colors.DeepSkyBlue),
+								Background = new SolidColorBrush(Windows.UI.Colors.DeepSkyBlue),
 								Clip = new RectangleGeometry()
 								{
 									Rect = new Rect(0, 0, 5, 50),
@@ -184,9 +184,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			await UITestHelper.Load(grid);
 			var screenshot = await UITestHelper.ScreenShot(grid);
-			var chartreuseBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Chartreuse);
-			var deepPinkBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.DeepPink);
-			var deepSkyBlueBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.DeepSkyBlue);
+			var chartreuseBounds = ImageAssert.GetColorBounds(screenshot, Windows.UI.Colors.Chartreuse);
+			var deepPinkBounds = ImageAssert.GetColorBounds(screenshot, Windows.UI.Colors.DeepPink);
+			var deepSkyBlueBounds = ImageAssert.GetColorBounds(screenshot, Windows.UI.Colors.DeepSkyBlue);
 
 			Assert.AreEqual(new Rect(0, 0, 99, 99), chartreuseBounds);
 			Assert.AreEqual(new Rect(25, 25, 49, 49), deepPinkBounds);
@@ -248,8 +248,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Border border = new Border();
 			TextBlock text = new TextBlock()
 			{
-				HorizontalAlignment = Microsoft.UI.Xaml.HorizontalAlignment.Center,
-				VerticalAlignment = Microsoft.UI.Xaml.VerticalAlignment.Center,
+				HorizontalAlignment = Windows.UI.Xaml.HorizontalAlignment.Center,
+				VerticalAlignment = Windows.UI.Xaml.VerticalAlignment.Center,
 				Text = "Short text"
 			};
 			border.Child = text;
@@ -277,8 +277,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			Rectangle rectangle = new Rectangle()
 			{
-				HorizontalAlignment = Microsoft.UI.Xaml.HorizontalAlignment.Center,
-				VerticalAlignment = Microsoft.UI.Xaml.VerticalAlignment.Center,
+				HorizontalAlignment = Windows.UI.Xaml.HorizontalAlignment.Center,
+				VerticalAlignment = Windows.UI.Xaml.VerticalAlignment.Center,
 				Width = 42,
 				Height = 24,
 			};
@@ -1117,17 +1117,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		{
 			var ctl1 = new MeasureAndArrangeCounter
 			{
-				Background = new SolidColorBrush(Microsoft.UI.Colors.Yellow),
+				Background = new SolidColorBrush(Windows.UI.Colors.Yellow),
 				Margin = new Thickness(20)
 			};
 			var ctl2 = new MeasureAndArrangeCounter
 			{
-				Background = new SolidColorBrush(Microsoft.UI.Colors.DarkRed),
+				Background = new SolidColorBrush(Windows.UI.Colors.DarkRed),
 				Margin = new Thickness(20)
 			};
 			var ctl3 = new MeasureAndArrangeCounter
 			{
-				Background = new SolidColorBrush(Microsoft.UI.Colors.Cornsilk),
+				Background = new SolidColorBrush(Windows.UI.Colors.Cornsilk),
 				Margin = new Thickness(20),
 				Width = 100,
 				Height = 100
@@ -1252,7 +1252,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[RunsOnUIThread]
 		public async Task When_Measure_Explicitly_Called()
 		{
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
@@ -1273,7 +1273,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 						Content = new TextBlock
 						{
 							Text = "Small",
-							Foreground = new SolidColorBrush(Microsoft.UI.Colors.Yellow)
+							Foreground = new SolidColorBrush(Windows.UI.Colors.Yellow)
 						}
 					}
 				}
@@ -1297,7 +1297,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			await TestServices.WindowHelper.WaitForIdle();
 
 			var bitmap = await UITestHelper.ScreenShot(sp);
-			ImageAssert.HasColorInRectangle(bitmap, new System.Drawing.Rectangle(new Point(0, 0), bitmap.Size), Microsoft.UI.Colors.Yellow, tolerance: 25);
+			ImageAssert.HasColorInRectangle(bitmap, new System.Drawing.Rectangle(new Point(0, 0), bitmap.Size), Windows.UI.Colors.Yellow, tolerance: 25);
 		}
 #endif
 
@@ -1573,7 +1573,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		{
 			var SUT = new Border
 			{
-				Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
+				Background = new SolidColorBrush(Windows.UI.Colors.Red),
 				Width = 100,
 				Height = 100
 			};
@@ -1646,7 +1646,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			{
 				Width = 100,
 				Height = 100,
-				Fill = new SolidColorBrush(Microsoft.UI.Colors.Blue),
+				Fill = new SolidColorBrush(Windows.UI.Colors.Blue),
 				RenderTransform = new ScaleTransform
 				{
 					ScaleX = 2,
