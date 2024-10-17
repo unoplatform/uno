@@ -335,7 +335,7 @@ public partial class EntryPoint : IDisposable
 			_process.ErrorDataReceived += (sender, args) => _errorAction?.Invoke(args.Data);
 
 			_process.StartInfo = pi;
-			_process.Exited += (sender, args) => _ = Restart();
+			_process.Exited += (sender, args) => _ = RestartAsync();
 
 			if (_process.Start())
 			{
@@ -346,6 +346,7 @@ public partial class EntryPoint : IDisposable
 				_ideChannelClient = new IdeChannelClient(pipeGuid, new Logger(this));
 				_ideChannelClient.ForceHotReloadRequested += OnForceHotReloadRequestedAsync;
 				_ideChannelClient.OnMessageReceived += OnMessageReceivedAsync;
+				_ideChannelClient.OnAddMenuItemIdeMessageRequested += OnAddMenuItemRequestIdeMessageAsync;
 				_ideChannelClient.ConnectToHost();
 
 				// Set the port to the projects
@@ -389,7 +390,7 @@ public partial class EntryPoint : IDisposable
 			_processGate.Release();
 		}
 
-		async Task Restart()
+		async Task RestartAsync()
 		{
 			if (_closing || _ct.IsCancellationRequested)
 			{
@@ -436,6 +437,35 @@ public partial class EntryPoint : IDisposable
 		catch (Exception e) when (_ideChannelClient is not null)
 		{
 			_debugAction?.Invoke($"Failed to handle InfoBar Notification Requested with message {e.Message}");
+			throw;
+		}
+	}
+
+	private async Task OnAddMenuItemRequestIdeMessageAsync(object? sender, AddMenuItemRequestIdeMessage cr)
+	{
+		try
+		{
+			if (_ideChannelClient == null)
+			{
+				return;
+			}
+
+			if (UnoMenuCommand.Instance is { } instance)
+			{
+				//ignore when duplicated
+				if (!instance.CommandList.Contains(cr))
+				{
+					instance.CommandList.Add(cr);
+				}
+			}
+			else
+			{
+				await UnoMenuCommand.InitializeAsync(_asyncPackage, _ideChannelClient, cr);
+			}
+		}
+		catch (Exception e)
+		{
+			_debugAction?.Invoke($"Using AddMenuItem Ide Message Requested fail {e.Message}");
 			throw;
 		}
 	}
