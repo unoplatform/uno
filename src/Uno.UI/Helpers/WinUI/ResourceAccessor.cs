@@ -84,5 +84,7 @@ namespace Uno.UI.Helpers.WinUI
 			return control.Resources.HasKey(key) ? control.Resources.Lookup(key) : Application.Current.Resources.Lookup(key);
 			//WinUI uses TryLookup for Application Resources, but Lookup seems to have the same semantics
 		}
+
+		public static bool IsResourceIdNull(string resourceId) => string.IsNullOrEmpty(resourceId);
 	}
 }
