@@ -8,6 +8,8 @@ public class HtmlImage : UIElement
 	{
 		// Avoid the "drag effect" which is set by default in browsers
 		SetAttribute("draggable", "false");
+		HitTestVisibility = HitTestability.Invisible;
+		IsHitTestVisible = false;
 	}
 
 	// We don't want HtmlImage to be the OriginalSource of PointerRoutedEventArgs.
