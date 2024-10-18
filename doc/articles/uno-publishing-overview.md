@@ -11,9 +11,9 @@ uid: uno.publishing.overview
 
 ## Packaging
 
-- [Packaging for Desktop](xref:uno.publishing.desktop)
-- [Packaging for WebAssembly](xref:uno.publishing.webassembly)
-- [Packaging for Windows](xref:uno.publishing.windows)
-- [Packaging for iOS](xref:uno.publishing.ios)
-- [Packaging for Android](xref:uno.publishing.android)
-- [Packaging for Mac Catalyst](xref:uno.publishing.maccatalyst)
+- [Packaging for Desktop](xref:uno.publishing.desktop) (using `netX.0-desktop`)
+- [Packaging for WebAssembly](xref:uno.publishing.webassembly) (using `netX.0-browserwasm`)
+- [Packaging for Windows App SDK](xref:uno.publishing.windows) (using `netX.0-windows10.yyy`)
+- [Packaging for iOS](xref:uno.publishing.ios) (using `netX.0-ios`)
+- [Packaging for Android](xref:uno.publishing.android) (using `netX.0-android`)
+- [Packaging for Mac Catalyst](xref:uno.publishing.maccatalyst) (using `netX.0-maccatalyst`)
