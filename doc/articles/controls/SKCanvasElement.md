@@ -37,13 +37,10 @@ XAML:
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="using:BlankApp"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:skia="http://uno.ui/skia"
              xmlns:not_skia="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             mc:Ignorable="d skia"
-             d:DesignHeight="300"
-             d:DesignWidth="400">
+             mc:Ignorable="skia">
 
     <Grid>
         <skia:Grid>
@@ -70,7 +67,7 @@ namespace BlankApp
 {
     public sealed partial class SKCanvasElement_Simple : UserControl
     {
-#if __SKIA__
+#if HAS_UNO_SKIA
         public int MaxSampleIndex => SKCanvasElementImpl.SampleCount - 1;
 #endif
 

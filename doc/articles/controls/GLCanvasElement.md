@@ -23,7 +23,7 @@ These three abstract methods take a `Silk.NET.OpenGL.GL` parameter that can be u
 
 ### The GLCanvasElement constructor
 
-The protected constructor requires a `Func<Window>` argument that fetches the `Microsoft.UI.Xaml.Window` object that the `GLCanvasElement` belongs to. This function is required because WinUI doesn't yet provide a way to get the `Window` of a `FrameworkElement`. This paramater is ignored on Uno Platform and must be set to null. This function is only called while the `GLCanvasElement` is still in the visual tree.
+The protected constructor requires a `Func<Window>` argument that fetches the `Microsoft.UI.Xaml.Window` object that the `GLCanvasElement` belongs to. This function is required because WinUI doesn't yet provide a way to get the `Window` of a `FrameworkElement`. This parameter is ignored on Uno Platform and must be set to null. This function is only called while the `GLCanvasElement` is still in the visual tree.
 
 ### The `Init` method
 
@@ -47,7 +47,7 @@ To learn more about using [Silk.NET](https://www.nuget.org/packages/Silk.NET.Ope
 
 ## Full example
 
-To see this in action, here's a complete sample that uses `GLCanvasElement` to draw a triangle. Note how you have to be careful with surrounding all the OpenGL-related logic in platform-specific guards. This is the case for both the [XAML](platform-specific-xaml) and the [code-behind](platform-specific-csharp).
+To see this in action, here's a complete sample that uses `GLCanvasElement` to draw a triangle. Note how you have to be careful with surrounding all the OpenGL-related logic in platform-specific guards. This is the case for both the [XAML](platform-specific-xaml) and the [code-behind](platform-specific-csharp). For complete C# projects, visit our [GLCanvasElement Samples in the Uno.Samples repository](https://aka.platform.uno/glcanvaselement-sample).
 
 XAML:
 
