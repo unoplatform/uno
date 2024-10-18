@@ -130,6 +130,11 @@ public partial class TemplatedParentTests // tests
 		11				ContentPresenter // TP=Uno17313_Expander
 		12					Border // TP=Uno17313_SettingsExpander
 		""";
+
+#if UNO_HAS_ENHANCED_LIFECYCLE || WINAPPSDK
+		expectations = expectations.Replace("ImplicitTextBlock", "TextBlock");
+#endif
+
 #if NEED_CUSTOM_ADJUSTMENTS_FOR_CP_BYPASS
 		// skip ContentControls' ContentPresenter that were bypassed
 		// ContentPresenter on line#11 is from the control template, so that doesn't count

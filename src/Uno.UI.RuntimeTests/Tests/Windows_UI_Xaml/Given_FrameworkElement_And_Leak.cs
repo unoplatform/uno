@@ -147,7 +147,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewItem), 15)]
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives.NavigationViewItemPresenter), 15)]
 #if !__IOS__ // Disabled https://github.com/unoplatform/uno/pull/15540
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationView), 15)]
+		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationView), 15, LeakTestStyles.Fluent)]
 #endif
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.NumberBox), 15)]
 #if !WINAPPSDK
