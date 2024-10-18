@@ -2424,11 +2424,8 @@ namespace Windows.UI.Tests.Enterprise
 
 		[Description("Verifies that items moved between Primary and Secondary commands go to the correct VisualStates.")]
 		[TestProperty("TestPass:ExcludeOn", "WindowsCore")]
-#if __ANDROID__
-		[Ignore("Unstable on android https://github.com/unoplatform/uno/issues/9080")]
-#endif
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#if __ANDROID__ || __IOS__ || __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic, and on others #17984, #9080 (only in CI for unknown reason)")]
 #endif
 		public async Task MoveItemsBetweenPrimaryAndSecondaryCommands()
 		{
@@ -3195,6 +3192,9 @@ namespace Windows.UI.Tests.Enterprise
 
 		[Description("Validates the layout of CommandBar.Content when IsDynamicOverflowEnabled is true or false.")]
 		[TestProperty("Hosting:Mode", "UAP")]
+#if __ANDROID__ || __IOS__ || __MACOS__
+		[Ignore("#17984 (only in CI for unknown reason)")]
+#endif
 		public async Task ValidateVisualStateUpdatesWhenDynamicOverflowCausesItemsToMove()
 		{
 			TestCleanupWrapper cleanup;

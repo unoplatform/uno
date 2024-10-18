@@ -20,10 +20,9 @@ namespace Uno.UI.Xaml.Core
 
 		private VisualTree? _mainVisualTree;
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
-
 		private static int _isAdditionalFrameRequested;
 
+#if UNO_HAS_ENHANCED_LIFECYCLE
 		public EventManager EventManager { get; private set; }
 #endif
 
@@ -35,7 +34,6 @@ namespace Uno.UI.Xaml.Core
 #endif
 		}
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 		private static XamlRoot? GetXamlRoot()
 		{
 			if (CoreServices.Instance.ContentRootCoordinator.ContentRoots.Count > 0)
@@ -85,11 +83,13 @@ namespace Uno.UI.Xaml.Core
 			{
 				xamlIsland.UpdateLayout();
 
+#if UNO_HAS_ENHANCED_LIFECYCLE
 				if (CoreServices.Instance.EventManager.ShouldRaiseLoadedEvent)
 				{
 					CoreServices.Instance.EventManager.RaiseLoadedEvent();
 					xamlIsland.UpdateLayout();
 				}
+#endif
 			}
 
 			foreach (var window in ApplicationHelper.WindowsInternal)
@@ -101,14 +101,15 @@ namespace Uno.UI.Xaml.Core
 
 				root.UpdateLayout();
 
+#if UNO_HAS_ENHANCED_LIFECYCLE
 				if (CoreServices.Instance.EventManager.ShouldRaiseLoadedEvent)
 				{
 					CoreServices.Instance.EventManager.RaiseLoadedEvent();
 					root.UpdateLayout();
 				}
+#endif
 			}
 		}
-#endif
 
 		// TODO Uno: This will not be a singleton when multi-window setups are supported.
 		public static CoreServices Instance => _instance.Value;

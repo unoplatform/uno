@@ -610,7 +610,7 @@ namespace Uno.UI.Controls.Legacy
 			/// </remarks>
 			public InternalContainer(NativeHandle handle) : base(handle) { }
 
-			private CGSize _lastUsedSize;
+			//private CGSize _lastUsedSize;
 
 			protected override void Dispose(bool disposing)
 			{
@@ -635,6 +635,36 @@ namespace Uno.UI.Controls.Legacy
 				}
 			}
 
+			public override void SetNeedsLayout()
+			{
+				base.SetNeedsLayout();
+				Superview?.SetNeedsLayout();
+			}
+
+			public override CGSize SizeThatFits(CGSize size)
+			{
+				var content = Content;
+				if (content is null)
+				{
+					return base.SizeThatFits(size);
+				}
+
+				content.Measure(size);
+				return content.DesiredSize;
+			}
+
+			public override CGRect Frame
+			{
+				get => base.Frame;
+				set
+				{
+					var content = Content;
+					content?.Measure(value.Size);
+					base.Frame = value;
+					content?.Arrange(value);
+				}
+			}
+
 			public ContentControl Content
 			{
 				get
@@ -649,26 +679,27 @@ namespace Uno.UI.Controls.Legacy
 					}
 
 					value.Frame = ContentView.Bounds;
-					value.AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight;
+					//value.AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight;
 
 					ContentView.AddSubview(value);
+					value.SetNeedsLayout();
 				}
 			}
 
-			public override void ApplyLayoutAttributes(UICollectionViewLayoutAttributes layoutAttributes)
-			{
-				// We don't call base because it adds unnecessary interop. From the doc: "The default implementation of this method does nothing." https://developer.apple.com/library/ios/documentation/UIKit/Reference/UICollectionReusableView_class/#//apple_ref/occ/instm/UICollectionReusableView/applyLayoutAttributes:
-				//base.ApplyLayoutAttributes(layoutAttributes);
+			//public override void ApplyLayoutAttributes(UICollectionViewLayoutAttributes layoutAttributes)
+			//{
+			//	// We don't call base because it adds unnecessary interop. From the doc: "The default implementation of this method does nothing." https://developer.apple.com/library/ios/documentation/UIKit/Reference/UICollectionReusableView_class/#//apple_ref/occ/instm/UICollectionReusableView/applyLayoutAttributes:
+			//	//base.ApplyLayoutAttributes(layoutAttributes);
 
-				var size = layoutAttributes.Frame.Size;
-				// If frame size has changed, call SizeThatFits on item content. This allows views that expect a measure prior to an arrange (eg StackPanel, StarStackPanel)
-				// to be laid out correctly.
-				if (size != _lastUsedSize)
-				{
-					Content?.SizeThatFits(size);
-					_lastUsedSize = size;
-				}
-			}
+			//	var size = layoutAttributes.Frame.Size;
+			//	// If frame size has changed, call SizeThatFits on item content. This allows views that expect a measure prior to an arrange (eg StackPanel, StarStackPanel)
+			//	// to be laid out correctly.
+			//	if (size != _lastUsedSize)
+			//	{
+			//		Content?.SizeThatFits(size);
+			//		_lastUsedSize = size;
+			//	}
+			//}
 		}
 	}
 }

@@ -223,7 +223,8 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
-			var xamlRootSize = XamlRoot.Size;
+			// Uno specific: Consider visible bounds
+			var xamlRootSize = XamlRoot.VisualTree.TrueVisibleBounds.Size;
 
 			var flowDirection = FlowDirection;
 

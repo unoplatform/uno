@@ -41,6 +41,29 @@ namespace Microsoft.UI.Xaml.Controls
 			ContentInset = new UIEdgeInsets();
 		}
 
+		public override void SetNeedsLayout()
+		{
+			base.SetNeedsLayout();
+			Superview?.SetNeedsLayout();
+		}
+
+		public override void SubviewAdded(UIView uiview)
+		{
+			base.SubviewAdded(uiview);
+			SetNeedsLayout();
+		}
+
+		public override CGSize SizeThatFits(CGSize size)
+		{
+			var desiredSize = base.SizeThatFits(size);
+			foreach (var cell in VisibleCells)
+			{
+				_ = cell.SizeThatFits(desiredSize);
+			}
+
+			return desiredSize;
+		}
+
 		public UICollectionViewScrollDirection Orientation
 		{
 			get { return _layout.ScrollDirection; }
