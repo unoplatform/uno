@@ -1,5 +1,6 @@
 ﻿#nullable enable
 
+using System.Linq;
 using System.Numerics;
 using Windows.Foundation;
 using SkiaSharp;
@@ -9,6 +10,8 @@ namespace Microsoft.UI.Composition;
 
 public partial class ShapeVisual
 {
+	private bool _needsContinuousUpdates;
+
 	private protected override void ApplyPrePaintingClipping(in SKCanvas canvas)
 	{
 		base.ApplyPrePaintingClipping(in canvas);
@@ -31,6 +34,19 @@ public partial class ShapeVisual
 
 		base.Paint(in session);
 	}
+
+	private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
+	{
+		base.OnPropertyChangedCore(propertyName, isSubPropertyChange);
+		if (propertyName == nameof(Shapes))
+		{
+			_needsContinuousUpdates = _shapes?.OfType<CompositionSpriteShape>().Any(s => s.FillBrush?.RequiresRepaintOnEveryFrame ?? false) ?? false;
+		}
+	}
+
+	internal override bool CanPaint => (_shapes?.Count ?? 0) > 0;
+
+	internal override bool RequiresRepaintOnEveryFrame => _needsContinuousUpdates;
 
 	internal SKPath? GetViewBoxPathInElementCoordinateSpace()
 	{

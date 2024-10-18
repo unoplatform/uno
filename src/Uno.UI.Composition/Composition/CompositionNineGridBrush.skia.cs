@@ -21,6 +21,7 @@ namespace Microsoft.UI.Composition
 		private SKRectI _insetRect;
 
 		bool IOnlineBrush.IsOnline => true; // TODO: `Source is IOnlineBrush onlineBrush && onlineBrush.IsOnline`, Implement this after offline rendering is properly implemented
+		internal override bool RequiresRepaintOnEveryFrame => ((IOnlineBrush)this).IsOnline;
 
 		internal override void UpdatePaint(SKPaint paint, SKRect bounds)
 		{
