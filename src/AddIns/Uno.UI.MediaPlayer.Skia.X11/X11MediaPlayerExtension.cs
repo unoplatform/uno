@@ -21,7 +21,7 @@ using MediaPlayer = Windows.Media.Playback.MediaPlayer;
 
 namespace Uno.UI.MediaPlayer.Skia.X11;
 
-internal class X11MediaPlayerExtension : IMediaPlayerExtension
+public class X11MediaPlayerExtension : IMediaPlayerExtension
 {
 	private static readonly LibVLC _vlc = new LibVLC(":start-paused");
 

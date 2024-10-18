@@ -11,11 +11,11 @@ using Uno.Logging;
 using Uno.UI.Runtime.Skia;
 using Uno.WinUI.Runtime.Skia.X11;
 
-[assembly: ApiExtension(typeof(IMediaPlayerPresenterExtension), typeof(Uno.UI.MediaPlayer.Skia.X11.X11MediaPlayerPresenterExtension), typeof(Windows.Media.Playback.MediaPlayer))]
+[assembly: ApiExtension(typeof(IMediaPlayerPresenterExtension), typeof(Uno.UI.MediaPlayer.Skia.X11.X11MediaPlayerPresenterExtension), typeof(MediaPlayerPresenter))]
 
 namespace Uno.UI.MediaPlayer.Skia.X11;
 
-internal class X11MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
+public class X11MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 {
 	private readonly MediaPlayerPresenter _presenter;
 	private X11MediaPlayerExtension? _playerExtension;

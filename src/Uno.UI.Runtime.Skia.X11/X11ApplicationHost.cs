@@ -73,9 +73,6 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 
 		ApiExtensibility.Register<XamlRoot>(typeof(Uno.Graphics.INativeOpenGLWrapper), xamlRoot => new X11NativeOpenGLWrapper(xamlRoot));
 
-		ApiExtensibility.Register<MediaPlayer>(typeof(IMediaPlayerExtension), o => new X11MediaPlayerExtension(o));
-		ApiExtensibility.Register<MediaPlayerPresenter>(typeof(IMediaPlayerPresenterExtension), o => new X11MediaPlayerPresenterExtension(o));
-
 		ApiExtensibility.Register<CoreWebView2>(typeof(INativeWebViewProvider), o => new X11NativeWebViewProvider(o));
 	}
 

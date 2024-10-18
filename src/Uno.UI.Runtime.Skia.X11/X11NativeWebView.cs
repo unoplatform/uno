@@ -126,6 +126,8 @@ internal class X11NativeWebView : INativeWebView
 		}
 	}
 
+	public string DocumentTitle { get; private set; } = "";
+
 	private void OnSourceChanged(string id, string req)
 	{
 		var rootNode = JsonSerializer.Deserialize<JsonNode>(req);
@@ -175,7 +177,8 @@ internal class X11NativeWebView : INativeWebView
 		{
 			_ = _coreWebView.Owner.Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
 			{
-				_coreWebView.DocumentTitle = title;
+				DocumentTitle = title;
+				_coreWebView.OnDocumentTitleChanged();
 			});
 		}
 		else
