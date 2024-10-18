@@ -26,7 +26,7 @@ public abstract class SKCanvasElement : FrameworkElement
 	/// <param name="area">The dimensions of the clipping area.</param>
 	/// <remarks>
 	/// When called, the <paramref name="canvas"/> is already set up such that the origin (0,0) is at the top-left of the clipping area.
-	/// Drawing outside this area (i.e. outside the (0, 0, area.Width, area.Height) rectangle will be clipped out.
+	/// Drawing outside this area (i.e. outside the (0, 0, area.Width, area.Height) rectangle) will be clipped out.
 	/// </remarks>
 	protected abstract void RenderOverride(SKCanvas canvas, Size area);
 
