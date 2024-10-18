@@ -3,12 +3,12 @@
 
 // MUX Reference ItemsView.h, tag winui3/release/1.5.0
 using System.Collections.Generic;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls.Primitives;
 using Uno.Disposables;
 using Windows.Foundation;
 using Windows.System;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 partial class ItemsView
 {

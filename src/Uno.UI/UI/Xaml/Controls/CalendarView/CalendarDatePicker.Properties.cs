@@ -4,7 +4,7 @@ using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 using Calendar = Windows.Globalization.Calendar;
 using DayOfWeek = Windows.Globalization.DayOfWeek;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	partial class CalendarDatePicker
 	{

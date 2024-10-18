@@ -2,7 +2,7 @@
 
 using System;
 using System.ComponentModel;
-using Microsoft.UI.Composition;
+using Windows.UI.Composition;
 using Uno.Disposables;
 using Uno.UI.Helpers;
 using Uno.UI.Xaml;
@@ -11,7 +11,7 @@ using Uno.UI.Xaml;
 using Windows.UI;
 #endif
 
-namespace Microsoft.UI.Xaml.Media
+namespace Windows.UI.Xaml.Media
 {
 	[TypeConverter(typeof(BrushConverter))]
 	public partial class Brush : DependencyObject
@@ -122,7 +122,7 @@ namespace Microsoft.UI.Xaml.Media
 		public static DependencyProperty TransformProperty { get; } = CreateTransformProperty();
 
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public Microsoft.UI.Xaml.Media.Transform Transform
+		public Windows.UI.Xaml.Media.Transform Transform
 		{
 			get => GetTransformValue();
 			set => SetTransformValue(value);

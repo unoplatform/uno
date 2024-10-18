@@ -5,7 +5,7 @@
 using System;
 using System.Security;
 
-namespace Microsoft.UI.Xaml.Media.Media3D
+namespace Windows.UI.Xaml.Media.Media3D
 {
 	//
 	// Summary:

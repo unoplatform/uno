@@ -5,15 +5,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using Microsoft.UI.Composition;
-using Microsoft.UI.Composition.Interactions;
+using Windows.UI.Composition;
+using Windows.UI.Composition.Interactions;
 using Microsoft.UI.Input;
 using Microsoft.UI.Private.Controls;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Hosting;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Markup;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Hosting;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Media;
 using Uno;
 using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
@@ -29,7 +29,7 @@ using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
-namespace Microsoft.UI.Xaml.Controls.Primitives;
+namespace Windows.UI.Xaml.Controls.Primitives;
 
 [ContentProperty(Name = "Content")]
 #if !__SKIA__
@@ -6633,8 +6633,8 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 		if (m_renderingRevoker.Disposable is null)
 		{
 			// SCROLLPRESENTER_TRACE_VERBOSE(nullptr, TRACE_MSG_METH, METH_NAME, this);
-			Microsoft.UI.Xaml.Media.CompositionTarget.Rendering += OnCompositionTargetRendering;
-			m_renderingRevoker.Disposable = Disposable.Create(() => Microsoft.UI.Xaml.Media.CompositionTarget.Rendering -= OnCompositionTargetRendering);
+			Windows.UI.Xaml.Media.CompositionTarget.Rendering += OnCompositionTargetRendering;
+			m_renderingRevoker.Disposable = Disposable.Create(() => Windows.UI.Xaml.Media.CompositionTarget.Rendering -= OnCompositionTargetRendering);
 		}
 	}
 

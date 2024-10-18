@@ -3,7 +3,7 @@
 // FocusPressState.cpp
 
 using Uno.UI.Xaml.Core;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 namespace Uno.UI.Xaml.Input
 {

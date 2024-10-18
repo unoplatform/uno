@@ -12,10 +12,10 @@ using System.Linq;
 using System.Diagnostics;
 using Windows.UI.Input.Spatial;
 
-using ResourceKey = Microsoft.UI.Xaml.SpecializedResourceDictionary.ResourceKey;
+using ResourceKey = Windows.UI.Xaml.SpecializedResourceDictionary.ResourceKey;
 using System.Runtime.CompilerServices;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	partial class ResourceDictionary
 	{

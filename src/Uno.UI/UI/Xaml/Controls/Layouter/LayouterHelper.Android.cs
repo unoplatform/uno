@@ -14,7 +14,7 @@ using Android.Graphics;
 using System.Linq.Expressions;
 using Uno.UI;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	/// <summary>
 	/// Provides access to internal methods for native View measuring.

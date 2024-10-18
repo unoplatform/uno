@@ -11,14 +11,14 @@ using Uno;
 using Uno.Extensions;
 using Uno.UI;
 using Uno.Foundation.Logging;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 using Uno.Collections;
 using Android.Security.Keystore;
 using Java.Security;
 using Uno.Buffers;
 using Windows.System;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	/// <summary>
 	/// A TextBlock measure cache for non-formatted text.

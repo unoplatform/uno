@@ -2,7 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 using MUXControlsTestApp.Utilities;
 using Uno.UI.Samples.Controls;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 namespace MUXControlsTestApp
 {

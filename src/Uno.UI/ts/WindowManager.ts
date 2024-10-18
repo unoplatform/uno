@@ -863,7 +863,7 @@ namespace Uno.UI {
 
 			if (eventExtractorId) {
 				//
-				// NOTE TO MAINTAINERS: Keep in sync with Microsoft.UI.Xaml.UIElement.HtmlEventExtractor
+				// NOTE TO MAINTAINERS: Keep in sync with Windows.UI.Xaml.UIElement.HtmlEventExtractor
 				//
 
 				switch (eventExtractorId) {
@@ -1433,10 +1433,10 @@ namespace Uno.UI {
 			if ((<any>globalThis).DotnetExports !== undefined) {
 				const exports = (<any>globalThis).DotnetExports.UnoUI;
 
-				WindowManager.resizeMethod = exports.Microsoft.UI.Xaml.Window.Resize;
-				WindowManager.dispatchEventMethod = exports.Microsoft.UI.Xaml.UIElement.DispatchEvent;
-				WindowManager.focusInMethod = exports.Microsoft.UI.Xaml.Input.FocusManager.ReceiveFocusNative;
-				WindowManager.dispatchSuspendingMethod = exports.Microsoft.UI.Xaml.Application.DispatchSuspending;
+				WindowManager.resizeMethod = exports.Windows.UI.Xaml.Window.Resize;
+				WindowManager.dispatchEventMethod = exports.Windows.UI.Xaml.UIElement.DispatchEvent;
+				WindowManager.focusInMethod = exports.Windows.UI.Xaml.Input.FocusManager.ReceiveFocusNative;
+				WindowManager.dispatchSuspendingMethod = exports.Windows.UI.Xaml.Application.DispatchSuspending;
 			} else {
 				throw `Unable to find dotnet exports`;
 			}

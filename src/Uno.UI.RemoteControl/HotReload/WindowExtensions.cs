@@ -1,6 +1,6 @@
 ﻿using System;
 using Uno.UI.RemoteControl.HotReload;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Uno.Diagnostics.UI;
 
 namespace Uno.UI;

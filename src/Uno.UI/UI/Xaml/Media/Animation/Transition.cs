@@ -9,7 +9,7 @@ using View = Android.Views.View;
 using View = UIKit.UIView;
 #endif
 
-namespace Microsoft.UI.Xaml.Media.Animation
+namespace Windows.UI.Xaml.Media.Animation
 {
 	/// <summary>
 	/// Transition : Based on WinRT Transition

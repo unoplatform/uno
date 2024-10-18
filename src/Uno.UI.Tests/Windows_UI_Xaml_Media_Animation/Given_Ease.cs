@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml.Media.Animation;
+﻿using Windows.UI.Xaml.Media.Animation;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

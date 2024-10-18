@@ -2,8 +2,8 @@
 using System.ComponentModel;
 using System.Drawing;
 using System.Globalization;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Media;
 using Android.Graphics;
 
 namespace Uno.Media

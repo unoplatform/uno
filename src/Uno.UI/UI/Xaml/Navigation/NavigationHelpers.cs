@@ -5,8 +5,8 @@
 using System;
 using System.Globalization;
 using System.Text;
-using Microsoft.UI.Xaml.Media.Animation;
-using Microsoft.UI.Xaml.Navigation;
+using Windows.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Navigation;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;

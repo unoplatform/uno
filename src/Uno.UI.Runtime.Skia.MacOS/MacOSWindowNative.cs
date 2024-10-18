@@ -1,4 +1,4 @@
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
 using Uno.Foundation.Logging;
 
@@ -6,7 +6,7 @@ using Windows.Foundation;
 using Windows.UI.ViewManagement;
 using Uno.UI.Xaml.Controls;
 using IOPath = System.IO.Path;
-using WinUIWindow = Microsoft.UI.Xaml.Window;
+using WinUIWindow = Windows.UI.Xaml.Window;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
 
@@ -15,7 +15,7 @@ internal class MacOSWindowNative
 	private readonly WinUIWindow _winUIWindow;
 	private readonly ApplicationView _applicationView;
 
-	public MacOSWindowNative(WinUIWindow winUIWindow, Microsoft.UI.Xaml.XamlRoot xamlRoot, out Size initialSize)
+	public MacOSWindowNative(WinUIWindow winUIWindow, Windows.UI.Xaml.XamlRoot xamlRoot, out Size initialSize)
 	{
 		_winUIWindow = winUIWindow ?? throw new ArgumentNullException(nameof(winUIWindow));
 
@@ -86,7 +86,7 @@ internal class MacOSWindowNative
 
 				NativeUno.uno_application_set_icon(iconPath);
 			}
-			else if (Microsoft.UI.Xaml.Media.Imaging.BitmapImage.GetScaledPath(basePath) is { } scaledPath && File.Exists(scaledPath))
+			else if (Windows.UI.Xaml.Media.Imaging.BitmapImage.GetScaledPath(basePath) is { } scaledPath && File.Exists(scaledPath))
 			{
 				if (this.Log().IsEnabled(LogLevel.Information))
 				{

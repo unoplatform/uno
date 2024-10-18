@@ -4,7 +4,7 @@ using Windows.UI.ViewManagement;
 using Uno.UI;
 using NotImplementedException = System.NotImplementedException;
 
-namespace Microsoft.UI.Xaml.Controls.Primitives
+namespace Windows.UI.Xaml.Controls.Primitives
 {
 	partial class FlyoutBase
 	{

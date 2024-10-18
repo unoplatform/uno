@@ -1,12 +1,12 @@
 ﻿using System.Runtime.InteropServices.JavaScript;
 
-namespace __Microsoft.UI.Xaml;
+namespace __Windows.UI.Xaml;
 
 internal partial class Application
 {
 	internal static partial class NativeMethods
 	{
-		[JSImport("globalThis.Microsoft.UI.Xaml.Application.observeVisibility")]
+		[JSImport("globalThis.Windows.UI.Xaml.Application.observeVisibility")]
 		internal static partial void ObserveVisibility();
 	}
 }

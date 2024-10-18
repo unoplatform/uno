@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Data;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.ProgressBar
 {
