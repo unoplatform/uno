@@ -93,6 +93,7 @@
 				Condition="
 				'$(UnoDisableVSWarnDesktopIsFirst)' != 'true'
 				AND '$(BuildingInsideVisualStudio)' == 'true'
+				AND '$(OutputType)'!='Library'
 				AND '$(_UnoTargetFrameworkCount)' != ''
 				AND $(_UnoTargetFrameworkCount) &gt; 1
 				AND $([MSBuild]::GetTargetPlatformIdentifier($(_UnoFirstOriginalTargetFramework))) == 'desktop'">
@@ -106,6 +107,7 @@
 				Condition="
 				'$(UnoDisableVSWarnWindowsIsFirst)' != 'true'
 				AND '$(BuildingInsideVisualStudio)' == 'true'
+				AND '$(OutputType)'!='Library'
 				AND '$(_UnoTargetFrameworkCount)' != ''
 				AND $(_UnoTargetFrameworkCount) &gt; 1
 				AND $([MSBuild]::GetTargetPlatformIdentifier($(_UnoFirstOriginalTargetFramework))) == 'windows'">
@@ -119,6 +121,7 @@
 			Condition=" 
 			'$(UnoDisableVSWarnNetIsFirst)' != 'true'
 			AND '$(BuildingInsideVisualStudio)' == 'true'
+			AND '$(OutputType)'!='Library'
 			AND '$(_UnoTargetFrameworkCount)' != ''
 			AND $(_UnoTargetFrameworkCount) &gt; 1
 			AND $([MSBuild]::GetTargetPlatformIdentifier($(_UnoFirstOriginalTargetFramework))) == ''
