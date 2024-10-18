@@ -616,7 +616,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 				else
 				{
-					throw new InvalidOperationException($"ApiExtensionAttribute should have ");
+					throw new InvalidOperationException($"ApiExtensionAttribute should takes 3 or 4 arguments.");
 				}
 			}
 		}
