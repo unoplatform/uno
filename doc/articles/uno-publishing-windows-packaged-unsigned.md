@@ -63,7 +63,7 @@ To build your solution:
 
   Notice that this command does not contain the `/r`.
 
-## Install the unsigned app
+## Install the unsigned Windows app
 
 To install the app:
 
