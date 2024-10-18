@@ -6,11 +6,7 @@ uid: Uno.Tutorials.SignInWithApple
 
 In Uno Platform projects, implementing a "Sign in with Apple" Button is possible through MAUI embedding (more on which in our [Overview](xref:Uno.Extensions.Maui.Overview)). Below is a simple example of how you can add the Apple Sign-In Button to your project. We will inject it into the visual tree from the code-behind and handle the authorization using Apple's Authentication Services.
 
-## Steps to Add "Sign in with Apple" Button
-
-Below is a simple example of how you can add the Apple Sign-In Button to your project. We will inject it into the visual tree from the code-behind and handle the authorization using Apple's Authentication Services.
-
-### General usage
+## General usage
 
 1. Import necessary namespaces:
 
@@ -64,7 +60,7 @@ Below is a simple example of how you can add the Apple Sign-In Button to your pr
    }
    ```
 
-### Custom Delegate for Authorization
+## Custom Delegate for Authorization
 
 To handle the result of the sign-in process, create a custom delegate:
 
@@ -97,7 +93,7 @@ public class AuthorizationControllerDelegate : ASAuthorizationControllerDelegate
 }
 ```
 
-### Managing Delegate in MVVM
+## Managing Delegate in MVVM
 
 If you're using an MVVM architecture, the delegate should handle sign-in logic indirectly by passing the necessary data to the ViewModel. This keeps the code clean and follows MVVM principles. For example:
 
@@ -136,7 +132,7 @@ public class AuthorizationControllerDelegate : ASAuthorizationControllerDelegate
 }
 ```
 
-### Presentation Context Provider
+## Presentation Context Provider
 
 For proper handling of the presentation context on iOS, implement a `PresentationContextProvider`:
 
