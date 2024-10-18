@@ -166,7 +166,6 @@ namespace Microsoft.UI.Xaml.Documents
 			var fontInfo = FontInfo;
 			var defaultTypeface = fontInfo.SKFont.Typeface;
 			var defaultFont = fontInfo.Font;
-			var paint = Paint;
 			var fontSize = fontInfo.SKFontSize;
 
 			defaultFont.GetScale(out int defaultFontScale, out _);

@@ -14,7 +14,6 @@ namespace Microsoft.UI.Composition
 	{
 		private SKPaint? _sourcePaint;
 		private SKPaint? _maskPaint;
-		private SKPaint? _resultPaint;
 
 		bool IOnlineBrush.IsOnline
 		{
@@ -36,10 +35,13 @@ namespace Microsoft.UI.Composition
 
 		void IOnlineBrush.Paint(in Visual.PaintingSession session, SKRect bounds)
 		{
-			_resultPaint ??= new SKPaint() { IsAntialias = true };
+			using (SkiaHelper.GetTempSKPaint(out var resultPaint))
+			{
+				resultPaint.IsAntialias = true;
 
-			UpdatePaint(_resultPaint, bounds);
-			session.Canvas?.DrawRect(bounds, _resultPaint);
+				UpdatePaint(resultPaint, bounds);
+				session.Canvas?.DrawRect(bounds, resultPaint);
+			}
 		}
 
 		private protected override void DisposeInternal()
@@ -48,7 +50,6 @@ namespace Microsoft.UI.Composition
 
 			_sourcePaint?.Dispose();
 			_maskPaint?.Dispose();
-			_resultPaint?.Dispose();
 		}
 	}
 }

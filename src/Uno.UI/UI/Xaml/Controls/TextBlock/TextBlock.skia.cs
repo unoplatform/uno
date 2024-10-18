@@ -188,11 +188,13 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				var canvas = t.canvas;
 				var rect = t.rect;
-				canvas.DrawRect(new SKRect((float)rect.Left, (float)rect.Top, (float)rect.Right, (float)rect.Bottom), new SKPaint
+
+				using (SkiaHelper.GetTempSKPaint(out var paint))
 				{
-					Color = SelectionHighlightColor.Color.ToSKColor(),
-					Style = SKPaintStyle.Fill
-				});
+					paint.Color = SelectionHighlightColor.Color.ToSKColor();
+					paint.Style = SKPaintStyle.Fill;
+					canvas.DrawRect(new SKRect((float)rect.Left, (float)rect.Top, (float)rect.Right, (float)rect.Bottom), paint);
+				}
 			};
 
 			_inlines.RenderSelection = IsTextSelectionEnabled;

@@ -499,7 +499,11 @@ namespace Microsoft.UI.Xaml.Documents
 					var segment = segmentSpan.Segment;
 					var inline = segment.Inline;
 					var fontInfo = segment.FallbackFont ?? inline.FontInfo;
-					var paint = inline.Paint;
+
+					using var paintDisposable = SkiaHelper.GetTempSKPaint(out var paint);
+					paint.TextEncoding = SKTextEncoding.Utf16;
+					paint.IsStroke = false;
+					paint.IsAntialias = true;
 
 					if (inline.Foreground is SolidColorBrush scb)
 					{
