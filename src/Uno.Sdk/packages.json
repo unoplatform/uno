@@ -80,7 +80,7 @@
 	},
 	{
 		"group": "settings",
-		"version": "0.1.0-dev.134",
+		"version": "0.1.0-dev.144",
 		"packages": [
 			"Uno.Settings.DevServer"
 		]
