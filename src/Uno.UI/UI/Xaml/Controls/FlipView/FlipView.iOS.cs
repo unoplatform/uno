@@ -26,14 +26,6 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.LayoutSubviews();
 
-			if (CollectionView == null)
-			{
-				return;
-			}
-
-			CollectionView.Frame = Bounds;
-			CollectionView.ItemSize = Bounds.Size;
-
 			//Set offset to current page if bounds change, eg if the device is rotated
 			if (Bounds.AreSizesDifferent(_oldBounds)
 				//Only snap if SelectedIndex is set
@@ -41,7 +33,25 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				CollectionView?.SnapToPage(SelectedIndex, animated: UseTouchAnimationsForAllNavigation);
 			}
+
 			_oldBounds = Bounds;
+		}
+
+		public override CGRect Frame
+		{
+			get => base.Frame;
+			set
+			{
+				base.Frame = value;
+
+				if (CollectionView == null)
+				{
+					return;
+				}
+
+				CollectionView.Frame = value;
+				CollectionView.ItemSize = value.Size;
+			}
 		}
 
 		private void OnSelectedIndexChangedPartial(int oldValue, int newValue, bool animateChange)

@@ -12,7 +12,7 @@ namespace Microsoft.UI.Xaml.Controls
 	/// </summary>
 	public partial class PagedCollectionView : UICollectionView
 	{
-		public PagedCollectionView() : base(new CGRect(0, 0, 50, 50), GetLayout())
+		public PagedCollectionView() : base(default, GetLayout())
 		{
 			PagingEnabled = true;
 			Bounces = true;
@@ -20,7 +20,7 @@ namespace Microsoft.UI.Xaml.Controls
 			BackgroundColor = UIColor.Clear;
 
 			_layout = (UICollectionViewFlowLayout)this.CollectionViewLayout;
-
+			//Delegate = new Del(this);
 			RegisterClassForCell(typeof(Uno.UI.Controls.Legacy.ListViewBaseSource.InternalContainer), FlipView.FlipViewItemReuseIdentifier);
 
 			if (ScrollViewer.UseContentInsetAdjustmentBehavior)
@@ -28,6 +28,21 @@ namespace Microsoft.UI.Xaml.Controls
 				ContentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentBehavior.Never;
 			}
 		}
+
+		//public class Del : UICollectionViewDelegateFlowLayout
+		//{
+		//	private readonly PagedCollectionView _owner;
+
+		//	public Del(PagedCollectionView owner)
+		//	{
+		//		_owner = owner;
+		//	}
+
+		//	public override CGSize GetSizeForItem(UICollectionView collectionView, UICollectionViewLayout layout, NSIndexPath indexPath)
+		//	{
+		//		return _owner.ItemSize;
+		//	}
+		//}
 
 
 		UICollectionViewFlowLayout _layout;
@@ -73,7 +88,11 @@ namespace Microsoft.UI.Xaml.Controls
 		public CGSize ItemSize
 		{
 			get { return _layout.ItemSize; }
-			set { _layout.ItemSize = value; }
+			set
+			{
+				_layout.ItemSize = value;
+				_layout.InvalidateLayout(new UICollectionViewFlowLayoutInvalidationContext() { InvalidateFlowLayoutDelegateMetrics = true });
+			}
 		}
 		public override CGSize ContentSize
 		{
@@ -106,13 +125,33 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private static UICollectionViewFlowLayout GetLayout()
 		{
-			return new UICollectionViewFlowLayout()
+			return new PagedCollectionFlowLayout()
 			{
 				ScrollDirection = UICollectionViewScrollDirection.Horizontal,
 				MinimumLineSpacing = 0,
 				MinimumInteritemSpacing = 0,
-				SectionInset = new UIEdgeInsets(),
+				SectionInset = new UIEdgeInsets()
 			};
+		}
+
+		private class PagedCollectionFlowLayout : UICollectionViewFlowLayout
+		{
+			public override UICollectionViewLayoutInvalidationContext GetInvalidationContextForBoundsChange(CGRect newBounds)
+			{
+				UICollectionViewFlowLayoutInvalidationContext context = base.GetInvalidationContextForBoundsChange(newBounds) as UICollectionViewFlowLayoutInvalidationContext;
+				if (context is null)
+				{
+					return new UICollectionViewLayoutInvalidationContext();
+				}
+				var collection = CollectionView;
+				context.InvalidateFlowLayoutDelegateMetrics = true;
+				return context;
+			}
+
+			public override bool ShouldInvalidateLayoutForBoundsChange(CGRect newBounds)
+			{
+				return true;
+			}
 		}
 
 		/// <summary>

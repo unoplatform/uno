@@ -20,6 +20,8 @@ using static Private.Infrastructure.TestServices;
 using Windows.UI.Input.Preview.Injection;
 using Uno.Extensions;
 using Windows.Foundation;
+using UIKit;
+using System.Diagnostics;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -96,6 +98,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			};
 
 			await UITestHelper.Load(stackPanel);
+			await Task.Delay(599);
+			Debug.WriteLine(stackPanel.ShowLocalVisualTree());
 			var bitmap = await UITestHelper.ScreenShot(stackPanel);
 			var redBounds = ImageAssert.GetColorBounds(bitmap, Microsoft.UI.Colors.Red);
 			Assert.AreEqual(redBounds.Width, bitmap.Width - 1);

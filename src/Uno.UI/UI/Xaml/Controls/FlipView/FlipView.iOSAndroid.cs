@@ -51,6 +51,95 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			return item is FlipViewItem;
 		}
+
+		protected override void PrepareContainerForItemOverride(DependencyObject element, object item)
+		{
+			base.PrepareContainerForItemOverride(element, item);
+
+			DependencyObject pElement = (DependencyObject)(element);
+			FlipViewItem pFlipViewItem = null;
+			double value = 0.0;
+			Thickness flipViewItemMargin = Thickness.Empty;
+
+			// Cast container to known type
+			pFlipViewItem = (FlipViewItem)(pElement);
+
+			flipViewItemMargin = pFlipViewItem.Margin;
+
+			value = GetDesiredItemWidth();
+
+			value -= (flipViewItemMargin.Left + flipViewItemMargin.Right);
+			pFlipViewItem.Width = value;
+
+			value = GetDesiredItemHeight();
+
+			value -= (flipViewItemMargin.Top + flipViewItemMargin.Bottom);
+			pFlipViewItem.Height = value;
+		}
+
+		double GetDesiredItemWidth()
+		{
+			double width = 0.0;
+
+			var spPanel = CollectionView;
+
+			if (spPanel != null)
+			{
+				width = LayoutInformation.GetAvailableSize(spPanel).Width;
+			}
+
+			double pWidth;
+			if (double.IsInfinity(width) || width <= 0)
+			{
+				// Desired container width matches the width of the ScrollingHost part (or FlipView)
+				pWidth = m_tpScrollViewer != null ? m_tpScrollViewer.ActualWidth : ActualWidth;
+			}
+			else
+			{
+				pWidth = width;
+			}
+
+			// If flipview has never been measured yet - scroll viewer will not have its size set.
+			// Use flipview size set by developer in that case.
+			if (pWidth <= 0)
+			{
+				pWidth = Width;
+			}
+
+			return pWidth;
+		}
+
+		double GetDesiredItemHeight()
+		{
+			double height = 0.0;
+
+			var spPanel = CollectionView;
+
+			if (spPanel != null)
+			{
+				height = LayoutInformation.GetAvailableSize(spPanel).Height;
+			}
+
+			double pHeight;
+			if (double.IsInfinity(height) || height <= 0)
+			{
+				// Desired container height matches the height of the ScrollingHost part (or FlipView)
+				pHeight = m_tpScrollViewer != null ? m_tpScrollViewer.ActualHeight : ActualHeight;
+			}
+			else
+			{
+				pHeight = height;
+			}
+
+			// If flipview has never been measured yet - scroll viewer will not have its size set.
+			// Use flipview size set by developer in that case.
+			if (pHeight <= 0)
+			{
+				pHeight = Height;
+			}
+
+			return pHeight;
+		}
 	}
 }
 #endif

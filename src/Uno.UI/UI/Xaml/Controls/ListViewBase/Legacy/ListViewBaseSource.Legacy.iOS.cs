@@ -608,7 +608,11 @@ namespace Uno.UI.Controls.Legacy
 			/// Used by the Xamarin Runtime to materialize native 
 			/// objects that may have been collected in the managed world.
 			/// </remarks>
-			public InternalContainer(NativeHandle handle) : base(handle) { }
+			public InternalContainer(NativeHandle handle) : base(handle)
+			{
+				AutoresizingMask = UIViewAutoresizing.FlexibleWidth |
+					UIViewAutoresizing.FlexibleHeight;
+			}
 
 			//private CGSize _lastUsedSize;
 
@@ -638,7 +642,7 @@ namespace Uno.UI.Controls.Legacy
 			public override void SetNeedsLayout()
 			{
 				base.SetNeedsLayout();
-				Superview?.SetNeedsLayout();
+				//Superview?.SetNeedsLayout();
 			}
 
 			public override CGSize SizeThatFits(CGSize size)
@@ -678,13 +682,17 @@ namespace Uno.UI.Controls.Legacy
 						ContentView.Subviews[0].RemoveFromSuperview();
 					}
 
-					value.Frame = ContentView.Bounds;
-					//value.AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight;
-
+					//value.Frame = ContentView.Bounds;
+					value.AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight;
+					ContentView.TranslatesAutoresizingMaskIntoConstraints = false;
+					ContentView.AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight;
 					ContentView.AddSubview(value);
+					ContentView.SetNeedsLayout();
 					value.SetNeedsLayout();
 				}
 			}
+
+			//private CGSize _lastUsedSize;
 
 			//public override void ApplyLayoutAttributes(UICollectionViewLayoutAttributes layoutAttributes)
 			//{
