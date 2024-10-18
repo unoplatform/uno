@@ -31,9 +31,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="SkiaSharp.Views.WPF" />
-		<PackageReference Include="SkiaSharp.Harfbuzz" />
-
 		<PackageReference Include="Microsoft.Web.WebView2" Aliases="WpfWebView" PrivateAssets="all" />
 
 		<!-- 

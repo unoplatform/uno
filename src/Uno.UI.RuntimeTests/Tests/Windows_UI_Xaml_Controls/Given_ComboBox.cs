@@ -5,6 +5,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -20,13 +21,13 @@ using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.ComboBoxTests;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
+using Windows.Storage.Pickers;
 using Windows.UI.Input.Preview.Injection;
 using static Private.Infrastructure.TestServices;
-
-#if WINAPPSDK
+using ComboBoxHelper = Microsoft.UI.Xaml.Tests.Common.ComboBoxHelper;
 using Uno.UI.Extensions;
-#elif __IOS__
-using UIKit;
+
+#if __IOS__
 using _UIViewController = UIKit.UIViewController;
 using Uno.UI.Controls;
 
@@ -34,10 +35,6 @@ using Windows.UI.Core;
 using Microsoft.UI.Xaml.Media.Animation;
 using static Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.MultiFrame;
 using Microsoft.UI.Xaml.Controls.Primitives;
-
-#elif __MACOS__
-using AppKit;
-#else
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -1293,6 +1290,31 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Items_Are_Enum_Values()
+		{
+			var comboBox = new ComboBox();
+			comboBox.ItemsSource = Enum.GetValues(typeof(PickerLocationId)).Cast<PickerLocationId>();
+			comboBox.SelectedIndex = 0;
+			TestServices.WindowHelper.WindowContent = comboBox;
+			await TestServices.WindowHelper.WaitForLoaded(comboBox);
+
+			await ComboBoxHelper.OpenComboBox(comboBox, ComboBoxHelper.OpenMethod.Programmatic);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(comboBox.IsDropDownOpen);
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(comboBox.XamlRoot).FirstOrDefault();
+			Assert.IsNotNull(popup);
+
+			var child = (FrameworkElement)popup.Child;
+			var comboBoxItems = child.GetAllChildren().OfType<ComboBoxItem>().ToArray();
+			Assert.AreEqual(Enum.GetValues(typeof(PickerLocationId)).Length, comboBoxItems.Length);
+		}
+
 #if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
@@ -1514,7 +1536,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			var uiViewController = new UiViewController(page);
 
-			var rootController = UIApplication.SharedApplication.KeyWindow.RootViewController;
+			var rootController = UIKit.UIApplication.SharedApplication.KeyWindow.RootViewController;
 
 			await rootController.PresentViewControllerAsync(uiViewController, animated: false);
 		}
@@ -1523,7 +1545,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			try
 			{
-				var rootController = UIApplication.SharedApplication.KeyWindow.RootViewController;
+				var rootController = UIKit.UIApplication.SharedApplication.KeyWindow.RootViewController;
 
 				await rootController.DismissViewControllerAsync(false);
 			}
@@ -1655,7 +1677,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		public class UIViewControllerSectionsTransitionInfo : FrameSectionsTransitionInfo
 		{
-			public UIViewControllerSectionsTransitionInfo(bool allowDismissFromGesture = true, UIModalPresentationStyle modalPresentationStyle = UIModalPresentationStyle.PageSheet, UIModalTransitionStyle modalTransitionStyle = UIModalTransitionStyle.CoverVertical)
+			public UIViewControllerSectionsTransitionInfo(bool allowDismissFromGesture = true, UIKit.UIModalPresentationStyle modalPresentationStyle = UIKit.UIModalPresentationStyle.PageSheet, UIKit.UIModalTransitionStyle modalTransitionStyle = UIKit.UIModalTransitionStyle.CoverVertical)
 			{
 				AllowDismissFromGesture = allowDismissFromGesture;
 				ModalPresentationStyle = modalPresentationStyle;
@@ -1664,9 +1686,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			public bool AllowDismissFromGesture { get; }
 
-			public UIModalPresentationStyle ModalPresentationStyle { get; }
+			public UIKit.UIModalPresentationStyle ModalPresentationStyle { get; }
 
-			public UIModalTransitionStyle ModalTransitionStyle { get; }
+			public UIKit.UIModalTransitionStyle ModalTransitionStyle { get; }
 
 			public override FrameSectionsTransitionInfoTypes Type => FrameSectionsTransitionInfoTypes.UIViewControllerBased;
 		}

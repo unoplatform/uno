@@ -274,6 +274,11 @@ public partial class EntryPoint : IDisposable
 					}
 				}
 			}
+			else
+			{
+				// No need to reload, but we still need to update the selected target framework
+				await WriteProjectUserSettingsAsync(newFramework);
+			}
 		}
 		catch (Exception e)
 		{

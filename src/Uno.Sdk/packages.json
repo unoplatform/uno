@@ -76,6 +76,13 @@
 	  ]
 	},
 	{
+	  "group": "sdkextras",
+	  "version": "5.5-dev.26",
+	  "packages": [
+			"Uno.Sdk.Extras"
+	  ]
+	},
+	{
 	  "group": "SkiaSharp",
 	  "version": "2.88.8",
 	  "packages": [
