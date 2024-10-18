@@ -51,6 +51,6 @@ The output `.pkg` file will be in the `publish` folder.
 > [!TIP]
 > To create a `.app` folder, set the `CreatePackage` parameter to `false`.
 
-## Publishing your app
+## Publishing your app om the App Store
 
 Publishing your app is done through [the transporter app](https://developer.apple.com/help/app-store-connect/manage-builds/upload-builds) on macOS.

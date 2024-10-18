@@ -24,7 +24,7 @@ To build your app from the CLI, on Windows, Linux, or macOS:
 
 - Once the build is done, the output `.apk` and `.aab` files are located in the `./publish` folder.
 
-## Publishing your app
+## Publishing your Android App
 
 Publishing an Uno Platform app uses the same steps as .NET for Android-based technologies.
 

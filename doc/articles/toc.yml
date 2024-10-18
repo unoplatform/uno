@@ -250,7 +250,7 @@
           href: xref:uno.publishing.desktop
         - name: Publishing for WebAssembly
           href: xref:uno.publishing.webassembly
-        - name: Publishing for Windows
+        - name: Publishing for Windows App SDK
           topicHref: xref:uno.publishing.windows
           items:
             - name: Build Packaged Unsigned Apps
