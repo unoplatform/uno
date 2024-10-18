@@ -230,6 +230,10 @@
 			"description": "Provides an explicit override for the version of Uno.Sdk.Extras to use.",
 			"type": "nuget-version"
 		},
+		"UnoSettingsVersion": {
+			"description": "Provides an explicit override for the version of Uno.Settings to use.",
+			"type": "nuget-version"
+		},
 		"MicrosoftLoggingVersion": {
 			"description": "Provides an explicit override for the version of Microsoft.Extensions.Logging to use.",
 			"type": "nuget-version"

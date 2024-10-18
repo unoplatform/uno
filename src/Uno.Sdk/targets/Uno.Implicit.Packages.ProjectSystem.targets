@@ -8,6 +8,7 @@
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Uno.Resizetizer" ProjectSystem="true" PrivateAssets="all" />
 		<_UnoProjectSystemPackageReference Include="Uno.Sdk.Extras" ProjectSystem="true" PrivateAssets="all" />
+		<_UnoProjectSystemPackageReference Include="Uno.Settings.DevServer" ProjectSystem="true" PrivateAssets="all" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(_ImplicitRestoreOutputType)' == 'WinExe' OR '$(_ImplicitRestoreOutputType)' == 'Exe' ">
