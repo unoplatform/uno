@@ -448,3 +448,48 @@ jobs:
       testResultsFiles: '$(build.sourcesdirectory)/build/skia-linux-runtime-tests-results.xml'
       failTaskOnFailedTests: true
       failTaskOnMissingResultsFile: true
+
+- job: Skia_macos_Runtime_Tests_Build
+  displayName: 'Run Skia macOS Runtime Tests'
+  timeoutInMinutes: 60
+
+  pool:
+    vmImage: ${{ parameters.vmMacImage }}
+
+  dependsOn: Skia_Tests_Build
+
+  variables:
+    SamplesAppArtifactName: skia-generic-samples-app-$(XAML_FLAVOR_BUILD)
+    SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
+
+    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
+    XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
+
+  steps:
+
+  - template: templates/download-winui-converted-tree.yml
+
+  - task: DownloadBuildArtifacts@0
+    inputs:
+        artifactName: $(SamplesAppArtifactName)
+        downloadPath: '$(build.sourcesdirectory)/build'
+
+  - template: templates/dotnet-install.yml
+
+  - script: |
+        cd $(SamplesAppArtifactPath)
+        dotnet SamplesApp.Skia.Generic.dll --runtime-tests=$(build.sourcesdirectory)/build/skia-macos-runtime-tests-results.xml
+
+    displayName: Run Skia  $(XAML_FLAVOR_BUILD) Runtime Tests
+    env:
+      SamplesAppArtifactPath: $(SamplesAppArtifactPath)
+      SamplesAppArtifactName: $(SamplesAppArtifactName)
+
+  - task: PublishTestResults@2
+    condition: always()
+    inputs:
+      testRunTitle: 'Skia macOS $(XAML_FLAVOR_BUILD) Runtime Tests'
+      testResultsFormat: 'NUnit'
+      testResultsFiles: '$(build.sourcesdirectory)/build/skia-macos-runtime-tests-results.xml'
+      failTaskOnFailedTests: true
+      failTaskOnMissingResultsFile: true
