@@ -106,8 +106,8 @@
 				BeforeTargets="_SetBuildInnerTarget;_ComputeTargetFrameworkItems;ResolveFrameworkReferences"
 				Condition="
 				'$(UnoDisableVSWarnDesktopIsFirst)' != 'true'
-				AND $([MSBuild]::VersionLessThan($(MSBuildVersion), 17.12.0))
 				AND '$(BuildingInsideVisualStudio)' == 'true'
+				AND $([MSBuild]::VersionLessThan($(MSBuildVersion), 17.12.0))
 				AND '$(_UnoTargetFrameworkCount)' != ''
 				AND $(_UnoTargetFrameworkCount) &gt; 1
 				AND $([MSBuild]::GetTargetPlatformIdentifier($(_UnoFirstOriginalTargetFramework))) == 'desktop'">
@@ -120,15 +120,20 @@
 				BeforeTargets="_SetBuildInnerTarget;_ComputeTargetFrameworkItems;ResolveFrameworkReferences"
 				Condition="
 				'$(UnoDisableVSWarnDesktopIsNotFirst)' != 'true'
-				AND $([MSBuild]::VersionGreaterThanOrEquals($(MSBuildVersion), 17.12.0))
 				AND '$(BuildingInsideVisualStudio)' == 'true'
+				AND $([MSBuild]::VersionGreaterThanOrEquals($(MSBuildVersion), 17.12.0))
 				AND '$(_UnoTargetFrameworkCount)' != ''
 				AND $(_UnoTargetFrameworkCount) &gt; 1
 				AND $(TargetFrameworks.Contains('-desktop'))
+				AND (
+					$(TargetFrameworks.Contains('-ios'))
+					OR $(TargetFrameworks.Contains('-android'))
+					OR $(TargetFrameworks.Contains('-maccatalyst'))
+				)
 				AND $([MSBuild]::GetTargetPlatformIdentifier($(_UnoFirstOriginalTargetFramework))) != 'desktop'">
 
 		<Warning Code="UNOB0014"
-					Text="The desktop TargetFramework must be placed first in the TargetFrameworks property in order for WSL debugging to work. (See https://aka.platform.uno/UNOB0014)" />
+					Text="The desktop TargetFramework must be placed first in the TargetFrameworks property in order for WSL debugging to work, when mobile targets are also used. (See https://aka.platform.uno/UNOB0014)" />
 	</Target>
 
 	<Target Name="_UnoVSWarnWindowsIsFirst"
