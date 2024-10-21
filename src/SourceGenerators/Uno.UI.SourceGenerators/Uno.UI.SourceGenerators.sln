@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.002.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.SourceGenerators", "Uno.UI.SourceGenerators.csproj", "{AB3D67A2-CE84-4369-AEA3-3D22041BC655}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AB3D67A2-CE84-4369-AEA3-3D22041BC655}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB3D67A2-CE84-4369-AEA3-3D22041BC655}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB3D67A2-CE84-4369-AEA3-3D22041BC655}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB3D67A2-CE84-4369-AEA3-3D22041BC655}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B70EB6D6-5D2A-4469-AB94-B7F1A606D516}
+	EndGlobalSection
+EndGlobal

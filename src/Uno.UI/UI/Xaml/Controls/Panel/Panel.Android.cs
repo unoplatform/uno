@@ -53,6 +53,7 @@ partial class Panel : IEnumerable
 
 	protected override void OnDraw(Android.Graphics.Canvas canvas)
 	{
+		base.OnDraw(canvas);
 		AdjustCornerRadius(canvas, CornerRadiusInternal);
 	}
 
