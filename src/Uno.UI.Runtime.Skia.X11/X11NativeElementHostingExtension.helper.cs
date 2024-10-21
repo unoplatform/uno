@@ -8,10 +8,7 @@ using Uno.Foundation.Logging;
 using Uno.UI.Runtime.Skia;
 namespace Uno.WinUI.Runtime.Skia.X11;
 
-// https://www.x.org/releases/X11R7.6/doc/xextproto/shape.html
-// Thanks to Jörg Seebohn for providing an example on how to use X SHAPE
-// https://gist.github.com/je-so/903479/834dfd78705b16ec5f7bbd10925980ace4049e17
-internal partial class X11NativeElementHostingExtension : ContentPresenter.INativeElementHostingExtension
+internal partial class X11NativeElementHostingExtension
 {
 	private const string SampleVideoLink = "https://uno-assets.platform.uno/tests/uno/big_buck_bunny_720p_5mb.mp4";
 

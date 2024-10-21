@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Numerics;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
@@ -9,9 +8,11 @@ using Uno.Extensions;
 using Uno.UI.Runtime.Skia;
 namespace Uno.WinUI.Runtime.Skia.X11;
 
+// https://www.x.org/releases/X11R7.6/doc/xextproto/shape.html
+// Thanks to Jörg Seebohn for providing an example on how to use X SHAPE
+// https://gist.github.com/je-so/903479/834dfd78705b16ec5f7bbd10925980ace4049e17
 internal partial class X11NativeElementHostingExtension : ContentPresenter.INativeElementHostingExtension
 {
-	private static readonly Dictionary<X11XamlRootHost, HashSet<X11NativeElementHostingExtension>> _hostToNativeElementHosts = new();
 	private Rect? _lastArrangeRect;
 	private Rect? _lastClipRect;
 	private bool _layoutDirty = true;
@@ -49,12 +50,6 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 			host.RegisterInputFromNativeSubwindow(nativeWindow.WindowId);
 
 			HideWindowFromTaskBar(nativeWindow);
-
-			if (!_hostToNativeElementHosts.TryGetValue(host, out var set))
-			{
-				set = _hostToNativeElementHosts[host] = new HashSet<X11NativeElementHostingExtension>();
-			}
-			set.Add(this);
 
 			xamlRoot.InvalidateRender += UpdateLayout;
 			xamlRoot.QueueInvalidateRender(); // to force initial layout and clipping
@@ -133,13 +128,6 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 			_ = X11Helper.XReparentWindow(Display, nativeWindow.WindowId, root, 0, 0);
 			_ = XLib.XUnmapWindow(Display, nativeWindow.WindowId);
 			_ = XLib.XSync(Display, false);
-
-			var set = _hostToNativeElementHosts[host];
-			set.Remove(this);
-			if (set.Count == 0)
-			{
-				_hostToNativeElementHosts.Remove(host);
-			}
 
 			_lastClipRect = null;
 			_lastArrangeRect = null;
