@@ -70,17 +70,18 @@ We support creating .snap packages on **Ubuntu 20.04** or later.
 
 The following must be installed and configured:
 
-- snapd
-- snaps (with `snap install`):
-  - core20 on Ubuntu 20.04
-  - core22 on Ubuntu 22.04
-  - core24 on Ubuntu 24.04
-  - multipass
-  - lxd
-    - current user must be part of the `lxd` group
-    - `lxd init --minimal` or similar should be run
-  - snapcraft
+```bash
+sudo apt-get install -y snapd
+sudo snap install core22
+sudo snap install multipass
+sudo snap install lxd
+sudo snap install snapcraft
+lxd init --minimal
+sudo usermod --append --groups lxd $USER # In order for the current user to use LXD
+```
 
+> [!NOTE]
+> In the above script, replace `core22` with `core20` if building on Ubuntu 20.04, or `core24` if building on Ubuntu 24.04.
 > [!NOTE]
 > Docker may interfere with Lxd causing network connectivity issues, for solutions see: https://documentation.ubuntu.com/lxd/en/stable-5.0/howto/network_bridge_firewalld/#prevent-connectivity-issues-with-lxd-and-docker
 
@@ -89,10 +90,10 @@ The following must be installed and configured:
 To generate a snap file, run the following:
 
 ```shell
-dotnet publish -f net8.0-desktop -r {{RID}} -p:SelfContained=true -p:PackageFormat=snap
+dotnet publish -f net8.0-desktop -p:SelfContained=true -p:PackageFormat=snap
 ```
 
-Where `{{RID}}` is either `linux-x64` or `linux-arm64`. The generated snap file is located in the `publish` folder.
+The generated snap file is located in the `bin/Release/netX.0-desktop/linux-[x64|arm64]/publish` folder.
 
 Uno Platform generates snap manifests in classic confinement mode and a `.desktop` file by default.
 
@@ -101,7 +102,7 @@ If you wish to customize your snap manifest, you will need to pass the following
 - `SnapManifest`
 - `DesktopFile`
 
-The `.desktop` filename MUST conform to the Desktop File spec.
+The `.desktop` filename MUST conform to the [Desktop File](https://specifications.freedesktop.org/desktop-entry-spec/latest) spec.
 
 If you wish, you can generate a default snap manifest and desktop file by running the command above, then tweak them.
 
@@ -113,7 +114,7 @@ If you wish, you can generate a default snap manifest and desktop file by runnin
 You can install your app on your machine using the following:
 
 ```bash
-sudo snap install MyApp_1.0_amd64.snap --dangerous –classic
+sudo snap install MyApp_1.0_amd64.snap --dangerous --classic
 ```
 
 You can also publish your app to the [Snap store](https://snapcraft.io/store).
