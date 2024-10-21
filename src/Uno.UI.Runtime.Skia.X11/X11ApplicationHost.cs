@@ -16,10 +16,8 @@ using Uno.UI.Xaml.Controls;
 using Uno.UI.Runtime.Skia;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices.Marshalling;
-using Windows.Media.Playback;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.Web.WebView2.Core;
-using Uno.Media.Playback;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
 
