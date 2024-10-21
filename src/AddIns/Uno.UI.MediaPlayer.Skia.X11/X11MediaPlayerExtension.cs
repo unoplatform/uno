@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Windows.Foundation;
 using Windows.Media.Core;
 using Windows.Media.Playback;
@@ -10,6 +11,7 @@ using Windows.Storage;
 using Windows.Storage.Streams;
 using LibVLCSharp.Shared;
 using Microsoft.UI.Xaml;
+using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Foundation.Extensibility;
 using Uno.Helpers;
@@ -26,10 +28,9 @@ public class X11MediaPlayerExtension : IMediaPlayerExtension
 	private static readonly LibVLC _vlc = new LibVLC(":start-paused");
 
 	private const string MsAppXScheme = "ms-appx";
-	private static readonly ConcurrentDictionary<Windows.Media.Playback.MediaPlayer, X11MediaPlayerExtension> _mediaPlayerToExtension = new();
+	private static readonly ConditionalWeakTable<Windows.Media.Playback.MediaPlayer, X11MediaPlayerExtension> _mediaPlayerToExtension = new();
 
-	private readonly DispatcherTimer _timer;
-
+	private readonly IDisposable _timerDisposable;
 	private int _playlistIndex = -1; // -1 if no playlist or empty playlist, otherwise the 0-based index of the current track in the playlist
 	private MediaPlaybackList? _playlist; // only set and used if the current _player.Source is a playlist
 
@@ -93,7 +94,8 @@ public class X11MediaPlayerExtension : IMediaPlayerExtension
 
 			if (VlcPlayer.Media is { } m)
 			{
-				m.ParsedChanged += (_, args) => OnLoadedMetadata(args.ParsedStatus);
+				var weakRef = new WeakReference<X11MediaPlayerExtension>(this);
+				m.ParsedChanged += (o, a) => weakRef.GetTarget()?.OnLoadedMetadata(a.ParsedStatus);
 			}
 		}
 	}
@@ -122,30 +124,43 @@ public class X11MediaPlayerExtension : IMediaPlayerExtension
 	{
 		Player = player;
 		_mediaPlayerToExtension.TryAdd(player, this);
-		VlcPlayer.LengthChanged += OnLengthChange;
-		VlcPlayer.EndReached += OnEndReached;
-		VlcPlayer.EncounteredError += OnEncounteredError;
-		VlcPlayer.Playing += OnPlaying;
-		VlcPlayer.Buffering += OnBuffering;
-		VlcPlayer.Paused += OnPaused;
-		VlcPlayer.TimeChanged += OnTimeChanged;
+
+		// It's important not to let libVLC's media player grab a strong reference to this object,
+		// otherwise neither will ever get collected. It seems like libVLC's media player is never
+		// collected until explicitly disposed. The lifetime of X11mediaPlayerExtension is similar
+		// to that of its owning MediaPlayer, which is part of the public API and  has an indefinite
+		// lifetime. We rely on the GC to determine when it's time to end this object's lifetime,
+		// and it turn, dispose of libVLC's media player handle as well.
+		var weakRef = new WeakReference<X11MediaPlayerExtension>(this);
+
+		VlcPlayer.LengthChanged += (o, a) => weakRef.GetTarget()?.OnLengthChange(o, a);
+		VlcPlayer.EndReached += (o, a) => weakRef.GetTarget()?.OnEndReached(o, a);
+		VlcPlayer.EncounteredError += (o, a) => weakRef.GetTarget()?.OnEncounteredError(o, a);
+		VlcPlayer.Playing += (o, a) => weakRef.GetTarget()?.OnPlaying(o, a);
+		VlcPlayer.Buffering += (o, a) => weakRef.GetTarget()?.OnBuffering(o, a);
+		VlcPlayer.Paused += (o, a) => weakRef.GetTarget()?.OnPaused(o, a);
+		VlcPlayer.TimeChanged += (o, a) => weakRef.GetTarget()?.OnTimeChanged(o, a); // PositionChanged fires way too frequently (probably every frame). We use TimeChanged instead.
 
 		_vlcPlayerVolume = VlcPlayer.Volume;
 
-		// using the native PositionChanged fires way too frequently (probably every frame) and chokes
-		// the event loop, so we limit this to 60 times a second.
-		// Also, for some reason, subscribing to VolumeChanged, even with an empty lambda, causes
+		// For some reason, subscribing to VolumeChanged, even with an empty lambda, causes
 		// a native crash. Here's the crazy part: this only happens when a debugger is attached.
 		// This does not happen when a debugger is not attached even in debug builds. To work around
 		// this, we poll for the volume in OnTick instead.
-		// VlcPlayer.PositionChanged += OnTimeUpdate;
 		// VlcPlayer.VolumeChanged += OnVolumeChanged;
-		_timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(16) };
-		_timer.Tick += (_, _) => OnTick();
-		_timer.Start();
+		var timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(16) };
+		EventHandler<object> timerOnTick = (_, _) => weakRef.GetTarget()?.OnTick();
+		timer.Tick += timerOnTick;
+		_timerDisposable = Disposable.Create(() => timer.Tick -= timerOnTick);
+		timer.Start();
 	}
 
-	internal static X11MediaPlayerExtension? GetByMediaPlayer(Windows.Media.Playback.MediaPlayer player) => _mediaPlayerToExtension.GetValueOrDefault(player);
+	~X11MediaPlayerExtension()
+	{
+		Dispose();
+	}
+
+	internal static X11MediaPlayerExtension? GetByMediaPlayer(Windows.Media.Playback.MediaPlayer player) => _mediaPlayerToExtension.TryGetValue(player, out var ext) ? ext : null;
 
 	public IMediaPlayerEventsExtension? Events { get; set; }
 
@@ -271,7 +286,8 @@ public class X11MediaPlayerExtension : IMediaPlayerExtension
 
 	public void Dispose()
 	{
-		_mediaPlayerToExtension.TryRemove(Player, out _);
+		_timerDisposable.Dispose();
+		_mediaPlayerToExtension.Remove(Player);
 		VlcPlayer.Dispose();
 	}
 

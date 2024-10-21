@@ -19,18 +19,59 @@ public class X11MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 {
 	private readonly MediaPlayerPresenter _presenter;
 	private X11MediaPlayerExtension? _playerExtension;
-	// private X11MediaPlayerExtension? _playerExtension;
-	// private X11Window? _x11Window;
-
-	private ContentPresenter ContentPresenter => (ContentPresenter)_presenter.Child;
+	private readonly X11Window _x11Window;
 
 	public X11MediaPlayerPresenterExtension(MediaPlayerPresenter presenter)
 	{
 		_presenter = presenter;
 
-		_presenter.Child = new ContentPresenter();
+		IntPtr display = XLib.XOpenDisplay(IntPtr.Zero);
+		using var lockDisposable = X11Helper.XLock(display);
 
-		ContentPresenter.SizeChanged += (_, _) => StretchChanged();
+		if (display == IntPtr.Zero)
+		{
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+			{
+				this.Log().Error("XLIB ERROR: Cannot connect to X server");
+			}
+			throw new InvalidOperationException("XLIB ERROR: Cannot connect to X server");
+		}
+
+		int screen = XLib.XDefaultScreen(display);
+
+		_ = XLib.XFlush(display); // unnecessary on most Xlib implementations
+
+		if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Trace))
+		{
+			this.Log().Trace("Created media player window.");
+		}
+
+		_x11Window = new X11Window(display, XLib.XCreateSimpleWindow(
+			display,
+			XLib.XRootWindow(display, screen),
+			0,
+			0,
+			1,
+			1,
+			0,
+			XLib.XBlackPixel(display, screen),
+			XLib.XWhitePixel(display, screen)));
+
+		// this is important because this display is different from the display used on the main thread,
+		// so we need to make sure the window is actually created (not just queued to be created)
+		// when we manipulate it using other display handles.
+		XLib.XFlush(display);
+		XLib.XSync(display, true);
+
+		var cp = new ContentPresenter() { Content = new X11NativeWindow(_x11Window.Window) };
+		_presenter.Child = cp;
+		cp.SizeChanged += (_, _) => StretchChanged();
+	}
+
+	~X11MediaPlayerPresenterExtension()
+	{
+		using var lockDisposable = X11Helper.XLock(_x11Window.Display);
+		XLib.XDestroyWindow(_x11Window.Display, _x11Window.Window);
 	}
 
 	public void MediaPlayerChanged()
@@ -44,50 +85,9 @@ public class X11MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 				_playerExtension.Player.PlaybackSession.PlaybackStateChanged -= OnPlaybackStateChanged;
 			}
 			_playerExtension = extension;
-			extension.IsVideoChanged += OnExtensionOnIsVideoChanged;
+			_playerExtension.VlcPlayer.XWindow = (uint)(_x11Window.Window);
+			_playerExtension.IsVideoChanged += OnExtensionOnIsVideoChanged;
 			_playerExtension.Player.PlaybackSession.PlaybackStateChanged += OnPlaybackStateChanged;
-
-			var xamlRoot = _presenter.XamlRoot ?? throw new NullReferenceException($"{nameof(MediaPlayerPresenter)} must have a valid XamlRoot.");
-			var host = (X11XamlRootHost)X11Manager.XamlRootMap.GetHostForRoot(xamlRoot)!;
-
-			IntPtr display = XLib.XOpenDisplay(IntPtr.Zero);
-			using var lockDisposable = X11Helper.XLock(display);
-
-			if (display == IntPtr.Zero)
-			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
-				{
-					this.Log().Error("XLIB ERROR: Cannot connect to X server");
-				}
-				throw new InvalidOperationException("XLIB ERROR: Cannot connect to X server");
-			}
-
-			int screen = XLib.XDefaultScreen(display);
-
-			// TODO XLib.XSelectInput and X11 event loop
-
-			IntPtr window = XLib.XCreateSimpleWindow(
-				display,
-				XLib.XRootWindow(display, screen),
-				0,
-				0,
-				1,
-				1,
-				0,
-				XLib.XBlackPixel(display, screen),
-				XLib.XWhitePixel(display, screen));
-
-			_ = XLib.XFlush(display); // unnecessary on most Xlib implementations
-
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Trace))
-			{
-				this.Log().Trace("Created media player window.");
-			}
-
-			// _x11Window = new X11Window(display, window);
-			extension.VlcPlayer.XWindow = (uint)window;
-
-			ContentPresenter.Content = new X11NativeWindow(window);
 		}
 	}
 
