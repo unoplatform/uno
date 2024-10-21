@@ -3,16 +3,11 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Composition
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class AnimationController : global::Microsoft.UI.Composition.CompositionObject
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		internal AnimationController()
-		{
-		}
-#endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Microsoft.UI.Composition.AnimationControllerProgressBehavior ProgressBehavior
@@ -27,20 +22,7 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public float Progress
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float AnimationController.Progress is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20AnimationController.Progress");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.AnimationController", "float AnimationController.Progress");
-			}
-		}
-#endif
+
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public float PlaybackRate
@@ -76,26 +58,16 @@ namespace Microsoft.UI.Composition
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Composition.AnimationController.ProgressBehavior.get
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Resume()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.AnimationController", "void AnimationController.Resume()");
-		}
-#endif
 		// Forced skipping of method Microsoft.UI.Composition.AnimationController.PlaybackRate.set
 		// Forced skipping of method Microsoft.UI.Composition.AnimationController.PlaybackRate.get
 		// Forced skipping of method Microsoft.UI.Composition.AnimationController.Progress.get
 		// Forced skipping of method Microsoft.UI.Composition.AnimationController.Progress.set
 		// Forced skipping of method Microsoft.UI.Composition.AnimationController.ProgressBehavior.set
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Pause()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.AnimationController", "void AnimationController.Pause()");
-		}
-#endif
 		// Forced skipping of method Microsoft.UI.Composition.AnimationController.MaxPlaybackRate.get
 		// Forced skipping of method Microsoft.UI.Composition.AnimationController.MinPlaybackRate.get
+
+		// Skipping already declared property Progress
+		// Skipping already declared method Microsoft.UI.Composition.AnimationController.Pause()
+		// Skipping already declared method Microsoft.UI.Composition.AnimationController.Resume()
 	}
 }

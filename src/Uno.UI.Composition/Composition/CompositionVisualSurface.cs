@@ -62,5 +62,37 @@ namespace Microsoft.UI.Composition
 			get => _sourceSize;
 			set => SetProperty(ref _sourceSize, value);
 		}
+
+		internal override object GetAnimatableProperty(string propertyName, string subPropertyName)
+		{
+			if (propertyName.Equals(nameof(SourceOffset), StringComparison.OrdinalIgnoreCase))
+			{
+				return SubPropertyHelpers.GetVector2(subPropertyName, SourceOffset);
+			}
+			else if (propertyName.Equals(nameof(SourceSize), StringComparison.OrdinalIgnoreCase))
+			{
+				return SubPropertyHelpers.GetVector2(subPropertyName, SourceSize);
+			}
+			else
+			{
+				return base.GetAnimatableProperty(propertyName, subPropertyName);
+			}
+		}
+
+		private protected override void SetAnimatableProperty(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, object? propertyValue)
+		{
+			if (propertyName.Equals(nameof(SourceOffset), StringComparison.OrdinalIgnoreCase))
+			{
+				SourceOffset = SubPropertyHelpers.ValidateValue<Vector2>(propertyValue);
+			}
+			else if (propertyName.Equals(nameof(SourceSize), StringComparison.OrdinalIgnoreCase))
+			{
+				SourceSize = SubPropertyHelpers.ValidateValue<Vector2>(propertyValue);
+			}
+			else
+			{
+				base.SetAnimatableProperty(propertyName, subPropertyName, propertyValue);
+			}
+		}
 	}
 }
