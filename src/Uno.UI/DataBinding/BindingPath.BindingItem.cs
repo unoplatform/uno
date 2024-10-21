@@ -361,6 +361,12 @@ namespace Uno.UI.DataBinding
 			/// <returns>A disposable to be called when the subscription is disposed.</returns>
 			private IDisposable SubscribeToPropertyChanged()
 			{
+				if (_forAnimations)
+				{
+					// ThemeResource and animations don't need to listen to changes
+					return Disposable.Empty;
+				}
+
 				var disposables = new CompositeDisposable(_propertyChangedHandlers.Count + 1);
 				if (SubscribeToNotifyCollectionChanged(this) is { } notifyCollectionChangedDisposable)
 				{
