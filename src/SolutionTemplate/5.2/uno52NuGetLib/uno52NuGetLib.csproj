@@ -89,9 +89,9 @@
 			<!-- Validates that assets are properly included -->
 			<_AssetsToValidate Include="$(_tempNuGetOutput)\lib\net8.0-browserwasm1.0\uno52NuGetLib\Assets\test.xml" />
 			<_AssetsToValidate Include="$(_tempNuGetOutput)\lib\net8.0-desktop1.0\uno52NuGetLib\Assets\test.xml" />
-			<_AssetsToValidate Include="$(_tempNuGetOutput)\lib\net8.0-ios17.5\uno52NuGetLib\Assets\test.xml" Condition="!$([MSBuild]::IsOSPlatform('linux'))" />
+			<_AssetsToValidate Include="$(_tempNuGetOutput)\lib\net8.0-ios18.0\uno52NuGetLib\Assets\test.xml" Condition="!$([MSBuild]::IsOSPlatform('linux'))" />
 			<_AssetsToValidate Include="$(_tempNuGetOutput)\lib\net8.0-android34.0\uno52NuGetLib\Assets\test.xml" Condition="!$([MSBuild]::IsOSPlatform('linux')) AND '$(MSBuildRuntimeType)' != 'Full'" />
-			<_AssetsToValidate Include="$(_tempNuGetOutput)\lib\net8.0-maccatalyst17.5\uno52NuGetLib\Assets\test.xml" Condition="!$([MSBuild]::IsOSPlatform('linux'))" />
+			<_AssetsToValidate Include="$(_tempNuGetOutput)\lib\net8.0-maccatalyst18.0\uno52NuGetLib\Assets\test.xml" Condition="!$([MSBuild]::IsOSPlatform('linux'))" />
 			<!--
 			Assets are not properly included for winui
 			<_AssetsToValidate Include="$(_tempNuGetOutput)\lib\net8.0-windows10.0.19041\uno52NuGetLib\Assets\test.xml" />

@@ -26,7 +26,7 @@ To publish your app:
 
 In order to build for additional platforms, change the `Platform` parameter to `x86` or `arm64` to create additional MSIX files.
 
-## Publish the app
+## Publish the Windows app
 
 Publishing your app can be done through different means:
 

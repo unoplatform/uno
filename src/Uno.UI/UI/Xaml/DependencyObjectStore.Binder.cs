@@ -1,5 +1,10 @@
 ﻿#nullable enable
 
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
+// fallback option for legacy DepObj from external library generated before templated-parent rework.
+#define ENABLE_LEGACY_DO_TP_SUPPORT
+#endif
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -39,55 +44,26 @@ namespace Microsoft.UI.Xaml
 		private HashtableEx ChildrenBindableMap => _childrenBindableMap ??= new HashtableEx(DependencyPropertyComparer.Default);
 		private List<object?> ChildrenBindable => _childrenBindable ??= new List<object?>();
 
-		private bool _isApplyingTemplateBindings;
 		private bool _isApplyingDataContextBindings;
 		private bool _bindingsSuspended;
 		private readonly DependencyProperty _dataContextProperty;
-		private readonly DependencyProperty _templatedParentProperty;
 
-		/// <summary>
-		/// Sets the templated parent, with the ability to control the propagation of the templated parent.
-		/// </summary>
-		/// <param name="templatedParent">The parent to apply.</param>
-		/// <param name="applyToChildren">
-		/// Applies the templated parent to children if true. False is generally used when a control is template-able
-		/// to avoid propagating its own templated parent to its children.
-		/// </param>
+#if ENABLE_LEGACY_DO_TP_SUPPORT
+		private ManagedWeakReference? _templatedParentWeakRef;
+		internal ManagedWeakReference? GetTemplatedParentWeakRef() => _templatedParentWeakRef;
+#endif
+
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
 		public void SetTemplatedParent(FrameworkElement? templatedParent)
 		{
-			try
-			{
-				if (_isApplyingTemplateBindings || _bindingsSuspended)
-				{
-					// If we reach this point, this means that a propagation loop has been detected, and
-					// we can skip the current binder.
-					// This can happen if a DependencyObject-typed DependencyProperty contains a reference
-					// to one of its ancestors.
-					return;
-				}
-
-				_isApplyingTemplateBindings = true;
-
-				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-				{
-					this.Log().DebugFormat(
-						"{0}.ApplyTemplateBindings({1}/{2}) (h:{3:X8})",
-						_originalObjectType.ToString(),
-						templatedParent?.GetType().ToString() ?? "[null]",
-						templatedParent?.GetHashCode().ToString("X8", CultureInfo.InvariantCulture) ?? "[null]",
-						ActualInstance?.GetHashCode()
-					);
-				}
-
-				_properties.ApplyTemplatedParent(templatedParent);
-
-				ApplyChildrenBindable(templatedParent, isTemplatedParent: true);
-			}
-			finally
-			{
-				_isApplyingTemplateBindings = false;
-			}
+			// do nothing, this only exist to keep public api the same.
 		}
+#endif
+
+#if ENABLE_LEGACY_DO_TP_SUPPORT
+		internal DependencyObject? GetTemplatedParent2() => _templatedParentWeakRef?.Target as DependencyObject;
+		internal void SetTemplatedParent2(DependencyObject parent) => _templatedParentWeakRef = (parent as IWeakReferenceProvider)?.WeakReference;
+#endif
 
 		private bool IsCandidateChild([NotNullWhen(true)] object? child)
 		{
@@ -101,20 +77,8 @@ namespace Microsoft.UI.Xaml
 			return isValidEnumerable && child is IEnumerable;
 		}
 
-		private void ApplyChildrenBindable(object? inheritedValue, bool isTemplatedParent)
+		private void ApplyChildrenBindable(object? inheritedValue)
 		{
-			static void SetInherited(IDependencyObjectStoreProvider provider, object? inheritedValue, bool isTemplatedParent)
-			{
-				if (isTemplatedParent)
-				{
-					provider.Store.SetInheritedTemplatedParent(inheritedValue);
-				}
-				else
-				{
-					provider.Store.SetInheritedDataContext(inheritedValue);
-				}
-			}
-
 			if (_childrenBindable is null)
 			{
 				return;
@@ -149,7 +113,7 @@ namespace Microsoft.UI.Xaml
 
 				if (childAsStoreProvider != null)
 				{
-					SetInherited(childAsStoreProvider, inheritedValue, isTemplatedParent);
+					childAsStoreProvider.Store.SetInheritedDataContext(inheritedValue);
 				}
 				else if (child is IList list)
 				{
@@ -159,7 +123,7 @@ namespace Microsoft.UI.Xaml
 					{
 						if (list[childIndex] is IDependencyObjectStoreProvider provider2)
 						{
-							SetInherited(provider2, inheritedValue, isTemplatedParent);
+							provider2.Store.SetInheritedDataContext(inheritedValue);
 						}
 					}
 				}
@@ -169,7 +133,7 @@ namespace Microsoft.UI.Xaml
 					{
 						if (item is IDependencyObjectStoreProvider provider2)
 						{
-							SetInherited(provider2, inheritedValue, isTemplatedParent);
+							provider2.Store.SetInheritedDataContext(inheritedValue);
 						}
 					}
 				}
@@ -179,9 +143,6 @@ namespace Microsoft.UI.Xaml
 				}
 			}
 		}
-
-		private void SetInheritedTemplatedParent(object? templatedParent)
-			=> SetValue(_templatedParentProperty!, templatedParent, DependencyPropertyValuePrecedences.Inheritance, _properties.TemplatedParentPropertyDetails);
 
 		private void SetInheritedDataContext(object? dataContext)
 			=> SetValue(_dataContextProperty!, dataContext, DependencyPropertyValuePrecedences.Inheritance, _properties.DataContextPropertyDetails);
@@ -198,6 +159,11 @@ namespace Microsoft.UI.Xaml
 		internal void ApplyElementNameBindings()
 			=> _properties.ApplyElementNameBindings();
 
+		internal void ApplyTemplateBindings()
+			// Update the template-bindings when the templated-parent is late injected.
+			// Such as the case with: ElementStub materialization.
+			=> _properties.ApplyTemplateBindings();
+
 		static void InitializeStaticBinder()
 		{
 			// Register the ability for the BindingPath to subscribe to dependency property changes.
@@ -205,7 +171,6 @@ namespace Microsoft.UI.Xaml
 		}
 
 		internal DependencyProperty DataContextProperty => _dataContextProperty!;
-		internal DependencyProperty TemplatedParentProperty => _templatedParentProperty!;
 
 		/// <summary>
 		/// Restores the bindings that may have been cleared by <see cref="ClearBindings()"/>.
@@ -324,7 +289,7 @@ namespace Microsoft.UI.Xaml
 		private void ApplyDataContext(object? actualDataContext)
 		{
 			_properties.ApplyDataContext(actualDataContext);
-			ApplyChildrenBindable(actualDataContext, isTemplatedParent: false);
+			ApplyChildrenBindable(actualDataContext);
 		}
 
 		private IDisposable? TryWriteDataContextChangedEventActivity()

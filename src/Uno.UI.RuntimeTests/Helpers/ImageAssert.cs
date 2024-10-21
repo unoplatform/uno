@@ -106,8 +106,9 @@ public static partial class ImageAssert
 				.AppendLine($"Color at ({x},{y}) is not expected")
 				.AppendLine($"expected: {ToArgbCode(expectedColor)} {expectedColor}")
 				.AppendLine($"actual  : {ToArgbCode(pixel)} {pixel}")
-				.AppendLine($"tolerance: {tolerance}")
+				.AppendLine($"tolerance : {tolerance}")
 				.AppendLine($"difference: {difference}")
+				.AppendLine($"screenshot size: {bitmap.Width}x{bitmap.Height}")
 			));
 		}
 
@@ -173,8 +174,10 @@ public static partial class ImageAssert
 			var x = expectation.Location.X;
 			var y = expectation.Location.Y;
 
-			Assert.IsTrue(bitmap.Width >= x);
-			Assert.IsTrue(bitmap.Height >= y);
+			Assert.IsTrue(
+				bitmap.Width >= x && bitmap.Height >= y,
+				$"Expectation '{expectation.Name}'@{x},{y} is outside of the provided bitmap ({bitmap.Width}x{bitmap.Height})"
+			);
 
 			var result = new StringBuilder();
 			result.AppendLine(expectation.Name);

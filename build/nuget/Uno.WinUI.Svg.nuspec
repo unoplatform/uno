@@ -56,14 +56,14 @@
 
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 			</group>
-			<group targetFramework="net9.0-ios17.5">
+			<group targetFramework="net9.0-ios18.0">
 				<dependency id="Svg.Skia" version="1.0.0.1" />
 				<dependency id="SkiaSharp.Views.Uno" version="2.88.7" />
 				<dependency id="SkiaSharp.NativeAssets.ios" version="2.88.7" />
 
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 			</group>
-			<group targetFramework="net9.0-maccatalyst17.5">
+			<group targetFramework="net9.0-maccatalyst18.0">
 				<dependency id="Svg.Skia" version="1.0.0.1" />
 				<dependency id="SkiaSharp.Views.Uno" version="2.88.7" />
 				<dependency id="SkiaSharp.NativeAssets.maccatalyst" version="2.88.7" />
@@ -73,10 +73,10 @@
 		</dependencies>
 
 		<references>
-			<group targetFramework="net9.0-ios17.5">
+			<group targetFramework="net9.0-ios18.0">
 				<reference file="Uno.UI.Svg.dll" />
 			</group>
-			<group targetFramework="net9.0-maccatalyst17.5">
+			<group targetFramework="net9.0-maccatalyst18.0">
 				<reference file="Uno.UI.Svg.dll" />
 			</group>
 			<group targetFramework="net9.0-android">
@@ -109,8 +109,8 @@
 		<file src="..\..\src\AddIns\Uno.UI.Svg\bin\Uno.UI.Svg.netcoremobile\Release\net8.0-maccatalyst17.0\Uno.UI.Svg.dll" target="lib\net8.0-maccatalyst17.0" />
 
 		<file src="..\..\src\AddIns\Uno.UI.Svg\bin\Uno.UI.Svg.netcoremobile\Release\net9.0-android\Uno.UI.Svg.dll" target="lib\net9.0-android" />
-		<file src="..\..\src\AddIns\Uno.UI.Svg\bin\Uno.UI.Svg.netcoremobile\Release\net9.0-ios17.5\Uno.UI.Svg.dll" target="lib\net9.0-ios17.5" />
-		<file src="..\..\src\AddIns\Uno.UI.Svg\bin\Uno.UI.Svg.netcoremobile\Release\net9.0-maccatalyst17.5\Uno.UI.Svg.dll" target="lib\net9.0-maccatalyst17.5" />
+		<file src="..\..\src\AddIns\Uno.UI.Svg\bin\Uno.UI.Svg.netcoremobile\Release\net9.0-ios18.0\Uno.UI.Svg.dll" target="lib\net9.0-ios18.0" />
+		<file src="..\..\src\AddIns\Uno.UI.Svg\bin\Uno.UI.Svg.netcoremobile\Release\net9.0-maccatalyst18.0\Uno.UI.Svg.dll" target="lib\net9.0-maccatalyst18.0" />
 
 		<!-- Build targets -->
 		<file src="..\..\src\AddIns\Uno.UI.Svg\buildTransitive\*" target="buildTransitive" />

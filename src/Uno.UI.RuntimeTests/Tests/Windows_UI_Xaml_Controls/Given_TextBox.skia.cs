@@ -21,6 +21,7 @@ using static Private.Infrastructure.TestServices;
 using Color = Windows.UI.Color;
 using Point = Windows.Foundation.Point;
 using System.Runtime.InteropServices;
+using SamplesApp.UITests;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -2280,6 +2281,48 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			""";
 
 			Assert.AreEqual(expected.Replace("\r\n", "\n"), output);
+		}
+
+		[TestMethod]
+		[UnoWorkItem("https://github.com/unoplatform/uno/issues/18371")]
+		public async Task When_BeforeTextChanging_Resets_Selection_Direction()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Text = "adasgasg"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Select(SUT.Text.Length, 0);
+			await WindowHelper.WaitForIdle();
+
+			// Select from the end to right after the first character
+			for (int i = 0; i < SUT.Text.Length - 1; i++)
+			{
+				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, VirtualKeyModifiers.Shift));
+			}
+
+			SUT.BeforeTextChanging += (_, args) => args.Cancel = args.NewText == "as";
+
+			var selectionChangedCount = 0;
+			SUT.SelectionChanged += (_, _) => selectionChangedCount++;
+
+			await KeyboardHelper.InputText("s");
+			Assert.AreEqual(0, selectionChangedCount);
+
+			// when we press Shift+Left now, the selection "end" is on the right, so the selection shrinks.
+			Assert.AreEqual(SUT.Text.Length - 1, SUT.SelectionLength);
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, VirtualKeyModifiers.Shift));
+			Assert.AreEqual(SUT.Text.Length - 2, SUT.SelectionLength);
 		}
 
 		[TestMethod]

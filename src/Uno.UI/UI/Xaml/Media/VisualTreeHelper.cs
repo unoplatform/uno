@@ -393,31 +393,6 @@ namespace Microsoft.UI.Xaml.Media
 		{
 #if __ANDROID__
 			view.AddView(child);
-
-			// Reset to original (invalidated) state
-			child.ResetLayoutFlags();
-			if (view.IsMeasureDirtyPathDisabled)
-			{
-				FrameworkElementHelper.SetUseMeasurePathDisabled(child); // will invalidate too
-			}
-			else
-			{
-				child.InvalidateMeasure();
-			}
-
-			if (view.IsArrangeDirtyPathDisabled)
-			{
-				FrameworkElementHelper.SetUseArrangePathDisabled(child); // will invalidate too
-			}
-			else
-			{
-				child.InvalidateArrange();
-			}
-
-			// Force a new measure of this element (the parent of the new child)
-			view.InvalidateMeasure();
-			view.InvalidateArrange();
-
 #elif __IOS__ || __MACOS__
 			view.AddSubview(child);
 #elif __CROSSRUNTIME__
@@ -542,9 +517,14 @@ namespace Microsoft.UI.Xaml.Media
 
 			// The maximum region where the current element and its children might draw themselves
 			// This is expressed in the window (absolute) coordinate space.
-			var clippingBounds = element.Visual.GetViewBoxPathInElementCoordinateSpace() is { } path
-				? transformToElement.Transform(path.TightBounds.ToRect())
-				: Rect.Infinite;
+			Rect clippingBounds;
+			using (SkiaHelper.GetTempSKPath(out var viewBoxPath))
+			{
+				clippingBounds = element.Visual.GetViewBoxPathInElementCoordinateSpace(viewBoxPath)
+					? transformToElement.Transform(viewBoxPath.TightBounds.ToRect())
+					: Rect.Infinite;
+			}
+
 
 			if (element.Visual.Clip?.GetBounds(element.Visual) is { } clip)
 			{

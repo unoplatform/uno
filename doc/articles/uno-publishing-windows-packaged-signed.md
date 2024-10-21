@@ -85,7 +85,7 @@ To build your solution:
 
   Notice that this command does not contain the `/r`.
 
-## Install the signed app
+## Install the signed Windows app
 
 To install the app:
 

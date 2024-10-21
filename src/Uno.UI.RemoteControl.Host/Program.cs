@@ -9,7 +9,9 @@ using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.ComponentModel;
 using System.Threading.Tasks;
+using Uno.UI.RemoteControl.Host.Extensibility;
 using Uno.UI.RemoteControl.Host.IdeChannel;
+using Uno.UI.RemoteControl.Services;
 
 namespace Uno.UI.RemoteControl.Host
 {
@@ -19,8 +21,10 @@ namespace Uno.UI.RemoteControl.Host
 		{
 			var httpPort = 0;
 			var parentPID = 0;
+			var solution = default(string);
 
-			var p = new OptionSet() {
+			var p = new OptionSet
+			{
 				{
 					"httpPort=", s => {
 						if(!int.TryParse(s, NumberStyles.Integer, CultureInfo.InvariantCulture, out httpPort))
@@ -35,6 +39,17 @@ namespace Uno.UI.RemoteControl.Host
 						{
 							throw new ArgumentException($"The parent process id parameter is invalid {s}");
 						}
+					}
+				},
+				{
+					"solution=", s =>
+					{
+						if (string.IsNullOrWhiteSpace(s) || !File.Exists(s))
+						{
+							throw new ArgumentException($"The provided solution path '{s}' does not exists");
+						}
+
+						solution = s;
 					}
 				}
 			};
@@ -63,12 +78,18 @@ namespace Uno.UI.RemoteControl.Host
 				})
 				.ConfigureServices(services =>
 				{
-					services.AddSingleton<IIdeChannelServerProvider, IdeChannelServerProvider>();
+					services.AddSingleton<IIdeChannel, IdeChannelServer>();
 				});
+
+			if (solution is not null)
+			{
+				// For backward compatibility, we allow to not have a solution file specified.
+				builder.ConfigureAddIns(solution);
+			}
 
 			var host = builder.Build();
 
-			host.Services.GetService<IIdeChannelServerProvider>();
+			host.Services.GetService<IIdeChannel>();
 
 			using var parentObserver = ParentProcessObserver.Observe(host, parentPID);
 

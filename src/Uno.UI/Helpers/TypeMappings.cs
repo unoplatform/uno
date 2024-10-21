@@ -94,6 +94,7 @@ public static class TypeMappings
 	{
 		AllMappedTypeToOriginalTypeMappings[mappedType] = originalType;
 		AllOriginalTypeToMappedType[originalType] = mappedType;
+
 		if (_mappingsPaused is null)
 		{
 			MappedTypeToOriginalTypeMappings[mappedType] = originalType;
@@ -114,19 +115,7 @@ public static class TypeMappings
 		AllOriginalTypeToMappedType.Clear();
 	}
 
-	private static TaskCompletionSource<bool> _mappingsPaused;
-
-	/// <summary>
-	/// Gets a Task that can be awaited to ensure type mappings
-	/// are being applied. This is useful particularly for testing 
-	/// HR the pause/resume function of type mappings
-	/// </summary>
-	/// <returns>A task that will complete when type mapping collection
-	/// has resumed. Returns a completed task if type mapping collection
-	/// is currently active.</returns>
-	[Obsolete("Use WaitForResume instead")]
-	public static Task WaitForMappingsToResume()
-		=> WaitForResume();
+	private static TaskCompletionSource _mappingsPaused;
 
 	/// <summary>
 	/// Gets a Task that can be awaited to ensure type mappings
@@ -137,8 +126,13 @@ public static class TypeMappings
 	/// has resumed. Returns a completed task if type mapping collection
 	/// is currently active
 	/// The value (bool) returned from the task indicates whether the layout should be updated</returns>
-	public static Task<bool> WaitForResume()
+	public static Task WaitForResume()
 		=> _mappingsPaused is not null ? _mappingsPaused.Task : Task.FromResult(true);
+
+	/// <summary>
+	/// Gets whether type mappings are currently paused 
+	/// </summary>
+	public static bool IsPaused => _mappingsPaused is not null;
 
 
 	/// <summary>
@@ -146,8 +140,7 @@ public static class TypeMappings
 	/// Internally the type mappings are still collected but will only be
 	/// applied to the mapping dictionaries after Resume is called
 	/// </summary>
-	public static void Pause()
-		=> _mappingsPaused ??= new TaskCompletionSource<bool>();
+	public static void Pause() => Interlocked.CompareExchange(ref _mappingsPaused, new TaskCompletionSource(), null);
 
 	/// <summary>
 	/// Resumes the collection of type mappings
@@ -156,22 +149,12 @@ public static class TypeMappings
 	/// the WaitForResume task completes
 	/// </summary>
 	public static void Resume()
-		=> Resume(true);
-
-	/// <summary>
-	/// Resumes the collection of type mappings
-	/// If new types have been created whilst type mapping
-	/// was paused, those new mappings will be applied before
-	/// the WaitForResume task completes
-	/// </summary>
-	/// <param name="updateLayout">Indicates whether the layout should be updated after resuming updates</param>
-	public static void Resume(bool updateLayout)
 	{
 		if (Interlocked.Exchange(ref _mappingsPaused, null) is { } completion)
 		{
 			MappedTypeToOriginalTypeMappings = new Dictionary<Type, Type>(AllMappedTypeToOriginalTypeMappings);
 			OriginalTypeToMappedType = new Dictionary<Type, Type>(AllOriginalTypeToMappedType);
-			completion.TrySetResult(updateLayout);
+			completion.TrySetResult();
 		}
 	}
 }

@@ -140,7 +140,6 @@ public partial class TextBox
 		}
 		else
 		{
-			global::System.Diagnostics.CI.Assert(!_isSkiaTextBox || _selection.length == 0);
 			_historyIndex++;
 			_history.RemoveAllAt(_historyIndex);
 			_history.Add(new HistoryRecord(
@@ -240,11 +239,13 @@ public partial class TextBox
 							var caretRect = args.rect;
 							var compositor = _visual.Compositor;
 							var brush = DefaultBrushes.TextForegroundBrush.GetOrCreateCompositionBrush(compositor);
-							var caretPaint = new SKPaint(); // we create a new caret everytime to dodge the complications that occur when trying to "reset" an SKPaint.
-							brush.UpdatePaint(caretPaint, caretRect.ToSKRect());
-							args.canvas.DrawRect(
-								new SKRect((float)caretRect.Left, (float)caretRect.Top, (float)caretRect.Right,
-									(float)caretRect.Bottom), caretPaint);
+							using (SkiaHelper.GetTempSKPaint(out var caretPaint))
+							{
+								brush.UpdatePaint(caretPaint, caretRect.ToSKRect());
+								args.canvas.DrawRect(
+									new SKRect((float)caretRect.Left, (float)caretRect.Top, (float)caretRect.Right,
+										(float)caretRect.Bottom), caretPaint);
+							}
 						}
 
 						if ((CaretMode == CaretDisplayMode.CaretWithThumbsOnlyEndShowing && args.endCaret) ||

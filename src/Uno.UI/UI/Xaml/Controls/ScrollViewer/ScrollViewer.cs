@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using Uno.Disposables;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -121,15 +122,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 			UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewer.GetUpdatesMode(this);
 			InitializePartial();
-
-
-			this.RegisterParentChangedCallback(this, (_, _, args) =>
-			{
-				if (args.NewParent is null)
-				{
-					ClearContentTemplatedParent(Content);
-				}
-			});
 		}
 
 		partial void InitializePartial();
@@ -508,7 +500,7 @@ namespace Microsoft.UI.Xaml.Controls
 				"ComputedHorizontalScrollBarVisibility",
 				typeof(Visibility),
 				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(Visibility.Collapsed)); // This has to be collapsed by default to allow deferred loading of the template
+				new FrameworkPropertyMetadata(Visibility.Visible));
 
 		public Visibility ComputedHorizontalScrollBarVisibility
 		{
@@ -523,7 +515,7 @@ namespace Microsoft.UI.Xaml.Controls
 				"ComputedVerticalScrollBarVisibility",
 				typeof(Visibility),
 				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(Visibility.Collapsed)); // This has to be collapsed by default to allow deferred loading of the template
+				new FrameworkPropertyMetadata(Visibility.Visible));
 
 		public Visibility ComputedVerticalScrollBarVisibility
 		{
@@ -667,7 +659,9 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			ViewportMeasureSize = availableSize;
 
-			return base.MeasureOverride(availableSize);
+			var size = base.MeasureOverride(availableSize);
+
+			return size;
 		}
 
 		protected override Size ArrangeOverride(Size finalSize)
@@ -677,6 +671,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var arrangeSize = base.ArrangeOverride(finalSize);
 			TrimOverscroll(Orientation.Horizontal);
 			TrimOverscroll(Orientation.Vertical);
+
 			return arrangeSize;
 		}
 
@@ -708,14 +703,11 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 			void UpdateDimensionProperties()
 		{
-			if (this.Log().IsEnabled(LogLevel.Debug)
-				&& (ActualHeight != ViewportHeight || ActualWidth != ViewportWidth)
-			)
-			{
-				this.Log().LogDebug($"ScrollViewer setting ViewportHeight={ActualHeight}, ViewportWidth={ActualWidth}");
-			}
+			// The dimensions of the presenter (which are often but not always the same as the ScrollViewer) determine the viewport size
+			var vpHeight = (_presenter as IFrameworkElement)?.ActualHeight ?? ActualHeight;
+			var vpWidth = (_presenter as IFrameworkElement)?.ActualWidth ?? ActualWidth;
 
-			if (ActualWidth == 0 || ActualHeight == 0)
+			if (vpHeight == 0 || vpWidth == 0)
 			{
 				// Do not update properties if we don't have any valid size yet.
 				// This is useful essentially for the first size changed on the Content,
@@ -726,9 +718,14 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			// The dimensions of the presenter (which are often but not always the same as the ScrollViewer) determine the viewport size
-			ViewportHeight = (_presenter as IFrameworkElement)?.ActualHeight ?? ActualHeight;
-			ViewportWidth = (_presenter as IFrameworkElement)?.ActualWidth ?? ActualWidth;
+			if ((ActualHeight != vpHeight || ActualWidth != vpWidth) &&
+				this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"ScrollViewer setting ViewportHeight={ActualHeight}, ViewportWidth={ActualWidth}");
+			}
+
+			ViewportHeight = vpHeight;
+			ViewportWidth = vpWidth;
 
 			var oldSize = new Size(ExtentWidth, ExtentHeight);
 
@@ -739,74 +736,58 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else if (Content is FrameworkElement fe)
 			{
-				var explicitHeight = fe.Height;
-				var extentHeight = 0d;
-				var extentWidth = 0d;
-				var marginWidthAlreadyIncluded = false;
-				var marginHeightAlreadyIncluded = false;
-				if (explicitHeight.IsFinite())
+				double CalculateExtent(double @explicit, double actual, double desired, bool isStretchAlign, double margin)
 				{
-					extentHeight = explicitHeight;
-				}
-				else
-				{
-					var canUseActualHeightAsExtent =
-						fe.ActualHeight > 0 &&
-						fe.VerticalAlignment == VerticalAlignment.Stretch;
+					var shouldIncludeMargin = true;
+					var extent = default(double);
+					if (@explicit.IsFinite())
+					{
+						extent = @explicit;
+					}
+					else
+					{
+						if (actual > 0 && isStretchAlign)
+						{
+							extent = LayoutRoundIfNeeded(fe, actual);
+						}
+						else
+						{
+							// desired size has margin built-in already.
+							shouldIncludeMargin = false;
+							extent = desired;
+						}
+					}
 
-					extentHeight = canUseActualHeightAsExtent ? LayoutRoundIfNeeded(fe, fe.ActualHeight) : fe.DesiredSize.Height;
-
-					// DesiredSize already includes margins.
-					marginHeightAlreadyIncluded = !canUseActualHeightAsExtent;
+					return shouldIncludeMargin ? (extent + margin) : extent;
 				}
 
-				if (marginHeightAlreadyIncluded)
-				{
-					ExtentHeight = extentHeight;
-				}
-				else
-				{
-#if __WASM__
+				ExtentHeight = CalculateExtent(
+					fe.Height,
+					fe.ActualHeight,
+					fe.DesiredSize.Height,
+					fe.VerticalAlignment == VerticalAlignment.Stretch,
+#if !__WASM__
+					fe.Margin.Top + fe.Margin.Bottom
+#else
 					// Issue needs to be fixed first for WASM for Bottom Margin missing
 					// Details here: https://github.com/unoplatform/uno/issues/7000
-					ExtentHeight = extentHeight + fe.Margin.Top;
-#else
-					ExtentHeight = extentHeight + fe.Margin.Top + fe.Margin.Bottom;
+					fe.Margin.Top
 #endif
-				}
+				);
 
-
-				var explicitWidth = fe.Width;
-				if (explicitWidth.IsFinite())
-				{
-					extentWidth = explicitWidth;
-				}
-				else
-				{
-					var canUseActualWidthAsExtent =
-						fe.ActualWidth > 0 &&
-						fe.HorizontalAlignment == HorizontalAlignment.Stretch;
-
-					extentWidth = canUseActualWidthAsExtent ? LayoutRoundIfNeeded(fe, fe.ActualWidth) : fe.DesiredSize.Width;
-
-					// DesiredSize already includes margins.
-					marginWidthAlreadyIncluded = !canUseActualWidthAsExtent;
-				}
-
-				if (marginWidthAlreadyIncluded)
-				{
-					ExtentWidth = extentWidth;
-				}
-				else
-				{
-#if __WASM__
+				ExtentWidth = CalculateExtent(
+					fe.Width,
+					fe.ActualWidth,
+					fe.DesiredSize.Width,
+					fe.HorizontalAlignment == HorizontalAlignment.Stretch,
+#if !__WASM__
+					fe.Margin.Left + fe.Margin.Right
+#else
 					// Issue needs to be fixed first for WASM for Right Margin missing
 					// Details here: https://github.com/unoplatform/uno/issues/7000
-					ExtentWidth = extentWidth + fe.Margin.Left;
-#else
-					ExtentWidth = extentWidth + fe.Margin.Left + fe.Margin.Right;
+					fe.Margin.Left
 #endif
-				}
+				);
 			}
 			else
 			{
@@ -1065,16 +1046,9 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		#region Content and TemplatedParent forwarding to the ScrollContentPresenter
+		#region Content forwarding to the ScrollContentPresenter
 		protected override void OnContentChanged(object? oldValue, object? newValue)
 		{
-			if (oldValue is not null && !ReferenceEquals(oldValue, newValue))
-			{
-				// remove the explicit templated parent propagation
-				// for the lack of TemplatedParentScope support
-				ClearContentTemplatedParent(oldValue);
-			}
-
 			base.OnContentChanged(oldValue, newValue);
 
 			if (_presenter is not null)
@@ -1089,71 +1063,27 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void ApplyScrollContentPresenterContent(object? content)
 		{
-			// Stop the automatic propagation of the templated parent on the Content
-			// This prevents issues when the a ScrollViewer is hosted in a control template
-			// and its content is a ContentControl or ContentPresenter, which has a TemplateBinding
-			// on the Content property. This can make the Content added twice in the visual tree.
-			// cf. https://github.com/unoplatform/uno/issues/3762
-			if (content is IDependencyObjectStoreProvider provider)
-			{
-				var contentTemplatedParent = provider.Store.GetValue(provider.Store.TemplatedParentProperty);
-				if (contentTemplatedParent == null || contentTemplatedParent != TemplatedParent)
-				{
-					// Note: Even if the TemplatedParent is already null, we make sure to set it with the local precedence
-					provider.Store.SetValue(provider.Store.TemplatedParentProperty, null, DependencyPropertyValuePrecedences.Local);
-				}
-			}
-
 			// Then explicitly propagate the Content to the _presenter
 			if (_presenter != null)
 			{
 				_presenter.Content = content as View;
 			}
-
-			// Propagate the ScrollViewer's own templated parent, instead of
-			// the scrollviewer itself (through ScrollContentPresenter)
-			SynchronizeContentTemplatedParent(TemplatedParent);
 		}
 
 		private void UpdateSizeChangedSubscription(bool isCleanupRequired = false)
 		{
-			// TODO HERE
-			if (!isCleanupRequired
-				&& Content is IFrameworkElement element)
+			_sizeChangedSubscription.Disposable = null;
+			if (!isCleanupRequired &&
+				Content is IFrameworkElement element)
 			{
-				_sizeChangedSubscription.Disposable = Disposable.Create(() => element.SizeChanged -= OnElementSizeChanged);
 				element.SizeChanged += OnElementSizeChanged;
-			}
-			else
-			{
-				_sizeChangedSubscription.Disposable = null;
+				_sizeChangedSubscription.Disposable = Disposable.Create(() =>
+					element.SizeChanged -= OnElementSizeChanged
+				);
 			}
 
 			void OnElementSizeChanged(object sender, SizeChangedEventArgs args)
 				=> UpdateDimensionProperties();
-		}
-
-		protected internal override void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnTemplatedParentChanged(e);
-
-			SynchronizeContentTemplatedParent(e.NewValue as DependencyObject);
-		}
-
-		private void SynchronizeContentTemplatedParent(DependencyObject? templatedParent)
-		{
-			if (Content is View && Content is IDependencyObjectStoreProvider provider)
-			{
-				provider.Store.SetValue(provider.Store.TemplatedParentProperty, templatedParent, DependencyPropertyValuePrecedences.Local);
-			}
-		}
-
-		private void ClearContentTemplatedParent(object? oldContent)
-		{
-			if (oldContent is IDependencyObjectStoreProvider provider)
-			{
-				provider.Store.ClearValue(provider.Store.TemplatedParentProperty, DependencyPropertyValuePrecedences.Local);
-			}
 		}
 		#endregion
 

@@ -16,10 +16,7 @@ namespace Microsoft.UI.Xaml
 		private readonly ManagedWeakReference _ownerReference;
 		private object? _hardOwnerReference;
 		private readonly DependencyProperty _dataContextProperty;
-		private readonly DependencyProperty _templatedParentProperty;
-
 		private DependencyPropertyDetails? _dataContextPropertyDetails;
-		private DependencyPropertyDetails? _templatedParentPropertyDetails;
 
 		private readonly static ArrayPool<short> _offsetsPool = ArrayPool<short>.Shared;
 		private readonly static LinearArrayPool<DependencyPropertyDetails?> _pool = LinearArrayPool<DependencyPropertyDetails?>.CreateAutomaticallyManaged(BucketSize, 16);
@@ -36,12 +33,11 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Creates an instance using the specified DependencyObject <see cref="Type"/>
 		/// </summary>
-		public DependencyPropertyDetailsCollection(ManagedWeakReference ownerReference, DependencyProperty dataContextProperty, DependencyProperty templatedParentProperty)
+		public DependencyPropertyDetailsCollection(ManagedWeakReference ownerReference, DependencyProperty dataContextProperty)
 		{
 			_ownerReference = ownerReference;
 
 			_dataContextProperty = dataContextProperty;
-			_templatedParentProperty = templatedParentProperty;
 
 			_entries = _empty;
 		}
@@ -109,9 +105,6 @@ namespace Microsoft.UI.Xaml
 
 		public DependencyPropertyDetails DataContextPropertyDetails
 			=> _dataContextPropertyDetails ??= GetPropertyDetails(_dataContextProperty);
-
-		public DependencyPropertyDetails TemplatedParentPropertyDetails
-			=> _templatedParentPropertyDetails ??= GetPropertyDetails(_templatedParentProperty);
 
 		/// <summary>
 		/// Gets the <see cref="DependencyPropertyDetails"/> for a specific <see cref="DependencyProperty"/>
@@ -194,7 +187,7 @@ namespace Microsoft.UI.Xaml
 
 				if (propertyEntry == null)
 				{
-					propertyEntry = new DependencyPropertyDetails(property, property == _dataContextProperty || property == _templatedParentProperty);
+					propertyEntry = new DependencyPropertyDetails(property, property == _dataContextProperty);
 				}
 
 				return propertyEntry;

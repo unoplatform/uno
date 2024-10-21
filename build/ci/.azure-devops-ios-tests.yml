@@ -149,10 +149,10 @@ jobs:
   - bash: |
       cd $(BUILD.SOURCESDIRECTORY)/src/SamplesApp/SamplesApp.netcoremobile
       dotnet publish \
-        -f net8.0-ios \
+        -f net9.0-ios \
         -c Release \
         -p:BuildForTestFlight=true \
-        -p:UnoTargetFrameworkOverride=net8.0-ios \
+        -p:UnoTargetFrameworkOverride=net9.0-ios \
         /bl:$(build.artifactstagingdirectory)/ios-netcoremobile-sampleapp-testflight.binlog
 
     displayName: Build iOS App for TestFlight
@@ -164,7 +164,7 @@ jobs:
 
   - task: CopyFiles@2
     inputs:
-      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.netcoremobile/bin/Release/net8.0-ios/ios-arm64/publish
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.netcoremobile/bin/Release/net9.0-ios/ios-arm64/publish
       Contents: '**'
       TargetFolder: $(build.artifactstagingdirectory)/TestFlight
       CleanTargetFolder: false

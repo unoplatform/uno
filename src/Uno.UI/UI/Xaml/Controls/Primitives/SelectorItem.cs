@@ -36,6 +36,12 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			public const string Disabled = "Disabled";
 		}
 
+		private static class MultiSelectStates
+		{
+			public const string MultiSelectEnabled = "MultiSelectEnabled";
+			public const string MultiSelectDisabled = "MultiSelectDisabled";
+		}
+
 		private enum ManipulationUpdateKind
 		{
 			None = 0,
@@ -89,6 +95,13 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			AddHandler(PointerCaptureLostEvent, _onPointerExitedOrCanceled, handledEventsToo: true);
 		}
 
+		protected override void OnApplyTemplate()
+		{
+			base.OnApplyTemplate();
+
+			UpdateVisualStates(useTransitions: IsLoaded);
+		}
+
 		private protected Selector Selector => ItemsControl.ItemsControlFromItemContainer(this) as Selector;
 
 		internal override UIElement VisualParent => Selector ?? base.VisualParent;
@@ -108,39 +121,14 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs e)
 		{
-			var disabledStates = e.NewValue ? DisabledStates.Enabled : DisabledStates.Disabled;
-			VisualStateManager.GoToState(this, disabledStates, true);
+			UpdateDisabledStates(useTransitions: IsLoaded);
 
 			base.OnIsEnabledChanged(e);
 		}
 
-		/// <summary>
-		/// Set appropriate visual state from MultiSelectStates group. (https://msdn.microsoft.com/en-us/library/windows/apps/mt299136.aspx)
-		/// </summary>
-		internal void ApplyMultiSelectState(bool isSelectionMultiple)
-		{
-			if (isSelectionMultiple && Selector is not ListViewBase { IsMultiSelectCheckBoxEnabled: false })
-			{
-				// We can safely always go to multiselect state
-				VisualStateManager.GoToState(this, "MultiSelectEnabled", useTransitions: true);
-			}
-			else
-			{
-				// Retrieve the current state (which 'lives' on the SelectorItem's template root, and may change if it is retemplated)
-				var currentState = VisualStateManager.GetCurrentState(this, "MultiSelectStates")?.Name;
-
-				if (currentState == "MultiSelectEnabled")
-				{
-					// The MultiSelectDisabled state goes through VisibleRect then collapsed, which means Disabled state can't be
-					// invoked if the state is already disabled without having the selected check box appearing briefly. (Issue #403)
-					VisualStateManager.GoToState(this, "MultiSelectDisabled", useTransitions: true);
-				}
-			}
-		}
-
 		partial void OnIsSelectedChangedPartial(bool oldIsSelected, bool newIsSelected)
 		{
-			UpdateCommonStates();
+			UpdateCommonStates(useTransitions: IsLoaded);
 			OnIsSelectedChanged();
 
 			Selector?.NotifyListItemSelected(this, oldIsSelected, newIsSelected);
@@ -148,20 +136,30 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		internal protected virtual void OnIsSelectedChanged() { }
 
-		private void UpdateCommonStatesWithoutNeedsLayout(PointerDeviceType deviceType, ManipulationUpdateKind manipulationUpdate)
+		private void UpdateCommonStatesWithoutNeedsLayout(bool useTransitions, PointerDeviceType deviceType, ManipulationUpdateKind manipulationUpdate)
 		{
 			using (InterceptSetNeedsLayout())
 			{
-				UpdateCommonStates(deviceType == PointerDeviceType.Mouse, manipulationUpdate);
+				UpdateCommonStates(useTransitions, deviceType == PointerDeviceType.Mouse, manipulationUpdate);
 			}
 		}
 
-		private void UpdateCommonStates(bool isMouse = false, ManipulationUpdateKind manipulationUpdate = ManipulationUpdateKind.None)
+		private void UpdateVisualStates(bool useTransitions)
+		{
+			if (GetTemplateRoot() is { })
+			{
+				UpdateCommonStates(useTransitions);
+				UpdateDisabledStates(useTransitions);
+				UpdateMultiSelectStates(useTransitions);
+			}
+		}
+
+		private void UpdateCommonStates(bool useTransitions, bool isMouse = false, ManipulationUpdateKind manipulationUpdate = ManipulationUpdateKind.None)
 		{
 			// On Windows, the pressed state appears only after a few, and won't appear at all if you quickly start to scroll with the finger.
 			// So here we make sure to delay the beginning of a manipulation to match this behavior (and avoid flickering when scrolling)
 			// We also make sure that when user taps (Enter->Pressed->Move*->Release->Exit) on the item, he is able to see the pressed (selected) state.
-			var state = GetState(IsEnabled, IsSelected, IsPointerOver, _canRaiseClickOnPointerRelease);
+			var state = GetCommonState(IsEnabled, IsSelected, IsPointerOver, _canRaiseClickOnPointerRelease);
 			var requestId = ++_goToStateRequest; // Request ID is use to ensure to apply only the last requested state.
 
 			TimeSpan delay; // delay to apply the 'state'
@@ -172,9 +170,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			{
 				// When clicked (i.e. pointer released), but not yet in pressed state, we force to go immediately in pressed state
 				// Then we let the standard go to state process (i.e. with delay handling) reach the final expected state.
-				var pressedState = GetState(IsEnabled, IsSelected, IsPointerOver, isPressed: true);
+				var pressedState = GetCommonState(IsEnabled, IsSelected, IsPointerOver, isPressed: true);
 				_currentState = pressedState;
-				VisualStateManager.GoToState(this, pressedState, true);
+				VisualStateManager.GoToState(this, pressedState, useTransitions);
 
 				_pauseStateUpdateUntil = _chronometer.Elapsed + MinTimeBetweenPressStates;
 
@@ -188,7 +186,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				if (isMouse)
 				{
 					_currentState = state;
-					VisualStateManager.GoToState(this, state, true);
+					VisualStateManager.GoToState(this, state, useTransitions);
 					return;
 				}
 
@@ -204,7 +202,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			if (delay <= TimeSpan.Zero)
 			{
 				_currentState = state;
-				VisualStateManager.GoToState(this, state, true);
+				VisualStateManager.GoToState(this, state, useTransitions);
 			}
 			else
 			{
@@ -234,7 +232,34 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 		}
 
-		private string GetState(bool isEnabled, bool isSelected, bool isOver, bool isPressed)
+		private void UpdateDisabledStates(bool useTransitions)
+		{
+			// TODO: This may need to be adjusted later when we remove the Visual State mixins.
+			var state = IsEnabled ? DisabledStates.Enabled : DisabledStates.Disabled;
+			VisualStateManager.GoToState(this, state, useTransitions);
+		}
+
+		internal void UpdateMultiSelectStates(bool useTransitions)
+		{
+			if (Selector is ListViewBase { SelectionMode: ListViewSelectionMode.Multiple, IsMultiSelectCheckBoxEnabled: true })
+			{
+				// We can safely always go to multiselect state
+				VisualStateManager.GoToState(this, MultiSelectStates.MultiSelectEnabled, useTransitions);
+			}
+			else
+			{
+				// Retrieve the current state (which 'lives' on the SelectorItem's template root, and may change if it is re-templated)
+				var currentState = VisualStateManager.GetCurrentState(this, nameof(MultiSelectStates))?.Name;
+				if (currentState == MultiSelectStates.MultiSelectEnabled)
+				{
+					// The MultiSelectDisabled state goes through VisibleRect then collapsed, which means Disabled state can't be
+					// invoked if the state is already disabled without having the selected check box appearing briefly. (Issue #403)
+					VisualStateManager.GoToState(this, MultiSelectStates.MultiSelectDisabled, useTransitions);
+				}
+			}
+		}
+
+		private string GetCommonState(bool isEnabled, bool isSelected, bool isOver, bool isPressed)
 		{
 			var state = CommonStates.Normal;
 
@@ -293,11 +318,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			FocusableInTouchMode = true;
 #endif
 
-			UpdateCommonStates();
-
-			// TODO: This may need to be adjusted later when we remove the Visual State mixins.
-			var state = IsEnabled ? DisabledStates.Enabled : DisabledStates.Disabled;
-			VisualStateManager.GoToState(this, state, true);
+			UpdateVisualStates(true);
 		}
 
 #if __IOS__
@@ -329,7 +350,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		protected override void OnPointerEntered(PointerRoutedEventArgs args)
 		{
 			base.OnPointerEntered(args);
-			UpdateCommonStatesWithoutNeedsLayout((global::Windows.Devices.Input.PointerDeviceType)args.Pointer.PointerDeviceType, ManipulationUpdateKind.Begin);
+			UpdateCommonStatesWithoutNeedsLayout(true, (PointerDeviceType)args.Pointer.PointerDeviceType, ManipulationUpdateKind.Begin);
 		}
 
 		/// <inheritdoc />
@@ -349,7 +370,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			args.Handled = ShouldHandlePressed;
 
 			base.OnPointerPressed(args);
-			UpdateCommonStatesWithoutNeedsLayout((global::Windows.Devices.Input.PointerDeviceType)args.Pointer.PointerDeviceType, ManipulationUpdateKind.Begin);
+			UpdateCommonStatesWithoutNeedsLayout(true, (PointerDeviceType)args.Pointer.PointerDeviceType, ManipulationUpdateKind.Begin);
 		}
 
 		/// <inheritdoc />
@@ -374,7 +395,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				}
 
 				args.Handled = ShouldHandlePressed;
-				UpdateCommonStatesWithoutNeedsLayout((global::Windows.Devices.Input.PointerDeviceType)args.Pointer.PointerDeviceType, update);
+				UpdateCommonStatesWithoutNeedsLayout(true, (PointerDeviceType)args.Pointer.PointerDeviceType, update);
 			}
 		}
 
@@ -383,7 +404,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			// Not like a Button, if the pointer goes out of this item, we abort the ItemClick
 			_canRaiseClickOnPointerRelease = false;
-			UpdateCommonStatesWithoutNeedsLayout((global::Windows.Devices.Input.PointerDeviceType)args.Pointer.PointerDeviceType, ManipulationUpdateKind.End);
+			UpdateCommonStatesWithoutNeedsLayout(true, (PointerDeviceType)args.Pointer.PointerDeviceType, ManipulationUpdateKind.End);
 		}
 
 		protected override void OnGotFocus(RoutedEventArgs e)

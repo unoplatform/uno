@@ -31,12 +31,12 @@
 		<PackageReference Include="Microsoft.Win32.SystemEvents" Version="6.0.1" />
 		<PackageReference Include="Silk.NET.OpenGL" Version="2.16.0" />
 		<PackageReference Include="Silk.NET.OpenGLES" Version="2.16.0" />
+		<PackageReference Include="System.Text.Json" Version="8.0.5" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="SkiaSharp.NativeAssets.Linux" />
 		<PackageReference Include="HarfBuzzSharp.NativeAssets.Linux" />
-		<PackageReference Include="SkiaSharp.Harfbuzz" />
 		<PackageReference Include="SkiaSharp" />
 		<PackageReference Include="GtkSharp" />
 	</ItemGroup>
