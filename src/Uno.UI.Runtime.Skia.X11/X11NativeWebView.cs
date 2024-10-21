@@ -50,14 +50,22 @@ internal class X11NativeWebView : INativeWebView
 		_nativeWebview = null!; // to work around nullability;
 		if (_masterWebview is { })
 		{
-			_masterWebview.Dispatch(() => Init(false));
+			_masterWebview.Dispatch(() => _nativeWebview = Init());
 		}
 		else
 		{
-			new Thread(() => Init(true)).Start();
-			SpinWait.SpinUntil(() => _nativeWebview is not null);
-			_masterWebview = _nativeWebview;
+			new Thread(() =>
+			{
+				_nativeWebview = _masterWebview = Init();
+				_nativeWebview.Run();
+			})
+			{
+				Name = "X11 Master WebView Thread",
+				IsBackground = true // very important, otherwise it will prevent process termination when closing the uno window
+			}.Start();
 		}
+
+		SpinWait.SpinUntil(() => _nativeWebview is not null);
 
 		// Unfortunately, there's a split second where the new window spawns and is visible before being attached to the
 		// Uno window. The API doesn't allow us to open a hidden window. We would have to talk to gtk directly.
@@ -70,33 +78,31 @@ internal class X11NativeWebView : INativeWebView
 			});
 		});
 
-		SpinWait.SpinUntil(() => _nativeWebview is not null);
-
 		_presenter.SizeChanged += (_, args) =>
 		{
 			_nativeWebview.Dispatch(() => _nativeWebview.SetSize((int)args.NewSize.Width, (int)args.NewSize.Height, WebviewHint.None));
 		};
 	}
 
-	private void Init(bool runLoop)
+	private Webview Init()
 	{
 		// WARNING: The threading for Webview is fragile. If you move the Webview construction outside
 		// of the new thread, it won't work. Be careful about moving anything around.
 #if DEBUG
-		_nativeWebview = new Webview(true);
+		var nativeWebview = new Webview(true);
 #else
 		_nativeWebview = new Webview(false);
 #endif
-		_nativeWebview.SetSize(1, 1, WebviewHint.None);
-		_nativeWebview.SetTitle(_title);
+		nativeWebview.SetSize(1, 1, WebviewHint.None);
+		nativeWebview.SetTitle(_title);
 
-		_nativeWebview.Bind("onSourceChanged", OnSourceChanged);
-		_nativeWebview.Bind("onScriptInvocationDone", OnScriptInvocationDone);
-		_nativeWebview.Bind("onDocumentTitleChanged", OnDocumentTitleChanged);
-		_nativeWebview.Bind("onDocumentLoaded", OnDocumentLoaded);
+		nativeWebview.Bind("onSourceChanged", OnSourceChanged);
+		nativeWebview.Bind("onScriptInvocationDone", OnScriptInvocationDone);
+		nativeWebview.Bind("onDocumentTitleChanged", OnDocumentTitleChanged);
+		nativeWebview.Bind("onDocumentLoaded", OnDocumentLoaded);
 		// from https://learn.microsoft.com/en-us/dotnet/api/microsoft.web.webview2.core.corewebview2.navigationcompleted?view=webview2-dotnet-1.0.2478.35#microsoft-web-webview2-core-corewebview2-navigationcompleted
 		// "NavigationCompleted is raised when the WebView has completely loaded (body.onload has been raised) or loading stopped with error."
-		_nativeWebview.InitScript(
+		nativeWebview.InitScript(
 			"""
 			onSourceChanged({ 'url': window.location.href });
 
@@ -111,10 +117,7 @@ internal class X11NativeWebView : INativeWebView
 			document.onload = (event) => { onDocumentLoaded(); };
 			""");
 
-		if (runLoop)
-		{
-			_nativeWebview.Run();
-		}
+		return nativeWebview;
 	}
 
 	~X11NativeWebView()
