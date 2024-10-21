@@ -53,6 +53,8 @@ namespace Microsoft.UI.Xaml
 		}
 
 		private event RoutedEventHandler _unloaded;
+
+		[global::Uno.UI.Xaml.GeneratedWeakEvent]
 		public event RoutedEventHandler Unloaded
 		{
 			add
