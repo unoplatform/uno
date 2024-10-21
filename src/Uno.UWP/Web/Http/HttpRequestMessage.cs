@@ -13,9 +13,8 @@ public sealed partial class HttpRequestMessage : IDisposable, IStringable
 		Headers = new HttpRequestHeaderCollection(this);
 	}
 
-	public HttpRequestMessage()
+	public HttpRequestMessage() : this(HttpMethod.Get, null)
 	{
-		Method = new HttpMethod("GET");
 	}
 
 	public Uri RequestUri { get; set; }
