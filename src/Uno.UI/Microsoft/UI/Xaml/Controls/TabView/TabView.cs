@@ -551,7 +551,11 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 					TabItems = lvItems;
 				}
 
-				if (ReadLocalValue(SelectedItemProperty) != DependencyProperty.UnsetValue)
+				if (ReadLocalValue(SelectedItemProperty) != DependencyProperty.UnsetValue
+#if __SKIA__ || __WASM__
+					&& SelectedItem is not null
+#endif
+					)
 				{
 					UpdateSelectedItem();
 				}
