@@ -32,6 +32,8 @@ namespace Windows.Devices.Midi
 			DeviceId = deviceId ?? throw new ArgumentNullException(nameof(deviceId));
 			_deviceInfo = deviceInfo ?? throw new ArgumentNullException(nameof(deviceInfo));
 			_portInfo = portInfo ?? throw new ArgumentNullException(nameof(portInfo));
+
+			InitializeMessageReceived();
 		}
 
 		partial void StartMessageReceived()
