@@ -44,7 +44,7 @@ To build your app from the CLI, on Windows, Linux, or macOS:
 
 Once done, you can head over to [publishing section](xref:uno.publishing.webassembly#publishing).
 
-## Publishing
+## Publishing your WebAssembly App
 
 Publishing your app can be done to different servers and cloud providers.
 

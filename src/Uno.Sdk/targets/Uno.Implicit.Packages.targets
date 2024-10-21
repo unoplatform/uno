@@ -62,6 +62,7 @@
 				AndroidXSwipeRefreshLayoutVersion="@(AndroidXSwipeRefreshLayoutVersion)"
 				UnoResizetizerVersion="$(UnoResizetizerVersion)"
 				UnoSdkExtrasVersion="$(UnoSdkExtrasVersion)"
+				UnoSettingsVersion="$(UnoSettingsVersion)"
 				MicrosoftLoggingVersion="$(MicrosoftLoggingVersion)"
 				WinAppSdkVersion="$(WinAppSdkVersion)"
 				WinAppSdkBuildToolsVersion="$(WinAppSdkBuildToolsVersion)"

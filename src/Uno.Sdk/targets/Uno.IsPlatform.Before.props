@@ -5,6 +5,8 @@
 		<IsMacOS>false</IsMacOS>
 		<IsMacCatalyst>false</IsMacCatalyst>
 		<IsIOSOrCatalyst>false</IsIOSOrCatalyst>
+		<IsTvOS>false</IsTvOS>
+		<IsAppleUIKit>false</IsAppleUIKit>
 		<IsWinAppSdk>false</IsWinAppSdk>
 		<IsBrowserWasm>false</IsBrowserWasm>
 		<IsDesktop>false</IsDesktop>
