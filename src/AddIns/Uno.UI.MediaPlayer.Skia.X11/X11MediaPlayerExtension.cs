@@ -128,6 +128,7 @@ public class X11MediaPlayerExtension : IMediaPlayerExtension
 		VlcPlayer.Playing += OnPlaying;
 		VlcPlayer.Buffering += OnBuffering;
 		VlcPlayer.Paused += OnPaused;
+		VlcPlayer.TimeChanged += OnTimeChanged;
 
 		_vlcPlayerVolume = VlcPlayer.Volume;
 
@@ -191,9 +192,9 @@ public class X11MediaPlayerExtension : IMediaPlayerExtension
 		get => TimeSpan.FromMilliseconds(Math.Max(0, VlcPlayer.Position * NaturalDuration.TotalMilliseconds));
 		set
 		{
-			if (!_updatingPositionFromNative)
+			if (!_updatingPositionFromNative && NaturalDuration.TotalMilliseconds > 0)
 			{
-				VlcPlayer.Position = NaturalDuration.TotalMilliseconds > 0 ? value.Milliseconds * 1.0f / (float)NaturalDuration.TotalMilliseconds : 0;
+				VlcPlayer.Position = (float)(value.TotalMilliseconds / (float)NaturalDuration.TotalMilliseconds);
 			}
 		}
 	}
@@ -291,6 +292,17 @@ public class X11MediaPlayerExtension : IMediaPlayerExtension
 		}
 	}
 
+	private void OnTimeChanged(object? sender, MediaPlayerTimeChangedEventArgs mediaPlayerTimeChangedEventArgs)
+	{
+		NativeDispatcher.Main.Enqueue(() =>
+		{
+			var oldValue = _updatingPositionFromNative;
+			_updatingPositionFromNative = true; // RaisePositionChanged will set Position, so we need a way to flag this so we can ignore it
+			Events?.RaisePositionChanged();
+			_updatingPositionFromNative = oldValue;
+		});
+	}
+
 	private void OnBuffering(object? sender, MediaPlayerBufferingEventArgs mediaPlayerBufferingEventArgs)
 		=> NativeDispatcher.Main.Enqueue(() => Player.PlaybackSession.PlaybackState = MediaPlaybackState.Buffering);
 
@@ -341,10 +353,6 @@ public class X11MediaPlayerExtension : IMediaPlayerExtension
 
 	private void OnTick()
 	{
-		_updatingPositionFromNative = true; // RaisePositionChanged will set Position, so we need a way to flag this so we can ignore it
-		Events?.RaisePositionChanged();
-		_updatingPositionFromNative = false;
-
 		var volume = VlcPlayer.Volume;
 		if (_vlcPlayerVolume != volume)
 		{
