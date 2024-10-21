@@ -51,7 +51,10 @@ partial class StackPanel
 
 		for (int i = 0; i < count; i++)
 		{
-			var view = Children[i];
+			if (Children[i] is not { } view)
+			{
+				continue;
+			}
 
 			var measuredSize = MeasureElement(view, slotSize);
 			view.EnsureLayoutStorage();

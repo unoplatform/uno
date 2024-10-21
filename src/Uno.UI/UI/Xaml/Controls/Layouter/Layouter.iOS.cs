@@ -26,6 +26,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected Size MeasureChildOverride(View view, Size slotSize)
 		{
+			if (view is null)
+			{
+				return default;
+			}
+
 			var ret = view
 				.SizeThatFits(slotSize.LogicalToPhysicalPixels())
 				.PhysicalToLogicalPixels()
