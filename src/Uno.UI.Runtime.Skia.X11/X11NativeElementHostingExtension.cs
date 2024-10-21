@@ -46,58 +46,9 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 			host.AttachSubWindow(nativeWindow.WindowId);
 			_ = XLib.XMapWindow(Display, nativeWindow.WindowId);
 			_ = X11Helper.XRaiseWindow(Display, host.TopX11Window.Window);
+			host.RegisterInputFromNativeSubwindow(nativeWindow.WindowId);
 
-			// hide the embedded window from showing up in the taskbar/dock.
-			var netWmStateAtom = X11Helper.GetAtom(Display, "_NET_WM_STATE");
-			var netWmStateSkipTaskbarAtom = X11Helper.GetAtom(Display, "_NET_WM_STATE_SKIP_TASKBAR");
-			if (netWmStateAtom != IntPtr.Zero && netWmStateSkipTaskbarAtom != IntPtr.Zero)
-			{
-				_ = XLib.XGetWindowProperty(
-					Display,
-					nativeWindow.WindowId,
-					netWmStateAtom,
-					IntPtr.Zero,
-					X11Helper.LONG_LENGTH,
-					false,
-					X11Helper.AnyPropertyType,
-					out var actualTypeAtom,
-					out var actualFormat,
-					out var nitems,
-					out _,
-					out var prop);
-				using var atomsDisposable = new DisposableStruct<IntPtr>(static p => { _ = XLib.XFree(p); }, prop);
-
-				if (actualFormat == 32)
-				{
-					unsafe
-					{
-						var atomSpan = new Span<IntPtr>(prop.ToPointer(), (int)nitems);
-
-						var foundSkipTaskbarAtom = false;
-						foreach (var atom in atomSpan)
-						{
-							if (atom == netWmStateSkipTaskbarAtom)
-							{
-								foundSkipTaskbarAtom = true;
-								break;
-							}
-						}
-
-						if (!foundSkipTaskbarAtom)
-						{
-							_ = XLib.XChangeProperty(
-								Display,
-								nativeWindow.WindowId,
-								netWmStateAtom,
-								X11Helper.GetAtom(Display, X11Helper.XA_ATOM),
-								32,
-								PropertyMode.Append,
-								new[] { X11Helper.GetAtom(Display, "_NET_WM_STATE_SKIP_TASKBAR") },
-								1);
-						}
-					}
-				}
-			}
+			HideWindowFromTaskBar(nativeWindow);
 
 			if (!_hostToNativeElementHosts.TryGetValue(host, out var set))
 			{
@@ -114,6 +65,61 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 		}
 	}
 
+	private unsafe void HideWindowFromTaskBar(X11NativeWindow nativeWindow)
+	{
+		// hide the embedded window from showing up in the taskbar/dock.
+		var netWmStateAtom = X11Helper.GetAtom(Display, "_NET_WM_STATE");
+		var netWmStateSkipTaskbarAtom = X11Helper.GetAtom(Display, "_NET_WM_STATE_SKIP_TASKBAR");
+		if (netWmStateAtom != IntPtr.Zero && netWmStateSkipTaskbarAtom != IntPtr.Zero)
+		{
+			_ = XLib.XGetWindowProperty(
+				Display,
+				nativeWindow.WindowId,
+				netWmStateAtom,
+				IntPtr.Zero,
+				X11Helper.LONG_LENGTH,
+				false,
+				X11Helper.AnyPropertyType,
+				out var actualTypeAtom,
+				out var actualFormat,
+				out var nitems,
+				out _,
+				out var prop);
+			using var atomsDisposable = new DisposableStruct<IntPtr>(static p => { _ = XLib.XFree(p); }, prop);
+
+			if (actualFormat == 32)
+			{
+				var atomSpan = new Span<IntPtr>(prop.ToPointer(), (int)nitems);
+
+				var foundSkipTaskbarAtom = false;
+				foreach (var atom in atomSpan)
+				{
+					if (atom == netWmStateSkipTaskbarAtom)
+					{
+						foundSkipTaskbarAtom = true;
+						break;
+					}
+				}
+
+				if (!foundSkipTaskbarAtom)
+				{
+					_ = XLib.XChangeProperty(
+						Display,
+						nativeWindow.WindowId,
+						netWmStateAtom,
+						X11Helper.GetAtom(Display, X11Helper.XA_ATOM),
+						32,
+						PropertyMode.Append,
+						new[]
+						{
+							X11Helper.GetAtom(Display, "_NET_WM_STATE_SKIP_TASKBAR")
+						},
+						1);
+				}
+			}
+		}
+	}
+
 	public void DetachNativeElement(object content)
 	{
 		if (content is X11NativeWindow nativeWindow
@@ -121,6 +127,7 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 			&& X11Manager.XamlRootMap.GetHostForRoot(xamlRoot) is X11XamlRootHost host)
 		{
 			using var lockDiposable = X11Helper.XLock(Display);
+			host.UnregisterInputFromNativeSubwindow(nativeWindow.WindowId);
 			_ = XLib.XQueryTree(Display, nativeWindow.WindowId, out IntPtr root, out _, out var children, out _);
 			_ = XLib.XFree(children);
 			_ = X11Helper.XReparentWindow(Display, nativeWindow.WindowId, root, 0, 0);
