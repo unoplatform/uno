@@ -279,7 +279,6 @@ internal partial class X11XamlRootHost
 				}
 			}
 		}
-		// ReSharper disable once FunctionNeverReturns
 
 		void PrintUnexpectedEventError(XEvent @event)
 		{

@@ -60,7 +60,7 @@ internal class X11NativeWebView : INativeWebView
 		}
 
 		// Unfortunately, there's a split second where the new window spawns and is visible before being attached to the
-		// Uno window. The API doesn't allow was to open a hidden window. We would have to talk to gtk directly.
+		// Uno window. The API doesn't allow us to open a hidden window. We would have to talk to gtk directly.
 		_ = Task.Run(() =>
 		{
 			var window = X11NativeElementHostingExtension.FindWindowByTitle(host, _title, TimeSpan.MaxValue);
@@ -71,6 +71,11 @@ internal class X11NativeWebView : INativeWebView
 		});
 
 		SpinWait.SpinUntil(() => _nativeWebview is not null);
+
+		_presenter.SizeChanged += (_, args) =>
+		{
+			_nativeWebview.Dispatch(() => _nativeWebview.SetSize((int)args.NewSize.Width, (int)args.NewSize.Height, WebviewHint.None));
+		};
 	}
 
 	private void Init(bool runLoop)
@@ -96,19 +101,14 @@ internal class X11NativeWebView : INativeWebView
 			onSourceChanged({ 'url': window.location.href });
 
 			document.addEventListener("DOMContentLoaded", (event) => {
-			onDocumentTitleChanged(document.title);
-
-			new MutationObserver(function(mutations) {
 				onDocumentTitleChanged(document.title);
-			}).observe(
-				document.querySelector('title'),
-				{ subtree: true, characterData: true, childList: true }
-			);
+
+				new MutationObserver(function(mutations) {
+					onDocumentTitleChanged(document.title);
+				}).observe(document, { attributes: true });
 			});
 
-			document.onload = (event) => {
-			onDocumentLoaded();
-			};
+			document.onload = (event) => { onDocumentLoaded(); };
 			""");
 
 		if (runLoop)
