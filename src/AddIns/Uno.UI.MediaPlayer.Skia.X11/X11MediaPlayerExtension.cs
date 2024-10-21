@@ -284,6 +284,7 @@ public class X11MediaPlayerExtension : IMediaPlayerExtension
 			NativeDispatcher.Main.Enqueue(() =>
 			{
 				Events?.RaiseNaturalVideoDimensionChanged();
+				Events?.NaturalDurationChanged();
 				Events?.RaiseMediaOpened();
 				IsVideo = VlcPlayer.Media?.Tracks.Any(track => track.TrackType is TrackType.Video);
 			});
