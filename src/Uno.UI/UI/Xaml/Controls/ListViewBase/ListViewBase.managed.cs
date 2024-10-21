@@ -111,8 +111,10 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 					);
 
+				var orientation = ItemsPanelRoot?.PhysicalOrientation ?? Orientation.Vertical;
+
 				var (elementOffset, elementLength, presenterOffset, presenterViewportLength) =
-					ItemsPanelRoot.PhysicalOrientation is Orientation.Vertical
+					orientation is Orientation.Vertical
 						? (offsetXY.Y, element.ActualSize.Y, presenter.VerticalOffset, presenter.ViewportHeight)
 						: (offsetXY.X, element.ActualSize.X, presenter.HorizontalOffset, presenter.ViewportWidth);
 
@@ -130,7 +132,7 @@ namespace Microsoft.UI.Xaml.Controls
 					? elementOffset - presenterViewportLength + elementLength
 					: elementOffset;
 
-				if (ItemsPanelRoot.PhysicalOrientation is Orientation.Vertical)
+				if (orientation is Orientation.Vertical)
 				{
 					sv.ScrollToVerticalOffset(newOffset);
 				}
