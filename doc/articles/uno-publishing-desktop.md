@@ -41,11 +41,11 @@ If you wish to do a self-contained publish, run the following instead:
 dotnet publish -f net8.0-desktop -r {{RID}} -p:SelfContained=true
 ```
 
-Where `{{RID}}` specifies the chosen OS and Architecture (e.g. win-x64). Again when targeting Windows, cross-publishing is not supported.
+Where `{{RID}}` specifies the chosen OS and Architecture (e.g. win-x64). When targeting Windows, cross-publishing to architectures other than the currently running one is not supported.
 
 ### macOS App Bundles
 
-We now support generating .app bundles on macOS machines. From the CLI run:
+We now support generating `.app` bundles on macOS machines. From the CLI run:
 
 ```shell
 dotnet publish -f net8.0-desktop -p:PackageFormat=app
@@ -84,22 +84,22 @@ The following must be installed and configured:
 > [!NOTE]
 > Docker may interfere with Lxd causing network connectivity issues, for solutions see: https://documentation.ubuntu.com/lxd/en/stable-5.0/howto/network_bridge_firewalld/#prevent-connectivity-issues-with-lxd-and-docker
 
-#### Publishing A Snap
+#### Generate a Snap file
 
-To publish a snap, run:
+To generate a snap file, run the following:
 
 ```shell
 dotnet publish -f net8.0-desktop -r {{RID}} -p:SelfContained=true -p:PackageFormat=snap
 ```
 
-Where `{{RID}}` is either `linux-x64` or `linux-arm64`.
+Where `{{RID}}` is either `linux-x64` or `linux-arm64`. The generated snap file is located in the `publish` folder.
 
-We generate snap manifests in classic confinement mode and a .desktop file by default.
+Uno Platform generates snap manifests in classic confinement mode and a `.desktop` file by default.
 
 If you wish to customize your snap manifest, you will need to pass the following MSBuild properties:
 
-- SnapManifest
-- DesktopFile
+- `SnapManifest`
+- `DesktopFile`
 
 The `.desktop` filename MUST conform to the Desktop File spec.
 
@@ -108,14 +108,24 @@ If you wish, you can generate a default snap manifest and desktop file by runnin
 > [!NOTE]
 > .NET 9 publishing and cross-publishing are not supported as of Uno 5.5, we will support .NET 9 publishing soon.
 
+#### Publish your Snap Package
+
+You can install your app on your machine using the following:
+
+```bash
+sudo snap install MyApp_1.0_amd64.snap --dangerous –classic
+```
+
+You can also publish your app to the [Snap store](https://snapcraft.io/store).
+
 ## Limitations
 
-- NativeAOT is not supported
-- R2R is not supported
-- Single file publish is not supported
+- NativeAOT is not yet supported
+- R2R is not yet supported
+- Single file publish is not yet supported
 
 > [!NOTE]
-> Publishing is a work in progress
+> Publishing is a [work in progress](https://github.com/unoplatform/uno/issues/16440)
 
 ## Links
 

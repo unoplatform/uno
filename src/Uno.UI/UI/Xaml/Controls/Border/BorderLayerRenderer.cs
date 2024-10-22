@@ -42,11 +42,11 @@ internal partial class BorderLayerRenderer
 	/// <summary>
 	/// Updates the border.
 	/// </summary>
-	internal void Update()
+	internal void Update(bool forceUpdate = false)
 	{
 		if (_owner.IsLoaded)
 		{
-			UpdatePlatform();
+			UpdatePlatform(forceUpdate);
 		}
 	}
 
@@ -59,7 +59,7 @@ internal partial class BorderLayerRenderer
 		_currentState = default;
 	}
 
-	partial void UpdatePlatform();
+	partial void UpdatePlatform(bool forceUpdate);
 
 	partial void ClearPlatform();
 }
