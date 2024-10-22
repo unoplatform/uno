@@ -148,8 +148,8 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 				$"--feature UnoBindableMetadata false",
 				$"--verbose",
 				$"--deterministic",
-				// $"--used-attrs-only true", // not used to keep additional linker hints
-				$"--skip-unresolved true",
+				$"--trim-mode link",
+				$"--action link",
 				$"-b true",
 				$"-a {AssemblyPath} entrypoint",
 				$"-out {outputPath}",
