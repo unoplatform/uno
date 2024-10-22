@@ -1187,7 +1187,7 @@ public partial class TabView : Control
 		return base.MeasureOverride(availableSize);
 	}
 
-	private void UpdateTabWidths(bool shouldUpdateWidths = true, bool fillAllAvailableSpace = true)
+	internal void UpdateTabWidths(bool shouldUpdateWidths = true, bool fillAllAvailableSpace = true)
 	{
 		double tabWidth = double.NaN;
 
