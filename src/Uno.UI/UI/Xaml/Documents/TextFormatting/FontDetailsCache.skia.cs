@@ -90,7 +90,7 @@ internal static class FontDetailsCache
 		}
 	}
 
-	private static readonly Func<string?, float, FontWeight, FontStretch, FontStyle, (FontDetails details, Task<SKTypeface?> loadedTask)> _getFont = FuncMemoizeExtensions.AsMemoized((
+	private static readonly Func<string?, float, FontWeight, FontStretch, FontStyle, (FontDetails details, Task<SKTypeface?> loadedTask)> _getFont = FuncMemoizeExtensions.AsLockedMemoized((
 		string? name,
 		float fontSize,
 		FontWeight weight,
