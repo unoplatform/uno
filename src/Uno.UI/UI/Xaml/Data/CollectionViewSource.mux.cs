@@ -134,8 +134,7 @@ public partial class CollectionViewSource : IDependencyObjectInternal
 	{
 		if ((source is null ||
 			source is IEnumerable ||
-			source is IEnumerable<object>
-			) &&
+			source is IEnumerable<object>) &&
 			source is not ICollectionView) // TODO:MZ: Validate this condition
 		{
 			return true;

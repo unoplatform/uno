@@ -4,31 +4,30 @@ using System.Text;
 using Uno.UI.DataBinding;
 using Windows.Foundation.Collections;
 
-namespace Microsoft.UI.Xaml.Data
+namespace Microsoft.UI.Xaml.Data;
+
+internal partial class CollectionViewGroup : ICollectionViewGroup
 {
-	internal class CollectionViewGroup : ICollectionViewGroup
+	private readonly BindingPath _bindingPath;
+
+	public CollectionViewGroup(object group, PropertyPath itemsPath)
 	{
-		private readonly BindingPath _bindingPath;
+		Group = group;
 
-		public CollectionViewGroup(object group, PropertyPath itemsPath)
+		if (itemsPath != null)
 		{
-			Group = group;
+			_bindingPath = new BindingPath(itemsPath.Path, null);
+			_bindingPath.DataContext = group;
 
-			if (itemsPath != null)
-			{
-				_bindingPath = new BindingPath(itemsPath.Path, null);
-				_bindingPath.DataContext = group;
-
-				GroupItems = ObservableVectorWrapper.Create(_bindingPath.Value);
-			}
-			else
-			{
-				GroupItems = ObservableVectorWrapper.Create(group);
-			}
+			GroupItems = ObservableVectorWrapper.Create(_bindingPath.Value);
 		}
-		public object Group { get; }
-
-
-		public IObservableVector<object> GroupItems { get; }
+		else
+		{
+			GroupItems = ObservableVectorWrapper.Create(group);
+		}
 	}
+	public object Group { get; }
+
+
+	public IObservableVector<object> GroupItems { get; }
 }
