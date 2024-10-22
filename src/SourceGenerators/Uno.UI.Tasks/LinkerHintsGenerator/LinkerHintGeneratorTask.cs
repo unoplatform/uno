@@ -55,6 +55,9 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 		public string UnoRuntimeIdentifier { get; set; } = "";
 
 		[Required]
+		public Microsoft.Build.Framework.ITaskItem[] TrimmerRootDescriptor { get; set; } = [];
+
+		[Required]
 		public Microsoft.Build.Framework.ITaskItem[]? ReferencePath { get; set; }
 
 		[Output]
@@ -143,6 +146,10 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 				.Distinct()
 				.Select(r => $"-reference \"{r}\" "));
 
+			var rootDescriptors = string.Join(
+				" ",
+				TrimmerRootDescriptor.Select(selector => $"-x \"{selector.GetMetadata("FullPath")}\""));
+
 			var parameters = new List<string>()
 			{
 				$"--feature UnoBindableMetadata false",
@@ -153,6 +160,7 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 				$"-b true",
 				$"-a {AssemblyPath} entrypoint",
 				$"-out {outputPath}",
+				rootDescriptors,
 				referencedAssemblies,
 				features,
 			};
