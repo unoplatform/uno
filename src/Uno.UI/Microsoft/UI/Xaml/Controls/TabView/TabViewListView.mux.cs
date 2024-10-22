@@ -1,11 +1,9 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference: TabViewListView.cpp, commit 4bab3245a
+// MUX Reference src\controls\dev\TabView\TabViewListView.cpp, commit d74a0332
 
-using Uno.UI.Helpers.WinUI;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Helpers.WinUI;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives;
 
@@ -74,14 +72,22 @@ public partial class TabViewListView : ListView
 		// as they are already set correctly here.
 		//
 		// We know we are currently looking at a TabViewItem being recycled if its parent TabView has already been set.
-		if (tvi.GetParentTabView() == null)
+		var parentTabView = tvi.GetParentTabView();
+		if (parentTabView is null)
 		{
 			var tabView = SharedHelpers.GetAncestorOfType<TabView>(VisualTreeHelper.GetParent(this));
 			if (tabView != null)
 			{
 				tvi.OnTabViewWidthModeChanged(tabView.TabWidthMode);
 				tvi.SetParentTabView(tabView);
+
+				parentTabView = tabView;
 			}
+		}
+
+		if (parentTabView is not null)
+		{
+			parentTabView.UpdateTabWidths();
 		}
 
 		base.PrepareContainerForItemOverride(element, item);
