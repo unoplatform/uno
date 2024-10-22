@@ -534,11 +534,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 					var value = AcceptsExpression
 						? NumberBoxParser.Compute(text, numberParser)
-						: ApiInformation.IsTypePresent(numberParser?.GetType().FullName)
-							? numberParser.ParseDouble(text)
-							: double.TryParse(text, out var v)
-								? (double?)v
-								: null;
+						: numberParser.ParseDouble(text);
 
 					if (value == null)
 					{
