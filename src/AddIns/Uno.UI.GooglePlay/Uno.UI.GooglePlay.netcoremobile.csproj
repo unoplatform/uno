@@ -11,7 +11,7 @@
 		<RootNamespace>Uno.UI.GooglePlay</RootNamespace>
 		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.GooglePlay</PackageId>
 
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
 		<NoWarn>$(NoWarn);Uno0001</NoWarn>
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
