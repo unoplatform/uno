@@ -551,11 +551,9 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 					TabItems = lvItems;
 				}
 
+				// ReadLocalValue() is not returning UnsetValue even though SelectedItem is not yet set
 				if (ReadLocalValue(SelectedItemProperty) != DependencyProperty.UnsetValue
-#if __SKIA__ || __WASM__
-					&& SelectedItem is not null
-#endif
-					)
+					&& SelectedItem is not null)
 				{
 					UpdateSelectedItem();
 				}
