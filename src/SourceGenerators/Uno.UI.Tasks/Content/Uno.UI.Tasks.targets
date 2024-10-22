@@ -329,6 +329,7 @@
 			OutputPath="$(ProjectDir)$(IntermediateOutputPath)/linkerhints"
 			ReferencePath="@(_UnoLinkerHintsPass1AssembliesForReferencePaths)"
 			ILLinkerPath="$(_UnoLinkerHintGeneratorILLinkerPath)"
+			TrimmerRootDescriptor="@(TrimmerRootDescriptor)"
 			TargetFramework="$(TargetFramework)"
 			TargetFrameworkVersion="$(TargetFrameworkVersion.Substring(1))"
 			UnoUIPackageBasePath="$(_UnoUIPackageBasePath)"
