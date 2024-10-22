@@ -1,13 +1,11 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference: TabViewItem.properties.cpp, commit de78834
+// MUX Reference src\controls\dev\Generated\TabView.properties.cpp, commit d74a0332
 
 using System.Collections.Generic;
 using System.Windows.Input;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
@@ -87,6 +85,21 @@ public partial class TabView
 	/// </summary>
 	public static DependencyProperty CanReorderTabsProperty { get; } =
 		DependencyProperty.Register(nameof(CanReorderTabs), typeof(bool), typeof(TabView), new FrameworkPropertyMetadata(true));
+
+	/// <summary>
+	/// Gets or sets a value indicating whether tabs can be torn off to create new windows.
+	/// </summary>
+	public bool CanTearOutTabs
+	{
+		get => (bool)GetValue(CanTearOutTabsProperty);
+		set => SetValue(CanTearOutTabsProperty, value);
+	}
+
+	/// <summary>
+	/// Identifies the CanTearOutTabs dependency property.
+	/// </summary>
+	public static readonly DependencyProperty CanTearOutTabsProperty =
+		DependencyProperty.Register(nameof(CanTearOutTabs), typeof(bool), typeof(TabView), new FrameworkPropertyMetadata(false));
 
 	/// <summary>
 	/// Gets or sets a value that indicates the behavior of the close button within tabs.
@@ -320,6 +333,16 @@ public partial class TabView
 	public event TypedEventHandler<TabView, object> AddTabButtonClick;
 
 	/// <summary>
+	/// Occurs when an external torn out tab is dropped into the TabView.
+	/// </summary>
+	public event TypedEventHandler<TabView, TabViewExternalTornOutTabsDroppedEventArgs> ExternalTornOutTabsDropped;
+
+	/// <summary>
+	/// Occurs when an external torn out tab is being dropped into the TabView.
+	/// </summary>
+	public event TypedEventHandler<TabView, TabViewExternalTornOutTabsDroppingEventArgs> ExternalTornOutTabsDropping;
+
+	/// <summary>
 	/// Occurs when the currently selected tab changes.
 	/// </summary>
 	public event SelectionChangedEventHandler SelectionChanged;
@@ -358,4 +381,14 @@ public partial class TabView
 	/// Occurs when the input system reports an underlying drop event with the TabStrip as the drop target.
 	/// </summary>
 	public event DragEventHandler TabStripDrop;
+
+	/// <summary>
+	/// Occurs when the user attempts to tear out a tab.
+	/// </summary>
+	public event TypedEventHandler<TabView, TabViewTabTearOutRequestedEventArgs> TabTearOutRequested;
+
+	/// <summary>
+	/// Occurs when a torn out requests a window to be created.
+	/// </summary>
+	public event TypedEventHandler<TabView, TabViewTabTearOutWindowRequestedEventArgs> TabTearOutWindowRequested;
 }
