@@ -18,8 +18,6 @@ internal readonly record struct DrawingFilters(float Opacity)
 {
 	public static DrawingFilters Default { get; } = new(1.0f);
 
-	// Note: This SKColorFilter might be created more than once since this Filter is a struct.
-	//       However since this Filter is copied (pushed to the stack) only when something changes, it should still catch most cases.
 	public SKColorFilter? OpacityColorFilter => Opacity is 1.0f
 		? null
 		: _opacityToColorFilter[(byte)(0xFF * Opacity)] ??= SKColorFilter.CreateBlendMode(new SKColor(0xFF, 0xFF, 0xFF, (byte)(0xFF * Opacity)), SKBlendMode.Modulate);
