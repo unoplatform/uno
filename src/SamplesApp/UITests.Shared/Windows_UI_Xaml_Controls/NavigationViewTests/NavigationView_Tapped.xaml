@@ -4,18 +4,19 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:muxcontrols="using:Microsoft.UI.Xaml.Controls"
 	mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400">
 
-  <NavigationView PaneDisplayMode="LeftCompact">
-    <NavigationView.MenuItems>
-      <NavigationViewItem Content="Item 1">
-        <NavigationViewItem.MenuItems>
-          <NavigationViewItem Content="Item 1.1" />
-        </NavigationViewItem.MenuItems>
-      </NavigationViewItem>
-    </NavigationView.MenuItems>
+  <muxcontrols:NavigationView PaneDisplayMode="LeftCompact">
+    <muxcontrols:NavigationView.MenuItems>
+      <muxcontrols:NavigationViewItem Content="Item 1">
+        <muxcontrols:NavigationViewItem.MenuItems>
+          <muxcontrols:NavigationViewItem Content="Item 1.1" />
+        </muxcontrols:NavigationViewItem.MenuItems>
+      </muxcontrols:NavigationViewItem>
+    </muxcontrols:NavigationView.MenuItems>
 	<TextBlock>
 	Manual test for <Hyperlink>https://github.com/unoplatform/uno/issues/18024</Hyperlink>
 	<LineBreak/>
@@ -27,5 +28,5 @@
 	<LineBreak/>
 	3. Press the "Item 1.1" item in the pane. The pane is supposed to collapse. (IMPORTANT) No popups or tooltips should be visible.
 	</TextBlock>
-  </NavigationView>
+  </muxcontrols:NavigationView>
 </UserControl>
