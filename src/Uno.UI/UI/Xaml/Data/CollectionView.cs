@@ -172,16 +172,6 @@ namespace Microsoft.UI.Xaml.Data
 		public event VectorChangedEventHandler<object> VectorChanged; //TODO: this should be raised if underlying source implements INotifyCollectionChanged
 #pragma warning restore 67 // Unused member
 
-		public IEnumerator<object> GetEnumerator()
-		{
-			// In Windows if CollectionView is from a CollectionViewSource marked grouped, it enumerates the flattened list of objects
-			if (_isGrouped)
-			{
-				return (_collection as IEnumerable<IEnumerable<object>> ?? Enumerable.Empty<IEnumerable<object>>()).SelectMany(g => g).GetEnumerator();
-			}
-			return (_collection as IEnumerable<object>)?.GetEnumerator();
-		}
-
 		public IAsyncOperation<LoadMoreItemsResult> LoadMoreItemsAsync(uint count)
 		{
 			throw new NotSupportedException();
@@ -260,23 +250,18 @@ namespace Microsoft.UI.Xaml.Data
 			_collection?.ToObjectArray().CopyTo(array, arrayIndex);
 		}
 
-		IEnumerator<object> IEnumerable<object>.GetEnumerator()
-		{
-			var enumerator = (this as IEnumerable).GetEnumerator();
-			while (enumerator.MoveNext())
-			{
-				yield return enumerator.Current;
-			}
-		}
+		IEnumerator<object> IEnumerable<object>.GetEnumerator() => GetEnumerator();
 
-		IEnumerator IEnumerable.GetEnumerator()
+		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+		public IEnumerator<object> GetEnumerator()
 		{
 			// In Windows if CollectionView is from a CollectionViewSource marked grouped, it enumerates the flattened list of objects
 			if (_isGrouped)
 			{
-				return (_collection as IEnumerable<IEnumerable> ?? Enumerable.Empty<IEnumerable>()).SelectManyUntyped(g => g).GetEnumerator();
+				return CollectionGroups.OfType<ICollectionViewGroup>().SelectMany(c => c.GroupItems).GetEnumerator();
 			}
-			return (_collection as IEnumerable).GetEnumerator();
+			return (_collection as IEnumerable<object>)?.GetEnumerator();
 		}
 
 		public int IndexOf(object item) => _collection.IndexOf(item);
