@@ -11,7 +11,7 @@ namespace Microsoft.UI.Composition;
 /// <summary>
 /// A ShapeVisual that has a border and a background.
 /// </summary>
-internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
+internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 {
 	// state set from outside and used inside the class
 	private CornerRadius _cornerRadius;
