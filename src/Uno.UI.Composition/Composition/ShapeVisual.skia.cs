@@ -17,16 +17,15 @@ public partial class ShapeVisual
 			return;
 		}
 
+		canvas.ClipRect(new SKRect(0, 0, Size.X, Size.Y));
+
 		if (ViewBox is not null)
 		{
 			canvas.Scale(
 				ViewBox.Size.X > 0 ? Size.X / ViewBox.Size.X : 1,
 				ViewBox.Size.Y > 0 ? Size.Y / ViewBox.Size.Y : 1);
-			canvas.Translate(-ViewBox.Offset.X, -ViewBox.Offset.Y); // translate after scaling
-			canvas.ClipRect(new SKRect(0, 0, ViewBox.Size.X, ViewBox.Size.Y));
+			canvas.Translate(-ViewBox.Offset.X, -ViewBox.Offset.Y); // translate before scaling
 		}
-
-		canvas.ClipRect(new SKRect(0, 0, Size.X, Size.Y));
 
 		if (_shapes is { Count: not 0 } shapes)
 		{
