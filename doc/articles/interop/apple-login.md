@@ -6,9 +6,21 @@ uid: Uno.Tutorials.SignInWithApple
 
 In Uno Platform projects, implementing a "Sign in with Apple" Button is possible through MAUI embedding (more on which in our [Overview](xref:Uno.Extensions.Maui.Overview)). Below is a simple example of how you can add the Apple Sign-In Button to your project. We will inject it into the visual tree from the code-behind and handle the authorization using Apple's Authentication Services.
 
-## General usage
+## General Usage
 
-1. Import necessary namespaces:
+1. Activate the Apple Sign-In Capability:
+
+   - If you are using Visual Studio, open the `Entitlements.plist` file and locate the "Sign In With Apple" checkbox. After checking it, ensure you save your changes.
+   - Alternatively, you can open the `Entitlements.plist` file in any text editor and add the following within the `<dict>` tag:
+
+   ```xml
+   <key>com.apple.developer.applesignin</key>
+   <array>
+       <string>Default</string>
+   </array>
+   ```
+
+2. Import Necessary Namespaces:
 
    ```csharp
    using AuthenticationServices;
@@ -16,7 +28,10 @@ In Uno Platform projects, implementing a "Sign in with Apple" Button is possible
    using UIKit;
    ```
 
-2. In the constructor of your Page or control, create the Apple Sign-In Button:
+3. In the constructor of your Page or control, create the Apple Sign-In Button:
+
+   > [Important]
+   > Ensure that you wrap platform-specific code in `#if __IOS__` directives. For more details, refer to the [Platform-specific C# documentation](xref:Uno.Development.PlatformSpecificCSharp).
 
    ```csharp
    var appleSignInButton = new ASAuthorizationAppleIdButton(ASAuthorizationAppleIdButtonType.Default, ASAuthorizationAppleIdButtonStyle.WhiteOutline);
@@ -27,9 +42,10 @@ In Uno Platform projects, implementing a "Sign in with Apple" Button is possible
    _appleSignInDelegate = new AuthorizationControllerDelegate(this);
    ```
 
-   **Note**: It's important to retain a reference to the delegate (`_appleSignInDelegate`) to avoid garbage collection issues. This ensures that the authorization process is completed without interruption.
+   > [!NOTE]
+   > It's important to retain a reference to the delegate (`_appleSignInDelegate`) to avoid garbage collection issues. This ensures that the authorization process is completed without interruption.
 
-3. Inject the Apple Sign-In button into the visual tree using `VisualTreeHelper.AdaptNative`:
+4. Inject the Apple Sign-In button into the visual tree using `VisualTreeHelper.AdaptNative`:
 
    ```csharp
    var adaptedAppleButton = VisualTreeHelper.AdaptNative(appleSignInButton);
@@ -44,7 +60,7 @@ In Uno Platform projects, implementing a "Sign in with Apple" Button is possible
    m_MainStackPanel.Children.Add(borderWrapper);
    ```
 
-4. Handle the button's `TouchUpInside` event to initiate Apple Sign-In:
+5. Handle the button's `TouchUpInside` event to initiate Apple Sign-In:
 
    ```csharp
    private void HandleAuthorizationAppleIDButtonPress(object sender, EventArgs e)
