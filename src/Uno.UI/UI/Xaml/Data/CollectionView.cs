@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Text;
 using Uno;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
@@ -250,9 +249,24 @@ namespace Microsoft.UI.Xaml.Data
 			_collection?.ToObjectArray().CopyTo(array, arrayIndex);
 		}
 
-		IEnumerator<object> IEnumerable<object>.GetEnumerator() => GetEnumerator();
+		IEnumerator<object> IEnumerable<object>.GetEnumerator()
+		{
+			var enumerator = (this as IEnumerable).GetEnumerator();
+			while (enumerator.MoveNext())
+			{
+				yield return enumerator.Current;
+			}
+		}
 
-		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			// In Windows if CollectionView is from a CollectionViewSource marked grouped, it enumerates the flattened list of objects
+			if (_isGrouped)
+			{
+				return CollectionGroups.OfType<ICollectionViewGroup>().SelectManyUntyped(c => c.GroupItems).GetEnumerator();
+			}
+			return (_collection as IEnumerable).GetEnumerator();
+		}
 
 		public IEnumerator<object> GetEnumerator()
 		{
