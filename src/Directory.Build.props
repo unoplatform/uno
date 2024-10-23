@@ -1,4 +1,4 @@
-﻿<Project>
+<Project>
 
 	<Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
 	<Import Project="crosstargeting_override.props" Condition="exists('crosstargeting_override.props')" />
@@ -122,8 +122,6 @@
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Toolkit.netcoremobile.csproj</_AdjustedOutputProjects>
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Toolkit.Reference.csproj</_AdjustedOutputProjects>
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Toolkit.Windows.csproj</_AdjustedOutputProjects>
-
-		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.GooglePlay.netcoremobile.csproj</_AdjustedOutputProjects>
 
 		<_AdjustedOutputProjects>$(_AdjustedOutputProjects);Uno.UI.Foldable.netcoremobile.csproj</_AdjustedOutputProjects>
 
