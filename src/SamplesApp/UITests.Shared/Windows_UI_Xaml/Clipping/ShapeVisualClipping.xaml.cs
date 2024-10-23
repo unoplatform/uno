@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
-using Microsoft.UI;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -33,7 +32,7 @@ public sealed partial class ShapeVisualClipping : UserControl
 						{
 							Height = 40,
 							Width = 40,
-							Background = new SolidColorBrush(Colors.Red)
+							Background = new SolidColorBrush(Microsoft.UI.Colors.Red)
 						};
 
 						var elementVisual = ElementCompositionPreview.GetElementVisual(element);
@@ -44,7 +43,7 @@ public sealed partial class ShapeVisualClipping : UserControl
 						spriteShape.Geometry = compositor.CreateRectangleGeometry();
 						((CompositionRectangleGeometry)spriteShape.Geometry).Size = new Vector2(40, 40);
 						spriteShape.Offset = new Vector2(spriteOffset, spriteOffset);
-						spriteShape.FillBrush = compositor.CreateColorBrush(Colors.Blue);
+						spriteShape.FillBrush = compositor.CreateColorBrush(Microsoft.UI.Colors.Blue);
 						shapeVisual.Shapes.Add(spriteShape);
 						shapeVisual.Size = new Vector2(shapeVisualSize, shapeVisualSize);
 						shapeVisual.ViewBox = compositor.CreateViewBox();
