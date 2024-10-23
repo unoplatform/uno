@@ -9714,6 +9714,7 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\RemoteFonts\antikytheraoutlineital.woff" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\RemoteFonts\GALACTIC VANGUARDIAN NCV.woff" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\ResizedLargeWisteria.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\When_ShapeVisual_ViewBox_Shape_Combinations\*.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\square100.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\testimage_exif_rotated.jpg" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\testimage_exif_rotated_different_dimensions.jpg" />
