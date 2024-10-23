@@ -328,7 +328,7 @@ namespace Microsoft.UI.Xaml
 			_renderTransform?.UpdateFlowDirectionTransform();
 
 			// The clipping applied by our parent due to layout constraints are pushed to the visual through the ClipRectFromArrangeCycle property
-			// This allows special handling of this clipping by the compositor (cf. ShapeVisual.Render).
+			// This allows special handling of this clipping by the compositor (cf. ContainerVisual.Render).
 			if (clip is null)
 			{
 				visual.ClipRectFromArrangeCycle = null;

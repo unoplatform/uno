@@ -19,6 +19,7 @@ public partial class ShapeVisual
 
 		canvas.ClipRect(new SKRect(0, 0, Size.X, Size.Y));
 
+		// TODO: ViewBox.Stretch, ViewBox.HorizontalAlignmentRatio and ViewBox.VerticalAlignmentRatio
 		if (ViewBox is not null)
 		{
 			canvas.Scale(
