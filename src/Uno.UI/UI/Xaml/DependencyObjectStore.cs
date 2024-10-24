@@ -1,23 +1,24 @@
 ﻿#nullable enable
 
 using System;
-using Uno.UI.DataBinding;
+using System.Collections;
 using System.Collections.Generic;
-using Uno.Extensions;
-using Uno.Foundation.Logging;
+using System.Diagnostics;
+using System.Globalization;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using System.Threading;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
+using Uno.Collections;
 using Uno.Diagnostics.Eventing;
 using Uno.Disposables;
-using System.Linq;
-using System.Threading;
-using Uno.Collections;
-using System.Runtime.CompilerServices;
-using System.Diagnostics;
-using Microsoft.UI.Xaml.Data;
+using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.UI;
-using System.Collections;
-using System.Globalization;
+using Uno.UI.DataBinding;
 using Windows.ApplicationModel.Calls;
-using Microsoft.UI.Xaml.Controls;
 
 
 #if __ANDROID__
@@ -88,9 +89,6 @@ namespace Microsoft.UI.Xaml
 		private object? _hardParentRef;
 		private readonly Dictionary<DependencyProperty, ManagedWeakReference> _inheritedForwardedProperties = new Dictionary<DependencyProperty, ManagedWeakReference>(DependencyPropertyComparer.Default);
 		private Stack<DependencyPropertyValuePrecedences?>? _overriddenPrecedences;
-
-		private static long _propertyChangedToken;
-		private readonly Dictionary<long, IDisposable> _propertyChangedTokens = new Dictionary<long, IDisposable>();
 
 		private bool _registeringInheritedProperties;
 		private bool _unregisteringInheritedProperties;
@@ -825,46 +823,70 @@ namespace Microsoft.UI.Xaml
 
 		public long RegisterPropertyChangedCallback(DependencyProperty property, DependencyPropertyChangedCallback callback)
 		{
-			_propertyChangedToken = Interlocked.Increment(ref _propertyChangedToken);
-
-			var registration = RegisterPropertyChangedCallback(property, (PropertyChangedCallback)((s, e) => callback((DependencyObject)s, property)));
-
-			_propertyChangedTokens.Add(_propertyChangedToken, registration);
-
-			return _propertyChangedToken;
+			return RegisterPropertyChangedCallback(property, (PropertyChangedCallback)((s, e) => callback((DependencyObject)s, property)));
 		}
 
 		public void UnregisterPropertyChangedCallback(DependencyProperty property, long token)
 		{
-			if (_propertyChangedTokens.TryGetValue(token, out var registration))
+			if (_propertyChangedCallbacks is null)
 			{
-				registration.Dispose();
+				return;
+			}
 
-				_propertyChangedTokens.Remove(token);
+			for (int i = 0; i < _propertyChangedCallbacks.Count; i++)
+			{
+				var entry = _propertyChangedCallbacks[i];
+				if (entry.Property == property)
+				{
+					var handle = GCHandle.FromIntPtr((nint)token);
+					if (handle.IsAllocated && handle.Target is PropertyChangedCallback callback)
+					{
+						var newCallback = entry.Callback - callback;
+						if (newCallback is null)
+						{
+							_propertyChangedCallbacks.RemoveAt(i);
+							if (_propertyChangedCallbacks.Count == 0)
+							{
+								_propertyChangedCallbacks = null;
+							}
+						}
+						else
+						{
+							_propertyChangedCallbacks[i] = (property, newCallback);
+						}
+
+						handle.Free();
+						return;
+					}
+				}
 			}
 		}
 
-		internal IDisposable RegisterPropertyChangedCallback(DependencyProperty property, PropertyChangedCallback callback, DependencyPropertyDetails? propertyDetails = null)
+		private List<(DependencyProperty Property, PropertyChangedCallback Callback)>? _propertyChangedCallbacks;
+
+		internal long RegisterPropertyChangedCallback(DependencyProperty property, PropertyChangedCallback callback, DependencyPropertyDetails? propertyDetails = null)
 		{
-			propertyDetails ??= _properties.GetPropertyDetails(property);
-
-			if (ReferenceEquals(callback.Target, ActualInstance))
+			var gcHandle = GCHandle.Alloc(callback, GCHandleType.Weak);
+			long token = GCHandle.ToIntPtr(gcHandle);
+			if (_propertyChangedCallbacks is null)
 			{
-				return propertyDetails.RegisterCallback(callback);
+				_propertyChangedCallbacks = [(property, callback)];
+				return token;
 			}
-			else
+
+			for (int i = 0; i < _propertyChangedCallbacks.Count; i++)
 			{
-				CreateWeakDelegate(callback, out var weakCallback, out var weakDelegateRelease);
-
-				var cookie = propertyDetails.RegisterCallback(weakCallback);
-
-				return new RegisterPropertyChangedCallbackForPropertyConditionalDisposable(
-					callback,
-					weakDelegateRelease,
-					cookie,
-					ThisWeakReference
-				);
+				var entry = _propertyChangedCallbacks[i];
+				if (entry.Property == property)
+				{
+					var newCallback = entry.Callback + callback;
+					_propertyChangedCallbacks[i] = (property, newCallback);
+					return token;
+				}
 			}
+
+			_propertyChangedCallbacks.Add((property, callback));
+			return token;
 		}
 
 		/// <summary>
@@ -978,18 +1000,6 @@ namespace Microsoft.UI.Xaml
 				// as the subscription being held by the callee.
 				_callback = null!;
 			}
-		}
-
-		/// <summary>
-		/// Registers an strong-referenced explicit DependencyProperty changed handler to be notified of any property change.
-		/// </summary>
-		/// <remarks>
-		/// This method is meant to be used only for a DependencyObject to
-		/// itself, to match the behavior of generic WinUI's OnPropertyChanged virtual method.
-		/// </remarks>
-		internal void RegisterPropertyChangedCallbackStrong(ExplicitPropertyChangedCallback handler)
-		{
-			_genericCallbacks = _genericCallbacks.Add(handler);
 		}
 
 		private readonly struct InheritedPropertyChangedCallbackDisposable : IDisposable
@@ -1850,32 +1860,6 @@ namespace Microsoft.UI.Xaml
 			=> _hardOriginalObjectRef ?? _originalObjectRef.Target as DependencyObject;
 
 		/// <summary>
-		/// Creates a weak delegate for the specified PropertyChangedCallback callback.
-		/// </summary>
-		/// <param name="callback">The callback to reference</param>
-		/// <remarks>
-		/// This method is used to avoid creating a hard link between the source instance
-		/// and the stored delegate for the instance, thus avoid memory leaks.
-		/// We also do not need to clear the delegate created because it is already associated with the instance.
-		///
-		/// Note that this method is not generic to avoid the cost of trampoline resolution
-		/// on Mono 4.2 and earlier, when Full AOT is enabled. This should be revised once this behavior is updated, or
-		/// the cost of calling generic delegates is lowered.
-		/// </remarks>
-		private static void CreateWeakDelegate(
-			PropertyChangedCallback callback,
-			out PropertyChangedCallback weakCallback,
-			out WeakReferenceReturnDisposable weakRelease)
-		{
-			var wr = WeakReferencePool.RentWeakReference(null, callback);
-
-			weakCallback =
-				(s, e) => (!wr.IsDisposed ? wr.Target as PropertyChangedCallback : null)?.Invoke(s, e);
-
-			weakRelease = new WeakReferenceReturnDisposable(wr);
-		}
-
-		/// <summary>
 		/// Creates a weak delegate for the specified ExplicitPropertyChangedCallback callback.
 		/// </summary>
 		/// <param name="callback">The callback to reference</param>
@@ -2060,14 +2044,21 @@ namespace Microsoft.UI.Xaml
 			}
 
 			// Raise the changes for the callbacks register through RegisterPropertyChangedCallback.
-			if (propertyDetails.CanRaisePropertyChanged)
+			if (_propertyChangedCallbacks is not null)
 			{
-				eventArgs ??= new DependencyPropertyChangedEventArgs(property, previousValue, newValue
+				foreach (var (candidateProperty, callback) in _propertyChangedCallbacks)
+				{
+					if (candidateProperty == property)
+					{
+						eventArgs ??= new DependencyPropertyChangedEventArgs(property, previousValue, newValue
 #if __IOS__ || __MACOS__ || IS_UNIT_TESTS
-					, previousPrecedence, newPrecedence, bypassesPropagation
+							, previousPrecedence, newPrecedence, bypassesPropagation
 #endif
-				);
-				propertyDetails.RaisePropertyChangedNoNullCheck(actualInstanceAlias, eventArgs);
+										);
+						callback.Invoke(actualInstanceAlias, eventArgs);
+						break;
+					}
+				}
 			}
 
 			// Raise the property change for generic handlers
