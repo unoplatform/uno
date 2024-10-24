@@ -12,7 +12,7 @@ namespace Uno.WinUI.Graphics2DSK;
 /// <remarks>This is only available on skia-based targets.</remarks>
 public abstract class SKCanvasElement : FrameworkElement
 {
-	private protected override ShapeVisual CreateElementVisual() => new SKCanvasVisual(this, Compositor.GetSharedCompositor());
+	private protected override ContainerVisual CreateElementVisual() => new SKCanvasVisual(this, Compositor.GetSharedCompositor());
 
 	/// <summary>
 	/// Queue a rendering cycle that will call <see cref="RenderOverride"/>.
@@ -30,7 +30,7 @@ public abstract class SKCanvasElement : FrameworkElement
 	/// </remarks>
 	protected abstract void RenderOverride(SKCanvas canvas, Size area);
 
-	private class SKCanvasVisual(SKCanvasElement owner, Compositor compositor) : ShapeVisual(compositor)
+	private class SKCanvasVisual(SKCanvasElement owner, Compositor compositor) : ContainerVisual(compositor)
 	{
 		internal override void Paint(in PaintingSession session)
 		{

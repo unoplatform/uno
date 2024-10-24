@@ -55,7 +55,7 @@ public partial class Border : FrameworkElement
 #endif
 
 #if UNO_HAS_BORDER_VISUAL
-	private protected override ShapeVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateBorderVisual();
+	private protected override ContainerVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateBorderVisual();
 #endif
 
 	/// <summary>

@@ -55,7 +55,7 @@ public partial class Panel : FrameworkElement, IPanel
 	public BrushTransition BackgroundTransition { get; set; }
 
 #if UNO_HAS_BORDER_VISUAL
-	private protected override ShapeVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateBorderVisual();
+	private protected override ContainerVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateBorderVisual();
 #endif
 
 	private protected override void OnLoaded()

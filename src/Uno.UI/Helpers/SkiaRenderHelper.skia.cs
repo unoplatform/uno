@@ -17,7 +17,7 @@ internal static class SkiaRenderHelper
 	/// <summary>
 	/// Does a rendering cycle and returns a path that represents the total area that was drawn
 	/// </summary>
-	public static void RenderRootVisualAndClearNativeAreas(int width, int height, ShapeVisual rootVisual, SKSurface surface)
+	public static void RenderRootVisualAndClearNativeAreas(int width, int height, ContainerVisual rootVisual, SKSurface surface)
 	{
 		var path = RenderRootVisualAndReturnPath(width, height, rootVisual, surface);
 		if (path is { })
@@ -38,7 +38,7 @@ internal static class SkiaRenderHelper
 	/// Does a rendering cycle and returns a path that represents the total area that was drawn
 	/// or null if the entire window is drawn.
 	/// </summary>
-	public static SKPath? RenderRootVisualAndReturnPath(int width, int height, ShapeVisual rootVisual, SKSurface surface)
+	public static SKPath? RenderRootVisualAndReturnPath(int width, int height, ContainerVisual rootVisual, SKSurface surface)
 	{
 		if (!ContentPresenter.HasNativeElements())
 		{
