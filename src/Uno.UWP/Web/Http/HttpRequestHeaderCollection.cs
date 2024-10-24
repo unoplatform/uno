@@ -162,6 +162,9 @@ public partial class HttpRequestHeaderCollection : IDictionary<string, string>, 
 		}
 	}
 
+	public void Add(string key, string value)
+		=> _dictionary.Add(key, value);
+
 	public bool ContainsKey(string key)
 		=> _dictionary.ContainsKey(key);
 
@@ -214,4 +217,9 @@ public partial class HttpRequestHeaderCollection : IDictionary<string, string>, 
 	public int Count => _dictionary.Count;
 
 	public bool IsReadOnly => false;
+
+	public global::System.Collections.Generic.IEnumerator<global::System.Collections.Generic.KeyValuePair<string, string>> GetEnumerator()
+	{
+		return _dictionary.GetEnumerator();
+	}
 }
