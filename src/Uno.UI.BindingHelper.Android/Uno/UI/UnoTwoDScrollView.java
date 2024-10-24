@@ -1192,6 +1192,13 @@ public class UnoTwoDScrollView extends FrameLayout {
 	}
 
 	@Override
+	public void forceLayout() {
+		// See comment in managed BindableView.ForceLayout override for why we call requestLayout.
+		this.requestLayout();
+		super.forceLayout();
+	}
+
+	@Override
 	protected void onLayout(boolean changed, int l, int t, int r, int b) {
 		mIsLayoutDirty = false;
 		// Give a child focus if it needs it
@@ -1201,7 +1208,9 @@ public class UnoTwoDScrollView extends FrameLayout {
 		mChildToScrollTo = null;
 
 		// Calling this with the present values causes it to re-clam them
-		scrollTo(getScrollX(), getScrollY());
+		if (mScroller.isFinished()) {
+			scrollTo(getScrollX(), getScrollY());
+		}
 	}
 
 	@Override
@@ -1209,7 +1218,7 @@ public class UnoTwoDScrollView extends FrameLayout {
 		super.onSizeChanged(w, h, oldw, oldh);
 
 		View currentFocused = findFocus();
-		if (null == currentFocused || this == currentFocused)
+		if (null == currentFocused || this == currentFocused || !mScroller.isFinished())
 			return;
 
 		// If the currently-focused view was visible on the screen when the
