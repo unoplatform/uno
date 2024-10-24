@@ -10,7 +10,7 @@ public sealed
 #endif
     class ControlWithXamlEverywhereExceptDesktop : Page
 {
-	public SkiaOnlyControl()
+	public ControlWithXamlEverywhereExceptDesktop()
 	{
 		// no this.InitializeComponent();
     }
