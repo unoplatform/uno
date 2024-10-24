@@ -40,7 +40,7 @@ Additionally, you may also get the following error message:
 NETSDK1198: A publish profile with the name 'win-AnyCPU.pubxml' was not found in the project.
 ```
 
-This issue is not yet fixed but does not cause any issues while deploying.
+This issue is not yet fixed, but it does not cause any problems during deployment.
 
 ### UWP Support for Uno.Extensions
 
