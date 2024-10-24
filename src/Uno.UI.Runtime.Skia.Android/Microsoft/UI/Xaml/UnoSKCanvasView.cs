@@ -206,9 +206,9 @@ internal sealed class UnoSKCanvasView : SurfaceView, ISurfaceHolderCallback
 
 		_grContext = GRContext.CreateGl(glInterface);
 		if (_grContext is null)
-        {
+		{
 			throw new InvalidOperationException($"{nameof(GRContext)} creation failed.");
-        }
+		}
 
 		int[] stencil = new int[1];
 		if (EGL14.EglGetConfigAttrib(_eglDisplay, configs[0], EGL14.EglStencilSize, stencil, 0))
