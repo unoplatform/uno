@@ -1,8 +1,10 @@
 #nullable enable
 
 using System;
+using System.IO;
 using SkiaSharp;
 using Windows.Foundation;
+using Windows.Graphics.Interop;
 
 namespace Microsoft.UI.Composition;
 
@@ -10,27 +12,31 @@ partial class CompositionGeometricClip
 {
 	private protected override Rect? GetBoundsCore(Visual visual)
 	{
-		switch (Geometry)
+		if (Geometry is not null)
 		{
-			case CompositionPathGeometry { Path.GeometrySource: SkiaGeometrySource2D geometrySource }:
+			var geometry = Geometry.BuildGeometry();
+
+			if (geometry is SkiaGeometrySource2D geometrySource)
+			{
 				return geometrySource.Geometry.TightBounds.ToRect();
-
-			case CompositionPathGeometry cpg:
-				throw new InvalidOperationException($"Clipping with source {cpg.Path?.GeometrySource} is not supported");
-
-			case null:
-				return null;
-
-			default:
-				throw new InvalidOperationException($"Clipping with {Geometry} is not supported");
+			}
+			else
+			{
+				throw new InvalidOperationException($"Clipping with source {geometry} is not supported");
+			}
 		}
+
+		return null;
 	}
 
 	internal override void Apply(SKCanvas canvas, Visual visual)
 	{
-		switch (Geometry)
+		if (Geometry is not null)
 		{
-			case CompositionPathGeometry { Path.GeometrySource: SkiaGeometrySource2D geometrySource }:
+			var geometry = Geometry.BuildGeometry();
+
+			if (geometry is SkiaGeometrySource2D geometrySource)
+			{
 				var path = geometrySource.Geometry;
 				if (!TransformMatrix.IsIdentity)
 				{
@@ -40,17 +46,11 @@ partial class CompositionGeometricClip
 				}
 
 				canvas.ClipPath(path, antialias: true);
-				break;
-
-			case CompositionPathGeometry cpg:
-				throw new InvalidOperationException($"Clipping with source {cpg.Path?.GeometrySource} is not supported");
-
-			case null:
-				// null is nop
-				break;
-
-			default:
-				throw new InvalidOperationException($"Clipping with {Geometry} is not supported");
+			}
+			else
+			{
+				throw new InvalidOperationException($"Clipping with source {geometry} is not supported");
+			}
 		}
 	}
 }

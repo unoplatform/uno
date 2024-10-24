@@ -198,26 +198,14 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateColorBrush()
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateColorBrush(Windows.UI.Color)
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateContainerVisual()
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Composition.CubicBezierEasingFunction CreateCubicBezierEasingFunction(global::System.Numerics.Vector2 controlPoint1, global::System.Numerics.Vector2 controlPoint2)
-		{
-			throw new global::System.NotImplementedException("The member CubicBezierEasingFunction Compositor.CreateCubicBezierEasingFunction(Vector2 controlPoint1, Vector2 controlPoint2) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CubicBezierEasingFunction%20Compositor.CreateCubicBezierEasingFunction%28Vector2%20controlPoint1%2C%20Vector2%20controlPoint2%29");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateCubicBezierEasingFunction(System.Numerics.Vector2, System.Numerics.Vector2)
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateEffectFactory(Windows.Graphics.Effects.IGraphicsEffect)
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateEffectFactory(Windows.Graphics.Effects.IGraphicsEffect, System.Collections.Generic.IEnumerable<string>)
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateExpressionAnimation()
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateExpressionAnimation(string)
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateInsetClip()
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateInsetClip(float, float, float, float)
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Composition.LinearEasingFunction CreateLinearEasingFunction()
-		{
-			throw new global::System.NotImplementedException("The member LinearEasingFunction Compositor.CreateLinearEasingFunction() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LinearEasingFunction%20Compositor.CreateLinearEasingFunction%28%29");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateLinearEasingFunction()
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreatePropertySet()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -300,20 +288,8 @@ namespace Microsoft.UI.Composition
 			throw new global::System.NotImplementedException("The member SpotLight Compositor.CreateSpotLight() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpotLight%20Compositor.CreateSpotLight%28%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Composition.StepEasingFunction CreateStepEasingFunction()
-		{
-			throw new global::System.NotImplementedException("The member StepEasingFunction Compositor.CreateStepEasingFunction() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StepEasingFunction%20Compositor.CreateStepEasingFunction%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Composition.StepEasingFunction CreateStepEasingFunction(int stepCount)
-		{
-			throw new global::System.NotImplementedException("The member StepEasingFunction Compositor.CreateStepEasingFunction(int stepCount) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StepEasingFunction%20Compositor.CreateStepEasingFunction%28int%20stepCount%29");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateStepEasingFunction()
+		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateStepEasingFunction(int)
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateColorGradientStop()
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateColorGradientStop(float, Windows.UI.Color)
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateLinearGradientBrush()

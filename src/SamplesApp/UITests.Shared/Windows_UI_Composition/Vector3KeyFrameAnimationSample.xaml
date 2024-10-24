@@ -13,6 +13,18 @@
 		<CheckBox x:Name="isForeverCheckBox" Content="Is forever?" />
 		<CheckBox x:Name="hasFrameAtZeroCheckBox" Content="Has a keyframe at 0.0f?" />
 		<muxc:NumberBox x:Name="iterationCountNumberBox"  Header="Iteration count" Value="1" />
+		<ComboBox x:Name="easingFunctionBox" Header="Easing Function" SelectedIndex="0">
+			<ComboBoxItem Content="Default (Cubic Bezier)" />
+			<ComboBoxItem Content="Linear" />
+			<ComboBoxItem Content="Back" />
+			<ComboBoxItem Content="Bounce" />
+			<ComboBoxItem Content="Circle" />
+			<ComboBoxItem Content="Elastic" />
+			<ComboBoxItem Content="Exponential" />
+			<ComboBoxItem Content="Power" />
+			<ComboBoxItem Content="Sine"/>
+			<ComboBoxItem Content="Step"/>
+		</ComboBox>
 		<Button Content="Start" Click="OnStartAnimation" />
 		<Button Content="Stop" Click="OnStopAnimation" />
 		<Border x:Name="border" Width="100" Height="100" Background="Red" />
