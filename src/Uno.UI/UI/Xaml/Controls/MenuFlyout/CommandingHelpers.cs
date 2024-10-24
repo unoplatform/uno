@@ -6,226 +6,238 @@ using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Markup;
-
+using Uno.UI.DataBinding;
 using ICommand = System.Windows.Input.ICommand;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls;
+
+public class CommandingHelpers
 {
-	public class CommandingHelpers
+	class IconSourceToIconSourceElementConverter : IValueConverter
 	{
-		class IconSourceToIconSourceElementConverter : IValueConverter
+		public object Convert(object value, Type targetType, object parameter, string language)
 		{
-			public object Convert(object value, Type targetType, object parameter, string language)
+			if (value != null)
 			{
-				if (value != null)
-				{
-					var valueAsI = value;
+				var valueAsI = value;
 
-					IconSource valueAsIconSource;
-					IconSourceElement returnValueAsIconElement = new IconSourceElement();
+				IconSource valueAsIconSource;
+				IconSourceElement returnValueAsIconElement = new IconSourceElement();
 
-					valueAsIconSource = valueAsI as IconSource;
+				valueAsIconSource = valueAsI as IconSource;
 
-					returnValueAsIconElement.IconSource = valueAsIconSource;
+				returnValueAsIconElement.IconSource = valueAsIconSource;
 
-					return returnValueAsIconElement;
-				}
-				else
-				{
-					return null;
-				}
+				return returnValueAsIconElement;
 			}
-
-			public object ConvertBack(object value, Type targetType, object parameter, string language)
+			else
 			{
-				throw new NotImplementedException();
+				return null;
 			}
 		}
 
-		class KeyboardAcceleratorCopyConverter : IValueConverter
+		public object ConvertBack(object value, Type targetType, object parameter, string language)
 		{
-			public object Convert(object value, Type targetType, object parameter, string language)
+			throw new NotImplementedException();
+		}
+	}
+
+	class KeyboardAcceleratorCopyConverter : IValueConverter
+	{
+#if HAS_UNO // We have to pass in the target element so that we can set the parent of KeyboardAcceleratorCollection.
+		private readonly ManagedWeakReference _targetWeakRef;
+
+		public KeyboardAcceleratorCopyConverter(ManagedWeakReference targetWeakRef)
+		{
+			_targetWeakRef = targetWeakRef;
+		}
+#endif
+
+		public object Convert(object value, Type targetType, object parameter, string language)
+		{
+			if (value != null && _targetWeakRef.IsAlive && _targetWeakRef.Target is DependencyObject element)
 			{
-				if (value != null)
+				object valueAsI = value;
+
+				IList<KeyboardAccelerator> valueAsKeyboardAccelerators;
+				var returnValueAsKeyboardAcceleratorCollection = new KeyboardAcceleratorCollection(element);
+
+				valueAsKeyboardAccelerators = valueAsI as IList<KeyboardAccelerator>;
+				int keyboardAcceleratorCount;
+
+				keyboardAcceleratorCount = valueAsKeyboardAccelerators.Count;
+
+				// Keyboard accelerators can't have two parents,
+				// so we'll need to copy them and bind to the original properties
+				// instead of assigning them.
+				// We set up bindings so that modifications to the app-defined accelerators
+				// will propagate to the accelerators that are used by the framework.
+				for (int i = 0; i < keyboardAcceleratorCount; i++)
 				{
-					object valueAsI = value;
+					KeyboardAccelerator keyboardAccelerator = valueAsKeyboardAccelerators[i];
+					KeyboardAccelerator keyboardAcceleratorCopy = new KeyboardAccelerator();
 
-					IList<KeyboardAccelerator> valueAsKeyboardAccelerators;
-					var returnValueAsKeyboardAcceleratorCollection = new DependencyObjectCollection<KeyboardAccelerator>();
+					keyboardAcceleratorCopy.SetBinding(KeyboardAccelerator.IsEnabledProperty, new Binding { Path = "IsEnabled", Source = keyboardAccelerator });
+					keyboardAcceleratorCopy.SetBinding(KeyboardAccelerator.KeyProperty, new Binding { Path = "Key", Source = keyboardAccelerator });
+					keyboardAcceleratorCopy.SetBinding(KeyboardAccelerator.ModifiersProperty, new Binding { Path = "Modifiers", Source = keyboardAccelerator });
+					keyboardAcceleratorCopy.SetBinding(KeyboardAccelerator.ScopeOwnerProperty, new Binding { Path = "ScopeOwner", Source = keyboardAccelerator });
+					returnValueAsKeyboardAcceleratorCollection.Add(keyboardAcceleratorCopy);
 
-					valueAsKeyboardAccelerators = valueAsI as IList<KeyboardAccelerator>;
-					int keyboardAcceleratorCount;
 
-					keyboardAcceleratorCount = valueAsKeyboardAccelerators.Count;
-
-					// Keyboard accelerators can't have two parents,
-					// so we'll need to copy them and bind to the original properties
-					// instead of assigning them.
-					// We set up bindings so that modifications to the app-defined accelerators
-					// will propagate to the accelerators that are used by the framework.
-					for (int i = 0; i < keyboardAcceleratorCount; i++)
-					{
-						KeyboardAccelerator keyboardAccelerator = valueAsKeyboardAccelerators[i];
-						KeyboardAccelerator keyboardAcceleratorCopy = new KeyboardAccelerator();
-
-						keyboardAcceleratorCopy.SetBinding(KeyboardAccelerator.IsEnabledProperty, new Binding { Path = "IsEnabled", Source = keyboardAccelerator });
-						keyboardAcceleratorCopy.SetBinding(KeyboardAccelerator.KeyProperty, new Binding { Path = "Key", Source = keyboardAccelerator });
-						keyboardAcceleratorCopy.SetBinding(KeyboardAccelerator.ModifiersProperty, new Binding { Path = "Modifiers", Source = keyboardAccelerator });
-						keyboardAcceleratorCopy.SetBinding(KeyboardAccelerator.ScopeOwnerProperty, new Binding { Path = "ScopeOwner", Source = keyboardAccelerator });
-					}
-
-					return returnValueAsKeyboardAcceleratorCollection;
 				}
-				else
-				{
-					return null;
-				}
-			}
 
-			public object ConvertBack(object value, Type targetType, object parameter, string language)
+				return returnValueAsKeyboardAcceleratorCollection;
+			}
+			else
 			{
-				throw new NotImplementedException();
+				return null;
 			}
 		}
 
-		internal static void BindToLabelPropertyIfUnset(
-			 ICommand uiCommand,
-			 DependencyObject target,
-			 DependencyProperty labelProperty)
+		public object ConvertBack(object value, Type targetType, object parameter, string language)
 		{
-			string localLabel = null;
-			var localLabelAsI = target.ReadLocalValue(labelProperty);
+			throw new NotImplementedException();
+		}
+	}
 
-			if (localLabelAsI != null)
-			{
-				localLabel = localLabelAsI.ToString();
-			}
+	internal static void BindToLabelPropertyIfUnset(
+		 ICommand uiCommand,
+		 DependencyObject target,
+		 DependencyProperty labelProperty)
+	{
+		string localLabel = null;
+		var localLabelAsI = target.ReadLocalValue(labelProperty);
 
-			if (localLabelAsI == DependencyProperty.UnsetValue || string.IsNullOrEmpty(localLabel))
-			{
-				if (target is IDependencyObjectStoreProvider dosp)
-				{
-					dosp.Store.SetBinding(labelProperty, new Binding { Path = "Label", Source = uiCommand });
-				}
-			}
+		if (localLabelAsI != null)
+		{
+			localLabel = localLabelAsI.ToString();
 		}
 
-		internal static void BindToIconPropertyIfUnset(
-			 XamlUICommand uiCommand,
-			 DependencyObject target,
-			 DependencyProperty iconProperty)
+		if (localLabelAsI == DependencyProperty.UnsetValue || string.IsNullOrEmpty(localLabel))
 		{
-			IconElement localIcon;
-			object localIconAsI = target.ReadLocalValue(iconProperty);
-
-			localIcon = localIconAsI as IconElement;
-
-			if (localIconAsI == DependencyProperty.UnsetValue || localIcon == null)
+			if (target is IDependencyObjectStoreProvider dosp)
 			{
-				if (target is IDependencyObjectStoreProvider dosp)
-				{
-					IconSourceToIconSourceElementConverter converter = new IconSourceToIconSourceElementConverter();
-					dosp.Store.SetBinding(iconProperty, new Binding { Path = "IconSource", Source = uiCommand, Converter = converter });
-				}
+				dosp.Store.SetBinding(labelProperty, new Binding { Path = "Label", Source = uiCommand });
 			}
 		}
+	}
 
-		internal static void BindToIconSourcePropertyIfUnset(
-			 XamlUICommand uiCommand,
-			 DependencyObject target,
-			 DependencyProperty iconSourceProperty)
+	internal static void BindToIconPropertyIfUnset(
+		 XamlUICommand uiCommand,
+		 DependencyObject target,
+		 DependencyProperty iconProperty)
+	{
+		IconElement localIcon;
+		object localIconAsI = target.ReadLocalValue(iconProperty);
+
+		localIcon = localIconAsI as IconElement;
+
+		if (localIconAsI == DependencyProperty.UnsetValue || localIcon == null)
 		{
-			object localIconSourceAsI;
-			IconSource localIconSource;
-			localIconSourceAsI = target.ReadLocalValue(iconSourceProperty);
-
-			localIconSource = localIconSourceAsI as IconSource;
-
-			if (localIconSourceAsI == DependencyProperty.UnsetValue || localIconSource == null)
+			if (target is IDependencyObjectStoreProvider dosp)
 			{
-				if (target is IDependencyObjectStoreProvider dosp)
-				{
-					dosp.Store.SetBinding(iconSourceProperty, new Binding { Path = "IconSource", Source = uiCommand });
-				}
+				IconSourceToIconSourceElementConverter converter = new IconSourceToIconSourceElementConverter();
+				dosp.Store.SetBinding(iconProperty, new Binding { Path = "IconSource", Source = uiCommand, Converter = converter });
 			}
 		}
+	}
 
-		internal static void BindToKeyboardAcceleratorsIfUnset(
-			 XamlUICommand uiCommand,
-			 UIElement target)
+	internal static void BindToIconSourcePropertyIfUnset(
+		 XamlUICommand uiCommand,
+		 DependencyObject target,
+		 DependencyProperty iconSourceProperty)
+	{
+		object localIconSourceAsI;
+		IconSource localIconSource;
+		localIconSourceAsI = target.ReadLocalValue(iconSourceProperty);
+
+		localIconSource = localIconSourceAsI as IconSource;
+
+		if (localIconSourceAsI == DependencyProperty.UnsetValue || localIconSource == null)
 		{
-			IList<KeyboardAccelerator> targetKeyboardAccelerators;
-			int targetKeyboardAcceleratorCount;
-
-			targetKeyboardAccelerators = target.KeyboardAccelerators;
-			targetKeyboardAcceleratorCount = targetKeyboardAccelerators.Count;
-
-			if (targetKeyboardAcceleratorCount == 0)
+			if (target is IDependencyObjectStoreProvider dosp)
 			{
-				var converter = new KeyboardAcceleratorCopyConverter();
-				target.SetBinding(UIElement.KeyboardAcceleratorsProperty, new Binding { Path = "KeyboardAccelerators", Source = uiCommand, Converter = converter });
+				dosp.Store.SetBinding(iconSourceProperty, new Binding { Path = "IconSource", Source = uiCommand });
 			}
 		}
+	}
 
-		internal static void BindToAccessKeyIfUnset(
-			 XamlUICommand uiCommand,
-			 UIElement target)
+	internal static void BindToKeyboardAcceleratorsIfUnset(
+		 XamlUICommand uiCommand,
+		 UIElement target)
+	{
+		IList<KeyboardAccelerator> targetKeyboardAccelerators;
+		int targetKeyboardAcceleratorCount;
+
+		targetKeyboardAccelerators = target.KeyboardAccelerators;
+		targetKeyboardAcceleratorCount = targetKeyboardAccelerators.Count;
+
+		if (targetKeyboardAcceleratorCount == 0)
 		{
-			string localAccessKey;
-			localAccessKey = target.AccessKey;
+			var weakReference = WeakReferencePool.RentSelfWeakReference(target);
+			var converter = new KeyboardAcceleratorCopyConverter(weakReference);
+			target.SetBinding(UIElement.KeyboardAcceleratorsProperty, new Binding { Path = "KeyboardAccelerators", Source = uiCommand, Converter = converter });
+		}
+	}
 
-			if (localAccessKey == null || string.IsNullOrEmpty(localAccessKey))
-			{
-				target.SetBinding(UIElement.AccessKeyProperty, new Binding { Path = "AccessKey", Source = uiCommand });
-			}
+	internal static void BindToAccessKeyIfUnset(
+		 XamlUICommand uiCommand,
+		 UIElement target)
+	{
+		string localAccessKey;
+		localAccessKey = target.AccessKey;
+
+		if (localAccessKey == null || string.IsNullOrEmpty(localAccessKey))
+		{
+			target.SetBinding(UIElement.AccessKeyProperty, new Binding { Path = "AccessKey", Source = uiCommand });
+		}
+	}
+
+	internal static void BindToDescriptionPropertiesIfUnset(
+		 XamlUICommand uiCommand,
+		 FrameworkElement target)
+	{
+		string localHelpText = AutomationProperties.GetHelpText(target);
+
+		if (localHelpText == null || string.IsNullOrEmpty(localHelpText))
+		{
+			target.SetBinding(AutomationProperties.HelpTextProperty, new Binding { Path = "Description", Source = uiCommand });
 		}
 
-		internal static void BindToDescriptionPropertiesIfUnset(
-			 XamlUICommand uiCommand,
-			 FrameworkElement target)
+		object localToolTipAsI;
+		localToolTipAsI = ToolTipService.GetToolTip(target);
+
+		string localToolTipAsString = null;
+		ToolTip localToolTip = null;
+
+		if (localToolTipAsI != null)
 		{
-			string localHelpText = AutomationProperties.GetHelpText(target);
-
-			if (localHelpText == null || string.IsNullOrEmpty(localHelpText))
-			{
-				target.SetBinding(AutomationProperties.HelpTextProperty, new Binding { Path = "Description", Source = uiCommand });
-			}
-
-			object localToolTipAsI;
-			localToolTipAsI = ToolTipService.GetToolTip(target);
-
-			string localToolTipAsString = null;
-			ToolTip localToolTip = null;
-
-			if (localToolTipAsI != null)
-			{
-				localToolTipAsString = localToolTipAsI.ToString();
-				localToolTip = localToolTipAsI as ToolTip;
-			}
-
-			if ((localToolTipAsString == null || string.IsNullOrEmpty(localToolTipAsString)) && localToolTip == null)
-			{
-				target.SetBinding(ToolTipService.ToolTipProperty, new Binding { Path = "Description", Source = uiCommand });
-			}
+			localToolTipAsString = localToolTipAsI.ToString();
+			localToolTip = localToolTipAsI as ToolTip;
 		}
 
-		internal static void ClearBindingIfSet(
-			 ICommand uiCommand,
-			 FrameworkElement target,
-			 DependencyProperty targetProperty)
+		if ((localToolTipAsString == null || string.IsNullOrEmpty(localToolTipAsString)) && localToolTip == null)
 		{
-			BindingExpression bindingExpression;
-			bindingExpression = target.GetBindingExpression(targetProperty);
+			target.SetBinding(ToolTipService.ToolTipProperty, new Binding { Path = "Description", Source = uiCommand });
+		}
+	}
 
-			if (bindingExpression != null)
+	internal static void ClearBindingIfSet(
+		 ICommand uiCommand,
+		 FrameworkElement target,
+		 DependencyProperty targetProperty)
+	{
+		BindingExpression bindingExpression;
+		bindingExpression = target.GetBindingExpression(targetProperty);
+
+		if (bindingExpression != null)
+		{
+			object bindingSource;
+			bindingSource = bindingExpression.ParentBinding.Source;
+
+			if (bindingSource != null && bindingSource == uiCommand)
 			{
-				object bindingSource;
-				bindingSource = bindingExpression.ParentBinding.Source;
-
-				if (bindingSource != null && bindingSource == uiCommand)
-				{
-					target.ClearValue(targetProperty);
-				}
+				target.ClearValue(targetProperty);
 			}
 		}
 	}
