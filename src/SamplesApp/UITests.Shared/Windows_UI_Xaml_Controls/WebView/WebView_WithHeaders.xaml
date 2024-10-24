@@ -17,12 +17,12 @@
 		  VerticalAlignment="Stretch">
 		<StackPanel Orientation="Vertical">
 			<TextBlock Text="WebView_NavigateWithHttpRequestMessage" />
-			<WebView Source="http://www.hslkdjghsldkjhlskjdhlsfjbvxcmnbxcmvnbjkhfksjdhf.com/"
+			<WebView Source="about:blank"
 						 x:Name="MyWebView2"
 						 Height="100"
 						 Width="100" />
 			<TextBlock x:Name="MyTextBlock" TextWrapping="Wrap" />
-			<Button Content="Navigate to Requestb.in" x:Name="MyButton" />
+			<Button Content="Navigate to httpbin.org" x:Name="MyButton" />
 		</StackPanel>
 	</not_win:Grid>
 </UserControl>
