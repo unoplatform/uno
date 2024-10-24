@@ -26,6 +26,12 @@ On Desktop Skia and WebAssembly, the feature is enabled by default.
 
 To include an SVG file, you will need to place it in a folder named `Svg` (e.g. `Assets\Svg\MyFile.svg`). This is required in order to avoid [Uno.Resizetizer](xref:Uno.Resizetizer.GettingStarted) transform the file into a set of scaled PNGs files.
 
+Now, you can display the SVG image in an `Image` by referencing it from the `Source` property. For example:
+
+```xml
+<Image Source="ms-appx:///Assets/Svg/test.svg" Stretch="UniformToFill" Width="100" Height="100" />
+```
+
 ## [**Legacy Project**](#tab/legacyproject)
 
 To use SVG, install the following NuGet packages into the iOS, macOS, Mac Catalyst, Android, and Skia projects:
@@ -42,13 +48,13 @@ To use SVG, install the following NuGet packages into the iOS, macOS, Mac Cataly
 
 Add the SVG Image to the app project and make sure that the build action is set to Content.
 
----
-
 Now, you can display the SVG image in an `Image` by referencing it from the `Source` property. For example:
 
 ```xml
 <Image Source="ms-appx:///Assets/test.svg" Stretch="UniformToFill" Width="100" Height="100" />
 ```
+
+---
 
 You can also explicitly use `SvgImageSource`:
 
