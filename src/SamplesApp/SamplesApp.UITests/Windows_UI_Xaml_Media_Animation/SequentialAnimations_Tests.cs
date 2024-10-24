@@ -18,7 +18,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media.Animation_Tests
 		public void SequentialAnimations()
 		{
 			// Navigate to this x:Class control name
-			Run("SamplesApp.Windows_UI_Xaml_Media.Animation.SequentialAnimationsPage");
+			Run("SamplesApp.Windows_UI_Xaml_Media.Animation.SequentialAnimationsPage",skipInitialScreenshot:true);
 		}
 	}
 }

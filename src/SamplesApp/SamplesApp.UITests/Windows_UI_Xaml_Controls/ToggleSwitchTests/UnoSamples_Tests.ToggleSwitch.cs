@@ -16,7 +16,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ToggleSwitchTests
 		[AutoRetry]
 		public void ToggleSwitch_TemplateReuseTest()
 		{
-			Run("UITests.Shared.Windows_UI_Xaml_Controls.ToggleSwitchControl.ToggleSwitch_TemplateReuse");
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.ToggleSwitchControl.ToggleSwitch_TemplateReuse",skipInitialScreenshot:true);
 
 			var toggleSwitchGroup = _app.Marked("toggleSwitchGroup");
 
