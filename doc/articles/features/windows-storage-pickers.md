@@ -19,18 +19,18 @@ Legend
 * 💬 Partially supported (see below for more details)
 * ✖ Not supported
 
-| Picker         | UWP   | WebAssembly | Android | iOS    | macOS | Skia Desktop (Windows) | Skia Desktop (X11) |
-|----------------|-------|-------------|---------|--------|-------|----------------------- |-----|
-| FileOpenPicker | ✔    | ✔ (1)       | ✔      | ✔      | ✔    | ✔                      | ✔  |
-| FileSavePicker | ✔    | ✔ (1)       | ✔      | 💬 (2) | ✔    | ✔                      | ✔  |
-| FolderPicker   | ✔    | ✔           | ✔      | ✔      | ✔    | ✖                      | ✔  |
+| Picker         | Windows App SDK   | WebAssembly | Android | iOS    | Desktop |
+|----------------|-------|-------------|---------|--------|-------|
+| FileOpenPicker | ✔    | ✔ (1)       | ✔      | ✔      | ✔    |
+| FileSavePicker | ✔    | ✔ (1)       | ✔      | 💬 (2) | ✔    |
+| FolderPicker   | ✔    | ✔           | ✔      | ✔      | ✔    |
 
 *(1) - Multiple implementations supported - see WebAssembly section below*\
 *(2) - See iOS section below*
 
 On some platforms, you can further customize the file-picking experience by utilizing additional properties:
 
-| Feature                 | UWP  | WebAssembly | Android | iOS   | Skia Desktop |
+| Feature                 | Windows App SDK  | WebAssembly | Android | iOS   | Desktop |
 |-------------------------|------|-------------|---------|-------|-----|
 | SuggestedFileName       | ✔   | ✔           | ✖      | ✖     | ✔ |
 | SuggestedStartLocation  | ✔   | ✔ (1)       | 💬 (4) | ✔ (3) | ✔ |
