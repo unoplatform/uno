@@ -2,16 +2,17 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Runtime.Loader;
 using System.Text;
 using System.Threading.Tasks;
 using Uno.Extensions;
+using Uno.Foundation;
 using Uno.Foundation.Logging;
 using Uno.UI.RemoteControl.HotReload.Messages;
-using System.Runtime.Loader;
-using System.Runtime.CompilerServices;
-using System.Diagnostics;
 
 namespace Uno.UI.RemoteControl.HotReload
 {
@@ -189,7 +190,7 @@ namespace Uno.UI.RemoteControl.HotReload
 					from type in asm.GetTypes()
 					let originalType = type.GetCustomAttribute<MetadataUpdateOriginalTypeAttribute>()
 					where originalType is not null
-					group type by originalType.OriginalType into g
+					group type by GetOriginalType(type, originalType.OriginalType) into g
 					select new
 					{
 						Key = g.Key.FullName,
@@ -199,5 +200,14 @@ namespace Uno.UI.RemoteControl.HotReload
 
 			return mappedTypes.ToDictionary(p => p.Key, p => p.LastMapped);
 		}
+
+		private static Type GetOriginalType(Type type, Type originalType)
+			// Normally, HotReload should work by reading the original type from MetadataUpdateOriginalTypeAttribute.
+			// It's currently a problem on Android and iOS that a new type can't be emitted as it ends up with two managed types pointing to the same native type.
+			// For this reason, we create a fake marker class with CreateNewOnMetadataUpdate attribute.
+			// The marker class has UnoOriginalTypeAttribute which points to the real original type.
+			// So, when we update the marker class, we should use the OriginalType specified by it.
+			// Otherwise, use the original type from MetadataUpdateOriginalTypeAttribute
+			=> type.GetCustomAttribute<UnoOriginalTypeAttribute>()?.OriginalType ?? originalType;
 	}
 }
