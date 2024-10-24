@@ -6,6 +6,7 @@
 		"Uno.WinUI",
 		"Uno.UI.Adapter.Microsoft.Extensions.Logging",
 		"Uno.WinUI.Maps",
+    "Uno.WinUI.GooglePlay",
 		"Uno.WinUI.Foldable",
 		"Uno.WinUI.MSAL",
 		"Uno.WinUI.Svg",
