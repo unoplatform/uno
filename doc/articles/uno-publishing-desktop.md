@@ -89,6 +89,13 @@ Create a file named `Properties\PublishProfiles\ClickOnceProfile.pubxml` in your
     <PublishDir>bin\Release\net8.0-desktop\win-x64\app.publish\</PublishDir>
     <PublishUrl>bin\publish\</PublishUrl>
   </PropertyGroup>
+  <ItemGroup>
+    <!-- This section needs to be adjusted based on the target framework -->
+    <BootstrapperPackage Include="Microsoft.NetCore.DesktopRuntime.8.0.x64">
+      <Install>true</Install>
+      <ProductName>.NET Desktop Runtime 8.0.10 (x64)</ProductName>
+    </BootstrapperPackage>
+  </ItemGroup>
 </Project>
 ```
 
@@ -107,6 +114,7 @@ To use the Visual Studio publishing wizard:
 - Click the **+ New profile** button
 - Select **ClicOnce**, then **Next**
 - Configure your app publishing in all the following wizard pages
+- In the **Configuration** section, make sure to select **Portable** for the **Target runtime**
 - Click Finish.
 
 The `Properties\PublishProfiles\ClickOnceProfile.pubxml` file will be created.
@@ -122,6 +130,10 @@ msbuild /m /r /target:Publish /p:Configuration=Release /p:PublishProfile="Proper
 The resulting package will be located in the `bin\publish` folder. You an change the output folder using `/p:UnoClickOncePublishDir=your\output\directory`.
 
 Depending on your deployment settings, you can run the `Setup.exe` file to install the application on a machine.
+
+> [!IMPORTANT]
+> At this time, publishing with the Visual Studio Publishing Wizard is not supported for
+> multi-targeted projects. Using the command line above is required.
 
 ### macOS App Bundles
 
