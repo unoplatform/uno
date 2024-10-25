@@ -2,6 +2,8 @@
 uid: uno.publishing.desktop
 ---
 
+<!-- markdownlint-disable MD001 MD051 -->
+
 # Publishing Your App For Desktop
 
 ## Preparing For Publish
