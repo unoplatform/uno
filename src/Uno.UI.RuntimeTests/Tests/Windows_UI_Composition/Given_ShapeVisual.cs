@@ -20,6 +20,9 @@ public class Given_ShapeVisual
 	public async Task When_ShapeVisual_ViewBox_Shape_Combinations()
 	{
 		// runtime test version of the ShapeVisualClipping sample
+
+		// The reference images are currently not very accurate due to the commented clipping line in ShapeVisual.Paint.
+		// Restoring that line gives results identical to WinUI.
 		var counter = 1;
 		foreach (var shapeVisualSize in (int[])[20, 40, 80])
 		{

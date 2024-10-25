@@ -17,7 +17,12 @@ public partial class ShapeVisual
 			return;
 		}
 
-		canvas.ClipRect(new SKRect(0, 0, Size.X, Size.Y));
+		// TODO: ShapeVisuals should be clipping to the size rect. However, this breaks shapes for us because
+		// they we implement them with ShapeVisuals and they doesn't be clipping anything. The problem is that
+		// the WinUI implementation doesn't use ShapeVisuals for shapes, but a combination of ContainerVisuals and
+		// SpriteVisuals (among others). When_StrokeThickness_Is_GreaterThan_Or_Equals_Width and
+		// When_Border_CornerRadius_HitTesting fail when you uncomment the following line.
+		// canvas.ClipRect(new SKRect(0, 0, Size.X, Size.Y));
 
 		// TODO: ViewBox.Stretch, ViewBox.HorizontalAlignmentRatio and ViewBox.VerticalAlignmentRatio
 		if (ViewBox is not null)
