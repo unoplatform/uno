@@ -7,21 +7,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Reflection;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Core;
 using Microsoft.UI.Input;
 using Uno.UI.Xaml;
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.System;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Input;
 
 #if __IOS__
 using UIKit;
 #endif
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	public partial class UIElement : DependencyObject, IXUidProvider
 	{

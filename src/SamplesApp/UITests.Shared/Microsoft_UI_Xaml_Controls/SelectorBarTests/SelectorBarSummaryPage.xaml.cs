@@ -5,11 +5,11 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Microsoft.UI;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Navigation;
 using Microsoft.UI.Private.Controls;
 using Windows.Foundation;
 using MUXControlsTestApp.Samples.Model;
@@ -153,7 +153,7 @@ namespace MUXControlsTestApp
 			AppendEventMessage($"ItemsView.SelectionChanged SelectedItems={selectedItems}");
 		}
 
-		private void ItemsView_GettingFocus(UIElement sender, Microsoft.UI.Xaml.Input.GettingFocusEventArgs args)
+		private void ItemsView_GettingFocus(UIElement sender, Windows.UI.Xaml.Input.GettingFocusEventArgs args)
 		{
 			FrameworkElement oldFE = args.OldFocusedElement as FrameworkElement;
 			string oldFEName = (oldFE == null) ? "null" : oldFE.Name;
@@ -168,7 +168,7 @@ namespace MUXControlsTestApp
 			AppendEventMessage("ItemsView.LostFocus");
 		}
 
-		private void ItemsView_LosingFocus(UIElement sender, Microsoft.UI.Xaml.Input.LosingFocusEventArgs args)
+		private void ItemsView_LosingFocus(UIElement sender, Windows.UI.Xaml.Input.LosingFocusEventArgs args)
 		{
 			FrameworkElement oldFE = args.OldFocusedElement as FrameworkElement;
 			string oldFEName = (oldFE == null) ? "null" : oldFE.Name;

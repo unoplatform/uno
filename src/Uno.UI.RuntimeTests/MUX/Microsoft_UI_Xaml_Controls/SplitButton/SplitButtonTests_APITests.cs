@@ -7,13 +7,13 @@
 using System;
 using System.Windows.Input;
 using MUXControlsTestApp.Utilities;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using Common;
 using System.Threading.Tasks;
 using SplitButton = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SplitButton;
 using ToggleSplitButton = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ToggleSplitButton;
 
-namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
+namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 {
 	[TestClass]
 	public partial class SplitButtonTests : MUXApiTestBase

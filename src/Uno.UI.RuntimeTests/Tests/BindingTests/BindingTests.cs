@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Automation;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Automation;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 using SamplesApp.UITests;
 using Uno.UI.RuntimeTests.Helpers;
 
@@ -79,14 +79,14 @@ public class BindingTests
 		await UITestHelper.Load(SUT);
 
 		var myBtn = SUT.myBtn;
-		Assert.AreEqual(Microsoft.UI.Colors.Red, ((SolidColorBrush)myBtn.Foreground).Color);
+		Assert.AreEqual(Windows.UI.Colors.Red, ((SolidColorBrush)myBtn.Foreground).Color);
 
 		using (ThemeHelper.UseDarkTheme())
 		{
-			Assert.AreEqual(Microsoft.UI.Colors.Green, ((SolidColorBrush)myBtn.Foreground).Color);
+			Assert.AreEqual(Windows.UI.Colors.Green, ((SolidColorBrush)myBtn.Foreground).Color);
 		}
 
-		Assert.AreEqual(Microsoft.UI.Colors.Red, ((SolidColorBrush)myBtn.Foreground).Color);
+		Assert.AreEqual(Windows.UI.Colors.Red, ((SolidColorBrush)myBtn.Foreground).Color);
 	}
 
 	[TestMethod]
@@ -96,19 +96,19 @@ public class BindingTests
 		await UITestHelper.Load(SUT);
 
 		var myBtn = SUT.myBtn;
-		Assert.AreEqual(Microsoft.UI.Colors.Red, ((SolidColorBrush)myBtn.Foreground).Color);
+		Assert.AreEqual(Windows.UI.Colors.Red, ((SolidColorBrush)myBtn.Foreground).Color);
 
 		using (ThemeHelper.UseDarkTheme())
 		{
 #if WINAPPSDK
-			Assert.AreEqual(Microsoft.UI.Colors.Green, ((SolidColorBrush)myBtn.Foreground).Color);
+			Assert.AreEqual(Windows.UI.Colors.Green, ((SolidColorBrush)myBtn.Foreground).Color);
 #else
 			// WRONG behavior!
-			Assert.AreEqual(Microsoft.UI.Colors.Red, ((SolidColorBrush)myBtn.Foreground).Color);
+			Assert.AreEqual(Windows.UI.Colors.Red, ((SolidColorBrush)myBtn.Foreground).Color);
 #endif
 		}
 
-		Assert.AreEqual(Microsoft.UI.Colors.Red, ((SolidColorBrush)myBtn.Foreground).Color);
+		Assert.AreEqual(Windows.UI.Colors.Red, ((SolidColorBrush)myBtn.Foreground).Color);
 	}
 
 	[TestMethod]
@@ -119,13 +119,13 @@ public class BindingTests
 
 		var myBtn = SUT.myBtn;
 		myBtn.DataContext = "Hello";
-		Assert.AreEqual(Microsoft.UI.Colors.Red, ((SolidColorBrush)myBtn.Foreground).Color);
+		Assert.AreEqual(Windows.UI.Colors.Red, ((SolidColorBrush)myBtn.Foreground).Color);
 
 		using (ThemeHelper.UseDarkTheme())
 		{
-			Assert.AreEqual(Microsoft.UI.Colors.Green, ((SolidColorBrush)myBtn.Foreground).Color);
+			Assert.AreEqual(Windows.UI.Colors.Green, ((SolidColorBrush)myBtn.Foreground).Color);
 		}
 
-		Assert.AreEqual(Microsoft.UI.Colors.Red, ((SolidColorBrush)myBtn.Foreground).Color);
+		Assert.AreEqual(Windows.UI.Colors.Red, ((SolidColorBrush)myBtn.Foreground).Color);
 	}
 }

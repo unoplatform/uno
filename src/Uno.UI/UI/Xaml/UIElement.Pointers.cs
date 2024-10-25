@@ -12,8 +12,8 @@ using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Windows.Devices.Haptics;
 using Windows.Foundation;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media.Imaging;
 
 using Uno.Extensions;
 using Uno.Foundation.Logging;
@@ -30,7 +30,7 @@ using Windows.UI.Input;
 using Windows.Devices.Input;
 #endif
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	/*
 	 *	This partial file
@@ -70,7 +70,7 @@ namespace Microsoft.UI.Xaml
 		{
 			var uiElement = typeof(UIElement);
 			VisibilityProperty.GetMetadata(uiElement).MergePropertyChangedCallback(ClearPointersStateIfNeeded);
-			Microsoft.UI.Xaml.Controls.Control.IsEnabledProperty.GetMetadata(typeof(Microsoft.UI.Xaml.Controls.Control)).MergePropertyChangedCallback(ClearPointersStateIfNeeded);
+			Windows.UI.Xaml.Controls.Control.IsEnabledProperty.GetMetadata(typeof(Windows.UI.Xaml.Controls.Control)).MergePropertyChangedCallback(ClearPointersStateIfNeeded);
 #if UNO_HAS_MANAGED_POINTERS
 			HitTestVisibilityProperty.GetMetadata(uiElement).MergePropertyChangedCallback(ClearPointersStateIfNeeded);
 #endif
@@ -278,13 +278,13 @@ namespace Microsoft.UI.Xaml
 				return HitTestability.Collapsed;
 			}
 
-			if (this is Microsoft.UI.Xaml.Controls.Control ctrl)
+			if (this is Windows.UI.Xaml.Controls.Control ctrl)
 			{
 				return ctrl.IsLoaded && ctrl.IsEnabled
 					? HitTestability.Visible
 					: HitTestability.Collapsed;
 			}
-			else if (this is Microsoft.UI.Xaml.FrameworkElement fwElt)
+			else if (this is Windows.UI.Xaml.FrameworkElement fwElt)
 			{
 				return fwElt.IsLoaded
 					? HitTestability.Visible
@@ -638,7 +638,7 @@ namespace Microsoft.UI.Xaml
 
 				case RoutedEventFlag.DragEnter:
 					{
-						var pt = ((global::Microsoft.UI.Xaml.DragEventArgs)args).SourceId;
+						var pt = ((global::Windows.UI.Xaml.DragEventArgs)args).SourceId;
 						var wasDragOver = IsDragOver(pt);
 
 						// As the IsDragOver is expected to reflect the state of the current element **and the state of its children**,
@@ -656,7 +656,7 @@ namespace Microsoft.UI.Xaml
 				case RoutedEventFlag.DragOver:
 					// As the IsDragOver is expected to reflect the state of the current element **and the state of its children**,
 					// even if the AllowDrop flag has not been set, we have to update the IsDragOver state.
-					SetIsDragOver(((global::Microsoft.UI.Xaml.DragEventArgs)args).SourceId, true);
+					SetIsDragOver(((global::Windows.UI.Xaml.DragEventArgs)args).SourceId, true);
 
 					if (!AllowDrop) // The Drag and Drop "routed" events are raised only on controls that opted-in
 					{
@@ -667,7 +667,7 @@ namespace Microsoft.UI.Xaml
 				case RoutedEventFlag.DragLeave:
 				case RoutedEventFlag.Drop:
 					{
-						var pt = ((global::Microsoft.UI.Xaml.DragEventArgs)args).SourceId;
+						var pt = ((global::Windows.UI.Xaml.DragEventArgs)args).SourceId;
 						var wasDragOver = IsDragOver(pt);
 
 						// As the IsDragOver is expected to reflect the state of the current element **and the state of its children**,
@@ -807,7 +807,7 @@ namespace Microsoft.UI.Xaml
 		{
 		}
 
-		internal void RaiseDragEnterOrOver(global::Microsoft.UI.Xaml.DragEventArgs args)
+		internal void RaiseDragEnterOrOver(global::Windows.UI.Xaml.DragEventArgs args)
 		{
 			var evt = IsDragOver(args.SourceId)
 				? DragOverEvent
@@ -818,7 +818,7 @@ namespace Microsoft.UI.Xaml
 			SafeRaiseEvent(evt, args);
 		}
 
-		internal void RaiseDragLeave(global::Microsoft.UI.Xaml.DragEventArgs args, UIElement upTo = null)
+		internal void RaiseDragLeave(global::Windows.UI.Xaml.DragEventArgs args, UIElement upTo = null)
 		{
 			if (_draggingOver?.Remove(args.SourceId) ?? false)
 			{
@@ -826,7 +826,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		internal void RaiseDrop(global::Microsoft.UI.Xaml.DragEventArgs args)
+		internal void RaiseDrop(global::Windows.UI.Xaml.DragEventArgs args)
 		{
 			if (_draggingOver?.Remove(args.SourceId) ?? false)
 			{

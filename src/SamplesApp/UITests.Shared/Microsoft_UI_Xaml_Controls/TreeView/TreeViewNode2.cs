@@ -3,7 +3,7 @@
 
 // MUX commit reference 6a8ac7c
 
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 
 using TreeViewNode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TreeViewNode;
 

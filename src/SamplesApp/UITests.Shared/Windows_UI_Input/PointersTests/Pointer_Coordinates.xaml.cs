@@ -1,7 +1,7 @@
 ﻿using Uno.UI.Samples.Controls;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
 
 namespace UITests.Windows_UI_Input.PointersTests
 {

@@ -1,6 +1,6 @@
-#nullable enable
+﻿#nullable enable
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 /// <summary>
 /// Represents one item of content in a SelectorBar control.

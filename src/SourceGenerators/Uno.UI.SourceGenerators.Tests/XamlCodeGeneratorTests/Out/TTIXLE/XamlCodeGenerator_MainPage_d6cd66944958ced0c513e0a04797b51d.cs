@@ -7,14 +7,14 @@ using System.Diagnostics;
 using System.Linq;
 using Uno.UI;
 using Uno.UI.Xaml;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Documents;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Animation;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Documents;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Shapes;
 using Windows.UI.Text;
 using Uno.Extensions;
 using Uno;
@@ -29,18 +29,18 @@ using _View = UIKit.UIView;
 #elif __MACOS__
 using _View = AppKit.NSView;
 #else
-using _View = Microsoft.UI.Xaml.UIElement;
+using _View = Windows.UI.Xaml.UIElement;
 #endif
 
 namespace TestRepro
 {
-	partial class MainPage : global::Microsoft.UI.Xaml.Controls.Page
+	partial class MainPage : global::Windows.UI.Xaml.Controls.Page
 	{
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_prefix_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
-		private global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
+		private global::Windows.UI.Xaml.NameScope __nameScope = new global::Windows.UI.Xaml.NameScope();
 		private void InitializeComponent()
 		{
 			NameScope.SetNameScope(this, __nameScope);
@@ -48,28 +48,28 @@ namespace TestRepro
 			base.IsParsing = true;
 			// Source 0\MainPage.xaml (Line 1:2)
 			base.Content = 
-			new global::Microsoft.UI.Xaml.Controls.StackPanel
+			new global::Windows.UI.Xaml.Controls.StackPanel
 			{
 				IsParsing = true,
 				// Source 0\MainPage.xaml (Line 10:3)
 				Children = 
 				{
-					new Microsoft.UI.Xaml.ElementStub( () => 
-					new global::Microsoft.UI.Xaml.Controls.Grid
+					new Windows.UI.Xaml.ElementStub( () => 
+					new global::Windows.UI.Xaml.Controls.Grid
 					{
 						IsParsing = true,
 						Name = "outerGrid",
 						// Source 0\MainPage.xaml (Line 11:4)
 						Children = 
 						{
-							new global::Microsoft.UI.Xaml.Controls.StackPanel
+							new global::Windows.UI.Xaml.Controls.StackPanel
 							{
 								IsParsing = true,
 								Name = "inner1",
 								// Source 0\MainPage.xaml (Line 12:5)
 								Children = 
 								{
-									new global::Microsoft.UI.Xaml.Controls.Button
+									new global::Windows.UI.Xaml.Controls.Button
 									{
 										IsParsing = true,
 										Name = "inner1Button",
@@ -95,11 +95,11 @@ namespace TestRepro
 							}
 							))
 							,
-							new global::Microsoft.UI.Xaml.Controls.Button
+							new global::Windows.UI.Xaml.Controls.Button
 							{
 								IsParsing = true,
 								Name = "inner2",
-								Template = 								new global::Microsoft.UI.Xaml.Controls.ControlTemplate(this, (__owner) => 								new _MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPageSC0().Build(__owner)
+								Template = 								new global::Windows.UI.Xaml.Controls.ControlTemplate(this, (__owner) => 								new _MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPageSC0().Build(__owner)
 								)								,
 								// Source 0\MainPage.xaml (Line 15:5)
 							}
@@ -112,14 +112,14 @@ namespace TestRepro
 							}
 							))
 							,
-							new global::Microsoft.UI.Xaml.Controls.StackPanel
+							new global::Windows.UI.Xaml.Controls.StackPanel
 							{
 								IsParsing = true,
 								Name = "inner3",
 								// Source 0\MainPage.xaml (Line 24:5)
 								Children = 
 								{
-									new global::Microsoft.UI.Xaml.Controls.Button
+									new global::Windows.UI.Xaml.Controls.Button
 									{
 										IsParsing = true,
 										Name = "inner3Button",
@@ -163,8 +163,8 @@ namespace TestRepro
 						c6.Name = "outerGrid";
 						_outerGridSubject.ElementInstance = c6;
 						c6.SetBinding(
-							global::Microsoft.UI.Xaml.ElementStub.LoadProperty,
-							new Microsoft.UI.Xaml.Data.Binding()
+							global::Windows.UI.Xaml.ElementStub.LoadProperty,
+							new Windows.UI.Xaml.Data.Binding()
 							{
 								Mode = BindingMode.OneTime,
 							}
@@ -173,7 +173,7 @@ namespace TestRepro
 						__that._component_1 = c6;
 						var _component_1_update_That = (this as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;
 						var _component_1_update_subject_capture = _outerGridSubject;
-						void _component_1_update(global::Microsoft.UI.Xaml.ElementStub sender)
+						void _component_1_update(global::Windows.UI.Xaml.ElementStub sender)
 						{
 							if (_component_1_update_That.Target is global::TestRepro.MainPage that)
 							{
@@ -241,7 +241,7 @@ namespace TestRepro
 			OnInitializeCompleted();
 
 			Bindings = new MainPage_Bindings(this);
-			((global::Microsoft.UI.Xaml.FrameworkElement)this).Loading += (s, e) =>
+			((global::Windows.UI.Xaml.FrameworkElement)this).Loading += (s, e) =>
 			{
 				__that.Bindings.Update();
 				__that.Bindings.UpdateResources();
@@ -249,72 +249,72 @@ namespace TestRepro
 			;
 		}
 		partial void OnInitializeCompleted();
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _inner1ButtonSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
-		private global::Microsoft.UI.Xaml.Controls.Button inner1Button
+		private global::Windows.UI.Xaml.Data.ElementNameSubject _inner1ButtonSubject = new global::Windows.UI.Xaml.Data.ElementNameSubject();
+		private global::Windows.UI.Xaml.Controls.Button inner1Button
 		{
 			get
 			{
-				return (global::Microsoft.UI.Xaml.Controls.Button)_inner1ButtonSubject.ElementInstance;
+				return (global::Windows.UI.Xaml.Controls.Button)_inner1ButtonSubject.ElementInstance;
 			}
 			set
 			{
 				_inner1ButtonSubject.ElementInstance = value;
 			}
 		}
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _inner1Subject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
-		private global::Microsoft.UI.Xaml.Controls.StackPanel inner1
+		private global::Windows.UI.Xaml.Data.ElementNameSubject _inner1Subject = new global::Windows.UI.Xaml.Data.ElementNameSubject();
+		private global::Windows.UI.Xaml.Controls.StackPanel inner1
 		{
 			get
 			{
-				return (global::Microsoft.UI.Xaml.Controls.StackPanel)_inner1Subject.ElementInstance;
+				return (global::Windows.UI.Xaml.Controls.StackPanel)_inner1Subject.ElementInstance;
 			}
 			set
 			{
 				_inner1Subject.ElementInstance = value;
 			}
 		}
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _inner2Subject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
-		private global::Microsoft.UI.Xaml.Controls.Button inner2
+		private global::Windows.UI.Xaml.Data.ElementNameSubject _inner2Subject = new global::Windows.UI.Xaml.Data.ElementNameSubject();
+		private global::Windows.UI.Xaml.Controls.Button inner2
 		{
 			get
 			{
-				return (global::Microsoft.UI.Xaml.Controls.Button)_inner2Subject.ElementInstance;
+				return (global::Windows.UI.Xaml.Controls.Button)_inner2Subject.ElementInstance;
 			}
 			set
 			{
 				_inner2Subject.ElementInstance = value;
 			}
 		}
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _inner3ButtonSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
-		private global::Microsoft.UI.Xaml.Controls.Button inner3Button
+		private global::Windows.UI.Xaml.Data.ElementNameSubject _inner3ButtonSubject = new global::Windows.UI.Xaml.Data.ElementNameSubject();
+		private global::Windows.UI.Xaml.Controls.Button inner3Button
 		{
 			get
 			{
-				return (global::Microsoft.UI.Xaml.Controls.Button)_inner3ButtonSubject.ElementInstance;
+				return (global::Windows.UI.Xaml.Controls.Button)_inner3ButtonSubject.ElementInstance;
 			}
 			set
 			{
 				_inner3ButtonSubject.ElementInstance = value;
 			}
 		}
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _inner3Subject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
-		private global::Microsoft.UI.Xaml.Controls.StackPanel inner3
+		private global::Windows.UI.Xaml.Data.ElementNameSubject _inner3Subject = new global::Windows.UI.Xaml.Data.ElementNameSubject();
+		private global::Windows.UI.Xaml.Controls.StackPanel inner3
 		{
 			get
 			{
-				return (global::Microsoft.UI.Xaml.Controls.StackPanel)_inner3Subject.ElementInstance;
+				return (global::Windows.UI.Xaml.Controls.StackPanel)_inner3Subject.ElementInstance;
 			}
 			set
 			{
 				_inner3Subject.ElementInstance = value;
 			}
 		}
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _outerGridSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
-		private global::Microsoft.UI.Xaml.Controls.Grid outerGrid
+		private global::Windows.UI.Xaml.Data.ElementNameSubject _outerGridSubject = new global::Windows.UI.Xaml.Data.ElementNameSubject();
+		private global::Windows.UI.Xaml.Controls.Grid outerGrid
 		{
 			get
 			{
-				return (global::Microsoft.UI.Xaml.Controls.Grid)_outerGridSubject.ElementInstance;
+				return (global::Windows.UI.Xaml.Controls.Grid)_outerGridSubject.ElementInstance;
 			}
 			set
 			{
@@ -328,20 +328,20 @@ namespace TestRepro
 			private const string __baseUri_prefix_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 			private const string __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
-			global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
+			global::Windows.UI.Xaml.NameScope __nameScope = new global::Windows.UI.Xaml.NameScope();
 			public _View Build(object __ResourceOwner_1)
 			{
 				_View __rootInstance = null;
 				var __that = this;
 				__rootInstance = 
-				new global::Microsoft.UI.Xaml.Controls.Grid
+				new global::Windows.UI.Xaml.Controls.Grid
 				{
 					IsParsing = true,
 					Name = "gridInsideTemplate",
 					// Source 0\MainPage.xaml (Line 18:8)
 					Children = 
 					{
-						new global::Microsoft.UI.Xaml.Controls.Grid
+						new global::Windows.UI.Xaml.Controls.Grid
 						{
 							IsParsing = true,
 							Name = "gridInsideGridInsideTemplate",
@@ -369,33 +369,33 @@ namespace TestRepro
 				;
 				if (__rootInstance is DependencyObject d)
 				{
-					if (global::Microsoft.UI.Xaml.NameScope.GetNameScope(d) == null)
+					if (global::Windows.UI.Xaml.NameScope.GetNameScope(d) == null)
 					{
-						global::Microsoft.UI.Xaml.NameScope.SetNameScope(d, __nameScope);
+						global::Windows.UI.Xaml.NameScope.SetNameScope(d, __nameScope);
 						__nameScope.Owner = d;
 					}
 					global::Uno.UI.FrameworkElementHelper.AddObjectReference(d, this);
 				}
 				return __rootInstance;
 			}
-			private global::Microsoft.UI.Xaml.Data.ElementNameSubject _gridInsideGridInsideTemplateSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
-			private global::Microsoft.UI.Xaml.Controls.Grid gridInsideGridInsideTemplate
+			private global::Windows.UI.Xaml.Data.ElementNameSubject _gridInsideGridInsideTemplateSubject = new global::Windows.UI.Xaml.Data.ElementNameSubject();
+			private global::Windows.UI.Xaml.Controls.Grid gridInsideGridInsideTemplate
 			{
 				get
 				{
-					return (global::Microsoft.UI.Xaml.Controls.Grid)_gridInsideGridInsideTemplateSubject.ElementInstance;
+					return (global::Windows.UI.Xaml.Controls.Grid)_gridInsideGridInsideTemplateSubject.ElementInstance;
 				}
 				set
 				{
 					_gridInsideGridInsideTemplateSubject.ElementInstance = value;
 				}
 			}
-			private global::Microsoft.UI.Xaml.Data.ElementNameSubject _gridInsideTemplateSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
-			private global::Microsoft.UI.Xaml.Controls.Grid gridInsideTemplate
+			private global::Windows.UI.Xaml.Data.ElementNameSubject _gridInsideTemplateSubject = new global::Windows.UI.Xaml.Data.ElementNameSubject();
+			private global::Windows.UI.Xaml.Controls.Grid gridInsideTemplate
 			{
 				get
 				{
-					return (global::Microsoft.UI.Xaml.Controls.Grid)_gridInsideTemplateSubject.ElementInstance;
+					return (global::Windows.UI.Xaml.Controls.Grid)_gridInsideTemplateSubject.ElementInstance;
 				}
 				set
 				{
@@ -403,24 +403,24 @@ namespace TestRepro
 				}
 			}
 		}
-		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder  = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-		private global::Microsoft.UI.Xaml.Controls.Grid _component_0
+		private global::Windows.UI.Xaml.Markup.ComponentHolder _component_0_Holder  = new global::Windows.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+		private global::Windows.UI.Xaml.Controls.Grid _component_0
 		{
 			get
 			{
-				return (global::Microsoft.UI.Xaml.Controls.Grid)_component_0_Holder.Instance;
+				return (global::Windows.UI.Xaml.Controls.Grid)_component_0_Holder.Instance;
 			}
 			set
 			{
 				_component_0_Holder.Instance = value;
 			}
 		}
-		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_1_Holder  = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: false);
-		private global::Microsoft.UI.Xaml.ElementStub _component_1
+		private global::Windows.UI.Xaml.Markup.ComponentHolder _component_1_Holder  = new global::Windows.UI.Xaml.Markup.ComponentHolder(isWeak: false);
+		private global::Windows.UI.Xaml.ElementStub _component_1
 		{
 			get
 			{
-				return (global::Microsoft.UI.Xaml.ElementStub)_component_1_Holder.Instance;
+				return (global::Windows.UI.Xaml.ElementStub)_component_1_Holder.Instance;
 			}
 			set
 			{
@@ -488,30 +488,30 @@ namespace MyProject
 {
 	static class MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions
 	{
-		public delegate void XamlApplyHandler0(global::Microsoft.UI.Xaml.Controls.Button instance);
+		public delegate void XamlApplyHandler0(global::Windows.UI.Xaml.Controls.Button instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.Button MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Microsoft.UI.Xaml.Controls.Button instance, XamlApplyHandler0 handler)
+		public static global::Windows.UI.Xaml.Controls.Button MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Windows.UI.Xaml.Controls.Button instance, XamlApplyHandler0 handler)
 		{
 			handler(instance);
 			return instance;
 		}
-		public delegate void XamlApplyHandler1(global::Microsoft.UI.Xaml.Controls.StackPanel instance);
+		public delegate void XamlApplyHandler1(global::Windows.UI.Xaml.Controls.StackPanel instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.StackPanel MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Microsoft.UI.Xaml.Controls.StackPanel instance, XamlApplyHandler1 handler)
+		public static global::Windows.UI.Xaml.Controls.StackPanel MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Windows.UI.Xaml.Controls.StackPanel instance, XamlApplyHandler1 handler)
 		{
 			handler(instance);
 			return instance;
 		}
-		public delegate void XamlApplyHandler2(global::Microsoft.UI.Xaml.Controls.Grid instance);
+		public delegate void XamlApplyHandler2(global::Windows.UI.Xaml.Controls.Grid instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.Grid MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Microsoft.UI.Xaml.Controls.Grid instance, XamlApplyHandler2 handler)
+		public static global::Windows.UI.Xaml.Controls.Grid MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Windows.UI.Xaml.Controls.Grid instance, XamlApplyHandler2 handler)
 		{
 			handler(instance);
 			return instance;
 		}
-		public delegate void XamlApplyHandler3(global::Microsoft.UI.Xaml.ElementStub instance);
+		public delegate void XamlApplyHandler3(global::Windows.UI.Xaml.ElementStub instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.ElementStub MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Microsoft.UI.Xaml.ElementStub instance, XamlApplyHandler3 handler)
+		public static global::Windows.UI.Xaml.ElementStub MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Windows.UI.Xaml.ElementStub instance, XamlApplyHandler3 handler)
 		{
 			handler(instance);
 			return instance;

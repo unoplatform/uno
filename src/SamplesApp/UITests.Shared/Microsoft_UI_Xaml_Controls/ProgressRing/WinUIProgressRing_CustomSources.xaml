@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
-	xmlns:lottie="using:CommunityToolkit.WinUI.Lottie"
+	xmlns:lottie="using:Microsoft.Toolkit.Uwp.UI.Lottie"
 	xmlns:not_win="http://uno.ui/not_win"
     mc:Ignorable="d not_win"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">

@@ -2,16 +2,16 @@
 
 using System;
 using Windows.System;
-using Microsoft.UI.Xaml.Documents;
+using Windows.UI.Xaml.Documents;
 using Uno.Extensions;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls.Extensions;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 using Uno.UI;
 using Uno.UI.DataBinding;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	internal class TextBoxView
 	{

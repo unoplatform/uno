@@ -3,7 +3,7 @@
 using System;
 using Uno.UI.Xaml.Core;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 namespace Uno.UI.Xaml.Controls;

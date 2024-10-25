@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Input;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.UI;
@@ -10,12 +10,12 @@ using Windows.Foundation;
 using Windows.System;
 
 #if HAS_UNO_WINUI
-using _WindowActivatedEventArgs = Microsoft.UI.Xaml.WindowActivatedEventArgs;
+using _WindowActivatedEventArgs = Windows.UI.Xaml.WindowActivatedEventArgs;
 #else
 using _WindowActivatedEventArgs = Windows.UI.Core.WindowActivatedEventArgs;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls.Primitives;
+namespace Windows.UI.Xaml.Controls.Primitives;
 
 internal partial class PopupRoot : Panel
 {

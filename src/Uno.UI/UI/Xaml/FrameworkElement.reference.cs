@@ -6,9 +6,9 @@ using Uno.Collections;
 using Uno.UI;
 using Windows.Foundation;
 
-using View = Microsoft.UI.Xaml.UIElement;
+using View = Windows.UI.Xaml.UIElement;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	public partial class FrameworkElement : IEnumerable
 	{

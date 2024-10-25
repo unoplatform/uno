@@ -12,16 +12,16 @@ using Android.Graphics.Drawables;
 using Android.Runtime;
 using Java.IO;
 using Android.Graphics;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 using Uno.Extensions;
 
 using Uno.Foundation.Logging;
 using Uno.UI.Controls;
 using Uno.UI;
 using Android.Views;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Media
+namespace Windows.UI.Xaml.Media
 {
 	/// <summary>
 	/// Renderer to update all frames with better shadows matching material design standards.

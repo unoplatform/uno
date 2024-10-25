@@ -5,7 +5,7 @@ using System;
 using Windows.Foundation;
 using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	// UNO ONLY
 	// Note: This class is public as sub-class CalendarViewDayItem is public

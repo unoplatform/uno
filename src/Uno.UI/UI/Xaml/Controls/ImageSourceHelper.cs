@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Text;
 
 #if NETFX_CORE
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public static class ImageSourceHelper
 	{

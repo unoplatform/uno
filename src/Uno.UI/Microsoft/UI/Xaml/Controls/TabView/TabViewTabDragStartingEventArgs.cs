@@ -3,7 +3,7 @@
 // MUX Reference: TabView.h, commit ed31e13
 
 using Windows.ApplicationModel.DataTransfer;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {

@@ -1,5 +1,5 @@
 ﻿using Windows.Foundation;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 using System.Threading.Tasks;
 using UITests.Shared.Helpers;
@@ -23,8 +23,8 @@ namespace SamplesApp.Wasm.Windows_UI_Xaml_Media.Transform
 		{
 			var transform = TargetView.TransformToVisual(EnclosingView);
 			var target = transform.TransformPoint(new Point(0, 0));
-			Microsoft.UI.Xaml.Controls.Canvas.SetLeft(TrackerViewX, target.X);
-			Microsoft.UI.Xaml.Controls.Canvas.SetTop(TrackerViewY, target.Y);
+			Windows.UI.Xaml.Controls.Canvas.SetLeft(TrackerViewX, target.X);
+			Windows.UI.Xaml.Controls.Canvas.SetTop(TrackerViewY, target.Y);
 
 			OffsetTextBlock.Text = target.ToString();
 		}

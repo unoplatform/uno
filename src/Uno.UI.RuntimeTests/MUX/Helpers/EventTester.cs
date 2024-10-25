@@ -12,7 +12,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using UIExecutor = MUXControlsTestApp.Utilities.RunOnUIThread;
 using MUXControlsTestApp.Utilities;
 

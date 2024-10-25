@@ -17,7 +17,7 @@ namespace UnoApp50
 #if (NET6_0_OR_GREATER && WINDOWS && !HAS_UNO) || HAS_UNO_WINUI
 			_window = new Window();
 #else
-			_window = Microsoft.UI.Xaml.Window.Current;
+			_window = Windows.UI.Xaml.Window.Current;
 #endif
 			_window!.EnableHotReload();
 			// Do not repeat app initialization when the Window already has content,

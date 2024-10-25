@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis.PooledObjects;
 using Uno.Disposables;
 using SKPaint = SkiaSharp.SKPaint;
 
-namespace Microsoft.UI.Composition
+namespace Windows.UI.Composition
 {
 	internal static class SkiaHelper
 	{

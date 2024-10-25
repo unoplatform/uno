@@ -4,11 +4,11 @@
 #pragma warning disable 105 // Disabled until the tree is migrate to WinUI
 
 using System;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Markup;
 using Windows.UI;
 using System.Windows.Input;
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
@@ -17,7 +17,7 @@ using FontIconSource = Microsoft/* UWP don't rename */.UI.Xaml.Controls.FontIcon
 using BitmapIconSource = Microsoft/* UWP don't rename */.UI.Xaml.Controls.BitmapIconSource;
 using SymbolIconSource = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SymbolIconSource;
 using PathIconSource = Microsoft/* UWP don't rename */.UI.Xaml.Controls.PathIconSource;
-using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml.Media.Imaging;
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls.AnimatedVisuals;
 using ColorChangedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Controls.ColorChangedEventArgs;
 using Uno.UI.Samples.Controls;

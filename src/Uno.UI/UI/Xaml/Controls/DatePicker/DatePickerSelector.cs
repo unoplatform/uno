@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Uno.UI;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	/// <summary>
 	/// Shows an interface for selecting a date. Used as the content of DatePickerFlyout, and can also be used in other templates.
