@@ -1,4 +1,6 @@
-﻿using System;
+﻿// #define FPS_DISPLAY
+
+using System;
 using System.Diagnostics.CodeAnalysis;
 using Android.App;
 using Android.Content;
@@ -35,12 +37,17 @@ namespace Microsoft.UI.Xaml
 	[Activity(ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode, WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden)]
 	public class ApplicationActivity : Controls.NativePage
 	{
+#if FPS_DISPLAY
+		private long _counter = 0;
+		private DateTime _time = DateTime.UtcNow;
+		private string _fpsText = "0";
+#endif
+
 		private DisplayInformation? _cachedDisplayInformation;
 		private UnoSKCanvasView? _skCanvasView;
 		private ClippedRelativeLayout? _nativeLayerHost;
 
 		private InputPane _inputPane;
-		//private Android.Views.Window? _window;
 
 		private bool _started;
 
@@ -258,21 +265,37 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		private void OnPaintSurface(object? sender, SKPaintSurfaceEventArgs e)
+		private void OnPaintSurface(object? sender, SKSurface surface)
 		{
-			if (Microsoft.UI.Xaml.Window.CurrentSafe is { RootElement: { } root } window)
+			var canvas = surface.Canvas;
+			using (new SKAutoCanvasRestore(canvas, true))
 			{
-				_skCanvasView!.ExploreByTouchHelper.InvalidateRoot();
-
-				var canvas = e.Surface.Canvas;
-				canvas.Clear(SKColors.Transparent);
-				var scale = _cachedDisplayInformation!.RawPixelsPerViewPixel;
-				canvas.Scale((float)scale);
-				var negativePath = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath((int)window.Bounds.Width, (int)window.Bounds.Height, root.Visual, e.Surface);
-				if (_nativeLayerHost is { })
+				if (Microsoft.UI.Xaml.Window.CurrentSafe is { RootElement: { } root } window)
 				{
-					_nativeLayerHost.Path = negativePath;
-					_nativeLayerHost.Invalidate();
+					_skCanvasView!.ExploreByTouchHelper.InvalidateRoot();
+
+					canvas.Clear(SKColors.Transparent);
+					var scale = _cachedDisplayInformation!.RawPixelsPerViewPixel;
+					canvas.Scale((float)scale);
+					var negativePath = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath((int)window.Bounds.Width, (int)window.Bounds.Height, root.Visual, surface);
+					if (_nativeLayerHost is { })
+					{
+						_nativeLayerHost.Path = negativePath;
+						_nativeLayerHost.Invalidate();
+					}
+
+#if FPS_DISPLAY
+					// This naively calculates the difference in time every 100 frames, so to get
+					// a usable number, open a sample with a continuously-running animation.
+					_counter++;
+					if (_counter % 100 == 0)
+					{
+						var newTime = DateTime.UtcNow;
+						_fpsText = $"{100 / (newTime - _time).TotalSeconds}";
+						_time = newTime;
+					}
+					canvas.DrawText(_fpsText, new SKPoint((int)window.Bounds.Width / 2, (int)window.Bounds.Height / 2), new SKPaint(new SKFont(SKTypeface.Default, size: 20F)) { Color = SKColors.Red});
+#endif
 				}
 			}
 		}
