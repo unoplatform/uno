@@ -7,6 +7,7 @@
 	<!-- Sanity check ensure that platform files for other targets are not included -->
 	<ItemGroup Condition=" $(_IsUnoSingleProjectAndLegacy) == 'true' and $(PlatformsProjectFolder) != '' and Exists($(PlatformsProjectFolder))">
 		<Compile Remove="@(_IgnorePlatformFiles)" />
+		<Page Remove="@(_IgnorePlatformFiles)" />
 		<Content Remove="@(_IgnorePlatformFiles)" />
 		<EmbeddedResource Remove="@(_IgnorePlatformFiles)" />
 		<Manifest Remove="@(_IgnorePlatformFiles)" />
