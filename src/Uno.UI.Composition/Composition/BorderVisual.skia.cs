@@ -309,6 +309,6 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 	internal override bool HitTest(Point point)
 	{
 		UpdatePathsAndCornerClip();
-		return (_borderShape?.HitTest(point) ?? false) || (_backgroundShape?.HitTest(point) ?? false) || base.HitTest(point);
+		return (_borderShape?.HitTest(point) ?? false) || (_backgroundShape?.HitTest(point) ?? false);
 	}
 }
