@@ -77,6 +77,12 @@ namespace Microsoft.UI.Xaml.Media
 			return Disposable.Create(() => _subscriptions.Remove(onSourceOpened));
 		}
 
+		/// <summary>
+		/// Indicates that this source has already been opened
+		/// (So the onSourceOpened callback of Subscribe will be invoked synchronously!)
+		/// </summary>
+		internal bool IsOpened => _imageData.HasData;
+
 		private protected void InvalidateSource()
 		{
 			_imageData = default;

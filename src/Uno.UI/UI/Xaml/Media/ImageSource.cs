@@ -202,11 +202,6 @@ namespace Microsoft.UI.Xaml.Media
 			}
 		}
 
-		/// <summary>
-		/// Indicates that this source has already been opened
-		/// (So the onSourceOpened callback of Subscribe will be invoked synchronously!)
-		/// </summary>
-		internal bool IsOpened => _imageData.HasData;
 		partial void SetImageLoader();
 
 		internal void UnloadImageData()
