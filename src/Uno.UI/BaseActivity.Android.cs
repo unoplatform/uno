@@ -1,4 +1,6 @@
-﻿using System;
+﻿
+
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -82,7 +84,9 @@ namespace Uno.UI
 		/// For more info look at the lifecycle diagram documented here: https://developer.android.com/reference/android/app/Activity.html.
 		/// </remarks>
 		/// </summary>
-		public static BaseActivity Current => _current;
+#nullable enable
+		public static BaseActivity? Current => _current;
+#nullable disable
 
 		/// <summary>
 		/// Gets the first BaseActivity which is set as current. Unlike the <see cref="Current"/>, this method will wait until a BaseActivity is set as Current.
