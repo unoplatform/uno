@@ -2,6 +2,8 @@
 uid: uno.publishing.desktop
 ---
 
+<!-- markdownlint-disable MD001 MD051 -->
+
 # Publishing Your App For Desktop
 
 ## Preparing For Publish
@@ -42,6 +44,98 @@ dotnet publish -f net8.0-desktop -r {{RID}} -p:SelfContained=true
 ```
 
 Where `{{RID}}` specifies the chosen OS and Architecture (e.g. win-x64). When targeting Windows, cross-publishing to architectures other than the currently running one is not supported.
+
+### Windows ClickOnce
+
+Uno Platform supports publishing desktop apps using ClickOnce to Windows environments.
+
+In order to do so, you'll need to create a `.pubxml` file using Visual Studio, or to use the file below:
+
+# [**Using a Sample Profile**](#tab/windows)
+
+Create a file named `Properties\PublishProfiles\ClickOnceProfile.pubxml` in your project with the following contents:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<!-- https://go.microsoft.com/fwlink/?LinkID=208121. -->
+<Project>
+  <PropertyGroup>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.*</ApplicationVersion>
+    <BootstrapperEnabled>True</BootstrapperEnabled>
+    <Configuration>Release</Configuration>
+    <CreateWebPageOnPublish>False</CreateWebPageOnPublish>
+    <GenerateManifests>true</GenerateManifests>
+    <Install>True</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <IsRevisionIncremented>True</IsRevisionIncremented>
+    <IsWebBootstrapper>False</IsWebBootstrapper>
+    <MapFileExtensions>True</MapFileExtensions>
+    <OpenBrowserOnPublish>False</OpenBrowserOnPublish>
+    <Platform>x64</Platform>
+    <PublishProtocol>ClickOnce</PublishProtocol>
+    <PublishReadyToRun>False</PublishReadyToRun>
+    <PublishSingleFile>False</PublishSingleFile>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>True</SelfContained>
+    <SignatureAlgorithm>(none)</SignatureAlgorithm>
+    <SignManifests>False</SignManifests>
+    <SkipPublishVerification>false</SkipPublishVerification>
+    <TargetFramework>net8.0-desktop</TargetFramework>
+    <UpdateEnabled>False</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateRequired>False</UpdateRequired>
+    <WebPageFileName>Publish.html</WebPageFileName>
+
+    <!-- Those two lines below need to be removed when building using "UnoClickOncePublishDir" -->
+    <PublishDir>bin\Release\net8.0-desktop\win-x64\app.publish\</PublishDir>
+    <PublishUrl>bin\publish\</PublishUrl>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- This section needs to be adjusted based on the target framework -->
+    <BootstrapperPackage Include="Microsoft.NetCore.DesktopRuntime.8.0.x64">
+      <Install>true</Install>
+      <ProductName>.NET Desktop Runtime 8.0.10 (x64)</ProductName>
+    </BootstrapperPackage>
+  </ItemGroup>
+</Project>
+```
+
+# [**Using the Wizard**](#tab/vs-wizard)
+
+> [!NOTE]
+> An existing Visual Studio issue prevents the **Publish** context menu from being active
+> if iOS/Android/maccatalyst are present in the TargetFrameworks list. In order to create
+> the file, you can temporarily remove those target frameworks from `TargetFrameworks` in
+> order to create the `.pubxml` file generated.
+
+To use the Visual Studio publishing wizard:
+
+- Select the `netX.0-desktop` target framework in the debugger drop-down
+- In the Solution Explorer, right click on your project then select **Publish**
+- Click the **+ New profile** button
+- Select **ClickOnce**, then **Next**
+- Configure your app publishing in all the following wizard pages
+- In the **Configuration** section, make sure to select **Portable** for the **Target runtime**
+- Click **Finish**.
+
+The `Properties\PublishProfiles\ClickOnceProfile.pubxml` file will be created.
+
+***
+
+Once done, you can use the following command in your CI environment, or using a **Developer Command Prompt for Visual Studio**:
+
+```shell
+msbuild /m /r /target:Publish /p:Configuration=Release /p:PublishProfile="Properties\PublishProfiles\ClickOnceProfile.pubxml" /p:TargetFramework=net8.0-desktop
+```
+
+The resulting package will be located in the `bin\publish` folder. You can change the output folder using `/p:UnoClickOncePublishDir=your\output\directory`.
+
+Depending on your deployment settings, you can run the `Setup.exe` file to install the application on a machine.
+
+> [!IMPORTANT]
+> At this time, publishing with the Visual Studio Publishing Wizard is not supported for
+> multi-targeted projects. Using the command line above is required.
 
 ### macOS App Bundles
 
