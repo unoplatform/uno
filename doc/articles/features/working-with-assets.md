@@ -64,6 +64,30 @@ Or
 
 For Uno's latest project template where images are saved in the `Images` folder.
 
+### Referencing an asset from code
+
+You can also reference assets from code using the `ms-appx:///` scheme. For example:
+
+```xaml
+<Image x:Name="MyImage" />
+```
+
+```csharp
+// from XAML code behind
+MyImage.Source = "ms-appx:///Assets/MyImage.png";
+```
+
+or using bindings:
+
+```csharp
+// from a ViewModel
+public string ImagePath { get; set ;} = "ms-appx:///Assets/MyImage.png";
+```
+
+```xaml
+<Image Source="{x:Bind ImagePath}" />
+```
+
 You can also get assets directly using [StorageFile.GetFileFromApplicationUriAsync](xref:Uno.Features.FileManagement#support-for-storagefilegetfilefromapplicationuriasync).
 
 ## Qualify an asset
