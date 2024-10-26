@@ -527,7 +527,7 @@ public partial class EntryPoint : IDisposable
 					{
 						var cmd =
 							new CommandRequestIdeMessage(
-								System.Diagnostics.Process.GetCurrentProcess().MainWindowHandle.ToInt64(),
+								System.Diagnostics.Process.GetCurrentProcess().Id,
 								command,
 								action.ActionContext?.ToString());
 						await _ideChannelClient.SendToDevServerAsync(cmd, _ct.Token);
