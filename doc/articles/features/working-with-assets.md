@@ -49,6 +49,21 @@ See the examples below for XAML:
 <Image Source="ms-appx:///[MyApp]/Assets/MyImage.png" />
 ```
 
+> [!NOTE]
+> For [single project solutions](https://platform.uno/docs/articles/migrating-to-single-project.html#project-structure), the `[MyApp]` qualifier is not required when explicitly qualifying the asset.
+
+```xml
+<Image Source="ms-appx:///Assets/MyImage.png" />
+```
+
+Or
+
+```xml
+<Image Source="ms-appx:///Assets/Images/MyImage.png" />
+```
+
+For Uno's latest project template where images are saved in the `Images` folder.
+
 You can also get assets directly using [StorageFile.GetFileFromApplicationUriAsync](xref:Uno.Features.FileManagement#support-for-storagefilegetfilefromapplicationuriasync).
 
 ## Qualify an asset
