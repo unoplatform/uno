@@ -112,12 +112,12 @@ Create a file named `Properties\PublishProfiles\ClickOnceProfile.pubxml` in your
 To use the Visual Studio publishing wizard:
 
 - Select the `netX.0-desktop` target framework in the debugger drop-down
-- In the Solution Explorer, right click on your project then sekect **Publish**
+- In the Solution Explorer, right click on your project then select **Publish**
 - Click the **+ New profile** button
-- Select **ClicOnce**, then **Next**
+- Select **ClickOnce**, then **Next**
 - Configure your app publishing in all the following wizard pages
 - In the **Configuration** section, make sure to select **Portable** for the **Target runtime**
-- Click Finish.
+- Click **Finish**.
 
 The `Properties\PublishProfiles\ClickOnceProfile.pubxml` file will be created.
 
@@ -129,7 +129,7 @@ Once done, you can use the following command in your CI environment, or using a 
 msbuild /m /r /target:Publish /p:Configuration=Release /p:PublishProfile="Properties\PublishProfiles\ClickOnceProfile.pubxml" /p:TargetFramework=net8.0-desktop
 ```
 
-The resulting package will be located in the `bin\publish` folder. You an change the output folder using `/p:UnoClickOncePublishDir=your\output\directory`.
+The resulting package will be located in the `bin\publish` folder. You can change the output folder using `/p:UnoClickOncePublishDir=your\output\directory`.
 
 Depending on your deployment settings, you can run the `Setup.exe` file to install the application on a machine.
 

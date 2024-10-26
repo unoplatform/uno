@@ -145,9 +145,9 @@ The Uno Platform team is following this [Visual Studio issue](https://developerc
 
 ### UNOB0016: The Publish Profile file must not contain the "PublishDir"
 
-When publishing an app using Click Once on Windows, the `PublishProfile` file may not contain a `PublishDir` entry if the command line parameter `UnoClickOncePublishDir` has been set.
+When publishing an app using ClickOnce on Windows, the `PublishProfile` file may not contain a `PublishDir` entry if the command line parameter `UnoClickOncePublishDir` has been set.
 
-This situation is due to an MSBuild property overriding bug found in the .NET SDK. For more information, see our [publishing with Click Once](xref:uno.publishing.desktop#windows-clickonce) documentation.
+This situation is due to an MSBuild property overriding bug found in the .NET SDK. For more information, see our [publishing with ClickOnce](xref:uno.publishing.desktop#windows-clickonce) documentation.
 
 ## Compiler Errors
 
