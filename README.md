@@ -63,7 +63,6 @@ For a larger example and features demo:
     * [SkiaSharp.Extended](https://github.com/mono/SkiaSharp.Extended)
     * [ReactiveUI Official](https://github.com/reactiveui/ReactiveUI/pull/2067)
     * [WindowsStateTriggers](https://github.com/unoplatform/uno.WindowsStateTriggers)
-    * [Xamarin.Forms for UWP](https://github.com/unoplatform/uno.Xamarin.Forms), [NuGet](https://www.nuget.org/packages/ReactiveUI.Uno)
     * [Rx.NET](https://github.com/reactiveui/Reactive.Wasm)
     * [ColorCode-Universal](https://github.com/unoplatform/uno.ColorCode-Universal)
     * [LibVLCSharp](https://github.com/videolan/libvlcsharp)
