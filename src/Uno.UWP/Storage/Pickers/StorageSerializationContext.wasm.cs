@@ -2,6 +2,7 @@
 
 using System.Text.Json.Serialization;
 using Uno.Storage.Internal;
+using Uno.Storage.Pickers.Internal;
 
 namespace Windows.Storage.Pickers
 {
