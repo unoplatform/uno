@@ -53,7 +53,7 @@ For a larger example and features demo:
     * [Data Templating](https://code.msdn.microsoft.com/Data-Binding-in-UWP-b5c98114)
     * [Styling](https://learn.microsoft.com/windows/uwp/design/controls-and-patterns/xaml-styles)
     * [Rich Animations](https://learn.microsoft.com/windows/uwp/design/motion/xaml-animation)
-* UWP/WinUI Code Support:
+* WinUI/UWP Code Support:
     * [Windows Community Toolkit](https://github.com/CommunityToolkit/Windows)
     * [Windows Community Toolkit (Uno Fork)](https://github.com/unoplatform/uno.WindowsCommunityToolkit)
     * [Community Toolkit MVVM](https://learn.microsoft.com/dotnet/communitytoolkit/mvvm/)
