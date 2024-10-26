@@ -6,7 +6,7 @@ uid: Uno.Features.Assets
 
 Uno Platform automatically processes assets from your app's project and makes them available on all platforms.
 
-Support for the automatic generation of assets in multiple resolutions from SVG or PNG is also provided using [Uno.Resizetizer](xref:Uno.Resizetizer.GettingStarted).
+Support for automatically generating assets in multiple resolutions from SVG or PNG is also provided using [Uno.Resizetizer](xref:Uno.Resizetizer.GettingStarted).
 
 Platform-specific assets such as [`BundleResource`](https://learn.microsoft.com/xamarin/ios/user-interface/controls/image) and [`AndroidAssets`](https://learn.microsoft.com/xamarin/android/app-fundamentals/resources-in-android/android-assets) are also supported on the heads, when required.
 
@@ -53,7 +53,7 @@ You can also get assets directly using [StorageFile.GetFileFromApplicationUriAsy
 
 ## Qualify an asset
 
-When developing Windows apps, developers can load different assets at runtime based on attributes that qualify their visibility in the app UX. This allows you to tailor your app to different contexts to better suit users' hardware or language preferences.
+When developing Windows apps, developers can load different assets at runtime based on attributes that qualify their visibility in the app's UX. This allows you to tailor your app to different contexts to better suit users' hardware or language preferences.
 
 For instance, such **qualifiers** can selectively load different assets depending on scale, language, theme preferences, etc. This feature is notably useful when supporting high DPI screens or the norms of differing regions.
 
@@ -61,7 +61,7 @@ For instance, such **qualifiers** can selectively load different assets dependin
 > To become more familiar with qualifiers, check out Microsoft's documentation for a conceptual overview of the feature:
 > [Microsoft: Tailor your resources for language, scale, high contrast, and other qualifiers](https://learn.microsoft.com/windows/apps/windows-app-sdk/mrtcore/tailor-resources-lang-scale-contrast)
 
-Uno Platform allows you to use this same feature on multiple platforms. However, a subset of those qualifiers currently has support.
+Uno Platform allows you to use the same feature on multiple platforms. However, only a subset of those qualifiers currently have support.
 
 ### Table of scales
 
@@ -143,7 +143,7 @@ Sometimes, you might want to use a different asset depending on the platform. Be
 | iOS      | `ios`           |
 | Android  | `android`       |
 
-Because the `custom` qualifier doesn't have any special meaning on WinUI/UWP, we have to interpret its value manually.
+Because the `custom` qualifier has no special meaning on WinUI/UWP, we have to interpret its value manually.
 
 On iOS and Android, Uno.UI's `RetargetAssets` task automatically interprets these values and excludes unsupported platforms.
 
@@ -169,10 +169,10 @@ On UWP, you must add the following code to your `App.cs` or `App.xaml.cs` constr
 
 ## Android: setting a custom image handler
 
-On Android, to handle the loading of images from a remote url, the Image control has to be provided a
-ImageSource.DefaultImageLoader such as the [Android Universal Image Loader](https://github.com/nostra13/Android-Universal-Image-Loader).
+On Android, to handle the loading of images from a remote URL, the Image control has to be provided a
+`ImageSource.DefaultImageLoader`, such as the [Android Universal Image Loader](https://github.com/nostra13/Android-Universal-Image-Loader).
 
-This package is installed by default when using the [Uno Cross-Platform solution templates](https://marketplace.visualstudio.com/items?itemName=unoplatform.uno-platform-addin-2022). If not using the solution template, you can install the [nventive.UniversalImageLoader](https://www.nuget.org/packages/nventive.UniversalImageLoader/) NuGet package and call the following code from your application's App constructor:
+This package is installed by default when using the [Uno Cross-Platform solution templates](https://marketplace.visualstudio.com/items?itemName=unoplatform.uno-platform-addin-2022). If not using the solution template. You can install the [nventive.UniversalImageLoader](https://www.nuget.org/packages/nventive.UniversalImageLoader/) NuGet package and call the following code from your application's App constructor:
 
 ```csharp
 private void ConfigureUniversalImageLoader()
