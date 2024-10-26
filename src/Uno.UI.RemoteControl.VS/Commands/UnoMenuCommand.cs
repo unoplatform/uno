@@ -96,7 +96,7 @@ internal sealed class UnoMenuCommand
 		{
 			var cmdMessage =
 				new CommandRequestIdeMessage(
-					System.Diagnostics.Process.GetCurrentProcess().MainWindowHandle.ToInt64(),
+					System.Diagnostics.Process.GetCurrentProcess().Id,
 					cmd.Name,
 					cmd.Parameter);
 
