@@ -42,6 +42,7 @@ namespace Microsoft.UI.Xaml.Controls
 			this.SetBackgroundColor(Colors.Transparent);
 			//Remove default native padding.
 			this.SetPadding(0, 0, 0, 0);
+			SetIncludeFontPadding(false);
 
 			if (FeatureConfiguration.TextBox.HideCaret)
 			{
