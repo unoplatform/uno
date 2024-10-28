@@ -1151,5 +1151,41 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle(); // Needed to account for lifecycle differences on mobile
 			return textBox;
 		}
+
+		[TestMethod]
+		[UnoWorkItem("https://github.com/unoplatform/uno/issues/6528")]
+		public async Task When_Font_padding()
+		{
+			TextBox tb1, tb2;
+			var sp = new StackPanel
+			{
+				Children =
+				{
+					new Border
+					{
+						BorderThickness = new Thickness(1),
+						BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Green),
+						Child = tb1 = new TextBox
+						{
+							Text = "Default Font"
+						}
+					},
+					new Border
+					{
+						BorderThickness = new Thickness(1),
+						BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Red),
+						Child = tb2 = new TextBox
+						{
+							FontFamily = new FontFamily("ms-appx:///Assets/Fonts/BravuraText.ttf"),
+							Text = "Bravura Font"
+						}
+					}
+				}
+			};
+
+			await UITestHelper.Load(sp);
+
+			Assert.AreEqual(tb1.ActualHeight, tb2.ActualHeight);
+		}
 	}
 }

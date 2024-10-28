@@ -19,6 +19,7 @@ using FluentAssertions;
 using static Private.Infrastructure.TestServices;
 using System.Collections.Generic;
 using System.Drawing;
+using SamplesApp.UITests;
 using Uno.Disposables;
 using Uno.Extensions;
 using Point = Windows.Foundation.Point;
@@ -731,6 +732,44 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var bitmap = await UITestHelper.ScreenShot(SUT);
 
 			ImageAssert.HasColorInRectangle(bitmap, new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height), Colors.Red.WithOpacity(.5));
+		}
+
+
+		[TestMethod]
+		[UnoWorkItem("https://github.com/unoplatform/uno/issues/6528")]
+		public async Task When_Font_padding()
+		{
+			TextBlock tb1, tb2;
+			var sp = new StackPanel
+			{
+				Children =
+				{
+					new Border
+					{
+						BorderThickness = new Thickness(1),
+						BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Green),
+						Child = tb1 = new TextBlock
+						{
+							Text = "Default Font"
+						}
+					},
+					new Border
+					{
+						BorderThickness = new Thickness(1),
+						BorderBrush = new SolidColorBrush(Microsoft.UI.Colors.Red),
+						Child = tb2 = new TextBlock
+						{
+							FontFamily = new FontFamily("ms-appx:///Assets/Fonts/BravuraText.ttf"),
+							Text = "Bravura Font"
+						}
+					}
+				}
+			};
+
+			await UITestHelper.Load(sp);
+
+			// The 2 fonts don't have the same exact ascents and descents, so they're not supposed to be equal, just mostly the same
+			Assert.AreEqual(tb1.ActualHeight, tb2.ActualHeight, 5);
 		}
 
 		[TestMethod]
