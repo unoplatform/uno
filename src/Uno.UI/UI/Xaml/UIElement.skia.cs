@@ -327,15 +327,15 @@ namespace Microsoft.UI.Xaml
 
 			_renderTransform?.UpdateFlowDirectionTransform();
 
-			// The clipping applied by our parent due to layout constraints are pushed to the visual through the ClipRectFromArrangeCycle property
+			// The clipping applied by our parent due to layout constraints are pushed to the visual through the LayoutClip property
 			// This allows special handling of this clipping by the compositor (cf. ContainerVisual.Render).
 			if (clip is null)
 			{
-				visual.ClipRectFromArrangeCycle = null;
+				visual.LayoutClip = null;
 			}
 			else
 			{
-				visual.ClipRectFromArrangeCycle = (clip.Value, ShouldApplyLayoutClipAsAncestorClip());
+				visual.LayoutClip = (clip.Value, ShouldApplyLayoutClipAsAncestorClip());
 			}
 		}
 

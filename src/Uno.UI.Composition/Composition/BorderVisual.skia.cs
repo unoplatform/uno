@@ -9,7 +9,7 @@ using Uno.UI.Composition;
 namespace Microsoft.UI.Composition;
 
 /// <summary>
-/// A ShapeVisual that has a border and a background.
+/// A Visual that has a border and a background.
 /// </summary>
 internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 {

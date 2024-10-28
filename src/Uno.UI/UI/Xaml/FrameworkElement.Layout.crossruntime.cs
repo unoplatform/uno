@@ -964,7 +964,7 @@ namespace Microsoft.UI.Xaml
 
 #if __SKIA__
 			// clippedFrame here is the one calculated by FrameworkElement.GetClipRect
-			// which propagates to ShapeVisual.ViewBox.
+			// which propagates to ContainerVisual.LayoutClip.
 			// The UIElement.Clip public property isn't considered here on Skia because
 			// it's propagated to Visual.Clip and is set when UIElement.Clip changes.
 			ArrangeVisual(newRect, clippedFrame);

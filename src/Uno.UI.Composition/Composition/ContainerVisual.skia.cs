@@ -12,17 +12,17 @@ public partial class ContainerVisual : Visual
 	private List<Visual>? _childrenInRenderOrder;
 	private bool _hasCustomRenderOrder;
 
-	private (Rect rect, bool isAncestorClip)? _clipRectFromArrangeCycle;
+	private (Rect rect, bool isAncestorClip)? _layoutClip;
 
 	/// <summary>
 	/// Layout clipping is usually applied in the element's coordinate space.
 	/// However, for Panels and ScrollViewer headers specifically, WinUI applies clipping in the parent's coordinate space.
 	/// So, isAncestorClip will be set to true for Panels and ScrollViewer headers, indicating that clipping is in parent's coordinate space.
 	/// </summary>
-	internal (Rect rect, bool isAncestorClip)? ClipRectFromArrangeCycle
+	internal (Rect rect, bool isAncestorClip)? LayoutClip
 	{
-		get => _clipRectFromArrangeCycle;
-		set => SetObjectProperty(ref _clipRectFromArrangeCycle, value);
+		get => _layoutClip;
+		set => SetObjectProperty(ref _layoutClip, value);
 	}
 
 	internal bool IsChildrenRenderOrderDirty { get; set; }
@@ -65,7 +65,7 @@ public partial class ContainerVisual : Visual
 	/// <returns>true if a ViewBox exists</returns>
 	internal bool GetArrangeClipPathInElementCoordinateSpace(SKPath dst)
 	{
-		if (ClipRectFromArrangeCycle is not { isAncestorClip: var isAncestorClip, rect: var rect })
+		if (LayoutClip is not { isAncestorClip: var isAncestorClip, rect: var rect })
 		{
 			return false;
 		}
