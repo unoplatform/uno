@@ -490,7 +490,7 @@ jobs:
 
 #   - template: templates/dotnet-install.yml
 
-#   - template: templates/linux-install-xvfb.yml
+#   - template: templates/linux-install-deps.yml
 
 #   - bash: |
 #         set -euo pipefail
