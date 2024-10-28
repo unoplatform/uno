@@ -627,6 +627,8 @@
         href: features/SpeechRecognition.md
       - name: Step Counter
         href: features/step-counter.md
+      - name: Store Context
+        href: features/windows-ui-storecontext.md
       - name: Title Bar Customization
         href: features/windows-ui-viewmanagement.md
       - name: URI Launcher
