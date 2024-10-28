@@ -630,6 +630,7 @@ namespace Microsoft.UI.Xaml.Controls
 					MakeLayout(desiredWidth);
 				}
 
+				// More details on font metric calculations here: https://medium.com/androiddevelopers/fixing-font-padding-in-compose-text-768cd232425b
 				var lineCount = Layout.LineCount;
 				var measuredHeight = Layout.GetLineTop(lineCount);
 				if (_lineHeight != 0 && _addedSpacing > 0)
@@ -723,7 +724,7 @@ namespace Microsoft.UI.Xaml.Controls
 								1,
 								_addedSpacing = GetSpacingAdd(_paint),
 								_metrics,
-								true,
+								false,
 								_ellipsize,
 								width
 							);
@@ -740,7 +741,7 @@ namespace Microsoft.UI.Xaml.Controls
 								1,
 								_addedSpacing = GetSpacingAdd(_paint),
 								_metrics,
-								true,
+								false,
 								_ellipsize,
 								width
 							);
