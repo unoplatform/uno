@@ -23,12 +23,14 @@ internal class GlobalJsonObserver
 	private readonly Action<string> _infoAction;
 	private readonly Action<string> _warningAction;
 	private readonly Action<string> _errorAction;
+	private readonly InfoBarFactory _infoBarFactory;
 	private FileSystemWatcher? _fileWatcher;
 	private readonly JsonSerializerOptions _readerOptions = new() { ReadCommentHandling = JsonCommentHandling.Skip };
 
 	public GlobalJsonObserver(
 		AsyncPackage asyncPackage
 		, DTE dte
+		, InfoBarFactory infoBarFactory
 		, Action<string> debugAction
 		, Action<string> infoAction
 		, Action<string> warningAction
@@ -40,6 +42,7 @@ internal class GlobalJsonObserver
 		_infoAction = infoAction;
 		_warningAction = warningAction;
 		_errorAction = errorAction;
+		_infoBarFactory = infoBarFactory;
 
 		_debugAction("GlobalJsonObserver: Starting");
 
