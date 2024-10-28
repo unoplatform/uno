@@ -296,9 +296,9 @@ namespace Uno.WinUI.Runtime.Skia.X11
 		public XIModifierState group;
 
 		public override string ToString()
-        {
-        	return $"{evtype} windowCoords={event_x}x{event_y} rootCoords={root_x}x{root_y} EventWindow={EventWindow.ToString("X", CultureInfo.InvariantCulture)} ChildWindow={ChildWindow.ToString("X", CultureInfo.InvariantCulture)} detail={detail} time={time}";
-        }
+		{
+			return $"{evtype} windowCoords={event_x}x{event_y} rootCoords={root_x}x{root_y} EventWindow={EventWindow.ToString("X", CultureInfo.InvariantCulture)} ChildWindow={ChildWindow.ToString("X", CultureInfo.InvariantCulture)} detail={detail} time={time}";
+		}
 	}
 
 	[Flags]

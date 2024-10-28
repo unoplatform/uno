@@ -60,7 +60,7 @@ public class X11MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 		// this is important because this display is different from the display used on the main thread,
 		// so we need to make sure the window is actually created (not just queued to be created)
 		// when we manipulate it using other display handles.
-		XLib.XFlush(display);
+		_ = XLib.XFlush(display);
 		XLib.XSync(display, true);
 
 		var cp = new ContentPresenter() { Content = new X11NativeWindow(_x11Window.Window) };
@@ -71,7 +71,7 @@ public class X11MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 	~X11MediaPlayerPresenterExtension()
 	{
 		using var lockDisposable = X11Helper.XLock(_x11Window.Display);
-		XLib.XDestroyWindow(_x11Window.Display, _x11Window.Window);
+		_ = XLib.XDestroyWindow(_x11Window.Display, _x11Window.Window);
 	}
 
 	public void MediaPlayerChanged()

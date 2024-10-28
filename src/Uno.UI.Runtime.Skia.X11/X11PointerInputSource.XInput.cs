@@ -350,8 +350,8 @@ internal partial class X11PointerInputSource
 		};
 
 		var scale = ((IXamlRootHost)_host).RootElement?.XamlRoot is { } root
-        			? XamlRoot.GetDisplayInformation(root).RawPixelsPerViewPixel
-        			: 1;
+					? XamlRoot.GetDisplayInformation(root).RawPixelsPerViewPixel
+					: 1;
 
 		var point = new PointerPoint(
 			frameId: (uint)data.time, // UNO TODO: How should we set the frame, timestamp may overflow.
