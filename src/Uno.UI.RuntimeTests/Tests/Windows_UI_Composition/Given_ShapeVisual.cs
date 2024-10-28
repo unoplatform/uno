@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Numerics;
 using System.Threading.Tasks;
-using Microsoft.UI;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Hosting;
@@ -47,7 +46,7 @@ public class Given_ShapeVisual
 						spriteShape.Geometry = compositor.CreateRectangleGeometry();
 						((CompositionRectangleGeometry)spriteShape.Geometry).Size = new Vector2(40, 40);
 						spriteShape.Offset = new Vector2(spriteOffset, spriteOffset);
-						spriteShape.FillBrush = compositor.CreateColorBrush(Colors.Blue);
+						spriteShape.FillBrush = compositor.CreateColorBrush(Microsoft.UI.Colors.Blue);
 						shapeVisual.Shapes.Add(spriteShape);
 						shapeVisual.Size = new Vector2(shapeVisualSize, shapeVisualSize);
 						shapeVisual.ViewBox = compositor.CreateViewBox();
@@ -59,7 +58,7 @@ public class Given_ShapeVisual
 						{
 							Width = 500,
 							Height = 500,
-							Background = new SolidColorBrush(Colors.Green),
+							Background = new SolidColorBrush(Microsoft.UI.Colors.Green),
 							Child = element
 						};
 						await UITestHelper.Load(border);
