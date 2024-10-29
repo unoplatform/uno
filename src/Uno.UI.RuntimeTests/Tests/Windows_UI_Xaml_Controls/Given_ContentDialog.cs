@@ -536,7 +536,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitFor(() => (button = (Button)VisualTreeUtils.FindVisualChildByName(contentDialog, buttonName)) != null);
 
 			await WindowHelper.WaitForLoaded(button);
-			(button.GetAutomationPeer() as ButtonAutomationPeer).Invoke();
+			(FrameworkElementAutomationPeer.CreatePeerForElement(button) as ButtonAutomationPeer).Invoke();
 
 			await WindowHelper.WaitFor(() => closed);
 
@@ -580,7 +580,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitFor(() => (button = (Button)VisualTreeUtils.FindVisualChildByName(contentDialog, buttonName)) != null);
 
 			await WindowHelper.WaitForLoaded(button);
-			(button.GetAutomationPeer() as ButtonAutomationPeer).Invoke();
+			(FrameworkElementAutomationPeer.CreatePeerForElement(button) as ButtonAutomationPeer).Invoke();
 
 			await WindowHelper.WaitFor(() => closed);
 
