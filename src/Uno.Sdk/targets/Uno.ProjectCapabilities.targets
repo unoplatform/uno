@@ -32,9 +32,16 @@
 		<ProjectCapability Include="WindowsUniversalMultiViews"/>
 	</ItemGroup>
 
-	<ItemGroup>
-		<!-- Required since VS 2022 17.4 Preview 1 -->
-		<!-- Moved to root capabilities as Visual Studio doesn't like it in the SingleProject specific capabilities -->
+	<ItemGroup Condition=" '$(TargetFrameworks)' != '' AND ( $(TargetFrameworks.Contains('-ios')) OR $(TargetFrameworks.Contains('-android')) OR $(TargetFrameworks.Contains('-catalyst')) )">
+		<!-- 
+		Required since VS 2022 17.4 Preview 1
+		Moved to root capabilities as Visual Studio doesn't like it in the SingleProject specific 
+		capabilities, in order to have project properties panel to work properly.
+
+		This block is conditional to having iOS/Android/Catalyst as targets, in order to work around 
+		the "publish" context menu being disabled when those caps are set.
+		https://github.com/unoplatform/uno/issues/18577
+		-->
 		<ProjectCapability Include="MauiCore" Exclude="@(ProjectCapability)" />
 		<ProjectCapability Include="Maui" Exclude="@(ProjectCapability)" />
 		<ProjectCapability Include="UseMauiCore" Exclude="@(ProjectCapability)" />
