@@ -6,7 +6,7 @@ uid: Uno.Tutorials.SignInWithApple
 
 In Uno Platform projects, implementing a "Sign in with Apple" Button is possible through MAUI embedding (more on which in our [Overview](xref:Uno.Extensions.Maui.Overview)). Below is a simple example of how you can add the Apple Sign-In Button to your project. We will inject it into the visual tree from the code-behind and handle the authorization using Apple's Authentication Services.
 
-![Sign in with Apple ID](images/signin-with-apple.png)
+![Sign in with Apple ID](../interop/assets/signin-with-apple.png)
 
 ## General Usage
 
