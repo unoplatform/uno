@@ -103,11 +103,7 @@ namespace Microsoft.UI.Composition
 					matrix *= RelativeTransform;
 					matrix *= Matrix3x2.CreateScale(bounds.Width, bounds.Height);
 
-					// The image rescaling (i.e resampling) algorithm in the shader directly is really low quality (but really fast).
-					// There is no sound workaround for this at the moment. See https://github.com/unoplatform/uno/issues/17325.
-					var imageShader = SKShader.CreateImage(scs.Image, SKShaderTileMode.Decal, SKShaderTileMode.Decal, matrix.ToSKMatrix());
-					// SkiaSharp 3 introduces new SKSamplingOptions. When we move to SkiaSharp 3, replace the line about with this one.
-					// var imageShader = SKShader.CreateImage(scs.Image, SKShaderTileMode.Decal, SKShaderTileMode.Decal, new SKSamplingOptions(SKCubicResampler.Mitchell), matrix.ToSKMatrix());
+					var imageShader = scs.Image.ToShader(SKShaderTileMode.Decal, SKShaderTileMode.Decal, new SKSamplingOptions(SKCubicResampler.Mitchell), matrix.ToSKMatrix());
 
 					if (UsePaintColorToColorSurface)
 					{
@@ -122,7 +118,6 @@ namespace Microsoft.UI.Composition
 					}
 
 					fillPaint.IsAntialias = true;
-					fillPaint.FilterQuality = SKFilterQuality.High;
 				}
 			}
 			else if (Surface is ISkiaSurface skiaSurface)

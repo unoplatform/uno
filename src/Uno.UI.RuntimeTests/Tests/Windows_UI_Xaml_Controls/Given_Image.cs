@@ -592,7 +592,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var skBitmapScaled = new SKBitmap(skBitmap.Info with { Width = 100, Height = 100 });
 
-			Assert.IsTrue(skBitmap.ScalePixels(skBitmapScaled, SKFilterQuality.High));
+			Assert.IsTrue(skBitmap.ScalePixels(skBitmapScaled, new SKSamplingOptions(SKCubicResampler.Mitchell)));
 
 			for (int x = 0; x < 100; x++)
 			{

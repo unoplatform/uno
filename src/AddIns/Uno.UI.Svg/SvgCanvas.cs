@@ -128,7 +128,7 @@ internal partial class SvgCanvas : SkiaCanvas
 		else if (_svgProvider.SkSvg?.Picture is { } picture)
 		{
 			var svgScaleMatrix = CreateScaleMatrix();
-			canvas.DrawPicture(picture, ref svgScaleMatrix);
+			canvas.DrawPicture(picture, in svgScaleMatrix);
 		}
 	}
 

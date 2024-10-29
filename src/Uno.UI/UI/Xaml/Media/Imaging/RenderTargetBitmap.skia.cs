@@ -67,7 +67,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			{
 				var scaledBitmap = bitmap.Resize(
 					new SKImageInfo((int)scaledSize.Value.Width, (int)scaledSize.Value.Height, SKColorType.Bgra8888, SKAlphaType.Premul),
-					SKFilterQuality.High);
+					new SKSamplingOptions(SKCubicResampler.Mitchell));
 				bitmap.Dispose();
 				bitmap = scaledBitmap;
 				(width, height) = (bitmap.Width, bitmap.Height);
@@ -77,7 +77,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			EnsureBuffer(ref buffer, byteCount);
 			unsafe
 			{
-				SkiaCompat.SKBitmap_GetPixelSpan(bitmap).CopyTo(new Span<byte>(buffer!.Pointer.ToPointer(), byteCount));
+				((ReadOnlySpan<byte>)bitmap.GetPixelSpan()).CopyTo(new Span<byte>(buffer!.Pointer.ToPointer(), byteCount));
 			}
 			bitmap?.Dispose();
 

@@ -62,10 +62,9 @@ public class Given_AcrylicBrush
 		using var surface = SKSurface.Create(info: new SKImageInfo(image.Width, image.Height));
 		using var canvas = surface.Canvas;
 		using var paint = new SKPaint();
-		using var filter = SKImageFilter.CreateBlur(30.0f, 30.0f, SKImageFilter.CreateImage(image));
+		using var filter = SKImageFilter.CreateBlur(30.0f, 30.0f, SKImageFilter.CreateImage(image, new SKSamplingOptions(SKCubicResampler.Mitchell)));
 
 		paint.IsAntialias = true;
-		paint.FilterQuality = SKFilterQuality.High;
 		paint.ImageFilter = filter;
 		canvas.DrawPaint(paint);
 

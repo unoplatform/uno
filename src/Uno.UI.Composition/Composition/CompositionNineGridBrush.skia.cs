@@ -17,7 +17,7 @@ namespace Microsoft.UI.Composition
 		private SKImage? _sourceImage;
 		private SKSurface? _surface;
 		private SKSurface? _offlineSurface;
-		private SKPaint? _filterPaint = new SKPaint() { FilterQuality = SKFilterQuality.High, IsAntialias = true, IsAutohinted = true, IsDither = true };
+		private SKPaint? _filterPaint = new SKPaint() { IsAntialias = true, IsDither = true };
 		private SKRectI _insetRect;
 
 		bool IOnlineBrush.IsOnline => true; // TODO: `Source is IOnlineBrush onlineBrush && onlineBrush.IsOnline`, Implement this after offline rendering is properly implemented
@@ -78,11 +78,9 @@ namespace Microsoft.UI.Composition
 					_offlineSurface?.Canvas.ClipRect(_insetRect, SKClipOperation.Difference, true);
 				}
 
-				_offlineSurface?.Canvas.DrawImageNinePatch(_sourceImage, _insetRect, bounds, _filterPaint);
+				_offlineSurface?.Canvas.DrawImageNinePatch(_sourceImage, _insetRect, bounds, new SKSamplingOptions(SKCubicResampler.Mitchell).Filter, _filterPaint);
 
-				paint.FilterQuality = SKFilterQuality.High;
 				paint.IsAntialias = true;
-				paint.IsAutohinted = true;
 				paint.IsDither = true;
 
 				paint.Shader = _offlineSurface?.Snapshot().ToShader();
