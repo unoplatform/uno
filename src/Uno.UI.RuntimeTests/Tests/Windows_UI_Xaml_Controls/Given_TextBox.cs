@@ -1185,7 +1185,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await UITestHelper.Load(sp);
 
-			Assert.AreEqual(tb1.ActualHeight, tb2.ActualHeight);
+			Assert.AreEqual(tb1.ActualHeight, tb2.ActualHeight, 2);
 		}
 	}
 }

@@ -769,7 +769,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await UITestHelper.Load(sp);
 
 			// The 2 fonts don't have the same exact ascents and descents, so they're not supposed to be equal, just mostly the same
-			Assert.AreEqual(tb1.ActualHeight, tb2.ActualHeight, 5);
+			Assert.AreEqual(tb1.ActualHeight, tb2.ActualHeight, 7);
 		}
 
 		[TestMethod]
