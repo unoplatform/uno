@@ -9,10 +9,15 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
 using Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers;
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 using Uno.Disposables;
-using Uno.Extensions;
 using Uno.Extensions.Specialized;
 using Uno.UI.Helpers.WinUI;
 using Windows.ApplicationModel.DataTransfer;
@@ -20,15 +25,6 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.System;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Automation;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Markup;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Animation;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
@@ -520,6 +516,16 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			UpdateTabContent();
 		}
 
+		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
+		{
+			base.OnPropertyChanged2(args);
+
+			if (args.Property == SelectedItemProperty)
+			{
+
+			}
+		}
+
 		private void OnListViewLoaded(object sender, RoutedEventArgs args)
 		{
 			if (m_listView is { } listView)
@@ -552,8 +558,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 				}
 
 				// ReadLocalValue() is not returning UnsetValue even though SelectedItem is not yet set
-				if (ReadLocalValue(SelectedItemProperty) != DependencyProperty.UnsetValue
-					&& SelectedItem is not null)
+				if (ReadLocalValue(SelectedItemProperty) != DependencyProperty.UnsetValue)
 				{
 					UpdateSelectedItem();
 				}
