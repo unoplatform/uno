@@ -145,7 +145,10 @@ internal sealed class UnoMenuCommand : IDisposable
 
 	public void Dispose()
 	{
-		CommandService.RemoveCommand(_dynamicMenuCommand);
+		if (_dynamicMenuCommand is not null)
+		{
+			CommandService.RemoveCommand(_dynamicMenuCommand);
+		}
 
 		if (_unoMainMenuItem is not null)
 		{
