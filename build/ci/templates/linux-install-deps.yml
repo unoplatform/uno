@@ -2,5 +2,5 @@ steps:
 
   - bash: |
       sudo apt-get update
-      sudo apt-get install -y xvfb fluxbox libvlc-dev libgtk-4-1 libwebkitgtk-6.0-4
-    displayName: Install Xvfb, fluxbox, libvlc, and libwebkitgtk
+      sudo apt-get install -y xvfb fluxbox vlc libvlc-dev libgtk-4-1 libwebkitgtk-6.0-4
+    displayName: Install Linux dependencies
