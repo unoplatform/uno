@@ -15,6 +15,8 @@ using Windows.Graphics.Display;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Size = Windows.Foundation.Size;
+using MUXWindow = Microsoft.UI.Xaml.Window;
+using AndroidWindow = Android.Views.Window;
 
 namespace Uno.UI.Xaml.Controls;
 
@@ -25,7 +27,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	private Rect _previousTrueVisibleBounds;
 
-	public NativeWindowWrapper(Window window, XamlRoot xamlRoot)
+	public NativeWindowWrapper(MUXWindow window, XamlRoot xamlRoot)
 	{
 		_preDrawListener = new ActivationPreDrawListener(this);
 		CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged += RaiseNativeSizeChanged;
