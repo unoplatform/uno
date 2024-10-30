@@ -1222,9 +1222,7 @@ $$"""
 
 			Vector3 lightTarget = EffectHelpers.CalculateLightTargetVector(position, target);
 
-			SKPoint3 target1 = new SKPoint3(lightTarget.X, lightTarget.Y, lightTarget.Z);
-			SKColor lightColor = color.ToSKColor();
-			return SKImageFilter.CreateSpotLitDiffuse(new SKPoint3(position.X, position.Y, position.Z), target1, focus, angle, lightColor, 1.0f, amount, sourceFilter, bounds);
+			return SKImageFilter.CreateSpotLitDiffuse(new SKPoint3(position.X, position.Y, position.Z), new SKPoint3(lightTarget.X, lightTarget.Y, lightTarget.Z), focus, angle, color.ToSKColor(), 1.0f, amount, sourceFilter, bounds);
 		}
 
 		return null;
@@ -1265,9 +1263,7 @@ $$"""
 
 			Vector3 lightTarget = EffectHelpers.CalculateLightTargetVector(position, target);
 
-			SKPoint3 target1 = new SKPoint3(lightTarget.X, lightTarget.Y, lightTarget.Z);
-			SKColor lightColor = color.ToSKColor();
-			return SKImageFilter.CreateSpotLitSpecular(new SKPoint3(position.X, position.Y, position.Z), target1, exponent, angle, lightColor, 1.0f, amount, focus, sourceFilter, bounds);
+			return SKImageFilter.CreateSpotLitSpecular(new SKPoint3(position.X, position.Y, position.Z), new SKPoint3(lightTarget.X, lightTarget.Y, lightTarget.Z), exponent, angle, color.ToSKColor(), 1.0f, amount, focus, sourceFilter, bounds);
 		}
 
 		return null;
@@ -1293,8 +1289,7 @@ $$"""
 			float amount = (float)(effectInterop.GetProperty(amountProp) ?? throw new InvalidOperationException("The effect property was null"));
 			Color color = (Color)(effectInterop.GetProperty(colorProp) ?? throw new InvalidOperationException("The effect property was null"));
 
-			SKColor lightColor = color.ToSKColor();
-			return SKImageFilter.CreatePointLitDiffuse(new SKPoint3(position.X, position.Y, position.Z), lightColor, 1.0f, amount, sourceFilter, bounds);
+			return SKImageFilter.CreatePointLitDiffuse(new SKPoint3(position.X, position.Y, position.Z), color.ToSKColor(), 1.0f, amount, sourceFilter, bounds);
 		}
 
 		return null;

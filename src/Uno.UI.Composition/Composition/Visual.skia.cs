@@ -375,19 +375,8 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			totalMatrix = TotalMatrix * rootTransform;
 		}
 
-		var skMatrix = stackalloc float[9];
-
-		skMatrix[0] = totalMatrix.M11;
-		skMatrix[1] = totalMatrix.M21;
-		skMatrix[2] = totalMatrix.M41;
-		skMatrix[3] = totalMatrix.M12;
-		skMatrix[4] = totalMatrix.M22;
-		skMatrix[5] = totalMatrix.M42;
-		skMatrix[6] = totalMatrix.M14;
-		skMatrix[7] = totalMatrix.M24;
-		skMatrix[8] = totalMatrix.M44;
-
-		UnoSkiaApi.sk_canvas_set_matrix(canvas.Handle, (SKMatrix*)skMatrix);
+		// this avoids the matrix copying in canvas.SetMatrix()
+		UnoSkiaApi.sk_canvas_set_matrix(canvas.Handle, (SKMatrix44*)&totalMatrix);
 	}
 
 	[Flags]

@@ -131,7 +131,6 @@ namespace Microsoft.UI.Composition
 
 					fillPaint.Shader = SKShader.CreateImage(image, SKShaderTileMode.Decal, SKShaderTileMode.Decal, matrix.ToSKMatrix());
 					fillPaint.IsAntialias = true;
-					fillPaint.FilterQuality = SKFilterQuality.High;
 				}
 				else
 				{

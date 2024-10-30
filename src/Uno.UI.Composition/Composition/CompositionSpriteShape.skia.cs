@@ -49,11 +49,6 @@ namespace Microsoft.UI.Composition
 
 					PrepareTempPaint(fillPaint, isStroke: false, session.OpacityColorFilter);
 
-					if (fill is CompositionBrushWrapper wrapper)
-					{
-						fill = wrapper.WrappedBrush;
-					}
-
 					if (Compositor.TryGetEffectiveBackgroundColor(this, out var colorFromTransition))
 					{
 						fillPaint.Color = colorFromTransition.ToSKColor();
@@ -75,13 +70,7 @@ namespace Microsoft.UI.Composition
 
 					if (fill is CompositionEffectBrush { HasBackdropBrushInput: true })
 					{
-						// workaround until SkiaSharp adds support for SaveLayerRec
-#pragma warning disable CS0618 // Type or member is obsolete
-						fillPaint.FilterQuality = SKFilterQuality.High;
-#pragma warning restore CS0618 // Type or member is obsolete
-						session.Canvas.SaveLayer(fillPaint);
-						session.Canvas.Scale(1.0f / session.Canvas.TotalMatrix.ScaleX);
-						session.Canvas.DrawSurface(session.Surface, new(-session.Canvas.TotalMatrix.TransX, -session.Canvas.DeviceClipBounds.Top + session.Canvas.LocalClipBounds.Top));
+						session.Canvas.SaveLayer(new SKCanvasSaveLayerRec { Backdrop = fillPaint.ImageFilter });
 						session.Canvas.Restore();
 					}
 					else
@@ -161,10 +150,6 @@ namespace Microsoft.UI.Composition
 			paint.IsAntialias = true;
 
 			paint.ColorFilter = colorFilter;
-			if (CompositionConfiguration.UseBrushAntialiasing)
-			{
-				paint.FilterQuality = SKFilterQuality.High;
-			}
 		}
 
 		private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)

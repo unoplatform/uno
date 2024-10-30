@@ -16,6 +16,6 @@ internal record ShadowState(float Dx, float Dy, float SigmaX, float SigmaY, Colo
 	public SKPaint Paint =>
 		_paint ??= new SKPaint()
 		{
-			ImageFilter = SkiaCompat.SKImageFilter_CreateDropShadow(Dx, Dy, SigmaX, SigmaY, Color.ToSKColor())
+			ImageFilter = SKImageFilter.CreateDropShadow(Dx, Dy, SigmaX, SigmaY, Color.ToSKColor())
 		};
 }

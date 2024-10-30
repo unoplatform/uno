@@ -77,7 +77,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			EnsureBuffer(ref buffer, byteCount);
 			unsafe
 			{
-				((ReadOnlySpan<byte>)bitmap.GetPixelSpan()).CopyTo(new Span<byte>(buffer!.Pointer.ToPointer(), byteCount));
+				bitmap.GetPixelSpan().CopyTo(new Span<byte>(buffer!.Pointer.ToPointer(), byteCount));
 			}
 			bitmap?.Dispose();
 
