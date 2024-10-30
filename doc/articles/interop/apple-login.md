@@ -32,7 +32,7 @@ In Uno Platform projects, implementing a "Sign in with Apple" Button is possible
 
 3. In the constructor of your Page or control, create the Apple Sign-In Button:
 
-   > [Important]
+   > [!Important]
    > Ensure that you wrap platform-specific code in `#if __IOS__` directives. For more details, refer to the [Platform-specific C# documentation](xref:Uno.Development.PlatformSpecificCSharp).
 
    ```csharp
