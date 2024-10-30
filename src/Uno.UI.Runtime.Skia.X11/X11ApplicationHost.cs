@@ -17,6 +17,7 @@ using Uno.UI.Runtime.Skia;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices.Marshalling;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.Web.WebView2.Core;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
 

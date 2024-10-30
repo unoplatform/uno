@@ -189,7 +189,7 @@ internal partial class X11PointerInputSource
 	// |  (pc)    |    up    | TouchEnd(4), TouchEnd(5)
 	// |  move    |          | Motion
 	// |   up     |          | Motion
-	public unsafe PointerEventArgs CreatePointerEventArgsFromDeviceEvent(XIDeviceEvent data)
+	private unsafe PointerEventArgs CreatePointerEventArgsFromDeviceEvent(IntPtr display, XIDeviceEvent data)
 	{
 		(double wheelDelta, bool isHorizontalMouseWheel) = (0, false);
 		if (data.evtype is XiEventType.XI_ButtonPress or XiEventType.XI_ButtonRelease)
@@ -208,7 +208,7 @@ internal partial class X11PointerInputSource
 			};
 		}
 
-		var info = GetDevicePropertiesFromId(data.sourceid);
+		var info = GetDevicePropertiesFromId(display, data.sourceid);
 
 		// Touchpad scrolling manifests in a Motion event where the current scrolling "position" is recorded in the
 		// valuator. There is no direct way to get the delta, so we have to record the old position and diff it
@@ -305,13 +305,15 @@ internal partial class X11PointerInputSource
 			? XamlRoot.GetDisplayInformation(root).RawPixelsPerViewPixel
 			: 1;
 
+		_ = XLib.XTranslateCoordinates(display, data.EventWindow, _host!.TopX11Window.Window, (int)data.event_x, (int)data.event_y, out var dataEventX, out var dataEventY, out _);
+
 		var point = new PointerPoint(
 			frameId: (uint)data.time, // UNO TODO: How should we set the frame, timestamp may overflow.
 			timestamp: (uint)(data.time * TimeSpan.TicksPerMillisecond), // Time is given in milliseconds since system boot. See also: https://github.com/unoplatform/uno/issues/14535
 			PointerDevice.For(data.evtype is XiEventType.XI_TouchBegin or XiEventType.XI_TouchEnd or XiEventType.XI_TouchUpdate ? PointerDeviceType.Touch : PointerDeviceType.Mouse),
 			(uint)(data.evtype is XiEventType.XI_TouchBegin or XiEventType.XI_TouchEnd or XiEventType.XI_TouchUpdate ? data.detail : data.sourceid), // for touch, data.detail is the touch ID
-			new Point(data.event_x / scale, data.event_y / scale),
-			new Point(data.event_x / scale, data.event_y / scale),
+			new Point(dataEventX / scale, dataEventY / scale),
+			new Point(dataEventX / scale, dataEventY / scale),
 			properties.HasPressedButton,
 			properties // We don't SetUpdateKind here. We already did that above
 		);
@@ -320,18 +322,20 @@ internal partial class X11PointerInputSource
 
 		var modifiers = X11XamlRootHost.XModifierMaskToVirtualKeyModifiers((XModifierMask)(data.mods.Base & 0xffff));
 
-		return new PointerEventArgs(point, modifiers);
+		return new PointerEventArgs(point, modifiers) { Handled = data.EventWindow != _host.TopX11Window.Window };
 	}
 
 	// This method is comment-free. See the very similar (but more involved) implementation of
 	// CreatePointerEventArgsFromDeviceEvent for comments.
-	public unsafe PointerEventArgs CreatePointerEventArgsFromEnterLeaveEvent(XIEnterLeaveEvent data, PointerDeviceType pointerType)
+	private unsafe PointerEventArgs CreatePointerEventArgsFromEnterLeaveEvent(IntPtr display, XIEnterLeaveEvent data, PointerDeviceType pointerType)
 	{
 		var mask = 0;
 		for (var i = 0; i < data.buttons.MaskLen; i++) // masklen <= 4
 		{
 			mask |= data.buttons.Mask[i] << (BitsPerByte * i);
 		}
+
+		// No need to translate coords. We only receive Leave/Enter on the uno window
 
 		var properties = new PointerPointProperties
 		{
@@ -341,17 +345,21 @@ internal partial class X11PointerInputSource
 			IsXButton1Pressed = (mask & (1 << XButton1)) != 0,
 			IsXButton2Pressed = (mask & (1 << XButton2)) != 0,
 			IsInRange = true,
-			IsTouchPad = GetDevicePropertiesFromId(data.sourceid)?.IsTouchpad ?? false,
+			IsTouchPad = GetDevicePropertiesFromId(display, data.sourceid)?.IsTouchpad ?? false,
 			IsHorizontalMouseWheel = false,
 		};
+
+		var scale = ((IXamlRootHost)_host).RootElement?.XamlRoot is { } root
+					? XamlRoot.GetDisplayInformation(root).RawPixelsPerViewPixel
+					: 1;
 
 		var point = new PointerPoint(
 			frameId: (uint)data.time, // UNO TODO: How should we set the frame, timestamp may overflow.
 			timestamp: (ulong)data.time,
 			PointerDevice.For(PointerDeviceType.Mouse),
 			(uint)data.sourceid,
-			new Point(data.event_x, data.event_y),
-			new Point(data.event_x, data.event_y),
+			new Point(data.event_x / scale, data.event_y / scale),
+			new Point(data.event_x / scale, data.event_y / scale),
 			properties.HasPressedButton,
 			properties.SetUpdateKindFromPrevious(_previousPointerPointProperties)
 		);
@@ -360,18 +368,14 @@ internal partial class X11PointerInputSource
 
 		var modifiers = X11XamlRootHost.XModifierMaskToVirtualKeyModifiers((XModifierMask)(data.mods.Base & 0xffff));
 
-		return new PointerEventArgs(point, modifiers);
+		return new PointerEventArgs(point, modifiers) { Handled = data.EventWindow != _host!.TopX11Window.Window };
 	}
 
 	// Note about removing devices: the server emits a ButtonRelease if a device is removed
 	// while a button is held.
-	public void HandleXI2Event(XEvent ev)
+	public void HandleXI2Event(IntPtr display, XEvent ev)
 	{
 		var evtype = (XiEventType)ev.GenericEventCookie.evtype;
-		if (this.Log().IsEnabled(LogLevel.Trace))
-		{
-			this.Log().Trace($"XI2 EVENT: {evtype}");
-		}
 
 		switch (evtype)
 		{
@@ -379,11 +383,24 @@ internal partial class X11PointerInputSource
 			case XiEventType.XI_Leave:
 				{
 					var enterLeaveEvent = ev.GenericEventCookie.GetEvent<XIEnterLeaveEvent>();
+
+					if (this.Log().IsEnabled(LogLevel.Trace))
+					{
+						this.Log().Trace($"Received {enterLeaveEvent}");
+					}
+
 					_valuatorValues.Remove(enterLeaveEvent.sourceid);
 
 					var args = CreatePointerEventArgsFromEnterLeaveEvent(
+						display,
 						enterLeaveEvent,
 						PointerDeviceType.Mouse); // https://www.x.org/releases/X11R7.7/doc/inputproto/XI2proto.txt: Touch events do not generate enter/leave events.
+
+					if (this.Log().IsEnabled(LogLevel.Trace))
+					{
+						this.Log().Trace($"Created event args: {args}");
+					}
+
 					if (evtype is XiEventType.XI_Enter)
 					{
 						X11XamlRootHost.QueueAction(_host, () => RaisePointerEntered(args));
@@ -543,7 +560,12 @@ internal partial class X11PointerInputSource
 						return;
 					}
 
-					var args = CreatePointerEventArgsFromDeviceEvent(data);
+					if (this.Log().IsEnabled(LogLevel.Trace))
+					{
+						this.Log().Trace($"Received {data}");
+					}
+
+					var args = CreatePointerEventArgsFromDeviceEvent(display, data);
 					if (this.Log().IsEnabled(LogLevel.Trace))
 					{
 						this.Log().Trace($"Created event args: {args}");
@@ -584,6 +606,10 @@ internal partial class X11PointerInputSource
 			case XiEventType.XI_DeviceChanged:
 				{
 					var data = ev.GenericEventCookie.GetEvent<XIDeviceEvent>();
+					if (this.Log().IsEnabled(LogLevel.Error))
+					{
+						this.Log().Error($"XI2 {evtype} EVENT: {data.event_x}x{data.event_y} {data.buttons}");
+					}
 					_deviceInfoCache.Remove(data.sourceid);
 					_valuatorValues.Remove(data.sourceid);
 					break;
@@ -697,13 +723,12 @@ internal partial class X11PointerInputSource
 		return props.Any(p => p is "Synaptics Tap Time" or "libinput Tapping Enabled");
 	}
 
-	private unsafe DeviceInfo? GetDevicePropertiesFromId(int id)
+	private unsafe DeviceInfo? GetDevicePropertiesFromId(IntPtr display, int id)
 	{
 		if (_deviceInfoCache.TryGetValue(id, out var result))
 		{
 			return result;
 		}
-		var display = _host.TopX11Window.Display;
 		var infos = XLib.XIQueryDevice(display, (int)XiPredefinedDeviceId.XIAllDevices, out var ndevices);
 		using var deviceInfoDisposable = Disposable.Create(() => XLib.XIFreeDeviceInfo(infos));
 

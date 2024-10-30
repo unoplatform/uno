@@ -53,35 +53,47 @@ internal class X11AirspaceRenderHelper : IDisposable
 
 		using var xLock = X11Helper.XLock(_display);
 
-		var maskCanvas = _maskSurface.Canvas;
-		using (new SKAutoCanvasRestore(maskCanvas, true))
+		if (path is null)
 		{
-			maskCanvas.Clear(SKColor.Empty);
-			maskCanvas.ClipPath(path);
-			maskCanvas.Clear(SKColors.White);
-			maskCanvas.Flush();
-			_maskSurface.Snapshot();
+			IntPtr region = X11Helper.CreateRegion(0, 0, (short)_width, (short)_height);
+			X11Helper.XShapeCombineRegion(_display, _window, X11Helper.ShapeBounding, 0, 0, region, X11Helper.ShapeSet);
+			X11Helper.XShapeCombineRegion(_display, _window, X11Helper.ShapeInput, 0, 0, region, X11Helper.ShapeSet);
 
-			// XShapeCombineMask requires a mask with a bit depth of 1. Unfortunately, skia doesn't support
-			// a 1-bit color type, so we have to loop over the pixels.
-			var pixels = (byte*)_maskBitmap.GetPixels();
-			var scanline = (byte*)_maskData.ToPointer();
-			for (var y = 0; y < _height; y++, scanline += _bytesPerMaskScanline, pixels += _maskBitmap.RowBytes)
-			{
-				for (var x = 0; x < _width; x++)
-				{
-					var val = (byte)(pixels[x] == 255 ? 1 : 0);
-					var temp = scanline[x / BitsPerByte];
-					scanline[x / BitsPerByte] = (byte)((((temp & ~(1 << (x % BitsPerByte))) | (val << (x % BitsPerByte))))); // set bit to val
-				}
-			}
-
-			var pixmap = X11Helper.XCreateBitmapFromData(_display, _window, _maskData, (uint)_width, (uint)_height);
-			X11Helper.XShapeCombineMask(_display, _window, X11Helper.ShapeBounding, 0, 0, pixmap, X11Helper.ShapeSet);
-			X11Helper.XShapeCombineMask(_display, _window, X11Helper.ShapeInput, 0, 0, pixmap, X11Helper.ShapeSet);
-
-			_ = X11Helper.XFreePixmap(_display, pixmap);
+			_ = X11Helper.XDestroyRegion(region);
 			_ = XLib.XSync(_display, false);
+		}
+		else
+		{
+			var maskCanvas = _maskSurface.Canvas;
+			using (new SKAutoCanvasRestore(maskCanvas, true))
+			{
+				maskCanvas.Clear(SKColor.Empty);
+				maskCanvas.ClipPath(path);
+				maskCanvas.Clear(SKColors.White);
+				maskCanvas.Flush();
+				_maskSurface.Snapshot();
+
+				// XShapeCombineMask requires a mask with a bit depth of 1. Unfortunately, skia doesn't support
+				// a 1-bit color type, so we have to loop over the pixels.
+				var pixels = (byte*)_maskBitmap.GetPixels();
+				var scanline = (byte*)_maskData.ToPointer();
+				for (var y = 0; y < _height; y++, scanline += _bytesPerMaskScanline, pixels += _maskBitmap.RowBytes)
+				{
+					for (var x = 0; x < _width; x++)
+					{
+						var val = (byte)(pixels[x] == 255 ? 1 : 0);
+						var temp = scanline[x / BitsPerByte];
+						scanline[x / BitsPerByte] = (byte)((((temp & ~(1 << (x % BitsPerByte))) | (val << (x % BitsPerByte))))); // set bit to val
+					}
+				}
+
+				var pixmap = X11Helper.XCreateBitmapFromData(_display, _window, _maskData, (uint)_width, (uint)_height);
+				X11Helper.XShapeCombineMask(_display, _window, X11Helper.ShapeBounding, 0, 0, pixmap, X11Helper.ShapeSet);
+				X11Helper.XShapeCombineMask(_display, _window, X11Helper.ShapeInput, 0, 0, pixmap, X11Helper.ShapeSet);
+
+				_ = X11Helper.XFreePixmap(_display, pixmap);
+				_ = XLib.XSync(_display, false);
+			}
 		}
 	}
 

@@ -73,6 +73,7 @@
 		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.X11\Uno.UI.Runtime.Skia.X11.csproj" />
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj" />
 		<ProjectReference Include="..\SamplesApp.Skia\SamplesApp.Skia.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.MediaPlayer.Skia.X11\Uno.UI.MediaPlayer.Skia.X11.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

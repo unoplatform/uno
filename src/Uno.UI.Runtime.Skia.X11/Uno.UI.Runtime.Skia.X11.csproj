@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
 	<PropertyGroup>
 		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
 		<Nullable>enable</Nullable>
@@ -32,6 +31,7 @@
 		<PackageReference Include="SkiaSharp.NativeAssets.Linux" />
 		<PackageReference Include="HarfBuzzSharp.NativeAssets.Linux" />
 		<PackageReference Include="SkiaSharp" />
+		<PackageReference Include="LibVLCSharp" Version="3.7.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -47,9 +47,4 @@
 			<PackagePath>buildTransitive</PackagePath>
 		</Content>
 	</ItemGroup>
-
-	<ItemGroup>
-	  <Compile Remove="DBus\DBusHelper.cs" />
-	</ItemGroup>
-
 </Project>

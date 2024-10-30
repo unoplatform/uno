@@ -5,6 +5,7 @@ using System.IO;
 using System.Runtime.Loader;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Runtime.Skia;
+using Uno.WinUI.Runtime.Skia.X11;
 
 namespace SkiaSharpExample
 {
@@ -28,7 +29,8 @@ namespace SkiaSharpExample
 		{
 			SamplesApp.App.ConfigureLogging(); // Enable tracing of the host
 
-			var host = SkiaHostBuilder.Create()
+			SkiaHost? host = default;
+			host = SkiaHostBuilder.Create()
 				.App(() => _app = new SamplesApp.App())
 				.AfterInit(() =>
 				{
@@ -41,6 +43,12 @@ namespace SkiaSharpExample
 							var windowContentAsUIElement = (System.Windows.UIElement)windowContent;
 							Assert.IsTrue(windowContentAsUIElement.IsFocused);
 						};
+					}
+
+					if (host is X11ApplicationHost)
+					{
+						global::Uno.Foundation.Extensibility.ApiExtensibility.Register<global::Windows.Media.Playback.MediaPlayer>(typeof(global::Uno.Media.Playback.IMediaPlayerExtension), o => new global::Uno.UI.MediaPlayer.Skia.X11.X11MediaPlayerExtension(o));
+						global::Uno.Foundation.Extensibility.ApiExtensibility.Register<global::Microsoft.UI.Xaml.Controls.MediaPlayerPresenter>(typeof(global::Microsoft.UI.Xaml.Controls.IMediaPlayerPresenterExtension), o => new global::Uno.UI.MediaPlayer.Skia.X11.X11MediaPlayerPresenterExtension(o));
 					}
 				})
 				.UseX11()

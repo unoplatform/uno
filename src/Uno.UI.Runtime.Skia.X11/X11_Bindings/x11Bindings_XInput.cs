@@ -24,6 +24,7 @@
 // https://github.com/AvaloniaUI/Avalonia/blob/3b961906e43904d41b4e88b4d33ea9bd9a976ee5/src/Avalonia.X11/XIStructs.cs
 
 using System;
+using System.Globalization;
 using System.Runtime.InteropServices;
 using Bool = System.Boolean;
 using Atom = System.IntPtr;
@@ -260,6 +261,11 @@ namespace Uno.WinUI.Runtime.Skia.X11
 		public XIValuatorState valuators;
 		public XIModifierState mods;
 		public XIModifierState group;
+
+		public override string ToString()
+		{
+			return $"{evtype} windowCoords={event_x}x{event_y} rootCoords={root_x}x{root_y} EventWindow={EventWindow.ToString("X", CultureInfo.InvariantCulture)} ChildWindow={ChildWindow.ToString("X", CultureInfo.InvariantCulture)} detail={detail} Emulated={(flags & XiDeviceEventFlags.XIPointerEmulated) != 0} time={time}";
+		}
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
@@ -288,6 +294,11 @@ namespace Uno.WinUI.Runtime.Skia.X11
 		public XIButtonState buttons;
 		public XIModifierState mods;
 		public XIModifierState group;
+
+		public override string ToString()
+		{
+			return $"{evtype} windowCoords={event_x}x{event_y} rootCoords={root_x}x{root_y} EventWindow={EventWindow.ToString("X", CultureInfo.InvariantCulture)} ChildWindow={ChildWindow.ToString("X", CultureInfo.InvariantCulture)} detail={detail} time={time}";
+		}
 	}
 
 	[Flags]

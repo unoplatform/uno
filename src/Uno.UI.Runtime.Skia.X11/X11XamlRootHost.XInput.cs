@@ -139,7 +139,7 @@ internal partial class X11XamlRootHost
 		return _xi2Details.Value;
 	}
 
-	private unsafe void SetXIEventMask(X11Window x11Window)
+	private unsafe void SetXIEventMask(IntPtr display, IntPtr window, int mask)
 	{
 		var m = stackalloc XIEventMask[1];
 		m->Deviceid = (int)XiPredefinedDeviceId.XIAllDevices;
@@ -150,16 +150,12 @@ internal partial class X11XamlRootHost
 		//		#define XI_LASTEVENT                     XI_GestureSwipeEnd
 		// So XIMaskLen(XI_LASTEVENT) is always 4
 		// m->mask = calloc(m->mask_len, sizeof(char));
-		var mask = stackalloc int[1];
-		*mask |= XI2Mask;
-		if (GetXI2Details(x11Window.Display).version >= XIVersion.XI2_2)
-		{
-			*mask |= XI2_2Mask;
-		}
-		m->Mask = mask;
+		var maskPtr = stackalloc int[1];
+		*maskPtr = mask;
+		m->Mask = maskPtr;
 		m->MaskLen = 4;
 		m->Deviceid = (int)XiPredefinedDeviceId.XIAllDevices;
-		var _1 = XLib.XISelectEvents(x11Window.Display, x11Window.Window, m, 1);
-		var _2 = XLib.XSync(x11Window.Display, false);
+		var _1 = XLib.XISelectEvents(display, window, m, 1);
+		var _2 = XLib.XSync(display, false);
 	}
 }

@@ -397,7 +397,7 @@ jobs:
         artifactName: $(SamplesAppArtifactName)
         downloadPath: '$(build.sourcesdirectory)/build'
 
-  - template: templates/linux-install-xvfb.yml
+  - template: templates/linux-install-deps.yml
 
   - script: |
         cd $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
@@ -440,7 +440,7 @@ jobs:
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - template: templates/dotnet-install.yml
-  - template: templates/linux-install-xvfb.yml
+  - template: templates/linux-install-deps.yml
 
   - script: |
         cd $(SamplesAppArtifactPath)
@@ -490,7 +490,7 @@ jobs:
 
 #   - template: templates/dotnet-install.yml
 
-#   - template: templates/linux-install-xvfb.yml
+#   - template: templates/linux-install-deps.yml
 
 #   - bash: |
 #         set -euo pipefail
