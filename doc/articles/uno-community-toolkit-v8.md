@@ -50,7 +50,7 @@ When using the Uno Platform solution templates, add the following to your applic
 
         ```xml
         <ItemGroup>
-          <PackageVersion Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.1.240606-rc" />
+          <PackageVersion Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.1.240916" />
           <!-- Add more community toolkit references here -->
         </ItemGroup>
         ```
@@ -71,7 +71,7 @@ When using the Uno Platform solution templates, add the following to your applic
     >
     > ```xml
     > <PropertyGroup>
-    >   <WindowsSdkPackageVersion>10.0.22621.33</WindowsSdkPackageVersion>
+    >   <WindowsSdkPackageVersion>10.0.22621.38</WindowsSdkPackageVersion>
     >   <WinAppSdkVersion>1.5.240607001</WinAppSdkVersion>
     > </PropertyGroup>
     > ```
@@ -82,7 +82,7 @@ When using the Uno Platform solution templates, add the following to your applic
 
     ```xml
     <ItemGroup>
-      <PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.1.240606-rc" />
+      <PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.1.240916" />
       <!-- Add more community toolkit references here -->
     </ItemGroup>
     ```
@@ -96,7 +96,7 @@ When using the Uno Platform solution templates, add the following to your applic
 
     ```xml
     <ItemGroup>
-      <PackageReference Include="CommunityToolkit.Uwp.Controls.SettingsControls" Version="8.1.240606-rc" />
+      <PackageReference Include="CommunityToolkit.Uwp.Controls.SettingsControls" Version="8.1.240916" />
       <!-- Add more community toolkit references here -->
     </ItemGroup>
     ```
@@ -115,7 +115,7 @@ When using the Uno Platform solution templates, add the following to your applic
 
         ```xml
         <ItemGroup>
-          <PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.1.240606-rc" />
+          <PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.1.240916" />
           <!-- Add more uno community toolkit references here -->
         </ItemGroup>
         ```
@@ -134,7 +134,7 @@ When using the Uno Platform solution templates, add the following to your applic
 
         ```xml
         <ItemGroup>
-          <PackageReference Include="CommunityToolkit.Uwp.Controls.SettingsControls" Version="8.1.240606-rc" />
+          <PackageReference Include="CommunityToolkit.Uwp.Controls.SettingsControls" Version="8.1.240916" />
           <!-- Add more uno community toolkit references here -->
         </ItemGroup>
         ```
