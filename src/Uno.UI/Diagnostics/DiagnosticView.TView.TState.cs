@@ -10,7 +10,7 @@ namespace Uno.Diagnostics.UI;
 /// <summary>
 /// A generic diagnostic view that can be updated with a state.
 /// </summary>
-internal class DiagnosticView<TView, TState>(
+public class DiagnosticView<TView, TState>(
 	string id,
 	string name,
 	Func<IDiagnosticViewContext, TView> factory,

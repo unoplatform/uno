@@ -7,7 +7,7 @@ using Microsoft.UI.Xaml;
 
 namespace Uno.Diagnostics.UI;
 
-internal partial class DiagnosticView
+partial class DiagnosticView
 {
 	/// <summary>
 	/// Registers a dedicated diagnostic view to be displayed by the diagnostic overlay.
