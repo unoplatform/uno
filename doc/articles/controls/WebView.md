@@ -2,7 +2,7 @@
 
 > Uno Platform supports two `WebView` controls - a legacy `WebView` and a modernized `WebView2` control. For new development, we strongly recommend `WebView2` as it will get further improvements in the future.
 
-`WebView2` is currently supported on Windows, Android, iOS, macOS (Catalyst), and Skia WPF.
+`WebView2` is currently supported on Windows, Android, iOS, macOS (Catalyst), Desktop (Windows), and WebAssembly.
 
 ## Basic usage
 
@@ -26,6 +26,13 @@ MyWebView.NavigateToString("<html><body><p>Hello world!</p></body></html>");
 
 > [!IMPORTANT]
 > For Skia WPF, you should add `<PackageReference Include="Microsoft.Web.WebView2" Aliases="WpfWebView" />` to your csproj.
+
+## WebAssembly support
+
+In case of WebAssembly, the control is supported via a native `<iframe>` element. This means all `<iframe>` browser security considerations and limitations also apply to `WebView`:
+
+- The [`frame-ancestors` Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/frame-ancestors) can be used to allow embedding a site you have control over, while at the same time blocking third-party sites from embedding
+- External site you are embedding must not block embedding via [`X-FRAME-OPTIONS` header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options)
 
 ## Executing JavaScript
 
