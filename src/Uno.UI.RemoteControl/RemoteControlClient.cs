@@ -33,7 +33,63 @@ public partial class RemoteControlClient : IRemoteControlClient
 	public delegate void RemoteControlClientEventEventHandler(object sender, ClientEventEventArgs args);
 	public delegate void SendMessageFailedEventHandler(object sender, SendMessageFailedEventArgs args);
 
-	public static RemoteControlClient? Instance { get; private set; }
+	public static RemoteControlClient? Instance
+	{
+		get => _instance;
+		private set
+		{
+			_instance = value;
+
+			if (value is { })
+			{
+				while (Interlocked.Exchange(ref _waitingList, null) is { } waitingList)
+				{
+					foreach (var action in waitingList)
+					{
+						action(value);
+					}
+				}
+			}
+		}
+	}
+
+	private static IReadOnlyCollection<Action<RemoteControlClient>>? _waitingList;
+
+	/// <summary>
+	/// Add a callback to be called when the Instance is available.
+	/// </summary>
+	/// <remarks>
+	/// Will be called synchronously if the instance is already available, no need to check for it before.
+	/// </remarks>
+	public static void OnRemoteControlClientAvailable(Action<RemoteControlClient> action)
+	{
+		if(Instance is not null)
+		{
+			action(Instance);
+		}
+		else
+		{
+			// Thread-safe way to add the action to a waiting list for the client to be available
+			while (true)
+			{
+				var waitingList = _waitingList;
+				IReadOnlyCollection<Action<RemoteControlClient>> newList = waitingList is null
+					? [action]
+					: [.. waitingList, action];
+
+				if(Instance is { } i) // Last chance to avoid the waiting list
+				{
+					action(i);
+					break;
+				}
+
+				if (ReferenceEquals(Interlocked.CompareExchange(ref _waitingList, newList, waitingList), waitingList))
+				{
+					break;
+				}
+			}
+		}
+	}
 
 	public static RemoteControlClient Initialize(Type appType)
 		=> Instance = new RemoteControlClient(appType);
@@ -59,6 +115,7 @@ public partial class RemoteControlClient : IRemoteControlClient
 
 	private readonly StatusSink _status;
 	private static readonly TimeSpan _keepAliveInterval = TimeSpan.FromSeconds(30);
+	private static RemoteControlClient? _instance;
 	private readonly (string endpoint, int port)[]? _serverAddresses;
 	private readonly Dictionary<string, IClientProcessor> _processors = new();
 	private readonly List<IRemoteControlPreProcessor> _preprocessors = new();
