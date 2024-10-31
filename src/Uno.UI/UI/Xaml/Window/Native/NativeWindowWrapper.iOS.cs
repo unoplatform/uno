@@ -9,24 +9,25 @@ using Windows.Graphics.Display;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.Graphics;
+using MUXWindow = Microsoft.UI.Xaml.Window;
+using NativeWindow = Uno.UI.Controls.Window;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Xaml.Controls;
 
 internal class NativeWindowWrapper : NativeWindowWrapperBase
 {
-	private static readonly Lazy<NativeWindowWrapper> _instance = new(() => new NativeWindowWrapper());
-
-	private Uno.UI.Controls.Window _nativeWindow;
+	private NativeWindow _nativeWindow;
 
 	private RootViewController _mainController;
 	private NSObject _orientationRegistration;
 	private readonly DisplayInformation _displayInformation;
 
-	public NativeWindowWrapper()
+	public NativeWindowWrapper(MUXWindow window, XamlRoot xamlRoot)
 	{
-		_nativeWindow = new Uno.UI.Controls.Window();
+		_nativeWindow = new NativeWindow();
 
-		_mainController = Microsoft.UI.Xaml.Window.ViewControllerGenerator?.Invoke() ?? new RootViewController();
+		_mainController = MUXWindow.ViewControllerGenerator?.Invoke() ?? new RootViewController();
 		_mainController.View.BackgroundColor = UIColor.Clear;
 		_mainController.NavigationBarHidden = true;
 
@@ -41,9 +42,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		DispatchDpiChanged();
 	}
 
-	public override Uno.UI.Controls.Window NativeWindow => _nativeWindow;
-
-	internal static NativeWindowWrapper Instance => _instance.Value;
+	public override NativeWindow NativeWindow => _nativeWindow;
 
 	private void DispatchDpiChanged() =>
 		RasterizationScale = (float)_displayInformation.RawPixelsPerViewPixel;
@@ -106,9 +105,9 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		return new Size(nativeFrame.Width, nativeFrame.Height);
 	}
 
-	private void SetVisibleBounds(UIKit.UIWindow keyWindow, Windows.Foundation.Size windowSize)
+	private void SetVisibleBounds(UIWindow keyWindow, Size windowSize)
 	{
-		var windowBounds = new Windows.Foundation.Rect(default, windowSize);
+		var windowBounds = new Rect(default, windowSize);
 
 		var inset = UseSafeAreaInsets
 				? keyWindow.SafeAreaInsets
@@ -123,7 +122,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 		inset.Top = (nfloat)Math.Max(inset.Top, statusBarHeight);
 
-		var newVisibleBounds = new Windows.Foundation.Rect(
+		var newVisibleBounds = new Rect(
 			x: windowBounds.Left + inset.Left,
 			y: windowBounds.Top + inset.Top,
 			width: windowBounds.Width - inset.Right - inset.Left,
