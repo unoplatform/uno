@@ -40,6 +40,7 @@ void uno_set_resize_callback(resize_fn_ptr p);
 NSWindow* uno_app_get_main_window(void);
 
 NSWindow* uno_window_create(double width, double height);
+void uno_window_activate(NSWindow *window);
 void uno_window_invalidate(NSWindow *window);
 bool uno_window_resize(NSWindow *window, double width, double height);
 

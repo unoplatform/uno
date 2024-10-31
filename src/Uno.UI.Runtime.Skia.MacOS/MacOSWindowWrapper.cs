@@ -37,6 +37,18 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase
 		set => NativeUno.uno_window_set_title(_window.Handle, value);
 	}
 
+	public override void Activate()
+	{
+		NativeUno.uno_window_activate(_window.Handle);
+	}
+
+	protected override void ShowCore()
+	{
+		// the first call to `Window.Activate` does not reach the above `Activate` method
+		// https://github.com/unoplatform/uno/blob/fc8e58d77f8cf31d651135c22ea3105099c26fb7/src/Uno.UI/UI/Xaml/Window/Implementations/BaseWindowImplementation.cs#L81-L98
+		NativeUno.uno_window_activate(_window.Handle);
+	}
+
 	private void OnHostSizeChanged(Size size)
 	{
 		Bounds = new Rect(default, size);

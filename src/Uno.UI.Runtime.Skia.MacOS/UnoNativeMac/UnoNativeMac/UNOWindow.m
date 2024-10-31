@@ -143,6 +143,14 @@ NSWindow* uno_window_create(double width, double height)
     return window;
 }
 
+void uno_window_activate(NSWindow *window)
+{
+#if DEBUG
+    NSLog(@"uno_window_activate %@", window);
+#endif
+    [window orderFront:nil];
+}
+
 void uno_window_notify_screen_change(NSWindow *window)
 {
     assert(windowDidChangeScreen);

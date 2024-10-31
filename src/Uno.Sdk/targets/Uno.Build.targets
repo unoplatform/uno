@@ -29,6 +29,7 @@
 		Condition=" $(_IsUnoSingleProjectAndLegacy) == 'true' ">
 		<ItemGroup>
 			<None Remove="@(_IgnorePlatformFiles)" />
+			<Page Remove="@(_IgnorePlatformFiles)" />
 			<Compile Remove="@(_IgnorePlatformFiles)" />
 			<Content Remove="@(_IgnorePlatformFiles)" />
 			<EmbeddedResource Remove="@(_IgnorePlatformFiles)" />
