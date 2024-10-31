@@ -2,6 +2,7 @@
 #if WINUI || HAS_UNO_WINUI
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -462,10 +463,10 @@ public sealed partial class DiagnosticsOverlay : Control
 				var viewsThatShouldBeMaterialized = DiagnosticViewRegistry
 					.Registrations
 					.Where(ShouldMaterialize)
+					.Order() // See DiagnosticViewRegistration.CompareTo
 					.Select(reg => reg.View)
-					.Concat(_localRegistrations)
-					.Distinct()
-					.ToList();
+					.Concat(_localRegistrations) // They are at the end of the list.
+					.Distinct();
 
 				foreach (var view in viewsThatShouldBeMaterialized)
 				{
