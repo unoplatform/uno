@@ -151,7 +151,8 @@ public class Given_AppWindow
 	private void AssertPositioningAndSizingSupport()
 	{
 		if (!OperatingSystem.IsLinux() &&
-			!OperatingSystem.IsWindows() ||
+			!OperatingSystem.IsWindows() &&
+			!OperatingSystem.IsMacOS() ||
 			TestServices.WindowHelper.IsXamlIsland ||
 			IsGtk())
 		{
