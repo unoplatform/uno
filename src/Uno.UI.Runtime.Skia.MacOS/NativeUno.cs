@@ -187,7 +187,9 @@ internal static partial class NativeUno
 	internal static unsafe partial void uno_set_window_events_callbacks(
 		delegate* unmanaged[Cdecl]<nint, VirtualKey, VirtualKeyModifiers, uint, ushort, int> keyDownCallback,
 		delegate* unmanaged[Cdecl]<nint, VirtualKey, VirtualKeyModifiers, uint, ushort, int> keyUpCallback,
-		delegate* unmanaged[Cdecl]<nint, NativeMouseEventData*, int> pointerCallback);
+		delegate* unmanaged[Cdecl]<nint, NativeMouseEventData*, int> pointerCallback,
+		delegate* unmanaged[Cdecl]<nint, double, double, void> moveCallback,
+		delegate* unmanaged[Cdecl]<nint, double, double, void> resizeCallback);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial uint uno_get_system_theme();
@@ -206,6 +208,12 @@ internal static partial class NativeUno
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_window_invalidate(nint window);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_window_close(nint window);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_window_get_position(nint window, out double x, out double y);
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
 	internal static partial string uno_window_get_title(nint window);
@@ -258,6 +266,9 @@ internal static partial class NativeUno
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial nint uno_window_get_metal_context(nint window);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_window_move(nint window, double x, double y);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	[return: MarshalAs(UnmanagedType.I1)]
