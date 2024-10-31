@@ -202,6 +202,9 @@ internal static partial class NativeUno
 	internal static partial nint uno_window_create(double width, double height);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_window_activate(nint window);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_window_invalidate(nint window);
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
