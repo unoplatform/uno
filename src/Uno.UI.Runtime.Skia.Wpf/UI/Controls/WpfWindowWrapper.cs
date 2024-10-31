@@ -45,18 +45,18 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 	{
 		if (!_wasShown)
 		{
-			Size = new() { Width = (int)_wpfWindow.Width, Height = (int)_wpfWindow.Height };
+			Size = new() { Width = (int)(_wpfWindow.Width * RasterizationScale), Height = (int)(_wpfWindow.Height * RasterizationScale)};
 		}
 		else
 		{
-			Size = new() { Width = (int)_wpfWindow.ActualWidth, Height = (int)_wpfWindow.ActualHeight };
+			Size = new() { Width = (int)(_wpfWindow.ActualWidth * RasterizationScale), Height = (int)(_wpfWindow.ActualHeight * RasterizationScale)};
 		}
 	}
 
 	private void OnNativeLocationChanged(object? sender, EventArgs e) => UpdatePositionFromNative();
 
 	private void UpdatePositionFromNative() =>
-		Position = new() { X = (int)_wpfWindow.Left, Y = (int)_wpfWindow.Top };
+		Position = new() { X = (int)(_wpfWindow.Left * RasterizationScale), Y = (int)(_wpfWindow.Top * RasterizationScale)};
 
 	private void OnNativeStateChanged(object? sender, EventArgs e) => UpdateIsVisible();
 
@@ -165,8 +165,8 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 
 	public override void Move(PointInt32 position)
 	{
-		_wpfWindow.Left = position.X;
-		_wpfWindow.Top = position.Y;
+		_wpfWindow.Left = position.X / RasterizationScale;
+		_wpfWindow.Top = position.Y / RasterizationScale;
 
 		if (!_wasShown)
 		{
@@ -177,8 +177,8 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 
 	public override void Resize(SizeInt32 size)
 	{
-		_wpfWindow.Width = size.Width;
-		_wpfWindow.Height = size.Height;
+		_wpfWindow.Width = size.Width / RasterizationScale;
+		_wpfWindow.Height = size.Height / RasterizationScale;
 
 		if (!_wasShown)
 		{
