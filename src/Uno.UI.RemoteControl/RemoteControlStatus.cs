@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Uno.UI.RemoteControl;
 
-internal record RemoteControlStatus(
+public record RemoteControlStatus(
 	RemoteControlStatus.ConnectionState State,
 	bool? IsVersionValid,
 	(RemoteControlStatus.KeepAliveState State, long RoundTrip) KeepAlive,
@@ -82,9 +82,9 @@ internal record RemoteControlStatus(
 		return details.ToString();
 	}
 
-	internal record struct MissingProcessor(string TypeFullName, string Version, string Details, string? Error = null);
+	public readonly record struct MissingProcessor(string TypeFullName, string Version, string Details, string? Error = null);
 
-	internal enum KeepAliveState
+	public enum KeepAliveState
 	{
 		Idle,
 		Ok, // Got ping/pong in expected delays
@@ -93,7 +93,7 @@ internal record RemoteControlStatus(
 		Aborted // KeepAlive was aborted
 	}
 
-	internal enum ConnectionState
+	public enum ConnectionState
 	{
 		/// <summary>
 		/// Client as not been started yet
@@ -140,7 +140,7 @@ internal record RemoteControlStatus(
 		Disconnected
 	}
 
-	internal enum Classification
+	public enum Classification
 	{
 		Ok,
 		Info,

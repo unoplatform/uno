@@ -28,7 +28,7 @@ public partial class ClientHotReloadProcessor
 	/// <summary>
 	/// The current status of the hot-reload engine.
 	/// </summary>
-	internal Status CurrentStatus => _status.Current;
+	public Status CurrentStatus => _status.Current;
 
 	private readonly StatusSink _status;
 
@@ -39,7 +39,7 @@ public partial class ClientHotReloadProcessor
 		Manual
 	}
 
-	internal enum HotReloadClientResult
+	public enum HotReloadClientResult
 	{
 		/// <summary>
 		/// Successful hot-reload.
@@ -70,9 +70,9 @@ public partial class ClientHotReloadProcessor
 
 	private class StatusSink(ClientHotReloadProcessor owner)
 	{
-#if HAS_UNO_WINUI
-		private readonly DiagnosticView<HotReloadStatusView, Status> _view = DiagnosticView.Register<HotReloadStatusView, Status>("Hot reload", ctx => new HotReloadStatusView(ctx), static (view, status) => view.OnHotReloadStatusChanged(status));
-#endif
+// #if HAS_UNO_WINUI
+// 		private readonly DiagnosticView<HotReloadStatusView, Status> _view = DiagnosticView.Register<HotReloadStatusView, Status>("Hot reload", ctx => new HotReloadStatusView(ctx), static (view, status) => view.OnHotReloadStatusChanged(status));
+// #endif
 
 		private HotReloadState? _serverState;
 		private bool _isFinalServerState;
@@ -142,9 +142,9 @@ public partial class ClientHotReloadProcessor
 			var status = BuildStatus();
 
 			Current = status;
-#if HAS_UNO_WINUI
-			_view.Update(status);
-#endif
+// #if HAS_UNO_WINUI
+// 			_view.Update(status);
+// #endif
 			owner.StatusChanged?.Invoke(this, status);
 		}
 
@@ -208,7 +208,7 @@ public partial class ClientHotReloadProcessor
 
 		public Type[] Types { get; private set; }
 
-		internal string[] CuratedTypes => _curatedTypes ??= GetCuratedTypes();
+		public string[] CuratedTypes => _curatedTypes ??= GetCuratedTypes();
 
 		private string[] GetCuratedTypes()
 		{

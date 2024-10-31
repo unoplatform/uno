@@ -37,7 +37,7 @@ internal static class DiagnosticViewRegistry
 
 internal record DiagnosticViewRegistration(DiagnosticViewRegistrationMode Mode, IDiagnosticView View);
 
-internal enum DiagnosticViewRegistrationMode
+public enum DiagnosticViewRegistrationMode
 {
 	/// <summary>
 	/// Diagnostic is being display on at least one window.
