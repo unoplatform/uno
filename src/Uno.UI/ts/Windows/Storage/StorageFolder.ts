@@ -52,7 +52,7 @@ namespace Windows.Storage {
 			}
 
 			if (typeof IDBFS === 'undefined') {
-				console.warn(`IDBFS is not enabled in mono's configuration, persistence is disabled`);
+				console.warn(`IDBFS is not enabled in the project configuration, persistence is disabled. See https://aka.platform.uno/wasm-idbfs for more details`);
 
 				StorageFolder.onStorageInitialized();
 				return;
