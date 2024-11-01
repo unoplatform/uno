@@ -1,7 +1,7 @@
 <Project>
 	<PropertyGroup>
 		<UnoIsWebAssemblyBrowserHead>true</UnoIsWebAssemblyBrowserHead>
-		<WasmPWAManifestFile Condition="$(WasmPWAManifestFile) == ''">$(WasmProjectFolder)manifest.webmanifest</WasmPWAManifestFile>
+		<WasmPWAManifestFile Condition="$(WasmPWAManifestFile) == '' AND exists('$(WasmProjectFolder)manifest.webmanifest')">$(WasmProjectFolder)manifest.webmanifest</WasmPWAManifestFile>
 		<!--
 			Supports Deep Linking Routes
 			https://aka.platform.uno/wasm-deeplink
