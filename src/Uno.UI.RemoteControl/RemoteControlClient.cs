@@ -280,7 +280,6 @@ public partial class RemoteControlClient : IRemoteControlClient
 
 			_status.Report(ConnectionState.Connecting);
 
-
 			const string lastEndpointKey = "__UNO__" + nameof(RemoteControlClient) + "__last_endpoint";
 			var preferred = ApplicationData.Current.LocalSettings.Values.TryGetValue(lastEndpointKey, out var lastValue) && lastValue is string lastEp
 				? _serverAddresses.FirstOrDefault(srv => srv.endpoint.Equals(lastEp, StringComparison.OrdinalIgnoreCase)).endpoint

@@ -24,12 +24,12 @@ internal static class DiagnosticViewRegistry
 	/// </summary>
 	/// <param name="view">A diagnostic view to display.</param>
 	/// <param name="mode">Defines when the registered diagnostic view should be displayed.</param>
-	public static void Register(IDiagnosticView view, DiagnosticViewRegistrationMode mode = default, DiagnosticViewRegistrationPosition position = default)
+	public static void Register(IDiagnosticView view, DiagnosticViewRegistrationMode mode = default)
 	{
 		ImmutableInterlocked.Update(
 			ref _registrations,
 			static (providers, provider) => providers.Add(provider),
-			new DiagnosticViewRegistration(mode, position, view));
+			new DiagnosticViewRegistration(mode, view));
 
 		Added?.Invoke(null, _registrations);
 	}
@@ -37,25 +37,7 @@ internal static class DiagnosticViewRegistry
 
 internal sealed record DiagnosticViewRegistration(
 	DiagnosticViewRegistrationMode Mode,
-	DiagnosticViewRegistrationPosition Position,
-	IDiagnosticView View) : IComparable<DiagnosticViewRegistration>
-{
-	public int CompareTo(DiagnosticViewRegistration? other)
-	{
-		if (other is null)
-		{
-			return 1;
-		}
-
-		if (Position == other.Position)
-		{
-			// If the position is the same, we compare the view id to ensure a stable order.
-			return string.Compare(View.Id, other.View.Id, StringComparison.Ordinal);
-		}
-
-		return (int)Position - (int)other.Position;
-	}
-}
+	IDiagnosticView View);
 
 public enum DiagnosticViewRegistrationMode
 {
