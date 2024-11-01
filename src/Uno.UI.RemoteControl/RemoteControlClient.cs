@@ -63,7 +63,7 @@ public partial class RemoteControlClient : IRemoteControlClient
 	/// </remarks>
 	public static void OnRemoteControlClientAvailable(Action<RemoteControlClient> action)
 	{
-		if(Instance is not null)
+		if (Instance is { })
 		{
 			action(Instance);
 		}
@@ -77,7 +77,7 @@ public partial class RemoteControlClient : IRemoteControlClient
 					? [action]
 					: [.. waitingList, action];
 
-				if(Instance is { } i) // Last chance to avoid the waiting list
+				if (Instance is { } i) // Last chance to avoid the waiting list
 				{
 					action(i);
 					break;
