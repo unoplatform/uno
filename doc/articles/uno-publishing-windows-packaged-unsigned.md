@@ -18,7 +18,7 @@ To package your app:
 - Update the `Package.appxmanifest` file with the following `Identity` node to include the following `OID`:
 
   ```xml
-  <Identity Name="MyApp"
+  <Identity Name="MyApp"
             Publisher="CN=AppModelSamples, OID.2.25.311729368913984317654407730594956997722=1"
             Version="1.0.0.0" />
   ```
