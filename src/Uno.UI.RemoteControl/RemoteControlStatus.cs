@@ -12,8 +12,27 @@ public record RemoteControlStatus(
 	ImmutableHashSet<RemoteControlStatus.MissingProcessor> MissingRequiredProcessors,
 	(long Count, ImmutableHashSet<Type> Types) InvalidFrames)
 {
-	public bool IsAllGood => State == ConnectionState.Connected && IsVersionValid == true && MissingRequiredProcessors.IsEmpty && KeepAlive.State == KeepAliveState.Ok && InvalidFrames.Count == 0;
 
+	/// <summary>
+	/// A boolean indicating if everything is fine with the connection and the handshaking succeeded.
+	/// </summary>
+	public bool IsAllGood =>
+		State == ConnectionState.Connected
+#if !DEBUG
+		// For debug builds, it's annoying to have the version mismatch preventing the connection
+		// Only Uno devs should get this issue, let's not block them.
+		&& IsVersionValid == true
+#endif
+		&& MissingRequiredProcessors.IsEmpty
+		&& KeepAlive.State == KeepAliveState.Ok
+		&& InvalidFrames.Count == 0;
+
+	/// <summary>
+	/// If the connection is problematic, meaning that the connection is not in a good state.
+	/// </summary>
+	/// <remarks>
+	/// It's just a negation of <see cref="IsAllGood"/>.
+	/// </remarks>
 	public bool IsProblematic => !IsAllGood;
 
 	public (Classification kind, string message) GetSummary()
