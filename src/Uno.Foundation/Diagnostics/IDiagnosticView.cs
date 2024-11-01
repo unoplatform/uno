@@ -21,6 +21,8 @@ public interface IDiagnosticView
 	/// </summary>
 	string Name { get; }
 
+	DiagnosticViewRegistrationPosition Position => DiagnosticViewRegistrationPosition.Normal;
+
 	/// <summary>
 	/// Gets a visual element of the diagnostic, usually a value or an icon.
 	/// </summary>

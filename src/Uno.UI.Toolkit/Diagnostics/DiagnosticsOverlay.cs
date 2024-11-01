@@ -317,8 +317,8 @@ public sealed partial class DiagnosticsOverlay : Control
 	/// Add a UI diagnostic element to this overlay.
 	/// </summary>
 	/// <remarks>This will also make this overlay visible (cf. <see cref="Show(bool?)"/>).</remarks>
-	public void Add(string id, string name, UIElement preview, Func<UIElement>? details = null)
-		=> Add(new DiagnosticView(id, name, _ => preview, (_, ct) => new(details?.Invoke())));
+	public void Add(string id, string name, UIElement preview, Func<UIElement>? details = null, DiagnosticViewRegistrationPosition position = default)
+		=> Add(new DiagnosticView(id, name, _ => preview, (_, ct) => new(details?.Invoke()), position));
 
 	/// <summary>
 	/// Add a UI diagnostic element to this overlay.
@@ -463,9 +463,9 @@ public sealed partial class DiagnosticsOverlay : Control
 				var viewsThatShouldBeMaterialized = DiagnosticViewRegistry
 					.Registrations
 					.Where(ShouldMaterialize)
-					.Order() // See DiagnosticViewRegistration.CompareTo
 					.Select(reg => reg.View)
-					.Concat(_localRegistrations) // They are at the end of the list.
+					.Concat(_localRegistrations)
+					.OrderBy(r => (int)r.Position)
 					.Distinct();
 
 				foreach (var view in viewsThatShouldBeMaterialized)

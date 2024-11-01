@@ -14,15 +14,17 @@ public partial class DiagnosticView(
 	string id,
 	string name,
 	Func<IDiagnosticViewContext, UIElement> factory,
-	Func<IDiagnosticViewContext, CancellationToken, ValueTask<object?>>? details = null)
-	: DiagnosticView<UIElement>(id, name, factory, details)
+	Func<IDiagnosticViewContext, CancellationToken, ValueTask<object?>>? details = null,
+	DiagnosticViewRegistrationPosition position = default)
+	: DiagnosticView<UIElement>(id, name, factory, details, position)
 {
 	public DiagnosticView(
 		string id,
 		string name,
 		Func<UIElement> preview,
-		Func<CancellationToken, ValueTask<object?>>? details = null)
-		: this(id, name, _ => preview(), async (_, ct) => details is null ? null : await details(ct))
+		Func<CancellationToken, ValueTask<object?>>? details = null,
+		DiagnosticViewRegistrationPosition position = default)
+		: this(id, name, _ => preview(), async (_, ct) => details is null ? null : await details(ct), position)
 	{
 	}
 }

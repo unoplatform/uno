@@ -29,8 +29,8 @@ partial class DiagnosticView
 		DiagnosticViewRegistrationPosition position = default)
 		where TView : UIElement, new()
 	{
-		var provider = new DiagnosticView<TView>(typeof(TView).Name, friendlyName, () => new TView());
-		DiagnosticViewRegistry.Register(provider, mode, position);
+		var provider = new DiagnosticView<TView>(typeof(TView).Name, friendlyName, () => new TView(), position: position);
+		DiagnosticViewRegistry.Register(provider, mode);
 		return provider;
 	}
 
@@ -56,8 +56,8 @@ partial class DiagnosticView
 		DiagnosticViewRegistrationPosition position = default)
 		where TView : UIElement
 	{
-		var provider = new DiagnosticView<TView>(typeof(TView).Name, friendlyName, factory);
-		DiagnosticViewRegistry.Register(provider, mode, position);
+		var provider = new DiagnosticView<TView>(typeof(TView).Name, friendlyName, factory, position: position);
+		DiagnosticViewRegistry.Register(provider, mode);
 		return provider;
 	}
 
@@ -84,9 +84,9 @@ partial class DiagnosticView
 		where TView : FrameworkElement, new()
 	{
 		var provider = details is null
-			? new DiagnosticView<TView, TState>(typeof(TView).Name, friendlyName, _ => new TView(), update)
-			: new DiagnosticView<TView, TState>(typeof(TView).Name, friendlyName, _ => new TView(), update, (ctx, state, ct) => new(details(state)));
-		DiagnosticViewRegistry.Register(provider, mode, position);
+			? new DiagnosticView<TView, TState>(typeof(TView).Name, friendlyName, _ => new TView(), update, position: position)
+			: new DiagnosticView<TView, TState>(typeof(TView).Name, friendlyName, _ => new TView(), update, (ctx, state, ct) => new(details(state)), position: position);
+		DiagnosticViewRegistry.Register(provider, mode);
 		return provider;
 	}
 
@@ -115,9 +115,9 @@ partial class DiagnosticView
 		where TView : FrameworkElement
 	{
 		var provider = details is null
-			? new DiagnosticView<TView, TState>(typeof(TView).Name, friendlyName, factory, update)
-			: new DiagnosticView<TView, TState>(typeof(TView).Name, friendlyName, factory, update, (ctx, state, ct) => new(details(state)));
-		DiagnosticViewRegistry.Register(provider, mode, position);
+			? new DiagnosticView<TView, TState>(typeof(TView).Name, friendlyName, factory, update, position: position)
+			: new DiagnosticView<TView, TState>(typeof(TView).Name, friendlyName, factory, update, (ctx, state, ct) => new(details(state)), position: position);
+		DiagnosticViewRegistry.Register(provider, mode);
 		return provider;
 	}
 }
