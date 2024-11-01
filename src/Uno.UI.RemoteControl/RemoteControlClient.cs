@@ -486,7 +486,8 @@ public partial class RemoteControlClient : IRemoteControlClient
 		{
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().Trace($"Connecting to [{serverUri}] failed: {e.Message}");
+				var innerMessage = e.InnerException is { } ie ? $" ({ie.Message})" : "";
+				this.Log().Trace($"Connecting to [{serverUri}] failed: {e.Message}{innerMessage}");
 			}
 
 			return new(this, serverUri, watch, null);
