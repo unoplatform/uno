@@ -519,14 +519,11 @@ public partial class EntryPoint : IDisposable
 
 		var infoBar = await _infoBarFactory.CreateAsync(
 			new InfoBarModel(
-				e.Message,
-				e.Commands.Select(Commands => new ActionBarItem
-				{
-					Text = Commands.Text,
-					Name = Commands.Name,
-					ActionContext = Commands.Parameter,
-					IsButton = true,
-				}).ToArray(),
+				new ActionBarTextSpan[] {
+					new(e.Title, Bold: true),
+					new(e.Message)
+				},
+				e.Commands.Select(Commands => new ActionBarItem(Commands.Text, Commands.Name, ActionContext: Commands.Parameter, IsButton: true)).ToArray(),
 				e.Kind == NotificationKind.Information ? KnownMonikers.StatusInformation : KnownMonikers.StatusError,
 				isCloseButtonVisible: true));
 
