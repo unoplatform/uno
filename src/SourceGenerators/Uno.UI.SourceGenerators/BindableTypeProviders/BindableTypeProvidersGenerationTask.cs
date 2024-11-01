@@ -302,7 +302,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 					writer.AppendLineIndented("[global::System.Diagnostics.CodeAnalysis.SuppressMessage(\"Microsoft.Maintainability\", \"CA1505:AvoidUnmaintainableCode\", Justification = \"Must be ignored even if generated code is checked.\")]");
 					using (writer.BlockInvariant("internal static global::Uno.UI.DataBinding.IBindableType Build(global::Uno.UI.DataBinding.BindableType parent)"))
 					{
-						RegisterHintMethod($"MetadataBuilder_{typeInfo.Index:000}", ownerType, "global::Uno.UI.DataBinding.IBindableType Build(global::Uno.UI.DataBinding.BindableType)");
+						RegisterHintMethod($"MetadataBuilder_{typeInfo.Index:000}", ownerType, "Uno.UI.DataBinding.IBindableType Build(Uno.UI.DataBinding.BindableType)");
 
 						writer.AppendLineInvariantIndented(
 							@"var bindableType = parent ?? new global::Uno.UI.DataBinding.BindableType({0}, typeof({1}));",
@@ -327,7 +327,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 								writer.AppendLineIndented(@"bindableType.AddActivator(CreateInstance);");
 								postWriter.AppendLineIndented($@"private static object CreateInstance() => new {ownerTypeName}();");
 
-								RegisterHintMethod($"MetadataBuilder_{typeInfo.Index:000}", ownerType, "global::System.Object CreateInstance()");
+								RegisterHintMethod($"MetadataBuilder_{typeInfo.Index:000}", ownerType, "System.Object CreateInstance()");
 							}
 						}
 
@@ -341,12 +341,12 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 								writer.AppendLineIndented("bindableType.AddIndexer(GetIndexer, SetIndexer);");
 
 								postWriter.AppendLineIndented($@"private static object GetIndexer(object instance, string name) => (({ownerTypeName})instance)[name];");
-								RegisterHintMethod($"MetadataBuilder_{typeInfo.Index:000}", ownerType, "global::System.Object GetIndexer(global::System.Object, global::System.String)");
+								RegisterHintMethod($"MetadataBuilder_{typeInfo.Index:000}", ownerType, "System.Object GetIndexer(System.Object, System.String)");
 
 								if (property.SetMethod != null)
 								{
 									postWriter.AppendLineIndented($@"private static void SetIndexer(object instance, string name, object value) => (({ownerTypeName})instance)[name] = ({propertyTypeName})value;");
-									RegisterHintMethod($"MetadataBuilder_{typeInfo.Index:000}", ownerType, "global::System.Void SetIndexer(global::System.Object, global::System.String, global::System.Object)");
+									RegisterHintMethod($"MetadataBuilder_{typeInfo.Index:000}", ownerType, "System.Void SetIndexer(System.Object,System.String,System.Object)");
 								}
 								else
 								{
@@ -386,8 +386,8 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 									postWriter.AppendLineIndented($@"private static void Set{propertyName}(object instance, object value, global::Microsoft.UI.Xaml.DependencyPropertyValuePrecedences? precedence) => (({ownerTypeName})instance).{propertyName} = ({propertyTypeName})value;");
 								}
 
-								RegisterHintMethod($"MetadataBuilder_{typeInfo.Index:000}", ownerType, $"global::System.Object Get{propertyName}(global::System.Object, global::System.Nullable`1<global::Microsoft.UI.Xaml.DependencyPropertyValuePrecedences>)");
-								RegisterHintMethod($"MetadataBuilder_{typeInfo.Index:000}", ownerType, $"global::System.Void Set{propertyName}(global::System.Object, global::System.Object, global::System.Nullable`1<global::Microsoft.UI.Xaml.DependencyPropertyValuePrecedences>)");
+								RegisterHintMethod($"MetadataBuilder_{typeInfo.Index:000}", ownerType, $"System.Object Get{propertyName}(System.Object,System.Nullable`1<Microsoft.UI.Xaml.DependencyPropertyValuePrecedences>)");
+								RegisterHintMethod($"MetadataBuilder_{typeInfo.Index:000}", ownerType, $"System.Void Set{propertyName}(System.Object,System.Object,System.Nullable`1<Microsoft.UI.Xaml.DependencyPropertyValuePrecedences>)");
 
 							}
 							else if (HasPublicGetter(property))
@@ -396,7 +396,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 
 								postWriter.AppendLineIndented($@"private static object Get{propertyName}(object instance, global::Microsoft.UI.Xaml.DependencyPropertyValuePrecedences? precedence) => (({ownerTypeName})instance).{propertyName};");
 
-								RegisterHintMethod($"MetadataBuilder_{typeInfo.Index:000}", ownerType, $"global::System.Object Get{propertyName}(global::System.Object, global::System.Nullable`1<global::Microsoft.UI.Xaml.DependencyPropertyValuePrecedences>)");
+								RegisterHintMethod($"MetadataBuilder_{typeInfo.Index:000}", ownerType, $"System.Object Get{propertyName}(System.Object,System.Nullable`1<Microsoft.UI.Xaml.DependencyPropertyValuePrecedences>)");
 							}
 						}
 
