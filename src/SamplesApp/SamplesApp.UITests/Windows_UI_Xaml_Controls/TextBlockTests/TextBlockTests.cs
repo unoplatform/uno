@@ -360,12 +360,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 			var rectAfter = _app.GetLogicalRect(stackTextBlockName);
 			var textBlockHeight = rectAfter.Height;
 
-			var actualNumberOfLines = (int)Math.Ceiling(textBlockHeight / lineHeight);
-			Assert.IsTrue(actualNumberOfLines == numberOfLines,
-				"Results \n" +
-				$"Expected Number of lines: {numberOfLines}. \n" +
-				$"Actual Number of lines:{actualNumberOfLines}. \n" +
-				$"Line height: {lineHeight}. \n");
+			textBlockHeight.Should().BeApproximately(lineHeight * numberOfLines, 0.3f);
 		}
 
 		[Test]
@@ -390,12 +385,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 			var rectAfter = _app.GetLogicalRect(gridTextBlockName);
 			var textBlockHeight = rectAfter.Height;
 
-			var actualNumberOfLines = (int)Math.Ceiling(textBlockHeight / lineHeight);
-			Assert.IsTrue(actualNumberOfLines == numberOfLines,
-				"Results \n" +
-				$"Expected Number of lines: {numberOfLines}. \n" +
-				$"Actual Number of lines:{actualNumberOfLines}. \n" +
-				$"Line height: {lineHeight}. \n");
+			textBlockHeight.Should().BeApproximately(lineHeight * numberOfLines, 0.3f);
 		}
 
 		[Test]
