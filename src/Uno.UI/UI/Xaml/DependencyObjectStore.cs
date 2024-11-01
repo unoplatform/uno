@@ -107,7 +107,12 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		private SpecializedResourceDictionary.ResourceKey? _themeLastUsed;
 
-		private static readonly bool _validatePropertyOwner = Debugger.IsAttached;
+		private const bool _validatePropertyOwner =
+#if DEBUG
+			true;
+#else
+			false;
+#endif
 
 #if UNO_HAS_ENHANCED_LIFECYCLE
 		internal bool IsDisposed => _isDisposed;

@@ -159,11 +159,8 @@ namespace SamplesApp
 			}
 
 			var sw = Stopwatch.StartNew();
-#if DEBUG
-			if (System.Diagnostics.Debugger.IsAttached)
-			{
-				// this.DebugSettings.EnableFrameRateCounter = true;
-			}
+#if WINAPPSDK && DEBUG
+			// this.DebugSettings.EnableFrameRateCounter = true;
 #endif
 			AssertInitialWindowSize();
 
