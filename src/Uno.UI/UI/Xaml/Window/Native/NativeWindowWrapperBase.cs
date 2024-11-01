@@ -33,7 +33,7 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 	private CoreWindowActivationState _activationState;
 	private XamlRoot? _xamlRoot;
 	private Window? _window;
-	private float _rasterizationScale = 1f;
+	private float _rasterizationScale;
 	private readonly SerialDisposable _presenterSubscription = new SerialDisposable();
 
 	protected NativeWindowWrapperBase(Window window, XamlRoot xamlRoot) : this()
