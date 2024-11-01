@@ -10,7 +10,7 @@ namespace Uno.Diagnostics.UI;
 /// <summary>
 /// A generic diagnostic view.
 /// </summary>
-internal partial class DiagnosticView(
+public partial class DiagnosticView(
 	string id,
 	string name,
 	Func<IDiagnosticViewContext, UIElement> factory,

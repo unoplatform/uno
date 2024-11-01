@@ -11,7 +11,7 @@ using static Uno.UI.RemoteControl.RemoteControlStatus;
 
 namespace Uno.UI.RemoteControl;
 
-internal sealed partial class RemoteControlStatusView : Ellipse
+public sealed partial class RemoteControlStatusView : Ellipse
 {
 #if __ANDROID__
 	public new const string Id = nameof(RemoteControlStatusView);

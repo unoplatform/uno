@@ -70,13 +70,15 @@ public class Given_TextBlock : BaseTestClass
 	{
 		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(60)).Token;
 
+		var content = new HR_Frame_Pages_Page2();
+
 		UnitTestsUIContentHelper.Content = new ContentControl
 		{
-			Content = new HR_Frame_Pages_Page2()
+			Content = content
 		};
 
 		var hr = Uno.UI.RemoteControl.RemoteControlClient.Instance?.Processors.OfType<Uno.UI.RemoteControl.HotReload.ClientHotReloadProcessor>().Single();
-		var ctx = Uno.UI.RuntimeTests.Tests.HotReload.FrameworkElementExtensions.GetDebugParseContext(new HR_Frame_Pages_Page2());
+		var ctx = Uno.UI.RuntimeTests.Tests.HotReload.FrameworkElementExtensions.GetDebugParseContext(content);
 		var req = new Uno.UI.RemoteControl.HotReload.ClientHotReloadProcessor.UpdateRequest(
 			ctx.FileName,
 			SecondPageTextBlockOriginalText,
@@ -94,20 +96,49 @@ public class Given_TextBlock : BaseTestClass
 			await hr.UpdateFileAsync(req.Undo(waitForHotReload: false), CancellationToken.None);
 		}
 	}
-	
+
+	/// <summary>
+	/// Ensure that UpdateFileAsync() completes when no changes are made to the file.
+	/// </summary>
+	[TestMethod]
+	public async Task When_Changing_TextBlock_UsingHRClient_NoChanges()
+	{
+		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(60)).Token;
+
+		var content = new HR_Frame_Pages_Page2();
+
+		UnitTestsUIContentHelper.Content = new ContentControl
+		{
+			Content = content
+		};
+
+		var hr = Uno.UI.RemoteControl.RemoteControlClient.Instance?.Processors.OfType<Uno.UI.RemoteControl.HotReload.ClientHotReloadProcessor>().Single();
+		var ctx = Uno.UI.RuntimeTests.Tests.HotReload.FrameworkElementExtensions.GetDebugParseContext(content);
+		var req = new Uno.UI.RemoteControl.HotReload.ClientHotReloadProcessor.UpdateRequest(
+			ctx.FileName,
+			SecondPageTextBlockOriginalText,
+			SecondPageTextBlockOriginalText + Environment.NewLine,
+			true)
+			.WithExtendedTimeouts(); // Required for CI
+		
+		await hr.UpdateFileAsync(req, ct);
+	}
+
 	// Another version of the test above, but pausing the TypeMapping before calling the file update
 	[TestMethod]
 	public async Task When_Changing_TextBlock_UsingHRClient_PausingTypeMapping()
 	{
 		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(25)).Token;
 
+		var content = new HR_Frame_Pages_Page1();
+
 		UnitTestsUIContentHelper.Content = new ContentControl
 		{
-			Content = new HR_Frame_Pages_Page1()
+			Content = content
 		};
 
 		var hr = Uno.UI.RemoteControl.RemoteControlClient.Instance?.Processors.OfType<Uno.UI.RemoteControl.HotReload.ClientHotReloadProcessor>().Single();
-		var ctx = Uno.UI.RuntimeTests.Tests.HotReload.FrameworkElementExtensions.GetDebugParseContext(new HR_Frame_Pages_Page1());
+		var ctx = Uno.UI.RuntimeTests.Tests.HotReload.FrameworkElementExtensions.GetDebugParseContext(content);
 		var req = new Uno.UI.RemoteControl.HotReload.ClientHotReloadProcessor.UpdateRequest(
 			ctx.FileName,
 			FirstPageTextBlockOriginalText,
