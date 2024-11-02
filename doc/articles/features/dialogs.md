@@ -120,7 +120,7 @@ new Button()
 
 ---
 
-If you are using Uno.Extensions Navigation, you can utilize its features to display a dialog. For more information, check out this documentation: [Dialogs with Uno.Extensions Navigation](xref:Uno.Extensions.Navigation.HowTo-ShowDialog).
+If you are using Uno.Extensions Navigation, you can utilize its features to display a dialog. For more information, check out this documentation: [Dialogs with Uno.Extensions.Navigation](https://platform.uno/docs/articles/external/uno.extensions/doc/Learn/Navigation/HowTo-ShowDialog.html).
 
 Considering adding a dialog to your app? Check out our comprehensive video for detailed guidance on the implementation:
 
