@@ -105,7 +105,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				if (typeSymbol is INamedTypeSymbol { TypeKind: TypeKind.Interface })
 				{
-					return namedTypeSymbol.AllInterfaces.Contains(typeSymbol);
+					return namedTypeSymbol.AllInterfaces.Contains(typeSymbol, SymbolEqualityComparer.Default);
 				}
 
 				do
@@ -195,9 +195,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private bool IsDependencyObject(XamlObjectDefinition component)
 			=> GetType(component.Type).GetAllInterfaces().Any(i => SymbolEqualityComparer.Default.Equals(i, Generation.DependencyObjectSymbol.Value));
-
-		private bool IsDependencyObject(INamedTypeSymbol component)
-			=> component.GetAllInterfaces().Any(i => SymbolEqualityComparer.Default.Equals(i, Generation.DependencyObjectSymbol.Value));
 
 		private bool IsUIElement(INamedTypeSymbol? symbol)
 			=> IsType(symbol, Generation.UIElementSymbol.Value);

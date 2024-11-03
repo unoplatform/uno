@@ -7,5 +7,8 @@
 				'$(UnoDisableOmnisharpTargetsImport)'=='' 
 				and '$(UnoForceSingleTFM)' == 'true'
 				and Exists($([MSBuild]::GetPathOfFileAbove('uno.vscode.props', '$(MSBuildThisFileDirectory)../.vscode/')))" />
-  
+
+	<PropertyGroup>
+		<SupportsFontManifest Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='ios'">true</SupportsFontManifest>
+	</PropertyGroup>
 </Project>

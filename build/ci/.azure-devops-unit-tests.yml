@@ -5,6 +5,7 @@ jobs:
 - job: Unit_Tests
   displayName: 'Unit Tests'
   timeoutInMinutes: 90
+  cancelTimeoutInMinutes: 1
 
   pool: ${{ parameters.poolName }}
 
@@ -59,6 +60,13 @@ jobs:
     displayName: Download build artifact
     inputs:
       artifactName: 'NugetPackages-Artifacts-reference-$(XAML_FLAVOR_BUILD)'
+      downloadPath: '$(Agent.WorkFolder)'
+
+  # Unfortunate, but this is needed specifically for a single test: TestAndroidViewImplementingDependencyObject
+  - task: DownloadBuildArtifacts@0
+    displayName: Download build artifact
+    inputs:
+      artifactName: 'NugetPackages-Artifacts-netcoremobile-$(XAML_FLAVOR_BUILD)'
       downloadPath: '$(Agent.WorkFolder)'
 
   - task: ExtractFiles@1

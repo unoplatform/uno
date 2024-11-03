@@ -4217,7 +4217,7 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 
 		DependencyObject sourceAsDO = source as DependencyObject;
 
-		IUIElement thisAsUIElement = this; // Need to have exactly the same interface as we're comparing below for object equality
+		UIElement thisAsUIElement = this; // Need to have exactly the same interface as we're comparing below for object equality
 
 		while (sourceAsDO is not null)
 		{

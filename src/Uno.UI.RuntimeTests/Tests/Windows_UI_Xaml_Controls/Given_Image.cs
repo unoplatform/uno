@@ -356,13 +356,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				Width = 100,
 				Height = 100,
-				Source = new BitmapImage(new Uri("ms-appx:///Assets/square100.png")),
 				Stretch = Stretch.Fill
 			};
+
+			var imageOpened = false;
+			SUT.ImageOpened += (_, _) => imageOpened = true;
+
+			SUT.Source = new BitmapImage(new Uri("ms-appx:///Assets/square100.png"));
 
 			parent.Child = SUT;
 			WindowHelper.WindowContent = parent;
 			await WindowHelper.WaitForLoaded(parent);
+
+			await TestServices.WindowHelper.WaitFor(() => imageOpened, 3000);
+
 			var result = await TakeScreenshot(parent);
 
 			var sample = parent.GetRelativeCoords(SUT);
@@ -385,7 +392,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if !WINAPPSDK
 		[TestMethod]
 		[RunsOnUIThread]
-#if IS_UNIT_TESTS || __MACOS__ || __SKIA__
+#if IS_UNIT_TESTS || __MACOS__ || __SKIA__ || __IOS__
 		[Ignore("Currently fails on macOS, part of #9282! epic and Monochromatic Image not supported for IS_UNIT_TESTS and SKIA")]
 #endif
 		public async Task When_Image_Is_Monochromatic()

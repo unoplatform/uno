@@ -30,5 +30,15 @@ namespace Microsoft.UI.Xaml.Controls
 			DependencyProperty.Register("UseTouchAnimationsForAllNavigation", typeof(bool), typeof(FlipView), new FrameworkPropertyMetadata(true));
 
 		partial void InitializePartial();
+
+		internal (ButtonBase previousButton, ButtonBase nextButton) GetPreviousAndNextButtons()
+		{
+			// UNO TODO: Implement GetPreviousAndNextButtons on FlipView
+			return (null, null);
+		}
+
+		// TODO Uno: This should not be necessary, but it is required as ItemsControl is now different from WinUI.
+		protected override (Orientation PhysicalOrientation, Orientation LogicalOrientation) GetItemsHostOrientations() =>
+			(Orientation.Horizontal, Orientation.Horizontal);
 	}
 }

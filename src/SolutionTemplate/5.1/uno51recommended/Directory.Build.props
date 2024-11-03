@@ -1,4 +1,6 @@
 <Project>
+  <Import Project="$(MSBuildThisFileDirectory)..\..\Directory.Build.props" />
+
   <PropertyGroup>
     <DotNetVersion>net8.0</DotNetVersion>
     <ImplicitUsings>enable</ImplicitUsings>

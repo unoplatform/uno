@@ -97,6 +97,30 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		internal void SetFontStretch(object localValue)
+		{
+			if (localValue == DependencyProperty.UnsetValue)
+			{
+				ResetStyle("font-stretch");
+			}
+			else
+			{
+				string cssStretch = (FontStretch)localValue switch
+				{
+					FontStretch.UltraCondensed => "ultra-condensed",
+					FontStretch.ExtraCondensed => "extra-condensed",
+					FontStretch.Condensed => "condensed",
+					FontStretch.SemiCondensed => "semi-condensed",
+					FontStretch.SemiExpanded => "semi-expanded",
+					FontStretch.Expanded => "expanded",
+					FontStretch.ExtraExpanded => "extra-expanded",
+					FontStretch.UltraExpanded => "ultra-expanded",
+					_ => "normal",
+				};
+				this.SetStyle("font-stretch", cssStretch);
+			}
+		}
+
 		internal void SetFontSize(object localValue)
 		{
 			if (localValue == DependencyProperty.UnsetValue)

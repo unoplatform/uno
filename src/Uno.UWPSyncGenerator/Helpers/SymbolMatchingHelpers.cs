@@ -9,6 +9,11 @@ internal static class SymbolMatchingHelpers
 {
 	public static bool AreMatching(ISymbol uapSymbol, ISymbol unoSymbol)
 	{
+		//if (uapSymbol?.Name == "SizeInt32" ||
+		//	unoSymbol?.Name == "Size" && unoSymbol?.ContainingType?.Name == "AppWindow")
+		//{
+		//	global::System.Diagnostics.Debugger.Break();
+		//}
 		if (uapSymbol is IEventSymbol uapEvent)
 		{
 			var result = unoSymbol is IEventSymbol unoEvent && AreEventsMatching(uapEvent, unoEvent);
@@ -76,10 +81,12 @@ internal static class SymbolMatchingHelpers
 			return true;
 		}
 
-		if (uapSymbol.Name == "IGeometrySource2D")
+		if (uapSymbol.Name == "IGeometrySource2D" ||
+			uapSymbol.Name == "SizeInt32" ||
+			uapSymbol.Name == "PointInt32")
 		{
-			// For some reason, we get here with IGeometrySource2D being an error symbol.
-			// Hence, the IsAbstract check below fails.
+			// For some reason, these are marked with Kind=ErrorType.
+			// This means the matching then fails.
 			return true;
 		}
 

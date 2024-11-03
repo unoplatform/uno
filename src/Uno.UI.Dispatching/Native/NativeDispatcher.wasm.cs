@@ -39,11 +39,8 @@ namespace Uno.UI.Dispatching
 			= Environment.GetEnvironmentVariable("UNO_BOOTSTRAP_MONO_RUNTIME_FEATURES")
 				?.Split(',').Contains("threads", StringComparer.OrdinalIgnoreCase) ?? false;
 
-		// Always reschedule, otherwise we may end up in live-lock.
-		internal static bool HasThreadAccessOverride { get; set; }
-
 		private bool GetHasThreadAccess()
-			=> IsThreadingSupported ? Environment.CurrentManagedThreadId == 1 : HasThreadAccessOverride;
+			=> !IsThreadingSupported || Environment.CurrentManagedThreadId == 1;
 
 		/// <summary>
 		/// Provide an action that will delegate the dispatch of CoreDispatcher work

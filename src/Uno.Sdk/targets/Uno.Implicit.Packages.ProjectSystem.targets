@@ -7,9 +7,11 @@
 	<ItemGroup>
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Uno.Resizetizer" ProjectSystem="true" PrivateAssets="all" />
+		<_UnoProjectSystemPackageReference Include="Uno.Sdk.Extras" ProjectSystem="true" PrivateAssets="all" />
+		<_UnoProjectSystemPackageReference Include="Uno.Settings.DevServer" ProjectSystem="true" PrivateAssets="all" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(_ImplicitRestoreOutputType) == 'Exe'">
+	<ItemGroup Condition=" '$(_ImplicitRestoreOutputType)' == 'WinExe' OR '$(_ImplicitRestoreOutputType)' == 'Exe' ">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.DevServer" ProjectSystem="true" Condition="$(Optimize) != 'true'" />
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.DevServer" ProjectSystem="true" Exclude="all" Condition="$(Optimize) == 'true'" />
 	</ItemGroup>
@@ -73,6 +75,10 @@
 
 	<ItemGroup Condition="$(UnoFeatures.Contains(';mvvm;'))">
 		<_UnoProjectSystemPackageReference Include="CommunityToolkit.Mvvm" ProjectSystem="true" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(UnoDefaultFont)'=='OpenSans'">
+		<_UnoProjectSystemPackageReference Include="Uno.Fonts.OpenSans" ProjectSystem="true" />
 	</ItemGroup>
 
 	<Import Project="$(MSBuildThisFileDirectory)Uno.Extensions.Implicit.Packages.ProjectSystem.targets" />

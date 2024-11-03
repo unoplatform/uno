@@ -8,6 +8,7 @@ using Windows.Foundation;
 using Windows.Graphics.Display;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
+using Windows.Graphics;
 
 namespace Uno.UI.Xaml.Controls;
 
@@ -51,22 +52,23 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 	{
 		_nativeWindow.RootViewController = _mainController;
 		_nativeWindow.MakeKeyAndVisible();
-		Visible = true;
+		IsVisible = true;
 	}
 
 	internal RootViewController MainController => _mainController;
 
-	internal void OnNativeVisibilityChanged(bool visible) => Visible = visible;
+	internal void OnNativeVisibilityChanged(bool visible) => IsVisible = visible;
 
 	internal void OnNativeActivated(CoreWindowActivationState state) => ActivationState = state;
 
-	internal void OnNativeClosed() => RaiseClosed(); // TODO: Handle closing when multiwindow #13847
+	internal void OnNativeClosed() => RaiseClosing(); // TODO: Handle closing cancellation when multiwindow is supported #13847
 
 	internal void RaiseNativeSizeChanged()
 	{
 		var newWindowSize = GetWindowSize();
 
 		Bounds = new Rect(default, newWindowSize);
+		Size = newWindowSize.ToSizeInt32();
 
 		SetVisibleBounds(_nativeWindow, newWindowSize);
 	}

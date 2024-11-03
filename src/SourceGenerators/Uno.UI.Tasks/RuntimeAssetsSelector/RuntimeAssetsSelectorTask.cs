@@ -72,6 +72,14 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 						searchPaths.Add(Path.Combine(packageBasePath, "..", "uno-runtime", "net8.0", UnoRuntimeIdentifier));
 					}
 
+					if (targetFrameworkVersion >= new Version(7, 0))
+					{
+						// Even if Uno does not support nte7.0 explicitly anymore, dependencies
+						// may still be providing net7.0 runtime support files (e.g. SkiaSharp)
+						searchPaths.Add(Path.Combine(packageBasePath, "uno-runtime", "net7.0", UnoRuntimeIdentifier));
+						searchPaths.Add(Path.Combine(packageBasePath, "..", "uno-runtime", "net7.0", UnoRuntimeIdentifier));
+					}
+
 					if (targetFrameworkVersion >= new Version(2, 0))
 					{
 						searchPaths.Add(Path.Combine(packageBasePath, "uno-runtime", "netstandard2.0", UnoRuntimeIdentifier));

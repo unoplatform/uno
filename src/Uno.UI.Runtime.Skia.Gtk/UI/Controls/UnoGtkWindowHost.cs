@@ -69,6 +69,10 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 		{
 			UpdateWindowSize(area.AllocatedWidth, area.AllocatedHeight);
 		};
+		area.SizeAllocated += (s, e) =>
+		{
+			UpdateWindowSize(e.Allocation.Width, e.Allocation.Height);
+		};
 
 		var overlay = new Overlay();
 		overlay.Add(area);
@@ -128,7 +132,7 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 				_renderer.BackgroundColor = brush.Color;
 			}
 		}
-		else
+		else if (_winUIWindow.Background is not null)
 		{
 			if (this.Log().IsEnabled(LogLevel.Warning))
 			{

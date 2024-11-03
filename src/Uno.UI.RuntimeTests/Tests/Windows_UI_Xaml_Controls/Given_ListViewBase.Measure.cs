@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.UI.RuntimeTests.Extensions;
 using System.Collections.ObjectModel;
 using Windows.Foundation;
@@ -309,7 +310,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var sv = SUT.FindFirstChild<ScrollViewer>();
 			var itemHeights = Enumerable.Range(0, 3)
 				.Select(x => (ListViewItem)SUT.ContainerFromIndex(x))
-				.Select(x => x.LayoutSlot.Height)
+				.Select(x => LayoutInformation.GetLayoutSlot(x).Height)
 				.ToArray();
 
 			Assert.IsTrue(itemHeights[0] < itemHeights[1] && itemHeights[1] < itemHeights[2], "Set of item heights should be in ascending order: " + string.Join(" < ", itemHeights));

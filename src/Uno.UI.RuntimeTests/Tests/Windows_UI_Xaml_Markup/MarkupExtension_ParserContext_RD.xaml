@@ -1,0 +1,13 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:local="using:Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup">
+
+	<ControlTemplate x:Key="TestButtonControlTemplate" TargetType="Button">
+		<Grid x:Name="RootGrid" Tag="{local:ParserContextMarkup}" />
+	</ControlTemplate>
+
+	<Style x:Key="TestButtonStyle" TargetType="Button">
+		<Setter Property="Template" Value="{StaticResource TestButtonControlTemplate}" />
+	</Style>
+
+</ResourceDictionary>

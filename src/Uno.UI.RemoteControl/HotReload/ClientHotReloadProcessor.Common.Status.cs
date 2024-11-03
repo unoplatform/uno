@@ -8,7 +8,13 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using Uno.Diagnostics.UI;
+
+#if HAS_UNO_WINUI
 using Uno.UI.RemoteControl.HotReload.Messages;
+#else
+using HotReloadServerOperationData = object;
+#pragma warning disable CS0649 // Field _serverState is not used on windows, we need to keep it to default
+#endif
 
 namespace Uno.UI.RemoteControl.HotReload;
 
@@ -17,18 +23,23 @@ public partial class ClientHotReloadProcessor
 	/// <summary>
 	/// Raised when the status of the hot-reload engine changes.
 	/// </summary>
-	internal EventHandler<Status>? StatusChanged;
+	public EventHandler<Status>? StatusChanged;
+
+	/// <summary>
+	/// The current status of the hot-reload engine.
+	/// </summary>
+	public Status CurrentStatus => _status.Current;
 
 	private readonly StatusSink _status;
 
-	internal enum HotReloadSource
+	public enum HotReloadSource
 	{
 		Runtime,
 		DevServer,
 		Manual
 	}
 
-	internal enum HotReloadClientResult
+	public enum HotReloadClientResult
 	{
 		/// <summary>
 		/// Successful hot-reload.
@@ -52,25 +63,45 @@ public partial class ClientHotReloadProcessor
 	/// <param name="State">The global state of the hot-reload engine (combining server and client state).</param>
 	/// <param name="Server">State and history of all hot-reload operations detected on the server.</param>
 	/// <param name="Local">State and history of all hot-reload operation received by this client.</param>
-	internal record Status(
+	public record Status(
 		HotReloadState State,
 		(HotReloadState State, IImmutableList<HotReloadServerOperationData> Operations) Server,
 		(HotReloadState State, IImmutableList<HotReloadClientOperation> Operations) Local);
 
 	private class StatusSink(ClientHotReloadProcessor owner)
 	{
-#if HAS_UNO_WINUI
-		private readonly DiagnosticView<HotReloadStatusView, Status> _view = DiagnosticView.Register<HotReloadStatusView, Status>("Hot reload", ctx => new HotReloadStatusView(ctx), static (view, status) => view.OnHotReloadStatusChanged(status));
-#endif
-
 		private HotReloadState? _serverState;
+		private bool _isFinalServerState;
 		private ImmutableDictionary<long, HotReloadServerOperationData> _serverOperations = ImmutableDictionary<long, HotReloadServerOperationData>.Empty;
 		private ImmutableList<HotReloadClientOperation> _localOperations = ImmutableList<HotReloadClientOperation>.Empty;
 		private HotReloadSource _source;
 
+		public Status Current { get; private set; } = null!;
+
+		public void ReportInvalidRuntime()
+		{
+			_serverState = HotReloadState.Disabled;
+			_isFinalServerState = true;
+		}
+
+		public void ReportServerState(HotReloadState state)
+		{
+			if (_isFinalServerState)
+			{
+				return;
+			}
+
+			_serverState = state;
+			NotifyStatusChanged();
+		}
+
+#if HAS_UNO_WINUI
 		public void ReportServerStatus(HotReloadStatusMessage status)
 		{
-			_serverState = status.State;
+			if (!_isFinalServerState)
+			{
+				_serverState = status.State; // Do not override the state if it has already been set (debugger attached with dev-server)
+			}
 			ImmutableInterlocked.Update(ref _serverOperations, UpdateOperations, status.Operations);
 			NotifyStatusChanged();
 
@@ -85,6 +116,7 @@ public partial class ClientHotReloadProcessor
 				return updatedHistory.ToImmutable();
 			}
 		}
+#endif
 
 		public void ConfigureSourceForNextOperation(HotReloadSource source)
 			=> _source = source;
@@ -104,38 +136,42 @@ public partial class ClientHotReloadProcessor
 		private void NotifyStatusChanged()
 		{
 			var status = BuildStatus();
-#if HAS_UNO_WINUI
-			_view.Update(status);
-#endif
+
+			Current = status;
 			owner.StatusChanged?.Invoke(this, status);
 		}
 
 		private Status BuildStatus()
 		{
-			var serverState = _serverState ?? (_localOperations.Any() ? HotReloadState.Idle /* no info */ : HotReloadState.Initializing);
-			var localState = _localOperations.Any(op => op.Result is null) ? HotReloadState.Processing : HotReloadState.Idle;
-			var globalState = _serverState is HotReloadState.Disabled ? HotReloadState.Disabled : (HotReloadState)Math.Max((int)serverState, (int)localState);
+			var serverState = _serverState ?? (_localOperations.Any() ? HotReloadState.Ready /* no info */ : HotReloadState.Initializing);
+			var localState = _localOperations.Any(op => op.Result is null) ? HotReloadState.Processing : HotReloadState.Ready;
+			var globalState = _serverState switch
+			{
+				HotReloadState.Disabled => HotReloadState.Disabled,
+				HotReloadState.Initializing => HotReloadState.Initializing,
+				_ => (HotReloadState)Math.Max((int)serverState, (int)localState)
+			};
 
 			return new(globalState, (serverState, _serverOperations.Values.ToImmutableArray()), (localState, _localOperations));
 		}
 	}
 
-	internal class HotReloadClientOperation
+	public class HotReloadClientOperation
 	{
 		#region Current
 		[ThreadStatic]
 		private static HotReloadClientOperation? _opForCurrentUiThread;
 
-		public static HotReloadClientOperation? GetForCurrentThread()
+		internal static HotReloadClientOperation? GetForCurrentThread()
 			=> _opForCurrentUiThread;
 
-		public void SetCurrent()
+		internal void SetCurrent()
 		{
 			Debug.Assert(_opForCurrentUiThread == null, "Only one operation should be active at once for a given UI thread.");
 			_opForCurrentUiThread = this;
 		}
 
-		public void ResignCurrent()
+		internal void ResignCurrent()
 		{
 			Debug.Assert(_opForCurrentUiThread == this, "Another operation has been started for teh current UI thread.");
 			_opForCurrentUiThread = null;
@@ -163,19 +199,43 @@ public partial class ClientHotReloadProcessor
 
 		public HotReloadSource Source { get; }
 
-		public Type[] Types { get; }
+		public Type[] Types { get; private set; }
 
-		internal string[] CuratedTypes => _curatedTypes ??= Types
-			.Select(t =>
+		public string[] CuratedTypes => _curatedTypes ??= GetCuratedTypes();
+
+		private string[] GetCuratedTypes()
+		{
+			return Types
+				.Select(GetFriendlyName)
+				.Where(name => name is { Length: > 0 })
+				.Distinct()
+				.ToArray()!;
+
+			string? GetFriendlyName(Type type)
 			{
-				var name = t.Name;
-				var versionIndex = t.Name.IndexOf('#');
-				return versionIndex < 0
-					? default!
-					: $"{name[..versionIndex]} (v{name[(versionIndex + 1)..]})";
-			})
-			.Where(t => t is not null)
-			.ToArray();
+				var name = type.FullName ?? type.Name;
+
+				var versionIndex = name.IndexOf('#');
+				if (versionIndex >= 0)
+				{
+					name = name[..versionIndex];
+				}
+
+				var nestingIndex = name.IndexOf('+');
+				if (nestingIndex >= 0)
+				{
+					name = name[..nestingIndex];
+				}
+
+				var endOfNamespaceIndex = name.LastIndexOf('.');
+				if (endOfNamespaceIndex >= 0)
+				{
+					name = name[(endOfNamespaceIndex + 1)..];
+				}
+
+				return name;
+			}
+		}
 
 		public DateTimeOffset? EndTime { get; private set; }
 
@@ -184,6 +244,18 @@ public partial class ClientHotReloadProcessor
 		public ImmutableList<Exception> Exceptions => _exceptions;
 
 		public string? IgnoreReason { get; private set; }
+
+		internal void AddType(Type type)
+		{
+			if (Types.Contains(type))
+			{
+				return;
+			}
+
+			_curatedTypes = null;
+			Types = Types.Append(type).ToArray();
+			_onUpdated();
+		}
 
 		internal void ReportError(MethodInfo source, Exception error)
 			=> ReportError(error); // For now we just ignore the source
@@ -196,7 +268,7 @@ public partial class ClientHotReloadProcessor
 
 		internal void ReportCompleted()
 		{
-			var result = (_exceptions, AbortReason: IgnoreReason) switch
+			var result = (_exceptions, IgnoreReason) switch
 			{
 				({ Count: > 0 }, _) => HotReloadClientResult.Failed,
 				(_, not null) => HotReloadClientResult.Ignored,
@@ -208,7 +280,7 @@ public partial class ClientHotReloadProcessor
 				EndTime = DateTimeOffset.Now;
 				_onUpdated();
 			}
-			else
+			else if (_result != (int)HotReloadClientResult.Ignored) // ReportIgnored auto completes but caller usually does not expect it (use ReportCompleted in finally)
 			{
 				Debug.Fail("The result should not have already been set.");
 			}

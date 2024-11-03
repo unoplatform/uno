@@ -2,6 +2,7 @@
 
 using System;
 using System.ComponentModel;
+using Microsoft.UI.Composition;
 using Uno.Disposables;
 using Uno.UI.Helpers;
 using Uno.UI.Xaml;
@@ -66,11 +67,17 @@ namespace Microsoft.UI.Xaml.Media
 			}
 		}
 
-		private protected void OnInvalidateRender() => _weakEventManager.HandleEvent(nameof(InvalidateRender));
+		private protected void OnInvalidateRender()
+		{
+			_weakEventManager.HandleEvent(nameof(InvalidateRender));
+#if __SKIA__
+			SynchronizeCompositionBrush();
+#endif
+		}
 
 		internal virtual void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 		{
-			if (args.Property == DataContextProperty || args.Property == TemplatedParentProperty || args.Property == XamlCompositionBrushBase.CompositionBrushProperty)
+			if (args.Property == DataContextProperty || args.Property == XamlCompositionBrushBase.CompositionBrushProperty)
 			{
 				return;
 			}

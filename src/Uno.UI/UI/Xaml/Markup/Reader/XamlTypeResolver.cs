@@ -28,6 +28,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 		private readonly Func<string, string, Type?> _findPropertyTypeByName;
 		private readonly Func<XamlMember, Type?> _findPropertyTypeByXamlMember;
 		private readonly Func<Type?, PropertyInfo?> _findContentProperty;
+		private readonly Func<Type, Type?, MethodInfo?> _findCollectionAddItemMethod;
 
 		private static ImmutableDictionary<string, string[]> KnownNamespaces { get; }
 			= new Dictionary<string, string[]>
@@ -47,12 +48,14 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 		public XamlTypeResolver(XamlFileDefinition definition)
 		{
 			FileDefinition = definition;
+
 			_findType = SourceFindType;
 			_findType = _findType.AsMemoized();
 			_isAttachedProperty = Funcs.Create<Type, string, bool>(SourceIsAttachedProperty).AsLockedMemoized();
 			_findPropertyTypeByXamlMember = Funcs.Create<XamlMember, Type?>(SourceFindPropertyType).AsLockedMemoized();
 			_findPropertyTypeByName = Funcs.Create<string, string, Type?>(SourceFindPropertyType).AsLockedMemoized();
 			_findContentProperty = Funcs.Create<Type?, PropertyInfo?>(SourceFindContentProperty).AsLockedMemoized();
+			_findCollectionAddItemMethod = Funcs.Create<Type, Type?, MethodInfo?>(SourceFindCollectionAddItemMethod).AsLockedMemoized();
 		}
 
 		public bool IsAttachedProperty(XamlMemberDefinition member)
@@ -432,8 +435,27 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 					return false;
 				}
 
-				var property = currentType.GetProperties().FirstOrDefault(p => p.Name == name);
-				var setMethod = currentType.GetMethods().FirstOrDefault(p => p.Name == "Set" + name);
+				// Converted from LINQ to reduce allocations: var property = currentType.GetProperties().FirstOrDefault(p => p.Name == name);
+				PropertyInfo? property = null;
+				foreach (var p in currentType.GetProperties())
+				{
+					if (p.Name == name)
+					{
+						property = p;
+						break;
+					}
+				}
+
+				// Converted from LINQ to reduce allocations: var setMethod = currentType.GetMethods().FirstOrDefault(p => p.Name == "Set" + name);
+				MethodInfo? setMethod = null;
+				foreach (var p in currentType.GetMethods())
+				{
+					if (p.Name == "Set" + name)
+					{
+						setMethod = p;
+						break;
+					}
+				}
 
 				if (property?.GetMethod?.IsStatic ?? false)
 				{
@@ -542,5 +564,17 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			}
 		}
 
+		public MethodInfo? FindCollectionAddItemMethod(Type collectionType, Type? itemType) => _findCollectionAddItemMethod(collectionType, itemType);
+
+		private MethodInfo? SourceFindCollectionAddItemMethod(Type collectionType, Type? itemType)
+		{
+			return collectionType
+				.GetMethods(BindingFlags.Instance | BindingFlags.FlattenHierarchy | BindingFlags.Public)
+				.Where(m => m.Name == "Add")
+				.FirstOrDefault(m =>
+					m.GetParameters() is [var arg0] &&
+					(itemType ?? typeof(object)).Is(arg0.ParameterType)
+				);
+		}
 	}
 }

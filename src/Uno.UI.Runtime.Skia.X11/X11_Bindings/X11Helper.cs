@@ -41,6 +41,8 @@ internal static partial class X11Helper
 	private const string libX11 = "libX11.so.6";
 	private const string libX11Randr = "libXrandr.so.2";
 	private const string libXext = "libXext.so.6";
+	private const string libXInput = "libXi.so.6";
+
 
 	public static readonly IntPtr CurrentTime = IntPtr.Zero;
 	public static readonly IntPtr None = IntPtr.Zero;
@@ -393,6 +395,12 @@ internal static partial class X11Helper
 	[LibraryImport(libX11)]
 	public static partial int XHeightOfScreen(IntPtr screen);
 
+	[DllImport(libXInput)]
+	public static extern unsafe XExtensionVersion* XGetExtensionVersion(IntPtr display, string name);
+
+	[LibraryImport(libXInput)]
+	public static unsafe partial IntPtr* XIListProperties(IntPtr display, int deviceid, out int num_props_return);
+
 	[LibraryImport(libX11)]
 	public static partial IntPtr XResourceManagerString(IntPtr display);
 
@@ -630,5 +638,15 @@ internal static partial class X11Helper
 		public int fd;
 		public short events;
 		public short revents;
+	}
+
+	[StructLayout(LayoutKind.Sequential)]
+#pragma warning disable CA1815 // Override equals and operator equals on value types
+	public struct XExtensionVersion
+#pragma warning restore CA1815 // Override equals and operator equals on value types
+	{
+		public int present;
+		public short major_version;
+		public short minor_version;
 	}
 }

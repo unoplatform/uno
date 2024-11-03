@@ -13,9 +13,9 @@ namespace Uno.UI.RemoteControl;
 
 public partial class RemoteControlClient
 {
-	internal event EventHandler<RemoteControlStatus>? StatusChanged;
+	public event EventHandler<RemoteControlStatus>? StatusChanged;
 
-	internal RemoteControlStatus Status => _status.BuildStatus();
+	public RemoteControlStatus Status => _status.BuildStatus();
 
 	private class StatusSink : DevServerDiagnostics.ISink
 	{
@@ -26,7 +26,7 @@ public partial class RemoteControlClient
 		{
 			_owner = owner;
 #if HAS_UNO_WINUI
-			DiagnosticView.Register("Dev-server", () => new RemoteControlStatusView(owner));
+			DiagnosticView.Register("Dev-server", () => new RemoteControlStatusView(owner), DiagnosticViewRegistrationMode.OnDemand);
 #endif
 		}
 

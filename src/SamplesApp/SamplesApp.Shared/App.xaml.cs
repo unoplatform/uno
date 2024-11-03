@@ -33,8 +33,12 @@ using Uno.Logging;
 #endif
 
 #if HAS_UNO_WINUI || WINAPPSDK
+using DispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue;
+using DispatcherQueuePriority = Microsoft.UI.Dispatching.DispatcherQueuePriority;
 using LaunchActivatedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.LaunchActivatedEventArgs;
 #else
+using DispatcherQueue = Windows.System.DispatcherQueue;
+using DispatcherQueuePriority = Windows.System.DispatcherQueuePriority;
 using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActivatedEventArgs;
 #endif
 
@@ -62,6 +66,9 @@ namespace SamplesApp
 		private static Microsoft.UI.Xaml.Window? _mainWindow;
 		private bool _wasActivated;
 		private bool _isSuspended;
+#if __SKIA__
+		private bool _gotOnLaunched;
+#endif
 
 		static App()
 		{
@@ -94,6 +101,12 @@ namespace SamplesApp
 			this.Suspending += OnSuspending;
 			this.Resuming += OnResuming;
 #endif
+#if __SKIA__
+			DispatcherQueue.GetForCurrentThread().TryEnqueue(DispatcherQueuePriority.High, () =>
+			{
+				Assert.IsTrue(_gotOnLaunched);
+			});
+#endif
 		}
 
 		internal static Microsoft.UI.Xaml.Window? MainWindow => _mainWindow;
@@ -109,7 +122,17 @@ namespace SamplesApp
 #endif
 		override void OnLaunched(LaunchActivatedEventArgs e)
 		{
+#if __SKIA__
+			_gotOnLaunched = true;
+#endif
 			EnsureMainWindow();
+
+#if __WASM__
+			DispatcherQueue.Main.TryEnqueue(
+				DispatcherQueuePriority.Low,
+				() => InitWasmSampleRunner()
+			);
+#endif
 
 			SetupAndroidEnvironment();
 
@@ -526,6 +549,11 @@ namespace SamplesApp
 #if HAS_UNO
 			Uno.UI.FeatureConfiguration.TextBox.UseOverlayOnSkia = false;
 			Uno.UI.FeatureConfiguration.ToolTip.UseToolTips = true;
+
+			Uno.UI.FeatureConfiguration.Font.DefaultTextFontFamily = "ms-appx:///Uno.Fonts.OpenSans/Fonts/OpenSans.ttf";
+#endif
+#if __ANDROID__
+			Uno.WinRTFeatureConfiguration.StoreContext.TestMode = true;
 #endif
 		}
 
@@ -593,6 +621,9 @@ namespace SamplesApp
 #endif
 		}
 
+#if __WASM__
+		[System.Runtime.InteropServices.JavaScript.JSExport]
+#endif
 		public static string GetDisplayScreenScaling(string displayId)
 			=> (DisplayInformation.GetForCurrentView().LogicalDpi * 100f / 96f).ToString(CultureInfo.InvariantCulture);
 	}

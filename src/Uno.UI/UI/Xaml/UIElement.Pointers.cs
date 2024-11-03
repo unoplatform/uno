@@ -18,6 +18,7 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
+using Uno.UI.Dispatching;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
@@ -70,7 +71,7 @@ namespace Microsoft.UI.Xaml
 			var uiElement = typeof(UIElement);
 			VisibilityProperty.GetMetadata(uiElement).MergePropertyChangedCallback(ClearPointersStateIfNeeded);
 			Microsoft.UI.Xaml.Controls.Control.IsEnabledProperty.GetMetadata(typeof(Microsoft.UI.Xaml.Controls.Control)).MergePropertyChangedCallback(ClearPointersStateIfNeeded);
-#if UNO_HAS_ENHANCED_HIT_TEST_PROPERTY
+#if UNO_HAS_MANAGED_POINTERS
 			HitTestVisibilityProperty.GetMetadata(uiElement).MergePropertyChangedCallback(ClearPointersStateIfNeeded);
 #endif
 		}
@@ -266,7 +267,7 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		internal HitTestability GetHitTestVisibility()
 		{
-#if __WASM__ || __SKIA__ || __MACOS__
+#if UNO_HAS_MANAGED_POINTERS
 			return HitTestVisibility;
 #else
 			// This is a coalesced HitTestVisible and should be unified with it
@@ -726,6 +727,17 @@ namespace Microsoft.UI.Xaml
 			var routedArgs = new DragStartingEventArgs(this, ptArgs);
 			PrepareShare(routedArgs.Data); // Gives opportunity to the control to fulfill the data
 			SafeRaiseEvent(DragStartingEvent, routedArgs); // The event won't bubble, cf. PrepareManagedDragAndDropEventBubbling
+
+			// We need to give a chance for layout updates, etc. This is particularly problematic with TreeView
+			// dragging where the DragStarting event on the TreeView will "internally" collapse some nodes,
+			// but actually removing them from the visual tree needs a layout cycle. Without waiting here,
+			// we can also get a DragEnter event on one of the to-be-collapsed containers in the same
+			// pointer event. This crashes the dragging logic.
+			// The way WinUI asynchronously handles StartDragAsync (relevant code is in AutomaticDragHelper::AutomaticDragHelper::HandlePointerMovedEventArgs)
+			// is not very clear and the way it interacts with layout timing is not similar at all to
+			// what we do in Uno, so the closest thing is to wait for Low/Idle here.
+			// Note that waiting for Idle causes some unrelated problems in ListView dragging, so we choose Low.
+			await NativeDispatcher.Main.EnqueueAsync(() => { }, NativeDispatcherPriority.Low);
 
 			// We capture the original position of the pointer before going async,
 			// so we have the closet location of the "down" possible.
@@ -1544,10 +1556,15 @@ namespace Microsoft.UI.Xaml
 			relatedArgs ??= lastDispatched;
 			if (relatedArgs == null)
 			{
-				return false; // TODO: We should create a new instance of event args with dummy location
+				return false;
 			}
+
+#if UNO_HAS_MANAGED_POINTERS
+			return RaisePointerEvent(PointerCaptureLostEvent, new PointerRoutedEventArgs(relatedArgs.CoreArgs, relatedArgs.OriginalSource as UIElement));
+#else // TODO: do the same for unmanaged pointers
 			relatedArgs.Handled = false;
 			return RaisePointerEvent(PointerCaptureLostEvent, relatedArgs);
+#endif
 		}
 		#endregion
 

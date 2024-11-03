@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,6 +15,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Uno.Disposables;
 using Uno.Extensions;
+using Uno.UI.RemoteControl.HotReload;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.UI.RemoteControl.Messaging.HotReload;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
@@ -26,7 +28,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 	{
 		private FileSystemWatcher[]? _watchers;
 		private CompositeDisposable? _watcherEventsDisposable;
-		private IRemoteControlServer _remoteControlServer;
+		private readonly IRemoteControlServer _remoteControlServer;
 
 		public ServerHotReloadProcessor(IRemoteControlServer remoteControlServer)
 		{
@@ -137,7 +139,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					break;
 
 				case HotReloadEvent.Ready:
-					_globalState = HotReloadState.Idle;
+					_globalState = HotReloadState.Ready;
 					await SendUpdate();
 					break;
 
@@ -158,7 +160,6 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					break;
 
 				case HotReloadEvent.RudeEdit:
-				case HotReloadEvent.RudeEditDialogButton:
 					await (await StartOrContinueHotReload()).Complete(HotReloadServerResult.RudeEdit);
 					break;
 			}
@@ -218,6 +219,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			private ImmutableHashSet<string> _filePaths;
 			private int /* HotReloadResult */ _result = -1;
 			private CancellationTokenSource? _deferredCompletion;
+			private int _noChangesRetry;
 
 			public long Id { get; } = Interlocked.Increment(ref _count);
 
@@ -289,33 +291,11 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				}
 			}
 
-			// Note: This is a patch until the dev-server based hot-reload treat files per batch instead of file per file.
-			private HotReloadServerResult _aggregatedResult = HotReloadServerResult.NoChanges;
-			private int _aggregatedFilesCount;
-			public void NotifyIntermediate(string file, HotReloadServerResult result)
-			{
-				if (Interlocked.Increment(ref _aggregatedFilesCount) is 1)
-				{
-					_aggregatedResult = result;
-					return;
-				}
-
-				_aggregatedResult = (HotReloadServerResult)Math.Max((int)_aggregatedResult, (int)result);
-				_timeout.Change(_timeoutDelay, Timeout.InfiniteTimeSpan);
-			}
-
-			public async ValueTask CompleteUsingIntermediates(Exception? exception = null)
-			{
-				if (exception is null)
-				{
-					//Debug.Assert(_aggregatedFilesCount == _filePaths.Count);
-					await Complete(_aggregatedResult);
-				}
-				else
-				{
-					await Complete(HotReloadServerResult.Failed, exception);
-				}
-			}
+			/// <summary>
+			/// Configure a simple auto-retry strategy if no changes are detected.
+			/// </summary>
+			public void EnableAutoRetryIfNoChanges()
+				=> _noChangesRetry = 1;
 
 			/// <summary>
 			/// As errors might get a bit after the complete from the IDE, we can defer the completion of the operation.
@@ -340,6 +320,14 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 			private async ValueTask Complete(HotReloadServerResult result, Exception? exception, bool isFromNext)
 			{
+				if (_result is -1
+					&& result is HotReloadServerResult.NoChanges
+					&& Interlocked.Decrement(ref _noChangesRetry) >= 0
+					&& await _owner.RequestHotReloadToIde(Id))
+				{
+					return;
+				}
+
 				Debug.Assert(result != HotReloadServerResult.InternalError || exception is not null); // For internal error we should always provide an exception!
 
 				// Remove this from current
@@ -465,71 +453,143 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 			try
 			{
-				var (result, error) = DoUpdateFile();
+				var (result, error) = message switch
+				{
+					{ FilePath: null or { Length: 0 } } => (FileUpdateResult.BadRequest, "Invalid request (file path is empty)"),
+					{ OldText: not null, NewText: not null } => await DoUpdate(message.OldText, message.NewText),
+					{ OldText: null, NewText: not null } => await DoWrite(message.NewText),
+					{ NewText: null, IsCreateDeleteAllowed: true } => await DoDelete(),
+					_ => (FileUpdateResult.BadRequest, "Invalid request")
+				};
 				if ((int)result < 300 && !message.IsForceHotReloadDisabled)
 				{
+					hotReload.EnableAutoRetryIfNoChanges();
 					await RequestHotReloadToIde(hotReload.Id);
 				}
 
-				await _remoteControlServer.SendFrame(new UpdateFileResponse(message.RequestId, message.FilePath, result, error, hotReload.Id));
+				await _remoteControlServer.SendFrame(new UpdateFileResponse(message.RequestId, message.FilePath ?? "", result, error, hotReload.Id));
 			}
 			catch (Exception ex)
 			{
 				await hotReload.Complete(HotReloadServerResult.InternalError, ex);
-				await _remoteControlServer.SendFrame(new UpdateFileResponse(message.RequestId, message.FilePath, FileUpdateResult.Failed, ex.Message));
+				await _remoteControlServer.SendFrame(new UpdateFileResponse(message.RequestId, message.FilePath ?? "", FileUpdateResult.Failed, ex.Message));
 			}
 
-			(FileUpdateResult, string?) DoUpdateFile()
+			async ValueTask<(FileUpdateResult, string?)> DoUpdate(string oldText, string newText)
 			{
-				if (message?.IsValid() is not true)
-				{
-					if (this.Log().IsEnabled(LogLevel.Debug))
-					{
-						this.Log().LogDebug($"Got an invalid update file frame ({message})");
-					}
-
-					return (FileUpdateResult.BadRequest, "Invalid request");
-				}
-
 				if (!File.Exists(message.FilePath))
 				{
 					if (this.Log().IsEnabled(LogLevel.Debug))
 					{
-						this.Log().LogDebug($"Requested file '{message.FilePath}' does not exists.");
+						this.Log().LogDebug($"Requested file '{message.FilePath}' does not exists [{message.RequestId}].");
 					}
 
 					return (FileUpdateResult.FileNotFound, $"Requested file '{message.FilePath}' does not exists.");
 				}
 
-				if (this.Log().IsEnabled(LogLevel.Debug))
-				{
-					this.Log().LogDebug($"Apply Changes to {message.FilePath}");
-				}
-
-				var originalContent = File.ReadAllText(message.FilePath);
+				var originalContent = await File.ReadAllTextAsync(message.FilePath);
 				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().LogTrace($"Original content: {message.FilePath}");
+					this.Log().LogTrace($"Original content: {originalContent} [{message.RequestId}].");
 				}
 
-				var updatedContent = originalContent.Replace(message.OldText, message.NewText);
+				var updatedContent = originalContent.Replace(oldText, newText);
 				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().LogTrace($"Updated content: {message.FilePath}");
+					this.Log().LogTrace($"Updated content: {updatedContent} [{message.RequestId}].");
 				}
 
 				if (updatedContent == originalContent)
 				{
 					if (this.Log().IsEnabled(LogLevel.Debug))
 					{
-						this.Log().LogDebug($"No changes detected in {message.FilePath}");
+						this.Log().LogDebug($"No changes detected in {message.FilePath} [{message.RequestId}].");
 					}
 
 					return (FileUpdateResult.NoChanges, null);
 				}
 
-				File.WriteAllText(message.FilePath, updatedContent);
+				var effectiveUpdate = WaitForFileUpdated();
+				await File.WriteAllTextAsync(message.FilePath, updatedContent);
+				await effectiveUpdate;
+
 				return (FileUpdateResult.Success, null);
+			}
+
+			async ValueTask<(FileUpdateResult, string?)> DoWrite(string newText)
+			{
+				if (!message.IsCreateDeleteAllowed && !File.Exists(message.FilePath))
+				{
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().LogDebug($"Requested file '{message.FilePath}' does not exists [{message.RequestId}].");
+					}
+
+					return (FileUpdateResult.FileNotFound, $"Requested file '{message.FilePath}' does not exists.");
+				}
+
+				if (this.Log().IsEnabled(LogLevel.Trace))
+				{
+					this.Log().LogTrace($"Write content: {newText} [{message.RequestId}].");
+				}
+
+				var effectiveUpdate = WaitForFileUpdated();
+				await File.WriteAllTextAsync(message.FilePath, newText);
+				await effectiveUpdate;
+
+				return (FileUpdateResult.Success, null);
+			}
+
+			async ValueTask<(FileUpdateResult, string?)> DoDelete()
+			{
+				if (!File.Exists(message.FilePath))
+				{
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().LogDebug($"Requested file '{message.FilePath}' does not exists [{message.RequestId}].");
+					}
+
+					return (FileUpdateResult.FileNotFound, $"Requested file '{message.FilePath}' does not exists.");
+				}
+
+				var effectiveUpdate = WaitForFileUpdated();
+				File.Delete(message.FilePath);
+				await effectiveUpdate;
+
+				return (FileUpdateResult.Success, null);
+			}
+
+			async Task WaitForFileUpdated()
+			{
+				var file = new FileInfo(message.FilePath);
+				var dir = file.Directory;
+				while (dir is { Exists: false })
+				{
+					dir = dir.Parent;
+				}
+
+				if (dir is null)
+				{
+					return;
+				}
+
+				var tcs = new TaskCompletionSource();
+				using var watcher = new FileSystemWatcher(dir.FullName);
+				watcher.Changed += async (snd, e) =>
+				{
+					if (e.FullPath.Equals(file.FullName, StringComparison.OrdinalIgnoreCase))
+					{
+						await Task.Delay(500);
+						tcs.TrySetResult();
+					}
+				};
+				watcher.EnableRaisingEvents = true;
+
+				if (await Task.WhenAny(tcs.Task, Task.Delay(TimeSpan.FromSeconds(2))) != tcs.Task
+					&& this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().LogDebug($"File update event not received for '{message.FilePath}', continuing anyway [{message.RequestId}].");
+				}
 			}
 		}
 
@@ -543,6 +603,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(2));
 				await using var ctReg = cts.Token.Register(() => hrRequested.TrySetCanceled());
 
+				_pendingHotReloadRequestToIde.TryAdd(hrRequest.CorrelationId, hrRequested);
 				await _remoteControlServer.SendMessageToIDEAsync(hrRequest);
 
 				return await hrRequested.Task is { IsSuccess: true };
@@ -583,28 +644,111 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		}
 
 		#region Helpers
-		private static IObservable<IList<string>> ToObservable(FileSystemWatcher watcher)
-			=> Observable.Create<string>(o =>
+		private static IObservable<IList<string>> ToObservable(params FileSystemWatcher[] watchers)
+			=> Observable.Defer(() =>
 			{
 				// Create an observable instead of using the FromEventPattern which
 				// does not register to events properly.
 				// Renames are required for the WriteTemporary->DeleteOriginal->RenameToOriginal that
 				// Visual Studio uses to save files.
 
-				void changed(object s, FileSystemEventArgs args) => o.OnNext(args.FullPath);
-				void renamed(object s, RenamedEventArgs args) => o.OnNext(args.FullPath);
+				var subject = new Subject<string>();
 
-				watcher.Changed += changed;
-				watcher.Created += changed;
-				watcher.Renamed += renamed;
+				void changed(object s, FileSystemEventArgs args) => subject.OnNext(args.FullPath);
+				void renamed(object s, RenamedEventArgs args) => subject.OnNext(args.FullPath);
+
+				foreach (var watcher in watchers)
+				{
+					watcher.Changed += changed;
+					watcher.Created += changed;
+					watcher.Renamed += renamed;
+				}
+
+				return subject
+					.Buffer(() => subject.Throttle(TimeSpan.FromMilliseconds(250))) // Wait for 250 ms without any file change
+					.Finally(() =>
+					{
+						foreach (var watcher in watchers)
+						{
+							watcher.Changed -= changed;
+							watcher.Created -= changed;
+							watcher.Renamed -= renamed;
+						}
+					});
+			});
+
+		private static IObservable<Task<ImmutableHashSet<string>>> To2StepsObservable(FileSystemWatcher[] watchers, Predicate<string> filter)
+			=> Observable.Create<Task<ImmutableHashSet<string>>>(o =>
+			{
+				// Create an observable instead of using the FromEventPattern which
+				// does not register to events properly.
+				// Renames are required for the WriteTemporary->DeleteOriginal->RenameToOriginal that
+				// Visual Studio uses to save files.
+
+				var gate = new object();
+				var buffer = default((ImmutableHashSet<string>.Builder items, TaskCompletionSource<ImmutableHashSet<string>> task)?);
+				var bufferTimer = new Timer(CloseBuffer);
+
+				void changed(object s, FileSystemEventArgs args) => OnNext(args.FullPath);
+				void renamed(object s, RenamedEventArgs args) => OnNext(args.FullPath);
+
+				foreach (var watcher in watchers)
+				{
+					watcher.Changed += changed;
+					watcher.Created += changed;
+					watcher.Renamed += renamed;
+				}
+
+				void OnNext(string file)
+				{
+					if (!filter(file))
+					{
+						return;
+					}
+
+					lock (gate)
+					{
+						if (buffer is null)
+						{
+							buffer = (ImmutableHashSet.CreateBuilder<string>(_pathsComparer), new());
+							o.OnNext(buffer.Value.task.Task);
+						}
+
+						buffer.Value.items.Add(file);
+						bufferTimer.Change(250, Timeout.Infinite); // Wait for 250 ms without any file change
+					}
+				}
+
+				void CloseBuffer(object? state)
+				{
+					(ImmutableHashSet<string>.Builder items, TaskCompletionSource<ImmutableHashSet<string>> task) completingBuffer;
+					if (buffer is null)
+					{
+						Debug.Fail("Should not happen.");
+						return;
+					}
+
+					lock (gate)
+					{
+						completingBuffer = buffer.Value;
+						buffer = default;
+					}
+
+					completingBuffer.task.SetResult(completingBuffer.items.ToImmutable());
+				}
 
 				return Disposable.Create(() =>
 				{
-					watcher.Changed -= changed;
-					watcher.Created -= changed;
-					watcher.Renamed -= renamed;
+					foreach (var watcher in watchers)
+					{
+						watcher.Changed -= changed;
+						watcher.Created -= changed;
+						watcher.Renamed -= renamed;
+					}
+
+					bufferTimer.Dispose();
 				});
-			}).Buffer(TimeSpan.FromMilliseconds(250));
+			});
 		#endregion
 	}
 }

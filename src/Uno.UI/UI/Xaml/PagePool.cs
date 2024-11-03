@@ -66,14 +66,14 @@ namespace Microsoft.UI.Xaml
 		{
 			if (!FeatureConfiguration.Page.IsPoolingEnabled)
 			{
-				return Frame.CreatePageInstance(pageType);
+				return Frame.CreatePageInstance(pageType) as Page;
 			}
 
 			var list = _pooledInstances.UnoGetValueOrDefault(pageType);
 
 			if (list == null || list.Count == 0)
 			{
-				return Frame.CreatePageInstance(pageType);
+				return Frame.CreatePageInstance(pageType) as Page;
 			}
 			else
 			{

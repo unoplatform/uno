@@ -24,11 +24,6 @@ namespace Microsoft.UI.Xaml
 	{
 		private readonly static IEventProvider _trace = Tracing.Get(FrameworkElement.TraceProvider.Id);
 
-		/// <summary>
-		/// DesiredSize from MeasureOverride, after clamping to min size but before being clipped by max size (from GetMinMax())
-		/// </summary>
-		private Size _unclippedDesiredSize;
-
 		private bool m_firedLoadingEvent;
 
 		private const double SIZE_EPSILON = 0.05d;
@@ -166,6 +161,97 @@ namespace Microsoft.UI.Xaml
 
 		}
 
+		private protected virtual void ApplyTemplate(out bool addedVisuals)
+		{
+			addedVisuals = false;
+
+			// Applying the template will not delete existing visuals. This will be done conditionally
+			// when the template is invalidated.
+			if (
+				!HasTemplateChild() ||
+				// review@xy: perhaps we can remove IsContentPresenterBypassEnabled completely, it has outlived its purpose.
+				// ContentPresenter bypass causes Content to be added as direct child
+				// (in situation where implicit style is not present or doesn't define a template setter),
+				// preventing template application.
+				// IsContentPresenterBypassEnabled depends on Template==null, which may have changed since, so we can't use that check here.
+				(this as ContentControl)?.Content == GetFirstChild()
+			)
+			{
+				var template = GetTemplate();
+				if (template is not null)
+				{
+					// BEGIN Uno-specific
+					// Try to clear the ContentPresenter bypass, because the template may generate some setup
+					// that binds onto the .Content itself, and leads to situation
+					// where the .Content is set as the direct child (with the bypass) for multiple parents.
+					(this as ContentControl)?.ClearContentPresenterBypass();
+					// END Uno-specific
+
+					//SetIsUpdatingBindings(true);
+					var child = ((IFrameworkTemplateInternal)template).LoadContent(this);
+
+					// BEGIN Uno-specific
+					if (this is Control control)
+					{
+						control.TemplatedRoot = child;
+					}
+					// END Uno-specific
+
+					//SetIsUpdatingBindings(false);
+					if (child is null)
+					{
+						return;
+					}
+
+					addedVisuals = true;
+					AddChild(child);
+				}
+			}
+		}
+
+		internal void InvokeApplyTemplate(out bool addedVisuals)
+		{
+			ApplyTemplate(out addedVisuals);
+
+			//if (auto visualTree = VisualTree::GetForElementNoRef(pControl))
+			// {
+			//	// Create VisualState StateTriggers and perform evaulation to determine initial state,
+			//	// if we're in the visual tree (since we need it to get our qualifier context).
+			//	// If we're not in the visual tree, we'll do this when we enter it.
+			//	IFC(CVisualStateManager2::InitializeStateTriggers(this));
+			//}
+
+			//var control = this as Control;
+
+			if (addedVisuals)
+			{
+				// UNO TODO:
+				//if (control is not null)
+				{
+					// Run all of the bindings that were created and set the
+					// properties to the values from this control
+					//IFC(control.RefreshTemplateBindings(TemplateBindingsRefreshType.All));
+				}
+				// If the object has a managed peer that is a custom type, then it might have
+				// an overloaded OnApplyTemplate. Reverse P/Invoke to get that overload, if any.
+				// If there's no overload, the default Control.OnApplyTemplate will be invoked,
+				// which will just P/Invoke back to the native CControl::OnApplyTemplate.
+				OnApplyTemplate();
+			}
+
+			// UNO TODO:
+			// Update template bindings of realized element in the template.
+			// This will update if element was realized after template was applied (no visuals added, hence it would not be updated earlier)
+			// and if element was realized in OnApplyTemplate.
+			// We should not refresh all of controls template bindings, as it could potentially overwrite values set by other ways (e.g. VSM)
+			//if (control is not null &&
+			//	control.NeedsTemplateBindingRefresh())
+			//{
+			//	control.RefreshTemplateBindings(TemplateBindingsRefreshType.WithoutInitialUpdate);
+			//}
+
+		}
+
 		private void InnerMeasureCore(Size availableSize)
 		{
 			if (_traceLayoutCycle && this.Log().IsEnabled(LogLevel.Warning))
@@ -196,13 +282,11 @@ namespace Microsoft.UI.Xaml
 			//if (!bInLayoutTransition)
 			{
 				// Templates should be applied here.
-				//bTemplateApplied = InvokeApplyTemplate();
+				InvokeApplyTemplate(out _);
 
 				// TODO: BEGIN Uno specific
 				if (this is Control thisAsControl)
 				{
-					thisAsControl.ApplyTemplate();
-
 					// Update bindings to ensure resources defined
 					// in visual parents get applied.
 					this.UpdateResourceBindings();
@@ -275,8 +359,8 @@ namespace Microsoft.UI.Xaml
 
 				// Here is the "true minimum" desired size - the one that is
 				// for sure enough for the control to render its content.
-				// EnsureLayoutStorage();
-				_unclippedDesiredSize = desiredSize;
+				EnsureLayoutStorage();
+				m_unclippedDesiredSize = desiredSize;
 
 				// More layout transforms processing here.
 
@@ -314,9 +398,7 @@ namespace Microsoft.UI.Xaml
 
 				// only clip and constrain if the tree wants that.
 				// currently only listviewitems do not want clipping
-				// UNO TODO
-
-				//if (!pLayoutManager->GetIsInNonClippingTree())
+				if (!IsInNonClippingTree)
 				{
 					// In overconstrained scenario, parent wins and measured size of the child,
 					// including any sizes set or computed, can not be larger then
@@ -361,23 +443,10 @@ namespace Microsoft.UI.Xaml
 				this.Log().LogWarning($"[LayoutCycleTracing] Measured {this},{this.GetDebugName()}: desiredSize is {desiredSize}.");
 			}
 
-#if __SKIA__
-			if (desiredSize != DesiredSize)
-#endif
-			{
-				// DesiredSize must include margins
-				LayoutInformation.SetDesiredSize(this, desiredSize);
-#if __SKIA__
-				this.OnDesiredSizeChanged();
-#endif
-			}
+			// DesiredSize must include margins
+			m_desiredSize = desiredSize;
 
-			_logDebug?.Debug($"{DepthIndentation}[{FormatDebugName()}] Measure({Name}/{availableSize}/{Margin}) = {desiredSize} _unclippedDesiredSize={_unclippedDesiredSize}");
-		}
-
-		private protected virtual void OnDesiredSizeChanged()
-		{
-
+			_logDebug?.Debug($"{DepthIndentation}[{FormatDebugName()}] Measure({Name}/{availableSize}/{Margin}) = {desiredSize} _unclippedDesiredSize={m_unclippedDesiredSize}");
 		}
 
 		private void RaiseLoadingEventIfNeeded()
@@ -472,10 +541,9 @@ namespace Microsoft.UI.Xaml
 			Size clientSize = default;
 			double offsetX = 0, offsetY = 0;
 
-			// Uno TODO:
-			//IFC_RETURN(EnsureLayoutStorage());
+			EnsureLayoutStorage();
 
-			unclippedDesiredSize = _unclippedDesiredSize;
+			unclippedDesiredSize = m_unclippedDesiredSize;
 			oldRenderSize = RenderSize;
 
 			//if (!bInLayoutTransition)
@@ -768,7 +836,7 @@ namespace Microsoft.UI.Xaml
 
 				Size clippingSize = default;
 
-				// EnsureLayoutStorage();
+				EnsureLayoutStorage();
 
 				// If clipping is forced, ensure the clip is at least as small as the RenderSize.
 				//if (forceClipToRenderSize)
@@ -919,38 +987,80 @@ namespace Microsoft.UI.Xaml
 #endif
 		}
 
-		internal override void Enter(EnterParams @params, int depth)
+		internal override void EnterImpl(EnterParams @params, int depth)
 		{
-			// The way this works on WinUI is that when an element enters the visual tree, all values
-			// of properties that are marked with MetaDataPropertyInfoFlags::IsSparse and MetaDataPropertyInfoFlags::IsVisualTreeProperty
-			// are entered as well.
-			// The property we currently know it has an effect is Resources
-			if (Resources is not null)
-			{
-				foreach (var resource in Resources.Values)
-				{
-					if (resource is FrameworkElement resourceAsUIElement)
-					{
-						resourceAsUIElement.XamlRoot = XamlRoot;
-						resourceAsUIElement.Enter(@params, int.MinValue);
-					}
-				}
-			}
+			var core = this.GetContext();
 
-			base.Enter(@params, depth);
+			//if (@params.IsLive && @params.CheckForResourceOverrides == false)
+			//{
+			//    var resources = GetResourcesNoCreate();
 
+			//    if (resources is not null &&
+			//        resources.HasPotentialOverrides())
+			//    {
+			//        @params.CheckForResourceOverrides = TRUE;
+			//    }
+			//}
+
+			base.EnterImpl(@params, depth);
+
+			////Check for focus chrome property.
+			//if (@params.IsLive)
+			//{
+			//	if (Control.GetIsTemplateFocusTarget(this))
+			//	{
+			//		UpdateFocusAncestorsTarget(true /*shouldSet*/); //Add pointer to the Descendant
+			//	}
+			//}
+
+			//// Walk the list of events (if any) to keep watch of loaded events.
+			//if (@params.IsLive && m_pEventList is not null)
+			//{
+			//	CXcpList<REQUEST>::XCPListNode* pTemp = m_pEventList.GetHead();
+			//	while (pTemp is not null)
+			//	{
+			//		REQUEST* pRequest = (REQUEST*)pTemp->m_pData;
+			//		if (pRequest && pRequest->m_hEvent.index != KnownEventIndex::UnknownType_UnknownEvent)
+			//		{
+			//			if (pRequest->m_hEvent.index == KnownEventIndex::FrameworkElement_Loaded)
+			//			{
+			//				// Take note of the fact we added a loaded event to the event manager.
+			//				core->KeepWatch(WATCH_LOADED_EVENTS);
+			//			}
+			//		}
+			//		pTemp = pTemp->m_pNext;
+			//	}
+			//}
+
+			// Apply style when element is live in the tree
 			if (@params.IsLive)
 			{
+				//if (m_eImplicitStyleProvider == ImplicitStyleProvider::None)
+				//{
+				//	if (!GetStyle())
+				//	{
+				//		IFC_RETURN(ApplyStyle());
+				//	}
+				//}
+				//else if (m_eImplicitStyleProvider == ImplicitStyleProvider::AppWhileNotInTree)
+				//{
+				//	IFC_RETURN(UpdateImplicitStyle(m_pImplicitStyle, null, /*bForceUpdate*/false, /*bUpdateChildren*/false));
+				//}
+
+				// ---------- Uno-specific BEGIN ----------
 				// Apply active style and default style when we enter the visual tree, if they haven't been applied already.
 				this.ApplyStyles();
+				// ---------- Uno-specific END ----------
 			}
 
+			// Uno-specific
 			ReconfigureViewportPropagation();
 
 			m_firedLoadingEvent = false;
 		}
 
-		internal override void Leave(LeaveParams @params)
+		// UNO TODO: Not yet ported
+		internal override void LeaveImpl(LeaveParams @params)
 		{
 			// The way this works on WinUI is that when an element enters the visual tree, all values
 			// of properties that are marked with MetaDataPropertyInfoFlags::IsSparse and MetaDataPropertyInfoFlags::IsVisualTreeProperty
@@ -958,16 +1068,17 @@ namespace Microsoft.UI.Xaml
 			// The property we currently know it has an effect is Resources
 			if (Resources is not null)
 			{
-				foreach (var resource in Resources.Values)
+				// Using ValuesInternal to avoid Enumerator boxing
+				foreach (var resource in Resources.ValuesInternal)
 				{
 					if (resource is FrameworkElement resourceAsUIElement)
 					{
-						resourceAsUIElement.Leave(@params);
+						resourceAsUIElement.LeaveImpl(@params);
 					}
 				}
 			}
 
-			base.Leave(@params);
+			base.LeaveImpl(@params);
 
 			ReconfigureViewportPropagation(isLeavingTree: true);
 		}

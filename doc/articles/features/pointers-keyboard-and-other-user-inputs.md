@@ -28,7 +28,7 @@ User inputs are usually propagated using `RoutedEvents`. See Uno's [routed event
 | **_manipulation events_**
 | `ManipulationStarting`        | Yes     | Yes              | Yes     | Yes          | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.manipulationstarting) |
 | `ManipulationStarted`         | Yes     | Yes              | Yes     | Yes          | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.manipulationstarted) |
-| `ManipulationDelta`           | Yes     | Yes              | Yes     | Yes          | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.manipulationedelta) |
+| `ManipulationDelta`           | Yes     | Yes              | Yes     | Yes          | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.manipulationdelta) |
 | `ManipulationInertiaStarting` | Yes     | Yes              | Yes     | Yes          | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.manipulationinertiastarting) |
 | `ManipulationCompleted`       | Yes     | Yes              | Yes     | Yes          | [Documentation](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.uielement.manipulationcompleted) |
 | **_gesture events_**

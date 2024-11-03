@@ -45,6 +45,11 @@ public partial class Border : FrameworkElement
 #endif
 	}
 
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __NETSTD_REFERENCE__ || __MACOS__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#endif
+	public BrushTransition BackgroundTransition { get; set; }
+
 #if !UNO_HAS_BORDER_VISUAL
 	internal BorderLayerRenderer BorderRenderer { get; }
 #endif
@@ -80,13 +85,25 @@ public partial class Border : FrameworkElement
 
 	public UIElement Child
 	{
-		get => (UIElement)this.GetValue(ChildProperty);
-		set => this.SetValue(ChildProperty, value);
+		get => (UIElement)GetValue(ChildProperty);
+		set
+		{
+			// This means that setting Child to the same reference does not trigger PropertyChanged, 
+			// which is a problem, as WinUI always removes the current child and adds it again,
+			// even when dealing with the exact same reference. This also triggers measure/arrange
+			// on the child. To work around this, we force the update here.
+			if (value == Child)
+			{
+				SetChild(value, value);
+			}
+
+			SetValue(ChildProperty, value);
+		}
 	}
 
 	public static DependencyProperty ChildProperty { get; } =
 		DependencyProperty.Register(
-			"Child",
+			nameof(Child),
 			typeof(UIElement),
 			typeof(Border),
 			new FrameworkPropertyMetadata(
@@ -94,23 +111,26 @@ public partial class Border : FrameworkElement
 				// Since this is a view, inheritance is handled through the visual tree, rather than via the property. We explicitly
 				// disable the property-based propagation here to support the case where the Parent property is overridden to simulate
 				// a different inheritance hierarchy, as is done for some controls with native styles.
-				FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
-				(s, e) => ((Border)s)?.OnChildChanged((UIElement)e.OldValue, (UIElement)e.NewValue)
+				FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.AffectsMeasure,
+				(DependencyObject s, DependencyPropertyChangedEventArgs e) => ((Border)s)?.SetChild((UIElement)e.OldValue, (UIElement)e.NewValue)
 			)
 		);
 
-	private void OnChildChanged(UIElement oldValue, UIElement newValue)
+	private void SetChild(UIElement previousChild, UIElement newChild)
 	{
-		ReAttachChildTransitions(oldValue, newValue);
-
-		if (oldValue is not null)
+		if (previousChild != newChild)
 		{
-			RemoveChild(oldValue);
+			ReAttachChildTransitions(previousChild, newChild);
 		}
 
-		if (newValue is not null)
+		if (previousChild is not null)
 		{
-			AddChild(newValue);
+			RemoveChild(previousChild);
+		}
+
+		if (newChild is not null)
+		{
+			AddChild(newChild);
 		}
 	}
 
@@ -188,7 +208,7 @@ public partial class Border : FrameworkElement
 	#region Padding DependencyProperty
 	private static Thickness GetPaddingDefaultValue() => Thickness.Empty;
 
-	[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange)]
+	[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
 	public static DependencyProperty PaddingProperty { get; } = CreatePaddingProperty();
 
 	public Thickness Padding
@@ -231,7 +251,7 @@ public partial class Border : FrameworkElement
 	#region BorderThickness DependencyProperty
 	private static Thickness GetBorderThicknessDefaultValue() => Thickness.Empty;
 
-	[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange)]
+	[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
 	public static DependencyProperty BorderThicknessProperty { get; } = CreateBorderThicknessProperty();
 
 	public Thickness BorderThickness
@@ -253,7 +273,9 @@ public partial class Border : FrameworkElement
 
 	#region BorderBrush Dependency Property
 
+#if !__SKIA__
 	private Action _borderBrushChanged;
+#endif
 
 #if __ANDROID__
 	//This field is never accessed. It just exists to create a reference, because the DP causes issues with ImageBrush of the backing bitmap being prematurely garbage-collected. (Bug with ConditionalWeakTable? https://bugzilla.xamarin.com/show_bug.cgi?id=21620)
@@ -280,14 +302,15 @@ public partial class Border : FrameworkElement
 
 	private void OnBorderBrushChanged(Brush oldValue, Brush newValue)
 	{
+#if __SKIA__
+		this.UpdateBorderBrush();
+#else
 		Brush.SetupBrushChanged(oldValue, newValue, ref _borderBrushChanged, _borderBrushChanged ?? (() =>
 		{
-#if UNO_HAS_BORDER_VISUAL
-			this.UpdateBorderBrush();
-#else
 			UpdateBorder();
-#endif
 		}));
+#endif
+
 #if __WASM__
 		if (((oldValue is null) ^ (newValue is null)) && BorderThickness != default)
 		{
@@ -303,6 +326,12 @@ public partial class Border : FrameworkElement
 	{
 #if UNO_HAS_BORDER_VISUAL
 		this.UpdateBackground();
+		BorderHelper.SetUpBrushTransitionIfAllowed(
+			(BorderVisual)this.Visual,
+			e.OldValue as Brush,
+			e.NewValue as Brush,
+			this.BackgroundTransition,
+			((IDependencyObjectStoreProvider)this).Store.GetCurrentHighestValuePrecedence(BackgroundProperty) == DependencyPropertyValuePrecedences.Animations);
 #else
 		UpdateBorder();
 #endif
@@ -315,14 +344,18 @@ public partial class Border : FrameworkElement
 
 	internal override bool IsViewHit() => IsViewHitImpl(this);
 
-	internal static bool IsViewHitImpl(FrameworkElement element)
+	internal static bool IsViewHitImpl(IBorderInfoProvider element)
 	{
 		_Debug.Assert(element is Panel
 			|| element is Border
 			|| element is ContentPresenter
 		);
 
-		return element.Background != null;
+		return element.Background != null
+#if __SKIA__
+			|| element.BorderBrush != null
+#endif
+			;
 	}
 
 #if !UNO_HAS_BORDER_VISUAL

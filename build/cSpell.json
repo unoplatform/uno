@@ -24,6 +24,7 @@
 	"databinding",
 	"datacontext",
 	"datagrid",
+	"decompile",
 	"devs",
 	"dbus",
 	"Dismissable",
@@ -45,6 +46,7 @@
 	"hectopascals",
 	"HoloLens",
 	"howto",
+	"hotreload",
 	"hotswap",
 	"Inlines",
 	"keychain",
@@ -85,6 +87,7 @@
 	"signalr",
 	"Skia",
 	"skiasharp",
+	"Snapcraft",
 	"Storyboarded",
 	"struct",
 	"Syncfusion",
@@ -109,7 +112,9 @@
 	"webservices",
 	"webapps",
 	"Haptics",
-	"autoplay"
+	"autoplay",
+	"Xcodes",
+	"Raygun"
   ],
   "ignoreWords": [
 	"ADAL",
@@ -120,6 +125,7 @@
 	"Authenticode",
 	"automagically",
 	"bluetoothdevice",
+	"browserwasm",
 	"commandbar",
 	"CLSID",
 	"datatransfer",

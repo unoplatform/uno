@@ -340,6 +340,11 @@ namespace Uno.UI.DataBinding
 				return true;
 			}
 
+			if (FastStringToCollection(outputType, input, ref output))
+			{
+				return true;
+			}
+
 			// Fallback for Enums. Leave it at the end.
 			if (outputType.IsEnum)
 			{
@@ -975,6 +980,23 @@ namespace Uno.UI.DataBinding
 			if (outputType == typeof(bool) && bool.TryParse(input, out var result))
 			{
 				output = result;
+				return true;
+			}
+
+			return false;
+		}
+
+		private static bool FastStringToCollection(Type outputType, string input, ref object output)
+		{
+			if (outputType == typeof(DoubleCollection))
+			{
+				output = (DoubleCollection)input;
+				return true;
+			}
+
+			if (outputType == typeof(PointCollection))
+			{
+				output = (PointCollection)input;
 				return true;
 			}
 

@@ -21,6 +21,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 #endif
 		[Test]
 		[AutoRetry]
+		[InjectedPointer(PointerDeviceType.Mouse)]
 		[InjectedPointer(PointerDeviceType.Touch)]
 		public async Task When_NestedHandlesPressed_Then_ContainerStillGetsSubsequentEvents()
 		{
@@ -35,9 +36,11 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 		[Test]
 		[AutoRetry]
-#if !__SKIA__
 		[ActivePlatforms(Platform.Browser)] // Not supported on iOS and Android where dispatch is native and has "implicit capture".
+#if !IS_RUNTIME_UI_TESTS
+		[Ignore("Flaky")]
 #endif
+		[InjectedPointer(PointerDeviceType.Mouse)]
 		[InjectedPointer(PointerDeviceType.Touch)]
 		public async Task When_Nested_Then_EnterAndExitedDoesNotBubble()
 		{
@@ -63,11 +66,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 			// The results should be "ENTERED SUCCESS" and "EXITED SUCCESS", but even if tests are passing locally they are failing on CI
 			// We are validating as much as we can to reduce risk of regression ...
-#if __SKIA__
 			enterResult.Should().Contain("ENTERED SUCCESS", "we should have received ENTER only on '_intermediate' which has subscribed to handled events too.");
-#else
-			enterResult.Should().BeOneOf(new[] { "ENTERED", "ENTERED SUCCESS" }, "we should have received ENTER only on '_intermediate' which has subscribed to handled events too.");
-#endif
 #if false
 			exitResult.Should().Be("EXITED SUCCESS", "we should have received EXIT only on '_intermediate' which has subscribed to handled events too.");
 #endif

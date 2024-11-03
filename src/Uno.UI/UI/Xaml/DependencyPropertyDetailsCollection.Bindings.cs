@@ -17,26 +17,10 @@ namespace Microsoft.UI.Xaml
 	partial class DependencyPropertyDetailsCollection
 	{
 		private ImmutableList<BindingExpression> _bindings = ImmutableList<BindingExpression>.Empty;
-		private ImmutableList<BindingExpression> _templateBindings = ImmutableList<BindingExpression>.Empty;
 
 		private bool _bindingsSuspended;
 
-		/// <summary>
-		/// Applies the specified templated parent on the current <see cref="TemplateBinding"/> instances
-		/// </summary>
-		/// <param name="templatedParent"></param>
-		internal void ApplyTemplatedParent(FrameworkElement templatedParent)
-		{
-			var templateBindings = _templateBindings.Data;
-
-			for (int i = 0; i < templateBindings.Length; i++)
-			{
-				ApplyBinding(templateBindings[i], templatedParent);
-			}
-		}
-
-		public bool HasBindings =>
-			_bindings != ImmutableList<BindingExpression>.Empty || _templateBindings != ImmutableList<BindingExpression>.Empty;
+		public bool HasBindings => _bindings != ImmutableList<BindingExpression>.Empty;
 
 		/// <summary>
 		/// Applies the specified datacontext on the current <see cref="Binding"/> instances
@@ -77,6 +61,16 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		internal void ApplyTemplateBindings()
+		{
+			var bindings = _bindings.Data;
+
+			for (int i = 0; i < bindings.Length; i++)
+			{
+				bindings[i].ApplyTemplateBindingParent();
+			}
+		}
+
 		/// <summary>
 		/// Suspends the <see cref="Binding"/> instances from reacting to DataContext changes
 		/// </summary>
@@ -111,7 +105,15 @@ namespace Microsoft.UI.Xaml
 					bindings[i].ResumeBinding();
 				}
 
-				ApplyDataContext(DataContextPropertyDetails.GetValue());
+				var value = DataContextPropertyDetails.GetEffectiveValue();
+				if (value == DependencyProperty.UnsetValue)
+				{
+					// If we get UnsetValue, it means this is DefaultValue precedence that's not stored in DependencyPropertyDetails.
+					// In this case, we know for sure that DataContext's default value is null.
+					value = null;
+				}
+
+				ApplyDataContext(value);
 			}
 		}
 
@@ -139,24 +141,25 @@ namespace Microsoft.UI.Xaml
 					);
 
 				details.SetBinding(bindingExpression);
+				_bindings = _bindings.Add(bindingExpression);
 
-				if (Equals(binding.RelativeSource, RelativeSource.TemplatedParent))
+				if (!Equals(binding.RelativeSource, RelativeSource.TemplatedParent))
 				{
-					_templateBindings = _templateBindings.Add(bindingExpression);
-
-					ApplyBinding(bindingExpression, TemplatedParentPropertyDetails.GetValue());
-				}
-				else
-				{
-					_bindings = _bindings.Add(bindingExpression);
-
 					if (bindingExpression.TargetPropertyDetails.Property.UniqueId == DataContextPropertyDetails.Property.UniqueId)
 					{
-						bindingExpression.DataContext = details.GetValue(DependencyPropertyValuePrecedences.Inheritance);
+						bindingExpression.DataContext = details.GetInheritedValue();
 					}
 					else
 					{
-						ApplyBinding(bindingExpression, DataContextPropertyDetails.GetValue());
+						var value = DataContextPropertyDetails.GetEffectiveValue();
+						if (value == DependencyProperty.UnsetValue)
+						{
+							// If we get UnsetValue, it means this is DefaultValue precedence that's not stored in DependencyPropertyDetails.
+							// In this case, we know for sure that DataContext's default value is null.
+							value = null;
+						}
+
+						ApplyBinding(bindingExpression, value);
 					}
 				}
 			}
@@ -164,11 +167,7 @@ namespace Microsoft.UI.Xaml
 
 		private void ApplyBinding(BindingExpression binding, object dataContext)
 		{
-			if (Equals(binding.ParentBinding.RelativeSource, RelativeSource.TemplatedParent))
-			{
-				binding.DataContext = dataContext;
-			}
-			else if (Equals(binding.ParentBinding.RelativeSource, RelativeSource.Self))
+			if (Equals(binding.ParentBinding.RelativeSource, RelativeSource.Self))
 			{
 				binding.DataContext = Owner;
 			}
@@ -203,7 +202,7 @@ namespace Microsoft.UI.Xaml
 
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
-				this.Log().DebugFormat("Set binding value [{0}] from [{1}].", details.Property.Name, _ownerType);
+				this.Log().DebugFormat("Set binding value [{0}].", details.Property.Name);
 			}
 		}
 
@@ -224,11 +223,11 @@ namespace Microsoft.UI.Xaml
 
 		internal bool IsPropertyTemplateBound(DependencyProperty dependencyProperty)
 		{
-			foreach (var templateBinding in _templateBindings)
+			foreach (var binding in _bindings)
 			{
-				if (templateBinding.TargetPropertyDetails.Property == dependencyProperty)
+				if (binding.TargetPropertyDetails.Property == dependencyProperty)
 				{
-					return true;
+					return binding.ParentBinding.IsTemplateBinding;
 				}
 			}
 
@@ -238,11 +237,6 @@ namespace Microsoft.UI.Xaml
 		internal void UpdateBindingExpressions()
 		{
 			foreach (var binding in _bindings)
-			{
-				UpdateBindingPropertiesFromThemeResources(binding.ParentBinding);
-			}
-
-			foreach (var binding in _templateBindings)
 			{
 				UpdateBindingPropertiesFromThemeResources(binding.ParentBinding);
 			}
@@ -264,11 +258,6 @@ namespace Microsoft.UI.Xaml
 		internal void OnThemeChanged()
 		{
 			foreach (var binding in _bindings)
-			{
-				RefreshBindingValueIfNecessary(binding);
-			}
-
-			foreach (var binding in _templateBindings)
 			{
 				RefreshBindingValueIfNecessary(binding);
 			}

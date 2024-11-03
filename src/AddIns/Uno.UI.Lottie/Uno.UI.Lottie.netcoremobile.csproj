@@ -17,11 +17,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Remove="buildTransitive\Uno.UI.Lottie.targets" />
+		<None Remove="buildTransitive\*.Lottie.targets" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Include="buildTransitive\Uno.UI.Lottie.targets">
+		<Content Include="buildTransitive\*.Lottie.targets">
 			<PackagePath>build</PackagePath>
 			<Pack>true</Pack>
 		</Content>
@@ -74,6 +74,10 @@
 
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
+			
+			<!-- Current nuget publishing uses netX.0-android30.0 -->
+			<_OverrideTargetFramework Condition="$(_OverrideTargetFramework.EndsWith('.0-android'))">$(_OverrideTargetFramework)30.0</_OverrideTargetFramework>
+
 			<_TargetNugetFolder>$(NuGetPackageRoot)\uno.ui.lottie\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>

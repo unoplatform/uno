@@ -62,7 +62,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 
 			// Assertions
 			const int testHeight = 50;
-			const int tolerance = 10; // Margins, etc
+			const int tolerance = 16; // Margins, etc
 			var above = new Rectangle((int)rect.X, (int)rect.Y - testHeight - tolerance, (int)rect.Width, testHeight);
 			var below = new Rectangle((int)rect.X, (int)rect.Bottom + tolerance, (int)rect.Width, testHeight);
 

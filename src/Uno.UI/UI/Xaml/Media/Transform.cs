@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Runtime.CompilerServices;
@@ -41,7 +42,7 @@ namespace Microsoft.UI.Xaml.Media
 		/// <summary>
 		/// Notifies that a value of this transform changed (usually this means that the <see cref="MatrixCore"/> has been updated).
 		/// </summary>
-		internal event EventHandler Changed;
+		internal event EventHandler? Changed;
 
 		protected void NotifyChanged()
 		{
@@ -85,7 +86,7 @@ namespace Microsoft.UI.Xaml.Media
 		// Currently we support only one view par transform.
 		// But we can declare a Transform as a static resource and use it on multiple views.
 		// Note: This is now used only for animations
-		internal virtual _View View { get; set; }
+		internal virtual _View? View { get; set; }
 #endif
 
 		#region GeneralTransform overrides

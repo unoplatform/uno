@@ -10,7 +10,7 @@ public partial class AppWindowTitleBar
 {
 	private bool _extendsContentIntoTitleBar;
 
-	internal AppWindowTitleBar()
+	internal AppWindowTitleBar(AppWindow appWindow)
 	{
 	}
 

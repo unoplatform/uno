@@ -48,6 +48,7 @@ Here's what to look for:
 
       ```csharp
       builder.AddFilter("Windows.UI.Xaml.Media.Animation", LogLevel.Debug);
+      builder.AddFilter("Microsoft.UI.Xaml.Media.Animation", LogLevel.Debug);
       ```
 
       The logger will provide all the changes done to animated properties, with element names.
@@ -151,7 +152,7 @@ Here's what to look for:
 
 ### Profiling applications
 
-A profiling guide for Uno Platform apps is [available here](ref:Uno.Tutorials.ProfilingApplications).
+A profiling guide for Uno Platform apps is [available here](xref:Uno.Tutorials.ProfilingApplications).
 
 ### FrameworkTemplatePool
 

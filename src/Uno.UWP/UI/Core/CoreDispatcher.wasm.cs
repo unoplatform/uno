@@ -16,8 +16,5 @@ namespace Windows.UI.Core
 			get => NativeDispatcher.DispatchOverride;
 			set => NativeDispatcher.DispatchOverride = value;
 		}
-
-		// Always reschedule, otherwise we may end up in live-lock.
-		internal static bool HasThreadAccessOverride => NativeDispatcher.HasThreadAccessOverride;
 	}
 }

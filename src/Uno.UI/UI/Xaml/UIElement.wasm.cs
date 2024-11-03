@@ -628,6 +628,12 @@ namespace Microsoft.UI.Xaml
 			WindowManagerInterop.SetAttribute(HtmlId, "xaml" + propertyName.ToLowerInvariant().Replace('.', '_'), value?.ToString() ?? "[null]");
 		}
 
+		/// <remarks>
+		/// This doesn't consider renderingBounds and defaults to true, where currently only Shapes override it to provide proper hit testing.
+		/// Caller is responsible for checking rendering bounds
+		/// </remarks>
+		internal virtual bool HitTest(Point relativePosition) => true;
+
 		private static KeyRoutedEventArgs PayloadToKeyArgs(object src, string payload)
 		{
 			var key = VirtualKey.None;

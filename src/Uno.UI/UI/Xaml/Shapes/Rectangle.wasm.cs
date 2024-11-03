@@ -25,7 +25,7 @@ namespace Microsoft.UI.Xaml.Shapes
 
 			_mainSvgElement.Clip = new RectangleGeometry() { Rect = new Rect(0, 0, finalSize.Width, finalSize.Height) };
 
-			return shapeSize;
+			return finalSize;
 		}
 	}
 }

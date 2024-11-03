@@ -42,6 +42,6 @@ To build your app from the CLI on macOS:
 
 The output `.ipa` file will be in the `publish` folder.
 
-## Publishing your app
+## Publishing your app on the App Store
 
 Publishing your app is done through [the transporter app](https://developer.apple.com/help/app-store-connect/manage-builds/upload-builds) on macOS.

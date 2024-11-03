@@ -23,7 +23,7 @@ using System.Collections.Specialized;
 using Uno.Helpers;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Dispatching;
-
+using Uno.UI.Runtime;
 
 #if HAS_UNO_WINUI
 using LaunchActivatedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.LaunchActivatedEventArgs;
@@ -46,6 +46,9 @@ namespace Microsoft.UI.Xaml
 				throw new InvalidOperationException("The application must be started using Application.Start first, e.g. Microsoft.UI.Xaml.Application.Start(_ => new App());");
 			}
 
+			global::Uno.Foundation.Extensibility.ApiExtensibility.Register(
+				typeof(IUnoCorePointerInputSource),
+				o => new BrowserPointerInputSource());
 			global::Uno.Foundation.Extensibility.ApiExtensibility.Register(
 				typeof(global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.IDragDropExtension),
 				o => global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension.GetForCurrentView());

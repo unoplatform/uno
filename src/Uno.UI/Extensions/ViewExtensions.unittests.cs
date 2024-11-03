@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
 namespace Uno.UI
 {
@@ -110,7 +111,7 @@ namespace Uno.UI
 					.Append(s)
 					.Append(innerView == viewOfInterest ? "*>" : ">")
 					.Append(innerView.ToString() + namePart)
-					.Append($"-({fe.ActualWidth}x{fe.ActualHeight})@({fe.LayoutSlot.Left},{fe.LayoutSlot.Top})")
+					.Append($"-({fe.ActualWidth}x{fe.ActualHeight})@({LayoutInformation.GetLayoutSlot(fe).Left},{LayoutInformation.GetLayoutSlot(fe).Top})")
 					.Append($"  {innerView.Visibility}")
 					.Append(fe != null ? $" HA={fe.HorizontalAlignment},VA={fe.VerticalAlignment}" : "")
 					.Append(fe != null && fe.Margin != default ? $" Margin={fe.Margin}" : "")

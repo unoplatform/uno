@@ -33,10 +33,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				|| _isDesignTimeBuild;
 
 			_telemetry = new Telemetry.Telemetry(isTelemetryOptout);
-
-#if DEBUG
-			Console.WriteLine($"Telemetry enabled: {_telemetry.Enabled}");
-#endif
 		}
 
 		private bool IsTelemetryEnabled => _telemetry?.Enabled ?? false;
@@ -141,6 +137,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			else if (_generatorContext.GetMSBuildPropertyValue("UnoPlatformIDE")?.ToString() is { } unoPlatformIDE)
 			{
 				return unoPlatformIDE;
+			}
+			else if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("VSCODE_CWD")) || Environment.GetEnvironmentVariable("TERM_PROGRAM") == "vscode")
+			{
+				return "vscode";
+			}
+			else if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("IDEA_INITIAL_DIRECTORY")))
+			{
+				return "rider";
 			}
 			else
 			{

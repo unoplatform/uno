@@ -66,7 +66,6 @@ internal partial class SystemFocusVisual : Control
 
 		if (args.NewValue is FrameworkElement element)
 		{
-			element.EnsureFocusVisualBrushDefaults();
 			element.SizeChanged += focusVisual.FocusedElementSizeChanged;
 #if !UNO_HAS_ENHANCED_LIFECYCLE
 			element.LayoutUpdated += focusVisual.FocusedElementLayoutUpdated;

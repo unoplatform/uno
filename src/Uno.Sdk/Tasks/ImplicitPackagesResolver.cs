@@ -81,6 +81,10 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 
 	public string? UnoResizetizerVersion { get; set; }
 
+	public string? UnoSdkExtrasVersion { get; set; }
+
+	public string? UnoSettingsVersion { get; set; }
+
 	public string? MicrosoftLoggingVersion { get; set; }
 
 	public string? WinAppSdkVersion { get; set; }
@@ -94,6 +98,8 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 	public string? CommunityToolkitMvvmVersion { get; set; }
 
 	public string? PrismVersion { get; set; }
+
+	public string? UnoFontsVersion { get; set; }
 
 	public string? AndroidXNavigationVersion { get; set; }
 
@@ -230,12 +236,16 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 	private void SetupRuntimePackageManifestUpdates(PackageManifest manifest)
 	{
 		// Checks any MSBuild parameters passed to the task to override the default versions from the bundled packages.json
+		// This set of updates must not be conditional to features, as those may not be defined yet when the task
+		// is invoked early.
 		manifest.UpdateManifest(PackageManifest.Group.WasmBootstrap, UnoWasmBootstrapVersion)
 			.UpdateManifest(PackageManifest.Group.OSLogging, UnoLoggingVersion)
 			.UpdateManifest(PackageManifest.Group.CoreLogging, UnoCoreLoggingSingletonVersion)
 			.UpdateManifest(PackageManifest.Group.UniversalImageLoading, UnoUniversalImageLoaderVersion)
 			.UpdateManifest(PackageManifest.Group.Dsp, UnoDspTasksVersion)
 			.UpdateManifest(PackageManifest.Group.Resizetizer, UnoResizetizerVersion)
+			.UpdateManifest(PackageManifest.Group.SdkExtras, UnoSdkExtrasVersion)
+			.UpdateManifest(PackageManifest.Group.Settings, UnoSettingsVersion)
 			.UpdateManifest(PackageManifest.Group.SkiaSharp, SkiaSharpVersion)
 			.UpdateManifest(PackageManifest.Group.SvgSkia, SvgSkiaVersion)
 			.UpdateManifest(PackageManifest.Group.WinAppSdk, WinAppSdkVersion)
@@ -245,6 +255,7 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 			.UpdateManifest(PackageManifest.Group.MsalClient, MicrosoftIdentityClientVersion)
 			.UpdateManifest(PackageManifest.Group.Mvvm, CommunityToolkitMvvmVersion)
 			.UpdateManifest(PackageManifest.Group.Prism, PrismVersion)
+			.UpdateManifest(PackageManifest.Group.UnoFonts, UnoFontsVersion)
 			.UpdateManifest(PackageManifest.Group.AndroidMaterial, AndroidMaterialVersion)
 			.UpdateManifest(PackageManifest.Group.AndroidXLegacySupportV4, AndroidXLegacySupportV4Version)
 			.UpdateManifest(PackageManifest.Group.AndroidXAppCompat, AndroidXAppCompatVersion)
@@ -257,16 +268,9 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 			.UpdateManifest(PackageManifest.Group.CSharpMarkup, UnoCSharpMarkupVersion)
 			.UpdateManifest(PackageManifest.Group.Extensions, UnoExtensionsVersion)
 			.UpdateManifest(PackageManifest.Group.Toolkit, UnoToolkitVersion)
-			.UpdateManifest(PackageManifest.Group.Themes, UnoThemesVersion);
-
-		if (HasFeature(UnoFeature.MauiEmbedding))
-		{
-			manifest.UpdateManifest(PackageManifest.Group.Maui, MauiVersion);
-		}
+			.UpdateManifest(PackageManifest.Group.Themes, UnoThemesVersion)
+			.UpdateManifest(PackageManifest.Group.Maui, MauiVersion);
 	}
-
-	private bool HasFeature(UnoFeature feature) =>
-		_unoFeatures.Any(x => x == feature);
 
 	private UnoFeature[] GetFeatures()
 	{

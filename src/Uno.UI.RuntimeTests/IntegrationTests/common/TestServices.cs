@@ -74,11 +74,7 @@ namespace Private.Infrastructure
 		{
 			get
 			{
-#if __WASM__ // TODO Uno: To be adjusted for #2302
-				return false;
-#else
 				return WindowHelper.RootElementDispatcher.HasThreadAccess;
-#endif
 			}
 		}
 
@@ -87,6 +83,11 @@ namespace Private.Infrastructure
 		public static void VERIFY_IS_NOT_NULL(object value)
 		{
 			Assert.IsNotNull(value);
+		}
+
+		public static void VERIFY_IS_NOT_NULL(object value, string msg)
+		{
+			Assert.IsNotNull(value, msg);
 		}
 
 		public static void VERIFY_IS_NULL(object value)

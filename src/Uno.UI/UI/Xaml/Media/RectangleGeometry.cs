@@ -29,7 +29,7 @@ namespace Microsoft.UI.Xaml.Media
 				"Rect",
 				typeof(Rect), typeof(RectangleGeometry),
 				new FrameworkPropertyMetadata(
-					null,
+					default(Rect),
 					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: OnRectChanged));
 

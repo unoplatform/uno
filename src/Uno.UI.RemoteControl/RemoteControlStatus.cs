@@ -5,32 +5,55 @@ using System.Text;
 
 namespace Uno.UI.RemoteControl;
 
-internal record RemoteControlStatus(
+public record RemoteControlStatus(
 	RemoteControlStatus.ConnectionState State,
 	bool? IsVersionValid,
 	(RemoteControlStatus.KeepAliveState State, long RoundTrip) KeepAlive,
 	ImmutableHashSet<RemoteControlStatus.MissingProcessor> MissingRequiredProcessors,
 	(long Count, ImmutableHashSet<Type> Types) InvalidFrames)
 {
+
+	/// <summary>
+	/// A boolean indicating if everything is fine with the connection and the handshaking succeeded.
+	/// </summary>
+	public bool IsAllGood =>
+		State == ConnectionState.Connected
+#if !DEBUG
+		// For debug builds, it's annoying to have the version mismatch preventing the connection
+		// Only Uno devs should get this issue, let's not block them.
+		&& IsVersionValid == true
+#endif
+		&& MissingRequiredProcessors.IsEmpty
+		&& KeepAlive.State == KeepAliveState.Ok
+		&& InvalidFrames.Count == 0;
+
+	/// <summary>
+	/// If the connection is problematic, meaning that the connection is not in a good state.
+	/// </summary>
+	/// <remarks>
+	/// It's just a negation of <see cref="IsAllGood"/>.
+	/// </remarks>
+	public bool IsProblematic => !IsAllGood;
+
 	public (Classification kind, string message) GetSummary()
 	{
 		var (kind, message) = State switch
 		{
 			ConnectionState.Idle => (Classification.Info, "Initializing..."),
 			ConnectionState.NoServer => (Classification.Error, "No server configured, cannot initialize connection."),
-			ConnectionState.Connecting => (Classification.Info, "Connecting to dev-server."),
-			ConnectionState.ConnectionTimeout => (Classification.Error, "Failed to connect to dev-server (timeout)."),
-			ConnectionState.ConnectionFailed => (Classification.Error, "Failed to connect to dev-server (error)."),
-			ConnectionState.Reconnecting => (Classification.Info, "Connection to dev-server has been lost, reconnecting."),
-			ConnectionState.Disconnected => (Classification.Error, "Connection to dev-server has been lost, will retry later."),
+			ConnectionState.Connecting => (Classification.Info, "Connecting to IDE."),
+			ConnectionState.ConnectionTimeout => (Classification.Error, "Failed to connect to IDE (timeout)."),
+			ConnectionState.ConnectionFailed => (Classification.Error, "Failed to connect to IDE (error)."),
+			ConnectionState.Reconnecting => (Classification.Info, "Connection to IDE has been lost, reconnecting."),
+			ConnectionState.Disconnected => (Classification.Error, "Connection to IDE has been lost, will retry later."),
 
-			ConnectionState.Connected when IsVersionValid is false => (Classification.Warning, "Connected to dev-server, but version mis-match with client."),
-			ConnectionState.Connected when InvalidFrames.Count is not 0 => (Classification.Warning, $"Connected to dev-server, but received {InvalidFrames.Count} invalid frames from the server."),
-			ConnectionState.Connected when MissingRequiredProcessors is { IsEmpty: false } => (Classification.Warning, "Connected to dev-server, but some required processors are missing on server."),
-			ConnectionState.Connected when KeepAlive.State is KeepAliveState.Late => (Classification.Info, "Connected to dev-server, but keep-alive messages are taking longer than expected."),
-			ConnectionState.Connected when KeepAlive.State is KeepAliveState.Lost => (Classification.Warning, "Connected to dev-server, but last keep-alive messages have been lost."),
-			ConnectionState.Connected when KeepAlive.State is KeepAliveState.Aborted => (Classification.Warning, "Connected to dev-server, but keep-alive has been aborted."),
-			ConnectionState.Connected => (Classification.Ok, "Connected to dev-server."),
+			ConnectionState.Connected when IsVersionValid is false => (Classification.Warning, "Connected to IDE, but version mis-match with client."),
+			ConnectionState.Connected when InvalidFrames.Count is not 0 => (Classification.Warning, $"Connected to IDE, but received {InvalidFrames.Count} invalid frames."),
+			ConnectionState.Connected when MissingRequiredProcessors is { IsEmpty: false } => (Classification.Warning, "Connected to IDE, but some required processors are missing on it."),
+			ConnectionState.Connected when KeepAlive.State is KeepAliveState.Late => (Classification.Info, "Connected to IDE, but keep-alive messages are taking longer than expected."),
+			ConnectionState.Connected when KeepAlive.State is KeepAliveState.Lost => (Classification.Warning, "Connected to IDE, but last keep-alive messages has been lost."),
+			ConnectionState.Connected when KeepAlive.State is KeepAliveState.Aborted => (Classification.Warning, "Connected to IDE, but keep-alive has been aborted."),
+			ConnectionState.Connected => (Classification.Ok, "Connected to IDE."),
 
 			_ => (Classification.Warning, State.ToString()),
 		};
@@ -51,11 +74,11 @@ internal record RemoteControlStatus(
 		{
 			details.AppendLine();
 			details.AppendLine();
-			details.AppendLine("Some processor(s) requested by the client are missing on the server:");
+			details.AppendLine("Some processor(s) requested by the client are missing on the IDE:");
 
 			foreach (var m in missing)
 			{
-				details.AppendLine($"- {m.TypeFullName} v{m.Version}: {m.Details}");
+				details.AppendLine($"- {m.TypeFullName}: {m.Details}");
 				if (m.Error is not null)
 				{
 					details.AppendLine($"  {m.Error}");
@@ -67,20 +90,20 @@ internal record RemoteControlStatus(
 		{
 			details.AppendLine();
 			details.AppendLine();
-			details.AppendLine($"Received {InvalidFrames.Count} invalid frames from the server. Failing frame types ({invalidFrameTypes.Count}):");
+			details.AppendLine($"Received {InvalidFrames.Count} invalid frames from the IDE. Failing frame types ({invalidFrameTypes.Count}):");
 
 			foreach (var type in invalidFrameTypes)
 			{
-				details.AppendLine($"- {type.FullName}");
+				details.AppendLine($"- {type.Name}");
 			}
 		}
 
 		return details.ToString();
 	}
 
-	internal record struct MissingProcessor(string TypeFullName, string Version, string Details, string? Error = null);
+	public readonly record struct MissingProcessor(string TypeFullName, string Version, string Details, string? Error = null);
 
-	internal enum KeepAliveState
+	public enum KeepAliveState
 	{
 		Idle,
 		Ok, // Got ping/pong in expected delays
@@ -89,7 +112,7 @@ internal record RemoteControlStatus(
 		Aborted // KeepAlive was aborted
 	}
 
-	internal enum ConnectionState
+	public enum ConnectionState
 	{
 		/// <summary>
 		/// Client as not been started yet
@@ -136,7 +159,7 @@ internal record RemoteControlStatus(
 		Disconnected
 	}
 
-	internal enum Classification
+	public enum Classification
 	{
 		Ok,
 		Info,

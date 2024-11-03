@@ -385,8 +385,7 @@ namespace Microsoft.UI.Xaml.Controls
 				m_tpMonthTextBlock = null;
 				m_tpDayTextBlock = null;
 
-				// UNO TODO
-				// DatePickerGenerated.OnApplyTemplate();
+				base.OnApplyTemplate();
 
 				// Get selectors for day/month/year pickers
 				GetTemplatePart<Selector>("DayPicker", out spDayPicker);
@@ -518,7 +517,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 				RefreshSetup();
 
-				// UpdateVisualState(false);
+				UpdateVisualState(false);
 
 			}
 			finally

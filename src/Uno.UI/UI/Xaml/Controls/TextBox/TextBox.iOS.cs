@@ -214,9 +214,13 @@ namespace Microsoft.UI.Xaml.Controls
 		partial void OnIsTextPredictionEnabledChangedPartial(bool newValue)
 		{
 			// There doesn't seem to be any way to disable/enable TextPrediction without disabling/enabling SpellCheck
-			if (!IsTextPredictionEnabledErrorMessageShown)
+			if (newValue != IsSpellCheckEnabled && !IsTextPredictionEnabledErrorMessageShown)
 			{
-				this.Log().Warn("IsTextPredictionEnabled isn't supported on iOS. Use IsSpellCheckeEnabled instead.");
+				if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().Warn("IsTextPredictionEnabled isn't supported on iOS. Use IsSpellCheckEnabled instead.");
+				}
+
 				IsTextPredictionEnabledErrorMessageShown = true;
 			}
 		}

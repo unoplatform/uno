@@ -2,7 +2,6 @@
 
 using System;
 using System.IO;
-using System.Runtime.InteropServices;
 using Windows.UI;
 using Microsoft.UI;
 using Microsoft.UI.Composition;
@@ -64,6 +63,8 @@ public partial class AcrylicBrush
 
 	internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 	{
+		base.OnPropertyChanged2(args);
+
 		switch (args.Property.Name)
 		{
 			case nameof(TintColor):
@@ -77,15 +78,12 @@ public partial class AcrylicBrush
 		}
 	}
 
-	// issue specific to macOSarm64 https://github.com/unoplatform/uno/issues/16853
-	static bool macOSarm64 = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) && RuntimeInformation.ProcessArchitecture is Architecture.Arm64;
-
 	private void UpdateAcrylicBrush()
 	{
 		if (_isConnected)
 		{
 			// TODO: Currently we are force recreating the brush even if it exists because Composition animations aren't implemented yet
-			CreateAcrylicBrush(useCrossFadeEffect: false, forceCreateAcrylicBrush: !macOSarm64);
+			CreateAcrylicBrush(useCrossFadeEffect: false, forceCreateAcrylicBrush: true);
 		}
 	}
 

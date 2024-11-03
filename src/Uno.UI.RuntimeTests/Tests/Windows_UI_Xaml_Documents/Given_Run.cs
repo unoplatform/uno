@@ -17,7 +17,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Documents
 		public void When_GetSegments_SingleLine()
 		{
 			var expected = new ExpectedSegment[] {
-				new("  Test ", 2, 1, 0, true),
+				new("  Test ", 2, 1, 0),
 			};
 
 			Run run = new() { Text = GetText(expected) };
@@ -30,7 +30,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Documents
 		public void When_GetSegments_SingleLineWith1CharLineBreak()
 		{
 			var expected = new ExpectedSegment[] {
-				new("  Test \n", 2, 1, 1, true),
+				new("  Test \n", 2, 1, 1),
 			};
 
 			Run run = new() { Text = GetText(expected) };
@@ -43,7 +43,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Documents
 		public void When_GetSegments_SingleLineWith2CharLineBreak()
 		{
 			var expected = new ExpectedSegment[] {
-				new("Test  \r\n", 0, 2, 2, true),
+				new("Test  \r\n", 0, 2, 2),
 			};
 
 			Run run = new() { Text = GetText(expected) };
@@ -56,8 +56,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Documents
 		public void When_GetSegments_Multiline()
 		{
 			var expected = new ExpectedSegment[] {
-				new("Test1\n", 0, 0, 1, false),
-				new(" Test2  ", 1, 2, 0, true),
+				new("Test1\n", 0, 0, 1),
+				new(" Test2  ", 1, 2, 0),
 			};
 
 			Run run = new() { Text = GetText(expected) };
@@ -70,10 +70,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Documents
 		public void When_GetSegments_MultiwordWithSpaces()
 		{
 			var expected = new ExpectedSegment[] {
-				new(" Test1 ", 1, 1, 0, true),
-				new("Test2 ", 0, 1, 0, true),
-				new("Test3   ", 0, 3, 0, true),
-				new("Test4", 0, 0, 0, false),
+				new(" Test1 ", 1, 1, 0),
+				new("Test2 ", 0, 1, 0),
+				new("Test3   ", 0, 3, 0),
+				new("Test4", 0, 0, 0),
 			};
 
 			Run run = new() { Text = GetText(expected) };
@@ -86,11 +86,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Documents
 		public void When_GetSegments_MultiwordWithHyphens()
 		{
 			var expected = new ExpectedSegment[] {
-				new(" Test1- ", 1, 1, 0, true),
-				new("Test2---", 0, 0, 0, true),
-				new("Test3 ", 0, 1, 0, true),
-				new("-", 0, 0, 0, true),
-				new("Test4", 0, 0, 0, false),
+				new(" Test1- ", 1, 1, 0),
+				new("Test2---", 0, 0, 0),
+				new("Test3 ", 0, 1, 0),
+				new("-", 0, 0, 0),
+				new("Test4", 0, 0, 0),
 			};
 
 			Run run = new() { Text = GetText(expected) };
@@ -103,9 +103,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Documents
 		public void When_GetSegments_MultiwordWithNumericHyphens()
 		{
 			var expected = new ExpectedSegment[] {
-				new("Test1-$123-", 0, 0, 0, true),
-				new("Test2 ", 0, 1, 0, true),
-				new("-.456", 0, 0, 0, false),
+				new("Test1-$123-", 0, 0, 0),
+				new("Test2 ", 0, 1, 0),
+				new("-.456", 0, 0, 0),
 			};
 
 			Run run = new() { Text = GetText(expected) };
@@ -127,8 +127,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Documents
 
 				Assert.AreEqual(expected.LeadingSpaces, result.LeadingSpaces);
 				Assert.AreEqual(expected.TrailingSpaces, result.TrailingSpaces);
-
-				Assert.AreEqual(expected.WordBreakAfter, result.WordBreakAfter);
 
 				Assert.AreEqual(expected.LineBreakLength, result.LineBreakLength);
 				Assert.AreEqual(expected.LineBreakAfter, result.LineBreakAfter);
@@ -163,15 +161,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Documents
 
 			public bool LineBreakAfter => LineBreakLength > 0;
 
-			public bool WordBreakAfter { get; }
-
-			public ExpectedSegment(string text, int leadingSpaces, int trailingSpaces, int lineBreakLength, bool wordBreakAfter)
+			public ExpectedSegment(string text, int leadingSpaces, int trailingSpaces, int lineBreakLength)
 			{
 				Text = text;
 				LeadingSpaces = leadingSpaces;
 				TrailingSpaces = trailingSpaces;
 				LineBreakLength = lineBreakLength;
-				WordBreakAfter = wordBreakAfter;
 			}
 		}
 	}

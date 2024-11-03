@@ -1,5 +1,5 @@
 parameters:
-  UnoCheck_Version: '1.24.0-dev.12'
+  UnoCheck_Version: '1.26.0-dev.63'
 
 steps:
 
@@ -12,12 +12,12 @@ steps:
       sudo apt-get install apt-transport-https
       sudo apt-get update
       sudo apt-get install -y msopenjdk-11
+      sudo update-java-alternatives --set msopenjdk-11-amd64
     displayName: Install OpenJDK 11
     retryCountOnTaskFailure: 3
 
   - bash: |
       dotnet tool update --global uno.check --version ${{ parameters.UnoCheck_Version }} --add-source https://api.nuget.org/v3/index.json
-      # androidsdk disabled for https://github.com/unoplatform/uno.check/issues/241
-      uno-check --ci --non-interactive --fix --skip androidsdk --skip gtk3 --pre-major
+      uno-check --verbose --ci --non-interactive --fix --skip gtk3 --skip androidsdk --pre-major
     displayName: Install .NET Workloads
     retryCountOnTaskFailure: 3

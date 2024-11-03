@@ -15,8 +15,9 @@
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 
-		<!-- Manual packaging during CI -->
-		<IsPackable>false</IsPackable>
+		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
+
+    	<Description>This package provides internal logging utilities for Uno.UI and Uno.WinUI packages</Description>
 	</PropertyGroup>
 
 	<ItemGroup>

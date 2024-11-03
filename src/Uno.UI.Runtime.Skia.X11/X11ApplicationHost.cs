@@ -23,6 +23,7 @@ namespace Uno.WinUI.Runtime.Skia.X11;
 public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDisposable
 {
 	[ThreadStatic] private static bool _isDispatcherThread;
+	[ThreadStatic] private static int _renderFrameRate;
 	private readonly EventLoop _eventLoop;
 
 	private readonly Func<Application> _appBuilder;
@@ -66,19 +67,27 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 		ApiExtensibility.Register<ContentPresenter>(typeof(ContentPresenter.INativeElementHostingExtension), o => new X11NativeElementHostingExtension(o));
 
 		ApiExtensibility.Register<DragDropManager>(typeof(Windows.ApplicationModel.DataTransfer.DragDrop.Core.IDragDropExtension), o => new X11DragDropExtension(o));
+
+		ApiExtensibility.Register<XamlRoot>(typeof(Uno.Graphics.INativeOpenGLWrapper), xamlRoot => new X11NativeOpenGLWrapper(xamlRoot));
 	}
 
-	public X11ApplicationHost(Func<Application> appBuilder)
+	public X11ApplicationHost(Func<Application> appBuilder, int renderFrameRate = 60)
 	{
 		_appBuilder = appBuilder;
 
 		_eventLoop = new EventLoop();
 		_eventLoop.Schedule(() => { Thread.CurrentThread.Name = "Uno Event Loop"; }, UI.Dispatching.NativeDispatcherPriority.Normal);
 
-		_eventLoop.Schedule(() => _isDispatcherThread = true, UI.Dispatching.NativeDispatcherPriority.Normal);
+		_eventLoop.Schedule(() =>
+		{
+			_isDispatcherThread = true;
+			_renderFrameRate = renderFrameRate;
+		}, UI.Dispatching.NativeDispatcherPriority.Normal);
 		CoreDispatcher.DispatchOverride = _eventLoop.Schedule;
 		CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
 	}
+
+	internal static int RenderFrameRate => _renderFrameRate;
 
 	[LibraryImport("libc", StringMarshallingCustomType = typeof(AnsiStringMarshaller))]
 	private static partial void setlocale(int type, string s);
@@ -109,7 +118,7 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 			app.Host = this;
 		}
 
-		Application.StartWithArguments(CreateApp);
+		Application.Start(CreateApp);
 	}
 
 	protected override void Initialize()

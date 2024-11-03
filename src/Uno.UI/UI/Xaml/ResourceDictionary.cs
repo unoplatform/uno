@@ -140,7 +140,7 @@ namespace Microsoft.UI.Xaml
 				if (value is FrameworkElement fe)
 				{
 #if UNO_HAS_ENHANCED_LIFECYCLE
-					fe.Leave(new LeaveParams());
+					fe.LeaveImpl(new LeaveParams());
 #else
 					fe.PerformOnUnloaded(isFromResources: true);
 #endif
@@ -521,6 +521,8 @@ namespace Microsoft.UI.Xaml
 
 		// TODO: this doesn't handle lazy initializers or aliases
 		public global::System.Collections.Generic.ICollection<object> Values => _values.Values;
+
+		internal SpecializedResourceDictionary.ValueCollection ValuesInternal => _values.Values;
 
 		public void Add(global::System.Collections.Generic.KeyValuePair<object, object> item) => Add(item.Key, item.Value);
 

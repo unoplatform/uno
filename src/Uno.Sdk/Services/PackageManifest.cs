@@ -136,6 +136,8 @@ internal class PackageManifest
 		public const string UniversalImageLoading = nameof(UniversalImageLoading);
 		public const string Dsp = nameof(Dsp);
 		public const string Resizetizer = nameof(Resizetizer);
+		public const string SdkExtras = nameof(SdkExtras);
+		public const string Settings = nameof(Settings);
 		public const string SkiaSharp = nameof(SkiaSharp);
 		public const string SvgSkia = nameof(SvgSkia);
 		public const string WinAppSdk = nameof(WinAppSdk);
@@ -145,6 +147,7 @@ internal class PackageManifest
 		public const string MsalClient = nameof(MsalClient);
 		public const string Mvvm = nameof(Mvvm);
 		public const string Prism = nameof(Prism);
+		public const string UnoFonts = nameof(UnoFonts);
 		public const string AndroidMaterial = nameof(AndroidMaterial);
 		public const string AndroidXLegacySupportV4 = nameof(AndroidXLegacySupportV4);
 		public const string AndroidXAppCompat = nameof(AndroidXAppCompat);

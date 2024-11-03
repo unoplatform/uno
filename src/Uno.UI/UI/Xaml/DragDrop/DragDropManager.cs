@@ -44,11 +44,7 @@ namespace Microsoft.UI.Xaml
 		/// <inheritdoc />
 		public void BeginDragAndDrop(CoreDragInfo info, ICoreDropOperationTarget? target = null)
 		{
-			if (
-#if __WASM__
-				Uno.UI.Dispatching.NativeDispatcher.IsThreadingSupported &&
-#endif
-				_inputManager.ContentRoot.Dispatcher is { } dispatcher &&
+			if (_inputManager.ContentRoot.Dispatcher is { } dispatcher &&
 				!dispatcher.HasThreadAccess)
 			{
 				_ = dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => BeginDragAndDrop(info, target));

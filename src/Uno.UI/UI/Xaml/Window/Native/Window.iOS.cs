@@ -274,13 +274,7 @@ public partial class Window : UIWindow
 		}
 	}
 
-	public override
-#if NET8_0_OR_GREATER
-		UIView?
-#else
-		UIView
-#endif
-		HitTest(CGPoint point, UIEvent? uievent)
+	public override UIView? HitTest(CGPoint point, UIEvent? uievent)
 	{
 		if (!BypassCheckToCloseKeyboard && uievent is { Type: UIEventType.Touches })
 		{

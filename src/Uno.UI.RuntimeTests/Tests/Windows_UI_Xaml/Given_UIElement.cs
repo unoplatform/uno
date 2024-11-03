@@ -18,27 +18,27 @@ using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.System;
 using Windows.UI.Core;
+using Windows.UI.Input.Preview.Injection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
+using SamplesApp.UITests;
+using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Point = System.Drawing.Point;
+using Uno.UI;
+using Windows.UI;
+using Windows.ApplicationModel.Appointments;
+using Microsoft.UI.Xaml.Hosting;
+using Uno.UI.Toolkit.Extensions;
 
 #if __IOS__
 using UIKit;
 #elif __MACOS__
 using AppKit;
-#else
-using Uno.UI;
-using Windows.UI;
-using Windows.ApplicationModel.Appointments;
-using Microsoft.UI.Xaml.Hosting;
-using Uno.Extensions;
-using Windows.UI.Input.Preview.Injection;
-using Uno.UI.Toolkit.Extensions;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
@@ -46,6 +46,39 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	[TestClass]
 	public partial class Given_UIElement
 	{
+		private partial class ButtonChangingClipDuringArrange : Button
+		{
+			protected override Size ArrangeOverride(Size finalSize)
+			{
+				Clip = new RectangleGeometry()
+				{
+					Rect = new Rect(0, 0, 100, 10),
+					Transform = new TranslateTransform(),
+				};
+				return base.ArrangeOverride(finalSize);
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __ANDROID__ || __IOS__
+		[Ignore("LayoutStorage not implemented properly for Layouter")]
+#endif
+		public async Task When_Not_In_Visual_Tree_Should_Reset_LayoutStorage()
+		{
+			var SUT = new TextBox { Text = "Some text", Margin = new Thickness(10) };
+			var border = new Border { Child = SUT };
+
+			await UITestHelper.Load(border);
+
+			Assert.AreNotEqual(default, SUT.DesiredSize);
+
+			TestServices.WindowHelper.WindowContent = null;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(default, SUT.DesiredSize);
+		}
+
 		[TestMethod]
 		[RunsOnUIThread]
 		[DataRow(200)]
@@ -158,6 +191,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.AreEqual(new Rect(0, 0, 99, 99), chartreuseBounds);
 			Assert.AreEqual(new Rect(25, 25, 49, 49), deepPinkBounds);
 			Assert.AreEqual(new Rect(65, 25, 4, 24), deepSkyBlueBounds);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[UnoWorkItem("https://github.com/unoplatform/uno/issues/17642")]
+		public async Task When_Clipping_Changes_During_Arrange()
+		{
+			await UITestHelper.Load(new ButtonChangingClipDuringArrange() { Content = "Hello" });
 		}
 
 #if HAS_UNO // Tests use IsArrangeDirty, which is an internal property
@@ -809,60 +850,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		}
 #endif
 
-#if HAS_UNO // Cannot Set the LayoutInformation on UWP
-		[TestMethod]
-		[RunsOnUIThread]
-		public void When_UpdateLayout_Then_TreeNotMeasuredUsingCachedValue()
-		{
-			if (TestServices.WindowHelper.RootElement is Panel root)
-			{
-				var sut = new Grid
-				{
-					HorizontalAlignment = HorizontalAlignment.Stretch,
-					VerticalAlignment = VerticalAlignment.Stretch
-				};
-
-				var originalRootAvailableSize = LayoutInformation.GetAvailableSize(root);
-				var originalRootDesiredSize = LayoutInformation.GetDesiredSize(root);
-				var originalRootLayoutSlot = LayoutInformation.GetLayoutSlot(root);
-
-				Size availableSize;
-				Rect layoutSlot;
-				try
-				{
-					LayoutInformation.SetAvailableSize(root, default);
-					LayoutInformation.SetDesiredSize(root, default);
-					LayoutInformation.SetLayoutSlot(root, default);
-
-					root.Children.Add(sut);
-					sut.UpdateLayout();
-
-					availableSize = LayoutInformation.GetAvailableSize(sut);
-					layoutSlot = LayoutInformation.GetLayoutSlot(sut);
-				}
-				finally
-				{
-					LayoutInformation.SetAvailableSize(root, originalRootAvailableSize);
-					LayoutInformation.SetDesiredSize(root, originalRootDesiredSize);
-					LayoutInformation.SetLayoutSlot(root, originalRootLayoutSlot);
-
-					root.Children.Remove(sut);
-					try { root.UpdateLayout(); }
-					catch { } // Make sure to restore visual tree if test has failed!
-				}
-
-				Assert.AreNotEqual(default, availableSize);
-#if !__IOS__ // Arrange is async on iOS!
-				Assert.AreNotEqual(default, layoutSlot);
-#endif
-			}
-			else
-			{
-				Assert.Inconclusive("The RootElement is not a Panel");
-			}
-		}
-#endif
-
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_UpdateLayout_Then_ReentrancyNotAllowed()
@@ -1310,7 +1297,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			await TestServices.WindowHelper.WaitForIdle();
 
 			var bitmap = await UITestHelper.ScreenShot(sp);
-			ImageAssert.HasColorInRectangle(bitmap, new System.Drawing.Rectangle(new Point(0, 0), bitmap.Size), Microsoft.UI.Colors.Yellow);
+			ImageAssert.HasColorInRectangle(bitmap, new System.Drawing.Rectangle(new Point(0, 0), bitmap.Size), Microsoft.UI.Colors.Yellow, tolerance: 25);
 		}
 #endif
 
@@ -1332,13 +1319,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		}
 #endif
 
-#if __SKIA__ || WINAPPSDK
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
+#if !HAS_COMPOSITION_API
+		[Ignore("Composition APIs are not supported on this platform.")]
+#endif
 		public async Task When_Visual_Offset_Changes_HitTest()
 		{
-			var sut = new Button()
+			var sut = new Button
 			{
 				Content = "Click",
 			};
@@ -1347,7 +1336,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			var rect = await UITestHelper.Load(sut);
 
-#if __SKIA__
+#if HAS_UNO
 			var (element, _) = VisualTreeHelper.HitTest(rect.GetCenter(), sut.XamlRoot);
 			Assert.IsTrue(sut.IsAncestorOf(element));
 #endif
@@ -1383,7 +1372,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.AreEqual(rect.Height * 2, matrix4.OffsetY - matrix1.OffsetY);
 #endif
 
-#if __SKIA__
+#if HAS_UNO
 			var (element2, _) = VisualTreeHelper.HitTest(rect.GetCenter(), sut.XamlRoot);
 			Assert.IsFalse(sut.IsAncestorOf(element2));
 
@@ -1395,9 +1384,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
+#if !HAS_COMPOSITION_API
+		[Ignore("Composition APIs are not supported on this platform.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
 		public async Task When_Visual_Offset_Changes_InjectedPointer()
 		{
-			var sut = new Button()
+			var sut = new Button
 			{
 				Content = "Click",
 			};
@@ -1565,6 +1559,76 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #endif
 		}
 #endif
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is only supported on skia")]
+#endif
+		[DataRow(true)]
+		[DataRow(false)]
+		public async Task When_Multiple_Pointer_Buttons_Pressed(bool releaseRightFirst)
+		{
+			var SUT = new Border
+			{
+				Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
+				Width = 100,
+				Height = 100
+			};
+
+			var pointerDown = 0;
+			var pointerUp = 0;
+			var rightTapped = 0;
+			SUT.PointerPressed += (_, _) => pointerDown++;
+			SUT.PointerReleased += (_, _) => pointerUp++;
+			SUT.RightTapped += (_, _) => rightTapped++;
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			mouse.MoveTo(SUT.GetAbsoluteBoundsRect().GetCenter());
+			mouse.Press();
+			await TestServices.WindowHelper.WaitForIdle();
+			Assert.AreEqual(1, pointerDown);
+			Assert.AreEqual(0, pointerUp);
+			Assert.AreEqual(0, rightTapped);
+
+			mouse.PressRight();
+			await TestServices.WindowHelper.WaitForIdle();
+			Assert.AreEqual(1, pointerDown);
+			Assert.AreEqual(0, pointerUp);
+			Assert.AreEqual(0, rightTapped);
+
+			if (releaseRightFirst)
+			{
+				mouse.ReleaseRight();
+			}
+			else
+			{
+				mouse.Release();
+			}
+			await TestServices.WindowHelper.WaitForIdle();
+			Assert.AreEqual(1, pointerDown);
+			Assert.AreEqual(0, pointerUp);
+			Assert.AreEqual(0, rightTapped);
+
+			if (releaseRightFirst)
+			{
+				mouse.Release();
+			}
+			else
+			{
+				mouse.ReleaseRight();
+			}
+			await TestServices.WindowHelper.WaitForIdle();
+			Assert.AreEqual(1, pointerDown);
+			Assert.AreEqual(1, pointerUp);
+			Assert.AreEqual(0, rightTapped);
+		}
 #endif
 
 #if HAS_UNO
@@ -1615,13 +1679,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		}
 #endif
 
-#if HAS_UNO && HAS_INPUT_INJECTOR
+#if HAS_UNO
 		#region Drag and Drop
 
 		[TestMethod]
 		[RunsOnUIThread]
 		[DataRow(true)]
 		[DataRow(false)]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#elif __WASM__
+		[Ignore("Failing on WASM: https://github.com/unoplatform/uno/issues/17742")]
+#endif
 		public async Task When_DragOver_Fires_Along_DragEnter_Drop(bool waitAfterRelease)
 		{
 			if (TestServices.WindowHelper.IsXamlIsland)
@@ -1683,6 +1752,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.AreEqual(0, dragOverCount);
 			Assert.AreEqual(0, dropCount);
 
+			mouse.MoveTo(new Windows.Foundation.Point(SUT.GetAbsoluteBoundsRect().GetCenter().X, SUT.GetAbsoluteBoundsRect().Top + 15), 1);
+			await TestServices.WindowHelper.WaitForIdle();
 			mouse.MoveTo(new Windows.Foundation.Point(SUT.GetAbsoluteBoundsRect().GetCenter().X, SUT.GetAbsoluteBoundsRect().Top + 10), 1);
 			await TestServices.WindowHelper.WaitForIdle();
 

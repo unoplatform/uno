@@ -9,6 +9,7 @@ using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices;
 using NavigationView = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationView;
 using NavigationViewItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.NavigationViewItem;
+using Private.Infrastructure;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests;
 
@@ -16,10 +17,15 @@ public partial class NavigationViewTests : MUXApiTestBase
 {
 	[TestMethod]
 #if !HAS_INPUT_INJECTOR || !HAS_UNO_WINUI
-	[Ignore("InputInjector is only supported on skia")]
+	[Ignore("InputInjector is not supported on this platform.")]
 #endif
 	public async Task VerifyNavigationViewItemExpandsCollapsesWhenChevronTapped()
 	{
+		if (TestServices.WindowHelper.IsXamlIsland)
+		{
+			Assert.Inconclusive("Test is currently disabled on Uno Islands #18105");
+		}
+
 		NavigationView SUT = null;
 
 		MUXControlsTestApp.Utilities.RunOnUIThread.Execute(() =>

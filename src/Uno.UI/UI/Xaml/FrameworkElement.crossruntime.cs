@@ -38,7 +38,7 @@ namespace Microsoft.UI.Xaml
 		#region HorizontalAlignment Dependency Property
 		[GeneratedDependencyProperty(
 			DefaultValue = Xaml.HorizontalAlignment.Stretch,
-			Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
+			Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsArrange
 #if DEBUG
 			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
 #endif
@@ -55,7 +55,7 @@ namespace Microsoft.UI.Xaml
 		#region VerticalAlignment Dependency Property
 		[GeneratedDependencyProperty(
 			DefaultValue = Xaml.VerticalAlignment.Stretch,
-			Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
+			Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsArrange
 #if DEBUG
 			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
 #endif
@@ -68,7 +68,6 @@ namespace Microsoft.UI.Xaml
 			set => SetVerticalAlignmentValue(value);
 		}
 		#endregion
-
 
 		#region Width Dependency Property
 		[GeneratedDependencyProperty(
@@ -239,6 +238,10 @@ namespace Microsoft.UI.Xaml
 		partial void OnUnloadedPartial();
 
 		private protected virtual void OnUnloaded() { }
+
+#if DEBUG && __NETSTD_REFERENCE__
+		private void OnGenericPropertyUpdated(DependencyPropertyChangedEventArgs args) { }
+#endif
 
 		public override string ToString()
 		{

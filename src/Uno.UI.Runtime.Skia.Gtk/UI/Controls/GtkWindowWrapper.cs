@@ -11,9 +11,11 @@ using Uno.Foundation.Logging;
 using Uno.UI.Runtime.Skia.Gtk.Helpers.Dpi;
 using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
+using Windows.Graphics;
 using Windows.UI.Core;
 using Windows.UI.Core.Preview;
 using WinUIApplication = Microsoft.UI.Xaml.Application;
+using WinUIWindow = Microsoft.UI.Xaml.Window;
 
 namespace Uno.UI.Runtime.Skia.Gtk.UI.Controls;
 
@@ -25,7 +27,7 @@ internal class GtkWindowWrapper : NativeWindowWrapperBase
 	private List<PendingWindowStateChangedInfo>? _pendingWindowStateChanged = new();
 	private bool _wasShown;
 
-	public GtkWindowWrapper(UnoGtkWindow gtkWindow, XamlRoot xamlRoot) : base(xamlRoot)
+	public GtkWindowWrapper(UnoGtkWindow gtkWindow, WinUIWindow window, XamlRoot xamlRoot) : base(window, xamlRoot)
 	{
 		_gtkWindow = gtkWindow ?? throw new ArgumentNullException(nameof(gtkWindow));
 		_gtkWindow.Shown += OnWindowShown;
@@ -75,14 +77,10 @@ internal class GtkWindowWrapper : NativeWindowWrapperBase
 
 	public override void Close()
 	{
+		base.Close();
 		if (_wasShown)
 		{
 			_gtkWindow.Close();
-		}
-		else
-		{
-			// Simulate closing to be in line with other targets.
-			OnWindowClosed(null, EventArgs.Empty);
 		}
 	}
 
@@ -94,8 +92,6 @@ internal class GtkWindowWrapper : NativeWindowWrapperBase
 
 	private void OnWindowClosed(object? sender, EventArgs e)
 	{
-		RaiseClosed();
-
 		var windows = global::Gtk.Window.ListToplevels();
 		if (!windows.Where(w => w is UnoGtkWindow && w != NativeWindow).Any())
 		{
@@ -112,17 +108,6 @@ internal class GtkWindowWrapper : NativeWindowWrapperBase
 			return;
 		}
 
-		var manager = SystemNavigationManagerPreview.GetForCurrentView();
-		if (!manager.HasConfirmedClose)
-		{
-			if (!manager.RequestAppClose())
-			{
-				// App closing was prevented, handle event
-				args.RetVal = true;
-				return;
-			}
-		}
-
 		// Closing should continue, perform suspension.
 		WinUIApplication.Current.RaiseSuspending();
 
@@ -134,6 +119,7 @@ internal class GtkWindowWrapper : NativeWindowWrapperBase
 	{
 		Bounds = new Rect(default, size);
 		VisibleBounds = Bounds;
+		Size = size.ToSizeInt32();
 	}
 
 	private void OnWindowStateChanged(object o, WindowStateEventArgs args)
@@ -196,11 +182,11 @@ internal class GtkWindowWrapper : NativeWindowWrapperBase
 		{
 			if (isVisible)
 			{
-				winUIApplication?.RaiseLeavingBackground(() => Visible = isVisible);
+				winUIApplication?.RaiseLeavingBackground(() => IsVisible = isVisible);
 			}
 			else
 			{
-				Visible = isVisible;
+				IsVisible = isVisible;
 				winUIApplication?.RaiseEnteredBackground(null);
 			}
 		}

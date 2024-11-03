@@ -26,7 +26,7 @@ namespace Microsoft.UI.Xaml.Shapes
 				("rx", (cx - halfStrokeThickness).ToStringInvariant()),
 				("ry", (cy - halfStrokeThickness).ToStringInvariant()));
 
-			return shapeSize;
+			return finalSize;
 		}
 	}
 }

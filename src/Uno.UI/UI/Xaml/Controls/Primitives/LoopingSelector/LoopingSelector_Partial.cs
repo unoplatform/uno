@@ -29,8 +29,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		internal LoopingSelector()
 		{
-			this.RegisterDisposablePropertyChangedCallback((i, s, e) => OnPropertyChanged(e));
-
 			_hasFocus = false;
 			_isSized = false;
 			_isSetupPending = true;

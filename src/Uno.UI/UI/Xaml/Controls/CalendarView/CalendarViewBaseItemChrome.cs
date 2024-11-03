@@ -87,7 +87,7 @@ namespace Microsoft.UI.Xaml.Controls
 			m_hasLabel = false;
 		}
 
-		private bool HasTemplateChild()
+		private protected override bool HasTemplateChild()
 		{
 			return GetFirstChildNoAddRef() != null;
 		}
@@ -280,8 +280,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (pChildNoRef is { })
 			{
 				pChildNoRef.Measure(availableSize);
-				// TODO UNO
-				//pChildNoRef.EnsureLayoutStorage();
+				pChildNoRef.EnsureLayoutStorage();
 
 				desiredSize.Width = Math.Max(pChildNoRef.DesiredSize.Width, desiredSize.Width);
 				desiredSize.Height = Math.Max(pChildNoRef.DesiredSize.Height, desiredSize.Height);

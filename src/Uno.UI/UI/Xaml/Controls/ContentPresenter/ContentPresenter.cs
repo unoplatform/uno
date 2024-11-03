@@ -53,7 +53,7 @@ namespace Microsoft.UI.Xaml.Controls;
 /// The content presenter is used for compatibility with WPF concepts,
 /// but the ContentSource property is not available, because there are ControlTemplates for now.
 /// </remarks>
-[ContentProperty(Name = "Content")]
+[ContentProperty(Name = nameof(Content))]
 public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePoolAware
 #if !__CROSSRUNTIME__ && !IS_UNIT_TESTS
 	, ICustomClippingElement
@@ -77,10 +77,15 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 #if !UNO_HAS_BORDER_VISUAL
 		_borderRenderer = new BorderLayerRenderer(this);
 #endif
-		SetDefaultForeground(ForegroundProperty);
+		UpdateLastUsedTheme();
 
 		InitializePlatform();
 	}
+
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __NETSTD_REFERENCE__ || __MACOS__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#endif
+	public BrushTransition BackgroundTransition { get; set; }
 
 #if UNO_HAS_BORDER_VISUAL
 	private protected override ShapeVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateBorderVisual();
@@ -105,6 +110,8 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	/// <remarks>This is used to alter the propagation of the templated parent.</remarks>
 	internal bool IsNativeHost { get; set; }
 
+	internal DataTemplate SelectedContentTemplate => _dataTemplateUsedLastUpdate;
+
 	protected override bool IsSimpleLayout => true;
 
 	#region Content DependencyProperty
@@ -117,12 +124,12 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	public static DependencyProperty ContentProperty { get; } =
 		DependencyProperty.Register(
-			"Content",
+			nameof(Content),
 			typeof(object),
 			typeof(ContentPresenter),
 			new FrameworkPropertyMetadata(
 				defaultValue: null,
-				options: FrameworkPropertyMetadataOptions.None,
+				options: FrameworkPropertyMetadataOptions.AffectsMeasure,
 				propertyChangedCallback: (s, e) => ((ContentPresenter)s)?.OnContentChanged(e.OldValue, e.NewValue)
 			)
 		);
@@ -140,12 +147,12 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	// Using a DependencyProperty as the backing store for ContentTemplate.  This enables animation, styling, binding, etc...
 	public static DependencyProperty ContentTemplateProperty { get; } =
 		DependencyProperty.Register(
-			"ContentTemplate",
+			nameof(ContentTemplate),
 			typeof(DataTemplate),
 			typeof(ContentPresenter),
 			new FrameworkPropertyMetadata(
 				null,
-				FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
+				FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.AffectsMeasure,
 				(s, e) => ((ContentPresenter)s)?.OnContentTemplateChanged(e.OldValue as DataTemplate, e.NewValue as DataTemplate)
 			)
 		);
@@ -254,12 +261,12 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	public static DependencyProperty FontWeightProperty { get; } =
 		DependencyProperty.Register(
-			"FontWeight",
+			nameof(FontWeight),
 			typeof(FontWeight),
 			typeof(ContentPresenter),
 			new FrameworkPropertyMetadata(
 				FontWeights.Normal,
-				FrameworkPropertyMetadataOptions.Inherits,
+				FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
 				(s, e) => ((ContentPresenter)s)?.OnFontWeightChanged((FontWeight)e.OldValue, (FontWeight)e.NewValue)
 			)
 		);
@@ -276,12 +283,12 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	public static DependencyProperty FontSizeProperty { get; } =
 		DependencyProperty.Register(
-			"FontSize",
+			nameof(FontSize),
 			typeof(double),
 			typeof(ContentPresenter),
 			new FrameworkPropertyMetadata(
 				14.0,
-				FrameworkPropertyMetadataOptions.Inherits,
+				FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
 				(s, e) => ((ContentPresenter)s)?.OnFontSizeChanged((double)e.OldValue, (double)e.NewValue)
 			)
 		);
@@ -298,12 +305,12 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	public static DependencyProperty FontFamilyProperty { get; } =
 		DependencyProperty.Register(
-			"FontFamily",
+			nameof(FontFamily),
 			typeof(FontFamily),
 			typeof(ContentPresenter),
 			new FrameworkPropertyMetadata(
 				FontFamily.Default,
-				FrameworkPropertyMetadataOptions.Inherits,
+				FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
 				(s, e) => ((ContentPresenter)s)?.OnFontFamilyChanged(e.OldValue as FontFamily, e.NewValue as FontFamily)
 			)
 		);
@@ -319,15 +326,27 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	public static DependencyProperty FontStyleProperty { get; } =
 		DependencyProperty.Register(
-			"FontStyle",
+			nameof(FontStyle),
 			typeof(FontStyle),
 			typeof(ContentPresenter),
 			new FrameworkPropertyMetadata(
 				FontStyle.Normal,
-				FrameworkPropertyMetadataOptions.Inherits,
+				FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
 				(s, e) => ((ContentPresenter)s)?.OnFontStyleChanged((FontStyle)e.OldValue, (FontStyle)e.NewValue)
 			)
 		);
+	#endregion
+
+	#region FontStretch
+
+	public FontStretch FontStretch
+	{
+		get => GetFontStretchValue();
+		set => SetFontStretchValue(value);
+	}
+
+	[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnFontStretchChanged), DefaultValue = FontStretch.Normal, Options = FrameworkPropertyMetadataOptions.Inherits)]
+	public static DependencyProperty FontStretchProperty { get; } = CreateFontStretchProperty();
 	#endregion
 
 	#region TextWrapping Dependency Property
@@ -368,11 +387,12 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	public static DependencyProperty MaxLinesProperty { get; } =
 		DependencyProperty.Register(
-			"MaxLines",
+			nameof(MaxLines),
 			typeof(int),
 			typeof(ContentPresenter),
 			new FrameworkPropertyMetadata(
 				defaultValue: 0,
+				options: FrameworkPropertyMetadataOptions.AffectsMeasure,
 				propertyChangedCallback: (s, e) => ((ContentPresenter)s).OnMaxLinesChanged()
 			)
 		);
@@ -545,12 +565,12 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	public static DependencyProperty BorderThicknessProperty { get; } =
 		DependencyProperty.Register(
-			"BorderThickness",
+			nameof(BorderThickness),
 			typeof(Thickness),
 			typeof(ContentPresenter),
 			new FrameworkPropertyMetadata(
 				(Thickness)Thickness.Empty,
-				FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange,
+				FrameworkPropertyMetadataOptions.AffectsMeasure,
 				(s, e) => ((ContentPresenter)s)?.OnBorderThicknessChanged((Thickness)e.OldValue, (Thickness)e.NewValue)
 			)
 		);
@@ -636,7 +656,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		// Uno specific: since we don't call this early enough, we have to comment out the condition
 		// if (GetChildren().Count == 0)
 		{
-			ContentControl pTemplatedParent = TemplatedParent as ContentControl;
+			ContentControl pTemplatedParent = GetTemplatedParent() as ContentControl;
 
 			// Only ContentControl has the two properties below.  Other parents would just fail to bind since they don't have these
 			// two content related properties.
@@ -746,6 +766,13 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	partial void OnFontStyleChangedPartial(FontStyle oldValue, FontStyle newValue);
 
+	private protected virtual void OnFontStretchChanged(FontStretch oldValue, FontStretch newValue)
+	{
+		OnFontStretchChangedPartial(oldValue, newValue);
+	}
+
+	partial void OnFontStretchChangedPartial(FontStretch oldValue, FontStretch newValue);
+
 	protected virtual void OnContentChanged(object oldValue, object newValue)
 	{
 		if (oldValue is View || newValue is View)
@@ -757,10 +784,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 		TrySetDataContextFromContent(newValue);
 
-		if (IsInLiveTree)
-		{
-			TryRegisterNativeElement(oldValue, newValue);
-		}
+		TryRegisterNativeElement(oldValue, newValue);
 
 		SetUpdateTemplate();
 	}
@@ -787,13 +811,6 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		}
 	}
 
-	protected internal override void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
-	{
-		base.OnTemplatedParentChanged(e);
-
-		SetImplicitContent();
-	}
-
 	protected virtual void OnContentTemplateChanged(DataTemplate oldContentTemplate, DataTemplate newContentTemplate)
 	{
 		if (ContentTemplateRoot != null)
@@ -806,6 +823,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	protected virtual void OnContentTemplateSelectorChanged(DataTemplateSelector oldContentTemplateSelector, DataTemplateSelector newContentTemplateSelector)
 	{
+		SetUpdateTemplate();
 	}
 
 	partial void UnregisterContentTemplateRoot();
@@ -832,56 +850,11 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 			_contentTemplateRoot = value;
 
-			SynchronizeContentTemplatedParent();
-
 			if (_contentTemplateRoot != null)
 			{
 				RegisterContentTemplateRoot();
 
 				UpdateContentTransitions(null, this.ContentTransitions);
-			}
-		}
-	}
-
-	private void SynchronizeContentTemplatedParent()
-	{
-		if (IsNativeHost)
-		{
-			// In this case, the ContentPresenter is not used as part of the child of a
-			// templated control, and we must not take the outer templated parent, but rather
-			// the immediate template parent (as if the native view was not wrapped).
-			// Needs to be reevaluated with https://github.com/unoplatform/uno/issues/1621
-			if (_contentTemplateRoot is IFrameworkElement binder)
-			{
-				binder.TemplatedParent = this.TemplatedParent;
-			}
-		}
-		else
-		{
-			if (_contentTemplateRoot is IFrameworkElement binder)
-			{
-				binder.TemplatedParent = FindTemplatedParent();
-
-				DependencyObject FindTemplatedParent()
-				{
-					// ImplicitTextBlock is a special case that requires its TemplatedParent to be the ContentPresenter
-					if (_contentTemplateRoot is ImplicitTextBlock) return this;
-
-					// Sometimes when content is a child view defined in the xaml, the direct TemplatedParent should be used,
-					// but only if the content hasnt been overwritten yet. If the content has been overwritten,
-					// either ImplicitTextBlock or the DataTemplate (requiring the outter TemplatedParent) would has been used.
-					if (!SynchronizeContentWithOuterTemplatedParent && _dataTemplateUsedLastUpdate == null)
-					{
-						return this.TemplatedParent;
-					}
-
-					return (this.TemplatedParent as IFrameworkElement)?.TemplatedParent;
-				}
-			}
-			else if (_contentTemplateRoot is DependencyObject dependencyObject)
-			{
-				// Propagate binding context correctly
-				dependencyObject.SetParent(this);
 			}
 		}
 	}
@@ -925,18 +898,14 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	}
 
 #if UNO_HAS_ENHANCED_LIFECYCLE
-	internal override void Enter(EnterParams @params, int depth)
+	internal override void EnterImpl(EnterParams @params, int depth)
 	{
-		base.Enter(@params, depth);
+		base.EnterImpl(@params, depth);
 
 		if (ResetDataContextOnFirstLoad() || ContentTemplateRoot == null)
 		{
 			SetUpdateTemplate();
 		}
-
-		// When the control is loaded, set the TemplatedParent
-		// as it may have been reset during the last unload.
-		SynchronizeContentTemplatedParent();
 
 #if !UNO_HAS_BORDER_VISUAL
 		UpdateBorder();
@@ -944,19 +913,15 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 		// We do this in Enter not Loaded since Loaded is a lot more tricky
 		// (e.g. you can have Unloaded without Loaded, you can have multiple loaded events without unloaded in between, etc.)
-		if (!IsNativeHost)
-		{
-			TryRegisterNativeElement(null, Content);
-		}
-		if (IsNativeHost) // IsNativeHost can become true after the above TryRegisterNativeElement call, so this is not an if-else situation
+		if (IsNativeHost)
 		{
 			AttachNativeElement();
 		}
 	}
 
-	internal override void Leave(LeaveParams @params)
+	internal override void LeaveImpl(LeaveParams @params)
 	{
-		base.Leave(@params);
+		base.LeaveImpl(@params);
 
 		if (IsNativeHost)
 		{
@@ -986,17 +951,9 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		}
 #endif
 
-		// When the control is loaded, set the TemplatedParent
-		// as it may have been reset during the last unload.
-		SynchronizeContentTemplatedParent();
-
 #if !UNO_HAS_ENHANCED_LIFECYCLE
 		UpdateBorder();
 
-		if (!IsNativeHost)
-		{
-			TryRegisterNativeElement(null, Content);
-		}
 		if (IsNativeHost)
 		{
 			AttachNativeElement();
@@ -1078,7 +1035,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		if (!object.Equals(dataTemplate, _dataTemplateUsedLastUpdate))
 		{
 			_dataTemplateUsedLastUpdate = dataTemplate;
-			ContentTemplateRoot = dataTemplate?.LoadContentCached() ?? Content as View;
+			ContentTemplateRoot = dataTemplate?.LoadContentCached(this) ?? Content as View;
 			if (ContentTemplateRoot != null)
 			{
 				IsUsingDefaultTemplate = false;
@@ -1111,33 +1068,29 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		}
 
 		var textBlock = new ImplicitTextBlock(this);
-
-		void setBinding(DependencyProperty property, string path)
-			=> textBlock.SetBinding(
-				property,
-				new Binding
-				{
-					Path = new PropertyPath(path),
-					Source = this,
-					Mode = BindingMode.OneWay
-				}
-			);
+		textBlock.SetTemplatedParent(this);
 
 		if (!IsNativeHost)
 		{
-			setBinding(TextBlock.TextProperty, nameof(Content));
-			setBinding(TextBlock.HorizontalAlignmentProperty, nameof(HorizontalContentAlignment));
-			setBinding(TextBlock.VerticalAlignmentProperty, nameof(VerticalContentAlignment));
-			setBinding(TextBlock.TextWrappingProperty, nameof(TextWrapping));
-			setBinding(TextBlock.MaxLinesProperty, nameof(MaxLines));
-			setBinding(TextBlock.TextAlignmentProperty, nameof(TextAlignment));
+			TemplateBind(TextBlock.TextProperty, nameof(Content));
+			TemplateBind(TextBlock.HorizontalAlignmentProperty, nameof(HorizontalContentAlignment));
+			TemplateBind(TextBlock.VerticalAlignmentProperty, nameof(VerticalContentAlignment));
+			TemplateBind(TextBlock.TextWrappingProperty, nameof(TextWrapping));
+			TemplateBind(TextBlock.MaxLinesProperty, nameof(MaxLines));
+			TemplateBind(TextBlock.TextAlignmentProperty, nameof(TextAlignment));
+
+			void TemplateBind(DependencyProperty property, string path) =>
+				textBlock.SetBinding(property, new Binding(path)
+				{
+					RelativeSource = RelativeSource.TemplatedParent
+				});
 		}
 
 		ContentTemplateRoot = textBlock;
 		IsUsingDefaultTemplate = true;
 	}
 
-	private bool _isBoundImplicitelyToContent;
+	private bool _isBoundImplicitlyToContent;
 
 	private void SetImplicitContent()
 	{
@@ -1146,17 +1099,17 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			return;
 		}
 
-		if (!(TemplatedParent is ContentControl))
+		if (GetTemplatedParent() is not ContentControl)
 		{
-			ClearImplicitBindinds();
+			ClearImplicitBindings();
 			return; // Not applicable: no TemplatedParent or it's not a ContentControl
 		}
 
 		// Check if the Content is set to something
-		var v = this.GetValueUnderPrecedence(ContentProperty, DependencyPropertyValuePrecedences.DefaultValue);
-		if (v.precedence != DependencyPropertyValuePrecedences.DefaultValue)
+		var store = ((IDependencyObjectStoreProvider)this).Store;
+		if (store.GetCurrentHighestValuePrecedence(ContentProperty) != DependencyPropertyValuePrecedences.DefaultValue)
 		{
-			ClearImplicitBindinds();
+			ClearImplicitBindings();
 			return; // Nope, there's a value somewhere
 		}
 
@@ -1164,22 +1117,17 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		var b = GetBindingExpression(ContentProperty);
 		if (b != null)
 		{
-			ClearImplicitBindinds();
+			ClearImplicitBindings();
 			return; // Yep, there's a binding: a value "will" come eventually
 		}
 
 		// Create an implicit binding of Content to Content property of the TemplatedParent (which is a ContentControl)
-		var binding =
-			new Binding(new PropertyPath("Content"), null)
-			{
-				RelativeSource = RelativeSource.TemplatedParent,
-			};
-		SetBinding(ContentProperty, binding);
-		_isBoundImplicitelyToContent = true;
+		SetBinding(ContentProperty, new Binding("Content") { RelativeSource = RelativeSource.TemplatedParent });
+		_isBoundImplicitlyToContent = true;
 
-		void ClearImplicitBindinds()
+		void ClearImplicitBindings()
 		{
-			if (_isBoundImplicitelyToContent)
+			if (_isBoundImplicitlyToContent)
 			{
 				SetBinding(ContentProperty, new Binding());
 			}
@@ -1195,6 +1143,12 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	{
 #if UNO_HAS_BORDER_VISUAL
 		this.UpdateBackground();
+		BorderHelper.SetUpBrushTransitionIfAllowed(
+			(BorderVisual)this.Visual,
+			e.OldValue as Brush,
+			e.NewValue as Brush,
+			this.BackgroundTransition,
+			((IDependencyObjectStoreProvider)this).Store.GetCurrentHighestValuePrecedence(BackgroundProperty) == DependencyPropertyValuePrecedences.Animations);
 #else
 		UpdateBorder();
 #endif
@@ -1203,7 +1157,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	internal override void UpdateThemeBindings(ResourceUpdateReason updateReason)
 	{
 		base.UpdateThemeBindings(updateReason);
-		SetDefaultForeground(ForegroundProperty);
+		UpdateLastUsedTheme();
 	}
 
 #if __ANDROID__
@@ -1261,6 +1215,10 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 				contentSize.Width,
 				contentSize.Height);
 
+			if (child is UIElement childAsUIElement)
+			{
+				childAsUIElement.EnsureLayoutStorage();
+			}
 			ArrangeElement(child, arrangeRect);
 		}
 
@@ -1322,12 +1280,20 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		var padding = Padding;
 		var borderThickness = BorderThickness;
 
-		var measuredSize = MeasureFirstChild(
-			new Size(
-				size.Width - padding.Left - padding.Right - borderThickness.Left - borderThickness.Right,
-				size.Height - padding.Top - padding.Bottom - borderThickness.Top - borderThickness.Bottom
-			)
-		);
+		var child = this.FindFirstChild();
+		Size measuredSize = default;
+		if (child is not null)
+		{
+			measuredSize = MeasureElement(child,
+				new Size(
+					size.Width - padding.Left - padding.Right - borderThickness.Left - borderThickness.Right,
+					size.Height - padding.Top - padding.Bottom - borderThickness.Top - borderThickness.Bottom
+				));
+			if (child is UIElement childAsUIElement)
+			{
+				childAsUIElement.EnsureLayoutStorage();
+			}
+		}
 
 #if UNO_SUPPORTS_NATIVEHOST
 		if (IsNativeHost)
@@ -1374,4 +1340,14 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	}
 
 	partial void SetUpdateTemplatePartial();
+
+	internal string GetTextBlockText()
+	{
+		if (IsUsingDefaultTemplate && ContentTemplateRoot is ImplicitTextBlock tb)
+		{
+			return tb.Text;
+		}
+
+		return null;
+	}
 }

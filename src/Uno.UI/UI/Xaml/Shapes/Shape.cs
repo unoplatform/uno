@@ -16,8 +16,10 @@ namespace Microsoft.UI.Xaml.Shapes
 	{
 		private const double DefaultStrokeThicknessWhenNoStrokeDefined = 0.0;
 
+#if !__SKIA__
 		private Action _brushChanged;
 		private Action _strokeBrushChanged;
+#endif
 
 		/// <summary>
 		/// Returns 0.0 if Stroke is <c>null</c>, otherwise, StrokeThickness
@@ -55,7 +57,13 @@ namespace Microsoft.UI.Xaml.Shapes
 
 		private void OnFillChanged(Brush oldValue, Brush newValue)
 		{
+#if __SKIA__
+			// On Skia, OnFillBrushChanged will call GetOrCreateCompositionBrush and assign this to _shape.FillBrush
+			// In this case, we don't really want to listen to brush changes as the Brush is responsible for synchronizing its internal composition brush
+			OnFillBrushChanged();
+#else
 			Brush.SetupBrushChanged(oldValue, newValue, ref _brushChanged, () => OnFillBrushChanged());
+#endif
 		}
 
 		#endregion
@@ -68,14 +76,13 @@ namespace Microsoft.UI.Xaml.Shapes
 		}
 
 		public static DependencyProperty StrokeProperty { get; } = DependencyProperty.Register(
-			"Stroke",
+			nameof(Stroke),
 			typeof(Brush),
 			typeof(Shape),
 			new FrameworkPropertyMetadata(
 				defaultValue: null,
-				options: FrameworkPropertyMetadataOptions.AffectsArrange,
 				propertyChangedCallback: (s, e) => ((Shape)s).OnStrokeChanged((Brush)e.OldValue, (Brush)e.NewValue)
-			)
+			) // Perf: WinUI uses AffectsMeasure, we optimize this and only invalidate measure if needed
 		);
 
 		private void OnStrokeChanged(Brush oldValue, Brush newValue)
@@ -86,7 +93,13 @@ namespace Microsoft.UI.Xaml.Shapes
 				InvalidateMeasure();
 			}
 
+#if __SKIA__
+			// On Skia, OnStrokeBrushChanged will call GetOrCreateCompositionBrush and assign this to _shape.StrokeBrush
+			// In this case, we don't really want to listen to brush changes as the Brush is responsible for synchronizing its internal composition brush
+			OnStrokeBrushChanged();
+#else
 			Brush.SetupBrushChanged(oldValue, newValue, ref _strokeBrushChanged, () => OnStrokeBrushChanged());
+#endif
 		}
 
 		#endregion
@@ -105,7 +118,7 @@ namespace Microsoft.UI.Xaml.Shapes
 			new FrameworkPropertyMetadata(
 				defaultValue: 1.0d,
 				propertyChangedCallback: (s, e) => ((Shape)s).OnStrokeThicknessChanged()
-			)
+			) // Perf: WinUI uses AffectsMeasure, we optimize this and only invalidate measure if Stroke is not null
 		);
 
 		private void OnStrokeThicknessChanged()
@@ -154,8 +167,14 @@ namespace Microsoft.UI.Xaml.Shapes
 		);
 		#endregion
 
+		// Do not invoke base.IsViewHit(): We don't have to have de FrameworkElement.Background to be hit testable!
 		internal override bool IsViewHit()
-			=> Fill != null; // Do not invoke base.IsViewHit(): We don't have to have de FrameworkElement.Background to be hit testable!
+			=> Fill != null
+#if __SKIA__ || __WASM__ // we only add this condition for Skia and Wasm because these are the only platforms with proper hit-testing support for shapes. If we add it for other platforms, we get a different but still inaccurate behaviour, so we prefer to keep the behaviour as is.
+				// TODO: Verify if this should also consider StrokeThickness (likely it should)
+				|| Stroke != null
+#endif
+				;
 
 		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{

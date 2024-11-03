@@ -40,8 +40,5 @@ internal partial interface IBorderInfoProvider
 
 #if UNO_HAS_BORDER_VISUAL
 	BorderVisual BorderVisual { get; }
-
-	SerialDisposable BorderBrushSubscriptionDisposable { get; set; }
-	SerialDisposable BackgroundBrushSubscriptionDisposable { get; set; }
 #endif
 }

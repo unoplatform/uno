@@ -226,6 +226,14 @@
 			"description": "Provides an explicit override for the version of Uno.Resizetizer to use.",
 			"type": "nuget-version"
 		},
+		"UnoSdkExtrasVersion": {
+			"description": "Provides an explicit override for the version of Uno.Sdk.Extras to use.",
+			"type": "nuget-version"
+		},
+		"UnoSettingsVersion": {
+			"description": "Provides an explicit override for the version of Uno.Settings to use.",
+			"type": "nuget-version"
+		},
 		"MicrosoftLoggingVersion": {
 			"description": "Provides an explicit override for the version of Microsoft.Extensions.Logging to use.",
 			"type": "nuget-version"
@@ -252,6 +260,10 @@
 		},
 		"PrismVersion": {
 			"description": "Provides an explicit override for the version of Prism to use.",
+			"type": "nuget-version"
+		},
+		"UnoFontsVersion": {
+			"description": "Provides an explicit override for the version of Uno.Fonts packages to use.",
 			"type": "nuget-version"
 		},
 		"AndroidXNavigationVersion": {
@@ -395,6 +407,10 @@
 			"allowUnknownValues": false,
 			"caseSensitive": false,
 			"values": {
+				"GooglePlay": {
+					"description": "Adds a reference to Uno.WinUI.GooglePlay.",
+					"helpUrl": "https://aka.platform.uno/feature-googleplay"
+				},
 				"Foldable": {
 					"description": "Adds a reference to Uno.WinUI.Foldable.",
 					"helpUrl": "https://aka.platform.uno/feature-foldable"
@@ -510,6 +526,9 @@
 				"Svg": {
 					"description": "Adds support for SVG images.",
 					"helpUrl": "https://aka.platform.uno/feature-svg"
+				},
+				"GLCanvas": {
+					"description": "Adds support for 3D graphics APIs based on OpenGL."
 				}
 			}
 		}

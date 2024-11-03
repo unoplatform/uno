@@ -17,6 +17,9 @@ uid: uno.publishing.maccatalyst
 
 First, you'll need to setup to be able to build Mac Catalyst apps. You can follow [these steps for publishing .NET Mac Catalyst apps](https://learn.microsoft.com/en-us/dotnet/maui/mac-catalyst/deployment).
 
+> [!IMPORTANT]
+> If you intend to publish your app on TestFlight, make sure that the provisioning profile has the "Profile type" set to "Mac" and not "Mac Catalyst". Using "Mac Catalyst" will crash the app in similar ways to [this .NET issue](https://github.com/xamarin/xamarin-macios/issues/14686).
+
 Then, you'll need to setup your `csproj` to include the signing information:
 
 ```xml
@@ -48,6 +51,6 @@ The output `.pkg` file will be in the `publish` folder.
 > [!TIP]
 > To create a `.app` folder, set the `CreatePackage` parameter to `false`.
 
-## Publishing your app
+## Publishing your app om the App Store
 
 Publishing your app is done through [the transporter app](https://developer.apple.com/help/app-store-connect/manage-builds/upload-builds) on macOS.

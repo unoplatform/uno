@@ -18,6 +18,7 @@ using Windows.UI.Text;
 using Uno.UI;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Automation.Peers;
 
 #if __ANDROID__
 using View = Android.Views.View;
@@ -72,6 +73,10 @@ namespace Microsoft.UI.Xaml.Documents
 				)
 			);
 
+		// While font family itself didn't change, OnFontFamilyChanged will invalidate whatever
+		// needed for the rendering to happen correctly on the next frame.
+		internal void OnFontLoaded() => OnFontFamilyChanged();
+
 		protected virtual void OnFontFamilyChanged()
 		{
 			OnFontFamilyChangedPartial();
@@ -109,6 +114,26 @@ namespace Microsoft.UI.Xaml.Documents
 
 		#endregion
 
+		#region FontStretch Dependency Property
+
+		public FontStretch FontStretch
+		{
+			get => GetFontStretchValue();
+			set => SetFontStretchValue(value);
+		}
+
+		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnFontStretchChanged), DefaultValue = FontStretch.Normal, Options = FrameworkPropertyMetadataOptions.Inherits)]
+		public static DependencyProperty FontStretchProperty { get; } = CreateFontStretchProperty();
+
+		protected virtual void OnFontStretchChanged()
+		{
+			OnFontStretchChangedPartial();
+		}
+
+		partial void OnFontStretchChangedPartial();
+
+		#endregion
+
 		#region FontSize Dependency Property
 
 		public double FontSize
@@ -142,7 +167,7 @@ namespace Microsoft.UI.Xaml.Documents
 
 		public Brush Foreground
 		{
-			get => GetForegroundValue();
+			get => (Brush)GetValue(ForegroundProperty);
 			set
 			{
 				if (value != null && !(value is SolidColorBrush))
@@ -150,14 +175,19 @@ namespace Microsoft.UI.Xaml.Documents
 					throw new InvalidOperationException("Specified brush is not a SolidColorBrush");
 				}
 
-				SetForegroundValue(value);
+				SetValue(ForegroundProperty, value);
 			}
 		}
 
-		[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.Inherits, ChangedCallback = true, ChangedCallbackName = nameof(OnForegroundChanged))]
-		public static DependencyProperty ForegroundProperty { get; } = CreateForegroundProperty();
-
-		private static Brush GetForegroundDefaultValue() => SolidColorBrushHelper.Black;
+		public static DependencyProperty ForegroundProperty { get; } = DependencyProperty.Register(
+			nameof(Foreground),
+			typeof(Brush),
+			typeof(TextElement),
+			new FrameworkPropertyMetadata(
+				defaultValue: SolidColorBrushHelper.Black,
+				options: FrameworkPropertyMetadataOptions.Inherits,
+				propertyChangedCallback: (instance, args) => ((TextElement)instance).OnForegroundChanged()
+		));
 
 		protected virtual void OnForegroundChanged()
 		{
@@ -349,27 +379,22 @@ namespace Microsoft.UI.Xaml.Documents
 
 		public void OnThemeChanged() => SetDefaultForeground(ForegroundProperty);
 
-		private protected virtual Brush DefaultTextForegroundBrush => DefaultBrushes.TextForegroundBrush;
-
-#if __WASM__ // On Wasm, we inherit UIElement, and so we need to shadow UIElement.SetDefaultForeground.
-		private protected new
-#else
-		private
-#endif
-		void SetDefaultForeground(DependencyProperty foregroundProperty)
+		private void SetDefaultForeground(DependencyProperty foregroundProperty)
 		{
-			if (this is Hyperlink)
+			if (this is Hyperlink hl)
 			{
 				// Hyperlink doesn't appear to inherit foreground from the parent.
 				// So, we set this with ImplicitStyle precedence which is a higher precedence than Inheritance.
-				this.SetValue(foregroundProperty, DefaultTextForegroundBrush, DependencyPropertyValuePrecedences.ImplicitStyle);
-			}
-			else
-			{
-				this.SetValue(foregroundProperty, DefaultTextForegroundBrush, DependencyPropertyValuePrecedences.DefaultValue);
+				hl.SetCurrentForeground();
 			}
 
 			((IDependencyObjectStoreProvider)this).Store.SetLastUsedTheme(Application.Current?.RequestedThemeForResources);
+		}
+
+		internal protected virtual List<AutomationPeer> AppendAutomationPeerChildren(int startPos, int endPos)
+		{
+			//return S_OK;
+			return null;
 		}
 	}
 }

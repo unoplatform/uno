@@ -20,11 +20,11 @@ Get an [in-depth introduction to how Uno works](uno-internals-overview.md), or j
 
 For the prerequisites you'll need, as well as useful tips like using [solution filters](https://learn.microsoft.com/visualstudio/ide/filtered-solutions) and cross-targeting overrides to quickly load and build Uno for a single platform, start with the guide to [Building Uno.UI](building-uno-ui.md). The guide to [Debugging Uno.UI](debugging-uno-ui.md) will show you how to debug Uno.UI code either in the included UI samples or in an application outside the Uno.UI solution.
 
-If you're doing development for Uno's macOS support, you'll need to build and run Uno using Visual Studio for Mac. [There's a separate guide for that here](building-uno-macos.md).
+If you're doing development for Uno's macOS support, you'll need to build and run Uno using Visual Studio for Mac. [There's a separate guide for that here](xref:Uno.Contributing.BuildingUnomacOS).
 
-You can contribute to Uno directly from your browser using GitPod. [Find out how.](../features/working-with-gitpod.md)
+You can contribute to Uno directly from your browser using GitPod, [find out how](xref:Uno.Features.Gitpod).
 
-Whether you're fixing a bug or working on a new feature, [inspecting the visual tree of a running app](debugging-inspect-visual-tree.md) is often a key step.
+Whether you're fixing a bug or working on a new feature, [inspecting the visual tree of a running app](xref:Uno.Contributing.InspectVisualTree) is often a key step.
 
 ## Writing code in Uno
 
@@ -32,11 +32,11 @@ See [Uno's code conventions and common patterns here](../contributing/guidelines
 
 ## Implementing a new feature
 
-See how to implement a new [feature here](../contributing/guidelines/implementing-a-new%20winui-winrt-feature.md).
+See how to implement a new [feature here](xref:Uno.Contributing.ImplementWinUIWinRTAPI).
 
 ## Experimenting with Samples App
 
-The [Samples App](../../../src/SamplesApp) is the development app contained in the Uno.UI solution. It serves as a UI and Runtime Tests host, as well as a playground for validating other API scenarios.
+The [Samples App](xref:Uno.Contributing.SamplesApp) is the development app contained in the Uno.UI solution. It serves as a UI and Runtime Tests host, as well as a playground for validating other API scenarios.
 
 This app is available live at these locations, built from the default branch:
 
@@ -52,7 +52,10 @@ See the [Guidelines for creating tests](../contributing/guidelines/creating-test
 
 ## Creating a Pull Request
 
-Uno uses [Git](https://git-scm.com/) for version control, and GitHub to host the [main repository](https://github.com/unoplatform/uno). You'll need to know the basics of Git to submit changes to Uno, but never fear, there are plenty of [great](https://git-scm.com/book/en/v2) [guides](https://guides.github.com/introduction/git-handbook/) [available](https://www.atlassian.com/git/tutorials).
+Uno uses [Git](https://git-scm.com/) for version control, and GitHub to host the [main repository](https://github.com/unoplatform/uno). You'll need to know the basics of Git to submit changes to Uno, but never fear, there are plenty of great guides available:
+[Pro Git book | git-scm](https://git-scm.com/book/en/v2)
+[About Git | GitHub](https://guides.github.com/introduction/git-handbook/)
+[Tutorials | Atlassian](https://www.atlassian.com/git/tutorials)
 
 > [!IMPORTANT]
 > Before you commit your code, take a minute to familiarize yourself with the [Conventional Commits format](git-conventional-commits.md) Uno uses.

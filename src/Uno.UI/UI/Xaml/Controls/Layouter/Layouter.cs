@@ -133,6 +133,11 @@ namespace Microsoft.UI.Xaml.Controls
 					.AtLeast((Panel as ILayoutOptOut)?.ShouldUseMinSize == false ? Size.Empty : minSize)
 					.AtLeastZero();
 
+				if (_elementAsUIElement is not null)
+				{
+					_elementAsUIElement.EnsureLayoutStorage();
+				}
+
 				_unclippedDesiredSize = desiredSize;
 
 				var clippedDesiredSize = desiredSize
@@ -200,6 +205,11 @@ namespace Microsoft.UI.Xaml.Controls
 				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().DebugFormat("[{0}/{1}] Arrange({2}/{3}/{4}/{5})", LoggingOwnerTypeName, Name, GetType(), Panel.Name, finalRect, Panel.Margin);
+				}
+
+				if (_elementAsUIElement is not null)
+				{
+					_elementAsUIElement.EnsureLayoutStorage();
 				}
 
 				var clippedArrangeSize = _elementAsUIElement?.ClippedFrame is Rect clip && !_elementAsUIElement.IsArrangeDirty

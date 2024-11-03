@@ -32,9 +32,8 @@ namespace Uno.Extensions
 				return new Point(x, y);
 			}
 
-			return new Point(
-				(x * matrix.M11) + (y * matrix.M21) + matrix.M31,
-				(x * matrix.M12) + (y * matrix.M22) + matrix.M32);
+			var transformed = Vector2.Transform(new Vector2((float)x, (float)y), matrix);
+			return new Point(transformed.X, transformed.Y);
 		}
 
 		/// <summary>

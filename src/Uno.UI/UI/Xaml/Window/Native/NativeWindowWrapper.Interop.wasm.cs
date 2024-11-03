@@ -19,5 +19,11 @@ internal partial class NativeWindowWrapper
 
 		[JSImport("globalThis.Uno.UI.WindowManager.current.setWindowTitle")]
 		internal static partial void SetWindowTitle(string title);
+
+		[JSImport("globalThis.Uno.UI.WindowManager.current.resizeWindow")]
+		internal static partial void ResizeWindow(int width, int height);
+
+		[JSImport("globalThis.Uno.UI.WindowManager.current.moveWindow")]
+		internal static partial void MoveWindow(int x, int y);
 	}
 }

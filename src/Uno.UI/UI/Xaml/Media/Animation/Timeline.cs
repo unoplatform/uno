@@ -210,7 +210,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 					_propertyInfo = new BindingPath(
 						path: targetPropertyPath,
 						fallbackValue: null,
-						precedence: DependencyPropertyValuePrecedences.Animations,
+						forAnimations: true,
 						allowPrivateMembers: false
 					)
 					{
@@ -359,9 +359,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			// Timeline should not be used directly.  Please use derived class.
 			ApiInformation.TryRaiseNotImplemented(GetType().FullName, "void Deactivate()");
 		}
-
-		private protected IValueAnimator InitializeAnimator() => throw new NotSupportedException(); // Should be implemented by classes which use AnimationImplementation
-
 
 		/// <summary>
 		/// Checks if the Timeline will repeat.

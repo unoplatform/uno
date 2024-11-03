@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO.Pipes;
-using System.Linq;
-using System.Runtime.Remoting.Messaging;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Threading;
 using StreamJsonRpc;
-using Uno.UI.RemoteControl.Host.IDEChannel;
+using Uno.UI.RemoteControl.Host.IdeChannel;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
 using Uno.UI.RemoteControl.VS.Helpers;
 
@@ -20,11 +17,10 @@ internal class IdeChannelClient
 	private Guid _pipeGuid;
 	private CancellationTokenSource? _IDEChannelCancellation;
 	private Task? _connectTask;
-	private JsonRpc? _rpc;
-	private IIdeChannelServer? _roslynServer;
+	private IIdeChannelServer? _devServer;
 	private readonly ILogger _logger;
 
-	public event AsyncEventHandler<ForceHotReloadIdeMessage>? ForceHotReloadRequested;
+	public event AsyncEventHandler<IdeMessage>? OnMessageReceived;
 
 	public IdeChannelClient(Guid pipeGuid, ILogger logger)
 	{
@@ -34,6 +30,7 @@ internal class IdeChannelClient
 
 	public void ConnectToHost()
 	{
+		_IDEChannelCancellation?.Cancel();
 		_IDEChannelCancellation = new CancellationTokenSource();
 
 		_connectTask = Task.Run(async () =>
@@ -50,14 +47,10 @@ internal class IdeChannelClient
 
 				await _pipeServer.ConnectAsync(_IDEChannelCancellation.Token);
 
-				_rpc = JsonRpc.Attach(_pipeServer);
-				_rpc.AllowModificationWhileListening = true;
-				_roslynServer = _rpc.Attach<IIdeChannelServer>();
-				_rpc.AllowModificationWhileListening = false;
+				_devServer = JsonRpc.Attach<IIdeChannelServer>(_pipeServer);
+				_devServer.MessageFromDevServer += ProcessDevServerMessage;
 
-				_roslynServer.MessageFromDevServer += ProcessDevServerMessage;
-
-				_ = Task.Run(StartKeepaliveAsync);
+				_ = Task.Run(StartKeepAliveAsync);
 			}
 			catch (Exception e)
 			{
@@ -68,20 +61,20 @@ internal class IdeChannelClient
 
 	public async Task SendToDevServerAsync(IdeMessage message, CancellationToken ct)
 	{
-		if (_roslynServer is not null)
+		if (_devServer is not null)
 		{
 			ct = ct.CanBeCanceled && ct != _IDEChannelCancellation!.Token
 				? CancellationTokenSource.CreateLinkedTokenSource(ct, _IDEChannelCancellation!.Token).Token
 				: _IDEChannelCancellation!.Token;
-			await _roslynServer.SendToDevServerAsync(IdeMessageSerializer.Serialize(message), ct);
+			await _devServer.SendToDevServerAsync(IdeMessageSerializer.Serialize(message), ct);
 		}
 	}
 
-	private async Task StartKeepaliveAsync()
+	private async Task StartKeepAliveAsync()
 	{
 		while (_IDEChannelCancellation is { IsCancellationRequested: false })
 		{
-			_roslynServer?.SendToDevServerAsync(IdeMessageSerializer.Serialize(new KeepAliveIdeMessage()), _IDEChannelCancellation.Token);
+			await _devServer!.SendToDevServerAsync(IdeMessageSerializer.Serialize(new KeepAliveIdeMessage("IDE")), default);
 
 			await Task.Delay(5000, _IDEChannelCancellation.Token);
 		}
@@ -98,12 +91,12 @@ internal class IdeChannelClient
 			var process = Task.CompletedTask;
 			switch (devServerMessage)
 			{
-				case ForceHotReloadIdeMessage forceHotReloadMessage when ForceHotReloadRequested is { } hrRequested:
-					_logger.Debug("Hot reload requested");
-					process = hrRequested.InvokeAsync(this, forceHotReloadMessage);
-					break;
 				case KeepAliveIdeMessage:
 					_logger.Verbose($"Keep alive from Dev Server");
+					break;
+				case IdeMessage message:
+					_logger.Verbose($"Dev Server Message {message.GetType()} requested");
+					process = OnMessageReceived.InvokeAsync(this, message);
 					break;
 				default:
 					_logger.Verbose($"Unknown message type {devServerMessage?.GetType()} from DevServer");

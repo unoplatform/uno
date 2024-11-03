@@ -1038,7 +1038,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (child is FrameworkElement fe)
 			{
-				return fe.AssignedActualSize.Add(fe.Margin);
+				return fe.RenderSize.Add(fe.Margin);
 			}
 			else
 			{

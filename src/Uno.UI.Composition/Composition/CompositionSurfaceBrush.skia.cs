@@ -7,6 +7,7 @@ using SkiaSharp;
 using Windows.Foundation;
 using System.Diagnostics.CodeAnalysis;
 using Windows.Graphics.Display;
+using Uno.Extensions;
 
 namespace Microsoft.UI.Composition
 {
@@ -88,31 +89,26 @@ namespace Microsoft.UI.Composition
 				}
 				else
 				{
-					var matrix = Matrix3x2.CreateTranslation((float)backgroundArea.Left, (float)backgroundArea.Top);
+					// Relevant doc snippet from WPF: https://learn.microsoft.com/en-us/dotnet/desktop/wpf/graphics-multimedia/brush-transformation-overview#differences-between-the-transform-and-relativetransform-properties
+					// When you apply a transform to a brush's RelativeTransform property, that transform is applied to the brush before its output is mapped to the painted area. The following list describes the order in which a brush’s contents are processed and transformed.
+					//  * Process the brush’s contents. For a GradientBrush, this means determining the gradient area. For a TileBrush, the Viewbox is mapped to the Viewport. This becomes the brush’s output.
+					// 	* Project the brush’s output onto the 1 x 1 transformation rectangle.
+					// 	* Apply the brush’s RelativeTransform, if it has one.
+					// 	* Project the transformed output onto the area to paint.
+					// 	* Apply the brush’s Transform, if it has one.
+					var matrix = Matrix3x2.Identity;
+					matrix *= Matrix3x2.CreateScale((float)(backgroundArea.Width / scs.Image!.Width), (float)(backgroundArea.Height / scs.Image.Height));
+					matrix *= Matrix3x2.CreateTranslation((float)backgroundArea.Left, (float)backgroundArea.Top);
 					matrix *= TransformMatrix;
+					matrix *= Matrix3x2.CreateScale(bounds.Width, bounds.Height).Inverse();
+					matrix *= RelativeTransform;
+					matrix *= Matrix3x2.CreateScale(bounds.Width, bounds.Height);
 
-					// The brush is not tied to a specific window, so we can't get the scaling of a specific XamlRoot and
-					// instead we settle for the main window's scaling which should hopefully be the same.
-					var scale = DisplayInformation.GetForCurrentViewSafe().LogicalDpi / DisplayInformation.BaseDpi;
-					// We scale the backgroundArea with the dpi scaling and then scale with 1 / dpi scaling in the shader,
-					// This is conceptually a noop, but it actually affects quality. For example, if you have a hi-res image
-					// that should be drawn in a 500x500 rectangle. If the scaling is 2x, it will actually be drawn in a
-					// 1000x1000 rectangle. We don't want to resize the image to 500x500 and then stretch it to 1000x1000.
-					// Instead, we resize it to 1000x1000 directly and counteract the global 2x scaling done by the
-					// renderer by telling the shader to scale by 1/2.
-					backgroundArea = backgroundArea with { Width = backgroundArea.Width * scale, Height = backgroundArea.Height * scale };
-					matrix *= Matrix3x2.CreateScale(1 / scale);
-
-					// Adding image downscaling in the shader matrix directly is very blurry
-					// since the default downsampler in Skia is really low quality (but really fast).
-					// We force Lanczos instead.
-					// https://github.com/mono/SkiaSharp/issues/520#issuecomment-444973518
-#pragma warning disable CS0612 // Type or member is obsolete
-					var resizedBitmap = scs.Image.ToSKBitmap().Resize(scs.Image.Info.WithSize((int)backgroundArea.Size.Width, (int)backgroundArea.Size.Height), SKBitmapResizeMethod.Lanczos3.ToFilterQuality());
-#pragma warning restore CS0612 // Type or member is obsolete
-					var resizedImage = SKImage.FromBitmap(resizedBitmap);
-
-					var imageShader = SKShader.CreateImage(resizedImage, SKShaderTileMode.Decal, SKShaderTileMode.Decal, matrix.ToSKMatrix());
+					// The image rescaling (i.e resampling) algorithm in the shader directly is really low quality (but really fast).
+					// There is no sound workaround for this at the moment. See https://github.com/unoplatform/uno/issues/17325.
+					var imageShader = SKShader.CreateImage(scs.Image, SKShaderTileMode.Decal, SKShaderTileMode.Decal, matrix.ToSKMatrix());
+					// SkiaSharp 3 introduces new SKSamplingOptions. When we move to SkiaSharp 3, replace the line about with this one.
+					// var imageShader = SKShader.CreateImage(scs.Image, SKShaderTileMode.Decal, SKShaderTileMode.Decal, new SKSamplingOptions(SKCubicResampler.Mitchell), matrix.ToSKMatrix());
 
 					if (UsePaintColorToColorSurface)
 					{

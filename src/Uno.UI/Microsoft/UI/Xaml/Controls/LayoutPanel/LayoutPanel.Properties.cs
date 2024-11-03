@@ -16,7 +16,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 		private static Brush GetBorderBrushDefaultValue() => SolidColorBrushHelper.Transparent;
 
-		[GeneratedDependencyProperty(ChangedCallback = false, Options = FrameworkPropertyMetadataOptions.ValueInheritsDataContext)]
+		[GeneratedDependencyProperty(ChangedCallback = true, ChangedCallbackName = nameof(OnPropertyChanged), Options = FrameworkPropertyMetadataOptions.ValueInheritsDataContext)]
 		public static DependencyProperty BorderBrushProperty { get; } = CreateBorderBrushProperty();
 
 		#endregion
@@ -31,7 +31,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 		private static Thickness GetBorderThicknessDefaultValue() => Thickness.Empty;
 
-		[GeneratedDependencyProperty(ChangedCallback = false)]
+		[GeneratedDependencyProperty(ChangedCallback = true, ChangedCallbackName = nameof(OnPropertyChanged))]
 		public static DependencyProperty BorderThicknessProperty { get; } = CreateBorderThicknessProperty();
 
 		#endregion
@@ -46,7 +46,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 		private static Thickness GetPaddingDefaultValue() => Thickness.Empty;
 
-		[GeneratedDependencyProperty(ChangedCallback = false, Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
+		[GeneratedDependencyProperty(ChangedCallback = true, ChangedCallbackName = nameof(OnPropertyChanged), Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
 		public static DependencyProperty PaddingProperty { get; } = CreatePaddingProperty();
 
 		#endregion
@@ -61,13 +61,13 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 		private static CornerRadius GetCornerRadiusDefaultValue() => CornerRadius.None;
 
-		[GeneratedDependencyProperty(ChangedCallback = false)]
+		[GeneratedDependencyProperty(ChangedCallback = true, ChangedCallbackName = nameof(OnPropertyChanged))]
 		public static DependencyProperty CornerRadiusProperty { get; } = CreateCornerRadiusProperty();
 
 		#endregion
 
 		public static DependencyProperty LayoutProperty { get; } = DependencyProperty.Register(
-			"Layout", typeof(Layout), typeof(LayoutPanel), new FrameworkPropertyMetadata(default(Layout)));
+			"Layout", typeof(Layout), typeof(LayoutPanel), new FrameworkPropertyMetadata(default(Layout), propertyChangedCallback: (sender, args) => ((LayoutPanel)sender).OnPropertyChanged(args)));
 
 #if __ANDROID__ || __MACOS__
 		new

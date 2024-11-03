@@ -28,11 +28,9 @@ namespace Microsoft.UI.Xaml.Controls
 		private MenuFlyout? _contextMenu;
 		private readonly Dictionary<ContextMenuItem, MenuFlyoutItem> _flyoutItems = new();
 
-		internal Action? DesiredSizeChangedCallback { get; set; }
-
 		public TextBlock()
 		{
-			SetDefaultForeground(ForegroundProperty);
+			UpdateLastUsedTheme();
 			_textVisual = new TextVisual(Visual.Compositor, this);
 
 			Visual.Children.InsertAtBottom(_textVisual);
@@ -45,12 +43,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 			GotFocus += (_, _) => UpdateSelectionRendering();
 			LostFocus += (_, _) => UpdateSelectionRendering();
-		}
-
-		private protected override void OnDesiredSizeChanged()
-		{
-			base.OnDesiredSizeChanged();
-			DesiredSizeChangedCallback?.Invoke();
 		}
 
 #if DEBUG
@@ -89,13 +81,11 @@ namespace Microsoft.UI.Xaml.Controls
 			return desiredSize;
 		}
 
+		// the entire body of the text block is considered hit-testable
+		internal override bool HitTest(Point point) => TransformToVisual((UIElement)this.GetParent()).Inverse.TransformBounds(LayoutSlotWithMarginsAndAlignments).Contains(point);
+
 		partial void OnIsTextSelectionEnabledChangedPartial()
 		{
-			if (_inlines is { })
-			{
-				_inlines.FireDrawingEventsOnEveryRedraw = IsTextSelectionEnabled;
-			}
-
 			RecalculateSubscribeToPointerEvents();
 			UpdateSelectionRendering();
 		}
@@ -150,7 +140,12 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else
 			{
-				var font = FontDetailsCache.GetFont(FontFamily?.Source, (float)FontSize, FontWeight, FontStyle);
+				var font = FontDetailsCache.GetFont(FontFamily?.Source, (float)FontSize, FontWeight, FontStretch, FontStyle);
+				if (font.CanChange)
+				{
+					font.RegisterElementForFontLoaded(this);
+				}
+
 				return font.LineHeight;
 			}
 		}
@@ -193,14 +188,15 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				var canvas = t.canvas;
 				var rect = t.rect;
-				canvas.DrawRect(new SKRect((float)rect.Left, (float)rect.Top, (float)rect.Right, (float)rect.Bottom), new SKPaint
+
+				using (SkiaHelper.GetTempSKPaint(out var paint))
 				{
-					Color = SelectionHighlightColor.Color.ToSKColor(),
-					Style = SKPaintStyle.Fill
-				});
+					paint.Color = SelectionHighlightColor.Color.ToSKColor();
+					paint.Style = SKPaintStyle.Fill;
+					canvas.DrawRect(new SKRect((float)rect.Left, (float)rect.Top, (float)rect.Right, (float)rect.Bottom), paint);
+				}
 			};
 
-			_inlines.FireDrawingEventsOnEveryRedraw = IsTextSelectionEnabled;
 			_inlines.RenderSelection = IsTextSelectionEnabled;
 		}
 
@@ -227,7 +223,6 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					var chunk = GetChunkAt(Text, index);
 
-					// the chunk range will be relative to the span, so we have to add the offset of the span relative to the entire Text
 					Selection = new Range(chunk.start, chunk.start + chunk.length);
 				}
 			}

@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Linq;
 using System.Numerics;
+using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Media;
 using Windows.Foundation;
-using Microsoft.UI.Composition;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
-using Uno.UI;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -19,7 +17,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private SkiaCompositionSurface _currentSurface;
 		private CompositionSurfaceBrush _surfaceBrush;
 		private readonly SpriteVisual _imageSprite;
-		private ImageData _pendingImageData;
+		private ImageData? _pendingImageData;
 
 		public Image()
 		{
@@ -35,7 +33,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_lastMeasuredSize = default;
 			_imageSprite.Brush = null;
 			_currentSurface = null;
-			_pendingImageData = new();
+			_pendingImageData = null;
 			InvalidateMeasure();
 
 			if (newValue is SvgImageSource svgImageSource)
@@ -135,21 +133,35 @@ namespace Microsoft.UI.Xaml.Controls
 		private void TryProcessPendingSource()
 		{
 			var currentData = _pendingImageData;
-			_pendingImageData = new();
-			if (currentData.HasData)
+			_pendingImageData = null;
+			if (currentData is null)
 			{
-				_currentSurface = currentData.CompositionSurface;
+				// No image data is pending
+				return;
+			}
+
+			var processedData = currentData.Value;
+
+			if (processedData.HasData)
+			{
+				_currentSurface = processedData.CompositionSurface;
 				_surfaceBrush = Visual.Compositor.CreateSurfaceBrush(_currentSurface);
 				_surfaceBrush.UsePaintColorToColorSurface = MonochromeColor is not null;
 				_imageSprite.SetPaintColor(MonochromeColor);
 				_imageSprite.Brush = _surfaceBrush;
 				ImageOpened?.Invoke(this, new RoutedEventArgs(this));
 			}
-			else if (currentData is { Kind: ImageDataKind.Error })
+			else if (processedData is { Kind: ImageDataKind.Empty })
+			{
+				// Ensure the previous content is unloaded
+				_currentSurface = null;
+				_imageSprite.Brush = null;
+			}
+			else if (processedData is { Kind: ImageDataKind.Error })
 			{
 				ImageFailed?.Invoke(this, new(
 					this,
-					currentData.Error?.Message ?? "Unknown error"));
+					processedData.Error?.Message ?? "Unknown error"));
 			}
 		}
 

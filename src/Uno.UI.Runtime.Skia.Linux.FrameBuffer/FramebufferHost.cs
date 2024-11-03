@@ -6,7 +6,6 @@ using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
 using Uno.UI.Hosting;
-using Uno.UI.Runtime.Skia.Gtk.Extensions.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Uno.WinUI.Runtime.Skia.Linux.FrameBuffer;
@@ -16,6 +15,7 @@ using Microsoft.UI.Xaml;
 using Uno.Helpers;
 using WUX = Microsoft.UI.Xaml;
 using System.Threading.Tasks;
+using Uno.UI.Runtime.Skia.Linux.FrameBuffer.UI;
 
 namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 {
@@ -148,6 +148,9 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 				}
 
 				_displayInformationExtension.Renderer = _renderer;
+
+				// Force the first render once the app has been setup
+				Dispatch(() => _renderer?.InvalidateRender(), NativeDispatcherPriority.High);
 			}
 
 			Windows.UI.Core.CoreDispatcher.DispatchOverride = Dispatch;
@@ -157,7 +160,7 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 
 			_renderer = new Renderer(this);
 
-			WUX.Application.StartWithArguments(CreateApp);
+			WUX.Application.Start(CreateApp);
 		}
 
 		void IXamlRootHost.InvalidateRender() => _renderer?.InvalidateRender();

@@ -212,14 +212,14 @@ namespace Microsoft.UI.Xaml
 		{
 			var @this = (UIElement)dependencyObject;
 
-			// GetPrecedenceSpecificValue will read an outdated value for the precedence currently being set
+			// ReadLocalValue will read an outdated value for the precedence currently being set
 			var localValue = precedence is DependencyPropertyValuePrecedences.Local ?
 				baseValue :
-				@this.GetPrecedenceSpecificValue(EventsBubblingInManagedCodeProperty, DependencyPropertyValuePrecedences.Local);
+				@this.ReadLocalValue(EventsBubblingInManagedCodeProperty);
 
 			var inheritedValue = precedence is DependencyPropertyValuePrecedences.Inheritance ?
 				baseValue :
-				@this.GetPrecedenceSpecificValue(EventsBubblingInManagedCodeProperty, DependencyPropertyValuePrecedences.Inheritance);
+				((IDependencyObjectStoreProvider)@this).Store.ReadInheritedValueOrDefaultValue(EventsBubblingInManagedCodeProperty);
 
 			var combinedFlag = RoutedEventFlag.None;
 			if (localValue is RoutedEventFlag local)
@@ -590,6 +590,22 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		internal bool SafeRaiseTunnelingEvent(RoutedEvent routedEvent, RoutedEventArgs args)
+		{
+			try
+			{
+				RaiseTunnelingEvent(routedEvent, args);
+				return true;
+			}
+			catch (Exception e)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"Failed to raise '{routedEvent.Name}': {e}");
+				}
+				return false;
+			}
+		}
 
 		/// <summary>
 		/// Raise a routed event

@@ -11,19 +11,39 @@ namespace Windows.Foundation;
 [TypeConverter(typeof(SizeConverter))]
 public partial struct Size
 {
-	public Size(double width, double height)
+	// These are public in WinUI (with the underscore!), but we don't want to expose it for now at least.
+	private float _width;
+	private float _height;
+
+	public Size(float width, float height)
 	{
-		Width = width;
-		Height = height;
+		// TODO: Disallow nagative, as WinUI does.
+		_width = width;
+		_height = height;
+	}
+
+	public Size(double width, double height)
+		: this((float)width, (float)height)
+	{
 	}
 
 	public static Size Empty => new Size(double.NegativeInfinity, double.NegativeInfinity);
 
 	public bool IsEmpty => double.IsNegativeInfinity(Width) && double.IsNegativeInfinity(Height);
 
-	public double Height { get; set; }
+	public double Height
+	{
+		get => _height;
+		// TODO: Disallow negative, as WinUI does.
+		set => _height = (float)value;
+	}
 
-	public double Width { get; set; }
+	public double Width
+	{
+		get => _width;
+		// TODO: Disallow negative, as WinUI does.
+		set => _width = (float)value;
+	}
 
 	public override bool Equals(object o)
 	{

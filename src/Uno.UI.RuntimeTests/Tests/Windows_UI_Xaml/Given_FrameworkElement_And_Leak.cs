@@ -1,8 +1,7 @@
-﻿// Uncomment to get additional reference tracking
-// #define TRACK_REFS
+// Uncomment to get additional reference tracking
+//#define TRACK_REFS
 #nullable enable
 
-#if !WINAPPSDK
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,17 +12,22 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Private.Infrastructure;
-using Uno.Extensions;
-using Uno.UI.RuntimeTests.Helpers;
-using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
-using Windows.UI.Core;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Uno.UI.Extensions;
+using Private.Infrastructure;
+using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
+using Windows.UI.Core;
+using Uno.Extensions;
 
-#if !HAS_UNO_WINUI
+#if !HAS_UNO_WINUI && !WINAPPSDK
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
+#endif
+
+#if WINAPPSDK
+using Microsoft.UI.Xaml.Media;
 #endif
 
 #if __MACOS__
@@ -56,8 +60,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(ScrollViewer), 15)]
 		[DataRow(typeof(CheckBox), 15)]
 		[DataRow(typeof(ListView), 15)]
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.ProgressBar), 15)]
-		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.ProgressBar), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.ProgressBar), 15,
+#if __IOS__
+			LeakTestStyles.Uwp // Fluent styles disabled - #18105
+#else
+			LeakTestStyles.All
+#endif
+			)]
+		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.ProgressBar), 15,
+#if __IOS__
+			LeakTestStyles.Uwp // Fluent styles disabled - #18105
+#else
+			LeakTestStyles.All
+#endif
+			)]
 #if !__IOS__ // Disabled https://github.com/unoplatform/uno/pull/15540
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.ProgressRing), 15)]
 #endif
@@ -102,12 +118,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(SplitView), 15)]
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.AnimatedIcon), 15,
 #if __ANDROID__
-			LeakTestStyles.Default // Fluent styles disabled - #14341
+			LeakTestStyles.Uwp // Fluent styles disabled - #14341
 #else
 			LeakTestStyles.All
 #endif
 			)]
+#if !__IOS__ // Disabled https://github.com/unoplatform/uno/issues/9080
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.BreadcrumbBar), 15)]
+#endif
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.BreadcrumbBarItem), 15)]
 #if !__IOS__ // Disabled https://github.com/unoplatform/uno/issues/9080
 		[DataRow(typeof(Microsoft/* UWP don't rename */.UI.Xaml.Controls.ColorPicker), 15)]
@@ -165,7 +183,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #endif
 		[DataRow("Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.Button_Command_Leak", 15)]
 		[DataRow("Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.ItemsControl_ItemsSource_Leak", 15)]
-#if !__WASM__ && !__IOS__ // Disabled - https://github.com/unoplatform/uno/issues/7860
+#if !__WASM__ && !__IOS__ && !WINAPPSDK // Disabled - https://github.com/unoplatform/uno/issues/7860
 		[DataRow("Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.ContentDialog_Leak", 15)]
 #endif
 		[DataRow(typeof(TextBox_Focus_Leak), 15,
@@ -179,7 +197,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #if __IOS__
 			LeakTestStyles.None // Disabled - #10344
 #elif __ANDROID__
-			LeakTestStyles.Default // Fluent styles disabled - #14340
+			LeakTestStyles.Uwp // Fluent styles disabled - #14340
 #else
 			LeakTestStyles.All
 #endif
@@ -187,27 +205,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(MediaPlayerElement), 15)]
 		public async Task When_Add_Remove(object controlTypeRaw, int count, LeakTestStyles leakTestStyles = LeakTestStyles.All)
 		{
-			if (leakTestStyles.HasFlag(LeakTestStyles.Default))
+			if (leakTestStyles.HasFlag(LeakTestStyles.Fluent))
 			{
-				// Test for leaks both without and with fluent styles
 				await When_Add_Remove_Inner(controlTypeRaw, count);
 			}
 
-			if (leakTestStyles.HasFlag(LeakTestStyles.Fluent))
+			if (leakTestStyles.HasFlag(LeakTestStyles.Uwp))
 			{
-				using (var themeHelper = StyleHelper.UseFluentStyles())
-				{
-					await When_Add_Remove_Inner(controlTypeRaw, count);
-				}
+				using var _ = StyleHelper.UseUwpStyles();
+				await When_Add_Remove_Inner(controlTypeRaw, count);
 			}
 		}
 
 		private async Task When_Add_Remove_Inner(object controlTypeRaw, int count)
 		{
-#if TRACK_REFS
-			var initialInactiveStats = Uno.UI.DataBinding.BinderReferenceHolder.GetInactiveViewReferencesStats();
-			var initialActiveStats = Uno.UI.DataBinding.BinderReferenceHolder.GetReferenceStats();
-#endif
 
 			Type GetType(string s)
 				=> AppDomain.CurrentDomain.GetAssemblies().Select(a => a.GetType(s)).Where(t => t != null).First()!;
@@ -222,6 +233,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			var _holders = new ConditionalWeakTable<DependencyObject, Holder>();
 			void TrackDependencyObject(DependencyObject target) => _holders.Add(target, new Holder(HolderUpdate));
 
+			var forest = new List<string>();
 			var maxCounter = 0;
 			var activeControls = 0;
 			var maxActiveControls = 0;
@@ -235,16 +247,31 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			await TestServices.WindowHelper.WaitForIdle();
 
+#if TRACK_REFS
+			Uno.UI.DataBinding.BinderReferenceHolder.IsEnabled = true;
+
+			Uno.UI.DataBinding.BinderReferenceHolder.PurgeHolders();
+			var preStats = Uno.UI.DataBinding.BinderReferenceHolder.GetReferenceStats()
+				.GroupBy(x => x.Item1, x => x.Item2)
+				.ToDictionary(g => g.Key, g => g.Sum());
+			Dictionary<Type, int>? run0Stats = null;
+#endif
+
 			for (int i = 0; i < count; i++)
 			{
 				await MaterializeControl(controlType, _holders, maxCounter, rootContainer);
 			}
 
 			TestServices.WindowHelper.WindowContent = null;
+			rootContainer = null;
 
 			void HolderUpdate(int value)
 			{
-				_ = rootContainer!.Dispatcher.RunAsync(CoreDispatcherPriority.High,
+#if HAS_UNO
+				_ = TestServices.WindowHelper.RootElement.Dispatcher.RunAsync(CoreDispatcherPriority.High,
+#else
+				_ = TestServices.WindowHelper.CurrentTestWindow.DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.High,
+#endif
 					() =>
 					{
 						maxCounter = Math.Max(value, maxCounter);
@@ -256,6 +283,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			var sw = Stopwatch.StartNew();
 
+			//var endTime = TimeSpan.FromSeconds(10);
 			var endTime = TimeSpan.FromSeconds(5);
 			var maxTime = TimeSpan.FromSeconds(30);
 
@@ -281,20 +309,45 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			}
 
 #if TRACK_REFS
-			Uno.UI.DataBinding.BinderReferenceHolder.LogInactiveViewReferencesStatsDiff(initialInactiveStats);
-			Uno.UI.DataBinding.BinderReferenceHolder.LogActiveViewReferencesStatsDiff(initialActiveStats);
+			var postStats = Uno.UI.DataBinding.BinderReferenceHolder.GetReferenceStats()
+				.GroupBy(x => x.Item1, x => x.Item2)
+				.ToDictionary(g => g.Key, g => g.Sum());
+			var delta = preStats.Keys.Concat(postStats.Keys).Distinct()
+				.Select(x => $"{x.Name}: {(preStats.TryGetValue(x, out var pre) ? pre : 0)} -> {(postStats.TryGetValue(x, out var post) ? post : 0)}")
+				.ToArray();
+
+			// GetLeakedObjects contain more objects than tracked by _holder
+			//var leaks = Uno.UI.DataBinding.BinderReferenceHolder.GetLeakedObjects();
 #endif
 
 			var retainedMessage = "";
 
 #if __IOS__ || __ANDROID__
+			var retainedTypes = _holders.AsEnumerable().Select(ExtractTargetName).ToArray();
 			if (activeControls != 0)
 			{
-				var retainedTypes = _holders.AsEnumerable().Select(ExtractTargetName).JoinBy(";");
-				Console.WriteLine($"Retained types: {retainedTypes}");
+				Console.WriteLine($"\n --- Retained types ---\n{string.Join("\n", retainedTypes)}");
 
-				retainedMessage = $"Retained types: {retainedTypes}";
+				Console.WriteLine($"\n ========== first run: tree-graph ============\n{forest.FirstOrDefault()}");
+
+#if TRACK_REFS
+				Console.WriteLine($"\n ========== first run: total objects created ============");
+				foreach (var kvp in run0Stats ?? new Dictionary<Type, int>())
+				{
+					Console.WriteLine($"{kvp.Key.Name}: {kvp.Value}");
+				}
+				Console.WriteLine();
+
+				Console.WriteLine($"\n ========== post-run: ref count ============");
+				foreach (var item in delta)
+				{
+					Console.WriteLine(item);
+				}
+				Console.WriteLine();
+#endif
 			}
+			retainedMessage = retainedTypes.JoinBy(";");
+			//var retained = _holders.Select(x => x.Key).ToArray();
 #endif
 
 #if __IOS__
@@ -310,17 +363,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #if __IOS__ || __ANDROID__
 			static string? ExtractTargetName(KeyValuePair<DependencyObject, Holder> p)
 			{
-				if (p.Key is FrameworkElement fe)
+				if (p.Key is FrameworkElement { Name: { Length: > 0 } name } fe)
 				{
-					return $"{fe}/{fe.Name}";
+					return $"{fe.GetType().Name}/{name}";
 				}
 				else
 				{
-					return p.Key?.ToString();
+					return p.Key?.ToString() ?? "null";
 				}
 			}
 #endif
-
 			async Task MaterializeControl(Type controlType, ConditionalWeakTable<DependencyObject, Holder> _holders, int maxCounter, ContentControl rootContainer)
 			{
 				var item = (FrameworkElement)Activator.CreateInstance(controlType)!;
@@ -333,17 +385,45 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 					await extendedTest.WaitForTestToComplete();
 				}
 
-				// Add all children to the tracking
+#if TRACK_REFS
+				if (run0Stats is not { })
+				{
+					run0Stats = Uno.UI.DataBinding.BinderReferenceHolder.GetReferenceStats()
+						.GroupBy(x => x.Item1, x => x.Item2)
+						.ToDictionary(g => g.Key, g => g.Sum());
+				}
+
+				forest.Add(Uno.UI.Extensions.ViewExtensions.TreeGraph(rootContainer, DescribeView));
+				static IEnumerable<string> DescribeView(object x)
+				{
+					if (x is FrameworkElement fe)
+					{
+						yield return $"TP={PrettyPrint.FormatType(fe.GetTemplatedParent())}, DC={PrettyPrint.FormatObject(fe.DataContext)}";
+					}
+				}
+#endif
+
+				#region Add all children to the tracking
+#if WINAPPSDK
+				for (int i = 0; i < VisualTreeHelper.GetChildrenCount(item); i++)
+				{
+					var child = VisualTreeHelper.GetChild(item, i);
+#else
 				foreach (var child in item.EnumerateAllChildren(maxDepth: 200).OfType<UIElement>())
 				{
+#endif
 					TrackDependencyObject(child);
 
 					if (child is FrameworkElement fe)
 					{
+#if !WINAPPSDK
 						// Don't use VisualStateManager.GetVisualStateManager to avoid creating an instance
 						if (child.GetValue(VisualStateManager.VisualStateManagerProperty) is VisualStateManager vsm)
+#endif
 						{
+#if !WINAPPSDK
 							TrackDependencyObject(vsm);
+#endif
 
 							if (VisualStateManager.GetVisualStateGroups(fe) is { } groups)
 							{
@@ -380,7 +460,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 						}
 					}
 				}
+				#endregion
 
+				item = null;
 				rootContainer.Content = null;
 				GC.Collect();
 				GC.WaitForPendingFinalizers();
@@ -391,6 +473,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			}
 		}
 
+#if !WINAPPSDK
 		[TestMethod]
 		public async Task When_Control_Loaded_Then_HardReferences()
 		{
@@ -414,22 +497,30 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				Assert.IsNull(SUT.GetParent());
 			}
 		}
+#endif
 
 		private class Holder
 		{
 			private readonly Action<int> _update;
 			private static int _counter;
 
+			private static object _lock = new object();
+
 			public Holder(Action<int> update)
 			{
 				_update = update;
-				_update(++_counter);
+				lock (_lock)
+				{
+					_update(++_counter);
+				}
 			}
 
 			~Holder()
 			{
-				var counter = Interlocked.Decrement(ref _counter);
-				_update(counter);
+				lock (_lock)
+				{
+					_update(--_counter);
+				}
 			}
 
 			public static void Reset() => _counter = 0;
@@ -439,10 +530,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		public enum LeakTestStyles
 		{
 			None = 0,
-			Default = 1,
-			Fluent = 2,
-			All = Default | Fluent
+			Fluent = 1,
+			Uwp = 2,
+			All = Fluent | Uwp
 		}
 	}
 }
-#endif

@@ -45,6 +45,10 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 				ProcessAssemblyReload(frame.GetContent<AssemblyDeltaReload>());
 				break;
 
+			case UpdateFileResponse.Name:
+				ProcessUpdateFileResponse(frame.GetContent<UpdateFileResponse>());
+				break;
+
 			case FileReload.Name:
 				await ProcessFileReload(frame.GetContent<FileReload>());
 				break;
@@ -66,11 +70,13 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 		}
 	}
 
+	partial void ProcessUpdateFileResponse(UpdateFileResponse response);
+
 	private async Task ProcessFileReload(HotReload.Messages.FileReload fileReload)
 	{
 		if ((
 				_forcedHotReloadMode is null
-				&& !_supportsLightweightHotReload
+				&& !_supportsPartialHotReload
 				&& !_serverMetadataUpdatesEnabled
 				&& _supportsXamlReader)
 			|| _forcedHotReloadMode == HotReloadMode.XamlReader)
@@ -87,40 +93,58 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 	private async Task ConfigureServer()
 	{
 		var assembly = _rcClient.AppType.Assembly;
-
 		if (assembly.GetCustomAttributes(typeof(ProjectConfigurationAttribute), false) is ProjectConfigurationAttribute[] configs)
 		{
-			var config = configs.First();
+			_status.ReportServerState(HotReloadState.Initializing);
 
-			_projectPath = config.ProjectPath;
-			_xamlPaths = config.XamlPaths;
-
-			if (this.Log().IsEnabled(LogLevel.Debug))
+			try
 			{
-				this.Log().LogDebug($"ProjectConfigurationAttribute={config.ProjectPath}, Paths={_xamlPaths.Length}");
-			}
+				var config = configs.First();
 
-			if (this.Log().IsEnabled(LogLevel.Trace))
-			{
-				foreach (var path in _xamlPaths)
+				_projectPath = config.ProjectPath;
+				_xamlPaths = config.XamlPaths;
+
+				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
-					this.Log().Trace($"\t- {path}");
+					this.Log().LogDebug($"ProjectConfigurationAttribute={config.ProjectPath}, Paths={_xamlPaths.Length}");
 				}
+
+				if (this.Log().IsEnabled(LogLevel.Trace))
+				{
+					foreach (var path in _xamlPaths)
+					{
+						this.Log().Trace($"\t- {path}");
+					}
+				}
+
+				_msbuildProperties = Messages.ConfigureServer.BuildMSBuildProperties(config.MSBuildProperties);
+
+				ConfigureHotReloadMode();
+				InitializeMetadataUpdater();
+				InitializePartialReload();
+				InitializeXamlReader();
+
+				if (!_supportsMetadataUpdates
+					&& !_supportsPartialHotReload
+					&& !_supportsXamlReader)
+				{
+					_status.ReportInvalidRuntime();
+				}
+
+				ConfigureServer message = new(_projectPath, _xamlPaths, GetMetadataUpdateCapabilities(), _serverMetadataUpdatesEnabled, config.MSBuildProperties);
+
+				await _rcClient.SendMessage(message);
 			}
-
-			_msbuildProperties = Messages.ConfigureServer.BuildMSBuildProperties(config.MSBuildProperties);
-
-			ConfigureHotReloadMode();
-			InitializeMetadataUpdater();
-			InitializePartialReload();
-			InitializeXamlReader();
-
-			ConfigureServer message = new(_projectPath, _xamlPaths, GetMetadataUpdateCapabilities(), _serverMetadataUpdatesEnabled, config.MSBuildProperties);
-
-			await _rcClient.SendMessage(message);
+			catch
+			{
+				_status.ReportServerState(HotReloadState.Disabled);
+				throw;
+			}
 		}
 		else
 		{
+			_status.ReportServerState(HotReloadState.Disabled);
+
 			if (this.Log().IsEnabled(LogLevel.Error))
 			{
 				this.Log().LogError("Unable to find ProjectConfigurationAttribute");
@@ -163,6 +187,8 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 
 	private async Task ProcessServerStatus(HotReloadStatusMessage status)
 	{
+#if HAS_UNO_WINUI
 		_status.ReportServerStatus(status);
+#endif
 	}
 }

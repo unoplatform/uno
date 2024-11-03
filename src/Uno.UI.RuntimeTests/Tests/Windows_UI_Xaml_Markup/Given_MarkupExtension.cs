@@ -28,10 +28,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 			var sut = (page.SimpleMarkupExtension as TextBlock);
 			var context = (IXamlServiceProvider)sut.Tag;
 			var pvt = (IProvideValueTarget)context.GetService(typeof(IProvideValueTarget));
+			var rop = (IRootObjectProvider)context.GetService(typeof(IRootObjectProvider));
 			var property = (ProvideValueTargetProperty)pvt.TargetProperty;
 
 			Assert.AreEqual(pvt.TargetObject, sut);
 			Assert.AreEqual(property.Name, nameof(TextBlock.Tag));
+			Assert.AreEqual(rop.RootObject, page);
 		}
 
 		[TestMethod]
@@ -42,10 +44,46 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 			var sut = (page.NestedMarkupExtension as TextBlock);
 			var context = (IXamlServiceProvider)sut.Tag;
 			var pvt = (IProvideValueTarget)context.GetService(typeof(IProvideValueTarget));
+			var rop = (IRootObjectProvider)context.GetService(typeof(IRootObjectProvider));
 			var property = (ProvideValueTargetProperty)pvt.TargetProperty;
 
 			Assert.IsInstanceOfType(pvt.TargetObject, typeof(Binding));
 			Assert.AreEqual(property.Name, nameof(Binding.Source));
+			Assert.AreEqual(rop.RootObject, page);
+		}
+
+		[TestMethod]
+		public async Task When_MarkupExtension_ResourceDictionary1()
+		{
+			var page = new MarkupExtension_ParserContext();
+			await UITestHelper.Load(page, isLoaded: x => x.IsLoaded); // waiting for control-template to materialize
+
+			var sut = (Grid)(page.ButtonMarkupExtension_Style as Button).GetTemplateRoot();
+			var context = (IXamlServiceProvider)sut.Tag;
+			var pvt = (IProvideValueTarget)context.GetService(typeof(IProvideValueTarget));
+			var rop = (IRootObjectProvider)context.GetService(typeof(IRootObjectProvider));
+			var property = (ProvideValueTargetProperty)pvt.TargetProperty;
+
+			Assert.AreEqual(pvt.TargetObject, sut);
+			Assert.AreEqual(property.Name, nameof(TextBlock.Tag));
+			Assert.IsInstanceOfType(rop.RootObject, typeof(ResourceDictionary));
+		}
+
+		[TestMethod]
+		public async Task When_MarkupExtension_ResourceDictionary2()
+		{
+			var page = new MarkupExtension_ParserContext();
+			await UITestHelper.Load(page, isLoaded: x => x.IsLoaded); // waiting for control-template to materialize
+
+			var sut = (Grid)(page.ButtonMarkupExtension_Template as Button).GetTemplateRoot();
+			var context = (IXamlServiceProvider)sut.Tag;
+			var pvt = (IProvideValueTarget)context.GetService(typeof(IProvideValueTarget));
+			var rop = (IRootObjectProvider)context.GetService(typeof(IRootObjectProvider));
+			var property = (ProvideValueTargetProperty)pvt.TargetProperty;
+
+			Assert.AreEqual(pvt.TargetObject, sut);
+			Assert.AreEqual(property.Name, nameof(TextBlock.Tag));
+			Assert.IsInstanceOfType(rop.RootObject, typeof(ResourceDictionary));
 		}
 
 		[TestMethod]

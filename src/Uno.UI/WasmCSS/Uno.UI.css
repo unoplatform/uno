@@ -156,6 +156,9 @@ embed.uno-frameworkelement.uno-unarranged {
   outline: none;
   border: none;
   background-color: transparent;
+  /* Redundant, but actually fixes rendering bug on Safari for a multiline textbox with fixed height where vertical scrolling breaks weirdly */
+  /* https://stackoverflow.com/a/57215893 */
+  transform: translate3d(0, 0, 0);
 }
 
 .uno-textbox {
@@ -190,6 +193,12 @@ embed.uno-frameworkelement.uno-unarranged {
 .uno-scrollcontentpresenter {
   -webkit-overflow-scrolling: touch;
 }
+
+  .uno-scrollcontentpresenter > * {
+    /* Force hardware acceleration as per https://stackoverflow.com/q/9807620 */
+    /* Fixes https://github.com/unoplatform/uno/issues/17640 */
+    -webkit-transform: translate3d(0, 0, 0);
+  }
 
   .uno-scrollcontentpresenter.scroll-x-auto {
     overflow-x: auto;
@@ -264,7 +273,12 @@ embed.uno-frameworkelement.uno-unarranged {
 
 textarea {
   resize: none;
-  overflow: hidden; /* Scrolling is handled by the parent ScrollViewer */
+  scrollbar-width: none;
+}
+
+textarea::-webkit-scrollbar {
+  width: 0;
+  background: transparent;
 }
 
 input::-ms-reveal,
@@ -276,4 +290,15 @@ input::-ms-clear {
 .selection-highlight *::selection {
   background: var(--selection-background);
   color: var(--selection-color);
+}
+
+/* Uno has its own HR indicator: hide default dotnet indicator. */
+#dotnet-hotreload-toast {
+  visibility: collapse;
+}
+
+.uno-nativewebview {
+  border: 0px;
+  width: 100%;
+  height: 100%;
 }

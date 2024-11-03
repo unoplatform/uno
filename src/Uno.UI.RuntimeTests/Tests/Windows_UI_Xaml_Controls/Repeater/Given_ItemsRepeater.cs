@@ -522,7 +522,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 			sut.MaterializedItems.Should().NotContain(sut.Source[15]);
 
 			// Item 0 should be at offset 0
-			sut.MaterializedElements.OrderBy(e => e.DataContext).First().LayoutSlot.Y.Should().Be(0, "Item #0 should be at the origin of the IR (negative offset means we are in trouble!)");
+			LayoutInformation.GetLayoutSlot(sut.MaterializedElements.OrderBy(e => e.DataContext).First()).Y.Should().Be(0, "Item #0 should be at the origin of the IR (negative offset means we are in trouble!)");
 		}
 
 		private record MyItem(int Id, double Height, Color Color)

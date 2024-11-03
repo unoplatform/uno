@@ -35,6 +35,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private string _userInput;
 		private FrameworkElement _suggestionsContainer;
 		private IDisposable _textChangedDisposable;
+		private IDisposable _textBoxLoadedDisposable;
 
 		public AutoSuggestBox() : base()
 		{
@@ -52,7 +53,12 @@ namespace Microsoft.UI.Xaml.Controls
 			_layoutRoot = GetTemplateChild("LayoutRoot") as Grid;
 			_suggestionsList = GetTemplateChild("SuggestionsList") as ListView;
 			_suggestionsContainer = GetTemplateChild("SuggestionsContainer") as FrameworkElement;
-			_queryButton = GetTemplateChild("QueryButton") as Button;
+
+			// This is *expected* to be null on platforms with proper lifecycle.
+			// The queryButton is part of the TextBox template, which is not applied yet.
+			// On WinUI, QueryButton is never retrieved in OnTextBoxLoaded, not in OnApplyTemplate.
+			// We do in both to account for all our platforms.
+			_queryButton = _textBox?.GetTemplateChild("QueryButton") as Button;
 
 			// Uno specific: If the user enabled the legacy behavior for popup light dismiss default
 			// we force it to false explicitly to make sure the AutoSuggestBox works correctly.
@@ -72,15 +78,25 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 #endif
 
-			UpdateQueryButton();
 			UpdateTextBox();
 			UpdateDescriptionVisibility(true);
 
 			_textChangedDisposable?.Dispose();
+			_textBoxLoadedDisposable?.Dispose();
 			if (_textBox is { })
 			{
 				_textBox.TextChanged += OnTextBoxTextChanged;
 				_textChangedDisposable = Disposable.Create(() => _textBox.TextChanged -= OnTextBoxTextChanged);
+
+				if (_textBox.IsLoaded)
+				{
+					UpdateQueryButton();
+				}
+				else
+				{
+					_textBox.Loaded += OnTextBoxLoaded;
+					_textBoxLoadedDisposable = Disposable.Create(() => _textBox.Loaded -= OnTextBoxLoaded);
+				}
 			}
 
 			Loaded += (s, e) => RegisterEvents();
@@ -101,6 +117,11 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			Text = _textBox.Text;
 			OnTextChanged(args.IsUserModifyingText);
+		}
+
+		private void OnTextBoxLoaded(object sender, RoutedEventArgs args)
+		{
+			UpdateQueryButton();
 		}
 
 		private void OnItemsChanged(IObservableVector<object> sender, IVectorChangedEventArgs @event)
@@ -273,6 +294,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (_textBox != null)
 			{
 				_textBox.KeyDown += OnTextBoxKeyDown;
+				_queryButton = _textBox.GetTemplateChild<Button>("QueryButton");
 			}
 
 			if (_queryButton != null)
@@ -283,6 +305,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (_suggestionsList != null)
 			{
 				_suggestionsList.ItemClick += OnSuggestionListItemClick;
+				_suggestionsList.SelectionChanged += OnSuggestionsListSelectionChanged;
 			}
 
 			if (_popup != null)
@@ -290,11 +313,14 @@ namespace Microsoft.UI.Xaml.Controls
 				_popup.Closed += OnPopupClosed;
 				_popup.Opened += OnPopupOpened;
 			}
+
+			SizeChanged += OnSizeChanged;
 		}
 
 		void UnregisterEvents()
 		{
 			_textChangedDisposable?.Dispose();
+			_textBoxLoadedDisposable?.Dispose();
 			if (_textBox != null)
 			{
 				_textBox.KeyDown -= OnTextBoxKeyDown;
@@ -308,6 +334,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (_suggestionsList != null)
 			{
 				_suggestionsList.ItemClick -= OnSuggestionListItemClick;
+				_suggestionsList.SelectionChanged -= OnSuggestionsListSelectionChanged;
 			}
 
 			if (_popup != null)
@@ -317,6 +344,8 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			_textChangedDisposable?.Dispose();
+
+			SizeChanged -= OnSizeChanged;
 		}
 
 		protected override void OnLostFocus(RoutedEventArgs e)
@@ -334,6 +363,14 @@ namespace Microsoft.UI.Xaml.Controls
 			LayoutPopup();
 		}
 
+		private void OnSizeChanged(object sender, SizeChangedEventArgs args)
+		{
+			if (_suggestionsContainer is not null)
+			{
+				_suggestionsContainer.Width = ActualWidth;
+			}
+		}
+
 		private void OnIsSuggestionListOpenChanged(DependencyPropertyChangedEventArgs e)
 		{
 			if (e.NewValue is bool isOpened && _popup != null)
@@ -344,6 +381,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void UpdateQueryButton()
 		{
+			_queryButton = _textBox?.GetTemplateChild<Button>("QueryButton");
 			if (_queryButton == null)
 			{
 				return;
@@ -377,6 +415,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 			ChoseItem(e.ClickedItem);
 			SubmitSearch(e.ClickedItem);
+		}
+
+		private void OnSuggestionsListSelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			_suggestionsList.ScrollIntoView(_suggestionsList.SelectedItem);
 		}
 
 		private void OnQueryButtonClick(object sender, RoutedEventArgs e)
@@ -491,7 +534,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (TextMemberPath != null)
 			{
-				using var bindingPath = new BindingPath(TextMemberPath, "", null, allowPrivateMembers: true) { DataContext = o };
+				using var bindingPath = new BindingPath(TextMemberPath, "", forAnimations: false, allowPrivateMembers: true) { DataContext = o };
 				value = bindingPath.Value;
 			}
 

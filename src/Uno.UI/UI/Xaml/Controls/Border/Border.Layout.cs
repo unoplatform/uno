@@ -27,7 +27,7 @@ partial class Border
 
 			var desiredSize = MeasureElement(child, childAvailableSize);
 
-			//IFC(pChild->EnsureLayoutStorage());
+			child.EnsureLayoutStorage();
 
 			// Desired size would be my child's desired size plus the border
 			desiredSize.Width = desiredSize.Width + combined.Width;

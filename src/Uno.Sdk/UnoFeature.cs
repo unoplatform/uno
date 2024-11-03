@@ -9,6 +9,9 @@ public enum UnoFeature
 	Maps,
 
 	[UnoArea(UnoArea.Core)]
+	GooglePlay,
+
+	[UnoArea(UnoArea.Core)]
 	Foldable,
 
 	[UnoArea(UnoArea.Core)]
@@ -90,5 +93,8 @@ public enum UnoFeature
 	Lottie,
 
 	[UnoArea(UnoArea.Core)]
-	Svg
+	Svg,
+
+	[UnoArea(UnoArea.Core)]
+	GLCanvas
 }

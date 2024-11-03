@@ -53,22 +53,10 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Frame.GoForward()
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Frame.Navigate(System.Type, object)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Frame.Navigate(System.Type, object, Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo)
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool NavigateToType(global::System.Type sourcePageType, object parameter, global::Microsoft.UI.Xaml.Navigation.FrameNavigationOptions navigationOptions)
-		{
-			throw new global::System.NotImplementedException("The member bool Frame.NavigateToType(Type sourcePageType, object parameter, FrameNavigationOptions navigationOptions) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20Frame.NavigateToType%28Type%20sourcePageType%2C%20object%20parameter%2C%20FrameNavigationOptions%20navigationOptions%29");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Frame.NavigateToType(System.Type, object, Microsoft.UI.Xaml.Navigation.FrameNavigationOptions)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Frame.GetNavigationState()
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Frame.SetNavigationState(string)
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetNavigationState(string navigationState, bool suppressNavigate)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.Frame", "void Frame.SetNavigationState(string navigationState, bool suppressNavigate)");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Frame.SetNavigationState(string, bool)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.Frame.Navigate(System.Type)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.CacheSizeProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Frame.CanGoBackProperty.get

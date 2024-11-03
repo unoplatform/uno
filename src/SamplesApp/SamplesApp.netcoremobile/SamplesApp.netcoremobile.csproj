@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFrameworks>$(NetMobilePreviousAndCurrent)</TargetFrameworks>
+		<OutputType>Exe</OutputType>
 	</PropertyGroup>
 
 	<Import Project="../../targetframework-override.props" />
@@ -8,7 +9,6 @@
 	<PropertyGroup>
 		<SingleProject>true</SingleProject>
 
-		<OutputType>Exe</OutputType>
 		<AssemblyName>SamplesApp</AssemblyName>
 		<DefineConstants>$(DefineConstants);XAMARIN;HAS_UNO</DefineConstants>
 		<IsUnoHead>true</IsUnoHead>
@@ -16,6 +16,7 @@
 		<ApplicationId>uno.platform.samplesdev</ApplicationId>
 
 		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">iossimulator-x64</RuntimeIdentifier>
+		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos'">osx-x64</RuntimeIdentifier>
 		<RuntimeIdentifier Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">maccatalyst-x64</RuntimeIdentifier>
 
 		<!-- Override RuntimeIdentifir specifically for smaller builds -->
@@ -64,7 +65,7 @@
 			</ItemGroup>
 
 			<PropertyGroup>
-				<SupportedOSPlatformVersion>12.0</SupportedOSPlatformVersion>
+				<SupportedOSPlatformVersion>12.2</SupportedOSPlatformVersion>
 				
 				<!-- iOS 17 compatibility -->
 				<MtouchExtraArgs>$(MtouchExtraArgs) --weak-framework=NewsstandKit</MtouchExtraArgs>
@@ -148,12 +149,13 @@
 			
 			<ItemGroup>
 				<PackageReference Include="Xamarin.Google.Android.Material" Version="1.4.0.4" />
-				<PackageReference Include="Uno.UniversalImageLoader" Version="1.9.36" />
+				<PackageReference Include="Uno.UniversalImageLoader" Version="1.9.37" />
 				<PackageReference Include="SkiaSharp.NativeAssets.Android" />
 			</ItemGroup>
 			
 			<ItemGroup>
 				<ProjectReference Include="..\..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.netcoremobile.csproj" />
+				<ProjectReference Include="..\..\AddIns\Uno.UI.GooglePlay\Uno.UI.GooglePlay.netcoremobile.csproj" />
 			</ItemGroup>
 			
 			<ItemGroup>
@@ -187,8 +189,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Graph">
-			<Version>3.12.0</Version>
+		<PackageReference Include="Microsoft.Graph" Condition="'$(Configuration)'!='Debug' or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))!='ios'"> <!-- Workaround for https://github.com/microsoftgraph/msgraph-sdk-dotnet/issues/2617 -->
+			<Version>5.56.0</Version>
 		</PackageReference>
 		<PackageReference Include="Microsoft.Identity.Client">
 			<Version>4.61.3</Version>
@@ -197,10 +199,10 @@
 		<PackageReference Include="MSTest.TestFramework" />
 		<PackageReference Include="MSTest.Analyzers" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.0-dev.7" />
 		<PackageReference Include="Uno.Fonts.Fluent" />
 		<PackageReference Include="Uno.Resizetizer" />
+		<PackageReference Include="System.Text.Encodings.Web" Version="8.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -236,16 +238,10 @@
 
 	<Import Project="..\..\..\build\nuget\uno.winui.single-project.targets" />
 
-	<Target Name="GenerateVersion" 
-			BeforeTargets="BeforeBuild;_CompileAppManifest;_GetAndroidPackageName" 
-			Condition="'$(GITVERSION_InformationalVersion)'!=''">
+	<Target Name="GenerateVersion" BeforeTargets="BeforeBuild;_CompileAppManifest;_GetAndroidPackageName" Condition="'$(GITVERSION_InformationalVersion)'!=''">
 
-		<Exec
-			Command="git rev-list --count HEAD"
-			ConsoleToMSBuild="true">
-			<Output
-				TaskParameter="ConsoleOutput"
-				PropertyName="_VersionCode" />
+		<Exec Command="git rev-list --count HEAD" ConsoleToMSBuild="true">
+			<Output TaskParameter="ConsoleOutput" PropertyName="_VersionCode" />
 		</Exec>
 
 		<PropertyGroup>
@@ -258,7 +254,7 @@
 
 	</Target>
 
-	<PropertyGroup >
+	<PropertyGroup>
 		<!-- Versions -->
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
 		<ApplicationVersion>1</ApplicationVersion>

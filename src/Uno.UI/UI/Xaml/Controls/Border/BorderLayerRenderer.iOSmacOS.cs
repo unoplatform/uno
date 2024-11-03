@@ -60,7 +60,7 @@ partial class BorderLayerRenderer
 	/// <param name="borderBrush">The border brush</param>
 	/// <param name="cornerRadius">The corner radius</param>
 	/// <returns>An updated BoundsPath if the layer has been created or updated; null if there is no change.</returns>
-	partial void UpdatePlatform()
+	partial void UpdatePlatform(bool forceUpdate)
 	{
 		// Bounds is captured to avoid calling twice calls below.
 		var bounds = _owner.Bounds;
@@ -72,7 +72,7 @@ partial class BorderLayerRenderer
 			_borderInfoProvider.BorderBrush,
 			_borderInfoProvider.BorderThickness,
 			_borderInfoProvider.CornerRadius);
-		if (!newState.Equals(_currentState))
+		if (!newState.Equals(_currentState) || forceUpdate)
 		{
 #if __MACOS__
 			_owner.WantsLayer = true;

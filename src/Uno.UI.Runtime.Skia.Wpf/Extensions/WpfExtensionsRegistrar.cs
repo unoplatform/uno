@@ -23,6 +23,8 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Runtime.Skia.Extensions.System;
 using Uno.UI.Runtime.Skia.Wpf.Input;
+using Microsoft.Web.WebView2.Core;
+using Uno.Graphics;
 
 namespace Uno.UI.Runtime.Skia.Wpf.Extensions;
 
@@ -55,6 +57,8 @@ internal static class WpfExtensionsRegistrar
 		ApiExtensibility.Register(typeof(IClipboardExtension), o => new ClipboardExtensions(o));
 		ApiExtensibility.Register(typeof(IAnalyticsInfoExtension), o => new AnalyticsInfoExtension());
 		ApiExtensibility.Register(typeof(ISystemNavigationManagerPreviewExtension), o => new SystemNavigationManagerPreviewExtension());
+		ApiExtensibility.Register<CoreWebView2>(typeof(INativeWebViewProvider), o => new WpfNativeWebViewProvider(o));
+		ApiExtensibility.Register<XamlRoot>(typeof(INativeOpenGLWrapper), xamlRoot => new WpfNativeOpenGLWrapper(xamlRoot));
 
 		_registered = true;
 	}

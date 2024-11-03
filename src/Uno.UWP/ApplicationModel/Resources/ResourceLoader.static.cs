@@ -58,6 +58,8 @@ partial class ResourceLoader
 	private static readonly Dictionary<string, ResourceLoader> _loaders = new(StringComparer.OrdinalIgnoreCase); // _loaders[RES_PACK ?? "Resources"]._resources[CULTURE][RES_KEY]
 	private static LoaderContext? _loaderContext;
 
+	private static ReadOnlySpan<byte> _expectedUnoSequence => [0x75, 0x6E, 0x6F]; // == "uno"
+
 	private static string[] EnsureLoadersCultures()
 	{
 		if (HasContextChangedSignificantly(out var context))
@@ -173,8 +175,9 @@ partial class ResourceLoader
 		using (var reader = new BinaryReader(stream))
 		{
 			// "Magic" sequence to ensure we're reading a proper resource file
-			var magic = reader.ReadBytes(3);
-			if (!magic.SequenceEqual(new byte[] { 0x75, 0x6E, 0x6F })) // == "uno"
+			Span<byte> magic = stackalloc byte[3];
+			var magicCount = reader.Read(magic);
+			if (magicCount != 3 || !magic.SequenceEqual(_expectedUnoSequence))
 			{
 				throw new InvalidOperationException($"The file {fileName} is not a resource file");
 			}
@@ -186,7 +189,7 @@ partial class ResourceLoader
 			}
 
 			var name = reader.ReadString();
-			var culture = reader.ReadString().ToLowerInvariant();
+			var culture = reader.ReadString();
 
 			if (!languagePreferences.Contains(culture, FastBaseCultureComparer.Instance))
 			{
@@ -257,15 +260,33 @@ partial class ResourceLoader
 	private class FastBaseCultureComparer : EqualityComparer<string>
 	{
 		public static FastBaseCultureComparer Instance { get; } = new();
-		public static string GetBaseCulture(string value) => value.Split('-', 2)[0].ToLowerInvariant();
 
-		public override int GetHashCode([DisallowNull] string x) => x.Split('-', 2)[0].ToLowerInvariant().GetHashCode();
+		private static ReadOnlySpan<char> GetBaseCulture(ReadOnlySpan<char> span)
+		{
+			var dashIndex = span.IndexOf('-');
+			if (dashIndex != -1)
+			{
+				span = span.Slice(0, dashIndex);
+			}
+
+			return span;
+		}
+
+		public override int GetHashCode([DisallowNull] string x)
+		{
+			return string.GetHashCode(GetBaseCulture(x), StringComparison.OrdinalIgnoreCase);
+		}
+
 		public override bool Equals(string? c1, string? c2)
 		{
-			return
-				c1 is { } &&
-				c2 is { } &&
-				GetBaseCulture(c1) == GetBaseCulture(c2);
+			if (c1 is not null && c2 is not null)
+			{
+				var span1 = GetBaseCulture(c1);
+				var span2 = GetBaseCulture(c2);
+				return span1.Equals(span2, StringComparison.OrdinalIgnoreCase);
+			}
+
+			return c1 is null && c2 is null;
 		}
 	}
 }

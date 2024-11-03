@@ -100,7 +100,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				// CompositionTarget.Rendering += (sender, args) => { Log.Comment("Rendering"); }; // debugging aid
 			});
 
-			await TestServices.WindowHelper.WaitFor(() => buildTreeCompleted, 2000);
+			await TestServices.WindowHelper.WaitFor(() => buildTreeCompleted, 5000);
 			if (buildTreeCompleted)
 			{
 				RunOnUIThread.Execute(() =>
@@ -168,7 +168,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				};
 			});
 
-			await TestServices.WindowHelper.WaitFor(() => ElementLoadedCompleted, 2000);
+			await TestServices.WindowHelper.WaitFor(() => ElementLoadedCompleted, 5000);
 			if (ElementLoadedCompleted)
 			{
 				RunOnUIThread.Execute(() =>

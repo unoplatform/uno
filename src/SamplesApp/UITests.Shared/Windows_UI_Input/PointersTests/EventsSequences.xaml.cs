@@ -42,7 +42,7 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 		public EventsSequences()
 		{
 			this.InitializeComponent();
-
+			TestListViewTarget.ItemsSource = "0123456789".ToCharArray();
 			SetupEvents(TestTapTarget, _tapResult, EventsKind.Pointers | EventsKind.Manipulation | EventsKind.Gestures);
 			SetupEvents(TestClickTarget, _clickResult, EventsKind.Pointers | EventsKind.Manipulation | EventsKind.Gestures | EventsKind.Click);
 			SetupEvents(TestTranslatedTapTarget, _translatedTapResult, EventsKind.Pointers | EventsKind.Manipulation | EventsKind.Gestures);

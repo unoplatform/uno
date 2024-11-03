@@ -97,6 +97,10 @@ namespace Microsoft.UI.Xaml
 
 		private protected virtual ShapeVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateShapeVisual();
 
+		/// <param name="point">The point being tested, in element coordinates (i.e. top-left of element is (0,0) if not RTL)</param>
+		/// <remarks>This does NOT take the clipping into account.</remarks>
+		internal virtual bool HitTest(Point point) => Visual.HitTest(point);
+
 		internal void AddChild(UIElement child, int? index = null)
 		{
 			if (child == null)
@@ -252,8 +256,8 @@ namespace Microsoft.UI.Xaml
 
 			if (newValue == Visibility.Collapsed)
 			{
-				LayoutInformation.SetDesiredSize(this, new Size(0, 0));
-				_size = new Size(0, 0);
+				m_desiredSize = new Size(0, 0);
+				m_size = new Size(0, 0);
 			}
 
 			if (FeatureConfiguration.UIElement.UseInvalidateMeasurePath && this.GetParent() is UIElement parent)

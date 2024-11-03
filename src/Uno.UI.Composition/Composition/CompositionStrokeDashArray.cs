@@ -9,7 +9,7 @@ public partial class CompositionStrokeDashArray : CompositionObject, IList<float
 {
 	private readonly List<float> _list;
 
-	internal CompositionStrokeDashArray()
+	internal CompositionStrokeDashArray(Compositor compositor) : base(compositor)
 	{
 		_list = new List<float>();
 	}

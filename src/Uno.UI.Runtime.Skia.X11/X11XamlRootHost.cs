@@ -41,6 +41,28 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		(IntPtr)EventMask.LeaveWindowMask |
 		(IntPtr)EventMask.FocusChangeMask |
 		(IntPtr)EventMask.NoEventMask;
+	// We only use XI2 for pointer stuff. We use the core protocol events for everything else.
+	private const IntPtr EventsHandledByXI2Mask =
+		(IntPtr)EventMask.ButtonPressMask |
+		(IntPtr)EventMask.PointerMotionMask |
+		(IntPtr)EventMask.EnterWindowMask |
+		(IntPtr)EventMask.LeaveWindowMask |
+		(IntPtr)EventMask.NoEventMask;
+
+	private static readonly int[] _glxAttribs = {
+		GlxConsts.GLX_X_RENDERABLE    , /* True */ 1,
+		GlxConsts.GLX_DRAWABLE_TYPE   , GlxConsts.GLX_WINDOW_BIT,
+		GlxConsts.GLX_RENDER_TYPE     , GlxConsts.GLX_RGBA_BIT,
+		GlxConsts.GLX_X_VISUAL_TYPE   , GlxConsts.GLX_TRUE_COLOR,
+		GlxConsts.GLX_RED_SIZE        , 8,
+		GlxConsts.GLX_GREEN_SIZE      , 8,
+		GlxConsts.GLX_BLUE_SIZE       , 8,
+		GlxConsts.GLX_ALPHA_SIZE      , 8,
+		GlxConsts.GLX_DEPTH_SIZE      , 8,
+		GlxConsts.GLX_STENCIL_SIZE    , 8,
+		GlxConsts.GLX_DOUBLEBUFFER    , /* True */ 1,
+		(int)X11Helper.None
+	};
 
 	private static bool _firstWindowCreated;
 	private static readonly object _x11WindowToXamlRootHostMutex = new();
@@ -66,34 +88,33 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	public X11Window RootX11Window => _x11Window!.Value;
 	public X11Window TopX11Window => _x11TopWindow!.Value;
 
-	public X11XamlRootHost(X11WindowWrapper wrapper, Window winUIWindow, XamlRoot xamlRoot, Action<Size> resizeCallback, Action closingCallback, Action<bool> focusCallback, Action<bool> visibilityCallback)
+	public X11XamlRootHost(X11WindowWrapper wrapper, Window winUIWindow, XamlRoot xamlRoot, Action configureCallback, Action closingCallback, Action<bool> focusCallback, Action<bool> visibilityCallback)
 	{
 		_xamlRoot = xamlRoot;
 		_wrapper = wrapper;
 		_window = winUIWindow;
 
-		_renderTimer = new DispatcherTimer();
-		_renderTimer.Interval = new TimeSpan(1000 / 16);
-		_renderTimer.Tick += (sender, o) =>
-		{
-			if (_renderDirty)
-			{
-				_renderer?.Render();
-				_renderDirty = false;
-			}
-		};
-		_renderTimer.Start();
-
-		_resizeCallback = size =>
-		{
-			// copy the root window dimensions to the top window
-			using var _1 = X11Helper.XLock(TopX11Window.Display);
-			_ = XLib.XResizeWindow(TopX11Window.Display, TopX11Window.Window, (int)size.Width, (int)size.Height);
-			resizeCallback(size);
-		};
 		_closingCallback = closingCallback;
 		_focusCallback = focusCallback;
 		_visibilityCallback = visibilityCallback;
+		_configureCallback = configureCallback;
+
+		_renderTimer = new DispatcherTimer();
+		_renderTimer.Interval = TimeSpan.FromSeconds(1.0 / X11ApplicationHost.RenderFrameRate); // we're on the UI thread
+		_renderTimer.Tick += (sender, o) =>
+		{
+			if (Interlocked.Exchange(ref _needsConfigureCallback, 0) == 1)
+			{
+				_configureCallback();
+			}
+
+			if (_renderDirty)
+			{
+				_renderDirty = false;
+				_renderer?.Render();
+			}
+		};
+		_renderTimer.Start();
 
 		_applicationView = ApplicationView.GetForWindowId(winUIWindow.AppWindow.Id);
 		_applicationView.PropertyChanged += OnApplicationViewPropertyChanged;
@@ -353,27 +374,29 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		// For the root window (that does nothing but act as an anchor for children,
 		// we don't bother with OpenGL, since we don't render on this window anyway.
 		IntPtr rootXWindow = XLib.XRootWindow(display, screen);
-		IntPtr rootUnoWindow = CreateSoftwareRenderWindow(display, screen, size, rootXWindow);
-		XLib.XSelectInput(display, rootUnoWindow, RootEventsMask);
-		XLib.XSelectInput(display, rootXWindow, (IntPtr)EventMask.PropertyChangeMask); // to update dpi when X resources change
-		_x11Window = new X11Window(display, rootUnoWindow);
+		_x11Window = CreateSoftwareRenderWindow(display, screen, size, rootXWindow);
 		var topWindowDisplay = XLib.XOpenDisplay(IntPtr.Zero);
-		if (FeatureConfiguration.Rendering.UseOpenGLOnX11 ?? IsOpenGLSupported(display))
+		_x11TopWindow = FeatureConfiguration.Rendering.UseOpenGLOnX11 ?? IsOpenGLSupported(display)
+			? CreateGLXWindow(topWindowDisplay, screen, size, RootX11Window.Window)
+			: CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
+
+		// Only XI2.2 has touch events, and that's pretty much the only reason we're using XI2,
+		// so to make our assumptions simpler, we assume XI >= 2.2 or no XI at all.
+		var usingXi2 = GetXI2Details(display).version >= XIVersion.XI2_2;
+		if (usingXi2)
 		{
-			_x11TopWindow = CreateGLXWindow(topWindowDisplay, screen, size, rootUnoWindow);
-		}
-		else
-		{
-			var topWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, rootUnoWindow);
-			XLib.XSelectInput(topWindowDisplay, topWindow, TopEventsMask);
-			_x11TopWindow = new X11Window(display, topWindow);
+			SetXIEventMask(TopX11Window);
 		}
 
-		QueueAction(this, () => _resizeCallback(size));
+		XLib.XSelectInput(RootX11Window.Display, RootX11Window.Window, RootEventsMask);
+		// to update dpi when X resources change
+		XLib.XSelectInput(RootX11Window.Display, rootXWindow, (IntPtr)EventMask.PropertyChangeMask);
+		// We make sure not to select events that will be handled by a corresponding XI2 event
+		XLib.XSelectInput(TopX11Window.Display, TopX11Window.Window, usingXi2 ? TopEventsMask & ~EventsHandledByXI2Mask : TopEventsMask);
 
 		// Tell the WM to send a WM_DELETE_WINDOW message before closing
 		IntPtr deleteWindow = X11Helper.GetAtom(display, X11Helper.WM_DELETE_WINDOW);
-		_ = XLib.XSetWMProtocols(display, rootUnoWindow, new[] { deleteWindow }, 1);
+		_ = XLib.XSetWMProtocols(RootX11Window.Display, RootX11Window.Window, new[] { deleteWindow }, 1);
 
 		lock (_x11WindowToXamlRootHostMutex)
 		{
@@ -383,7 +406,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 		_ = X11Helper.XClearWindow(RootX11Window.Display, RootX11Window.Window); // the root window is never drawn, just always blank
 
-		if (FeatureConfiguration.Rendering.UseOpenGLOnX11 ?? IsOpenGLSupported(display))
+		if (FeatureConfiguration.Rendering.UseOpenGLOnX11 ?? IsOpenGLSupported(TopX11Window.Display))
 		{
 			_renderer = new X11OpenGLRenderer(this, TopX11Window);
 		}
@@ -397,24 +420,9 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	// https://learnopengl.com/Advanced-OpenGL/Framebuffers
 	private unsafe static X11Window CreateGLXWindow(IntPtr display, int screen, Size size, IntPtr parent)
 	{
-		int[] glxAttribs = {
-			GlxConsts.GLX_X_RENDERABLE    , /* True */ 1,
-			GlxConsts.GLX_DRAWABLE_TYPE   , GlxConsts.GLX_WINDOW_BIT,
-			GlxConsts.GLX_RENDER_TYPE     , GlxConsts.GLX_RGBA_BIT,
-			GlxConsts.GLX_X_VISUAL_TYPE   , GlxConsts.GLX_TRUE_COLOR,
-			GlxConsts.GLX_RED_SIZE        , 8,
-			GlxConsts.GLX_GREEN_SIZE      , 8,
-			GlxConsts.GLX_BLUE_SIZE       , 8,
-			GlxConsts.GLX_ALPHA_SIZE      , 8,
-			GlxConsts.GLX_DEPTH_SIZE      , 24,
-			GlxConsts.GLX_STENCIL_SIZE    , 8,
-			GlxConsts.GLX_DOUBLEBUFFER    , /* True */ 1,
-			(int)X11Helper.None
-		};
-
 		IntPtr bestFbc = IntPtr.Zero;
 		XVisualInfo* visual = null;
-		var ptr = GlxInterface.glXChooseFBConfig(display, screen, glxAttribs, out var count);
+		var ptr = GlxInterface.glXChooseFBConfig(display, screen, _glxAttribs, out var count);
 		if (ptr == null || *ptr == IntPtr.Zero)
 		{
 			throw new InvalidOperationException($"{nameof(GlxInterface.glXChooseFBConfig)} failed to retrieve GLX frambuffer configurations.");
@@ -444,7 +452,6 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		// Not sure why this is needed, commented out until further notice
 		// attribs.override_redirect = /* True */ 1;
 		attribs.colormap = XLib.XCreateColormap(display, parent, visual->visual, /* AllocNone */ 0);
-		attribs.event_mask = TopEventsMask;
 		var window = XLib.XCreateWindow(
 			display,
 			parent,
@@ -464,7 +471,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		return new X11Window(display, window, (stencil, samples, context));
 	}
 
-	private static IntPtr CreateSoftwareRenderWindow(IntPtr display, int screen, Size size, IntPtr parent)
+	private static X11Window CreateSoftwareRenderWindow(IntPtr display, int screen, Size size, IntPtr parent)
 	{
 		var matchVisualInfoResult = XLib.XMatchVisualInfo(display, screen, DefaultColorDepth, 4, out var info);
 		var success = matchVisualInfoResult != 0;
@@ -512,7 +519,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		var window = XLib.XCreateWindow(display, parent, 0, 0, (int)size.Width,
 			(int)size.Height, 0, (int)depth, /* InputOutput */ 1, visual,
 			(UIntPtr)(valueMask), ref xSetWindowAttributes);
-		return window;
+		return new X11Window(display, window);
 	}
 
 	private bool IsOpenGLSupported(IntPtr display)

@@ -73,12 +73,7 @@ namespace Uno.UI.Dispatching
 		/// </summary>
 		internal static void CheckThreadAccess()
 		{
-			// This check is disabled on WASM unless threading is enabled
-			if (
-#if __WASM__
-				NativeDispatcher.IsThreadingSupported &&
-#endif
-				!Main.HasThreadAccess)
+			if (!Main.HasThreadAccess)
 			{
 				throw new InvalidOperationException("The application called an interface that was marshalled for a different thread.");
 			}

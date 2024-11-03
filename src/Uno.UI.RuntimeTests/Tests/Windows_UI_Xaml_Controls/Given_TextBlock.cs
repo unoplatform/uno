@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Uno.Helpers;
 using Uno.UI.RuntimeTests.Helpers;
@@ -8,8 +9,12 @@ using Windows.UI.Text;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.ApplicationModel.DataTransfer;
+using Windows.System;
+using Windows.UI.Input.Preview.Injection;
 using FluentAssertions;
 using static Private.Infrastructure.TestServices;
 using System.Collections.Generic;
@@ -20,13 +25,8 @@ using Point = Windows.Foundation.Point;
 using Size = Windows.Foundation.Size;
 
 #if __SKIA__
-using System;
-using Windows.ApplicationModel.DataTransfer;
-using Windows.System;
-using Windows.UI.Input.Preview.Injection;
 using SkiaSharp;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
-using Microsoft.UI.Xaml.Input;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -35,6 +35,91 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[RunsOnUIThread]
 	public class Given_TextBlock
 	{
+#if __ANDROID__
+		[Ignore("Visually looks good, but fails :(")]
+#elif !HAS_RENDER_TARGET_BITMAP
+		[Ignore("Cannot take screenshot on this platform.")]
+#endif
+		[TestMethod]
+		[DataRow((ushort)400, FontStyle.Italic, FontStretch.Condensed, "ms-appx:///Assets/Fonts/OpenSans/OpenSans_Condensed-MediumItalic.ttf")]
+		[DataRow((ushort)400, FontStyle.Normal, FontStretch.SemiCondensed, "ms-appx:///Assets/Fonts/OpenSans/OpenSans_SemiCondensed-Regular.ttf")]
+		[DataRow((ushort)600, FontStyle.Normal, FontStretch.SemiCondensed, "ms-appx:///Assets/Fonts/OpenSans/OpenSans_SemiCondensed-SemiBold.ttf")]
+		[DataRow((ushort)700, FontStyle.Normal, FontStretch.Normal, "ms-appx:///Assets/Fonts/OpenSans/OpenSans-Bold.ttf")]
+		[DataRow((ushort)400, FontStyle.Normal, FontStretch.Normal, "ms-appx:///Assets/Fonts/OpenSans/OpenSans-Regular.ttf")]
+		[DataRow((ushort)600, FontStyle.Normal, FontStretch.SemiCondensed, "ms-appx:///Assets/Fonts/OpenSans/OpenSans_SemiCondensed-SemiBold.ttf#Open Sans")]
+		public async Task When_Font_Has_Manifest(ushort weight, FontStyle style, FontStretch stretch, string ttfFile)
+		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			var SUT = new TextBlock
+			{
+				Text = "Hello World!",
+				FontSize = 18,
+				FontStyle = style,
+				FontStretch = stretch,
+				FontWeight = new FontWeight(weight),
+				FontFamily = new FontFamily("ms-appx:///Assets/Fonts/OpenSans/OpenSans.ttf"),
+			};
+			var SUTContainer = new Border()
+			{
+				Width = 200,
+				Height = 100,
+				Child = SUT
+			};
+
+			var expectedTB = new TextBlock
+			{
+				Text = "Hello World!",
+				FontSize = 18,
+				FontFamily = new FontFamily(ttfFile)
+			};
+			var expectedTBContainer = new Border()
+			{
+				Width = 200,
+				Height = 100,
+				Child = expectedTB
+			};
+
+			var differentTtf = "ms-appx:///Assets/Fonts/OpenSans/OpenSans-Bold.ttf";
+			if (ttfFile == differentTtf)
+			{
+				differentTtf = "ms-appx:///Assets/Fonts/OpenSans/OpenSans-Regular.ttf";
+			}
+
+			var differentTB = new TextBlock
+			{
+				Text = "Hello World!",
+				FontSize = 18,
+				FontFamily = new FontFamily(differentTtf),
+			};
+			var differentTBContainer = new Border()
+			{
+				Width = 200,
+				Height = 100,
+				Child = differentTB
+			};
+
+			var sp = new StackPanel()
+			{
+				Children =
+				{
+					SUTContainer,
+					expectedTBContainer,
+					differentTBContainer,
+				},
+			};
+
+			await UITestHelper.Load(sp);
+			var actual = await UITestHelper.ScreenShot(SUTContainer);
+			var expected = await UITestHelper.ScreenShot(expectedTBContainer);
+			var different = await UITestHelper.ScreenShot(differentTBContainer);
+			await ImageAssert.AreEqualAsync(actual, expected);
+			await ImageAssert.AreNotEqualAsync(actual, different);
+		}
+
 #if __SKIA__
 		[TestMethod]
 		// It looks like CI might not have any installed fonts with Chinese characters which could cause the test to fail
@@ -42,7 +127,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task Check_FontFallback()
 		{
 			var SUT = new TextBlock { Text = "示例文本", FontSize = 24 };
-			var skFont = FontDetailsCache.GetFont(SUT.FontFamily?.Source, (float)SUT.FontSize, SUT.FontWeight, SUT.FontStyle).SKFont;
+			var skFont = FontDetailsCache.GetFont(SUT.FontFamily?.Source, (float)SUT.FontSize, SUT.FontWeight, SUT.FontStretch, SUT.FontStyle).SKFont;
 			Assert.IsFalse(skFont.ContainsGlyph(SUT.Text[0]));
 
 			var fallbackFont = SKFontManager.Default.MatchCharacter(SUT.Text[0]);
@@ -50,6 +135,46 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(fallbackFont.ContainsGlyph(SUT.Text[0]));
 
 			var expected = new TextBlock { Text = "示例文本", FontSize = 24, FontFamily = new FontFamily(fallbackFont.FamilyName) };
+
+			await UITestHelper.Load(SUT);
+			var screenshot1 = await UITestHelper.ScreenShot(SUT);
+
+			await UITestHelper.Load(expected);
+			var screenshot2 = await UITestHelper.ScreenShot(expected);
+
+			Assert.AreEqual(screenshot2.Width, screenshot1.Width);
+			Assert.AreEqual(screenshot2.Height, screenshot1.Height);
+
+			await ImageAssert.AreSimilarAsync(screenshot1, screenshot2, imperceptibilityThreshold: 0.15);
+		}
+
+		// Reason for failure on X11 is not very known, but it's likely the AdvanceX of space character
+		// is different between the fallback font and OpenSans
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaX11)]
+		public async Task Check_FontFallback_Shaping()
+		{
+			var SUT = new TextBlock
+			{
+				Text = "اللغة العربية",
+				FontSize = 24,
+				LineHeight = 34,
+			};
+
+			var skFont = FontDetailsCache.GetFont(SUT.FontFamily?.Source, (float)SUT.FontSize, SUT.FontWeight, SUT.FontStretch, SUT.FontStyle).SKFont;
+			var familyName = skFont.Typeface.FamilyName;
+			Assert.IsFalse(skFont.ContainsGlyph(SUT.Text[0]));
+
+			var fallbackFont = SKFontManager.Default.MatchCharacter(SUT.Text[0]);
+
+			Assert.IsTrue(fallbackFont.ContainsGlyph(SUT.Text[0]));
+
+			var expected = new TextBlock
+			{
+				Text = "اللغة العربية",
+				FontSize = 24,
+				FontFamily = new FontFamily(fallbackFont.FamilyName),
+				LineHeight = 34,
+			};
 
 			await UITestHelper.Load(SUT);
 			var screenshot1 = await UITestHelper.ScreenShot(SUT);
@@ -76,6 +201,34 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(TextDecorations.None, SUT.textBlock4.TextDecorations);
 			Assert.AreEqual(TextDecorations.Strikethrough, SUT.textBlock5.TextDecorations);
 			Assert.AreEqual(TextDecorations.None, SUT.textBlock6.TextDecorations);
+		}
+
+		[TestMethod]
+		public async Task When_NewLine_After_Tab()
+		{
+			var SUT = new TextBlock
+			{
+				Text = "\t\r",
+				FontFamily = new FontFamily("ms-appx:///Assets/Fonts/CascadiaCode-Regular.ttf"),
+				Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red)
+			};
+
+			await UITestHelper.Load(SUT);
+
+#if __SKIA__
+			var segments = ((Run)SUT.Inlines.Single()).Segments;
+			Assert.AreEqual(2, segments.Count);
+			Assert.IsTrue(segments[0].IsTab);
+			Assert.AreEqual("\r", segments[1].Text.ToString());
+#endif
+
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			var screenshot = await UITestHelper.ScreenShot(SUT);
+			ImageAssert.DoesNotHaveColorInRectangle(screenshot, new Rectangle(0, 0, screenshot.Width, screenshot.Height), Microsoft.UI.Colors.Red, tolerance: 15);
 		}
 
 		[TestMethod]
@@ -560,16 +713,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#elif !HAS_RENDER_TARGET_BITMAP
+		[Ignore("Cannot take screenshot on this platform.")]
+#endif
 		public async Task When_SolidColorBrush_With_Opacity()
 		{
-			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
-			{
-				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
-			}
-
-#if __MACOS__
-			Assert.Inconclusive();
-#endif
 			var SUT = new TextBlock
 			{
 				Text = "••••••••",
@@ -752,8 +902,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if HAS_UNO // GetMouse is not available on WinUI
 		#region IsTextSelectionEnabled
 
-#if __SKIA__ // enable this region when InputInjector and IsTextSelectionEnabled are supported on more platforms
 		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#elif !HAS_RENDER_TARGET_BITMAP
+		[Ignore("Cannot take screenshot on this platform.")]
+#endif
 		public async Task When_IsTextSelectionEnabled_PointerDrag()
 		{
 			var SUT = new TextBlock
@@ -797,6 +951,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#elif !HAS_RENDER_TARGET_BITMAP
+		[Ignore("Cannot take screenshot on this platform.")]
+#endif
 		public async Task When_IsTextSelectionEnabled_DoubleTapped()
 		{
 			var SUT = new TextBlock
@@ -842,6 +1001,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#elif !HAS_RENDER_TARGET_BITMAP
+		[Ignore("Cannot take screenshot on this platform.")]
+#endif
 		public async Task When_IsTextSelectionEnabled_Chunking_DoubleTapped()
 		{
 			var SUT = new TextBlock
@@ -888,6 +1052,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#elif !HAS_RENDER_TARGET_BITMAP
+		[Ignore("Cannot take screenshot on this platform.")]
+#endif
 		public async Task When_IsTextSelectionEnabled_Wrapping_DoubleTapped()
 		{
 			var SUT = new TextBlock
@@ -936,6 +1105,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#elif __WASM__
+		[Ignore("Requires authorization to access to the clipboard on WASM.")]
+#endif
 		public async Task When_IsTextSelectionEnabled_SurrogatePair_Copy()
 		{
 			var SUT = new TextBlock
@@ -965,6 +1139,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#elif __WASM__
+		[Ignore("Requires authorization to access to the clipboard on WASM.")]
+#endif
 		public async Task When_IsTextSelectionEnabled_CRLF()
 		{
 			var SUT = new TextBlock
@@ -1026,7 +1205,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if !__SKIA__
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#elif !__SKIA__
 		[Ignore("The context menu is only implemented on skia.")]
 #endif
 		[DataRow(true)]
@@ -1057,6 +1238,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#elif !HAS_RENDER_TARGET_BITMAP
+		[Ignore("Cannot take screenshot on this platform.")]
+#endif
 		public async Task When_IsTextSelectionEnabled_Keyboard_SelectAll_Copy()
 		{
 			var SUT = new TextBlock
@@ -1099,6 +1285,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#elif !HAS_RENDER_TARGET_BITMAP
+		[Ignore("Cannot take screenshot on this platform.")]
+#endif
 		public async Task When_IsTextSelectionEnabled_ContextMenu_SelectAll()
 		{
 			var SUT = new TextBlock
@@ -1120,7 +1311,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.ReleaseRight();
 			await WindowHelper.WaitForIdle();
 
-			mouse.MoveBy(5, 5); // should be over first menu item now
+			mouse.MoveBy(10, 10); // should be over first menu item now
 			mouse.Press();
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
@@ -1138,6 +1329,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#elif !__SKIA__
+		[Ignore("The context menu is only implemented on skia.")]
+#endif
 		public async Task When_IsTextSelectionEnabled_ContextMenu_Copy()
 		{
 			var SUT = new TextBlock
@@ -1162,31 +1358,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.ReleaseRight();
 			await WindowHelper.WaitForIdle();
 
-			mouse.MoveBy(5, 5); // should be over first menu item now
+			mouse.MoveBy(10, 10); // should be over first menu item now
 			mouse.Press();
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual("world", await Clipboard.GetContent()!.GetTextAsync());
 		}
-#endif
-
 		#endregion
-
-#if __SKIA__
-		[TestMethod]
-		public async Task When_Inside_TextBox_FireDrawingEventsOnEveryRedraw()
-		{
-			var textBox = new TextBox
-			{
-				Text = "test"
-			};
-
-			await UITestHelper.Load(textBox);
-
-			Assert.IsFalse(textBox.TextBoxView.DisplayBlock.Inlines.FireDrawingEventsOnEveryRedraw);
-		}
-#endif
 #endif
 	}
 }

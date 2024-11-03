@@ -197,8 +197,11 @@ namespace Uno.UI
 
 			/// <summary>
 			/// The default font family for text when a font isn't explicitly specified (e.g. for a TextBlock)
-			/// This is often needs to be set by users on Linux, where Microsoft's Segoe UI isn't present
 			/// </summary>
+			/// <remarks>
+			/// The default is Segoe UI, which is not available on Mac and Linux as well as browsers running on Mac and Linux.
+			/// So, you can change to OpenSans. For more information, see https://aka.platform.uno/feature-opensans
+			/// </remarks>
 			public static string DefaultTextFontFamily { get; set; } = "Segoe UI";
 
 			/// <summary>
@@ -330,6 +333,12 @@ namespace Uno.UI
 			/// legacy behavior, use this property to override it.
 			/// </summary>
 			public static bool EnableLightDismissByDefault { get; set; }
+
+			/// <summary>
+			/// When set to true, light dismiss UI popups will not be dismissed when the window is deactivated.
+			/// This is mainly useful for debugging purposes, we do not recommend using this in production code.
+			/// </summary>
+			public static bool PreventLightDismissOnWindowDeactivated { get; set; }
 		}
 
 		public static class ProgressRing
@@ -394,6 +403,18 @@ namespace Uno.UI
 			public static bool IsPoolingEnabled { get; set; }
 		}
 
+		public static class Frame
+		{
+			/// <summary>
+			/// On non-Skia targets, Frame pools page instances to improve performance by default.
+			/// To follow the WinUI behavior, set this to true. Skia uses WinUI behavior by default.
+			/// </summary>
+			public static bool UseWinUIBehavior { get; set; }
+#if __SKIA__
+				= true;
+#endif
+		}
+
 		public static class PointerRoutedEventArgs
 		{
 #if __ANDROID__
@@ -450,7 +471,7 @@ namespace Uno.UI
 			{
 				if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_Frame_Available)
 				{
-					SetUWPDefaultStylesOverride<Frame>(useUWPDefaultStyle: false);
+					SetUWPDefaultStylesOverride<Microsoft.UI.Xaml.Controls.Frame>(useUWPDefaultStyle: false);
 				}
 
 				if (__LinkerHints.Is_Microsoft_UI_Xaml_Controls_CommandBar_Available)
@@ -682,6 +703,20 @@ namespace Uno.UI
 #endif
 		}
 
+		public static class WebView2
+		{
+#if __IOS__
+			/// <summary>
+			/// Sets whether the <see cref="WebView2"/> object is inspectable or not.
+			/// </summary>
+			/// <remarks>
+			/// On iOS and Catalyst this means that developers can use the Safari Web Developers tools to debug apps with <see cref="WebView2"/>
+			/// Important: It will only work when the app runs in Debug mode.
+			/// </remarks>
+			public static bool IsInspectable { get; set; }
+#endif
+		}
+
 		public static class Xaml
 		{
 			/// <summary>
@@ -802,7 +837,7 @@ namespace Uno.UI
 			/// Accessing the dependency property system isn't thread safe and should only
 			/// happen on the UI thread.
 			/// By default, attempting to access it from non UI thread will throw an exception.
-			/// Setting this flag to false will prevent the exception from being thrown at the risk
+			/// Setting this flag to true will prevent the exception from being thrown at the risk
 			/// of having an undefined behavior and/or race conditions.
 			/// </summary>
 			public static bool DisableThreadingCheck { get; set; }

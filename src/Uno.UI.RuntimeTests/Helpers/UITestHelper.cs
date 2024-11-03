@@ -31,10 +31,26 @@ namespace Uno.UI.RuntimeTests.Helpers;
 
 public static class UITestHelper
 {
-	public static async Task<Windows.Foundation.Rect> Load(FrameworkElement element)
+	/// <summary>
+	/// Loads an element onto the test area, and wait for it to be loaded before returning.
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
+	/// <param name="element">The element to be loaded onto the test area.</param>
+	/// <param name="isLoaded">optional, function to override the default is-loaded check.</param>
+	/// <returns>Loaded element absolute bounds.</returns>
+	/// <remarks>The default is-loaded check fails on 0 height/width, or empty list-view, overload the <paramref name="isLoaded"/> with <code>x => x.IsLoaded</code> or <code>x => x.GetTemplateRoot() != null</code> to bypass that.</remarks>
+	public static async Task<Rect> Load<T>(T element, Func<T, bool>? isLoaded = null) where T : FrameworkElement
 	{
 		TestServices.WindowHelper.WindowContent = element;
-		await TestServices.WindowHelper.WaitForLoaded(element);
+
+		if (isLoaded is null)
+		{
+			await TestServices.WindowHelper.WaitForLoaded(element);
+		}
+		else
+		{
+			await TestServices.WindowHelper.WaitFor(() => isLoaded(element), message: $"Timeout waiting on {element} to be loaded with custom criteria.");
+		}
 		await TestServices.WindowHelper.WaitForIdle();
 
 		return element.GetAbsoluteBounds();
@@ -51,6 +67,7 @@ public static class UITestHelper
 	/// <returns></returns>
 	public static async Task<RawBitmap> ScreenShot(FrameworkElement element, bool opaque = false, ScreenShotScalingMode scaling = ScreenShotScalingMode.UsePhysicalPixelsWithImplicitScaling)
 	{
+#if HAS_RENDER_TARGET_BITMAP
 		var renderer = new RenderTargetBitmap();
 		element.UpdateLayout();
 		await TestServices.WindowHelper.WaitForIdle();
@@ -80,6 +97,9 @@ public static class UITestHelper
 		}
 
 		return bitmap;
+#else
+		throw new NotSupportedException("Cannot take screenshot on this platform.");
+#endif
 	}
 
 	public enum ScreenShotScalingMode
@@ -217,6 +237,18 @@ public static class UITestHelper
 
 		await popup.ShowAsync(ContentDialogPlacement.Popup);
 	}
+
+	public static void CloseAllPopups()
+#if HAS_UNO
+		=> VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
+#else
+	{
+		foreach (var popup in VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot))
+		{
+			popup.IsOpen = false;
+		}
+	}
+#endif
 }
 
 public class DynamicDataTemplate : IDisposable

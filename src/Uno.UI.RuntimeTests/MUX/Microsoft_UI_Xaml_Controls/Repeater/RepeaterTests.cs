@@ -46,6 +46,9 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 	public class RepeaterTests : MUXApiTestBase
 	{
 		[TestMethod]
+#if __IOS__
+		[Ignore("Fails on iOS with Fluent styles #18105")]
+#endif
 		public void ValidateElementToIndexMapping()
 		{
 			ItemsRepeater repeater = null;

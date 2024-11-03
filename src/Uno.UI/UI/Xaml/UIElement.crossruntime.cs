@@ -69,8 +69,6 @@ namespace Microsoft.UI.Xaml
 		internal void OnElementUnloaded()
 		{
 			IsLoaded = false;
-			IsActiveInVisualTree = false;
-			Depth = int.MinValue;
 
 			OnFwEltUnloaded();
 			UpdateHitTest();
@@ -102,6 +100,8 @@ namespace Microsoft.UI.Xaml
 
 		private void OnChildRemoved(UIElement child)
 		{
+			child.Shutdown();
+
 			if (!child._isFrameworkElement)
 			{
 				return;
@@ -122,7 +122,7 @@ namespace Microsoft.UI.Xaml
 			// Uno TODO: WinUI has much more complex logic than this.
 			if (@params.IsLive)
 			{
-				child.Enter(@params, this.Depth + 1);
+				child.EnterImpl(@params, this.Depth + 1);
 			}
 		}
 #endif

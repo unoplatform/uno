@@ -22,7 +22,7 @@ public partial class IconElement : FrameworkElement
 
 	public IconElement()
 	{
-		SetDefaultForeground(ForegroundProperty);
+		UpdateLastUsedTheme();
 	}
 
 	/// <summary>
@@ -71,6 +71,7 @@ public partial class IconElement : FrameworkElement
 		{
 			// Measure the child
 			_rootGrid.Measure(availableSize);
+			_rootGrid.EnsureLayoutStorage();
 			return _rootGrid.DesiredSize;
 		}
 
@@ -94,7 +95,7 @@ public partial class IconElement : FrameworkElement
 	{
 		base.UpdateThemeBindings(updateReason);
 
-		SetDefaultForeground(ForegroundProperty);
+		UpdateLastUsedTheme();
 	}
 
 	[MemberNotNull(nameof(_rootGrid))]

@@ -61,6 +61,8 @@
 				AndroidXBrowserVersion="@(AndroidXBrowserVersion)"
 				AndroidXSwipeRefreshLayoutVersion="@(AndroidXSwipeRefreshLayoutVersion)"
 				UnoResizetizerVersion="$(UnoResizetizerVersion)"
+				UnoSdkExtrasVersion="$(UnoSdkExtrasVersion)"
+				UnoSettingsVersion="$(UnoSettingsVersion)"
 				MicrosoftLoggingVersion="$(MicrosoftLoggingVersion)"
 				WinAppSdkVersion="$(WinAppSdkVersion)"
 				WinAppSdkBuildToolsVersion="$(WinAppSdkBuildToolsVersion)"
@@ -68,6 +70,7 @@
 				UnoDspTasksVersion="$(UnoDspTasksVersion)"
 				CommunityToolkitMvvmVersion="$(CommunityToolkitMvvmVersion)"
 				PrismVersion="$(PrismVersion)"
+				UnoFontsVersion="$(UnoFontsVersion)"
 				AndroidXNavigationVersion="$(AndroidXNavigationVersion)"
 				AndroidXCollectionVersion="$(AndroidXCollectionVersion)"
 				MicrosoftIdentityClientVersion="$(MicrosoftIdentityClientVersion)"
@@ -79,7 +82,7 @@
 		</ImplicitPackagesResolver_v0>
 
 		<ItemGroup>
-			<_UnoProjectSystemPackageReference Remove="@(_UnoProjectSystemPackageReference" />
+			<_UnoProjectSystemPackageReference Remove="@(_UnoProjectSystemPackageReference)" />
 			<PackageVersion Remove="@(_UnoRemovePackageVersions)" />
 			<PackageReference Include="@(_UnoImplicitPackageReference)" />
 			<_UnoImplicitPackageReference Remove="@(_UnoImplicitPackageReference)" />

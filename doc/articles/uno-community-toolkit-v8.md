@@ -4,7 +4,9 @@ uid: Uno.Development.CommunityToolkit.v8
 
 # How to use Windows Community Toolkit - Version 8.x
 
-This tutorial will walk you through adding and implementing the `SettingsCard` control but the same steps can be followed for any of the Windows Community Toolkit controls version 8.x.
+This tutorial will walk you through adding and implementing the `SettingsCard` control but the same steps can be followed for **other\*** Windows Community Toolkit controls version 8.x.
+
+**\* See the [non-Windows platform compatibility](xref:Uno.Development.CommunityToolkit#non-windows-platform-compatibility) section for more details.**
 
 > [!NOTE]
 > The complete source code that goes along with this guide is available in the [unoplatform/Uno.Samples](https://github.com/unoplatform/Uno.Samples) GitHub repository - [`SettingsCard` Sample](https://github.com/unoplatform/Uno.Samples/tree/master/UI/WindowsCommunityToolkit/Version-8.x/UnoWCTSettingsCardSample)
@@ -48,7 +50,7 @@ When using the Uno Platform solution templates, add the following to your applic
 
         ```xml
         <ItemGroup>
-          <PackageVersion Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.1.240606-rc" />
+          <PackageVersion Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.1.240916" />
           <!-- Add more community toolkit references here -->
         </ItemGroup>
         ```
@@ -69,7 +71,7 @@ When using the Uno Platform solution templates, add the following to your applic
     >
     > ```xml
     > <PropertyGroup>
-    >   <WindowsSdkPackageVersion>10.0.22621.33</WindowsSdkPackageVersion>
+    >   <WindowsSdkPackageVersion>10.0.22621.38</WindowsSdkPackageVersion>
     >   <WinAppSdkVersion>1.5.240607001</WinAppSdkVersion>
     > </PropertyGroup>
     > ```
@@ -80,7 +82,7 @@ When using the Uno Platform solution templates, add the following to your applic
 
     ```xml
     <ItemGroup>
-      <PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.1.240606-rc" />
+      <PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.1.240916" />
       <!-- Add more community toolkit references here -->
     </ItemGroup>
     ```
@@ -94,7 +96,7 @@ When using the Uno Platform solution templates, add the following to your applic
 
     ```xml
     <ItemGroup>
-      <PackageReference Include="CommunityToolkit.Uwp.Controls.SettingsControls" Version="8.1.240606-rc" />
+      <PackageReference Include="CommunityToolkit.Uwp.Controls.SettingsControls" Version="8.1.240916" />
       <!-- Add more community toolkit references here -->
     </ItemGroup>
     ```
@@ -113,7 +115,7 @@ When using the Uno Platform solution templates, add the following to your applic
 
         ```xml
         <ItemGroup>
-          <PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.1.240606-rc" />
+          <PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.1.240916" />
           <!-- Add more uno community toolkit references here -->
         </ItemGroup>
         ```
@@ -132,7 +134,7 @@ When using the Uno Platform solution templates, add the following to your applic
 
         ```xml
         <ItemGroup>
-          <PackageReference Include="CommunityToolkit.Uwp.Controls.SettingsControls" Version="8.1.240606-rc" />
+          <PackageReference Include="CommunityToolkit.Uwp.Controls.SettingsControls" Version="8.1.240916" />
           <!-- Add more uno community toolkit references here -->
         </ItemGroup>
         ```

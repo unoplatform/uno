@@ -10,5 +10,4 @@
 	<PropertyGroup Condition="$(UnoFeatures.Contains(';mauiembedding;'))">
 		<UseMaui>true</UseMaui>
 	</PropertyGroup>
-
 </Project>

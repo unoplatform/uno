@@ -7,17 +7,17 @@ There are two ways to migrate an application to .NET 7.
 
 ## The fastest path to keep using the UWP APIs
 
-   1. In a separate folder, create a new application from the templates using [`dotnet new unoapp-uwp-net6 -o MyApp`](get-started-dotnet-new.md) (MyApp being of the same name as your existing app),
+   1. In a separate folder, create a new application from the templates using [`dotnet new unoapp-uwp-net6 -o MyApp`](xref:Uno.GetStarted.dotnet-new) (MyApp being of the same name as your existing app),
    2. Move the `MyApp.Mobile` project folder and include it in your existing solution
    3. Make the adjustments for your new application head to build
    4. Optionally remove the legacy Xamarin heads, once you're done with the migration
 
 ## The forward looking path using the WinUI/WinApp SDK APIs
 
-   1. In a separate folder, create a new application from the templates using [`dotnet new unoapp -o MyApp`](get-started-dotnet-new.md) (MyApp being of the same name as your existing app), or by using the Visual Studio `Uno Platform App` template
+   1. In a separate folder, create a new application from the templates using [`dotnet new unoapp -o MyApp`](xref:Uno.GetStarted.dotnet-new) (MyApp being of the same name as your existing app), or by using the Visual Studio `Uno Platform App` template
    2. Move the `MyApp.Mobile` project folder and include it in your existing solution
-   3. Make the adjustments to move from the [UWP APIs to the WinUI APIs](updating-to-winui3.ms)
-   4. Optionally [convert your legacy Xamarin heads](updating-to-winui3.md) to use Uno.WinUI instead of Uno.UI
+   3. Make the adjustments to move from the [UWP APIs to the WinUI APIs](xref:Uno.Development.UpdatingToWinUI3)
+   4. Optionally [convert your legacy Xamarin heads](xref:Uno.Development.UpdatingToWinUI3) to use Uno.WinUI instead of Uno.UI
 
 ## Additional considerations
 

@@ -46,7 +46,14 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		internal UIElement? FocusTargetDescendant => FindFocusTargetDescendant(this); //TODO Uno: This should be set internally when the template is applied.
 
-		private UIElement? FindFocusTargetDescendant(DependencyObject? root)
+		private UIElement? FindFocusTargetDescendant(
+#if __CROSSRUNTIME__
+			// Uno docs: Intentionally passing UIElement as GetChildren(UIElement) is more performant than GetChildren(DependencyObject).
+			UIElement? root
+#else
+			DependencyObject? root
+#endif
+			)
 		{
 			if (root == null)
 			{
@@ -218,5 +225,26 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		private protected static VirtualKeyModifiers GetKeyboardModifiers() => CoreImports.Input_GetKeyboardModifiers();
+
+		internal bool TryGetValueFromBuiltInStyle(DependencyProperty dp, out object? value)
+		{
+			if (Style.GetDefaultStyleForType(GetDefaultStyleKey()) is { } style)
+			{
+				return style.TryGetPropertyValue(dp, out value, this);
+			}
+
+			value = null;
+			return false;
+		}
+
+		private protected void EnsureValidationVisuals()
+		{
+			// TODO Uno: Not supported yet #4839
+		}
+
+		private protected void InvokeValidationCommand(object control, string value)
+		{
+			// TODO Uno: Not supported yet #4839
+		}
 	}
 }

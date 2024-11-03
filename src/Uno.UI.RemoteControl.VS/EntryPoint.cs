@@ -14,11 +14,15 @@ using EnvDTE;
 using EnvDTE80;
 using Microsoft.Build.Evaluation;
 using Microsoft.Internal.VisualStudio.Shell;
+using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.Threading;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
 using Uno.UI.RemoteControl.VS.DebuggerHelper;
 using Uno.UI.RemoteControl.VS.Helpers;
 using Uno.UI.RemoteControl.VS.IdeChannel;
+using Uno.UI.RemoteControl.VS.Notifications;
 using ILogger = Uno.UI.RemoteControl.VS.Helpers.ILogger;
 using Task = System.Threading.Tasks.Task;
 
@@ -31,6 +35,7 @@ public partial class EntryPoint : IDisposable
 {
 	private const string UnoPlatformOutputPane = "Uno Platform";
 	private const string RemoteControlServerPortProperty = "UnoRemoteControlPort";
+	private const string UnoRemoteControlConfigCookieProperty = "UnoRemoteControlConfigCookie";
 	private const string UnoVSExtensionLoadedProperty = "_UnoVSExtensionLoaded";
 
 	private readonly CancellationTokenSource _ct = new();
@@ -45,16 +50,23 @@ public partial class EntryPoint : IDisposable
 	private Action<string>? _errorAction;
 	private int _msBuildLogLevel;
 	private System.Diagnostics.Process? _process;
+	private SemaphoreSlim _processGate = new(1);
+	private IServiceProvider? _visualStudioServiceProvider;
 
-	private int RemoteControlServerPort;
+	private int _remoteControlServerPort;
+	private string? _remoteControlConfigCookie;
 	private bool _closing;
 	private bool _isDisposed;
 	private IdeChannelClient? _ideChannelClient;
-	private ProfilesObserver _debuggerObserver;
+	private ProfilesObserver? _debuggerObserver;
+	private InfoBarFactory? _infoBarFactory;
+	private GlobalJsonObserver? _globalJsonObserver;
 	private readonly Func<Task> _globalPropertiesChanged;
-	private readonly _dispSolutionEvents_BeforeClosingEventHandler _closeHandler;
-	private readonly _dispBuildEvents_OnBuildDoneEventHandler _onBuildDoneHandler;
-	private readonly _dispBuildEvents_OnBuildProjConfigBeginEventHandler _onBuildProjConfigBeginHandler;
+	private _dispSolutionEvents_BeforeClosingEventHandler? _closeHandler;
+	private _dispBuildEvents_OnBuildBeginEventHandler? _onBuildBeginHandler;
+	private _dispBuildEvents_OnBuildDoneEventHandler? _onBuildDoneHandler;
+	private _dispBuildEvents_OnBuildProjConfigBeginEventHandler? _onBuildProjConfigBeginHandler;
+	private UnoMenuCommand? _unoMenuCommand;
 
 	public EntryPoint(
 		DTE2 dte2
@@ -70,15 +82,25 @@ public partial class EntryPoint : IDisposable
 		globalPropertiesProvider(OnProvideGlobalPropertiesAsync);
 		_globalPropertiesChanged = globalPropertiesChanged;
 
+		_ = ThreadHelper.JoinableTaskFactory.RunAsync(() => InitializeAsync(asyncPackage));
+	}
+
+	private async Task InitializeAsync(AsyncPackage asyncPackage)
+	{
+		await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
 		SetupOutputWindow();
 
 		_closeHandler = () => SolutionEvents_BeforeClosing();
 		_dte.Events.SolutionEvents.BeforeClosing += _closeHandler;
 
-		_onBuildDoneHandler = (s, a) => BuildEvents_OnBuildDone(s, a);
+		_onBuildBeginHandler = (s, a) => _ = EnsureServerAsync();
+		_dte.Events.BuildEvents.OnBuildBegin += _onBuildBeginHandler;
+
+		_onBuildDoneHandler = (s, a) => _ = EnsureServerAsync();
 		_dte.Events.BuildEvents.OnBuildDone += _onBuildDoneHandler;
 
-		_onBuildProjConfigBeginHandler = (string project, string projectConfig, string platform, string solutionConfig) => _ = BuildEvents_OnBuildProjConfigBeginAsync(project, projectConfig, platform, solutionConfig);
+		_onBuildProjConfigBeginHandler = (string project, string projectConfig, string platform, string solutionConfig) => _ = UpdateProjectsAsync();
 		_dte.Events.BuildEvents.OnBuildProjConfigBegin += _onBuildProjConfigBeginHandler;
 
 		// Start the RC server early, as iOS and Android projects capture the globals early
@@ -95,28 +117,37 @@ public partial class EntryPoint : IDisposable
 			, OnStartupProjectChangedAsync
 			, _debugAction);
 
-		_ = _debuggerObserver.ObserveProfilesAsync();
+		if (await _asyncPackage.GetServiceAsync(typeof(SVsShell)) is IVsShell shell
+			&& await _asyncPackage.GetServiceAsync(typeof(SVsInfoBarUIFactory)) is IVsInfoBarUIFactory infoBarFactory)
+		{
+			_infoBarFactory = new InfoBarFactory(infoBarFactory, shell);
 
-		_ = _globalPropertiesChanged();
+			_globalJsonObserver = new GlobalJsonObserver(asyncPackage, _dte, _infoBarFactory, _debugAction, _infoAction, _warningAction, _errorAction);
+		}
+
+		_ = _debuggerObserver.ObserveProfilesAsync();
 
 		TelemetryHelper.DataModelTelemetrySession.AddSessionChannel(new TelemetryEventListener(this));
 	}
 
-	private async Task<Dictionary<string, string>> OnProvideGlobalPropertiesAsync()
+	private Task<Dictionary<string, string>> OnProvideGlobalPropertiesAsync()
 	{
 		Dictionary<string, string> properties = new()
 		{
 			[UnoVSExtensionLoadedProperty] = "true"
 		};
 
-		if (RemoteControlServerPort != 0)
+		if (_remoteControlServerPort is not 0)
 		{
-			properties.Add(RemoteControlServerPortProperty, RemoteControlServerPort.ToString(CultureInfo.InvariantCulture));
+			properties.Add(RemoteControlServerPortProperty, _remoteControlServerPort.ToString(CultureInfo.InvariantCulture));
 		}
 
-		await Task.Yield();
+		if (_remoteControlConfigCookie is not null)
+		{
+			properties.Add(UnoRemoteControlConfigCookieProperty, _remoteControlConfigCookie);
+		}
 
-		return properties;
+		return Task.FromResult(properties);
 	}
 
 	[MemberNotNull(
@@ -148,35 +179,35 @@ public partial class EntryPoint : IDisposable
 		{
 			if (!_closing && _msBuildLogLevel >= 3 /* MSBuild Log Detailed */)
 			{
-				owPane.OutputString("[DEBUG] " + s + "\r\n");
+				owPane.OutputString($"[DEBUG][{DateTime.Now:HH:mm:ss.ff}] " + s + "\r\n");
 			}
 		};
 		_infoAction = s =>
 		{
 			if (!_closing && _msBuildLogLevel >= 2 /* MSBuild Log Normal */)
 			{
-				owPane.OutputString("[INFO] " + s + "\r\n");
+				owPane.OutputString($"[INFO][{DateTime.Now:HH:mm:ss.ff}] " + s + "\r\n");
 			}
 		};
 		_verboseAction = s =>
 		{
 			if (!_closing && _msBuildLogLevel >= 4 /* MSBuild Log Diagnostic */)
 			{
-				owPane.OutputString("[VERBOSE] " + s + "\r\n");
+				owPane.OutputString($"[VERBOSE][{DateTime.Now:HH:mm:ss.ff}] " + s + "\r\n");
 			}
 		};
 		_warningAction = s =>
 		{
 			if (!_closing && _msBuildLogLevel >= 1 /* MSBuild Log Minimal */)
 			{
-				owPane.OutputString("[WARNING] " + s + "\r\n");
+				owPane.OutputString($"[WARNING][{DateTime.Now:HH:mm:ss.ff}] " + s + "\r\n");
 			}
 		};
 		_errorAction = e =>
 		{
 			if (!_closing && _msBuildLogLevel >= 0 /* MSBuild Log Quiet */)
 			{
-				owPane.OutputString("[ERROR] " + e + "\r\n");
+				owPane.OutputString($"[ERROR][{DateTime.Now:HH:mm:ss.ff}] " + e + "\r\n");
 			}
 		};
 
@@ -201,36 +232,11 @@ public partial class EntryPoint : IDisposable
 		}
 	}
 
-	private async Task BuildEvents_OnBuildProjConfigBeginAsync(string project, string projectConfig, string platform, string solutionConfig)
-	{
-		await UpdateProjectsAsync();
-	}
-
 	private async Task UpdateProjectsAsync()
 	{
 		try
 		{
-			StartServer();
-			var portString = RemoteControlServerPort.ToString(CultureInfo.InvariantCulture);
-			foreach (var p in await _dte.GetProjectsAsync())
-			{
-				var filename = string.Empty;
-				try
-				{
-					filename = p.FileName;
-				}
-				catch (Exception ex)
-				{
-					_debugAction?.Invoke($"Exception on retrieving {p.UniqueName} details. Err: {ex}.");
-					_warningAction?.Invoke($"Cannot read {p.UniqueName} project details (It may be unloaded).");
-				}
-				if (string.IsNullOrWhiteSpace(filename) == false
-					&& GetMsbuildProject(filename) is Microsoft.Build.Evaluation.Project msbProject
-					&& IsApplication(msbProject))
-				{
-					SetGlobalProperty(filename, RemoteControlServerPortProperty, portString);
-				}
-			}
+			await EnsureServerAsync();
 		}
 		catch (Exception e)
 		{
@@ -238,16 +244,12 @@ public partial class EntryPoint : IDisposable
 		}
 	}
 
-	private void BuildEvents_OnBuildDone(vsBuildScope Scope, vsBuildAction Action)
-	{
-		StartServer();
-	}
-
 	private void SolutionEvents_BeforeClosing()
 	{
 		// Detach event handler to avoid this being called multiple times
 		_dte.Events.SolutionEvents.BeforeClosing -= _closeHandler;
 
+		_closing = true;
 		if (_process is not null)
 		{
 			try
@@ -265,7 +267,6 @@ public partial class EntryPoint : IDisposable
 			}
 			finally
 			{
-				_closing = true;
 				_process = null;
 
 				// Invoke Dispose to make sure other event handlers are detached
@@ -294,23 +295,42 @@ public partial class EntryPoint : IDisposable
 		throw new InvalidOperationException($"Unable to detect current dotnet version (\"dotnet --version\" returned \"{result.output}\")");
 	}
 
-	private void StartServer()
+	private async Task EnsureServerAsync()
 	{
-		if (_process?.HasExited ?? true)
+		_debugAction?.Invoke($"Starting server (tid:{Environment.CurrentManagedThreadId})");
+
+		if (_process is { HasExited: false })
 		{
-			RemoteControlServerPort = GetTcpPort();
+			_debugAction?.Invoke("Server already running");
+			return;
+		}
+
+		await _processGate.WaitAsync();
+		try
+		{
+
+			if (EnsureTcpPort(ref _remoteControlServerPort))
+			{
+				// Update the cookie file, so a rebuild will be triggered
+				_remoteControlConfigCookie ??= Path.GetTempFileName();
+				File.WriteAllText(_remoteControlConfigCookie, _remoteControlServerPort.ToString(CultureInfo.InvariantCulture));
+
+				// Push the new port to the project using global properties
+				_ = _globalPropertiesChanged();
+			}
+
+			_debugAction?.Invoke($"Using available port {_remoteControlServerPort}");
 
 			var version = GetDotnetMajorVersion();
 			if (version < 7)
 			{
 				throw new InvalidOperationException($"Unsupported dotnet version ({version}) detected");
 			}
-			var runtimeVersionPath = $"net{version}.0";
 
 			var pipeGuid = Guid.NewGuid();
 
-			var hostBinPath = Path.Combine(_toolsPath, "host", runtimeVersionPath, "Uno.UI.RemoteControl.Host.dll");
-			var arguments = $"\"{hostBinPath}\" --httpPort {RemoteControlServerPort} --ppid {System.Diagnostics.Process.GetCurrentProcess().Id} --ideChannel \"{pipeGuid}\"";
+			var hostBinPath = Path.Combine(_toolsPath, "host", $"net{version}.0", "Uno.UI.RemoteControl.Host.dll");
+			var arguments = $"\"{hostBinPath}\" --httpPort {_remoteControlServerPort} --ppid {System.Diagnostics.Process.GetCurrentProcess().Id} --ideChannel \"{pipeGuid}\" --solution \"{_dte.Solution.FullName}\"";
 			var pi = new ProcessStartInfo("dotnet", arguments)
 			{
 				UseShellExecute = false,
@@ -323,24 +343,214 @@ public partial class EntryPoint : IDisposable
 				RedirectStandardError = true
 			};
 
-			_process = new System.Diagnostics.Process();
+			_process = new System.Diagnostics.Process { EnableRaisingEvents = true };
 
 			// hookup the event handlers to capture the data that is received
 			_process.OutputDataReceived += (sender, args) => _debugAction?.Invoke(args.Data);
 			_process.ErrorDataReceived += (sender, args) => _errorAction?.Invoke(args.Data);
 
 			_process.StartInfo = pi;
-			_process.Start();
+			_process.Exited += (sender, args) => _ = RestartAsync();
 
-			// start our event pumps
-			_process.BeginOutputReadLine();
-			_process.BeginErrorReadLine();
+			if (_process.Start())
+			{
+				// start our event pumps
+				_process.BeginOutputReadLine();
+				_process.BeginErrorReadLine();
 
-			_ideChannelClient = new IdeChannelClient(pipeGuid, new Logger(this));
-			_ideChannelClient.ForceHotReloadRequested += OnForceHotReloadRequestedAsync;
-			_ideChannelClient.ConnectToHost();
+				_ideChannelClient = new IdeChannelClient(pipeGuid, new Logger(this));
+				_ideChannelClient.OnMessageReceived += OnMessageReceivedAsync;
+				_ideChannelClient.ConnectToHost();
 
-			_ = _globalPropertiesChanged();
+				// Set the port to the projects
+				// This LEGACY as port should be set through the global properties (cf. OnProvideGlobalPropertiesAsync)
+				var portString = _remoteControlServerPort.ToString(CultureInfo.InvariantCulture);
+				await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+				var projects = (await _dte.GetProjectsAsync()).ToArray(); // EnumerateProjects must be called on the UI thread.
+				await TaskScheduler.Default;
+				foreach (var project in projects)
+				{
+					var filename = string.Empty;
+					try
+					{
+						filename = project.FileName;
+					}
+					catch (Exception ex)
+					{
+						_debugAction?.Invoke($"Exception on retrieving {project.UniqueName} details. Err: {ex}.");
+						_warningAction?.Invoke($"Cannot read {project.UniqueName} project details (It may be unloaded).");
+					}
+					if (string.IsNullOrWhiteSpace(filename) == false
+						&& GetMsbuildProject(filename) is Microsoft.Build.Evaluation.Project msbProject
+						&& IsApplication(msbProject))
+					{
+						SetGlobalProperty(filename, RemoteControlServerPortProperty, portString);
+					}
+				}
+			}
+			else
+			{
+				_process = null;
+				_remoteControlServerPort = 0;
+			}
+		}
+		catch (Exception e)
+		{
+			_errorAction?.Invoke($"Failed to start server: {e}");
+		}
+		finally
+		{
+			_processGate.Release();
+		}
+
+		async Task RestartAsync()
+		{
+			if (_closing || _ct.IsCancellationRequested)
+			{
+				if (_remoteControlConfigCookie is not null)
+				{
+					File.WriteAllText(_remoteControlConfigCookie, "--closed--"); // Make sure VS will re-build on next start
+				}
+
+				_debugAction?.Invoke($"Remote Control server exited ({_process?.ExitCode}) and won't be restarted as solution is closing.");
+				return;
+			}
+
+			_debugAction?.Invoke($"Remote Control server exited ({_process?.ExitCode}). It will restart in 5sec.");
+
+			await Task.Delay(5000, _ct.Token);
+
+			if (_closing || _ct.IsCancellationRequested)
+			{
+				if (_remoteControlConfigCookie is not null)
+				{
+					File.WriteAllText(_remoteControlConfigCookie, "--closed--"); // Make sure VS will re-build on next start
+				}
+
+				_debugAction?.Invoke($"Remote Control server will not be restarted as solution is closing.");
+				return;
+			}
+
+			await EnsureServerAsync();
+		}
+	}
+
+	private async Task OnMessageReceivedAsync(object? sender, IdeMessage devServerMessage)
+	{
+		try
+		{
+			switch (devServerMessage)
+			{
+				case AddMenuItemRequestIdeMessage amir:
+					await OnAddMenuItemRequestIdeMessageAsync(sender, amir);
+					break;
+				case ForceHotReloadIdeMessage fhr:
+					await OnForceHotReloadRequestedAsync(sender, fhr);
+					break;
+				case NotificationRequestIdeMessage nr:
+					await NotificationRequestIdeMessageAsync(sender, nr);
+					break;
+				default:
+					_debugAction?.Invoke($"Unknown message type {devServerMessage?.GetType()} from DevServer");
+					break;
+			}
+		}
+		catch (Exception e) when (_ideChannelClient is not null)
+		{
+			_debugAction?.Invoke($"Failed to handle IdeMessage with message {e.Message}");
+			throw;
+		}
+	}
+
+	private async Task NotificationRequestIdeMessageAsync(object? sender, NotificationRequestIdeMessage message)
+	{
+		try
+		{
+			await _asyncPackage.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+			if (await _asyncPackage.GetServiceAsync(typeof(SVsShell)) is IVsShell shell &&
+				await _asyncPackage.GetServiceAsync(typeof(SVsInfoBarUIFactory)) is IVsInfoBarUIFactory infoBarFactory)
+			{
+				await CreateInfoBarAsync(message, shell, infoBarFactory);
+			}
+		}
+		catch (Exception e) when (_ideChannelClient is not null)
+		{
+			_debugAction?.Invoke($"Failed to handle InfoBar Notification Requested with message {e.Message}");
+			throw;
+		}
+	}
+
+	private async Task OnAddMenuItemRequestIdeMessageAsync(object? sender, AddMenuItemRequestIdeMessage cr)
+	{
+		try
+		{
+			if (_ideChannelClient == null)
+			{
+				return;
+			}
+
+			if (_unoMenuCommand is not null)
+			{
+				//ignore when duplicated
+				if (!_unoMenuCommand.CommandList.Contains(cr))
+				{
+					_unoMenuCommand.CommandList.Add(cr);
+				}
+			}
+			else
+			{
+				_unoMenuCommand = await UnoMenuCommand.InitializeAsync(_asyncPackage, _ideChannelClient, cr);
+			}
+		}
+		catch (Exception e)
+		{
+			_debugAction?.Invoke($"Using AddMenuItem Ide Message Requested fail {e.Message}");
+			throw;
+		}
+	}
+
+	private async Task CreateInfoBarAsync(NotificationRequestIdeMessage e, IVsShell shell, IVsInfoBarUIFactory infoBarFactory)
+	{
+		if (_ideChannelClient is null || _infoBarFactory is null)
+		{
+			return;
+		}
+
+		var infoBar = await _infoBarFactory.CreateAsync(
+			new InfoBarModel(
+				e.Message,
+				e.Commands.Select(Commands => new ActionBarItem
+				{
+					Text = Commands.Text,
+					Name = Commands.Name,
+					ActionContext = Commands.Parameter,
+					IsButton = true,
+				}).ToArray(),
+				e.Kind == NotificationKind.Information ? KnownMonikers.StatusInformation : KnownMonikers.StatusError,
+				isCloseButtonVisible: true));
+
+		if (infoBar is not null)
+		{
+			infoBar.ActionItemClicked += (s, e) =>
+			{
+				_asyncPackage.JoinableTaskFactory.Run(async () =>
+				{
+					if (e.ActionItem is ActionBarItem action &&
+						action.Name is { } command)
+					{
+						var cmd = new CommandRequestIdeMessage(
+							System.Diagnostics.Process.GetCurrentProcess().Id,
+							command,
+							action.ActionContext?.ToString());
+
+						await _ideChannelClient.SendToDevServerAsync(cmd, _ct.Token);
+
+						infoBar.Close();
+					}
+				});
+			};
+			await infoBar.TryShowInfoBarUIAsync();
 		}
 	}
 
@@ -364,13 +574,34 @@ public partial class EntryPoint : IDisposable
 		}
 	}
 
-	private static int GetTcpPort()
+	private bool EnsureTcpPort(ref int port)
 	{
-		var l = new TcpListener(IPAddress.Loopback, 0);
-		l.Start();
-		var port = ((IPEndPoint)l.LocalEndpoint).Port;
-		l.Stop();
-		return port;
+		TcpListener tcp;
+
+		if (port is not 0)
+		{
+			// If possible we try to re-use the same port, so running apps will be able to resume connection
+			// (and we prevent a rebuild of the application).
+			try
+			{
+				tcp = new TcpListener(IPAddress.Loopback, port);
+				tcp.Start();
+				tcp.Stop();
+
+				return false;
+			}
+			catch
+			{
+				_debugAction?.Invoke($"Failed to reused previous port {port}, choosing a new one.");
+			}
+		}
+
+		tcp = new TcpListener(IPAddress.Loopback, 0);
+		tcp.Start();
+		port = ((IPEndPoint)tcp.LocalEndpoint).Port;
+		tcp.Stop();
+
+		return true; // HasChanged
 	}
 
 	public void SetGlobalProperty(string projectFullName, string propertyName, string propertyValue)
@@ -386,7 +617,7 @@ public partial class EntryPoint : IDisposable
 		}
 	}
 
-	private static Microsoft.Build.Evaluation.Project GetMsbuildProject(string projectFullName)
+	private static Microsoft.Build.Evaluation.Project? GetMsbuildProject(string projectFullName)
 		=> ProjectCollection.GlobalProjectCollection.GetLoadedProjects(projectFullName).FirstOrDefault();
 
 	public void SetGlobalProperties(string projectFullName, IDictionary<string, string> properties)
@@ -429,13 +660,55 @@ public partial class EntryPoint : IDisposable
 		try
 		{
 			_ct.Cancel(false);
+			_dte.Events.BuildEvents.OnBuildBegin -= _onBuildBeginHandler;
 			_dte.Events.BuildEvents.OnBuildDone -= _onBuildDoneHandler;
 			_dte.Events.BuildEvents.OnBuildProjConfigBegin -= _onBuildProjConfigBeginHandler;
+			_globalJsonObserver?.Dispose();
+			_infoBarFactory?.Dispose();
+			_unoMenuCommand?.Dispose();
 		}
 		catch (Exception e)
 		{
 			_debugAction?.Invoke($"Failed to dispose Remote Control server: {e}");
 		}
+	}
+
+	protected IServiceProvider VisualStudioServiceProvider
+	{
+		get
+		{
+			ThreadHelper.ThrowIfNotOnUIThread();
+
+			if (_visualStudioServiceProvider == null)
+			{
+				_visualStudioServiceProvider = _dte as IServiceProvider;
+				if (_visualStudioServiceProvider == null)
+				{
+					var serviceProvider = (Microsoft.VisualStudio.OLE.Interop.IServiceProvider?)((_dte is Microsoft.VisualStudio.OLE.Interop.IServiceProvider) ? _dte : null);
+					_visualStudioServiceProvider = (IServiceProvider)new Microsoft.VisualStudio.Shell.ServiceProvider(serviceProvider);
+				}
+			}
+			return _visualStudioServiceProvider;
+		}
+	}
+
+	private Version? GetVisualStudioReleaseVersion()
+	{
+		ThreadHelper.ThrowIfNotOnUIThread();
+
+		if (VisualStudioServiceProvider?.GetService(typeof(SVsShell)) is IVsShell service)
+		{
+			if (service.GetProperty(-9068, out var releaseVersion) != 0)
+			{
+				return null;
+			}
+			if (releaseVersion is string releaseVersionAsText && Version.TryParse(releaseVersionAsText.Split(' ')[0], out var result))
+			{
+				return result;
+			}
+		}
+
+		return null;
 	}
 
 	private class Logger(EntryPoint entryPoint) : ILogger

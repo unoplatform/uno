@@ -6,6 +6,7 @@ using SkiaSharp;
 
 using Windows.Devices.Input;
 using Windows.Foundation;
+using Windows.Graphics;
 using Windows.Graphics.Display;
 using Windows.System;
 using Windows.UI.Core;
@@ -56,6 +57,8 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 	}
 
 	// Display
+
+	internal event EventHandler<PointInt32>? PositionChanged;
 
 	internal event EventHandler<Size>? SizeChanged;
 
@@ -108,7 +111,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 
 		// we can't cache anything since the texture will be different on next calls
 		using var target = MacOSMetalRenderer.CreateTarget(_context!, nativeWidth, nativeHeight, texture);
-		using var surface = SKSurface.Create(_context, target, GRSurfaceOrigin.TopLeft, SKColorType.Bgra8888);
+		using var surface = SKSurface.Create(_context, target, GRSurfaceOrigin.TopLeft, SKColorType.Rgba8888);
 
 		surface.Canvas.Scale(scale, scale);
 
@@ -171,7 +174,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 
 		NativeUno.uno_set_drawing_callbacks(&MetalDraw, &SoftDraw, &Resize);
 
-		NativeUno.uno_set_window_events_callbacks(&OnRawKeyDown, &OnRawKeyUp, &OnMouseEvent);
+		NativeUno.uno_set_window_events_callbacks(&OnRawKeyDown, &OnRawKeyUp, &OnMouseEvent, &OnMoveEvent, &Resize);
 		ApiExtensibility.Register<IXamlRootHost>(typeof(IUnoKeyboardInputSource), o => (o as IUnoKeyboardInputSource)!);
 		ApiExtensibility.Register<IXamlRootHost>(typeof(IUnoCorePointerInputSource), o => (o as IUnoCorePointerInputSource)!);
 
@@ -238,6 +241,18 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			// _initializationCompleted takes care of some legit cases where this can happen, e.g. the NSView.window might not yet be set when the view is created but not yet assigned
 			typeof(MacOSWindowHost).Log().Warn($"MacOSWindowHost.Resize could not map 0x{handle:X} with an NSWindow");
 		}
+	}
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	private static void OnMoveEvent(nint handle, double x, double y)
+	{
+		var window = GetWindowHost(handle);
+		if (window is not null)
+		{
+			window.PositionChanged?.Invoke(window, new PointInt32((int)x, (int)y));
+		}
+		// the first event occurs before the managed side is ready to handle it
+		// this special case is handled inside MacOSWindowWrapper constructor
 	}
 
 	// IUnoKeyboardInputSource

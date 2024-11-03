@@ -24,8 +24,7 @@ namespace Windows.Devices.Sensors {
 					if ((<any>globalThis).DotnetExports !== undefined) {
 						LightSensor.dispatchReading = (<any>globalThis).DotnetExports.Uno.Windows.Devices.Sensors.LightSensor.DispatchReading;
 					} else {
-						LightSensor.dispatchReading = (<any>Module).mono_bind_static_method(
-							"[Uno] Windows.Devices.Sensors.LightSensor:DispatchReading");
+						throw `Unable to find dotnet exports`;
 					}
 					const AmbientLightSensorClass: any = window.AmbientLightSensor;
 					LightSensor.ambientLightSensor = new AmbientLightSensorClass();

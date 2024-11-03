@@ -11,12 +11,17 @@ using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
+using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 using SamplesApp.UITests;
 using Uno.Disposables;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.MUX.Helpers;
 using Windows.Globalization;
+
+#if HAS_UNO && !HAS_UNO_WINUI
+using Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives;
+#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -111,6 +116,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __WASM__
+		[Ignore("https://github.com/unoplatform/uno/issues/9080")] // Works locally but not in chromium
+#endif
 		public async Task When_CanadaFrench_Culture_Column_Order()
 		{
 			using var _ = new AssertionScope();
@@ -129,6 +137,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __WASM__
+		[Ignore("https://github.com/unoplatform/uno/issues/9080")] // Works locally but not in chromium
+#endif
 		public async Task When_Czech_Culture_Column_Order()
 		{
 			using var _ = new AssertionScope();
@@ -147,6 +158,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __WASM__
+		[Ignore("https://github.com/unoplatform/uno/issues/9080")] // Works locally but not in chromium
+#endif
 		public async Task When_Hungarian_Culture_Column_Order()
 		{
 			using var _ = new AssertionScope();
@@ -201,6 +215,35 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				}
 			}
 		}
+
+#if HAS_UNO
+		// Validates the workaround for missing support of MonochromaticOverlayPresenter in Uno
+		[TestMethod]
+		public async Task When_MonochromaticOverlayPresenter_Workaround()
+		{
+			var timePicker = new DatePicker();
+			timePicker.UseNativeStyle = false;
+
+			TestServices.WindowHelper.WindowContent = timePicker;
+			await TestServices.WindowHelper.WaitForLoaded(timePicker);
+
+			await DateTimePickerHelper.OpenDateTimePicker(timePicker);
+
+			var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot).FirstOrDefault();
+			var datePickerFlyoutPresenter = popup?.Child as DatePickerFlyoutPresenter;
+			Assert.IsNotNull(datePickerFlyoutPresenter);
+
+			var presenters = VisualTreeUtils.FindVisualChildrenByType<MonochromaticOverlayPresenter>(datePickerFlyoutPresenter);
+			foreach (var presenter in presenters)
+			{
+				Assert.AreEqual(0, presenter.Opacity);
+			}
+
+			var highlightRect = VisualTreeUtils.FindVisualChildByName(datePickerFlyoutPresenter, "HighlightRect") as Grid;
+			Assert.IsNotNull(highlightRect);
+			Assert.AreEqual(0.5, highlightRect.Opacity);
+		}
+#endif
 
 		[TestMethod]
 		[UnoWorkItem("https://github.com/unoplatform/uno/issues/15256")]

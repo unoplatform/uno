@@ -10,7 +10,7 @@ using System.Runtime.CompilerServices;
 using Uno.UI.RuntimeTests.Helpers;
 using FluentAssertions;
 
-#if !HAS_UNO_WINUI
+#if !HAS_UNO_WINUI && !WINAPPSDK
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 #endif
 
@@ -43,7 +43,7 @@ public class Given_WebView2
 		border.Child = webView;
 		TestServices.WindowHelper.WindowContent = border;
 		await TestServices.WindowHelper.WaitForLoaded(border);
-		var uri = new Uri("https://example.com/");
+		var uri = new Uri("https://platform.uno/");
 		await webView.EnsureCoreWebView2Async();
 		bool navigationStarting = false;
 		bool navigationDone = false;
@@ -54,7 +54,7 @@ public class Given_WebView2
 		await TestServices.WindowHelper.WaitFor(() => navigationStarting, 1000);
 		await TestServices.WindowHelper.WaitFor(() => navigationDone, 3000);
 		Assert.IsNotNull(webView.Source);
-		Assert.IsTrue(webView.Source.OriginalString.StartsWith("https://example.com/", StringComparison.OrdinalIgnoreCase));
+		Assert.IsTrue(webView.Source.OriginalString.StartsWith("https://platform.uno/", StringComparison.OrdinalIgnoreCase));
 	}
 
 	[TestMethod]
@@ -67,7 +67,7 @@ public class Given_WebView2
 		border.Child = webView;
 		TestServices.WindowHelper.WindowContent = border;
 		await TestServices.WindowHelper.WaitForLoaded(border);
-		var uri = new Uri("https://example.com/");
+		var uri = new Uri("https://platform.uno/");
 		await webView.EnsureCoreWebView2Async();
 		bool navigationStarting = false;
 		bool navigationDone = false;
@@ -75,17 +75,15 @@ public class Given_WebView2
 		webView.NavigationCompleted += (s, e) => navigationDone = true;
 		webView.Source = uri;
 		Assert.IsNotNull(webView.Source);
-		await TestServices.WindowHelper.WaitFor(() => navigationStarting, 3000);
-		await TestServices.WindowHelper.WaitFor(() => navigationDone, 3000);
+		await TestServices.WindowHelper.WaitFor(() => navigationStarting, 10000);
+		await TestServices.WindowHelper.WaitFor(() => navigationDone, 10000);
 		Assert.IsNotNull(webView.Source);
 		navigationStarting = false;
 		navigationDone = false;
 		webView.NavigateToString("<html></html>");
-		await TestServices.WindowHelper.WaitFor(() => navigationStarting, 3000);
-		await TestServices.WindowHelper.WaitFor(() => navigationDone, 3000);
-#if HAS_UNO
-		Assert.AreEqual(CoreWebView2.BlankUri, webView.Source);
-#endif
+		await TestServices.WindowHelper.WaitFor(() => navigationStarting, 10000);
+		await TestServices.WindowHelper.WaitFor(() => navigationDone, 10000);
+		Assert.AreEqual(new Uri("about:blank"), webView.Source);
 	}
 
 
@@ -108,8 +106,8 @@ public class Given_WebView2
 		Assert.IsFalse(webView.CanGoForward);
 
 		webView.NavigationCompleted += (sender, e) => navigated = true;
-		webView.CoreWebView2.Navigate("https://example.com/1");
-		await TestServices.WindowHelper.WaitFor(() => navigated, 3000);
+		webView.CoreWebView2.Navigate("https://uno-assets.platform.uno/tests/docs/WebView_NavigateToAnchor.html");
+		await TestServices.WindowHelper.WaitFor(() => navigated, 10000);
 
 		Assert.IsFalse(webView.CoreWebView2.CanGoBack);
 		Assert.IsFalse(webView.CanGoBack);
@@ -117,15 +115,15 @@ public class Given_WebView2
 		Assert.IsFalse(webView.CanGoForward);
 
 		navigated = false;
-		webView.CoreWebView2.Navigate("https://example.com/2");
-		await TestServices.WindowHelper.WaitFor(() => navigated, 3000);
+		webView.CoreWebView2.Navigate("https://platform.uno");
+		await TestServices.WindowHelper.WaitFor(() => navigated, 10000);
 
 		Assert.IsTrue(webView.CoreWebView2.CanGoBack);
 		Assert.IsTrue(webView.CanGoBack);
 
 		navigated = false;
 		webView.GoBack();
-		await TestServices.WindowHelper.WaitFor(() => navigated, 3000);
+		await TestServices.WindowHelper.WaitFor(() => navigated, 10000);
 
 		Assert.IsFalse(webView.CoreWebView2.CanGoBack);
 		Assert.IsFalse(webView.CanGoBack);
@@ -221,7 +219,7 @@ public class Given_WebView2
 			await webView.EnsureCoreWebView2Async();
 			webView.NavigationCompleted += (sender, e) => navigated = true;
 			webView.NavigateToString("<html><body><div id='test' style='width: 100px; height: 100px; background-color: blue;' /></body></html>");
-			await TestServices.WindowHelper.WaitFor(() => navigated);
+			await TestServices.WindowHelper.WaitFor(() => navigated, 3000);
 
 			var color = await webView.ExecuteScriptAsync("eval({ 'color' : document.getElementById('test').style.backgroundColor })");
 			Assert.AreEqual("{\"color\":\"blue\"}", color);
@@ -252,7 +250,7 @@ public class Given_WebView2
 			await webView.EnsureCoreWebView2Async();
 			webView.NavigationCompleted += (sender, e) => navigated = true;
 			webView.NavigateToString("<html></html>");
-			await TestServices.WindowHelper.WaitFor(() => navigated);
+			await TestServices.WindowHelper.WaitFor(() => navigated, 3000);
 
 			var script = $"'hello \"world\"'.toString()";
 			var result = await webView.ExecuteScriptAsync(script);
@@ -279,7 +277,7 @@ public class Given_WebView2
 
 			webView.NavigationCompleted += (sender, e) => navigated = true;
 			webView.NavigateToString("<html></html>");
-			await TestServices.WindowHelper.WaitFor(() => navigated);
+			await TestServices.WindowHelper.WaitFor(() => navigated, 3000);
 			var script = "(1 + 1).toString()";
 
 			var result = await webView.ExecuteScriptAsync($"eval(\"{script}\")");
@@ -290,6 +288,9 @@ public class Given_WebView2
 	}
 
 	[TestMethod]
+#if WINAPPSDK
+	[Ignore("Crashes")]
+#endif
 	public async Task When_LocalFolder_File()
 	{
 		async Task Do()
@@ -311,11 +312,14 @@ public class Given_WebView2
 			string message = "";
 			webView.WebMessageReceived += (s, e) =>
 			{
+				Assert.IsTrue(webView.DispatcherQueue.HasThreadAccess);
+#if !WINAPPSDK
 				Assert.IsTrue(webView.Dispatcher.HasThreadAccess);
+#endif
 				message = e.WebMessageAsJson;
 			};
 			webView.CoreWebView2.Navigate("http://UnoNativeAssets/index.html");
-			await TestServices.WindowHelper.WaitFor(() => navigated);
+			await TestServices.WindowHelper.WaitFor(() => navigated, 3000);
 			await TestServices.WindowHelper.WaitFor(() => message is not null, 2000);
 
 			Assert.AreEqual(@"""rgb(255, 0, 0)""", message);
@@ -340,7 +344,7 @@ public class Given_WebView2
 			await webView.EnsureCoreWebView2Async();
 			webView.NavigationCompleted += (sender, e) => navigated = true;
 			webView.NavigateToString("<html></html>");
-			await TestServices.WindowHelper.WaitFor(() => navigated);
+			await TestServices.WindowHelper.WaitFor(() => navigated, 3000);
 			var script = "(1 + 1)";
 
 			var result = await webView.ExecuteScriptAsync($"eval(\"{script}\")");
@@ -369,7 +373,10 @@ public class Given_WebView2
 		string message = null;
 		webView.WebMessageReceived += (s, e) =>
 		{
+			Assert.IsTrue(webView.DispatcherQueue.HasThreadAccess);
+#if !WINAPPSDK
 			Assert.IsTrue(webView.Dispatcher.HasThreadAccess);
+#endif
 			message = e.WebMessageAsJson;
 		};
 

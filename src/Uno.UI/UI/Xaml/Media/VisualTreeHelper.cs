@@ -39,6 +39,7 @@ using _ViewGroup = Android.Views.ViewGroup;
 using _View = Microsoft.UI.Xaml.UIElement;
 using _ViewGroup = Microsoft.UI.Xaml.UIElement;
 using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml.Shapes;
 #endif
 
 namespace Microsoft.UI.Xaml.Media
@@ -102,7 +103,7 @@ namespace Microsoft.UI.Xaml.Media
 		private static bool IsElementIntersecting(Point intersectingPoint, UIElement uiElement)
 		{
 			GeneralTransform transformToRoot = uiElement.TransformToVisual(null);
-			var target = transformToRoot.TransformBounds(uiElement.LayoutSlot);
+			var target = transformToRoot.TransformBounds(LayoutInformation.GetLayoutSlot(uiElement));
 			return target.Contains(intersectingPoint);
 		}
 
@@ -221,14 +222,28 @@ namespace Microsoft.UI.Xaml.Media
 			return Array.Empty<Popup>();
 		}
 
-		private static IReadOnlyList<Popup> GetOpenFlyoutPopups(XamlRoot xamlRoot) =>
-			GetOpenPopups(xamlRoot.VisualTree)
+		private static IReadOnlyList<Popup> GetOpenFlyoutPopups(XamlRoot xamlRoot)
+		{
+			if (xamlRoot is null)
+			{
+				throw new ArgumentNullException(nameof(xamlRoot));
+			}
+
+			return GetOpenPopups(xamlRoot.VisualTree)
 				.Where(p => p.IsForFlyout)
 				.ToList()
 				.AsReadOnly();
+		}
 
-		public static IReadOnlyList<Popup> GetOpenPopupsForXamlRoot(XamlRoot xamlRoot) =>
-			GetOpenPopups(xamlRoot.VisualTree);
+		public static IReadOnlyList<Popup> GetOpenPopupsForXamlRoot(XamlRoot xamlRoot)
+		{
+			if (xamlRoot is null)
+			{
+				throw new ArgumentNullException(nameof(xamlRoot));
+			}
+
+			return GetOpenPopups(xamlRoot.VisualTree);
+		}
 
 		private static IReadOnlyList<Popup> GetOpenPopups(VisualTree visualTree)
 		{
@@ -260,6 +275,11 @@ namespace Microsoft.UI.Xaml.Media
 
 		internal static void CloseAllPopups(XamlRoot xamlRoot)
 		{
+			if (xamlRoot is null)
+			{
+				throw new ArgumentNullException(nameof(xamlRoot));
+			}
+
 			foreach (var popup in GetOpenPopups(xamlRoot.VisualTree))
 			{
 				popup.IsOpen = false;
@@ -268,6 +288,11 @@ namespace Microsoft.UI.Xaml.Media
 
 		internal static void CloseLightDismissPopups(XamlRoot xamlRoot)
 		{
+			if (xamlRoot is null)
+			{
+				throw new ArgumentNullException(nameof(xamlRoot));
+			}
+
 			foreach (var popup in GetOpenPopups(xamlRoot.VisualTree).Where(p => p.IsLightDismissEnabled))
 			{
 				popup.IsOpen = false;
@@ -354,6 +379,13 @@ namespace Microsoft.UI.Xaml.Media
 				.OfType<T>()
 				?? Enumerable.Empty<T>();
 
+#if __CROSSRUNTIME__
+		// This overload is more performant than GetChildren(DependecnyObject) below.
+		// As the parameter type is more specific, the compiler will prefer it when the argument is UIElement.
+		internal static MaterializableList<UIElement> GetChildren(UIElement element)
+			=> element._children;
+#endif
+
 		public static IEnumerable<DependencyObject> GetChildren(DependencyObject view)
 			=> GetChildren<DependencyObject>(view);
 
@@ -400,23 +432,15 @@ namespace Microsoft.UI.Xaml.Media
 			throw new NotImplementedException("ReplaceChild not implemented on this platform.");
 		}
 
-		internal static IReadOnlyList<_View> ClearChildren(UIElement view)
+		internal static void ClearChildren(UIElement view)
 		{
 #if __ANDROID__
-			var children = GetChildren<_View>(view).ToList();
 			view.RemoveAllViews();
-
-			return children;
 #elif __IOS__ || __MACOS__
-			var children = view.ChildrenShadow.ToList();
+			var children = view.ChildrenShadow;
 			children.ForEach(v => v.RemoveFromSuperview());
-
-			return children;
 #elif __CROSSRUNTIME__
-			var children = GetChildren<_View>(view).ToList();
 			view.ClearChildren();
-
-			return children;
 #else
 			throw new NotImplementedException("ClearChildren not implemented on this platform.");
 #endif
@@ -493,9 +517,14 @@ namespace Microsoft.UI.Xaml.Media
 
 			// The maximum region where the current element and its children might draw themselves
 			// This is expressed in the window (absolute) coordinate space.
-			var clippingBounds = element.Visual.GetViewBoxPathInElementCoordinateSpace() is { } path
-				? transformToElement.Transform(path.TightBounds.ToRect())
-				: Rect.Infinite;
+			Rect clippingBounds;
+			using (SkiaHelper.GetTempSKPath(out var viewBoxPath))
+			{
+				clippingBounds = element.Visual.GetViewBoxPathInElementCoordinateSpace(viewBoxPath)
+					? transformToElement.Transform(viewBoxPath.TightBounds.ToRect())
+					: Rect.Infinite;
+			}
+
 
 			if (element.Visual.Clip?.GetBounds(element.Visual) is { } clip)
 			{
@@ -660,9 +689,15 @@ namespace Microsoft.UI.Xaml.Media
 				}
 			}
 
-			// We didn't find any child at the given position, validate that element can be touched (i.e. not HitTestability.Invisible),
-			// and the position is in actual bounds (which might be different than the clipping bounds)
-			if (elementHitTestVisibility == HitTestability.Visible && renderingBounds.Contains(testPosition))
+			// We didn't find any child at the given position, validate that element can be touched,
+			// and the position is in actual bounds(which might be different than the clipping bounds)
+			if (elementHitTestVisibility == HitTestability.Visible && renderingBounds.Contains(testPosition)
+#if __SKIA__
+				&& element.HitTest(transformToElement.Inverse().Transform(testPosition))
+#elif __WASM__
+				&& element.HitTest(testPosition)
+#endif
+				)
 			{
 				TRACE($"> LEAF! ({element.GetDebugName()} is the OriginalSource) | stale branch: {stale?.ToString() ?? "-- none --"}");
 				return (element, stale);

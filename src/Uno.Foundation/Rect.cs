@@ -11,6 +11,12 @@ namespace Windows.Foundation;
 [DebuggerDisplay("[Rect {Size}@{Location}]")]
 public partial struct Rect
 {
+	// These are public in WinUI (with the underscore!), but we don't want to expose it for now at least.
+	private float _x;
+	private float _y;
+	private float _width;
+	private float _height;
+
 	private const string _negativeErrorMessage = "Non-negative number required.";
 	private const float Epsilon = 0.00001f;
 
@@ -35,6 +41,11 @@ public partial struct Rect
 	public Rect(Point point, Size size) : this(point.X, point.Y, size.Width, size.Height) { }
 
 	public Rect(double x, double y, double width, double height)
+		: this((float)x, (float)y, (float)width, (float)height)
+	{
+	}
+
+	public Rect(float x, float y, float width, float height)
 	{
 		if (!Uno.FoundationFeatureConfiguration.Rect.AllowNegativeWidthHeight)
 		{
@@ -49,10 +60,10 @@ public partial struct Rect
 			}
 		}
 
-		X = x;
-		Y = y;
-		Width = width;
-		Height = height;
+		_x = x;
+		_y = y;
+		_width = width;
+		_height = height;
 	}
 
 	public Rect(Point point1, Point point2)
@@ -90,15 +101,38 @@ public partial struct Rect
 		}
 	}
 
-	public double X { get; set; }
-	public double Y { get; set; }
-	public double Width { get; set; }
-	public double Height { get; set; }
+	public double X
+	{
+		get => _x;
+		set => _x = (float)value;
+	}
 
-	public double Left => X;
-	public double Top => Y;
-	public double Right => X + Width;
-	public double Bottom => Y + Height;
+	public double Y
+	{
+		get => _y;
+		set => _y = (float)value;
+	}
+
+	public double Width
+	{
+		get => _width;
+		// TODO: Disallow negative, as WinUI does.
+		set => _width = (float)value;
+	}
+
+	public double Height
+	{
+		get => _height;
+		// TODO: Disallow negative, as WinUI does.
+		set => _height = (float)value;
+	}
+
+	public double Left => _x;
+	public double Top => _y;
+
+	// TODO: Do we need any special handling for "this.IsEmpty" case?
+	public double Right => _x + _width;
+	public double Bottom => _y + _height;
 
 	public bool IsEmpty => Empty.Equals(this);
 

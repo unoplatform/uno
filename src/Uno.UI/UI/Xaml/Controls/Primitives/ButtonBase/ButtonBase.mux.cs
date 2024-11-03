@@ -7,6 +7,7 @@
 using System;
 using System.Windows.Input;
 using Uno.Disposables;
+using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Core;
 using Windows.Devices.Input;
 using Windows.Foundation;
@@ -62,8 +63,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			SetAcceptsReturn(true);
 
 			Loaded += OnLoaded;
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 			//TODO Uno specific: Call LeaveImpl to simulate leaving visual tree
 			Unloaded += (s, e) => LeaveImpl();
+#endif
 		}
 
 		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
@@ -84,7 +87,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 			else if (args.Property == CommandParameterProperty)
 			{
-				UpdateCanExecute();
+				UpdateCanExecuteSafe();
 			}
 			else if (args.Property == VisibilityProperty)
 			{
@@ -146,8 +149,15 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		/// <summary>
 		/// Called when the element enters the tree. Attaches event handler to Command.CanExecuteChanged.
 		/// </summary>
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		private protected override void EnterImpl(bool live)
+#else
 		private void EnterImpl()
+#endif
 		{
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			base.EnterImpl(live);
+#endif
 			if (_canExecuteChangedHandler.Disposable == null)
 			{
 				var command = Command;
@@ -175,8 +185,15 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		/// <summary>
 		/// Called when the element leaves the tree. Detaches event handler from Command.CanExecuteChanged.
 		/// </summary>
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		private protected override void LeaveImpl(bool live)
+#else
 		private void LeaveImpl()
+#endif
 		{
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			base.LeaveImpl(live);
+#endif
 			if (_canExecuteChangedHandler.Disposable != null)
 			{
 				_canExecuteChangedHandler.Disposable = null;
@@ -257,7 +274,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 
 			// Coerce the button enabled state with the CanExecute state of the command.
-			UpdateCanExecute();
+			UpdateCanExecuteSafe();
 		}
 
 		/// <summary>
@@ -279,6 +296,24 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			// If command is present and cannot be executed, disable the button.
 			var suppress = !canExecute;
 			SuppressIsEnabled(suppress);
+		}
+
+		private void UpdateCanExecuteSafe()
+		{
+			// uno specific workaround:
+			// If Button::Command binding produces an ICommand value that throws Exception in its CanExecute,
+			// this value will be canceled and replaced by the Binding::FallbackValue.
+			try
+			{
+				UpdateCanExecute();
+			}
+			catch (Exception e)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"Failed to update CanExecute", e);
+				}
+			}
 		}
 
 		/// <summary>
@@ -309,8 +344,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		private void OnLoaded(object sender, RoutedEventArgs args)
 		{
 			UpdateVisualState(false);
+#if !UNO_HAS_ENHANCED_LIFECYCLE
 			// TODO Uno specific: Call EnterImpl to simulate entering visual tree
 			EnterImpl();
+#endif
 		}
 
 		/// <summary>

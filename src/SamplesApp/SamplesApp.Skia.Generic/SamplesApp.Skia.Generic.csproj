@@ -46,6 +46,19 @@
 	<ItemGroup>
 		<PackageReference Include="SkiaSharp" />
 		<PackageReference Include="SkiaSharp.NativeAssets.Linux" />
+		<PackageReference Include="Microsoft.Web.WebView2" Aliases="WpfWebView" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="..\LinkedFiles\WebContent\index.html">
+			<Link>WebContent\index.html</Link>
+		</Content>
+		<Content Include="..\LinkedFiles\WebContent\css\site.css">
+			<Link>WebContent\css\site.css</Link>
+		</Content>
+		<Content Include="..\LinkedFiles\WebContent\js\site.js">
+			<Link>WebContent\js\site.js</Link>
+		</Content>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -64,8 +77,8 @@
 		<Compile Update="Program.cs" />
 	</ItemGroup>
 
-	<Import Project="..\..\..\build\nuget\*.Skia.Gtk.props" />
-	<Import Project="..\..\..\build\nuget\*.Skia.Gtk.targets" />
+	<Import Project="..\..\Uno.UI.Runtime.Skia.Wpf\buildTransitive\*.Runtime.Skia.Wpf.props" />
+	<Import Project="..\..\Uno.UI.Runtime.Skia.Wpf\buildTransitive\*.Runtime.Skia.Wpf.targets" />
 
 	<PropertyGroup>
 		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
@@ -82,6 +95,16 @@
 		<Copy
 			SourceFiles="$(_libUnoNativeMacPath)"
 			DestinationFolder="$(MSBuildThisFileDirectory)bin/$(Configuration)/$(TargetFramework)/runtimes/osx/native/" />
+	</Target>
+
+	<Target Name="CopyGLdylibs" BeforeTargets="Compile">
+		<ItemGroup>
+			<_libGLESdylibPath Include="$(MSBuildThisFileDirectory)../../AddIns/Uno.WinUI.Graphics3DGL/angle_binaries/**/libEGL.*" />
+			<_libGLESdylibPath Include="$(MSBuildThisFileDirectory)../../AddIns/Uno.WinUI.Graphics3DGL/angle_binaries/**/libGLESv2.*" />
+		</ItemGroup>
+		<Copy
+			SourceFiles="@(_libGLESdylibPath)"
+			DestinationFiles="$(MSBuildThisFileDirectory)bin/$(Configuration)/$(TargetFramework)/runtimes/%(RecursiveDir)native/%(Filename)%(Extension)" />
 	</Target>
 
 	<Target Name="_ValidatePublishedItems" AfterTargets="Publish">

@@ -53,6 +53,7 @@ namespace Microsoft.UI.Xaml
 
 			_target = target ?? new DropUITarget(inputManager.ContentRoot.XamlRoot!); // The DropUITarget must be re-created for each drag operation! (Caching of the drag ui-override)
 			_view = new DragView(info.DragUI as DragUI);
+			_view.SetLocation(Info.Position);
 			_viewHandle = inputManager.OpenDragAndDrop(_view);
 			_viewOverride = new CoreDragUIOverride(); // UWP does re-use the same instance for each update on _target
 		}

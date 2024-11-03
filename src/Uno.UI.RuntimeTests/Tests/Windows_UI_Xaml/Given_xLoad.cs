@@ -256,10 +256,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.IsNotNull(SUT.tb02);
 			Assert.IsNotNull(SUT.tb03);
 			Assert.IsNotNull(SUT.panel01);
-			await AssertIsNullAsync(() => SUT.panel02);
-			await AssertIsNullAsync(() => SUT.tb04);
+			Assert.IsNull(SUT.panel02);
+			Assert.IsNull(SUT.tb04);
 			Assert.IsNotNull(SUT.tb05);
-			await AssertIsNullAsync(() => SUT.tb06);
+			Assert.IsNull(SUT.tb06);
 
 			SUT.TopLevelVisiblity2 = false;
 
@@ -268,25 +268,25 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.IsNotNull(SUT.tb01);
 			Assert.IsNotNull(SUT.tb02);
 			// Note: If not null, this usually means that the control is leaking!!!
-			await AssertIsNullAsync(() => SUT.panel01);
-			await AssertIsNullAsync(() => SUT.tb03);
-			await AssertIsNullAsync(() => SUT.panel02);
-			await AssertIsNullAsync(() => SUT.tb04);
-			await AssertIsNullAsync(() => SUT.tb06);
-			await AssertIsNullAsync(() => SUT.panel03);
-			await AssertIsNullAsync(() => SUT.tb05);
+			Assert.IsNull(SUT.panel01);
+			Assert.IsNull(SUT.tb03);
+			Assert.IsNull(SUT.panel02);
+			Assert.IsNull(SUT.tb04);
+			Assert.IsNull(SUT.tb06);
+			Assert.IsNull(SUT.panel03);
+			Assert.IsNull(SUT.tb05);
 
 			SUT.TopLevelVisiblity1 = false;
 
-			await AssertIsNullAsync(() => SUT.tb01);
-			await AssertIsNullAsync(() => SUT.tb02);
-			await AssertIsNullAsync(() => SUT.panel01);
-			await AssertIsNullAsync(() => SUT.tb03);
-			await AssertIsNullAsync(() => SUT.panel02);
-			await AssertIsNullAsync(() => SUT.tb04);
-			await AssertIsNullAsync(() => SUT.panel03);
-			await AssertIsNullAsync(() => SUT.tb05);
-			await AssertIsNullAsync(() => SUT.tb06);
+			Assert.IsNull(SUT.tb01);
+			Assert.IsNull(SUT.tb02);
+			Assert.IsNull(SUT.panel01);
+			Assert.IsNull(SUT.tb03);
+			Assert.IsNull(SUT.panel02);
+			Assert.IsNull(SUT.tb04);
+			Assert.IsNull(SUT.panel03);
+			Assert.IsNull(SUT.tb05);
+			Assert.IsNull(SUT.tb06);
 		}
 
 #if __ANDROID__
@@ -409,10 +409,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.IsNotNull(SUT.tb02);
 			Assert.IsNotNull(SUT.tb03);
 			Assert.IsNotNull(SUT.panel01);
-			await AssertIsNullAsync(() => SUT.panel02);
-			await AssertIsNullAsync(() => SUT.tb04);
+			Assert.IsNull(SUT.panel02);
+			Assert.IsNull(SUT.tb04);
 			Assert.IsNotNull(SUT.tb05);
-			await AssertIsNullAsync(() => SUT.tb06);
+			Assert.IsNull(SUT.tb06);
 			Assert.IsTrue(panel03Stub.Load);
 			Assert.AreEqual(1, tb01StubChangedCount);
 			Assert.AreEqual(1, tb02StubChangedCount);
@@ -425,14 +425,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			Assert.IsNotNull(SUT.tb01);
 			Assert.IsNotNull(SUT.tb02);
-			await AssertIsNullAsync(() => SUT.panel01);
-			await AssertIsNullAsync(() => SUT.tb03);
-			await AssertIsNullAsync(() => SUT.panel02);
-			await AssertIsNullAsync(() => SUT.tb04);
-			await AssertIsNullAsync(() => SUT.tb06);
+			Assert.IsNull(SUT.panel01);
+			Assert.IsNull(SUT.tb03);
+			Assert.IsNull(SUT.panel02);
+			Assert.IsNull(SUT.tb04);
+			Assert.IsNull(SUT.tb06);
 			Assert.IsFalse(panel03Stub.Load);
-			await AssertIsNullAsync(() => SUT.panel03);
-			await AssertIsNullAsync(() => SUT.tb05);
+			Assert.IsNull(SUT.panel03);
+			Assert.IsNull(SUT.tb05);
 			Assert.AreEqual(1, tb01StubChangedCount);
 			Assert.AreEqual(1, tb02StubChangedCount);
 			Assert.AreEqual(2, panel01StubChangedCount);
@@ -442,38 +442,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			await Task.Yield();
 
-			await AssertIsNullAsync(() => SUT.tb01);
-			await AssertIsNullAsync(() => SUT.tb02);
-			await AssertIsNullAsync(() => SUT.panel01);
-			await AssertIsNullAsync(() => SUT.tb03);
-			await AssertIsNullAsync(() => SUT.panel02);
-			await AssertIsNullAsync(() => SUT.tb04);
+			Assert.IsNull(SUT.tb01);
+			Assert.IsNull(SUT.tb02);
+			Assert.IsNull(SUT.panel01);
+			Assert.IsNull(SUT.tb03);
+			Assert.IsNull(SUT.panel02);
+			Assert.IsNull(SUT.tb04);
 			Assert.IsFalse(panel03Stub.Load);
-			await AssertIsNullAsync(() => SUT.panel03);
-			await AssertIsNullAsync(() => SUT.tb05);
-			await AssertIsNullAsync(() => SUT.tb06);
+			Assert.IsNull(SUT.panel03);
+			Assert.IsNull(SUT.tb05);
+			Assert.IsNull(SUT.tb06);
 			Assert.AreEqual(2, tb01StubChangedCount);
 			Assert.AreEqual(2, tb02StubChangedCount);
 			Assert.AreEqual(2, panel01StubChangedCount);
 			Assert.AreEqual(2, panel02StubChangedCount);
-		}
-
-		private async Task AssertIsNullAsync<T>(Func<T> getter, TimeSpan? timeout = null)
-		{
-			timeout ??= TimeSpan.FromSeconds(10);
-			var sw = Stopwatch.StartNew();
-
-			while (sw.Elapsed < timeout && getter() != null)
-			{
-				await Task.Delay(100);
-
-				// Wait for the ElementNameSubject and ComponentHolder
-				// instances to release their references.
-				GC.Collect(2);
-				GC.WaitForPendingFinalizers();
-			}
-
-			Assert.IsNull(getter());
 		}
 	}
 }

@@ -49,7 +49,11 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public TextBoxView(TextBox textBox, bool isMultiline)
-			: base(isMultiline ? "textarea" : "input")
+			// We need to use textarea regardless of isMultiline
+			// because "input" native HTML element can't have its text top-aligned.
+			// For PasswordBox, it must be input. So, for now we can't match WinUI and it will
+			// remain center-aligned instead of top-aligned.
+			: base(textBox is PasswordBox ? "input" : "textarea")
 		{
 			IsMultiline = isMultiline;
 			_textBox = textBox;
@@ -86,6 +90,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 			HtmlInput += OnInput;
 			HtmlPaste += OnPaste;
+
+			if (!IsMultiline)
+			{
+				WindowManagerInterop.SetSingleLine(this);
+			}
 
 			SetTextNative(_textBox.Text);
 		}

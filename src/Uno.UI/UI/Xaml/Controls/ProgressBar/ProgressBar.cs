@@ -11,11 +11,6 @@ namespace Microsoft.UI.Xaml.Controls
 		private FrameworkElement _determinateRoot;
 		private FrameworkElement _progressBarIndicator;
 
-		static ProgressBar()
-		{
-			MaximumProperty.OverrideMetadata(typeof(ProgressBar), new FrameworkPropertyMetadata(100d));
-		}
-
 		public ProgressBar()
 		{
 			TemplateSettings = new ProgressBarTemplateSettings();

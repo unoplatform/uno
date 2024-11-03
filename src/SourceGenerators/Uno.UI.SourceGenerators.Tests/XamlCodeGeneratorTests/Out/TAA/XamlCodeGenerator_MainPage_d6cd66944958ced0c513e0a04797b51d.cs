@@ -108,7 +108,7 @@ namespace TestRepro
 			OnInitializeCompleted();
 
 			Bindings = new MainPage_Bindings(this);
-			Loading += (s, e) =>
+			((global::Microsoft.UI.Xaml.FrameworkElement)this).Loading += (s, e) =>
 			{
 				__that.Bindings.Update();
 				__that.Bindings.UpdateResources();
@@ -178,8 +178,8 @@ namespace TestRepro
 			void IMainPage_Bindings.UpdateResources()
 			{
 				var owner = Owner;
-				owner._component_0.UpdateResourceBindings();
-				owner._component_1.UpdateResourceBindings();
+				owner._component_0.UpdateResourceBindings(resourceContextProvider: null);
+				owner._component_1.UpdateResourceBindings(resourceContextProvider: null);
 			}
 			void IMainPage_Bindings.StopTracking()
 			{

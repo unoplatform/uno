@@ -348,11 +348,14 @@ namespace Microsoft.UI.Xaml
 
 					// This block is a manual enumeration to avoid the foreach pattern
 					// See https://github.com/dotnet/runtime/issues/56309 for details
-					var settersEnumerator = target.setters.OfType<Setter>().GetEnumerator();
+					var settersEnumerator = target.setters.GetEnumerator();
 
 					while (settersEnumerator.MoveNext())
 					{
-						settersEnumerator.Current.ApplyValue(element);
+						if (settersEnumerator.Current is Setter setter)
+						{
+							setter.ApplyValue(element);
+						}
 					}
 				}
 				finally
@@ -407,9 +410,12 @@ namespace Microsoft.UI.Xaml
 
 			if (nextSetters is { })
 			{
-				foreach (var setter in nextSetters.OfType<Setter>())
+				foreach (var setterBase in nextSetters)
 				{
-					propertiesNotToClear[propsLength++] = setter.TryGetOrCreateBindingPath(element);
+					if (setterBase is Setter setter)
+					{
+						propertiesNotToClear[propsLength++] = setter.TryGetOrCreateBindingPath(element);
+					}
 				}
 			}
 
@@ -423,10 +429,11 @@ namespace Microsoft.UI.Xaml
 
 			if (prevSetters is { })
 			{
-				foreach (var setter in prevSetters.OfType<Setter>())
+				foreach (var setterBase in prevSetters)
 				{
 					// Setters with a null path are always cleared.
-					if (setter.TryGetOrCreateBindingPath(element) is not { } prevPath || !propertiesNotToClear.Any(path => prevPath.PrefixOfOrEqualTo(path)))
+					if (setterBase is Setter setter &&
+						(setter.TryGetOrCreateBindingPath(element) is not { } prevPath || !propertiesNotToClear.Any(path => prevPath.PrefixOfOrEqualTo(path))))
 					{
 						setter.ClearValue();
 					}
@@ -452,30 +459,31 @@ namespace Microsoft.UI.Xaml
 			// The most specific transition wins (i.e. with matching From and To),
 			// then we validate for transitions that have only From or To defined which match.
 
+			var transitions = Transitions;
 			var hasOld = !oldStateName.IsNullOrEmpty();
 			var hasNew = !newStateName.IsNullOrEmpty();
 
-			if (hasOld && hasNew && GetFirstMatch(oldStateName, newStateName) is { } perfectMatch)
+			if (hasOld && hasNew && GetFirstMatch(transitions, oldStateName, newStateName) is { } perfectMatch)
 			{
 				return perfectMatch;
 			}
 
-			if (hasOld && GetFirstMatch(oldStateName, null) is { } fromMatch)
+			if (hasOld && GetFirstMatch(transitions, oldStateName, null) is { } fromMatch)
 			{
 				return fromMatch;
 			}
 
-			if (hasNew && GetFirstMatch(null, newStateName) is { } newMatch)
+			if (hasNew && GetFirstMatch(transitions, null, newStateName) is { } newMatch)
 			{
 				return newMatch;
 			}
 
 			return default;
 
-			VisualTransition GetFirstMatch(string from, string to)
+			static VisualTransition GetFirstMatch(IList<VisualTransition> transitions, string from, string to)
 			{
 				// Avoid using Transitions.FirstOrDefault as it incurs unnecessary Func<VisualTransition, bool> allocations.
-				foreach (var transition in Transitions)
+				foreach (var transition in transitions)
 				{
 					if (Match(transition, from, to))
 					{
@@ -486,8 +494,8 @@ namespace Microsoft.UI.Xaml
 				return null;
 			}
 
-			bool Match(VisualTransition transition, string from, string to)
-				=> string.Equals(transition.From, oldStateName) && string.Equals(transition.To, newStateName);
+			static bool Match(VisualTransition transition, string from, string to)
+				=> string.Equals(transition.From, from) && string.Equals(transition.To, to);
 		}
 
 		internal void RefreshStateTriggers(bool force = false)

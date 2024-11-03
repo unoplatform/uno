@@ -94,10 +94,10 @@ body:
       multiple: true
       options:
         - Visual Studio 2022
-        - Visual Studio 2019
         - Visual Studio Code
         - Rider Windows
         - Rider macOS
+        - Rider Linux
 
   - type: input
     id: ide-version

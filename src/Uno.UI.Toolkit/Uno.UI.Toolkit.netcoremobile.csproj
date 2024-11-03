@@ -62,6 +62,10 @@
 
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
+			
+			<!-- Current nuget publishing uses netX.0-android30.0 -->
+			<_OverrideTargetFramework Condition="$(_OverrideTargetFramework.EndsWith('.0-android'))">$(_OverrideTargetFramework)30.0</_OverrideTargetFramework>
+
 			<_overridePackageId>$(CommonOverridePackageId.ToLowerInvariant())</_overridePackageId>
 			<_overridePackageId Condition="'$(UNO_UWP_BUILD)'=='false'">$(_overridePackageId.Replace('uno.ui','uno.winui'))</_overridePackageId>
 			<_TargetNugetFolder>$(NuGetPackageRoot)\$(_overridePackageId)\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>

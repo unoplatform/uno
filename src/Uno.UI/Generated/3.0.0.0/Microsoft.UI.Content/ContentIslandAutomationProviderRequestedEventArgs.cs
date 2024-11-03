@@ -10,9 +10,9 @@ namespace Microsoft.UI.Content
 	{
 		// Skipping already declared property Handled
 		// Skipping already declared property AutomationProvider
+		// Forced skipping of method Microsoft.UI.Content.ContentIslandAutomationProviderRequestedEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Content.ContentIslandAutomationProviderRequestedEventArgs.AutomationProvider.set
 		// Forced skipping of method Microsoft.UI.Content.ContentIslandAutomationProviderRequestedEventArgs.AutomationProvider.get
-		// Forced skipping of method Microsoft.UI.Content.ContentIslandAutomationProviderRequestedEventArgs.Handled.get
 		// Forced skipping of method Microsoft.UI.Content.ContentIslandAutomationProviderRequestedEventArgs.Handled.set
 	}
 }

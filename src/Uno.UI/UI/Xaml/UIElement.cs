@@ -42,7 +42,7 @@ using UIKit;
 
 namespace Microsoft.UI.Xaml
 {
-	public partial class UIElement : DependencyObject, IXUidProvider, IUIElement
+	public partial class UIElement : DependencyObject, IXUidProvider
 	{
 		private protected static bool _traceLayoutCycle;
 
@@ -58,8 +58,7 @@ namespace Microsoft.UI.Xaml
 		private InputCursor _protectedCursor;
 		private SerialDisposable _disposedEventDisposable = new();
 
-		internal void FreezeTemplatedParent() =>
-			((IDependencyObjectStoreProvider)this).Store.IsTemplatedParentFrozen = true;
+		public Size DesiredSize => Visibility == Visibility.Visible && HasLayoutStorage ? m_desiredSize : default;
 
 		//private protected virtual void PrepareState()
 		//{
@@ -198,8 +197,6 @@ namespace Microsoft.UI.Xaml
 				&& method.DeclaringType != typeof(Control);
 		}
 
-		private protected virtual bool IsTabStopDefaultValue => false;
-
 		/// <summary>
 		/// Provide an instance-specific default value for the specified property
 		/// </summary>
@@ -211,11 +208,6 @@ namespace Microsoft.UI.Xaml
 			if (property == KeyboardAcceleratorsProperty)
 			{
 				defaultValue = new KeyboardAcceleratorCollection(this);
-				return true;
-			}
-			else if (property == IsTabStopProperty)
-			{
-				defaultValue = IsTabStopDefaultValue;
 				return true;
 			}
 
@@ -263,6 +255,7 @@ namespace Microsoft.UI.Xaml
 				{
 					_translation = value;
 					UpdateShadow();
+					InvalidateArrange();
 				}
 			}
 		}
@@ -308,13 +301,11 @@ namespace Microsoft.UI.Xaml
 
 		partial void UnsetShadow();
 
-		internal Size AssignedActualSize { get; set; }
-
 		internal bool IsLeavingFrame { get; set; }
 
-		private protected virtual double GetActualWidth() => AssignedActualSize.Width;
+		private protected virtual double GetActualWidth() => 0;
 
-		private protected virtual double GetActualHeight() => AssignedActualSize.Height;
+		private protected virtual double GetActualHeight() => 0;
 
 		string IXUidProvider.Uid
 		{
@@ -383,14 +374,25 @@ namespace Microsoft.UI.Xaml
 
 		private void OnClipChanged(DependencyPropertyChangedEventArgs e)
 		{
-			if (e.OldValue is RectangleGeometry oldValue)
+			var oldValue = e.OldValue as RectangleGeometry;
+			var newValue = e.NewValue as RectangleGeometry;
+			if (oldValue is not null)
 			{
 				oldValue.GeometryChanged -= ApplyClip;
 			}
 
-			ApplyClip();
+			// The clip could change, but the new instance is equivalent to the old one.
+			// In this case, we don't want to ApplyClip.
+			// NOTE: This is NOT a performance optimizations.
+			// On Wasm, ApplyClip invalidates arrange, so, if Clip is set during arrange, we will end up with layout cycle if we always call ApplyClip.
+			// NOTE 2: It's more ideal if clip changes don't invalidate arrange in the first place.
+			if (oldValue?.Rect != newValue?.Rect || oldValue?.Transform?.ToMatrix(default) != newValue?.Transform?.ToMatrix(default))
+			{
+				ApplyClip();
+			}
 
-			if (e.NewValue is RectangleGeometry newValue)
+
+			if (newValue is not null)
 			{
 				newValue.GeometryChanged += ApplyClip;
 			}
@@ -511,13 +513,8 @@ namespace Microsoft.UI.Xaml
 
 		partial void OnVisibilityChangedPartial(Visibility oldValue, Visibility newValue);
 
-		/// <summary>
-		/// Set correct default foreground for the current theme.
-		/// </summary>
-		/// <param name="foregroundProperty">The appropriate property for the calling instance.</param>
-		private protected void SetDefaultForeground(DependencyProperty foregroundProperty)
+		private protected void UpdateLastUsedTheme()
 		{
-			this.SetValue(foregroundProperty, DefaultBrushes.TextForegroundBrush, DependencyPropertyValuePrecedences.DefaultValue);
 			((IDependencyObjectStoreProvider)this).Store.SetLastUsedTheme(Application.Current?.RequestedThemeForResources);
 		}
 
@@ -747,7 +744,7 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
-			var root = XamlRoot?.VisualTree.RootElement;
+			var root = XamlRoot?.VisualTree.RootElement ?? this.GetContext().MainVisualTree?.RootElement;
 			if (root is null)
 			{
 				return;
@@ -1036,29 +1033,6 @@ namespace Microsoft.UI.Xaml
 		}
 
 		/// <summary>
-		/// Backing property for <see cref="LayoutInformation.GetAvailableSize(UIElement)"/>
-		/// </summary>
-		Size IUIElement.LastAvailableSize { get; set; }
-
-		/// <summary>
-		/// Gets the 'availableSize' of the last Measure
-		/// </summary>
-		internal Size LastAvailableSize => ((IUIElement)this).LastAvailableSize;
-
-		/// <summary>
-		/// Backing property for <see cref="LayoutInformation.GetLayoutSlot(FrameworkElement)"/>
-		/// </summary>
-		Rect IUIElement.LayoutSlot { get; set; }
-
-		/// <summary>
-		/// Gets the 'finalSize' of the last Arrange.
-		/// Be aware that it's the rect provided by the parent, **before** margins and alignment are being applied,
-		/// so the size of that rect can be different to the size get in the `ArrangeOverride`.
-		/// </summary>
-		/// <remarks>This is expressed in parent's coordinate space.</remarks>
-		internal Rect LayoutSlot => ((IUIElement)this).LayoutSlot;
-
-		/// <summary>
 		/// This is the <see cref="LayoutSlot"/> **after** margins and alignments has been applied.
 		/// It's somehow the region into which an element renders itself in its parent (before any RenderTransform).
 		/// This is the 'finalRect' of the last Arrange. However, this doesn't affect clipping (even for children).
@@ -1068,54 +1042,46 @@ namespace Microsoft.UI.Xaml
 
 		internal bool NeedsClipToSlot { get; set; }
 
-		/// <summary>
-		/// Backing property for <see cref="LayoutInformation.GetDesiredSize(UIElement)"/>
-		/// </summary>
-		Size IUIElement.DesiredSize { get; set; }
-
-		private Size _size;
-
+#if !__CROSSRUNTIME__
 		/// <summary>
 		/// Provides the size reported during the last call to Arrange (i.e. the ActualSize)
 		/// </summary>
 		public Size RenderSize
 		{
-			get => Visibility == Visibility.Collapsed ? new Size() : _size;
+			get => Visibility == Visibility.Collapsed ? new Size() : m_size;
 			internal set
 			{
 				global::System.Diagnostics.Debug.Assert(value.Width >= 0, $"Invalid width ({value.Width})");
 				global::System.Diagnostics.Debug.Assert(value.Height >= 0, $"Invalid height ({value.Height})");
-				var previousSize = _size;
-				_size = value;
-				if (_size != previousSize)
+				var previousSize = m_size;
+				m_size = value;
+				if (m_size != previousSize)
 				{
 					if (this is FrameworkElement frameworkElement)
 					{
-						frameworkElement.SetActualSize(_size);
-#if !UNO_HAS_ENHANCED_LIFECYCLE // Handled by EventManager with enhanced lifecycle.
-						frameworkElement.RaiseSizeChanged(new SizeChangedEventArgs(this, previousSize, _size));
-#endif
+						frameworkElement.RaiseSizeChanged(new SizeChangedEventArgs(this, previousSize, m_size));
 					}
 				}
 			}
 		}
-
-#if !UNO_REFERENCE_API
+#else
 		/// <summary>
-		/// Provides the size reported during the last call to Measure.
+		/// Provides the size reported during the last call to Arrange (i.e. the ActualSize)
 		/// </summary>
-		/// <remarks>
-		/// DesiredSize INCLUDES MARGINS.
-		/// </remarks>
-		public Size DesiredSize => ((IUIElement)this).DesiredSize;
+		public Size RenderSize
+		{
+			get => HasLayoutStorage ? m_size : default;
+			internal set => m_size = value;
+		}
+#endif
 
 
 #if !UNO_REFERENCE_API
+
 		/// <summary>
 		/// This is the Frame that should be used as "available Size" for the Arrange phase.
 		/// </summary>
 		internal Rect? ClippedFrame;
-#endif
 
 		/// <summary>
 		/// Updates the DesiredSize of a UIElement. Typically, objects that implement custom layout for their
@@ -1133,7 +1099,8 @@ namespace Microsoft.UI.Xaml
 		/// </remarks>
 		public void Measure(Size availableSize)
 		{
-#if !UNO_REFERENCE_API
+			EnsureLayoutStorage();
+
 			if (this is not FrameworkElement fwe)
 			{
 				return;
@@ -1148,7 +1115,6 @@ namespace Microsoft.UI.Xaml
 #if IS_UNIT_TESTS
 			OnMeasurePartial(availableSize);
 #endif
-#endif
 		}
 
 #if IS_UNIT_TESTS
@@ -1162,7 +1128,8 @@ namespace Microsoft.UI.Xaml
 		/// <param name="finalRect">The final size that the parent computes for the child in layout, provided as a <see cref="Windows.Foundation.Rect"/> value.</param>
 		public void Arrange(Rect finalRect)
 		{
-#if !UNO_REFERENCE_API
+			EnsureLayoutStorage();
+
 			if (this is not FrameworkElement fwe)
 			{
 				return;
@@ -1171,7 +1138,6 @@ namespace Microsoft.UI.Xaml
 			var layouter = ((ILayouterElement)fwe).Layouter;
 			layouter.Arrange(finalRect.DeflateBy(fwe.Margin));
 			layouter.ArrangeChild(fwe, finalRect);
-#endif
 		}
 
 		public void InvalidateMeasure()
@@ -1366,7 +1332,7 @@ namespace Microsoft.UI.Xaml
 			set => SetXYFocusKeyboardNavigationValue(value);
 		}
 
-		[GeneratedDependencyProperty(DefaultValue = default(XYFocusKeyboardNavigationMode), Options = FrameworkPropertyMetadataOptions.Inherits)]
+		[GeneratedDependencyProperty(DefaultValue = default(XYFocusKeyboardNavigationMode))]
 		public static DependencyProperty XYFocusKeyboardNavigationProperty { get; } = CreateXYFocusKeyboardNavigationProperty();
 
 		public XYFocusNavigationStrategy XYFocusDownNavigationStrategy

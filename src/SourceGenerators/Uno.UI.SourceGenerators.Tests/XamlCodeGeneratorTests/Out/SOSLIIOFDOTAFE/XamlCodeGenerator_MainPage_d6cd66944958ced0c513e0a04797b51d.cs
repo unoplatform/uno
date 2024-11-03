@@ -111,7 +111,7 @@ namespace TestRepro
 			"MyItemTemplate"
 			] = 
 			new global::Uno.UI.Xaml.WeakResourceInitializer(this, __ResourceOwner_1 => 
-				new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1 , __owner => 				((I_MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPageSC0)global::Uno.UI.Helpers.TypeMappings.CreateInstance<_MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPageSC0>()).Build(__owner)
+				new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, (__owner) => 				((I_MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPageSC0)global::Uno.UI.Helpers.TypeMappings.CreateInstance<_MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPageSC0>()).Build(__owner)
 				)				.GenericApply(__that, __nameScope, ((c6, __that, __nameScope) => 
 				{
 					global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(c6, "OriginalSourceLocation", "file:///C:/Project/0/MainPage.xaml#L13:6");
@@ -125,7 +125,7 @@ namespace TestRepro
 			{
 				IsParsing = true,
 				Name = "TheListView",
-				HeaderTemplate = 				new global::Microsoft.UI.Xaml.DataTemplate(this , __owner => 				((I_MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPageSC1)global::Uno.UI.Helpers.TypeMappings.CreateInstance<_MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPageSC1>()).Build(__owner)
+				HeaderTemplate = 				new global::Microsoft.UI.Xaml.DataTemplate(this, (__owner) => 				((I_MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPageSC1)global::Uno.UI.Helpers.TypeMappings.CreateInstance<_MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPageSC1>()).Build(__owner)
 				)				.GenericApply(__that, __nameScope, ((c7, __that, __nameScope) => 
 				{
 					global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(c7, "OriginalSourceLocation", "file:///C:/Project/0/MainPage.xaml#L42:8");
@@ -266,7 +266,7 @@ namespace TestRepro
 
 			Bindings = ((IMainPage_Bindings)global::Uno.UI.Helpers.TypeMappings.CreateInstance<MainPage_Bindings>(this));
 			global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(__that, "owner", __that);
-			Loading += (s, e) =>
+			((global::Microsoft.UI.Xaml.FrameworkElement)this).Loading += (s, e) =>
 			{
 				var __that = global::Uno.UI.Helpers.MarkupHelper.GetElementProperty<global::TestRepro.MainPage>(s, "owner");
 				__that.Bindings.UpdateResources();
@@ -516,8 +516,8 @@ namespace TestRepro
 			void IMainPage_Bindings.UpdateResources()
 			{
 				var owner = Owner;
-				owner._component_0.UpdateResourceBindings();
-				owner._component_1.UpdateResourceBindings();
+				owner._component_0.UpdateResourceBindings(resourceContextProvider: null);
+				owner._component_1.UpdateResourceBindings(resourceContextProvider: null);
 			}
 			void IMainPage_Bindings.StopTracking()
 			{

@@ -62,7 +62,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if __IOS__
 					child.Layer.ZPosition = (nfloat)GetZIndex(childAsUIElement);
 #endif
-
+					child.EnsureLayoutStorage();
 					ArrangeElement(child, childRect);
 				}
 			}

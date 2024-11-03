@@ -21,10 +21,32 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 
 			if (winningTask == timeoutTask)
 			{
-				return false;
+				throw new TimeoutException("Timed out waiting for event to fire");
 			}
 
 			return await tcs.Task;
+		}
+
+
+		public async Task<bool> WaitForNoThrow(int timeoutValueMs, bool enforceUnderDebugger = true)
+		{
+			// Event timeouts can be frustrating when trying to debug tests. 
+			// When under the debugger we disable all timeouts.
+			//if (IsDebuggerPresent() && !enforceUnderDebugger)
+			//{
+			//	timeoutValueMs = INFINITE;
+			//}
+
+			try
+			{
+				await WaitForDefault(timeoutValueMs);
+				return true;
+			}
+			catch (TimeoutException)
+			{
+				return false;
+			}
+			//return WaitForSingleObject(m_handle, timeoutValueMs) == WAIT_OBJECT_0;
 		}
 
 		private TaskCompletionSource<bool> EnsureTcs()

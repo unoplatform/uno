@@ -8,18 +8,13 @@
 
 	<PropertyGroup>
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
-		<authors>Uno Platform</authors>
-		<PackageProjectUrl>https://github.com/unoplatform/uno</PackageProjectUrl>
-		<PackageIcon>uno.png</PackageIcon>
-		<RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
 		<Description>This package provides the platform support for Skia in Uno Platform projects.</Description>
-		<Copyright>Copyright (C) 2015-$([System.DateTime]::Now.ToString(`yyyy`)) Uno Platform Inc. - all rights reserved</Copyright>
 
 		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Runtime.Skia.Wpf</PackageId>
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 
-		<!-- Ignore NU5104 for net7.0 System.Drawing.Common -->
+		<!-- Ignore NU5104 for net9.0 Microsoft.Win32.SystemEvents -->
 		<NoWarn>$(NoWarn);NU5104</NoWarn>
 	</PropertyGroup>	
 
@@ -28,7 +23,7 @@
 		This allows for building the library with a dependency to WPF while not
 		building with net8-windows.
 		-->
-		<FrameworkReference Include="Microsoft.WindowsDesktop.App.WPF"/>
+		<FrameworkReference Include="Microsoft.WindowsDesktop.App.WPF" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -36,11 +31,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="SkiaSharp.Views.WPF" />
-		<PackageReference Include="SkiaSharp.Harfbuzz" />
+		<PackageReference Include="Microsoft.Web.WebView2" Aliases="WpfWebView" PrivateAssets="all" />
 
 		<!-- 
-			Required to ensure that this reference is latest and not 
+			Required to ensure that this reference is latest and not
 			transitively flowing through SkiaSharp's dependencies
 		 -->
 		<PackageReference Include="Microsoft.Win32.SystemEvents" />
@@ -54,7 +48,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Include="buildTransitive/*.targets">
+		<Content Include="buildTransitive/*.*">
 			<Pack>true</Pack>
 			<PackagePath>buildTransitive</PackagePath>
 		</Content>

@@ -84,10 +84,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			try
 			{
-#if DEBUG
-				Console.WriteLine("Pre-processing XAML file: {0}", targetFilePath);
-#endif
-
 				var sourceText = file.GetText(cancellationToken)!;
 				if (sourceText is null)
 				{

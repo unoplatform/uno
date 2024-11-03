@@ -1,0 +1,15 @@
+<Project>
+  <PropertyGroup>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+
+    <!--
+      Adding NoWarn to remove build warnings
+      NU1507: Warning when there are multiple package sources when using CPM with no source mapping
+      NETSDK1201: Warning that specifying RID won't create self containing app
+      PRI257: Ignore default language (en) not being one of the included resources (eg en-us, en-uk)
+    -->
+    <NoWarn>$(NoWarn);NU1507;NETSDK1201;PRI257</NoWarn>
+  </PropertyGroup>
+</Project>

@@ -31,8 +31,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.InteractionTests
 	public partial class SplitButtonTests
 	{
 		[TestMethod]
-#if !__SKIA__
-		[Ignore("InputInjector is only supported on skia")]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		public async Task BasicInteractionTest()
 		{
@@ -70,8 +70,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.InteractionTests
 		}
 
 		[TestMethod]
-#if !__SKIA__
-		[Ignore("InputInjector is only supported on skia")]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		public async Task CommandTest()
 		{
@@ -100,12 +100,12 @@ namespace Windows.UI.Xaml.Tests.MUXControls.InteractionTests
 
 			Log.Comment("Click primary button with SPACE key to execute command");
 			// ClickPrimaryButtonWithKey(splitButton, "SPACE");
-			KeyboardHelper.Space(splitButton);
+			await KeyboardHelper.Space(splitButton);
 			Verify.AreEqual("2", executeCountTextBlock.Text);
 
 			Log.Comment("Click primary button with ENTER key to execute command");
 			// ClickPrimaryButtonWithKey(splitButton, "ENTER");
-			KeyboardHelper.Enter(splitButton);
+			await KeyboardHelper.Enter(splitButton);
 			Verify.AreEqual("3", executeCountTextBlock.Text);
 
 			Log.Comment("Use invoke pattern to execute command");
@@ -123,8 +123,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.InteractionTests
 		}
 
 		[TestMethod]
-#if !__SKIA__
-		[Ignore("InputInjector is only supported on skia")]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		public async Task TouchTest()
 		{
@@ -216,7 +216,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.InteractionTests
 
 		[TestMethod]
 #if !__SKIA__
-		[Ignore("InputInjector is only supported on skia")]
+		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		public async Task KeyboardTest()
 		{
@@ -238,19 +238,19 @@ namespace Windows.UI.Xaml.Tests.MUXControls.InteractionTests
 			// splitButton.SetFocus();
 			splitButton.Focus(FocusState.Programmatic);
 			await WindowHelper.WaitForIdle();
-			KeyboardHelper.Space();
+			await KeyboardHelper.Space();
 			await WindowHelper.WaitForIdle();
 			Verify.AreEqual("1", clickCountTextBlock.Text);
 
 			Verify.AreEqual("0", flyoutOpenedCountTextBlock.Text);
 			Log.Comment("Verify that pressing alt-down on SplitButton opens the flyout");
-			KeyboardHelper.PressKeySequence("$d$_alt#$d$_down#$u$_down#$u$_alt");
+			await KeyboardHelper.PressKeySequence("$d$_alt#$d$_down#$u$_down#$u$_alt");
 			await WindowHelper.WaitForIdle();
 			Verify.AreEqual("1", flyoutOpenedCountTextBlock.Text);
 
 			Verify.AreEqual("0", flyoutClosedCountTextBlock.Text);
 			Log.Comment("Verify that pressing escape closes the flyout");
-			KeyboardHelper.Escape();
+			await KeyboardHelper.Escape();
 			await WindowHelper.WaitForIdle();
 			Verify.AreEqual("1", flyoutClosedCountTextBlock.Text);
 
@@ -259,14 +259,14 @@ namespace Windows.UI.Xaml.Tests.MUXControls.InteractionTests
 			splitButton.Focus(FocusState.Programmatic);
 			await WindowHelper.WaitForIdle();
 			// TextInput.SendText("{F4}");
-			KeyboardHelper.PressKeySequence("$d$_f4#$u$_f4");
+			await KeyboardHelper.PressKeySequence("$d$_f4#$u$_f4");
 			await WindowHelper.WaitForIdle();
 			Verify.AreEqual("2", flyoutOpenedCountTextBlock.Text);
 		}
 
 		[TestMethod]
-#if !__SKIA__
-		[Ignore("InputInjector is only supported on skia")]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		public async Task ToggleTest()
 		{

@@ -1,22 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Uno.Extensions;
-using System.ComponentModel;
-using Uno.Disposables;
-using System.Windows.Input;
-using Uno;
-using Uno.UI.DataBinding;
-using Uno.Presentation;
-using Uno.Foundation.Logging;
 using System.Globalization;
-using System.Reflection;
-using Uno.UI;
-using Uno.UI.Converters;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Data;
+using System.Linq;
 using System.Runtime.CompilerServices;
+using Microsoft.UI.Xaml.Controls;
+using Uno;
+using Uno.Disposables;
+using Uno.Extensions;
+using Uno.Foundation.Logging;
+using Uno.UI;
+using Uno.UI.DataBinding;
 
 namespace Microsoft.UI.Xaml.Data
 {
@@ -58,10 +50,25 @@ namespace Microsoft.UI.Xaml.Data
 
 		public object DataContext
 		{
-			get => _isElementNameSource || ExplicitSource != null ? ExplicitSource : _dataContext?.Target;
+			get
+			{
+				if (ParentBinding.IsTemplateBinding)
+				{
+					return (_view?.Target as IDependencyObjectStoreProvider)?.Store.GetTemplatedParent2();
+				}
+				if (_isElementNameSource || ExplicitSource != null)
+				{
+					return ExplicitSource;
+				}
+
+				return _dataContext?.Target;
+			}
 			set
 			{
-				if (ExplicitSource == null && !_disposed && DependencyObjectStore.AreDifferent(_dataContext?.Target, value))
+				if (!_disposed &&
+					!ParentBinding.IsTemplateBinding &&
+					ExplicitSource == null &&
+					DependencyObjectStore.AreDifferent(_dataContext?.Target, value))
 				{
 					var previousContext = _dataContext;
 
@@ -104,7 +111,7 @@ namespace Microsoft.UI.Xaml.Data
 			_bindingPath = new BindingPath(
 				path: ParentBinding.Path,
 				fallbackValue: ParentBinding.FallbackValue,
-				precedence: null,
+				forAnimations: false,
 				allowPrivateMembers: ParentBinding.IsXBind
 			);
 			_boundPropertyType = targetPropertyDetails.Property.Type;
@@ -121,7 +128,7 @@ namespace Microsoft.UI.Xaml.Data
 			{
 				_updateSources = ParentBinding
 					.XBindPropertyPaths
-					.Select(p => new BindingPath(path: p, fallbackValue: null, precedence: null, allowPrivateMembers: true)
+					.Select(p => new BindingPath(path: p, fallbackValue: null, forAnimations: false, allowPrivateMembers: true)
 					{
 					})
 					.ToArray();
@@ -137,12 +144,29 @@ namespace Microsoft.UI.Xaml.Data
 				ApplyFallbackValue();
 			}
 
+			ApplyTemplateBindingParent();
 			ApplyExplicitSource();
 			ApplyElementName();
 		}
 
+		private ManagedWeakReference GetWeakTemplatedParent()
+		{
+			return (_view?.Target as IDependencyObjectStoreProvider)?.Store.GetTemplatedParentWeakRef();
+		}
+
 		private ManagedWeakReference GetWeakDataContext()
-			=> _isElementNameSource || (_explicitSourceStore?.IsAlive ?? false) ? _explicitSourceStore : _dataContext;
+		{
+			if (_isElementNameSource || (_explicitSourceStore?.IsAlive ?? false))
+			{
+				return _explicitSourceStore;
+			}
+			if (ParentBinding.IsTemplateBinding)
+			{
+				return GetWeakTemplatedParent();
+			}
+
+			return _dataContext;
+		}
 
 		/// <summary>
 		/// Sends the current binding target value to the binding source property in TwoWay bindings.
@@ -309,16 +333,17 @@ namespace Microsoft.UI.Xaml.Data
 		}
 
 		/// <summary>
-		/// Turns UpdateSourceTrigger.Default to DependencyProperty's FrameworkPropertyMetadata.DefaultUpdateSourceTrigger
+		/// Turns UpdateSourceTrigger.Default to PropertyChanged, except for TextBox.TextProperty it's Explicit
 		/// </summary>
-		/// <returns></returns>
+		/// <remarks>
+		/// For TextBox.TextProperty, it should be LostFocus, but for now, it's Explicit and we are getting the
+		/// same behavior by explicitly updating the binding on losing focus in TextBox code.
+		/// </remarks>
 		private UpdateSourceTrigger ResolveUpdateSourceTrigger()
 		{
 			if (ParentBinding.UpdateSourceTrigger == UpdateSourceTrigger.Default)
 			{
-				var metadata = TargetPropertyDetails.Property?.GetMetadata(_targetOwnerType) as FrameworkPropertyMetadata;
-				return metadata?.DefaultUpdateSourceTrigger
-					?? UpdateSourceTrigger.PropertyChanged;
+				return TargetPropertyDetails.Property == TextBox.TextProperty ? UpdateSourceTrigger.Explicit : UpdateSourceTrigger.PropertyChanged;
 			}
 			else
 			{
@@ -376,7 +401,8 @@ namespace Microsoft.UI.Xaml.Data
 			}
 			else if (useTypeDefaultValue && TargetPropertyDetails != null)
 			{
-				SetTargetValue(TargetPropertyDetails.Property.GetMetadata(_view.Target?.GetType()).DefaultValue);
+				var viewTarget = _view.Target;
+				SetTargetValue(TargetPropertyDetails.Property.GetDefaultValue(viewTarget as DependencyObject, viewTarget?.GetType()));
 			}
 		}
 
@@ -400,6 +426,19 @@ namespace Microsoft.UI.Xaml.Data
 				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().DebugFormat("Applying compiled source {0} on {1}", ExplicitSource.GetType(), _view.Target?.GetType());
+				}
+
+				ApplyBinding();
+			}
+		}
+
+		internal void ApplyTemplateBindingParent()
+		{
+			if (ParentBinding.IsTemplateBinding)
+			{
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+				{
+					this.Log().DebugFormat("Applying template binding parent {0} on {1}", GetWeakTemplatedParent()?.Target?.GetType(), _view.Target?.GetType());
 				}
 
 				ApplyBinding();
@@ -468,12 +507,12 @@ namespace Microsoft.UI.Xaml.Data
 					// It may be related to https://github.com/unoplatform/uno/issues/190
 					try
 					{
-						DependencyPropertyDetails.SuppressLocalCanDefeatAnimations();
+						ModifiedValue.SuppressLocalCanDefeatAnimations();
 						GetValueSetter()(viewTarget, value);
 					}
 					finally
 					{
-						DependencyPropertyDetails.ContinueLocalCanDefeatAnimations();
+						ModifiedValue.ContinueLocalCanDefeatAnimations();
 					}
 				}
 				else
@@ -788,7 +827,6 @@ namespace Microsoft.UI.Xaml.Data
 		}
 
 		private string GetCurrentCulture() => CultureInfo.CurrentCulture.ToString();
-
 
 		private object ConvertValue(object value)
 		{
