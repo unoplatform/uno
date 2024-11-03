@@ -211,7 +211,7 @@ internal static partial class NativeUno
 	internal static partial string uno_window_get_title(nint window);
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
-	internal static partial nint uno_window_set_title(nint window, string title);
+	internal static partial void uno_window_set_title(nint window, string title);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static unsafe partial void uno_set_window_close_callbacks(
