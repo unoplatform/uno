@@ -30,6 +30,8 @@ As part of creating the application, we selected MVVM as the presentation framew
     private void Increment()
         => Count += Step;
     ```
+> [!NOTE]
+> If you see red squiggles under `Count` or `Step`, save the file to have Hot Reload apply your changes.
 
 The final code for the `MainViewModel` class should look like this:
 
