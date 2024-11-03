@@ -156,6 +156,37 @@ public class Given_TabView
 	}
 
 	[TestMethod]
+	public async Task When_Items_Should_ShowHeader()
+	{
+		var SUT = new TabView
+		{
+			TabItems =
+			{
+				new TabViewItem { Header = "Tab 1" },
+				new TabViewItem { Header = "Tab 2" }
+			}
+		};
+
+		await UITestHelper.Load(SUT);
+
+		var tabviewItem1 = SUT.ContainerFromIndex(0) as TabViewItem;
+		var headerPresenter1 = tabviewItem1.GetTemplateChild<ContentPresenter>("ContentPresenter");
+		Assert.IsTrue(headerPresenter1.ActualWidth > 0, "TabViewItem header for index  0 should have a non-zero width.");
+		Assert.IsTrue(headerPresenter1.ActualHeight > 0, "TabViewItem header for index  0 should have a non-zero height.");
+
+		var closeButton1 = tabviewItem1.GetTemplateChild<Button>("CloseButton");
+		var buttonLabel1 = closeButton1.GetTemplateChild<ContentPresenter>("ContentPresenter").FindFirstChild<ImplicitTextBlock>();
+
+		Assert.IsTrue(buttonLabel1.ActualWidth > 0, "TabViewItem Button for index 0 should have a non-zero width.");
+		Assert.IsTrue(buttonLabel1.ActualHeight > 0, "TabViewItem Button  for index 0 should have a non-zero height.");
+
+		var tabviewItem2 = SUT.ContainerFromIndex(1) as TabViewItem;
+		var headerPresenter2 = tabviewItem2.GetTemplateChild<ContentPresenter>("ContentPresenter");
+		Assert.IsTrue(headerPresenter2.ActualWidth > 0, "TabViewItem header for index  1  should have a non-zero width.");
+		Assert.IsTrue(headerPresenter2.ActualHeight > 0, "TabViewItem header for index  1  should have a non-zero height.");
+	}
+
+	[TestMethod]
 	public async Task When_SelectedItem_Changed_Binding()
 	{
 		var vm = new ViewModel();
