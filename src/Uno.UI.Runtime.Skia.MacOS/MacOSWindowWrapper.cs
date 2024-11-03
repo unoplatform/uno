@@ -57,6 +57,7 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase
 	public override void Close()
 	{
 		NativeUno.uno_window_close(_window.Handle);
+		base.Close();
 	}
 
 	public override void Move(PointInt32 position)
