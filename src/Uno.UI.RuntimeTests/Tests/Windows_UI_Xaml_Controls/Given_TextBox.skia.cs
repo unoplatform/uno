@@ -32,6 +32,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	/// </summary>
 	public partial class Given_TextBox
 	{
+		// most macOS keyboard shortcuts uses Command (mapped as Window) and not Control (Ctrl)
+		private readonly VirtualKeyModifiers _platformCtrlKey = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? VirtualKeyModifiers.Windows : VirtualKeyModifiers.Control;
+
 		[TestMethod]
 		public async Task When_Basic_Input()
 		{
@@ -1580,6 +1583,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow(true)]
 		public async Task When_Copy_Paste(bool useInsert)
 		{
+			if (useInsert && OperatingSystem.IsMacOS())
+			{
+				Assert.Inconclusive("There's no `Insert` key on Mac keyboards");
+				// it's replaced by the `fn` key, which is a modifier
+			}
+
 			using var _ = new TextBoxFeatureConfigDisposable();
 
 			var SUT = new TextBox
@@ -1611,7 +1620,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				}
 				else
 				{
-					SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.V, VirtualKeyModifiers.Control, unicodeKey: 'v'));
+					SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.V, _platformCtrlKey, unicodeKey: 'v'));
 				}
 			}
 
@@ -1623,7 +1632,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				}
 				else
 				{
-					SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.C, VirtualKeyModifiers.Control, unicodeKey: 'c'));
+					SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.C, _platformCtrlKey, unicodeKey: 'c'));
 				}
 			}
 
