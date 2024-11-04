@@ -859,9 +859,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.AreEqual(svRight, LayoutInformation.GetLayoutSlot(SUT).Right);
 			}
 
+			// on macOS we use `option` (menu/alt) + `delete` to remove word at the left
+			var mod = OperatingSystem.IsMacOS() ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.Control;
 			for (var i = 0; i < 10; i++)
 			{
-				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Back, VirtualKeyModifiers.Control));
+				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Back, mod));
 			}
 			await WindowHelper.WaitForIdle();
 
