@@ -701,6 +701,11 @@
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
 
+                            <!-- Uno workaround: On Android, the ContentPresenters inside this are not calculating correctly -->
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
                             <Viewbox x:Name="IconBox"
                                     MaxWidth="{ThemeResource TabViewItemHeaderIconSize}"
                                     MaxHeight="{ThemeResource TabViewItemHeaderIconSize}"
