@@ -14,7 +14,7 @@ namespace Uno.Utils.DependencyInjection;
 /// so the implementation will be able to add some custom services on it.
 /// </remarks>
 [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
-public class ServiceCollectionExtensionAttribute(Type type) : Attribute
+public sealed class ServiceCollectionExtensionAttribute(Type type) : Attribute
 {
 	/// <summary>
 	/// Type of the extension that should be instantiated with a <see cref="IServiceCollection"/> as parameter.
