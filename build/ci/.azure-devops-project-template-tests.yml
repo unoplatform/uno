@@ -31,8 +31,8 @@ jobs:
       artifactName: 'Nuget_Packages'
 
   - template: templates/gitversion.yml
-
   - template: templates/dotnet-mobile-install-windows.yml
+  - template: templates/uno-dev-feed.yml
 
   - script: copy $(System.ArtifactsDirectory)\Nuget_Packages\vslatest\*.nupkg $(Build.SourcesDirectory)\src\PackageCache
     displayName: Copy Artifacts to PackageCache
@@ -88,6 +88,7 @@ jobs:
       xCodeRoot: ${{ parameters.xCodeRoot }}
 
   - template: templates/dotnet-mobile-install-mac.yml
+  - template: templates/uno-dev-feed.yml
 
   - powershell: cp $(System.ArtifactsDirectory)/Nuget_Packages/vslatest/*.nupkg $(Build.SourcesDirectory)/src/PackageCache
     displayName: Copy Artifacts to PackageCache
@@ -126,11 +127,10 @@ jobs:
       artifactName: 'Nuget_Packages'
 
   - template: templates/gitversion.yml
-
   - template: templates/dotnet-mobile-install-linux.yml
-
   - template: templates/gitversion.yml
-  
+  - template: templates/uno-dev-feed.yml
+
   - script: cp $(System.ArtifactsDirectory)/Nuget_Packages/vslatest/*.nupkg $(Build.SourcesDirectory)/src/PackageCache
     displayName: Copy Artifacts to PackageCache
 

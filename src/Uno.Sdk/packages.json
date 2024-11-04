@@ -86,6 +86,13 @@
 		]
 	},
 	{
+		"group": "hotdesign",
+		"version": "1.0.0-dev.3",
+		"packages": [
+			"Uno.UI.HotDesign"
+		]
+	},
+	{
 	  "group": "SkiaSharp",
 	  "version": "2.88.8",
 	  "packages": [

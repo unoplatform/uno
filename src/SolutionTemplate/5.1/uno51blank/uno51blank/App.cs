@@ -9,7 +9,7 @@ public class App : Application
         MainWindow = new Window();
 
 #if DEBUG
-        MainWindow.EnableHotReload();
+        MainWindow.UseStudio();
 #endif
 
 
