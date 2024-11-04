@@ -538,6 +538,12 @@ public partial class TextBox
 
 	private void KeyDownBack(KeyRoutedEventArgs args, ref string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
+		// on macOS it is `option` + `delete` (same location as backspace on PC keyboards) that removes the previous word
+		if (OperatingSystem.IsMacOS())
+		{
+			ctrl = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Menu);
+		}
+
 		if (HasPointerCapture)
 		{
 			return;
