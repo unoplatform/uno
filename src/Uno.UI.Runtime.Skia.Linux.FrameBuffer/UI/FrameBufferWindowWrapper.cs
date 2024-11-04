@@ -21,17 +21,16 @@ internal class FrameBufferWindowWrapper : NativeWindowWrapperBase
 
 	public override object? NativeWindow => null;
 
-	internal Window? Window { get; private set; }
-
 	internal void RaiseNativeSizeChanged(Size newWindowSize)
 	{
 		Bounds = new Rect(default, newWindowSize);
 		VisibleBounds = new Rect(default, newWindowSize);
+		Size = new((int)newWindowSize.Width, (int)newWindowSize.Height);
 	}
 
 	internal void OnNativeVisibilityChanged(bool visible) => IsVisible = visible;
 
 	internal void OnNativeActivated(CoreWindowActivationState state) => ActivationState = state;
 
-	internal void OnNativeClosed() => RaiseClosed();
+	internal void OnNativeClosed() => RaiseClosing();
 }

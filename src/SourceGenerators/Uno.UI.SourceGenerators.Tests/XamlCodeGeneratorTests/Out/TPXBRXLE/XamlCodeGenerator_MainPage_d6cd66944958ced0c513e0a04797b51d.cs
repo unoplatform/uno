@@ -108,6 +108,10 @@ namespace TestRepro
 									that.Bindings.UpdateResources();
 									that.Bindings.NotifyXLoad("LoadElement");
 								}
+								else
+								{
+									_LoadElementSubject.ElementInstance = null;
+								}
 							}
 						}
 						c1.MaterializationChanged += _component_1_update;
@@ -200,7 +204,7 @@ namespace TestRepro
 			OnInitializeCompleted();
 
 			Bindings = new MainPage_Bindings(this);
-			Loading += (s, e) =>
+			((global::Microsoft.UI.Xaml.FrameworkElement)this).Loading += (s, e) =>
 			{
 				__that.Bindings.Update();
 				__that.Bindings.UpdateResources();

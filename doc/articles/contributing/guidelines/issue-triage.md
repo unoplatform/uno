@@ -35,10 +35,10 @@ Is something unclear? Do we need to improve our documentation or samples?
 
 Community support requests should be directed to:
 
-* Our [documentation](https://platform.uno/docs/) and [troubleshooting guide](https://platform.uno/docs/troubleshooting-guide).
+* Our [documentation](https://platform.uno/docs/) and [troubleshooting guide](xref:Uno.UI.CommonIssues).
 * [GitHub Discussions](https://github.com/unoplatform/uno/discussions)
 * The [Discord Server](https://platform.uno/discord)
-* On [Twitter using the #unoplatform](https://twitter.com/search?q=%23unoplatform) hashtag.
+* On [X/Twitter using the #unoplatform](https://x.com/search?q=%23unoplatform) hashtag.
 
 Organizations that want a deeper level of support beyond community support should be directed to [contact Uno Platform](https://platform.uno/contact/) to discuss obtaining professional support.
 

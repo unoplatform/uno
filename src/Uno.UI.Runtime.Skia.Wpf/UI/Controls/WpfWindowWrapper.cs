@@ -29,7 +29,6 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 		_wpfWindow.Deactivated += OnNativeDeactivated;
 		_wpfWindow.IsVisibleChanged += OnNativeIsVisibleChanged;
 		_wpfWindow.Closing += OnNativeClosing;
-		_wpfWindow.Closed += OnNativeClosed;
 		_wpfWindow.DpiChanged += OnNativeDpiChanged;
 		_wpfWindow.StateChanged += OnNativeStateChanged;
 		_wpfWindow.Host.SizeChanged += (_, e) => OnHostSizeChanged(e.NewSize);
@@ -81,7 +80,11 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 
 	public override void Activate() => _wpfWindow.Activate();
 
-	public override void Close() => _wpfWindow.Close();
+	public override void Close()
+	{
+		base.Close();
+		_wpfWindow.Close();
+	}
 
 	public override void ExtendContentIntoTitleBar(bool extend)
 	{
@@ -95,8 +98,6 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 		VisibleBounds = Bounds;
 	}
 
-	private void OnNativeClosed(object? sender, EventArgs e) => RaiseClosed();
-
 	private void OnNativeClosing(object? sender, CancelEventArgs e)
 	{
 		var closingArgs = RaiseClosing();
@@ -104,16 +105,6 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 		{
 			e.Cancel = true;
 			return;
-		}
-
-		var manager = SystemNavigationManagerPreview.GetForCurrentView();
-		if (!manager.HasConfirmedClose)
-		{
-			if (!manager.RequestAppClose())
-			{
-				e.Cancel = true;
-				return;
-			}
 		}
 
 		// Closing should continue, perform suspension.

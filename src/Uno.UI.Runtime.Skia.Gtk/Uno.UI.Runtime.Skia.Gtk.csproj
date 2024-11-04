@@ -20,6 +20,9 @@
 
 		<!-- Don't install GTK at this step, let the app head do it -->
 		<SkipGtkInstall>true</SkipGtkInstall>
+
+		<!-- Ignore NU5104 for net9.0 Microsoft.Win32.SystemEvents -->
+		<NoWarn>$(NoWarn);NU5104</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -31,12 +34,12 @@
 		<PackageReference Include="Microsoft.Win32.SystemEvents" Version="6.0.1" />
 		<PackageReference Include="Silk.NET.OpenGL" Version="2.16.0" />
 		<PackageReference Include="Silk.NET.OpenGLES" Version="2.16.0" />
+		<PackageReference Include="System.Text.Json" Version="8.0.5" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="SkiaSharp.NativeAssets.Linux" />
 		<PackageReference Include="HarfBuzzSharp.NativeAssets.Linux" />
-		<PackageReference Include="SkiaSharp.Harfbuzz" />
 		<PackageReference Include="SkiaSharp" />
 		<PackageReference Include="GtkSharp" />
 	</ItemGroup>
@@ -48,7 +51,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Include="buildTransitive/*.targets">
+		<Content Include="buildTransitive/*.*">
 			<Pack>true</Pack>
 			<PackagePath>buildTransitive</PackagePath>
 		</Content>

@@ -12,7 +12,9 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			get
 			{
-				if (TemplatedParent is GridView gv && gv.Style == Style.GetDefaultStyleForType(GetDefaultStyleKey()))
+				if (GetTemplatedParent() is ItemsPresenter presenter &&
+					presenter.GetTemplatedParent() is GridView gv &&
+					gv.GetCurrentHighestValuePrecedence(Control.TemplateProperty) == DependencyPropertyValuePrecedences.ImplicitStyle)
 				{
 					// This is a workaround for our GridView using a WrapPanel instead of an ItemsWrapGrid (which we don't implement).
 					// The following is the implementation of ItemsWrapGrid::get_PhysicalOrientation from WinUI.

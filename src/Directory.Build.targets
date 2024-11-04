@@ -65,7 +65,7 @@
 		<!-- TODO: Uncomment when we're net8.0+ to have SamplesApp serve as a good test for SkiaSharp 3 support -->
 		<!-- <SkiaSharpVersion Condition="'$(IsTestProject)' == 'true' or '$(IsSampleProject)' == 'true'">3.0.0-preview.3.1</SkiaSharpVersion> -->
 	</PropertyGroup>
-	
+
 	<ItemGroup>
 		<PackageReference Update="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.1.9" />
 		<!-- Keep aligned with MSBuild extras' default ExtrasUwpMetaPackageVersion -->
@@ -75,8 +75,8 @@
 		<PackageReference Update="Uno.Core.Extensions.Disposables" Version="4.0.1" />
 		<PackageReference Update="Uno.Core.Extensions.Compatibility" Version="4.0.1" />
 		<PackageReference Update="Uno.Diagnostics.Eventing" Version="2.0.1" />
-		<PackageReference Update="Uno.Wasm.Bootstrap" Version="9.0.0-dev.86" />
-		<PackageReference Update="Uno.Wasm.Bootstrap.DevServer" Version="9.0.0-dev.86" />
+		<PackageReference Update="Uno.Wasm.Bootstrap" Version="9.0.0-dev.301" />
+		<PackageReference Update="Uno.Wasm.Bootstrap.DevServer" Version="9.0.0-dev.301" />
 		<PackageReference Update="MSTest" Version="3.3.1" />
 		<PackageReference Update="MSTest.TestFramework" Version="3.3.1" />
 		<PackageReference Update="MSTest.TestAdapter" Version="3.3.1" />
@@ -90,7 +90,7 @@
 		<PackageReference Update="Uno.UITest.Selenium" Version="1.1.0-dev.70" />
 		<PackageReference Update="Uno.UITest.Xamarin" Version="1.1.0-dev.70" />
 		<PackageReference Update="Uno.UITest.Helpers" Version="1.1.0-dev.70" />
-		<PackageReference Update="Uno.Fonts.Fluent" version="2.3.1" />
+		<PackageReference Update="Uno.Fonts.Fluent" version="2.4.5" />
 		<PackageReference Update="Uno.Resizetizer" Version="1.2.0-dev.72" />
 		<PackageReference Update="Xamarin.DuoSdk" Version="0.0.3.4" />
 		<PackageReference Update="Xamarin.UITest" Version="4.3.5" />
@@ -115,6 +115,9 @@
 		<PackageReference Update="harfbuzzsharp.nativeassets.ios" Version="7.3.0.1" />
 		<PackageReference Update="SkiaSharp.HarfBuzz" Version="$(SkiaSharpVersion)" />
 
+		<PackageReference Condition=" '$(TargetFramework)' == '$(NetPrevious)' " Update="Microsoft.Win32.SystemEvents" Version="8.0.0" />
+		<PackageReference Condition=" '$(TargetFramework)' == '$(NetCurrent)' " Update="Microsoft.Win32.SystemEvents" Version="9.0.0-rc.2.24473.5" />
+
 		<PackageReference Update="Svg.Skia" Version="1.0.0.1" />
 		<PackageReference Update="GtkSharp" Version="3.24.24.38" />
 		<PackageReference Update="System.Json" Version="4.7.1" />
@@ -130,7 +133,7 @@
 		<PackageReference Update="Newtonsoft.Json" Version="13.0.2" />
 		<PackageReference Update="CommunityToolkit.Mvvm" Version="$(CommunityToolkitMvvmVersion)" />
 		<PackageReference Update="System.CommandLine" Version="2.0.0-beta4.22272.1" />
-		<PackageReference Update="Microsoft.Win32.SystemEvents" Version="8.0.0" />
+		<PackageReference Update="Microsoft.Web.WebView2" Version="1.0.2592.51" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net8.0-android'">
@@ -194,4 +197,6 @@
 			<ServerAddress></ServerAddress>
 		</PropertyGroup>
 	</Target>
+
+	<Import Project="Workaround-43339.targets" />
 </Project>

@@ -15,11 +15,11 @@
 	<Import Project="../../targetframework-override.props" />
 
 	<ItemGroup>
-		<None Remove="buildTransitive\Uno.UI.Svg.targets" />
+		<None Remove="buildTransitive\*.Svg.targets" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Include="buildTransitive\Uno.UI.Svg.targets">
+		<Content Include="buildTransitive\*.Svg.targets">
 			<PackagePath>build</PackagePath>
 			<Pack>true</Pack>
 		</Content>

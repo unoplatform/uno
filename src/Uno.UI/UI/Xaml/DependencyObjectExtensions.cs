@@ -51,7 +51,7 @@ namespace Microsoft.UI.Xaml
 		/// <returns>A unique ID</returns>
 		internal static long GetDependencyObjectId(this object dependencyObject)
 		{
-			return GetStore(dependencyObject).ObjectId;
+			return GetStore(dependencyObject).GetHashCode();
 		}
 
 		/// <summary>
@@ -152,17 +152,12 @@ namespace Microsoft.UI.Xaml
 
 		internal static void SetLogicalParent(this FrameworkElement element, DependencyObject logicalParent)
 		{
-#if UNO_HAS_MANAGED_POINTERS || __WASM__ // WASM has managed-esque pointers
-
 			// UWP distinguishes between the 'logical parent' (or inheritance parent) and the 'visual parent' of an element. Uno already
 			// recognises this distinction on some targets, but for targets using CoerceHitTestVisibility() for hit testing, the pointer
 			// implementation depends upon the logical parent (ie DepObjStore.Parent) being identical to the visual parent, because it
 			// piggybacks on the DP inheritance mechanism. Therefore we use LogicalParentOverride as a workaround to modify the publicly-visible
 			// FrameworkElement.Parent without affecting DP propagation.
 			element.LogicalParentOverride = logicalParent;
-#else
-			SetParent(element, logicalParent);
-#endif
 		}
 
 		/// <summary>
@@ -213,7 +208,7 @@ namespace Microsoft.UI.Xaml
 		/// <returns></returns>
 		public static object GetValue(this object instance, DependencyProperty property, DependencyPropertyValuePrecedences? precedence)
 		{
-			return GetStore(instance).GetValue(property, precedence);
+			return GetStore(instance).GetValue(property);
 		}
 
 		/// <summary>
@@ -227,49 +222,10 @@ namespace Microsoft.UI.Xaml
 			return GetStore(instance).ReadLocalValue(property);
 		}
 
-		/// <summary>
-		/// Gets the value for the specified dependency property on the specific instance at
-		/// the specified precedence.  As opposed to GetValue, this will not fall back to the highest
-		/// precedence if this precedence is currently unset and will return unset value.
-		/// </summary>
-		/// <param name="instance">The instance on which the property is attached</param>
-		/// <param name="property">The dependency property to get</param>
-		/// <param name="precedence">The value precedence at which to fetch a value</param>
-		/// <returns></returns>
-		internal static object GetPrecedenceSpecificValue(this DependencyObject instance, DependencyProperty property, DependencyPropertyValuePrecedences precedence)
+		internal static object GetBaseValue(this object instance, DependencyProperty property)
 		{
-			return GetStore(instance).GetValue(property, precedence, true);
-		}
-
-		/// <summary>
-		/// Get the value for the specified dependency property on the specific instance at 
-		/// the highest precedence level under the specified one.
-		/// E.G. If a property has a value both on the Animation, Local and Default 
-		/// precedences, and the given precedence is Animation, then the Local value is returned.
-		/// </summary>
-		/// <param name="instance">The instance on which the property is attached</param>
-		/// <param name="property">The dependency property to get</param>
-		/// <param name="precedence">The value precedence under which to fetch a value</param>
-		/// <returns></returns>
-		internal static (object value, DependencyPropertyValuePrecedences precedence) GetValueUnderPrecedence(this DependencyObject instance, DependencyProperty property, DependencyPropertyValuePrecedences precedence)
-		{
-			return GetStore(instance).GetValueUnderPrecedence(property, precedence);
-		}
-
-		/// <summary>
-		/// The the value for all precedences.
-		/// </summary>
-		/// <remarks>
-		/// This should only be used for diagnostics and testing purposes.
-		/// </remarks>
-		internal static (object value, DependencyPropertyValuePrecedences precedence)[] GetValueForEachPrecedences(
-			this DependencyObject instance, DependencyProperty property)
-		{
-			var propertyDetails = GetStore(instance).GetPropertyDetails(property).ToList();
-
-			return Enum.GetValues<DependencyPropertyValuePrecedences>()
-				.Select(precedence => (propertyDetails[(int)precedence], precedence))
-				.ToArray();
+			var (value, _) = GetStore(instance).GetBaseValue(property);
+			return value;
 		}
 
 		/// <summary>
@@ -492,5 +448,15 @@ namespace Microsoft.UI.Xaml
 		// allows for some customization - e.g. glyphs should not respect this.
 		internal static bool IsRightToLeft(this DependencyObject dependencyObject) =>
 			dependencyObject is FrameworkElement fw && fw.FlowDirection == FlowDirection.RightToLeft;
+
+		internal static DependencyObject GetTemplatedParent(this DependencyObject @do)
+		{
+			return (@do as IDependencyObjectStoreProvider)?.Store.GetTemplatedParent2();
+		}
+
+		internal static void SetTemplatedParent(this DependencyObject @do, DependencyObject tp)
+		{
+			(@do as IDependencyObjectStoreProvider)?.Store.SetTemplatedParent2(tp);
+		}
 	}
 }

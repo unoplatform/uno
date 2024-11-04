@@ -1781,7 +1781,7 @@
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.TimePickerFlyout.OnClockIdentifierChanged(System.String oldClockIdentifier, System.String newClockIdentifier)" reason="Not present in WinUI" />
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.TimePickerFlyoutPresenter..ctor()" reason="Not present in WinUI" />
 			<!-- END TimePicker -->
-			
+
 			<!-- Multiple XamlRoots -->
 			<Member fullName="System.Void Windows.UI.Core.CoreWindow..ctor(UIKit.UIWindow window)" reason="Does not exist in UWP" />
 			<Member fullName="System.Void Windows.UI.Core.CoreWindow..ctor(AppKit.NSWindow window)" reason="Does not exist in UWP" />
@@ -1801,7 +1801,7 @@
 			<Member fullName="Microsoft.UI.Dispatching.DispatcherQueueTimer" reason="Only in UWP build. It shouldn't have existed." />
 
 			<Member fullName="Microsoft.UI.Xaml.Hosting.HostingContract" reason="No longer exists in WinAppSDK 1.4" />
-			
+
 			<Member fullName="Uno.WinUI.Runtime.Skia.LinuxFB.EventLoop" reason="Should be internal" />
 		</Types>
 
@@ -1827,7 +1827,7 @@
 			<Member fullName="System.Void Windows.ApplicationModel.Activation.SplashScreen..ctor()" reason="The signature differs in MUX" />
 			<Member fullName="System.Void Microsoft.UI.Xaml.Input.PointerRoutedEventArgs..ctor()" reason="Does not exist in WinUI" />
 			<Member fullName="System.Void Windows.UI.Xaml.Input.PointerRoutedEventArgs..ctor()" reason="Does not exist in WinUI" />
-			
+
 			<!-- Begin Skia Builder-->
 			<Member fullName="System.Void Uno.UI.Runtime.Skia.Linux.FrameBuffer.FrameBufferHost.Run()" reason="Non-breaking API, moved to SkiaHost" />
 			<!-- End Skia Builder-->
@@ -1890,8 +1890,105 @@
 			<Member fullName="Microsoft.UI.Xaml.IXamlServiceProvider Uno.UI.Helpers.MarkupHelper.CreateParserContext(System.Object target, Microsoft.UI.Xaml.Markup.ProvideValueTargetProperty property)" reason="Not in WinUI; refactored out" />
 			<Member fullName="Windows.UI.Xaml.IXamlServiceProvider Uno.UI.Helpers.MarkupHelper.CreateParserContext(System.Object target, Windows.UI.Xaml.Markup.ProvideValueTargetProperty property)" reason="Not in WinUI; refactored out" />
 
+			<Member fullName="System.Void Windows.UI.Xaml.UnhandledExceptionEventArgs..ctor(System.Exception e, System.Boolean fatal)" reason="Not in WinUI" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.UnhandledExceptionEventArgs..ctor(System.Exception e, System.Boolean fatal)" reason="Not in WinUI" />
 		</Methods>
 	</IgnoreSet>
+
+	<IgnoreSet baseVersion="5.4">
+		<Assemblies>
+		</Assemblies>
+
+		<Types>
+			<Member fullName="Microsoft.UI.Xaml.Core.Direct.XamlDirectContract" reason="Not in WinUI" />
+		</Types>
+
+		<Events>
+		</Events>
+
+		<Fields>
+		</Fields>
+
+		<Properties>
+			<!-- BEGIN templated-parent rework -->
+
+			<!-- HorizontalGridView -->
+			<Member fullName="System\.Func`1&lt;Android\.Views\.View&gt; Uno\.UI\.Controls\.HorizontalGridView::(Item|Header|Footer)Template\(\)" reason="Not in UWP" isRegex="true" />
+
+			<!-- END templated-parent rework -->
+		</Properties>
+
+		<Methods>
+			<Member fullName="System.Void Microsoft.Web.WebView2.Core.CoreWebView2.set_DocumentTitle(System.String value)" reason="Does not exist in UWP" />
+
+			<!-- BEGIN templated-parent rework -->
+
+			<!-- DependencyObject (codegen for all descendants) -->
+			<Member fullName=".*DependencyProperty .*\.get_TemplatedParentProperty\(\)" reason="Not in UWP" isRegex="true" />
+			<Member fullName=".*DependencyObject .*\.get_TemplatedParent\(\)" reason="Not in UWP" isRegex="true" />
+			<Member fullName="System\.Void .*\.set_TemplatedParent\((Microsoft|Windows)\.UI\.Xaml\.DependencyObject value\)" reason="Not in UWP" isRegex="true" />
+
+			<!-- templates: FrameworkTemplate, DataTemplate, ControlTemplate, ItemsPanelTemplate -->
+			<Member fullName="(?&lt;ReturnType&gt;(Microsoft|Windows)\.UI\.Xaml\.(DataTemplate|Controls\.(ControlTemplate|ItemsPanelTemplate))) \k&lt;ReturnType&gt;\.op_Implicit\(System\.Func`1&lt;.*&gt; obj\)" reason="Not in UWP" isRegex="true" />
+			<Member fullName="System\.Func`1&lt;.*&gt; (?&lt;DeclaringType&gt;(Microsoft|Windows)\.UI\.Xaml\.(FrameworkTemplate|DataTemplate|Controls\.(ControlTemplate|ItemsPanelTemplate)))\.op_Implicit\(\k&lt;DeclaringType&gt; obj\)" reason="Not in UWP" isRegex="true" />
+
+			<!-- HorizontalGridView -->
+			<Member fullName="System\.Func`1&lt;Android\.Views\.View&gt; Uno\.UI\.Controls\.HorizontalGridView\.get_(Item|Header|Footer)Template\(\)" reason="Not in UWP" isRegex="true" />
+			<Member fullName="System\.Void Uno\.UI\.Controls\.HorizontalGridView\.set_(Item|Header|Footer)Template\(System\.Func`1&lt;Android\.Views\.View&gt; value\)" reason="Not in UWP" isRegex="true" />
+
+			<!-- ViewExtensions -->
+			<Member fullName="System\.String Uno\.UI\.Extensions\.ViewExtensions\.TreeGraph\((?&lt;_View&gt;.+) reference, System\.Func`2&lt;\k&lt;_View&gt;,System\.String&gt; describe\)" isRegex="true" reason="Not in UWP" />
+
+			<!-- END templated-parent rework -->
+
+			<!-- BEGIN ComboBox.IsEditable -->
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.Primitives.Selector.SetFocusedItem(System.Int32 index, System.Boolean shouldScrollIntoView, System.Boolean forceFocus, Windows.UI.Xaml.FocusState focusState, System.Boolean animateIfBringIntoView)" reason="Does not exist in UWP" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.Primitives.Selector.SetFocusedItem(System.Int32 index, System.Boolean shouldScrollIntoView, System.Boolean forceFocus, Windows.UI.Xaml.FocusState focusState, System.Boolean animateIfBringIntoView, Windows.UI.Xaml.Input.FocusNavigationDirection focusNavigationDirection)" reason="Does not exist in UWP" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.Primitives.Selector.SetFocusedItem(System.Int32 index, System.Boolean shouldScrollIntoView, System.Boolean animateIfBringIntoView, Windows.UI.Xaml.Input.FocusNavigationDirection focusNavigationDirection)" reason="Does not exist in UWP" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.Primitives.Selector.SetFocusedItem(System.Int32 index, System.Boolean shouldScrollIntoView)" reason="Does not exist in UWP" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.Selector.SetFocusedItem(System.Int32 index, System.Boolean shouldScrollIntoView, System.Boolean forceFocus, Microsoft.UI.Xaml.FocusState focusState, System.Boolean animateIfBringIntoView)" reason="Does not exist in WinUI" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.Selector.SetFocusedItem(System.Int32 index, System.Boolean shouldScrollIntoView, System.Boolean forceFocus, Microsoft.UI.Xaml.FocusState focusState, System.Boolean animateIfBringIntoView, Microsoft.UI.Xaml.Input.FocusNavigationDirection focusNavigationDirection)" reason="Does not exist in WinUI" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.Selector.SetFocusedItem(System.Int32 index, System.Boolean shouldScrollIntoView, System.Boolean animateIfBringIntoView, Microsoft.UI.Xaml.Input.FocusNavigationDirection focusNavigationDirection)" reason="Does not exist in WinUI" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.Selector.SetFocusedItem(System.Int32 index, System.Boolean shouldScrollIntoView)" reason="Does not exist in WinUI" />
+			<!-- END ComboBox.IsEditable -->
+
+			<!-- BEGIN TypeMappings -->
+			<Member fullName="System.Threading.Tasks.Task Uno.UI.Helpers.TypeMappings.WaitForMappingsToResume()" reason="Not really considered a public API, used by internal tooling" />
+			<Member fullName="System.Threading.Tasks.Task`1&lt;System.Boolean&gt; Uno.UI.Helpers.TypeMappings.WaitForResume()" reason="Not really considered a public API, used by internal tooling" />
+			<Member fullName="System.Void Uno.UI.Helpers.TypeMappings.Resume(System.Boolean updateLayout)" reason="Not really considered a public API, used by internal tooling" />
+			<!-- END TypeMappings -->
+		</Methods>
+	</IgnoreSet>
+
+	<IgnoreSet baseVersion="5.5">
+		<Assemblies>
+		</Assemblies>
+
+		<Types>
+		</Types>
+
+		<Events>
+		</Events>
+
+		<Fields>
+		</Fields>
+
+		<Properties>
+		</Properties>
+
+		<Methods>
+			<!-- BEGIN TypeMappings -->
+			<Member fullName="System.Threading.Tasks.Task Uno.UI.Helpers.TypeMappings.WaitForMappingsToResume()" reason="Not really considered a public API, used by internal tooling" />
+			<Member fullName="System.Threading.Tasks.Task`1&lt;System.Boolean&gt; Uno.UI.Helpers.TypeMappings.WaitForResume()" reason="Not really considered a public API, used by internal tooling" />
+			<Member fullName="System.Void Uno.UI.Helpers.TypeMappings.Resume(System.Boolean updateLayout)" reason="Not really considered a public API, used by internal tooling" />
+			<!-- END TypeMappings -->
+			
+			<!-- BEGIN DiagnosticsOverlay -->
+			<Member fullName="System.Void Uno.Diagnostics.UI.DiagnosticsOverlay.Add(System.String id, System.String name, Microsoft.UI.Xaml.UIElement preview, System.Func`1&lt;Microsoft.UI.Xaml.UIElement&gt; details)" reason="Recently public, nobody uses it yet." />
+			<!-- END DiagnosticsOverlay -->
+		</Methods>
+	</IgnoreSet>
+
 	<![CDATA[
 		The 'baseVersion' should be the current latest stable version published on nuget, 
 		NOT what will be published by the PR in progress.

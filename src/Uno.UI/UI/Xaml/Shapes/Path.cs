@@ -22,7 +22,7 @@ namespace Microsoft.UI.Xaml.Shapes
 				typeof(Path),
 				new FrameworkPropertyMetadata(
 					defaultValue: null,
-					options: FrameworkPropertyMetadataOptions.ValueInheritsDataContext | FrameworkPropertyMetadataOptions.LogicalChild | FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange
+					options: FrameworkPropertyMetadataOptions.ValueInheritsDataContext | FrameworkPropertyMetadataOptions.LogicalChild | FrameworkPropertyMetadataOptions.AffectsMeasure
 				)
 			);
 

@@ -11,32 +11,32 @@ internal static class WaitableSampleImageHelpers
 	private static Task WaitImage(ImageBrush image)
 	{
 		var tcs = new TaskCompletionSource();
-		image.ImageOpened += (_, _) => tcs.SetResult();
-		image.ImageFailed += (_, _) => tcs.SetResult();
+		image.ImageOpened += (_, _) => tcs.TrySetResult();
+		image.ImageFailed += (_, _) => tcs.TrySetResult();
 		return tcs.Task;
 	}
 
 	private static Task WaitImage(Image image)
 	{
 		var tcs = new TaskCompletionSource();
-		image.ImageOpened += (_, _) => tcs.SetResult();
-		image.ImageFailed += (_, _) => tcs.SetResult();
+		image.ImageOpened += (_, _) => tcs.TrySetResult();
+		image.ImageFailed += (_, _) => tcs.TrySetResult();
 		return tcs.Task;
 	}
 
 	private static Task WaitImage(SvgImageSource image)
 	{
 		var tcs = new TaskCompletionSource();
-		image.Opened += (_, _) => tcs.SetResult();
-		image.OpenFailed += (_, _) => tcs.SetResult();
+		image.Opened += (_, _) => tcs.TrySetResult();
+		image.OpenFailed += (_, _) => tcs.TrySetResult();
 		return tcs.Task;
 	}
 
 	private static Task WaitImage(BitmapImage image)
 	{
 		var tcs = new TaskCompletionSource();
-		image.ImageOpened += (_, _) => tcs.SetResult();
-		image.ImageFailed += (_, _) => tcs.SetResult();
+		image.ImageOpened += (_, _) => tcs.TrySetResult();
+		image.ImageFailed += (_, _) => tcs.TrySetResult();
 		return tcs.Task;
 	}
 

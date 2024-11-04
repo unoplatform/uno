@@ -21,6 +21,7 @@ using static Private.Infrastructure.TestServices;
 using Color = Windows.UI.Color;
 using Point = Windows.Foundation.Point;
 using System.Runtime.InteropServices;
+using SamplesApp.UITests;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -764,7 +765,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var SUT = new TextBox
 			{
-				Width = 40,
+				Width = 64, // == TextControlThemeMinWidth for UWP styles
 				Text = "This should be a lot longer than the width of the TextBox."
 			};
 
@@ -797,11 +798,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(0, sv.HorizontalOffset);
 
-			for (var i = 0; i < 7; i++)
+			for (var i = 0; i < 6; i++)
 			{
 				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.None));
 				await WindowHelper.WaitForIdle();
-				sv.HorizontalOffset.Should().BeApproximately(0, 3); // CI reports different numbers than local, probably because of scaling difference, hence the tolerance
+				Assert.AreEqual(0, sv.HorizontalOffset);
 			}
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.None));
@@ -981,17 +982,22 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.MoveTo(bounds.GetCenter());
 			await WindowHelper.WaitForIdle();
 
+			// Right tapping should move the caret to the current pointer location and open the context menu
 			mouse.PressRight();
 			mouse.ReleaseRight();
 			await WindowHelper.WaitForIdle();
 
-			mouse.MoveBy(100, 0); // click out
+			Assert.AreEqual(9, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			mouse.MoveBy(-100, 0); // click out
 			mouse.Press();
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(2, SUT.SelectionStart);
-			Assert.AreEqual(2, SUT.SelectionLength);
+			// clicking inside the TextBox to dismiss the context menu should NOT move the caret
+			Assert.AreEqual(9, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
 		}
 
 		[TestMethod]
@@ -1027,7 +1033,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(10, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 
-			mouse.MoveBy(-50, 0);
+			mouse.MoveBy(-51, 0);
 
 			Assert.AreEqual(1, SUT.SelectionStart);
 			Assert.AreEqual(9, SUT.SelectionLength);
@@ -1296,7 +1302,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(10, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 
-			mouse.MoveBy(-50, 0);
+			mouse.MoveBy(-51, 0);
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(1, SUT.SelectionStart);
@@ -1358,7 +1364,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(10, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 
-			mouse.MoveBy(-50, 0);
+			mouse.MoveBy(-51, 0);
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(1, SUT.SelectionStart);
@@ -1406,7 +1412,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(10, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 
-			mouse.MoveBy(-50, 0);
+			mouse.MoveBy(-51, 0);
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(1, SUT.SelectionStart);
@@ -1465,7 +1471,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(10, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 
-			mouse.MoveBy(-50, 0);
+			mouse.MoveBy(-51, 0);
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(1, SUT.SelectionStart);
@@ -1518,7 +1524,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(10, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 
-			mouse.MoveBy(-50, 0);
+			mouse.MoveBy(-51, 0);
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(1, SUT.SelectionStart);
@@ -2278,6 +2284,48 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[UnoWorkItem("https://github.com/unoplatform/uno/issues/18371")]
+		public async Task When_BeforeTextChanging_Resets_Selection_Direction()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Text = "adasgasg"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Select(SUT.Text.Length, 0);
+			await WindowHelper.WaitForIdle();
+
+			// Select from the end to right after the first character
+			for (int i = 0; i < SUT.Text.Length - 1; i++)
+			{
+				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, VirtualKeyModifiers.Shift));
+			}
+
+			SUT.BeforeTextChanging += (_, args) => args.Cancel = args.NewText == "as";
+
+			var selectionChangedCount = 0;
+			SUT.SelectionChanged += (_, _) => selectionChangedCount++;
+
+			await KeyboardHelper.InputText("s");
+			Assert.AreEqual(0, selectionChangedCount);
+
+			// when we press Shift+Left now, the selection "end" is on the right, so the selection shrinks.
+			Assert.AreEqual(SUT.Text.Length - 1, SUT.SelectionLength);
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, VirtualKeyModifiers.Shift));
+			Assert.AreEqual(SUT.Text.Length - 2, SUT.SelectionLength);
+		}
+
+		[TestMethod]
 		public async Task When_Multiline_Pointer_Tap()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -2365,7 +2413,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(12, SUT.SelectionStart);
 			Assert.AreEqual(6, SUT.SelectionLength);
 
-			mouse.MoveBy(-40, 10);
+			mouse.MoveBy(-41, 10);
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
 
@@ -2385,7 +2433,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(22, SUT.SelectionStart);
 			Assert.AreEqual(5, SUT.SelectionLength);
 
-			mouse.MoveBy(40, -10);
+			mouse.MoveBy(41, -10);
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
 
@@ -2595,7 +2643,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 			await Task.Delay(100);
 
-			var canvas = SUT.FindVisualChildByType<Canvas>();
+			var canvas = SUT.FindVisualChildByType<ScrollViewer>();
 			var initial = await UITestHelper.ScreenShot(canvas);
 			ImageAssert.HasColorInRectangle(initial, new Rectangle(System.Drawing.Point.Empty, initial.Size), SUT.SelectionHighlightColor.Color);
 
@@ -3516,8 +3564,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Tab_Forces_NewLine_When_Not_Enough_Width()
 		{
-			using var _1 = new TextBoxFeatureConfigDisposable();
-			using var _2 = StyleHelper.UseFluentStyles();
+			using var _ = new TextBoxFeatureConfigDisposable();
 
 			// WinUI actually wraps when width <= 114, not <= 113 like we have here.
 			// But when width == 114, WinUI has a bug where it wraps, but it doesn't
@@ -3600,8 +3647,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				await Task.Delay(random.Next(75, 126));
 				var screenshot = await UITestHelper.ScreenShot(SUT);
-				if (HasColorInRectangle(screenshot, new Rectangle(0, 0, screenshot.Width / 2, screenshot.Height), Colors.Black) &&
-					!HasColorInRectangle(screenshot, new Rectangle(screenshot.Width / 2, 0, screenshot.Width / 2, screenshot.Height), Colors.Black))
+				// For some reason, the caret sometimes appears black, and sometimes as very dark grey (#FF030303), so we check for both
+				Color[] blacks = [Colors.Black, Colors.FromARGB(0xFF, 0x03, 0x03, 0x03)];
+				if (blacks.Any(b => HasColorInRectangle(screenshot, new Rectangle(0, 0, screenshot.Width / 2, screenshot.Height), b)) &&
+					blacks.All(b => !HasColorInRectangle(screenshot, new Rectangle(screenshot.Width / 2, 0, screenshot.Width / 2, screenshot.Height), Colors.Black)))
 				{
 					break;
 				}
@@ -3653,7 +3702,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 			using var mouse = injector.GetMouse();
 
-			var revealButton = (Button)SUT.FindName("RevealButton");
+			var revealButton = (FrameworkElement)SUT.FindName("RevealButton");
 			mouse.MoveTo(revealButton.GetAbsoluteBoundsRect().GetCenter());
 			mouse.Press();
 			await WindowHelper.WaitForIdle();

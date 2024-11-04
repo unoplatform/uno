@@ -37,14 +37,25 @@ namespace SamplesApp.UITests.TestFramework
 		#region Are[Almost]Equal
 		public static void AreEqual(ScreenshotInfo expected, ScreenshotInfo actual, IAppRect rect, double expectedToActualScale = 1, PixelTolerance tolerance = default, [CallerLineNumber] int line = 0)
 			=> AreEqualImpl(expected, rect.ToRectangle(), actual, rect.ToRectangle(), expectedToActualScale, tolerance, line);
+		public static async Task AreEqualAsync(ScreenshotInfo expected, ScreenshotInfo actual, IAppRect rect, double expectedToActualScale = 1, PixelTolerance tolerance = default, [CallerLineNumber] int line = 0)
+			=> AreEqualImpl(expected, rect.ToRectangle(), actual, rect.ToRectangle(), expectedToActualScale, tolerance, line);
 
 		public static void AreEqual(ScreenshotInfo expected, ScreenshotInfo actual, Rectangle? rect = null, double expectedToActualScale = 1, PixelTolerance tolerance = default, [CallerLineNumber] int line = 0)
+			=> AreEqualImpl(expected, rect ?? FirstQuadrant, actual, rect ?? FirstQuadrant, expectedToActualScale, tolerance, line);
+
+		public static async Task AreEqualAsync(ScreenshotInfo expected, ScreenshotInfo actual, Rectangle? rect = null, double expectedToActualScale = 1, PixelTolerance tolerance = default, [CallerLineNumber] int line = 0)
 			=> AreEqualImpl(expected, rect ?? FirstQuadrant, actual, rect ?? FirstQuadrant, expectedToActualScale, tolerance, line);
 
 		public static void AreEqual(ScreenshotInfo expected, IAppRect expectedRect, ScreenshotInfo actual, IAppRect actualRect, double expectedToActualScale = 1, PixelTolerance tolerance = default, [CallerLineNumber] int line = 0)
 			=> AreEqualImpl(expected, expectedRect.ToRectangle(), actual, actualRect.ToRectangle(), expectedToActualScale, tolerance, line);
 
+		public static async Task AreEqualAsync(ScreenshotInfo expected, IAppRect expectedRect, ScreenshotInfo actual, IAppRect actualRect, double expectedToActualScale = 1, PixelTolerance tolerance = default, [CallerLineNumber] int line = 0)
+			=> AreEqualImpl(expected, expectedRect.ToRectangle(), actual, actualRect.ToRectangle(), expectedToActualScale, tolerance, line);
+
 		public static void AreEqual(ScreenshotInfo expected, Rectangle expectedRect, ScreenshotInfo actual, Rectangle actualRect, double expectedToActualScale = 1, PixelTolerance tolerance = default, [CallerLineNumber] int line = 0)
+			=> AreEqualImpl(expected, expectedRect, actual, actualRect, expectedToActualScale, tolerance, line);
+
+		public static async Task AreEqualAsync(ScreenshotInfo expected, Rectangle expectedRect, ScreenshotInfo actual, Rectangle actualRect, double expectedToActualScale = 1, PixelTolerance tolerance = default, [CallerLineNumber] int line = 0)
 			=> AreEqualImpl(expected, expectedRect, actual, actualRect, expectedToActualScale, tolerance, line);
 
 		/// <summary>

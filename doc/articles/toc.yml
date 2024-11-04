@@ -107,6 +107,8 @@
         href: xref:Uno.Interop.MSAL
       - name: How to authenticate with OpenID Connect
         href: xref:Uno.Tutorials.OpenIDConnect
+      - name: How to implement a sign-in with Apple Button
+        href: xref:Uno.Tutorials.SignInWithApple
       - name: Embed a JavaScript Component
         topicHref: xref:Uno.Interop.WasmJavaScript1
         items:
@@ -157,6 +159,8 @@
         href: platform-specific-csharp.md
       - name: Platform-specific XAML markup
         href: platform-specific-xaml.md
+      - name: Creating Custom Controls
+        href: guides/creating-custom-controls.md
       - name: Control Libraries
         href: guides/how-to-create-control-libraries.md
       - name: Adding New Platforms
@@ -184,6 +188,10 @@
           href: debugging-wasm.md
         - name: VS Code Advanced Mobile Debugging
           href: xref:uno.vscode.mobile.advanced.debugging
+        - name: Generic Unhandled Exceptions handler
+          href: xref:Uno.Development.UnhandledExceptions
+        - name: Debugging Troubleshooting
+          href: xref:Uno.Debugging.Troubleshooting
 
     - name: Embedding
       items:
@@ -204,6 +212,8 @@
         href: xref:Uno.Development.MigratingToSingleProject
       - name: Upgrading to Uno 5.0
         href: xref:Uno.Development.MigratingToUno5
+      - name: Upgrading from .NET 8 to .NET 9
+        href: xref:Uno.Development.MigratingFromNet8ToNet9
       - name: Upgrading from .NET 7 to .NET 8
         href: xref:Uno.Development.MigratingFromNet7ToNet8
       - name: Upgrading from Xamarin to .NET 6
@@ -244,7 +254,7 @@
           href: xref:uno.publishing.desktop
         - name: Publishing for WebAssembly
           href: xref:uno.publishing.webassembly
-        - name: Publishing for Windows
+        - name: Publishing for Windows App SDK
           topicHref: xref:uno.publishing.windows
           items:
             - name: Build Packaged Unsigned Apps
@@ -266,6 +276,8 @@
           href: xref:Build.Solution.TargetFramework-override
         - name: Performance tips
           href: Uno-UI-Performance.md
+        - name: Memory Profiling
+          href: xref:Uno.Contributing.MemoryIssues
         - name: How to profile applications
           href: guides/profiling-applications.md
         - name: IL Linker for WebAssembly
@@ -430,8 +442,10 @@
               href: controls/DatePicker.md
             - name: Flyout
               href: controls/Flyout.md
-            - name: Flyout
+            - name: Frame
               href: controls/Frame.md
+            - name: GLCanvasElement
+              href: xref:Uno.Controls.GLCanvasElement
             - name: Image
               href: xref:Uno.Features.Image
             - name: ListView and GridView
@@ -454,6 +468,8 @@
               href: controls/RefreshContainer.md
             - name: ScrollViewer
               href: controls/ScrollViewer.md
+            - name: SKCanvasElement
+              href: xref:Uno.Controls.SKCanvasElement
             - name: TextBox
               href: controls/TextBox.md
             - name: TimePicker

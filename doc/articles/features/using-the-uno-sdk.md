@@ -36,7 +36,6 @@ You can use the `UnoFeatures` property in the `csproj` or `Directory.Build.props
     Serialization;
     Localization;
     Navigation;
-    OpenSans;
 </UnoFeatures>
 ```
 
@@ -67,7 +66,7 @@ Here are the supported features:
 | `Navigation`         | Adds support for [Navigation](xref:Uno.Extensions.Navigation.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                               |
 | `LoggingSerilog`     | Adds support for [Serilog](https://github.com/serilog/serilog) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                                       |
 | `Storage`            | Adds support for [Storage](xref:Uno.Extensions.Storage.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                                     |
-| `Serialization`      | Adds support for [Serialization](Uno.Extensions.Serialization.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                              |
+| `Serialization`      | Adds support for [Serialization](xref:Uno.Extensions.Serialization.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                              |
 | `Toolkit`            | Adds support for the [Uno.Toolkit](xref:Toolkit.GettingStarted).                                                                                                                                                                           |
 | `Material`           | Adds support for the [Material Design Theme](xref:Uno.Themes.Material.GetStarted) library. If the `Toolkit` feature is also used, it will add support for the [Material Design Toolkit](xref:Toolkit.GettingStarted.Material) library.     |
 | `Cupertino`          | Adds support for the [Cupertino Design Theme](xref:Uno.Themes.Cupertino.GetStarted) library. If the `Toolkit` feature is also used, it will add support for the [Cupertino Design Toolkit](xref:Toolkit.GettingStarted.Cupertino) library. |
@@ -75,9 +74,9 @@ Here are the supported features:
 | `Dsp`                | Adds support for the [Uno.Dsp.Tasks packages](https://www.nuget.org/packages?q=uno.dsp.tasks).                                                                                                                                             |
 | `Prism`              | Adds [Prism](https://github.com/PrismLibrary/Prism) support for Uno Platform applications WinUI.                                                                                                                                           |
 | `Skia`               | Adds support for [SkiaSharp](https://github.com/mono/SkiaSharp).                                                                                                                                                                           |
+| `GLCanvas`               | Adds support for the [OpenGL Canvas](xref:Uno.Controls.GLCanvasElement).                                                                                                                                                                           |
 | `Svg`                | [SVG](xref:Uno.Features.SVG) support for iOS, Android, and Mac Catalyst. This option is not needed when only targeting WebAssembly and WinAppSDK.                                                                                          |
 | `Lottie`             | Adds support for [Lottie animations](xref:Uno.Features.Lottie).                                                                                                                                                                            |
-| `OpenSans`             | Adds support for the [Open Sans](https://github.com/unoplatform/uno.fonts#open-sans-font) font, and sets it as the [default text font](xref:Uno.Features.CustomFonts#default-text-font).                                                                                                                                                                            |
 
 ## Implicit Packages
 

@@ -23,6 +23,7 @@
 	<ItemGroup>
 		<!-- Avoid transitive dependency from Microsoft.VisualStudio.ProjectSystem → Microsoft.Build on 4.7.1 which has a vulnerability -->
 		<PackageReference Include="Microsoft.IO.Redist" Version="6.0.1" />
+		<PackageReference Include="System.Text.Json" Version="8.0.5" />
 
 		<PackageReference Include="Microsoft.VisualStudio.ProjectSystem.Managed" Version="2.0.6142705" />
 		<PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.4.33103.184" ExcludeAssets="runtime" />
@@ -31,6 +32,7 @@
 		<PackageReference Include="NuGet.VisualStudio" version="4.5.0" />
 		<PackageReference Include="Microsoft.VisualStudio.ProjectSystem" Version="17.0.1313-pre" />
 		<PackageReference Include="StreamJsonRpc" Version="2.14.24" />
+		<PackageReference Include="MessagePack" Version="2.5.187" />
 		<PackageReference Include="System.ValueTuple" Version="4.5.0" />
 		<PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.7.30" />
 		<PackageReference Include="PolySharp" Version="1.14.1">

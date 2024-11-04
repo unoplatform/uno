@@ -10,6 +10,9 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
+	<!-- Property Captures -->
+	<Import Project="$(_UnoSdkTargetsDirectory)Uno.PropertyCaptures.targets" />
+
 	<!-- Common Includes -->
 	<Import Project="$(_UnoSdkTargetsDirectory)Uno.Common.targets" />
 

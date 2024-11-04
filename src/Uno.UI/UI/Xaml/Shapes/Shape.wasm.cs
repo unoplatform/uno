@@ -11,6 +11,7 @@ using Microsoft.UI.Xaml.Wasm;
 using RadialGradientBrush = Microsoft/* UWP don't rename */.UI.Xaml.Media.RadialGradientBrush;
 using System.Numerics;
 using System.Diagnostics;
+using Uno.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Shapes
 {
@@ -40,13 +41,6 @@ namespace Microsoft.UI.Xaml.Shapes
 			OnStrokeBrushChanged();
 			UpdateStrokeThickness();
 			UpdateStrokeDashArray();
-		}
-
-
-		private protected override void OnHitTestVisibilityChanged(HitTestability oldValue, HitTestability newValue)
-		{
-			// We don't invoke the base, so we stay at the default "pointer-events: none" defined in Uno.UI.css in class svg.uno-uielement.
-			// This is required to avoid this SVG element (which is actually only a collection) to stoll pointer events.
 		}
 
 		private void OnFillBrushChanged()
@@ -221,5 +215,15 @@ namespace Microsoft.UI.Xaml.Shapes
 			_mainSvgElement.SetNativeTransform(matrix);
 		}
 
+		internal override bool HitTest(Point relativePosition)
+		{
+			var considerFill = Fill != null;
+
+			// TODO: Verify if this should also consider StrokeThickness (likely it should)
+			var considerStroke = Stroke != null;
+
+			return (considerFill || considerStroke) &&
+				WindowManagerInterop.ContainsPoint(_mainSvgElement.HtmlId, relativePosition.X, relativePosition.Y, considerFill, considerStroke);
+		}
 	}
 }

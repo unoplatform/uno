@@ -22,7 +22,7 @@ public partial class IconElement : FrameworkElement
 
 	public IconElement()
 	{
-		SetDefaultForeground(ForegroundProperty);
+		UpdateLastUsedTheme();
 	}
 
 	/// <summary>
@@ -95,7 +95,7 @@ public partial class IconElement : FrameworkElement
 	{
 		base.UpdateThemeBindings(updateReason);
 
-		SetDefaultForeground(ForegroundProperty);
+		UpdateLastUsedTheme();
 	}
 
 	[MemberNotNull(nameof(_rootGrid))]

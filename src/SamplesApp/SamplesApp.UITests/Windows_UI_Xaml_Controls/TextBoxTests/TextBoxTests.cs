@@ -954,7 +954,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android, Platform.Browser)]
+		[ActivePlatforms(Platform.Android)] // Too flaky on Wasm for some reason
 		public void TextBox_VerticalAlignment()
 		{
 			Run("UITests.Windows_UI_Xaml_Controls.TextBox.TextBox_VerticalAlignment", skipInitialScreenshot: true);

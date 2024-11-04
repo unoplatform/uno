@@ -18,6 +18,7 @@ using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.System;
 using Windows.UI.Core;
+using Windows.UI.Input.Preview.Injection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -25,21 +26,19 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using SamplesApp.UITests;
+using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Point = System.Drawing.Point;
+using Uno.UI;
+using Windows.UI;
+using Windows.ApplicationModel.Appointments;
+using Microsoft.UI.Xaml.Hosting;
+using Uno.UI.Toolkit.Extensions;
 
 #if __IOS__
 using UIKit;
 #elif __MACOS__
 using AppKit;
-#else
-using Uno.UI;
-using Windows.UI;
-using Windows.ApplicationModel.Appointments;
-using Microsoft.UI.Xaml.Hosting;
-using Uno.Extensions;
-using Windows.UI.Input.Preview.Injection;
-using Uno.UI.Toolkit.Extensions;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
@@ -1320,13 +1319,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		}
 #endif
 
-#if __SKIA__ || WINAPPSDK
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
+#if !HAS_COMPOSITION_API
+		[Ignore("Composition APIs are not supported on this platform.")]
+#endif
 		public async Task When_Visual_Offset_Changes_HitTest()
 		{
-			var sut = new Button()
+			var sut = new Button
 			{
 				Content = "Click",
 			};
@@ -1335,7 +1336,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			var rect = await UITestHelper.Load(sut);
 
-#if __SKIA__
+#if HAS_UNO
 			var (element, _) = VisualTreeHelper.HitTest(rect.GetCenter(), sut.XamlRoot);
 			Assert.IsTrue(sut.IsAncestorOf(element));
 #endif
@@ -1371,7 +1372,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.AreEqual(rect.Height * 2, matrix4.OffsetY - matrix1.OffsetY);
 #endif
 
-#if __SKIA__
+#if HAS_UNO
 			var (element2, _) = VisualTreeHelper.HitTest(rect.GetCenter(), sut.XamlRoot);
 			Assert.IsFalse(sut.IsAncestorOf(element2));
 
@@ -1383,9 +1384,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
+#if !HAS_COMPOSITION_API
+		[Ignore("Composition APIs are not supported on this platform.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
 		public async Task When_Visual_Offset_Changes_InjectedPointer()
 		{
-			var sut = new Button()
+			var sut = new Button
 			{
 				Content = "Click",
 			};
@@ -1553,6 +1559,76 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #endif
 		}
 #endif
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is only supported on skia")]
+#endif
+		[DataRow(true)]
+		[DataRow(false)]
+		public async Task When_Multiple_Pointer_Buttons_Pressed(bool releaseRightFirst)
+		{
+			var SUT = new Border
+			{
+				Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
+				Width = 100,
+				Height = 100
+			};
+
+			var pointerDown = 0;
+			var pointerUp = 0;
+			var rightTapped = 0;
+			SUT.PointerPressed += (_, _) => pointerDown++;
+			SUT.PointerReleased += (_, _) => pointerUp++;
+			SUT.RightTapped += (_, _) => rightTapped++;
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			mouse.MoveTo(SUT.GetAbsoluteBoundsRect().GetCenter());
+			mouse.Press();
+			await TestServices.WindowHelper.WaitForIdle();
+			Assert.AreEqual(1, pointerDown);
+			Assert.AreEqual(0, pointerUp);
+			Assert.AreEqual(0, rightTapped);
+
+			mouse.PressRight();
+			await TestServices.WindowHelper.WaitForIdle();
+			Assert.AreEqual(1, pointerDown);
+			Assert.AreEqual(0, pointerUp);
+			Assert.AreEqual(0, rightTapped);
+
+			if (releaseRightFirst)
+			{
+				mouse.ReleaseRight();
+			}
+			else
+			{
+				mouse.Release();
+			}
+			await TestServices.WindowHelper.WaitForIdle();
+			Assert.AreEqual(1, pointerDown);
+			Assert.AreEqual(0, pointerUp);
+			Assert.AreEqual(0, rightTapped);
+
+			if (releaseRightFirst)
+			{
+				mouse.Release();
+			}
+			else
+			{
+				mouse.ReleaseRight();
+			}
+			await TestServices.WindowHelper.WaitForIdle();
+			Assert.AreEqual(1, pointerDown);
+			Assert.AreEqual(1, pointerUp);
+			Assert.AreEqual(0, rightTapped);
+		}
 #endif
 
 #if HAS_UNO
@@ -1603,13 +1679,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		}
 #endif
 
-#if HAS_UNO && HAS_INPUT_INJECTOR
+#if HAS_UNO
 		#region Drag and Drop
 
 		[TestMethod]
 		[RunsOnUIThread]
 		[DataRow(true)]
 		[DataRow(false)]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#elif __WASM__
+		[Ignore("Failing on WASM: https://github.com/unoplatform/uno/issues/17742")]
+#endif
 		public async Task When_DragOver_Fires_Along_DragEnter_Drop(bool waitAfterRelease)
 		{
 			if (TestServices.WindowHelper.IsXamlIsland)

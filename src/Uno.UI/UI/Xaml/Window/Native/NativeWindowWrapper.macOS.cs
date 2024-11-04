@@ -102,8 +102,6 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	internal AppWindowClosingEventArgs OnNativeClosing() => RaiseClosing();
 
-	internal void OnNativeClosed() => RaiseClosed();
-
 	internal void RaiseNativeSizeChanged()
 	{
 		var newWindowSize = new Size(_window.Frame.Width, _window.Frame.Height);

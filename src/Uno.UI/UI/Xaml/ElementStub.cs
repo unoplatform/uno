@@ -7,6 +7,7 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
+using Uno.UI.Xaml;
 using Windows.Foundation;
 
 #if __ANDROID__
@@ -145,6 +146,19 @@ namespace Microsoft.UI.Xaml
 
 		protected override Size ArrangeOverride(Size finalSize)
 			=> ArrangeFirstChild(finalSize);
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		internal override void EnterImpl(EnterParams @params, int depth)
+		{
+			// the base impl would cause immediately materialization by loading this stub
+			// which is not something we want here.
+		}
+
+		internal override void LeaveImpl(LeaveParams @params)
+		{
+			// do nothing
+		}
+#endif
 
 		private protected override void OnLoaded()
 		{

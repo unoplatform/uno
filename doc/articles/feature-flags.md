@@ -59,6 +59,10 @@ If you require native popups for your use case, set the `Uno.UI.FeatureConfigura
 
 In older versions of Uno Platforms, the `Popup.IsLightDismissEnabled` dependency property defaulted to `true`. In UWP/WinUI and Uno 4.1 and newer, it correctly defaults to `false`. If your code depended on the old behavior, you can set the `Uno.UI.FeatureConfiguration.Popup.EnableLightDismissByDefault` property to `true` to override this.
 
+### Prevent light dismiss on window deactivation
+
+By default all light-dismissible elements are dismissed when window deactivates. This happens in various situations, including hitting a breakpoint while debugging. Setting the `Popup.PreventLightDismissOnWindowDeactivated` flag to `true` prevents this behavior. We strongly recommend setting this only when debugging.
+
 ## MessageDialog
 
 By default, `MessageDialog` in Uno Platform targets displays using `ContentDialog` on WebAssembly and Skia, whereas it uses native dialog UI on Android, iOS, and macOS. The native dialogs are familiar to the users of the target platform, whereas the `ContentDialog` version offers the same UI on all targets. The `WinRTFeatureConfiguration.MessageDialog.UseNativeDialog` flag allows you to either disable or enable the use of native dialog UI. The default value of the flag depends on the target platform and changing the value of the flag on Skia has no effect (only `ContentDialog` version is available there):
@@ -94,6 +98,26 @@ Uno.UI.FeatureConfiguration.ToolTip.UseToolTips = true;
 ```
 
 It is also possible to adjust the delay in milliseconds (`Uno.UI.FeatureConfiguration.ToolTip.ShowDelay` - defaults to `1000`) and show duration in milliseconds (`Uno.UI.FeatureConfiguration.ToolTip.ShowDuration` - defaults to `5000`). This configuration only applies to Uno Platform targets. Windows App SDK/UWP will not adhere to this configuration.
+
+## WebView2
+
+### Inspectable (iOS and Mac Catalyst)
+
+To enable inspecting applications using `WebView2` controls from macOS with the Safari Developer Tools, set the `IsInspectable` configuration flag to `true` in your `App.Xaml.cs`:
+
+```csharp
+public App()
+{
+    this.InitializeComponent();
+#if __IOS__
+    Uno.UI.FeatureConfiguration.WebView2.IsInspectable = true;
+#endif
+}
+```
+
+> [!IMPORTANT]
+>
+> This feature will only work for security reasons when the application runs in Debug mode.
 
 ## `ApplicationData`
 

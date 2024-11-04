@@ -12,7 +12,9 @@ namespace Uno.Diagnostics.UI;
 /// <typeparam name="TState">Type of the state used to update the <typeparamref name="TView"/>.</typeparam>
 /// <param name="factory">Factory to create an instance of the <typeparamref name="TView"/>.</param>
 /// <param name="update">Delegate to use to update the <typeparamref name="TView"/> on <see cref="NotifyChanged"/>.</param>
-internal class DiagnosticViewManager<TView, TState>(Func<IDiagnosticViewContext, TView> factory, Action<IDiagnosticViewContext, TView, TState> update)
+internal class DiagnosticViewManager<TView, TState>(
+	Func<IDiagnosticViewContext, TView> factory,
+	Action<IDiagnosticViewContext, TView, TState> update)
 	where TView : FrameworkElement
 {
 	private event EventHandler<TState>? _changed;

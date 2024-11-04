@@ -98,6 +98,118 @@ public class Given_MvvmGeneratedMembers
 	}
 
 	[TestMethod]
+	public async Task When_Boolean_Observable_Property()
+	{
+		var xamlFile = new XamlFile(
+			"MainPage.xaml",
+			"""
+			<Page x:Class="TestRepro.MainPage"
+					xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
+
+				<StackPanel>
+					<ToggleSwitch IsOn="{x:Bind ViewModel.IsEnabled, Mode=TwoWay}" OnContent="Enabled" OffContent="Disabled"/>
+				</StackPanel>
+			</Page>
+			""");
+
+		var test = new MvvmTest(xamlFile, $"WBOP")
+		{
+			TestState =
+			{
+				Sources =
+				{
+					$$"""
+					using Microsoft.UI.Xaml.Controls;
+					using CommunityToolkit.Mvvm.ComponentModel;
+
+					namespace TestRepro
+					{
+						public sealed partial class MainPage : Page
+						{
+							public MyViewModel ViewModel = new MyViewModel();
+
+							public MainPage()
+							{
+								this.InitializeComponent();
+							}
+						}
+
+						public partial class MyViewModel : ObservableObject
+						{
+							[ObservableProperty]
+							private bool _isEnabled;
+						}
+					}
+					"""
+				}
+			}
+		}.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task When_Nested_Boolean_Observable_Property()
+	{
+		var xamlFile = new XamlFile(
+			"MainPage.xaml",
+			"""
+			<Page x:Class="TestRepro.MainPage"
+					xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
+
+				<StackPanel>
+					<ToggleSwitch IsOn="{x:Bind ViewModel.SubModel.IsEnabled, Mode=TwoWay}" OnContent="Enabled" OffContent="Disabled"/>
+				</StackPanel>
+			</Page>
+			""");
+
+		var test = new MvvmTest(xamlFile, $"WNBOP")
+		{
+			TestState =
+			{
+				Sources =
+				{
+					$$"""
+					using Microsoft.UI.Xaml.Controls;
+					using CommunityToolkit.Mvvm.ComponentModel;
+
+					namespace TestRepro
+					{
+						public sealed partial class MainPage : Page
+						{
+							public MyViewModel ViewModel = new MyViewModel();
+
+							public MainPage()
+							{
+								this.InitializeComponent();
+							}
+						}
+
+						public partial class MyViewModel : ObservableObject
+						{
+							[ObservableProperty]
+							private MySubViewModel _subModel;
+						}
+
+						public partial class MySubViewModel : ObservableObject
+						{
+							[ObservableProperty]
+							private bool _isEnabled;
+						}
+					}
+					"""
+				}
+			}
+		}.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
 	public async Task When_ObservableProperty_AttributeDoesNotExists()
 	{
 		// This test is an error scenario case.

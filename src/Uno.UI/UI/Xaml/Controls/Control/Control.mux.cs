@@ -225,5 +225,26 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		private protected static VirtualKeyModifiers GetKeyboardModifiers() => CoreImports.Input_GetKeyboardModifiers();
+
+		internal bool TryGetValueFromBuiltInStyle(DependencyProperty dp, out object? value)
+		{
+			if (Style.GetDefaultStyleForType(GetDefaultStyleKey()) is { } style)
+			{
+				return style.TryGetPropertyValue(dp, out value, this);
+			}
+
+			value = null;
+			return false;
+		}
+
+		private protected void EnsureValidationVisuals()
+		{
+			// TODO Uno: Not supported yet #4839
+		}
+
+		private protected void InvokeValidationCommand(object control, string value)
+		{
+			// TODO Uno: Not supported yet #4839
+		}
 	}
 }

@@ -32,7 +32,6 @@
 		<PackageReference Include="SkiaSharp.NativeAssets.Linux" />
 		<PackageReference Include="HarfBuzzSharp.NativeAssets.Linux" />
 		<PackageReference Include="SkiaSharp" />
-		<PackageReference Include="SkiaSharp.Harfbuzz" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -43,7 +42,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Include="buildTransitive/*.targets">
+		<Content Include="buildTransitive/*.*">
 			<Pack>true</Pack>
 			<PackagePath>buildTransitive</PackagePath>
 		</Content>

@@ -11,14 +11,14 @@ namespace Uno.UITest.Helpers.Queries;
 
 internal static class Helpers
 {
-	internal static SkiaApp App { get; set; }
+	internal static RuntimeTestsApp App { get; set; }
 }
 
 internal static partial class QueryExtensions
 {
 	// This class contains extensions method to match the Uno.UITest.Helpers.Queries.QueryExtensions contract.
 
-	private static SkiaApp App => Helpers.App;
+	private static RuntimeTestsApp App => Helpers.App;
 
 	public static void Tap(this QueryEx query)
 	{

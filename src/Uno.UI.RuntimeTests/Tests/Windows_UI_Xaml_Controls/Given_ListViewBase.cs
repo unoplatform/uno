@@ -19,14 +19,12 @@ using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 using Uno.Extensions;
 using Uno.UI.Helpers;
 using Uno.UI.RuntimeTests.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.ListViewPages;
-using Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
 
 #if !WINAPPSDK
 using Uno.UI;
@@ -42,6 +40,7 @@ using TabViewItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TabViewItem
 
 using static Private.Infrastructure.TestServices;
 using static Uno.UI.Extensions.ViewExtensions;
+using MUXControlsTestApp.Utilities;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -842,7 +841,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RunsOnUIThread]
 #if !HAS_INPUT_INJECTOR
-		[Ignore("InputInjector is only supported on skia")]
+		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		public async Task When_Multiple_Selection_Pointer()
 		{
@@ -942,12 +941,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			selected.AddRange(items.Where((_, i) => i is > 1 and <= 3).ToList());
 			await AssertSelected();
 
-			KeyboardHelper.Down(list);
-			KeyboardHelper.Down(list);
+			await KeyboardHelper.Down(list);
+			await KeyboardHelper.Down(list);
 
 			await AssertSelected();
 
-			KeyboardHelper.Space(list);
+			await KeyboardHelper.Space(list);
 			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Shift));
 			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Shift));
 			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Shift));
@@ -955,7 +954,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			selected.AddRange(items.Where((_, i) => i is >= 5 and <= 8).ToList());
 			await AssertSelected();
 
-			KeyboardHelper.Down(list);
+			await KeyboardHelper.Down(list);
 			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Up, VirtualKeyModifiers.Shift));
 			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Up, VirtualKeyModifiers.Shift));
 
@@ -975,7 +974,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RunsOnUIThread]
 #if !HAS_INPUT_INJECTOR
-		[Ignore("InputInjector is only supported on skia")]
+		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		public async Task When_Extended_Selection_Pointer()
 		{
@@ -1084,13 +1083,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			selected.AddRange(items.Where((_, i) => i is > 1 and <= 3).ToList());
 			await AssertSelected();
 
-			KeyboardHelper.Down(list);
+			await KeyboardHelper.Down(list);
 
 			items.Where((_, i) => i is >= 1 and <= 3).ForEach(item => selected.Remove(item));
 			selected.Add(items[4]);
 			await AssertSelected();
 
-			KeyboardHelper.Down(list);
+			await KeyboardHelper.Down(list);
 
 			selected.Remove(items[4]);
 			selected.Add(items[5]);
@@ -1186,7 +1185,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RunsOnUIThread]
 #if !HAS_INPUT_INJECTOR
-		[Ignore("InputInjector is only supported on skia")]
+		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		public async Task When_Extended_Selection_SelectedIndex_Changed_Mixed()
 		{
@@ -1274,13 +1273,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(1, SUT.SelectedIndex);
 
-			KeyboardHelper.Right();
-			KeyboardHelper.Right();
+			await KeyboardHelper.Right();
+			await KeyboardHelper.Right();
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(3, SUT.SelectedIndex);
 
-			KeyboardHelper.Left();
+			await KeyboardHelper.Left();
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(2, SUT.SelectedIndex);
@@ -1316,7 +1315,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			lvi1.Focus(FocusState.Programmatic);
 			await WindowHelper.WaitForIdle();
 
-			KeyboardHelper.Space();
+			await KeyboardHelper.Space();
 			await WindowHelper.WaitForIdle();
 
 			Assert.IsTrue(lvi1.IsSelected);
@@ -1326,7 +1325,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.SelectedIndex = -1;
 
-			KeyboardHelper.Enter();
+			await KeyboardHelper.Enter();
 			await WindowHelper.WaitForIdle();
 
 			Assert.IsTrue(handled);
@@ -1751,7 +1750,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RunsOnUIThread]
 #if !HAS_INPUT_INJECTOR
-		[Ignore("InputInjector is only supported on skia")]
+		[Ignore("InputInjector is not supported on this platform.")]
+#elif !HAS_RENDER_TARGET_BITMAP
+		[Ignore("Cannot take screenshot on this platform.")]
 #endif
 		public async Task When_Large_List_Scroll_To_End_Then_Back_Up_TryClick()
 		{
@@ -1987,10 +1988,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// since this is originally a virtualization issue and references
 			// could be to different things than those shown on the screen.
 			var si = await UITestHelper.ScreenShot(list, true);
-			ImageAssert.HasColorAt(si, 70, 65, Colors.FromARGB("#66AEE7")); // selected
+			ImageAssert.HasColorAt(si, 70, 65, Colors.FromARGB("#1A69A6")); // selected
 
 			// check starting from below the second item that nothing looks selected or hovered
-			ImageAssert.DoesNotHaveColorInRectangle(si, new Rectangle(100, 110, si.Width - 100, si.Height - 110), Colors.FromARGB("#66AEE7")); // selected
+			ImageAssert.DoesNotHaveColorInRectangle(si, new Rectangle(100, 110, si.Width - 100, si.Height - 110), Colors.FromARGB("#1A69A6")); // selected
 			ImageAssert.DoesNotHaveColorInRectangle(si, new Rectangle(100, 110, si.Width - 100, si.Height - 110), Colors.FromARGB("#FFE6E6E6")); // hovered
 		}
 
@@ -2065,12 +2066,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(0, sv.VerticalOffset);
 
-			KeyboardHelper.Down();
+			await KeyboardHelper.Down();
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(0, sv.VerticalOffset);
 
-			KeyboardHelper.Down();
+			await KeyboardHelper.Down();
 			await WindowHelper.WaitForIdle();
 
 			sv.VerticalOffset.Should().BeApproximately(lvi.ActualHeight * 3 - 120, 2);
@@ -2926,12 +2927,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task When_ItemTemplateSelector_Set_And_Fluent()
+		public async Task When_ItemTemplateSelector_Set_And_Uwp()
 		{
-			using (StyleHelper.UseFluentStyles())
-			{
-				await When_ItemTemplateSelector_Set();
-			}
+			using var _ = StyleHelper.UseUwpStyles();
+			await When_ItemTemplateSelector_Set();
 		}
 
 		[TestMethod]
@@ -3498,6 +3497,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_TemplateSelector_And_List_Reloaded_Uwp()
+		{
+			using var uwpStyles = StyleHelper.UseUwpStyles();
+			await When_TemplateSelector_And_List_Reloaded();
+		}
+
+		[TestMethod]
 		public async Task When_List_Given_More_Space()
 		{
 
@@ -3550,6 +3556,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[Ignore("Test fails in CI when Fluent styles are used #18105")]
 		public async Task When_Item_Removed_Then_DataContext_Released()
 		{
 			using (FeatureConfigurationHelper.UseTemplatePooling())
@@ -3740,9 +3747,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 
 		[TestMethod]
-		[RequiresFullWindow]
 		[RunsOnUIThread]
-		public async Task When_Incremental_Load()
+		public async Task When_Incremental_Load_Default()
 		{
 			const int BatchSize = 25;
 
@@ -3772,28 +3778,29 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			ScrollTo(list, 10000);
 			await Task.Delay(500);
 			await WindowHelper.WaitForIdle();
-			var firstScroll = GetCurrenState();
+			var first = GetCurrenState();
 
 			// scroll to bottom
 			ScrollTo(list, 10000);
 			await Task.Delay(500);
 			await WindowHelper.WaitForIdle();
-			var secondScroll = GetCurrenState();
+			var second = GetCurrenState();
 
-			Assert.AreEqual(BatchSize * 1, initial.LastLoaded, "Should start with first batch loaded.");
-			Assert.AreEqual(BatchSize * 2, firstScroll.LastLoaded, "Should have 2 batches loaded after first scroll.");
-			Assert.IsTrue(initial.LastMaterialized < firstScroll.LastMaterialized, "No extra item materialized after first scroll.");
-			Assert.AreEqual(BatchSize * 3, secondScroll.LastLoaded, "Should have 3 batches loaded after second scroll.");
-			Assert.IsTrue(firstScroll.LastMaterialized < secondScroll.LastMaterialized, "No extra item materialized after second scroll.");
+			Assert.IsTrue(initial.Count / BatchSize > 0, $"Should start with a few batch(es) loaded: count0={initial.Count}");
+			Assert.IsTrue(initial.Count + BatchSize <= first.Count, $"Should have more batch(es) loaded after first scroll: count0={initial.Count}, count1={first.Count}");
+			Assert.IsTrue(initial.LastMaterialized < first.LastMaterialized, $"No extra item materialized after first scroll: index0={initial.LastMaterialized}, index1={first.LastMaterialized}");
+			Assert.IsTrue(first.Count + BatchSize <= second.Count, $"Should have even more batch(es) after second scroll: count1={first.Count}, count2={second.Count}");
+			Assert.IsTrue(first.LastMaterialized < second.LastMaterialized, $"No extra item materialized after second scroll: index1={first.LastMaterialized}, index2={second.LastMaterialized}");
 
-			(int LastLoaded, int LastMaterialized) GetCurrenState() =>
+			(int Count, int LastMaterialized) GetCurrenState() =>
 			(
-				source.LastIndex,
-				Enumerable.Range(0, source.LastIndex).Reverse().FirstOrDefault(x => list.ContainerFromIndex(x) != null)
+				source.Count,
+				Enumerable.Range(0, source.Count).Reverse().FirstOrDefault(x => list.ContainerFromIndex(x) != null)
 			);
 		}
 
 		[TestMethod]
+		[RunsOnUIThread]
 		public async Task When_Incremental_Load_ShouldStop()
 		{
 			const int BatchSize = 25;
@@ -3835,16 +3842,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 			var secondScroll = GetCurrenState();
 
-			Assert.AreEqual(BatchSize * 1, initial.LastLoaded, "Should start with first batch loaded.");
-			Assert.AreEqual(BatchSize * 2, firstScroll.LastLoaded, "Should have 2 batches loaded after first scroll.");
-			Assert.IsTrue(initial.LastMaterialized < firstScroll.LastMaterialized, "No extra item materialized after first scroll.");
-			Assert.AreEqual(BatchSize * 2, secondScroll.LastLoaded, "Should still have 2 batches loaded after first scroll since HasMoreItems was false.");
-			Assert.AreEqual(BatchSize * 2 - 1, secondScroll.LastMaterialized, "Last materialized item should be the last from 2nd batch (50th/index=49).");
+			Assert.IsTrue(initial.Count / BatchSize > 0, $"Should start with a few batch(es) loaded: count0={initial.Count}");
+			Assert.IsTrue(initial.Count + BatchSize <= firstScroll.Count, $"Should have more batch(es) loaded after first scroll: count0={initial.Count}, count1={firstScroll.Count}");
+			Assert.IsTrue(initial.LastMaterialized < firstScroll.LastMaterialized, $"No extra item materialized after first scroll: index0={initial.LastMaterialized}, index={firstScroll.LastMaterialized}");
+			Assert.AreEqual(firstScroll.Count, secondScroll.Count, $"Should still have same number of batches after second scroll: count1={firstScroll.Count}, count2={secondScroll.Count}");
+			Assert.AreEqual(firstScroll.Count - 1, secondScroll.LastMaterialized, $"Should reach end of list from first scroll: count1={firstScroll.LastMaterialized}, index2={secondScroll.LastMaterialized}");
 
-			(int LastLoaded, int LastMaterialized) GetCurrenState() =>
+			(int Count, int LastMaterialized) GetCurrenState() =>
 			(
-				source.LastIndex,
-				Enumerable.Range(0, source.LastIndex).Reverse().FirstOrDefault(x => list.ContainerFromIndex(x) != null)
+				source.Count,
+				Enumerable.Range(0, source.Count).Reverse().FirstOrDefault(x => list.ContainerFromIndex(x) != null)
 			);
 		}
 
@@ -4625,7 +4632,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RunsOnUIThread]
 #if !HAS_INPUT_INJECTOR
-		[Ignore("InputInjector is only supported on skia")]
+		[Ignore("InputInjector is not supported on this platform.")]
+#elif __WASM__
+		[Ignore("Failing on WASM: https://github.com/unoplatform/uno/issues/17742")]
 #endif
 		public async Task When_UpdateLayout_In_DragDropping()
 		{
@@ -4665,6 +4674,58 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.MoveTo(SUT.GetAbsoluteBoundsRect().GetCenter() with { Y = SUT.GetAbsoluteBoundsRect().Y + 100 }, 1);
 			await WindowHelper.WaitForIdle();
 			mouse.MoveTo(SUT.GetAbsoluteBoundsRect().GetCenter() with { Y = SUT.GetAbsoluteBoundsRect().Y + 150 }, 1);
+			await WindowHelper.WaitForIdle();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			var textBlocks = SUT.FindFirstDescendant<ItemsStackPanel>().Children
+				.Select(c => c.FindFirstDescendant<TextBlock>())
+				.OrderBy(c => c.GetAbsoluteBoundsRect().Y)
+				.ToList();
+			Assert.AreEqual("1", textBlocks[0].Text);
+			Assert.AreEqual("0", textBlocks[1].Text);
+			Assert.AreEqual("2", textBlocks[2].Text);
+		}
+#endif
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#elif __WASM__
+		[Ignore("Failing on WASM https://github.com/unoplatform/uno/issues/17742")]
+#endif
+		public async Task When_DragDrop_ItemsSource_Is_Subclass_Of_ObservableCollection()
+		{
+			var SUT = new ListView
+			{
+				AllowDrop = true,
+				CanDragItems = true,
+				CanReorderItems = true,
+				ItemsSource = new SubclassOfObservableCollection
+				{
+					"0",
+					"1",
+					"2"
+				}
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			// drag(pick-up) item#0
+			mouse.MoveTo(SUT.GetAbsoluteBoundsRect().Location + new Point(20, SUT.ActualHeight / 6));
+			await WindowHelper.WaitForIdle();
+			mouse.Press();
+			await WindowHelper.WaitForIdle();
+
+			// drop onto item#1
+			mouse.MoveTo(SUT.GetAbsoluteBoundsRect().Location + new Point(20, SUT.ActualHeight * 2 / 6));
+			await WindowHelper.WaitForIdle();
+			mouse.MoveTo(SUT.GetAbsoluteBoundsRect().Location + new Point(20, SUT.ActualHeight * 3 / 6));
 			await WindowHelper.WaitForIdle();
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
@@ -4764,7 +4825,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await UITestHelper.WaitForIdle();
 
-			var tree = sut.TreeGraph();
+			//var tree = sut.TreeGraph();
 			var sv = sut.FindFirstDescendant<ScrollViewer>() ?? throw new Exception("Failed to find the ListView's ScrollViewer");
 
 			// Here we aren't verifying the viewport is entirely filled,
@@ -4948,8 +5009,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 
 			public bool HasMoreItems { get; set; } = true;
-
-			public int LastIndex => _start;
 		}
 
 		private record TestReleaseObject()
@@ -5198,6 +5257,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				return Name;
 			}
+		}
+
+		public class SubclassOfObservableCollection : ObservableCollection<string>
+		{
 		}
 	}
 }

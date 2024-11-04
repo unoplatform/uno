@@ -587,7 +587,7 @@ namespace Microsoft.UI.Xaml
 		protected virtual IEnumerable<DependencyObject>? GetChildrenInTabFocusOrder()
 		{
 			var children = FocusProperties.GetFocusChildren(this);
-			if (children != null && /*!children.IsLeaving() && */children.Length > 0)
+			if (children != null && /*!children.IsLeaving() && */children.Count > 0)
 			{
 				return children;
 			}
@@ -1074,7 +1074,8 @@ namespace Microsoft.UI.Xaml
 			// In WinUI, it happens in CDependencyObject::EnterImpl (the call to EnterSparseProperties)
 			if (this is FrameworkElement { Resources: { } resources })
 			{
-				foreach (var resource in resources.Values)
+				// Using ValuesInternal to avoid Enumerator boxing
+				foreach (var resource in resources.ValuesInternal)
 				{
 					if (resource is FrameworkElement resourceAsUIElement)
 					{
@@ -1682,7 +1683,7 @@ namespace Microsoft.UI.Xaml
 				var eventManager = this.GetContext().EventManager;
 				eventManager.RemoveRequest(this);
 			}
-			// --------- UNO Specific BEGIN ---------
+			// --------- UNO Specific END ---------
 
 			//var core = this.GetContext();
 			//var isParentEnabled = @params.CoercedIsEnabled;
@@ -1929,5 +1930,10 @@ namespace Microsoft.UI.Xaml
 
 		}
 #endif
+
+		internal virtual bool WantsScrollViewerToObscureAvailableSizeBasedOnScrollBarVisibility(Orientation horizontal)
+			=> true;
+
+		internal bool IsNonClippingSubtree { get; set; }
 	}
 }

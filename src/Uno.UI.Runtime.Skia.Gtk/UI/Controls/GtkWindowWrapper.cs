@@ -77,14 +77,10 @@ internal class GtkWindowWrapper : NativeWindowWrapperBase
 
 	public override void Close()
 	{
+		base.Close();
 		if (_wasShown)
 		{
 			_gtkWindow.Close();
-		}
-		else
-		{
-			// Simulate closing to be in line with other targets.
-			OnWindowClosed(null, EventArgs.Empty);
 		}
 	}
 
@@ -96,8 +92,6 @@ internal class GtkWindowWrapper : NativeWindowWrapperBase
 
 	private void OnWindowClosed(object? sender, EventArgs e)
 	{
-		RaiseClosed();
-
 		var windows = global::Gtk.Window.ListToplevels();
 		if (!windows.Where(w => w is UnoGtkWindow && w != NativeWindow).Any())
 		{
@@ -112,17 +106,6 @@ internal class GtkWindowWrapper : NativeWindowWrapperBase
 		{
 			args.RetVal = true;
 			return;
-		}
-
-		var manager = SystemNavigationManagerPreview.GetForCurrentView();
-		if (!manager.HasConfirmedClose)
-		{
-			if (!manager.RequestAppClose())
-			{
-				// App closing was prevented, handle event
-				args.RetVal = true;
-				return;
-			}
 		}
 
 		// Closing should continue, perform suspension.

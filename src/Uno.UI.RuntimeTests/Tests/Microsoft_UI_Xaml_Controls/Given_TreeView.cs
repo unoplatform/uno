@@ -69,7 +69,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 #if HAS_UNO
 		[TestMethod]
 #if !HAS_INPUT_INJECTOR
-		[Ignore("InputInjector is only supported on skia")]
+		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		public async Task When_TreeViewItem_Dragged_Near_the_Edge()
 		{
@@ -240,7 +240,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		// https://github.com/unoplatform/uno/issues/16041
 		[TestMethod]
 #if !HAS_INPUT_INJECTOR
-		[Ignore("InputInjector is only supported on skia")]
+		[Ignore("InputInjector is not supported on this platform.")]
 #elif HAS_UNO && !HAS_UNO_WINUI
 		[Ignore("Fails on UWP branch as mixing WUX and MUX types causes errors.")]
 #endif
@@ -322,7 +322,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 
 		[TestMethod]
 #if !HAS_INPUT_INJECTOR
-		[Ignore("InputInjector is only supported on skia")]
+		[Ignore("InputInjector is not supported on this platform.")]
 #elif HAS_UNO && !HAS_UNO_WINUI
 		[Ignore("Fails on UWP branch as mixing WUX and MUX types causes errors.")]
 #endif
@@ -496,8 +496,8 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			ImageAssert.HasColorAt(screenshot, new Point(x, screenshot.Height / 4), Microsoft.UI.Colors.Red);
 			ImageAssert.HasColorAt(screenshot, new Point(x, screenshot.Height * 3 / 4), Microsoft.UI.Colors.Red);
 
-			((TreeViewItem)sp.FindFirstDescendant<TreeViewList>().ContainerFromIndex(0)).ActualHeight.Should().BeApproximately(102, 1);
-			((TreeViewItem)sp.FindFirstDescendant<TreeViewList>().ContainerFromIndex(1)).ActualHeight.Should().BeApproximately(102, 1);
+			((TreeViewItem)sp.FindFirstDescendant<TreeViewList>().ContainerFromIndex(0)).ActualHeight.Should().BeApproximately(112, 1);
+			((TreeViewItem)sp.FindFirstDescendant<TreeViewList>().ContainerFromIndex(1)).ActualHeight.Should().BeApproximately(112, 1);
 			Assert.AreEqual("1", ((ContentPresenter)((TreeViewItem)sp.FindFirstDescendant<TreeViewList>().ContainerFromIndex(0)).FindName("ContentPresenter")).FindFirstDescendant<TextBlock>().Text);
 			Assert.AreEqual("2", ((ContentPresenter)((TreeViewItem)sp.FindFirstDescendant<TreeViewList>().ContainerFromIndex(1)).FindName("ContentPresenter")).FindFirstDescendant<TextBlock>().Text);
 		}
@@ -934,6 +934,16 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 #if HAS_UNO
 			Assert.AreEqual(TreeNodeSelectionState.Selected, SUT.NodeFromContainer(SUT.ContainerFromItem(targetItem))?.SelectionState, "[step2]target node is not selected");
 #endif
+		}
+
+		[TestMethod]
+		public async Task When_Simple_ItemsSource()
+		{
+			var SUT = new TreeView()
+			{
+				ItemsSource = new int[] { 1, 2 }
+			};
+			await UITestHelper.Load(SUT);
 		}
 	}
 	public partial class Given_TreeView // helper methods, view-models

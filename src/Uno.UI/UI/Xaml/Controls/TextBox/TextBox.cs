@@ -205,7 +205,7 @@ namespace Microsoft.UI.Xaml.Controls
 			OnIsSpellCheckEnabledChanged(IsSpellCheckEnabled);
 			OnTextAlignmentChanged(TextAlignment);
 			OnTextWrappingChanged();
-			OnFocusStateChanged((FocusState)FocusStateProperty.GetMetadata(GetType()).DefaultValue, FocusState, initial: true);
+			OnFocusStateChanged(FocusState.Unfocused, FocusState, initial: true);
 			OnTextCharacterCasingChanged(CharacterCasing);
 			UpdateDescriptionVisibility(true);
 			var buttonRef = _deleteButton?.GetTarget();
@@ -427,6 +427,21 @@ namespace Microsoft.UI.Xaml.Controls
 			BeforeTextChanging?.Invoke(this, args);
 			if (args.Cancel)
 			{
+#if __SKIA__
+				if (_isSkiaTextBox)
+				{
+					// On WinUI, when a selection is canceled, the TextBox invokes a bunch of weird
+					// SelectionChanging events followed by a bunch of matching SelectionChanged.
+					// Probing for the value of SelectionStart and SelectionLength during these SelectionChanging
+					// events will give incorrect transient values and the SelectionChanged events will end up
+					// with the selection where it started (before the text change). Also, the direction of
+					// of the selection will be reset, i.e. if the selection end was "at the start", then it won't be
+					// so anymore.
+					// In Uno, we choose a simpler sequence. We just reset the selection direction (like WinUI) and
+					// we don't invoke any selection change events (since selection was in fact not changed).
+					_pendingSelection = (SelectionStart, SelectionLength);
+				}
+#endif
 				return DependencyProperty.UnsetValue;
 			}
 
@@ -523,10 +538,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public static DependencyProperty PlaceholderTextProperty { get; } =
 			DependencyProperty.Register(
-				"PlaceholderText",
+				nameof(PlaceholderText),
 				typeof(string),
 				typeof(TextBox),
-				new FrameworkPropertyMetadata(defaultValue: string.Empty)
+				new FrameworkPropertyMetadata(defaultValue: string.Empty, options: FrameworkPropertyMetadataOptions.AffectsMeasure)
 			);
 
 		#endregion
@@ -694,11 +709,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public static DependencyProperty TextWrappingProperty { get; } =
 			DependencyProperty.Register(
-				"TextWrapping",
+				nameof(TextWrapping),
 				typeof(TextWrapping),
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(
 					defaultValue: TextWrapping.NoWrap,
+					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnTextWrappingChanged())
 				);
 
@@ -791,10 +807,13 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty HeaderProperty { get; } =
-			DependencyProperty.Register("Header",
+			DependencyProperty.Register(
+				nameof(Header),
 				typeof(object),
 				typeof(TextBox),
-				new FrameworkPropertyMetadata(defaultValue: null,
+				new FrameworkPropertyMetadata(
+					defaultValue: null,
+					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnHeaderChanged()
 				)
 			);
@@ -806,12 +825,13 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty HeaderTemplateProperty { get; } =
-			DependencyProperty.Register("HeaderTemplate",
+			DependencyProperty.Register(
+				nameof(HeaderTemplate),
 				typeof(DataTemplate),
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(
 					defaultValue: null,
-					options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
+					options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnHeaderChanged()
 				)
 			);
@@ -893,7 +913,14 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty TextAlignmentProperty { get; } =
-			DependencyProperty.Register("TextAlignment", typeof(TextAlignment), typeof(TextBox), new FrameworkPropertyMetadata(TextAlignment.Left, (s, e) => ((TextBox)s)?.OnTextAlignmentChanged((TextAlignment)e.NewValue)));
+			DependencyProperty.Register(
+				nameof(TextAlignment),
+				typeof(TextAlignment),
+				typeof(TextBox),
+				new FrameworkPropertyMetadata(
+					TextAlignment.Left,
+					FrameworkPropertyMetadataOptions.AffectsMeasure,
+					(s, e) => ((TextBox)s)?.OnTextAlignmentChanged((TextAlignment)e.NewValue)));
 
 
 		private void OnTextAlignmentChanged(TextAlignment newValue) => OnTextAlignmentChangedPartial(newValue);
@@ -1000,6 +1027,7 @@ namespace Microsoft.UI.Xaml.Controls
 			base.OnPointerCaptureLost(e);
 			_isPointerOver = false;
 			UpdateVisualState();
+			OnPointerCaptureLostPartial(e);
 		}
 
 		protected override void OnPointerPressed(PointerRoutedEventArgs args)
@@ -1013,11 +1041,19 @@ namespace Microsoft.UI.Xaml.Controls
 				true;
 #endif
 
-			if (ShouldFocusOnPointerPressed(args) // UWP Captures if the pointer is not Touch
-				&& isPointerCaptureRequired
-				&& CapturePointer(args.Pointer))
+			if (ShouldFocusOnPointerPressed(args)) // UWP Captures if the pointer is not Touch
 			{
-				Focus(FocusState.Pointer);
+				if (isPointerCaptureRequired)
+				{
+					if (CapturePointer(args.Pointer))
+					{
+						Focus(FocusState.Pointer);
+					}
+				}
+				else
+				{
+					Focus(FocusState.Pointer);
+				}
 			}
 
 			args.Handled = true;
@@ -1028,6 +1064,8 @@ namespace Microsoft.UI.Xaml.Controls
 		partial void OnPointerPressedPartial(PointerRoutedEventArgs args);
 
 		partial void OnPointerReleasedPartial(PointerRoutedEventArgs args);
+
+		partial void OnPointerCaptureLostPartial(PointerRoutedEventArgs e);
 
 		/// <inheritdoc />
 		protected override void OnPointerReleased(PointerRoutedEventArgs args)
@@ -1320,6 +1358,11 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					_suppressCurrentlyTyping = false;
 					_clearHistoryOnTextChanged = true;
+					if (Text.IsNullOrEmpty())
+					{
+						// On WinUI, the caret never has thumbs if there is no text
+						CaretMode = CaretDisplayMode.ThumblessCaretShowing;
+					}
 				}
 #endif
 

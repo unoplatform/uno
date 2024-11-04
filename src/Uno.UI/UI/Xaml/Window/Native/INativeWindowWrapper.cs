@@ -34,8 +34,6 @@ internal interface INativeWindowWrapper : INativeAppWindow
 
 	event EventHandler<AppWindowClosingEventArgs>? Closing;
 
-	event EventHandler? Closed;
-
 	event EventHandler? Shown;
 
 	void Activate();

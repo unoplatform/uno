@@ -143,15 +143,15 @@ namespace Microsoft.UI.Content
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Content.ContentSite.IsSiteEnabled.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.RasterizationScale.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSite.ActualSize.set
 		// Forced skipping of method Microsoft.UI.Content.ContentSite.ClientSize.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSite.ClientSize.set
 		// Forced skipping of method Microsoft.UI.Content.ContentSite.CoordinateConverter.get
-		// Forced skipping of method Microsoft.UI.Content.ContentSite.ActualSize.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.DispatcherQueue.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSite.Environment.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSite.IsConnected.get
-		// Forced skipping of method Microsoft.UI.Content.ContentSite.DispatcherQueue.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.IsSiteEnabled.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSite.IsSiteEnabled.set
 		// Forced skipping of method Microsoft.UI.Content.ContentSite.IsSiteVisible.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSite.IsSiteVisible.set
@@ -161,11 +161,11 @@ namespace Microsoft.UI.Content
 		// Forced skipping of method Microsoft.UI.Content.ContentSite.OverrideScale.set
 		// Forced skipping of method Microsoft.UI.Content.ContentSite.ParentScale.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSite.ParentScale.set
-		// Forced skipping of method Microsoft.UI.Content.ContentSite.RasterizationScale.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.View.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSite.RequestedSize.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSite.ShouldApplyRasterizationScale.get
 		// Forced skipping of method Microsoft.UI.Content.ContentSite.ShouldApplyRasterizationScale.set
-		// Forced skipping of method Microsoft.UI.Content.ContentSite.View.get
+		// Forced skipping of method Microsoft.UI.Content.ContentSite.ActualSize.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Microsoft.UI.Content.ContentDeferral GetIslandStateChangeDeferral()

@@ -10,7 +10,7 @@ namespace Microsoft.UI.Xaml
 {
 	public partial class FrameworkElement
 	{
-		private protected virtual string GetPlainText() => "";
+		internal virtual string GetPlainText() => "";
 
 		internal protected static string GetStringFromObject(object pObject)
 		{
@@ -46,5 +46,19 @@ namespace Microsoft.UI.Xaml
 			//TODO MZ: Should default to null instead of ToString?
 			return pObject.ToString() ?? null;
 		}
+
+		// Get property value from style.
+		internal bool TryGetValueFromStyle(DependencyProperty dp, out object value)
+		{
+			Style activeStyle = GetActiveStyle();
+			if (activeStyle is not null)
+			{
+				return activeStyle.TryGetPropertyValue(dp, out value, this);
+			}
+
+			value = null;
+			return false;
+		}
+
 	}
 }

@@ -89,17 +89,17 @@ Also, for more information on all the template options, see [Using the Uno Platf
 
 ## Data Binding
 
-Now that we have the **`BindableMainModel`** class, we can update the **`MainPage`** to use data binding to connect the UI to the application logic.
+Now that we have the **`MainViewModel`** class, we can update the **`MainPage`** to use data binding to connect the UI to the application logic.
 
 - Add a **`DataContext`** element to the **`Page`** element in the **MainPage.xaml** file.
 
     ```xml
     <Page.DataContext>
-        <local:BindableMainModel />
+        <local:MainViewModel />
     </Page.DataContext>
     ```
 
-- Update the **`TextBlock`** by removing the **`Text`** attribute, replacing it with two **`Run`** elements, and binding the **`Text`** property of the second **`Run`** element to the **`Countable.Count`** property of the **BindableMainModel**.
+- Update the **`TextBlock`** by removing the **`Text`** attribute, replacing it with two **`Run`** elements, and binding the **`Text`** property of the second **`Run`** element to the **`Countable.Count`** property of the **MainViewModel**.
 
     ```xml
     <TextBlock Margin="12"
@@ -109,7 +109,7 @@ Now that we have the **`BindableMainModel`** class, we can update the **`MainPag
     </TextBlock>
     ```
 
-- Update the **`TextBox`** by binding the **`Text`** property to the **`Countable.Step`** property of the **BindableMainModel**. The **`Mode`** of the binding is set to **`TwoWay`** so that the **`Countable.Step`** property is updated when the user changes the value in the **`TextBox`**.
+- Update the **`TextBox`** by binding the **`Text`** property to the **`Countable.Step`** property of the **MainViewModel**. The **`Mode`** of the binding is set to **`TwoWay`** so that the **`Countable.Step`** property is updated when the user changes the value in the **`TextBox`**.
 
     ```xml
     <TextBox Margin="12"
@@ -119,7 +119,7 @@ Now that we have the **`BindableMainModel`** class, we can update the **`MainPag
              TextAlignment="Center" />
     ```
 
-- Update the **`Button`** to add a **`Command`** attribute that is bound to the **`IncrementCounter`** task of the **`BindableMainModel`**.
+- Update the **`Button`** to add a **`Command`** attribute that is bound to the **`IncrementCounter`** task of the **`MainViewModel`**.
 
     ```xml
     <Button Margin="12"
@@ -137,7 +137,7 @@ The final code for **MainPage.xaml** should look like this:
       xmlns:local="using:Counter"
       Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
   <Page.DataContext>
-    <local:BindableMainModel />
+    <local:MainViewModel />
   </Page.DataContext>
   <StackPanel VerticalAlignment="Center">
     <Image Width="150"

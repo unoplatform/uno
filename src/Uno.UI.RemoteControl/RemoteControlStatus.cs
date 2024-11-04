@@ -5,15 +5,34 @@ using System.Text;
 
 namespace Uno.UI.RemoteControl;
 
-internal record RemoteControlStatus(
+public record RemoteControlStatus(
 	RemoteControlStatus.ConnectionState State,
 	bool? IsVersionValid,
 	(RemoteControlStatus.KeepAliveState State, long RoundTrip) KeepAlive,
 	ImmutableHashSet<RemoteControlStatus.MissingProcessor> MissingRequiredProcessors,
 	(long Count, ImmutableHashSet<Type> Types) InvalidFrames)
 {
-	public bool IsAllGood => State == ConnectionState.Connected && IsVersionValid == true && MissingRequiredProcessors.IsEmpty && KeepAlive.State == KeepAliveState.Ok && InvalidFrames.Count == 0;
 
+	/// <summary>
+	/// A boolean indicating if everything is fine with the connection and the handshaking succeeded.
+	/// </summary>
+	public bool IsAllGood =>
+		State == ConnectionState.Connected
+#if !DEBUG
+		// For debug builds, it's annoying to have the version mismatch preventing the connection
+		// Only Uno devs should get this issue, let's not block them.
+		&& IsVersionValid == true
+#endif
+		&& MissingRequiredProcessors.IsEmpty
+		&& KeepAlive.State == KeepAliveState.Ok
+		&& InvalidFrames.Count == 0;
+
+	/// <summary>
+	/// If the connection is problematic, meaning that the connection is not in a good state.
+	/// </summary>
+	/// <remarks>
+	/// It's just a negation of <see cref="IsAllGood"/>.
+	/// </remarks>
 	public bool IsProblematic => !IsAllGood;
 
 	public (Classification kind, string message) GetSummary()
@@ -82,9 +101,9 @@ internal record RemoteControlStatus(
 		return details.ToString();
 	}
 
-	internal record struct MissingProcessor(string TypeFullName, string Version, string Details, string? Error = null);
+	public readonly record struct MissingProcessor(string TypeFullName, string Version, string Details, string? Error = null);
 
-	internal enum KeepAliveState
+	public enum KeepAliveState
 	{
 		Idle,
 		Ok, // Got ping/pong in expected delays
@@ -93,7 +112,7 @@ internal record RemoteControlStatus(
 		Aborted // KeepAlive was aborted
 	}
 
-	internal enum ConnectionState
+	public enum ConnectionState
 	{
 		/// <summary>
 		/// Client as not been started yet
@@ -140,7 +159,7 @@ internal record RemoteControlStatus(
 		Disconnected
 	}
 
-	internal enum Classification
+	public enum Classification
 	{
 		Ok,
 		Info,

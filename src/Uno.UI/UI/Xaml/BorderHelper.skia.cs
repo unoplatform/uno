@@ -47,12 +47,24 @@ internal static class BorderHelper
 		@this.UpdateBorderThickness();
 	}
 
-	public static void SetUpBrushTransitionIfAllowed(BorderVisual visual, Brush fromBrush, Brush toBrush, BrushTransition transition)
+	public static void SetUpBrushTransitionIfAllowed(BorderVisual visual, Brush fromBrush, Brush toBrush, BrushTransition transition, bool isAnimation)
 	{
 		if (transition is null)
 		{
 			return;
 		}
+
+		// Begin Uno Specific
+		if (isAnimation)
+		{
+			// When an animation sets the background, it skips the transition logic and is applied immediately.
+			// However, it "deactivates" the currently active transition if one exists. Once the animation is done,
+			// the deactivated transition is reactivated and continues as if it was running (i.e. it's not paused,
+			// but takes into account the duration during which it was deactivated).
+			visual.Compositor.DeactivateBackgroundTransition(visual);
+			return;
+		}
+		// End Uno Specific
 
 		var oldBrush = fromBrush as SolidColorBrush;
 		var newBrush = toBrush as SolidColorBrush;

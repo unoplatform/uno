@@ -8,7 +8,6 @@ namespace Microsoft.UI.Composition
 #endif
 	public partial class Vector4KeyFrameAnimation : global::Microsoft.UI.Composition.KeyFrameAnimation
 	{
-		// Skipping already declared method Microsoft.UI.Composition.Vector4KeyFrameAnimation.InsertKeyFrame(float, System.Numerics.Vector4)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public void InsertKeyFrame(float normalizedProgressKey, global::System.Numerics.Vector4 value, global::Microsoft.UI.Composition.CompositionEasingFunction easingFunction)
@@ -16,5 +15,6 @@ namespace Microsoft.UI.Composition
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Vector4KeyFrameAnimation", "void Vector4KeyFrameAnimation.InsertKeyFrame(float normalizedProgressKey, Vector4 value, CompositionEasingFunction easingFunction)");
 		}
 #endif
+		// Skipping already declared method Microsoft.UI.Composition.Vector4KeyFrameAnimation.InsertKeyFrame(float, System.Numerics.Vector4)
 	}
 }

@@ -23,7 +23,7 @@ namespace Microsoft.UI.Xaml.Shapes
 			typeof(Polyline),
 			new FrameworkPropertyMetadata(
 				defaultValue: default(PointCollection),
-				options: FrameworkPropertyMetadataOptions.LogicalChild | FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange,
+				options: FrameworkPropertyMetadataOptions.LogicalChild | FrameworkPropertyMetadataOptions.AffectsMeasure,
 				propertyChangedCallback: (s, e) =>
 				{
 					(e.OldValue as PointCollection)?.UnRegisterChangedListener(s.InvalidateMeasure);

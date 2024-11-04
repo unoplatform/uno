@@ -10,6 +10,8 @@ using Microsoft.UI.Xaml.Media;
 using Windows.UI.Core;
 
 using PointerEventArgs = Windows.UI.Core.PointerEventArgs;
+using Uno.Extensions;
+
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -55,7 +57,9 @@ namespace Microsoft.UI.Xaml.Input
 			else
 			{
 				var absolutePosition = _pointerEventArgs.CurrentPoint.Position;
-				var relativePosition = relativeTo.TransformToVisual(null).Inverse.TransformPoint(absolutePosition);
+				// This is the same as relativeTo.TransformToVisual(null).Inverse.TransformPoint(absolutePosition);
+				// However, TransformToVisual will allocate a MatrixTransform object, while this version is allocation-less
+				var relativePosition = UIElement.GetTransform(from: relativeTo, to: null).Inverse().Transform(absolutePosition);
 
 				return _currentPoint.At(relativePosition);
 			}

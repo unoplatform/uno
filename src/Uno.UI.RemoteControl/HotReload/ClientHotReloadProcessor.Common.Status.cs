@@ -23,18 +23,23 @@ public partial class ClientHotReloadProcessor
 	/// <summary>
 	/// Raised when the status of the hot-reload engine changes.
 	/// </summary>
-	internal EventHandler<Status>? StatusChanged;
+	public EventHandler<Status>? StatusChanged;
+
+	/// <summary>
+	/// The current status of the hot-reload engine.
+	/// </summary>
+	public Status CurrentStatus => _status.Current;
 
 	private readonly StatusSink _status;
 
-	internal enum HotReloadSource
+	public enum HotReloadSource
 	{
 		Runtime,
 		DevServer,
 		Manual
 	}
 
-	internal enum HotReloadClientResult
+	public enum HotReloadClientResult
 	{
 		/// <summary>
 		/// Successful hot-reload.
@@ -58,22 +63,20 @@ public partial class ClientHotReloadProcessor
 	/// <param name="State">The global state of the hot-reload engine (combining server and client state).</param>
 	/// <param name="Server">State and history of all hot-reload operations detected on the server.</param>
 	/// <param name="Local">State and history of all hot-reload operation received by this client.</param>
-	internal record Status(
+	public record Status(
 		HotReloadState State,
 		(HotReloadState State, IImmutableList<HotReloadServerOperationData> Operations) Server,
 		(HotReloadState State, IImmutableList<HotReloadClientOperation> Operations) Local);
 
 	private class StatusSink(ClientHotReloadProcessor owner)
 	{
-#if HAS_UNO_WINUI
-		private readonly DiagnosticView<HotReloadStatusView, Status> _view = DiagnosticView.Register<HotReloadStatusView, Status>("Hot reload", ctx => new HotReloadStatusView(ctx), static (view, status) => view.OnHotReloadStatusChanged(status));
-#endif
-
 		private HotReloadState? _serverState;
 		private bool _isFinalServerState;
 		private ImmutableDictionary<long, HotReloadServerOperationData> _serverOperations = ImmutableDictionary<long, HotReloadServerOperationData>.Empty;
 		private ImmutableList<HotReloadClientOperation> _localOperations = ImmutableList<HotReloadClientOperation>.Empty;
 		private HotReloadSource _source;
+
+		public Status Current { get; private set; } = null!;
 
 		public void ReportInvalidRuntime()
 		{
@@ -133,9 +136,8 @@ public partial class ClientHotReloadProcessor
 		private void NotifyStatusChanged()
 		{
 			var status = BuildStatus();
-#if HAS_UNO_WINUI
-			_view.Update(status);
-#endif
+
+			Current = status;
 			owner.StatusChanged?.Invoke(this, status);
 		}
 
@@ -154,22 +156,22 @@ public partial class ClientHotReloadProcessor
 		}
 	}
 
-	internal class HotReloadClientOperation
+	public class HotReloadClientOperation
 	{
 		#region Current
 		[ThreadStatic]
 		private static HotReloadClientOperation? _opForCurrentUiThread;
 
-		public static HotReloadClientOperation? GetForCurrentThread()
+		internal static HotReloadClientOperation? GetForCurrentThread()
 			=> _opForCurrentUiThread;
 
-		public void SetCurrent()
+		internal void SetCurrent()
 		{
 			Debug.Assert(_opForCurrentUiThread == null, "Only one operation should be active at once for a given UI thread.");
 			_opForCurrentUiThread = this;
 		}
 
-		public void ResignCurrent()
+		internal void ResignCurrent()
 		{
 			Debug.Assert(_opForCurrentUiThread == this, "Another operation has been started for teh current UI thread.");
 			_opForCurrentUiThread = null;
@@ -199,7 +201,7 @@ public partial class ClientHotReloadProcessor
 
 		public Type[] Types { get; private set; }
 
-		internal string[] CuratedTypes => _curatedTypes ??= GetCuratedTypes();
+		public string[] CuratedTypes => _curatedTypes ??= GetCuratedTypes();
 
 		private string[] GetCuratedTypes()
 		{
@@ -278,7 +280,7 @@ public partial class ClientHotReloadProcessor
 				EndTime = DateTimeOffset.Now;
 				_onUpdated();
 			}
-			else
+			else if (_result != (int)HotReloadClientResult.Ignored) // ReportIgnored auto completes but caller usually does not expect it (use ReportCompleted in finally)
 			{
 				Debug.Fail("The result should not have already been set.");
 			}

@@ -10,6 +10,52 @@ uid: Uno.Development.MigratingFromPreviousReleases
 
 To align the behavior with WinUI, lazy loading using `x:Load="False"` and `x:DeferLoadStrategy="lazy"` is no longer affected with changes to the visibility of the lazily-loaded element. Previously, binding the `Visibility` property of the lazily-loaded element and then updating the source of the binding to make the element visible would cause the element to materialize (i.e. load). This is no longer the case. To load the element, add an `x:Name` to the element and call `FindName` with th given name.
 
+## Uno Platform 5.5
+
+Uno Platform 5.5 introduces support for .NET 9 RC2 and requires installation updates for WebAssembly.
+
+### .NET 9 RC2
+
+A few considerations to take into account:
+
+- Moving to .NET 9 or upgrading .NET 9 projects now require the use of .NET 9 RC2 and Visual Studio 17.12 Preview 3.
+- To migrate a project to .NET 9, [read the directions](xref:Uno.Development.MigratingFromNet8ToNet9) from our documentation.
+
+## Uno Platform 5.4
+
+Uno Platform 5.4 contains breaking changes for Uno.Extensions.
+
+### WinAppSDK 1.6 considerations
+
+Uno Platform 5.4 updates to WinAppSDK 1.6 if you using the [`Uno.SDK`](xref:Uno.Features.Uno.Sdk), which requires a temporary version adjustment until newer versions of the .NET 8 SDKs are released.
+
+In your project, you may need to add the following lines (or uncomment them if you kept them from our templates) to get the `net8.0-windowsXX` target to build:
+
+```xml
+<PropertyGroup>
+    <!-- Remove when the .NET SDK 8.0.403 or later has been released -->
+    <WindowsSdkPackageVersion>10.0.19041.38</WindowsSdkPackageVersion>
+</PropertyGroup>
+```
+
+Additionally, you may also get the following error message:
+
+```text
+NETSDK1198: A publish profile with the name 'win-AnyCPU.pubxml' was not found in the project.
+```
+
+This issue is not yet fixed, but it does not cause any problems during deployment.
+
+### UWP Support for Uno.Extensions
+
+The [`Uno.Extensions`](https://aka.platform.uno/uno-extensions) compatibility with legacy UWP apps has been removed. If your app is UWP-based and uses Uno.Extensions, in order to migrate to Uno Platform 5.4, you can keep using [previous releases of Uno.Extensions](https://github.com/unoplatform/uno.extensions/releases), or [migrate your app to WinUI](https://platform.uno/docs/articles/updating-to-winui3.html).
+
+All the other features of Uno Platform 5.4 continue to be compatible with both UWP and WinUI apps.
+
+### Updates in Uno.Extensions.Reactive
+
+The generated code has changed. Make sure to [review our docs to upgrade](xref:Uno.Extensions.Reactive.Upgrading) to Uno Platform 5.4.
+
 ## Uno Platform 5.3
 
 Uno Platform 5.3 contains an improved template and Uno.SDK versioning, new default text font, and Rider support.
@@ -42,9 +88,7 @@ If you are upgrading from an Uno Platform 5.2 project, you can remove the follow
 
 ### Default Text Font
 
-Starting from Uno Platform 5.3, the [default text font](xref:Uno.Features.CustomFonts#default-text-font) has been changed to [Open Sans](https://github.com/unoplatform/uno.fonts#open-sans-font) in the templates, when the [`OpenSans` feature](xref:Uno.Features.Uno.Sdk#uno-platform-features) is specified.
-
-If you created your project with Uno Platform 5.2 or earlier, you can start using Open Sans by adding the `OpenSans` feature in your `.csproj` file.
+Starting from Uno Platform 5.3, the [default text font](xref:Uno.Features.CustomFonts#default-text-font) has been changed to [Open Sans](https://github.com/unoplatform/uno.fonts#open-sans-font) in the templates. This is because Uno.Sdk sets `UnoDefaultFont` MSBuild property to `OpenSans` when it's not set to something else. For more information, see [Custom fonts](xref:Uno.Features.CustomFonts).
 
 ### Rider support
 
@@ -140,7 +184,7 @@ Additionally, here are some specific hints about the migration to Android 12:
     displayName: Select JDK 11
     ```
 
-  - You may need to [add the following property](https://github.com/tdevere/AppCenterSupportDocs/blob/main/Build/Could_not_determine_API_level_for_$TargetFrameworkVersion_of_v12.0.md) to your Android csproj:
+  - You may need to add the following property to your Android csproj:
 
     ```xml
     <PropertyGroup>

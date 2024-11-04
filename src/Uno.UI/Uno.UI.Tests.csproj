@@ -2,6 +2,7 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>$(NetUnitTests)</TargetFrameworks>
+		<DefineConstants>$(DefineConstants);ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT</DefineConstants>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override.props" />
@@ -134,21 +135,6 @@
 			<LastGenOutput>FrameworkElementMixins.g.cs</LastGenOutput>
 		</None>
 	</ItemGroup>
-
-	<Target Name="VS16Mac_RemoveSystemMemory" BeforeTargets="ResolveAssemblyReferences" Condition="$([MSBuild]::IsOsPlatform('OSX'))">
-		<!--
-		VS4Mac seems to process System.Memory differently, and removes
-		the System.Memory local reference if the package is transitively referenced.
-		We remove the Reference added by the nuget targets so that ResolveAssemblyReferences
-		is properly adding the local System.Memory to the Reference item group.
-		-->
-		<ItemGroup>
-			<_ReferenceToRemove Include="@(Reference)" Condition="'%(Reference.Identity)'=='System.Memory'" />
-			<_ReferenceToRemove Include="@(Reference)" Condition="'%(Reference.Identity)'=='System.Buffers'" />
-
-			<Reference Remove="@(_ReferenceToRemove)" />
-		</ItemGroup>
-	</Target>
 
 	<Import Project="MixinGeneration.targets" />
 	<Import Project="XamlMerge.targets" />

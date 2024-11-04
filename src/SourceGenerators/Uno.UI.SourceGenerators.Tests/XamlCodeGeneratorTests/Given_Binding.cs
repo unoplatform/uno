@@ -522,4 +522,154 @@ public class Given_Binding
 
 		await test.RunAsync();
 	}
+
+	[TestMethod]
+	public async Task TestTemplateInsideXLoadedElement()
+	{
+		var xamlFile = new XamlFile("MainPage.xaml", """
+			<Page
+				x:Class="TestRepro.MainPage"
+				xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				xmlns:local="using:TestRepro"
+				xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+				xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+				mc:Ignorable="d">
+
+				<StackPanel>
+					<Grid x:Name="outerGrid" x:Load="{x:Bind IsLoaded}">
+						<StackPanel x:Name="inner1">
+							<Button x:Name="inner1Button" />
+						</StackPanel>
+						<Button x:Name="inner2">
+							<Button.Template>
+								<ControlTemplate TargetType="Button">
+									<Grid x:Name="gridInsideTemplate">
+										<Grid x:Name="gridInsideGridInsideTemplate" />
+									</Grid>
+								</ControlTemplate>
+							</Button.Template>
+						</Button>
+						<StackPanel x:Name="inner3">
+							<Button x:Name="inner3Button" />
+						</StackPanel>
+					</Grid>
+				</StackPanel>
+			</Page>
+			""");
+
+		var test = new Verify.Test(xamlFile)
+		{
+			TestState =
+			{
+				Sources =
+				{
+					"""
+					using Microsoft.UI.Xaml.Controls;
+
+					namespace TestRepro
+					{
+						public sealed partial class MainPage : Page
+						{
+							public MainPage()
+							{
+								this.InitializeComponent();
+							}
+
+							public bool IsLoaded { get; set; }
+						}
+					}
+
+					"""
+				}
+			}
+		}.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task TestInterfaceDerivesFromAnother()
+	{
+		var xamlFile = new XamlFile("MainPage.xaml", """
+			<Page
+				x:Class="TestRepro.MainPage"
+				xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				xmlns:local="using:TestRepro"
+				xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+				xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+				mc:Ignorable="d">
+
+				<StackPanel>
+					<TextBox Text="{x:Bind MyFooInterface.Name, Mode=TwoWay}" />
+				</StackPanel>
+			</Page>
+			""");
+
+		var test = new Verify.Test(xamlFile)
+		{
+			TestState =
+			{
+				Sources =
+				{
+					"""
+					using System.ComponentModel;
+					using Microsoft.UI.Xaml.Controls;
+
+					namespace TestRepro
+					{
+						public sealed partial class MainPage : Page
+						{
+							public MainPage()
+							{
+								MyFooInterface = new MyBarClass("John Doe");
+								this.InitializeComponent();
+							}
+
+							private IMyFooInterface MyFooInterface { get; set; }
+						}
+
+						public partial class MyBarClass : INotifyPropertyChanged, IMyFooInterface
+						{
+							private string _name;
+
+							public MyBarClass(string name)
+							{
+								Name = name;
+							}
+
+							public string Name
+							{
+								get => _name;
+								set
+								{
+									if (_name != value)
+									{
+										_name = value;
+										PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Name)));
+									}
+								}
+							}
+
+							public event PropertyChangedEventHandler PropertyChanged;
+						}
+
+						public interface IMyFooInterface : INameProvider
+						{
+						}
+
+						public interface INameProvider
+						{
+							string Name { get; set; }
+						}
+					}
+
+					"""
+				}
+			}
+		}.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
 }

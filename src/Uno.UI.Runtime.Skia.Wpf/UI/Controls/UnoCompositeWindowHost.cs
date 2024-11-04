@@ -12,6 +12,7 @@ using Uno.UI.Runtime.Skia.Wpf.Rendering;
 using WpfCanvas = System.Windows.Controls.Canvas;
 using WpfContentPresenter = System.Windows.Controls.ContentPresenter;
 using WpfControl = System.Windows.Controls.Control;
+using WpfWindow = System.Windows.Window;
 using WpfFrameworkPropertyMetadata = System.Windows.FrameworkPropertyMetadata;
 using MUX = Microsoft.UI.Xaml;
 
@@ -55,7 +56,7 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 	private readonly MUX.Window _winUIWindow;
 
 	private readonly WpfCanvas _nativeOverlayLayer;
-	private readonly RenderingLayerHost _renderLayer;
+	private RenderingLayerHost _renderLayer;
 
 	private readonly SerialDisposable _backgroundDisposable = new();
 
@@ -73,17 +74,24 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 
 		_nativeOverlayLayer = new WpfCanvas();
 		// Transparency doesn't work with the OpenGL renderer, so we have to use the software renderer for the top layer
-		_renderLayer = new RenderingLayerHost(WpfRendererProvider.CreateForHost(this));
+		_renderLayer = new RenderingLayerHost();
 
 		Loaded += WpfHost_Loaded;
 		Unloaded += (_, _) => _backgroundDisposable.Dispose();
 
-		UpdateRendererBackground();
 		_backgroundDisposable.Disposable = _winUIWindow.RegisterBackgroundChangedEvent((_, _) => UpdateRendererBackground());
 	}
 
+	public WpfWindow Window => _wpfWindow;
+
 	public WpfControl RenderLayer => _renderLayer;
 	public WpfControl BottomLayer => _renderLayer;
+
+	internal void InitializeRenderer()
+	{
+		_renderLayer.Renderer = WpfRendererProvider.CreateForHost(this);
+		UpdateRendererBackground();
+	}
 
 	private void WpfHost_Loaded(object _, System.Windows.RoutedEventArgs __)
 	{
@@ -97,6 +105,11 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 
 	void UpdateRendererBackground()
 	{
+		if (_renderLayer.Renderer is null)
+		{
+			return;
+		}
+
 		// the flyout layer always has a transparent background so that elements underneath can be seen.
 		_renderLayer.Renderer.BackgroundColor = SKColors.Transparent;
 
@@ -142,14 +155,14 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 
 	RenderSurfaceType? IWpfXamlRootHost.RenderSurfaceType => WpfHost.Current?.RenderSurfaceType ?? null;
 
-	private class RenderingLayerHost(IWpfRenderer renderer) : WpfControl
+	private class RenderingLayerHost : WpfControl
 	{
-		public IWpfRenderer Renderer { get; } = renderer;
+		public IWpfRenderer? Renderer { get; set; }
 
 		protected override void OnRender(System.Windows.Media.DrawingContext drawingContext)
 		{
 			base.OnRender(drawingContext);
-			Renderer.Render(drawingContext);
+			Renderer?.Render(drawingContext);
 		}
 	}
 }

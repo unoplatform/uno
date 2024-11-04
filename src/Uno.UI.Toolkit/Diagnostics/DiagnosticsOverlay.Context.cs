@@ -24,7 +24,8 @@ public sealed partial class DiagnosticsOverlay
 
 		public static ViewContext? TryCreate(DiagnosticsOverlay owner)
 		{
-			if (owner._root.Content?.DispatcherQueue is { } dispatcher)
+			if (owner._root.Content?.DispatcherQueue is { } dispatcher
+				&& owner._context?._dispatcher != dispatcher)
 			{
 				return new ViewContext(owner, dispatcher);
 			}

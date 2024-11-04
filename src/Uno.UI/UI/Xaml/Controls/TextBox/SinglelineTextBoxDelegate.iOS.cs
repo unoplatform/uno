@@ -1,10 +1,12 @@
-﻿using Foundation;
+﻿#nullable enable
+using Foundation;
 using Uno.Extensions;
 using System;
 using System.Linq;
 using UIKit;
 using Windows.UI.Core;
 using System.Threading.Tasks;
+using Uno.Foundation.Logging;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -58,27 +60,38 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public override bool ShouldReturn(UITextField textField)
 		{
-			if (IsKeyboardHiddenOnEnter)
+			try
 			{
-				_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal,
-					async () =>
-					{
-						// Delay losing focus to avoid concurrent interactions when transferring focus to another control. See 101152
-						await Task.Delay(TimeSpan.FromMilliseconds(50));
-						textField.ResignFirstResponder();
-					});
-			}
-
-			var textBox = textField as SinglelineTextBoxView;
-			if (textBox != null)
-			{
-				if (_textBox.GetTarget()?.OnKey('\n') ?? false)
+				if (IsKeyboardHiddenOnEnter)
 				{
-					return false;
+					_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal,
+						async () =>
+						{
+							// Delay losing focus to avoid concurrent interactions when transferring focus to another control. See 101152
+							await Task.Delay(TimeSpan.FromMilliseconds(50));
+							textField.ResignFirstResponder();
+						});
 				}
-			}
 
-			return true;
+				if (textField is SinglelineTextBoxView textBox)
+				{
+					if (_textBox.GetTarget()?.OnKey('\n') ?? false)
+					{
+						return false;
+					}
+				}
+
+				return true;
+			}
+			catch (Exception ex)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().LogError("[ShouldReturn] Exception caught while executing method", ex);
+				}
+
+				return false;
+			}
 		}
 
 		/// <summary>

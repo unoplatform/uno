@@ -20,6 +20,8 @@ namespace Microsoft.UI.Xaml
 	{
 		private Size? _lastLayoutSize;
 		private bool _constraintsChanged;
+		private bool? _stretchAffectsMeasure;
+		private bool _stretchAffectsMeasureDefault;
 
 		/// <summary>
 		/// The parent of the <see cref="FrameworkElement"/> in the visual tree, which may differ from its <see cref="Parent"/> (ie if it's a child of a native view).
@@ -192,11 +194,7 @@ namespace Microsoft.UI.Xaml
 		partial void OnLoadedPartial()
 		{
 			// see StretchAffectsMeasure for details.
-			this.SetValue(
-				StretchAffectsMeasureProperty,
-				!(NativeVisualParent is DependencyObject),
-				DependencyPropertyValuePrecedences.DefaultValue
-			);
+			_stretchAffectsMeasureDefault = NativeVisualParent is not DependencyObject;
 
 			ReconfigureViewportPropagationPartial();
 		}
@@ -216,13 +214,23 @@ namespace Microsoft.UI.Xaml
 		/// </remarks>
 		public bool StretchAffectsMeasure
 		{
-			get { return (bool)GetValue(StretchAffectsMeasureProperty); }
-			set { SetValue(StretchAffectsMeasureProperty, value); }
+			get => (bool)GetValue(StretchAffectsMeasureProperty);
+			set => SetValue(StretchAffectsMeasureProperty, value);
 		}
 
-		// Using a DependencyProperty as the backing store for StretchAffectsMeasure.  This enables animation, styling, binding, etc...
 		public static DependencyProperty StretchAffectsMeasureProperty { get; } =
-			DependencyProperty.Register("StretchAffectsMeasure", typeof(bool), typeof(FrameworkElement), new FrameworkPropertyMetadata(false));
+			DependencyProperty.Register(nameof(StretchAffectsMeasure), typeof(bool), typeof(FrameworkElement), new FrameworkPropertyMetadata(false));
+
+		internal override bool GetDefaultValue2(DependencyProperty property, out object defaultValue)
+		{
+			if (property == StretchAffectsMeasureProperty)
+			{
+				defaultValue = _stretchAffectsMeasureDefault;
+				return true;
+			}
+
+			return base.GetDefaultValue2(property, out defaultValue);
+		}
 
 		#endregion
 

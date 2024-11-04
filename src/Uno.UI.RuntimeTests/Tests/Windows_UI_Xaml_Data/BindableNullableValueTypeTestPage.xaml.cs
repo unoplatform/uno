@@ -30,4 +30,8 @@ public sealed partial class BindableNullableValueTypeTestPage : Page, INotifyPro
 			}
 		}
 	}
+
+#if !WINAPPSDK // https://github.com/microsoft/microsoft-ui-xaml/issues/5315
+	public int MyInitOnlyProperty { get; init; }
+#endif
 }

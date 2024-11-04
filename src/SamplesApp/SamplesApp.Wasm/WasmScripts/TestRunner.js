@@ -1,46 +1,40 @@
 ﻿class SampleRunner {
 
-    static init() {
+    static async init() {
 
-        if (!this._getAllTests) {
-            this._getAllTests = this.getMethod("[SamplesApp.Wasm] SamplesApp.App:GetAllTests");
-            this._runTest = this.getMethod("[SamplesApp.Wasm] SamplesApp.App:RunTest");
-            this._isTestDone = this.getMethod("[SamplesApp.Wasm] SamplesApp.App:IsTestDone");
-            this._getDisplayScreenScaling = this.getMethod("[SamplesApp.Wasm] SamplesApp.App:GetDisplayScreenScaling");
+        if (!SampleRunner._getAllTests) {
+            const sampleAppExports = await Module.getAssemblyExports("SamplesApp.Wasm");
+
+            SampleRunner._getAllTests = sampleAppExports.SamplesApp.App.GetAllTests;
+            SampleRunner._runTest = sampleAppExports.SamplesApp.App.RunTest;
+            SampleRunner._isTestDone = sampleAppExports.SamplesApp.App.IsTestDone;
+            SampleRunner._getDisplayScreenScaling = sampleAppExports.SamplesApp.App.GetDisplayScreenScaling;
         }
-    }
-
-    static getMethod(methodName) {
-        var method = Module.mono_bind_static_method(methodName);
-
-        if (!method) {
-            throw new `Method ${methodName} does not exist`;
-        }
-
-        return method;
     }
 
     static IsTestDone(test) {
-        SampleRunner.init();
-        return this._isTestDone(test);
+        SampleRunner.init();    
+        return SampleRunner._isTestDone(test);
     }
 
     static RunTest(test) {
         SampleRunner.init();
-        return this._runTest(test);
+        return SampleRunner._runTest(test);
     } 
 
     static GetAllTests() {
         SampleRunner.init();
-        return this._getAllTests();
+        return SampleRunner._getAllTests();
     } 
 
     static GetDisplayScreenScaling(displayId) {
         SampleRunner.init();
-        return this._getDisplayScreenScaling(displayId);
+        return SampleRunner._getDisplayScreenScaling(displayId);
     }
 
     static RefreshBrowser(unused) {
         window.location.reload();
     } 
 }
+
+globalThis.SampleRunner = SampleRunner;

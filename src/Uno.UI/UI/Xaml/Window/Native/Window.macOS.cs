@@ -408,15 +408,6 @@ namespace Uno.UI.Controls
 					return false;
 				}
 
-				var manager = SystemNavigationManagerPreview.GetForCurrentView();
-				if (!manager.HasConfirmedClose)
-				{
-					if (!manager.RequestAppClose())
-					{
-						return false;
-					}
-				}
-
 				// Closing should continue, perform suspension.
 				if (!Application.Current.IsSuspended)
 				{
@@ -431,7 +422,6 @@ namespace Uno.UI.Controls
 			public override void WillClose(NSNotification notification)
 			{
 				base.WillClose(notification);
-				NativeWindowWrapper.Instance.OnNativeClosed();
 			}
 		}
 	}

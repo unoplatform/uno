@@ -281,6 +281,9 @@ namespace SamplesApp.UITests
 			}
 		}
 
+		public async ValueTask<ScreenshotInfo> TakeScreenshotAsync(string stepName, bool? ignoreInSnapshotCompare = null)
+			=> TakeScreenshot(stepName, ignoreInSnapshotCompare);
+
 		public ScreenshotInfo TakeScreenshot(string stepName, bool? ignoreInSnapshotCompare = null)
 			=> TakeScreenshot(
 				stepName,
@@ -288,6 +291,9 @@ namespace SamplesApp.UITests
 					? new ScreenshotOptions { IgnoreInSnapshotCompare = ignoreInSnapshotCompare.Value }
 					: null
 			);
+
+		public async ValueTask<ScreenshotInfo> TakeScreenshotAsync(string stepName, ScreenshotOptions options)
+			=> TakeScreenshot(stepName, options);
 
 		public ScreenshotInfo TakeScreenshot(string stepName, ScreenshotOptions options)
 		{

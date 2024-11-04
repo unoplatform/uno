@@ -22,6 +22,23 @@ namespace MonoSupport {
 			jsCallDispatcher.registrations.set(identifier, instance);
 		}
 
+		public static invokeJSUnmarshalled(funcName: string, arg0: any, arg1: any, arg2: any): void | number {
+			const funcInstance = jsCallDispatcher.findJSFunction(funcName);
+
+			let ret = funcInstance.call(null, arg0, arg1, arg2);
+
+			switch (typeof ret) {
+				case "boolean":
+					return ret ? 1 : 0;
+				case "undefined":
+					return 0;
+				case "number":
+					return ret;
+				default:
+					throw new Error(`Function ${funcName} returned an unsupported type: ${typeof ret}`);
+			}
+		}
+
 		public static findJSFunction(identifier: string): any {
 
 			if (!identifier) {
@@ -32,7 +49,6 @@ namespace MonoSupport {
 					jsCallDispatcher.registerScope("UnoStatic_Windows_Storage_StorageFolder", Windows.Storage.StorageFolder);
 					jsCallDispatcher.registerScope("UnoStatic_Windows_Storage_ApplicationDataContainer", Windows.Storage.ApplicationDataContainer);
 					jsCallDispatcher.registerScope("UnoStatic_Windows_ApplicationModel_DataTransfer_DragDrop_Core_DragDropExtension", Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension);
-					jsCallDispatcher.registerScope("UnoStatic_Windows_UI_Xaml_UIElement", Microsoft.UI.Xaml.UIElement);
 					jsCallDispatcher._isUnoRegistered = true;
 				}
 

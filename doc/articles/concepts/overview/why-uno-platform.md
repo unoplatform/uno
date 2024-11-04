@@ -162,7 +162,7 @@ The Uno Platform provides access to SkiaSharp as a render canvas for your app, e
 
 ## Animations: Beyond storyboards, access to Lottie and Rive
 
-Based on SkiaSharp support, Uno Platform provides AnimatedVisualPlayer to give the ability to render rich Lottie files directly in your app, for all target platforms.
+Based on SkiaSharp support, Uno Platform provides AnimatedVisualPlayer to give the ability to render rich [Lottie files](https://airbnb.io/lottie/#/) directly in your app, for all target platforms.
 
 ## Performance and app size with AOT/Jiterpreter
 
@@ -200,7 +200,7 @@ Your Uno Platform WebAssembly app can run as a Progressive Web App. This means u
 
 ## WebView across platforms
 
-When you need to display web content within your cross-platform apps, you can use our `WebView2` control. Not only will it easily handle rendering of both remote and in-app HTML content, but it will also allow you to implement bi-directional JavaScript communication without any hassle. Note that `WebView2` is currently available on mobile and WinAppSDK targets. We are working on an implementation for Skia targets.
+When you need to display web content within your cross-platform apps, you can use our `WebView2` control. Not only will it easily handle rendering of both remote and in-app HTML content, but it will also allow you to implement bi-directional JavaScript communication without any hassle. Note that `WebView2` is currently available on mobile, WPF, and WinAppSDK targets. We are working on an implementation for the remaining Skia targets.
 
 ## Media Player across platforms
 

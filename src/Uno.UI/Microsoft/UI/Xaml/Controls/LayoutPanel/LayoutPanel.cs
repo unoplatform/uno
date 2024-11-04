@@ -13,14 +13,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 	partial class LayoutPanel
 	{
-
-		public LayoutPanel()
-		{
-			this.RegisterDisposablePropertyChangedCallback((i, s, e) => OnPropertyChanged(e));
-		}
-
-
-		void OnPropertyChanged(DependencyPropertyChangedEventArgs args)
+		private void OnPropertyChanged(DependencyPropertyChangedEventArgs args)
 		{
 			var dependencyProperty = args.Property;
 

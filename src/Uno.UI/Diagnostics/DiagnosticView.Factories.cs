@@ -7,7 +7,7 @@ using Microsoft.UI.Xaml;
 
 namespace Uno.Diagnostics.UI;
 
-internal partial class DiagnosticView
+partial class DiagnosticView
 {
 	/// <summary>
 	/// Registers a dedicated diagnostic view to be displayed by the diagnostic overlay.
@@ -21,11 +21,16 @@ internal partial class DiagnosticView
 	/// </remarks>
 	/// <typeparam name="TView">Type of the control.</typeparam>
 	/// <param name="friendlyName">The user-friendly name of the diagnostics view.</param>
-	public static DiagnosticView<TView> Register<TView>(string friendlyName)
+	/// <param name="mode">Defines when the registered diagnostic view should be displayed.</param>
+	/// <param name="position">Defines where the item should be placed in the overlay.</param>
+	public static DiagnosticView<TView> Register<TView>(
+		string friendlyName,
+		DiagnosticViewRegistrationMode mode = default,
+		DiagnosticViewRegistrationPosition position = default)
 		where TView : UIElement, new()
 	{
-		var provider = new DiagnosticView<TView>(typeof(TView).Name, friendlyName, () => new TView());
-		DiagnosticViewRegistry.Register(provider);
+		var provider = new DiagnosticView<TView>(typeof(TView).Name, friendlyName, () => new TView(), position: position);
+		DiagnosticViewRegistry.Register(provider, mode);
 		return provider;
 	}
 
@@ -43,10 +48,15 @@ internal partial class DiagnosticView
 	/// <param name="friendlyName">The user-friendly name of the diagnostics view.</param>
 	/// <param name="factory">Factory to create an instance of the control.</param>
 	/// <param name="mode">Defines when the registered diagnostic view should be displayed.</param>
-	public static DiagnosticView<TView> Register<TView>(string friendlyName, Func<TView> factory, DiagnosticViewRegistrationMode mode = default)
+	/// <param name="position">Defines where the item should be placed in the overlay.</param>
+	public static DiagnosticView<TView> Register<TView>(
+		string friendlyName,
+		Func<TView> factory,
+		DiagnosticViewRegistrationMode mode = default,
+		DiagnosticViewRegistrationPosition position = default)
 		where TView : UIElement
 	{
-		var provider = new DiagnosticView<TView>(typeof(TView).Name, friendlyName, factory);
+		var provider = new DiagnosticView<TView>(typeof(TView).Name, friendlyName, factory, position: position);
 		DiagnosticViewRegistry.Register(provider, mode);
 		return provider;
 	}
@@ -62,17 +72,21 @@ internal partial class DiagnosticView
 	/// <param name="friendlyName">The user-friendly name of the diagnostics view.</param>
 	/// <param name="update">Delegate to use to update the <typeparamref name="TView"/> when the <typeparamref name="TState"/> is being updated.</param>
 	/// <param name="details">Optional delegate used to show more details about the diagnostic info when user taps on the view.</param>
+	/// <param name="mode">Defines when the registered diagnostic view should be displayed.</param>
+	/// <param name="position">Defines where the item should be placed in the overlay.</param>
 	/// <returns>A diagnostic view helper class which can be used to push updates of the state (cf. <see cref="DiagnosticView{TView,TState}.Update"/>).</returns>
 	public static DiagnosticView<TView, TState> Register<TView, TState>(
 		string friendlyName,
 		Action<TView, TState> update,
-		Func<TState, object?>? details = null)
+		Func<TState, object?>? details = null,
+		DiagnosticViewRegistrationMode mode = default,
+		DiagnosticViewRegistrationPosition position = default)
 		where TView : FrameworkElement, new()
 	{
 		var provider = details is null
-			? new DiagnosticView<TView, TState>(typeof(TView).Name, friendlyName, _ => new TView(), update)
-			: new DiagnosticView<TView, TState>(typeof(TView).Name, friendlyName, _ => new TView(), update, (ctx, state, ct) => new(details(state)));
-		DiagnosticViewRegistry.Register(provider);
+			? new DiagnosticView<TView, TState>(typeof(TView).Name, friendlyName, _ => new TView(), update, position: position)
+			: new DiagnosticView<TView, TState>(typeof(TView).Name, friendlyName, _ => new TView(), update, (ctx, state, ct) => new(details(state)), position: position);
+		DiagnosticViewRegistry.Register(provider, mode);
 		return provider;
 	}
 
@@ -88,18 +102,22 @@ internal partial class DiagnosticView
 	/// <param name="factory">Factory to create an instance of the generic element.</param>
 	/// <param name="update">Delegate to use to update the <typeparamref name="TView"/> when the <typeparamref name="TState"/> is being updated.</param>
 	/// <param name="details">Optional delegate used to show more details about the diagnostic info when user taps on the view.</param>
+	/// <param name="mode">Defines when the registered diagnostic view should be displayed.</param>
+	/// <param name="position">Defines where the item should be placed in the overlay.</param>
 	/// <returns>A diagnostic view helper class which can be used to push updates of the state (cf. <see cref="DiagnosticView{TView,TState}.Update"/>).</returns>
 	public static DiagnosticView<TView, TState> Register<TView, TState>(
 		string friendlyName,
 		Func<IDiagnosticViewContext, TView> factory,
 		Action<TView, TState> update,
-		Func<TState, object?>? details = null)
+		Func<TState, object?>? details = null,
+		DiagnosticViewRegistrationMode mode = default,
+		DiagnosticViewRegistrationPosition position = default)
 		where TView : FrameworkElement
 	{
 		var provider = details is null
-			? new DiagnosticView<TView, TState>(typeof(TView).Name, friendlyName, factory, update)
-			: new DiagnosticView<TView, TState>(typeof(TView).Name, friendlyName, factory, update, (ctx, state, ct) => new(details(state)));
-		DiagnosticViewRegistry.Register(provider);
+			? new DiagnosticView<TView, TState>(typeof(TView).Name, friendlyName, factory, update, position: position)
+			: new DiagnosticView<TView, TState>(typeof(TView).Name, friendlyName, factory, update, (ctx, state, ct) => new(details(state)), position: position);
+		DiagnosticViewRegistry.Register(provider, mode);
 		return provider;
 	}
 }

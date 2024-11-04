@@ -38,7 +38,7 @@ public partial class EntryPoint : IDisposable
 		await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
 		// In this case, a new TargetFramework was selected. We need to file a matching launch profile, if any.
-		if (GetTargetFrameworkIdentifier(newFramework) is { } targetFrameworkIdentifier)
+		if (GetTargetFrameworkIdentifier(newFramework) is { } targetFrameworkIdentifier && _debuggerObserver is not null)
 		{
 			_debugAction?.Invoke($"OnDebugFrameworkChangedAsync({previousFramework}, {newFramework}, {targetFrameworkIdentifier}, forceReload: {forceReload})");
 
@@ -134,6 +134,11 @@ public partial class EntryPoint : IDisposable
 			return;
 		}
 
+		if (_debuggerObserver is null)
+		{
+			return;
+		}
+
 		var targetFrameworks = await _debuggerObserver.GetActiveTargetFrameworksAsync();
 		var profiles = await _debuggerObserver.GetLaunchProfilesAsync();
 
@@ -181,8 +186,21 @@ public partial class EntryPoint : IDisposable
 					(
 						previousFramework is not null
 						&& GetTargetFrameworkIdentifier(previousFramework) is { } previousTargetFrameworkIdentifier
-						&& (previousTargetFrameworkIdentifier is WasmTargetFrameworkIdentifier or DesktopTargetFrameworkIdentifier or Windows10TargetFrameworkIdentifier
-							|| targetFrameworkIdentifier is WasmTargetFrameworkIdentifier or DesktopTargetFrameworkIdentifier or Windows10TargetFrameworkIdentifier)
+						&& (
+							(
+								// 17.12 or later properly supports having their TFM anywhere in the
+								// TFMs lists, except Wasm.
+								GetVisualStudioReleaseVersion() >= new Version(17, 12)
+								&& (
+									previousTargetFrameworkIdentifier is WasmTargetFrameworkIdentifier
+									|| targetFrameworkIdentifier is WasmTargetFrameworkIdentifier))
+
+							|| (
+								// 17.11 or earlier needs reloading most TFMs
+								GetVisualStudioReleaseVersion() < new Version(17, 12)
+								&& (previousTargetFrameworkIdentifier is WasmTargetFrameworkIdentifier or DesktopTargetFrameworkIdentifier or Windows10TargetFrameworkIdentifier
+									|| targetFrameworkIdentifier is WasmTargetFrameworkIdentifier or DesktopTargetFrameworkIdentifier or Windows10TargetFrameworkIdentifier))
+						)
 					)
 				)
 			)
@@ -261,6 +279,11 @@ public partial class EntryPoint : IDisposable
 					}
 				}
 			}
+			else
+			{
+				// No need to reload, but we still need to update the selected target framework
+				await WriteProjectUserSettingsAsync(newFramework);
+			}
 		}
 		catch (Exception e)
 		{
@@ -287,7 +310,7 @@ public partial class EntryPoint : IDisposable
 
 	private async Task OnStartupProjectChangedAsync()
 	{
-		if (!await EnsureProjectUserSettingsAsync())
+		if (!await EnsureProjectUserSettingsAsync() && _debuggerObserver is not null)
 		{
 			_debugAction?.Invoke($"The user setting is not yet initialized, aligning framework and profile");
 
@@ -314,7 +337,8 @@ public partial class EntryPoint : IDisposable
 	private async Task<bool> EnsureProjectUserSettingsAsync()
 	{
 		if (await _asyncPackage.GetServiceAsync(typeof(SVsSolution)) is IVsSolution solution
-			&& await _dte.GetStartupProjectsAsync() is { Length: > 0 } startupProjects)
+			&& await _dte.GetStartupProjectsAsync() is { Length: > 0 } startupProjects
+			&& _debuggerObserver is not null)
 		{
 			// Convert DTE project to IVsHierarchy
 			solution.GetProjectOfUniqueName(startupProjects[0].UniqueName, out var hierarchy);

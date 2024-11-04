@@ -1,0 +1,10 @@
+steps:
+  - task: NuGetCommand@2
+    displayName: 'Publish to nuget.org'
+    inputs:
+      command: 'push'
+      packagesToPush: '$(Pipeline.Workspace)/Nuget_Packages/**/*.nupkg'
+      nuGetFeedType: 'external'
+      publishFeedCredentials: 'nuget.org uno packages'
+      verbosityPush: 'Normal'
+

@@ -70,7 +70,10 @@ namespace Microsoft.UI.Xaml.Controls
 				_attributedString?.DrawString(_drawRect, NSStringDrawingOptions.UsesLineFragmentOrigin, null);
 			}
 
-			UpdateIsTextTrimmed();
+			if (_attributedString is not null)
+			{
+				UpdateIsTextTrimmed();
+			}
 		}
 
 		/// <summary>
@@ -332,7 +335,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private int GetCharacterIndexAtPoint(Point point)
 		{
-			if (!_drawRect.Contains(point))
+			if (!_drawRect.Contains(point) || _layoutManager is null)
 			{
 				return -1;
 			}

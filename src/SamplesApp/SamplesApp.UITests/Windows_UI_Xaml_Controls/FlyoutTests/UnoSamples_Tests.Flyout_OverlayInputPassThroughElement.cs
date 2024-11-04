@@ -11,7 +11,7 @@ using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests;
 
-#if __SKIA__
+#if IS_RUNTIME_UI_TESTS
 [TestFixture]
 partial class Flyout_Tests : SampleControlUITestBase
 #else

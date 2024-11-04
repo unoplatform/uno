@@ -6,10 +6,18 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Shapes;
 using Uno;
 using Uno.Extensions;
 using Uno.UI;
 using Uno.UI.Dispatching;
+using Uno.UI.Helpers;
+using Uno.UI.Xaml.Media;
 
 #if __ANDROID__
 using _View = Android.Views.View;
@@ -28,10 +36,10 @@ namespace Microsoft.UI.Xaml
 	[DebuggerDisplay("Name={Name}, Type={Type.FullName}, Owner={OwnerType.FullName}")]
 	public sealed partial class DependencyProperty
 	{
-		private readonly static DependencyPropertyRegistry _registry = new DependencyPropertyRegistry();
+		private readonly static DependencyPropertyRegistry _registry = DependencyPropertyRegistry.Instance;
 
-		private readonly static TypeToPropertiesDictionary _getPropertiesForType = new TypeToPropertiesDictionary();
 		private readonly static NameToPropertyDictionary _getPropertyCache = new NameToPropertyDictionary();
+		private static object DefaultThemeAnimationDurationBox = new Duration(FeatureConfiguration.ThemeAnimation.DefaultThemeAnimationDuration);
 
 		/// <summary>
 		/// A static <see cref="PropertyCacheEntry"/> used for lookups and avoid creating new instances. This assumes that uses are non-reentrant.
@@ -39,17 +47,15 @@ namespace Microsoft.UI.Xaml
 		private readonly static PropertyCacheEntry _searchPropertyCacheEntry = new();
 
 
-		private readonly static FrameworkPropertiesForTypeDictionary _getFrameworkPropertiesForType = new FrameworkPropertiesForTypeDictionary();
+		private readonly static FrameworkPropertiesForTypeDictionary _getInheritedPropertiesForType = new FrameworkPropertiesForTypeDictionary();
 
 		private readonly PropertyMetadata _ownerTypeMetadata; // For perf consideration, we keep direct ref the metadata for the owner type
-		private readonly PropertyMetadataDictionary _metadata = new PropertyMetadataDictionary();
 
 		private readonly Flags _flags;
 		private string _name;
 		private Type _propertyType;
 		private Type _ownerType;
 		private readonly int _uniqueId;
-		private object _fallbackDefaultValue;
 
 		private static int _globalId = -1;
 
@@ -62,7 +68,12 @@ namespace Microsoft.UI.Xaml
 			_flags |= attached ? Flags.IsAttached : Flags.None;
 			_flags |= typeof(DependencyObjectCollection).IsAssignableFrom(propertyType) ? Flags.IsDependencyObjectCollection : Flags.None;
 			_flags |= GetIsTypeNullable(propertyType) ? Flags.IsTypeNullable : Flags.None;
-			_flags |= (defaultMetadata as FrameworkPropertyMetadata)?.Options.HasWeakStorage() is true ? Flags.HasWeakStorage : Flags.None;
+			if (defaultMetadata is FrameworkPropertyMetadata frameworkMetadata)
+			{
+				_flags |= frameworkMetadata.Options.HasWeakStorage() ? Flags.HasWeakStorage : Flags.None;
+				_flags |= frameworkMetadata.Options.HasInherits() ? Flags.IsInherited : Flags.None;
+			}
+
 			_flags |= ownerType.Assembly.Equals(typeof(DependencyProperty).Assembly) ? Flags.IsUnoType : Flags.None;
 
 			if (ownerType == typeof(FrameworkElement))
@@ -80,7 +91,6 @@ namespace Microsoft.UI.Xaml
 			_uniqueId = Interlocked.Increment(ref _globalId);
 
 			_ownerTypeMetadata = defaultMetadata ?? new FrameworkPropertyMetadata(null);
-			_metadata.Add(_ownerType, _ownerTypeMetadata);
 		}
 
 		// This is our equivalent of WinUI's ValidateXXX methods in PropertySystem.cpp, e.g, CDependencyObject::ValidateFloatValue
@@ -103,6 +113,8 @@ namespace Microsoft.UI.Xaml
 		/// Provides a unique identifier for the dependency property lookup
 		/// </summary>
 		internal int UniqueId => _uniqueId;
+
+		internal PropertyMetadata Metadata => _ownerTypeMetadata;
 
 		/// <summary>
 		/// Determines if the property storage should be backed by a <see cref="Uno.UI.DataBinding.ManagedWeakReference"/>
@@ -127,6 +139,8 @@ namespace Microsoft.UI.Xaml
 		/// <exception cref="InvalidOperationException">A property with the same name has already been declared for the ownerType</exception>
 		public static DependencyProperty Register(string name, Type propertyType, Type ownerType, PropertyMetadata typeMetadata)
 		{
+			typeMetadata = FixMetadataIfNeeded(propertyType, typeMetadata);
+
 			var newProperty = new DependencyProperty(name, propertyType, ownerType, typeMetadata, attached: false);
 
 			try
@@ -142,6 +156,21 @@ namespace Microsoft.UI.Xaml
 			}
 
 			return newProperty;
+		}
+
+		private static PropertyMetadata FixMetadataIfNeeded(Type propertyType, PropertyMetadata metadata)
+		{
+			if (metadata is null)
+			{
+				var defaultValue = propertyType.IsNullable() ? null : RuntimeHelpers.GetUninitializedObject(propertyType);
+				return new PropertyMetadata(defaultValue);
+			}
+			else if (!propertyType.IsNullable() && metadata.DefaultValue is null)
+			{
+				return metadata.CloneWithOverwrittenDefaultValue(RuntimeHelpers.GetUninitializedObject(propertyType));
+			}
+
+			return metadata;
 		}
 
 		/// <summary>
@@ -173,6 +202,8 @@ namespace Microsoft.UI.Xaml
 		/// <exception cref="InvalidOperationException">A property with the same name has already been declared for the ownerType</exception>
 		public static DependencyProperty RegisterAttached(string name, Type propertyType, Type ownerType, PropertyMetadata defaultMetadata)
 		{
+			defaultMetadata = FixMetadataIfNeeded(propertyType, defaultMetadata);
+
 			var newProperty = new DependencyProperty(name, propertyType, ownerType, defaultMetadata, attached: true);
 
 			try
@@ -231,79 +262,22 @@ namespace Microsoft.UI.Xaml
 		/// <returns>A property metadata object.</returns>
 		public PropertyMetadata GetMetadata(Type forType)
 		{
+			// NOTE: WinUI always allocates a and returns fresh PropertyMetadata and only sets DefaultValue on the returned instance, and nothing else.
+			// For now, we have internal usages that requires the full info to be returned, so we return the complete info and even the same instance.
+
 			if (forType == _ownerType)
 			{
 				return _ownerTypeMetadata;
 			}
 
-			PropertyMetadata metadata = null;
-			if (!_metadata.TryGetValue(forType, out metadata))
+			var defaultValueForType = GetDefaultValue(null, forType);
+
+			if (!DependencyObjectStore.AreDifferent(_ownerTypeMetadata.DefaultValue, defaultValueForType))
 			{
-				if (
-					!IsTypeDependencyObject(forType)
-#if !UNO_REFERENCE_API
-					// Perf: On generic API the Panel.Children are UIElement, so avoid costly check
-					// This check must be removed when Panel.Children will support only
-					// UIElement as its elements. See #103492
-					&& !forType.Is<_View>()
-#endif
-					&& OwnerType != typeof(AttachedDependencyObject)
-				)
-				{
-					throw new ArgumentException($"'{forType}' type must derive from DependencyObject.", nameof(forType));
-				}
-
-				var baseType = forType.IsSubclassOf(_ownerType)
-					? forType.BaseType
-					: _ownerType;
-
-				ForceInitializeTypeConstructor(forType);
-
-				metadata = _metadata.FindOrCreate(forType, baseType, this);
+				return _ownerTypeMetadata;
 			}
 
-			return metadata;
-		}
-
-		private static bool IsTypeDependencyObject(Type forType) => typeof(DependencyObject).IsAssignableFrom(forType);
-
-		internal void OverrideMetadata(Type forType, PropertyMetadata typeMetadata)
-		{
-			ForceInitializeTypeConstructor(forType);
-
-			if (forType == null)
-			{
-				throw new ArgumentNullException(nameof(forType), "Value cannot be null.");
-			}
-
-			if (typeMetadata == null)
-			{
-				throw new ArgumentNullException(nameof(typeMetadata));
-			}
-
-			if (!(typeof(DependencyObject).IsAssignableFrom(forType)))
-			{
-				throw new ArgumentException($"'{forType}' type must derive from DependencyObject.", nameof(forType));
-			}
-
-			if (_metadata.ContainsKey(forType))
-			{
-				throw new ArgumentException($"PropertyMetadata is already registered for type '{forType}'.", nameof(forType));
-			}
-
-			if (_metadata.ContainsValue(typeMetadata))
-			{
-				throw new ArgumentException($"Metadata is already associated with a type and property. A new one must be created.", nameof(typeMetadata));
-			}
-
-			var baseMetadata = GetMetadata(forType.BaseType);
-			if (!baseMetadata.GetType().IsAssignableFrom(typeMetadata.GetType()))
-			{
-				throw new ArgumentException($"Metadata override and base metadata must be of the same type or derived type.", nameof(typeMetadata));
-			}
-
-			typeMetadata.Merge(baseMetadata, this);
-			_metadata.Add(forType, typeMetadata);
+			return _ownerTypeMetadata.CloneWithOverwrittenDefaultValue(defaultValueForType);
 		}
 
 		internal Type OwnerType
@@ -322,9 +296,6 @@ namespace Microsoft.UI.Xaml
 		internal bool IsTypeNullable
 			=> (_flags & Flags.IsTypeNullable) != 0;
 
-		internal object GetFallbackDefaultValue()
-			=> _fallbackDefaultValue != null ? _fallbackDefaultValue : _fallbackDefaultValue = Activator.CreateInstance(Type);
-
 		internal string Name
 		{
 			get { return _name; }
@@ -335,6 +306,12 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		internal bool IsAttached
 			=> (_flags & Flags.IsAttached) != 0;
+
+		/// <summary>
+		/// Determines if the property is an inherited property
+		/// </summary>
+		internal bool IsInherited
+			=> (_flags & Flags.IsInherited) != 0;
 
 		/// <summary>
 		/// Determines if the owner type is declared by Uno.UI
@@ -403,50 +380,21 @@ namespace Microsoft.UI.Xaml
 		}
 
 		/// <summary>
-		/// Gets the dependencies properties for the specified type
-		/// </summary>
-		/// <param name="type">A dependency object</param>
-		/// <returns>An array of Dependency Properties.</returns>
-		internal static DependencyProperty[] GetPropertiesForType(Type type)
-		{
-			DependencyProperty[] result = null;
-
-			if (!_getPropertiesForType.TryGetValue(type, out result))
-			{
-				_getPropertiesForType.Add(type, result = InternalGetPropertiesForType(type));
-			}
-
-			return result;
-		}
-
-		/// <summary>
 		/// Gets the dependencies properties for the specified type with specific Framework metadata options
 		/// </summary>
 		/// <param name="type">A dependency object</param>
 		/// <param name="options">A set of flags that must be set</param>
 		/// <returns>An array of Dependency Properties.</returns>
-		internal static DependencyProperty[] GetFrameworkPropertiesForType(Type type, FrameworkPropertyMetadataOptions options)
+		internal static DependencyProperty[] GetInheritedPropertiesForType(Type type)
 		{
 			DependencyProperty[] result = null;
-			var key = CachedTuple.Create(type, options);
 
-			if (!_getFrameworkPropertiesForType.TryGetValue(key, out result))
+			if (!_getInheritedPropertiesForType.TryGetValue(type, out result))
 			{
-				_getFrameworkPropertiesForType.Add(key, result = InternalGetFrameworkPropertiesForType(type, options));
+				_getInheritedPropertiesForType.Add(type, result = InternalGetInheritedPropertiesForType(type));
 			}
 
 			return result;
-		}
-
-		/// <summary>
-		/// Clears all the property registrations, when used in unit tests.
-		/// </summary>
-		internal static void ClearRegistry()
-		{
-			_registry.Clear();
-			_getPropertiesForType.Clear();
-			_getPropertyCache.Clear();
-			_getFrameworkPropertiesForType.Clear();
 		}
 
 		private static void RegisterProperty(Type ownerType, string name, DependencyProperty newProperty)
@@ -454,29 +402,6 @@ namespace Microsoft.UI.Xaml
 			ResetGetPropertyCache(ownerType, name);
 
 			_registry.Add(ownerType, name, newProperty);
-		}
-
-		private static DependencyProperty[] InternalGetPropertiesForType(Type type)
-		{
-			ForceInitializeTypeConstructor(type);
-
-			var results = new List<DependencyProperty>();
-
-			do
-			{
-				_registry.AppendPropertiesForType(type, results);
-
-				// Dependency properties are inherited
-				type = type.BaseType;
-			}
-			while (type != typeof(object) && type != null);
-
-			var array = results.ToArray();
-
-			// Produce a pre-sorted list, aligned with the initial behavior of DependencyPropertyDetailsCollection
-			Array.Sort(array, (l, r) => l.UniqueId - r.UniqueId);
-
-			return array;
 		}
 
 		/// <summary>
@@ -491,7 +416,7 @@ namespace Microsoft.UI.Xaml
 		///
 		/// See: http://stackoverflow.com/questions/6729841/why-did-the-beforefieldinit-behavior-change-in-net-4
 		/// </remarks>
-		private static void ForceInitializeTypeConstructor(Type type)
+		internal static void ForceInitializeTypeConstructor(Type type)
 		{
 			do
 			{
@@ -502,21 +427,134 @@ namespace Microsoft.UI.Xaml
 			while (type != null);
 		}
 
-		private static DependencyProperty[] InternalGetFrameworkPropertiesForType(Type type, FrameworkPropertyMetadataOptions options)
+		private static DependencyProperty[] InternalGetInheritedPropertiesForType(Type type)
 		{
-			var output = new List<DependencyProperty>();
+			ForceInitializeTypeConstructor(type);
 
-			foreach (var prop in GetPropertiesForType(type))
+			var results = new List<DependencyProperty>();
+
+			do
 			{
-				var propertyOptions = (prop.GetMetadata(type) as FrameworkPropertyMetadata)?.Options;
+				_registry.AppendInheritedPropertiesForType(type, results);
 
-				if (propertyOptions != null && (propertyOptions & options) != 0)
+				// Dependency properties are inherited
+				type = type.BaseType;
+			}
+			while (type != typeof(object) && type != null);
+
+			var array = results.ToArray();
+
+			// Produce a pre-sorted list, aligned with the initial behavior of DependencyPropertyDetailsCollection
+			Array.Sort(array, (l, r) => l.UniqueId - r.UniqueId);
+
+			return array;
+		}
+
+		private bool TryGetDefaultInheritedPropertyValue(out object defaultValue)
+		{
+			if (this == TextElement.ForegroundProperty ||
+				this == TextBlock.ForegroundProperty ||
+				this == Control.ForegroundProperty ||
+				this == RichTextBlock.ForegroundProperty ||
+				this == ContentPresenter.ForegroundProperty ||
+				this == IconElement.ForegroundProperty)
+			{
+				defaultValue = DefaultBrushes.TextForegroundBrush;
+				return true;
+			}
+
+			defaultValue = null;
+			return false;
+		}
+
+		internal object GetDefaultValue(DependencyObject referenceObject, Type forType)
+		{
+			if ((referenceObject as UIElement)?.GetDefaultValue2(this, out var defaultValue) == true)
+			{
+				return defaultValue;
+			}
+
+			if (IsInherited && TryGetDefaultInheritedPropertyValue(out var value))
+			{
+				return value;
+			}
+
+			if (this == FrameworkElement.FocusVisualPrimaryBrushProperty &&
+				ResourceResolver.TryStaticRetrieval("SystemControlFocusVisualPrimaryBrush", null, out var primaryBrush))
+			{
+				return primaryBrush;
+			}
+			else if (this == FrameworkElement.FocusVisualSecondaryBrushProperty &&
+				ResourceResolver.TryStaticRetrieval("SystemControlFocusVisualSecondaryBrush", null, out var secondaryBrush))
+			{
+				return secondaryBrush;
+			}
+
+			if (this == UIElement.IsTabStopProperty)
+			{
+				if (forType.IsAssignableTo(typeof(UserControl)))
 				{
-					output.Add(prop);
+					return Boxes.BooleanBoxes.BoxedFalse;
+				}
+				else if (forType.IsAssignableTo(typeof(Control)))
+				{
+					return Boxes.BooleanBoxes.BoxedTrue;
+				}
+
+				return Boxes.BooleanBoxes.BoxedFalse;
+			}
+
+			if (this == Shape.StretchProperty)
+			{
+				if (forType == typeof(Rectangle) || forType == typeof(Ellipse))
+				{
+					return Boxes.StretchBoxes.Fill;
 				}
 			}
 
-			return output.ToArray();
+			if (this == Timeline.DurationProperty)
+			{
+				if (referenceObject is FadeInThemeAnimation or FadeOutThemeAnimation)
+				{
+					if (((Duration)DefaultThemeAnimationDurationBox).TimeSpan == FeatureConfiguration.ThemeAnimation.DefaultThemeAnimationDuration)
+					{
+						// Our box is valid, so we can re-use it.
+						return DefaultThemeAnimationDurationBox;
+					}
+
+					// Rare code path, it will be hit only once per change in the feature configuration.
+					// The cached box is not valid. So we create a new box update the cached box.
+					DefaultThemeAnimationDurationBox = new Duration(FeatureConfiguration.ThemeAnimation.DefaultThemeAnimationDuration);
+					return DefaultThemeAnimationDurationBox;
+				}
+			}
+
+			if (this == Storyboard.TargetPropertyProperty)
+			{
+				if (referenceObject is FadeInThemeAnimation or FadeOutThemeAnimation)
+				{
+					return "Opacity";
+				}
+			}
+
+			if (this == DoubleAnimation.ToProperty)
+			{
+				if (referenceObject is FadeInThemeAnimation)
+				{
+					return Uno.UI.Helpers.Boxes.NullableDoubleBoxes.One;
+				}
+				else if (referenceObject is FadeOutThemeAnimation)
+				{
+					return Uno.UI.Helpers.Boxes.NullableDoubleBoxes.Zero;
+				}
+			}
+
+			if (_ownerTypeMetadata.CreateDefaultValueCallback != null)
+			{
+				return _ownerTypeMetadata.CreateDefaultValueCallback();
+			}
+
+			return _ownerTypeMetadata.DefaultValue;
 		}
 
 		public override int GetHashCode() => CachedHashCode;
@@ -555,6 +593,11 @@ namespace Microsoft.UI.Xaml
 			IsUnoType = (1 << 4),
 
 			ValidateNotNegativeAndNotNaN = (1 << 5),
+
+			/// <summary>
+			/// Set when the property is an inherited property
+			/// </summary>
+			IsInherited = (1 << 6),
 		}
 	}
 }

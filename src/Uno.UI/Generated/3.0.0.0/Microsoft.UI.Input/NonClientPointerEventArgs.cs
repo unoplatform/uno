@@ -53,8 +53,8 @@ namespace Microsoft.UI.Input
 			}
 		}
 #endif
-		// Forced skipping of method Microsoft.UI.Input.NonClientPointerEventArgs.PointerDeviceType.get
 		// Forced skipping of method Microsoft.UI.Input.NonClientPointerEventArgs.Point.get
+		// Forced skipping of method Microsoft.UI.Input.NonClientPointerEventArgs.PointerDeviceType.get
 		// Forced skipping of method Microsoft.UI.Input.NonClientPointerEventArgs.RegionKind.get
 		// Forced skipping of method Microsoft.UI.Input.NonClientPointerEventArgs.IsPointInRegion.get
 	}

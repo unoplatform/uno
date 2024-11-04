@@ -42,7 +42,8 @@ internal class UnoWpfWindow : WpfWindow
 		Width = (int)preferredWindowSize.Width;
 		Height = (int)preferredWindowSize.Height;
 
-		Host = new UnoWpfWindowHost(this, winUIWindow);
+		var windowHost = new UnoWpfWindowHost(this, winUIWindow);
+		Host = windowHost;
 		WpfManager.XamlRootMap.Register(xamlRoot, (IWpfXamlRootHost)Host);
 
 		_applicationView = ApplicationView.GetForWindowId(winUIWindow.AppWindow.Id);
@@ -56,6 +57,8 @@ internal class UnoWpfWindow : WpfWindow
 		UpdateWindowPropertiesFromPackage();
 		UpdateWindowPropertiesFromApplicationView();
 		UpdateWindowPropertiesFromCoreApplication();
+
+		this.SourceInitialized += (s, e) => windowHost.InitializeRenderer();
 	}
 
 	public static WpfWindow? GetFromWinUIWindow(WinUI.Window window)

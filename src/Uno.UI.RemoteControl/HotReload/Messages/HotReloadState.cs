@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Uno.UI.RemoteControl.HotReload;
 
-internal enum HotReloadState
+public enum HotReloadState
 {
 	/// <summary>
 	/// Hot reload is disabled.

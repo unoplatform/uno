@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.Threading;
-using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
 
@@ -148,13 +145,10 @@ internal partial class X11XamlRootHost
 					this.Log().Trace($"XLIB EVENT: {@event.type}");
 				}
 
-				if (@event.AnyEvent.window != x11Window.Window)
+				_ = XLib.XQueryTree(x11Window.Display, x11Window.Window, out IntPtr root, out _, out var children, out _);
+				_ = XLib.XFree(children);
+				if (@event.AnyEvent.window == root)
 				{
-#if DEBUG
-					_ = XLib.XQueryTree(x11Window.Display, x11Window.Window, out IntPtr root, out _, out var children, out _);
-					_ = XLib.XFree(children);
-					Debug.Assert(@event.AnyEvent.window == root);
-#endif
 					switch (@event.type)
 					{
 						case XEventName.PropertyNotify:
@@ -179,7 +173,8 @@ internal partial class X11XamlRootHost
 							break;
 					}
 				}
-				else
+				else if (@event.AnyEvent.window == x11Window.Window ||
+					(@event.type is XEventName.GenericEvent && @event.GenericEventCookie.extension == GetXI2Details(x11Window.Window).opcode))
 				{
 					switch (@event.type)
 					{
@@ -231,6 +226,26 @@ internal partial class X11XamlRootHost
 						case XEventName.EnterNotify:
 							_pointerSource?.ProcessEnterEvent(@event.CrossingEvent);
 							break;
+						case XEventName.GenericEvent:
+							var eventWithData = @event;
+							var cookiePtr = &eventWithData.GenericEventCookie;
+							var getEventDataSucceeded = XLib.XGetEventData(TopX11Window.Display, cookiePtr);
+
+							try
+							{
+								if (getEventDataSucceeded && _pointerSource is { } pointerSource)
+								{
+									pointerSource.HandleXI2Event(eventWithData);
+								}
+							}
+							finally
+							{
+								if (getEventDataSucceeded)
+								{
+									XLib.XFreeEventData(TopX11Window.Display, cookiePtr);
+								}
+							}
+							break;
 						case XEventName.KeyPress:
 							_keyboardSource?.ProcessKeyboardEvent(@event.KeyEvent, true);
 							break;
@@ -261,9 +276,16 @@ internal partial class X11XamlRootHost
 						default:
 							if (this.Log().IsEnabled(LogLevel.Error))
 							{
-								this.Log().Error($"XLIB ERROR: received an unexpected {@event.type} event on window {x11Window.Window.ToString("X", CultureInfo.InvariantCulture)}");
+								this.Log().Error($"XLIB ERROR: received an unexpected {@event.type} event on a non-uno window {@event.AnyEvent.window.ToString("X", CultureInfo.InvariantCulture)}");
 							}
 							break;
+					}
+				}
+				else
+				{
+					if (this.Log().IsEnabled(LogLevel.Error))
+					{
+						this.Log().Error($"XLIB ERROR: received an unexpected {@event.type} event on window {x11Window.Window.ToString("X", CultureInfo.InvariantCulture)}");
 					}
 				}
 			}

@@ -67,6 +67,7 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 		var x11Window = _host.RootX11Window;
 		using var lockDiposable = X11Helper.XLock(x11Window.Display);
 		_ = XLib.XRaiseWindow(x11Window.Display, x11Window.Window);
+		_ = XLib.XFlush(x11Window.Display); // Important! Otherwise X commands will sit waiting to be flushed, and since the window is not activated, there are no new X commands being sent to force a flush.
 
 		// We could send _NET_ACTIVE_WINDOW as well, although it doesn't seem to be needed (and only works with EWMH-compliant WMs)
 		// XClientMessageEvent xclient = default;
@@ -86,6 +87,7 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 
 	public override void Close()
 	{
+		base.Close();
 		var x11Window = _host.RootX11Window;
 		if (this.Log().IsEnabled(LogLevel.Information))
 		{
@@ -95,8 +97,6 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 		{
 			X11XamlRootHost.Close(x11Window);
 		}
-
-		RaiseClosed();
 	}
 
 	public override void ExtendContentIntoTitleBar(bool extend)
@@ -113,16 +113,6 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 			return;
 		}
 
-		var manager = SystemNavigationManagerPreview.GetForCurrentView();
-		if (!manager.HasConfirmedClose)
-		{
-			if (!manager.RequestAppClose())
-			{
-				// App closing was prevented
-				return;
-			}
-		}
-
 		// All prerequisites passed, can safely close.
 		Close();
 	}
@@ -134,6 +124,7 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 	protected override void ShowCore()
 	{
 		using var lockDiposable = X11Helper.XLock(_host.RootX11Window.Display);
+		using var lockDiposable2 = X11Helper.XLock(_host.TopX11Window.Display);
 		_ = XLib.XMapWindow(_host.RootX11Window.Display, _host.RootX11Window.Window);
 		_ = XLib.XMapWindow(_host.TopX11Window.Display, _host.TopX11Window.Window);
 	}

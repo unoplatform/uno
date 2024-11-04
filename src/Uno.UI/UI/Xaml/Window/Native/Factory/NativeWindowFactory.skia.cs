@@ -18,6 +18,8 @@ partial class NativeWindowFactory
 		return factory;
 	});
 
+	public static bool SupportsClosingCancellation => _nativeWindowFactory.Value?.SupportsClosingCancellation ?? false;
+
 	public static bool SupportsMultipleWindows => _nativeWindowFactory.Value?.SupportsMultipleWindows ?? false;
 
 	private static INativeWindowWrapper? CreateWindowPlatform(Microsoft.UI.Xaml.Window window, XamlRoot xamlRoot) =>

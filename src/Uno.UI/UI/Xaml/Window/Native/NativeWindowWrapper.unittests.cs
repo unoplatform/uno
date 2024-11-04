@@ -18,7 +18,7 @@ internal partial class NativeWindowWrapper : NativeWindowWrapperBase
 
 	public override object NativeWindow => null;
 
-	internal void OnNativeClosed() => RaiseClosed();
+	internal void OnNativeClosed() => RaiseClosing();
 
 	internal void OnNativeActivated(CoreWindowActivationState state) => ActivationState = state;
 

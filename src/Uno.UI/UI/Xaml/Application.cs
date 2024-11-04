@@ -269,6 +269,14 @@ namespace Microsoft.UI.Xaml
 
 		internal void InitializationCompleted()
 		{
+			if (_initializationComplete)
+			{
+				// InitializationCompleted is currently called from NativeApplication.OnActivityStarted
+				// and will be called every time the app is put to background then back to foreground.
+				// Nothing in this method should really execute twice.
+				return;
+			}
+
 			SystemThemeHelper.SystemThemeChanged += OnSystemThemeChanged;
 
 			_initializationComplete = true;
@@ -446,7 +454,7 @@ namespace Microsoft.UI.Xaml
 				// with the newly evaluated ThemeResource value.
 				// In this case, if we previously had Animation value in effect, we don't want the new Local value to take effect.
 				// So, we avoid setting LocalValueNewerThanAnimationsValue
-				DependencyPropertyDetails.SuppressLocalCanDefeatAnimations();
+				ModifiedValue.SuppressLocalCanDefeatAnimations();
 				DefaultBrushes.ResetDefaultThemeBrushes();
 				foreach (var contentRoot in WinUICoreServices.Instance.ContentRootCoordinator.ContentRoots)
 				{
@@ -477,7 +485,7 @@ namespace Microsoft.UI.Xaml
 			}
 			finally
 			{
-				DependencyPropertyDetails.ContinueLocalCanDefeatAnimations();
+				ModifiedValue.ContinueLocalCanDefeatAnimations();
 			}
 		}
 

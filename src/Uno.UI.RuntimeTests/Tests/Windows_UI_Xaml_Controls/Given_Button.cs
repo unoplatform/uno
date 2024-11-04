@@ -16,6 +16,7 @@ using Windows.Foundation;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Color = Windows.UI.Color;
+using Microsoft.UI.Xaml.Data;
 
 #if HAS_UNO_WINUI || WINAPPSDK || WINUI
 using Colors = Microsoft.UI.Colors;
@@ -34,7 +35,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow(false)]
 		public async Task When_NavigationViewButtonStyles(bool useFluent)
 		{
-			using var _ = useFluent ? StyleHelper.UseFluentStyles() : null;
+			using var _ = useFluent ? null : StyleHelper.UseUwpStyles();
 
 			var normalBtn = (Button)XamlReader.Load("""
 				<Button xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" Style="{StaticResource NavigationBackButtonNormalStyle}" />
@@ -123,9 +124,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow(typeof(Button))]
 		[DataRow(typeof(ToggleButton))]
 		[DataRow(typeof(RepeatButton))]
+#if !HAS_RENDER_TARGET_BITMAP
+		[Ignore("Cannot take screenshot on this platform.")]
+#endif
 		public async Task When_BorderThickness_Zero(Type type)
 		{
-			using var fluent = StyleHelper.UseFluentStyles();
 			var grid = new Grid
 			{
 				Width = 120,
@@ -178,7 +181,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if HAS_UNO
 		[TestMethod]
 #if !HAS_INPUT_INJECTOR
-		[Ignore("InputInjector is only supported on skia")]
+		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		public async Task When_DoubleTap_Timing()
 		{
@@ -255,7 +258,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if HAS_UNO
 		[TestMethod]
 #if !HAS_INPUT_INJECTOR
-		[Ignore("InputInjector is only supported on skia")]
+		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		public async Task When_Tapped_PointerPressed_Is_Not_Raised()
 		{
@@ -314,6 +317,26 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 #endif
+
+		[TestMethod]
+		public async Task When_Command_CanExecute_Throws()
+		{
+			// Here we are testing against a bug where
+			// a data-bound ICommand that throws in its CanExecute
+			// can cause the binding to reset to its FallbackValue.
+			var vm = new
+			{
+				UnstableCommand = new DelegateCommand(x => throw new Exception("fail...")),
+			};
+
+			var sut = new Button();
+			sut.SetBinding(Button.CommandProperty, new Binding { Path = new(nameof(vm.UnstableCommand)), FallbackValue = new NoopCommand() });
+			sut.DataContext = vm;
+
+			await UITestHelper.Load(sut, x => x.IsLoaded);
+
+			Assert.AreEqual(vm.UnstableCommand, sut.Command, "Binding did not set the proper value.");
+		}
 
 		private async Task RunIsExecutingCommandCommon(IsExecutingCommand command)
 		{
@@ -419,5 +442,26 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				CanExecuteChanged?.Invoke(this, EventArgs.Empty);
 			}
 		}
+
+		public class DelegateCommand : ICommand
+		{
+			private readonly Func<object, bool> canExecuteImpl;
+			private readonly Action<object> executeImpl;
+
+			public event EventHandler CanExecuteChanged;
+
+			public DelegateCommand(Func<object, bool> canExecute = null, Action<object> execute = null)
+			{
+				this.canExecuteImpl = canExecute;
+				this.executeImpl = execute;
+			}
+
+			public void RaiseCanExecuteChanged() => CanExecuteChanged?.Invoke(this, default);
+
+			public bool CanExecute(object parameter) => canExecuteImpl?.Invoke(parameter) ?? true;
+			public void Execute(object parameter) => executeImpl?.Invoke(parameter);
+		}
+
+		public class NoopCommand() : DelegateCommand(null, null) { }
 	}
 }
