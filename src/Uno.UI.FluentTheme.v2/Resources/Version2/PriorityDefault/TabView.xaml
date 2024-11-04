@@ -701,7 +701,8 @@
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
 
-                            <!-- Uno workaround: On Android, the ContentPresenters inside this are not calculating correctly -->
+                            <!-- Uno workaround: On Android, the Height of ContentPresenters inside this Grid is not bing calculated correctly -->
+                            <!-- It can be removed once this PR is merged: https://github.com/unoplatform/uno/pull/18261 -->
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
