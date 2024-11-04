@@ -2739,10 +2739,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual("hello", SUT.Text);
 
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Z, VirtualKeyModifiers.Control, unicodeKey: 'z'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Z, _platformCtrlKey, unicodeKey: 'z'));
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual("", SUT.Text);
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Y, VirtualKeyModifiers.Control, unicodeKey: 'z'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Y, _platformCtrlKey, unicodeKey: 'z'));
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual("hello", SUT.Text);
 		}
