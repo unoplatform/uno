@@ -3498,7 +3498,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Focus(FocusState.Programmatic);
 			await WindowHelper.WaitForIdle();
 
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Delete, VirtualKeyModifiers.Control));
+			// on macOS it's option (menu/alt) and backspace to delete a word
+			var mod = OperatingSystem.IsMacOS() ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.Control;
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Delete, mod));
 			await WindowHelper.WaitForIdle();
 
 			SUT.Undo();
