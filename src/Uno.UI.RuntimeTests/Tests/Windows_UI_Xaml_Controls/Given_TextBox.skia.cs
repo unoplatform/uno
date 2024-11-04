@@ -1704,7 +1704,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.Select(2, 4);
 			await WindowHelper.WaitForIdle();
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.X, VirtualKeyModifiers.Control, unicodeKey: 'x'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.X, _platformCtrlKey, unicodeKey: 'x'));
 			await WindowHelper.WaitForIdle();
 
 			Assert.IsFalse(handled);
@@ -1715,7 +1715,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.Select(SUT.Text.Length - 1, 0);
 			await WindowHelper.WaitForIdle();
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.V, VirtualKeyModifiers.Control, unicodeKey: 'v'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.V, _platformCtrlKey, unicodeKey: 'v'));
 			await WindowHelper.WaitForIdle();
 
 			Assert.IsFalse(handled);
@@ -1725,7 +1725,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.Select(6, 3);
 			await WindowHelper.WaitForIdle();
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.V, VirtualKeyModifiers.Control, unicodeKey: 'v'));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.V, _platformCtrlKey, unicodeKey: 'v'));
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual("Heworlllo  d", SUT.Text);
