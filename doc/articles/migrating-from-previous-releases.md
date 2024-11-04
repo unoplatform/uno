@@ -4,7 +4,7 @@ uid: Uno.Development.MigratingFromPreviousReleases
 
 # Migrating from Previous Releases of Uno Platform
 
-## Uno Platform 5.3
+## Uno Platform 5.6
 
 ### Lazy loading
 

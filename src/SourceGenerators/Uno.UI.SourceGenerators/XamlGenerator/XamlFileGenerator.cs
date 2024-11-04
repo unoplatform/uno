@@ -6413,26 +6413,25 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								{
 									using (writer.BlockInvariant($"if ({componentName}_update_That.Target is {_xClassName} that)"))
 									{
-
-												using (writer.BlockInvariant($"if (sender.IsMaterialized)"))
-												{
-													writer.AppendLineIndented($"that.Bindings.UpdateResources();");
-													if (nameMember?.Value is string xName)
-													{
-														writer.AppendLineIndented($"that.Bindings.NotifyXLoad(\"{xName}\");");
-													}
-												}
-
-												using (writer.BlockInvariant("else"))
-												{
-													var elementNames = FindNamesIn(definition);
-													foreach (var elementName in elementNames)
-													{
-														writer.AppendLineIndented($"_{elementName}Subject.ElementInstance = null;");
-													}
-												}
+										using (writer.BlockInvariant($"if (sender.IsMaterialized)"))
+										{
+											writer.AppendLineIndented($"that.Bindings.UpdateResources();");
+											if (nameMember?.Value is string xName)
+											{
+												writer.AppendLineIndented($"that.Bindings.NotifyXLoad(\"{xName}\");");
 											}
 										}
+
+										using (writer.BlockInvariant("else"))
+										{
+											var elementNames = FindNamesIn(definition);
+											foreach (var elementName in elementNames)
+											{
+												writer.AppendLineIndented($"_{elementName}Subject.ElementInstance = null;");
+											}
+										}
+									}
+								}
 
 								writer.AppendLineIndented($"{closureName}.MaterializationChanged += {componentName}_update;");
 
