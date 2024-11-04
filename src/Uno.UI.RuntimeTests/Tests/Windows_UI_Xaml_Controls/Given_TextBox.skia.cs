@@ -333,13 +333,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Focus(FocusState.Programmatic);
 			await WindowHelper.WaitForIdle();
 
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.End, VirtualKeyModifiers.Control));
+			var key = OperatingSystem.IsMacOS() ? VirtualKey.Down : VirtualKey.End;
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, key, _platformCtrlKey));
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(SUT.Text.Length, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Home, VirtualKeyModifiers.Control));
+			key = OperatingSystem.IsMacOS() ? VirtualKey.Up : VirtualKey.Home;
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, key, _platformCtrlKey));
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(0, SUT.SelectionStart);
