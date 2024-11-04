@@ -146,16 +146,16 @@ public class InfoBar : IVsInfoBarUIEvents
 }
 
 record class ActionBarTextSpan(
-	string Text
-	, bool Bold = false
-	, bool Italic = false
-	, bool Underline = false) : IVsInfoBarTextSpan;
+	string Text,
+	bool Bold = false,
+	bool Italic = false,
+	bool Underline = false) : IVsInfoBarTextSpan;
 
 record ActionBarItem(
-	string? Text
-	, string? Name = null
-	, bool Bold = false
-	, bool Italic = false
-	, bool Underline = false
-	, object? ActionContext = null
-	, bool IsButton = false) : IVsInfoBarActionItem;
+	string? Text,
+	string? Name = null,
+	bool Bold = false,
+	bool Italic = false,
+	bool Underline = false,
+	object? ActionContext = null,
+	bool IsButton = false) : IVsInfoBarActionItem;
