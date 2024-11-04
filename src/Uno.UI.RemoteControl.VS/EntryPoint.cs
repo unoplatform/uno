@@ -496,7 +496,7 @@ public partial class EntryPoint : IDisposable
 			new InfoBarModel(
 				new ActionBarTextSpan[] {
 					new(e.Title, Bold: true),
-					new(e.Message)
+					new(" " + e.Message)
 				},
 				e.Commands.Select(Commands => new ActionBarItem(Commands.Text, Commands.Name, ActionContext: Commands.Parameter, IsButton: true)).ToArray(),
 				e.Kind == NotificationKind.Information ? KnownMonikers.StatusInformation : KnownMonikers.StatusError,
