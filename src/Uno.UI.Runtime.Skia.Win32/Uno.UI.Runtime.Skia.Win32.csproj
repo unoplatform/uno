@@ -1,0 +1,56 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>$(NetPrevious);$(NetCurrent)</TargetFrameworks>
+	</PropertyGroup>
+
+	<Import Project="../targetframework-override-noplatform.props" />
+
+	<PropertyGroup>
+		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
+		<Description>This package provides the platform support for Skia in Uno Platform projects.</Description>
+
+		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Runtime.Skia.Win32</PackageId>
+
+		<UseCommonOverridePackage>true</UseCommonOverridePackage>
+
+		<!-- Ignore NU5104 for net7.0 System.Drawing.Common -->
+		<NoWarn>$(NoWarn);NU5104</NoWarn>
+	</PropertyGroup>	
+
+	<ItemGroup>
+		<!--
+		This allows for building the library with a dependency to WPF while not
+		building with net8-windows.
+		-->
+		<FrameworkReference Include="Microsoft.WindowsDesktop.App.WPF" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\Common\uno.png" Pack="true" PackagePath="\" Visible="false" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Web.WebView2" Aliases="WpfWebView" PrivateAssets="all" />
+
+		<!-- 
+			Required to ensure that this reference is latest and not
+			transitively flowing through SkiaSharp's dependencies
+		 -->
+		<PackageReference Include="Microsoft.Win32.SystemEvents" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Skia.csproj" />
+		<ProjectReference Include="..\Uno.UI.Runtime.Skia\Uno.UI.Runtime.Skia.csproj" />
+		<ProjectReference Include="..\Uno.UI\Uno.UI.Skia.csproj" />
+		<ProjectReference Include="..\Uno.UWP\Uno.Skia.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="buildTransitive/*.*">
+			<Pack>true</Pack>
+			<PackagePath>buildTransitive</PackagePath>
+		</Content>
+	</ItemGroup>
+</Project>

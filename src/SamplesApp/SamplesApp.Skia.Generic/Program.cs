@@ -52,6 +52,7 @@ namespace SkiaSharpExample
 					}
 				})
 				.UseX11()
+				.UseWin32()
 				.UseLinuxFrameBuffer()
 				.UseWindows(b => b
 					.WpfApplication(() =>
