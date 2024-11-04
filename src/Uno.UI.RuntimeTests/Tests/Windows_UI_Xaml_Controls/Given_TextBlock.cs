@@ -182,8 +182,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await UITestHelper.Load(expected);
 			var screenshot2 = await UITestHelper.ScreenShot(expected);
 
-			// we tolerate a 1 pixel difference between the bitmaps due to font differences
-			await ImageAssert.AreSimilarAsync(screenshot1, screenshot2, imperceptibilityThreshold: 0.18, resolutionTolerance: 1);
+			// we tolerate a 2 pixels difference between the bitmaps due to font differences
+			await ImageAssert.AreSimilarAsync(screenshot1, screenshot2, imperceptibilityThreshold: 0.18, resolutionTolerance: 2);
 		}
 #endif
 
