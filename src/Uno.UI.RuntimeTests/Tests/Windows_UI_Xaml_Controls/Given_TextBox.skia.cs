@@ -1431,7 +1431,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(1, SUT.SelectionStart);
 			Assert.AreEqual(9, SUT.SelectionLength);
 
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.X, VirtualKeyModifiers.Control));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.X, _platformCtrlKey));
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual("Hd", SUT.Text);
@@ -2151,67 +2151,69 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.Shift | VirtualKeyModifiers.Control));
+			// on macOS selecting the next word is `shift` + `option` (alt/menu) + `right`
+			var mod = VirtualKeyModifiers.Shift | (OperatingSystem.IsMacOS() ? VirtualKeyModifiers.Menu : VirtualKeyModifiers.Control);
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, mod));
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(0, SUT.SelectionStart);
 			Assert.AreEqual(6, SUT.SelectionLength);
 
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.Shift | VirtualKeyModifiers.Control));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, mod));
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(0, SUT.SelectionStart);
 			Assert.AreEqual(7, SUT.SelectionLength);
 
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.Shift | VirtualKeyModifiers.Control));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, mod));
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(0, SUT.SelectionStart);
 			Assert.AreEqual(12, SUT.SelectionLength);
 
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.Shift | VirtualKeyModifiers.Control));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, mod));
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(0, SUT.SelectionStart);
 			Assert.AreEqual(13, SUT.SelectionLength);
 
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.Shift | VirtualKeyModifiers.Control));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, mod));
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(0, SUT.SelectionStart);
 			Assert.AreEqual(14, SUT.SelectionLength);
 
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.Shift | VirtualKeyModifiers.Control));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, mod));
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(0, SUT.SelectionStart);
 			Assert.AreEqual(19, SUT.SelectionLength);
 
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.Shift | VirtualKeyModifiers.Control));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, mod));
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(0, SUT.SelectionStart);
 			Assert.AreEqual(20, SUT.SelectionLength);
 
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.Shift | VirtualKeyModifiers.Control));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, mod));
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(0, SUT.SelectionStart);
 			Assert.AreEqual(21, SUT.SelectionLength);
 
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.Shift | VirtualKeyModifiers.Control));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, mod));
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(0, SUT.SelectionStart);
 			Assert.AreEqual(24, SUT.SelectionLength);
 
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.Shift | VirtualKeyModifiers.Control));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, mod));
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(0, SUT.SelectionStart);
 			Assert.AreEqual(25, SUT.SelectionLength);
 
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.Shift | VirtualKeyModifiers.Control));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, mod));
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(0, SUT.SelectionStart);
 			Assert.AreEqual(29, SUT.SelectionLength);
 
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.Shift | VirtualKeyModifiers.Control));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, mod));
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(0, SUT.SelectionStart);
 			Assert.AreEqual(30, SUT.SelectionLength);
 
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.Shift | VirtualKeyModifiers.Control));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, mod));
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(0, SUT.SelectionStart);
 			Assert.AreEqual(31, SUT.SelectionLength);
@@ -3075,7 +3077,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.E, VirtualKeyModifiers.None, unicodeKey: 'e'));
 			await WindowHelper.WaitForIdle();
 
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, key, VirtualKeyModifiers.Control));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, key, _platformCtrlKey));
 			await WindowHelper.WaitForIdle();
 
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.L, VirtualKeyModifiers.None, unicodeKey: 'l'));
