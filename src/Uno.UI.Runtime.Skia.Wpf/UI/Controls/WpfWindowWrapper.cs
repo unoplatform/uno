@@ -32,9 +32,12 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 		_wpfWindow.DpiChanged += OnNativeDpiChanged;
 		_wpfWindow.StateChanged += OnNativeStateChanged;
 		_wpfWindow.Host.SizeChanged += (_, e) => OnHostSizeChanged(e.NewSize);
-		OnHostSizeChanged(new Size(_wpfWindow.Width, _wpfWindow.Height));
 		_wpfWindow.LocationChanged += OnNativeLocationChanged;
 		_wpfWindow.SizeChanged += OnNativeSizeChanged;
+
+		RasterizationScale = (float)VisualTreeHelper.GetDpi(_wpfWindow.Host).DpiScaleX;
+
+		OnHostSizeChanged(new Size(_wpfWindow.Width, _wpfWindow.Height));
 		UpdateSizeFromNative();
 		UpdatePositionFromNative();
 	}
@@ -72,7 +75,6 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 
 	protected override void ShowCore()
 	{
-		RasterizationScale = (float)VisualTreeHelper.GetDpi(_wpfWindow.Host).DpiScaleX;
 		_wpfWindow.Show();
 		_wasShown = true;
 		UpdatePositionFromNative();
