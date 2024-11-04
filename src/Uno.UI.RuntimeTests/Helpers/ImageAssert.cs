@@ -258,16 +258,19 @@ public static partial class ImageAssert
 	/// If the error is greater than or equal to 0.022, the differences are visible to human eyes.
 	/// <paramref name="actual">The image to compare with reference</paramref>
 	/// <paramref name="expected">Reference image.</paramref>
-	/// <paramref name="imperceptibilityThreshold">It is the threshold beyond which the compared images are not considered equal. Default value is 0.022.</paramref>>
+	/// <paramref name="imperceptibilityThreshold">It is the threshold beyond which the compared images are not considered equal. Default value is 0.022.</paramref>
+	/// <paramref name="resolutionTolerance"/>Limits of resolution (in pixels) difference between the bitmaps</paramref>
 	/// </summary>
-	public static async Task AreSimilarAsync(RawBitmap actual, RawBitmap expected, double imperceptibilityThreshold = 0.022)
+	public static async Task AreSimilarAsync(RawBitmap actual, RawBitmap expected, double imperceptibilityThreshold = 0.022, int resolutionTolerance = 0)
 	{
 		await actual.Populate();
 		await expected.Populate();
 
 		using var assertionScope = new AssertionScope("ImageAssert");
 
-		if (actual.Width != expected.Width || actual.Height != expected.Height)
+		var dx = Math.Abs(actual.Width - expected.Width);
+		var dy = Math.Abs(actual.Height - expected.Height);
+		if (dx > resolutionTolerance || dy > resolutionTolerance)
 		{
 			assertionScope.FailWith($"Images have different resolutions. {Environment.NewLine}expected:({expected.Width},{expected.Height}){Environment.NewLine}actual  :({actual.Width},{actual.Height})");
 		}
