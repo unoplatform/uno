@@ -13,11 +13,21 @@ namespace Uno.Utils.DependencyInjection;
 public static class ServiceCollectionServiceExtensions
 {
 	/// <summary>
+	/// Register services configured with the <see cref="ServiceAttribute"/> and <see cref="ServiceCollectionExtensionAttribute"/> attributes from all loaded assemblies.
+	/// </summary>
+	/// <param name="svc">The service collection on which services should be registered.</param>
+	/// <returns>The service collection for fluent usage.</returns>
+	public static IServiceCollection AddFromAttributes(this IServiceCollection svc)
+		=> svc
+			.AddFromServiceAttributes()
+			.AddFromServiceExtensionAttributes();
+
+	/// <summary>
 	/// Register services configured with the <see cref="ServiceAttribute"/> attribute from all loaded assemblies.
 	/// </summary>
 	/// <param name="svc">The service collection on which services should be registered.</param>
 	/// <returns>The service collection for fluent usage.</returns>
-	public static IServiceCollection AddFromAttribute(this IServiceCollection svc)
+	public static IServiceCollection AddFromServiceAttributes(this IServiceCollection svc)
 	{
 		var attribute = typeof(ServiceAttribute);
 		var services = AppDomain
@@ -33,6 +43,40 @@ public static class ServiceCollectionServiceExtensions
 			svc.Add(new ServiceDescriptor(service!.Contract, service.Key, service.Implementation, service.LifeTime));
 		}
 		svc.AddHostedService(s => new AutoInitService(s, services!));
+
+		return svc;
+	}
+
+	/// <summary>
+	/// Register services configured with the <see cref="ServiceCollectionExtensionAttribute"/> attribute from all loaded assemblies.
+	/// </summary>
+	/// <param name="svc">The service collection on which services should be registered.</param>
+	/// <returns>The service collection for fluent usage.</returns>
+	public static IServiceCollection AddFromServiceExtensionAttributes(this IServiceCollection svc)
+	{
+		var attribute = typeof(ServiceCollectionExtensionAttribute);
+		var extensions = AppDomain
+			.CurrentDomain
+			.GetAssemblies()
+			.SelectMany(assembly => assembly.GetCustomAttributesData())
+			.Select(attrData => attrData.TryCreate(attribute) as ServiceCollectionExtensionAttribute)
+			.Where(attr => attr is not null)
+			.ToImmutableList();
+
+		foreach (var extension in extensions)
+		{
+			try
+			{
+				Activator.CreateInstance(extension!.Type, args: [svc]);
+			}
+			catch (Exception error)
+			{
+				if (svc.Log().IsEnabled(LogLevel.Error))
+				{
+					svc.Log().Log(LogLevel.Error, error, $"Failed to create an instance of extensions {extension?.Type} for dynamic service discovery..");
+				}
+			}
+		}
 
 		return svc;
 	}
