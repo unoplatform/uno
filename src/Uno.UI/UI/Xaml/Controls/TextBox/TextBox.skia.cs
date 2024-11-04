@@ -705,8 +705,10 @@ public partial class TextBox
 
 	private void KeyDownRightArrow(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
-		// on macOS it is `shift` + `option` + `right` that select the next word
-		if (shift && OperatingSystem.IsMacOS())
+		// on macOS it is:
+		// * `option` + `right` that moves to the next word
+		// * `shift` + `option` + `right` that select the next word
+		if (OperatingSystem.IsMacOS())
 		{
 			ctrl = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Menu);
 		}
