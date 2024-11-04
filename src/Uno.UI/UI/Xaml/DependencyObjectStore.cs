@@ -107,13 +107,6 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		private SpecializedResourceDictionary.ResourceKey? _themeLastUsed;
 
-		private const bool _validatePropertyOwner =
-#if DEBUG
-			true;
-#else
-			false;
-#endif
-
 #if UNO_HAS_ENHANCED_LIFECYCLE
 		internal bool IsDisposed => _isDisposed;
 #endif
@@ -807,25 +800,24 @@ namespace Microsoft.UI.Xaml
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void ValidatePropertyOwner(DependencyProperty property)
 		{
-			if (_validatePropertyOwner)
+#if DEBUG
+			var isFrameworkElement = _originalObjectType.Is(typeof(FrameworkElement));
+			var isMixinFrameworkElement = _originalObjectRef.Target is IFrameworkElement && !isFrameworkElement;
+
+			if (
+				!_originalObjectType.Is(property.OwnerType)
+				&& !property.IsAttached
+
+				// Don't fail validation for properties that are located on non-FrameworkElement types
+				// e.g. ScrollContentPresenter, for which using the Name property should not fail.
+				&& !isMixinFrameworkElement
+			)
 			{
-				var isFrameworkElement = _originalObjectType.Is(typeof(FrameworkElement));
-				var isMixinFrameworkElement = _originalObjectRef.Target is IFrameworkElement && !isFrameworkElement;
-
-				if (
-					!_originalObjectType.Is(property.OwnerType)
-					&& !property.IsAttached
-
-					// Don't fail validation for properties that are located on non-FrameworkElement types
-					// e.g. ScrollContentPresenter, for which using the Name property should not fail.
-					&& !isMixinFrameworkElement
-				)
-				{
-					throw new InvalidOperationException(
-						$"The Dependency Property [{property.Name}] is owned by [{property.OwnerType}] and cannot be used on [{_originalObjectType}]"
-					);
-				}
+				throw new InvalidOperationException(
+					$"The Dependency Property [{property.Name}] is owned by [{property.OwnerType}] and cannot be used on [{_originalObjectType}]"
+				);
 			}
+#endif
 		}
 
 		public long RegisterPropertyChangedCallback(DependencyProperty property, DependencyPropertyChangedCallback callback)
