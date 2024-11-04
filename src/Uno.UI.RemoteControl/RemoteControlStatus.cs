@@ -19,11 +19,7 @@ public record RemoteControlStatus(
 	/// </summary>
 	public bool IsAllGood =>
 		State == ConnectionState.Connected
-#if !DEBUG
-		// For debug builds, it's annoying to have the version mismatch preventing the connection
-		// Only Uno devs should get this issue, let's not block them.
 		&& IsVersionValid == true
-#endif
 		&& MissingRequiredProcessors.IsEmpty
 		&& KeepAlive.State == KeepAliveState.Ok
 		&& InvalidFrames.Count == 0;
