@@ -18,6 +18,8 @@ public class AssemblyHelper
 		{
 			try
 			{
+				_log.Log(LogLevel.Information, $"Loading add-in assembly '{dll}'.");
+
 				assemblies.Add(Assembly.LoadFrom(dll));
 			}
 			catch (Exception err)
