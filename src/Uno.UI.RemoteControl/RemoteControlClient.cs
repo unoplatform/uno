@@ -656,7 +656,7 @@ public partial class RemoteControlClient : IRemoteControlClient
 
 		if (Interlocked.CompareExchange(ref _keepAliveTimer, timer, null) is null)
 		{
-			timer.Change(_keepAliveInterval, _keepAliveInterval);
+			timer.Change(TimeSpan.Zero, _keepAliveInterval);
 		}
 	}
 
