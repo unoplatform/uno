@@ -145,19 +145,17 @@ public class InfoBar : IVsInfoBarUIEvents
 	}
 }
 
-class ActionBarItem : IVsInfoBarActionItem
-{
-	public string? Text { get; set; }
+record class ActionBarTextSpan(
+	string Text,
+	bool Bold = false,
+	bool Italic = false,
+	bool Underline = false) : IVsInfoBarTextSpan;
 
-	public string? Name { get; set; }
-
-	public bool Bold { get; set; }
-
-	public bool Italic { get; set; }
-
-	public bool Underline { get; set; }
-
-	public object? ActionContext { get; set; }
-
-	public bool IsButton { get; set; }
-}
+record ActionBarItem(
+	string? Text,
+	string? Name = null,
+	bool Bold = false,
+	bool Italic = false,
+	bool Underline = false,
+	object? ActionContext = null,
+	bool IsButton = false) : IVsInfoBarActionItem;
