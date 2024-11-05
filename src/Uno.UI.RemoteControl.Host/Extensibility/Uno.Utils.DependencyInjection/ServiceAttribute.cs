@@ -10,7 +10,7 @@ namespace Uno.Utils.DependencyInjection;
 /// <param name="contract">Type of the contract (i.e. interface) implemented by the concrete <see cref="Implementation"/> type.</param>
 /// <param name="implementation">Concrete type to register in the service collection.</param>
 [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
-public class ServiceAttribute(Type contract, Type implementation) : Attribute
+public sealed class ServiceAttribute(Type contract, Type implementation) : Attribute
 {
 	/// <summary>
 	/// Creates a new instance of the <see cref="ServiceAttribute"/> class with only a concrete type (used as contract and implementation).

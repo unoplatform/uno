@@ -10,11 +10,12 @@ namespace Uno.Diagnostics.UI;
 /// <summary>
 /// A generic diagnostic view.
 /// </summary>
-internal class DiagnosticView<TView>(
+public class DiagnosticView<TView>(
 	string id,
 	string name,
 	Func<IDiagnosticViewContext, TView> factory,
-	Func<IDiagnosticViewContext, CancellationToken, ValueTask<object?>>? details = null)
+	Func<IDiagnosticViewContext, CancellationToken, ValueTask<object?>>? details = null,
+	DiagnosticViewRegistrationPosition position = default)
 	: IDiagnosticView
 	where TView : UIElement
 {
@@ -22,8 +23,9 @@ internal class DiagnosticView<TView>(
 		string id,
 		string name,
 		Func<TView> preview,
-		Func<CancellationToken, ValueTask<object?>>? details = null)
-		: this(id, name, _ => preview(), async (_, ct) => details is null ? null : await details(ct))
+		Func<CancellationToken, ValueTask<object?>>? details = null,
+		DiagnosticViewRegistrationPosition position = default)
+		: this(id, name, _ => preview(), async (_, ct) => details is null ? null : await details(ct), position)
 	{
 	}
 
@@ -32,6 +34,8 @@ internal class DiagnosticView<TView>(
 
 	/// <inheritdoc />
 	string IDiagnosticView.Name => name;
+
+	DiagnosticViewRegistrationPosition IDiagnosticView.Position => position;
 
 	/// <inheritdoc />
 	object IDiagnosticView.GetElement(IDiagnosticViewContext context) => factory(context);

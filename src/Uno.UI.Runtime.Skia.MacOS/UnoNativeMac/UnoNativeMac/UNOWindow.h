@@ -9,9 +9,13 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef void (*resize_fn_ptr)(void* /* window */, double /* width */, double /* height */);
-resize_fn_ptr uno_get_resize_callback(void);
-void uno_set_resize_callback(resize_fn_ptr p);
+typedef void (*uno_drawable_resize_fn_ptr)(void* /* window */, double /* width */, double /* height */);
+uno_drawable_resize_fn_ptr uno_get_resize_callback(void);
+void uno_set_resize_callback(uno_drawable_resize_fn_ptr p);
+
+typedef void (*window_move_or_resize_fn_ptr)(NSWindow* /* window */, double /* x or width */, double /* y or height */);
+window_move_or_resize_fn_ptr uno_get_window_move_callback(void);
+window_move_or_resize_fn_ptr uno_get_window_resize_callback(void);
 
 @interface windowDidChangeScreenNoteClass : NSObject
 
@@ -32,6 +36,7 @@ void uno_set_resize_callback(resize_fn_ptr p);
 - (void)sendEvent:(NSEvent *)event;
 
 - (BOOL)windowShouldZoom:(NSWindow *)window toFrame:(NSRect)newFrame;
+- (void)windowDidMove:(NSNotification *)notification;
 - (bool)windowShouldClose:(NSWindow *)sender;
 - (void)windowWillClose:(NSNotification *)notification;
 
@@ -42,8 +47,11 @@ NSWindow* uno_app_get_main_window(void);
 NSWindow* uno_window_create(double width, double height);
 void uno_window_activate(NSWindow *window);
 void uno_window_invalidate(NSWindow *window);
+void uno_window_close(NSWindow *window);
+void uno_window_move(NSWindow *window, double x, double y);
 bool uno_window_resize(NSWindow *window, double width, double height);
 
+void uno_window_get_position(NSWindow *window, double *x, double *y);
 char* uno_window_get_title(NSWindow *window);
 void uno_window_set_title(NSWindow *window, const char* title);
 
@@ -297,7 +305,7 @@ struct MouseEventData {
 
 typedef int32_t (*window_key_callback_fn_ptr)(UNOWindow* window, VirtualKey key, VirtualKeyModifiers mods, uint32 scanCode, UniChar unicode);
 typedef int32_t (*window_mouse_callback_fn_ptr)(UNOWindow* window, struct MouseEventData *data);
-void uno_set_window_events_callbacks(window_key_callback_fn_ptr keyDown, window_key_callback_fn_ptr keyUp, window_mouse_callback_fn_ptr pointer);
+void uno_set_window_events_callbacks(window_key_callback_fn_ptr keyDown, window_key_callback_fn_ptr keyUp, window_mouse_callback_fn_ptr pointer, window_move_or_resize_fn_ptr move, window_move_or_resize_fn_ptr resize);
 
 typedef bool (*window_should_close_fn_ptr)(UNOWindow* window);
 window_should_close_fn_ptr uno_get_window_should_close_callback(void);
