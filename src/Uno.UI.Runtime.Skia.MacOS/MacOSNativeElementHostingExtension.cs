@@ -11,12 +11,9 @@ namespace Uno.UI.Runtime.Skia.MacOS;
 
 internal class MacOSNativeElement : Microsoft.UI.Xaml.FrameworkElement
 {
-	internal MacOSNativeElement(nint handle)
-	{
-		NativeHandle = handle;
-	}
+	public nint NativeHandle { get; internal set; }
 
-	public nint NativeHandle { get; private set; }
+	internal bool Detached { get; set; }
 }
 
 internal class MacOSNativeElementHostingExtension : ContentPresenter.INativeElementHostingExtension
@@ -36,7 +33,14 @@ internal class MacOSNativeElementHostingExtension : ContentPresenter.INativeElem
 	{
 		if (content is MacOSNativeElement element)
 		{
-			NativeUno.uno_native_arrange(element.NativeHandle, arrangeRect.Left, arrangeRect.Top, arrangeRect.Width, arrangeRect.Height, clipRect.Left, clipRect.Top, clipRect.Width, clipRect.Height);
+			if (element.Detached)
+			{
+				this.Log().Debug($"Cannot arrange element `{nameof(content)}` of type {content.GetType().FullName} since it was detached.");
+			}
+			else
+			{
+				NativeUno.uno_native_arrange(element.NativeHandle, arrangeRect.Left, arrangeRect.Top, arrangeRect.Width, arrangeRect.Height, clipRect.Left, clipRect.Top, clipRect.Width, clipRect.Height);
+			}
 		}
 		else if (this.Log().IsEnabled(LogLevel.Debug))
 		{
@@ -89,20 +93,32 @@ internal class MacOSNativeElementHostingExtension : ContentPresenter.INativeElem
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().Debug($"CreateSampleComponent failed as no MacOSWindowNative could be found.");
+				this.Log().Debug($"CreateSampleComponent failed as no MacOSWindowNative instance could be found.");
 			}
 			return null;
 		}
 
 		var handle = NativeUno.uno_native_create_sample(_window.Handle, text);
-		return new MacOSNativeElement(handle);
+		return new MacOSNativeElement()
+		{
+			NativeHandle = handle,
+			AccessKey = text // FIXME: debug helper, to be removed
+		};
 	}
 
 	public void DetachNativeElement(object content)
 	{
 		if (content is MacOSNativeElement element)
 		{
-			NativeUno.uno_native_detach(element.NativeHandle);
+			if (element.Detached)
+			{
+				this.Log().Debug($"Object `{nameof(content)}` of type {content.GetType().FullName} was already detached.");
+			}
+			else
+			{
+				NativeUno.uno_native_detach(element.NativeHandle);
+				element.Detached = true;
+			}
 		}
 		else if (this.Log().IsEnabled(LogLevel.Debug))
 		{

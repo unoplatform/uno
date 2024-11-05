@@ -1,5 +1,5 @@
 //
-//  UNOWindowDelegate.m
+//  UNOWindow.m
 //
 
 #import "UNOWindow.h"
@@ -97,7 +97,7 @@ NSWindow* uno_app_get_main_window(void)
 -(instancetype) initWithFrame:(CGRect)frameRect device:(id<MTLDevice>)device {
     self = [super initWithFrame:frameRect device:device];
     if (self) {
-        self.clipLayer = [CAShapeLayer layer];
+        // TODO
     }
     return self;
 }
@@ -642,7 +642,6 @@ CGFloat readNextCoord(const char *svg, int *position, long length)
 
 void uno_window_clip_svg(UNOWindow* window, const char* svg)
 {
-    UNOMetalFlippedView* v = window.contentView;
     if (svg) {
 #if DEBUG
         NSLog(@"uno_window_clip_svg %@ %@ %s", window, window.contentView.layer.description, svg);
@@ -689,17 +688,10 @@ void uno_window_clip_svg(UNOWindow* window, const char* svg)
 #endif
             }
         }
-
-        // note: we already have a CAMetalLayer present as the _main_ layer
-        if (!window.contentView.layer.sublayers) {
-            UNOMetalFlippedView* v = window.contentView;
-            [window.contentView.layer addSublayer:v.clipLayer];
-        }
     } else {
 #if DEBUG
         NSLog(@"uno_window_clip_svg %@ reset", window);
 #endif
-        [v.clipLayer removeFromSuperlayer];
     }
 }
 
@@ -797,7 +789,7 @@ void uno_window_clip_svg(UNOWindow* window, const char* svg)
             UniChar unicode = get_unicode(event);
             handled = uno_get_window_key_up_callback()(self, get_virtual_key(scanCode), get_modifiers(event.modifierFlags), scanCode, unicode);
 #if DEBUG
-            NSLog(@"NSEventTypeKeyUp: %@ window %p unocode %d handled? %s", event, self, unicode, handled ? "true" : "false");
+            NSLog(@"NSEventTypeKeyUp: %@ window %p unicode %d handled? %s", event, self, unicode, handled ? "true" : "false");
 #endif
             break;
         }

@@ -12,6 +12,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+@protocol UNONativeElement
+
+-(void) detach;
+
+@end
+
 NSView* uno_native_create_sample(NSWindow *window, const char* _Nullable text);
 
 void uno_native_arrange(NSView *element, double arrangeLeft, double arrangeTop, double arrangeWidth, double arrangeHeight, double clipLeft, double clipTop, double clipWidth, double clipHeight);

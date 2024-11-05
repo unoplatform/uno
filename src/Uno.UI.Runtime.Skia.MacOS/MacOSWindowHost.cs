@@ -82,16 +82,8 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 				NativeUno.uno_window_clip_svg(_nativeWindow.Handle, null);
 				int width = (int)nativeWidth;
 				int height = (int)nativeHeight;
-				var path = SkiaRenderHelper.RenderRootVisualAndReturnPath(width, height, rootVisual, surface);
-				// we clip the "negative" of what was drawn
-				if (path is { })
-				{
-					using var negativePath = new SKPath();
-					negativePath.AddRect(new SKRect(0, 0, width, height));
-					using var diffPath = negativePath.Op(path, SKPathOp.Difference);
-					// note: use an online svg viewer to visualize the clipping path
-					NativeUno.uno_window_clip_svg(_nativeWindow.Handle, diffPath.ToSvgPathData());
-				}
+				SkiaRenderHelper.RenderRootVisualAndClearNativeAreas(width, height, rootVisual, surface);
+				// TODO clip the "negative" of what was drawn
 			}
 		}
 

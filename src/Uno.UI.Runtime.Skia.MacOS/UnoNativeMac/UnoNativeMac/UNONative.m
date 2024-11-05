@@ -43,13 +43,17 @@ NSView* uno_native_create_sample(NSWindow *window, const char* _Nullable text)
 
 void uno_native_arrange(NSView *element, double arrangeLeft, double arrangeTop, double arrangeWidth, double arrangeHeight, double clipLeft, double clipTop, double clipWidth, double clipHeight)
 {
-    NSRect clip = NSMakeRect(clipLeft, clipTop, clipWidth, clipHeight);
-    if (!element.hidden) {
-        element.hidden = NSIsEmptyRect(clip);
+    NSLog(@"uno_native_arrange %p", element);
+    if (!element || element.hidden) {
+        NSLog(@"uno_native_arrange0 hidden %p", element);
+        return;
     }
+
+    NSRect clip = NSMakeRect(arrangeLeft + clipLeft, arrangeTop - clipTop, clipWidth, clipHeight);
+    element.hidden = NSIsEmptyRect(clip) || clipHeight <= 0 || clipWidth <= 0;
     // TODO handle partial case with element special layers
 
-    NSRect arrange = NSMakeRect(arrangeLeft, arrangeTop, arrangeWidth, arrangeWidth);
+    NSRect arrange = NSMakeRect(arrangeLeft, arrangeTop, arrangeWidth, arrangeHeight);
     element.frame = arrange;
 #if DEBUG
     NSLog(@"uno_native_arrange %p arrange(%g,%g,%g,%g) clip(%g,%g,%g,%g) %s", element,
@@ -62,7 +66,7 @@ void uno_native_arrange(NSView *element, double arrangeLeft, double arrangeTop, 
 void uno_native_attach(NSView* element)
 {
 #if DEBUG
-    NSLog(@"uno_native_attach %p -> %s attached", element, [elements containsObject:element] ? "already" : "not");
+    NSLog(@"uno_native_attach %p -> %s attached", element, [elements containsObject:element] ? "already" : "not previously");
 #endif
     if (!elements) {
         elements = [[NSMutableSet alloc] initWithCapacity:10];
@@ -76,6 +80,10 @@ void uno_native_detach(NSView *element)
     NSLog(@"uno_native_detach %p", element);
 #endif
     if (elements) {
+        if ([element conformsToProtocol:@protocol(UNONativeElement)]) {
+            id<UNONativeElement> native = (id<UNONativeElement>) element;
+            [native detach];
+        }
         [elements removeObject:element];
     }
 }
@@ -108,7 +116,7 @@ void uno_native_set_opacity(NSView* element, double opacity)
     element.alphaValue = opacity;
 }
 
-void uno_native_set_visibility(NSView* element, bool visible)
+void uno_native_set_visibility(UNORedView* element, bool visible)
 {
 #if DEBUG
     NSLog(@"uno_native_set_visibility #%p : hidden %s -> visible %s", element, element.hidden ? "TRUE" : "FALSE", visible ? "TRUE" : "FALSE");
