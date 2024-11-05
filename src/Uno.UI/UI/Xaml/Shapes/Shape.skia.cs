@@ -26,7 +26,7 @@ namespace Microsoft.UI.Xaml.Shapes
 		}
 
 		private Rect GetPathBoundingBox(SkiaGeometrySource2D path)
-			=> path.Geometry.TightBounds.ToRect();
+			=> path.TightBounds.ToRect();
 
 		private protected override ContainerVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateShapeVisual();
 

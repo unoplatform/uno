@@ -10,7 +10,7 @@ namespace Microsoft.UI.Composition
 {
 	public partial class CompositionSpriteShape : CompositionShape
 	{
-		private SKPath? _geometryWithTransformations;
+		private SkiaGeometrySource2D? _geometryWithTransformations;
 
 		internal override void Paint(in Visual.PaintingSession session)
 		{
@@ -45,7 +45,7 @@ namespace Microsoft.UI.Composition
 					}
 					else
 					{
-						session.Canvas.DrawPath(geometryWithTransformations, fillPaint);
+						geometryWithTransformations.CanvasDrawPath(session.Canvas, fillPaint);
 					}
 				}
 
@@ -80,7 +80,7 @@ namespace Microsoft.UI.Composition
 					using (SkiaHelper.GetTempSKPath(out var strokeFillPath))
 					{
 						// Get the stroke geometry, after scaling has been applied.
-						strokePaint.GetFillPath(geometryWithTransformations, strokeFillPath);
+						geometryWithTransformations.GetFillPath(strokePaint, strokeFillPath);
 
 						stroke.UpdatePaint(fillPaint, strokeFillPath.Bounds);
 
@@ -125,21 +125,12 @@ namespace Microsoft.UI.Composition
 			switch (propertyName)
 			{
 				case nameof(Geometry) or nameof(CombinedTransformMatrix):
-					if (Geometry?.BuildGeometry() is SkiaGeometrySource2D { Geometry: { } geometry })
+					if (Geometry?.BuildGeometry() is SkiaGeometrySource2D geometrySource2D)
 					{
 						var transform = CombinedTransformMatrix;
-						SKPath geometryWithTransformations;
-						if (transform.IsIdentity)
-						{
-							geometryWithTransformations = geometry;
-						}
-						else
-						{
-							geometryWithTransformations = new SKPath();
-							geometry.Transform(transform.ToSKMatrix(), geometryWithTransformations);
-						}
-
-						_geometryWithTransformations = geometryWithTransformations;
+						_geometryWithTransformations = transform.IsIdentity
+							? geometrySource2D
+							: geometrySource2D.Transform(transform.ToSKMatrix());
 					}
 					else
 					{
@@ -168,7 +159,7 @@ namespace Microsoft.UI.Composition
 
 						using (SkiaHelper.GetTempSKPath(out var hitTestStrokeFillPath))
 						{
-							strokePaint.GetFillPath(geometryWithTransformations, hitTestStrokeFillPath);
+							geometryWithTransformations.GetFillPath(strokePaint, hitTestStrokeFillPath);
 							if (hitTestStrokeFillPath.Contains((float)point.X, (float)point.Y))
 							{
 								return true;
