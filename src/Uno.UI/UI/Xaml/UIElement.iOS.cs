@@ -63,12 +63,7 @@ namespace Microsoft.UI.Xaml
 
 		partial void ApplyNativeClip(Rect rect)
 		{
-			if (rect.IsEmpty
-				|| double.IsPositiveInfinity(rect.X)
-				|| double.IsPositiveInfinity(rect.Y)
-				|| double.IsPositiveInfinity(rect.Width)
-				|| double.IsPositiveInfinity(rect.Height)
-			)
+			if (!rect.IsFinite)
 			{
 				if (!ClippingIsSetByCornerRadius)
 				{
