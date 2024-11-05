@@ -279,7 +279,7 @@
 
 	<Target Name="_UnoEmbeddedResourcesInjection"
 		Condition="'$(_UnoRequiresEmbeddedResourcesInjection)' == 'true'"
-		AfterTargets="Compile">
+		AfterTargets="Compile;CompileTypeScriptWithTSConfig">
 
 		<ItemGroup>
 			<!-- Filter ReferenceCopyLocalPaths as it may contain pdbs as well -->
