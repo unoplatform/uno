@@ -14,7 +14,8 @@ public record RemoteControlStatus(
 {
 
 	/// <summary>
-	/// A boolean indicating if everything is fine with the connection and the handshaking succeeded.
+	/// An ***aggregated*** state of the connection to determine if everything is fine.
+	/// This is for visual representation only, the actual state of the connection is in <see cref="State"/>.
 	/// </summary>
 	public bool IsAllGood =>
 		State == ConnectionState.Connected
@@ -28,11 +29,8 @@ public record RemoteControlStatus(
 		&& InvalidFrames.Count == 0;
 
 	/// <summary>
-	/// If the connection is problematic, meaning that the connection is not in a good state.
+	/// Not <see cref="IsAllGood"/> (for binding purposes).
 	/// </summary>
-	/// <remarks>
-	/// It's just a negation of <see cref="IsAllGood"/>.
-	/// </remarks>
 	public bool IsProblematic => !IsAllGood;
 
 	public (Classification kind, string message) GetSummary()
