@@ -76,7 +76,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 		Bounds = new Rect(default, windowSize);
 		VisibleBounds = visibleBounds;
-		Size = windowSize.ToSizeInt32();
+		Size = new((int)(windowSize.Width * RasterizationScale), (int)(windowSize.Height * RasterizationScale));
 
 		if (_previousTrueVisibleBounds != trueVisibleBounds)
 		{

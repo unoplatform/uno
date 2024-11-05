@@ -39,6 +39,12 @@ namespace Microsoft.UI.Xaml.Input
 		private const int _pointerIdsCount = (int)MotionEventActions.PointerIndexMask >> (int)MotionEventActions.PointerIndexShift; // 0xff
 		private const int _pointerIdsShift = 31 - (int)MotionEventActions.PointerIndexShift; // 23
 
+		// _lastNativeEvent.lastArgs is not necessary equal to LastPointerEvent. _lastNativeEvent.lastArgs is
+		// the last PointerRoutedEventArgs that was created as part of the native bubbling of _lastNativeEvent.nativeEvent.
+		// In other words, if a PointerRoutedEventArgs was created in managed (using the parameterless constructor),
+		// then _lastNativeEvent.lastArgs and LastPointerEvent will diverge.
+		private static (MotionEvent nativeEvent, PointerRoutedEventArgs lastArgs)? _lastNativeEvent;
+
 		private readonly MotionEvent _nativeEvent;
 		private readonly int _pointerIndex;
 		private readonly UIElement _receiver;
@@ -71,6 +77,18 @@ namespace Microsoft.UI.Xaml.Input
 			Pointer = new Pointer(pointerId, basePointerType, isInContact, isInRange: true);
 			KeyModifiers = keys;
 			OriginalSource = originalSource;
+
+			// On platforms with managed pointers, we reuse the same PointerRoutedEventArgs instance
+			// as we bubble up the event in the visual tree. On Android, the event bubbling is done
+			// natively and we create a corresponding (new) managed PointerRoutedEventArgs instance
+			// for each element up the tree. This means that parents won't see modifications in the
+			// PointerRoutedEventArgs instance that were done by the children. We have to detect
+			// this and copy the relevant fields ourselves.
+			if (_lastNativeEvent?.nativeEvent == nativeEvent)
+			{
+				GestureEventsAlreadyRaised = _lastNativeEvent.Value.lastArgs.GestureEventsAlreadyRaised;
+			}
+			_lastNativeEvent = (nativeEvent, this);
 
 			var inputManager = VisualTree.GetContentRootForElement(originalSource)?.InputManager;
 			if (inputManager is not null)
