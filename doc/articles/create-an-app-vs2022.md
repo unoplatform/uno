@@ -104,6 +104,8 @@ To debug for **iOS**:
 
     > [!NOTE]
     > If no iOS devices are available, a Visual Studio 17.7+ issue may require unloading/reloading the project. Right-click on the `MyApp` project and select **Unload Project** then **Load project**.
+    > [!IMPORTANT]
+    > When using a device connected to a Windows PC, the Release build configuration is not supported. An actual macOS machine is required.
 
 ### [**Android**](#tab/Android)
 
