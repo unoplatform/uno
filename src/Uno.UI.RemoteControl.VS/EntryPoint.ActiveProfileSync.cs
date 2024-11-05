@@ -38,7 +38,7 @@ public partial class EntryPoint : IDisposable
 		await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
 		// In this case, a new TargetFramework was selected. We need to file a matching launch profile, if any.
-		if (GetTargetFrameworkIdentifier(newFramework) is { } targetFrameworkIdentifier)
+		if (GetTargetFrameworkIdentifier(newFramework) is { } targetFrameworkIdentifier && _debuggerObserver is not null)
 		{
 			_debugAction?.Invoke($"OnDebugFrameworkChangedAsync({previousFramework}, {newFramework}, {targetFrameworkIdentifier}, forceReload: {forceReload})");
 
@@ -131,6 +131,11 @@ public partial class EntryPoint : IDisposable
 			// The first change after a reload is always the active target. This happens
 			// when going to/from desktop/wasm for VS issues.
 			_debugAction?.Invoke($"Skipping for no previous profile");
+			return;
+		}
+
+		if (_debuggerObserver is null)
+		{
 			return;
 		}
 
@@ -274,6 +279,11 @@ public partial class EntryPoint : IDisposable
 					}
 				}
 			}
+			else
+			{
+				// No need to reload, but we still need to update the selected target framework
+				await WriteProjectUserSettingsAsync(newFramework);
+			}
 		}
 		catch (Exception e)
 		{
@@ -300,7 +310,7 @@ public partial class EntryPoint : IDisposable
 
 	private async Task OnStartupProjectChangedAsync()
 	{
-		if (!await EnsureProjectUserSettingsAsync())
+		if (!await EnsureProjectUserSettingsAsync() && _debuggerObserver is not null)
 		{
 			_debugAction?.Invoke($"The user setting is not yet initialized, aligning framework and profile");
 
@@ -327,7 +337,8 @@ public partial class EntryPoint : IDisposable
 	private async Task<bool> EnsureProjectUserSettingsAsync()
 	{
 		if (await _asyncPackage.GetServiceAsync(typeof(SVsSolution)) is IVsSolution solution
-			&& await _dte.GetStartupProjectsAsync() is { Length: > 0 } startupProjects)
+			&& await _dte.GetStartupProjectsAsync() is { Length: > 0 } startupProjects
+			&& _debuggerObserver is not null)
 		{
 			// Convert DTE project to IVsHierarchy
 			solution.GetProjectOfUniqueName(startupProjects[0].UniqueName, out var hierarchy);

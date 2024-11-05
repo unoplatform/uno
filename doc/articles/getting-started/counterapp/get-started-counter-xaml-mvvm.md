@@ -91,7 +91,7 @@ Also, for more information on all the template options, see [Using the Uno Platf
 
 Now that we have the **`MainViewModel`** class, we can update the **`MainPage`** to use data binding to connect the UI to the application logic.
 
-- Add a **`DataContext`** element to the **`Page`** element in the **MainPage.xaml** file.
+- Add a **`DataContext`** element to the **`Page`** element in the **MainPage.xaml** file, between the first `StackPanel` and the `Page` element.
 
     ```xml
     <Page.DataContext>
@@ -119,7 +119,7 @@ Now that we have the **`MainViewModel`** class, we can update the **`MainPage`**
              TextAlignment="Center" />
     ```
 
-- Update the **`Button`** to add a **`Command`** attribute that is bound to the **`IncrementCommand`** property of the **`MainViewModel`**.
+- Add a new **`Button`** with a  **`Command`** attribute that is bound to the **`IncrementCommand`** property of the **`MainViewModel`**.
 
     ```xml
     <Button Margin="12"

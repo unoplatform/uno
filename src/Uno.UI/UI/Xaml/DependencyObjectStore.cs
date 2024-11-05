@@ -83,7 +83,7 @@ namespace Microsoft.UI.Xaml
 		private ManagedWeakReference? _thisWeakRef;
 
 		private readonly Type _originalObjectType;
-		private readonly SerialDisposable _inheritedProperties = new SerialDisposable();
+		private InheritedPropertiesDisposable? _inheritedProperties;
 		private ManagedWeakReference? _parentRef;
 		private object? _hardParentRef;
 		private readonly Dictionary<DependencyProperty, ManagedWeakReference> _inheritedForwardedProperties = new Dictionary<DependencyProperty, ManagedWeakReference>(DependencyPropertyComparer.Default);
@@ -112,6 +112,16 @@ namespace Microsoft.UI.Xaml
 #if UNO_HAS_ENHANCED_LIFECYCLE
 		internal bool IsDisposed => _isDisposed;
 #endif
+
+		private InheritedPropertiesDisposable? InheritedProperties
+		{
+			get => _inheritedProperties;
+			set
+			{
+				_inheritedProperties?.Dispose();
+				_inheritedProperties = value;
+			}
+		}
 
 		/// <summary>
 		/// Provides the parent Dependency Object of this dependency object
@@ -146,7 +156,7 @@ namespace Microsoft.UI.Xaml
 						_parentRef = WeakReferencePool.RentWeakReference(this, value);
 					}
 
-					_inheritedProperties.Disposable = null;
+					InheritedProperties = null;
 
 					if (value is IDependencyObjectStoreProvider parentProvider)
 					{
@@ -1224,7 +1234,7 @@ namespace Microsoft.UI.Xaml
 			if (
 				!_registeringInheritedProperties
 				&& !_unregisteringInheritedProperties
-				&& _inheritedProperties.Disposable == null
+				&& InheritedProperties == null
 				&& (
 					IsAutoPropertyInheritanceEnabled
 					|| force
@@ -1248,7 +1258,7 @@ namespace Microsoft.UI.Xaml
 					{
 						_registeringInheritedProperties = true;
 
-						_inheritedProperties.Disposable = RegisterInheritedProperties(parentProvider);
+						InheritedProperties = RegisterInheritedProperties(parentProvider);
 					}
 					finally
 					{

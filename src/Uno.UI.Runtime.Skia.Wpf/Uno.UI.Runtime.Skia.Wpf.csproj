@@ -14,7 +14,7 @@
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 
-		<!-- Ignore NU5104 for net7.0 System.Drawing.Common -->
+		<!-- Ignore NU5104 for net9.0 Microsoft.Win32.SystemEvents -->
 		<NoWarn>$(NoWarn);NU5104</NoWarn>
 	</PropertyGroup>	
 
@@ -31,9 +31,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="SkiaSharp.Views.WPF" />
-		<PackageReference Include="SkiaSharp.Harfbuzz" />
-
 		<PackageReference Include="Microsoft.Web.WebView2" Aliases="WpfWebView" PrivateAssets="all" />
 
 		<!-- 

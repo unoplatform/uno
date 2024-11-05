@@ -534,11 +534,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 					var value = AcceptsExpression
 						? NumberBoxParser.Compute(text, numberParser)
-						: ApiInformation.IsTypePresent(numberParser?.GetType().FullName)
-							? numberParser.ParseDouble(text)
-							: double.TryParse(text, out var v)
-								? (double?)v
-								: null;
+						: numberParser.ParseDouble(text);
 
 					if (value == null)
 					{
@@ -686,15 +682,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 				{
 					// Rounding the value here will prevent displaying digits caused by floating point imprecision.
 					var roundedValue = m_displayRounder.RoundDouble(value);
-
-					if (ApiInformation.IsTypePresent(NumberFormatter.GetType().FullName))
-					{
-						newText = NumberFormatter.FormatDouble(roundedValue);
-					}
-					else
-					{
-						newText = roundedValue.ToString($"0." + new string('#', 6), CultureInfo.CurrentCulture);
-					}
+					newText = NumberFormatter.FormatDouble(roundedValue);
 				}
 
 				m_textBox.Text = newText;

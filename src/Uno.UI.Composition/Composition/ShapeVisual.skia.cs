@@ -1,5 +1,6 @@
 ﻿#nullable enable
 
+using System;
 using System.Numerics;
 using Windows.Foundation;
 using SkiaSharp;
@@ -12,9 +13,12 @@ public partial class ShapeVisual
 	private protected override void ApplyPrePaintingClipping(in SKCanvas canvas)
 	{
 		base.ApplyPrePaintingClipping(in canvas);
-		if (GetViewBoxPathInElementCoordinateSpace() is { } path)
+		using (SkiaHelper.GetTempSKPath(out var prePaintingClipPath))
 		{
-			canvas.ClipPath(path, antialias: true);
+			if (GetViewBoxPathInElementCoordinateSpace(prePaintingClipPath))
+			{
+				canvas.ClipPath(prePaintingClipPath, antialias: true);
+			}
 		}
 	}
 
@@ -32,28 +36,28 @@ public partial class ShapeVisual
 		base.Paint(in session);
 	}
 
-	internal SKPath? GetViewBoxPathInElementCoordinateSpace()
+	/// <returns>true if a ViewBox exists</returns>
+	internal bool GetViewBoxPathInElementCoordinateSpace(SKPath dst)
 	{
 		if (ViewBox is not { } viewBox)
 		{
-			return null;
+			return false;
 		}
 
-		var shape = new SKPath();
+		dst.Rewind();
 		var clipRect = new SKRect(viewBox.Offset.X, viewBox.Offset.Y, viewBox.Offset.X + viewBox.Size.X, viewBox.Offset.Y + viewBox.Size.Y);
-		shape.AddRect(clipRect);
+		dst.AddRect(clipRect);
 		if (viewBox.IsAncestorClip)
 		{
 			Matrix4x4.Invert(TotalMatrix, out var totalMatrixInverted);
 			var childToParentTransform = Parent!.TotalMatrix * totalMatrixInverted;
 			if (!childToParentTransform.IsIdentity)
 			{
-
-				shape.Transform(childToParentTransform.ToSKMatrix());
+				dst.Transform(childToParentTransform.ToSKMatrix());
 			}
 		}
 
-		return shape;
+		return true;
 	}
 
 	/// <remarks>This does NOT take the clipping into account.</remarks>

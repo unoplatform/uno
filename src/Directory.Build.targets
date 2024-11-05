@@ -115,6 +115,9 @@
 		<PackageReference Update="harfbuzzsharp.nativeassets.ios" Version="7.3.0.1" />
 		<PackageReference Update="SkiaSharp.HarfBuzz" Version="$(SkiaSharpVersion)" />
 
+		<PackageReference Condition=" '$(TargetFramework)' == '$(NetPrevious)' " Update="Microsoft.Win32.SystemEvents" Version="8.0.0" />
+		<PackageReference Condition=" '$(TargetFramework)' == '$(NetCurrent)' " Update="Microsoft.Win32.SystemEvents" Version="9.0.0-rc.2.24473.5" />
+
 		<PackageReference Update="Svg.Skia" Version="1.0.0.1" />
 		<PackageReference Update="GtkSharp" Version="3.24.24.38" />
 		<PackageReference Update="System.Json" Version="4.7.1" />
@@ -130,7 +133,6 @@
 		<PackageReference Update="Newtonsoft.Json" Version="13.0.2" />
 		<PackageReference Update="CommunityToolkit.Mvvm" Version="$(CommunityToolkitMvvmVersion)" />
 		<PackageReference Update="System.CommandLine" Version="2.0.0-beta4.22272.1" />
-		<PackageReference Update="Microsoft.Win32.SystemEvents" Version="8.0.0" />
 		<PackageReference Update="Microsoft.Web.WebView2" Version="1.0.2592.51" />
 	</ItemGroup>
 

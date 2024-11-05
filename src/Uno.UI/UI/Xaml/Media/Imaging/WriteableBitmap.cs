@@ -21,10 +21,13 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		private void UpdateBuffer()
 		{
 			var pixelsBufferSize = (uint)(PixelWidth * PixelHeight * 4);
-			_buffer = new UwpBuffer(pixelsBufferSize)
+			if (_buffer?.Capacity != pixelsBufferSize)
 			{
-				Length = pixelsBufferSize
-			};
+				_buffer = new UwpBuffer(pixelsBufferSize)
+				{
+					Length = pixelsBufferSize
+				};
+			}
 		}
 
 		public void Invalidate()

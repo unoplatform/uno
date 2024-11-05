@@ -115,6 +115,7 @@
 		<_IgnorePlatformFiles Include="$(WindowsProjectFolder)**"
 			Condition=" $(IsWinAppSdk) != 'true' AND '$(WindowsProjectFolder)'!='' " />
 		<Compile Remove="@(_IgnorePlatformFiles)" />
+		<Page Remove="@(_IgnorePlatformFiles)" />
 		<Content Remove="@(_IgnorePlatformFiles)" />
 		<EmbeddedResource Remove="@(_IgnorePlatformFiles)" />
 		<Manifest Remove="@(_IgnorePlatformFiles)" />

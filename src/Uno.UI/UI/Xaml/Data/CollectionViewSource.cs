@@ -62,7 +62,7 @@ namespace Microsoft.UI.Xaml.Data
 			private set => SetValue(ViewProperty, value);
 		}
 
-		public global::Microsoft.UI.Xaml.PropertyPath ItemsPath
+		public PropertyPath ItemsPath
 		{
 			get => (PropertyPath)this.GetValue(ItemsPathProperty);
 			set => this.SetValue(ItemsPathProperty, value);

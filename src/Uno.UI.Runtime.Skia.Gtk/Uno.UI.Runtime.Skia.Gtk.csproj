@@ -20,6 +20,9 @@
 
 		<!-- Don't install GTK at this step, let the app head do it -->
 		<SkipGtkInstall>true</SkipGtkInstall>
+
+		<!-- Ignore NU5104 for net9.0 Microsoft.Win32.SystemEvents -->
+		<NoWarn>$(NoWarn);NU5104</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -37,7 +40,6 @@
 	<ItemGroup>
 		<PackageReference Include="SkiaSharp.NativeAssets.Linux" />
 		<PackageReference Include="HarfBuzzSharp.NativeAssets.Linux" />
-		<PackageReference Include="SkiaSharp.Harfbuzz" />
 		<PackageReference Include="SkiaSharp" />
 		<PackageReference Include="GtkSharp" />
 	</ItemGroup>

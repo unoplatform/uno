@@ -129,6 +129,26 @@ When building with Rider on Linux or macOS, unsupported target frameworks are [n
 
 See how to [make platforms conditional](xref:Uno.GettingStarted.CreateAnApp.Rider#considerations-for-macos-and-linux) for Rider.
 
+### UNOB0015: The desktop TargetFramework must be placed first
+
+In Visual Studio 17.12 or later, when both mobile (`-ios`, `-android`, `-maccatalyst`) and `desktop` target frameworks are used, the `-desktop` target framework must be placed first in order for WSL debugging to work.
+
+If `-desktop` is not first, the following message will appear:
+
+```text
+The project doesn't know how to run the profile with name 'MyApp (Desktop WSL2)' and command 'WSL2'.
+```
+
+To fix the issue, reorder the items in your `.csproj` so that `TargetFrameworks` contains `netX.0-desktop` as the first target framework.
+
+The Uno Platform team is following this [Visual Studio issue](https://developercommunity.visualstudio.com/t/WSL-launch-profile-cannot-be-found-when/10776961).
+
+### UNOB0016: The Publish Profile file must not contain the "PublishDir"
+
+When publishing an app using ClickOnce on Windows, the `PublishProfile` file may not contain a `PublishDir` entry if the command line parameter `UnoClickOncePublishDir` has been set.
+
+This situation is due to an MSBuild property overriding bug found in the .NET SDK. For more information, see our [publishing with ClickOnce](xref:uno.publishing.desktop#windows-clickonce) documentation.
+
 ## Compiler Errors
 
 ### UNO0001

@@ -20,8 +20,7 @@ internal class IdeChannelClient
 	private IIdeChannelServer? _devServer;
 	private readonly ILogger _logger;
 
-	public event AsyncEventHandler<ForceHotReloadIdeMessage>? ForceHotReloadRequested;
-	public event AsyncEventHandler<NotificationRequestIdeMessage>? OnMessageReceived;
+	public event AsyncEventHandler<IdeMessage>? OnMessageReceived;
 
 	public IdeChannelClient(Guid pipeGuid, ILogger logger)
 	{
@@ -92,15 +91,11 @@ internal class IdeChannelClient
 			var process = Task.CompletedTask;
 			switch (devServerMessage)
 			{
-				case ForceHotReloadIdeMessage forceHotReloadMessage when ForceHotReloadRequested is { } hrRequested:
-					_logger.Debug("Hot reload requested");
-					process = hrRequested.InvokeAsync(this, forceHotReloadMessage);
-					break;
 				case KeepAliveIdeMessage:
 					_logger.Verbose($"Keep alive from Dev Server");
 					break;
-				case NotificationRequestIdeMessage e when e is { } message:
-					_logger.Verbose($"Dev Server will open the Notification Message with message {e.Message}");
+				case IdeMessage message:
+					_logger.Verbose($"Dev Server Message {message.GetType()} requested");
 					process = OnMessageReceived.InvokeAsync(this, message);
 					break;
 				default:

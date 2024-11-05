@@ -9,6 +9,9 @@ public enum UnoFeature
 	Maps,
 
 	[UnoArea(UnoArea.Core)]
+	GooglePlay,
+
+	[UnoArea(UnoArea.Core)]
 	Foldable,
 
 	[UnoArea(UnoArea.Core)]

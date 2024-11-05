@@ -60,6 +60,8 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 		<DisableImplicitAspNetCoreAnalyzers Condition=" '$(DisableImplicitAspNetCoreAnalyzers)' == '' ">true</DisableImplicitAspNetCoreAnalyzers>
 	</PropertyGroup>
 
+	<Import Project="$(_UnoSdkTargetsDirectory)Uno.IsPlatform.Before.props" />
+
 	<Import Sdk="$(_DefaultMicrosoftNETSdk)" Project="Sdk.props" />
 
 	<PropertyGroup>

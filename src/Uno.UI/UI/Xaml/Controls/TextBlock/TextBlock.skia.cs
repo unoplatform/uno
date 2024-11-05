@@ -27,6 +27,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private Action? _selectionHighlightColorChanged;
 		private MenuFlyout? _contextMenu;
 		private readonly Dictionary<ContextMenuItem, MenuFlyoutItem> _flyoutItems = new();
+		private readonly VirtualKeyModifiers _platformCtrlKey = OperatingSystem.IsMacOS() ? VirtualKeyModifiers.Windows : VirtualKeyModifiers.Control;
 
 		public TextBlock()
 		{
@@ -188,11 +189,13 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				var canvas = t.canvas;
 				var rect = t.rect;
-				canvas.DrawRect(new SKRect((float)rect.Left, (float)rect.Top, (float)rect.Right, (float)rect.Bottom), new SKPaint
+
+				using (SkiaHelper.GetTempSKPaint(out var paint))
 				{
-					Color = SelectionHighlightColor.Color.ToSKColor(),
-					Style = SKPaintStyle.Fill
-				});
+					paint.Color = SelectionHighlightColor.Color.ToSKColor();
+					paint.Style = SKPaintStyle.Fill;
+					canvas.DrawRect(new SKRect((float)rect.Left, (float)rect.Top, (float)rect.Right, (float)rect.Bottom), paint);
+				}
 			};
 
 			_inlines.RenderSelection = IsTextSelectionEnabled;
@@ -202,11 +205,11 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			switch (args.Key)
 			{
-				case VirtualKey.C when args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Control):
+				case VirtualKey.C when args.KeyboardModifiers.HasFlag(_platformCtrlKey):
 					CopySelectionToClipboard();
 					args.Handled = true;
 					break;
-				case VirtualKey.A when args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Control):
+				case VirtualKey.A when args.KeyboardModifiers.HasFlag(_platformCtrlKey):
 					SelectAll();
 					args.Handled = true;
 					break;

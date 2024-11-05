@@ -7,6 +7,7 @@
 	<!-- Sanity check ensure that platform files for other targets are not included -->
 	<ItemGroup Condition=" $(_IsUnoSingleProjectAndLegacy) == 'true' and $(PlatformsProjectFolder) != '' and Exists($(PlatformsProjectFolder))">
 		<Compile Remove="@(_IgnorePlatformFiles)" />
+		<Page Remove="@(_IgnorePlatformFiles)" />
 		<Content Remove="@(_IgnorePlatformFiles)" />
 		<EmbeddedResource Remove="@(_IgnorePlatformFiles)" />
 		<Manifest Remove="@(_IgnorePlatformFiles)" />
@@ -41,10 +42,23 @@
 		<When Condition="
 				'$(BuildingInsideVisualStudio)' == 'true'
 				AND '$(UnoDisableFirstTargetFrameworkRewrite)' != 'true'
-				AND (
-					$([MSBuild]::GetTargetPlatformIdentifier($(_UnoSelectedTargetFramework))) == 'browserwasm'
-					OR $([MSBuild]::GetTargetPlatformIdentifier($(_UnoSelectedTargetFramework))) == 'desktop'
-					OR $([MSBuild]::GetTargetPlatformIdentifier($(_UnoSelectedTargetFramework))) == 'windows'
+				AND 
+				(
+					(
+						$([MSBuild]::VersionLessThan($(MSBuildVersion), 17.12.0))
+						AND (
+							$([MSBuild]::GetTargetPlatformIdentifier($(_UnoSelectedTargetFramework))) == 'browserwasm'
+							OR $([MSBuild]::GetTargetPlatformIdentifier($(_UnoSelectedTargetFramework))) == 'desktop'
+							OR $([MSBuild]::GetTargetPlatformIdentifier($(_UnoSelectedTargetFramework))) == 'windows'
+						)
+					)
+					OR
+					(
+						$([MSBuild]::VersionGreaterThanOrEquals($(MSBuildVersion), 17.12.0))
+						AND (
+							$([MSBuild]::GetTargetPlatformIdentifier($(_UnoSelectedTargetFramework))) == 'browserwasm'
+						)
+					)
 				)
 				AND '$(TargetFrameworks)' != ''
 				AND '$(_UnoFirstOriginalTargetFramework)' != '$(_UnoSelectedTargetFramework)'
@@ -76,12 +90,14 @@
 	</Choose>
 
 	<Target Name="_UnoVSWarnBrowserIsFirst"
-			BeforeTargets="_SetBuildInnerTarget;_ComputeTargetFrameworkItems"
+			BeforeTargets="_SetBuildInnerTarget;_ComputeTargetFrameworkItems;ResolveFrameworkReferences"
 			Condition=" 
 			'$(UnoDisableVSWarnBrowserIsFirst)' != 'true'
 			AND '$(BuildingInsideVisualStudio)' == 'true'
+			AND '$(OutputType)'!='Library'
 			AND '$(_UnoTargetFrameworkCount)' != ''
 			AND $(_UnoTargetFrameworkCount) &gt; 1
+			AND $(TargetFrameworks.Contains('-browserwasm'))
 			AND $([MSBuild]::GetTargetPlatformIdentifier($(_UnoFirstOriginalTargetFramework))) == 'browserwasm'">
 
 		<Warning Code="UNOB0010"
@@ -89,11 +105,12 @@
 	</Target>
 
 	<Target Name="_UnoVSWarnDesktopIsFirst"
-				BeforeTargets="_SetBuildInnerTarget;_ComputeTargetFrameworkItems"
+				BeforeTargets="_SetBuildInnerTarget;_ComputeTargetFrameworkItems;ResolveFrameworkReferences"
 				Condition="
 				'$(UnoDisableVSWarnDesktopIsFirst)' != 'true'
 				AND '$(BuildingInsideVisualStudio)' == 'true'
 				AND '$(OutputType)'!='Library'
+				AND $([MSBuild]::VersionLessThan($(MSBuildVersion), 17.12.0))
 				AND '$(_UnoTargetFrameworkCount)' != ''
 				AND $(_UnoTargetFrameworkCount) &gt; 1
 				AND $([MSBuild]::GetTargetPlatformIdentifier($(_UnoFirstOriginalTargetFramework))) == 'desktop'">
@@ -102,14 +119,36 @@
 					Text="The desktop TargetFramework must not be placed first in the TargetFrameworks property in order for other platforms debugging to work. (See https://aka.platform.uno/UNOB0011)" />
 	</Target>
 
+	<Target Name="_UnoVSWarnDesktopIsNotFirst"
+				BeforeTargets="_SetBuildInnerTarget;_ComputeTargetFrameworkItems;ResolveFrameworkReferences"
+				Condition="
+				'$(UnoDisableVSWarnDesktopIsNotFirst)' != 'true'
+				AND '$(BuildingInsideVisualStudio)' == 'true'
+				AND '$(OutputType)'!='Library'
+				AND $([MSBuild]::VersionGreaterThanOrEquals($(MSBuildVersion), 17.12.0))
+				AND '$(_UnoTargetFrameworkCount)' != ''
+				AND $(_UnoTargetFrameworkCount) &gt; 1
+				AND $(TargetFrameworks.Contains('-desktop'))
+				AND (
+					$(TargetFrameworks.Contains('-ios'))
+					OR $(TargetFrameworks.Contains('-android'))
+					OR $(TargetFrameworks.Contains('-maccatalyst'))
+				)
+				AND $([MSBuild]::GetTargetPlatformIdentifier($(_UnoFirstOriginalTargetFramework))) != 'desktop'">
+
+		<Warning Code="UNOB0014"
+					Text="The desktop TargetFramework must be placed first in the TargetFrameworks property in order for WSL debugging to work, when mobile targets are also used. (See https://aka.platform.uno/UNOB0014)" />
+	</Target>
+
 	<Target Name="_UnoVSWarnWindowsIsFirst"
-				BeforeTargets="_SetBuildInnerTarget;_ComputeTargetFrameworkItems"
+				BeforeTargets="_SetBuildInnerTarget;_ComputeTargetFrameworkItems;ResolveFrameworkReferences"
 				Condition="
 				'$(UnoDisableVSWarnWindowsIsFirst)' != 'true'
 				AND '$(BuildingInsideVisualStudio)' == 'true'
 				AND '$(OutputType)'!='Library'
 				AND '$(_UnoTargetFrameworkCount)' != ''
 				AND $(_UnoTargetFrameworkCount) &gt; 1
+				AND $(TargetFrameworks.Contains('-windows'))
 				AND $([MSBuild]::GetTargetPlatformIdentifier($(_UnoFirstOriginalTargetFramework))) == 'windows'">
 
 		<Warning Code="UNOB0012"
@@ -117,7 +156,7 @@
 	</Target>
 
 	<Target Name="_UnoVSWarnNetIsFirst"
-			BeforeTargets="_SetBuildInnerTarget;_ComputeTargetFrameworkItems"
+			BeforeTargets="_SetBuildInnerTarget;_ComputeTargetFrameworkItems;ResolveFrameworkReferences"
 			Condition=" 
 			'$(UnoDisableVSWarnNetIsFirst)' != 'true'
 			AND '$(BuildingInsideVisualStudio)' == 'true'

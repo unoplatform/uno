@@ -475,6 +475,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 				properties.IsRightButtonPressed = IsPressed(state, ModifierType.Button3Mask, properties.PointerUpdateKind, RightButtonPressed, RightButtonReleased);
 				properties.IsXButton1Pressed = IsPressed(state, ModifierType.Button4Mask, properties.PointerUpdateKind, XButton1Pressed, XButton1Released);
 				properties.IsXButton2Pressed = IsPressed(state, ModifierType.Button5Mask, properties.PointerUpdateKind, XButton1Pressed, XButton2Released);
+				properties.IsTouchPad = dev.Source == InputSource.Touchpad;
 				break;
 
 			case PointerDeviceType.Pen:

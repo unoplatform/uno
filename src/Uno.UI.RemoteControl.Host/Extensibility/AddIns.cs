@@ -20,6 +20,7 @@ public class AddIns
 		var targetFrameworks = GetConfigurationValue(result.output ?? "", "TargetFrameworks")
 			.SelectMany(tfms => tfms.Split(['\r', '\n', ';', ','], StringSplitOptions.RemoveEmptyEntries))
 			.Select(tfm => tfm.Trim())
+			.Where(tfm => tfm is { Length: > 0 })
 			.Distinct(StringComparer.OrdinalIgnoreCase)
 			.ToImmutableList();
 
@@ -50,6 +51,7 @@ public class AddIns
 			var addIns = GetConfigurationValue(result.output, "RemoteControlAddIns")
 				.SelectMany(tfms => tfms.Split(['\r', '\n', ';', ','], StringSplitOptions.RemoveEmptyEntries))
 				.Select(tfm => tfm.Trim())
+				.Where(tfm => tfm is { Length: > 0 })
 				.Distinct(StringComparer.OrdinalIgnoreCase)
 				.ToImmutableList();
 
@@ -69,7 +71,7 @@ public class AddIns
 
 	private static IEnumerable<string> GetConfigurationValue(string msbuildResult, string nodeName)
 		=> Regex
-			.Matches(msbuildResult, $"<{nodeName}>(?<value>.*)</{nodeName}>")
+			.Matches(msbuildResult, $"<{nodeName}>(?<value>[^\\<\\>]*)</{nodeName}>", RegexOptions.Singleline)
 			.Where(match => match.Success)
 			.Select(match => match.Groups["value"].Value);
 }
