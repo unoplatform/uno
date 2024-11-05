@@ -155,6 +155,7 @@ public class Given_TabView
 		Assert.AreEqual(0, SUT.SelectedIndex);
 	}
 
+#if !WINAPPSDK // GetTemplateChild is protected in UWP while public in Uno.
 	[TestMethod]
 	public async Task When_Items_Should_ShowHeader()
 	{
@@ -170,21 +171,22 @@ public class Given_TabView
 		await UITestHelper.Load(SUT);
 
 		var tabviewItem1 = SUT.ContainerFromIndex(0) as TabViewItem;
-		var headerPresenter1 = tabviewItem1.GetTemplateChild<ContentPresenter>("ContentPresenter");
+		var headerPresenter1 = (ContentPresenter)tabviewItem1.GetTemplateChild("ContentPresenter");
 		Assert.IsTrue(headerPresenter1.ActualWidth > 0, "TabViewItem header for index  0 should have a non-zero width.");
 		Assert.IsTrue(headerPresenter1.ActualHeight > 0, "TabViewItem header for index  0 should have a non-zero height.");
 
-		var closeButton1 = tabviewItem1.GetTemplateChild<Button>("CloseButton");
-		var buttonLabel1 = closeButton1.GetTemplateChild<ContentPresenter>("ContentPresenter").FindFirstChild<ImplicitTextBlock>();
+		var closeButton1 = (Button)tabviewItem1.GetTemplateChild("CloseButton");
+		var buttonLabel1 = ((ContentPresenter)closeButton1.GetTemplateChild("ContentPresenter")).FindFirstChild<ImplicitTextBlock>();
 
 		Assert.IsTrue(buttonLabel1.ActualWidth > 0, "TabViewItem Button for index 0 should have a non-zero width.");
 		Assert.IsTrue(buttonLabel1.ActualHeight > 0, "TabViewItem Button  for index 0 should have a non-zero height.");
 
 		var tabviewItem2 = SUT.ContainerFromIndex(1) as TabViewItem;
-		var headerPresenter2 = tabviewItem2.GetTemplateChild<ContentPresenter>("ContentPresenter");
+		var headerPresenter2 = (ContentPresenter)tabviewItem2.GetTemplateChild("ContentPresenter");
 		Assert.IsTrue(headerPresenter2.ActualWidth > 0, "TabViewItem header for index  1  should have a non-zero width.");
 		Assert.IsTrue(headerPresenter2.ActualHeight > 0, "TabViewItem header for index  1  should have a non-zero height.");
 	}
+#endif
 
 	[TestMethod]
 	public async Task When_SelectedItem_Changed_Binding()
