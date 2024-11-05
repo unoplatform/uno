@@ -11,6 +11,7 @@ using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Input;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Input;
 
 using Window = Microsoft.UI.Xaml.Window;
 
@@ -278,8 +279,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			}
 			var args = CreateArgs(key, mods, scanCode, unicode);
 			keyDown.Invoke(window!, args);
-			// we tell macOS it's always handled as WinUI does not mark as handled some keys that would make it beep in common cases
-			return 1;
+			return FocusManager.GetFocusedElement() == null ? 0 : 1;
 		}
 		catch (Exception e)
 		{
@@ -306,7 +306,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			}
 			var args = CreateArgs(key, mods, scanCode, unicode);
 			keyUp.Invoke(window!, args);
-			return args.Handled ? 1 : 0;
+			return 1;
 		}
 		catch (Exception e)
 		{
@@ -414,8 +414,8 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			}
 
 			mouseEvent(window, BuildPointerArgs(*data));
-			// let the window be activated (becoming the keyWindow) when clicked
-			return data->EventType == NativeMouseEvents.Down ? 0 : 1;
+			// always let the native side know about the mouse events, e.g. setting keyWindow, embedded native controls
+			return 0;
 		}
 		catch (Exception e)
 		{
