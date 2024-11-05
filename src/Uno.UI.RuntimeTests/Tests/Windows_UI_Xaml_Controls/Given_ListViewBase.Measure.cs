@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -7,9 +8,11 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
-using Uno.UI.RuntimeTests.Extensions;
-using System.Collections.ObjectModel;
 using Windows.Foundation;
+using Uno.UI.Helpers;
+using Uno.UI.RuntimeTests.Extensions;
+using Uno.UI.RuntimeTests.Helpers;
+
 #if WINAPPSDK
 using Uno.UI.Extensions;
 #elif __IOS__
@@ -441,6 +444,44 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			source.RemoveAt(source.Count - 1);
 			await WindowHelper.WaitFor(() => Math.Abs(SUT.ActualHeight - 29) <= Epsilon, message: $"ListView failed to shrink from removing item: (ActualHeight: {SUT.ActualHeight})");
 		}
+
+#if __IOS__ || __ANDROID__
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Item_With_NegativeMargin_AsdAsd() // todo@xy: remove asdasd
+		{
+			const string PathData = "M 2 2 H 18 V 18 H 2 Z M 3 3 V 17 H 17 V 3 Z"; // 18x18 square with 1px border located at 2,2
+			var setup = new ListView
+			{
+				ItemsSource = Enumerable.Range(0, 1).ToArray(),
+				ItemTemplate = XamlHelper.LoadXaml<DataTemplate>($$"""
+					<DataTemplate>
+						<Grid Background="SkyBlue">
+							<Border x:Name="SutBorder" Background="Pink">
+								<PathIcon x:Name="SUT"
+									Data="{{PathData}}" Foreground="Red"
+									Width="20" Height="20"
+									Margin="0,-10,0,0"
+									HorizontalAlignment="Center" VerticalAlignment="Center" />
+							</Border>
+						</Grid>
+					</DataTemplate>
+				"""),
+			};
+
+			await UITestHelper.Load(setup);
+
+			// We can't really test rotating the device in the context of runtime tests. But still, this is a good repro.
+			// When loaded, we should see a red square, whose lower half is sitting in a pink background.
+			// When you rotate the device (portrait <-> landscape), the red square should still be fully visible.
+
+			// Previously, there is a bug where rotating could cause the view with negative padding to be clipped.
+			// The visual hierarchy needs a special setup, it is just the easiest to replicate with a ListView...
+
+			// It can be verified by checking `.Layer.Mask` remains consistent for the visual tree under ListView,
+			// before and after the device rotation. In this case, it was the SutBorder that magically had a `.Layer.Mask` assigned.
+		}
+#endif
 
 		// Works around ScrollIntoView() not implemented for all platforms
 		private static void ScrollTo(ListViewBase listViewBase, double vOffset)
