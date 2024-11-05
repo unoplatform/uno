@@ -1,0 +1,8 @@
+CW_USEDEFAULT
+
+CreateWindowEx
+FormatMessage
+LocalFree
+RegisterClassEx
+ShowWindow
+UpdateWindow

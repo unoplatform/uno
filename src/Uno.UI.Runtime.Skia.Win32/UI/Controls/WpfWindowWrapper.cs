@@ -1,189 +1,73 @@
 ﻿#nullable enable
 
 using System;
-using System.ComponentModel;
-using System.Windows;
-using System.Windows.Media;
-using Microsoft.UI.Windowing;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using Windows.Win32;
+using Windows.Win32.Foundation;
+using Windows.Win32.System.Diagnostics.Debug;
+using Windows.Win32.UI.WindowsAndMessaging;
 using Microsoft.UI.Xaml;
 using Uno.Disposables;
 using Uno.UI.Xaml.Controls;
-using Windows.Graphics;
-using Windows.UI.Core;
-using Windows.UI.Core.Preview;
-using WinUIApplication = Microsoft.UI.Xaml.Application;
-using WinUIWindow = Microsoft.UI.Xaml.Window;
 
 namespace Uno.UI.Runtime.Skia.Win32.UI.Controls;
 
-internal class WpfWindowWrapper : NativeWindowWrapperBase
+internal class Win32WindowWrapper : NativeWindowWrapperBase
 {
-	private readonly UnoWpfWindow _wpfWindow;
-	private bool _isFullScreen;
-	private bool _wasShown;
+	private readonly HWND _hwnd;
 
-	public WpfWindowWrapper(UnoWpfWindow wpfWindow, WinUIWindow window, XamlRoot xamlRoot) : base(window, xamlRoot)
+	// https://learn.microsoft.com/en-us/windows/win32/learnwin32/creating-a-window
+	public unsafe Win32WindowWrapper(Window window, XamlRoot xamlRoot) : base(window, xamlRoot)
 	{
-		_wpfWindow = wpfWindow ?? throw new ArgumentNullException(nameof(wpfWindow));
-		_wpfWindow.Activated += OnNativeActivated;
-		_wpfWindow.Deactivated += OnNativeDeactivated;
-		_wpfWindow.IsVisibleChanged += OnNativeIsVisibleChanged;
-		_wpfWindow.Closing += OnNativeClosing;
-		_wpfWindow.DpiChanged += OnNativeDpiChanged;
-		_wpfWindow.StateChanged += OnNativeStateChanged;
-		_wpfWindow.Host.SizeChanged += (_, e) => OnHostSizeChanged(e.NewSize);
-		OnHostSizeChanged(new Size(_wpfWindow.Width, _wpfWindow.Height));
-		_wpfWindow.LocationChanged += OnNativeLocationChanged;
-		_wpfWindow.SizeChanged += OnNativeSizeChanged;
-		UpdateSizeFromNative();
-		UpdatePositionFromNative();
-	}
+		const string windowClassName = "UnoPlatformRegularWindow";
+		var windowClassPtr = Marshal.StringToHGlobalUni(windowClassName);
+		using var windowClassNameDisposable = new DisposableStruct<IntPtr>(Marshal.FreeHGlobal, windowClassPtr);
+		var lpClassName = new PCWSTR((char*)windowClassPtr);
 
-	private void OnNativeSizeChanged(object sender, System.Windows.SizeChangedEventArgs e) => UpdateSizeFromNative();
+		var hInstance = new HINSTANCE(Marshal.GetHINSTANCE(Assembly.GetEntryAssembly()!.GetModules()[0]));
 
-	private void UpdateSizeFromNative()
-	{
-		if (!_wasShown)
+		WNDCLASSEXW windowClass = new WNDCLASSEXW
 		{
-			Size = new() { Width = (int)_wpfWindow.Width, Height = (int)_wpfWindow.Height };
-		}
-		else
+			cbSize = (uint)Marshal.SizeOf<WNDCLASSEXW>(),
+			lpfnWndProc = WndProc,
+			hInstance = hInstance,
+			lpszClassName = lpClassName
+		};
+
+		var classAtom = PInvoke.RegisterClassEx(windowClass);
+		if (classAtom is 0)
 		{
-			Size = new() { Width = (int)_wpfWindow.ActualWidth, Height = (int)_wpfWindow.ActualHeight };
-		}
-	}
-
-	private void OnNativeLocationChanged(object? sender, EventArgs e) => UpdatePositionFromNative();
-
-	private void UpdatePositionFromNative() =>
-		Position = new() { X = (int)_wpfWindow.Left, Y = (int)_wpfWindow.Top };
-
-	private void OnNativeStateChanged(object? sender, EventArgs e) => UpdateIsVisible();
-
-	private void OnNativeDpiChanged(object sender, DpiChangedEventArgs e) => RasterizationScale = (float)e.NewDpi.DpiScaleX;
-
-	public override string Title
-	{
-		get => _wpfWindow.Title;
-		set => _wpfWindow.Title = value;
-	}
-
-	public override object NativeWindow => _wpfWindow;
-
-	protected override void ShowCore()
-	{
-		RasterizationScale = (float)VisualTreeHelper.GetDpi(_wpfWindow.Host).DpiScaleX;
-		_wpfWindow.Show();
-		_wasShown = true;
-		UpdatePositionFromNative();
-	}
-
-	public override void Activate() => _wpfWindow.Activate();
-
-	public override void Close()
-	{
-		base.Close();
-		_wpfWindow.Close();
-	}
-
-	public override void ExtendContentIntoTitleBar(bool extend)
-	{
-		base.ExtendContentIntoTitleBar(extend);
-		_wpfWindow.ExtendContentIntoTitleBar(extend);
-	}
-
-	private void OnHostSizeChanged(Size size)
-	{
-		Bounds = new Windows.Foundation.Rect(default, new Windows.Foundation.Size(size.Width, size.Height));
-		VisibleBounds = Bounds;
-	}
-
-	private void OnNativeClosing(object? sender, CancelEventArgs e)
-	{
-		var closingArgs = RaiseClosing();
-		if (closingArgs.Cancel)
-		{
-			e.Cancel = true;
-			return;
+			throw new InvalidOperationException($"{nameof(PInvoke.RegisterClassEx)} failed: {Win32Helper.GetErrorMessage()}");
 		}
 
-		// Closing should continue, perform suspension.
-		WinUIApplication.Current.RaiseSuspending();
-	}
+		var title = Marshal.StringToHGlobalUni("Uno platfooooooooorm");
+		using var titleDisposable = new DisposableStruct<IntPtr>(Marshal.FreeHGlobal, title);
 
-	private void OnNativeDeactivated(object? sender, EventArgs e) =>
-		ActivationState = CoreWindowActivationState.Deactivated;
+		_hwnd = PInvoke.CreateWindowEx(
+			WINDOW_EX_STYLE.WS_EX_OVERLAPPEDWINDOW,
+			lpClassName,
+			new PCWSTR((char*)title),
+			WINDOW_STYLE.WS_OVERLAPPEDWINDOW,
+			PInvoke.CW_USEDEFAULT,
+			PInvoke.CW_USEDEFAULT,
+			PInvoke.CW_USEDEFAULT,
+			PInvoke.CW_USEDEFAULT,
+			HWND.Null,
+			HMENU.Null,
+			hInstance,
+			null);
 
-	private void OnNativeActivated(object? sender, EventArgs e) =>
-		ActivationState = CoreWindowActivationState.PointerActivated;
-
-	private void OnNativeIsVisibleChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e) => UpdateIsVisible();
-
-	private void UpdateIsVisible()
-	{
-		var isVisible = _wpfWindow.IsVisible && _wpfWindow.WindowState != WindowState.Minimized;
-		if (isVisible == IsVisible)
+		if (_hwnd == HWND.Null)
 		{
-			return;
-		}
-
-		if (isVisible)
-		{
-			WinUIApplication.Current?.RaiseLeavingBackground(() => IsVisible = isVisible);
-		}
-		else
-		{
-			IsVisible = isVisible;
-			WinUIApplication.Current?.RaiseEnteredBackground(null);
+			throw new InvalidOperationException($"{nameof(PInvoke.CreateWindowEx)} failed: {Win32Helper.GetErrorMessage()}");
 		}
 	}
 
-	protected override IDisposable ApplyFullScreenPresenter()
+	private LRESULT WndProc(HWND param0, uint param1, WPARAM param2, LPARAM param3)
 	{
-		_isFullScreen = true;
-		_wpfWindow.WindowStyle = WindowStyle.None;
-		_wpfWindow.WindowState = WindowState.Maximized;
-
-		return Disposable.Create(() =>
-		{
-			if (!_isFullScreen)
-			{
-				return;
-			}
-
-			_isFullScreen = false;
-			_wpfWindow.WindowStyle = WindowStyle.SingleBorderWindow;
-			_wpfWindow.WindowState = WindowState.Normal;
-		});
+		return new LRESULT(0);
 	}
 
-	protected override IDisposable ApplyOverlappedPresenter(OverlappedPresenter presenter)
-	{
-		presenter.SetNative(new NativeOverlappedPresenter(_wpfWindow));
-		return Disposable.Create(() => presenter.SetNative(null));
-	}
-
-	public override void Move(PointInt32 position)
-	{
-		_wpfWindow.Left = position.X;
-		_wpfWindow.Top = position.Y;
-
-		if (!_wasShown)
-		{
-			// Set Position and trigger AppWindow.Changed
-			UpdatePositionFromNative();
-		}
-	}
-
-	public override void Resize(SizeInt32 size)
-	{
-		_wpfWindow.Width = size.Width;
-		_wpfWindow.Height = size.Height;
-
-		if (!_wasShown)
-		{
-			// Set size and trigger AppWindow.Changed
-			UpdateSizeFromNative();
-		}
-	}
+	public override object NativeWindow => _hwnd;
 }

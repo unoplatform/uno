@@ -7,9 +7,9 @@ using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Runtime.Skia.Win32.Extensions.UI.Xaml.Controls;
 
-internal class NativeWindowFactoryExtension : INativeWindowFactoryExtension
+internal class Win32NativeWindowFactoryExtension : INativeWindowFactoryExtension
 {
-	internal NativeWindowFactoryExtension()
+	internal Win32NativeWindowFactoryExtension()
 	{
 	}
 
@@ -19,7 +19,6 @@ internal class NativeWindowFactoryExtension : INativeWindowFactoryExtension
 
 	public INativeWindowWrapper CreateWindow(Window window, XamlRoot xamlRoot)
 	{
-		var unoWpfWindow = new UnoWpfWindow(window, xamlRoot);
-		return new WpfWindowWrapper(unoWpfWindow, window, xamlRoot);
+		return new Win32WindowWrapper(window, xamlRoot);
 	}
 }

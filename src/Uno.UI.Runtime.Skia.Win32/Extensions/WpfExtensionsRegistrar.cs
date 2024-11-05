@@ -39,7 +39,7 @@ internal static class WpfExtensionsRegistrar
 			return;
 		}
 
-		ApiExtensibility.Register(typeof(INativeWindowFactoryExtension), o => new NativeWindowFactoryExtension());
+		ApiExtensibility.Register(typeof(INativeWindowFactoryExtension), o => new Win32NativeWindowFactoryExtension());
 		// ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), o => new CoreApplicationExtension(o));
 		// ApiExtensibility.Register<IXamlRootHost>(typeof(Windows.UI.Core.IUnoKeyboardInputSource), o => new WpfKeyboardInputSource(o));
 		// ApiExtensibility.Register<IXamlRootHost>(typeof(Windows.UI.Core.IUnoCorePointerInputSource), o => new WpfCorePointerInputSource(o));
