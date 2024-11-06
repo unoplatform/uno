@@ -153,6 +153,11 @@ partial class App
 	private bool HandleAutoScreenshots(string args)
 	{
 #if __SKIA__ || __MACOS__
+		if (string.IsNullOrEmpty(args))
+		{
+			return false;
+		}
+
 		var autoScreenshotsOption = new Option<string>("--auto-screenshots");
 		var totalGroupsOption = new Option<int>("--total-groups", getDefaultValue: () => 1);
 		var currentGroupIndexOption = new Option<int>("--current-group-index", getDefaultValue: () => 0);
