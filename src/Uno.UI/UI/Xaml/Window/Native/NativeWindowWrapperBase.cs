@@ -193,6 +193,7 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 	public virtual void Show()
 	{
 		ShowCore();
+
 		// On single-window targets, the window is already shown with splash screen
 		// so we must ensure the property is initialized correctly.
 		IsVisible = true;

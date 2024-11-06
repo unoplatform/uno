@@ -92,10 +92,8 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 			SetVisibleBoundsFromNative();
 			NativeWindowWrapper?.Show();
 		}
-		else
-		{
-			NativeWindowWrapper?.Activate();
-		}
+
+		NativeWindowWrapper?.Activate();
 
 		OnActivationStateChanged(CoreWindowActivationState.CodeActivated);
 	}
