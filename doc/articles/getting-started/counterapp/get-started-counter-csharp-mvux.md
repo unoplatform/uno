@@ -136,8 +136,6 @@ Now that we have the **`MainModel`** class, we can update the **`MainPage`** to 
 - The final code for **MainPage.cs** should look like this:
 
     ```csharp
-    namespace Counter;
-
     public sealed partial class MainPage : Page
     {
         public MainPage()

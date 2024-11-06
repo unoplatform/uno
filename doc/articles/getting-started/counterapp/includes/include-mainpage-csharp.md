@@ -1,7 +1,6 @@
 The layout for the `MainPage` is defined in the **MainPage.cs** file. This file contains the C# Markup that defines the layout of the application.
 
 ```csharp
-namespace Uno;
 
 public sealed partial class MainPage : Page
 {
