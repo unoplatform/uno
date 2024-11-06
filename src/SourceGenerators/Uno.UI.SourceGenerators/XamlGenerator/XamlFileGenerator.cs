@@ -4243,7 +4243,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			var modeMember = bindNode.Members.FirstOrDefault(m => m.Member.Name == "Mode")?.Value?.ToString() ?? GetDefaultBindMode();
 			var rawBindBack = bindNode.Members.FirstOrDefault(m => m.Member.Name == "BindBack")?.Value?.ToString();
-			
+
 			var sourceInstance = CurrentResourceOwner is not null ? CurrentResourceOwnerName : "__that";
 
 			var applyBindingParameters = _isHotReloadEnabled
