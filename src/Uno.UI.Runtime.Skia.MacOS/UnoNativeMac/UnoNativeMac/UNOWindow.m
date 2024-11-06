@@ -767,6 +767,11 @@ void uno_window_clip_svg(UNOWindow* window, const char* svg)
 }
 
 - (void)sendEvent:(NSEvent *)event {
+    if (![[NSApplication sharedApplication] isActive]) {
+        [super sendEvent:event];
+        return;
+    }
+
     bool handled = false;
     MouseEvents mouse = MouseEventsNone;
     PointerDeviceType pdt = PointerDeviceTypeMouse;

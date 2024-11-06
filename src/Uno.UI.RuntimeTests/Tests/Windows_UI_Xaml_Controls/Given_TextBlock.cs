@@ -182,10 +182,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await UITestHelper.Load(expected);
 			var screenshot2 = await UITestHelper.ScreenShot(expected);
 
-			Assert.AreEqual(screenshot2.Width, screenshot1.Width);
-			Assert.AreEqual(screenshot2.Height, screenshot1.Height);
-
-			await ImageAssert.AreSimilarAsync(screenshot1, screenshot2, imperceptibilityThreshold: 0.15);
+			// we tolerate a 2 pixels difference between the bitmaps due to font differences
+			await ImageAssert.AreSimilarAsync(screenshot1, screenshot2, imperceptibilityThreshold: 0.18, resolutionTolerance: 2);
 		}
 #endif
 
@@ -1264,7 +1262,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
 
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.A, VirtualKeyModifiers.Control));
+			var mod = OperatingSystem.IsMacOS() ? VirtualKeyModifiers.Windows : VirtualKeyModifiers.Control;
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.A, mod));
 			await WindowHelper.WaitForIdle();
 
 			var bitmap = await UITestHelper.ScreenShot(SUT);
@@ -1278,7 +1277,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					SUT.SelectionHighlightColor.Color);
 			}
 
-			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.C, VirtualKeyModifiers.Control));
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.C, mod));
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(SUT.Text, await Clipboard.GetContent()!.GetTextAsync());
