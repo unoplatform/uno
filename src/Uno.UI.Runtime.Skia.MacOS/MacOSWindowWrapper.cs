@@ -47,13 +47,6 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase
 		NativeUno.uno_window_activate(_window.Handle);
 	}
 
-	protected override void ShowCore()
-	{
-		// the first call to `Window.Activate` does not reach the above `Activate` method
-		// https://github.com/unoplatform/uno/blob/fc8e58d77f8cf31d651135c22ea3105099c26fb7/src/Uno.UI/UI/Xaml/Window/Implementations/BaseWindowImplementation.cs#L81-L98
-		NativeUno.uno_window_activate(_window.Handle);
-	}
-
 	public override void Close()
 	{
 		NativeUno.uno_window_close(_window.Handle);
