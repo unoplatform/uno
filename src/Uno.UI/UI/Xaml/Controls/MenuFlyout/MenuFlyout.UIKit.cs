@@ -30,10 +30,12 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					ShowAlert(Target);
 				}
+#if !__TVOS__
 				else if (UIDevice.CurrentDevice.CheckSystemVersion(7, 0))
 				{
 					ShowActionSheet(Target);
 				}
+#endif
 			}
 			else
 			{
@@ -50,10 +52,12 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					HideAlert();
 				}
+#if !__TVOS__
 				else if (UIDevice.CurrentDevice.CheckSystemVersion(7, 0))
 				{
 					HideActionSheet();
 				}
+#endif
 			}
 			else
 			{

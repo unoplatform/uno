@@ -4,7 +4,7 @@ using System.Text;
 
 #pragma warning disable CS0108 // Member hides inherited member; missing new keyword
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
 using ITextInput = UIKit.IUITextInput;
 #elif __MACOS__

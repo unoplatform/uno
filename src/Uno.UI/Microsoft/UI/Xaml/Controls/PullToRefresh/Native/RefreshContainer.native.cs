@@ -1,4 +1,4 @@
-﻿#if __APPLE_UIKIT__ || __ANDROID__
+﻿#if __IOS__ || __ANDROID__
 using Microsoft.UI.Xaml.Controls;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;

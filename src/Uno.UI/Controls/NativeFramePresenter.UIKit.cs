@@ -796,7 +796,12 @@ namespace Uno.UI.Controls
 		{
 			private PageViewController LowerController => ViewControllers.Length > 1 ? ViewControllers[ViewControllers.Length - 2] as PageViewController : null;
 
-			public FrameNavigationController() : base(typeof(UnoNavigationBar), typeof(UIToolbar))
+			public FrameNavigationController() :
+#if !__TVOS__
+				base(typeof(UnoNavigationBar), typeof(UIToolbar))
+#else
+				base()
+#endif
 			{
 			}
 

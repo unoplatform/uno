@@ -3,21 +3,17 @@ using System;
 using System.Linq;
 using CoreGraphics;
 using Foundation;
-using ObjCRuntime;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
 using UIKit;
 using Uno.Collections;
 using Uno.Diagnostics.Eventing;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
-using Windows.Foundation;
-using Windows.System;
-using Windows.UI.Core;
 using Windows.UI.ViewManagement;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Input;
 #if !__TVOS__
 using WebKit;
 #endif
@@ -66,8 +62,10 @@ public partial class Window : UIWindow
 		_inputPane = InputPane.GetForCurrentView();
 		_inputPane.Window = this;
 
+#if !__TVOS__
 		UIKeyboard.Notifications.ObserveWillShow(OnKeyboardWillShow);
 		UIKeyboard.Notifications.ObserveWillHide(OnKeyboardWillHide);
+#endif
 		UIApplication.Notifications.ObserveDidEnterBackground(OnApplicationEnteredBackground);
 		UIApplication.Notifications.ObserveContentSizeCategoryChanged(OnContentSizeCategoryChanged);
 
@@ -329,6 +327,7 @@ public partial class Window : UIWindow
 		}
 	}
 
+#if !__TVOS__
 	private void OnKeyboardWillShow(object? sender, UIKeyboardEventArgs e)
 	{
 		try
@@ -366,6 +365,7 @@ public partial class Window : UIWindow
 			Application.Current.RaiseRecoverableUnhandledException(ex);
 		}
 	}
+#endif
 
 	internal void MakeFocusedViewVisible(bool isOpeningKeyboard = false)
 	{
@@ -531,10 +531,14 @@ public partial class Window : UIWindow
 	private bool IsWithinAWebView(UIView? view)
 	{
 		return
+#if __TVOS__
+			false;
+#else
 #if !__MACCATALYST__
 			view?.FindSuperviewOfType<UIWebView>(stopAt: this) != null ||
 #endif
 			view?.FindSuperviewOfType<WKWebView>(stopAt: this) != null;
+#endif
 	}
 
 	private bool IsFocusable(UIView? view)

@@ -1,20 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Windows.Graphics.Display;
 using Foundation;
-using UIKit;
 using Microsoft.UI.Xaml.Media;
-using Uno.Extensions;
-using Windows.Devices.Sensors;
-using CoreGraphics;
 using ObjCRuntime;
+using UIKit;
 using Uno.Helpers.Theming;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 namespace Uno.UI.Controls
 {
-	public class RootViewController : UINavigationController, IRotationAwareViewController
+	public partial class RootViewController : UINavigationController, IRotationAwareViewController
 	{
 		internal event Action VisibleBoundsChanged;
 
@@ -51,10 +45,12 @@ namespace Uno.UI.Controls
 		{
 			// TODO Uno: When we support multi-window, this should close popups for the appropriate XamlRoot #13847.
 
+#if !__TVOS__
 			// Dismiss on device rotation: this reproduces the windows behavior
 			UIApplication.Notifications
 				.ObserveDidChangeStatusBarOrientation((sender, args) =>
 					VisualTreeHelper.CloseLightDismissPopups(WinUICoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot.XamlRoot));
+#endif
 
 			// Dismiss when the app is entering background
 			UIApplication.Notifications
@@ -77,23 +73,7 @@ namespace Uno.UI.Controls
 			VisibleBoundsChanged?.Invoke();
 		}
 
-		public override UIInterfaceOrientationMask GetSupportedInterfaceOrientations()
-		{
-			return DisplayInformation.AutoRotationPreferences.ToUIInterfaceOrientationMask();
-		}
-
-		public override void MotionEnded(UIEventSubtype motion, UIEvent evt)
-		{
-			if (motion == UIEventSubtype.MotionShake)
-			{
-				Accelerometer.HandleShake();
-			}
-			base.MotionEnded(motion, evt);
-		}
-
 		public bool CanAutorotate { get; set; } = true;
-
-		public override bool ShouldAutorotate() => CanAutorotate && base.ShouldAutorotate();
 
 #pragma warning disable CA1422 // Deprecated in iOS 17+, replaced by RegisterForTraitChanges in Initialize()
 		public override void TraitCollectionDidChange(UITraitCollection previousTraitCollection)

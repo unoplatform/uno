@@ -86,7 +86,9 @@ namespace Microsoft.UI.Xaml
 
 		partial void InitializePointersPartial()
 		{
+#if !__TVOS__
 			MultipleTouchEnabled = true;
+#endif
 			ArePointersEnabled = true;
 		}
 

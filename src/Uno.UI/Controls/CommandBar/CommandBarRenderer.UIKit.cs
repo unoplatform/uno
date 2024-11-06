@@ -204,8 +204,10 @@ namespace Uno.UI.Controls
 			}
 			else
 			{
+#if !__TVOS__
 				Native.BackIndicatorImage = backButtonIcon;
 				Native.BackIndicatorTransitionMaskImage = backButtonIcon;
+#endif
 			}
 
 			// Remove 1px "shadow" line from the bottom of UINavigationBar

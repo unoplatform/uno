@@ -68,6 +68,7 @@ namespace Microsoft.UI.Xaml
 						handled = true;
 					}
 				}
+#if !__TVOS__
 				else if (launchOptions.TryGetValue(UIApplication.LaunchOptionsShortcutItemKey, out var shortcutItemObject))
 				{
 					_preventSecondaryActivationHandling = true;
@@ -75,6 +76,7 @@ namespace Microsoft.UI.Xaml
 					OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, shortcutItem.Type));
 					handled = true;
 				}
+#endif
 				else if (
 					TryGetUserActivityFromLaunchOptions(launchOptions, out var userActivity) &&
 					userActivity.ActivityType == NSUserActivityType.BrowsingWeb)
@@ -116,24 +118,11 @@ namespace Microsoft.UI.Xaml
 			return true;
 		}
 
-		public override void PerformActionForShortcutItem(
-			UIApplication application,
-			UIApplicationShortcutItem shortcutItem,
-			UIOperationHandler completionHandler)
-		{
-			if (!_preventSecondaryActivationHandling)
-			{
-				OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, shortcutItem.Type));
-			}
-			_preventSecondaryActivationHandling = false;
-		}
+
 
 		private DateTimeOffset GetSuspendingOffset() => DateTimeOffset.Now.AddSeconds(10);
 
-		public override UIInterfaceOrientationMask GetSupportedInterfaceOrientations(UIApplication application, [Transient] UIWindow forWindow)
-		{
-			return DisplayInformation.AutoRotationPreferences.ToUIInterfaceOrientationMask();
-		}
+
 
 		/// <summary>
 		/// This method enables UI Tests to get the output path

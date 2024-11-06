@@ -99,6 +99,8 @@ namespace Uno.UI.Controls
 				nativeBar.Superview.SetNeedsLayout();
 			}
 		}
+
+#if !__TVOS__
 		protected override Size MeasureOverride(Size size)
 		{
 			var measuredSize = base.MeasureOverride(size);
@@ -129,6 +131,7 @@ namespace Uno.UI.Controls
 
 			return measuredSize;
 		}
+#endif
 
 		private protected override void OnUnloaded()
 		{

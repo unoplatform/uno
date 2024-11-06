@@ -115,6 +115,7 @@ namespace Uno.UI.Controls
 				native.LeftBarButtonItem = null;
 			}
 
+#if !__TVOS__
 			// CommandBarExtensions.BackButtonText
 			if (element.GetValue(BackButtonTitleProperty) is string backButtonText)
 			{
@@ -124,6 +125,7 @@ namespace Uno.UI.Controls
 			{
 				native.BackBarButtonItem = null;
 			}
+#endif
 		}
 
 		private void OnTitleViewParentChanged(object instance, object? key, DependencyObjectParentChangedEventArgs args)

@@ -74,6 +74,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				switch (UIDevice.CurrentDevice.UserInterfaceIdiom)
 				{
+#if !__TVOS__
 					case UIUserInterfaceIdiom.Pad:
 						if (placementTarget.Superview != null)
 						{
@@ -90,7 +91,8 @@ namespace Microsoft.UI.Xaml.Controls
 						_alertController.PopoverPresentationController.PermittedArrowDirections = UIPopoverArrowDirection.Any;
 						placementTarget.FindViewController().PresentViewController(_alertController, true, null);
 						break;
-					case UIUserInterfaceIdiom.Phone:
+#endif
+					case UIUserInterfaceIdiom.Phone or UIUserInterfaceIdiom.TV:
 						placementTarget.FindViewController().PresentViewController(_alertController, true, null);
 						break;
 					case UIUserInterfaceIdiom.Unspecified:
