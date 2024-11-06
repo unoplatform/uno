@@ -3,6 +3,9 @@ using Foundation;
 using Microsoft.UI.Xaml.Media;
 using ObjCRuntime;
 using UIKit;
+using Uno.Helpers.Theming;
+using Windows.Graphics.Display;
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 namespace Uno.UI.Controls;
 
