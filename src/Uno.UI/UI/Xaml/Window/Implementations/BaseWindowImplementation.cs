@@ -29,7 +29,6 @@ namespace Uno.UI.Xaml.Controls;
 
 internal abstract class BaseWindowImplementation : IWindowImplementation
 {
-	private bool _wasShown;
 	private CoreWindowActivationState _lastActivationState = CoreWindowActivationState.Deactivated;
 	private Size _lastSize = new Size(-1, -1);
 
@@ -85,15 +84,17 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 			throw new InvalidOperationException("Cannot reactivate a closed window.");
 		}
 
-		if (!_wasShown)
+		if (NativeWindowWrapper is null)
 		{
-			_wasShown = true;
-
-			SetVisibleBoundsFromNative();
-			NativeWindowWrapper?.Show();
+			throw new InvalidOperationException("Native window is not initialized.");
 		}
 
-		NativeWindowWrapper?.Activate();
+		if (!NativeWindowWrapper.WasShown)
+		{
+			SetVisibleBoundsFromNative();
+		}
+
+		NativeWindowWrapper?.Show(true);
 
 		OnActivationStateChanged(CoreWindowActivationState.CodeActivated);
 	}

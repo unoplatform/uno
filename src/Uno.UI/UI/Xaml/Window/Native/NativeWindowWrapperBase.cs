@@ -51,6 +51,8 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 
 	internal protected Window? Window => _window;
 
+	public bool WasShown { get; private set; }
+
 	internal void SetWindow(Window window, XamlRoot xamlRoot)
 	{
 		_window = window;
@@ -181,7 +183,9 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 	public event EventHandler<AppWindowClosingEventArgs>? Closing;
 	public event EventHandler? Shown;
 
-	public virtual void Activate() { }
+	protected virtual void Activate()
+	{
+	}
 
 	public virtual void Close()
 	{
@@ -190,14 +194,23 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 
 	public virtual void ExtendContentIntoTitleBar(bool extend) { }
 
-	public virtual void Show()
+	public virtual void Show(bool activateWindow)
 	{
-		ShowCore();
+		if (!WasShown)
+		{
+			WasShown = true;
+			ShowCore();
 
-		// On single-window targets, the window is already shown with splash screen
-		// so we must ensure the property is initialized correctly.
-		IsVisible = true;
-		Shown?.Invoke(this, EventArgs.Empty);
+			// On single-window targets, the window is already shown with splash screen
+			// so we must ensure the property is initialized correctly.
+			IsVisible = true;
+			Shown?.Invoke(this, EventArgs.Empty);
+		}
+
+		if (activateWindow)
+		{
+			Activate();
+		}
 	}
 
 	protected virtual void ShowCore() { }
@@ -248,13 +261,4 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 	public void Destroy() { }
 
 	public void Hide() { }
-
-	public void Show(bool activateWindow)
-	{
-		Show();
-		if (activateWindow)
-		{
-			Activate();
-		}
-	}
 }
