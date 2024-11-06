@@ -42,12 +42,12 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase
 		set => NativeUno.uno_window_set_title(_window.Handle, value);
 	}
 
-	public override void Activate()
+	protected override void Activate()
 	{
 		NativeUno.uno_window_activate(_window.Handle);
 	}
 
-	public override void Close()
+	protected override void CloseCore()
 	{
 		NativeUno.uno_window_close(_window.Handle);
 	}

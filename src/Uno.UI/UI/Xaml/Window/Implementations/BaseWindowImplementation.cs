@@ -220,7 +220,7 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 
 	private void OnNativeVisibilityChanged(object? sender, bool isVisible)
 	{
-		if (!_wasShown)
+		if (NativeWindowWrapper is not { WasShown: true })
 		{
 			return;
 		}
@@ -236,7 +236,7 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 
 	private void OnNativeActivationChanged(object? sender, CoreWindowActivationState state)
 	{
-		if (!_wasShown)
+		if (NativeWindowWrapper is not { WasShown: true })
 		{
 			return;
 		}
@@ -323,11 +323,6 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 				// because they check if window is closed already
 				Window.SetTitleBar(null);
 				Window.Content = null;
-			}
-			else
-			{
-				// Just reset the window to not shown state so it can be reactivated
-				_wasShown = false;
 			}
 
 			// _windowChrome.SetDesktopWindow(null);

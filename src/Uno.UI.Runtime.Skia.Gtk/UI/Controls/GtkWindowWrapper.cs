@@ -73,11 +73,10 @@ internal class GtkWindowWrapper : NativeWindowWrapperBase
 
 	public override object NativeWindow => _gtkWindow;
 
-	public override void Activate() => _gtkWindow.Activate();
+	protected override void Activate() => _gtkWindow.Activate();
 
-	public override void Close()
+	protected override void CloseCore()
 	{
-		base.Close();
 		if (_wasShown)
 		{
 			_gtkWindow.Close();

@@ -187,9 +187,21 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 	{
 	}
 
-	public virtual void Close()
+	protected virtual void CloseCore()
 	{
+	}
+
+	public void Close()
+	{
+		CloseCore();
+
 		IsVisible = false;
+
+		// Allow the window to be re-shown on single-window targets.
+		if (!NativeWindowFactory.SupportsMultipleWindows)
+		{
+			WasShown = false;
+		}
 	}
 
 	public virtual void ExtendContentIntoTitleBar(bool extend) { }

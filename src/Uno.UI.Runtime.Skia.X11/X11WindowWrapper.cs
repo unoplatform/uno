@@ -85,9 +85,8 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 		// _ = XLib.XFlush(x11Window.Display);
 	}
 
-	public override void Close()
+	protected override void CloseCore()
 	{
-		base.Close();
 		var x11Window = _host.RootX11Window;
 		if (this.Log().IsEnabled(LogLevel.Information))
 		{
