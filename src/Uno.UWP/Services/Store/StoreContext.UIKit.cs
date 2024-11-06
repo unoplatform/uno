@@ -63,6 +63,7 @@ public sealed partial class StoreContext
 	[GeneratedRegex("trackId[^0-9]*([0-9]*)")]
 	private static partial Regex TrackParser();
 
+#if __IOS__
 	private async Task<StoreRateAndReviewResult> RequestRateAndReviewAppTaskAsync(CancellationToken cancellationToken)
 	{
 		try
@@ -79,4 +80,5 @@ public sealed partial class StoreContext
 			return new StoreRateAndReviewResult(StoreRateAndReviewStatus.Error, ex);
 		}
 	}
+#endif
 }
