@@ -669,6 +669,11 @@ void* uno_window_get_metal_context(UNOWindow* window)
 }
 
 - (void)sendEvent:(NSEvent *)event {
+    if (![[NSApplication sharedApplication] isActive]) {
+        [super sendEvent:event];
+        return;
+    }
+
     bool handled = false;
     MouseEvents mouse = MouseEventsNone;
     PointerDeviceType pdt = PointerDeviceTypeMouse;
