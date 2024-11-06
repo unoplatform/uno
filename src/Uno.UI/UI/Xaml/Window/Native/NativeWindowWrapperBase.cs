@@ -183,7 +183,7 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 	public event EventHandler<AppWindowClosingEventArgs>? Closing;
 	public event EventHandler? Shown;
 
-	protected virtual void Activate()
+	internal protected virtual void Activate()
 	{
 	}
 

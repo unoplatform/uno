@@ -62,7 +62,7 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 		VisibleBounds = new Rect(default, newWindowSize);
 	}
 
-	public override void Activate()
+	internal protected override void Activate()
 	{
 		var x11Window = _host.RootX11Window;
 		using var lockDiposable = X11Helper.XLock(x11Window.Display);

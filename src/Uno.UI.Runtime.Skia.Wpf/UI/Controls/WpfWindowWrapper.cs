@@ -80,7 +80,7 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 		UpdatePositionFromNative();
 	}
 
-	protected override void Activate() => _wpfWindow.Activate();
+	internal protected override void Activate() => _wpfWindow.Activate();
 
 	protected override void CloseCore() => _wpfWindow.Close();
 
