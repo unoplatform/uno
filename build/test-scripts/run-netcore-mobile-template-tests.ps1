@@ -271,16 +271,16 @@ $projects =
     @(1, "5.2/uno52blank/uno52blank/uno52blank.csproj", @("-f", "net8.0-desktop", $sdkFeatures), @("macOS", "NetCore")),
 
     # Default mode for the template is WindowsAppSDKSelfContained=true, which requires specifying a target platform.
-    @(2, "5.2/uno52blank/uno52blank/uno52blank.csproj", @("-p:Platform=x86" , "-p:TargetFramework=net8.0-windows10.0.19041"), @()),
-    @(2, "5.2/uno52blank/uno52blank/uno52blank.csproj", @("-p:Platform=arm64" , "-p:TargetFramework=net8.0-windows10.0.19041"), @()),
+    @(2, "5.2/uno52blank/uno52blank/uno52blank.csproj", @("-p:Platform=x86" , "-p:TargetFramework=net8.0-windows10.0.26100"), @()),
+    @(2, "5.2/uno52blank/uno52blank/uno52blank.csproj", @("-p:Platform=arm64" , "-p:TargetFramework=net8.0-windows10.0.26100"), @()),
 
     # Ensure that default without platform builds properly
-    @(2, "5.2/uno52blank/uno52blank/uno52blank.csproj", @("-p:TargetFramework=net8.0-windows10.0.19041"), @()),
+    @(2, "5.2/uno52blank/uno52blank/uno52blank.csproj", @("-p:TargetFramework=net8.0-windows10.0.26100"), @()),
 
     # Validate building inside VS
     @(2, "5.2/uno52blank/uno52blank/uno52blank.csproj", @("-p:BuildingInsideVisualStudio=true"), @("NetCore")),
     @(2, "5.2/uno52blank/uno52blank/uno52blank.csproj", @("-p:BuildingInsideVisualStudio=true", "-p:_UnoSelectedTargetFramework=net8.0-desktop"), @("NetCore")),
-    @(2, "5.2/uno52blank/uno52blank/uno52blank.csproj", @("-p:BuildingInsideVisualStudio=true", "-p:_UnoSelectedTargetFramework=net8.0-windows10.0.19041"), @()),
+    @(2, "5.2/uno52blank/uno52blank/uno52blank.csproj", @("-p:BuildingInsideVisualStudio=true", "-p:_UnoSelectedTargetFramework=net8.0-windows10.0.26100"), @()),
 
     #
     # 5.2 Uno Lib
@@ -301,7 +301,7 @@ $projects =
     @(2, "5.2/uno52NuGetLib/uno52NuGetLib.csproj", @(), @("macOS", "NetCore")),
 
     # Default mode for the template is WindowsAppSDKSelfContained=true, which requires specifying a target platform.
-    @(2, "5.2/uno52Lib/uno52Lib.csproj", @("-p:Platform=x86" , "-p:TargetFramework=net8.0-windows10.0.19041"), @("macOS")),
+    @(2, "5.2/uno52Lib/uno52Lib.csproj", @("-p:Platform=x86" , "-p:TargetFramework=net8.0-windows10.0.26100"), @("macOS")),
 
     #
     # 5.2 Uno SingleProject Lib
@@ -314,7 +314,7 @@ $projects =
     @(2, "5.2/uno52SingleProjectLib/uno52SingleProjectLib.csproj", @("-f", "net8.0-desktop"), @("macOS", "NetCore")),
 
     # Default mode for the template is WindowsAppSDKSelfContained=true, which requires specifying a target platform.
-    @(2, "5.2/uno52SingleProjectLib/uno52SingleProjectLib.csproj", @("-p:Platform=x86" , "-p:TargetFramework=net8.0-windows10.0.19041"), @()),
+    @(2, "5.2/uno52SingleProjectLib/uno52SingleProjectLib.csproj", @("-p:Platform=x86" , "-p:TargetFramework=net8.0-windows10.0.26100"), @()),
 
     # 5.2 Uno App with Library reference
     @(2, "5.2/uno52AppWithLib/uno52AppWithLib/uno52AppWithLib.csproj", @("-f", "net8.0"), @("macOS", "NetCore")),
@@ -339,7 +339,7 @@ $projects =
     @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-desktop", $sdkFeatures), @("macOS", "NetCore")),
 
     # Default mode for the template is WindowsAppSDKSelfContained=true, which requires specifying a target platform.
-    @(4, "5.2/uno52AppWithLib/uno52AppWithLib/uno52AppWithLib.csproj", @("-p:Platform=x86" , "-p:TargetFramework=net8.0-windows10.0.19041"), @()),
+    @(4, "5.2/uno52AppWithLib/uno52AppWithLib/uno52AppWithLib.csproj", @("-p:Platform=x86" , "-p:TargetFramework=net8.0-windows10.0.26100"), @()),
 
     # Publishing validation
     @(4, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-desktop", "-p:PackageFormat=app"), @("OnlyMacOS", "NetCore", "Publish"))

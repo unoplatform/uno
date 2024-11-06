@@ -9,7 +9,10 @@
 		<_UnoProjectSystemPackageReference Include="Uno.Resizetizer" ProjectSystem="true" PrivateAssets="all" />
 		<_UnoProjectSystemPackageReference Include="Uno.Sdk.Extras" ProjectSystem="true" PrivateAssets="all" />
 		<_UnoProjectSystemPackageReference Include="Uno.Settings.DevServer" ProjectSystem="true" PrivateAssets="all" />
-		<_UnoProjectSystemPackageReference Include="Uno.UI.HotDesign" ProjectSystem="true" PrivateAssets="all" />
+	</ItemGroup>
+
+	<ItemGroup Condition=" ($(_IsExecutable) == 'true' OR '$(IsUnoHead)' == 'true') AND '$(UnoDisableHotDesign)' != 'true' ">
+		<_UnoProjectSystemPackageReference Include="Uno.UI.HotDesign" ProjectSystem="true" PrivateAssets="all" Condition=" '$(Optimize)' != 'true' " />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(_ImplicitRestoreOutputType)' == 'WinExe' OR '$(_ImplicitRestoreOutputType)' == 'Exe' ">
