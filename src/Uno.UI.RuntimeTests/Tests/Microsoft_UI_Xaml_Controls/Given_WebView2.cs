@@ -450,6 +450,7 @@ public class Given_WebView2
 		Assert.IsTrue(webView.Source.OriginalString.StartsWith("https://httpbin.org/status/444", StringComparison.OrdinalIgnoreCase));
 	}
 
+#if !WINAPPSDK
 	[TestMethod]
 	[DataRow(true)]
 	[DataRow(false)]
@@ -489,4 +490,6 @@ public class Given_WebView2
 		}
 	}
 }
+#endif // !WINAPPSDK
+
 #endif
