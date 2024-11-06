@@ -1,4 +1,4 @@
-﻿#if __ANDROID__ || __APPLE_UIKIT__
+﻿#if __ANDROID__ || __IOS__
 using Microsoft.UI.Private.Controls;
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Windows.Foundation;

@@ -699,7 +699,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return this.GetUseLayoutRounding() ? fe.LayoutRound(value) : value;
 		}
 
-#if __IOS__
+#if __APPLE_UIKIT__
 		internal
 #else
 		private

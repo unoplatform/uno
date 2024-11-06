@@ -26,7 +26,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		DateTime IDatePickerFlyoutPresenter.GetDate()
 		{
-#if __APPLE_UIKIT__
+#if __IOS__
 			if (Content is DatePickerSelector selector)
 			{
 				selector.SaveValue();

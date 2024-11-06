@@ -125,14 +125,14 @@ internal partial class PopupPanel : Panel
 			// against the placement target approach.
 			var isFlyoutManagedDatePicker =
 				(Popup.AssociatedFlyout is DatePickerFlyout || Popup.AssociatedFlyout is TimePickerFlyout)
-#if __ANDROID__ || __APPLE_UIKIT__
+#if __ANDROID__ || __IOS__
 				&& (Popup.AssociatedFlyout is not NativeDatePickerFlyout && Popup.AssociatedFlyout is not NativeTimePickerFlyout)
 #endif
 				;
 
 			if (!isFlyoutManagedDatePicker &&
 				Popup.PlacementTarget is not null
-#if __ANDROID__ || __APPLE_UIKIT__
+#if __ANDROID__ || __IOS__
 				|| NativeAnchor is not null
 #endif
 				)

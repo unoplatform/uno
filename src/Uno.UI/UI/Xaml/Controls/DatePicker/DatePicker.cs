@@ -1,4 +1,4 @@
-﻿#if __APPLE_UIKIT__ || __ANDROID__
+﻿#if __IOS__ || __ANDROID__
 #define SUPPORTS_NATIVE_DATEPICKER
 #endif
 using System;

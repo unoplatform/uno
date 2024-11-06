@@ -14,7 +14,9 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		public PagedCollectionView() : base(new CGRect(0, 0, 50, 50), GetLayout())
 		{
+#if !__TVOS__
 			PagingEnabled = true;
+#endif
 			Bounces = true;
 
 			BackgroundColor = UIColor.Clear;

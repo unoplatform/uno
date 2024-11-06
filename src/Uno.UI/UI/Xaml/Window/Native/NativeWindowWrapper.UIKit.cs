@@ -19,7 +19,9 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 	private Uno.UI.Controls.Window _nativeWindow;
 
 	private RootViewController _mainController;
+#if !__TVOS__
 	private NSObject _orientationRegistration;
+#endif
 	private readonly DisplayInformation _displayInformation;
 
 	public NativeWindowWrapper()
@@ -141,10 +143,12 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	private static bool UseSafeAreaInsets => UIDevice.CurrentDevice.CheckSystemVersion(11, 0);
 
+#if !__TVOS__
 	protected override IDisposable ApplyFullScreenPresenter()
 	{
 		CoreDispatcher.CheckThreadAccess();
 		UIApplication.SharedApplication.StatusBarHidden = true;
 		return Disposable.Create(() => UIApplication.SharedApplication.StatusBarHidden = false);
 	}
+#endif
 }

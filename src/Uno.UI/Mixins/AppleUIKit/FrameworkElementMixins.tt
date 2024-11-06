@@ -4,11 +4,15 @@
 <#@include file="../Uno.UI/UI/Xaml/IFrameworkElement.Partials.tt"#>
 <#
 	GenerateDefaultPartialClasses(
+		"true",
 		"Microsoft.UI.Xaml.Controls.NativeListViewBase",
 		"Microsoft.UI.Xaml.Controls.NativeScrollContentPresenter",
 		"Microsoft.UI.Xaml.Controls.MultilineTextBoxView",
-		"Microsoft.UI.Xaml.Controls.Picker",
 		"Microsoft.UI.Xaml.Controls.SinglelineTextBoxView"
+	);
+	GenerateDefaultPartialClasses(
+		"!__TVOS__",
+		"Microsoft.UI.Xaml.Controls.Picker"
 	);
 #>
 

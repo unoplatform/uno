@@ -17,7 +17,7 @@ public partial class RefreshContainer : ContentControl
 		//	return;
 		//}
 
-#if !__ANDROID__ && !__APPLE_UIKIT__
+#if !__ANDROID__ && !__IOS__
 		m_refreshInfoProviderAdapter = new ProgressRingRefreshInfoProviderAdapter(this);
 #else
 		m_refreshInfoProviderAdapter = new NativeRefreshInfoProviderAdapter(this);

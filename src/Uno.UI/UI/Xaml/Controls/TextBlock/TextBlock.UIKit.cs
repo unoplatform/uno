@@ -1,19 +1,15 @@
 ﻿using System;
 using System.Linq;
+using CoreGraphics;
+using Foundation;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Media;
-using Windows.Foundation;
-using Uno.UI.Controls;
-using Microsoft.UI.Xaml.Input;
-using Foundation;
 using UIKit;
-using CoreGraphics;
-using Windows.UI.Text;
 using Uno.UI;
-using Windows.UI;
-using CoreAnimation;
-using ObjCRuntime;
+using Uno.UI.Controls;
 using Uno.UI.Xaml;
+using Windows.Foundation;
+using Windows.UI.Text;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -123,7 +119,17 @@ namespace Microsoft.UI.Xaml.Controls
 					var font = FontHelper.TryGetFont(new FontProperties((float)FontSize, FontWeight, FontStyle, FontStretch), FontFamily);
 
 #pragma warning disable BI1234 // error BI1234: 'UIStringDrawing.StringSize(string, UIFont, CGSize)' is obsolete: 'Starting with ios7.0 use NSString.GetBoundingRect (CGSize, NSStringDrawingOptions, UIStringAttributes, NSStringDrawingContext) instead.'
+#if __TVOS__
+					var attributes = new UIStringAttributes { Font = font };
+					result = ((NSString)(Text ?? NSString.Empty)).GetBoundingRect(
+						size,
+						NSStringDrawingOptions.UsesLineFragmentOrigin,
+						attributes,
+						null
+					).Size;
+#else
 					result = (Text ?? NSString.Empty).StringSize(font, size);
+#endif
 #pragma warning restore BI1234
 				}
 
