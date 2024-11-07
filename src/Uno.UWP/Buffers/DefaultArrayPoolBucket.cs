@@ -44,7 +44,7 @@ namespace Uno.Buffers
 #if DEBUG // thread tracking adds non-trivial overheads to Enter/Exit
 					true
 #else
-					false
+					global::System.Diagnostics.Debugger.IsAttached
 #endif
 					);
 				_buffers = new T[numberOfBuffers][];

@@ -269,7 +269,10 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 		CoreWindow?.OnActivated(coreWindowActivatedEventArgs);
 		Activated?.Invoke(Window, activatedEventArgs);
 		SystemThemeHelper.RefreshSystemTheme();
-		KeyboardStateTracker.Reset();
+		if (!FeatureConfiguration.DebugOptions.PreventKeyboardStateTrackerFromResettingOnWindowActivationChange)
+		{
+			KeyboardStateTracker.Reset();
+		}
 	}
 
 	public bool Close()

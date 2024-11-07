@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using UIExecutor = MUXControlsTestApp.Utilities.RunOnUIThread;
 using MUXControlsTestApp.Utilities;
+using Uno.UI;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Tests.Common
 {
@@ -153,7 +154,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Tests.Common
 			return new RoutedEventTester<TEventArgs>(sender, eventName, action);
 		}
 
-		public TimeSpan DefaultTimeout = EventTesterConfig.Timeout;
+		public TimeSpan DefaultTimeout = FeatureConfiguration.DebugOptions.WaitIndefinitelyInEventTester ? TimeSpan.FromMilliseconds(-1) : EventTesterConfig.Timeout;
 
 		private TSender Sender
 		{

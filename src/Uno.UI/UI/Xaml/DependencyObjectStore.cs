@@ -800,24 +800,25 @@ namespace Microsoft.UI.Xaml
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void ValidatePropertyOwner(DependencyProperty property)
 		{
-#if DEBUG
-			var isFrameworkElement = _originalObjectType.Is(typeof(FrameworkElement));
-			var isMixinFrameworkElement = _originalObjectRef.Target is IFrameworkElement && !isFrameworkElement;
-
-			if (
-				!_originalObjectType.Is(property.OwnerType)
-				&& !property.IsAttached
-
-				// Don't fail validation for properties that are located on non-FrameworkElement types
-				// e.g. ScrollContentPresenter, for which using the Name property should not fail.
-				&& !isMixinFrameworkElement
-			)
+			if (FeatureConfiguration.DependencyProperty.ValidatePropertyOwnerOnReadWrite)
 			{
-				throw new InvalidOperationException(
-					$"The Dependency Property [{property.Name}] is owned by [{property.OwnerType}] and cannot be used on [{_originalObjectType}]"
-				);
+				var isFrameworkElement = _originalObjectType.Is(typeof(FrameworkElement));
+				var isMixinFrameworkElement = _originalObjectRef.Target is IFrameworkElement && !isFrameworkElement;
+
+				if (
+					!_originalObjectType.Is(property.OwnerType)
+					&& !property.IsAttached
+
+					// Don't fail validation for properties that are located on non-FrameworkElement types
+					// e.g. ScrollContentPresenter, for which using the Name property should not fail.
+					&& !isMixinFrameworkElement
+				)
+				{
+					throw new InvalidOperationException(
+						$"The Dependency Property [{property.Name}] is owned by [{property.OwnerType}] and cannot be used on [{_originalObjectType}]"
+					);
+				}
 			}
-#endif
 		}
 
 		public long RegisterPropertyChangedCallback(DependencyProperty property, DependencyPropertyChangedCallback callback)
