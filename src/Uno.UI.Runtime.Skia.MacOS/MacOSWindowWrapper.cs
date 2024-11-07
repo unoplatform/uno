@@ -50,7 +50,6 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase
 	protected override void CloseCore()
 	{
 		NativeUno.uno_window_close(_window.Handle);
-		base.Close();
 	}
 
 	public override void Move(PointInt32 position)
@@ -91,13 +90,7 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase
 	private void OnWindowClosing(object? sender, CancelEventArgs e)
 	{
 		var closingArgs = RaiseClosing();
-		if (closingArgs.Cancel)
-		{
-			e.Cancel = true;
-		}
-
-		// All prerequisites passed, can safely close.
-		e.Cancel = false;
+		e.Cancel = closingArgs.Cancel;
 	}
 
 	protected override IDisposable ApplyFullScreenPresenter()
