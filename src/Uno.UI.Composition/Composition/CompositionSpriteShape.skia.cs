@@ -10,32 +10,32 @@ namespace Microsoft.UI.Composition
 {
 	public partial class CompositionSpriteShape : CompositionShape
 	{
-		private CompositionGeometry? _negativeFillGeometry;
+		private CompositionGeometry? _fillGeometry;
 
 		private SkiaGeometrySource2D? _geometryWithTransformations;
-		private SkiaGeometrySource2D? _finalFillGeometryWithTransformations;
+		private SkiaGeometrySource2D? _fillGeometryWithTransformations;
 
 		/// <summary>
 		/// This is largely a hack that's needed for MUX.Shapes.Path with Data set to a PathGeometry that has some
 		/// figures with IsFilled = False. CompositionSpriteShapes don't have the concept of a "selectively filled
 		/// geometry". The entire Geometry is either filled (FillBrush is not null) or not. To work around this,
-		/// we add this "negative geometry" that is subtracted from the <see cref="Geometry"/> to get the
-		/// final geometry to be filled. cf. https://github.com/unoplatform/uno/issues/18694
+		/// we add this "fill geometry" which is only the subgeomtry to be filled.
+		/// cf. https://github.com/unoplatform/uno/issues/18694
 		/// Remove this if we port Shapes from WinUI, which don't use CompositionSpriteShapes to begin with, but
 		/// a CompositionMaskBrush that (presumably) masks out certain areas. We compensate for this by using this
-		/// negative geometry as a "negative mask".
+		/// geometry as the mask.
 		/// </summary>
-		public CompositionGeometry? NegativeFillGeometry
+		public CompositionGeometry? FillGeometry
 		{
-			get => _negativeFillGeometry;
-			set => SetProperty(ref _negativeFillGeometry, value);
+			get => _fillGeometry;
+			set => SetProperty(ref _fillGeometry, value);
 		}
 
 		internal override void Paint(in Visual.PaintingSession session)
 		{
 			if (_geometryWithTransformations is { } geometryWithTransformations)
 			{
-				if (FillBrush is { } fill && _finalFillGeometryWithTransformations is { } finalFillGeometryWithTransformations)
+				if (FillBrush is { } fill && _fillGeometryWithTransformations is { } finalFillGeometryWithTransformations)
 				{
 					using var fillPaintDisposable = GetTempFillPaint(session.Filters.OpacityColorFilter, out var fillPaint);
 
@@ -143,29 +143,28 @@ namespace Microsoft.UI.Composition
 
 			switch (propertyName)
 			{
-				case nameof(Geometry) or nameof(CombinedTransformMatrix) or nameof(NegativeFillGeometry):
+				case nameof(Geometry) or nameof(CombinedTransformMatrix) or nameof(FillGeometry):
 					if (Geometry?.BuildGeometry() is SkiaGeometrySource2D geometry)
 					{
 						var transform = CombinedTransformMatrix;
 						_geometryWithTransformations = transform.IsIdentity
 							? geometry
 							: geometry.Transform(transform.ToSKMatrix());
-						if (NegativeFillGeometry?.BuildGeometry() is SkiaGeometrySource2D negativeFillGeometry)
+						if (FillGeometry?.BuildGeometry() is SkiaGeometrySource2D fillGeometry)
 						{
-							var finalFillGeometry = geometry.Op(negativeFillGeometry, SKPathOp.Difference);
-							_finalFillGeometryWithTransformations = transform.IsIdentity
-								? finalFillGeometry
-								: finalFillGeometry.Transform(transform.ToSKMatrix());
+							_fillGeometryWithTransformations = transform.IsIdentity
+								? fillGeometry
+								: fillGeometry.Transform(transform.ToSKMatrix());
 						}
 						else
 						{
-							_finalFillGeometryWithTransformations = _geometryWithTransformations;
+							_fillGeometryWithTransformations = _geometryWithTransformations;
 						}
 					}
 					else
 					{
 						_geometryWithTransformations = null;
-						_finalFillGeometryWithTransformations = null;
+						_fillGeometryWithTransformations = null;
 					}
 					break;
 			}

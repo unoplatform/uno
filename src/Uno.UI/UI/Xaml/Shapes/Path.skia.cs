@@ -24,11 +24,11 @@ namespace Microsoft.UI.Xaml.Shapes
 
 			if (Data?.GetUnfilledSKPath() is { } negativePath)
 			{
-				SpriteShape.NegativeFillGeometry = Visual.Compositor.CreatePathGeometry(new CompositionPath(new SkiaGeometrySource2D(negativePath)));
+				SpriteShape.FillGeometry = Visual.Compositor.CreatePathGeometry(new CompositionPath(new SkiaGeometrySource2D(negativePath)));
 			}
 			else
 			{
-				SpriteShape.NegativeFillGeometry = null;
+				SpriteShape.FillGeometry = null;
 			}
 		}
 	}

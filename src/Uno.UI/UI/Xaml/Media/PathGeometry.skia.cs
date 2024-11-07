@@ -7,15 +7,15 @@ namespace Microsoft.UI.Xaml.Media
 	{
 		internal override SKPath GetSKPath() => GetSKPath(false);
 
-		internal override SKPath GetUnfilledSKPath() => GetSKPath(true);
+		internal override SKPath GetFilledSKPath() => GetSKPath(true);
 
-		internal SKPath GetSKPath(bool skipFilled)
+		internal SKPath GetSKPath(bool skipUnfilled)
 		{
 			var path = new SKPath();
 
 			foreach (var figure in Figures)
 			{
-				if (skipFilled && figure.IsFilled)
+				if (skipUnfilled && !figure.IsFilled)
 				{
 					continue;
 				}
