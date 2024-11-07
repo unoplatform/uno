@@ -1,6 +1,7 @@
 CW_USEDEFAULT
 
 CreateWindowEx
+DefWindowProc
 FormatMessage
 LocalFree
 RegisterClassEx

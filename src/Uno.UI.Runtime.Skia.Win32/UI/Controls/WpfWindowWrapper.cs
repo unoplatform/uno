@@ -45,7 +45,7 @@ internal class Win32WindowWrapper : NativeWindowWrapperBase
 		using var titleDisposable = new DisposableStruct<IntPtr>(Marshal.FreeHGlobal, title);
 
 		_hwnd = PInvoke.CreateWindowEx(
-			WINDOW_EX_STYLE.WS_EX_OVERLAPPEDWINDOW,
+			0,
 			lpClassName,
 			new PCWSTR((char*)title),
 			WINDOW_STYLE.WS_OVERLAPPEDWINDOW,
@@ -64,9 +64,9 @@ internal class Win32WindowWrapper : NativeWindowWrapperBase
 		}
 	}
 
-	private LRESULT WndProc(HWND param0, uint param1, WPARAM param2, LPARAM param3)
+	private LRESULT WndProc(HWND hwnd, uint msg, WPARAM wParam, LPARAM lParam)
 	{
-		return new LRESULT(0);
+		return PInvoke.DefWindowProc(hwnd, msg, wParam, lParam);
 	}
 
 	public override object NativeWindow => _hwnd;
