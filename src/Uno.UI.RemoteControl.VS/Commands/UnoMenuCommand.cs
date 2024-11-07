@@ -152,8 +152,7 @@ internal sealed class UnoMenuCommand : IDisposable
 
 		if (_unoMainMenuItem is not null)
 		{
-			_unoMainMenuItem.Enabled = false;
-			_unoMainMenuItem.Visible = false;
+			CommandService.RemoveCommand(_unoMainMenuItem);
 		}
 	}
 }
