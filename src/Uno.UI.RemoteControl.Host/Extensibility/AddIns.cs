@@ -65,8 +65,8 @@ public class AddIns
 		var values = File
 			.ReadAllLines(file, Encoding.Unicode)
 			.SelectMany(line => line.Split(['\r', '\n', ';', ','], StringSplitOptions.RemoveEmptyEntries))
-			.Select(liene => liene.Trim())
-			.Where(line => line is { Length: > 0 })
+			.Select(value => value.Trim())
+			.Where(value => value is { Length: > 0 })
 			.Distinct(StringComparer.OrdinalIgnoreCase)
 			.ToImmutableList();
 
