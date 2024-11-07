@@ -29,11 +29,14 @@
 	<ItemGroup>
 		<Compile Include="..\Uno.UI\Controls\BringIntoViewMode.Apple.cs" Link="Controls\BringIntoViewMode.Apple.cs" />
 		<Compile Include="..\Uno.UI\Controls\IRotationAwareViewController.UIKit.cs" Link="Controls\IRotationAwareViewController.UIKit.cs" />
-		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\Apple\LocalWKUIDelegate.iOSmacOS.cs" Link="UI\Xaml\Controls\WebView\LocalWKUIDelegate.iOSmacOS.cs" />
-		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\Apple\NativeWebView.iOSmacOS.cs" Link="UI\Xaml\Controls\WebView\NativeWebView.iOSmacOS.cs" />
-		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\Apple\UnoWKWebView.ErrorMap.iOSmacOS.cs" Link="UI\Xaml\Controls\WebView\UnoWKWebView.ErrorMap.iOSmacOS.cs" />
-		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\Apple\UnoWKWebView.iOSmacOS.cs" Link="UI\Xaml\Controls\WebView\UnoWKWebView.iOSmacOS.cs" />
-		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\Apple\WebViewNavigationDelegate.iOSmacOS.cs" Link="UI\Xaml\Controls\WebView\WebViewNavigationDelegate.iOSmacOS.cs" />
+	</ItemGroup>
+
+	<ItemGroup Condition="!$(IsTvOS)">
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\iOSmacOS\LocalWKUIDelegate.Apple.cs" Link="UI\Xaml\Controls\WebView\LocalWKUIDelegate.Apple.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\iOSmacOS\NativeWebView.Apple.cs" Link="UI\Xaml\Controls\WebView\NativeWebView.Apple.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\iOSmacOS\UnoWKWebView.ErrorMap.Apple.cs" Link="UI\Xaml\Controls\WebView\UnoWKWebView.ErrorMap.Apple.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\iOSmacOS\UnoWKWebView.Apple.cs" Link="UI\Xaml\Controls\WebView\UnoWKWebView.Apple.cs" />
+		<Compile Include="..\Uno.UI\UI\Xaml\Controls\WebView\Native\iOSmacOS\WebViewNavigationDelegate.Apple.cs" Link="UI\Xaml\Controls\WebView\WebViewNavigationDelegate.Apple.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
