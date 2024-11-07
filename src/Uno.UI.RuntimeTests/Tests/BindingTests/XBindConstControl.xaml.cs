@@ -4,8 +4,8 @@ namespace Uno.UI.RuntimeTests.Tests;
 
 public sealed partial class XBindConstControl : Control
 {
-	public const double MyWidth = 200;
-	public const double MyHeight = 200;
+	private const double MyWidth = 200;
+	private const double MyHeight = 200;
 
 	public XBindConstControl()
 	{
