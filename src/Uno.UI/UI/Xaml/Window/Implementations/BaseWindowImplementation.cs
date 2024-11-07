@@ -29,7 +29,6 @@ namespace Uno.UI.Xaml.Controls;
 
 internal abstract class BaseWindowImplementation : IWindowImplementation
 {
-	private bool _wasShown;
 	private CoreWindowActivationState _lastActivationState = CoreWindowActivationState.Deactivated;
 	private Size _lastSize = new Size(-1, -1);
 
@@ -85,17 +84,17 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 			throw new InvalidOperationException("Cannot reactivate a closed window.");
 		}
 
-		if (!_wasShown)
+		if (NativeWindowWrapper is null)
 		{
-			_wasShown = true;
+			throw new InvalidOperationException("Native window is not initialized.");
+		}
 
-			SetVisibleBoundsFromNative();
-			NativeWindowWrapper?.Show();
-		}
-		else
+		if (!NativeWindowWrapper.WasShown)
 		{
-			NativeWindowWrapper?.Activate();
+			SetVisibleBoundsFromNative();
 		}
+
+		NativeWindowWrapper?.Show(true);
 
 		OnActivationStateChanged(CoreWindowActivationState.CodeActivated);
 	}
@@ -221,7 +220,7 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 
 	private void OnNativeVisibilityChanged(object? sender, bool isVisible)
 	{
-		if (!_wasShown)
+		if (NativeWindowWrapper is not { WasShown: true })
 		{
 			return;
 		}
@@ -237,7 +236,7 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 
 	private void OnNativeActivationChanged(object? sender, CoreWindowActivationState state)
 	{
-		if (!_wasShown)
+		if (NativeWindowWrapper is not { WasShown: true })
 		{
 			return;
 		}
@@ -324,11 +323,6 @@ internal abstract class BaseWindowImplementation : IWindowImplementation
 				// because they check if window is closed already
 				Window.SetTitleBar(null);
 				Window.Content = null;
-			}
-			else
-			{
-				// Just reset the window to not shown state so it can be reactivated
-				_wasShown = false;
 			}
 
 			// _windowChrome.SetDesktopWindow(null);

@@ -24,14 +24,6 @@ internal partial class NativeWindowWrapper : NativeWindowWrapperBase
 
 	public override object NativeWindow => null;
 
-	public override void Activate()
-	{
-	}
-
-	public override void Close()
-	{
-	}
-
 	private void DispatchDpiChanged() =>
 		RasterizationScale = (float)_displayInformation.RawPixelsPerViewPixel;
 
