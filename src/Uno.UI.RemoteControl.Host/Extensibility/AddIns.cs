@@ -62,13 +62,18 @@ public class AddIns
 
 	private static ImmutableList<string> Read(string file)
 	{
-		var values = File
-			.ReadAllLines(file, Encoding.Unicode)
-			.SelectMany(line => line.Split(['\r', '\n', ';', ','], StringSplitOptions.RemoveEmptyEntries))
-			.Select(value => value.Trim())
-			.Where(value => value is { Length: > 0 })
-			.Distinct(StringComparer.OrdinalIgnoreCase)
-			.ToImmutableList();
+		var values = ImmutableList<string>.Empty;
+		try
+		{
+			values = File
+				.ReadAllLines(file, Encoding.Unicode)
+				.SelectMany(line => line.Split(['\r', '\n', ';', ','], StringSplitOptions.RemoveEmptyEntries))
+				.Select(value => value.Trim())
+				.Where(value => value is { Length: > 0 })
+				.Distinct(StringComparer.OrdinalIgnoreCase)
+				.ToImmutableList();
+		}
+		catch { }
 
 		try
 		{
