@@ -7,6 +7,8 @@ namespace Microsoft.UI.Xaml.Shapes
 {
 	partial class Path : Shape
 	{
+		private CompositionPathGeometry? _fillGeometry;
+
 		/// <inheritdoc />
 		protected override Size MeasureOverride(Size availableSize)
 			=> MeasureAbsoluteShape(availableSize, GetPath());
@@ -22,13 +24,15 @@ namespace Microsoft.UI.Xaml.Shapes
 		{
 			base.Render(path, scaleX, scaleY, renderOriginX, renderOriginY);
 
-			if (Data?.GetUnfilledSKPath() is { } negativePath)
+			_fillGeometry ??= Visual.Compositor.CreatePathGeometry();
+			SpriteShape.FillGeometry = _fillGeometry;
+			if (Data?.GetFilledSKPath() is { } filledPath)
 			{
-				SpriteShape.FillGeometry = Visual.Compositor.CreatePathGeometry(new CompositionPath(new SkiaGeometrySource2D(negativePath)));
+				_fillGeometry.Path = new CompositionPath(new SkiaGeometrySource2D(filledPath));
 			}
 			else
 			{
-				SpriteShape.FillGeometry = null;
+				_fillGeometry.Path = null;
 			}
 		}
 	}
