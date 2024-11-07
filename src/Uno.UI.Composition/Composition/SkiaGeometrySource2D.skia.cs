@@ -35,6 +35,8 @@ namespace Microsoft.UI.Composition
 
 		public bool Contains(float x, float y) => _geometry.Contains(x, y);
 
+		public SkiaGeometrySource2D Op(SkiaGeometrySource2D other, SKPathOp op) => new(_geometry.Op(other._geometry, op));
+
 		#endregion
 	}
 }

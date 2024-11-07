@@ -11,6 +11,8 @@ namespace Microsoft.UI.Xaml.Shapes
 		private readonly CompositionSpriteShape _shape;
 		private readonly CompositionPathGeometry _geometry;
 
+		protected CompositionSpriteShape SpriteShape => _shape;
+
 		public Shape()
 		{
 			var visual = Visual;
