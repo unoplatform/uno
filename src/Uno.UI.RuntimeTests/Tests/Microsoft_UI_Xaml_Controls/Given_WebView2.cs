@@ -489,7 +489,7 @@ public class Given_WebView2
 			await TestServices.WindowHelper.WaitFor(() => navigationDone, 3000);
 		}
 	}
-}
 #endif // !WINAPPSDK
+}
 
 #endif
