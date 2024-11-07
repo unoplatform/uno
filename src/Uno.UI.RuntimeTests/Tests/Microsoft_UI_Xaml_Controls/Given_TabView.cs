@@ -17,6 +17,10 @@ using TabViewItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TabViewItem
 using static Uno.UI.Extensions.ViewExtensions;
 using static Private.Infrastructure.TestServices;
 
+#if __IOS__
+using UIKit;
+#endif
+
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 
 [TestClass]
@@ -176,7 +180,13 @@ public class Given_TabView
 		Assert.IsTrue(headerPresenter1.ActualHeight > 0, "TabViewItem header for index  0 should have a non-zero height.");
 
 		var closeButton1 = (Button)tabviewItem1.GetTemplateChild("CloseButton");
-		var buttonLabel1 = ((ContentPresenter)closeButton1.GetTemplateChild("ContentPresenter")).FindFirstChild<ImplicitTextBlock>();
+
+		var buttonLabel1 =
+#if __IOS__
+        closeButton1.FindFirstChild<ImplicitTextBlock>();
+#else
+		((ContentPresenter)closeButton1.GetTemplateChild("ContentPresenter")).FindFirstChild<ImplicitTextBlock>();
+#endif
 
 		Assert.IsTrue(buttonLabel1.ActualWidth > 0, "TabViewItem Button for index 0 should have a non-zero width.");
 		Assert.IsTrue(buttonLabel1.ActualHeight > 0, "TabViewItem Button  for index 0 should have a non-zero height.");
