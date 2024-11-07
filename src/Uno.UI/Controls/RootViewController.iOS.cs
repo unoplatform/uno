@@ -5,6 +5,7 @@ using ObjCRuntime;
 using UIKit;
 using Uno.Helpers.Theming;
 using Windows.Graphics.Display;
+using Windows.Devices.Sensors;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 namespace Uno.UI.Controls;

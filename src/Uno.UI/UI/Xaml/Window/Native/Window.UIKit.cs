@@ -15,6 +15,8 @@ using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using Windows.UI.ViewManagement;
 using Windows.UI.Core;
+using Windows.Foundation;
+using Windows.System;
 
 #if !__TVOS__
 using WebKit;
