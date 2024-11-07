@@ -826,6 +826,11 @@ namespace SampleControl.Presentation
 
 		private async Task ToggleFavorite(CancellationToken ct, SampleChooserContent sample)
 		{
+			if (sample is null)
+			{
+				return;
+			}
+
 			var favorites = await GetFavoriteSamples(ct);
 
 			if (favorites.Contains(sample))
