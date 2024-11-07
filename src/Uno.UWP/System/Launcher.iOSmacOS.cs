@@ -12,11 +12,19 @@ namespace Windows.System
 {
 	public static partial class Launcher
 	{
-		public static async Task<bool> LaunchUriPlatformAsync(Uri uri)
+		public static
+#if __IOS__
+			async
+#endif
+			Task<bool> LaunchUriPlatformAsync(Uri uri)
 		{
 			if (IsSpecialUri(uri) && CanHandleSpecialUri(uri))
 			{
+#if __IOS__
 				return await HandleSpecialUri(uri);
+#else
+				return Task.FromResult(HandleSpecialUri(uri));
+#endif
 			}
 
 			var appleUrl = new AppleUrl(uri.OriginalString);
