@@ -4,6 +4,7 @@ using Windows.Foundation;
 using Microsoft.UI;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Shapes;
 using SamplesApp.UITests;
 using Uno.UI.RuntimeTests.Helpers;
@@ -114,7 +115,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 		{
 			var SUT = new Path
 			{
-				Fill = new ImageBrush { ImageSource = "ms-appx:///Assets/rect.png" },
+				Fill = new ImageBrush { ImageSource = new BitmapImage(new Uri("ms-appx:///Assets/rect.png")) },
 				Data = new PathGeometry
 				{
 					Figures = new PathFigureCollection
