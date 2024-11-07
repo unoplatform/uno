@@ -2,8 +2,12 @@ CW_USEDEFAULT
 
 CreateWindowEx
 DefWindowProc
+DestroyWindow
 FormatMessage
+GetWindowText
 LocalFree
 RegisterClassEx
+SetActiveWindow
+SetWindowText
 ShowWindow
 UpdateWindow
