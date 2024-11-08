@@ -427,13 +427,19 @@ partial class BorderLayerRenderer
 			sublayers.Add(backgroundLayer);
 			parent.InsertSublayer(backgroundLayer, insertionIndex);
 
-			parent.Mask = new CAShapeLayer()
+			// Normally, the parent.Mask (or owner.Layer.Mask) is usually cleared by ApplyNativeClip that follows.
+			// However, on device rotation (portrait <-> landscape), ApplyNativeClip happens before this method, causing the view to have an unwanted clipping.
+			// Here, we are reusing the logics of ApplyNativeClip to decide when to not apply the mask (as it would be cleared anyways).
+			if (owner.GetNativeClippedViewport().IsFinite)
 			{
-				Path = outerPath,
-				Frame = area,
-				// We only use the fill color to create the mask area
-				FillColor = _Color.White.CGColor,
-			};
+				parent.Mask = new CAShapeLayer()
+				{
+					Path = outerPath,
+					Frame = area,
+					// We only use the fill color to create the mask area
+					FillColor = _Color.White.CGColor,
+				};
+			}
 
 			updatedBoundsPath = outerPath;
 		}
