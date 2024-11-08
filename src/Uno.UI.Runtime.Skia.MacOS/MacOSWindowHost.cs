@@ -83,10 +83,10 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			if (RootElement?.Visual is { } rootVisual)
 			{
 				// remove previous clipping (if any)
-				NativeUno.uno_window_clip_svg(_nativeWindow.Handle, null);
+				// NativeUno.uno_window_clip_svg(_nativeWindow.Handle, null);
 				int width = (int)nativeWidth;
 				int height = (int)nativeHeight;
-				SkiaRenderHelper.RenderRootVisualAndClearNativeAreas(width, height, rootVisual, surface);
+				SkiaRenderHelper.RenderRootVisualAndReturnPath(width, height, rootVisual, surface);
 				// TODO clip the "negative" of what was drawn
 			}
 		}

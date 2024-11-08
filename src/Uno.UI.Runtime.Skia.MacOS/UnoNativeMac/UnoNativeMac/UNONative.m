@@ -11,12 +11,18 @@ static NSMutableSet<NSView*> *elements;
 // make the background red for easier tracking
 - (BOOL)wantsUpdateLayer
 {
-    return YES;
+    return !self.hidden;
 }
 
 - (void)updateLayer
 {
-    self.layer.backgroundColor = NSColor.redColor.CGColor;
+    self.layer.backgroundColor = self.hidden ? NSColor.clearColor.CGColor : NSColor.redColor.CGColor;
+}
+
+@synthesize visible;
+
+- (void)detach {
+    // nothing needed
 }
 
 @end
@@ -41,22 +47,28 @@ NSView* uno_native_create_sample(NSWindow *window, const char* _Nullable text)
     return sample;
 }
 
-void uno_native_arrange(NSView *element, double arrangeLeft, double arrangeTop, double arrangeWidth, double arrangeHeight, double clipLeft, double clipTop, double clipWidth, double clipHeight)
+void uno_native_arrange(NSView<UNONativeElement> *element, double arrangeLeft, double arrangeTop, double arrangeWidth, double arrangeHeight, double clipLeft, double clipTop, double clipWidth, double clipHeight)
 {
-    NSLog(@"uno_native_arrange %p", element);
-    if (!element || element.hidden) {
-        NSLog(@"uno_native_arrange0 hidden %p", element);
+    if (!element || !element.visible) {
+#if DEBUG
+        NSLog(@"uno_native_arrange %p '%@' is not visible - nothing to arrange", element, ((NSTextField*)element.subviews[0]).stringValue);
+#endif
         return;
     }
 
     NSRect clip = NSMakeRect(arrangeLeft + clipLeft, arrangeTop - clipTop, clipWidth, clipHeight);
     element.hidden = NSIsEmptyRect(clip) || clipHeight <= 0 || clipWidth <= 0;
-    // TODO handle partial case with element special layers
+    if (element.hidden) {
+#if DEBUG
+        NSLog(@"uno_native_arrange %p '%@' hidden by clipping", element, ((NSTextField*)element.subviews[0]).stringValue);
+#endif
+        return;
+    }
 
-    NSRect arrange = NSMakeRect(arrangeLeft, arrangeTop, arrangeWidth, arrangeHeight);
+    NSRect arrange = NSMakeRect(arrangeLeft + clipLeft, arrangeTop + clipTop, MIN(arrangeWidth, clipWidth), MIN(arrangeHeight, clipHeight));
     element.frame = arrange;
 #if DEBUG
-    NSLog(@"uno_native_arrange %p arrange(%g,%g,%g,%g) clip(%g,%g,%g,%g) %s", element,
+    NSLog(@"uno_native_arrange %p %@ arrange(%g,%g,%g,%g) clip(%g,%g,%g,%g) %s", element, ((NSTextField*)element.subviews[0]).stringValue,
           arrangeLeft, arrangeTop, arrangeWidth, arrangeHeight,
           clipLeft, clipTop, clipWidth, clipHeight,
           element.hidden ? "EMPTY" : (clipWidth < arrangeWidth) || (clipHeight < arrangeHeight) ? "partial" : "");
@@ -116,10 +128,13 @@ void uno_native_set_opacity(NSView* element, double opacity)
     element.alphaValue = opacity;
 }
 
-void uno_native_set_visibility(UNORedView* element, bool visible)
+void uno_native_set_visibility(NSView<UNONativeElement>* element, bool visible)
 {
 #if DEBUG
     NSLog(@"uno_native_set_visibility #%p : hidden %s -> visible %s", element, element.hidden ? "TRUE" : "FALSE", visible ? "TRUE" : "FALSE");
 #endif
-    element.hidden = !visible;
+    element.visible = visible;
+    // hidden is controlled by both visible and clipping
+    if (!visible)
+        element.hidden = true;
 }

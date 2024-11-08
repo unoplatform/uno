@@ -8,13 +8,15 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface UNORedView : NSView
+@protocol UNONativeElement
+
+@property (nonatomic) bool visible;
+
+-(void) detach;
 
 @end
 
-@protocol UNONativeElement
-
--(void) detach;
+@interface UNORedView : NSView<UNONativeElement>
 
 @end
 
