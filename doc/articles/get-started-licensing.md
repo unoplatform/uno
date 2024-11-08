@@ -10,7 +10,7 @@ Sign in with your Uno Platform account directly in your favorite IDE—Visual St
 
 1. Go to our website, [platform.uno](https://platform.uno/), and click on the **Sign in** button in the top right corner, or go directly to [platform.uno/my-account](https://platform.uno/my-account).
 2. Enter your email address and click on **Register**.
-3. On the registration page, fill in your information, including your email, name, country, and password. Once done, click on **Sign up**.
+3. On the registration page, fill in your information. Once done, click on **Sign up**.
 4. You will receive a confirmation email from **no-reply@platform.uno**. Click on **Confirm Email** to activate your account.
 5. You should then see the Sign in page. Enter your email and password and click on **Sign in** to access your account details, where you can update information or add more details.
 
