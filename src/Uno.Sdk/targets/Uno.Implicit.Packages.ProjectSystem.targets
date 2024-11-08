@@ -49,15 +49,6 @@
 		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Markup.Generators" ProjectSystem="true" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(UnoFeatures.Contains(';mauiembedding;'))">
-		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Maui.WinUI" ProjectSystem="true" />
-		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Maui.WinUI.Markup" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';csharpmarkup;'))" />
-		<_UnoProjectSystemPackageReference Include="Microsoft.Maui.Controls" ProjectSystem="true" />
-		<_UnoProjectSystemPackageReference Include="Microsoft.Maui.Controls.Compatibility" ProjectSystem="true" />
-		<_UnoProjectSystemPackageReference Include="Microsoft.Maui.Graphics" ProjectSystem="true" />
-		<_UnoProjectSystemPackageReference Include="Microsoft.Maui.Controls.Build.Tasks" ProjectSystem="true" Condition="$(SingleProject) == 'true'"/>
-	</ItemGroup>
-
 	<ItemGroup Condition="$(UnoFeatures.Contains(';toolkit;'))">
 		<_UnoProjectSystemPackageReference Include="Uno.Toolkit.WinUI" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Uno.Toolkit.WinUI.Markup" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';csharpmarkup;'))" />
