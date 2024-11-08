@@ -52,7 +52,6 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 	{
 		_nativeWindow.RootViewController = _mainController;
 		_nativeWindow.MakeKeyAndVisible();
-		IsVisible = true;
 	}
 
 	internal RootViewController MainController => _mainController;

@@ -42,22 +42,14 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase
 		set => NativeUno.uno_window_set_title(_window.Handle, value);
 	}
 
-	public override void Activate()
+	internal protected override void Activate()
 	{
 		NativeUno.uno_window_activate(_window.Handle);
 	}
 
-	protected override void ShowCore()
-	{
-		// the first call to `Window.Activate` does not reach the above `Activate` method
-		// https://github.com/unoplatform/uno/blob/fc8e58d77f8cf31d651135c22ea3105099c26fb7/src/Uno.UI/UI/Xaml/Window/Implementations/BaseWindowImplementation.cs#L81-L98
-		NativeUno.uno_window_activate(_window.Handle);
-	}
-
-	public override void Close()
+	protected override void CloseCore()
 	{
 		NativeUno.uno_window_close(_window.Handle);
-		base.Close();
 	}
 
 	public override void Move(PointInt32 position)
@@ -98,13 +90,7 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase
 	private void OnWindowClosing(object? sender, CancelEventArgs e)
 	{
 		var closingArgs = RaiseClosing();
-		if (closingArgs.Cancel)
-		{
-			e.Cancel = true;
-		}
-
-		// All prerequisites passed, can safely close.
-		e.Cancel = false;
+		e.Cancel = closingArgs.Cancel;
 	}
 
 	protected override IDisposable ApplyFullScreenPresenter()

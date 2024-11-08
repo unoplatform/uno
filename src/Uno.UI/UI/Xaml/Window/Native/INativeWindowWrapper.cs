@@ -24,6 +24,8 @@ internal interface INativeWindowWrapper : INativeAppWindow
 
 	float RasterizationScale { get; }
 
+	bool WasShown { get; }
+
 	event EventHandler<Size>? SizeChanged;
 
 	event EventHandler<Rect>? VisibleBoundsChanged;
@@ -35,10 +37,6 @@ internal interface INativeWindowWrapper : INativeAppWindow
 	event EventHandler<AppWindowClosingEventArgs>? Closing;
 
 	event EventHandler? Shown;
-
-	void Activate();
-
-	void Show();
 
 	void Close();
 
