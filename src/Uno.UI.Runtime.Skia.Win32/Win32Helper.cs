@@ -24,14 +24,4 @@ internal static partial class Win32Helper
 		using var messageDisposable = new DisposableStruct<IntPtr>(static m => PInvoke.LocalFree(new HLOCAL(m.ToPointer())), message);
 		return Marshal.PtrToStringUni(message, (int)messageLength);
 	}
-
-	[LibraryImport("Kernel32.dll", SetLastError = true, StringMarshalling = StringMarshalling.Utf8)]
-	private static partial int FormatMessageW(
-		uint dwFlags,
-		IntPtr lpSource,
-		uint dwMessageId,
-		uint dwLanguageId,
-		out IntPtr lpBuffer,
-		int nSize,
-		IntPtr Arguments);
 }
