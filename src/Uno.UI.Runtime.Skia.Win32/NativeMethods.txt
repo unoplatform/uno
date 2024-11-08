@@ -25,12 +25,13 @@ FormatMessage
 GetClientRect
 GetWindowRect
 GetWindowText
+InvalidateRect
 IsWindowVisible
 LoadImage
 LocalFree
+PostMessage
 RegisterClassEx
 ResizeWindow
-SendMessage
 SetActiveWindow
 SetProcessDpiAwarenessContext
 SetWindowLong
