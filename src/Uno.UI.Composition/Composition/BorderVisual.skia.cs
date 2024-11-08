@@ -316,7 +316,7 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 		return backgroundPath;
 	}
 
-	private static unsafe SKPath CreateBorderPath(SKRect innerArea, SKRect outerArea, SKPoint* outerRadii, SKPoint* innerRadii)
+	private unsafe SKPath CreateBorderPath(SKRect innerArea, SKRect outerArea, SKPoint* outerRadii, SKPoint* innerRadii)
 	{
 		var borderPath = new SKPath();
 
