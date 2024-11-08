@@ -13,9 +13,9 @@ namespace Uno.UI.RemoteControl;
 
 public partial class RemoteControlClient
 {
-	internal event EventHandler<RemoteControlStatus>? StatusChanged;
+	public event EventHandler<RemoteControlStatus>? StatusChanged;
 
-	internal RemoteControlStatus Status => _status.BuildStatus();
+	public RemoteControlStatus Status => _status.BuildStatus();
 
 	private class StatusSink : DevServerDiagnostics.ISink
 	{

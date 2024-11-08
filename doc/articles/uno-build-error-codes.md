@@ -178,6 +178,18 @@ Some components like `ProgressRing` and `MediaPlayerElement` requires you to ref
 - For `ProgressRing`, it requires Lottie dependency. For more information about adding Lottie to your project, see [Lottie for Uno](xref:Uno.Features.Lottie).
 - For `MediaPlayerElement` on WebAssembly or Gtk, it requires `Uno.WinUI.MediaPlayer.WebAssembly` or `Uno.WinUI.MediaPlayer.Skia.Gtk` NuGet package. For more information, see [MediaPlayerElement](xref:Uno.Controls.MediaPlayerElement).
 
+### UNO0008
+
+In Uno Platform 5.5, the `EnableHotReload` method has been deprecated and replaced by `UseStudio()`.
+
+Note that this change only applies to projects using the Uno.Sdk. If you're not using the Uno.Sdk, you can disable this warning using the following code:
+
+```xml
+#pragma warning disable UNO0008 // Replace with UseStudio() when migrating to the Uno.Sdk.
+window.EnableHotReload();
+#pragma warning restore UNO0008
+```
+
 ## XAML Errors
 
 ### UNOX0001
