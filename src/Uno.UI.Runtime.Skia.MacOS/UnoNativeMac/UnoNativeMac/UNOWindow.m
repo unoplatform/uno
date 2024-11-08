@@ -888,8 +888,15 @@ void uno_window_clip_svg(UNOWindow* window, const char* svg)
             // scrollwheel
             if (mouse == MouseEventsScrollWheel) {
                 // do not call if not in the scrollwheel event -> *** Assertion failure in -[NSEvent scrollingDeltaX], NSEvent.m:2202
-                data.scrollingDeltaX = (int32_t)event.scrollingDeltaX;
-                data.scrollingDeltaY = (int32_t)event.scrollingDeltaY;
+
+                // trackpad / magic mouse sends about 10x more events than a _normal_ (PC) mouse
+                // this is often refered as a line scroll versus a pixel scroll
+                double factor = event.hasPreciseScrollingDeltas ? 1.0 : 10.0;
+                data.scrollingDeltaX = (int32_t)(event.scrollingDeltaX * factor);
+                data.scrollingDeltaY = (int32_t)(event.scrollingDeltaY * factor);
+#if DEBUG_MOUSE // very noisy
+                NSLog(@"NSEventTypeMouse*: %@ %g %g delta %g %g %s scrollingDelta %d %d", event, data.x, data.y, event.deltaX, event.deltaY, event.hasPreciseScrollingDeltas ? "precise" : "non-precise", data.scrollingDeltaX, data.scrollingDeltaY);
+#endif
             }
 
             // other
