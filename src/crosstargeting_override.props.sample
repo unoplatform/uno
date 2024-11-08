@@ -12,10 +12,10 @@
   <PropertyGroup>
     <!-- See documentation for each property below -->
 
-    <!--<UnoTargetFrameworkOverride>net8.0</UnoTargetFrameworkOverride>-->
+    <!--<UnoTargetFrameworkOverride>net9.0</UnoTargetFrameworkOverride>-->
     <!--<AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>-->
     <!--<OptimizeImplicitlyTriggeredBuild>true</OptimizeImplicitlyTriggeredBuild>-->
-    <!--<UnoNugetOverrideVersion>5.3.0-dev.1495</UnoNugetOverrideVersion>-->
+    <!--<UnoNugetOverrideVersion>5.6.0-dev.181</UnoNugetOverrideVersion>-->
 
     <!-- 
         

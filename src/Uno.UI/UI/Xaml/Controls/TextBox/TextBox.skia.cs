@@ -447,10 +447,26 @@ public partial class TextBox
 		switch (args.Key)
 		{
 			case VirtualKey.Up:
-				KeyDownUpArrow(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
+				// on macOS start of document is `Command` and `Up`
+				if (ctrl && OperatingSystem.IsMacOS())
+				{
+					KeyDownHome(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
+				}
+				else
+				{
+					KeyDownUpArrow(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
+				}
 				break;
 			case VirtualKey.Down:
-				KeyDownDownArrow(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
+				// on macOS end of document is `Command` and `Down`
+				if (ctrl && OperatingSystem.IsMacOS())
+				{
+					KeyDownEnd(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
+				}
+				else
+				{
+					KeyDownDownArrow(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
+				}
 				break;
 			case VirtualKey.Left:
 				KeyDownLeftArrow(args, text, shift, ctrl, ref selectionStart, ref selectionLength);
@@ -557,6 +573,12 @@ public partial class TextBox
 
 	private void KeyDownBack(KeyRoutedEventArgs args, ref string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
+		// on macOS it is `option` + `delete` (same location as backspace on PC keyboards) that removes the previous word
+		if (OperatingSystem.IsMacOS())
+		{
+			ctrl = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Menu);
+		}
+
 		if (HasPointerCapture)
 		{
 			return;
@@ -702,6 +724,14 @@ public partial class TextBox
 
 	private void KeyDownRightArrow(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
+		// on macOS it is:
+		// * `option` + `right` that moves to the next word
+		// * `shift` + `option` + `right` that select the next word
+		if (OperatingSystem.IsMacOS())
+		{
+			ctrl = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Menu);
+		}
+
 		if (HasPointerCapture)
 		{
 			return;
@@ -827,6 +857,12 @@ public partial class TextBox
 
 	private void KeyDownDelete(KeyRoutedEventArgs args, ref string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
 	{
+		// on macOS it is `option` + `delete>` that removes the next word
+		if (OperatingSystem.IsMacOS())
+		{
+			ctrl = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Menu);
+		}
+
 		if (HasPointerCapture)
 		{
 			return;

@@ -6,6 +6,7 @@
 		"Uno.WinUI",
 		"Uno.UI.Adapter.Microsoft.Extensions.Logging",
 		"Uno.WinUI.Maps",
+		"Uno.WinUI.GooglePlay",
 		"Uno.WinUI.Foldable",
 		"Uno.WinUI.MSAL",
 		"Uno.WinUI.Svg",
@@ -70,7 +71,7 @@
 	},
 	{
 	  "group": "Resizetizer",
-	  "version": "1.6.0-dev.31",
+	  "version": "1.7.0-dev.2",
 	  "packages": [
 		"Uno.Resizetizer"
 	  ]
@@ -91,7 +92,7 @@
 	},
 	{
 	  "group": "SkiaSharp",
-	  "version": "2.88.8",
+	  "version": "2.88.9-preview.2.2",
 	  "packages": [
 		"SkiaSharp.Skottie",
 		"SkiaSharp.Views.Uno.WinUI",

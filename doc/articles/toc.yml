@@ -107,6 +107,8 @@
         href: xref:Uno.Interop.MSAL
       - name: How to authenticate with OpenID Connect
         href: xref:Uno.Tutorials.OpenIDConnect
+      - name: How to implement a sign-in with Apple Button
+        href: xref:Uno.Tutorials.SignInWithApple
       - name: Embed a JavaScript Component
         topicHref: xref:Uno.Interop.WasmJavaScript1
         items:
@@ -210,6 +212,8 @@
         href: xref:Uno.Development.MigratingToSingleProject
       - name: Upgrading to Uno 5.0
         href: xref:Uno.Development.MigratingToUno5
+      - name: Upgrading from .NET 8 to .NET 9
+        href: xref:Uno.Development.MigratingFromNet8ToNet9
       - name: Upgrading from .NET 7 to .NET 8
         href: xref:Uno.Development.MigratingFromNet7ToNet8
       - name: Upgrading from Xamarin to .NET 6

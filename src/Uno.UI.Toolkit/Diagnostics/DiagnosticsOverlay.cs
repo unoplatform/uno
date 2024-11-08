@@ -2,6 +2,7 @@
 #if WINUI || HAS_UNO_WINUI
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -316,8 +317,8 @@ public sealed partial class DiagnosticsOverlay : Control
 	/// Add a UI diagnostic element to this overlay.
 	/// </summary>
 	/// <remarks>This will also make this overlay visible (cf. <see cref="Show(bool?)"/>).</remarks>
-	public void Add(string id, string name, UIElement preview, Func<UIElement>? details = null)
-		=> Add(new DiagnosticView(id, name, _ => preview, (_, ct) => new(details?.Invoke())));
+	public void Add(string id, string name, UIElement preview, Func<UIElement>? details = null, DiagnosticViewRegistrationPosition position = default)
+		=> Add(new DiagnosticView(id, name, _ => preview, (_, ct) => new(details?.Invoke()), position));
 
 	/// <summary>
 	/// Add a UI diagnostic element to this overlay.
@@ -464,8 +465,8 @@ public sealed partial class DiagnosticsOverlay : Control
 					.Where(ShouldMaterialize)
 					.Select(reg => reg.View)
 					.Concat(_localRegistrations)
-					.Distinct()
-					.ToList();
+					.OrderBy(r => (int)r.Position)
+					.Distinct();
 
 				foreach (var view in viewsThatShouldBeMaterialized)
 				{

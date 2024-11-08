@@ -931,6 +931,16 @@ namespace Microsoft.UI.Xaml
 #elif __WASM__
 			InvalidateArrange();
 #else
+			var rect = GetNativeClippedViewport();
+
+			ApplyNativeClip(rect);
+			OnViewportUpdated(rect);
+#endif
+		}
+
+#if !(__SKIA__ || __WASM__)
+		internal Rect GetNativeClippedViewport()
+		{
 			Rect rect;
 
 			if (Clip == null)
@@ -957,10 +967,9 @@ namespace Microsoft.UI.Xaml
 				}
 			}
 
-			ApplyNativeClip(rect);
-			OnViewportUpdated(rect);
-#endif
+			return rect;
 		}
+#endif
 
 		partial void ApplyNativeClip(Rect rect
 #if __SKIA__

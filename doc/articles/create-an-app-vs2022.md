@@ -28,7 +28,9 @@ To create an Uno Platform app:
 
 1. Click the create button
 
-1. Wait for the projects to be created, and their dependencies to be restored
+1. Ensure that the lower left IDE icon shows a check mark and says "Ready" ![A checkmark with a text saying ready](getting-started/wizard/assets/vs2022-ready-statusbar.png). This ensures that the projects have been created, and their dependencies have been restored completely.
+
+1. A Windows Firewall window may appear. If you do not intend to do Linux development with WSL, check "Private networks" only. Otherwise, check "Public networks" and "Private networks".
 
 1. A banner at the top of the editor may ask to reload projects, click **Reload projects**:  
     ![Visual Studio - A banner indicating to reload projects](Assets/quick-start/vs2022-project-reload.png)
@@ -102,6 +104,8 @@ To debug for **iOS**:
 
     > [!NOTE]
     > If no iOS devices are available, a Visual Studio 17.7+ issue may require unloading/reloading the project. Right-click on the `MyApp` project and select **Unload Project** then **Load project**.
+    > [!IMPORTANT]
+    > When using a device connected to a Windows PC, the Release build configuration is not supported. An actual macOS machine is required.
 
 ### [**Android**](#tab/Android)
 

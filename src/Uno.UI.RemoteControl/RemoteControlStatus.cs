@@ -5,15 +5,28 @@ using System.Text;
 
 namespace Uno.UI.RemoteControl;
 
-internal record RemoteControlStatus(
+public record RemoteControlStatus(
 	RemoteControlStatus.ConnectionState State,
 	bool? IsVersionValid,
 	(RemoteControlStatus.KeepAliveState State, long RoundTrip) KeepAlive,
 	ImmutableHashSet<RemoteControlStatus.MissingProcessor> MissingRequiredProcessors,
 	(long Count, ImmutableHashSet<Type> Types) InvalidFrames)
 {
-	public bool IsAllGood => State == ConnectionState.Connected && IsVersionValid == true && MissingRequiredProcessors.IsEmpty && KeepAlive.State == KeepAliveState.Ok && InvalidFrames.Count == 0;
 
+	/// <summary>
+	/// An ***aggregated*** state of the connection to determine if everything is fine.
+	/// This is for visual representation only, the actual state of the connection is in <see cref="State"/>.
+	/// </summary>
+	public bool IsAllGood =>
+		State == ConnectionState.Connected
+		&& IsVersionValid == true
+		&& MissingRequiredProcessors.IsEmpty
+		&& KeepAlive.State == KeepAliveState.Ok
+		&& InvalidFrames.Count == 0;
+
+	/// <summary>
+	/// Not <see cref="IsAllGood"/> (for binding purposes).
+	/// </summary>
 	public bool IsProblematic => !IsAllGood;
 
 	public (Classification kind, string message) GetSummary()
@@ -82,9 +95,9 @@ internal record RemoteControlStatus(
 		return details.ToString();
 	}
 
-	internal record struct MissingProcessor(string TypeFullName, string Version, string Details, string? Error = null);
+	public readonly record struct MissingProcessor(string TypeFullName, string Version, string Details, string? Error = null);
 
-	internal enum KeepAliveState
+	public enum KeepAliveState
 	{
 		Idle,
 		Ok, // Got ping/pong in expected delays
@@ -93,7 +106,7 @@ internal record RemoteControlStatus(
 		Aborted // KeepAlive was aborted
 	}
 
-	internal enum ConnectionState
+	public enum ConnectionState
 	{
 		/// <summary>
 		/// Client as not been started yet
@@ -140,7 +153,7 @@ internal record RemoteControlStatus(
 		Disconnected
 	}
 
-	internal enum Classification
+	public enum Classification
 	{
 		Ok,
 		Info,

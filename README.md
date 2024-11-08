@@ -43,9 +43,9 @@ For a larger example and features demo:
 * Dev loop:
     * Develop on Windows first using Visual Studio
     * [XAML Hot Reload](https://blogs.msdn.microsoft.com/visualstudio/2016/04/06/ui-development-made-easier-with-xaml-edit-continue/) for live XAML edition on each keystroke
-    * [C# Hot Reload](https://learn.microsoft.com/visualstudio/debugger/hot-reload) on Windows (VS2022), Linux and macOS (VS Code)
+    * [C# Hot Reload](https://learn.microsoft.com/visualstudio/debugger/hot-reload) on Windows (VS2022/Rider/VS Code), Linux and macOS (VS Code / Rider)
     * Validate on other platforms as late as possible
-    * Develop in VS Code, Codespaces, or GitPod
+    * Develop in VS Code, Rider, Codespaces, or GitPod
     * XAML and/or C# Hot Reload for WebAssembly, Linux, iOS and Android
     * [Uno.UITest](https://github.com/unoplatform/Uno.UITest), a library to create Cross-Platform UI Tests for WebAssembly, iOS, and Android.
 * Cross Platform Controls:
@@ -53,18 +53,16 @@ For a larger example and features demo:
     * [Data Templating](https://code.msdn.microsoft.com/Data-Binding-in-UWP-b5c98114)
     * [Styling](https://learn.microsoft.com/windows/uwp/design/controls-and-patterns/xaml-styles)
     * [Rich Animations](https://learn.microsoft.com/windows/uwp/design/motion/xaml-animation)
-* UWP/WinUI Code Support:
+* WinUI/UWP Code Support:
     * [Windows Community Toolkit](https://github.com/CommunityToolkit/Windows)
     * [Windows Community Toolkit (Uno Fork)](https://github.com/unoplatform/uno.WindowsCommunityToolkit)
     * [Community Toolkit MVVM](https://learn.microsoft.com/dotnet/communitytoolkit/mvvm/)
-    * [MVVM Light Toolkit](https://github.com/unoplatform/uno.mvvmlight)
     * [Microsoft XAML Behaviors](https://github.com/unoplatform/uno.XamlBehaviors)
     * [Prism](https://github.com/prismlibrary/prism)
     * [SkiaSharp](https://github.com/mono/SkiaSharp)
     * [SkiaSharp.Extended](https://github.com/mono/SkiaSharp.Extended)
     * [ReactiveUI Official](https://github.com/reactiveui/ReactiveUI/pull/2067)
     * [WindowsStateTriggers](https://github.com/unoplatform/uno.WindowsStateTriggers)
-    * [Xamarin.Forms for UWP](https://github.com/unoplatform/uno.Xamarin.Forms), [NuGet](https://www.nuget.org/packages/ReactiveUI.Uno)
     * [Rx.NET](https://github.com/reactiveui/Reactive.Wasm)
     * [ColorCode-Universal](https://github.com/unoplatform/uno.ColorCode-Universal)
     * [LibVLCSharp](https://github.com/videolan/libvlcsharp)
@@ -92,14 +90,9 @@ Here's a list of live apps made with the Uno Platform for WebAssembly.
 * The [Community Toolkit Labs App](https://toolkitlabs.dev/)
 * [SkiaSharp fork for the Uno Platform](https://skiasharp-wasm.platform.uno/), Skia is a cross-platform 2D graphics API for .NET platforms based on Google's Skia Graphics Library ([Source](https://github.com/unoplatform/Uno.SkiaSharp)).
 * The [Uno.WindowsCommunityToolkit](https://windowstoolkit-wasm.platform.uno/) ([Source](https://github.com/unoplatform/uno.WindowsCommunityToolkit)).
-* The [Uno.Lottie](https://lottie.platform.uno/), a sample that uses the [AnimatedVisualPlayer](https://learn.microsoft.com/uwp/api/microsoft.ui.xaml.controls.animatedvisualplayer) ([Source](https://github.com/unoplatform/uno.LottieSample)).
 * The [Uno.RoslynQuoter](https://roslynquoter-wasm.platform.uno/), a [Roslyn](https://github.com/dotnet/roslyn) based C# analysis tool ([Source](https://github.com/unoplatform/uno.RoslynQuoter)).
-* The [Uno.BikeSharing360 App](http://bikerider-wasm.platform.uno/), a Xamarin.Forms app running on top of Uno for WebAssembly ([Source](https://github.com/unoplatform/uno.BikeSharing360_MobileApps)).
-* The [Uno.WindowsStateTriggers App](http://winstatetriggers-wasm.platform.uno/), a demo of the [Morten's WindowsStateTriggers](https://github.com/dotMorten/WindowsStateTriggers) ([Source](https://github.com/unoplatform/uno.WindowsStateTriggers)).
 * The [SQLite + Entity Framework Core App](https://sqliteefcore-wasm.platform.uno), a demo of the combination of [Roslyn](https://github.com/dotnet/roslyn), [Entity Framework Core](https://learn.microsoft.com/ef/core/), [SQLite](https://github.com/unoplatform/uno.SQLitePCLRaw.Wasm) and the Uno Platform to manipulate an in-browser database.
-* The [Uno.WebSockets App](https://websockets-wasm.platform.uno), a demo of System.Net.WebSocket running from WebAssembly ([Source](https://github.com/unoplatform/uno.Wasm.WebSockets)).
 * A [WebAssembly AOT RayTracer](https://raytracer-mono-aot.platform.uno/).
-* The [Xaml Controls Gallery](https://xamlcontrolsgallery.platform.uno/) ([Source](https://github.com/unoplatform/uno.Xaml-Controls-Gallery)).
 
 Let us know if you've made your app publicly available, we'll list it here!
 

@@ -18,7 +18,12 @@ using Microsoft.UI.Xaml.Navigation;
 
 namespace UITests.Windows_UI_Xaml_Controls.FlipView;
 
-[SampleControlInfo("FlipView", "FlipView_Background", isManualTest: true)]
+[SampleControlInfo(
+	"FlipView",
+	"FlipView_Background",
+	description: "Shows a green Page with a red FlipView in the middle. \n" +
+	"This tests that the FlipView background is displayed when the FlipView is empty.",
+	isManualTest: true)]
 public sealed partial class FlipView_Background : UserControl
 {
 	public FlipView_Background()
