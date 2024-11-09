@@ -286,7 +286,7 @@ public partial class CoreWebView2
 			{
 				RequestUri = requestMessage.RequestUri
 			};
-			foreach(var header in requestMessage.Headers)
+			foreach (var header in requestMessage.Headers)
 			{
 				httpRequestMessage.Headers.Add(header.Key, header.Value);
 			}
