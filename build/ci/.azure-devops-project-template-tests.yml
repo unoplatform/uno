@@ -25,6 +25,10 @@ jobs:
       group_4:
         TestGroup: '4'
 
+  variables:
+    # don't validate transitive dependencies for template tests
+    NuGetAuditMode: direct
+
   steps:
   - task: DownloadBuildArtifacts@0
     inputs:
@@ -75,6 +79,10 @@ jobs:
         TestGroup: '3'
       group_4:
         TestGroup: '4'
+
+  variables:
+    # don't validate transitive dependencies for template tests
+    NuGetAuditMode: direct
 
   steps:
   - task: DownloadBuildArtifacts@0
@@ -127,6 +135,10 @@ jobs:
         TestGroup: '2'
       group_3:
         TestGroup: '3'
+
+  variables:
+    # don't validate transitive dependencies for template tests
+    NuGetAuditMode: direct
 
   steps:
   - task: DownloadBuildArtifacts@0
