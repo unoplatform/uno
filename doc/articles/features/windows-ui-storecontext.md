@@ -5,7 +5,7 @@ uid: Uno.Features.StoreContext
 # Store Context
 
 > [!TIP]
-> This article provides Uno-specific information for the `Windows.Services.Store.StoreContext` namespace. For a comprehensive overview of this feature and detailed usage instructions, refer to the official documentation for [Windows.Services.Store.StoreContext Namespace](https://learn.microsoft.com/uwp/api/Windows.Services.Store.StoreContext).
+> This article provides Uno Platform-specific information for the `Windows.Services.Store.StoreContext` namespace. For a comprehensive overview of this feature and detailed usage instructions, refer to the official documentation for [Windows.Services.Store.StoreContext Namespace](https://learn.microsoft.com/uwp/api/Windows.Services.Store.StoreContext).
 
 ## In-App Review
 
@@ -15,7 +15,7 @@ The in-app review feature is currently supported on iOS and Android through Goog
 
 #### References in a Single Project
 
-In Uno Platform Single Project, you'll need to add the `GooglePlay` [Uno Feature](xref:Uno.Features.Uno.Sdk#uno-platform-features) as follows:
+In an Uno Platform Single Project, you'll need to add the `GooglePlay` [Uno Feature](xref:Uno.Features.Uno.Sdk#uno-platform-features) as follows:
 
 ```xml
 <UnoFeatures>
