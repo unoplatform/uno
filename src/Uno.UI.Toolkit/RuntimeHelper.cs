@@ -9,5 +9,10 @@ namespace Uno.UI.Toolkit;
 
 public static class RuntimeHelper
 {
-	public static UnoRuntimePlatform CurrentPlatform => PlatformRuntimeHelper.Current;
+	public static UnoRuntimePlatform CurrentPlatform =>
+#if !HAS_UNO
+		Uno.UI.Toolkit.UnoRuntimePlatform.Windows;
+#else
+		(Uno.UI.Toolkit.UnoRuntimePlatform)PlatformRuntimeHelper.Current;
+#endif
 }
