@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Uno.UI.Helpers;
 
-public enum UnoRuntimePlatform
+internal enum UnoRuntimePlatform
 {
 	Android,
 	iOS,
