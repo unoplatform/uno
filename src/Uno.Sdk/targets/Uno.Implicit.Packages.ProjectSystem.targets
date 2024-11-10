@@ -11,8 +11,9 @@
 		<_UnoProjectSystemPackageReference Include="Uno.Settings.DevServer" ProjectSystem="true" PrivateAssets="all" />
 	</ItemGroup>
 
-	<ItemGroup Condition=" ($(_IsExecutable) == 'true' OR '$(IsUnoHead)' == 'true') AND '$(UnoDisableHotDesign)' != 'true' ">
-		<_UnoProjectSystemPackageReference Include="Uno.UI.HotDesign" ProjectSystem="true" PrivateAssets="all" Condition=" '$(Optimize)' != 'true' " />
+	<ItemGroup Condition=" ('$(_ImplicitRestoreOutputType)' == 'WinExe' OR '$(_ImplicitRestoreOutputType)' == 'Exe') AND '$(UnoDisableHotDesign)' != 'true' ">
+		<_UnoProjectSystemPackageReference Include="Uno.UI.HotDesign" ProjectSystem="true" Condition="$(Optimize) != 'true'" />
+		<_UnoProjectSystemPackageReference Include="Uno.UI.HotDesign" ProjectSystem="true" Exclude="all" Condition="$(Optimize) == 'true'" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(_ImplicitRestoreOutputType)' == 'WinExe' OR '$(_ImplicitRestoreOutputType)' == 'Exe' ">
