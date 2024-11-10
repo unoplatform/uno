@@ -226,7 +226,7 @@ public partial class HttpRequestHeaderCollection : IDictionary<string, string>, 
 		return _dictionary.GetEnumerator();
 	}
 
-	global::System.Collections.IEnumerator GetEnumerator()
+	global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator()
 	{
 		return _dictionary.GetEnumerator();
 	}
