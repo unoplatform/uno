@@ -228,7 +228,7 @@ namespace Windows.Web.Http.Headers
 		}
 #endif
 		// Processing: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, string>>
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, string>>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public void Add(global::System.Collections.Generic.KeyValuePair<string, string> item)
@@ -264,7 +264,7 @@ namespace Windows.Web.Http.Headers
 		}
 #endif
 		// Processing: System.Collections.IEnumerable
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		// DeclaringType: System.Collections.IEnumerable
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		 global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator()
