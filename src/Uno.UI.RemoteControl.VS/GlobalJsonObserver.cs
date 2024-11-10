@@ -1,17 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.Text.Json;
-using System.Linq;
-using EnvDTE;
-using Microsoft.VisualStudio.Shell;
-using EnvDTE80;
-using Microsoft.VisualStudio.Shell.Interop;
-using Uno.UI.RemoteControl.VS.Helpers;
-using Microsoft.VisualStudio.PlatformUI;
-using Uno.UI.RemoteControl.VS.Notifications;
-using Microsoft.VisualStudio.Imaging;
-using Microsoft.VisualStudio;
 using System.Threading.Tasks;
+using EnvDTE;
+using Microsoft.VisualStudio.Imaging;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
+using Uno.UI.RemoteControl.VS.Notifications;
 
 namespace Uno.UI.RemoteControl.VS;
 
@@ -23,12 +18,14 @@ internal class GlobalJsonObserver
 	private readonly Action<string> _infoAction;
 	private readonly Action<string> _warningAction;
 	private readonly Action<string> _errorAction;
+	private readonly InfoBarFactory _infoBarFactory;
 	private FileSystemWatcher? _fileWatcher;
 	private readonly JsonSerializerOptions _readerOptions = new() { ReadCommentHandling = JsonCommentHandling.Skip };
 
 	public GlobalJsonObserver(
 		AsyncPackage asyncPackage
 		, DTE dte
+		, InfoBarFactory infoBarFactory
 		, Action<string> debugAction
 		, Action<string> infoAction
 		, Action<string> warningAction
@@ -40,6 +37,7 @@ internal class GlobalJsonObserver
 		_infoAction = infoAction;
 		_warningAction = warningAction;
 		_errorAction = errorAction;
+		_infoBarFactory = infoBarFactory;
 
 		_debugAction("GlobalJsonObserver: Starting");
 
@@ -118,8 +116,8 @@ internal class GlobalJsonObserver
 			&& await _asyncPackage.GetServiceAsync(typeof(SVsInfoBarUIFactory)) is IVsInfoBarUIFactory infoBarFactory)
 		{
 			var factory = new InfoBarFactory(infoBarFactory, shell);
-			var restartVSItem = new ActionBarItem { Text = "Restart Visual Studio" };
-			var moreInformationVSItem = new ActionBarItem { Text = "More information" };
+			var restartVSItem = new ActionBarItem("Restart Visual Studio");
+			var moreInformationVSItem = new ActionBarItem("More information");
 
 			var infoBar = await factory.CreateAsync(
 				new InfoBarModel(
@@ -138,7 +136,7 @@ internal class GlobalJsonObserver
 				{
 					_asyncPackage.JoinableTaskFactory.Run(async () =>
 					{
-						if (e.ActionItem == restartVSItem)
+						if (ReferenceEquals(e.ActionItem, restartVSItem))
 						{
 							await _asyncPackage.JoinableTaskFactory.SwitchToMainThreadAsync();
 
@@ -149,7 +147,7 @@ internal class GlobalJsonObserver
 								var hr = shell4.Restart((uint)type);
 							}
 						}
-						else if (e.ActionItem == moreInformationVSItem)
+						else if (ReferenceEquals(e.ActionItem, moreInformationVSItem))
 						{
 							System.Diagnostics.Process.Start("https://aka.platform.uno/upgrade-uno-packages");
 						}
@@ -172,6 +170,11 @@ internal class GlobalJsonObserver
 			if (msbuildSdksElement.TryGetProperty("Uno.Sdk", out var unoSdkElement))
 			{
 				return unoSdkElement.ToString();
+			}
+			// Can't find Uno.Sdk, so fallback to look for Uno.Sdk.Private
+			if (msbuildSdksElement.TryGetProperty("Uno.Sdk.Private", out var unoSdkPrivateElement))
+			{
+				return unoSdkPrivateElement.ToString();
 			}
 		}
 

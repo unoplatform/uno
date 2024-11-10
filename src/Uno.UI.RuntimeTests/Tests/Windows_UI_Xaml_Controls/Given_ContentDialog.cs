@@ -18,6 +18,8 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Tests.Enterprise;
 using static Private.Infrastructure.TestServices;
 using Windows.UI.Input.Preview.Injection;
+using Microsoft.UI.Xaml.Automation.Peers;
+using MUXControlsTestApp.Utilities;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -478,6 +480,113 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					SUT.Hide();
 				}
 			}
+		}
+
+		[TestMethod]
+		[DataRow(ContentDialogButton.Primary)]
+		[DataRow(ContentDialogButton.Secondary)]
+		[DataRow(ContentDialogButton.Close)]
+		public async Task When_Hide_In_Click(ContentDialogButton buttonType)
+		{
+			var contentDialog = new ContentDialog
+			{
+				Content = "Test",
+				PrimaryButtonText = "Primary",
+				SecondaryButtonText = "Secondary",
+				CloseButtonText = "Close",
+				XamlRoot = WindowHelper.XamlRoot,
+			};
+
+			static void OnButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs e)
+			{
+				e.Cancel = true;
+				sender.Hide();
+			};
+
+			switch (buttonType)
+			{
+				case ContentDialogButton.Primary:
+					contentDialog.PrimaryButtonClick += OnButtonClick;
+					break;
+				case ContentDialogButton.Secondary:
+					contentDialog.SecondaryButtonClick += OnButtonClick;
+					break;
+				case ContentDialogButton.Close:
+					contentDialog.CloseButtonClick += OnButtonClick;
+					break;
+			}
+
+			int closingCount = 0;
+			var closed = false;
+			contentDialog.Closed += (s, e) => closed = true;
+			contentDialog.Closing += (s, e) => closingCount++;
+
+			var dialogTask = contentDialog.ShowAsync();
+
+			Button button = null;
+
+			var buttonName = buttonType switch
+			{
+				ContentDialogButton.Primary => "PrimaryButton",
+				ContentDialogButton.Secondary => "SecondaryButton",
+				ContentDialogButton.Close => "CloseButton",
+				_ => throw new NotSupportedException()
+			};
+
+			await WindowHelper.WaitFor(() => (button = (Button)VisualTreeUtils.FindVisualChildByName(contentDialog, buttonName)) != null);
+
+			await WindowHelper.WaitForLoaded(button);
+			(FrameworkElementAutomationPeer.CreatePeerForElement(button) as ButtonAutomationPeer).Invoke();
+
+			await WindowHelper.WaitFor(() => closed);
+
+			await dialogTask;
+
+			Assert.AreEqual(1, closingCount);
+		}
+
+		[TestMethod]
+		[DataRow(ContentDialogButton.Primary)]
+		[DataRow(ContentDialogButton.Secondary)]
+		[DataRow(ContentDialogButton.Close)]
+		public async Task When_Button_Click(ContentDialogButton buttonType)
+		{
+			var contentDialog = new ContentDialog
+			{
+				Content = "Test",
+				PrimaryButtonText = "Primary",
+				SecondaryButtonText = "Secondary",
+				CloseButtonText = "Close",
+				XamlRoot = WindowHelper.XamlRoot,
+			};
+
+			int closingCount = 0;
+			var closed = false;
+			contentDialog.Closed += (s, e) => closed = true;
+			contentDialog.Closing += (s, e) => closingCount++;
+
+			var dialogTask = contentDialog.ShowAsync();
+
+			Button button = null;
+
+			var buttonName = buttonType switch
+			{
+				ContentDialogButton.Primary => "PrimaryButton",
+				ContentDialogButton.Secondary => "SecondaryButton",
+				ContentDialogButton.Close => "CloseButton",
+				_ => throw new NotSupportedException()
+			};
+
+			await WindowHelper.WaitFor(() => (button = (Button)VisualTreeUtils.FindVisualChildByName(contentDialog, buttonName)) != null);
+
+			await WindowHelper.WaitForLoaded(button);
+			(FrameworkElementAutomationPeer.CreatePeerForElement(button) as ButtonAutomationPeer).Invoke();
+
+			await WindowHelper.WaitFor(() => closed);
+
+			await dialogTask;
+
+			Assert.AreEqual(1, closingCount);
 		}
 
 #if HAS_UNO

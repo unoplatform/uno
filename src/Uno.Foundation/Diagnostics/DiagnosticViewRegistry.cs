@@ -12,7 +12,7 @@ internal static class DiagnosticViewRegistry
 {
 	internal static EventHandler<IImmutableList<DiagnosticViewRegistration>>? Added;
 
-	private static ImmutableArray<DiagnosticViewRegistration> _registrations = ImmutableArray<DiagnosticViewRegistration>.Empty;
+	private static ImmutableArray<DiagnosticViewRegistration> _registrations = [];
 
 	/// <summary>
 	/// Gets the list of registered diagnostic providers.
@@ -35,15 +35,17 @@ internal static class DiagnosticViewRegistry
 	}
 }
 
-internal record DiagnosticViewRegistration(DiagnosticViewRegistrationMode Mode, IDiagnosticView View);
+internal sealed record DiagnosticViewRegistration(
+	DiagnosticViewRegistrationMode Mode,
+	IDiagnosticView View);
 
-internal enum DiagnosticViewRegistrationMode
+public enum DiagnosticViewRegistrationMode
 {
 	/// <summary>
 	/// Diagnostic is being display on at least one window.
 	/// I.e. only the main/first opened but move to the next one if the current window is closed.
 	/// </summary>
-	One,
+	One, // Default
 
 	/// <summary>
 	/// Diagnostic is being rendered as overlay on each window.
@@ -54,4 +56,19 @@ internal enum DiagnosticViewRegistrationMode
 	/// Only registers the diagnostic provider but does not display it.
 	/// </summary>
 	OnDemand
+}
+
+public enum DiagnosticViewRegistrationPosition
+{
+	Normal = 0, // Default
+
+	/// <summary>
+	/// Register as the first diagnostic view, ensuring it is displayed first.
+	/// </summary>
+	First = -1,
+
+	/// <summary>
+	/// Register as the last diagnostic view, ensuring it is displayed last.
+	///	</summary>
+	Last = 1,
 }

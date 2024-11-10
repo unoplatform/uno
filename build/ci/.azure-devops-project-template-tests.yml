@@ -26,6 +26,10 @@ jobs:
       group_4:
         TestGroup: '4'
 
+  variables:
+    # don't validate transitive dependencies for template tests
+    NuGetAuditMode: direct
+
   steps:
   - task: DownloadBuildArtifacts@0
     inputs:
@@ -78,10 +82,19 @@ jobs:
       group_4:
         TestGroup: '4'
 
+  variables:
+    # don't validate transitive dependencies for template tests
+    NuGetAuditMode: direct
+
   steps:
   - task: DownloadBuildArtifacts@0
     inputs:
       artifactName: 'Nuget_Packages'
+
+  # Install android 34 as we're running on macos-15
+  - bash: |
+      echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_HOME --install 'platforms;android-34' | tr '\r' '\n' | uniq
+    displayName: Install Android 34
 
   - template: templates/gitversion.yml
 
@@ -121,6 +134,10 @@ jobs:
         TestGroup: '1'
       group_2:
         TestGroup: '2'
+
+  variables:
+    # don't validate transitive dependencies for template tests
+    NuGetAuditMode: direct
 
   steps:
   - task: DownloadBuildArtifacts@0

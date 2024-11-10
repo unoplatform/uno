@@ -1,5 +1,6 @@
 ﻿// Imported from https://github.com/VsixCommunity/Community.VisualStudio.Toolkit
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -13,6 +14,7 @@ public class InfoBarFactory
 {
 	private IVsInfoBarUIFactory _infoBarUIFactory;
 	private readonly IVsShell _shell;
+	private List<InfoBar> _infoBars = new();
 
 	public InfoBarFactory(IVsInfoBarUIFactory infoBarUIFactory, IVsShell shell)
 	{
@@ -32,10 +34,34 @@ public class InfoBarFactory
 
 		if (value is IVsInfoBarHost host)
 		{
-			return new InfoBar(host, _infoBarUIFactory, model);
+			var infoBar = new InfoBar(this, host, _infoBarUIFactory, model);
+			_infoBars.Add(infoBar);
+			return infoBar;
 		}
 
 		return null;
+	}
+
+	internal void RemoveInfoBar(InfoBar infoBar)
+	{
+		_infoBars.Remove(infoBar);
+	}
+
+	internal void RemoveAllInfoBars()
+	{
+		ThreadHelper.ThrowIfNotOnUIThread();
+
+		foreach (var infoBar in _infoBars.ToArray())
+		{
+			infoBar.Close();
+		}
+	}
+
+	internal void Dispose()
+	{
+		ThreadHelper.ThrowIfNotOnUIThread();
+
+		RemoveAllInfoBars();
 	}
 }
 
@@ -49,12 +75,14 @@ public class InfoBar : IVsInfoBarUIEvents
 	private readonly InfoBarModel _model;
 	private IVsInfoBarUIElement? _uiElement;
 	private uint _listenerCookie;
+	private InfoBarFactory _infoBarFactory;
 
 	/// <summary>
 	/// Creates a new instance of the InfoBar in a specific window frame or document window.
 	/// </summary>
-	internal InfoBar(IVsInfoBarHost host, IVsInfoBarUIFactory infoBarUIFactory, InfoBarModel model)
+	internal InfoBar(InfoBarFactory infoBarFactory, IVsInfoBarHost host, IVsInfoBarUIFactory infoBarUIFactory, InfoBarModel model)
 	{
+		_infoBarFactory = infoBarFactory;
 		_host = host;
 		_infoBarUIFactory = infoBarUIFactory;
 		_model = model;
@@ -108,6 +136,7 @@ public class InfoBar : IVsInfoBarUIEvents
 		IsVisible = false;
 		ThreadHelper.ThrowIfNotOnUIThread();
 		_uiElement?.Unadvise(_listenerCookie);
+		_infoBarFactory.RemoveInfoBar(this);
 	}
 
 	void IVsInfoBarUIEvents.OnActionItemClicked(IVsInfoBarUIElement infoBarUIElement, IVsInfoBarActionItem actionItem)
@@ -116,19 +145,17 @@ public class InfoBar : IVsInfoBarUIEvents
 	}
 }
 
-class ActionBarItem : IVsInfoBarActionItem
-{
-	public string? Text { get; set; }
+record class ActionBarTextSpan(
+	string Text,
+	bool Bold = false,
+	bool Italic = false,
+	bool Underline = false) : IVsInfoBarTextSpan;
 
-	public string? Name { get; set; }
-
-	public bool Bold { get; set; }
-
-	public bool Italic { get; set; }
-
-	public bool Underline { get; set; }
-
-	public object? ActionContext { get; set; }
-
-	public bool IsButton { get; set; }
-}
+record ActionBarItem(
+	string? Text,
+	string? Name = null,
+	bool Bold = false,
+	bool Italic = false,
+	bool Underline = false,
+	object? ActionContext = null,
+	bool IsButton = false) : IVsInfoBarActionItem;

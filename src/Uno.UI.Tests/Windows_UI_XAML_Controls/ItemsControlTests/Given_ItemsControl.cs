@@ -311,9 +311,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 
 			SUT.ItemsSource = cvs;
 
-			// This behavior is not the UWP one, this assertion
-			// is present to freeze the behavior.
-			Assert.AreEqual(0, count);
+			Assert.AreEqual(11, count);
 		}
 #endif
 

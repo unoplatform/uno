@@ -10,12 +10,13 @@ namespace Uno.Diagnostics.UI;
 /// <summary>
 /// A generic diagnostic view that can be updated with a state.
 /// </summary>
-internal class DiagnosticView<TView, TState>(
+public class DiagnosticView<TView, TState>(
 	string id,
 	string name,
 	Func<IDiagnosticViewContext, TView> factory,
 	Action<TView, TState> update,
-	Func<IDiagnosticViewContext, TState, CancellationToken, ValueTask<object?>>? details = null)
+	Func<IDiagnosticViewContext, TState, CancellationToken, ValueTask<object?>>? details = null,
+	DiagnosticViewRegistrationPosition position = default)
 	: IDiagnosticView
 	where TView : FrameworkElement
 {
@@ -36,6 +37,8 @@ internal class DiagnosticView<TView, TState>(
 
 	/// <inheritdoc />
 	string IDiagnosticView.Name => name;
+
+	DiagnosticViewRegistrationPosition IDiagnosticView.Position => position;
 
 	/// <inheritdoc />
 	object IDiagnosticView.GetElement(IDiagnosticViewContext context)

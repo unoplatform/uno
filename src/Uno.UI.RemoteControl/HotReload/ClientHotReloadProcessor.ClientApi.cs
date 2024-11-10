@@ -21,7 +21,7 @@ public partial class ClientHotReloadProcessor
 	/// <summary>
 	/// Result details of a file update
 	/// </summary>
-	/// <param name="FileUpdated">Indicates if is known to have been updated on server-side.</param>
+	/// <param name="FileUpdated">Indicates if file is known to have been updated on server-side.</param>
 	/// <param name="ApplicationUpdated">Indicates if the change had an impact on the compilation of the application (might be a success-full build or an error).</param>
 	/// <param name="Error">Gets the error if any happened during the update.</param>
 	public record struct UpdateResult(

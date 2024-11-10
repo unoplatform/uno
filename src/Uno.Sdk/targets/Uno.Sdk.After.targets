@@ -7,6 +7,7 @@
 	<!-- Sanity check ensure that platform files for other targets are not included -->
 	<ItemGroup Condition=" $(_IsUnoSingleProjectAndLegacy) == 'true' and $(PlatformsProjectFolder) != '' and Exists($(PlatformsProjectFolder))">
 		<Compile Remove="@(_IgnorePlatformFiles)" />
+		<Page Remove="@(_IgnorePlatformFiles)" />
 		<Content Remove="@(_IgnorePlatformFiles)" />
 		<EmbeddedResource Remove="@(_IgnorePlatformFiles)" />
 		<Manifest Remove="@(_IgnorePlatformFiles)" />
@@ -93,6 +94,7 @@
 			Condition=" 
 			'$(UnoDisableVSWarnBrowserIsFirst)' != 'true'
 			AND '$(BuildingInsideVisualStudio)' == 'true'
+			AND '$(OutputType)'!='Library'
 			AND '$(_UnoTargetFrameworkCount)' != ''
 			AND $(_UnoTargetFrameworkCount) &gt; 1
 			AND $(TargetFrameworks.Contains('-browserwasm'))
@@ -107,6 +109,7 @@
 				Condition="
 				'$(UnoDisableVSWarnDesktopIsFirst)' != 'true'
 				AND '$(BuildingInsideVisualStudio)' == 'true'
+				AND '$(OutputType)'!='Library'
 				AND $([MSBuild]::VersionLessThan($(MSBuildVersion), 17.12.0))
 				AND '$(_UnoTargetFrameworkCount)' != ''
 				AND $(_UnoTargetFrameworkCount) &gt; 1
@@ -121,6 +124,7 @@
 				Condition="
 				'$(UnoDisableVSWarnDesktopIsNotFirst)' != 'true'
 				AND '$(BuildingInsideVisualStudio)' == 'true'
+				AND '$(OutputType)'!='Library'
 				AND $([MSBuild]::VersionGreaterThanOrEquals($(MSBuildVersion), 17.12.0))
 				AND '$(_UnoTargetFrameworkCount)' != ''
 				AND $(_UnoTargetFrameworkCount) &gt; 1
@@ -141,6 +145,7 @@
 				Condition="
 				'$(UnoDisableVSWarnWindowsIsFirst)' != 'true'
 				AND '$(BuildingInsideVisualStudio)' == 'true'
+				AND '$(OutputType)'!='Library'
 				AND '$(_UnoTargetFrameworkCount)' != ''
 				AND $(_UnoTargetFrameworkCount) &gt; 1
 				AND $(TargetFrameworks.Contains('-windows'))
@@ -155,6 +160,7 @@
 			Condition=" 
 			'$(UnoDisableVSWarnNetIsFirst)' != 'true'
 			AND '$(BuildingInsideVisualStudio)' == 'true'
+			AND '$(OutputType)'!='Library'
 			AND '$(_UnoTargetFrameworkCount)' != ''
 			AND $(_UnoTargetFrameworkCount) &gt; 1
 			AND $([MSBuild]::GetTargetPlatformIdentifier($(_UnoFirstOriginalTargetFramework))) == ''

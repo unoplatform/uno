@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml;
 using Uno.Disposables;
 using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
+using Windows.Graphics;
 using Windows.UI.Core.Preview;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
@@ -20,6 +21,10 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase
 		nativeWindow.Host.RasterizationScaleChanged += Host_RasterizationScaleChanged;
 		nativeWindow.Host.SizeChanged += (_, s) => OnHostSizeChanged(s);
 		OnHostSizeChanged(initialSize);
+		nativeWindow.Host.PositionChanged += (_, s) => OnHostPositionChanged(s.X, s.Y);
+		// the initial event occurred before the managed side was ready to handle it
+		NativeUno.uno_window_get_position(nativeWindow.Handle, out var x, out var y);
+		OnHostPositionChanged(x, y);
 
 		RasterizationScale = (float)_window.Host.RasterizationScale;
 	}
@@ -37,22 +42,55 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase
 		set => NativeUno.uno_window_set_title(_window.Handle, value);
 	}
 
+	internal protected override void Activate()
+	{
+		NativeUno.uno_window_activate(_window.Handle);
+	}
+
+	protected override void CloseCore()
+	{
+		NativeUno.uno_window_close(_window.Handle);
+	}
+
+	public override void Move(PointInt32 position)
+	{
+		// user input in physical pixels transformed into logical pixels
+		var x = position.X / RasterizationScale;
+		var y = position.Y / RasterizationScale;
+		NativeUno.uno_window_move(_window.Handle, x, y);
+	}
+
+	public override void Resize(SizeInt32 size)
+	{
+		// user input in physical pixels transformed into logical pixels
+		var w = size.Width / RasterizationScale;
+		var h = size.Height / RasterizationScale;
+		NativeUno.uno_window_resize(_window.Handle, w, h);
+	}
+
+	private void OnHostPositionChanged(double x, double y)
+	{
+		// in physical pixels
+		var sx = (int)(x * RasterizationScale);
+		var sy = (int)(y * RasterizationScale);
+		Position = new PointInt32(sx, sy);
+	}
+
 	private void OnHostSizeChanged(Size size)
 	{
+		// in logical pixels
 		Bounds = new Rect(default, size);
 		VisibleBounds = Bounds;
+		// in physical pixels
+		int w = (int)(size.Width * RasterizationScale);
+		int h = (int)(size.Height * RasterizationScale);
+		Size = new SizeInt32(w, h);
 	}
 
 	private void OnWindowClosing(object? sender, CancelEventArgs e)
 	{
 		var closingArgs = RaiseClosing();
-		if (closingArgs.Cancel)
-		{
-			e.Cancel = true;
-		}
-
-		// All prerequisites passed, can safely close.
-		e.Cancel = false;
+		e.Cancel = closingArgs.Cancel;
 	}
 
 	protected override IDisposable ApplyFullScreenPresenter()

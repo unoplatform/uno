@@ -46,7 +46,17 @@ partial class AppWindow
 		ApplicationView.GetOrCreateForWindowId(Id);
 	}
 
+	/// <summary>
+	/// Occurs when a property of the window has changed, and the system is in a "steady state" for the time being.
+	/// </summary>
 	public event TypedEventHandler<AppWindow, AppWindowChangedEventArgs> Changed;
+
+	/// <summary>
+	/// Occurs when a window is being closed through a system affordance.
+	/// </summary>
+	public event TypedEventHandler<AppWindow, AppWindowClosingEventArgs> Closing;
+
+	internal static MUXWindowId MainWindowId { get; } = new(1);
 
 	/// <summary>
 	/// Gets the title bar of the app window.
@@ -105,6 +115,24 @@ partial class AppWindow
 		}
 	}
 
+	/// <summary>
+	/// Returns the AppWindow with the specified WindowId, if available. Returns null if the WindowId cannot be matched to a valid window.
+	/// </summary>
+	/// <param name="windowId">The identifier for the AppWindow.</param>
+	/// <returns>The AppWindow with the specified WindowId, if available; null if the WindowId cannot be matched to a valid window.</returns>
+	public static AppWindow GetFromWindowId(MUXWindowId windowId)
+	{
+		if (!_windowIdMap.TryGetValue(windowId, out var appWindow))
+		{
+			return null;
+		}
+
+		return appWindow;
+	}
+
+	internal static bool TryGetFromWindowId(MUXWindowId windowId, [NotNullWhen(true)] out AppWindow appWindow)
+		=> _windowIdMap.TryGetValue(windowId, out appWindow);
+
 	internal static void SkipMainWindowId()
 	{
 		// In case of Uno Islands we currently have no "main window",
@@ -116,48 +144,33 @@ partial class AppWindow
 		}
 	}
 
-	internal void SetNativeWindow(INativeAppWindow nativeAppWindow)
-	{
-		if (nativeAppWindow is null)
-		{
-			throw new ArgumentNullException(nameof(nativeAppWindow));
-		}
+	/// <summary>
+	/// Shows the window and activates it.
+	/// </summary>
+	public void Show() => Show(true);
 
-		_nativeAppWindow = nativeAppWindow;
+	/// <summary>
+	/// Shows the window with an option to activate it or not.
+	/// </summary>
+	/// <param name="activateWindow">Shows the window with an option to activate it or not.</param>
+	public void Show(bool activateWindow) => _nativeAppWindow.Show(activateWindow);
 
-		if (string.IsNullOrWhiteSpace(_nativeAppWindow.Title) && !string.IsNullOrWhiteSpace(_titleCache))
-		{
-			_nativeAppWindow.Title = _titleCache;
-		}
-		else
-		{
-			_titleCache = _nativeAppWindow.Title;
-		}
-
-		SetPresenter(AppWindowPresenterKind.Default);
-	}
-
-	public event TypedEventHandler<AppWindow, AppWindowClosingEventArgs> Closing;
-
-	internal static MUXWindowId MainWindowId { get; } = new(1);
-
-	public static AppWindow GetFromWindowId(MUXWindowId windowId)
-	{
-		if (!_windowIdMap.TryGetValue(windowId, out var appWindow))
-		{
-			throw new InvalidOperationException("Window not found");
-		}
-
-		return appWindow;
-	}
-
-	internal static bool TryGetFromWindowId(MUXWindowId windowId, [NotNullWhen(true)] out AppWindow appWindow)
-		=> _windowIdMap.TryGetValue(windowId, out appWindow);
-
+	/// <summary>
+	/// Moves the window to the specified point in screen coordinates.
+	/// </summary>
+	/// <param name="position">The point to move the window to in screen coordinates.</param>
 	public void Move(PointInt32 position) => _nativeAppWindow.Move(position);
 
+	/// <summary>
+	/// Resizes the window to the specified size.
+	/// </summary>
+	/// <param name="size">The height and width of the window in screen coordinates.</param>
 	public void Resize(SizeInt32 size) => _nativeAppWindow.Resize(size);
 
+	/// <summary>
+	/// Applies the specified presenter to the window.
+	/// </summary>
+	/// <param name="appWindowPresenter">The presenter to apply to the window.</param>
 	public void SetPresenter(AppWindowPresenter appWindowPresenter)
 	{
 		if (_presenter == appWindowPresenter)
@@ -176,6 +189,12 @@ partial class AppWindow
 		Changed?.Invoke(this, new AppWindowChangedEventArgs() { DidPresenterChange = true });
 	}
 
+	/// <summary>
+	/// Applies the specified presenter kind to the window.
+	/// </summary>
+	/// <param name="appWindowPresenterKind">The presenter kind to apply to the window.</param>
+	/// <exception cref="NotSupportedException">Thrown when an unsupported presenter is requested.</exception>
+	/// <exception cref="InvalidOperationException">Thrown when invalid param value is provided.</exception>
 	public void SetPresenter(AppWindowPresenterKind appWindowPresenterKind)
 	{
 		switch (appWindowPresenterKind)
@@ -197,4 +216,25 @@ partial class AppWindow
 	internal void RaiseClosing(AppWindowClosingEventArgs args) => Closing?.Invoke(this, args);
 
 	internal void OnAppWindowChanged(AppWindowChangedEventArgs args) => Changed?.Invoke(this, args);
+
+	internal void SetNativeWindow(INativeAppWindow nativeAppWindow)
+	{
+		if (nativeAppWindow is null)
+		{
+			throw new ArgumentNullException(nameof(nativeAppWindow));
+		}
+
+		_nativeAppWindow = nativeAppWindow;
+
+		if (string.IsNullOrWhiteSpace(_nativeAppWindow.Title) && !string.IsNullOrWhiteSpace(_titleCache))
+		{
+			_nativeAppWindow.Title = _titleCache;
+		}
+		else
+		{
+			_titleCache = _nativeAppWindow.Title;
+		}
+
+		SetPresenter(AppWindowPresenterKind.Default);
+	}
 }
