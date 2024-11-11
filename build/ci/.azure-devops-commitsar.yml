@@ -19,5 +19,6 @@ jobs:
       ./commitsar
 
     condition: ne(variables['System.PullRequest.PullRequestNumber'], '')
+    displayName: 'Commitsar Validation'
 
   - template: templates/generate-changelog.yml

@@ -1,3 +1,5 @@
+# Installs dependencies for DocFX
+
 steps:
   - task: NodeTool@0
     displayName: "Install Node 14.7.1"

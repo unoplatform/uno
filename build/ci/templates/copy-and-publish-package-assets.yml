@@ -1,4 +1,5 @@
 # Copies build artifacts from bin folders and publishes them
+
 steps:
 
   - task: CopyFiles@2

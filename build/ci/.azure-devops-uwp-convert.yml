@@ -50,6 +50,7 @@ jobs:
       createLogFile: false
 
   - task: PublishBuildArtifacts@1
+    displayName: 'Publish Sync Generator binlogs'
     condition: always()
     retryCountOnTaskFailure: 3
     inputs:
@@ -67,11 +68,13 @@ jobs:
     displayName: Cleanup sources before publish
 
   - task: PublishPipelineArtifact@1
+    displayName: 'Publish UWP Converted Tree'
     inputs:
       targetPath: $(build.sourcesdirectory)
       artifactName: uwp-converted-tree
 
   - task: PublishBuildArtifacts@1
+    displayName: 'Publish build artifacts'
     condition: always()
     retryCountOnTaskFailure: 3
     inputs:

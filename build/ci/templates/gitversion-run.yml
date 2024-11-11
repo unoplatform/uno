@@ -14,6 +14,7 @@ steps:
     displayName: Update GitVersion file for PullRequests
 
   - task: gitversion/setup@0
+    displayName: Setup GitVersion
     retryCountOnTaskFailure: 3
     inputs:
       versionSpec: '5.10.3'

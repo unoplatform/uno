@@ -1,6 +1,6 @@
 
 stages:
-- stage: Setup
+- stage: setup
   displayName: Setup
   jobs:
   - template: .azure-devops-commitsar.yml
@@ -22,7 +22,7 @@ stages:
 - stage: convert_tree
   displayName: UWP Tree Conversion
   dependsOn:
-    - Setup
+    - setup
   jobs:
   - template: .azure-devops-uwp-convert.yml
     parameters:
@@ -31,7 +31,7 @@ stages:
 - stage: binaries_build_uwp
   displayName: Build Binaries UWP
   dependsOn:
-    - Setup
+    - setup
     - convert_tree
 
   jobs: 
@@ -63,7 +63,7 @@ stages:
 - stage: binaries_build_winui
   displayName: Build Binaries WinUI
   dependsOn:
-    - Setup
+    - setup
 
   jobs: 
   - template: .azure-devops-package-netcoremobile.yml
@@ -143,7 +143,7 @@ stages:
 - stage: skia_tests_uwp
   displayName: Tests - Skia UWP
   dependsOn:
-    - Setup
+    - setup
     - convert_tree
 
   jobs:
@@ -159,7 +159,7 @@ stages:
 - stage: skia_tests_winui
   displayName: Tests - Skia WinUI
   dependsOn:
-    - Setup
+    - setup
 
   jobs:
   - template: .azure-devops-skia-tests.yml
@@ -174,7 +174,7 @@ stages:
 - stage: macos_tests
   displayName: Tests - macOS
   dependsOn:
-    - Setup
+    - setup
 
   jobs:
   - template: .azure-devops-macos.yml
@@ -185,7 +185,7 @@ stages:
 - stage: android_tests
   displayName: Tests - Android
   dependsOn:
-    - Setup
+    - setup
 
   jobs:
   - template: .azure-devops-android-tests.yml
@@ -199,7 +199,7 @@ stages:
 - stage: ios_tests
   displayName: Tests - iOS
   dependsOn:
-    - Setup
+    - setup
 
   jobs:
   - template: .azure-devops-ios-tests.yml
@@ -212,7 +212,7 @@ stages:
 - stage: wasdk_tests
   displayName: Tests - WinAppSDK  
   dependsOn:
-    - Setup
+    - setup
 
   jobs:
   - template: .azure-devops-wasdk.yml
