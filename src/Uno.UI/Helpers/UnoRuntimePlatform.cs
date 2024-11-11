@@ -20,5 +20,5 @@ internal enum UnoRuntimePlatform
 	SkiaX11,
 	SkiaFrameBuffer,
 	SkiaMacOS,
-	Unkonwn
+	Unknown
 }
