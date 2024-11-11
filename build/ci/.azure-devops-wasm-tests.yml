@@ -269,7 +269,6 @@ jobs:
     displayName: 'Running UI Tests'
 
   - task: PublishTestResults@2
-    displayName: 'Publish UI Tests Results'
     condition: always()
     inputs:
       testResultsFiles: '$(build.sourcesdirectory)/build/TestResult-original.xml'
@@ -281,7 +280,6 @@ jobs:
       searchFolder: '$(build.artifactstagingdirectory)/screenshots/wasm-automated' # https://github.com/microsoft/azure-pipelines-tasks/issues/10072
 
   - task: PublishTestResults@2
-    displayName: 'Publish Runtime Tests Results'
     condition: always()
     inputs:
       testResultsFiles: '$(build.sourcesdirectory)/build/RuntimeTestResults*.xml'
@@ -292,7 +290,6 @@ jobs:
       failTaskOnMissingResultsFile: $(IS_RUNTIME_TESTS)
 
   - task: PublishBuildArtifacts@1
-    displayName: 'Publish UI tests results'
     condition: always()
     retryCountOnTaskFailure: 3
     inputs:
@@ -301,7 +298,6 @@ jobs:
       ArtifactType: Container
 
   - task: PublishBuildArtifacts@1
-    displayName: 'Publish failed tests results'
     condition: always()
     retryCountOnTaskFailure: 3
     inputs:
