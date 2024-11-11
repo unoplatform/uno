@@ -26,7 +26,7 @@ internal static class PlatformRuntimeHelper
 #elif __SKIA__
 		SkiaPlatform;
 #else
-		UnoRuntimePlatform.Unkonwn;
+		UnoRuntimePlatform.Unknown;
 #endif
 
 }
