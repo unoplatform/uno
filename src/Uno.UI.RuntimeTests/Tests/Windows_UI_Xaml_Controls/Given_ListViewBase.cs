@@ -1988,8 +1988,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// since this is originally a virtualization issue and references
 			// could be to different things than those shown on the screen.
 			var si = await UITestHelper.ScreenShot(list, true);
-			// on macOS/metal we get the color #1A6AA7 which is quite close but not identical
-			var tolerance = 1;
+			// on macOS/metal we get the color #1A6AA7 which is quite close but not identical,
+			// similar inaccuracy is happening on Linux as well
+			byte tolerance = 1;
 			ImageAssert.HasColorAt(si, 70, 65, Colors.FromARGB("#1A69A6"), tolerance); // selected
 
 			// check starting from below the second item that nothing looks selected or hovered
