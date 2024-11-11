@@ -1,0 +1,16 @@
+jobs:
+  - template: .azure-devops-commitsar.yml
+    parameters:
+      vmImage: '$(linuxVMImage)'
+
+  - template: .azure-devops-spell-check.yml
+    parameters:
+      vmImage: '$(linuxVMImage)'
+
+  - template: .azure-devops-markdown-lint.yml
+    parameters:
+      vmImage: '$(linuxVMImage)'
+
+  - template: .azure-devops-pipeline-validations.yml
+    parameters:
+      vmImage: '$(linuxVMImage)'
