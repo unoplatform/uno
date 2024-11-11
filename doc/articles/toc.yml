@@ -32,6 +32,8 @@
     - name: Troubleshoot
       topicHref: xref:Uno.UI.CommonIssues
       items:
+      - name: Sign in with Uno Platform
+        href: xref:Uno.GetStarted.Licensing
       - name: All Development Environments
         href: xref:Uno.UI.CommonIssues.AllIDEs
       - name: Visual Studio 2022 for Windows
