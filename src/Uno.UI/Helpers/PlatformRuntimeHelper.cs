@@ -25,8 +25,6 @@ internal static class PlatformRuntimeHelper
 		UnoRuntimePlatform.WebAssembly;
 #elif __SKIA__
 		SkiaPlatform;
-#elif !HAS_UNO
-		UnoRuntimePlatform.Windows;
 #else
 		UnoRuntimePlatform.Unkonwn;
 #endif
