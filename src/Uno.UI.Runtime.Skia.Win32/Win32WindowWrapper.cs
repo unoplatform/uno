@@ -17,14 +17,16 @@ using Windows.Win32.Foundation;
 using Windows.Win32.UI.HiDpi;
 using Windows.Win32.UI.WindowsAndMessaging;
 using Microsoft.UI.Xaml;
+using SkiaSharp;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
+using Uno.UI.Hosting;
 using Uno.UI.Xaml.Controls;
 using Point = System.Drawing.Point;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
-internal partial class Win32WindowWrapper : NativeWindowWrapperBase
+internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHost
 {
 	private const string WindowClassName = "UnoPlatformRegularWindow";
 	private static readonly HINSTANCE _hInstance = new HINSTANCE(Process.GetCurrentProcess().Handle);
@@ -33,11 +35,20 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase
 	// ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
 	private static readonly WNDCLASSEXW _windowClass;
 
+	// This is necessary to be able to direct the very first WndProc call of a window to the correct window wrapper.
+	// That first call is inside CreateWindow, so we don't have a HWND yet. The alternative would be to create a new
+	// window class (and a new WndProc) per window, but that sounds excessive.
 	private static Win32WindowWrapper? _wrapperForNextCreateWindow;
-	private static Dictionary<HWND, Win32WindowWrapper> _hwndToWrapper = new();
+	private static readonly Dictionary<HWND, Win32WindowWrapper> _hwndToWrapper = new();
+
+	private static readonly XamlRootMap<Win32WindowWrapper> _xamlRootMap = new();
 
 	private readonly HWND _hwnd;
 	private readonly ApplicationView _applicationView;
+	private readonly IRenderer _renderer;
+
+	private IDisposable? _backgroundDisposable;
+	private SKColor _background;
 
 	static unsafe Win32WindowWrapper()
 	{
@@ -72,6 +83,9 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase
 		_applicationView.PropertyChanged += OnApplicationViewPropertyChanged;
 
 		_hwnd = CreateWindow();
+
+		_xamlRootMap.Register(xamlRoot, this);
+
 		OnWindowSizeOrLocationChanged();
 		_ = (RasterizationScale = (float)PInvoke.GetDpiForWindow(_hwnd) / PInvoke.USER_DEFAULT_SCREEN_DPI) != 0
 			|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GetDpiForWindow)} failed: {Win32Helper.GetErrorMessage()}");
@@ -79,6 +93,12 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase
 		UpdateWindowPropertiesFromPackage();
 
 		Win32Host.RegisterWindow(_hwnd);
+
+		_gl = FeatureConfiguration.Rendering.UseOpenGLOnWin32 ?? true ? CreateGlContext() : null;
+		_renderer = _gl is null ? new SoftwareRenderer(_hwnd) : new GlRenderer(_hwnd, _gl);
+
+		RegisterForBackgroundColor();
+
 
 		// TODO: extending into titlebar
 		// TODO: NativeOverlappedPresenter and FullScreenPresenter
@@ -188,6 +208,13 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase
 				this.Log().Log(LogLevel.Trace, nameof(PInvoke.WM_DESTROY), static messageName => $"WndProc received a {messageName} message.");
 				_applicationView.PropertyChanged -= OnApplicationViewPropertyChanged;
 				Win32Host.UnregisterWindow(_hwnd);
+				_renderer.Reset();
+				if (_gl is { })
+				{
+					ReleaseGlContext(_gl.GlContext, _gl.GrGlInterface, _gl.GrContext);
+				}
+				_backgroundDisposable?.Dispose();
+				_xamlRootMap.Unregister(XamlRoot!);
 				break;
 			case PInvoke.WM_DPICHANGED:
 				RasterizationScale = (float)(wParam & 0xffff) / PInvoke.USER_DEFAULT_SCREEN_DPI;
@@ -208,6 +235,10 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase
 				this.Log().Log(LogLevel.Trace, static () => $"WndProc received a {nameof(PInvoke.WM_GETMINMAXINFO)} message.");
 				MINMAXINFO* info = (MINMAXINFO*)lParam.Value;
 				info->ptMinTrackSize = new Point((int)_applicationView.PreferredMinSize.Width, (int)_applicationView.PreferredMinSize.Height);
+				break;
+			case PInvoke.WM_PAINT:
+				this.Log().Log(LogLevel.Trace, static () => $"WndProc received a {nameof(PInvoke.WM_PAINT)} message.");
+				Paint();
 				break;
 		}
 
@@ -232,8 +263,13 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase
 
 		this.Log().Log(LogLevel.Trace, windowRect, clientRect, static (windowRect, clientRect) => $"Adjusting window dimensions to {windowRect.Width}x{windowRect.Height}@{windowRect.left}x{windowRect.top} and client area dimensions to {clientRect.Width}x{clientRect.Height}@{clientRect.left}x{clientRect.top}");
 
-		Bounds = new Rect(windowRect.left / scale, windowRect.top / scale, windowRect.Width / scale, windowRect.Height / scale);
-		VisibleBounds = new Rect(clientRect.left / scale, clientRect.top / scale, clientRect.Width / scale, clientRect.Height / scale);
+		// For things to work correctly with layoutting, Bounds and VisibleBounds need to start at (0,0) regardless of
+		// the reported top-left corner by Windows.
+		// Bounds = new Rect(windowRect.left / scale, windowRect.top / scale, windowRect.Width / scale, windowRect.Height / scale);
+		// VisibleBounds = new Rect(clientRect.left / scale, clientRect.top / scale, clientRect.Width / scale, clientRect.Height / scale);
+		Bounds = new Rect(0, 0, windowRect.Width / scale, windowRect.Height / scale);
+		VisibleBounds = new Rect(0, 0, clientRect.Width / scale, clientRect.Height / scale);
+
 		Size = new SizeInt32(windowRect.Width, windowRect.Height);
 		Position = new PointInt32(windowRect.left, windowRect.top);
 	}
@@ -328,6 +364,36 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase
 				|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.PostMessage)} failed: {Win32Helper.GetErrorMessage()}");
 			_ = PInvoke.PostMessage(_hwnd, PInvoke.WM_SETICON, PInvoke.ICON_BIG, hIcon.Value)
 				|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.PostMessage)} failed: {Win32Helper.GetErrorMessage()}");
+		}
+	}
+
+	UIElement? IXamlRootHost.RootElement => Window?.RootElement;
+
+	unsafe void IXamlRootHost.InvalidateRender()
+	{
+		_ = PInvoke.InvalidateRect(_hwnd, default(RECT*), true)
+			|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.InvalidateRect)} failed: {Win32Helper.GetErrorMessage()}");
+	}
+
+	private void RegisterForBackgroundColor()
+	{
+		UpdateRendererBackground();
+		_backgroundDisposable = _window?.RegisterBackgroundChangedEvent((_, _) => UpdateRendererBackground());
+	}
+
+	private void UpdateRendererBackground()
+	{
+		if (_window?.Background is Microsoft.UI.Xaml.Media.SolidColorBrush brush)
+		{
+			_background = new SKColor(brush.Color.AsUInt32());
+		}
+		else if (_window?.Background is not null)
+		{
+			this.Log().Log(LogLevel.Error, static () => "This platform only supports SolidColorBrush for the Window background");
+		}
+		else if (_window is null)
+		{
+			this.Log().Log(LogLevel.Debug, static () => $"{nameof(UpdateRendererBackground)} is called before {nameof(_window)} is set.");
 		}
 	}
 }

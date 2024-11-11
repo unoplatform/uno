@@ -1,20 +1,297 @@
 #nullable enable
 
+using System;
+using System.Drawing;
+using System.Globalization;
+using System.Runtime.InteropServices;
 using Windows.Win32;
 using Windows.Win32.Foundation;
-using Microsoft.UI.Xaml;
+using Windows.Win32.Graphics.Gdi;
+using Windows.Win32.Graphics.OpenGL;
+using SkiaSharp;
+using Uno.Disposables;
 using Uno.Foundation.Logging;
-using Uno.UI.Hosting;
+using Uno.UI.Helpers;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
-internal partial class Win32WindowWrapper : IXamlRootHost
+internal partial class Win32WindowWrapper
 {
-	public UIElement? RootElement => Window?.RootElement;
+	private const SKColorType ColorType = SKColorType.Rgba8888; // always Rgba8888, regardless of what SKImage.PlatformColorType might say
 
-	public unsafe void InvalidateRender()
+	private record OpenGlContext(HGLRC GlContext, GRGlInterface GrGlInterface, GRContext GrContext);
+	private readonly OpenGlContext? _gl;
+
+	private int _renderCount;
+
+	private Size? _lastSize;
+	private SKSurface? _surface;
+
+	private unsafe OpenGlContext? CreateGlContext()
 	{
-		_ = PInvoke.InvalidateRect(_hwnd, default(RECT*), true)
-			|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.InvalidateRect)} failed: {Win32Helper.GetErrorMessage()}");
+		var hdc = PInvoke.GetDC(_hwnd);
+		using var dcDisposable = new DisposableStruct<HWND, HDC>(static (hwnd, hdc) =>
+		{
+			_ = PInvoke.ReleaseDC(hwnd, hdc) == 1 || typeof(Win32WindowWrapper).Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.ReleaseDC)} failed: {Win32Helper.GetErrorMessage()}");
+		}, _hwnd, hdc);
+
+		PIXELFORMATDESCRIPTOR pfd = new()
+		{
+			nSize = (ushort)Marshal.SizeOf<PIXELFORMATDESCRIPTOR>(),
+			nVersion = 1,
+			dwFlags = PFD_FLAGS.PFD_DRAW_TO_WINDOW | PFD_FLAGS.PFD_SUPPORT_OPENGL | PFD_FLAGS.PFD_DOUBLEBUFFER,
+			iPixelType = PFD_PIXEL_TYPE.PFD_TYPE_RGBA,
+			cColorBits = 32,
+			cRedBits = 8,
+			cGreenBits = 8,
+			cBlueBits = 8,
+			cAlphaBits = 8,
+			cDepthBits = 16,
+			cStencilBits = 1 // anything > 0 is fine, we will most likely get 8
+		};
+
+		// Choose the best matching pixel format
+		var pixelFormat = PInvoke.ChoosePixelFormat(hdc, pfd);
+
+		if (pixelFormat == 0)
+		{
+			this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.ChoosePixelFormat)} failed: {Win32Helper.GetErrorMessage()}");
+			ReleaseGlContext(HGLRC.Null, null, null);
+			return null;
+		}
+
+		this.Log().Log(LogLevel.Debug, hdc, pixelFormat, static (dc, pixelFormat) =>
+		{
+			PIXELFORMATDESCRIPTOR chosenPfd = default;
+			return PInvoke.DescribePixelFormat(dc, pixelFormat, (uint)Marshal.SizeOf<PIXELFORMATDESCRIPTOR>(), &chosenPfd) == 0
+				? $"{nameof(PInvoke.DescribePixelFormat)} failed: {Win32Helper.GetErrorMessage()}"
+				: $"{nameof(PInvoke.ChoosePixelFormat)} chose a PFD with {chosenPfd.cColorBits} ColorBits {{ R{chosenPfd.cRedBits} G{chosenPfd.cGreenBits} B{chosenPfd.cBlueBits} A{chosenPfd.cAlphaBits} }}, {chosenPfd.cDepthBits} DepthBits and {chosenPfd.cStencilBits} StencilBits.";
+		});
+
+		// Set the pixel format for the device context
+		if (!PInvoke.SetPixelFormat(hdc, pixelFormat, pfd))
+		{
+			this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SetPixelFormat)} failed: {Win32Helper.GetErrorMessage()}");
+			ReleaseGlContext(HGLRC.Null, null, null);
+			return null;
+		}
+
+		// Create the OpenGL context
+		var glContext = PInvoke.wglCreateContext(hdc);
+
+		if (glContext == HGLRC.Null)
+		{
+			this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.wglCreateContext)} failed: {Win32Helper.GetErrorMessage()}");
+			ReleaseGlContext(HGLRC.Null, null, null);
+			return null;
+		}
+
+		this.Log().Log(LogLevel.Trace, hdc, glContext, static (dc, glContext) =>
+		{
+			if (PInvoke.wglMakeCurrent(dc, glContext))
+			{
+				var version = PInvoke.glGetString(/* GL_VERSION */ 0x1F02);
+				return version is null
+					? $"{nameof(PInvoke.glGetString)} failed with error code {PInvoke.glGetError().ToString("X", CultureInfo.InvariantCulture)}"
+					: $"OpenGL Version: {Marshal.PtrToStringUTF8((IntPtr)version)}";
+			}
+			else
+			{
+				return $"{nameof(PInvoke.wglMakeCurrent)} failed: {Win32Helper.GetErrorMessage()}";
+			}
+		});
+
+		var grGlInterface = GRGlInterface.Create();
+
+		if (grGlInterface is null)
+		{
+			this.Log().Log(LogLevel.Error, static () => "OpenGL is not supported in this system (Cannot create GRGlInterface)");
+			ReleaseGlContext(glContext, null, null);
+			return null;
+		}
+
+		if (GRContext.CreateGl(grGlInterface) is not { } grContext)
+		{
+			this.Log().Log(LogLevel.Error, static () => "OpenGL is not supported in this system (failed to create GRContext)");
+			ReleaseGlContext(glContext, grGlInterface, null);
+			return null;
+		}
+
+		return new OpenGlContext(glContext, grGlInterface, grContext);
+	}
+
+	private void ReleaseGlContext(HGLRC glContext, GRGlInterface? grGlInterface, GRContext? grContext)
+	{
+		grContext?.Dispose();
+		grGlInterface?.Dispose();
+
+		if (glContext != HGLRC.Null)
+		{
+			_ = PInvoke.wglDeleteContext(glContext) || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.wglDeleteContext)} failed: {Win32Helper.GetErrorMessage()}");
+		}
+	}
+
+	private void Paint()
+	{
+		this.Log().Log(LogLevel.Trace, this, static @this => $"Render {@this._renderCount++}");
+
+		if (!PInvoke.GetClientRect(_hwnd, out RECT clientRect))
+		{
+			this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GetClientRect)} failed: {Win32Helper.GetErrorMessage()}");
+			return;
+		}
+
+		if (_surface is null || _lastSize != clientRect.Size)
+		{
+			_lastSize = clientRect.Size;
+			_renderer.Reset();
+			_surface?.Dispose();
+			_surface = _renderer.UpdateSize(clientRect.Width, clientRect.Height);
+		}
+
+		var canvas = _surface!.Canvas;
+		canvas.Clear(_background);
+		var scale = XamlRoot!.RasterizationScale;
+		canvas.Scale((int)scale);
+		if (XamlRoot.VisualTree.RootElement.Visual is { } rootVisual)
+		{
+			var isSoftwareRenderer = rootVisual.Compositor.IsSoftwareRenderer;
+			try
+			{
+				rootVisual.Compositor.IsSoftwareRenderer = _renderer.IsSoftware();
+				SkiaRenderHelper.RenderRootVisualAndReturnNegativePath(clientRect.Width, clientRect.Height, rootVisual, _surface);
+			}
+			finally
+			{
+				rootVisual.Compositor.IsSoftwareRenderer = isSoftwareRenderer;
+			}
+		}
+
+		_surface.Flush();
+		_renderer.CopyPixels(clientRect.Width, clientRect.Height);
+	}
+
+	private interface IRenderer
+	{
+		SKSurface UpdateSize(int width, int height);
+		void CopyPixels(int width, int height);
+		void Reset();
+		bool IsSoftware();
+	}
+
+	private class SoftwareRenderer(HWND hwnd) : IRenderer
+	{
+		private HBITMAP _hBitmap;
+
+		unsafe SKSurface IRenderer.UpdateSize(int width, int height)
+		{
+			BITMAPINFO bitmapinfo = new BITMAPINFO
+			{
+				bmiHeader = new BITMAPINFOHEADER
+				{
+					biSize = (uint)Marshal.SizeOf<BITMAPINFOHEADER>(),
+					biWidth = width,
+					biHeight = -height, // the negative is to deal with bottom-up coords
+					biPlanes = 1,
+					biBitCount = 32,
+					biCompression = /* BI_RGB */ 0x0000,
+				}
+			};
+			void* bits;
+			_hBitmap = PInvoke.CreateDIBSection(new HDC(IntPtr.Zero), &bitmapinfo, DIB_USAGE.DIB_RGB_COLORS, &bits, HANDLE.Null, 0);
+			if (_hBitmap == HBITMAP.Null)
+			{
+				throw new InvalidOperationException($"{nameof(PInvoke.CreateDIBSection)} failed: {Win32Helper.GetErrorMessage()}");
+			}
+
+			return SKSurface.Create(new SKImageInfo(width, height, ColorType, SKAlphaType.Premul), (IntPtr)bits);
+		}
+
+		void IRenderer.Reset()
+		{
+			if (_hBitmap != HBITMAP.Null)
+			{
+				_ = PInvoke.DeleteObject(_hBitmap) == 1 || typeof(Win32WindowWrapper).Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.DeleteObject)} failed: {Win32Helper.GetErrorMessage()}");
+				_hBitmap = HBITMAP.Null;
+			}
+		}
+
+		void IRenderer.CopyPixels(int width, int height)
+		{
+			var paintDc = PInvoke.BeginPaint(hwnd, out var lpPaint);
+			if (paintDc == new HDC(IntPtr.Zero))
+			{
+				this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.BeginPaint)} failed: {Win32Helper.GetErrorMessage()}");
+				return;
+			}
+			using var endPaintDisposable = new DisposableStruct<HWND, PAINTSTRUCT>(static (hwnd, lpPaint) => PInvoke.EndPaint(hwnd, lpPaint), hwnd, lpPaint);
+
+			var bitmapDc = PInvoke.CreateCompatibleDC(paintDc);
+			if (bitmapDc == new HDC(IntPtr.Zero))
+			{
+				this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.CreateCompatibleDC)} failed: {Win32Helper.GetErrorMessage()}");
+				return;
+			}
+			using var bitmapDcDisposable = new DisposableStruct<HDC>(static bitmapDc =>
+			{
+				_ = PInvoke.DeleteObject(new HGDIOBJ(bitmapDc.Value)) == 1 || typeof(Win32WindowWrapper).Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.ReleaseDC)} failed: {Win32Helper.GetErrorMessage()}");
+			}, bitmapDc);
+
+			if (PInvoke.SelectObject(bitmapDc, _hBitmap) == 0)
+			{
+				this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SelectObject)} failed: {Win32Helper.GetErrorMessage()}");
+				return;
+			}
+
+			_ = PInvoke.BitBlt(paintDc, 0, 0, width, height, bitmapDc, 0, 0, ROP_CODE.SRCCOPY)
+				|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.BitBlt)} failed: {Win32Helper.GetErrorMessage()}");
+		}
+
+		bool IRenderer.IsSoftware() => true;
+	}
+
+	private class GlRenderer(HWND hwnd, OpenGlContext gl) : IRenderer
+	{
+		private GRBackendRenderTarget? _renderTarget;
+
+		SKSurface IRenderer.UpdateSize(int width, int height)
+		{
+			var hdc = PInvoke.GetDC(hwnd);
+			using var dcDisposable = new DisposableStruct<HWND, HDC>(static (hwnd, hdc) =>
+			{
+				_ = PInvoke.ReleaseDC(hwnd, hdc) == 1 || typeof(Win32WindowWrapper).Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.ReleaseDC)} failed: {Win32Helper.GetErrorMessage()}");
+			}, hwnd, hdc);
+
+			if (!PInvoke.wglMakeCurrent(hdc, gl.GlContext))
+			{
+				throw new InvalidOperationException($"{nameof(PInvoke.wglMakeCurrent)} failed: {Win32Helper.GetErrorMessage()}");
+			}
+
+			int framebuffer = default, stencil = default, samples = default;
+			PInvoke.glGetIntegerv(/* GL_FRAMEBUFFER_BINDING */ 0x8CA6, ref framebuffer);
+			PInvoke.glGetIntegerv(/* GL_STENCIL_BITS */ 0x0D57, ref stencil);
+			PInvoke.glGetIntegerv(/* GL_SAMPLES */ 0x80A9, ref samples);
+
+			_renderTarget = new GRBackendRenderTarget(width, height, samples, stencil, new GRGlFramebufferInfo((uint)framebuffer, ColorType.ToGlSizedFormat()));
+			return SKSurface.Create(gl.GrContext, _renderTarget, GRSurfaceOrigin.BottomLeft, ColorType); // BottomLeft to match GL's origin
+		}
+
+		void IRenderer.CopyPixels(int width, int height)
+		{
+			var hdc = PInvoke.GetDC(hwnd);
+			using var dcDisposable = new DisposableStruct<HWND, HDC>(static (hwnd, hdc) =>
+			{
+				_ = PInvoke.ReleaseDC(hwnd, hdc) == 1 || typeof(Win32WindowWrapper).Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.ReleaseDC)} failed: {Win32Helper.GetErrorMessage()}");
+			}, hwnd, hdc);
+			_ = PInvoke.SwapBuffers(hdc) || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SwapBuffers)} failed: {Win32Helper.GetErrorMessage()}");
+		}
+
+		void IRenderer.Reset()
+		{
+			_renderTarget?.Dispose();
+			_renderTarget = null;
+		}
+
+		bool IRenderer.IsSoftware() => false;
 	}
 }
