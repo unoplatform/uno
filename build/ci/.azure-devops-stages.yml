@@ -3,7 +3,7 @@ stages:
 - stage: setup
   displayName: Setup
   jobs:
-  - template: .azure-devops-setup.yml
+  - template: setup/.azure-devops-setup.yml
 
 - stage: convert_tree
   displayName: UWP Tree Conversion
@@ -21,25 +21,25 @@ stages:
     - convert_tree
 
   jobs: 
-  - template: .azure-devops-package-netcoremobile.yml
+  - template: build/.azure-devops-package-netcoremobile.yml
     parameters:
       poolName: '$(windowsScaledPool)'
       UNO_UWP_BUILD: true
       XAML_FLAVOR_BUILD: UWP
   
-  - template: .azure-devops-package-wasm.yml
+  - template: build/.azure-devops-package-wasm.yml
     parameters:
       poolName: '$(linuxScaledPool)'
       UNO_UWP_BUILD: true
       XAML_FLAVOR_BUILD: UWP
 
-  - template: .azure-devops-package-reference.yml
+  - template: build/.azure-devops-package-reference.yml
     parameters:
       poolName: '$(linuxScaledPool)'
       UNO_UWP_BUILD: true
       XAML_FLAVOR_BUILD: UWP
 
-  - template: .azure-devops-package-skia.yml
+  - template: build/.azure-devops-package-skia.yml
     parameters:
       poolName: '$(linuxScaledPool)'
       macOSImageName: '$(macOSVMImage)'
@@ -52,25 +52,25 @@ stages:
     - setup
 
   jobs: 
-  - template: .azure-devops-package-netcoremobile.yml
+  - template: build/.azure-devops-package-netcoremobile.yml
     parameters:
       poolName: '$(windowsScaledPool)'
       UNO_UWP_BUILD: false
       XAML_FLAVOR_BUILD: WinUI
   
-  - template: .azure-devops-package-wasm.yml
+  - template: build/.azure-devops-package-wasm.yml
     parameters:
       poolName: '$(linuxScaledPool)'
       UNO_UWP_BUILD: false
       XAML_FLAVOR_BUILD: WinUI
 
-  - template: .azure-devops-package-reference.yml
+  - template: build/.azure-devops-package-reference.yml
     parameters:
       poolName: '$(linuxScaledPool)'
       UNO_UWP_BUILD: false
       XAML_FLAVOR_BUILD: WinUI
 
-  - template: .azure-devops-package-skia.yml
+  - template: build/.azure-devops-package-skia.yml
     parameters:
       poolName: '$(linuxScaledPool)'
       macOSImageName: '$(macOSVMImage)'
@@ -84,7 +84,7 @@ stages:
     - binaries_build_winui
 
   jobs: 
-  - template: .azure-devops-package.yml
+  - template: build/.azure-devops-package.yml
     parameters:
       poolName: '$(windowsScaledPool)'
 
@@ -94,7 +94,7 @@ stages:
     - packages_build
 
   jobs: 
-  - template: .azure-devops-project-template-tests.yml
+  - template: tests/.azure-devops-project-template-tests.yml
     parameters:
       poolName: '$(windowsScaledPool)'
       vmImageWindows: $(windows2022HostedVMImage)
@@ -111,7 +111,7 @@ stages:
 
   jobs:
 
-  - template: .azure-devops-unit-tests.yml
+  - template: tests/.azure-devops-unit-tests.yml
     parameters:
       poolName: '$(windowsScaledPool)'
 
@@ -122,7 +122,7 @@ stages:
 
   jobs:
   
-  - template: .azure-devops-wasm-uitests.yml
+  - template: tests/.azure-devops-wasm-tests.yml
     parameters:
       poolName: '$(linuxScaledPool)'
 
@@ -133,7 +133,7 @@ stages:
     - convert_tree
 
   jobs:
-  - template: .azure-devops-skia-tests.yml
+  - template: tests/.azure-devops-skia-tests.yml
     parameters:
       vmImage: '$(windows2022HostedVMImage)'
       vmMacImage: '$(macOSVMImage)'
@@ -148,7 +148,7 @@ stages:
     - setup
 
   jobs:
-  - template: .azure-devops-skia-tests.yml
+  - template: tests/.azure-devops-skia-tests.yml
     parameters:
       vmImage: '$(windows2022HostedVMImage)'
       vmMacImage: '$(macOSVMImage)'
@@ -163,7 +163,7 @@ stages:
     - setup
 
   jobs:
-  - template: .azure-devops-macos.yml
+  - template: tests/.azure-devops-macos.yml
     parameters:
       vmImage: '$(macOSVMImage)'
       xCodeRoot: '$(xCodeRoot)'
@@ -174,7 +174,7 @@ stages:
     - setup
 
   jobs:
-  - template: .azure-devops-android-tests.yml
+  - template: tests/.azure-devops-android-tests.yml
     parameters:
       vmWindowsImage: '$(windows2019HostedVMImage)'
       vmLinuxImage: '$(linuxVMImage)'
@@ -188,7 +188,7 @@ stages:
     - setup
 
   jobs:
-  - template: .azure-devops-ios-tests.yml
+  - template: tests/.azure-devops-ios-tests.yml
     parameters:
       vmImage: '$(macOSVMImage)'
       vmImageTest: '$(macOSVMImage_UITests)'
@@ -201,7 +201,7 @@ stages:
     - setup
 
   jobs:
-  - template: .azure-devops-wasdk.yml
+  - template: tests/.azure-devops-wasdk.yml
     parameters:
       poolName: '$(windowsScaledPool)'
 
@@ -216,7 +216,7 @@ stages:
     - skia_tests_winui
 
   jobs:
-  - template: .azure-devops-screenshot-compare.yml
+  - template: tests/.azure-devops-screenshot-compare.yml
     parameters:
       poolName: '$(windowsScaledPool)'
 
@@ -228,7 +228,7 @@ stages:
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'), not(eq(variables['build.reason'], 'PullRequest')))
   dependsOn: packages_build
   jobs:
-  - template: .azure-devops-publish-nuget-dev.yml
+  - template: publishing/.azure-devops-publish-nuget-dev.yml
     parameters:
       vmImage: '$(windows2022HostedVMImage)'
 
@@ -237,7 +237,7 @@ stages:
   condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'), not(eq(variables['build.reason'], 'PullRequest')))
   dependsOn: packages_build
   jobs:
-  - template: .azure-devops-publish-nuget-prod-dev.yml
+  - template: publishing/.azure-devops-publish-nuget-prod-dev.yml
     parameters:
       vmImage: '$(windows2022HostedVMImage)'
   
@@ -246,6 +246,6 @@ stages:
   condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'), not(eq(variables['build.reason'], 'PullRequest')))
   dependsOn: Publish_Prod_Dev
   jobs:
-  - template: .azure-devops-publish-nuget-prod.yml
+  - template: publishing/.azure-devops-publish-nuget-prod.yml
     parameters:
       vmImage: '$(windows2022HostedVMImage)'
