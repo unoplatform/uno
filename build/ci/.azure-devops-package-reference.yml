@@ -17,6 +17,9 @@ jobs:
     UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
+    ArchiveName: Reference-bin
+    ArtifactName: NugetPackages-Artifacts-reference
+
   steps:
   - checkout: self
     clean: true
@@ -43,19 +46,4 @@ jobs:
       dotnet build build/Uno.UI.Build.csproj /m /t:BuildCIReference "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/build-Reference-$(XAML_FLAVOR_BUILD).binlog
     displayName: Building Reference Binaries
 
-  - template: templates/copy-package-assets.yml
-
-  - task: ArchiveFiles@2
-    inputs:
-      rootFolderOrFile: $(build.sourcesdirectory)/build-artifacts/bin-$(XAML_FLAVOR_BUILD)
-      includeRootFolder: false
-      archiveType: 'zip'
-      archiveFile: '$(Build.ArtifactStagingDirectory)/Reference-bin-$(XAML_FLAVOR_BUILD).zip'
-
-  - task: PublishBuildArtifacts@1
-    condition: always()
-    retryCountOnTaskFailure: 3
-    inputs:
-      PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: NugetPackages-Artifacts-reference-$(XAML_FLAVOR_BUILD)
-      ArtifactType: Container
+  - template: templates/copy-and-publish-package-assets.yml
