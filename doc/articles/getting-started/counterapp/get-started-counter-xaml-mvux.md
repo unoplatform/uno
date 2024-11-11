@@ -89,7 +89,7 @@ Also, for more information on all the template options, see [Using the Uno Platf
 
 ## Data Binding
 
-Now that we have the **`MainViewModel`** class, we can update the **`MainPage`** to use data binding to connect the UI to the application logic.
+Now that we have the **`MainModel`** class, we can update the **`MainPage`** to use data binding to connect the UI to the application logic.
 
 - Add a **`DataContext`** element to the **`Page`** element in the **MainPage.xaml** file.
 
