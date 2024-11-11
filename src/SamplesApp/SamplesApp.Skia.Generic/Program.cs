@@ -3,6 +3,7 @@
 using System;
 using System.IO;
 using System.Runtime.Loader;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Runtime.Skia;
 using Uno.WinUI.Runtime.Skia.X11;
@@ -14,7 +15,7 @@ namespace SkiaSharpExample
 		static SamplesApp.App? _app;
 
 		[STAThread]
-		public static void Main(string[] args)
+		public static async Task Main(string[] args)
 		{
 			// Ensures that we're loading the Skia assemblies properly
 			// as we're manipulating the output based on _UnoOverrideReferenceCopyLocalPaths
@@ -22,10 +23,10 @@ namespace SkiaSharpExample
 			// output folder.
 			AssemblyLoadContext.Default.Resolving += Default_Resolving;
 
-			Run();
+			await Run();
 		}
 
-		private static void Run()
+		private static async Task Run()
 		{
 			SamplesApp.App.ConfigureLogging(); // Enable tracing of the host
 
@@ -63,7 +64,7 @@ namespace SkiaSharpExample
 				.UseMacOS()
 				.Build();
 
-			host.Run();
+			await host.RunAsync();
 		}
 
 		private static System.Reflection.Assembly? Default_Resolving(AssemblyLoadContext alc, System.Reflection.AssemblyName assemblyName)

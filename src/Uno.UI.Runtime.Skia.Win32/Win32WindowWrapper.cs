@@ -1,10 +1,11 @@
 ﻿#nullable enable
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Windows.Foundation;
@@ -25,22 +26,59 @@ namespace Uno.UI.Runtime.Skia.Win32;
 
 internal partial class Win32WindowWrapper : NativeWindowWrapperBase
 {
+	private const string WindowClassName = "UnoPlatformRegularWindow";
+	private static readonly HINSTANCE _hInstance = new HINSTANCE(Process.GetCurrentProcess().Handle);
+
+	// _windowClass must be statically stored, otherwise lpfnWndProc will get collected and the CLR will throw some weird exceptions
+	// ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
+	private static readonly WNDCLASSEXW _windowClass;
+
+	private static Win32WindowWrapper? _wrapperForNextCreateWindow;
+	private static Dictionary<HWND, Win32WindowWrapper> _hwndToWrapper = new();
+
 	private readonly HWND _hwnd;
 	private readonly ApplicationView _applicationView;
+
+	static unsafe Win32WindowWrapper()
+	{
+		var windowClassPtr = Marshal.StringToHGlobalUni(WindowClassName);
+		using var windowClassNameDisposable = new DisposableStruct<IntPtr>(Marshal.FreeHGlobal, windowClassPtr);
+		var lpClassName = new PCWSTR((char*)windowClassPtr);
+
+		_windowClass = new WNDCLASSEXW
+		{
+			cbSize = (uint)Marshal.SizeOf<WNDCLASSEXW>(),
+			lpfnWndProc = WndProc,
+			hInstance = _hInstance,
+			lpszClassName = lpClassName,
+			style = WNDCLASS_STYLES.CS_HREDRAW | WNDCLASS_STYLES.CS_VREDRAW // https://learn.microsoft.com/en-us/windows/win32/winmsg/window-class-styles
+		};
+
+		var classAtom = PInvoke.RegisterClassEx(_windowClass);
+		if (classAtom is 0)
+		{
+			throw new InvalidOperationException($"{nameof(PInvoke.RegisterClassEx)} failed: {Win32Helper.GetErrorMessage()}");
+		}
+	}
 
 	// https://learn.microsoft.com/en-us/windows/win32/learnwin32/creating-a-window
 	public Win32WindowWrapper(Window window, XamlRoot xamlRoot) : base(window, xamlRoot)
 	{
-		_ = PInvoke.SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT.DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2)
-			|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SetProcessDpiAwarenessContext)} failed: {Win32Helper.GetErrorMessage()}");
+		_ = PInvoke.SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT.DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2) != 0
+			|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SetThreadDpiAwarenessContext)} failed: {Win32Helper.GetErrorMessage()}");
 
-		_hwnd = CreateWindow();
-		OnWindowSizeOrLocationChanged();
-
+		// this must come before CreateWindow(), which sends a WM_GETMINMAXINFO message that reads from _applicationView
 		_applicationView = ApplicationView.GetForWindowId(window.AppWindow.Id);
 		_applicationView.PropertyChanged += OnApplicationViewPropertyChanged;
 
+		_hwnd = CreateWindow();
+		OnWindowSizeOrLocationChanged();
+		_ = (RasterizationScale = (float)PInvoke.GetDpiForWindow(_hwnd) / PInvoke.USER_DEFAULT_SCREEN_DPI) != 0
+			|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GetDpiForWindow)} failed: {Win32Helper.GetErrorMessage()}");
+
 		UpdateWindowPropertiesFromPackage();
+
+		Win32Host.RegisterWindow(_hwnd);
 
 		// TODO: extending into titlebar
 		// TODO: NativeOverlappedPresenter and FullScreenPresenter
@@ -63,28 +101,6 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase
 
 	private unsafe HWND CreateWindow()
 	{
-		const string windowClassName = "UnoPlatformRegularWindow";
-		var windowClassPtr = Marshal.StringToHGlobalUni(windowClassName);
-		using var windowClassNameDisposable = new DisposableStruct<IntPtr>(Marshal.FreeHGlobal, windowClassPtr);
-		var lpClassName = new PCWSTR((char*)windowClassPtr);
-
-		var hInstance = new HINSTANCE(Marshal.GetHINSTANCE(Assembly.GetEntryAssembly()!.GetModules()[0]));
-
-		WNDCLASSEXW windowClass = new WNDCLASSEXW
-		{
-			cbSize = (uint)Marshal.SizeOf<WNDCLASSEXW>(),
-			lpfnWndProc = WndProc,
-			hInstance = hInstance,
-			lpszClassName = lpClassName,
-			style = WNDCLASS_STYLES.CS_HREDRAW | WNDCLASS_STYLES.CS_VREDRAW // https://learn.microsoft.com/en-us/windows/win32/winmsg/window-class-styles
-		};
-
-		var classAtom = PInvoke.RegisterClassEx(windowClass);
-		if (classAtom is 0)
-		{
-			throw new InvalidOperationException($"{nameof(PInvoke.RegisterClassEx)} failed: {Win32Helper.GetErrorMessage()}");
-		}
-
 		var title = Marshal.StringToHGlobalUni("Uno Platform");
 		using var titleDisposable = new DisposableStruct<IntPtr>(Marshal.FreeHGlobal, title);
 
@@ -94,6 +110,11 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase
 			preferredWindowSize = new Size(InitialWidth, InitialHeight);
 		}
 
+		var windowClassPtr = Marshal.StringToHGlobalUni(WindowClassName);
+		using var windowClassNameDisposable = new DisposableStruct<IntPtr>(Marshal.FreeHGlobal, windowClassPtr);
+		var lpClassName = new PCWSTR((char*)windowClassPtr);
+
+		_wrapperForNextCreateWindow = this;
 		var hwnd = PInvoke.CreateWindowEx(
 			0,
 			lpClassName,
@@ -105,19 +126,33 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase
 			(int)preferredWindowSize.Height,
 			HWND.Null,
 			HMENU.Null,
-			hInstance,
+			_hInstance,
 			null);
+		_wrapperForNextCreateWindow = null;
 
 		if (hwnd == HWND.Null)
 		{
 			throw new InvalidOperationException($"{nameof(PInvoke.CreateWindowEx)} failed: {Win32Helper.GetErrorMessage()}");
 		}
-
 		return hwnd;
 	}
 
-	private unsafe LRESULT WndProc(HWND hwnd, uint msg, WPARAM wParam, LPARAM lParam)
+	private static LRESULT WndProc(HWND hwnd, uint msg, WPARAM wParam, LPARAM lParam)
 	{
+		if (_wrapperForNextCreateWindow is { } wrapper)
+		{
+			_hwndToWrapper[hwnd] = _wrapperForNextCreateWindow;
+		}
+		else if (!_hwndToWrapper.TryGetValue(hwnd, out wrapper))
+		{
+			throw new Exception($"{nameof(WndProc)} was fired on a {nameof(HWND)} before it was added to, or after it was removed from, {nameof(_hwndToWrapper)}.");
+		}
+		return wrapper.WndProcInner(hwnd, msg, wParam, lParam);
+	}
+
+	private unsafe LRESULT WndProcInner(HWND hwnd, uint msg, WPARAM wParam, LPARAM lParam)
+	{
+		Debug.Assert(_hwnd == HWND.Null || hwnd == _hwnd); // the null check is for when this method gets called inside CreateWindow before setting _hwnd
 		switch (msg)
 		{
 			case PInvoke.WM_ACTIVATE:
@@ -152,6 +187,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase
 			case PInvoke.WM_DESTROY:
 				this.Log().Log(LogLevel.Trace, nameof(PInvoke.WM_DESTROY), static messageName => $"WndProc received a {messageName} message.");
 				_applicationView.PropertyChanged -= OnApplicationViewPropertyChanged;
+				Win32Host.UnregisterWindow(_hwnd);
 				break;
 			case PInvoke.WM_DPICHANGED:
 				RasterizationScale = (float)(wParam & 0xffff) / PInvoke.USER_DEFAULT_SCREEN_DPI;
@@ -213,7 +249,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase
 			_ = readChars is not 0 || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GetWindowText)} read 0 chars: {Win32Helper.GetErrorMessage()}");
 			return Marshal.PtrToStringUni((IntPtr)title, readChars);
 		}
-		set => PInvoke.SetWindowText(_hwnd, value);
+		set => _ = PInvoke.SetWindowText(_hwnd, value) || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SetWindowText)} failed: {Win32Helper.GetErrorMessage()}");
 	}
 
 	public override void Activate()
@@ -224,8 +260,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase
 
 	protected override void ShowCore()
 	{
-		_ = PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_SHOW)
-			|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.ShowWindow)} failed: {Win32Helper.GetErrorMessage()}");
+		PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_SHOWDEFAULT);
 	}
 
 	public override void Close()
@@ -283,7 +318,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase
 			var iconPtr = Marshal.StringToHGlobalUni(iconPath);
 			using var iconDisposable = new DisposableStruct<IntPtr>(Marshal.FreeHGlobal, iconPtr);
 			var hIcon = PInvoke.LoadImage(HINSTANCE.Null, new PCWSTR((char*)iconPtr), GDI_IMAGE_TYPE.IMAGE_ICON, 0, 0, IMAGE_FLAGS.LR_DEFAULTSIZE | IMAGE_FLAGS.LR_LOADFROMFILE);
-			if (hIcon != HANDLE.Null)
+			if (hIcon == HANDLE.Null)
 			{
 				this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.LoadImage)} failed: {Win32Helper.GetErrorMessage()}");
 				return;

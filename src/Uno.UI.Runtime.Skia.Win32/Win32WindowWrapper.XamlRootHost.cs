@@ -15,6 +15,6 @@ internal partial class Win32WindowWrapper : IXamlRootHost
 	public unsafe void InvalidateRender()
 	{
 		_ = PInvoke.InvalidateRect(_hwnd, default(RECT*), true)
-			|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.InvalidateRect)} failed: {Win32Helper.GetErrorMessage()}")
+			|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.InvalidateRect)} failed: {Win32Helper.GetErrorMessage()}");
 	}
 }

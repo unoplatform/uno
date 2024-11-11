@@ -10,25 +10,9 @@ namespace Uno.UI.Runtime.Skia;
 
 public static class HostBuilder
 {
-	public static ISkiaHostBuilder UseWin32(this ISkiaHostBuilder builder, Action<IWindowsSkiaHostBuilder> windowsBuilder = null)
+	public static ISkiaHostBuilder UseWin32(this ISkiaHostBuilder builder)
 	{
-		builder.AddHostBuilder(() =>
-		{
-			var wpfBuilder = new Win32HostBuilder();
-			if (wpfBuilder.IsSupported)
-			{
-				windowsBuilder?.Invoke(wpfBuilder);
-			}
-			return wpfBuilder;
-		});
-
-		return builder;
-	}
-
-	public static IWindowsSkiaHostBuilder WpfApplication(this IWindowsSkiaHostBuilder builder, Func<System.Windows.Application> action)
-	{
-		builder.WpfApplication = action;
-
+		builder.AddHostBuilder(() => new Win32HostBuilder());
 		return builder;
 	}
 }
