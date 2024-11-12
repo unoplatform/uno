@@ -14,6 +14,7 @@ using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.Win32;
 using Windows.Win32.Foundation;
+using Windows.Win32.Graphics.Gdi;
 using Windows.Win32.UI.HiDpi;
 using Windows.Win32.UI.WindowsAndMessaging;
 using Microsoft.UI.Xaml;
@@ -98,7 +99,6 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		_renderer = _gl is null ? new SoftwareRenderer(_hwnd) : new GlRenderer(_hwnd, _gl);
 
 		RegisterForBackgroundColor();
-
 
 		// TODO: extending into titlebar
 		// TODO: NativeOverlappedPresenter and FullScreenPresenter
@@ -351,19 +351,66 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 		void SetIcon(string iconPath)
 		{
-			var iconPtr = Marshal.StringToHGlobalUni(iconPath);
-			using var iconDisposable = new DisposableStruct<IntPtr>(Marshal.FreeHGlobal, iconPtr);
-			var hIcon = PInvoke.LoadImage(HINSTANCE.Null, new PCWSTR((char*)iconPtr), GDI_IMAGE_TYPE.IMAGE_ICON, 0, 0, IMAGE_FLAGS.LR_DEFAULTSIZE | IMAGE_FLAGS.LR_LOADFROMFILE);
-			if (hIcon == HANDLE.Null)
+			// https://github.com/libsdl-org/SDL/blob/fc12cc6dfd859a4e01376162a58f12208e539ac6/src/video/windows/SDL_windowswindow.c#L827
+			// This software is provided 'as-is', without any express or implied
+			// warranty.  In no event will the authors be held liable for any damages
+			// arising from the use of this software.
+			//
+			// Permission is granted to anyone to use this software for any purpose,
+			// including commercial applications, and to alter it and redistribute it
+			// freely, subject to the following restrictions:
+			//
+			// 1. The origin of this software must not be misrepresented; you must not
+			//    claim that you wrote the original software. If you use this software
+			//    in a product, an acknowledgment in the product documentation would be
+			//    appreciated but is not required.
+			// 2. Altered source versions must be plainly marked as such, and must not be
+			//    misrepresented as being the original software.
+			// 3. This notice may not be removed or altered from any source distribution.
+
+			if (!File.Exists(iconPath))
 			{
-				this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.LoadImage)} failed: {Win32Helper.GetErrorMessage()}");
+				this.Log().Log(LogLevel.Error, iconPath, static iconPath => $"Couldn't find icon file [{iconPath}].");
 				return;
 			}
 
-			_ = PInvoke.PostMessage(_hwnd, PInvoke.WM_SETICON, PInvoke.ICON_SMALL, hIcon.Value)
-				|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.PostMessage)} failed: {Win32Helper.GetErrorMessage()}");
-			_ = PInvoke.PostMessage(_hwnd, PInvoke.WM_SETICON, PInvoke.ICON_BIG, hIcon.Value)
-				|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.PostMessage)} failed: {Win32Helper.GetErrorMessage()}");
+			var image = SKImage.FromEncodedData(iconPath);
+			if (image is null)
+			{
+				this.Log().Log(LogLevel.Error, iconPath, static iconPath => $"Couldn't load icon file [{iconPath}].");
+				return;
+			}
+			using var imageDisposable = new DisposableStruct<SKImage>(static image => image.Dispose(), image);
+
+			var maskLength = image.Height * (image.Width + 7) / 8;
+			var imageSize = image.Height * image.Width * Marshal.SizeOf<uint>();
+			var iconLength = Marshal.SizeOf<BITMAPINFOHEADER>() + imageSize + maskLength;
+			var presBits = stackalloc byte[iconLength];
+
+			var bmi = (BITMAPINFOHEADER*)presBits;
+			bmi->biSize = (uint)Marshal.SizeOf<BITMAPINFOHEADER>();
+			bmi->biWidth = image.Width;
+			bmi->biHeight = image.Height * 2; // the multiplication by 2 is unexplainable, it seems to draw only have the image without the multiplication
+			bmi->biPlanes = 1;
+			bmi->biBitCount = 32;
+			bmi->biCompression = /* BI_RGB */ 0x0000;
+
+			image.ReadPixels(new SKImageInfo(image.Width, image.Height, SKColorType.Rgba8888), (IntPtr)(presBits + Marshal.SizeOf<BITMAPINFOHEADER>()));
+
+			new Span<byte>(presBits + iconLength - maskLength, maskLength).Fill(0xFF);
+
+			// No need to destroy icons created with CreateIconFromResource
+			var hIcon = PInvoke.CreateIconFromResource(presBits, (uint)iconLength, true, 0x00030000);
+			if (hIcon == HICON.Null)
+			{
+				this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.CreateIconFromResource)} failed: {Win32Helper.GetErrorMessage()}");
+				return;
+			}
+
+			_ = PInvoke.SendMessage(_hwnd, PInvoke.WM_SETICON, PInvoke.ICON_SMALL, hIcon.Value) == 0
+				|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SendMessage)} failed: {Win32Helper.GetErrorMessage()}");
+			_ = PInvoke.SendMessage(_hwnd, PInvoke.WM_SETICON, PInvoke.ICON_BIG, hIcon.Value) == 0
+				|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SendMessage)} failed: {Win32Helper.GetErrorMessage()}");
 		}
 	}
 

@@ -1,3 +1,6 @@
+// This file is used by Microsoft.Windows.CSWin32 to generate WinAPI bindings
+
+// macros
 CW_USEDEFAULT
 DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2
 ICON_BIG
@@ -19,16 +22,18 @@ WM_SHOWWINDOW
 WM_SIZE
 WM_USER
 
+// Structs
 MINMAXINFO
 PIXELFORMATDESCRIPTOR
 RECT
 
+// Functions
 BeginPaint
 BitBlt
 ChoosePixelFormat
-CreateCompatibleBitmap
 CreateCompatibleDC
 CreateDIBSection
+CreateIconFromResource
 CreateWindowEx
 DefWindowProc
 DescribePixelFormat
@@ -39,7 +44,6 @@ FormatMessage
 GetClientRect
 GetDC
 GetDpiForWindow
-GetMessage
 GetWindowRect
 GetWindowText
 glGetError
@@ -50,7 +54,6 @@ IsWindowVisible
 LoadImage
 LocalFree
 PeekMessage
-PostMessage
 RegisterClassEx
 ReleaseDC
 SelectObject
