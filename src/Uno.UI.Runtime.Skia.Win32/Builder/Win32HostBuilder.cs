@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using System;
+﻿using System;
 using Uno.UI.Runtime.Skia.Win32;
 
 namespace Uno.UI.Runtime.Skia;

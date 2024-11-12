@@ -7,7 +7,7 @@ using Uno.Disposables;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
-internal static partial class Win32Helper
+internal static class Win32Helper
 {
 	public static unsafe string GetErrorMessage()
 	{

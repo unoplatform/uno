@@ -1,13 +1,10 @@
-﻿#nullable enable
-
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.UI.Core;
 using Windows.Win32.Foundation;
 using Microsoft.UI.Xaml;
 using Uno.Foundation.Extensibility;
-using Uno.Helpers;
 using Uno.UI.Dispatching;
 using Uno.UI.Xaml.Controls;
 
@@ -46,7 +43,7 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 
 	protected override Task RunLoop()
 	{
-		_eventLoop.Schedule(() => Application.Start(unknown =>
+		_eventLoop.Schedule(() => Application.Start(_ =>
 		{
 			var app = _appBuilder();
 			app.Host = this;

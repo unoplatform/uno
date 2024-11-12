@@ -2,7 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-#nullable enable
+// This is same as Uno.Helpers.EventLoop, except that before each Run() iteration, it checks if there are
+// Win32 messages first and dispatches them before getting to the action queue.
 
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ using System.Threading;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.UI.WindowsAndMessaging;
+using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
 
 namespace Uno.UI.Runtime.Skia.Win32

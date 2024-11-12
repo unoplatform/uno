@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -294,10 +292,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SetActiveWindow)} failed: {Win32Helper.GetErrorMessage()}");
 	}
 
-	protected override void ShowCore()
-	{
-		PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_SHOWDEFAULT);
-	}
+	protected override void ShowCore() => PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_SHOWDEFAULT);
 
 	public override void Close()
 	{
@@ -417,10 +412,8 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				return;
 			}
 
-			_ = PInvoke.SendMessage(_hwnd, PInvoke.WM_SETICON, PInvoke.ICON_SMALL, hIcon.Value) == 0
-				|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SendMessage)} failed: {Win32Helper.GetErrorMessage()}");
-			_ = PInvoke.SendMessage(_hwnd, PInvoke.WM_SETICON, PInvoke.ICON_BIG, hIcon.Value) == 0
-				|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SendMessage)} failed: {Win32Helper.GetErrorMessage()}");
+			PInvoke.SendMessage(_hwnd, PInvoke.WM_SETICON, PInvoke.ICON_SMALL, hIcon.Value);
+			PInvoke.SendMessage(_hwnd, PInvoke.WM_SETICON, PInvoke.ICON_BIG, hIcon.Value);
 		}
 	}
 
