@@ -19,18 +19,19 @@ namespace Windows.System
 			}
 		}
 
-		private static bool HandleSpecialUri(Uri uri)
+		private static async Task<bool> HandleSpecialUri(Uri uri)
 		{
 			switch (uri.Scheme.ToLowerInvariant())
 			{
-				case MicrosoftSettingsUri: return HandleSettingsUri(uri);
+				case MicrosoftSettingsUri: return await HandleSettingsUri(uri);
 				default: throw new InvalidOperationException("This special URI is not supported on iOS");
 			}
 		}
 
-		private static bool HandleSettingsUri(Uri uri) =>
-			UIApplication.SharedApplication.OpenUrl(
-				new NSUrl(UIApplication.OpenSettingsUrlString));
+		private static async Task<bool> HandleSettingsUri(Uri uri) =>
+			await UIApplication.SharedApplication.OpenUrlAsync(
+				new NSUrl(UIApplication.OpenSettingsUrlString),
+				new UIApplicationOpenUrlOptions());
 	}
 }
 #endif

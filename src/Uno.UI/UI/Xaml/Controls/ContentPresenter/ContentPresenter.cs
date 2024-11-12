@@ -88,7 +88,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	public BrushTransition BackgroundTransition { get; set; }
 
 #if UNO_HAS_BORDER_VISUAL
-	private protected override ShapeVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateBorderVisual();
+	private protected override ContainerVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateBorderVisual();
 #endif
 
 	partial void InitializePlatform();

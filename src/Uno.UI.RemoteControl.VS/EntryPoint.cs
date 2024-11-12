@@ -442,71 +442,54 @@ public partial class EntryPoint : IDisposable
 			switch (devServerMessage)
 			{
 				case AddMenuItemRequestIdeMessage amir:
-					await OnAddMenuItemRequestIdeMessageAsync(sender, amir);
+					await OnAddMenuItemRequestedAsync(sender, amir);
 					break;
 				case ForceHotReloadIdeMessage fhr:
 					await OnForceHotReloadRequestedAsync(sender, fhr);
 					break;
 				case NotificationRequestIdeMessage nr:
-					await NotificationRequestIdeMessageAsync(sender, nr);
+					await OnNotificationRequestedAsync(sender, nr);
 					break;
 				default:
 					_debugAction?.Invoke($"Unknown message type {devServerMessage?.GetType()} from DevServer");
 					break;
 			}
 		}
-		catch (Exception e) when (_ideChannelClient is not null)
-		{
-			_debugAction?.Invoke($"Failed to handle IdeMessage with message {e.Message}");
-			throw;
-		}
-	}
-
-	private async Task NotificationRequestIdeMessageAsync(object? sender, NotificationRequestIdeMessage message)
-	{
-		try
-		{
-			await _asyncPackage.JoinableTaskFactory.SwitchToMainThreadAsync();
-
-			if (await _asyncPackage.GetServiceAsync(typeof(SVsShell)) is IVsShell shell &&
-				await _asyncPackage.GetServiceAsync(typeof(SVsInfoBarUIFactory)) is IVsInfoBarUIFactory infoBarFactory)
-			{
-				await CreateInfoBarAsync(message, shell, infoBarFactory);
-			}
-		}
-		catch (Exception e) when (_ideChannelClient is not null)
-		{
-			_debugAction?.Invoke($"Failed to handle InfoBar Notification Requested with message {e.Message}");
-			throw;
-		}
-	}
-
-	private async Task OnAddMenuItemRequestIdeMessageAsync(object? sender, AddMenuItemRequestIdeMessage cr)
-	{
-		try
-		{
-			if (_ideChannelClient == null)
-			{
-				return;
-			}
-
-			if (_unoMenuCommand is not null)
-			{
-				//ignore when duplicated
-				if (!_unoMenuCommand.CommandList.Contains(cr))
-				{
-					_unoMenuCommand.CommandList.Add(cr);
-				}
-			}
-			else
-			{
-				_unoMenuCommand = await UnoMenuCommand.InitializeAsync(_asyncPackage, _ideChannelClient, cr);
-			}
-		}
 		catch (Exception e)
 		{
-			_debugAction?.Invoke($"Using AddMenuItem Ide Message Requested fail {e.Message}");
-			throw;
+			_debugAction?.Invoke($"Failed to handle IdeMessage with message {e.Message}");
+		}
+	}
+
+	private async Task OnNotificationRequestedAsync(object? sender, NotificationRequestIdeMessage message)
+	{
+		await _asyncPackage.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+		if (await _asyncPackage.GetServiceAsync(typeof(SVsShell)) is IVsShell shell &&
+			await _asyncPackage.GetServiceAsync(typeof(SVsInfoBarUIFactory)) is IVsInfoBarUIFactory infoBarFactory)
+		{
+			await CreateInfoBarAsync(message, shell, infoBarFactory);
+		}
+	}
+
+	private async Task OnAddMenuItemRequestedAsync(object? sender, AddMenuItemRequestIdeMessage cr)
+	{
+		if (_ideChannelClient == null)
+		{
+			return;
+		}
+
+		if (_unoMenuCommand is not null)
+		{
+			//ignore when duplicated
+			if (!_unoMenuCommand.CommandList.Contains(cr))
+			{
+				_unoMenuCommand.CommandList.Add(cr);
+			}
+		}
+		else
+		{
+			_unoMenuCommand = await UnoMenuCommand.InitializeAsync(_asyncPackage, _ideChannelClient, cr);
 		}
 	}
 

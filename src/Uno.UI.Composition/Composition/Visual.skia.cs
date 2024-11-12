@@ -299,7 +299,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private protected virtual void ApplyPrePaintingClipping(in SKCanvas canvas)
 	{
 		// Apply the clipping defined on the element
-		// (Only the Clip property, clipping applied by parent for layout constraints reason it's managed by the ShapeVisual through the ViewBox)
+		// (Only the Clip property, clipping applied by parent for layout constraints reason it's managed by the ContainerVisual through the LayoutClip)
 		// Note: The Clip is applied after the transformation matrix, so it's also transformed.
 		Clip?.Apply(canvas, this);
 	}

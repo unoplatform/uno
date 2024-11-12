@@ -1,8 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
+using System.Text;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Uno.UI.RemoteControl.Helpers;
@@ -15,14 +16,9 @@ public class AddIns
 
 	public static IImmutableList<string> Discover(string solutionFile)
 	{
-		// Note: With .net 9 we need to specify --verbosity detailed to get messages with High importance.
-		var result = ProcessHelper.RunProcess("dotnet", $"build \"{solutionFile}\" --target:UnoDumpTargetFrameworks --verbosity detailed");
-		var targetFrameworks = GetConfigurationValue(result.output ?? "", "TargetFrameworks")
-			.SelectMany(tfms => tfms.Split(['\r', '\n', ';', ','], StringSplitOptions.RemoveEmptyEntries))
-			.Select(tfm => tfm.Trim())
-			.Where(tfm => tfm is { Length: > 0 })
-			.Distinct(StringComparer.OrdinalIgnoreCase)
-			.ToImmutableList();
+		var tmp = Path.GetTempFileName();
+		var result = ProcessHelper.RunProcess("dotnet", $"build \"{solutionFile}\" --target:UnoDumpTargetFrameworks \"-p:UnoDumpTargetFrameworksTargetFile={tmp}\" --verbosity quiet");
+		var targetFrameworks = Read(tmp);
 
 		if (targetFrameworks.IsEmpty)
 		{
@@ -37,7 +33,8 @@ public class AddIns
 
 		foreach (var targetFramework in targetFrameworks)
 		{
-			result = ProcessHelper.RunProcess("dotnet", $"build \"{solutionFile}\" --target:UnoDumpRemoteControlAddIns --verbosity detailed --framework \"{targetFramework}\" -nowarn:MSB4057");
+			tmp = Path.GetTempFileName();
+			result = ProcessHelper.RunProcess("dotnet", $"build \"{solutionFile}\" --target:UnoDumpRemoteControlAddIns \"-p:UnoDumpRemoteControlAddInsTargetFile={tmp}\" --verbosity quiet --framework \"{targetFramework}\" -nowarn:MSB4057");
 			if (!string.IsNullOrWhiteSpace(result.error))
 			{
 				if (_log.IsEnabled(LogLevel.Warning))
@@ -48,13 +45,7 @@ public class AddIns
 				continue;
 			}
 
-			var addIns = GetConfigurationValue(result.output, "RemoteControlAddIns")
-				.SelectMany(tfms => tfms.Split(['\r', '\n', ';', ','], StringSplitOptions.RemoveEmptyEntries))
-				.Select(tfm => tfm.Trim())
-				.Where(tfm => tfm is { Length: > 0 })
-				.Distinct(StringComparer.OrdinalIgnoreCase)
-				.ToImmutableList();
-
+			var addIns = Read(tmp);
 			if (!addIns.IsEmpty)
 			{
 				return addIns;
@@ -69,9 +60,27 @@ public class AddIns
 		return ImmutableArray<string>.Empty;
 	}
 
-	private static IEnumerable<string> GetConfigurationValue(string msbuildResult, string nodeName)
-		=> Regex
-			.Matches(msbuildResult, $"<{nodeName}>(?<value>[^\\<\\>]*)</{nodeName}>", RegexOptions.Singleline)
-			.Where(match => match.Success)
-			.Select(match => match.Groups["value"].Value);
+	private static ImmutableList<string> Read(string file)
+	{
+		var values = ImmutableList<string>.Empty;
+		try
+		{
+			values = File
+				.ReadAllLines(file, Encoding.Unicode)
+				.SelectMany(line => line.Split(['\r', '\n', ';', ','], StringSplitOptions.RemoveEmptyEntries))
+				.Select(value => value.Trim())
+				.Where(value => value is { Length: > 0 })
+				.Distinct(StringComparer.OrdinalIgnoreCase)
+				.ToImmutableList();
+		}
+		catch { }
+
+		try
+		{
+			File.Delete(file);
+		}
+		catch { }
+
+		return values;
+	}
 }
