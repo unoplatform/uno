@@ -44,12 +44,12 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase
 
 	internal protected override void Activate()
 	{
-		NativeUno.uno_window_activate(_window.Handle);
+		NativeUno.uno_window_activate(_nativeWindow.Handle);
 	}
 
 	protected override void CloseCore()
 	{
-		NativeUno.uno_window_close(_window.Handle);
+		NativeUno.uno_window_close(_nativeWindow.Handle);
 	}
 
 	public override void Move(PointInt32 position)
@@ -57,7 +57,7 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase
 		// user input in physical pixels transformed into logical pixels
 		var x = position.X / RasterizationScale;
 		var y = position.Y / RasterizationScale;
-		NativeUno.uno_window_move(_window.Handle, x, y);
+		NativeUno.uno_window_move(_nativeWindow.Handle, x, y);
 	}
 
 	public override void Resize(SizeInt32 size)
@@ -65,7 +65,7 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase
 		// user input in physical pixels transformed into logical pixels
 		var w = size.Width / RasterizationScale;
 		var h = size.Height / RasterizationScale;
-		NativeUno.uno_window_resize(_window.Handle, w, h);
+		NativeUno.uno_window_resize(_nativeWindow.Handle, w, h);
 	}
 
 	private void OnHostPositionChanged(double x, double y)
