@@ -7,9 +7,9 @@ using Uno.UI.Helpers;
 
 namespace Uno.UI.Toolkit;
 
-public static class RuntimeHelper
+public static class PlatformRuntimeHelper
 {
-	public static UnoRuntimePlatform CurrentPlatform =>
+	public static UnoRuntimePlatform Current =>
 #if !HAS_UNO
 		Uno.UI.Toolkit.UnoRuntimePlatform.Windows;
 #else
