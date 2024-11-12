@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Uno.UI.Helpers;
 
-internal static class PlatformRuntimeHelper
+public static class PlatformRuntimeHelper
 {
 	internal static UnoRuntimePlatform SkiaPlatform { get; set; } = UnoRuntimePlatform.Skia;
 
