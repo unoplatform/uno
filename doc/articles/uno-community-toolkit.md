@@ -10,6 +10,7 @@ Depending on the version of the Windows Community Toolkit that you want to use, 
 
 - **[For WCT version 8.x](xref:Uno.Development.CommunityToolkit.v8):** The `SettingsCard` control, but the same steps can be followed for **other\*** Windows Community Toolkit components supported out of the box.
 - **[For WCT version 7.x](xref:Uno.Development.CommunityToolkit.v7):** The `DataGrid` control, but the same steps can be followed for **other\*** Uno ported Windows Community Toolkit components.
+- **[For DataGrid WCT version 7.x + WCT version 8.x](xref:Uno.Development.CommunityToolkit.DataGridv7Andv8):** Instructions on how to set up the `DataGrid` control with WCT version 7.x alongside using WCT version 8.x for other components.
 
 **\* See the [non-Windows platform compatibility](#non-windows-platform-compatibility) section below for more details.**
 
@@ -17,6 +18,7 @@ Depending on the version of the Windows Community Toolkit that you want to use, 
 > **Here is the [Migration Guide from v7 to v8 for Windows Community Toolkit](https://github.com/CommunityToolkit/Windows/wiki/Migration-Guide-from-v7-to-v8) for additional information on what changed lately between these versions.**
 >
 > For some controls (`DataGrid`, `Carousel`, ect...) you will need to use **version 7.x** for them as they are no longer available in the latest 8.x version of Windows Community Toolkit. The complete list of changes is available in the [migration guide](https://github.com/CommunityToolkit/Windows/wiki/Migration-Guide-from-v7-to-v8).
+> As mentioned by the WCT Team in the migration guide: "You can safely use the 7.x DataGrid alongside the newer 8.x packages, as it has no dependencies on the toolkit itself".
 >
 > For additional information, here are the releases notes for Windows Community Toolkit:
 >

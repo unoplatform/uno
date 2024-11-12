@@ -232,7 +232,7 @@ When using the Uno Platform solution templates, add the following to your applic
 
     This means that there's an unconditional reference to Uno Platform's packages, and you'll need to make sure to add the conditional references as suggested above.
 
-1. Add the the related needed namespaces
+1. Add the related needed namespaces
 
     ### [WinUI / WinAppSDK](#tab/tabid-winui)
 
