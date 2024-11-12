@@ -238,6 +238,14 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				this.Log().Log(LogLevel.Trace, static () => $"WndProc received a {nameof(PInvoke.WM_PAINT)} message.");
 				Paint();
 				break;
+			case PInvoke.WM_KEYDOWN:
+				this.Log().Log(LogLevel.Trace, static () => $"WndProc received a {nameof(PInvoke.WM_KEYDOWN)} message.");
+				OnKey(wParam, lParam, true);
+				break;
+			case PInvoke.WM_KEYUP:
+				this.Log().Log(LogLevel.Trace, static () => $"WndProc received a {nameof(PInvoke.WM_KEYUP)} message.");
+				OnKey(wParam, lParam, false);
+				break;
 		}
 
 		return PInvoke.DefWindowProc(hwnd, msg, wParam, lParam);

@@ -6,6 +6,7 @@ using Windows.Win32.Foundation;
 using Microsoft.UI.Xaml;
 using Uno.Foundation.Extensibility;
 using Uno.UI.Dispatching;
+using Uno.UI.Hosting;
 using Uno.UI.Xaml.Controls;
 
 namespace Uno.UI.Runtime.Skia.Win32;
@@ -21,6 +22,8 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 	static Win32Host()
 	{
 		ApiExtensibility.Register(typeof(INativeWindowFactoryExtension), _ => new Win32NativeWindowFactoryExtension());
+		ApiExtensibility.Register<IXamlRootHost>(typeof(IUnoKeyboardInputSource),
+			host => host as Win32WindowWrapper ?? throw new ArgumentException($"{nameof(host)} must be a {nameof(Win32WindowWrapper)} instance"));
 	}
 
 	public Win32Host(Func<Application> appBuilder)
