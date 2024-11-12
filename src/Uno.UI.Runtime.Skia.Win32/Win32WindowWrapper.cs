@@ -395,8 +395,18 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			bmi->biBitCount = 32;
 			bmi->biCompression = /* BI_RGB */ 0x0000;
 
-			image.ReadPixels(new SKImageInfo(image.Width, image.Height, SKColorType.Rgba8888), (IntPtr)(presBits + Marshal.SizeOf<BITMAPINFOHEADER>()));
+			// Write the pixels upside down into the bitmap buffer
+			var info = new SKImageInfo(image.Width, image.Height, SKColorType.Bgra8888);
+			using (var surface = SKSurface.Create(info))
+			{
+				var canvas = surface.Canvas;
+				canvas.Translate(0, image.Height);
+				canvas.Scale(1, -1);
+				canvas.DrawImage(image, 0, 0);
+				surface.Snapshot().ReadPixels(info, (IntPtr)(presBits + Marshal.SizeOf<BITMAPINFOHEADER>()));
+			}
 
+			// Write the mask
 			new Span<byte>(presBits + iconLength - maskLength, maskLength).Fill(0xFF);
 
 			// No need to destroy icons created with CreateIconFromResource
