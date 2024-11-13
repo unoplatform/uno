@@ -4,7 +4,7 @@ uid: Uno.GetStarted.Licensing
 
 # Sign in with Uno Platform
 
-Sign in with your Uno Platform account directly in your favorite IDE—Visual Studio, VS Code, or Rider, to unlock powerful tools like Hot Reload, helping you speed up development. With a single registration, you also get early access to new features and the opportunity to connect with the Uno Platform community to share feedback and network.
+Sign in with your Uno Platform account directly in your favorite IDE (Visual Studio, VS Code, or Rider), to unlock powerful tools like Hot Reload, helping you speed up development. With a single registration, you also get early access to new features and the opportunity to connect with the Uno Platform community to share feedback and network.
 
 ## Create your account
 
