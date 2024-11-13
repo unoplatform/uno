@@ -9,9 +9,9 @@ using Uno.UI.Composition;
 namespace Microsoft.UI.Composition;
 
 /// <summary>
-/// A ShapeVisual that has a border and a background.
+/// A Visual that has a border and a background.
 /// </summary>
-internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
+internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 {
 	// state set from outside and used inside the class
 	private CornerRadius _cornerRadius;
@@ -348,6 +348,6 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 	internal override bool HitTest(Point point)
 	{
 		UpdatePathsAndCornerClip();
-		return (_borderShape?.HitTest(point) ?? false) || (_backgroundShape?.HitTest(point) ?? false) || base.HitTest(point);
+		return (_borderShape?.HitTest(point) ?? false) || (_backgroundShape?.HitTest(point) ?? false);
 	}
 }

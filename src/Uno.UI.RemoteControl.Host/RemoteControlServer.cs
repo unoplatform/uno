@@ -28,6 +28,7 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 	private static readonly Dictionary<string, (AssemblyLoadContext Context, int Count)> _loadContexts = new();
 	private static readonly Dictionary<string, string> _resolveAssemblyLocations = new();
 	private readonly Dictionary<string, IServerProcessor> _processors = new();
+	private readonly List<DiscoveredProcessor> _discoveredProcessors = new();
 	private readonly CancellationTokenSource _ct = new();
 
 	private WebSocket? _socket;
@@ -257,7 +258,6 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 	private async Task ProcessDiscoveryFrame(Frame frame)
 	{
 		var assemblies = new List<(string path, System.Reflection.Assembly assembly)>();
-		var discoveredProcessors = new List<DiscoveredProcessor>();
 		try
 		{
 			var msg = JsonConvert.DeserializeObject<ProcessorsDiscovery>(frame.Content)!;
@@ -358,12 +358,12 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 							{
 								if (ActivatorUtilities.CreateInstance(_serviceProvider, processor.ProcessorType, parameters: new[] { this }) is IServerProcessor serverProcessor)
 								{
-									discoveredProcessors.Add(new(asm.path, processor.ProcessorType.FullName!, VersionHelper.GetVersion(processor.ProcessorType), IsLoaded: true));
+									_discoveredProcessors.Add(new(asm.path, processor.ProcessorType.FullName!, VersionHelper.GetVersion(processor.ProcessorType), IsLoaded: true));
 									RegisterProcessor(serverProcessor);
 								}
 								else
 								{
-									discoveredProcessors.Add(new(asm.path, processor.ProcessorType.FullName!, VersionHelper.GetVersion(processor.ProcessorType), IsLoaded: false));
+									_discoveredProcessors.Add(new(asm.path, processor.ProcessorType.FullName!, VersionHelper.GetVersion(processor.ProcessorType), IsLoaded: false));
 									if (this.Log().IsEnabled(LogLevel.Debug))
 									{
 										this.Log().LogDebug("Failed to create server processor {ProcessorType}", processor.ProcessorType);
@@ -372,7 +372,7 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 							}
 							catch (Exception error)
 							{
-								discoveredProcessors.Add(new(asm.path, processor.ProcessorType.FullName!, VersionHelper.GetVersion(processor.ProcessorType), IsLoaded: false, LoadError: error.ToString()));
+								_discoveredProcessors.Add(new(asm.path, processor.ProcessorType.FullName!, VersionHelper.GetVersion(processor.ProcessorType), IsLoaded: false, LoadError: error.ToString()));
 								if (this.Log().IsEnabled(LogLevel.Error))
 								{
 									this.Log().LogError(error, "Failed to create server processor {ProcessorType}", processor.ProcessorType);
@@ -404,7 +404,7 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 		{
 			await SendFrame(new ProcessorsDiscoveryResponse(
 				assemblies.Select(asm => asm.path).ToImmutableList(),
-				discoveredProcessors.ToImmutableList()));
+				_discoveredProcessors.ToImmutableList()));
 		}
 	}
 

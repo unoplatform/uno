@@ -35,7 +35,7 @@ namespace Microsoft.UI.Xaml
 {
 	public partial class UIElement : DependencyObject, IVisualElement, IVisualElement2
 	{
-		private protected ShapeVisual _visual;
+		private protected ContainerVisual _visual;
 		private Rect _lastFinalRect;
 		private Rect? _lastClippedFrame;
 
@@ -78,7 +78,7 @@ namespace Microsoft.UI.Xaml
 			Visual.Opacity = Visibility == Visibility.Visible ? (float)Opacity : 0;
 		}
 
-		internal ShapeVisual Visual
+		internal ContainerVisual Visual
 		{
 			get
 			{
@@ -98,7 +98,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		private protected virtual ShapeVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateShapeVisual();
+		private protected virtual ContainerVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateContainerVisual();
 
 		internal static Action<UIElement, UIElement, int?> ExternalOnChildAdded { get; set; }
 		internal static Action<UIElement, UIElement> ExternalOnChildRemoved { get; set; }
@@ -335,21 +335,15 @@ namespace Microsoft.UI.Xaml
 
 			_renderTransform?.UpdateFlowDirectionTransform();
 
-			// The clipping applied by our parent due to layout constraints are pushed to the visual through the ViewBox property
-			// This allows special handling of this clipping by the compositor (cf. ShapeVisual.Render).
+			// The clipping applied by our parent due to layout constraints are pushed to the visual through the LayoutClip property
+			// This allows special handling of this clipping by the compositor (cf. ContainerVisual.Render).
 			if (clip is null)
 			{
-				visual.ViewBox = null;
+				visual.LayoutClip = null;
 			}
 			else
 			{
-				var viewBox = visual.Compositor.CreateViewBox();
-				viewBox.IsAncestorClip = ShouldApplyLayoutClipAsAncestorClip();
-
-				viewBox.Offset = clip.Value.Location.ToVector2();
-				viewBox.Size = clip.Value.Size.ToVector2();
-
-				visual.ViewBox = viewBox;
+				visual.LayoutClip = (clip.Value, ShouldApplyLayoutClipAsAncestorClip());
 			}
 		}
 

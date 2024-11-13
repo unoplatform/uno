@@ -311,8 +311,8 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// <remarks>The canvas' TotalMatrix is assumed to already be set up to the local coordinates of the visual.</remarks>
 	internal virtual SKPath? GetPrePaintingClipping()
 	{
-		// The clipping defined on the element
-		// (Only the Clip property, clipping applied by parent for layout constraints reason it's managed by the ShapeVisual through the ViewBox)
+		// Apply the clipping defined on the element
+		// (Only the Clip property, clipping applied by parent for layout constraints reason it's managed by the ContainerVisual through the LayoutClip)
 		// Note: The Clip is applied after the transformation matrix, so it's also transformed.
 		return Clip?.GetClipPath(this);
 	}

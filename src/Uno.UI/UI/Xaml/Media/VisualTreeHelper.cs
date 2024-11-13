@@ -520,7 +520,7 @@ namespace Microsoft.UI.Xaml.Media
 			Rect clippingBounds;
 			using (SkiaHelper.GetTempSKPath(out var viewBoxPath))
 			{
-				clippingBounds = element.Visual.GetViewBoxPathInElementCoordinateSpace(viewBoxPath)
+				clippingBounds = element.Visual.GetArrangeClipPathInElementCoordinateSpace(viewBoxPath)
 					? transformToElement.Transform(viewBoxPath.TightBounds.ToRect())
 					: Rect.Infinite;
 			}
