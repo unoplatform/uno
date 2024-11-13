@@ -31,8 +31,6 @@ internal static class SkiaRenderHelper
 			canvas.Clear(SKColors.Transparent);
 			canvas.Restore();
 		}
-
-		return path;
 	}
 
 	/// <summary>
@@ -91,9 +89,12 @@ internal static class SkiaRenderHelper
 				_visualPath.AddRect(new SKRect(0, 0, visual.Size.X, visual.Size.Y));
 
 				var finalVisualPath = _clipPath.Op(_visualPath, SKPathOp.Intersect);
-				if (visual.GetPrePaintingClipping() is { } preClip)
+				using (SkiaHelper.GetTempSKPath(out var preClip))
 				{
-					finalVisualPath = finalVisualPath.Op(preClip, SKPathOp.Intersect);
+					if (visual.GetPrePaintingClipping(preClip))
+					{
+						finalVisualPath.Op(preClip, SKPathOp.Intersect, finalVisualPath);
+					}
 				}
 
 				finalVisualPath.Transform(canvas.TotalMatrix);

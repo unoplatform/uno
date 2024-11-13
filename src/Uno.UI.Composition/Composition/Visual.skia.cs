@@ -263,9 +263,12 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		{
 			var canvas = session.Canvas;
 
-			if (GetPrePaintingClipping() is { } preClip)
+			using (SkiaHelper.GetTempSKPath(out var preClip))
 			{
-				canvas.ClipPath(preClip, antialias: true);
+				if (GetPrePaintingClipping(preClip))
+				{
+					canvas.ClipPath(preClip, antialias: true);
+				}
 			}
 
 			// Rendering shouldn't depend on matrix or clip adjustments happening in a visual's Paint. That should
@@ -308,13 +311,18 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		return Offset;
 	}
 
-	/// <remarks>The canvas' TotalMatrix is assumed to already be set up to the local coordinates of the visual.</remarks>
-	internal virtual SKPath? GetPrePaintingClipping()
+	internal virtual bool GetPrePaintingClipping(SKPath dst)
 	{
 		// Apply the clipping defined on the element
 		// (Only the Clip property, clipping applied by parent for layout constraints reason it's managed by the ContainerVisual through the LayoutClip)
 		// Note: The Clip is applied after the transformation matrix, so it's also transformed.
-		return Clip?.GetClipPath(this);
+		if (Clip is not null)
+		{
+			dst.Reset();
+			dst.AddPath(Clip?.GetClipPath(this));
+			return true;
+		}
+		return false;
 	}
 
 	/// <summary>This clipping won't affect the visual itself, but its children.</summary>

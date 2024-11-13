@@ -86,14 +86,33 @@ public partial class ContainerVisual : Visual
 		return true;
 	}
 
-	private protected override void ApplyPrePaintingClipping(in SKCanvas canvas)
+	internal override bool GetPrePaintingClipping(SKPath dst)
 	{
-		base.ApplyPrePaintingClipping(in canvas);
-		using (SkiaHelper.GetTempSKPath(out var prePaintingClipPath))
+		if (base.GetPrePaintingClipping(dst))
 		{
-			if (GetArrangeClipPathInElementCoordinateSpace(prePaintingClipPath))
+			using (SkiaHelper.GetTempSKPath(out var prePaintingClipPath))
 			{
-				canvas.ClipPath(prePaintingClipPath, antialias: true);
+				if (GetArrangeClipPathInElementCoordinateSpace(prePaintingClipPath))
+				{
+					dst.Op(prePaintingClipPath, SKPathOp.Intersect, dst);
+				}
+				return true;
+			}
+		}
+		else
+		{
+			using (SkiaHelper.GetTempSKPath(out var prePaintingClipPath))
+			{
+				if (GetArrangeClipPathInElementCoordinateSpace(prePaintingClipPath))
+				{
+					dst.Reset();
+					dst.AddPath(prePaintingClipPath);
+					return true;
+				}
+				else
+				{
+					return false;
+				}
 			}
 		}
 	}

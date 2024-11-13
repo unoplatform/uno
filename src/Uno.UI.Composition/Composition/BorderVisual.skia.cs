@@ -155,7 +155,7 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 		_borderShape?.Render(in session);
 	}
 
-	internal override SKPath? GetPrePaintingClipping()
+	internal override bool GetPrePaintingClipping(SKPath dst)
 	{
 		// This method is only important for airspace (to accurately deal with corner radii, etc.),
 		// other than that it doesn't really do anything.
@@ -163,20 +163,25 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 
 		if (_cornerRadius != CornerRadius.None && _borderPathOuterRect is { } rect)
 		{
-			var path = new SKPath();
-			path.AddRoundRect(rect);
-			if (base.GetPrePaintingClipping() is { } baseClip)
+			if (base.GetPrePaintingClipping(dst))
 			{
-				return path.Op(baseClip, SKPathOp.Intersect);
+				using (SkiaHelper.GetTempSKPath(out var path))
+				{
+					path.AddRoundRect(rect);
+					dst.Op(path, SKPathOp.Intersect, dst);
+				}
+				return true;
 			}
 			else
 			{
-				return path;
+				dst.Reset();
+				dst.AddRoundRect(rect);
+				return true;
 			}
 		}
 		else
 		{
-			return base.GetPrePaintingClipping();
+			return base.GetPrePaintingClipping(dst);
 		}
 	}
 
