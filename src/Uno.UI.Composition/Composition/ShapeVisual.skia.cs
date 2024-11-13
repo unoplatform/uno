@@ -12,18 +12,6 @@ namespace Microsoft.UI.Composition;
 
 public partial class ShapeVisual
 {
-	private GCHandle _gcHandle;
-
-	partial void InitializePartial()
-	{
-		_gcHandle = GCHandle.Alloc(this, GCHandleType.Weak);
-		Handle = GCHandle.ToIntPtr(_gcHandle);
-	}
-
-	internal IntPtr Handle { get; private set; }
-
-	internal WeakReference? Owner { get; set; }
-
 	/// <inheritdoc />
 	internal override void Paint(in PaintingSession session)
 	{

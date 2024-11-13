@@ -1,9 +1,11 @@
 ﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using Windows.Foundation;
+using System.Runtime.InteropServices;
 using SkiaSharp;
+using Windows.Foundation;
 
 namespace Microsoft.UI.Composition;
 
@@ -13,6 +15,20 @@ public partial class ContainerVisual : Visual
 	private bool _hasCustomRenderOrder;
 
 	private (Rect rect, bool isAncestorClip)? _layoutClip;
+
+	private GCHandle _gcHandle;
+
+	partial void InitializePartial()
+	{
+		Children.CollectionChanged += (s, e) => IsChildrenRenderOrderDirty = true;
+
+		_gcHandle = GCHandle.Alloc(this, GCHandleType.Weak);
+		Handle = GCHandle.ToIntPtr(_gcHandle);
+	}
+
+	internal IntPtr Handle { get; private set; }
+
+	internal WeakReference? Owner { get; set; }
 
 	/// <summary>
 	/// Layout clipping is usually applied in the element's coordinate space.
@@ -26,11 +42,6 @@ public partial class ContainerVisual : Visual
 	}
 
 	internal bool IsChildrenRenderOrderDirty { get; set; }
-
-	partial void InitializePartial()
-	{
-		Children.CollectionChanged += (s, e) => IsChildrenRenderOrderDirty = true;
-	}
 
 	private protected override List<Visual> GetChildrenInRenderOrder()
 	{
