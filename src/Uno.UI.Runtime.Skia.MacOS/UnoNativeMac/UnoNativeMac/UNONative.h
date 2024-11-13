@@ -5,6 +5,7 @@
 #pragma once
 
 #import "UnoNativeMac.h"
+#import "UNOWindow.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

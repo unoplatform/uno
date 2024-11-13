@@ -688,52 +688,65 @@ void uno_window_clip_svg(UNOWindow* window, const char* svg)
 #if DEBUG
         NSLog(@"uno_window_clip_svg %@ %@ %s", window, window.contentView.layer.description, svg);
 #endif
-        CGMutablePathRef path = CGPathCreateMutable();
-        // small subset of an SVG path parser handling trusted input of integer-based points
-        long length = strlen(svg);
-        for (int i=0; i < length; i++) {
-            CGFloat x, y;
-            char op = svg[i];
-            switch (op) {
-                case 'M':
-                    x = readNextCoord(svg, &i, length);
-                    i++; // skip separator
-                    y = readNextCoord(svg, &i, length);
-                    // there might not be a separator (not required before the next op)
-#if DEBUG_PARSER
-                    NSLog(@"uno_window_clip_svg parsing CGPathMoveToPoint %g %g - position %d", x, y, i);
-#endif
-                    CGPathMoveToPoint(path, nil, x, y);
-                    break;
-                case 'L':
-                    x = readNextCoord(svg, &i, length);
-                    i++; // skip separator
-                    y = readNextCoord(svg, &i, length);
-                    // there might not be a separator (not required before the next op)
-#if DEBUG_PARSER
-                    NSLog(@"uno_window_clip_svg parsing CGPathAddLineToPoint %g %g - position %d", x, y, i);
-#endif
-                    CGPathAddLineToPoint(path, nil, x, y);
-                    break;
-                case 'Z':
-#if DEBUG_PARSER
-                    NSLog(@"uno_window_clip_svg parsing CGPathCloseSubpath - position %d", i);
-#endif
-                    CGPathCloseSubpath(path);
-                    break;
+        NSArray<__kindof NSView *> *subviews = window.contentViewController.view.subviews;
+        for (int i = 0; i < subviews.count; i++) {
+            NSView* view = subviews[i];
 #if DEBUG
-                default:
-                    if (op != ' ') {
-                        NSLog(@"uno_window_clip_svg parsing unknown op %c at position %d", op, i - 1);
-                    }
-                    break;
+            NSLog(@"uno_window_clip_svg subview %d %@ layer %@ mask %@", i, view, view.layer, view.layer.mask);
 #endif
+            CGMutablePathRef path = CGPathCreateMutable();
+            // small subset of an SVG path parser handling trusted input of integer-based points
+            long length = strlen(svg);
+            for (int i=0; i < length; i++) {
+                CGFloat x, y;
+                char op = svg[i];
+                switch (op) {
+                    case 'M':
+                        x = readNextCoord(svg, &i, length);
+                        i++; // skip separator
+                        y = readNextCoord(svg, &i, length);
+                        // there might not be a separator (not required before the next op)
+#if DEBUG_PARSER
+                        NSLog(@"uno_window_clip_svg parsing CGPathMoveToPoint %g %g - position %d", x, y, i);
+#endif
+                        x -= view.frame.origin.x;
+                        y -= view.frame.origin.y;
+                        CGPathMoveToPoint(path, nil, x, y);
+                        break;
+                    case 'L':
+                        x = readNextCoord(svg, &i, length);
+                        i++; // skip separator
+                        y = readNextCoord(svg, &i, length);
+                        // there might not be a separator (not required before the next op)
+#if DEBUG_PARSER
+                        NSLog(@"uno_window_clip_svg parsing CGPathAddLineToPoint %g %g - position %d", x, y, i);
+#endif
+                        x -= view.frame.origin.x;
+                        y -= view.frame.origin.y;
+                        CGPathAddLineToPoint(path, nil, x, y);
+                        break;
+                    case 'Z':
+#if DEBUG_PARSER
+                        NSLog(@"uno_window_clip_svg parsing CGPathCloseSubpath - position %d", i);
+#endif
+                        CGPathCloseSubpath(path);
+                        break;
+#if DEBUG
+                    default:
+                        if (op != ' ') {
+                            NSLog(@"uno_window_clip_svg parsing unknown op %c at position %d", op, i - 1);
+                        }
+                        break;
+#endif
+                }
             }
+            CAShapeLayer* mask = view.layer.mask;
+            if (mask == nil) {
+                view.layer.mask = mask = [[CAShapeLayer alloc] init];
+            }
+            mask.fillColor = NSColor.blueColor.CGColor; // anything but clearColor
+            mask.path = path;
         }
-    } else {
-#if DEBUG
-        NSLog(@"uno_window_clip_svg %@ reset", window);
-#endif
     }
 }
 
