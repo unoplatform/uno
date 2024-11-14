@@ -665,20 +665,10 @@ CGFloat readNextCoord(const char *svg, int *position, long length)
 #endif
         return result;
     }
-    for (int i=*position; i < length; i++) {
-        if (isdigit(svg[i])) {
-            if (isnan(result)) {
-                result = svg[i] - '0';
-            } else {
-                result *= 10;
-                result += svg[i] - '0';
-            }
-            *position = i;
-        } else if (!isnan(result)) {
-            *position = i - 1;
-            break;
-        }
-    }
+    const char* start = svg + *position;
+    char* end;
+    result = strtod(start, &end);
+    *position += (int)(end - start);
     return result;
 }
 
@@ -697,11 +687,12 @@ void uno_window_clip_svg(UNOWindow* window, const char* svg)
             CGMutablePathRef path = CGPathCreateMutable();
             // small subset of an SVG path parser handling trusted input of integer-based points
             long length = strlen(svg);
-            for (int i=0; i < length; i++) {
+            for (int i=0; i < length;) {
                 CGFloat x, y;
                 char op = svg[i];
                 switch (op) {
                     case 'M':
+                        i++; // skip M
                         x = readNextCoord(svg, &i, length);
                         i++; // skip separator
                         y = readNextCoord(svg, &i, length);
@@ -714,6 +705,7 @@ void uno_window_clip_svg(UNOWindow* window, const char* svg)
                         CGPathMoveToPoint(path, nil, x, y);
                         break;
                     case 'L':
+                        i++; // skip L
                         x = readNextCoord(svg, &i, length);
                         i++; // skip separator
                         y = readNextCoord(svg, &i, length);
@@ -726,6 +718,7 @@ void uno_window_clip_svg(UNOWindow* window, const char* svg)
                         CGPathAddLineToPoint(path, nil, x, y);
                         break;
                     case 'Z':
+                        i++; // skip Z
 #if DEBUG_PARSER
                         NSLog(@"uno_window_clip_svg parsing CGPathCloseSubpath - position %d", i);
 #endif
@@ -734,8 +727,9 @@ void uno_window_clip_svg(UNOWindow* window, const char* svg)
 #if DEBUG
                     default:
                         if (op != ' ') {
-                            NSLog(@"uno_window_clip_svg parsing unknown op %c at position %d", op, i - 1);
+                            NSLog(@"uno_window_clip_svg parsing unknown op %c at position %d", op, i);
                         }
+                        i++; // skip unknown op
                         break;
 #endif
                 }
