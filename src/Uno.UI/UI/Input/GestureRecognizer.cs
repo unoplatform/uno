@@ -194,16 +194,19 @@ namespace Windows.UI.Input
 		}
 
 		/// <returns>The set of events that can be raised by this recognizer for this pointer ID</returns>
-		internal GestureSettings PreventEvents(uint pointerId, GestureSettings events)
+		internal GestureSettings PreventEvents(PointerIdentifier pointerId, GestureSettings events)
 		{
-			if (_gestures.TryGetValue(pointerId, out var gesture))
+			if (_gestures.TryGetValue(pointerId.Id, out var gesture))
 			{
-				gesture.PreventGestures(events & GestureSettingsHelper.SupportedGestures);
-
-				return gesture.Settings;
+				gesture.PreventGestures(events);
 			}
 
-			return GestureSettings.None;
+			if ((events & GestureSettings.Drag) != 0 && (_manipulation?.IsActive(pointerId) ?? false))
+			{
+				_manipulation?.DisableDragging();
+			}
+
+			return _gestureSettings;
 		}
 
 		#region Manipulations

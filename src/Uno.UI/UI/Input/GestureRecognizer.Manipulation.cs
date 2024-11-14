@@ -596,6 +596,19 @@ namespace Windows.UI.Input
 				}
 			}
 
+			public void DisableDragging()
+			{
+				StopDragTimer();
+				if (_state is ManipulationState.Starting)
+				{
+					_isDraggingEnable = false;
+				}
+				else if (_state is ManipulationState.Started && IsDragManipulation)
+				{
+					Complete();
+				}
+			}
+
 			private bool ShouldStartInertia(ManipulationVelocities velocities)
 				=> _inertia is null
 					&& !IsDragManipulation
