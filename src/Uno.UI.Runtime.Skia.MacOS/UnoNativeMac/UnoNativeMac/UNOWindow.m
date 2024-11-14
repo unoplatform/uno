@@ -746,6 +746,7 @@ void uno_window_clip_svg(UNOWindow* window, const char* svg)
             }
             mask.fillColor = NSColor.blueColor.CGColor; // anything but clearColor
             mask.path = path;
+            mask.fillRule = kCAFillRuleEvenOdd;
         }
     }
 }
