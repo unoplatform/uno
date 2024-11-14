@@ -9,8 +9,6 @@
 /* Begin PBXBuildFile section */
 		D116C63E2AC79876004B975F /* UNOCursor.m in Sources */ = {isa = PBXBuildFile; fileRef = D116C63D2AC79876004B975F /* UNOCursor.m */; };
 		D13AB8A82B5839B200693F8E /* libSkiaSharp.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D13AB8A72B5839B200693F8E /* libSkiaSharp.dylib */; };
-		D15930D52CDEA3C0007B40FD /* UNOWebView.h in Headers */ = {isa = PBXBuildFile; fileRef = D15930D32CDEA3C0007B40FD /* UNOWebView.h */; };
-		D15930D62CDEA3C0007B40FD /* UNOWebView.m in Sources */ = {isa = PBXBuildFile; fileRef = D15930D42CDEA3C0007B40FD /* UNOWebView.m */; };
 		D18D4FAC2C2DE804003E4BBF /* UNONative.m in Sources */ = {isa = PBXBuildFile; fileRef = D18D4FAB2C2DE804003E4BBF /* UNONative.m */; };
 		D1A0651E2A7066F700101BE6 /* UNOMetalViewDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D1A0651D2A7066F700101BE6 /* UNOMetalViewDelegate.m */; };
 		D1A065202A8467B200101BE6 /* UNOApplication.h in Headers */ = {isa = PBXBuildFile; fileRef = D1A0651F2A8467B200101BE6 /* UNOApplication.h */; };
@@ -27,8 +25,6 @@
 		D116C63D2AC79876004B975F /* UNOCursor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UNOCursor.m; sourceTree = "<group>"; };
 		D13AB8A72B5839B200693F8E /* libSkiaSharp.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libSkiaSharp.dylib; path = UnoNativeMac/libSkiaSharp.dylib; sourceTree = "<group>"; };
 		D13AB8AC2B58566400693F8E /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
-		D15930D32CDEA3C0007B40FD /* UNOWebView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UNOWebView.h; sourceTree = "<group>"; };
-		D15930D42CDEA3C0007B40FD /* UNOWebView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UNOWebView.m; sourceTree = "<group>"; };
 		D18D4FAA2C2DE76F003E4BBF /* UNONative.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UNONative.h; sourceTree = "<group>"; };
 		D18D4FAB2C2DE804003E4BBF /* UNONative.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UNONative.m; sourceTree = "<group>"; };
 		D1A0651C2A70664A00101BE6 /* UNOMetalViewDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UNOMetalViewDelegate.h; sourceTree = "<group>"; };
@@ -105,8 +101,6 @@
 				D1FE7A2A2B75C8BB00ACFC76 /* UNOSoftView.m */,
 				D1A065232A8AC15C00101BE6 /* UNOWindow.h */,
 				D1A065242A8AC23800101BE6 /* UNOWindow.m */,
-				D15930D32CDEA3C0007B40FD /* UNOWebView.h */,
-				D15930D42CDEA3C0007B40FD /* UNOWebView.m */,
 			);
 			path = UnoNativeMac;
 			sourceTree = "<group>";
@@ -118,7 +112,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D15930D52CDEA3C0007B40FD /* UNOWebView.h in Headers */,
 				D1F248A92A67288B008A609E /* UnoNativeMac.h in Headers */,
 				D1A065202A8467B200101BE6 /* UNOApplication.h in Headers */,
 			);
@@ -188,7 +181,6 @@
 				D1A065252A8AC23800101BE6 /* UNOWindow.m in Sources */,
 				D1CC768B2AB9D464002A44F0 /* UNOClipboard.m in Sources */,
 				D116C63E2AC79876004B975F /* UNOCursor.m in Sources */,
-				D15930D62CDEA3C0007B40FD /* UNOWebView.m in Sources */,
 				D18D4FAC2C2DE804003E4BBF /* UNONative.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
