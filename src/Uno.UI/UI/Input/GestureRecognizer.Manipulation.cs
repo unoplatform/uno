@@ -243,13 +243,13 @@ namespace Windows.UI.Input
 			{
 				StopDragTimer();
 
+				_inertia?.Dispose();
+				_state = ManipulationState.Completed;
+
 				// If the manipulation was not started, we just abort the manipulation without any event
 				switch (_state)
 				{
 					case ManipulationState.Started when IsDragManipulation:
-						_inertia?.Dispose(); // Safety, inertia should never been started when IsDragManipulation, especially if _state is ManipulationState.Started ^^
-						_state = ManipulationState.Completed;
-
 						_recognizer.Dragging?.Invoke(
 							_recognizer,
 							new DraggingEventArgs(_currents.Pointer1, DraggingState.Completed, _contacts.onStart));
@@ -257,9 +257,6 @@ namespace Windows.UI.Input
 
 					case ManipulationState.Started:
 					case ManipulationState.Inertia:
-						_inertia?.Dispose();
-						_state = ManipulationState.Completed;
-
 						var position = GetPosition();
 						var cumulative = GetCumulative();
 						var delta = GetDelta(cumulative);
@@ -271,15 +268,7 @@ namespace Windows.UI.Input
 						break;
 
 					case ManipulationState.Starting:
-						_inertia?.Dispose();
-						_state = ManipulationState.Completed;
-
 						_recognizer.ManipulationAborted?.Invoke(_recognizer, this);
-						break;
-
-					default: // Safety only
-						_inertia?.Dispose();
-						_state = ManipulationState.Completed;
 						break;
 				}
 
@@ -576,7 +565,7 @@ namespace Windows.UI.Input
 				//		 those thresholds are lower than a Tap (and actually only 1px), which does not math the UWP behavior.
 				var down = _origins.Pointer1;
 				var current = _currents.Pointer1;
-				var isOutOfRange = Gesture.IsOutOfTapRange(down.Position, current.Position);
+				var isOutOfRange = IsOutOfTapRange(down.Position, current.Position);
 
 				switch (_deviceType)
 				{
@@ -652,13 +641,12 @@ namespace Windows.UI.Input
 					=> Math.Abs(slope) >= Math.Tan(67.5 * Math.PI / 180);
 			}
 
-			internal struct Thresholds
-			{
-				public double TranslateX;
-				public double TranslateY;
-				public double Rotate; // Degrees
-				public double Expansion;
-			}
+			internal readonly record struct Thresholds(
+				double TranslateX,
+				double TranslateY,
+				double Rotate, // Degrees
+				double Expansion
+			);
 
 			// WARNING: This struct is ** MUTABLE **
 			private struct Points
@@ -666,10 +654,10 @@ namespace Windows.UI.Input
 				public PointerPoint Pointer1;
 				private PointerPoint? _pointer2;
 
-				public ulong Timestamp;
+				public ulong Timestamp; // The timestamp of the latest pointer update to either pointer
 				public Point Center; // This is the center in ** absolute ** coordinates spaces (i.e. relative to the screen)
-				public float Distance;
-				public double Angle;
+				public float Distance; // The distance between the 2 points, or zero if !HasPointer2
+				public double Angle; // The angle between the horizontal axis and the line segment formed by the 2 points, or zero if !HasPointer2
 
 				public bool HasPointer2 => _pointer2 != null;
 
