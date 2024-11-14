@@ -155,7 +155,7 @@ public partial class CoreWebView2
 	{
 		_nativeWebView = GetNativeWebViewFromTemplate();
 
-		//The nativate WebView already navigate to a blank page if no source is set.
+		//The native WebView already navigate to a blank page if no source is set.
 		//Avoid a bug where invoke GoBack() on WebView do nothing in Android 4.4
 		UpdateFromInternalSource();
 		OnScrollEnabledChanged(_scrollEnabled);
@@ -280,8 +280,16 @@ public partial class CoreWebView2
 		{
 			_nativeWebView.ProcessNavigation(html);
 		}
-		else if (_processedSource is HttpRequestMessage httpRequestMessage)
+		else if (_processedSource is global::Windows.Web.Http.HttpRequestMessage requestMessage)
 		{
+			var httpRequestMessage = new HttpRequestMessage()
+			{
+				RequestUri = requestMessage.RequestUri
+			};
+			foreach (var header in requestMessage.Headers)
+			{
+				httpRequestMessage.Headers.Add(header.Key, header.Value);
+			}
 			_nativeWebView.ProcessNavigation(httpRequestMessage);
 		}
 
