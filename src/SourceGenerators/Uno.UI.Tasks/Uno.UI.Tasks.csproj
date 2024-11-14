@@ -20,6 +20,9 @@
 		<PackageReference Include="Microsoft.Build.Tasks.Core" Version="15.9.20" ExcludeAssets="runtime" />
 		<PackageReference Include="Microsoft.Build.Utilities.Core" Version="15.9.20" ExcludeAssets="runtime" />
 		<PackageReference Include="Mono.Cecil" Version="0.11.4" />
+		
+		<!-- https://github.com/NuGet/Home/issues/7344 -->
+		<PackageReference Include="System.Private.Uri" Version="4.3.2" />
 	</ItemGroup>
 
 	<ItemGroup>
