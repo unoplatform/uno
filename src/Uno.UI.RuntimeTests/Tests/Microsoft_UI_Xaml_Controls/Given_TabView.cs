@@ -19,6 +19,8 @@ using static Private.Infrastructure.TestServices;
 
 #if __IOS__
 using UIKit;
+#elif __MACOS__
+using AppKit;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
@@ -182,8 +184,8 @@ public class Given_TabView
 		var closeButton1 = (Button)tabviewItem1.GetTemplateChild("CloseButton");
 
 		var buttonLabel1 =
-#if __IOS__
-        closeButton1.FindFirstChild<ImplicitTextBlock>();
+#if __IOS__ || __MACOS__
+		closeButton1.FindFirstChild<ImplicitTextBlock>();
 #else
 		((ContentPresenter)closeButton1.GetTemplateChild("ContentPresenter")).FindFirstChild<ImplicitTextBlock>();
 #endif
