@@ -18,6 +18,9 @@
 		<!-- Disable assets generation for libraries -->
 		<StaticWebAssetsEnabled Condition=" $(OutputType) != 'Exe' ">false</StaticWebAssetsEnabled>
 
+		<!-- Workaround for https://github.com/dotnet/runtime/pull/109866 -->
+		<IsBrowserWasmProject Condition=" $(OutputType) != 'Exe' ">false</IsBrowserWasmProject>
+
 		<IsMSALSupported>true</IsMSALSupported>
 
 		<!-- net9.0 validation of CA1418 is case sensitive -->
