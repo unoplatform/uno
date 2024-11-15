@@ -81,7 +81,7 @@ $projects =
     @(2, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @(), @())
 
     # 5.3 lib
-    @(2, "5.3/uno53net9blank/uno53net9Lib/uno53net9Lib.csproj", @(), @())
+    @(2, "5.3/uno53net9Lib/uno53net9Lib.csproj", @(), @())
 
     # 5.3 blank publish testing
     # Disabled for LXD setup issues
