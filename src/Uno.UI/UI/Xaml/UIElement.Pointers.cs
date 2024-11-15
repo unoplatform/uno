@@ -910,7 +910,7 @@ namespace Microsoft.UI.Xaml
 					//		 ptArgs.Pointer.IsInRange && ptArgs.IsPointCoordinatesOver(this) (and probably share it on all platforms).
 					var isOver = ptArgs.Pointer.IsInRange && (ptArgs.Pointer.PointerDeviceType, ptArgs.Pointer.IsInContact) switch
 					{
-						(PointerDeviceType.Touch, false) => false,
+						(global::Microsoft.UI.Input.PointerDeviceType.Touch, false) => false,
 						_ => ptArgs.IsPointCoordinatesOver(this),
 					};
 #endif
