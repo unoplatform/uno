@@ -142,10 +142,6 @@ jobs:
     # don't validate transitive dependencies for template tests
     NuGetAuditMode: direct
 
-  variables:
-    # don't validate transitive dependencies for template tests
-    NuGetAuditMode: direct
-
   steps:
   - task: DownloadBuildArtifacts@0
     inputs:
