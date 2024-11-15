@@ -107,7 +107,15 @@ namespace Microsoft.UI.Xaml
 			}
 
 			Update(src);
-			Enqueue(RaiseDrop);
+
+			if (_acceptedOperation is DataPackageOperation.None)
+			{
+				Abort();
+			}
+			else
+			{
+				Enqueue(RaiseDrop);
+			}
 
 			return _acceptedOperation;
 		}
