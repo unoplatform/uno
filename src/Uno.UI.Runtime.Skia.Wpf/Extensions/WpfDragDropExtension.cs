@@ -244,7 +244,7 @@ namespace Uno.UI.Runtime.Skia.Wpf
 			return dst;
 		}
 
-		private class DragEventSource : IDragEventSource
+		private readonly struct DragEventSource : IDragEventSource
 		{
 			private readonly DragEventArgs _wpfArgs;
 			private static long _nextFrameId;

@@ -297,7 +297,7 @@ internal class X11DragDropExtension : IDragDropExtension
 	// TODO: uno-to-outside dragging
 	public void StartNativeDrag(CoreDragInfo info) => throw new System.NotImplementedException();
 
-	private class DragEventSource(int x, int y) : IDragEventSource
+	private readonly struct DragEventSource(int x, int y) : IDragEventSource
 	{
 		private static long _nextFrameId;
 		private readonly Point _location = new Point(x, y);
