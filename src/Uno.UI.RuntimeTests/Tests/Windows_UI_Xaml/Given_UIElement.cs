@@ -1760,7 +1760,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			await TestServices.WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(1, dragEnterCount);
-			Assert.AreEqual(1, dragOverCount);
+			Assert.AreEqual(2, dragOverCount);
 			Assert.AreEqual(0, dropCount);
 
 			mouse.Release();
@@ -1770,7 +1770,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			}
 
 			Assert.AreEqual(1, dragEnterCount);
-			Assert.AreEqual(2, dragOverCount);
+			Assert.AreEqual(3, dragOverCount);
 			Assert.AreEqual(waitAfterRelease ? 1 : 0, dropCount);
 		}
 
