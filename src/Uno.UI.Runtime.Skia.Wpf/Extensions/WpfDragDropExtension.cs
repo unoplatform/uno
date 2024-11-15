@@ -71,7 +71,7 @@ namespace Uno.UI.Runtime.Skia.Wpf
 			=> e.Effects = ToDropEffects(_manager.ProcessAborted(_fakePointerId));
 
 		private void OnHostDrop(object sender, DragEventArgs e)
-			=> e.Effects = ToDropEffects(_manager.ProcessDropped(new DragEventSource(_fakePointerId, e)));
+			=> e.Effects = ToDropEffects(_manager.ProcessReleased(new DragEventSource(_fakePointerId, e)));
 
 		public void StartNativeDrag(CoreDragInfo info)
 		{

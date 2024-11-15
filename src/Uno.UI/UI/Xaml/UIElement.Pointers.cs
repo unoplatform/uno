@@ -1100,7 +1100,7 @@ namespace Microsoft.UI.Xaml
 				GestureRecognizer.ProcessUpEvent(currentPoint, isOverOrCaptured && !ctx.IsCleanup);
 				if (isDragging)
 				{
-					XamlRoot.VisualTree.ContentRoot.InputManager.DragDrop.ProcessDropped(args);
+					XamlRoot.VisualTree.ContentRoot.InputManager.DragDrop.ProcessReleased(args);
 				}
 			}
 
