@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFrameworks>net9.0-browserwasm;net9.0-desktop;net9.0</TargetFrameworks>
     <TargetFrameworks Condition="!$([MSBuild]::IsOSPlatform('linux'))">$(TargetFrameworks);net9.0-android;net9.0-ios;net9.0-maccatalyst;net9.0-desktop</TargetFrameworks>
-    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net9.0-windows10.0.26100</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net9.0-windows10.0.19041</TargetFrameworks>
 
     <!-- Disable android on msbuild .NET Framework until android 35 is supported -->
     <TargetFrameworks Condition="'$(MSBuildRuntimeType)' == 'Full'">$(TargetFrameworks.Replace('net9.0-android',''))</TargetFrameworks>
@@ -65,7 +65,7 @@
         BeforeTargets="AfterBuild">
 
     <ItemGroup
-        Condition=" '$(TargetFramework)' == 'net9.0-windows10.0.26100' OR '$(TargetFramework)' == 'net9.0-desktop' ">
+        Condition=" '$(TargetFramework)' == 'net9.0-windows10.0.19041' OR '$(TargetFramework)' == 'net9.0-desktop' ">
       <!-- Validates that assets are properly propagated to the output folder, regardless of their "copy to output" value -->
       <_AssetsToValidate Include="$(OutputPath)Assets\SharedAssets.md" />
       <_AssetsToValidate Include="$(OutputPath)Assets\Icons\icon_foreground.png" />
