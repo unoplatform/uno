@@ -17,7 +17,7 @@ pr:
       - legacy/*
 
 variables:
-  windowsScaledPool: 'Windows2022-20240421'
+  windowsScaledPool: 'Windows2022-20241021-1'
   linuxVMImage: 'ubuntu-latest'
 
 stages:
