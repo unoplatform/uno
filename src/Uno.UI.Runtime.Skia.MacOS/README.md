@@ -7,7 +7,7 @@ Before you can build you need the libSkiaSharp.dylib.
 cd UnoNativeMac
 ./getSkiaSharpDylib.sh
 ```
-See /UnoNativeMac/README.md for more info.
+See [/UnoNativeMac/README.md](UnoNativeMac/README.md) for more info.
 
 ## Requirements
 
