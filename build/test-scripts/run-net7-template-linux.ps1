@@ -78,14 +78,10 @@ $projects =
     @(2, "5.2/uno52AppWithLib/uno52AppWithLib/uno52AppWithLib.csproj", @(), @()),
 
     # 5.3 Blank with net9
-<<<<<<< HEAD
     @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @(), @())
-=======
-    @(2, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @(), @()),
->>>>>>> 8e5cb3ca42 (chore: Adjust end of line)
 
     # 5.3 lib
-    @(2, "5.3/uno53net9Lib/uno53net9Lib.csproj", @(), @())
+    @(3, "5.3/uno53net9Lib/uno53net9Lib.csproj", @(), @())
 
     # 5.3 blank publish testing
     # Disabled for LXD setup issues
