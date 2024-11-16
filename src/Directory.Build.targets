@@ -96,6 +96,12 @@
 		<PackageReference Update="Xamarin.UITest" Version="4.3.5" />
 		<PackageReference Update="Xamarin.TestCloud.Agent" Version="0.23.2" />
 		<PackageReference Update="System.Numerics.Vectors" Version="4.5.0" />
+		<PackageReference Update="System.Private.Uri" Version="4.3.2" />
+		<PackageReference Update="System.Net.Http" Version="4.3.4" />
+		<PackageReference Update="System.Text.RegularExpressions" Version="4.3.1" />
+		<PackageReference Update="NuGet.Packaging" Version="6.3.4" />
+		<PackageReference Update="System.Formats.Asn1" Version="8.0.1" />
+		<PackageReference Update="System.Text.Json" Version="8.0.5" />
 
 		<PackageReference Update="SkiaSharp.Views" Version="$(SkiaSharpVersion)" />
 		<PackageReference Update="SkiaSharp.Views.Uno" Version="$(SkiaSharpVersion)" />
