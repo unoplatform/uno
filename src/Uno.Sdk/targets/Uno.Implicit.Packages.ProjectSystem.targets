@@ -109,17 +109,4 @@
 	<ItemGroup>
 		<PackageReference Include="@(_UnoProjectSystemPackageReference)" Exclude="@(PackageReference)" />
 	</ItemGroup>
-
-	<!-- HD workaround for https://github.com/dotnet/sdk/issues/1212, see HD#2924 -->
-	<Target Name="_RemoveHDAnalyzerRelease"
-			BeforeTargets="CoreCompile;XamlPreCompile"
-			Condition=" '$(Optimize)' == 'true' ">
-		<!---
-		Remove HD analyzers in release mode, as they cannot work in release mode.
-		-->
-		<ItemGroup>
-			<_HDAnalyzerToRemove Include="@(Analyzer)" Condition="'%(Analyzer.NuGetPackageId)'=='Uno.UI.HotDesign'" />
-			<Analyzer Remove="@(_HDAnalyzerToRemove)"/>
-		</ItemGroup>
-	</Target>
 </Project>
