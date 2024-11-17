@@ -80,6 +80,9 @@ $projects =
     # 5.3 Blank with net9
     @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @(), @())
 
+    # 5.3 lib
+    @(3, "5.3/uno53net9Lib/uno53net9Lib.csproj", @(), @())
+
     # 5.3 blank publish testing
     # Disabled for LXD setup issues
     # @(2, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f:net9.0-desktop", "-p:SelfContained=true", "-p:PackageFormat=snap"), @("Publish"))
