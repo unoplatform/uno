@@ -1,5 +1,4 @@
 using System;
-using System.Runtime.InteropServices;
 using System.Threading;
 using Windows.Devices.Input;
 using Windows.Foundation;
@@ -7,9 +6,7 @@ using Windows.UI.Core;
 using Windows.UI.Input;
 using Windows.Win32;
 using Windows.Win32.Foundation;
-using Windows.Win32.System.SystemServices;
-using Windows.Win32.UI.Input.KeyboardAndMouse;
-using Windows.Win32.UI.Input.Touch;
+using Windows.Win32.UI.Input.Pointer;
 using Windows.Win32.UI.WindowsAndMessaging;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
@@ -18,10 +15,7 @@ namespace Uno.UI.Runtime.Skia.Win32;
 
 internal partial class Win32WindowWrapper : IUnoCorePointerInputSource
 {
-	private const int MousePointerId = 1;
-
 	private static uint _currentPointerFrameId;
-	private PointerEventArgs? _previousPointerArgs;
 	private CoreCursor? _pointerCursor;
 
 #pragma warning disable CS0067 // Some event are not raised on Win32 ... yet!
@@ -43,34 +37,39 @@ internal partial class Win32WindowWrapper : IUnoCorePointerInputSource
 		set
 		{
 			_pointerCursor = value;
-			var cursor = value?.Type switch
-			{
-				CoreCursorType.Arrow => PInvoke.IDC_ARROW,
-				CoreCursorType.Cross => PInvoke.IDC_CROSS,
-				CoreCursorType.Hand => PInvoke.IDC_HAND,
-				CoreCursorType.Help => PInvoke.IDC_HELP,
-				CoreCursorType.IBeam => PInvoke.IDC_IBEAM,
-				CoreCursorType.SizeAll => PInvoke.IDC_SIZEALL,
-				CoreCursorType.SizeNortheastSouthwest => PInvoke.IDC_SIZENESW,
-				CoreCursorType.SizeNorthSouth => PInvoke.IDC_SIZENS,
-				CoreCursorType.SizeNorthwestSoutheast => PInvoke.IDC_SIZENWSE,
-				CoreCursorType.SizeWestEast => PInvoke.IDC_SIZEWE,
-				CoreCursorType.UniversalNo => PInvoke.IDC_NO,
-				CoreCursorType.UpArrow => PInvoke.IDC_UPARROW,
-				CoreCursorType.Wait => PInvoke.IDC_WAIT,
-				CoreCursorType.Pin => PInvoke.IDC_PIN,
-				CoreCursorType.Person => PInvoke.IDC_PERSON,
-				CoreCursorType.Custom => PInvoke.IDC_ARROW,
-				null => PInvoke.IDC_ARROW,
-				_ => throw new ArgumentOutOfRangeException()
-			};
-			var hCursor = PInvoke.LoadCursor(HINSTANCE.Null, new PCWSTR((char*)cursor));
-			PInvoke.SetCursor(hCursor);
-			using var cursorDisposable = new DisposableStruct<HCURSOR, Win32WindowWrapper>(static (hCursor, @this) =>
-			{
-				_ = PInvoke.DestroyCursor(hCursor) || @this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.DestroyCursor)} failed: {Win32Helper.GetErrorMessage()}");
-			}, hCursor, this);
+			SetCursor(value);
 		}
+	}
+
+	private unsafe void SetCursor(CoreCursor? coreCursor)
+	{
+		var cursor = coreCursor?.Type switch
+		{
+			CoreCursorType.Arrow => PInvoke.IDC_ARROW,
+			CoreCursorType.Cross => PInvoke.IDC_CROSS,
+			CoreCursorType.Hand => PInvoke.IDC_HAND,
+			CoreCursorType.Help => PInvoke.IDC_HELP,
+			CoreCursorType.IBeam => PInvoke.IDC_IBEAM,
+			CoreCursorType.SizeAll => PInvoke.IDC_SIZEALL,
+			CoreCursorType.SizeNortheastSouthwest => PInvoke.IDC_SIZENESW,
+			CoreCursorType.SizeNorthSouth => PInvoke.IDC_SIZENS,
+			CoreCursorType.SizeNorthwestSoutheast => PInvoke.IDC_SIZENWSE,
+			CoreCursorType.SizeWestEast => PInvoke.IDC_SIZEWE,
+			CoreCursorType.UniversalNo => PInvoke.IDC_NO,
+			CoreCursorType.UpArrow => PInvoke.IDC_UPARROW,
+			CoreCursorType.Wait => PInvoke.IDC_WAIT,
+			CoreCursorType.Pin => PInvoke.IDC_PIN,
+			CoreCursorType.Person => PInvoke.IDC_PERSON,
+			CoreCursorType.Custom => PInvoke.IDC_ARROW,
+			null => PInvoke.IDC_ARROW,
+			_ => throw new ArgumentOutOfRangeException()
+		};
+		var hCursor = PInvoke.LoadCursor(HINSTANCE.Null, new PCWSTR((char*)cursor));
+		PInvoke.SetCursor(hCursor);
+		using var cursorDisposable = new DisposableStruct<HCURSOR, Win32WindowWrapper>(static (hCursor, @this) =>
+		{
+			_ = PInvoke.DestroyCursor(hCursor) || @this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.DestroyCursor)} failed: {Win32Helper.GetErrorMessage()}");
+		}, hCursor, this);
 	}
 
 	[NotImplemented] public Point PointerPosition => default;
@@ -83,150 +82,156 @@ internal partial class Win32WindowWrapper : IUnoCorePointerInputSource
 
 	public void ReleasePointerCapture(PointerIdentifier pointer) => ReleasePointerCapture();
 
-	private void OnPointer(uint msg, WPARAM wParam, LPARAM lParam)
+	private void OnPointerCaptureChanged(WPARAM wParam)
 	{
-		var (evt, msgName) = msg switch
+		var pointerId = Win32Helper.GET_POINTERID_WPARAM(wParam);
+
+		if (!PInvoke.GetPointerType(pointerId, out var pointerType))
 		{
-			PInvoke.WM_MOUSEWHEEL => (PointerWheelChanged, nameof(PInvoke.WM_MOUSEWHEEL)),
-			PInvoke.WM_MOUSEHWHEEL => (PointerWheelChanged, nameof(PInvoke.WM_MOUSEHWHEEL)),
-			PInvoke.WM_LBUTTONDOWN => (PointerPressed, nameof(PInvoke.WM_LBUTTONDOWN)),
-			PInvoke.WM_RBUTTONDOWN => (PointerPressed, nameof(PInvoke.WM_RBUTTONDOWN)),
-			PInvoke.WM_MBUTTONDOWN => (PointerPressed, nameof(PInvoke.WM_MBUTTONDOWN)),
-			PInvoke.WM_XBUTTONDOWN => (PointerPressed, nameof(PInvoke.WM_XBUTTONDOWN)),
-			PInvoke.WM_LBUTTONUP => (PointerReleased, nameof(PInvoke.WM_LBUTTONUP)),
-			PInvoke.WM_RBUTTONUP => (PointerReleased, nameof(PInvoke.WM_RBUTTONUP)),
-			PInvoke.WM_MBUTTONUP => (PointerReleased, nameof(PInvoke.WM_MBUTTONUP)),
-			PInvoke.WM_XBUTTONUP => (PointerReleased, nameof(PInvoke.WM_XBUTTONUP)),
-			PInvoke.WM_MOUSEMOVE => (PointerMoved, nameof(PInvoke.WM_MOUSEMOVE)),
-			PInvoke.WM_MOUSELEAVE => (PointerExited, nameof(PInvoke.WM_MOUSELEAVE)),
-			_ => throw new ArgumentOutOfRangeException(nameof(msg), msg, null)
-		};
-
-		this.Log().Log(LogLevel.Trace, msgName, static msgName => $"WndProc received a {msgName} message.");
-
-		var x = unchecked((short)(lParam & 0xffff));
-		var y = unchecked((short)((lParam >> 16) & 0xffff));
-		var delta = unchecked((short)(wParam >> 16));
-
-		if (delta is not 0)
-		{
-			// Only WM_MOUSEWHEEL gives the position in screen coordinates, not client-area coordinates
-			var systemDrawingPoint = new System.Drawing.Point(x, y);
-			if (PInvoke.ScreenToClient(_hwnd, ref systemDrawingPoint)
-				|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.ScreenToClient)} failed: {Win32Helper.GetErrorMessage()}"))
-			{
-				x = (short)systemDrawingPoint.X;
-				y = (short)systemDrawingPoint.Y;
-			}
+			throw new InvalidOperationException($"{nameof(PInvoke.GetPointerType)} failed: {Win32Helper.GetErrorMessage()}");
 		}
 
-		PointerPointProperties properties = new()
+		if (!PInvoke.GetPointerInfo(pointerId, out var pointerInfo))
 		{
-			IsLeftButtonPressed = (wParam & (ulong)MODIFIERKEYS_FLAGS.MK_LBUTTON) != 0,
-			IsMiddleButtonPressed = (wParam & (ulong)MODIFIERKEYS_FLAGS.MK_MBUTTON) != 0,
-			IsRightButtonPressed = (wParam & (ulong)MODIFIERKEYS_FLAGS.MK_RBUTTON) != 0,
-			IsXButton1Pressed = (wParam & (ulong)MODIFIERKEYS_FLAGS.MK_XBUTTON1) != 0,
-			IsXButton2Pressed = (wParam & (ulong)MODIFIERKEYS_FLAGS.MK_XBUTTON2) != 0,
-			IsPrimary = true,
-			IsInRange = true,
-			MouseWheelDelta = delta,
-			IsHorizontalMouseWheel = msg is PInvoke.WM_MOUSEHWHEEL
-		};
+			throw new InvalidOperationException($"{nameof(PInvoke.GetPointerInfo)} failed: {Win32Helper.GetErrorMessage()}");
+		}
 
-		properties = properties.SetUpdateKindFromPrevious(_previousPointerArgs?.CurrentPoint.Properties);
+		var position = pointerInfo.ptPixelLocation;
+		var rawPosition = pointerInfo.ptPixelLocationRaw;
+		_ = PInvoke.ScreenToClient(_hwnd, ref position) || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.ScreenToClient)} failed: {Win32Helper.GetErrorMessage()}");
+		_ = PInvoke.ScreenToClient(_hwnd, ref rawPosition) || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.ScreenToClient)} failed: {Win32Helper.GetErrorMessage()}");
 
 		var point = new PointerPoint(
 			frameId: Interlocked.Increment(ref _currentPointerFrameId),
 			timestamp: (ulong)(PInvoke.GetMessageTime() * 1000), // GetMessageTime is in ms
-			device: PointerDevice.For(PointerDeviceType.Mouse),
-			pointerId: MousePointerId,
-			rawPosition: new Point(x, y),
-			position: new Point(x, y),
-			isInContact: properties.HasPressedButton,
+			device: PointerDevice.For(pointerType switch
+			{
+				POINTER_INPUT_TYPE.PT_PEN => PointerDeviceType.Pen,
+				POINTER_INPUT_TYPE.PT_TOUCH => PointerDeviceType.Touch,
+				_ => PointerDeviceType.Mouse
+			}),
+			pointerId: pointerId,
+			rawPosition: new Point(rawPosition.X, rawPosition.Y),
+			position: new Point(position.X, position.Y),
+			isInContact: false,
+			properties: null);
+		PointerCaptureLost?.Invoke(this, new PointerEventArgs(point, Win32Helper.GetKeyModifiers()));
+	}
+
+	private void OnPointer(uint msg, WPARAM wParam)
+	{
+		var pointerId = Win32Helper.GET_POINTERID_WPARAM(wParam);
+
+		if (!PInvoke.GetPointerType(pointerId, out var pointerType))
+		{
+			throw new InvalidOperationException($"{nameof(PInvoke.GetPointerType)} failed: {Win32Helper.GetErrorMessage()}");
+		}
+
+		if (!PInvoke.GetPointerInfo(pointerId, out var pointerInfo))
+		{
+			throw new InvalidOperationException($"{nameof(PInvoke.GetPointerInfo)} failed: {Win32Helper.GetErrorMessage()}");
+		}
+
+		PointerPointProperties properties;
+		if (msg is PInvoke.WM_POINTERWHEEL or PInvoke.WM_POINTERHWHEEL)
+		{
+			properties = new() { MouseWheelDelta = Win32Helper.GET_WHEEL_DELTA_WPARAM(wParam) };
+		}
+		else
+		{
+			properties = new()
+			{
+				IsPrimary = Win32Helper.IS_POINTER_PRIMARY_WPARAM(wParam),
+				IsInRange = Win32Helper.IS_POINTER_INRANGE_WPARAM(wParam),
+				IsCanceled = Win32Helper.IS_POINTER_CANCELED_WPARAM(wParam),
+				IsLeftButtonPressed = Win32Helper.IS_POINTER_FIRSTBUTTON_WPARAM(wParam),
+				PointerUpdateKind = pointerInfo.ButtonChangeType switch
+				{
+					POINTER_BUTTON_CHANGE_TYPE.POINTER_CHANGE_NONE => PointerUpdateKind.Other,
+					POINTER_BUTTON_CHANGE_TYPE.POINTER_CHANGE_FIRSTBUTTON_DOWN => PointerUpdateKind.LeftButtonPressed,
+					POINTER_BUTTON_CHANGE_TYPE.POINTER_CHANGE_FIRSTBUTTON_UP => PointerUpdateKind.LeftButtonReleased,
+					POINTER_BUTTON_CHANGE_TYPE.POINTER_CHANGE_SECONDBUTTON_DOWN => PointerUpdateKind.RightButtonPressed,
+					POINTER_BUTTON_CHANGE_TYPE.POINTER_CHANGE_SECONDBUTTON_UP => PointerUpdateKind.RightButtonReleased,
+					POINTER_BUTTON_CHANGE_TYPE.POINTER_CHANGE_THIRDBUTTON_DOWN => PointerUpdateKind.MiddleButtonPressed,
+					POINTER_BUTTON_CHANGE_TYPE.POINTER_CHANGE_THIRDBUTTON_UP => PointerUpdateKind.MiddleButtonReleased,
+					POINTER_BUTTON_CHANGE_TYPE.POINTER_CHANGE_FOURTHBUTTON_DOWN => PointerUpdateKind.XButton1Pressed,
+					POINTER_BUTTON_CHANGE_TYPE.POINTER_CHANGE_FOURTHBUTTON_UP => PointerUpdateKind.XButton1Released,
+					POINTER_BUTTON_CHANGE_TYPE.POINTER_CHANGE_FIFTHBUTTON_DOWN => PointerUpdateKind.XButton2Pressed,
+					POINTER_BUTTON_CHANGE_TYPE.POINTER_CHANGE_FIFTHBUTTON_UP => PointerUpdateKind.XButton2Released,
+					_ => throw new ArgumentOutOfRangeException()
+				}
+			};
+
+			switch (pointerType)
+			{
+				case POINTER_INPUT_TYPE.PT_TOUCH:
+					properties.TouchConfidence = Win32Helper.HAS_POINTER_CONFIDENCE_WPARAM(wParam);
+					if (PInvoke.GetPointerTouchInfo(pointerId, out var pointerTouchInfo)
+						|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GetPointerTouchInfo)} failed: {Win32Helper.GetErrorMessage()}"))
+					{
+						properties.ContactRect = (pointerTouchInfo.touchMask & PInvoke.TOUCH_MASK_CONTACTAREA) == 0 ? new Rect() : pointerTouchInfo.rcContact.ToRect();
+						properties.Orientation = (pointerTouchInfo.touchMask & PInvoke.TOUCH_MASK_CONTACTAREA) == 0 ? 0 : pointerTouchInfo.orientation;
+						properties.Pressure = (pointerTouchInfo.touchMask & PInvoke.TOUCH_MASK_PRESSURE) == 0 ? 0 : pointerTouchInfo.pressure;
+					}
+					break;
+				case POINTER_INPUT_TYPE.PT_PEN:
+					properties.IsBarrelButtonPressed = Win32Helper.IS_POINTER_SECONDBUTTON_WPARAM(wParam);
+					if (PInvoke.GetPointerPenInfo(pointerId, out var pointerPenInfo)
+						|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GetPointerPenInfo)} failed: {Win32Helper.GetErrorMessage()}"))
+					{
+						properties.XTilt = (pointerPenInfo.penMask & PInvoke.PEN_MASK_TILT_X) == 0 ? 0 : pointerPenInfo.tiltX;
+						properties.YTilt = (pointerPenInfo.penMask & PInvoke.PEN_MASK_TILT_Y) == 0 ? 0 : pointerPenInfo.tiltY;
+						properties.Pressure = (pointerPenInfo.penMask & PInvoke.PEN_MASK_PRESSURE) == 0 ? 0 : pointerPenInfo.pressure;
+					}
+					break;
+				case POINTER_INPUT_TYPE.PT_MOUSE:
+				case POINTER_INPUT_TYPE.PT_TOUCHPAD:
+					properties.IsTouchPad = pointerType is POINTER_INPUT_TYPE.PT_TOUCHPAD;
+					properties.IsRightButtonPressed = Win32Helper.IS_POINTER_SECONDBUTTON_WPARAM(wParam);
+					properties.IsMiddleButtonPressed = Win32Helper.IS_POINTER_THIRDBUTTON_WPARAM(wParam);
+					properties.IsXButton1Pressed = Win32Helper.IS_POINTER_FOURTHBUTTON_WPARAM(wParam);
+					properties.IsXButton2Pressed = Win32Helper.IS_POINTER_FIFTHBUTTON_WPARAM(wParam);
+					properties.IsHorizontalMouseWheel = (wParam & (ulong)POINTER_FLAGS.POINTER_FLAG_HWHEEL) != 0;
+					break;
+				default:
+					throw new ArgumentOutOfRangeException(nameof(pointerType));
+			}
+		}
+
+		var position = pointerInfo.ptPixelLocation;
+		var rawPosition = pointerInfo.ptPixelLocationRaw;
+		_ = PInvoke.ScreenToClient(_hwnd, ref position) || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.ScreenToClient)} failed: {Win32Helper.GetErrorMessage()}");
+		_ = PInvoke.ScreenToClient(_hwnd, ref rawPosition) || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.ScreenToClient)} failed: {Win32Helper.GetErrorMessage()}");
+
+		var point = new PointerPoint(
+			frameId: Interlocked.Increment(ref _currentPointerFrameId),
+			timestamp: (ulong)(PInvoke.GetMessageTime() * 1000), // GetMessageTime is in ms
+			device: PointerDevice.For(pointerType switch
+			{
+				POINTER_INPUT_TYPE.PT_PEN => PointerDeviceType.Pen,
+				POINTER_INPUT_TYPE.PT_TOUCH => PointerDeviceType.Touch,
+				_ => PointerDeviceType.Mouse
+			}),
+			pointerId: pointerId,
+			rawPosition: new Point(rawPosition.X, rawPosition.Y),
+			position: new Point(position.X, position.Y),
+			isInContact: msg is not (PInvoke.WM_POINTERWHEEL or PInvoke.WM_POINTERHWHEEL) && Win32Helper.IS_POINTER_INCONTACT_WPARAM(wParam),
 			properties: properties
 		);
 
-		var ptArgs = new PointerEventArgs(point, Win32Helper.GetKeyModifiers());
-		_previousPointerArgs = ptArgs;
-
-		evt?.Invoke(this, ptArgs);
-	}
-
-	private void TrackLeave()
-	{
-		TRACKMOUSEEVENT tme = new()
+		var (evt, msgName) = msg switch
 		{
-			cbSize = (uint)Marshal.SizeOf<TRACKMOUSEEVENT>(),
-			dwFlags = TRACKMOUSEEVENT_FLAGS.TME_LEAVE,
-			hwndTrack = _hwnd
+			PInvoke.WM_POINTERDOWN => (PointerPressed, nameof(PInvoke.WM_POINTERDOWN)),
+			PInvoke.WM_POINTERUP => (PointerReleased, nameof(PInvoke.WM_POINTERUP)),
+			PInvoke.WM_POINTERWHEEL => (PointerWheelChanged, nameof(PInvoke.WM_POINTERWHEEL)),
+			PInvoke.WM_POINTERHWHEEL => (PointerWheelChanged, nameof(PInvoke.WM_POINTERHWHEEL)),
+			PInvoke.WM_POINTERENTER => (PointerEntered, nameof(PInvoke.WM_POINTERENTER)),
+			PInvoke.WM_POINTERLEAVE => (PointerExited, nameof(PInvoke.WM_POINTERLEAVE)),
+			PInvoke.WM_POINTERUPDATE => (PointerMoved, nameof(PInvoke.WM_POINTERUPDATE)),
+			_ => throw new ArgumentOutOfRangeException(nameof(msg), msg, null)
 		};
-		_ = PInvoke.TrackMouseEvent(ref tme) || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.TrackMouseEvent)} failed: {Win32Helper.GetErrorMessage()}");
-	}
 
-	private unsafe void OnTouch(WPARAM wParam, LPARAM lParam)
-	{
-		var numInputs = (uint)wParam;
-		var ti = stackalloc TOUCHINPUT[(int)numInputs];
-		var hTouchInput = new HTOUCHINPUT(lParam);
-		using var touchDisposable = new DisposableStruct<HTOUCHINPUT, Win32WindowWrapper>(static (hTouchInput, @this) =>
-		{
-			_ = PInvoke.CloseTouchInputHandle(hTouchInput) || @this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.CloseTouchInputHandle)} failed: {Win32Helper.GetErrorMessage()}");
-		}, hTouchInput, this);
-
-		if (PInvoke.GetTouchInputInfo(hTouchInput, numInputs, ti, Marshal.SizeOf<TOUCHINPUT>())
-		   || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GetTouchInputInfo)} failed: {Win32Helper.GetErrorMessage()}"))
-		{
-			for (var i = 0; i < numInputs; i++)
-			{
-				var touchInfo = ti[i];
-
-				var systemDrawingPoint = new System.Drawing.Point(touchInfo.x, touchInfo.y);
-				_ = PInvoke.ScreenToClient(_hwnd, ref systemDrawingPoint)
-					|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.ScreenToClient)} failed: {Win32Helper.GetErrorMessage()}");
-				var x = systemDrawingPoint.X;
-				var y = systemDrawingPoint.Y;
-
-				PointerPointProperties properties = new()
-				{
-					IsLeftButtonPressed = (touchInfo.dwFlags & (TOUCHEVENTF_FLAGS.TOUCHEVENTF_DOWN | TOUCHEVENTF_FLAGS.TOUCHEVENTF_MOVE)) != 0,
-					IsPrimary = true,
-					IsInRange = true,
-				};
-
-				if ((touchInfo.dwMask & TOUCHINPUTMASKF_MASK.TOUCHINPUTMASKF_CONTACTAREA) != 0)
-				{
-					properties.ContactRect = new Rect(x, y, touchInfo.cxContact * 1.0 / 100, touchInfo.cyContact * 1.0 / 100);
-				}
-
-				var point = new PointerPoint(
-					frameId: Interlocked.Increment(ref _currentPointerFrameId),
-					timestamp: touchInfo.dwTime * 1000, // touchInfo.dwTime is in ms
-					device: PointerDevice.For((touchInfo.dwFlags & TOUCHEVENTF_FLAGS.TOUCHEVENTF_PEN) != 0 ? PointerDeviceType.Pen : PointerDeviceType.Touch),
-					pointerId: MousePointerId * 10 + touchInfo.dwID,
-					rawPosition: new Point(x, y),
-					position: new Point(x, y),
-					isInContact: properties.HasPressedButton,
-					properties: properties
-				);
-
-				var ptArgs = new PointerEventArgs(point, Win32Helper.GetKeyModifiers());
-				_previousPointerArgs = ptArgs;
-
-				if ((touchInfo.dwFlags & TOUCHEVENTF_FLAGS.TOUCHEVENTF_DOWN) != 0)
-				{
-					PointerEntered?.Invoke(this, ptArgs);
-					PointerPressed?.Invoke(this, ptArgs);
-				}
-				else if ((touchInfo.dwFlags & TOUCHEVENTF_FLAGS.TOUCHEVENTF_MOVE) != 0)
-				{
-					PointerMoved?.Invoke(this, ptArgs);
-				}
-				else if ((touchInfo.dwFlags & TOUCHEVENTF_FLAGS.TOUCHEVENTF_UP) != 0)
-				{
-					PointerReleased?.Invoke(this, ptArgs);
-					PointerExited?.Invoke(this, ptArgs);
-				}
-			}
-		}
+		this.Log().Log(LogLevel.Trace, msgName, static msgName => $"WndProc received a {msgName} message.");
+		evt?.Invoke(this, new PointerEventArgs(point, Win32Helper.GetKeyModifiers()));
 	}
 }

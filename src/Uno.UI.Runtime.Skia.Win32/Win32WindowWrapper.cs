@@ -155,6 +155,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		}
 
 		_ = PInvoke.RegisterTouchWindow(hwnd, 0) || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}");
+		_ = PInvoke.EnableMouseInPointer(true) || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.EnableMouseInPointer)} failed: {Win32Helper.GetErrorMessage()}");
 		return hwnd;
 	}
 
@@ -177,7 +178,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		switch (msg)
 		{
 			case PInvoke.WM_ACTIVATE:
-				switch (wParam & 0xffff)
+				switch ((uint)Win32Helper.LOWORD(wParam))
 				{
 					case PInvoke.WA_ACTIVE:
 						this.Log().Log(LogLevel.Trace, static () => $"WndProc received a {nameof(PInvoke.WM_ACTIVATE)} message with LOWORD(wParam) == {nameof(PInvoke.WA_ACTIVE)}");
@@ -192,18 +193,19 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 						ActivationState = CoreWindowActivationState.Deactivated;
 						break;
 					default:
-						this.Log().Log(LogLevel.Error, wParam, static wParam => $"WndProc received a {nameof(PInvoke.WM_ACTIVATE)} message but LOWORD(wParam) is {wParam & 0xffff}, not {nameof(PInvoke.WA_ACTIVE)}, {nameof(PInvoke.WA_CLICKACTIVE)} or {nameof(PInvoke.WA_INACTIVE)}.");
+						this.Log().Log(LogLevel.Error, wParam, static wParam => $"WndProc received a {nameof(PInvoke.WM_ACTIVATE)} message but LOWORD(wParam) is {Win32Helper.LOWORD(wParam)}, not {nameof(PInvoke.WA_ACTIVE)}, {nameof(PInvoke.WA_CLICKACTIVE)} or {nameof(PInvoke.WA_INACTIVE)}.");
 						break;
 				}
-				break;
+				return new LRESULT(0);
 			case PInvoke.WM_CLOSE:
 				this.Log().Log(LogLevel.Trace, nameof(PInvoke.WM_CLOSE), static messageName => $"WndProc received a {messageName} message.");
 				var closingArgs = RaiseClosing();
-				if (!closingArgs.Cancel)
+				if (closingArgs.Cancel)
 				{
-					// Closing should continue, perform suspension.
-					Application.Current.RaiseSuspending();
+					return new LRESULT(0);
 				}
+				// Closing should continue, perform suspension.
+				Application.Current.RaiseSuspending();
 				break;
 			case PInvoke.WM_DESTROY:
 				this.Log().Log(LogLevel.Trace, nameof(PInvoke.WM_DESTROY), static messageName => $"WndProc received a {messageName} message.");
@@ -216,27 +218,27 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				}
 				_backgroundDisposable?.Dispose();
 				_xamlRootMap.Unregister(XamlRoot!);
-				break;
+				return new LRESULT(0);
 			case PInvoke.WM_DPICHANGED:
-				RasterizationScale = (float)(wParam & 0xffff) / PInvoke.USER_DEFAULT_SCREEN_DPI;
+				RasterizationScale = (float)(Win32Helper.LOWORD(wParam)) / PInvoke.USER_DEFAULT_SCREEN_DPI;
 				RECT rect = Unsafe.ReadUnaligned<RECT>(lParam.Value.ToPointer());
-				this.Log().Log(LogLevel.Trace, wParam, rect, static (wParam, rect) => $"WndProc received a {nameof(PInvoke.WM_DPICHANGED)} message with LOWORD(wParam) == {wParam & 0xffff} and lParam = RECT {rect.Width}x{rect.Height}@{rect.left}x{rect.top}");
+				this.Log().Log(LogLevel.Trace, wParam, rect, static (wParam, rect) => $"WndProc received a {nameof(PInvoke.WM_DPICHANGED)} message with LOWORD(wParam) == {Win32Helper.LOWORD(wParam)} and lParam = RECT {rect.ToRect()}");
 				_ = PInvoke.SetWindowPos(_hwnd, HWND.Null, rect.X, rect.Y, rect.Width, rect.Height, SET_WINDOW_POS_FLAGS.SWP_NOZORDER)
 					|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}");
-				break;
+				return new LRESULT(0);
 			case PInvoke.WM_SIZE:
 				this.Log().Log(LogLevel.Trace, static () => $"WndProc received a {nameof(PInvoke.WM_SIZE)} message.");
 				OnWindowSizeOrLocationChanged();
-				break;
+				return new LRESULT(0);
 			case PInvoke.WM_MOVE:
 				this.Log().Log(LogLevel.Trace, static () => $"WndProc received a {nameof(PInvoke.WM_MOVE)} message.");
 				OnWindowSizeOrLocationChanged();
-				break;
+				return new LRESULT(0);
 			case PInvoke.WM_GETMINMAXINFO:
 				this.Log().Log(LogLevel.Trace, static () => $"WndProc received a {nameof(PInvoke.WM_GETMINMAXINFO)} message.");
 				MINMAXINFO* info = (MINMAXINFO*)lParam.Value;
 				info->ptMinTrackSize = new Point((int)_applicationView.PreferredMinSize.Width, (int)_applicationView.PreferredMinSize.Height);
-				break;
+				return new LRESULT(0);
 			case PInvoke.WM_PAINT:
 				this.Log().Log(LogLevel.Trace, static () => $"WndProc received a {nameof(PInvoke.WM_PAINT)} message.");
 				Paint();
@@ -249,21 +251,22 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				this.Log().Log(LogLevel.Trace, static () => $"WndProc received a {nameof(PInvoke.WM_KEYUP)} message.");
 				OnKey(wParam, lParam, false);
 				break;
-			case PInvoke.WM_LBUTTONDOWN or PInvoke.WM_MBUTTONDOWN or PInvoke.WM_RBUTTONDOWN or PInvoke.WM_XBUTTONDOWN
-				or PInvoke.WM_LBUTTONUP or PInvoke.WM_MBUTTONUP or PInvoke.WM_RBUTTONUP or PInvoke.WM_XBUTTONUP
-				or PInvoke.WM_MOUSELEAVE:
-				OnPointer(msg, wParam, lParam);
-				break;
-			case PInvoke.WM_MOUSEMOVE:
-				OnPointer(msg, wParam, lParam);
-				TrackLeave();
-				break;
-			case PInvoke.WM_MOUSEWHEEL or PInvoke.WM_MOUSEHWHEEL:
-				OnPointer(msg, wParam, lParam);
-				return new LRESULT(IntPtr.Zero); // https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-mousewheel: "If an application processes this message, it should return zero."
-			case PInvoke.WM_TOUCH:
-				this.Log().Log(LogLevel.Trace, static () => $"WndProc received a {nameof(PInvoke.WM_TOUCH)} message.");
-				OnTouch(wParam, lParam);
+			case PInvoke.WM_POINTERDOWN or PInvoke.WM_POINTERUP or PInvoke.WM_POINTERWHEEL or PInvoke.WM_POINTERHWHEEL
+				or PInvoke.WM_POINTERENTER or PInvoke.WM_POINTERLEAVE or PInvoke.WM_POINTERUPDATE:
+				OnPointer(msg, wParam);
+				return new LRESULT(0);
+			case PInvoke.WM_POINTERCAPTURECHANGED:
+				this.Log().Log(LogLevel.Trace, static () => $"WndProc received a {nameof(PInvoke.WM_POINTERCAPTURECHANGED)} message.");
+				OnPointerCaptureChanged(wParam);
+				return new LRESULT(0);
+			case PInvoke.WM_SETCURSOR:
+				this.Log().Log(LogLevel.Trace, static () => $"WndProc received a {nameof(PInvoke.WM_SETCURSOR)} message.");
+				if ((uint)Win32Helper.LOWORD(lParam) is not (PInvoke.HTBOTTOM or PInvoke.HTBOTTOMLEFT or PInvoke.HTBOTTOMRIGHT
+					or PInvoke.HTLEFT or PInvoke.HTRIGHT or PInvoke.HTTOP or PInvoke.HTTOPLEFT or PInvoke.HTTOPRIGHT))
+				{
+					SetCursor(PointerCursor);
+					return new LRESULT(0);
+				}
 				break;
 		}
 
@@ -286,7 +289,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 		var scale = RasterizationScale == 0 ? 1 : RasterizationScale;
 
-		this.Log().Log(LogLevel.Trace, windowRect, clientRect, static (windowRect, clientRect) => $"Adjusting window dimensions to {windowRect.Width}x{windowRect.Height}@{windowRect.left}x{windowRect.top} and client area dimensions to {clientRect.Width}x{clientRect.Height}@{clientRect.left}x{clientRect.top}");
+		this.Log().Log(LogLevel.Trace, windowRect, clientRect, static (windowRect, clientRect) => $"Adjusting window dimensions to {windowRect.ToRect()} and client area dimensions to {clientRect.ToRect()}");
 
 		// For things to work correctly with layoutting, Bounds and VisibleBounds need to start at (0,0) regardless of
 		// the reported top-left corner by Windows.
