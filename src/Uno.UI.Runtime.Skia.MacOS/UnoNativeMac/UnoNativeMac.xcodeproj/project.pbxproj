@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		D116C63E2AC79876004B975F /* UNOCursor.m in Sources */ = {isa = PBXBuildFile; fileRef = D116C63D2AC79876004B975F /* UNOCursor.m */; };
 		D13AB8A82B5839B200693F8E /* libSkiaSharp.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D13AB8A72B5839B200693F8E /* libSkiaSharp.dylib */; };
+		D18D4FAC2C2DE804003E4BBF /* UNONative.m in Sources */ = {isa = PBXBuildFile; fileRef = D18D4FAB2C2DE804003E4BBF /* UNONative.m */; };
 		D1A0651E2A7066F700101BE6 /* UNOMetalViewDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D1A0651D2A7066F700101BE6 /* UNOMetalViewDelegate.m */; };
 		D1A065202A8467B200101BE6 /* UNOApplication.h in Headers */ = {isa = PBXBuildFile; fileRef = D1A0651F2A8467B200101BE6 /* UNOApplication.h */; };
 		D1A065222A84688000101BE6 /* UNOApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = D1A065212A84688000101BE6 /* UNOApplication.m */; };
@@ -24,6 +25,8 @@
 		D116C63D2AC79876004B975F /* UNOCursor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UNOCursor.m; sourceTree = "<group>"; };
 		D13AB8A72B5839B200693F8E /* libSkiaSharp.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libSkiaSharp.dylib; path = UnoNativeMac/libSkiaSharp.dylib; sourceTree = "<group>"; };
 		D13AB8AC2B58566400693F8E /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
+		D18D4FAA2C2DE76F003E4BBF /* UNONative.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UNONative.h; sourceTree = "<group>"; };
+		D18D4FAB2C2DE804003E4BBF /* UNONative.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UNONative.m; sourceTree = "<group>"; };
 		D1A0651C2A70664A00101BE6 /* UNOMetalViewDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UNOMetalViewDelegate.h; sourceTree = "<group>"; };
 		D1A0651D2A7066F700101BE6 /* UNOMetalViewDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UNOMetalViewDelegate.m; sourceTree = "<group>"; };
 		D1A0651F2A8467B200101BE6 /* UNOApplication.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UNOApplication.h; sourceTree = "<group>"; };
@@ -90,6 +93,8 @@
 				D116C63D2AC79876004B975F /* UNOCursor.m */,
 				D1A0651C2A70664A00101BE6 /* UNOMetalViewDelegate.h */,
 				D1A0651D2A7066F700101BE6 /* UNOMetalViewDelegate.m */,
+				D18D4FAA2C2DE76F003E4BBF /* UNONative.h */,
+				D18D4FAB2C2DE804003E4BBF /* UNONative.m */,
 				D1CC768E2ABA1368002A44F0 /* UNOPickers.h */,
 				D1CC768C2ABA1337002A44F0 /* UNOPickers.m */,
 				D1FE7A2C2B75C8E100ACFC76 /* UNOSoftView.h */,
@@ -176,6 +181,7 @@
 				D1A065252A8AC23800101BE6 /* UNOWindow.m in Sources */,
 				D1CC768B2AB9D464002A44F0 /* UNOClipboard.m in Sources */,
 				D116C63E2AC79876004B975F /* UNOCursor.m in Sources */,
+				D18D4FAC2C2DE804003E4BBF /* UNONative.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
