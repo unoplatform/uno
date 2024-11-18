@@ -16,7 +16,7 @@ jobs:
           inputs:
             artifactName: 'NuGet_Packages'
             itemPattern: |
-              **/.nupkg
+              **/*.nupkg
               !*Private*.nupkg
             targetPath: '$(Pipeline.Workspace)/NuGet_Packages'
           displayName: Download artifacts
