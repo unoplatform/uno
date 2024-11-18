@@ -11,7 +11,6 @@ using System.Threading;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.UI.WindowsAndMessaging;
-using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
 
 namespace Uno.UI.Runtime.Skia.Win32
@@ -34,7 +33,9 @@ namespace Uno.UI.Runtime.Skia.Win32
 		/// </summary>
 		private readonly Queue<Action> _readyList;
 
-		private readonly List<HWND> _hwnds = new();
+		// It's important to also include HWND.Null here because some messages will only show up with HWND.Null.
+		// Specifically, system messages like Alt-Shift (to change the keyboard layout) will only show up with HWND.Null.
+		private readonly List<HWND> _hwnds = [HWND.Null];
 
 		/// <summary>
 		/// Flag indicating whether the event loop should quit. When set, the event should be signaled as well to
