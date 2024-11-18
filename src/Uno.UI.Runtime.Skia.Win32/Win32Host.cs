@@ -24,6 +24,8 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 		ApiExtensibility.Register(typeof(INativeWindowFactoryExtension), _ => new Win32NativeWindowFactoryExtension());
 		ApiExtensibility.Register<IXamlRootHost>(typeof(IUnoKeyboardInputSource),
 			host => host as Win32WindowWrapper ?? throw new ArgumentException($"{nameof(host)} must be a {nameof(Win32WindowWrapper)} instance"));
+		ApiExtensibility.Register<IXamlRootHost>(typeof(IUnoCorePointerInputSource),
+			host => host as Win32WindowWrapper ?? throw new ArgumentException($"{nameof(host)} must be a {nameof(Win32WindowWrapper)} instance"));
 	}
 
 	public Win32Host(Func<Application> appBuilder)

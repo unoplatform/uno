@@ -17,16 +17,29 @@ WM_DPICHANGED
 WM_GETMINMAXINFO
 WM_KEYDOWN
 WM_KEYUP
+WM_LBUTTONDOWN
+WM_LBUTTONUP
+WM_MBUTTONDOWN
+WM_MBUTTONUP
+WM_MOUSEHWHEEL
+WM_MOUSELEAVE
+WM_MOUSEMOVE
+WM_MOUSEWHEEL
 WM_MOVE
 WM_NCCREATE
 WM_PAINT
+WM_RBUTTONDOWN
+WM_RBUTTONUP
 WM_SETICON
 WM_SHOWWINDOW
 WM_SIZE
 WM_USER
+WM_XBUTTONDOWN
+WM_XBUTTONUP
 
 // Structs
 MINMAXINFO
+MODIFIERKEYS_FLAGS
 PIXELFORMATDESCRIPTOR
 RECT
 
@@ -44,6 +57,7 @@ DestroyWindow
 DispatchMessage
 EndPaint
 FormatMessage
+GetCapture
 GetClientRect
 GetDC
 GetDpiForWindow
@@ -60,9 +74,11 @@ LocalFree
 PeekMessage
 RegisterClassEx
 ReleaseDC
+ReleaseCapture
 SelectObject
 SendMessage
 SetActiveWindow
+SetCapture
 SetPixelFormat
 SetThreadDpiAwarenessContext
 SetWindowLong
@@ -71,6 +87,7 @@ SetWindowText
 ShowWindow
 ShowWindowAsync
 SwapBuffers
+TrackMouseEvent
 TranslateMessage
 wglCreateContext
 wglDeleteContext

@@ -246,6 +246,18 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				this.Log().Log(LogLevel.Trace, static () => $"WndProc received a {nameof(PInvoke.WM_KEYUP)} message.");
 				OnKey(wParam, lParam, false);
 				break;
+			case PInvoke.WM_LBUTTONDOWN or PInvoke.WM_MBUTTONDOWN or PInvoke.WM_RBUTTONDOWN or PInvoke.WM_XBUTTONDOWN
+				or PInvoke.WM_LBUTTONUP or PInvoke.WM_MBUTTONUP or PInvoke.WM_RBUTTONUP or PInvoke.WM_XBUTTONUP
+				or PInvoke.WM_MOUSELEAVE:
+				OnPointer(msg, wParam, lParam);
+				break;
+			case PInvoke.WM_MOUSEMOVE:
+				OnPointer(msg, wParam, lParam);
+				TrackLeave();
+				break;
+			case PInvoke.WM_MOUSEWHEEL or PInvoke.WM_MOUSEHWHEEL:
+				OnPointer(msg, wParam, lParam);
+				return new LRESULT(IntPtr.Zero); // https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-mousewheel: "If an application processes this message, it should return zero."
 		}
 
 		return PInvoke.DefWindowProc(hwnd, msg, wParam, lParam);
