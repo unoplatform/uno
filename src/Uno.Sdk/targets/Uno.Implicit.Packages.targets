@@ -63,6 +63,7 @@
 				UnoResizetizerVersion="$(UnoResizetizerVersion)"
 				UnoSdkExtrasVersion="$(UnoSdkExtrasVersion)"
 				UnoSettingsVersion="$(UnoSettingsVersion)"
+				UnoHotDesignVersion="$(UnoHotDesignVersion)"
 				MicrosoftLoggingVersion="$(MicrosoftLoggingVersion)"
 				WinAppSdkVersion="$(WinAppSdkVersion)"
 				WinAppSdkBuildToolsVersion="$(WinAppSdkBuildToolsVersion)"

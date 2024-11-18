@@ -499,7 +499,7 @@ partial class ClientHotReloadProcessor
 #endif
 		else
 		{
-			var errorMsg = $"Unable to access Dispatcher/DispatcherQueue in order to invoke {nameof(ReloadWithUpdatedTypes)}. Make sure you have enabled hot-reload (Window.EnableHotReload()) in app startup. See https://aka.platform.uno/hot-reload";
+			var errorMsg = $"Unable to access Dispatcher/DispatcherQueue in order to invoke {nameof(ReloadWithUpdatedTypes)}. Make sure you have enabled hot-reload (Window.UseStudio()) in app startup. See https://aka.platform.uno/hot-reload";
 			hr?.ReportError(new InvalidOperationException(errorMsg));
 			if (_log.IsEnabled(LogLevel.Warning))
 			{
