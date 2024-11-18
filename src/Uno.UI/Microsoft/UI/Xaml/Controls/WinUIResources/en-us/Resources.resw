@@ -1509,4 +1509,8 @@
   <data name="5155" xml:space="preserve">
     <value>Plum</value>
   </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>Close</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

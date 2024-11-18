@@ -153,10 +153,6 @@
     <value>रंगाचो मोदेल</value>
     <comment>The automation name for the color model selection combo box.</comment>
   </data>
-  <data name="AutomationNameColorSpectrum" xml:space="preserve">
-    <value>रंग पिकर</value>
-    <comment>The automation name for the ColorSpectrum control.</comment>
-  </data>
   <data name="TextGreenLabel" xml:space="preserve">
     <value>पाचवो</value>
     <comment>The label for the text box to edit the green component of the current RGB color.</comment>
@@ -164,10 +160,6 @@
   <data name="AutomationNameGreenTextBox" xml:space="preserve">
     <value>पाचवो</value>
     <comment>The automation name for the text box to edit the green component of the current RGB color.</comment>
-  </data>
-  <data name="HelpTextColorSpectrum" xml:space="preserve">
-    <value>बाण बटणा वरवीं 2D नॅविगेशन</value>
-    <comment>The help text associated with ColorSpectrum.</comment>
   </data>
   <data name="AutomationNameHexTextBox" xml:space="preserve">
     <value>RGB hex</value>
@@ -184,10 +176,6 @@
   <data name="AutomationNameHueTextBox" xml:space="preserve">
     <value>रंगछटा</value>
     <comment>The automation name for the text box to edit the hue component of the current HSV color.</comment>
-  </data>
-  <data name="LocalizedControlTypeColorSpectrum" xml:space="preserve">
-    <value>2D स्लायडर</value>
-    <comment>The string to provide as the localized control type of the ColorSpectrum.</comment>
   </data>
   <data name="TextRedLabel" xml:space="preserve">
     <value>तांबडो</value>
@@ -212,14 +200,6 @@
   <data name="TextValueLabel" xml:space="preserve">
     <value>मान</value>
     <comment>The label for the text box to edit the value component of the current HSV color.</comment>
-  </data>
-  <data name="ValueStringColorSpectrumWithColorName" xml:space="preserve">
-    <value>%1!s!, रंगछटा %2!u!, परिपूर्णता %3!u!, मान %4!u!</value>
-    <comment>The string to provide as the UIA value of the ColorSpectrum when we're including the friendly color name. %1 is the friendly name of the color; %2, %3, and %4 are the HSV values for the color between 0 and 359 (for hue) or 0 and 100 (for saturation or value).</comment>
-  </data>
-  <data name="ValueStringColorSpectrumWithoutColorName" xml:space="preserve">
-    <value>रंगछटा %1!u!, परिपूर्णता %2!u!, मान %3!u!</value>
-    <comment>The string to provide as the UIA value of the ColorSpectrum when we aren't including the friendly color name. %1, %2, and %3 are the HSV values for the color between 0 and 359 (for hue) or 0 and 100 (for saturation or value).</comment>
   </data>
   <data name="ValueStringHueSliderWithColorName" xml:space="preserve">
     <value>%1!u!, %2!s!</value>
