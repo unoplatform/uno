@@ -5,6 +5,21 @@ CW_USEDEFAULT
 DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2
 ICON_BIG
 ICON_SMALL
+IDC_ARROW
+IDC_CROSS
+IDC_HAND
+IDC_HELP
+IDC_IBEAM
+IDC_NO
+IDC_PERSON
+IDC_PIN
+IDC_SIZEALL
+IDC_SIZENESW
+IDC_SIZENWSE
+IDC_SIZENS
+IDC_SIZEWE
+IDC_UPARROW
+IDC_WAIT
 USER_DEFAULT_SCREEN_DPI
 WA_ACTIVE
 WA_CLICKACTIVE
@@ -69,6 +84,7 @@ glGetIntegerv
 glGetString
 InvalidateRect
 IsWindowVisible
+LoadCursor
 LoadImage
 LocalFree
 PeekMessage
@@ -79,6 +95,7 @@ SelectObject
 SendMessage
 SetActiveWindow
 SetCapture
+SetCursor
 SetPixelFormat
 SetThreadDpiAwarenessContext
 SetWindowLong

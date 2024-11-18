@@ -82,6 +82,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		_applicationView.PropertyChanged += OnApplicationViewPropertyChanged;
 
 		_hwnd = CreateWindow();
+		PointerCursor = new CoreCursor(CoreCursorType.Arrow, 0);
 
 		_xamlRootMap.Register(xamlRoot, this);
 

@@ -9,6 +9,8 @@ using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.System.SystemServices;
 using Windows.Win32.UI.Input.KeyboardAndMouse;
+using Windows.Win32.UI.WindowsAndMessaging;
+using Uno.Disposables;
 using Uno.Foundation.Logging;
 
 namespace Uno.UI.Runtime.Skia.Win32;
@@ -19,6 +21,7 @@ internal partial class Win32WindowWrapper : IUnoCorePointerInputSource
 
 	private static uint _currentPointerFrameId;
 	private PointerEventArgs? _previousPointerArgs;
+	private CoreCursor? _pointerCursor;
 
 #pragma warning disable CS0067 // Some event are not raised on Win32 ... yet!
 	public event TypedEventHandler<object, PointerEventArgs>? PointerCaptureLost;
@@ -33,7 +36,41 @@ internal partial class Win32WindowWrapper : IUnoCorePointerInputSource
 
 	public bool HasCapture => PInvoke.GetCapture() == _hwnd;
 
-	public CoreCursor? PointerCursor { get; set; }
+	public unsafe CoreCursor? PointerCursor
+	{
+		get => _pointerCursor;
+		set
+		{
+			_pointerCursor = value;
+			var cursor = value?.Type switch
+			{
+				CoreCursorType.Arrow => PInvoke.IDC_ARROW,
+				CoreCursorType.Cross => PInvoke.IDC_CROSS,
+				CoreCursorType.Hand => PInvoke.IDC_HAND,
+				CoreCursorType.Help => PInvoke.IDC_HELP,
+				CoreCursorType.IBeam => PInvoke.IDC_IBEAM,
+				CoreCursorType.SizeAll => PInvoke.IDC_SIZEALL,
+				CoreCursorType.SizeNortheastSouthwest => PInvoke.IDC_SIZENESW,
+				CoreCursorType.SizeNorthSouth => PInvoke.IDC_SIZENS,
+				CoreCursorType.SizeNorthwestSoutheast => PInvoke.IDC_SIZENWSE,
+				CoreCursorType.SizeWestEast => PInvoke.IDC_SIZEWE,
+				CoreCursorType.UniversalNo => PInvoke.IDC_NO,
+				CoreCursorType.UpArrow => PInvoke.IDC_UPARROW,
+				CoreCursorType.Wait => PInvoke.IDC_WAIT,
+				CoreCursorType.Pin => PInvoke.IDC_PIN,
+				CoreCursorType.Person => PInvoke.IDC_PERSON,
+				CoreCursorType.Custom => PInvoke.IDC_ARROW,
+				null => PInvoke.IDC_ARROW,
+				_ => throw new ArgumentOutOfRangeException()
+			};
+			var hCursor = PInvoke.LoadCursor(HINSTANCE.Null, new PCWSTR((char*)cursor));
+			PInvoke.SetCursor(hCursor);
+			using var cursorDisposable = new DisposableStruct<HCURSOR>(static hCursor =>
+			{
+				_ = PInvoke.DestroyCursor(hCursor) || typeof(Win32WindowWrapper).Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.DestroyCursor)} failed: {Win32Helper.GetErrorMessage()}");
+			}, hCursor);
+		}
+	}
 
 	[NotImplemented] public Point PointerPosition => default;
 
