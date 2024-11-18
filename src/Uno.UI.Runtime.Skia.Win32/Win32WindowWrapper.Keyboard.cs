@@ -14,6 +14,8 @@ internal partial class Win32WindowWrapper : IUnoKeyboardInputSource
 
 	private void OnKey(WPARAM wParam, LPARAM lParam, bool down)
 	{
+		var key = (VirtualKey)wParam.Value;
+
 		var modifiers = VirtualKeyModifiers.None;
 		if (PInvoke.GetKeyState((int)VirtualKey.LeftMenu) < 0 || PInvoke.GetKeyState((int)VirtualKey.RightMenu) < 0 ||
 			PInvoke.GetKeyState((int)VirtualKey.Menu) < 0)
@@ -47,13 +49,17 @@ internal partial class Win32WindowWrapper : IUnoKeyboardInputSource
 			if (msg.message == PInvoke.WM_CHAR)
 			{
 				PInvoke.PeekMessage(out _, _hwnd, 0, 0, PEEK_MESSAGE_REMOVE_TYPE.PM_REMOVE);
-				unicodeKey = (char)msg.wParam;
+				if (key != VirtualKey.Tab)
+				{
+					// We don't treat Tab as a character key. For example, tabbing in a TextBox doesn't insert a '\t'
+					unicodeKey = (char)msg.wParam;
+				}
 			}
 		}
 
 		var args = new KeyEventArgs(
 			"keyboard",
-			(VirtualKey)wParam.Value,
+			key,
 			modifiers,
 			new CorePhysicalKeyStatus { ScanCode = (uint)((lParam.Value & 0x00FF0000) >> 16), RepeatCount = 1, },
 			unicodeKey);
