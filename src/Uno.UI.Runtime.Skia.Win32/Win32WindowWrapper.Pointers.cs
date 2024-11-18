@@ -9,6 +9,7 @@ using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.System.SystemServices;
 using Windows.Win32.UI.Input.KeyboardAndMouse;
+using Windows.Win32.UI.Input.Touch;
 using Windows.Win32.UI.WindowsAndMessaging;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
@@ -65,10 +66,10 @@ internal partial class Win32WindowWrapper : IUnoCorePointerInputSource
 			};
 			var hCursor = PInvoke.LoadCursor(HINSTANCE.Null, new PCWSTR((char*)cursor));
 			PInvoke.SetCursor(hCursor);
-			using var cursorDisposable = new DisposableStruct<HCURSOR>(static hCursor =>
+			using var cursorDisposable = new DisposableStruct<HCURSOR, Win32WindowWrapper>(static (hCursor, @this) =>
 			{
-				_ = PInvoke.DestroyCursor(hCursor) || typeof(Win32WindowWrapper).Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.DestroyCursor)} failed: {Win32Helper.GetErrorMessage()}");
-			}, hCursor);
+				_ = PInvoke.DestroyCursor(hCursor) || @this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.DestroyCursor)} failed: {Win32Helper.GetErrorMessage()}");
+			}, hCursor, this);
 		}
 	}
 
@@ -110,8 +111,13 @@ internal partial class Win32WindowWrapper : IUnoCorePointerInputSource
 		if (delta is not 0)
 		{
 			// Only WM_MOUSEWHEEL gives the position in screen coordinates, not client-area coordinates
-			x -= (short)Position.X;
-			y -= (short)Position.Y;
+			var systemDrawingPoint = new System.Drawing.Point(x, y);
+			if (PInvoke.ScreenToClient(_hwnd, ref systemDrawingPoint)
+				|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.ScreenToClient)} failed: {Win32Helper.GetErrorMessage()}"))
+			{
+				x = (short)systemDrawingPoint.X;
+				y = (short)systemDrawingPoint.Y;
+			}
 		}
 
 		PointerPointProperties properties = new()
@@ -131,7 +137,7 @@ internal partial class Win32WindowWrapper : IUnoCorePointerInputSource
 
 		var point = new PointerPoint(
 			frameId: Interlocked.Increment(ref _currentPointerFrameId),
-			timestamp: (ulong)(DateTime.Now.Ticks / TimeSpan.TicksPerMicrosecond),
+			timestamp: (ulong)(PInvoke.GetMessageTime() * 1000), // GetMessageTime is in ms
 			device: PointerDevice.For(PointerDeviceType.Mouse),
 			pointerId: MousePointerId,
 			rawPosition: new Point(x, y),
@@ -155,5 +161,72 @@ internal partial class Win32WindowWrapper : IUnoCorePointerInputSource
 			hwndTrack = _hwnd
 		};
 		_ = PInvoke.TrackMouseEvent(ref tme) || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.TrackMouseEvent)} failed: {Win32Helper.GetErrorMessage()}");
+	}
+
+	private unsafe void OnTouch(WPARAM wParam, LPARAM lParam)
+	{
+		var numInputs = (uint)wParam;
+		var ti = stackalloc TOUCHINPUT[(int)numInputs];
+		var hTouchInput = new HTOUCHINPUT(lParam);
+		using var touchDisposable = new DisposableStruct<HTOUCHINPUT, Win32WindowWrapper>(static (hTouchInput, @this) =>
+		{
+			_ = PInvoke.CloseTouchInputHandle(hTouchInput) || @this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.CloseTouchInputHandle)} failed: {Win32Helper.GetErrorMessage()}");
+		}, hTouchInput, this);
+
+		if (PInvoke.GetTouchInputInfo(hTouchInput, numInputs, ti, Marshal.SizeOf<TOUCHINPUT>())
+		   || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GetTouchInputInfo)} failed: {Win32Helper.GetErrorMessage()}"))
+		{
+			for (var i = 0; i < numInputs; i++)
+			{
+				var touchInfo = ti[i];
+
+				var systemDrawingPoint = new System.Drawing.Point(touchInfo.x, touchInfo.y);
+				_ = PInvoke.ScreenToClient(_hwnd, ref systemDrawingPoint)
+					|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.ScreenToClient)} failed: {Win32Helper.GetErrorMessage()}");
+				var x = systemDrawingPoint.X;
+				var y = systemDrawingPoint.Y;
+
+				PointerPointProperties properties = new()
+				{
+					IsLeftButtonPressed = (touchInfo.dwFlags & (TOUCHEVENTF_FLAGS.TOUCHEVENTF_DOWN | TOUCHEVENTF_FLAGS.TOUCHEVENTF_MOVE)) != 0,
+					IsPrimary = true,
+					IsInRange = true,
+				};
+
+				if ((touchInfo.dwMask & TOUCHINPUTMASKF_MASK.TOUCHINPUTMASKF_CONTACTAREA) != 0)
+				{
+					properties.ContactRect = new Rect(x, y, touchInfo.cxContact * 1.0 / 100, touchInfo.cyContact * 1.0 / 100);
+				}
+
+				var point = new PointerPoint(
+					frameId: Interlocked.Increment(ref _currentPointerFrameId),
+					timestamp: touchInfo.dwTime * 1000, // touchInfo.dwTime is in ms
+					device: PointerDevice.For((touchInfo.dwFlags & TOUCHEVENTF_FLAGS.TOUCHEVENTF_PEN) != 0 ? PointerDeviceType.Pen : PointerDeviceType.Touch),
+					pointerId: MousePointerId * 10 + touchInfo.dwID,
+					rawPosition: new Point(x, y),
+					position: new Point(x, y),
+					isInContact: properties.HasPressedButton,
+					properties: properties
+				);
+
+				var ptArgs = new PointerEventArgs(point, Win32Helper.GetKeyModifiers());
+				_previousPointerArgs = ptArgs;
+
+				if ((touchInfo.dwFlags & TOUCHEVENTF_FLAGS.TOUCHEVENTF_DOWN) != 0)
+				{
+					PointerEntered?.Invoke(this, ptArgs);
+					PointerPressed?.Invoke(this, ptArgs);
+				}
+				else if ((touchInfo.dwFlags & TOUCHEVENTF_FLAGS.TOUCHEVENTF_MOVE) != 0)
+				{
+					PointerMoved?.Invoke(this, ptArgs);
+				}
+				else if ((touchInfo.dwFlags & TOUCHEVENTF_FLAGS.TOUCHEVENTF_UP) != 0)
+				{
+					PointerReleased?.Invoke(this, ptArgs);
+					PointerExited?.Invoke(this, ptArgs);
+				}
+			}
+		}
 	}
 }

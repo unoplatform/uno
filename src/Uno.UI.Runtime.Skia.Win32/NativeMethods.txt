@@ -48,6 +48,7 @@ WM_RBUTTONUP
 WM_SETICON
 WM_SHOWWINDOW
 WM_SIZE
+WM_TOUCH
 WM_USER
 WM_XBUTTONDOWN
 WM_XBUTTONUP
@@ -57,6 +58,7 @@ MINMAXINFO
 MODIFIERKEYS_FLAGS
 PIXELFORMATDESCRIPTOR
 RECT
+TOUCHINPUT
 
 // Functions
 BeginPaint
@@ -77,6 +79,8 @@ GetClientRect
 GetDC
 GetDpiForWindow
 GetKeyState
+GetMessageTime
+GetTouchInputInfo
 GetWindowRect
 GetWindowText
 glGetError
@@ -89,8 +93,10 @@ LoadImage
 LocalFree
 PeekMessage
 RegisterClassEx
+RegisterTouchWindow
 ReleaseDC
 ReleaseCapture
+ScreenToClient
 SelectObject
 SendMessage
 SetActiveWindow

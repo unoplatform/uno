@@ -153,6 +153,8 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		{
 			throw new InvalidOperationException($"{nameof(PInvoke.CreateWindowEx)} failed: {Win32Helper.GetErrorMessage()}");
 		}
+
+		_ = PInvoke.RegisterTouchWindow(hwnd, 0) || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}");
 		return hwnd;
 	}
 
@@ -259,6 +261,10 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			case PInvoke.WM_MOUSEWHEEL or PInvoke.WM_MOUSEHWHEEL:
 				OnPointer(msg, wParam, lParam);
 				return new LRESULT(IntPtr.Zero); // https://learn.microsoft.com/en-us/windows/win32/inputdev/wm-mousewheel: "If an application processes this message, it should return zero."
+			case PInvoke.WM_TOUCH:
+				this.Log().Log(LogLevel.Trace, static () => $"WndProc received a {nameof(PInvoke.WM_TOUCH)} message.");
+				OnTouch(wParam, lParam);
+				break;
 		}
 
 		return PInvoke.DefWindowProc(hwnd, msg, wParam, lParam);
