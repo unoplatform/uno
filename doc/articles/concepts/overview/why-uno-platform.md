@@ -14,7 +14,7 @@ At the core is a cross-platform .NET UI framework, that allows apps to run every
 
 However, built on top of this foundation is also a rich platform which includes libraries, extensions, and tools that accelerate the design, development, and testing of cross-platform applications.
 
-## Hot Design - the only U
+## Hot Design - The only Visual Designer for cross-platform .NET Applications
 
 Uno Platform offers Hot Design, industry's first and only runtime Visual Designer for cross-platform .NET Applications. It transforms your running app into a Designer from any IDE on any OS. This offers unprecedented productivity gains. Learn more about [Hot Design](https://platform.uno/hot-design/)
 
