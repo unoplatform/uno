@@ -11,7 +11,9 @@ namespace UITests.Windows_UI_Xaml_Input.Keyboard
 	[Sample("Keyboard", IsManualTest = true)]
 	public sealed partial class Keyboard_Modifiers : Page
 	{
+#if HAS_UNO
 		private DispatcherTimer _timer;
+#endif
 
 		public Keyboard_Modifiers()
 		{
