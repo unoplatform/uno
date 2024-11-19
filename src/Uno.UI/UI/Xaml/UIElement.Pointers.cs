@@ -29,7 +29,6 @@ using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 using Microsoft.UI.Input;
 #else
 using Windows.UI.Input;
-using Windows.Devices.Input;
 #endif
 
 namespace Microsoft.UI.Xaml
