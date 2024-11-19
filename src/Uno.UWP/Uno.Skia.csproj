@@ -37,6 +37,8 @@
 		<Compile Include="..\Uno.UI\UI\Input\PointerPointProperties.cs" />
 		<Compile Include="..\Uno.UI\UI\Input\PointerPointPropertiesExtensions.cs" />
 		<Compile Include="..\Uno.UI\UI\Input\PointerUpdateKind.cs" />
+		<Compile Include="..\Uno.UI\UI\Colors.cs" />
+		<Compile Include="..\Uno.UI\UI\Text\FontWeights.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
