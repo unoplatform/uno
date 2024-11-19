@@ -37,6 +37,10 @@ using Microsoft.UI.Xaml.Hosting;
 using Uno.UI.Toolkit.Extensions;
 using KeyEventArgs = Windows.UI.Core.KeyEventArgs;
 
+#if !HAS_UNO_WINUI
+using Windows.UI.Input;
+#endif
+
 #if __IOS__
 using UIKit;
 #elif __MACOS__
