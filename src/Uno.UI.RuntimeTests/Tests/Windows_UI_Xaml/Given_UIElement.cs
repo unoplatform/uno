@@ -33,7 +33,6 @@ using Uno.UI;
 using Windows.UI;
 using Windows.ApplicationModel.Appointments;
 using Microsoft.UI.Xaml.Hosting;
-using Uno.UI.Helpers.Xaml;
 using Uno.UI.Toolkit.Extensions;
 
 #if __IOS__
@@ -1718,15 +1717,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 					Height = 100,
 					Fill = new SolidColorBrush(Microsoft.UI.Colors.LightCoral),
 					AllowDrop = true
-				}.GenericApply(rect =>
-					{
-						rect.Drop += (_, _) => dropCount++;
-						if (setAcceptedOperation)
-						{
-							rect.DragOver += (_, e) => e.AcceptedOperation = DataPackageOperation.Copy;
-						}
-					}))
+				})
 			};
+
+			target.Drop += (_, _) => dropCount++;
+			if (setAcceptedOperation)
+			{
+				target.DragOver += (_, e) => e.AcceptedOperation = DataPackageOperation.Copy;
+			}
 
 			await UITestHelper.Load(sp);
 
