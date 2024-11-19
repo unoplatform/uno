@@ -154,7 +154,14 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Tests.Common
 			return new RoutedEventTester<TEventArgs>(sender, eventName, action);
 		}
 
-		public TimeSpan DefaultTimeout = FeatureConfiguration.DebugOptions.WaitIndefinitelyInEventTester ? TimeSpan.FromMilliseconds(-1) : EventTesterConfig.Timeout;
+		public TimeSpan DefaultTimeout =
+#if HAS_UNO
+			FeatureConfiguration.DebugOptions.WaitIndefinitelyInEventTester
+#else
+			Debugger.IsAttached
+#endif
+				? TimeSpan.FromMilliseconds(-1)
+				: EventTesterConfig.Timeout;
 
 		private TSender Sender
 		{
