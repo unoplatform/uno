@@ -111,7 +111,8 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 
 		Background = new ImageBrush
 		{
-			RelativeTransform = new ScaleTransform { ScaleX = 1, ScaleY = -1, CenterX = 0.5, CenterY = 0.5 } // because OpenGL coordinates go bottom-to-top
+			RelativeTransform = new ScaleTransform { ScaleX = 1, ScaleY = -1, CenterX = 0.5, CenterY = 0.5 }, // because OpenGL coordinates go bottom-to-top
+			ImageSource = _fallbackImage
 		};
 
 		Loaded += OnLoaded;
