@@ -19,10 +19,6 @@ dotnet tool uninstall dotnet-serve --tool-path $BUILD_SOURCESDIRECTORY/build/too
 dotnet tool install dotnet-serve --version 1.10.140 --tool-path $BUILD_SOURCESDIRECTORY/build/tools || true
 export PATH="$PATH:$BUILD_SOURCESDIRECTORY/build/tools"
 
-# Workaround an issue where dotnet test gets stuck.
-# If this is removed and everything works, then remove it! :)
-export MSBUILDENSURESTDOUTFORTASKPROCESSES=1
-
 export UNO_UITEST_TARGETURI=http://localhost:8000
 export UNO_UITEST_DRIVERPATH_CHROME=$BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/node_modules/chromedriver/lib/chromedriver
 export UNO_UITEST_CHROME_BINARY_PATH=~/.cache/puppeteer/chrome/linux-127.0.6533.72/chrome-linux64/chrome
