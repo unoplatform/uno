@@ -1,5 +1,14 @@
 # Skia Host for macOS
 
+## Preparation
+
+Before you can build you need the libSkiaSharp.dylib.
+```bash
+cd UnoNativeMac
+./getSkiaSharpDylib.sh
+```
+See [/UnoNativeMac/README.md](UnoNativeMac/README.md) for more info.
+
 ## Requirements
 
 * Minimum OS version: same as the [dotnet version used](https://learn.microsoft.com/en-us/dotnet/core/install/macos)
