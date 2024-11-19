@@ -31,6 +31,13 @@
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Skia.csproj" />
 		<ProjectReference Include="..\Uno.UI.Dispatching\Uno.UI.Dispatching.Skia.csproj" />
 	</ItemGroup>
+	
+	<ItemGroup>
+		<Compile Include="..\Uno.UI\UI\Input\PointerPoint.cs" />
+		<Compile Include="..\Uno.UI\UI\Input\PointerPointProperties.cs" />
+		<Compile Include="..\Uno.UI\UI\Input\PointerPointPropertiesExtensions.cs" />
+		<Compile Include="..\Uno.UI\UI\Input\PointerUpdateKind.cs" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<PRIResource Include="Storage\Pickers\Strings\**\*.resw" />

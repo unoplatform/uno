@@ -26,4 +26,10 @@
 		<ProjectReference Include="..\Uno.UI.Dispatching\Uno.UI.Dispatching.Wasm.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<Compile Include="..\Uno.UI\UI\Input\PointerPoint.cs" />
+		<Compile Include="..\Uno.UI\UI\Input\PointerPointProperties.cs" />
+		<Compile Include="..\Uno.UI\UI\Input\PointerPointPropertiesExtensions.cs" />
+		<Compile Include="..\Uno.UI\UI\Input\PointerUpdateKind.cs" />
+	</ItemGroup>
 </Project>
