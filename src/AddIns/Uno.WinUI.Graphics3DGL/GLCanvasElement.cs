@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.InteropServices;
 using Microsoft.Extensions.Logging;
 using Silk.NET.OpenGL;
 using Microsoft.UI.Xaml;
@@ -41,13 +42,24 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 {
 	private const int BytesPerPixel = 4;
 	private static readonly BitmapImage _fallbackImage = new BitmapImage(new Uri("ms-appx:///Assets/error.png"));
-	private static readonly Dictionary<XamlRoot, INativeOpenGLWrapper> _xamlRootToWrapper = new();
+	private static readonly Dictionary<XamlRoot, INativeOpenGLWrapper?> _xamlRootToWrapper = new();
+
+	private static (int major, int minor) _minVersion = (3, 0);
+
+	/// <summary>
+	/// The minimum required OpenGL version. Set this property depending on the OpenGL features you use.
+	/// </summary>
+	public static (int major, int minor) MinVersion
+	{
+		get => _minVersion;
+		set => _minVersion = value.major < 3 ? (3, 0) : value;
+	}
 
 	private readonly Func<Window>? _getWindowFunc;
 
-	// valid if and only if _loadedAtleastOnce and OpenGL is available on the running platform
+	// valid if and only if GLCanvasElement was loaded at least once and OpenGL is available on the running platform
 	private INativeOpenGLWrapper? _nativeOpenGlWrapper;
-	// These are valid if and only if IsLoaded
+	// These are valid if and only if IsLoaded and _nativeOpenGlWrapper is not null
 	private GL? _gl;
 	private WriteableBitmap? _backBuffer;
 	private FrameBufferDetails? _details;
@@ -88,8 +100,6 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 	/// </remarks>
 	protected abstract void RenderOverride(GL gl);
 
-	/// <param name="width">The width of the backing framebuffer.</param>
-	/// <param name="height">The height of the backing framebuffer.</param>
 	/// <param name="getWindowFunc">A function that returns the Window object that this element belongs to. This parameter is only used on WinUI. On Uno Platform, it can be set to null.</param>
 #if WINAPPSDK
 	protected GLCanvasElement(Func<Window> getWindowFunc)
@@ -109,7 +119,7 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 		SizeChanged += (_, _) => UpdateFramebuffer();
 	}
 
-	private static INativeOpenGLWrapper? GetOrCreateNativeOpenGlWrapper(XamlRoot xamlRoot, Func<Window>? getWindowFunc)
+	private static unsafe INativeOpenGLWrapper? GetOrCreateNativeOpenGlWrapper(XamlRoot xamlRoot, Func<Window>? getWindowFunc)
 	{
 		try
 		{
@@ -119,14 +129,66 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 #if WINAPPSDK
 				nativeOpenGlWrapper = new WinUINativeOpenGLWrapper(xamlRoot, getWindowFunc!);
 #else
-				if (!ApiExtensibility.CreateInstance<INativeOpenGLWrapper>(xamlRoot, out nativeOpenGlWrapper))
+				if (!ApiExtensibility.CreateInstance(xamlRoot, out nativeOpenGlWrapper))
 				{
-					throw new InvalidOperationException($"Couldn't create a {nameof(INativeOpenGLWrapper)} object. Make sure you are running on a platform with OpenGL support.");
+					if (typeof(GLCanvasElement).Log().IsEnabled(LogLevel.Error))
+					{
+						typeof(GLCanvasElement).Log().Error($"Couldn't create a {nameof(INativeOpenGLWrapper)} object. Make sure you are running on a platform with OpenGL support.");
+					}
+
+					_xamlRootToWrapper[xamlRoot] = null;
+					return null;
 				}
 #endif
 
+				var abort = false;
+				using (nativeOpenGlWrapper.MakeCurrent())
+				{
+					var glGetString = (delegate* unmanaged[Cdecl]<GLEnum, byte*>)nativeOpenGlWrapper.GetProcAddress("glGetString");
+
+					var glVersionBytePtr = glGetString(GLEnum.Version);
+					var glVersionString = Marshal.PtrToStringUTF8((IntPtr)glVersionBytePtr);
+
+					if (typeof(GLCanvasElement).Log().IsEnabled(LogLevel.Information))
+					{
+						typeof(GLCanvasElement).Log().Info($"{nameof(GLCanvasElement)} created an OpenGL context with a version string = '{glVersionString}'.");
+					}
+
+					if (glVersionString?.Contains("ANGLE", StringComparison.Ordinal) ?? false)
+					{
+						if (typeof(GLCanvasElement).Log().IsEnabled(LogLevel.Warning))
+						{
+							typeof(GLCanvasElement).Log().Warn($"{nameof(GLCanvasElement)} is using an ANGLE implementation, ignoring {nameof(MinVersion)} checks.");
+						}
+					}
+					else
+					{
+						var glGetIntegerv = (delegate* unmanaged[Cdecl]<GLEnum, int*, void>)nativeOpenGlWrapper.GetProcAddress("glGetIntegerv");
+						int major, minor;
+						glGetIntegerv(GLEnum.MajorVersion, &major);
+						glGetIntegerv(GLEnum.MinorVersion, &minor);
+
+						if (major < _minVersion.major || (major == _minVersion.major && minor < _minVersion.minor))
+						{
+							if (typeof(GLCanvasElement).Log().IsEnabled(LogLevel.Error))
+							{
+								typeof(GLCanvasElement).Log().Error($"{nameof(GLCanvasElement)} requires at least {MinVersion.major}.{MinVersion.minor}, but found {major}.{minor}.");
+							}
+
+							abort = true;
+						}
+					}
+				}
+
+				if (abort)
+				{
+					nativeOpenGlWrapper.Dispose();
+					nativeOpenGlWrapper = null;
+				}
+
 				_xamlRootToWrapper.Add(xamlRoot, nativeOpenGlWrapper);
 			}
+
 			return nativeOpenGlWrapper;
 		}
 		catch (Exception e)
@@ -151,8 +213,8 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 			}
 			if (_xamlRootToWrapper.Remove(XamlRoot!, out var wrapper))
 			{
-				using var _ = wrapper.MakeCurrent();
-				wrapper.Dispose();
+				using var makeCurrentDisposable = wrapper?.MakeCurrent();
+				wrapper?.Dispose();
 			}
 		});
 	}
@@ -180,7 +242,7 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 
 		_gl = GL.GetApi(this);
 
-		using (_nativeOpenGlWrapper!.MakeCurrent())
+		using (_nativeOpenGlWrapper.MakeCurrent())
 		{
 			UpdateFramebuffer();
 			Init(_gl);
@@ -256,7 +318,7 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 
 	private void UpdateFramebuffer()
 	{
-		if (!IsLoaded)
+		if (!IsLoaded || _nativeOpenGlWrapper is null)
 		{
 			return;
 		}
@@ -290,7 +352,7 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 
 	private unsafe void Render()
 	{
-		if (!IsLoaded)
+		if (!IsLoaded || _nativeOpenGlWrapper is null)
 		{
 			return;
 		}
