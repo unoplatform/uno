@@ -121,7 +121,7 @@
 	},
 	{
 	  "group": "WinAppSdkBuildTools",
-	  "version": "10.0.26100.1742",
+	  "version": "10.0.22621.3233", // Keep this version until https://github.com/microsoft/WindowsAppSDK/issues/4480 is resolved
 	  "packages": [
 		"Microsoft.Windows.SDK.BuildTools"
 	  ]
