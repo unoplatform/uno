@@ -87,7 +87,7 @@ public class Given_InputManager
 					HorizontalAlignment = HorizontalAlignment.Center,
 					VerticalAlignment = VerticalAlignment.Center,
 					Width = 16,
-					Height = Windows.UI.Input.GestureRecognizer.Manipulation.StartTouch.TranslateY * 3,
+					Height = GestureRecognizer.Manipulation.StartTouch.TranslateY * 3,
 					Background = new SolidColorBrush(Colors.DeepPink),
 					ManipulationMode = ManipulationModes.TranslateY,
 					RenderTransform = (transform = new TranslateTransform())
