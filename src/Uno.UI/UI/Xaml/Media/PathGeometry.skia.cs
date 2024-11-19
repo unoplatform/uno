@@ -9,11 +9,11 @@ namespace Microsoft.UI.Xaml.Media
 
 		internal override SKPath GetFilledSKPath() => GetSKPath(true);
 
-		internal SKPath GetSKPath(bool skipUnfilled)
+		private SKPath GetSKPath(bool skipUnfilled)
 		{
 			var path = new SKPath();
 
-			foreach (var figure in Figures)
+			foreach (PathFigure figure in Figures)
 			{
 				if (skipUnfilled && !figure.IsFilled)
 				{
@@ -22,7 +22,7 @@ namespace Microsoft.UI.Xaml.Media
 
 				path.MoveTo((float)figure.StartPoint.X, (float)figure.StartPoint.Y);
 
-				foreach (var segment in figure.Segments)
+				foreach (PathSegment segment in figure.Segments)
 				{
 					if (segment is LineSegment lineSegment)
 					{

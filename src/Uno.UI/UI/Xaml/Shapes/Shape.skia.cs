@@ -11,7 +11,7 @@ namespace Microsoft.UI.Xaml.Shapes
 		private readonly CompositionSpriteShape _shape;
 		private readonly CompositionPathGeometry _geometry;
 
-		protected CompositionSpriteShape SpriteShape => _shape;
+		private protected CompositionSpriteShape SpriteShape => _shape;
 
 		public Shape()
 		{
@@ -32,7 +32,7 @@ namespace Microsoft.UI.Xaml.Shapes
 
 		private protected override ContainerVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateShapeVisual();
 
-		private protected void Render(Microsoft.UI.Composition.SkiaGeometrySource2D? path, double? scaleX = null, double? scaleY = null, double? renderOriginX = null, double? renderOriginY = null)
+		private protected virtual void Render(Microsoft.UI.Composition.SkiaGeometrySource2D? path, double? scaleX = null, double? scaleY = null, double? renderOriginX = null, double? renderOriginY = null)
 		{
 			if (path is null)
 			{

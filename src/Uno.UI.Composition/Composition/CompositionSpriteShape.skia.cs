@@ -25,9 +25,9 @@ namespace Microsoft.UI.Composition
 		/// a CompositionMaskBrush that (presumably) masks out certain areas. We compensate for this by using this
 		/// geometry as the mask.
 		/// </summary>
-		public CompositionGeometry? FillGeometry
+		internal CompositionGeometry? FillGeometry
 		{
-			get => _fillGeometry;
+			private get => _fillGeometry;
 			set => SetProperty(ref _fillGeometry, value);
 		}
 
