@@ -101,9 +101,9 @@ namespace Microsoft.UI.Composition
 						// Get the stroke geometry, after scaling has been applied.
 						geometryWithTransformations.GetFillPath(strokePaint, strokeFillPath);
 
-						stroke.UpdatePaint(strokePaint, strokeFillPath.Bounds);
+						stroke.UpdatePaint(fillPaint, strokeFillPath.Bounds);
 
-						session.Canvas.DrawPath(strokeFillPath, strokePaint);
+						session.Canvas.DrawPath(strokeFillPath, fillPaint);
 					}
 				}
 			}
