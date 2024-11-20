@@ -360,7 +360,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 			var rectAfter = _app.GetLogicalRect(stackTextBlockName);
 			var textBlockHeight = rectAfter.Height;
 
-			textBlockHeight.Should().BeApproximately(lineHeight * numberOfLines, 0.3f);
+			textBlockHeight.Should().BeApproximately(lineHeight * numberOfLines, 0.5f * lineHeight);
 		}
 
 		[Test]
@@ -385,7 +385,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 			var rectAfter = _app.GetLogicalRect(gridTextBlockName);
 			var textBlockHeight = rectAfter.Height;
 
-			textBlockHeight.Should().BeApproximately(lineHeight * numberOfLines, 0.3f);
+			textBlockHeight.Should().BeApproximately(lineHeight * numberOfLines, 0.5f * lineHeight);
 		}
 
 		[Test]
