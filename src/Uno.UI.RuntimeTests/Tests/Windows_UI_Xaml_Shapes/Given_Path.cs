@@ -43,6 +43,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 
 		[TestMethod]
 		[UnoWorkItem("https://github.com/unoplatform/uno/issues/18694")]
+#if !__SKIA__
+		[Ignore("PathFigure.IsFilled's interaction with Path is only implemented on Skia.")]
+#endif
 		public async Task When_PathGeometry_Figures_Not_Filled_ColorBrush()
 		{
 			var SUT = new Path
@@ -111,6 +114,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 
 		[TestMethod]
 		[UnoWorkItem("https://github.com/unoplatform/uno/issues/18694")]
+#if !__SKIA__
+		[Ignore("PathFigure.IsFilled's interaction with Path is only implemented on Skia.")]
+#endif
 		public async Task When_PathGeometry_Figures_Not_Filled_ImageBrush()
 		{
 			var SUT = new Path
