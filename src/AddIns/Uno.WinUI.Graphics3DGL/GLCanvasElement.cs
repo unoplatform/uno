@@ -222,7 +222,7 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 
 	/// <summary>
 	/// Indicates whether this element was loaded successfully or not, including the OpenGL context creation and setup.
-	/// This property is only valid when the element is loaded. When the element is not loaded, the value will be null.
+	/// This property is only valid when the element is loaded. When the element is not loaded in the visual tree, the value will be null.
 	/// </summary>
 	public bool? LoadedSuccessfully { get; private set; }
 
