@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Microsoft.Extensions.Logging;
 using Silk.NET.OpenGL;
@@ -232,12 +233,15 @@ public abstract partial class GLCanvasElement : Grid, INativeContext, INotifyPro
 		get => _isGlInitialized;
 		private set
 		{
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsGLInitialized)));
 			_isGlInitialized = value;
+			RaisePropertyChanged();
 		}
 	}
 
 	public event PropertyChangedEventHandler? PropertyChanged;
+
+	protected void RaisePropertyChanged([CallerMemberName] string? propertyName = null)
+		=> PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
 	private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
 	{
