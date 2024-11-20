@@ -8,9 +8,7 @@ using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Uno.Extensions.Specialized;
-using Uno.Helpers.Serialization;
 using Uno.Storage.Internal;
-using Uno.Storage.Pickers.Internal;
 
 namespace Windows.Storage;
 
@@ -128,12 +126,12 @@ internal class DataTypeSerializer
 			targetDictionary.Add(entry.Key, serializedValue);
 		}
 
-		return JsonHelper.Serialize(targetDictionary, DataTypeSerializerContext.Default);
+		return JsonSerializer.Serialize(targetDictionary, DataTypeSerializerContext.Default.DictionaryStringString);
 	}
 
 	private static ApplicationDataCompositeValue DeserializeCompositeValue(string value)
 	{
-		var dictionary = JsonHelper.Deserialize<Dictionary<string, string?>>(value, DataTypeSerializerContext.Default);
+		var dictionary = JsonSerializer.Deserialize(value, DataTypeSerializerContext.Default.DictionaryStringString);
 		if (dictionary is null)
 		{
 			throw new InvalidOperationException("Failed to deserialize ApplicationDataCompositeValue");
