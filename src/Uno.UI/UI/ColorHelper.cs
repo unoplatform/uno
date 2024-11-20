@@ -1,9 +1,11 @@
-﻿using System;
+﻿// On the UWP branch, only include this file in Uno.UWP (as public Window.whatever). On the WinUI branch, include it in both Uno.UWP (internal as Windows.whatever) and Uno.UI (public as Microsoft.whatever)
+#if HAS_UNO_WINUI || !IS_UNO_UI_PROJECT
+using System;
 using System.ComponentModel;
 using Uno.Extensions;
 using WindowsColor = Windows/*Intentional space for WinUI upgrade tool*/.UI.Color;
 
-#if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
+#if IS_UNO_UI_PROJECT
 namespace Microsoft.UI.Text;
 #else
 namespace Windows.UI.Text;
@@ -357,7 +359,7 @@ public
 	];
 	#endregion
 
-	private unsafe static uint GetColorNameResourceId(WindowsColor color)
+	private static uint GetColorNameResourceId(WindowsColor color)
 	{
 		var hsl = color.ToHsl();
 		double h = hsl.H * 255.0;
@@ -428,3 +430,4 @@ public
 		}
 	}
 }
+#endif
