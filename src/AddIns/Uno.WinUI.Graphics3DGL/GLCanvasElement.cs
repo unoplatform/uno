@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using Microsoft.Extensions.Logging;
@@ -37,7 +38,7 @@ namespace Uno.WinUI.Graphics3DGL;
 /// This is only available on WinUI and on skia-based targets running with hardware acceleration.
 /// This is currently only available on the WPF and X11 targets (and WinUI).
 /// </remarks>
-public abstract partial class GLCanvasElement : Grid, INativeContext
+public abstract partial class GLCanvasElement : Grid, INativeContext, INotifyPropertyChanged
 {
 	private const int BytesPerPixel = 4;
 	private static readonly Dictionary<XamlRoot, INativeOpenGLWrapper?> _xamlRootToWrapper = new();
@@ -45,6 +46,8 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 	private static readonly (int major, int minor) _minVersion = (3, 0);
 
 	private readonly Func<Window>? _getWindowFunc;
+
+	private bool? _isGlInitialized;
 
 	// valid if and only if GLCanvasElement was loaded at least once and OpenGL is available on the running platform
 	private INativeOpenGLWrapper? _nativeOpenGlWrapper;
@@ -224,16 +227,25 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 	/// Indicates whether this element was loaded successfully or not, including the OpenGL context creation and setup.
 	/// This property is only valid when the element is loaded. When the element is not loaded in the visual tree, the value will be null.
 	/// </summary>
-	public bool? LoadedSuccessfully { get; private set; }
+	public bool? IsGLInitialized
+	{
+		get => _isGlInitialized;
+		private set
+		{
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsGLInitialized)));
+			_isGlInitialized = value;
+		}
+	}
+
+	public event PropertyChangedEventHandler? PropertyChanged;
 
 	private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
 	{
-		LoadedSuccessfully = false;
-
 		_nativeOpenGlWrapper = GetOrCreateNativeOpenGlWrapper(XamlRoot!, _getWindowFunc);
 
 		if (_nativeOpenGlWrapper is null)
 		{
+			IsGLInitialized = false;
 			return;
 		}
 
@@ -260,12 +272,12 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 			fe.Unloaded += OnClosed;
 		}
 
-		LoadedSuccessfully = true;
+		IsGLInitialized = true;
 	}
 
 	private void OnUnloaded(object sender, RoutedEventArgs routedEventArgs)
 	{
-		LoadedSuccessfully = null;
+		IsGLInitialized = null;
 		if (_nativeOpenGlWrapper is null)
 		{
 			return;
