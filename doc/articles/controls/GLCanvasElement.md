@@ -23,7 +23,7 @@ These three abstract methods take a `Silk.NET.OpenGL.GL` parameter that can be u
 
 ### The GLCanvasElement constructor
 
-The protected constructor requires a `Func<Window>` argument that fetches the `Microsoft.UI.Xaml.Window` object that the `GLCanvasElement` belongs to. This function is required because WinUI doesn't yet provide a way to get the `Window` of a `FrameworkElement`. This parameter is ignored on Uno Platform and must be set to null. This function is only called while the `GLCanvasElement` is still in the visual tree.
+The protected constructor requires a `Func<Window>` argument that fetches the `Microsoft.UI.Xaml.Window` object that the `GLCanvasElement` belongs to. This function is required because WinUI doesn't yet provide a way to get the `Window` of a `FrameworkElement`. This parameter is ignored on Uno Platform and can be set to null. This function is only called while the `GLCanvasElement` is still in the visual tree.
 
 ### The `Init` method
 
@@ -40,6 +40,10 @@ On MacOS, since OpenGL support is not natively present, we use [ANGLE](https://e
 ## Invalidating the canvas
 
 Additionally, `GLCanvasElement` has an `Invalidate` method that requests a redrawing of the `GLCanvasElement`, calling `RenderOverride` in the process. Note that `RenderOverride` will only be called once per `Invalidate` call and the output will be saved to be used in future frames. To update the output, you must call `Invalidate`. If you need to continuously update the output (e.g. in an animation), you can add an `Invalidate` call inside `RenderOverride`.
+
+## Detecting errors
+
+To detect errors in initializing the OpenGL environment, `GLCanvasElement` exposes a `LoadedSuccessfully` property that shows whether or nor the loading of the element and its OpenGL setup were successful. This property is only valid when the element is loading, i.e. its `IsLoaded` property is true. When the element is not loaded, the value of `LoadedSuccessfully` will be null. 
 
 ## How to use Silk.NET
 

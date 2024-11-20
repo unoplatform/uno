@@ -20,7 +20,6 @@ using Windows.System;
 #endif
 
 #if WINAPPSDK
-using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 #else
 using Uno.Foundation.Extensibility;
@@ -41,19 +40,9 @@ namespace Uno.WinUI.Graphics3DGL;
 public abstract partial class GLCanvasElement : Grid, INativeContext
 {
 	private const int BytesPerPixel = 4;
-	private static readonly BitmapImage _fallbackImage = new BitmapImage(new Uri("ms-appx:///Assets/error.png"));
 	private static readonly Dictionary<XamlRoot, INativeOpenGLWrapper?> _xamlRootToWrapper = new();
 
-	private static (int major, int minor) _minVersion = (3, 0);
-
-	/// <summary>
-	/// The minimum required OpenGL version. Set this property depending on the OpenGL features you use.
-	/// </summary>
-	public static (int major, int minor) MinVersion
-	{
-		get => _minVersion;
-		set => _minVersion = value.major < 3 ? (3, 0) : value;
-	}
+	private static readonly (int major, int minor) _minVersion = (3, 0);
 
 	private readonly Func<Window>? _getWindowFunc;
 
@@ -111,8 +100,7 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 
 		Background = new ImageBrush
 		{
-			RelativeTransform = new ScaleTransform { ScaleX = 1, ScaleY = -1, CenterX = 0.5, CenterY = 0.5 }, // because OpenGL coordinates go bottom-to-top
-			ImageSource = _fallbackImage
+			RelativeTransform = new ScaleTransform { ScaleX = 1, ScaleY = -1, CenterX = 0.5, CenterY = 0.5 } // because OpenGL coordinates go bottom-to-top
 		};
 
 		Loaded += OnLoaded;
@@ -159,7 +147,7 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 					{
 						if (typeof(GLCanvasElement).Log().IsEnabled(LogLevel.Warning))
 						{
-							typeof(GLCanvasElement).Log().Warn($"{nameof(GLCanvasElement)} is using an ANGLE implementation, ignoring {nameof(MinVersion)} checks.");
+							typeof(GLCanvasElement).Log().Warn($"{nameof(GLCanvasElement)} is using an ANGLE implementation, ignoring minimum version checks.");
 						}
 					}
 					else
@@ -173,7 +161,7 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 						{
 							if (typeof(GLCanvasElement).Log().IsEnabled(LogLevel.Error))
 							{
-								typeof(GLCanvasElement).Log().Error($"{nameof(GLCanvasElement)} requires at least {MinVersion.major}.{MinVersion.minor}, but found {major}.{minor}.");
+								typeof(GLCanvasElement).Log().Error($"{nameof(GLCanvasElement)} requires at least {_minVersion.major}.{_minVersion.minor}, but found {major}.{minor}.");
 							}
 
 							abort = true;
@@ -232,8 +220,16 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 	public void Invalidate() => NativeDispatcher.Main.Enqueue(Render, NativeDispatcherPriority.Idle);
 #endif
 
+	/// <summary>
+	/// Indicates whether this element was loaded successfully or not, including the OpenGL context creation and setup.
+	/// This property is only valid when the element is loaded. When the element is not loaded, the value will be null.
+	/// </summary>
+	public bool? LoadedSuccessfully { get; private set; }
+
 	private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
 	{
+		LoadedSuccessfully = false;
+
 		_nativeOpenGlWrapper = GetOrCreateNativeOpenGlWrapper(XamlRoot!, _getWindowFunc);
 
 		if (_nativeOpenGlWrapper is null)
@@ -263,10 +259,13 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 		{
 			fe.Unloaded += OnClosed;
 		}
+
+		LoadedSuccessfully = true;
 	}
 
 	private void OnUnloaded(object sender, RoutedEventArgs routedEventArgs)
 	{
+		LoadedSuccessfully = null;
 		if (_nativeOpenGlWrapper is null)
 		{
 			return;
