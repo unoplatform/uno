@@ -29,6 +29,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -43,6 +44,8 @@ namespace Uno.Xaml
 	// it registers AssemblyLoaded event on CurrentDomain when it should
 	// reflect dynamic in-scope asemblies.
 	// It should be released at finalizer.
+	[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Types manipulated here have been marked earlier")]
+	[UnconditionalSuppressMessage("Trimming", "IL2055", Justification = "Types manipulated here have been marked earlier")]
 	public class XamlSchemaContext
 	{
 		private static readonly char[] _semicolonArray = new char[] { ';' };

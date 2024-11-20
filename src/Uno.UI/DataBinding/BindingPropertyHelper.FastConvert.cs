@@ -15,6 +15,8 @@ using Uno.UI.Extensions;
 using System.Text.RegularExpressions;
 using Microsoft.UI.Text;
 using FontWeight = Windows.UI.Text.FontWeight;
+using System.Diagnostics.CodeAnalysis;
+
 
 #if __ANDROID__
 using View = Android.Views.View;
@@ -962,6 +964,7 @@ namespace Uno.UI.DataBinding
 			}
 		}
 
+		[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "GetType may return null, normal flow of operation")]
 		private static bool FastStringToTypeConvert(Type outputType, string input, ref object output)
 		{
 			if (outputType == typeof(Type))

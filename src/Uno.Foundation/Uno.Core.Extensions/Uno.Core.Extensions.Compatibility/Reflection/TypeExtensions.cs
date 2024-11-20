@@ -16,6 +16,7 @@
 // ******************************************************************
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 
@@ -60,7 +61,12 @@ namespace Uno.Extensions
 		/// <param name="type"></param>
 		/// <param name="genericTypeDefinition">The generic type without generic type argument(s).</param>
 		/// <returns></returns>
-		public static bool IsGenericDescentOf(this Type type, Type genericTypeDefinition)
+		public static bool IsGenericDescentOf(
+#if NET9_0_OR_GREATER
+			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)]
+#endif
+			this Type type,
+			Type genericTypeDefinition)
 		{
 			if (!genericTypeDefinition.IsGenericTypeDefinition)
 			{

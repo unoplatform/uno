@@ -414,6 +414,8 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Finds a DependencyProperty for the specified C# property
 		/// </summary>
+		[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Types manipulated here have been marked earlier")]
+		[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "Types manipulated here have been marked earlier")]
 		private DependencyProperty? FindStandardProperty(Type originalObjectType, string dependencyProperty, bool allowPrivateMembers)
 		{
 			var propertyType = BindingPropertyHelper.GetPropertyType(originalObjectType, dependencyProperty, allowPrivateMembers);

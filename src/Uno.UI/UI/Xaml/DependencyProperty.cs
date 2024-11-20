@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -137,7 +138,11 @@ namespace Microsoft.UI.Xaml
 		/// <param name="typeMetadata">The metadata to use when creating the property</param>
 		/// <returns>A dependency property instance</returns>
 		/// <exception cref="InvalidOperationException">A property with the same name has already been declared for the ownerType</exception>
-		public static DependencyProperty Register(string name, Type propertyType, Type ownerType, PropertyMetadata typeMetadata)
+		public static DependencyProperty Register(
+			string name,
+			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)] Type propertyType,
+			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)] Type ownerType,
+			PropertyMetadata typeMetadata)
 		{
 			typeMetadata = FixMetadataIfNeeded(propertyType, typeMetadata);
 
@@ -158,7 +163,10 @@ namespace Microsoft.UI.Xaml
 			return newProperty;
 		}
 
-		private static PropertyMetadata FixMetadataIfNeeded(Type propertyType, PropertyMetadata metadata)
+		private static PropertyMetadata FixMetadataIfNeeded(
+			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
+			Type propertyType,
+			PropertyMetadata metadata)
 		{
 			if (metadata is null)
 			{
@@ -186,7 +194,11 @@ namespace Microsoft.UI.Xaml
 		/// This method is to ensure that all uno controls defined dependency properties are using <see cref="FrameworkPropertyMetadata"/>.
 		/// This is achieved by banning the other public overload in Uno.UI directory.
 		/// </remarks>
-		internal static DependencyProperty Register(string name, Type propertyType, Type ownerType, FrameworkPropertyMetadata typeMetadata)
+		internal static DependencyProperty Register(
+			string name,
+			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)] Type propertyType,
+			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)] Type ownerType,
+			FrameworkPropertyMetadata typeMetadata)
 #pragma warning disable RS0030 // Do not used banned APIs
 			=> Register(name, propertyType, ownerType, (PropertyMetadata)typeMetadata);
 #pragma warning restore RS0030 // Do not used banned APIs
@@ -200,7 +212,11 @@ namespace Microsoft.UI.Xaml
 		/// <param name="defaultMetadata">The metadata to use when creating the property</param>
 		/// <returns>A dependency property instance</returns>
 		/// <exception cref="InvalidOperationException">A property with the same name has already been declared for the ownerType</exception>
-		public static DependencyProperty RegisterAttached(string name, Type propertyType, Type ownerType, PropertyMetadata defaultMetadata)
+		public static DependencyProperty RegisterAttached(
+			string name,
+			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)] Type propertyType,
+			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)] Type ownerType,
+			PropertyMetadata defaultMetadata)
 		{
 			defaultMetadata = FixMetadataIfNeeded(propertyType, defaultMetadata);
 
@@ -234,6 +250,7 @@ namespace Microsoft.UI.Xaml
 		/// This method is to ensure that all uno controls defined dependency properties are using <see cref="FrameworkPropertyMetadata"/>.
 		/// This is achieved by banning the other public overload in Uno.UI directory.
 		/// </remarks>
+		[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "Types manipulated here have been marked earlier")]
 		internal static DependencyProperty RegisterAttached(string name, Type propertyType, Type ownerType, FrameworkPropertyMetadata typeMetadata)
 #pragma warning disable RS0030 // Do not used banned APIs
 			=> RegisterAttached(name, propertyType, ownerType, (PropertyMetadata)typeMetadata);
@@ -416,6 +433,7 @@ namespace Microsoft.UI.Xaml
 		///
 		/// See: http://stackoverflow.com/questions/6729841/why-did-the-beforefieldinit-behavior-change-in-net-4
 		/// </remarks>
+		[UnconditionalSuppressMessage("Trimming", "IL2059", Justification = "Normal flow of operations")]
 		internal static void ForceInitializeTypeConstructor(Type type)
 		{
 			do
