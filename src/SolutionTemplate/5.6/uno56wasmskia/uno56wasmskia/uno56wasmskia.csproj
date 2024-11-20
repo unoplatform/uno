@@ -6,9 +6,9 @@
     <UnoSingleProject>true</UnoSingleProject>
 
     <!-- Display name -->
-    <ApplicationTitle>uno54wasmskia</ApplicationTitle>
+    <ApplicationTitle>uno56wasmskia</ApplicationTitle>
     <!-- App Identifier -->
-    <ApplicationId>com.companyname.uno54wasmskia</ApplicationId>
+    <ApplicationId>com.companyname.uno56wasmskia</ApplicationId>
     <!-- Versions -->
     <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
     <ApplicationVersion>1</ApplicationVersion>

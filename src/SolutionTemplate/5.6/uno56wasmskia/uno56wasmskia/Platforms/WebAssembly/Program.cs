@@ -1,6 +1,6 @@
 using Uno.UI.Runtime.Skia.WebAssembly.Browser;
 
-namespace uno54wasmskia;
+namespace uno56wasmskia;
 
 public class Program
 {

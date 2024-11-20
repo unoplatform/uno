@@ -9,7 +9,7 @@
   },
   "profiles": {
     // This profile is first in order for dotnet run to pick it up by default
-    "uno54wasmskia (WebAssembly)": {
+    "uno56wasmskia (WebAssembly)": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
@@ -19,7 +19,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "uno54wasmskia (WebAssembly IIS Express)": {
+    "uno56wasmskia (WebAssembly IIS Express)": {
       "commandName": "IISExpress",
       "launchBrowser": true,
       "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
@@ -28,21 +28,21 @@
       }
     },
     // Note: In order to select this profile, you'll need to comment the `Packaged` profile below until this is fixed: https://aka.platform.uno/wasdk-maui-debug-profile-issue
-    "uno54wasmskia (WinAppSDK Unpackaged)": {
+    "uno56wasmskia (WinAppSDK Unpackaged)": {
       "commandName": "Project",
       "compatibleTargetFramework": "windows"
     },
-    "uno54wasmskia (WinAppSDK Packaged)": {
+    "uno56wasmskia (WinAppSDK Packaged)": {
       "commandName": "MsixPackage",
       "compatibleTargetFramework": "windows"
     },
-    "uno54wasmskia (Desktop)": {
+    "uno56wasmskia (Desktop)": {
       "commandName": "Project",
       "compatibleTargetFramework": "desktop"
     },
-    "uno54wasmskia (Desktop WSL2)": {
+    "uno56wasmskia (Desktop WSL2)": {
       "commandName": "WSL2",
-      "commandLineArgs": "{ProjectDir}/bin/Debug/net8.0-desktop/uno54wasmskia.dll",
+      "commandLineArgs": "{ProjectDir}/bin/Debug/net8.0-desktop/uno56wasmskia.dll",
       "distributionName": "",
       "compatibleTargetFramework": "desktop"
     }

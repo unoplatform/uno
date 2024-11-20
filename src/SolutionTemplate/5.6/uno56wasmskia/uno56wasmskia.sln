@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.2.32210.308
 MinimumVisualStudioVersion = 15.0.26124.0
 
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "uno54wasmskia", "uno54wasmskia\uno54wasmskia.csproj", "{FED2ABE6-09B4-4EA1-BB75-1F929D76C263}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "uno56wasmskia", "uno56wasmskia\uno56wasmskia.csproj", "{FED2ABE6-09B4-4EA1-BB75-1F929D76C263}"
 EndProject
 
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BADA71DC-7FFD-4EDC-9F28-FB74AEADC713}"

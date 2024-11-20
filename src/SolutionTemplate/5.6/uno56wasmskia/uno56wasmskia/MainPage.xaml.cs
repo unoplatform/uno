@@ -1,4 +1,4 @@
-namespace uno54wasmskia;
+namespace uno56wasmskia;
 
 public sealed partial class MainPage : Page
 {

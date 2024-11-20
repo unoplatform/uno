@@ -7,13 +7,13 @@
   IgnorableNamespaces="uap rescap">
 
   <Identity
-    Name="uno54wasmskia"
-    Publisher="O=uno54wasmskia"
+    Name="uno56wasmskia"
+    Publisher="O=uno56wasmskia"
     Version="1.0.0.0" />
 
   <Properties>
-    <DisplayName>uno54wasmskia</DisplayName>
-    <PublisherDisplayName>uno54wasmskia</PublisherDisplayName>
+    <DisplayName>uno56wasmskia</DisplayName>
+    <PublisherDisplayName>uno56wasmskia</PublisherDisplayName>
   </Properties>
 
   <Dependencies>
@@ -30,8 +30,8 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="$targetentrypoint$">
       <uap:VisualElements
-        DisplayName="uno54wasmskia"
-        Description="uno54wasmskia">
+        DisplayName="uno56wasmskia"
+        Description="uno56wasmskia">
         <uap:SplashScreen />
       </uap:VisualElements>
     </Application>
