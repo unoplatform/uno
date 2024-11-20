@@ -6,17 +6,12 @@ using Uno.Extensions;
 using WindowsColor = Windows/*Intentional space for WinUI upgrade tool*/.UI.Color;
 
 #if IS_UNO_UI_PROJECT
-namespace Microsoft.UI.Text;
+namespace Microsoft.UI;
 #else
-namespace Windows.UI.Text;
+namespace Windows.UI;
 #endif
 
-#if HAS_UNO_WINUI && !IS_UNO_UI_PROJECT
-internal
-#else
-public
-#endif
-	static partial class ColorHelper
+public static partial class ColorHelper
 {
 	/// <summary>
 	/// Retrieves the display name of the specified color.
