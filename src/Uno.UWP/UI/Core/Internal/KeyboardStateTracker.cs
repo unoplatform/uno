@@ -108,7 +108,6 @@ internal static partial class KeyboardStateTracker
 		}
 	}
 
-#if __WASM__
 #pragma warning disable IDE0051 // Remove unused private members
 	[JSExport]
 	private static void UpdateKeyStateNative(string key, bool down)
@@ -116,12 +115,11 @@ internal static partial class KeyboardStateTracker
 	{
 		if (down)
 		{
-			OnKeyDown(VirtualKeyHelper.FromKey(key));
+			OnKeyDown(BrowserVirtualKeyHelper.FromKey(key));
 		}
 		else
 		{
-			OnKeyUp(VirtualKeyHelper.FromKey(key));
+			OnKeyUp(BrowserVirtualKeyHelper.FromKey(key));
 		}
 	}
-#endif
 }
