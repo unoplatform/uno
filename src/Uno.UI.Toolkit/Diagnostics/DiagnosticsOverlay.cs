@@ -352,11 +352,11 @@ public sealed partial class DiagnosticsOverlay : Control
 	/// <inheritdoc />
 	protected override void OnApplyTemplate()
 	{
-		if (_anchor is not null)
+		if (_toolbar is not null)
 		{
 			//_anchor.Tapped -= OnAnchorTapped;
-			_anchor.ManipulationDelta -= OnAnchorManipulated;
-			_anchor.ManipulationCompleted -= OnAnchorManipulatedCompleted;
+			_toolbar.ManipulationDelta -= OnAnchorManipulated;
+			_toolbar.ManipulationCompleted -= OnAnchorManipulatedCompleted;
 		}
 		if (_notificationPresenter is not null)
 		{
@@ -377,12 +377,12 @@ public sealed partial class DiagnosticsOverlay : Control
 		_anchor = GetTemplateChild(AnchorPartName) as UIElement;
 		_notificationPresenter = GetTemplateChild(NotificationPartName) as ContentPresenter;
 
-		if (_anchor is not null)
+		if (_toolbar is not null)
 		{
 			//_anchor.Tapped += OnAnchorTapped;
-			_anchor.ManipulationDelta += OnAnchorManipulated;
-			_anchor.ManipulationCompleted += OnAnchorManipulatedCompleted;
-			_anchor.ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY | ManipulationModes.TranslateInertia;
+			_toolbar.ManipulationDelta += OnAnchorManipulated;
+			_toolbar.ManipulationCompleted += OnAnchorManipulatedCompleted;
+			_toolbar.ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY | ManipulationModes.TranslateInertia;
 			RenderTransform = new TranslateTransform();
 		}
 		if (_notificationPresenter is not null)
@@ -399,9 +399,14 @@ public sealed partial class DiagnosticsOverlay : Control
 		static void OnToolBarSizeChanged(object sender, SizeChangedEventArgs args)
 		{
 			// Patches pointer event dispatch on a 0x0 Canvas
-			if (sender is UIElement uie && uie.GetTemplatedParent() is DiagnosticsOverlay { TemplatedRoot: Canvas canvas })
+			if (sender is UIElement uie && uie.GetTemplatedParent() is DiagnosticsOverlay { TemplatedRoot: Canvas canvas } overlay)
 			{
 				canvas.Width = args.NewSize.Width;
+
+#if __ANDROID__
+				// Required for Android to effectively update the ActualSize allowing the RenderTransformAdapter to accept to apply the transform.
+				overlay.DispatcherQueue.TryEnqueue(() => canvas.InvalidateMeasure());
+#endif
 			}
 		}
 #endif
