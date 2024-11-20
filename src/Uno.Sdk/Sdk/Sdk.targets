@@ -30,7 +30,7 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 
 	<!-- Replacement for restore targets for Wasm when an explicit RID is specified -->
 	<Import Project="$(_UnoSdkTargetsDirectory)Uno.Wasm.UnsupportedRid.targets"
-			Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm' AND '$(RuntimeIdentifier)' != 'browser-wasm' "/>
+			Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm' AND '$(RuntimeIdentifier)' != '' AND '$(RuntimeIdentifier)' != 'browser-wasm' "/>
 	
 	<!-- Targets and props to be executed last after the default .NET SDK has been imported -->
 	<Import Project="$(_UnoSdkTargetsDirectory)Uno.Sdk.After.targets" />
