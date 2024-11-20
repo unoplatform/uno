@@ -345,7 +345,10 @@ $projects =
     @(4, "5.2/uno52AppWithLib/uno52AppWithLib/uno52AppWithLib.csproj", @("-p:Platform=x86" , "-p:TargetFramework=net8.0-windows10.0.19041"), @()),
 
     # Publishing validation
-    @(4, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-desktop", "-p:PackageFormat=app"), @("OnlyMacOS", "NetCore", "Publish"))
+    @(4, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-desktop", "-p:PackageFormat=app"), @("OnlyMacOS", "NetCore", "Publish")),
+
+    # Ensure that build can happen even if a RID is specified
+    @(4, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-android", "-r", "android-arm64"), @("macOS", "NetCore"))
 
     ## Note for contributors
     ##
