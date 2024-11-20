@@ -50,7 +50,7 @@
 
 	<ItemGroup Condition="$(UnoFeatures.Contains(';mauiembedding;'))">
 		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Maui.WinUI" ProjectSystem="true" />
-		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Maui.WinUI.Markup" ProjectSystem="true" Condition="$(UnoFeatures.Contains('CSharpMarkup'))" />
+		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Maui.WinUI.Markup" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';csharpmarkup;'))" />
 		<_UnoProjectSystemPackageReference Include="Microsoft.Maui.Controls" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Microsoft.Maui.Controls.Compatibility" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Microsoft.Maui.Graphics" ProjectSystem="true" />
