@@ -43,7 +43,7 @@ Additionally, `GLCanvasElement` has an `Invalidate` method that requests a redra
 
 ## Detecting errors
 
-To detect errors in initializing the OpenGL environment, `GLCanvasElement` exposes a `LoadedSuccessfully` property that shows whether or nor the loading of the element and its OpenGL setup were successful. This property is only valid when the element is loading, i.e. its `IsLoaded` property is true. When the element is not loaded, the value of `LoadedSuccessfully` will be null. 
+To detect errors in initializing the OpenGL environment, `GLCanvasElement` exposes an `IsGLInitialized` property that shows whether or nor the loading of the element and its OpenGL setup were successful. This property is only valid when the element is loaded, i.e. its `IsLoaded` property is true. When the element is not loaded, the value of `IsGLInitialized` will be null. `GLCanvasElement` implements `INotifyPropertyChanged`, so you can use this property in a data bindings, for example to set the visibility of a control as a fallback.
 
 ## How to use Silk.NET
 
