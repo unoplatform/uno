@@ -7,11 +7,19 @@ Set-PSDebug -Trace 1
 
 $external_docs = @{
     # use either commit, or branch name to use its latest commit
+<<<<<<< HEAD
     "uno.wasm.bootstrap" = "bb241f7f8c739d269e2f09b46ca061eeeb9b8714" #latest release/stable/9.0 branch commit
     "uno.themes"         = "22df5299701fe9a6f96e4414b559f8dfd5789540" #latest release/stable/5.4 branch commit
     "uno.toolkit.ui"     = "f45468269d8f7b24f820bfedce8a45bea2809864" #latest release/stable/6.4 branch commit
     "uno.check"          = "c327cb365d29a2b53911a3ea9f8cd89254f5729d" #latest main commit
     "uno.xamlmerge.task" = "528874f7f95bf18c9267eaf50474bf9f6b951696" #latest main commit
+=======
+    "uno.wasm.bootstrap" = "6af3775bca9a732114df54e7e1253f0f813fd855" #latest release/stable/9.0 branch commit
+    "uno.themes"         = "be986dc71ace7e2f5075154321dbf0a68f5d00ce" #latest release/stable/5.3 branch commit
+    "uno.toolkit.ui"     = "490176858d99ca05a8615a11bb4da24a7c49a323" #latest release/stable/6.3 branch commit
+    "uno.check"          = "27e686d9205654375fd2c7861c3ebe5f2ad69e93" #latest main commit
+    "uno.xamlmerge.task" = "377ce2d9fdeab0d4f0b94a61e008731a40b10220" #latest release/stable/1.33 branch commit
+>>>>>>> 92572a22d5 (docs: Update xaml merge docs)
     "figma-docs"         = "842a2792282b88586a337381b2b3786e779973b4" #latest main commit
     "uno.resizetizer"    = "dfcb976c40eb66cb33c5def4c81d2e4e374dc678" #latest main commit
     "uno.uitest"         = "9669fd2783187d06c36dd6a717c1b9f08d1fa29c" #latest master commit
