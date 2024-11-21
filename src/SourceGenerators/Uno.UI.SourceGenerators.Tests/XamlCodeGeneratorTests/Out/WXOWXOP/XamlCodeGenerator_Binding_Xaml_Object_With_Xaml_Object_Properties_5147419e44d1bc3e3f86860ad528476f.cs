@@ -100,6 +100,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 			))
 			;
 			
+			
 			this
 			.GenericApply(((c2) => 
 			{

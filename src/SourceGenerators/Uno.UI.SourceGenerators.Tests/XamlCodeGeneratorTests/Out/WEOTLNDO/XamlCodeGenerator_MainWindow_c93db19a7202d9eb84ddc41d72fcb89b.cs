@@ -47,6 +47,7 @@ namespace TestRepro
 			// Source 0\MainWindow.xaml (Line 1:2)
 			;
 			
+			
 			this
 			.GenericApply(((c0) => 
 			{

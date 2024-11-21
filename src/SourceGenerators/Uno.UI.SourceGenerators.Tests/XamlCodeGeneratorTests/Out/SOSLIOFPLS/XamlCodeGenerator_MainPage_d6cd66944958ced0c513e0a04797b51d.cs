@@ -122,6 +122,7 @@ namespace TestRepro
 			))
 			;
 			
+			
 			this
 			.GenericApply(__that, __nameScope, ((c7, __that, __nameScope) => 
 			{

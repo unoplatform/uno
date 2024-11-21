@@ -67,6 +67,7 @@ namespace TestRepro
 			))
 			;
 			
+			
 			this
 			.GenericApply(((c1) => 
 			{

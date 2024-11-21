@@ -82,6 +82,7 @@ namespace TestRepro
 			// Source 0\MainPage.xaml (Line 1:2)
 			;
 			
+			
 			this
 			.GenericApply(((c4) => 
 			{
