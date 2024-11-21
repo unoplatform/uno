@@ -216,6 +216,7 @@
 		<UpriSubstitutionsGeneratorTask_v0
 			AssemblyName="$(AssemblyName)"
 			Resources="@(_UnoUpriResource)"
+			EnableXamlTrimmingIntegration="$(UnoXamlResourcesUpriTrimming)"
 			OutputFile="$(_UnoUpriSubstitutionsFile)" />
 
 		<ItemGroup>
