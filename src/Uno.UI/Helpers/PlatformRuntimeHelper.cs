@@ -8,7 +8,7 @@ namespace Uno.UI.Helpers;
 
 public static class PlatformRuntimeHelper
 {
-	internal static UnoRuntimePlatform SkiaPlatform { get; set; } = UnoRuntimePlatform.Skia;
+	internal static UnoRuntimePlatform SkiaPlatform { get; set; } = UnoRuntimePlatform.Unknown;
 
 	public static UnoRuntimePlatform Current => GetPlatform();
 
