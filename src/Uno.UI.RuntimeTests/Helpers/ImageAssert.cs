@@ -131,6 +131,9 @@ public static partial class ImageAssert
 	public static void DoesNotHaveColorAt(RawBitmap screenshot, float x, float y, Color excludedColor, byte tolerance = 0, [CallerLineNumber] int line = 0)
 		=> DoesNotHaveColorAtImpl(screenshot, (int)x, (int)y, excludedColor, tolerance, line);
 
+	public static void DoesNotHaveColorAt(RawBitmap screenshot, Point p, Color excludedColor, byte tolerance = 0, [CallerLineNumber] int line = 0)
+		=> DoesNotHaveColorAtImpl(screenshot, (int)p.X, (int)p.Y, excludedColor, tolerance, line);
+
 	private static void DoesNotHaveColorAtImpl(RawBitmap screenshot, int x, int y, Color excludedColor, byte tolerance, int line)
 	{
 		var bitmap = screenshot;
