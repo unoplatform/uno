@@ -351,7 +351,7 @@ $projects =
     @(4, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-android", "-r", "android-arm64"), @("macOS", "NetCore"))
 
     # 5.4 Wasm+Skia
-    @(3, "5.4/uno54wasmskia/uno54wasmskia/uno54wasmskia.csproj", @("-f", "net8.0-browserwasm"), @("macOS", "NetCore")),
+    @(3, "5.6/uno56wasmskia/uno56wasmskia/uno56wasmskia.csproj", @("-f", "net8.0-browserwasm"), @("macOS", "NetCore")),
 
     ## Note for contributors
     ##

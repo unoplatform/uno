@@ -88,7 +88,7 @@ $projects =
     # @(2, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f:net9.0-desktop", "-p:SelfContained=true", "-p:PackageFormat=snap"), @("Publish"))
 
     # 5.4 Wasm+Skia
-    @(2, "5.4/uno54wasmskia/uno54wasmskia/uno54wasmskia.csproj", @(), @()),
+    @(3, "5.6/uno56wasmskia/uno56wasmskia/uno56wasmskia.csproj", @(), @()),
 
     ## Note for contributors
     ##
