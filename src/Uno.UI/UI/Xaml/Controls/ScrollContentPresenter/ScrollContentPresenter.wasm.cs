@@ -262,9 +262,16 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			_pendingScrollTo = (horizontalOffset, verticalOffset);
-			_lastScrollToRequest = (horizontalOffset, verticalOffset);
 
-			WindowManagerInterop.ScrollTo(HtmlId, horizontalOffset, verticalOffset, disableAnimation);
+			try
+			{
+				_lastScrollToRequest = (horizontalOffset, verticalOffset);
+				WindowManagerInterop.ScrollTo(HtmlId, horizontalOffset, verticalOffset, disableAnimation);
+			}
+			finally
+			{
+				_lastScrollToRequest = (null, null);
+			}
 
 			if (_pendingScrollTo.HasValue)
 			{
@@ -356,10 +363,6 @@ namespace Microsoft.UI.Xaml.Controls
 			var isIntermediate =
 				(_lastScrollToRequest.horizontal.HasValue && _lastScrollToRequest.horizontal.Value != horizontalOffset) ||
 				(_lastScrollToRequest.vertical.HasValue && _lastScrollToRequest.vertical.Value != verticalOffset);
-			if (!isIntermediate)
-			{
-				_lastScrollToRequest = (null, null);
-			}
 
 			if (IsArrangeDirty
 				&& _pendingScrollTo is { } pending
