@@ -262,16 +262,9 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			_pendingScrollTo = (horizontalOffset, verticalOffset);
+			_lastScrollToRequest = (horizontalOffset, verticalOffset);
 
-			try
-			{
-				_lastScrollToRequest = (horizontalOffset, verticalOffset);
-				WindowManagerInterop.ScrollTo(HtmlId, horizontalOffset, verticalOffset, disableAnimation);
-			}
-			finally
-			{
-				_lastScrollToRequest = (null, null);
-			}
+			WindowManagerInterop.ScrollTo(HtmlId, horizontalOffset, verticalOffset, disableAnimation);
 
 			if (_pendingScrollTo.HasValue)
 			{
@@ -361,8 +354,12 @@ namespace Microsoft.UI.Xaml.Controls
 			var horizontalOffset = GetNativeHorizontalOffset();
 			var verticalOffset = GetNativeVerticalOffset();
 			var isIntermediate =
-				(_lastScrollToRequest.horizontal.HasValue && _lastScrollToRequest.horizontal.Value != horizontalOffset) ||
-				(_lastScrollToRequest.vertical.HasValue && _lastScrollToRequest.vertical.Value != verticalOffset);
+				(_lastScrollToRequest.horizontal.HasValue && Math.Abs(_lastScrollToRequest.horizontal.Value - horizontalOffset) >= 1) ||
+				(_lastScrollToRequest.vertical.HasValue && Math.Abs(_lastScrollToRequest.vertical.Value - verticalOffset) >= 1);
+			if (!isIntermediate)
+			{
+				_lastScrollToRequest = (null, null);
+			}
 
 			if (IsArrangeDirty
 				&& _pendingScrollTo is { } pending
