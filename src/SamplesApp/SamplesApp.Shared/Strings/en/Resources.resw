@@ -147,4 +147,7 @@
   <data name="PublisherDisplayName" xml:space="preserve">
     <value>Uno Platform</value>
   </data>
+  <data name="XuidGeneratorErrorUid.PrimaryButtonText" xml:space="preserve">
+    <value>SomeValue</value>
+  </data>
 </root>
