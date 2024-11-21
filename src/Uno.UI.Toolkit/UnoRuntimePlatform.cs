@@ -2,17 +2,16 @@
 
 public enum UnoRuntimePlatform
 {
+	Unknown,
 	Android,
 	iOS,
 	MacCatalyst,
 	MacOSX,
 	WebAssembly,
 	Windows,
-	Skia,
 	SkiaGtk,
-	SkiaWpf,
+	SkiaWpfIslands,
 	SkiaX11,
 	SkiaFrameBuffer,
-	SkiaMacOS,
-	Unknown
+	SkiaMacOS
 }
