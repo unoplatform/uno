@@ -782,9 +782,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				RegisterAndBuildResources(writer, topLevelControl, isInInitializer: false);
 				BuildProperties(writer, topLevelControl, isInline: false, useBase: true);
-				BuildInlineLocalizedProperties(writer, topLevelControl, topLevelControlType, isInInitializer: false);
 
 				writer.AppendLineIndented(";");
+
+				writer.AppendLineIndented("");
+				BuildInlineLocalizedProperties(writer, topLevelControl, topLevelControlType, isInInitializer: false);
 
 				writer.AppendLineIndented("");
 				writer.AppendLineIndented("this");
