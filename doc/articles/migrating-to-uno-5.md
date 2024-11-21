@@ -44,7 +44,7 @@ Hot Reload support has changed in Uno Platform 5.0 and a new API invocation is n
     //... in the OnLaunched method
 
     #if DEBUG
-            MainWindow.EnableHotReload();
+            MainWindow.UseStudio();
     #endif
     ```
 

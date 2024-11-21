@@ -14,11 +14,9 @@ using System.Diagnostics;
 
 #if __SKIA__
 using NativePath = Microsoft.UI.Composition.SkiaGeometrySource2D;
-using NativeSingle = System.Double;
 
 #elif __WASM__
 using NativePath = Microsoft.UI.Xaml.Shapes.Shape;
-using NativeSingle = System.Double;
 #endif
 
 namespace Microsoft.UI.Xaml.Shapes;
@@ -37,9 +35,8 @@ partial class Shape
 		var stroke = Stroke;
 		var strokeThickness = stroke is null ? DefaultStrokeThicknessWhenNoStrokeDefined : StrokeThickness;
 		var pathBounds = GetPathBoundingBox(path); // The BoundingBox shouldn't include the control points.
-		var pathSize = (Size)pathBounds.Size;
 
-		if (NativeSingle.IsInfinity(pathBounds.Right) || NativeSingle.IsInfinity(pathBounds.Bottom))
+		if (IsInfinity(pathBounds.Right) || IsInfinity(pathBounds.Bottom))
 		{
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{

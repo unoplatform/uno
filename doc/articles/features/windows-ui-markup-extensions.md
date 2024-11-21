@@ -89,17 +89,15 @@ Using the following XAML:
 ```csharp
 public class DynamicBindExtension : MarkupExtension
 {
-    public DynamicBindExtension(string propertyName)
-    {
-        _propertyName = propertyName;
-    }
-    string _propertyName;
+    public DynamicBindExtension() { }
 
-    public override object ProvideValue(IXamlServiceProvider serviceProvider)
+    public string Name { get; set; } = "";
+
+    protected override object? ProvideValue(IXamlServiceProvider serviceProvider)
     {
         var root = ((IRootObjectProvider)serviceProvider.GetService(typeof(IRootObjectProvider))).RootObject;
-        var info = root.GetType().GetProperty(_propertyName);
-        return info.GetValue(root);
+        var info = root.GetType().GetProperty(Name);
+        return info?.GetValue(root);
     }
 }
 ```
@@ -115,7 +113,13 @@ The following XAML will display “Page Tag”:
       Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-        <TextBlock Text="{local:DynamicBind Tag}" />
+        <ContentControl>
+            <ContentControl.ContentTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{local:DynamicBind Name=Tag}" />
+                </DataTemplate>
+            </ContentControl.ContentTemplate>
+        </ContentControl>
     </Grid>
 </Page>
 ```

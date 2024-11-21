@@ -15,7 +15,7 @@ internal static class MacOSMetalRenderer
 		// FIXME: contribute some extra API (e.g. using `nint` or `IntPtr`) to SkiaSharp to avoid reflection
 		// net8+ alternative -> https://steven-giesel.com/blogPost/05ecdd16-8dc4-490f-b1cf-780c994346a4
 		var get = typeof(GRContext).GetMethod("GetObject", BindingFlags.Static | BindingFlags.NonPublic);
-		var context = (GRContext?)get?.Invoke(null, new object[] { ctx, true });
+		var context = (GRContext?)get?.Invoke(null, [ctx, true]);
 		if (context is null)
 		{
 			// Macs since 2012 have Metal 2 support and macOS 10.14 Mojave (2018) requires Metal

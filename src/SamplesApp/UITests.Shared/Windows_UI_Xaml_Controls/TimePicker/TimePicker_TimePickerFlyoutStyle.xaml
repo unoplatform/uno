@@ -57,7 +57,6 @@
 									</Grid.ColumnDefinitions>
 
 									<Button x:Name="DismissButton"
-											x:Uid="TimePickerDismissButton"
 											Style="{StaticResource IOSTimePickerDoneCancelButtonStyle}"
 											Foreground="Red"
 											Grid.Column="0"
@@ -72,7 +71,6 @@
 											BorderThickness="0" />
 
 									<Button x:Name="AcceptButton"
-											x:Uid="TimePickerAcceptButton"
 											Style="{StaticResource IOSTimePickerDoneCancelButtonStyle}"
 											Foreground="Purple"
 											Grid.Column="2"

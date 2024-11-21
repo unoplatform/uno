@@ -153,10 +153,6 @@
     <value>Kleurenmodel</value>
     <comment>The automation name for the color model selection combo box.</comment>
   </data>
-  <data name="AutomationNameColorSpectrum" xml:space="preserve">
-    <value>Kleurenkiezer</value>
-    <comment>The automation name for the ColorSpectrum control.</comment>
-  </data>
   <data name="TextGreenLabel" xml:space="preserve">
     <value>Groen</value>
     <comment>The label for the text box to edit the green component of the current RGB color.</comment>
@@ -164,10 +160,6 @@
   <data name="AutomationNameGreenTextBox" xml:space="preserve">
     <value>Groen</value>
     <comment>The automation name for the text box to edit the green component of the current RGB color.</comment>
-  </data>
-  <data name="HelpTextColorSpectrum" xml:space="preserve">
-    <value>2D-navigatie met pijltoetsen</value>
-    <comment>The help text associated with ColorSpectrum.</comment>
   </data>
   <data name="AutomationNameHexTextBox" xml:space="preserve">
     <value>RGB-hexadecimaal</value>
@@ -184,10 +176,6 @@
   <data name="AutomationNameHueTextBox" xml:space="preserve">
     <value>Tint</value>
     <comment>The automation name for the text box to edit the hue component of the current HSV color.</comment>
-  </data>
-  <data name="LocalizedControlTypeColorSpectrum" xml:space="preserve">
-    <value>2D-schuifregelaar</value>
-    <comment>The string to provide as the localized control type of the ColorSpectrum.</comment>
   </data>
   <data name="TextRedLabel" xml:space="preserve">
     <value>Rood</value>
@@ -212,14 +200,6 @@
   <data name="TextValueLabel" xml:space="preserve">
     <value>Waarde</value>
     <comment>The label for the text box to edit the value component of the current HSV color.</comment>
-  </data>
-  <data name="ValueStringColorSpectrumWithColorName" xml:space="preserve">
-    <value>%1!s!, tint %2!u!, intensiteit %3!u!, waarde %4!u!</value>
-    <comment>The string to provide as the UIA value of the ColorSpectrum when we're including the friendly color name. %1 is the friendly name of the color; %2, %3, and %4 are the HSV values for the color between 0 and 359 (for hue) or 0 and 100 (for saturation or value).</comment>
-  </data>
-  <data name="ValueStringColorSpectrumWithoutColorName" xml:space="preserve">
-    <value>Tint %1!u!, intensiteit %2!u!, waarde %3!u!</value>
-    <comment>The string to provide as the UIA value of the ColorSpectrum when we aren't including the friendly color name. %1, %2, and %3 are the HSV values for the color between 0 and 359 (for hue) or 0 and 100 (for saturation or value).</comment>
   </data>
   <data name="ValueStringHueSliderWithColorName" xml:space="preserve">
     <value>%1!u!, %2!s!</value>

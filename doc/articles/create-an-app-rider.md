@@ -74,7 +74,15 @@ Creating an Uno Platform project is done [using dotnet new](xref:Uno.GetStarted.
 ---
 
 > [!IMPORTANT]
-> A notification window will appear for the free registration of the extension. If the notification disappears before you can enter the license, you can find it again in the "Notification Bell" icon at the top right of the Rider window.
+> A notification should appear prompting you to sign in or register with Uno Platform.
+>
+> Signing in with your Uno Platform account in Rider unlocks powerful tools like Hot Reload, helping you speed up development.
+>
+> With a single registration, you also gain early access to new features and the opportunity to connect with the Uno Platform community, where you can share feedback and network.
+>
+> Detailed information on registration and sign-in is available <a href="https://aka.platform.uno/account-access" target="_blank">here</a>.
+>
+> ![Uno Platform Sign in / Register notification](Assets/uno-settings-rider-notification.png)
 
 ### Considerations for macOS and Linux
 

@@ -17,17 +17,17 @@
     <PackageVersion Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.2428" />
     <PackageVersion Include="Microsoft.WindowsAppSDK" Version="1.4.240211001" />
     <PackageVersion Include="Serilog.AspNetCore" Version="8.0.1" />
-    <PackageVersion Include="SkiaSharp.NativeAssets.Android" Version="2.88.7" />
-    <PackageVersion Include="SkiaSharp.NativeAssets.iOS" Version="2.88.7" />
-    <PackageVersion Include="SkiaSharp.NativeAssets.Linux" Version="2.88.7" />
-    <PackageVersion Include="SkiaSharp.NativeAssets.MacCatalyst" Version="2.88.7" />
-    <PackageVersion Include="SkiaSharp.NativeAssets.macOS" Version="2.88.7" />
-    <PackageVersion Include="SkiaSharp.NativeAssets.WebAssembly" Version="2.88.7" />
-    <PackageVersion Include="SkiaSharp.NativeAssets.Win32" Version="2.88.7" />
-    <PackageVersion Include="SkiaSharp.Skottie" Version="2.88.7" />
-    <PackageVersion Include="SkiaSharp.Views.Uno.WinUI" Version="2.88.7" />
-    <PackageVersion Include="SkiaSharp.Views" Version="2.88.7" />
-    <PackageVersion Include="SkiaSharp.Views.Gtk2" Version="2.88.7" />
+    <PackageVersion Include="SkiaSharp.NativeAssets.Android" Version="2.88.9-preview.2.2" />
+    <PackageVersion Include="SkiaSharp.NativeAssets.iOS" Version="2.88.9-preview.2.2" />
+    <PackageVersion Include="SkiaSharp.NativeAssets.Linux" Version="2.88.9-preview.2.2" />
+    <PackageVersion Include="SkiaSharp.NativeAssets.MacCatalyst" Version="2.88.9-preview.2.2" />
+    <PackageVersion Include="SkiaSharp.NativeAssets.macOS" Version="2.88.9-preview.2.2" />
+    <PackageVersion Include="SkiaSharp.NativeAssets.WebAssembly" Version="2.88.9-preview.2.2" />
+    <PackageVersion Include="SkiaSharp.NativeAssets.Win32" Version="2.88.9-preview.2.2" />
+    <PackageVersion Include="SkiaSharp.Skottie" Version="2.88.9-preview.2.2" />
+    <PackageVersion Include="SkiaSharp.Views.Uno.WinUI" Version="2.88.9-preview.2.2" />
+    <PackageVersion Include="SkiaSharp.Views" Version="2.88.9-preview.2.2" />
+    <PackageVersion Include="SkiaSharp.Views.Gtk2" Version="2.88.9-preview.2.2" />
     <PackageVersion Include="OpenTK" Version="3.1.0" />
     <PackageVersion Include="OpenTK.GLControl" Version="3.1.0" />
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="6.5.0" />
@@ -52,10 +52,10 @@
     <PackageVersion Include="Uno.Extensions.Serialization" Version="4.0.0" />
     <PackageVersion Include="Uno.Extensions.Serialization.Http" Version="4.0.0" />
     <PackageVersion Include="Uno.Extensions.Serialization.Refit" Version="4.0.0" />
-    <PackageVersion Include="Uno.Material.WinUI" Version="4.1.1" />
+    <PackageVersion Include="Uno.Material.WinUI" Version="5.0.13" />
     <PackageVersion Include="Uno.Dsp.Tasks" Version="1.3.0" />
-    <PackageVersion Include="Uno.Toolkit.WinUI" Version="5.1.5" />
-    <PackageVersion Include="Uno.Toolkit.WinUI.Material" Version="5.1.5" />
+    <PackageVersion Include="Uno.Toolkit.WinUI" Version="6.3.6" />
+    <PackageVersion Include="Uno.Toolkit.WinUI.Material" Version="6.3.6" />
     <PackageVersion Include="Uno.Resizetizer" Version="1.3.0" />
     <PackageVersion Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="$(UnoVersion)" />
     <PackageVersion Include="Uno.UniversalImageLoader" Version="1.9.37" />

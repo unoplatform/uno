@@ -1521,4 +1521,8 @@
   <data name="5155" xml:space="preserve">
     <value>Plómulitaður</value>
   </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>Loka</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

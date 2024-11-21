@@ -219,7 +219,7 @@ internal static partial class NativeUno
 	internal static partial string uno_window_get_title(nint window);
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
-	internal static partial nint uno_window_set_title(nint window, string title);
+	internal static partial void uno_window_set_title(nint window, string title);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static unsafe partial void uno_set_window_close_callbacks(
@@ -278,6 +278,9 @@ internal static partial class NativeUno
 	internal static partial void uno_window_set_min_size(nint window, double width, double height);
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial void uno_window_clip_svg(nint window, string? svg);
+
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
 	internal static partial string? /* const char* _Nullable */ uno_pick_single_folder(string? prompt, string? identifier, int suggestedStartLocation);
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
@@ -320,4 +323,29 @@ internal static partial class NativeUno
 	[LibraryImport("libUnoNativeMac.dylib")]
 	[return: MarshalAs(UnmanagedType.I1)]
 	internal static partial bool uno_cursor_set(CoreCursorType cursorType);
+
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial nint uno_native_create_sample(nint window, string text);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_native_arrange(nint element, double arrangeLeft, double arrangeTop, double arrangeWidth, double arrangeHeight, double clipLeft, double clipTop, double clipWidth, double clipHeight);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_native_attach(nint element);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_native_detach(nint element);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	[return: MarshalAs(UnmanagedType.I1)]
+	internal static partial bool uno_native_is_attached(nint element);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_native_set_opacity(nint element, double opacity);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_native_set_visibility(nint element, [MarshalAs(UnmanagedType.I1)] bool visible);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_native_measure(nint element, double childWidth, double childHeight, double availableWidth, double availableHeight, out double width, out double height);
 }

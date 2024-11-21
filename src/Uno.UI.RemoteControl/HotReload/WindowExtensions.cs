@@ -2,6 +2,7 @@
 using Uno.UI.RemoteControl.HotReload;
 using Microsoft.UI.Xaml;
 using Uno.Diagnostics.UI;
+using System.ComponentModel;
 
 namespace Uno.UI;
 
@@ -14,6 +15,9 @@ public static class WindowExtensions
 	/// Enables the UI Update cycle of HotReload to be handled by Uno
 	/// </summary>
 	/// <param name="window">The window of the application where UI updates will be applied</param>
+	[Obsolete("Use the UseStudio() method instead if using the Uno.SDK, otherwise see https://aka.platform.uno/UNO0008 for more details.", DiagnosticId = "UNO0008", UrlFormat = "https://aka.platform.uno/UNO0008")]
+	[Browsable(false)]
+	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static void EnableHotReload(this Window window)
 		=> ClientHotReloadProcessor.SetWindow(window, false);
 
@@ -22,6 +26,9 @@ public static class WindowExtensions
 	/// </summary>
 	/// <param name="window">The window of the application where UI updates will be applied</param>
 	/// <param name="disableIndicator">Request to not show the on-canvas indicator by default.</param>
+	[Obsolete("Use the UseStudio() method instead if using the Uno.SDK, otherwise see https://aka.platform.uno/UNO0008 for more details.", DiagnosticId = "UNO0008", UrlFormat = "https://aka.platform.uno/UNO0008")]
+	[Browsable(false)]
+	[EditorBrowsable(EditorBrowsableState.Never)]
 	public static void EnableHotReload(this Window window, bool disableIndicator)
 		=> ClientHotReloadProcessor.SetWindow(window, disableIndicator);
 

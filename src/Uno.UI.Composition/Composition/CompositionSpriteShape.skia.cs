@@ -10,13 +10,32 @@ namespace Microsoft.UI.Composition
 {
 	public partial class CompositionSpriteShape : CompositionShape
 	{
-		private SKPath? _geometryWithTransformations;
+		private CompositionGeometry? _fillGeometry;
+
+		private SkiaGeometrySource2D? _geometryWithTransformations;
+		private SkiaGeometrySource2D? _fillGeometryWithTransformations;
+
+		/// <summary>
+		/// This is largely a hack that's needed for MUX.Shapes.Path with Data set to a PathGeometry that has some
+		/// figures with IsFilled = False. CompositionSpriteShapes don't have the concept of a "selectively filled
+		/// geometry". The entire Geometry is either filled (FillBrush is not null) or not. To work around this,
+		/// we add this "fill geometry" which is only the subgeomtry to be filled.
+		/// cf. https://github.com/unoplatform/uno/issues/18694
+		/// Remove this if we port Shapes from WinUI, which don't use CompositionSpriteShapes to begin with, but
+		/// a CompositionMaskBrush that (presumably) masks out certain areas. We compensate for this by using this
+		/// geometry as the mask.
+		/// </summary>
+		internal CompositionGeometry? FillGeometry
+		{
+			private get => _fillGeometry;
+			set => SetProperty(ref _fillGeometry, value);
+		}
 
 		internal override void Paint(in Visual.PaintingSession session)
 		{
 			if (_geometryWithTransformations is { } geometryWithTransformations)
 			{
-				if (FillBrush is { } fill)
+				if (FillBrush is { } fill && _fillGeometryWithTransformations is { } finalFillGeometryWithTransformations)
 				{
 					using var fillPaintDisposable = GetTempFillPaint(session.Filters.OpacityColorFilter, out var fillPaint);
 
@@ -26,7 +45,7 @@ namespace Microsoft.UI.Composition
 					}
 					else
 					{
-						fill.UpdatePaint(fillPaint, geometryWithTransformations.Bounds);
+						fill.UpdatePaint(fillPaint, finalFillGeometryWithTransformations.Bounds);
 					}
 
 					if (fill is CompositionBrushWrapper wrapper)
@@ -45,7 +64,7 @@ namespace Microsoft.UI.Composition
 					}
 					else
 					{
-						session.Canvas.DrawPath(geometryWithTransformations, fillPaint);
+						finalFillGeometryWithTransformations.CanvasDrawPath(session.Canvas, fillPaint);
 					}
 				}
 
@@ -80,7 +99,7 @@ namespace Microsoft.UI.Composition
 					using (SkiaHelper.GetTempSKPath(out var strokeFillPath))
 					{
 						// Get the stroke geometry, after scaling has been applied.
-						strokePaint.GetFillPath(geometryWithTransformations, strokeFillPath);
+						geometryWithTransformations.GetFillPath(strokePaint, strokeFillPath);
 
 						stroke.UpdatePaint(fillPaint, strokeFillPath.Bounds);
 
@@ -124,26 +143,28 @@ namespace Microsoft.UI.Composition
 
 			switch (propertyName)
 			{
-				case nameof(Geometry) or nameof(CombinedTransformMatrix):
-					if (Geometry?.BuildGeometry() is SkiaGeometrySource2D { Geometry: { } geometry })
+				case nameof(Geometry) or nameof(CombinedTransformMatrix) or nameof(FillGeometry):
+					if (Geometry?.BuildGeometry() is SkiaGeometrySource2D geometry)
 					{
 						var transform = CombinedTransformMatrix;
-						SKPath geometryWithTransformations;
-						if (transform.IsIdentity)
+						_geometryWithTransformations = transform.IsIdentity
+							? geometry
+							: geometry.Transform(transform.ToSKMatrix());
+						if (FillGeometry?.BuildGeometry() is SkiaGeometrySource2D fillGeometry)
 						{
-							geometryWithTransformations = geometry;
+							_fillGeometryWithTransformations = transform.IsIdentity
+								? fillGeometry
+								: fillGeometry.Transform(transform.ToSKMatrix());
 						}
 						else
 						{
-							geometryWithTransformations = new SKPath();
-							geometry.Transform(transform.ToSKMatrix(), geometryWithTransformations);
+							_fillGeometryWithTransformations = _geometryWithTransformations;
 						}
-
-						_geometryWithTransformations = geometryWithTransformations;
 					}
 					else
 					{
 						_geometryWithTransformations = null;
+						_fillGeometryWithTransformations = null;
 					}
 					break;
 			}
@@ -168,7 +189,7 @@ namespace Microsoft.UI.Composition
 
 						using (SkiaHelper.GetTempSKPath(out var hitTestStrokeFillPath))
 						{
-							strokePaint.GetFillPath(geometryWithTransformations, hitTestStrokeFillPath);
+							geometryWithTransformations.GetFillPath(strokePaint, hitTestStrokeFillPath);
 							if (hitTestStrokeFillPath.Contains((float)point.X, (float)point.Y))
 							{
 								return true;

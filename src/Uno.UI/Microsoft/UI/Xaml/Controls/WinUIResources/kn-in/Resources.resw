@@ -1521,4 +1521,8 @@
   <data name="5155" xml:space="preserve">
     <value>ಪ್ಲಮ್</value>
   </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>ಮುಚ್ಚಿರಿ</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

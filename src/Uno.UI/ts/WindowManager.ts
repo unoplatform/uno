@@ -133,6 +133,7 @@ namespace Uno.UI {
 		private static dispatchSuspendingMethod: any;
 		private static getDependencyPropertyValueMethod: any;
 		private static setDependencyPropertyValueMethod: any;
+		private static keyTrackingMethod: any;
 
 		private constructor(private containerElementId: string, private loadingElementId: string) {
 			this.initDom();
@@ -1437,6 +1438,7 @@ namespace Uno.UI {
 				WindowManager.dispatchEventMethod = exports.Microsoft.UI.Xaml.UIElement.DispatchEvent;
 				WindowManager.focusInMethod = exports.Microsoft.UI.Xaml.Input.FocusManager.ReceiveFocusNative;
 				WindowManager.dispatchSuspendingMethod = exports.Microsoft.UI.Xaml.Application.DispatchSuspending;
+				WindowManager.keyTrackingMethod = (<any>globalThis).DotnetExports.Uno.Uno.UI.Core.KeyboardStateTracker.UpdateKeyStateNative;
 			} else {
 				throw `Unable to find dotnet exports`;
 			}
@@ -1450,6 +1452,13 @@ namespace Uno.UI {
 			}
 			document.body.addEventListener("focusin", this.onfocusin);
 			document.body.appendChild(this.containerElement);
+
+			// On WASM, if no one subscribes to key<Down|Up>, not only will the event not fire on any UIElement,
+			// but the browser won't even notify us that a key was pressed/released, and this breaks KeyboardStateTracker
+			// key tracking, which depends on RaiseEvent being called even if no one is subscribing. Instead, we
+			// subscribe on the body and make sure to call KeyboardStateTracker ourselves here.
+			document.body.addEventListener("keydown", this.onBodyKeyDown);
+			document.body.addEventListener("keyup", this.onBodyKeyUp);
 
 			window.addEventListener("resize", x => WindowManager.resize());
 			window.addEventListener("contextmenu", x => {
@@ -1592,6 +1601,14 @@ namespace Uno.UI {
 
 		public moveWindow(x: number, y: number) {
 			window.moveTo(x, y);
+		}
+
+		private onBodyKeyDown(event: KeyboardEvent) {
+			WindowManager.keyTrackingMethod(event.key, true);
+		}
+
+		private onBodyKeyUp(event: KeyboardEvent) {
+			WindowManager.keyTrackingMethod(event.key, false);
 		}
 	}
 

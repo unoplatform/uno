@@ -35,6 +35,17 @@ To create an Uno Platform app:
 1. A banner at the top of the editor may ask to reload projects, click **Reload projects**:  
     ![Visual Studio - A banner indicating to reload projects](Assets/quick-start/vs2022-project-reload.png)
 
+1. > [!IMPORTANT]
+    > A notification should appear prompting you to sign in or register with Uno Platform.
+    >
+    > Signing in with your Uno Platform account in Visual Studio unlocks powerful tools like Hot Reload, helping you speed up development.
+    >
+    > With a single registration, you also gain early access to new features and the opportunity to connect with the Uno Platform community, where you can share feedback and network.
+    >
+    > Detailed information on registration and sign-in is available <a href="https://aka.platform.uno/account-access" target="_blank">here</a>.
+    >
+    > ![Uno Platform sign in / register notification](Assets/uno-settings-notification.png)
+
 ## Debug the App
 
 ### [**Desktop**](#tab/desktop)

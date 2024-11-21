@@ -75,7 +75,9 @@ public class App : Application
         MainWindow = builder.Window;
 
 #if DEBUG
+#pragma warning disable UNO0008
         MainWindow.EnableHotReload();
+#pragma warning restore UNO0008
 #endif
 
         Host = await builder.NavigateAsync<Shell>();

@@ -1395,4 +1395,8 @@
   <data name="TEXT_VK_IMEOFF" xml:space="preserve">
     <value>IME ਬੰਦ</value>
   </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>ਬੰਦ ਕਰੋ</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

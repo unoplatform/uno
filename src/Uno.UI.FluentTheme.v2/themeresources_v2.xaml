@@ -22960,6 +22960,11 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
               </Grid.ColumnDefinitions>
+              <!-- Uno workaround: On Android, the Height of ContentPresenters inside this Grid is not bing calculated correctly -->
+              <!-- It can be removed once this PR is merged: https://github.com/unoplatform/uno/pull/18261 -->
+              <android:Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+              </android:Grid.RowDefinitions>
               <Viewbox x:Name="IconBox" MaxWidth="{ThemeResource TabViewItemHeaderIconSize}" MaxHeight="{ThemeResource TabViewItemHeaderIconSize}" Margin="{ThemeResource TabViewItemHeaderIconMargin}">
                 <ContentControl x:Name="IconControl" Content="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TabViewTemplateSettings.IconElement}" IsTabStop="False" Foreground="{ThemeResource TabViewItemIconForeground}" HighContrastAdjustment="None" />
               </Viewbox>

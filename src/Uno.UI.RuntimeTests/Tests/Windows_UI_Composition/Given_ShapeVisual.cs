@@ -16,6 +16,7 @@ public class Given_ShapeVisual
 #if __SKIA__
 	[RequiresFullWindow]
 	[TestMethod]
+	[Ignore("https://github.com/unoplatform/uno/issues/18752")]
 	public async Task When_ShapeVisual_ViewBox_Shape_Combinations()
 	{
 		// runtime test version of the ShapeVisualClipping sample
