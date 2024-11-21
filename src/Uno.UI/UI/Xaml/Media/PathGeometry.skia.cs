@@ -5,12 +5,21 @@ namespace Microsoft.UI.Xaml.Media
 {
 	partial class PathGeometry
 	{
-		internal override SKPath GetSKPath()
+		internal override SKPath GetSKPath() => GetSKPath(false);
+
+		internal override SKPath GetFilledSKPath() => GetSKPath(true);
+
+		private SKPath GetSKPath(bool skipUnfilled)
 		{
 			var path = new SKPath();
 
 			foreach (PathFigure figure in Figures)
 			{
+				if (skipUnfilled && !figure.IsFilled)
+				{
+					continue;
+				}
+
 				path.MoveTo((float)figure.StartPoint.X, (float)figure.StartPoint.Y);
 
 				foreach (PathSegment segment in figure.Segments)
