@@ -44,6 +44,11 @@
 		<Platform Condition="$(Platform) == 'AnyCPU'">$([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture)</Platform>
 		<PublishProfile Condition=" $(PublishProfile) == '' ">win-$(Platform).pubxml</PublishProfile>
 		<UseWinUI Condition=" $(UseWinUI) == '' ">true</UseWinUI>
+
+		<!-- Explicitly set the PlatformTarget in order for packages like WebView2 to select the appropriate binaries -->
+		<PlatformTarget Condition=" '$(PlatformTarget)' == '' AND $(Platform) == 'AnyCPU' AND '$(NETCoreSdkRuntimeIdentifier)' == 'win-x86'">x86</PlatformTarget>
+		<PlatformTarget Condition=" '$(PlatformTarget)' == '' AND $(Platform) == 'AnyCPU' AND '$(NETCoreSdkRuntimeIdentifier)' == 'win-x64'">x64</PlatformTarget>
+		<PlatformTarget Condition=" '$(PlatformTarget)' == '' AND $(Platform) == 'AnyCPU' AND '$(NETCoreSdkRuntimeIdentifier)' == 'win-arm64'">arm64</PlatformTarget>
 	</PropertyGroup>
 
 	<!-- Legacy Project Support -->
