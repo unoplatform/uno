@@ -259,7 +259,7 @@ internal class X11DragDropExtension : IDragDropExtension
 	private void ProcessXdndDrop(XClientMessageEvent ev)
 	{
 		var pos = _currentSession!.Value.LastPosition!.Value;
-		var acceptedOperation = _manager.ProcessDropped(new DragEventSource((int)pos.X, (int)pos.Y));
+		var acceptedOperation = _manager.ProcessReleased(new DragEventSource((int)pos.X, (int)pos.Y));
 		_currentSession = null;
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
@@ -297,7 +297,7 @@ internal class X11DragDropExtension : IDragDropExtension
 	// TODO: uno-to-outside dragging
 	public void StartNativeDrag(CoreDragInfo info) => throw new System.NotImplementedException();
 
-	private class DragEventSource(int x, int y) : IDragEventSource
+	private readonly struct DragEventSource(int x, int y) : IDragEventSource
 	{
 		private static long _nextFrameId;
 		private readonly Point _location = new Point(x, y);
