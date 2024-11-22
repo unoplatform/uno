@@ -273,14 +273,26 @@
 			ContentRoot="$(MSBuildProjectDirectory)\wwwroot\"
 			BasePath="$(StaticWebAssetBasePath)"
 			AssetMergeSource="$(StaticWebAssetMergeTarget)">
-			<Output TaskParameter="Assets" ItemName="StaticWebAsset" />
+			<Output TaskParameter="Assets" ItemName="_UnoTransitiveItems_StaticWebAsset" />
 		</DefineStaticWebAssets>
+
+		<RemoveDuplicates Inputs="@(StaticWebAsset);@(_UnoTransitiveItems_StaticWebAsset)">
+			<Output TaskParameter="Filtered" ItemName="_UnoTransitiveItems_Unique_StaticWebAsset"/>
+		</RemoveDuplicates>
+
+		<ItemGroup>
+			<StaticWebAsset Remove="@(StaticWebAsset)" />
+			<StaticWebAsset Include="@(_UnoTransitiveItems_Unique_StaticWebAsset)" />
+
+			<_UnoTransitiveItems_Unique_StaticWebAsset Remove="@(_UnoTransitiveItems_Unique_StaticWebAsset)" />
+			<_UnoTransitiveItems_Unique_StaticWebAsset Remove="@(_UnoTransitiveItems_StaticWebAsset)" />
+		</ItemGroup>
 
 		<DefineStaticWebAssetEndpoints
 			  CandidateAssets="@(StaticWebAsset)"
 			  ExistingEndpoints="@(StaticWebAssetEndpoint)"
 			  ContentTypeMappings="@(StaticWebAssetContentTypeMapping)"
-				>	
+			>
 			<Output TaskParameter="Endpoints" ItemName="StaticWebAssetEndpoint" />
 		</DefineStaticWebAssetEndpoints>
 
