@@ -13,6 +13,7 @@ using System.IO;
 using System.Linq;
 using MobileCoreServices;
 using SystemPath = System.IO.Path;
+using PhotosUI;
 
 namespace Windows.Storage
 {
@@ -20,6 +21,9 @@ namespace Windows.Storage
 	{
 		internal static StorageFile GetFromSecurityScopedUrl(NSUrl nsUrl, StorageFolder? parent) =>
 			new StorageFile(new SecurityScopedFile(nsUrl, parent));
+
+		internal static StorageFile GetFromPHPickerResult(PHPickerResult result, StorageFolder? parent) =>
+			new StorageFile(new PHPickerResultFile(result, parent));
 
 		internal class SecurityScopedFile : ImplementationBase
 		{
@@ -94,6 +98,63 @@ namespace Windows.Storage
 			protected override bool IsEqual(ImplementationBase implementation) =>
 				implementation is SecurityScopedFile file &&
 				file._nsUrl.FilePathUrl?.Path == _nsUrl.FilePathUrl?.Path;
+		}
+
+		internal class PHPickerResultFile : ImplementationBase
+		{
+			private PHPickerResult _phPickerResult;
+			private StorageFolder? _parent;
+
+			public PHPickerResultFile(PHPickerResult phPickerResult, StorageFolder? parent) : base(string.Empty)
+			{
+				if (phPickerResult is null)
+				{
+					throw new ArgumentNullException(nameof(phPickerResult));
+				}
+
+				_phPickerResult = phPickerResult;
+				_parent = parent;
+			}
+
+			public override StorageProvider Provider => StorageProviders.IosPHPicker;
+
+			public override DateTimeOffset DateCreated
+			{
+				get
+				{
+					var itemProvider = _phPickerResult.ItemProvider;
+
+					if (itemProvider.HasItemConformingTo(UTType.Image))
+					{
+						var fileUrl = await GetFileUrlAsync(itemProvider);
+
+						if (fileUrl != null)
+						{
+							var attributes = NSFileManager.DefaultManager.GetAttributes(fileUrl.Path, out NSError error);
+							if (error != null)
+							{
+								throw new IOException($"Error retrieving file attributes: {error.LocalizedDescription}");
+							}
+
+							var creationDate = attributes.CreationDate;
+							return creationDate?.ToDateTimeOffset()
+								   ?? throw new InvalidOperationException("Creation date not found.");
+						}
+					}
+
+					throw new InvalidOperationException("Item does not conform to a supported type.");
+				}
+			}
+
+			public override Task DeleteAsync(CancellationToken ct, StorageDeleteOption options) => throw new NotImplementedException();
+			public override Task<BasicProperties> GetBasicPropertiesAsync(CancellationToken ct) => throw new NotImplementedException();
+			public override Task<StorageFolder?> GetParentAsync(CancellationToken ct) => throw new NotImplementedException();
+			public override Task<IRandomAccessStreamWithContentType> OpenAsync(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options) => throw new NotImplementedException();
+			public override Task<StorageStreamTransaction> OpenTransactedWriteAsync(CancellationToken ct, StorageOpenOptions option) => throw new NotImplementedException();
+			protected override bool IsEqual(ImplementationBase implementation)
+			{
+				implementation is PHPickerResultFile file && file._phPickerResult.ItemProvider.Load
+			}
 		}
 	}
 }
