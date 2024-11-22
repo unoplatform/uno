@@ -31,7 +31,7 @@ partial class CompositionGeometricClip
 		switch (Geometry)
 		{
 			case CompositionPathGeometry { Path.GeometrySource: SkiaGeometrySource2D geometrySource }:
-				var path = geometrySource;
+				var path = geometrySource.Geometry;
 				if (!TransformMatrix.IsIdentity)
 				{
 					var transformedPath = new SKPath();
