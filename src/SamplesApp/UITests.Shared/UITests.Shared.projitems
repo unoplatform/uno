@@ -2378,6 +2378,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\PersonPictureTests\PersonPictureLateBindingPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>    
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Pivot\Pivot_CustomContent_Automated.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -7183,6 +7187,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\PersonPictureTests\PersonPicturePage.xaml.cs">
       <DependentUpon>PersonPicturePage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\PersonPictureTests\PersonPictureLateBindingPage.xaml.cs">
+      <DependentUpon>PersonPictureLateBindingPage.xaml</DependentUpon>
+    </Compile>    
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Pivot\Pivot_CustomContent_Automated.xaml.cs">
       <DependentUpon>Pivot_CustomContent_Automated.xaml</DependentUpon>
     </Compile>
