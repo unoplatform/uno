@@ -177,7 +177,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public void OnForegroundChanged(Brush oldValue, Brush newValue)
 		{
-			Brush.SetupBrushChanged(oldValue, newValue, ref _foregroundChanged, () => ApplyColor());
+			_foregroundBrushChangedSubscription?.Dispose();
+			_foregroundBrushChangedSubscription = Brush.SetupBrushChanged(newValue, ref _foregroundChanged, () => ApplyColor());
 
 			void ApplyColor()
 			{
