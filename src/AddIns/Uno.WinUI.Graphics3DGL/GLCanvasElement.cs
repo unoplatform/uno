@@ -39,7 +39,7 @@ namespace Uno.WinUI.Graphics3DGL;
 /// This is only available on WinUI and on skia-based targets running with hardware acceleration.
 /// This is currently only available on the WPF and X11 targets (and WinUI).
 /// </remarks>
-public abstract partial class GLCanvasElement : Grid, INativeContext, INotifyPropertyChanged
+public abstract partial class GLCanvasElement : Grid, INativeContext
 {
 	private const int BytesPerPixel = 4;
 	private static readonly Dictionary<XamlRoot, INativeOpenGLWrapper?> _xamlRootToWrapper = new();
@@ -48,7 +48,7 @@ public abstract partial class GLCanvasElement : Grid, INativeContext, INotifyPro
 
 	private readonly Func<Window>? _getWindowFunc;
 
-	private bool? _isGlInitialized;
+	private bool _changingGlInitialized;
 
 	// valid if and only if GLCanvasElement was loaded at least once and OpenGL is available on the running platform
 	private INativeOpenGLWrapper? _nativeOpenGlWrapper;
@@ -224,24 +224,40 @@ public abstract partial class GLCanvasElement : Grid, INativeContext, INotifyPro
 	public void Invalidate() => NativeDispatcher.Main.Enqueue(Render, NativeDispatcherPriority.Idle);
 #endif
 
+	public static DependencyProperty IsGLInitializedProperty { get; } =
+		DependencyProperty.Register(
+			nameof(IsGLInitialized),
+			typeof(bool?),
+			typeof(GLCanvasElement),
+			new PropertyMetadata(null, (PropertyChangedCallback)((dO, _) =>
+			{
+				var @this = (GLCanvasElement)dO;
+				if (!@this._changingGlInitialized)
+				{
+					throw new InvalidOperationException($"{nameof(GLCanvasElement)}.{nameof(IsGLInitializedProperty)} is read-only.");
+				}
+
+				// We should have arrived here from set_IsGLInitialized, so we could put this line at the end of the
+				// setter. Instead, we set it to false here to prevent users from calling SetValue.IsGLInitializedProperty
+				// _inside_ a call to GLCanvasElement.set_IsGLInitialized. This way, if a user intercepts this
+				// change (e.g. with SubscribeToPropertyChanged) and attempts to make a nested SetValue call, we still
+				// explode in their face.
+				@this._changingGlInitialized = false;
+			})));
+
 	/// <summary>
 	/// Indicates whether this element was loaded successfully or not, including the OpenGL context creation and setup.
 	/// This property is only valid when the element is loaded. When the element is not loaded in the visual tree, the value will be null.
 	/// </summary>
 	public bool? IsGLInitialized
 	{
-		get => _isGlInitialized;
+		get => (bool?)GetValue(IsGLInitializedProperty);
 		private set
 		{
-			_isGlInitialized = value;
-			RaisePropertyChanged();
+			_changingGlInitialized = true;
+			SetValue(IsGLInitializedProperty, value);
 		}
 	}
-
-	public event PropertyChangedEventHandler? PropertyChanged;
-
-	protected void RaisePropertyChanged([CallerMemberName] string? propertyName = null)
-		=> PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
 	private void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
 	{
