@@ -310,7 +310,8 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (newValue is SolidColorBrush scb)
 			{
-				Brush.SetupBrushChanged(oldValue, newValue, ref _foregroundChanged, () => ApplyColor());
+				_foregroundBrushChangedSubscription?.Dispose();
+				_foregroundBrushChangedSubscription = Brush.SetupBrushChanged(newValue, ref _foregroundChanged, () => ApplyColor());
 
 				void ApplyColor()
 				{

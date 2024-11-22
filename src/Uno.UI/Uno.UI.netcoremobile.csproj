@@ -45,14 +45,6 @@
 
 	<ItemGroup>
 		<None Include="Extensions\CGSizeExtensions.iOSmacOS.cs" />
-		<None Include="Mixins\Android\FrameworkElementMixins.g.cs">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-		</None>
-		<None Include="Mixins\iOS\FrameworkElementMixins.g.cs">
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-		</None>
 		<None Include="Mixins\macOS\FrameworkElementMixins.g.cs">
 			<DesignTime>True</DesignTime>
 			<AutoGen>True</AutoGen>
@@ -143,5 +135,8 @@
 
 	<Import Project="MixinGeneration.targets" />
 	<Import Project="XamlMerge.targets" />
+	<ItemGroup>
+	  <Compile Remove="D:\s\uno.github\uno\src\Uno.UI\Mixins\DependencyPropertyMixins.g.cs" />
+	</ItemGroup>
 
 </Project>
