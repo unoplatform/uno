@@ -79,7 +79,7 @@ namespace Windows.Storage.Pickers
 					};
 					return new PHPickerViewController(imageConfiguration)
 					{
-						Delegate = new PhotoPickerDelegate(completionSource)
+						Delegate = new PhotoPickerDelegate(completionSource, _isReadOnly)
 					};
 				case PickerLocationId.VideosLibrary when multiple is true && iOS14AndAbove is true:
 					var videoConfiguration = new PHPickerConfiguration(PHPhotoLibrary.SharedPhotoLibrary)
@@ -89,7 +89,7 @@ namespace Windows.Storage.Pickers
 					};
 					return new PHPickerViewController(videoConfiguration)
 					{
-						Delegate = new PhotoPickerDelegate(completionSource)
+						Delegate = new PhotoPickerDelegate(completionSource, _isReadOnly)
 					};
 
 				default:
@@ -213,7 +213,7 @@ namespace Windows.Storage.Pickers
 
 					foreach (NSItemProvider provider in providers)
 					{
-						var identifier = GetIdentifier(provider.RegisteredTypeIdentifiers ?? []) ?? "public.data";
+						var identifier = StorageFile.GetUTIdentifier(provider.RegisteredTypeIdentifiers ?? []) ?? "public.data";
 						var data = await provider.LoadDataRepresentationAsync(identifier);
 
 						if (data is null)
@@ -221,7 +221,7 @@ namespace Windows.Storage.Pickers
 							continue;
 						}
 
-						var extension = GetExtension(identifier);
+						var extension = StorageFile.GetUTFileExtension(identifier);
 
 						var destinationUrl = NSFileManager.DefaultManager
 							.GetTemporaryDirectory()
@@ -233,30 +233,6 @@ namespace Windows.Storage.Pickers
 				}
 				return storageFiles;
 			}
-
-			private static string? GetIdentifier(string[] identifiers)
-			{
-				if (!(identifiers?.Length > 0))
-				{
-					return null;
-				}
-
-				if (identifiers.Any(i => i.StartsWith(UTType.LivePhoto, StringComparison.InvariantCultureIgnoreCase)) && identifiers.Contains(UTType.JPEG))
-				{
-					return identifiers.FirstOrDefault(i => i == UTType.JPEG);
-				}
-
-				if (identifiers.Contains(UTType.QuickTimeMovie))
-				{
-					return identifiers.FirstOrDefault(i => i == UTType.QuickTimeMovie);
-				}
-
-				return identifiers.FirstOrDefault();
-			}
-
-			private string? GetExtension(string identifier)
-			=> UTType.CopyAllTags(identifier, UTType.TagClassFilenameExtension)?.FirstOrDefault();
-
 		}
 
 		private class FileOpenPickerDelegate : UIDocumentPickerDelegate

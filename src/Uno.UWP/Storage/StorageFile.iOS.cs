@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Foundation;
+using MobileCoreServices;
 using Photos;
 using PhotosUI;
 using UIKit;
@@ -23,7 +24,7 @@ namespace Windows.Storage
 			new StorageFile(new SecurityScopedFile(nsUrl, parent));
 
 		internal static StorageFile GetFromPHPickerResult(PHPickerResult result, PHAsset phAsset, StorageFolder? parent) =>
-			new StorageFile(new PHPickerResultFile(result, phAsset, parent));
+			new StorageFile(new PHAssetFile(phAsset, result, parent));
 
 		internal class SecurityScopedFile : ImplementationBase
 		{
@@ -103,13 +104,19 @@ namespace Windows.Storage
 		internal class PHAssetFile : ImplementationBase
 		{
 			private readonly PHAsset _phAsset;
+			private readonly PHPickerResult _pickerResult;
 			private StorageFolder? _parent;
 
-			public PHAssetFile(PHAsset phAsset, StorageFolder? parent) : base(string.Empty)
+			private NSUrl? _fileUrl;
+
+			public PHAssetFile(PHAsset phAsset, PHPickerResult pickerResult, StorageFolder? parent) : base(string.Empty)
 			{
 				_phAsset = phAsset;
+				_pickerResult = pickerResult;
 				_parent = parent;
-				Path = phAsset.
+
+				var resources = PHAssetResource.GetAssetResources(_phAsset);
+				Path = ((PHAssetResource)resources[0]).OriginalFilename;
 			}
 
 			public override StorageProvider Provider => StorageProviders.IosPHPicker;
@@ -150,14 +157,81 @@ namespace Windows.Storage
 
 			public override Task<StorageFolder?> GetParentAsync(CancellationToken ct) => Task.FromResult(_parent);
 
-			public override Task<IRandomAccessStreamWithContentType> OpenAsync(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options)
-				=> Task.FromResult<IRandomAccessStreamWithContentType>(new RandomAccessStreamWithContentType(FileRandomAccessStream.CreateSecurityScoped(_phAsset.Rea, ToFileAccess(accessMode), ToFileShare(options)), ContentType));
-			public override Task<StorageStreamTransaction> OpenTransactedWriteAsync(CancellationToken ct, StorageOpenOptions option)
+			public override async Task<IRandomAccessStreamWithContentType> OpenAsync(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options)
 			{
+				await EnsureLoadedAsync();
 
+				if (_fileUrl is null)
+				{
+					throw new InvalidOperationException("The file could not be loaded.");
+				}
+
+				return new RandomAccessStreamWithContentType(FileRandomAccessStream.CreateSecurityScoped(_fileUrl, ToFileAccess(accessMode), ToFileShare(options)), ContentType);
 			}
 
+			public override async Task<Stream> OpenStreamAsync(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options)
+			{
+				await EnsureLoadedAsync();
+
+				if (_fileUrl is null)
+				{
+					throw new InvalidOperationException("The file could not be loaded.");
+				}
+
+				Func<Stream> streamBuilder = () => File.Open(Path, FileMode.Open, ToFileAccess(accessMode), ToFileShare(options));
+				var streamWrapper = new SecurityScopeStreamWrapper(_fileUrl, streamBuilder);
+				return streamWrapper;
+			}
+
+			public override Task<StorageStreamTransaction> OpenTransactedWriteAsync(CancellationToken ct, StorageOpenOptions option) => throw new NotSupportedException();
+
 			protected override bool IsEqual(ImplementationBase implementation) => implementation is PHAssetFile file && file._phAsset.LocalIdentifier == _phAsset.LocalIdentifier;
+
+			private async Task EnsureLoadedAsync()
+			{
+				if (_fileUrl is not null)
+				{
+					return;
+				}
+
+				var identifier = GetUTIdentifier(_pickerResult.ItemProvider.RegisteredTypeIdentifiers ?? []) ?? "public.data";
+				var extension = GetUTFileExtension(identifier);
+				var result = await _pickerResult.ItemProvider.LoadFileRepresentationAsync(identifier);
+				if (result != null)
+				{
+					var destinationUrl = NSFileManager.DefaultManager
+						.GetTemporaryDirectory()
+						.Append($"{NSProcessInfo.ProcessInfo.GloballyUniqueString}.{extension}", false);
+
+					using Stream source = File.Open(result.Path!, FileMode.Open);
+					using Stream destination = File.Create(destinationUrl.Path!);
+					await source.CopyToAsync(destination);
+
+					_fileUrl = destinationUrl;
+				}
+			}
 		}
+
+		internal static string? GetUTIdentifier(string[] identifiers)
+		{
+			if (!(identifiers?.Length > 0))
+			{
+				return null;
+			}
+
+			if (identifiers.Any(i => i.StartsWith(UTType.LivePhoto, StringComparison.InvariantCultureIgnoreCase)) && identifiers.Contains(UTType.JPEG))
+			{
+				return identifiers.FirstOrDefault(i => i == UTType.JPEG);
+			}
+
+			if (identifiers.Contains(UTType.QuickTimeMovie))
+			{
+				return identifiers.FirstOrDefault(i => i == UTType.QuickTimeMovie);
+			}
+
+			return identifiers.FirstOrDefault();
+		}
+
+		internal static string? GetUTFileExtension(string identifier) => UTType.CopyAllTags(identifier, UTType.TagClassFilenameExtension)?.FirstOrDefault();
 	}
 }
