@@ -10,6 +10,9 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
+	<!-- Property Captures -->
+	<Import Project="$(_UnoSdkTargetsDirectory)Uno.PropertyCaptures.targets" />
+
 	<!-- Common Includes -->
 	<Import Project="$(_UnoSdkTargetsDirectory)Uno.Common.targets" />
 
@@ -24,6 +27,10 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 
 	<!-- Microsoft.NET.Sdk should be loaded last. This ensures our targets are evaluated before all others. -->
 	<Import Sdk="$(_DefaultMicrosoftNETSdk)" Project="Sdk.targets" />
+
+	<!-- Replacement for restore targets for Wasm when an explicit RID is specified -->
+	<Import Project="$(_UnoSdkTargetsDirectory)Uno.Wasm.UnsupportedRid.targets"
+			Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm' AND '$(RuntimeIdentifier)' != '' AND '$(RuntimeIdentifier)' != 'browser-wasm' "/>
 	
 	<!-- Targets and props to be executed last after the default .NET SDK has been imported -->
 	<Import Project="$(_UnoSdkTargetsDirectory)Uno.Sdk.After.targets" />

@@ -62,11 +62,12 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 		VisibleBounds = new Rect(default, newWindowSize);
 	}
 
-	public override void Activate()
+	internal protected override void Activate()
 	{
 		var x11Window = _host.RootX11Window;
 		using var lockDiposable = X11Helper.XLock(x11Window.Display);
 		_ = XLib.XRaiseWindow(x11Window.Display, x11Window.Window);
+		_ = XLib.XFlush(x11Window.Display); // Important! Otherwise X commands will sit waiting to be flushed, and since the window is not activated, there are no new X commands being sent to force a flush.
 
 		// We could send _NET_ACTIVE_WINDOW as well, although it doesn't seem to be needed (and only works with EWMH-compliant WMs)
 		// XClientMessageEvent xclient = default;
@@ -84,9 +85,8 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 		// _ = XLib.XFlush(x11Window.Display);
 	}
 
-	public override void Close()
+	protected override void CloseCore()
 	{
-		base.Close();
 		var x11Window = _host.RootX11Window;
 		if (this.Log().IsEnabled(LogLevel.Information))
 		{

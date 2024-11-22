@@ -1312,10 +1312,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			var clip = new Rect(0, 0, 50, 50);
 
 			sut.ArrangeVisual(rect, clip);
-			Assert.IsNotNull(sut.Visual.ViewBox);
+			Assert.IsNotNull(sut.Visual.LayoutClip);
 
 			sut.ArrangeVisual(rect, null);
-			Assert.IsNull(sut.Visual.ViewBox);
+			Assert.IsNull(sut.Visual.LayoutClip);
 		}
 #endif
 
@@ -1681,6 +1681,67 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 #if HAS_UNO
 		#region Drag and Drop
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[UnoWorkItem("https://github.com/unoplatform/uno/issues/18770")]
+		[DataRow(true)]
+		[DataRow(false)]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_DragDrop_AcceptedOperation_None(bool setAcceptedOperation)
+		{
+			if (TestServices.WindowHelper.IsXamlIsland)
+			{
+				Assert.Inconclusive("Drag and drop doesn't work in Uno islands.");
+			}
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var dropCount = 0;
+			Rectangle source, target;
+			var sp = new StackPanel
+			{
+				(source = new Rectangle
+				{
+					Width = 100,
+					Height = 100,
+					Fill = new SolidColorBrush(Microsoft.UI.Colors.LightCoral),
+					CanDrag = true
+				}),
+				(target = new Rectangle
+				{
+					Width = 100,
+					Height = 100,
+					Fill = new SolidColorBrush(Microsoft.UI.Colors.LightCoral),
+					AllowDrop = true
+				})
+			};
+
+			target.Drop += (_, _) => dropCount++;
+			if (setAcceptedOperation)
+			{
+				target.DragOver += (_, e) => e.AcceptedOperation = DataPackageOperation.Copy;
+			}
+
+			await UITestHelper.Load(sp);
+
+			mouse.MoveTo(source.GetAbsoluteBoundsRect().GetCenter());
+			await TestServices.WindowHelper.WaitForIdle();
+			mouse.Press();
+			await TestServices.WindowHelper.WaitForIdle();
+			for (int i = 1; i <= 10; i++)
+			{
+				mouse.MoveBy(0, (target.GetAbsoluteBoundsRect().GetMidY() - source.GetAbsoluteBoundsRect().GetMidY()) * 0.1);
+				await TestServices.WindowHelper.WaitForIdle();
+			}
+			mouse.Release();
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(setAcceptedOperation ? 1 : 0, dropCount);
+		}
 
 		[TestMethod]
 		[RunsOnUIThread]

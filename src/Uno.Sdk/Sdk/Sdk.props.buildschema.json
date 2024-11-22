@@ -234,6 +234,10 @@
 			"description": "Provides an explicit override for the version of Uno.Settings to use.",
 			"type": "nuget-version"
 		},
+		"UnoHotDesignVersion": {
+			"description": "Provides an explicit override for the version of Uno.HotDesign to use.",
+			"type": "nuget-version"
+		},
 		"MicrosoftLoggingVersion": {
 			"description": "Provides an explicit override for the version of Microsoft.Extensions.Logging to use.",
 			"type": "nuget-version"
@@ -407,6 +411,10 @@
 			"allowUnknownValues": false,
 			"caseSensitive": false,
 			"values": {
+				"GooglePlay": {
+					"description": "Adds a reference to Uno.WinUI.GooglePlay.",
+					"helpUrl": "https://aka.platform.uno/feature-googleplay"
+				},
 				"Foldable": {
 					"description": "Adds a reference to Uno.WinUI.Foldable.",
 					"helpUrl": "https://aka.platform.uno/feature-foldable"

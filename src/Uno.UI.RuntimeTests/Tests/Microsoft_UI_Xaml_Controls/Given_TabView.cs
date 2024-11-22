@@ -17,6 +17,12 @@ using TabViewItem = Microsoft/* UWP don't rename */.UI.Xaml.Controls.TabViewItem
 using static Uno.UI.Extensions.ViewExtensions;
 using static Private.Infrastructure.TestServices;
 
+#if __IOS__
+using UIKit;
+#elif __MACOS__
+using AppKit;
+#endif
+
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 
 [TestClass]
@@ -114,4 +120,146 @@ public class Given_TabView
 		Assert.AreEqual(0, SUT.SelectedIndex);
 		Assert.AreEqual("Tab 2", ((TabViewItem)SUT.TabItems[0]).Header);
 	}
+
+	[TestMethod]
+	public async Task When_SelectedItem_Changed()
+	{
+		var SUT = new TabView
+		{
+			TabItems =
+			{
+				new TabViewItem { Header = "Tab 1" },
+				new TabViewItem { Header = "Tab 2" }
+			}
+		};
+
+		await UITestHelper.Load(SUT);
+
+		Assert.AreEqual(0, SUT.SelectedIndex);
+
+		SUT.SelectedItem = SUT.TabItems[1];
+
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(1, SUT.SelectedIndex);
+	}
+
+	[TestMethod]
+	public async Task When_DataBinding()
+	{
+		var vm = new ViewModel();
+		var SUT = new TabView();
+
+		SUT.SetBinding(TabView.TabItemsSourceProperty, new Microsoft.UI.Xaml.Data.Binding() { Path = new("TabItems") });
+		SUT.SetBinding(TabView.SelectedItemProperty, new Microsoft.UI.Xaml.Data.Binding() { Path = new("SelectedItem"), Mode = Microsoft.UI.Xaml.Data.BindingMode.TwoWay });
+
+		SUT.DataContext = vm;
+
+		await UITestHelper.Load(SUT);
+
+		Assert.AreEqual(2, SUT.TabItems.Count);
+		Assert.AreEqual(0, SUT.SelectedIndex);
+	}
+
+#if !WINAPPSDK // GetTemplateChild is protected in UWP while public in Uno.
+	[TestMethod]
+	public async Task When_Items_Should_ShowHeader()
+	{
+		var SUT = new TabView
+		{
+			TabItems =
+			{
+				new TabViewItem { Header = "Tab 1" },
+				new TabViewItem { Header = "Tab 2" }
+			}
+		};
+
+		await UITestHelper.Load(SUT);
+
+		var tabviewItem1 = SUT.ContainerFromIndex(0) as TabViewItem;
+		var headerPresenter1 = (ContentPresenter)tabviewItem1.GetTemplateChild("ContentPresenter");
+		Assert.IsTrue(headerPresenter1.ActualWidth > 0, "TabViewItem header for index  0 should have a non-zero width.");
+		Assert.IsTrue(headerPresenter1.ActualHeight > 0, "TabViewItem header for index  0 should have a non-zero height.");
+
+		var closeButton1 = (Button)tabviewItem1.GetTemplateChild("CloseButton");
+
+		var buttonLabel1 =
+#if __IOS__ || __MACOS__
+		closeButton1.FindFirstChild<ImplicitTextBlock>();
+#else
+		((ContentPresenter)closeButton1.GetTemplateChild("ContentPresenter")).FindFirstChild<ImplicitTextBlock>();
+#endif
+
+		Assert.IsTrue(buttonLabel1.ActualWidth > 0, "TabViewItem Button for index 0 should have a non-zero width.");
+		Assert.IsTrue(buttonLabel1.ActualHeight > 0, "TabViewItem Button  for index 0 should have a non-zero height.");
+
+		var tabviewItem2 = SUT.ContainerFromIndex(1) as TabViewItem;
+		var headerPresenter2 = (ContentPresenter)tabviewItem2.GetTemplateChild("ContentPresenter");
+		Assert.IsTrue(headerPresenter2.ActualWidth > 0, "TabViewItem header for index  1  should have a non-zero width.");
+		Assert.IsTrue(headerPresenter2.ActualHeight > 0, "TabViewItem header for index  1  should have a non-zero height.");
+	}
+#endif
+
+	[TestMethod]
+	public async Task When_SelectedItem_Changed_Binding()
+	{
+		var vm = new ViewModel();
+		var SUT = new TabView();
+
+		SUT.SetBinding(TabView.TabItemsSourceProperty, new Microsoft.UI.Xaml.Data.Binding() { Path = new("TabItems") });
+		SUT.SetBinding(TabView.SelectedItemProperty, new Microsoft.UI.Xaml.Data.Binding() { Path = new("SelectedItem"), Mode = Microsoft.UI.Xaml.Data.BindingMode.TwoWay });
+
+		SUT.DataContext = vm;
+
+		vm.SelectedItem = vm.TabItems[1];
+
+		await UITestHelper.Load(SUT);
+
+		Assert.AreEqual(1, SUT.SelectedIndex);
+	}
+
+	[TestMethod]
+	public async Task When_AddingTab_While_Binding()
+	{
+		var SUT = new TabView();
+
+		SUT.SetBinding(TabView.TabItemsSourceProperty, new Microsoft.UI.Xaml.Data.Binding() { Path = new("TabItems") });
+		SUT.SetBinding(TabView.SelectedItemProperty, new Microsoft.UI.Xaml.Data.Binding() { Path = new("SelectedItem"), Mode = Microsoft.UI.Xaml.Data.BindingMode.TwoWay });
+
+		SUT.DataContext = new ViewModel(addTab: true);
+
+		await UITestHelper.Load(SUT);
+
+		// It should select the newly added tab
+		Assert.AreEqual(2, SUT.SelectedIndex);
+
+		var tabviewItem = SUT.ContainerFromItem(SUT.SelectedItem) as TabViewItem;
+		Assert.IsTrue(tabviewItem.ActualWidth > 0, "TabViewItem should have a non-zero width.");
+		Assert.IsTrue(tabviewItem.ActualHeight > 0, "TabViewItem should have a non-zero height.");
+	}
+}
+
+public class ViewModel : ViewModelBase
+{
+	public ViewModel(bool addTab = false)
+	{
+		if (addTab)
+		{
+			TabItems.Add(new TabViewItem { Header = "Main Tab", Content = "Main Content" });
+			SelectedItem = TabItems[^1];
+		}
+	}
+	private TabViewItem _selectedItem;
+
+	public TabViewItem SelectedItem
+	{
+		get => _selectedItem;
+		set => SetAndRaiseIfChanged(ref _selectedItem, value);
+	}
+
+	public ObservableCollection<TabViewItem> TabItems { get; } = new ObservableCollection<TabViewItem>
+	{
+		new TabViewItem { Header = "Tab 1", Content = "Content 1" },
+		new TabViewItem { Header = "Tab 2", Content = "Content 2" }
+	};
 }

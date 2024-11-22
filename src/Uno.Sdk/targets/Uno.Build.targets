@@ -29,6 +29,7 @@
 		Condition=" $(_IsUnoSingleProjectAndLegacy) == 'true' ">
 		<ItemGroup>
 			<None Remove="@(_IgnorePlatformFiles)" />
+			<Page Remove="@(_IgnorePlatformFiles)" />
 			<Compile Remove="@(_IgnorePlatformFiles)" />
 			<Content Remove="@(_IgnorePlatformFiles)" />
 			<EmbeddedResource Remove="@(_IgnorePlatformFiles)" />
@@ -147,6 +148,12 @@
 			It is useful to determine all target frameworks used by all projects of a solution.
 		-->
 		<Message Text="&lt;TargetFrameworks&gt;$(TargetFramework);$(TargetFrameworks)&lt;/TargetFrameworks&gt;" Importance="High" />
+		<WriteLinesToFile
+			Condition="$(UnoDumpTargetFrameworksTargetFile) != ''"
+			File="$(UnoDumpTargetFrameworksTargetFile)"
+			Lines="$(TargetFramework);$(TargetFrameworks)"
+			Overwrite="false"
+			Encoding="Unicode"/>
 	</Target>
 
 	<Import Project="Uno.SingleProject.VS.Build.targets"

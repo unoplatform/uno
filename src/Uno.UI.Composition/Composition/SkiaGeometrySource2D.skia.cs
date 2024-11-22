@@ -8,15 +8,37 @@ namespace Microsoft.UI.Composition
 {
 	internal class SkiaGeometrySource2D : IGeometrySource2D
 	{
+		private readonly SKPath _geometry;
+
 		public SkiaGeometrySource2D(SKPath source)
 		{
-			Geometry = source ?? throw new ArgumentNullException(nameof(source));
+			_geometry = source ?? throw new ArgumentNullException(nameof(source));
 		}
 
-		/// <remarks>
-		/// DO NOT MODIFY THIS SKPath. CREATE A NEW SkiaGeometrySource2D INSTEAD.
-		/// This can lead to nasty invalidation bugs where the SKPath changes without notifying anyone.
-		/// </remarks>
-		public SKPath Geometry { get; }
+		#region SKPath read-only passthrough methods
+
+		public SkiaGeometrySource2D Transform(SKMatrix matrix)
+		{
+			var path = new SKPath();
+			_geometry.Transform(matrix, path);
+			return new SkiaGeometrySource2D(path);
+		}
+
+		public SKRect Bounds => _geometry.Bounds;
+		public SKRect TightBounds => _geometry.TightBounds;
+
+		internal SKPath Geometry => _geometry;
+
+		public void CanvasDrawPath(SKCanvas canvas, SKPaint paint) => canvas.DrawPath(_geometry, paint);
+
+		public void CanvasClipPath(SKCanvas canvas, SKClipOperation operation = SKClipOperation.Intersect, bool antialias = false) => canvas.ClipPath(_geometry, operation, antialias);
+
+		public bool GetFillPath(SKPaint paint, SKPath dst) => paint.GetFillPath(_geometry, dst);
+
+		public bool Contains(float x, float y) => _geometry.Contains(x, y);
+
+		public SkiaGeometrySource2D Op(SkiaGeometrySource2D other, SKPathOp op) => new(_geometry.Op(other._geometry, op));
+
+		#endregion
 	}
 }

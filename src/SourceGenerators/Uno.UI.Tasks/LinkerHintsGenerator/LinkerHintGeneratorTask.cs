@@ -55,6 +55,9 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 		public string UnoRuntimeIdentifier { get; set; } = "";
 
 		[Required]
+		public Microsoft.Build.Framework.ITaskItem[] TrimmerRootDescriptor { get; set; } = [];
+
+		[Required]
 		public Microsoft.Build.Framework.ITaskItem[]? ReferencePath { get; set; }
 
 		[Output]
@@ -143,16 +146,21 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 				.Distinct()
 				.Select(r => $"-reference \"{r}\" "));
 
+			var rootDescriptors = string.Join(
+				" ",
+				TrimmerRootDescriptor.Select(selector => $"-x \"{selector.GetMetadata("FullPath")}\""));
+
 			var parameters = new List<string>()
 			{
 				$"--feature UnoBindableMetadata false",
 				$"--verbose",
 				$"--deterministic",
-				// $"--used-attrs-only true", // not used to keep additional linker hints
-				$"--skip-unresolved true",
+				$"--trim-mode link",
+				$"--action link",
 				$"-b true",
 				$"-a {AssemblyPath} entrypoint",
 				$"-out {outputPath}",
+				rootDescriptors,
 				referencedAssemblies,
 				features,
 			};

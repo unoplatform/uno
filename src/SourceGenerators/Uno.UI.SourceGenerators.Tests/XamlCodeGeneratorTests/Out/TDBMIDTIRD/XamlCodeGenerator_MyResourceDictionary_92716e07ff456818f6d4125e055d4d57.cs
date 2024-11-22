@@ -97,6 +97,7 @@ namespace TestRepro
 					__fe.Loading += delegate
 					{
 						_component_0.UpdateResourceBindings();
+						_component_0.ApplyXBind();
 					}
 					;
 				}
@@ -263,6 +264,7 @@ namespace MyProject.__Resources
 				__fe.Loading += delegate
 				{
 					_component_0.UpdateResourceBindings();
+					_component_0.ApplyXBind();
 				}
 				;
 			}
@@ -352,6 +354,7 @@ namespace MyProject.__Resources
 				__fe.Loading += delegate
 				{
 					_component_0.UpdateResourceBindings();
+					_component_0.ApplyXBind();
 				}
 				;
 			}

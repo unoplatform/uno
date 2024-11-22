@@ -6,6 +6,21 @@ uid: Uno.Development.MigratingFromPreviousReleases
 
 This article details the migration steps required to migrate from one version to the next when breaking changes are being introduced.
 
+## Uno Platform 5.5
+
+Uno Platform 5.5 introduces support for .NET 9 RC2 and requires installation updates for WebAssembly.
+
+### .NET 9 RC2
+
+A few considerations to take into account:
+
+- Moving to .NET 9 or upgrading .NET 9 projects now require the use of .NET 9 RC2 and Visual Studio 17.12 Preview 3.
+- To migrate a project to .NET 9, [read the directions](xref:Uno.Development.MigratingFromNet8ToNet9) from our documentation.
+
+### The EnableHotReload method is deprecated
+
+When upgrading to Uno 5.5, in the `App.xaml.cs` file, the `EnableHotReload()` method is deprecated and must be replaced with `UseStudio()` instead.
+
 ## Uno Platform 5.4
 
 Uno Platform 5.4 contains breaking changes for Uno.Extensions.
@@ -29,7 +44,7 @@ Additionally, you may also get the following error message:
 NETSDK1198: A publish profile with the name 'win-AnyCPU.pubxml' was not found in the project.
 ```
 
-In order to fix this warning in your existing project, you can create a new file named `Properties/PublishProfiles/win-AnyCPU.pubxml`, with [this content](https://github.com/unoplatform/uno.templates/blob/5196433a5e0a8a4d2efffd118d575ed03e30dcf0/src/Uno.Templates/content/unoapp/MyExtensionsApp.1/Properties/PublishProfiles/win-AnyCPU.pubxml).
+This issue is not yet fixed, but it does not cause any problems during deployment.
 
 ### UWP Support for Uno.Extensions
 

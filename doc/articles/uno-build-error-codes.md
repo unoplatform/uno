@@ -141,6 +141,14 @@ The project doesn't know how to run the profile with name 'MyApp (Desktop WSL2)'
 
 To fix the issue, reorder the items in your `.csproj` so that `TargetFrameworks` contains `netX.0-desktop` as the first target framework.
 
+The Uno Platform team is following this [Visual Studio issue](https://developercommunity.visualstudio.com/t/WSL-launch-profile-cannot-be-found-when/10776961).
+
+### UNOB0016: The Publish Profile file must not contain the "PublishDir"
+
+When publishing an app using ClickOnce on Windows, the `PublishProfile` file may not contain a `PublishDir` entry if the command line parameter `UnoClickOncePublishDir` has been set.
+
+This situation is due to an MSBuild property overriding bug found in the .NET SDK. For more information, see our [publishing with ClickOnce](xref:uno.publishing.desktop#windows-clickonce) documentation.
+
 ## Compiler Errors
 
 ### UNO0001
@@ -169,6 +177,18 @@ Some components like `ProgressRing` and `MediaPlayerElement` requires you to ref
 
 - For `ProgressRing`, it requires Lottie dependency. For more information about adding Lottie to your project, see [Lottie for Uno](xref:Uno.Features.Lottie).
 - For `MediaPlayerElement` on WebAssembly or Gtk, it requires `Uno.WinUI.MediaPlayer.WebAssembly` or `Uno.WinUI.MediaPlayer.Skia.Gtk` NuGet package. For more information, see [MediaPlayerElement](xref:Uno.Controls.MediaPlayerElement).
+
+### UNO0008
+
+In Uno Platform 5.5, the `EnableHotReload` method has been deprecated and replaced by `UseStudio()`.
+
+Note that this change only applies to projects using the Uno.Sdk. If you're not using the Uno.Sdk, you can disable this warning using the following code:
+
+```xml
+#pragma warning disable UNO0008 // Replace with UseStudio() when migrating to the Uno.Sdk.
+window.EnableHotReload();
+#pragma warning restore UNO0008
+```
 
 ## XAML Errors
 

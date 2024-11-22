@@ -1,4 +1,4 @@
-﻿<Project>
+<Project>
 
 	<Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
 	<Import Project="crosstargeting_override.props" Condition="exists('crosstargeting_override.props')" />
@@ -239,6 +239,9 @@
 
 		<!-- Workaround for https://github.com/dotnet/runtime/issues/103205 -->
 		<NoWarn>$(NoWarn);CS0436</NoWarn>
+		
+		<!-- Required for studio -->
+		<NoWarn>$(NoWarn);UNO0008</NoWarn>
 
 		<!-- On CI, UWP source is generated in a job running on Windows (CRLF EOLs). -->
 		<!-- When the artifacts are downloaded in a job running on Linux, IDE0055 will complain (expecting LF EOLs) -->

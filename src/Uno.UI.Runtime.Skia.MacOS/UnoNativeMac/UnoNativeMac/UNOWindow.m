@@ -1,5 +1,5 @@
 //
-//  UNOWindowDelegate.m
+//  UNOWindow.m
 //
 
 #import "UNOWindow.h"
@@ -16,11 +16,11 @@ static window_did_change_screen_parameters_fn_ptr window_did_change_screen_param
 // libSkiaSharp
 extern void* gr_direct_context_make_metal(id device, id queue);
 
-static resize_fn_ptr window_resize;
+static uno_drawable_resize_fn_ptr window_resize;
 static metal_draw_fn_ptr metal_draw;
 static soft_draw_fn_ptr soft_draw;
 
-inline resize_fn_ptr uno_get_resize_callback(void)
+inline uno_drawable_resize_fn_ptr uno_get_resize_callback(void)
 {
     return window_resize;
 }
@@ -35,7 +35,7 @@ inline soft_draw_fn_ptr uno_get_soft_draw_callback(void)
     return soft_draw;
 }
 
-void uno_set_drawing_callbacks(metal_draw_fn_ptr metal, soft_draw_fn_ptr soft, resize_fn_ptr resize)
+void uno_set_drawing_callbacks(metal_draw_fn_ptr metal, soft_draw_fn_ptr soft, uno_drawable_resize_fn_ptr resize)
 {
     metal_draw = metal;
     soft_draw = soft;
@@ -87,6 +87,23 @@ NSWindow* uno_app_get_main_window(void)
     return main_window;
 }
 
+@implementation UNOMetalFlippedView : MTKView
+
+// behave like UIView/UWP/WinUI, where the origin is top/left, instead of bottom/left
+-(BOOL) isFlipped {
+    return YES;
+}
+
+-(instancetype) initWithFrame:(CGRect)frameRect device:(id<MTLDevice>)device {
+    self = [super initWithFrame:frameRect device:device];
+    if (self) {
+        // TODO
+    }
+    return self;
+}
+
+@end
+
 NSWindow* uno_window_create(double width, double height)
 {
     CGRect size = NSMakeRect(0, 0, width, height);
@@ -98,7 +115,7 @@ NSWindow* uno_window_create(double width, double height)
     
     id device = uno_application_get_metal_device();
     if (device) {
-        MTKView *v = [[MTKView alloc] initWithFrame:size device:device];
+        UNOMetalFlippedView *v = [[UNOMetalFlippedView alloc] initWithFrame:size device:device];
         v.enableSetNeedsDisplay = YES;
         window.metalViewDelegate = [[UNOMetalViewDelegate alloc] initWithMetalKitView:v];
         v.delegate = window.metalViewDelegate;
@@ -126,6 +143,14 @@ NSWindow* uno_window_create(double width, double height)
     return window;
 }
 
+void uno_window_activate(NSWindow *window)
+{
+#if DEBUG
+    NSLog(@"uno_window_activate %@", window);
+#endif
+    [window orderFront:nil];
+}
+
 void uno_window_notify_screen_change(NSWindow *window)
 {
     assert(windowDidChangeScreen);
@@ -140,6 +165,22 @@ void uno_window_invalidate(NSWindow *window)
     NSLog(@"uno_window_invalidate %@ view: %p", window, window.contentViewController.view);
 #endif
     window.contentViewController.view.needsDisplay = true;
+}
+
+void uno_window_close(NSWindow *window)
+{
+#if DEBUG
+    NSLog(@"uno_window_close %@", window);
+#endif
+    [window performClose:nil];
+}
+
+void uno_window_move(NSWindow *window, double x, double y)
+{
+#if DEBUG
+    NSLog(@"uno_window_move %@ x: %g y: %g", window, x, y);
+#endif
+    [window setFrameOrigin:NSMakePoint(x, y)];
 }
 
 bool uno_window_resize(NSWindow *window, double width, double height)
@@ -163,6 +204,16 @@ void uno_window_set_min_size(NSWindow *window, double width, double height)
     NSLog (@"uno_window_set_min_size %@ %f %f", window, width, height);
 #endif
     window.minSize = CGSizeMake(width, height);
+}
+
+void uno_window_get_position(NSWindow *window, double *x, double *y)
+{
+    CGPoint origin = window.frame.origin;
+#if DEBUG
+    NSLog (@"uno_window_get_position %@ %f %f", window, origin.x, origin.y);
+#endif
+    *x = origin.x;
+    *y = origin.y;
 }
 
 char* uno_window_get_title(NSWindow *window)
@@ -552,11 +603,27 @@ inline static window_mouse_callback_fn_ptr uno_get_window_mouse_event_callback(v
     return window_mouse_event;
 }
 
-void uno_set_window_events_callbacks(window_key_callback_fn_ptr keyDown, window_key_callback_fn_ptr keyUp, window_mouse_callback_fn_ptr pointer)
+static window_move_or_resize_fn_ptr window_move_event;
+
+inline static window_move_or_resize_fn_ptr uno_get_window_move_event_callback(void)
+{
+    return window_move_event;
+}
+
+static window_move_or_resize_fn_ptr window_resize_event;
+
+inline static window_move_or_resize_fn_ptr uno_get_window_resize_event_callback(void)
+{
+    return window_resize_event;
+}
+
+void uno_set_window_events_callbacks(window_key_callback_fn_ptr keyDown, window_key_callback_fn_ptr keyUp, window_mouse_callback_fn_ptr pointer, window_move_or_resize_fn_ptr move, window_move_or_resize_fn_ptr resize)
 {
     window_key_down = keyDown;
     window_key_up = keyUp;
     window_mouse_event = pointer;
+    window_move_event = move;
+    window_resize_event = resize;
 }
 
 static window_should_close_fn_ptr window_should_close;
@@ -589,6 +656,95 @@ void* uno_window_get_metal_context(UNOWindow* window)
     return gr_direct_context_make_metal(device, queue);
 }
 
+CGFloat readNextCoord(const char *svg, int *position, long length)
+{
+    CGFloat result = NAN;
+    if (*position >= length) {
+#if DEBUG
+        NSLog(@"uno_window_clip_svg readNextCoord position:%d >= length:%ld", *position, length);
+#endif
+        return result;
+    }
+    const char* start = svg + *position;
+    char* end;
+    result = strtod(start, &end);
+    *position += (int)(end - start);
+    return result;
+}
+
+void uno_window_clip_svg(UNOWindow* window, const char* svg)
+{
+    if (svg) {
+#if DEBUG
+        NSLog(@"uno_window_clip_svg %@ %@ %s", window, window.contentView.layer.description, svg);
+#endif
+        NSArray<__kindof NSView *> *subviews = window.contentViewController.view.subviews;
+        for (int i = 0; i < subviews.count; i++) {
+            NSView* view = subviews[i];
+#if DEBUG
+            NSLog(@"uno_window_clip_svg subview %d %@ layer %@ mask %@", i, view, view.layer, view.layer.mask);
+#endif
+            CGMutablePathRef path = CGPathCreateMutable();
+            // small subset of an SVG path parser handling trusted input of integer-based points
+            long length = strlen(svg);
+            for (int i=0; i < length;) {
+                CGFloat x, y;
+                char op = svg[i];
+                switch (op) {
+                    case 'M':
+                        i++; // skip M
+                        x = readNextCoord(svg, &i, length);
+                        i++; // skip separator
+                        y = readNextCoord(svg, &i, length);
+                        // there might not be a separator (not required before the next op)
+#if DEBUG_PARSER
+                        NSLog(@"uno_window_clip_svg parsing CGPathMoveToPoint %g %g - position %d", x, y, i);
+#endif
+                        x -= view.frame.origin.x;
+                        y -= view.frame.origin.y;
+                        CGPathMoveToPoint(path, nil, x, y);
+                        break;
+                    case 'L':
+                        i++; // skip L
+                        x = readNextCoord(svg, &i, length);
+                        i++; // skip separator
+                        y = readNextCoord(svg, &i, length);
+                        // there might not be a separator (not required before the next op)
+#if DEBUG_PARSER
+                        NSLog(@"uno_window_clip_svg parsing CGPathAddLineToPoint %g %g - position %d", x, y, i);
+#endif
+                        x -= view.frame.origin.x;
+                        y -= view.frame.origin.y;
+                        CGPathAddLineToPoint(path, nil, x, y);
+                        break;
+                    case 'Z':
+                        i++; // skip Z
+#if DEBUG_PARSER
+                        NSLog(@"uno_window_clip_svg parsing CGPathCloseSubpath - position %d", i);
+#endif
+                        CGPathCloseSubpath(path);
+                        break;
+#if DEBUG
+                    default:
+                        if (op != ' ') {
+                            NSLog(@"uno_window_clip_svg parsing unknown op %c at position %d", op, i);
+                        }
+                        i++; // skip unknown op
+                        break;
+#endif
+                }
+            }
+            CAShapeLayer* mask = view.layer.mask;
+            if (mask == nil) {
+                view.layer.mask = mask = [[CAShapeLayer alloc] init];
+            }
+            mask.fillColor = NSColor.blueColor.CGColor; // anything but clearColor
+            mask.path = path;
+            mask.fillRule = kCAFillRuleEvenOdd;
+        }
+    }
+}
+
 @implementation UNOWindow : NSWindow
 
 + (void)initialize {
@@ -619,6 +775,11 @@ void* uno_window_get_metal_context(UNOWindow* window)
 }
 
 - (void)sendEvent:(NSEvent *)event {
+    if (![[NSApplication sharedApplication] isActive]) {
+        [super sendEvent:event];
+        return;
+    }
+
     bool handled = false;
     MouseEvents mouse = MouseEventsNone;
     PointerDeviceType pdt = PointerDeviceTypeMouse;
@@ -683,7 +844,7 @@ void* uno_window_get_metal_context(UNOWindow* window)
             UniChar unicode = get_unicode(event);
             handled = uno_get_window_key_up_callback()(self, get_virtual_key(scanCode), get_modifiers(event.modifierFlags), scanCode, unicode);
 #if DEBUG
-            NSLog(@"NSEventTypeKeyUp: %@ window %p unocode %d handled? %s", event, self, unicode, handled ? "true" : "false");
+            NSLog(@"NSEventTypeKeyUp: %@ window %p unicode %d handled? %s", event, self, unicode, handled ? "true" : "false");
 #endif
             break;
         }
@@ -735,8 +896,15 @@ void* uno_window_get_metal_context(UNOWindow* window)
             // scrollwheel
             if (mouse == MouseEventsScrollWheel) {
                 // do not call if not in the scrollwheel event -> *** Assertion failure in -[NSEvent scrollingDeltaX], NSEvent.m:2202
-                data.scrollingDeltaX = (int32_t)event.scrollingDeltaX;
-                data.scrollingDeltaY = (int32_t)event.scrollingDeltaY;
+
+                // trackpad / magic mouse sends about 10x more events than a _normal_ (PC) mouse
+                // this is often refered as a line scroll versus a pixel scroll
+                double factor = event.hasPreciseScrollingDeltas ? 1.0 : 10.0;
+                data.scrollingDeltaX = (int32_t)(event.scrollingDeltaX * factor);
+                data.scrollingDeltaY = (int32_t)(event.scrollingDeltaY * factor);
+#if DEBUG_MOUSE // very noisy
+                NSLog(@"NSEventTypeMouse*: %@ %g %g delta %g %g %s scrollingDelta %d %d", event, data.x, data.y, event.deltaX, event.deltaY, event.hasPreciseScrollingDeltas ? "precise" : "non-precise", data.scrollingDeltaX, data.scrollingDeltaY);
+#endif
             }
 
             // other
@@ -764,6 +932,22 @@ void* uno_window_get_metal_context(UNOWindow* window)
 - (BOOL)windowShouldZoom:(NSWindow *)window toFrame:(NSRect)newFrame {
     // if we disable the (green) maximize button then we don't allow zooming
     return window.collectionBehavior != (NSWindowCollectionBehaviorFullScreenAuxiliary|NSWindowCollectionBehaviorFullScreenNone|NSWindowCollectionBehaviorFullScreenDisallowsTiling);
+}
+
+- (void)windowDidMove:(NSNotification *)notification {
+    CGPoint position = self.frame.origin;
+#if DEBUG
+    NSLog(@"UNOWindow %p windowDidMove %@ x: %g y: %g", self, notification, position.x, position.y);
+#endif
+    uno_get_window_move_event_callback()(self, position.x, position.y);
+}
+
+- (void)windowDidResize:(NSNotification *)notification {
+    CGSize size = self.frame.size;
+#if DEBUG
+    NSLog(@"UNOWindow %p windowDidMove %@ x: %g y: %g", self, notification, size.width, size.height);
+#endif
+    uno_get_window_resize_event_callback()(self, size.width, size.height);
 }
 
 - (bool)windowShouldClose:(NSWindow *)sender

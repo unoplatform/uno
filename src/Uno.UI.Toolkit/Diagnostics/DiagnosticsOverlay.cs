@@ -2,6 +2,7 @@
 #if WINUI || HAS_UNO_WINUI
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -316,8 +317,8 @@ public sealed partial class DiagnosticsOverlay : Control
 	/// Add a UI diagnostic element to this overlay.
 	/// </summary>
 	/// <remarks>This will also make this overlay visible (cf. <see cref="Show(bool?)"/>).</remarks>
-	public void Add(string id, string name, UIElement preview, Func<UIElement>? details = null)
-		=> Add(new DiagnosticView(id, name, _ => preview, (_, ct) => new(details?.Invoke())));
+	public void Add(string id, string name, UIElement preview, Func<UIElement>? details = null, DiagnosticViewRegistrationPosition position = default)
+		=> Add(new DiagnosticView(id, name, _ => preview, (_, ct) => new(details?.Invoke()), position));
 
 	/// <summary>
 	/// Add a UI diagnostic element to this overlay.
@@ -351,11 +352,11 @@ public sealed partial class DiagnosticsOverlay : Control
 	/// <inheritdoc />
 	protected override void OnApplyTemplate()
 	{
-		if (_anchor is not null)
+		if (_toolbar is not null)
 		{
 			//_anchor.Tapped -= OnAnchorTapped;
-			_anchor.ManipulationDelta -= OnAnchorManipulated;
-			_anchor.ManipulationCompleted -= OnAnchorManipulatedCompleted;
+			_toolbar.ManipulationDelta -= OnAnchorManipulated;
+			_toolbar.ManipulationCompleted -= OnAnchorManipulatedCompleted;
 		}
 		if (_notificationPresenter is not null)
 		{
@@ -376,12 +377,12 @@ public sealed partial class DiagnosticsOverlay : Control
 		_anchor = GetTemplateChild(AnchorPartName) as UIElement;
 		_notificationPresenter = GetTemplateChild(NotificationPartName) as ContentPresenter;
 
-		if (_anchor is not null)
+		if (_toolbar is not null)
 		{
 			//_anchor.Tapped += OnAnchorTapped;
-			_anchor.ManipulationDelta += OnAnchorManipulated;
-			_anchor.ManipulationCompleted += OnAnchorManipulatedCompleted;
-			_anchor.ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY | ManipulationModes.TranslateInertia;
+			_toolbar.ManipulationDelta += OnAnchorManipulated;
+			_toolbar.ManipulationCompleted += OnAnchorManipulatedCompleted;
+			_toolbar.ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY | ManipulationModes.TranslateInertia;
 			RenderTransform = new TranslateTransform();
 		}
 		if (_notificationPresenter is not null)
@@ -398,9 +399,14 @@ public sealed partial class DiagnosticsOverlay : Control
 		static void OnToolBarSizeChanged(object sender, SizeChangedEventArgs args)
 		{
 			// Patches pointer event dispatch on a 0x0 Canvas
-			if (sender is UIElement uie && uie.GetTemplatedParent() is DiagnosticsOverlay { TemplatedRoot: Canvas canvas })
+			if (sender is UIElement uie && uie.GetTemplatedParent() is DiagnosticsOverlay { TemplatedRoot: Canvas canvas } overlay)
 			{
 				canvas.Width = args.NewSize.Width;
+
+#if __ANDROID__
+				// Required for Android to effectively update the ActualSize allowing the RenderTransformAdapter to accept to apply the transform.
+				overlay.DispatcherQueue.TryEnqueue(() => canvas.InvalidateMeasure());
+#endif
 			}
 		}
 #endif
@@ -464,8 +470,8 @@ public sealed partial class DiagnosticsOverlay : Control
 					.Where(ShouldMaterialize)
 					.Select(reg => reg.View)
 					.Concat(_localRegistrations)
-					.Distinct()
-					.ToList();
+					.OrderBy(r => (int)r.Position)
+					.Distinct();
 
 				foreach (var view in viewsThatShouldBeMaterialized)
 				{

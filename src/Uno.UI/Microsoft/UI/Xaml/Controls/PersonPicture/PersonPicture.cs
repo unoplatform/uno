@@ -203,23 +203,33 @@ public partial class PersonPicture : Control
 
 		var templateSettings = TemplateSettings;
 		templateSettings.ActualInitials = initials;
-		if (imageSrc != null)
-		{
-			var imageBrush = templateSettings.ActualImageBrush;
-			if (imageBrush == null)
-			{
-				imageBrush = new ImageBrush();
-				imageBrush.Stretch = Stretch.UniformToFill;
-				templateSettings.ActualImageBrush = imageBrush;
-			}
 
-			imageBrush.ImageSource = imageSrc;
+		if (imageSrc is not null)
+		{
+			if (templateSettings.ActualImageBrush is ImageBrush imageBrush)
+			{
+				imageBrush.ImageSource = imageSrc;
+			}
+			else
+			{
+				templateSettings.ActualImageBrush = new ImageBrush()
+				{
+					ImageSource = imageSrc,
+					Stretch = Stretch.UniformToFill
+				};
+			}
 		}
 		else
 		{
 			templateSettings.ActualImageBrush = null;
 		}
 
+#if __IOS__
+		if (templateSettings.ActualImageBrush is ImageBrush brush)
+		{
+			brush.ImageOpened += RefreshPhoto;
+		}
+#endif
 		// If the control is converted to 'Group-mode', we'll clear individual-specific information.
 		// When IsGroup evaluates to false, we will restore state.
 		if (IsGroup)
@@ -228,7 +238,11 @@ public partial class PersonPicture : Control
 		}
 		else
 		{
-			if (imageSrc != null)
+			if (imageSrc is not null
+#if __IOS__
+			&& imageSrc.IsOpened
+#endif
+			)
 			{
 				VisualStateManager.GoToState(this, "Photo", false);
 			}
@@ -244,6 +258,18 @@ public partial class PersonPicture : Control
 
 		UpdateAutomationName();
 	}
+
+#if __IOS__
+	void RefreshPhoto(object sender, RoutedEventArgs e)
+	{
+		VisualStateManager.GoToState(this, "Photo", false);
+
+		if (TemplateSettings.ActualImageBrush is { } brush)
+		{
+			brush.ImageOpened -= RefreshPhoto;
+		}
+	}
+#endif
 
 	void UpdateBadge()
 	{

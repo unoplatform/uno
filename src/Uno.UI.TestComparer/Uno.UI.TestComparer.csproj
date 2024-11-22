@@ -2,7 +2,8 @@
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<TargetFramework>$(NetCurrentWpf)</TargetFramework>
+		<TargetFramework>$(NetPreviousWpf)</TargetFramework>
+		<RollForward>Major</RollForward>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<UseWPF>true</UseWPF>
 		<NoWarn>SYSLIB0014;MSB3277</NoWarn>
@@ -18,7 +19,7 @@
 		<PackageReference Include="Microsoft.TeamFoundationServer.Client" Version="16.153.0" />
 		<PackageReference Include="NUnit" Version="3.14.0" />
 		<PackageReference Include="NUnit.Engine" Version="3.16.3" />
-		<PackageReference Include="Refit" Version="7.0.0" />
+		<PackageReference Include="Refit" Version="8.0.0" />
 		<PackageReference Include="Mono.Options" Version="6.6.0.161" />
 
 		<!-- BEGIN WORKAROUND: These dependencies already come transitively, but the version that comes transitively has security vulnerabilities reported by NuGet -->

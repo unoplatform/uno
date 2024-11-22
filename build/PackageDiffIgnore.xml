@@ -1972,6 +1972,9 @@
 		</Assemblies>
 
 		<Types>
+			<Member fullName="Microsoft.UI.Xaml.Controls.Primitives.ColorPickerSliderAutomationPeer" reason="Fixed namespace" />
+			<Member fullName="Microsoft.UI.Xaml.Controls.NativeDatePickerFlyout" reason="Should not exist in Uno.UI for Skia" />
+			<Member fullName="Windows.UI.Xaml.Controls.NativeDatePickerFlyout" reason="Should not exist in Uno.UI for Skia" />
 		</Types>
 
 		<Events>
@@ -1984,11 +1987,17 @@
 		</Properties>
 
 		<Methods>
+			<Member fullName="System.Void Microsoft.UI.Xaml.Automation.Peers.ColorPickerSliderAutomationPeer..ctor(Microsoft.UI.Xaml.Controls.Primitives.ColorPickerSlider owner)" reason="Fixed namespace" />
+
 			<!-- BEGIN TypeMappings -->
 			<Member fullName="System.Threading.Tasks.Task Uno.UI.Helpers.TypeMappings.WaitForMappingsToResume()" reason="Not really considered a public API, used by internal tooling" />
 			<Member fullName="System.Threading.Tasks.Task`1&lt;System.Boolean&gt; Uno.UI.Helpers.TypeMappings.WaitForResume()" reason="Not really considered a public API, used by internal tooling" />
 			<Member fullName="System.Void Uno.UI.Helpers.TypeMappings.Resume(System.Boolean updateLayout)" reason="Not really considered a public API, used by internal tooling" />
 			<!-- END TypeMappings -->
+			
+			<!-- BEGIN DiagnosticsOverlay -->
+			<Member fullName="System.Void Uno.Diagnostics.UI.DiagnosticsOverlay.Add(System.String id, System.String name, Microsoft.UI.Xaml.UIElement preview, System.Func`1&lt;Microsoft.UI.Xaml.UIElement&gt; details)" reason="Recently public, nobody uses it yet." />
+			<!-- END DiagnosticsOverlay -->
 		</Methods>
 	</IgnoreSet>
 
@@ -1997,7 +2006,7 @@
 		NOT what will be published by the PR in progress.
 		To test locally, you need to install: 
 			; the tool version can be found from the failed task OR look for "ValidatePackage" in Uno.UI.Build.csproj
-			dotnet tool install --global Uno.PackageDiff --version 1.1.0-dev.25
+			dotnet tool install --global Uno.PackageDiff --version 1.1.0-dev.29
 		Then, run this command: // the command is supposed to be one line
 			generatepkgdiff
 				--base=path/to/the-latest-stable-from-nuget-org/uno.winui.5.2.175.nupkg

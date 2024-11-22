@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference TabView.cpp, commit ed31e13
 
@@ -551,7 +551,9 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 					TabItems = lvItems;
 				}
 
-				if (ReadLocalValue(SelectedItemProperty) != DependencyProperty.UnsetValue)
+				// ReadLocalValue() is not returning UnsetValue even though SelectedItem is not yet set
+				if (ReadLocalValue(SelectedItemProperty) != DependencyProperty.UnsetValue
+					&& SelectedItem is not null)
 				{
 					UpdateSelectedItem();
 				}
@@ -1268,27 +1270,17 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 		private int GetItemCount()
 		{
-			var itemsSource = TabItemsSource;
-			if (itemsSource != null)
+			if (TabItemsSource is { } itemsSource)
 			{
-				var iterable = itemsSource as IEnumerable;
-				if (iterable != null)
+				if (itemsSource is IEnumerable iterable)
 				{
-					//int i = 1;
-					//var iter = iterable.First();
-					//while (iter.MoveNext())
-					//{
-					//	i++;
-					//}
-					//return i;
 					return iterable.Count();
 				}
 				return 0;
 			}
-
 			else
 			{
-				return (int)TabItems.Count;
+				return TabItems.Count;
 			}
 		}
 

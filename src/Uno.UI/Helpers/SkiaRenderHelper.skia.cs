@@ -16,7 +16,7 @@ internal static class SkiaRenderHelper
 	/// Does a rendering cycle, clips to the total area that was drawn
 	/// and returns this area or null if the entire window is drawn.
 	/// </summary>
-	public static SKPath? RenderRootVisualAndClearNativeAreas(int width, int height, ShapeVisual rootVisual, SKSurface surface)
+	public static void RenderRootVisualAndClearNativeAreas(int width, int height, ContainerVisual rootVisual, SKSurface surface)
 	{
 		var path = RenderRootVisualAndReturnPath(width, height, rootVisual, surface);
 		if (path is not null)
@@ -31,15 +31,13 @@ internal static class SkiaRenderHelper
 			canvas.Clear(SKColors.Transparent);
 			canvas.Restore();
 		}
-
-		return path;
 	}
 
 	/// <summary>
 	/// Does a rendering cycle and returns a path that represents the total area that was drawn
 	/// or null if the entire window is drawn. Takes the current TotalMatrix of the surface's canvas into account
 	/// </summary>
-	public static SKPath RenderRootVisualAndReturnNegativePath(int width, int height, ShapeVisual rootVisual, SKSurface surface)
+	public static SKPath RenderRootVisualAndReturnNegativePath(int width, int height, ContainerVisual rootVisual, SKSurface surface)
 	{
 		var path = RenderRootVisualAndReturnPath(width, height, rootVisual, surface);
 		var negativePath = new SKPath();
@@ -57,7 +55,7 @@ internal static class SkiaRenderHelper
 	/// Does a rendering cycle and returns a path that represents the total area that was drawn
 	/// or null if the entire window is drawn.
 	/// </summary>
-	public static SKPath? RenderRootVisualAndReturnPath(int width, int height, ShapeVisual rootVisual, SKSurface surface)
+	public static SKPath? RenderRootVisualAndReturnPath(int width, int height, ContainerVisual rootVisual, SKSurface surface)
 	{
 		if (!ContentPresenter.HasNativeElements())
 		{
@@ -91,9 +89,12 @@ internal static class SkiaRenderHelper
 				_visualPath.AddRect(new SKRect(0, 0, visual.Size.X, visual.Size.Y));
 
 				var finalVisualPath = _clipPath.Op(_visualPath, SKPathOp.Intersect);
-				if (visual.GetPrePaintingClipping() is { } preClip)
+				using (SkiaHelper.GetTempSKPath(out var preClip))
 				{
-					finalVisualPath = finalVisualPath.Op(preClip, SKPathOp.Intersect);
+					if (visual.GetPrePaintingClipping(preClip))
+					{
+						finalVisualPath.Op(preClip, SKPathOp.Intersect, finalVisualPath);
+					}
 				}
 
 				finalVisualPath.Transform(canvas.TotalMatrix);

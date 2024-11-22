@@ -6,16 +6,19 @@ using SkiaSharp;
 
 using Windows.Devices.Input;
 using Windows.Foundation;
+using Windows.Graphics;
 using Windows.Graphics.Display;
 using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Input;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Input;
 
 using Window = Microsoft.UI.Xaml.Window;
 
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
+using Uno.UI.Helpers;
 using Uno.UI.Hosting;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
@@ -57,6 +60,8 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 
 	// Display
 
+	internal event EventHandler<PointInt32>? PositionChanged;
+
 	internal event EventHandler<Size>? SizeChanged;
 
 	internal event EventHandler? RasterizationScaleChanged;
@@ -68,7 +73,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		SizeChanged?.Invoke(this, new Size(nativeWidth, nativeHeight));
 	}
 
-	private void Draw(SKSurface surface)
+	private void Draw(double nativeWidth, double nativeHeight, SKSurface surface)
 	{
 		using var canvas = surface.Canvas;
 		using (new SKAutoCanvasRestore(canvas, true))
@@ -77,7 +82,16 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 
 			if (RootElement?.Visual is { } rootVisual)
 			{
-				RootElement.XamlRoot?.Compositor.RenderRootVisual(surface, rootVisual, null);
+				int width = (int)nativeWidth;
+				int height = (int)nativeHeight;
+				var path = SkiaRenderHelper.RenderRootVisualAndReturnPath(width, height, rootVisual, surface);
+				if (path is { })
+				{
+					using var negativePath = new SKPath();
+					negativePath.AddRect(new SKRect(0, 0, width, height));
+					using var diffPath = negativePath.Op(path, SKPathOp.Difference);
+					NativeUno.uno_window_clip_svg(_nativeWindow.Handle, diffPath.ToSvgPathData());
+				}
 			}
 		}
 
@@ -112,7 +126,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 
 		surface.Canvas.Scale(scale, scale);
 
-		Draw(surface);
+		Draw(nativeWidth, nativeHeight, surface);
 
 		_context?.Flush();
 	}
@@ -152,7 +166,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			_rowBytes = info.RowBytes;
 		}
 
-		Draw(_surface!);
+		Draw(nativeWidth, nativeHeight, _surface!);
 
 		*data = _bitmap.GetPixels(out var bitmapSize);
 		*size = (int)bitmapSize;
@@ -171,7 +185,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 
 		NativeUno.uno_set_drawing_callbacks(&MetalDraw, &SoftDraw, &Resize);
 
-		NativeUno.uno_set_window_events_callbacks(&OnRawKeyDown, &OnRawKeyUp, &OnMouseEvent);
+		NativeUno.uno_set_window_events_callbacks(&OnRawKeyDown, &OnRawKeyUp, &OnMouseEvent, &OnMoveEvent, &Resize);
 		ApiExtensibility.Register<IXamlRootHost>(typeof(IUnoKeyboardInputSource), o => (o as IUnoKeyboardInputSource)!);
 		ApiExtensibility.Register<IXamlRootHost>(typeof(IUnoCorePointerInputSource), o => (o as IUnoCorePointerInputSource)!);
 
@@ -240,6 +254,18 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		}
 	}
 
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	private static void OnMoveEvent(nint handle, double x, double y)
+	{
+		var window = GetWindowHost(handle);
+		if (window is not null)
+		{
+			window.PositionChanged?.Invoke(window, new PointInt32((int)x, (int)y));
+		}
+		// the first event occurs before the managed side is ready to handle it
+		// this special case is handled inside MacOSWindowWrapper constructor
+	}
+
 	// IUnoKeyboardInputSource
 
 	public event TypedEventHandler<object, KeyEventArgs>? KeyDown;
@@ -272,8 +298,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			}
 			var args = CreateArgs(key, mods, scanCode, unicode);
 			keyDown.Invoke(window!, args);
-			// we tell macOS it's always handled as WinUI does not mark as handled some keys that would make it beep in common cases
-			return 1;
+			return FocusManager.GetFocusedElement() == null ? 0 : 1;
 		}
 		catch (Exception e)
 		{
@@ -300,7 +325,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			}
 			var args = CreateArgs(key, mods, scanCode, unicode);
 			keyUp.Invoke(window!, args);
-			return args.Handled ? 1 : 0;
+			return 1;
 		}
 		catch (Exception e)
 		{
@@ -408,8 +433,8 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			}
 
 			mouseEvent(window, BuildPointerArgs(*data));
-			// let the window be activated (becoming the keyWindow) when clicked
-			return data->EventType == NativeMouseEvents.Down ? 0 : 1;
+			// always let the native side know about the mouse events, e.g. setting keyWindow, embedded native controls
+			return 0;
 		}
 		catch (Exception e)
 		{

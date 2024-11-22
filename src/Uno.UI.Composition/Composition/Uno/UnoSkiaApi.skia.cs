@@ -33,7 +33,7 @@ internal static class UnoSkiaApi
 	unsafe internal static extern void sk_rrect_set_rect_radii_others(IntPtr rrect, SKRect* rect, SKPoint* radii);
 
 	/// <summary>
-	/// We use this instead of the equivalent SKRoundRect.SetRectRadii because it take the array with a
+	/// We use this instead of the equivalent SKRoundRect.SetRectRadii because it takes an array with a
 	/// length of _exactly_ 4. If we rent the SKPoint array to reduce allocations, we're not guaranteed to
 	/// get the exact length we need.
 	/// </summary>

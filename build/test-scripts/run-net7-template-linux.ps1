@@ -48,13 +48,13 @@ $projects =
     @(0, "5.1/uno51blank/uno51blank.Wasm/uno51blank.Wasm.csproj", @(), @()),
 
     # 5.1 Recommended
-    @(0, "5.1/uno51recommended/uno51recommended.Skia.Gtk/uno51recommended.Skia.Gtk.csproj", @(), @()),
-    @(0, "5.1/uno51recommended/uno51recommended.Skia.Linux.FrameBuffer/uno51recommended.Skia.Linux.FrameBuffer.csproj", @(), @()),
-    @(0, "5.1/uno51recommended/uno51recommended.Skia.WPF/uno51recommended.Skia.WPF.csproj", @(), @()),
-    @(0, "5.1/uno51recommended/uno51recommended.Wasm/uno51recommended.Wasm.csproj", @(), @()),
-    @(0, "5.1/uno51recommended/uno51recommended.Server/uno51recommended.Server.csproj", @(), @()),
-    @(0, "5.1/uno51recommended/uno51recommended.Tests/uno51recommended.Tests.csproj", @(), @()),
-    @(0, "5.1/uno51recommended/uno51recommended.UITests/uno51recommended.UITests.csproj", @(), @()),
+    @(1, "5.1/uno51recommended/uno51recommended.Skia.Gtk/uno51recommended.Skia.Gtk.csproj", @(), @()),
+    @(1, "5.1/uno51recommended/uno51recommended.Skia.Linux.FrameBuffer/uno51recommended.Skia.Linux.FrameBuffer.csproj", @(), @()),
+    @(1, "5.1/uno51recommended/uno51recommended.Skia.WPF/uno51recommended.Skia.WPF.csproj", @(), @()),
+    @(1, "5.1/uno51recommended/uno51recommended.Wasm/uno51recommended.Wasm.csproj", @(), @()),
+    @(1, "5.1/uno51recommended/uno51recommended.Server/uno51recommended.Server.csproj", @(), @()),
+    @(1, "5.1/uno51recommended/uno51recommended.Tests/uno51recommended.Tests.csproj", @(), @()),
+    @(1, "5.1/uno51recommended/uno51recommended.UITests/uno51recommended.UITests.csproj", @(), @()),
 
     # 5.2 Blank
     @(1, "5.2/uno52blank/uno52blank/uno52blank.csproj", @(), @()),
@@ -69,23 +69,26 @@ $projects =
     @(1, "5.2/uno52Lib/uno52Lib.csproj", @(), @()),
 
     # 5.2 Uno NuGet Lib
-    @(1, "5.2/uno52NuGetLib/uno52NuGetLib.csproj", @(), @()),
+    @(2, "5.2/uno52NuGetLib/uno52NuGetLib.csproj", @(), @()),
 
     # 5.2 Uno SingleProject Lib
-    @(1, "5.2/uno52SingleProjectLib/uno52SingleProjectLib.csproj", @(), @()),
+    @(2, "5.2/uno52SingleProjectLib/uno52SingleProjectLib.csproj", @(), @()),
 
     # 5.2 Uno App with Library reference
-    @(1, "5.2/uno52AppWithLib/uno52AppWithLib/uno52AppWithLib.csproj", @(), @()),
+    @(2, "5.2/uno52AppWithLib/uno52AppWithLib/uno52AppWithLib.csproj", @(), @()),
 
     # 5.3 Blank with net9
-    @(2, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @(), @()),
+    @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @(), @()),
+
+    # 5.3 lib
+    @(3, "5.3/uno53net9Lib/uno53net9Lib.csproj", @(), @())
 
     # 5.3 blank publish testing
     # Disabled for LXD setup issues
     # @(2, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f:net9.0-desktop", "-p:SelfContained=true", "-p:PackageFormat=snap"), @("Publish"))
 
     # 5.4 Wasm+Skia
-    @(2, "5.4/uno54wasmskia/uno54wasmskia/uno54wasmskia.csproj", @(), @()),
+    # @(3, "5.6/uno56wasmskia/uno56wasmskia/uno56wasmskia.csproj", @(), @()),
 
     ## Note for contributors
     ##

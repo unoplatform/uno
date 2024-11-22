@@ -9,9 +9,9 @@ using Uno.UI.Composition;
 namespace Microsoft.UI.Composition;
 
 /// <summary>
-/// A ShapeVisual that has a border and a background.
+/// A Visual that has a border and a background.
 /// </summary>
-internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
+internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 {
 	// state set from outside and used inside the class
 	private CornerRadius _cornerRadius;
@@ -30,6 +30,8 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 	private RectangleClip? _childClipCausedByCornerRadius;
 
 	// We do this instead of a direct SetProperty call so that SetProperty automatically gets an accurate propertyName
+	// we need the SetProperty calls to get notified on brush updates.
+	// (<Border|Background>Brush internals change -> <Border|Background>Shape is notified through FillBrush -> render invalidation)
 	private CompositionSpriteShape? BackgroundShape { set => SetProperty(ref _backgroundShape, value); }
 	private CompositionSpriteShape? BorderShape { set => SetProperty(ref _borderShape, value); }
 
@@ -56,13 +58,29 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 	public CompositionBrush? BackgroundBrush
 	{
 		private get => _backgroundBrush;
-		set => SetProperty(ref _backgroundBrush, value);
+		set
+		{
+			if (_backgroundBrush is null)
+			{
+				// we skip the background path calculations while the background is null;
+				_backgroundPathValid = false;
+			}
+			SetProperty(ref _backgroundBrush, value);
+		}
 	}
 
 	public CompositionBrush? BorderBrush
 	{
 		private get => _borderBrush;
-		set => SetProperty(ref _borderBrush, value);
+		set
+		{
+			if (_borderBrush is null)
+			{
+				// we skip the border path calculations while the border is null;
+				_borderPathValid = false;
+			}
+			SetProperty(ref _borderBrush, value);
+		}
 	}
 
 	private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
@@ -79,11 +97,8 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 			// BackgroundShape and BorderShape are NOT added to this.Shapes, which both makes it easier
 			// to reason about (no external tampering) and is also closer to what WinUI does.
 			case nameof(BorderBrush):
-				_borderPathValid = false; // to update _borderPath if previously skipped
 				if (BorderBrush is not null && _borderShape is null)
 				{
-					// we need this to get notified on brush updates
-					// (BorderBrush internals change -> BorderShape is notified through FillBrush -> render invalidation)
 					var borderShape = Compositor.CreateSpriteShape();
 					borderShape.Geometry = Compositor.CreatePathGeometry();
 #if DEBUG
@@ -98,11 +113,8 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 				}
 				break;
 			case nameof(BackgroundBrush):
-				_backgroundPathValid = false; // to update _backgroundPath if previously skipped
 				if (BackgroundBrush is not null && _backgroundShape is null)
 				{
-					// we need this to get notified on brush updates.
-					// (BackgroundBrush internals change -> BackgroundShape is notified through FillBrush -> render invalidation)
 					var backgroundShape = Compositor.CreateSpriteShape();
 
 					backgroundShape.Geometry = Compositor.CreatePathGeometry();
@@ -143,7 +155,7 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 		_borderShape?.Render(in session);
 	}
 
-	internal override SKPath? GetPrePaintingClipping()
+	internal override bool GetPrePaintingClipping(SKPath dst)
 	{
 		// This method is only important for airspace (to accurately deal with corner radii, etc.),
 		// other than that it doesn't really do anything.
@@ -151,20 +163,25 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 
 		if (_cornerRadius != CornerRadius.None && _borderPathOuterRect is { } rect)
 		{
-			var path = new SKPath();
-			path.AddRoundRect(rect);
-			if (base.GetPrePaintingClipping() is { } baseClip)
+			if (base.GetPrePaintingClipping(dst))
 			{
-				return path.Op(baseClip, SKPathOp.Intersect);
+				using (SkiaHelper.GetTempSKPath(out var path))
+				{
+					path.AddRoundRect(rect);
+					dst.Op(path, SKPathOp.Intersect, dst);
+				}
+				return true;
 			}
 			else
 			{
-				return path;
+				dst.Reset();
+				dst.AddRoundRect(rect);
+				return true;
 			}
 		}
 		else
 		{
-			return base.GetPrePaintingClipping();
+			return base.GetPrePaintingClipping(dst);
 		}
 	}
 
@@ -203,7 +220,7 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 			fullCornerRadius.Outer.GetRadii(outerRadii);
 			fullCornerRadius.Inner.GetRadii(innerRadii);
 
-			if (_backgroundBrush is { } && !_backgroundPathValid)
+			if (_backgroundBrush is { } && !_backgroundPathValid) // no point calculating background state if the brush is null
 			{
 				_backgroundPathValid = true;
 				// We don't pass down <inner|outer>Area directly, since it contains the thickness offsets.
@@ -247,13 +264,16 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 				//    |                                           |
 				//    |                                           |
 				//    |-----------------300px---------------------|
-				UpdateBackgroundPath(_useInnerBorderBoundsAsAreaForBackground, innerArea.Size, outerArea.Size, outerRadii, innerRadii);
+
+				var backgroundPath = CreateBackgroundPath(_useInnerBorderBoundsAsAreaForBackground, innerArea.Size, outerArea.Size, outerRadii, innerRadii);
+				((CompositionPathGeometry)_backgroundShape!.Geometry!).Path = new CompositionPath(new SkiaGeometrySource2D(backgroundPath));
 				_backgroundShape!.Offset = _useInnerBorderBoundsAsAreaForBackground ? new Vector2((float)_borderThickness.Left, (float)_borderThickness.Top) : Vector2.Zero;
 			}
-			if (_borderBrush is { } && !_borderPathValid)
+			if (_borderBrush is { } && !_borderPathValid) // no point calculating border state if the brush is null
 			{
 				_borderPathValid = true;
-				UpdateBorderPath(innerArea, outerArea, outerRadii, innerRadii);
+				var borderPath = CreateBorderPath(innerArea, outerArea, outerRadii, innerRadii);
+				((CompositionPathGeometry)_borderShape!.Geometry!).Path = new CompositionPath(new SkiaGeometrySource2D(borderPath));
 			}
 		}
 
@@ -284,7 +304,7 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 		}
 	}
 
-	private unsafe void UpdateBackgroundPath(bool useInnerBorderBoundsAsAreaForBackground, SKSize innerArea, SKSize outerArea, SKPoint* outerRadii, SKPoint* innerRadii)
+	private static unsafe SKPath CreateBackgroundPath(bool useInnerBorderBoundsAsAreaForBackground, SKSize innerArea, SKSize outerArea, SKPoint* outerRadii, SKPoint* innerRadii)
 	{
 		var backgroundPath = new SKPath();
 		var roundRect = new SKRoundRect();
@@ -298,11 +318,10 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 		backgroundPath.AddRoundRect(roundRect);
 		backgroundPath.Close();
 
-		// Unfortunately, this will cause an unnecessary render invalidation
-		((CompositionPathGeometry)_backgroundShape!.Geometry!).Path = new CompositionPath(new SkiaGeometrySource2D(backgroundPath));
+		return backgroundPath;
 	}
 
-	private unsafe void UpdateBorderPath(SKRect innerArea, SKRect outerArea, SKPoint* outerRadii, SKPoint* innerRadii)
+	private unsafe SKPath CreateBorderPath(SKRect innerArea, SKRect outerArea, SKPoint* outerRadii, SKPoint* innerRadii)
 	{
 		var borderPath = new SKPath();
 
@@ -323,8 +342,7 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 			borderPath.Close();
 		}
 
-		// Unfortunately, this will cause an unnecessary render invalidation
-		((CompositionPathGeometry)_borderShape!.Geometry!).Path = new CompositionPath(new SkiaGeometrySource2D(borderPath));
+		return borderPath;
 	}
 
 	internal override bool CanPaint() =>
@@ -335,6 +353,6 @@ internal class BorderVisual(Compositor compositor) : ShapeVisual(compositor)
 	internal override bool HitTest(Point point)
 	{
 		UpdatePathsAndCornerClip();
-		return (_borderShape?.HitTest(point) ?? false) || (_backgroundShape?.HitTest(point) ?? false) || base.HitTest(point);
+		return (_borderShape?.HitTest(point) ?? false) || (_backgroundShape?.HitTest(point) ?? false);
 	}
 }

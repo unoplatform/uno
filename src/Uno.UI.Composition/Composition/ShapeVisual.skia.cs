@@ -12,35 +12,32 @@ namespace Microsoft.UI.Composition;
 
 public partial class ShapeVisual
 {
-	private GCHandle _gcHandle;
-
-	partial void InitializePartial()
-	{
-		_gcHandle = GCHandle.Alloc(this, GCHandleType.Weak);
-		Handle = GCHandle.ToIntPtr(_gcHandle);
-	}
-
-	internal IntPtr Handle { get; private set; }
-
-	internal WeakReference? Owner { get; set; }
-
-	internal override SKPath? GetPrePaintingClipping()
-	{
-		using (SkiaHelper.GetTempSKPath(out var prePaintingClipPath))
-		{
-			return (GetViewBoxPathInElementCoordinateSpace(prePaintingClipPath) ? prePaintingClipPath : null, base.GetPrePaintingClipping()) switch
-			{
-				(null, { } baseClip) => baseClip,
-				({ } localClip, null) => localClip,
-				({ } localClip, { } baseClip) => localClip.Op(baseClip, SKPathOp.Intersect),
-				_ => null
-			};
-		}
-	}
-
 	/// <inheritdoc />
 	internal override void Paint(in PaintingSession session)
 	{
+		var canvas = session.Canvas;
+
+		if (Size.X == 0 || Size.Y == 0)
+		{
+			return;
+		}
+
+		// TODO: ShapeVisuals should be clipping to the size rect. However, this breaks shapes for us because
+		// we implement them with ShapeVisuals and they don't clip anything. The problem is that
+		// the WinUI implementation doesn't use ShapeVisuals for shapes, but a combination of ContainerVisuals and
+		// SpriteVisuals. When_StrokeThickness_Is_GreaterThan_Or_Equals_Width and
+		// When_Border_CornerRadius_HitTesting fail when you uncomment the following line.
+		// canvas.ClipRect(new SKRect(0, 0, Size.X, Size.Y));
+
+		// TODO: ViewBox.Stretch, ViewBox.HorizontalAlignmentRatio and ViewBox.VerticalAlignmentRatio
+		if (ViewBox is not null)
+		{
+			canvas.Scale(
+				ViewBox.Size.X > 0 ? Size.X / ViewBox.Size.X : 1,
+				ViewBox.Size.Y > 0 ? Size.Y / ViewBox.Size.Y : 1);
+			canvas.Translate(-ViewBox.Offset.X, -ViewBox.Offset.Y); // translate before scaling
+		}
+
 		if (_shapes is { Count: not 0 } shapes)
 		{
 			for (var i = 0; i < shapes.Count; i++)
@@ -52,34 +49,10 @@ public partial class ShapeVisual
 		base.Paint(in session);
 	}
 
-	/// <returns>true if a ViewBox exists</returns>
-	internal bool GetViewBoxPathInElementCoordinateSpace(SKPath dst)
-	{
-		if (ViewBox is not { } viewBox)
-		{
-			return false;
-		}
-
-		dst.Rewind();
-		var clipRect = new SKRect(viewBox.Offset.X, viewBox.Offset.Y, viewBox.Offset.X + viewBox.Size.X, viewBox.Offset.Y + viewBox.Size.Y);
-		dst.AddRect(clipRect);
-		if (viewBox.IsAncestorClip)
-		{
-			Matrix4x4.Invert(TotalMatrix, out var totalMatrixInverted);
-			var childToParentTransform = Parent!.TotalMatrix * totalMatrixInverted;
-			if (!childToParentTransform.IsIdentity)
-			{
-				dst.Transform(childToParentTransform.ToSKMatrix());
-			}
-		}
-
-		return true;
-	}
-
 	internal override bool CanPaint() => base.CanPaint() || (_shapes?.Any(s => s.CanPaint()) ?? false);
 
 	/// <remarks>This does NOT take the clipping into account.</remarks>
-	internal virtual bool HitTest(Point point)
+	internal override bool HitTest(Point point)
 	{
 		if (_shapes is null)
 		{

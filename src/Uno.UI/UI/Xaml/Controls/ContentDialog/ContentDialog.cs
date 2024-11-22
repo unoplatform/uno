@@ -195,12 +195,12 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				return;
 			}
-			_hiding = true;
 			Hide(ContentDialogResult.None);
 		}
 
 		internal bool Hide(ContentDialogResult result)
 		{
+			_hiding = true;
 			void Complete(ContentDialogClosingEventArgs args)
 			{
 				if (!args.Cancel)
@@ -476,7 +476,6 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				return;
 			}
-			_hiding = true;
 
 			var args = new ContentDialogButtonClickEventArgs(Complete);
 			CloseButtonClick?.Invoke(this, args);
@@ -507,7 +506,6 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				return;
 			}
-			_hiding = true;
 
 			var args = new ContentDialogButtonClickEventArgs(Complete);
 			SecondaryButtonClick?.Invoke(this, args);
@@ -540,7 +538,6 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				return;
 			}
-			_hiding = true;
 
 			var args = new ContentDialogButtonClickEventArgs(Complete);
 			PrimaryButtonClick?.Invoke(this, args);

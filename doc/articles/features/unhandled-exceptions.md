@@ -8,7 +8,7 @@ Starting Uno Platform 5.4, we are generating a generic handler for `Application.
 
 ```xml
 <PropertyGroup>
-  <BreakOnUnhandledExceptions>true</DefineConstants>
+  <BreakOnUnhandledExceptions>true</BreakOnUnhandledExceptions>
 </PropertyGroup>
 ```
 
