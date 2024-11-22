@@ -28,6 +28,12 @@ partial class TextBox
 			new FrameworkPropertyMetadata(
 				// We should not capture the pointer on WASM by default because it would prevent the user from scrolling through text on selection.
 				// See https://github.com/unoplatform/uno/pull/16982, https://issues.chromium.org/issues/344491566
-				false));
+				false, static (dO, args) =>
+				{
+					if (((TextBox)dO)._contentElement is ScrollViewer sv)
+					{
+						sv.DisableSetFocusOnPopupByPointer = !(bool)args.NewValue;
+					}
+				}));
 #endif
 }
