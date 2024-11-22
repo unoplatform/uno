@@ -5,16 +5,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Uno.Storage.Pickers.Internal;
-using UIKit;
 using Foundation;
-using Windows.ApplicationModel.Core;
-using Uno.Helpers.Theming;
-using PhotosUI;
-using Uno.UI.Dispatching;
 using MobileCoreServices;
-using Windows.Foundation.Metadata;
-using Uno.Foundation.Logging;
+using Photos;
+using PhotosUI;
+using UIKit;
+using Uno.Helpers.Theming;
+using Uno.Storage.Pickers.Internal;
+using Uno.UI.Dispatching;
+using Windows.ApplicationModel.Core;
 
 namespace Windows.Storage.Pickers
 {
@@ -73,7 +72,7 @@ namespace Windows.Storage.Pickers
 					};
 
 				case PickerLocationId.PicturesLibrary when multiple is true && iOS14AndAbove is true:
-					var imageConfiguration = new PHPickerConfiguration
+					var imageConfiguration = new PHPickerConfiguration(PHPhotoLibrary.SharedPhotoLibrary)
 					{
 						Filter = PHPickerFilter.ImagesFilter,
 						SelectionLimit = limit
@@ -83,7 +82,7 @@ namespace Windows.Storage.Pickers
 						Delegate = new PhotoPickerDelegate(completionSource)
 					};
 				case PickerLocationId.VideosLibrary when multiple is true && iOS14AndAbove is true:
-					var videoConfiguration = new PHPickerConfiguration
+					var videoConfiguration = new PHPickerConfiguration(PHPhotoLibrary.SharedPhotoLibrary)
 					{
 						Filter = PHPickerFilter.VideosFilter,
 						SelectionLimit = limit
@@ -167,9 +166,13 @@ namespace Windows.Storage.Pickers
 		private class PhotoPickerDelegate : PHPickerViewControllerDelegate
 		{
 			private readonly TaskCompletionSource<StorageFile?[]> _taskCompletionSource;
+			private readonly bool _readOnly;
 
-			public PhotoPickerDelegate(TaskCompletionSource<StorageFile?[]> taskCompletionSource) =>
+			public PhotoPickerDelegate(TaskCompletionSource<StorageFile?[]> taskCompletionSource, bool readOnly)
+			{
 				_taskCompletionSource = taskCompletionSource;
+				_readOnly = readOnly;
+			}
 
 			public override async void DidFinishPicking(PHPickerViewController picker, PHPickerResult[] results)
 			{
@@ -186,33 +189,51 @@ namespace Windows.Storage.Pickers
 			private async Task<IEnumerable<StorageFile>> ConvertPickerResults(PHPickerResult[] results)
 			{
 				List<StorageFile> storageFiles = new List<StorageFile>();
-				var providers = results
-					.Select(res => res.ItemProvider)
-					.Where(provider => provider != null && provider.RegisteredTypeIdentifiers?.Length > 0)
-					.ToArray();
-
-				foreach (NSItemProvider provider in providers)
+				if (_readOnly)
 				{
-					var identifier = GetIdentifier(provider.RegisteredTypeIdentifiers ?? []) ?? "public.data";
-					var data = await provider.LoadDataRepresentationAsync(identifier);
+					var assetIdentifiers = results
+						.Select(res => res.AssetIdentifier!)
+						.Where(id => id != null)
+						.ToArray();
 
-					if (data is null)
+					var resultsByIdentifier = results.ToDictionary(res => res.AssetIdentifier!);
+					var assets = PHAsset.FetchAssetsUsingLocalIdentifiers(assetIdentifiers, null);
+					foreach (PHAsset asset in assets)
 					{
-						continue;
+						var file = StorageFile.GetFromPHPickerResult(resultsByIdentifier[asset.LocalIdentifier], asset, null);
+						storageFiles.Add(file);
 					}
-
-					var extension = GetExtension(identifier);
-
-					var destinationUrl = NSFileManager.DefaultManager
-						.GetTemporaryDirectory()
-						.Append($"{NSProcessInfo.ProcessInfo.GloballyUniqueString}.{extension}", false);
-					data.Save(destinationUrl, false);
-
-					storageFiles.Add(StorageFile.GetFromSecurityScopedUrl(destinationUrl, null));
 				}
+				else
+				{
+					var providers = results
+						.Select(res => res.ItemProvider)
+						.Where(provider => provider != null && provider.RegisteredTypeIdentifiers?.Length > 0)
+						.ToArray();
 
+					foreach (NSItemProvider provider in providers)
+					{
+						var identifier = GetIdentifier(provider.RegisteredTypeIdentifiers ?? []) ?? "public.data";
+						var data = await provider.LoadDataRepresentationAsync(identifier);
+
+						if (data is null)
+						{
+							continue;
+						}
+
+						var extension = GetExtension(identifier);
+
+						var destinationUrl = NSFileManager.DefaultManager
+							.GetTemporaryDirectory()
+							.Append($"{NSProcessInfo.ProcessInfo.GloballyUniqueString}.{extension}", false);
+						data.Save(destinationUrl, false);
+
+						storageFiles.Add(StorageFile.GetFromSecurityScopedUrl(destinationUrl, null));
+					}
+				}
 				return storageFiles;
 			}
+
 			private static string? GetIdentifier(string[] identifiers)
 			{
 				if (!(identifiers?.Length > 0))

@@ -1,19 +1,19 @@
 ﻿#nullable enable
 
 using System;
+using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Foundation;
+using Photos;
+using PhotosUI;
 using UIKit;
-using Windows.Storage.FileProperties;
-using Windows.Storage.Streams;
 using Uno.Storage.Internal;
 using Uno.Storage.Streams.Internal;
-using System.IO;
-using System.Linq;
-using MobileCoreServices;
-using SystemPath = System.IO.Path;
-using PhotosUI;
+using Windows.Extensions;
+using Windows.Storage.FileProperties;
+using Windows.Storage.Streams;
 
 namespace Windows.Storage
 {
@@ -22,8 +22,8 @@ namespace Windows.Storage
 		internal static StorageFile GetFromSecurityScopedUrl(NSUrl nsUrl, StorageFolder? parent) =>
 			new StorageFile(new SecurityScopedFile(nsUrl, parent));
 
-		internal static StorageFile GetFromPHPickerResult(PHPickerResult result, StorageFolder? parent) =>
-			new StorageFile(new PHPickerResultFile(result, parent));
+		internal static StorageFile GetFromPHPickerResult(PHPickerResult result, PHAsset phAsset, StorageFolder? parent) =>
+			new StorageFile(new PHPickerResultFile(result, phAsset, parent));
 
 		internal class SecurityScopedFile : ImplementationBase
 		{
@@ -100,61 +100,64 @@ namespace Windows.Storage
 				file._nsUrl.FilePathUrl?.Path == _nsUrl.FilePathUrl?.Path;
 		}
 
-		internal class PHPickerResultFile : ImplementationBase
+		internal class PHAssetFile : ImplementationBase
 		{
-			private PHPickerResult _phPickerResult;
+			private readonly PHAsset _phAsset;
 			private StorageFolder? _parent;
 
-			public PHPickerResultFile(PHPickerResult phPickerResult, StorageFolder? parent) : base(string.Empty)
+			public PHAssetFile(PHAsset phAsset, StorageFolder? parent) : base(string.Empty)
 			{
-				if (phPickerResult is null)
-				{
-					throw new ArgumentNullException(nameof(phPickerResult));
-				}
-
-				_phPickerResult = phPickerResult;
+				_phAsset = phAsset;
 				_parent = parent;
+				Path = phAsset.
 			}
 
 			public override StorageProvider Provider => StorageProviders.IosPHPicker;
 
-			public override DateTimeOffset DateCreated
+			public override DateTimeOffset DateCreated => _phAsset.CreationDate.ToDateTimeOffset();
+
+			public override Task DeleteAsync(CancellationToken ct, StorageDeleteOption options)
 			{
-				get
-				{
-					var itemProvider = _phPickerResult.ItemProvider;
-
-					if (itemProvider.HasItemConformingTo(UTType.Image))
+				TaskCompletionSource resultCompletionSource = new TaskCompletionSource();
+				PHPhotoLibrary.SharedPhotoLibrary.PerformChanges(
+					() =>
 					{
-						var fileUrl = await GetFileUrlAsync(itemProvider);
-
-						if (fileUrl != null)
+						PHAssetChangeRequest.DeleteAssets(new PHAsset[] { _phAsset });
+					},
+					(success, error) =>
+					{
+						if (success)
 						{
-							var attributes = NSFileManager.DefaultManager.GetAttributes(fileUrl.Path, out NSError error);
-							if (error != null)
-							{
-								throw new IOException($"Error retrieving file attributes: {error.LocalizedDescription}");
-							}
-
-							var creationDate = attributes.CreationDate;
-							return creationDate?.ToDateTimeOffset()
-								   ?? throw new InvalidOperationException("Creation date not found.");
+							resultCompletionSource.SetResult();
+						}
+						else
+						{
+							resultCompletionSource.SetException(new Exception(error.LocalizedDescription));
 						}
 					}
+				);
 
-					throw new InvalidOperationException("Item does not conform to a supported type.");
-				}
+				return resultCompletionSource.Task;
 			}
 
-			public override Task DeleteAsync(CancellationToken ct, StorageDeleteOption options) => throw new NotImplementedException();
-			public override Task<BasicProperties> GetBasicPropertiesAsync(CancellationToken ct) => throw new NotImplementedException();
-			public override Task<StorageFolder?> GetParentAsync(CancellationToken ct) => throw new NotImplementedException();
-			public override Task<IRandomAccessStreamWithContentType> OpenAsync(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options) => throw new NotImplementedException();
-			public override Task<StorageStreamTransaction> OpenTransactedWriteAsync(CancellationToken ct, StorageOpenOptions option) => throw new NotImplementedException();
-			protected override bool IsEqual(ImplementationBase implementation)
+			public override Task<BasicProperties> GetBasicPropertiesAsync(CancellationToken ct)
 			{
-				implementation is PHPickerResultFile file && file._phPickerResult.ItemProvider.Load
+				var resources = PHAssetResource.GetAssetResources(_phAsset);
+				var imageSizeBytes = (resources.FirstOrDefault()?.ValueForKey(new NSString("fileSize")) as NSNumber) ?? 0;
+				var dateModified = _phAsset.ModificationDate.ToDateTimeOffset();
+				return Task.FromResult(new BasicProperties((ulong)imageSizeBytes, dateModified));
 			}
+
+			public override Task<StorageFolder?> GetParentAsync(CancellationToken ct) => Task.FromResult(_parent);
+
+			public override Task<IRandomAccessStreamWithContentType> OpenAsync(CancellationToken ct, FileAccessMode accessMode, StorageOpenOptions options)
+				=> Task.FromResult<IRandomAccessStreamWithContentType>(new RandomAccessStreamWithContentType(FileRandomAccessStream.CreateSecurityScoped(_phAsset.Rea, ToFileAccess(accessMode), ToFileShare(options)), ContentType));
+			public override Task<StorageStreamTransaction> OpenTransactedWriteAsync(CancellationToken ct, StorageOpenOptions option)
+			{
+
+			}
+
+			protected override bool IsEqual(ImplementationBase implementation) => implementation is PHAssetFile file && file._phAsset.LocalIdentifier == _phAsset.LocalIdentifier;
 		}
 	}
 }
