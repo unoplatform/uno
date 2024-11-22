@@ -21,6 +21,7 @@ namespace Windows.Storage.Pickers
 	public partial class FileOpenPicker
 	{
 		private int _multipleFileLimit;
+		private bool _isReadOnly;
 
 		private Task<StorageFile?> PickSingleFileTaskAsync(CancellationToken token)
 		{
@@ -53,10 +54,9 @@ namespace Windows.Storage.Pickers
 			return tcs.Task;
 		}
 
-		internal void SetMultipleFileLimit(int limit)
-		{
-			_multipleFileLimit = limit;
-		}
+		internal void SetMultipleFileLimit(int limit) => _multipleFileLimit = limit;
+
+		internal void SetReadOnlyMode(bool readOnly) => _isReadOnly = readOnly;
 
 		private UIViewController GetViewController(bool multiple, int limit, TaskCompletionSource<StorageFile?[]> completionSource)
 		{
