@@ -48,7 +48,7 @@ performance cost is shifted to downcast and upcast checks in the `EventRaiseHand
 
 The returned disposable must be used as follows :
 
- ```csharp 
+ ```csharp
  private IDisposable? _sizeChangedSubscription;
 
  ...
