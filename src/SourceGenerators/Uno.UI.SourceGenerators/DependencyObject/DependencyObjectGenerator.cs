@@ -531,7 +531,7 @@ global::Uno.UI.DataBinding.ManagedWeakReference IWeakReferenceProvider.WeakRefer
 				if (hasDispose)
 				{
 					builder.AppendMultiLineIndented($@"
-#if __IOS__ || __MACOS__
+#if __APPLE_UIKIT__ || __IOS__ || __TVOS__ || __MACOS__
 					private bool _isDisposed;
 
 					[SuppressMessage(
@@ -564,7 +564,7 @@ global::Uno.UI.DataBinding.ManagedWeakReference IWeakReferenceProvider.WeakRefer
 							// a native representation via the IntPtr ctor, particularly on iOS.
 							__Store?.Dispose();
 
-#if __IOS__
+#if __APPLE_UIKIT__ || __IOS__ || __TVOS__
 							var subviews = Subviews;
 
 							if (subviews.Length > 0)
