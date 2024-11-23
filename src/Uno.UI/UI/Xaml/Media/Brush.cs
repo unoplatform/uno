@@ -18,11 +18,11 @@ namespace Microsoft.UI.Xaml.Media
 	[TypeConverter(typeof(BrushConverter))]
 	public partial class Brush : DependencyObject
 	{
-		private List<WeakEventHelper.GenericEventHandler>? _invalidateRenderHandlers;
+		private WeakEventHelper.WeakEventCollection? _invalidateRenderHandlers;
 
 		internal IDisposable RegisterInvalidateRender(Action handler)
 			=> WeakEventHelper.RegisterEvent(
-				_invalidateRenderHandlers ??= [],
+				_invalidateRenderHandlers ??= new(),
 				handler,
 				(h, s, e) =>
 					(h as Action)?.Invoke()
@@ -72,13 +72,7 @@ namespace Microsoft.UI.Xaml.Media
 
 		private protected void OnInvalidateRender()
 		{
-			if (_invalidateRenderHandlers is not null)
-			{
-				foreach (var action in _invalidateRenderHandlers)
-				{
-					action(this, null);
-				}
-			}
+			_invalidateRenderHandlers?.Invoke(this, null);
 
 #if __SKIA__
 			SynchronizeCompositionBrush();
