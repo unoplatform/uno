@@ -33,6 +33,8 @@ namespace Uno.UI.Xaml.Controls
 		private static Paint? _fillPaint;
 		private Action? _backgroundChanged;
 		private Action? _borderChanged;
+		private IDisposable? _backgroundBrushChangedSubscription;
+		private IDisposable? _borderBrushChangedSubscription;
 
 		private static ImageSource? GetBackgroundImageSource(BorderLayerState? state)
 			=> (state?.Background as ImageBrush)?.ImageSource;
