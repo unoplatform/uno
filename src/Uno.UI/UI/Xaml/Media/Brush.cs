@@ -7,10 +7,10 @@ using Microsoft.UI.Composition;
 using Uno.Disposables;
 using Uno.UI.Helpers;
 using Uno.UI.Xaml;
+using Windows.UI.Core;
 
 #if HAS_UNO_WINUI
 using Windows.UI;
-using Windows.UI.Core;
 #endif
 
 namespace Microsoft.UI.Xaml.Media
