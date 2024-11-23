@@ -28,6 +28,7 @@ namespace Microsoft.UI.Xaml.Controls
 		internal TextBox? Owner => _ownerRef?.Target as TextBox;
 
 		private Action? _foregroundChanged;
+		private IDisposable? _foregroundBrushChangedSubscription;
 		private bool _isDisposed;
 
 		public TextBoxView(TextBox owner)
