@@ -64,6 +64,7 @@
 		<SkiaSharpVersion>2.88.7</SkiaSharpVersion>
 		<!-- TODO: Uncomment when we're net8.0+ to have SamplesApp serve as a good test for SkiaSharp 3 support -->
 		<!-- <SkiaSharpVersion Condition="'$(IsTestProject)' == 'true' or '$(IsSampleProject)' == 'true'">3.0.0-preview.3.1</SkiaSharpVersion> -->
+		<HarfbuzzSharpVersion>7.3.0.1</HarfbuzzSharpVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -118,11 +119,11 @@
 		<PackageReference Update="SkiaSharp.NativeAssets.macos" Version="$(SkiaSharpVersion)" />
 		<PackageReference Update="SkiaSharp.NativeAssets.tvOS" Version="$(SkiaSharpVersion)" />
 		
-		<PackageReference Update="HarfBuzzSharp.NativeAssets.macOS" Version="7.3.0.1" />
-		<PackageReference Update="HarfBuzzSharp.NativeAssets.WebAssembly" Version="7.3.0.1" />
-		<PackageReference Update="HarfBuzzSharp.NativeAssets.Linux" Version="7.3.0.1" />
-		<PackageReference Update="harfbuzzsharp.nativeassets.ios" Version="7.3.0.1" />
-		<PackageReference Update="harfbuzzsharp.nativeassets.tvos" Version="7.3.0.1" />
+		<PackageReference Update="HarfBuzzSharp.NativeAssets.macOS" Version="$(HarfbuzzSharpVersion)" />
+		<PackageReference Update="HarfBuzzSharp.NativeAssets.WebAssembly" Version="$(HarfbuzzSharpVersion)" />
+		<PackageReference Update="HarfBuzzSharp.NativeAssets.Linux" Version="$(HarfbuzzSharpVersion)" />
+		<PackageReference Update="harfbuzzsharp.nativeassets.ios" Version="$(HarfbuzzSharpVersion)" />
+		<PackageReference Update="harfbuzzsharp.nativeassets.tvos" Version="$(HarfbuzzSharpVersion)" />
 
 		<PackageReference Condition=" '$(TargetFramework)' == '$(NetPrevious)' " Update="Microsoft.Win32.SystemEvents" Version="8.0.0" />
 		<PackageReference Condition=" '$(TargetFramework)' == '$(NetCurrent)' " Update="Microsoft.Win32.SystemEvents" Version="9.0.0" />
