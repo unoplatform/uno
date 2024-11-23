@@ -17,6 +17,9 @@
 		<WasmShellIncludeWindowsCompatibility>false</WasmShellIncludeWindowsCompatibility>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		
+		<!-- Required for net9 workloads -->
+		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+		
 		<!-- To build with AOT, uncomment these two lines -->
 		<!--<WasmShellEnableEmccProfiling>true</WasmShellEnableEmccProfiling>
 		<WasmShellMonoRuntimeExecutionMode>InterpreterAndAOT</WasmShellMonoRuntimeExecutionMode>-->
