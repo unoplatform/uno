@@ -18,7 +18,7 @@ public partial class RefreshContainer : ContentControl
 		//}
 
 #if !__ANDROID__ && !__IOS__
-		m_refreshInfoProviderAdapter = new ProgressRingRefreshInfoProviderAdapter(this);
+		m_refreshInfoProviderAdapter = new ScrollViewerIRefreshInfoProviderAdapter(PullDirection, null);
 #else
 		m_refreshInfoProviderAdapter = new NativeRefreshInfoProviderAdapter(this);
 #endif
@@ -26,8 +26,8 @@ public partial class RefreshContainer : ContentControl
 
 	private void SetDefaultRefreshVisualizer()
 	{
-#if !__ANDROID__ && !__APPLE_UIKIT__
-		Visualizer = new ProgressRingRefreshVisualizer();
+#if !__ANDROID__ && !__IOS__
+		Visualizer = new RefreshVisualizer();
 #else
 		Visualizer = new NativeRefreshVisualizer();
 #endif
