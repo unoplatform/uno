@@ -1,4 +1,4 @@
-﻿#if !__ANDROID__ && !__APPLE_UIKIT__
+﻿#if !__ANDROID__ && !__IOS__
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference ScrollViewerIRefreshInfoProviderDefaultAnimationHandler.cpp, commit 87ce7c0
