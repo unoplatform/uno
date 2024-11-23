@@ -21,6 +21,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private readonly WeakReference<TextBox> _textBox;
 
 		private Action _foregroundChanged;
+		private IDisposable _foregroundBrushChangedSubscription;
 
 		public TextBoxView(TextBox textBox)
 		{
