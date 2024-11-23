@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if HAS_UNO
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -231,3 +232,4 @@ public class Given_WeakEventHelper
 		public bool? Invoke() => _callback?.Invoke(_target);
 	}
 }
+#endif
