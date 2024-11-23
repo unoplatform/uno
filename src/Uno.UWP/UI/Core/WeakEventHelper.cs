@@ -36,9 +36,9 @@ namespace Windows.UI.Core
 		internal interface ITrimProvider
 		{
 			/// <summary>
-			/// Registers a callback to be called when GC triggerd
+			/// Registers a callback to be called when GC triggered
 			/// </summary>
-			/// <param name="callback">Function called with <paramref name="arrayPool"/> as the first parameter</param>
+			/// <param name="callback">Function called with <paramref name="target"/> as the first parameter</param>
 			/// <param name="target">instance to be provided when invoking <paramref name="callback"/></param>
 			void RegisterTrimCallback(Func<object, bool> callback, object target);
 		}
