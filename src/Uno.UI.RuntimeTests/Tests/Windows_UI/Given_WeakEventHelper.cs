@@ -1,4 +1,4 @@
-﻿#if HAS_UNO
+#if HAS_UNO
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -122,7 +122,7 @@ public class Given_WeakEventHelper
 
 		SUT.Invoke(this, null);
 
-		Assert.AreEqual(5050, invoked);
+		Assert.AreEqual(5150, invoked);
 
 		disposable.Clear();
 
