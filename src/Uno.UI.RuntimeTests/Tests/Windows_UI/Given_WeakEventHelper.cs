@@ -104,13 +104,13 @@ public class Given_WeakEventHelper
 		WeakEventHelper.WeakEventCollection SUT = new();
 
 		var invoked = 0;
-		IDisposable disposable = null;
+		List<IDisposable> disposable = new();
 
 		void Do()
 		{
 			Action action = () => invoked++;
 
-			disposable = WeakEventHelper.RegisterEvent(SUT, action, (s, e, a) => (s as Action).Invoke());
+			disposable.Add(WeakEventHelper.RegisterEvent(SUT, action, (s, e, a) => (s as Action).Invoke()));
 
 			SUT.Invoke(this, null);
 		}
@@ -120,17 +120,19 @@ public class Given_WeakEventHelper
 			Do();
 		}
 
-		GC.Collect(2);
-		GC.WaitForPendingFinalizers();
-
 		SUT.Invoke(this, null);
 
 		Assert.AreEqual(5050, invoked);
+
+		disposable.Clear();
+
+		GC.Collect(2);
+		GC.WaitForPendingFinalizers();
 
 		// Ensure that everything has been collected.
 		SUT.Invoke(this, null);
 
-		Assert.AreEqual(5050, invoked);
+		Assert.AreEqual(5150, invoked);
 	}
 
 	[TestMethod]
