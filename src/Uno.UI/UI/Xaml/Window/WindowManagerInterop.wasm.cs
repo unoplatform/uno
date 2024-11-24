@@ -15,6 +15,7 @@ using Microsoft.UI.Xaml;
 
 using System.Runtime.InteropServices.JavaScript;
 using Microsoft.UI.Xaml.Controls;
+using System.Xml.Linq;
 
 namespace Uno.UI.Xaml
 {
@@ -517,14 +518,8 @@ namespace Uno.UI.Xaml
 
 		internal static Rect GetBBox(IntPtr htmlId)
 		{
-			var parms = new WindowManagerGetBBoxParams
-			{
-				HtmlId = htmlId
-			};
-
-			var ret = (WindowManagerGetBBoxReturn)TSInteropMarshaller.InvokeJS("Uno:getBBoxNative", parms, typeof(WindowManagerGetBBoxReturn));
-
-			return new Rect(ret.X, ret.Y, ret.Width, ret.Height);
+			var ret = NativeMethods.GetBBox(htmlId);
+			return new Rect(ret[0], ret[1], ret[2], ret[3]);
 		}
 
 		[TSInteropMessage]
@@ -890,6 +885,9 @@ namespace Uno.UI.Xaml
 
 			[JSImport("globalThis.Uno.UI.WindowManager.current.setUnsetCssClasses")]
 			internal static partial void SetUnsetCssClasses(IntPtr htmlId, string[] cssClassesToSet, string[] cssClassesToUnset);
+
+			[JSImport("globalThis.Uno.UI.WindowManager.current.getBBox")]
+			internal static partial double[] GetBBox(IntPtr htmlId);
 		}
 	}
 }
