@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Animation;
@@ -162,6 +163,7 @@ internal partial class NavigationHistory
 
 	internal NavigationMode GetCurrentNavigationMode() => m_navigationMode;
 
+	[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "Types manipulated here have been marked earlier")]
 	internal void CommitNavigation()
 	{
 		int nCount = 0;

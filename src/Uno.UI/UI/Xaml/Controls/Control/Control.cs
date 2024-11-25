@@ -11,6 +11,8 @@ using Windows.Foundation;
 using Uno;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
+using System.Diagnostics.CodeAnalysis;
+
 #if __ANDROID__
 using View = Android.Views.View;
 using ViewGroup = Android.Views.ViewGroup;
@@ -284,6 +286,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 
+		[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Types manipulated here have been marked earlier")]
 		private void SubscribeToOverridenRoutedEvents()
 		{
 			// Overridden Events are registered from constructor to ensure they are
@@ -1095,7 +1098,9 @@ namespace Microsoft.UI.Xaml.Controls
 		private static readonly Type[] _manipInertiaArgsType = new[] { typeof(ManipulationInertiaStartingRoutedEventArgs) };
 		private static readonly Type[] _manipCompletedArgsType = new[] { typeof(ManipulationCompletedRoutedEventArgs) };
 
-		internal static RoutedEventFlag EvaluateImplementedControlRoutedEvents(Type type)
+		internal static RoutedEventFlag EvaluateImplementedControlRoutedEvents(
+			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
+			Type type)
 		{
 			var result = RoutedEventFlag.None;
 

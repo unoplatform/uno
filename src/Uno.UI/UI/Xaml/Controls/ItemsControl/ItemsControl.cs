@@ -17,6 +17,8 @@ using Uno.UI;
 using Uno.UI.DataBinding;
 using Uno.UI.Extensions;
 using System.Runtime.InteropServices.JavaScript;
+using System.Diagnostics.CodeAnalysis;
+
 
 
 #if __ANDROID__
@@ -651,6 +653,7 @@ namespace Microsoft.UI.Xaml.Controls
 			TryObserveCollectionViewSource(e.NewValue);
 		}
 
+		[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Types manipulated here have been marked earlier")]
 		private void TrySnapshotNonObservableSource(object source)
 		{
 			// For normal enumerables, that are not notifying (INCC) or observable (ObsCollection),

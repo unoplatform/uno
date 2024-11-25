@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using DirectUI;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media.Animation;
@@ -689,6 +690,7 @@ partial class Frame
 		//TraceFrameNavigatingInfo(WindowsGetStringRawBuffer(descriptor, null), (unsigned char)(navigationMode));
 	}
 
+	[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "normal flow of operations")]
 	private void RaiseNavigationFailed(string descriptor, Exception errorResult, out bool isCanceled)
 	{
 		if (descriptor is null)
