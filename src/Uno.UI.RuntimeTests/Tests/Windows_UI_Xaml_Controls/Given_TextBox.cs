@@ -28,6 +28,7 @@ using SamplesApp.UITests;
 using Windows.UI.Input.Preview.Injection;
 using Windows.Foundation;
 using System.Collections.Generic;
+using Uno.Extensions;
 
 
 #if WINAPPSDK
@@ -1121,6 +1122,44 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.Fail("Cannot find SCP inside TextBox");
 				return null;
 			}
+		}
+#endif
+
+#if HAS_UNO
+		[TestMethod]
+		[UnoWorkItem("https://github.com/unoplatform/uno/issues/18790")]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Clicked_In_Popup()
+		{
+			TextBox tb;
+			var btn = new Button
+			{
+				Flyout = new Flyout
+				{
+					Content = tb = new TextBox()
+				}
+			};
+
+			await UITestHelper.Load(btn);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			mouse.Press(btn.GetAbsoluteBoundsRect().GetCenter());
+			await UITestHelper.WaitForIdle();
+			mouse.Release();
+			await UITestHelper.WaitForIdle();
+
+			Assert.IsTrue(btn.Flyout.IsOpen);
+
+			mouse.Press(tb.GetAbsoluteBoundsRect().GetCenter());
+			await UITestHelper.WaitForIdle();
+			mouse.Release();
+			await UITestHelper.WaitForIdle();
+
+			Assert.AreEqual(tb, FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 		}
 #endif
 
