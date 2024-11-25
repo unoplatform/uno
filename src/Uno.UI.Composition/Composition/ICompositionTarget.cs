@@ -6,4 +6,6 @@ namespace Uno.UI.Composition;
 internal interface ICompositionTarget
 {
 	void TryRedirectForManipulation(Windows.UI.Input.PointerPoint pointerPoint, InteractionTracker tracker);
+
+	Windows.Graphics.Display.DisplayInformation DisplayInformation { get; }
 }
