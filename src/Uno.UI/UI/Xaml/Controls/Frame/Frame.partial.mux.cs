@@ -51,9 +51,10 @@ partial class Frame
 		base.OnApplyTemplate();
 
 #if HAS_UNO
+		// It is not possible to use the WinUI behavior with a NativeFramePresenter.
+		// We have two such presenters - on internal in Uno, another in Uno.Toolkit.
 		if (_useWinUIBehavior && this.TemplatedRoot?.GetType().Name?.Contains("NativeFramePresenter", StringComparison.Ordinal) == true)
 		{
-			// It is not possible to use the WinUI behavior with a NativeFramePresenter.
 			if (this.Log().IsEnabled(LogLevel.Error))
 			{
 				this.Log().LogError("WinUI Frame behavior is not compatible with NativeFramePresenter. Set the Frame.Style to '{StaticResource XamlDefaultFrame}' instead.");
