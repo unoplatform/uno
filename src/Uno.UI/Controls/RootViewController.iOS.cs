@@ -64,7 +64,7 @@ namespace Uno.UI.Controls
 			// iOS 17+ only
 			if (UIDevice.CurrentDevice.CheckSystemVersion(17, 0))
 			{
-				((IUITraitChangeObservable)this).RegisterForTraitChanges<UITraitUserInterfaceStyle>((env, traits) => SystemThemeHelper.RefreshSystemTheme());
+				((IUITraitChangeObservable)this).RegisterForTraitChanges((env, traits) => SystemThemeHelper.RefreshSystemTheme());
 			}
 		}
 
