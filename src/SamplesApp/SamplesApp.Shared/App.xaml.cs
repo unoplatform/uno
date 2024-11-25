@@ -159,8 +159,11 @@ namespace SamplesApp
 			}
 
 			var sw = Stopwatch.StartNew();
-#if WINAPPSDK && DEBUG
-			// this.DebugSettings.EnableFrameRateCounter = true;
+#if DEBUG
+			if (System.Diagnostics.Debugger.IsAttached)
+			{
+				// this.DebugSettings.EnableFrameRateCounter = true;
+			}
 #endif
 			AssertInitialWindowSize();
 
@@ -546,7 +549,6 @@ namespace SamplesApp
 #if HAS_UNO
 			Uno.UI.FeatureConfiguration.TextBox.UseOverlayOnSkia = false;
 			Uno.UI.FeatureConfiguration.ToolTip.UseToolTips = true;
-			Uno.UI.FeatureConfiguration.DependencyProperty.ValidatePropertyOwnerOnReadWrite = true;
 
 			Uno.UI.FeatureConfiguration.Font.DefaultTextFontFamily = "ms-appx:///Uno.Fonts.OpenSans/Fonts/OpenSans.ttf";
 #endif

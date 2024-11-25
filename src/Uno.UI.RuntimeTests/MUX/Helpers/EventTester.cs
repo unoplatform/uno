@@ -15,7 +15,6 @@ using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using UIExecutor = MUXControlsTestApp.Utilities.RunOnUIThread;
 using MUXControlsTestApp.Utilities;
-using Uno.UI;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Tests.Common
 {
@@ -93,11 +92,11 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Tests.Common
 #if !__WASM__
 			if (this.options.HasFlag(EventTesterOptions.CaptureWindowBefore))
 			{
-				this.CaptureWindowAsync("Before").Wait(this.DefaultTimeout);
+				this.CaptureWindowAsync("Before").Wait(this.Timeout);
 			}
 			if (this.options.HasFlag(EventTesterOptions.CaptureScreenBefore))
 			{
-				this.CaptureScreenAsync("Before").Wait(this.DefaultTimeout);
+				this.CaptureScreenAsync("Before").Wait(this.Timeout);
 			}
 #endif
 		}
@@ -154,14 +153,22 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Tests.Common
 			return new RoutedEventTester<TEventArgs>(sender, eventName, action);
 		}
 
-		public TimeSpan DefaultTimeout =
-#if HAS_UNO
-			FeatureConfiguration.DebugOptions.WaitIndefinitelyInEventTester
-#else
-			Debugger.IsAttached
-#endif
-				? TimeSpan.FromMilliseconds(-1)
-				: EventTesterConfig.Timeout;
+		public TimeSpan DefaultTimeout = EventTesterConfig.Timeout;
+
+		private TimeSpan Timeout
+		{
+			get
+			{
+				if (Debugger.IsAttached)
+				{
+					return TimeSpan.FromMilliseconds(-1); // Wait indefinitely if debugger is attached.
+				}
+				else
+				{
+					return this.DefaultTimeout;
+				}
+			}
+		}
 
 		private TSender Sender
 		{
@@ -251,7 +258,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Tests.Common
 
 		public async Task<bool> Wait()
 		{
-			return await this.Wait(this.DefaultTimeout);
+			return await this.Wait(this.Timeout);
 		}
 
 		public async Task<bool> Wait(TimeSpan timeout)
@@ -325,7 +332,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Tests.Common
 
 		public async Task<bool> WaitAsync()
 		{
-			return await this.WaitAsync(this.DefaultTimeout);
+			return await this.WaitAsync(this.Timeout);
 		}
 
 		public async Task<bool> WaitAsync(TimeSpan timeout)
@@ -434,11 +441,11 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Tests.Common
 #if !__WASM__
 					if (this.options.HasFlag(EventTesterOptions.CaptureWindowAfter))
 					{
-						this.CaptureWindowAsync("After").Wait(this.DefaultTimeout);
+						this.CaptureWindowAsync("After").Wait(this.Timeout);
 					}
 					if (this.options.HasFlag(EventTesterOptions.CaptureScreenAfter))
 					{
-						this.CaptureScreenAsync("After").Wait(this.DefaultTimeout);
+						this.CaptureScreenAsync("After").Wait(this.Timeout);
 					}
 #endif
 
