@@ -179,7 +179,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private static bool ScrollContentControl_SetFocusOnFlyoutLightDismissPopupByPointer(UIElement pScrollContentControl)
 		{
-#if __CROSSRUNTIME__
+#if __WASM__
 			if ((pScrollContentControl as ScrollViewer)?.DisableSetFocusOnPopupByPointer ?? false)
 			{
 				return false;

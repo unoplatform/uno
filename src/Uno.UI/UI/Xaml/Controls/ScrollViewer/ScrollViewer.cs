@@ -593,7 +593,7 @@ namespace Microsoft.UI.Xaml.Controls
 			);
 		#endregion
 
-#if __CROSSRUNTIME__
+#if __WASM__
 		/// <summary>
 		/// This is specifically added for ScrollViewers inside TextBoxes and specifically for WASM
 		/// On WASM, a click on a TextBox inside a popup shifts focus to the Popup instead of the TextBox
