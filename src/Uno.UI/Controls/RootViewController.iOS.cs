@@ -61,11 +61,13 @@ namespace Uno.UI.Controls
 				.ObserveWillResignActive((sender, args) =>
 					VisualTreeHelper.CloseLightDismissPopups(WinUICoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot.XamlRoot));
 
+#if NET9_0_OR_GREATER
 			// iOS 17+ only
 			if (UIDevice.CurrentDevice.CheckSystemVersion(17, 0))
 			{
 				((IUITraitChangeObservable)this).RegisterForTraitChanges((env, traits) => SystemThemeHelper.RefreshSystemTheme());
 			}
+#endif
 		}
 
 		// This will handle when the status bar is showed / hidden by the system on iPhones
