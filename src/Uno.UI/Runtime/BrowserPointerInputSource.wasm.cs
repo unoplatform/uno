@@ -15,6 +15,7 @@ using _PointerIdentifier = Windows.Devices.Input.PointerIdentifier; // internal 
 using _NativeMethods = __Windows.UI.Core.CoreWindow.NativeMethods;
 using System.Runtime.InteropServices;
 using Windows.System;
+using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Runtime;
 
@@ -163,7 +164,7 @@ internal partial class BrowserPointerInputSource : IUnoCorePointerInputSource
 					throw new ArgumentOutOfRangeException(nameof(@event), $"Unknown event ({@event}-{evt}).");
 			}
 
-			return (int)Microsoft.UI.Xaml.HtmlEventDispatchResult.Ok;
+			return (int)args.DispatchResult;
 		}
 		catch (Exception error)
 		{
@@ -172,7 +173,7 @@ internal partial class BrowserPointerInputSource : IUnoCorePointerInputSource
 				_log.Error($"Failed to dispatch native pointer event: {error}");
 			}
 
-			return (int)Microsoft.UI.Xaml.HtmlEventDispatchResult.Ok;
+			return (int)HtmlEventDispatchResult.Ok;
 		}
 	}
 

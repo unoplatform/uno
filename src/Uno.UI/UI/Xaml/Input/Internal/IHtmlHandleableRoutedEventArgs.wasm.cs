@@ -1,4 +1,4 @@
-﻿using Microsoft.UI.Xaml;
+﻿using Windows.UI.Core;
 
 namespace Uno.UI.Xaml.Input;
 

@@ -12,6 +12,7 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Core;
 
 
 namespace Microsoft.UI.Xaml

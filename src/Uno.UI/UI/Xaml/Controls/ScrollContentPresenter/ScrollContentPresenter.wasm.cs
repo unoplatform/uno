@@ -58,7 +58,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				// When pointer wheel is reversed, we scroll in managed code and prevent the browser to scroll (PreventDefault)
 				e.Handled = true;
-				((IHtmlHandleableRoutedEventArgs)e).HandledResult |= HtmlEventDispatchResult.PreventDefault;
+				e.PreventDefault();
 
 				((ScrollContentPresenter)sender).PointerWheelScroll(sender, e);
 			}
@@ -197,7 +197,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// Unlike KeyDown, we can't wait until OnScroll to prevent the scrolling. We have to cancel it right here.
 			if (args.Handled)
 			{
-				((IHtmlHandleableRoutedEventArgs)args).HandledResult |= HtmlEventDispatchResult.PreventDefault;
+				args.PreventDefault();
 			}
 		}
 

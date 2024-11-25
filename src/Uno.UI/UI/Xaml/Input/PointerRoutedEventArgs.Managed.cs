@@ -46,7 +46,11 @@ namespace Microsoft.UI.Xaml.Input
 			Pointer = GetPointer(pointerEventArgs);
 			KeyModifiers = pointerEventArgs.KeyModifiers;
 			OriginalSource = source;
+
+			InitPartial();
 		}
+
+		partial void InitPartial();
 
 		public PointerPoint GetCurrentPoint(UIElement relativeTo)
 		{

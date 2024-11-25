@@ -30,6 +30,7 @@ using Uno.UI;
 using Microsoft.UI.Xaml.Input;
 using Windows.System;
 using Uno.UI.Xaml.Input;
+using Windows.UI.Core;
 
 namespace Microsoft.UI.Xaml.Controls
 {
