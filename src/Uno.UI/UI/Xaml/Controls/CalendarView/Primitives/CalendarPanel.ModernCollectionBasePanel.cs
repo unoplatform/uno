@@ -432,7 +432,15 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				// then it will request GetContainerFromIndex and tries to focus it.
 				// So here we prepare the _effectiveViewport (which will most probably be re-updated by the ChangeView below),
 				// and then force a base_Measure()
-				_effectiveViewport.Y += newOffset - currentOffset;
+
+				if (newOffset >= sv.ScrollableHeight)
+				{
+					_effectiveViewport.Y = currentOffset;
+				}
+				else
+				{
+					_effectiveViewport.Y += newOffset - currentOffset;
+				}
 
 				sv.ChangeView(
 					horizontalOffset: null,
