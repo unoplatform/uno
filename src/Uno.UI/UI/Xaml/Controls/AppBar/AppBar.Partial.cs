@@ -769,8 +769,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			// If the AppBar is not live, then wait until it's loaded before
 			// responding to changes to opened state and firing our Opening/Opened events.
-			// Uno Specific: using IsLoaded instead of IsInLiveTree, which makes more sense because OnOpening (called below) -> SetupOverlayState expects OnApplyTemplate to have already been called
-			if (!IsLoaded)
+			if (!IsInLiveTree)
 			{
 				return;
 			}
