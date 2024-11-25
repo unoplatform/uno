@@ -675,12 +675,15 @@ CGFloat readNextCoord(const char *svg, int *position, long length)
 void uno_window_clip_svg(UNOWindow* window, const char* svg)
 {
     if (svg) {
+        CGFloat scale = window.screen.backingScaleFactor;
 #if DEBUG
-        NSLog(@"uno_window_clip_svg %@ %@ %s", window, window.contentView.layer.description, svg);
+        NSLog(@"uno_window_clip_svg %@ %@ %s scale: %g", window, window.contentView.layer.description, svg, scale);
 #endif
         NSArray<__kindof NSView *> *subviews = window.contentViewController.view.subviews;
         for (int i = 0; i < subviews.count; i++) {
             NSView* view = subviews[i];
+            CGFloat vx = view.frame.origin.x;
+            CGFloat vy = view.frame.origin.y;
 #if DEBUG
             NSLog(@"uno_window_clip_svg subview %d %@ layer %@ mask %@", i, view, view.layer, view.layer.mask);
 #endif
@@ -700,8 +703,9 @@ void uno_window_clip_svg(UNOWindow* window, const char* svg)
 #if DEBUG_PARSER
                         NSLog(@"uno_window_clip_svg parsing CGPathMoveToPoint %g %g - position %d", x, y, i);
 #endif
-                        x -= view.frame.origin.x;
-                        y -= view.frame.origin.y;
+                        NSLog(@"uno_window_clip_svg %d M %g (%g) %g (%g)", i, x, (x - vx) / scale, y, (y - vy) / scale);
+                        x = (x / scale - vx);
+                        y = (y / scale - vy);
                         CGPathMoveToPoint(path, nil, x, y);
                         break;
                     case 'L':
@@ -713,8 +717,8 @@ void uno_window_clip_svg(UNOWindow* window, const char* svg)
 #if DEBUG_PARSER
                         NSLog(@"uno_window_clip_svg parsing CGPathAddLineToPoint %g %g - position %d", x, y, i);
 #endif
-                        x -= view.frame.origin.x;
-                        y -= view.frame.origin.y;
+                        x = (x / scale - vx);
+                        y = (y / scale - vy);
                         CGPathAddLineToPoint(path, nil, x, y);
                         break;
                     case 'Z':
