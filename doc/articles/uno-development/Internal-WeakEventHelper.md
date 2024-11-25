@@ -19,7 +19,8 @@ return disposable.
 
 If the provided handler is collected, the registration will
 be collected as well. The returned disposable is not tracked, which means that it will
-not remove the registration when collected.
+not remove the registration when collected, unless the provided handler is a lambda. In
+this case, the lambda's lifetime is tied to the returned disposable.
 
 The WeakEventCollection automatically manages its internal registration list using GC events.
 
