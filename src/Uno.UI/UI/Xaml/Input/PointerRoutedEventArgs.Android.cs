@@ -45,8 +45,10 @@ namespace Microsoft.UI.Xaml.Input
 		// then _lastNativeEvent.lastArgs and LastPointerEvent will diverge.
 		private static (MotionEvent nativeEvent, PointerRoutedEventArgs lastArgs)? _lastNativeEvent;
 
-		private readonly MotionEvent _nativeEvent;
 		private readonly int _pointerIndex;
+		private readonly ulong _timestamp;
+		private readonly float _x;
+		private readonly float _y;
 		private readonly UIElement _receiver;
 		private readonly PointerPointProperties _properties;
 
@@ -54,9 +56,14 @@ namespace Microsoft.UI.Xaml.Input
 
 		internal PointerRoutedEventArgs(MotionEvent nativeEvent, int pointerIndex, UIElement originalSource, UIElement receiver) : this()
 		{
-			_nativeEvent = nativeEvent;
 			_pointerIndex = pointerIndex;
 			_receiver = receiver;
+
+			// NOTE: do not keep a reference to nativeEvent, which will be reused by android's native event bubbling and will be mutated as it
+			// goes up through the visual tree. Instead, get whatever values you need here and keep them in fields.
+			_timestamp = ToTimeStamp(nativeEvent.EventTime);
+			_x = nativeEvent.GetX(pointerIndex);
+			_y = nativeEvent.GetY(pointerIndex);
 
 			// Here we assume that usually pointerId is 'PointerIndexShift' bits long (8 bits / 255 ids),
 			// and that usually the deviceId is [0, something_not_too_big_hopefully_less_than_0x00ffffff].
@@ -73,7 +80,7 @@ namespace Microsoft.UI.Xaml.Input
 			var isInContact = IsInContact(nativeEvent, basePointerType, nativePointerAction, nativePointerButtons);
 			var keys = nativeEvent.MetaState.ToVirtualKeyModifiers();
 
-			FrameId = (uint)_nativeEvent.EventTime;
+			FrameId = (uint)nativeEvent.EventTime;
 			Pointer = new Pointer(pointerId, basePointerType, isInContact, isInRange: true);
 			KeyModifiers = keys;
 			OriginalSource = originalSource;
@@ -101,38 +108,34 @@ namespace Microsoft.UI.Xaml.Input
 				};
 			}
 
-			_properties = GetProperties(nativePointerType, nativePointerAction, nativePointerButtons); // Last: we need the Pointer property to be set!
+			_properties = GetProperties(nativeEvent, nativePointerType, nativePointerAction, nativePointerButtons); // Last: we need the Pointer property to be set!
 		}
 
 		public PointerPoint GetCurrentPoint(UIElement relativeTo)
 		{
-			var timestamp = ToTimeStamp(_nativeEvent.EventTime);
 			var device = global::Windows.Devices.Input.PointerDevice.For((global::Windows.Devices.Input.PointerDeviceType)Pointer.PointerDeviceType);
 			var (rawPosition, position) = GetPositions(relativeTo);
 
-			return new PointerPoint(FrameId, timestamp, device, Pointer.PointerId, rawPosition, position, Pointer.IsInContact, _properties);
+			return new PointerPoint(FrameId, _timestamp, device, Pointer.PointerId, rawPosition, position, Pointer.IsInContact, _properties);
 		}
 
 		private (Point raw, Point relative) GetPositions(UIElement relativeTo)
 		{
-			var phyX = _nativeEvent.GetX(_pointerIndex);
-			var phyY = _nativeEvent.GetY(_pointerIndex);
-
 			Point raw, relative;
 			if (relativeTo == null) // Relative to the window
 			{
 				var windowToReceiver = new int[2];
 				_receiver.GetLocationInWindow(windowToReceiver);
 
-				relative = new Point(phyX + windowToReceiver[0], phyY + windowToReceiver[1]).PhysicalToLogicalPixels();
+				relative = new Point(_x + windowToReceiver[0], _y + windowToReceiver[1]).PhysicalToLogicalPixels();
 			}
 			else if (relativeTo == _receiver) // Fast path
 			{
-				relative = new Point(phyX, phyY).PhysicalToLogicalPixels();
+				relative = new Point(_x, _y).PhysicalToLogicalPixels();
 			}
 			else
 			{
-				var posRelToReceiver = new Point(phyX, phyY).PhysicalToLogicalPixels();
+				var posRelToReceiver = new Point(_x, _y).PhysicalToLogicalPixels();
 				var posRelToTarget = UIElement.GetTransform(from: _receiver, to: relativeTo).Transform(posRelToReceiver);
 
 				relative = posRelToTarget;
@@ -148,13 +151,13 @@ namespace Microsoft.UI.Xaml.Input
 				var screenToReceiver = new int[2];
 				_receiver.GetLocationOnScreen(screenToReceiver);
 
-				raw = new Point(phyX + screenToReceiver[0], phyY + screenToReceiver[1]).PhysicalToLogicalPixels();
+				raw = new Point(_x + screenToReceiver[0], _y + screenToReceiver[1]).PhysicalToLogicalPixels();
 			}
 
 			return (raw, relative);
 		}
 
-		private PointerPointProperties GetProperties(MotionEventToolType type, MotionEventActions action, MotionEventButtonState buttons)
+		private PointerPointProperties GetProperties(MotionEvent nativeEvent, MotionEventToolType type, MotionEventActions action, MotionEventButtonState buttons)
 		{
 			var props = new PointerPointProperties
 			{
@@ -193,16 +196,16 @@ namespace Microsoft.UI.Xaml.Input
 					//		 In that case we will still receive moves and up with the "StylusWithBarrel***" actions.
 					props.IsBarrelButtonPressed = buttons.HasFlag(MotionEventButtonState.StylusPrimary);
 					props.IsRightButtonPressed = Pointer.IsInContact;
-					props.Pressure = Math.Min(1f, _nativeEvent.GetPressure(_pointerIndex)); // Might exceed 1.0 on Android
+					props.Pressure = Math.Min(1f, nativeEvent.GetPressure(_pointerIndex)); // Might exceed 1.0 on Android
 					break;
 				case MotionEventToolType.Stylus:
 					props.IsBarrelButtonPressed = buttons.HasFlag(MotionEventButtonState.StylusPrimary);
 					props.IsLeftButtonPressed = Pointer.IsInContact;
-					props.Pressure = Math.Min(1f, _nativeEvent.GetPressure(_pointerIndex)); // Might exceed 1.0 on Android
+					props.Pressure = Math.Min(1f, nativeEvent.GetPressure(_pointerIndex)); // Might exceed 1.0 on Android
 					break;
 				case MotionEventToolType.Eraser:
 					props.IsEraser = true;
-					props.Pressure = Math.Min(1f, _nativeEvent.GetPressure(_pointerIndex)); // Might exceed 1.0 on Android
+					props.Pressure = Math.Min(1f, nativeEvent.GetPressure(_pointerIndex)); // Might exceed 1.0 on Android
 					break;
 
 				default:
@@ -210,7 +213,7 @@ namespace Microsoft.UI.Xaml.Input
 			}
 
 			if (Android.OS.Build.VERSION.SdkInt >= BuildVersionCodes.M // ActionButton was introduced with API 23 (https://developer.android.com/reference/android/view/MotionEvent.html#getActionButton())
-				&& updates.TryGetValue(_nativeEvent.ActionButton, out var update))
+				&& updates.TryGetValue(nativeEvent.ActionButton, out var update))
 			{
 				props.PointerUpdateKind = update;
 			}
