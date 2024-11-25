@@ -17,6 +17,7 @@ namespace Microsoft.UI.Composition
 	{
 		private SKSurface? _surface;
 		private DisplayInformation? _displayInformation;
+		private float _scale = 1.0f;
 
 		SKSurface? ISkiaSurface.Surface { get => _surface; }
 
@@ -39,17 +40,26 @@ namespace Microsoft.UI.Composition
 
 				if (_displayInformation is null)
 				{
-					_displayInformation = DisplayInformation.GetForCurrentViewSafe();
+					if (SourceVisual?.CompositionTarget is ICompositionTarget target
+						&& target.DisplayInformation is DisplayInformation displayInfo)
+					{
+						_displayInformation = displayInfo;
+					}
+					else
+					{
+						_displayInformation = DisplayInformation.GetForCurrentViewSafe();
+					}
+
 					_displayInformation.DpiChanged += DpiChanged;
+					_scale = (float)_displayInformation.RawPixelsPerViewPixel;
 				}
 
-				var scale = _displayInformation.LogicalDpi / DisplayInformation.BaseDpi;
-				size *= scale;
+				size *= _scale;
 
 				var info = new SKImageInfo((int)size.X, (int)size.Y, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
 				_surface = SKSurface.Create(info);
 				canvas = _surface.Canvas;
-				canvas.Scale(scale, scale);
+				canvas.Scale(_scale, _scale);
 			}
 
 			canvas ??= _surface.Canvas;
@@ -67,6 +77,8 @@ namespace Microsoft.UI.Composition
 
 		private void DpiChanged(DisplayInformation sender, object args)
 		{
+			_scale = (float)sender.RawPixelsPerViewPixel;
+
 			if (_surface is not null)
 			{
 				((ISkiaSurface)this).UpdateSurface(true);
@@ -103,7 +115,33 @@ namespace Microsoft.UI.Composition
 			}
 		}
 
-		partial void OnSourceVisualChangedPartial(Visual? sourceVisual) => ((ISkiaSurface)this).UpdateSurface(SourceSize == default && sourceVisual?.Size != default);
+		partial void OnSourceVisualChangedPartial(Visual? sourceVisual)
+		{
+			bool needsRecreation = false;
+
+			if (sourceVisual?.CompositionTarget is ICompositionTarget target
+				&& target.DisplayInformation is DisplayInformation displayInfo
+				&& displayInfo != _displayInformation)
+			{
+				if (_displayInformation is not null)
+				{
+					_displayInformation.DpiChanged -= DpiChanged;
+				}
+
+				_displayInformation = displayInfo;
+				_displayInformation.DpiChanged += DpiChanged;
+
+				var scale = (float)_displayInformation.RawPixelsPerViewPixel;
+				if (scale != _scale)
+				{
+					_scale = scale;
+					needsRecreation = true;
+				}
+			}
+
+			((ISkiaSurface)this).UpdateSurface(needsRecreation || (SourceSize == default && sourceVisual?.Size != default));
+		}
+
 		partial void OnSourceOffsetChangedPartial(Vector2 offset) => ((ISkiaSurface)this).UpdateSurface();
 		partial void OnSourceSizeChangedPartial(Vector2 size) => ((ISkiaSurface)this).UpdateSurface(true);
 	}
