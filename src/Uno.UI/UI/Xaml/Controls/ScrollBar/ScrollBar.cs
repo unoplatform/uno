@@ -572,6 +572,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				if (!handled)
 				{
 					pArgs.Handled = true;
+#if __WASM__
+					pArgs.PreventDefault();
+#endif
+
 					spPointer = pArgs.Pointer;
 					var captured = CapturePointer(spPointer);
 				}

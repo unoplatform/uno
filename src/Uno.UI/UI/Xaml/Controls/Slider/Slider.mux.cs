@@ -399,6 +399,9 @@ public partial class Slider
 			var pointerDeviceType = pointerPoint.PointerDevice.PointerDeviceType;
 
 			args.Handled = true;
+#if __WASM__
+			args.PreventDefault();
+#endif
 
 			var mode = AutomaticToolTipInputMode.None;
 			if (pointerDeviceType == PointerDeviceType.Touch)

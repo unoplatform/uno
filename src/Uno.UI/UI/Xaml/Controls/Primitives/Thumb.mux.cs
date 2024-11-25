@@ -267,6 +267,9 @@ public sealed partial class Thumb
 				}
 
 				args.Handled = true;
+#if __WASM__
+				args.PreventDefault();
+#endif
 
 				var pointer = args.Pointer;
 				var pointerCaptured = CapturePointer(pointer, /* UNO only */ options: PointerCaptureOptions.PreventOSSteal);
