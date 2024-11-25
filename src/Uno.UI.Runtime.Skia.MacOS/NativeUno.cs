@@ -4,6 +4,7 @@ using System.Runtime.InteropServices.Marshalling;
 using Windows.Devices.Input;
 using Windows.System;
 using Windows.UI.Core;
+using Microsoft.Web.WebView2.Core;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
 
@@ -165,6 +166,10 @@ internal static partial class NativeUno
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
 	[return: MarshalAs(UnmanagedType.I1)]
 	internal static partial bool uno_application_query_url_support(string url);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	[return: MarshalAs(UnmanagedType.I1)]
+	internal static partial bool uno_application_is_bundled();
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static unsafe partial void uno_set_drawing_callbacks(
@@ -348,4 +353,66 @@ internal static partial class NativeUno
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_native_measure(nint element, double childWidth, double childHeight, double availableWidth, double availableHeight, out double width, out double height);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static unsafe partial nint uno_set_execute_callback(delegate* unmanaged[Cdecl]<IntPtr, sbyte*, sbyte*, void> callback);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static unsafe partial nint uno_set_invoke_callback(delegate* unmanaged[Cdecl]<IntPtr, sbyte*, sbyte*, void> callback);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static unsafe partial void uno_set_webview_navigation_callbacks(
+		delegate* unmanaged[Cdecl]<IntPtr, sbyte*, int> starting,
+		delegate* unmanaged[Cdecl]<IntPtr, sbyte*, void> finishing,
+		delegate* unmanaged[Cdecl]<IntPtr, long, void> notification,
+		delegate* unmanaged[Cdecl]<IntPtr, sbyte*, void> receiveWebMessage,
+		delegate* unmanaged[Cdecl]<IntPtr, sbyte*, CoreWebView2WebErrorStatus, void> failing
+		);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static unsafe partial void uno_set_webview_unsupported_scheme_identified_callback(delegate* unmanaged[Cdecl]<IntPtr, sbyte*, int> callback);
+
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial nint uno_webview_create(nint window, string ok, string cancel);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_webview_dispose(nint webview);
+
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial string uno_webview_get_title(nint webview);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	[return: MarshalAs(UnmanagedType.I1)]
+	internal static partial bool uno_webview_can_go_back(nint webview);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	[return: MarshalAs(UnmanagedType.I1)]
+	internal static partial bool uno_webview_can_go_forward(nint webview);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_webview_go_back(nint webview);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_webview_go_forward(nint webview);
+
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial void uno_webview_navigate(nint webview, string? url, string? headers);
+
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial void uno_webview_load_html(nint webview, string? html);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_webview_reload(nint webview);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_webview_stop(nint webview);
+
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial void uno_webview_execute_script(nint webview, nint handle, string javascript);
+
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial void uno_webview_invoke_script(nint webview, nint handle, string javascript);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_webview_set_scrolling_enabled(nint webview, [MarshalAs(UnmanagedType.I1)] bool enabled);
 }

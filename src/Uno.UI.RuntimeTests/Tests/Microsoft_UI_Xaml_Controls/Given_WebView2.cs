@@ -25,9 +25,11 @@ using _View = UIKit.UIView;
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 
-#if !HAS_UNO || __ANDROID__ || __IOS__
+#if !HAS_UNO || __ANDROID__ || __IOS__ || __SKIA__
 [TestClass]
 [RunsOnUIThread]
+// only SkiaMacOS right now
+[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaGtk | RuntimeTestPlatform.SkiaWpf | RuntimeTestPlatform.SkiaX11 | RuntimeTestPlatform.SkiaBrowser | RuntimeTestPlatform.SkiaIslands)]
 public class Given_WebView2
 {
 	[TestMethod]
