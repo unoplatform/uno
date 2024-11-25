@@ -191,7 +191,6 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls
 			))
 			;
 			
-			
 			this
 			.GenericApply(((c11) => 
 			{

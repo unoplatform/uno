@@ -482,10 +482,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="$(MSBuildThisFileDirectory)Resources\XuidGeneratorError.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Toolkit\ElevatedView_BorderThickness.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -5858,9 +5854,6 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Playground\Playground.xaml.cs">
       <DependentUpon>Playground.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Resources\XuidGeneratorError.xaml.cs">
-      <DependentUpon>XuidGeneratorError.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Toolkit\ElevatedViewTests.xaml.cs">
       <DependentUpon>ElevatedViewTests.xaml</DependentUpon>

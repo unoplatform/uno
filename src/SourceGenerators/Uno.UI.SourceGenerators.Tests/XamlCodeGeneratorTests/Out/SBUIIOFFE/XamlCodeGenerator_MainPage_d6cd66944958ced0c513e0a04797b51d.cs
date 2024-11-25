@@ -89,7 +89,6 @@ namespace TestRepro
 			))
 			;
 			
-			
 			this
 			.GenericApply(__that, __nameScope, ((c2, __that, __nameScope) => 
 			{
