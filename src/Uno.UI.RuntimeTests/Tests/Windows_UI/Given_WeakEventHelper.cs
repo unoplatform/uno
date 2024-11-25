@@ -95,7 +95,7 @@ public class Given_WeakEventHelper
 
 		SUT.Invoke(this, null);
 
-		Assert.AreEqual(1, invoked);
+		Assert.AreEqual(2, invoked);
 	}
 
 	[TestMethod]

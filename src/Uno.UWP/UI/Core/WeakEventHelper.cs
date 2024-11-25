@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Text;
 using Uno.Buffers;
 using Uno.Disposables;
@@ -94,9 +95,27 @@ namespace Windows.UI.Core
 			{
 				lock (_lock)
 				{
-					for (int i = 0; i < _handlers.Count; i++)
+					if (_handlers.Count == 1)
 					{
-						_handlers[i].Handler(sender, args);
+						// Fast path for single registrations
+						var handler = _handlers[0];
+						handler.Handler(sender, args);
+					}
+					else if (_handlers.Count > 1)
+					{
+						// Clone the array to account for reentrancy.
+						var handlers = ArrayPool<WeakHandler>.Shared.Rent(_handlers.Count);
+						_handlers.CopyTo(handlers, 0);
+
+						// Use the original count, the rented array may be larger.
+						var count = _handlers.Count;
+
+						for (int i = 0; i < count; i++)
+						{
+							handlers[i].Handler(sender, args);
+						}
+
+						ArrayPool<WeakHandler>.Shared.Return(handlers);
 					}
 				}
 			}
@@ -105,8 +124,8 @@ namespace Windows.UI.Core
 			/// Do not use directly, use <see cref="RegisterEvent"/> instead.
 			/// Registers an handler to be called when the event is raised. 
 			/// </summary>
-			/// <returns>A disposable that can be used to unregister the provided handler. The disposable instance is not tracked by the GC and will not collect the registration.</returns>
-			internal IDisposable Register(WeakReference target, GenericEventHandler handler)
+			/// <returns>A disposable that can be used to unregister the provided handler.</returns>
+			internal IDisposable Register(WeakReference target, GenericEventHandler handler, Delegate actualTarget)
 			{
 				lock (_lock)
 				{
@@ -122,6 +141,13 @@ namespace Windows.UI.Core
 
 					void RemoveRegistration()
 					{
+						// Force a capture of the delegate by setting it to null.
+						// This will ensure that keeping the IDisposable alive will
+						// keep the registered original delegate alive. This does ensure
+						// that if the original delegate was provided as a lambda, the
+						// instance will stay active as long as the disposable instance.
+						actualTarget = null!;
+
 						lock (_lock)
 						{
 							_handlers.Remove(key);
@@ -154,8 +180,6 @@ namespace Windows.UI.Core
 		/// 
 		/// If either the <paramref name="list"/> or the <paramref name="handler"/> are 
 		/// collected, raising the event will produce nothing.
-		/// 
-		/// The returned disposable instance itself is not tracked by the GC and will not collect the registration.
 		/// </remarks>
 		internal static IDisposable RegisterEvent(WeakEventCollection list, Delegate handler, EventRaiseHandler raise)
 		{
@@ -178,7 +202,7 @@ namespace Windows.UI.Core
 				}
 			};
 
-			return list.Register(wr, genericHandler);
+			return list.Register(wr, genericHandler, handler);
 		}
 	}
 }
