@@ -18,4 +18,4 @@ Considering that your project is called `MyProject`, and you want to add the `de
 
 Your new platform project is now ready to be compiled.
 
-You can repeat a similar process for `net8.0-ios`, `net8.0-android`, `net8.0-maccatalyst`, `net8.0-browserwasm` and `net8.0-windows10.0.19041`.
+You can repeat a similar process for `net8.0-ios`, `net8.0-android`, `net8.0-maccatalyst`, `net8.0-tvos`, `net8.0-browserwasm` and `net8.0-windows10.0.19041`.
