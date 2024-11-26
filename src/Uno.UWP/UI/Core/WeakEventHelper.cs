@@ -112,7 +112,13 @@ namespace Windows.UI.Core
 
 						for (int i = 0; i < count; i++)
 						{
-							handlers[i].Handler(sender, args);
+							ref var handler = ref handlers[i];
+
+							handler.Handler(sender, args);
+
+							// Clear the handle immediately, so we don't
+							// call ArrayPool.Return with clear.
+							handler = null;
 						}
 
 						ArrayPool<WeakHandler>.Shared.Return(handlers);
