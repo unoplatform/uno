@@ -13,7 +13,7 @@ Badge notifications are supported on iOS, Mac Catalyst, tvOS, and macOS.
 
 macOS supports numeric and textual badges (as opposed to UWP) but does not support glyphs.
 
-iOS, Mac Catlyst, and tvOS allow for numeric badges only. It is also necessary to request user permission prior to executing the badge notification for the first time (this request can be executed when appropriate for your application):
+iOS, Mac Catalyst, and tvOS allow for numeric badges only. It is also necessary to request user permission prior to executing the badge notification for the first time (this request can be executed when appropriate for your application):
 
 ```csharp
 #if __IOS__ || __TVOS__
