@@ -121,7 +121,7 @@ public partial class ConditionalTestAttribute : TestMethodAttribute
 
 	private static bool IsIOS()
 	{
-#if __IOS__
+#if __APPLE_UIKIT__
 		return true;
 #else
 		return false;

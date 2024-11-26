@@ -14,7 +14,7 @@ using System.IO;
 using Windows.Graphics.Display;
 using Private.Infrastructure;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
 #endif
 
@@ -90,7 +90,7 @@ namespace UITests.Windows_UI_Xaml_Media_Imaging
 			var file = await folder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
 			using (var output = await file.OpenAsync(FileAccessMode.ReadWrite))
 			{
-#if WINAPPSDK || __SKIA__ || __ANDROID__ || __IOS__ || __MACOS__
+#if WINAPPSDK || __SKIA__ || __ANDROID__ || __APPLE_UIKIT__ || __MACOS__
 				var pixels = await renderer.GetPixelsAsync();
 				var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, output);
 				encoder.SetPixelData(BitmapPixelFormat.Bgra8

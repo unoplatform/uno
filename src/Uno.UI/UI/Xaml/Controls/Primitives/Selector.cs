@@ -194,7 +194,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			if (newIndex != -1 && IsInLiveTree)
 			{
 				if (this is ListViewBase lvb
-#if __IOS__
+#if __APPLE_UIKIT__
 					// workaround to prevent scrolling when it is not ready
 					// without this, the ios TabView could render blank if the selection happens too early.
 					&& ContainerFromIndex(newIndex) is FrameworkElement { IsLoaded: true }

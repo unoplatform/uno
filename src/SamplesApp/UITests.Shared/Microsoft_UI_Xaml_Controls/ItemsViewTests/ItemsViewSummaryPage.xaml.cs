@@ -18,7 +18,7 @@ using Windows.Foundation;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.ItemsViewTests;
 
-#if DEBUG || !__IOS__ // Samples times out on iOS.
+#if DEBUG || !__APPLE_UIKIT__ // Samples times out on iOS.
 [Sample("ItemsView", IgnoreInSnapshotTests = true)]
 #endif
 public sealed partial class ItemsViewSummaryPage : Page

@@ -1,4 +1,4 @@
-﻿#if __ANDROID__ || __IOS__
+﻿#if __ANDROID__ || __APPLE_UIKIT__
 // On droid and ios, ContentPresenter bypass can be potentially enabled (based on if a base control template is present, or not).
 // As such, ContentPresenter may be omitted, and altering its descendants templated-parent too.
 #define NEED_CUSTOM_ADJUSTMENTS_FOR_CP_BYPASS

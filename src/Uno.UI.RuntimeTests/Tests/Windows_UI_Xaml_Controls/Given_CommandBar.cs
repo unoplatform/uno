@@ -13,7 +13,7 @@ using static Private.Infrastructure.TestServices;
 
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.CommandBarPages;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using Uno.UI.Controls;
 using Uno.UI.Helpers.WinUI;
 using UIKit;
@@ -89,7 +89,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __IOS__
+#if __APPLE_UIKIT__
 		[Ignore("VerticalAlignment asserts fail. Might be because of different timing.")]
 #endif
 		public async Task When_Expanded_Then_Collapsed_MoreButton_VerticalAlignment()
@@ -135,7 +135,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(moreButton.VerticalAlignment, VerticalAlignment.Top);
 		}
 
-#if __IOS__
+#if __APPLE_UIKIT__
 		[TestMethod]
 		[RequiresFullWindow]
 
@@ -180,7 +180,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 	}
 
-#if __IOS__
+#if __APPLE_UIKIT__
 	public static class NavigationBarTestHelper
 	{
 		public static UINavigationBar GetNativeNavBar(this CommandBar navBar) => navBar

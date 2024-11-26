@@ -30,7 +30,7 @@ using Uno.UI.Xaml.Core;
 #if __ANDROID__
 using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using UIKit;
 using View = UIKit.UIView;
 using Color = UIKit.UIColor;
@@ -262,19 +262,19 @@ namespace Microsoft.UI.Xaml.Controls
 		#endregion
 
 		#region BringIntoViewOnFocusChange (Attached DP)
-#if __IOS__
+#if __APPLE_UIKIT__
 		[global::Uno.NotImplemented]
 #endif
 		public static bool GetBringIntoViewOnFocusChange(global::Microsoft.UI.Xaml.DependencyObject element)
 			=> (bool)element.GetValue(BringIntoViewOnFocusChangeProperty);
 
-#if __IOS__
+#if __APPLE_UIKIT__
 		[global::Uno.NotImplemented]
 #endif
 		public static void SetBringIntoViewOnFocusChange(global::Microsoft.UI.Xaml.DependencyObject element, bool bringIntoViewOnFocusChange)
 			=> element.SetValue(BringIntoViewOnFocusChangeProperty, bringIntoViewOnFocusChange);
 
-#if __IOS__
+#if __APPLE_UIKIT__
 		[global::Uno.NotImplemented]
 #endif
 		public bool BringIntoViewOnFocusChange
@@ -984,7 +984,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_horizontalScrollbar = null;
 			_isHorizontalScrollBarMaterialized = false;
 
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 			if (scpTemplatePart is ScrollContentPresenter scp && scp.Native is null)
 			{
 				// For Android and iOS, ensure that the ScrollContentPresenter contains a native SCP,
@@ -1272,7 +1272,7 @@ namespace Microsoft.UI.Xaml.Controls
 				Update(isIntermediate);
 
 				if (!isIntermediate
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 					&& (_presenter as ListViewBaseScrollContentPresenter)?.NativePanel?.UseNativeSnapping != true
 #endif
 				)
@@ -1646,7 +1646,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 		#endregion
 
-#if !__ANDROID__ && !__IOS__ // ScrollContentPresenter.[Horizontal|Vertical]Offset not implemented on Android and iOS
+#if !__ANDROID__ && !__APPLE_UIKIT__ // ScrollContentPresenter.[Horizontal|Vertical]Offset not implemented on Android and iOS
 		protected override void OnKeyDown(KeyRoutedEventArgs args)
 		{
 			base.OnKeyDown(args);

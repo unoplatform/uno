@@ -6,7 +6,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using CoreGraphics;
 using _View = UIKit.UIView;
 #elif __MACOS__
@@ -77,7 +77,7 @@ namespace Uno.UI.Toolkit
 			_border = GetTemplateChild("PART_Border") as Border;
 			_shadowHost = GetTemplateChild("PART_ShadowHost") as Panel;
 
-#if __IOS__ || __MACOS__
+#if __APPLE_UIKIT__ || __MACOS__
 			if (_border != null)
 			{
 				_border.BorderRenderer.BoundsPathUpdated += (s, e) => UpdateElevation();
@@ -123,7 +123,7 @@ namespace Uno.UI.Toolkit
 			"Background",
 			typeof(Brush),
 			typeof(ElevatedView),
-#if __IOS__ || __MACOS__
+#if __APPLE_UIKIT__ || __MACOS__
 			new FrameworkPropertyMetadata(default(Brush))
 #else
 			new FrameworkPropertyMetadata(default(Brush), OnChanged)
@@ -136,7 +136,7 @@ namespace Uno.UI.Toolkit
 			set => SetValue(BackgroundProperty, value);
 		}
 
-#if !__IOS__ && !__MACOS__
+#if !__APPLE_UIKIT__ && !__MACOS__
 		private protected override void OnCornerRadiusChanged(DependencyPropertyChangedEventArgs args) => OnChanged(this, args);
 #endif
 #endif
@@ -163,7 +163,7 @@ namespace Uno.UI.Toolkit
 				// and not setting CornerRadius properly results in wrong rendering.
 				// Note that the brush will not be used if we pass zero thickness, so we pass null instead of wasting time reading the dependency property.
 				BorderLayerRenderer.SetCornerRadius(this, CornerRadius, default);
-#elif __IOS__ || __MACOS__
+#elif __APPLE_UIKIT__ || __MACOS__
 				this.SetElevationInternal(Elevation, ShadowColor, _border.BorderRenderer.BoundsPath);
 #elif __ANDROID__
 				_invalidateShadow = true;

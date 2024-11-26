@@ -149,7 +149,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				Assert.AreEqual(new Size(gridDesiredWidthExpected, gridDesiredHeightExpected), desiredSize);
 
-#if !__ANDROID__ && !__IOS__ // These assertions fail on Android/iOS because layout slots aren't set the same way as UWP
+#if !__ANDROID__ && !__APPLE_UIKIT__ // These assertions fail on Android/iOS because layout slots aren't set the same way as UWP
 				var layoutRect0Actual = LayoutInformation.GetLayoutSlot(SUT.Children[0] as FrameworkElement);
 				var layoutRect0Expected = new Rect(child0LeftExpected, child0TopExpected, child0WidthExpected, child0HeightExpected);
 				Assert.AreEqual(layoutRect0Expected, layoutRect0Actual);
@@ -327,7 +327,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			// We have a problem on IOS and Android where SUT isn't relayouted after the padding
 			// change even though IsMeasureDirty is true. This is a workaround to explicity relayout.
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 			SUT.InvalidateMeasure();
 			SUT.UpdateLayout();
 #endif
@@ -546,7 +546,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsNotNull(SUT);
 			Assert.AreEqual(Visibility.Visible, SUT.Visibility);
 
-#if !__ANDROID__ && !__IOS__ // The Grid contents doesn't seem to actually display properly when added this way, but at least it should not throw an exception.
+#if !__ANDROID__ && !__APPLE_UIKIT__ // The Grid contents doesn't seem to actually display properly when added this way, but at least it should not throw an exception.
 			Assert.AreEqual(27, SUT.ActualHeight);
 			NumberAssert.Greater(SUT.ActualWidth, 0);
 #endif
@@ -554,7 +554,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 		[Ignore("Fails on Android and iOS.")]
 #endif
 		public async Task When_Negative_Margin_Should_Not_Clip()
@@ -618,7 +618,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 		[Ignore("Fails on Android and iOS.")]
 #endif
 		public async Task When_RenderTransform_Ensure_Correct_Clipping()

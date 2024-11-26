@@ -36,7 +36,7 @@ Here's how to enable it:
 
 ```csharp
 // App's constructor (`App.cs` or `App.xaml.cs`)
-#if __IOS__ || __ANDROID__ || __MACOS__ || __WASM__
+#if __IOS__ || __TVOS__ || __ANDROID__ || __MACOS__ || __WASM__
 FeatureConfiguration.AutomationPeer.UseSimpleAccessibility = true;
 #endif
 ```

@@ -376,8 +376,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		//#if !__ANDROID__ && !__IOS__ // Fails on Android because keyboard does not appear when TextBox inside native popup is programmatically focussed - https://github.com/unoplatform/uno/issues/7995
-#if !__IOS__
+		//#if !__ANDROID__ && !__APPLE_UIKIT__ // Fails on Android because keyboard does not appear when TextBox inside native popup is programmatically focussed - https://github.com/unoplatform/uno/issues/7995
+#if !__APPLE_UIKIT__
 		[Ignore("Test applies to platforms using software keyboard")]
 #endif
 		public async Task When_Soft_Keyboard_And_VisibleBounds()

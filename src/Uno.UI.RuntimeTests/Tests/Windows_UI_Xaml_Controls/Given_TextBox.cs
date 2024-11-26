@@ -33,7 +33,7 @@ using Uno.Extensions;
 
 #if WINAPPSDK
 using Uno.UI.Extensions;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using UIKit;
 #elif __MACOS__
 using AppKit;
@@ -323,7 +323,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, textBox.SelectionLength);
 		}
 
-#if __IOS__
+#if __APPLE_UIKIT__
 		[Ignore("Disabled as not working properly. See https://github.com/unoplatform/uno/issues/8016")]
 #endif
 		[TestMethod]
@@ -364,7 +364,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(3, textBox.SelectionStart);
 		}
 
-#if __IOS__
+#if __APPLE_UIKIT__
 		[Ignore("Disabled as not working properly. See https://github.com/unoplatform/uno/issues/8016")]
 #endif
 		[TestMethod]
@@ -860,7 +860,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __SKIA__ || __IOS__
+#if __SKIA__ || __APPLE_UIKIT__
 		[Ignore("Fails on Skia and iOS")]
 		// On iOS, the failure is: AssertFailedException: Expected value to be greater than 1199.0, but found 1199.0.
 		// Since the number is large, it looks like the TextBox is taking the full height.

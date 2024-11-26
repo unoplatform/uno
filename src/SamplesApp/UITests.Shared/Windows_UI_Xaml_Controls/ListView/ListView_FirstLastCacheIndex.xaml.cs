@@ -21,7 +21,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 
 		private void OnLoaded(object sender, RoutedEventArgs e)
 		{
-#if !__IOS__ && !UNO_REFERENCE_API
+#if !__APPLE_UIKIT__ && !UNO_REFERENCE_API
 			var sv = MyListView.FindFirstChild<ScrollViewer>();
 			sv.ViewChanged += (o, e2) =>
 			{

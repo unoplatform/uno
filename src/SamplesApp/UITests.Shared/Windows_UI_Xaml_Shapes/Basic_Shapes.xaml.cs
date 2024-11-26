@@ -31,7 +31,7 @@ using Private.Infrastructure;
 using Uno.UI.Controls.Legacy;
 #endif
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
 #endif
 

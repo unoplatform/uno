@@ -328,7 +328,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			{
 				vp[sv].Effective.Should().Be(WindowBounds);
 				vp.Of<ScrollContentPresenter>().Effective.Should().Be(WindowBounds);
-#if __ANDROID__ || __IOS__ // same reason as Ignore of EVP_When_ConstrainedInNonScrollableSV
+#if __ANDROID__ || __APPLE_UIKIT__ // same reason as Ignore of EVP_When_ConstrainedInNonScrollableSV
 				vp[sut].Effective.Width.Should().Be(512);
 				vp[sut].Effective.Height.Should().Be(512);
 #else
@@ -341,10 +341,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			await RetryAssert(() =>
 			{
 				vp[sv].Effective.Should().Be(WindowBounds);
-#if !__SKIA__ && !__WASM__ && !__ANDROID__ && !__IOS__
+#if !__SKIA__ && !__WASM__ && !__ANDROID__ && !__APPLE_UIKIT__
 				vp.Of<ScrollContentPresenter>().Effective.Should().Be(WindowBounds);
 #endif
-#if __ANDROID__ || __IOS__ // same reason as Ignore of EVP_When_ConstrainedInNonScrollableSV
+#if __ANDROID__ || __APPLE_UIKIT__ // same reason as Ignore of EVP_When_ConstrainedInNonScrollableSV
 				vp[sut].Effective.Width.Should().Be(512);
 				vp[sut].Effective.Height.Should().Be(512);
 				vp[sut].Effective.Y.Should().Be(512);
@@ -451,7 +451,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(true, false)]
 		[DataRow(false, true)]
 		[DataRow(true, true)]
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 		[Ignore(
 			"On Android and iOS the ScrollHost is not the (native)SCP but the SV, so alignments are not taken in consideration when computing the scrollport "
 			+ "(which is used as viewport for children). We will get instead 100x100@0,0.")]
@@ -1027,7 +1027,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
-#if !__IOS__
+#if !__APPLE_UIKIT__
 		[Ignore("This test native only element and is not supported on this platform")]
 		public void EVP_When_NativeOnlyElement_Then_PassThrough() { }
 #else
@@ -1338,7 +1338,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			}
 		}
 
-#if __IOS__
+#if __APPLE_UIKIT__
 		public partial class NativeOnlyElement : UIKit.UIView
 		{
 			public NativeOnlyElement()

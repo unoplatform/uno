@@ -19,11 +19,11 @@ using Uno.Foundation.Logging;
 using Microsoft.UI;
 #endif
 
-#if __IOS__ || __MACOS__
+#if __APPLE_UIKIT__ || __MACOS__
 using CoreGraphics;
 #endif
 
-#if __IOS__ || __MACOS__
+#if __APPLE_UIKIT__ || __MACOS__
 using ObjCRuntime;
 #endif
 
@@ -66,7 +66,7 @@ namespace Uno.UI.Toolkit
 			}
 		}
 
-#if __IOS__ || __MACOS__
+#if __APPLE_UIKIT__ || __MACOS__
 		internal static void SetElevationInternal(this DependencyObject element, double elevation, Color shadowColor, CGPath path = null)
 #elif (WINAPPSDK || WINDOWS_UWP || NETCOREAPP) && !HAS_UNO
 		internal static void SetElevationInternal(this DependencyObject element, double elevation, Color shadowColor, DependencyObject host = null, CornerRadius cornerRadius = default(CornerRadius))
@@ -84,7 +84,7 @@ namespace Uno.UI.Toolkit
 					view.SetOutlineSpotShadowColor(shadowColor);
 				}
 			}
-#elif __IOS__ || __MACOS__
+#elif __APPLE_UIKIT__ || __MACOS__
 #if __MACOS__
 			if (element is AppKit.NSView view)
 #else

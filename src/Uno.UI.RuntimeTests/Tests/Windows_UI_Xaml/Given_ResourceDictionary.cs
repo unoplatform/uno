@@ -21,7 +21,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	public class Given_ResourceDictionary
 	{
 		[TestMethod]
-#if __IOS__ || __MACOS__
+#if __APPLE_UIKIT__ || __MACOS__
 		[Ignore("iOS and macOS don't yet load/unload from resources - https://github.com/unoplatform/uno/issues/5208")]
 #endif
 		public async Task When_FrameworkElement_In_Resources_Should_Receive_Loaded_Unloaded()
@@ -90,7 +90,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
-#if __IOS__ || __MACOS__
+#if __APPLE_UIKIT__ || __MACOS__
 		[Ignore("iOS and macOS don't yet load/unload from resources - https://github.com/unoplatform/uno/issues/5208")]
 #endif
 		public async Task When_FrameworkElement_In_Resources_Then_Removed_Should_Receive_Loaded_Unloaded()

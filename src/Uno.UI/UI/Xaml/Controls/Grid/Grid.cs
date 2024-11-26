@@ -1374,7 +1374,7 @@ namespace Microsoft.UI.Xaml.Controls
 					while (childrenEnumerator.MoveNext())
 					{
 						var currentChild = childrenEnumerator.Current;
-#if __IOS__ // Uno specific: On iOS an additional non-UIElement is added the the parent of a focused TextBox control, we need to skip it.
+#if __APPLE_UIKIT__ // Uno specific: On iOS an additional non-UIElement is added the the parent of a focused TextBox control, we need to skip it.
 						if (currentChild is null)
 						{
 							continue;
@@ -1420,7 +1420,7 @@ namespace Microsoft.UI.Xaml.Controls
 				for (Xuint childIndex = 0; childIndex < count; childIndex++)
 				{
 					UIElement currentChild = children[childIndex];
-#if __IOS__ // Uno specific: On iOS an additional non-UIElement is added the the parent of a focused TextBox control, we need to skip it.
+#if __APPLE_UIKIT__ // Uno specific: On iOS an additional non-UIElement is added the the parent of a focused TextBox control, we need to skip it.
 					if (currentChild is null)
 					{
 						continue;

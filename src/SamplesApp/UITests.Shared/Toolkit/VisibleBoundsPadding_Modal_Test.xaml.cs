@@ -14,7 +14,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using Uno.UI.Samples.Controls;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
 #endif
 
@@ -29,7 +29,7 @@ namespace UITests.Toolkit
 		}
 		private void LaunchModalSample(object sender, RoutedEventArgs e)
 		{
-#if __IOS__
+#if __APPLE_UIKIT__
 			var vc = new UIViewController { View = new VisibleBoundsPadding_Modal() };
 			if (UIDevice.CurrentDevice.UserInterfaceIdiom == UIUserInterfaceIdiom.Pad)
 			{

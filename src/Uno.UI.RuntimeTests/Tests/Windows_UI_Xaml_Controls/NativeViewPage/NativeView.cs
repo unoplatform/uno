@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-#if __IOS__
+#if __APPLE_UIKIT__
 using _NativeBase = UIKit.UISwitch;
 #elif __ANDROID__
 using _NativeBase = AndroidX.AppCompat.Widget.AppCompatCheckBox;

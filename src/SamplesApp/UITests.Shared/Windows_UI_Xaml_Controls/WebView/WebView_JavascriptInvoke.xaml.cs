@@ -33,7 +33,7 @@ namespace Uno.UI.Samples.Content.UITests.WebView
 
 		private static string GetReloadJavascript()
 		{
-#if __IOS__
+#if __APPLE_UIKIT__
 			return "location.reload(true);";
 #else
 			return "window.location.reload()";

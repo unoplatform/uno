@@ -60,7 +60,7 @@ public class Given_TemplateBindingAfterAnimation
 		{
 			Assert.AreEqual((btn.Background as SolidColorBrush).Color, Microsoft.UI.Colors.LightGray);
 
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 			// Android and iOS behavior is very wrong.
 			// ResourceResolver.TryVisualTreeRetrieval fails to retrieve TemplateBindingAfterAnimationThemeColor2
 			// So, we end up not updating the foreground.
@@ -75,7 +75,7 @@ public class Given_TemplateBindingAfterAnimation
 
 			await TestServices.WindowHelper.WaitForIdle();
 
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 			Assert.AreEqual((tb2.Foreground as SolidColorBrush).Color, Microsoft.UI.Colors.Brown);
 #else
 			Assert.AreEqual((tb2.Foreground as SolidColorBrush).Color, Microsoft.UI.Colors.RosyBrown);

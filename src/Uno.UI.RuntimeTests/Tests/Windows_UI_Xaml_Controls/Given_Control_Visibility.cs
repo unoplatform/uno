@@ -48,7 +48,7 @@ public class Given_Control_Visibility
 #if HAS_UNO_WINUI
 					type == typeof(ItemsView) ||
 #endif
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 					// OnApplyTemplate crashes with NRE.
 					type == typeof(AutoSuggestBox) ||
 					type == typeof(TwoPaneView) ||
@@ -59,7 +59,7 @@ public class Given_Control_Visibility
 					// RefreshContainer requires a control of type NativeRefreshControl in its hierarchy.
 					type == typeof(RefreshContainer) ||
 #endif
-#if __IOS__
+#if __APPLE_UIKIT__
 					// Native implementation not found. Make sure FlipView has a style which contains an ItemsPanel of type {nameof(PagedCollectionView)}.
 					type == typeof(FlipView) ||
 #endif

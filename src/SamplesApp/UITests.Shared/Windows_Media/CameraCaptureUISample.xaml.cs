@@ -17,7 +17,7 @@ public sealed partial class CameraCaptureUISample : Page
 		this.InitializeComponent();
 	}
 
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 	private async void CaptureImage_Click(object sender, RoutedEventArgs e)
 	{
 		try

@@ -22,7 +22,7 @@ using SamplesApp.UITests;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
 #elif __MACOS__
 using AppKit;

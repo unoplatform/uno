@@ -80,7 +80,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(new Rect(68, 41, 11, 17), pinkBounds);
 		}
 
-#if !__IOS__ // Currently fails on iOS
+#if !__APPLE_UIKIT__ // Currently fails on iOS
 		[TestMethod]
 #endif
 		[RunsOnUIThread]
@@ -401,7 +401,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if !WINAPPSDK
 		[TestMethod]
 		[RunsOnUIThread]
-#if IS_UNIT_TESTS || __MACOS__ || __SKIA__ || __IOS__
+#if IS_UNIT_TESTS || __MACOS__ || __SKIA__ || __APPLE_UIKIT__
 		[Ignore("Currently fails on macOS, part of #9282! epic and Monochromatic Image not supported for IS_UNIT_TESTS and SKIA")]
 #endif
 		public async Task When_Image_Is_Monochromatic()

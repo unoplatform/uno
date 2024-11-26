@@ -15,7 +15,7 @@ using Uno.UI.RuntimeTests.Extensions;
 
 #if WINAPPSDK
 using Uno.UI.Extensions;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using UIKit;
 #elif __MACOS__
 using AppKit;

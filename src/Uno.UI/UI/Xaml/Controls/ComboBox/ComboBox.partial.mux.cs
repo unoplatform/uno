@@ -938,7 +938,7 @@ partial class ComboBox
 			// This method will load the itempresenter children
 #if __ANDROID__
 			SetItemsPresenter((m_tpPopupPart.Child as Android.Views.ViewGroup).FindFirstChild<ItemsPresenter>()!);
-#elif __IOS__ || __MACOS__
+#elif __APPLE_UIKIT__ || __MACOS__
 			SetItemsPresenter(m_tpPopupPart.Child.FindFirstChild<ItemsPresenter>()!);
 #endif
 #endif
@@ -1162,7 +1162,7 @@ partial class ComboBox
 		UpdateSelectionBoxHighlighted();
 		IsSelectionActive = hasFocus;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 		if (_popup is Popup popup && popup.Child.FindFirstChild<Picker>() is not null)
 		{
 			// If the ComboBox is in a Picker, we don't want to close the ComboBox when it loses focus.

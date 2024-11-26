@@ -1,4 +1,4 @@
-﻿#if __ANDROID__ || __IOS__ || __WASM__
+﻿#if __ANDROID__ || __APPLE_UIKIT__ || __WASM__
 using System;
 using System.Text.RegularExpressions;
 using Windows.System.Profile;

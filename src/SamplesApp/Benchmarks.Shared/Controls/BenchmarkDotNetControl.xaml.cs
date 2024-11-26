@@ -182,7 +182,7 @@ namespace Benchmarks.Shared.Controls
 					.WithWarmupCount(1)
 					.WithIterationCount(5)
 					.WithIterationTime(TimeInterval.FromMilliseconds(100))
-#if __IOS__
+#if __APPLE_UIKIT__
 					// Fails on iOS with code generation used by EmitInvokeMultiple
 					.WithUnrollFactor(1)
 #endif
