@@ -28,7 +28,8 @@ namespace Microsoft.UI.Xaml
 	{
 		private object _vectorChangedHandlersLock = new();
 
-		// Explicit handlers list to avoid the cost of multicast delegates handling
+		// Explicit handlers list to avoid the cost of generic multicast
+		// delegates handling on mono's AOT.
 		private List<VectorChangedEventHandler<T>> _vectorChangedHandlers;
 
 		public event VectorChangedEventHandler<T> VectorChanged
