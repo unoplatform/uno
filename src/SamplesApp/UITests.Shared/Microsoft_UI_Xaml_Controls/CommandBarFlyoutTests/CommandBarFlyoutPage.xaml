@@ -1,5 +1,5 @@
 ﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
-<!-- MUX Reference controls\dev\CommandBarFlyout\TestUI\CommandBarFlyoutPage.xaml, tag winui3/release/1.5.2, commit b91b3ce6f25c587a9e18c4e122f348f51331f18b -->
+<!-- MUX Reference controls\dev\CommandBarFlyout\TestUI\CommandBarFlyoutPage.xaml, tag winui3/release/1.6.3, commit 66d24dfff3b2763ab3be096a2c7cbaafc81b31eb -->
 <local:TestPage
     x:Class="MUXControlsTestApp.CommandBarFlyoutPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -125,7 +125,7 @@
 					<AppBarButton x:Name="ProofingButton" AutomationProperties.AutomationId="ProofingButton" Label="Proofing" Click="OnElementClicked">
 						<AppBarButton.Flyout>
 							<MenuFlyout>
-								<MenuFlyoutItem AutomationProperties.Name="FirstFlyoutItem" Text="talk" />
+								<MenuFlyoutItem AutomationProperties.AutomationId="FirstFlyoutItem" AutomationProperties.Name="FirstFlyoutItem" Text="talk" Click="OnElementClicked"/>
 								<MenuFlyoutItem Text="talks" />
 								<MenuFlyoutItem Text="talk a" />
 								<MenuFlyoutSeparator />
@@ -280,6 +280,17 @@
 					<AppBarButton x:Name="SelectAllButton15" AutomationProperties.AutomationId="SelectAllButton15" Label="Select all" Click="OnElementClicked" />
 				</muxc:CommandBarFlyout.SecondaryCommands>
 			</muxc:CommandBarFlyout>
+			<muxc:CommandBarFlyout Placement="Right" x:Name="Flyout16" AutomationProperties.AutomationId="Flyout16" Opened="OnFlyoutOpened" Closed="OnFlyoutClosed" AlwaysExpanded="True">
+                <AppBarButton x:Name="CutButton16" AutomationProperties.AutomationId="CutButton16" Icon="Cut" Click="OnElementClicked" />
+                <AppBarButton x:Name="CopyButton16" AutomationProperties.AutomationId="CopyButton16" Icon="Copy" Click="OnElementClicked" />
+                <AppBarButton x:Name="PasteButton16" AutomationProperties.AutomationId="PasteButton16" Icon="Paste" Click="OnElementClicked" />
+                <muxc:CommandBarFlyout.SecondaryCommands>
+                    <AppBarButton x:Name="UndoButton16" AutomationProperties.AutomationId="UndoButton16" Label="Undo" Icon="Undo" Click="OnElementClicked" />
+                    <AppBarButton x:Name="UndoButtonOverflow16" AutomationProperties.AutomationId="UndoButtonOverflow16" Label="Undo" Icon="Undo" Click="OnElementClicked" Visibility="Collapsed" />
+                    <AppBarButton x:Name="RedoButton16" AutomationProperties.AutomationId="RedoButton16" Label="Redo" Icon="Redo" Click="OnElementClicked" />
+                    <AppBarButton x:Name="SelectAllButton16" AutomationProperties.AutomationId="SelectAllButton16" Label="Select all" Click="OnElementClicked" />
+                </muxc:CommandBarFlyout.SecondaryCommands>
+            </muxc:CommandBarFlyout>
 		</Grid.Resources>
 		<ScrollViewer>
 			<StackPanel>
@@ -301,6 +312,7 @@
 				<Button x:Name="FlyoutTarget13" Content="Show CommandBarFlyout with a very long primary command label" Margin="10" Click="OnFlyoutTarget13Click" />
 				<Button x:Name="FlyoutTarget14" Content="Show CommandBarFlyout with some primary commands with no label" Margin="10" Click="OnFlyoutTarget14Click" />
 				<Button x:Name="FlyoutTarget15" Content="Show CommandBarFlyout with all primary commands with no label" Margin="10" Click="OnFlyoutTarget15Click" />
+				<Button x:Name="FlyoutTarget16" Content="Show CommandBarFlyout with a delayed AppBarButton flyout" Margin="10" Click="OnFlyoutTarget16Click" />
 				<CheckBox x:Name="IsRTLCheckBox" Content="Is Page in RightToLeft FlowDirection?" AutomationProperties.AutomationId="IsRTLCheckBox" Margin="10,10,10,2" Checked="IsRTLCheckBox_Checked" Unchecked="IsRTLCheckBox_Unchecked" />
 				<StackPanel Orientation="Horizontal" Margin="10,0,10,2">
 					<CheckBox x:Name="AddPrimaryCommandDynamicallyCheckBox" Content="Add Primary Commands Dynamically?" AutomationProperties.AutomationId="AddPrimaryCommandDynamicallyCheckBox" />
@@ -338,6 +350,7 @@
 		</ScrollViewer>
 		<StackPanel Grid.Row="1">
 			<TextBox IsReadOnly="True" AcceptsReturn="True" x:Name="StatusReportingTextBox" AutomationProperties.AutomationId="StatusReportingTextBox" Margin="10" />
+			<TextBox IsReadOnly="True" AcceptsReturn="True" x:Name="ExtraInformationTextBox" AutomationProperties.AutomationId="ExtraInformationTextBox" Margin="10" />
 			<CheckBox x:Name="IsFlyoutOpenCheckBox" AutomationProperties.AutomationId="IsFlyoutOpenCheckBox" Content="Is flyout open" />
 		</StackPanel>
 	</Grid>

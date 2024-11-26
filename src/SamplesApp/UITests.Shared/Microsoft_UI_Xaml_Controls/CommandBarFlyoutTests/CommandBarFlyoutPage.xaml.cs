@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\CommandBarFlyout\TestUI\CommandBarFlyoutPage.xaml.cs, tag winui3/release/1.5.2, commit b91b3ce6f25c587a9e18c4e122f348f51331f18b
+// MUX Reference controls\dev\CommandBarFlyout\TestUI\CommandBarFlyoutPage.xaml.cs, tag winui3/release/1.6.3, commit 66d24dfff3b2763ab3be096a2c7cbaafc81b31eb
 
 using Common;
 using System;
@@ -30,6 +30,9 @@ public sealed partial class CommandBarFlyoutPage : TestPage
 
 	private DispatcherTimer clearPrimaryCommandsTimer = new DispatcherTimer();
 	private CommandBarFlyout clearPrimaryCommandsFlyout;
+
+	private DispatcherTimer addFlyoutTimer = new DispatcherTimer();
+	private MenuFlyout flyoutToAdd = new MenuFlyout();
 
 	private DispatcherTimer dynamicLabelTimer = new DispatcherTimer();
 	private DispatcherTimer dynamicVisibilityTimer = new DispatcherTimer();
@@ -63,6 +66,12 @@ public sealed partial class CommandBarFlyoutPage : TestPage
 		clearSecondaryCommandsTimer.Interval = new TimeSpan(0, 0, 3 /*sec*/);
 		clearPrimaryCommandsTimer.Tick += ClearPrimaryCommandsTimer_Tick;
 
+		addFlyoutTimer.Interval = new TimeSpan(0, 0, 1 /*sec*/);
+		addFlyoutTimer.Tick += AddFlyoutTimer_Tick;
+
+		flyoutToAdd.Items.Add(new MenuFlyoutItem() { Text = "This" });
+		flyoutToAdd.Items.Add(new MenuFlyoutItem() { Text = "That" });
+
 		UndoButton1.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.Z, Modifiers = VirtualKeyModifiers.Control });
 		UndoButton2.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.Z, Modifiers = VirtualKeyModifiers.Control });
 		UndoButton3.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.Z, Modifiers = VirtualKeyModifiers.Control });
@@ -88,6 +97,7 @@ public sealed partial class CommandBarFlyoutPage : TestPage
 		RedoButton13.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.Y, Modifiers = VirtualKeyModifiers.Control });
 		RedoButton14.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.Y, Modifiers = VirtualKeyModifiers.Control });
 		RedoButton15.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.Y, Modifiers = VirtualKeyModifiers.Control });
+		RedoButton16.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.Y, Modifiers = VirtualKeyModifiers.Control });
 
 		SelectAllButton1.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.A, Modifiers = VirtualKeyModifiers.Control });
 		SelectAllButton2.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.A, Modifiers = VirtualKeyModifiers.Control });
@@ -101,6 +111,7 @@ public sealed partial class CommandBarFlyoutPage : TestPage
 		SelectAllButton13.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.A, Modifiers = VirtualKeyModifiers.Control });
 		SelectAllButton14.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.A, Modifiers = VirtualKeyModifiers.Control });
 		SelectAllButton15.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.A, Modifiers = VirtualKeyModifiers.Control });
+		SelectAllButton16.KeyboardAccelerators.Add(new KeyboardAccelerator() { Key = VirtualKey.A, Modifiers = VirtualKeyModifiers.Control });
 
 		FlyoutTarget1.ContextFlyout = Flyout1;
 		FlyoutTarget2.ContextFlyout = Flyout2;
@@ -114,6 +125,7 @@ public sealed partial class CommandBarFlyoutPage : TestPage
 		FlyoutTarget13.ContextFlyout = Flyout13;
 		FlyoutTarget14.ContextFlyout = Flyout14;
 		FlyoutTarget15.ContextFlyout = Flyout15;
+		FlyoutTarget16.ContextFlyout = Flyout16;
 
 		Flyout1.Placement = FlyoutPlacementMode.TopEdgeAlignedLeft;
 		Flyout2.Placement = FlyoutPlacementMode.TopEdgeAlignedLeft;
@@ -127,6 +139,22 @@ public sealed partial class CommandBarFlyoutPage : TestPage
 		Flyout13.Placement = FlyoutPlacementMode.TopEdgeAlignedLeft;
 		Flyout14.Placement = FlyoutPlacementMode.TopEdgeAlignedLeft;
 		Flyout15.Placement = FlyoutPlacementMode.TopEdgeAlignedLeft;
+		Flyout16.Placement = FlyoutPlacementMode.TopEdgeAlignedLeft;
+
+		Flyout16.Opening += (object sender, object args) =>
+		{
+			addFlyoutTimer.Start();
+		};
+
+		Flyout16.Closed += (object sender, object args) =>
+		{
+			UndoButton16.Visibility = Visibility.Visible;
+			UndoButtonOverflow16.Visibility = Visibility.Collapsed;
+			UndoButtonOverflow16.Flyout = null;
+
+			StatusReportingTextBox.Text = string.Empty;
+			ExtraInformationTextBox.Text = string.Empty;
+		};
 	}
 
 	public void OnElementClicked(object sender, object args)
@@ -309,6 +337,11 @@ public sealed partial class CommandBarFlyoutPage : TestPage
 	private void OnFlyoutTarget15Click(object sender, RoutedEventArgs e)
 	{
 		ShowFlyoutAt(Flyout15, FlyoutTarget15);
+	}
+
+	private void OnFlyoutTarget16Click(object sender, RoutedEventArgs e)
+	{
+		ShowFlyoutAt(Flyout16, FlyoutTarget16);
 	}
 
 	private void ShowFlyoutAt(FlyoutBase flyout, FrameworkElement targetElement, FlyoutShowMode showMode = FlyoutShowMode.Transient)
@@ -507,6 +540,16 @@ public sealed partial class CommandBarFlyoutPage : TestPage
 		}
 	}
 
+	private void AddFlyoutTimer_Tick(object sender, object e)
+	{
+		UndoButtonOverflow16.SizeChanged += UndoButtonOverflow16_SizeChanged;
+
+		UndoButton16.Visibility = Visibility.Collapsed;
+		UndoButtonOverflow16.Visibility = Visibility.Visible;
+		UndoButtonOverflow16.Flyout = flyoutToAdd;
+		addFlyoutTimer.Stop();
+	}
+
 	private void DynamicLabelTimer_Tick(object sender, object e)
 	{
 		if (dynamicLabelSecondaryCommand != null)
@@ -610,5 +653,22 @@ public sealed partial class CommandBarFlyoutPage : TestPage
 		{
 			flyout6.PrimaryCommands.RemoveAt(0);
 		}
+	}
+
+	private void UndoButtonOverflow16_SizeChanged(object sender, SizeChangedEventArgs e)
+	{
+		UndoButtonOverflow16.SizeChanged -= UndoButtonOverflow16_SizeChanged;
+
+		// These visual elements don't have automation peers we can access, so we need to expose their bounds to the test the hard way.
+		var undoButtonOverflow16ContentViewbox = UndoButtonOverflow16.FindVisualChildByName("ContentViewbox");
+		var undoButtonOverflow16OverflowTextLabel = UndoButtonOverflow16.FindVisualChildByName("OverflowTextLabel");
+		var redoButton16ContentViewbox = RedoButton16.FindVisualChildByName("ContentViewbox");
+
+		var undoButtonOverflow16ContentViewboxBounds = undoButtonOverflow16ContentViewbox.TransformToVisual(null).TransformBounds(new Windows.Foundation.Rect(0, 0, undoButtonOverflow16ContentViewbox.ActualWidth, undoButtonOverflow16ContentViewbox.ActualHeight));
+		var undoButtonOverflow16OverflowTextLabelBounds = undoButtonOverflow16OverflowTextLabel.TransformToVisual(null).TransformBounds(new Windows.Foundation.Rect(0, 0, undoButtonOverflow16ContentViewbox.ActualWidth, undoButtonOverflow16ContentViewbox.ActualHeight));
+		var redoButton16ContentViewboxBounds = redoButton16ContentViewbox.TransformToVisual(null).TransformBounds(new Windows.Foundation.Rect(0, 0, undoButtonOverflow16ContentViewbox.ActualWidth, undoButtonOverflow16ContentViewbox.ActualHeight));
+
+		ExtraInformationTextBox.Text = $"({undoButtonOverflow16ContentViewboxBounds.X}, {undoButtonOverflow16ContentViewboxBounds.Y}, {undoButtonOverflow16ContentViewboxBounds.Width}, {undoButtonOverflow16ContentViewboxBounds.Height}), ({undoButtonOverflow16OverflowTextLabelBounds.X}, {undoButtonOverflow16OverflowTextLabelBounds.Y}, {undoButtonOverflow16OverflowTextLabelBounds.Width}, {undoButtonOverflow16OverflowTextLabelBounds.Height}), ({redoButton16ContentViewboxBounds.X}, {redoButton16ContentViewboxBounds.Y}, {redoButton16ContentViewboxBounds.Width}, {redoButton16ContentViewboxBounds.Height})";
+		RecordEvent("Undo with overflow visible");
 	}
 }
