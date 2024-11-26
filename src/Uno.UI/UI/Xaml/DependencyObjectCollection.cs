@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -25,7 +26,29 @@ namespace Microsoft.UI.Xaml
 	public partial class DependencyObjectCollection<T> : DependencyObjectCollectionBase, IList<T>, IEnumerable<T>, IEnumerable, IObservableVector<T>
 		where T : DependencyObject
 	{
-		public event VectorChangedEventHandler<T> VectorChanged;
+		private object _vectorChangedHandlersLock = new();
+
+		// Explicit handlers list to avoid the cost of multicast delegates handling
+		private List<VectorChangedEventHandler<T>> _vectorChangedHandlers;
+
+		public event VectorChangedEventHandler<T> VectorChanged
+		{
+			add
+			{
+				lock (_vectorChangedHandlersLock)
+				{
+					(_vectorChangedHandlers ??= new()).Add(value);
+				}
+			}
+
+			remove
+			{
+				lock (_vectorChangedHandlersLock)
+				{
+					(_vectorChangedHandlers ??= new()).Remove(value);
+				}
+			}
+		}
 
 		private readonly List<T> _list = new List<T>();
 
@@ -205,7 +228,36 @@ namespace Microsoft.UI.Xaml
 			=> _list.GetEnumerator();
 
 		private void RaiseVectorChanged(CollectionChange change, int index)
-			=> VectorChanged?.Invoke(this, new VectorChangedEventArgs(change, (uint)index));
+		{
+			lock (_vectorChangedHandlersLock)
+			{
+				if (_vectorChangedHandlers is { Count: > 0 })
+				{
+					var args = new VectorChangedEventArgs(change, (uint)index);
+
+					if (_vectorChangedHandlers.Count == 1)
+					{
+						_vectorChangedHandlers[0].Invoke(this, args);
+					}
+					else
+					{
+						// Clone the array to account for reentrancy.
+						var handlersClone = ArrayPool<VectorChangedEventHandler<T>>.Shared.Rent(_vectorChangedHandlers.Count);
+						_vectorChangedHandlers.CopyTo(handlersClone, 0);
+
+						// Use the original count, the rented array may be larger.
+						var count = _vectorChangedHandlers.Count;
+
+						for (int i = 0; i < count; i++)
+						{
+							handlersClone[i].Invoke(this, args);
+						}
+
+						ArrayPool<VectorChangedEventHandler<T>>.Shared.Return(handlersClone);
+					}
+				}
+			}
+		}
 
 		private protected virtual void OnAdded(T d)
 		{
