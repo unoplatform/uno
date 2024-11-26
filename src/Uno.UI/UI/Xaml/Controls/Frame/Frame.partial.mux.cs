@@ -50,7 +50,7 @@ partial class Frame
 
 		base.OnApplyTemplate();
 
-#if HAS_UNO
+#if HAS_UNO && (__ANDROID__ || __IOS__)
 		// It is not possible to use the WinUI behavior with a NativeFramePresenter.
 		// We have two such presenters - on internal in Uno, another in Uno.Toolkit.
 		if (_useWinUIBehavior && this.TemplatedRoot?.GetType().Name?.Contains("NativeFramePresenter", StringComparison.Ordinal) == true)
