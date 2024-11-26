@@ -239,9 +239,10 @@ internal partial class InputManager
 #endif
 
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource) { IsInjected = isInjected };
+			var result = default(PointerEventDispatchResult);
 
 			// First raise the event, either on the OriginalSource or on the capture owners if any
-			RaiseUsingCaptures(Wheel, originalSource, routedArgs, setCursor: true);
+			result = RaiseUsingCaptures(Wheel, originalSource, routedArgs, setCursor: true);
 
 			// Scrolling can change the element underneath the pointer, so we need to update
 			(originalSource, var staleBranch) = HitTest(args, caller: "OnPointerWheelChanged_post_wheel", isStale: _isOver);
@@ -250,7 +251,9 @@ internal partial class InputManager
 			// Second raise the PointerExited events on the stale branch
 			if (staleBranch.HasValue)
 			{
-				if (Raise(Leave, staleBranch.Value, routedArgs) is { VisualTreeAltered: true })
+				var leaveResult = Raise(Leave, staleBranch.Value, routedArgs);
+				result += leaveResult;
+				if (leaveResult is { VisualTreeAltered: true })
 				{
 					// The visual tree has been modified in a way that requires performing a new hit test.
 					originalSource = HitTest(args, caller: "OnPointerWheelChanged_post_leave").element ?? _inputManager.ContentRoot.VisualTree.RootElement;
@@ -259,7 +262,7 @@ internal partial class InputManager
 
 			// Third (try to) raise the PointerEnter on the OriginalSource
 			// Note: This won't do anything if already over.
-			Raise(Enter, originalSource!, routedArgs);
+			result += Raise(Enter, originalSource!, routedArgs);
 
 			if (!PointerCapture.TryGet(routedArgs.Pointer, out var capture) || capture.IsImplicitOnly)
 			{
@@ -267,6 +270,8 @@ internal partial class InputManager
 				// If not, we make sure to update the cursor based on the new originalSource.
 				SetSourceCursor(originalSource);
 			}
+
+			args.DispatchResult = result;
 		}
 
 		private void OnPointerEntered(Windows.UI.Core.PointerEventArgs args, bool isInjected = false)
@@ -300,7 +305,9 @@ internal partial class InputManager
 
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource) { IsInjected = isInjected };
 
-			Raise(Enter, originalSource, routedArgs);
+			var result = Raise(Enter, originalSource, routedArgs);
+
+			args.DispatchResult = result;
 		}
 
 		private void OnPointerExited(Windows.UI.Core.PointerEventArgs args, bool isInjected = false)
@@ -340,13 +347,16 @@ internal partial class InputManager
 
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource) { IsInjected = isInjected };
 
-			Raise(Leave, overBranchLeaf, routedArgs);
+			var result = Raise(Leave, overBranchLeaf, routedArgs);
+
 			if (!args.CurrentPoint.IsInContact && (PointerDeviceType)args.CurrentPoint.Pointer.Type == PointerDeviceType.Touch)
 			{
 				// We release the captures on exit when pointer if not pressed
 				// Note: for a "Tap" with a finger the sequence is Up / Exited / Lost, so the lost cannot be raised on Up
 				ReleaseCaptures(routedArgs);
 			}
+
+			args.DispatchResult = result;
 		}
 
 		private void OnPointerPressed(Windows.UI.Core.PointerEventArgs args, bool isInjected = false)
@@ -396,7 +406,9 @@ internal partial class InputManager
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource) { IsInjected = isInjected };
 
 			_pressedElements[routedArgs.Pointer] = originalSource;
-			Raise(Pressed, originalSource, routedArgs);
+			var result = Raise(Pressed, originalSource, routedArgs);
+
+			args.DispatchResult = result;
 		}
 
 		private void OnPointerReleased(Windows.UI.Core.PointerEventArgs args, bool isInjected = false)
@@ -439,7 +451,8 @@ internal partial class InputManager
 
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource) { IsInjected = isInjected };
 
-			RaiseUsingCaptures(Released, originalSource, routedArgs, setCursor: false);
+			var result = RaiseUsingCaptures(Released, originalSource, routedArgs, setCursor: false);
+
 			if (isOutOfWindow || (PointerDeviceType)args.CurrentPoint.Pointer.Type != PointerDeviceType.Touch)
 			{
 				// We release the captures on up but only after the released event and processed the gesture
@@ -451,6 +464,8 @@ internal partial class InputManager
 				SetSourceCursor(originalSource);
 			}
 			ClearPressedState(routedArgs);
+
+			args.DispatchResult = result;
 		}
 
 		private void OnPointerMoved(Windows.UI.Core.PointerEventArgs args, bool isInjected = false)
@@ -482,11 +497,14 @@ internal partial class InputManager
 			}
 
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource) { IsInjected = isInjected };
+			var result = default(PointerEventDispatchResult);
 
 			// First raise the PointerExited events on the stale branch
 			if (staleBranch.HasValue)
 			{
-				if (Raise(Leave, staleBranch.Value, routedArgs) is { VisualTreeAltered: true })
+				var leaveResult = Raise(Leave, staleBranch.Value, routedArgs);
+				result += leaveResult;
+				if (leaveResult is { VisualTreeAltered: true })
 				{
 					// The visual tree has been modified in a way that requires performing a new hit test.
 					originalSource = HitTest(args, caller: "OnPointerMoved_post_leave").element ?? _inputManager.ContentRoot.VisualTree.RootElement;
@@ -495,7 +513,9 @@ internal partial class InputManager
 
 			// Second (try to) raise the PointerEnter on the OriginalSource
 			// Note: This won't do anything if already over.
-			if (Raise(Enter, originalSource, routedArgs) is { VisualTreeAltered: true })
+			var enterResult = Raise(Enter, originalSource, routedArgs);
+			result += enterResult;
+			if (enterResult is { VisualTreeAltered: true })
 			{
 				// The visual tree has been modified in a way that requires performing a new hit test.
 				originalSource = HitTest(args, caller: "OnPointerMoved_post_enter").element ?? _inputManager.ContentRoot.VisualTree.RootElement;
@@ -503,6 +523,8 @@ internal partial class InputManager
 
 			// Finally raise the event, either on the OriginalSource or on the capture owners if any
 			RaiseUsingCaptures(Move, originalSource, routedArgs, setCursor: true);
+
+			args.DispatchResult = result;
 		}
 
 		private void OnPointerCancelled(PointerEventArgs args, bool isInjected = false)
@@ -535,10 +557,12 @@ internal partial class InputManager
 
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource) { IsInjected = isInjected };
 
-			RaiseUsingCaptures(Cancelled, originalSource, routedArgs, setCursor: false);
+			var result = RaiseUsingCaptures(Cancelled, originalSource, routedArgs, setCursor: false);
 			// Note: No ReleaseCaptures(routedArgs);, the cancel automatically raise it
 			SetSourceCursor(originalSource);
 			ClearPressedState(routedArgs);
+
+			args.DispatchResult = result;
 		}
 
 		#region Captures
