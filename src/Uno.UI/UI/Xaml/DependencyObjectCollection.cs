@@ -45,7 +45,14 @@ namespace Microsoft.UI.Xaml
 			{
 				lock (_vectorChangedHandlersLock)
 				{
-					(_vectorChangedHandlers ??= new()).Remove(value);
+					var list = _vectorChangedHandlers ??= new();
+
+					var lastIndex = list.LastIndexOf(value);
+
+					if (lastIndex != -1)
+					{
+						list.RemoveAt(lastIndex);
+					}
 				}
 			}
 		}
@@ -229,32 +236,59 @@ namespace Microsoft.UI.Xaml
 
 		private void RaiseVectorChanged(CollectionChange change, int index)
 		{
-			lock (_vectorChangedHandlersLock)
+			// Gets an executable list that does not need to be locked
+			int GetInvocationList(out VectorChangedEventHandler<T> single, out VectorChangedEventHandler<T>[] array)
 			{
-				if (_vectorChangedHandlers is { Count: > 0 })
+				lock (_vectorChangedHandlersLock)
 				{
-					var args = new VectorChangedEventArgs(change, (uint)index);
-
-					if (_vectorChangedHandlers.Count == 1)
+					if (_vectorChangedHandlers is { Count: > 0 })
 					{
-						_vectorChangedHandlers[0].Invoke(this, args);
-					}
-					else
-					{
-						// Clone the array to account for reentrancy.
-						var handlersClone = ArrayPool<VectorChangedEventHandler<T>>.Shared.Rent(_vectorChangedHandlers.Count);
-						_vectorChangedHandlers.CopyTo(handlersClone, 0);
-
-						// Use the original count, the rented array may be larger.
-						var count = _vectorChangedHandlers.Count;
-
-						for (int i = 0; i < count; i++)
+						if (_vectorChangedHandlers.Count == 1)
 						{
-							handlersClone[i].Invoke(this, args);
+							single = _vectorChangedHandlers[0];
+							array = null;
+							return 1;
 						}
+						else
+						{
+							single = null;
 
-						ArrayPool<VectorChangedEventHandler<T>>.Shared.Return(handlersClone);
+							array = ArrayPool<VectorChangedEventHandler<T>>.Shared.Rent(_vectorChangedHandlers.Count);
+							_vectorChangedHandlers.CopyTo(array, 0);
+
+							return _vectorChangedHandlers.Count;
+						}
 					}
+				}
+
+				single = null;
+				array = null;
+				return 0;
+			}
+
+			var count = GetInvocationList(out var single, out var array);
+
+			if (count > 0)
+			{
+				var args = new VectorChangedEventArgs(change, (uint)index);
+
+				if (count == 1)
+				{
+					single.Invoke(this, args);
+				}
+				else
+				{
+					for (int i = 0; i < count; i++)
+					{
+						ref var handler = ref array[i];
+						handler.Invoke(this, args);
+
+						// Clear the handle immediately, so we don't
+						// call ArrayPool.Return with clear.
+						handler = null;
+					}
+
+					ArrayPool<VectorChangedEventHandler<T>>.Shared.Return(array);
 				}
 			}
 		}
