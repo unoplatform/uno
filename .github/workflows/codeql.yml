@@ -82,9 +82,6 @@ jobs:
         df -h
         # du -h -d 3 /
 
-    displayName: 'Cleanup unused image dependencies (Linux)'
-    condition: eq(variables['Agent.OS'], 'Linux')
-
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
