@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using NUnit.Framework;
+using SamplesApp.UITests.Extensions;
 using SamplesApp.UITests.TestFramework;
 using Uno.UITest;
 using Uno.UITest.Helpers;
@@ -991,6 +992,26 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 
 			// Final verification of SelectedText
 			Assert.IsNotEmpty(readonlyTextBox.GetDependencyPropertyValue("SelectedText")?.ToString());
+		}
+
+		[Test]
+		[AutoRetry]
+		public void When_ClickAndDrag_SelectsDefaultText()
+		{
+
+			Run("UITests.Shared.Windows_UI_Input.PointersTests.TextBox_Pointer");
+
+			_app.WaitForElement("TestTextBox");
+
+			var textBoxRect = _app.GetPhysicalRect("TestTextBox");
+
+			var startPoint = textBoxRect.GetPointInRect(new System.Drawing.PointF(0.1f, 0.5f));
+			var endPoint = textBoxRect.GetPointInRect(new System.Drawing.PointF(0.9f, 0.5f));
+
+			_app.DragCoordinates(startPoint, endPoint);
+
+			var resultText = _app.GetText("ResultText");
+			Assert.AreEqual("Pointer Released - No text selected", resultText, "Dragging should not select text.");
 		}
 	}
 }
