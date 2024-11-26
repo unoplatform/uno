@@ -75,12 +75,11 @@ namespace Windows.UI.Core
 			{
 				lock (_lock)
 				{
-					for (int i = 0; i < _handlers.Count; i++)
+					for (int i = _handlers.Count - 1; i >= 0; i--)
 					{
 						if (!_handlers[i].Target.IsAlive)
 						{
 							_handlers.RemoveAt(i);
-							i--;
 						}
 					}
 
