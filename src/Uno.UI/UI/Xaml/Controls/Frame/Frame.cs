@@ -9,7 +9,6 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
-using Uno.Disposables;
 using Uno.UI;
 using Uno.UI.Helpers;
 using Uno.UI.Xaml.Core;
