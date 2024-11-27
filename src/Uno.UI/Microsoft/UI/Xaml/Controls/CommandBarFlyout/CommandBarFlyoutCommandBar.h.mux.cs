@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\CommandBarFlyout\CommandBarFlyoutCommandBar.h, commit b91b3ce6f25c587a9e18c4e122f348f51331f18b
+// MUX Reference controls\dev\CommandBarFlyout\CommandBarFlyoutCommandBar.h, tag winui3/release/1.6.3, commit 66d24dfff3b2763ab3be096a2c7cbaafc81b31eb
 
 #nullable enable
 
@@ -48,6 +48,7 @@ partial class CommandBarFlyoutCommandBar
 	private readonly SerialDisposable m_secondaryItemsRootSizeChangedRevoker = new();
 	private readonly SerialDisposable m_firstItemLoadedRevoker = new();
 	private readonly CompositeDisposable m_itemLoadedRevokerVector = new();
+	private readonly CompositeDisposable m_itemSizeChangedRevokerVector = new();
 
 	// We need to manually connect the end element of the primary items to the start element of the secondary items
 	// for the purposes of UIA items navigation. To ensure that we only have the current start and end elements registered
@@ -89,6 +90,12 @@ partial class CommandBarFlyoutCommandBar
 	// dtor, so we cache a copy for ourselves to use during cleanup. Another possibility is to do cleanup during Closed,
 	// but the app can release and delete this CommandBarFlyoutCommandBar without ever closing it.
 	private ManagedWeakReference m_systemBackdrop;
+
+	// Bookkeeping for registering and unregistering with the SystemBackdrop. In order to register, we need to have a
+    // XamlRoot available so we can listen for events like theme changed or high contrast changed. It's possible we get
+    // a SystemBackdrop object set without being in the tree, in which case there's no XamlRoot so we can't register
+    // yet. We'll wait for the Loaded event to register.
+    private bool m_registeredWithSystemBackdrop;
 #endif
 
 	// Localized string caches. Looking these up from MRTCore is expensive, so we don't want to put the lookups in a

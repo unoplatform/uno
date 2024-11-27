@@ -1,35 +1,26 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\CommandBarFlyout\CommandBarFlyoutCommandBar.cpp, commit b91b3ce6f25c587a9e18c4e122f348f51331f18b
+// MUX Reference controls\dev\CommandBarFlyout\CommandBarFlyoutCommandBar.cpp, tag winui3/release/1.6.3, commit 66d24dfff3b2763ab3be096a2c7cbaafc81b31eb
 
 #nullable enable
 
 using System;
 using System.Collections.Generic;
-using System.Numerics;
+using System.Threading.Tasks;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media.Animation;
 using Uno.Disposables;
 using Uno.UI.DataBinding;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.System;
+using Windows.UI.Core;
 using Windows.UI.ViewManagement;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Automation;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media.Animation;
-
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 using static Uno.UI.Helpers.WinUI.ResourceAccessor;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Composition;
-using Microsoft.UI.Xaml.Hosting;
-using Windows.UI.Core;
-using Uno.Extensions;
-using System.Threading.Tasks;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives;
 
@@ -93,6 +84,12 @@ partial class CommandBarFlyoutCommandBar
 							}
 						}
 					}
+
+#if !HAS_UNO // We do not support SystemBackdrop yet.
+					TryConnectSystemBackdrop();
+					// If we have a SystemBackdrop, it should be connected by now.
+					MUX_ASSERT(m_registeredWithSystemBackdrop || !m_systemBackdrop);
+#endif
 				}
 			};
 
@@ -173,15 +170,20 @@ partial class CommandBarFlyoutCommandBar
 		};
 	}
 
-	//CommandBarFlyoutCommandBar::~CommandBarFlyoutCommandBar()
-	//{
-	//	// The SystemBackdrop DP has already been cleared out. Use our cached field.
-	//	if (auto systemBackdrop = m_systemBackdrop.get())
-	//	{
-	//		systemBackdrop.OnTargetDisconnected(m_backdropLink);
-	//		systemBackdrop.OnTargetDisconnected(m_overflowPopupBackdropLink);
-	//	}
-	//}
+#if !HAS_UNO // We do not support SystemBackdrop yet.
+	CommandBarFlyoutCommandBar::~CommandBarFlyoutCommandBar()
+	{
+		// The SystemBackdrop DP has already been cleared out. Use our cached field.
+		if (m_registeredWithSystemBackdrop)
+	  {
+			if (auto systemBackdrop = m_systemBackdrop.get())
+			{
+				systemBackdrop.OnTargetDisconnected(m_backdropLink);
+				systemBackdrop.OnTargetDisconnected(m_overflowPopupBackdropLink);
+			}
+		}
+	}
+#endif
 
 	protected override void OnApplyTemplate()
 	{
@@ -240,7 +242,7 @@ partial class CommandBarFlyoutCommandBar
 			// Hard-code a large size for the placement visual. The size and position of this lifted visual controls the
 			// size and position of the system visual with the backdrop. This visual is parented in a windowed popup, so it
 			// should use the popup's coordinate space, but we're seeing it use the main island's coordinate space instead.
-			// We don't easily have the popup hwnd's offset from outside MUX.dll, so just size the placement visual to a
+			// We don't easily have the popup island's offset from outside MUX.dll, so just size the placement visual to a
 			// large number to cover everything. We'll apply a clip to this placement visual later to size it to the
 			// CommandBarFlyoutCommandBar's contents.
 			placementVisual.Size = new(10000, 10000);
@@ -409,6 +411,7 @@ partial class CommandBarFlyoutCommandBar
 	private void AttachItemEventHandlers()
 	{
 		m_itemLoadedRevokerVector.Dispose();
+		m_itemSizeChangedRevokerVector.Dispose();
 
 		foreach (var command in PrimaryCommands)
 		{
@@ -417,9 +420,18 @@ partial class CommandBarFlyoutCommandBar
 				void OnItemLoaded(object? sender, object args)
 				{
 					UpdateItemVisualState(sender as Control, true /* isPrimaryControl */);
+					UpdateTemplateSettings();
 				}
 				commandAsFE.Loaded += OnItemLoaded;
 				m_itemLoadedRevokerVector.Add(() => commandAsFE.Loaded -= OnItemLoaded);
+
+				void OnItemSizeChanged(object? sender, SizeChangedEventArgs args)
+				{
+					UpdateItemVisualState(sender as Control, true /* isPrimaryControl */);
+					UpdateTemplateSettings();
+				}
+				commandAsFE.SizeChanged += OnItemSizeChanged;
+				m_itemSizeChangedRevokerVector.Add(() => commandAsFE.SizeChanged -= OnItemSizeChanged);
 			}
 		}
 
@@ -430,9 +442,18 @@ partial class CommandBarFlyoutCommandBar
 				void OnItemLoaded(object? sender, object args)
 				{
 					UpdateItemVisualState(sender as Control, false /* isPrimaryControl */);
+					UpdateTemplateSettings();
 				}
 				commandAsFE.Loaded += OnItemLoaded;
 				m_itemLoadedRevokerVector.Add(() => commandAsFE.Loaded -= OnItemLoaded);
+
+				void OnItemSizeChanged(object? sender, SizeChangedEventArgs args)
+				{
+					UpdateItemVisualState(sender as Control, true /* isPrimaryControl */);
+					UpdateTemplateSettings();
+				}
+				commandAsFE.SizeChanged += OnItemSizeChanged;
+				m_itemSizeChangedRevokerVector.Add(() => commandAsFE.SizeChanged -= OnItemSizeChanged);
 			}
 		}
 	}
@@ -1316,7 +1337,7 @@ partial class CommandBarFlyoutCommandBar
 
 		if (newFocus!.Focus(focusState))
 		{
-			if (oldFocus is not null && updateTabStop)
+			if (oldFocus is not null && updateTabStop && oldFocus != newFocus)
 			{
 				oldFocus.IsTabStop = false;
 			}
@@ -1560,6 +1581,7 @@ partial class CommandBarFlyoutCommandBar
 				{
 					oldSystemBackdrop.OnTargetDisconnected(m_backdropLink);
 					oldSystemBackdrop.OnTargetDisconnected(m_overflowPopupBackdropLink);
+					m_registeredWithSystemBackdrop = false;
 				}
 
 				m_systemBackdrop = WeakReferencePool.RentWeakReference(this, newSystemBackdrop);
@@ -1574,14 +1596,34 @@ partial class CommandBarFlyoutCommandBar
 						m_overflowPopupBackdropLink = ContentExternalBackdropLink.Create(compositor);
 					}
 
-					newSystemBackdrop.OnTargetConnected(m_backdropLink, XamlRoot);
-					newSystemBackdrop.OnTargetConnected(m_overflowPopupBackdropLink, XamlRoot);
+					TryConnectSystemBackdrop();
 				}
 
 				else
 				{
 					m_backdropLink = null;
 					m_overflowPopupBackdropLink = null;
+				}
+			}
+
+			private void TryConnectSystemBackdrop()
+			{
+				if (!m_registeredWithSystemBackdrop)
+				{
+					if (m_systemBackdrop is { } systemBackdrop)
+					{
+						MUX_ASSERT(m_backdropLink);
+						MUX_ASSERT(m_overflowPopupBackdropLink);
+
+						var xamlRoot = XamlRoot;
+
+						if (xamlRoot is not null)
+						{
+							systemBackdrop.OnTargetConnected(m_backdropLink, XamlRoot);
+							systemBackdrop.OnTargetConnected(m_overflowPopupBackdropLink, XamlRoot);
+							m_registeredWithSystemBackdrop = true;
+						}
+					}
 				}
 			}
 #endif
