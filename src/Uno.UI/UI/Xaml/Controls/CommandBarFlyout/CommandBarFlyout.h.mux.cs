@@ -62,7 +62,7 @@ partial class CommandBarFlyout
 	private readonly Dictionary<int, IDisposable> m_secondaryToggleButtonUncheckedRevokerByIndexMap = new();
 	private readonly Dictionary<int, IDisposable[]> m_propertyChangedRevokersByIndexMap = new();
 
-	private FlyoutPresenter? m_presenter = null;
+	private FlyoutPresenter? m_presenter;
 
-	private bool m_isClosingAfterCloseAnimation = false;
+	private bool m_isClosingAfterCloseAnimation;
 }
