@@ -63,7 +63,10 @@ internal partial class BrowserPointerInputSource : IUnoCorePointerInputSource
 		if (inputSource is BrowserPointerInputSource that)
 		{
 			that._bootTime = (ulong)bootTime;
-			that._isIOs = userAgent.Contains("iPhone") || userAgent.Contains("iPad"); // Note: OperatingSystem.IsIOS() is false
+
+			// Note: OperatingSystem.IsIOS() is false
+			that._isIOs = userAgent.Contains("iPhone", StringComparison.OrdinalIgnoreCase)
+				|| userAgent.Contains("iPad", StringComparison.OrdinalIgnoreCase);
 
 			_logTrace?.Trace("Complete initialization of BrowserPointerInputSource, we are now ready to receive pointer events!");
 		}

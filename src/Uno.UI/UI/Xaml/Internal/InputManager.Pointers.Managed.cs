@@ -239,10 +239,9 @@ internal partial class InputManager
 #endif
 
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource) { IsInjected = isInjected };
-			var result = default(PointerEventDispatchResult);
 
 			// First raise the event, either on the OriginalSource or on the capture owners if any
-			result = RaiseUsingCaptures(Wheel, originalSource, routedArgs, setCursor: true);
+			var result = RaiseUsingCaptures(Wheel, originalSource, routedArgs, setCursor: true);
 
 			// Scrolling can change the element underneath the pointer, so we need to update
 			(originalSource, var staleBranch) = HitTest(args, caller: "OnPointerWheelChanged_post_wheel", isStale: _isOver);
