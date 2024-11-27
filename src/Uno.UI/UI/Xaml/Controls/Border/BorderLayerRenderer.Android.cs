@@ -263,16 +263,11 @@ namespace Uno.UI.Xaml.Controls
 			// because even though the brush instance is the same, there are additional properties
 			// that BorderLayerState tracks on Android. This is not ideal and we should avoid it by refactoring
 			// this file to handle brush changes on the same brush instance on its own instead.
-<<<<<<< HEAD
-			Brush.SetupBrushChanged(_currentState.Background, background, ref _backgroundChanged, () => Update(), false);
-			Brush.SetupBrushChanged(_currentState.BorderBrush, borderBrush, ref _borderChanged, () => Update(), false);
-=======
 			_backgroundBrushChangedSubscription?.Dispose();
-			_backgroundBrushChangedSubscription = Brush.SetupBrushChanged(background, ref _backgroundChanged, () => Update(true), false);
+			_backgroundBrushChangedSubscription = Brush.SetupBrushChanged(background, ref _backgroundChanged, () => Update(), false);
 
 			_borderBrushChangedSubscription?.Dispose();
-			_borderBrushChangedSubscription = Brush.SetupBrushChanged(borderBrush, ref _borderChanged, () => Update(true), false);
->>>>>>> 679b4bff33 (perf(brush): Don't use reflection to invoke brush updates)
+			_borderBrushChangedSubscription = Brush.SetupBrushChanged(borderBrush, ref _borderChanged, () => Update(), false);
 
 			return disposables;
 		}

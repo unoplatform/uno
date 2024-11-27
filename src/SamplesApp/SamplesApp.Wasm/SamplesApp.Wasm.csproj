@@ -14,15 +14,7 @@
 		<UseUnoXamlParser>true</UseUnoXamlParser>
 		<UnoRuntimeIdentifier>WebAssembly</UnoRuntimeIdentifier>
 		<WasmShellIncludeWindowsCompatibility>false</WasmShellIncludeWindowsCompatibility>
-<<<<<<< HEAD
 
-=======
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		
-		<!-- Required for net9 workloads -->
-		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-		
->>>>>>> cee9464a4f (chore: Use GC events to cleanup the handlers collection)
 		<!-- To build with AOT, uncomment these two lines -->
 		<!--<WasmShellEnableEmccProfiling>true</WasmShellEnableEmccProfiling>
 		<WasmShellMonoRuntimeExecutionMode>InterpreterAndAOT</WasmShellMonoRuntimeExecutionMode>-->
