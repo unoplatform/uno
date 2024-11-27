@@ -1,3 +1,5 @@
+# Downloads the UWP converted source tree from the pipeline artifacts if the UNO_UWP_BUILD variable is set to true.
+
 steps:
   - pwsh: |
       cd $(Build.SourcesDirectory)

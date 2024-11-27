@@ -1,10 +1,12 @@
+# Generates a changelog file based on the conventional commit messages
+
 steps:
 
   - bash: |
       npm install -g conventional-changelog-cli@2.2.2
       conventional-changelog -p angular -u -r 2 -o "build/CHANGELOG.md"
       # sed -r -i 's/\[(.*?)\]\((.*?)\)/\2/g' build/CHANGELOG.md
-    displayName: 'Generate CHANGELOG.MD'
+    displayName: 'Generate changelog'
     
   - task: CopyFiles@2
     displayName: Copy changelog
@@ -15,6 +17,7 @@ steps:
       TargetFolder: $(build.artifactstagingdirectory)
 
   - task: PublishBuildArtifacts@1
+    displayName: Publish changelog
     condition: always()
     retryCountOnTaskFailure: 3
     inputs:

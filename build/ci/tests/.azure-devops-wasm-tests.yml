@@ -40,7 +40,7 @@ jobs:
     displayName: 'Build sample app (net9.0)'
 
   - task: CopyFiles@2
-    displayName: 'Publish Wasm Site (net9.0)'
+    displayName: 'Publish WebAssembly Site (net9.0)'
     inputs:
       SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Wasm/bin/Release/net9.0/browser-wasm/publish/wwwroot
       Contents: '**/*.*'
@@ -50,6 +50,7 @@ jobs:
       flattenFolders: false
 
   - task: PublishBuildArtifacts@1
+    displayName: 'Publish WebAssembly sample app build artifacts'
     condition: always()
     retryCountOnTaskFailure: 3
     inputs:
@@ -121,7 +122,7 @@ jobs:
 
 
 - job: Wasm_UITests_Automated
-  displayName: ' WebAssembly Tests'
+  displayName: 'Run WebAssembly'
   dependsOn:
   - Wasm_UITests_Build
 
@@ -129,21 +130,21 @@ jobs:
 
   strategy:
     matrix:
-      net9_default:
+      '.NET 9 UWP UI Tests':
         SITE_SUFFIX: 'net9.0-UWP'
         UITEST_AUTOMATED_GROUP: 'Default'
         UITEST_TEST_TIMEOUT: '120s'
         IS_RUNTIME_TESTS: false
         IS_UI_TESTS: true
 
-      net9_benchmarks:
+      '.NET 9 WinUI Benchmarks':
         SITE_SUFFIX: 'net9.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'Benchmarks'
         UITEST_TEST_TIMEOUT: '15m'
         IS_RUNTIME_TESTS: false
         IS_UI_TESTS: true
 
-      net9_uwp_runtimetests_group_00:
+      '.NET 9 UWP Runtime Tests 1':
         SITE_SUFFIX: 'net9.0-UWP'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
         UITEST_TEST_TIMEOUT: '20m'
@@ -152,7 +153,7 @@ jobs:
         IS_RUNTIME_TESTS: true
         IS_UI_TESTS: false
 
-      net9_uwp_runtimetests_group_01:
+      '.NET 9 UWP Runtime Tests 2':
         SITE_SUFFIX: 'net9.0-UWP'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
         UITEST_TEST_TIMEOUT: '20m'
@@ -161,7 +162,7 @@ jobs:
         IS_RUNTIME_TESTS: true
         IS_UI_TESTS: false
 
-      net9_uwp_runtimetests_group_02:
+      '.NET 9 UWP Runtime Tests 3':
         SITE_SUFFIX: 'net9.0-UWP'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
         UITEST_TEST_TIMEOUT: '20m'
@@ -170,7 +171,7 @@ jobs:
         IS_RUNTIME_TESTS: true
         IS_UI_TESTS: false
 
-      net9_winui_runtimetests_group_00:
+      '.NET 9 WinUI Runtime Tests 1':
         SITE_SUFFIX: 'net9.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
         UITEST_TEST_TIMEOUT: '20m'
@@ -179,7 +180,7 @@ jobs:
         IS_RUNTIME_TESTS: true
         IS_UI_TESTS: false
 
-      net9_winui_runtimetests_group_01:
+      '.NET 9 WinUI Runtime Tests 2':
         SITE_SUFFIX: 'net9.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
         UITEST_TEST_TIMEOUT: '20m'
@@ -188,7 +189,7 @@ jobs:
         IS_RUNTIME_TESTS: true
         IS_UI_TESTS: false
 
-      net9_winui_runtimetests_group_02:
+      '.NET 9 WinUI Runtime Tests 3':
         SITE_SUFFIX: 'net9.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
         UITEST_TEST_TIMEOUT: '20m'
@@ -213,10 +214,12 @@ jobs:
       nugetPackages: $(NUGET_PACKAGES)
 
   - task: NodeTool@0
+    displayName: 'Install Node.js'
     inputs:
       versionSpec: '18.x'
 
   - task: DownloadBuildArtifacts@0
+    displayName: 'Download WebAssembly binaries'
     inputs:
         artifactName: wasm-uitest-binaries
         downloadPath: '$(build.sourcesdirectory)/build'
@@ -266,6 +269,7 @@ jobs:
     displayName: 'Running UI Tests'
 
   - task: PublishTestResults@2
+    displayName: 'Publish UI Tests Results'
     condition: always()
     inputs:
       testResultsFiles: '$(build.sourcesdirectory)/build/TestResult-original.xml'
@@ -277,6 +281,7 @@ jobs:
       searchFolder: '$(build.artifactstagingdirectory)/screenshots/wasm-automated' # https://github.com/microsoft/azure-pipelines-tasks/issues/10072
 
   - task: PublishTestResults@2
+    displayName: 'Publish Runtime Tests Results'
     condition: always()
     inputs:
       testResultsFiles: '$(build.sourcesdirectory)/build/RuntimeTestResults*.xml'
@@ -287,6 +292,7 @@ jobs:
       failTaskOnMissingResultsFile: $(IS_RUNTIME_TESTS)
 
   - task: PublishBuildArtifacts@1
+    displayName: 'Publish UI tests results'
     condition: always()
     retryCountOnTaskFailure: 3
     inputs:
@@ -295,6 +301,7 @@ jobs:
       ArtifactType: Container
 
   - task: PublishBuildArtifacts@1
+    displayName: 'Publish failed tests results'
     condition: always()
     retryCountOnTaskFailure: 3
     inputs:
