@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\CommandBarFlyout\CommandBarFlyout.cpp, commit b91b3ce6f25c587a9e18c4e122f348f51331f18b
+// MUX Reference controls\dev\CommandBarFlyout\CommandBarFlyout.cpp, tag winui3/release/1.6.3, commit 66d24dfff3b2763ab3be096a2c7cbaafc81b31eb
 
 using System;
 using Microsoft.UI.Xaml.Controls.Primitives;
