@@ -21,6 +21,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private readonly WeakReference<TextBox> _textBox;
 
 		private Action _foregroundChanged;
+		private IDisposable _foregroundBrushChangedSubscription;
 
 		public TextBoxView(TextBox textBox)
 		{
@@ -177,7 +178,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public void OnForegroundChanged(Brush oldValue, Brush newValue)
 		{
-			Brush.SetupBrushChanged(oldValue, newValue, ref _foregroundChanged, () => ApplyColor());
+			_foregroundBrushChangedSubscription?.Dispose();
+			_foregroundBrushChangedSubscription = Brush.SetupBrushChanged(newValue, ref _foregroundChanged, () => ApplyColor());
 
 			void ApplyColor()
 			{
