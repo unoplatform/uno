@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\CommandBarFlyout\CommandBarFlyout.h, tag winui3/release/1.5.2, commit b91b3ce6f25c587a9e18c4e122f348f51331f18b
+// MUX Reference controls\dev\CommandBarFlyout\CommandBarFlyout.h, tag winui3/release/1.6.3, commit 66d24dfff3b2763ab3be096a2c7cbaafc81b31eb
 
 #nullable enable
 
@@ -52,7 +52,9 @@ partial class CommandBarFlyout
 
 	private readonly SerialDisposable m_commandBarOpenedRevoker = new();
 	private readonly SerialDisposable m_commandBarOpeningRevoker = new();
-	private readonly SerialDisposable m_commandBarClosedRevoker = new();
+#if false // Not used in WinUI
+    private readonly SerialDisposable m_commandBarClosedRevoker = new();
+#endif
 	private readonly SerialDisposable m_commandBarClosingRevoker = new();
 
 	private readonly Dictionary<int, IDisposable> m_secondaryButtonClickRevokerByIndexMap = new();

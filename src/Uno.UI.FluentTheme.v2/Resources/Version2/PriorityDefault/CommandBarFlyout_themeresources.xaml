@@ -1,5 +1,5 @@
 ﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
-<!-- MUX Reference controls\dev\CommandBarFlyout\CommandBarFlyout_themeresources.xaml, tag winui3/release/1.5.2, commit b91b3ce6f25c587a9e18c4e122f348f51331f18b -->
+<!-- MUX Reference controls\dev\CommandBarFlyout\CommandBarFlyout_themeresources.xaml, tag winui3/release/1.6.3, commit 66d24dfff3b2763ab3be096a2c7cbaafc81b31eb -->
 <ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:primitives="using:Microsoft.UI.Xaml.Controls.Primitives" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
   <ResourceDictionary.ThemeDictionaries>
     <ResourceDictionary x:Key="Default">
@@ -271,13 +271,13 @@
                 </VisualState>
               </VisualStateGroup>
               <VisualStateGroup x:Name="PrimaryLabelStates">
-                <VisualState x:Name="HasPrimaryLabels" />
-                <VisualState x:Name="NoPrimaryLabels">
+                <VisualState x:Name="NoPrimaryLabels" />
+                <VisualState x:Name="HasPrimaryLabels">
                   <VisualState.Setters>
-                    <Setter Target="IconAndLabelPanel.Margin" Value="0" />
-                    <Setter Target="IconAndLabelPanel.VerticalAlignment" Value="Center" />
-                    <Setter Target="IconAndLabelPanel.Width" Value="NaN" />
-                    <Setter Target="TextLabel.Visibility" Value="Collapsed" />
+                    <Setter Target="IconAndLabelPanel.Margin" Value="0,9,0,0" />
+                    <Setter Target="IconAndLabelPanel.VerticalAlignment" Value="Top" />
+                    <Setter Target="IconAndLabelPanel.Width" Value="60" />
+                    <Setter Target="TextLabel.Visibility" Value="Visible" />
                   </VisualState.Setters>
                 </VisualState>
               </VisualStateGroup>
@@ -293,7 +293,7 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
               </Grid.ColumnDefinitions>
-              <Grid x:Name="IconAndLabelPanel" VerticalAlignment="Top" Margin="0,9,0,0" Width="60">
+              <Grid x:Name="IconAndLabelPanel" VerticalAlignment="Center">
                 <Grid.RowDefinitions>
                   <RowDefinition Height="*" />
                   <RowDefinition Height="Auto" />
@@ -301,7 +301,7 @@
                 <Viewbox x:Name="ContentViewbox" Height="16" AutomationProperties.AccessibilityView="Raw">
                   <ContentPresenter x:Name="Content" Content="{TemplateBinding Icon}" Foreground="{TemplateBinding Foreground}" />
                 </Viewbox>
-                <TextBlock x:Name="TextLabel" Grid.Row="1" Text="{TemplateBinding Label}" Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{TemplateBinding Foreground}" FontFamily="{TemplateBinding FontFamily}" TextAlignment="Center" TextTrimming="Clip" TextWrapping="Wrap" HorizontalAlignment="Center" Margin="0,6,0,2" AutomationProperties.AccessibilityView="Raw" />
+                <TextBlock x:Name="TextLabel" Grid.Row="1" Text="{TemplateBinding Label}" Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{TemplateBinding Foreground}" FontFamily="{TemplateBinding FontFamily}" TextAlignment="Center" TextTrimming="Clip" TextWrapping="Wrap" HorizontalAlignment="Center" Margin="0,6,0,2" Visibility="Collapsed" AutomationProperties.AccessibilityView="Raw" />
               </Grid>
               <TextBlock x:Name="OverflowTextLabel" Text="{TemplateBinding Label}" Style="{ThemeResource BodyTextBlockStyle}" Foreground="{TemplateBinding Foreground}" FontFamily="{TemplateBinding FontFamily}" TextAlignment="Left" TextTrimming="Clip" TextWrapping="NoWrap" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="12,0,12,0" Padding="0,6,0,7" Visibility="Collapsed" AutomationProperties.AccessibilityView="Raw" />
               <TextBlock x:Name="KeyboardAcceleratorTextLabel" Grid.Column="1" Style="{ThemeResource CaptionTextBlockStyle}" Text="{TemplateBinding KeyboardAcceleratorTextOverride}" MinWidth="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.KeyboardAcceleratorTextMinWidth}" Margin="24,0,12,0" Foreground="{ThemeResource CommandBarFlyoutAppBarButtonKeyboardTextLabelForeground}" HorizontalAlignment="Right" VerticalAlignment="Center" Visibility="Collapsed" AutomationProperties.AccessibilityView="Raw" />
@@ -485,13 +485,13 @@
                 </VisualState>
               </VisualStateGroup>
               <VisualStateGroup x:Name="PrimaryLabelStates">
-                <VisualState x:Name="HasPrimaryLabels" />
-                <VisualState x:Name="NoPrimaryLabels">
+                <VisualState x:Name="NoPrimaryLabels" />
+                <VisualState x:Name="HasPrimaryLabels">
                   <VisualState.Setters>
-                    <Setter Target="IconAndLabelPanel.Margin" Value="0" />
-                    <Setter Target="IconAndLabelPanel.VerticalAlignment" Value="Center" />
-                    <Setter Target="IconAndLabelPanel.Width" Value="NaN" />
-                    <Setter Target="TextLabel.Visibility" Value="Collapsed" />
+                    <Setter Target="IconAndLabelPanel.Margin" Value="0,9,0,0" />
+                    <Setter Target="IconAndLabelPanel.VerticalAlignment" Value="Top" />
+                    <Setter Target="IconAndLabelPanel.Width" Value="60" />
+                    <Setter Target="TextLabel.Visibility" Value="Visible" />
                   </VisualState.Setters>
                 </VisualState>
               </VisualStateGroup>
@@ -507,7 +507,7 @@
                 <ColumnDefinition Width="Auto" />
               </Grid.ColumnDefinitions>
               <TextBlock x:Name="OverflowCheckGlyph" Text="&#xE73E;" Foreground="{ThemeResource CommandBarFlyoutAppBarButtonForeground}" FontFamily="{ThemeResource SymbolThemeFontFamily}" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="15,4,14,4" Opacity="0" Visibility="Collapsed" AutomationProperties.AccessibilityView="Raw" />
-              <Grid x:Name="IconAndLabelPanel" VerticalAlignment="Top" Margin="0,9,0,0" Width="60">
+              <Grid x:Name="IconAndLabelPanel" VerticalAlignment="Top">
                 <Grid.RowDefinitions>
                   <RowDefinition Height="*" />
                   <RowDefinition Height="Auto" />
@@ -515,7 +515,7 @@
                 <Viewbox x:Name="ContentViewbox" Height="16" AutomationProperties.AccessibilityView="Raw">
                   <ContentPresenter x:Name="Content" Content="{TemplateBinding Icon}" Foreground="{TemplateBinding Foreground}" />
                 </Viewbox>
-                <TextBlock x:Name="TextLabel" Grid.Row="1" Text="{TemplateBinding Label}" Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{TemplateBinding Foreground}" FontFamily="{TemplateBinding FontFamily}" TextAlignment="Center" TextTrimming="Clip" TextWrapping="Wrap" HorizontalAlignment="Center" Margin="0,6,0,2" AutomationProperties.AccessibilityView="Raw" />
+                <TextBlock x:Name="TextLabel" Grid.Row="1" Text="{TemplateBinding Label}" Style="{ThemeResource CaptionTextBlockStyle}" Foreground="{TemplateBinding Foreground}" FontFamily="{TemplateBinding FontFamily}" TextAlignment="Center" TextTrimming="Clip" TextWrapping="Wrap" HorizontalAlignment="Center" Margin="0,6,0,2" Visibility="Collapsed" AutomationProperties.AccessibilityView="Raw" />
               </Grid>
               <TextBlock x:Name="OverflowTextLabel" Text="{TemplateBinding Label}" Style="{ThemeResource BodyTextBlockStyle}" Foreground="{TemplateBinding Foreground}" FontFamily="{TemplateBinding FontFamily}" TextAlignment="Left" TextTrimming="Clip" TextWrapping="NoWrap" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="39,0,12,0" Padding="0,6,0,7" Visibility="Collapsed" AutomationProperties.AccessibilityView="Raw" />
               <TextBlock x:Name="KeyboardAcceleratorTextLabel" Grid.Column="1" Style="{ThemeResource CaptionTextBlockStyle}" Text="{TemplateBinding KeyboardAcceleratorTextOverride}" MinWidth="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.KeyboardAcceleratorTextMinWidth}" Margin="24,0,12,0" Foreground="{ThemeResource CommandBarFlyoutAppBarButtonKeyboardTextLabelForeground}" HorizontalAlignment="Right" VerticalAlignment="Center" Visibility="Collapsed" AutomationProperties.AccessibilityView="Raw" />
@@ -1013,11 +1013,11 @@
                 </VisualState>
               </VisualStateGroup>
               <VisualStateGroup x:Name="PrimaryLabelStates">
-                <VisualState x:Name="HasPrimaryLabels" />
-                <VisualState x:Name="NoPrimaryLabels">
+                <VisualState x:Name="NoPrimaryLabels" />
+                <VisualState x:Name="HasPrimaryLabels">
                   <VisualState.Setters>
-                    <Setter Target="PrimaryItemsControl.MinHeight" Value="0" />
-                    <Setter Target="PrimaryItemsControl.Height" Value="40" />
+                    <Setter Target="PrimaryItemsControl.MinHeight" Value="52" />
+                    <Setter Target="PrimaryItemsControl.Height" Value="NaN" />
                   </VisualState.Setters>
                 </VisualState>
               </VisualStateGroup>
@@ -1044,7 +1044,7 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" MinWidth="3" />
                   </Grid.ColumnDefinitions>
-                    <ItemsControl x:Name="PrimaryItemsControl" MinHeight="52" Margin="3,3,0,3" Grid.Column="0" IsTabStop="False" HorizontalAlignment="Left">
+                    <ItemsControl x:Name="PrimaryItemsControl" Height="40" Margin="3,3,0,3" Grid.Column="0" IsTabStop="False" HorizontalAlignment="Left">
                     <ItemsControl.ItemsPanel>
                       <ItemsPanelTemplate>
                         <StackPanel Orientation="Horizontal" />
