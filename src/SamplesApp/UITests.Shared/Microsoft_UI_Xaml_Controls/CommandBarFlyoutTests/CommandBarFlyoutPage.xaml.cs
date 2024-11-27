@@ -660,9 +660,9 @@ public sealed partial class CommandBarFlyoutPage : TestPage
 		UndoButtonOverflow16.SizeChanged -= UndoButtonOverflow16_SizeChanged;
 
 		// These visual elements don't have automation peers we can access, so we need to expose their bounds to the test the hard way.
-		var undoButtonOverflow16ContentViewbox = UndoButtonOverflow16.FindVisualChildByName("ContentViewbox");
-		var undoButtonOverflow16OverflowTextLabel = UndoButtonOverflow16.FindVisualChildByName("OverflowTextLabel");
-		var redoButton16ContentViewbox = RedoButton16.FindVisualChildByName("ContentViewbox");
+		var undoButtonOverflow16ContentViewbox = (FrameworkElement)UndoButtonOverflow16.FindVisualChildByName("ContentViewbox");
+		var undoButtonOverflow16OverflowTextLabel = (FrameworkElement)UndoButtonOverflow16.FindVisualChildByName("OverflowTextLabel");
+		var redoButton16ContentViewbox = (FrameworkElement)RedoButton16.FindVisualChildByName("ContentViewbox");
 
 		var undoButtonOverflow16ContentViewboxBounds = undoButtonOverflow16ContentViewbox.TransformToVisual(null).TransformBounds(new Windows.Foundation.Rect(0, 0, undoButtonOverflow16ContentViewbox.ActualWidth, undoButtonOverflow16ContentViewbox.ActualHeight));
 		var undoButtonOverflow16OverflowTextLabelBounds = undoButtonOverflow16OverflowTextLabel.TransformToVisual(null).TransformBounds(new Windows.Foundation.Rect(0, 0, undoButtonOverflow16ContentViewbox.ActualWidth, undoButtonOverflow16ContentViewbox.ActualHeight));
