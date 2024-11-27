@@ -61,7 +61,6 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-
     - name: Free Disk Space (Ubuntu)
       if: runner.os == 'Linux'
       uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be #v1.3.1
@@ -73,12 +72,24 @@ jobs:
         # all of these default to true, but feel free to set to
         # "false" if necessary for your workflow
         android: true
-        dotnet: false
+        dotnet: true
         haskell: true
         large-packages: true
         docker-images: true
         swap-storage: true
 
+    - name: Pin .NET Version
+      run: |
+        cp build/ci/net9/global.json global.json
+
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@3447fd6a9f9e57506b15f895c5b76d3b197dc7c2 # v3
+      with:
+        global-json-file: global.json
+      env:
+        DOTNET_INSTALL_DIR: ${{ runner.temp }}\dotnet
+        DOTNET_ROOT: ${{ runner.temp }}\dotnet
+  
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
