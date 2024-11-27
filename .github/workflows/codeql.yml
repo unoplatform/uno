@@ -87,8 +87,8 @@ jobs:
       with:
         global-json-file: global.json
       env:
-        DOTNET_INSTALL_DIR: ${{ runner.temp }}\dotnet
-        DOTNET_ROOT: ${{ runner.temp }}\dotnet
+        DOTNET_INSTALL_DIR: ${{ runner.temp }}/.dotnet
+        DOTNET_ROOT: ${{ runner.temp }}/.dotnet
   
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
