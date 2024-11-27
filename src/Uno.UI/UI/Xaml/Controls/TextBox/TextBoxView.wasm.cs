@@ -20,6 +20,7 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		private readonly TextBox _textBox;
 		private Action _foregroundChanged;
+		private IDisposable _foregroundBrushChangedSubscription;
 
 		private bool _browserContextMenuEnabled = true;
 		private bool _isReadOnly;
@@ -44,7 +45,8 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (e.NewValue is SolidColorBrush scb)
 			{
-				Brush.SetupBrushChanged(e.OldValue as Brush, scb, ref _foregroundChanged, () => SetForeground(scb));
+				_foregroundBrushChangedSubscription?.Dispose();
+				_foregroundBrushChangedSubscription = Brush.SetupBrushChanged(scb, ref _foregroundChanged, () => SetForeground(scb));
 			}
 		}
 
