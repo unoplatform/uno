@@ -96,14 +96,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			await UITestHelper.Load(page);
 
 			var foreground = (SolidColorBrush)page.GridTextBlock.Foreground;
-			Assert.AreEqual(Colors.Red, foreground.Color);
+			Assert.AreEqual(Microsoft.UI.Colors.Red, foreground.Color);
 
 			page.ShowPopup();
 
 			await TestServices.WindowHelper.WaitFor(() => VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot).Count > 0);
 
 			var popupForeground = (SolidColorBrush)page.PopupTextBlock.Foreground;
-			Assert.AreEqual(Colors.Red, popupForeground.Color);
+			Assert.AreEqual(Microsoft.UI.Colors.Red, popupForeground.Color);
 		}
 	}
 }
