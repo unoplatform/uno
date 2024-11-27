@@ -138,7 +138,7 @@ public partial class Popup : FrameworkElement, IPopup
 
 	partial void OnChildChangedPartial(UIElement oldChild, UIElement newChild)
 	{
-		if (oldChild is FrameworkElement oldChildFe && oldChildFe.Parent == this)
+		if (oldChild is FrameworkElement oldChildFe && oldChildFe.LogicalParentOverride == this)
 		{
 			oldChildFe.SetLogicalParent(null);
 		}
