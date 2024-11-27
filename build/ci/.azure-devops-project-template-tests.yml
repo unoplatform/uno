@@ -15,6 +15,9 @@ jobs:
   dependsOn:
     - Generate_Packages
 
+  variables:
+    NuGetAudit: false
+
   steps:
   - task: DownloadBuildArtifacts@0
     inputs:
@@ -55,6 +58,9 @@ jobs:
   dependsOn:
     - Generate_Packages
 
+  variables:
+    NuGetAudit: false
+
   steps:
   - task: DownloadBuildArtifacts@0
     inputs:
@@ -94,6 +100,9 @@ jobs:
   pool: ${{ parameters.vmPoolLinux }}
 
   container: unoplatform/wasm-build:2.3
+
+  variables:
+    NuGetAudit: false
 
   steps:
   - task: DownloadBuildArtifacts@0
