@@ -238,7 +238,6 @@ internal partial class PopupPanel : Panel
 	private protected override void OnUnloaded()
 	{
 		base.OnUnloaded();
-		this.SetLogicalParent(null);
 
 		if (XamlRoot is { } xamlRoot)
 		{
