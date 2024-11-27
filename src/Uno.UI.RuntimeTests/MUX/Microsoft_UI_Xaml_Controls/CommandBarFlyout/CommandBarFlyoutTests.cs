@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\CommandBarFlyout\APITests\CommandBarFlyoutTests.cs, tag winui3/release/1.5.2, commit b91b3ce6f25c587a9e18c4e122f348f51331f18b
+// MUX Reference controls\dev\CommandBarFlyout\APITests\CommandBarFlyoutTests.cs, tag winui3/release/1.6.3, commit 66d24dfff3b2763ab3be096a2c7cbaafc81b31eb
 
 using Common;
 using MUXControlsTestApp.Utilities;
@@ -15,6 +15,8 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using System.Threading.Tasks;
+using Private.Infrastructure;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests;
 
@@ -39,13 +41,13 @@ public class CommandBarFlyoutTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Verifies that setting commands on CommandBarFlyout causes them to propagate down to its CommandBar.")]
-	public void VerifyFlyoutCommandsArePropagatedToTheCommandBar()
+	public async Task VerifyFlyoutCommandsArePropagatedToTheCommandBar()
 	{
 		CommandBarFlyout commandBarFlyout = null;
 		Button commandBarFlyoutTarget = null;
 
 		SetupCommandBarFlyoutTest(out commandBarFlyout, out commandBarFlyoutTarget);
-		OpenFlyout(commandBarFlyout, commandBarFlyoutTarget);
+		await OpenFlyout(commandBarFlyout, commandBarFlyoutTarget);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -67,7 +69,7 @@ public class CommandBarFlyoutTests : MUXApiTestBase
 			}
 		});
 
-		CloseFlyout(commandBarFlyout);
+		await CloseFlyout(commandBarFlyout);
 	}
 
 	private enum CommandBarSizingOptions
@@ -80,33 +82,33 @@ public class CommandBarFlyoutTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Verifies that the overflow popup sizes itself to be the size of the main command bar if the primary items section width is larger than the secondary items section width.")]
-	public void VerifyCommandBarSizingPrimaryItemsLarger()
+	public async Task VerifyCommandBarSizingPrimaryItemsLarger()
 	{
-		VerifyCommandBarSizing(CommandBarSizingOptions.PrimaryItemsLarger);
+		await VerifyCommandBarSizing(CommandBarSizingOptions.PrimaryItemsLarger);
 	}
 
 	[TestMethod]
 	[TestProperty("Description", "Verifies that the main command bar sizes itself to be the size of the overflow popup when open if the primary items section width is smaller than the secondary items section width.")]
-	public void VerifyCommandBarSizingSecondaryItemsLarger()
+	public async Task VerifyCommandBarSizingSecondaryItemsLarger()
 	{
-		VerifyCommandBarSizing(CommandBarSizingOptions.SecondaryItemsLarger);
+		await VerifyCommandBarSizing(CommandBarSizingOptions.SecondaryItemsLarger);
 	}
 
 	[TestMethod]
 	[TestProperty("Description", "Verifies that the command bar and overflow popup do not size themselves to be larger than the max width if a very wide AppBarButton is present.")]
-	public void VerifyCommandBarSizingSecondaryItemsMaxWidth()
+	public async Task VerifyCommandBarSizingSecondaryItemsMaxWidth()
 	{
-		VerifyCommandBarSizing(CommandBarSizingOptions.SecondaryItemsMaxWidth);
+		await VerifyCommandBarSizing(CommandBarSizingOptions.SecondaryItemsMaxWidth);
 	}
 
 	[TestMethod]
 	[TestProperty("Description", "Verifies that the overflow popup does not size itself to be larger than its max height if a sufficiently large number of AppBarButtons are present.")]
-	public void VerifyCommandBarSizingSecondaryItemsMaxHeight()
+	public async Task VerifyCommandBarSizingSecondaryItemsMaxHeight()
 	{
-		VerifyCommandBarSizing(CommandBarSizingOptions.SecondaryItemsMaxHeight);
+		await VerifyCommandBarSizing(CommandBarSizingOptions.SecondaryItemsMaxHeight);
 	}
 
-	private void VerifyCommandBarSizing(CommandBarSizingOptions sizingOptions)
+	private async Task VerifyCommandBarSizing(CommandBarSizingOptions sizingOptions)
 	{
 		CommandBarFlyout commandBarFlyout = null;
 		Button commandBarFlyoutTarget = null;
@@ -132,7 +134,7 @@ public class CommandBarFlyoutTests : MUXApiTestBase
 			}
 		});
 
-		OpenFlyout(commandBarFlyout, commandBarFlyoutTarget);
+		await OpenFlyout(commandBarFlyout, commandBarFlyoutTarget);
 
 		CommandBar commandBar = null;
 
@@ -142,7 +144,7 @@ public class CommandBarFlyoutTests : MUXApiTestBase
 			commandBar = TestUtilities.FindDescendents<CommandBar>(flyoutPopup).Single();
 		});
 
-		IdleSynchronizer.Wait();
+		await TestServices.WindowHelper.WaitForIdle();
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -151,7 +153,7 @@ public class CommandBarFlyoutTests : MUXApiTestBase
 			commandBar.IsOpen = false;
 		});
 
-		IdleSynchronizer.Wait();
+		await TestServices.WindowHelper.WaitForIdle();
 
 		double originalWidth = 0;
 		double originalHeight = 0;
@@ -167,7 +169,7 @@ public class CommandBarFlyoutTests : MUXApiTestBase
 			commandBar.IsOpen = true;
 		});
 
-		IdleSynchronizer.Wait();
+		await TestServices.WindowHelper.WaitForIdle();
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -199,13 +201,13 @@ public class CommandBarFlyoutTests : MUXApiTestBase
 			commandBar.IsOpen = false;
 		});
 
-		IdleSynchronizer.Wait();
-		CloseFlyout(commandBarFlyout);
+		await TestServices.WindowHelper.WaitForIdle();
+		await CloseFlyout(commandBarFlyout);
 	}
 
 	[TestMethod]
 	[TestProperty("Description", "Verifies that the overflow popup does not size itself to be larger than its max height if a sufficiently large number of AppBarButtons are present.")]
-	public void VerifyPrimaryCommandsCanOverflowToSecondaryItemsControl()
+	public async Task VerifyPrimaryCommandsCanOverflowToSecondaryItemsControl()
 	{
 		CommandBarFlyout flyout = null;
 		Button flyoutTarget = null;
@@ -246,7 +248,7 @@ public class CommandBarFlyoutTests : MUXApiTestBase
 			Content.UpdateLayout();
 		});
 
-		OpenFlyout(flyout, flyoutTarget);
+		await OpenFlyout(flyout, flyoutTarget);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -267,12 +269,12 @@ public class CommandBarFlyoutTests : MUXApiTestBase
 			Verify.AreEqual(17, secondaryItemsControl.Items.Count);
 		});
 
-		CloseFlyout(flyout);
+		await CloseFlyout(flyout);
 	}
 
 	[TestMethod]
 	[TestProperty("Description", "Verifies that labels cause primary commmands to be wider than without, and to have their labels be visible.")]
-	public void VerifyPrimaryCommandLabelsAffectLayout()
+	public async Task VerifyPrimaryCommandLabelsAffectLayout()
 	{
 		CommandBarFlyout flyout = null;
 		Button flyoutTarget = null;
@@ -294,7 +296,7 @@ public class CommandBarFlyoutTests : MUXApiTestBase
 			Content.UpdateLayout();
 		});
 
-		OpenFlyout(flyout, flyoutTarget);
+		await OpenFlyout(flyout, flyoutTarget);
 
 		double originalWidth = 0;
 		double originalHeight = 0;
@@ -319,14 +321,14 @@ public class CommandBarFlyoutTests : MUXApiTestBase
 			originalHeight = commandBar.ActualHeight;
 		});
 
-		CloseFlyout(flyout);
+		await CloseFlyout(flyout);
 
 		RunOnUIThread.Execute(() =>
 		{
 			button1.Label = "Item 1";
 		});
 
-		OpenFlyout(flyout, flyoutTarget);
+		await OpenFlyout(flyout, flyoutTarget);
 
 		double finalWidth = 0;
 		double finalHeight = 0;
@@ -345,14 +347,14 @@ public class CommandBarFlyoutTests : MUXApiTestBase
 			Verify.IsGreaterThan(finalHeight, originalHeight);
 		});
 
-		CloseFlyout(flyout);
+		await CloseFlyout(flyout);
 
 		RunOnUIThread.Execute(() =>
 		{
 			button2.Label = "Item 2";
 		});
 
-		OpenFlyout(flyout, flyoutTarget);
+		await OpenFlyout(flyout, flyoutTarget);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -361,7 +363,32 @@ public class CommandBarFlyoutTests : MUXApiTestBase
 			Verify.AreEqual(Math.Round(finalHeight), Math.Round(commandBar.ActualHeight));
 		});
 
-		CloseFlyout(flyout);
+		await CloseFlyout(flyout);
+	}
+
+	[TestMethod]
+	[TestProperty("Description", "Verifies that CommandBarFlyoutCommandBar can set its SystemBackdrop without being parented to the tree.")]
+	public async Task VerifyDisconnectedFlyoutCommandBar()
+	{
+		CommandBarFlyoutCommandBar cbfcb = null;
+		DesktopAcrylicBackdrop dba = null;
+
+		RunOnUIThread.Execute(() =>
+		{
+			cbfcb = new CommandBarFlyoutCommandBar();
+			dba = new DesktopAcrylicBackdrop();
+
+			// cbfcb isn't in the tree yet. Setting this shouldn't crash. The parser will do this (set properties before inserting into tree).
+			cbfcb.SystemBackdrop = dba;
+
+			// dbfcb shouldn't crash when it's destroyed.
+			cbfcb = null;
+			GC.Collect();
+			GC.WaitForPendingFinalizers();
+			GC.Collect();
+		});
+
+		await TestServices.WindowHelper.WaitForIdle();
 	}
 
 	private void SetupCommandBarFlyoutTest(out CommandBarFlyout flyout, out Button flyoutTarget)
@@ -400,10 +427,10 @@ public class CommandBarFlyoutTests : MUXApiTestBase
 		flyoutTarget = commandBarFlyoutTarget;
 	}
 
-	private void OpenFlyout(CommandBarFlyout flyout, Button flyoutTarget)
+	private async Task OpenFlyout(CommandBarFlyout flyout, Button flyoutTarget)
 	{
 		Log.Comment("Opening flyout...");
-		AutoResetEvent openedEvent = new AutoResetEvent(false);
+		var openedEvent = new UnoAutoResetEvent(false);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -411,15 +438,15 @@ public class CommandBarFlyoutTests : MUXApiTestBase
 			flyout.ShowAt(flyoutTarget, new FlyoutShowOptions { ShowMode = FlyoutShowMode.Transient });
 		});
 
-		TestUtilities.WaitForEvent(openedEvent);
-		IdleSynchronizer.Wait();
+		await TestUtilities.WaitForEvent(openedEvent);
+		await TestServices.WindowHelper.WaitForIdle();
 		Log.Comment("Flyout opened.");
 	}
 
-	private void CloseFlyout(CommandBarFlyout flyout)
+	private async Task CloseFlyout(CommandBarFlyout flyout)
 	{
 		Log.Comment("Closing flyout...");
-		AutoResetEvent closedEvent = new AutoResetEvent(false);
+		var closedEvent = new UnoAutoResetEvent(false);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -427,8 +454,8 @@ public class CommandBarFlyoutTests : MUXApiTestBase
 			flyout.Hide();
 		});
 
-		TestUtilities.WaitForEvent(closedEvent);
-		IdleSynchronizer.Wait();
+		await TestUtilities.WaitForEvent(closedEvent);
+		await TestServices.WindowHelper.WaitForIdle();
 		Log.Comment("Flyout closed.");
 	}
 }
