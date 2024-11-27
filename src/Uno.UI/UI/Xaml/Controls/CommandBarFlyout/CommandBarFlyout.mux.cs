@@ -416,6 +416,7 @@ partial class CommandBarFlyout
 				button.Click += closeFlyoutFunc;
 				var clickRevoker = new SerialDisposable();
 				clickRevoker.Disposable = Disposable.Create(() => button.Click -= closeFlyoutFunc);
+				m_secondaryButtonClickRevokerByIndexMap[i] = clickRevoker;
 			}
 			else if (toggleButton is not null)
 			{

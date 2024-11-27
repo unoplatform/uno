@@ -22,8 +22,8 @@ public partial class CommandBarOverflowPresenter : ItemsControl
 		m_useFullWidth = false;
 		m_shouldOpenUp = false;
 
-#if HAS_UNO && XAMARIN // Uno specific: Set StackPanel as default ItemsPanel for CommandBarOverflowPresenter
-		ItemsPanel = new ItemsPanelTemplate(() => new StackPanel());
+#if HAS_UNO // Uno specific: Set StackPanel as default ItemsPanel for CommandBarOverflowPresenter
+		ItemsPanel = new ItemsPanelTemplate(() => new StackPanel() { HorizontalAlignment = HorizontalAlignment.Stretch });
 #endif
 	}
 
