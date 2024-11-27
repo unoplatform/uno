@@ -44,5 +44,5 @@ partial class TextCommandBarFlyout
 	private List<IDisposable> m_proofingMenuToggleItemClickRevokers = new();
 	private DispatcherHelper m_dispatcherHelper;
 
-	private bool m_isSettingToggleButtonState = false;
+	private bool m_isSettingToggleButtonState;
 }
