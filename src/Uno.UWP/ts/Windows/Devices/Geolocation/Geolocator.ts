@@ -37,7 +37,7 @@
 					Geolocator.dispatchGeoposition = exports.DispatchGeoposition;
 				}
 				else {
-					throw `Unable to find dotnet exports`;
+					throw `Geolocator: Unable to find dotnet exports`;
 				}
 
 				Geolocator.interopInitialized = true;

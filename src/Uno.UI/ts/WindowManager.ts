@@ -1355,7 +1355,7 @@ namespace Uno.UI {
 				if ((<any>globalThis).DotnetExports !== undefined) {
 					WindowManager.setDependencyPropertyValueMethod = (<any>globalThis).DotnetExports.UnoUI.Uno.UI.Helpers.Automation.SetDependencyPropertyValue;
 				} else {
-					throw `Unable to find dotnet exports`;
+					throw `SetDependencyPropertyValue: Unable to find dotnet exports`;
 				}
 			}
 
@@ -1399,7 +1399,7 @@ namespace Uno.UI {
 				WindowManager.dispatchSuspendingMethod = exports.Microsoft.UI.Xaml.Application.DispatchSuspending;
 				WindowManager.keyTrackingMethod = (<any>globalThis).DotnetExports.Uno.Uno.UI.Core.KeyboardStateTracker.UpdateKeyStateNative;
 			} else {
-				throw `Unable to find dotnet exports`;
+				throw `WindowManager: Unable to find dotnet exports`;
 			}
 		}
 

@@ -145,7 +145,7 @@
 					if ((<any>globalThis).DotnetExports !== undefined) {
 						DisplayInformation.dispatchDpiChanged = (<any>globalThis).DotnetExports.Uno.Windows.Graphics.Display.DisplayInformation.DispatchDpiChanged;
 					} else {
-						throw `Unable to find dotnet exports`;
+						throw `DisplayInformation: Unable to find dotnet exports`;
 					}
 				}
 				DisplayInformation.dispatchDpiChanged(currentDpi);
@@ -158,7 +158,7 @@
 				if ((<any>globalThis).DotnetExports !== undefined) {
 					DisplayInformation.dispatchOrientationChanged = (<any>globalThis).DotnetExports.Uno.Windows.Graphics.Display.DisplayInformation.DispatchOrientationChanged;
 				} else {
-					throw `Unable to find dotnet exports`;
+					throw `DisplayInformation: Unable to find dotnet exports`;
 				}
 			}
 			DisplayInformation.dispatchOrientationChanged(window.screen.orientation.type);

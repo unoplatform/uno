@@ -73,7 +73,7 @@ namespace Windows.Storage {
 				if ((<any>globalThis).DotnetExports !== undefined) {
 					StorageFolder.dispatchStorageInitialized = (<any>globalThis).DotnetExports.Uno.Windows.Storage.StorageFolder.DispatchStorageInitialized;
 				} else {
-					throw `Unable to find dotnet exports`;
+					throw `StorageFolder: Unable to find dotnet exports`;
 				}
 			}
 			StorageFolder.dispatchStorageInitialized();

@@ -68,7 +68,7 @@
 				if ((<any>globalThis).DotnetExports !== undefined) {
 					Gamepad.dispatchGamepadAdded = (<any>globalThis).DotnetExports.Uno.Windows.Gaming.Input.Gamepad.DispatchGamepadAdded;
 				} else {
-					throw `Unable to find dotnet exports`;
+					throw `Gamepad: Unable to find dotnet exports`;
 				}
 			}
 			Gamepad.dispatchGamepadAdded(e.gamepad.index);
@@ -79,7 +79,7 @@
 				if ((<any>globalThis).DotnetExports !== undefined) {
 					Gamepad.dispatchGamepadRemoved = (<any>globalThis).DotnetExports.Uno.Windows.Gaming.Input.Gamepad.DispatchGamepadRemoved;
 				} else {
-					throw `Unable to find dotnet exports`;
+					throw `Gamepad: Unable to find dotnet exports`;
 				}
 			}
 			Gamepad.dispatchGamepadRemoved(e.gamepad.index);

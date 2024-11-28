@@ -52,7 +52,7 @@
 				if ((<any>globalThis).DotnetExports !== undefined) {
 					FontFamily.managedNotifyFontLoaded = (<any>globalThis).DotnetExports.UnoUI.Microsoft.UI.Xaml.Media.FontFamilyLoader.NotifyFontLoaded;
 				} else {
-					throw `Unable to find dotnet exports`;
+					throw `FontFamily: Unable to find dotnet exports`;
 				}
 			}
 
@@ -65,7 +65,7 @@
 				if ((<any>globalThis).DotnetExports !== undefined) {
 					FontFamily.managedNotifyFontLoadFailed = (<any>globalThis).DotnetExports.UnoUI.Microsoft.UI.Xaml.Media.FontFamilyLoader.NotifyFontLoadFailed;
 				} else {
-					throw `Unable to find dotnet exports`;
+					throw `FontFamily: Unable to find dotnet exports`;
 				}
 			}
 

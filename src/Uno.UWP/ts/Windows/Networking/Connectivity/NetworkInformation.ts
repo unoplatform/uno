@@ -18,7 +18,7 @@
 				if ((<any>globalThis).DotnetExports !== undefined) {
 					NetworkInformation.dispatchStatusChanged = (<any>globalThis).DotnetExports.Uno.Windows.Networking.Connectivity.NetworkInformation.DispatchStatusChanged;
 				} else {
-					throw `Unable to find dotnet exports`;
+					throw `NetworkInformation: Unable to find dotnet exports`;
 				}
 			}
 			NetworkInformation.dispatchStatusChanged();

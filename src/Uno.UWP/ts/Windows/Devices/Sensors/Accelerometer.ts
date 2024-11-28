@@ -16,7 +16,7 @@ namespace Windows.Devices.Sensors {
 					Accelerometer.dispatchReading = exports.DispatchReading;
 				}
 				else {
-					throw `Unable to find dotnet exports`;
+					throw `Accelerometer: Unable to find dotnet exports`;
 				}
 
 				return true;

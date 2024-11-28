@@ -12,6 +12,7 @@ using Microsoft.UI.Xaml.Media;
 using Uno.UI.Dispatching;
 using Uno.UI.Xaml.Core;
 using Windows.Globalization;
+using Microsoft.UI.Dispatching;
 
 namespace Microsoft.UI.Xaml
 {
@@ -102,7 +103,8 @@ namespace Microsoft.UI.Xaml
 
 			callback(new ApplicationInitializationCallbackParams());
 
-			_current.InvokeOnLaunched();
+			// Force a schedule to let the dotnet exports be initialized properly
+			DispatcherQueue.Main.TryEnqueue(_current.InvokeOnLaunched);
 		}
 
 		private void InvokeOnLaunched()

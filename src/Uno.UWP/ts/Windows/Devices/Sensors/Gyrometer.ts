@@ -20,7 +20,7 @@ namespace Windows.Devices.Sensors {
 					if ((<any>globalThis).DotnetExports !== undefined) {
 						this.dispatchReading = (<any>globalThis).DotnetExports.Uno.Windows.Devices.Sensors.Gyrometer.DispatchReading;
 					} else {
-						throw `Unable to find dotnet exports`;
+						throw `Gyrometer: Unable to find dotnet exports`;
 					}
 					let GyroscopeClass: any = window.Gyroscope;
 					this.gyroscope = new GyroscopeClass({ referenceFrame: "device" });

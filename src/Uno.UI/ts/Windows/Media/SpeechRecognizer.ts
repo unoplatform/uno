@@ -69,7 +69,7 @@ namespace Windows.Media {
 					if ((<any>globalThis).DotnetExports !== undefined) {
 						SpeechRecognizer.dispatchResult = (<any>globalThis).DotnetExports.Uno.Windows.Media.SpeechRecognition.SpeechRecognizer.DispatchResult;
 					} else {
-						throw `Unable to find dotnet exports`;
+						throw `SpeechRecognizer: Unable to find dotnet exports`;
 					}
 				}
 				SpeechRecognizer.dispatchResult(this.managedId, event.results[0][0].transcript, event.results[0][0].confidence);
@@ -78,7 +78,7 @@ namespace Windows.Media {
 					if ((<any>globalThis).DotnetExports !== undefined) {
 						SpeechRecognizer.dispatchHypothesis = (<any>globalThis).DotnetExports.Uno.Windows.Media.SpeechRecognition.SpeechRecognizer.DispatchHypothesis;
 					} else {
-						throw `Unable to find dotnet exports`;
+						throw `SpeechRecognizer: Unable to find dotnet exports`;
 					}
 				}
 				SpeechRecognizer.dispatchHypothesis(this.managedId, event.results[0][0].transcript);
@@ -90,7 +90,7 @@ namespace Windows.Media {
 				if ((<any>globalThis).DotnetExports !== undefined) {
 					SpeechRecognizer.dispatchStatus = (<any>globalThis).DotnetExports.Uno.Windows.Media.SpeechRecognition.SpeechRecognizer.DispatchStatus;
 				} else {
-					throw `Unable to find dotnet exports`;
+					throw `SpeechRecognizer: Unable to find dotnet exports`;
 				}
 			}
 			SpeechRecognizer.dispatchStatus(this.managedId, "SpeechDetected")
@@ -101,7 +101,7 @@ namespace Windows.Media {
 				if ((<any>globalThis).DotnetExports !== undefined) {
 					SpeechRecognizer.dispatchError = (<any>globalThis).DotnetExports.Uno.Windows.Media.SpeechRecognition.SpeechRecognizer.DispatchError;
 				} else {
-					throw `Unable to find dotnet exports`;
+					throw `SpeechRecognizer: Unable to find dotnet exports`;
 				}
 			}
 			SpeechRecognizer.dispatchError(this.managedId, event.error);

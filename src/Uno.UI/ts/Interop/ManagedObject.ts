@@ -9,7 +9,7 @@
 			if (exports !== undefined) {
 				ManagedObject.dispatchMethod = exports.Dispatch;
 			} else {
-				throw `Unable to find dotnet exports`;
+				throw `ManagedObject: Unable to find dotnet exports`;
 			}
 		}
 

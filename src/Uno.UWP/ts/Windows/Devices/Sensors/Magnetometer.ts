@@ -20,7 +20,7 @@ namespace Windows.Devices.Sensors {
 					if ((<any>globalThis).DotnetExports !== undefined) {
 						this.dispatchReading = (<any>globalThis).DotnetExports.Uno.Windows.Devices.Sensors.Magnetometer.DispatchReading;
 					} else {
-						throw `Unable to find dotnet exports`;
+						throw `Magnetometer: Unable to find dotnet exports`;
 					}
 					let MagnetometerClass: any = window.Magnetometer;
 					this.magnetometer = new MagnetometerClass({ referenceFrame: 'device' });
