@@ -16,9 +16,10 @@ partial class CoreApplication
 
 	static partial void InitializePlatform()
 	{
+		NativeInitialize();
+
 		if (ApiExtensibility.CreateInstance(typeof(CoreApplication), out _coreApplicationExtension))
 		{
-			NativeInitialize();
 		}
 	}
 

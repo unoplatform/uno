@@ -23,11 +23,11 @@
 		/**
 		 * Provides a promised that resolves when CoreApplication is initialized
 		 */
-		public static async WaitForInitialized(): Promise<void> {
+		public static async waitForInitialized(): Promise<void> {
 			await CoreApplication._initializedExports;
 		}
 
-		private static async initializeExports() {
+		public static async initializeExports() {
 
 			if ((<any>Module).getAssemblyExports !== undefined) {
 				const unoExports = await (<any>Module).getAssemblyExports("Uno");
@@ -36,11 +36,13 @@
 				const runtimeWasmExports = await (<any>Module).getAssemblyExports("Uno.Foundation.Runtime.WebAssembly");
 
 				if (Object.entries(unoExports).length > 0) {
-					(<any>globalThis).DotnetExports = {
-						Uno: unoExports,
-						UnoUIDispatching: unoUIDispatchingExports,
-						UnoFoundationRuntimeWebAssembly: runtimeWasmExports
-					};
+
+					// DotnetExports may already have been initialized
+					(<any>globalThis).DotnetExports = (<any>globalThis).DotnetExports || {};
+
+					(<any>globalThis).DotnetExports.Uno = unoExports;
+					(<any>globalThis).DotnetExports.UnoUIDispatching = unoUIDispatchingExports;
+					(<any>globalThis).DotnetExports.UnoFoundationRuntimeWebAssembly = runtimeWasmExports;
 				}
 			}
 		}

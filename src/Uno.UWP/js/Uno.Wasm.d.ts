@@ -9,8 +9,8 @@ declare namespace Windows.ApplicationModel.Core {
         /**
          * Provides a promised that resolves when CoreApplication is initialized
          */
-        static WaitForInitialized(): Promise<void>;
-        private static initializeExports;
+        static waitForInitialized(): Promise<void>;
+        static initializeExports(): Promise<void>;
     }
 }
 declare namespace Uno.Devices.Enumeration.Internal.Providers.Midi {
