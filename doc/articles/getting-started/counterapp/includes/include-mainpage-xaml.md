@@ -1,11 +1,15 @@
 The layout for the **MainPage** is defined in the **MainPage.xaml** file. This file contains the XAML markup that defines the layout of the application. Replace your **MainPage.xaml** with the contents below:
 
 ```xml
-<Page x:Class="Counter.MainPage"
+<Page x:Class="Counter.Presentation.MainPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:local="using:Counter"
-      Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+      xmlns:local="using:Counter.Presentation"
+      xmlns:uen="using:Uno.Extensions.Navigation.UI"
+      xmlns:utu="using:Uno.Toolkit.UI"
+      xmlns:um="using:Uno.Material"
+      NavigationCacheMode="Required"
+      Background="{ThemeResource BackgroundBrush}">
   <StackPanel HorizontalAlignment="Center"
               VerticalAlignment="Center">
     <TextBlock AutomationProperties.AutomationId="HelloTextBlock"
@@ -13,4 +17,5 @@ The layout for the **MainPage** is defined in the **MainPage.xaml** file. This f
                HorizontalAlignment="Center" />
   </StackPanel>
 </Page>
+
 ```
