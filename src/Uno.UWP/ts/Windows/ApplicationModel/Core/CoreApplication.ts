@@ -4,14 +4,27 @@
 	 * */
 	export class CoreApplication {
 
+		private static _initializedExportsResolve: (value?: unknown) => void;
+		private static _initializedExports: Promise<void> = new Promise<void>((resolve) => { CoreApplication._initializedExportsResolve = resolve; });
+
 		public static initialize() {
+
+			// create a non-finishing promise
 
 			Uno.UI.Dispatching.NativeDispatcher.init(
 				new Promise<boolean>(resolve => (<any>window).setImmediate(async () => {
 					await CoreApplication.initializeExports();
+					CoreApplication._initializedExportsResolve(true);
 					resolve(true);
 				}))
 			);
+		}
+
+		/**
+		 * Provides a promised that resolves when CoreApplication is initialized
+		 */
+		public static async WaitForInitialized(): Promise<void> {
+			await CoreApplication._initializedExports;
 		}
 
 		private static async initializeExports() {

@@ -15,6 +15,9 @@
 		<Deterministic>true</Deterministic>
 
 		<UnoRuntimeIdentifier>Reference</UnoRuntimeIdentifier>
+
+		<UseCommonOverridePackage>true</UseCommonOverridePackage>
+		<CommonOverridePackageId>Uno.UI</CommonOverridePackageId>
 	</PropertyGroup>
 
 	<ItemGroup>

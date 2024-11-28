@@ -207,4 +207,12 @@
 	</Target>
 
 	<Import Project="Workaround-43339.targets" />
+
+	<ItemDefinitionGroup>
+		<ProjectReference>
+			<!-- Avoid copying all outputs to every dependent projects, for build performance -->
+			<Private Condition="'$(OutputType)' == 'library' AND '$(DisablePrivateProjectReference)'!='true'">false</Private>
+		</ProjectReference>
+	</ItemDefinitionGroup>
+
 </Project>

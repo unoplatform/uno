@@ -26,12 +26,6 @@
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
-	<ItemDefinitionGroup>
-		<ProjectReference>
-			<Private Condition="'$(OutputType)' == 'library'">false</Private>
-		</ProjectReference>
-	</ItemDefinitionGroup>
-
 	<ItemGroup>
 		<Compile Include="..\Uno.UI\Controls\BringIntoViewMode.iOSmacOS.cs" Link="Controls\BringIntoViewMode.iOSmacOS.cs" />
 		<Compile Include="..\Uno.UI\Controls\IRotationAwareViewController.iOS.cs" Link="Controls\IRotationAwareViewController.iOS.cs" />

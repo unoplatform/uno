@@ -25,6 +25,9 @@
 		-->
 		<AndroidResgenNamespace>Uno.UWP</AndroidResgenNamespace>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		
+		<UseCommonOverridePackage>true</UseCommonOverridePackage>
+		<CommonOverridePackageId>Uno.UI</CommonOverridePackageId>
 	</PropertyGroup>
 
 	<ItemGroup>

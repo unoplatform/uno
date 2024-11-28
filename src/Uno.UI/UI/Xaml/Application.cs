@@ -92,6 +92,8 @@ namespace Microsoft.UI.Xaml
 		public Application()
 		{
 #if __SKIA__ || __WASM__
+			CoreApplication.StaticInitialize();
+
 			Package.SetEntryAssembly(this.GetType().Assembly);
 #endif
 			Current = this;

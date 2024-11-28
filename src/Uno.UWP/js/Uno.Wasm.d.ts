@@ -3,7 +3,10 @@ declare namespace Windows.ApplicationModel.Core {
      * Support file for the Windows.ApplicationModel.Core
      * */
     class CoreApplication {
+        static _initializedExportsResolve: (value?: unknown) => void;
+        static _initializedExports: Promise<void>;
         static initialize(): void;
+        static WaitForInitialized(): Promise<void>;
         private static initializeExports;
     }
 }

@@ -19,6 +19,9 @@
 		assembly, for non-fully qualified types in System and Windows.System
 		-->
 		<AndroidResgenNamespace>Uno.UI.Dispatching</AndroidResgenNamespace>
+
+		<UseCommonOverridePackage>true</UseCommonOverridePackage>
+		<CommonOverridePackageId>Uno.UI</CommonOverridePackageId>
 	</PropertyGroup>
 
 	<ItemGroup>

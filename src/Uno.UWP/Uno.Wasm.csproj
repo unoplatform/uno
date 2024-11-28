@@ -20,6 +20,9 @@
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
+		<UseCommonOverridePackage>true</UseCommonOverridePackage>
+		<CommonOverridePackageId>Uno.UI</CommonOverridePackageId>
+
 		<UnoRewriteEmbeddedResources>true</UnoRewriteEmbeddedResources>
 	</PropertyGroup>
 	
