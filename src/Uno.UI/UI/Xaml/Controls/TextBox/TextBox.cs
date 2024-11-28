@@ -171,6 +171,10 @@ namespace Microsoft.UI.Xaml.Controls
 					scrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled; // The template sets this to Hidden
 					scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto; // The template sets this to Hidden
 				}
+
+#if __WASM__
+				scrollViewer.DisableSetFocusOnPopupByPointer = !IsPointerCaptureRequired;
+#endif
 #endif
 			}
 		}
