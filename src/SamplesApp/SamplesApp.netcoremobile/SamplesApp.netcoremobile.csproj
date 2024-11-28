@@ -40,6 +40,9 @@
 		<AndroidPackageFormat>apk</AndroidPackageFormat>
 
 		<AndroidEnableMultiDex>true</AndroidEnableMultiDex>
+
+		<!-- We need all the intermediate assemblies -->
+		<DisablePrivateProjectReference>true</DisablePrivateProjectReference>
 	</PropertyGroup>
 
 	<ItemGroup>
