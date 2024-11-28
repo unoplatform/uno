@@ -12,7 +12,12 @@ using Microsoft.UI.Xaml.Media;
 using Uno.UI.Dispatching;
 using Uno.UI.Xaml.Core;
 using Windows.Globalization;
-using Microsoft.UI.Dispatching;
+
+#if HAS_UNO_WINUI || WINAPPSDK
+using DispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue;
+#else
+using DispatcherQueue = Windows.System.DispatcherQueue;
+#endif
 
 namespace Microsoft.UI.Xaml
 {
