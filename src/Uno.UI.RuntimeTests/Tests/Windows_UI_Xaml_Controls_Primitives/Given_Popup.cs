@@ -78,29 +78,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 		}
 
 		[TestMethod]
-		public async Task When_Child_Visual_Parents_Does_Not_Include_Popup()
+		public async Task When_Child_Visual_Parents_Do_Not_Include_Popup()
 		{
-			var popup = new Popup();
-			popup.XamlRoot = TestServices.WindowHelper.XamlRoot;
-			var button = new Button()
-			{
-				Content = "test"
-			};
-			popup.Child = button;
-			popup.IsOpen = true;
-			await WindowHelper.WaitForLoaded(button);
-			bool found = false;
-			DependencyObject current = popup.Child;
-			while (current != null)
-			{
-				if (current == popup)
-				{
-					found = true;
-					break;
-				}
-
-				current = VisualTreeHelper.GetParent(current);
-			}
+			var popup = await LoadAndOpenPopupWithButtonAsync();
+			bool found = SearchPopupChildAscendants(popup, element => element == popup, element => VisualTreeHelper.GetParent(element));
 
 			Assert.IsFalse(found);
 
@@ -111,6 +92,70 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 		[TestMethod]
 		public async Task When_Child_Logical_Parents_Include_Popup()
 		{
+			var popup = await LoadAndOpenPopupWithButtonAsync();
+			bool found = SearchPopupChildAscendants(popup, element => element == popup, element => (element as FrameworkElement)?.Parent);
+
+			Assert.IsTrue(found);
+
+			// Should not throw
+			popup.IsOpen = false;
+		}
+
+		[TestMethod]
+		public async Task When_Child_Visual_Parent_Is_Canvas()
+		{
+			var popup = await LoadAndOpenPopupWithButtonAsync();
+			var child = (FrameworkElement)popup.Child;
+			var parent = VisualTreeHelper.GetParent(child);
+			Assert.IsInstanceOfType(parent, typeof(Canvas));
+#if HAS_UNO // It is actually a PopupRoot, but it is internal in WinUI
+			Assert.IsInstanceOfType(parent, typeof(PopupRoot));
+#endif
+
+			// Should not throw
+			popup.IsOpen = false;
+		}
+
+		[TestMethod]
+		public async Task When_Child_Logical_Parent_Is_Popup()
+		{
+			var popup = await LoadAndOpenPopupWithButtonAsync();
+			var child = (FrameworkElement)popup.Child;
+
+			Assert.AreEqual(popup, child.Parent);
+
+			// Should not throw
+			popup.IsOpen = false;
+		}
+
+#if HAS_UNO // PopupPanel is Uno-specific
+		[TestMethod]
+		public async Task When_Child_Visual_Parents_Do_Not_Include_PopupPanel()
+		{
+			var popup = await LoadAndOpenPopupWithButtonAsync();
+			bool found = SearchPopupChildAscendants(popup, element => element is PopupPanel, VisualTreeHelper.GetParent);
+
+			Assert.IsFalse(found);
+
+			// Should not throw
+			popup.IsOpen = false;
+		}
+
+		[TestMethod]
+		public async Task When_Child_Logical_Parents_Do_Not_Include_PopupPanel()
+		{
+			var popup = await LoadAndOpenPopupWithButtonAsync();
+			bool found = SearchPopupChildAscendants(popup, element => element is PopupPanel, element => (element as FrameworkElement)?.Parent);
+
+			Assert.IsFalse(found);
+
+			// Should not throw
+			popup.IsOpen = false;
+		}
+#endif
+
+		private async Task<Popup> LoadAndOpenPopupWithButtonAsync()
+		{
 			var popup = new Popup();
 			popup.XamlRoot = TestServices.WindowHelper.XamlRoot;
 			var button = new Button()
@@ -120,23 +165,23 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 			popup.Child = button;
 			popup.IsOpen = true;
 			await WindowHelper.WaitForLoaded(button);
-			bool found = false;
-			DependencyObject current = button;
+			return popup;
+		}
+
+		private bool SearchPopupChildAscendants(Popup popup, Predicate<DependencyObject> predicate, Func<DependencyObject, DependencyObject> getParent)
+		{
+			DependencyObject current = popup.Child;
 			while (current != null)
 			{
-				if (current == popup)
+				if (predicate(current))
 				{
-					found = true;
-					break;
+					return true;
 				}
 
-				current = (current as FrameworkElement)?.Parent;
+				current = getParent(current);
 			}
 
-			Assert.IsTrue(found);
-
-			// Should not throw
-			popup.IsOpen = false;
+			return false;
 		}
 
 		[TestMethod]

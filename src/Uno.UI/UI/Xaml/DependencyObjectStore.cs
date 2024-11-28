@@ -19,6 +19,7 @@ using System.Globalization;
 using Windows.ApplicationModel.Calls;
 using Microsoft.UI.Xaml.Controls;
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.UI.Xaml.Media;
 
 
 
@@ -1637,9 +1638,13 @@ namespace Microsoft.UI.Xaml
 					{
 						yield return fe.Resources;
 					}
-				}
 
-				candidate = candidate.GetParent() as DependencyObject;
+					candidate = fe.Parent as FrameworkElement;
+				}
+				else
+				{
+					candidate = VisualTreeHelper.GetParent(candidate) as DependencyObject;
+				}
 			}
 
 			if (includeAppResources && Application.Current != null)

@@ -7,4 +7,6 @@ namespace Microsoft.UI.Xaml.Controls;
 [ContentProperty(Name = nameof(Header))]
 public partial class TimePicker : Control
 {
+	internal const long DEFAULT_TIME_TICKS = -1;
+
 }

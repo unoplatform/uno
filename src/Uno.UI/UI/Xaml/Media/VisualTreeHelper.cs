@@ -270,6 +270,12 @@ namespace Microsoft.UI.Xaml.Media
 				return uiElement.GetVisualTreeParent() as DependencyObject;
 			}
 
+			if (realParent is PopupPanel)
+			{
+				// Skip the popup panel and go to PopupRoot instead.
+				realParent = GetParent(realParent);
+			}
+
 			return realParent;
 		}
 
