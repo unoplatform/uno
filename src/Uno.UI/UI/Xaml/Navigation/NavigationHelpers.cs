@@ -3,6 +3,7 @@
 // MUX Reference dxaml\xcp\dxaml\lib\NavigationHelpers.cpp, tag winui3/release/1.5.5, commit fd8e26f1d
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
 using Microsoft.UI.Xaml.Media.Animation;
@@ -15,6 +16,7 @@ namespace DirectUI;
 
 internal static class NavigationHelpers
 {
+	[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "The provided type has been marked before getting at that location")]
 	internal static NavigationEventArgs CreateINavigationEventArgs(
 		object content,
 		object parameter,
@@ -40,6 +42,7 @@ internal static class NavigationHelpers
 		return spNavigationEventArgs;
 	}
 
+	[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "The provided type has been marked before getting at that location")]
 	internal static NavigatingCancelEventArgs CreateINavigatingCancelEventArgs(
 		 object parameter,
 		 NavigationTransitionInfo pTransitionInfo,

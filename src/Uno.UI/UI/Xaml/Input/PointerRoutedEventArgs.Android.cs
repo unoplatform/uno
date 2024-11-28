@@ -44,8 +44,10 @@ namespace Microsoft.UI.Xaml.Input
 		// then _lastNativeEvent.lastArgs and LastPointerEvent will diverge.
 		private static (MotionEvent nativeEvent, PointerRoutedEventArgs lastArgs)? _lastNativeEvent;
 
-		private readonly MotionEvent _nativeEvent;
 		private readonly int _pointerIndex;
+		private readonly ulong _timestamp;
+		private readonly float _x;
+		private readonly float _y;
 		private readonly UIElement _receiver;
 		private readonly PointerPointProperties _properties;
 
@@ -53,9 +55,14 @@ namespace Microsoft.UI.Xaml.Input
 
 		internal PointerRoutedEventArgs(MotionEvent nativeEvent, int pointerIndex, UIElement originalSource, UIElement receiver) : this()
 		{
-			_nativeEvent = nativeEvent;
 			_pointerIndex = pointerIndex;
 			_receiver = receiver;
+
+			// NOTE: do not keep a reference to nativeEvent, which will be reused by android's native event bubbling and will be mutated as it
+			// goes up through the visual tree. Instead, get whatever values you need here and keep them in fields.
+			_timestamp = ToTimeStamp(nativeEvent.EventTime);
+			_x = nativeEvent.GetX(pointerIndex);
+			_y = nativeEvent.GetY(pointerIndex);
 
 			// Here we assume that usually pointerId is 'PointerIndexShift' bits long (8 bits / 255 ids),
 			// and that usually the deviceId is [0, something_not_too_big_hopefully_less_than_0x00ffffff].
@@ -72,7 +79,7 @@ namespace Microsoft.UI.Xaml.Input
 			var isInContact = PointerHelpers.IsInContact(nativeEvent, pointerType, nativePointerAction, nativePointerButtons);
 			var keys = nativeEvent.MetaState.ToVirtualKeyModifiers();
 
-			FrameId = (uint)_nativeEvent.EventTime;
+			FrameId = (uint)nativeEvent.EventTime;
 			Pointer = new Pointer(pointerId, basePointerType, isInContact, isInRange: true);
 			KeyModifiers = keys;
 			OriginalSource = originalSource;
@@ -105,33 +112,29 @@ namespace Microsoft.UI.Xaml.Input
 
 		public PointerPoint GetCurrentPoint(UIElement relativeTo)
 		{
-			var timestamp = ToTimeStamp(_nativeEvent.EventTime);
 			var device = global::Windows.Devices.Input.PointerDevice.For((global::Windows.Devices.Input.PointerDeviceType)Pointer.PointerDeviceType);
 			var (rawPosition, position) = GetPositions(relativeTo);
 
-			return new PointerPoint(FrameId, timestamp, device, Pointer.PointerId, rawPosition, position, Pointer.IsInContact, _properties);
+			return new PointerPoint(FrameId, _timestamp, device, Pointer.PointerId, rawPosition, position, Pointer.IsInContact, _properties);
 		}
 
 		private (Point raw, Point relative) GetPositions(UIElement relativeTo)
 		{
-			var phyX = _nativeEvent.GetX(_pointerIndex);
-			var phyY = _nativeEvent.GetY(_pointerIndex);
-
 			Point raw, relative;
 			if (relativeTo == null) // Relative to the window
 			{
 				var windowToReceiver = new int[2];
 				_receiver.GetLocationInWindow(windowToReceiver);
 
-				relative = new Point(phyX + windowToReceiver[0], phyY + windowToReceiver[1]).PhysicalToLogicalPixels();
+				relative = new Point(_x + windowToReceiver[0], _y + windowToReceiver[1]).PhysicalToLogicalPixels();
 			}
 			else if (relativeTo == _receiver) // Fast path
 			{
-				relative = new Point(phyX, phyY).PhysicalToLogicalPixels();
+				relative = new Point(_x, _y).PhysicalToLogicalPixels();
 			}
 			else
 			{
-				var posRelToReceiver = new Point(phyX, phyY).PhysicalToLogicalPixels();
+				var posRelToReceiver = new Point(_x, _y).PhysicalToLogicalPixels();
 				var posRelToTarget = UIElement.GetTransform(from: _receiver, to: relativeTo).Transform(posRelToReceiver);
 
 				relative = posRelToTarget;
@@ -147,10 +150,74 @@ namespace Microsoft.UI.Xaml.Input
 				var screenToReceiver = new int[2];
 				_receiver.GetLocationOnScreen(screenToReceiver);
 
-				raw = new Point(phyX + screenToReceiver[0], phyY + screenToReceiver[1]).PhysicalToLogicalPixels();
+				raw = new Point(_x + screenToReceiver[0], _y + screenToReceiver[1]).PhysicalToLogicalPixels();
 			}
 
 			return (raw, relative);
+		}
+
+		private PointerPointProperties GetProperties(MotionEvent nativeEvent, MotionEventToolType type, MotionEventActions action, MotionEventButtonState buttons)
+		{
+			var props = new PointerPointProperties
+			{
+				IsPrimary = true,
+				IsInRange = Pointer.IsInRange
+			};
+
+			var isDown = action == /* 0 = */ MotionEventActions.Down || action.HasFlag(MotionEventActions.PointerDown);
+			var isUp = action.HasFlag(MotionEventActions.Up) || action.HasFlag(MotionEventActions.PointerUp);
+			var updates = _none;
+			switch (type)
+			{
+				case MotionEventToolType.Finger:
+				case MotionEventToolType.Unknown: // used by Xamarin.UITest
+					props.IsLeftButtonPressed = Pointer.IsInContact;
+					updates = isDown ? _fingerDownUpdates : isUp ? _fingerUpUpdates : _none;
+					// Pressure = .5f => Keeps default as UWP returns .5 for fingers.
+					break;
+
+				case MotionEventToolType.Mouse:
+					props.IsLeftButtonPressed = buttons.HasFlag(MotionEventButtonState.Primary);
+					props.IsMiddleButtonPressed = buttons.HasFlag(MotionEventButtonState.Tertiary);
+					props.IsRightButtonPressed = buttons.HasFlag(MotionEventButtonState.Secondary);
+					updates = isDown ? _mouseDownUpdates : isUp ? _mouseUpUpdates : _none;
+					// Pressure = .5f => Keeps default as UWP returns .5 for Mouse no matter is button is pressed or not (Android return 1.0 while pressing a button, but 0 otherwise).
+					break;
+
+				// Note: On UWP, if you touch screen while already holding the barrel button, you will get a right + barrel,
+				//		 ** BUT ** if you touch screen and THEN press the barrel button props will be left + barrel until released.
+				//		 On Android this distinction seems to be flagged by the "1101 ****" action flag (i.e. "StylusWithBarrel***" actions),
+				//		 so here we set the Is<Left|Right>ButtonPressed based on the action and we don't try to link it to the barrel button state.
+				case MotionEventToolType.Stylus when action == StylusWithBarrelDown:
+				case MotionEventToolType.Stylus when action == StylusWithBarrelMove:
+				case MotionEventToolType.Stylus when action == StylusWithBarrelUp:
+					// Note: We still validate the "IsButtonPressed(StylusPrimary)" as the user might release the button while pressed.
+					//		 In that case we will still receive moves and up with the "StylusWithBarrel***" actions.
+					props.IsBarrelButtonPressed = buttons.HasFlag(MotionEventButtonState.StylusPrimary);
+					props.IsRightButtonPressed = Pointer.IsInContact;
+					props.Pressure = Math.Min(1f, nativeEvent.GetPressure(_pointerIndex)); // Might exceed 1.0 on Android
+					break;
+				case MotionEventToolType.Stylus:
+					props.IsBarrelButtonPressed = buttons.HasFlag(MotionEventButtonState.StylusPrimary);
+					props.IsLeftButtonPressed = Pointer.IsInContact;
+					props.Pressure = Math.Min(1f, nativeEvent.GetPressure(_pointerIndex)); // Might exceed 1.0 on Android
+					break;
+				case MotionEventToolType.Eraser:
+					props.IsEraser = true;
+					props.Pressure = Math.Min(1f, nativeEvent.GetPressure(_pointerIndex)); // Might exceed 1.0 on Android
+					break;
+
+				default:
+					break;
+			}
+
+			if (Android.OS.Build.VERSION.SdkInt >= BuildVersionCodes.M // ActionButton was introduced with API 23 (https://developer.android.com/reference/android/view/MotionEvent.html#getActionButton())
+				&& updates.TryGetValue(nativeEvent.ActionButton, out var update))
+			{
+				props.PointerUpdateKind = update;
+			}
+
+			return props;
 		}
 
 		#region Misc static helpers

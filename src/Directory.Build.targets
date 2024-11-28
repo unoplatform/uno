@@ -77,9 +77,9 @@
 		<PackageReference Update="Uno.Diagnostics.Eventing" Version="2.0.1" />
 		<PackageReference Update="Uno.Wasm.Bootstrap" Version="9.0.0-dev.301" />
 		<PackageReference Update="Uno.Wasm.Bootstrap.DevServer" Version="9.0.0-dev.301" />
-		<PackageReference Update="MSTest" Version="3.3.1" />
-		<PackageReference Update="MSTest.TestFramework" Version="3.3.1" />
-		<PackageReference Update="MSTest.TestAdapter" Version="3.3.1" />
+		<PackageReference Update="MSTest" Version="3.6.3" />
+		<PackageReference Update="MSTest.TestFramework" Version="3.6.3" />
+		<PackageReference Update="MSTest.TestAdapter" Version="3.6.3" />
 		<PackageReference Update="MSTest.Analyzers" Version="3.3.1" />
 		<PackageReference Update="Uno.MonoAnalyzers" Version="1.0.0" PrivateAssets="all" />
 		<PackageReference Update="Uno.Wasm.WebSockets" Version="1.1.0" />
@@ -124,7 +124,7 @@
 		<PackageReference Update="harfbuzzsharp.nativeassets.ios" Version="7.3.0.1" />
 
 		<PackageReference Condition=" '$(TargetFramework)' == '$(NetPrevious)' " Update="Microsoft.Win32.SystemEvents" Version="8.0.0" />
-		<PackageReference Condition=" '$(TargetFramework)' == '$(NetCurrent)' " Update="Microsoft.Win32.SystemEvents" Version="9.0.0-rc.2.24473.5" />
+		<PackageReference Condition=" '$(TargetFramework)' == '$(NetCurrent)' " Update="Microsoft.Win32.SystemEvents" Version="9.0.0" />
 
 		<PackageReference Update="Svg.Skia" Version="1.0.0.1" />
 		<PackageReference Update="GtkSharp" Version="3.24.24.38" />

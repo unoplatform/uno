@@ -11,9 +11,13 @@ using Uno.Extensions;
 using Uno.Xaml;
 using Windows.UI;
 using Windows.Foundation;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Microsoft.UI.Xaml.Markup.Reader
 {
+	[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "normal flow of operation")]
+	[UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "normal flow of operation")]
+	[UnconditionalSuppressMessage("Trimming", "IL2075znote", Justification = "normal flow of operation")]
 	internal class XamlTypeResolver
 	{
 		private readonly static Assembly[] _lookupAssemblies = new[]{
@@ -199,7 +203,8 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			) as DependencyProperty;
 		}
 
-		private static IEnumerable<PropertyInfo> GetAllProperties(Type? type)
+		private static IEnumerable<PropertyInfo> GetAllProperties(
+			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] Type? type)
 		{
 			Type? currentType = type;
 
@@ -214,7 +219,10 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			}
 		}
 
-		private static IEnumerable<FieldInfo> GetAllFields(Type? type)
+		[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "GetField/BaseType may return null, normal flow of operation")]
+		[UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "GetField/BaseType may return null, normal flow of operation")]
+		private static IEnumerable<FieldInfo> GetAllFields(
+			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields)] Type? type)
 		{
 			Type? currentType = type;
 
@@ -245,8 +253,10 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				IsImplementingInterface(type, typeof(global::System.Collections.Generic.IList<>));
 		}
 
-		private bool IsImplementingInterface(Type type, Type iface) =>
-			type
+		private bool IsImplementingInterface(
+			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.Interfaces)] Type type,
+			Type iface)
+			=> type
 				.Flatten(t => t.BaseType!)
 				.Any(t => t
 					.GetInterfaces()
@@ -331,6 +341,8 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			}
 		}
 
+		[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Types may be removed or not present as part of the normal operations of that method")]
+		[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "GetType may return null, normal flow of operation")]
 		private Type? SourceFindType(string? name)
 		{
 			static string? GetFullyQualifiedName(NamespaceDeclaration? ns, string nonQualifiedName)
@@ -407,13 +419,16 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 
 				// As a partial name using the non-qualified name
 				() => Type.GetType(originalName.Split(':').ElementAtOrDefault(1) ?? ""),
-
+					
 				// Look for the type in all loaded assemblies
 				() => AppDomain.CurrentDomain
 					.GetAssemblies()
-					.Select(a =>
-						(name != null ? a.GetType(name) : null) ??
-						a.GetType(originalName)
+					.Select(
+
+						[UnconditionalSuppressMessage("Trimming","IL2026", Justification = "Types may be removed or not present as part of the normal operations of that method")]
+						(a) =>
+							(name != null ? a.GetType(name) : null) ??
+							a.GetType(originalName)
 					)
 					.Trim()
 					.FirstOrDefault(),
@@ -507,6 +522,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 
 		public Type? FindPropertyType(string ownerType, string propertyName) => _findPropertyTypeByName(ownerType, propertyName);
 
+		[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Types manipulated here have been marked earlier")]
 		private Type? SourceFindPropertyType(string ownerType, string propertyName)
 		{
 			var type = FindType(ownerType);
