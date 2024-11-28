@@ -17,7 +17,7 @@ using _WindowActivatedEventArgs = Windows.UI.Core.WindowActivatedEventArgs;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
-internal partial class PopupRoot : Panel
+internal partial class PopupRoot : Canvas
 {
 	private readonly List<ManagedWeakReference> _openPopups = new();
 
