@@ -474,7 +474,7 @@
 
 		<!-- net9.0 reference -->
 		<file src="..\..\src\Uno.UWP\Bin\Uno.Reference\Release\net9.0\Uno.dll" target="lib\net9.0" />
-		<file src="..\..\src\Uno.Foundation\Bin\Uno.Reference\Release\net9.0\Uno.Foundation.dll" target="lib\net9.0" />
+		<file src="..\..\src\Uno.Foundation\Bin\Uno.Foundation.Reference\Release\net9.0\Uno.Foundation.dll" target="lib\net9.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Reference\Release\net9.0\Uno.UI.dll" target="lib\net9.0" />
 		<file src="..\..\src\Uno.UI.Composition\bin\Uno.UI.Composition.Reference\Release\net9.0\Uno.UI.Composition.dll" target="lib\net9.0" />
 		<file src="..\..\src\Uno.UI.Dispatching\bin\Uno.UI.Dispatching.Reference\Release\net9.0\Uno.UI.Dispatching.dll" target="lib\net9.0" />
@@ -491,7 +491,7 @@
 
 		<!-- net8.0 reference -->
 		<file src="..\..\src\Uno.UWP\Bin\Uno.Reference\Release\net8.0\Uno.dll" target="lib\net8.0" />
-		<file src="..\..\src\Uno.Foundation\Bin\Uno.Foundation\Release\net8.0\Uno.Foundation.dll" target="lib\net8.0" />
+		<file src="..\..\src\Uno.Foundation\Bin\Uno.Foundation.Foundation\Release\net8.0\Uno.Foundation.dll" target="lib\net8.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.Reference\Release\net8.0\Uno.UI.dll" target="lib\net8.0" />
 		<file src="..\..\src\Uno.UI.Composition\bin\Uno.UI.Composition.Reference\Release\net8.0\Uno.UI.Composition.dll" target="lib\net8.0" />
 		<file src="..\..\src\Uno.UI.Dispatching\bin\Uno.UI.Dispatching.Reference\Release\net8.0\Uno.UI.Dispatching.dll" target="lib\net8.0" />
