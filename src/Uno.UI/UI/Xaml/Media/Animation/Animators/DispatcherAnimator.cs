@@ -3,14 +3,14 @@ using System.Linq;
 
 namespace Microsoft.UI.Xaml.Media.Animation
 {
-	internal sealed class DispatcherFloatAnimator : CPUBoundAnimator<float>
+	internal abstract class DispatcherAnimator<T> : CPUBoundAnimator<T> where T : struct
 	{
 		public const int DefaultFrameRate = 30;
 
 		private readonly int _frameRate;
 		private readonly DispatcherTimer _timer;
 
-		public DispatcherFloatAnimator(float from, float to, int frameRate = DefaultFrameRate)
+		public DispatcherAnimator(T from, T to, int frameRate = DefaultFrameRate)
 			: base(from, to)
 		{
 			_frameRate = frameRate;
@@ -24,6 +24,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		protected override void SetStartFrameDelay(long delayMs) => _timer.Interval = TimeSpan.FromMilliseconds(delayMs);
 		protected override void SetAnimationFramesInterval() => _timer.Interval = TimeSpan.FromSeconds(1d / _frameRate);
 
-		protected override float GetUpdatedValue(long frame, float from, float to) => (float)_easing.Ease(frame, from, to, Duration);
+		protected abstract override T GetUpdatedValue(long frame, T from, T to);
 	}
 }
