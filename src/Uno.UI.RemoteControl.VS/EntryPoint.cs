@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using EnvDTE;
@@ -24,6 +25,7 @@ using Uno.UI.RemoteControl.VS.Helpers;
 using Uno.UI.RemoteControl.VS.IdeChannel;
 using Uno.UI.RemoteControl.VS.Notifications;
 using ILogger = Uno.UI.RemoteControl.VS.Helpers.ILogger;
+using Process = System.Diagnostics.Process;
 using Task = System.Threading.Tasks.Task;
 
 #pragma warning disable VSTHRD010
@@ -308,6 +310,14 @@ public partial class EntryPoint : IDisposable
 		await _processGate.WaitAsync();
 		try
 		{
+			var allTfms = new List<string>();
+			foreach (EnvDTE.Project project in _dte.Solution.Projects)
+			{
+				allTfms.AddRange(GetTargetFrameworks(project.FullName));
+			}
+			allTfms = allTfms.Distinct().ToList();
+			_verboseAction?.Invoke($"Using {string.Join(", ", allTfms)} TFM's to start the Uno.Check.");
+			await StartUnoCheckProcessAsync(allTfms, false);
 
 			if (EnsureTcpPort(ref _remoteControlServerPort))
 			{
@@ -670,6 +680,113 @@ public partial class EntryPoint : IDisposable
 			}
 			return _visualStudioServiceProvider;
 		}
+	}
+
+	private List<string> GetTargetFrameworks(string projectFullName)
+	{
+		try
+		{
+			if (string.IsNullOrEmpty(projectFullName))
+			{
+				return [];
+			}
+
+			var msbuildProject = GetMsbuildProject(projectFullName);
+			if (msbuildProject == null)
+			{
+				return [];
+			}
+			var tfms = msbuildProject.GetProperty("TargetFrameworks")?.EvaluatedValue;
+			if (tfms != null)
+			{
+				return tfms.Split(';').ToList();
+			}
+			var tfm = msbuildProject.GetProperty("TargetFramework")?.EvaluatedValue;
+			return tfm == null ? [] : [tfm];
+		}
+		catch (Exception ex)
+		{
+			_errorAction?.Invoke(ex.ToString());
+			return [];
+		}
+	}
+
+	private async Task StartUnoCheckProcessAsync(List<string> tfms, bool isFix)
+	{
+		// On Windows uno-check requires admin permissions, so to run it in background we need "set __COMPAT_LAYER=RUNASINVOKER"
+		// https://github.com/unoplatform/uno.check/blob/main/doc/using-uno-check.md#running-without-elevation-on-windows
+		var processStartInfo = new ProcessStartInfo
+		{
+			FileName = "cmd.exe",
+			Arguments = $"/c \"set __COMPAT_LAYER=RUNASINVOKER && uno-check -v --ci --non-interactive {(isFix ? "-f" : "")} --tfm {string.Join(" --tfm ", tfms)}\"",
+			UseShellExecute = false,
+			CreateNoWindow = true,
+			RedirectStandardOutput = true,
+			StandardOutputEncoding = Encoding.UTF8
+		};
+		using var process = new Process();
+		process.StartInfo = processStartInfo;
+		process.Start();
+
+		if (isFix == false)
+		{
+			var output = await process.StandardOutput.ReadToEndAsync();
+			process.WaitForExit();
+
+			if (UnoCheckOutputHasErrors(output))
+			{
+				_infoAction?.Invoke("Uno-Check has detected errors with user's environment. Showing the suggestion to fix them.");
+				if (_infoBarFactory is null)
+				{
+					return;
+				}
+
+				var infoBar = await _infoBarFactory.CreateAsync(
+				new InfoBarModel(
+					new ActionBarTextSpan[] {
+					new("Uno Check found problems with your development environment!", Bold: true)
+					},
+					[
+						new ActionBarItem("Fix", ActionContext: () => StartUnoCheckProcessAsync(tfms, true), IsButton: true),
+						new ActionBarItem("Learn more!", ActionContext: () => {
+							Process.Start(new ProcessStartInfo
+							{
+								FileName = "https://platform.uno/docs/articles/external/uno.check/doc/using-uno-check.html",
+								UseShellExecute = true });
+							}, Underline: true, IsButton: true)
+					],
+					KnownMonikers.StatusError,
+					isCloseButtonVisible: true));
+
+				if (infoBar is not null)
+				{
+					infoBar.ActionItemClicked += (s, e) =>
+					{
+						if (e.ActionItem is ActionBarItem action && action.ActionContext is Action runAction)
+						{
+							runAction();
+
+							infoBar.Close();
+						}
+					};
+					await infoBar.TryShowInfoBarUIAsync();
+				}
+
+			}
+			else
+			{
+				_infoAction?.Invoke("Uno-Check hasn't detected any errors.");
+			}
+		}
+	}
+
+	private static bool UnoCheckOutputHasErrors(string output)
+	{
+		// Assuming that the last line is "Has errors? True/False".
+		var lastLineSplitted = output.Split([Environment.NewLine], StringSplitOptions.None)
+			.Last(x => string.IsNullOrEmpty(x) == false)
+			.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries);
+		return lastLineSplitted.Length == 3 && lastLineSplitted[2] == "True";
 	}
 
 	private Version? GetVisualStudioReleaseVersion()
