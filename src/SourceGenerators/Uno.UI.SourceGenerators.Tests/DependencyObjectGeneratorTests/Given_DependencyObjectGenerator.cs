@@ -73,7 +73,6 @@ public class Given_DependencyObjectGenerator
 			TestState =
 			{
 				Sources = { testCode },
-				
 			},
 			ReferenceAssemblies = _net80,
 		};
