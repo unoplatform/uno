@@ -13,7 +13,7 @@
 		<NoWarn>$(NoWarn);NU1903;NU1902</NoWarn>
 		
 		<!-- To remove when all warnings have been fixed -->
-		<NoWarn>$(NoWarn);IL2026;IL2072;IL2067;IL2075;IL2070;IL2077;IL2057;IL2045;IL2111;IL2062;IL2104;IL2080;IL2065;IL2090</NoWarn>
+		<NoWarn>$(NoWarn);IL2026;IL2072;IL2067;IL2075;IL2070;IL2077;IL2057;IL2045;IL2111;IL2062;IL2104;IL2080;IL2065;IL2090;IL2007;IL2122</NoWarn>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
