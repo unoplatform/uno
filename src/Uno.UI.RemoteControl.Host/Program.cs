@@ -87,8 +87,6 @@ namespace Uno.UI.RemoteControl.Host
 					services.AddSingleton<IIdeChannel, IdeChannelServer>();
 				});
 
-			Debugger.Launch();
-
 			if (solution is not null)
 			{
 				// For backward compatibility, we allow to not have a solution file specified.
@@ -96,7 +94,7 @@ namespace Uno.UI.RemoteControl.Host
 			}
 			else
 			{
-				typeof(Program).Log().Log(LogLevel.Warning, "No solution file specified, add-ins will not be loaded.");
+				typeof(Program).Log().Log(LogLevel.Warning, "No solution file specified, add-ins will not be loaded which means that you won't be able to use any of the uno-studio features. Usually this indicates that your version of uno's IDE extension is too old.");
 			}
 
 			var host = builder.Build();
