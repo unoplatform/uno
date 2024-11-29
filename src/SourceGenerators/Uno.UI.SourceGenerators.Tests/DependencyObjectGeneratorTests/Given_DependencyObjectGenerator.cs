@@ -37,12 +37,14 @@ public class Given_DependencyObjectGenerator
 				Path.Combine("Uno.UI.netcoremobile", Configuration, $"{TFMCurrent}-android"),
 			]
 			: [
-				Path.Combine("Uno.UI.Skia", Configuration, TFMPrevious),
-				Path.Combine("Uno.UI.Reference", Configuration, TFMPrevious),
+				// On CI the test assemblies set must be first, as it contains all
+				// dependent assemblies, which the other platforms don't (see DisablePrivateProjectReference).
 				Path.Combine("Uno.UI.Tests", Configuration, TFMPrevious),
-				Path.Combine("Uno.UI.Skia", Configuration, TFMCurrent),
-				Path.Combine("Uno.UI.Reference", Configuration, TFMCurrent),
+				Path.Combine("Uno.UI.Reference", Configuration, TFMPrevious),
+				Path.Combine("Uno.UI.Skia", Configuration, TFMPrevious),
 				Path.Combine("Uno.UI.Tests", Configuration, TFMCurrent),
+				Path.Combine("Uno.UI.Reference", Configuration, TFMCurrent),
+				Path.Combine("Uno.UI.Skia", Configuration, TFMCurrent),
 			];
 
 		var unoUIBase = Path.Combine(

@@ -312,6 +312,8 @@ build_metadata.AdditionalFiles.SourceItemGroup = PRIResource
 #endif
 
 				var availableTargets = new[] {
+					// On CI the test assemblies set must be first, as it contains all
+					// dependent assemblies, which the other platforms don't (see DisablePrivateProjectReference).
 					Path.Combine("Uno.UI.Tests", configuration, "net8.0"),
 					Path.Combine("Uno.UI.Skia", configuration, "net8.0"),
 					Path.Combine("Uno.UI.Reference", configuration, "net8.0"),
