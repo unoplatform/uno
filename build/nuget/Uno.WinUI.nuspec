@@ -389,8 +389,8 @@
 		<file src="..\..\src\Uno.UI.Composition\Bin\Uno.UI.Composition.netcoremobile\Release\net9.0-ios18.0\Uno.UI.Composition.pdb" target="lib\net9.0-ios18.0" />
 		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net9.0-ios18.0\Uno.UI.Dispatching.dll" target="lib\net9.0-ios18.0" />
 		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net9.0-ios18.0\Uno.UI.Dispatching.pdb" target="lib\net9.0-ios18.0" />
-		<file src="..\..\src\SourceGenerators\System.Xaml\Bin\Release\Uno.Xaml.dll" target="lib\net9.0-ios18.0" />
-		<file src="..\..\src\SourceGenerators\System.Xaml\Bin\Release\Uno.Xaml.pdb" target="lib\net9.0-ios18.0" />
+		<file src="..\..\src\SourceGenerators\System.Xaml\Bin\Release\netstandard2.0\Uno.Xaml.dll" target="lib\net9.0-ios18.0" />
+		<file src="..\..\src\SourceGenerators\System.Xaml\Bin\Release\netstandard2.0\Uno.Xaml.pdb" target="lib\net9.0-ios18.0" />
 		<file src="..\..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net9.0-ios18.0\Uno.UI.FluentTheme.dll" target="lib\net9.0-ios18.0" />
 		<file src="..\..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net9.0-ios18.0\Uno.UI.FluentTheme.pdb" target="lib\net9.0-ios18.0" />
 		<file src="..\..\src\Uno.UI.FluentTheme.v1\bin\Uno.UI.FluentTheme.v1.netcoremobile\Release\net9.0-ios18.0\Uno.UI.FluentTheme.v1.dll" target="lib\net9.0-ios18.0" />
