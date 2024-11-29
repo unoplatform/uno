@@ -294,7 +294,7 @@
 			<_UnoTransitiveItems Include="@(UnoAllCopyToOutputItems)">
 				<!-- set the ContentRoot using GetDirectoryName -->
 				<ContentRoot>$([System.IO.Path]::GetDirectoryName('%(FullPath)'))</ContentRoot>
-				<Link>wwwroot/%(TargetPath)</Link>
+				<Link>wwwroot/$(WasmShellOutputPackagePath)/%(TargetPath)</Link>
 				<TargetPath></TargetPath>
 			</_UnoTransitiveItems>
 
