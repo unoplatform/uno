@@ -26,16 +26,23 @@ public class Given_DependencyObjectGenerator
 		"Release";
 #endif
 
-	private const string TFM = "net8.0";
+	private const string TFMPrevious = "net8.0";
+	private const string TFMCurrent = "net9.0";
 
 	private static MetadataReference[] BuildUnoReferences(bool isAndroid)
 	{
 		string[] availableTargets = isAndroid
-			? [Path.Combine("Uno.UI.netcoremobile", Configuration, $"{TFM}-android")]
+			? [
+				Path.Combine("Uno.UI.netcoremobile", Configuration, $"{TFMPrevious}-android"),
+				Path.Combine("Uno.UI.netcoremobile", Configuration, $"{TFMCurrent}-android"),
+			]
 			: [
-				Path.Combine("Uno.UI.Skia", Configuration, TFM),
-				Path.Combine("Uno.UI.Reference", Configuration, TFM),
-				Path.Combine("Uno.UI.Tests", Configuration, TFM),
+				Path.Combine("Uno.UI.Skia", Configuration, TFMPrevious),
+				Path.Combine("Uno.UI.Reference", Configuration, TFMPrevious),
+				Path.Combine("Uno.UI.Tests", Configuration, TFMPrevious),
+				Path.Combine("Uno.UI.Skia", Configuration, TFMCurrent),
+				Path.Combine("Uno.UI.Reference", Configuration, TFMCurrent),
+				Path.Combine("Uno.UI.Tests", Configuration, TFMCurrent),
 			];
 
 		var unoUIBase = Path.Combine(

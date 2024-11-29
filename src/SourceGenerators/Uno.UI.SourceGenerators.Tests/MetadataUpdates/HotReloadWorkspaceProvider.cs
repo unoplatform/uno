@@ -374,6 +374,9 @@ internal class HotReloadWorkspace
 			Path.Combine("Uno.UI.Skia", configuration, "net8.0"),
 			Path.Combine("Uno.UI.Reference", configuration, "net8.0"),
 			Path.Combine("Uno.UI.Tests", configuration, "net8.0"),
+			Path.Combine("Uno.UI.Skia", configuration, "net9.0"),
+			Path.Combine("Uno.UI.Reference", configuration, "net9.0"),
+			Path.Combine("Uno.UI.Tests", configuration, "net9.0"),
 		};
 
 		var unoUIBase = Path.Combine(
