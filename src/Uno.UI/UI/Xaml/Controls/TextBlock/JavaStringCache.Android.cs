@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml.Controls
 	/// <summary>
 	/// A cache for native java strings. This cache periodically evicts entries that haven't been used
 	/// in a while. Additionally, it also evicts the least recently used entries when adding new entries beyond a certain
-	/// capacity. Limiting the total capacity is necessary to
+	/// capacity. Limiting the total capacity is necessary to deal with the Android-limited GREF counts.
 	/// </summary>
 	internal static class JavaStringCache
 	{
@@ -22,7 +22,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Unfortunately, Android emulators only allow 2000 global references to exist at a time. Hardware has a much higher limit of 52000 global references. The lower limit can be problematic when running applications on the emulator, so knowing where the instance came from can be very useful.
 		// https://github.com/MicrosoftDocs/xamarin-docs/blob/live/docs/android/troubleshooting/troubleshooting.md
 		// https://github.com/unoplatform/uno/issues/18951
-		private const int MaxEntryCount = 1000;
+		private static readonly int MaxEntryCount = Uno.UI.FeatureConfiguration.JavaStringCachedCapacity;
 		private static readonly Logger _log = typeof(JavaStringCache).Log();
 		private static readonly Stopwatch _watch = Stopwatch.StartNew();
 		private static readonly Dictionary<string, LinkedListNode<KeyEntry>> _table = new();
