@@ -503,6 +503,18 @@ namespace Uno.UI
 			/// [WebAssembly Only] Determines if the measure cache is enabled.
 			/// </summary>
 			public static bool IsMeasureCacheEnabled { get; set; } = true;
+
+			/// <summary>
+			/// [Android Only] Determines if the Java string-cache is enabled.
+			/// This option must be set on application startup before the cache is initialized.
+			/// </summary>
+			public static bool IsJavaStringCachedEnabled { get; set; } = true;
+
+			/// <summary>
+			/// [Android Only] Determines the maximum capacity of the Java string-cache.
+			/// This option must be set on application startup before the cache is initialized.
+			/// </summary>
+			public static int JavaStringCachedCapacity { get; set; } = 1000;
 		}
 
 		public static class TextBox
