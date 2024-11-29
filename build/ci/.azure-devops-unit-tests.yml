@@ -77,10 +77,9 @@ jobs:
       cleanDestinationFolder: false
       overwriteExistingFiles: true
 
-  - task: MSBuild@1
-    inputs:
-      solution: src/Uno.UI-UnitTests-only.slnf
-      msbuildArguments: /r /v:m /p:CheckExclusions=True /p:Configuration=Release /nodeReuse:true /detailedsummary /m $(ADDITIONAL_FLAGS) /bl:$(build.artifactstagingdirectory)\unit-tests-build-$(XAML_FLAVOR_BUILD).binlog
+  - powershell: |
+      dotnet build -c Release src/Uno.UI-UnitTests-only.slnf -p:CheckExclusions=True $(ADDITIONAL_FLAGS) /bl:$(build.artifactstagingdirectory)/unit-tests-build-$(XAML_FLAVOR_BUILD).binlog
+    displayName: Build test binaries
 
   - task: PublishBuildArtifacts@1
     condition: always()
