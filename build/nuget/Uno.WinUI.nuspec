@@ -412,8 +412,8 @@
 		<file src="..\..\src\Uno.UI.Composition\Bin\Uno.UI.Composition.netcoremobile\Release\net9.0-maccatalyst18.0\Uno.UI.Composition.pdb" target="lib\net9.0-maccatalyst18.0" />
 		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net9.0-maccatalyst18.0\Uno.UI.Dispatching.dll" target="lib\net9.0-maccatalyst18.0" />
 		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net9.0-maccatalyst18.0\Uno.UI.Dispatching.pdb" target="lib\net9.0-maccatalyst18.0" />
-		<file src="..\..\src\SourceGenerators\System.Xaml\Bin\Release\net9.0-maccatalyst18.0\Uno.Xaml.dll" target="lib\net9.0-maccatalyst18.0" />
-		<file src="..\..\src\SourceGenerators\System.Xaml\Bin\Release\net9.0-maccatalyst18.0\Uno.Xaml.pdb" target="lib\net9.0-maccatalyst18.0" />
+		<file src="..\..\src\SourceGenerators\System.Xaml\Bin\Release\netstandard2.0\Uno.Xaml.dll" target="lib\net9.0-maccatalyst18.0" />
+		<file src="..\..\src\SourceGenerators\System.Xaml\Bin\Release\netstandard2.0\Uno.Xaml.pdb" target="lib\net9.0-maccatalyst18.0" />
 		<file src="..\..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net9.0-maccatalyst18.0\Uno.UI.FluentTheme.dll" target="lib\net9.0-maccatalyst18.0" />
 		<file src="..\..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net9.0-maccatalyst18.0\Uno.UI.FluentTheme.pdb" target="lib\net9.0-maccatalyst18.0" />
 		<file src="..\..\src\Uno.UI.FluentTheme.v1\bin\Uno.UI.FluentTheme.v1.netcoremobile\Release\net9.0-maccatalyst18.0\Uno.UI.FluentTheme.v1.dll" target="lib\net9.0-maccatalyst18.0" />
@@ -435,8 +435,8 @@
 		<file src="..\..\src\Uno.UI.Composition\Bin\Uno.UI.Composition.netcoremobile\Release\net9.0-macos15.0\Uno.UI.Composition.pdb" target="lib\net9.0-macos15.0" />
 		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net9.0-macos15.0\Uno.UI.Dispatching.dll" target="lib\net9.0-macos15.0" />
 		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net9.0-macos15.0\Uno.UI.Dispatching.pdb" target="lib\net9.0-macos15.0" />
-		<file src="..\..\src\SourceGenerators\System.Xaml\Bin\Release\net9.0-macos15.0\Uno.Xaml.dll" target="lib\net9.0-macos15.0" />
-		<file src="..\..\src\SourceGenerators\System.Xaml\Bin\Release\net9.0-macos15.0\Uno.Xaml.pdb" target="lib\net9.0-macos15.0" />
+		<file src="..\..\src\SourceGenerators\System.Xaml\Bin\Release\netstandard2.0\Uno.Xaml.dll" target="lib\net9.0-macos15.0" />
+		<file src="..\..\src\SourceGenerators\System.Xaml\Bin\Release\netstandard2.0\Uno.Xaml.pdb" target="lib\net9.0-macos15.0" />
 		<file src="..\..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net9.0-macos15.0\Uno.UI.FluentTheme.dll" target="lib\net9.0-macos15.0" />
 		<file src="..\..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net9.0-macos15.0\Uno.UI.FluentTheme.pdb" target="lib\net9.0-macos15.0" />
 		<file src="..\..\src\Uno.UI.FluentTheme.v1\bin\Uno.UI.FluentTheme.v1.netcoremobile\Release\net9.0-macos15.0\Uno.UI.FluentTheme.v1.dll" target="lib\net9.0-macos15.0" />
@@ -479,6 +479,7 @@
 		<file src="..\..\src\Uno.UI.Composition\bin\Uno.UI.Composition.Reference\Release\net9.0\Uno.UI.Composition.dll" target="lib\net9.0" />
 		<file src="..\..\src\Uno.UI.Dispatching\bin\Uno.UI.Dispatching.Reference\Release\net9.0\Uno.UI.Dispatching.dll" target="lib\net9.0" />
 		<file src="..\..\src\SourceGenerators\System.Xaml\bin\Release\netstandard2.0\Uno.Xaml.dll" target="lib\net9.0" />
+		<file src="..\..\src\SourceGenerators\System.Xaml\Bin\Release\netstandard2.0\Uno.Xaml.pdb" target="lib\net9.0" />
 		<file src="..\..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Reference\Release\net9.0\Uno.UI.FluentTheme.dll" target="lib\net9.0" />
 		<file src="..\..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Reference\Release\net9.0\Uno.UI.FluentTheme.pdb" target="lib\net9.0" />
 		<file src="..\..\src\Uno.UI.FluentTheme.v1\bin\Uno.UI.FluentTheme.v1.Reference\Release\net9.0\Uno.UI.FluentTheme.v1.dll" target="lib\net9.0" />
@@ -495,6 +496,7 @@
 		<file src="..\..\src\Uno.UI.Composition\bin\Uno.UI.Composition.Reference\Release\net8.0\Uno.UI.Composition.dll" target="lib\net8.0" />
 		<file src="..\..\src\Uno.UI.Dispatching\bin\Uno.UI.Dispatching.Reference\Release\net8.0\Uno.UI.Dispatching.dll" target="lib\net8.0" />
 		<file src="..\..\src\SourceGenerators\System.Xaml\bin\Release\netstandard2.0\Uno.Xaml.dll" target="lib\net8.0" />
+		<file src="..\..\src\SourceGenerators\System.Xaml\Bin\Release\netstandard2.0\Uno.Xaml.pdb" target="lib\net8.0" />
 		<file src="..\..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Reference\Release\net8.0\Uno.UI.FluentTheme.dll" target="lib\net8.0" />
 		<file src="..\..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.Reference\Release\net8.0\Uno.UI.FluentTheme.pdb" target="lib\net8.0" />
 		<file src="..\..\src\Uno.UI.FluentTheme.v1\bin\Uno.UI.FluentTheme.v1.Reference\Release\net8.0\Uno.UI.FluentTheme.v1.dll" target="lib\net8.0" />
