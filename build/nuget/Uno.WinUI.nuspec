@@ -403,8 +403,8 @@
 		<!-- net9.0-maccatalyst18.0 -->
 		<file src="..\..\src\Uno.UWP\Bin\Uno.netcoremobile\Release\net9.0-maccatalyst18.0\Uno.dll" target="lib\net9.0-maccatalyst18.0" />
 		<file src="..\..\src\Uno.UWP\Bin\Uno.netcoremobile\Release\net9.0-maccatalyst18.0\Uno.pdb" target="lib\net9.0-maccatalyst18.0" />
-		<file src="..\..\src\Uno.Foundation\Bin\Uno.Foundation.netcoremobile\Release\Uno.Foundation.dll" target="lib\net9.0-maccatalyst18.0" />
-		<file src="..\..\src\Uno.Foundation\Bin\Uno.Foundation.netcoremobile\Release\Uno.Foundation.pdb" target="lib\net9.0-maccatalyst18.0" />
+		<file src="..\..\src\Uno.Foundation\Bin\Uno.Foundation.netcoremobile\Release\net9.0-maccatalyst18.0\Uno.Foundation.dll" target="lib\net9.0-maccatalyst18.0" />
+		<file src="..\..\src\Uno.Foundation\Bin\Uno.Foundation.netcoremobile\Release\net9.0-maccatalyst18.0\Uno.Foundation.pdb" target="lib\net9.0-maccatalyst18.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net9.0-maccatalyst18.0\Uno.UI.dll" target="lib\net9.0-maccatalyst18.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net9.0-maccatalyst18.0\Uno.UI.pdb" target="lib\net9.0-maccatalyst18.0" />
 		<file src="..\..\src\Uno.UI\bin\Uno.UI.netcoremobile\Release\net9.0-maccatalyst18.0\*.xml" target="lib\net9.0-maccatalyst18.0" />
@@ -431,10 +431,10 @@
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net9.0-macos15.0\Uno.UI.dll" target="lib\net9.0-macos15.0" />
 		<file src="..\..\src\Uno.UI\bin\Uno.UI.netcoremobile\Release\net9.0-macos15.0\*.xml" target="lib\net9.0-macos15.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net9.0-macos15.0\Uno.UI.pdb" target="lib\net9.0-macos15.0" />
-		<file src="..\..\src\Uno.UI.Composition\Bin\Uno.UI.Composition.netcoremobile\Release\Uno.UI.Composition.dll" target="lib\net9.0-macos15.0" />
-		<file src="..\..\src\Uno.UI.Composition\Bin\Uno.UI.Composition.netcoremobile\Release\Uno.UI.Composition.pdb" target="lib\net9.0-macos15.0" />
-		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\Uno.UI.Dispatching.dll" target="lib\net9.0-macos15.0" />
-		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\Uno.UI.Dispatching.pdb" target="lib\net9.0-macos15.0" />
+		<file src="..\..\src\Uno.UI.Composition\Bin\Uno.UI.Composition.netcoremobile\Release\net9.0-macos15.0\Uno.UI.Composition.dll" target="lib\net9.0-macos15.0" />
+		<file src="..\..\src\Uno.UI.Composition\Bin\Uno.UI.Composition.netcoremobile\Release\net9.0-macos15.0\Uno.UI.Composition.pdb" target="lib\net9.0-macos15.0" />
+		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net9.0-macos15.0\Uno.UI.Dispatching.dll" target="lib\net9.0-macos15.0" />
+		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net9.0-macos15.0\Uno.UI.Dispatching.pdb" target="lib\net9.0-macos15.0" />
 		<file src="..\..\src\SourceGenerators\System.Xaml\Bin\Release\net9.0-macos15.0\Uno.Xaml.dll" target="lib\net9.0-macos15.0" />
 		<file src="..\..\src\SourceGenerators\System.Xaml\Bin\Release\net9.0-macos15.0\Uno.Xaml.pdb" target="lib\net9.0-macos15.0" />
 		<file src="..\..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme.netcoremobile\Release\net9.0-macos15.0\Uno.UI.FluentTheme.dll" target="lib\net9.0-macos15.0" />
