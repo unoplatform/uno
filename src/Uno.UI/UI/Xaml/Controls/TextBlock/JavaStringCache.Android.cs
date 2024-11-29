@@ -22,7 +22,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Unfortunately, Android emulators only allow 2000 global references to exist at a time. Hardware has a much higher limit of 52000 global references. The lower limit can be problematic when running applications on the emulator, so knowing where the instance came from can be very useful.
 		// https://github.com/MicrosoftDocs/xamarin-docs/blob/live/docs/android/troubleshooting/troubleshooting.md
 		// https://github.com/unoplatform/uno/issues/18951
-		private static readonly int MaxEntryCount = Uno.UI.FeatureConfiguration.JavaStringCachedCapacity;
+		private static readonly int _maxEntryCount = Uno.UI.FeatureConfiguration.TextBlock.JavaStringCachedCapacity;
 		private static readonly Logger _log = typeof(JavaStringCache).Log();
 		private static readonly Stopwatch _watch = Stopwatch.StartNew();
 		private static readonly Dictionary<string, LinkedListNode<KeyEntry>> _table = new();
@@ -93,7 +93,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 				else
 				{
-					if (_queue.Count == MaxEntryCount)
+					if (_queue.Count == _maxEntryCount)
 					{
 						var last = _queue.Last!.Value.CsString;
 						_table.Remove(last);

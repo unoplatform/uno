@@ -506,6 +506,7 @@ namespace Uno.UI
 
 			/// <summary>
 			/// [Android Only] Determines if the Java string-cache is enabled.
+			/// This option must be set on application startup before the cache is initialized.
 			/// </summary>
 			public static bool IsJavaStringCachedEnabled { get; set; } = true;
 
