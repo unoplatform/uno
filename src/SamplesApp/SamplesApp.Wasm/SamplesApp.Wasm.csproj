@@ -35,6 +35,7 @@
 		<WasmShellLoadAllSatelliteResources>true</WasmShellLoadAllSatelliteResources>
 
 		<WasmShellEnableIDBFS>true</WasmShellEnableIDBFS>
+		<WasmBuildNative>true</WasmBuildNative>
 
 		<!--
 		IL Linking is disabled in Debug configuration.
