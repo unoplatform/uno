@@ -511,7 +511,7 @@ jobs:
 
 - job: Skia_Browser_Runtime_Tests_Build
   displayName: 'Run Skia Browser Runtime Tests'
-  timeoutInMinutes: 180
+  timeoutInMinutes: 90
 
   pool:
     vmImage: ${{ parameters.vmLinuxImage }}
