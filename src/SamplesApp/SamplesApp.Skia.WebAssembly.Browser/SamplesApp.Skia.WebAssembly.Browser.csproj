@@ -29,6 +29,7 @@
 		<WasmShellLoadAllSatelliteResources>true</WasmShellLoadAllSatelliteResources>
 
 		<WasmShellEnableIDBFS>true</WasmShellEnableIDBFS>
+		<WasmBuildNative>true</WasmBuildNative>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
