@@ -1,5 +1,6 @@
 parameters:
   UnoCheck_Version: '1.27.0-dev.8'
+  UnoCheckParameters: ''
 
 steps:
 
@@ -9,7 +10,7 @@ steps:
 
   - powershell: |
       & dotnet tool update --global uno.check --version ${{ parameters.UnoCheck_Version }} --add-source https://api.nuget.org/v3/index.json
-      & uno-check -v --ci --non-interactive --fix --skip androidemulator --skip xcode --skip gtk3 --skip vswin --skip vsmac --pre-major
+      & uno-check -v --ci --non-interactive --fix --skip androidemulator --skip xcode --skip gtk3 --skip vswin --skip vsmac --pre-major ${{ parameters.UnoCheckParameters }}}}
     displayName: Install .NET Workloads
     errorActionPreference: continue
     ignoreLASTEXITCODE: true
