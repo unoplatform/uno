@@ -90,13 +90,10 @@ When the value of `WinRTFeatureConfiguration.Accessibility.HighContrast` is chan
 
 ## Known issues
 
-- `Hyperlink` in `TextBlock` is not supported.
-- `TextBox` and `PasswordBox` don't use `Header` and `PlaceholderText`.
 - `ItemsControl` doesn't use `AutomationProperties.Name` on its `DataTemplate`'s root.
 - There are XAML code generation conflicts between `x:Name` and `AutomationProperties.Name`.
 - A child with the same accessible name as its parent is accessibility focusable.
 - `Control` doesn't receive focus when accessibility focused.
-- `TabIndex` is not supported.
 - On iOS, nested accessible elements are not accessibility focusable.
 - On Android, both `ToggleSwitch` and its native `Switch` can be accessibility focused.
 - On Android, both `TextBox` and its native `EditText` can be accessibility focused.
