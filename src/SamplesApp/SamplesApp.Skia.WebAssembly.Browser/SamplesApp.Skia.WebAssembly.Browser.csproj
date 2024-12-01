@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WebAssembly">
 	<PropertyGroup>
-		<TargetFrameworks>$(NetWasmPreviousAndCurrent)</TargetFrameworks>
+		<TargetFrameworks>$(NetCurrent)</TargetFrameworks>
 	</PropertyGroup>
 
 	<Import Project="../../targetframework-override-noplatform.props" />
