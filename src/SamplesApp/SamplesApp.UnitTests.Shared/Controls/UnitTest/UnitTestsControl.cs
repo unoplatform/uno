@@ -74,6 +74,9 @@ namespace Uno.UI.Samples.Tests
 
 		public UnitTestsControl()
 		{
+			// Force keep the Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions assembly from mstest 3.6.3
+			typeof(Microsoft.VisualStudio.TestTools.UnitTesting.TestContext).ToString();
+
 #if DEBUG
 			if (_ciTestsGroupCountCache != -1 || _ciTestGroupCache != -1)
 			{
