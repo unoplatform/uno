@@ -190,6 +190,7 @@ jobs:
       xCodeRoot: ${{ parameters.xCodeRootBuild }}
 
   - bash: |
+      chmod +x $(build.sourcesdirectory)/build/test-scripts/skia-ios-uitest-build.sh
       $(build.sourcesdirectory)/build/test-scripts/skia-ios-uitest-build.sh
     displayName: Build iOS Skia Head
     env:
