@@ -4,6 +4,8 @@ using Windows.Foundation;
 using Windows.System;
 using Windows.Win32;
 using Windows.Win32.Foundation;
+using Windows.Win32.Graphics.Gdi;
+using Windows.Win32.Graphics.OpenGL;
 using Windows.Win32.System.Diagnostics.Debug;
 using Uno.Disposables;
 
@@ -63,6 +65,29 @@ internal static class Win32Helper
 		private readonly IntPtr _handle = Marshal.StringToHGlobalUni(str);
 		public static unsafe implicit operator PCWSTR(NativeNulTerminatedUtf16String value) => new((char*)value._handle);
 		public void Dispose() => Marshal.FreeHGlobal(_handle);
+	}
+
+	public readonly struct WglCurrentContextDisposable : IDisposable
+	{
+		private readonly HDC _oldDc;
+		private readonly HGLRC _oldContext;
+		public WglCurrentContextDisposable(HDC dc, HGLRC context)
+		{
+			_oldContext = PInvoke.wglGetCurrentContext();
+			_oldDc = PInvoke.wglGetCurrentDC();
+			if (!PInvoke.wglMakeCurrent(dc, context))
+			{
+				throw new InvalidOperationException($"{nameof(PInvoke.wglMakeCurrent)} failed: {GetErrorMessage()}");
+			}
+		}
+
+		public void Dispose()
+		{
+			if (!PInvoke.wglMakeCurrent(_oldDc, _oldContext))
+			{
+				throw new InvalidOperationException($"{nameof(PInvoke.wglMakeCurrent)} failed: {GetErrorMessage()}");
+			}
+		}
 	}
 
 	public static ushort LOWORD(IntPtr a) => unchecked((ushort)(a & 0xffff));

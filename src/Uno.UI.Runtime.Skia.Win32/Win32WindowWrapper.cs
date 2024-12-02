@@ -209,7 +209,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				_renderer.Reset();
 				if (_gl is { })
 				{
-					ReleaseGlContext(_gl.GlContext, _gl.GrGlInterface, _gl.GrContext);
+					ReleaseGlContext(_gl.Hdc, _gl.GlContext, _gl.GrGlInterface, _gl.GrContext);
 				}
 				_backgroundDisposable?.Dispose();
 				XamlRootMap.Unregister(XamlRoot!);

@@ -134,4 +134,6 @@ SwapBuffers
 TranslateMessage
 wglCreateContext
 wglDeleteContext
+wglGetCurrentContext
+wglGetCurrentDC
 wglMakeCurrent
