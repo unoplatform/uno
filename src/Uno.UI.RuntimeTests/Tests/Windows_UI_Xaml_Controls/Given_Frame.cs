@@ -437,6 +437,22 @@ public class Given_Frame
 		Assert.IsTrue(_navigateOrderTracker.FrameNavigated);
 	}
 
+	[TestMethod]
+	public async Task When_Exception_In_Page_Ctor()
+	{
+		var SUT = new Frame()
+		{
+			Width = 200,
+			Height = 200
+		};
+
+		TestServices.WindowHelper.WindowContent = SUT;
+		await TestServices.WindowHelper.WaitForLoaded(SUT);
+
+		var exception = Assert.ThrowsException<NotSupportedException>(() => SUT.Navigate(typeof(CrashOnlyPage)));
+		Assert.AreEqual("Crashed", exception.Message);
+	}
+
 	[TestCleanup]
 	public void Cleanup()
 	{
@@ -612,4 +628,12 @@ public partial class FrameNavigateFirstPage : Page
 
 public partial class FrameNavigateSecondPage : Page
 {
+}
+
+public partial class CrashOnlyPage : Page
+{
+	public CrashOnlyPage()
+	{
+		throw new NotSupportedException("Crashed");
+	}
 }
