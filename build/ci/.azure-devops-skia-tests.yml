@@ -190,7 +190,7 @@ jobs:
       xCodeRoot: ${{ parameters.xCodeRootBuild }}
 
   - bash: |
-      $(build.sourcesdirectory)/build/test-scripts/ios-uitest-build.shD:\Work\uno-private\build\test-scripts\skia-ios-uitest-build.sh
+      $(build.sourcesdirectory)/build/test-scripts/skia-ios-uitest-build.sh
     displayName: Build iOS Skia Head
     env:
       BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
