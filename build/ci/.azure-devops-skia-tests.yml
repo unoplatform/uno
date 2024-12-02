@@ -128,8 +128,67 @@ jobs:
       ArtifactName: skia-browserwasm-samples-app-$(XAML_FLAVOR_BUILD)
       ArtifactType: Container
 
-  # iOS
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    retryCountOnTaskFailure: 3
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: uitests-ios-skia-build
+      ArtifactType: Container
 
+
+  - task: PublishBuildArtifacts@1
+    retryCountOnTaskFailure: 3
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: skia-samples-app-binlog
+      ArtifactType: Container
+
+
+- job: Skia_Tests_Build_Apple
+  displayName: 'Build Apple Skia Samples App UI Tests'
+  timeoutInMinutes: 60
+  cancelTimeoutInMinutes: 1
+  dependsOn: skia_package_macos_native_build
+
+  pool:
+    vmImage: ${{ parameters.vmMacImage }}
+
+  variables:
+    CombinedConfiguration: Release|Any CPU
+    CI_Build: true
+    GTK_RUNTIME_URL: https://github.com/tschoonj/GTK-for-Windows-Runtime-Environment-Installer/releases/download/2020-07-15/gtk3-runtime-3.24.20-2020-07-15-ts-win64.exe
+
+    # Use pre-defined local nuget cache for restore
+    NUGET_PACKAGES: 'C:\NugetPackages'
+
+    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
+    XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - template: templates/download-winui-converted-tree.yml
+
+  - template: templates/gitversion.yml
+  - template: templates/dotnet-mobile-install-mac.yml
+    parameters:
+      UnoCheckParameters: '--tfm net9.0-ios --tfm net9.0-maccatalyst'
+
+  - template: templates/nuget-cache.yml
+    parameters:
+      nugetPackages: $(NUGET_PACKAGES)
+
+  ## Restore skia-macos native assets
+  - task: DownloadPipelineArtifact@2
+    displayName: Restoring macOS native assets
+    inputs:
+      artifact: NugetPackages-Artifacts-skia-macos-native-SamplesApp-$(XAML_FLAVOR_BUILD)
+      path: $(Build.SourcesDirectory)/src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/build/Release
+
+  # iOS
   - template: templates/ios-build-select-version.yml
     parameters:
       xCodeRoot: ${{ parameters.xCodeRootBuild }}
@@ -637,7 +696,7 @@ jobs:
 - ${{ each RuntimeTestGroup in parameters.RUNTIME_TESTS_GROUPS }}:
   - template: .azure-devops-ios-tests-run.yml
     dependsOn:
-    - Skia_Tests_Build
+    - Skia_Tests_Build_Apple
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
       JobName: 'Skia_iOS_Runtime_Tests_group_${{ RuntimeTestGroup.value }}'
