@@ -454,7 +454,11 @@ public class Given_Frame
 
 		var exception = Assert.ThrowsException<NotSupportedException>(() => SUT.Navigate(typeof(ExceptionInCtorPage)));
 		Assert.AreEqual("Crashed", exception.Message);
-		Assert.IsFalse(navigationFailed);
+		if (FeatureConfiguration.Frame.UseWinUIBehavior)
+		{
+			// This is only valid with WinUI Frame behavior
+			Assert.IsFalse(navigationFailed);
+		}
 	}
 
 	[TestMethod]
