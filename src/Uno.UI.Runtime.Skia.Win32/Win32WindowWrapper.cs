@@ -311,7 +311,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		set => _ = PInvoke.SetWindowText(_hwnd, value) || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SetWindowText)} failed: {Win32Helper.GetErrorMessage()}");
 	}
 
-	public override void Activate()
+	protected internal override void Activate()
 	{
 		_ = PInvoke.SetActiveWindow(_hwnd) != HWND.Null
 			|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SetActiveWindow)} failed: {Win32Helper.GetErrorMessage()}");
@@ -319,10 +319,8 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 	protected override void ShowCore() => PInvoke.ShowWindow(_hwnd, SHOW_WINDOW_CMD.SW_SHOWDEFAULT);
 
-	public override void Close()
+	protected override void CloseCore()
 	{
-		base.Close();
-
 		this.Log().Log(LogLevel.Information, _hwnd, static hwnd => $"Forcibly closing window {hwnd.Value.ToString("X", CultureInfo.InvariantCulture)}");
 
 		_ = PInvoke.DestroyWindow(_hwnd)

@@ -173,8 +173,6 @@ internal partial class Win32WindowWrapper
 
 		_surface.Flush();
 		_renderer.CopyPixels(clientRect.Width, clientRect.Height);
-
-		_renderer.EndPaint();
 	}
 
 	private interface IRenderer
