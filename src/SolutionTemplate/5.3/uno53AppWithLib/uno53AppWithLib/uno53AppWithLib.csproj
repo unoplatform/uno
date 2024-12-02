@@ -138,27 +138,27 @@
 
       <ItemGroup
           Condition="'$(TargetFramework)'=='net9.0-browserwasm'">
-        <_AssetsToValidate Include="$(PublishDir)wwwroot\Assets\SharedAssets.md" />
-        <_AssetsToValidate Include="$(PublishDir)wwwroot\Assets\json_file_asset.json" />
-        <_AssetsToValidate Include="$(PublishDir)wwwroot\Assets\Icons\icon_foreground.png" />
-        <_AssetsToValidate Include="$(PublishDir)wwwroot\Assets\Icons\icon_foreground.scale-100.png" />
-        <_AssetsToValidate Include="$(PublishDir)wwwroot\Assets\Icons\icon_foreground.scale-125.png" />
-        <_AssetsToValidate Include="$(PublishDir)wwwroot\Assets\Icons\icon_foreground.scale-150.png" />
-        <_AssetsToValidate Include="$(PublishDir)wwwroot\Assets\Icons\icon_foreground.scale-200.png" />
-        <_AssetsToValidate Include="$(PublishDir)wwwroot\Assets\Icons\icon_foreground.scale-300.png" />
-        <_AssetsToValidate Include="$(PublishDir)wwwroot\Assets\Icons\icon_foreground.scale-400.png" />
+        <_AssetsToValidate Include="$(PublishDir)wwwroot\$(WasmShellOutputPackagePath)\Assets\SharedAssets.md" />
+        <_AssetsToValidate Include="$(PublishDir)wwwroot\$(WasmShellOutputPackagePath)\Assets\json_file_asset.json" />
+        <_AssetsToValidate Include="$(PublishDir)wwwroot\$(WasmShellOutputPackagePath)\Assets\Icons\icon_foreground.png" />
+        <_AssetsToValidate Include="$(PublishDir)wwwroot\$(WasmShellOutputPackagePath)\Assets\Icons\icon_foreground.scale-100.png" />
+        <_AssetsToValidate Include="$(PublishDir)wwwroot\$(WasmShellOutputPackagePath)\Assets\Icons\icon_foreground.scale-125.png" />
+        <_AssetsToValidate Include="$(PublishDir)wwwroot\$(WasmShellOutputPackagePath)\Assets\Icons\icon_foreground.scale-150.png" />
+        <_AssetsToValidate Include="$(PublishDir)wwwroot\$(WasmShellOutputPackagePath)\Assets\Icons\icon_foreground.scale-200.png" />
+        <_AssetsToValidate Include="$(PublishDir)wwwroot\$(WasmShellOutputPackagePath)\Assets\Icons\icon_foreground.scale-300.png" />
+        <_AssetsToValidate Include="$(PublishDir)wwwroot\$(WasmShellOutputPackagePath)\Assets\Icons\icon_foreground.scale-400.png" />
 
         <!-- wwwroot -->
         <_AssetsToValidate Include="$(PublishDir)wwwroot\staticwebapp.config.json" />
         <_AssetsToValidate Include="$(OutputPath)wwwroot\web.config" />
 
         <!-- Validate json files handling -->
-        <_AssetsToValidate Include="$(PublishDir)wwwroot\test_root_asset.json" />
-        <_AssetsToValidate Include="$(PublishDir)wwwroot\test_root_asset_not_included.json" MustNotExist="true" />
+        <_AssetsToValidate Include="$(PublishDir)wwwroot\$(WasmShellOutputPackagePath)\test_root_asset.json" />
+        <_AssetsToValidate Include="$(PublishDir)wwwroot\$(WasmShellOutputPackagePath)\test_root_asset_not_included.json" MustNotExist="true" />
 
         <!-- Transitive library asset -->
-        <_AssetsToValidate Include="$(PublishDir)wwwroot\uno53lib\Assets\uno53lib-test.xml" />
-        <_AssetsToValidate Include="$(PublishDir)wwwroot\uno53lib\Assets\uno53lib_icon_lib.png" />
+        <_AssetsToValidate Include="$(PublishDir)wwwroot\$(WasmShellOutputPackagePath)\uno53lib\Assets\uno53lib-test.xml" />
+        <_AssetsToValidate Include="$(PublishDir)wwwroot\$(WasmShellOutputPackagePath)\uno53lib\Assets\uno53lib_icon_lib.png" />
       </ItemGroup>
 
     <Error Text="Missing asset %(_AssetsToValidate.Identity)"

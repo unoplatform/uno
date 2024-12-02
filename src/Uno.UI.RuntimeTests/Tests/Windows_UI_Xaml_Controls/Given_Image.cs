@@ -663,8 +663,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitFor(() => imageOpened);
 			var screenshot = await TakeScreenshot(image);
 			ImageAssert.HasColorAt(screenshot, 5, screenshot.Height / 2, Color.FromArgb(0xFF, 0xED, 0x1B, 0x24), tolerance: 5);
-			ImageAssert.HasColorAt(screenshot, screenshot.Width / 2 - 10, screenshot.Height / 2, Color.FromArgb(0xFF, 0xED, 0x1B, 0x24), tolerance: 5);
-			ImageAssert.HasColorAt(screenshot, screenshot.Width / 2 + 10, screenshot.Height / 2, Color.FromArgb(0xFF, 0x23, 0xB1, 0x4D), tolerance: 5);
+			ImageAssert.HasColorAt(screenshot, screenshot.Width / 2.2f, screenshot.Height / 2, Color.FromArgb(0xFF, 0xED, 0x1B, 0x24), tolerance: 5);
+			ImageAssert.HasColorAt(screenshot, screenshot.Width / 1.8f, screenshot.Height / 2, Color.FromArgb(0xFF, 0x23, 0xB1, 0x4D), tolerance: 5);
 			ImageAssert.HasColorAt(screenshot, screenshot.Width - 5, screenshot.Height / 2, Color.FromArgb(0xFF, 0x23, 0xB1, 0x4D), tolerance: 5);
 
 		}
