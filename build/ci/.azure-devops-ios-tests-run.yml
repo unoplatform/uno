@@ -18,7 +18,6 @@ jobs:
   - iOS_Build
 
   displayName: ${{ parameters.JobDisplayName }}
-  dependsOn: iOS_Build
   pool:
     vmImage: ${{ parameters.vmImage }}
 
