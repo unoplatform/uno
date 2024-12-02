@@ -167,6 +167,10 @@ internal static partial class NativeUno
 	internal static partial bool uno_application_query_url_support(string url);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
+	[return: MarshalAs(UnmanagedType.I1)]
+	internal static partial bool uno_application_is_bundled();
+
+	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static unsafe partial void uno_set_drawing_callbacks(
 		delegate* unmanaged[Cdecl]<nint, double, double, nint, void> metalCallback,
 		delegate* unmanaged[Cdecl]<nint, double, double, nint*, int*, int*, void> softCallback,
