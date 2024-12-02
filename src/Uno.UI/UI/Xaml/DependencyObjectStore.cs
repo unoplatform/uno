@@ -19,6 +19,7 @@ using System.Globalization;
 using Windows.ApplicationModel.Calls;
 using Microsoft.UI.Xaml.Controls;
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.UI.Xaml.Media;
 
 
 
@@ -108,8 +109,6 @@ namespace Microsoft.UI.Xaml
 		/// The theme last to apply theme bindings on this object and its children.
 		/// </summary>
 		private SpecializedResourceDictionary.ResourceKey? _themeLastUsed;
-
-		private static readonly bool _validatePropertyOwner = Debugger.IsAttached;
 
 #if UNO_HAS_ENHANCED_LIFECYCLE
 		internal bool IsDisposed => _isDisposed;
@@ -805,7 +804,7 @@ namespace Microsoft.UI.Xaml
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void ValidatePropertyOwner(DependencyProperty property)
 		{
-			if (_validatePropertyOwner)
+			if (FeatureConfiguration.DependencyProperty.ValidatePropertyOwnerOnReadWrite)
 			{
 				var isFrameworkElement = _originalObjectType.Is(typeof(FrameworkElement));
 				var isMixinFrameworkElement = _originalObjectRef.Target is IFrameworkElement && !isFrameworkElement;
@@ -1637,9 +1636,13 @@ namespace Microsoft.UI.Xaml
 					{
 						yield return fe.Resources;
 					}
-				}
 
-				candidate = candidate.GetParent() as DependencyObject;
+					candidate = fe.Parent as FrameworkElement;
+				}
+				else
+				{
+					candidate = VisualTreeHelper.GetParent(candidate) as DependencyObject;
+				}
 			}
 
 			if (includeAppResources && Application.Current != null)

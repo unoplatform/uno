@@ -940,7 +940,7 @@ namespace Uno.UI.Samples.Tests
 							}
 							else if (test.ExpectedException is null || !test.ExpectedException.IsInstanceOfType(e))
 							{
-								if (_currentRun.CurrentRepeatCount < config.Attempts - 1 && !Debugger.IsAttached)
+								if (_currentRun.CurrentRepeatCount < config.Attempts - 1)
 								{
 									_currentRun.CurrentRepeatCount++;
 									canRetry = true;

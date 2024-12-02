@@ -504,6 +504,18 @@ namespace Uno.UI
 			/// [WebAssembly Only] Determines if the measure cache is enabled.
 			/// </summary>
 			public static bool IsMeasureCacheEnabled { get; set; } = true;
+
+			/// <summary>
+			/// [Android Only] Determines if the Java string-cache is enabled.
+			/// This option must be set on application startup before the cache is initialized.
+			/// </summary>
+			public static bool IsJavaStringCachedEnabled { get; set; } = true;
+
+			/// <summary>
+			/// [Android Only] Determines the maximum capacity of the Java string-cache.
+			/// This option must be set on application startup before the cache is initialized.
+			/// </summary>
+			public static int JavaStringCachedCapacity { get; set; } = 1000;
 		}
 
 		public static class TextBox
@@ -842,6 +854,29 @@ namespace Uno.UI
 			/// of having an undefined behavior and/or race conditions.
 			/// </summary>
 			public static bool DisableThreadingCheck { get; set; }
+
+			/// <summary>
+			/// Enables checks that make sure that <see cref="DependencyObjectStore.GetValue" /> and
+			/// <see cref="DependencyObjectStore.SetValue" /> are only called on the owner of the property being
+			/// set/got.
+			/// </summary>
+			public static bool ValidatePropertyOwnerOnReadWrite { get; set; } =
+#if DEBUG
+				true;
+#else
+				global::System.Diagnostics.Debugger.IsAttached;
+#endif
+		}
+
+		/// <summary>
+		/// This is for internal use to facilitate turning on/off certain logic that makes it easier/harder
+		/// to debug.
+		/// </summary>
+		internal static class DebugOptions
+		{
+			public static bool PreventKeyboardStateTrackerFromResettingOnWindowActivationChange { get; set; }
+
+			public static bool WaitIndefinitelyInEventTester { get; set; }
 		}
 	}
 }
