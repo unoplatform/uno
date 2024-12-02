@@ -58,6 +58,13 @@ internal static class Win32Helper
 		return modifiers;
 	}
 
+	public readonly ref struct NativeNulTerminatedUtf16String(string str)
+	{
+		private readonly IntPtr _handle = Marshal.StringToHGlobalUni(str);
+		public static unsafe implicit operator PCWSTR(NativeNulTerminatedUtf16String value) => new((char*)value._handle);
+		public void Dispose() => Marshal.FreeHGlobal(_handle);
+	}
+
 	public static ushort LOWORD(IntPtr a) => unchecked((ushort)(a & 0xffff));
 	public static ushort LOWORD(WPARAM wParam) => LOWORD((IntPtr)wParam.Value);
 	public static ushort HIWORD(IntPtr a) => unchecked((ushort)((a >> 16) & 0xffff));

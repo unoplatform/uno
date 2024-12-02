@@ -49,11 +49,9 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	private IDisposable? _backgroundDisposable;
 	private SKColor _background;
 
-	static unsafe Win32WindowWrapper()
+	static Win32WindowWrapper()
 	{
-		var windowClassPtr = Marshal.StringToHGlobalUni(WindowClassName);
-		using var windowClassNameDisposable = new DisposableStruct<IntPtr>(Marshal.FreeHGlobal, windowClassPtr);
-		var lpClassName = new PCWSTR((char*)windowClassPtr);
+		using var lpClassName = new Win32Helper.NativeNulTerminatedUtf16String(WindowClassName);
 
 		_windowClass = new WNDCLASSEXW
 		{
@@ -120,8 +118,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 	private unsafe HWND CreateWindow()
 	{
-		var title = Marshal.StringToHGlobalUni("Uno Platform");
-		using var titleDisposable = new DisposableStruct<IntPtr>(Marshal.FreeHGlobal, title);
+		using var title = new Win32Helper.NativeNulTerminatedUtf16String("Uno Platform");
 
 		var preferredWindowSize = ApplicationView.PreferredLaunchViewSize;
 		if (preferredWindowSize.IsEmpty)
@@ -129,15 +126,13 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			preferredWindowSize = new Size(InitialWidth, InitialHeight);
 		}
 
-		var windowClassPtr = Marshal.StringToHGlobalUni(WindowClassName);
-		using var windowClassNameDisposable = new DisposableStruct<IntPtr>(Marshal.FreeHGlobal, windowClassPtr);
-		var lpClassName = new PCWSTR((char*)windowClassPtr);
+		using var lpClassName = new Win32Helper.NativeNulTerminatedUtf16String(WindowClassName);
 
 		_wrapperForNextCreateWindow = this;
 		var hwnd = PInvoke.CreateWindowEx(
 			0,
 			lpClassName,
-			new PCWSTR((char*)title),
+			title,
 			WINDOW_STYLE.WS_OVERLAPPEDWINDOW,
 			PInvoke.CW_USEDEFAULT,
 			PInvoke.CW_USEDEFAULT,
