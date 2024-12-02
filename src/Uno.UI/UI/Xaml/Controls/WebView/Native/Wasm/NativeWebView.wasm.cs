@@ -1,44 +1,55 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Net.Http;
+using System.Runtime.InteropServices.JavaScript;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Web.WebView2.Core;
 using Uno.Foundation;
+using Uno.UI.Runtime.Skia;
 using Uno.UI.Xaml.Controls;
 using static __Microsoft.UI.Xaml.Controls.NativeWebView;
 
+#if WASM_SKIA
+using ElementId = System.String;
+#else
+using ElementId = System.IntPtr;
+#endif
+
 namespace Microsoft.UI.Xaml.Controls;
 
-public partial class NativeWebView
-#if __WASM__
-	: UIElement, INativeWebView
-#endif
+public partial class NativeWebView : INativeWebView
 {
-	private CoreWebView2 _coreWebView;
+	private readonly CoreWebView2 _coreWebView;
+	private readonly ElementId _elementId;
+	private static readonly ConcurrentDictionary<ElementId, NativeWebView> _elementIdToNativeWebView = new();
 
-	public NativeWebView(CoreWebView2 coreWebView)
-#if __WASM__
-		: base("iframe")
-#endif
+	public NativeWebView(CoreWebView2 coreWebView, ElementId elementId)
 	{
+		NativeMethods.BuildImports(
+#if WASM_SKIA
+			"Uno.UI.Runtime.Skia.WebAssembly.Browser"
+#else
+			"Uno.UI"
+#endif
+			);
 		_coreWebView = coreWebView;
+		_elementId = elementId;
 
-		SetAttribute("background-color", "transparent");
-
-		IFrameLoaded += OnNavigationCompleted;
-
-#if __WASM_SKIA__
-		Html
-#endif
+		NativeMethods.SetBackground(elementId, "transparent");
 	}
 
-	private event EventHandler IFrameLoaded
+	[JSExport]
+	internal static void DispatchLoadEvent(ElementId elementId)
 	{
-		add => RegisterEventHandler("load", value, GenericEventHandlers.RaiseEventHandler);
-		remove => UnregisterEventHandler("load", value, GenericEventHandlers.RaiseEventHandler);
+		if (_elementIdToNativeWebView.TryGetValue(elementId, out var nativeWebView))
+		{
+			nativeWebView.OnNavigationCompleted(nativeWebView._coreWebView, EventArgs.Empty);
+		}
 	}
 
-	public string DocumentTitle => NativeMethods.GetDocumentTitle(HtmlId) ?? "";
+	public string DocumentTitle => NativeMethods.GetDocumentTitle(_elementId) ?? "";
 
 	private void OnNavigationCompleted(object sender, EventArgs e)
 	{
@@ -47,7 +58,7 @@ public partial class NativeWebView
 			return;
 		}
 
-		var uriString = this.GetAttribute("src");
+		var uriString = NativeMethods.GetAttribute(_elementId, "src");
 		Uri uri = CoreWebView2.BlankUri;
 		if (!string.IsNullOrEmpty(uriString))
 		{
@@ -58,11 +69,13 @@ public partial class NativeWebView
 		_coreWebView.RaiseNavigationCompleted(uri, true, 200, CoreWebView2WebErrorStatus.Unknown);
 	}
 
-	public Task<string> ExecuteScriptAsync(string script, CancellationToken token) => Task.FromResult(NativeMethods.ExecuteScript(HtmlId, script));
+	public Task<string?> ExecuteScriptAsync(string script, CancellationToken token) =>
+		Task.FromResult(NativeMethods.ExecuteScript(_elementId, script));
 
-	public Task<string> InvokeScriptAsync(string script, string[] arguments, CancellationToken token) => Task.FromResult<string>("");
+	public Task<string?> InvokeScriptAsync(string script, string[]? arguments, CancellationToken token) =>
+		throw new NotSupportedException("InvokeScriptAsync with arguments is not yet supported on this platform.");
 
-	private void ScheduleNavigationStarting(string url, Action loadAction)
+	private void ScheduleNavigationStarting(string? url, Action loadAction)
 	{
 		_ = _coreWebView.Owner.Dispatcher.RunAsync(global::Windows.UI.Core.CoreDispatcherPriority.High, () =>
 		{
@@ -78,13 +91,13 @@ public partial class NativeWebView
 	public void ProcessNavigation(Uri uri)
 	{
 		var uriString = uri.OriginalString;
-		ScheduleNavigationStarting(uriString, () => this.SetAttribute("src", uriString));
+		ScheduleNavigationStarting(uriString, () => NativeMethods.SetAttribute(_elementId, "src", uriString));
 		OnNavigationCompleted(this, EventArgs.Empty);
 	}
 
 	public void ProcessNavigation(string html)
 	{
-		ScheduleNavigationStarting(null, () => this.SetAttribute("srcdoc", html));
+		ScheduleNavigationStarting(null, () => NativeMethods.SetAttribute(_elementId, "srcdoc", html));
 		OnNavigationCompleted(this, EventArgs.Empty);
 	}
 
@@ -92,18 +105,13 @@ public partial class NativeWebView
 	{
 	}
 
-	public void Reload() => NativeMethods.Reload(HtmlId);
+	public void Reload() => NativeMethods.Reload(_elementId);
 
-	public void Stop() => NativeMethods.Stop(HtmlId);
+	public void Stop() => NativeMethods.Stop(_elementId);
 
-	public void GoBack() => NativeMethods.GoBack(HtmlId);
+	public void GoBack() => NativeMethods.GoBack(_elementId);
 
-	public void GoForward() => NativeMethods.GoForward(HtmlId);
+	public void GoForward() => NativeMethods.GoForward(_elementId);
 
 	public void SetScrollingEnabled(bool isScrollingEnabled) { }
-
-#if __SKIA__
-	
-
-#endif
 }

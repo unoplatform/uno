@@ -24,6 +24,7 @@
 		<RootNamespace>Uno.WinUI.Runtime.Skia.WebAssembly.Browser</RootNamespace>
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
+		<DefineConstants>$(DefineConstants);WASM_SKIA</DefineConstants>
 
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>

@@ -1,6 +1,15 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
+using System.Net.Http.Headers;
 using System.Runtime.InteropServices.JavaScript;
 using System.Threading.Tasks;
+
+#if WASM_SKIA
+using ElementId = System.String;
+#else
+using ElementId = System.IntPtr;
+#endif
 
 namespace __Microsoft.UI.Xaml.Controls;
 
@@ -8,22 +17,37 @@ internal static partial class NativeWebView
 {
 	internal static partial class NativeMethods
 	{
+		[JSImport("globalThis.Microsoft.UI.Xaml.Controls.WebView.buildImports")]
+		internal static partial void BuildImports(string assembly);
+
 		[JSImport("globalThis.Microsoft.UI.Xaml.Controls.WebView.reload")]
-		internal static partial void Reload(IntPtr htmlId);
+		internal static partial void Reload(ElementId htmlId);
 
 		[JSImport("globalThis.Microsoft.UI.Xaml.Controls.WebView.stop")]
-		internal static partial void Stop(IntPtr htmlId);
+		internal static partial void Stop(ElementId htmlId);
 
 		[JSImport("globalThis.Microsoft.UI.Xaml.Controls.WebView.goBack")]
-		internal static partial void GoBack(IntPtr htmlId);
+		internal static partial void GoBack(ElementId htmlId);
 
 		[JSImport("globalThis.Microsoft.UI.Xaml.Controls.WebView.goForward")]
-		internal static partial void GoForward(IntPtr htmlId);
+		internal static partial void GoForward(ElementId htmlId);
 
 		[JSImport("globalThis.Microsoft.UI.Xaml.Controls.WebView.executeScriptAsync")]
-		internal static partial string ExecuteScript(IntPtr htmlId, string script);
+		internal static partial string? ExecuteScript(ElementId htmlId, string script);
 
 		[JSImport("globalThis.Microsoft.UI.Xaml.Controls.WebView.getDocumentTitle")]
-		internal static partial string GetDocumentTitle(IntPtr htmlId);
+		internal static partial string? GetDocumentTitle(ElementId htmlId);
+
+		[JSImport("globalThis.Microsoft.UI.Xaml.Controls.WebView.getAttribute")]
+		internal static partial string? GetAttribute(ElementId htmlId, string attribute);
+
+		[JSImport("globalThis.Microsoft.UI.Xaml.Controls.WebView.setAttribute")]
+		internal static partial void SetAttribute(ElementId htmlId, string attribute, string value);
+
+		[JSImport("globalThis.Microsoft.UI.Xaml.Controls.WebView.setBackground")]
+		internal static partial void SetBackground(ElementId htmlId, string value);
+
+		[JSImport("globalThis.Microsoft.UI.Xaml.Controls.WebView.setupEvents")]
+		internal static partial void SetupEvents(ElementId htmlId);
 	}
 }

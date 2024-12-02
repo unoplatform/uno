@@ -1,6 +1,9 @@
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.Web.WebView2.Core;
+using Uno.UI.Runtime.Skia;
 using Uno.UI.Xaml.Controls;
+
+namespace Microsoft.UI.Xaml.Controls;
 
 internal class BrowserWebViewProvider : INativeWebViewProvider
 {
@@ -13,14 +16,14 @@ internal class BrowserWebViewProvider : INativeWebViewProvider
 
 	public INativeWebView CreateNativeWebView(ContentPresenter contentPresenter)
 	{
-		var content = contentPresenter.Content as INativeWebView;
+		var content = contentPresenter.Content as BrowserHtmlElement;
 		if (content is null)
 		{
-			content = new NativeWebView();
+			content = BrowserHtmlElement.CreateHtmlElement("iframe");
 			contentPresenter.Content = content;
 		}
 
-		content.SetOwner(_owner);
-		return content;
+		var nativeWebView = new NativeWebView(_owner, content.ElementId);
+		return nativeWebView;
 	}
 }

@@ -172,7 +172,7 @@ public partial class CoreWebView2
 		DocumentTitleChanged?.Invoke(this, null);
 	}
 
-	internal void RaiseNavigationStarting(object navigationData, out bool cancel)
+	internal void RaiseNavigationStarting(object? navigationData, out bool cancel)
 	{
 		string? uriString = null;
 		if (navigationData is Uri uri)
