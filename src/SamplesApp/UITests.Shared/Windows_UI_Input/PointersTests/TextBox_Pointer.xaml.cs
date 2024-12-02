@@ -7,9 +7,9 @@ using Windows.Foundation;
 namespace UITests.Shared.Windows_UI_Input.PointersTests
 {
 	[Sample("Pointers",Description = "This sample tests an issue where dragging on a TextBox selects text incorrectly. To ensures that dragging across the TextBox does not select text unless explicitly selected.")]
-	public sealed partial class TextBoxPointer : Page
+	public sealed partial class TextBox_Pointer : Page
 	{
-		public TextBoxPointer()
+		public TextBox_Pointer()
 		{
 			this.InitializeComponent();
 			SetupPointerEvents();
