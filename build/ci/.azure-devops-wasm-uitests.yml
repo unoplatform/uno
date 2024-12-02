@@ -28,7 +28,9 @@ jobs:
   - template: templates/download-winui-converted-tree.yml
 
   - template: templates/gitversion.yml
-  - template: templates/dotnet-install.yml
+  - template: templates/dotnet-mobile-install-linux.yml
+    parameters:
+      UnoCheckParameters: '--tfm net9.0-browserwasm'
 
   - template: templates/nuget-cache.yml
     parameters:
@@ -42,7 +44,7 @@ jobs:
   - task: CopyFiles@2
     displayName: 'Publish Wasm Site (net9.0)'
     inputs:
-      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Wasm/bin/Release/net9.0/browser-wasm/publish/wwwroot
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Wasm/bin/Release/net9.0/publish/wwwroot
       Contents: '**/*.*'
       TargetFolder: $(build.artifactstagingdirectory)/site-net9.0-$(XAML_FLAVOR_BUILD)
       CleanTargetFolder: false

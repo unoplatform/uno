@@ -17,6 +17,9 @@
 		<!-- which is very important for us -->
 		<RestoreAdditionalProjectSources Condition="'$(UNO_UWP_BUILD)'=='false'">https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet-tools/nuget/v3/index.json</RestoreAdditionalProjectSources>
 
+		<!-- We need all the intermediate assemblies -->
+		<DisablePrivateProjectReference>true</DisablePrivateProjectReference>
+
 	</PropertyGroup>
 
 	<ItemGroup Label="GlobalUsings">

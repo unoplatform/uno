@@ -20,7 +20,7 @@ namespace Uno.Helpers.Theming {
 				if ((<any>globalThis).DotnetExports !== undefined) {
 					SystemThemeHelper.dispatchThemeChange = (<any>globalThis).DotnetExports.Uno.Uno.Helpers.Theming.SystemThemeHelper.DispatchSystemThemeChange;
 				} else {
-					throw `Unable to find dotnet exports`;
+					throw `SystemThemeHelper: Unable to find dotnet exports`;
 				}
 			}
 

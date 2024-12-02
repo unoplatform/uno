@@ -18,7 +18,7 @@
 				if ((<any>globalThis).DotnetExports !== undefined) {
 					DragDropExtension._dispatchDropEventMethod = (<any>globalThis).DotnetExports.UnoUI.Windows.ApplicationModel.DataTransfer.DragDrop.Core.DragDropExtension.OnNativeDropEvent;
 				} else {
-					throw `Unable to find dotnet exports`;
+					throw `DragDropExtension: Unable to find dotnet exports`;
 				}
 			}
 
@@ -55,6 +55,9 @@
 			//document.addEventListener("dragstart", this._dragHandler);
 			//document.addEventListener("drag", this._dragHandler);
 			//document.addEventListener("dragend", this._dragHandler);
+
+			// #18854: Prevent the browser default selection drag preview.
+			document.addEventListener('dragstart', e => e.preventDefault());
 		}
 
 		public dispose() {

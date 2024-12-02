@@ -44,6 +44,8 @@ partial class App
 
 	public static async Task<bool> HandleRuntimeTests(string args)
 	{
+		Console.WriteLine($"Automated runtime tests args: {args}");
+
 		var runRuntimeTestsResultsParam =
 			args.Split(';').FirstOrDefault(a => a.StartsWith("--runtime-tests"));
 

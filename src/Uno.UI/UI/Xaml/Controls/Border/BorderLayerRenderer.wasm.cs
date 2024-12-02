@@ -20,6 +20,8 @@ partial class BorderLayerRenderer
 {
 	private Action _backgroundChanged;
 	private Action _borderChanged;
+	private IDisposable _borderBrushChangedSubscription;
+	private IDisposable _brushChangedSubscription;
 
 	partial void UpdatePlatform(bool forceUpdate)
 	{
@@ -56,8 +58,9 @@ partial class BorderLayerRenderer
 	private void SetAndObserveBorder(BorderLayerState newState)
 	{
 		SetBorder(newState);
-		Brush.SetupBrushChanged(
-			_currentState.BorderBrush,
+
+		_borderBrushChangedSubscription?.Dispose();
+		_borderBrushChangedSubscription = Brush.SetupBrushChanged(
 			newState.BorderBrush,
 			ref _borderChanged,
 			() =>
@@ -217,7 +220,8 @@ partial class BorderLayerRenderer
 
 		if (newOnInvalidateRender is not null)
 		{
-			Brush.SetupBrushChanged(oldValue, newValue, ref brushChanged, newOnInvalidateRender);
+			_brushChangedSubscription?.Dispose();
+			_brushChangedSubscription = Brush.SetupBrushChanged(newValue, ref brushChanged, newOnInvalidateRender);
 		}
 	}
 

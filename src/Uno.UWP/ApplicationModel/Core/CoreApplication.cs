@@ -22,6 +22,11 @@ public static partial class CoreApplication
 		InitializePlatform();
 	}
 
+	internal static void StaticInitialize()
+	{
+		// Called to ensure the static constructor is called
+	}
+
 	static partial void InitializePlatform();
 
 	/// <summary>

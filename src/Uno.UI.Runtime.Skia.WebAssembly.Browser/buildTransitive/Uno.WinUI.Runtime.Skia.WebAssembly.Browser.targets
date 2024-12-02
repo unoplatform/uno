@@ -35,18 +35,18 @@
 				
 				In order to support a two-layered rendering mode.
 			-->
-
+			
 			<ItemGroup>
-				<Content Include="@(SkiaSharpStaticLibrary)" Visible="false" />
-				<Content Include="@(HarfBuzzSharpStaticLibrary)" Visible="false" />
+				<Content Include="@(SkiaSharpStaticLibrary)" Visible="false" KeepDuplicates="false" />
+				<Content Include="@(HarfBuzzSharpStaticLibrary)" Visible="false" KeepDuplicates="false" />
 			</ItemGroup>
 
 			<ItemGroup>
 				<!-- Include the GL symbol when running under net7 (https://github.com/dotnet/runtime/issues/76077) -->
-				<WasmShellEmccExportedRuntimeMethod Include="GL" />
+				<WasmShellEmccExportedRuntimeMethod Include="GL" KeepDuplicates="false" />
 
 				<!-- Enable GLCtx when threading is available -->
-				<WasmShellExtraEmccFlags Condition="'$(WasmShellEnableThreads)'=='True'" Include="-s OFFSCREEN_FRAMEBUFFER=1" />
+				<WasmShellExtraEmccFlags Condition="'$(WasmShellEnableThreads)'=='True'" Include="-s OFFSCREEN_FRAMEBUFFER=1" KeepDuplicates="false" />
 			</ItemGroup>
 		</When>
 	</Choose>

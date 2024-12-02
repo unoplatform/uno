@@ -102,7 +102,7 @@ namespace SamplesApp
 			this.Resuming += OnResuming;
 #endif
 #if __SKIA__
-			DispatcherQueue.GetForCurrentThread().TryEnqueue(DispatcherQueuePriority.High, () =>
+			DispatcherQueue.GetForCurrentThread().TryEnqueue(DispatcherQueuePriority.Low, () =>
 			{
 				Assert.IsTrue(_gotOnLaunched);
 			});

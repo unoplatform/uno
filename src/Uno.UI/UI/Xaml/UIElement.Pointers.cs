@@ -789,6 +789,8 @@ namespace Microsoft.UI.Xaml
 			});
 
 			XamlRoot.GetCoreDragDropManager(XamlRoot).DragStarted(dragInfo);
+			// Synchronously fire DragEnter+DragOver without waiting for another "mouse tick". This matches WinUI.
+			XamlRoot.VisualTree.ContentRoot.InputManager.DragDrop.ProcessMoved(ptArgs);
 
 			var result = await asyncResult.Task;
 

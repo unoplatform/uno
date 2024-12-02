@@ -18,6 +18,8 @@ using System.Collections;
 using System.Globalization;
 using Windows.ApplicationModel.Calls;
 using Microsoft.UI.Xaml.Controls;
+using System.Diagnostics.CodeAnalysis;
+
 
 
 #if __ANDROID__
@@ -185,6 +187,7 @@ namespace Microsoft.UI.Xaml
 		/// Creates a delegated dependency object instance for the specified <paramref name="originalObject"/>
 		/// </summary>
 		/// <param name="originalObject"></param>
+		[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "normal flow of operation")]
 		public DependencyObjectStore(object originalObject, DependencyProperty dataContextProperty)
 		{
 			_originalObjectRef = WeakReferencePool.RentWeakReference(this, originalObject);
@@ -1498,6 +1501,8 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "normal flow of operation")]
+		[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "normal flow of operation")]
 		private void SetResourceBindingValue(DependencyProperty property, ResourceBinding binding, object? value)
 		{
 			var convertedValue = BindingPropertyHelper.Convert(property.Type, value);

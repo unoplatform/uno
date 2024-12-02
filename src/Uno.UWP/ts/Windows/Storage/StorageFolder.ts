@@ -23,7 +23,10 @@ namespace Windows.Storage {
 		/**
 		 * Setup the storage persistence of a given set of paths.
 		 * */
-		private static makePersistent(paths: string[]): void {
+		private static async makePersistent(paths: string[]) {
+
+			await Windows.ApplicationModel.Core.CoreApplication.waitForInitialized();
+
 			for (var i = 0; i < paths.length; i++) {
 				this.setupStorage(paths[i])
 			}
@@ -70,7 +73,7 @@ namespace Windows.Storage {
 				if ((<any>globalThis).DotnetExports !== undefined) {
 					StorageFolder.dispatchStorageInitialized = (<any>globalThis).DotnetExports.Uno.Windows.Storage.StorageFolder.DispatchStorageInitialized;
 				} else {
-					throw `Unable to find dotnet exports`;
+					throw `StorageFolder: Unable to find dotnet exports`;
 				}
 			}
 			StorageFolder.dispatchStorageInitialized();

@@ -16,7 +16,6 @@ using Verify = CSharpSourceGeneratorVerifier<DependencyObjectGenerator>;
 [TestClass]
 public class Given_DependencyObjectGenerator
 {
-	private static readonly ReferenceAssemblies _net80Android = ReferenceAssemblies.Net.Net80Android.AddPackages([new PackageIdentity("Uno.Diagnostics.Eventing", "2.1.0")]);
 	private static readonly ReferenceAssemblies _net80 = ReferenceAssemblies.Net.Net80.AddPackages([new PackageIdentity("Uno.Diagnostics.Eventing", "2.1.0")]);
 
 	private const string Configuration =
@@ -26,16 +25,20 @@ public class Given_DependencyObjectGenerator
 		"Release";
 #endif
 
-	private const string TFM = "net8.0";
+	private const string TFMPrevious = "net8.0";
+	private const string TFMCurrent = "net9.0";
 
-	private static MetadataReference[] BuildUnoReferences(bool isAndroid)
+	private static MetadataReference[] BuildUnoReferences()
 	{
-		string[] availableTargets = isAndroid
-			? [Path.Combine("Uno.UI.netcoremobile", Configuration, $"{TFM}-android")]
-			: [
-				Path.Combine("Uno.UI.Skia", Configuration, TFM),
-				Path.Combine("Uno.UI.Reference", Configuration, TFM),
-				Path.Combine("Uno.UI.Tests", Configuration, TFM),
+		string[] availableTargets = [
+				// On CI the test assemblies set must be first, as it contains all
+				// dependent assemblies, which the other platforms don't (see DisablePrivateProjectReference).
+				Path.Combine("Uno.UI.Tests", Configuration, TFMPrevious),
+				Path.Combine("Uno.UI.Reference", Configuration, TFMPrevious),
+				Path.Combine("Uno.UI.Skia", Configuration, TFMPrevious),
+				Path.Combine("Uno.UI.Tests", Configuration, TFMCurrent),
+				Path.Combine("Uno.UI.Reference", Configuration, TFMCurrent),
+				Path.Combine("Uno.UI.Skia", Configuration, TFMCurrent),
 			];
 
 		var unoUIBase = Path.Combine(
@@ -51,6 +54,7 @@ public class Given_DependencyObjectGenerator
 		var unoTarget = availableTargets
 			.Select(t => Path.Combine(unoUIBase, t, "Uno.UI.dll"))
 			.FirstOrDefault(File.Exists);
+
 		if (unoTarget is null)
 		{
 			throw new InvalidOperationException($"Unable to find Uno.UI.dll in {string.Join(",", availableTargets)}");
@@ -70,10 +74,10 @@ public class Given_DependencyObjectGenerator
 			{
 				Sources = { testCode },
 			},
-			ReferenceAssemblies = _net80Android,
+			ReferenceAssemblies = _net80,
 		};
 
-		test.TestState.AdditionalReferences.AddRange(BuildUnoReferences(isAndroid: true));
+		test.TestState.AdditionalReferences.AddRange(BuildUnoReferences());
 		test.ExpectedDiagnostics.AddRange(expectedDiagnostics);
 		await test.RunAsync();
 	}
@@ -81,15 +85,14 @@ public class Given_DependencyObjectGenerator
 	[TestMethod]
 	public async Task TestAndroidViewImplementingDependencyObject()
 	{
-		await TestAndroid("""
-			using Android.Content;
+		await TestAndroid(/* lang=c#-test */"""
 			using Windows.UI.Core;
 			using Microsoft.UI.Dispatching;
 			using Microsoft.UI.Xaml;
 
 			public class C : Android.Views.View, DependencyObject
 			{
-				public C(Context context) : base(context)
+				public C(Android.Views.Context context) : base(context)
 				{
 				}
 
@@ -103,9 +106,15 @@ public class Given_DependencyObjectGenerator
 				public long RegisterPropertyChangedCallback(DependencyProperty dp, DependencyPropertyChangedCallback callback) => 0;
 				public void UnregisterPropertyChangedCallback(DependencyProperty dp, long token) { }
 			}
+
+			namespace Android.Views
+			{
+				public class View(Context context) { }
+				public class Context { }
+			}
 			""",
 		// /0/Test0.cs(5,14): error Uno0003: 'Android.Views.View' shouldn't implement 'DependencyObject'. Inherit 'FrameworkElement' instead.
-		DiagnosticResult.CompilerError("Uno0003").WithSpan(6, 14, 6, 15).WithArguments("Android.Views.View"));
+		DiagnosticResult.CompilerError("Uno0003").WithSpan(5, 14, 5, 15).WithArguments("Android.Views.View"));
 	}
 
 	[TestMethod]
@@ -344,7 +353,7 @@ public class Given_DependencyObjectGenerator
 			ReferenceAssemblies = _net80,
 		};
 
-		test.TestState.AdditionalReferences.AddRange(BuildUnoReferences(isAndroid: false));
+		test.TestState.AdditionalReferences.AddRange(BuildUnoReferences());
 		await test.RunAsync();
 	}
 }

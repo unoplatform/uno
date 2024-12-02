@@ -47,7 +47,9 @@ jobs:
   - template: templates/download-winui-converted-tree.yml
 
   - template: templates/gitversion.yml
-  - template: templates/dotnet-install.yml
+  - template: templates/dotnet-mobile-install-windows.yml
+    parameters:
+      UnoCheckParameters: '--tfm net9.0-browserwasm --tfm net9.0-desktop'
 
   - template: templates/nuget-cache.yml
     parameters:
@@ -511,12 +513,10 @@ jobs:
 
 # - job: Skia_Browser_Runtime_Tests_Build
 #   displayName: 'Run Skia Browser Runtime Tests'
-#   timeoutInMinutes: 180
+#   timeoutInMinutes: 90
 
 #   pool:
 #     vmImage: ${{ parameters.vmLinuxImage }}
-
-#   container: nv-bionic-wasm
 
 #   dependsOn: Skia_Tests_Build
 
@@ -583,8 +583,8 @@ jobs:
 #         # for some reason, you have to run the next line twice or else it doesn't work
 #         xvfb-run --server-num 99 google-chrome --enable-logging=stderr --no-sandbox "http://localhost:8000/?--runtime-tests=${ENCODED_RESULT}" &
 #         sleep 2
-#         pkill chrome
-#         pkill xvfb-run
+#         pkill chrome || true
+#         pkill xvfb-run || true
 #         xvfb-run --server-num 98 google-chrome --enable-logging=stderr --no-sandbox "http://localhost:8000/?--runtime-tests=${ENCODED_RESULT}" &
 
 #         while ! test -f "$(build.sourcesdirectory)/build/skia-browserwasm-runtime-tests-results.xml"; do

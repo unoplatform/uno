@@ -3,8 +3,14 @@ declare namespace Windows.ApplicationModel.Core {
      * Support file for the Windows.ApplicationModel.Core
      * */
     class CoreApplication {
+        private static _initializedExportsResolve;
+        private static _initializedExports;
         static initialize(): void;
-        private static initializeExports;
+        /**
+         * Provides a promised that resolves when CoreApplication is initialized
+         */
+        static waitForInitialized(): Promise<void>;
+        static initializeExports(): Promise<void>;
     }
 }
 declare namespace Uno.Devices.Enumeration.Internal.Providers.Midi {
