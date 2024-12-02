@@ -40,7 +40,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	private static Win32WindowWrapper? _wrapperForNextCreateWindow;
 	private static readonly Dictionary<HWND, Win32WindowWrapper> _hwndToWrapper = new();
 
-	private static readonly XamlRootMap<Win32WindowWrapper> _xamlRootMap = new();
+	public static readonly XamlRootMap<Win32WindowWrapper> XamlRootMap = new();
 
 	private readonly HWND _hwnd;
 	private readonly ApplicationView _applicationView;
@@ -84,7 +84,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		_hwnd = CreateWindow();
 		PointerCursor = new CoreCursor(CoreCursorType.Arrow, 0);
 
-		_xamlRootMap.Register(xamlRoot, this);
+		XamlRootMap.Register(xamlRoot, this);
 
 		OnWindowSizeOrLocationChanged();
 		_ = (RasterizationScale = (float)PInvoke.GetDpiForWindow(_hwnd) / PInvoke.USER_DEFAULT_SCREEN_DPI) != 0
@@ -217,7 +217,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 					ReleaseGlContext(_gl.GlContext, _gl.GrGlInterface, _gl.GrContext);
 				}
 				_backgroundDisposable?.Dispose();
-				_xamlRootMap.Unregister(XamlRoot!);
+				XamlRootMap.Unregister(XamlRoot!);
 				return new LRESULT(0);
 			case PInvoke.WM_DPICHANGED:
 				RasterizationScale = (float)(Win32Helper.LOWORD(wParam)) / PInvoke.USER_DEFAULT_SCREEN_DPI;

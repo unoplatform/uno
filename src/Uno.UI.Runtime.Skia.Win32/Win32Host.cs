@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.UI.Core;
+using Windows.UI.ViewManagement;
 using Windows.Win32.Foundation;
 using Microsoft.UI.Xaml;
 using Uno.Foundation.Extensibility;
@@ -26,6 +27,7 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 			host => host as Win32WindowWrapper ?? throw new ArgumentException($"{nameof(host)} must be a {nameof(Win32WindowWrapper)} instance"));
 		ApiExtensibility.Register<IXamlRootHost>(typeof(IUnoCorePointerInputSource),
 			host => host as Win32WindowWrapper ?? throw new ArgumentException($"{nameof(host)} must be a {nameof(Win32WindowWrapper)} instance"));
+		ApiExtensibility.Register<ApplicationView>(typeof(IApplicationViewExtension), o => new Win32ApplicationViewExtension(o));
 	}
 
 	public Win32Host(Func<Application> appBuilder)
