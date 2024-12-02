@@ -446,11 +446,39 @@ public class Given_Frame
 			Height = 200
 		};
 
+		bool navigationFailed = false;
+		SUT.NavigationFailed += (s, e) => navigationFailed = true;
+
 		TestServices.WindowHelper.WindowContent = SUT;
 		await TestServices.WindowHelper.WaitForLoaded(SUT);
 
-		var exception = Assert.ThrowsException<NotSupportedException>(() => SUT.Navigate(typeof(CrashOnlyPage)));
+		var exception = Assert.ThrowsException<NotSupportedException>(() => SUT.Navigate(typeof(ExceptionInCtorPage)));
 		Assert.AreEqual("Crashed", exception.Message);
+		Assert.IsFalse(navigationFailed);
+	}
+
+	[TestMethod]
+	public async Task When_Exception_In_OnNavigatedTo()
+	{
+		var SUT = new Frame()
+		{
+			Width = 200,
+			Height = 200
+		};
+
+		bool navigationFailed = false;
+		SUT.NavigationFailed += (s, e) =>
+		{
+			navigationFailed = true;
+			e.Handled = true;
+		};
+
+		TestServices.WindowHelper.WindowContent = SUT;
+		await TestServices.WindowHelper.WaitForLoaded(SUT);
+
+		var exception = Assert.ThrowsException<NotSupportedException>(() => SUT.Navigate(typeof(ExceptionInOnNavigatedToPage)));
+		Assert.AreEqual("Crashed", exception.Message);
+		Assert.IsTrue(navigationFailed);
 	}
 
 	[TestCleanup]
@@ -630,10 +658,23 @@ public partial class FrameNavigateSecondPage : Page
 {
 }
 
-public partial class CrashOnlyPage : Page
+public partial class ExceptionInCtorPage : Page
 {
-	public CrashOnlyPage()
+	public ExceptionInCtorPage()
 	{
+		throw new NotSupportedException("Crashed");
+	}
+}
+
+public partial class ExceptionInOnNavigatedToPage : Page
+{
+	public ExceptionInOnNavigatedToPage()
+	{
+	}
+
+	protected internal override void OnNavigatedTo(NavigationEventArgs e)
+	{
+		base.OnNavigatedTo(e);
 		throw new NotSupportedException("Crashed");
 	}
 }
