@@ -16,8 +16,6 @@ namespace Uno.UI.Runtime.Skia.Win32;
 
 internal partial class Win32WindowWrapper
 {
-	private const SKColorType ColorType = SKColorType.Rgba8888; // always Rgba8888, regardless of what SKImage.PlatformColorType might say
-
 	private record OpenGlContext(HDC Hdc, HGLRC GlContext, GRGlInterface GrGlInterface, GRContext GrContext);
 	private readonly OpenGlContext? _gl;
 
@@ -214,7 +212,7 @@ internal partial class Win32WindowWrapper
 				throw new InvalidOperationException($"{nameof(PInvoke.CreateDIBSection)} failed: {Win32Helper.GetErrorMessage()}");
 			}
 
-			return SKSurface.Create(new SKImageInfo(width, height, ColorType, SKAlphaType.Premul), (IntPtr)bits);
+			return SKSurface.Create(new SKImageInfo(width, height, SKColorType.Bgra8888, SKAlphaType.Premul), (IntPtr)bits);
 		}
 
 		void IRenderer.Reset()
@@ -293,8 +291,8 @@ internal partial class Win32WindowWrapper
 			PInvoke.glGetIntegerv(/* GL_STENCIL_BITS */ 0x0D57, ref stencil);
 			PInvoke.glGetIntegerv(/* GL_SAMPLES */ 0x80A9, ref samples);
 
-			_renderTarget = new GRBackendRenderTarget(width, height, samples, stencil, new GRGlFramebufferInfo((uint)framebuffer, ColorType.ToGlSizedFormat()));
-			return SKSurface.Create(gl.GrContext, _renderTarget, GRSurfaceOrigin.BottomLeft, ColorType); // BottomLeft to match GL's origin
+			_renderTarget = new GRBackendRenderTarget(width, height, samples, stencil, new GRGlFramebufferInfo((uint)framebuffer, SKColorType.Rgba8888.ToGlSizedFormat()));
+			return SKSurface.Create(gl.GrContext, _renderTarget, GRSurfaceOrigin.BottomLeft, SKColorType.Rgba8888); // BottomLeft to match GL's origin
 		}
 
 		void IRenderer.CopyPixels(int width, int height)
