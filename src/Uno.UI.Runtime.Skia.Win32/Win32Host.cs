@@ -6,6 +6,7 @@ using Windows.UI.ViewManagement;
 using Windows.Win32.Foundation;
 using Microsoft.UI.Xaml;
 using Uno.Foundation.Extensibility;
+using Uno.Helpers.Theming;
 using Uno.UI.Dispatching;
 using Uno.UI.Hosting;
 using Uno.UI.Xaml.Controls;
@@ -28,6 +29,7 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 		ApiExtensibility.Register<IXamlRootHost>(typeof(IUnoCorePointerInputSource),
 			host => host as Win32WindowWrapper ?? throw new ArgumentException($"{nameof(host)} must be a {nameof(Win32WindowWrapper)} instance"));
 		ApiExtensibility.Register<ApplicationView>(typeof(IApplicationViewExtension), o => new Win32ApplicationViewExtension(o));
+		ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), _ => Win32SystemThemeHelperExtension.Instance);
 	}
 
 	public Win32Host(Func<Application> appBuilder)

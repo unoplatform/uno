@@ -3,6 +3,7 @@
 // macros
 CW_USEDEFAULT
 DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2
+HKEY_CURRENT_USER
 HTBOTTOM
 HTBOTTOMLEFT
 HTBOTTOMRIGHT
@@ -110,8 +111,11 @@ InvalidateRect
 LoadCursor
 LocalFree
 PeekMessage
+RegGetValue
 RegisterClassEx
 RegisterTouchWindow
+RegNotifyChangeKeyValue
+RegOpenKeyEx
 ReleaseDC
 ReleaseCapture
 ScreenToClient

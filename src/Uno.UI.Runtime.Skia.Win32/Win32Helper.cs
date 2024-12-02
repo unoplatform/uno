@@ -11,13 +11,15 @@ namespace Uno.UI.Runtime.Skia.Win32;
 
 internal static class Win32Helper
 {
-	public static unsafe string GetErrorMessage()
+	public static string GetErrorMessage() => GetErrorMessage((uint)Marshal.GetLastWin32Error());
+
+	public static unsafe string GetErrorMessage(uint errorCode)
 	{
 		IntPtr* messagePtr = stackalloc IntPtr[1];
 		var messageLength = PInvoke.FormatMessage(
 			FORMAT_MESSAGE_OPTIONS.FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_OPTIONS.FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_OPTIONS.FORMAT_MESSAGE_IGNORE_INSERTS,
 			default,
-			(uint)Marshal.GetLastWin32Error(),
+			errorCode,
 			0,
 			new PWSTR((char*)messagePtr),
 			0);
