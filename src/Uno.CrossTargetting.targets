@@ -102,7 +102,7 @@
 		<SupportedOSPlatformVersion>21.0</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
-	<PropertyGroup Condition=" '$(TargetFramework)' != 'uap10.0.19041' and '$(TargetFramework)'!='net8.0-windows10.0.19041.0' and '$(TargetPlatformIdentifier)' != 'UAP'">
+	<PropertyGroup Condition=" '$(TargetFramework)' != 'uap10.0.19041' and $(TargetFramework.EndsWith('-windows10.0.19041.0')) != 'true' and '$(TargetPlatformIdentifier)' != 'UAP'">
 		<DefineConstants>$(DefineConstants);HAS_UNO</DefineConstants>
 		<DefineConstants Condition="'$(UNO_UWP_BUILD)'!='true'">$(DefineConstants);HAS_UNO_WINUI</DefineConstants>
 
@@ -111,7 +111,7 @@
     	<DefaultXamlRuntime Condition="'$(DefaultXamlRuntime)'==''">WinUI</DefaultXamlRuntime>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(TargetFramework)'=='net8.0-windows10.0.19041.0'">
+	<PropertyGroup Condition="$(TargetFramework.EndsWith('-windows10.0.19041.0'))">
 		<DefineConstants>$(DefineConstants);HAS_INPUT_INJECTOR;WINDOWS_WINUI;HAS_RENDER_TARGET_BITMAP;HAS_COMPOSITION_API</DefineConstants>
 	</PropertyGroup>
 
