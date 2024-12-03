@@ -676,7 +676,11 @@ public partial class ExceptionInOnNavigatedToPage : Page
 	{
 	}
 
-	protected internal override void OnNavigatedTo(NavigationEventArgs e)
+	protected
+#if HAS_UNO
+	internal
+#endif
+	override void OnNavigatedTo(NavigationEventArgs e)
 	{
 		base.OnNavigatedTo(e);
 		throw new NotSupportedException("Crashed");
