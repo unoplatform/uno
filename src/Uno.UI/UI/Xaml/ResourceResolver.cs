@@ -14,6 +14,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Resources;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Uno.UI
 {
@@ -82,7 +83,10 @@ namespace Uno.UI
 		/// Performs a one-time, typed resolution of a named resource, using Application.Resources.
 		/// </summary>
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static object ResolveResourceStatic(object key, Type type, object context = null)
+		public static object ResolveResourceStatic(
+			object key,
+			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type type,
+			object context = null)
 		{
 			if (TryStaticRetrieval(new SpecializedResourceDictionary.ResourceKey(key), context, out var value))
 			{
@@ -289,6 +293,7 @@ namespace Uno.UI
 			ApplyResource(owner, property, new SpecializedResourceDictionary.ResourceKey(resourceKey), updateReason, context, null);
 		}
 
+		[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Types manipulated here have been marked earlier")]
 		internal static void ApplyResource(DependencyObject owner, DependencyProperty property, SpecializedResourceDictionary.ResourceKey specializedKey, ResourceUpdateReason updateReason, object context, DependencyPropertyValuePrecedences? precedence)
 		{
 			// If the invocation comes from XAML and from theme resources, resolution

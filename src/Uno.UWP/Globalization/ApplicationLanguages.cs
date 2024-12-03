@@ -18,6 +18,9 @@ public static partial class ApplicationLanguages
 {
 	private static string? _primaryLanguageOverride = string.Empty;
 
+	internal readonly static bool InvariantCulture = GetBooleanConfig("System.Globalization.Invariant", "DOTNET_SYSTEM_GLOBALIZATION_INVARIANT");
+
+
 #if !IS_UNIT_TESTS
 	private const string PrimaryLanguageOverrideSettingKey = "__Uno.PrimaryLanguageOverride";
 #endif
@@ -106,6 +109,13 @@ public static partial class ApplicationLanguages
 #if !__IOS__
 	private static string[] GetManifestLanguages()
 	{
+		if (InvariantCulture)
+		{
+			// The invariant culture can be created with `new CultureInfo("")`.
+			// We return this as part of the supported languages.
+			return [""];
+		}
+
 		string AdjustCultureName(string? name)
 			=> string.IsNullOrEmpty(name) ? "en-US" : name;
 
@@ -141,6 +151,15 @@ public static partial class ApplicationLanguages
 	[MemberNotNull(nameof(Languages))]
 	private static void ApplyLanguages()
 	{
+		if (InvariantCulture)
+		{
+			// The invariant culture can be created with `new CultureInfo("")`.
+			// We return this as part of the supported languages 
+			Languages = [""];
+
+			return;
+		}
+
 #if false
 		Languages = GlobalizationPreferences.Languages
 			.Cast<string?>()
@@ -211,6 +230,31 @@ public static partial class ApplicationLanguages
 		}
 	}
 
+	internal static bool GetBooleanConfig(string switchName, bool defaultValue) =>
+		AppContext.TryGetSwitch(switchName, out bool value) ? value : defaultValue;
+
+	internal static bool GetBooleanConfig(string switchName, string envVariable, bool defaultValue = false)
+	{
+		string? str = Environment.GetEnvironmentVariable(envVariable);
+
+		if (str != null)
+		{
+			if (str == "1" || str.Equals("true", StringComparison.OrdinalIgnoreCase))
+			{
+				return true;
+			}
+			if (str == "0" || str.Equals("false", StringComparison.OrdinalIgnoreCase))
+			{
+				return false;
+			}
+		}
+
+		return GetBooleanConfig(switchName, defaultValue);
+	}
+
+
 	[GeneratedRegex(@"(?<lang>[a-z]{2,8})(?:(?:\-(?<script>[a-zA-Z]+))?\-(?<reg>[A-Z]+))?", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.CultureInvariant)]
 	private static partial Regex CultureRegex();
+
+
 }

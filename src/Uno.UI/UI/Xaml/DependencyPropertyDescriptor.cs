@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
@@ -92,7 +93,12 @@ namespace Microsoft.UI.Xaml
 		/// This method is split to avoid Type.GetType causing fallbacks
 		/// on the Wasm interpreter.
 		/// </remarks>
+		[UnconditionalSuppressMessage(
+			"AssemblyLoadTrimming",
+			"IL2026:RequiresUnreferencedCode",
+			Justification = "Types may be removed or not present as part of the normal operations of that method")]
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "GetType may return null, normal flow of operations")]
 		private static Type SearchTypeInLoadedAssemblies(string qualifiedTypeName)
 		{
 			// If not available, search through Reflection
