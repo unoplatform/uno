@@ -243,13 +243,13 @@ namespace Windows.UI.Input
 			{
 				StopDragTimer();
 
-				_inertia?.Dispose();
-				_state = ManipulationState.Completed;
-
 				// If the manipulation was not started, we just abort the manipulation without any event
 				switch (_state)
 				{
 					case ManipulationState.Started when IsDragManipulation:
+						_inertia?.Dispose(); // Safety, inertia should never been started when IsDragManipulation, especially if _state is ManipulationState.Started ^^
+						_state = ManipulationState.Completed;
+
 						_recognizer.Dragging?.Invoke(
 							_recognizer,
 							new DraggingEventArgs(_currents.Pointer1, DraggingState.Completed, _contacts.onStart));
@@ -257,6 +257,9 @@ namespace Windows.UI.Input
 
 					case ManipulationState.Started:
 					case ManipulationState.Inertia:
+						_inertia?.Dispose();
+						_state = ManipulationState.Completed;
+
 						var position = GetPosition();
 						var cumulative = GetCumulative();
 						var delta = GetDelta(cumulative);
@@ -268,7 +271,15 @@ namespace Windows.UI.Input
 						break;
 
 					case ManipulationState.Starting:
+						_inertia?.Dispose();
+						_state = ManipulationState.Completed;
+
 						_recognizer.ManipulationAborted?.Invoke(_recognizer, this);
+						break;
+
+					default: // Safety only
+						_inertia?.Dispose();
+						_state = ManipulationState.Completed;
 						break;
 				}
 
