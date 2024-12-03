@@ -551,23 +551,8 @@ namespace Microsoft.UI.Xaml
 
 			if (OperatingSystem.IsBrowser()) // Skia-WASM
 			{
-				var parameters = HttpUtility.ParseQueryString(new Uri(Eval("window.location.href")).Query);
-
-				var webArgs = new StringBuilder();
-				foreach (string key in parameters)
-				{
-					var val = parameters.Get(key);
-					if (string.IsNullOrEmpty(val))
-					{
-						webArgs.Append($"{key} ");
-					}
-					else
-					{
-						webArgs.Append($"{key}={val} ");
-					}
-				}
-
-				return webArgs.ToString().Trim();
+				// On launched uses the web url syntax
+				return Eval("window.location.href");
 			}
 			else
 			{
