@@ -71,6 +71,8 @@
 		<PackageReference Include="Uno.Wasm.Bootstrap" />
 		<PackageReference Include="Microsoft.Windows.Compatibility" />
 		<PackageReference Include="Uno.Fonts.Fluent" />
+		<PackageReference Include="MSTest.TestFramework" />
+		<PackageReference Include="MSTest.Analyzers" />
 	</ItemGroup>
 
 	<ItemGroup>
