@@ -30,14 +30,16 @@ sleep 10
 
 rawurlencode "$BUILD_SOURCESDIRECTORY/build/skia-browserwasm-runtime-tests-results.xml"
 
+RUNTIME_TESTS_URL="http://localhost:8000/?--runtime-tests=${ENCODED_RESULT}&--runtime-tests-group=${UITEST_RUNTIME_TEST_GROUP}&--runtime-tests-group-count=${UITEST_RUNTIME_TEST_GROUP_COUNT}"
+
 # we use xvfb instead of headless chrome because using --enable-logging with --headless doesn't
 # print the logs as expected
 # for some reason, you have to run the next line twice or else it doesn't work
-xvfb-run --server-num 99 google-chrome --enable-logging=stderr --no-sandbox "http://localhost:8000/?--runtime-tests=${ENCODED_RESULT}" &
+xvfb-run --server-num 99 google-chrome --enable-logging=stderr --no-sandbox "${RUNTIME_TESTS_URL}" &
 sleep 5
 killall -9 chrome || true
 killall -9 xvfb-run || true
-xvfb-run --server-num 98 google-chrome --enable-logging=stderr --no-sandbox "http://localhost:8000/?--runtime-tests=${ENCODED_RESULT}" &
+xvfb-run --server-num 98 google-chrome --enable-logging=stderr --no-sandbox "${RUNTIME_TESTS_URL}" &
 
 while ! test -f "$BUILD_SOURCESDIRECTORY/build/skia-browserwasm-runtime-tests-results.xml"; do
     sleep 10

@@ -17,6 +17,8 @@ using Uno.Logging;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Dispatching;
+using System.Collections.Generic;
+
 #else
 using Windows.System;
 #endif
@@ -46,13 +48,22 @@ partial class App
 	{
 		Console.WriteLine($"Automated runtime tests args: {args}");
 
-		var runRuntimeTestsResultsParam =
-			args.Split(';').FirstOrDefault(a => a.StartsWith("--runtime-tests"));
+		var argsPairs = ParseArgs(args);
 
-		var runtimeTestResultFilePath = runRuntimeTestsResultsParam?.Split('=').LastOrDefault();
+		var runtimeTestResultFilePath = argsPairs.GetValueOrDefault(
+			"--runtime-tests", 
+			// Used to autostart the runtime tests for iOS/Android Runtime tests
+			Environment.GetEnvironmentVariable("UITEST_RUNTIME_AUTOSTART_RESULT_FILE") ?? "");
 
-		// Used to autostart the runtime tests for iOS/Android Runtime tests
-		runtimeTestResultFilePath ??= Environment.GetEnvironmentVariable("UITEST_RUNTIME_AUTOSTART_RESULT_FILE");
+		if (argsPairs.TryGetValue("--runtime-tests-group", out var runtimeTestGroup))
+		{
+			Environment.SetEnvironmentVariable("--runtime-tests-group", runtimeTestGroup);
+		}
+
+		if (argsPairs.TryGetValue("--runtime-tests-group-count", out var runtimeTestGroupCount))
+		{
+			Environment.SetEnvironmentVariable("--runtime-tests-group-count", runtimeTestGroupCount);
+		}
 
 		Console.WriteLine($"Automated runtime tests output file: {runtimeTestResultFilePath}");
 
@@ -74,6 +85,12 @@ partial class App
 
 		return false;
 	}
+
+	private static Dictionary<string, string> ParseArgs(string args) 
+		=> args.Split('&').ToDictionary(
+			p => p.Split('=').First(),
+			p => p.Split('=').LastOrDefault()
+		);
 
 #if __WASM__
 	[System.Runtime.InteropServices.JavaScript.JSExport]
