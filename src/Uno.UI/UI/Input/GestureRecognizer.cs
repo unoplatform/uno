@@ -36,7 +36,7 @@ namespace Windows.UI.Input
 		private readonly Logger _log;
 		private IDictionary<uint, Gesture> _gestures = new Dictionary<uint, Gesture>(_defaultGesturesSize);
 		private Manipulation _manipulation;
-		private GestureSettings _gestureSettings;
+		private GestureSettings _gestureSettings = GestureSettings.Tap; // On WinUI, Tap is always raised no matter the flag set on the recognizer
 		private bool _isManipulationOrDragEnabled;
 
 		public GestureSettings GestureSettings
@@ -204,10 +204,9 @@ namespace Windows.UI.Input
 			if (_gestures.TryGetValue(pointerId.Id, out var gesture))
 			{
 				gesture.PreventGestures(events);
-				return gesture.Settings;
 			}
 
-			return GestureSettings.None;
+			return _gestureSettings;
 		}
 
 		#region Manipulations
