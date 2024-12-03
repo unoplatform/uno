@@ -446,19 +446,23 @@ public class Given_Frame
 			Height = 200
 		};
 
+#if HAS_UNO
 		bool navigationFailed = false;
 		SUT.NavigationFailed += (s, e) => navigationFailed = true;
+#endif
 
 		TestServices.WindowHelper.WindowContent = SUT;
 		await TestServices.WindowHelper.WaitForLoaded(SUT);
 
 		var exception = Assert.ThrowsException<NotSupportedException>(() => SUT.Navigate(typeof(ExceptionInCtorPage)));
 		Assert.AreEqual("Crashed", exception.Message);
+#if HAS_UNO
 		if (FeatureConfiguration.Frame.UseWinUIBehavior)
 		{
 			// This is only valid with WinUI Frame behavior
 			Assert.IsFalse(navigationFailed);
 		}
+#endif
 	}
 
 	[TestMethod]
