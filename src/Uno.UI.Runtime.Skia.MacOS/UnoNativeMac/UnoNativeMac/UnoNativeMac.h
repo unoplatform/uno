@@ -6,3 +6,4 @@
 #import <AppKit/AppKit.h>
 #import <Metal/Metal.h>
 #import <QuartzCore/CAShapeLayer.h>
+#import <WebKit/WebKit.h>
