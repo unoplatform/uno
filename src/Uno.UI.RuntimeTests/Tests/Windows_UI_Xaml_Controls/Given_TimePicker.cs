@@ -321,13 +321,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(expectedCurrentTime.Hours, displayedHour, "Hours should match the current time.");
 			Assert.AreEqual(expectedCurrentTime.Minutes, displayedMinute, "Minutes should match the current time.");
 #elif __IOS__
-		    var nativeFlyout = (NativeTimePickerFlyout)associatedFlyout;
+			var nativeFlyout = (NativeTimePickerFlyout)associatedFlyout;
 
-		    var timeSelector = nativeFlyout.GetTimeSelector();
-		    var displayedTime = timeSelector.Time;
+			var timeSelector = nativeFlyout.GetTimeSelector();
+			var displayedTime = timeSelector.Time;
 
-		    Assert.AreEqual(expectedCurrentTime.Hours, displayedTime.Hours, "Hours should match the current time.");
-		    Assert.AreEqual(expectedCurrentTime.Minutes, displayedTime.Minutes, "Minutes should match the current time.");
+			Assert.AreEqual(expectedCurrentTime.Hours, displayedTime.Hours, "Hours should match the current time.");
+			Assert.AreEqual(expectedCurrentTime.Minutes, displayedTime.Minutes, "Minutes should match the current time.");
 #endif
 		}
 
