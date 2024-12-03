@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Immutable;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,7 +18,6 @@ using Uno.Logging;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Dispatching;
-using System.Collections.Generic;
 
 #else
 using Windows.System;
@@ -51,7 +51,7 @@ partial class App
 		var argsPairs = ParseArgs(args);
 
 		var runtimeTestResultFilePath = argsPairs.GetValueOrDefault(
-			"--runtime-tests", 
+			"--runtime-tests",
 			// Used to autostart the runtime tests for iOS/Android Runtime tests
 			Environment.GetEnvironmentVariable("UITEST_RUNTIME_AUTOSTART_RESULT_FILE") ?? "");
 
@@ -86,10 +86,10 @@ partial class App
 		return false;
 	}
 
-	private static Dictionary<string, string> ParseArgs(string args) 
+	private static Dictionary<string, string> ParseArgs(string args)
 		=> args.Split('&').ToDictionary(
 			p => p.Split('=').First(),
-			p => p.Split('=').LastOrDefault()
+			p => p.Split('=').LastOrDefault() ?? ""
 		);
 
 #if __WASM__
