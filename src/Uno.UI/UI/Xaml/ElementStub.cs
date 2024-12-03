@@ -195,6 +195,12 @@ namespace Microsoft.UI.Xaml
 					_isMaterializing = true;
 
 					_content = SwapViews(oldView: (FrameworkElement)this, newViewProvider: ContentBuilder);
+#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
+					// note: This can be safely removed, once moving away from legacy impl.
+					// In the new impl, the templated-parent would be immediately available
+					// before any binding is applied, so there is no need to force update.
+					TemplatedParentScope.UpdateTemplatedParent(_content as DependencyObject, GetTemplatedParent(), reapplyTemplateBindings: true);
+#endif
 
 					MaterializationChanged?.Invoke(this);
 				}
