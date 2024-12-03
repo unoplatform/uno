@@ -108,6 +108,12 @@ namespace TestRepro
 							that.Bindings.UpdateResources();
 							that.Bindings.NotifyXLoad("topLevelContent");
 						}
+						else
+						{
+							_topLevelContentSubject.ElementInstance = null;
+							_innerTextBlockSubject.ElementInstance = null;
+							_innerTextBlockSubject.ElementInstance = null;
+						}
 					}
 				}
 				c2.MaterializationChanged += _component_1_update;
@@ -144,7 +150,7 @@ namespace TestRepro
 			OnInitializeCompleted();
 
 			Bindings = new MainPage_Bindings(this);
-			Loading += (s, e) =>
+			((global::Microsoft.UI.Xaml.FrameworkElement)this).Loading += (s, e) =>
 			{
 				__that.Bindings.Update();
 				__that.Bindings.UpdateResources();
