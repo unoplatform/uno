@@ -5,10 +5,6 @@ namespace Uno.UI.Runtime.Skia.Win32;
 
 internal class Win32NativeWindowFactoryExtension : INativeWindowFactoryExtension
 {
-	internal Win32NativeWindowFactoryExtension()
-	{
-	}
-
 	public bool SupportsClosingCancellation => true;
 
 	public bool SupportsMultipleWindows => true;

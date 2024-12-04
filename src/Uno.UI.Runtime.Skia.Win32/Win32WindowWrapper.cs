@@ -12,6 +12,7 @@ using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.Win32;
 using Windows.Win32.Foundation;
+using Windows.Win32.Graphics.Dwm;
 using Windows.Win32.Graphics.Gdi;
 using Windows.Win32.UI.HiDpi;
 using Windows.Win32.UI.WindowsAndMessaging;
@@ -19,6 +20,7 @@ using Microsoft.UI.Xaml;
 using SkiaSharp;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
+using Uno.Helpers.Theming;
 using Uno.UI.Hosting;
 using Uno.UI.Xaml.Controls;
 using Point = System.Drawing.Point;
@@ -80,9 +82,11 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		_applicationView.PropertyChanged += OnApplicationViewPropertyChanged;
 
 		_hwnd = CreateWindow();
-		PointerCursor = new CoreCursor(CoreCursorType.Arrow, 0);
 
 		XamlRootMap.Register(xamlRoot, this);
+
+		Win32SystemThemeHelperExtension.Instance.SystemThemeChanged += OnSystemThemeChanged;
+		OnSystemThemeChanged(Win32SystemThemeHelperExtension.Instance, EventArgs.Empty);
 
 		OnWindowSizeOrLocationChanged();
 		_ = (RasterizationScale = (float)PInvoke.GetDpiForWindow(_hwnd) / PInvoke.USER_DEFAULT_SCREEN_DPI) != 0
@@ -97,8 +101,20 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 		RegisterForBackgroundColor();
 
+		PointerCursor = new CoreCursor(CoreCursorType.Arrow, 0);
+
 		// TODO: extending into titlebar
 		// TODO: NativeOverlappedPresenter and FullScreenPresenter
+	}
+
+	private unsafe void OnSystemThemeChanged(object? _, EventArgs __)
+	{
+		BOOL value = Win32SystemThemeHelperExtension.Instance.GetSystemTheme() is SystemTheme.Dark;
+		var hresult = PInvoke.DwmSetWindowAttribute(_hwnd, DWMWINDOWATTRIBUTE.DWMWA_USE_IMMERSIVE_DARK_MODE, &value, (uint)Marshal.SizeOf(value));
+		if (hresult.Failed)
+		{
+			this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.DwmSetWindowAttribute)} failed: {Win32Helper.GetErrorMessage()}");
+		}
 	}
 
 	private void OnApplicationViewPropertyChanged(object? sender, PropertyChangedEventArgs e)

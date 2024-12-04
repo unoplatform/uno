@@ -31,7 +31,7 @@ internal partial class Win32WindowWrapper : IUnoCorePointerInputSource
 
 	public bool HasCapture => PInvoke.GetCapture() == _hwnd;
 
-	public unsafe CoreCursor? PointerCursor
+	public CoreCursor? PointerCursor
 	{
 		get => _pointerCursor;
 		set

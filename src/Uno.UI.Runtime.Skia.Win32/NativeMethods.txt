@@ -89,6 +89,7 @@ DefWindowProc
 DescribePixelFormat
 DestroyWindow
 DispatchMessage
+DwmSetWindowAttribute
 EnableMouseInPointer
 EndPaint
 FormatMessage
