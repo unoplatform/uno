@@ -693,8 +693,6 @@ jobs:
 ##
 - ${{ each RuntimeTestGroup in parameters.RUNTIME_TESTS_GROUPS }}:
   - template: .azure-devops-ios-tests-run.yml
-    dependsOn:
-    - Skia_Tests_Build_Apple
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
       JobName: 'Skia_iOS_Runtime_Tests_group_${{ RuntimeTestGroup.value }}'
@@ -709,3 +707,5 @@ jobs:
       UITEST_RUNTIME_TEST_GROUP_COUNT: ${{ parameters.UITEST_RUNTIME_TEST_GROUP_COUNT }}
       UITEST_ALLOW_RERUN: 'false'
       xCodeRoot: ${{ parameters.xCodeRootTest }}
+      dependsOn:
+        - Skia_Tests_Build_Apple

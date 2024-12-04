@@ -14,9 +14,7 @@ jobs:
 - job: ${{ parameters.JobName }}
   timeoutInMinutes: ${{ parameters.JobTimeoutInMinutes }}
   cancelTimeoutInMinutes: 1
-  dependsOn:
-  - iOS_Build
-
+  dependsOn: ${{ parameters.dependsOn }}
   displayName: ${{ parameters.JobDisplayName }}
   pool:
     vmImage: ${{ parameters.vmImage }}

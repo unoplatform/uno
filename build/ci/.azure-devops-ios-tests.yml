@@ -196,6 +196,8 @@ jobs:
       UITEST_TEST_TIMEOUT: '20m'
       UITEST_ALLOW_RERUN: 'true'
       xCodeRoot: ${{ parameters.xCodeRootTest }}
+      dependsOn:
+        - iOS_Build
 
 ##
 ## Runtime tests
@@ -216,6 +218,8 @@ jobs:
       UITEST_RUNTIME_TEST_GROUP_COUNT: ${{ parameters.UITEST_RUNTIME_TEST_GROUP_COUNT }}
       UITEST_ALLOW_RERUN: 'false'
       xCodeRoot: ${{ parameters.xCodeRootTest }}
+      dependsOn:
+        - iOS_Build
 
 # Disabled for benchmkarks timeout
 # - template: .azure-devops-ios-tests-run.yml
@@ -243,3 +247,5 @@ jobs:
       UITEST_TEST_TIMEOUT: '10m'
       UITEST_ALLOW_RERUN: 'false'
       xCodeRoot: ${{ parameters.xCodeRootTest }}
+      dependsOn:
+        - iOS_Build
