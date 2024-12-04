@@ -25,6 +25,7 @@ using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using Uno.UI;
+using Uno;
 #endif
 
 namespace SampleControl.Presentation
@@ -445,6 +446,16 @@ namespace SampleControl.Presentation
 					Owner.FlowDirection = newValue;
 					RaisePropertyChanged();
 				}
+			}
+		}
+
+		public bool SimulateTouch
+		{
+			get => WinRTFeatureConfiguration.DebugOptions.SimulateTouch;
+			set
+			{
+				WinRTFeatureConfiguration.DebugOptions.SimulateTouch = value;
+				RaisePropertyChanged();
 			}
 		}
 
