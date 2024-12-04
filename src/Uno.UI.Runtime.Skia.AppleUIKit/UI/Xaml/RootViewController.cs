@@ -20,7 +20,7 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit;
 
 internal class RootViewController : UINavigationController, IRotationAwareViewController, IAppleUIKitXamlRootHost
 {
-	private SKCanvasView? _skCanvasView;
+	private SKMetalView? _skCanvasView;
 	private XamlRoot? _xamlRoot;
 	private UIView? _textInputLayer;
 	private UIView? _nativeOverlayLayer;
@@ -57,7 +57,9 @@ internal class RootViewController : UINavigationController, IRotationAwareViewCo
 	public void Initialize()
 	{
 		_textInputLayer = new UIView();
-		_skCanvasView = new SKCanvasView();
+		_skCanvasView = new SKMetalView();
+		_skCanvasView.Paused = false;
+		_skCanvasView.EnableSetNeedsDisplay = false;
 		_skCanvasView.BackgroundColor = UIColor.Red;
 		_skCanvasView.Frame = View!.Bounds;
 		_skCanvasView.AutoresizingMask = UIViewAutoresizing.All;
@@ -89,7 +91,7 @@ internal class RootViewController : UINavigationController, IRotationAwareViewCo
 
 	public SKColor BackgroundColor { get; set; } = SKColors.White;
 
-	private void OnPaintSurface(object? sender, SKPaintSurfaceEventArgs e)
+	private void OnPaintSurface(object? sender, SKPaintMetalSurfaceEventArgs e)
 	{
 		if (_xamlRoot?.VisualTree.RootElement is { } rootElement)
 		{
