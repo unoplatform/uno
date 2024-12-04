@@ -112,9 +112,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 
-		private UIElement GetFirstChildNoAddRef() => GetFirstChild();
-
-		private UIElement GetFirstChild()
+		internal override UIElement GetFirstChild()
 		{
 			UIElement spFirstChild;
 			// added in UIElement.GetFirstChild()
