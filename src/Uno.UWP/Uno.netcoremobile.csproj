@@ -44,6 +44,14 @@
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.netcoremobile.csproj" />
 		<ProjectReference Include="..\Uno.UI.Dispatching\Uno.UI.Dispatching.netcoremobile.csproj" />
 	</ItemGroup>
+	
+	<ItemGroup>
+		<ProjectReference Include="..\SourceGenerators\Uno.UI.Tasks\Uno.UI.Tasks.csproj">
+			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+			<UndefineProperties>TargetFramework</UndefineProperties>
+		</ProjectReference>
+	</ItemGroup>
 
 	<ItemGroup>
 		<Compile Include="..\Uno.UI\UI\Input\*.cs" />
