@@ -4637,7 +4637,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			var property = FindProperty(member.Member);
 			var declaringType = property?.ContainingType;
-			var propertyType = property?.FindDependencyPropertyType();
+			var propertyType = property?.FindDependencyPropertyType(unwrapNullable: false);
 
 			if (declaringType == null || propertyType == null)
 			{
@@ -4683,7 +4683,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var provider = $"{globalized.MarkupHelper}.CreateParserContext({providerDetails.JoinBy(", ")})";
 
 			var provideValue = $"(({globalized.IMarkupExtensionOverrides})new {globalized.MarkupType}{markupInitializer}).ProvideValue({provider})";
-			if (IsImplementingInterface(propertyType, Generation.IConvertibleSymbol.Value))
+			var unwrappedPropertyType = propertyType.IsNullable(out var nullableInnerType) ? nullableInnerType as INamedTypeSymbol : propertyType;
+			if (IsImplementingInterface(unwrappedPropertyType, Generation.IConvertibleSymbol.Value))
 			{
 				provideValue = $"{globalized.XamlBindingHelper}.ConvertValue(typeof({globalized.PvtpType}), {provideValue})";
 			}
