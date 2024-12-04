@@ -1303,7 +1303,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 							if (HasMarkupExtensionNeedingComponent(component.XamlObject) && IsDependencyObject(component.XamlObject))
 							{
-								writer.AppendLineIndented($"owner.{component.MemberName}.UpdateResourceBindings(resourceContextProvider: {(component.ResourceContext is { } ctx ? $"owner.{ctx.MemberName}" : "null")});");
+								writer.AppendLineIndented($"owner.{component.MemberName}.UpdateResourceBindings({(component.ResourceContext is { } ctx ? $"resourceContextProvider: owner.{ctx.MemberName}" : "")});");
 							}
 						}
 					}
@@ -6358,7 +6358,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				|| loadMember?.Value?.ToString()?.ToLowerInvariant() == "false"
 				|| hasLoadMarkup)
 			{
-				var dataContextMember = FindMember(definition, "DataContext");
 				var nameMember = FindMember(definition, "Name");
 
 				var elementStubBaseType = Generation.ElementStubSymbol.Value.BaseType;
