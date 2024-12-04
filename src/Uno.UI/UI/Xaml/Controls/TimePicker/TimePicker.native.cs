@@ -12,6 +12,8 @@ namespace Microsoft.UI.Xaml.Controls;
 
 partial class TimePicker
 {
+	internal const long DEFAULT_TIME_TICKS = -1;
+	
 	#region FlyoutPlacement DependencyProperty
 
 	[UnoOnly]
