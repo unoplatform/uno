@@ -62,6 +62,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private Action _selectionHighlightColorChanged;
 		private Action _foregroundBrushChanged;
+		private IDisposable _selectionHighlightBrushChangedSubscription;
+		private IDisposable _foregroundBrushChangedSubscription;
 #pragma warning restore CS0067, CS0649
 
 		private ContentPresenter _header;
@@ -169,6 +171,10 @@ namespace Microsoft.UI.Xaml.Controls
 					scrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled; // The template sets this to Hidden
 					scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto; // The template sets this to Hidden
 				}
+
+#if __WASM__
+				scrollViewer.DisableSetFocusOnPopupByPointer = !IsPointerCaptureRequired;
+#endif
 #endif
 			}
 		}
@@ -523,7 +529,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override void OnForegroundColorChanged(Brush oldValue, Brush newValue)
 		{
-			Brush.SetupBrushChanged(oldValue, newValue, ref _foregroundBrushChanged, () => OnForegroundColorChangedPartial(newValue));
+			_foregroundBrushChangedSubscription?.Dispose();
+			_foregroundBrushChangedSubscription = Brush.SetupBrushChanged(newValue, ref _foregroundBrushChanged, () => OnForegroundColorChangedPartial(newValue));
 		}
 
 		partial void OnForegroundColorChangedPartial(Brush newValue);
@@ -573,7 +580,9 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			oldBrush ??= DefaultBrushes.SelectionHighlightColor;
 			newBrush ??= DefaultBrushes.SelectionHighlightColor;
-			Brush.SetupBrushChanged(oldBrush, newBrush, ref _selectionHighlightColorChanged, () => OnSelectionHighlightColorChangedPartial(newBrush));
+
+			_selectionHighlightBrushChangedSubscription?.Dispose();
+			_selectionHighlightBrushChangedSubscription = Brush.SetupBrushChanged(newBrush, ref _selectionHighlightColorChanged, () => OnSelectionHighlightColorChangedPartial(newBrush));
 		}
 
 		partial void OnSelectionHighlightColorChangedPartial(SolidColorBrush brush);

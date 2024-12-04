@@ -111,6 +111,11 @@ namespace XamlGenerationTests.Shared.MarkupExtensions
 		}
 	}
 
+	public class ReturnNullExtension : MarkupExtension
+	{
+		protected override object ProvideValue() => null;
+	}
+
 	public class ComplexObject
 	{
 		public string StringProp { get; set; }

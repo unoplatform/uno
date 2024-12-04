@@ -19,6 +19,8 @@ namespace Microsoft.UI.Xaml.Shapes
 #if !__SKIA__
 		private Action _brushChanged;
 		private Action _strokeBrushChanged;
+		private IDisposable _brushChangedSubscription;
+		private IDisposable _strokeBrushChangedSubscription;
 #endif
 
 		/// <summary>
@@ -62,7 +64,8 @@ namespace Microsoft.UI.Xaml.Shapes
 			// In this case, we don't really want to listen to brush changes as the Brush is responsible for synchronizing its internal composition brush
 			OnFillBrushChanged();
 #else
-			Brush.SetupBrushChanged(oldValue, newValue, ref _brushChanged, () => OnFillBrushChanged());
+			_brushChangedSubscription?.Dispose();
+			_brushChangedSubscription = Brush.SetupBrushChanged(newValue, ref _brushChanged, () => OnFillBrushChanged());
 #endif
 		}
 
@@ -98,7 +101,8 @@ namespace Microsoft.UI.Xaml.Shapes
 			// In this case, we don't really want to listen to brush changes as the Brush is responsible for synchronizing its internal composition brush
 			OnStrokeBrushChanged();
 #else
-			Brush.SetupBrushChanged(oldValue, newValue, ref _strokeBrushChanged, () => OnStrokeBrushChanged());
+			_strokeBrushChangedSubscription?.Dispose();
+			_strokeBrushChangedSubscription = Brush.SetupBrushChanged(newValue, ref _strokeBrushChanged, () => OnStrokeBrushChanged());
 #endif
 		}
 

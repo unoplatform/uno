@@ -30,6 +30,10 @@ using _View = Microsoft.UI.Xaml.UIElement;
 
 namespace Microsoft.UI.Xaml.Markup.Reader
 {
+	[UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "Normal flow of operations")]
+	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Normal flow of operations")]
+	[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Normal flow of operations")]
+	[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "Normal flow of operations")]
 	internal partial class XamlObjectBuilder
 	{
 		private XamlFileDefinition _fileDefinition;
@@ -138,7 +142,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 
 			if (type == null)
 			{
-				throw new InvalidOperationException($"Unable to find type {control.Type}");
+				throw new InvalidOperationException($"Unable to find type {control.Type}. If the linker is enabled, more info at https://aka.platform.uno/XXX");
 			}
 
 			var unknownContent = control.Members.Where(m => m.Member.Name == "_UnknownContent").FirstOrDefault();

@@ -55,6 +55,9 @@
 			//document.addEventListener("dragstart", this._dragHandler);
 			//document.addEventListener("drag", this._dragHandler);
 			//document.addEventListener("dragend", this._dragHandler);
+
+			// #18854: Prevent the browser default selection drag preview.
+			document.addEventListener('dragstart', e => e.preventDefault());
 		}
 
 		public dispose() {

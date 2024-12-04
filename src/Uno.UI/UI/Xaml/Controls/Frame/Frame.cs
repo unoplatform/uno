@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,7 +9,6 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
-using Uno.Disposables;
 using Uno.UI;
 using Uno.UI.Helpers;
 using Uno.UI.Xaml.Core;
@@ -163,7 +163,10 @@ public partial class Frame : ContentControl
 		}
 	}
 
-	internal static object CreatePageInstance(Type sourcePageType)
+	[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Types manipulated here have been marked earlier")]
+	internal static object CreatePageInstance(
+		[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)]
+		Type sourcePageType)
 	{
 		var replacementType = sourcePageType.GetReplacementType(); // Get latest replacement type to handle Hot Reload.
 		if (Uno.UI.DataBinding.BindingPropertyHelper.BindableMetadataProvider != null)

@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Text;
 using Uno.Foundation;
@@ -164,13 +165,15 @@ namespace Uno.Foundation.Interop
 			return new StructPtr(Marshal.AllocHGlobal(size), type);
 		}
 
-		public static T UnmarshalStructure<T>(AutoPtr ptr)
+		public static T UnmarshalStructure<
+			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)] T>(AutoPtr ptr)
 			where T : struct
 		{
 			return Marshal.PtrToStructure<T>(ptr);
 		}
 
-		public static T UnmarshalStructure<T>(StructPtr ptr)
+		public static T UnmarshalStructure<
+			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)] T>(StructPtr ptr)
 			where T : struct
 		{
 			return Marshal.PtrToStructure<T>(ptr);

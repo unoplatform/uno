@@ -18,6 +18,9 @@ using System.Collections;
 using System.Globalization;
 using Windows.ApplicationModel.Calls;
 using Microsoft.UI.Xaml.Controls;
+using System.Diagnostics.CodeAnalysis;
+using Microsoft.UI.Xaml.Media;
+
 
 
 #if __ANDROID__
@@ -107,8 +110,6 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		private SpecializedResourceDictionary.ResourceKey? _themeLastUsed;
 
-		private static readonly bool _validatePropertyOwner = Debugger.IsAttached;
-
 #if UNO_HAS_ENHANCED_LIFECYCLE
 		internal bool IsDisposed => _isDisposed;
 #endif
@@ -185,6 +186,7 @@ namespace Microsoft.UI.Xaml
 		/// Creates a delegated dependency object instance for the specified <paramref name="originalObject"/>
 		/// </summary>
 		/// <param name="originalObject"></param>
+		[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "normal flow of operation")]
 		public DependencyObjectStore(object originalObject, DependencyProperty dataContextProperty)
 		{
 			_originalObjectRef = WeakReferencePool.RentWeakReference(this, originalObject);
@@ -802,7 +804,7 @@ namespace Microsoft.UI.Xaml
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void ValidatePropertyOwner(DependencyProperty property)
 		{
-			if (_validatePropertyOwner)
+			if (FeatureConfiguration.DependencyProperty.ValidatePropertyOwnerOnReadWrite)
 			{
 				var isFrameworkElement = _originalObjectType.Is(typeof(FrameworkElement));
 				var isMixinFrameworkElement = _originalObjectRef.Target is IFrameworkElement && !isFrameworkElement;
@@ -1498,6 +1500,8 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "normal flow of operation")]
+		[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "normal flow of operation")]
 		private void SetResourceBindingValue(DependencyProperty property, ResourceBinding binding, object? value)
 		{
 			var convertedValue = BindingPropertyHelper.Convert(property.Type, value);
@@ -1632,9 +1636,13 @@ namespace Microsoft.UI.Xaml
 					{
 						yield return fe.Resources;
 					}
-				}
 
-				candidate = candidate.GetParent() as DependencyObject;
+					candidate = fe.Parent as FrameworkElement;
+				}
+				else
+				{
+					candidate = VisualTreeHelper.GetParent(candidate) as DependencyObject;
+				}
 			}
 
 			if (includeAppResources && Application.Current != null)

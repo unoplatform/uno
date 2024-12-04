@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Uno;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
@@ -18,8 +19,10 @@ namespace Microsoft.UI.Xaml.Markup
 		/// <summary>
 		/// Converts a value from a source type to a target type.
 		/// </summary>
-		public static object ConvertValue(Type type, object value) =>
-			Uno.UI.DataBinding.BindingPropertyHelper.Convert(type, value);
+		public static object ConvertValue(
+			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type type,
+			object value)
+			=> Uno.UI.DataBinding.BindingPropertyHelper.Convert(type, value);
 
 		/// <summary>
 		/// Resumes rendering of the specified element.

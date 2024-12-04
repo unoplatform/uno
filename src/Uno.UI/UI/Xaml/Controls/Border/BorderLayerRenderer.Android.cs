@@ -33,6 +33,8 @@ namespace Uno.UI.Xaml.Controls
 		private static Paint? _fillPaint;
 		private Action? _backgroundChanged;
 		private Action? _borderChanged;
+		private IDisposable? _backgroundBrushChangedSubscription;
+		private IDisposable? _borderBrushChangedSubscription;
 
 		private static ImageSource? GetBackgroundImageSource(BorderLayerState? state)
 			=> (state?.Background as ImageBrush)?.ImageSource;
@@ -261,8 +263,11 @@ namespace Uno.UI.Xaml.Controls
 			// because even though the brush instance is the same, there are additional properties
 			// that BorderLayerState tracks on Android. This is not ideal and we should avoid it by refactoring
 			// this file to handle brush changes on the same brush instance on its own instead.
-			Brush.SetupBrushChanged(_currentState.Background, background, ref _backgroundChanged, () => Update(true), false);
-			Brush.SetupBrushChanged(_currentState.BorderBrush, borderBrush, ref _borderChanged, () => Update(true), false);
+			_backgroundBrushChangedSubscription?.Dispose();
+			_backgroundBrushChangedSubscription = Brush.SetupBrushChanged(background, ref _backgroundChanged, () => Update(true), false);
+
+			_borderBrushChangedSubscription?.Dispose();
+			_borderBrushChangedSubscription = Brush.SetupBrushChanged(borderBrush, ref _borderChanged, () => Update(true), false);
 
 			return disposables;
 		}

@@ -865,6 +865,7 @@ void uno_window_clip_svg(UNOWindow* window, const char* svg)
         memset(&data, 0, sizeof(struct MouseEventData));
         data.eventType = mouse;
         data.inContact = inContact;
+        data.mods = get_modifiers(event.modifierFlags);
         if ([self getPositionFrom:event x:&data.x y:&data.y]) {
 #if false
             // check subtype for most mouse events

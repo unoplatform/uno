@@ -8,6 +8,7 @@ using Uno.Extensions;
 using Uno.UI;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml.Controls;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Microsoft.UI.Xaml
 {
@@ -15,6 +16,8 @@ namespace Microsoft.UI.Xaml
 	/// Provides an instance pool for <see cref="Page"/>s. Pooling is enabled when <see cref="Uno.UI.FeatureConfiguration.Page.IsPoolingEnabled"/> is set to true.
 	/// </summary>
 	/// <remarks>Enabling page pooling improves performance when using <see cref="Frame"/> navigation.</remarks>
+	[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "Types manipulated here have been marked earlier")]
+	[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "Types manipulated here have been marked earlier")]
 	public class PagePool
 	{
 		private readonly Stopwatch _watch = new Stopwatch();

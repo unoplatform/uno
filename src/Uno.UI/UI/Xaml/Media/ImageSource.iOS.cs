@@ -55,6 +55,11 @@ namespace Microsoft.UI.Xaml.Media
 
 		static public implicit operator ImageSource(UIImage image) => new ImageSource(image);
 
+		/// <summary>
+		/// Indicates that this source has already been opened (So TryOpenSync will return true!)
+		/// </summary>
+		internal bool IsOpened => _imageData.HasData;
+
 		private static UIImage? OpenBundleFromString(string? bundle)
 		{
 			if (!bundle.IsNullOrWhiteSpace())

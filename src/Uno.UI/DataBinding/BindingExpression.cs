@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -840,6 +841,7 @@ namespace Microsoft.UI.Xaml.Data
 			}
 		}
 
+		[UnconditionalSuppressMessage("Trimming", "IL2077", Justification = "Types manipulated here have been marked earlier")]
 		private object ConvertToBoundPropertyType(object value)
 		{
 			// _boundPropertyType can be null for properties not bound for the actual instance (no matching properties found)

@@ -22,6 +22,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private SinglelineTextBoxDelegate _delegate;
 		private readonly WeakReference<TextBox> _textBox;
 		private Action _foregroundChanged;
+		private IDisposable _foregroundBrushChangedSubscription;
 
 		public SinglelineTextBoxView(TextBox textBox)
 		{
@@ -204,7 +205,8 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				if (newValue is SolidColorBrush scb)
 				{
-					Brush.SetupBrushChanged(oldValue, newValue, ref _foregroundChanged, () => ApplyColor());
+					_foregroundBrushChangedSubscription?.Dispose();
+					_foregroundBrushChangedSubscription = Brush.SetupBrushChanged(newValue, ref _foregroundChanged, () => ApplyColor());
 
 					void ApplyColor()
 					{

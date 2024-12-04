@@ -99,7 +99,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 				var scale = _host.RootElement?.XamlRoot is { } root
 					? root.RasterizationScale
 					: 1;
-				_surface.Canvas.Scale((int)scale);
+				_surface.Canvas.Scale((float)scale);
 
 				if (_host.RootElement?.Visual is { } rootVisual)
 				{

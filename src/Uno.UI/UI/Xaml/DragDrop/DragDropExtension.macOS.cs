@@ -67,7 +67,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 
 		private bool OnPerformDragOperation(NSDraggingInfo draggingInfo)
 		{
-			var operation = _manager.ProcessDropped(new DragEventSource(_fakePointerId, draggingInfo, _window));
+			var operation = _manager.ProcessReleased(new DragEventSource(_fakePointerId, draggingInfo, _window));
 			return (operation != DataPackageOperation.None);
 		}
 
@@ -88,7 +88,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 						(NSImage image, CGPoint screenPoint, NSDragOperation operation) =>
 						{
 							// The drop was completed externally
-							_manager.ProcessDropped(new DragEventSource(info.SourceId, _window));
+							_manager.ProcessReleased(new DragEventSource(info.SourceId, _window));
 							return;
 						};
 

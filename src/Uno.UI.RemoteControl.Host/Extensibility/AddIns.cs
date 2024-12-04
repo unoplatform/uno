@@ -17,29 +17,54 @@ public class AddIns
 	public static IImmutableList<string> Discover(string solutionFile)
 	{
 		var tmp = Path.GetTempFileName();
-		var result = ProcessHelper.RunProcess("dotnet", $"build \"{solutionFile}\" --target:UnoDumpTargetFrameworks \"-p:UnoDumpTargetFrameworksTargetFile={tmp}\" --verbosity quiet");
+		var command = $"build \"{solutionFile}\" --target:UnoDumpTargetFrameworks \"-p:UnoDumpTargetFrameworksTargetFile={tmp}\" --verbosity quiet";
+		var result = ProcessHelper.RunProcess("dotnet", command);
 		var targetFrameworks = Read(tmp);
 
 		if (targetFrameworks.IsEmpty)
 		{
 			if (_log.IsEnabled(LogLevel.Warning))
 			{
-				_log.Log(LogLevel.Warning, new Exception(result.error), $"Failed to get target frameworks of solution '{solutionFile}' (cf. inner exception for details).");
+				var msg = $"Failed to get target frameworks of solution '{solutionFile}'. "
+					+ "This usually indicates that the solution is in an invalid state (e.g. a referenced project is missing on disk). "
+					+ $"Please fix and restart your IDE (command used: `dotnet {command}`).";
+				if (result.error is { Length: > 0 })
+				{
+					_log.Log(LogLevel.Warning, new Exception(result.error), msg + " (cf. inner exception for more details.)");
+				}
+				else
+				{
+					_log.Log(LogLevel.Warning, msg);
+				}
 			}
 
 			return ImmutableArray<string>.Empty;
+		}
+
+		if (_log.IsEnabled(LogLevel.Debug))
+		{
+			_log.Log(LogLevel.Debug, $"Found target frameworks for solution '{solutionFile}': {string.Join(", ", targetFrameworks)}.");
 		}
 
 
 		foreach (var targetFramework in targetFrameworks)
 		{
 			tmp = Path.GetTempFileName();
-			result = ProcessHelper.RunProcess("dotnet", $"build \"{solutionFile}\" --target:UnoDumpRemoteControlAddIns \"-p:UnoDumpRemoteControlAddInsTargetFile={tmp}\" --verbosity quiet --framework \"{targetFramework}\" -nowarn:MSB4057");
+			command = $"build \"{solutionFile}\" --target:UnoDumpRemoteControlAddIns \"-p:UnoDumpRemoteControlAddInsTargetFile={tmp}\" --verbosity quiet --framework \"{targetFramework}\" -nowarn:MSB4057";
+			result = ProcessHelper.RunProcess("dotnet", command);
 			if (!string.IsNullOrWhiteSpace(result.error))
 			{
 				if (_log.IsEnabled(LogLevel.Warning))
 				{
-					_log.Log(LogLevel.Warning, new Exception(result.error), $"Failed to get add-ins for solution '{solutionFile}' for tfm {targetFramework} (cf. inner exception for details).");
+					var msg = $"Failed to get add-ins for solution '{solutionFile}' for tfm {targetFramework} (command used: `dotnet {command}`).";
+					if (result.error is { Length: > 0 })
+					{
+						_log.Log(LogLevel.Warning, new Exception(result.error), msg + " (cf. inner exception for more details.)");
+					}
+					else
+					{
+						_log.Log(LogLevel.Warning, msg);
+					}
 				}
 
 				continue;

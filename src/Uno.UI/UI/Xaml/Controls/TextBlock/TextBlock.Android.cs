@@ -274,7 +274,14 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else if (UseInlinesFastPath)
 			{
-				return JavaStringCache.GetNativeString(Text);
+				if (FeatureConfiguration.TextBlock.IsJavaStringCachedEnabled)
+				{
+					return JavaStringCache.GetNativeString(Text);
+				}
+				else
+				{
+					return new Java.Lang.String(Text);
+				}
 			}
 			else
 			{

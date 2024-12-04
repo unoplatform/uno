@@ -13,6 +13,7 @@
 //      determine which content to replace.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 
@@ -77,6 +78,7 @@ internal partial class NavigationCache
 		//TraceNavigationCacheGetContentInfo(WindowsGetStringRawBuffer(strDescriptor, null), found);
 	}
 
+	[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "The provided type has been marked before getting at that location")]
 	private object LoadContent(string descriptor)
 	{
 		var type = Type.GetType(descriptor);

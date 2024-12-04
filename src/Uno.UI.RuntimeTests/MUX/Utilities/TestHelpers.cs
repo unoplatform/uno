@@ -139,7 +139,7 @@ namespace MUXControlsTestApp.Utilities
 {
 	public static class TestUtilities
 	{
-		public static int DefaultWaitMs = Debugger.IsAttached ? 120000 : 5000;
+		public static int DefaultWaitMs = 5000;
 
 		public static async Task SetAsVisualTreeRoot(FrameworkElement element)
 		{

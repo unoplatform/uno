@@ -10,6 +10,7 @@ namespace Uno.UI.RuntimeTests.Tests.UnitTestsTests
 	{
 		static int When_UnhandledException_Count;
 
+		// This tests that automatic retry is working.
 		[TestMethod]
 		public void When_UnhandledException()
 		{
@@ -25,6 +26,7 @@ namespace Uno.UI.RuntimeTests.Tests.UnitTestsTests
 	{
 		static int Initialize_Count;
 
+		// This tests that automatic retry is working.
 		[TestInitialize]
 		public void Initialize()
 		{

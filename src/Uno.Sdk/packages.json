@@ -88,7 +88,7 @@
 	},
 	{
 		"group": "hotdesign",
-		"version": "1.0.51",
+		"version": "1.0.160",
 		"packages": [
 			"Uno.UI.HotDesign"
 		]
@@ -121,7 +121,7 @@
 	},
 	{
 	  "group": "WinAppSdkBuildTools",
-	  "version": "10.0.26100.1742",
+	  "version": "10.0.22621.3233",
 	  "packages": [
 		"Microsoft.Windows.SDK.BuildTools"
 	  ]
@@ -133,7 +133,7 @@
 		"Microsoft.Extensions.Logging.Console"
 	  ],
 	  "versionOverride": {
-		"net9.0": "9.0.0-rc.2.24473.5"
+		"net9.0": "9.0.0"
 	  }
 	},
 	{
@@ -143,7 +143,7 @@
 		"Microsoft.Windows.Compatibility"
 	  ],
 	  "versionOverride": {
-		"net9.0": "9.0.0-rc.2.24474.4"
+		"net9.0": "9.0.0"
 	  }
 	},
 	{
@@ -255,7 +255,7 @@
 		"Microsoft.Maui.Graphics"
 	  ],
 	  "versionOverride": {
-		"net9.0": "9.0.0-rc.2.24503.2"
+		"net9.0": "9.0.0"
 	  }
 	},
 	{
@@ -268,7 +268,7 @@
 	},
 	{
 	  "group": "Extensions",
-	  "version": "5.1.0-dev.67",
+	  "version": "5.2.0-dev.20",
 	  "packages": [
 		"Uno.Extensions.Authentication.WinUI",
 		"Uno.Extensions.Authentication.MSAL.WinUI",

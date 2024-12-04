@@ -40,7 +40,13 @@ namespace Uno.Buffers
 			/// </summary>
 			internal Bucket(int bufferLength, int numberOfBuffers, int poolId)
 			{
-				_lock = new SpinLock(Debugger.IsAttached); // only enable thread tracking if debugger is attached; it adds non-trivial overheads to Enter/Exit
+				_lock = new SpinLock(
+#if DEBUG // thread tracking adds non-trivial overheads to Enter/Exit
+					true
+#else
+					global::System.Diagnostics.Debugger.IsAttached
+#endif
+					);
 				_buffers = new T[numberOfBuffers][];
 				_bufferLength = bufferLength;
 				_poolId = poolId;

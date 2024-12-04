@@ -2,22 +2,20 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.UI.Xaml.Core;
 using Windows.ApplicationModel.DataTransfer;
-using Windows.ApplicationModel.DataTransfer.DragDrop;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
-using Windows.System;
-using Windows.UI.Core;
-using Windows.UI.Input;
-using Microsoft.UI.Xaml.Input;
 using Uno.UI.Dispatching;
 
 namespace Microsoft.UI.Xaml
 {
+	/// <summary>
+	/// The state machine of a dragging operation from the initiation of a dragging event
+	/// when a pointer holds and moves to the completion of the event when the pointer
+	/// is released
+	/// </summary>
 	internal class DragOperation
 	{
 		private static readonly TimeSpan _deferralTimeout = TimeSpan.FromSeconds(30); // Random value!
@@ -35,7 +33,7 @@ namespace Microsoft.UI.Xaml
 		private State _state = State.None;
 		private uint _lastFrameId;
 		private bool _hasRequestedNativeDrag;
-		private DataPackageOperation _acceptedOperation;
+		private DataPackageOperation _acceptedOperation = DataPackageOperation.Copy | DataPackageOperation.Move | DataPackageOperation.Link;
 
 		private enum State
 		{
@@ -98,7 +96,7 @@ namespace Microsoft.UI.Xaml
 			return _acceptedOperation;
 		}
 
-		internal DataPackageOperation Dropped(IDragEventSource src)
+		internal DataPackageOperation Released(IDragEventSource src)
 		{
 			// For safety, we don't validate the FrameId for the finalizing actions, we rely only on the _state
 			if (_state >= State.Completing)
@@ -107,7 +105,15 @@ namespace Microsoft.UI.Xaml
 			}
 
 			Update(src);
-			Enqueue(RaiseDrop);
+
+			if (_acceptedOperation is DataPackageOperation.None)
+			{
+				Abort();
+			}
+			else
+			{
+				Enqueue(RaiseDrop);
+			}
 
 			return _acceptedOperation;
 		}

@@ -229,8 +229,6 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 				var rawScale = _scaleOverride ?? (TryGetXResource(XftDotdpi, out var xrdbScaling) ? xrdbScaling.Value : dpi / DisplayInformation.BaseDpi);
 
-				var flooredScale = FloorScale(rawScale);
-
 				// This returns very incorrect numbers as far as I've tested.
 				var widthInInches = (uint)Math.Round(X11Helper.XWidthMMOfScreen(screen) / InchesToMilliMeters);
 				var heightInInches = (uint)Math.Round(X11Helper.XHeightMMOfScreen(screen) / InchesToMilliMeters);
@@ -238,9 +236,9 @@ namespace Uno.WinUI.Runtime.Skia.X11
 				_details = new(
 					(uint)X11Helper.XWidthOfScreen(screen),
 					(uint)X11Helper.XHeightOfScreen(screen),
-					flooredScale * DisplayInformation.BaseDpi,
-					flooredScale,
-					(ResolutionScale)(int)(flooredScale * 100.0),
+					(float)(rawScale * DisplayInformation.BaseDpi),
+					rawScale,
+					(ResolutionScale)(int)(rawScale * 100),
 					Math.Sqrt(widthInInches * widthInInches + heightInInches * heightInInches)
 				);
 			}
@@ -265,28 +263,6 @@ namespace Uno.WinUI.Runtime.Skia.X11
 
 		public void StartDpiChanged() { }
 		public void StopDpiChanged() { }
-
-		private static float FloorScale(double rawDpi)
-			=> rawDpi switch
-			{
-				>= 5.00f => 5.00f,
-				>= 4.50f => 4.50f,
-				>= 4.00f => 4.00f,
-				>= 3.50f => 3.50f,
-				>= 3.00f => 3.00f,
-				>= 2.50f => 2.50f,
-				>= 2.25f => 2.25f,
-				>= 2.00f => 2.00f,
-				>= 1.80f => 1.80f,
-				>= 1.75f => 1.75f,
-				>= 1.60f => 1.60f,
-				>= 1.50f => 1.50f,
-				>= 1.40f => 1.40f,
-				>= 1.25f => 1.25f,
-				>= 1.20f => 1.20f,
-				>= 1.00f => 1.00f,
-				_ => 1.00f,
-			};
 
 		private bool TryGetXResource(string resourceName, [NotNullWhen(true)] out double? scaling)
 		{
@@ -472,14 +448,13 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			// With XRandR, we don't use the xScaling and yScaling values, since the server will "stretch" the window to
 			// the required scaling. We don't need to do any scale by <x|y>Scaling ourselves.
 			var rawScale = _scaleOverride ?? (TryGetXResource(XftDotdpi, out var xrdbScaling) ? xrdbScaling.Value : 1);
-			var flooredScale = FloorScale(rawScale);
 
 			return new DisplayInformationDetails(
 				rawWidth,
 				rawHeight,
-				flooredScale * DisplayInformation.BaseDpi,
-				flooredScale,
-				(ResolutionScale)(FloorScale(flooredScale) * 100),
+				(float)(rawScale * DisplayInformation.BaseDpi),
+				rawScale,
+				(ResolutionScale)(rawScale * 100),
 				Math.Sqrt(outputInfo->mm_width * outputInfo->mm_width + outputInfo->mm_height * outputInfo->mm_height) / InchesToMilliMeters
 			);
 		}

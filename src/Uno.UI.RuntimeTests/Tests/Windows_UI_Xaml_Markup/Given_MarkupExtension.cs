@@ -94,6 +94,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 			Assert.AreEqual(Orientation.Horizontal, page.EnumMarkupExtension_Horizontal.Orientation);
 			Assert.AreEqual(Orientation.Vertical, page.EnumMarkupExtension_Vertical.Orientation);
 		}
+
+		[TestMethod]
+		public void When_MarkupExtension_ReturnNullForNullableStructType()
+		{
+			// it also shouldn't throw here
+			var page = new MarkupExtension_CodegenTypeCast();
+
+			Assert.IsTrue(page.Control.IsChecked, "sanity check failed: Control.IsChecked is not true");
+			Assert.IsNull(page.SUT.IsChecked, "Property value should be set to null by the markup-extension");
+		}
 #endif
 	}
 }

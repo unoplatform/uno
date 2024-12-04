@@ -47,8 +47,8 @@ partial class Window
 	private bool _splashScreenDismissed;
 	private WindowType _windowType;
 
-	private List<WeakEventHelper.GenericEventHandler> _sizeChangedHandlers = new List<WeakEventHelper.GenericEventHandler>();
-	private List<WeakEventHelper.GenericEventHandler>? _backgroundChangedHandlers;
+	private WeakEventHelper.WeakEventCollection? _sizeChangedHandlers;
+	private WeakEventHelper.WeakEventCollection? _backgroundChangedHandlers;
 
 	internal Window(WindowType windowType)
 	{
@@ -340,13 +340,7 @@ partial class Window
 		{
 			_background = value;
 
-			if (_backgroundChangedHandlers != null)
-			{
-				foreach (var action in _backgroundChangedHandlers)
-				{
-					action(this, EventArgs.Empty);
-				}
-			}
+			_backgroundChangedHandlers?.Invoke(this, EventArgs.Empty);
 		}
 	}
 
@@ -355,7 +349,7 @@ partial class Window
 			_backgroundChangedHandlers ??= new(),
 			handler,
 			(h, s, e) =>
-				(h as EventHandler)?.Invoke(s, (EventArgs)e)
+				(h as EventHandler)?.Invoke(s, (EventArgs)e!)
 		);
 
 	/// <summary>
@@ -365,18 +359,15 @@ partial class Window
 	internal IDisposable RegisterSizeChangedEvent(Microsoft.UI.Xaml.WindowSizeChangedEventHandler handler)
 	{
 		return WeakEventHelper.RegisterEvent(
-			_sizeChangedHandlers,
+			_sizeChangedHandlers ??= new(),
 			handler,
 			(h, s, e) =>
-				(h as Microsoft.UI.Xaml.WindowSizeChangedEventHandler)?.Invoke(s, (WindowSizeChangedEventArgs)e)
+				(h as Microsoft.UI.Xaml.WindowSizeChangedEventHandler)?.Invoke(s, (WindowSizeChangedEventArgs)e!)
 		);
 	}
 
 	private void OnWindowSizeChanged(object sender, WindowSizeChangedEventArgs e)
 	{
-		foreach (var action in _sizeChangedHandlers)
-		{
-			action(this, e);
-		}
+		_sizeChangedHandlers?.Invoke(this, e);
 	}
 }

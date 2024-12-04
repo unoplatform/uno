@@ -28,6 +28,7 @@ namespace Microsoft.UI.Xaml.Controls
 		internal TextBox? Owner => _ownerRef?.Target as TextBox;
 
 		private Action? _foregroundChanged;
+		private IDisposable? _foregroundBrushChangedSubscription;
 		private bool _isDisposed;
 
 		public TextBoxView(TextBox owner)
@@ -310,7 +311,8 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (newValue is SolidColorBrush scb)
 			{
-				Brush.SetupBrushChanged(oldValue, newValue, ref _foregroundChanged, () => ApplyColor());
+				_foregroundBrushChangedSubscription?.Dispose();
+				_foregroundBrushChangedSubscription = Brush.SetupBrushChanged(newValue, ref _foregroundChanged, () => ApplyColor());
 
 				void ApplyColor()
 				{

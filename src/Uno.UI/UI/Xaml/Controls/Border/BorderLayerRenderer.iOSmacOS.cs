@@ -228,8 +228,8 @@ partial class BorderLayerRenderer
 			{
 				Action onInvalidateRender = () => backgroundLayer.FillColor = Brush.GetFallbackColor(background);
 				onInvalidateRender();
-				background.InvalidateRender += onInvalidateRender;
-				new DisposableAction(() => background.InvalidateRender -= onInvalidateRender).DisposeWith(disposables);
+
+				background.RegisterInvalidateRender(onInvalidateRender).DisposeWith(disposables);
 			}
 			else
 			{
@@ -284,8 +284,7 @@ partial class BorderLayerRenderer
 				else
 				{
 					onInvalidateRender();
-					borderBrush.InvalidateRender += onInvalidateRender;
-					new DisposableAction(() => borderBrush.InvalidateRender -= onInvalidateRender).DisposeWith(disposables);
+					borderBrush.RegisterInvalidateRender(onInvalidateRender).DisposeWith(disposables);
 				}
 			}
 
@@ -334,9 +333,7 @@ partial class BorderLayerRenderer
 				Action onInvalidateRender = () => backgroundLayer.FillColor = Brush.GetFallbackColor(background);
 
 				onInvalidateRender();
-				background.InvalidateRender += onInvalidateRender;
-				new DisposableAction(() => background.InvalidateRender -= onInvalidateRender)
-					.DisposeWith(disposables);
+				background.RegisterInvalidateRender(onInvalidateRender).DisposeWith(disposables);
 
 				// This is required because changing the CornerRadius changes the background drawing
 				// implementation and we don't want a rectangular background behind a rounded background.
@@ -362,10 +359,8 @@ partial class BorderLayerRenderer
 			else if (background is XamlCompositionBrushBase)
 			{
 				Action onInvalidateRender = () => backgroundLayer.FillColor = Brush.GetFallbackColor(background);
-				background.InvalidateRender += onInvalidateRender;
+				background.RegisterInvalidateRender(onInvalidateRender).DisposeWith(disposables);
 				onInvalidateRender();
-				new DisposableAction(() => background.InvalidateRender -= onInvalidateRender)
-					.DisposeWith(disposables);
 
 				// This is required because changing the CornerRadius changes the background drawing
 				// implementation and we don't want a rectangular background behind a rounded background.
@@ -417,8 +412,7 @@ partial class BorderLayerRenderer
 					Action onInvalidateRender = () => layer.FillColor = Brush.GetFallbackColor(borderBrush);
 
 					onInvalidateRender();
-					borderBrush.InvalidateRender += onInvalidateRender;
-					new DisposableAction(() => borderBrush.InvalidateRender -= onInvalidateRender).DisposeWith(disposables);
+					borderBrush.RegisterInvalidateRender(onInvalidateRender).DisposeWith(disposables);
 				}
 			}
 

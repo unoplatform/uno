@@ -1,4 +1,6 @@
-﻿using System;
+﻿// On the UWP branch, only include this file in Uno.UWP (as public Window.whatever). On the WinUI branch, include it in both Uno.UWP (internal as Windows.whatever) and Uno.UI (public as Microsoft.whatever)
+#if HAS_UNO_WINUI || !IS_UNO_UI_PROJECT
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
@@ -110,3 +112,4 @@ namespace Windows.UI.Input
 			=> $"[{PointerDevice.PointerDeviceType}-{PointerId}] @{Position.ToDebugString()} (raw: {RawPosition.ToDebugString()} | ts: {Timestamp} | props: {Properties} | inContact: {IsInContact})";
 	}
 }
+#endif

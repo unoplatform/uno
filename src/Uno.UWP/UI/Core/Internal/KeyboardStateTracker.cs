@@ -98,15 +98,7 @@ internal static partial class KeyboardStateTracker
 		}
 	}
 
-	internal static void Reset()
-	{
-		// Clearing state when debugger is attached would
-		// make it hard to debug key events.
-		if (!System.Diagnostics.Debugger.IsAttached)
-		{
-			_keyStates.Clear();
-		}
-	}
+	internal static void Reset() => _keyStates.Clear();
 
 #if __WASM__
 #pragma warning disable IDE0051 // Remove unused private members

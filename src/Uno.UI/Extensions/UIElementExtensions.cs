@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using System.Globalization;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Uno.UI.Extensions;
 
@@ -82,6 +83,7 @@ public static partial class UIElementExtensions
 
 	private static Dictionary<(Type type, string property), DependencyProperty?>? _dependencyPropertyReflectionCache;
 
+	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "The provided type has been marked before getting at that location")]
 	internal static DependencyProperty? FindDependencyPropertyUsingReflection<TProperty>(this UIElement uiElement, string propertyName)
 	{
 		var type = uiElement.GetType();

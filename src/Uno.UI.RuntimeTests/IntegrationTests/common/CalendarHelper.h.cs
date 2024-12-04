@@ -236,7 +236,7 @@ namespace Private.Infrastructure
 			{
 				// we expect no event here, so below statement will timeout and throw WEX.Common.Exception.
 				TestServices.VERIFY_THROWS_WINRT<Exception>(
-					async () => await m_selectedDatesChangedEvent.WaitFor(TimeSpan.FromMilliseconds(5000), true /* enforceUnderDebugger */),
+					async () => await m_selectedDatesChangedEvent.WaitFor(TimeSpan.FromMilliseconds(5000)),
 					"SelectedDatesChanged event should not raise!");
 				TestServices.VERIFY_IS_FALSE(m_selectedDatesChangedEvent.HasFired());
 				m_selectedDatesChangedRegistration.Detach();

@@ -181,12 +181,14 @@ namespace <#= mixin.NamespaceName #>
 		}
 
 		Action _brushChanged;
+		IDisposable _backgroundBrushChangedSubscription;
 
 		protected virtual void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{
-			var oldValue = e.OldValue as Brush;
 			var newValue = e.NewValue as Brush;
-			Brush.SetupBrushChanged(oldValue, newValue, ref _brushChanged, () => SetBackgroundColor(Brush.GetFallbackColor(newValue)));
+
+			_backgroundBrushChangedSubscription?.Dispose();
+			_backgroundBrushChangedSubscription = Brush.SetupBrushChanged(newValue, ref _brushChanged, () => SetBackgroundColor(Brush.GetFallbackColor(newValue)));
 		}
 		#endregion
 

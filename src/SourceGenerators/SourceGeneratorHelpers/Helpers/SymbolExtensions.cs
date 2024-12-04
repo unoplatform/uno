@@ -599,20 +599,21 @@ namespace Microsoft.CodeAnalysis
 		/// </summary>
 		/// <param name="propertyOrSetter">The dependency-property or the attached dependency-property setter</param>
 		/// <returns>The property type</returns>
-		public static INamedTypeSymbol? FindDependencyPropertyType(this ISymbol propertyOrSetter)
+		public static INamedTypeSymbol? FindDependencyPropertyType(this ISymbol propertyOrSetter, bool unwrapNullable = true)
 		{
-			if (propertyOrSetter is IPropertySymbol dependencyProperty)
+			var type = propertyOrSetter switch
 			{
-				return dependencyProperty.Type.OriginalDefinition is { SpecialType: SpecialType.System_Nullable_T }
-					? (dependencyProperty.Type as INamedTypeSymbol)?.TypeArguments[0] as INamedTypeSymbol
-					: dependencyProperty.Type as INamedTypeSymbol;
-			}
-			else if (propertyOrSetter is IMethodSymbol { IsStatic: true, Parameters.Length: 2 } attachedPropertySetter)
+				IPropertySymbol dp => dp.Type,
+				IMethodSymbol { IsStatic: true, Parameters.Length: 2 } adpSetter => adpSetter.Parameters[1].Type,
+
+				_ => null,
+			};
+			if (unwrapNullable && type?.IsNullable(out var innerType) == true)
 			{
-				return attachedPropertySetter.Parameters[1].Type as INamedTypeSymbol;
+				type = innerType;
 			}
 
-			return null;
+			return type as INamedTypeSymbol;
 		}
 	}
 }

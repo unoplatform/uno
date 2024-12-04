@@ -39,6 +39,9 @@ namespace Uno.UI.DataBinding
 		}
 	}
 
+	[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "normal flow of operation")]
+	[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "normal flow of operation")]
+	[UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "normal flow of operation")]
 	internal static partial class BindingPropertyHelper
 	{
 		private static readonly Logger _log = typeof(BindingPropertyHelper).Log();
@@ -334,7 +337,10 @@ namespace Uno.UI.DataBinding
 		/// The private members lookup is present to enable the binding to
 		/// x:Name elements in x:Bind operations.
 		/// </remarks>
-		private static PropertyInfo? GetPropertyInfo(Type type, string name, bool allowPrivateMembers)
+		private static PropertyInfo? GetPropertyInfo(
+			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties)] Type type,
+			string name,
+			bool allowPrivateMembers)
 		{
 			do
 			{
@@ -375,7 +381,10 @@ namespace Uno.UI.DataBinding
 		/// The private members lookup is present to enable the binding to
 		/// x:Name elements in x:Bind operations.
 		/// </remarks>
-		private static PropertyInfo? GetIndexerInfo(Type type, Type? parameterType, bool allowPrivateMembers)
+		private static PropertyInfo? GetIndexerInfo(
+			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties)] Type type,
+			Type? parameterType,
+			bool allowPrivateMembers)
 		{
 			var parameterTypes = parameterType is not null
 				? new[] { parameterType }
@@ -412,7 +421,10 @@ namespace Uno.UI.DataBinding
 			return null;
 		}
 
-		private static FieldInfo? GetFieldInfo(Type type, string name, bool allowPrivateMembers)
+		private static FieldInfo? GetFieldInfo(
+			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.NonPublicFields)] Type type,
+			string name,
+			bool allowPrivateMembers)
 		{
 			do
 			{
@@ -482,6 +494,8 @@ namespace Uno.UI.DataBinding
 			return property;
 		}
 
+		[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "GetField/GetType may return null, normal flow of operation")]
+		[UnconditionalSuppressMessage("Trimming", "IL2077", Justification = "GetField/GetType may return null, normal flow of operation")]
 		private static ValueGetterHandler InternalGetValueGetter(Type type, string property, bool allowPrivateMembers)
 		{
 			if (type == typeof(UnsetValue))
@@ -810,8 +824,11 @@ namespace Uno.UI.DataBinding
 			return indexerParameter;
 		}
 
-		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling", Justification = "To be refactored"),
-		System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Justification = "To be refactored")]
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling", Justification = "To be refactored")]
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Justification = "To be refactored")]
+		[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "GetField/GetType may return null, normal flow of operation")]
+		[UnconditionalSuppressMessage("Trimming", "IL2077", Justification = "GetField/GetType may return null, normal flow of operation")]
+
 		private static ValueSetterHandler InternalGetValueSetter(Type type, string property, bool convert, DependencyPropertyValuePrecedences precedence)
 		{
 			if (type == typeof(UnsetValue))
@@ -1105,10 +1122,10 @@ namespace Uno.UI.DataBinding
 			return delegate { once(); };
 		}
 
-		private static DependencyProperty FindDependencyProperty(Type ownerType, string property)
+		private static DependencyProperty FindDependencyProperty([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)] Type ownerType, string property)
 			=> DependencyProperty.GetProperty(ownerType, property);
 
-		private static DependencyProperty? FindAttachedProperty(Type type, string property)
+		private static DependencyProperty? FindAttachedProperty([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields)] Type type, string property)
 		{
 			var propertyInfo = DependencyPropertyDescriptor.Parse(property);
 			if (propertyInfo != null)
@@ -1154,7 +1171,7 @@ namespace Uno.UI.DataBinding
 				.FirstOrDefault();
 		}
 
-		private static object? ConvertToEnum(Type enumType, object value)
+		private static object? ConvertToEnum([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields)] Type enumType, object value)
 		{
 			var valueString = Enum.GetName(enumType, value);
 
@@ -1212,7 +1229,9 @@ namespace Uno.UI.DataBinding
 			}
 		}
 
-		private static object? ConvertUsingTypeDescriptor(Type type, object value)
+		[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Types may be removed or not present as part of the normal operations of that method")]
+		[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "Types may be removed or not present as part of the normal operations of that method")]
+		private static object? ConvertUsingTypeDescriptor([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type type, object value)
 		{
 			var valueTypeConverter = TypeDescriptor.GetConverter(value.GetType());
 			if (valueTypeConverter.CanConvertTo(type))
@@ -1275,7 +1294,9 @@ namespace Uno.UI.DataBinding
 			return value;
 		}
 
-		internal static object? Convert(Type? propertyType, object? value)
+		internal static object? Convert(
+			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type? propertyType,
+			object? value)
 		{
 			if (value != null)
 			{

@@ -28,6 +28,11 @@ For Android, there is one permission you must configure before using this API in
 - The `Cancel` method is not supported.
 - The parameter of the `Vibrate(TimeSpan)` method is not taken into account - iOS supports only a default vibration duration.
 
+#### WinUI
+
+- The `Windows.Phone.Devices.Notification` namespace is no longer supported in WinUI.
+- Developers should use the [Windows.Devices.Haptics](xref:Uno.Features.WDHaptics) namespace for vibration functionality.
+
 #### UWP
 
 - The `VibrationDevice` class is only available in the UWP-head if the `Windows.Mobile.Extensions for the UWP` is added to the project.

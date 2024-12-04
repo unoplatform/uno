@@ -244,6 +244,20 @@ By Default when using the Uno.Sdk you get the added benefit of default includes 
 
 As discussed above setting `EnableDefaultUnoItems` to false will disable these includes.
 
+> [!TIP]
+> When you need to exclude specific files from a particular target framework (such as WebAssembly), you can use a custom MSBuild target:
+>
+> ```xml
+> <Target Name="AdjustAppItemGroups" BeforeTargets="ResolveAssemblyReferences">
+>     <ItemGroup Condition="'$(TargetFramework)' == 'net9.0-browserwasm'">
+>         <None Remove="Page.xaml"/>
+>         <Page Remove="Page.xaml"/>
+>     </ItemGroup>
+> </Target>
+> ```
+>
+> This approach allows you to selectively remove pages from specific target frameworks while maintaining them in others.
+
 ## Apple Privacy Manifest Support
 
 Starting May 1st, 2024, Apple requires the inclusion of a new file, the [Privacy Manifest file](https://developer.apple.com/documentation/bundleresources/privacy_manifest_files) (named `PrivacyInfo.xcprivacy`), in app bundles. This file is crucial for complying with updated privacy regulations.

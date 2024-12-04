@@ -17,6 +17,9 @@
 		<WasmShellIncludeWindowsCompatibility>false</WasmShellIncludeWindowsCompatibility>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		
+		<!-- Required for net9 workloads -->
+		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+		
 		<!-- To build with AOT, uncomment these two lines -->
 		<!--<WasmShellEnableEmccProfiling>true</WasmShellEnableEmccProfiling>
 		<WasmShellMonoRuntimeExecutionMode>InterpreterAndAOT</WasmShellMonoRuntimeExecutionMode>-->
@@ -94,8 +97,7 @@
 		<PackageReference Include="Uno.BenchmarkDotNet.Annotations" Version="0.11.7-develop" />
 		<PackageReference Include="Uno.Wasm.WebSockets" />
 		<PackageReference Include="Uno.Wasm.Bootstrap" />
-		<PackageReference Include="Uno.Wasm.Bootstrap.DevServer" />
-		<PackageReference Include="Microsoft.Windows.Compatibility" Version="9.0.0-rc.2.24474.4" />
+		<PackageReference Include="Microsoft.Windows.Compatibility" Version="9.0.0" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.0-dev.7" />
 		<PackageReference Include="Uno.Fonts.Fluent" />
 		<PackageReference Include="Uno.Core.Extensions.Logging" Version="4.0.1" />

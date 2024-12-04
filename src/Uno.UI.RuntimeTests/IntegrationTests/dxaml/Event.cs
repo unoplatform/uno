@@ -74,15 +74,5 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		{
 			return WaitForDefault((int)timeout.TotalMilliseconds, ct);
 		}
-
-		internal Task WaitFor(TimeSpan timeout, bool enforceUnderDebugger, CancellationToken ct = default)
-		{
-			if (!enforceUnderDebugger && Debugger.IsAttached)
-			{
-				return Task.CompletedTask;
-			}
-
-			return WaitForDefault((int)timeout.TotalMilliseconds, ct);
-		}
 	}
 }

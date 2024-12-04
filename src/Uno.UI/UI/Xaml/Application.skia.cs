@@ -11,6 +11,7 @@ using Windows.ApplicationModel.Core;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.Dispatching;
 using Uno.UI.Xaml.Core;
+using Windows.Globalization;
 
 namespace Microsoft.UI.Xaml
 {
@@ -58,18 +59,29 @@ namespace Microsoft.UI.Xaml
 			if (CultureInfo.CurrentUICulture.IetfLanguageTag == "" &&
 				CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "iv")
 			{
-				try
+				if (!ApplicationLanguages.InvariantCulture)
 				{
-					// Fallback to English
-					var cultureInfo = CultureInfo.CreateSpecificCulture("en");
-					CultureInfo.CurrentUICulture = cultureInfo;
-					CultureInfo.CurrentCulture = cultureInfo;
-					Thread.CurrentThread.CurrentCulture = cultureInfo;
-					Thread.CurrentThread.CurrentUICulture = cultureInfo;
+
+					try
+					{
+						// Fallback to English
+						var cultureInfo = CultureInfo.CreateSpecificCulture("en");
+						CultureInfo.CurrentUICulture = cultureInfo;
+						CultureInfo.CurrentCulture = cultureInfo;
+						Thread.CurrentThread.CurrentCulture = cultureInfo;
+						Thread.CurrentThread.CurrentUICulture = cultureInfo;
+					}
+					catch (Exception ex)
+					{
+						this.Log().Error($"Failed to set default culture", ex);
+					}
 				}
-				catch (Exception ex)
+				else
 				{
-					this.Log().Error($"Failed to set default culture", ex);
+					if (typeof(ApplicationLanguages).Log().IsEnabled(LogLevel.Debug))
+					{
+						typeof(ApplicationLanguages).Log().Debug("InvariantCulture mode is enabled");
+					}
 				}
 			}
 		}

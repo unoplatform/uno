@@ -984,24 +984,7 @@ namespace Uno.UI {
 			delete this.allActiveElementsById[elementId];
 		}
 
-		public getBBoxNative(pParams: number, pReturn: number): boolean {
-
-			const params = WindowManagerGetBBoxParams.unmarshal(pParams);
-
-			const bbox = this.getBBoxInternal(params.HtmlId);
-
-			const ret = new WindowManagerGetBBoxReturn();
-			ret.X = bbox.x;
-			ret.Y = bbox.y;
-			ret.Width = bbox.width;
-			ret.Height = bbox.height;
-
-			ret.marshal(pReturn);
-
-			return true;
-		}
-
-		private getBBoxInternal(elementId: number): any {
+		public getBBox(elementId: number): any {
 
 			const element = this.getView(elementId) as SVGGraphicsElement;
 			let unconnectedRoot: HTMLElement | SVGGraphicsElement = null;
@@ -1028,12 +1011,17 @@ namespace Uno.UI {
 					this.containerElement.appendChild(unconnectedRoot);
 				}
 
-				return element.getBBox();
+				let bbox = element.getBBox();
+
+				return [
+					bbox.x,
+					bbox.y,
+					bbox.width,
+					bbox.height];
 			}
 			finally {
 				cleanupUnconnectedRoot(this.containerElement);
 			}
-
 		}
 
 		public setSvgElementRect(pParams: number): boolean {

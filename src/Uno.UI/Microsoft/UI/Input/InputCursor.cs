@@ -11,8 +11,7 @@ public partial class InputCursor
 internal partial class InputCursor
 #endif
 {
-
-	private List<WeakEventHelper.GenericEventHandler> _disposedHandlers = new List<WeakEventHelper.GenericEventHandler>();
+	private WeakEventHelper.WeakEventCollection _disposedHandlers = new();
 
 	internal bool IsDisposed { get; private set; }
 
@@ -27,11 +26,9 @@ internal partial class InputCursor
 		if (!IsDisposed)
 		{
 			IsDisposed = true;
-			var handlers = new List<WeakEventHelper.GenericEventHandler>(_disposedHandlers);
-			foreach (var action in handlers)
-			{
-				action(this, null);
-			}
+
+			_disposedHandlers.Invoke(this, null);
+			_disposedHandlers.Dispose();
 		}
 	}
 

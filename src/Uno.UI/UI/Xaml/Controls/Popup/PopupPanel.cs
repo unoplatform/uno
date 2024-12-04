@@ -231,9 +231,6 @@ internal partial class PopupPanel : Panel
 	private protected override void OnLoaded()
 	{
 		base.OnLoaded();
-		// Set Parent to the Popup, to obtain the same behavior as UWP that the Popup (and therefore the rest of the main visual tree)
-		// is reachable by scaling the combined Parent/GetVisualParent() hierarchy.
-		this.SetLogicalParent(Popup);
 
 		this.XamlRoot.Changed += XamlRootChanged;
 	}
@@ -241,7 +238,6 @@ internal partial class PopupPanel : Panel
 	private protected override void OnUnloaded()
 	{
 		base.OnUnloaded();
-		this.SetLogicalParent(null);
 
 		if (XamlRoot is { } xamlRoot)
 		{

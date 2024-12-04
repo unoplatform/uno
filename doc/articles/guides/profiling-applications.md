@@ -14,6 +14,7 @@ Run the following commands
 
 - `dotnet tool update -g dotnet-dsrouter`
 - `dotnet tool update -g dotnet-trace`
+- `dotnet tool update -g dotnet-gcdump`
 
 ## Profiling .NET iOS applications
 
@@ -164,7 +165,11 @@ The `suspend` directive means that the application will wait for `dotnet-trace` 
 
 - Open a browser at `https://speedscope.app` and drop the `*.speedscope.json` file in it
 
-See complete [documentation](https://github.com/xamarin/xamarin-android/blob/main/Documentation/guides/tracing.md) for more details.
+### Getting GC memory dumps
+
+To take a GC memory dump of a running android app, follow the same steps above, but instead of `dotnet-trace collect -p <port>`, use `dotnet-gcdump collect -p <port>`. It will create a `.gcdump` file that can be viewed in Visual Studio and Perfview on Windows and [heapview](https://github.com/1hub/dotnet-heapview) on non-Windows platforms.
+
+See complete [documentation](https://github.com/dotnet/android/blob/main/Documentation/guides/tracing.md) for more details.
 
 ### Analyzing the trace data
 

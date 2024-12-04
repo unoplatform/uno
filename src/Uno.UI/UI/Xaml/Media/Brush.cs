@@ -1,11 +1,13 @@
 ﻿#nullable enable
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using Microsoft.UI.Composition;
 using Uno.Disposables;
 using Uno.UI.Helpers;
 using Uno.UI.Xaml;
+using Windows.UI.Core;
 
 #if HAS_UNO_WINUI
 using Windows.UI;
@@ -16,13 +18,15 @@ namespace Microsoft.UI.Xaml.Media
 	[TypeConverter(typeof(BrushConverter))]
 	public partial class Brush : DependencyObject
 	{
-		private readonly WeakEventManager _weakEventManager = new();
+		private WeakEventHelper.WeakEventCollection? _invalidateRenderHandlers;
 
-		internal event Action? InvalidateRender
-		{
-			add => _weakEventManager.AddEventHandler(value);
-			remove => _weakEventManager.RemoveEventHandler(value);
-		}
+		internal IDisposable RegisterInvalidateRender(Action handler)
+			=> WeakEventHelper.RegisterEvent(
+				_invalidateRenderHandlers ??= new(),
+				handler,
+				(h, s, e) =>
+					(h as Action)?.Invoke()
+			);
 
 		protected Brush()
 		{
@@ -46,30 +50,30 @@ namespace Microsoft.UI.Xaml.Media
 
 		public static implicit operator Brush(string colorCode) => SolidColorBrushHelper.Parse(colorCode);
 
-		internal static void SetupBrushChanged(Brush? oldValue, Brush? newValue, ref Action? onInvalidateRender, Action newOnInvalidateRender, bool initialInvoke = true)
+		internal static IDisposable? SetupBrushChanged(Brush? newValue, ref Action? onInvalidateRender, Action newOnInvalidateRender, bool initialInvoke = true)
 		{
-			if (oldValue is not null && onInvalidateRender is not null)
-			{
-				oldValue.InvalidateRender -= onInvalidateRender;
-			}
 			if (initialInvoke)
 			{
 				newOnInvalidateRender();
 			}
+
 			if (newValue is not null)
 			{
 				onInvalidateRender = newOnInvalidateRender;
-				newValue.InvalidateRender += onInvalidateRender;
+				return newValue.RegisterInvalidateRender(onInvalidateRender);
 			}
 			else
 			{
 				onInvalidateRender = null;
 			}
+
+			return null;
 		}
 
 		private protected void OnInvalidateRender()
 		{
-			_weakEventManager.HandleEvent(nameof(InvalidateRender));
+			_invalidateRenderHandlers?.Invoke(this, null);
+
 #if __SKIA__
 			SynchronizeCompositionBrush();
 #endif

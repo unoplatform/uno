@@ -1,3 +1,5 @@
+// On the UWP branch, only include this file in Uno.UWP (as public Window.whatever). On the WinUI branch, include it in both Uno.UWP (internal as Windows.whatever) and Uno.UI (public as Microsoft.whatever)
+#if HAS_UNO_WINUI || !IS_UNO_UI_PROJECT
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Uno;
@@ -33,3 +35,4 @@ namespace Windows.UI.Input
 		public uint CurrentContactCount => HoldingState == HoldingState.Started ? 1u : 0u;
 	}
 }
+#endif

@@ -187,7 +187,7 @@ public class ExpanderAutomationPeer : FrameworkElementAutomationPeer, IExpandCol
 		// Uno Doc: AutomationEvents not currently implemented so added an API check
 		// if (winrt::AutomationPeer::ListenerExists(winrt::AutomationEvents::PropertyChanged))
 		if (ApiInformation.IsEnumNamedValuePresent(
-			"Microsoft.UI.Xaml.Automation.Peers.AutomationEvents",
+			"Microsoft.UI.Xaml.Automation.Peers.AutomationEvents, Uno.UI",
 			nameof(AutomationEvents.PropertyChanged)) && ListenerExists(AutomationEvents.PropertyChanged))
 		{
 			ExpandCollapseState oldState = (newState == ExpandCollapseState.Expanded) ?

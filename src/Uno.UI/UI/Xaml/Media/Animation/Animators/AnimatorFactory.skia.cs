@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Uno.Extensions;
-using Uno.Foundation.Logging;
 using Windows.UI;
 
 namespace Microsoft.UI.Xaml.Media.Animation
@@ -14,6 +9,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			=> new DispatcherDoubleAnimator(startingValue, targetValue);
 
 		private static IValueAnimator CreateColor(Timeline timeline, ColorOffset startingValue, ColorOffset targetValue)
-			=> new ImmediateAnimator<ColorOffset>(targetValue);
+			=> new DispatcherColorAnimator(startingValue, targetValue);
 	}
 }

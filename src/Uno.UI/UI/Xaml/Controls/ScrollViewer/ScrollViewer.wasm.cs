@@ -11,6 +11,15 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	partial class ScrollViewer
 	{
+		/// <summary>
+		/// This is specifically added for ScrollViewers inside TextBoxes and specifically for WASM
+		/// On WASM, a click on a TextBox inside a popup shifts focus to the Popup instead of the TextBox
+		/// as a result of ScrollContentControl_SetFocusOnFlyoutLightDismissPopupByPointer.
+		/// This is only a problem on WASM because we don't capture the pointer when pressing inside a TextBox
+		/// <seealso cref="TextBox.IsPointerCaptureRequired"/>.
+		/// </summary>
+		internal bool DisableSetFocusOnPopupByPointer { get; set; }
+
 		internal bool CancelNextNativeScroll { get; private set; }
 		internal Size ScrollBarSize => (_presenter as ScrollContentPresenter)?.ScrollBarSize ?? default;
 

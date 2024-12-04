@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Animation;
 using Uno.UI.DataBinding;
@@ -39,6 +40,7 @@ public sealed partial class PageStackEntry : DependencyObject
 		InitializeBinder();
 	}
 
+	[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "The provided type has been marked before getting at that location")]
 	internal static PageStackEntry Create(
 		 Frame frame,
 		 string descriptor,

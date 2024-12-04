@@ -24,6 +24,7 @@ namespace SamplesApp.Wasm
 #endif
 
 			Microsoft.UI.Xaml.Application.Start(_ => _app = new App());
+
 		}
 	}
 }
