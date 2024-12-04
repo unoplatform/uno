@@ -94,6 +94,7 @@
 			Condition=" 
 			'$(UnoDisableVSWarnBrowserIsFirst)' != 'true'
 			AND '$(BuildingInsideVisualStudio)' == 'true'
+			AND '$(OutputType)'!='Library'
 			AND '$(_UnoTargetFrameworkCount)' != ''
 			AND $(_UnoTargetFrameworkCount) &gt; 1
 			AND $(TargetFrameworks.Contains('-browserwasm'))
@@ -108,6 +109,7 @@
 				Condition="
 				'$(UnoDisableVSWarnDesktopIsFirst)' != 'true'
 				AND '$(BuildingInsideVisualStudio)' == 'true'
+				AND '$(OutputType)'!='Library'
 				AND $([MSBuild]::VersionLessThan($(MSBuildVersion), 17.12.0))
 				AND '$(_UnoTargetFrameworkCount)' != ''
 				AND $(_UnoTargetFrameworkCount) &gt; 1
@@ -122,6 +124,7 @@
 				Condition="
 				'$(UnoDisableVSWarnDesktopIsNotFirst)' != 'true'
 				AND '$(BuildingInsideVisualStudio)' == 'true'
+				AND '$(OutputType)'!='Library'
 				AND $([MSBuild]::VersionGreaterThanOrEquals($(MSBuildVersion), 17.12.0))
 				AND '$(_UnoTargetFrameworkCount)' != ''
 				AND $(_UnoTargetFrameworkCount) &gt; 1
@@ -142,6 +145,7 @@
 				Condition="
 				'$(UnoDisableVSWarnWindowsIsFirst)' != 'true'
 				AND '$(BuildingInsideVisualStudio)' == 'true'
+				AND '$(OutputType)'!='Library'
 				AND '$(_UnoTargetFrameworkCount)' != ''
 				AND $(_UnoTargetFrameworkCount) &gt; 1
 				AND $(TargetFrameworks.Contains('-windows'))
@@ -156,6 +160,7 @@
 			Condition=" 
 			'$(UnoDisableVSWarnNetIsFirst)' != 'true'
 			AND '$(BuildingInsideVisualStudio)' == 'true'
+			AND '$(OutputType)'!='Library'
 			AND '$(_UnoTargetFrameworkCount)' != ''
 			AND $(_UnoTargetFrameworkCount) &gt; 1
 			AND $([MSBuild]::GetTargetPlatformIdentifier($(_UnoFirstOriginalTargetFramework))) == ''

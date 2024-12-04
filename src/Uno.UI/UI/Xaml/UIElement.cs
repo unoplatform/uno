@@ -35,6 +35,8 @@ using Windows.ApplicationModel.Core;
 using Microsoft.UI.Input;
 using Uno.UI.Xaml.Media;
 using Uno.UI.Xaml.Core.Scaling;
+using System.Diagnostics.CodeAnalysis;
+
 
 #if __IOS__
 using UIKit;
@@ -121,6 +123,7 @@ namespace Microsoft.UI.Xaml
 		}
 #endif
 
+		[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Types manipulated here have been marked earlier")]
 		private void SubscribeToOverridenRoutedEvents()
 		{
 			// Overridden Events are registered from constructor to ensure they are
@@ -135,7 +138,9 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		internal static RoutedEventFlag GetImplementedRoutedEventsForType(Type type)
+		internal static RoutedEventFlag GetImplementedRoutedEventsForType(
+			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
+			Type type)
 		{
 			if (UIElementGeneratedProxy.TryGetImplementedRoutedEvents(type, out var result))
 			{
@@ -164,7 +169,9 @@ namespace Microsoft.UI.Xaml
 			return implementedRoutedEvents;
 		}
 
-		internal static RoutedEventFlag EvaluateImplementedUIElementRoutedEvents(Type type)
+		internal static RoutedEventFlag EvaluateImplementedUIElementRoutedEvents(
+			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
+			Type type)
 		{
 			RoutedEventFlag result = RoutedEventFlag.None;
 
@@ -181,7 +188,11 @@ namespace Microsoft.UI.Xaml
 			InvalidateMeasure();
 		}
 
-		private protected static bool GetIsEventOverrideImplemented(Type type, string name, Type[] args)
+		private protected static bool GetIsEventOverrideImplemented(
+			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods | DynamicallyAccessedMemberTypes.NonPublicMethods)]
+			Type type,
+			string name,
+			Type[] args)
 		{
 			var method = type
 				.GetMethod(
@@ -931,6 +942,16 @@ namespace Microsoft.UI.Xaml
 #elif __WASM__
 			InvalidateArrange();
 #else
+			var rect = GetNativeClippedViewport();
+
+			ApplyNativeClip(rect);
+			OnViewportUpdated(rect);
+#endif
+		}
+
+#if !(__SKIA__ || __WASM__)
+		internal Rect GetNativeClippedViewport()
+		{
 			Rect rect;
 
 			if (Clip == null)
@@ -957,10 +978,9 @@ namespace Microsoft.UI.Xaml
 				}
 			}
 
-			ApplyNativeClip(rect);
-			OnViewportUpdated(rect);
-#endif
+			return rect;
 		}
+#endif
 
 		partial void ApplyNativeClip(Rect rect
 #if __SKIA__
@@ -996,6 +1016,8 @@ namespace Microsoft.UI.Xaml
 		/// parameters passing on iOS, where the number of parameters follows a unconventional set of rules. Using
 		/// a single parameter with a simple delimitation format fits all platforms with little overhead.
 		/// </remarks>
+		[UnconditionalSuppressMessage("Trimming", "IL2077", Justification = "Types manipulated here have been marked earlier")]
+		[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Types manipulated here have been marked earlier")]
 		internal static string SetDependencyPropertyValueInternal(DependencyObject owner, string dependencyPropertyNameAndValue)
 		{
 			var s = dependencyPropertyNameAndValue;

@@ -20,6 +20,12 @@ using Private.Infrastructure;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 
+#if HAS_UNO_WINUI
+using GestureRecognizer = Microsoft.UI.Input.GestureRecognizer;
+#else
+using GestureRecognizer = Windows.UI.Input.GestureRecognizer;
+#endif
+
 namespace Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
 
 [TestClass]
@@ -87,7 +93,7 @@ public class Given_InputManager
 					HorizontalAlignment = HorizontalAlignment.Center,
 					VerticalAlignment = VerticalAlignment.Center,
 					Width = 16,
-					Height = Windows.UI.Input.GestureRecognizer.Manipulation.StartTouch.TranslateY * 3,
+					Height = GestureRecognizer.Manipulation.StartTouch.TranslateY * 3,
 					Background = new SolidColorBrush(Colors.DeepPink),
 					ManipulationMode = ManipulationModes.TranslateY,
 					RenderTransform = (transform = new TranslateTransform())

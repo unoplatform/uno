@@ -21,6 +21,10 @@ A few considerations to take into account:
 - Moving to .NET 9 or upgrading .NET 9 projects now require the use of .NET 9 RC2 and Visual Studio 17.12 Preview 3.
 - To migrate a project to .NET 9, [read the directions](xref:Uno.Development.MigratingFromNet8ToNet9) from our documentation.
 
+### The EnableHotReload method is deprecated
+
+When upgrading to Uno 5.5, in the `App.xaml.cs` file, the `EnableHotReload()` method is deprecated and must be replaced with `UseStudio()` instead.
+
 ## Uno Platform 5.4
 
 Uno Platform 5.4 contains breaking changes for Uno.Extensions.

@@ -17,6 +17,8 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 {
 	public record struct XamlFile(string FileName, string Contents);
 
+	public record struct ResourceFile(string Locale, string FileName, string Contents);
+
 	public class TestSetup
 	{
 		public TestSetup(string xamlFileName, string subFolder)
@@ -66,6 +68,11 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 			{
 			}
 
+			public Test(XamlFile[] xamlFiles, ResourceFile[] resourceFiles, [CallerFilePath] string testFilePath = "", [CallerMemberName] string testMethodName = "")
+				: base(xamlFiles, resourceFiles, testFilePath, ShortName(testMethodName))
+			{
+			}
+
 			private static string ShortName(string name)
 				=> new string(name.Where(char.IsUpper).ToArray()); // We use only upper-cased char to reduce length of filename push to git
 		}
@@ -77,6 +84,7 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 			private const string TestOutputFolderName = "Out";
 
 			private readonly XamlFile[] _xamlFiles;
+			private readonly ResourceFile[] _resourceFiles;
 
 			public bool EnableFuzzyMatching { get; set; } = true;
 			public bool DisableBuildReferences { get; set; }
@@ -88,8 +96,14 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 			}
 
 			protected TestBase(XamlFile[] xamlFiles, string testFilePath, string testMethodName)
+				: this(xamlFiles, [], testFilePath, testMethodName)
+			{
+			}
+
+			protected TestBase(XamlFile[] xamlFiles, ResourceFile[] resourceFiles, string testFilePath, string testMethodName)
 			{
 				_xamlFiles = xamlFiles;
+				_resourceFiles = resourceFiles;
 				_testFilePath = testFilePath;
 				_testMethodName = testMethodName;
 
@@ -170,6 +184,14 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 build_metadata.AdditionalFiles.SourceItemGroup = Page
 ");
 					TestState.AdditionalFiles.Add(($"C:/Project/0/{xamlFile.FileName}", xamlFile.Contents));
+				}
+
+				foreach (var resourceFile in _resourceFiles)
+				{
+					globalConfigBuilder.Append($@"[C:/Project/0/Strings/{resourceFile.Locale}/{resourceFile.FileName}]
+build_metadata.AdditionalFiles.SourceItemGroup = PRIResource
+");
+					TestState.AdditionalFiles.Add(($"C:/Project/0/Strings/{resourceFile.Locale}/{resourceFile.FileName}", resourceFile.Contents));
 				}
 
 				TestState.AnalyzerConfigFiles.Add(("/.globalconfig", globalConfigBuilder.ToString()));

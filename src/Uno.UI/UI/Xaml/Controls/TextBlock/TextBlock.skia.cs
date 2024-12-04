@@ -26,7 +26,9 @@ namespace Microsoft.UI.Xaml.Controls
 		private readonly TextVisual _textVisual;
 		private Action? _selectionHighlightColorChanged;
 		private MenuFlyout? _contextMenu;
+		private IDisposable? _selectionHighlightBrushChangedSubscription;
 		private readonly Dictionary<ContextMenuItem, MenuFlyoutItem> _flyoutItems = new();
+		private readonly VirtualKeyModifiers _platformCtrlKey = OperatingSystem.IsMacOS() ? VirtualKeyModifiers.Windows : VirtualKeyModifiers.Control;
 
 		public TextBlock()
 		{
@@ -204,11 +206,11 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			switch (args.Key)
 			{
-				case VirtualKey.C when args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Control):
+				case VirtualKey.C when args.KeyboardModifiers.HasFlag(_platformCtrlKey):
 					CopySelectionToClipboard();
 					args.Handled = true;
 					break;
-				case VirtualKey.A when args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Control):
+				case VirtualKey.A when args.KeyboardModifiers.HasFlag(_platformCtrlKey):
 					SelectAll();
 					args.Handled = true;
 					break;
@@ -356,7 +358,9 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			oldBrush ??= DefaultBrushes.SelectionHighlightColor;
 			newBrush ??= DefaultBrushes.SelectionHighlightColor;
-			Brush.SetupBrushChanged(oldBrush, newBrush, ref _selectionHighlightColorChanged, () => OnSelectionHighlightColorChangedPartial(newBrush));
+
+			_selectionHighlightBrushChangedSubscription?.Dispose();
+			_selectionHighlightBrushChangedSubscription = Brush.SetupBrushChanged(newBrush, ref _selectionHighlightColorChanged, () => OnSelectionHighlightColorChangedPartial(newBrush));
 		}
 
 		partial void OnSelectionHighlightColorChangedPartial(SolidColorBrush brush);

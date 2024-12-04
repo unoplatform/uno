@@ -37,7 +37,6 @@ As part of creating the application, we selected MVVM as the presentation framew
 The final code for the `MainViewModel` class should look like this:
 
 ```csharp
-namespace Counter;
 
 internal partial class MainViewModel : ObservableObject
 {

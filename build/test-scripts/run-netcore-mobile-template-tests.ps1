@@ -338,20 +338,43 @@ $projects =
     @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-desktop"), @("macOS", "NetCore")),
     @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-desktop", $sdkFeatures), @("macOS", "NetCore")),
 
+    # 5.3 Library
+    @(3, "5.3/uno53net9Lib/uno53net9Lib.csproj", @(), @("macOS", "NetCore")),
+
     # Default mode for the template is WindowsAppSDKSelfContained=true, which requires specifying a target platform.
     @(4, "5.2/uno52AppWithLib/uno52AppWithLib/uno52AppWithLib.csproj", @("-p:Platform=x86" , "-p:TargetFramework=net8.0-windows10.0.19041"), @()),
 
     # Publishing validation
-    @(4, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-desktop", "-p:PackageFormat=app"), @("OnlyMacOS", "NetCore", "Publish"))
+    @(4, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-desktop", "-p:PackageFormat=app"), @("OnlyMacOS", "NetCore", "Publish")),
+
+    # Ensure that build can happen even if a RID is specified
+    @(4, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-android", "-r", "android-arm64"), @("macOS", "NetCore"))
+
+    # Ensure that build can happen even if a RID is specified
+    @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net9.0"), @("macOS", "NetCore")),
+    @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net9.0-browserwasm"), @("macOS", "NetCore")),
+    @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net9.0-ios"), @("macOS", "NetCore")),
+    @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net9.0-android"), @("macOS", "NetCore")),
+    @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net9.0-maccatalyst"), @("macOS", "NetCore")),
+    @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net9.0-desktop"), @("macOS", "NetCore")),
 
     ## Note for contributors
     ##
     ## When adding new template versions, create them in a separate version named folder
     ## using all the specific features that can be impacted by the use of the Uno.SDK
+
+    # Empty marker to allow new tests lines to end with a comma
+    @()
 );
 
 for($i = 0; $i -lt $projects.Length; $i++)
 {
+    # Skip the end marker to help for new tests authoring
+    if ($projects[$i].Length -eq 0)
+    {
+        continue
+    }
+
     $projectTestGroup=$projects[$i][0];
     $projectPath=$projects[$i][1];
     $projectOptions=$projects[$i][2];

@@ -60,6 +60,8 @@ Pausing and resuming UI Update is done by calling
 
 Note that pausing UI Updates doesn't stop the Hot Reload process. It only prevents the UI Update from running until UI Updates are resumed.
 
+<!---
 ## Waiting for Hot Reload to be applied
 
 // TODO: Give an example of how to await UI Updates (eg https://github.com/unoplatform/uno/blob/0340cc1394994cdbd525d61de611a0531c38bcc7/src/Uno.UI.RuntimeTests/Tests/HotReload/Frame/HRApp/Tests/Given_Frame.cs#L9-L37)
+-->

@@ -10,8 +10,8 @@ public static class AddInsExtensions
 {
 	public static IWebHostBuilder ConfigureAddIns(this IWebHostBuilder builder, string solutionFile)
 	{
-		AssemblyHelper.Load(AddIns.Discover(solutionFile), throwIfLoadFailed: true);
+		AssemblyHelper.Load(AddIns.Discover(solutionFile), throwIfLoadFailed: false);
 
-		return builder.ConfigureServices(svc => svc.AddFromAttribute());
+		return builder.ConfigureServices(svc => svc.AddFromAttributes());
 	}
 }

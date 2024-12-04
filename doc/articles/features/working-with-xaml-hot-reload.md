@@ -293,7 +293,7 @@ Mobile targets are currently using a limited version of XAML Hot Reload and do n
 
 ## Hot Reload Indicator
 
-Hot Reload displays a visual indicator to help you further monitor changes while developing. It displays new information every time Hot Reload is triggered. The indicator is enabled by default within the `EnableHotReload()` method which is located in the root `App.xaml.cs` file. This displays an overlay which hosts the visual indicator. If you wish to disable it, you simply have to provide the following boolean: `EnableHotReload(disableIndicator: true)`, removing the overlay from the view.
+Hot Reload displays a visual indicator to help you further monitor changes while developing. It displays new information every time Hot Reload is triggered. The indicator is enabled by default within the `UseStudio()` method which is located in the root `App.xaml.cs` file. This displays an overlay which hosts the visual indicator. If you wish to disable it, you simply have to provide the following boolean: `EnableHotReload(disableIndicator: true)`, removing the overlay from the view.
 
 <p align="center">
   <img src="../Assets/features/hotreload/indicator.png" alt="A hot reload visual indicator" />
@@ -370,7 +370,7 @@ Here's a summary of what icons and statuses you can expect:
     //... in the OnLaunched method
 
     #if DEBUG
-            MainWindow.EnableHotReload();
+            MainWindow.UseStudio();
     #endif
     ```
 

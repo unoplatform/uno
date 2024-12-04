@@ -419,5 +419,77 @@ public class Given_WebView2
 
 		Assert.AreEqual(@"{""some"":[""values"",""in"",""json"",1]}", message);
 	}
+
+	[TestMethod]
+	[Ignore("WebResourceResponseReceived is not yet implemented")]
+	public async Task When_Navigate_Error()
+	{
+		var border = new Border();
+		var webView = new WebView2();
+		webView.Width = 200;
+		webView.Height = 200;
+		border.Child = webView;
+		TestServices.WindowHelper.WindowContent = border;
+		await TestServices.WindowHelper.WaitForLoaded(border);
+		var uri = new Uri("https://httpbin.org/status/444");
+		await webView.EnsureCoreWebView2Async();
+		bool navigationStarting = false;
+		int statusCode = -1;
+		CoreWebView2WebErrorStatus navigationStatus = CoreWebView2WebErrorStatus.Unknown;
+		// TODO: WebResourceResponseReceived is not implemented
+		webView.CoreWebView2.WebResourceResponseReceived += (s, e) =>
+			statusCode = e.Response.StatusCode;
+		webView.NavigationStarting += (s, e) => navigationStarting = true;
+		webView.NavigationCompleted += (s, e) =>
+			navigationStatus = e.WebErrorStatus;
+		webView.CoreWebView2.Navigate(uri.ToString());
+		Assert.IsNull(webView.Source);
+		await TestServices.WindowHelper.WaitFor(() => navigationStarting, 3000);
+		await TestServices.WindowHelper.WaitFor(() => navigationStatus != CoreWebView2WebErrorStatus.Unknown, 3000);
+		Assert.IsNotNull(webView.Source);
+		Assert.IsTrue(webView.Source.OriginalString.StartsWith("https://httpbin.org/status/444", StringComparison.OrdinalIgnoreCase));
+	}
+
+#if !WINAPPSDK && !__ANDROID__
+	[TestMethod]
+	[DataRow(true)]
+	[DataRow(false)]
+	public async Task When_Navigate_Unsupported_Scheme(bool handled)
+	{
+		var border = new Border();
+		var webView = new WebView2();
+		webView.Width = 200;
+		webView.Height = 200;
+		border.Child = webView;
+		TestServices.WindowHelper.WindowContent = border;
+		await TestServices.WindowHelper.WaitForLoaded(border);
+		var uri = new Uri("notsupported://httpbin.org/");
+		await webView.EnsureCoreWebView2Async();
+		bool navigationStarting = false;
+		bool navigationDone = false;
+		string scheme = null;
+		webView.NavigationStarting += (s, e) => navigationStarting = true;
+		webView.NavigationCompleted += (s, e) => navigationDone = true;
+		webView.CoreWebView2.UnsupportedUriSchemeIdentified += (s, e) =>
+		{
+			scheme = e.Uri.Scheme;
+			e.Handled = handled;
+		};
+		webView.CoreWebView2.Navigate(uri.ToString());
+		Assert.IsNull(webView.Source);
+		await TestServices.WindowHelper.WaitFor(() => scheme == "notsupported", 3000);
+		if (handled)
+		{
+			Assert.IsFalse(navigationStarting);
+			Assert.IsFalse(navigationDone);
+		}
+		else
+		{
+			await TestServices.WindowHelper.WaitFor(() => navigationStarting, 3000);
+			await TestServices.WindowHelper.WaitFor(() => navigationDone, 3000);
+		}
+	}
+#endif // !WINAPPSDK && !__ANDROID__
 }
+
 #endif

@@ -128,4 +128,24 @@ public class BindingTests
 
 		Assert.AreEqual(Microsoft.UI.Colors.Red, ((SolidColorBrush)myBtn.Foreground).Color);
 	}
+
+	[TestMethod]
+	public async Task When_XBind_To_Const_Page()
+	{
+		var SUT = new XBindConstPage();
+		await UITestHelper.Load(SUT);
+
+		Assert.AreEqual(200, SUT.XBoundBorder.ActualWidth);
+		Assert.AreEqual(200, SUT.XBoundBorder.ActualHeight);
+	}
+
+	[TestMethod]
+	public async Task When_XBind_To_Const_Control_Template()
+	{
+		var SUT = new XBindConstControl();
+		await UITestHelper.Load(SUT);
+
+		Assert.AreEqual(200, SUT.XBoundBorder.ActualWidth);
+		Assert.AreEqual(200, SUT.XBoundBorder.ActualHeight);
+	}
 }

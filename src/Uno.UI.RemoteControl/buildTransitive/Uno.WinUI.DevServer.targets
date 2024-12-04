@@ -33,6 +33,12 @@
 
 	<Target Name="UnoDumpRemoteControlAddIns">
 		<Message Text="&lt;RemoteControlAddIns&gt;@(UnoRemoteControlAddIns)&lt;/RemoteControlAddIns&gt;" Importance="High" />
+		<WriteLinesToFile
+			Condition="$(UnoDumpRemoteControlAddInsTargetFile) != ''"
+			File="$(UnoDumpRemoteControlAddInsTargetFile)"
+			Lines="@(UnoRemoteControlAddIns)"
+			Overwrite="false"
+			Encoding="Unicode"/>
 	</Target>
 
 	<!-- .NET 7 and earlier compatibility for .NET8 msbuild CLI `getProperty` equivalent -->

@@ -54,7 +54,6 @@ As part of creating the application, we selected MVUX as the presentation framew
 The final code for the `MainModel` class should look like this:
 
 ```csharp
-namespace Counter;
 
 internal partial record Countable(int Count, int Step)
 {

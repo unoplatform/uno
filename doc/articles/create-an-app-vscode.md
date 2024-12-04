@@ -43,8 +43,16 @@ Next, open the project using Visual Studio Code:
 * Visual Studio Code might ask to restore the NuGet packages. Allow it to restore them if asked.
 * Once the solution has been loaded, in the status bar at the bottom left of VS Code, `MyApp.sln` is selected by default. Select `MyApp.csproj` to load the project instead.
 
-> [!IMPORTANT]
-> A notification window will appear for the free registration of the extension. If the notification disappears before you can enter the license, you can find it again in the "Notification Bell" icon at the bottom right of the VS Code window.
+* > [!IMPORTANT]
+  > A notification should appear prompting you to sign in or register with Uno Platform.
+  >
+  > Signing in with your Uno Platform account in Visual Studio Code unlocks powerful tools like Hot Reload, helping you speed up development.
+  >
+  > With a single registration, you also gain early access to new features and the opportunity to connect with the Uno Platform community, where you can share feedback and network.
+  >
+  > Detailed information on registration and sign-in is available <a href="https://aka.platform.uno/account-access" target="_blank">here</a>.
+  >
+  > ![Uno Platform Sign in / Register notification](Assets/uno-settings-vsc-notification.png)
 
 ## Debug the App
 

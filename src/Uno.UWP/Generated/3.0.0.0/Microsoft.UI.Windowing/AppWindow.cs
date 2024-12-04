@@ -41,7 +41,7 @@ namespace Microsoft.UI.Windowing
 		// Skipping already declared property TitleBar
 		// Skipping already declared property ClientSize
 		// Skipping already declared property DispatcherQueue
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public void Show(bool activateWindow)
 		{
@@ -98,7 +98,7 @@ namespace Microsoft.UI.Windowing
 #endif
 		// Skipping already declared method Microsoft.UI.Windowing.AppWindow.SetPresenter(Microsoft.UI.Windowing.AppWindowPresenter)
 		// Skipping already declared method Microsoft.UI.Windowing.AppWindow.SetPresenter(Microsoft.UI.Windowing.AppWindowPresenterKind)
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public void Show()
 		{

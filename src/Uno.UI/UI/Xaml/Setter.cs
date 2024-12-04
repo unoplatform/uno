@@ -13,6 +13,7 @@ using Uno.UI.Xaml;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Microsoft.UI.Xaml.Data;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Microsoft.UI.Xaml
 {
@@ -133,6 +134,7 @@ namespace Microsoft.UI.Xaml
 			Value = value;
 		}
 
+		[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Types manipulated here have been marked earlier")]
 		internal override void ApplyTo(DependencyObject o)
 		{
 			if (Property != null)
@@ -173,6 +175,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Types manipulated here have been marked earlier")]
 		internal override bool TryGetSetterValue(out object? value, DependencyObject _)
 		{
 			if (ThemeResourceKey.HasValue)

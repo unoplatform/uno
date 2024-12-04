@@ -62,7 +62,7 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 		VisibleBounds = new Rect(default, newWindowSize);
 	}
 
-	public override void Activate()
+	internal protected override void Activate()
 	{
 		var x11Window = _host.RootX11Window;
 		using var lockDiposable = X11Helper.XLock(x11Window.Display);
@@ -85,9 +85,8 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 		// _ = XLib.XFlush(x11Window.Display);
 	}
 
-	public override void Close()
+	protected override void CloseCore()
 	{
-		base.Close();
 		var x11Window = _host.RootX11Window;
 		if (this.Log().IsEnabled(LogLevel.Information))
 		{

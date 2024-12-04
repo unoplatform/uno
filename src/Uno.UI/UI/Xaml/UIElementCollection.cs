@@ -57,7 +57,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public void Add(UIElement item)
 		{
+#if !__CROSSRUNTIME__ // SetParent is already called in AddCore and calling it here messes up the check inside AddCore for a preexisting parent. VerifyNavigationViewItemToolTipPaneDisplayMode (in DEBUG) fails otherwise because Enter is called multiple times on the same element
 			item.SetParent(_owner);
+#endif
 
 			AddCore(item);
 			OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item));

@@ -1,20 +1,7 @@
 ﻿#nullable enable
 
-using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Collections.Specialized;
-using System.Globalization;
-using System.Linq;
-using System.Threading;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
-using Uno.Extensions;
 using Microsoft.UI.Composition;
-using Uno.Disposables;
-using System.IO.Compression;
-using SkiaSharp;
 using System.Numerics;
 
 namespace Microsoft.UI.Xaml.Shapes
@@ -23,6 +10,8 @@ namespace Microsoft.UI.Xaml.Shapes
 	{
 		private readonly CompositionSpriteShape _shape;
 		private readonly CompositionPathGeometry _geometry;
+
+		private protected CompositionSpriteShape SpriteShape => _shape;
 
 		public Shape()
 		{
@@ -35,13 +24,15 @@ namespace Microsoft.UI.Xaml.Shapes
 			_shape.Comment = "#path";
 #endif
 
-			visual.Shapes.Add(_shape);
+			((ShapeVisual)visual).Shapes.Add(_shape);
 		}
 
 		private Rect GetPathBoundingBox(SkiaGeometrySource2D path)
-			=> path.Geometry.TightBounds.ToRect();
+			=> path.TightBounds.ToRect();
 
-		private protected void Render(Microsoft.UI.Composition.SkiaGeometrySource2D? path, double? scaleX = null, double? scaleY = null, double? renderOriginX = null, double? renderOriginY = null)
+		private protected override ContainerVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateShapeVisual();
+
+		private protected virtual void Render(Microsoft.UI.Composition.SkiaGeometrySource2D? path, double? scaleX = null, double? scaleY = null, double? renderOriginX = null, double? renderOriginY = null)
 		{
 			if (path is null)
 			{
