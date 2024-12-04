@@ -27,6 +27,8 @@ class FileCreationRequestHandler(SimpleHTTPRequestHandler):
             self.send_response(200)
             self.end_headers()
             self.wfile.write(b"File created successfully.")
+            print(f"Wrote file {filename}")
+
         except Exception as e:
             self.send_error(400, str(e))
             self.end_headers()

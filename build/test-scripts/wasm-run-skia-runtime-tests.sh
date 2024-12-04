@@ -46,7 +46,18 @@ xvfb-run --server-num 98 google-chrome --enable-logging=stderr --no-sandbox "${R
 
 # wait five minutes for the canary file to be created, otherwise fail the script.
 # This may happen if xvfb-run of chrome fails to start
-timeout 300s bash -c 'while ! test -f "$RESULTS_CANARY_FILE"; do sleep 10; done'
+for i in {1..30}; do
+    if test -f "$RESULTS_CANARY_FILE"; then
+        break
+    fi
+    sleep 10
+done
+
+# if the canary file does not exist show a message and exit
+if ! test -f "$RESULTS_CANARY_FILE"; then
+    echo "Canary file not found. The app may not have started? Exiting."
+    exit 1
+fi
 
 while ! test -f "$BUILD_SOURCESDIRECTORY/build/skia-browserwasm-runtime-tests-results.xml"; do
     sleep 10

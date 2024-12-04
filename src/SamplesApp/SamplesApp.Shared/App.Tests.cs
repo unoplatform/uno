@@ -65,7 +65,7 @@ partial class App
 			Environment.SetEnvironmentVariable("UITEST_RUNTIME_TEST_GROUP_COUNT", runtimeTestGroupCount);
 		}
 
-		Console.WriteLine($"Automated runtime tests output file: {runtimeTestResultFilePath}");
+		Console.WriteLine($"Automated runtime tests output file: {runtimeTestResultFilePath} (UITEST_RUNTIME_TEST_GROUP: {Environment.GetEnvironmentVariable("UITEST_RUNTIME_TEST_GROUP")}, UITEST_RUNTIME_TEST_GROUP_COUNT: {Environment.GetEnvironmentVariable("UITEST_RUNTIME_TEST_GROUP_COUNT")})");
 
 		if (!string.IsNullOrEmpty(runtimeTestResultFilePath))
 		{
@@ -206,12 +206,12 @@ partial class App
 				throw new ArgumentException("Group index is out of range.");
 			}
 
-			Console.WriteLine($"Screenshots path: {screenshotsPath}");
-			Console.WriteLine($"Total groups: {totalGroups}");
-			Console.WriteLine($"Current group index: {currentGroupIndex}");
-
 			if (!string.IsNullOrEmpty(screenshotsPath))
 			{
+				Console.WriteLine($"Screenshots path: {screenshotsPath}");
+				Console.WriteLine($"Total groups: {totalGroups}");
+				Console.WriteLine($"Current group index: {currentGroupIndex}");
+
 				if (MainWindow is null)
 				{
 					throw new InvalidOperationException("Main window must be initialized before running screenshot tests");
