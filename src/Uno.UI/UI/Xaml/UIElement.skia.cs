@@ -36,6 +36,7 @@ namespace Microsoft.UI.Xaml
 		private protected ContainerVisual _visual;
 		private Rect _lastFinalRect;
 		private Rect? _lastClippedFrame;
+		private Vector3 _lastTranslation;
 
 		public UIElement()
 		{
@@ -278,8 +279,10 @@ namespace Microsoft.UI.Xaml
 
 			var oldFinalRect = _lastFinalRect;
 			var oldClippedFrame = _lastClippedFrame;
+			var oldTranslation = _lastTranslation;
 			_lastFinalRect = finalRect;
 			_lastClippedFrame = clippedFrame;
+			_lastTranslation = _translation;
 
 			var oldRect = oldFinalRect;
 			var newRect = finalRect;
@@ -287,7 +290,10 @@ namespace Microsoft.UI.Xaml
 			var oldClip = oldClippedFrame;
 			var newClip = clippedFrame;
 
-			if (oldRect != newRect || oldClip != newClip || (_renderTransform?.FlowDirectionTransform ?? Matrix3x2.Identity) != GetFlowDirectionTransform())
+			if (oldRect != newRect ||
+				oldClip != newClip ||
+				oldTranslation != _translation ||
+				(_renderTransform?.FlowDirectionTransform ?? Matrix3x2.Identity) != GetFlowDirectionTransform())
 			{
 				if (
 					newRect.Width < 0
