@@ -113,4 +113,14 @@
 	<PropertyGroup Condition="'$(UNO_UWP_BUILD)'=='true'">
 		<PageExclusions>$(MSBuildThisFileDirectory)Tests\Windows_UI_Xaml\Controls\Multiwindow\**\*.xaml</PageExclusions>
 	</PropertyGroup>
+	<ItemGroup>
+	  <Page Update="Tests\Windows_UI_Xaml\Controls\BlankPage1.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
+	</ItemGroup>
+	<ItemGroup>
+	  <Page Update="Tests\Windows_UI_Xaml\Controls\Style_Override.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
+	</ItemGroup>
 </Project>
