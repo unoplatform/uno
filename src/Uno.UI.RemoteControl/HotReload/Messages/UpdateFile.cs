@@ -43,6 +43,18 @@ public class UpdateFile : IMessage
 	[JsonProperty]
 	public bool IsForceHotReloadDisabled { get; set; }
 
+	/// <summary>
+	/// The delay to wait before forcing (**OR RETRYING**) a hot reload in Visual Studio.
+	/// </summary>
+	[JsonProperty]
+	public TimeSpan? ForceHotReloadDelay { get; set; }
+
+	/// <summary>
+	/// Number of times to retry the hot reload in Visual Studio **if not changes are detected**.
+	/// </summary>
+	[JsonProperty]
+	public int? ForceHotReloadAttempts { get; set; }
+
 	[JsonIgnore]
 	public string Scope => WellKnownScopes.HotReload;
 
