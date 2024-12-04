@@ -28,7 +28,10 @@ python -m http.server 8000 -d "$SAMPLESAPPARTIFACTPATH" &
 python $BUILD_SOURCESDIRECTORY/build/test-scripts/skia-browserwasm-file-creation-server.py 8001 &
 sleep 10
 
-rawurlencode "$BUILD_SOURCESDIRECTORY/build/skia-browserwasm-runtime-tests-results.xml"
+RESULTS_FILE="$BUILD_SOURCESDIRECTORY/build/skia-browserwasm-runtime-tests-results.xml"
+RESULTS_CANARY_FILE="$RESULTS_FILE.canary"
+
+rawurlencode "$RESULTS_FILE"
 
 RUNTIME_TESTS_URL="http://localhost:8000/?--runtime-tests=${ENCODED_RESULT}&--runtime-tests-group=${UITEST_RUNTIME_TEST_GROUP}&--runtime-tests-group-count=${UITEST_RUNTIME_TEST_GROUP_COUNT}"
 
@@ -40,6 +43,10 @@ sleep 5
 killall -9 chrome || true
 killall -9 xvfb-run || true
 xvfb-run --server-num 98 google-chrome --enable-logging=stderr --no-sandbox "${RUNTIME_TESTS_URL}" &
+
+# wait five minutes for the canary file to be created, otherwise fail the script.
+# This may happen if xvfb-run of chrome fails to start
+timeout 300s bash -c 'while ! test -f "$RESULTS_CANARY_FILE"; do sleep 10; done'
 
 while ! test -f "$BUILD_SOURCESDIRECTORY/build/skia-browserwasm-runtime-tests-results.xml"; do
     sleep 10

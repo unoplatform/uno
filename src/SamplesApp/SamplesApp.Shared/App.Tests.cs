@@ -57,12 +57,12 @@ partial class App
 
 		if (argsPairs.TryGetValue("--runtime-tests-group", out var runtimeTestGroup))
 		{
-			Environment.SetEnvironmentVariable("--runtime-tests-group", runtimeTestGroup);
+			Environment.SetEnvironmentVariable("UITEST_RUNTIME_TEST_GROUP", runtimeTestGroup);
 		}
 
 		if (argsPairs.TryGetValue("--runtime-tests-group-count", out var runtimeTestGroupCount))
 		{
-			Environment.SetEnvironmentVariable("--runtime-tests-group-count", runtimeTestGroupCount);
+			Environment.SetEnvironmentVariable("UITEST_RUNTIME_TEST_GROUP_COUNT", runtimeTestGroupCount);
 		}
 
 		Console.WriteLine($"Automated runtime tests output file: {runtimeTestResultFilePath}");
