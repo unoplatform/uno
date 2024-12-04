@@ -449,6 +449,7 @@ namespace SampleControl.Presentation
 			}
 		}
 
+#if HAS_UNO
 		public bool SimulateTouch
 		{
 			get => WinRTFeatureConfiguration.DebugOptions.SimulateTouch;
@@ -459,7 +460,6 @@ namespace SampleControl.Presentation
 			}
 		}
 
-#if HAS_UNO
 		public bool PreventLightDismissOnWindowDeactivated
 		{
 			get => FeatureConfiguration.Popup.PreventLightDismissOnWindowDeactivated;
