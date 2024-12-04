@@ -17,7 +17,7 @@ public class AddIns
 	public static IImmutableList<string> Discover(string solutionFile)
 	{
 		var tmp = Path.GetTempFileName();
-		var command = $"build \"{solutionFile}\" --target:UnoDumpTargetFrameworks \"-p:UnoDumpTargetFrameworksTargetFile={tmp}\" --verbosity quiet";
+		var command = $"build \"{solutionFile}\" -t:UnoDumpTargetFrameworks \"-p:UnoDumpTargetFrameworksTargetFile={tmp}\" --verbosity quiet";
 		var result = ProcessHelper.RunProcess("dotnet", command);
 		var targetFrameworks = Read(tmp);
 
@@ -50,7 +50,7 @@ public class AddIns
 		foreach (var targetFramework in targetFrameworks)
 		{
 			tmp = Path.GetTempFileName();
-			command = $"build \"{solutionFile}\" --target:UnoDumpRemoteControlAddIns \"-p:UnoDumpRemoteControlAddInsTargetFile={tmp}\" --verbosity quiet --framework \"{targetFramework}\" -nowarn:MSB4057";
+			command = $"build \"{solutionFile}\" -t:UnoDumpRemoteControlAddIns \"-p:UnoDumpRemoteControlAddInsTargetFile={tmp}\" --verbosity quiet --framework \"{targetFramework}\" -nowarn:MSB4057";
 			result = ProcessHelper.RunProcess("dotnet", command);
 			if (!string.IsNullOrWhiteSpace(result.error))
 			{
