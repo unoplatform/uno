@@ -231,18 +231,22 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				XamlRootMap.Unregister(XamlRoot!);
 				return new LRESULT(0);
 			case PInvoke.WM_DPICHANGED:
-				RasterizationScale = (float)(Win32Helper.LOWORD(wParam)) / PInvoke.USER_DEFAULT_SCREEN_DPI;
 				RECT rect = Unsafe.ReadUnaligned<RECT>(lParam.Value.ToPointer());
 				this.Log().Log(LogLevel.Trace, wParam, rect, static (wParam, rect) => $"WndProc received a {nameof(PInvoke.WM_DPICHANGED)} message with LOWORD(wParam) == {Win32Helper.LOWORD(wParam)} and lParam = RECT {rect.ToRect()}");
+				// the order of the next lines matters or else the canvas might not be resized correctly
+				RasterizationScale = (float)(Win32Helper.LOWORD(wParam)) / PInvoke.USER_DEFAULT_SCREEN_DPI;
+				UpdateDisplayInfo();
 				_ = PInvoke.SetWindowPos(_hwnd, HWND.Null, rect.X, rect.Y, rect.Width, rect.Height, SET_WINDOW_POS_FLAGS.SWP_NOZORDER)
 					|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}");
 				return new LRESULT(0);
 			case PInvoke.WM_SIZE:
 				this.Log().Log(LogLevel.Trace, static () => $"WndProc received a {nameof(PInvoke.WM_SIZE)} message.");
+				UpdateDisplayInfo();
 				OnWindowSizeOrLocationChanged();
 				return new LRESULT(0);
 			case PInvoke.WM_MOVE:
 				this.Log().Log(LogLevel.Trace, static () => $"WndProc received a {nameof(PInvoke.WM_MOVE)} message.");
+				UpdateDisplayInfo();
 				OnWindowSizeOrLocationChanged();
 				return new LRESULT(0);
 			case PInvoke.WM_GETMINMAXINFO:

@@ -92,6 +92,7 @@ DispatchMessage
 DwmSetWindowAttribute
 EnableMouseInPointer
 EndPaint
+EnumDisplaySettingsEx
 FormatMessage
 GetCapture
 GetClientRect
@@ -99,6 +100,7 @@ GetDC
 GetDpiForWindow
 GetKeyState
 GetMessageTime
+GetMonitorInfo
 GetPointerInfo
 GetPointerPenInfo
 GetPointerTouchInfo
@@ -111,6 +113,7 @@ glGetString
 InvalidateRect
 LoadCursor
 LocalFree
+MonitorFromWindow
 PeekMessage
 RegGetValue
 RegisterClassEx

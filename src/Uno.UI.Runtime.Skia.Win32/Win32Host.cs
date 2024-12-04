@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.Graphics.Display;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.Win32.Foundation;
+using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Uno.Foundation.Extensibility;
 using Uno.Helpers.Theming;
@@ -30,6 +32,17 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 			host => host as Win32WindowWrapper ?? throw new ArgumentException($"{nameof(host)} must be a {nameof(Win32WindowWrapper)} instance"));
 		ApiExtensibility.Register<ApplicationView>(typeof(IApplicationViewExtension), o => new Win32ApplicationViewExtension(o));
 		ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), _ => Win32SystemThemeHelperExtension.Instance);
+
+		ApiExtensibility.Register<DisplayInformation>(typeof(IDisplayInformationExtension), displayInformation =>
+		{
+			var appWindow = AppWindow.GetFromWindowId(displayInformation.WindowId);
+			var window = Window.GetFromAppWindow(appWindow);
+			var rootElement = window.RootElement ?? throw new NullReferenceException($"The window's {nameof(window.RootElement)} is not initialized.");
+			var xamlRoot = rootElement.XamlRoot ?? throw new NullReferenceException($"The window's {nameof(window.RootElement)} doesn't have a {nameof(XamlRoot)}.");
+			var wrapper = Win32WindowWrapper.XamlRootMap.GetHostForRoot(xamlRoot) ?? throw new NullReferenceException($"The {nameof(XamlRoot)} is not associated with a {nameof(Win32WindowWrapper)} instance.");
+			wrapper.SetDisplayInformation(displayInformation);
+			return wrapper;
+		});
 	}
 
 	public Win32Host(Func<Application> appBuilder)

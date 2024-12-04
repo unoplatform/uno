@@ -84,22 +84,7 @@ internal partial class Win32WindowWrapper : IUnoCorePointerInputSource
 
 	private void OnPointerCaptureChanged(WPARAM wParam)
 	{
-		var pointerId = Win32Helper.GET_POINTERID_WPARAM(wParam);
-
-		if (!PInvoke.GetPointerType(pointerId, out var pointerType))
-		{
-			throw new InvalidOperationException($"{nameof(PInvoke.GetPointerType)} failed: {Win32Helper.GetErrorMessage()}");
-		}
-
-		if (!PInvoke.GetPointerInfo(pointerId, out var pointerInfo))
-		{
-			throw new InvalidOperationException($"{nameof(PInvoke.GetPointerInfo)} failed: {Win32Helper.GetErrorMessage()}");
-		}
-
-		var position = pointerInfo.ptPixelLocation;
-		var rawPosition = pointerInfo.ptPixelLocationRaw;
-		_ = PInvoke.ScreenToClient(_hwnd, ref position) || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.ScreenToClient)} failed: {Win32Helper.GetErrorMessage()}");
-		_ = PInvoke.ScreenToClient(_hwnd, ref rawPosition) || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.ScreenToClient)} failed: {Win32Helper.GetErrorMessage()}");
+		var pointerId = ReadWParams(wParam, out _, out var pointerType, out var position, out var rawPosition);
 
 		var point = new PointerPoint(
 			frameId: Interlocked.Increment(ref _currentPointerFrameId),
@@ -118,19 +103,34 @@ internal partial class Win32WindowWrapper : IUnoCorePointerInputSource
 		PointerCaptureLost?.Invoke(this, new PointerEventArgs(point, Win32Helper.GetKeyModifiers()));
 	}
 
-	private void OnPointer(uint msg, WPARAM wParam)
+	private ushort ReadWParams(WPARAM wParam, out POINTER_INFO pointerInfo, out POINTER_INPUT_TYPE pointerType, out System.Drawing.Point position, out System.Drawing.Point rawPosition)
 	{
 		var pointerId = Win32Helper.GET_POINTERID_WPARAM(wParam);
 
-		if (!PInvoke.GetPointerType(pointerId, out var pointerType))
+		if (!PInvoke.GetPointerType(pointerId, out pointerType))
 		{
 			throw new InvalidOperationException($"{nameof(PInvoke.GetPointerType)} failed: {Win32Helper.GetErrorMessage()}");
 		}
 
-		if (!PInvoke.GetPointerInfo(pointerId, out var pointerInfo))
+		if (!PInvoke.GetPointerInfo(pointerId, out pointerInfo))
 		{
 			throw new InvalidOperationException($"{nameof(PInvoke.GetPointerInfo)} failed: {Win32Helper.GetErrorMessage()}");
 		}
+
+		position = pointerInfo.ptPixelLocation;
+		rawPosition = pointerInfo.ptPixelLocationRaw;
+		_ = PInvoke.ScreenToClient(_hwnd, ref position) || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.ScreenToClient)} failed: {Win32Helper.GetErrorMessage()}");
+		_ = PInvoke.ScreenToClient(_hwnd, ref rawPosition) || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.ScreenToClient)} failed: {Win32Helper.GetErrorMessage()}");
+
+		var scale = XamlRoot!.RasterizationScale;
+		position = new System.Drawing.Point((int)(position.X / scale), (int)(position.Y / scale));
+		rawPosition = new System.Drawing.Point((int)(rawPosition.X / scale), (int)(rawPosition.Y / scale));
+		return pointerId;
+	}
+
+	private void OnPointer(uint msg, WPARAM wParam)
+	{
+		var pointerId = ReadWParams(wParam, out var pointerInfo, out var pointerType, out var position, out var rawPosition);
 
 		PointerPointProperties properties;
 		if (msg is PInvoke.WM_POINTERWHEEL or PInvoke.WM_POINTERHWHEEL)
@@ -197,11 +197,6 @@ internal partial class Win32WindowWrapper : IUnoCorePointerInputSource
 					throw new ArgumentOutOfRangeException(nameof(pointerType));
 			}
 		}
-
-		var position = pointerInfo.ptPixelLocation;
-		var rawPosition = pointerInfo.ptPixelLocationRaw;
-		_ = PInvoke.ScreenToClient(_hwnd, ref position) || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.ScreenToClient)} failed: {Win32Helper.GetErrorMessage()}");
-		_ = PInvoke.ScreenToClient(_hwnd, ref rawPosition) || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.ScreenToClient)} failed: {Win32Helper.GetErrorMessage()}");
 
 		var point = new PointerPoint(
 			frameId: Interlocked.Increment(ref _currentPointerFrameId),

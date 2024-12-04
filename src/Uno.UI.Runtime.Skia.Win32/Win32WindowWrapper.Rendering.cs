@@ -152,9 +152,13 @@ internal partial class Win32WindowWrapper
 		}
 
 		var canvas = _surface!.Canvas;
+
+		var count = canvas.Save();
+		using var restoreDisposable = new DisposableStruct<SKCanvas, int>(static (canvas, count) => canvas.RestoreToCount(count), canvas, count);
+
 		canvas.Clear(_background);
 		var scale = XamlRoot!.RasterizationScale;
-		canvas.Scale((int)scale);
+		canvas.Scale((float)scale);
 		if (XamlRoot.VisualTree.RootElement.Visual is { } rootVisual)
 		{
 			var isSoftwareRenderer = rootVisual.Compositor.IsSoftwareRenderer;
