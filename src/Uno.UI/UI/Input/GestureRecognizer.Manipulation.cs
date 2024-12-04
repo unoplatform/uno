@@ -80,6 +80,7 @@ namespace Windows.UI.Input
 			public bool IsTranslateYEnabled => _isTranslateYEnabled;
 			public bool IsRotateEnabled => _isRotateEnabled;
 			public bool IsScaleEnabled => _isScaleEnabled;
+			public bool IsDraggingEnabled => _isDraggingEnable;
 
 			internal static void AddPointer(GestureRecognizer recognizer, PointerPoint pointer)
 			{

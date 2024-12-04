@@ -201,12 +201,19 @@ namespace Windows.UI.Input
 				_manipulation?.DisableDragging();
 			}
 
+			var ret = GestureSettings.None;
 			if (_gestures.TryGetValue(pointerId.Id, out var gesture))
 			{
 				gesture.PreventGestures(events);
+				ret |= gesture.Settings;
 			}
 
-			return _gestureSettings;
+			if (_manipulation is not null && _manipulation.IsActive(pointerId) && _manipulation.IsDraggingEnabled)
+			{
+				ret |= GestureSettings.Drag;
+			}
+
+			return ret;
 		}
 
 		#region Manipulations
