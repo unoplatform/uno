@@ -1,6 +1,7 @@
 parameters:
   vmImage: ''
   vmMacImage: ''
+  vmMacImageTest: ''
   vmLinuxImage: ''
   vmLinuxPool: ''
   xCodeRootTest: ''
@@ -698,7 +699,7 @@ jobs:
       JobName: 'Skia_iOS_Runtime_Tests_group_${{ RuntimeTestGroup.value }}'
       JobDisplayName: 'Skia iOS Runtime Tests ${{ RuntimeTestGroup.value }}'
       JobTimeoutInMinutes: 90
-      vmImage: ${{ parameters.vmImageTest }}
+      vmImage: ${{ parameters.vmMacImageTest }}
       SamplesAppArtifactName: 'uitests-ios-skia-build'
       UITEST_SNAPSHOTS_ONLY: false
       UITEST_TEST_TIMEOUT: '90m'
@@ -706,6 +707,6 @@ jobs:
       UITEST_RUNTIME_TEST_GROUP: ${{ RuntimeTestGroup.key }}
       UITEST_RUNTIME_TEST_GROUP_COUNT: ${{ parameters.UITEST_RUNTIME_TEST_GROUP_COUNT }}
       UITEST_ALLOW_RERUN: 'false'
-      xCodeRoot: ${{ parameters.xCodeRootTest }}
+      xCodeRoot: ${{ parameters.vmMacImage }}
       dependsOn:
         - Skia_Tests_Build_Apple

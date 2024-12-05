@@ -178,6 +178,7 @@ stages:
       vmMacImage: '$(macOSVMImage)'
       vmLinuxImage: '$(linuxVMImage)'
       vmLinuxPool: '$(linuxScaledPool)'
+      vmMacImageTest: '$(macOSVMImage_UITests)'
       poolName: '$(windowsScaledPool)'
       xCodeRootBuild: '$(xCodeRoot)'
       xCodeRootTest: '$(xCodeRoot_iOS_UITests)'
@@ -194,6 +195,7 @@ stages:
     parameters:
       vmImage: '$(windows2022HostedVMImage)'
       vmMacImage: '$(macOSVMImage)'
+      vmMacImageTest: '$(macOSVMImage_UITests)'
       vmLinuxImage: '$(linuxVMImage)'
       vmLinuxPool: '$(linuxScaledPool)'
       poolName: '$(windowsScaledPool)'
