@@ -433,6 +433,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				// So here we prepare the _effectiveViewport (which will most probably be re-updated by the ChangeView below),
 				// and then force a base_Measure()
 
+#if HAS_UNO
+				// Scrolling to the MaxDate and switching between Decade/Year/Month views keeps increasing the _effectiveViewport.Y
+				// even though there's no more items to show after MaxDate, causing empty rows in the viewport
 				if (newOffset >= sv.ScrollableHeight)
 				{
 					_effectiveViewport.Y = currentOffset;
@@ -441,6 +444,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				{
 					_effectiveViewport.Y += newOffset - currentOffset;
 				}
+#else
+				_effectiveViewport.Y += newOffset - currentOffset;			
+#endif
 
 				sv.ChangeView(
 					horizontalOffset: null,
