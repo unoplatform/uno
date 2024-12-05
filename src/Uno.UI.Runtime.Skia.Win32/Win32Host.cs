@@ -9,6 +9,7 @@ using Windows.UI.ViewManagement;
 using Windows.Win32.Foundation;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
+using Uno.ApplicationModel.DataTransfer;
 using Uno.Foundation.Extensibility;
 using Uno.Helpers.Theming;
 using Uno.UI.Dispatching;
@@ -48,6 +49,7 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 
 		ApiExtensibility.Register<ConnectionProfile>(typeof(IConnectionProfileExtension), _ => Win32ConnectionProfileExtension.Instance);
 		ApiExtensibility.Register(typeof(IAnalyticsInfoExtension), _ => Win32AnalyticsInfoExtension.Instance);
+		ApiExtensibility.Register(typeof(IClipboardExtension), _ => Win32ClipboardExtension.Instance);
 	}
 
 	public Win32Host(Func<Application> appBuilder)
@@ -76,8 +78,11 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 			app.Host = this;
 		}), NativeDispatcherPriority.Normal);
 
-		return _exitTcs.Task;
+		_exitTcs.Task.GetAwaiter().GetResult();
+		return Task.CompletedTask;
 	}
+
+	internal static void RunOnce() => _eventLoop.RunOnce();
 
 	internal static void RegisterWindow(HWND hwnd)
 	{

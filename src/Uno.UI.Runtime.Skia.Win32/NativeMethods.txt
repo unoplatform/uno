@@ -12,6 +12,7 @@ HTRIGHT
 HTTOP
 HTTOPLEFT
 HTTOPRIGHT
+HWND_MESSAGE
 ICON_BIG
 ICON_SMALL
 IDC_ARROW
@@ -52,6 +53,7 @@ WA_CLICKACTIVE
 WA_INACTIVE
 WM_ACTIVATE
 WM_CHAR
+WM_CLIPBOARDUPDATE
 WM_CLOSE
 WM_DESTROY
 WM_DPICHANGED
@@ -73,14 +75,18 @@ WM_SETICON
 WM_SIZE
 
 // Structs
+BITMAPFILEHEADER
+CLIPBOARD_FORMAT
 MINMAXINFO
 PIXELFORMATDESCRIPTOR
 RECT
 
 // Functions
+AddClipboardFormatListener
 BeginPaint
 BitBlt
 ChoosePixelFormat
+CloseClipboard
 CreateCompatibleDC
 CreateDIBSection
 CreateIconFromResource
@@ -90,12 +96,15 @@ DescribePixelFormat
 DestroyWindow
 DispatchMessage
 DwmSetWindowAttribute
+EmptyClipboard
 EnableMouseInPointer
 EndPaint
+EnumClipboardFormats
 EnumDisplaySettingsEx
 FormatMessage
 GetCapture
 GetClientRect
+GetClipboardData
 GetDC
 GetDpiForWindow
 GetKeyState
@@ -110,11 +119,15 @@ GetWindowText
 glGetError
 glGetIntegerv
 glGetString
+GlobalLock
+GlobalSize
+GlobalUnlock
 InternetGetConnectedState
 InvalidateRect
 LoadCursor
 LocalFree
 MonitorFromWindow
+OpenClipboard
 PeekMessage
 RegGetValue
 RegisterClassEx
@@ -128,6 +141,7 @@ SelectObject
 SendMessage
 SetActiveWindow
 SetCapture
+SetClipboardData
 SetCursor
 SetPixelFormat
 SetThreadDpiAwarenessContext

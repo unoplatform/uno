@@ -221,6 +221,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			case PInvoke.WM_DESTROY:
 				this.Log().Log(LogLevel.Trace, nameof(PInvoke.WM_DESTROY), static messageName => $"WndProc received a {messageName} message.");
 				_applicationView.PropertyChanged -= OnApplicationViewPropertyChanged;
+				Win32SystemThemeHelperExtension.Instance.SystemThemeChanged -= OnSystemThemeChanged;
 				Win32Host.UnregisterWindow(_hwnd);
 				_renderer.Reset();
 				if (_gl is { })
@@ -428,7 +429,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			var bmi = (BITMAPINFOHEADER*)presBits;
 			bmi->biSize = (uint)Marshal.SizeOf<BITMAPINFOHEADER>();
 			bmi->biWidth = image.Width;
-			bmi->biHeight = image.Height * 2; // the multiplication by 2 is unexplainable, it seems to draw only have the image without the multiplication
+			bmi->biHeight = image.Height * 2; // the multiplication by 2 is unexplainable, it seems to draw only half the image without the multiplication
 			bmi->biPlanes = 1;
 			bmi->biBitCount = 32;
 			bmi->biCompression = /* BI_RGB */ 0x0000;

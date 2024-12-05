@@ -15,7 +15,7 @@ namespace SkiaSharpExample
 		static SamplesApp.App? _app;
 
 		[STAThread]
-		public static async Task Main(string[] args)
+		public static void Main(string[] args)
 		{
 			// Ensures that we're loading the Skia assemblies properly
 			// as we're manipulating the output based on _UnoOverrideReferenceCopyLocalPaths
@@ -23,10 +23,10 @@ namespace SkiaSharpExample
 			// output folder.
 			AssemblyLoadContext.Default.Resolving += Default_Resolving;
 
-			await Run();
+			Run();
 		}
 
-		private static async Task Run()
+		private static void Run()
 		{
 			SamplesApp.App.ConfigureLogging(); // Enable tracing of the host
 
@@ -54,6 +54,7 @@ namespace SkiaSharpExample
 				})
 				.UseX11()
 				.UseWin32()
+				.UseWindows()
 				.UseLinuxFrameBuffer()
 				.UseWindows(b => b
 					.WpfApplication(() =>
@@ -64,7 +65,7 @@ namespace SkiaSharpExample
 				.UseMacOS()
 				.Build();
 
-			await host.RunAsync();
+			host.Run();
 		}
 
 		private static System.Reflection.Assembly? Default_Resolving(AssemblyLoadContext alc, System.Reflection.AssemblyName assemblyName)

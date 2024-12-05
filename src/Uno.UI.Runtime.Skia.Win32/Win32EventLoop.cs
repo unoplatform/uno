@@ -11,6 +11,7 @@ using System.Threading;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.UI.WindowsAndMessaging;
+using Uno.Collections;
 using Uno.UI.Dispatching;
 
 namespace Uno.UI.Runtime.Skia.Win32
@@ -35,7 +36,7 @@ namespace Uno.UI.Runtime.Skia.Win32
 
 		// It's important to also include HWND.Null here because some messages will only show up with HWND.Null.
 		// Specifically, system messages like Alt-Shift (to change the keyboard layout) will only show up with HWND.Null.
-		private readonly List<HWND> _hwnds = [HWND.Null];
+		private readonly MaterializableList<HWND> _hwnds = [HWND.Null];
 
 		/// <summary>
 		/// Flag indicating whether the event loop should quit. When set, the event should be signaled as well to
@@ -104,67 +105,72 @@ namespace Uno.UI.Runtime.Skia.Win32
 			}
 		}
 
+		internal void RunOnce()
+		{
+			SpinWait.SpinUntil(() =>
+			{
+				bool aHwndHasAMessage;
+				lock (_gate)
+				{
+					aHwndHasAMessage = !_hwnds.TrueForAll(static hwnd =>
+						!PInvoke.PeekMessage(out _, hwnd, 0, 0, PEEK_MESSAGE_REMOVE_TYPE.PM_NOREMOVE));
+				}
+
+				// ReSharper disable once AccessToDisposedClosure
+				return _evt.CurrentCount > 0 || aHwndHasAMessage;
+			});
+
+			Action[]? ready = null;
+
+			lock (_gate)
+			{
+				while (_evt.CurrentCount > 0)
+				{
+					_evt.Wait();
+				}
+
+				if (_disposed)
+				{
+					_evt.Dispose();
+					return;
+				}
+
+				var foundAMessage = true;
+				while (foundAMessage)
+				{
+					foundAMessage = false;
+					foreach (var hwnd in _hwnds)
+					{
+						if (PInvoke.PeekMessage(out var msg, hwnd, 0, 0, PEEK_MESSAGE_REMOVE_TYPE.PM_REMOVE) != 0)
+						{
+							foundAMessage = true;
+							PInvoke.TranslateMessage(msg);
+							PInvoke.DispatchMessage(msg);
+						}
+					}
+				}
+
+				if (_readyList.Count > 0)
+				{
+					ready = _readyList.ToArray();
+					_readyList.Clear();
+				}
+			}
+
+			if (ready != null)
+			{
+				foreach (var item in ready)
+				{
+					item.Invoke();
+				}
+			}
+		}
+
 		private void Run()
 		{
 			while (true)
 			{
-				SpinWait.SpinUntil(() =>
-				{
-					bool aHwndHasAMessage;
-					lock (_gate)
-					{
-						aHwndHasAMessage = !_hwnds.TrueForAll(static hwnd =>
-							!PInvoke.PeekMessage(out _, hwnd, 0, 0, PEEK_MESSAGE_REMOVE_TYPE.PM_NOREMOVE));
-					}
-
-					// ReSharper disable once AccessToDisposedClosure
-					return _evt.CurrentCount > 0 || aHwndHasAMessage;
-				});
-
-				Action[]? ready = null;
-
-				lock (_gate)
-				{
-					while (_evt.CurrentCount > 0)
-					{
-						_evt.Wait();
-					}
-
-					if (_disposed)
-					{
-						_evt.Dispose();
-						return;
-					}
-
-					var foundAMessage = true;
-					while (foundAMessage)
-					{
-						foundAMessage = false;
-						foreach (var hwnd in _hwnds)
-						{
-							if (PInvoke.PeekMessage(out var msg, hwnd, 0, 0, PEEK_MESSAGE_REMOVE_TYPE.PM_REMOVE) != 0)
-							{
-								foundAMessage = true;
-								PInvoke.TranslateMessage(msg);
-								PInvoke.DispatchMessage(msg);
-							}
-						}
-					}
-
-					if (_readyList.Count > 0)
-					{
-						ready = _readyList.ToArray();
-						_readyList.Clear();
-					}
-				}
-
-				if (ready != null)
-				{
-					foreach (var item in ready)
-					{
-						item.Invoke();
-					}
-				}
+				RunOnce();
 			}
 		}
 	}
