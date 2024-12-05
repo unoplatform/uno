@@ -5,7 +5,7 @@
 		<!-- We keep it on the oldest supported TFM -->
 		<!-- Though we could use UnoTargetFrameworkOverride to choose between NetPrevious and NetCurrent -->
 		<!-- As of writing this comment, we don't see a need to do that, so we keep it simple -->
-		<TargetFramework>$(NetPrevious)</TargetFramework>
+		<TargetFramework>net9.0</TargetFramework>
 		<IsPackable>false</IsPackable>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
@@ -41,9 +41,9 @@
 	<ItemGroup>
 		<PackageReference Include="MSTest" />
 		<PackageReference Include="coverlet.collector" Version="6.0.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis" Version="4.10.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.Features" Version="4.10.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.10.0" />
+		<PackageReference Include="Microsoft.CodeAnalysis" Version="4.12.0-3.final" />
+		<PackageReference Include="Microsoft.CodeAnalysis.Features" Version="4.12.0-3.final" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.12.0-3.final" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing.MSTest" Version="1.1.2" Condition="'$(UNO_UWP_BUILD)'=='false'" />
 		<PackageReference Include="FluentAssertions" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Condition="'$(UNO_UWP_BUILD)'=='false'" />
