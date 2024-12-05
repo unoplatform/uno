@@ -46,6 +46,7 @@ public static partial class WinRTFeatureConfiguration
 	}
 #endif
 
+#if DEBUG
 	internal static class DebugOptions
 	{
 		/// <summary>
@@ -53,4 +54,5 @@ public static partial class WinRTFeatureConfiguration
 		/// </summary>
 		public static bool SimulateTouch { get; set; }
 	}
+#endif
 }
