@@ -7,6 +7,7 @@ parameters:
   UITEST_SNAPSHOTS_ONLY: ''
   UITEST_SNAPSHOTS_GROUP: ''
   UITEST_ALLOW_RERUN: ''
+  UITEST_VARIANT: ''
   nugetPackages: ''
   SamplesAppArtifactName: ''
 
@@ -119,6 +120,7 @@ jobs:
       UITEST_RUNTIME_TEST_GROUP: "${{ parameters.UITEST_RUNTIME_TEST_GROUP }}"
       UITEST_RUNTIME_TEST_GROUP_COUNT: "${{ parameters.UITEST_RUNTIME_TEST_GROUP_COUNT }}"
       UITEST_TEST_TIMEOUT: "${{ parameters.UITEST_TEST_TIMEOUT }}"
+      UITEST_VARIANT: "${{ parameters.UITEST_VARIANT }}"
       UNO_UITEST_IOSBUNDLE_PATH: "$(build.sourcesdirectory)/build/ios-uitest-build/SamplesApp.app"
 
   - task: PublishTestResults@2

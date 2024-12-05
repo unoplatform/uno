@@ -707,6 +707,7 @@ jobs:
       UITEST_RUNTIME_TEST_GROUP: ${{ RuntimeTestGroup.key }}
       UITEST_RUNTIME_TEST_GROUP_COUNT: ${{ parameters.UITEST_RUNTIME_TEST_GROUP_COUNT }}
       UITEST_ALLOW_RERUN: 'false'
+      UITEST_VARIANT: 'skia'
       xCodeRoot: ${{ parameters.xCodeRootTest }}
       dependsOn:
         - Skia_Tests_Build_Apple

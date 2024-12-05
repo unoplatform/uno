@@ -76,6 +76,10 @@ else
 	fi
 fi
 
+if [ -n "$UITEST_VARIANT" ]; then
+	export SCREENSHOTS_FOLDERNAME="$SCREENSHOTS_FOLDERNAME-$UITEST_VARIANT"
+fi
+
 export LOG_FILEPATH=$BUILD_SOURCESDIRECTORY/ios-ui-tests-logs/$SCREENSHOTS_FOLDERNAME/_logs
 export LOG_PREFIX=`date +"%Y%m%d%H%M%S"`
 
