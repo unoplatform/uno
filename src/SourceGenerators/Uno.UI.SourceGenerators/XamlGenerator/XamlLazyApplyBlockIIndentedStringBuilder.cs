@@ -89,7 +89,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					else if (_exposeContext)
 					{
 						blockDisposable.Dispose();
-						_onRegisterApplyMethodBody("/* registration */" + _inner.ToString());
+						_onRegisterApplyMethodBody(_inner.ToString());
 					}
 
 					_source.AppendLineIndented("))");

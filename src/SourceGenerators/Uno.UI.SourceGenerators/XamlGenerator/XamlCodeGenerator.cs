@@ -28,6 +28,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			//	Debugger.Launch();
 			//}
 
+			//Debugger.Launch();
+
 			if (PlatformHelper.IsValidPlatform(context))
 			{
 				var gen = new XamlCodeGeneration(context);
@@ -36,6 +38,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				foreach (var tree in generatedTrees)
 				{
 					context.AddSource(tree.Key, tree.Value);
+					File.WriteAllText(Path.Combine("C:\\Src\\_Gen", tree.Key + ".cs"), tree.Value.ToString());
 				}
 
 				DumpXamlSourceGeneratorState(context, generatedTrees);

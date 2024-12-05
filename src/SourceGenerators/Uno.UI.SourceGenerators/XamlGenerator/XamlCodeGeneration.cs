@@ -164,7 +164,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			_isDebug = string.Equals(_configuration, "Debug", StringComparison.OrdinalIgnoreCase);
 
+			//Debugger.Launch();
 			_projectFullPath = context.GetMSBuildPropertyValue("MSBuildProjectFullPath");
+			if (Path.GetDirectoryName(_projectFullPath) is null)
+			{
+				Debugger.Launch();
+			}
 			_projectDirectory = Path.GetDirectoryName(_projectFullPath)
 				?? throw new InvalidOperationException($"MSBuild property MSBuildProjectFullPath value {_projectFullPath} is not valid");
 

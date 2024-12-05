@@ -16,6 +16,8 @@ public class AddIns
 
 	public static IImmutableList<string> Discover(string solutionFile)
 	{
+		Debugger.Launch();
+
 		var tmp = Path.GetTempFileName();
 		var wd = Path.GetDirectoryName(solutionFile);
 		var command = $"build \"{solutionFile}\" -t:UnoDumpTargetFrameworks \"-p:UnoDumpTargetFrameworksTargetFile={tmp}\" --verbosity quiet";

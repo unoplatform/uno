@@ -914,6 +914,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								{
 									writer.AppendLineIndented("global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();");
 									writer.AppendLineIndented($"global::System.Object {CurrentResourceOwner};");
+									writer.AppendLineIndented($"{kvp.Value.ReturnType} __rootInstance = null;");
 
 #if USE_NEW_TP_CODEGEN
 									using (writer.BlockInvariant($"public {kvp.Value.ReturnType} Build(object {CurrentResourceOwner}, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)"))
@@ -924,6 +925,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 										writer.AppendLineIndented($"{kvp.Value.ReturnType} __rootInstance = null;");
 										writer.AppendLineIndented($"var __that = this;");
 										writer.AppendLineIndented($"this.{CurrentResourceOwner} = {CurrentResourceOwner};");
+										writer.AppendLineIndented($"this.__rootInstance = __rootInstance;");
 										writer.AppendLineIndented("__rootInstance = ");
 
 										// Is never considered in Global Resources because class encapsulation
@@ -1044,7 +1046,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (hasResourceExtensions)
 			{
-				using (writer.BlockInvariant($"if (__rootInstance is FrameworkElement __fe) "))
+				using (writer.BlockInvariant($"if (__that.__rootInstance is FrameworkElement __fe) "))
 				{
 					writer.AppendLineIndented($"var owner = this;");
 
@@ -2740,7 +2742,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var currentScope = CurrentResourceOwnerName;
 			var resourceOwnerScope = ResourceOwnerScope();
 
-			writer.AppendLineIndented($"new global::Uno.UI.Xaml.WeakResourceInitializer({currentScope}, {CurrentResourceOwner} => ");
+			var bodyDisposable = writer.BlockInvariant($"new global::Uno.UI.Xaml.WeakResourceInitializer({currentScope}, {CurrentResourceOwner} => ");
+
+			writer.AppendLineInvariantIndented($"// var __that = ({CurrentScope.ClassName}){CurrentResourceOwner};");
+
+			writer.AppendLineInvariantIndented($"return ");
 
 			var indent = writer.Indent();
 
@@ -2748,6 +2754,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				resourceOwnerScope.Dispose();
 				indent.Dispose();
+				writer.AppendLineInvariantIndented(";");
+				bodyDisposable.Dispose();
 				writer.AppendLineIndented(")");
 			});
 		}
@@ -2989,6 +2997,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void BuildExtendedProperties(IIndentedStringBuilder outerwriter, XamlObjectDefinition objectDefinition, bool useGenericApply = false)
 		{
+			useGenericApply = true;
+
 			_generatorContext.CancellationToken.ThrowIfCancellationRequested();
 
 			TryAnnotateWithGeneratorSource(outerwriter);
@@ -3000,6 +3010,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var isFrameworkElement = IsType(objectDefinitionType, Generation.FrameworkElementSymbol.Value);
 			var hasIsParsing = HasIsParsing(objectDefinitionType);
 
+			//if (objectDefinitionType is null)
+			{
+				//Debugger.Launch();
+			}
+
 			if (extendedProperties.Any() || hasChildrenWithPhase || isFrameworkElement || hasIsParsing || !objectUid.IsNullOrEmpty())
 			{
 				string closureName;
@@ -3008,7 +3023,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					throw new InvalidOperationException("The type {0} could not be found".InvariantCultureFormat(objectDefinition.Type));
 				}
 
-				using (var writer = CreateApplyBlock(outerwriter, useGenericApply ? null : objectDefinitionType, out closureName))
+				using (var writer = CreateApplyBlock(outerwriter, objectDefinitionType, out closureName))
 				{
 					XamlMemberDefinition? uidMember = null;
 					XamlMemberDefinition? nameMember = null;
@@ -3612,7 +3627,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 									// Use of __rootInstance is required to get the top-level DataContext, as it may be changed
 									// in the current visual tree by the user.
-									$"(__rootInstance as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference",
+									$"(__that.__rootInstance as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference",
 									FindTargetMethodSymbol(dataTypeSymbol)
 								);
 							}
@@ -3904,6 +3919,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					delegateType = $"{_fileUniqueId}XamlApplyExtensions.XamlApplyHandler{appliedTypeIndex}";
 				}
 			}
+			else
+			{
+				Debugger.Launch();
+			}
 
 			return new XamlLazyApplyBlockIIndentedStringBuilder(
 				writer,
@@ -3912,7 +3931,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				delegateType,
 				!_isTopLevelDictionary,
 				RegisterApplyMethod,
-				appliedType?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) ?? "global::System.Object",
+				appliedType?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) ?? "global::System.Object /* oups */",
 				CurrentScope.ClassName,
 				$"ApplyMethod_{(_applyIndex++).ToString(CultureInfo.InvariantCulture)}");
 		}
@@ -4613,6 +4632,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.JoinBy(", ");
 			var markupInitializer = !properties.IsNullOrEmpty() ? $" {{ {properties} }}" : "()";
 
+			var thatCurrentResourceOwnerName = CurrentResourceOwnerName == "this"
+				? CurrentResourceOwnerName
+				: "__that." + CurrentResourceOwnerName;
+
 			// Build the parser context for ProvideValue(IXamlServiceProvider)
 			var providerDetails = new string[]
 			{
@@ -4622,7 +4645,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				$"\"{member.Member.Name}\"",
 				$"typeof({globalized.PvtpType})",
 				// the ResourceOwner for an ResDict is the RD's singleton instance, not the RD itself
-				$"({CurrentResourceOwnerName} as object as {DictionaryProviderInterfaceName})?.GetResourceDictionary() ?? (object){CurrentResourceOwnerName}",
+				$"({thatCurrentResourceOwnerName} as object as {DictionaryProviderInterfaceName})?.GetResourceDictionary() ?? (object){thatCurrentResourceOwnerName}",
 			};
 			var provider = $"{globalized.MarkupHelper}.CreateParserContext({providerDetails.JoinBy(", ")})";
 
@@ -6546,6 +6569,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			var subclassName = $"_{_fileUniqueId}_{subClassPrefix}SC{(_subclassIndex++).ToString(CultureInfo.InvariantCulture)}";
 
+			RegisterChildSubclass(subclassName, contentOwner, returnType);
+
 			var activator = $"new {namespacePrefix}{subclassName}()";
 
 #if USE_NEW_TP_CODEGEN
@@ -6830,7 +6855,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			=> _resourceOwner != 0 ? $"__ResourceOwner_{_resourceOwner.ToString(CultureInfo.InvariantCulture)}" : null;
 
 		private string CurrentResourceOwnerName
-			=> CurrentResourceOwner ?? "this";
+			=> /*CurrentResourceOwner ??*/ "this";
 
 		public bool HasImplicitViewPinning
 			=> Generation.IOSViewSymbol.Value is not null || Generation.AppKitViewSymbol.Value is not null;

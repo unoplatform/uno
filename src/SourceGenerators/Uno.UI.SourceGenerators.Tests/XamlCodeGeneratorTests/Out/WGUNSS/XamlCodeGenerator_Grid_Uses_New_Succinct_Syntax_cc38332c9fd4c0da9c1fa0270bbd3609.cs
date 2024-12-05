@@ -112,30 +112,30 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls
 				,
 				// Source 0\Grid_Uses_New_Succinct_Syntax.xaml (Line 10:6)
 			}
-			.Grid_Uses_New_Succinct_Syntax_cc38332c9fd4c0da9c1fa0270bbd3609_XamlApply((Grid_Uses_New_Succinct_Syntax_cc38332c9fd4c0da9c1fa0270bbd3609XamlApplyExtensions.XamlApplyHandler0)(c0 => 
+			.Grid_Uses_New_Succinct_Syntax_cc38332c9fd4c0da9c1fa0270bbd3609_XamlApply((Grid_Uses_New_Succinct_Syntax_cc38332c9fd4c0da9c1fa0270bbd3609XamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 			{
-				__nameScope.RegisterName("grid", c0);
-				__that.grid = c0;
-				// FieldModifier public
-				global::Uno.UI.FrameworkElementHelper.SetBaseUri(c0, __baseUri_Grid_Uses_New_Succinct_Syntax_cc38332c9fd4c0da9c1fa0270bbd3609);
-				c0.CreationComplete();
+			__nameScope.RegisterName("grid", __p1);
+			__that.grid = __p1;
+			// FieldModifier public
+			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_Grid_Uses_New_Succinct_Syntax_cc38332c9fd4c0da9c1fa0270bbd3609);
+			__p1.CreationComplete();
 			}
 			))
 			;
 			
 			this
-			.GenericApply(((c1) => 
+			.Grid_Uses_New_Succinct_Syntax_cc38332c9fd4c0da9c1fa0270bbd3609_XamlApply((Grid_Uses_New_Succinct_Syntax_cc38332c9fd4c0da9c1fa0270bbd3609XamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 			{
-				// Source 0\Grid_Uses_New_Succinct_Syntax.xaml (Line 1:2)
-				
-				// WARNING Property c1.base does not exist on {http://schemas.microsoft.com/winfx/2006/xaml/presentation}Page, the namespace is http://www.w3.org/XML/1998/namespace. This error was considered irrelevant by the XamlFileGenerator
+			// Source 0\Grid_Uses_New_Succinct_Syntax.xaml (Line 1:2)
+			
+			// WARNING Property __p1.base does not exist on {http://schemas.microsoft.com/winfx/2006/xaml/presentation}Page, the namespace is http://www.w3.org/XML/1998/namespace. This error was considered irrelevant by the XamlFileGenerator
 			}
 			))
-			.GenericApply(((c2) => 
+			.Grid_Uses_New_Succinct_Syntax_cc38332c9fd4c0da9c1fa0270bbd3609_XamlApply((Grid_Uses_New_Succinct_Syntax_cc38332c9fd4c0da9c1fa0270bbd3609XamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 			{
-				// Class Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls.Grid_Uses_New_Succinct_Syntax
-				global::Uno.UI.FrameworkElementHelper.SetBaseUri(c2, __baseUri_Grid_Uses_New_Succinct_Syntax_cc38332c9fd4c0da9c1fa0270bbd3609);
-				c2.CreationComplete();
+			// Class Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls.Grid_Uses_New_Succinct_Syntax
+			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_Grid_Uses_New_Succinct_Syntax_cc38332c9fd4c0da9c1fa0270bbd3609);
+			__p1.CreationComplete();
 			}
 			))
 			;
@@ -164,6 +164,13 @@ namespace MyProject
 		public delegate void XamlApplyHandler0(global::Microsoft.UI.Xaml.Controls.Grid instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 		public static global::Microsoft.UI.Xaml.Controls.Grid Grid_Uses_New_Succinct_Syntax_cc38332c9fd4c0da9c1fa0270bbd3609_XamlApply(this global::Microsoft.UI.Xaml.Controls.Grid instance, XamlApplyHandler0 handler)
+		{
+			handler(instance);
+			return instance;
+		}
+		public delegate void XamlApplyHandler1(global::Microsoft.UI.Xaml.Controls.Page instance);
+		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+		public static global::Microsoft.UI.Xaml.Controls.Page Grid_Uses_New_Succinct_Syntax_cc38332c9fd4c0da9c1fa0270bbd3609_XamlApply(this global::Microsoft.UI.Xaml.Controls.Page instance, XamlApplyHandler1 handler)
 		{
 			handler(instance);
 			return instance;

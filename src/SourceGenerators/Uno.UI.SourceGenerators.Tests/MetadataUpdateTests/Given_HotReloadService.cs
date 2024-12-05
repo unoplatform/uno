@@ -1,17 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Runtime.Serialization;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.VisualStudio.TestPlatform.Utilities;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Uno.Extensions;
-using Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates;
 using Uno.UI.SourceGenerators.MetadataUpdates;
 
 namespace Uno.UI.SourceGenerators.Tests.MetadataUpdateTests;
@@ -27,7 +16,7 @@ public class Given_HotReloadService
 		{
 			var results = await ApplyScenario(projects, scenario.IsDebug, scenario.IsMono, scenario.UseXamlReaderReload, name);
 
-			for (int i = 0; i < scenario.PassResults.Length; i++)
+			for (var i = 0; i < scenario.PassResults.Length; i++)
 			{
 				var resultValidation = scenario.PassResults[i];
 
@@ -63,10 +52,12 @@ public class Given_HotReloadService
 			var scenarioName = Path.GetFileName(scenarioFolder);
 			var path = Path.Combine(scenarioFolder, "Scenario.json");
 
-			//if (!path.Contains("When_Simple_Xaml_Single_xName_Add_Twice"))
-			//{
-			//	continue;
-			//}
+#if DEBUG && false
+			if (!path.Contains("When_Simple_Xaml_Add_xBind_Function_Property_Add"))
+			{
+				continue;
+			}
+#endif
 
 			if (File.Exists(path))
 			{

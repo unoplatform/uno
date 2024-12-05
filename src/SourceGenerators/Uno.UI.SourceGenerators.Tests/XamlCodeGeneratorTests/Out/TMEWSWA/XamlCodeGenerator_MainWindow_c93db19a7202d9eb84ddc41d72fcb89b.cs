@@ -51,28 +51,28 @@ namespace TestRepro
 				IsParsing = true,
 				// Source 0\MainWindow.xaml (Line 10:3)
 			}
-			.MainWindow_c93db19a7202d9eb84ddc41d72fcb89b_XamlApply((MainWindow_c93db19a7202d9eb84ddc41d72fcb89bXamlApplyExtensions.XamlApplyHandler0)(c0 => 
+			.MainWindow_c93db19a7202d9eb84ddc41d72fcb89b_XamlApply((MainWindow_c93db19a7202d9eb84ddc41d72fcb89bXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 			{
-				/* _isTopLevelDictionary:False */
-				__that._component_0 = c0;
-				global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(c0, global::Microsoft.UI.Xaml.Controls.Page.BackgroundProperty, "ApplicationPageBackgroundThemeBrush", isThemeResourceExtension: true, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-				global::Uno.UI.FrameworkElementHelper.SetBaseUri(c0, __baseUri_MainWindow_c93db19a7202d9eb84ddc41d72fcb89b);
-				c0.CreationComplete();
+			/* _isTopLevelDictionary:False */
+			__that._component_0 = __p1;
+			global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Page.BackgroundProperty, "ApplicationPageBackgroundThemeBrush", isThemeResourceExtension: true, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
+			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainWindow_c93db19a7202d9eb84ddc41d72fcb89b);
+			__p1.CreationComplete();
 			}
 			))
 			;
 			
 			this
-			.GenericApply(((c1) => 
+			.MainWindow_c93db19a7202d9eb84ddc41d72fcb89b_XamlApply((MainWindow_c93db19a7202d9eb84ddc41d72fcb89bXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 			{
-				// Source 0\MainWindow.xaml (Line 1:2)
-				
-				// WARNING Property c1.base does not exist on {using:TestRepro}BaseWindow, the namespace is http://www.w3.org/XML/1998/namespace. This error was considered irrelevant by the XamlFileGenerator
+			// Source 0\MainWindow.xaml (Line 1:2)
+			
+			// WARNING Property __p1.base does not exist on {using:TestRepro}BaseWindow, the namespace is http://www.w3.org/XML/1998/namespace. This error was considered irrelevant by the XamlFileGenerator
 			}
 			))
-			.GenericApply(((c2) => 
+			.MainWindow_c93db19a7202d9eb84ddc41d72fcb89b_XamlApply((MainWindow_c93db19a7202d9eb84ddc41d72fcb89bXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 			{
-				// Class TestRepro.MainWindow
+			// Class TestRepro.MainWindow
 			}
 			))
 			;
@@ -90,7 +90,7 @@ namespace TestRepro
 			;
 		}
 		partial void OnInitializeCompleted();
-		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder  = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
 		private global::Microsoft.UI.Xaml.Controls.Page _component_0
 		{
 			get
@@ -154,6 +154,13 @@ namespace MyProject
 		public delegate void XamlApplyHandler0(global::Microsoft.UI.Xaml.Controls.Page instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 		public static global::Microsoft.UI.Xaml.Controls.Page MainWindow_c93db19a7202d9eb84ddc41d72fcb89b_XamlApply(this global::Microsoft.UI.Xaml.Controls.Page instance, XamlApplyHandler0 handler)
+		{
+			handler(instance);
+			return instance;
+		}
+		public delegate void XamlApplyHandler1(global::TestRepro.BaseWindow instance);
+		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+		public static global::TestRepro.BaseWindow MainWindow_c93db19a7202d9eb84ddc41d72fcb89b_XamlApply(this global::TestRepro.BaseWindow instance, XamlApplyHandler1 handler)
 		{
 			handler(instance);
 			return instance;
