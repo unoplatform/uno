@@ -452,11 +452,17 @@ namespace SampleControl.Presentation
 #if HAS_UNO
 		public bool SimulateTouch
 		{
+#if DEBUG
 			get => WinRTFeatureConfiguration.DebugOptions.SimulateTouch;
+#else
+			get => false;
+#endif
 			set
 			{
+#if DEBUG
 				WinRTFeatureConfiguration.DebugOptions.SimulateTouch = value;
 				RaisePropertyChanged();
+#endif
 			}
 		}
 
