@@ -110,6 +110,7 @@ GetWindowText
 glGetError
 glGetIntegerv
 glGetString
+InternetGetConnectedState
 InvalidateRect
 LoadCursor
 LocalFree
