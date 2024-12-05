@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Graphics.Display;
 using Windows.Networking.Connectivity;
+using Windows.System.Profile.Internal;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.Win32.Foundation;
@@ -46,6 +47,7 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 		});
 
 		ApiExtensibility.Register<ConnectionProfile>(typeof(IConnectionProfileExtension), _ => Win32ConnectionProfileExtension.Instance);
+		ApiExtensibility.Register(typeof(IAnalyticsInfoExtension), _ => Win32AnalyticsInfoExtension.Instance);
 	}
 
 	public Win32Host(Func<Application> appBuilder)
