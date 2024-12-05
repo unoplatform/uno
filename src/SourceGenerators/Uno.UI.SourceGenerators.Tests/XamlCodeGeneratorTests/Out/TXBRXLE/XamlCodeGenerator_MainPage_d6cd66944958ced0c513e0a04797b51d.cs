@@ -85,10 +85,6 @@ namespace TestRepro
 					))
 					)					.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 					{
-						else
-						{
-							_LoadElementSubject.ElementInstance = null;
-						}
 					__p1.Name = "LoadElement";
 					_LoadElementSubject.ElementInstance = __p1;
 					__p1.SetBinding(
@@ -111,6 +107,10 @@ namespace TestRepro
 							{
 								that.Bindings.UpdateResources();
 								that.Bindings.NotifyXLoad("LoadElement");
+							}
+							else
+							{
+								_LoadElementSubject.ElementInstance = null;
 							}
 						}
 					}
