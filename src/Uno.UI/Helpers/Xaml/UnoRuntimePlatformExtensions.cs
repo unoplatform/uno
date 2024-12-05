@@ -1,13 +1,22 @@
 namespace Uno.UI.Helpers;
 
-internal static class UnoRuntimePlatformExtensions
+public static class UnoRuntimePlatformExtensions
 {
-	public static bool IsSkia(UnoRuntimePlatform platform)
-	{
-		return platform == UnoRuntimePlatform.SkiaFrameBuffer
+	public static bool IsSkia(this UnoRuntimePlatform platform) => platform == UnoRuntimePlatform.SkiaFrameBuffer
 						   || platform == UnoRuntimePlatform.SkiaGtk
 						   || platform == UnoRuntimePlatform.SkiaMacOS
 						   || platform == UnoRuntimePlatform.SkiaWpfIslands
 						   || platform == UnoRuntimePlatform.SkiaX11;
-	}
+
+	public static bool IsIOS(this UnoRuntimePlatform platform) => platform == UnoRuntimePlatform.iOS;
+
+	public static bool IsMacCatalyst(this UnoRuntimePlatform platform) => platform == UnoRuntimePlatform.MacCatalyst;
+
+	public static bool IsMacOS(this UnoRuntimePlatform platform) => platform == UnoRuntimePlatform.MacOSX;
+
+	public static bool IsWebAssembly(this UnoRuntimePlatform platform) => platform == UnoRuntimePlatform.WebAssembly;
+
+	public static bool IsWindows(this UnoRuntimePlatform platform) => platform == UnoRuntimePlatform.Windows;
+
+	public static bool IsAndroid(this UnoRuntimePlatform platform) => platform == UnoRuntimePlatform.Android;
 }
