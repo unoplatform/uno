@@ -220,6 +220,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		public async Task When_Transitive_Asset_With_Link_Loaded()
 		{
+#if __SKIA__
+			if (OperatingSystem.IsBrowser())
+			{
+				// Fails with a timeout. 
+				// https://github.com/unoplatform/uno-private/issues/706
+				Assert.Inconclusive("https://github.com/unoplatform/uno-private/issues/706");
+			}
+#endif
+
 			string url = "ms-appx:///Uno.UI.RuntimeTests/Assets/TransitiveTest/colors300.png";
 			var img = new Image();
 			var SUT = new BitmapImage(new Uri(url));

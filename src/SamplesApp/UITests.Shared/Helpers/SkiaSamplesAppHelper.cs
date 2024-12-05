@@ -41,6 +41,8 @@ namespace Uno.UI.Samples.UITests.Helpers
 						port = protocol == "http:" ? 80 : 443;
 					}
 
+					Console.WriteLine($"Writing file {filePath} to {protocol}//{hostname}:{port + 1}");
+
 					var payload = new StringContent(json, Encoding.UTF8, "application/json");
 					var response = ct is { }
 						? await client.PostAsync($"{protocol}//{hostname}:{port + 1}", payload, ct.Value)

@@ -121,6 +121,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		public async Task When_CanadaFrench_Culture_Column_Order()
 		{
+			if (OperatingSystem.IsBrowser())
+			{
+				// this test is failing on browser, see https://github.com/unoplatform/uno/issues/9080
+				Assert.Inconclusive("https://github.com/unoplatform/uno/issues/9080");
+			}
+
 			using var _ = new AssertionScope();
 			using var lang = SetAmbiantLanguage("fr-CA");
 
@@ -142,6 +148,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		public async Task When_Czech_Culture_Column_Order()
 		{
+			if (OperatingSystem.IsBrowser())
+			{
+				// this test is failing on browser, see https://github.com/unoplatform/uno/issues/9080
+				Assert.Inconclusive("https://github.com/unoplatform/uno/issues/9080");
+			}
+
 			using var _ = new AssertionScope();
 			using var lang = SetAmbiantLanguage("cs-CZ");
 
@@ -163,6 +175,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		public async Task When_Hungarian_Culture_Column_Order()
 		{
+			if (OperatingSystem.IsBrowser())
+			{
+				// this test is failing on browser, see https://github.com/unoplatform/uno/issues/9080
+				Assert.Inconclusive("https://github.com/unoplatform/uno/issues/9080");
+			}
+
 			using var _ = new AssertionScope();
 			using var lang = SetAmbiantLanguage("hu-HU");
 

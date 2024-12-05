@@ -16,7 +16,7 @@ namespace UnoIslandsSamplesApp.Skia.Wpf
 #if HAS_UNO
 			Assert.IsNotNull(xamlHost.Child.XamlRoot?.VisualTree.ContentRoot.CompositionContent, "ContentIsland of the ContentRoot should have been set by now.");
 #endif
-			await SamplesApp.App.HandleRuntimeTests(string.Join(";", System.Environment.GetCommandLineArgs()));
+			await SamplesApp.App.HandleRuntimeTests(string.Join("&", System.Environment.GetCommandLineArgs()));
 		}
 	}
 }

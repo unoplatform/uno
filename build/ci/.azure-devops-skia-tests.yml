@@ -507,97 +507,68 @@ jobs:
       failTaskOnFailedTests: true
       failTaskOnMissingResultsFile: true
 
-# ##
-# ## Skia WebAssembly Browser
-# ##
+##
+## Skia WebAssembly Browser
+##
 
-# - job: Skia_Browser_Runtime_Tests_Build
-#   displayName: 'Run Skia Browser Runtime Tests'
-#   timeoutInMinutes: 90
+- job: Skia_Browser_Runtime_Tests_Build
+  displayName: 'Run Skia Browser Runtime Tests'
+  timeoutInMinutes: 60
 
-#   pool:
-#     vmImage: ${{ parameters.vmLinuxImage }}
+  pool:
+    vmImage: ${{ parameters.vmLinuxImage }}
 
-#   dependsOn: Skia_Tests_Build
+  dependsOn: Skia_Tests_Build
 
-#   variables:
-#     SamplesAppArtifactName: skia-browserwasm-samples-app-$(XAML_FLAVOR_BUILD)
-#     SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
+  strategy:
+    matrix:
+      GROUP_0:
+        UITEST_RUNTIME_TEST_GROUP: 0
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 3
 
-#     UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
-#     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
+      GROUP_1:
+        UITEST_RUNTIME_TEST_GROUP: 1
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 3
 
-#   steps:
-#   - task: DownloadBuildArtifacts@0
-#     inputs:
-#         artifactName: $(SamplesAppArtifactName)
-#         downloadPath: '$(build.sourcesdirectory)/build'
+      GROUP_2:
+        UITEST_RUNTIME_TEST_GROUP: 2
+        UITEST_RUNTIME_TEST_GROUP_COUNT: 3
 
-#   - template: templates/dotnet-install.yml
+  variables:
+    SamplesAppArtifactName: skia-browserwasm-samples-app-$(XAML_FLAVOR_BUILD)
+    SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
 
-#   - template: templates/linux-install-deps.yml
+    UNO_UWP_BUILD: ${{ parameters.UNO_UWP_BUILD }}
+    XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
-#   - bash: |
-#         set -euo pipefail
-#         set -x
-#         # We use google-chrome instead of chromium-browser because ubuntu uses snap
-#         # for the chromium package, and snapd isn't available in CI
-#         wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-#         sudo apt-get update
-#         sudo apt-get install -y ./google-chrome-stable_current_amd64.deb
-#     displayName: Install chrome
+  steps:
+  - task: DownloadBuildArtifacts@0
+    inputs:
+        artifactName: $(SamplesAppArtifactName)
+        downloadPath: '$(build.sourcesdirectory)/build'
 
-#   - bash: |
-#         set -euo pipefail
-#         set -x
+  - template: templates/dotnet-install.yml
 
-#         # https://github.com/sfinktah/bash/blob/master/rawurlencode.inc.sh
-#         rawurlencode() {
-#             local string="${1}"
-#             local strlen=${#string}
-#             local encoded=""
-#             local pos c o
+  - template: templates/linux-install-deps.yml
 
-#             for (( pos=0 ; pos<strlen ; pos++ )); do
-#                 c=${string:$pos:1}
-#                 case "$c" in
-#                   [-_.~a-zA-Z0-9] ) o="${c}" ;;
-#                   * )               printf -v o '%%%02x' "'$c"
-#                 esac
-#                 encoded+="${o}"
-#             done
-#             ENCODED_RESULT="${encoded}"
-#         }
-        
-#         # For Skia-WASM, SamplesApp is set up so that when saving files, it
-#         # sends a POST request at HOSTNAME:PORT+1 where HOSTNAME and PORT are
-#         # the hostname and port of the server that serves the SamplesApp
-#         python -m http.server 8000 -d "$(SamplesAppArtifactPath)" &
-#         python $(build.sourcesdirectory)/build/test-scripts/skia-browserwasm-file-creation-server.py 8001 &
-#         sleep 2
+  - bash: |
+        set -euo pipefail
+        set -x
+        # We use google-chrome instead of chromium-browser because ubuntu uses snap
+        # for the chromium package, and snapd isn't available in CI
+        wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+        sudo apt-get update
+        sudo apt-get install -y ./google-chrome-stable_current_amd64.deb
+    displayName: Install chrome
 
-#         rawurlencode "$(build.sourcesdirectory)/build/skia-browserwasm-runtime-tests-results.xml"
-        
-#         # we use xvfb instead of headless chrome because using --enable-logging with --headless doesn't
-#         # print the logs as expected
-#         # for some reason, you have to run the next line twice or else it doesn't work
-#         xvfb-run --server-num 99 google-chrome --enable-logging=stderr --no-sandbox "http://localhost:8000/?--runtime-tests=${ENCODED_RESULT}" &
-#         sleep 2
-#         pkill chrome || true
-#         pkill xvfb-run || true
-#         xvfb-run --server-num 98 google-chrome --enable-logging=stderr --no-sandbox "http://localhost:8000/?--runtime-tests=${ENCODED_RESULT}" &
+  - bash: build/test-scripts/wasm-run-skia-runtime-tests.sh
+    displayName: Run Skia Browser $(XAML_FLAVOR_BUILD) Runtime Tests
 
-#         while ! test -f "$(build.sourcesdirectory)/build/skia-browserwasm-runtime-tests-results.xml"; do
-#             sleep 10
-#         done
-
-#     displayName: Run Skia Browser $(XAML_FLAVOR_BUILD) Runtime Tests
-
-#   - task: PublishTestResults@2
-#     condition: always()
-#     inputs:
-#       testRunTitle: 'Skia Browser $(XAML_FLAVOR_BUILD) Runtime Tests'
-#       testResultsFormat: 'NUnit'
-#       testResultsFiles: '$(build.sourcesdirectory)/build/skia-browserwasm-runtime-tests-results.xml'
-#       failTaskOnFailedTests: true
-#       failTaskOnMissingResultsFile: true
+  - task: PublishTestResults@2
+    condition: always()
+    inputs:
+      testRunTitle: 'Skia Browser $(XAML_FLAVOR_BUILD) Runtime Tests'
+      testResultsFormat: 'NUnit'
+      testResultsFiles: '$(build.sourcesdirectory)/build/skia-browserwasm-runtime-tests-results.xml'
+      failTaskOnFailedTests: true
+      failTaskOnMissingResultsFile: true
