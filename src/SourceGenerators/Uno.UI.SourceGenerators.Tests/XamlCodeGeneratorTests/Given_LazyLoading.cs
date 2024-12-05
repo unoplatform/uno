@@ -55,7 +55,7 @@ public class Given_LazyLoading
 					"""
 				}
 			},
-			ReferenceAssemblies = ReferenceAssemblies.Net.Net70.AddPackages(ImmutableArray.Create(new PackageIdentity("Uno.WinUI", "5.0.118"))),
+			ReferenceAssemblies = _Dotnet.Current.WithUnoPackage(),
 			DisableBuildReferences = true,
 		}.AddGeneratedSources();
 
@@ -114,7 +114,7 @@ public class Given_LazyLoading
 					"""
 				}
 			},
-			ReferenceAssemblies = ReferenceAssemblies.Net.Net70.AddPackages(ImmutableArray.Create(new PackageIdentity("Uno.WinUI", "5.0.118"))),
+			ReferenceAssemblies = _Dotnet.Current.WithUnoPackage(),
 			DisableBuildReferences = true,
 		}.AddGeneratedSources();
 
