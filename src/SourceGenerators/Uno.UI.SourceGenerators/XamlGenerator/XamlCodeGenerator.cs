@@ -38,7 +38,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				foreach (var tree in generatedTrees)
 				{
 					context.AddSource(tree.Key, tree.Value);
-					File.WriteAllText(Path.Combine("C:\\Src\\_Gen", tree.Key + ".cs"), tree.Value.ToString());
+					try
+					{
+						File.WriteAllText(Path.Combine("C:\\Src\\_Gen", tree.Key + ".cs"), tree.Value.ToString());
+					}
+					catch { }
 				}
 
 				DumpXamlSourceGeneratorState(context, generatedTrees);

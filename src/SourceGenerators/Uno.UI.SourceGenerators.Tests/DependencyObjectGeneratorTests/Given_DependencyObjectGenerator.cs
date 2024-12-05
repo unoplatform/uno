@@ -16,8 +16,8 @@ using Verify = CSharpSourceGeneratorVerifier<DependencyObjectGenerator>;
 [TestClass]
 public class Given_DependencyObjectGenerator
 {
-	private static readonly ReferenceAssemblies _net80Android = ReferenceAssemblies.Net.Net80Android.AddPackages([new PackageIdentity("Uno.Diagnostics.Eventing", "2.1.0")]);
-	private static readonly ReferenceAssemblies _net80 = ReferenceAssemblies.Net.Net80.AddPackages([new PackageIdentity("Uno.Diagnostics.Eventing", "2.1.0")]);
+	private static readonly ReferenceAssemblies _refAsmAndroid = _Dotnet.CurrentAndroid.ReferenceAssemblies.AddPackages([new PackageIdentity("Uno.Diagnostics.Eventing", "2.1.0")]);
+	private static readonly ReferenceAssemblies _refAsm = _Dotnet.Current.ReferenceAssemblies.AddPackages([new PackageIdentity("Uno.Diagnostics.Eventing", "2.1.0")]);
 
 	private const string Configuration =
 #if DEBUG
@@ -79,7 +79,7 @@ public class Given_DependencyObjectGenerator
 			{
 				Sources = { testCode },
 			},
-			ReferenceAssemblies = _net80Android,
+			ReferenceAssemblies = _refAsmAndroid,
 		};
 
 		test.TestState.AdditionalReferences.AddRange(BuildUnoReferences(isAndroid: true));
@@ -350,7 +350,7 @@ public class Given_DependencyObjectGenerator
 	 """, Encoding.UTF8)) }
 				}
 			},
-			ReferenceAssemblies = _net80,
+			ReferenceAssemblies = _refAsm,
 		};
 
 		test.TestState.AdditionalReferences.AddRange(BuildUnoReferences(isAndroid: false));

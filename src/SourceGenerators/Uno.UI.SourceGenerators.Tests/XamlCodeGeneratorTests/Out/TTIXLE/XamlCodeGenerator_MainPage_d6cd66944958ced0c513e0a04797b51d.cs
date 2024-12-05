@@ -160,20 +160,6 @@ namespace TestRepro
 					))
 					)					.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
 					{
-						else
-						{
-							_outerGridSubject.ElementInstance = null;
-							_inner1Subject.ElementInstance = null;
-							_inner1Subject.ElementInstance = null;
-							_inner1ButtonSubject.ElementInstance = null;
-							_inner1ButtonSubject.ElementInstance = null;
-							_inner2Subject.ElementInstance = null;
-							_inner2Subject.ElementInstance = null;
-							_inner3Subject.ElementInstance = null;
-							_inner3Subject.ElementInstance = null;
-							_inner3ButtonSubject.ElementInstance = null;
-							_inner3ButtonSubject.ElementInstance = null;
-						}
 					__p1.Name = "outerGrid";
 					_outerGridSubject.ElementInstance = __p1;
 					__p1.SetBinding(
@@ -195,6 +181,20 @@ namespace TestRepro
 							{
 								that.Bindings.UpdateResources();
 								that.Bindings.NotifyXLoad("outerGrid");
+							}
+							else
+							{
+								_outerGridSubject.ElementInstance = null;
+								_inner1Subject.ElementInstance = null;
+								_inner1Subject.ElementInstance = null;
+								_inner1ButtonSubject.ElementInstance = null;
+								_inner1ButtonSubject.ElementInstance = null;
+								_inner2Subject.ElementInstance = null;
+								_inner2Subject.ElementInstance = null;
+								_inner3Subject.ElementInstance = null;
+								_inner3Subject.ElementInstance = null;
+								_inner3ButtonSubject.ElementInstance = null;
+								_inner3ButtonSubject.ElementInstance = null;
 							}
 						}
 					}

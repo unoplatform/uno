@@ -51,7 +51,7 @@ public class Given_Xuid
 					"""
 				}
 			},
-			ReferenceAssemblies = ReferenceAssemblies.Net.Net80Android.AddPackages(ImmutableArray.Create(new PackageIdentity("Uno.WinUI", "5.0.118"))),
+			ReferenceAssemblies = _Dotnet.CurrentAndroid.WithUnoPackage(),
 			DisableBuildReferences = true,
 		}.AddGeneratedSources();
 
