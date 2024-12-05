@@ -3010,11 +3010,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var isFrameworkElement = IsType(objectDefinitionType, Generation.FrameworkElementSymbol.Value);
 			var hasIsParsing = HasIsParsing(objectDefinitionType);
 
-			//if (objectDefinitionType is null)
-			{
-				//Debugger.Launch();
-			}
-
 			if (extendedProperties.Any() || hasChildrenWithPhase || isFrameworkElement || hasIsParsing || !objectUid.IsNullOrEmpty())
 			{
 				string closureName;
@@ -3919,10 +3914,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					delegateType = $"{_fileUniqueId}XamlApplyExtensions.XamlApplyHandler{appliedTypeIndex}";
 				}
 			}
-			else
-			{
-				Debugger.Launch();
-			}
 
 			return new XamlLazyApplyBlockIIndentedStringBuilder(
 				writer,
@@ -4227,7 +4218,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var sourceInstance = CurrentResourceOwner is not null ? CurrentResourceOwnerName : "__that";
 
 			var applyBindingParameters = _isHotReloadEnabled
-				? $"{sourceInstance}, (___b, {sourceInstance})"
+				? $"{sourceInstance}, (___b, __that)"
 				: "___b";
 
 			if (isInsideDataTemplate)
