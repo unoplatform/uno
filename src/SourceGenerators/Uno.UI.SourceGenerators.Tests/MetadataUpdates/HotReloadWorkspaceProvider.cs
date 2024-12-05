@@ -269,67 +269,6 @@ internal class HotReloadWorkspace
 			);
 
 			workspace.TryApplyChanges(currentSolution);
-
-			//if (_sourceFiles.TryGetValue(projectName, out var sourceFiles))
-			//{
-			//	foreach (var (fileName, content) in sourceFiles)
-			//	{
-			//		var documentId = DocumentId.CreateNewId(project.Id);
-
-			//		currentSolution = currentSolution.AddDocument(
-			//			documentId,
-			//			fileName,
-			//			CSharpSyntaxTree.ParseText(content, encoding: Encoding.UTF8).GetText(),
-			//			filePath: Path.Combine(_baseWorkFolder, project.Name, fileName)
-			//		);
-			//	}
-			//}
-
-			//if (_additionalFiles.TryGetValue(projectName, out var additionalFiles))
-			//{
-			//	foreach (var (fileName, content) in additionalFiles)
-			//	{
-			//		var documentId = DocumentId.CreateNewId(project.Id);
-			//		currentSolution = currentSolution.AddAdditionalDocument(
-			//			documentId,
-			//			fileName,
-			//			CSharpSyntaxTree.ParseText(content, encoding: Encoding.UTF8).GetText(),
-			//			filePath: Path.Combine(_baseWorkFolder, project.Name, fileName));
-			//	}
-
-			//	if (additionalFiles.Any())
-			//	{
-			//		// Build the analyzer document additional data information
-			//		var analyzerDocumentId = DocumentId.CreateNewId(project.Id);
-
-			//		// For now, there is no need to customize these for each test.
-			//		var globalConfigBuilder = new StringBuilder($"""
-			//			is_global = true
-			//			build_property.MSBuildProjectFullPath = C:\Project\{project.Name}.csproj
-			//			build_property.RootNamespace = {project.Name}
-			//			build_property.XamlSourceGeneratorTracingFolder = {_baseWorkFolder}
-			//			build_property.Configuration = {(_isDebugCompilation ? "Debug" : "Release")}
-
-			//			"""); ;
-
-			//		foreach (var (fileName, content) in additionalFiles.Where(k => k.Key.EndsWith(".xaml")))
-			//		{
-			//			globalConfigBuilder.Append($"""
-			//				[{Path.Combine(_baseWorkFolder, project.Name, fileName).Replace("\\", "/")}]
-			//				build_metadata.AdditionalFiles.SourceItemGroup = Page
-			//				""");
-			//		}
-
-			//		currentSolution = currentSolution.AddAnalyzerConfigDocument(
-			//			analyzerDocumentId,
-			//			name: ".globalconfig",
-			//			filePath: "/.globalconfig",
-			//			text: SourceText.From(globalConfigBuilder.ToString())
-			//		); ;
-			//	}
-			//}
-
-			//workspace.TryApplyChanges(currentSolution);
 		}
 
 
