@@ -76,7 +76,7 @@ else
 	fi
 fi
 
-if [ -n "$UITEST_VARIANT" ]; then
+if [ -n "${UITEST_VARIANT-}" ]; then
 	export SCREENSHOTS_FOLDERNAME="$SCREENSHOTS_FOLDERNAME-$UITEST_VARIANT"
 fi
 
