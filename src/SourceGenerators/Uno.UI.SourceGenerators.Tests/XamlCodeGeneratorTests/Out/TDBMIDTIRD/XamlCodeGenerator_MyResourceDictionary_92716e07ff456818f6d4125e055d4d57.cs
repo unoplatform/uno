@@ -49,7 +49,7 @@ namespace TestRepro
 			{
 				// var __that = (MyResourceDictionary)__ResourceOwner_1;
 				return 
-					new global::Microsoft.UI.Xaml.DataTemplate(this, (__owner) => 					new _MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_TestReproMyResourceDictionarySC0().Build(__owner)
+					new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, (__owner) => 					new _MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_TestReproMyResourceDictionarySC0().Build(__owner)
 					)				;
 			}
 			)
@@ -194,7 +194,7 @@ namespace MyProject
 			[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026")]
 			[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111")]
 			private object Get_1(object __ResourceOwner_1) =>
-				new global::Microsoft.UI.Xaml.DataTemplate(this, (__owner) => 				new __Resources._MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_MyResourceDictionaryRDSC1().Build(__owner)
+				new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, (__owner) => 				new __Resources._MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_MyResourceDictionaryRDSC1().Build(__owner)
 				)				;
 
 			private global::Microsoft.UI.Xaml.ResourceDictionary _MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_ResourceDictionary;
@@ -216,7 +216,7 @@ namespace MyProject
 							{
 								// var __that = (MyResourceDictionaryRD)__ResourceOwner_1;
 								return 
-									new global::Microsoft.UI.Xaml.DataTemplate(this, (__owner) => 									new __Resources._MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_MyResourceDictionaryRDSC2().Build(__owner)
+									new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, (__owner) => 									new __Resources._MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_MyResourceDictionaryRDSC2().Build(__owner)
 									)								;
 							}
 							)
