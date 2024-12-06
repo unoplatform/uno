@@ -182,20 +182,69 @@ internal class Win32ClipboardExtension : IClipboardExtension
 										_ = PInvoke.GlobalUnlock(h) || @this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GlobalUnlock)} failed: {Win32Helper.GetErrorMessage()}");
 									}, this, (HGLOBAL)dib);
 
-									var pbih = (BITMAPINFOHEADER*)dib;
-									var bih_size = pbih->biSize + pbih->biClrUsed * Marshal.SizeOf<RGBQUAD>();
-									var dib_size = bih_size + pbih->biSizeImage;
-									var bmp_size = Marshal.SizeOf<BITMAPFILEHEADER>() + dib_size;
+									var srcBitmapInfo = (BITMAPINFO*)dib;
 
-									var arr = new byte[bmp_size];
+									var width = Math.Abs(srcBitmapInfo->bmiHeader.biWidth);
+									var height = Math.Abs(srcBitmapInfo->bmiHeader.biHeight);
+
+									BITMAPINFO bitmapinfo = new BITMAPINFO
+									{
+										bmiHeader = new BITMAPINFOHEADER
+										{
+											biSize = (uint)Marshal.SizeOf<BITMAPINFOHEADER>(),
+											biWidth = width,
+											biHeight = -height, // the negative is to deal with bottom-up coords
+											biPlanes = 1,
+											biBitCount = 32,
+											biCompression = /* BI_RGB */ 0x0000,
+										}
+									};
+									BITMAPINFOHEADER bitmapInfoHeader = bitmapinfo.bmiHeader;
+									void* srcBits;
+									void* dstBits;
+
+									var srcDC = PInvoke.CreateCompatibleDC(new HDC(IntPtr.Zero));
+									var dstDC = PInvoke.CreateCompatibleDC(srcDC);
+
+									var dstBitmap = PInvoke.CreateDIBSection(dstDC, &bitmapinfo, DIB_USAGE.DIB_RGB_COLORS, &dstBits, HANDLE.Null, 0);
+									var srcBitmap = PInvoke.CreateDIBSection(srcDC, srcBitmapInfo, DIB_USAGE.DIB_RGB_COLORS, &srcBits, HANDLE.Null, 0);
+
+									int colorTableSize = srcBitmapInfo->bmiHeader.biCompression switch
+									{
+										/* BI_RGB */
+										0 when srcBitmapInfo->bmiHeader.biBitCount <= 8 => Marshal.SizeOf<RGBQUAD>() * (int)(srcBitmapInfo->bmiHeader.biClrUsed == 0 ? Math.Pow(2, srcBitmapInfo->bmiHeader.biBitCount) : srcBitmapInfo->bmiHeader.biClrUsed),
+										0 => 0,
+										/* BI_BITFIELDS */
+										3 => 3 * Marshal.SizeOf<uint>(),
+										_ => Marshal.SizeOf<RGBQUAD>() * (int)srcBitmapInfo->bmiHeader.biClrUsed
+									};
+									Buffer.MemoryCopy((byte*)srcBitmapInfo + Marshal.SizeOf<BITMAPINFOHEADER>() + colorTableSize, srcBits, memSize, memSize - (UIntPtr)Marshal.SizeOf<BITMAPINFOHEADER>() - (UIntPtr)colorTableSize);
+
+									var res1 = PInvoke.SelectObject(srcDC, srcBitmap);
+									var res2 = PInvoke.SelectObject(dstDC, dstBitmap);
+
+									var res3 = PInvoke.BitBlt(dstDC, 0, 0, width, height, srcDC, 0, 0, ROP_CODE.SRCCOPY);
+
+									var imgBitsSize = Math.Abs(width * height * Marshal.SizeOf<uint>());
+									var bmpSize = (uint)(Marshal.SizeOf<BITMAPFILEHEADER>() + Marshal.SizeOf<BITMAPINFOHEADER>() + imgBitsSize);
+									BITMAPFILEHEADER bitmapfileheader = new BITMAPFILEHEADER
+									{
+										bfType = /* BM */ 0x4d42,
+										bfSize = bmpSize,
+										bfOffBits = (uint)(Marshal.SizeOf<BITMAPFILEHEADER>() + Marshal.SizeOf(bitmapInfoHeader))
+									};
+
+									var arr = new byte[bmpSize];
 									fixed (byte* bmp = arr)
 									{
-										BITMAPFILEHEADER* pbfh = (BITMAPFILEHEADER*)bmp;
-										pbfh->bfType = /* BM */ 0x4d42;
-										pbfh->bfSize = (uint)bmp_size;
-										pbfh->bfOffBits = (uint)(sizeof(BITMAPFILEHEADER) + bih_size);
+										Buffer.MemoryCopy(&bitmapfileheader, bmp, bmpSize, Marshal.SizeOf<BITMAPFILEHEADER>());
+										Buffer.MemoryCopy(&bitmapInfoHeader, bmp + Marshal.SizeOf<BITMAPFILEHEADER>(), bmpSize - Marshal.SizeOf<BITMAPFILEHEADER>(), Marshal.SizeOf<BITMAPINFOHEADER>());
+										Buffer.MemoryCopy(dstBits, bmp + Marshal.SizeOf<BITMAPFILEHEADER>() + Marshal.SizeOf<BITMAPINFOHEADER>(), bmpSize - Marshal.SizeOf<BITMAPFILEHEADER>() - Marshal.SizeOf<BITMAPINFOHEADER>(), imgBitsSize);
+									}
 
-										Buffer.MemoryCopy(dib, bmp + Marshal.SizeOf<BITMAPFILEHEADER>(), bmp_size, dib_size);
+									using (var fs = new FileStream("ramoozwin32.bmp", FileMode.OpenOrCreate))
+									{
+										fs.Write(arr, 0, arr.Length);
 									}
 
 									return Task.FromResult<object>(RandomAccessStreamReference.CreateFromStream(new MemoryStream(arr).AsRandomAccessStream()));
