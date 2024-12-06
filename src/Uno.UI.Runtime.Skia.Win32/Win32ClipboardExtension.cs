@@ -168,17 +168,11 @@ internal class Win32ClipboardExtension : IClipboardExtension
 			return;
 		}
 
-		var bytes = PInvoke.GlobalLock(handle);
-		if (bytes is null)
+		using var lockDisposable = Win32Helper.GlobalLock(handle, out var bytes);
+		if (lockDisposable is null)
 		{
-			this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GlobalLock)} failed: {Win32Helper.GetErrorMessage()}");
 			return;
 		}
-
-		using var lockDisposable = new DisposableStruct<Win32ClipboardExtension, HGLOBAL>(static (@this, h) =>
-		{
-			_ = PInvoke.GlobalUnlock(h) || @this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GlobalUnlock)} failed: {Win32Helper.GetErrorMessage()}");
-		}, this, handle);
 
 		_currentPackage!.SetText(Marshal.PtrToStringUni((IntPtr)bytes)!);
 	}
@@ -201,16 +195,11 @@ internal class Win32ClipboardExtension : IClipboardExtension
 
 		_currentPackage!.SetDataProvider(StandardDataFormats.Bitmap, _ =>
 		{
-			var dib = PInvoke.GlobalLock(handle);
-			if (dib is null)
+			using var lockDisposable = Win32Helper.GlobalLock(handle, out var dib);
+			if (lockDisposable is null)
 			{
 				return Task.FromException<object>(new InvalidOperationException($"{nameof(PInvoke.GlobalLock)} failed: {Win32Helper.GetErrorMessage()}"));
 			}
-
-			using var lockDisposable = new DisposableStruct<Win32ClipboardExtension, HGLOBAL>(static (@this, h) =>
-			{
-				var unused = PInvoke.GlobalUnlock(h) || @this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GlobalUnlock)} failed: {Win32Helper.GetErrorMessage()}");
-			}, this, handle);
 
 			var srcBitmapInfo = (BITMAPINFO*)dib;
 
@@ -254,17 +243,13 @@ internal class Win32ClipboardExtension : IClipboardExtension
 			return;
 		}
 
-		var hDrop = new HDROP((IntPtr)PInvoke.GlobalLock(handle));
-		if (hDrop == IntPtr.Zero)
+		using var lockDisposable = Win32Helper.GlobalLock(handle, out var firstByte);
+		if (lockDisposable is null)
 		{
-			this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GlobalLock)} failed: {Win32Helper.GetErrorMessage()}");
 			return;
 		}
 
-		using var lockDisposable = new DisposableStruct<Win32ClipboardExtension, HGLOBAL>(static (@this, h) =>
-		{
-			_ = PInvoke.GlobalUnlock(h) || @this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GlobalUnlock)} failed: {Win32Helper.GetErrorMessage()}");
-		}, this, handle);
+		var hDrop = new HDROP((IntPtr)firstByte);
 
 		var filesDropped = PInvoke.DragQueryFile(hDrop, 0xFFFFFFFF, new PWSTR(), 0);
 		if (filesDropped == 0)
@@ -340,43 +325,29 @@ internal class Win32ClipboardExtension : IClipboardExtension
 			{
 				// If the hMem parameter identifies a memory object, the object must have been allocated using the function with the GMEM_MOVEABLE flag
 				var bufferLength = (str.Length + 1) * sizeof(char); // + 1 for \0
-				var textBuffer = PInvoke.GlobalAlloc(GLOBAL_ALLOC_FLAGS.GMEM_MOVEABLE, (UIntPtr)bufferLength);
-				if (textBuffer == IntPtr.Zero)
-				{
-					this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GlobalAlloc)} failed: {Win32Helper.GetErrorMessage()}");
-					return;
-				}
-
 				var shouldFree = true;
-				using var allocDisposable = Disposable.Create(() =>
-				{
+				using var allocDisposable = Win32Helper.GlobalAlloc(
+					GLOBAL_ALLOC_FLAGS.GMEM_MOVEABLE,
+					(UIntPtr)bufferLength,
+					out var handle,
 					// ReSharper disable once AccessToModifiedClosure
-					if (shouldFree)
-					{
-						_ = PInvoke.GlobalFree(textBuffer) == IntPtr.Zero || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GlobalFree)} failed: {Win32Helper.GetErrorMessage()}");
-					}
-				});
+					() => shouldFree);
 
-				var dstBytes = PInvoke.GlobalLock(textBuffer);
-				if (dstBytes is null)
+				if (allocDisposable is null)
 				{
-					this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GlobalLock)} failed: {Win32Helper.GetErrorMessage()}");
 					return;
 				}
 
 				var shouldUnlock = true;
-				using var lockDisposable = Disposable.Create(() =>
-				{
+				using var lockDisposable = Win32Helper.GlobalLock(
+					handle,
+					out var dstBytes,
 					// ReSharper disable once AccessToModifiedClosure
-					if (shouldUnlock)
-					{
-						_ = PInvoke.GlobalUnlock(textBuffer) == IntPtr.Zero || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GlobalUnlock)} failed: {Win32Helper.GetErrorMessage()}");
-					}
-				});
+					() => shouldUnlock);
 
 				Buffer.MemoryCopy(srcBytes, dstBytes, bufferLength, bufferLength);
 
-				var success = PInvoke.SetClipboardData((uint)CLIPBOARD_FORMAT.CF_UNICODETEXT, new HANDLE(textBuffer)) != HANDLE.Null || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SetClipboardData)} failed: {Win32Helper.GetErrorMessage()}");
+				var success = PInvoke.SetClipboardData((uint)CLIPBOARD_FORMAT.CF_UNICODETEXT, new HANDLE(handle)) != HANDLE.Null || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SetClipboardData)} failed: {Win32Helper.GetErrorMessage()}");
 				// "If SetClipboardData succeeds, the system owns the object identified by the hMem parameter. The application may not write to or free the data once ownership has been transferred to the system"
 				shouldFree = !success;
 				shouldUnlock = !success; // The docs aren't very clear on this, but Windows refuses to unlock after SetClipboardData succeeds.
@@ -422,35 +393,15 @@ internal class Win32ClipboardExtension : IClipboardExtension
 		stream.Seek(0);
 
 		// If the hMem parameter identifies a memory object, the object must have been allocated using the function with the GMEM_MOVEABLE flag
-		var handle = PInvoke.GlobalAlloc(GLOBAL_ALLOC_FLAGS.GMEM_MOVEABLE, (UIntPtr)(stream.Size - (ulong)sizeof(BITMAPFILEHEADER)));
-
-		if (handle == IntPtr.Zero)
-		{
-			this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GlobalAlloc)} failed: {Win32Helper.GetErrorMessage()}");
-			return;
-		}
-
 		var shouldFree = true;
-		using var allocDisposable = Disposable.Create(() =>
-		{
+		using var allocDisposable = Win32Helper.GlobalAlloc(
+			GLOBAL_ALLOC_FLAGS.GMEM_MOVEABLE,
+			(UIntPtr)(stream.Size - (ulong)sizeof(BITMAPFILEHEADER)),
+			out var handle,
 			// ReSharper disable once AccessToModifiedClosure
-			if (shouldFree)
-			{
-				_ = PInvoke.GlobalFree(handle) == IntPtr.Zero || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GlobalFree)} failed: {Win32Helper.GetErrorMessage()}");
-			}
-		});
+			() => shouldFree);
 
-		var bmp = PInvoke.GlobalLock(handle);
-		if (bmp is null)
-		{
-			this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GlobalLock)} failed: {Win32Helper.GetErrorMessage()}");
-			return;
-		}
-
-		using var lockDisposable = new DisposableStruct<Win32ClipboardExtension, HGLOBAL>(static (@this, h) =>
-		{
-			_ = PInvoke.GlobalUnlock(h) || @this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GlobalUnlock)} failed: {Win32Helper.GetErrorMessage()}");
-		}, this, handle);
+		using var lockDisposable = Win32Helper.GlobalLock(handle, out var bmp);
 
 		stream.AsStreamForWrite().Write(new ReadOnlySpan<byte>(bmp, (int)stream.Size));
 		var isBmp = stream.Size > (ulong)sizeof(BITMAPFILEHEADER) && ((BITMAPFILEHEADER*)bmp)->bfType == /* BM */ 0x4d42;

@@ -7,7 +7,9 @@ using Windows.Win32.Foundation;
 using Windows.Win32.Graphics.Gdi;
 using Windows.Win32.Graphics.OpenGL;
 using Windows.Win32.System.Diagnostics.Debug;
+using Windows.Win32.System.Memory;
 using Uno.Disposables;
+using Uno.Foundation.Logging;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
@@ -65,6 +67,52 @@ internal static class Win32Helper
 		private readonly IntPtr _handle = Marshal.StringToHGlobalUni(str);
 		public static unsafe implicit operator PCWSTR(NativeNulTerminatedUtf16String value) => new((char*)value._handle);
 		public void Dispose() => Marshal.FreeHGlobal(_handle);
+	}
+
+	public static unsafe GlobalLockDisposable? GlobalLock(HGLOBAL handle, out void* firstByte, Func<bool>? shouldUnlock = null)
+	{
+		firstByte = PInvoke.GlobalLock(handle);
+		if (firstByte is null)
+		{
+			typeof(Win32Helper).Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GlobalLock)} failed: {GetErrorMessage()}");
+			return null;
+		}
+
+		return new GlobalLockDisposable(handle, shouldUnlock);
+	}
+
+	public readonly struct GlobalLockDisposable(HGLOBAL handle, Func<bool>? shouldUnlock = null) : IDisposable
+	{
+		public void Dispose()
+		{
+			if (shouldUnlock?.Invoke() ?? true)
+			{
+				_ = PInvoke.GlobalUnlock(handle) != IntPtr.Zero || typeof(GlobalLockDisposable).Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GlobalUnlock)} failed: {GetErrorMessage()}");
+			}
+		}
+	}
+
+	public static GlobalAllocDisposable? GlobalAlloc(GLOBAL_ALLOC_FLAGS uFlags, UIntPtr dwBytes, out HGLOBAL handle, Func<bool>? shouldFree = null)
+	{
+		handle = PInvoke.GlobalAlloc(uFlags, dwBytes);
+		if (handle == IntPtr.Zero)
+		{
+			typeof(Win32Helper).Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GlobalAlloc)} failed: {GetErrorMessage()}");
+			return null;
+		}
+
+		return new GlobalAllocDisposable(handle, shouldFree);
+	}
+
+	public readonly struct GlobalAllocDisposable(HGLOBAL handle, Func<bool>? shouldFree = null) : IDisposable
+	{
+		public void Dispose()
+		{
+			if (shouldFree?.Invoke() ?? true)
+			{
+				_ = PInvoke.GlobalFree(handle) != IntPtr.Zero || typeof(GlobalLockDisposable).Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GlobalFree)} failed: {GetErrorMessage()}");
+			}
+		}
 	}
 
 	public readonly struct WglCurrentContextDisposable : IDisposable
