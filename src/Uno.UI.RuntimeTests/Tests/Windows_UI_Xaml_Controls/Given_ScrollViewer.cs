@@ -1511,6 +1511,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await UITestHelper.Load(SUT, x => x.IsLoaded);
 		}
 
+		[TestMethod]
 		public async Task When_Zero_Size_With_Margin()
 		{
 			var SUT = new ScrollViewer()
