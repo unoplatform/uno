@@ -1568,6 +1568,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
+#if !__SKIA__
+		[Ignore("Translation X and Y axis is currently supported on Skia only")]
+#endif
 		public async Task When_Translation_On_Load()
 		{
 			var sut = new Rectangle()
@@ -1582,10 +1585,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			canvas.Children.Add(sut);
 			TestServices.WindowHelper.WindowContent = canvas;
 			await TestServices.WindowHelper.WaitForLoaded(sut);
-			sut.Translation += new Vector3(200, 0, 128);
+			sut.Translation += new Vector3(100, 100, 128);
 			await TestServices.WindowHelper.WaitForIdle();
 			var bitmap = await UITestHelper.ScreenShot(canvas);
-			ImageAssert.DoesNotHaveColorAt(bitmap, new Windows.Foundation.Point(50, 50), Microsoft.UI.Colors.Blue, tolerance: 25);
+			ImageAssert.DoesNotHaveColorAt(bitmap, new Windows.Foundation.Point(50, 50), Microsoft.UI.Colors.Blue);
+			ImageAssert.HasColorAt(bitmap, new Windows.Foundation.Point(150, 150), Microsoft.UI.Colors.Blue);
 		}
 
 #if HAS_UNO
