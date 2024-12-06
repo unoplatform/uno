@@ -95,6 +95,7 @@ DefWindowProc
 DescribePixelFormat
 DestroyWindow
 DispatchMessage
+DragQueryFile
 DwmSetWindowAttribute
 EmptyClipboard
 EnableMouseInPointer

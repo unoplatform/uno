@@ -19,16 +19,20 @@
 // https://github.com/libsdl-org/SDL/blob/9f8157f42cc0351833c030febe8a559719c875bd/src/video/windows/SDL_windowsclipboard.c
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
+using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.Graphics.Gdi;
 using Windows.Win32.System.Ole;
+using Windows.Win32.UI.Shell;
 using Windows.Win32.UI.WindowsAndMessaging;
 using Uno.ApplicationModel.DataTransfer;
 using Uno.Disposables;
@@ -136,7 +140,7 @@ internal class Win32ClipboardExtension : IClipboardExtension
 				{
 					case CLIPBOARD_FORMAT.CF_UNICODETEXT:
 						{
-							var handle = PInvoke.GetClipboardData((uint)CLIPBOARD_FORMAT.CF_UNICODETEXT);
+							var handle = PInvoke.GetClipboardData(lastFormat);
 							if (handle == IntPtr.Zero)
 							{
 								this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GetClipboardData)} failed: {Win32Helper.GetErrorMessage()}");
@@ -155,9 +159,72 @@ internal class Win32ClipboardExtension : IClipboardExtension
 							}
 						}
 						break;
+					case CLIPBOARD_FORMAT.CF_HDROP:
+						{
+							var handle = PInvoke.GetClipboardData(lastFormat);
+							if (handle == IntPtr.Zero)
+							{
+								this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GetClipboardData)} failed: {Win32Helper.GetErrorMessage()}");
+								break;
+							}
+
+							var hDrop = new HDROP((IntPtr)PInvoke.GlobalLock((HGLOBAL)handle.Value));
+							if (hDrop != IntPtr.Zero
+								|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GlobalLock)} failed: {Win32Helper.GetErrorMessage()}"))
+							{
+								using var lockDisposable = new DisposableStruct<Win32ClipboardExtension, HGLOBAL>(static (@this, h) =>
+								{
+									_ = PInvoke.GlobalUnlock(h) || @this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GlobalUnlock)} failed: {Win32Helper.GetErrorMessage()}");
+								}, this, (HGLOBAL)handle.Value);
+
+								var filesDropped = PInvoke.DragQueryFile(hDrop, 0xFFFFFFFF, new PWSTR(), 0);
+								if (filesDropped == 0)
+								{
+									this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.DragQueryFile)} failed when querying total count: {Win32Helper.GetErrorMessage()}");
+									break;
+								}
+
+								var files = new List<IStorageItem>((int)filesDropped);
+								for (uint i = 0; i < filesDropped; i++)
+								{
+									var charLength = PInvoke.DragQueryFile(hDrop, i, new PWSTR(), 0);
+									if (charLength == 0)
+									{
+										this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.DragQueryFile)} failed when querying buffer length: {Win32Helper.GetErrorMessage()}");
+										break;
+									}
+									charLength++; // + 1 for \0
+
+									var buffer = Marshal.AllocHGlobal((IntPtr)(charLength * Unsafe.SizeOf<char>()));
+									using var bufferDisposable = new DisposableStruct<IntPtr>(Marshal.FreeHGlobal, buffer);
+									var charsWritten = PInvoke.DragQueryFile(hDrop, i, new PWSTR((char*)buffer), charLength);
+									if (charsWritten == 0)
+									{
+										this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.DragQueryFile)} failed when querying file path: {Win32Helper.GetErrorMessage()}");
+										break;
+									}
+									var filePath = Marshal.PtrToStringUni(buffer, (int)charsWritten);
+									if (Directory.Exists(filePath))
+									{
+										files.Add(new StorageFolder(filePath));
+									}
+									else if (File.Exists(filePath))
+									{
+										files.Add(StorageFile.GetFileFromPath(filePath));
+									}
+									else
+									{
+										this.Log().Log(LogLevel.Error, filePath, static filePath => $"HDROP Clipboard: file path '{filePath}' was not a valid file or directory.");
+									}
+								}
+
+								_currentPackage.SetStorageItems(files);
+							}
+						}
+						break;
 					case CLIPBOARD_FORMAT.CF_DIB:
 						{
-							var handle = PInvoke.GetClipboardData((uint)CLIPBOARD_FORMAT.CF_DIB);
+							var handle = PInvoke.GetClipboardData(lastFormat);
 							if (handle == IntPtr.Zero)
 							{
 								this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GetClipboardData)} failed: {Win32Helper.GetErrorMessage()}");
@@ -180,7 +247,7 @@ internal class Win32ClipboardExtension : IClipboardExtension
 									using var lockDisposable = new DisposableStruct<Win32ClipboardExtension, HGLOBAL>(static (@this, h) =>
 									{
 										_ = PInvoke.GlobalUnlock(h) || @this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GlobalUnlock)} failed: {Win32Helper.GetErrorMessage()}");
-									}, this, (HGLOBAL)dib);
+									}, this, (HGLOBAL)handle.Value);
 
 									var srcBitmapInfo = (BITMAPINFO*)dib;
 
