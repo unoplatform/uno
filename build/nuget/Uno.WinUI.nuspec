@@ -608,6 +608,7 @@
 		<file src="..\..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\netstandard2.0\Uno.Xaml.dll" target="analyzers/dotnet/cs" />
 		<file src="..\..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\netstandard2.0\Uno.Xaml.pdb" target="analyzers/dotnet/cs" />
 		<file src="..\..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\netstandard2.0\Microsoft.ApplicationInsights.dll" target="analyzers/dotnet/cs" />
+		<file src="..\..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\netstandard2.0\Uno.DevTools.Telemetry.dll" target="analyzers/dotnet/cs" />
 		<file src="..\..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\netstandard2.0\System.Diagnostics.DiagnosticSource.dll" target="analyzers/dotnet/cs" />
 		<file src="..\..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\netstandard2.0\Microsoft.DotNet.PlatformAbstractions.dll" target="analyzers/dotnet/cs" />
 
