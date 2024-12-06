@@ -6846,7 +6846,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			=> _resourceOwner != 0 ? $"__ResourceOwner_{_resourceOwner.ToString(CultureInfo.InvariantCulture)}" : null;
 
 		private string CurrentResourceOwnerName
-			=> /*CurrentResourceOwner ??*/ "this";
+			=> CurrentResourceOwner ?? "this";
 
 		public bool HasImplicitViewPinning
 			=> Generation.IOSViewSymbol.Value is not null || Generation.AppKitViewSymbol.Value is not null;

@@ -107,7 +107,7 @@ namespace TestRepro
 			{
 				// var __that = (MainPage)__ResourceOwner_1;
 				return 
-					new global::Microsoft.UI.Xaml.DataTemplate(this, (__owner) => 					new _MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPageSC0().Build(__owner)
+					new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, (__owner) => 					new _MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPageSC0().Build(__owner)
 					)					.GenericApply(__that, __nameScope, (ApplyMethod_6					))
 				;
 			}
