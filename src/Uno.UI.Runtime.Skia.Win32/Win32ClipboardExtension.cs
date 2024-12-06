@@ -31,6 +31,7 @@ using Windows.Storage.Streams;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.Graphics.Gdi;
+using Windows.Win32.System.Memory;
 using Windows.Win32.System.Ole;
 using Windows.Win32.UI.Shell;
 using Windows.Win32.UI.WindowsAndMessaging;
@@ -125,7 +126,7 @@ internal class Win32ClipboardExtension : IClipboardExtension
 
 	public void Flush() { }
 
-	public unsafe DataPackageView GetContent()
+	public DataPackageView GetContent()
 	{
 		if (_currentPackage is null)
 		{
@@ -139,153 +140,13 @@ internal class Win32ClipboardExtension : IClipboardExtension
 				switch ((CLIPBOARD_FORMAT)lastFormat)
 				{
 					case CLIPBOARD_FORMAT.CF_UNICODETEXT:
-						{
-							var handle = PInvoke.GetClipboardData(lastFormat);
-							if (handle == IntPtr.Zero)
-							{
-								this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GetClipboardData)} failed: {Win32Helper.GetErrorMessage()}");
-								break;
-							}
-
-							if (PInvoke.GlobalLock((HGLOBAL)handle.Value) is not null
-								|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GlobalLock)} failed: {Win32Helper.GetErrorMessage()}"))
-							{
-								using var lockDisposable = new DisposableStruct<Win32ClipboardExtension, HGLOBAL>(static (@this, h) =>
-								{
-									_ = PInvoke.GlobalUnlock(h) || @this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GlobalUnlock)} failed: {Win32Helper.GetErrorMessage()}");
-								}, this, (HGLOBAL)handle.Value);
-
-								_currentPackage.SetText(Marshal.PtrToStringUni(handle)!);
-							}
-						}
+						GetText();
 						break;
 					case CLIPBOARD_FORMAT.CF_HDROP:
-						{
-							var handle = PInvoke.GetClipboardData(lastFormat);
-							if (handle == IntPtr.Zero)
-							{
-								this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GetClipboardData)} failed: {Win32Helper.GetErrorMessage()}");
-								break;
-							}
-
-							var hDrop = new HDROP((IntPtr)PInvoke.GlobalLock((HGLOBAL)handle.Value));
-							if (hDrop != IntPtr.Zero
-								|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GlobalLock)} failed: {Win32Helper.GetErrorMessage()}"))
-							{
-								using var lockDisposable = new DisposableStruct<Win32ClipboardExtension, HGLOBAL>(static (@this, h) =>
-								{
-									_ = PInvoke.GlobalUnlock(h) || @this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GlobalUnlock)} failed: {Win32Helper.GetErrorMessage()}");
-								}, this, (HGLOBAL)handle.Value);
-
-								var filesDropped = PInvoke.DragQueryFile(hDrop, 0xFFFFFFFF, new PWSTR(), 0);
-								if (filesDropped == 0)
-								{
-									this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.DragQueryFile)} failed when querying total count: {Win32Helper.GetErrorMessage()}");
-									break;
-								}
-
-								var files = new List<IStorageItem>((int)filesDropped);
-								for (uint i = 0; i < filesDropped; i++)
-								{
-									var charLength = PInvoke.DragQueryFile(hDrop, i, new PWSTR(), 0);
-									if (charLength == 0)
-									{
-										this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.DragQueryFile)} failed when querying buffer length: {Win32Helper.GetErrorMessage()}");
-										break;
-									}
-									charLength++; // + 1 for \0
-
-									var buffer = Marshal.AllocHGlobal((IntPtr)(charLength * Unsafe.SizeOf<char>()));
-									using var bufferDisposable = new DisposableStruct<IntPtr>(Marshal.FreeHGlobal, buffer);
-									var charsWritten = PInvoke.DragQueryFile(hDrop, i, new PWSTR((char*)buffer), charLength);
-									if (charsWritten == 0)
-									{
-										this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.DragQueryFile)} failed when querying file path: {Win32Helper.GetErrorMessage()}");
-										break;
-									}
-									var filePath = Marshal.PtrToStringUni(buffer, (int)charsWritten);
-									if (Directory.Exists(filePath))
-									{
-										files.Add(new StorageFolder(filePath));
-									}
-									else if (File.Exists(filePath))
-									{
-										files.Add(StorageFile.GetFileFromPath(filePath));
-									}
-									else
-									{
-										this.Log().Log(LogLevel.Error, filePath, static filePath => $"HDROP Clipboard: file path '{filePath}' was not a valid file or directory.");
-									}
-								}
-
-								_currentPackage.SetStorageItems(files);
-							}
-						}
+						GetFileDropList();
 						break;
 					case CLIPBOARD_FORMAT.CF_DIB:
-						{
-							var handle = PInvoke.GetClipboardData(lastFormat);
-							if (handle == IntPtr.Zero)
-							{
-								this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GetClipboardData)} failed: {Win32Helper.GetErrorMessage()}");
-								break;
-							}
-
-							var memSize = (uint)PInvoke.GlobalSize((HGLOBAL)handle.Value);
-							if (memSize <= Marshal.SizeOf<BITMAPINFOHEADER>())
-							{
-								this.Log().Log(LogLevel.Error, memSize, static memSize => $"{nameof(PInvoke.GlobalSize)} returned {memSize}: {Win32Helper.GetErrorMessage()}");
-								break;
-							}
-
-							_currentPackage.SetDataProvider(StandardDataFormats.Bitmap, ct =>
-							{
-								var dib = PInvoke.GlobalLock((HGLOBAL)handle.Value);
-								if (dib is not null
-									|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GlobalLock)} failed: {Win32Helper.GetErrorMessage()}"))
-								{
-									using var lockDisposable = new DisposableStruct<Win32ClipboardExtension, HGLOBAL>(static (@this, h) =>
-									{
-										_ = PInvoke.GlobalUnlock(h) || @this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GlobalUnlock)} failed: {Win32Helper.GetErrorMessage()}");
-									}, this, (HGLOBAL)handle.Value);
-
-									var srcBitmapInfo = (BITMAPINFO*)dib;
-
-									// https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmapinfoheader#color-tables
-									int colorTableSize = srcBitmapInfo->bmiHeader.biCompression switch
-									{
-										// BI_RGB
-										0 when srcBitmapInfo->bmiHeader.biBitCount <= 8 => Marshal.SizeOf<RGBQUAD>() * (srcBitmapInfo->bmiHeader.biClrUsed == 0 ? 1 << srcBitmapInfo->bmiHeader.biBitCount : (int)srcBitmapInfo->bmiHeader.biClrUsed),
-										0 => 0,
-										// BI_BITFIELDS
-										3 => 3 * Marshal.SizeOf<uint>(),
-										// FOURCC
-										_ => Marshal.SizeOf<RGBQUAD>() * (int)srcBitmapInfo->bmiHeader.biClrUsed
-									};
-
-									BITMAPFILEHEADER bitmapfileheader = new BITMAPFILEHEADER
-									{
-										bfType = /* BM */ 0x4d42,
-										bfSize = (uint)(Marshal.SizeOf<BITMAPFILEHEADER>() + memSize),
-										bfOffBits = (uint)(Marshal.SizeOf<BITMAPFILEHEADER>() + Marshal.SizeOf<BITMAPINFOHEADER>() + colorTableSize)
-									};
-
-									var bmpSize = (uint)(Marshal.SizeOf<BITMAPFILEHEADER>() + memSize);
-									var arr = new byte[bmpSize];
-									fixed (byte* bmp = arr)
-									{
-										Buffer.MemoryCopy(&bitmapfileheader, bmp, bmpSize, Marshal.SizeOf<BITMAPFILEHEADER>());
-										Buffer.MemoryCopy(dib, bmp + Marshal.SizeOf<BITMAPFILEHEADER>(), bmpSize - Marshal.SizeOf<BITMAPFILEHEADER>(), bmpSize - Marshal.SizeOf<BITMAPFILEHEADER>());
-									}
-
-									return Task.FromResult<object>(RandomAccessStreamReference.CreateFromStream(new MemoryStream(arr).AsRandomAccessStream()));
-								}
-								else
-								{
-									return Task.FromException<object>(new InvalidOperationException($"{nameof(PInvoke.GlobalLock)} failed: {Win32Helper.GetErrorMessage()}"));
-								}
-							});
-						}
+						GetBitmap();
 						break;
 				}
 			}
@@ -298,10 +159,167 @@ internal class Win32ClipboardExtension : IClipboardExtension
 		return _currentPackage.GetView();
 	}
 
+	private unsafe void GetText()
+	{
+		var handle = (HGLOBAL)(IntPtr)PInvoke.GetClipboardData((uint)CLIPBOARD_FORMAT.CF_UNICODETEXT);
+		if (handle == IntPtr.Zero)
+		{
+			this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GetClipboardData)} failed: {Win32Helper.GetErrorMessage()}");
+			return;
+		}
+
+		var bytes = PInvoke.GlobalLock(handle);
+		if (bytes is null)
+		{
+			this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GlobalLock)} failed: {Win32Helper.GetErrorMessage()}");
+			return;
+		}
+
+		using var lockDisposable = new DisposableStruct<Win32ClipboardExtension, HGLOBAL>(static (@this, h) =>
+		{
+			_ = PInvoke.GlobalUnlock(h) || @this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GlobalUnlock)} failed: {Win32Helper.GetErrorMessage()}");
+		}, this, handle);
+
+		_currentPackage!.SetText(Marshal.PtrToStringUni((IntPtr)bytes)!);
+	}
+
+	private unsafe void GetBitmap()
+	{
+		var handle = (HGLOBAL)(IntPtr)PInvoke.GetClipboardData((uint)CLIPBOARD_FORMAT.CF_DIB);
+		if (handle == IntPtr.Zero)
+		{
+			this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GetClipboardData)} failed: {Win32Helper.GetErrorMessage()}");
+			return;
+		}
+
+		var memSize = (uint)PInvoke.GlobalSize(handle);
+		if (memSize <= Marshal.SizeOf<BITMAPINFOHEADER>())
+		{
+			this.Log().Log(LogLevel.Error, memSize, static memSize => $"{nameof(PInvoke.GlobalSize)} returned {memSize}: {Win32Helper.GetErrorMessage()}");
+			return;
+		}
+
+		_currentPackage!.SetDataProvider(StandardDataFormats.Bitmap, _ =>
+		{
+			var dib = PInvoke.GlobalLock(handle);
+			if (dib is null)
+			{
+				return Task.FromException<object>(new InvalidOperationException($"{nameof(PInvoke.GlobalLock)} failed: {Win32Helper.GetErrorMessage()}"));
+			}
+
+			using var lockDisposable = new DisposableStruct<Win32ClipboardExtension, HGLOBAL>(static (@this, h) =>
+			{
+				var unused = PInvoke.GlobalUnlock(h) || @this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GlobalUnlock)} failed: {Win32Helper.GetErrorMessage()}");
+			}, this, handle);
+
+			var srcBitmapInfo = (BITMAPINFO*)dib;
+
+			// https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmapinfoheader#color-tables
+			int colorTableSize = srcBitmapInfo->bmiHeader.biCompression switch
+			{
+				// BI_RGB
+				0 when srcBitmapInfo->bmiHeader.biBitCount <= 8 => Marshal.SizeOf<RGBQUAD>() * (srcBitmapInfo->bmiHeader.biClrUsed == 0 ? 1 << srcBitmapInfo->bmiHeader.biBitCount : (int)srcBitmapInfo->bmiHeader.biClrUsed),
+				0 => 0,
+				// BI_BITFIELDS
+				3 => 3 * Marshal.SizeOf<uint>(),
+				// FOURCC
+				_ => Marshal.SizeOf<RGBQUAD>() * (int)srcBitmapInfo->bmiHeader.biClrUsed
+			};
+
+			BITMAPFILEHEADER bitmapfileheader = new BITMAPFILEHEADER
+			{
+				bfType = /* BM */ 0x4d42,
+				bfSize = (uint)(Marshal.SizeOf<BITMAPFILEHEADER>() + memSize),
+				bfOffBits = (uint)(Marshal.SizeOf<BITMAPFILEHEADER>() + Marshal.SizeOf<BITMAPINFOHEADER>() + colorTableSize)
+			};
+
+			var bmpSize = (uint)(Marshal.SizeOf<BITMAPFILEHEADER>() + memSize);
+			var arr = new byte[bmpSize];
+			fixed (byte* bmp = arr)
+			{
+				Buffer.MemoryCopy(&bitmapfileheader, bmp, bmpSize, Marshal.SizeOf<BITMAPFILEHEADER>());
+				Buffer.MemoryCopy(dib, bmp + Marshal.SizeOf<BITMAPFILEHEADER>(), bmpSize - Marshal.SizeOf<BITMAPFILEHEADER>(), bmpSize - Marshal.SizeOf<BITMAPFILEHEADER>());
+			}
+
+			return Task.FromResult<object>(RandomAccessStreamReference.CreateFromStream(new MemoryStream(arr).AsRandomAccessStream()));
+		});
+	}
+
+	private unsafe void GetFileDropList()
+	{
+		var handle = (HGLOBAL)(IntPtr)PInvoke.GetClipboardData((uint)CLIPBOARD_FORMAT.CF_HDROP);
+		if (handle == IntPtr.Zero)
+		{
+			this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GetClipboardData)} failed: {Win32Helper.GetErrorMessage()}");
+			return;
+		}
+
+		var hDrop = new HDROP((IntPtr)PInvoke.GlobalLock(handle));
+		if (hDrop == IntPtr.Zero)
+		{
+			this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GlobalLock)} failed: {Win32Helper.GetErrorMessage()}");
+			return;
+		}
+
+		using var lockDisposable = new DisposableStruct<Win32ClipboardExtension, HGLOBAL>(static (@this, h) =>
+		{
+			_ = PInvoke.GlobalUnlock(h) || @this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GlobalUnlock)} failed: {Win32Helper.GetErrorMessage()}");
+		}, this, handle);
+
+		var filesDropped = PInvoke.DragQueryFile(hDrop, 0xFFFFFFFF, new PWSTR(), 0);
+		if (filesDropped == 0)
+		{
+			this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.DragQueryFile)} failed when querying total count: {Win32Helper.GetErrorMessage()}");
+			return;
+		}
+
+		var files = new List<IStorageItem>((int)filesDropped);
+		for (uint i = 0; i < filesDropped; i++)
+		{
+			var charLength = PInvoke.DragQueryFile(hDrop, i, new PWSTR(), 0);
+			if (charLength == 0)
+			{
+				this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.DragQueryFile)} failed when querying buffer length: {Win32Helper.GetErrorMessage()}");
+				break;
+			}
+			charLength++; // + 1 for \0
+
+			var buffer = Marshal.AllocHGlobal((IntPtr)(charLength * Unsafe.SizeOf<char>()));
+			using var bufferDisposable = new DisposableStruct<IntPtr>(Marshal.FreeHGlobal, buffer);
+			var charsWritten = PInvoke.DragQueryFile(hDrop, i, new PWSTR((char*)buffer), charLength);
+			if (charsWritten == 0)
+			{
+				this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.DragQueryFile)} failed when querying file path: {Win32Helper.GetErrorMessage()}");
+				break;
+			}
+			var filePath = Marshal.PtrToStringUni(buffer, (int)charsWritten);
+			if (Directory.Exists(filePath))
+			{
+				files.Add(new StorageFolder(filePath));
+			}
+			else if (File.Exists(filePath))
+			{
+				files.Add(StorageFile.GetFileFromPath(filePath));
+			}
+			else
+			{
+				this.Log().Log(LogLevel.Error, filePath, static filePath => $"HDROP Clipboard: file path '{filePath}' was not a valid file or directory.");
+			}
+		}
+
+		_currentPackage!.SetStorageItems(files);
+	}
+
 	public void SetContent(DataPackage content)
 	{
 		using var clipboardDisposable = new ClipboardDisposable(_hwnd, true);
 
+		TrySetText(content);
+		TrySetImage(content);
+	}
+
+	private unsafe void TrySetText(DataPackage content)
+	{
 		var view = content.GetView();
 		if (content.Contains(StandardDataFormats.Text))
 		{
@@ -311,17 +329,142 @@ internal class Win32ClipboardExtension : IClipboardExtension
 				Win32Host.RunOnce();
 			}
 
-			if (task.IsCompletedSuccessfully)
+			if (!task.IsCompletedSuccessfully)
 			{
-				var nativeString = Marshal.StringToHGlobalUni(task.Result);
-				var success = PInvoke.SetClipboardData((uint)CLIPBOARD_FORMAT.CF_UNICODETEXT, new HANDLE(nativeString)) != HANDLE.Null || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SetClipboardData)} failed: {Win32Helper.GetErrorMessage()}");
-				if (!success)
+				this.Log().Log(LogLevel.Error, task, static task => $"{nameof(view.GetTextAsync)} failed to fetch data to be copied to the clipboard: {task.Status}", task.Exception);
+				return;
+			}
+
+			var str = task.Result;
+			fixed (void* srcBytes = &str.GetPinnableReference())
+			{
+				// If the hMem parameter identifies a memory object, the object must have been allocated using the function with the GMEM_MOVEABLE flag
+				var bufferLength = (str.Length + 1) * sizeof(char); // + 1 for \0
+				var textBuffer = PInvoke.GlobalAlloc(GLOBAL_ALLOC_FLAGS.GMEM_MOVEABLE, (UIntPtr)bufferLength);
+				if (textBuffer == IntPtr.Zero)
 				{
-					// "If SetClipboardData succeeds, the system owns the object identified by the hMem parameter. The application may not write to or free the data once ownership has been transferred to the system"
-					Marshal.FreeHGlobal(nativeString);
+					this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GlobalAlloc)} failed: {Win32Helper.GetErrorMessage()}");
+					return;
 				}
+
+				var shouldFree = true;
+				using var allocDisposable = Disposable.Create(() =>
+				{
+					// ReSharper disable once AccessToModifiedClosure
+					if (shouldFree)
+					{
+						_ = PInvoke.GlobalFree(textBuffer) == IntPtr.Zero || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GlobalFree)} failed: {Win32Helper.GetErrorMessage()}");
+					}
+				});
+
+				var dstBytes = PInvoke.GlobalLock(textBuffer);
+				if (dstBytes is null)
+				{
+					this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GlobalLock)} failed: {Win32Helper.GetErrorMessage()}");
+					return;
+				}
+
+				var shouldUnlock = true;
+				using var lockDisposable = Disposable.Create(() =>
+				{
+					// ReSharper disable once AccessToModifiedClosure
+					if (shouldUnlock)
+					{
+						_ = PInvoke.GlobalUnlock(textBuffer) == IntPtr.Zero || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GlobalUnlock)} failed: {Win32Helper.GetErrorMessage()}");
+					}
+				});
+
+				Buffer.MemoryCopy(srcBytes, dstBytes, bufferLength, bufferLength);
+
+				var success = PInvoke.SetClipboardData((uint)CLIPBOARD_FORMAT.CF_UNICODETEXT, new HANDLE(textBuffer)) != HANDLE.Null || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SetClipboardData)} failed: {Win32Helper.GetErrorMessage()}");
+				// "If SetClipboardData succeeds, the system owns the object identified by the hMem parameter. The application may not write to or free the data once ownership has been transferred to the system"
+				shouldFree = !success;
+				shouldUnlock = !success; // The docs aren't very clear on this, but Windows refuses to unlock after SetClipboardData succeeds.
 			}
 		}
+	}
+
+	// Untested
+	private unsafe void TrySetImage(DataPackage content)
+	{
+		if (!content.Contains(StandardDataFormats.Bitmap))
+		{
+			return;
+		}
+
+		var view = content.GetView();
+		var task = view.GetBitmapAsync().AsTask();
+		while (!task.IsCompleted)
+		{
+			Win32Host.RunOnce();
+		}
+
+		if (!task.IsCompletedSuccessfully)
+		{
+			this.Log().Log(LogLevel.Error, task, static task => $"{nameof(view.GetBitmapAsync)} failed to fetch data to be copied to the clipboard: {task.Status}", task.Exception);
+			return;
+		}
+
+		var task2 = task.Result.OpenReadAsync().AsTask();
+		while (!task2.IsCompleted)
+		{
+			Win32Host.RunOnce();
+		}
+
+		if (!task2.IsCompletedSuccessfully)
+		{
+			this.Log().Log(LogLevel.Error, task2, static task => $"{nameof(RandomAccessStreamReference.OpenReadAsync)} failed to fetch data to be copied to the clipboard: {task.Status}", task.Exception);
+			return;
+		}
+
+		var stream = task2.Result;
+		Debug.Assert(stream.CanRead);
+		stream.Seek(0);
+
+		// If the hMem parameter identifies a memory object, the object must have been allocated using the function with the GMEM_MOVEABLE flag
+		var handle = PInvoke.GlobalAlloc(GLOBAL_ALLOC_FLAGS.GMEM_MOVEABLE, (UIntPtr)(stream.Size - (ulong)sizeof(BITMAPFILEHEADER)));
+
+		if (handle == IntPtr.Zero)
+		{
+			this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GlobalAlloc)} failed: {Win32Helper.GetErrorMessage()}");
+			return;
+		}
+
+		var shouldFree = true;
+		using var allocDisposable = Disposable.Create(() =>
+		{
+			// ReSharper disable once AccessToModifiedClosure
+			if (shouldFree)
+			{
+				_ = PInvoke.GlobalFree(handle) == IntPtr.Zero || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GlobalFree)} failed: {Win32Helper.GetErrorMessage()}");
+			}
+		});
+
+		var bmp = PInvoke.GlobalLock(handle);
+		if (bmp is null)
+		{
+			this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GlobalLock)} failed: {Win32Helper.GetErrorMessage()}");
+			return;
+		}
+
+		using var lockDisposable = new DisposableStruct<Win32ClipboardExtension, HGLOBAL>(static (@this, h) =>
+		{
+			_ = PInvoke.GlobalUnlock(h) || @this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GlobalUnlock)} failed: {Win32Helper.GetErrorMessage()}");
+		}, this, handle);
+
+		stream.AsStreamForWrite().Write(new ReadOnlySpan<byte>(bmp, (int)stream.Size));
+		var isBmp = stream.Size > (ulong)sizeof(BITMAPFILEHEADER) && ((BITMAPFILEHEADER*)bmp)->bfType == /* BM */ 0x4d42;
+
+		if (!isBmp)
+		{
+			this.Log().Log(LogLevel.Error, static () => "Failed to copy BMP image to clipboard: invalid BMP format.");
+			_ = PInvoke.GlobalFree(handle) == IntPtr.Zero || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GlobalFree)} failed: {Win32Helper.GetErrorMessage()}");
+			return;
+		}
+
+		var success = PInvoke.SetClipboardData((uint)CLIPBOARD_FORMAT.CF_DIB, new HANDLE(handle)) != HANDLE.Null || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SetClipboardData)} failed: {Win32Helper.GetErrorMessage()}");
+		// "If SetClipboardData succeeds, the system owns the object identified by the hMem parameter. The application may not write to or free the data once ownership has been transferred to the system"
+		shouldFree = !success;
 	}
 
 	private readonly ref struct ClipboardDisposable

@@ -120,6 +120,8 @@ GetWindowText
 glGetError
 glGetIntegerv
 glGetString
+GlobalAlloc
+GlobalFree
 GlobalLock
 GlobalSize
 GlobalUnlock
