@@ -164,8 +164,8 @@ internal class Win32ClipboardExtension : IClipboardExtension
 								break;
 							}
 
-							var memSize = PInvoke.GlobalSize((HGLOBAL)handle.Value);
-							if (memSize <= (UIntPtr)Marshal.SizeOf<BITMAPINFOHEADER>())
+							var memSize = (uint)PInvoke.GlobalSize((HGLOBAL)handle.Value);
+							if (memSize <= Marshal.SizeOf<BITMAPINFOHEADER>())
 							{
 								this.Log().Log(LogLevel.Error, memSize, static memSize => $"{nameof(PInvoke.GlobalSize)} returned {memSize}: {Win32Helper.GetErrorMessage()}");
 								break;
@@ -184,67 +184,31 @@ internal class Win32ClipboardExtension : IClipboardExtension
 
 									var srcBitmapInfo = (BITMAPINFO*)dib;
 
-									var width = Math.Abs(srcBitmapInfo->bmiHeader.biWidth);
-									var height = Math.Abs(srcBitmapInfo->bmiHeader.biHeight);
-
-									BITMAPINFO bitmapinfo = new BITMAPINFO
-									{
-										bmiHeader = new BITMAPINFOHEADER
-										{
-											biSize = (uint)Marshal.SizeOf<BITMAPINFOHEADER>(),
-											biWidth = width,
-											biHeight = -height, // the negative is to deal with bottom-up coords
-											biPlanes = 1,
-											biBitCount = 32,
-											biCompression = /* BI_RGB */ 0x0000,
-										}
-									};
-									BITMAPINFOHEADER bitmapInfoHeader = bitmapinfo.bmiHeader;
-									void* srcBits;
-									void* dstBits;
-
-									var srcDC = PInvoke.CreateCompatibleDC(new HDC(IntPtr.Zero));
-									var dstDC = PInvoke.CreateCompatibleDC(srcDC);
-
-									var dstBitmap = PInvoke.CreateDIBSection(dstDC, &bitmapinfo, DIB_USAGE.DIB_RGB_COLORS, &dstBits, HANDLE.Null, 0);
-									var srcBitmap = PInvoke.CreateDIBSection(srcDC, srcBitmapInfo, DIB_USAGE.DIB_RGB_COLORS, &srcBits, HANDLE.Null, 0);
-
+									// https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmapinfoheader#color-tables
 									int colorTableSize = srcBitmapInfo->bmiHeader.biCompression switch
 									{
-										/* BI_RGB */
-										0 when srcBitmapInfo->bmiHeader.biBitCount <= 8 => Marshal.SizeOf<RGBQUAD>() * (int)(srcBitmapInfo->bmiHeader.biClrUsed == 0 ? Math.Pow(2, srcBitmapInfo->bmiHeader.biBitCount) : srcBitmapInfo->bmiHeader.biClrUsed),
+										// BI_RGB
+										0 when srcBitmapInfo->bmiHeader.biBitCount <= 8 => Marshal.SizeOf<RGBQUAD>() * (srcBitmapInfo->bmiHeader.biClrUsed == 0 ? 1 << srcBitmapInfo->bmiHeader.biBitCount : (int)srcBitmapInfo->bmiHeader.biClrUsed),
 										0 => 0,
-										/* BI_BITFIELDS */
+										// BI_BITFIELDS
 										3 => 3 * Marshal.SizeOf<uint>(),
+										// FOURCC
 										_ => Marshal.SizeOf<RGBQUAD>() * (int)srcBitmapInfo->bmiHeader.biClrUsed
 									};
-									Buffer.MemoryCopy((byte*)srcBitmapInfo + Marshal.SizeOf<BITMAPINFOHEADER>() + colorTableSize, srcBits, memSize, memSize - (UIntPtr)Marshal.SizeOf<BITMAPINFOHEADER>() - (UIntPtr)colorTableSize);
 
-									var res1 = PInvoke.SelectObject(srcDC, srcBitmap);
-									var res2 = PInvoke.SelectObject(dstDC, dstBitmap);
-
-									var res3 = PInvoke.BitBlt(dstDC, 0, 0, width, height, srcDC, 0, 0, ROP_CODE.SRCCOPY);
-
-									var imgBitsSize = Math.Abs(width * height * Marshal.SizeOf<uint>());
-									var bmpSize = (uint)(Marshal.SizeOf<BITMAPFILEHEADER>() + Marshal.SizeOf<BITMAPINFOHEADER>() + imgBitsSize);
 									BITMAPFILEHEADER bitmapfileheader = new BITMAPFILEHEADER
 									{
 										bfType = /* BM */ 0x4d42,
-										bfSize = bmpSize,
-										bfOffBits = (uint)(Marshal.SizeOf<BITMAPFILEHEADER>() + Marshal.SizeOf(bitmapInfoHeader))
+										bfSize = (uint)(Marshal.SizeOf<BITMAPFILEHEADER>() + memSize),
+										bfOffBits = (uint)(Marshal.SizeOf<BITMAPFILEHEADER>() + Marshal.SizeOf<BITMAPINFOHEADER>() + colorTableSize)
 									};
 
+									var bmpSize = (uint)(Marshal.SizeOf<BITMAPFILEHEADER>() + memSize);
 									var arr = new byte[bmpSize];
 									fixed (byte* bmp = arr)
 									{
 										Buffer.MemoryCopy(&bitmapfileheader, bmp, bmpSize, Marshal.SizeOf<BITMAPFILEHEADER>());
-										Buffer.MemoryCopy(&bitmapInfoHeader, bmp + Marshal.SizeOf<BITMAPFILEHEADER>(), bmpSize - Marshal.SizeOf<BITMAPFILEHEADER>(), Marshal.SizeOf<BITMAPINFOHEADER>());
-										Buffer.MemoryCopy(dstBits, bmp + Marshal.SizeOf<BITMAPFILEHEADER>() + Marshal.SizeOf<BITMAPINFOHEADER>(), bmpSize - Marshal.SizeOf<BITMAPFILEHEADER>() - Marshal.SizeOf<BITMAPINFOHEADER>(), imgBitsSize);
-									}
-
-									using (var fs = new FileStream("ramoozwin32.bmp", FileMode.OpenOrCreate))
-									{
-										fs.Write(arr, 0, arr.Length);
+										Buffer.MemoryCopy(dib, bmp + Marshal.SizeOf<BITMAPFILEHEADER>(), bmpSize - Marshal.SizeOf<BITMAPFILEHEADER>(), bmpSize - Marshal.SizeOf<BITMAPFILEHEADER>());
 									}
 
 									return Task.FromResult<object>(RandomAccessStreamReference.CreateFromStream(new MemoryStream(arr).AsRandomAccessStream()));
