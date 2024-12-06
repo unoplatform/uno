@@ -705,7 +705,7 @@ jobs:
       UITEST_TEST_TIMEOUT: '90m'
       UITEST_AUTOMATED_GROUP: RuntimeTests
       UITEST_RUNTIME_TEST_GROUP: ${{ RuntimeTestGroup.key }}
-      UITEST_RUNTIME_TEST_GROUP_COUNT: ${{ parameters.UITEST_RUNTIME_TEST_GROUP_COUNT }}
+      UITEST_RUNTIME_TEST_GROUP_COUNT: ${{ parameters.IOS_RUNTIME_TEST_GROUP_COUNT }}
       UITEST_ALLOW_RERUN: 'false'
       UITEST_VARIANT: 'skia'
       xCodeRoot: ${{ parameters.xCodeRootTest }}
