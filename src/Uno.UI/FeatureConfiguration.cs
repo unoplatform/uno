@@ -842,5 +842,19 @@ namespace Uno.UI
 			/// </summary>
 			public static bool DisableThreadingCheck { get; set; }
 		}
+
+		public static class Shape
+		{
+#if __WASM__
+			public static bool BlockNativeUpdateUntil1stArrange { get; set; } = true;
+
+			public static int BBoxCacheSize
+			{
+				get => Microsoft.UI.Xaml.Shapes.Shape.BBoxCacheSize;
+				set => Microsoft.UI.Xaml.Shapes.Shape.BBoxCacheSize = value;
+			}
+			public static bool CacheBBoxCalculationResult { get; set; } = true;
+#endif
+		}
 	}
 }
