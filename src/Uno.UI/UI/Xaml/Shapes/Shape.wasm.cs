@@ -1,27 +1,44 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using Uno;
-using Uno.Disposables;
-using Uno.Extensions;
+using System.Numerics;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Wasm;
+using Uno;
+using Uno.Collections;
+using Uno.Disposables;
+using Uno.Extensions;
+using Uno.UI;
+using Uno.UI.Xaml;
 
 using RadialGradientBrush = Microsoft/* UWP don't rename */.UI.Xaml.Media.RadialGradientBrush;
-using System.Numerics;
-using System.Diagnostics;
-using Uno.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Shapes
 {
 	partial class Shape
 	{
+		private static readonly LruCache<string, Rect> _bboxCache = new(FeatureConfiguration.Shape.WasmDefaultBBoxCacheSize);
+
+		internal static int BBoxCacheSize
+		{
+			get => _bboxCache.Capacity;
+			set => _bboxCache.Capacity = value;
+		}
+	}
+
+	partial class Shape
+	{
+		private protected string _bboxCacheKey;
+
 		private readonly SerialDisposable _fillBrushSubscription = new SerialDisposable();
 		private readonly SerialDisposable _strokeBrushSubscription = new SerialDisposable();
 
 		private DefsSvgElement _defs;
 		private protected readonly SvgElement _mainSvgElement;
+		private protected bool _shouldUpdateNative = !FeatureConfiguration.Shape.WasmDelayUpdateUntilFirstArrange;
 
 		protected Shape() : base("svg", isSvg: true)
 		{
@@ -37,14 +54,30 @@ namespace Microsoft.UI.Xaml.Shapes
 
 		private protected void UpdateRender()
 		{
-			OnFillBrushChanged();
-			OnStrokeBrushChanged();
-			UpdateStrokeThickness();
-			UpdateStrokeDashArray();
+			// We can delay the setting of these property until first arrange pass,
+			// so to prevent double-updates from both OnPropertyChanged & ArrangeOverride.
+			// These updates are a little costly as we need to cross the cs-js bridge.
+			_shouldUpdateNative = true;
+
+			// Regarding to caching of GetPathBoundingBox(js: getBBox) result:
+			// On shapes that depends on it, so: Line, Path, Polygon, Polyline
+			// all the properties below (at the time of written) has no effect on getBBox:
+			// > Note that the values of the opacity, visibility, fill, fill-opacity, fill-rule, stroke-dasharray and stroke-dashoffset properties on an element have no effect on the bounding box of an element.
+			// > -- https://svgwg.org/svg2-draft/coords.html#BoundingBoxes
+			// while not mentioned, stroke-width doesnt affect getBBox neither (for the 4 classes of shape mentioned above).
+
+			// StrokeThickness can alter getBBox on Ellipse and Rectangle, but we dont use getBBox in these two.
+
+			OnFillBrushChanged(); // fill
+			OnStrokeBrushChanged(); // stroke
+			UpdateStrokeThickness(); // stroke-width
+			UpdateStrokeDashArray(); // stroke-dasharray
 		}
 
 		private void OnFillBrushChanged()
 		{
+			if (!_shouldUpdateNative) return;
+
 			// We don't request an update of the HitTest (UpdateHitTest()) since this element is never expected to be hit testable.
 			// Note: We also enforce that the default hit test == false is not altered in the OnHitTestVisibilityChanged.
 
@@ -111,6 +144,8 @@ namespace Microsoft.UI.Xaml.Shapes
 
 		private void OnStrokeBrushChanged()
 		{
+			if (!_shouldUpdateNative) return;
+
 			var svgElement = _mainSvgElement;
 			var stroke = Stroke;
 
@@ -159,6 +194,8 @@ namespace Microsoft.UI.Xaml.Shapes
 
 		private void UpdateStrokeThickness()
 		{
+			if (!_shouldUpdateNative) return;
+
 			var svgElement = _mainSvgElement;
 			var strokeThickness = ActualStrokeThickness;
 
@@ -174,6 +211,8 @@ namespace Microsoft.UI.Xaml.Shapes
 
 		private void UpdateStrokeDashArray()
 		{
+			if (!_shouldUpdateNative) return;
+
 			var svgElement = _mainSvgElement;
 
 			if (StrokeDashArray is not { } strokeDashArray)
@@ -203,7 +242,22 @@ namespace Microsoft.UI.Xaml.Shapes
 
 		private static Rect GetPathBoundingBox(Shape shape)
 		{
-			return shape._mainSvgElement.GetBBox();
+			if (FeatureConfiguration.Shape.WasmCacheBBoxCalculationResult)
+			{
+				var key = shape.GetBBoxCacheKey();
+				if (!string.IsNullOrEmpty(key))
+				{
+					if (!_bboxCache.TryGetValue(key, out var rect))
+					{
+						_bboxCache[key] = rect = shape._mainSvgElement.GetBBox();
+					}
+
+					return rect;
+				}
+			}
+
+			var result = shape._mainSvgElement.GetBBox();
+			return result;
 		}
 
 		private protected void Render(Shape shape, Size? size = null, double scaleX = 1d, double scaleY = 1d, double renderOriginX = 0d, double renderOriginY = 0d)
@@ -225,5 +279,11 @@ namespace Microsoft.UI.Xaml.Shapes
 			return (considerFill || considerStroke) &&
 				WindowManagerInterop.ContainsPoint(_mainSvgElement.HtmlId, relativePosition.X, relativePosition.Y, considerFill, considerStroke);
 		}
+
+		// lazy impl, and _cacheKey can be invalidated by setting to null
+		private string GetBBoxCacheKey() => _bboxCacheKey ?? (_bboxCacheKey = GetBBoxCacheKeyImpl());
+
+		// note: perf is of concern here. avoid $"string interpolation" and current-culture .ToString, and use string.concat and ToStringInvariant
+		private protected abstract string GetBBoxCacheKeyImpl();
 	}
 }
