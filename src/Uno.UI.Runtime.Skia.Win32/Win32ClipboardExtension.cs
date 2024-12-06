@@ -59,13 +59,11 @@ internal class Win32ClipboardExtension : IClipboardExtension
 		using var lpClassName = new Win32Helper.NativeNulTerminatedUtf16String("UnoPlatformClipboardWindow");
 		using var windowTitle = new Win32Helper.NativeNulTerminatedUtf16String("");
 
-		var hInstance = new HINSTANCE(Process.GetCurrentProcess().Handle);
-
 		_windowClass = new WNDCLASSEXW
 		{
 			cbSize = (uint)Marshal.SizeOf<WNDCLASSEXW>(),
 			lpfnWndProc = WndProc,
-			hInstance = hInstance,
+			hInstance = Win32Helper.GetHInstance(),
 			lpszClassName = lpClassName,
 		};
 
@@ -86,7 +84,7 @@ internal class Win32ClipboardExtension : IClipboardExtension
 			0,
 			HWND.HWND_MESSAGE,
 			HMENU.Null,
-			hInstance,
+			Win32Helper.GetHInstance(),
 			null);
 
 		if (_hwnd == HWND.Null)

@@ -65,11 +65,11 @@ internal partial class Win32WindowWrapper : IUnoCorePointerInputSource
 			_ => throw new ArgumentOutOfRangeException()
 		};
 		var hCursor = PInvoke.LoadCursor(HINSTANCE.Null, new PCWSTR((char*)cursor));
-		PInvoke.SetCursor(hCursor);
 		using var cursorDisposable = new DisposableStruct<HCURSOR, Win32WindowWrapper>(static (hCursor, @this) =>
 		{
 			_ = PInvoke.DestroyCursor(hCursor) || @this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.DestroyCursor)} failed: {Win32Helper.GetErrorMessage()}");
 		}, hCursor, this);
+		PInvoke.SetCursor(hCursor);
 	}
 
 	[NotImplemented] public Point PointerPosition => default;
@@ -82,28 +82,7 @@ internal partial class Win32WindowWrapper : IUnoCorePointerInputSource
 
 	public void ReleasePointerCapture(PointerIdentifier pointer) => ReleasePointerCapture();
 
-	private void OnPointerCaptureChanged(WPARAM wParam)
-	{
-		var pointerId = ReadWParams(wParam, out _, out var pointerType, out var position, out var rawPosition);
-
-		var point = new PointerPoint(
-			frameId: Interlocked.Increment(ref _currentPointerFrameId),
-			timestamp: (ulong)(PInvoke.GetMessageTime() * 1000), // GetMessageTime is in ms
-			device: PointerDevice.For(pointerType switch
-			{
-				POINTER_INPUT_TYPE.PT_PEN => PointerDeviceType.Pen,
-				POINTER_INPUT_TYPE.PT_TOUCH => PointerDeviceType.Touch,
-				_ => PointerDeviceType.Mouse
-			}),
-			pointerId: pointerId,
-			rawPosition: new Point(rawPosition.X, rawPosition.Y),
-			position: new Point(position.X, position.Y),
-			isInContact: false,
-			properties: null);
-		PointerCaptureLost?.Invoke(this, new PointerEventArgs(point, Win32Helper.GetKeyModifiers()));
-	}
-
-	private ushort ReadWParams(WPARAM wParam, out POINTER_INFO pointerInfo, out POINTER_INPUT_TYPE pointerType, out System.Drawing.Point position, out System.Drawing.Point rawPosition)
+	private ushort ReadCommonWParamInfo(WPARAM wParam, out POINTER_INFO pointerInfo, out POINTER_INPUT_TYPE pointerType, out System.Drawing.Point position, out System.Drawing.Point rawPosition)
 	{
 		var pointerId = Win32Helper.GET_POINTERID_WPARAM(wParam);
 
@@ -128,9 +107,30 @@ internal partial class Win32WindowWrapper : IUnoCorePointerInputSource
 		return pointerId;
 	}
 
+	private void OnPointerCaptureChanged(WPARAM wParam)
+	{
+		var pointerId = ReadCommonWParamInfo(wParam, out _, out var pointerType, out var position, out var rawPosition);
+
+		var point = new PointerPoint(
+			frameId: Interlocked.Increment(ref _currentPointerFrameId),
+			timestamp: (ulong)(PInvoke.GetMessageTime() * 1000), // GetMessageTime is in ms
+			device: PointerDevice.For(pointerType switch
+			{
+				POINTER_INPUT_TYPE.PT_PEN => PointerDeviceType.Pen,
+				POINTER_INPUT_TYPE.PT_TOUCH => PointerDeviceType.Touch,
+				_ => PointerDeviceType.Mouse
+			}),
+			pointerId: pointerId,
+			rawPosition: new Point(rawPosition.X, rawPosition.Y),
+			position: new Point(position.X, position.Y),
+			isInContact: false,
+			properties: null);
+		PointerCaptureLost?.Invoke(this, new PointerEventArgs(point, Win32Helper.GetKeyModifiers()));
+	}
+
 	private void OnPointer(uint msg, WPARAM wParam)
 	{
-		var pointerId = ReadWParams(wParam, out var pointerInfo, out var pointerType, out var position, out var rawPosition);
+		var pointerId = ReadCommonWParamInfo(wParam, out var pointerInfo, out var pointerType, out var position, out var rawPosition);
 
 		PointerPointProperties properties;
 		if (msg is PInvoke.WM_POINTERWHEEL or PInvoke.WM_POINTERHWHEEL)

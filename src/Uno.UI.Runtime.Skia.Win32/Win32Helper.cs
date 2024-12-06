@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Windows.Foundation;
 using Windows.System;
@@ -15,6 +16,8 @@ namespace Uno.UI.Runtime.Skia.Win32;
 
 internal static class Win32Helper
 {
+	public static HINSTANCE GetHInstance() => new(Process.GetCurrentProcess().Handle);
+
 	public static string GetErrorMessage() => GetErrorMessage((uint)Marshal.GetLastWin32Error());
 
 	public static unsafe string GetErrorMessage(uint errorCode)

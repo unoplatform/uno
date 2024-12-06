@@ -16,119 +16,10 @@ namespace Uno.UI.Runtime.Skia.Win32;
 
 internal partial class Win32WindowWrapper
 {
-	private record OpenGlContext(HDC Hdc, HGLRC GlContext, GRGlInterface GrGlInterface, GRContext GrContext);
-	private readonly OpenGlContext? _gl;
-
 	private int _renderCount;
 
 	private Size? _lastSize;
 	private SKSurface? _surface;
-
-	private unsafe OpenGlContext? CreateGlContext()
-	{
-		var hdc = PInvoke.GetDC(_hwnd);
-		if (hdc == IntPtr.Zero)
-		{
-			this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GetDC)} failed: {Win32Helper.GetErrorMessage()}");
-			ReleaseGlContext(hdc, HGLRC.Null, null, null);
-			return null;
-		}
-
-		PIXELFORMATDESCRIPTOR pfd = new()
-		{
-			nSize = (ushort)Marshal.SizeOf<PIXELFORMATDESCRIPTOR>(),
-			nVersion = 1,
-			dwFlags = PFD_FLAGS.PFD_DRAW_TO_WINDOW | PFD_FLAGS.PFD_SUPPORT_OPENGL | PFD_FLAGS.PFD_DOUBLEBUFFER,
-			iPixelType = PFD_PIXEL_TYPE.PFD_TYPE_RGBA,
-			cColorBits = 32,
-			cRedBits = 8,
-			cGreenBits = 8,
-			cBlueBits = 8,
-			cAlphaBits = 8,
-			cDepthBits = 16,
-			cStencilBits = 1 // anything > 0 is fine, we will most likely get 8
-		};
-
-		// Choose the best matching pixel format
-		var pixelFormat = PInvoke.ChoosePixelFormat(hdc, pfd);
-
-		if (pixelFormat == 0)
-		{
-			this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.ChoosePixelFormat)} failed: {Win32Helper.GetErrorMessage()}");
-			ReleaseGlContext(hdc, HGLRC.Null, null, null);
-			return null;
-		}
-
-		this.Log().Log(LogLevel.Debug, hdc, pixelFormat, static (dc, pixelFormat) =>
-		{
-			PIXELFORMATDESCRIPTOR chosenPfd = default;
-			return PInvoke.DescribePixelFormat(dc, pixelFormat, (uint)Marshal.SizeOf<PIXELFORMATDESCRIPTOR>(), &chosenPfd) == 0
-				? $"{nameof(PInvoke.DescribePixelFormat)} failed: {Win32Helper.GetErrorMessage()}"
-				: $"{nameof(PInvoke.ChoosePixelFormat)} chose a PFD with {chosenPfd.cColorBits} ColorBits {{ R{chosenPfd.cRedBits} G{chosenPfd.cGreenBits} B{chosenPfd.cBlueBits} A{chosenPfd.cAlphaBits} }}, {chosenPfd.cDepthBits} DepthBits and {chosenPfd.cStencilBits} StencilBits.";
-		});
-
-		// Set the pixel format for the device context
-		if (!PInvoke.SetPixelFormat(hdc, pixelFormat, pfd))
-		{
-			this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SetPixelFormat)} failed: {Win32Helper.GetErrorMessage()}");
-			ReleaseGlContext(hdc, HGLRC.Null, null, null);
-			return null;
-		}
-
-		// Create the OpenGL context
-		var glContext = PInvoke.wglCreateContext(hdc);
-
-		if (glContext == HGLRC.Null)
-		{
-			this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.wglCreateContext)} failed: {Win32Helper.GetErrorMessage()}");
-			ReleaseGlContext(hdc, HGLRC.Null, null, null);
-			return null;
-		}
-
-		using var makeCurrentDisposable = new Win32Helper.WglCurrentContextDisposable(hdc, glContext);
-
-		this.Log().Log(LogLevel.Trace, static () =>
-		{
-			var version = PInvoke.glGetString(/* GL_VERSION */ 0x1F02);
-			return version is null
-				? $"{nameof(PInvoke.glGetString)} failed with error code {PInvoke.glGetError().ToString("X", CultureInfo.InvariantCulture)}"
-				: $"OpenGL Version: {Marshal.PtrToStringUTF8((IntPtr)version)}";
-		});
-
-		var grGlInterface = GRGlInterface.Create();
-
-		if (grGlInterface is null)
-		{
-			this.Log().Log(LogLevel.Error, static () => "OpenGL is not supported in this system (Cannot create GRGlInterface)");
-			ReleaseGlContext(hdc, glContext, null, null);
-			return null;
-		}
-
-		if (GRContext.CreateGl(grGlInterface) is not { } grContext)
-		{
-			this.Log().Log(LogLevel.Error, static () => "OpenGL is not supported in this system (failed to create GRContext)");
-			ReleaseGlContext(hdc, glContext, grGlInterface, null);
-			return null;
-		}
-
-		return new OpenGlContext(hdc, glContext, grGlInterface, grContext);
-	}
-
-	private void ReleaseGlContext(HDC hdc, HGLRC glContext, GRGlInterface? grGlInterface, GRContext? grContext)
-	{
-		grContext?.Dispose();
-		grGlInterface?.Dispose();
-
-		if (glContext != HGLRC.Null)
-		{
-			_ = PInvoke.wglDeleteContext(glContext) || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.wglDeleteContext)} failed: {Win32Helper.GetErrorMessage()}");
-		}
-
-		if (hdc != new HDC(IntPtr.Zero))
-		{
-			_ = PInvoke.ReleaseDC(_hwnd, hdc) == 1 || typeof(Win32WindowWrapper).Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.ReleaseDC)} failed: {Win32Helper.GetErrorMessage()}");
-		}
-	}
 
 	private void Paint()
 	{
@@ -177,7 +68,7 @@ internal partial class Win32WindowWrapper
 		_renderer.CopyPixels(clientRect.Width, clientRect.Height);
 	}
 
-	private interface IRenderer
+	private interface IRenderer : IDisposable
 	{
 		void StartPaint();
 		void EndPaint();
@@ -260,35 +151,158 @@ internal partial class Win32WindowWrapper
 		}
 
 		bool IRenderer.IsSoftware() => true;
+
+		void IDisposable.Dispose() => ((IRenderer)this).Reset();
 	}
 
-	private class GlRenderer(HWND hwnd, OpenGlContext gl) : IRenderer
+	private class GlRenderer : IRenderer
 	{
+		private readonly HWND _hwnd;
+		private readonly HDC _hdc;
+		private readonly HGLRC _glContext;
+		private readonly GRGlInterface _grGlInterface;
+		private readonly GRContext _grContext;
+
 		private GRBackendRenderTarget? _renderTarget;
-		private Win32Helper.WglCurrentContextDisposable? _disposable;
+		private Win32Helper.WglCurrentContextDisposable? _paintDisposable;
+
+		private GlRenderer(HWND hwnd, HDC hdc, HGLRC glContext, GRGlInterface grGlInterface, GRContext grContext)
+		{
+			_hwnd = hwnd;
+			_hdc = hdc;
+			_glContext = glContext;
+			_grGlInterface = grGlInterface;
+			_grContext = grContext;
+		}
+
+		public static unsafe GlRenderer? TryCreateGlRenderer(HWND hwnd)
+		{
+			var hdc = PInvoke.GetDC(hwnd);
+			if (hdc == IntPtr.Zero)
+			{
+				typeof(GlRenderer).Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GetDC)} failed: {Win32Helper.GetErrorMessage()}");
+				ReleaseGlContext(hwnd, hdc, HGLRC.Null, null, null);
+				return null;
+			}
+
+			PIXELFORMATDESCRIPTOR pfd = new()
+			{
+				nSize = (ushort)Marshal.SizeOf<PIXELFORMATDESCRIPTOR>(),
+				nVersion = 1,
+				dwFlags = PFD_FLAGS.PFD_DRAW_TO_WINDOW | PFD_FLAGS.PFD_SUPPORT_OPENGL | PFD_FLAGS.PFD_DOUBLEBUFFER,
+				iPixelType = PFD_PIXEL_TYPE.PFD_TYPE_RGBA,
+				cColorBits = 32,
+				cRedBits = 8,
+				cGreenBits = 8,
+				cBlueBits = 8,
+				cAlphaBits = 8,
+				cDepthBits = 16,
+				cStencilBits = 1 // anything > 0 is fine, we will most likely get 8
+			};
+
+			// Choose the best matching pixel format
+			var pixelFormat = PInvoke.ChoosePixelFormat(hdc, pfd);
+
+			if (pixelFormat == 0)
+			{
+				typeof(GlRenderer).Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.ChoosePixelFormat)} failed: {Win32Helper.GetErrorMessage()}");
+				ReleaseGlContext(hwnd, hdc, HGLRC.Null, null, null);
+				return null;
+			}
+
+			typeof(GlRenderer).Log().Log(LogLevel.Debug, hdc, pixelFormat, static (dc, pixelFormat) =>
+			{
+				PIXELFORMATDESCRIPTOR chosenPfd = default;
+				return PInvoke.DescribePixelFormat(dc, pixelFormat, (uint)Marshal.SizeOf<PIXELFORMATDESCRIPTOR>(), &chosenPfd) == 0
+					? $"{nameof(PInvoke.DescribePixelFormat)} failed: {Win32Helper.GetErrorMessage()}"
+					: $"{nameof(PInvoke.ChoosePixelFormat)} chose a PFD with {chosenPfd.cColorBits} ColorBits {{ R{chosenPfd.cRedBits} G{chosenPfd.cGreenBits} B{chosenPfd.cBlueBits} A{chosenPfd.cAlphaBits} }}, {chosenPfd.cDepthBits} DepthBits and {chosenPfd.cStencilBits} StencilBits.";
+			});
+
+			// Set the pixel format for the device context
+			if (!PInvoke.SetPixelFormat(hdc, pixelFormat, pfd))
+			{
+				typeof(GlRenderer).Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SetPixelFormat)} failed: {Win32Helper.GetErrorMessage()}");
+				ReleaseGlContext(hwnd, hdc, HGLRC.Null, null, null);
+				return null;
+			}
+
+			// Create the OpenGL context
+			var glContext = PInvoke.wglCreateContext(hdc);
+
+			if (glContext == HGLRC.Null)
+			{
+				typeof(GlRenderer).Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.wglCreateContext)} failed: {Win32Helper.GetErrorMessage()}");
+				ReleaseGlContext(hwnd, hdc, HGLRC.Null, null, null);
+				return null;
+			}
+
+			using var makeCurrentDisposable = new Win32Helper.WglCurrentContextDisposable(hdc, glContext);
+
+			typeof(GlRenderer).Log().Log(LogLevel.Trace, static () =>
+			{
+				var version = PInvoke.glGetString(/* GL_VERSION */ 0x1F02);
+				return version is null
+					? $"{nameof(PInvoke.glGetString)} failed with error code {PInvoke.glGetError().ToString("X", CultureInfo.InvariantCulture)}"
+					: $"OpenGL Version: {Marshal.PtrToStringUTF8((IntPtr)version)}";
+			});
+
+			var grGlInterface = GRGlInterface.Create();
+
+			if (grGlInterface is null)
+			{
+				typeof(GlRenderer).Log().Log(LogLevel.Error, static () => "OpenGL is not supported in this system (Cannot create GRGlInterface)");
+				ReleaseGlContext(hwnd, hdc, glContext, null, null);
+				return null;
+			}
+
+			if (GRContext.CreateGl(grGlInterface) is not { } grContext)
+			{
+				typeof(GlRenderer).Log().Log(LogLevel.Error, static () => "OpenGL is not supported in this system (failed to create GRContext)");
+				ReleaseGlContext(hwnd, hdc, glContext, grGlInterface, null);
+				return null;
+			}
+
+			return new GlRenderer(hwnd, hdc, glContext, grGlInterface, grContext);
+		}
+
+		private static void ReleaseGlContext(HWND hwnd, HDC hdc, HGLRC glContext, GRGlInterface? grGlInterface, GRContext? grContext)
+		{
+			grContext?.Dispose();
+			grGlInterface?.Dispose();
+
+			if (glContext != HGLRC.Null)
+			{
+				_ = PInvoke.wglDeleteContext(glContext) || typeof(Win32WindowWrapper).Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.wglDeleteContext)} failed: {Win32Helper.GetErrorMessage()}");
+			}
+
+			if (hdc != new HDC(IntPtr.Zero))
+			{
+				_ = PInvoke.ReleaseDC(hwnd, hdc) == 1 || typeof(Win32WindowWrapper).Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.ReleaseDC)} failed: {Win32Helper.GetErrorMessage()}");
+			}
+		}
 
 		void IRenderer.StartPaint()
 		{
-			Debug.Assert(_disposable == null);
-			_disposable = new Win32Helper.WglCurrentContextDisposable(gl.Hdc, gl.GlContext);
+			Debug.Assert(_paintDisposable == null);
+			_paintDisposable = new Win32Helper.WglCurrentContextDisposable(_hdc, _glContext);
 		}
 
 		void IRenderer.EndPaint()
 		{
-			Debug.Assert(_disposable != null);
-			_disposable?.Dispose();
-			_disposable = null;
+			Debug.Assert(_paintDisposable != null);
+			_paintDisposable?.Dispose();
+			_paintDisposable = null;
 		}
 
 		SKSurface IRenderer.UpdateSize(int width, int height)
 		{
-			var hdc = PInvoke.GetDC(hwnd);
+			var hdc = PInvoke.GetDC(_hwnd);
 			using var dcDisposable = new DisposableStruct<HWND, HDC>(static (hwnd, hdc) =>
 			{
 				_ = PInvoke.ReleaseDC(hwnd, hdc) == 1 || typeof(Win32WindowWrapper).Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.ReleaseDC)} failed: {Win32Helper.GetErrorMessage()}");
-			}, hwnd, hdc);
+			}, _hwnd, hdc);
 
-			using var makeCurrentDisposable = new Win32Helper.WglCurrentContextDisposable(hdc, gl.GlContext);
+			using var makeCurrentDisposable = new Win32Helper.WglCurrentContextDisposable(hdc, _glContext);
 
 			int framebuffer = default, stencil = default, samples = default;
 			PInvoke.glGetIntegerv(/* GL_FRAMEBUFFER_BINDING */ 0x8CA6, ref framebuffer);
@@ -296,16 +310,16 @@ internal partial class Win32WindowWrapper
 			PInvoke.glGetIntegerv(/* GL_SAMPLES */ 0x80A9, ref samples);
 
 			_renderTarget = new GRBackendRenderTarget(width, height, samples, stencil, new GRGlFramebufferInfo((uint)framebuffer, SKColorType.Rgba8888.ToGlSizedFormat()));
-			return SKSurface.Create(gl.GrContext, _renderTarget, GRSurfaceOrigin.BottomLeft, SKColorType.Rgba8888); // BottomLeft to match GL's origin
+			return SKSurface.Create(_grContext, _renderTarget, GRSurfaceOrigin.BottomLeft, SKColorType.Rgba8888); // BottomLeft to match GL's origin
 		}
 
 		void IRenderer.CopyPixels(int width, int height)
 		{
-			var hdc = PInvoke.GetDC(hwnd);
+			var hdc = PInvoke.GetDC(_hwnd);
 			using var dcDisposable = new DisposableStruct<HWND, HDC>(static (hwnd, hdc) =>
 			{
 				_ = PInvoke.ReleaseDC(hwnd, hdc) == 1 || typeof(Win32WindowWrapper).Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.ReleaseDC)} failed: {Win32Helper.GetErrorMessage()}");
-			}, hwnd, hdc);
+			}, _hwnd, hdc);
 			_ = PInvoke.SwapBuffers(hdc) || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SwapBuffers)} failed: {Win32Helper.GetErrorMessage()}");
 		}
 
@@ -316,5 +330,11 @@ internal partial class Win32WindowWrapper
 		}
 
 		bool IRenderer.IsSoftware() => false;
+
+		void IDisposable.Dispose()
+		{
+			((IRenderer)this).Reset();
+			ReleaseGlContext(_hwnd, _hdc, _glContext, _grGlInterface, _grContext);
+		}
 	}
 }

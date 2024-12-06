@@ -30,7 +30,6 @@ namespace Uno.UI.Runtime.Skia.Win32;
 internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHost
 {
 	private const string WindowClassName = "UnoPlatformRegularWindow";
-	private static readonly HINSTANCE _hInstance = new HINSTANCE(Process.GetCurrentProcess().Handle);
 
 	// _windowClass must be statically stored, otherwise lpfnWndProc will get collected and the CLR will throw some weird exceptions
 	// ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
@@ -59,7 +58,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		{
 			cbSize = (uint)Marshal.SizeOf<WNDCLASSEXW>(),
 			lpfnWndProc = WndProc,
-			hInstance = _hInstance,
+			hInstance = Win32Helper.GetHInstance(),
 			lpszClassName = lpClassName,
 			style = WNDCLASS_STYLES.CS_HREDRAW | WNDCLASS_STYLES.CS_VREDRAW // https://learn.microsoft.com/en-us/windows/win32/winmsg/window-class-styles
 		};
@@ -89,6 +88,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		OnSystemThemeChanged(Win32SystemThemeHelperExtension.Instance, EventArgs.Empty);
 
 		OnWindowSizeOrLocationChanged();
+
 		_ = (RasterizationScale = (float)PInvoke.GetDpiForWindow(_hwnd) / PInvoke.USER_DEFAULT_SCREEN_DPI) != 0
 			|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GetDpiForWindow)} failed: {Win32Helper.GetErrorMessage()}");
 
@@ -96,8 +96,9 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 		Win32Host.RegisterWindow(_hwnd);
 
-		_gl = FeatureConfiguration.Rendering.UseOpenGLOnWin32 ?? true ? CreateGlContext() : null;
-		_renderer = _gl is null ? new SoftwareRenderer(_hwnd) : new GlRenderer(_hwnd, _gl);
+		_renderer = FeatureConfiguration.Rendering.UseOpenGLOnWin32 ?? true
+			? (IRenderer?)GlRenderer.TryCreateGlRenderer(_hwnd) ?? new SoftwareRenderer(_hwnd)
+			: new SoftwareRenderer(_hwnd);
 
 		RegisterForBackgroundColor();
 
@@ -156,7 +157,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			(int)preferredWindowSize.Height,
 			HWND.Null,
 			HMENU.Null,
-			_hInstance,
+			Win32Helper.GetHInstance(),
 			null);
 		_wrapperForNextCreateWindow = null;
 
@@ -223,11 +224,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				_applicationView.PropertyChanged -= OnApplicationViewPropertyChanged;
 				Win32SystemThemeHelperExtension.Instance.SystemThemeChanged -= OnSystemThemeChanged;
 				Win32Host.UnregisterWindow(_hwnd);
-				_renderer.Reset();
-				if (_gl is { })
-				{
-					ReleaseGlContext(_gl.Hdc, _gl.GlContext, _gl.GrGlInterface, _gl.GrContext);
-				}
+				_renderer.Dispose();
 				_backgroundDisposable?.Dispose();
 				XamlRootMap.Unregister(XamlRoot!);
 				return new LRESULT(0);
