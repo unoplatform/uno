@@ -47,6 +47,9 @@ namespace Microsoft.UI.Xaml
 	public partial class UIElement : DependencyObject, IXUidProvider
 	{
 		private protected static bool _traceLayoutCycle;
+#if !__SKIA__
+		private bool _warnedAboutTranslation;
+#endif
 
 		private static readonly TypedEventHandler<UIElement, BringIntoViewRequestedEventArgs> OnBringIntoViewRequestedHandler =
 			(UIElement sender, BringIntoViewRequestedEventArgs args) => sender.OnBringIntoViewRequested(args);
@@ -265,6 +268,19 @@ namespace Microsoft.UI.Xaml
 				if (_translation != value)
 				{
 					_translation = value;
+
+#if !__SKIA__
+					if (!_warnedAboutTranslation &&
+						(_translation.X != 0 || _translation.Y != 0))
+					{
+						_warnedAboutTranslation = true;
+						if (this.Log().IsEnabled(LogLevel.Warning))
+						{
+							this.Log().LogWarning("Translation supports only Z-axis on this target.");
+						}
+					}
+#endif
+
 					UpdateShadow();
 					InvalidateArrange();
 				}
