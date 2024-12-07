@@ -411,6 +411,24 @@
     - name: FAQ
       href: xref:Uno.Development.FAQ
 
+- name: Studio
+  items:
+    - name: Overview
+      href: xref:Uno.Platform.Studio.Overview
+    - name: Hot Reload
+      href: xref:Uno.Platform.Studio.HotReload.Overview
+    - name: Hot Design
+      href: xref:Uno.HotDesign.Overview
+      items:
+      - name: Overview
+        href: xref:Uno.HotDesign.Overview
+      - name: Getting Started with Hot Design
+        href: xref:Uno.HotDesign.GetStarted.Guide
+      - name: Counter Tutorial
+        href: xref:Uno.HotDesign.GetStarted.CounterTutorial
+    - name: Design-to-Code
+      href: external/figma-docs/toc.yml
+
 - name: Reference
   items:
     - name: Overview
@@ -672,10 +690,6 @@
 - name: Toolkit
   #topicHref: external/uno.toolkit.ui/doc/getting-started.md
   href: external/uno.toolkit.ui/doc/toc.yml
-  
-- name: Figma
-  #topicHref: xref:Uno.Figma.GetStarted
-  href: external/figma-docs/toc.yml
 
 - name: Tooling
   items:
