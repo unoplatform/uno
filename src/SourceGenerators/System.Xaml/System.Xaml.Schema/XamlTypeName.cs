@@ -22,13 +22,11 @@
 //
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 
 namespace Uno.Xaml.Schema
 {
-	[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Types manipulated here have been marked earlier")]
 	public class XamlTypeName
 	{
 		public static XamlTypeName Parse (string typeName, IXamlNamespaceResolver namespaceResolver)
@@ -202,7 +200,7 @@ namespace Uno.Xaml.Schema
 			Name = xamlType.Name;
 			if (xamlType.TypeArguments != null && xamlType.TypeArguments.Count > 0) {
 				var l = new List<XamlTypeName> ();
-				l.AddRange (from x in xamlType.TypeArguments.AsQueryable () select new XamlTypeName (x));
+				l.AddRange (xamlType.TypeArguments.Select(x => new XamlTypeName (x)));
 				TypeArguments = l;
 			}
 		}

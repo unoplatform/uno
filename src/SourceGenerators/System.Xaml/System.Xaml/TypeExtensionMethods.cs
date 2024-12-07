@@ -33,7 +33,6 @@ using Uno.Xaml.Schema;
 
 namespace Uno.Xaml
 {
-	[UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "Types manipulated here have been marked earlier")]
 	static class TypeExtensionMethods
 	{
 		#region inheritance search and custom attribute provision
@@ -63,6 +62,7 @@ namespace Uno.Xaml
 			return definitions.Any (t => ImplementsInterface (type, t));
 		}
 
+		[UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "Types manipulated here have been marked earlier.")]
 		public static bool ImplementsInterface (this Type type, Type definition)
 		{
 			if (type == null)
@@ -120,7 +120,9 @@ namespace Uno.Xaml
 				return (string) obj;
 			throw new InvalidCastException (String.Format (CultureInfo.InvariantCulture, "Cannot cast object '{0}' to string", obj.GetType ()));
 		}
-		
+
+		[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Types manipulated here have been marked earlier.")]
+		[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "Types manipulated here have been marked earlier.")]
 		public static TypeConverter GetTypeConverter (this Type type)
 		{
 			return TypeDescriptor.GetConverter (type);
@@ -199,7 +201,8 @@ namespace Uno.Xaml
 				type == XamlLanguage.Static ||
 				ExaminePositionalParametersApplicable (type, vsctx) && type.ConstructionRequiresArguments;
 		}
-		
+
+		[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Types manipulated here have been marked earlier.")]
 		static bool ExaminePositionalParametersApplicable (this XamlType type, IValueSerializerContext vsctx)
 		{
 			if (!type.IsMarkupExtension || type.UnderlyingType == null)
@@ -225,6 +228,7 @@ namespace Uno.Xaml
 			return type.GetAllMembers ().Where (m => m.UnderlyingMember != null && m.GetCustomAttributeProvider ().GetCustomAttribute<ConstructorArgumentAttribute> (false) != null);
 		}
 
+		[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Types manipulated here have been marked earlier.")]
 		public static IEnumerable<XamlMember> GetSortedConstructorArguments (this XamlType type)
 		{
 			var args = type.GetConstructorArguments ().ToArray ();

@@ -25,6 +25,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -329,6 +330,7 @@ namespace Uno.Xaml
 
 		static readonly BindingFlags static_flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
 
+		[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Not used.")]
 		protected override void OnWriteEndMember ()
 		{
 			var xm = CurrentMember;
@@ -365,6 +367,7 @@ namespace Uno.Xaml
 			}
 		}
 
+		[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Not used.")]
 		void SetEvent (XamlMember member, string value)
 		{
 			if (member.UnderlyingMember == null)

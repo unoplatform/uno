@@ -23,6 +23,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
 using Uno.Xaml.Schema;
@@ -49,6 +50,7 @@ namespace System.Windows.Markup
 		[DefaultValue (null)]
 		public Type MemberType { get; set; }
 
+		[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Not used.")]
 		public override object ProvideValue (IServiceProvider serviceProvider)
 		{
 			if (Member == null)

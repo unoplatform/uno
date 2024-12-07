@@ -25,6 +25,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Windows.Markup;
@@ -272,6 +273,7 @@ namespace Uno.Xaml
 			}
 		}
 
+		[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Not used.")]
 		IEnumerable<XamlNodeInfo> GetItemsNodes (XamlMember xm, XamlObject xobj)
 		{
 			var obj = xobj.GetRawValue ();

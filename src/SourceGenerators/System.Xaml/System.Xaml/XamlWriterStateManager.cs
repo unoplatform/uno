@@ -22,6 +22,7 @@
 //
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -70,6 +71,7 @@ MemberDone + StartMember -> MemberStarted : push(xm)
 
 namespace Uno.Xaml
 {
+	[UnconditionalSuppressMessage("Trimming", "IL2087", Justification = "Not used.")]
 	internal class XamlWriterStateManager<TError,TNSError> : XamlWriterStateManager
 		where TError : Exception
 		where TNSError : Exception

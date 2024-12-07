@@ -24,6 +24,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
 using System.Windows.Markup;
@@ -83,7 +84,8 @@ namespace System.Windows.Markup
 			// null is allowed.
 			Items.Add (text);
 		}
-		
+
+		[UnconditionalSuppressMessage("AOT", "IL3050", Justification = "Not used.")]
 		public override object ProvideValue (IServiceProvider serviceProvider)
 		{
 			if (Type == null)

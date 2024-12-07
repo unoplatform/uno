@@ -24,6 +24,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
 using System.Windows.Markup;
@@ -64,6 +65,8 @@ namespace Uno.Xaml.Schema
 			get { return type == null ? null : type.SetTypeConverterHandler; }
 		}
 
+		[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Not used.")]
+		[UnconditionalSuppressMessage("AOT", "IL3050", Justification = "Not used.")]
 		public virtual void AddToCollection (object instance, object item)
 		{
 			if (instance == null)
@@ -101,6 +104,8 @@ namespace Uno.Xaml.Schema
 			mi.Invoke (instance, new object [] {item});
 		}
 
+		[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Not used.")]
+		[UnconditionalSuppressMessage("AOT", "IL3050", Justification = "Not used.")]
 		public virtual void AddToDictionary (object instance, object key, object item)
 		{
 			if (instance == null)
@@ -121,7 +126,8 @@ namespace Uno.Xaml.Schema
 			}
 			mi.Invoke (instance, new object [] {key, item});
 		}
-		
+
+		[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "Not used.")]
 		MethodInfo LookupAddMethod (Type ct, Type iface)
 		{
 			var map = ct.GetInterfaceMap (iface);
@@ -131,17 +137,20 @@ namespace Uno.Xaml.Schema
 			return null;
 		}
 
+		[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Not used.")]
 		public virtual object CreateInstance (object [] arguments)
 		{
 			ThrowIfUnknown ();
 			return Activator.CreateInstance (type.UnderlyingType, arguments);
 		}
 
+		[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Not used.")]
 		public virtual MethodInfo GetAddMethod (XamlType contentType)
 		{
 			return type == null || type.UnderlyingType == null || type.ItemType == null || type.LookupCollectionKind () == XamlCollectionKind.None ? null : type.UnderlyingType.GetMethod ("Add", new Type [] {contentType.UnderlyingType});
 		}
 
+		[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Not used.")]
 		public virtual MethodInfo GetEnumeratorMethod ()
 		{
 			return type.UnderlyingType == null || type.LookupCollectionKind () == XamlCollectionKind.None ? null : type.UnderlyingType.GetMethod ("GetEnumerator");

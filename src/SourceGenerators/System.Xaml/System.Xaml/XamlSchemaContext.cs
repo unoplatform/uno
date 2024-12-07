@@ -44,8 +44,6 @@ namespace Uno.Xaml
 	// it registers AssemblyLoaded event on CurrentDomain when it should
 	// reflect dynamic in-scope asemblies.
 	// It should be released at finalizer.
-	[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Types manipulated here have been marked earlier")]
-	[UnconditionalSuppressMessage("Trimming", "IL2055", Justification = "Types manipulated here have been marked earlier")]
 	public class XamlSchemaContext
 	{
 		private static readonly char[] _semicolonArray = new char[] { ';' };
@@ -371,6 +369,7 @@ namespace Uno.Xaml
 				compat_nss.Add (xca.OldNamespace, xca.NewNamespace);
 		}
 
+		[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Types manipulated here have been marked earlier.")]
 		void FillAllXamlTypes (Assembly ass)
 		{
 			foreach (XmlnsDefinitionAttribute xda in ass.GetCustomAttributes (typeof (XmlnsDefinitionAttribute), false)) {
@@ -390,6 +389,9 @@ namespace Uno.Xaml
 		static readonly int clr_ns_len = "clr-namespace:".Length;
 		static readonly int clr_ass_len = "assembly=".Length;
 
+		[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Not used.")]
+		[UnconditionalSuppressMessage("Trimming", "IL2055", Justification = "Not used.")]
+		[UnconditionalSuppressMessage("AOT", "IL3050", Justification = "Not used.")]
 		Type ResolveXamlTypeName (string xmlNamespace, string xmlLocalName, IList<XamlType> typeArguments)
 		{
 			string ns = xmlNamespace;

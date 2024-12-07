@@ -24,17 +24,18 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Markup;
 using Uno.Xaml.Schema;
 using System.Xml.Serialization;
 using System.Globalization;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Uno.Xaml
 {
-	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Types manipulated here have been marked earlier")]
+	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Types manipulated here have been marked earlier.")]
+	[UnconditionalSuppressMessage("Trimming", "IL2080", Justification = "Types manipulated here have been marked earlier.")]
 	public class XamlType : IEquatable<XamlType>
 	{
 		public XamlType (Type underlyingType, XamlSchemaContext schemaContext)

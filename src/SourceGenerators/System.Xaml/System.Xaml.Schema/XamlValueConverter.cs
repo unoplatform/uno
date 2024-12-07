@@ -23,6 +23,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
 namespace Uno.Xaml.Schema
@@ -83,6 +84,9 @@ namespace Uno.Xaml.Schema
 			return Equals (a);
 		}
 
+		[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Not used.")]
+		[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Not used.")]
+		[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Not used.")]
 		protected virtual TConverterBase CreateInstance ()
 		{
 			if (ConverterType == null)
