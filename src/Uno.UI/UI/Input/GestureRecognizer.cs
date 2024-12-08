@@ -157,14 +157,7 @@ namespace Windows.UI.Input
 				_log.Debug($"{Owner} Received a 'Up' for a pointer which was not considered as down. Ignoring event.");
 			}
 
-			if (isRelevant)
-			{
-				_manipulation?.Remove(value);
-			}
-			else
-			{
-				_manipulation?.Complete();
-			}
+			_manipulation?.Remove(value);
 		}
 
 #if IS_UNIT_TESTS
