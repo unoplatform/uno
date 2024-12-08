@@ -7,13 +7,13 @@ namespace Uno.UI.Runtime.Skia.Wpf.Extensions;
 
 internal static class TypeConversionExtensions
 {
-	public static System.Windows.Media.Brush? ToWpfBrush(this Microsoft.UI.Xaml.Media.Brush brush)
+	public static System.Windows.Media.Brush? ToWpfBrush(this Windows.UI.Xaml.Media.Brush brush)
 	{
-		if (brush is Microsoft.UI.Xaml.Media.SolidColorBrush solidBrush)
+		if (brush is Windows.UI.Xaml.Media.SolidColorBrush solidBrush)
 		{
 			return new System.Windows.Media.SolidColorBrush(solidBrush.Color.ToWpfColor()) { Opacity = solidBrush.Opacity };
 		}
-		else if (brush is Microsoft.UI.Xaml.Media.LinearGradientBrush gradientBrush)
+		else if (brush is Windows.UI.Xaml.Media.LinearGradientBrush gradientBrush)
 		{
 			return new System.Windows.Media.LinearGradientBrush(gradientBrush.GradientStops.ToWpfGradientStopCollection(), gradientBrush.StartPoint.ToWpfPoint(), gradientBrush.EndPoint.ToWpfPoint())
 			{
@@ -22,7 +22,7 @@ internal static class TypeConversionExtensions
 				RelativeTransform = gradientBrush.RelativeTransform.ToWpfTransform(),
 			};
 		}
-		else if (brush is Microsoft.UI.Xaml.Media.ImageBrush imageBrush)
+		else if (brush is Windows.UI.Xaml.Media.ImageBrush imageBrush)
 		{
 			return new System.Windows.Media.ImageBrush(imageBrush.ImageSource.ToWpfImageSource())
 			{
@@ -45,15 +45,15 @@ internal static class TypeConversionExtensions
 	private static System.Windows.Point ToWpfPoint(this Windows.Foundation.Point point)
 		=> new System.Windows.Point(point.X, point.Y);
 
-	private static System.Windows.Media.GradientStopCollection ToWpfGradientStopCollection(this Microsoft.UI.Xaml.Media.GradientStopCollection gradientStops)
+	private static System.Windows.Media.GradientStopCollection ToWpfGradientStopCollection(this Windows.UI.Xaml.Media.GradientStopCollection gradientStops)
 		=> new System.Windows.Media.GradientStopCollection(gradientStops.Select(stop => stop.ToWpfGradientStop()));
 
-	private static System.Windows.Media.GradientStop ToWpfGradientStop(this Microsoft.UI.Xaml.Media.GradientStop gradientStop)
+	private static System.Windows.Media.GradientStop ToWpfGradientStop(this Windows.UI.Xaml.Media.GradientStop gradientStop)
 		=> new System.Windows.Media.GradientStop(gradientStop.Color.ToWpfColor(), gradientStop.Offset);
 
-	private static System.Windows.Media.ImageSource? ToWpfImageSource(this Microsoft.UI.Xaml.Media.ImageSource imageSource)
+	private static System.Windows.Media.ImageSource? ToWpfImageSource(this Windows.UI.Xaml.Media.ImageSource imageSource)
 	{
-		if (imageSource is Microsoft.UI.Xaml.Media.Imaging.BitmapImage bitmapSource)
+		if (imageSource is Windows.UI.Xaml.Media.Imaging.BitmapImage bitmapSource)
 		{
 			return new System.Windows.Media.Imaging.BitmapImage(bitmapSource.UriSource);
 		}
@@ -62,37 +62,37 @@ internal static class TypeConversionExtensions
 		return null;
 	}
 
-	private static System.Windows.Media.AlignmentX ToWpfAlignmentX(this Microsoft.UI.Xaml.Media.AlignmentX alignment) =>
+	private static System.Windows.Media.AlignmentX ToWpfAlignmentX(this Windows.UI.Xaml.Media.AlignmentX alignment) =>
 		alignment switch
 		{
-			Microsoft.UI.Xaml.Media.AlignmentX.Left => System.Windows.Media.AlignmentX.Left,
-			Microsoft.UI.Xaml.Media.AlignmentX.Center => System.Windows.Media.AlignmentX.Center,
-			Microsoft.UI.Xaml.Media.AlignmentX.Right => System.Windows.Media.AlignmentX.Right,
+			Windows.UI.Xaml.Media.AlignmentX.Left => System.Windows.Media.AlignmentX.Left,
+			Windows.UI.Xaml.Media.AlignmentX.Center => System.Windows.Media.AlignmentX.Center,
+			Windows.UI.Xaml.Media.AlignmentX.Right => System.Windows.Media.AlignmentX.Right,
 			_ => throw new System.InvalidOperationException(),
 		};
 
-	private static System.Windows.Media.AlignmentY ToWpfAlignmentY(this Microsoft.UI.Xaml.Media.AlignmentY alignment) =>
+	private static System.Windows.Media.AlignmentY ToWpfAlignmentY(this Windows.UI.Xaml.Media.AlignmentY alignment) =>
 		alignment switch
 		{
-			Microsoft.UI.Xaml.Media.AlignmentY.Top => System.Windows.Media.AlignmentY.Top,
-			Microsoft.UI.Xaml.Media.AlignmentY.Center => System.Windows.Media.AlignmentY.Center,
-			Microsoft.UI.Xaml.Media.AlignmentY.Bottom => System.Windows.Media.AlignmentY.Bottom,
+			Windows.UI.Xaml.Media.AlignmentY.Top => System.Windows.Media.AlignmentY.Top,
+			Windows.UI.Xaml.Media.AlignmentY.Center => System.Windows.Media.AlignmentY.Center,
+			Windows.UI.Xaml.Media.AlignmentY.Bottom => System.Windows.Media.AlignmentY.Bottom,
 			_ => throw new System.InvalidOperationException(),
 		};
 
-	private static System.Windows.Media.Stretch ToWpfStretch(this Microsoft.UI.Xaml.Media.Stretch stretch) =>
+	private static System.Windows.Media.Stretch ToWpfStretch(this Windows.UI.Xaml.Media.Stretch stretch) =>
 		stretch switch
 		{
-			Microsoft.UI.Xaml.Media.Stretch.None => System.Windows.Media.Stretch.None,
-			Microsoft.UI.Xaml.Media.Stretch.Fill => System.Windows.Media.Stretch.Fill,
-			Microsoft.UI.Xaml.Media.Stretch.Uniform => System.Windows.Media.Stretch.Uniform,
-			Microsoft.UI.Xaml.Media.Stretch.UniformToFill => System.Windows.Media.Stretch.UniformToFill,
+			Windows.UI.Xaml.Media.Stretch.None => System.Windows.Media.Stretch.None,
+			Windows.UI.Xaml.Media.Stretch.Fill => System.Windows.Media.Stretch.Fill,
+			Windows.UI.Xaml.Media.Stretch.Uniform => System.Windows.Media.Stretch.Uniform,
+			Windows.UI.Xaml.Media.Stretch.UniformToFill => System.Windows.Media.Stretch.UniformToFill,
 			_ => throw new System.InvalidOperationException(),
 		};
 
-	private static System.Windows.Media.Transform? ToWpfTransform(this Microsoft.UI.Xaml.Media.Transform transform)
+	private static System.Windows.Media.Transform? ToWpfTransform(this Windows.UI.Xaml.Media.Transform transform)
 	{
-		if (transform is Microsoft.UI.Xaml.Media.MatrixTransform matrixTransform)
+		if (transform is Windows.UI.Xaml.Media.MatrixTransform matrixTransform)
 		{
 			return new System.Windows.Media.MatrixTransform(
 				m11: matrixTransform.Matrix.M11,
@@ -102,14 +102,14 @@ internal static class TypeConversionExtensions
 				offsetX: matrixTransform.Matrix.OffsetX,
 				offsetY: matrixTransform.Matrix.OffsetY);
 		}
-		else if (transform is Microsoft.UI.Xaml.Media.RotateTransform rotateTransform)
+		else if (transform is Windows.UI.Xaml.Media.RotateTransform rotateTransform)
 		{
 			return new System.Windows.Media.RotateTransform(
 				angle: rotateTransform.Angle,
 				centerX: rotateTransform.CenterX,
 				centerY: rotateTransform.CenterY);
 		}
-		else if (transform is Microsoft.UI.Xaml.Media.ScaleTransform scaleTransform)
+		else if (transform is Windows.UI.Xaml.Media.ScaleTransform scaleTransform)
 		{
 			return new System.Windows.Media.ScaleTransform(
 				scaleX: scaleTransform.ScaleX,
@@ -117,7 +117,7 @@ internal static class TypeConversionExtensions
 				centerX: scaleTransform.CenterX,
 				centerY: scaleTransform.CenterY);
 		}
-		else if (transform is Microsoft.UI.Xaml.Media.SkewTransform skewTransform)
+		else if (transform is Windows.UI.Xaml.Media.SkewTransform skewTransform)
 		{
 			return new System.Windows.Media.SkewTransform(
 				angleX: skewTransform.AngleX,
@@ -125,14 +125,14 @@ internal static class TypeConversionExtensions
 				centerX: skewTransform.CenterX,
 				centerY: skewTransform.CenterY);
 		}
-		else if (transform is Microsoft.UI.Xaml.Media.TransformGroup transformGroup)
+		else if (transform is Windows.UI.Xaml.Media.TransformGroup transformGroup)
 		{
 			return new System.Windows.Media.TransformGroup()
 			{
 				Children = new System.Windows.Media.TransformCollection(transformGroup.Children.Select(g => g.ToWpfTransform()))
 			};
 		}
-		else if (transform is Microsoft.UI.Xaml.Media.TranslateTransform translateTransform)
+		else if (transform is Windows.UI.Xaml.Media.TranslateTransform translateTransform)
 		{
 			return new System.Windows.Media.TranslateTransform(translateTransform.X, translateTransform.Y);
 		}
@@ -140,11 +140,11 @@ internal static class TypeConversionExtensions
 		return null;
 	}
 
-	private static System.Windows.Media.BrushMappingMode ToWpfBrushMappingMode(this Microsoft.UI.Xaml.Media.BrushMappingMode mappingMode) =>
+	private static System.Windows.Media.BrushMappingMode ToWpfBrushMappingMode(this Windows.UI.Xaml.Media.BrushMappingMode mappingMode) =>
 		mappingMode switch
 		{
-			Microsoft.UI.Xaml.Media.BrushMappingMode.Absolute => System.Windows.Media.BrushMappingMode.Absolute,
-			Microsoft.UI.Xaml.Media.BrushMappingMode.RelativeToBoundingBox => System.Windows.Media.BrushMappingMode.RelativeToBoundingBox,
+			Windows.UI.Xaml.Media.BrushMappingMode.Absolute => System.Windows.Media.BrushMappingMode.Absolute,
+			Windows.UI.Xaml.Media.BrushMappingMode.RelativeToBoundingBox => System.Windows.Media.BrushMappingMode.RelativeToBoundingBox,
 			_ => throw new System.InvalidOperationException(),
 		};
 
@@ -172,6 +172,6 @@ internal static class TypeConversionExtensions
 			_ => System.Windows.FontStyles.Normal
 		};
 
-	public static System.Windows.Media.FontFamily ToWpfFontFamily(this Microsoft.UI.Xaml.Media.FontFamily fontFamily) =>
+	public static System.Windows.Media.FontFamily ToWpfFontFamily(this Windows.UI.Xaml.Media.FontFamily fontFamily) =>
 		new System.Windows.Media.FontFamily(fontFamily.Source);
 }

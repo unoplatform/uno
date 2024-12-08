@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Uno.UI;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls.Primitives;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	abstract partial class ManagedVirtualizingPanelLayout : DependencyObject
 	{

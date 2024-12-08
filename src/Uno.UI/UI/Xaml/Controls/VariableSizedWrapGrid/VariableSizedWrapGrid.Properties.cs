@@ -1,6 +1,6 @@
-﻿using Microsoft.UI.Xaml;
+﻿using Windows.UI.Xaml;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 partial class VariableSizedWrapGrid
 {

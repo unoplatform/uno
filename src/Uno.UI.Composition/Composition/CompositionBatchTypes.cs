@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Microsoft.UI.Composition
+namespace Windows.UI.Composition
 {
 	/// <summary>
 	/// Batch types for CompositionCommitBatch and CompositionScopedBatch.

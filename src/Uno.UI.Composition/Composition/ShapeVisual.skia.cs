@@ -3,7 +3,7 @@
 using Windows.Foundation;
 using SkiaSharp;
 
-namespace Microsoft.UI.Composition;
+namespace Windows.UI.Composition;
 
 public partial class ShapeVisual
 {

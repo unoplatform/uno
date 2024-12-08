@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Uno.UI.Xaml.Controls;
 using CoreGraphics;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 
 
 #if __IOS__
@@ -16,7 +16,7 @@ using AppKit;
 using __View = AppKit.NSView;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 partial class Panel
 {

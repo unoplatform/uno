@@ -5,9 +5,9 @@ using AndroidX.AppCompat.Widget;
 using Android.Views;
 using Uno.Extensions;
 using Uno.UI;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls.Primitives;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class NativeListViewBase : UnoRecyclerView, ILayoutConstraints
 	{

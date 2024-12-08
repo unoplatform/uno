@@ -1,4 +1,4 @@
-﻿namespace Microsoft.UI.Xaml.Automation;
+﻿namespace Windows.UI.Xaml.Automation;
 
 /// <summary>
 /// Defines the type of text edit change.

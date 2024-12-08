@@ -1,5 +1,5 @@
-using System.ComponentModel;
-using Microsoft.UI.Xaml.Data;
+﻿using System.ComponentModel;
+using Windows.UI.Xaml.Data;
 
 namespace Uno.UI.Helpers.Xaml;
 

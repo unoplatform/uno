@@ -1,9 +1,9 @@
 ﻿#nullable enable
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Wasm;
+using Windows.UI.Xaml.Wasm;
 using Uno.UI.Xaml;
 
-namespace Microsoft.UI.Xaml.Shapes
+namespace Windows.UI.Xaml.Shapes
 {
 	partial class Path
 	{

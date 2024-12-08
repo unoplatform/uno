@@ -1,7 +1,7 @@
 ﻿using System;
 using Uno.UI.Views.Controls;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class ListViewBaseHeaderItem : ContentControl
 	{

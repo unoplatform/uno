@@ -1,6 +1,6 @@
 ﻿using Uno;
 
-namespace Microsoft.UI.Xaml.Automation.Peers
+namespace Windows.UI.Xaml.Automation.Peers
 {
 	public partial class AutomationPeer
 	{

@@ -4,8 +4,8 @@
 
 #nullable enable
 
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Documents;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Documents;
 
 namespace Uno.UI.Xaml.Input
 {

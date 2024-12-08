@@ -5,7 +5,7 @@ using Uno.UI.DataBinding;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
 
-namespace Microsoft.UI.Xaml.Controls.Primitives;
+namespace Windows.UI.Xaml.Controls.Primitives;
 
 public partial class FlyoutBase
 {

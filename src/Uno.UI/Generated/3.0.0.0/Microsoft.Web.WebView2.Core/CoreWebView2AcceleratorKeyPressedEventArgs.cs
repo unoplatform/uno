@@ -67,22 +67,6 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool IsBrowserAcceleratorKeyEnabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2AcceleratorKeyPressedEventArgs.IsBrowserAcceleratorKeyEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2AcceleratorKeyPressedEventArgs.IsBrowserAcceleratorKeyEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2AcceleratorKeyPressedEventArgs", "bool CoreWebView2AcceleratorKeyPressedEventArgs.IsBrowserAcceleratorKeyEnabled");
-			}
-		}
-#endif
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2AcceleratorKeyPressedEventArgs.IsBrowserAcceleratorKeyEnabled.get
-		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2AcceleratorKeyPressedEventArgs.IsBrowserAcceleratorKeyEnabled.set
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2AcceleratorKeyPressedEventArgs.KeyEventKind.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2AcceleratorKeyPressedEventArgs.VirtualKey.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2AcceleratorKeyPressedEventArgs.KeyEventLParam.get

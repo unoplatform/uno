@@ -11,8 +11,8 @@ using System.Windows;
 using System.Windows.Controls;
 #else
 using Windows.Foundation;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 #endif
 
 namespace Uno.UI.Samples.Controls

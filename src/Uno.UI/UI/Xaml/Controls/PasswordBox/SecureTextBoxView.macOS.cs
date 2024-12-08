@@ -1,7 +1,7 @@
 ﻿using CoreGraphics;
 using System;
 using Uno.Extensions;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 using Uno.UI.Controls;
 using Foundation;
 using System.Collections;
@@ -9,7 +9,7 @@ using System.Linq;
 using AppKit;
 using Windows.UI;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class SecureTextBoxView : NSSecureTextField, ITextBoxView, DependencyObject, IFontScalable
 	{

@@ -5,10 +5,10 @@ using System;
 using System.Reflection;
 using System.Threading;
 using Windows.ApplicationModel.Contacts;
-using Microsoft.UI.Xaml.Automation;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml.Automation;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using MUXControlsTestApp.Utilities;
 using Common;
 using System.Threading.Tasks;
@@ -25,7 +25,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 
 using PersonPicture = Microsoft/* UWP don't rename */.UI.Xaml.Controls.PersonPicture;
 
-namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
+namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 {
 	[TestClass]
 	public class PersonPictureTests
@@ -79,7 +79,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 		[TestMethod]
 		public async Task VerifyAutomationName()
 		{
-			if (ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Automation.Peers.PersonPictureAutomationPeer"))
+			if (ApiInformation.IsTypePresent("Windows.UI.Xaml.Automation.Peers.PersonPictureAutomationPeer"))
 			{
 				await RunOnUIThread.ExecuteAsync(() =>
 				{
@@ -138,7 +138,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 		{
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
-				Microsoft.UI.Xaml.XamlTypeInfo.XamlControlsXamlMetaDataProvider provider = new Microsoft.UI.Xaml.XamlTypeInfo.XamlControlsXamlMetaDataProvider();
+				Windows.UI.Xaml.XamlTypeInfo.XamlControlsXamlMetaDataProvider provider = new Windows.UI.Xaml.XamlTypeInfo.XamlControlsXamlMetaDataProvider();
 				var picturePersonType = provider.GetXamlType(typeof(PersonPicture).FullName);
 				var contactMember = picturePersonType.GetMember("Contact");
 				var memberType = contactMember.Type;

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace Microsoft.UI.Xaml.Media.Animation
+namespace Windows.UI.Xaml.Media.Animation
 {
 	internal abstract class DispatcherAnimator<T> : CPUBoundAnimator<T> where T : struct
 	{

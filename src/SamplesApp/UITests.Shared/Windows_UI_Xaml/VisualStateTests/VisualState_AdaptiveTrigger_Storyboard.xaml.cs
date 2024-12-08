@@ -1,5 +1,5 @@
-﻿using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+﻿using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml.ViusalStateTests
@@ -13,8 +13,8 @@ namespace UITests.Shared.Windows_UI_Xaml.ViusalStateTests
 
 			void OnSizeChanged(object snd, SizeChangedEventArgs evt)
 			{
-				var w = Microsoft.UI.Xaml.Window.Current is not null ?
-					Microsoft.UI.Xaml.Window.Current.Bounds :
+				var w = Windows.UI.Xaml.Window.Current is not null ?
+					Windows.UI.Xaml.Window.Current.Bounds :
 					new Windows.Foundation.Rect(default, XamlRoot.Size);
 
 				txt.Text += $"Control Size: {evt?.NewSize.Width}, Window Size:{w}\n";

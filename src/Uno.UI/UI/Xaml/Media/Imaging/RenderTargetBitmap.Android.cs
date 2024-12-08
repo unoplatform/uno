@@ -11,7 +11,7 @@ using Android.Views;
 using Uno.UI.Xaml.Media;
 using System.Runtime.InteropServices;
 
-namespace Microsoft.UI.Xaml.Media.Imaging
+namespace Windows.UI.Xaml.Media.Imaging
 {
 	partial class RenderTargetBitmap
 	{

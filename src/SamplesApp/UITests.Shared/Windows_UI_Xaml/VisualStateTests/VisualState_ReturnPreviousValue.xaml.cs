@@ -1,9 +1,9 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using Microsoft.UI;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 using Uno.UI.Samples.Controls;
 using Windows.UI;
 
@@ -30,20 +30,20 @@ public sealed partial class VisualState_ReturnPreviousValue : Page
 
 		if (tag == "DefaultState")
 		{
-			if (_wasWhiteSet && ((SolidColorBrush)RootGrid.Background).Color != Microsoft.UI.Colors.White)
+			if (_wasWhiteSet && ((SolidColorBrush)RootGrid.Background).Color != Windows.UI.Colors.White)
 			{
 				await ErrorAsync("Background is expected to be white.");
 			}
-			else if (!_wasWhiteSet && ((SolidColorBrush)RootGrid.Background).Color != Microsoft.UI.Colors.Green)
+			else if (!_wasWhiteSet && ((SolidColorBrush)RootGrid.Background).Color != Windows.UI.Colors.Green)
 			{
 				await ErrorAsync("Background is expected to be green.");
 			}
 		}
-		else if (tag == "SecondState" && ((SolidColorBrush)RootGrid.Background).Color != Microsoft.UI.Colors.Red)
+		else if (tag == "SecondState" && ((SolidColorBrush)RootGrid.Background).Color != Windows.UI.Colors.Red)
 		{
 			await ErrorAsync("Background is expected to be red.");
 		}
-		else if (tag == "ThirdState" && ((SolidColorBrush)RootGrid.Background).Color != Microsoft.UI.Colors.Blue)
+		else if (tag == "ThirdState" && ((SolidColorBrush)RootGrid.Background).Color != Windows.UI.Colors.Blue)
 		{
 			await ErrorAsync("Background is expected to be blue.");
 		}
@@ -64,7 +64,7 @@ public sealed partial class VisualState_ReturnPreviousValue : Page
 	{
 		RootGrid.Background = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255));
 		_wasWhiteSet = true;
-		if (((SolidColorBrush)RootGrid.Background).Color != Microsoft.UI.Colors.White)
+		if (((SolidColorBrush)RootGrid.Background).Color != Windows.UI.Colors.White)
 		{
 			await ErrorAsync("Background is expected to be white.");
 		}

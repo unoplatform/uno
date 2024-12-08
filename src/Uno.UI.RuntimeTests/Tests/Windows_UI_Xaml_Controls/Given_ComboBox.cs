@@ -6,13 +6,13 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 using SamplesApp.UITests;
@@ -24,7 +24,7 @@ using Windows.Foundation.Metadata;
 using Windows.Storage.Pickers;
 using Windows.UI.Input.Preview.Injection;
 using static Private.Infrastructure.TestServices;
-using ComboBoxHelper = Microsoft.UI.Xaml.Tests.Common.ComboBoxHelper;
+using ComboBoxHelper = Windows.UI.Xaml.Tests.Common.ComboBoxHelper;
 using Uno.UI.Extensions;
 
 #if __IOS__
@@ -32,9 +32,9 @@ using _UIViewController = UIKit.UIViewController;
 using Uno.UI.Controls;
 
 using Windows.UI.Core;
-using Microsoft.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Media.Animation;
 using static Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.MultiFrame;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls.Primitives;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -796,8 +796,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				c.Add("2-Five");
 				c.Add("2-Six");
 
-				SUT.SetBinding(ComboBox.ItemsSourceProperty, new Microsoft.UI.Xaml.Data.Binding() { Path = new("MySource") });
-				SUT.SetBinding(ComboBox.SelectedItemProperty, new Microsoft.UI.Xaml.Data.Binding() { Path = new("SelectedItem"), Mode = Microsoft.UI.Xaml.Data.BindingMode.TwoWay });
+				SUT.SetBinding(ComboBox.ItemsSourceProperty, new Windows.UI.Xaml.Data.Binding() { Path = new("MySource") });
+				SUT.SetBinding(ComboBox.SelectedItemProperty, new Windows.UI.Xaml.Data.Binding() { Path = new("SelectedItem"), Mode = Windows.UI.Xaml.Data.BindingMode.TwoWay });
 
 				SUT.DataContext = new { MySource = c, SelectedItem = "One" };
 
@@ -838,8 +838,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 
 				var tb = new TextBlock();
-				tb.SetBinding(TextBlock.TextProperty, new Microsoft.UI.Xaml.Data.Binding { Path = "Text" });
-				tb.SetBinding(TextBlock.NameProperty, new Microsoft.UI.Xaml.Data.Binding { Path = "Text" });
+				tb.SetBinding(TextBlock.TextProperty, new Windows.UI.Xaml.Data.Binding { Path = "Text" });
+				tb.SetBinding(TextBlock.NameProperty, new Windows.UI.Xaml.Data.Binding { Path = "Text" });
 
 				return tb;
 			});
@@ -904,8 +904,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 
 				var tb = new TextBlock();
-				tb.SetBinding(TextBlock.TextProperty, new Microsoft.UI.Xaml.Data.Binding { Path = "Text" });
-				tb.SetBinding(TextBlock.NameProperty, new Microsoft.UI.Xaml.Data.Binding { Path = "Text" });
+				tb.SetBinding(TextBlock.TextProperty, new Windows.UI.Xaml.Data.Binding { Path = "Text" });
+				tb.SetBinding(TextBlock.NameProperty, new Windows.UI.Xaml.Data.Binding { Path = "Text" });
 
 				return tb;
 			});

@@ -2,7 +2,7 @@
 using System;
 using Windows.Foundation;
 
-namespace Microsoft.UI.Xaml.Media.Imaging;
+namespace Windows.UI.Xaml.Media.Imaging;
 
 public partial class SvgImageSource : ImageSource
 {

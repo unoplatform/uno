@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using Uno;
 
-namespace Microsoft.UI.Composition;
+namespace Windows.UI.Composition;
 
 public partial class ScalarKeyFrameAnimation : KeyFrameAnimation
 {
@@ -19,7 +19,7 @@ public partial class ScalarKeyFrameAnimation : KeyFrameAnimation
 	private protected override int KeyFrameCountCore => Keys.Length;
 
 	[NotImplemented]
-	public void InsertKeyFrame(float normalizedProgressKey, float value, global::Microsoft.UI.Composition.CompositionEasingFunction easingFunction)
+	public void InsertKeyFrame(float normalizedProgressKey, float value, global::Windows.UI.Composition.CompositionEasingFunction easingFunction)
 	{
 	}
 

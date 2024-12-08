@@ -1,4 +1,4 @@
-﻿namespace Microsoft.UI.Xaml.Automation.Provider;
+﻿namespace Windows.UI.Xaml.Automation.Provider;
 
 /// <summary>
 /// Exposes a method to support Microsoft UI Automation access to controls that 

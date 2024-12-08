@@ -4,7 +4,7 @@ using Windows.Foundation;
 using Uno.Foundation.Logging;
 using Uno.Extensions;
 using Android.App;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using SizeF = System.Drawing.SizeF;
 using System.Runtime.CompilerServices;
 using Android.Views;
