@@ -1,20 +1,35 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using Uno;
-using Uno.Disposables;
-using Uno.Extensions;
+using System.Numerics;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Wasm;
+using Uno;
+using Uno.Collections;
+using Uno.Disposables;
+using Uno.Extensions;
+using Uno.UI;
+using Uno.UI.Xaml;
 
 using RadialGradientBrush = Microsoft/* UWP don't rename */.UI.Xaml.Media.RadialGradientBrush;
-using System.Numerics;
-using System.Diagnostics;
-using Uno.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Shapes
 {
+	partial class Shape
+
+	{
+		private static readonly LruCache<string, Rect> _bboxCache = new(500);
+
+		internal static int BBoxCacheSize
+		{
+			get => _bboxCache.Capacity;
+			set => _bboxCache.Capacity = value;
+		}
+	}
+
 	partial class Shape
 	{
 		private readonly SerialDisposable _fillBrushSubscription = new SerialDisposable();
@@ -22,6 +37,7 @@ namespace Microsoft.UI.Xaml.Shapes
 
 		private DefsSvgElement _defs;
 		private protected readonly SvgElement _mainSvgElement;
+		private protected bool _shouldUpdateNative = !FeatureConfiguration.Shape.BlockNativeUpdateUntil1stArrange; // used to block updates to native element until 1st Arrange
 
 		protected Shape() : base("svg", isSvg: true)
 		{
@@ -37,6 +53,8 @@ namespace Microsoft.UI.Xaml.Shapes
 
 		private protected void UpdateRender()
 		{
+			_shouldUpdateNative = true;
+
 			OnFillBrushChanged();
 			OnStrokeBrushChanged();
 			UpdateStrokeThickness();
@@ -45,6 +63,8 @@ namespace Microsoft.UI.Xaml.Shapes
 
 		private void OnFillBrushChanged()
 		{
+			if (!_shouldUpdateNative) return;
+
 			// We don't request an update of the HitTest (UpdateHitTest()) since this element is never expected to be hit testable.
 			// Note: We also enforce that the default hit test == false is not altered in the OnHitTestVisibilityChanged.
 
@@ -111,6 +131,8 @@ namespace Microsoft.UI.Xaml.Shapes
 
 		private void OnStrokeBrushChanged()
 		{
+			if (!_shouldUpdateNative) return;
+
 			var svgElement = _mainSvgElement;
 			var stroke = Stroke;
 
@@ -159,6 +181,8 @@ namespace Microsoft.UI.Xaml.Shapes
 
 		private void UpdateStrokeThickness()
 		{
+			if (!_shouldUpdateNative) return;
+
 			var svgElement = _mainSvgElement;
 			var strokeThickness = ActualStrokeThickness;
 
@@ -174,6 +198,8 @@ namespace Microsoft.UI.Xaml.Shapes
 
 		private void UpdateStrokeDashArray()
 		{
+			if (!_shouldUpdateNative) return;
+
 			var svgElement = _mainSvgElement;
 
 			if (StrokeDashArray is not { } strokeDashArray)
@@ -203,7 +229,27 @@ namespace Microsoft.UI.Xaml.Shapes
 
 		private static Rect GetPathBoundingBox(Shape shape)
 		{
-			return shape._mainSvgElement.GetBBox();
+			if (FeatureConfiguration.Shape.CacheBBoxCalculationResult)
+			{
+				var key = shape switch
+				{
+					Path path => (path.Data as GeometryData)?.Data,
+					_ => null,
+				};
+
+				if (!string.IsNullOrEmpty(key))
+				{
+					if (!_bboxCache.TryGetValue(key, out var rect))
+					{
+						_bboxCache[key] = rect = shape._mainSvgElement.GetBBox();
+					}
+
+					return rect;
+				}
+			}
+
+			var result = shape._mainSvgElement.GetBBox();
+			return result;
 		}
 
 		private protected void Render(Shape shape, Size? size = null, double scaleX = 1d, double scaleY = 1d, double renderOriginX = 0d, double renderOriginY = 0d)
