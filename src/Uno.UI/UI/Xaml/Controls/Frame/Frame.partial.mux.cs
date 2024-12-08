@@ -301,6 +301,7 @@ partial class Frame
 			catch
 			{
 				pCanNavigate = false;
+				throw;
 			}
 		Cleanup:
 			;
@@ -585,6 +586,8 @@ partial class Frame
 			{
 				Content = oldObject;
 			}
+
+			throw;
 		}
 	}
 
