@@ -9,9 +9,6 @@ using Verify = XamlSourceGeneratorVerifier;
 [TestClass]
 public class Given_HotReloadEnabledInBuild
 {
-	// Specify this centrally for all tests that rely on Uno5 or above
-	private static readonly ReferenceAssemblies _net8Uno5Refs = ReferenceAssemblies.Net.Net80.AddPackages([new PackageIdentity("Uno.WinUI", "5.0.118")]);
-
 	[TestMethod]
 	public async Task SetBaseUriIncludedInOutputForFrameworkElements()
 	{
@@ -57,7 +54,7 @@ public class Given_HotReloadEnabledInBuild
 					"""
 				}
 			},
-			ReferenceAssemblies = _net8Uno5Refs,
+			ReferenceAssemblies = _Dotnet.Current.WithUnoPackage(),
 			DisableBuildReferences = true,
 			GlobalConfigOverride = configOverride,
 		}.AddGeneratedSources();
@@ -111,7 +108,7 @@ public class Given_HotReloadEnabledInBuild
 					"""
 				}
 			},
-			ReferenceAssemblies = _net8Uno5Refs,
+			ReferenceAssemblies = _Dotnet.Current.WithUnoPackage(),
 			GlobalConfigOverride = configOverride,
 		}.AddGeneratedSources();
 
@@ -161,7 +158,7 @@ public class Given_HotReloadEnabledInBuild
 					"""
 				}
 			},
-			ReferenceAssemblies = _net8Uno5Refs,
+			ReferenceAssemblies = _Dotnet.Current.WithUnoPackage(),
 			GlobalConfigOverride = configOverride,
 		}.AddGeneratedSources();
 
@@ -220,7 +217,7 @@ public class Given_HotReloadEnabledInBuild
 					"""
 				}
 			},
-			ReferenceAssemblies = _net8Uno5Refs,
+			ReferenceAssemblies = _Dotnet.Current.WithUnoPackage(),
 			GlobalConfigOverride = configOverride,
 		}.AddGeneratedSources();
 
@@ -243,7 +240,7 @@ public class Given_HotReloadEnabledInBuild
 
 		var test = new Verify.Test(xamlFile)
 		{
-			ReferenceAssemblies = _net8Uno5Refs,
+			ReferenceAssemblies = _Dotnet.Current.WithUnoPackage(),
 			DisableBuildReferences = true,
 			GlobalConfigOverride = configOverride,
 		}.AddGeneratedSources();
@@ -329,7 +326,7 @@ public class Given_HotReloadEnabledInBuild
 					"""
 				}
 			},
-			ReferenceAssemblies = _net8Uno5Refs,
+			ReferenceAssemblies = _Dotnet.Current.WithUnoPackage(),
 			GlobalConfigOverride = configOverride,
 		}.AddGeneratedSources();
 
