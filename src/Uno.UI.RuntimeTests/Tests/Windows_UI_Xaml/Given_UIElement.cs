@@ -1903,6 +1903,62 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.AreEqual(1, dragOverCount);
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(true)]
+		[DataRow(false)]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_CanDrag_Child_And_Parent(bool childCanDrag)
+		{
+			var child = new Rectangle
+			{
+				Fill = new SolidColorBrush(Microsoft.UI.Colors.LightBlue),
+				Width = 100,
+				Height = 80,
+				CanDrag = childCanDrag
+			};
+			var parent = new Frame
+			{
+				Background = new SolidColorBrush(Microsoft.UI.Colors.LightCoral),
+				Width = 400,
+				Height = 300,
+				CanDrag = true,
+				Content = child
+			};
+
+			var parentDragStartingCount = 0;
+			var childDragStartingCount = 0;
+			parent.DragStarting += (_, _) => parentDragStartingCount++;
+			child.DragStarting += (_, _) => childDragStartingCount++;
+
+			await UITestHelper.Load(parent);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			mouse.MoveTo(child.GetAbsoluteBoundsRect().GetCenter());
+			await UITestHelper.WaitForIdle();
+			mouse.Press();
+			await UITestHelper.WaitForIdle();
+			mouse.MoveTo(child.GetAbsoluteBoundsRect().GetCenter() + new Windows.Foundation.Point(20, 0), steps: 10);
+			await UITestHelper.WaitForIdle();
+			mouse.Release();
+			await UITestHelper.WaitForIdle();
+
+			if (childCanDrag)
+			{
+				Assert.AreEqual(1, childDragStartingCount);
+				Assert.AreEqual(0, parentDragStartingCount);
+			}
+			else
+			{
+				Assert.AreEqual(0, childDragStartingCount);
+				Assert.AreEqual(1, parentDragStartingCount);
+			}
+		}
+
 		#endregion
 #endif
 	}
