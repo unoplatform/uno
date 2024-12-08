@@ -1,5 +1,8 @@
 #if __ANDROID__ || __IOS__
 
+using Uno.Extensions;
+using Uno.Helpers;
+using Uno.Logging;
 using Windows.Foundation;
 
 namespace Windows.Devices.Sensors
@@ -13,13 +16,17 @@ namespace Windows.Devices.Sensors
 		private static bool _initializationAttempted;
 		private static Barometer _instance;
 
-		private TypedEventHandler<Barometer, BarometerReadingChangedEventArgs> _readingChanged;
+		private readonly StartStopTypedEventWrapper<Barometer, BarometerReadingChangedEventArgs> _readingChangedWrapper;
 
 		/// <summary>
 		/// Hides the public parameterless constructor
 		/// </summary>
 		private Barometer()
 		{
+			_readingChangedWrapper = new StartStopTypedEventWrapper<Barometer, BarometerReadingChangedEventArgs>(
+				() => StartReading(),
+				() => StopReading(),
+				_syncLock);
 		}
 
 		/// <summary>
@@ -48,29 +55,20 @@ namespace Windows.Devices.Sensors
 		/// </summary>
 		public event TypedEventHandler<Barometer, BarometerReadingChangedEventArgs> ReadingChanged
 		{
-			add
+			add => _readingChangedWrapper.AddHandler(value);
+			remove => _readingChangedWrapper.RemoveHandler(value);
+		}
+
+
+		private void OnReadingChanged(BarometerReading reading)
+		{
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 			{
-				lock (_syncLock)
-				{
-					bool isFirstSubscriber = _readingChanged == null;
-					_readingChanged += value;
-					if (isFirstSubscriber)
-					{
-						StartReading();
-					}
-				}
+				this.Log().Debug($"Barometer reading received " +
+					$"StationPressureInHectopascals:{reading.StationPressureInHectopascals}, " +
+					$"Timestamp:{reading.Timestamp}");
 			}
-			remove
-			{
-				lock (_syncLock)
-				{
-					_readingChanged -= value;
-					if (_readingChanged == null)
-					{
-						StopReading();
-					}
-				}
-			}
+			_readingChangedWrapper.Invoke(this, new GyrometerReadingChangedEventArgs(reading));
 		}
 	}
 }
