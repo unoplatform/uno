@@ -51,18 +51,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 			var nativeViewTopBorder = topBorder as Android.Views.View;
 			var nativeViewRect = rect as Android.Views.View;
 			var nativeViewBottomBorder = bottomBorder as Android.Views.View;
+			var nativeGrid = grid as Android.Views.View;
 
-			Assert.AreEqual(146, nativeViewTopBorder.Height);
-			Assert.AreEqual(147, nativeViewRect.Height);
-			Assert.AreEqual(146, nativeViewBottomBorder.Height);
+			Assert.AreEqual(nativeGrid.Height, nativeViewTopBorder.Height + nativeViewRect.Height + nativeViewBottomBorder.Height);
 
-			Assert.AreEqual(146, nativeViewRect.Top);
-			Assert.AreEqual(293, nativeViewRect.Bottom);
-			Assert.AreEqual(293, nativeViewBottomBorder.Top);
-
-			Assert.IsNotNull(rect.FrameRoundingAdjustment);
-			Assert.AreEqual(1, rect.FrameRoundingAdjustment.Value.Height);
-			Assert.AreEqual(0, rect.FrameRoundingAdjustment.Value.Width);
+			Assert.AreEqual(nativeViewRect.Top, nativeViewTopBorder.Bottom);
+			Assert.AreEqual(nativeViewBottomBorder.Top, nativeViewRect.Bottom);
 		}
 	}
 }

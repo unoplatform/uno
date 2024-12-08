@@ -15,6 +15,7 @@ using ObjCRuntime;
 
 using Foundation;
 using UIKit;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
 namespace Uno.UI.Controls
 {
@@ -48,6 +49,8 @@ namespace Uno.UI.Controls
 			// to properly walk the tree up and down (cf. EffectiveViewport).
 			_shadowChildren.Add(view);
 			base.AddSubview(view);
+
+			OnChildAdded(this, view);
 		}
 
 		public override void InsertSubview(UIView view, nint atIndex)
@@ -55,6 +58,53 @@ namespace Uno.UI.Controls
 			// cf. AddSubview comment!
 			_shadowChildren.Insert((int)atIndex, view);
 			base.InsertSubview(view, atIndex);
+
+			OnChildAdded(this, view);
+		}
+
+		private static void OnChildAdded(UIView parent, UIView child)
+		{
+			if (child is not UIElement)
+			{
+				LayoutInformation.SetMeasureDirtyPath(child, true);
+				LayoutInformation.SetArrangeDirtyPath(child, true);
+			}
+
+			while (parent is not null && parent is not UIElement)
+			{
+				LayoutInformation.SetMeasureDirtyPath(parent, true);
+				LayoutInformation.SetMeasureDirtyPath(parent, true);
+				parent = parent.Superview;
+			}
+
+			if (parent is UIElement managedParent)
+			{
+				if (child is UIElement managedChild)
+				{
+					// Reset to original (invalidated) state
+					managedChild.ResetLayoutFlags();
+					if (managedParent.IsMeasureDirtyPathDisabled)
+					{
+						FrameworkElementHelper.SetUseMeasurePathDisabled(managedChild); // will invalidate too
+					}
+					else
+					{
+						managedChild.InvalidateMeasure();
+					}
+
+					if (managedParent.IsArrangeDirtyPathDisabled)
+					{
+						FrameworkElementHelper.SetUseArrangePathDisabled(managedChild); // will invalidate too
+					}
+					else
+					{
+						managedChild.InvalidateArrange();
+					}
+				}
+
+				managedParent.InvalidateArrange();
+				managedParent.InvalidateMeasure();
+			}
 		}
 
 		public override void WillRemoveSubview(UIView uiview)

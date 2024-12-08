@@ -16,108 +16,44 @@ namespace Microsoft.UI.Xaml
 {
 	public partial class FrameworkElement
 	{
-		/// <summary>
-		/// When set, measure and invalidate requests will not be propagated further up the visual tree, ie they won't trigger a relayout.
-		/// Used where repeated unnecessary measure/arrange passes would be unacceptable for performance (eg scrolling in a list).
-		/// </summary>
-		internal bool ShouldInterceptInvalidate { get; set; }
-
 		public override void SetNeedsLayout()
 		{
-			if (ShouldInterceptInvalidate)
-			{
-				return;
-			}
-
-			if (!_inLayoutSubviews)
-			{
-				base.SetNeedsLayout();
-			}
-
-			SetLayoutFlags(LayoutFlag.MeasureDirty | LayoutFlag.ArrangeDirty);
-
-			if (FeatureConfiguration.FrameworkElement.IOsAllowSuperviewNeedsLayoutWhileInLayoutSubViews || !_inLayoutSubviews)
-			{
-				SetSuperviewNeedsLayout();
-			}
+			base.SetNeedsLayout();
 		}
 
 		public override void LayoutSubviews()
 		{
-			try
-			{
-				try
-				{
-					_inLayoutSubviews = true;
+			base.LayoutSubviews();
 
-					if (IsMeasureDirty)
-					{
-						// Add back the Margin (which is normally 'outside' the view's bounds) - the layouter will subtract it again
-						var availableSizeWithMargins = Bounds.Size.Add(Margin);
-						XamlMeasure(availableSizeWithMargins);
-					}
-
-					//if (IsArrangeDirty) // commented until the MEASURE_DIRTY_PATH is properly implemented for iOS
-					{
-						ClearLayoutFlags(LayoutFlag.ArrangeDirty);
-
-						OnBeforeArrange();
-
-						Rect finalRect;
-						var parent = Superview;
-						if (parent is UIElement or ISetLayoutSlots)
-						{
-							finalRect = LayoutSlotWithMarginsAndAlignments;
-						}
-						else
-						{
-							// Here the "arrange" is coming from a native element,
-							// so we convert those measurements to logical ones.
-							finalRect = RectFromUIRect(Frame);
-
-							// We also need to set the LayoutSlot as it was not by the parent.
-							// Note: This is only an approximation of the LayoutSlot as margin and alignment might already been applied at this point.
-							LayoutInformation.SetLayoutSlot(this, finalRect);
-							LayoutSlotWithMarginsAndAlignments = finalRect;
-						}
-
-						_layouter.Arrange(finalRect);
-
-						OnAfterArrange();
-					}
-				}
-				finally
-				{
-					_inLayoutSubviews = false;
-				}
-			}
-			catch (Exception e)
-			{
-				this.Log().Error($"Layout failed in {GetType()}", e);
-			}
+			// If we get LayoutSubviews on managed element, it could be because a native child measure has changed
+			// In this case, parents aren't automagically invalidated. For example, while typing in TextBox in a way that makes it grow.
+			// So, once we get LayoutSubviews, we go through the native-only children. If we found any of them has
+			// changed, we do invalidate the current managed element (the parent of the native-only child)
+			//foreach (var child in this.GetChildren())
+			//{
+			//	if (child is UIView nativeOnlyChild && child is not UIElement)
+			//	{
+			//		var oldDesiredSize = LayoutInformation.GetDesiredSize(nativeOnlyChild);
+			//		var desiredSize = (Size)nativeOnlyChild.SizeThatFits(LayoutInformation.GetAvailableSize(nativeOnlyChild));
+			//		if (oldDesiredSize != desiredSize)
+			//		{
+			//			LayoutInformation.SetDesiredSize(nativeOnlyChild, desiredSize);
+			//			this.InvalidateMeasure();
+			//			this.InvalidateArrange();
+			//		}
+			//	}
+			//}
 		}
 
 		public override CGSize SizeThatFits(CGSize size)
 		{
-			try
+			if (IsVisualTreeRoot)
 			{
-				_inLayoutSubviews = true;
-
-				var xamlMeasure = XamlMeasure(size);
-
-				if (xamlMeasure != null)
-				{
-					return _lastMeasure = xamlMeasure.Value;
-				}
-				else
-				{
-					return _lastMeasure = base.SizeThatFits(size);
-				}
+				return base.SizeThatFits(size);
 			}
-			finally
-			{
-				_inLayoutSubviews = false;
-			}
+
+			this.Measure(size);
+			return this.DesiredSize;
 		}
 
 		public override void AddSubview(UIView view)
