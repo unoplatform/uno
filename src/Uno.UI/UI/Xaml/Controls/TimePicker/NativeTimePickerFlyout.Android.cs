@@ -16,9 +16,16 @@ partial class NativeTimePickerFlyout
 	private TimeSpan _initialTime;
 
 	internal bool IsNativeDialogOpen => _dialog?.IsShowing ?? false;
+	internal UnoTimePickerDialog GetNativeDialog() => _dialog;
+
 
 	internal protected override void Open()
 	{
+		if (Time.Ticks == TimePicker.DEFAULT_TIME_TICKS)
+		{
+			Time = GetCurrentTime();
+		}
+
 		SaveInitialTime();
 
 		ShowTimePicker();
@@ -27,6 +34,7 @@ partial class NativeTimePickerFlyout
 	}
 
 	private void SaveInitialTime() => _initialTime = Time;
+
 
 	private void SaveTime(TimeSpan time)
 	{
@@ -58,7 +66,7 @@ partial class NativeTimePickerFlyout
 
 	private void ShowTimePicker()
 	{
-		var time = Time.RoundToNextMinuteInterval(MinuteIncrement);
+		var time = _initialTime.RoundToNextMinuteInterval(MinuteIncrement);
 		var listener = new OnSetTimeListener((view, hourOfDay, minute) => AdjustAndSaveTime(hourOfDay, minute));
 
 		var themeResourceId = CoreApplication.RequestedTheme == Uno.Helpers.Theming.SystemTheme.Light ?
