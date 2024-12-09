@@ -25,6 +25,7 @@ using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using Uno.UI;
+using Uno;
 #endif
 
 namespace SampleControl.Presentation
@@ -449,6 +450,22 @@ namespace SampleControl.Presentation
 		}
 
 #if HAS_UNO
+		public bool SimulateTouch
+		{
+#if DEBUG
+			get => WinRTFeatureConfiguration.DebugOptions.SimulateTouch;
+#else
+			get => false;
+#endif
+			set
+			{
+#if DEBUG
+				WinRTFeatureConfiguration.DebugOptions.SimulateTouch = value;
+				RaisePropertyChanged();
+#endif
+			}
+		}
+
 		public bool PreventLightDismissOnWindowDeactivated
 		{
 			get => FeatureConfiguration.Popup.PreventLightDismissOnWindowDeactivated;

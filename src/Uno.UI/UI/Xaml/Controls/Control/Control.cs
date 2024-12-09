@@ -207,7 +207,30 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private protected virtual void OnTemplateChanged(DependencyPropertyChangedEventArgs e)
 		{
-#if !UNO_HAS_ENHANCED_LIFECYCLE
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			if (e.OldValue != e.NewValue)
+			{
+				// Reset the template bindings for this control
+				//ClearPropertySubscriptions();
+
+				// When the control template property is set, we clear the visual children
+				var pUIElement = this.GetFirstChild();
+				if (pUIElement is { })
+				{
+					//CFrameworkTemplate* pNewTemplate = NULL;
+					//if (e.NewValue?.GetType() == valueObject)
+					//{
+					//	IFC(DoPointerCast(pNewTemplate, args.m_value.AsObject()));
+					//}
+					//else if (args.m_value.GetType() != valueNull)
+					//{
+					//	IFC(E_INVALIDARG);
+					//}
+					RemoveChild(pUIElement);
+					//IFC(GetContext()->RemoveNameScope(this, Jupiter::NameScoping::NameScopeType::TemplateNameScope));
+				}
+			}
+#else
 			_updateTemplate = true;
 			SetUpdateControlTemplate();
 #endif

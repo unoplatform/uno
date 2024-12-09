@@ -5,7 +5,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Windows_UI_Xaml_Media_Animation
 {
-	[Sample("Animations")]
+	[Sample("Animations", IsManualTest = true)]
 	public sealed partial class ColorAnimationUsingKeyFrames_Fill : Page
 	{
 		public ColorAnimationUsingKeyFrames_Fill()

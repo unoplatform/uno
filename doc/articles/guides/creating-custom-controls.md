@@ -17,9 +17,9 @@ If you're not familiar with concepts such as **dependency properties**, **contro
 
 ## Ensuring Cross-Platform Compatibility
 
-To ensure your custom control functions properly across all platforms, make sure that the `Themes/generic.xaml` file is included in your Uno project and correctly referenced for each platform. On non-Windows platforms, this file might not be automatically included, and you may need to adjust your project settings or add custom build steps to ensure it is properly referenced.
+To ensure your custom control functions properly across all platforms, make sure that the `Themes/Generic.xaml` file is included in your Uno project and correctly referenced for each platform. On non-Windows platforms, this file might not be automatically included, and you may need to adjust your project settings or add custom build steps to ensure it is properly referenced.
 
-In WinUI apps, `Themes/generic.xaml` is the standard location for default styles. It should be supported across all platforms and automatically referenced when Uno searches for implicit or default styles in any `TemplatedControl` defined in `generic.xaml`. Additionally, it's common to use a `MergedDictionary` to reference resources from other directories within `generic.xaml`. Currently, styles defined in `Themes/generic.xaml` are not found automatically across platforms in Uno.
+In WinUI apps, `Themes/Generic.xaml` is the standard location for default styles. It should be supported across all platforms and automatically referenced when Uno searches for implicit or default styles in any `TemplatedControl` defined in `Generic.xaml`. Additionally, it's common to use a `MergedDictionary` to reference resources from other directories within `Generic.xaml`. Currently, styles defined in `Themes/Generic.xaml` are not found automatically across platforms in Uno.
 
 To resolve this, you can define styles in `App.xaml` and use a `MergedDictionary` to pull in the resources, as shown in the following example:
 

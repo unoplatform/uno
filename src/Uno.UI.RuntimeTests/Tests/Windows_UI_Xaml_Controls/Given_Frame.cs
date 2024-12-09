@@ -437,6 +437,58 @@ public class Given_Frame
 		Assert.IsTrue(_navigateOrderTracker.FrameNavigated);
 	}
 
+	[TestMethod]
+	public async Task When_Exception_In_Page_Ctor()
+	{
+		var SUT = new Frame()
+		{
+			Width = 200,
+			Height = 200
+		};
+
+#if HAS_UNO
+		bool navigationFailed = false;
+		SUT.NavigationFailed += (s, e) => navigationFailed = true;
+#endif
+
+		TestServices.WindowHelper.WindowContent = SUT;
+		await TestServices.WindowHelper.WaitForLoaded(SUT);
+
+		var exception = Assert.ThrowsException<NotSupportedException>(() => SUT.Navigate(typeof(ExceptionInCtorPage)));
+		Assert.AreEqual("Crashed", exception.Message);
+#if HAS_UNO
+		if (FeatureConfiguration.Frame.UseWinUIBehavior)
+		{
+			// This is only valid with WinUI Frame behavior
+			Assert.IsFalse(navigationFailed);
+		}
+#endif
+	}
+
+	[TestMethod]
+	public async Task When_Exception_In_OnNavigatedTo()
+	{
+		var SUT = new Frame()
+		{
+			Width = 200,
+			Height = 200
+		};
+
+		bool navigationFailed = false;
+		SUT.NavigationFailed += (s, e) =>
+		{
+			navigationFailed = true;
+			e.Handled = true;
+		};
+
+		TestServices.WindowHelper.WindowContent = SUT;
+		await TestServices.WindowHelper.WaitForLoaded(SUT);
+
+		var exception = Assert.ThrowsException<NotSupportedException>(() => SUT.Navigate(typeof(ExceptionInOnNavigatedToPage)));
+		Assert.AreEqual("Crashed", exception.Message);
+		Assert.IsTrue(navigationFailed);
+	}
+
 	[TestCleanup]
 	public void Cleanup()
 	{
@@ -612,4 +664,29 @@ public partial class FrameNavigateFirstPage : Page
 
 public partial class FrameNavigateSecondPage : Page
 {
+}
+
+public partial class ExceptionInCtorPage : Page
+{
+	public ExceptionInCtorPage()
+	{
+		throw new NotSupportedException("Crashed");
+	}
+}
+
+public partial class ExceptionInOnNavigatedToPage : Page
+{
+	public ExceptionInOnNavigatedToPage()
+	{
+	}
+
+	protected
+#if HAS_UNO
+	internal
+#endif
+	override void OnNavigatedTo(NavigationEventArgs e)
+	{
+		base.OnNavigatedTo(e);
+		throw new NotSupportedException("Crashed");
+	}
 }
