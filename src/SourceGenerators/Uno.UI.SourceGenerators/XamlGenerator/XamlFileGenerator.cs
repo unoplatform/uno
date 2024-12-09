@@ -1046,7 +1046,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (hasResourceExtensions)
 			{
-				using (writer.BlockInvariant($"if (__that.__rootInstance is FrameworkElement __fe) "))
+				using (writer.BlockInvariant($"if (__rootInstance is FrameworkElement __fe) "))
 				{
 					writer.AppendLineIndented($"var owner = this;");
 
