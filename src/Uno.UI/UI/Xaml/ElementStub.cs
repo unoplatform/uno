@@ -121,7 +121,6 @@ namespace Microsoft.UI.Xaml
 
 		public ElementStub()
 		{
-			Visibility = Visibility.Collapsed;
 		}
 
 		private static void OnLoadChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
@@ -148,20 +147,6 @@ namespace Microsoft.UI.Xaml
 		protected override Size ArrangeOverride(Size finalSize)
 			=> ArrangeFirstChild(finalSize);
 
-		protected override void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
-		{
-			base.OnVisibilityChanged(oldValue, newValue);
-
-			if (ContentBuilder != null
-				&& oldValue == Visibility.Collapsed
-				&& newValue == Visibility.Visible
-				&& Parent != null
-			)
-			{
-				Materialize(isVisibilityChanged: true);
-			}
-		}
-
 #if UNO_HAS_ENHANCED_LIFECYCLE
 		internal override void EnterImpl(EnterParams @params, int depth)
 		{
@@ -179,16 +164,14 @@ namespace Microsoft.UI.Xaml
 		{
 			base.OnLoaded();
 
-			if (ContentBuilder != null
-				&& Visibility == Visibility.Visible
-			)
+			if (ContentBuilder != null && Load)
 			{
 				Materialize();
 			}
 		}
 
 		public void Materialize()
-			=> Materialize(isVisibilityChanged: false);
+			=> MaterializeInner();
 
 		private void RaiseMaterializing()
 		{
@@ -198,11 +181,11 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		private void Materialize(bool isVisibilityChanged)
+		private void MaterializeInner()
 		{
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
-				this.Log().Debug($"ElementStub.Materialize(isVibilityChanged: {isVisibilityChanged})");
+				this.Log().Debug($"ElementStub.Materialize()");
 			}
 
 			if (_content == null && !_isMaterializing)
@@ -218,17 +201,6 @@ namespace Microsoft.UI.Xaml
 					// before any binding is applied, so there is no need to force update.
 					TemplatedParentScope.UpdateTemplatedParent(_content as DependencyObject, GetTemplatedParent(), reapplyTemplateBindings: true);
 #endif
-
-					if (isVisibilityChanged &&
-						_content is DependencyObject contentAsDO)
-					{
-						var visibilityProperty = GetVisibilityProperty(_content);
-
-						// Set the visibility at the same precedence it was currently set with on the stub.
-						var precedence = this.GetCurrentHighestValuePrecedence(visibilityProperty);
-
-						contentAsDO.SetValue(visibilityProperty, Visibility.Visible, precedence);
-					}
 
 					MaterializationChanged?.Invoke(this);
 				}
@@ -255,18 +227,6 @@ namespace Microsoft.UI.Xaml
 				}
 
 				MaterializationChanged?.Invoke(this);
-			}
-		}
-
-		private static DependencyProperty GetVisibilityProperty(View view)
-		{
-			if (view is FrameworkElement)
-			{
-				return VisibilityProperty;
-			}
-			else
-			{
-				return DependencyProperty.GetProperty(view.GetType(), nameof(Visibility));
 			}
 		}
 	}

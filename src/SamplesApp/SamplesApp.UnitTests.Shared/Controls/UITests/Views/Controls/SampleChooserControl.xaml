@@ -573,6 +573,11 @@
 										<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE92F;" />
 									</not_win:ToggleMenuFlyoutItem.Icon>
 								</not_win:ToggleMenuFlyoutItem>
+								<not_win:ToggleMenuFlyoutItem Text="Simulate touch" IsChecked="{Binding SimulateTouch, Mode=TwoWay}">
+									<not_win:ToggleMenuFlyoutItem.Icon>
+										<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE815;" />
+									</not_win:ToggleMenuFlyoutItem.Icon>
+								</not_win:ToggleMenuFlyoutItem>
 								<MenuFlyoutItem Text="Log view dump" Command="{Binding LogViewDumpCommand}" Visibility="{Binding IsDebug, Converter={StaticResource TrueToVisible}}">
 									<MenuFlyoutItem.Icon>
 										<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xEBD2;" />

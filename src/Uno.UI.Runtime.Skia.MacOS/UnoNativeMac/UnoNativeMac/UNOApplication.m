@@ -102,6 +102,11 @@ void uno_set_application_can_exit_callback(application_can_exit_fn_ptr p)
     application_can_exit = p;
 }
 
+bool uno_application_is_bundled(void)
+{
+    return NSRunningApplication.currentApplication.bundleIdentifier != nil;
+}
+
 void uno_application_quit(void)
 {
 #if DEBUG

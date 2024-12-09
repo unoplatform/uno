@@ -133,7 +133,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		[TestMethod]
 		public void DoubleTapped_Without_Tapped()
 		{
-			var sut = new GestureRecognizer { GestureSettings = GestureSettings.DoubleTap };
+			var sut = new GestureRecognizer { GestureSettings = GestureSettings.Tap | GestureSettings.DoubleTap };
 			var taps = new List<TappedEventArgs>();
 			sut.Tapped += (snd, e) => taps.Add(e);
 

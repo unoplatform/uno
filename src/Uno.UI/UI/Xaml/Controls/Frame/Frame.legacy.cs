@@ -153,7 +153,7 @@ public partial class Frame : ContentControl
 				Application.Current.RaiseRecoverableUnhandledException(new InvalidOperationException("Navigation failed", exception));
 			}
 
-			return false;
+			throw;
 		}
 		finally
 		{
