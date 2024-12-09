@@ -51,7 +51,6 @@ namespace TestRepro
 			] = 
 			new global::Uno.UI.Xaml.WeakResourceInitializer(this, __ResourceOwner_1 => 
 			{
-				// var __that = (MainPage)__ResourceOwner_1;
 				return 
 					new global::Microsoft.UI.Xaml.Style
 					{

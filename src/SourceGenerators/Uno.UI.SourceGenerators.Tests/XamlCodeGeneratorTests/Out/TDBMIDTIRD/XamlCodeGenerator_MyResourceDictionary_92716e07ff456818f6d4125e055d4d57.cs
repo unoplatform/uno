@@ -47,7 +47,6 @@ namespace TestRepro
 			] = 
 			new global::Uno.UI.Xaml.WeakResourceInitializer(this, __ResourceOwner_1 => 
 			{
-				// var __that = (MyResourceDictionary)__ResourceOwner_1;
 				return 
 					new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, (__owner) => 					new _MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_TestReproMyResourceDictionarySC0().Build(__owner)
 					)				;
@@ -214,7 +213,6 @@ namespace MyProject
 							] = 
 							new global::Uno.UI.Xaml.WeakResourceInitializer(this, __ResourceOwner_1 => 
 							{
-								// var __that = (MyResourceDictionaryRD)__ResourceOwner_1;
 								return 
 									new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, (__owner) => 									new __Resources._MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_MyResourceDictionaryRDSC2().Build(__owner)
 									)								;
