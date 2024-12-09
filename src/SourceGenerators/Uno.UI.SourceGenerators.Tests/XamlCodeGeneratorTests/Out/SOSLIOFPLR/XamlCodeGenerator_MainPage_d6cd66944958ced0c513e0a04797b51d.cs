@@ -51,7 +51,6 @@ namespace TestRepro
 			] = 
 			new global::Uno.UI.Xaml.WeakResourceInitializer(this, __ResourceOwner_1 => 
 			{
-				// var __that = (MainPage)__ResourceOwner_1;
 				return 
 					new global::Microsoft.UI.Xaml.Style
 					{
@@ -78,7 +77,6 @@ namespace TestRepro
 			] = 
 			new global::Uno.UI.Xaml.WeakResourceInitializer(this, __ResourceOwner_1 => 
 			{
-				// var __that = (MainPage)__ResourceOwner_1;
 				return 
 					new global::Microsoft.UI.Xaml.Style
 					{
@@ -105,7 +103,6 @@ namespace TestRepro
 			] = 
 			new global::Uno.UI.Xaml.WeakResourceInitializer(this, __ResourceOwner_1 => 
 			{
-				// var __that = (MainPage)__ResourceOwner_1;
 				return 
 					new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, (__owner) => 					new _MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPageSC0().Build(__owner)
 					)					.GenericApply(__that, __nameScope, (ApplyMethod_6					))
@@ -147,7 +144,7 @@ namespace TestRepro
 						global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(__p1, "OriginalSourceLocation", "file:///C:/Project/0/MainPage.xaml#L10:6");
 					}
 
-							private void ApplyMethod_6(global::System.Object /* oups */ __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
+							private void ApplyMethod_6(global::System.Object __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
 					{
 						global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(__p1, "OriginalSourceLocation", "file:///C:/Project/0/MainPage.xaml#L13:6");
 					}

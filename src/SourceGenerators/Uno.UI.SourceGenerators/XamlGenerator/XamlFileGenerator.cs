@@ -2744,8 +2744,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			var bodyDisposable = writer.BlockInvariant($"new global::Uno.UI.Xaml.WeakResourceInitializer({currentScope}, {CurrentResourceOwner} => ");
 
-			writer.AppendLineInvariantIndented($"// var __that = ({CurrentScope.ClassName}){CurrentResourceOwner};");
-
 			writer.AppendLineInvariantIndented($"return ");
 
 			var indent = writer.Indent();
@@ -2997,8 +2995,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void BuildExtendedProperties(IIndentedStringBuilder outerwriter, XamlObjectDefinition objectDefinition, bool useGenericApply = false)
 		{
-			useGenericApply = true;
-
 			_generatorContext.CancellationToken.ThrowIfCancellationRequested();
 
 			TryAnnotateWithGeneratorSource(outerwriter);
@@ -3117,7 +3113,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							}
 							else
 							{
-								BuildCustomMarkupExtensionPropertyValue(writer, member, closureName);
+								BuildCustomMarkupExtensionPropertyValue(writer, member, closureName, $"(({CurrentScope.ClassName})__that)");
 							}
 						}
 						else if (member.Objects.Count > 0)
@@ -3479,9 +3475,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			// Local function used to build a property/value for any custom MarkupExtensions
-			void BuildCustomMarkupExtensionPropertyValue(IIndentedStringBuilder writer, XamlMemberDefinition member, string closure)
+			void BuildCustomMarkupExtensionPropertyValue(IIndentedStringBuilder writer, XamlMemberDefinition member, string closure, string resourceOwner)
 			{
-				var propertyValue = GetCustomMarkupExtensionValue(member, closure);
+				var propertyValue = GetCustomMarkupExtensionValue(member, closure, resourceOwner);
 				if (!propertyValue.IsNullOrEmpty())
 				{
 					writer.AppendIndented($"{closure}.{member.Member.Name} = {propertyValue};\r\n");
@@ -3922,7 +3918,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				delegateType,
 				!_isTopLevelDictionary,
 				RegisterApplyMethod,
-				appliedType?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) ?? "global::System.Object /* oups */",
+				appliedType?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) ?? "global::System.Object",
 				CurrentScope.ClassName,
 				$"ApplyMethod_{(_applyIndex++).ToString(CultureInfo.InvariantCulture)}");
 		}
@@ -4577,7 +4573,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private string GetCustomMarkupExtensionValue(XamlMemberDefinition member, string? target = null)
+		private string GetCustomMarkupExtensionValue(XamlMemberDefinition member, string? target = null, string? resourceOwner = null)
 		{
 			// Get the type of the custom markup extension
 			var markup = member
@@ -4623,9 +4619,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.JoinBy(", ");
 			var markupInitializer = !properties.IsNullOrEmpty() ? $" {{ {properties} }}" : "()";
 
-			var thatCurrentResourceOwnerName = CurrentResourceOwnerName == "this"
-				? CurrentResourceOwnerName
-				: "__that." + CurrentResourceOwnerName;
+			var thatCurrentResourceOwnerName = resourceOwner switch
+			{
+				not null => resourceOwner,
+				null when CurrentResourceOwner is { } owner => "__that." + owner,
+				_ => "this"
+			};
 
 			// Build the parser context for ProvideValue(IXamlServiceProvider)
 			var providerDetails = new string[]
