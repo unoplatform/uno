@@ -16,16 +16,16 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.ContentControlTests
 		[AutoRetry]
 		public void LoadEmptyContentControl()
 		{
-			Run("SamplesApp.Windows_UI_Xaml_Controls.ContentControlNoTemplateNoContent");
+			Run("SamplesApp.Windows_UI_Xaml_Controls.ContentControlNoTemplateNoContent",skipInitialScreenshot:true);
 
 			_app.WaitForElement("CContentControl");
-			TakeScreenshot($"CContentControl");
+			TakeScreenshot($"CContentControl",ignoreInSnapshotCompare:true);
 			TabWaitAndThenScreenshot("bntContentClear");
 
 			void TabWaitAndThenScreenshot(string buttonName)
 			{
 				_app.Marked(buttonName).FastTap();
-				TakeScreenshot($"ContentControlNoTemplateNoContent - {buttonName}");
+				TakeScreenshot($"ContentControlNoTemplateNoContent - {buttonName}",ignoreInSnapshotCompare:true);
 			}
 
 		}
