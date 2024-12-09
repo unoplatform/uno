@@ -87,6 +87,7 @@ BeginPaint
 BitBlt
 ChoosePixelFormat
 CloseClipboard
+CommDlgExtendedError
 CreateCompatibleDC
 CreateDIBSection
 CreateIconFromResource
@@ -111,6 +112,7 @@ GetDpiForWindow
 GetKeyState
 GetMessageTime
 GetMonitorInfo
+GetOpenFileName
 GetPointerInfo
 GetPointerPenInfo
 GetPointerTouchInfo

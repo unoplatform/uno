@@ -12,21 +12,15 @@
 
 		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Runtime.Skia.Win32</PackageId>
 
+		<PlatformTarget>x64</PlatformTarget>
+
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 
 		<!-- Ignore NU5104 for net7.0 System.Drawing.Common -->
 		<NoWarn>$(NoWarn);NU5104</NoWarn>
 
 		<Nullable>enable</Nullable>
-	</PropertyGroup>	
-
-	<ItemGroup>
-		<!--
-		This allows for building the library with a dependency to WPF while not
-		building with net8-windows.
-		-->
-		<FrameworkReference Include="Microsoft.WindowsDesktop.App.WPF" />
-	</ItemGroup>
+	</PropertyGroup>
 
 	<ItemGroup>
 		<None Include="..\Common\uno.png" Pack="true" PackagePath="\" Visible="false" />
@@ -35,11 +29,6 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Web.WebView2" Aliases="WpfWebView" PrivateAssets="all" />
 
-		<!-- 
-			Required to ensure that this reference is latest and not
-			transitively flowing through SkiaSharp's dependencies
-		 -->
-		<PackageReference Include="Microsoft.Win32.SystemEvents" />
 		<PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.106" />
 	</ItemGroup>
 

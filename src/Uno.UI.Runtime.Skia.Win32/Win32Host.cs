@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Graphics.Display;
 using Windows.Networking.Connectivity;
+using Windows.Storage.Pickers;
 using Windows.System.Profile.Internal;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
@@ -10,6 +11,7 @@ using Windows.Win32.Foundation;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Uno.ApplicationModel.DataTransfer;
+using Uno.Extensions.Storage.Pickers;
 using Uno.Foundation.Extensibility;
 using Uno.Helpers.Theming;
 using Uno.UI.Dispatching;
@@ -50,6 +52,7 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 		ApiExtensibility.Register<ConnectionProfile>(typeof(IConnectionProfileExtension), _ => Win32ConnectionProfileExtension.Instance);
 		ApiExtensibility.Register(typeof(IAnalyticsInfoExtension), _ => Win32AnalyticsInfoExtension.Instance);
 		ApiExtensibility.Register(typeof(IClipboardExtension), _ => Win32ClipboardExtension.Instance);
+		ApiExtensibility.Register<FileOpenPicker>(typeof(IFileOpenPickerExtension), o => new Win32FileOpenPickerExtension(o));
 	}
 
 	public Win32Host(Func<Application> appBuilder)
