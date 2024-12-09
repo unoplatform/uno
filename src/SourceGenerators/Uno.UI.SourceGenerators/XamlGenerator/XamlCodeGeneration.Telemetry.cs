@@ -19,13 +19,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private Telemetry _telemetry;
 
-		public bool IsRunningCI =>
-			!Environment.GetEnvironmentVariable("TF_BUILD").IsNullOrEmpty() // https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?tabs=yaml&view=azure-devops#system-variables
-			|| !Environment.GetEnvironmentVariable("TRAVIS").IsNullOrEmpty() // https://docs.travis-ci.com/user/environment-variables/#default-environment-variables
-			|| !Environment.GetEnvironmentVariable("JENKINS_URL").IsNullOrEmpty() // https://wiki.jenkins.io/display/JENKINS/Building+a+software+project#Buildingasoftwareproject-belowJenkinsSetEnvironmentVariables
-			|| !Environment.GetEnvironmentVariable("GITHUB_REPOSITORY").IsNullOrEmpty() // https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/store-information-in-variables#default-environment-variables
-			|| !Environment.GetEnvironmentVariable("APPVEYOR").IsNullOrEmpty(); // https://www.appveyor.com/docs/environment-variables/
-
 		private void InitTelemetry(GeneratorExecutionContext context)
 		{
 			var telemetryOptOut = context.GetMSBuildPropertyValue("UnoPlatformTelemetryOptOut");
@@ -52,7 +45,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				return Environment.CurrentDirectory;
 			}
 
-			_telemetry = new Telemetry(InstrumentationKey, enabledProvider: isTelemetryOptout, currentDirectoryProvider: getCurrentDirectory);
+			_telemetry = new Telemetry(InstrumentationKey, "uno/generation", enabledProvider: isTelemetryOptout, currentDirectoryProvider: getCurrentDirectory);
 		}
 
 		private bool IsTelemetryEnabled => _telemetry?.Enabled ?? false;
@@ -66,9 +59,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					_telemetry.TrackEvent(
 						"generate-xaml-done",
-						new[] {
-							("IsRunningCI", IsRunningCI.ToString()),
-						},
+						[],
 						new[] { ("Duration", elapsed.TotalSeconds) }
 					);
 				}
@@ -93,8 +84,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					_telemetry.TrackEvent(
 						"generate-xaml-failed",
 						new[] {
-							("ExceptionType", exception.GetType().ToString()),
-							("IsRunningCI", IsRunningCI.ToString()),
+							("ExceptionType", exception.GetType().ToString())
 						},
 						new[] { ("Duration", elapsed.TotalSeconds) }
 					);
@@ -130,7 +120,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							("IsBuildingUnoSolution", isBuildingUno.ToString()),
 							("IsUiAutomationMappingEnabled", _isUiAutomationMappingEnabled.ToString()),
 							("DefaultLanguage", _defaultLanguage ?? "Unknown"),
-							("IsRunningCI", IsRunningCI.ToString()),
 							("BuildingInsideVisualStudio", _generatorContext.GetMSBuildPropertyValue("BuildingInsideVisualStudio")?.ToString().ToLowerInvariant()),
 							("IDE", BuildIDEName()),
 						},
