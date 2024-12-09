@@ -9,18 +9,21 @@ using System.Xml;
 using Uno.Roslyn;
 using Microsoft.CodeAnalysis;
 using Uno.Extensions;
-using Uno.UI.SourceGenerators.Telemetry;
+using Uno.DevTools.Telemetry;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
 	internal partial class XamlCodeGeneration
 	{
-		private Telemetry.Telemetry _telemetry;
+		private const string InstrumentationKey = "9a44058e-1913-4721-a979-9582ab8bedce";
+
+		private Telemetry _telemetry;
 
 		public bool IsRunningCI =>
 			!Environment.GetEnvironmentVariable("TF_BUILD").IsNullOrEmpty() // https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?tabs=yaml&view=azure-devops#system-variables
 			|| !Environment.GetEnvironmentVariable("TRAVIS").IsNullOrEmpty() // https://docs.travis-ci.com/user/environment-variables/#default-environment-variables
 			|| !Environment.GetEnvironmentVariable("JENKINS_URL").IsNullOrEmpty() // https://wiki.jenkins.io/display/JENKINS/Building+a+software+project#Buildingasoftwareproject-belowJenkinsSetEnvironmentVariables
+			|| !Environment.GetEnvironmentVariable("GITHUB_REPOSITORY").IsNullOrEmpty() // https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/store-information-in-variables#default-environment-variables
 			|| !Environment.GetEnvironmentVariable("APPVEYOR").IsNullOrEmpty(); // https://www.appveyor.com/docs/environment-variables/
 
 		private void InitTelemetry(GeneratorExecutionContext context)
@@ -32,7 +35,24 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				|| telemetryOptOut.Equals("1", StringComparison.OrdinalIgnoreCase)
 				|| _isDesignTimeBuild;
 
-			_telemetry = new Telemetry.Telemetry(isTelemetryOptout);
+			string getCurrentDirectory()
+			{
+				var solutionDir = context.GetMSBuildPropertyValue("SolutionDir");
+				if (!string.IsNullOrEmpty(solutionDir))
+				{
+					return solutionDir;
+				}
+
+				var projectDir = context.GetMSBuildPropertyValue("MSBuildProjectFullPath");
+				if (!string.IsNullOrEmpty(projectDir))
+				{
+					return projectDir;
+				}
+
+				return Environment.CurrentDirectory;
+			}
+
+			_telemetry = new Telemetry(InstrumentationKey, enabledProvider: isTelemetryOptout, currentDirectoryProvider: getCurrentDirectory);
 		}
 
 		private bool IsTelemetryEnabled => _telemetry?.Enabled ?? false;

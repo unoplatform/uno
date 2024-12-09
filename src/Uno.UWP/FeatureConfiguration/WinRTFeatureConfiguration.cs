@@ -45,4 +45,14 @@ public static partial class WinRTFeatureConfiguration
 		public static bool TestMode { get; set; }
 	}
 #endif
+
+#if DEBUG
+	internal static class DebugOptions
+	{
+		/// <summary>
+		/// Adjusts all PointerPoint instances as if they were of type Touch.
+		/// </summary>
+		public static bool SimulateTouch { get; set; }
+	}
+#endif
 }
