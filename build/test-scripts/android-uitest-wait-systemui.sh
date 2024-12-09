@@ -92,7 +92,7 @@ while [[ -z ${LAUNCHER_READY} ]]; do
 done
 
 # Force terminate system UI to restart clean
-"$ANDROID_HOME/platform-tools/adb" shell am force-stop com.android.systemui
+# "$ANDROID_HOME/platform-tools/adb" shell am force-stop com.android.systemui
 
 # disable system animations
 "$ANDROID_HOME/platform-tools/adb" shell settings put global animator_duration_scale 0
