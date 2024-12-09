@@ -4655,7 +4655,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					Content = new TextBlock
 					{
 						AllowDrop = true,
-						CanDrag = true,
 						Height = 100,
 						Text = i.ToString()
 					}
