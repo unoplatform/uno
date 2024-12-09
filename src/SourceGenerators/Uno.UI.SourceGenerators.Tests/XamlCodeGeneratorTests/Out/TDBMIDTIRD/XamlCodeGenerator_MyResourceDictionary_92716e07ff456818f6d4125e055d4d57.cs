@@ -100,7 +100,7 @@ namespace TestRepro
 				}
 				))
 				;
-				if (__that.__rootInstance is FrameworkElement __fe) 
+				if (__rootInstance is FrameworkElement __fe) 
 				{
 					var owner = this;
 					__fe.Loading += delegate
@@ -282,7 +282,7 @@ namespace MyProject.__Resources
 			}
 			))
 			;
-			if (__that.__rootInstance is FrameworkElement __fe) 
+			if (__rootInstance is FrameworkElement __fe) 
 			{
 				var owner = this;
 				__fe.Loading += delegate
@@ -378,7 +378,7 @@ namespace MyProject.__Resources
 			}
 			))
 			;
-			if (__that.__rootInstance is FrameworkElement __fe) 
+			if (__rootInstance is FrameworkElement __fe) 
 			{
 				var owner = this;
 				__fe.Loading += delegate

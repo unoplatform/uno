@@ -369,7 +369,7 @@ namespace TestRepro
 				}
 				.GenericApply(__that, __nameScope, (ApplyMethod_19				))
 				;
-				if (__that.__rootInstance is FrameworkElement __fe) 
+				if (__rootInstance is FrameworkElement __fe) 
 				{
 					var owner = this;
 					__fe.Loading += delegate

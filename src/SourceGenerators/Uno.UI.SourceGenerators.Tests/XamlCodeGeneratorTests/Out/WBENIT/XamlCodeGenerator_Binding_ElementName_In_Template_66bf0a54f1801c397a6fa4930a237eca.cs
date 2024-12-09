@@ -159,7 +159,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 				}
 				))
 				;
-				if (__that.__rootInstance is FrameworkElement __fe) 
+				if (__rootInstance is FrameworkElement __fe) 
 				{
 					var owner = this;
 					__fe.Loading += delegate
