@@ -104,16 +104,17 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 		_host.ExtendContentIntoTitleBar(extend);
 	}
 
-	private void OnWindowClosing()
+	private bool OnWindowClosing()
 	{
 		var closingArgs = RaiseClosing();
 		if (closingArgs.Cancel)
 		{
-			return;
+			return false;
 		}
 
 		// All prerequisites passed, can safely close.
 		Close();
+		return true;
 	}
 
 	private void OnNativeActivated(bool focused) => ActivationState = focused ? CoreWindowActivationState.PointerActivated : CoreWindowActivationState.Deactivated;

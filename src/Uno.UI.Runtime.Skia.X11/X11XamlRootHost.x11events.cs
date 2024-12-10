@@ -13,12 +13,12 @@ internal partial class X11XamlRootHost
 {
 	private static int _threadCount;
 
-	private readonly Action _closingCallback;
+	private readonly Func<bool> _closingCallback;
 	private readonly Action<bool> _focusCallback;
 	private readonly Action<bool> _visibilityCallback;
 	private readonly Action _configureCallback;
 
-	private int _needsConfigureCallback;
+	private bool _needsConfigureCallback;
 
 	private X11PointerInputSource? _pointerSource;
 	private X11KeyboardInputSource? _keyboardSource;
@@ -185,7 +185,13 @@ internal partial class X11XamlRootHost
 								// which, according to the source code, just calls XKillClient
 								// https://gitlab.freedesktop.org/xorg/app/xkill/-/blob/a5f704e4cd30f03859f66bafd609a75aae27cc8c/xkill.c#L234
 								// In the case of xkill, we can't really do much, it's similar to a SIGKILL but for x connections
-								QueueAction(this, _closingCallback);
+								QueueAction(this, () =>
+								{
+									if (_closingCallback())
+									{
+										_windowBackgroundDisposable.Dispose();
+									}
+								});
 							}
 							else if (@event.ClientMessageEvent.message_type == X11Helper.GetAtom(x11Window.Display, X11Helper.XdndEnter) ||
 								@event.ClientMessageEvent.message_type == X11Helper.GetAtom(x11Window.Display, X11Helper.XdndPosition) ||
@@ -197,7 +203,7 @@ internal partial class X11XamlRootHost
 							}
 							break;
 						case XEventName.ConfigureNotify:
-							Interlocked.Exchange(ref _needsConfigureCallback, 1);
+							_needsConfigureCallback = true;
 							break;
 						case XEventName.FocusIn:
 							QueueAction(this, () => _focusCallback(true));

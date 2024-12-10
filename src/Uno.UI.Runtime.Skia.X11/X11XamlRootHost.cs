@@ -16,6 +16,7 @@ using Microsoft.UI.Xaml;
 using SkiaSharp;
 using Uno.Disposables;
 using Uno.UI;
+using Uno.UI.Dispatching;
 using Uno.UI.Xaml.Controls;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
@@ -73,8 +74,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	private readonly ApplicationView _applicationView;
 	private readonly X11WindowWrapper _wrapper;
 	private readonly Window _window;
-	private readonly CompositeDisposable _disposables = new();
-	private readonly XamlRoot _xamlRoot;
+	private readonly IDisposable _windowBackgroundDisposable;
 
 	private int _synchronizedShutDownTopWindowIdleCounter;
 
@@ -83,14 +83,14 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	private IX11Renderer? _renderer;
 
 	private bool _renderDirty = true;
-	private readonly DispatcherTimer _renderTimer;
+	// ReSharper disable once NotAccessedField.Local
+	private readonly Timer _timer; // this field is necessary to prevent the timer from being GCed
 
 	public X11Window RootX11Window => _x11Window!.Value;
 	public X11Window TopX11Window => _x11TopWindow!.Value;
 
-	public X11XamlRootHost(X11WindowWrapper wrapper, Window winUIWindow, XamlRoot xamlRoot, Action configureCallback, Action closingCallback, Action<bool> focusCallback, Action<bool> visibilityCallback)
+	public X11XamlRootHost(X11WindowWrapper wrapper, Window winUIWindow, XamlRoot xamlRoot, Action configureCallback, Func<bool> closingCallback, Action<bool> focusCallback, Action<bool> visibilityCallback)
 	{
-		_xamlRoot = xamlRoot;
 		_wrapper = wrapper;
 		_window = winUIWindow;
 
@@ -99,22 +99,32 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		_visibilityCallback = visibilityCallback;
 		_configureCallback = configureCallback;
 
-		_renderTimer = new DispatcherTimer();
-		_renderTimer.Interval = TimeSpan.FromSeconds(1.0 / X11ApplicationHost.RenderFrameRate); // we're on the UI thread
-		_renderTimer.Tick += (sender, o) =>
+		// running XConfigureEvent and rendering callbacks on a timer is necessary to avoid freezing in certain situations
+		// where we get spammed with these events. Most notably, when resizing a window by dragging an edge, we'll get spammed
+		// with XConfigureEvents.
+		_timer = new Timer(static obj =>
 		{
-			if (Interlocked.Exchange(ref _needsConfigureCallback, 0) == 1)
-			{
-				_configureCallback();
-			}
+			var @this = (X11XamlRootHost)obj!;
+			var needsConfigureCallback = @this._needsConfigureCallback;
+			var needsRender = @this._renderDirty;
 
-			if (_renderDirty)
+			if (needsConfigureCallback || needsRender)
 			{
-				_renderDirty = false;
-				_renderer?.Render();
+				NativeDispatcher.Main.Enqueue(() =>
+				{
+					if (needsConfigureCallback)
+					{
+						@this._needsConfigureCallback = false;
+						@this._configureCallback();
+					}
+					if (needsRender)
+					{
+						@this._renderDirty = false;
+						@this._renderer?.Render();
+					}
+				});
 			}
-		};
-		_renderTimer.Start();
+		}, this, TimeSpan.Zero, TimeSpan.FromSeconds(1.0 / X11ApplicationHost.RenderFrameRate));
 
 		_applicationView = ApplicationView.GetForWindowId(winUIWindow.AppWindow.Id);
 		_applicationView.PropertyChanged += OnApplicationViewPropertyChanged;
@@ -150,7 +160,8 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		// only start listening to events after we're done setting everything up
 		InitializeX11EventsThread();
 
-		RegisterForBackgroundColor();
+		_windowBackgroundDisposable = _window.RegisterBackgroundChangedEvent((_, _) => UpdateRendererBackground());
+		UpdateRendererBackground();
 	}
 
 	public static X11XamlRootHost? GetHostFromWindow(Window window)
@@ -444,7 +455,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		}
 
 		IntPtr context = GlxInterface.glXCreateNewContext(display, bestFbc, GlxConsts.GLX_RGBA_TYPE, IntPtr.Zero, /* True */ 1);
-		var _1 = XLib.XSync(display, false);
+		_ = XLib.XSync(display, false);
 
 		XSetWindowAttributes attribs = default;
 		attribs.border_pixel = XLib.XBlackPixel(display, screen);
@@ -591,13 +602,6 @@ internal partial class X11XamlRootHost : IXamlRootHost
 				_ = XLib.XFlush(RootX11Window.Display);
 			}
 		}
-	}
-
-	private void RegisterForBackgroundColor()
-	{
-		UpdateRendererBackground();
-
-		_disposables.Add(_window.RegisterBackgroundChangedEvent((s, e) => UpdateRendererBackground()));
 	}
 
 	private void UpdateRendererBackground()
