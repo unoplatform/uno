@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Web.WebView2.Core;
 using Uno.UI.Xaml.Controls;
+using Uno.UI.Xaml.Controls.WebView.Native.Skia;
 using static __Microsoft.UI.Xaml.Controls.NativeWebView;
 
 #if WASM_SKIA
@@ -16,7 +17,7 @@ using ElementId = System.IntPtr;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-public partial class NativeWebView : INativeWebView
+public partial class NativeWebView : ICleanableNativeWebView
 {
 	private readonly CoreWebView2 _coreWebView;
 	private readonly ElementId _elementId;

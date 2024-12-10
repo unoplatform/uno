@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls;
+using Uno.UI.Xaml.Controls.WebView.Native.Skia;
 using Windows.Foundation;
 using Windows.UI.Core;
 
@@ -40,9 +41,9 @@ public partial class CoreWebView2
 	internal IReadOnlyDictionary<string, string> HostToFolderMap { get; }
 
 #if __SKIA__
-	internal void OnLoaded() => _nativeWebView?.OnLoaded();
+	internal void OnLoaded() => (_nativeWebView as ICleanableNativeWebView)?.OnLoaded();
 
-	internal void OnUnloaded() => _nativeWebView?.OnUnloaded();
+	internal void OnUnloaded() => (_nativeWebView as ICleanableNativeWebView)?.OnUnloaded();
 #endif
 
 	/// <summary>
