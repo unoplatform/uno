@@ -69,11 +69,9 @@ namespace TestRepro
 			_View __rootInstance = null;
 			public _View Build(object __ResourceOwner_1)
 			{
-				_View __rootInstance = null;
 				var __that = this;
 				this.__ResourceOwner_1 = __ResourceOwner_1;
-				this.__rootInstance = __rootInstance;
-				__rootInstance = 
+				this.__rootInstance = 
 				new global::Microsoft.UI.Xaml.Controls.TextBlock
 				{
 					IsParsing = true,
@@ -250,11 +248,9 @@ namespace MyProject.__Resources
 		_View __rootInstance = null;
 		public _View Build(object __ResourceOwner_1)
 		{
-			_View __rootInstance = null;
 			var __that = this;
 			this.__ResourceOwner_1 = __ResourceOwner_1;
-			this.__rootInstance = __rootInstance;
-			__rootInstance = 
+			this.__rootInstance = 
 			new global::Microsoft.UI.Xaml.Controls.TextBlock
 			{
 				IsParsing = true,
@@ -346,11 +342,9 @@ namespace MyProject.__Resources
 		_View __rootInstance = null;
 		public _View Build(object __ResourceOwner_1)
 		{
-			_View __rootInstance = null;
 			var __that = this;
 			this.__ResourceOwner_1 = __ResourceOwner_1;
-			this.__rootInstance = __rootInstance;
-			__rootInstance = 
+			this.__rootInstance = 
 			new global::Microsoft.UI.Xaml.Controls.TextBlock
 			{
 				IsParsing = true,
