@@ -65,6 +65,10 @@
 
 		<TypeScriptCompile Include="..\Uno.UI\ts\types\**\*.ts" />
 
+		<TypeScriptCompile Include="..\Uno.UI\ts\Windows\UI\Xaml\Controls\WebView.ts">
+			<Link>ts\Runtime\WebView.ts</Link>
+		</TypeScriptCompile>
+
 		<UpToDateCheckInput Include="ts\**\*" />
 		<UpToDateCheckInput Include="WasmCSS\**\*" />
 	</ItemGroup>
@@ -122,9 +126,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <TypeScriptCompile Include="..\Uno.UI\ts\Windows\UI\Xaml\Controls\WebView.ts">
-	    <Link>ts\Runtime\WebView.ts</Link>
-	  </TypeScriptCompile>
+
 	</ItemGroup>
 
 </Project>

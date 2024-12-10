@@ -38,6 +38,7 @@ public partial class NativeWebView : INativeWebView
 		_elementId = elementId;
 
 		NativeMethods.SetBackground(elementId, "transparent");
+		NativeMethods.SetupEvents(elementId);
 	}
 
 	[JSExport]
@@ -114,4 +115,10 @@ public partial class NativeWebView : INativeWebView
 	public void GoForward() => NativeMethods.GoForward(_elementId);
 
 	public void SetScrollingEnabled(bool isScrollingEnabled) { }
+
+	public void Dispose()
+	{
+		// Todo call this and reattach if needed
+		_elementIdToNativeWebView.TryRemove(_elementId, out _);
+	}
 }

@@ -4,10 +4,12 @@ namespace Microsoft.UI.Xaml.Controls {
 		private static unoExports: any;
 
 		public static buildImports(assembly: string) {
-			(<any>window.Module).getAssemblyExports(assembly)
-				.then((e: any) => {
-					WebView.unoExports = e.Microsoft.UI.Xaml.Controls.NativeWebView;
-				});
+			if (!WebView.unoExports) {
+				(<any>window.Module).getAssemblyExports(assembly)
+					.then((e: any) => {
+						WebView.unoExports = e.Microsoft.UI.Xaml.Controls.NativeWebView;
+					});
+			}
 		}
 
 		static reload(htmlId: string): void {

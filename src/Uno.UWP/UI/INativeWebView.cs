@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 namespace Uno.UI.Xaml.Controls;
 
 internal partial interface INativeWebView
+#if __SKIA__
+	: IDisposable
+#endif
 {
 	string DocumentTitle { get; }
 
