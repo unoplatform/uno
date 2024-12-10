@@ -828,6 +828,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void BuildBackingFields(IIndentedStringBuilder writer)
 		{
+			var accessors = _isHotReloadEnabled ? " { get; set; }" : null; // We use property for HR so we can remove them without causing rude edit.
+
 			TryAnnotateWithGeneratorSource(writer);
 			foreach (var backingFieldDefinition in CurrentScope.BackingFields.Distinct())
 			{
@@ -838,7 +840,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					CurrentScope.ReferencedElementNames.Remove(sanitizedFieldName);
 				}
 
-				writer.AppendLineIndented($"private global::Microsoft.UI.Xaml.Data.ElementNameSubject _{sanitizedFieldName}Subject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();");
+				writer.AppendLineIndented($"private global::Microsoft.UI.Xaml.Data.ElementNameSubject _{sanitizedFieldName}Subject{accessors} = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();");
 
 
 				using (writer.BlockInvariant($"{FormatAccessibility(backingFieldDefinition.Accessibility)} {backingFieldDefinition.GlobalizedTypeName} {sanitizedFieldName}"))
@@ -858,13 +860,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			foreach (var xBindEventHandler in CurrentScope.xBindEventsHandlers)
 			{
 				// Create load-time subjects for ElementName references not in local scope
-				writer.AppendLineIndented($"{FormatAccessibility(xBindEventHandler.Accessibility)} {xBindEventHandler.GlobalizedTypeName} {xBindEventHandler.Name};");
+				writer.AppendLineIndented($"{FormatAccessibility(xBindEventHandler.Accessibility)} {xBindEventHandler.GlobalizedTypeName} {xBindEventHandler.Name}{accessors ?? ";"}");
 			}
 
 			foreach (var remainingReference in CurrentScope.ReferencedElementNames)
 			{
 				// Create load-time subjects for ElementName references not in local scope
-				writer.AppendLineIndented($"private global::Microsoft.UI.Xaml.Data.ElementNameSubject _{remainingReference}Subject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: true, name: \"{remainingReference}\");");
+				writer.AppendLineIndented($"private global::Microsoft.UI.Xaml.Data.ElementNameSubject _{remainingReference}Subject{accessors} = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: true, name: \"{remainingReference}\");");
 			}
 		}
 
@@ -1108,8 +1110,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var typeName = GetType(current.XamlObject.Type).GetFullyQualifiedTypeIncludingGlobal();
 
 				var isWeak = current.IsWeakReference ? "true" : "false";
-				var accessors = _isHotReloadEnabled ? "{ get; set; } " : ""; // We use property for HR so we can remove them without causing rude edit.
-				writer.AppendLineIndented($"private global::Microsoft.UI.Xaml.Markup.ComponentHolder {componentName}_Holder {accessors}= new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: {isWeak});");
+				var accessors = _isHotReloadEnabled ? " { get; set; }" : ""; // We use property for HR so we can remove them without causing rude edit.
+				writer.AppendLineIndented($"private global::Microsoft.UI.Xaml.Markup.ComponentHolder {componentName}_Holder{accessors} = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: {isWeak});");
 
 				using (writer.BlockInvariant($"private {typeName} {componentName}"))
 				{
