@@ -206,6 +206,10 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		/// </summary>
 		private class HotReloadServerOperation
 		{
+			public readonly static int DefaultAutoRetryIfNoChangesAttempts = 3;
+
+			public readonly static TimeSpan DefaultAutoRetryIfNoChangesDelay = TimeSpan.FromMilliseconds(500);
+
 			// Delay to wait without any update to consider operation was aborted.
 			private static readonly TimeSpan _timeoutDelay = TimeSpan.FromSeconds(30);
 
@@ -219,7 +223,11 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			private ImmutableHashSet<string> _filePaths;
 			private int /* HotReloadResult */ _result = -1;
 			private CancellationTokenSource? _deferredCompletion;
+
+			// In VS we forcefully request to VS to hot-reload application, but in some cases the changes are not detected by VS and it returns a NoChanges result.
+			// In such cases we can retry the hot-reload request to VS to let it process the file updates.
 			private int _noChangesRetry;
+			private TimeSpan _noChangesRetryDelay = DefaultAutoRetryIfNoChangesDelay;
 
 			public long Id { get; } = Interlocked.Increment(ref _count);
 
@@ -294,8 +302,11 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			/// <summary>
 			/// Configure a simple auto-retry strategy if no changes are detected.
 			/// </summary>
-			public void EnableAutoRetryIfNoChanges()
-				=> _noChangesRetry = 1;
+			public void EnableAutoRetryIfNoChanges(int? attempts, TimeSpan? delay)
+			{
+				_noChangesRetry = attempts ?? DefaultAutoRetryIfNoChangesAttempts;
+				_noChangesRetryDelay = delay ?? DefaultAutoRetryIfNoChangesDelay;
+			}
 
 			/// <summary>
 			/// As errors might get a bit after the complete from the IDE, we can defer the completion of the operation.
@@ -322,10 +333,17 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			{
 				if (_result is -1
 					&& result is HotReloadServerResult.NoChanges
-					&& Interlocked.Decrement(ref _noChangesRetry) >= 0
-					&& await _owner.RequestHotReloadToIde(Id))
+					&& Interlocked.Decrement(ref _noChangesRetry) >= 0)
 				{
-					return;
+					if (_noChangesRetryDelay is { TotalMilliseconds: > 0 })
+					{
+						await Task.Delay(_noChangesRetryDelay);
+					}
+
+					if (await _owner.RequestHotReloadToIde(Id))
+					{
+						return;
+					}
 				}
 
 				Debug.Assert(result != HotReloadServerResult.InternalError || exception is not null); // For internal error we should always provide an exception!
@@ -463,7 +481,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				};
 				if ((int)result < 300 && !message.IsForceHotReloadDisabled)
 				{
-					hotReload.EnableAutoRetryIfNoChanges();
+					hotReload.EnableAutoRetryIfNoChanges(message.ForceHotReloadAttempts, message.ForceHotReloadDelay);
 					await RequestHotReloadToIde(hotReload.Id);
 				}
 
@@ -579,7 +597,11 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				{
 					if (e.FullPath.Equals(file.FullName, StringComparison.OrdinalIgnoreCase))
 					{
-						await Task.Delay(500);
+						if ((message.ForceHotReloadDelay ?? HotReloadServerOperation.DefaultAutoRetryIfNoChangesDelay) is { TotalMilliseconds: > 0 } delay)
+						{
+							await Task.Delay(delay);
+						}
+
 						tcs.TrySetResult();
 					}
 				};

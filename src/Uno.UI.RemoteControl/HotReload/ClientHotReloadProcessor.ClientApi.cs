@@ -63,6 +63,16 @@ public partial class ClientHotReloadProcessor
 		/// <remarks>This includes the time to apply the delta locally and then to run all local handlers.</remarks>
 		public TimeSpan LocalHotReloadTimeout { get; set; } = TimeSpan.FromSeconds(5);
 
+		/// <summary>
+		/// When <see cref="WaitForHotReload"/> the delay to wait before retrying a hot-reload in Visual Studio if no changes are detected.
+		/// </summary>
+		public TimeSpan? HotReloadNoChangesRetryDelay { get; set; }
+
+		/// <summary>
+		/// When <see cref="WaitForHotReload"/> the number of times to retry the hot reload in Visual Studio if no changes are detected.
+		/// </summary>
+		public int? HotReloadNoChangesRetryAttempts { get; set; }
+
 		public UpdateRequest WithExtendedTimeouts(float? factor = null)
 		{
 			factor ??= Debugger.IsAttached ? 10 : 30;
@@ -116,7 +126,14 @@ public partial class ClientHotReloadProcessor
 			// As the local HR is not really ID trackable (trigger by VS without any ID), we capture the current ID here to make sure that if HR completes locally before we get info from the server, we won't miss it.
 			var currentLocalHrId = GetCurrentLocalHotReloadId();
 
-			var request = new UpdateFile { FilePath = req.FilePath, OldText = req.OldText, NewText = req.NewText };
+			var request = new UpdateFile
+			{
+				FilePath = req.FilePath,
+				OldText = req.OldText,
+				NewText = req.NewText,
+				ForceHotReloadDelay = req.HotReloadNoChangesRetryDelay,
+				ForceHotReloadAttempts = req.HotReloadNoChangesRetryAttempts
+			};
 			var response = await UpdateFileCoreAsync(request, req.ServerUpdateTimeout, ct);
 
 			if (response.Result is FileUpdateResult.NoChanges)
