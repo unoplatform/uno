@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using Uno.Diagnostics.UI;
+using Uno.Foundation.Logging;
 
 #if HAS_UNO_WINUI
 using Uno.UI.RemoteControl.HotReload.Messages;
@@ -138,7 +139,14 @@ public partial class ClientHotReloadProcessor
 			var status = BuildStatus();
 
 			Current = status;
-			owner.StatusChanged?.Invoke(this, status);
+			try
+			{
+				owner.StatusChanged?.Invoke(this, status);
+			}
+			catch (Exception error)
+			{
+				this.Log().Error("Failed to notify the status changed.", error);
+			}
 		}
 
 		private Status BuildStatus()

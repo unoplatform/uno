@@ -1294,6 +1294,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						{
 							writer.AppendLineIndented("// This non-static inner class is a means of reducing size of AOT compilations by avoiding many accesses to static members from a static callsite, which adds costly class initializer checks each time.");
 
+							if (_isHotReloadEnabled)
+							{
+								// Create a public member to avoid having to remove all unused member warnings
+								// The member is a method to avoid this error: error ENC0011: Updating the initializer of const field requires restarting the application.
+								writer.AppendLineIndented("[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
+								writer.AppendLineIndented($"internal string __{_fileDefinition.UniqueID}_checksum() => \"{_fileDefinition.Checksum}\";");
+
+								writer.AppendLineIndented("[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]");
+							}
+
 							var block = writer.BlockInvariant("internal sealed class {0} : {1}", SingletonClassName, DictionaryProviderInterfaceName);
 							_isInSingletonInstance = true;
 							return new DisposableAction(() =>
@@ -1694,6 +1704,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				using (writer.BlockInvariant("namespace {0}", className.Namespace))
 				{
+					if (_isHotReloadEnabled)
+					{
+						writer.AppendLineIndented("[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]");
+					}
+
 					using (writer.BlockInvariant("public sealed partial class {0} : {1}", className.ClassName, controlBaseType.GetFullyQualifiedTypeIncludingGlobal()))
 					{
 						BuildBaseUri(writer);
