@@ -104,5 +104,47 @@ namespace TestRepro
 				__p1.CreationComplete();
 			}
 
+		private interface IMainPage_Bindings
+		{
+			void Initialize();
+			void Update();
+			void UpdateResources();
+			void StopTracking();
+			void NotifyXLoad(string name);
+		}
+		#pragma warning disable 0169 //  Suppress unused field warning in case Bindings is not used.
+		private IMainPage_Bindings Bindings;
+		#pragma warning restore 0169
+		[global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+		private class MainPage_Bindings : IMainPage_Bindings
+		{
+			#if UNO_HAS_UIELEMENT_IMPLICIT_PINNING
+			private global::System.WeakReference _ownerReference;
+			private global::TestRepro.MainPage Owner { get => (global::TestRepro.MainPage)_ownerReference?.Target; set => _ownerReference = new global::System.WeakReference(value); }
+			#else
+			private global::TestRepro.MainPage Owner { get; set; }
+			#endif
+			public MainPage_Bindings(global::TestRepro.MainPage owner)
+			{
+				Owner = owner;
+			}
+			void IMainPage_Bindings.NotifyXLoad(string name)
+			{
+			}
+			void IMainPage_Bindings.Initialize()
+			{
+			}
+			void IMainPage_Bindings.Update()
+			{
+				var owner = Owner;
+			}
+			void IMainPage_Bindings.UpdateResources()
+			{
+				var owner = Owner;
+			}
+			void IMainPage_Bindings.StopTracking()
+			{
+			}
+		}
 	}
 }

@@ -1135,7 +1135,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var hasXBindExpressions = CurrentScope.XBindExpressions.Count != 0;
 			var hasResourceExtensions = CurrentScope.Components.Any(c => HasMarkupExtensionNeedingComponent(c.XamlObject));
 
-			if (hasXBindExpressions || hasResourceExtensions)
+			if (hasXBindExpressions || hasResourceExtensions || _isHotReloadEnabled) // We forcefully generate the bindings class for HR to avoids rude edit
 			{
 				var (bindingsInterfaceName, bindingsClassName) = GetBindingsTypeNames(_xClassName.ClassName);
 
