@@ -111,7 +111,7 @@
 	</Target>
 	
 	<!-- https://github.com/dotnet/runtime/issues/109289 -->
-	<Target Name="Issue109289_Workaround" AfterTargets="_BrowserWasmWriteRspForLinking" Condition=" $(NETCoreSdkVersion.Contains('9.0.100')) ">
+	<Target Name="Issue109289_Workaround" AfterTargets="_BrowserWasmWriteRspForLinking" Condition=" $(NETCoreSdkVersion.StartsWith('9.0.')) ">
 		<ItemGroup>
 			<_WasmLinkStepArgs Remove="@(_EmccLinkStepArgs)" />
 			<_EmccLinkStepArgs Remove="&quot;%(_WasmNativeFileForLinking.Identity)&quot;" />
