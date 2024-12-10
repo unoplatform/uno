@@ -185,9 +185,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 
 			var initialScreenshot = await UITestHelper.ScreenShot(border);
 
-			bitmapImage.UriSource = new Uri("ms-appx:///Assets/BlueSquare.png");
 			bool opened = false;
 			bitmapImage.ImageOpened += (s, e) => opened = true;
+			bitmapImage.UriSource = new Uri("ms-appx:///Assets/BlueSquare.png");
 
 			await WindowHelper.WaitForIdle();
 			await WindowHelper.WaitFor(() => opened);

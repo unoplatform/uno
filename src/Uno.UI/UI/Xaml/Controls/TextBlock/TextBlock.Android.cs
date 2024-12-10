@@ -294,14 +294,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region Layout
 
-		internal protected override void OnInvalidateMeasure()
-		{
-			base.OnInvalidateMeasure();
-
-			// We want to invalidate both the layout and the rendering
-			Invalidate();
-		}
-
 		protected override Size MeasureOverride(Size availableSize)
 		{
 			IDisposable measureActivity = null;
@@ -326,7 +318,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var measuredSize = UpdateLayout(ref _measureLayout, availableSize, false);
 
 				measuredSize = measuredSize.Add(padding);
-
+				Invalidate();
 				return measuredSize;
 			}
 		}
@@ -398,10 +390,15 @@ namespace Microsoft.UI.Xaml.Controls
 					UpdateNativeTextBlockLayout();
 				}
 
-				UpdateIsTextTrimmed();
-
+				Invalidate();
 				return finalSize;
 			}
+		}
+
+		internal override void AfterArrange()
+		{
+			base.AfterArrange();
+			UpdateIsTextTrimmed();
 		}
 
 		private void UpdateNativeTextBlockLayout()
@@ -412,7 +409,6 @@ namespace Microsoft.UI.Xaml.Controls
 				LogicalToPhysicalPixels(padding.Left),
 				LogicalToPhysicalPixels(padding.Top)
 			);
-			Invalidate(); // This ensures that OnDraw() will be called, which is typically the case anyway after OnLayout() but not always (eg, if device is being unlocked).
 		}
 
 		/// <summary>
@@ -474,10 +470,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void UpdateIsTextTrimmed()
 		{
-			IsTextTrimmed = IsTextTrimmable && (
-				_measureLayout.MeasuredSize.Width > _arrangeLayout.MeasuredSize.Width ||
-				_measureLayout.MeasuredSize.Height > _arrangeLayout.MeasuredSize.Height
-			);
+			IsTextTrimmed = IsTextTrimmable && NeedsClipToSlot;
 		}
 
 		/// <summary>

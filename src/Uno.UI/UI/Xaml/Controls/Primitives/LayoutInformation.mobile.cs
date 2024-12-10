@@ -2,6 +2,7 @@
 using System.Runtime.CompilerServices;
 using Windows.Foundation;
 using Uno.Collections;
+using System;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
@@ -10,6 +11,40 @@ partial class LayoutInformation
 	private static readonly UnsafeWeakAttachedDictionary<object, string> _layoutProperties = new();
 
 	#region AvailableSize
+
+	internal static bool GetMeasureDirtyPath(object view)
+		=> view is UIElement uiElement
+			? uiElement.IsMeasureDirtyPath
+			: _layoutProperties.GetValue(view, "measuredirtypath", () => true);
+
+	internal static void SetMeasureDirtyPath(object view, bool value)
+	{
+		if (view is UIElement uiElement)
+		{
+			uiElement.SetLayoutFlags(UIElement.LayoutFlag.MeasureDirtyPath);
+		}
+		else
+		{
+			_layoutProperties.SetValue(view, "measuredirtypath", value);
+		}
+	}
+
+	internal static bool GetArrangeDirtyPath(object view)
+		=> view is UIElement uiElement
+			? uiElement.IsArrangeDirtyPath
+			: _layoutProperties.GetValue(view, "arrangedirtypath", () => true);
+
+	internal static void SetArrangeDirtyPath(object view, bool value)
+	{
+		if (view is UIElement uiElement)
+		{
+			uiElement.SetLayoutFlags(UIElement.LayoutFlag.ArrangeDirtyPath);
+		}
+		else
+		{
+			_layoutProperties.SetValue(view, "arrangedirtypath", value);
+		}
+	}
 
 	internal static Size GetAvailableSize(object view)
 		=> view is UIElement iue
