@@ -30,7 +30,6 @@ jobs:
   variables:
     # don't validate transitive dependencies for template tests
     NuGetAuditMode: direct
-    UWPBuildEnabled: '${{ parameters.UWPBuildEnabled }}'
 
   steps:
   - task: DownloadBuildArtifacts@0
@@ -54,7 +53,7 @@ jobs:
     env:
       BUILD_SOURCESDIRECTORY: $(BUILD.SOURCESDIRECTORY)
       GITVERSION_SemVer: $(GITVERSION.SemVer)
-      UWPBuildEnabled: $(UWPBuildEnabled)
+      UWPBuildEnabled: '${{ parameters.UWPBuildEnabled }}'
 
   - task: PublishBuildArtifacts@1
     retryCountOnTaskFailure: 3
@@ -88,7 +87,6 @@ jobs:
   variables:
     # don't validate transitive dependencies for template tests
     NuGetAuditMode: direct
-    UWPBuildEnabled: '${{ parameters.UWPBuildEnabled }}'
 
   steps:
   - task: DownloadBuildArtifacts@0
@@ -120,7 +118,7 @@ jobs:
     env:
       BUILD_SOURCESDIRECTORY: $(BUILD.SOURCESDIRECTORY)
       GITVERSION_SemVer: $(GITVERSION.SemVer)
-      UWPBuildEnabled: $(UWPBuildEnabled)
+      UWPBuildEnabled: '${{ parameters.UWPBuildEnabled }}'
 
   - task: PublishBuildArtifacts@1
     retryCountOnTaskFailure: 3
@@ -193,7 +191,7 @@ jobs:
     env:
       BUILD_SOURCESDIRECTORY: $(BUILD.SOURCESDIRECTORY)
       GITVERSION_SemVer: $(GITVERSION.SemVer)
-      UWPBuildEnabled: $(UWPBuildEnabled)
+      UWPBuildEnabled: '${{ parameters.UWPBuildEnabled }}'
 
   - task: PublishBuildArtifacts@1
     retryCountOnTaskFailure: 3
