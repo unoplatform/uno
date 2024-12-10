@@ -922,11 +922,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									using (writer.BlockInvariant($"public {kvp.Value.ReturnType} Build(object {CurrentResourceOwner})"))
 #endif
 									{
-										writer.AppendLineIndented($"{kvp.Value.ReturnType} __rootInstance = null;");
 										writer.AppendLineIndented($"var __that = this;");
 										writer.AppendLineIndented($"this.{CurrentResourceOwner} = {CurrentResourceOwner};");
-										writer.AppendLineIndented($"this.__rootInstance = __rootInstance;");
-										writer.AppendLineIndented("__rootInstance = ");
+										writer.AppendLineIndented("this.__rootInstance = ");
 
 										// Is never considered in Global Resources because class encapsulation
 										BuildChild(writer, contentOwner, contentOwner.Objects.First());
