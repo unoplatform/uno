@@ -16,8 +16,9 @@ jobs:
 
   strategy:
     matrix:
-      group_0:
-        TestGroup: '0'
+      ${{ if eq(parameters.UWPBuildEnabled, 'true') }}:
+        group_0:
+          TestGroup: '0'
       group_1:
         TestGroup: '1'
       group_2:
@@ -73,8 +74,9 @@ jobs:
 
   strategy:
     matrix:
-      group_0:
-        TestGroup: '0'
+      ${{ if eq(parameters.UWPBuildEnabled, 'true') }}:
+        group_0:
+          TestGroup: '0'
       group_1:
         TestGroup: '1'
       group_2:
