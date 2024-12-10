@@ -1,5 +1,6 @@
 parameters:
   vmImage: ''
+  UWPBuildEnabled: false
 
 jobs:
 - job: Unit_Tests
@@ -11,10 +12,11 @@ jobs:
 
   strategy:
     matrix:
-      UWP:
-        UNO_UWP_BUILD: true
-        XAML_FLAVOR_BUILD: UWP
-        ADDITIONAL_FLAGS: ''
+      ${{ if eq(parameters.UWPBuildEnabled, 'true') }}:
+        UWP:
+          UNO_UWP_BUILD: true
+          XAML_FLAVOR_BUILD: UWP
+          ADDITIONAL_FLAGS: ''
 
       WinUI:
         UNO_UWP_BUILD: false

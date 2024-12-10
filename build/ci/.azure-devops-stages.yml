@@ -34,8 +34,9 @@ stages:
   ${{ if eq(parameters.UWPBuildEnabled, 'false') }}:
     jobs:
     - job:
-      displayName: 'Dummy step'
+      displayName: 'UWP Build is disabled'
       steps:
+      - checkout: none
       - pwsh: echo "Skipping UWP tree conversion"
 
 - stage: binaries_build_uwp
@@ -74,8 +75,9 @@ stages:
   ${{ if eq(parameters.UWPBuildEnabled, 'false') }}:
     jobs:
     - job:
-      displayName: 'Dummy step'
+      displayName: 'UWP Build is disabled'
       steps:
+      - checkout: none
       - pwsh: echo "Skipping UWP Content"
 
 - stage: binaries_build_winui
@@ -148,6 +150,7 @@ stages:
   - template: .azure-devops-unit-tests.yml
     parameters:
       poolName: '$(windowsScaledPool)'
+      UWPBuildEnabled: '${{ parameters.UWPBuildEnabled }}'
 
 - stage: wasm_tests
   displayName: Tests - WebAssembly
