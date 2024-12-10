@@ -127,7 +127,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 		/// Be aware that due to the async processing of dragging in UWP, this might not be the up to date.
 		/// </returns>
 		internal DataPackageOperation ProcessDropped(IDragEventSource src)
-			=> _manager?.ProcessDropped(src) ?? DataPackageOperation.None;
+			=> _manager?.ProcessReleased(src) ?? DataPackageOperation.None;
 
 		/// <summary>
 		/// This method is expected to be invoked when pointer involved in a drag operation
@@ -169,7 +169,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 			/// The last accepted operation.
 			/// Be aware that due to the async processing of dragging in UWP, this might not be the up to date.
 			/// </returns>
-			DataPackageOperation ProcessDropped(IDragEventSource src);
+			DataPackageOperation ProcessReleased(IDragEventSource src);
 
 			/// <summary>
 			/// This method is expected to be invoked when pointer involved in a drag operation

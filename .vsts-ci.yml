@@ -53,13 +53,13 @@ variables:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   windows2019HostedVMImage: 'windows-2019'
   windows2022HostedVMImage: 'windows-2022'
-  windowsScaledPool: 'Windows2022-20240421'
+  windowsScaledPool: 'Windows2022-20241021-1'
   linuxVMImage: 'ubuntu-latest'
   linuxScaledPool: 'Ubuntu2204-20230918'
-  macOSVMImage: 'macOS-14'
+  macOSVMImage: 'macOS-15'
   macOSVMImage_UITests: 'macOS-14'
   xCodeRoot: '/Applications/Xcode_16.app'
-  xCodeRoot_iOS_UITests: '/Applications/Xcode_16.app'
+  xCodeRoot_iOS_UITests: '/Applications/Xcode_15.3.app'
 
   # Offline validation to improve build performance
   NUGET_CERT_REVOCATION_MODE: offline

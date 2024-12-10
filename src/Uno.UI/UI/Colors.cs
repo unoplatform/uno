@@ -1,11 +1,16 @@
-﻿using System;
+﻿// On the UWP branch, only include this file in Uno.UWP (as public Window.whatever). On the WinUI branch, include it in both Uno.UWP (internal as Windows.whatever) and Uno.UI (public as Microsoft.whatever)
+#if HAS_UNO_WINUI || !IS_UNO_UI_PROJECT
+using System;
 using System.Collections.Generic;
 using System.Text;
-using Microsoft.UI;
 
 using Color = global::Windows/*Intentional space for WinUI upgrade tool*/.UI.Color;
 
+#if IS_UNO_UI_PROJECT
 namespace Microsoft.UI
+#else
+namespace Windows.UI
+#endif
 {
 #if HAS_UNO_WINUI && !IS_UNO_UI_PROJECT
 	internal
@@ -210,7 +215,7 @@ namespace Microsoft.UI
 			else
 			{
 				len = colorCode.Length;
-				// skip a starting `#` if present 
+				// skip a starting `#` if present
 				offset = (len > 0 && colorCode[0] == '#' ? 1 : 0);
 				len -= offset;
 			}
@@ -250,10 +255,9 @@ namespace Microsoft.UI
 			}
 			else
 			{
-				r = 0xFF;
-				g = 0x0;
-				b = 0x0;
+				throw new ArgumentException($"Cannot parse color '{colorCode}'.");
 			}
+
 			return new Color(a, r, g, b);
 		}
 
@@ -562,3 +566,4 @@ namespace Microsoft.UI
 		public static Color YellowGreen => _yellowGreen ??= FromInteger(unchecked((int)0xFF9ACD32));
 	}
 }
+#endif

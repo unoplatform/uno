@@ -1,5 +1,6 @@
 #nullable enable
 
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using Uno.Foundation.Logging;
 
@@ -50,9 +51,11 @@ public partial class ApiInformation
 		}
 	}
 
+	[UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "GetMethod may return null, normal flow of operation")]
 	internal static bool IsMethodPresent(Type type, string methodName)
 		=> IsImplementedByUno(type?.GetMethod(methodName));
 
+	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "GetField may return null, normal flow of operation")]
 	public static bool IsMethodPresent(string typeName, string methodName)
 		=> IsImplementedByUno(
 			GetValidType(typeName)
@@ -72,9 +75,11 @@ public partial class ApiInformation
 			GetValidType(typeName)
 			?.GetEvent(eventName));
 
+	[UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "GetField may return null, normal flow of operation")]
 	internal static bool IsPropertyPresent(Type type, string methodName)
 		=> IsImplementedByUno(type?.GetProperty(methodName));
 
+	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "GetProperty may return null, normal flow of operation")]
 	public static bool IsPropertyPresent(string typeName, string propertyName)
 		=> IsImplementedByUno(
 			GetValidType(typeName)
@@ -106,7 +111,11 @@ public partial class ApiInformation
 		return false;
 	}
 
-	public static bool IsEnumNamedValuePresent(string enumTypeName, string valueName)
+	[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "GetField may return null, normal flow of operation")]
+	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "GetField may return null, normal flow of operation")]
+	public static bool IsEnumNamedValuePresent(
+		[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields)] string enumTypeName,
+		string valueName)
 		=> GetValidType(enumTypeName)?.GetField(valueName) != null;
 
 	/// <summary>
@@ -124,6 +133,7 @@ public partial class ApiInformation
 	/// </summary>
 	public static LogLevel NotImplementedLogLevel { get; set; } = LogLevel.Debug;
 
+	[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Types may be removed or not present as part of the normal operations of that method")]
 	private static Type? GetValidType(string typeName)
 	{
 		lock (_assemblies)

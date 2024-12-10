@@ -55,7 +55,7 @@ public partial class Border : FrameworkElement
 #endif
 
 #if UNO_HAS_BORDER_VISUAL
-	private protected override ShapeVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateBorderVisual();
+	private protected override ContainerVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateBorderVisual();
 #endif
 
 	/// <summary>
@@ -275,6 +275,7 @@ public partial class Border : FrameworkElement
 
 #if !__SKIA__
 	private Action _borderBrushChanged;
+	private IDisposable _brushChangedSubscription;
 #endif
 
 #if __ANDROID__
@@ -305,7 +306,9 @@ public partial class Border : FrameworkElement
 #if __SKIA__
 		this.UpdateBorderBrush();
 #else
-		Brush.SetupBrushChanged(oldValue, newValue, ref _borderBrushChanged, _borderBrushChanged ?? (() =>
+		_brushChangedSubscription?.Dispose();
+
+		_brushChangedSubscription = Brush.SetupBrushChanged(newValue, ref _borderBrushChanged, _borderBrushChanged ?? (() =>
 		{
 			UpdateBorder();
 		}));

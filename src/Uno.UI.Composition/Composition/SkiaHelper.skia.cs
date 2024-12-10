@@ -9,8 +9,8 @@ namespace Microsoft.UI.Composition
 {
 	internal static class SkiaHelper
 	{
-		private static readonly ObjectPool<SKPaint> _paintPool = new(() => new SKPaint(), 8);
-		private static readonly ObjectPool<SKPath> _pathPool = new(() => new SKPath(), 8);
+		private static readonly ObjectPool<SKPaint> _paintPool = new(() => new SKPaint());
+		private static readonly ObjectPool<SKPath> _pathPool = new(() => new SKPath());
 
 		public static DisposableStruct<SKPath> GetTempSKPath(out SKPath path)
 		{

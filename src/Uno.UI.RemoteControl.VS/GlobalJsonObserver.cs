@@ -1,17 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.Text.Json;
-using System.Linq;
-using EnvDTE;
-using Microsoft.VisualStudio.Shell;
-using EnvDTE80;
-using Microsoft.VisualStudio.Shell.Interop;
-using Uno.UI.RemoteControl.VS.Helpers;
-using Microsoft.VisualStudio.PlatformUI;
-using Uno.UI.RemoteControl.VS.Notifications;
-using Microsoft.VisualStudio.Imaging;
-using Microsoft.VisualStudio;
 using System.Threading.Tasks;
+using EnvDTE;
+using Microsoft.VisualStudio.Imaging;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
+using Uno.UI.RemoteControl.VS.Notifications;
 
 namespace Uno.UI.RemoteControl.VS;
 
@@ -175,6 +170,11 @@ internal class GlobalJsonObserver
 			if (msbuildSdksElement.TryGetProperty("Uno.Sdk", out var unoSdkElement))
 			{
 				return unoSdkElement.ToString();
+			}
+			// Can't find Uno.Sdk, so fallback to look for Uno.Sdk.Private
+			if (msbuildSdksElement.TryGetProperty("Uno.Sdk.Private", out var unoSdkPrivateElement))
+			{
+				return unoSdkPrivateElement.ToString();
 			}
 		}
 

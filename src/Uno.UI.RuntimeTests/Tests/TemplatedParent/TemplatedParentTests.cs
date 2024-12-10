@@ -289,6 +289,40 @@ public partial class TemplatedParentTests // tests
 		""";
 		VerifyTree(expectations, setup, checkVSG: true);
 	}
+
+	[TestMethod]
+	public Task LateTemplateSwapping_NonContentControl() => LateTemplateSwapping<TextBox>();
+
+	[TestMethod]
+	public Task LateTemplateSwapping_ContentControl() => LateTemplateSwapping<ContentControl>();
+
+	public async Task LateTemplateSwapping<TControl>() where TControl : Control, new()
+	{
+		var templateA = XamlHelper.LoadXaml<ControlTemplate>("""
+			<ControlTemplate>
+				<Grid x:Name="RootA" Width="150" Height="50" Background="SkyBlue">
+					<TextBlock>Template A</TextBlock>
+				</Grid>
+			</ControlTemplate>
+		""");
+		var templateB = XamlHelper.LoadXaml<ControlTemplate>("""
+			<ControlTemplate>
+				<Grid x:Name="RootB" Width="150" Height="50" Background="Pink">
+					<TextBlock>Template B</TextBlock>
+				</Grid>
+			</ControlTemplate>
+		""");
+
+		var sut = new TControl();
+
+		sut.Template = templateA;
+		await UITestHelper.Load(sut, x => x.IsLoaded);
+		sut.FindFirstDescendantOrThrow<Grid>("RootA");
+
+		sut.Template = templateB;
+		await UITestHelper.WaitForIdle();
+		sut.FindFirstDescendantOrThrow<Grid>("RootB");
+	}
 }
 public partial class TemplatedParentTests // helper methods
 {

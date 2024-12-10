@@ -1,5 +1,5 @@
 //
-//  UNOWindowDelegate.m
+//  UNOWindow.m
 //
 
 #import "UNOWindow.h"
@@ -87,6 +87,23 @@ NSWindow* uno_app_get_main_window(void)
     return main_window;
 }
 
+@implementation UNOMetalFlippedView : MTKView
+
+// behave like UIView/UWP/WinUI, where the origin is top/left, instead of bottom/left
+-(BOOL) isFlipped {
+    return YES;
+}
+
+-(instancetype) initWithFrame:(CGRect)frameRect device:(id<MTLDevice>)device {
+    self = [super initWithFrame:frameRect device:device];
+    if (self) {
+        // TODO
+    }
+    return self;
+}
+
+@end
+
 NSWindow* uno_window_create(double width, double height)
 {
     CGRect size = NSMakeRect(0, 0, width, height);
@@ -98,7 +115,7 @@ NSWindow* uno_window_create(double width, double height)
     
     id device = uno_application_get_metal_device();
     if (device) {
-        MTKView *v = [[MTKView alloc] initWithFrame:size device:device];
+        UNOMetalFlippedView *v = [[UNOMetalFlippedView alloc] initWithFrame:size device:device];
         v.enableSetNeedsDisplay = YES;
         window.metalViewDelegate = [[UNOMetalViewDelegate alloc] initWithMetalKitView:v];
         v.delegate = window.metalViewDelegate;
@@ -639,6 +656,95 @@ void* uno_window_get_metal_context(UNOWindow* window)
     return gr_direct_context_make_metal(device, queue);
 }
 
+CGFloat readNextCoord(const char *svg, int *position, long length)
+{
+    CGFloat result = NAN;
+    if (*position >= length) {
+#if DEBUG
+        NSLog(@"uno_window_clip_svg readNextCoord position:%d >= length:%ld", *position, length);
+#endif
+        return result;
+    }
+    const char* start = svg + *position;
+    char* end;
+    result = strtod(start, &end);
+    *position += (int)(end - start);
+    return result;
+}
+
+void uno_window_clip_svg(UNOWindow* window, const char* svg)
+{
+    if (svg) {
+#if DEBUG
+        NSLog(@"uno_window_clip_svg %@ %@ %s", window, window.contentView.layer.description, svg);
+#endif
+        NSArray<__kindof NSView *> *subviews = window.contentViewController.view.subviews;
+        for (int i = 0; i < subviews.count; i++) {
+            NSView* view = subviews[i];
+#if DEBUG
+            NSLog(@"uno_window_clip_svg subview %d %@ layer %@ mask %@", i, view, view.layer, view.layer.mask);
+#endif
+            CGMutablePathRef path = CGPathCreateMutable();
+            // small subset of an SVG path parser handling trusted input of integer-based points
+            long length = strlen(svg);
+            for (int i=0; i < length;) {
+                CGFloat x, y;
+                char op = svg[i];
+                switch (op) {
+                    case 'M':
+                        i++; // skip M
+                        x = readNextCoord(svg, &i, length);
+                        i++; // skip separator
+                        y = readNextCoord(svg, &i, length);
+                        // there might not be a separator (not required before the next op)
+#if DEBUG_PARSER
+                        NSLog(@"uno_window_clip_svg parsing CGPathMoveToPoint %g %g - position %d", x, y, i);
+#endif
+                        x -= view.frame.origin.x;
+                        y -= view.frame.origin.y;
+                        CGPathMoveToPoint(path, nil, x, y);
+                        break;
+                    case 'L':
+                        i++; // skip L
+                        x = readNextCoord(svg, &i, length);
+                        i++; // skip separator
+                        y = readNextCoord(svg, &i, length);
+                        // there might not be a separator (not required before the next op)
+#if DEBUG_PARSER
+                        NSLog(@"uno_window_clip_svg parsing CGPathAddLineToPoint %g %g - position %d", x, y, i);
+#endif
+                        x -= view.frame.origin.x;
+                        y -= view.frame.origin.y;
+                        CGPathAddLineToPoint(path, nil, x, y);
+                        break;
+                    case 'Z':
+                        i++; // skip Z
+#if DEBUG_PARSER
+                        NSLog(@"uno_window_clip_svg parsing CGPathCloseSubpath - position %d", i);
+#endif
+                        CGPathCloseSubpath(path);
+                        break;
+#if DEBUG
+                    default:
+                        if (op != ' ') {
+                            NSLog(@"uno_window_clip_svg parsing unknown op %c at position %d", op, i);
+                        }
+                        i++; // skip unknown op
+                        break;
+#endif
+                }
+            }
+            CAShapeLayer* mask = view.layer.mask;
+            if (mask == nil) {
+                view.layer.mask = mask = [[CAShapeLayer alloc] init];
+            }
+            mask.fillColor = NSColor.blueColor.CGColor; // anything but clearColor
+            mask.path = path;
+            mask.fillRule = kCAFillRuleEvenOdd;
+        }
+    }
+}
+
 @implementation UNOWindow : NSWindow
 
 + (void)initialize {
@@ -738,7 +844,7 @@ void* uno_window_get_metal_context(UNOWindow* window)
             UniChar unicode = get_unicode(event);
             handled = uno_get_window_key_up_callback()(self, get_virtual_key(scanCode), get_modifiers(event.modifierFlags), scanCode, unicode);
 #if DEBUG
-            NSLog(@"NSEventTypeKeyUp: %@ window %p unocode %d handled? %s", event, self, unicode, handled ? "true" : "false");
+            NSLog(@"NSEventTypeKeyUp: %@ window %p unicode %d handled? %s", event, self, unicode, handled ? "true" : "false");
 #endif
             break;
         }
@@ -759,6 +865,7 @@ void* uno_window_get_metal_context(UNOWindow* window)
         memset(&data, 0, sizeof(struct MouseEventData));
         data.eventType = mouse;
         data.inContact = inContact;
+        data.mods = get_modifiers(event.modifierFlags);
         if ([self getPositionFrom:event x:&data.x y:&data.y]) {
 #if false
             // check subtype for most mouse events
@@ -790,15 +897,21 @@ void* uno_window_get_metal_context(UNOWindow* window)
             // scrollwheel
             if (mouse == MouseEventsScrollWheel) {
                 // do not call if not in the scrollwheel event -> *** Assertion failure in -[NSEvent scrollingDeltaX], NSEvent.m:2202
-                data.scrollingDeltaX = (int32_t)event.scrollingDeltaX;
-                data.scrollingDeltaY = (int32_t)event.scrollingDeltaY;
+
+                // trackpad / magic mouse sends about 10x more events than a _normal_ (PC) mouse
+                // this is often refered as a line scroll versus a pixel scroll
+                double factor = event.hasPreciseScrollingDeltas ? 1.0 : 10.0;
+                data.scrollingDeltaX = (int32_t)(event.scrollingDeltaX * factor);
+                data.scrollingDeltaY = (int32_t)(event.scrollingDeltaY * factor);
+#if DEBUG_MOUSE // very noisy
+                NSLog(@"NSEventTypeMouse*: %@ %g %g delta %g %g %s scrollingDelta %d %d", event, data.x, data.y, event.deltaX, event.deltaY, event.hasPreciseScrollingDeltas ? "precise" : "non-precise", data.scrollingDeltaX, data.scrollingDeltaY);
+#endif
             }
 
             // other
             NSTimeInterval ts = event.timestamp;
             
-            // The precision of the frameId is 10 frame per ms ... which should be enough
-            data.frameId = (uint)(ts * 1000.0 * 10.0);
+            data.frameId = (uint)(ts * 10.0);
 
             NSDate *now = [[NSDate alloc] init];
             NSDate *boot = [[NSDate alloc] initWithTimeInterval:uno_get_system_uptime() sinceDate:now];

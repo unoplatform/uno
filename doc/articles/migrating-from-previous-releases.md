@@ -4,7 +4,11 @@ uid: Uno.Development.MigratingFromPreviousReleases
 
 # Migrating from Previous Releases of Uno Platform
 
-This article details the migration steps required to migrate from one version to the next when breaking changes are being introduced.
+## Uno Platform 5.6
+
+### Lazy loading
+
+To align the behavior with WinUI, lazy loading using `x:Load="False"` and `x:DeferLoadStrategy="lazy"` is no longer affected with changes to the visibility of the lazily-loaded element. Previously, binding the `Visibility` property of the lazily-loaded element and then updating the source of the binding to make the element visible would cause the element to materialize (i.e. load). This is no longer the case. To load the element, add an `x:Name` to the element and call `FindName` with th given name.
 
 ## Uno Platform 5.5
 
@@ -16,6 +20,10 @@ A few considerations to take into account:
 
 - Moving to .NET 9 or upgrading .NET 9 projects now require the use of .NET 9 RC2 and Visual Studio 17.12 Preview 3.
 - To migrate a project to .NET 9, [read the directions](xref:Uno.Development.MigratingFromNet8ToNet9) from our documentation.
+
+### The EnableHotReload method is deprecated
+
+When upgrading to Uno 5.5, in the `App.xaml.cs` file, the `EnableHotReload()` method is deprecated and must be replaced with `UseStudio()` instead.
 
 ## Uno Platform 5.4
 

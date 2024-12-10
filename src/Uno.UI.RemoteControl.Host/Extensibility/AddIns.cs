@@ -1,8 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
+using System.Text;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Uno.UI.RemoteControl.Helpers;
@@ -15,46 +16,62 @@ public class AddIns
 
 	public static IImmutableList<string> Discover(string solutionFile)
 	{
-		// Note: With .net 9 we need to specify --verbosity detailed to get messages with High importance.
-		var result = ProcessHelper.RunProcess("dotnet", $"build \"{solutionFile}\" --target:UnoDumpTargetFrameworks --verbosity detailed");
-		var targetFrameworks = GetConfigurationValue(result.output ?? "", "TargetFrameworks")
-			.SelectMany(tfms => tfms.Split(['\r', '\n', ';', ','], StringSplitOptions.RemoveEmptyEntries))
-			.Select(tfm => tfm.Trim())
-			.Where(tfm => tfm is { Length: > 0 })
-			.Distinct(StringComparer.OrdinalIgnoreCase)
-			.ToImmutableList();
+		var tmp = Path.GetTempFileName();
+		var wd = Path.GetDirectoryName(solutionFile);
+		var command = $"build \"{solutionFile}\" -t:UnoDumpTargetFrameworks \"-p:UnoDumpTargetFrameworksTargetFile={tmp}\" --verbosity quiet";
+		var result = ProcessHelper.RunProcess("dotnet", command, wd);
+		var targetFrameworks = Read(tmp);
 
 		if (targetFrameworks.IsEmpty)
 		{
 			if (_log.IsEnabled(LogLevel.Warning))
 			{
-				_log.Log(LogLevel.Warning, new Exception(result.error), $"Failed to get target frameworks of solution '{solutionFile}' (cf. inner exception for details).");
+				var msg = $"Failed to get target frameworks of solution '{solutionFile}'. "
+					+ "This usually indicates that the solution is in an invalid state (e.g. a referenced project is missing on disk). "
+					+ $"Please fix and restart your IDE (command used: `dotnet {command}`).";
+				if (result.error is { Length: > 0 })
+				{
+					_log.Log(LogLevel.Warning, new Exception(result.error), msg + " (cf. inner exception for more details.)");
+				}
+				else
+				{
+					_log.Log(LogLevel.Warning, msg);
+				}
 			}
 
 			return ImmutableArray<string>.Empty;
 		}
 
+		if (_log.IsEnabled(LogLevel.Debug))
+		{
+			_log.Log(LogLevel.Debug, $"Found target frameworks for solution '{solutionFile}': {string.Join(", ", targetFrameworks)}.");
+		}
+
 
 		foreach (var targetFramework in targetFrameworks)
 		{
-			result = ProcessHelper.RunProcess("dotnet", $"build \"{solutionFile}\" --target:UnoDumpRemoteControlAddIns --verbosity detailed --framework \"{targetFramework}\" -nowarn:MSB4057");
+			tmp = Path.GetTempFileName();
+			command = $"build \"{solutionFile}\" -t:UnoDumpRemoteControlAddIns \"-p:UnoDumpRemoteControlAddInsTargetFile={tmp}\" --verbosity quiet --framework \"{targetFramework}\" -nowarn:MSB4057";
+			result = ProcessHelper.RunProcess("dotnet", command, wd);
 			if (!string.IsNullOrWhiteSpace(result.error))
 			{
 				if (_log.IsEnabled(LogLevel.Warning))
 				{
-					_log.Log(LogLevel.Warning, new Exception(result.error), $"Failed to get add-ins for solution '{solutionFile}' for tfm {targetFramework} (cf. inner exception for details).");
+					var msg = $"Failed to get add-ins for solution '{solutionFile}' for tfm {targetFramework} (command used: `dotnet {command}`).";
+					if (result.error is { Length: > 0 })
+					{
+						_log.Log(LogLevel.Warning, new Exception(result.error), msg + " (cf. inner exception for more details.)");
+					}
+					else
+					{
+						_log.Log(LogLevel.Warning, msg);
+					}
 				}
 
 				continue;
 			}
 
-			var addIns = GetConfigurationValue(result.output, "RemoteControlAddIns")
-				.SelectMany(tfms => tfms.Split(['\r', '\n', ';', ','], StringSplitOptions.RemoveEmptyEntries))
-				.Select(tfm => tfm.Trim())
-				.Where(tfm => tfm is { Length: > 0 })
-				.Distinct(StringComparer.OrdinalIgnoreCase)
-				.ToImmutableList();
-
+			var addIns = Read(tmp);
 			if (!addIns.IsEmpty)
 			{
 				return addIns;
@@ -69,9 +86,27 @@ public class AddIns
 		return ImmutableArray<string>.Empty;
 	}
 
-	private static IEnumerable<string> GetConfigurationValue(string msbuildResult, string nodeName)
-		=> Regex
-			.Matches(msbuildResult, $"<{nodeName}>(?<value>[^\\<\\>]*)</{nodeName}>", RegexOptions.Singleline)
-			.Where(match => match.Success)
-			.Select(match => match.Groups["value"].Value);
+	private static ImmutableList<string> Read(string file)
+	{
+		var values = ImmutableList<string>.Empty;
+		try
+		{
+			values = File
+				.ReadAllLines(file, Encoding.Unicode)
+				.SelectMany(line => line.Split(['\r', '\n', ';', ','], StringSplitOptions.RemoveEmptyEntries))
+				.Select(value => value.Trim())
+				.Where(value => value is { Length: > 0 })
+				.Distinct(StringComparer.OrdinalIgnoreCase)
+				.ToImmutableList();
+		}
+		catch { }
+
+		try
+		{
+			File.Delete(file);
+		}
+		catch { }
+
+		return values;
+	}
 }

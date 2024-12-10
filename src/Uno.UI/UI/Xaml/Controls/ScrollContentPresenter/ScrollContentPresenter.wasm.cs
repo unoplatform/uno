@@ -354,8 +354,8 @@ namespace Microsoft.UI.Xaml.Controls
 			var horizontalOffset = GetNativeHorizontalOffset();
 			var verticalOffset = GetNativeVerticalOffset();
 			var isIntermediate =
-				(_lastScrollToRequest.horizontal.HasValue && _lastScrollToRequest.horizontal.Value != horizontalOffset) ||
-				(_lastScrollToRequest.vertical.HasValue && _lastScrollToRequest.vertical.Value != verticalOffset);
+				(_lastScrollToRequest.horizontal.HasValue && Math.Abs(_lastScrollToRequest.horizontal.Value - horizontalOffset) >= 1) ||
+				(_lastScrollToRequest.vertical.HasValue && Math.Abs(_lastScrollToRequest.vertical.Value - verticalOffset) >= 1);
 			if (!isIntermediate)
 			{
 				_lastScrollToRequest = (null, null);

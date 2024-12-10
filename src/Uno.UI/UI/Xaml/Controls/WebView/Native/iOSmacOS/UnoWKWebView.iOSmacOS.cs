@@ -267,7 +267,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 		var nsUrl = new NSUrl(url);
 		//Opens the specified URL, launching the app that's registered to handle the scheme.
 #if __IOS__
-		UIApplication.SharedApplication.OpenUrl(nsUrl);
+		Task.Run(() => UIApplication.SharedApplication.OpenUrlAsync(nsUrl, new UIApplicationOpenUrlOptions()));
 #else
 		NSWorkspace.SharedWorkspace.OpenUrl(nsUrl);
 #endif

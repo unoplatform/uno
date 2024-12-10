@@ -1521,4 +1521,8 @@
   <data name="5155" xml:space="preserve">
     <value>তালের মতো রঙ</value>
   </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>বন্ধ</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

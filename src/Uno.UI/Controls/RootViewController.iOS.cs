@@ -60,6 +60,14 @@ namespace Uno.UI.Controls
 			UIApplication.Notifications
 				.ObserveWillResignActive((sender, args) =>
 					VisualTreeHelper.CloseLightDismissPopups(WinUICoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot.XamlRoot));
+
+#if NET9_0_OR_GREATER
+			// iOS 17+ only
+			if (UIDevice.CurrentDevice.CheckSystemVersion(17, 0))
+			{
+				((IUITraitChangeObservable)this).RegisterForTraitChanges((env, traits) => SystemThemeHelper.RefreshSystemTheme(), typeof(UITraitUserInterfaceStyle));
+			}
+#endif
 		}
 
 		// This will handle when the status bar is showed / hidden by the system on iPhones
@@ -87,10 +95,12 @@ namespace Uno.UI.Controls
 
 		public override bool ShouldAutorotate() => CanAutorotate && base.ShouldAutorotate();
 
+#pragma warning disable CA1422 // Deprecated in iOS 17+, replaced by RegisterForTraitChanges in Initialize()
 		public override void TraitCollectionDidChange(UITraitCollection previousTraitCollection)
 		{
 			base.TraitCollectionDidChange(previousTraitCollection);
 			SystemThemeHelper.RefreshSystemTheme();
 		}
+#pragma warning restore CA1422 // Deprecated in iOS 17+
 	}
 }

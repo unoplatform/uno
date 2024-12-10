@@ -1,7 +1,10 @@
 ﻿#nullable enable
 #if !WINAPPSDK
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
@@ -9,6 +12,7 @@ using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI.RuntimeTests.Helpers;
 using SamplesApp.UITests;
 
@@ -289,6 +293,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.IsNull(SUT.tb06);
 		}
 
+#if HAS_UNO
 #if __ANDROID__
 		[Ignore("https://github.com/unoplatform/uno/issues/7305")]
 #endif
@@ -332,10 +337,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.AreEqual(2, SUT.TopLevelVisiblity1GetCount);
 			Assert.AreEqual(0, SUT.TopLevelVisiblity1SetCount);
 
-			var tb01Stub = SUT.FindFirstChild<ElementStub>(e => e.Name == "tb01")!;
-			var tb02Stub = SUT.FindFirstChild<ElementStub>(e => e.Name == "tb02")!;
-			var panel01Stub = SUT.FindFirstChild<ElementStub>(e => e.Name == "panel01")!;
-			var panel03Stub = SUT.FindFirstChild<ElementStub>(e => e.Name == "panel03")!;
+			var stubs = GetAllChildren(SUT).OfType<ElementStub>().ToList();
+			var tb01Stub = stubs.First(e => e.Name == "tb01");
+			var tb02Stub = stubs.First(e => e.Name == "tb02")!;
+			var panel01Stub = stubs.First(e => e.Name == "panel01")!;
+			var panel03Stub = stubs.First(e => e.Name == "panel03");
 
 			var tb01StubChangedCount = 0;
 			tb01Stub.MaterializationChanged += _ => tb01StubChangedCount++;
@@ -379,7 +385,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.AreEqual(1, tb02StubChangedCount);
 			Assert.AreEqual(1, panel01StubChangedCount);
 
-			var panel02Stub = SUT.FindFirstChild<ElementStub>(e => e.Name == "panel02")!;
+			var panel02Stub = GetAllChildren(SUT).OfType<ElementStub>().First(e => e.Name == "panel02");
 
 			var panel02StubChangedCount = 0;
 			panel02Stub.MaterializationChanged += _ => panel02StubChangedCount++;
@@ -456,6 +462,30 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.AreEqual(2, tb02StubChangedCount);
 			Assert.AreEqual(2, panel01StubChangedCount);
 			Assert.AreEqual(2, panel02StubChangedCount);
+
+			IEnumerable<UIElement> GetAllChildren(UIElement element)
+			{
+				yield return element;
+				foreach (var child in VisualTreeHelper.GetChildren(element).OfType<UIElement>())
+				{
+					foreach (var childChild in GetAllChildren(child))
+					{
+						yield return childChild;
+					}
+				}
+			}
+		}
+#endif
+
+		[TestMethod]
+		public async Task When_xLoad_Visibility_Set()
+		{
+			var SUT = new xLoad_Visibility();
+			TestServices.WindowHelper.WindowContent = SUT;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, SUT.GetChildren().Count(c => c is ElementStub));
+			Assert.AreEqual(0, SUT.GetChildren().Count(c => c is Border));
 		}
 	}
 }

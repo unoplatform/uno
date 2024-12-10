@@ -1,4 +1,6 @@
-﻿#nullable enable
+﻿// On the UWP branch, only include this file in Uno.UWP (as public Window.whatever). On the WinUI branch, include it in both Uno.UWP (internal as Windows.whatever) and Uno.UI (public as Microsoft.whatever)
+#if HAS_UNO_WINUI || !IS_UNO_UI_PROJECT
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -78,6 +80,7 @@ namespace Windows.UI.Input
 			public bool IsTranslateYEnabled => _isTranslateYEnabled;
 			public bool IsRotateEnabled => _isRotateEnabled;
 			public bool IsScaleEnabled => _isScaleEnabled;
+			public bool IsDraggingEnabled => _isDraggingEnable;
 
 			internal static void AddPointer(GestureRecognizer recognizer, PointerPoint pointer)
 			{
@@ -574,7 +577,7 @@ namespace Windows.UI.Input
 				//		 those thresholds are lower than a Tap (and actually only 1px), which does not math the UWP behavior.
 				var down = _origins.Pointer1;
 				var current = _currents.Pointer1;
-				var isOutOfRange = Gesture.IsOutOfTapRange(down.Position, current.Position);
+				var isOutOfRange = IsOutOfTapRange(down.Position, current.Position);
 
 				switch (_deviceType)
 				{
@@ -602,6 +605,19 @@ namespace Windows.UI.Input
 							// The drag should start only after the hold delay and if the pointer moved out of the range
 							return !isInHoldPhase && isOutOfRange;
 						}
+				}
+			}
+
+			public void DisableDragging()
+			{
+				StopDragTimer();
+				if (_state is ManipulationState.Starting)
+				{
+					_isDraggingEnable = false;
+				}
+				else if (_state is ManipulationState.Started && IsDragManipulation)
+				{
+					Complete();
 				}
 			}
 
@@ -650,13 +666,12 @@ namespace Windows.UI.Input
 					=> Math.Abs(slope) >= Math.Tan(67.5 * Math.PI / 180);
 			}
 
-			internal struct Thresholds
-			{
-				public double TranslateX;
-				public double TranslateY;
-				public double Rotate; // Degrees
-				public double Expansion;
-			}
+			internal readonly record struct Thresholds(
+				double TranslateX,
+				double TranslateY,
+				double Rotate, // Degrees
+				double Expansion
+			);
 
 			// WARNING: This struct is ** MUTABLE **
 			private struct Points
@@ -664,10 +679,10 @@ namespace Windows.UI.Input
 				public PointerPoint Pointer1;
 				private PointerPoint? _pointer2;
 
-				public ulong Timestamp;
+				public ulong Timestamp; // The timestamp of the latest pointer update to either pointer
 				public Point Center; // This is the center in ** absolute ** coordinates spaces (i.e. relative to the screen)
-				public float Distance;
-				public double Angle;
+				public float Distance; // The distance between the 2 points, or zero if !HasPointer2
+				public double Angle; // The angle between the horizontal axis and the line segment formed by the 2 points, or zero if !HasPointer2
 
 				public bool HasPointer2 => _pointer2 != null;
 
@@ -751,3 +766,4 @@ namespace Windows.UI.Input
 		}
 	}
 }
+#endif

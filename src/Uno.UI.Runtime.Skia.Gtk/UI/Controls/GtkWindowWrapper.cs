@@ -50,12 +50,12 @@ internal class GtkWindowWrapper : NativeWindowWrapperBase
 	/// <summary>
 	/// GTK overrides show as the initialization is asynchronous.
 	/// </summary>
-	public override async void Show()
+	public override async void Show(bool activateWindow)
 	{
 		try
 		{
 			await _gtkWindow.Host.InitializeAsync();
-			base.Show();
+			base.Show(activateWindow);
 		}
 		catch (Exception ex)
 		{
@@ -73,11 +73,10 @@ internal class GtkWindowWrapper : NativeWindowWrapperBase
 
 	public override object NativeWindow => _gtkWindow;
 
-	public override void Activate() => _gtkWindow.Activate();
+	internal protected override void Activate() => _gtkWindow.Activate();
 
-	public override void Close()
+	protected override void CloseCore()
 	{
-		base.Close();
 		if (_wasShown)
 		{
 			_gtkWindow.Close();

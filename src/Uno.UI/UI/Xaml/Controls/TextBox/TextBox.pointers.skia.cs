@@ -105,7 +105,7 @@ public partial class TextBox
 
 		return previousTap.id == currentId
 			&& currentTs - previousTap.ts <= GestureRecognizer.MultiTapMaxDelayTicks
-			&& !GestureRecognizer.Gesture.IsOutOfTapRange(previousTap.position, currentPosition);
+			&& !GestureRecognizer.IsOutOfTapRange(previousTap.position, currentPosition);
 	}
 
 	partial void OnPointerPressedPartial(PointerRoutedEventArgs args)

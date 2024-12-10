@@ -1,3 +1,5 @@
+// On the UWP branch, only include this file in Uno.UWP (as public Window.whatever). On the WinUI branch, include it in both Uno.UWP (internal as Windows.whatever) and Uno.UI (public as Microsoft.whatever)
+#if HAS_UNO_WINUI || !IS_UNO_UI_PROJECT
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,7 +36,7 @@ namespace Windows.UI.Input
 		private readonly Logger _log;
 		private IDictionary<uint, Gesture> _gestures = new Dictionary<uint, Gesture>(_defaultGesturesSize);
 		private Manipulation _manipulation;
-		private GestureSettings _gestureSettings;
+		private GestureSettings _gestureSettings = GestureSettings.Tap; // On WinUI, Tap is always raised no matter the flag set on the recognizer
 		private bool _isManipulationOrDragEnabled;
 
 		public GestureSettings GestureSettings
@@ -192,16 +194,26 @@ namespace Windows.UI.Input
 		}
 
 		/// <returns>The set of events that can be raised by this recognizer for this pointer ID</returns>
-		internal GestureSettings PreventEvents(uint pointerId, GestureSettings events)
+		internal GestureSettings PreventEvents(PointerIdentifier pointerId, GestureSettings events)
 		{
-			if (_gestures.TryGetValue(pointerId, out var gesture))
+			if ((events & GestureSettings.Drag) != 0 && (_manipulation?.IsActive(pointerId) ?? false))
 			{
-				gesture.PreventGestures(events & GestureSettingsHelper.SupportedGestures);
-
-				return gesture.Settings;
+				_manipulation?.DisableDragging();
 			}
 
-			return GestureSettings.None;
+			var ret = GestureSettings.None;
+			if (_gestures.TryGetValue(pointerId.Id, out var gesture))
+			{
+				gesture.PreventGestures(events);
+				ret |= gesture.Settings;
+			}
+
+			if (_manipulation is not null && _manipulation.IsActive(pointerId) && _manipulation.IsDraggingEnabled)
+			{
+				ret |= GestureSettings.Drag;
+			}
+
+			return ret;
 		}
 
 		#region Manipulations
@@ -291,3 +303,4 @@ namespace Windows.UI.Input
 		}
 	}
 }
+#endif

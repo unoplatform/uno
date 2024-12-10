@@ -32,24 +32,41 @@
     - name: Troubleshoot
       topicHref: xref:Uno.UI.CommonIssues
       items:
-      - name: All Development Environments
-        href: xref:Uno.UI.CommonIssues.AllIDEs
-      - name: Visual Studio 2022 for Windows
-        href: xref:Uno.UI.CommonIssues.vs2022
-      - name: VS Code
-        href: xref:Uno.UI.CommonIssues.vscode
-      - name: WebAssembly
-        href: xref:Uno.UI.CommonIssues.Wasm
-      - name: UWP
-        href: xref:Uno.UI.CommonIssues.UWP
-      - name: Skia (Gtk/Wpf/Framebuffer)
-        href: xref:Uno.UI.CommonIssues.Skia
-      - name: iOS/mac Catalyst
-        href: xref:Uno.UI.CommonIssues.IosCatalyst
-      - name: Troubleshooting build errors
-        href: uno-builds-troubleshooting.md
-      - name: Build error codes
-        href: xref:Build.Solution.error-codes
+      - name: Overview
+        href: xref:Uno.UI.CommonIssues
+      - name: Sign in with Uno Platform
+        href: xref:Uno.GetStarted.Licensing
+      - name: Hot Reload
+        topicHref: xref:Uno.Features.HotReload#troubleshooting
+      - name: Development Environments
+        topicHref: xref:Uno.UI.CommonIssues.AllIDEs
+        items:
+        - name: All Development Environments
+          href: xref:Uno.UI.CommonIssues.AllIDEs
+        - name: Visual Studio 2022 for Windows
+          href: xref:Uno.UI.CommonIssues.vs2022
+        - name: VS Code
+          href: xref:Uno.UI.CommonIssues.vscode
+        - name: Rider
+          href: xref:Uno.UI.CommonIssues.rider
+      - name: Platforms
+        topicHref: xref:Uno.UI.CommonIssues.Wasm
+        items:
+        - name: WebAssembly
+          href: xref:Uno.UI.CommonIssues.Wasm
+        - name: UWP
+          href: xref:Uno.UI.CommonIssues.UWP
+        - name: Skia (Gtk/Wpf/Framebuffer)
+          href: xref:Uno.UI.CommonIssues.Skia
+        - name: iOS/mac Catalyst
+          href: xref:Uno.UI.CommonIssues.IosCatalyst
+      - name: Build Errors
+        topicHref: xref:Uno.Development.Troubleshooting
+        items:
+        - name: Troubleshooting build errors
+          href: xref:Uno.Development.Troubleshooting
+        - name: Build error codes
+          href: xref:Build.Solution.error-codes
 
 - name: Samples & Tutorials
   topicHref: xref:Uno.SamplesTutorials.Overview
@@ -394,6 +411,24 @@
     - name: FAQ
       href: xref:Uno.Development.FAQ
 
+- name: Studio
+  items:
+    - name: Overview
+      href: xref:Uno.Platform.Studio.Overview
+    - name: Hot Reload
+      href: xref:Uno.Platform.Studio.HotReload.Overview
+    - name: Hot Design
+      href: xref:Uno.HotDesign.Overview
+      items:
+      - name: Overview
+        href: xref:Uno.HotDesign.Overview
+      - name: Getting Started with Hot Design
+        href: xref:Uno.HotDesign.GetStarted.Guide
+      - name: Counter Tutorial
+        href: xref:Uno.HotDesign.GetStarted.CounterTutorial
+    - name: Design-to-Code
+      href: external/figma-docs/toc.yml
+
 - name: Reference
   items:
     - name: Overview
@@ -629,6 +664,8 @@
         href: features/SpeechRecognition.md
       - name: Step Counter
         href: features/step-counter.md
+      - name: Store Context
+        href: features/windows-ui-storecontext.md
       - name: Title Bar Customization
         href: features/windows-ui-viewmanagement.md
       - name: URI Launcher
@@ -653,10 +690,6 @@
 - name: Toolkit
   #topicHref: external/uno.toolkit.ui/doc/getting-started.md
   href: external/uno.toolkit.ui/doc/toc.yml
-  
-- name: Figma
-  #topicHref: xref:Uno.Figma.GetStarted
-  href: external/figma-docs/toc.yml
 
 - name: Tooling
   items:

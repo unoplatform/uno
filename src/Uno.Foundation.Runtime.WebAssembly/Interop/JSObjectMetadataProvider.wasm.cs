@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -11,9 +12,12 @@ namespace Uno.Foundation.Interop
 	/// <summary>
 	/// Provider of <see cref="IJSObjectMetadata"/>
 	/// </summary>
+	[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "Types manipulated here have been marked earlier")]
+	[UnconditionalSuppressMessage("Trimming", "IL2041", Justification = "Types manipulated here have been marked earlier")]
 	internal static class JSObjectMetadataProvider
 	{
-		private static readonly Func<Type, IJSObjectMetadata> _getByReflection = t => new ReflectionMetadata(t);
+		private static readonly Func<Type, IJSObjectMetadata> _getByReflection = (t) => new ReflectionMetadata(t);
+
 		static JSObjectMetadataProvider() => _getByReflection = _getByReflection.AsMemoized();
 
 		/// <summary>
@@ -26,7 +30,9 @@ namespace Uno.Foundation.Interop
 
 		private class ReflectionMetadata : IJSObjectMetadata
 		{
+			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicMethods)]
 			private readonly Type _type;
+
 			private static long _handles;
 
 			private bool _isPrototypeExported;
@@ -35,7 +41,8 @@ namespace Uno.Foundation.Interop
 			private static readonly char[] _parametersTrimArray = new char[] { '{', '}', ' ' };
 			private static readonly char[] _doubleQuoteSpaceArray = new[] { '"', ' ' };
 
-			public ReflectionMetadata(Type type)
+			public ReflectionMetadata(
+				[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicMethods)] Type type)
 			{
 				_type = type;
 			}

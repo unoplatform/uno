@@ -1521,4 +1521,8 @@
   <data name="5155" xml:space="preserve">
     <value>진한 보라</value>
   </data>
+  <data name="NavigationCloseButtonName" xml:space="preserve">
+    <value>닫기</value>
+    <comment>Automation name for the nav view provided close button</comment>
+  </data>
 </root>

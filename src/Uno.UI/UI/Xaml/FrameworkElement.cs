@@ -1064,7 +1064,9 @@ namespace Microsoft.UI.Xaml
 			return GetFirstChild() is not null;
 		}
 
-		private UIElement/*?*/ GetFirstChild()
+		internal UIElement GetFirstChildNoAddRef() => GetFirstChild();
+
+		internal virtual UIElement/*?*/ GetFirstChild()
 		{
 #if __CROSSRUNTIME__ && !__NETSTD_REFERENCE__
 			if (GetChildren() is { Count: > 0 } children)

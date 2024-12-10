@@ -17,30 +17,6 @@ namespace UnoWinUIRevert
 			DeleteFolder(Path.Combine(basePath, "src", "Uno.UWP", "Generated"));
 			DeleteFolder(Path.Combine(basePath, "src", "Uno.UI", "tsBindings")); // Generated
 
-			var colorsFilepath = Path.Combine(basePath, @"src", "Uno.UI", "UI", "Colors.cs");
-			if (File.Exists(colorsFilepath))
-			{
-				File.Delete(colorsFilepath);
-			}
-
-			var colorHelperFilePath = Path.Combine(basePath, @"src", "Uno.UI", "UI", "ColorHelper.cs");
-			if (File.Exists(colorHelperFilePath))
-			{
-				File.Delete(colorHelperFilePath);
-			}
-
-			var fontWeightsFilePath = Path.Combine(basePath, @"src", "Uno.UI", "UI", "Text", "FontWeights.cs");
-			if (File.Exists(fontWeightsFilePath))
-			{
-				File.Delete(fontWeightsFilePath);
-			}
-
-			var inputPath = Path.Combine(basePath, "src", "Uno.UI", "UI", "Input");
-			if (Directory.Exists(inputPath))
-			{
-				Directory.Delete(inputPath, true);
-			}
-
 			var dispatcherQueuePath = Path.Combine(basePath, "src", "Uno.UI.Dispatching", "Dispatching");
 			if (Directory.Exists(dispatcherQueuePath))
 			{

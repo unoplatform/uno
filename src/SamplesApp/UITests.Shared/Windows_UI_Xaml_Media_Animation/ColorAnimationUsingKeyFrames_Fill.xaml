@@ -9,12 +9,18 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
 	<Page.Resources>
-		<SolidColorBrush x:Key="Color1" Color="#FF0000" />
-		<SolidColorBrush x:Key="Color2" Color="#FF8000" />
-		<SolidColorBrush x:Key="Color3" Color="#FFFF00" />
-		<SolidColorBrush x:Key="Color4" Color="#008000" />
-		<SolidColorBrush x:Key="Color5" Color="#0000FF" />
-		<SolidColorBrush x:Key="Color6" Color="#A000C0" />
+		<Color x:Key="Color1">#FF0000</Color>
+		<Color x:Key="Color2">#FF8000</Color>
+		<Color x:Key="Color3">#FFFF00</Color>
+		<Color x:Key="Color4">#008000</Color>
+		<Color x:Key="Color5">#0000FF</Color>
+		<Color x:Key="Color6">#A000C0</Color>
+		<SolidColorBrush x:Key="Brush1" Color="{StaticResource Color1}" />
+		<SolidColorBrush x:Key="Brush2" Color="{StaticResource Color2}" />
+		<SolidColorBrush x:Key="Brush3" Color="{StaticResource Color3}" />
+		<SolidColorBrush x:Key="Brush4" Color="{StaticResource Color4}" />
+		<SolidColorBrush x:Key="Brush5" Color="{StaticResource Color5}" />
+		<SolidColorBrush x:Key="Brush6" Color="{StaticResource Color6}" />
 	</Page.Resources>
 
     <StackPanel Spacing="10">
@@ -162,18 +168,18 @@
 
 		<TextBlock>Original Colors: (should never change)</TextBlock>
 		<StackPanel Orientation="Horizontal" Height="40">
-			<Border Width="20" Background="{StaticResource Color1}" />
-			<Rectangle Width="20" Fill="{StaticResource Color1}" />
-			<Border Width="20" Background="{StaticResource Color2}" />
-			<Rectangle Width="20" Fill="{StaticResource Color2}" />
-			<Border Width="20" Background="{StaticResource Color3}" />
-			<Rectangle Width="20" Fill="{StaticResource Color3}" />
-			<Border Width="20" Background="{StaticResource Color4}" />
-			<Rectangle Width="20" Fill="{StaticResource Color4}" />
-			<Border Width="20" Background="{StaticResource Color5}" />
-			<Rectangle Width="20" Fill="{StaticResource Color5}" />
-			<Border Width="20" Background="{StaticResource Color6}" />
-			<Rectangle Width="20" Fill="{StaticResource Color6}" />
+			<Border Width="20" Background="{StaticResource Brush1}" />
+			<Rectangle Width="20" Fill="{StaticResource Brush1}" />
+			<Border Width="20" Background="{StaticResource Brush2}" />
+			<Rectangle Width="20" Fill="{StaticResource Brush2}" />
+			<Border Width="20" Background="{StaticResource Brush3}" />
+			<Rectangle Width="20" Fill="{StaticResource Brush3}" />
+			<Border Width="20" Background="{StaticResource Brush4}" />
+			<Rectangle Width="20" Fill="{StaticResource Brush4}" />
+			<Border Width="20" Background="{StaticResource Brush5}" />
+			<Rectangle Width="20" Fill="{StaticResource Brush5}" />
+			<Border Width="20" Background="{StaticResource Brush6}" />
+			<Rectangle Width="20" Fill="{StaticResource Brush6}" />
 		</StackPanel>
 
 		<StackPanel Orientation="Horizontal" Spacing="20">
@@ -186,12 +192,12 @@
 
 		<TextBlock>Animated block:</TextBlock>
 		<StackPanel Orientation="Horizontal" Height="40">
-			<Border Width="40" x:Name="border1" Background="{StaticResource Color1}" />
-			<Border Width="40" x:Name="border2" Background="{StaticResource Color2}" />
-			<Border Width="40" x:Name="border3" Background="{StaticResource Color3}" />
-			<Border Width="40" x:Name="border4" Background="{StaticResource Color4}" />
-			<Border Width="40" x:Name="border5" Background="{StaticResource Color5}" />
-			<Border Width="40" x:Name="border6" Background="{StaticResource Color6}" />
+			<Border Width="40" x:Name="border1" Background="{StaticResource Brush1}" />
+			<Border Width="40" x:Name="border2" Background="{StaticResource Brush2}" />
+			<Border Width="40" x:Name="border3" Background="{StaticResource Brush3}" />
+			<Border Width="40" x:Name="border4" Background="{StaticResource Brush4}" />
+			<Border Width="40" x:Name="border5" Background="{StaticResource Brush5}" />
+			<Border Width="40" x:Name="border6" Background="{StaticResource Brush6}" />
 		</StackPanel>
     </StackPanel>
 </Page>

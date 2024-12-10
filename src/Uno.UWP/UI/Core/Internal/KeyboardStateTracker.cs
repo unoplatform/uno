@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.JavaScript;
 using Windows.System;
 using Windows.UI.Core;
 
@@ -13,7 +14,7 @@ namespace Uno.UI.Core;
 ///	In UWP/WinUI, every key has a locked state (not only Caps Lock, etc.). The sequence of states is as follows:
 ///	(None) -> (Down) -> (None) -> (Down + Locked) -> (None + Locked) -> (Down) -> (None) -> etc.
 /// </remarks>
-internal static class KeyboardStateTracker
+internal static partial class KeyboardStateTracker
 {
 	private static readonly Dictionary<VirtualKey, CoreVirtualKeyStates> _keyStates = new Dictionary<VirtualKey, CoreVirtualKeyStates>();
 
@@ -97,13 +98,22 @@ internal static class KeyboardStateTracker
 		}
 	}
 
-	internal static void Reset()
+	internal static void Reset() => _keyStates.Clear();
+
+#if __WASM__
+#pragma warning disable IDE0051 // Remove unused private members
+	[JSExport]
+	private static void UpdateKeyStateNative(string key, bool down)
+#pragma warning restore IDE0051 // Remove unused private members
 	{
-		// Clearing state when debugger is attached would
-		// make it hard to debug key events.
-		if (!System.Diagnostics.Debugger.IsAttached)
+		if (down)
 		{
-			_keyStates.Clear();
+			OnKeyDown(VirtualKeyHelper.FromKey(key));
+		}
+		else
+		{
+			OnKeyUp(VirtualKeyHelper.FromKey(key));
 		}
 	}
+#endif
 }
