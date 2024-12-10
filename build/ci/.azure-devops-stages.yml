@@ -31,6 +31,13 @@ stages:
       parameters:
         poolName: '$(windowsScaledPool)'
 
+  ${{ if eq(parameters.UWPBuildEnabled, 'false') }}:
+    jobs:
+    - job:
+      displayName: 'Dummy step'
+      steps:
+      - run: echo "Skipping UWP tree conversion"
+
 - stage: binaries_build_uwp
   displayName: Build Binaries UWP
   dependsOn:
@@ -63,6 +70,13 @@ stages:
         macOSImageName: '$(macOSVMImage)'
         UNO_UWP_BUILD: true
         XAML_FLAVOR_BUILD: UWP
+
+  ${{ if eq(parameters.UWPBuildEnabled, 'false') }}:
+    jobs:
+    - job:
+      displayName: 'Dummy step'
+      steps:
+      - run: echo "Skipping UWP Content"
 
 - stage: binaries_build_winui
   displayName: Build Binaries WinUI
