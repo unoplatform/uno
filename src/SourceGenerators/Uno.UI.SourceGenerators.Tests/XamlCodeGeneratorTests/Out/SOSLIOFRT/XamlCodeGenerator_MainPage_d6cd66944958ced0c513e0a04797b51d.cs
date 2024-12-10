@@ -121,7 +121,7 @@ namespace TestRepro
 				__p1.CreationComplete();
 			}
 
-		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder { get; set; } = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
 		private global::Microsoft.UI.Xaml.Controls.Page _component_0
 		{
 			get
