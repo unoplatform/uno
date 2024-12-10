@@ -268,16 +268,7 @@
         - name: Overview
           href: xref:uno.publishing.overview
         - name: Publishing for Desktop
-          topicHref: xref:uno.publishing.desktop
-          items:
-            - name: Publishing Your App for Desktop
-              href: xref:uno.publishing.desktop
-            - name: Publishing Your App for macOS
-              href: xref:uno.publishing.desktop.macos
-            - name: Publishing Your App for macOS - Advanced Topics
-              href: xref:uno.publishing.desktop.macos.advanced
-            - name: Publishing Your App for Linux
-              href: xref:uno.publishing.desktop.linux
+          href: xref:uno.publishing.desktop
         - name: Publishing for WebAssembly
           href: xref:uno.publishing.webassembly
         - name: Publishing for Windows App SDK

@@ -24,6 +24,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 [RunsOnUIThread]
 public class Given_CalendarView
 {
+	const int DEFAULT_MIN_MAX_DATE_YEAR_OFFSET = 100;
+
 	[TestMethod]
 	[UnoWorkItem("https://github.com/unoplatform/uno/issues/16123")]
 	[Ignore("Test is unstable on CI: https://github.com/unoplatform/uno/issues/16123")]
@@ -59,6 +61,42 @@ public class Given_CalendarView
 		calendarView.MaxDate = new DateTimeOffset(new DateTime(2010, 1, 31), TimeSpan.FromHours(2));
 
 		await UITestHelper.Load(calendarView);
+	}
+
+	[TestMethod]
+	public async Task When_Scroll_To_MaxDate()
+	{
+		var calendarView = new CalendarView()
+		{
+			DisplayMode = CalendarViewDisplayMode.Decade
+		};
+
+		await UITestHelper.Load(calendarView);
+
+		Type calendarViewType = typeof(CalendarView);
+		MethodInfo ChangeVisualStateInfo = calendarViewType.GetMethod("ChangeVisualState", BindingFlags.NonPublic | BindingFlags.Instance);
+
+		// Scroll to max date
+		calendarView.SetDisplayDate(calendarView.MaxDate);
+
+		// Switch to Year view
+		calendarView.DisplayMode = CalendarViewDisplayMode.Year;
+		ChangeVisualStateInfo.Invoke(calendarView, new object[] { false });
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Switch back to Decade view
+		calendarView.DisplayMode = CalendarViewDisplayMode.Decade;
+		ChangeVisualStateInfo.Invoke(calendarView, new object[] { false });
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// Decade viewport should be full of items (no missing row)
+		calendarView.GetActiveGeneratorHost(out var pHost);
+		var maxDecadeIndex = DEFAULT_MIN_MAX_DATE_YEAR_OFFSET * 2;
+		var maxDisplayedItems = pHost.Panel.Rows * pHost.Panel.Cols;
+
+		// The first visible index should be less than the max possible index minus the max items we can display
+		// Worst case scenario is that the last row only has 1 item
+		Assert.IsTrue(pHost.Panel.FirstVisibleIndex <= maxDecadeIndex - (maxDisplayedItems - pHost.Panel.Rows - 1));
 	}
 
 #if __WASM__
