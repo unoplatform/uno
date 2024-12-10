@@ -1,5 +1,6 @@
 parameters:
   poolName: ''
+  UWPBuildEnabled: 'true'
   artifactsToDownload:
     - "NugetPackages-Artifacts-netcoremobile"
     - "NugetPackages-Artifacts-reference"
@@ -14,9 +15,10 @@ jobs:
 
   strategy:
     matrix:
-      UWP:
-        UNO_UWP_BUILD: true
-        XAML_FLAVOR_BUILD: UWP
+      ${{ if eq(parameters.UWPBuildEnabled, 'true') }}:
+        UWP:
+          UNO_UWP_BUILD: true
+          XAML_FLAVOR_BUILD: UWP
 
       WinUI:
         UNO_UWP_BUILD: false

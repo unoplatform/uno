@@ -1,3 +1,5 @@
+parameters:
+  UWPBuildEnabled: true
 
 stages:
 - stage: Setup
@@ -21,6 +23,7 @@ stages:
 
 - stage: convert_tree
   displayName: UWP Tree Conversion
+  condition: eq('${{ parameters.UWPBuildEnabled }}', true)
   dependsOn:
     - Setup
   jobs:
@@ -30,6 +33,7 @@ stages:
 
 - stage: binaries_build_uwp
   displayName: Build Binaries UWP
+  condition: eq('${{ parameters.UWPBuildEnabled }}', true)
   dependsOn:
     - Setup
     - convert_tree
@@ -101,6 +105,7 @@ stages:
   - template: .azure-devops-package.yml
     parameters:
       poolName: '$(windowsScaledPool)'
+      UWPBuildEnabled: '${{ parameters.UWPBuildEnabled }}'
 
 - stage: packages_tests
   displayName: Test Packages
@@ -115,6 +120,7 @@ stages:
       vmPoolLinux: '$(linuxScaledPool)'
       macOSImageName: '$(macOSVMImage)'
       xCodeRoot: '$(xCodeRoot)'
+      UWPBuildEnabled: '${{ parameters.UWPBuildEnabled }}'
 
 - stage: unit_tests
   displayName: Tests - Unit
@@ -139,9 +145,11 @@ stages:
   - template: .azure-devops-wasm-uitests.yml
     parameters:
       poolName: '$(linuxScaledPool)'
+      UWPBuildEnabled: '${{ parameters.UWPBuildEnabled }}'
 
 - stage: skia_tests_uwp
   displayName: Tests - Skia UWP
+  condition: eq('${{ parameters.UWPBuildEnabled }}', true)
   dependsOn:
     - Setup
     - convert_tree
@@ -195,6 +203,7 @@ stages:
       vmMacOSImage: '$(macOSVMImage)'
       vmLinuxPool: '$(linuxScaledPool)'
       xCodeRoot: '$(xCodeRoot)'
+      UWPBuildEnabled: '${{ parameters.UWPBuildEnabled }}'
   
 - stage: ios_tests
   displayName: Tests - iOS
@@ -208,6 +217,7 @@ stages:
       vmImageTest: '$(macOSVMImage_UITests)'
       xCodeRootBuild: '$(xCodeRoot)'
       xCodeRootTest: '$(xCodeRoot_iOS_UITests)'
+      UWPBuildEnabled: '${{ parameters.UWPBuildEnabled }}'
 
 - stage: wasdk_tests
   displayName: Tests - WinAppSDK  
@@ -233,6 +243,7 @@ stages:
   - template: .azure-devops-screenshot-compare.yml
     parameters:
       poolName: '$(windowsScaledPool)'
+      UWPBuildEnabled: '${{ parameters.UWPBuildEnabled }}'
 
 ##
 ## Publishing
