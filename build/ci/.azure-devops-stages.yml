@@ -23,46 +23,46 @@ stages:
 
 - stage: convert_tree
   displayName: UWP Tree Conversion
-  condition: eq('${{ parameters.UWPBuildEnabled }}', true)
   dependsOn:
     - Setup
   jobs:
-  - template: .azure-devops-uwp-convert.yml
-    parameters:
-      poolName: '$(windowsScaledPool)'
+  ${{ if eq(parameters.UWPBuildEnabled, 'true') }}:
+    - template: .azure-devops-uwp-convert.yml
+      parameters:
+        poolName: '$(windowsScaledPool)'
 
 - stage: binaries_build_uwp
   displayName: Build Binaries UWP
-  condition: eq('${{ parameters.UWPBuildEnabled }}', true)
   dependsOn:
     - Setup
     - convert_tree
 
-  jobs: 
-  - template: .azure-devops-package-netcoremobile.yml
-    parameters:
-      poolName: '$(windowsScaledPool)'
-      UNO_UWP_BUILD: true
-      XAML_FLAVOR_BUILD: UWP
+  ${{ if eq(parameters.UWPBuildEnabled, 'true') }}:
+    jobs: 
+    - template: .azure-devops-package-netcoremobile.yml
+      parameters:
+        poolName: '$(windowsScaledPool)'
+        UNO_UWP_BUILD: true
+        XAML_FLAVOR_BUILD: UWP
   
-  - template: .azure-devops-package-wasm.yml
-    parameters:
-      poolName: '$(linuxScaledPool)'
-      UNO_UWP_BUILD: true
-      XAML_FLAVOR_BUILD: UWP
+    - template: .azure-devops-package-wasm.yml
+      parameters:
+        poolName: '$(linuxScaledPool)'
+        UNO_UWP_BUILD: true
+        XAML_FLAVOR_BUILD: UWP
 
-  - template: .azure-devops-package-reference.yml
-    parameters:
-      poolName: '$(linuxScaledPool)'
-      UNO_UWP_BUILD: true
-      XAML_FLAVOR_BUILD: UWP
+    - template: .azure-devops-package-reference.yml
+      parameters:
+        poolName: '$(linuxScaledPool)'
+        UNO_UWP_BUILD: true
+        XAML_FLAVOR_BUILD: UWP
 
-  - template: .azure-devops-package-skia.yml
-    parameters:
-      poolName: '$(linuxScaledPool)'
-      macOSImageName: '$(macOSVMImage)'
-      UNO_UWP_BUILD: true
-      XAML_FLAVOR_BUILD: UWP
+    - template: .azure-devops-package-skia.yml
+      parameters:
+        poolName: '$(linuxScaledPool)'
+        macOSImageName: '$(macOSVMImage)'
+        UNO_UWP_BUILD: true
+        XAML_FLAVOR_BUILD: UWP
 
 - stage: binaries_build_winui
   displayName: Build Binaries WinUI
