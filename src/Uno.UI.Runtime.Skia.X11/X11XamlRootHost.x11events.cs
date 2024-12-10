@@ -13,12 +13,10 @@ internal partial class X11XamlRootHost
 {
 	private static int _threadCount;
 
-	private readonly Func<bool> _closingCallback;
+	private readonly Action _closingCallback;
 	private readonly Action<bool> _focusCallback;
 	private readonly Action<bool> _visibilityCallback;
 	private readonly Action _configureCallback;
-
-	private bool _needsConfigureCallback;
 
 	private X11PointerInputSource? _pointerSource;
 	private X11KeyboardInputSource? _keyboardSource;
@@ -87,7 +85,7 @@ internal partial class X11XamlRootHost
 		{
 			var ret = X11Helper.poll(fds, 1, 1000); // timeout every second to see if the window is closed
 
-			if (_closed.Task.IsCompleted)
+			if (Closed.IsCompleted)
 			{
 				SynchronizedShutDown(x11Window);
 				return;
@@ -185,13 +183,7 @@ internal partial class X11XamlRootHost
 								// which, according to the source code, just calls XKillClient
 								// https://gitlab.freedesktop.org/xorg/app/xkill/-/blob/a5f704e4cd30f03859f66bafd609a75aae27cc8c/xkill.c#L234
 								// In the case of xkill, we can't really do much, it's similar to a SIGKILL but for x connections
-								QueueAction(this, () =>
-								{
-									if (_closingCallback())
-									{
-										_windowBackgroundDisposable.Dispose();
-									}
-								});
+								QueueAction(this, _closingCallback);
 							}
 							else if (@event.ClientMessageEvent.message_type == X11Helper.GetAtom(x11Window.Display, X11Helper.XdndEnter) ||
 								@event.ClientMessageEvent.message_type == X11Helper.GetAtom(x11Window.Display, X11Helper.XdndPosition) ||
@@ -203,7 +195,7 @@ internal partial class X11XamlRootHost
 							}
 							break;
 						case XEventName.ConfigureNotify:
-							_needsConfigureCallback = true;
+							RaiseConfigureCallback();
 							break;
 						case XEventName.FocusIn:
 							QueueAction(this, () => _focusCallback(true));
@@ -215,7 +207,7 @@ internal partial class X11XamlRootHost
 							QueueAction(this, () => _visibilityCallback(@event.VisibilityEvent.state != /* VisibilityFullyObscured */ 2));
 							break;
 						case XEventName.Expose:
-							QueueAction(this, () => ((IXamlRootHost)this).InvalidateRender());
+							((IXamlRootHost)this).InvalidateRender();
 							break;
 						case XEventName.MotionNotify:
 							_pointerSource?.ProcessMotionNotifyEvent(@event.MotionEvent);

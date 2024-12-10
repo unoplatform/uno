@@ -16,7 +16,6 @@ using Microsoft.UI.Xaml;
 using SkiaSharp;
 using Uno.Disposables;
 using Uno.UI;
-using Uno.UI.Dispatching;
 using Uno.UI.Xaml.Controls;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
@@ -74,7 +73,6 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	private readonly ApplicationView _applicationView;
 	private readonly X11WindowWrapper _wrapper;
 	private readonly Window _window;
-	private readonly IDisposable _windowBackgroundDisposable;
 
 	private int _synchronizedShutDownTopWindowIdleCounter;
 
@@ -82,14 +80,20 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	private X11Window? _x11TopWindow;
 	private IX11Renderer? _renderer;
 
-	private bool _renderDirty = true;
-	// ReSharper disable once NotAccessedField.Local
-	private readonly Timer _timer; // this field is necessary to prevent the timer from being GCed
+	private static readonly Stopwatch _stopwatch = Stopwatch.StartNew();
+
+	private readonly DispatcherTimer _renderTimer = new DispatcherTimer();
+	private long _lastRenderTime;
+	private int _renderScheduled;
+
+	private readonly DispatcherTimer _configureTimer = new DispatcherTimer();
+	private long _lastConfigureTime;
+	private int _configureScheduled;
 
 	public X11Window RootX11Window => _x11Window!.Value;
 	public X11Window TopX11Window => _x11TopWindow!.Value;
 
-	public X11XamlRootHost(X11WindowWrapper wrapper, Window winUIWindow, XamlRoot xamlRoot, Action configureCallback, Func<bool> closingCallback, Action<bool> focusCallback, Action<bool> visibilityCallback)
+	public X11XamlRootHost(X11WindowWrapper wrapper, Window winUIWindow, XamlRoot xamlRoot, Action configureCallback, Action closingCallback, Action<bool> focusCallback, Action<bool> visibilityCallback)
 	{
 		_wrapper = wrapper;
 		_window = winUIWindow;
@@ -99,40 +103,27 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		_visibilityCallback = visibilityCallback;
 		_configureCallback = configureCallback;
 
-		// running XConfigureEvent and rendering callbacks on a timer is necessary to avoid freezing in certain situations
-		// where we get spammed with these events. Most notably, when resizing a window by dragging an edge, we'll get spammed
-		// with XConfigureEvents.
-		_timer = new Timer(static obj =>
-		{
-			var @this = (X11XamlRootHost)obj!;
-			var needsConfigureCallback = @this._needsConfigureCallback;
-			var needsRender = @this._renderDirty;
+		_closed = new TaskCompletionSource();
+		Closed = _closed.Task;
 
-			if (needsConfigureCallback || needsRender)
-			{
-				NativeDispatcher.Main.Enqueue(() =>
-				{
-					if (needsConfigureCallback)
-					{
-						@this._needsConfigureCallback = false;
-						@this._configureCallback();
-					}
-					if (needsRender)
-					{
-						@this._renderDirty = false;
-						@this._renderer?.Render();
-					}
-				});
-			}
-		}, this, TimeSpan.Zero, TimeSpan.FromSeconds(1.0 / X11ApplicationHost.RenderFrameRate));
+		_renderTimer.Tick += (_, _) =>
+		{
+			_renderTimer.Stop();
+			_renderScheduled = 0;
+			_renderer?.Render();
+		};
+
+		_configureTimer.Tick += (_, _) =>
+		{
+			_configureTimer.Stop();
+			_configureScheduled = 0;
+			_configureCallback();
+		};
 
 		_applicationView = ApplicationView.GetForWindowId(winUIWindow.AppWindow.Id);
 		_applicationView.PropertyChanged += OnApplicationViewPropertyChanged;
 		CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged += UpdateWindowPropertiesFromCoreApplication;
 		winUIWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged += ExtendContentIntoTitleBar;
-
-		_closed = new TaskCompletionSource();
-		Closed = _closed.Task;
 
 		Initialize();
 
@@ -141,6 +132,15 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		// the X11Window is "initialized".
 		_windowToHost[winUIWindow] = this;
 		X11Manager.XamlRootMap.Register(xamlRoot, this);
+
+		UpdateWindowPropertiesFromPackage();
+		OnApplicationViewPropertyChanged(this, new PropertyChangedEventArgs(null));
+
+		// only start listening to events after we're done setting everything up
+		InitializeX11EventsThread();
+
+		var windowBackgroundDisposable = _window.RegisterBackgroundChangedEvent((_, _) => UpdateRendererBackground());
+		UpdateRendererBackground();
 
 		Closed.ContinueWith(_ =>
 		{
@@ -151,17 +151,9 @@ internal partial class X11XamlRootHost : IXamlRootHost
 				_applicationView.PropertyChanged -= OnApplicationViewPropertyChanged;
 				CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged -= UpdateWindowPropertiesFromCoreApplication;
 				winUIWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged -= ExtendContentIntoTitleBar;
+				windowBackgroundDisposable.Dispose();
 			}
 		});
-
-		UpdateWindowPropertiesFromPackage();
-		OnApplicationViewPropertyChanged(this, new PropertyChangedEventArgs(null));
-
-		// only start listening to events after we're done setting everything up
-		InitializeX11EventsThread();
-
-		_windowBackgroundDisposable = _window.RegisterBackgroundChangedEvent((_, _) => UpdateRendererBackground());
-		UpdateRendererBackground();
 	}
 
 	public static X11XamlRootHost? GetHostFromWindow(Window window)
@@ -545,9 +537,56 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		}
 	}
 
-	void IXamlRootHost.InvalidateRender() => _renderDirty = true;
-
 	UIElement? IXamlRootHost.RootElement => _window.RootElement;
+
+	// running XConfigureEvent and rendering callbacks on a timer is necessary to avoid freezing in certain situations
+	// where we get spammed with these events. Most notably, when resizing a window by dragging an edge, we'll get spammed
+	// with XConfigureEvents.
+	void IXamlRootHost.InvalidateRender()
+	{
+		if (Interlocked.Exchange(ref _renderScheduled, 1) == 0)
+        {
+			// Don't use ticks, which seem to mess things up for some reason
+			var now = _stopwatch.ElapsedMilliseconds;
+            var delta = now - Interlocked.Exchange(ref _lastRenderTime, now);
+			if (delta > TimeSpan.FromSeconds(1.0 / X11ApplicationHost.RenderFrameRate).TotalMilliseconds)
+        	{
+        		QueueAction(this, () =>
+        		{
+        			_renderScheduled = 0;
+					_renderer?.Render();
+        		});
+        	}
+        	else
+        	{
+        		_renderTimer.Interval = TimeSpan.FromTicks(delta);
+				_renderTimer.Start();
+        	}
+        }
+	}
+
+	private void RaiseConfigureCallback()
+	{
+		if (Interlocked.Exchange(ref _configureScheduled, 1) == 0)
+		{
+			// Don't use ticks, which seem to mess things up for some reason
+			var now = _stopwatch.ElapsedMilliseconds;
+            var delta = now - Interlocked.Exchange(ref _lastConfigureTime, now);
+			if (delta > TimeSpan.FromSeconds(1.0 / X11ApplicationHost.RenderFrameRate).TotalMilliseconds)
+			{
+				QueueAction(this, () =>
+				{
+					_configureScheduled = 0;
+					_configureCallback();
+				});
+			}
+			else
+			{
+				_configureTimer.Interval = TimeSpan.FromTicks(delta);
+				_configureTimer.Start();
+			}
+		}
+	}
 
 	public unsafe void AttachSubWindow(IntPtr window)
 	{
