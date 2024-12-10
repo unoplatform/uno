@@ -1108,8 +1108,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var typeName = GetType(current.XamlObject.Type).GetFullyQualifiedTypeIncludingGlobal();
 
 				var isWeak = current.IsWeakReference ? "true" : "false";
-
-				writer.AppendLineIndented($"private global::Microsoft.UI.Xaml.Markup.ComponentHolder {componentName}_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: {isWeak});");
+				var accessors = _isHotReloadEnabled ? "{ get; set; } " : ""; // We use property for HR so we can remove them without causing rude edit.
+				writer.AppendLineIndented($"private global::Microsoft.UI.Xaml.Markup.ComponentHolder {componentName}_Holder {accessors}= new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: {isWeak});");
 
 				using (writer.BlockInvariant($"private {typeName} {componentName}"))
 				{
