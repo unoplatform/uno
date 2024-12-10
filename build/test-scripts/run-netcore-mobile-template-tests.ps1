@@ -31,7 +31,7 @@ $release = $default + '/p:Configuration=Release' + '/r'
 
 cd src/SolutionTemplate
 
-if ($TestGroup -eq 0)
+if ( ($TestGroup -eq 0) -and ($env:UWPBuildEnabled -eq 'True') )
 {
     ## Configurations are split to work around UWP not building with .NET new
     $dotnetBuildConfigurations =
