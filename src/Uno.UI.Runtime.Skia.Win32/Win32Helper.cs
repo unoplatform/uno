@@ -67,9 +67,9 @@ internal static class Win32Helper
 
 	public readonly ref struct NativeNulTerminatedUtf16String(string str)
 	{
-		private readonly IntPtr _handle = Marshal.StringToHGlobalUni(str);
-		public static unsafe implicit operator PCWSTR(NativeNulTerminatedUtf16String value) => new((char*)value._handle);
-		public void Dispose() => Marshal.FreeHGlobal(_handle);
+		public IntPtr Handle { get; } = Marshal.StringToHGlobalUni(str);
+		public static unsafe implicit operator PCWSTR(NativeNulTerminatedUtf16String value) => new((char*)value.Handle);
+		public void Dispose() => Marshal.FreeHGlobal(Handle);
 	}
 
 	public static unsafe GlobalLockDisposable? GlobalLock(HGLOBAL handle, out void* firstByte, Func<bool>? shouldUnlock = null)

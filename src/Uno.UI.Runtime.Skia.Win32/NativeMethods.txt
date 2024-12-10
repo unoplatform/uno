@@ -1,6 +1,8 @@
 // This file is used by Microsoft.Windows.CSWin32 to generate WinAPI bindings
 
 // macros
+BFFM_INITIALIZED
+BFFM_SETSELECTION
 CW_USEDEFAULT
 DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2
 HKEY_CURRENT_USER
@@ -76,6 +78,7 @@ WM_SIZE
 
 // Structs
 BITMAPFILEHEADER
+BROWSEINFOW
 CLIPBOARD_FORMAT
 MINMAXINFO
 PIXELFORMATDESCRIPTOR
@@ -127,6 +130,7 @@ GlobalFree
 GlobalLock
 GlobalSize
 GlobalUnlock
+ILFree
 InternetGetConnectedState
 InvalidateRect
 LoadCursor
@@ -152,6 +156,8 @@ SetPixelFormat
 SetThreadDpiAwarenessContext
 SetWindowPos
 SetWindowText
+SHBrowseForFolder
+SHGetPathFromIDList
 ShowWindow
 ShowWindowAsync
 SwapBuffers

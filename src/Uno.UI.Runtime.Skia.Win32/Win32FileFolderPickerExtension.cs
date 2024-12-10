@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -11,14 +12,19 @@ using Windows.Storage.Pickers;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.UI.Controls.Dialogs;
+using Windows.Win32.UI.Shell;
+using Windows.Win32.UI.Shell.Common;
+using Uno.Disposables;
 using Uno.Extensions.Storage.Pickers;
 using Uno.Foundation.Logging;
 using Uno.UI.Helpers;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
-internal class Win32FileOpenPickerExtension(IFilePicker picker) : IFileOpenPickerExtension
+internal class Win32FileFolderPickerExtension(IFilePicker picker) : IFileOpenPickerExtension, IFolderPickerExtension
 {
+	private const int FilePathBuffer = 1000;
+
 	public Task<StorageFile?> PickSingleFileAsync(CancellationToken token)
 		=> PickFiles(true).ContinueWith(task => task.Result.Count == 0 ? null : task.Result[0], token);
 
@@ -29,8 +35,7 @@ internal class Win32FileOpenPickerExtension(IFilePicker picker) : IFileOpenPicke
 	{
 		using var initialDir = new Win32Helper.NativeNulTerminatedUtf16String(PickerHelpers.GetInitialDirectory(picker.SuggestedStartLocationInternal));
 		using var filters = new Win32Helper.NativeNulTerminatedUtf16String(GetFilterString());
-		const int nMaxFile = 1000;
-		var fileNameBuffer = stackalloc char[nMaxFile];
+		var fileNameBuffer = stackalloc char[FilePathBuffer * (single ? 1 : 10)];
 
 		var ofn = new OPENFILENAMEW
 		{
@@ -38,7 +43,7 @@ internal class Win32FileOpenPickerExtension(IFilePicker picker) : IFileOpenPicke
 			lpstrInitialDir = initialDir,
 			lpstrFilter = filters,
 			lpstrFile = new PWSTR(fileNameBuffer),
-			nMaxFile = nMaxFile,
+			nMaxFile = FilePathBuffer,
 			Flags = (single ? 0 : OPEN_FILENAME_FLAGS.OFN_ALLOWMULTISELECT) | OPEN_FILENAME_FLAGS.OFN_EXPLORER
 		};
 		if (!PInvoke.GetOpenFileName(ref ofn))
@@ -54,17 +59,17 @@ internal class Win32FileOpenPickerExtension(IFilePicker picker) : IFileOpenPicke
 		}
 		else
 		{
-			var span = new Span<char>(fileNameBuffer, nMaxFile);
+			var span = new Span<char>(fileNameBuffer, FilePathBuffer);
 			var currentRun = 0;
 			var paths = new List<string>();
-			for (int i = 0; i < nMaxFile; i++)
+			for (int i = 0; i < FilePathBuffer; i++)
 			{
 				if (span[i] == '\0')
 				{
 					paths.Add(new string(fileNameBuffer + currentRun));
 					currentRun = i + 1;
 
-					if (i + 1 < nMaxFile && span[i + 1] == '\0')
+					if (i + 1 < FilePathBuffer && span[i + 1] == '\0')
 					{
 						break;
 					}
@@ -78,7 +83,7 @@ internal class Win32FileOpenPickerExtension(IFilePicker picker) : IFileOpenPicke
 			else
 			{
 				var dir = paths[0];
-				var completePaths = paths.Skip(1).Select(file => StorageFile.GetFileFromPath($"{dir}\\{file}"));
+				var completePaths = paths.Skip(1).Select(file => StorageFile.GetFileFromPath(Path.Join(dir, file)));
 				return Task.FromResult<IReadOnlyList<StorageFile>>(completePaths.ToImmutableList());
 			}
 		}
@@ -109,5 +114,45 @@ internal class Win32FileOpenPickerExtension(IFilePicker picker) : IFileOpenPicke
 		}
 
 		return builder.Length > 0 ? builder.Append('\0').ToString() : "All Files\0*.*\0\0";
+	}
+
+	public unsafe Task<StorageFolder?> PickSingleFolderAsync(CancellationToken token)
+	{
+		var folderNameBuffer = stackalloc char[FilePathBuffer];
+		BROWSEINFOW dialog = new BROWSEINFOW
+		{
+			pszDisplayName = folderNameBuffer,
+			lpfn = (hwnd, msg, _, _) =>
+			{
+				switch (msg)
+				{
+					case PInvoke.BFFM_INITIALIZED:
+						{
+							using var initialDir = new Win32Helper.NativeNulTerminatedUtf16String(PickerHelpers.GetInitialDirectory(picker.SuggestedStartLocationInternal));
+							PInvoke.SendMessage(hwnd, PInvoke.BFFM_SETSELECTION, 1, initialDir.Handle);
+						}
+						break;
+				}
+				return 0;
+			}
+		};
+
+		var list = PInvoke.SHBrowseForFolder(dialog);
+
+		if (list is null)
+		{
+			_ = this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SHBrowseForFolder)} failed with error code : {Win32Helper.GetErrorMessage()}");
+			return Task.FromResult<StorageFolder?>(null);
+		}
+
+		using var listDisposable = new DisposableStruct<IntPtr>(static ptr => PInvoke.ILFree((ITEMIDLIST*)ptr), (IntPtr)list);
+
+		if (!PInvoke.SHGetPathFromIDList(list, folderNameBuffer))
+		{
+			_ = this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SHGetPathFromIDList)} failed with error code : {Win32Helper.GetErrorMessage()}");
+			return Task.FromResult<StorageFolder?>(null);
+		}
+
+		return Task.FromResult<StorageFolder?>(new StorageFolder(Marshal.PtrToStringUni((IntPtr)folderNameBuffer)!));
 	}
 }
