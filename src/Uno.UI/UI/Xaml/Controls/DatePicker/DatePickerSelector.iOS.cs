@@ -12,7 +12,7 @@ using Windows.Globalization;
 using Uno.Helpers.Theming;
 using Windows.ApplicationModel.Core;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class DatePickerSelector
 	{

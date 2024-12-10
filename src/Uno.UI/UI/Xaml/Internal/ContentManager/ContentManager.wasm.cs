@@ -2,13 +2,13 @@
 
 using System;
 using Uno.UI.Xaml.Core;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 namespace Uno.UI.Xaml.Controls;
 
 partial class ContentManager
 {
-	static partial void AttachToWindowPlatform(UIElement rootElement, Microsoft.UI.Xaml.Window window)
+	static partial void AttachToWindowPlatform(UIElement rootElement, Windows.UI.Xaml.Window window)
 	{
 		WindowManagerInterop.SetRootElement(rootElement.HtmlId);
 		UpdateRootAttributes(rootElement);

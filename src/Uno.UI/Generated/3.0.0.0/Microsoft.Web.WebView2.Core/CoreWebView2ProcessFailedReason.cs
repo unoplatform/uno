@@ -24,9 +24,6 @@ namespace Microsoft.Web.WebView2.Core
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		OutOfMemory = 5,
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		ProfileDeleted = 6,
-#endif
 	}
 #endif
 }

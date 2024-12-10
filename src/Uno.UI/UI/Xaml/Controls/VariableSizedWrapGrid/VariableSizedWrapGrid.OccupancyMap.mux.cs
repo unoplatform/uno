@@ -19,7 +19,7 @@ using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 //      it is gorwing on Column direction
 //      Both classes are nested inside the VariableSizedWrapGrid class
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 partial class VariableSizedWrapGrid
 {

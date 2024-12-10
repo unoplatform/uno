@@ -2,7 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference IndexPathTests.cs, commit e7e0823
 
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using MUXControlsTestApp.Utilities;
 using Common;
 
@@ -17,7 +17,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 
 using IndexPath = Microsoft/* UWP don't rename */.UI.Xaml.Controls.IndexPath;
 
-namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
+namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
 	[TestClass]
 	public class IndexPathTests : MUXApiTestBase

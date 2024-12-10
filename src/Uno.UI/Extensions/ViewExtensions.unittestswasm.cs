@@ -7,14 +7,14 @@ using System.Text;
 
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Uno.UI.Extensions;
 using System.Drawing;
 using Windows.UI.Core;
 using System.Threading.Tasks;
 
-using _ViewGroup = Microsoft.UI.Xaml.UIElement;
-using _View = Microsoft.UI.Xaml.UIElement;
+using _ViewGroup = Windows.UI.Xaml.UIElement;
+using _View = Windows.UI.Xaml.UIElement;
 
 namespace Uno.UI
 {

@@ -25,7 +25,7 @@ public class Given_UserControl : BaseTestClass
 	{
 		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token;
 
-		var frame = new Microsoft.UI.Xaml.Controls.Frame();
+		var frame = new Windows.UI.Xaml.Controls.Frame();
 		UnitTestsUIContentHelper.Content = frame;
 
 		frame.Navigate(typeof(HR_Frame_Pages_Page1));
@@ -54,7 +54,7 @@ public class Given_UserControl : BaseTestClass
 	{
 		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token;
 
-		var frame = new Microsoft.UI.Xaml.Controls.Frame();
+		var frame = new Windows.UI.Xaml.Controls.Frame();
 		UnitTestsUIContentHelper.Content = frame;
 
 		frame.Navigate(typeof(HR_Frame_Pages_Page2));

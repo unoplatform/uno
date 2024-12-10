@@ -22,7 +22,7 @@ using XamlWindow = Microsoft/* UWP don't rename */.UI.Xaml.Window;
 using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls.Primitives;
+namespace Windows.UI.Xaml.Controls.Primitives;
 
 partial class PopupPanel
 {

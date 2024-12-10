@@ -1,4 +1,4 @@
-using Uno.Disposables;
+﻿using Uno.Disposables;
 
 #if HAS_UNO_WINUI
 using WindowSizeChangedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.WindowSizeChangedEventArgs;
@@ -6,7 +6,7 @@ using WindowSizeChangedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Windo
 using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
 #endif
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	public partial class AdaptiveTrigger : StateTriggerBase
 	{

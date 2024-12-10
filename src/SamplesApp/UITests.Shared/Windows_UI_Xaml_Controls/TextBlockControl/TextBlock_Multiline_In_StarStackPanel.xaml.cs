@@ -1,6 +1,6 @@
 ﻿using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.Presentation.SamplePages;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.TextBlockControl
 {

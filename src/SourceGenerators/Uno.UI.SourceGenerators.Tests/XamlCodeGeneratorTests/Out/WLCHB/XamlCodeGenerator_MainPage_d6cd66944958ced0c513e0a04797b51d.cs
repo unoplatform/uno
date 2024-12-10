@@ -7,14 +7,14 @@ using System.Diagnostics;
 using System.Linq;
 using Uno.UI;
 using Uno.UI.Xaml;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Documents;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Animation;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Documents;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Shapes;
 using Windows.UI.Text;
 using Uno.Extensions;
 using Uno;
@@ -29,18 +29,18 @@ using _View = UIKit.UIView;
 #elif __MACOS__
 using _View = AppKit.NSView;
 #else
-using _View = Microsoft.UI.Xaml.UIElement;
+using _View = Windows.UI.Xaml.UIElement;
 #endif
 
 namespace TestRepro
 {
-	partial class MainPage : global::Microsoft.UI.Xaml.Controls.Page
+	partial class MainPage : global::Windows.UI.Xaml.Controls.Page
 	{
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_prefix_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
-		private global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
+		private global::Windows.UI.Xaml.NameScope __nameScope = new global::Windows.UI.Xaml.NameScope();
 		private void InitializeComponent()
 		{
 			NameScope.SetNameScope(this, __nameScope);
@@ -48,14 +48,14 @@ namespace TestRepro
 			base.IsParsing = true;
 			// Source 0\MainPage.xaml (Line 1:2)
 			base.Content = 
-			new Microsoft.UI.Xaml.ElementStub( () => 
-			new global::Microsoft.UI.Xaml.Controls.ContentControl
+			new Windows.UI.Xaml.ElementStub( () => 
+			new global::Windows.UI.Xaml.Controls.ContentControl
 			{
 				IsParsing = true,
 				Name = "topLevelContent",
 				// Source 0\MainPage.xaml (Line 9:3)
 				Content = 
-				new global::Microsoft.UI.Xaml.Controls.TextBlock
+				new global::Windows.UI.Xaml.Controls.TextBlock
 				{
 					IsParsing = true,
 					Name = "innerTextBlock",
@@ -69,10 +69,10 @@ namespace TestRepro
 					__that.innerTextBlock = c0;
 					// FieldModifier public
 					c0.SetBinding(
-						global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
-						new Microsoft.UI.Xaml.Data.Binding()
+						global::Windows.UI.Xaml.Controls.TextBlock.TextProperty,
+						new Windows.UI.Xaml.Data.Binding()
 						{
-							Mode = global::Microsoft.UI.Xaml.Data.BindingMode.OneWay,
+							Mode = global::Windows.UI.Xaml.Data.BindingMode.OneWay,
 						}
 							.BindingApply(___b =>  /*defaultBindModeOneTime InnerText*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, __that, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? (TryGetInstance_xBind_1(___tctx, out var bindResult1) ? (true, bindResult1) : (false, default)) : (false, default), null , new [] {"InnerText"}))
 					);
@@ -99,7 +99,7 @@ namespace TestRepro
 				__that._component_1 = c2;
 				var _component_1_update_That = (this as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;
 				var _component_1_update_subject_capture = _topLevelContentSubject;
-				void _component_1_update(global::Microsoft.UI.Xaml.ElementStub sender)
+				void _component_1_update(global::Windows.UI.Xaml.ElementStub sender)
 				{
 					if (_component_1_update_That.Target is global::TestRepro.MainPage that)
 					{
@@ -150,7 +150,7 @@ namespace TestRepro
 			OnInitializeCompleted();
 
 			Bindings = new MainPage_Bindings(this);
-			((global::Microsoft.UI.Xaml.FrameworkElement)this).Loading += (s, e) =>
+			((global::Windows.UI.Xaml.FrameworkElement)this).Loading += (s, e) =>
 			{
 				__that.Bindings.Update();
 				__that.Bindings.UpdateResources();
@@ -158,48 +158,48 @@ namespace TestRepro
 			;
 		}
 		partial void OnInitializeCompleted();
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _innerTextBlockSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
-		public global::Microsoft.UI.Xaml.Controls.TextBlock innerTextBlock
+		private global::Windows.UI.Xaml.Data.ElementNameSubject _innerTextBlockSubject = new global::Windows.UI.Xaml.Data.ElementNameSubject();
+		public global::Windows.UI.Xaml.Controls.TextBlock innerTextBlock
 		{
 			get
 			{
-				return (global::Microsoft.UI.Xaml.Controls.TextBlock)_innerTextBlockSubject.ElementInstance;
+				return (global::Windows.UI.Xaml.Controls.TextBlock)_innerTextBlockSubject.ElementInstance;
 			}
 			set
 			{
 				_innerTextBlockSubject.ElementInstance = value;
 			}
 		}
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _topLevelContentSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
-		public global::Microsoft.UI.Xaml.Controls.ContentControl topLevelContent
+		private global::Windows.UI.Xaml.Data.ElementNameSubject _topLevelContentSubject = new global::Windows.UI.Xaml.Data.ElementNameSubject();
+		public global::Windows.UI.Xaml.Controls.ContentControl topLevelContent
 		{
 			get
 			{
-				return (global::Microsoft.UI.Xaml.Controls.ContentControl)_topLevelContentSubject.ElementInstance;
+				return (global::Windows.UI.Xaml.Controls.ContentControl)_topLevelContentSubject.ElementInstance;
 			}
 			set
 			{
 				_topLevelContentSubject.ElementInstance = value;
 			}
 		}
-		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder  = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-		private global::Microsoft.UI.Xaml.Controls.TextBlock _component_0
+		private global::Windows.UI.Xaml.Markup.ComponentHolder _component_0_Holder  = new global::Windows.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+		private global::Windows.UI.Xaml.Controls.TextBlock _component_0
 		{
 			get
 			{
-				return (global::Microsoft.UI.Xaml.Controls.TextBlock)_component_0_Holder.Instance;
+				return (global::Windows.UI.Xaml.Controls.TextBlock)_component_0_Holder.Instance;
 			}
 			set
 			{
 				_component_0_Holder.Instance = value;
 			}
 		}
-		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_1_Holder  = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: false);
-		private global::Microsoft.UI.Xaml.ElementStub _component_1
+		private global::Windows.UI.Xaml.Markup.ComponentHolder _component_1_Holder  = new global::Windows.UI.Xaml.Markup.ComponentHolder(isWeak: false);
+		private global::Windows.UI.Xaml.ElementStub _component_1
 		{
 			get
 			{
-				return (global::Microsoft.UI.Xaml.ElementStub)_component_1_Holder.Instance;
+				return (global::Windows.UI.Xaml.ElementStub)_component_1_Holder.Instance;
 			}
 			set
 			{
@@ -263,23 +263,23 @@ namespace MyProject
 {
 	static class MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions
 	{
-		public delegate void XamlApplyHandler0(global::Microsoft.UI.Xaml.Controls.TextBlock instance);
+		public delegate void XamlApplyHandler0(global::Windows.UI.Xaml.Controls.TextBlock instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.TextBlock MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Microsoft.UI.Xaml.Controls.TextBlock instance, XamlApplyHandler0 handler)
+		public static global::Windows.UI.Xaml.Controls.TextBlock MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Windows.UI.Xaml.Controls.TextBlock instance, XamlApplyHandler0 handler)
 		{
 			handler(instance);
 			return instance;
 		}
-		public delegate void XamlApplyHandler1(global::Microsoft.UI.Xaml.Controls.ContentControl instance);
+		public delegate void XamlApplyHandler1(global::Windows.UI.Xaml.Controls.ContentControl instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.ContentControl MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Microsoft.UI.Xaml.Controls.ContentControl instance, XamlApplyHandler1 handler)
+		public static global::Windows.UI.Xaml.Controls.ContentControl MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Windows.UI.Xaml.Controls.ContentControl instance, XamlApplyHandler1 handler)
 		{
 			handler(instance);
 			return instance;
 		}
-		public delegate void XamlApplyHandler2(global::Microsoft.UI.Xaml.ElementStub instance);
+		public delegate void XamlApplyHandler2(global::Windows.UI.Xaml.ElementStub instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.ElementStub MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Microsoft.UI.Xaml.ElementStub instance, XamlApplyHandler2 handler)
+		public static global::Windows.UI.Xaml.ElementStub MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Windows.UI.Xaml.ElementStub instance, XamlApplyHandler2 handler)
 		{
 			handler(instance);
 			return instance;

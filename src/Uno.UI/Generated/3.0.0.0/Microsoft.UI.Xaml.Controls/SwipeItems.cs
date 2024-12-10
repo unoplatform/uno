@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class SwipeItems : global::Microsoft.UI.Xaml.DependencyObject, global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Controls.SwipeItem>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.Controls.SwipeItem>
+	public partial class SwipeItems : global::Windows.UI.Xaml.DependencyObject, global::System.Collections.Generic.IList<global::Microsoft.UI.Xaml.Controls.SwipeItem>, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Xaml.Controls.SwipeItem>
 	{
 		// Skipping already declared property Mode
 		// Skipping already declared property Size

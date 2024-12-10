@@ -6,17 +6,17 @@ using Uno.Extensions;
 using Uno.Disposables;
 using Uno.UI;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 using Rect = Windows.Foundation.Rect;
 using Windows.UI.Input.Spatial;
 using Android.Graphics.Drawables;
 using Android.Graphics.Drawables.Shapes;
-using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml.Media.Imaging;
 
 using RadialGradientBrush = Microsoft/* UWP don't rename */.UI.Xaml.Media.RadialGradientBrush;
 using System.Runtime.CompilerServices;
 
-namespace Microsoft.UI.Xaml.Media
+namespace Windows.UI.Xaml.Media
 {
 	//Android partial for Brush
 	public partial class Brush

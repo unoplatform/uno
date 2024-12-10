@@ -1,9 +1,9 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
 
-namespace Microsoft.UI.Composition;
+namespace Windows.UI.Composition;
 
 public partial class BooleanKeyFrameAnimation : KeyFrameAnimation
 {

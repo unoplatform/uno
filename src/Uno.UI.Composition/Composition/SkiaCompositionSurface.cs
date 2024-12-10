@@ -9,7 +9,7 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Windows.Graphics;
 
-namespace Microsoft.UI.Composition
+namespace Windows.UI.Composition
 {
 	internal partial class SkiaCompositionSurface : ICompositionSurface
 	{

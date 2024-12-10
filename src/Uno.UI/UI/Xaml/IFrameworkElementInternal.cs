@@ -1,6 +1,6 @@
-﻿using Microsoft.UI.Xaml.Controls;
+﻿using Windows.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	internal interface IFrameworkElementInternal : IFrameworkElement
 	{

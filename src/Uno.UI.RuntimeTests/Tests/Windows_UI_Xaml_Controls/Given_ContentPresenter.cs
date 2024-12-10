@@ -8,10 +8,10 @@ using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.ContentPresenterPages;
 using Windows.Foundation;
 using Windows.UI;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Shapes;
 using MUXControlsTestApp.Utilities;
 using Uno.UI.RuntimeTests.Helpers;
 
@@ -167,7 +167,7 @@ public class Given_ContentPresenter
 		var border1 = presenter1.FindVisualChildByType<Border>();
 		var tb1 = presenter1.FindVisualChildByType<TextBlock>();
 
-		Assert.AreEqual(new SolidColorBrush(Microsoft.UI.Colors.LightGreen), border1.Background);
+		Assert.AreEqual(new SolidColorBrush(Windows.UI.Colors.LightGreen), border1.Background);
 		Assert.AreEqual("Item 1", tb1.Text);
 
 		var cc2 = control.FindName("CCWithContentTemplate") as ContentControl;
@@ -175,7 +175,7 @@ public class Given_ContentPresenter
 		var border2 = presenter2.FindVisualChildByType<Border>();
 		var tb2 = presenter2.FindVisualChildByType<TextBlock>();
 
-		Assert.AreEqual(new SolidColorBrush(Microsoft.UI.Colors.LightPink), border2.Background);
+		Assert.AreEqual(new SolidColorBrush(Windows.UI.Colors.LightPink), border2.Background);
 		Assert.AreEqual("Item 2", tb2.Text);
 
 		var cc3 = control.FindName("CCWithContentTemplateAndContent") as ContentControl;
@@ -183,7 +183,7 @@ public class Given_ContentPresenter
 		var border3 = presenter3.FindVisualChildByType<Border>();
 		var tb3 = presenter3.FindVisualChildByType<TextBlock>();
 
-		Assert.AreEqual(new SolidColorBrush(Microsoft.UI.Colors.LightGreen), border3.Background);
+		Assert.AreEqual(new SolidColorBrush(Windows.UI.Colors.LightGreen), border3.Background);
 		Assert.AreEqual("Item 3", tb3.Text);
 
 		var cc4 = control.FindName("CCWithContent") as ContentControl;

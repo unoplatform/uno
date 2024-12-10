@@ -2,7 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX reference ScrollControllerAddScrollVelocityRequestedEventArgs.cpp, ScrollControllerAddScrollVelocityRequestedEventArgs.h, tag winui3/release/1.4.2
 
-namespace Microsoft.UI.Xaml.Controls.Primitives;
+namespace Windows.UI.Xaml.Controls.Primitives;
 
 public sealed partial class ScrollControllerAddScrollVelocityRequestedEventArgs
 {

@@ -1,7 +1,7 @@
 ﻿#if HAS_UNO
 using System;
-using Microsoft.UI.Xaml;
-using WebViewUno = Microsoft.UI.Xaml.Controls.WebView;
+using Windows.UI.Xaml;
+using WebViewUno = Windows.UI.Xaml.Controls.WebView;
 
 namespace Uno.UI.Samples.Content.UITests.WebView
 {

@@ -1,6 +1,6 @@
 ﻿using System;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Uno.UI.Tests.BitmapImageTests

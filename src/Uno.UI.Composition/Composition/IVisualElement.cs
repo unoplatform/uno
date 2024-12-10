@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Microsoft.UI.Composition
+namespace Windows.UI.Composition
 {
 	public partial interface IVisualElement
 	{
