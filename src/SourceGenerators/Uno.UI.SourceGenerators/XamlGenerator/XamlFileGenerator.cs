@@ -3113,7 +3113,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							}
 							else
 							{
-								BuildCustomMarkupExtensionPropertyValue(writer, member, closureName, $"(({CurrentScope.ClassName})__that)");
+								BuildCustomMarkupExtensionPropertyValue(writer, member, closureName, _isTopLevelDictionary ? null : $"(({CurrentScope.ClassName})__that)");
 							}
 						}
 						else if (member.Objects.Count > 0)
@@ -3475,7 +3475,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			// Local function used to build a property/value for any custom MarkupExtensions
-			void BuildCustomMarkupExtensionPropertyValue(IIndentedStringBuilder writer, XamlMemberDefinition member, string closure, string resourceOwner)
+			void BuildCustomMarkupExtensionPropertyValue(IIndentedStringBuilder writer, XamlMemberDefinition member, string closure, string? resourceOwner)
 			{
 				var propertyValue = GetCustomMarkupExtensionValue(member, closure, resourceOwner);
 				if (!propertyValue.IsNullOrEmpty())
