@@ -422,9 +422,6 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			Assert.AreEqual(-1, listControl.SelectedIndex);
 		}
 
-#if __IOS__
-		[Ignore("Fails on iOS 17 https://github.com/unoplatform/uno/issues/17102")]
-#endif
 		[TestMethod]
 		public async Task When_Setting_SelectedItem_TakesEffect()
 		{
