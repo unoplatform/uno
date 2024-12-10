@@ -25,8 +25,8 @@ stages:
   displayName: UWP Tree Conversion
   dependsOn:
     - Setup
-  jobs:
   ${{ if eq(parameters.UWPBuildEnabled, 'true') }}:
+    jobs:
     - template: .azure-devops-uwp-convert.yml
       parameters:
         poolName: '$(windowsScaledPool)'
