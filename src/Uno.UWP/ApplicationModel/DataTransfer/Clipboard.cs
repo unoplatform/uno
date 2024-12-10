@@ -1,13 +1,23 @@
 ﻿#if !IS_UNIT_TESTS
 
 using System;
+using Uno.Helpers;
 
 namespace Windows.ApplicationModel.DataTransfer
 {
 	public partial class Clipboard
 	{
 		private static object _syncLock = new object();
-		private static EventHandler<object> _contentChanged;
+
+		private static StartStopEventWrapper<EventHandler<object>> _contentChangedWrapper;
+
+		static Clipboard()
+		{
+			_contentChangedWrapper = new StartStopEventWrapper<EventHandler<object>>(
+				() => StartContentChanged(),
+				() => StopContentChanged(),
+				_syncLock);
+		}
 
 #if !__SKIA__
 		public static void Flush()
@@ -19,35 +29,14 @@ namespace Windows.ApplicationModel.DataTransfer
 
 		public static event EventHandler<object> ContentChanged
 		{
-			add
-			{
-				lock (_syncLock)
-				{
-					var firstSubscriber = _contentChanged == null;
-					_contentChanged += value;
-					if (firstSubscriber)
-					{
-						StartContentChanged();
-					}
-				}
-			}
-			remove
-			{
-				lock (_syncLock)
-				{
-					_contentChanged -= value;
-					if (_contentChanged == null)
-					{
-						StopContentChanged();
-					}
-				}
-			}
+			add => _contentChangedWrapper.AddHandler(value);
+			remove => _contentChangedWrapper.RemoveHandler(value);
 		}
 
 #if __ANDROID__ || __IOS__ || __MACOS__ || __SKIA__ || __WASM__
 		private static void OnContentChanged()
 		{
-			_contentChanged?.Invoke(null, null);
+			_contentChangedWrapper.Event?.Invoke(null, null);
 		}
 #endif
 	}
