@@ -15,9 +15,9 @@
 		</Grid.RowDefinitions>
 		<StackPanel Orientation="Vertical">
 			<Button Command="{x:Bind ViewModel.PickFolderCommand}">Pick folder</Button>
-			<Button Command="{x:Bind ViewModel.RunStorageFolderTestsCommand}">Run Storage Folder tets</Button>
-			<Button Command="{x:Bind ViewModel.RunStorageFileTestsCommand}">Run Storage File tets</Button>
-			<Button Command="{x:Bind ViewModel.RunFileIOTestsCommand}">Run FileIO tets</Button>
+			<Button Command="{x:Bind ViewModel.RunStorageFolderTestsCommand}">Run Storage Folder tests</Button>
+			<Button Command="{x:Bind ViewModel.RunStorageFileTestsCommand}">Run Storage File tests</Button>
+			<Button Command="{x:Bind ViewModel.RunFileIOTestsCommand}">Run FileIO tests</Button>
 		</StackPanel>
 		<tests:UnitTestsControl x:Name="UnitTestsControl" Grid.Row="1" />
 	</Grid>
