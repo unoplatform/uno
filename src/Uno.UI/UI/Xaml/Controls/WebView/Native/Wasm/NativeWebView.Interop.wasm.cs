@@ -49,5 +49,8 @@ internal static partial class NativeWebView
 
 		[JSImport("globalThis.Microsoft.UI.Xaml.Controls.WebView.setupEvents")]
 		internal static partial void SetupEvents(ElementId htmlId);
+
+		[JSImport("globalThis.Microsoft.UI.Xaml.Controls.WebView.cleanupEvents")]
+		internal static partial void CleanupEvents(ElementId htmlId);
 	}
 }

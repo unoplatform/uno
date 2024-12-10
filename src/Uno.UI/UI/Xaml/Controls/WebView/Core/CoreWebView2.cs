@@ -39,6 +39,12 @@ public partial class CoreWebView2
 
 	internal IReadOnlyDictionary<string, string> HostToFolderMap { get; }
 
+#if __SKIA__
+	internal void OnLoaded() => _nativeWebView?.OnLoaded();
+
+	internal void OnUnloaded() => _nativeWebView?.OnUnloaded();
+#endif
+
 	/// <summary>
 	/// Gets the CoreWebView2Settings object contains various modifiable
 	/// settings for the running WebView.

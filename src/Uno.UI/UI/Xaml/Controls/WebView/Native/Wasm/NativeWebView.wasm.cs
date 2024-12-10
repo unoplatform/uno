@@ -2,12 +2,9 @@
 using System.Collections.Concurrent;
 using System.Net.Http;
 using System.Runtime.InteropServices.JavaScript;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Web.WebView2.Core;
-using Uno.Foundation;
-using Uno.UI.Runtime.Skia;
 using Uno.UI.Xaml.Controls;
 using static __Microsoft.UI.Xaml.Controls.NativeWebView;
 
@@ -120,5 +117,18 @@ public partial class NativeWebView : INativeWebView
 	{
 		// Todo call this and reattach if needed
 		_elementIdToNativeWebView.TryRemove(_elementId, out _);
+	}
+
+	public void OnLoaded()
+	{
+		_elementIdToNativeWebView.TryAdd(_elementId, this);
+		NativeMethods.SetupEvents(_elementId);
+		DispatchLoadEvent(_elementId);
+	}
+
+	public void OnUnloaded()
+	{
+		NativeMethods.CleanupEvents(_elementId);
+		_elementIdToNativeWebView.TryRemove(_elementId, out var _);
 	}
 }
