@@ -877,5 +877,29 @@ namespace Uno.UI
 
 			public static bool WaitIndefinitelyInEventTester { get; set; }
 		}
+
+		public static class Shape
+		{
+#if __WASM__
+			/// <summary>
+			/// Gets or sets whether native svg attributes assignments can be postponed until the first arrange pass.
+			/// </summary>
+			/// <remarks>This avoid double assignments(with js interop call) from both OnPropertyChanged and UpdateRender.</remarks>
+			public static bool DelayUpdateUntilFirstArrange { get; set; } = true;
+
+			/// <summary>
+			/// Gets or sets whether native getBBox() result will be cached.
+			/// </summary>
+			public static bool CacheBBoxCalculationResult { get; set; } = true;
+			/// <summary>
+			/// Gets or sets the size of getBBox cache. The default size is 500.
+			/// </summary>
+			public static int BBoxCacheSize
+			{
+				get => Microsoft.UI.Xaml.Shapes.Shape.BBoxCacheSize;
+				set => Microsoft.UI.Xaml.Shapes.Shape.BBoxCacheSize = value;
+			}
+#endif
+		}
 	}
 }
