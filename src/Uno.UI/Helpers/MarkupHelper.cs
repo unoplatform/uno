@@ -80,8 +80,8 @@ namespace Uno.UI.Helpers
 			target.FromLegacyTemplate = TemplatedParentScope.GetCurrentTemplate() is { IsLegacyTemplate: true };
 		}
 
-		public static IXamlServiceProvider CreateParserContext(object? target, Type propertyDeclaringType, string propertyName, Type propertyType) =>
-			CreateParserContext(target, propertyDeclaringType, propertyName, propertyType, null);
+		public static IXamlServiceProvider CreateParserContext(object? target, Type propertyDeclaringType, string propertyName, Type propertyType)
+			=> CreateParserContext(target, propertyDeclaringType, propertyName, propertyType, null);
 
 		public static IXamlServiceProvider CreateParserContext(object? target, Type propertyDeclaringType, string propertyName, Type propertyType, object? rootObject)
 			=> new XamlServiceProviderContext

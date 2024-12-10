@@ -21,8 +21,20 @@ internal class HotReloadWorkspace
 {
 	public record UpdateResult(ImmutableArray<Diagnostic> Diagnostics, ImmutableArray<WatchHotReloadService.Update> MetadataUpdates);
 
+#if NET7_0
 	const string NetCoreCapsRaw = "Baseline AddMethodToExistingType AddStaticFieldToExistingType AddInstanceFieldToExistingType NewTypeDefinition ChangeCustomAttributes UpdateParameters";
 	const string MonoCapsRaw = "Baseline AddMethodToExistingType AddStaticFieldToExistingType NewTypeDefinition ChangeCustomAttributes";
+#elif NET8_0
+	const string NetCoreCapsRaw = "Baseline AddMethodToExistingType AddStaticFieldToExistingType AddInstanceFieldToExistingType NewTypeDefinition ChangeCustomAttributes UpdateParameters GenericUpdateMethod GenericAddMethodToExistingType GenericAddFieldToExistingType";
+	const string MonoCapsRaw = "Baseline AddMethodToExistingType AddStaticFieldToExistingType AddInstanceFieldToExistingType NewTypeDefinition ChangeCustomAttributes UpdateParameters GenericUpdateMethod GenericAddMethodToExistingType GenericAddFieldToExistingType";
+#elif NET9_0
+	// https://github.com/dotnet/runtime/blob/e99557baffbe864d624cc1c95c9cbf2eefae684f/src/coreclr/System.Private.CoreLib/src/System/Reflection/Metadata/MetadataUpdater.cs#L58
+	const string NetCoreCapsRaw = "Baseline AddMethodToExistingType AddStaticFieldToExistingType AddInstanceFieldToExistingType NewTypeDefinition ChangeCustomAttributes UpdateParameters GenericUpdateMethod GenericAddMethodToExistingType GenericAddFieldToExistingType";
+	// https://github.com/dotnet/runtime/blob/e99557baffbe864d624cc1c95c9cbf2eefae684f/src/mono/mono/component/hot_reload.c#L3330
+	const string MonoCapsRaw = "Baseline AddMethodToExistingType AddStaticFieldToExistingType NewTypeDefinition ChangeCustomAttributes AddInstanceFieldToExistingType GenericAddMethodToExistingType GenericUpdateMethod UpdateParameters GenericAddFieldToExistingType";
+#else
+#error This runtime is not supported yet, find the caps in the .NET runtime's sources
+#endif
 
 	private readonly string _baseWorkFolder;
 	private readonly bool _isDebugCompilation;
@@ -79,7 +91,18 @@ internal class HotReloadWorkspace
 		var basePath = Path.Combine(_baseWorkFolder, project);
 		var filePath = Path.Combine(basePath, fileName);
 		Directory.CreateDirectory(basePath);
-		File.WriteAllText(filePath, content, Encoding.UTF8);
+		for (var i = 2; i >= 0; i--)
+		{
+			try
+			{
+				File.WriteAllText(filePath, content, Encoding.UTF8);
+				break;
+			}
+			catch (IOException) when (i is not 0)
+			{
+				Task.Delay(100).Wait();
+			}
+		}
 
 		if (_currentSolution is not null)
 		{
@@ -190,6 +213,18 @@ internal class HotReloadWorkspace
 
 			currentSolution = project.Solution;
 
+			// Build the analyzer document additional data information
+			var analyzerDocumentId = DocumentId.CreateNewId(project.Id);
+
+			// For now, there is no need to customize these for each test.
+			var globalConfigBuilder = new StringBuilder($"""
+				is_global = true
+				build_property.MSBuildProjectFullPath = C:\Project\{project.Name}.csproj
+				build_property.RootNamespace = {project.Name}
+				build_property.XamlSourceGeneratorTracingFolder = {_baseWorkFolder}
+				build_property.Configuration = {(_isDebugCompilation ? "Debug" : "Release")}
+
+				""");
 			if (_sourceFiles.TryGetValue(projectName, out var sourceFiles))
 			{
 				foreach (var (fileName, content) in sourceFiles)
@@ -217,37 +252,21 @@ internal class HotReloadWorkspace
 						filePath: Path.Combine(_baseWorkFolder, project.Name, fileName));
 				}
 
-				if (additionalFiles.Any())
+				foreach (var (fileName, content) in additionalFiles.Where(k => k.Key.EndsWith(".xaml")))
 				{
-					// Build the analyzer document additional data information
-					var analyzerDocumentId = DocumentId.CreateNewId(project.Id);
-
-					// For now, there is no need to customize these for each test.
-					var globalConfigBuilder = new StringBuilder($"""
-						is_global = true
-						build_property.MSBuildProjectFullPath = C:\Project\{project.Name}.csproj
-						build_property.RootNamespace = {project.Name}
-						build_property.XamlSourceGeneratorTracingFolder = {_baseWorkFolder}
-						build_property.Configuration = {(_isDebugCompilation ? "Debug" : "Release")}
-						
-						"""); ;
-
-					foreach (var (fileName, content) in additionalFiles.Where(k => k.Key.EndsWith(".xaml")))
-					{
-						globalConfigBuilder.Append($"""
-							[{Path.Combine(_baseWorkFolder, project.Name, fileName).Replace("\\", "/")}]
-							build_metadata.AdditionalFiles.SourceItemGroup = Page
-							""");
-					}
-
-					currentSolution = currentSolution.AddAnalyzerConfigDocument(
-						analyzerDocumentId,
-						name: ".globalconfig",
-						filePath: "/.globalconfig",
-						text: SourceText.From(globalConfigBuilder.ToString())
-					); ;
+					globalConfigBuilder.Append($"""
+						[{Path.Combine(_baseWorkFolder, project.Name, fileName).Replace("\\", "/")}]
+						build_metadata.AdditionalFiles.SourceItemGroup = Page
+						""");
 				}
 			}
+
+			currentSolution = currentSolution.AddAnalyzerConfigDocument(
+				analyzerDocumentId,
+				name: ".globalconfig",
+				filePath: "/.globalconfig",
+				text: SourceText.From(globalConfigBuilder.ToString())
+			);
 
 			workspace.TryApplyChanges(currentSolution);
 		}
@@ -371,9 +390,14 @@ internal class HotReloadWorkspace
 #endif
 
 		var availableTargets = new[] {
+			// On CI the test assemblies set must be first, as it contains all
+			// dependent assemblies, which the other platforms don't (see DisablePrivateProjectReference).
+			Path.Combine("Uno.UI.Tests", configuration, "net8.0"),
 			Path.Combine("Uno.UI.Skia", configuration, "net8.0"),
 			Path.Combine("Uno.UI.Reference", configuration, "net8.0"),
-			Path.Combine("Uno.UI.Tests", configuration, "net8.0"),
+			Path.Combine("Uno.UI.Tests", configuration, "net9.0"),
+			Path.Combine("Uno.UI.Skia", configuration, "net9.0"),
+			Path.Combine("Uno.UI.Reference", configuration, "net9.0"),
 		};
 
 		var unoUIBase = Path.Combine(
