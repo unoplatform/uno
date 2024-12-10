@@ -12,6 +12,7 @@ using Microsoft.UI.Xaml.Media;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 using SamplesApp.UITests;
+using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.MUX.Helpers;
 
@@ -288,10 +289,86 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(expectedStyle, nativeTimePicker.OverrideUserInterfaceStyle);
 		}
 #endif
-	}
+#if __IOS__ || __ANDROID__
+		[TestMethod]
+		public async Task When_Time_Uninitialized_Should_Display_Current_Time()
+		{
+			var timePicker = new Microsoft.UI.Xaml.Controls.TimePicker();
+			timePicker.Time = new TimeSpan(TimePicker.DEFAULT_TIME_TICKS);
 
-	class MyContext
-	{
-		public object StartTime => null;
+			var expectedCurrentTime = GetCurrentTime();
+
+			TestServices.WindowHelper.WindowContent = timePicker;
+			await TestServices.WindowHelper.WaitForLoaded(timePicker);
+
+			await DateTimePickerHelper.OpenDateTimePicker(timePicker);
+
+			var openFlyouts = FlyoutBase.OpenFlyouts;
+			var associatedFlyout = openFlyouts[0];
+			Assert.IsInstanceOfType(associatedFlyout, typeof(NativeTimePickerFlyout));
+
+#if __ANDROID__
+			var nativeFlyout = (NativeTimePickerFlyout)associatedFlyout;
+
+			var dialog = nativeFlyout.GetNativeDialog();
+
+			var decorView = dialog.Window?.DecorView;
+			var timePickerView = FindTimePicker(decorView);
+
+			var displayedHour = timePickerView.GetHourCompat();
+			var displayedMinute = timePickerView.GetMinuteCompat();
+
+			Assert.AreEqual(expectedCurrentTime.Hours, displayedHour, "Hours should match the current time.");
+			Assert.AreEqual(expectedCurrentTime.Minutes, displayedMinute, "Minutes should match the current time.");
+#elif __IOS__
+			var nativeFlyout = (NativeTimePickerFlyout)associatedFlyout;
+
+			var timeSelector = nativeFlyout.GetTimeSelector();
+			var displayedTime = timeSelector.Time;
+
+			Assert.AreEqual(expectedCurrentTime.Hours, displayedTime.Hours, "Hours should match the current time.");
+			Assert.AreEqual(expectedCurrentTime.Minutes, displayedTime.Minutes, "Minutes should match the current time.");
+#endif
+		}
+
+		private TimeSpan GetCurrentTime()
+		{
+			var calendar = new global::Windows.Globalization.Calendar();
+			calendar.SetToNow();
+			var now = calendar.GetDateTime();
+			return new TimeSpan(now.Hour, now.Minute, now.Second);
+		}
+#if __ANDROID__
+		private Android.Widget.TimePicker FindTimePicker(Android.Views.View root)
+		{
+			if (root is Android.Widget.TimePicker picker)
+			{
+				return picker;
+			}
+
+			if (root is not Android.Views.ViewGroup viewGroup)
+			{
+				return null;
+			}
+
+			for (var i = 0; i < viewGroup.ChildCount; i++)
+			{
+				var child = viewGroup.GetChildAt(i);
+				var result = FindTimePicker(child);
+				if (result != null)
+				{
+					return result;
+				}
+			}
+
+			return null;
+		}
+#endif
+#endif
+
+		class MyContext
+		{
+			public object StartTime => null;
+		}
 	}
 }
