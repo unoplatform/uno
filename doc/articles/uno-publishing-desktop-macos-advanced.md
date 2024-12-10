@@ -61,7 +61,7 @@ You can create a basic `Info.plist` file yourself, using any text editor. The co
 </plist>
 ```
 
-You can edit the `Info.plist` file, add any required entries (for permissions), and let other fields empty. The basic, empty fields will be filled automatically by the `msbuild` task based on your project.
+You can edit the `Info.plist` file, add any required entries (for permissions), and leave other fields empty. The basic, empty fields will be filled automatically by the `msbuild` task based on your project.
 
 Then from the CLI run:
 
@@ -102,7 +102,7 @@ dotnet publish -f net8.0-desktop -p:SelfContained=true -p:PackageFormat=app -p:U
 
 ### Trimming
 
-App bundles that are distributed should be self-contained applications that depends only on the OS to execute. However bundling the dotnet runtime, base class libraries and Uno Platform libraries produce a rather large application size.
+App bundles that are distributed should be self-contained applications that depend only on the OS to execute. However bundling the dotnet runtime, base class libraries and Uno Platform libraries produce a rather large application size.
 
 To reduce the size of the app bundle you can enable dotnet's [trimming](https://learn.microsoft.com/en-us/dotnet/core/deploying/trimming/trimming-options#enable-trimming) when publishing the app, using `-p:PublishTrimmed=true`. The full command from the CLI would be:
 
@@ -115,11 +115,11 @@ dotnet publish -f net8.0-desktop -p:SelfContained=true -p:PackageFormat=app -p:P
 
 ### Optional files
 
-`dotnet publish` include several files that are not strictly required to execute your application. To reduce the app bundle size most of those files are **not** included, by default, inside the app bundles.
+`dotnet publish` includes several files that are not strictly required to execute your application. To reduce the app bundle size most of those files are **not** included, by default, inside the app bundles.
 
 #### Including dotnet `createdump` tool
 
-Useful for debugging, the `createdump` executable is rarely used by the consumers of the application and, by default, is not included in the app bundle.
+Although useful for debugging, the `createdump` executable is rarely used by the application's consumers and, by default, is not included in the app bundle.
 
 If you wish to include `createdump` inside your app bundle add the `-p:UnoMacOSIncludeCreateDump=true` on the CLI.
 
@@ -149,9 +149,9 @@ dotnet publish -f net8.0-desktop -p:SelfContained=true -p:PackageFormat=app -p:U
 
 #### Including assemblies debugging symbols (.pdb) files
 
-dotnet debugging symbols (`.pdb`) are generally included in released applications since it helps to provide better stack trace and help developers resolving issues. As such they are, by default, included inside the app bundle.
+dotnet debugging symbols (`.pdb`) are generally included in released applications since they help to provide better stack traces and help developers resolve issues. As such, they are, by default, included inside the app bundle.
 
-If you wish to remove them anyway you can do so by adding the `-p:UnoMacOSIncludeDebugSymbols=false` on the CLI.
+If you wish to remove them anyway, you can do so by adding the `-p:UnoMacOSIncludeDebugSymbols=false` on the CLI.
 
 ```bash
 dotnet publish -f net8.0-desktop -p:SelfContained=true -p:PackageFormat=app -p:UnoMacOSIncludeDebugSymbols=false
@@ -169,7 +169,7 @@ dotnet publish -f net8.0-desktop -p:SelfContained=true -p:PackageFormat=dmg -p:U
 
 ### Additional Customization
 
-Further disk image customization is possible but can be tricky since it requires modification to the `.DS_Store` binary file inside the disk image (a lot of trials and errors). If more control is required (e.g. icon positioning, background image...) we recommend the use of 3rd party tools created specifically for this purpose. Some free/open source examples are:
+Further disk image customization is possible but can be tricky since it requires modification to the `.DS_Store` binary file inside the disk image (many trials and errors). If more control is required (e.g. icon positioning, background image...) we recommend using 3rd party tools created specifically for this purpose. Some free/open source examples are:
 
 - [create-dmg](https://github.com/sindresorhus/create-dmg)
 - [dmgbuild](https://dmgbuild.readthedocs.io/en/latest/)
