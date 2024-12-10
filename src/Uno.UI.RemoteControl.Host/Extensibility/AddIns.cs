@@ -17,8 +17,9 @@ public class AddIns
 	public static IImmutableList<string> Discover(string solutionFile)
 	{
 		var tmp = Path.GetTempFileName();
-		var command = $"build \"{solutionFile}\" --target:UnoDumpTargetFrameworks \"-p:UnoDumpTargetFrameworksTargetFile={tmp}\" --verbosity quiet";
-		var result = ProcessHelper.RunProcess("dotnet", command);
+		var wd = Path.GetDirectoryName(solutionFile);
+		var command = $"build \"{solutionFile}\" -t:UnoDumpTargetFrameworks \"-p:UnoDumpTargetFrameworksTargetFile={tmp}\" --verbosity quiet";
+		var result = ProcessHelper.RunProcess("dotnet", command, wd);
 		var targetFrameworks = Read(tmp);
 
 		if (targetFrameworks.IsEmpty)
@@ -50,8 +51,8 @@ public class AddIns
 		foreach (var targetFramework in targetFrameworks)
 		{
 			tmp = Path.GetTempFileName();
-			command = $"build \"{solutionFile}\" --target:UnoDumpRemoteControlAddIns \"-p:UnoDumpRemoteControlAddInsTargetFile={tmp}\" --verbosity quiet --framework \"{targetFramework}\" -nowarn:MSB4057";
-			result = ProcessHelper.RunProcess("dotnet", command);
+			command = $"build \"{solutionFile}\" -t:UnoDumpRemoteControlAddIns \"-p:UnoDumpRemoteControlAddInsTargetFile={tmp}\" --verbosity quiet --framework \"{targetFramework}\" -nowarn:MSB4057";
+			result = ProcessHelper.RunProcess("dotnet", command, wd);
 			if (!string.IsNullOrWhiteSpace(result.error))
 			{
 				if (_log.IsEnabled(LogLevel.Warning))

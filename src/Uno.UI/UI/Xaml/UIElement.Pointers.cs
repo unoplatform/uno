@@ -10,6 +10,7 @@ using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.DataTransfer.DragDrop;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Windows.Devices.Haptics;
+using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml.Controls;
@@ -23,12 +24,12 @@ using Uno.UI.Dispatching;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
+using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
 #else
 using Windows.UI.Input;
-using Windows.Devices.Input;
 #endif
 
 namespace Microsoft.UI.Xaml
@@ -559,19 +560,31 @@ namespace Microsoft.UI.Xaml
 			{
 				if (routedEvent == TappedEvent)
 				{
-					GestureRecognizer.PreventEvents(((TappedRoutedEventArgs)args).PointerId, GestureSettings.Tap);
+					var tappedArgs = (TappedRoutedEventArgs)args;
+					GestureRecognizer.PreventEvents(
+						new PointerIdentifier((PointerDeviceType)tappedArgs.PointerDeviceType, tappedArgs.PointerId),
+						GestureSettings.Tap);
 				}
 				else if (routedEvent == DoubleTappedEvent)
 				{
-					GestureRecognizer.PreventEvents(((DoubleTappedRoutedEventArgs)args).PointerId, GestureSettings.DoubleTap);
+					var doubleTappedArgs = (DoubleTappedRoutedEventArgs)args;
+					GestureRecognizer.PreventEvents(
+						new PointerIdentifier((PointerDeviceType)doubleTappedArgs.PointerDeviceType, doubleTappedArgs.PointerId),
+						GestureSettings.DoubleTap);
 				}
 				else if (routedEvent == RightTappedEvent)
 				{
-					GestureRecognizer.PreventEvents(((RightTappedRoutedEventArgs)args).PointerId, GestureSettings.RightTap);
+					var rightTappedArgs = (RightTappedRoutedEventArgs)args;
+					GestureRecognizer.PreventEvents(
+						new PointerIdentifier((PointerDeviceType)rightTappedArgs.PointerDeviceType, rightTappedArgs.PointerId),
+						GestureSettings.RightTap);
 				}
 				else if (routedEvent == HoldingEvent)
 				{
-					GestureRecognizer.PreventEvents(((HoldingRoutedEventArgs)args).PointerId, GestureSettings.Hold);
+					var holdingArgs = (HoldingRoutedEventArgs)args;
+					GestureRecognizer.PreventEvents(
+						new PointerIdentifier((PointerDeviceType)holdingArgs.PointerDeviceType, holdingArgs.PointerId),
+						GestureSettings.Hold);
 				}
 			}
 		}
@@ -607,7 +620,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			var pointerId = args.Pointer.PointerId;
-			args.GestureEventsAlreadyRaised |= GestureRecognizer.PreventEvents(pointerId, args.GestureEventsAlreadyRaised);
+			args.GestureEventsAlreadyRaised |= GestureRecognizer.PreventEvents(new PointerIdentifier((PointerDeviceType)args.Pointer.PointerDeviceType, args.Pointer.PointerId), args.GestureEventsAlreadyRaised);
 		}
 		#endregion
 
@@ -897,7 +910,11 @@ namespace Microsoft.UI.Xaml
 					//		 ptArgs.Pointer.IsInRange && ptArgs.IsPointCoordinatesOver(this) (and probably share it on all platforms).
 					var isOver = ptArgs.Pointer.IsInRange && (ptArgs.Pointer.PointerDeviceType, ptArgs.Pointer.IsInContact) switch
 					{
+#if HAS_UNO_WINUI
+						(global::Microsoft.UI.Input.PointerDeviceType.Touch, false) => false,
+#else
 						(PointerDeviceType.Touch, false) => false,
+#endif
 						_ => ptArgs.IsPointCoordinatesOver(this),
 					};
 #endif

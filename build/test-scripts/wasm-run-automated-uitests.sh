@@ -110,11 +110,11 @@ mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
 
 echo "Running NUnitTransformTool"
 
-dotnet run list-failed $UNO_ORIGINAL_TEST_RESULTS $UNO_TESTS_FAILED_LIST
-
 ## Fail the build when no test results could be read
 dotnet run fail-empty $UNO_ORIGINAL_TEST_RESULTS
 
-echo "Ran NUnitTransformTool"
+if [ $? -eq 0 ]; then
+	dotnet run list-failed $UNO_ORIGINAL_TEST_RESULTS $UNO_TESTS_FAILED_LIST
+fi
 
 popd

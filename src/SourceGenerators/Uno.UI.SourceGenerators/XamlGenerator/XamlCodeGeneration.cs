@@ -12,7 +12,7 @@ using System.Xml;
 using Uno.Roslyn;
 using Microsoft.CodeAnalysis;
 using Uno.Extensions;
-using Uno.UI.SourceGenerators.Telemetry;
+using Uno.DevTools.Telemetry;
 using Uno.UI.Xaml;
 using System.Drawing;
 using __uno::Uno.Xaml;

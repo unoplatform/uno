@@ -29,6 +29,20 @@
 				<ComboBoxItem Content="{}{dayofweek.solo.abbreviated(2)}"></ComboBoxItem>
 				<ComboBoxItem Content="{}{dayofweek.solo.abbreviated(3)}"></ComboBoxItem>
 			</ComboBox>
+			<ComboBox x:Name="dateformat" Header="DateFormat">
+				<ComboBoxItem Content="{}{day.integer}/{month.integer}/{year.full}"></ComboBoxItem>
+				<ComboBoxItem Content="{}{month.full} {year.full}"></ComboBoxItem>
+				<ComboBoxItem Content="{}{month.full} {day.integer}"></ComboBoxItem>
+				<ComboBoxItem Content="{}{dayofweek.full}, {day.integer} {month.full} {year.full}"></ComboBoxItem>
+				<ComboBoxItem Content="{}{dayofweek.abbreviated}, {day.integer} {month.abbreviated} {year.full}"></ComboBoxItem>
+				<ComboBoxItem Content="{}{year.full}-{month.integer}-{day.integer}"></ComboBoxItem>
+				<ComboBoxItem Content="{}{day.integer}/{month.integer}/{year.abbreviated}"></ComboBoxItem>
+				<ComboBoxItem Content="{}{day.integer} {month.abbreviated} {year.full}"></ComboBoxItem>
+				<ComboBoxItem Content="{}{month.full} {day.integer}, {year.full}"></ComboBoxItem>
+				<ComboBoxItem Content="{}{month.abbreviated} {day.integer}, {year.full}"></ComboBoxItem>
+				<ComboBoxItem Content="{}{dayofweek.full}, {day.integer} {month.full} {year.full}"></ComboBoxItem>
+				<ComboBoxItem Content="{}{dayofweek.abbreviated}, {day.integer} {month.abbreviated} {year.abbreviated}"></ComboBoxItem>
+			</ComboBox>
 			<ComboBox x:Name="cid" Header="Calendar">
 				<ComboBoxItem>ChineseLunarCalendar</ComboBoxItem>
 				<ComboBoxItem IsSelected="True">GregorianCalendar</ComboBoxItem>
@@ -55,6 +69,7 @@
 				CalendarIdentifier="{Binding SelectedItem.Content, ElementName=cid, FallbackValue=GregorianCalendar}"
 				FirstDayOfWeek="{Binding SelectedItem.Content, ElementName=dow, FallbackValue=Sunday}"
 				DayOfWeekFormat="{Binding SelectedItem.Content, ElementName=dowf}"
+				DateFormat="{Binding SelectedItem.Content, ElementName=dateformat}"
 				IsTodayHighlighted="{Binding IsChecked, ElementName=today}"/>
 			<ToggleButton IsChecked="{Binding IsEnabled, ElementName=cdp1, Mode=TwoWay}">
 				IsEnabled

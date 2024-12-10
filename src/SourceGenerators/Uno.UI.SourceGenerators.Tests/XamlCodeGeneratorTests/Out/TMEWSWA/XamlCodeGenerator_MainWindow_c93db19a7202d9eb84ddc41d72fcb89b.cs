@@ -141,7 +141,7 @@ namespace TestRepro
 			void IMainWindow_Bindings.UpdateResources()
 			{
 				var owner = Owner;
-				owner._component_0.UpdateResourceBindings(resourceContextProvider: null);
+				owner._component_0.UpdateResourceBindings();
 			}
 			void IMainWindow_Bindings.StopTracking()
 			{
