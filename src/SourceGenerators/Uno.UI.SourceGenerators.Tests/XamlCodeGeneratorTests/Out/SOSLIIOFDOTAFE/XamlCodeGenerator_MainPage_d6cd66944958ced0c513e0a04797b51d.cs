@@ -286,7 +286,7 @@ namespace TestRepro
 				__p1.CreationComplete();
 			}
 
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _TheListViewSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _TheListViewSubject { get; set; } = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
 		private global::Microsoft.UI.Xaml.Controls.ListView TheListView
 		{
 			get
@@ -298,7 +298,7 @@ namespace TestRepro
 				_TheListViewSubject.ElementInstance = value;
 			}
 		}
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _WideStateSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _WideStateSubject { get; set; } = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
 		private global::Microsoft.UI.Xaml.VisualState WideState
 		{
 			get
@@ -310,7 +310,7 @@ namespace TestRepro
 				_WideStateSubject.ElementInstance = value;
 			}
 		}
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _NarrowStateSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _NarrowStateSubject { get; set; } = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
 		private global::Microsoft.UI.Xaml.VisualState NarrowState
 		{
 			get
