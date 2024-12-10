@@ -36,7 +36,7 @@ stages:
     - job:
       displayName: 'Dummy step'
       steps:
-      - run: echo "Skipping UWP tree conversion"
+      - pwsh: echo "Skipping UWP tree conversion"
 
 - stage: binaries_build_uwp
   displayName: Build Binaries UWP
@@ -76,7 +76,7 @@ stages:
     - job:
       displayName: 'Dummy step'
       steps:
-      - run: echo "Skipping UWP Content"
+      - pwsh: echo "Skipping UWP Content"
 
 - stage: binaries_build_winui
   displayName: Build Binaries WinUI
