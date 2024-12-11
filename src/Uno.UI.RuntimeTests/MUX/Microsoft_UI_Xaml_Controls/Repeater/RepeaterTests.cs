@@ -46,8 +46,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 	public class RepeaterTests : MUXApiTestBase
 	{
 		[TestMethod]
-#if 
-		[Ignore("Fails on iOS with Fluent styles #18105")]
+#if __APPLE_UIKIT__
+		[Ignore("Fails on UIKit with Fluent styles #18105")]
 #endif
 		public void ValidateElementToIndexMapping()
 		{
@@ -331,8 +331,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		[TestMethod]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#elif 
-		[Ignore("Currently fails on iOS/Skia https://github.com/unoplatform/uno/issues/9080")]
+#elif __APPLE_UIKIT__
+		[Ignore("Currently fails on UIKit https://github.com/unoplatform/uno/issues/9080")]
 #endif
 		public async Task VerifyFocusedItemIsRecycledOnCollectionReset()
 		{
@@ -501,8 +501,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		[TestMethod]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#elif 
-		[Ignore("Currently fails on iOS https://github.com/unoplatform/uno/issues/9080")]
+#elif __APPLE_UIKIT__
+		[Ignore("Currently fails on UIKit https://github.com/unoplatform/uno/issues/9080")]
 #endif
 		public async Task VerifyCorrectionsInNonScrollableDirection()
 		{
@@ -692,7 +692,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		[TestMethod]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#elif  || __SKIA__
+#elif __APPLE_UIKIT__ || __SKIA__
 		[Ignore("Fails https://github.com/unoplatform/uno/issues/9080")]
 #endif
 		public async Task VerifyRepeaterDoesNotLeakItemContainers()

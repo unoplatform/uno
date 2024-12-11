@@ -259,8 +259,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ ||  || __ANDROID__ || __MACOS__
-		[Ignore("Fails on WASM, iOS, Android and macOS https://github.com/unoplatform/uno/issues/4529")]
+#if __WASM__ || __APPLE_UIKIT__ || __ANDROID__ || __MACOS__
+		[Ignore("Fails on WASM, UIKit, Android and macOS https://github.com/unoplatform/uno/issues/4529")]
 #endif
 #if __SKIA__
 		[Ignore("https://github.com/unoplatform/uno/issues/7271")]
@@ -328,8 +328,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ ||  || __ANDROID__ || __MACOS__
-		[Ignore("Fails on WASM, iOS, Android and macOS https://github.com/unoplatform/uno/issues/4529")]
+#if __WASM__ || __APPLE_UIKIT__ || __ANDROID__ || __MACOS__
+		[Ignore("Fails on WASM, UIKit, Android and macOS https://github.com/unoplatform/uno/issues/4529")]
 #endif
 #if __SKIA__
 		[Ignore("https://github.com/unoplatform/uno/issues/7271")]
@@ -480,7 +480,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ ||  || __ANDROID__ || __SKIA__ || __MACOS__
+#if __WASM__ || __APPLE_UIKIT__ || __ANDROID__ || __SKIA__ || __MACOS__
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 #endif
 		public void ValidateStableResets()
@@ -504,7 +504,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ ||  || __ANDROID__ || __MACOS__
+#if __WASM__ || __APPLE_UIKIT__ || __ANDROID__ || __MACOS__
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 #endif
 #if __SKIA__
