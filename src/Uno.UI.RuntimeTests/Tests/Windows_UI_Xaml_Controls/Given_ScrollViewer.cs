@@ -1512,8 +1512,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if !HAS_INPUT_INJECTOR
-		[Ignore("InputInjector is not supported on this platform.")]
+#if !HAS_INPUT_INJECTOR || !UNO_HAS_MANAGED_SCROLL_PRESENTER
+		[Ignore("This test only applies to managed scroll presenter and requires input injector.")]
 #endif
 		public async Task When_ScrollViewer_Touch_Scrolled()
 		{
