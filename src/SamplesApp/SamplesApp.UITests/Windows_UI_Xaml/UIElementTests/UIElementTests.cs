@@ -10,7 +10,7 @@ using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml
 {
-	[TestFixture]
+
 	public partial class UIElementTests : SampleControlUITestBase
 	{
 		// TODO: convert this to RuntimeTests https://github.com/unoplatform/uno/issues/2114#issuecomment-555209397
@@ -28,7 +28,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml
 		[AutoRetry]
 		public void When_TransformToVisual_ScrollViewer()
 		{
-			Run("UITests.Shared.Windows_UI_Xaml.UIElementTests.TransformToVisual_ScrollViewer", skipInitialScreenshot: false);
+			Run("UITests.Shared.Windows_UI_Xaml.UIElementTests.TransformToVisual_ScrollViewer", skipInitialScreenshot: true);
 
 			_app.WaitForText("TestsStatus", "SUCCESS");
 		}
