@@ -120,6 +120,7 @@ GetPointerInfo
 GetPointerPenInfo
 GetPointerTouchInfo
 GetPointerType
+GetSaveFileName
 GetWindowRect
 GetWindowText
 glGetError

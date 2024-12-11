@@ -23,7 +23,7 @@ namespace Uno.UI.Runtime.Skia.Win32;
 
 internal class Win32FileFolderPickerExtension(IFilePicker picker) : IFileOpenPickerExtension, IFolderPickerExtension
 {
-	private const int FilePathBuffer = 1000;
+	internal const int FilePathBuffer = 1000;
 
 	public Task<StorageFile?> PickSingleFileAsync(CancellationToken token)
 		=> PickFiles(true).ContinueWith(task => task.Result.Count == 0 ? null : task.Result[0], token);
@@ -51,7 +51,6 @@ internal class Win32FileFolderPickerExtension(IFilePicker picker) : IFileOpenPic
 			_ = this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GetOpenFileName)} failed: {PInvoke.CommDlgExtendedError()}");
 			return Task.FromResult<IReadOnlyList<StorageFile>>([]);
 		}
-
 
 		if (single)
 		{
