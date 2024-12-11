@@ -90,7 +90,7 @@ public class Given_DependencyObjectGenerator
 	[TestMethod]
 	public async Task TestAndroidViewImplementingDependencyObject()
 	{
-		await TestAndroid("""
+		var source = """
 			using Android.Content;
 			using Windows.UI.Core;
 			using Microsoft.UI.Dispatching;
@@ -101,7 +101,7 @@ public class Given_DependencyObjectGenerator
 				public C(Context context) : base(context)
 				{
 				}
-
+			
 				public CoreDispatcher Dispatcher { get; }
 				public DispatcherQueue DispatcherQueue { get; }
 				public object GetValue(DependencyProperty dp) => null;
@@ -112,9 +112,12 @@ public class Given_DependencyObjectGenerator
 				public long RegisterPropertyChangedCallback(DependencyProperty dp, DependencyPropertyChangedCallback callback) => 0;
 				public void UnregisterPropertyChangedCallback(DependencyProperty dp, long token) { }
 			}
-			""",
-		// /0/Test0.cs(5,14): error Uno0003: 'Android.Views.View' shouldn't implement 'DependencyObject'. Inherit 'FrameworkElement' instead.
-		DiagnosticResult.CompilerError("Uno0003").WithSpan(6, 14, 6, 15).WithArguments("Android.Views.View"));
+			""";
+
+		await TestAndroid(
+			source,
+			// /0/Test0.cs(5,14): error Uno0003: 'Android.Views.View' shouldn't implement 'DependencyObject'. Inherit 'FrameworkElement' instead.
+			DiagnosticResult.CompilerError("Uno0003").WithSpan(6, 14, 6, 15).WithArguments("Android.Views.View"));
 	}
 
 	[TestMethod]
