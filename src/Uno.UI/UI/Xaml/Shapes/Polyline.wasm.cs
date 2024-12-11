@@ -31,5 +31,22 @@ namespace Microsoft.UI.Xaml.Shapes
 			UpdateRender();
 			return ArrangeAbsoluteShape(finalSize, this);
 		}
+
+		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
+		{
+			base.OnPropertyChanged2(args);
+
+			if (_bboxCacheKey != null && (
+				args.Property == PointsProperty
+			))
+			{
+				_bboxCacheKey = null;
+			}
+		}
+
+		private protected override string GetBBoxCacheKeyImpl() =>
+			Points is { } points
+				? ("polygone:" + points.ToCssString())
+				: null;
 	}
 }

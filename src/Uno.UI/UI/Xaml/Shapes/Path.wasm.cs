@@ -1,7 +1,8 @@
 ﻿#nullable enable
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Wasm;
 using Uno.UI.Xaml;
+using Microsoft.UI.Xaml.Wasm;
+using Microsoft.UI.Xaml.Media;
 
 namespace Microsoft.UI.Xaml.Shapes
 {
@@ -37,8 +38,15 @@ namespace Microsoft.UI.Xaml.Shapes
 				{
 					_mainSvgElement.AddChild(data.GetSvgElement());
 				}
+
+				_bboxCacheKey = null;
 			}
 		}
+
+		private protected override string? GetBBoxCacheKeyImpl() =>
+			Data is GeometryData g
+				? ("path," + g.Data)
+				: null;
 
 		internal override bool HitTest(Point relativePosition)
 		{
