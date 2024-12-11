@@ -29,10 +29,12 @@ namespace Uno.UI.RemoteControl.HotReload
 			var unoRuntimeIdentifier = GetMSBuildProperty("UnoRuntimeIdentifier");
 			var targetFramework = GetMSBuildProperty("TargetFramework");
 			var buildingInsideVisualStudio = GetMSBuildProperty("BuildingInsideVisualStudio");
+			var msBuildVersion = GetMSBuildProperty("MSBuildVersion");
 
 			_supportsPartialHotReload =
 				buildingInsideVisualStudio.Equals("true", StringComparison.OrdinalIgnoreCase)
 				&& _forcedHotReloadMode is null or HotReloadMode.Partial
+				&& (Version.TryParse(msBuildVersion, out var v) is false || v is not { Major: >= 17, Minor: >= 12 })
 				&& (
 					// As of VS 17.8, when the debugger is attached, mobile targets don't invoke MetadataUpdateHandlers
 					// and both targets are not providing updated types. We simulate parts of this process
