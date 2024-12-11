@@ -1,0 +1,5 @@
+<Project>
+	<ItemGroup>
+		<UnoRuntimeEnabledPackage Include="Uno.WinRT" PackageBasePath="$(MSBuildThisFileDirectory).." />
+	</ItemGroup>
+</Project>
