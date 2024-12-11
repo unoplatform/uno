@@ -22,7 +22,3 @@ steps:
       uno-check --verbose --ci --non-interactive --fix --skip gtk3 --skip androidsdk --skip unosdk --pre-major ${{ parameters.UnoCheckParameters }}
     displayName: Install .NET Workloads
     retryCountOnTaskFailure: 3
-  - bash: |
-      dotnet workload install tvos
-    displayName: Install .NET tvOS Workload
-    retryCountOnTaskFailure: 3
