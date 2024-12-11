@@ -1969,6 +1969,9 @@
 
 	<IgnoreSet baseVersion="5.5">
 		<Assemblies>
+			<Member fullName="Uno" reason="package split"/>
+			<Member fullName="Uno.Foundation" reason="package split"/>
+			<Member fullName="Uno.UI.Dispatching" reason="package split"/>
 		</Assemblies>
 
 		<Types>
