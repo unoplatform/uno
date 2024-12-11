@@ -286,6 +286,7 @@
 
 	<!-- Disabled as tests explicitly use WinUI types -->
 	<ItemGroup Condition="'$(UNO_UWP_BUILD)'=='true'">
+		<Compile Remove="_Dotnet.cs" />
 		<Compile Remove="DependencyObjectGeneratorTests\Given_DependencyObjectGenerator.cs" />
 		<Compile Remove="DependencyPropertyGeneratorTests\Given_DependencyPropertyGenerator.cs" />
 		<Compile Remove="ImplementedRoutedEventsGeneratorTests\Given_ImplementedRoutedEventsGenerator.cs" />
