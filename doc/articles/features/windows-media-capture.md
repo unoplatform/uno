@@ -2,7 +2,7 @@
 uid: Uno.Features.Capture
 ---
 
-# Device Information
+# Capture
 
 > [!TIP]
 > This article covers Uno-specific information for the `Windows.Media.Capture` namespace. For a full description of the feature and instructions on using it, see [Windows.Media.Capture Namespace](https://learn.microsoft.com/uwp/api/windows.media.capture).
