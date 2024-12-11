@@ -13,5 +13,5 @@ internal record class _Dotnet(string Moniker, ReferenceAssemblies ReferenceAssem
 
 	public static _Dotnet Current = new("net9.0", ReferenceAssemblies.Net.Net90);
 
-	public static _Dotnet CurrentAndroid = new("net9.0-android", ReferenceAssemblies.Net.Net90);
+	public static _Dotnet CurrentAndroid = new("net9.0-android", ReferenceAssemblies.Net.Net90Android);
 }
