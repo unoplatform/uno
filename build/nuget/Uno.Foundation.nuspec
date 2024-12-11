@@ -3,7 +3,7 @@
 	<metadata minClientVersion="5.0">
 		<id>Uno.Foundation</id>
 		<version>2.7.1000</version>
-		<title>Uno.UI</title>
+		<title>Uno.Foundation</title>
 		<authors>Uno Platform</authors>
 		<owners>unoplatform</owners>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
