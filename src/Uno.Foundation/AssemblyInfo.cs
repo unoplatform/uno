@@ -44,4 +44,7 @@ using global::System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Uno.UI.Composition")]
 [assembly: InternalsVisibleTo("Uno.UI.Dispatching")]
 [assembly: InternalsVisibleTo("Uno.WinUI.Graphics3DGL")]
+
+#if !__SKIA__
 [assembly: System.Reflection.AssemblyMetadata("IsTrimmable", "True")]
+#endif

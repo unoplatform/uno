@@ -12,6 +12,8 @@
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 
+		<IsAotCompatible>true</IsAotCompatible>
+
 		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
 	</PropertyGroup>

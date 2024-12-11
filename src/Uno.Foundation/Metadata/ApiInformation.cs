@@ -51,40 +51,44 @@ public partial class ApiInformation
 		}
 	}
 
-	[UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "GetMethod may return null, normal flow of operation")]
+	[UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "Methods may be trimmed.")]
 	internal static bool IsMethodPresent(Type type, string methodName)
 		=> IsImplementedByUno(type?.GetMethod(methodName));
 
-	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "GetField may return null, normal flow of operation")]
+	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Types/Methods may be trimmed.")]
 	public static bool IsMethodPresent(string typeName, string methodName)
 		=> IsImplementedByUno(
 			GetValidType(typeName)
 			?.GetMethod(methodName));
 
+	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Types/Methods may be trimmed.")]
 	public static bool IsMethodPresent(string typeName, string methodName, uint inputParameterCount)
 		=> IsImplementedByUno(
 			GetValidType(typeName)
 			?.GetMethods()
 			?.FirstOrDefault(m => m.Name == methodName && m.GetParameters().Length == inputParameterCount));
 
+	[UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "Events may be trimmed.")]
 	internal static bool IsEventPresent(Type type, string methodName)
 		=> IsImplementedByUno(type?.GetEvent(methodName));
 
+	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Types/Events may be trimmed.")]
 	public static bool IsEventPresent(string typeName, string eventName)
 		=> IsImplementedByUno(
 			GetValidType(typeName)
 			?.GetEvent(eventName));
 
-	[UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "GetField may return null, normal flow of operation")]
+	[UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "Properties may be trimmed.")]
 	internal static bool IsPropertyPresent(Type type, string methodName)
 		=> IsImplementedByUno(type?.GetProperty(methodName));
 
-	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "GetProperty may return null, normal flow of operation")]
+	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Types/Properties may be trimmed.")]
 	public static bool IsPropertyPresent(string typeName, string propertyName)
 		=> IsImplementedByUno(
 			GetValidType(typeName)
 			?.GetProperty(propertyName));
 
+	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Types/Properties may be trimmed.")]
 	public static bool IsReadOnlyPropertyPresent(string typeName, string propertyName)
 	{
 		var property = GetValidType(typeName)
@@ -98,6 +102,7 @@ public partial class ApiInformation
 		return false;
 	}
 
+	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Types/Properties may be trimmed.")]
 	public static bool IsWriteablePropertyPresent(string typeName, string propertyName)
 	{
 		var property = GetValidType(typeName)
@@ -111,10 +116,9 @@ public partial class ApiInformation
 		return false;
 	}
 
-	[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "GetField may return null, normal flow of operation")]
-	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "GetField may return null, normal flow of operation")]
+	[UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Types/Fields may be trimmed.")]
 	public static bool IsEnumNamedValuePresent(
-		[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields)] string enumTypeName,
+		string enumTypeName,
 		string valueName)
 		=> GetValidType(enumTypeName)?.GetField(valueName) != null;
 
@@ -133,7 +137,7 @@ public partial class ApiInformation
 	/// </summary>
 	public static LogLevel NotImplementedLogLevel { get; set; } = LogLevel.Debug;
 
-	[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Types may be removed or not present as part of the normal operations of that method")]
+	[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Types may be trimmed.")]
 	private static Type? GetValidType(string typeName)
 	{
 		lock (_assemblies)
