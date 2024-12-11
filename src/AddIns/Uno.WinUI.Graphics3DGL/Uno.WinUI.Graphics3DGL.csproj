@@ -8,6 +8,9 @@
 
 		<Nullable>enable</Nullable>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		
+		<!-- Required as the project name does not end with `.Skia` when building for netcoremobile targets -->
+		<UnoDisableTargetFrameworkPlatformOverride>true</UnoDisableTargetFrameworkPlatformOverride>
     </PropertyGroup>
 
 	<Import Project="../../targetframework-override.props" />

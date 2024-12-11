@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>$(NetPrevious)-android;$(NetPrevious)-ios,$(NetPrevious)-maccatalyst</TargetFrameworks>
+		<TargetFrameworks>$(NetCurrent)-android;$(NetCurrent)-ios;$(NetCurrent)-maccatalyst</TargetFrameworks>
 		<OutputType>Exe</OutputType>
 	</PropertyGroup>
 
@@ -39,6 +39,9 @@
 
 		<!-- Temporarily disabled due to uno-private #647 -->
 		<UnoDisableHotRestartHelperGeneration>true</UnoDisableHotRestartHelperGeneration>
+		
+		<!-- We need all the intermediate assemblies -->
+		<DisablePrivateProjectReference>true</DisablePrivateProjectReference>
 
 		<IsUIKit Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='ios' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='maccatalyst' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='tvos'">true</IsUIKit>
 	</PropertyGroup>
