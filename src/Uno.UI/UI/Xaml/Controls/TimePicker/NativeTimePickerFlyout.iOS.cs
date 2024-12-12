@@ -21,6 +21,8 @@ internal class NativeTimePickerFlyout : TimePickerFlyout
 	private FlyoutPresenter? _timePickerPresenter;
 	private bool _isInitialized;
 
+	internal TimePickerSelector? GetTimeSelector() => _timeSelector;
+
 	protected override void InitializePopupPanel()
 	{
 		_popup.PopupPanel = new PickerFlyoutPopupPanel(this)
@@ -144,6 +146,11 @@ internal class NativeTimePickerFlyout : TimePickerFlyout
 
 	protected internal override void Open()
 	{
+		if (Time.Ticks == TimePicker.DEFAULT_TIME_TICKS)
+		{
+			Time = GetCurrentTime();
+		}
+
 		InitializeContent();
 
 		_timeSelector?.Initialize();
