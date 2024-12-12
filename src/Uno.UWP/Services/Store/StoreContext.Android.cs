@@ -40,7 +40,17 @@ public sealed partial class StoreContext
 					LinkUri = new Uri($"https://play.google.com/store/apps/details?id={storeId}")
 				}
 			});
-		});
+		}
+
+		public IAsyncOperation<StoreProductQueryResult> GetAssociatedStoreProductsAsync(IEnumerable<string> productKinds)
+		{
+			new SKProductsRequest();
+		}
+
+		public IAsyncOperation<StoreProductPagedQueryResult> GetAssociatedStoreProductsWithPagingAsync(IEnumerable<string> productKinds, uint maxItemsToRetrievePerPage)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<StoreProductPagedQueryResult> StoreContext.GetAssociatedStoreProductsWithPagingAsync(IEnumerable<string> productKinds, uint maxItemsToRetrievePerPage) is not implemented in Uno.");
+		}
 	}
 
 	private async Task<StoreRateAndReviewResult> RequestRateAndReviewAppTaskAsync(CancellationToken cancellationToken)
