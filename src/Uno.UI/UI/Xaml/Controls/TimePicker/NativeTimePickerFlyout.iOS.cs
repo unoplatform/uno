@@ -12,7 +12,7 @@ using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-internal class NativeTimePickerFlyout : TimePickerFlyout
+partial class NativeTimePickerFlyout : TimePickerFlyout
 {
 	private readonly SerialDisposable _onLoad = new SerialDisposable();
 	private readonly SerialDisposable _onUnloaded = new SerialDisposable();
@@ -146,7 +146,7 @@ internal class NativeTimePickerFlyout : TimePickerFlyout
 
 	protected internal override void Open()
 	{
-		if (Time.Ticks == TimePicker.DEFAULT_TIME_TICKS)
+		if (Time.Ticks == DEFAULT_TIME_TICKS)
 		{
 			Time = GetCurrentTime();
 		}

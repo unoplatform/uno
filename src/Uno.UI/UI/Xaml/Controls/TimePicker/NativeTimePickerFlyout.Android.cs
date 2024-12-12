@@ -11,7 +11,7 @@ using Windows.ApplicationModel.Core;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-internal class NativeTimePickerFlyout : TimePickerFlyout
+partial class NativeTimePickerFlyout : TimePickerFlyout
 {
 	private bool _programmaticallyDismissed;
 	private UnoTimePickerDialog _dialog;
@@ -23,7 +23,7 @@ internal class NativeTimePickerFlyout : TimePickerFlyout
 
 	internal protected override void Open()
 	{
-		if (Time.Ticks == TimePicker.DEFAULT_TIME_TICKS)
+		if (Time.Ticks == DEFAULT_TIME_TICKS)
 		{
 			Time = GetCurrentTime();
 		}
