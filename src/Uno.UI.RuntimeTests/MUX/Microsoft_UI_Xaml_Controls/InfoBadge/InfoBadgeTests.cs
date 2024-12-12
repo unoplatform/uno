@@ -8,14 +8,14 @@ using Common;
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls.AnimatedVisuals;
 using MUXControlsTestApp.Utilities;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
-using Symbol = Microsoft.UI.Xaml.Controls.Symbol;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
+using Symbol = Windows.UI.Xaml.Controls.Symbol;
 using Windows.Foundation;
 using System.Threading.Tasks;
 using Private.Infrastructure;
 
-namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
+namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 {
 	[TestClass]
 	public class InfoBadgeTests : MUXApiTestBase

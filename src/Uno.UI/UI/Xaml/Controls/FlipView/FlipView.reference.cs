@@ -1,9 +1,9 @@
 ﻿using Windows.Foundation;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Input;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 // The existence of these override is significant for Reference API.
 // The implementation wouldn't matter at all, but they must exist to allow for a user class to inherit FlipView, and then override any of these methods, calling base in the implementation.

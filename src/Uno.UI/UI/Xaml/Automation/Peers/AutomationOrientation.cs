@@ -1,4 +1,4 @@
-﻿namespace Microsoft.UI.Xaml.Automation.Peers;
+﻿namespace Windows.UI.Xaml.Automation.Peers;
 
 /// <summary>
 /// Specifies the orientation direction in which a control can be presented. Values are used by GetOrientation.

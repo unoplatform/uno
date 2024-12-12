@@ -2,13 +2,13 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference dxaml\xcp\components\input\inc\KeyboardAutomationInvoker.h, tag winui3/release/1.4.3, commit 685d2bf
 
-using Microsoft.UI.Xaml.Automation;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Automation.Provider;
+using Windows.UI.Xaml.Automation;
+using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Automation.Provider;
 using Uno.Foundation.Logging;
 using static DirectUI.WinError;
 
-namespace Microsoft.UI.Xaml.Input;
+namespace Windows.UI.Xaml.Input;
 
 internal static class KeyboardAutomationInvoker
 {

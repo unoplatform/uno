@@ -1,6 +1,6 @@
-﻿using Microsoft.UI.Xaml.Markup;
+﻿using Windows.UI.Xaml.Markup;
 
-namespace Microsoft.UI.Xaml.Documents;
+namespace Windows.UI.Xaml.Documents;
 
 [ContentProperty(Name = nameof(Inlines))]
 public partial class Paragraph : Block
@@ -13,11 +13,11 @@ public partial class Paragraph : Block
 
 	public InlineCollection Inlines { get; }
 
-	public static global::Microsoft.UI.Xaml.DependencyProperty TextIndentProperty { get; } =
+	public static global::Windows.UI.Xaml.DependencyProperty TextIndentProperty { get; } =
 		DependencyProperty.Register(
 			name: nameof(TextIndent),
 			propertyType: typeof(double),
-			ownerType: typeof(global::Microsoft.UI.Xaml.Documents.Paragraph),
+			ownerType: typeof(global::Windows.UI.Xaml.Documents.Paragraph),
 			typeMetadata: new FrameworkPropertyMetadata(0.0)
 		);
 

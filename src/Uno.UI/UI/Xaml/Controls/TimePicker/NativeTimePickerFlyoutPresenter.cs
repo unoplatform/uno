@@ -1,5 +1,5 @@
 ﻿#if __ANDROID__ || __IOS__
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 internal partial class NativeTimePickerFlyoutPresenter : FlyoutPresenter
 {

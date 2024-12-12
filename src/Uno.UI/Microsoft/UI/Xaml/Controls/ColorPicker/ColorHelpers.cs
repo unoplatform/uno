@@ -8,7 +8,7 @@ using Windows.Foundation;
 using Windows.System.Threading;
 using Windows.UI;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives
 {

@@ -7,14 +7,14 @@ using System.Diagnostics;
 using System.Linq;
 using Uno.UI;
 using Uno.UI.Xaml;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Documents;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Animation;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Documents;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Shapes;
 using Windows.UI.Text;
 using Uno.Extensions;
 using Uno;
@@ -29,18 +29,18 @@ using _View = UIKit.UIView;
 #elif __MACOS__
 using _View = AppKit.NSView;
 #else
-using _View = Microsoft.UI.Xaml.UIElement;
+using _View = Windows.UI.Xaml.UIElement;
 #endif
 
 namespace TestRepro
 {
-	partial class MainPage : global::Microsoft.UI.Xaml.Controls.Page
+	partial class MainPage : global::Windows.UI.Xaml.Controls.Page
 	{
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_prefix_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
-		private global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
+		private global::Windows.UI.Xaml.NameScope __nameScope = new global::Windows.UI.Xaml.NameScope();
 		private void InitializeComponent()
 		{
 			NameScope.SetNameScope(this, __nameScope);
@@ -50,25 +50,25 @@ namespace TestRepro
 			"MyStyle"
 			] = 
 			new global::Uno.UI.Xaml.WeakResourceInitializer(this, __ResourceOwner_1 => 
-				new global::Microsoft.UI.Xaml.Style
+				new global::Windows.UI.Xaml.Style
 				{
 					TargetType = typeof(global::TestRepro.MyGrid),
 					// Source 0\MainPage.xaml (Line 8:4)
 					Setters = 
 					{
-						new global::Microsoft.UI.Xaml.Setter
+						new global::Windows.UI.Xaml.Setter
 						{
 							Property = global::TestRepro.MyGrid.FirstStyleProperty,
-							Value = 							new global::Microsoft.UI.Xaml.Style
+							Value = 							new global::Windows.UI.Xaml.Style
 							{
-								TargetType = typeof(global::Microsoft.UI.Xaml.Controls.Button),
+								TargetType = typeof(global::Windows.UI.Xaml.Controls.Button),
 								// Source 0\MainPage.xaml (Line 11:7)
 							}
 							,
 							// Source 0\MainPage.xaml (Line 9:5)
 						}
 						,
-						new global::Microsoft.UI.Xaml.Setter
+						new global::Windows.UI.Xaml.Setter
 						{
 							Property = global::TestRepro.MyGrid.SecondProperty,
 							Value = "Hello",
@@ -108,16 +108,16 @@ namespace MyProject
 {
 	static class MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions
 	{
-		public delegate void XamlApplyHandler0(global::Microsoft.UI.Xaml.Style instance);
+		public delegate void XamlApplyHandler0(global::Windows.UI.Xaml.Style instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Style MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Microsoft.UI.Xaml.Style instance, XamlApplyHandler0 handler)
+		public static global::Windows.UI.Xaml.Style MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Windows.UI.Xaml.Style instance, XamlApplyHandler0 handler)
 		{
 			handler(instance);
 			return instance;
 		}
-		public delegate void XamlApplyHandler1(global::Microsoft.UI.Xaml.Setter instance);
+		public delegate void XamlApplyHandler1(global::Windows.UI.Xaml.Setter instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Setter MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Microsoft.UI.Xaml.Setter instance, XamlApplyHandler1 handler)
+		public static global::Windows.UI.Xaml.Setter MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Windows.UI.Xaml.Setter instance, XamlApplyHandler1 handler)
 		{
 			handler(instance);
 			return instance;

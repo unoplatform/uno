@@ -4,7 +4,7 @@
 using System;
 using System.Linq;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
@@ -28,7 +28,7 @@ using NativeSingle = System.Double;
 
 #endif
 
-namespace Microsoft.UI.Xaml.Shapes;
+namespace Windows.UI.Xaml.Shapes;
 
 partial class Shape
 {

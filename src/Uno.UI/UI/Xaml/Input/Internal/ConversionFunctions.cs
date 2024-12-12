@@ -2,8 +2,8 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // ConversionFunctions.h, ConversionFunctions.cpp
 
-using Microsoft.UI.Xaml.Hosting;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Hosting;
+using Windows.UI.Xaml.Input;
 
 namespace Uno.UI.Xaml.Input
 {

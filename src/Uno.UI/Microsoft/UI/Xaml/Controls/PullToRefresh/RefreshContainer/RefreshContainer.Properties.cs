@@ -3,7 +3,7 @@
 // MUX Reference RefreshContainer.properties.cpp, commit de78834
 
 using Windows.Foundation;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 

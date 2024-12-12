@@ -4,9 +4,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Wasm;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Wasm;
 using Uno;
 using Uno.Collections;
 using Uno.Disposables;
@@ -16,7 +16,7 @@ using Uno.UI.Xaml;
 
 using RadialGradientBrush = Microsoft/* UWP don't rename */.UI.Xaml.Media.RadialGradientBrush;
 
-namespace Microsoft.UI.Xaml.Shapes
+namespace Windows.UI.Xaml.Shapes
 {
 	partial class Shape
 	{

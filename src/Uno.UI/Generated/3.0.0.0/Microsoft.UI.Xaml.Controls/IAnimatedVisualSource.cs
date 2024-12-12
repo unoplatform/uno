@@ -3,13 +3,5 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if false || false || false || false || false || false || false
-	[global::Uno.NotImplemented]
-#endif
-	public partial interface IAnimatedVisualSource
-	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Microsoft.UI.Xaml.Controls.IAnimatedVisual TryCreateAnimatedVisual(global::Microsoft.UI.Composition.Compositor compositor, out object diagnostics);
-#endif
-	}
+	// Skipped type, see SkippedType method
 }

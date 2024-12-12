@@ -1,6 +1,6 @@
-﻿using Microsoft.UI.Xaml;
+﻿using Windows.UI.Xaml;
 
-namespace Uno.UI.Controls.Legacy.Primitives;
+namespace Windows.UI.Xaml.Controls.Primitives;
 
 /// <summary>
 /// Provides calculated values that can be referenced as TemplatedParent sources

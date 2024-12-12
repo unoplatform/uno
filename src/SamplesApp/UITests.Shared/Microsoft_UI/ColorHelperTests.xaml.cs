@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 using Microsoft.UI;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
 using Private.Infrastructure;
 using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.UITests.Helpers;
@@ -9,7 +9,7 @@ using Windows.Devices.Sensors;
 
 namespace UITests.Shared.Microsoft_UI;
 
-[Sample("Microsoft.UI", "ColorHelper", Description = "Demonstrates use of Microsoft.UI.ColorHelper. Until WinUI3 1.6+ this currently only works on Uno targets", ViewModelType = typeof(ColorHelperTestsViewModel), IgnoreInSnapshotTests = true)]
+[Sample("Microsoft.UI", "ColorHelper", Description = "Demonstrates use of Windows.UI.ColorHelper. Until WinUI3 1.6+ this currently only works on Uno targets", ViewModelType = typeof(ColorHelperTestsViewModel), IgnoreInSnapshotTests = true)]
 public sealed partial class ColorHelperTests : UserControl
 {
 	public ColorHelperTests()

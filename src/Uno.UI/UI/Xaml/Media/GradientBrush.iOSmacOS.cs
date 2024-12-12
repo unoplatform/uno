@@ -1,7 +1,7 @@
 ﻿using CoreAnimation;
 using CoreGraphics;
 
-namespace Microsoft.UI.Xaml.Media
+namespace Windows.UI.Xaml.Media
 {
 	public abstract partial class GradientBrush : Brush
 	{

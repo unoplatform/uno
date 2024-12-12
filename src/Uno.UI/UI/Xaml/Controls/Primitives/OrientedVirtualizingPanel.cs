@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Microsoft.UI.Xaml.Controls.Primitives;
+namespace Windows.UI.Xaml.Controls.Primitives;
 
 [global::Uno.NotImplemented]
 public partial class OrientedVirtualizingPanel

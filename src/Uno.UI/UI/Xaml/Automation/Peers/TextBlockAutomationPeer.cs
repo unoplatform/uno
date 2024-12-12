@@ -3,11 +3,11 @@
 // MUX Reference TextBlockAutomationPeer_Partial.cpp, tag winui3/release/1.5-stable
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Documents;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Documents;
 using DirectUI;
 
-namespace Microsoft.UI.Xaml.Automation.Peers;
+namespace Windows.UI.Xaml.Automation.Peers;
 
 /// <summary>
 /// Exposes TextBlock types to UI Automation.

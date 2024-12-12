@@ -1,20 +1,20 @@
 ﻿using Uno.UI.Controls;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Input;
+using Windows.UI.Xaml.Input;
 using Windows.System;
 using System;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Uno.UI.Extensions;
 using AppKit;
 using CoreAnimation;
 using CoreGraphics;
 using ObjCRuntime;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	public partial class UIElement : BindableNSView
 	{
@@ -114,7 +114,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		internal global::Windows.Foundation.Point GetPosition(Point position, global::Microsoft.UI.Xaml.UIElement relativeTo)
+		internal global::Windows.Foundation.Point GetPosition(Point position, global::Windows.UI.Xaml.UIElement relativeTo)
 		{
 			throw new NotImplementedException();
 		}

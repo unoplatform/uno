@@ -1,6 +1,6 @@
-﻿using Microsoft.UI.Xaml.Markup;
+﻿using Windows.UI.Xaml.Markup;
 
-namespace Microsoft.UI.Xaml.Media
+namespace Windows.UI.Xaml.Media
 {
 	[ContentProperty(Name = nameof(Points))]
 	public partial class PolyQuadraticBezierSegment : PathSegment

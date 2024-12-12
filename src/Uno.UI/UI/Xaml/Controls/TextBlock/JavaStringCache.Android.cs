@@ -9,7 +9,7 @@ using Uno.Foundation.Logging;
 using Uno.Buffers;
 using Windows.System;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	/// <summary>
 	/// A cache for native java strings. This cache periodically evicts entries that haven't been used

@@ -1,12 +1,12 @@
-<Project>
+﻿<Project>
 	<ItemGroup Condition=" '$(ImplicitUsings)' == 'true' OR '$(ImplicitUsings)' == 'enable' ">
 		<Using Include="System.Windows.Input" Sdk="Uno" />
 		<Using Include="Windows.Networking.Connectivity" Sdk="Uno" />
 		<Using Include="Windows.Storage" Sdk="Uno" />
-		<Using Include="Microsoft.UI.Xaml" Sdk="Uno" />
-		<Using Include="Microsoft.UI.Xaml.Controls" Sdk="Uno" />
-		<Using Include="Microsoft.UI.Xaml.Media" Sdk="Uno" />
-		<Using Include="Microsoft.UI.Xaml.Navigation" Sdk="Uno" />
+		<Using Include="Windows.UI.Xaml" Sdk="Uno" />
+		<Using Include="Windows.UI.Xaml.Controls" Sdk="Uno" />
+		<Using Include="Windows.UI.Xaml.Media" Sdk="Uno" />
+		<Using Include="Windows.UI.Xaml.Navigation" Sdk="Uno" />
 		<Using Include="Uno.UI" Sdk="Uno" />
 		<Using Include="Windows.ApplicationModel" Sdk="Uno" />
 	</ItemGroup>

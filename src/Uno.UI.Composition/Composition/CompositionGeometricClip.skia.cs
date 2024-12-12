@@ -1,10 +1,10 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using SkiaSharp;
 using Windows.Foundation;
 
-namespace Microsoft.UI.Composition;
+namespace Windows.UI.Composition;
 
 partial class CompositionGeometricClip
 {

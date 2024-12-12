@@ -7,14 +7,14 @@ using System.Diagnostics;
 using System.Linq;
 using Uno.UI;
 using Uno.UI.Xaml;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Documents;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Animation;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Documents;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Shapes;
 using Windows.UI.Text;
 using Uno.Extensions;
 using Uno;
@@ -29,7 +29,7 @@ using _View = UIKit.UIView;
 #elif __MACOS__
 using _View = AppKit.NSView;
 #else
-using _View = Microsoft.UI.Xaml.UIElement;
+using _View = Windows.UI.Xaml.UIElement;
 #endif
 
 namespace TestRepro
@@ -40,13 +40,13 @@ namespace TestRepro
 		private const string __baseUri_prefix_MainWindow_c93db19a7202d9eb84ddc41d72fcb89b = "ms-appx:///TestProject/";
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_MainWindow_c93db19a7202d9eb84ddc41d72fcb89b = "ms-appx:///TestProject/";
-		private global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
+		private global::Windows.UI.Xaml.NameScope __nameScope = new global::Windows.UI.Xaml.NameScope();
 		private void InitializeComponent()
 		{
 			var __that = this;
 			// Source 0\MainWindow.xaml (Line 1:2)
 			base.Content = 
-			new global::Microsoft.UI.Xaml.Controls.Page
+			new global::Windows.UI.Xaml.Controls.Page
 			{
 				IsParsing = true,
 				// Source 0\MainWindow.xaml (Line 10:3)
@@ -55,7 +55,7 @@ namespace TestRepro
 			{
 				/* _isTopLevelDictionary:False */
 				__that._component_0 = c0;
-				global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(c0, global::Microsoft.UI.Xaml.Controls.Page.BackgroundProperty, "ApplicationPageBackgroundThemeBrush", isThemeResourceExtension: true, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
+				global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(c0, global::Windows.UI.Xaml.Controls.Page.BackgroundProperty, "ApplicationPageBackgroundThemeBrush", isThemeResourceExtension: true, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
 				global::Uno.UI.FrameworkElementHelper.SetBaseUri(c0, __baseUri_MainWindow_c93db19a7202d9eb84ddc41d72fcb89b);
 				c0.CreationComplete();
 			}
@@ -83,19 +83,19 @@ namespace TestRepro
 			OnInitializeCompleted();
 
 			Bindings = new MainWindow_Bindings(this);
-			((global::Microsoft.UI.Xaml.Window)this).Activated += (s, e) =>
+			((global::Windows.UI.Xaml.Window)this).Activated += (s, e) =>
 			{
 				__that.Bindings.UpdateResources();
 			}
 			;
 		}
 		partial void OnInitializeCompleted();
-		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder  = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-		private global::Microsoft.UI.Xaml.Controls.Page _component_0
+		private global::Windows.UI.Xaml.Markup.ComponentHolder _component_0_Holder  = new global::Windows.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+		private global::Windows.UI.Xaml.Controls.Page _component_0
 		{
 			get
 			{
-				return (global::Microsoft.UI.Xaml.Controls.Page)_component_0_Holder.Instance;
+				return (global::Windows.UI.Xaml.Controls.Page)_component_0_Holder.Instance;
 			}
 			set
 			{
@@ -151,9 +151,9 @@ namespace MyProject
 {
 	static class MainWindow_c93db19a7202d9eb84ddc41d72fcb89bXamlApplyExtensions
 	{
-		public delegate void XamlApplyHandler0(global::Microsoft.UI.Xaml.Controls.Page instance);
+		public delegate void XamlApplyHandler0(global::Windows.UI.Xaml.Controls.Page instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.Page MainWindow_c93db19a7202d9eb84ddc41d72fcb89b_XamlApply(this global::Microsoft.UI.Xaml.Controls.Page instance, XamlApplyHandler0 handler)
+		public static global::Windows.UI.Xaml.Controls.Page MainWindow_c93db19a7202d9eb84ddc41d72fcb89b_XamlApply(this global::Windows.UI.Xaml.Controls.Page instance, XamlApplyHandler0 handler)
 		{
 			handler(instance);
 			return instance;
