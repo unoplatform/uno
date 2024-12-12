@@ -294,7 +294,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task When_Time_Uninitialized_Should_Display_Current_Time()
 		{
 			var timePicker = new Microsoft.UI.Xaml.Controls.TimePicker();
-			timePicker.Time = new TimeSpan(TimePicker.DEFAULT_TIME_TICKS);
+			timePicker.Time = new TimeSpan(NativeTimePickerFlyout.DEFAULT_TIME_TICKS);
 
 			var expectedCurrentTime = GetCurrentTime();
 
