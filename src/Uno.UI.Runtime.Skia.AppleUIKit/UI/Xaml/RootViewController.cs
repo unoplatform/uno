@@ -17,15 +17,19 @@ using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 #if __IOS__
 using SkiaSharp.Views.iOS;
+using SkiaCanvas = SkiaSharp.Views.iOS.SKMetalView;
+using SkiaEventArgs = SkiaSharp.Views.iOS.SKPaintMetalSurfaceEventArgs;
 #else
 using SkiaSharp.Views.tvOS;
+using SkiaCanvas = SkiaSharp.Views.tvOS.SKCanvasView;
+using SkiaEventArgs = SkiaSharp.Views.tvOS.SKPaintSurfaceEventArgs;
 #endif
 
 namespace Uno.UI.Runtime.Skia.AppleUIKit;
 
 internal class RootViewController : UINavigationController, IRotationAwareViewController, IAppleUIKitXamlRootHost
 {
-	private SKMetalView? _skCanvasView;
+	private SkiaCanvas? _skCanvasView;
 	private XamlRoot? _xamlRoot;
 	private UIView? _textInputLayer;
 	private UIView? _nativeOverlayLayer;
@@ -62,9 +66,11 @@ internal class RootViewController : UINavigationController, IRotationAwareViewCo
 	public void Initialize()
 	{
 		_textInputLayer = new UIView();
-		_skCanvasView = new SKMetalView();
+		_skCanvasView = new SkiaCanvas();
+#if !__TVOS__
 		_skCanvasView.Paused = false;
 		_skCanvasView.EnableSetNeedsDisplay = false;
+#endif
 		_skCanvasView.BackgroundColor = UIColor.Red;
 		_skCanvasView.Frame = View!.Bounds;
 		_skCanvasView.AutoresizingMask = UIViewAutoresizing.All;
@@ -98,7 +104,7 @@ internal class RootViewController : UINavigationController, IRotationAwareViewCo
 
 	public SKColor BackgroundColor { get; set; } = SKColors.White;
 
-	private void OnPaintSurface(object? sender, SKPaintMetalSurfaceEventArgs e)
+	private void OnPaintSurface(object? sender, SkiaEventArgs e)
 	{
 		if (_xamlRoot?.VisualTree.RootElement is { } rootElement)
 		{
