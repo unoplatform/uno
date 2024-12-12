@@ -57,6 +57,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		/// </summary>
 		private readonly HashSet<DataTemplate> _itemTemplatesThatArentContainers = new HashSet<DataTemplate>();
 
+		private string _selectedContainerStateBeforeRecycling;
+
 		public Selector()
 		{
 
@@ -121,6 +123,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		internal virtual void OnSelectedItemChanged(object oldSelectedItem, object selectedItem, bool updateItemSelectedState)
 		{
+			_selectedContainerStateBeforeRecycling = null;
+
 			var wasSelectionUnset = oldSelectedItem == null && (!GetItems()?.Contains(null) ?? false);
 			var isSelectionUnset = false;
 			var items = GetItems();
@@ -518,13 +522,26 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 		}
 
+		internal void OnContainerRecycled(DependencyObject element)
+		{
+			if (element is SelectorItem { IsSelected: true } selectorItem)
+			{
+				_selectedContainerStateBeforeRecycling = VisualStateManager.GetCurrentState(selectorItem, "CommonStates")?.Name;
+			}
+		}
+
 		protected override void PrepareContainerForItemOverride(DependencyObject element, object item)
 		{
 			base.PrepareContainerForItemOverride(element, item);
 
 			if (element is SelectorItem selectorItem)
 			{
-				selectorItem.IsSelected = IsSelected(IndexFromContainer(element));
+				var isSelected = IsSelected(IndexFromContainer(element));
+				selectorItem.IsSelected = isSelected;
+				if (isSelected)
+				{
+					VisualStateManager.GoToState(selectorItem, _selectedContainerStateBeforeRecycling, false);
+				}
 			}
 
 			var newIndex = IndexFromContainer(element);
