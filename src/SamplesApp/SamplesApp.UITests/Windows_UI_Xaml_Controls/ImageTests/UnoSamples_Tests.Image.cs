@@ -56,6 +56,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 			ImageAssert.AreNotEqual(screenshotBefore, screenshotAfter);
 		}
 
+#if false // disabled for moved URI
 		[Test]
 		[AutoRetry]
 		public void ImageStretch_None()
@@ -76,6 +77,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 			HasValidSize("image03");
 			HasValidSize("image04");
 		}
+#endif
 
 		[Test]
 		[AutoRetry]
