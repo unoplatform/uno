@@ -14,6 +14,7 @@
 [![Uno Platform Discord](https://img.shields.io/discord/1182775715242967050?label=Discord&color=f85977)](https://platform.uno/discord)
 [![Open Uno in Gitpod](https://img.shields.io/badge/gitpod-setup%20automated-159bff?logo=gitpod&style=flat)](https://gitpod.io/#https://github.com/unoplatform/uno)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg?style=flat)](https://github.com/unoplatform/uno/blob/master/CONTRIBUTING.md)
+[![Gurubase](https://img.shields.io/badge/Gurubase-Ask%20Uno%20Platform%20Guru-006BFF?style=flat)](https://gurubase.io/g/uno-platform)
 
 # What is the Uno Platform?
 The Uno Platform is an Open-source platform for building single codebase native mobile, web, desktop, and embedded apps quickly.
