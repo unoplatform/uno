@@ -72,7 +72,7 @@ internal static class Win32Helper
 		public void Dispose() => Marshal.FreeHGlobal(Handle);
 	}
 
-	public static unsafe GlobalLockDisposable? GlobalLock(HGLOBAL handle, out void* firstByte, Func<bool>? shouldUnlock = null)
+	public static unsafe GlobalLockDisposable? GlobalLock(HGLOBAL handle, out void* firstByte)
 	{
 		firstByte = PInvoke.GlobalLock(handle);
 		if (firstByte is null)
@@ -81,17 +81,14 @@ internal static class Win32Helper
 			return null;
 		}
 
-		return new GlobalLockDisposable(handle, shouldUnlock);
+		return new GlobalLockDisposable(handle);
 	}
 
-	public readonly struct GlobalLockDisposable(HGLOBAL handle, Func<bool>? shouldUnlock = null) : IDisposable
+	public readonly struct GlobalLockDisposable(HGLOBAL handle) : IDisposable
 	{
 		public void Dispose()
 		{
-			if (shouldUnlock?.Invoke() ?? true)
-			{
-				_ = PInvoke.GlobalUnlock(handle) != IntPtr.Zero || typeof(GlobalLockDisposable).Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GlobalUnlock)} failed: {GetErrorMessage()}");
-			}
+			_ = PInvoke.GlobalUnlock(handle) != IntPtr.Zero || Marshal.GetLastWin32Error() == (int)WIN32_ERROR.NO_ERROR || typeof(GlobalLockDisposable).Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GlobalUnlock)} failed: {GetErrorMessage()}");
 		}
 	}
 

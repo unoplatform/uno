@@ -132,66 +132,78 @@ internal class Win32ClipboardExtension : IClipboardExtension
 
 			using var clipboardDisposable = new ClipboardDisposable(_hwnd, false);
 
+			var formats = new List<CLIPBOARD_FORMAT>();
 			uint lastFormat = 0;
 			while ((lastFormat = PInvoke.EnumClipboardFormats(lastFormat)) != 0)
 			{
-				switch ((CLIPBOARD_FORMAT)lastFormat)
-				{
-					case CLIPBOARD_FORMAT.CF_UNICODETEXT:
-						GetText();
-						break;
-					case CLIPBOARD_FORMAT.CF_HDROP:
-						GetFileDropList();
-						break;
-					case CLIPBOARD_FORMAT.CF_DIB:
-						GetBitmap();
-						break;
-				}
+				formats.Add((CLIPBOARD_FORMAT)lastFormat);
 			}
 
 			if (Marshal.GetLastWin32Error() != (int)WIN32_ERROR.ERROR_SUCCESS)
 			{
 				this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.EnumClipboardFormats)} failed: {Win32Helper.GetErrorMessage()}");
 			}
+			else
+			{
+				ReadContentIntoPackage(_currentPackage, formats, static format =>
+				{
+					var handle = (HGLOBAL)(IntPtr)PInvoke.GetClipboardData((uint)format);
+					if (handle == IntPtr.Zero)
+					{
+						typeof(Win32ClipboardExtension).Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GetClipboardData)} failed: {Win32Helper.GetErrorMessage()}");
+						return null;
+					}
+
+					return handle;
+				});
+			}
 		}
 		return _currentPackage.GetView();
 	}
 
-	private unsafe void GetText()
+	internal static void ReadContentIntoPackage(DataPackage package, IEnumerable<CLIPBOARD_FORMAT> formats, Func<CLIPBOARD_FORMAT, HGLOBAL?> dataGetter)
 	{
-		var handle = (HGLOBAL)(IntPtr)PInvoke.GetClipboardData((uint)CLIPBOARD_FORMAT.CF_UNICODETEXT);
-		if (handle == IntPtr.Zero)
+		foreach (var format in formats)
 		{
-			this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GetClipboardData)} failed: {Win32Helper.GetErrorMessage()}");
-			return;
+			if (Enum.IsDefined(typeof(CLIPBOARD_FORMAT), format) && dataGetter(format) is { } handle)
+			{
+				switch (format)
+				{
+					case CLIPBOARD_FORMAT.CF_UNICODETEXT:
+						GetText(handle, package);
+						break;
+					case CLIPBOARD_FORMAT.CF_HDROP:
+						GetFileDropList(handle, package);
+						break;
+					case CLIPBOARD_FORMAT.CF_DIB:
+						GetBitmap(handle, package);
+						break;
+				}
+			}
 		}
+	}
 
+	private static unsafe void GetText(HGLOBAL handle, DataPackage package)
+	{
 		using var lockDisposable = Win32Helper.GlobalLock(handle, out var bytes);
 		if (lockDisposable is null)
 		{
 			return;
 		}
 
-		_currentPackage!.SetText(Marshal.PtrToStringUni((IntPtr)bytes)!);
+		package.SetText(Marshal.PtrToStringUni((IntPtr)bytes)!);
 	}
 
-	private unsafe void GetBitmap()
+	private static unsafe void GetBitmap(HGLOBAL handle, DataPackage package)
 	{
-		var handle = (HGLOBAL)(IntPtr)PInvoke.GetClipboardData((uint)CLIPBOARD_FORMAT.CF_DIB);
-		if (handle == IntPtr.Zero)
-		{
-			this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GetClipboardData)} failed: {Win32Helper.GetErrorMessage()}");
-			return;
-		}
-
 		var memSize = (uint)PInvoke.GlobalSize(handle);
 		if (memSize <= Marshal.SizeOf<BITMAPINFOHEADER>())
 		{
-			this.Log().Log(LogLevel.Error, memSize, static memSize => $"{nameof(PInvoke.GlobalSize)} returned {memSize}: {Win32Helper.GetErrorMessage()}");
+			typeof(Win32ClipboardExtension).Log().Log(LogLevel.Error, memSize, static memSize => $"{nameof(PInvoke.GlobalSize)} returned {memSize}: {Win32Helper.GetErrorMessage()}");
 			return;
 		}
 
-		_currentPackage!.SetDataProvider(StandardDataFormats.Bitmap, _ =>
+		package.SetDataProvider(StandardDataFormats.Bitmap, _ =>
 		{
 			using var lockDisposable = Win32Helper.GlobalLock(handle, out var dib);
 			if (lockDisposable is null)
@@ -232,15 +244,8 @@ internal class Win32ClipboardExtension : IClipboardExtension
 		});
 	}
 
-	private unsafe void GetFileDropList()
+	private static unsafe void GetFileDropList(HGLOBAL handle, DataPackage package)
 	{
-		var handle = (HGLOBAL)(IntPtr)PInvoke.GetClipboardData((uint)CLIPBOARD_FORMAT.CF_HDROP);
-		if (handle == IntPtr.Zero)
-		{
-			this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GetClipboardData)} failed: {Win32Helper.GetErrorMessage()}");
-			return;
-		}
-
 		using var lockDisposable = Win32Helper.GlobalLock(handle, out var firstByte);
 		if (lockDisposable is null)
 		{
@@ -252,7 +257,7 @@ internal class Win32ClipboardExtension : IClipboardExtension
 		var filesDropped = PInvoke.DragQueryFile(hDrop, 0xFFFFFFFF, new PWSTR(), 0);
 		if (filesDropped == 0)
 		{
-			this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.DragQueryFile)} failed when querying total count: {Win32Helper.GetErrorMessage()}");
+			typeof(Win32ClipboardExtension).Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.DragQueryFile)} failed when querying total count: {Win32Helper.GetErrorMessage()}");
 			return;
 		}
 
@@ -262,7 +267,7 @@ internal class Win32ClipboardExtension : IClipboardExtension
 			var charLength = PInvoke.DragQueryFile(hDrop, i, new PWSTR(), 0);
 			if (charLength == 0)
 			{
-				this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.DragQueryFile)} failed when querying buffer length: {Win32Helper.GetErrorMessage()}");
+				typeof(Win32ClipboardExtension).Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.DragQueryFile)} failed when querying buffer length: {Win32Helper.GetErrorMessage()}");
 				break;
 			}
 			charLength++; // + 1 for \0
@@ -272,7 +277,7 @@ internal class Win32ClipboardExtension : IClipboardExtension
 			var charsWritten = PInvoke.DragQueryFile(hDrop, i, new PWSTR((char*)buffer), charLength);
 			if (charsWritten == 0)
 			{
-				this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.DragQueryFile)} failed when querying file path: {Win32Helper.GetErrorMessage()}");
+				typeof(Win32ClipboardExtension).Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.DragQueryFile)} failed when querying file path: {Win32Helper.GetErrorMessage()}");
 				break;
 			}
 			var filePath = Marshal.PtrToStringUni(buffer, (int)charsWritten);
@@ -286,11 +291,11 @@ internal class Win32ClipboardExtension : IClipboardExtension
 			}
 			else
 			{
-				this.Log().Log(LogLevel.Error, filePath, static filePath => $"HDROP Clipboard: file path '{filePath}' was not a valid file or directory.");
+				typeof(Win32ClipboardExtension).Log().Log(LogLevel.Error, filePath, static filePath => $"HDROP Clipboard: file path '{filePath}' was not a valid file or directory.");
 			}
 		}
 
-		_currentPackage!.SetStorageItems(files);
+		package.SetStorageItems(files);
 	}
 
 	public void SetContent(DataPackage content)
@@ -336,19 +341,12 @@ internal class Win32ClipboardExtension : IClipboardExtension
 					return;
 				}
 
-				var shouldUnlock = true;
-				using var lockDisposable = Win32Helper.GlobalLock(
-					handle,
-					out var dstBytes,
-					// ReSharper disable once AccessToModifiedClosure
-					() => shouldUnlock);
-
+				using var lockDisposable = Win32Helper.GlobalLock(handle, out var dstBytes);
 				Buffer.MemoryCopy(srcBytes, dstBytes, bufferLength, bufferLength);
-
 				var success = PInvoke.SetClipboardData((uint)CLIPBOARD_FORMAT.CF_UNICODETEXT, new HANDLE(handle)) != HANDLE.Null || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SetClipboardData)} failed: {Win32Helper.GetErrorMessage()}");
+
 				// "If SetClipboardData succeeds, the system owns the object identified by the hMem parameter. The application may not write to or free the data once ownership has been transferred to the system"
 				shouldFree = !success;
-				shouldUnlock = !success; // The docs aren't very clear on this, but Windows refuses to unlock after SetClipboardData succeeds.
 			}
 		}
 	}

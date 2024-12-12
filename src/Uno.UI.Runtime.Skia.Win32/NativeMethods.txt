@@ -77,9 +77,13 @@ WM_SETICON
 WM_SIZE
 
 // Structs
+DATADIR
 BITMAPFILEHEADER
 BROWSEINFOW
 CLIPBOARD_FORMAT
+IDataObject
+IDropSource
+IDropTarget
 MINMAXINFO
 PIXELFORMATDESCRIPTOR
 RECT
@@ -99,6 +103,7 @@ DefWindowProc
 DescribePixelFormat
 DestroyWindow
 DispatchMessage
+DoDragDrop
 DragQueryFile
 DwmSetWindowAttribute
 EmptyClipboard
@@ -137,10 +142,12 @@ InvalidateRect
 LoadCursor
 LocalFree
 MonitorFromWindow
+OleInitialize
 OpenClipboard
 PeekMessage
 RegGetValue
 RegisterClassEx
+RegisterDragDrop
 RegisterTouchWindow
 RegNotifyChangeKeyValue
 RegOpenKeyEx
