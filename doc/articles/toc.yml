@@ -606,6 +606,8 @@
         href: features/windows-system-power.md
       - name: Bluetooth
         href: features/bluetoothdevice.md
+      - name: Capture (Camera)
+        href: features/windows-media-capture.md
       - name: Clipboard
         href: features/clipboard.md
       - name: Compass
