@@ -13,6 +13,7 @@ using Microsoft.UI.Xaml;
 using SkiaSharp;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
+using MUXWindow = Microsoft.UI.Xaml.Window;
 
 namespace Uno.UI.Runtime.Skia.Android;
 
@@ -27,19 +28,20 @@ internal sealed class UnoSKCanvasView : SurfaceView, ISurfaceHolderCallback
 	private int _stencil;
 	private GRBackendRenderTarget? _renderTarget;
 	private SKSurface? _surface;
+	private MUXWindow _window;
 
 	public event EventHandler<SKSurface>? PaintSurface;
 
-	internal UIElement RootElement { get; }
+	internal UIElement? RootElement => _window.RootElement;
 	internal UnoExploreByTouchHelper ExploreByTouchHelper { get; }
 	internal TextInputPlugin TextInputPlugin { get; }
 
 	internal static UnoSKCanvasView? Instance { get; private set; }
 
-	public UnoSKCanvasView(Context context, UIElement rootElement) : base(context)
+	public UnoSKCanvasView(Context context, MUXWindow window) : base(context)
 	{
 		Instance = this;
-		RootElement = rootElement;
+		_window = window;
 		ExploreByTouchHelper = new UnoExploreByTouchHelper(this);
 		TextInputPlugin = new TextInputPlugin(this);
 		ViewCompat.SetAccessibilityDelegate(this, ExploreByTouchHelper);
