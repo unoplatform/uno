@@ -22,6 +22,10 @@
 				<dependency id="Microsoft.WindowsAppSDK" version="1.0.0" />
 				<dependency id="Microsoft.Windows.SDK.BuildTools" version="10.0.22000.196" />
 			</group>
+			<group targetFramework="net9.0-windows10.0.19041.0">
+				<dependency id="Microsoft.WindowsAppSDK" version="1.0.0" />
+				<dependency id="Microsoft.Windows.SDK.BuildTools" version="10.0.22000.196" />
+			</group>
 			<!-- END UWP-excluded -->
 
 			<!-- net9.0-android30.0 -->
@@ -260,6 +264,12 @@
 		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit*.pdb" target="lib\net8.0-windows10.0.19041.0" />
 		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit*.pri" target="lib\net8.0-windows10.0.19041.0" />
 		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit\**"   target="lib\net8.0-windows10.0.19041.0\Uno.UI.Toolkit" />
+
+		<!-- Duplicated block to avoid nuget from downgrading to net9.0 -->
+		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit*.dll" target="lib\net9.0-windows10.0.19041.0" />
+		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit*.pdb" target="lib\net9.0-windows10.0.19041.0" />
+		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit*.pri" target="lib\net9.0-windows10.0.19041.0" />
+		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit\**"   target="lib\net9.0-windows10.0.19041.0\Uno.UI.Toolkit" />
 		<!-- END UWP-excluded -->
 
 		<!-- net8.0-ios17.0 -->
