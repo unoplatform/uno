@@ -1,7 +1,12 @@
 <Project>
 	<PropertyGroup>
 		<_ShouldUseNoPlatformOverride>false</_ShouldUseNoPlatformOverride>
-		<_ShouldUseNoPlatformOverride Condition="$(MSBuildProjectFile.EndsWith('.Skia.csproj')) OR $(MSBuildProjectFile.EndsWith('.Wasm.csproj')) OR $(MSBuildProjectFile.EndsWith('.Reference.csproj'))">true</_ShouldUseNoPlatformOverride>
+		<_ShouldUseNoPlatformOverride Condition="
+			$(MSBuildProjectFile.EndsWith('.Skia.csproj')) 
+			OR $(MSBuildProjectFile.EndsWith('.Wasm.csproj')) 
+			OR $(MSBuildProjectFile.EndsWith('.Reference.csproj'))
+			OR '$(UnoDisableTargetFrameworkPlatformOverride)' == 'true'
+		">true</_ShouldUseNoPlatformOverride>
 	</PropertyGroup>
 
 	<Import Condition="'$(_ShouldUseNoPlatformOverride)'=='true'" Project="targetframework-override-noplatform.props" />
