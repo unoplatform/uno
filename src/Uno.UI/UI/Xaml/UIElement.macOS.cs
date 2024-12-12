@@ -42,12 +42,7 @@ namespace Microsoft.UI.Xaml
 
 		partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
 		{
-			// Don't update the internal value if the value is being animated.
-			// The value is being animated by the platform itself.
-			if (!(args.NewPrecedence == DependencyPropertyValuePrecedences.Animations && args.BypassesPropagation))
-			{
-				AlphaValue = IsRenderingSuspended ? 0 : (nfloat)Opacity;
-			}
+			AlphaValue = IsRenderingSuspended ? 0 : (nfloat)Opacity;
 		}
 
 		partial void OnIsHitTestVisibleChangedPartial(bool oldValue, bool newValue)
