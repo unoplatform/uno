@@ -3,36 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Composition
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class CubicBezierEasingFunction : global::Microsoft.UI.Composition.CompositionEasingFunction
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		internal CubicBezierEasingFunction()
-		{
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::System.Numerics.Vector2 ControlPoint1
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector2 CubicBezierEasingFunction.ControlPoint1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20CubicBezierEasingFunction.ControlPoint1");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::System.Numerics.Vector2 ControlPoint2
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector2 CubicBezierEasingFunction.ControlPoint2 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20CubicBezierEasingFunction.ControlPoint2");
-			}
-		}
-#endif
+		// Skipping already declared property ControlPoint1
+		// Skipping already declared property ControlPoint2
 		// Forced skipping of method Microsoft.UI.Composition.CubicBezierEasingFunction.ControlPoint1.get
 		// Forced skipping of method Microsoft.UI.Composition.CubicBezierEasingFunction.ControlPoint2.get
 	}
