@@ -16,8 +16,8 @@ using Verify = CSharpSourceGeneratorVerifier<DependencyObjectGenerator>;
 [TestClass]
 public class Given_DependencyObjectGenerator
 {
-	private static readonly ReferenceAssemblies _net80Android = ReferenceAssemblies.Net.Net80Android.AddPackages([new PackageIdentity("Uno.Diagnostics.Eventing", "2.1.0")]);
-	private static readonly ReferenceAssemblies _net80 = ReferenceAssemblies.Net.Net80.AddPackages([new PackageIdentity("Uno.Diagnostics.Eventing", "2.1.0")]);
+	private static readonly ReferenceAssemblies _refAsmAndroid = _Dotnet.CurrentAndroid.ReferenceAssemblies.AddPackages([new PackageIdentity("Uno.Diagnostics.Eventing", "2.1.0")]);
+	private static readonly ReferenceAssemblies _refAsm = _Dotnet.Current.ReferenceAssemblies.AddPackages([new PackageIdentity("Uno.Diagnostics.Eventing", "2.1.0")]);
 
 	private const string Configuration =
 #if DEBUG
@@ -26,16 +26,25 @@ public class Given_DependencyObjectGenerator
 		"Release";
 #endif
 
-	private const string TFM = "net8.0";
+	private const string TFMPrevious = "net8.0";
+	private const string TFMCurrent = "net9.0";
 
 	private static MetadataReference[] BuildUnoReferences(bool isAndroid)
 	{
 		string[] availableTargets = isAndroid
-			? [Path.Combine("Uno.UI.netcoremobile", Configuration, $"{TFM}-android")]
+			? [
+				Path.Combine("Uno.UI.netcoremobile", Configuration, $"{TFMPrevious}-android"),
+				Path.Combine("Uno.UI.netcoremobile", Configuration, $"{TFMCurrent}-android"),
+			]
 			: [
-				Path.Combine("Uno.UI.Skia", Configuration, TFM),
-				Path.Combine("Uno.UI.Reference", Configuration, TFM),
-				Path.Combine("Uno.UI.Tests", Configuration, TFM),
+				// On CI the test assemblies set must be first, as it contains all
+				// dependent assemblies, which the other platforms don't (see DisablePrivateProjectReference).
+				Path.Combine("Uno.UI.Tests", Configuration, TFMPrevious),
+				Path.Combine("Uno.UI.Reference", Configuration, TFMPrevious),
+				Path.Combine("Uno.UI.Skia", Configuration, TFMPrevious),
+				Path.Combine("Uno.UI.Tests", Configuration, TFMCurrent),
+				Path.Combine("Uno.UI.Reference", Configuration, TFMCurrent),
+				Path.Combine("Uno.UI.Skia", Configuration, TFMCurrent),
 			];
 
 		var unoUIBase = Path.Combine(
@@ -70,7 +79,7 @@ public class Given_DependencyObjectGenerator
 			{
 				Sources = { testCode },
 			},
-			ReferenceAssemblies = _net80Android,
+			ReferenceAssemblies = _refAsmAndroid,
 		};
 
 		test.TestState.AdditionalReferences.AddRange(BuildUnoReferences(isAndroid: true));
@@ -81,7 +90,7 @@ public class Given_DependencyObjectGenerator
 	[TestMethod]
 	public async Task TestAndroidViewImplementingDependencyObject()
 	{
-		await TestAndroid("""
+		var source = """
 			using Android.Content;
 			using Windows.UI.Core;
 			using Microsoft.UI.Dispatching;
@@ -92,7 +101,7 @@ public class Given_DependencyObjectGenerator
 				public C(Context context) : base(context)
 				{
 				}
-
+			
 				public CoreDispatcher Dispatcher { get; }
 				public DispatcherQueue DispatcherQueue { get; }
 				public object GetValue(DependencyProperty dp) => null;
@@ -103,9 +112,12 @@ public class Given_DependencyObjectGenerator
 				public long RegisterPropertyChangedCallback(DependencyProperty dp, DependencyPropertyChangedCallback callback) => 0;
 				public void UnregisterPropertyChangedCallback(DependencyProperty dp, long token) { }
 			}
-			""",
-		// /0/Test0.cs(5,14): error Uno0003: 'Android.Views.View' shouldn't implement 'DependencyObject'. Inherit 'FrameworkElement' instead.
-		DiagnosticResult.CompilerError("Uno0003").WithSpan(6, 14, 6, 15).WithArguments("Android.Views.View"));
+			""";
+
+		await TestAndroid(
+			source,
+			// /0/Test0.cs(5,14): error Uno0003: 'Android.Views.View' shouldn't implement 'DependencyObject'. Inherit 'FrameworkElement' instead.
+			DiagnosticResult.CompilerError("Uno0003").WithSpan(6, 14, 6, 15).WithArguments("Android.Views.View"));
 	}
 
 	[TestMethod]
@@ -341,7 +353,7 @@ public class Given_DependencyObjectGenerator
 	 """, Encoding.UTF8)) }
 				}
 			},
-			ReferenceAssemblies = _net80,
+			ReferenceAssemblies = _refAsm,
 		};
 
 		test.TestState.AdditionalReferences.AddRange(BuildUnoReferences(isAndroid: false));

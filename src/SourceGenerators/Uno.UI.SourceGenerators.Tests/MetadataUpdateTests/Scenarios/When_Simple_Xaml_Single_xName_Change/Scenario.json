@@ -5,11 +5,8 @@
 			"IsMono": false,
 			"PassResults": [
 				{
-					"MetadataUpdates": 0,
-					"Diagnostics": [
-						// error ENC0009: Updating the type of method requires restarting the application.
-						{ "Id": "ENC0009" }
-					]
+					"MetadataUpdates": 1,
+					"Diagnostics": []
 				}
 			]
 		},
@@ -18,11 +15,8 @@
 			"IsMono": true,
 			"PassResults": [
 				{
-					"MetadataUpdates": 0,
-					"Diagnostics": [
-						// error ENC0009: Updating the type of method requires restarting the application.
-						{ "Id": "ENC0009" }
-					]
+					"MetadataUpdates": 1,
+					"Diagnostics": []
 				}
 			]
 		}

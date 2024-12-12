@@ -7,7 +7,7 @@
 	  mc:Ignorable="d">
 
 	<StackPanel>
-		<TextBlock Text="Second page"  
+		<TextBlock Text="Second page"
 				   x:Name="SecondPageTextBlock" />
 		<TextBlock Text="{Binding TitleText}" />
 		<Viewbox>

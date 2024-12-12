@@ -122,30 +122,30 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls
 				,
 				// Source 0\Grid_Uses_Common_Syntax.xaml (Line 10:6)
 			}
-			.Grid_Uses_Common_Syntax_8659265dc2cabf0b5a684f0f4b26f8b7_XamlApply((Grid_Uses_Common_Syntax_8659265dc2cabf0b5a684f0f4b26f8b7XamlApplyExtensions.XamlApplyHandler2)(c10 => 
+			.Grid_Uses_Common_Syntax_8659265dc2cabf0b5a684f0f4b26f8b7_XamlApply((Grid_Uses_Common_Syntax_8659265dc2cabf0b5a684f0f4b26f8b7XamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 			{
-				__nameScope.RegisterName("grid", c10);
-				__that.grid = c10;
-				// FieldModifier public
-				global::Uno.UI.FrameworkElementHelper.SetBaseUri(c10, __baseUri_Grid_Uses_Common_Syntax_8659265dc2cabf0b5a684f0f4b26f8b7);
-				c10.CreationComplete();
+			__nameScope.RegisterName("grid", __p1);
+			__that.grid = __p1;
+			// FieldModifier public
+			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_Grid_Uses_Common_Syntax_8659265dc2cabf0b5a684f0f4b26f8b7);
+			__p1.CreationComplete();
 			}
 			))
 			;
 			
 			this
-			.GenericApply(((c11) => 
+			.Grid_Uses_Common_Syntax_8659265dc2cabf0b5a684f0f4b26f8b7_XamlApply((Grid_Uses_Common_Syntax_8659265dc2cabf0b5a684f0f4b26f8b7XamlApplyExtensions.XamlApplyHandler3)(__p1 => 
 			{
-				// Source 0\Grid_Uses_Common_Syntax.xaml (Line 1:2)
-				
-				// WARNING Property c11.base does not exist on {http://schemas.microsoft.com/winfx/2006/xaml/presentation}Page, the namespace is http://www.w3.org/XML/1998/namespace. This error was considered irrelevant by the XamlFileGenerator
+			// Source 0\Grid_Uses_Common_Syntax.xaml (Line 1:2)
+			
+			// WARNING Property __p1.base does not exist on {http://schemas.microsoft.com/winfx/2006/xaml/presentation}Page, the namespace is http://www.w3.org/XML/1998/namespace. This error was considered irrelevant by the XamlFileGenerator
 			}
 			))
-			.GenericApply(((c12) => 
+			.Grid_Uses_Common_Syntax_8659265dc2cabf0b5a684f0f4b26f8b7_XamlApply((Grid_Uses_Common_Syntax_8659265dc2cabf0b5a684f0f4b26f8b7XamlApplyExtensions.XamlApplyHandler3)(__p1 => 
 			{
-				// Class Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls.Grid_Uses_Common_Syntax
-				global::Uno.UI.FrameworkElementHelper.SetBaseUri(c12, __baseUri_Grid_Uses_Common_Syntax_8659265dc2cabf0b5a684f0f4b26f8b7);
-				c12.CreationComplete();
+			// Class Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls.Grid_Uses_Common_Syntax
+			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_Grid_Uses_Common_Syntax_8659265dc2cabf0b5a684f0f4b26f8b7);
+			__p1.CreationComplete();
 			}
 			))
 			;
@@ -188,6 +188,13 @@ namespace MyProject
 		public delegate void XamlApplyHandler2(global::Microsoft.UI.Xaml.Controls.Grid instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 		public static global::Microsoft.UI.Xaml.Controls.Grid Grid_Uses_Common_Syntax_8659265dc2cabf0b5a684f0f4b26f8b7_XamlApply(this global::Microsoft.UI.Xaml.Controls.Grid instance, XamlApplyHandler2 handler)
+		{
+			handler(instance);
+			return instance;
+		}
+		public delegate void XamlApplyHandler3(global::Microsoft.UI.Xaml.Controls.Page instance);
+		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+		public static global::Microsoft.UI.Xaml.Controls.Page Grid_Uses_Common_Syntax_8659265dc2cabf0b5a684f0f4b26f8b7_XamlApply(this global::Microsoft.UI.Xaml.Controls.Page instance, XamlApplyHandler3 handler)
 		{
 			handler(instance);
 			return instance;

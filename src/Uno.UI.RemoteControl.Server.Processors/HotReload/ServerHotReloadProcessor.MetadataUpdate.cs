@@ -65,7 +65,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 						configureServer.ProjectPath,
 						_reporter,
 						configureServer.MetadataUpdateCapabilities,
-						configureServer.MSBuildProperties,
+						configureServer.MSBuildProperties.Where(kvp => !kvp.Key.StartsWith("MSBuild", StringComparison.OrdinalIgnoreCase)).ToDictionary(),
 						CancellationToken.None);
 
 					ObserveSolutionPaths(result.Item1);
