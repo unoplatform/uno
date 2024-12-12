@@ -279,13 +279,6 @@ namespace Microsoft.UI.Xaml.Controls
 					// Normally this happens when the SelectorItem.Content is set, but there's an edge case where after a refresh, a
 					// container can be dequeued which happens to have had exactly the same DataContext as the new item.
 					cell.ClearMeasuredSize();
-
-					// Ensure ClippedFrame from a previous recycled item doesn't persist which can happen in some cases,
-					// and cause it to be clipped when either axis was smaller.
-					if (cell.Content is { } contentControl)
-					{
-						contentControl.ClippedFrame = null;
-					}
 				}
 
 				Owner?.XamlParent?.TryLoadMoreItems(index);
@@ -672,7 +665,8 @@ namespace Microsoft.UI.Xaml.Controls
 					Owner.XamlParent.AddSubview(BlockLayout);
 					BlockLayout.AddSubview(container);
 					// Measure with PositiveInfinity rather than MaxValue, since some views handle this better.
-					size = Owner.NativeLayout.Layouter.MeasureChild(container, availableSize);
+					container.Measure(availableSize);
+					size = container.DesiredSize;
 
 					if ((size.Height > nfloat.MaxValue / 2 || size.Width > nfloat.MaxValue / 2) &&
 						this.Log().IsEnabled(LogLevel.Warning)
@@ -764,7 +758,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private Orientation ScrollOrientation => Owner.NativeLayout.ScrollOrientation;
 		private bool SupportsDynamicItemSizes => Owner.NativeLayout.SupportsDynamicItemSizes;
-		private ILayouter Layouter => Owner.NativeLayout.Layouter;
 
 		internal string ElementKind { get; set; }
 
@@ -952,7 +945,8 @@ namespace Microsoft.UI.Xaml.Controls
 					{
 						using (InterceptSetNeedsLayout())
 						{
-							_measuredContentSize = Layouter.MeasureChild(Content, availableSize);
+							Content.Measure(availableSize);
+							_measuredContentSize = Content.DesiredSize;
 						}
 					}
 					else
@@ -962,7 +956,8 @@ namespace Microsoft.UI.Xaml.Controls
 							//Attach temporarily, because some Uno control (eg ItemsControl) are only measured correctly after MovedToWindow has been called
 							InterceptSetNeedsLayout();
 							Owner.XamlParent.AddSubview(this);
-							_measuredContentSize = Layouter.MeasureChild(Content, availableSize);
+							Content.Measure(availableSize);
+							_measuredContentSize = Content.DesiredSize;
 						}
 						finally
 						{
@@ -1056,7 +1051,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (Content != null)
 			{
-				Layouter.ArrangeChild(Content, new Rect(0, 0, (float)size.Width, (float)size.Height));
+				Content.Arrange(new Rect(0, 0, (float)size.Width, (float)size.Height));
 
 				// The item has to be arranged relative to this internal container (at 0,0),
 				// but doing this the LayoutSlot[WithMargins] has been updated, 

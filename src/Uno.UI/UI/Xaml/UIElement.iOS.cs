@@ -47,34 +47,50 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		internal bool IsMeasureDirtyPath
-		{
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			get => false; // Not implemented on iOS yet
-		}
+		private CGPath _borderLayerRendererClip;
 
-		internal bool IsArrangeDirtyPath
+		internal CGPath BorderLayerRendererClip
 		{
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			get => false; // Not implemented on iOS yet
-		}
-
-		internal bool ClippingIsSetByCornerRadius { get; set; }
-
-		partial void ApplyNativeClip(Rect rect)
-		{
-			if (!rect.IsFinite)
+			get => _borderLayerRendererClip;
+			set
 			{
-				if (!ClippingIsSetByCornerRadius)
-				{
-					this.Layer.Mask = null;
-				}
+				_borderLayerRendererClip = value;
+				SetTotalClipRect();
+			}
+		}
+
+		private void SetClipPlatform(Rect? totalLogicalClip)
+		{
+			if (totalLogicalClip is null && _borderLayerRendererClip is null)
+			{
+				// No clip is given by totalLogicalClip nor BorderLayerRenderer
+				this.Layer.Mask = null;
 				return;
+			}
+
+			CGPath totalPath = null;
+			if (totalLogicalClip is not null)
+			{
+				// We are given a clip by totalLogicalClip, so set it to totalPath
+				totalPath = CGPath.FromRect(totalLogicalClip.Value.ToCGRect());
+			}
+
+			if (_borderLayerRendererClip is not null)
+			{
+				// We are given a clip by BorderLayerRenderer, intersect it with the existing path (if there is one), otherwise, set it to totalPath directly.
+				if (totalPath is null)
+				{
+					totalPath = _borderLayerRendererClip;
+				}
+				else
+				{
+					totalPath = totalPath.CreateByIntersectingPath(_borderLayerRendererClip, evenOddFillRule: false);
+				}
 			}
 
 			this.Layer.Mask = new CAShapeLayer
 			{
-				Path = CGPath.FromRect(rect.ToCGRect())
+				Path = totalPath,
 			};
 		}
 
@@ -126,6 +142,57 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		public override void SetNeedsLayout()
+		{
+			base.SetNeedsLayout();
+
+			if (Superview is not UIElement)
+			{
+				var firstManaged = this.FindFirstParent<UIElement>();
+				if (firstManaged != null)
+				{
+					firstManaged.InvalidateMeasure();
+					firstManaged.InvalidateArrange();
+				}
+			}
+
+			InvalidateMeasure();
+			InvalidateMeasureOnNativeOnlyChildrenRecursive(this);
+
+			InvalidateArrange();
+			InvalidateArrangeOnNativeOnlyChildrenRecursive(this);
+		}
+
+		private static void InvalidateMeasureOnNativeOnlyChildrenRecursive(UIView view)
+		{
+			foreach (var child in view.GetChildren())
+			{
+				if (child is not UIElement)
+				{
+					LayoutInformation.SetMeasureDirtyPath(child, true);
+					if (child is UIView childAsUIView)
+					{
+						InvalidateMeasureOnNativeOnlyChildrenRecursive(childAsUIView);
+					}
+				}
+			}
+		}
+
+		private static void InvalidateArrangeOnNativeOnlyChildrenRecursive(UIView view)
+		{
+			foreach (var child in view.GetChildren())
+			{
+				if (child is not UIElement)
+				{
+					LayoutInformation.SetArrangeDirtyPath(child, true);
+					if (child is UIView childAsUIView)
+					{
+						InvalidateArrangeOnNativeOnlyChildrenRecursive(childAsUIView);
+					}
+				}
+			}
+		}
+
 		public void SetSubviewsNeedLayout()
 		{
 			base.SetNeedsLayout();
@@ -146,6 +213,29 @@ namespace Microsoft.UI.Xaml
 					(view as IFrameworkElement)?.SetSubviewsNeedLayout();
 				}
 			}
+		}
+
+
+		private protected bool _isSettingFrameByArrangeVisual;
+
+		internal void ArrangeVisual(Rect finalRect, Rect? clippedFrame = default)
+		{
+			LayoutSlotWithMarginsAndAlignments = finalRect;
+			SetTotalClipRect();
+			_isSettingFrameByArrangeVisual = true;
+			try
+			{
+				using (this.SettingFrame())
+				{
+					this.Frame = finalRect;
+				}
+			}
+			finally
+			{
+				_isSettingFrameByArrangeVisual = false;
+			}
+
+			OnViewportUpdated(clippedFrame ?? Rect.Empty);
 		}
 
 		internal global::Windows.Foundation.Point GetPosition(Point position, global::Microsoft.UI.Xaml.UIElement relativeTo)
