@@ -415,4 +415,16 @@ internal static partial class NativeUno
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_webview_set_scrolling_enabled(nint webview, [MarshalAs(UnmanagedType.I1)] bool enabled);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial nint uno_mediaplayer_create();
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_mediaplayer_pause(nint media);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_mediaplayer_play(nint media);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_mediaplayer_stop(nint media);
 }
