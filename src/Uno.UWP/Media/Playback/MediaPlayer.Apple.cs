@@ -131,6 +131,12 @@ namespace Windows.Media.Playback
 			_observer = new Observer(this);
 		}
 
+		// This is necessary for the Android-Skia target, specifically for code that
+		// compiles against the reference API (which has IsLoopingAllEnabled) such as
+		// MediaTransportControls.UpdateRepeatStates().
+		[Uno.NotImplemented]
+		public bool IsLoopingAllEnabled { get; set; }
+
 		#region Player Initialization
 
 		private void TryDisposePlayer()
