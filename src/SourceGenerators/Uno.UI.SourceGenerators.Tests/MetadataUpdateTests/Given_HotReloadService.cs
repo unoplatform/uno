@@ -14,6 +14,12 @@ public class Given_HotReloadService
 	{
 		if (scenario != null)
 		{
+			if (scenario.IsCrashingRoslyn)
+			{
+				Assert.Inconclusive("Case is known to crash roslyn.");
+				return;
+			}
+
 			var results = await ApplyScenario(projects, scenario.IsDebug, scenario.IsMono, scenario.UseXamlReaderReload, name);
 
 			for (var i = 0; i < scenario.PassResults.Length; i++)
@@ -36,7 +42,7 @@ public class Given_HotReloadService
 
 	public record Project(string Name, ProjectReference[]? ProjectReferences);
 	public record ProjectReference(string Name);
-	public record Scenario(bool IsDebug, bool IsMono, bool UseXamlReaderReload, params PassResult[] PassResults)
+	public record Scenario(bool IsDebug, bool IsMono, bool IsCrashingRoslyn, bool UseXamlReaderReload, params PassResult[] PassResults)
 	{
 		public override string ToString()
 			=> $"{(IsDebug ? "Debug" : "Release")},{(IsMono ? "MonoVM" : "NetCore")},XR:{UseXamlReaderReload}";
@@ -53,7 +59,7 @@ public class Given_HotReloadService
 			var path = Path.Combine(scenarioFolder, "Scenario.json");
 
 #if DEBUG && false
-			if (!path.Contains("When_Simple_Xaml_Add_xBind_Function_Property_Add"))
+			if (!path.Contains("When_DataTemplate_xLoad_xBind_Remove"))
 			{
 				continue;
 			}
