@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Globalization;
+using CoreAnimation;
+using CoreGraphics;
 using Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
@@ -7,11 +10,10 @@ using SkiaSharp;
 using UIKit;
 using Uno.Helpers.Theming;
 using Uno.UI.Controls;
-using Uno.UI.Hosting;
+using Uno.UI.Helpers;
 using Uno.UI.Runtime.Skia.AppleUIKit.Hosting;
-using Uno.UI.Xaml.Controls;
-using Uno.UI.Xaml.Core;
 using Windows.Devices.Sensors;
+using Windows.Foundation;
 using Windows.Graphics.Display;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
@@ -113,9 +115,110 @@ internal class RootViewController : UINavigationController, IRotationAwareViewCo
 			surface.Canvas.SetMatrix(SKMatrix.CreateScale((float)_xamlRoot.RasterizationScale, (float)_xamlRoot.RasterizationScale));
 			if (rootElement.Visual is { } rootVisual)
 			{
-				rootVisual.Compositor.RenderRootVisual(surface, rootVisual, null);
+				int width = (int)View!.Frame.Width;
+				int height = (int)View!.Frame.Height;
+				var path = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath(width, height, rootVisual, surface);
+				if (path is { })
+				{
+					ClipBySvgPath(path.ToSvgPathData());
+				}
 			}
 		}
+	}
+
+	private void ClipBySvgPath(string svg)
+	{
+		if (svg != null)
+		{
+			var cgPath = new CGPath();
+			var length = svg.Length;
+
+			var scale = UIScreen.MainScreen.Scale;
+
+			var subviews = _nativeOverlayLayer!.Subviews;
+			for (int i = 0; i < subviews.Length; i++)
+			{
+				var view = subviews[i];
+				var vx = view.Frame.X;
+				var vy = view.Frame.Y;
+
+				for (int index = 0; index < length;)
+				{
+					nfloat x, y;
+					char op = svg[index];
+					switch (op)
+					{
+						case 'M':
+							index++; // skip M
+							x = ReadNextSvgCoord(svg, ref index, length);
+							index++; // skip separator
+							y = ReadNextSvgCoord(svg, ref index, length);
+
+							x = (x / scale - vx);
+							y = (y / scale - vy);
+							cgPath.MoveToPoint(x, y);
+							break;
+
+						case 'L':
+							index++; // skip L
+							x = ReadNextSvgCoord(svg, ref index, length);
+							index++; // skip separator
+							y = ReadNextSvgCoord(svg, ref index, length);
+
+							x = (x / scale - vx);
+							y = (y / scale - vy);
+							cgPath.AddLineToPoint(x, y);
+							break;
+
+						case 'Z':
+							index++; // skip Z
+							cgPath.CloseSubpath();
+							break;
+
+						default:
+							index++; // skip unknown op
+							break;
+					}
+				}
+
+				var mask = view.Layer.Mask as CAShapeLayer;
+				if (mask == null)
+				{
+					mask = new CAShapeLayer();
+					view.Layer.Mask = mask;
+				}
+
+				mask.FillColor = UIColor.Blue.CGColor; // anything but clear color
+				mask.Path = cgPath;
+				mask.FillRule = CAShapeLayer.FillRuleEvenOdd;
+			}
+		}
+	}
+
+	private float ReadNextSvgCoord(string svg, ref int position, long length)
+	{
+		float result = float.NaN;
+		if (position >= length)
+		{
+			return result;
+		}
+
+		if (svg[position] == ' ')
+		{
+			position++;
+		}
+
+		var endPos = position;
+		while (endPos < svg.Length && (char.IsDigit(svg[endPos]) || svg[endPos] == '.' || svg[endPos] == '-'))
+		{
+			endPos++;
+		}
+		var reading = svg.Substring(position, endPos - position).Trim();
+		DebugLog.Log(reading);
+		var coord = float.Parse(reading, CultureInfo.InvariantCulture);
+
+		position = endPos;
+		return coord;
 	}
 
 	public void InvalidateRender() => _skCanvasView?.LayoutSubviews();
