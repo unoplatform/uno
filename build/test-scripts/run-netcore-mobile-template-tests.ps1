@@ -337,7 +337,9 @@ $projects =
     @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-maccatalyst", $sdkFeatures), @("macOS", "NetCore")),
     @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-desktop"), @("macOS", "NetCore")),
     @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-desktop", $sdkFeatures), @("macOS", "NetCore")),
-    @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-f", "net9.0-windows10.0.19041"), @()),
+
+    # Default mode for the template is WindowsAppSDKSelfContained=true, which requires specifying a target platform.
+    @(3, "5.3/uno53net9blank/uno53net9blank/uno53net9blank.csproj", @("-p:Platform=x86" , "-p:TargetFramework=net9.0-windows10.0.19041"), @()),
 
     # 5.3 Library
     @(3, "5.3/uno53net9Lib/uno53net9Lib.csproj", @(), @("macOS", "NetCore")),
