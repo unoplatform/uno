@@ -915,8 +915,7 @@ void uno_window_clip_svg(UNOWindow* window, const char* svg)
             // other
             NSTimeInterval ts = event.timestamp;
             
-            // The precision of the frameId is 10 frame per ms ... which should be enough
-            data.frameId = (uint)(ts * 1000.0 * 10.0);
+            data.frameId = (uint)(ts * 10.0);
 
             NSDate *now = [[NSDate alloc] init];
             NSDate *boot = [[NSDate alloc] initWithTimeInterval:uno_get_system_uptime() sinceDate:now];

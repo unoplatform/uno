@@ -1,4 +1,5 @@
-﻿using Uno.Extensions;
+﻿using System;
+using Uno.Extensions;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Wasm;
 
@@ -28,5 +29,12 @@ namespace Microsoft.UI.Xaml.Shapes
 
 			return finalSize;
 		}
+
+		private protected override string GetBBoxCacheKeyImpl() =>
+#if DEBUG
+			throw new InvalidOperationException("Elipse doesnt use GetBBox. Should the impl change in the future, add key-gen and invalidation mechanism.");
+#else
+			null;
+#endif
 	}
 }

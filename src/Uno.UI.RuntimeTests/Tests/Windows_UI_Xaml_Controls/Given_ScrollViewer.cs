@@ -1511,6 +1511,44 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await UITestHelper.Load(SUT, x => x.IsLoaded);
 		}
 
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR || !UNO_HAS_MANAGED_SCROLL_PRESENTER
+		[Ignore("This test only applies to managed scroll presenter and requires input injector.")]
+#endif
+		public async Task When_ScrollViewer_Touch_Scrolled()
+		{
+			var stackPanel = new StackPanel();
+			var random = Random.Shared;
+			for (int i = 0; i < 10; i++)
+			{
+				stackPanel.Children.Add(
+					new Rectangle()
+					{
+						Width = 50,
+						Height = 50,
+						Fill = new SolidColorBrush(Color.FromArgb(255, (byte)random.Next(256), (byte)random.Next(256), (byte)random.Next(256)))
+					});
+			}
+
+			var SUT = new ScrollViewer
+			{
+				Height = 300,
+				Content = stackPanel
+			};
+
+			await UITestHelper.Load(SUT);
+
+			var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+			using var finger = input.GetFinger();
+			var bounds = SUT.GetAbsoluteBounds();
+			finger.Press(bounds.GetCenter());
+			finger.MoveTo(bounds.GetCenter().Offset(0, -50));
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(50, SUT.VerticalOffset);
+		}
+
+		[TestMethod]
 		public async Task When_Zero_Size_With_Margin()
 		{
 			var SUT = new ScrollViewer()
