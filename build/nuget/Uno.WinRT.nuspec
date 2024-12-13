@@ -28,6 +28,12 @@
 		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net8.0-ios17.0\Uno.UI.Dispatching.dll" target="lib\net8.0-ios17.0" />
 		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net8.0-ios17.0\Uno.UI.Dispatching.pdb" target="lib\net8.0-ios17.0" />
 
+		<!-- net8.0-tvos17.0 -->
+		<file src="..\..\src\Uno.UWP\Bin\Uno.netcoremobile\Release\net8.0-tvos17.0\Uno.dll" target="lib\net8.0-tvos17.0" />
+		<file src="..\..\src\Uno.UWP\Bin\Uno.netcoremobile\Release\net8.0-tvos17.0\Uno.pdb" target="lib\net8.0-tvos17.0" />
+		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net8.0-tvos17.0\Uno.UI.Dispatching.dll" target="lib\net8.0-tvos17.0" />
+		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net8.0-tvos17.0\Uno.UI.Dispatching.pdb" target="lib\net8.0-tvos17.0" />
+
 		<!-- net8.0-maccatalyst17.0 -->
 		<file src="..\..\src\Uno.UWP\Bin\Uno.netcoremobile\Release\net8.0-maccatalyst17.0\Uno.dll" target="lib\net8.0-maccatalyst17.0" />
 		<file src="..\..\src\Uno.UWP\Bin\Uno.netcoremobile\Release\net8.0-maccatalyst17.0\Uno.pdb" target="lib\net8.0-maccatalyst17.0" />
@@ -51,6 +57,12 @@
 		<file src="..\..\src\Uno.UWP\Bin\Uno.netcoremobile\Release\net9.0-ios18.0\Uno.pdb" target="lib\net9.0-ios18.0" />
 		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net9.0-ios18.0\Uno.UI.Dispatching.dll" target="lib\net9.0-ios18.0" />
 		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net9.0-ios18.0\Uno.UI.Dispatching.pdb" target="lib\net9.0-ios18.0" />
+
+		<!-- net9.0-tvos18.0 -->
+		<file src="..\..\src\Uno.UWP\Bin\Uno.netcoremobile\Release\net9.0-tvos18.0\Uno.dll" target="lib\net9.0-tvos18.0" />
+		<file src="..\..\src\Uno.UWP\Bin\Uno.netcoremobile\Release\net9.0-tvos18.0\Uno.pdb" target="lib\net9.0-tvos18.0" />
+		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net9.0-tvos18.0\Uno.UI.Dispatching.dll" target="lib\net9.0-tvos18.0" />
+		<file src="..\..\src\Uno.UI.Dispatching\Bin\Uno.UI.Dispatching.netcoremobile\Release\net9.0-tvos18.0\Uno.UI.Dispatching.pdb" target="lib\net9.0-tvos18.0" />
 
 		<!-- net9.0-maccatalyst18.0 -->
 		<file src="..\..\src\Uno.UWP\Bin\Uno.netcoremobile\Release\net9.0-maccatalyst18.0\Uno.dll" target="lib\net9.0-maccatalyst18.0" />

@@ -23,6 +23,10 @@
 		<file src="..\..\src\Uno.Foundation\Bin\Uno.Foundation.netcoremobile\Release\net8.0-ios17.0\Uno.Foundation.dll" target="lib\net8.0-ios17.0" />
 		<file src="..\..\src\Uno.Foundation\Bin\Uno.Foundation.netcoremobile\Release\net8.0-ios17.0\Uno.Foundation.pdb" target="lib\net8.0-ios17.0" />
 
+		<!-- net8.0-tvos17.0 -->
+		<file src="..\..\src\Uno.Foundation\Bin\Uno.Foundation.netcoremobile\Release\net8.0-tvos17.0\Uno.Foundation.dll" target="lib\net8.0-tvos17.0" />
+		<file src="..\..\src\Uno.Foundation\Bin\Uno.Foundation.netcoremobile\Release\net8.0-tvos17.0\Uno.Foundation.pdb" target="lib\net8.0-tvos17.0" />
+
 		<!-- net8.0-maccatalyst17.0 -->
 		<file src="..\..\src\Uno.Foundation\Bin\Uno.Foundation.netcoremobile\Release\net8.0-maccatalyst17.0\Uno.Foundation.dll" target="lib\net8.0-maccatalyst17.0" />
 		<file src="..\..\src\Uno.Foundation\Bin\Uno.Foundation.netcoremobile\Release\net8.0-maccatalyst17.0\Uno.Foundation.pdb" target="lib\net8.0-maccatalyst17.0" />
@@ -38,6 +42,10 @@
 		<!-- net9.0-ios18.0 -->
 		<file src="..\..\src\Uno.Foundation\Bin\Uno.Foundation.netcoremobile\Release\net9.0-ios18.0\Uno.Foundation.dll" target="lib\net9.0-ios18.0" />
 		<file src="..\..\src\Uno.Foundation\Bin\Uno.Foundation.netcoremobile\Release\net9.0-ios18.0\Uno.Foundation.pdb" target="lib\net9.0-ios18.0" />
+
+		<!-- net9.0-tvos18.0 -->
+		<file src="..\..\src\Uno.Foundation\Bin\Uno.Foundation.netcoremobile\Release\net9.0-tvos18.0\Uno.Foundation.dll" target="lib\net9.0-tvos18.0" />
+		<file src="..\..\src\Uno.Foundation\Bin\Uno.Foundation.netcoremobile\Release\net9.0-tvos18.0\Uno.Foundation.pdb" target="lib\net9.0-tvos18.0" />
 
 		<!-- net9.0-maccatalyst18.0 -->
 		<file src="..\..\src\Uno.Foundation\Bin\Uno.Foundation.netcoremobile\Release\net9.0-maccatalyst18.0\Uno.Foundation.dll" target="lib\net9.0-maccatalyst18.0" />
