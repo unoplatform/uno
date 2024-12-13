@@ -127,13 +127,13 @@ namespace TestRepro
 			OnInitializeCompleted();
 
 			Bindings = new MainPage_Bindings(this);
-			((global::Microsoft.UI.Xaml.FrameworkElement)this).Loading += (s, e) =>
-			{
-				__that.Bindings.UpdateResources();
-			}
-			;
+			((global::Microsoft.UI.Xaml.FrameworkElement)this).Loading += __UpdateBindingsAndResources;
 		}
 		partial void OnInitializeCompleted();
+		private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
+		{
+			this.Bindings.UpdateResources();
+		}
 							private void ApplyMethod_1(global::Microsoft.UI.Xaml.Style __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
 					{
 						global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(__p1, "OriginalSourceLocation", "file:///C:/Project/0/MainPage.xaml#L7:6");
@@ -214,14 +214,9 @@ namespace TestRepro
 				}
 				.GenericApply(__that, __nameScope, (ApplyMethod_12				))
 				;
-				if (__rootInstance is FrameworkElement __fe) 
+				if (__rootInstance is FrameworkElement __fe)
 				{
-					var owner = this;
-					__fe.Loading += delegate
-					{
-						_component_0.UpdateResourceBindings();
-					}
-					;
+					__fe.Loading += __UpdateBindingsAndResources;
 				}
 				if (__rootInstance is DependencyObject d)
 				{
@@ -234,7 +229,7 @@ namespace TestRepro
 				}
 				return __rootInstance;
 			}
-			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder { get; set; } = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder { get; } = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
 			private global::Microsoft.UI.Xaml.Controls.Button _component_0
 			{
 				get
@@ -245,6 +240,11 @@ namespace TestRepro
 				{
 					_component_0_Holder.Instance = value;
 				}
+			}
+			private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
+			{
+				var owner = this;
+				_component_0.UpdateResourceBindings();
 			}
 									private void ApplyMethod_10(global::Microsoft.UI.Xaml.Controls.TextBlock __p1, _MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPageSC0 __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
 						{
@@ -275,7 +275,7 @@ namespace TestRepro
 				}
 
 		}
-		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder { get; set; } = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder { get; } = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
 		private global::Microsoft.UI.Xaml.Controls.Page _component_0
 		{
 			get

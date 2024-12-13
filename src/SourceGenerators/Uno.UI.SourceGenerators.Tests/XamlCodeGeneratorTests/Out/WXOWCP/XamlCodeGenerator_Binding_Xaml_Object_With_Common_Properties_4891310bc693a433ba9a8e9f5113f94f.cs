@@ -127,13 +127,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 			OnInitializeCompleted();
 
 			Bindings = new Binding_Xaml_Object_With_Common_Properties_Bindings(this);
-			((global::Microsoft.UI.Xaml.FrameworkElement)this).Loading += (s, e) =>
-			{
-				__that.Bindings.UpdateResources();
-			}
-			;
+			((global::Microsoft.UI.Xaml.FrameworkElement)this).Loading += __UpdateBindingsAndResources;
 		}
 		partial void OnInitializeCompleted();
+		private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
+		{
+			this.Bindings.UpdateResources();
+		}
 		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _topLevelSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
 		public global::Microsoft.UI.Xaml.Controls.TextBlock topLevel
 		{

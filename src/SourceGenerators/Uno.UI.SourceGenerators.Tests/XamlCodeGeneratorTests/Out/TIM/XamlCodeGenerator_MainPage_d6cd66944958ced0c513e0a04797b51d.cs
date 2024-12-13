@@ -158,14 +158,14 @@ namespace TestRepro
 			OnInitializeCompleted();
 
 			Bindings = new MainPage_Bindings(this);
-			((global::Microsoft.UI.Xaml.FrameworkElement)this).Loading += (s, e) =>
-			{
-				__that.Bindings.Update();
-				__that.Bindings.UpdateResources();
-			}
-			;
+			((global::Microsoft.UI.Xaml.FrameworkElement)this).Loading += __UpdateBindingsAndResources;
 		}
 		partial void OnInitializeCompleted();
+		private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
+		{
+			this.Bindings.Update();
+			this.Bindings.UpdateResources();
+		}
 		private global::System.Action<global::Microsoft.UI.Xaml.Controls.Primitives.ButtonBase> __0_Click_P1_Button_Click_Builder;
 		private global::System.Action<global::Microsoft.UI.Xaml.Controls.Primitives.ButtonBase> __1_Click_P2_Button_Click_Builder;
 		private global::System.Action<global::Microsoft.UI.Xaml.Controls.Primitives.ButtonBase> __2_Click_P3_Button_Click_Builder;

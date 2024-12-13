@@ -117,13 +117,13 @@ namespace TestRepro
 			OnInitializeCompleted();
 
 			Bindings = new MainPage_Bindings(this);
-			((global::Microsoft.UI.Xaml.FrameworkElement)this).Loading += (s, e) =>
-			{
-				__that.Bindings.UpdateResources();
-			}
-			;
+			((global::Microsoft.UI.Xaml.FrameworkElement)this).Loading += __UpdateBindingsAndResources;
 		}
 		partial void OnInitializeCompleted();
+		private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
+		{
+			this.Bindings.UpdateResources();
+		}
 		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
 		private global::Microsoft.UI.Xaml.Controls.Page _component_0
 		{

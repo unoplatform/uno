@@ -157,14 +157,9 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 				}
 				))
 				;
-				if (__rootInstance is FrameworkElement __fe) 
+				if (__rootInstance is FrameworkElement __fe)
 				{
-					var owner = this;
-					__fe.Loading += delegate
-					{
-						_component_0.UpdateResourceBindings();
-					}
-					;
+					__fe.Loading += __UpdateBindingsAndResources;
 				}
 				if (__rootInstance is DependencyObject d)
 				{
@@ -202,6 +197,11 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 				}
 			}
 			private global::Microsoft.UI.Xaml.Data.ElementNameSubject _topLevelSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: true, name: "topLevel");
+			private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
+			{
+				var owner = this;
+				_component_0.UpdateResourceBindings();
+			}
 		}
 	}
 }

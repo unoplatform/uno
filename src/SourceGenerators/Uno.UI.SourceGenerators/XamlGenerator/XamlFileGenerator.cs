@@ -385,6 +385,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 							BuildPartials(writer);
 
+							BuildEventHandlers(writer);
+
 							BuildExplicitApplyMethods(writer);
 
 							BuildBackingFields(writer);
@@ -826,9 +828,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
+		private void BuildEventHandlers(IIndentedStringBuilder writer)
+		{
+			foreach (var eventHandler in CurrentScope.EventHandlers)
+			{
+				eventHandler(writer);
+			}
+		}
+
 		private void BuildBackingFields(IIndentedStringBuilder writer)
 		{
-			var accessors = _isHotReloadEnabled ? " { get; set; }" : null; // We use property for HR so we can remove them without causing rude edit.
+			var rAccessor = _isHotReloadEnabled ? " { get; set; }" : null; // We use property for HR so we can remove them without causing rude edit.
 
 			TryAnnotateWithGeneratorSource(writer);
 			foreach (var backingFieldDefinition in CurrentScope.BackingFields.Distinct())
@@ -840,8 +850,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					CurrentScope.ReferencedElementNames.Remove(sanitizedFieldName);
 				}
 
-				writer.AppendLineIndented($"private global::Microsoft.UI.Xaml.Data.ElementNameSubject _{sanitizedFieldName}Subject{accessors} = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();");
-
+				writer.AppendLineIndented($"private global::Microsoft.UI.Xaml.Data.ElementNameSubject _{sanitizedFieldName}Subject{rAccessor} = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();");
 
 				using (writer.BlockInvariant($"{FormatAccessibility(backingFieldDefinition.Accessibility)} {backingFieldDefinition.GlobalizedTypeName} {sanitizedFieldName}"))
 				{
@@ -860,13 +869,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			foreach (var xBindEventHandler in CurrentScope.xBindEventsHandlers)
 			{
 				// Create load-time subjects for ElementName references not in local scope
-				writer.AppendLineIndented($"{FormatAccessibility(xBindEventHandler.Accessibility)} {xBindEventHandler.GlobalizedTypeName} {xBindEventHandler.Name}{accessors ?? ";"}");
+				writer.AppendLineIndented($"{FormatAccessibility(xBindEventHandler.Accessibility)} {xBindEventHandler.GlobalizedTypeName} {xBindEventHandler.Name}{rAccessor ?? ";"}");
 			}
 
 			foreach (var remainingReference in CurrentScope.ReferencedElementNames)
 			{
 				// Create load-time subjects for ElementName references not in local scope
-				writer.AppendLineIndented($"private global::Microsoft.UI.Xaml.Data.ElementNameSubject _{remainingReference}Subject{accessors} = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: true, name: \"{remainingReference}\");");
+				writer.AppendLineIndented($"private global::Microsoft.UI.Xaml.Data.ElementNameSubject _{remainingReference}Subject{rAccessor} = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: true, name: \"{remainingReference}\");");
 			}
 		}
 
@@ -956,6 +965,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 								BuildBackingFields(writer);
 
+								BuildEventHandlers(writer);
+
 								BuildExplicitApplyMethods(writer);
 
 								BuildChildSubclasses(writer);
@@ -1022,23 +1033,34 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				// Casting to FrameworkElement or Window is important to avoid issues when there
 				// is a member named Loading or Activated that shadows the ones from FrameworkElement/Window
-				var eventSubscription = isFrameworkElement
-					? "((global::Microsoft.UI.Xaml.FrameworkElement)this).Loading += (s, e) =>"
-					: "((global::Microsoft.UI.Xaml.Window)this).Activated += (s, e) =>";
 
-				using (writer.BlockInvariant(eventSubscription))
+				string callbackSignature;
+				if (isFrameworkElement)
 				{
-					if (hasXBindExpressions)
-					{
-						writer.AppendLineIndented("__that.Bindings.Update();");
-					}
-
-					writer.AppendLineIndented("__that.Bindings.UpdateResources();");
+					callbackSignature = "private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)";
+					writer.AppendLineIndented("((global::Microsoft.UI.Xaml.FrameworkElement)this).Loading += __UpdateBindingsAndResources;");
+				}
+				else
+				{
+					callbackSignature = "private void __UpdateBindingsAndResources(object s, global::Microsoft.UI.Xaml.WindowActivatedEventArgs e)";
+					writer.AppendLineIndented("((global::Microsoft.UI.Xaml.Window)this).Activated += __UpdateBindingsAndResources;");
 				}
 
-				writer.AppendLineIndented(";");
+				CurrentScope.EventHandlers.Add(eventWriter =>
+				{
+					using (eventWriter.BlockInvariant(callbackSignature))
+					{
+						if (hasXBindExpressions)
+						{
+							eventWriter.AppendLineIndented("this.Bindings.Update();");
+						}
+
+						eventWriter.AppendLineIndented("this.Bindings.UpdateResources();");
+					}
+				});
 			}
 		}
+
 		private void BuildCompiledBindingsInitializerForTemplate(IIndentedStringBuilder writer)
 		{
 			TryAnnotateWithGeneratorSource(writer);
@@ -1046,17 +1068,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (hasResourceExtensions)
 			{
-				using (writer.BlockInvariant($"if (__rootInstance is FrameworkElement __fe) "))
+				using (writer.BlockInvariant($"if (__rootInstance is FrameworkElement __fe)"))
 				{
-					writer.AppendLineIndented($"var owner = this;");
+					writer.AppendLineIndented("__fe.Loading += __UpdateBindingsAndResources;");
 
-					using (writer.BlockInvariant($"__fe.Loading += delegate"))
+					CurrentScope.EventHandlers.Add(eventWriter =>
 					{
-						BuildComponentResouceBindingUpdates(writer);
-						BuildXBindApply(writer);
-						BuildxBindEventHandlerInitializers(writer, CurrentScope.xBindEventsHandlers);
-					}
-					writer.AppendLineIndented(";");
+						using (writer.BlockInvariant("private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)"))
+						{
+							eventWriter.AppendLineIndented("var owner = this;");
+
+							BuildComponentResouceBindingUpdates(eventWriter);
+							BuildXBindApply(eventWriter);
+							BuildxBindEventHandlerInitializers(eventWriter, CurrentScope.xBindEventsHandlers);
+						}
+					});
 				}
 			}
 		}
@@ -1110,7 +1136,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var typeName = GetType(current.XamlObject.Type).GetFullyQualifiedTypeIncludingGlobal();
 
 				var isWeak = current.IsWeakReference ? "true" : "false";
-				var accessors = _isHotReloadEnabled ? " { get; set; }" : ""; // We use property for HR so we can remove them without causing rude edit.
+				var accessors = _isHotReloadEnabled ? " { get; }" : ""; // We use property for HR so we can remove them without causing rude edit.
 				writer.AppendLineIndented($"private global::Microsoft.UI.Xaml.Markup.ComponentHolder {componentName}_Holder{accessors} = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: {isWeak});");
 
 				using (writer.BlockInvariant($"private {typeName} {componentName}"))
@@ -1392,6 +1418,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						}
 
 						BuildXBindTryGetDeclarations(writer);
+
+						BuildEventHandlers(writer);
 					}
 				}
 
@@ -1729,6 +1757,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 							writer.AppendLine();
 
+							BuildEventHandlers(writer);
 							BuildChildSubclasses(writer);
 							BuildXBindTryGetDeclarations(writer);
 						}
@@ -1813,16 +1842,20 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (resourcesTogenerateUpdateBindings.Length > 0)
 			{
-				using (writer.BlockInvariant("Loading += (s, e) =>"))
-				{
-					foreach (var namedResource in resourcesTogenerateUpdateBindings)
-					{
-						var type = GetType(namedResource.Value.Type);
+				writer.AppendLineIndented("Loading += __UpdateNamedResources;");
 
-						writer.AppendLineIndented($"{namedResource.Key}.UpdateResourceBindings();");
+				CurrentScope.EventHandlers.Add(eventWriter =>
+				{
+					using (eventWriter.BlockInvariant("private void __UpdateNamedResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)"))
+					{
+						foreach (var namedResource in resourcesTogenerateUpdateBindings)
+						{
+							var type = GetType(namedResource.Value.Type);
+
+							eventWriter.AppendLineIndented($"{namedResource.Key}.UpdateResourceBindings();");
+						}
 					}
-				}
-				writer.AppendLineIndented(";");
+				});
 			}
 		}
 
@@ -3686,6 +3719,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								writer.AppendLineIndented($"global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(__owner, \"{eventTarget}\", {thatVariableName});");
 							}
 
+							//CurrentScope.ExplicitApplyMethods ICI
 							using (writer.BlockInvariant($"/* first level targetMethod:{targetContext.targetMethod} */ __owner.{member.Member.Name} += ({parms}) => "))
 							{
 								if (isStaticTarget)
@@ -6409,11 +6443,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 								innerWriter.AppendLineIndented($"var {componentName}_update_That = ({CurrentResourceOwnerName} as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;");
 
-								if (nameMember != null)
-								{
-									innerWriter.AppendLineIndented($"var {componentName}_update_subject_capture = _{nameMember.Value}Subject;");
-								}
-
 								using (innerWriter.BlockInvariant($"void {componentName}_update(global::Microsoft.UI.Xaml.ElementStub sender)"))
 								{
 									using (innerWriter.BlockInvariant($"if ({componentName}_update_That.Target is {_xClassName} that)"))
@@ -6433,7 +6462,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 											var elementNames = FindNamesIn(definition);
 											foreach (var elementName in elementNames)
 											{
-												innerWriter.AppendLineIndented($"_{elementName}Subject.ElementInstance = null;");
+												innerWriter.AppendLineIndented($"that._{elementName}Subject.ElementInstance = null;");
 											}
 										}
 									}

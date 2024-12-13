@@ -98,7 +98,6 @@ namespace TestRepro
 					);
 					__that._component_1 = __p1;
 					var _component_1_update_That = (this as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;
-					var _component_1_update_subject_capture = _LoadElementSubject;
 					void _component_1_update(global::Microsoft.UI.Xaml.ElementStub sender)
 					{
 						if (_component_1_update_That.Target is global::TestRepro.MainPage that)
@@ -110,7 +109,7 @@ namespace TestRepro
 							}
 							else
 							{
-								_LoadElementSubject.ElementInstance = null;
+								that._LoadElementSubject.ElementInstance = null;
 							}
 						}
 					}
@@ -204,14 +203,14 @@ namespace TestRepro
 			OnInitializeCompleted();
 
 			Bindings = new MainPage_Bindings(this);
-			((global::Microsoft.UI.Xaml.FrameworkElement)this).Loading += (s, e) =>
-			{
-				__that.Bindings.Update();
-				__that.Bindings.UpdateResources();
-			}
-			;
+			((global::Microsoft.UI.Xaml.FrameworkElement)this).Loading += __UpdateBindingsAndResources;
 		}
 		partial void OnInitializeCompleted();
+		private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
+		{
+			this.Bindings.Update();
+			this.Bindings.UpdateResources();
+		}
 		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _LoadElementSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
 		public global::Microsoft.UI.Xaml.Controls.Primitives.ToggleButton LoadElement
 		{

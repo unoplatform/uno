@@ -115,13 +115,13 @@ namespace TestRepro
 			OnInitializeCompleted();
 
 			Bindings = new MainPage_Bindings(this);
-			((global::Microsoft.UI.Xaml.FrameworkElement)this).Loading += (s, e) =>
-			{
-				__that.Bindings.UpdateResources();
-			}
-			;
+			((global::Microsoft.UI.Xaml.FrameworkElement)this).Loading += __UpdateBindingsAndResources;
 		}
 		partial void OnInitializeCompleted();
+		private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
+		{
+			this.Bindings.UpdateResources();
+		}
 							private void ApplyMethod_1(global::Microsoft.UI.Xaml.Style __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
 					{
 						global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(__p1, "OriginalSourceLocation", "file:///C:/Project/0/MainPage.xaml#L7:6");
@@ -155,7 +155,7 @@ namespace TestRepro
 				__p1.CreationComplete();
 			}
 
-		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder { get; set; } = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder { get; } = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
 		private global::Microsoft.UI.Xaml.Controls.Page _component_0
 		{
 			get
