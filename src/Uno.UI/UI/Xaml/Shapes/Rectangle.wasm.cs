@@ -1,4 +1,5 @@
 ﻿using Uno.Extensions;
+using System;
 using Uno.UI;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Media;
@@ -27,5 +28,12 @@ namespace Microsoft.UI.Xaml.Shapes
 
 			return finalSize;
 		}
+
+		private protected override string GetBBoxCacheKeyImpl() =>
+#if DEBUG
+			throw new InvalidOperationException("Rectangle doesnt use GetBBox. Should the impl change in the future, add key-gen and invalidation mechanism");
+#else
+			null;
+#endif
 	}
 }
