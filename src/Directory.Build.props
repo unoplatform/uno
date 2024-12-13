@@ -226,8 +226,6 @@
 		
 		<!-- Required for studio -->
 		<NoWarn>$(NoWarn);UNO0008</NoWarn>
-		
-		<NoWarn>$(NoWarn);NU1903</NoWarn>
 
 		<!-- On CI, UWP source is generated in a job running on Windows (CRLF EOLs). -->
 		<!-- When the artifacts are downloaded in a job running on Linux, IDE0055 will complain (expecting LF EOLs) -->

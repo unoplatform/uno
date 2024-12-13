@@ -6,9 +6,6 @@
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override.props" />
-	<PropertyGroup>
-		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-	</PropertyGroup>
 
 	<PropertyGroup>
 		<AssemblyName>Uno.UI</AssemblyName>
