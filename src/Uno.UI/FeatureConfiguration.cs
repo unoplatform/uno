@@ -740,7 +740,7 @@ namespace Uno.UI
 
 		public static class DatePicker
 		{
-#if __APPLE_UIKIT__ || __TVOS__
+#if __APPLE_UIKIT__
 			/// <summary>
 			/// Gets or set whether the <see cref="Microsoft.UI.Xaml.Controls.DatePicker" /> rendered matches the Legacy Style or not.
 			/// </summary>
