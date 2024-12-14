@@ -39,6 +39,14 @@ public partial class ApiInformation
 				// See C:\Program Files (x86)\Windows Kits\10\References\[version]\Microsoft.UI.Xaml.Hosting.HostingContract
 				return majorVersion <= 5; // SDK 10.0.22000.0
 
+			case "Microsoft.Windows.ApplicationModel.Resources.MrtCoreContract":
+				// See .nuget\packages\microsoft.windowsappsdk\1.6.241114003\lib\net6.0-windows10.0.18362.0\Microsoft.Windows.ApplicationModel.Resources.Projection.dll
+				return majorVersion <= 1; // WinAppSDK 1.6.241114003
+
+			case "Microsoft.Windows.AppLifecycle.AppLifecycleContract":
+				// See .nuget\packages\microsoft.windowsappsdk\1.6.241114003\lib\net6.0-windows10.0.18362.0\Microsoft.Windows.AppLifecycle.Projection.dll
+				return majorVersion <= 1; // WinAppSDK 1.6.241114003
+
 			case "Uno.WinUI":
 #if HAS_UNO_WINUI
 				return true;
