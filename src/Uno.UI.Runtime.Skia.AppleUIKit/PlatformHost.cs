@@ -32,7 +32,7 @@ public class PlatformHost : ISkiaApplicationHost
 
 	internal static Func<Application>? AppBuilder => _appBuilder;
 
-	public Task Run()
+	public void Run()
 	{
 		try
 		{
@@ -44,7 +44,5 @@ public class PlatformHost : ISkiaApplicationHost
 		{
 			Console.WriteLine($"App failed to initialize: {e}");
 		}
-
-		return Task.CompletedTask;
 	}
 }
