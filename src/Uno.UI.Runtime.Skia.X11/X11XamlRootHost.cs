@@ -545,24 +545,24 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	void IXamlRootHost.InvalidateRender()
 	{
 		if (Interlocked.Exchange(ref _renderScheduled, 1) == 0)
-        {
+		{
 			// Don't use ticks, which seem to mess things up for some reason
 			var now = _stopwatch.ElapsedMilliseconds;
-            var delta = now - Interlocked.Exchange(ref _lastRenderTime, now);
+			var delta = now - Interlocked.Exchange(ref _lastRenderTime, now);
 			if (delta > TimeSpan.FromSeconds(1.0 / X11ApplicationHost.RenderFrameRate).TotalMilliseconds)
-        	{
-        		QueueAction(this, () =>
-        		{
-        			_renderScheduled = 0;
+			{
+				QueueAction(this, () =>
+				{
+					_renderScheduled = 0;
 					_renderer?.Render();
-        		});
-        	}
-        	else
-        	{
-        		_renderTimer.Interval = TimeSpan.FromTicks(delta);
+				});
+			}
+			else
+			{
+				_renderTimer.Interval = TimeSpan.FromTicks(delta);
 				_renderTimer.Start();
-        	}
-        }
+			}
+		}
 	}
 
 	private void RaiseConfigureCallback()
@@ -571,7 +571,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		{
 			// Don't use ticks, which seem to mess things up for some reason
 			var now = _stopwatch.ElapsedMilliseconds;
-            var delta = now - Interlocked.Exchange(ref _lastConfigureTime, now);
+			var delta = now - Interlocked.Exchange(ref _lastConfigureTime, now);
 			if (delta > TimeSpan.FromSeconds(1.0 / X11ApplicationHost.RenderFrameRate).TotalMilliseconds)
 			{
 				QueueAction(this, () =>
