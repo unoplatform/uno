@@ -64,6 +64,7 @@
 		<CompilerVisibleProperty Include="SolutionName" />
 		<CompilerVisibleProperty Include="VSIDEResolvedNonMSBuildProjectOutputs" />
 		<CompilerVisibleProperty Include="DevEnvDir" />
+		<CompilerVisibleProperty Include="MSBuildVersion" />
 
 		<CompilerVisibleProperty Include="UseWPF" />
 		<CompilerVisibleProperty Include="IsUnoHead" />

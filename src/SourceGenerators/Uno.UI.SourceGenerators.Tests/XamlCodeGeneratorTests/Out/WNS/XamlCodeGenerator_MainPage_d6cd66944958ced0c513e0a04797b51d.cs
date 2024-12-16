@@ -50,51 +50,55 @@ namespace TestRepro
 			"MyStyle"
 			] = 
 			new global::Uno.UI.Xaml.WeakResourceInitializer(this, __ResourceOwner_1 => 
-				new global::Microsoft.UI.Xaml.Style
-				{
-					TargetType = typeof(global::TestRepro.MyGrid),
-					// Source 0\MainPage.xaml (Line 8:4)
-					Setters = 
+			{
+				return 
+					new global::Microsoft.UI.Xaml.Style
 					{
-						new global::Microsoft.UI.Xaml.Setter
+						TargetType = typeof(global::TestRepro.MyGrid),
+						// Source 0\MainPage.xaml (Line 8:4)
+						Setters = 
 						{
-							Property = global::TestRepro.MyGrid.FirstStyleProperty,
-							Value = 							new global::Microsoft.UI.Xaml.Style
+							new global::Microsoft.UI.Xaml.Setter
 							{
-								TargetType = typeof(global::Microsoft.UI.Xaml.Controls.Button),
-								// Source 0\MainPage.xaml (Line 11:7)
+								Property = global::TestRepro.MyGrid.FirstStyleProperty,
+								Value = 								new global::Microsoft.UI.Xaml.Style
+								{
+									TargetType = typeof(global::Microsoft.UI.Xaml.Controls.Button),
+									// Source 0\MainPage.xaml (Line 11:7)
+								}
+								,
+								// Source 0\MainPage.xaml (Line 9:5)
 							}
 							,
-							// Source 0\MainPage.xaml (Line 9:5)
+							new global::Microsoft.UI.Xaml.Setter
+							{
+								Property = global::TestRepro.MyGrid.SecondProperty,
+								Value = "Hello",
+								// Source 0\MainPage.xaml (Line 14:5)
+							}
+							,
 						}
-						,
-						new global::Microsoft.UI.Xaml.Setter
-						{
-							Property = global::TestRepro.MyGrid.SecondProperty,
-							Value = "Hello",
-							// Source 0\MainPage.xaml (Line 14:5)
-						}
-						,
 					}
-				}
+				;
+			}
 			)
 			;
 			// Source 0\MainPage.xaml (Line 1:2)
 			;
 			
 			this
-			.GenericApply(((c4) => 
+			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 			{
-				// Source 0\MainPage.xaml (Line 1:2)
-				
-				// WARNING Property c4.base does not exist on {http://schemas.microsoft.com/winfx/2006/xaml/presentation}Page, the namespace is http://www.w3.org/XML/1998/namespace. This error was considered irrelevant by the XamlFileGenerator
+			// Source 0\MainPage.xaml (Line 1:2)
+			
+			// WARNING Property __p1.base does not exist on {http://schemas.microsoft.com/winfx/2006/xaml/presentation}Page, the namespace is http://www.w3.org/XML/1998/namespace. This error was considered irrelevant by the XamlFileGenerator
 			}
 			))
-			.GenericApply(((c5) => 
+			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 			{
-				// Class TestRepro.MainPage
-				global::Uno.UI.FrameworkElementHelper.SetBaseUri(c5, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-				c5.CreationComplete();
+			// Class TestRepro.MainPage
+			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+			__p1.CreationComplete();
 			}
 			))
 			;
@@ -118,6 +122,13 @@ namespace MyProject
 		public delegate void XamlApplyHandler1(global::Microsoft.UI.Xaml.Setter instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 		public static global::Microsoft.UI.Xaml.Setter MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Microsoft.UI.Xaml.Setter instance, XamlApplyHandler1 handler)
+		{
+			handler(instance);
+			return instance;
+		}
+		public delegate void XamlApplyHandler2(global::Microsoft.UI.Xaml.Controls.Page instance);
+		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+		public static global::Microsoft.UI.Xaml.Controls.Page MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Microsoft.UI.Xaml.Controls.Page instance, XamlApplyHandler2 handler)
 		{
 			handler(instance);
 			return instance;

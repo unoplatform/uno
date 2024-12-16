@@ -34,7 +34,6 @@ public class Given_TypeReplacement : BaseTestClass
 				var grid = (Grid)page.Content;
 				var component = (UserControl)grid.Children.Single();
 				Assert.AreNotEqual(oldComponent, component);
-				Assert.IsTrue(component.GetType().Name.Contains("#"));
 				Assert.AreEqual(1, Grid.GetRow(component));
 				Assert.AreEqual("Hello tag", component.Tag as string);
 				Assert.AreEqual(Microsoft.UI.Colors.Orange, ((SolidColorBrush)((Grid)component.Content).Background).Color);
@@ -60,8 +59,6 @@ public class Given_TypeReplacement : BaseTestClass
 			{
 				var component = (UserControl)page.Content;
 				Assert.AreNotEqual(oldComponent, component);
-				Assert.IsTrue(component.GetType().Name.Contains("#"));
-
 				Assert.IsNotNull(component.GetBindingExpression(FrameworkElement.TagProperty));
 
 				page.Tag2 = "Updated tag";

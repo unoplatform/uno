@@ -1,11 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<!-- There is no need to multi-target this test project -->
 		<!-- We keep it on the oldest supported TFM -->
 		<!-- Though we could use UnoTargetFrameworkOverride to choose between NetPrevious and NetCurrent -->
 		<!-- As of writing this comment, we don't see a need to do that, so we keep it simple -->
-		<TargetFramework>$(NetPrevious)</TargetFramework>
+		<TargetFramework>$(NetCurrent)</TargetFramework>
 		<IsPackable>false</IsPackable>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
@@ -41,10 +41,10 @@
 	<ItemGroup>
 		<PackageReference Include="MSTest" />
 		<PackageReference Include="coverlet.collector" Version="6.0.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis" Version="4.8.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.Features" Version="4.8.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.8.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing.MSTest" Version="1.1.2-beta1.23578.3" Condition="'$(UNO_UWP_BUILD)'=='false'" />
+		<PackageReference Include="Microsoft.CodeAnalysis" Version="4.12.0-3.final" />
+		<PackageReference Include="Microsoft.CodeAnalysis.Features" Version="4.12.0-3.final" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.12.0-3.final" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing.MSTest" Version="1.1.2" Condition="'$(UNO_UWP_BUILD)'=='false'" />
 		<PackageReference Include="FluentAssertions" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Condition="'$(UNO_UWP_BUILD)'=='false'" />
 		<PackageReference Include="NuGet.Packaging" Version="6.3.4" />
@@ -286,6 +286,7 @@
 
 	<!-- Disabled as tests explicitly use WinUI types -->
 	<ItemGroup Condition="'$(UNO_UWP_BUILD)'=='true'">
+		<Compile Remove="_Dotnet.cs" />
 		<Compile Remove="DependencyObjectGeneratorTests\Given_DependencyObjectGenerator.cs" />
 		<Compile Remove="DependencyPropertyGeneratorTests\Given_DependencyPropertyGenerator.cs" />
 		<Compile Remove="ImplementedRoutedEventsGeneratorTests\Given_ImplementedRoutedEventsGenerator.cs" />

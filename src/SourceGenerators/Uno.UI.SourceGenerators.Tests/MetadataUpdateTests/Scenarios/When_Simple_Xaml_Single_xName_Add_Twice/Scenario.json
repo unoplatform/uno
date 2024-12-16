@@ -13,46 +13,43 @@
 					"Diagnostics": []
 				}
 			]
-		},
+		}
+		,
 		{
 			"IsDebug": true,
 			"IsMono": true,
-			"PassResults": [
-				{
-					"MetadataUpdates": 0,
-					"Diagnostics": [
-						// error ENC0100: Adding field requires restarting the application.
-						{ "Id": "ENC0100" }
-					]
-				},
-				{
-					"MetadataUpdates": 0,
-					"Diagnostics": [
-						// MainPage_c2bc688a73eab5431d787dcd21fe32b9.cs(102,59): error ENC0100: Adding field requires restarting the application.
-						{ "Id": "ENC0100" },
-						{ "Id": "ENC0100" }
-					]
-				}
-			]
-		},
-		{
-			"IsDebug": false,
-			"IsMono": false,
 			"PassResults": [
 				{
 					"MetadataUpdates": 1,
 					"Diagnostics": []
 				},
 				{
+					"MetadataUpdates": 1,
+					"Diagnostics": []
+				}
+			]
+		},	
+		{
+			"IsDebug": false,
+			"IsMono": false,
+			"PassResults": [
+				{
 					"MetadataUpdates": 0,
 					"Diagnostics": [
-						// MainPage_c2bc688a73eab5431d787dcd21fe32b9.cs(68,83): error ENC0049: Ceasing to capture variable '__that' requires restarting the application.
-						{ "Id": "ENC0049" },
-						{ "Id": "ENC0049" },
-
-						// error ENC0009: Updating the type of method requires restarting the application.
-						{ "Id": "ENC0009" },
-						{ "Id": "ENC0009" }
+						// MainPage_e249a1283df7035b4d61c8549853c03e.cs(75,138): error ENC0053: Changing the parameters of lambda requires restarting the application.
+						{ "Id": "ENC0053" },
+						{ "Id": "ENC0053" },
+						{ "Id": "ENC0053" }
+					]
+				},
+				{
+					"MetadataUpdates": 0,
+					"Diagnostics": [
+						// MainPage_e249a1283df7035b4d61c8549853c03e.cs(75,138): error ENC0053: Changing the parameters of lambda requires restarting the application.
+						{ "Id": "ENC0053" },
+						{ "Id": "ENC0053" },
+						{ "Id": "ENC0053" },
+						{ "Id": "ENC0053" }
 					]
 				}
 			]
@@ -64,20 +61,20 @@
 				{
 					"MetadataUpdates": 0,
 					"Diagnostics": [
-						// error ENC0100: Adding field requires restarting the application.
-						{ "Id": "ENC0100" }
+						// MainPage_e249a1283df7035b4d61c8549853c03e.cs(75,138): error ENC0053: Changing the parameters of lambda requires restarting the application.
+						{ "Id": "ENC0053" },
+						{ "Id": "ENC0053" },
+						{ "Id": "ENC0053" }
 					]
 				},
 				{
 					"MetadataUpdates": 0,
 					"Diagnostics": [
-						// MainPage_c2bc688a73eab5431d787dcd21fe32b9.cs(68,83): error ENC0049: Ceasing to capture variable '__that' requires restarting the application.
-						{ "Id": "ENC0049" },
-						{ "Id": "ENC0049" },
-
-						// error ENC0009: Updating the type of method requires restarting the application.
-						{ "Id": "ENC0009" },
-						{ "Id": "ENC0009" }
+						// MainPage_e249a1283df7035b4d61c8549853c03e.cs(75,138): error ENC0053: Changing the parameters of lambda requires restarting the application.
+						{ "Id": "ENC0053" },
+						{ "Id": "ENC0053" },
+						{ "Id": "ENC0053" },
+						{ "Id": "ENC0053" }
 					]
 				}
 			]
