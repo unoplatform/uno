@@ -12,7 +12,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Uno.DevTools.Telemetry" Version="1.0.0-dev.18" />
+		<PackageReference Include="Uno.DevTools.Telemetry" Version="1.0.0-dev.24" />
 	</ItemGroup>
 
 	<ItemGroup>
