@@ -30,8 +30,8 @@ namespace Uno.UI.Controls
 		private readonly Grid _pageStack;
 		private Frame _frame;
 		private bool _isUpdatingStack;
-		private PageStackEntry _currentEntry;
-		private Queue<(PageStackEntry pageEntry, NavigationEventArgs args)> _stackUpdates = new Queue<(PageStackEntry, NavigationEventArgs)>();
+		private (Page page, NavigationTransitionInfo transitionInfo) _currentPage;
+		private readonly Queue<(Page page, NavigationEventArgs args)> _stackUpdates = new Queue<(Page, NavigationEventArgs)>();
 
 		public NativeFramePresenter()
 		{
@@ -61,7 +61,7 @@ namespace Uno.UI.Controls
 
 			if (_frame.Content is Page startPage)
 			{
-				_stackUpdates.Enqueue((_frame.CurrentEntry, new NavigationEventArgs(_frame.Content, NavigationMode.New, null, null, null, null)));
+				_stackUpdates.Enqueue((_frame.Content as Page, new NavigationEventArgs(_frame.Content, NavigationMode.New, null, null, null, null)));
 				_ = InvalidateStack();
 			}
 		}
@@ -88,7 +88,7 @@ namespace Uno.UI.Controls
 
 		private void OnNavigated(object sender, NavigationEventArgs e)
 		{
-			_stackUpdates.Enqueue((_frame.CurrentEntry, e));
+			_stackUpdates.Enqueue((_frame.Content as Page, e));
 
 			_ = InvalidateStack();
 		}
@@ -105,99 +105,96 @@ namespace Uno.UI.Controls
 			while (_stackUpdates.Any())
 			{
 				var navigation = _stackUpdates.Dequeue();
-				await UpdateStack(navigation.pageEntry, navigation.args);
+				await UpdateStack(navigation.page, navigation.args);
 			}
 
 			_isUpdatingStack = false;
 		}
 
-		private async Task UpdateStack(PageStackEntry entry, NavigationEventArgs e)
+		private async Task UpdateStack(Page newPage, NavigationEventArgs e)
 		{
-			var oldEntry = _currentEntry;
-			var newEntry = entry;
-
-			var newPage = newEntry?.Instance;
-			var oldPage = oldEntry?.Instance;
-
-			if (newPage == null || newPage == oldPage)
-			{
-				return;
-			}
-
 			switch (e.NavigationMode)
 			{
 				case NavigationMode.Forward:
 				case NavigationMode.New:
 				case NavigationMode.Refresh:
-					_pageStack.Children.Add(newPage);
-					if (GetIsAnimated(newEntry))
 					{
-						await newPage.AnimateAsync(GetEnterAnimation());
-						newPage.ClearAnimation();
-					}
-					if (oldPage is not null)
-					{
-						if (FeatureConfiguration.NativeFramePresenter.AndroidUnloadInactivePages)
+						if (_currentPage.page is { } oldPage)
+                        {
+							if (GetIsAnimated(_currentPage.transitionInfo))
+							{
+								await _currentPage.page.AnimateAsync(GetExitAnimation());
+								_currentPage.page.ClearAnimation();
+							}
+                        	if (FeatureConfiguration.NativeFramePresenter.AndroidUnloadInactivePages)
+                        	{
+                        		_pageStack.Children.Remove(oldPage);
+                        	}
+                        	else
+                        	{
+                        		oldPage.Visibility = Visibility.Collapsed;
+                        	}
+                        }
+						_pageStack.Children.Add(newPage);
+						if (GetIsAnimated(e.NavigationTransitionInfo))
 						{
-							_pageStack.Children.Remove(oldPage);
-						}
-						else
-						{
-							oldPage.Visibility = Visibility.Collapsed;
+							await newPage.AnimateAsync(GetEnterAnimation());
+							newPage.ClearAnimation();
 						}
 					}
 					break;
 				case NavigationMode.Back:
-					if (FeatureConfiguration.NativeFramePresenter.AndroidUnloadInactivePages)
 					{
-						_pageStack.Children.Insert(0, newPage);
-					}
-					else
-					{
-						newPage.Visibility = Visibility.Visible;
-					}
-					if (GetIsAnimated(oldEntry))
-					{
-						await oldPage.AnimateAsync(GetExitAnimation());
-						oldPage.ClearAnimation();
-					}
-
-					if (oldPage != null)
-					{
-						_pageStack.Children.Remove(oldPage);
-					}
-
-					if (!FeatureConfiguration.NativeFramePresenter.AndroidUnloadInactivePages)
-					{
-						// Remove pages from the grid that may have been removed from the BackStack list
-						// Those items are not removed on BackStack list changes to avoid interfering with the GoBack method's behavior.
-						for (var pageIndex = _pageStack.Children.Count - 1; pageIndex >= 0; pageIndex--)
-						{
-							var page = _pageStack.Children[pageIndex];
-							if (page == newPage)
-							{
-								break;
-							}
-
-							_pageStack.Children.Remove(page);
-						}
-
-						//In case we cleared the whole stack. This should never happen
-						if (_pageStack.Children.Count == 0)
+						if (FeatureConfiguration.NativeFramePresenter.AndroidUnloadInactivePages)
 						{
 							_pageStack.Children.Insert(0, newPage);
 						}
-					}
+						else
+						{
+							newPage.Visibility = Visibility.Visible;
+						}
 
+						if (_currentPage.page is {  } oldPage)
+						{
+							if (GetIsAnimated(_currentPage.transitionInfo))
+							{
+								await _currentPage.page.AnimateAsync(GetExitAnimation());
+								_currentPage.page.ClearAnimation();
+							}
+							_pageStack.Children.Remove(oldPage);
+						}
+
+						if (!FeatureConfiguration.NativeFramePresenter.AndroidUnloadInactivePages)
+						{
+							// Remove pages from the grid that may have been removed from the BackStack list
+							// Those items are not removed on BackStack list changes to avoid interfering with the GoBack method's behavior.
+							for (var pageIndex = _pageStack.Children.Count - 1; pageIndex >= 0; pageIndex--)
+							{
+								var page = _pageStack.Children[pageIndex];
+								if (page == newPage)
+								{
+									break;
+								}
+
+								_pageStack.Children.Remove(page);
+							}
+
+							//In case we cleared the whole stack. This should never happen
+							if (_pageStack.Children.Count == 0)
+							{
+								_pageStack.Children.Insert(0, newPage);
+							}
+						}
+					}
 					break;
 			}
 
-			_currentEntry = newEntry;
+			_currentPage = (newPage, e.NavigationTransitionInfo);
 		}
 
-		private static bool GetIsAnimated(PageStackEntry entry)
+		private static bool GetIsAnimated(NavigationTransitionInfo transitionInfo)
 		{
-			return !(entry.NavigationTransitionInfo is SuppressNavigationTransitionInfo);
+			return !(transitionInfo is SuppressNavigationTransitionInfo);
 		}
 
 		private static Animation GetEnterAnimation()
