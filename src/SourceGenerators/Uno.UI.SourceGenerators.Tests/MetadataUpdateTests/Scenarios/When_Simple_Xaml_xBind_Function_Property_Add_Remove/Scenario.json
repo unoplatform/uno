@@ -7,6 +7,10 @@
 				{
 					"MetadataUpdates": 1,
 					"Diagnostics": []
+				},
+				{
+					"MetadataUpdates": 1,
+					"Diagnostics": []
 				}
 			]
 		},
@@ -14,6 +18,10 @@
 			"IsDebug": true,
 			"IsMono": true,
 			"PassResults": [
+				{
+					"MetadataUpdates": 1,
+					"Diagnostics": []
+				},
 				{
 					"MetadataUpdates": 1,
 					"Diagnostics": []
@@ -28,6 +36,10 @@
 				{
 					"MetadataUpdates": 1,
 					"Diagnostics": []
+				},
+				{
+					"MetadataUpdates": 1,
+					"Diagnostics": []
 				}
 			]
 		},
@@ -36,6 +48,10 @@
 			"IsMono": true,
 			"UseXamlReaderReload": true,
 			"PassResults": [
+				{
+					"MetadataUpdates": 1,
+					"Diagnostics": []
+				},
 				{
 					"MetadataUpdates": 1,
 					"Diagnostics": []
