@@ -56,14 +56,6 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_UI_Toolkit
 		}
 #endif
 
-#if __MACOS__
-		[TestMethod]
-		public void When_IsMacOS()
-		{
-			Uno.UI.Helpers.PlatformRuntimeHelper.Current.IsMacOS().Should().BeTrue();
-		}
-#endif
-
 #if __WASM__
 		[TestMethod]
 		public void When_IsWebAssembly()
@@ -77,6 +69,12 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_UI_Toolkit
 		public void When_IsWindows()
 		{
 			Uno.UI.Toolkit.PlatformRuntimeHelper.Current.Should().Be(Uno.UI.Toolkit.UnoRuntimePlatform.Windows);
+		}
+#else
+		[TestMethod]
+		public void When_IsUnoIsKnown()
+		{
+			Uno.UI.Helpers.PlatformRuntimeHelper.Current.Should().NotBe(Uno.UI.Toolkit.UnoRuntimePlatform.Unknown);
 		}
 #endif
 	}
