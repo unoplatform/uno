@@ -604,39 +604,6 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		}
 
 		#region Helpers
-		private static IObservable<IList<string>> ToObservable(params FileSystemWatcher[] watchers)
-			=> Observable.Defer(() =>
-			{
-				// Create an observable instead of using the FromEventPattern which
-				// does not register to events properly.
-				// Renames are required for the WriteTemporary->DeleteOriginal->RenameToOriginal that
-				// Visual Studio uses to save files.
-
-				var subject = new Subject<string>();
-
-				void changed(object s, FileSystemEventArgs args) => subject.OnNext(args.FullPath);
-				void renamed(object s, RenamedEventArgs args) => subject.OnNext(args.FullPath);
-
-				foreach (var watcher in watchers)
-				{
-					watcher.Changed += changed;
-					watcher.Created += changed;
-					watcher.Renamed += renamed;
-				}
-
-				return subject
-					.Buffer(() => subject.Throttle(TimeSpan.FromMilliseconds(250))) // Wait for 250 ms without any file change
-					.Finally(() =>
-					{
-						foreach (var watcher in watchers)
-						{
-							watcher.Changed -= changed;
-							watcher.Created -= changed;
-							watcher.Renamed -= renamed;
-						}
-					});
-			});
-
 		private static IObservable<Task<ImmutableHashSet<string>>> To2StepsObservable(FileSystemWatcher[] watchers, Predicate<string> filter)
 			=> Observable.Create<Task<ImmutableHashSet<string>>>(o =>
 			{
