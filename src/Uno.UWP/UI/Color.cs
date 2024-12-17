@@ -40,7 +40,9 @@ namespace Windows.UI
 
 		internal Color(byte a, byte r, byte g, byte b)
 		{
-			_color = 0; // Required for field initialization rules in C#
+			// Required for field initialization rules in C#
+			_color = 0;
+
 			_b = b;
 			_g = g;
 			_r = r;
@@ -54,6 +56,7 @@ namespace Windows.UI
 			_g = 0;
 			_r = 0;
 			_a = 0;
+
 			_color = color;
 		}
 
