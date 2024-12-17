@@ -3,21 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class InputPropertyAttribute : global::System.Attribute
 	{
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public InputPropertyAttribute() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.InputPropertyAttribute", "InputPropertyAttribute.InputPropertyAttribute()");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.InputPropertyAttribute.InputPropertyAttribute()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.InputPropertyAttribute.InputPropertyAttribute()
-#if false
-		public string Name;
-#endif
+		// Skipping already declared field Microsoft.UI.Xaml.Controls.InputPropertyAttribute.Name
 	}
 }

@@ -41,13 +41,7 @@ namespace Microsoft.UI.Windowing
 		// Skipping already declared property TitleBar
 		// Skipping already declared property ClientSize
 		// Skipping already declared property DispatcherQueue
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Show(bool activateWindow)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindow", "void AppWindow.Show(bool activateWindow)");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Windowing.AppWindow.Show(bool)
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.IsShownInSwitchers.get
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.IsShownInSwitchers.set
 		// Forced skipping of method Microsoft.UI.Windowing.AppWindow.IsVisible.get
@@ -98,13 +92,7 @@ namespace Microsoft.UI.Windowing
 #endif
 		// Skipping already declared method Microsoft.UI.Windowing.AppWindow.SetPresenter(Microsoft.UI.Windowing.AppWindowPresenter)
 		// Skipping already declared method Microsoft.UI.Windowing.AppWindow.SetPresenter(Microsoft.UI.Windowing.AppWindowPresenterKind)
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Show()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Windowing.AppWindow", "void AppWindow.Show()");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Windowing.AppWindow.Show()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public void Destroy()

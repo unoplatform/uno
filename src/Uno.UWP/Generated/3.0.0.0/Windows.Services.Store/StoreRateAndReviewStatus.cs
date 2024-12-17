@@ -3,21 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Services.Store
 {
-#if false
+#if false || false || false || false || false || false || false
 	public enum StoreRateAndReviewStatus
 	{
-#if false
-		Succeeded = 0,
-#endif
-#if false
-		CanceledByUser = 1,
-#endif
-#if false
-		NetworkError = 2,
-#endif
-#if false
-		Error = 3,
-#endif
+		// Skipping already declared field Windows.Services.Store.StoreRateAndReviewStatus.Succeeded
+		// Skipping already declared field Windows.Services.Store.StoreRateAndReviewStatus.CanceledByUser
+		// Skipping already declared field Windows.Services.Store.StoreRateAndReviewStatus.NetworkError
+		// Skipping already declared field Windows.Services.Store.StoreRateAndReviewStatus.Error
 	}
 #endif
 }
