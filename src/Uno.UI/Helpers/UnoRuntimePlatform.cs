@@ -12,7 +12,6 @@ public enum UnoRuntimePlatform
 	Android,
 	iOS,
 	MacCatalyst,
-	MacOSX,
 	WebAssembly,
 	Windows,
 	SkiaGtk,
