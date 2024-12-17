@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
@@ -9,6 +10,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Xaml.Media.Animation;
 using Android.Views.Animations;
+using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI.Extensions;
 
@@ -18,15 +20,14 @@ namespace Uno.UI.Controls
 	{
 		private static DependencyProperty BackButtonVisibilityProperty = ToolkitHelper.GetProperty("Uno.UI.Toolkit.CommandBarExtensions", "BackButtonVisibility");
 
-		private readonly Grid _pageStack;
 		private Frame _frame;
 		private bool _isUpdatingStack;
 		private (Page page, NavigationTransitionInfo transitionInfo) _currentPage;
 		private readonly Queue<(Page page, NavigationEventArgs args)> _stackUpdates = new Queue<(Page, NavigationEventArgs)>();
+		private CompositeDisposable _subscriptions;
 
 		public NativeFramePresenter()
 		{
-			_pageStack = this;
 		}
 
 		private protected override void OnLoaded()
@@ -43,11 +44,17 @@ namespace Uno.UI.Controls
 				return;
 			}
 
+			global::System.Diagnostics.Debug.Assert(_subscriptions is null);
+			_subscriptions = new CompositeDisposable();
+
 			_frame = frame;
 			_frame.Navigated += OnNavigated;
+			_subscriptions.Add(Disposable.Create(() => _frame.Navigated -= OnNavigated));
+
 			if (_frame.BackStack is ObservableCollection<PageStackEntry> backStack)
 			{
 				backStack.CollectionChanged += OnBackStackChanged;
+				_subscriptions.Add(Disposable.Create(() => backStack.CollectionChanged -= OnBackStackChanged));
 			}
 
 			if (_frame.Content is Page startPage)
@@ -55,6 +62,13 @@ namespace Uno.UI.Controls
 				_stackUpdates.Enqueue((_frame.Content as Page, new NavigationEventArgs(_frame.Content, NavigationMode.New, null, null, null, null)));
 				_ = InvalidateStack();
 			}
+		}
+
+		private protected override void OnUnloaded()
+		{
+			base.OnUnloaded();
+			_subscriptions?.Dispose();
+			_subscriptions = null;
 		}
 
 		private void OnBackStackChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -130,7 +144,7 @@ namespace Uno.UI.Controls
 				}
 				if (FeatureConfiguration.NativeFramePresenter.AndroidUnloadInactivePages)
 				{
-					_pageStack.Children.Remove(oldPage);
+					Children.Remove(oldPage);
 				}
 				else
 				{
@@ -140,13 +154,13 @@ namespace Uno.UI.Controls
 
 			if (newPage is not null)
 			{
-				if (_pageStack.Children.Contains(newPage))
+				if (Children.Contains(newPage))
 				{
 					newPage.Visibility = Visibility.Visible;
 				}
 				else
 				{
-					_pageStack.Children.Add(newPage);
+					Children.Add(newPage);
 				}
 				if (GetIsAnimated(transitionInfo))
 				{
@@ -160,7 +174,7 @@ namespace Uno.UI.Controls
 				var pagesStillInHistory = _frame.BackStack.Select(entry => entry.Instance).ToHashSet();
 				pagesStillInHistory.AddRange(_frame.ForwardStack.Select(entry => entry.Instance));
 				pagesStillInHistory.Add(newPage);
-				_pageStack.Children.Remove(element => !pagesStillInHistory.Contains(element));
+				Children.Remove(element => !pagesStillInHistory.Contains(element));
 			}
 		}
 
