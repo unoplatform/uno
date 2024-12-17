@@ -19,8 +19,6 @@ public static class PlatformRuntimeHelper
 		UnoRuntimePlatform.iOS;
 #elif __MACCATALYST__
 		UnoRuntimePlatform.MacCatalyst;
-#elif __MACOS__
-		UnoRuntimePlatform.MacOSX;
 #elif __WASM__
 		UnoRuntimePlatform.WebAssembly;
 #elif __SKIA__
