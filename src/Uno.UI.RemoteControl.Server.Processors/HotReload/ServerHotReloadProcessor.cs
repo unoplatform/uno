@@ -26,8 +26,6 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 {
 	partial class ServerHotReloadProcessor : IServerProcessor, IDisposable
 	{
-		private FileSystemWatcher[]? _watchers;
-		private CompositeDisposable? _watcherEventsDisposable;
 		private readonly IRemoteControlServer _remoteControlServer;
 
 		public ServerHotReloadProcessor(IRemoteControlServer remoteControlServer)
@@ -397,68 +395,18 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
 				this.Log().LogDebug($"Base project path: {configureServer.ProjectPath}");
-				this.Log().LogDebug($"Xaml Search Paths: {string.Join(", ", configureServer.XamlPaths)}");
 			}
 
-			if (!InitializeMetadataUpdater(configureServer))
+			if (InitializeMetadataUpdater(configureServer))
 			{
-				// We are relying on IDE (or XAML only), we won't have any other hot-reload initialization steps.
+				this.Log().LogDebug($"Metadata updater initialized");
+			}
+			else
+			{
+				// We are relying on IDE, we won't have any other hot-reload initialization steps.
 				_ = Notify(HotReloadEvent.Ready);
+				this.Log().LogDebug("Metadata updater **NOT** initialized.");
 			}
-
-			_watchers = configureServer.XamlPaths
-				.Select(p => new FileSystemWatcher
-				{
-					Path = p,
-					Filter = "*.*",
-					NotifyFilter = NotifyFilters.LastWrite |
-						NotifyFilters.Attributes |
-						NotifyFilters.Size |
-						NotifyFilters.CreationTime |
-						NotifyFilters.FileName,
-					EnableRaisingEvents = true,
-					IncludeSubdirectories = false
-				})
-				.ToArray();
-
-			_watcherEventsDisposable = new CompositeDisposable();
-
-			foreach (var watcher in _watchers)
-			{
-				var disposable = ToObservable(watcher).Subscribe(
-					filePaths =>
-					{
-						var files = filePaths
-							.Distinct()
-							.Where(f =>
-								Path.GetExtension(f).Equals(".xaml", StringComparison.OrdinalIgnoreCase)
-								|| Path.GetExtension(f).Equals(".cs", StringComparison.OrdinalIgnoreCase));
-
-						foreach (var file in files)
-						{
-							OnSourceFileChanged(file);
-						}
-					},
-					e => Console.WriteLine($"Error {e}"));
-
-				_watcherEventsDisposable.Add(disposable);
-			}
-
-			void OnSourceFileChanged(string fullPath)
-				=> Task.Run(async () =>
-				{
-					if (this.Log().IsEnabled(LogLevel.Debug))
-					{
-						this.Log().LogDebug($"File {fullPath} changed");
-					}
-
-					await _remoteControlServer.SendFrame(
-						new FileReload
-						{
-							Content = File.ReadAllText(fullPath),
-							FilePath = fullPath
-						});
-				});
 		}
 		#endregion
 
@@ -643,16 +591,6 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 		public void Dispose()
 		{
-			_watcherEventsDisposable?.Dispose();
-
-			if (_watchers != null)
-			{
-				foreach (var watcher in _watchers)
-				{
-					watcher.Dispose();
-				}
-			}
-
 			_solutionWatcherEventsDisposable?.Dispose();
 			if (_solutionWatchers != null)
 			{
@@ -666,39 +604,6 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		}
 
 		#region Helpers
-		private static IObservable<IList<string>> ToObservable(params FileSystemWatcher[] watchers)
-			=> Observable.Defer(() =>
-			{
-				// Create an observable instead of using the FromEventPattern which
-				// does not register to events properly.
-				// Renames are required for the WriteTemporary->DeleteOriginal->RenameToOriginal that
-				// Visual Studio uses to save files.
-
-				var subject = new Subject<string>();
-
-				void changed(object s, FileSystemEventArgs args) => subject.OnNext(args.FullPath);
-				void renamed(object s, RenamedEventArgs args) => subject.OnNext(args.FullPath);
-
-				foreach (var watcher in watchers)
-				{
-					watcher.Changed += changed;
-					watcher.Created += changed;
-					watcher.Renamed += renamed;
-				}
-
-				return subject
-					.Buffer(() => subject.Throttle(TimeSpan.FromMilliseconds(250))) // Wait for 250 ms without any file change
-					.Finally(() =>
-					{
-						foreach (var watcher in watchers)
-						{
-							watcher.Changed -= changed;
-							watcher.Created -= changed;
-							watcher.Renamed -= renamed;
-						}
-					});
-			});
-
 		private static IObservable<Task<ImmutableHashSet<string>>> To2StepsObservable(FileSystemWatcher[] watchers, Predicate<string> filter)
 			=> Observable.Create<Task<ImmutableHashSet<string>>>(o =>
 			{
