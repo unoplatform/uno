@@ -114,8 +114,7 @@ internal class LinuxFilePickerExtension(IFilePicker picker) : IFileOpenPickerExt
 
 			// We listen for the signal BEFORE we send the request. The spec API reference
 			// points out the race condition that could occur otherwise.
-			var myService = new MyServiceService(connection, Service);
-			var request = myService.CreateRequest(requestPath);
+			var request = desktopService.CreateRequest(requestPath);
 			var responseTcs = new TaskCompletionSource<(uint Response, Dictionary<string, VariantValue> Results)>();
 			_ = request.WatchResponseAsync((exception, tuple) =>
 			{

@@ -1,4 +1,6 @@
 // Generated using `dotnet dbus codegen --protocol-api --bus session --service org.freedesktop.portal.Desktop`
+// and `dotnet dbus codegen --protocol-api /usr/share/dbus-1/interfaces/org.freedesktop.portal.Request.xml`
+// then copying the relevant parts of the latter into the former.
 // Arch Linux's xdg-desktop-portal package v1.18.4-1
 // tmds.dbus.tool 0.21.2
 
@@ -9,7 +11,15 @@ using Tmds.DBus.Protocol;
 
 namespace Uno.WinUI.Runtime.Skia.X11.DBus
 {
-    record InhibitProperties
+	// From https://flatpak.github.io/xdg-desktop-portal/docs/doc-org.freedesktop.portal.Request.html#signals
+    enum Response : uint
+    {
+    	Success = 0,
+    	UserCancelled = 1,
+    	Other = 2
+    }
+
+	record InhibitProperties
     {
         public uint Version { get; set; } = default!;
     }
@@ -2213,7 +2223,31 @@ namespace Uno.WinUI.Runtime.Skia.X11.DBus
         public Trash CreateTrash(ObjectPath path) => new Trash(this, path);
         public ProxyResolver CreateProxyResolver(ObjectPath path) => new ProxyResolver(this, path);
         public FileChooser CreateFileChooser(ObjectPath path) => new FileChooser(this, path);
+
+		public Request CreateRequest(ObjectPath path) => new Request(this, path);
     }
+	partial class Request : DesktopObject
+	{
+		private const string __Interface = "org.freedesktop.portal.Request";
+		public Request(DesktopService service, ObjectPath path) : base(service, path)
+		{ }
+		public Task CloseAsync()
+		{
+			return this.Connection.CallMethodAsync(CreateMessage());
+			MessageBuffer CreateMessage()
+			{
+				var writer = this.Connection.GetMessageWriter();
+				writer.WriteMethodCallHeader(
+					destination: Service.Destination,
+					path: Path,
+					@interface: __Interface,
+					member: "Close");
+				return writer.CreateMessage();
+			}
+		}
+		public ValueTask<IDisposable> WatchResponseAsync(Action<Exception?, (uint Response, Dictionary<string, VariantValue> Results)> handler, bool emitOnCapturedContext = true, ObserverFlags flags = ObserverFlags.None)
+			=> base.WatchSignalAsync(Service.Destination, __Interface, Path, "Response", (Message m, object? s) => ReadMessage_uaesv(m, (DesktopObject)s!), handler, emitOnCapturedContext, flags);
+	}
     class DesktopObject
     {
         public DesktopService Service { get; }
@@ -2398,6 +2432,13 @@ namespace Uno.WinUI.Runtime.Skia.X11.DBus
             var reader = message.GetBodyReader();
             return reader.ReadArrayOfString();
         }
+		protected static (uint, Dictionary<string, VariantValue>) ReadMessage_uaesv(Message message, DesktopObject _)
+		{
+			var reader = message.GetBodyReader();
+			var arg0 = reader.ReadUInt32();
+			var arg1 = reader.ReadDictionaryOfStringToVariantValue();
+			return (arg0, arg1);
+		}
         protected static Dictionary<string, Dictionary<string, VariantValue>> ReadType_aesaesv(ref Reader reader)
         {
             Dictionary<string, Dictionary<string, VariantValue>> dictionary = new();
