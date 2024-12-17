@@ -12,8 +12,6 @@ public static class UnoRuntimePlatformExtensions
 
 	public static bool IsMacCatalyst(this UnoRuntimePlatform platform) => platform == UnoRuntimePlatform.MacCatalyst;
 
-	public static bool IsMacOS(this UnoRuntimePlatform platform) => platform == UnoRuntimePlatform.MacOSX;
-
 	public static bool IsWebAssembly(this UnoRuntimePlatform platform) => platform == UnoRuntimePlatform.WebAssembly;
 
 	public static bool IsWindows(this UnoRuntimePlatform platform) => platform == UnoRuntimePlatform.Windows;
