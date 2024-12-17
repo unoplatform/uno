@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Text;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Uno.Collections;
 
 namespace Uno.UI

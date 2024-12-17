@@ -8,7 +8,7 @@ using System.Threading;
 using System.Linq;
 using Windows.ApplicationModel.Resources;
 using Windows.ApplicationModel.Resources.Core;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 
 namespace Uno.UI.RuntimeTests.Tests
 {

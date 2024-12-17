@@ -7,11 +7,11 @@ using Android.Util;
 using Android.Views;
 using Android.Graphics;
 using Android.Widget;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml;
 using Uno.UI;
 using Uno.Extensions;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 using Size = Windows.Foundation.Size;
 using AndroidX.DrawerLayout.Widget;
 

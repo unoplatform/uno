@@ -6,10 +6,10 @@
 // It also includes all the data that is specific to that snap point and a particular collection.
 
 using System.Collections.Generic;
-using Microsoft.UI.Composition;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Composition;
+using Windows.UI.Xaml.Controls.Primitives;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 internal partial class SnapPointWrapper<T>
 {

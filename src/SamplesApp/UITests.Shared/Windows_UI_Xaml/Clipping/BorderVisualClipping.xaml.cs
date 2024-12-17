@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Uno.UI.Samples.Controls;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using UITests.Shared.Helpers;
 
 namespace UITests.Windows_UI_Xaml.Clipping;
@@ -47,7 +47,7 @@ public sealed partial class BorderVisualClipping : Page, IWaitableSample
 
 		Content = new ScrollViewer
 		{
-			Background = new SolidColorBrush(Microsoft.UI.Colors.Pink),
+			Background = new SolidColorBrush(Windows.UI.Colors.Pink),
 			Content = grid
 		};
 
@@ -59,7 +59,7 @@ public sealed partial class BorderVisualClipping : Page, IWaitableSample
 
 		var brushes = new List<Brush>
 		{
-			new SolidColorBrush(Microsoft.UI.Colors.Blue),
+			new SolidColorBrush(Windows.UI.Colors.Blue),
 			new SolidColorBrush(Windows.UI.Color.FromArgb(0x50, 0, 0, 0xFF)), // blue with low alpha
 			imageBrush,
 			null
@@ -89,7 +89,7 @@ public sealed partial class BorderVisualClipping : Page, IWaitableSample
 						{
 							border = new Border
 							{
-								Background = new SolidColorBrush(Microsoft.UI.Colors.Green),
+								Background = new SolidColorBrush(Windows.UI.Colors.Green),
 								Child = border
 							};
 						}

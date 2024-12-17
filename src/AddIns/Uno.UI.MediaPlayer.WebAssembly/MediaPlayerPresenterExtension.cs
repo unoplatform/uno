@@ -6,9 +6,9 @@ using Uno.Foundation.Logging;
 using Uno.Media.Playback;
 using Windows.Foundation;
 using Windows.Media.Playback;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Maps;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Maps;
+using Windows.UI.Xaml.Media;
 
 [assembly: ApiExtension(typeof(IMediaPlayerPresenterExtension), typeof(Uno.UI.Media.MediaPlayerPresenterExtension))]
 

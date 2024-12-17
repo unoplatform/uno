@@ -3,18 +3,18 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Markup;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Shapes;
-using Microsoft.UI.Xaml.Tests.Common;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Shapes;
+using Windows.UI.Xaml.Tests.Common;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests;
 using Windows.Foundation;
 using Windows.UI;
 
-namespace Microsoft.UI.Xaml.Tests.Controls.Grid_Tests
+namespace Windows.UI.Xaml.Tests.Controls.Grid_Tests
 {
 	[TestClass]
 #if __MACOS__
@@ -975,7 +975,7 @@ namespace Microsoft.UI.Xaml.Tests.Controls.Grid_Tests
 					"</Grid>");
 
 				var root = new Grid();
-				root.Background = new SolidColorBrush(Microsoft.UI.Colors.Purple);
+				root.Background = new SolidColorBrush(Windows.UI.Colors.Purple);
 				root.Children.Add(grid);
 
 				TestServices.WindowHelper.WindowContent = root;
@@ -1198,7 +1198,7 @@ namespace Microsoft.UI.Xaml.Tests.Controls.Grid_Tests
 					"</Grid>");
 
 				root = new Grid();
-				root.Background = new SolidColorBrush(Microsoft.UI.Colors.Purple);
+				root.Background = new SolidColorBrush(Windows.UI.Colors.Purple);
 				root.Children.Add(grid);
 
 				TestServices.WindowHelper.WindowContent = root;
@@ -1294,7 +1294,7 @@ namespace Microsoft.UI.Xaml.Tests.Controls.Grid_Tests
 					"</Grid>");
 
 				root = new Grid();
-				root.Background = new SolidColorBrush(Microsoft.UI.Colors.Purple);
+				root.Background = new SolidColorBrush(Windows.UI.Colors.Purple);
 				root.Children.Add(grid);
 
 				TestServices.WindowHelper.WindowContent = root;
@@ -1345,5 +1345,5 @@ namespace Microsoft.UI.Xaml.Tests.Controls.Grid_Tests
 		//	});
 		//}
 
-	}// Microsoft.UI.Xaml.Tests.Controls.Grid
+	}// Windows.UI.Xaml.Tests.Controls.Grid
 }

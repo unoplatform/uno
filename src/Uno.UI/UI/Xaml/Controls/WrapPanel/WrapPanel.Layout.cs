@@ -28,10 +28,10 @@ using Color = AppKit.NSColor;
 using Font = AppKit.NSFont;
 using ViewGroup = AppKit.NSView;
 #else
-using View = Microsoft.UI.Xaml.UIElement;
+using View = Windows.UI.Xaml.UIElement;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	partial class WrapPanel
 	{

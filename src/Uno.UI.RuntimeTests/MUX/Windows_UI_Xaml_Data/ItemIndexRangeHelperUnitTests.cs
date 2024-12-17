@@ -1,8 +1,8 @@
 ﻿#if HAS_UNO
 using DirectUI.Components;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Data;
 
-using Microsoft.UI.Xaml.Tests.Enterprise;
+using Windows.UI.Xaml.Tests.Enterprise;
 
 namespace Uno.UI.RuntimeTests.MUX.Windows_UI_Xaml_Data;
 

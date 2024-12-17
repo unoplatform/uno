@@ -7,7 +7,7 @@
 
 using static Uno.UI.FeatureConfiguration;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 partial class ToolTipService
 {

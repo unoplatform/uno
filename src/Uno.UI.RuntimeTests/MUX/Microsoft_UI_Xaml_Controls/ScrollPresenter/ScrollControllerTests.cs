@@ -6,11 +6,11 @@ using System.Threading;
 using Common;
 using MUXControlsTestApp;
 using MUXControlsTestApp.Utilities;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Shapes;
 using Windows.Foundation;
 using Windows.UI;
 using Private.Infrastructure;
@@ -20,7 +20,7 @@ using System.Threading.Tasks;
 //using WEX.TestExecution.Markup;
 //using WEX.Logging.Interop;
 
-namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests;
+namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests;
 
 partial class ScrollPresenterTests : MUXApiTestBase
 {
@@ -737,10 +737,10 @@ partial class ScrollPresenterTests : MUXApiTestBase
 
 		LinearGradientBrush twoColorLGB = new LinearGradientBrush() { StartPoint = new Point(0, 0), EndPoint = new Point(1, 1) };
 
-		GradientStop brownGS = new GradientStop() { Color = Microsoft.UI.Colors.Brown, Offset = 0.0 };
+		GradientStop brownGS = new GradientStop() { Color = Windows.UI.Colors.Brown, Offset = 0.0 };
 		twoColorLGB.GradientStops.Add(brownGS);
 
-		GradientStop orangeGS = new GradientStop() { Color = Microsoft.UI.Colors.Orange, Offset = 1.0 };
+		GradientStop orangeGS = new GradientStop() { Color = Windows.UI.Colors.Orange, Offset = 1.0 };
 		twoColorLGB.GradientStops.Add(orangeGS);
 
 		if (rectangleScrollPresenterContent != null)
@@ -794,10 +794,10 @@ partial class ScrollPresenterTests : MUXApiTestBase
 
 		LinearGradientBrush twoColorLGB = new LinearGradientBrush() { StartPoint = new Point(0, 0), EndPoint = new Point(1, 1) };
 
-		GradientStop brownGS = new GradientStop() { Color = Microsoft.UI.Colors.Brown, Offset = 0.0 };
+		GradientStop brownGS = new GradientStop() { Color = Windows.UI.Colors.Brown, Offset = 0.0 };
 		twoColorLGB.GradientStops.Add(brownGS);
 
-		GradientStop orangeGS = new GradientStop() { Color = Microsoft.UI.Colors.Orange, Offset = 1.0 };
+		GradientStop orangeGS = new GradientStop() { Color = Windows.UI.Colors.Orange, Offset = 1.0 };
 		twoColorLGB.GradientStops.Add(orangeGS);
 
 		if (rectangleScrollPresenterContent != null)

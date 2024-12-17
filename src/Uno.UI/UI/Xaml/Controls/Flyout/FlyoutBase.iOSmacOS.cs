@@ -12,7 +12,7 @@ using AppKit;
 using View = AppKit.NSView;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls.Primitives;
+namespace Windows.UI.Xaml.Controls.Primitives;
 
 public partial class FlyoutBase
 {

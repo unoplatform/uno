@@ -4,7 +4,7 @@ using System.Numerics;
 using SkiaSharp;
 using Windows.Graphics;
 
-namespace Microsoft.UI.Composition
+namespace Windows.UI.Composition
 {
 	public partial class CompositionRoundedRectangleGeometry : CompositionGeometry
 	{

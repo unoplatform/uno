@@ -5,9 +5,9 @@ using Uno.Foundation;
 using Uno.Foundation.Interop;
 using Uno.Foundation.Logging;
 
-using NativeMethods = __Microsoft.UI.Xaml.Media.Animation.RenderingLoopAnimator.NativeMethods;
+using NativeMethods = __Windows.UI.Xaml.Media.Animation.RenderingLoopAnimator.NativeMethods;
 
-namespace Microsoft.UI.Xaml.Media.Animation
+namespace Windows.UI.Xaml.Media.Animation
 {
 	internal abstract class RenderingLoopAnimator<T> : CPUBoundAnimator<T>, IJSObject where T : struct
 	{
@@ -104,7 +104,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 			/// <inheritdoc />
 			public string GetNativeInstance(IntPtr managedHandle, long jsHandle)
-				=> $"Microsoft.UI.Xaml.Media.Animation.RenderingLoopAnimator.getInstance(\"{jsHandle}\")";
+				=> $"Windows.UI.Xaml.Media.Animation.RenderingLoopAnimator.getInstance(\"{jsHandle}\")";
 
 			/// <inheritdoc />
 			public void DestroyNativeInstance(IntPtr managedHandle, long jsHandle)

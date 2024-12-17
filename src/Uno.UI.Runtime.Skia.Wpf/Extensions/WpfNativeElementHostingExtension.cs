@@ -3,8 +3,8 @@
 using System;
 using System.Windows.Media;
 using Uno.Foundation.Logging;
-using Microsoft.UI.Xaml;
-using ContentPresenter = Microsoft.UI.Xaml.Controls.ContentPresenter;
+using Windows.UI.Xaml;
+using ContentPresenter = Windows.UI.Xaml.Controls.ContentPresenter;
 using WpfCanvas = System.Windows.Controls.Canvas;
 
 namespace Uno.UI.Runtime.Skia.Wpf;

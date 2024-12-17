@@ -9,9 +9,9 @@ using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.UITests.Helpers;
 using Uno.UI.Toolkit;
 using Windows.Foundation;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using TextBlock = Microsoft.UI.Xaml.Controls.TextBlock;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using TextBlock = Windows.UI.Xaml.Controls.TextBlock;
 
 namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 {
@@ -46,8 +46,8 @@ namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 
 		public void When_TransformToRoot()
 		{
-			var windowBounds = Microsoft.UI.Xaml.Window.Current is not null ?
-				Microsoft.UI.Xaml.Window.Current.Bounds :
+			var windowBounds = Windows.UI.Xaml.Window.Current is not null ?
+				Windows.UI.Xaml.Window.Current.Bounds :
 				new Windows.Foundation.Rect(default, XamlRoot.Size);
 			var visible = VisibleBoundsPadding.WindowPadding;
 			var originAbs = new Point(windowBounds.Width - visible.Right - Border1.ActualWidth, windowBounds.Height - visible.Bottom - Border1.ActualHeight);
@@ -60,8 +60,8 @@ namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 
 		public void When_TransformToRoot_With_TranslateTransform()
 		{
-			var windowBounds = Microsoft.UI.Xaml.Window.Current is not null ?
-				Microsoft.UI.Xaml.Window.Current.Bounds :
+			var windowBounds = Windows.UI.Xaml.Window.Current is not null ?
+				Windows.UI.Xaml.Window.Current.Bounds :
 				new Windows.Foundation.Rect(default, XamlRoot.Size);
 			var visible = VisibleBoundsPadding.WindowPadding;
 			var originAbs = new Point(windowBounds.Width - visible.Right - Border2.ActualWidth, windowBounds.Height - visible.Bottom - Border2.ActualHeight);
@@ -76,8 +76,8 @@ namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 
 		public void When_TransformToRoot_With_InheritedTranslateTransform_And_Margin()
 		{
-			var windowBounds = Microsoft.UI.Xaml.Window.Current is not null ?
-				Microsoft.UI.Xaml.Window.Current.Bounds :
+			var windowBounds = Windows.UI.Xaml.Window.Current is not null ?
+				Windows.UI.Xaml.Window.Current.Bounds :
 				new Windows.Foundation.Rect(default, XamlRoot.Size);
 			var visible = VisibleBoundsPadding.WindowPadding;
 			var originAbs = new Point(windowBounds.Width - visible.Right - Border2.ActualWidth, windowBounds.Height - visible.Bottom - Border2.ActualHeight);

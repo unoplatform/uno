@@ -3,7 +3,7 @@
 
 using System.Numerics;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 // Uno specific: inheriting from OffsetsChange.
 // This is getting cast to OffsetChange so inheriting from ViewChangeBase isn't working.
