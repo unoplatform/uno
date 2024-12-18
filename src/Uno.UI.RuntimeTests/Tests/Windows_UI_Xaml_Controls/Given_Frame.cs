@@ -492,6 +492,7 @@ public class Given_Frame
 		Assert.IsTrue(navigationFailed);
 	}
 
+#if HAS_UNO
 	[TestMethod]
 #if !__ANDROID__
 	[Ignore("This test specifically tests Android's NativeFramePresenter")]
@@ -562,7 +563,7 @@ public class Given_Frame
 		for (int i = 0; i < 10; i++)
 		{
 			GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
-            GC.WaitForPendingFinalizers();
+			GC.WaitForPendingFinalizers();
 		}
 
 		Assert.AreEqual(backAndForth ? 2 : 12, FinalizeCounterPage.ConstructorCalls);
@@ -570,6 +571,7 @@ public class Given_Frame
 		// SUT.BackStack.Clear(), but waits for the next SUT.Navigate()
 		Assert.AreEqual(backAndForth ? 0 : 10, FinalizeCounterPage.FinalizerCalls);
 	}
+#endif
 
 	[TestCleanup]
 	public void Cleanup()
