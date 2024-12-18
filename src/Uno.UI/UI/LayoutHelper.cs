@@ -43,7 +43,7 @@ namespace Uno.UI
 			var isDefaultWidth = double.IsNaN(e.Width);
 
 			maxHeight = e.MaxHeight;
-			minHeight = e.MinHeight;
+			minHeight = e is ILayoutOptOut { ShouldUseMinSize: false } ? 0 : e.MinHeight;
 			var userValue = e.Height;
 
 			var height = isDefaultHeight ? double.PositiveInfinity : userValue;
@@ -53,7 +53,7 @@ namespace Uno.UI
 			minHeight = Math.Max(Math.Min(maxHeight, height), minHeight);
 
 			maxWidth = e.MaxWidth;
-			minWidth = e.MinWidth;
+			minWidth = e is ILayoutOptOut { ShouldUseMinSize: false } ? 0 : e.MinWidth;
 			userValue = e.Width;
 
 			var width = (isDefaultWidth ? double.PositiveInfinity : userValue);

@@ -18,6 +18,8 @@ using Point = Windows.Foundation.Point;
 using Rect = Windows.Foundation.Rect;
 using Java.Interop;
 using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Uno.Extensions;
 
 namespace Microsoft.UI.Xaml
 {
@@ -28,8 +30,6 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		private int _nativeChildrenCount;
 		private bool _nativeClipChildren;
-
-		private Rect _previousClip = Rect.Empty;
 
 		private void ComputeAreChildrenNativeViewsOnly()
 		{
@@ -69,6 +69,8 @@ namespace Microsoft.UI.Xaml
 			else
 			{
 				_nativeChildrenCount++;
+				InvalidateMeasure();
+				InvalidateArrange();
 			}
 
 			ComputeAreChildrenNativeViewsOnly();
@@ -84,6 +86,8 @@ namespace Microsoft.UI.Xaml
 			else
 			{
 				_nativeChildrenCount--;
+				InvalidateMeasure();
+				InvalidateArrange();
 			}
 
 			ComputeAreChildrenNativeViewsOnly();
@@ -91,12 +95,31 @@ namespace Microsoft.UI.Xaml
 			Shutdown();
 		}
 
-		private void OnChildManagedViewAddedOrRemoved(UIElement uiElement)
+		private void OnChildManagedViewAddedOrRemoved(UIElement child)
 		{
-			uiElement.ResetLayoutFlags();
-			SetLayoutFlags(LayoutFlag.MeasureDirty);
-			uiElement.SetLayoutFlags(LayoutFlag.MeasureDirty);
-			uiElement.IsMeasureDirtyPathDisabled = IsMeasureDirtyPathDisabled;
+			// Reset to original (invalidated) state
+			child.ResetLayoutFlags();
+			if (IsMeasureDirtyPathDisabled)
+			{
+				FrameworkElementHelper.SetUseMeasurePathDisabled(child); // will invalidate too
+			}
+			else
+			{
+				child.InvalidateMeasure();
+			}
+
+			if (IsArrangeDirtyPathDisabled)
+			{
+				FrameworkElementHelper.SetUseArrangePathDisabled(child); // will invalidate too
+			}
+			else
+			{
+				child.InvalidateArrange();
+			}
+
+			// Force a new measure of this element (the parent of the new child)
+			InvalidateMeasure();
+			InvalidateArrange();
 		}
 
 		public UIElement()
@@ -106,87 +129,29 @@ namespace Microsoft.UI.Xaml
 			InitializePointers();
 		}
 
-		/// <summary>
-		/// On Android, the equivalent of the "Dirty Path" is the native
-		/// "Layout Requested" mechanism.
-		/// </summary>
-		internal bool IsMeasureDirtyPath
+		//protected override void OnDraw(Android.Graphics.Canvas canvas)
+		//{
+		//	// Ancestor clipping support on Android is causing trouble.
+		//	// Keeping this code for reference.
+		//	if (m_pLayoutClipGeometry.HasValue)
+		//	{
+		//		SetTotalClipRect(out var clipRectLogical);
+		//		Android.Graphics.Rect physicalRect = ViewHelper.LogicalToPhysicalPixels(clipRectLogical.Value);
+		//		canvas.ClipRect(physicalRect, Region.Op.Intersect);
+		//	}
+
+		//	base.OnDraw(canvas);
+		//}
+
+		private void SetClipPlatform(Rect? totalLogicalClip)
 		{
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			get => IsLayoutRequested;
-		}
-
-		/// <summary>
-		/// Determines if InvalidateArrange has been called
-		/// </summary>
-		internal bool IsArrangeDirty => IsLayoutRequested;
-
-		/// <summary>
-		/// Not implemented yet on this platform.
-		/// </summary>
-		internal bool IsArrangeDirtyPath
-		{
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			get => false;
-		}
-
-		/// <summary>
-		/// Gets the **logical** frame (a.k.a. 'finalRect') of the element while it's being arranged by a managed parent.
-		/// </summary>
-		/// <remarks>Used to keep "double" precision of arrange phase.</remarks>
-		private protected Rect? TransientArrangeFinalRect { get; private set; }
-
-		/// <summary>
-		/// The difference between the physical layout width and height taking the origin into account,
-		/// and the physical width and height that would've been calculated for an origin of (0,0).
-		/// The difference may be -1,0, or +1 pixels due to different roundings.
-		///
-		/// (Eg, consider a Grid that is 31 logical pixels high, with 3 children with alignment Stretch in successive Star-sized rows.
-		/// Each child will be measured with a logical height of 10.3, and logical origins of 0, 10.3, and 20.6.  Assume the device scale is 1.
-		/// The child origins will be converted to 0, 10, and 21 respectively in integer pixel values; this will give heights of 10, 11, and 10 pixels.
-		/// The FrameRoundingAdjustment values will be (0,0), (0,1), and (0,0) respectively.
-		/// </summary>
-		internal Size? FrameRoundingAdjustment { get; set; }
-
-		internal void SetFramePriorArrange(Rect frame /* a.k.a 'finalRect' */, Rect physicalFrame)
-		{
-			var physicalWidth = ViewHelper.LogicalToPhysicalPixels(frame.Width);
-			var physicalHeight = ViewHelper.LogicalToPhysicalPixels(frame.Height);
-
-			TransientArrangeFinalRect = frame;
-			FrameRoundingAdjustment = new Size(
-				(int)physicalFrame.Width - physicalWidth,
-				(int)physicalFrame.Height - physicalHeight);
-		}
-
-		internal void ResetFramePostArrange()
-		{
-			TransientArrangeFinalRect = null;
-		}
-
-		partial void ApplyNativeClip(Rect rect)
-		{
-			if (rect.IsEmpty)
+			if (totalLogicalClip is null)
 			{
-				if (_previousClip != rect)
-				{
-					_previousClip = rect;
-
-					ViewCompat.SetClipBounds(this, null);
-				}
-
+				ViewCompat.SetClipBounds(this, null);
 				return;
 			}
 
-			_previousClip = rect;
-
-			var physicalRect = rect.LogicalToPhysicalPixels();
-			if (FrameRoundingAdjustment is { } fra)
-			{
-				physicalRect.Width += fra.Width;
-				physicalRect.Height += fra.Height;
-			}
-
+			Android.Graphics.Rect physicalRect = totalLogicalClip.Value.LogicalToPhysicalPixels();
 			ViewCompat.SetClipBounds(this, physicalRect);
 
 			if (FeatureConfiguration.UIElement.UseLegacyClipping)
@@ -201,6 +166,68 @@ namespace Microsoft.UI.Xaml
 				// This is closer to the XAML way of doing clipping.
 				SetClipToPadding(NeedsClipToSlot);
 			}
+		}
+
+		protected override bool NativeRequestLayout()
+		{
+			if (base.NativeRequestLayout())
+			{
+				// Native components could call RequestLayout to invalidate themselves.
+				// Internally, Android will keep calling RequestLayout on parents, then we get to the first managed element in this code path.
+				// However, the native elements in between the managed element and the original RequestLayout call were not marked as measure dirty path.
+				// We take the chance to mark them as measure dirty path here.
+				// Note that this code may mark more than needed, but we don't have a way to know which element initiated
+				// the RequestLayout call, we only know of the first managed parent
+				InvalidateMeasure();
+				InvalidateMeasureOnNativeOnlyChildrenRecursive(this);
+				return true;
+			}
+
+			return false;
+		}
+
+		private static void InvalidateMeasureOnNativeOnlyChildrenRecursive(ViewGroup view)
+		{
+			foreach (var child in view.GetChildren())
+			{
+				if (child is not UIElement)
+				{
+					LayoutInformation.SetMeasureDirtyPath(child, true);
+					if (child is ViewGroup childAsViewGroup)
+					{
+						InvalidateMeasureOnNativeOnlyChildrenRecursive(childAsViewGroup);
+					}
+				}
+			}
+		}
+
+		private protected bool _isInArrangeVisualLayout;
+
+		internal void ArrangeVisual(Rect finalRect, Rect? clippedFrame = default)
+		{
+			LayoutSlotWithMarginsAndAlignments = finalRect;
+
+			SetTotalClipRect();
+
+			var physical = finalRect.LogicalToPhysicalPixels();
+
+			try
+			{
+				_isInArrangeVisualLayout = true;
+				this.Layout(
+					(int)physical.Left,
+					(int)physical.Top,
+					(int)physical.Right,
+					(int)physical.Bottom
+				);
+			}
+			finally
+			{
+				_isInArrangeVisualLayout = false;
+			}
+
+			OnViewportUpdated(clippedFrame ?? Rect.Empty);
+			Invalidate();
 		}
 
 		/// <summary>
