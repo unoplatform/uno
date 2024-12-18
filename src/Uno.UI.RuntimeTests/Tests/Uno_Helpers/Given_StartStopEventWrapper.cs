@@ -13,14 +13,14 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_Helpers
 		[TestMethod]
 		public void When_Default_Event_Null()
 		{
-			var wrapper = new StartStopEventWrapper<TypedEventHandler<Accelerometer, AccelerometerReadingChangedEventArgs>>(() => { }, () => { });
+			var wrapper = new StartStopDelegateWrapper<TypedEventHandler<Accelerometer, AccelerometerReadingChangedEventArgs>>(() => { }, () => { });
 			Assert.IsNull(wrapper.Event);
 		}
 
 		[TestMethod]
 		public void When_Add_Handler_Event_Not_Null()
 		{
-			var wrapper = new StartStopEventWrapper<TypedEventHandler<Accelerometer, AccelerometerReadingChangedEventArgs>>(() => { }, () => { });
+			var wrapper = new StartStopDelegateWrapper<TypedEventHandler<Accelerometer, AccelerometerReadingChangedEventArgs>>(() => { }, () => { });
 			wrapper.AddHandler((s, e) => { });
 			Assert.IsNotNull(wrapper.Event);
 		}
@@ -31,7 +31,7 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_Helpers
 			void Handler(Accelerometer a, AccelerometerReadingChangedEventArgs e)
 			{
 			}
-			var wrapper = new StartStopEventWrapper<TypedEventHandler<Accelerometer, AccelerometerReadingChangedEventArgs>>(() => { }, () => { });
+			var wrapper = new StartStopDelegateWrapper<TypedEventHandler<Accelerometer, AccelerometerReadingChangedEventArgs>>(() => { }, () => { });
 			wrapper.AddHandler(Handler);
 			wrapper.RemoveHandler(Handler);
 			Assert.IsNull(wrapper.Event);
@@ -40,7 +40,7 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_Helpers
 		[TestMethod]
 		public void When_Remove_On_Empty()
 		{
-			var wrapper = new StartStopEventWrapper<TypedEventHandler<Accelerometer, AccelerometerReadingChangedEventArgs>>(() => { }, () => { });
+			var wrapper = new StartStopDelegateWrapper<TypedEventHandler<Accelerometer, AccelerometerReadingChangedEventArgs>>(() => { }, () => { });
 			wrapper.RemoveHandler((s, e) => { });
 			Assert.IsNull(wrapper.Event);
 		}
@@ -49,7 +49,7 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_Helpers
 		[TestMethod]
 		public void When_Remove_Nonexistent()
 		{
-			var wrapper = new StartStopEventWrapper<TypedEventHandler<Accelerometer, AccelerometerReadingChangedEventArgs>>(() => { }, () => { });
+			var wrapper = new StartStopDelegateWrapper<TypedEventHandler<Accelerometer, AccelerometerReadingChangedEventArgs>>(() => { }, () => { });
 			wrapper.AddHandler((s, e) => { });
 			wrapper.RemoveHandler((s, e) => { });
 			Assert.IsNotNull(wrapper.Event);
@@ -59,7 +59,7 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_Helpers
 		public void When_Single_Invoked()
 		{
 			var invoked = false;
-			var wrapper = new StartStopEventWrapper<EventHandler<EventArgs>>(() => { }, () => { });
+			var wrapper = new StartStopDelegateWrapper<EventHandler<EventArgs>>(() => { }, () => { });
 			wrapper.AddHandler((s, e) => invoked = true);
 			Assert.IsFalse(invoked);
 			wrapper.Event?.Invoke(null, EventArgs.Empty);
@@ -71,7 +71,7 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_Helpers
 		{
 			var firstInvoked = false;
 			var secondInvoked = false;
-			var wrapper = new StartStopEventWrapper<EventHandler<EventArgs>>(() => { }, () => { });
+			var wrapper = new StartStopDelegateWrapper<EventHandler<EventArgs>>(() => { }, () => { });
 			wrapper.AddHandler((s, e) => firstInvoked = true);
 			wrapper.AddHandler((s, e) => secondInvoked = true);
 			Assert.IsFalse(firstInvoked);
@@ -90,7 +90,7 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_Helpers
 				firstInvoked = true;
 			}
 			var secondInvoked = false;
-			var wrapper = new StartStopEventWrapper<EventHandler<EventArgs>>(() => { }, () => { });
+			var wrapper = new StartStopDelegateWrapper<EventHandler<EventArgs>>(() => { }, () => { });
 			wrapper.AddHandler(FirstHandler);
 			wrapper.AddHandler((s, e) => secondInvoked = true);
 			Assert.IsFalse(firstInvoked);
@@ -105,7 +105,7 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_Helpers
 		public void When_First_Subscriber_OnFirst_Invoked()
 		{
 			var onFirst = false;
-			var wrapper = new StartStopEventWrapper<EventHandler<EventArgs>>(() => onFirst = true, () => { });
+			var wrapper = new StartStopDelegateWrapper<EventHandler<EventArgs>>(() => onFirst = true, () => { });
 			Assert.IsFalse(onFirst);
 			wrapper.AddHandler((s, e) => { });
 			Assert.IsTrue(onFirst);
@@ -115,7 +115,7 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_Helpers
 		public void When_Multiple_Subscribers_OnFirst_Once()
 		{
 			var onFirstCounter = 0;
-			var wrapper = new StartStopEventWrapper<EventHandler<EventArgs>>(() => onFirstCounter++, () => { });
+			var wrapper = new StartStopDelegateWrapper<EventHandler<EventArgs>>(() => onFirstCounter++, () => { });
 			Assert.AreEqual(0, onFirstCounter);
 			wrapper.AddHandler((s, e) => { });
 			wrapper.AddHandler((s, e) => { });
@@ -134,7 +134,7 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_Helpers
 			}
 
 			var onFirstCounter = 0;
-			var wrapper = new StartStopEventWrapper<EventHandler<EventArgs>>(() => onFirstCounter++, () => { });
+			var wrapper = new StartStopDelegateWrapper<EventHandler<EventArgs>>(() => onFirstCounter++, () => { });
 			Assert.AreEqual(0, onFirstCounter);
 			wrapper.AddHandler(FirstSubscriber);
 			wrapper.AddHandler(SecondSubscriber);
@@ -153,7 +153,7 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_Helpers
 			{
 			}
 			var onLast = false;
-			var wrapper = new StartStopEventWrapper<EventHandler<EventArgs>>(() => { }, () => onLast = true);
+			var wrapper = new StartStopDelegateWrapper<EventHandler<EventArgs>>(() => { }, () => onLast = true);
 			wrapper.AddHandler(FirstSubscriber);
 			Assert.IsFalse(onLast);
 			wrapper.RemoveHandler(FirstSubscriber);
@@ -171,7 +171,7 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_Helpers
 			{
 			}
 			var onLastCounter = 0;
-			var wrapper = new StartStopEventWrapper<EventHandler<EventArgs>>(() => { }, () => onLastCounter++);
+			var wrapper = new StartStopDelegateWrapper<EventHandler<EventArgs>>(() => { }, () => onLastCounter++);
 			wrapper.AddHandler(FirstSubscriber);
 			wrapper.AddHandler(SecondSubscriber);
 			Assert.AreEqual(0, onLastCounter);
@@ -188,7 +188,7 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_Helpers
 			}
 
 			var onLastCounter = 0;
-			var wrapper = new StartStopEventWrapper<EventHandler<EventArgs>>(() => { }, () => onLastCounter++);
+			var wrapper = new StartStopDelegateWrapper<EventHandler<EventArgs>>(() => { }, () => onLastCounter++);
 			wrapper.AddHandler(FirstSubscriber);
 			Assert.AreEqual(0, onLastCounter);
 			wrapper.RemoveHandler(FirstSubscriber);
@@ -208,7 +208,7 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_Helpers
 			}
 
 			var onLastCounter = 0;
-			var wrapper = new StartStopEventWrapper<EventHandler<EventArgs>>(() => { }, () => onLastCounter++);
+			var wrapper = new StartStopDelegateWrapper<EventHandler<EventArgs>>(() => { }, () => onLastCounter++);
 			wrapper.AddHandler(FirstSubscriber);
 			wrapper.AddHandler(SecondSubscriber);
 			Assert.AreEqual(0, onLastCounter);
