@@ -56,6 +56,12 @@ partial class LayoutInformation
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	internal static Size GetDesiredSize(object view)
 	{
+		if (view is null)
+		{
+			// TODO: should we let it break or return default?
+			return default;
+		}
+
 		switch (view)
 		{
 			case UIElement iue:
