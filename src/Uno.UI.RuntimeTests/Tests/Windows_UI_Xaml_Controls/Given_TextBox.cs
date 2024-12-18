@@ -47,26 +47,30 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	public partial class Given_TextBox
 	{
 		[TestMethod]
-		[DataRow(UpdateSourceTrigger.Default)]
-		[DataRow(UpdateSourceTrigger.PropertyChanged)]
-		[DataRow(UpdateSourceTrigger.Explicit)]
-		[DataRow(UpdateSourceTrigger.LostFocus)]
-		public async Task When_TwoWay_Text_Binding(UpdateSourceTrigger trigger)
+		[DataRow(UpdateSourceTrigger.Default, false)]
+		[DataRow(UpdateSourceTrigger.PropertyChanged, false)]
+		[DataRow(UpdateSourceTrigger.Explicit, false)]
+		[DataRow(UpdateSourceTrigger.LostFocus, false)]
+		[DataRow(UpdateSourceTrigger.Default, true)]
+		[DataRow(UpdateSourceTrigger.LostFocus, true)]
+		public async Task When_TwoWay_Text_Binding(UpdateSourceTrigger trigger, bool xBind)
 		{
 			var SUT = new When_TwoWay_Text_Binding();
-			var tb = trigger switch
+			var tb = (trigger, xBind) switch
 			{
-				UpdateSourceTrigger.Default => SUT.tbTwoWay_triggerDefault,
-				UpdateSourceTrigger.PropertyChanged => SUT.tbTwoWay_triggerPropertyChanged,
-				UpdateSourceTrigger.Explicit => SUT.tbTwoWay_triggerExplicit,
-				UpdateSourceTrigger.LostFocus => SUT.tbTwoWay_triggerLostFocus,
+				(UpdateSourceTrigger.Default, false) => SUT.tbTwoWay_triggerDefault,
+				(UpdateSourceTrigger.PropertyChanged, false) => SUT.tbTwoWay_triggerPropertyChanged,
+				(UpdateSourceTrigger.Explicit, false) => SUT.tbTwoWay_triggerExplicit,
+				(UpdateSourceTrigger.LostFocus, false) => SUT.tbTwoWay_triggerLostFocus,
+				(UpdateSourceTrigger.Default, true) => SUT.tbTwoWay_triggerDefault_xBind,
+				(UpdateSourceTrigger.LostFocus, true) => SUT.tbTwoWay_triggerLostFocus_xBind,
 				_ => throw new Exception("Should not happen."),
 			};
 			var expectedSetCount = 0;
 
 			await UITestHelper.Load(SUT);
 
-			var vm = (When_TwoWay_Text_Binding.VM)tb.DataContext;
+			var vm = xBind ? SUT.VMForXBind : (When_TwoWay_Text_Binding.VM)tb.DataContext;
 
 			Assert.AreNotEqual(tb, FocusManager.GetFocusedElement(SUT.XamlRoot));
 
@@ -75,7 +79,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			// Change text while not focused
 			tb.Text = "Hello";
-			if (trigger != UpdateSourceTrigger.Explicit)
+			if (trigger is UpdateSourceTrigger.PropertyChanged || (trigger is not UpdateSourceTrigger.Explicit && !xBind))
 			{
 				expectedSetCount++;
 			}
