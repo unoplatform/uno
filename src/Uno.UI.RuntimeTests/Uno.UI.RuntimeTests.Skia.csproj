@@ -91,10 +91,6 @@
 		<PRIResource Include="Resources\**\*.resw" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<Content Include="Assets\**" />
-	</ItemGroup>
-
 	<Target Name="ValidateLocalAssets" AfterTargets="Build" Condition="'$(TargetFramework)'!=''">
 		<Message Text="Validating local assets" Importance="high" />
 		<Error Condition="!Exists('$(OutputPath)Uno.UI.RuntimeTests\Assets\TransientAsset01.txt')" Text="$(OutputPath)uno.ui.runtimetests\Assets\TransientAsset01.txt" />
@@ -113,4 +109,18 @@
 	<PropertyGroup Condition="'$(UNO_UWP_BUILD)'=='true'">
 		<PageExclusions>$(MSBuildThisFileDirectory)Tests\Windows_UI_Xaml\Controls\Multiwindow\**\*.xaml</PageExclusions>
 	</PropertyGroup>
+
+	<ItemGroup>
+		<None Remove="Assets\dotnet_bot_assets.png" />
+		<None Remove="Assets\Images\dotnet_bot_assets_images.png" />
+		<None Remove="dotnet_bot.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Page Update="Tests\Windows_UI_Xaml_Controls\FlyoutPages\When_PlacementTarget_Binding.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
+
+	<Import Project="ImageImport.props" />
 </Project>
