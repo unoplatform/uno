@@ -41,18 +41,20 @@ internal class MacOSMediaPlayerPresenterExtension : IMediaPlayerPresenterExtensi
 		{
 			if (_playerExtension is { })
 			{
-				// _playerExtension.VlcPlayer.XWindow = 0;
-				// _playerExtension.IsVideoChanged -= OnExtensionOnIsVideoChanged;
-				// _playerExtension.Player.PlaybackSession.PlaybackStateChanged -= OnPlaybackStateChanged;
+				// TODO unhook
 			}
 			_playerExtension = extension;
-			// _playerExtension.VlcPlayer.XWindow = (uint)(_x11Window.Window);
-			// _playerExtension.IsVideoChanged += OnExtensionOnIsVideoChanged;
-			// _playerExtension.Player.PlaybackSession.PlaybackStateChanged += OnPlaybackStateChanged;
+			// TODO hook
 		}
 	}
 
-	public void StretchChanged() => NotImplemented();
+	public void StretchChanged()
+	{
+		if (_playerExtension is not null)
+		{
+			NativeUno.uno_mediaplayer_set_stretch(_playerExtension._nativePlayer, _presenter.Stretch);
+		}
+	}
 
 	public void RequestFullScreen() => NotImplemented();
 
@@ -62,9 +64,9 @@ internal class MacOSMediaPlayerPresenterExtension : IMediaPlayerPresenterExtensi
 
 	public void ExitCompactOverlay() => NotImplemented();
 
-	public uint NaturalVideoHeight { get; }
+	public uint NaturalVideoWidth => 0;
 
-	public uint NaturalVideoWidth { get; }
+	public uint NaturalVideoHeight => 0;
 
 	public void NotImplemented([CallerMemberName] string name = "unknown")
 	{

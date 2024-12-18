@@ -4,6 +4,7 @@ using System.Runtime.InteropServices.Marshalling;
 using Windows.Devices.Input;
 using Windows.System;
 using Windows.UI.Core;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.Web.WebView2.Core;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
@@ -420,6 +421,19 @@ internal static partial class NativeUno
 	internal static partial nint uno_mediaplayer_create();
 
 	[LibraryImport("libUnoNativeMac.dylib")]
+	[return: MarshalAs(UnmanagedType.I1)]
+	internal static partial bool uno_mediaplayer_is_video(nint media);
+
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial void uno_mediaplayer_set_source(nint media, string uri);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_mediaplayer_set_stretch(nint media, Stretch stretch);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_mediaplayer_set_volume(nint media, float volume);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_mediaplayer_pause(nint media);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
@@ -427,4 +441,10 @@ internal static partial class NativeUno
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_mediaplayer_stop(nint media);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_mediaplayer_toggle_mute(nint media);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_mediaplayer_step_by(nint media, int frames);
 }
