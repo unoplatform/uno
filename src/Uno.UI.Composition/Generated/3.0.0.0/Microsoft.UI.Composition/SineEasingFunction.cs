@@ -3,26 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Composition
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class SineEasingFunction : global::Microsoft.UI.Composition.CompositionEasingFunction
 	{
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		internal SineEasingFunction()
-		{
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.UI.Composition.CompositionEasingFunctionMode Mode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CompositionEasingFunctionMode SineEasingFunction.Mode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionEasingFunctionMode%20SineEasingFunction.Mode");
-			}
-		}
-#endif
+		// Skipping already declared property Mode
 		// Forced skipping of method Microsoft.UI.Composition.SineEasingFunction.Mode.get
 	}
 }
