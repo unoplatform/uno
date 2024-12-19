@@ -121,25 +121,6 @@ internal partial class PopupPanel : Panel
 		}
 		else if (Popup.CustomLayouter == null)
 		{
-			// TODO: For now, the layouting logic for managed DatePickerFlyout or TimePickerFlyout does not correctly work
-			// against the placement target approach.
-			var isFlyoutManagedDatePicker =
-				(Popup.AssociatedFlyout is DatePickerFlyout || Popup.AssociatedFlyout is TimePickerFlyout)
-#if __ANDROID__ || __IOS__
-				&& (Popup.AssociatedFlyout is not NativeDatePickerFlyout && Popup.AssociatedFlyout is not NativeTimePickerFlyout)
-#endif
-				;
-
-			if (!isFlyoutManagedDatePicker &&
-				Popup.PlacementTarget is not null
-#if __ANDROID__ || __IOS__
-				|| NativeAnchor is not null
-#endif
-				)
-			{
-				return PlacementArrangeOverride(Popup, finalSize);
-			}
-
 			// Gets the location of the popup (or its Anchor) in the VisualTree, so we will align Top/Left with it
 			// Note: we do not prevent overflow of the popup on any side as UWP does not!
 			//		 (And actually it also lets the view appear out of the window ...)
@@ -174,6 +155,25 @@ internal partial class PopupPanel : Panel
 				anchorLocation.Y + (float)Popup.VerticalOffset,
 				size.Width,
 				size.Height);
+
+			// TODO: For now, the layouting logic for managed DatePickerFlyout or TimePickerFlyout does not correctly work
+			// against the placement target approach.
+			var isFlyoutManagedDatePicker =
+					(Popup.AssociatedFlyout is DatePickerFlyout || Popup.AssociatedFlyout is TimePickerFlyout)
+#if __ANDROID__ || __IOS__
+				&& (Popup.AssociatedFlyout is not NativeDatePickerFlyout && Popup.AssociatedFlyout is not NativeTimePickerFlyout)
+#endif
+				;
+
+			if (!isFlyoutManagedDatePicker && Popup.PlacementTarget is not null
+#if __ANDROID__ || __IOS__
+				|| NativeAnchor is not null
+#endif
+				|| !finalFrame.IntersectWith(GetVisibleBounds()).Equals(finalFrame) // if the finalFrame spills out of the window, always use PlacementArrangeOverride
+			   )
+			{
+				return PlacementArrangeOverride(Popup, finalSize);
+			}
 
 			ArrangeElement(child, finalFrame);
 
