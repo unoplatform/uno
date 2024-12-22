@@ -19,7 +19,7 @@ To start using **Hot Design**, ensure you are signed in with your Uno Platform a
 
 For existing applications, take this opportunity to update to the [latest **Uno.Sdk** version](https://www.nuget.org/packages/Uno.Sdk). Refer to our [migration guide](xref:Uno.Development.MigratingFromPreviousReleases) for upgrade steps.  
 
-Once you're using the **latest stable 5.5 Uno.Sdk version or higher**, you can access **Hot Design** by clicking the **flame** icon in the diagnostics overlay that appears over your app.
+Once you're using the **latest stable 5.5 Uno.Sdk version or higher**, and provided you have been granted Beta access, you can access **Hot Design** by clicking the **flame** icon in the diagnostics overlay that appears over your app.
 
 <p align="center">
   <img src="Assets/enter-hot-design-mode.png" alt="Hot Design flame icon to enter in design mode" />
