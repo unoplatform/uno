@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Tests.Enterprise;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Tests.Enterprise;
 using static Private.Infrastructure.TestServices;
 
-namespace Microsoft.UI.Xaml.Tests.Common;
+namespace Windows.UI.Xaml.Tests.Common;
 
 internal static class FocusTestHelper
 {

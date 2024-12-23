@@ -5,9 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Windows.Foundation;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Markup;
 using Uno.UI.Helpers.WinUI;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls

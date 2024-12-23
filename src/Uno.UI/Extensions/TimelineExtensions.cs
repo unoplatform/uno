@@ -1,11 +1,11 @@
-﻿using Microsoft.UI.Xaml.Media.Animation;
+﻿using Windows.UI.Xaml.Media.Animation;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 
-namespace Microsoft.UI.Xaml.Media.Animation
+namespace Windows.UI.Xaml.Media.Animation
 {
 	public static partial class TimelineExtensions
 	{

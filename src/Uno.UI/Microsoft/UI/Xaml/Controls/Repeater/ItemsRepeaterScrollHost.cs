@@ -5,16 +5,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Windows.Foundation;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Media;
 using Microsoft.UI.Private.Controls;
 using Uno.Disposables;
 using Uno.UI;
 using Uno.UI.Helpers.WinUI;
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
-using Microsoft.UI.Xaml.Markup;
+using Windows.UI.Xaml.Markup;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {

@@ -36,7 +36,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		DispatchDpiChanged();
 	}
 
-	public override object NativeWindow => Microsoft.UI.Xaml.ApplicationActivity.Instance?.Window;
+	public override object NativeWindow => Windows.UI.Xaml.ApplicationActivity.Instance?.Window;
 
 	internal static NativeWindowWrapper Instance => _instance.Value;
 
@@ -45,8 +45,8 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	public override string Title
 	{
-		get => Microsoft.UI.Xaml.ApplicationActivity.Instance.Title;
-		set => Microsoft.UI.Xaml.ApplicationActivity.Instance.Title = value;
+		get => Windows.UI.Xaml.ApplicationActivity.Instance.Title;
+		set => Windows.UI.Xaml.ApplicationActivity.Instance.Title = value;
 	}
 
 	internal int SystemUiVisibility { get; set; }

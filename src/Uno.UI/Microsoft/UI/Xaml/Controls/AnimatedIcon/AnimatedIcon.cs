@@ -9,11 +9,11 @@ using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using Windows.UI;
-using Microsoft.UI.Composition;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Hosting;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Composition;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Hosting;
+using Windows.UI.Xaml.Media;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
@@ -30,7 +30,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			//__RP_Marker_ClassById(RuntimeProfiler.ProfId_AnimatedIcon);
 
 #if !HAS_UNO
-			m_progressPropertySet = Microsoft.UI.Xaml.Window.Current.Compositor.CreatePropertySet();
+			m_progressPropertySet = Windows.UI.Xaml.Window.Current.Compositor.CreatePropertySet();
 			m_progressPropertySet.InsertScalar(s_progressPropertyName, 0);
 #else
 			m_progressPropertySet = new CompositionPropertySet(null);
@@ -546,7 +546,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 				{
 					// Initialize the scale transform that will be used for mirroring and the
 					// render transform origin as center in order to have the icon mirrored in place.
-					Microsoft.UI.Xaml.Media.ScaleTransform scaleTransform = new ScaleTransform();
+					Windows.UI.Xaml.Media.ScaleTransform scaleTransform = new ScaleTransform();
 
 					RenderTransform = scaleTransform;
 					RenderTransformOrigin = new Point(0.5, 0.5);

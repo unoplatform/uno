@@ -1,13 +1,13 @@
 ﻿using System.Numerics;
-using Microsoft.UI.Composition;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Hosting;
+using Windows.UI.Composition;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Hosting;
 using Uno.UI.Samples.Controls;
 
 namespace UITests.Windows_UI_Composition;
 
-[Sample("Microsoft.UI.Composition")]
+[Sample("Windows.UI.Composition")]
 public sealed partial class VisualTranslationSample : Page
 {
 	private readonly Visual _border2Visual;

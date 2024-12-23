@@ -2,24 +2,24 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:legacy="using:Uno.UI.Controls.Legacy"
+    xmlns:legacy="using:Windows.UI.Xaml.Controls"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:ios="http://uno.ui/ios#using:Uno.UI.Controls.Legacy"
-	xmlns:android="http://uno.ui/android#using:Uno.UI.Controls.Legacy"
+	xmlns:ios="http://uno.ui/ios#using:Windows.UI.Xaml.Controls"
+	xmlns:android="http://uno.ui/android#using:Windows.UI.Xaml.Controls"
 	xmlns:not_win="http://uno.ui/not_win"
 	xmlns:wasm="http://uno.ui/wasm"
 	mc:Ignorable="d not_win ios android wasm">
 
 
-	<!-- Default style for Uno.UI.Controls.Legacy.ProgressRing -->
+	<!-- Default style for Windows.UI.Xaml.Controls.ProgressRing -->
     <Style x:Key="ProgressRingEllipseStyle" TargetType="Ellipse">
 	    <Setter Property="Opacity" Value="0" />
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Top" />
     </Style>
 
-	<Style x:Key="DefaultWuxProgressRingStyle"  TargetType="legacy:ProgressRing">
+	<Style x:Key="DefaultWuxProgressRingStyle"  TargetType="ProgressRing">
 		<Setter Property="Background" Value="Transparent" />
 		<Setter Property="Foreground" Value="{ThemeResource SystemControlHighlightAccentBrush}" />
 		<Setter Property="IsHitTestVisible" Value="False" />
@@ -30,7 +30,7 @@
 		<Setter Property="IsTabStop" Value="False" />
 		<Setter Property="Template">
 		  <Setter.Value>
-		    <ControlTemplate TargetType="legacy:ProgressRing">
+		    <ControlTemplate TargetType="ProgressRing">
 		      <Grid x:Name="Ring"
 		            Background="{TemplateBinding Background}"
 		            BorderThickness="{TemplateBinding BorderThickness}"
@@ -282,26 +282,26 @@
 		</Setter>
 	</Style>
 
-	<android:Style TargetType="legacy:ProgressRing" x:Key="NativeWuxProgressRingStyle">
+	<android:Style TargetType="ProgressRing" x:Key="NativeWuxProgressRingStyle">
 		<Setter Property="Template">
 			<Setter.Value>
-				<ControlTemplate TargetType="legacy:ProgressRing">
+				<ControlTemplate TargetType="ProgressRing">
 					<android:NativeProgressRing />
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
 	</android:Style>
 
-	<ios:Style TargetType="legacy:ProgressRing" x:Key="NativeWuxProgressRingStyle">
+	<ios:Style TargetType="ProgressRing" x:Key="NativeWuxProgressRingStyle">
 		<Setter Property="Template">
 			<Setter.Value>
-				<ControlTemplate TargetType="legacy:ProgressRing">
+				<ControlTemplate TargetType="ProgressRing">
 					<ios:NativeProgressRing />
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
 	</ios:Style>
 
-	<Style TargetType="legacy:ProgressRing" BasedOn="{StaticResource DefaultWuxProgressRingStyle}" />
+	<Style TargetType="ProgressRing" BasedOn="{StaticResource DefaultWuxProgressRingStyle}" />
 
 </ResourceDictionary>

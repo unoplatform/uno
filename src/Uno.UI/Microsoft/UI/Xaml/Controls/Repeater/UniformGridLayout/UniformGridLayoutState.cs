@@ -6,7 +6,7 @@
 
 using System;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using Uno.Extensions;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls

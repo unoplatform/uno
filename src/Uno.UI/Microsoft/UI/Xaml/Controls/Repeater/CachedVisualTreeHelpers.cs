@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Foundation;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Markup;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Media;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {

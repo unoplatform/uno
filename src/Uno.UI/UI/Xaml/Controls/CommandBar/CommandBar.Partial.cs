@@ -19,16 +19,16 @@ using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.System;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 using Uno.UI.Extensions;
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 using Uno.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml;
-using Popup = Microsoft.UI.Xaml.Controls.Primitives.Popup;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml;
+using Popup = Windows.UI.Xaml.Controls.Primitives.Popup;
 using Uno.UI;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Controls;
@@ -40,7 +40,7 @@ using Android.Views;
 
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	partial class CommandBar : IMenu
 	{
@@ -1696,7 +1696,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var visibleBounds = new Rect();
 				var availableBounds = new Rect();
 
-				visibleBounds = XamlRoot?.Bounds ?? Microsoft.UI.Xaml.Window.CurrentSafe?.Bounds ?? default;
+				visibleBounds = XamlRoot?.Bounds ?? Windows.UI.Xaml.Window.CurrentSafe?.Bounds ?? default;
 
 				bool windowed = false;
 				//windowed = m_tpOverflowPopup && m_tpOverflowPopup.Cast<Popup>()->IsWindowed();
@@ -1893,7 +1893,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private bool GetShouldOverflowOpenInFullWidth()
 		{
-			var visibleBounds = XamlRoot?.Bounds ?? Microsoft.UI.Xaml.Window.CurrentSafe?.Bounds ?? default;
+			var visibleBounds = XamlRoot?.Bounds ?? Windows.UI.Xaml.Window.CurrentSafe?.Bounds ?? default;
 
 			// IFC_RETURN(DXamlCore::GetCurrent()->GetVisibleContentBoundsForElement(GetHandle(), &visibleBounds));
 

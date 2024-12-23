@@ -2,10 +2,10 @@
 using System;
 using Uno.UI;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Wasm;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Wasm;
 
-namespace Microsoft.UI.Xaml.Shapes
+namespace Windows.UI.Xaml.Shapes
 {
 	partial class Rectangle
 	{

@@ -2,7 +2,7 @@
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Controls;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Data;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,10 +12,10 @@ using Uno.Disposables;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Uno.UI;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml;
 using Uno.Extensions.Specialized;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Uno.UI.Controls.Legacy
 {

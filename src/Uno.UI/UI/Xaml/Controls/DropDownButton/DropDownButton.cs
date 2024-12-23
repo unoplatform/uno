@@ -3,10 +3,10 @@
 // MUX reference DropDownButton.cpp, tag winui3/release/1.4.2
 
 using Uno.UI.Helpers.WinUI;
-using Microsoft.UI.Xaml.Automation;
-using Microsoft.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Automation;
+using Windows.UI.Xaml.Automation.Peers;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 public partial class DropDownButton : Button
 {

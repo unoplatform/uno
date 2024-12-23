@@ -6,13 +6,13 @@ using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MUXControlsTestApp.Utilities;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Xaml.Shapes;
 
-using TextBox = Microsoft.UI.Xaml.Controls.TextBox;
+using TextBox = Windows.UI.Xaml.Controls.TextBox;
 using Private.Infrastructure;
 using System.Threading.Tasks;
 
-namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
+namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 {
 	[TestClass]
 	public partial class ColorPickerTests : MUXApiTestBase

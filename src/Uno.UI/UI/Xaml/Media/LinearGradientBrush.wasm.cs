@@ -2,9 +2,9 @@
 using System.Linq;
 using Windows.Foundation;
 using Uno.Extensions;
-using Microsoft.UI.Xaml.Wasm;
+using Windows.UI.Xaml.Wasm;
 
-namespace Microsoft.UI.Xaml.Media;
+namespace Windows.UI.Xaml.Media;
 
 partial class LinearGradientBrush
 {

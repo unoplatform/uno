@@ -4,12 +4,12 @@
 using System;
 using System.Collections;
 using System.Collections.Specialized;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 using IKeyIndexMapping = Microsoft/* UWP don't rename */.UI.Xaml.Controls.IKeyIndexMapping;
 
-namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common
+namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common
 {
 	public class CustomItemsSourceView : IList, INotifyCollectionChanged
 	{

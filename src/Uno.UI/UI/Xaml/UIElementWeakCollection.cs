@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Uno.UI.DataBinding;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	/// <summary>
 	/// Represents a collection of weak references to UIElement objects.

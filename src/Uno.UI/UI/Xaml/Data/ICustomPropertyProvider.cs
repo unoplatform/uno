@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Microsoft.UI.Xaml.Data
+namespace Windows.UI.Xaml.Data
 {
 	/// <summary>
 	/// Provides lookup service for ICustomProperty support.

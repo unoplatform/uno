@@ -4,7 +4,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.UI.Composition;
+using Windows.UI.Composition;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Uno.UI.Tests.CompositionTests;

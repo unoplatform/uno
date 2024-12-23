@@ -7,7 +7,7 @@
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 internal partial class SingleSelector : SelectorBase
 {

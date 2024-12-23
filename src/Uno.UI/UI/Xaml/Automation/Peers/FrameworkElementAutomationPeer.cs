@@ -8,8 +8,8 @@ using Uno.UI;
 using DirectUI;
 using System.Linq;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 using Rect = Windows.Foundation.Rect;
 using Uno.UI.Xaml.Core.Scaling;
 
@@ -24,10 +24,10 @@ using UIKit;
 using View = AppKit.NSView;
 using AppKit;
 #else
-using View = Microsoft.UI.Xaml.UIElement;
+using View = Windows.UI.Xaml.UIElement;
 #endif
 
-namespace Microsoft.UI.Xaml.Automation.Peers;
+namespace Windows.UI.Xaml.Automation.Peers;
 
 public partial class FrameworkElementAutomationPeer : AutomationPeer
 {

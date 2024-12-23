@@ -8,7 +8,7 @@ using _NativeBase = AndroidX.AppCompat.Widget.AppCompatCheckBox;
 #elif __MACOS__
 using _NativeBase = AppKit.NSSwitch;
 #else
-using _NativeBase = Microsoft.UI.Xaml.Controls.CheckBox; // No native views on other platforms
+using _NativeBase = Windows.UI.Xaml.Controls.CheckBox; // No native views on other platforms
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls

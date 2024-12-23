@@ -2,16 +2,16 @@
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using System.Runtime.CompilerServices;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Tests.Enterprise;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Tests.Enterprise;
 using MUXControlsTestApp.Utilities;
 using System.Linq;
-using ToolTip = Microsoft.UI.Xaml.Controls.ToolTip;
+using ToolTip = Windows.UI.Xaml.Controls.ToolTip;
 using System.Reflection.Metadata.Ecma335;
-using UIElement = Microsoft.UI.Xaml.UIElement;
+using UIElement = Windows.UI.Xaml.UIElement;
 
 #if HAS_UNO
 using DirectUI;
@@ -39,7 +39,7 @@ namespace Private.Infrastructure
 
 			public static bool IsXamlIsland { get; set; }
 
-			public static Microsoft.UI.Xaml.Window CurrentTestWindow { get; set; }
+			public static Windows.UI.Xaml.Window CurrentTestWindow { get; set; }
 
 			public static bool UseActualWindowRoot { get; set; }
 
