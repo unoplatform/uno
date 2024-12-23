@@ -303,43 +303,90 @@ public sealed partial class DateTimeFormatter
 		var info = new CultureInfo(language).DateTimeFormat;
 
 		map = new Dictionary<string, string>
-		{
+		{	
+			// Predefined patterns
 			{ "longdate"                             , info.LongDatePattern } ,
 			{ "shortdate"                            , info.ShortDatePattern } ,
 			{ "longtime"                             , info.LongTimePattern } ,
 			{ "shorttime"                            , info.ShortTimePattern } ,
+    
+			// Compound patterns
 			{ "dayofweek day month year"             , info.FullDateTimePattern } ,
 			{ "dayofweek day month"                  , "D" } ,
 			{ "day month year"                       , info.ShortDatePattern } ,
 			{ "day month.full year"                  , info.ShortDatePattern } ,
 			{ "day month"                            , info.MonthDayPattern } ,
 			{ "month year"                           , info.YearMonthPattern } ,
-			{ "dayofweek.full"                       , "dddd" } ,
-			{ "dayofweek.abbreviated"                , "ddd" } ,
-			{ "month.full"                           , "MMMM" } ,
-			{ "month.abbreviated"                    , "MMM" } ,
-			{ "month.numeric"                        , "%M" } ,
-			{ "year.abbreviated"                     , "yy" } ,
-			{ "year.full"                            , "yyyy" } ,
 			{ "hour minute second"                   , info.LongTimePattern },
 			{ "hour minute"                          , info.ShortTimePattern },
-			{ "timezone.abbreviated"                 , "zz" },
-			{ "timezone.full"                        , "zzz" },
+			//{ "year month day hour"                  , "" },
+
+			// Day of week formats
 			{ "dayofweek"                            , "dddd" } ,
-			{ "day.integer"                          , "d" },
+			{ "dayofweek.full"                       , "dddd" } ,
+			{ "dayofweek.abbreviated"                , "ddd" } ,
+			{ "dayofweek.abbreviated(1)"             , "dd" } ,
+			{ "dayofweek.abbreviated(2)"             , "ddd" } ,
+			{ "dayofweek.solo.full"                  , "dddd" } ,
+			{ "dayofweek.solo.abbreviated"           , "ddd" } ,
+
+			// Day formats
 			{ "day"                                  , "%d" } ,
-			{ "month.integer"                        , "M" },
+			{ "day.integer"                          , "%d" },
+			{ "day.integer(1)"                       , "%d" },
+			{ "day.integer(2)"                       , "dd" },
+
+			// Month formats
 			{ "month"                                , "MMMM" } ,
+			{ "month.full"                           , "MMMM" } ,
+			{ "month.abbreviated"                    , "MMM" } ,
+			{ "month.abbreviated(1)"                 , "%M" } ,
+			{ "month.abbreviated(2)"                 , "MMM" } ,
+			{ "month.numeric"                        , "%M" } ,
+			{ "month.integer"                        , "%M" } ,
+			{ "month.integer(1)"                     , "%M" } ,
+			{ "month.integer(2)"                     , "MM" } ,
+			{ "month.solo.full"                      , "MMMM" } ,
+			{ "month.solo.abbreviated"               , "MMM" } ,
+
+			// Year formats
 			{ "year"                                 , "yyyy" } ,
-			{ "hour.integer(1)"                      , "%h" },
-			{ "hour"                                 , "H tt" } ,
-			{ "minute.integer(2)"                    , "mm" },
-			{ "minute.integer"                       , "%m" },
-			{ "minute"                               , "%m" },
-			{ "second"                               , "%s" },
-			{ "timezone"                             , "%z" },
-			{ "period.abbreviated(2)"                , "tt" },
-			// { "year month day hour"                  , "" } ,
+			{ "year.full"                            , "yyyy" } ,
+			{ "year.abbreviated"                     , "yy" } ,
+			{ "year.abbreviated(1)"                  , "%y" } ,
+			{ "year.abbreviated(2)"                  , "yy" } ,
+
+			// Hour formats
+			{ "hour"                                 , "%H" } ,
+			{ "hour.integer"                         , "%H" } ,
+			{ "hour.integer(1)"                      , "%h" } ,
+			{ "hour.integer(2)"                      , "HH" } ,
+
+			// Period (AM/PM) formats
+			{ "period"                               , "tt" } ,
+			{ "period.full"                          , "tt" } ,
+			{ "period.abbreviated"                   , "tt" } ,
+			{ "period.abbreviated(1)"                , "t" } ,
+			{ "period.abbreviated(2)"                , "tt" } ,
+
+			// Minute formats
+			{ "minute"                               , "%m" } ,
+			{ "minute.integer"                       , "%m" } ,
+			{ "minute.integer(1)"                    , "%m" } ,
+			{ "minute.integer(2)"                    , "mm" } ,
+
+			// Second formats
+			{ "second"                               , "%s" } ,
+			{ "second.integer"                       , "%s" } ,
+			{ "second.integer(1)"                    , "%s" } ,
+			{ "second.integer(2)"                    , "ss" } ,
+
+			// Timezone formats
+			{ "timezone"                             , "%z" } ,
+			{ "timezone.full"                        , "zzz" } ,
+			{ "timezone.abbreviated"                 , "zz" } ,
+			{ "timezone.abbreviated(1)"              , "%z" } ,
+			{ "timezone.abbreviated(2)"              , "zz" }
 		};
 
 		return _mapCache[language] = map;
@@ -370,15 +417,20 @@ public sealed partial class DateTimeFormatter
 
 		var map = _maps![0];
 
-		foreach (var p in map)
-		{
-			result = result.Replace(p.Key, p.Value);
+		var sortedKeys = map.Keys.OrderByDescending(k => k.Length);
 
+		foreach (var key in sortedKeys)
+		{
+			result = result.Replace(key, map[key]);
 		}
 
 		if (result.Contains("h") && Clock == ClockIdentifiers.TwentyFourHour)
 		{
 			result = result.Replace("h", "H");
+		}
+		else if (result.Contains("H") && Clock == ClockIdentifiers.TwelveHour)
+		{
+			result = result.Replace("H", "h");
 		}
 
 		return result;
