@@ -17,16 +17,13 @@ namespace Microsoft.UI.Composition
 
 		bool ISizedBrush.IsSized => true;
 
-		Vector2? ISizedBrush.Size
+		Vector2? ISizedBrush.Size => Surface switch
 		{
-			get => Surface switch
-			{
-				SkiaCompositionSurface { Image: SKImage img } => new(img.Width, img.Height),
-				ISkiaSurface { Surface: SKSurface surface } => new(surface.Canvas.DeviceClipBounds.Width, surface.Canvas.DeviceClipBounds.Height),
-				ISkiaCompositionSurfaceProvider { SkiaCompositionSurface: { Image: SKImage img } } => new(img.Width, img.Height),
-				_ => null
-			};
-		}
+			SkiaCompositionSurface { Image: SKImage img } => new(img.Width, img.Height),
+			ISkiaSurface { Surface: SKSurface surface } => new(surface.Canvas.DeviceClipBounds.Width / surface.Canvas.TotalMatrix.ScaleX, surface.Canvas.DeviceClipBounds.Height / surface.Canvas.TotalMatrix.ScaleY),
+			ISkiaCompositionSurfaceProvider { SkiaCompositionSurface: { Image: SKImage img } } => new(img.Width, img.Height),
+			_ => null
+		};
 
 		private Rect GetArrangedImageRect(Size sourceSize, SKRect targetRect)
 		{
@@ -132,11 +129,12 @@ namespace Microsoft.UI.Composition
 
 				if (skiaSurface.Surface is not null)
 				{
-					fillPaint.Shader = skiaSurface.Surface.Snapshot().ToShader(SKShaderTileMode.Repeat, SKShaderTileMode.Repeat, TransformMatrix.ToSKMatrix());
+					var matrix = TransformMatrix * Matrix3x2.CreateScale(1 / skiaSurface.Surface.Canvas.TotalMatrix.ScaleX);
+					var image = skiaSurface.Surface.Snapshot();
+
+					fillPaint.Shader = SKShader.CreateImage(image, SKShaderTileMode.Decal, SKShaderTileMode.Decal, matrix.ToSKMatrix());
 					fillPaint.IsAntialias = true;
 					fillPaint.FilterQuality = SKFilterQuality.High;
-					fillPaint.IsAutohinted = true;
-					fillPaint.IsDither = true;
 				}
 				else
 				{

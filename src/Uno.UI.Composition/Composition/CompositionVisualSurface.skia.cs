@@ -16,6 +16,8 @@ namespace Microsoft.UI.Composition
 	public partial class CompositionVisualSurface : CompositionObject, ICompositionSurface, ISkiaSurface
 	{
 		private SKSurface? _surface;
+		private DisplayInformation? _displayInformation;
+		private float _scale = 1.0f;
 
 		SKSurface? ISkiaSurface.Surface { get => _surface; }
 
@@ -36,9 +38,28 @@ namespace Microsoft.UI.Composition
 					}
 				};
 
+				if (_displayInformation is null)
+				{
+					if (SourceVisual?.CompositionTarget is ICompositionTarget target
+						&& target.DisplayInformation is DisplayInformation displayInfo)
+					{
+						_displayInformation = displayInfo;
+					}
+					else
+					{
+						_displayInformation = DisplayInformation.GetForCurrentViewSafe();
+					}
+
+					_displayInformation.DpiChanged += DpiChanged;
+					_scale = (float)_displayInformation.RawPixelsPerViewPixel;
+				}
+
+				size *= _scale;
+
 				var info = new SKImageInfo((int)size.X, (int)size.Y, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
 				_surface = SKSurface.Create(info);
 				canvas = _surface.Canvas;
+				canvas.Scale(_scale, _scale);
 			}
 
 			canvas ??= _surface.Canvas;
@@ -51,6 +72,16 @@ namespace Microsoft.UI.Composition
 				Compositor.IsSoftwareRenderer = true;
 				SourceVisual.RenderRootVisual(_surface, SourceOffset, null);
 				Compositor.IsSoftwareRenderer = previousCompMode;
+			}
+		}
+
+		private void DpiChanged(DisplayInformation sender, object args)
+		{
+			_scale = (float)sender.RawPixelsPerViewPixel;
+
+			if (_surface is not null)
+			{
+				((ISkiaSurface)this).UpdateSurface(true);
 			}
 		}
 
@@ -77,9 +108,40 @@ namespace Microsoft.UI.Composition
 			base.Dispose();
 
 			_surface?.Dispose();
+
+			if (_displayInformation is not null)
+			{
+				_displayInformation.DpiChanged -= DpiChanged;
+			}
 		}
 
-		partial void OnSourceVisualChangedPartial(Visual? sourceVisual) => ((ISkiaSurface)this).UpdateSurface(SourceSize == default && sourceVisual?.Size != default);
+		partial void OnSourceVisualChangedPartial(Visual? sourceVisual)
+		{
+			bool needsRecreation = false;
+
+			if (sourceVisual?.CompositionTarget is ICompositionTarget target
+				&& target.DisplayInformation is DisplayInformation displayInfo
+				&& displayInfo != _displayInformation)
+			{
+				if (_displayInformation is not null)
+				{
+					_displayInformation.DpiChanged -= DpiChanged;
+				}
+
+				_displayInformation = displayInfo;
+				_displayInformation.DpiChanged += DpiChanged;
+
+				var scale = (float)_displayInformation.RawPixelsPerViewPixel;
+				if (scale != _scale)
+				{
+					_scale = scale;
+					needsRecreation = true;
+				}
+			}
+
+			((ISkiaSurface)this).UpdateSurface(needsRecreation || (SourceSize == default && sourceVisual?.Size != default));
+		}
+
 		partial void OnSourceOffsetChangedPartial(Vector2 offset) => ((ISkiaSurface)this).UpdateSurface();
 		partial void OnSourceSizeChangedPartial(Vector2 size) => ((ISkiaSurface)this).UpdateSurface(true);
 	}

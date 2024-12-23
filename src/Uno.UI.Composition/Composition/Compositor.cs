@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using Windows.Graphics.Effects;
 using Windows.UI;
 
@@ -12,6 +13,8 @@ namespace Microsoft.UI.Composition
 	public partial class Compositor : global::System.IDisposable
 	{
 		private static Lazy<Compositor> _sharedCompositorLazy = new(() => new());
+
+		private static Lazy<CompositionEasingFunction> _defaultEasingFunction = new(() => new CubicBezierEasingFunction(GetSharedCompositor(), new(0.41f, 0.52f), new(0.0f, 0.94f)));
 
 		public Compositor()
 		{
@@ -26,6 +29,9 @@ namespace Microsoft.UI.Composition
 		public long TimestampInTicks => unchecked((long)(Stopwatch.GetTimestamp() * s_tickFrequency));
 
 		internal static Compositor GetSharedCompositor() => _sharedCompositorLazy.Value;
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		internal static CompositionEasingFunction GetDefaultEasingFunction() => _defaultEasingFunction.Value;
 
 		public ContainerVisual CreateContainerVisual()
 			=> new ContainerVisual(this);
@@ -198,6 +204,18 @@ namespace Microsoft.UI.Composition
 
 		public CompositionEffectFactory CreateEffectFactory(IGraphicsEffect graphicsEffect, IEnumerable<string> animatableProperties)
 			=> new CompositionEffectFactory(this, graphicsEffect, animatableProperties);
+
+		public CubicBezierEasingFunction CreateCubicBezierEasingFunction(Vector2 controlPoint1, Vector2 controlPoint2)
+			=> new(this, controlPoint1, controlPoint2);
+
+		public LinearEasingFunction CreateLinearEasingFunction()
+			=> new(this);
+
+		public StepEasingFunction CreateStepEasingFunction()
+			=> new(this);
+
+		public StepEasingFunction CreateStepEasingFunction(int stepCount)
+			=> new(this, stepCount);
 
 		partial void InvalidateRenderPartial(Visual visual);
 	}
