@@ -1,6 +1,7 @@
 #nullable enable
 
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 using Windows.Foundation;
 using Windows.Media.Core;
@@ -21,6 +22,8 @@ internal class MacOSMediaPlayerExtension : IMediaPlayerExtension
 	private static Dictionary<MediaPlayer, MacOSMediaPlayerExtension> _instances = new();
 	private MediaPlayer _player;
 	internal nint _nativePlayer;
+	internal MacOSMediaPlayerPresenterExtension? _presenter;
+	private static readonly Dictionary<nint, WeakReference<MacOSMediaPlayerExtension>> _natives = [];
 
 	private MacOSMediaPlayerExtension(object owner)
 	{
@@ -28,6 +31,7 @@ internal class MacOSMediaPlayerExtension : IMediaPlayerExtension
 		{
 			_player = player;
 			_nativePlayer = NativeUno.uno_mediaplayer_create();
+			_natives.Add(_nativePlayer, new WeakReference<MacOSMediaPlayerExtension>(this));
 		}
 		else
 		{
@@ -56,8 +60,19 @@ internal class MacOSMediaPlayerExtension : IMediaPlayerExtension
 		}
 	}
 
-	public static void Register() => ApiExtensibility.Register(typeof(IMediaPlayerExtension), o => new MacOSMediaPlayerExtension(o));
+	public static unsafe void Register()
+	{
+		NativeUno.uno_mediaplayer_set_callbacks(
+			periodicPositionUpdate: &OnPeriodicPositionUpdate,
+			onRateChanged: &OnRateChanged,
+			onVideoDimensionChanged: &OnVideoDimensionChanged,
+			onDurationChanged: &OnDurationChanged,
+			onReadyToPlay: &OnReadyToPlay,
+			onBufferingProgressChanged: &OnBufferingProgressChanged
+			);
 
+		ApiExtensibility.Register(typeof(IMediaPlayerExtension), o => new MacOSMediaPlayerExtension(o));
+	}
 
 	public IMediaPlayerEventsExtension? Events { get; set; }
 	public double PlaybackRate { get; set; }
@@ -206,6 +221,110 @@ internal class MacOSMediaPlayerExtension : IMediaPlayerExtension
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
 			this.Log().Debug($"Member {name} is not implemented");
+		}
+	}
+
+	private static MacOSMediaPlayerExtension? GetMediaPlayer(nint handle)
+	{
+		if (_natives.TryGetValue(handle, out var weak))
+		{
+			weak.TryGetTarget(out var player);
+			return player;
+		}
+
+		if (typeof(MacOSMediaPlayerExtension).Log().IsEnabled(LogLevel.Error))
+		{
+			typeof(MacOSMediaPlayerExtension).Log().Error($"Could not map handle 0x{handle:X} to a managed MacOSMediaPlayerExtension");
+		}
+		return null;
+	}
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+
+	private static void OnPeriodicPositionUpdate(nint handle, double position)
+	{
+		var player = GetMediaPlayer(handle);
+		if (player is not null)
+		{
+			var session = player._player.PlaybackSession;
+			if (session.PlaybackState == MediaPlaybackState.Playing)
+			{
+				session.PositionFromPlayer = TimeSpan.FromSeconds(position);
+			}
+		}
+	}
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	private static void OnRateChanged(nint handle, double rate)
+	{
+		var player = GetMediaPlayer(handle);
+		if (player is not null)
+		{
+			var session = player._player.PlaybackSession;
+
+			if (rate == 0.0d && session.PlaybackState == MediaPlaybackState.Playing)
+			{
+				// Update the status because the system changed the rate.
+				session.PlaybackState = MediaPlaybackState.Paused;
+			}
+		}
+	}
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	private static void OnVideoDimensionChanged(nint handle, double width, double height)
+	{
+		var player = GetMediaPlayer(handle);
+		if (player is not null)
+		{
+			var presenter = player._presenter;
+			if (presenter is not null)
+			{
+				presenter.NaturalVideoWidth = (uint)width;
+				presenter.NaturalVideoHeight = (uint)height;
+			}
+			player.Events?.RaiseNaturalVideoDimensionChanged();
+		}
+	}
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	private static void OnDurationChanged(nint handle, double duration)
+	{
+		var player = GetMediaPlayer(handle);
+		if (player is not null)
+		{
+			player._player.PlaybackSession.NaturalDuration = TimeSpan.FromSeconds(duration);
+		}
+	}
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	private static void OnReadyToPlay(nint handle, double rate)
+	{
+		var player = GetMediaPlayer(handle);
+		if (player is not null)
+		{
+			var session = player._player.PlaybackSession;
+			if (session.PlaybackState is MediaPlaybackState.Opening or MediaPlaybackState.Buffering)
+			{
+				if (rate == 0.0d)
+				{
+					session.PlaybackState = MediaPlaybackState.Paused;
+				}
+				else
+				{
+					session.PlaybackState = MediaPlaybackState.Playing;
+					NativeUno.uno_mediaplayer_play(player._nativePlayer);
+				}
+			}
+		}
+	}
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	private static void OnBufferingProgressChanged(nint handle, double progress)
+	{
+		var player = GetMediaPlayer(handle);
+		if (player is not null)
+		{
+			player._player.PlaybackSession.BufferingProgress = progress;
 		}
 	}
 }

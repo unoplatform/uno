@@ -8,6 +8,10 @@
 #import "UNONative.h"
 #import "UNOApplication.h"
 
+#if DEBUG
+#define DEBUG_MEDIAPLAYER   1
+#endif
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface UNOMediaPlayer : NSObject
@@ -27,6 +31,26 @@ typedef NS_ENUM(sint32, Stretch) {
     StretchUniformToFill = 3,
 };
 
+typedef void (*uno_mediaplayer_periodic_position_update_fn_ptr)(UNOMediaPlayer* /* handle */, double position);
+uno_mediaplayer_periodic_position_update_fn_ptr uno_mediaplayer_get_periodic_position_update_callback(void);
+
+typedef void (*uno_mediaplayer_rate_changed_fn_ptr)(UNOMediaPlayer* /* handle */, double rate);
+uno_mediaplayer_rate_changed_fn_ptr uno_mediaplayer_get_rate_changed_callback(void);
+
+typedef void (*uno_mediaplayer_video_dimension_changed_fn_ptr)(UNOMediaPlayer* /* handle */, double width, double height);
+uno_mediaplayer_video_dimension_changed_fn_ptr uno_mediaplayer_get_video_dimension_changed_callback(void);
+
+typedef void (*uno_mediaplayer_duration_changed_fn_ptr)(UNOMediaPlayer* /* handle */, double duration);
+uno_mediaplayer_duration_changed_fn_ptr uno_mediaplayer_get_duration_changed_callback(void);
+
+typedef void (*uno_mediaplayer_ready_to_play_fn_ptr)(UNOMediaPlayer* /* handle */, double rate);
+uno_mediaplayer_ready_to_play_fn_ptr uno_mediaplayer_get_ready_to_play_callback(void);
+
+typedef void (*uno_mediaplayer_buffering_progress_changed_fn_ptr)(UNOMediaPlayer* /* handle */, double progress);
+uno_mediaplayer_buffering_progress_changed_fn_ptr uno_mediaplayer_get_buffering_progress_changed_callback(void);
+
+void uno_mediaplayer_set_callbacks(uno_mediaplayer_periodic_position_update_fn_ptr periodic_position_update, uno_mediaplayer_rate_changed_fn_ptr rate_changed, uno_mediaplayer_video_dimension_changed_fn_ptr video_dimension_changed, uno_mediaplayer_duration_changed_fn_ptr duration_changed, uno_mediaplayer_ready_to_play_fn_ptr ready_to_play, uno_mediaplayer_buffering_progress_changed_fn_ptr buffering_progress_changed);
+
 id uno_mediaplayer_create(void);
 
 bool uno_mediaplayer_is_video(UNOMediaPlayer *media);
@@ -40,5 +64,17 @@ void uno_mediaplayer_play(UNOMediaPlayer *media);
 void uno_mediaplayer_stop(UNOMediaPlayer *media);
 void uno_mediaplayer_toggle_muted(UNOMediaPlayer *media);
 void uno_mediaplayer_step_by(UNOMediaPlayer *media, int32_t frames);
+
+@interface UNOMediaPlayerView : NSView<UNONativeElement>
+
+- (nullable instancetype)initWithCoder:(NSCoder *)coder;
+- (instancetype)initWithFrame:(CGRect)frame;
+- (BOOL)wantsUpdateLayer;
+- (void)layout;
+
+@end
+
+UNOMediaPlayerView* uno_mediaplayer_create_view(void);
+void uno_mediaplayer_set_view(UNOMediaPlayer *media, UNOMediaPlayerView *view, NSWindow *window);
 
 NS_ASSUME_NONNULL_END

@@ -418,6 +418,16 @@ internal static partial class NativeUno
 	internal static partial void uno_webview_set_scrolling_enabled(nint webview, [MarshalAs(UnmanagedType.I1)] bool enabled);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static unsafe partial void uno_mediaplayer_set_callbacks(
+		delegate* unmanaged[Cdecl]<IntPtr, double, void> periodicPositionUpdate,
+		delegate* unmanaged[Cdecl]<IntPtr, double, void> onRateChanged,
+		delegate* unmanaged[Cdecl]<IntPtr, double, double, void> onVideoDimensionChanged,
+		delegate* unmanaged[Cdecl]<IntPtr, double, void> onDurationChanged,
+		delegate* unmanaged[Cdecl]<IntPtr, double, void> onReadyToPlay,
+		delegate* unmanaged[Cdecl]<IntPtr, double, void> onBufferingProgressChanged
+		);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial nint uno_mediaplayer_create();
 
 	[LibraryImport("libUnoNativeMac.dylib")]
@@ -447,4 +457,10 @@ internal static partial class NativeUno
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_mediaplayer_step_by(nint media, int frames);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial nint uno_mediaplayer_create_view();
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial nint uno_mediaplayer_set_view(nint media, nint view, nint window);
 }

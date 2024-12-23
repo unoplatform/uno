@@ -20,6 +20,7 @@ internal class MacOSMediaPlayerPresenterExtension : IMediaPlayerPresenterExtensi
 {
 	private MediaPlayerPresenter _presenter;
 	private MacOSMediaPlayerExtension? _playerExtension;
+	private nint _nativeView;
 
 	private MacOSMediaPlayerPresenterExtension(object owner)
 	{
@@ -31,6 +32,16 @@ internal class MacOSMediaPlayerPresenterExtension : IMediaPlayerPresenterExtensi
 		{
 			throw new InvalidOperationException($"MacOSMediaPlayerPresenterExtension must be initialized with a MediaPlayerPresenter instance");
 		}
+
+		_nativeView = NativeUno.uno_mediaplayer_create_view();
+		var native = new MacOSNativeElement()
+		{
+			NativeHandle = _nativeView
+		};
+
+		var cp = new ContentPresenter() { Content = native };
+		_presenter.Child = cp;
+		cp.SizeChanged += (_, _) => StretchChanged();
 	}
 
 	public static void Register() => ApiExtensibility.Register(typeof(IMediaPlayerPresenterExtension), o => new MacOSMediaPlayerPresenterExtension(o));
@@ -39,12 +50,15 @@ internal class MacOSMediaPlayerPresenterExtension : IMediaPlayerPresenterExtensi
 	{
 		if (MacOSMediaPlayerExtension.GetByMediaPlayer(_presenter.MediaPlayer) is { } extension)
 		{
+			extension._presenter = this;
 			if (_playerExtension is { })
 			{
 				// TODO unhook
 			}
 			_playerExtension = extension;
-			// TODO hook
+			// set native drawing destination
+			var nativeWindow = (_presenter.XamlRoot?.HostWindow?.NativeWindow as MacOSWindowNative);
+			NativeUno.uno_mediaplayer_set_view(_playerExtension._nativePlayer, _nativeView, nativeWindow is null ? 0 : nativeWindow.Handle);
 		}
 	}
 
@@ -64,9 +78,9 @@ internal class MacOSMediaPlayerPresenterExtension : IMediaPlayerPresenterExtensi
 
 	public void ExitCompactOverlay() => NotImplemented();
 
-	public uint NaturalVideoWidth => 0;
+	public uint NaturalVideoWidth { get; set; }
 
-	public uint NaturalVideoHeight => 0;
+	public uint NaturalVideoHeight { get; set; }
 
 	public void NotImplemented([CallerMemberName] string name = "unknown")
 	{
