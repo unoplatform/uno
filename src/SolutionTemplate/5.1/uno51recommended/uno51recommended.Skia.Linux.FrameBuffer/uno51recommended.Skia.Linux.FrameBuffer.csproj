@@ -9,7 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Uno.WinUI.Skia.Linux.FrameBuffer" />
+    <PackageReference Include="Uno.WinUI.Runtime.Skia.Linux.FrameBuffer" />
     <PackageReference Include="Uno.Extensions.Configuration" />
     <PackageReference Include="Uno.Extensions.Http" />
     <PackageReference Include="Uno.Extensions.Http.Refit" />
