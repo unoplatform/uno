@@ -92,7 +92,6 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Is this view the top of the managed visual tree
 		/// </summary>
-		/// <remarks>This differs from the XamlRoot be being true for the root element of a native Popup.</remarks>
 		internal bool IsVisualTreeRoot { get; set; }
 
 		private void Initialize()
@@ -819,16 +818,15 @@ namespace Microsoft.UI.Xaml
 
 			var bounds = root.XamlRoot.Bounds;
 
-#if __MACOS__ || __IOS__ // IsMeasureDirty and IsArrangeDirty are not available on iOS / macOS
-			root.Measure(bounds.Size);
-			root.Arrange(bounds);
-#elif __ANDROID__
+#if __ANDROID__ || __IOS__ || __MACOS__
 			for (var i = 0; i < MaxLayoutIterations; i++)
 			{
-				// On Android, Measure and arrange are the same
 				if (root.IsMeasureDirtyOrMeasureDirtyPath)
 				{
 					root.Measure(bounds.Size);
+				}
+				else if (root.IsArrangeDirtyOrArrangeDirtyPath)
+				{
 					root.Arrange(bounds);
 				}
 				else
@@ -954,49 +952,12 @@ namespace Microsoft.UI.Xaml
 			}
 
 			OnViewportUpdated();
-
-#elif __WASM__
+#elif __ANDROID__ || __IOS__ || __MACOS__
+			SetTotalClipRect();
+#else
 			InvalidateArrange();
-#else
-			var rect = GetNativeClippedViewport();
-
-			ApplyNativeClip(rect);
-			OnViewportUpdated(rect);
 #endif
 		}
-
-#if !(__SKIA__ || __WASM__)
-		internal Rect GetNativeClippedViewport()
-		{
-			Rect rect;
-
-			if (Clip == null)
-			{
-				rect = Rect.Empty;
-
-				if (NeedsClipToSlot)
-				{
-#if UNO_REFERENCE_API
-					rect = new Rect(0, 0, RenderSize.Width, RenderSize.Height);
-#else
-					rect = ClippedFrame ?? Rect.Empty;
-#endif
-				}
-			}
-			else
-			{
-				rect = Clip.Rect;
-
-				// Apply transform to clipping mask, if any
-				if (Clip.Transform != null)
-				{
-					rect = Clip.Transform.TransformBounds(rect);
-				}
-			}
-
-			return rect;
-		}
-#endif
 
 		partial void ApplyNativeClip(Rect rect
 #if __SKIA__
@@ -1110,102 +1071,6 @@ namespace Microsoft.UI.Xaml
 		{
 			get => HasLayoutStorage ? m_size : default;
 			internal set => m_size = value;
-		}
-#endif
-
-
-#if !UNO_REFERENCE_API
-
-		/// <summary>
-		/// This is the Frame that should be used as "available Size" for the Arrange phase.
-		/// </summary>
-		internal Rect? ClippedFrame;
-
-		/// <summary>
-		/// Updates the DesiredSize of a UIElement. Typically, objects that implement custom layout for their
-		/// layout children call this method from their own MeasureOverride implementations to form a recursive layout update.
-		/// </summary>
-		/// <param name="availableSize">
-		/// The available space that a parent can allocate to a child object. A child object can request a larger
-		/// space than what is available; the provided size might be accommodated if scrolling or other resize behavior is
-		/// possible in that particular container.
-		/// </param>
-		/// <returns>The measured size.</returns>
-		/// <remarks>
-		/// Under Uno.UI, this method should not be called during the normal layouting phase. Instead, use the
-		/// <see cref="MeasureElement(View, Size)"/> methods, which handles native view properly.
-		/// </remarks>
-		public void Measure(Size availableSize)
-		{
-			EnsureLayoutStorage();
-
-			if (this is not FrameworkElement fwe)
-			{
-				return;
-			}
-
-			if (double.IsNaN(availableSize.Width) || double.IsNaN(availableSize.Height))
-			{
-				throw new InvalidOperationException($"Cannot measure [{GetType()}] with NaN");
-			}
-
-			((ILayouterElement)fwe).Layouter.Measure(availableSize);
-#if IS_UNIT_TESTS
-			OnMeasurePartial(availableSize);
-#endif
-		}
-
-#if IS_UNIT_TESTS
-		partial void OnMeasurePartial(Size slotSize);
-#endif
-
-		/// <summary>
-		/// Positions child objects and determines a size for a UIElement. Parent objects that implement custom layout
-		/// for their child elements should call this method from their layout override implementations to form a recursive layout update.
-		/// </summary>
-		/// <param name="finalRect">The final size that the parent computes for the child in layout, provided as a <see cref="Windows.Foundation.Rect"/> value.</param>
-		public void Arrange(Rect finalRect)
-		{
-			EnsureLayoutStorage();
-
-			if (this is not FrameworkElement fwe)
-			{
-				return;
-			}
-
-			var layouter = ((ILayouterElement)fwe).Layouter;
-			layouter.Arrange(finalRect.DeflateBy(fwe.Margin));
-			layouter.ArrangeChild(fwe, finalRect);
-		}
-
-		public void InvalidateMeasure()
-		{
-#if __ANDROID__
-			// Use a non-virtual version of the RequestLayout method, for performance.
-			base.RequestLayout();
-			SetLayoutFlags(LayoutFlag.MeasureDirty);
-#elif __IOS__
-			SetNeedsLayout();
-			SetLayoutFlags(LayoutFlag.MeasureDirty);
-#elif __MACOS__
-			base.NeedsLayout = true;
-			SetLayoutFlags(LayoutFlag.MeasureDirty);
-#endif
-
-			OnInvalidateMeasure();
-		}
-
-		protected internal virtual void OnInvalidateMeasure()
-		{
-		}
-
-		[global::Uno.NotImplemented]
-		public void InvalidateArrange()
-		{
-			InvalidateMeasure();
-#if __IOS__ || __MACOS__
-			SetLayoutFlags(LayoutFlag.ArrangeDirty);
-#endif
 		}
 #endif
 
