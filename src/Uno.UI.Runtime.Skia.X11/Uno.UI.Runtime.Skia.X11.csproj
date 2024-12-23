@@ -25,7 +25,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Tmds.DBus" Version="0.16.0" />
+		<PackageReference Include="Tmds.DBus.Protocol" Version="0.21.2" />
 	</ItemGroup>
 
 	<ItemGroup>
