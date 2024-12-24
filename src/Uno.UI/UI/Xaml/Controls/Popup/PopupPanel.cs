@@ -165,11 +165,12 @@ internal partial class PopupPanel : Panel
 #endif
 				;
 
-			if (!isFlyoutManagedDatePicker && Popup.PlacementTarget is not null
+			if ((!isFlyoutManagedDatePicker
 #if __ANDROID__ || __IOS__
-				|| NativeAnchor is not null
+				 || NativeAnchor is not null
 #endif
-				|| !finalFrame.IntersectWith(GetVisibleBounds()).Equals(finalFrame) // if the finalFrame spills out of the window, always use PlacementArrangeOverride
+				 || !finalFrame.IntersectWith(GetVisibleBounds()).Equals(finalFrame) // if the finalFrame spills out of the window, always use PlacementArrangeOverride
+				) && Popup.PlacementTarget is not null
 			   )
 			{
 				return PlacementArrangeOverride(Popup, finalSize);
