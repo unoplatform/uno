@@ -499,10 +499,11 @@ public class Given_Frame
 #endif
 	[DataRow(false)]
 	[DataRow(true)]
+	[Timeout(5 * 60 * 1000)] // test is really slow in CI
 	public async Task When_Navigating_NativeFrame_Pages_Get_Collected(bool backAndForth)
 	{
 		// to clean up residual pages from a previous test run
-		for (int i = 0; i < 10; i++)
+		for (int i = 0; i < 4; i++)
 		{
 			GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
 			GC.WaitForPendingFinalizers();
@@ -560,7 +561,7 @@ public class Given_Frame
 			await Task.Delay(TimeSpan.FromSeconds(3));
 		}
 
-		for (int i = 0; i < 10; i++)
+		for (int i = 0; i < 4; i++)
 		{
 			GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
 			GC.WaitForPendingFinalizers();
