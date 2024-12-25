@@ -5,6 +5,9 @@ BFFM_INITIALIZED
 BFFM_SETSELECTION
 CW_USEDEFAULT
 DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2
+E_NOINTERFACE
+E_POINTER
+E_UNEXPECTED
 HKEY_CURRENT_USER
 HTBOTTOM
 HTBOTTOMLEFT
@@ -46,6 +49,7 @@ POINTER_MESSAGE_FLAG_INRANGE
 POINTER_MESSAGE_FLAG_PRIMARY
 POINTER_MESSAGE_FLAG_SECONDBUTTON
 POINTER_MESSAGE_FLAG_THIRDBUTTON
+S_OK
 TOUCH_MASK_CONTACTAREA
 TOUCH_MASK_ORIENTATION
 TOUCH_MASK_PRESSURE
@@ -83,8 +87,12 @@ BROWSEINFOW
 CLIPBOARD_FORMAT
 IDataObject
 IDropSource
-IDropTarget
+IEnumUnknown
+IFileOpenDialog
+IFileSaveDialog
+IGlobalInterfaceTable
 MINMAXINFO
+MONITORINFOEXW
 PIXELFORMATDESCRIPTOR
 RECT
 
@@ -94,7 +102,7 @@ BeginPaint
 BitBlt
 ChoosePixelFormat
 CloseClipboard
-CommDlgExtendedError
+CoCreateInstance
 CreateCompatibleDC
 CreateDIBSection
 CreateIconFromResource
@@ -103,7 +111,6 @@ DefWindowProc
 DescribePixelFormat
 DestroyWindow
 DispatchMessage
-DoDragDrop
 DragQueryFile
 DwmSetWindowAttribute
 EmptyClipboard
@@ -120,7 +127,6 @@ GetDpiForWindow
 GetKeyState
 GetMessageTime
 GetMonitorInfo
-GetOpenFileName
 GetPointerInfo
 GetPointerPenInfo
 GetPointerTouchInfo
@@ -136,10 +142,10 @@ GlobalFree
 GlobalLock
 GlobalSize
 GlobalUnlock
-ILFree
 InternetGetConnectedState
 InvalidateRect
 LoadCursor
+LoadRegTypeLib
 LocalFree
 MonitorFromWindow
 OleInitialize
@@ -153,6 +159,7 @@ RegNotifyChangeKeyValue
 RegOpenKeyEx
 ReleaseDC
 ReleaseCapture
+ReleaseStgMedium
 ScreenToClient
 SelectObject
 SendMessage
@@ -164,10 +171,7 @@ SetPixelFormat
 SetThreadDpiAwarenessContext
 SetWindowPos
 SetWindowText
-SHBrowseForFolder
-SHGetPathFromIDList
 ShowWindow
-ShowWindowAsync
 SwapBuffers
 TranslateMessage
 wglCreateContext

@@ -1,23 +1,19 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.Win32;
 using Windows.Win32.Foundation;
-using Windows.Win32.UI.Controls.Dialogs;
+using Windows.Win32.System.Com;
 using Windows.Win32.UI.Shell;
 using Windows.Win32.UI.Shell.Common;
+using Microsoft.UI.Xaml;
 using Uno.Disposables;
 using Uno.Extensions.Storage.Pickers;
 using Uno.Foundation.Logging;
-using Uno.UI.Helpers;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
@@ -26,71 +22,158 @@ internal class Win32FileFolderPickerExtension(IFilePicker picker) : IFileOpenPic
 	internal const int FilePathBuffer = 1000;
 
 	public Task<StorageFile?> PickSingleFileAsync(CancellationToken token)
-		=> PickFiles(true).ContinueWith(task => task.Result.Count == 0 ? null : task.Result[0], token);
+		=> PickFiles(false, true).ContinueWith(task => task.Result.Count == 0 ? null : task.Result[0], token);
 
 	public Task<IReadOnlyList<StorageFile>> PickMultipleFilesAsync(CancellationToken token)
-		=> PickFiles(false);
+		=> PickFiles(false, false);
 
-	private unsafe Task<IReadOnlyList<StorageFile>> PickFiles(bool single)
+	public Task<StorageFolder?> PickSingleFolderAsync(CancellationToken token)
+		=> PickFiles(true, true).ContinueWith(task => task.Result.Select(file => StorageFolder.GetFolderFromPathAsync(file.Path).GetResults()).FirstOrDefault((StorageFolder?)null), token);
+
+	private unsafe Task<IReadOnlyList<StorageFile>> PickFiles(bool directory, bool single)
 	{
-		using var initialDir = new Win32Helper.NativeNulTerminatedUtf16String(PickerHelpers.GetInitialDirectory(picker.SuggestedStartLocationInternal));
-		using var filters = new Win32Helper.NativeNulTerminatedUtf16String(GetFilterString());
-		var fileNameBuffer = stackalloc char[FilePathBuffer * (single ? 1 : 10)];
+		using ComScope<IFileOpenDialog> iFileOpenDialog = default;
+		var fileOpenDialogClsid = CLSID.FileOpenDialog;
+		var iFileOpenDialogRiid = IFileOpenDialog.IID_Guid;
+		var hResult = PInvoke.CoCreateInstance(
+			&fileOpenDialogClsid,
+			null,
+			CLSCTX.CLSCTX_ALL,
+			&iFileOpenDialogRiid,
+			iFileOpenDialog);
 
-		var ofn = new OPENFILENAMEW
+		if (hResult.Failed)
 		{
-			lStructSize = (uint)Marshal.SizeOf<OPENFILENAMEW>(),
-			lpstrInitialDir = initialDir,
-			lpstrFilter = filters,
-			lpstrFile = new PWSTR(fileNameBuffer),
-			nMaxFile = FilePathBuffer,
-			Flags = (single ? 0 : OPEN_FILENAME_FLAGS.OFN_ALLOWMULTISELECT) | OPEN_FILENAME_FLAGS.OFN_EXPLORER
-		};
-		if (!PInvoke.GetOpenFileName(ref ofn))
-		{
-			_ = this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GetOpenFileName)} failed: {PInvoke.CommDlgExtendedError()}");
+			this.Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(PInvoke.CoCreateInstance)} failed: {Win32Helper.GetErrorMessage(hResult)}");
 			return Task.FromResult<IReadOnlyList<StorageFile>>([]);
 		}
 
-		if (single)
+		hResult = iFileOpenDialog.Value->GetOptions(out var dialogOptions);
+		if (hResult.Failed)
 		{
-			return Task.FromResult<IReadOnlyList<StorageFile>>([StorageFile.GetFileFromPath(Marshal.PtrToStringUni((IntPtr)fileNameBuffer)!)]);
+			this.Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(IFileDialog.GetOptions)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+			return Task.FromResult<IReadOnlyList<StorageFile>>([]);
 		}
-		else
-		{
-			var span = new Span<char>(fileNameBuffer, FilePathBuffer);
-			var currentRun = 0;
-			var paths = new List<string>();
-			for (int i = 0; i < FilePathBuffer; i++)
-			{
-				if (span[i] == '\0')
-				{
-					paths.Add(new string(fileNameBuffer + currentRun));
-					currentRun = i + 1;
 
-					if (i + 1 < FilePathBuffer && span[i + 1] == '\0')
+		dialogOptions |=
+			FILEOPENDIALOGOPTIONS.FOS_NOCHANGEDIR
+			| FILEOPENDIALOGOPTIONS.FOS_FORCEFILESYSTEM
+			| FILEOPENDIALOGOPTIONS.FOS_FILEMUSTEXIST
+			| FILEOPENDIALOGOPTIONS.FOS_PATHMUSTEXIST
+			| (directory ? FILEOPENDIALOGOPTIONS.FOS_PICKFOLDERS : 0)
+			| (single ? 0 : FILEOPENDIALOGOPTIONS.FOS_ALLOWMULTISELECT);
+
+		hResult = iFileOpenDialog.Value->SetOptions(dialogOptions);
+		if (hResult.Failed)
+		{
+			this.Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(IFileDialog.SetOptions)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+			return Task.FromResult<IReadOnlyList<StorageFile>>([]);
+		}
+
+		if (!directory)
+		{
+			var fileTypeList = GetFilterString();
+			using var fileTypeListDisposable =
+				new DisposableStruct<List<(Win32Helper.NativeNulTerminatedUtf16String friendlyName,
+					Win32Helper.NativeNulTerminatedUtf16String pattern)>>(
+					static list =>
 					{
-						break;
-					}
-				}
-			}
+						foreach (var (name, pattern) in list)
+						{
+							name.Dispose();
+							pattern.Dispose();
+						}
+					}, fileTypeList);
 
-			if (paths.Count == 1)
+			hResult = iFileOpenDialog.Value->SetFileTypes(fileTypeList
+				.Select(t => new COMDLG_FILTERSPEC { pszName = t.friendlyName, pszSpec = t.pattern })
+				.ToArray()
+				.AsSpan());
+			if (hResult.Failed)
 			{
-				return Task.FromResult<IReadOnlyList<StorageFile>>([StorageFile.GetFileFromPath(Marshal.PtrToStringUni((IntPtr)fileNameBuffer)!)]);
-			}
-			else
-			{
-				var dir = paths[0];
-				var completePaths = paths.Skip(1).Select(file => StorageFile.GetFileFromPath(Path.Join(dir, file)));
-				return Task.FromResult<IReadOnlyList<StorageFile>>(completePaths.ToImmutableList());
+				this.Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(IFileDialog.SetFileTypes)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+				return Task.FromResult<IReadOnlyList<StorageFile>>([]);
 			}
 		}
+
+		hResult = iFileOpenDialog.Value->SetOkButtonLabel(picker.CommitButtonTextInternal);
+		if (hResult.Failed)
+		{
+			this.Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(IFileDialog.SetOkButtonLabel)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+			return Task.FromResult<IReadOnlyList<StorageFile>>([]);
+		}
+
+		// TODO: file pickers aren't associated with a specific window, so what do we do here?
+		hResult = iFileOpenDialog.Value->Show((HWND)Window.InitialWindow!.NativeWindow!);
+		if (hResult.Failed)
+		{
+			if (hResult != (uint)WIN32_ERROR.ERROR_CANCELLED)
+			{
+				this.Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(IFileDialog.Show)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+			}
+			return Task.FromResult<IReadOnlyList<StorageFile>>([]);
+		}
+
+		using ComScope<IShellItemArray> iShellItemArray = default;
+		hResult = iFileOpenDialog.Value->GetResults(iShellItemArray);
+		if (hResult.Failed)
+		{
+			this.Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(IFileOpenDialog.GetResults)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+			return Task.FromResult<IReadOnlyList<StorageFile>>([]);
+		}
+
+		hResult = iShellItemArray.Value->GetCount(out var count);
+		if (hResult.Failed)
+		{
+			this.Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(IShellItemArray.GetCount)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+			return Task.FromResult<IReadOnlyList<StorageFile>>([]);
+		}
+
+		var items = new IShellItem*[count];
+		using var itemsDisposable =
+			new DisposableStruct<IShellItem*[]>(
+				static list =>
+				{
+					foreach (var ptr in list)
+					{
+						if (ptr is null)
+						{
+							continue;
+						}
+						var hResult = (HRESULT)ptr->Release();
+						_ = hResult.Succeeded || typeof(Win32FileFolderPickerExtension).Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(IUnknown.Release)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+					}
+				}, items);
+
+		var ret = new List<StorageFile>();
+		char* resultName = stackalloc char[FilePathBuffer];
+		for (var i = 0; i < count; i++)
+		{
+			IShellItem* temp = default;
+			hResult = iShellItemArray.Value->GetItemAt((uint)i, &temp);
+			if (hResult.Failed)
+			{
+				this.Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(IShellItemArray.GetItemAt)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+				return Task.FromResult<IReadOnlyList<StorageFile>>([]);
+			}
+			items[i] = temp;
+
+			temp->GetDisplayName(SIGDN.SIGDN_FILESYSPATH, (PWSTR*)&resultName);
+			if (hResult.Failed)
+			{
+				this.Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(IShellItem.GetDisplayName)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+				continue;
+			}
+
+			ret.Add(StorageFile.GetFileFromPath(new string(resultName)));
+		}
+
+		return Task.FromResult<IReadOnlyList<StorageFile>>(ret);
 	}
 
-	private string GetFilterString()
+	private List<(Win32Helper.NativeNulTerminatedUtf16String friendlyName, Win32Helper.NativeNulTerminatedUtf16String pattern)> GetFilterString()
 	{
-		var builder = new StringBuilder();
+		var list = new List<(Win32Helper.NativeNulTerminatedUtf16String, Win32Helper.NativeNulTerminatedUtf16String)>();
 		foreach (var pattern in picker.FileTypeFilterInternal.Distinct())
 		{
 			if (pattern is null)
@@ -100,11 +183,11 @@ internal class Win32FileFolderPickerExtension(IFilePicker picker) : IFileOpenPic
 
 			if (pattern == "*")
 			{
-				builder.Append("All Files\0*.*\0");
+				list.Add((new Win32Helper.NativeNulTerminatedUtf16String("All Files"), new Win32Helper.NativeNulTerminatedUtf16String("*.*")));
 			}
 			else if (pattern.StartsWith('.') && pattern[1..] is var ext && ext.All(char.IsLetterOrDigit))
 			{
-				builder.Append($"{ext.ToUpperInvariant()} Files\0*.{ext}\0");
+				list.Add((new Win32Helper.NativeNulTerminatedUtf16String($"{ext.ToUpperInvariant()} Files"), new Win32Helper.NativeNulTerminatedUtf16String($"*.{ext}")));
 			}
 			else
 			{
@@ -112,46 +195,10 @@ internal class Win32FileFolderPickerExtension(IFilePicker picker) : IFileOpenPic
 			}
 		}
 
-		return builder.Length > 0 ? builder.Append('\0').ToString() : "All Files\0*.*\0\0";
-	}
-
-	public unsafe Task<StorageFolder?> PickSingleFolderAsync(CancellationToken token)
-	{
-		var folderNameBuffer = stackalloc char[FilePathBuffer];
-		BROWSEINFOW dialog = new BROWSEINFOW
+		if (list.Count == 0)
 		{
-			pszDisplayName = folderNameBuffer,
-			lpfn = (hwnd, msg, _, _) =>
-			{
-				switch (msg)
-				{
-					case PInvoke.BFFM_INITIALIZED:
-						{
-							using var initialDir = new Win32Helper.NativeNulTerminatedUtf16String(PickerHelpers.GetInitialDirectory(picker.SuggestedStartLocationInternal));
-							PInvoke.SendMessage(hwnd, PInvoke.BFFM_SETSELECTION, 1, initialDir.Handle);
-						}
-						break;
-				}
-				return 0;
-			}
-		};
-
-		var list = PInvoke.SHBrowseForFolder(dialog);
-
-		if (list is null)
-		{
-			_ = this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SHBrowseForFolder)} failed with error code : {Win32Helper.GetErrorMessage()}");
-			return Task.FromResult<StorageFolder?>(null);
+			list.Add((new Win32Helper.NativeNulTerminatedUtf16String("All Files"), new Win32Helper.NativeNulTerminatedUtf16String("*.*")));
 		}
-
-		using var listDisposable = new DisposableStruct<IntPtr>(static ptr => PInvoke.ILFree((ITEMIDLIST*)ptr), (IntPtr)list);
-
-		if (!PInvoke.SHGetPathFromIDList(list, folderNameBuffer))
-		{
-			_ = this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SHGetPathFromIDList)} failed with error code : {Win32Helper.GetErrorMessage()}");
-			return Task.FromResult<StorageFolder?>(null);
-		}
-
-		return Task.FromResult<StorageFolder?>(new StorageFolder(Marshal.PtrToStringUni((IntPtr)folderNameBuffer)!));
+		return list;
 	}
 }

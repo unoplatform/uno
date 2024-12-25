@@ -62,7 +62,7 @@ internal class Win32ClipboardExtension : IClipboardExtension
 		_windowClass = new WNDCLASSEXW
 		{
 			cbSize = (uint)Marshal.SizeOf<WNDCLASSEXW>(),
-			lpfnWndProc = WndProc,
+			lpfnWndProc = &WndProc,
 			hInstance = Win32Helper.GetHInstance(),
 			lpszClassName = lpClassName,
 		};
@@ -97,14 +97,15 @@ internal class Win32ClipboardExtension : IClipboardExtension
 		Win32Host.RegisterWindow(_hwnd);
 	}
 
-	internal LRESULT WndProc(HWND hwnd, uint msg, WPARAM wParam, LPARAM lParam)
+	[UnmanagedCallersOnly(CallConvs = [typeof(CallConvStdcall)])]
+	internal static LRESULT WndProc(HWND hwnd, uint msg, WPARAM wParam, LPARAM lParam)
 	{
 		if (msg is PInvoke.WM_CLIPBOARDUPDATE)
 		{
-			_currentPackage = null;
-			if (_observeContentChanged)
+			Instance._currentPackage = null;
+			if (Instance._observeContentChanged)
 			{
-				ContentChanged?.Invoke(this, EventArgs.Empty);
+				Instance.ContentChanged?.Invoke(Instance, EventArgs.Empty);
 			}
 			return new LRESULT(0);
 		}
@@ -196,19 +197,18 @@ internal class Win32ClipboardExtension : IClipboardExtension
 
 	private static unsafe void GetBitmap(HGLOBAL handle, DataPackage package)
 	{
-		var memSize = (uint)PInvoke.GlobalSize(handle);
-		if (memSize <= Marshal.SizeOf<BITMAPINFOHEADER>())
-		{
-			typeof(Win32ClipboardExtension).Log().Log(LogLevel.Error, memSize, static memSize => $"{nameof(PInvoke.GlobalSize)} returned {memSize}: {Win32Helper.GetErrorMessage()}");
-			return;
-		}
-
 		package.SetDataProvider(StandardDataFormats.Bitmap, _ =>
 		{
 			using var lockDisposable = Win32Helper.GlobalLock(handle, out var dib);
 			if (lockDisposable is null)
 			{
 				return Task.FromException<object>(new InvalidOperationException($"{nameof(PInvoke.GlobalLock)} failed: {Win32Helper.GetErrorMessage()}"));
+			}
+
+			var memSize = (uint)PInvoke.GlobalSize(handle);
+			if (memSize <= Marshal.SizeOf<BITMAPINFOHEADER>())
+			{
+				return Task.FromException<object>(new InvalidOperationException($"{nameof(PInvoke.GlobalSize)} returned {memSize}: {Win32Helper.GetErrorMessage()}"));
 			}
 
 			var srcBitmapInfo = (BITMAPINFO*)dib;
@@ -268,7 +268,7 @@ internal class Win32ClipboardExtension : IClipboardExtension
 			if (charLength == 0)
 			{
 				typeof(Win32ClipboardExtension).Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.DragQueryFile)} failed when querying buffer length: {Win32Helper.GetErrorMessage()}");
-				break;
+				continue;
 			}
 			charLength++; // + 1 for \0
 

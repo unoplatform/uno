@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -13,6 +14,7 @@ using Windows.Win32.System.Ole;
 using Windows.Win32.System.SystemServices;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
+using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
@@ -21,47 +23,67 @@ using IDataObject = Windows.Win32.System.Com.IDataObject;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
-internal class Win32DragDropExtension : IDragDropExtension, IDropTarget
+internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interface
 {
 	private static readonly long _fakePointerId = Pointer.CreateUniqueIdForUnknownPointer();
 
 	private readonly DragDropManager _manager;
 	private readonly CoreDragDropManager _coreDragDropManager;
 	private readonly HWND _hwnd;
+	private readonly ComScope<IDropTarget> _dropTarget;
 
-	public Win32DragDropExtension(DragDropManager manager)
+	public unsafe Win32DragDropExtension(DragDropManager manager)
 	{
 		var host = Win32WindowWrapper.XamlRootMap.GetHostForRoot(manager.ContentRoot.GetOrCreateXamlRoot()) ?? throw new InvalidOperationException($"Couldn't find an {nameof(Win32WindowWrapper)} instance associated with this {nameof(XamlRoot)}.");
 		_coreDragDropManager = XamlRoot.GetCoreDragDropManager(((IXamlRootHost)host).RootElement!.XamlRoot);
 		_manager = manager;
-
 		_hwnd = (HWND)host.NativeWindow;
-		var hResult = PInvoke.RegisterDragDrop(_hwnd, this);
+
+		// Note: we're deliberately not disposing the ComScope (which calls ReleaseRef()) here because the IDragDropExtension instance
+		// should last as long as the window that created it.
+		_dropTarget = ComHelpers.TryGetComScope<IDropTarget>(this, out HRESULT hResult);
+		if (hResult.Failed)
+		{
+			this.Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(ComHelpers.TryGetComScope)}<{nameof(IDropTarget)}> failed: {Win32Helper.GetErrorMessage(hResult)}");
+			return;
+		}
+
+		// RegisterDragDrop calls AddRef()
+		hResult = PInvoke.RegisterDragDrop(_hwnd, _dropTarget);
 		if (hResult.Failed)
 		{
 			this.Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(PInvoke.RegisterDragDrop)} failed: {Win32Helper.GetErrorMessage(hResult)}");
 		}
 	}
 
-	public unsafe void DragEnter(IDataObject pDataObj, MODIFIERKEYS_FLAGS grfKeyState, POINTL pt, DROPEFFECT* pdwEffect)
+	~Win32DragDropExtension()
+	{
+		_dropTarget.Dispose();
+	}
+
+	unsafe HRESULT IDropTarget.Interface.DragEnter(IDataObject* dataObject, MODIFIERKEYS_FLAGS grfKeyState, POINTL pt, DROPEFFECT* pdwEffect)
 	{
 		Debug.Assert(_manager is not null && _coreDragDropManager is not null);
 
-		pDataObj.EnumFormatEtc((uint)DATADIR.DATADIR_GET, out var enumFormatEtc);
-		if (enumFormatEtc is null)
+		IEnumFORMATETC* enumFormatEtc;
+		var hResult = dataObject->EnumFormatEtc((uint)DATADIR.DATADIR_GET, &enumFormatEtc);
+		if (hResult.Failed)
 		{
-			this.Log().Log(LogLevel.Error, static () => $"{nameof(pDataObj.EnumFormatEtc)} returned null");
-			return;
+			this.Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(IDataObject.EnumFormatEtc)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+			return HRESULT.E_UNEXPECTED;
 		}
 
-		enumFormatEtc.Reset();
-		var formatBuffer = stackalloc FORMATETC[100];
+		using var enumFormatDisposable = new DisposableStruct<IntPtr>(static p => ((IEnumFORMATETC*)p)->Release(), (IntPtr)enumFormatEtc);
+
+		enumFormatEtc->Reset();
+		const int formatBufferLength = 100;
+		var formatBuffer = stackalloc FORMATETC[formatBufferLength];
 		uint fetchedFormatCount;
-		var hResult = enumFormatEtc.Next(new Span<FORMATETC>(formatBuffer, 100), &fetchedFormatCount);
+		hResult = enumFormatEtc->Next(formatBufferLength, formatBuffer, &fetchedFormatCount);
 		if (hResult.Failed)
 		{
 			this.Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(PInvoke.RegisterDragDrop)} failed: {Win32Helper.GetErrorMessage(hResult)}");
-			return;
+			return HRESULT.E_UNEXPECTED;
 		}
 
 		var position = new System.Drawing.Point(pt.x, pt.y);
@@ -71,7 +93,7 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget
 		var formats = new Span<FORMATETC>(formatBuffer, (int)fetchedFormatCount);
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
-			var log = $"{nameof(DragEnter)} @ {position}, formats: ";
+			var log = $"{nameof(IDropTarget.Interface.DragEnter)} @ {position}, formats: ";
 			foreach (var format in formats)
 			{
 				log += (CLIPBOARD_FORMAT)format.cfFormat + " ";
@@ -92,7 +114,7 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget
 				}
 				if (formatetc.tymed != (uint)TYMED.TYMED_HGLOBAL)
 				{
-					typeof(Win32DragDropExtension).Log().Log(LogLevel.Error, formatetc, static formatetc => $"{nameof(DragEnter)} found {Enum.GetName(typeof(CLIPBOARD_FORMAT), formatetc.cfFormat)}, but {nameof(TYMED)} is not {nameof(TYMED.TYMED_HGLOBAL)}");
+					typeof(Win32DragDropExtension).Log().Log(LogLevel.Error, formatetc, static formatetc => $"{nameof(IDropTarget.Interface.DragEnter)} found {Enum.GetName(typeof(CLIPBOARD_FORMAT), formatetc.cfFormat)}, but {nameof(TYMED)} is not {nameof(TYMED.TYMED_HGLOBAL)}");
 					return false;
 				}
 
@@ -101,13 +123,21 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget
 			.Select(f => (CLIPBOARD_FORMAT)f.cfFormat)
 			.ToList();
 
+		var mediumsToDispose = new List<STGMEDIUM>();
+		using var mediumsDisposable = new DisposableStruct<List<STGMEDIUM>>(static list =>
+		{
+			foreach (var medium in list)
+			{
+				PInvoke.ReleaseStgMedium(&medium);
+			}
+		}, mediumsToDispose);
 		Win32ClipboardExtension.ReadContentIntoPackage(package, formatList, format =>
 		{
 			var formatEtc = formatEtcList.First(f => f.cfFormat == (int)format);
-			pDataObj.GetData(formatEtc, out STGMEDIUM medium);
+			dataObject->GetData(formatEtc, out STGMEDIUM medium);
+			mediumsToDispose.Add(medium);
 			return medium.u.hGlobal;
 		});
-
 
 		// DROPEFFECT and DataPackageOperation have the same binary representation
 		var info = new CoreDragInfo(src, package.GetView(), (DataPackageOperation)(*pdwEffect));
@@ -120,15 +150,17 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget
 			resetEvent.Set();
 		});
 		resetEvent.WaitOne();
+
+		return HRESULT.S_OK;
 	}
 
-	public unsafe void DragOver(MODIFIERKEYS_FLAGS grfKeyState, POINTL pt, DROPEFFECT* pdwEffect)
+	unsafe HRESULT IDropTarget.Interface.DragOver(MODIFIERKEYS_FLAGS grfKeyState, POINTL pt, DROPEFFECT* pdwEffect)
 	{
 		var position = new System.Drawing.Point(pt.x, pt.y);
 		_ = PInvoke.ScreenToClient(_hwnd, ref position) || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.ScreenToClient)} failed: {Win32Helper.GetErrorMessage()}");
 		var src = new DragEventSource(position.X, position.Y, grfKeyState);
 
-		this.Log().Log(LogLevel.Trace, position, static position => $"{nameof(DragOver)} @ {position}");
+		this.Log().Log(LogLevel.Trace, position, static position => $"{nameof(IDropTarget.Interface.DragOver)} @ {position}");
 
 		var resetEvent = new AutoResetEvent(false);
 		NativeDispatcher.Main.Enqueue(() =>
@@ -137,11 +169,13 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget
 			resetEvent.Set();
 		});
 		resetEvent.WaitOne();
+
+		return HRESULT.S_OK;
 	}
 
-	public void DragLeave()
+	HRESULT IDropTarget.Interface.DragLeave()
 	{
-		this.Log().Log(LogLevel.Trace, static () => $"{nameof(DragLeave)}");
+		this.Log().Log(LogLevel.Trace, static () => $"{nameof(IDropTarget.Interface.DragLeave)}");
 
 		var resetEvent = new AutoResetEvent(false);
 		NativeDispatcher.Main.Enqueue(() =>
@@ -150,15 +184,17 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget
 			resetEvent.Set();
 		});
 		resetEvent.WaitOne();
+
+		return HRESULT.S_OK;
 	}
 
-	public unsafe void Drop(IDataObject pDataObj, MODIFIERKEYS_FLAGS grfKeyState, POINTL pt, DROPEFFECT* pdwEffect)
+	unsafe HRESULT IDropTarget.Interface.Drop(IDataObject* dataObject, MODIFIERKEYS_FLAGS grfKeyState, POINTL pt, DROPEFFECT* pdwEffect)
 	{
 		var position = new System.Drawing.Point(pt.x, pt.y);
 		_ = PInvoke.ScreenToClient(_hwnd, ref position) || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.ScreenToClient)} failed: {Win32Helper.GetErrorMessage()}");
 		var src = new DragEventSource(position.X, position.Y, grfKeyState);
 
-		this.Log().Log(LogLevel.Trace, position, static position => $"{nameof(Drop)} @ {position}");
+		this.Log().Log(LogLevel.Trace, position, static position => $"{nameof(IDropTarget.Interface.Drop)} @ {position}");
 
 		var resetEvent = new AutoResetEvent(false);
 		NativeDispatcher.Main.Enqueue(() =>
@@ -167,6 +203,8 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget
 			resetEvent.Set();
 		});
 		resetEvent.WaitOne();
+
+		return HRESULT.S_OK;
 	}
 
 	public void StartNativeDrag(CoreDragInfo info) => throw new System.NotImplementedException();

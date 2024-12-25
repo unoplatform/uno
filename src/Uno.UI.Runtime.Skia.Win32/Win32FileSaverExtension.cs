@@ -1,17 +1,19 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.Win32;
 using Windows.Win32.Foundation;
-using Windows.Win32.UI.Controls.Dialogs;
+using Windows.Win32.System.Com;
+using Windows.Win32.UI.Shell;
+using Windows.Win32.UI.Shell.Common;
+using Microsoft.UI.Xaml;
+using Uno.Disposables;
 using Uno.Extensions.Storage.Pickers;
 using Uno.Foundation.Logging;
-using Uno.UI.Helpers;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
@@ -19,51 +21,127 @@ internal class Win32FileSaverExtension(FileSavePicker picker) : IFileSavePickerE
 {
 	public unsafe Task<StorageFile?> PickSaveFileAsync(CancellationToken token)
 	{
-		using var initialDir = new Win32Helper.NativeNulTerminatedUtf16String(PickerHelpers.GetInitialDirectory(picker.SuggestedStartLocation));
-		using var filters = new Win32Helper.NativeNulTerminatedUtf16String(GetFilterString());
-		var fileNameBuffer = stackalloc char[Win32FileFolderPickerExtension.FilePathBuffer];
+		using ComScope<IFileSaveDialog> iFileSaveDialog = default;
+		var fileSaveDialogClsid = CLSID.FileSaveDialog;
+		var iFileSaveDialogRiid = IFileSaveDialog.IID_Guid;
+		var hResult = PInvoke.CoCreateInstance(
+			&fileSaveDialogClsid,
+			null,
+			CLSCTX.CLSCTX_ALL,
+			&iFileSaveDialogRiid,
+			iFileSaveDialog);
 
-		var ofn = new OPENFILENAMEW
+		if (hResult.Failed)
 		{
-			lStructSize = (uint)Marshal.SizeOf<OPENFILENAMEW>(),
-			lpstrInitialDir = initialDir,
-			lpstrFilter = filters,
-			lpstrFile = new PWSTR(fileNameBuffer),
-			nMaxFile = Win32FileFolderPickerExtension.FilePathBuffer,
-			Flags = OPEN_FILENAME_FLAGS.OFN_EXPLORER
-		};
-
-		if (!PInvoke.GetSaveFileName(ref ofn))
-		{
-			_ = this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GetOpenFileName)} failed: {PInvoke.CommDlgExtendedError()}");
+			this.Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(PInvoke.CoCreateInstance)} failed: {Win32Helper.GetErrorMessage(hResult)}");
 			return Task.FromResult<StorageFile?>(null);
 		}
 
-		return Task.FromResult<StorageFile?>(StorageFile.GetFileFromPath(Marshal.PtrToStringUni((IntPtr)fileNameBuffer)!));
-	}
-
-	private string? GetFilterString()
-	{
-		var builder = new StringBuilder();
-		foreach (var entry in picker.FileTypeChoices)
+		hResult = iFileSaveDialog.Value->GetOptions(out var dialogOptions);
+		if (hResult.Failed)
 		{
-			builder.Append($"{entry.Key}\0");
-			var extensions = string.Join(
-				';',
-				entry.Value
-					.Where(pattern => pattern.StartsWith('.') && pattern[1..] is var ext && ext.All(char.IsLetterOrDigit))
-					.Select(pattern => $"*{pattern}")
-				);
-			if (string.IsNullOrEmpty(extensions))
+			this.Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(IFileDialog.GetOptions)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+			return Task.FromResult<StorageFile?>(null);
+		}
+
+		dialogOptions |=
+			FILEOPENDIALOGOPTIONS.FOS_NOCHANGEDIR
+			| FILEOPENDIALOGOPTIONS.FOS_FORCEFILESYSTEM
+			| FILEOPENDIALOGOPTIONS.FOS_FILEMUSTEXIST
+			| FILEOPENDIALOGOPTIONS.FOS_PATHMUSTEXIST
+			| FILEOPENDIALOGOPTIONS.FOS_STRICTFILETYPES;
+
+		hResult = iFileSaveDialog.Value->SetOptions(dialogOptions);
+		if (hResult.Failed)
+		{
+			this.Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(IFileDialog.SetOptions)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+			return Task.FromResult<StorageFile?>(null);
+		}
+
+		var fileTypeList = GetFilterString();
+		using var fileTypeListDisposable =
+			new DisposableStruct<List<(Win32Helper.NativeNulTerminatedUtf16String friendlyName,
+				Win32Helper.NativeNulTerminatedUtf16String pattern)>>(
+				static list =>
+				{
+					foreach (var (name, pattern) in list)
+					{
+						name.Dispose();
+						pattern.Dispose();
+					}
+				}, fileTypeList);
+
+		if (fileTypeList.Count > 0)
+		{
+			hResult = iFileSaveDialog.Value->SetFileTypes(fileTypeList
+				.Select(t => new COMDLG_FILTERSPEC { pszName = t.friendlyName, pszSpec = t.pattern })
+				.ToArray()
+				.AsSpan());
+			if (hResult.Failed)
 			{
-				_ = this.Log().Log(LogLevel.Error, entry, static entry => $"Skipping invalid file extension filter entry: '{entry}'");
-			}
-			else
-			{
-				builder.Append(extensions).Append('\0');
+				this.Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(IFileDialog.SetFileTypes)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+				return Task.FromResult<StorageFile?>(null);
 			}
 		}
 
-		return builder.Length > 0 ? builder.Append('\0').ToString() : null;
+		hResult = iFileSaveDialog.Value->SetOkButtonLabel(picker.CommitButtonText);
+		if (hResult.Failed)
+		{
+			this.Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(IFileDialog.SetOkButtonLabel)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+			return Task.FromResult<StorageFile?>(null);
+		}
+
+		// TODO: file pickers aren't associated with a specific window, so what do we do here?
+		hResult = iFileSaveDialog.Value->Show((HWND)Window.InitialWindow!.NativeWindow!);
+		if (hResult.Failed)
+		{
+			if (hResult != (uint)WIN32_ERROR.ERROR_CANCELLED)
+			{
+				this.Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(IFileDialog.Show)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+			}
+			return Task.FromResult<StorageFile?>(null);
+		}
+
+		using ComScope<IShellItem> iShellItem = default;
+		hResult = iFileSaveDialog.Value->GetResult(iShellItem);
+		if (hResult.Failed)
+		{
+			if (hResult != (uint)WIN32_ERROR.ERROR_CANCELLED)
+			{
+				this.Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(IFileDialog.GetResult)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+			}
+			return Task.FromResult<StorageFile?>(null);
+		}
+
+		char* resultName = stackalloc char[Win32FileFolderPickerExtension.FilePathBuffer];
+		iShellItem.Value->GetDisplayName(SIGDN.SIGDN_FILESYSPATH, (PWSTR*)&resultName);
+		if (hResult.Failed)
+		{
+			this.Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(IShellItem.GetDisplayName)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+			return Task.FromResult<StorageFile?>(null);
+		}
+
+		return Task.FromResult<StorageFile?>(StorageFile.GetFileFromPath(new string(resultName)));
+	}
+
+	private List<(Win32Helper.NativeNulTerminatedUtf16String friendlyName, Win32Helper.NativeNulTerminatedUtf16String pattern)> GetFilterString()
+	{
+		var ret = new List<(Win32Helper.NativeNulTerminatedUtf16String friendlyName, Win32Helper.NativeNulTerminatedUtf16String pattern)>();
+		foreach (var entry in picker.FileTypeChoices)
+		{
+			foreach (var pattern in entry.Value)
+			{
+				if (pattern.StartsWith('.') && pattern[1..] is var ext && ext.All(char.IsLetterOrDigit))
+				{
+					ret.Add((new Win32Helper.NativeNulTerminatedUtf16String(entry.Key), new Win32Helper.NativeNulTerminatedUtf16String($"*{pattern}")));
+				}
+				else
+				{
+					_ = this.Log().Log(LogLevel.Error, entry, pattern, static (entry, pattern) => $"Skipping invalid file extension pattern '{pattern}' for key {entry.Key}");
+				}
+			}
+		}
+
+		return ret;
 	}
 }

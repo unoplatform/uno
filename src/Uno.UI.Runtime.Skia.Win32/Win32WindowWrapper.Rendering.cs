@@ -238,7 +238,7 @@ internal partial class Win32WindowWrapper
 
 			using var makeCurrentDisposable = new Win32Helper.WglCurrentContextDisposable(hdc, glContext);
 
-			typeof(GlRenderer).Log().Log(LogLevel.Trace, static () =>
+			typeof(GlRenderer).Log().Log(LogLevel.Debug, static () =>
 			{
 				var version = PInvoke.glGetString(/* GL_VERSION */ 0x1F02);
 				return version is null
@@ -296,13 +296,7 @@ internal partial class Win32WindowWrapper
 
 		SKSurface IRenderer.UpdateSize(int width, int height)
 		{
-			var hdc = PInvoke.GetDC(_hwnd);
-			using var dcDisposable = new DisposableStruct<HWND, HDC>(static (hwnd, hdc) =>
-			{
-				_ = PInvoke.ReleaseDC(hwnd, hdc) == 1 || typeof(Win32WindowWrapper).Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.ReleaseDC)} failed: {Win32Helper.GetErrorMessage()}");
-			}, _hwnd, hdc);
-
-			using var makeCurrentDisposable = new Win32Helper.WglCurrentContextDisposable(hdc, _glContext);
+			using var makeCurrentDisposable = new Win32Helper.WglCurrentContextDisposable(_hdc, _glContext);
 
 			int framebuffer = default, stencil = default, samples = default;
 			PInvoke.glGetIntegerv(/* GL_FRAMEBUFFER_BINDING */ 0x8CA6, ref framebuffer);
@@ -315,12 +309,7 @@ internal partial class Win32WindowWrapper
 
 		void IRenderer.CopyPixels(int width, int height)
 		{
-			var hdc = PInvoke.GetDC(_hwnd);
-			using var dcDisposable = new DisposableStruct<HWND, HDC>(static (hwnd, hdc) =>
-			{
-				_ = PInvoke.ReleaseDC(hwnd, hdc) == 1 || typeof(Win32WindowWrapper).Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.ReleaseDC)} failed: {Win32Helper.GetErrorMessage()}");
-			}, _hwnd, hdc);
-			_ = PInvoke.SwapBuffers(hdc) || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SwapBuffers)} failed: {Win32Helper.GetErrorMessage()}");
+			_ = PInvoke.SwapBuffers(_hdc) || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SwapBuffers)} failed: {Win32Helper.GetErrorMessage()}");
 		}
 
 		void IRenderer.Reset()

@@ -65,7 +65,7 @@ internal static class Win32Helper
 		return modifiers;
 	}
 
-	public readonly ref struct NativeNulTerminatedUtf16String(string? str)
+	public readonly struct NativeNulTerminatedUtf16String(string? str) : IDisposable
 	{
 		public IntPtr Handle { get; } = Marshal.StringToHGlobalUni(str);
 		public static unsafe implicit operator PCWSTR(NativeNulTerminatedUtf16String value) => new((char*)value.Handle);

@@ -4,6 +4,7 @@ using Windows.Graphics.Display;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.Graphics.Gdi;
+using Uno.Disposables;
 using Uno.Foundation.Logging;
 
 namespace Uno.UI.Runtime.Skia.Win32;
@@ -24,16 +25,6 @@ internal partial class Win32WindowWrapper : IDisplayInformationExtension
 			0,
 			0,
 			1);
-	}
-
-	[StructLayout(LayoutKind.Sequential)]
-	private struct MONITORINFOEX
-	{
-		public uint cbSize;
-		public RECT rcMonitor;
-		public RECT rcWork;
-		public uint dwFlags;
-		public unsafe fixed char szDevice[/* CCHDEVICENAME */ 32];
 	}
 
 	public void SetDisplayInformation(DisplayInformation displayInformation)
@@ -59,9 +50,13 @@ internal partial class Win32WindowWrapper : IDisplayInformationExtension
 	private unsafe DisplayInfo GetDisplayInfo()
 	{
 		var hMonitor = PInvoke.MonitorFromWindow(_hwnd, MONITOR_FROM_FLAGS.MONITOR_DEFAULTTONEAREST);
-		var monitorInfo = new MONITORINFOEX
+
+		var monitorInfo = new MONITORINFOEXW
 		{
-			cbSize = (uint)Marshal.SizeOf<MONITORINFOEX>()
+			monitorInfo = new MONITORINFO
+			{
+				cbSize = (uint)Marshal.SizeOf<MONITORINFOEXW>()
+			}
 		};
 
 		if (!PInvoke.GetMonitorInfo(hMonitor, (MONITORINFO*)(&monitorInfo)))
@@ -78,7 +73,7 @@ internal partial class Win32WindowWrapper : IDisplayInformationExtension
 				DEVMODE_FIELD_FLAGS.DM_PELSWIDTH |
 				DEVMODE_FIELD_FLAGS.DM_PELSHEIGHT
 		};
-		if (!PInvoke.EnumDisplaySettingsEx(Marshal.PtrToStringUni((IntPtr)monitorInfo.szDevice), ENUM_DISPLAY_SETTINGS_MODE.ENUM_CURRENT_SETTINGS, ref devMode, ENUM_DISPLAY_SETTINGS_FLAGS.EDS_RAWMODE))
+		if (!PInvoke.EnumDisplaySettingsEx(monitorInfo.szDevice.ToString(), ENUM_DISPLAY_SETTINGS_MODE.ENUM_CURRENT_SETTINGS, ref devMode, ENUM_DISPLAY_SETTINGS_FLAGS.EDS_RAWMODE))
 		{
 			_ = this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.EnumDisplaySettingsEx)} failed: {Win32Helper.GetErrorMessage()}");
 			return DisplayInfo.Default;

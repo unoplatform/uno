@@ -28,7 +28,13 @@ namespace Uno.UI.Runtime.Skia.Win32;
 public class Win32Host : SkiaHost, ISkiaApplicationHost
 {
 	private readonly Func<Application> _appBuilder;
-	private static readonly Win32EventLoop _eventLoop = new(a => new Thread(a) { Name = "Uno Event Loop", IsBackground = true });
+	private static readonly Win32EventLoop _eventLoop = new(a =>
+	{
+		var thread = new Thread(a) { Name = "Uno Event Loop", IsBackground = true };
+		// not setting the thread's threading model as STA will deadlock some COM functions like IFileDialog::Show
+		thread.SetApartmentState(ApartmentState.STA);
+		return thread;
+	});
 	[ThreadStatic] private static bool _isDispatcherThread;
 	private static readonly TaskCompletionSource _exitTcs = new();
 	private static int _openWindows;

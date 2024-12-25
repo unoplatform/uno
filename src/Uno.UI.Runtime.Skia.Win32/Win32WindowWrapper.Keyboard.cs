@@ -18,8 +18,10 @@ internal partial class Win32WindowWrapper : IUnoKeyboardInputSource
 
 		var modifiers = Win32Helper.GetKeyModifiers();
 
-		// If a key press results in a "character" input, it gets sent separately as a WM_CHAR message,
+		// If a key press results in a "character" input, it gets sent separately as a WM_CHAR message right after,
 		// so we check for the next message in the queue to see if it's WM_CHAR, and if so, grab the char.
+		// This is not laid out in the docs and is technically an implementation detail that might change in the
+		// future, but since win32 is ancient at this point, this is rather unlikely.
 		char? unicodeKey = null;
 		if (PInvoke.PeekMessage(out var msg, _hwnd, 0, 0, PEEK_MESSAGE_REMOVE_TYPE.PM_NOREMOVE) != 0)
 		{

@@ -50,14 +50,14 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	private IDisposable? _backgroundDisposable;
 	private SKColor _background;
 
-	static Win32WindowWrapper()
+	static unsafe Win32WindowWrapper()
 	{
 		using var lpClassName = new Win32Helper.NativeNulTerminatedUtf16String(WindowClassName);
 
 		_windowClass = new WNDCLASSEXW
 		{
 			cbSize = (uint)Marshal.SizeOf<WNDCLASSEXW>(),
-			lpfnWndProc = WndProc,
+			lpfnWndProc = &WndProc,
 			hInstance = Win32Helper.GetHInstance(),
 			lpszClassName = lpClassName,
 			style = WNDCLASS_STYLES.CS_HREDRAW | WNDCLASS_STYLES.CS_VREDRAW // https://learn.microsoft.com/en-us/windows/win32/winmsg/window-class-styles
@@ -111,10 +111,10 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	private unsafe void OnSystemThemeChanged(object? _, EventArgs __)
 	{
 		BOOL value = Win32SystemThemeHelperExtension.Instance.GetSystemTheme() is SystemTheme.Dark;
-		var hresult = PInvoke.DwmSetWindowAttribute(_hwnd, DWMWINDOWATTRIBUTE.DWMWA_USE_IMMERSIVE_DARK_MODE, &value, (uint)Marshal.SizeOf(value));
-		if (hresult.Failed)
+		var hResult = PInvoke.DwmSetWindowAttribute(_hwnd, DWMWINDOWATTRIBUTE.DWMWA_USE_IMMERSIVE_DARK_MODE, &value, (uint)Marshal.SizeOf(value));
+		if (hResult.Failed)
 		{
-			this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.DwmSetWindowAttribute)} failed: {Win32Helper.GetErrorMessage()}");
+			this.Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(PInvoke.DwmSetWindowAttribute)} failed: {Win32Helper.GetErrorMessage(hResult)}");
 		}
 	}
 
@@ -171,6 +171,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		return hwnd;
 	}
 
+	[UnmanagedCallersOnly(CallConvs = [typeof(CallConvStdcall)])]
 	private static LRESULT WndProc(HWND hwnd, uint msg, WPARAM wParam, LPARAM lParam)
 	{
 		if (_wrapperForNextCreateWindow is { } wrapper)
