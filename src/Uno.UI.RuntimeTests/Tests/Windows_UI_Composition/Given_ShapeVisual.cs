@@ -25,7 +25,7 @@ public class Given_ShapeVisual
 	{
 		if (OperatingSystem.IsBrowser())
 		{
-			// this test is failing on browser, see https://github.com/unoplatform/uno-private/issues/704
+			Assert.Inconclusive("this test is failing on browser, see https://github.com/unoplatform/uno-private/issues/704");
 			return;
 		}
 
@@ -72,13 +72,8 @@ public class Given_ShapeVisual
 							Background = new SolidColorBrush(Microsoft.UI.Colors.Green),
 							Child = element
 						};
-						await UITestHelper.Load(border);
 
-						var screenShot1 = await UITestHelper.ScreenShot(border);
 						var filename = $"When_ShapeVisual_ViewBox_Shape_Combinations_{counter++}.png";
-						// To generate the images
-						// await screenShot1.Save(filename);
-
 						var referenceImage = new Image
 						{
 							Width = 500,
@@ -86,14 +81,25 @@ public class Given_ShapeVisual
 							Source = new BitmapImage(new Uri($"ms-appx:/Assets/When_ShapeVisual_ViewBox_Shape_Combinations/{filename}"))
 						};
 
+						await UITestHelper.Load(new StackPanel()
+						{
+							Children = { border, referenceImage },
+							Spacing = 10,
+							Orientation = Orientation.Horizontal
+						});
+
 						var imageOpened = false;
 						referenceImage.ImageOpened += (s, e) => imageOpened = true;
 
-						await UITestHelper.Load(referenceImage);
 						await TestServices.WindowHelper.WaitFor(() => imageOpened);
+
+						var screenShot1 = await UITestHelper.ScreenShot(border);
+						// To generate the images
+						// await screenShot1.Save(filename);
+
 						var screenShot2 = await UITestHelper.ScreenShot(referenceImage);
-						// there can be a very small _bit_ difference when drawing with metal on macOS
-						if (OperatingSystem.IsMacOS() || OperatingSystem.IsIOS())
+						// there can be a very small _bit_ difference when drawing with metal on some platforms
+						if (OperatingSystem.IsMacOS() || OperatingSystem.IsBrowser() || OperatingSystem.IsIOS())
 						{
 							await ImageAssert.AreSimilarAsync(screenShot1, screenShot2);
 						}
