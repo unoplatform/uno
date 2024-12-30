@@ -17,7 +17,6 @@ using Microsoft.UI.Xaml.Input;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-using Uno.UI.Dispatching;
 using Uno.UI.Hosting;
 using IDataObject = Windows.Win32.System.Com.IDataObject;
 
@@ -143,13 +142,7 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 		var info = new CoreDragInfo(src, package.GetView(), (DataPackageOperation)(*pdwEffect));
 		_coreDragDropManager.DragStarted(info);
 
-		var resetEvent = new AutoResetEvent(false);
-		NativeDispatcher.Main.Enqueue(() =>
-		{
-			*pdwEffect = (DROPEFFECT)_manager.ProcessMoved(src);
-			resetEvent.Set();
-		});
-		resetEvent.WaitOne();
+		*pdwEffect = (DROPEFFECT)_manager.ProcessMoved(src);
 
 		return HRESULT.S_OK;
 	}
@@ -162,13 +155,7 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 
 		this.Log().Log(LogLevel.Trace, position, static position => $"{nameof(IDropTarget.Interface.DragOver)} @ {position}");
 
-		var resetEvent = new AutoResetEvent(false);
-		NativeDispatcher.Main.Enqueue(() =>
-		{
-			*pdwEffect = (DROPEFFECT)_manager.ProcessMoved(src);
-			resetEvent.Set();
-		});
-		resetEvent.WaitOne();
+		*pdwEffect = (DROPEFFECT)_manager.ProcessMoved(src);
 
 		return HRESULT.S_OK;
 	}
@@ -177,13 +164,7 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 	{
 		this.Log().Log(LogLevel.Trace, static () => $"{nameof(IDropTarget.Interface.DragLeave)}");
 
-		var resetEvent = new AutoResetEvent(false);
-		NativeDispatcher.Main.Enqueue(() =>
-		{
-			_manager.ProcessAborted(_fakePointerId);
-			resetEvent.Set();
-		});
-		resetEvent.WaitOne();
+		_manager.ProcessAborted(_fakePointerId);
 
 		return HRESULT.S_OK;
 	}
@@ -196,13 +177,7 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 
 		this.Log().Log(LogLevel.Trace, position, static position => $"{nameof(IDropTarget.Interface.Drop)} @ {position}");
 
-		var resetEvent = new AutoResetEvent(false);
-		NativeDispatcher.Main.Enqueue(() =>
-		{
-			*pdwEffect = (DROPEFFECT)_manager.ProcessReleased(src);
-			resetEvent.Set();
-		});
-		resetEvent.WaitOne();
+		*pdwEffect = (DROPEFFECT)_manager.ProcessReleased(src);
 
 		return HRESULT.S_OK;
 	}
