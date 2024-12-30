@@ -182,7 +182,7 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 		return HRESULT.S_OK;
 	}
 
-	public void StartNativeDrag(CoreDragInfo info) => throw new System.NotImplementedException();
+	public void StartNativeDrag(CoreDragInfo info, Action<DataPackageOperation> action) => throw new System.NotImplementedException();
 
 	private readonly struct DragEventSource(int x, int y, MODIFIERKEYS_FLAGS modifierFlags) : IDragEventSource
 	{

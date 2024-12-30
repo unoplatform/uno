@@ -68,7 +68,7 @@ namespace Uno.UI.Runtime.Skia.Wpf
 		private void OnHostDrop(object sender, DragEventArgs e)
 			=> e.Effects = ToDropEffects(_coreDragDropManager.ProcessDropped(new DragEventSource(_fakePointerId, e)));
 
-		public void StartNativeDrag(CoreDragInfo info)
+		public void StartNativeDrag(CoreDragInfo info, Action<DataPackageOperation> onCompleted)
 		{
 			if (_rootControl is null)
 			{
@@ -76,6 +76,7 @@ namespace Uno.UI.Runtime.Skia.Wpf
 				{
 					this.Log().LogError("Can't start dragging until root element is initialized");
 				}
+				onCompleted(DataPackageOperation.None);
 				return;
 			}
 
@@ -87,12 +88,12 @@ namespace Uno.UI.Runtime.Skia.Wpf
 					var effects = ToDropEffects(info.AllowedOperations);
 
 					var acceptedEffect = DragDrop.DoDragDrop(_rootControl, data, effects);
-					_coreDragDropManager.ProcessAborted(_fakePointerId);
-					// info.Complete(ToDataPackageOperation(acceptedEffect));
+					onCompleted(ToDataPackageOperation(acceptedEffect));
 				}
 				catch (Exception e)
 				{
 					this.Log().Error("Failed to start native Drag and Drop.", e);
+					onCompleted(DataPackageOperation.None);
 				}
 			});
 		}
