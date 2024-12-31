@@ -79,7 +79,15 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 	public Win32Host(Func<Application> appBuilder)
 	{
 		_appBuilder = appBuilder;
-		_eventLoop.Schedule(() => _isDispatcherThread = true, NativeDispatcherPriority.Normal);
+		_eventLoop.Schedule(() =>
+		{
+			_isDispatcherThread = true;
+			var hResult = PInvoke.OleInitialize();
+			if (hResult.Failed)
+			{
+				typeof(Win32Host).Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(PInvoke.OleInitialize)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+			}
+		}, NativeDispatcherPriority.Normal);
 	}
 
 	/// <summary>
