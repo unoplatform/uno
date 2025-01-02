@@ -25,6 +25,13 @@ using SamplesApp.UITests;
 #if !HAS_UNO
 using System.Runtime.InteropServices;
 #endif
+
+#if HAS_UNO_WINUI || WINAPPSDK
+using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
+#else
+using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
+#endif
+
 namespace Uno.UI.RuntimeTests.Helpers;
 
 // Note: This file contains a bunch of helpers that are expected to be moved to the test engine among the pointer injection work
@@ -323,6 +330,16 @@ public partial class DynamicDataTemplatePresenter : ContentPresenter
 
 public static class InputInjectorExtensions
 {
+	public static IInjectedPointer GetPointer(this InputInjector injector, PointerDeviceType pointer)
+		=> pointer switch
+		{
+			PointerDeviceType.Touch => GetFinger(injector),
+#if !WINAPPSDK
+			PointerDeviceType.Mouse => GetMouse(injector),
+#endif
+			_ => throw new NotSupportedException($"Injection of {pointer} is not supported on this platform.")
+		};
+
 	public static Finger GetFinger(this InputInjector injector, uint id = 42)
 		=> new(injector, id);
 
@@ -336,7 +353,7 @@ public interface IInjectedPointer
 {
 	void Press(Point position);
 
-	void MoveTo(Point position);
+	void MoveTo(Point position, uint? steps = null);
 
 	void MoveBy(double deltaX = 0, double deltaY = 0);
 
@@ -400,7 +417,7 @@ public partial class Finger : IInjectedPointer, IDisposable
 		}
 	}
 
-	void IInjectedPointer.MoveTo(Point position) => MoveTo(position);
+	void IInjectedPointer.MoveTo(Point position, uint? steps) => MoveTo(position, steps ?? _defaultMoveSteps);
 	public void MoveTo(Point position, uint steps = _defaultMoveSteps)
 	{
 		if (_currentPosition is { } current)
@@ -460,6 +477,7 @@ public partial class Finger : IInjectedPointer, IDisposable
 			{
 				PointerInfo = new()
 				{
+					TimeOffsetInMilliseconds = 1,
 					PixelLocation = At(fromPosition.X + step * stepX, fromPosition.Y + step * stepY),
 					PointerOptions = InjectedInputPointerOptions.Update
 						| InjectedInputPointerOptions.FirstButton
@@ -604,7 +622,6 @@ public class Mouse : IInjectedPointer, IDisposable
 	public void MoveBy(double deltaX, double deltaY)
 		=> Inject(GetMoveBy(deltaX, deltaY));
 
-	void IInjectedPointer.MoveTo(Point position) => MoveTo(position);
 	public void MoveTo(Point position, uint? steps = null)
 		=> Inject(GetMoveTo(position.X, position.Y, steps));
 
