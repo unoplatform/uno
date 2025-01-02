@@ -9,11 +9,11 @@ namespace Windows.ApplicationModel.DataTransfer
 	{
 		private static object _syncLock = new object();
 
-		private static StartStopEventWrapper<EventHandler<object>> _contentChangedWrapper;
+		private static StartStopEventWrapper<object> _contentChangedWrapper;
 
 		static Clipboard()
 		{
-			_contentChangedWrapper = new StartStopEventWrapper<EventHandler<object>>(
+			_contentChangedWrapper = new StartStopEventWrapper<object>(
 				() => StartContentChanged(),
 				() => StopContentChanged(),
 				_syncLock);
@@ -36,7 +36,7 @@ namespace Windows.ApplicationModel.DataTransfer
 #if __ANDROID__ || __IOS__ || __MACOS__ || __SKIA__ || __WASM__
 		private static void OnContentChanged()
 		{
-			_contentChangedWrapper.Event?.Invoke(null, null);
+			_contentChangedWrapper.Invoke(null, null);
 		}
 #endif
 	}

@@ -10,7 +10,7 @@ namespace Uno.UI.Runtime.Skia.Gtk.Helpers.Dpi;
 
 internal class DpiHelper
 {
-	private readonly StartStopEventWrapper<EventHandler> _dpiChangedWrapper;
+	private readonly StartStopDelegateWrapper<EventHandler> _dpiChangedWrapper;
 	private readonly UnoGtkWindow _window;
 
 	private float? _dpi;
