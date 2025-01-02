@@ -691,7 +691,7 @@ void uno_window_clip_svg(UNOWindow* window, const char* svg)
             // small subset of an SVG path parser handling trusted input of integer-based points
             long length = strlen(svg);
             for (int i=0; i < length;) {
-                CGFloat x, y;
+                CGFloat x, y, x2, y2;
                 char op = svg[i];
                 switch (op) {
                     case 'M':
@@ -703,7 +703,6 @@ void uno_window_clip_svg(UNOWindow* window, const char* svg)
 #if DEBUG_PARSER
                         NSLog(@"uno_window_clip_svg parsing CGPathMoveToPoint %g %g - position %d", x, y, i);
 #endif
-                        NSLog(@"uno_window_clip_svg %d M %g (%g) %g (%g)", i, x, (x - vx) / scale, y, (y - vy) / scale);
                         x = (x / scale - vx);
                         y = (y / scale - vy);
                         CGPathMoveToPoint(path, nil, x, y);
@@ -720,6 +719,25 @@ void uno_window_clip_svg(UNOWindow* window, const char* svg)
                         x = (x / scale - vx);
                         y = (y / scale - vy);
                         CGPathAddLineToPoint(path, nil, x, y);
+                        break;
+                    case 'Q':
+                        i++; // skip Z
+                        x = readNextCoord(svg, &i, length);
+                        i++; // skip separator
+                        y = readNextCoord(svg, &i, length);
+                        i++; // skip separator
+                        x2 = readNextCoord(svg, &i, length);
+                        i++; // skip separator
+                        y2 = readNextCoord(svg, &i, length);
+                        // there might not be a separator (not required before the next op)
+#if DEBUG_PARSER
+                        NSLog(@"uno_window_clip_svg parsing CGPathAddQuadCurveToPoint %g %g %g %g - position %d", x, y, x2, y2, i);
+#endif
+                        x = (x / scale - vx);
+                        y = (y / scale - vy);
+                        x2 = (x2 / scale - vx);
+                        y2 = (y2 / scale - vy);
+                        CGPathAddQuadCurveToPoint(path, nil, x, y, x2, y2);
                         break;
                     case 'Z':
                         i++; // skip Z
