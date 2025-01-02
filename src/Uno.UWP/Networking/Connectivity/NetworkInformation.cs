@@ -11,7 +11,7 @@ namespace Windows.Networking.Connectivity;
 /// </summary>
 public static partial class NetworkInformation
 {
-	private static StartStopEventWrapper<NetworkStatusChangedEventHandler> _networkStatusChanged;
+	private static StartStopDelegateWrapper<NetworkStatusChangedEventHandler> _networkStatusChanged;
 
 	static NetworkInformation()
 	{
