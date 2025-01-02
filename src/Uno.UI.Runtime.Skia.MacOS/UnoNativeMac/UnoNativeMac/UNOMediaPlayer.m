@@ -214,7 +214,6 @@ id timeObserver;
 - (id)init {
     self.player = [[AVQueuePlayer alloc] init];
     self.videoLayer = [AVPlayerLayer playerLayerWithPlayer:self.player];
-    // TODO frame
     self.isVideo = NO;
 #if DEBUG_MEDIAPLAYER
     NSLog(@"UNOMediaPlayer %p %@ %@", self, self.player, self.videoLayer);
@@ -400,6 +399,10 @@ id timeObserver;
         self.layer = layer;
     }
     return self;
+}
+
+-(BOOL) isFlipped {
+    return YES;
 }
 
 // make the background red for easier tracking
