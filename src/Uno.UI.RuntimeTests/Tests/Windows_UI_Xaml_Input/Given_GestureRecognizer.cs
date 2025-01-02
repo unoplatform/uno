@@ -4,13 +4,18 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI.Input.Preview.Injection;
 using FluentAssertions;
-using Microsoft.UI.Input;
 using RuntimeTests.Tests.Windows_UI_Xaml_Input.TestPages;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 
 #if WINAPPSDK
 using Uno.UI.Toolkit.Extensions;
+#endif
+
+#if HAS_UNO_WINUI || WINAPPSDK
+using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
+#else
+using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input

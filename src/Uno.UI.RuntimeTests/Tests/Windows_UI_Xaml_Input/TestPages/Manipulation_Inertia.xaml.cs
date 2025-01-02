@@ -39,11 +39,12 @@ namespace RuntimeTests.Tests.Windows_UI_Xaml_Input.TestPages
 
 			//e.TranslationBehavior.DesiredDisplacement = 5;
 			//e.TranslationBehavior.DesiredDeceleration = .00001;
-
+#if HAS_UNO_WINUI || WINAPPSDK
 			Log(@$"[INERTIA] Inertia starting: {F(default, e.Delta, e.Cumulative, e.Velocities)}
 tr: ↘={e.TranslationBehavior.DesiredDeceleration} | ⌖={e.TranslationBehavior.DesiredDisplacement}
 θ: ↘={e.RotationBehavior.DesiredDeceleration} | ⌖={e.RotationBehavior.DesiredRotation}
 s: ↘={e.ExpansionBehavior.DesiredDeceleration} | ⌖={e.ExpansionBehavior.DesiredExpansion}");
+#endif
 		}
 
 		private void ManipDelta(object sender, ManipulationDeltaRoutedEventArgs e)
@@ -59,9 +60,11 @@ s: ↘={e.ExpansionBehavior.DesiredDeceleration} | ⌖={e.ExpansionBehavior.Desi
 			tr.ScaleX = e.Cumulative.Scale;
 			tr.ScaleY = e.Cumulative.Scale;
 
+#if HAS_UNO_WINUI || WINAPPSDK
 			Log(
 				$"[DELTA] {F(e.Position, e.Delta, e.Cumulative, e.Velocities)} "
 				+ (e.IsInertial ? $"{TimeSpan.FromTicks(DateTimeOffset.UtcNow.Ticks - _inertiaStart).TotalMilliseconds} ms" : ""));
+#endif
 		}
 
 		private void ManipCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
@@ -95,6 +98,7 @@ s: ↘={e.ExpansionBehavior.DesiredDeceleration} | ⌖={e.ExpansionBehavior.Desi
 			};
 		}
 
+#if HAS_UNO_WINUI || WINAPPSDK
 		private static string F(Point position, ManipulationDelta delta, ManipulationDelta cumulative, ManipulationVelocities velocities)
 			=> $"@=[{position.X:000.00},{position.Y:000.00}] "
 				+ $"| X=(Σ:{cumulative.Translation.X:' '000.00;'-'000.00} / Δ:{delta.Translation.X:' '00.00;'-'00.00} / c:{velocities.Linear.X:F2}) "
@@ -102,6 +106,7 @@ s: ↘={e.ExpansionBehavior.DesiredDeceleration} | ⌖={e.ExpansionBehavior.Desi
 				+ $"| θ=(Σ:{cumulative.Rotation:' '000.00;'-'000.00} / Δ:{delta.Rotation:' '00.00;'-'00.00} / c:{velocities.Angular:F2}) "
 				+ $"| s=(Σ:{cumulative.Scale:000.00} / Δ:{delta.Scale:00.00} / c:{velocities.Expansion:F2}) "
 				+ $"| e=(Σ:{cumulative.Expansion:' '000.00;'-'000.00} / Δ:{delta.Expansion:' '00.00;'-'00.00} / c:{velocities.Expansion:F2})";
+#endif
 
 		private void Log(string text)
 		{
