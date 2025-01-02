@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 using Android.Views.Animations;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
 namespace Uno.UI
 {
@@ -45,6 +46,8 @@ namespace Uno.UI
 
 			return view.Parent != null;
 		}
+
+		internal static IViewParent? FindParent(this IViewParent view) => view.Parent;
 
 		/// <summary>
 		/// Return First parent of the view of specified T type.
@@ -673,12 +676,14 @@ namespace Uno.UI
 					.Append(fe is not null && fe.Opacity < 1 ? $" Opacity={fe.Opacity}" : "")
 					.Append(fe is not null && fe.TryGetBorderThickness(out var b) && b != default ? $" Border={b}" : "")
 					.Append(fe is not null && fe.TryGetPadding(out var p) && p != default ? $" Padding={p}" : "")
-					.Append(u is not null ? $" DesiredSize={u.DesiredSize.ToString("F1")}" : "")
+					.Append($" DesiredSize={LayoutInformation.GetDesiredSize(innerView).ToString("F1")}")
 					.Append(u is { NeedsClipToSlot: true } ? " CLIPPED_TO_SLOT" : "")
 					.Append(vg is { ClipToOutline: true } ? " vg.CLIP_OUTLINE" : "")
 					.Append(vg is { ClipChildren: true } ? " vg.CLIP_CHILDREN" : "")
 					.Append(vg is { ClipToPadding: true } ? " vg.CLIP_TO_PADDING" : "")
+					.Append(vg is { IsLayoutRequested: true } ? " vg.IsLayoutRequested" : "")
 					.Append(u is { Clip: not null } ? $" Clip={u.Clip.Rect}" : "")
+					.Append(u is { m_pLayoutClipGeometry: not null } ? $" LayoutClip={u.m_pLayoutClipGeometry}" : "")
 					.Append(u == null && vg is not null ? $" ClipChildren={vg.ClipChildren}" : "")
 					.Append(fe is { Background: not null } ? $" Background={fe.Background}" : "")
 					.Append(u?.GetElementSpecificDetails())

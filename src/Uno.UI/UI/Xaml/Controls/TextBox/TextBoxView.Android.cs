@@ -11,10 +11,11 @@ using Android.Widget;
 using AndroidX.Core.Content;
 using AndroidX.Core.Graphics;
 using Java.Lang.Reflect;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
-using Microsoft.UI.Xaml.Media;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -270,19 +271,20 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			base.RequestLayout();
+			Invalidate();
 		}
 
 		protected override void OnMeasure(int widthMeasureSpec, int heightMeasureSpec)
 		{
-			base.OnMeasure(widthMeasureSpec, heightMeasureSpec);
-
 			// On some devices (LG G3), the cursor doesn't appear if the Text is empty.
 			// This is due to the TextBoxView's content having a width of 0 if the Text is empty.
 			// This code ensures that the TextBoxView's content always has a minimum width, allowing the cursor to be visible.
 			var minContentWidth = ViewHelper.LogicalToPhysicalPixels(10d); // arbitrary number, large enough to accommodate cursor
-			var minWidth = PaddingLeft + minContentWidth + PaddingRight;
-			var newMeasuredWidth = Math.Max(MeasuredWidth, minWidth);
-			SetMeasuredDimension(newMeasuredWidth, MeasuredHeight);
+			var physicalWidth = Math.Max(PaddingLeft + minContentWidth + PaddingRight, ViewHelper.PhysicalSizeFromSpec(widthMeasureSpec));
+
+			base.OnMeasure(
+				ViewHelper.MakeMeasureSpec(physicalWidth, Android.Views.MeasureSpecMode.AtMost),
+				heightMeasureSpec);
 		}
 
 		public

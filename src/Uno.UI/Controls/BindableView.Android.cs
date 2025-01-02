@@ -246,6 +246,32 @@ namespace Uno.UI.Controls
 		/// <param name="view">The view being added</param>
 		protected virtual void OnChildViewAdded(View view)
 		{
+			if (view is UIElement child && this.FindFirstParent<UIElement>() is { } parent)
+			{
+				// Reset to original (invalidated) state
+				child.ResetLayoutFlags();
+				if (parent.IsMeasureDirtyPathDisabled)
+				{
+					FrameworkElementHelper.SetUseMeasurePathDisabled(child); // will invalidate too
+				}
+				else
+				{
+					child.InvalidateMeasure();
+				}
+
+				if (parent.IsArrangeDirtyPathDisabled)
+				{
+					FrameworkElementHelper.SetUseArrangePathDisabled(child); // will invalidate too
+				}
+				else
+				{
+					child.InvalidateArrange();
+				}
+
+				// Force a new measure of this element (the parent of the new child)
+				parent.InvalidateMeasure();
+				parent.InvalidateArrange();
+			}
 		}
 
 		/// <summary>
@@ -264,6 +290,17 @@ namespace Uno.UI.Controls
 		protected override bool NativeHitCheck()
 		{
 			return true;
+		}
+
+		public override void ForceLayout()
+		{
+			// Following is explanation of what will happen if we **don't** call RequestLayout:
+			// Android's ForceLayout will set internal flag PFLAG_FORCE_LAYOUT
+			// Later, if RequestLayout is called on a descendant, it will keep propagating up but stops when an element has PFLAG_FORCE_LAYOUT set.
+			// If this happens, then the managed measure invalidation will not propagate up properly and we will not call RequestAdditionalFrame.
+			// So, we do RequestLayout so that everything is propagated all the way up.
+			RequestLayout();
+			base.ForceLayout();
 		}
 
 		/// <summary>

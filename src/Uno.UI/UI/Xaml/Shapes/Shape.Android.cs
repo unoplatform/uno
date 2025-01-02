@@ -16,6 +16,8 @@ namespace Microsoft.UI.Xaml.Shapes
 		private static Paint _strokePaint;
 		private static Paint _fillPaint;
 
+		private bool _isAbsoluteShape;
+
 		protected bool HasStroke
 		{
 			get { return Stroke != null && ActualStrokeThickness > 0; }
@@ -26,28 +28,41 @@ namespace Microsoft.UI.Xaml.Shapes
 		public Shape()
 		{
 			SetWillNotDraw(false);
+			_isAbsoluteShape = this is not Rectangle and not Ellipse;
 		}
 
 		protected override void OnDraw(Canvas canvas)
 		{
 			base.OnDraw(canvas);
-			if (_path == null)
+			if (_isAbsoluteShape)
 			{
+				if (_path != null)
+				{
+					DrawFill(canvas);
+					DrawStroke(canvas);
+				}
+
 				return;
 			}
 
-			//Drawing paths on the canvas does not respect the canvas' ClipBounds
-			if (ClippedFrame is { } clippedFrame)
-			{
-				clippedFrame = clippedFrame.LogicalToPhysicalPixels();
-				if (FrameRoundingAdjustment is { } fra)
-				{
-					clippedFrame.Width += fra.Width;
-					clippedFrame.Height += fra.Height;
-				}
+			_path = GetOrCreatePath();
+			var logicalRenderingArea = _logicalRenderingArea;
 
-				canvas.ClipRect(clippedFrame.ToRectF());
-			}
+			var physicalSize1 = LayoutSlotWithMarginsAndAlignments.Size.LogicalToPhysicalPixels();
+			var physicalSize2 = LayoutSlotWithMarginsAndAlignments.LogicalToPhysicalPixels().Size;
+
+			logicalRenderingArea.Width += (physicalSize2.Width - physicalSize1.Width);
+			logicalRenderingArea.Height += (physicalSize2.Height - physicalSize1.Height);
+
+			SetupPath(_path, logicalRenderingArea);
+
+			var matrix = new Android.Graphics.Matrix();
+
+			matrix.SetScale((float)ViewHelper.Scale, (float)ViewHelper.Scale);
+
+			_path.Transform(matrix);
+
+			_drawArea = GetPathBoundingBox(_path);
 
 			DrawFill(canvas);
 			DrawStroke(canvas);
@@ -223,43 +238,31 @@ namespace Microsoft.UI.Xaml.Shapes
 
 		protected global::Windows.Foundation.Rect TransformToLogical(global::Windows.Foundation.Rect renderingArea)
 		{
-			//Android's path rendering logic rounds values down to the nearest int, make sure we round up here instead using the ViewHelper scaling logic
-			var physicalRenderingArea = renderingArea.LogicalToPhysicalPixels();
-			if (FrameRoundingAdjustment is { } fra)
-			{
-				physicalRenderingArea.Height += fra.Height;
-				physicalRenderingArea.Width += fra.Width;
-			}
-
-			var logicalRenderingArea = physicalRenderingArea.PhysicalToLogicalPixels();
-			logicalRenderingArea.X = renderingArea.X;
-			logicalRenderingArea.Y = renderingArea.Y;
-
-			return logicalRenderingArea;
+			return renderingArea;
 		}
 
-		protected global::Windows.Foundation.Size BasicArrangeOverride(global::Windows.Foundation.Size finalSize, Action<Android.Graphics.Path> action)
+		private protected virtual void SetupPath(Android.Graphics.Path path, global::Windows.Foundation.Rect logicalRenderingArea)
 		{
-			var (shapeSize, renderingArea) = ArrangeRelativeShape(finalSize);
+		}
+
+		protected global::Windows.Foundation.Size BasicArrangeOverride(global::Windows.Foundation.Size finalSize)
+		{
+			var (_, renderingArea) = ArrangeRelativeShape(finalSize);
 
 			if (renderingArea.Width > 0 && renderingArea.Height > 0)
 			{
-				var logicalRenderingArea = TransformToLogical(renderingArea);
-
-				if (!_logicalRenderingArea.Equals(logicalRenderingArea))
+				if (!_logicalRenderingArea.Equals(renderingArea))
 				{
-					_logicalRenderingArea = logicalRenderingArea;
-					Android.Graphics.Path path = GetOrCreatePath();
-					action(path);
-					Render(path);
+					_logicalRenderingArea = renderingArea;
+					Invalidate();
 				}
 			}
 			else if (_path != null)
 			{
-				Render(null);
+				Invalidate();
 			}
 
-			return shapeSize;
+			return finalSize;
 		}
 
 		private void OnFillBrushChanged() => InvalidateCommon();

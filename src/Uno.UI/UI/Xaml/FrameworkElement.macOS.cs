@@ -14,25 +14,11 @@ namespace Microsoft.UI.Xaml
 {
 	public partial class FrameworkElement
 	{
-		/// <summary>
-		/// When set, measure and invalidate requests will not be propagated further up the visual tree, ie they won't trigger a relayout.
-		/// Used where repeated unnecessary measure/arrange passes would be unacceptable for performance (eg scrolling in a list).
-		/// </summary>
-		internal bool ShouldInterceptInvalidate { get; set; }
-
 		public override bool NeedsLayout
 		{
 			set
 			{
-				if (!_inLayoutSubviews)
-				{
-					base.NeedsLayout = value;
-				}
-
-				if (ShouldInterceptInvalidate)
-				{
-					return;
-				}
+				base.NeedsLayout = value;
 			}
 		}
 
@@ -66,57 +52,23 @@ namespace Microsoft.UI.Xaml
 
 		public override void Layout()
 		{
-			try
+			base.Layout();
+
+			if (!IsVisualTreeRoot && !_isSettingFrameByArrangeVisual)
 			{
-				_inLayoutSubviews = true;
+				// This handles native-only elements with managed child/children.
+				// When the parent is native-only element, it will layout its children with the proper rect.
+				// So we response to the requested bounds and do the managed arrange.
 
-				var bounds = Bounds.Size;
-				if (IsMeasureDirty)
-				{
-					XamlMeasure(bounds);
-				}
-
-				OnBeforeArrange();
-
-				var size = SizeFromUISize(bounds);
-
-				_layouter.Arrange(new Rect(0, 0, size.Width, size.Height));
-
-				OnAfterArrange();
-			}
-			catch (Exception e)
-			{
-				this.Log().Error($"Layout failed in {GetType()}", e);
-			}
-			finally
-			{
-				_inLayoutSubviews = false;
-
-				ClearLayoutFlags(LayoutFlag.MeasureDirty | LayoutFlag.ArrangeDirty);
+				var logical = this.Frame.PhysicalToLogicalPixels();
+				this.Arrange(logical);
 			}
 		}
 
 		public CGSize SizeThatFits(CGSize size)
 		{
-			try
-			{
-				_inLayoutSubviews = true;
-
-				var xamlMeasure = XamlMeasure(size);
-
-				if (xamlMeasure != null)
-				{
-					return _lastMeasure = xamlMeasure.Value;
-				}
-				else
-				{
-					return _lastMeasure = CGSize.Empty;
-				}
-			}
-			finally
-			{
-				_inLayoutSubviews = false;
-			}
+			this.Measure(size);
+			return this.DesiredSize;
 		}
 	}
 }
