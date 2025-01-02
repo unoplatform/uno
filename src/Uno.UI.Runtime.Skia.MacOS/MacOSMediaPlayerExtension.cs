@@ -24,6 +24,8 @@ internal class MacOSMediaPlayerExtension : IMediaPlayerExtension
 	internal nint _nativePlayer;
 	internal MacOSMediaPlayerPresenterExtension? _presenter;
 	private static readonly Dictionary<nint, WeakReference<MacOSMediaPlayerExtension>> _natives = [];
+	private int _playlistIndex;
+	private MediaPlaybackList? _playlist;
 
 	private MacOSMediaPlayerExtension(object owner)
 	{
@@ -87,8 +89,10 @@ internal class MacOSMediaPlayerExtension : IMediaPlayerExtension
 
 	public double BufferingProgress => 0.0d;
 
+	// deprecated
 	public bool CanPause => true;
 
+	// deprecated
 	public bool CanSeek => true;
 
 	public MediaPlayerAudioDeviceType AudioDeviceType { get; set; }
@@ -107,48 +111,68 @@ internal class MacOSMediaPlayerExtension : IMediaPlayerExtension
 		_player.PlaybackSession.NaturalDuration = TimeSpan.Zero;
 		_player.PlaybackSession.PositionFromPlayer = TimeSpan.Zero;
 
-		// Reset player
-		// TryDisposePlayer();
+		_playlistIndex = -1;
+		_playlist = null;
 
-		if (_player.Source == null)
+		switch (_player.Source)
 		{
-			return;
-		}
-
-		try
-		{
-			// InitializePlayer();
-
-			_player.PlaybackSession.PlaybackState = MediaPlaybackState.Opening;
-
-			switch (_player.Source)
-			{
-				case MediaPlaybackList playlist:
-					// Play(playlist);
-					break;
-				case MediaPlaybackItem item:
-					// Play(item.Source.Uri);
-					NativeUno.uno_mediaplayer_set_source(_nativePlayer, item.Source.Uri.ToString());
-					break;
-				case MediaSource source:
-					// Play(source.Uri);
-					NativeUno.uno_mediaplayer_set_source(_nativePlayer, source.Uri.ToString());
-					break;
-				default:
-					throw new InvalidOperationException("Unsupported media source type");
-			}
-		}
-		catch (Exception ex)
-		{
-			if (this.Log().IsEnabled(LogLevel.Debug))
-			{
-				this.Log().Debug(ex.ToString());
-			}
-			// OnMediaFailed(ex);
+			case MediaPlaybackList playlist:
+				_playlist = playlist;
+				_playlistIndex = playlist.Items.Count > 0 ? 0 : -1;
+				Uri = playlist.Items.FirstOrDefault()?.Source.Uri;
+				break;
+			case MediaPlaybackItem item:
+				Uri = item.Source.Uri;
+				break;
+			case MediaSource source:
+				Uri = source.Uri;
+				break;
+			case null:
+				Uri = null;
+				break;
+			default:
+				Uri = null;
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"Unsupported media source type {_player.Source.GetType()}");
+				}
+				break;
 		}
 	}
 
-	public void NextTrack() => NotImplemented(); // TODO
+	private Uri? _uri;
+
+	private Uri? Uri
+	{
+		get => _uri;
+		set
+		{
+			if (_uri is not null)
+			{
+
+			}
+
+			_uri = value;
+			if (_uri is null)
+			{
+				_player.PlaybackSession.PlaybackState = MediaPlaybackState.None;
+				return;
+			}
+
+			_player.PlaybackSession.PlaybackState = MediaPlaybackState.Opening;
+			NativeUno.uno_mediaplayer_set_source(_nativePlayer, _uri.ToString());
+		}
+	}
+
+	public void NextTrack()
+	{
+		if (_playlist != null && _playlist.Items.Count > 0 && _playlistIndex + 1 < _playlist.Items.Count)
+		{
+			Uri = _playlist.Items[++_playlistIndex].Source.Uri;
+			Play();
+		}
+	}
+
 	public void OnOptionChanged(string name, object value) => NotImplemented(); // TODO
 
 	public void OnVolumeChanged()
@@ -196,7 +220,14 @@ internal class MacOSMediaPlayerExtension : IMediaPlayerExtension
 		}
 	}
 
-	public void PreviousTrack() => NotImplemented(); // TODO
+	public void PreviousTrack()
+	{
+		if (_playlist != null && _playlistIndex > 0)
+		{
+			Uri = _playlist.Items[--_playlistIndex].Source.Uri;
+			Play();
+		}
+	}
 
 	// Deprecated. Use MediaPlayer.Source instead
 	public void SetUriSource(Uri uri) => throw new NotImplementedException();
