@@ -25,6 +25,8 @@ public sealed partial class When_TwoWay_Text_Binding : Page
 		public int SetCount { get; private set; }
 	}
 
+	public VM VMForXBind { get; } = new VM();
+
 	public When_TwoWay_Text_Binding()
 	{
 		this.InitializeComponent();
