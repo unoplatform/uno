@@ -25,6 +25,8 @@ namespace Microsoft.UI.Xaml
 	[Register("UnoAppDelegate")]
 	public partial class Application : UIApplicationDelegate
 	{
+		private const string UIApplicationSceneManifestKey = "UIApplicationSceneManifest";
+
 		private bool _preventSecondaryActivationHandling;
 
 		partial void InitializePartial()
@@ -141,6 +143,10 @@ namespace Microsoft.UI.Xaml
 		[Export("getApplicationDataPath")]
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		public NSString GetWorkingFolder() => new NSString(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
+
+		internal static bool HasSceneManifest() =>
+			(OperatingSystem.IsIOSVersionAtLeast(13, 0) || OperatingSystem.IsTvOSVersionAtLeast(13, 0)) &&
+			NSBundle.MainBundle.InfoDictionary.ContainsKey(new NSString(UIApplicationSceneManifestKey));
 
 		private bool TryHandleUniversalLinkFromUserActivity(NSUserActivity userActivity)
 		{
