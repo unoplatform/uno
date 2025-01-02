@@ -12,7 +12,6 @@ using Windows.Storage.Streams;
 using Windows.System;
 using Windows.UI.Input.Preview.Injection;
 using Windows.UI.Popups;
-using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -26,6 +25,13 @@ using SamplesApp.UITests;
 #if !HAS_UNO
 using System.Runtime.InteropServices;
 #endif
+
+#if HAS_UNO_WINUI || WINAPPSDK
+using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
+#else
+using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
+#endif
+
 namespace Uno.UI.RuntimeTests.Helpers;
 
 // Note: This file contains a bunch of helpers that are expected to be moved to the test engine among the pointer injection work
