@@ -92,7 +92,7 @@ internal class Win32FileSaverExtension(FileSavePicker picker) : IFileSavePickerE
 		}
 
 		// TODO: file pickers aren't associated with a specific window, so what do we do here?
-		hResult = iFileSaveDialog.Value->Show((HWND)Window.InitialWindow!.NativeWindow!);
+		hResult = iFileSaveDialog.Value->Show((HWND)((Win32NativeWindow)Window.InitialWindow!.NativeWindow!).Hwnd);
 		if (hResult.Failed)
 		{
 			if (hResult != (uint)WIN32_ERROR.ERROR_CANCELLED)

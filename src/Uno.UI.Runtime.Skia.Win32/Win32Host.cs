@@ -12,6 +12,7 @@ using Windows.Win32;
 using Windows.Win32.Foundation;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Uno.ApplicationModel.DataTransfer;
 using Uno.Extensions.Storage.Pickers;
 using Uno.Extensions.System;
@@ -74,6 +75,7 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 		ApiExtensibility.Register<FileSavePicker>(typeof(IFileSavePickerExtension), o => new Win32FileSaverExtension(o));
 		ApiExtensibility.Register(typeof(ILauncherExtension), o => new WindowsLauncherExtension(o));
 		ApiExtensibility.Register<DragDropManager>(typeof(IDragDropExtension), manager => new Win32DragDropExtension(manager));
+		ApiExtensibility.Register<ContentPresenter>(typeof(ContentPresenter.INativeElementHostingExtension), o => new Win32NativeElementHostingExtension(o));
 	}
 
 	public Win32Host(Func<Application> appBuilder)

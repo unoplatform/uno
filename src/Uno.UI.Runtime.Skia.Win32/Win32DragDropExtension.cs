@@ -36,7 +36,7 @@ internal class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interfac
 		var host = Win32WindowWrapper.XamlRootMap.GetHostForRoot(manager.ContentRoot.GetOrCreateXamlRoot()) ?? throw new InvalidOperationException($"Couldn't find an {nameof(Win32WindowWrapper)} instance associated with this {nameof(XamlRoot)}.");
 		_coreDragDropManager = XamlRoot.GetCoreDragDropManager(((IXamlRootHost)host).RootElement!.XamlRoot);
 		_manager = manager;
-		_hwnd = (HWND)host.NativeWindow;
+		_hwnd = (HWND)((Win32NativeWindow)host.NativeWindow).Hwnd;
 
 		// Note: we're deliberately not disposing the ComScope (which calls ReleaseRef()) here because the IDragDropExtension instance
 		// should last as long as the window that created it.

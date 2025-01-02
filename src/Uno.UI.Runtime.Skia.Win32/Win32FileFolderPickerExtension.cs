@@ -104,7 +104,7 @@ internal class Win32FileFolderPickerExtension(IFilePicker picker) : IFileOpenPic
 		}
 
 		// TODO: file pickers aren't associated with a specific window, so what do we do here?
-		hResult = iFileOpenDialog.Value->Show((HWND)Window.InitialWindow!.NativeWindow!);
+		hResult = iFileOpenDialog.Value->Show((HWND)((Win32NativeWindow)Window.InitialWindow!.NativeWindow!).Hwnd);
 		if (hResult.Failed)
 		{
 			if (hResult != (uint)WIN32_ERROR.ERROR_CANCELLED)

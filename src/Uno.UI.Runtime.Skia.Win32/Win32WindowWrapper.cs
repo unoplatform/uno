@@ -316,7 +316,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		Position = new PointInt32(windowRect.left, windowRect.top);
 	}
 
-	public override object NativeWindow => _hwnd;
+	public override object NativeWindow => new Win32NativeWindow(_hwnd);
 
 	public override unsafe string Title
 	{

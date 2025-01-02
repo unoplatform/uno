@@ -49,6 +49,7 @@ POINTER_MESSAGE_FLAG_INRANGE
 POINTER_MESSAGE_FLAG_PRIMARY
 POINTER_MESSAGE_FLAG_SECONDBUTTON
 POINTER_MESSAGE_FLAG_THIRDBUTTON
+RDH_RECTANGLES
 S_OK
 TOUCH_MASK_CONTACTAREA
 TOUCH_MASK_ORIENTATION
@@ -118,6 +119,8 @@ EnableMouseInPointer
 EndPaint
 EnumClipboardFormats
 EnumDisplaySettingsEx
+ExtCreateRegion
+FindWindow
 FormatMessage
 GetCapture
 GetClientRect
@@ -132,6 +135,7 @@ GetPointerPenInfo
 GetPointerTouchInfo
 GetPointerType
 GetSaveFileName
+GetWindowLong
 GetWindowRect
 GetWindowText
 glGetError
@@ -167,9 +171,13 @@ SetActiveWindow
 SetCapture
 SetClipboardData
 SetCursor
+SetLayeredWindowAttributes
+SetParent
 SetPixelFormat
 SetThreadDpiAwarenessContext
+SetWindowLong
 SetWindowPos
+SetWindowRgn
 SetWindowText
 ShowWindow
 SwapBuffers
