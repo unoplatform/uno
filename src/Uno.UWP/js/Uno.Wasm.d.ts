@@ -428,7 +428,7 @@ declare namespace Windows.System {
         * @param url URL to load
         * @returns "True" or "False", depending on whether a new window could be opened or not
         */
-        open(url: string): string;
+        static open(url: string): string;
     }
 }
 declare class BatteryManager {
