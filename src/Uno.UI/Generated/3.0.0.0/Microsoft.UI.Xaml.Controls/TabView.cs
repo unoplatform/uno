@@ -26,7 +26,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property AddTabButtonCommandParameter
 		// Skipping already declared property AddTabButtonCommand
 		// Skipping already declared property TabItems
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public bool CanTearOutTabs
 		{
@@ -58,7 +58,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property TabStripHeaderProperty
 		// Skipping already declared property TabStripHeaderTemplateProperty
 		// Skipping already declared property TabWidthModeProperty
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty CanTearOutTabsProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
@@ -161,7 +161,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.TabView.TabItemsChanged
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.TabView.TabStripDragOver
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.TabView.TabStripDrop
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.TabView, global::Microsoft.UI.Xaml.Controls.TabViewExternalTornOutTabsDroppedEventArgs> ExternalTornOutTabsDropped
 		{
@@ -177,7 +177,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.TabView, global::Microsoft.UI.Xaml.Controls.TabViewExternalTornOutTabsDroppingEventArgs> ExternalTornOutTabsDropping
 		{
@@ -193,7 +193,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.TabView, global::Microsoft.UI.Xaml.Controls.TabViewTabTearOutRequestedEventArgs> TabTearOutRequested
 		{
@@ -209,7 +209,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.TabView, global::Microsoft.UI.Xaml.Controls.TabViewTabTearOutWindowRequestedEventArgs> TabTearOutWindowRequested
 		{
