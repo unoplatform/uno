@@ -2,6 +2,7 @@
 using Uno.Extensions;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Wasm;
+using Uno.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Shapes
 {
@@ -18,14 +19,9 @@ namespace Microsoft.UI.Xaml.Shapes
 
 			var cx = shapeSize.Width / 2;
 			var cy = shapeSize.Height / 2;
-
 			var halfStrokeThickness = ActualStrokeThickness / 2;
 
-			_mainSvgElement.SetAttribute(
-				("cx", cx.ToStringInvariant()),
-				("cy", cy.ToStringInvariant()),
-				("rx", (cx - halfStrokeThickness).ToStringInvariant()),
-				("ry", (cy - halfStrokeThickness).ToStringInvariant()));
+			WindowManagerInterop.SetSvgEllipseAttributes(_mainSvgElement.HtmlId, cx, cy, cx - halfStrokeThickness, cy - halfStrokeThickness);
 
 			return finalSize;
 		}
