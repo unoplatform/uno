@@ -2,7 +2,7 @@
 
 using System;
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 /// <summary>
 /// Provides data for the WebView.NavigationStarting and FrameNavigationStarting events.

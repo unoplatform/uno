@@ -9,10 +9,10 @@ using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.Graphics.Display;
 using Windows.UI;
-using Microsoft.UI.Composition;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Hosting;
+using Windows.UI.Composition;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Hosting;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media;
 
@@ -64,7 +64,7 @@ public class Given_XamlCompositionBrushBase
 		}
 	}
 
-	private class TestBrush : Microsoft.UI.Xaml.Media.XamlCompositionBrushBase
+	private class TestBrush : Windows.UI.Xaml.Media.XamlCompositionBrushBase
 	{
 		private CompositionBrush Brush;
 

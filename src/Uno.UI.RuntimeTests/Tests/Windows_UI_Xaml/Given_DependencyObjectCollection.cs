@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.ObjectiveC;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;

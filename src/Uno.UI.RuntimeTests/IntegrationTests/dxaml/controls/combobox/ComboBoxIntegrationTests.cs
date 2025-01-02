@@ -3,20 +3,20 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Markup;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Tests.Common;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Tests.Common;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests;
 using Uno.UI.RuntimeTests.MUX.Helpers;
 using Windows.Foundation;
 using static Private.Infrastructure.TestServices;
-using ComboBoxHelper = Microsoft.UI.Xaml.Tests.Common.ComboBoxHelper;
+using ComboBoxHelper = Windows.UI.Xaml.Tests.Common.ComboBoxHelper;
 
-namespace Microsoft.UI.Xaml.Tests.Enterprise.ComboBoxTests;
+namespace Windows.UI.Xaml.Tests.Enterprise.ComboBoxTests;
 
 [TestClass]
 public class ComboBoxIntegrationTests : BaseDxamlTestClass
@@ -227,7 +227,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	//			LR"(<?xml version='1.0' encoding='UTF-8'?>
 	//				< Rules >
 
-	//					< Rule Applicability =\"//Element[@Type='Microsoft.UI.Xaml.Controls.ComboBox']\" Inclusion='Blacklist'>
+	//					< Rule Applicability =\"//Element[@Type='Windows.UI.Xaml.Controls.ComboBox']\" Inclusion='Blacklist'>
 	//						< Property Name = 'FocusState' />
 
 	//						< Property Name = 'IsSelectionBoxHighlighted' />
@@ -434,7 +434,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 
 	//			{
 	//				rootPanel.RequestedTheme = ElementTheme.Light;
-	//				rootPanel.Background = new SolidColorBrush(Microsoft.UI.Colors.White);
+	//				rootPanel.Background = new SolidColorBrush(Windows.UI.Colors.White);
 	//			});
 	//			await TestServices.WindowHelper.WaitForIdle();
 
@@ -624,8 +624,8 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	//		var comboBox = await SetupBasicComboBoxTest();
 	//		var comboBoxClosedEvent = new Event();
 	//		var closedRegistration = CreateSafeEventRegistration<ComboBox, EventHandler<object>>("DropDownClosed");
-	//		var comboBoxParentKeyDownRegistration = CreateSafeEventRegistrationForHandledEvents(Microsoft.UI.Xaml.UIElement, KeyDownEvent);
-	//		var comboBoxParentKeyUpRegistration = CreateSafeEventRegistrationForHandledEvents(Microsoft.UI.Xaml.UIElement, KeyUpEvent);
+	//		var comboBoxParentKeyDownRegistration = CreateSafeEventRegistrationForHandledEvents(Windows.UI.Xaml.UIElement, KeyDownEvent);
+	//		var comboBoxParentKeyUpRegistration = CreateSafeEventRegistrationForHandledEvents(Windows.UI.Xaml.UIElement, KeyUpEvent);
 
 	//		await RunOnUIThread(() =>
 
@@ -735,8 +735,8 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 	//	var comboBoxClosedEvent = new Event();
 	//	var comboBoxKeyDownRepeatedEvent = new Event();
 	//	var closedRegistration = CreateSafeEventRegistration<ComboBox, EventHandler<object>>("DropDownClosed");
-	//	var comboBoxParentKeyDownRegistration = CreateSafeEventRegistrationForHandledEvents(Microsoft.UI.Xaml.UIElement, KeyDownEvent);
-	//	var comboBoxParentKeyUpRegistration = CreateSafeEventRegistrationForHandledEvents(Microsoft.UI.Xaml.UIElement, KeyUpEvent);
+	//	var comboBoxParentKeyDownRegistration = CreateSafeEventRegistrationForHandledEvents(Windows.UI.Xaml.UIElement, KeyDownEvent);
+	//	var comboBoxParentKeyUpRegistration = CreateSafeEventRegistrationForHandledEvents(Windows.UI.Xaml.UIElement, KeyUpEvent);
 
 	//	int keyDownCount = 0;
 
@@ -3241,7 +3241,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 
 			{
 				// Ensure that the combobox is partially off screen
-				TranslateTransform translateTransform = new Microsoft.UI.Xaml.Media.TranslateTransform();
+				TranslateTransform translateTransform = new Windows.UI.Xaml.Media.TranslateTransform();
 				translateTransform.Y = 20;
 				comboBox.RenderTransform = translateTransform;
 
@@ -5367,7 +5367,7 @@ public class ComboBoxIntegrationTests : BaseDxamlTestClass
 
 
 
-	//				< Rule Applicability =\"//Element[@Type='Microsoft.UI.Xaml.Controls.ComboBox']\" Inclusion='Blacklist'>
+	//				< Rule Applicability =\"//Element[@Type='Windows.UI.Xaml.Controls.ComboBox']\" Inclusion='Blacklist'>
 	//					< Property Name = 'FocusState' />
 
 

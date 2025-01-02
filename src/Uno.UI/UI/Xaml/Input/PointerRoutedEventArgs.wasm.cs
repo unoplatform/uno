@@ -2,7 +2,7 @@
 using Windows.Foundation;
 using Uno.UI.Xaml.Input;
 
-namespace Microsoft.UI.Xaml.Input;
+namespace Windows.UI.Xaml.Input;
 
 partial class PointerRoutedEventArgs : IHtmlHandleableRoutedEventArgs
 {

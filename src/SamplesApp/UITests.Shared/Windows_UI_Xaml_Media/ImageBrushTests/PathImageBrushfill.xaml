@@ -12,7 +12,7 @@
 	xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:android="http://uno.ui/android"
 	xmlns:not_ios="http://uno.ui/not_ios"
-	xmlns:shapes="clr-namespace:Microsoft.UI.Xaml.Shapes;assembly=Uno"
+	xmlns:shapes="clr-namespace:Windows.UI.Xaml.Shapes;assembly=Uno"
 	mc:Ignorable="d ios android"
 	d:DesignHeight="300"
 	d:DesignWidth="400">

@@ -4,7 +4,7 @@
 
 #nullable enable
 
-namespace Microsoft.UI.Xaml.Hosting;
+namespace Windows.UI.Xaml.Hosting;
 
 internal class NavigateFocusResult : XamlSourceFocusNavigationResult
 {

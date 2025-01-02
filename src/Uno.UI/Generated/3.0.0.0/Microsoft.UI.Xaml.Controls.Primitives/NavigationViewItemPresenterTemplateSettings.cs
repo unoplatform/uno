@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class NavigationViewItemPresenterTemplateSettings : global::Microsoft.UI.Xaml.DependencyObject
+	public partial class NavigationViewItemPresenterTemplateSettings : global::Windows.UI.Xaml.DependencyObject
 	{
 		// Skipping already declared property IconWidth
 		// Skipping already declared property SmallerIconWidth

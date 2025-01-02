@@ -6,7 +6,7 @@ using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 
-namespace Microsoft.UI.Xaml.Markup
+namespace Windows.UI.Xaml.Markup
 {
 	/// <summary>
 	/// Provides helper methods for data binding.

@@ -2,7 +2,7 @@
 using Android.Graphics;
 using Uno.Extensions;
 using Uno.UI;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Media;
 using Point = Windows.Foundation.Point;
 using Size = Windows.Foundation.Size;
 using Rect = Windows.Foundation.Rect;

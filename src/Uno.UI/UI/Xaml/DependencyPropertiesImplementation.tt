@@ -16,12 +16,12 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Windows.Foundation;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Animation;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 #if __IOS__
 using Color = UIKit.UIColor;
 using View = UIKit.UIView;
@@ -33,7 +33,7 @@ using Color = Android.Resource.Color;
 using View = Android.Views.View;
 #elif IS_UNIT_TESTS || UNO_REFERENCE_API
 using Color = System.Object;
-using View = Microsoft.UI.Xaml.FrameworkElement;
+using View = Windows.UI.Xaml.FrameworkElement;
 #endif  
 
 <#

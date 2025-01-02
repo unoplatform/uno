@@ -3,8 +3,8 @@
 using System;
 using Uno.UI.Xaml.Core;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 namespace Uno.UI.Xaml.Controls;
@@ -29,7 +29,7 @@ internal partial class ContentManager
 		set => SetContent(value);
 	}
 
-	internal Microsoft.UI.Xaml.Controls.ScrollViewer? RootScrollViewer { get; private set; }
+	internal Windows.UI.Xaml.Controls.ScrollViewer? RootScrollViewer { get; private set; }
 
 	private void SetContent(UIElement? newContent)
 	{
@@ -65,7 +65,7 @@ internal partial class ContentManager
 					throw new InvalidOperationException("The root visual was not created.");
 				}
 
-				if (_owner is not Microsoft.UI.Xaml.Window window)
+				if (_owner is not Windows.UI.Xaml.Window window)
 				{
 					throw new InvalidOperationException("Owner of ContentManager should be a Window");
 				}
@@ -76,7 +76,7 @@ internal partial class ContentManager
 			// For an unknown reason we need to make sure to reset the Frame of the root view controller on iOS when Content changes,
 			// otherwise EVP and When_Mask_All tests fail as the viewport will extend under status bar. This should be investigated in #8978.
 #if __IOS__
-			if (_owner is not Microsoft.UI.Xaml.Window windowOuter)
+			if (_owner is not Windows.UI.Xaml.Window windowOuter)
 			{
 				throw new InvalidOperationException("Owner of ContentManager should be a Window");
 			}
@@ -120,7 +120,7 @@ internal partial class ContentManager
 
 	static partial void LoadRootElementPlatform(XamlRoot xamlRoot, UIElement rootElement);
 
-	internal static void AttachToWindow(UIElement rootElement, Microsoft.UI.Xaml.Window window) => AttachToWindowPlatform(rootElement, window);
+	internal static void AttachToWindow(UIElement rootElement, Windows.UI.Xaml.Window window) => AttachToWindowPlatform(rootElement, window);
 
-	static partial void AttachToWindowPlatform(UIElement rootElement, Microsoft.UI.Xaml.Window window);
+	static partial void AttachToWindowPlatform(UIElement rootElement, Windows.UI.Xaml.Window window);
 }

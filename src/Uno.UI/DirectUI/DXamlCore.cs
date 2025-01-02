@@ -11,7 +11,7 @@ using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core.Scaling;
 
 namespace DirectUI
@@ -45,7 +45,7 @@ namespace DirectUI
 			return physicalRect;
 		}
 
-		public Microsoft.UI.Xaml.Window? GetAssociatedWindow(Microsoft.UI.Xaml.UIElement element)
+		public Windows.UI.Xaml.Window? GetAssociatedWindow(Windows.UI.Xaml.UIElement element)
 		{
 			if (element == null)
 			{

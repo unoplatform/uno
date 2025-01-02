@@ -5,7 +5,7 @@ using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.Input;
-using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls;
 using static Windows.UI.Input.PointerUpdateKind;
 using Uno.Foundation.Logging;
 using System.Runtime.InteropServices.JavaScript;
@@ -163,7 +163,7 @@ internal partial class BrowserPointerInputSource : IUnoCorePointerInputSource
 					throw new ArgumentOutOfRangeException(nameof(@event), $"Unknown event ({@event}-{evt}).");
 			}
 
-			return (int)Microsoft.UI.Xaml.HtmlEventDispatchResult.Ok;
+			return (int)Windows.UI.Xaml.HtmlEventDispatchResult.Ok;
 		}
 		catch (Exception error)
 		{
@@ -172,7 +172,7 @@ internal partial class BrowserPointerInputSource : IUnoCorePointerInputSource
 				_log.Error($"Failed to dispatch native pointer event: {error}");
 			}
 
-			return (int)Microsoft.UI.Xaml.HtmlEventDispatchResult.Ok;
+			return (int)Windows.UI.Xaml.HtmlEventDispatchResult.Ok;
 		}
 	}
 

@@ -9,22 +9,22 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using Microsoft.UI.Private.Controls;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Markup;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Media;
 using MUXControlsTestApp.Utilities;
 
 //using WEX.TestExecution;
 //using WEX.TestExecution.Markup;
 //using WEX.Logging.Interop;
-using Microsoft.UI.Xaml.Automation;
-using Microsoft.UI.Xaml.Automation.Provider;
-using Microsoft.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Automation;
+using Windows.UI.Xaml.Automation.Provider;
+using Windows.UI.Xaml.Automation.Peers;
 using Private.Infrastructure;
 using System.Threading.Tasks;
 
-namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests;
+namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests;
 
 [TestClass]
 #if !__SKIA__

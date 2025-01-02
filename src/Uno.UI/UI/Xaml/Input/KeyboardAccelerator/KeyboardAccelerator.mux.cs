@@ -8,7 +8,7 @@ using Uno.UI.Xaml;
 using Windows.System;
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
-namespace Microsoft.UI.Xaml.Input;
+namespace Windows.UI.Xaml.Input;
 
 partial class KeyboardAccelerator
 {

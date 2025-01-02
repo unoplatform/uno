@@ -40,7 +40,7 @@ namespace Uno.UI.Runtime.Skia.Wpf
 			{
 				// TODO: this is a ridiculous amount of indirection, find something better
 				if (!AppWindow.TryGetFromWindowId(_displayInformation.WindowId, out var appWindow) ||
-					Microsoft.UI.Xaml.Window.GetFromAppWindow(appWindow) is not { } window ||
+					Windows.UI.Xaml.Window.GetFromAppWindow(appWindow) is not { } window ||
 					UnoWpfWindow.GetFromWinUIWindow(window) is not { } wpfWindow)
 				{
 					throw new InvalidOperationException($"{nameof(WpfDisplayInformationExtension)} couldn't find a WPF window.");

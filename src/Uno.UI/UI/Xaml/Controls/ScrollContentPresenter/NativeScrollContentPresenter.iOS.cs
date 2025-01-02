@@ -1,8 +1,8 @@
 ﻿using Uno.Extensions;
 using Uno.UI.DataBinding;
-using Microsoft.UI.Xaml;
+using Windows.UI.Xaml;
 using Uno.UI.Extensions;
-using Microsoft.UI.Xaml.Data;
+using Windows.UI.Xaml.Data;
 using System;
 using System.Collections.Generic;
 using Uno.Disposables;
@@ -14,7 +14,7 @@ using UIKit;
 using CoreGraphics;
 using Uno.Foundation.Logging;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Controls.Primitives;
 using Uno.UI;
 using Uno.UI.UI.Xaml.Controls.Layouter;
 using Uno.UI.Xaml.Input;
@@ -28,7 +28,7 @@ using Windows.UI.Input;
 using Windows.Devices.Input;
 #endif
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	partial class NativeScrollContentPresenter : UIScrollView, DependencyObject, ISetLayoutSlots
 	{

@@ -21,7 +21,7 @@ using Windows.Foundation;
 //
 //      Both classes are nested inside the VariableSizedWrapGrid class
 
-namespace Microsoft.UI.Xaml.Controls;
+namespace Windows.UI.Xaml.Controls;
 
 // Represents a VariableSizeWrapGrid.
 partial class VariableSizedWrapGrid

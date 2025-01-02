@@ -4,11 +4,11 @@ using System.Text;
 using Uno;
 using Uno.Extensions;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 
-namespace Microsoft.UI.Xaml
+namespace Windows.UI.Xaml
 {
 	public partial class UIElement : DependencyObject
 	{
@@ -46,7 +46,7 @@ namespace Microsoft.UI.Xaml
 
 		public IntPtr Handle { get; set; }
 
-		internal Point GetPosition(Point position, global::Microsoft.UI.Xaml.UIElement relativeTo)
+		internal Point GetPosition(Point position, global::Windows.UI.Xaml.UIElement relativeTo)
 		{
 			throw new NotSupportedException();
 		}

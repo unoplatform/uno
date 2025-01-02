@@ -1,4 +1,4 @@
-﻿namespace Microsoft.UI.Xaml.Media.Animation
+﻿namespace Windows.UI.Xaml.Media.Animation
 {
 	partial class EasingColorKeyFrame : ColorKeyFrame
 	{

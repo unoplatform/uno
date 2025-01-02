@@ -7,14 +7,14 @@ using System.Diagnostics;
 using System.Linq;
 using Uno.UI;
 using Uno.UI.Xaml;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Documents;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Animation;
-using Microsoft.UI.Xaml.Shapes;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Documents;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
+using Windows.UI.Xaml.Shapes;
 using Windows.UI.Text;
 using Uno.Extensions;
 using Uno;
@@ -29,18 +29,18 @@ using _View = UIKit.UIView;
 #elif __MACOS__
 using _View = AppKit.NSView;
 #else
-using _View = Microsoft.UI.Xaml.UIElement;
+using _View = Windows.UI.Xaml.UIElement;
 #endif
 
 namespace TestRepro
 {
-	partial class MainPage : global::Microsoft.UI.Xaml.Controls.Page
+	partial class MainPage : global::Windows.UI.Xaml.Controls.Page
 	{
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_prefix_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
-		private global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
+		private global::Windows.UI.Xaml.NameScope __nameScope = new global::Windows.UI.Xaml.NameScope();
 		private void InitializeComponent()
 		{
 			NameScope.SetNameScope(this, __nameScope);
@@ -48,17 +48,17 @@ namespace TestRepro
 			base.IsParsing = true;
 			// Source 0\MainPage.xaml (Line 1:2)
 			base.Content = 
-			new global::Microsoft.UI.Xaml.Controls.Grid
+			new global::Windows.UI.Xaml.Controls.Grid
 			{
 				IsParsing = true,
 				// Source 0\MainPage.xaml (Line 8:3)
 				Children = 
 				{
-					new global::Microsoft.UI.Xaml.Controls.TextBlock
+					new global::Windows.UI.Xaml.Controls.TextBlock
 					{
 						IsParsing = true,
 						Text = "Hello, world!",
-						Margin = new global::Microsoft.UI.Xaml.Thickness(20),
+						Margin = new global::Windows.UI.Xaml.Thickness(20),
 						FontSize = 30d,
 						// Source 0\MainPage.xaml (Line 9:4)
 					}
@@ -77,27 +77,27 @@ namespace TestRepro
 
 		}
 		partial void OnInitializeCompleted();
-							private void ApplyMethod_0(global::Microsoft.UI.Xaml.Controls.TextBlock __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
+							private void ApplyMethod_0(global::Windows.UI.Xaml.Controls.TextBlock __p1, MainPage __that, global::Windows.UI.Xaml.NameScope __nameScope)
 					{
 						global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d, "file:///C:/Project/0/MainPage.xaml", 9, 4);
 						__p1.CreationComplete();
 					}
 
-					private void ApplyMethod_1(global::Microsoft.UI.Xaml.Controls.Grid __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
+					private void ApplyMethod_1(global::Windows.UI.Xaml.Controls.Grid __p1, MainPage __that, global::Windows.UI.Xaml.NameScope __nameScope)
 			{
 				global::Uno.UI.Toolkit.VisibleBoundsPadding.SetPaddingMask(__p1, global::Uno.UI.Toolkit.VisibleBoundsPadding.PaddingMask.Top);
 				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d, "file:///C:/Project/0/MainPage.xaml", 8, 3);
 				__p1.CreationComplete();
 			}
 
-					private void ApplyMethod_2(global::Microsoft.UI.Xaml.Controls.Page __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
+					private void ApplyMethod_2(global::Windows.UI.Xaml.Controls.Page __p1, MainPage __that, global::Windows.UI.Xaml.NameScope __nameScope)
 			{
 				// Source 0\MainPage.xaml (Line 1:2)
 				
 				// WARNING Property __p1.base does not exist on {http://schemas.microsoft.com/winfx/2006/xaml/presentation}Page, the namespace is http://www.w3.org/XML/1998/namespace. This error was considered irrelevant by the XamlFileGenerator
 			}
 
-					private void ApplyMethod_3(global::Microsoft.UI.Xaml.Controls.Page __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
+					private void ApplyMethod_3(global::Windows.UI.Xaml.Controls.Page __p1, MainPage __that, global::Windows.UI.Xaml.NameScope __nameScope)
 			{
 				// Class TestRepro.MainPage
 				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d, "file:///C:/Project/0/MainPage.xaml", 1, 2);

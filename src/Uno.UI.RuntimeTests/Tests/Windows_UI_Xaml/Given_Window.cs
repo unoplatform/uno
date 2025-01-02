@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
@@ -14,7 +14,7 @@ using Uno.UI.Xaml.Controls;
 using Windows.ApplicationModel.Core;
 using Windows.UI;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
-using Colors = Microsoft.UI.Colors;
+using Colors = Windows.UI.Colors;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;

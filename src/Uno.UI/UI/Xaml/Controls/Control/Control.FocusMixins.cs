@@ -1,6 +1,6 @@
 ﻿#if !HAS_UNO_WINUI
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls
 {
 	public partial class Control
 	{
