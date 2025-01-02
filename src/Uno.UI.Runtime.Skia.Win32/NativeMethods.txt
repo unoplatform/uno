@@ -107,6 +107,7 @@ CoCreateInstance
 CreateCompatibleDC
 CreateDIBSection
 CreateIconFromResource
+CreateRectRgn
 CreateWindowEx
 DefWindowProc
 DescribePixelFormat
@@ -134,6 +135,7 @@ GetPointerInfo
 GetPointerPenInfo
 GetPointerTouchInfo
 GetPointerType
+GetRegionData
 GetSaveFileName
 GetWindowLong
 GetWindowRect
