@@ -8,8 +8,6 @@ using UIKit;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 
-
-
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
 #else
@@ -112,13 +110,11 @@ namespace Microsoft.UI.Xaml.Input
 			};
 
 		#region Misc static helpers
-		private static long? _bootTime;
 
 		private static ulong ToTimeStamp(double timestamp)
 		{
-			_bootTime ??= DateTime.UtcNow.Ticks - (long)(TimeSpan.TicksPerSecond * new NSProcessInfo().SystemUptime);
-
-			return (ulong)_bootTime.Value + (ulong)(TimeSpan.TicksPerSecond * timestamp);
+			// iOS Timestamp is in seconds from boot time.
+			return (ulong)(timestamp * 1000 * 1000); // Convert to microseconds
 		}
 
 		private static double? _firstTimestamp;

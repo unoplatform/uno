@@ -249,7 +249,7 @@ namespace Windows.UI.Input
 			private void StartHoldingTimer()
 			{
 				_holdingTimer = DispatcherQueue.GetForCurrentThread().CreateTimer();
-				_holdingTimer.Interval = TimeSpan.FromTicks(HoldMinDelayTicks);
+				_holdingTimer.Interval = TimeSpan.FromMicroseconds(HoldMinDelayMicroseconds);
 				_holdingTimer.State = this;
 				_holdingTimer.Tick += OnHoldingTimerTick;
 				_holdingTimer.Start();
@@ -323,7 +323,7 @@ namespace Windows.UI.Input
 				var currentPosition = down.Position;
 
 				return previousTap.id == currentId
-					&& currentTs - previousTap.ts <= MultiTapMaxDelayTicks
+					&& currentTs - previousTap.ts <= MultiTapMaxDelayMicroseconds
 					&& !IsOutOfTapRange(previousTap.position, currentPosition);
 			}
 
@@ -394,7 +394,7 @@ namespace Windows.UI.Input
 			}
 
 			private static bool IsLongPress(PointerPoint down, PointerPoint current)
-				=> current.Timestamp - down.Timestamp > HoldMinDelayTicks;
+				=> current.Timestamp - down.Timestamp > HoldMinDelayMicroseconds;
 			#endregion
 		}
 	}

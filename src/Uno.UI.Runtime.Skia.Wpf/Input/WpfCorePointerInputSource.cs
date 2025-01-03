@@ -296,7 +296,7 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 
 					var point = new Windows.UI.Input.PointerPoint(
 						frameId: FrameIdProvider.GetNextFrameId(),
-						timestamp: (ulong)Environment.TickCount,
+						timestamp: (ulong)(Environment.TickCount64 * 1000),
 						device: PointerDevice.For(PointerDeviceType.Mouse),
 						pointerId: 1,
 						rawPosition: position,
@@ -406,11 +406,12 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 			throw new ArgumentException();
 		}
 
+		var timestampInMicroseconds = (ulong)(args.Timestamp * 1000);
 		properties = properties.SetUpdateKindFromPrevious(_previous?.CurrentPoint.Properties);
 		var modifiers = GetKeyModifiers();
 		var point = new PointerPoint(
 			frameId: FrameIdProvider.GetNextFrameId(),
-			timestamp: (ulong)(args.Timestamp * TimeSpan.TicksPerMillisecond),
+			timestamp: timestampInMicroseconds,
 			device: GetPointerDevice(args),
 			pointerId: pointerId,
 			rawPosition: new Windows.Foundation.Point(position.X, position.Y),

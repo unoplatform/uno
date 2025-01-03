@@ -88,7 +88,7 @@ namespace Windows.UI.Input
 				/// Depending of the platform, the timestamp provided by pointer events might not be absolute,
 				/// so it's preferable to not compare timestamp between pointers and inertia processor.
 				/// </remarks>
-				public long Elapsed => _timer.LastTickElapsed.Ticks;
+				public double Elapsed => _timer.LastTickElapsed.TotalMicroseconds;
 
 				public void Start()
 				{

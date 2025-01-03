@@ -26,12 +26,12 @@ namespace Windows.UI.Input
 		internal const int TapMaxXDelta = 10;
 		internal const int TapMaxYDelta = 10;
 
-		internal const ulong MultiTapMaxDelayTicks = TimeSpan.TicksPerMillisecond * 500;
+		internal const ulong MultiTapMaxDelayMicroseconds = 500000;
 
-		internal const long HoldMinDelayTicks = TimeSpan.TicksPerMillisecond * 800;
+		internal const long HoldMinDelayMicroseconds = 800000;
 		internal const float HoldMinPressure = .75f;
 
-		internal const long DragWithTouchMinDelayTicks = TimeSpan.TicksPerMillisecond * 300; // https://docs.microsoft.com/en-us/windows/uwp/design/input/drag-and-drop#open-a-context-menu-on-an-item-you-can-drag-with-touch
+		internal const long DragWithTouchMinDelayMicroseconds = 300000; // https://docs.microsoft.com/en-us/windows/uwp/design/input/drag-and-drop#open-a-context-menu-on-an-item-you-can-drag-with-touch
 
 		private readonly Logger _log;
 		private IDictionary<uint, Gesture> _gestures = new Dictionary<uint, Gesture>(_defaultGesturesSize);

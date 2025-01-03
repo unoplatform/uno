@@ -28,6 +28,7 @@ internal partial class BrowserPointerInputSource : IUnoCorePointerInputSource
 	private static readonly Logger _log = typeof(BrowserPointerInputSource).Log();
 	private static readonly Logger? _logTrace = _log.IsTraceEnabled(LogLevel.Trace) ? _log : null;
 
+	// TODO: Verify the boot time unit (ms or ticks)
 	private ulong _bootTime;
 	private bool _isOver;
 	private PointerPoint? _lastPoint;
@@ -321,7 +322,7 @@ internal partial class BrowserPointerInputSource : IUnoCorePointerInputSource
 		=> (uint)(timestamp % uint.MaxValue);
 
 	private ulong ToTimeStamp(double timestamp)
-		=> _bootTime + (ulong)(timestamp * TimeSpan.TicksPerMillisecond);
+		=> _bootTime + (ulong)(timestamp * 1000);
 
 	private static PointerUpdateKind ToUpdateKind(HtmlPointerButtonUpdate update, PointerPointProperties props)
 		=> update switch
