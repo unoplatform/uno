@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Text;
 using System.Threading;
 using Windows.Devices.Input;
@@ -36,6 +37,13 @@ namespace Windows.UI.Input
 			IsInContact = isInContact;
 			Properties = properties;
 		}
+
+		/// <summary>
+		/// Retrieves the current timestamp in microseconds.S
+		/// </summary>
+		/// <returns>Timestamp in microseconds.</returns>
+		internal static ulong GetCurrentTimestamp() =>
+			(ulong)Stopwatch.GetElapsedTime(Stopwatch.GetTimestamp()).TotalMicroseconds;
 
 #if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
 		public PointerPoint(global::Windows.UI.Input.PointerPoint point)
