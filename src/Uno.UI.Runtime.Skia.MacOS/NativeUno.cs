@@ -434,6 +434,18 @@ internal static partial class NativeUno
 	[return: MarshalAs(UnmanagedType.I1)]
 	internal static partial bool uno_mediaplayer_is_video(nint media);
 
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial double uno_mediaplayer_get_current_time(nint media);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_mediaplayer_set_current_time(nint media, double seconds);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial float uno_mediaplayer_get_rate(nint media);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_mediaplayer_set_rate(nint media, float rate);
+
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
 	internal static partial void uno_mediaplayer_set_source(nint media, string uri);
 

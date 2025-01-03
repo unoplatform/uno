@@ -68,13 +68,51 @@ bool uno_mediaplayer_is_video(UNOMediaPlayer *media)
     return media.isVideo;
 }
 
+double uno_mediaplayer_get_current_time(UNOMediaPlayer *media)
+{
+    CMTime currentTime = media.player.currentItem.currentTime;
+    double time = currentTime.value / currentTime.timescale;
+#if DEBUG_MEDIAPLAYER
+    NSLog(@"uno_mediaplayer_get_current_time %p -> %g", media, time);
+#endif
+    return time;
+}
+
+void uno_mediaplayer_set_current_time(UNOMediaPlayer *media, double seconds)
+{
+#if DEBUG_MEDIAPLAYER
+    NSLog(@"uno_mediaplayer_set_current_time %p -> %g", media, seconds);
+#endif
+    CMTime time = CMTimeMakeWithSeconds(seconds, 100);
+    [media.player.currentItem seekToTime:time completionHandler:nil];
+}
+
+float uno_mediaplayer_get_rate(UNOMediaPlayer *media)
+{
+#if DEBUG_MEDIAPLAYER
+    NSLog(@"uno_mediaplayer_set_rate %p -> %g", media, media.player.rate);
+#endif
+    return media.player.rate;
+}
+
+void uno_mediaplayer_set_rate(UNOMediaPlayer *media, float rate)
+{
+#if DEBUG_MEDIAPLAYER
+    NSLog(@"uno_mediaplayer_set_rate %p -> %g", media, rate);
+#endif
+    media.player.rate = rate;
+    if (@available(macOS 13, *)) {
+        media.player.defaultRate = rate;
+    }
+}
+
 void uno_mediaplayer_set_source(UNOMediaPlayer *media, const char *uri)
 {
     NSString *s = [NSString stringWithUTF8String:uri];
     NSURL *url = [NSURL URLWithString:s];
     AVPlayerItem* item = [AVPlayerItem playerItemWithURL:url];
 #if DEBUG_MEDIAPLAYER
-    NSLog(@"uno_mediapalyer_set_source %p item %p url %@", media, item, url);
+    NSLog(@"uno_mediaplayer_set_source %p item %p url %@", media, item, url);
 #endif
     [media.player replaceCurrentItemWithPlayerItem: item];
 }
@@ -149,7 +187,15 @@ void uno_mediaplayer_play(UNOMediaPlayer *media)
     [item addObserver:media forKeyPath:@"status" options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew context:ctx];
     [item addObserver:media forKeyPath:@"loadedTimeRanges" options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew context:ctx];
 
-    [player play];
+    // Before macOS 13, iOS 16, tvOS 16, and watchOS 9, you can only call this method on the main thread or queue.
+    // ref: https://developer.apple.com/documentation/avfoundation/avplayer/play()?language=objc
+    if (@available(macOS 13, *)) {
+        [player play];
+    } else {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [player play];
+        });
+    }
 }
 
 void uno_mediaplayer_stop(UNOMediaPlayer *media)
@@ -405,7 +451,6 @@ id timeObserver;
     return YES;
 }
 
-// make the background red for easier tracking
 - (BOOL)wantsUpdateLayer
 {
     return true;

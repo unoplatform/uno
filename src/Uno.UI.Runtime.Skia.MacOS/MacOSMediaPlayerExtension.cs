@@ -11,14 +11,17 @@ using Windows.Storage.Streams;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml.Controls;
 
+using Uno.Extensions;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
+using Uno.Helpers;
 using Uno.Media.Playback;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
 
 internal class MacOSMediaPlayerExtension : IMediaPlayerExtension
 {
+	private const string MsAppXScheme = "ms-appx";
 	private static Dictionary<MediaPlayer, MacOSMediaPlayerExtension> _instances = new();
 	private MediaPlayer _player;
 	internal nint _nativePlayer;
@@ -77,35 +80,60 @@ internal class MacOSMediaPlayerExtension : IMediaPlayerExtension
 	}
 
 	public IMediaPlayerEventsExtension? Events { get; set; }
-	public double PlaybackRate { get; set; }
+
+	public double PlaybackRate
+	{
+		get => NativeUno.uno_mediaplayer_get_rate(_nativePlayer);
+		set => NativeUno.uno_mediaplayer_set_rate(_nativePlayer, (float)value);
+	}
+
 	public bool IsLoopingEnabled { get; set; }
 	public bool IsLoopingAllEnabled { get; set; }
 
+	// Deprecated. Use PlaybackSession.PlaybackState
+	// ref: https://learn.microsoft.com/en-us/uwp/api/windows.media.playback.mediaplayer.currentstate?view=winrt-26100
 	public MediaPlayerState CurrentState { get; }
 
-	public TimeSpan NaturalDuration => TimeSpan.Zero;
+	public TimeSpan NaturalDuration { get; private set; }
 
 	public bool IsProtected => false;
 
 	public double BufferingProgress => 0.0d;
 
-	// deprecated
+	// Deprecated. Use PlaybackSession.CanPause
+	// ref: https://learn.microsoft.com/en-us/uwp/api/windows.media.playback.mediaplayer.canpause?view=winrt-26100
+	// Always true, no mapping to AVPlayer
 	public bool CanPause => true;
 
-	// deprecated
+	// Deprecated. Use PlaybackSession.CanSeek
+	// ref: https://learn.microsoft.com/en-us/uwp/api/windows.media.playback.mediaplayer.canseek?view=winrt-26100
+	// Always true, no mapping to AVPlayer
 	public bool CanSeek => true;
 
 	public MediaPlayerAudioDeviceType AudioDeviceType { get; set; }
+
 	public MediaPlayerAudioCategory AudioCategory { get; set; }
+
 	public TimeSpan TimelineControllerPositionOffset { get; set; }
+
 	public bool RealTimePlayback { get; set; }
+
 	public double AudioBalance { get; set; }
-	public TimeSpan Position { get; set; }
+
+	public TimeSpan Position
+	{
+		get { return TimeSpan.FromSeconds(NativeUno.uno_mediaplayer_get_current_time(_nativePlayer)); }
+		set { NativeUno.uno_mediaplayer_set_current_time(_nativePlayer, value.TotalSeconds); }
+	}
 
 	public bool? IsVideo => NativeUno.uno_mediaplayer_is_video(_nativePlayer);
 
 	public void Dispose() => NotImplemented(); // TODO
-	public void Initialize() => NotImplemented(); // TODO
+
+	public void Initialize()
+	{
+	}
+
 	public void InitializeSource()
 	{
 		_player.PlaybackSession.NaturalDuration = TimeSpan.Zero;
@@ -147,20 +175,48 @@ internal class MacOSMediaPlayerExtension : IMediaPlayerExtension
 		get => _uri;
 		set
 		{
-			if (_uri is not null)
+			if (_uri != value)
 			{
-
+				_uri = value;
+				Events?.RaiseSourceChanged();
 			}
 
-			_uri = value;
 			if (_uri is null)
 			{
 				_player.PlaybackSession.PlaybackState = MediaPlaybackState.None;
 				return;
 			}
 
+			string source;
+			var uri = _uri;
+			if (!uri.IsAbsoluteUri || uri.Scheme.Length == 0)
+			{
+				uri = new Uri(MsAppXScheme + ":///" + _uri.OriginalString.TrimStart('/'));
+			}
+
+			if (uri.IsLocalResource())
+			{
+				var filePath = uri.PathAndQuery;
+
+				if (uri.Host is { Length: > 0 } host)
+				{
+					filePath = host + "/" + filePath.TrimStart('/');
+				}
+
+				// TODO location differs for app bundles
+				source = Path.Combine(Windows.ApplicationModel.Package.Current.InstalledPath, filePath.TrimStart('/'));
+			}
+			else if (uri.IsAppData())
+			{
+				source = AppDataUriEvaluator.ToPath(uri);
+			}
+			else
+			{
+				source = _uri.ToString();
+			}
+
 			_player.PlaybackSession.PlaybackState = MediaPlaybackState.Opening;
-			NativeUno.uno_mediaplayer_set_source(_nativePlayer, _uri.ToString());
+			NativeUno.uno_mediaplayer_set_source(_nativePlayer, source);
 		}
 	}
 
@@ -200,7 +256,7 @@ internal class MacOSMediaPlayerExtension : IMediaPlayerExtension
 		{
 			if (_player.PlaybackSession.PlaybackState == MediaPlaybackState.None)
 			{
-				// It's AVPlayer default behavior to clear CurrentItem when no next item exists
+				// It's AVPlayer default behavior to clear currentItem when no next item exists
 				// Solution to this is to reinitialize the source if video was: Ended, Failed or Manually stopped (not paused)
 				// This will also reinitialize all videos in case of source list, but only in one of 3 listed scenarios above
 				_player.InitializeSource();
@@ -236,9 +292,16 @@ internal class MacOSMediaPlayerExtension : IMediaPlayerExtension
 	public void SetMediaSource(IMediaSource source) => throw new NotImplementedException();
 
 	public void SetSurfaceSize(Size size) => NotImplemented(); // TODO
-	public void SetTransportControlsBounds(Rect bounds) => NotImplemented(); // TODO
+
+	// Not applicable, we use the managed Uno's MTC
+	public void SetTransportControlsBounds(Rect bounds)
+	{
+	}
+
 	public void StepBackwardOneFrame() => NativeUno.uno_mediaplayer_step_by(_nativePlayer, -1);
+
 	public void StepForwardOneFrame() => NativeUno.uno_mediaplayer_step_by(_nativePlayer, 1);
+
 	public void Stop()
 	{
 		NativeUno.uno_mediaplayer_stop(_nativePlayer);
@@ -323,7 +386,9 @@ internal class MacOSMediaPlayerExtension : IMediaPlayerExtension
 		var player = GetMediaPlayer(handle);
 		if (player is not null)
 		{
-			player._player.PlaybackSession.NaturalDuration = TimeSpan.FromSeconds(duration);
+			var ts = TimeSpan.FromSeconds(duration);
+			player.NaturalDuration = ts;
+			player._player.PlaybackSession.NaturalDuration = ts;
 		}
 	}
 
