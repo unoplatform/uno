@@ -81,7 +81,7 @@ public partial struct InjectedInputPointerInfo
 		var location = new Point(PixelLocation.PositionX, PixelLocation.PositionY);
 		var point = new PointerPoint(
 			state.FrameId + (uint)PerformanceCount,
-			state.Timestamp + (ulong)(TimeOffsetInMilliseconds * TimeSpan.TicksPerMillisecond),
+			state.Timestamp + TimeOffsetInMilliseconds * 1000,
 			PointerDevice.For(state.Type),
 			isNew ? PointerId : state.PointerId,
 			location,

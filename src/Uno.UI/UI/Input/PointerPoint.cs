@@ -39,10 +39,10 @@ namespace Windows.UI.Input
 		}
 
 		/// <summary>
-		/// Retrieves the current timestamp in microseconds.S
+		/// Retrieves the relative timestamp in microseconds.
 		/// </summary>
 		/// <returns>Timestamp in microseconds.</returns>
-		internal static ulong GetCurrentTimestamp() =>
+		internal static ulong GetRelativeTimestamp() =>
 			(ulong)Stopwatch.GetElapsedTime(Stopwatch.GetTimestamp()).TotalMicroseconds;
 
 #if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
