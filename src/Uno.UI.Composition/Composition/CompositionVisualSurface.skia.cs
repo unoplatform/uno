@@ -16,7 +16,6 @@ namespace Microsoft.UI.Composition
 	public partial class CompositionVisualSurface : CompositionObject, ICompositionSurface, ISkiaSurface
 	{
 		private SKSurface? _surface;
-		private DisplayInformation? _displayInformation;
 		private float _scale = 1.0f;
 
 		SKSurface? ISkiaSurface.Surface { get => _surface; }

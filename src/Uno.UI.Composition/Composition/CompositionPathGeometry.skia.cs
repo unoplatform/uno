@@ -18,6 +18,8 @@ public partial class CompositionPathGeometry : CompositionGeometry, ID2D1Geometr
 	private SkiaGeometrySource2D? _geometrySource2D;
 	private List<CompositionPathCommand> _commands = new();
 
+	internal IGeometrySource2D? Geometry => _geometrySource2D ?? Path?.GeometrySource;
+
 	internal override IGeometrySource2D? BuildGeometry() => _geometrySource2D;
 
 	private void InternalBuildGeometry()

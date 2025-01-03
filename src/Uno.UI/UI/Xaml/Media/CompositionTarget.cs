@@ -36,6 +36,4 @@ public partial class CompositionTarget : ICompositionTarget
 		ContentRoot.InputManager.Pointers.RedirectPointer(pointerPoint, tracker);
 #endif
 	}
-
-	global::Windows.Graphics.Display.DisplayInformation ICompositionTarget.DisplayInformation => XamlRoot.GetDisplayInformation(ContentRoot?.XamlRoot);
 }

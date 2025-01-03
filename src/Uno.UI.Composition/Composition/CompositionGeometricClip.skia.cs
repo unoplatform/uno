@@ -12,9 +12,8 @@ partial class CompositionGeometricClip
 	{
 		switch (Geometry)
 		{
-			case CompositionPathGeometry { Path.GeometrySource: SkiaGeometrySource2D geometrySource }:
-				return geometrySource.TightBounds.ToRect();
-
+			case CompositionPathGeometry { Geometry: SkiaGeometrySource2D genericGeometrySource }:
+				return genericGeometrySource.TightBounds.ToRect();
 			case CompositionPathGeometry cpg:
 				throw new InvalidOperationException($"Clipping with source {cpg.Path?.GeometrySource} is not supported");
 
@@ -30,7 +29,7 @@ partial class CompositionGeometricClip
 	{
 		switch (Geometry)
 		{
-			case CompositionPathGeometry { Path.GeometrySource: SkiaGeometrySource2D geometrySource }:
+			case CompositionPathGeometry { Geometry: SkiaGeometrySource2D geometrySource }:
 				var path = TransformMatrix.IsIdentity
 					? geometrySource
 					: geometrySource.Transform(TransformMatrix.ToSKMatrix());
