@@ -3328,7 +3328,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							{
 								writer.AppendLineInvariantIndented("// Load {0}", member.Value);
 							}
-							else if (member.Member.Name == "Uid")
+							else if (member.Member.Name == "Uid"
+								&& member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace)
 							{
 								uidMember = member;
 								writer.AppendLineIndented($"{GlobalPrefix}Uno.UI.Helpers.MarkupHelper.SetXUid({closureName}, \"{objectUid}\");");
