@@ -18,14 +18,15 @@ public sealed partial class DateTimeFormatter
 {
 	private readonly CultureInfo _firstCulture;
 
-	private readonly PatternRootNode _patternRootNode;
+	private readonly TemplateRootNode? _templateRootNode;
+	private readonly PatternRootNode? _patternRootNode;
 
 	/// <summary>
 	/// Creates a DateTimeFormatter object that is initialized by a format template string.
 	/// </summary>
 	/// <param name="formatTemplate">
-	/// A format template string that specifies the requested components. 
-	/// The order of the components is irrelevant. 
+	/// A format template string that specifies the requested components.
+	/// The order of the components is irrelevant.
 	/// This can also be a format pattern.
 	/// </param>
 	public DateTimeFormatter(string formatTemplate)
@@ -37,8 +38,8 @@ public sealed partial class DateTimeFormatter
 	/// Creates a DateTimeFormatter object that is initialized by a format template string.
 	/// </summary>
 	/// <param name="formatTemplate">
-	/// A format template string that specifies the requested components. 
-	/// The order of the components is irrelevant. 
+	/// A format template string that specifies the requested components.
+	/// The order of the components is irrelevant.
 	/// This can also be a format pattern.
 	/// </param>
 	/// <param name="languages">
@@ -51,6 +52,35 @@ public sealed partial class DateTimeFormatter
 	{
 		ArgumentNullException.ThrowIfNull(formatTemplate);
 
+		try
+		{
+			// Template example:
+			// "year month day dayofweek hour timezone" (that's just an example)
+			var templateParser = new TemplateParser(formatTemplate);
+			_templateRootNode = templateParser.Parse();
+			IncludeYear = templateParser.IncludeYear;
+			IncludeMonth = templateParser.IncludeMonth;
+			IncludeDay = templateParser.IncludeDay;
+			IncludeDayOfWeek = templateParser.IncludeDayOfWeek;
+			IncludeHour = templateParser.IncludeHour;
+			IncludeMinute = templateParser.IncludeMinute;
+			IncludeSecond = templateParser.IncludeSecond;
+			IncludeTimeZone = templateParser.IncludeTimeZone;
+			IsShortDate = templateParser.IsShortDate;
+			IsLongDate = templateParser.IsLongDate;
+			IsShortTime = templateParser.IsShortTime;
+			IsShortDate = templateParser.IsShortDate;
+			Template = BuildTemplate();
+		}
+		catch (Exception)
+		{
+			// Pattern example:
+			// "Hello {year.full} Hello2 {month.full}" (that's just an example)
+			_patternRootNode = new PatternParser(formatTemplate).Parse();
+			Template = formatTemplate;
+		}
+
+		Patterns = [formatTemplate];
 		if (languages != null)
 		{
 			Languages = languages.Distinct().ToArray();
@@ -58,51 +88,6 @@ public sealed partial class DateTimeFormatter
 
 		_firstCulture = new CultureInfo(Languages[0]);
 
-		try
-		{
-			// Template example:
-			// "year month day dayofweek hour timezone" (that's just an example)
-			var templateParser = new TemplateParser(formatTemplate);
-			templateParser.Parse();
-			IncludeYear = templateParser.Info.IncludeYear;
-			IncludeMonth = templateParser.Info.IncludeMonth;
-			IncludeDay = templateParser.Info.IncludeDay;
-			IncludeDayOfWeek = templateParser.Info.IncludeDayOfWeek;
-			IncludeHour = templateParser.Info.IncludeHour;
-			IncludeMinute = templateParser.Info.IncludeMinute;
-			IncludeSecond = templateParser.Info.IncludeSecond;
-			IncludeTimeZone = templateParser.Info.IncludeTimeZone;
-			IsShortDate = templateParser.Info.IsShortDate;
-			IsLongDate = templateParser.Info.IsLongDate;
-			IsShortTime = templateParser.Info.IsShortTime;
-			IsShortDate = templateParser.Info.IsShortDate;
-
-			// NOTE: We intentionally don't set the user provided template.
-			// Instead, we parse and re-build the template string.
-			// That's how WinUI works.
-			// Basically, the order of tokens in the template string does NOT matter.
-			// So, this kinda normalizes the order the right way.
-			Template = BuildTemplate();
-
-			string patternBuiltFromTemplate = BuildPattern();
-			Patterns = [patternBuiltFromTemplate];
-			_patternRootNode = new PatternParser(patternBuiltFromTemplate).Parse();
-		}
-		catch (Exception ex)
-		{
-			try
-			{
-				// Pattern example:
-				// "Hello {year.full} Hello2 {month.full}" (that's just an example)
-				_patternRootNode = new PatternParser(formatTemplate).Parse();
-				Template = formatTemplate;
-				Patterns = [formatTemplate];
-			}
-			catch (Exception ex2)
-			{
-				throw new AggregateException(ex, ex2);
-			}
-		}
 
 		var calendar = new Calendar(Languages);
 		Calendar = calendar.GetCalendarSystem();
@@ -136,9 +121,7 @@ public sealed partial class DateTimeFormatter
 		IncludeDay = dayFormat;
 		IncludeDayOfWeek = dayOfWeekFormat;
 		Template = BuildTemplate();
-		string patternBuiltFromTemplate = BuildPattern();
-		Patterns = [patternBuiltFromTemplate];
-		_patternRootNode = new PatternParser(patternBuiltFromTemplate).Parse();
+		Patterns = [Template];
 		_firstCulture = new CultureInfo(Languages[0]);
 
 		// TODO:MZ:
@@ -156,9 +139,7 @@ public sealed partial class DateTimeFormatter
 		IncludeMinute = minuteFormat;
 		IncludeSecond = secondFormat;
 		Template = BuildTemplate();
-		string patternBuiltFromTemplate = BuildPattern();
-		Patterns = [patternBuiltFromTemplate];
-		_patternRootNode = new PatternParser(patternBuiltFromTemplate).Parse();
+		Patterns = [Template];
 		_firstCulture = new CultureInfo(Languages[0]);
 
 		// TODO:MZ:
@@ -186,9 +167,7 @@ public sealed partial class DateTimeFormatter
 		IncludeSecond = secondFormat;
 		Languages = languages.ToArray();
 		Template = BuildTemplate();
-		string patternBuiltFromTemplate = BuildPattern();
-		Patterns = [patternBuiltFromTemplate];
-		_patternRootNode = new PatternParser(patternBuiltFromTemplate).Parse();
+		Patterns = [Template];
 		_firstCulture = new CultureInfo(Languages[0]);
 
 		// TODO:MZ:
@@ -222,9 +201,7 @@ public sealed partial class DateTimeFormatter
 		Calendar = calendar;
 		Clock = clock;
 		Template = BuildTemplate();
-		string patternBuiltFromTemplate = BuildPattern();
-		Patterns = [patternBuiltFromTemplate];
-		_patternRootNode = new PatternParser(patternBuiltFromTemplate).Parse();
+		Patterns = [Template];
 		_firstCulture = new CultureInfo(Languages[0]);
 	}
 
@@ -277,6 +254,16 @@ public sealed partial class DateTimeFormatter
 	/// Gets the YearFormat in the template.
 	/// </summary>
 	public YearFormat IncludeYear { get; }
+
+	internal TimeZoneFormat IncludeTimeZone { get; }
+
+	internal bool IsShortTime { get; }
+
+	internal bool IsLongTime { get; }
+
+	internal bool IsShortDate { get; }
+
+	internal bool IsLongDate { get; }
 
 	internal TimeZoneFormat IncludeTimeZone { get; }
 
@@ -342,7 +329,129 @@ public sealed partial class DateTimeFormatter
 	{
 		try
 		{
-			return _patternRootNode.Format(value, _firstCulture, isTwentyFourHours: Clock == ClockIdentifiers.TwentyFourHour);
+			if (_templateRootNode is not null)
+			{
+				string date;
+				if (IsLongDate)
+				{
+					date = value.ToString(_firstCulture.DateTimeFormat.LongDatePattern, _firstCulture);
+				}
+				else if (IsShortDate)
+				{
+					date = value.ToString(_firstCulture.DateTimeFormat.ShortDatePattern, _firstCulture);
+				}
+				else
+				{
+					// NOTE: The original order that was specified in the template string does NOT matter.
+					// That's why all we need to care about is the values of the mentioned properties.
+					// However, we should actually be checking the actual enum value and not just being "None" or not.
+					// But the actual correct implementation that will 100% match WinUI isn't yet clear.
+					// This is a best effort approach.
+					bool hasYear = IncludeYear != YearFormat.None;
+					bool hasMonth = IncludeMonth != MonthFormat.None;
+					bool hasDay = IncludeDay != DayFormat.None;
+					bool hasDayOfWeek = IncludeDayOfWeek != DayOfWeekFormat.None;
+
+					if (hasYear && hasMonth && hasDay && hasDayOfWeek)
+					{
+						date = value.ToString(_firstCulture.DateTimeFormat.LongDatePattern, _firstCulture);
+					}
+					else if (hasYear && hasMonth && hasDay)
+					{
+						date = value.ToString(_firstCulture.DateTimeFormat.ShortDatePattern, _firstCulture);
+					}
+					else if (hasYear && hasMonth && !hasDayOfWeek)
+					{
+						date = value.ToString(_firstCulture.DateTimeFormat.YearMonthPattern, _firstCulture);
+					}
+					else if (hasYear && !hasMonth && !hasDay && !hasDayOfWeek)
+					{
+						date = value.ToString("yyyy", _firstCulture);
+					}
+					else if (hasMonth && hasDay && !hasYear && !hasDayOfWeek)
+					{
+						date = value.ToString(_firstCulture.DateTimeFormat.MonthDayPattern, _firstCulture);
+					}
+					else
+					{
+						// Fallback case.
+						// Add more cases as they arise.
+						date = value.ToString(_firstCulture.DateTimeFormat.LongDatePattern, _firstCulture);
+					}
+				}
+
+				string time;
+				if (IsLongTime)
+				{
+					time = value.ToString(_firstCulture.DateTimeFormat.LongTimePattern, _firstCulture);
+				}
+				else if (IsShortTime)
+				{
+					time = value.ToString(_firstCulture.DateTimeFormat.ShortTimePattern, _firstCulture);
+				}
+				else
+				{
+					// NOTE: The original order that was specified in the template string does NOT matter.
+					// That's why all we need to care about is the values of the mentioned properties.
+					bool hasHour = IncludeHour != HourFormat.None;
+					bool hasMinute = IncludeMinute != MinuteFormat.None;
+					bool hasSecond = IncludeSecond != SecondFormat.None;
+					bool hasTimeZone = IncludeTimeZone != TimeZoneFormat.None;
+
+					if (hasHour && hasMinute && hasSecond)
+					{
+						time = value.ToString(_firstCulture.DateTimeFormat.LongTimePattern, _firstCulture);
+					}
+					else if (hasHour && hasMinute)
+					{
+						time = value.ToString(_firstCulture.DateTimeFormat.ShortTimePattern, _firstCulture);
+					}
+					else if (hasHour)
+					{
+						time = value.ToString("%H", _firstCulture);
+					}
+					else if (!hasHour && !hasMinute && !hasSecond)
+					{
+						time = string.Empty;
+					}
+					else
+					{
+						// Shouldn't really be reachable. But a fallback in place just in case.
+						time = value.ToString(_firstCulture.DateTimeFormat.LongTimePattern, _firstCulture);
+					}
+
+					if (hasTimeZone)
+					{
+						if (time.Length == 0)
+						{
+							time = $"GMT+{TimeZoneInfo.Local.BaseUtcOffset.TotalHours}";
+						}
+						else
+						{
+							time = $"{time} GMT+{TimeZoneInfo.Local.BaseUtcOffset.TotalHours}";
+						}
+					}
+				}
+
+				if (date.Length > 0 && time.Length > 0)
+				{
+					return $"{date} {time}";
+				}
+				else if (date.Length > 0)
+				{
+					return date;
+				}
+				else
+				{
+					return time;
+				}
+			}
+			else if (_patternRootNode is not null)
+			{
+				return _patternRootNode.Format(value, _firstCulture);
+			}
+
+			throw new InvalidOperationException("This cannot happen. The constructor sets either _templateRootNode or _patternRootNode to non-null.");
 		}
 		catch (Exception e)
 		{
@@ -432,39 +541,18 @@ public sealed partial class DateTimeFormatter
 	private string BuildTemplate()
 	{
 		var templateBuilder = new StringBuilder();
-		if (IsLongDate)
-			Append("longdate");
-		else if (IsShortDate)
-			Append("shortdate");
-		else
-		{
-			Append(ToTemplateString(IncludeYear));
-			Append(ToTemplateString(IncludeMonth));
-			Append(ToTemplateString(IncludeDay));
-			Append(ToTemplateString(IncludeDayOfWeek));
-		}
-
-		if (IsLongTime)
-			Append("longtime");
-		else if (IsShortTime)
-			Append("shorttime");
-		else
-		{
-			Append(ToTemplateString(IncludeHour));
-			Append(ToTemplateString(IncludeMinute));
-			Append(ToTemplateString(IncludeSecond));
-			Append(ToTemplateString(IncludeTimeZone));
-		}
-
+		Append(ToTemplateString(IncludeYear));
+		Append(ToTemplateString(IncludeMonth));
+		Append(ToTemplateString(IncludeDay));
+		Append(ToTemplateString(IncludeDayOfWeek));
+		Append(ToTemplateString(IncludeHour));
+		Append(ToTemplateString(IncludeMinute));
+		Append(ToTemplateString(IncludeSecond));
+		Append(ToTemplateString(IncludeTimeZone));
 		return templateBuilder.ToString();
 
 		void Append(string value)
 		{
-			if (value.Length == 0)
-			{
-				return;
-			}
-
 			if (templateBuilder.Length != 0)
 			{
 				templateBuilder.Append(' ');
@@ -473,347 +561,4 @@ public sealed partial class DateTimeFormatter
 			templateBuilder.Append(value);
 		}
 	}
-
-	private string BuildPattern()
-	{
-		string datePattern;
-		if (IsLongDate)
-		{
-			datePattern = _firstCulture.DateTimeFormat.LongDatePattern;
-		}
-		else if (IsShortDate)
-		{
-			datePattern = _firstCulture.DateTimeFormat.ShortDatePattern;
-		}
-		else
-		{
-			// NOTE: The original order that was specified in the template string does NOT matter.
-			// That's why all we need to care about is the values of the mentioned properties.
-			// However, we should actually be checking the actual enum value and not just being "None" or not.
-			// But the actual correct implementation that will 100% match WinUI isn't yet clear.
-			// This is a best effort approach.
-			bool hasYear = IncludeYear != YearFormat.None;
-			bool hasMonth = IncludeMonth != MonthFormat.None;
-			bool hasDay = IncludeDay != DayFormat.None;
-			bool hasDayOfWeek = IncludeDayOfWeek != DayOfWeekFormat.None;
-
-			if (hasYear && hasMonth && hasDay && hasDayOfWeek)
-			{
-				datePattern = _firstCulture.DateTimeFormat.LongDatePattern;
-			}
-			else if (hasYear && hasMonth && hasDay)
-			{
-				datePattern = _firstCulture.DateTimeFormat.ShortDatePattern;
-			}
-			else if (hasYear && hasMonth && !hasDayOfWeek)
-			{
-				datePattern = _firstCulture.DateTimeFormat.YearMonthPattern;
-			}
-			else if (hasYear && !hasMonth && !hasDay && !hasDayOfWeek)
-			{
-				datePattern = "yyyy";
-			}
-			else if (hasMonth && hasDay && !hasYear && !hasDayOfWeek)
-			{
-				datePattern = _firstCulture.DateTimeFormat.MonthDayPattern;
-			}
-			else
-			{
-				// Fallback case.
-				// Add more cases as they arise.
-				datePattern = _firstCulture.DateTimeFormat.LongDatePattern;
-			}
-		}
-
-		string timePattern;
-		if (IsLongTime)
-		{
-			timePattern = _firstCulture.DateTimeFormat.LongTimePattern;
-		}
-		else if (IsShortTime)
-		{
-			timePattern = _firstCulture.DateTimeFormat.ShortTimePattern;
-		}
-		else
-		{
-			// NOTE: The original order that was specified in the template string does NOT matter.
-			// That's why all we need to care about is the values of the mentioned properties.
-			bool hasHour = IncludeHour != HourFormat.None;
-			bool hasMinute = IncludeMinute != MinuteFormat.None;
-			bool hasSecond = IncludeSecond != SecondFormat.None;
-			bool hasTimeZone = IncludeTimeZone != TimeZoneFormat.None;
-
-			if (hasHour && hasMinute && hasSecond)
-			{
-				timePattern = _firstCulture.DateTimeFormat.LongTimePattern;
-			}
-			else if (hasHour && hasMinute)
-			{
-				timePattern = _firstCulture.DateTimeFormat.ShortTimePattern;
-			}
-			else if (hasHour)
-			{
-				timePattern = "h";
-			}
-			else if (!hasHour && !hasMinute && !hasSecond)
-			{
-				timePattern = string.Empty;
-			}
-			else
-			{
-				// Shouldn't really be reachable. But a fallback in place just in case.
-				timePattern = _firstCulture.DateTimeFormat.LongTimePattern;
-			}
-
-			if (hasTimeZone)
-			{
-				if (timePattern.Length == 0)
-				{
-					timePattern = "zzz";
-				}
-				else
-				{
-					timePattern = $"{timePattern} zzz";
-				}
-			}
-		}
-
-		string finalSystemFormat;
-		if (datePattern.Length > 0 && timePattern.Length > 0)
-		{
-			finalSystemFormat = $"{datePattern} {timePattern}";
-		}
-		else if (datePattern.Length > 0)
-		{
-			finalSystemFormat = datePattern;
-		}
-		else
-		{
-			finalSystemFormat = timePattern;
-		}
-
-		return ConstructPattern(finalSystemFormat);
-
-		void AddToBuilder(StringBuilder builder, char lastChar, int count)
-		{
-			// Best effort implementation.
-			switch (lastChar)
-			{
-				case 'g':
-					while (count >= 2)
-					{
-						builder.Append("{era.abbreviated}");
-						count -= 2;
-					}
-
-					while (count >= 1)
-					{
-						builder.Append("{era.abbreviated}");
-						count -= 1;
-					}
-
-					break;
-
-				case 'y':
-					while (count >= 5)
-					{
-						builder.Append("{year.full(5)}");
-						count -= 5;
-					}
-
-					while (count >= 4)
-					{
-						builder.Append("{year.full}");
-						count -= 4;
-					}
-
-					while (count >= 3)
-					{
-						builder.Append("{year.full(3)}");
-						count -= 3;
-					}
-
-					while (count >= 2)
-					{
-						builder.Append("{year.full(2)}");
-						count -= 2;
-					}
-
-					while (count >= 1)
-					{
-						builder.Append("{year.full(1)}");
-						count -= 1;
-					}
-
-					break;
-
-				case 'M':
-					while (count >= 4)
-					{
-						builder.Append("{month.full}");
-						count -= 4;
-					}
-
-					while (count >= 3)
-					{
-						builder.Append("{month.abbreviated}");
-						count -= 3;
-					}
-
-					while (count >= 2)
-					{
-						builder.Append("{month.integer(2)}");
-						count -= 2;
-					}
-
-					while (count >= 1)
-					{
-						builder.Append("{month.integer}");
-						count -= 1;
-					}
-
-					break;
-
-				case 'd':
-					while (count >= 4)
-					{
-						builder.Append("{dayofweek.full}");
-						count -= 4;
-					}
-
-					while (count >= 3)
-					{
-						builder.Append("{dayofweek.abbreviated}");
-						count -= 3;
-					}
-
-					while (count >= 2)
-					{
-						builder.Append("{day.integer(2)}");
-						count -= 2;
-					}
-
-					while (count >= 1)
-					{
-						builder.Append("{day.integer}");
-						count -= 1;
-					}
-
-					break;
-
-				case 't':
-					while (count >= 2)
-					{
-						builder.Append("{period.abbreviated(2)}");
-						count -= 2;
-					}
-
-					while (count >= 1)
-					{
-						builder.Append("{period.abbreviated(1)}");
-						count -= 1;
-					}
-
-					break;
-
-				case 'h' or 'H':
-
-					while (count >= 2)
-					{
-						builder.Append("{hour.integer(2)}");
-						count -= 2;
-					}
-
-					while (count >= 1)
-					{
-						builder.Append("{hour.integer(1)}");
-						count -= 1;
-					}
-
-					break;
-
-				case 'm':
-
-					while (count >= 2)
-					{
-						builder.Append("{minute.integer(2)}");
-						count -= 2;
-					}
-
-					while (count >= 1)
-					{
-						builder.Append("{minute.integer(1)}");
-						count -= 1;
-					}
-
-					break;
-
-				case 's':
-
-					while (count >= 2)
-					{
-						builder.Append("{second.integer(2)}");
-						count -= 2;
-					}
-
-					while (count >= 1)
-					{
-						builder.Append("{second.integer(1)}");
-						count -= 1;
-					}
-
-					break;
-
-				case 'z':
-					while (count >= 3)
-					{
-						builder.Append("{timezone.full}");
-						count -= 3;
-					}
-
-					while (count >= 2)
-					{
-						builder.Append("{timezone.abbreviated(2)}");
-						count -= 2;
-					}
-
-					while (count >= 1)
-					{
-						builder.Append("{timezone.abbreviated(1)}");
-						count -= 1;
-					}
-
-					break;
-
-				default:
-					builder.Append(lastChar, count);
-					break;
-			}
-		}
-
-		string ConstructPattern(string str)
-		{
-			var builder = new StringBuilder();
-			char lastChar = str[0];
-			int count = 1;
-			for (int i = 1; i < str.Length; i++)
-			{
-				if (lastChar != str[i])
-				{
-					AddToBuilder(builder, lastChar, count);
-
-					lastChar = str[i];
-					count = 1;
-				}
-				else
-				{
-					count++;
-				}
-			}
-
-			AddToBuilder(builder, lastChar, count);
-			return builder.ToString();
-		}
-	}
-
 }

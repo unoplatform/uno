@@ -38,19 +38,19 @@ internal sealed class PatternRootNode
 	public PatternLiteralTextNode? OptionalSuffixLiteralText { get; }
 	public PatternRootNode? OptionalSuffixPattern { get; }
 
-	internal string Format(DateTimeOffset dateTime, CultureInfo culture, bool isTwentyFourHours)
+	internal string Format(DateTimeOffset dateTime, CultureInfo culture)
 	{
 		var builder = new StringBuilder();
-		Format(builder, dateTime, culture, isTwentyFourHours);
+		Format(builder, dateTime, culture);
 		return builder.ToString();
 	}
 
-	internal void Format(StringBuilder builder, DateTimeOffset dateTime, CultureInfo culture, bool isTwentyFourHours)
+	internal void Format(StringBuilder builder, DateTimeOffset dateTime, CultureInfo culture)
 	{
-		OptionalPrefixLiteralText?.Format(builder, dateTime, culture, isTwentyFourHours);
-		DateTimeNode.Format(builder, dateTime, culture, isTwentyFourHours);
-		OptionalSuffixLiteralText?.Format(builder, dateTime, culture, isTwentyFourHours);
-		OptionalSuffixPattern?.Format(builder, dateTime, culture, isTwentyFourHours);
+		OptionalPrefixLiteralText?.Format(builder, dateTime, culture);
+		DateTimeNode.Format(builder, dateTime, culture);
+		OptionalSuffixLiteralText?.Format(builder, dateTime, culture);
+		OptionalSuffixPattern?.Format(builder, dateTime, culture);
 	}
 }
 
@@ -65,7 +65,7 @@ internal sealed class PatternLiteralTextNode
 
 	public string Text { get; }
 
-	internal void Format(StringBuilder builder, DateTimeOffset dateTime, CultureInfo culture, bool isTwentyFourHours)
+	internal void Format(StringBuilder builder, DateTimeOffset dateTime, CultureInfo culture)
 		=> builder.Append(Text);
 }
 
@@ -73,7 +73,7 @@ internal sealed class PatternLiteralTextNode
 //                        <period> | <hour> | <minute> | <second> | <timezone>
 internal abstract class PatternDateTimeNode
 {
-	internal abstract void Format(StringBuilder builder, DateTimeOffset dateTime, CultureInfo culture, bool isTwentyFourHours);
+	internal abstract void Format(StringBuilder builder, DateTimeOffset dateTime, CultureInfo culture);
 }
 
 // <era> ::= "{era.abbreviated" [<ideal-length>] "}"
@@ -87,7 +87,7 @@ internal sealed class PatternEraNode : PatternDateTimeNode
 	// Era is always "era.abbreviated", so no need to distinguish.
 	public int? IdealLength { get; }
 
-	internal override void Format(StringBuilder builder, DateTimeOffset dateTime, CultureInfo culture, bool isTwentyFourHours)
+	internal override void Format(StringBuilder builder, DateTimeOffset dateTime, CultureInfo culture)
 	{
 		// C# can't represent negative dates (i.e, before christ).
 		// So, looks like Era will always be "AD" (Anno Domini).
@@ -114,7 +114,7 @@ internal sealed class PatternYearNode : PatternDateTimeNode
 	public YearKind Kind { get; }
 	public int? IdealLength { get; }
 
-	internal override void Format(StringBuilder builder, DateTimeOffset dateTime, CultureInfo culture, bool isTwentyFourHours)
+	internal override void Format(StringBuilder builder, DateTimeOffset dateTime, CultureInfo culture)
 	{
 		if (Kind == YearKind.Full)
 		{
@@ -170,42 +170,28 @@ internal sealed class PatternMonthNode : PatternDateTimeNode
 	// Always null for full and solo.full
 	public int? IdealLength { get; }
 
-	internal override void Format(StringBuilder builder, DateTimeOffset dateTime, CultureInfo culture, bool isTwentyFourHours)
+	internal override void Format(StringBuilder builder, DateTimeOffset dateTime, CultureInfo culture)
 	{
+		// TODO
 		if (Kind == MonthKind.Full)
 		{
-			builder.Append(dateTime.ToString("MMMM", culture));
+
 		}
 		else if (Kind == MonthKind.SoloFull)
 		{
-			builder.Append(dateTime.ToString("MMMM", culture));
+
 		}
 		else if (Kind == MonthKind.Abbreviated)
 		{
-			builder.Append(dateTime.ToString("MMM", culture));
+
 		}
 		else if (Kind == MonthKind.SoloAbbreviated)
 		{
-			builder.Append(dateTime.ToString("MMM", culture));
+
 		}
 		else if (Kind == MonthKind.Integer)
 		{
-			if (IdealLength.HasValue)
-			{
-				var idealLength = IdealLength.Value;
-				if (idealLength >= 2)
-				{
-					builder.Append(dateTime.ToString("MM", culture));
-				}
-				else
-				{
-					builder.Append(dateTime.Month);
-				}
-			}
-			else
-			{
-				builder.Append(dateTime.Month);
-			}
+
 		}
 	}
 }
@@ -235,23 +221,24 @@ internal sealed class PatternDayOfWeekNode : PatternDateTimeNode
 	// Always null for full and solo.full
 	public int? IdealLength { get; }
 
-	internal override void Format(StringBuilder builder, DateTimeOffset dateTime, CultureInfo culture, bool isTwentyFourHours)
+	internal override void Format(StringBuilder builder, DateTimeOffset dateTime, CultureInfo culture)
 	{
+		// TODO
 		if (Kind == DayOfWeekKind.Full)
 		{
-			builder.Append(dateTime.ToString("dddd", culture));
+
 		}
 		else if (Kind == DayOfWeekKind.SoloFull)
 		{
-			builder.Append(dateTime.ToString("dddd", culture));
+
 		}
 		else if (Kind == DayOfWeekKind.Abbreviated)
 		{
-			builder.Append(dateTime.ToString("ddd", culture));
+
 		}
 		else if (Kind == DayOfWeekKind.SoloAbbreviated)
 		{
-			builder.Append(dateTime.ToString("ddd", culture));
+
 		}
 	}
 }
@@ -266,7 +253,7 @@ internal sealed class PatternDayNode : PatternDateTimeNode
 
 	public int? IdealLength { get; }
 
-	internal override void Format(StringBuilder builder, DateTimeOffset dateTime, CultureInfo culture, bool isTwentyFourHours)
+	internal override void Format(StringBuilder builder, DateTimeOffset dateTime, CultureInfo culture)
 	{
 		if (IdealLength.HasValue)
 		{
@@ -289,13 +276,8 @@ internal sealed class PatternPeriodNode : PatternDateTimeNode
 
 	public int? IdealLength { get; }
 
-	internal override void Format(StringBuilder builder, DateTimeOffset dateTime, CultureInfo culture, bool isTwentyFourHours)
+	internal override void Format(StringBuilder builder, DateTimeOffset dateTime, CultureInfo culture)
 	{
-		if (isTwentyFourHours)
-		{
-			return;
-		}
-
 		string period = dateTime.ToString("tt", culture);
 		if (IdealLength.HasValue && IdealLength.Value < period.Length)
 		{
@@ -318,21 +300,15 @@ internal sealed class PatternHourNode : PatternDateTimeNode
 
 	public int? IdealLength { get; }
 
-	internal override void Format(StringBuilder builder, DateTimeOffset dateTime, CultureInfo culture, bool isTwentyFourHours)
+	internal override void Format(StringBuilder builder, DateTimeOffset dateTime, CultureInfo culture)
 	{
-		int hour = dateTime.Hour;
-		if (!isTwentyFourHours && hour > 12)
-		{
-			hour = hour - 12;
-		}
-
 		if (IdealLength.HasValue)
 		{
-			builder.Append(hour.ToString(new string('0', IdealLength.Value), culture));
+			builder.Append(dateTime.Hour.ToString(new string('0', IdealLength.Value), culture));
 		}
 		else
 		{
-			builder.Append(hour);
+			builder.Append(dateTime.Hour);
 		}
 	}
 }
@@ -347,7 +323,7 @@ internal sealed class PatternMinuteNode : PatternDateTimeNode
 
 	public int? IdealLength { get; }
 
-	internal override void Format(StringBuilder builder, DateTimeOffset dateTime, CultureInfo culture, bool isTwentyFourHours)
+	internal override void Format(StringBuilder builder, DateTimeOffset dateTime, CultureInfo culture)
 	{
 		if (IdealLength.HasValue)
 		{
@@ -370,7 +346,7 @@ internal sealed class PatternSecondNode : PatternDateTimeNode
 
 	public int? IdealLength { get; }
 
-	internal override void Format(StringBuilder builder, DateTimeOffset dateTime, CultureInfo culture, bool isTwentyFourHours)
+	internal override void Format(StringBuilder builder, DateTimeOffset dateTime, CultureInfo culture)
 	{
 		if (IdealLength.HasValue)
 		{
@@ -404,7 +380,7 @@ internal sealed class PatternTimeZoneNode : PatternDateTimeNode
 	// Always null for full
 	public int? IdealLength { get; }
 
-	internal override void Format(StringBuilder builder, DateTimeOffset dateTime, CultureInfo culture, bool isTwentyFourHours)
+	internal override void Format(StringBuilder builder, DateTimeOffset dateTime, CultureInfo culture)
 	{
 		// Important: dateTime parameter shouldn't be used here.
 		// WinUI uses the local time zone info.
