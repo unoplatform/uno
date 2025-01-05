@@ -199,12 +199,12 @@ internal sealed class PatternMonthNode : PatternDateTimeNode
 				}
 				else
 				{
-					builder.Append(dateTime.ToString("M", culture));
+					builder.Append(dateTime.Month);
 				}
 			}
 			else
 			{
-				builder.Append(dateTime.ToString("M", culture));
+				builder.Append(dateTime.Month);
 			}
 		}
 	}
