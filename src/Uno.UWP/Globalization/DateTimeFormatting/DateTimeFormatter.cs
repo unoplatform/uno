@@ -70,6 +70,12 @@ public sealed partial class DateTimeFormatter
 			IsLongDate = templateParser.Info.IsLongDate;
 			IsShortTime = templateParser.Info.IsShortTime;
 			IsShortDate = templateParser.Info.IsShortDate;
+
+			// NOTE: We intentionally don't set the user provided template.
+			// Instead, we parse and re-build the template string.
+			// That's how WinUI works.
+			// Basically, the order of tokens in the template string does NOT matter.
+			// So, this kinda normalizes the order the right way.
 			Template = BuildTemplate();
 		}
 		catch (Exception)
