@@ -81,13 +81,20 @@ public sealed partial class DateTimeFormatter
 			Patterns = [patternBuiltFromTemplate];
 			_patternRootNode = new PatternParser(patternBuiltFromTemplate).Parse();
 		}
-		catch (Exception)
+		catch (Exception ex)
 		{
-			// Pattern example:
-			// "Hello {year.full} Hello2 {month.full}" (that's just an example)
-			_patternRootNode = new PatternParser(formatTemplate).Parse();
-			Template = formatTemplate;
-			Patterns = [formatTemplate];
+			try
+			{
+				// Pattern example:
+				// "Hello {year.full} Hello2 {month.full}" (that's just an example)
+				_patternRootNode = new PatternParser(formatTemplate).Parse();
+				Template = formatTemplate;
+				Patterns = [formatTemplate];
+			}
+			catch (Exception ex2)
+			{
+				throw new AggregateException(ex, ex2);
+			}
 		}
 
 		if (languages != null)
