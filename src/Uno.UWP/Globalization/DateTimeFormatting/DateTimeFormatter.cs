@@ -58,18 +58,18 @@ public sealed partial class DateTimeFormatter
 			// "year month day dayofweek hour timezone" (that's just an example)
 			var templateParser = new TemplateParser(formatTemplate);
 			_templateRootNode = templateParser.Parse();
-			IncludeYear = templateParser.IncludeYear;
-			IncludeMonth = templateParser.IncludeMonth;
-			IncludeDay = templateParser.IncludeDay;
-			IncludeDayOfWeek = templateParser.IncludeDayOfWeek;
-			IncludeHour = templateParser.IncludeHour;
-			IncludeMinute = templateParser.IncludeMinute;
-			IncludeSecond = templateParser.IncludeSecond;
-			IncludeTimeZone = templateParser.IncludeTimeZone;
-			IsShortDate = templateParser.IsShortDate;
-			IsLongDate = templateParser.IsLongDate;
-			IsShortTime = templateParser.IsShortTime;
-			IsShortDate = templateParser.IsShortDate;
+			IncludeYear = templateParser.Info.IncludeYear;
+			IncludeMonth = templateParser.Info.IncludeMonth;
+			IncludeDay = templateParser.Info.IncludeDay;
+			IncludeDayOfWeek = templateParser.Info.IncludeDayOfWeek;
+			IncludeHour = templateParser.Info.IncludeHour;
+			IncludeMinute = templateParser.Info.IncludeMinute;
+			IncludeSecond = templateParser.Info.IncludeSecond;
+			IncludeTimeZone = templateParser.Info.IncludeTimeZone;
+			IsShortDate = templateParser.Info.IsShortDate;
+			IsLongDate = templateParser.Info.IsLongDate;
+			IsShortTime = templateParser.Info.IsShortTime;
+			IsShortDate = templateParser.Info.IsShortDate;
 			Template = BuildTemplate();
 		}
 		catch (Exception)
