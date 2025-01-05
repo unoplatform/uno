@@ -456,6 +456,7 @@ public sealed partial class DateTimeFormatter
 
 	private string BuildPattern()
 	{
+		CultureInfo _firstCulture = CultureInfo.CurrentCulture;
 		string datePattern;
 		if (IsLongDate)
 		{
@@ -572,35 +573,228 @@ public sealed partial class DateTimeFormatter
 			finalSystemFormat = timePattern;
 		}
 
-		// Best effort implementation.
-		return finalSystemFormat
-			.Replace("gg", "{era.abbreviated}")
-			.Replace("g", "{era.abbreviated}")
-			.Replace("yyyyy", "{year.full(5)}")
-			.Replace("yyyy", "{year.full(4)}")
-			.Replace("yyy", "{year.full(3)}")
-			.Replace("yy", "{year.full(2)}")
-			.Replace("y", "{year.full(1)}")
-			.Replace("MMMM", "{month.full}")
-			.Replace("MMM", "{month.abbreviated}")
-			.Replace("MM", "{month.integer(2)}")
-			.Replace("M", "{month.integer(1)}")
-			.Replace("dddd", "{dayofweek.full}")
-			.Replace("ddd", "{dayofweek.abbreviated}")
-			.Replace("dd", "{day.integer(2)}")
-			.Replace("d", "{day.integer(1)}")
-			.Replace("tt", "{period.abbreviated(2)}")
-			.Replace("t", "{period.abbreviated(1)}")
-			.Replace("hh", "{hour.integer(2)}")
-			.Replace("HH", "{hour.integer(2)}")
-			.Replace("h", "{hour.integer(1)}")
-			.Replace("H", "{hour.integer(1)}")
-			.Replace("mm", "{minute.integer(2)}")
-			.Replace("m", "{minute.integer(1)}")
-			.Replace("ss", "{second.integer(2)}")
-			.Replace("s", "{second.integer(1)}")
-			.Replace("zzz", "{timezone.full}")
-			.Replace("zz", "{timezone.abbreviated(2)}")
-			.Replace("z", "{timezone.abbreviated(1)}");
+		return ConstructPattern(finalSystemFormat);
+
+		void AddToBuilder(StringBuilder builder, char lastChar, int count)
+		{
+			// Best effort implementation.
+			switch (lastChar)
+			{
+				case 'g':
+					while (count >= 2)
+					{
+						builder.Append("{era.abbreviated}");
+						count -= 2;
+					}
+
+					while (count >= 1)
+					{
+						builder.Append("{era.abbreviated}");
+						count -= 1;
+					}
+
+					break;
+
+				case 'y':
+					while (count >= 5)
+					{
+						builder.Append("{year.full(5)}");
+						count -= 5;
+					}
+
+					while (count >= 4)
+					{
+						builder.Append("{year.full(4)}");
+						count -= 4;
+					}
+
+					while (count >= 3)
+					{
+						builder.Append("{year.full(3)}");
+						count -= 3;
+					}
+
+					while (count >= 2)
+					{
+						builder.Append("{year.full(2)}");
+						count -= 2;
+					}
+
+					while (count >= 1)
+					{
+						builder.Append("{year.full(1)}");
+						count -= 1;
+					}
+
+					break;
+
+				case 'M':
+					while (count >= 4)
+					{
+						builder.Append("{month.full}");
+						count -= 4;
+					}
+
+					while (count >= 3)
+					{
+						builder.Append("{month.abbreviated}");
+						count -= 3;
+					}
+
+					while (count >= 2)
+					{
+						builder.Append("{month.integer(2)}");
+						count -= 2;
+					}
+
+					while (count >= 1)
+					{
+						builder.Append("{month.integer(1)}");
+						count -= 1;
+					}
+
+					break;
+
+				case 'd':
+					while (count >= 4)
+					{
+						builder.Append("{dayofweek.full}");
+						count -= 4;
+					}
+
+					while (count >= 3)
+					{
+						builder.Append("{dayofweek.abbreviated}");
+						count -= 3;
+					}
+
+					while (count >= 2)
+					{
+						builder.Append("{day.integer(2)}");
+						count -= 2;
+					}
+
+					while (count >= 1)
+					{
+						builder.Append("{day.integer(1)}");
+						count -= 1;
+					}
+
+					break;
+
+				case 't':
+					while (count >= 2)
+					{
+						builder.Append("{period.abbreviated(2)}");
+						count -= 2;
+					}
+
+					while (count >= 1)
+					{
+						builder.Append("{period.abbreviated(1)}");
+						count -= 1;
+					}
+
+					break;
+
+				case 'h' or 'H':
+
+					while (count >= 2)
+					{
+						builder.Append("{hour.integer(2)}");
+						count -= 2;
+					}
+
+					while (count >= 1)
+					{
+						builder.Append("{hour.integer(1)}");
+						count -= 1;
+					}
+
+					break;
+
+				case 'm':
+
+					while (count >= 2)
+					{
+						builder.Append("{minute.integer(2)}");
+						count -= 2;
+					}
+
+					while (count >= 1)
+					{
+						builder.Append("{minute.integer(1)}");
+						count -= 1;
+					}
+
+					break;
+
+				case 's':
+
+					while (count >= 2)
+					{
+						builder.Append("{second.integer(2)}");
+						count -= 2;
+					}
+
+					while (count >= 1)
+					{
+						builder.Append("{second.integer(1)}");
+						count -= 1;
+					}
+
+					break;
+
+				case 'z':
+					while (count >= 3)
+					{
+						builder.Append("{timezone.full}");
+						count -= 3;
+					}
+
+					while (count >= 2)
+					{
+						builder.Append("{timezone.abbreviated(2)}");
+						count -= 2;
+					}
+
+					while (count >= 1)
+					{
+						builder.Append("{timezone.abbreviated(1)}");
+						count -= 1;
+					}
+
+					break;
+
+				default:
+					builder.Append(lastChar, count);
+					break;
+			}
+		}
+
+		string ConstructPattern(string str)
+		{
+			var builder = new StringBuilder();
+			char lastChar = str[0];
+			int count = 1;
+			for (int i = 1; i < str.Length; i++)
+			{
+				if (lastChar != str[i])
+				{
+					AddToBuilder(builder, lastChar, count);
+
+					lastChar = str[i];
+					count = 1;
+				}
+				else
+				{
+					count++;
+				}
+			}
+
+			AddToBuilder(builder, lastChar, count);
+			return builder.ToString();
+		}
 	}
+
 }
