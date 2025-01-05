@@ -1,11 +1,40 @@
 ﻿#nullable enable
 
+using System;
 using System.Collections.Immutable;
 
 namespace Windows.Globalization.DateTimeFormatting;
 
+internal sealed class DateTimeTemplateInfo
+{
+	public YearFormat IncludeYear { get; set; }
+
+	public MonthFormat IncludeMonth { get; set; }
+
+	public DayFormat IncludeDay { get; set; }
+
+	public DayOfWeekFormat IncludeDayOfWeek { get; set; }
+
+	public HourFormat IncludeHour { get; set; }
+
+	public MinuteFormat IncludeMinute { get; set; }
+
+	public SecondFormat IncludeSecond { get; set; }
+
+	public TimeZoneFormat IncludeTimeZone { get; set; }
+
+	public bool IsLongTime { get; set; }
+
+	public bool IsShortTime { get; set; }
+
+	public bool IsLongDate { get; set; }
+
+	public bool IsShortDate { get; set; }
+}
+
 internal abstract class TemplateNode
 {
+	internal abstract void Traverse(DateTimeTemplateInfo state);
 }
 
 // <template> ::= <opt-whitespace> <date> <opt-whitespace> |
@@ -36,6 +65,11 @@ internal sealed class TemplateRootNode : TemplateNode
 	public TemplateNode First { get; }
 	public TemplateNode? Second { get; }
 
+	internal override void Traverse(DateTimeTemplateInfo state)
+	{
+		First.Traverse(state);
+		Second?.Traverse(state);
+	}
 }
 
 // <date> ::= <year> | <month> | <day> | <month-year> | <relative-date> | <specific-date>
@@ -66,6 +100,12 @@ internal sealed class TemplateMonthDayNode : TemplateRelativeDateNode
 
 	public TemplateDateNode Left { get; }
 	public TemplateDateNode Right { get; }
+
+	internal override void Traverse(DateTimeTemplateInfo state)
+	{
+		Left.Traverse(state);
+		Right.Traverse(state);
+	}
 }
 
 // <relative-longdate> ::= <month> <whitespace> <day> <whitespace> <dayofweek> |
@@ -86,6 +126,13 @@ internal sealed class TemplateRelativeLongDateNode : TemplateRelativeDateNode
 	public TemplateDateNode Left { get; }
 	public TemplateDateNode Middle { get; }
 	public TemplateDateNode Right { get; }
+
+	internal override void Traverse(DateTimeTemplateInfo state)
+	{
+		Left.Traverse(state);
+		Middle.Traverse(state);
+		Right.Traverse(state);
+	}
 }
 
 // <month-year> ::= <month> <whitespace> <year> |
@@ -100,6 +147,12 @@ internal sealed class TemplateMonthYearNode : TemplateDateNode
 
 	public TemplateNode Left { get; }
 	public TemplateNode Right { get; }
+
+	internal override void Traverse(DateTimeTemplateInfo state)
+	{
+		Left.Traverse(state);
+		Right.Traverse(state);
+	}
 }
 
 // <shortdate> ::= "shortdate" |
@@ -123,6 +176,20 @@ internal sealed class TemplateShortDateNode : TemplateSpecificDateNode
 	public TemplateDateNode? Left { get; }
 	public TemplateDateNode? Middle { get; }
 	public TemplateDateNode? Right { get; }
+
+	internal override void Traverse(DateTimeTemplateInfo state)
+	{
+		if (ReferenceEquals(this, DefaultShortDateInstance))
+		{
+			state.IsShortDate = true;
+		}
+		else
+		{
+			Left!.Traverse(state);
+			Middle!.Traverse(state);
+			Right!.Traverse(state);
+		}
+	}
 }
 
 // <longdate> ::= "longdate" |
@@ -166,6 +233,21 @@ internal sealed class TemplateLongDateNode : TemplateSpecificDateNode
 	public TemplateDateNode? Second { get; }
 	public TemplateDateNode? Third { get; }
 	public TemplateDateNode? Forth { get; }
+
+	internal override void Traverse(DateTimeTemplateInfo state)
+	{
+		if (ReferenceEquals(this, DefaultLongDateInstance))
+		{
+			state.IsLongDate = true;
+		}
+		else
+		{
+			First!.Traverse(state);
+			Second!.Traverse(state);
+			Third!.Traverse(state);
+			Forth!.Traverse(state);
+		}
+	}
 }
 
 // <time> ::= <hour> | 
@@ -184,6 +266,12 @@ internal sealed class TemplateTimeNode : TemplateNode
 	public TemplateNode First { get; }
 
 	public TemplateNode? Second { get; }
+
+	internal override void Traverse(DateTimeTemplateInfo state)
+	{
+		First.Traverse(state);
+		Second?.Traverse(state);
+	}
 }
 
 // <shorttime> ::= "shorttime" |
@@ -209,6 +297,20 @@ internal sealed class TemplateShortTimeNode : TemplateNode
 	public TemplateNode? First { get; }
 	public TemplateNode? Second { get; }
 	public TemplateNode? Third { get; }
+
+	internal override void Traverse(DateTimeTemplateInfo state)
+	{
+		if (ReferenceEquals(this, DefaultShortTimeInstance))
+		{
+			state.IsShortTime = true;
+		}
+		else
+		{
+			First!.Traverse(state);
+			Second!.Traverse(state);
+			Third?.Traverse(state);
+		}
+	}
 }
 
 // <longtime> ::= "longtime" |
@@ -258,6 +360,21 @@ internal sealed class TemplateLongTimeNode : TemplateNode
 	public TemplateNode? Second { get; }
 	public TemplateNode? Third { get; }
 	public TemplateNode? Forth { get; }
+
+	internal override void Traverse(DateTimeTemplateInfo state)
+	{
+		if (ReferenceEquals(this, DefaultLongTimeInstance))
+		{
+			state.IsLongTime = true;
+		}
+		else
+		{
+			First!.Traverse(state);
+			Second!.Traverse(state);
+			Third!.Traverse(state);
+			Forth?.Traverse(state);
+		}
+	}
 }
 
 
@@ -281,6 +398,17 @@ internal sealed class TemplateYearNode : TemplateDateNode
 	}
 
 	public YearKind Kind { get; }
+
+	internal override void Traverse(DateTimeTemplateInfo state)
+	{
+		state.IncludeYear = Kind switch
+		{
+			YearKind.Normal => YearFormat.Default,
+			YearKind.Full => YearFormat.Full,
+			YearKind.Abbreviated => YearFormat.Abbreviated,
+			_ => throw new InvalidOperationException(),
+		};
+	}
 }
 
 // <month> ::= "month" | "month.full" | "month.abbreviated" | "month.numeric"
@@ -305,6 +433,18 @@ internal sealed class TemplateMonthNode : TemplateDateNode
 	}
 
 	public MonthKind Kind { get; }
+
+	internal override void Traverse(DateTimeTemplateInfo state)
+	{
+		state.IncludeMonth = Kind switch
+		{
+			MonthKind.Normal => MonthFormat.Default,
+			MonthKind.Full => MonthFormat.Full,
+			MonthKind.Abbreviated => MonthFormat.Abbreviated,
+			MonthKind.Numeric => MonthFormat.Numeric,
+			_ => throw new InvalidOperationException(),
+		};
+	}
 }
 
 // <day> ::= "day"
@@ -315,6 +455,11 @@ internal sealed class TemplateDayNode : TemplateDateNode
 	}
 
 	public static TemplateDayNode Instance { get; } = new();
+
+	internal override void Traverse(DateTimeTemplateInfo state)
+	{
+		state.IncludeDay = DayFormat.Default;
+	}
 }
 
 // <dayofweek> ::= "dayofweek" | "dayofweek.full" | "dayofweek.abbreviated"
@@ -337,6 +482,17 @@ internal sealed class TemplateDayOfWeekNode : TemplateRelativeDateNode
 	}
 
 	public DayOfWeekKind Kind { get; }
+
+	internal override void Traverse(DateTimeTemplateInfo state)
+	{
+		state.IncludeDayOfWeek = Kind switch
+		{
+			DayOfWeekKind.Normal => DayOfWeekFormat.Default,
+			DayOfWeekKind.Full => DayOfWeekFormat.Full,
+			DayOfWeekKind.Abbreviated => DayOfWeekFormat.Abbreviated,
+			_ => throw new InvalidOperationException(),
+		};
+	}
 }
 
 // <hour> ::= "hour"
@@ -347,6 +503,11 @@ internal sealed class TemplateHourNode : TemplateNode
 	}
 
 	public static TemplateHourNode Instance { get; } = new();
+
+	internal override void Traverse(DateTimeTemplateInfo state)
+	{
+		state.IncludeHour = HourFormat.Default;
+	}
 }
 
 // <minute> ::= "minute"
@@ -357,6 +518,11 @@ internal sealed class TemplateMinuteNode : TemplateNode
 	}
 
 	public static TemplateMinuteNode Instance { get; } = new();
+
+	internal override void Traverse(DateTimeTemplateInfo state)
+	{
+		state.IncludeMinute = MinuteFormat.Default;
+	}
 }
 
 // <second> ::= "second"
@@ -367,6 +533,11 @@ internal sealed class TemplateSecondNode : TemplateNode
 	}
 
 	public static TemplateSecondNode Instance { get; } = new();
+
+	internal override void Traverse(DateTimeTemplateInfo state)
+	{
+		state.IncludeSecond = SecondFormat.Default;
+	}
 }
 
 // <timezone> ::= "timezone" | "timezone.full" | "timezone.abbreviated"
@@ -389,4 +560,15 @@ internal sealed class TemplateTimeZoneNode : TemplateNode
 	}
 
 	public TimeZoneKind Kind { get; }
+
+	internal override void Traverse(DateTimeTemplateInfo state)
+	{
+		state.IncludeTimeZone = Kind switch
+		{
+			TimeZoneKind.Normal => TimeZoneFormat.Default,
+			TimeZoneKind.Full => TimeZoneFormat.Full,
+			TimeZoneKind.Abbreviated => TimeZoneFormat.Abbreviated,
+			_ => throw new InvalidOperationException(),
+		};
+	}
 }
