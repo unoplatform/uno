@@ -623,7 +623,7 @@ public sealed partial class DateTimeFormatter
 
 					while (count >= 4)
 					{
-						builder.Append("{year.full(4)}");
+						builder.Append("{year.full}");
 						count -= 4;
 					}
 
@@ -668,7 +668,7 @@ public sealed partial class DateTimeFormatter
 
 					while (count >= 1)
 					{
-						builder.Append("{month.integer(1)}");
+						builder.Append("{month.integer}");
 						count -= 1;
 					}
 
@@ -695,7 +695,7 @@ public sealed partial class DateTimeFormatter
 
 					while (count >= 1)
 					{
-						builder.Append("{day.integer(1)}");
+						builder.Append("{day.integer}");
 						count -= 1;
 					}
 
