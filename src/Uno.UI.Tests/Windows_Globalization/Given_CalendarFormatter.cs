@@ -20,13 +20,8 @@ namespace Uno.UI.Tests.Windows_Globalization
 		public void When_UsingVariousLanguages(string format, string language, string expectedPattern)
 		{
 			var sut = new DateTimeFormatter(format, new[] { language });
-
 			var firstPattern = sut.Patterns[0];
-
-			using var _ = new AssertionScope();
-
 			firstPattern.Should().Be(expectedPattern);
-			firstPattern.Length.Should().Be(expectedPattern.Length);
 		}
 
 #if !NET7_0_OR_GREATER // https://github.com/unoplatform/uno/issues/9080
