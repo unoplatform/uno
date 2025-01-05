@@ -433,14 +433,30 @@ public sealed partial class DateTimeFormatter
 	private string BuildTemplate()
 	{
 		var templateBuilder = new StringBuilder();
-		Append(ToTemplateString(IncludeYear));
-		Append(ToTemplateString(IncludeMonth));
-		Append(ToTemplateString(IncludeDay));
-		Append(ToTemplateString(IncludeDayOfWeek));
-		Append(ToTemplateString(IncludeHour));
-		Append(ToTemplateString(IncludeMinute));
-		Append(ToTemplateString(IncludeSecond));
-		Append(ToTemplateString(IncludeTimeZone));
+		if (IsLongDate)
+			Append("longdate");
+		else if (IsShortDate)
+			Append("shortdate");
+		else
+		{
+			Append(ToTemplateString(IncludeYear));
+			Append(ToTemplateString(IncludeMonth));
+			Append(ToTemplateString(IncludeDay));
+			Append(ToTemplateString(IncludeDayOfWeek));
+		}
+
+		if (IsLongTime)
+			Append("longtime");
+		else if (IsShortTime)
+			Append("shorttime");
+		else
+		{
+			Append(ToTemplateString(IncludeHour));
+			Append(ToTemplateString(IncludeMinute));
+			Append(ToTemplateString(IncludeSecond));
+			Append(ToTemplateString(IncludeTimeZone));
+		}
+
 		return templateBuilder.ToString();
 
 		void Append(string value)
