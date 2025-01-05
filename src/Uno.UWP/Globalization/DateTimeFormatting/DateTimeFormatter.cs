@@ -343,7 +343,7 @@ public sealed partial class DateTimeFormatter
 	{
 		try
 		{
-			return _patternRootNode.Format(value, _firstCulture);
+			return _patternRootNode.Format(value, _firstCulture, isTwentyFourHours: Clock == ClockIdentifiers.TwentyFourHour);
 		}
 		catch (Exception e)
 		{
