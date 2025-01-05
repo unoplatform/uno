@@ -76,6 +76,11 @@ internal sealed class PatternParser
 	//                        <period> | <hour> | <minute> | <second> | <timezone>
 	private PatternDateTimeNode ParseDateTimePattern()
 	{
+		if (Completed)
+		{
+			throw new ArgumentException($"Failed to parse date time pattern. Already reached the end of the pattern '{_pattern}'.");
+		}
+
 		if (TryParseEra(out var era))
 		{
 			return era;
