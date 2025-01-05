@@ -425,7 +425,7 @@ internal sealed class PatternParser
 	{
 		if (_pattern[_index] != '(' ||
 			_index + 2 >= _pattern.Length ||
-			_pattern[_index + 2] != '(')
+			_pattern[_index + 2] != ')')
 		{
 			return null;
 		}
