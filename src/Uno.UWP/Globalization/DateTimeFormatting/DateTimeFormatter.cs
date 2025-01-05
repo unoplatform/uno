@@ -18,8 +18,7 @@ public sealed partial class DateTimeFormatter
 {
 	private readonly CultureInfo _firstCulture;
 
-	private readonly TemplateRootNode? _templateRootNode;
-	private readonly PatternRootNode? _patternRootNode;
+	private readonly PatternRootNode _patternRootNode;
 
 	/// <summary>
 	/// Creates a DateTimeFormatter object that is initialized by a format template string.
@@ -57,7 +56,7 @@ public sealed partial class DateTimeFormatter
 			// Template example:
 			// "year month day dayofweek hour timezone" (that's just an example)
 			var templateParser = new TemplateParser(formatTemplate);
-			_templateRootNode = templateParser.Parse();
+			templateParser.Parse();
 			IncludeYear = templateParser.Info.IncludeYear;
 			IncludeMonth = templateParser.Info.IncludeMonth;
 			IncludeDay = templateParser.Info.IncludeDay;
@@ -77,6 +76,10 @@ public sealed partial class DateTimeFormatter
 			// Basically, the order of tokens in the template string does NOT matter.
 			// So, this kinda normalizes the order the right way.
 			Template = BuildTemplate();
+
+			string patternBuiltFromTemplate = BuildPattern();
+			Patterns = [patternBuiltFromTemplate];
+			_patternRootNode = new PatternParser(patternBuiltFromTemplate).Parse();
 		}
 		catch (Exception)
 		{
@@ -84,9 +87,9 @@ public sealed partial class DateTimeFormatter
 			// "Hello {year.full} Hello2 {month.full}" (that's just an example)
 			_patternRootNode = new PatternParser(formatTemplate).Parse();
 			Template = formatTemplate;
+			Patterns = [formatTemplate];
 		}
 
-		Patterns = [formatTemplate];
 		if (languages != null)
 		{
 			Languages = languages.Distinct().ToArray();
@@ -127,7 +130,9 @@ public sealed partial class DateTimeFormatter
 		IncludeDay = dayFormat;
 		IncludeDayOfWeek = dayOfWeekFormat;
 		Template = BuildTemplate();
-		Patterns = [Template];
+		string patternBuiltFromTemplate = BuildPattern();
+		Patterns = [patternBuiltFromTemplate];
+		_patternRootNode = new PatternParser(patternBuiltFromTemplate).Parse();
 		_firstCulture = new CultureInfo(Languages[0]);
 
 		// TODO:MZ:
@@ -145,7 +150,9 @@ public sealed partial class DateTimeFormatter
 		IncludeMinute = minuteFormat;
 		IncludeSecond = secondFormat;
 		Template = BuildTemplate();
-		Patterns = [Template];
+		string patternBuiltFromTemplate = BuildPattern();
+		Patterns = [patternBuiltFromTemplate];
+		_patternRootNode = new PatternParser(patternBuiltFromTemplate).Parse();
 		_firstCulture = new CultureInfo(Languages[0]);
 
 		// TODO:MZ:
@@ -173,7 +180,9 @@ public sealed partial class DateTimeFormatter
 		IncludeSecond = secondFormat;
 		Languages = languages.ToArray();
 		Template = BuildTemplate();
-		Patterns = [Template];
+		string patternBuiltFromTemplate = BuildPattern();
+		Patterns = [patternBuiltFromTemplate];
+		_patternRootNode = new PatternParser(patternBuiltFromTemplate).Parse();
 		_firstCulture = new CultureInfo(Languages[0]);
 
 		// TODO:MZ:
@@ -207,7 +216,9 @@ public sealed partial class DateTimeFormatter
 		Calendar = calendar;
 		Clock = clock;
 		Template = BuildTemplate();
-		Patterns = [Template];
+		string patternBuiltFromTemplate = BuildPattern();
+		Patterns = [patternBuiltFromTemplate];
+		_patternRootNode = new PatternParser(patternBuiltFromTemplate).Parse();
 		_firstCulture = new CultureInfo(Languages[0]);
 	}
 
@@ -325,129 +336,7 @@ public sealed partial class DateTimeFormatter
 	{
 		try
 		{
-			if (_templateRootNode is not null)
-			{
-				string date;
-				if (IsLongDate)
-				{
-					date = value.ToString(_firstCulture.DateTimeFormat.LongDatePattern, _firstCulture);
-				}
-				else if (IsShortDate)
-				{
-					date = value.ToString(_firstCulture.DateTimeFormat.ShortDatePattern, _firstCulture);
-				}
-				else
-				{
-					// NOTE: The original order that was specified in the template string does NOT matter.
-					// That's why all we need to care about is the values of the mentioned properties.
-					// However, we should actually be checking the actual enum value and not just being "None" or not.
-					// But the actual correct implementation that will 100% match WinUI isn't yet clear.
-					// This is a best effort approach.
-					bool hasYear = IncludeYear != YearFormat.None;
-					bool hasMonth = IncludeMonth != MonthFormat.None;
-					bool hasDay = IncludeDay != DayFormat.None;
-					bool hasDayOfWeek = IncludeDayOfWeek != DayOfWeekFormat.None;
-
-					if (hasYear && hasMonth && hasDay && hasDayOfWeek)
-					{
-						date = value.ToString(_firstCulture.DateTimeFormat.LongDatePattern, _firstCulture);
-					}
-					else if (hasYear && hasMonth && hasDay)
-					{
-						date = value.ToString(_firstCulture.DateTimeFormat.ShortDatePattern, _firstCulture);
-					}
-					else if (hasYear && hasMonth && !hasDayOfWeek)
-					{
-						date = value.ToString(_firstCulture.DateTimeFormat.YearMonthPattern, _firstCulture);
-					}
-					else if (hasYear && !hasMonth && !hasDay && !hasDayOfWeek)
-					{
-						date = value.ToString("yyyy", _firstCulture);
-					}
-					else if (hasMonth && hasDay && !hasYear && !hasDayOfWeek)
-					{
-						date = value.ToString(_firstCulture.DateTimeFormat.MonthDayPattern, _firstCulture);
-					}
-					else
-					{
-						// Fallback case.
-						// Add more cases as they arise.
-						date = value.ToString(_firstCulture.DateTimeFormat.LongDatePattern, _firstCulture);
-					}
-				}
-
-				string time;
-				if (IsLongTime)
-				{
-					time = value.ToString(_firstCulture.DateTimeFormat.LongTimePattern, _firstCulture);
-				}
-				else if (IsShortTime)
-				{
-					time = value.ToString(_firstCulture.DateTimeFormat.ShortTimePattern, _firstCulture);
-				}
-				else
-				{
-					// NOTE: The original order that was specified in the template string does NOT matter.
-					// That's why all we need to care about is the values of the mentioned properties.
-					bool hasHour = IncludeHour != HourFormat.None;
-					bool hasMinute = IncludeMinute != MinuteFormat.None;
-					bool hasSecond = IncludeSecond != SecondFormat.None;
-					bool hasTimeZone = IncludeTimeZone != TimeZoneFormat.None;
-
-					if (hasHour && hasMinute && hasSecond)
-					{
-						time = value.ToString(_firstCulture.DateTimeFormat.LongTimePattern, _firstCulture);
-					}
-					else if (hasHour && hasMinute)
-					{
-						time = value.ToString(_firstCulture.DateTimeFormat.ShortTimePattern, _firstCulture);
-					}
-					else if (hasHour)
-					{
-						time = value.ToString("%H", _firstCulture);
-					}
-					else if (!hasHour && !hasMinute && !hasSecond)
-					{
-						time = string.Empty;
-					}
-					else
-					{
-						// Shouldn't really be reachable. But a fallback in place just in case.
-						time = value.ToString(_firstCulture.DateTimeFormat.LongTimePattern, _firstCulture);
-					}
-
-					if (hasTimeZone)
-					{
-						if (time.Length == 0)
-						{
-							time = $"GMT+{TimeZoneInfo.Local.BaseUtcOffset.TotalHours}";
-						}
-						else
-						{
-							time = $"{time} GMT+{TimeZoneInfo.Local.BaseUtcOffset.TotalHours}";
-						}
-					}
-				}
-
-				if (date.Length > 0 && time.Length > 0)
-				{
-					return $"{date} {time}";
-				}
-				else if (date.Length > 0)
-				{
-					return date;
-				}
-				else
-				{
-					return time;
-				}
-			}
-			else if (_patternRootNode is not null)
-			{
-				return _patternRootNode.Format(value, _firstCulture);
-			}
-
-			throw new InvalidOperationException("This cannot happen. The constructor sets either _templateRootNode or _patternRootNode to non-null.");
+			return _patternRootNode.Format(value, _firstCulture);
 		}
 		catch (Exception e)
 		{
@@ -556,5 +445,155 @@ public sealed partial class DateTimeFormatter
 
 			templateBuilder.Append(value);
 		}
+	}
+
+	private string BuildPattern()
+	{
+		string date;
+		if (IsLongDate)
+		{
+			date = value.ToString(_firstCulture.DateTimeFormat.LongDatePattern, _firstCulture);
+		}
+		else if (IsShortDate)
+		{
+			date = value.ToString(_firstCulture.DateTimeFormat.ShortDatePattern, _firstCulture);
+		}
+		else
+		{
+			// NOTE: The original order that was specified in the template string does NOT matter.
+			// That's why all we need to care about is the values of the mentioned properties.
+			// However, we should actually be checking the actual enum value and not just being "None" or not.
+			// But the actual correct implementation that will 100% match WinUI isn't yet clear.
+			// This is a best effort approach.
+			bool hasYear = IncludeYear != YearFormat.None;
+			bool hasMonth = IncludeMonth != MonthFormat.None;
+			bool hasDay = IncludeDay != DayFormat.None;
+			bool hasDayOfWeek = IncludeDayOfWeek != DayOfWeekFormat.None;
+
+			if (hasYear && hasMonth && hasDay && hasDayOfWeek)
+			{
+				date = value.ToString(_firstCulture.DateTimeFormat.LongDatePattern, _firstCulture);
+			}
+			else if (hasYear && hasMonth && hasDay)
+			{
+				date = value.ToString(_firstCulture.DateTimeFormat.ShortDatePattern, _firstCulture);
+			}
+			else if (hasYear && hasMonth && !hasDayOfWeek)
+			{
+				date = value.ToString(_firstCulture.DateTimeFormat.YearMonthPattern, _firstCulture);
+			}
+			else if (hasYear && !hasMonth && !hasDay && !hasDayOfWeek)
+			{
+				date = value.ToString("yyyy", _firstCulture);
+			}
+			else if (hasMonth && hasDay && !hasYear && !hasDayOfWeek)
+			{
+				date = value.ToString(_firstCulture.DateTimeFormat.MonthDayPattern, _firstCulture);
+			}
+			else
+			{
+				// Fallback case.
+				// Add more cases as they arise.
+				date = value.ToString(_firstCulture.DateTimeFormat.LongDatePattern, _firstCulture);
+			}
+		}
+
+		string time;
+		if (IsLongTime)
+		{
+			time = value.ToString(_firstCulture.DateTimeFormat.LongTimePattern, _firstCulture);
+		}
+		else if (IsShortTime)
+		{
+			time = value.ToString(_firstCulture.DateTimeFormat.ShortTimePattern, _firstCulture);
+		}
+		else
+		{
+			// NOTE: The original order that was specified in the template string does NOT matter.
+			// That's why all we need to care about is the values of the mentioned properties.
+			bool hasHour = IncludeHour != HourFormat.None;
+			bool hasMinute = IncludeMinute != MinuteFormat.None;
+			bool hasSecond = IncludeSecond != SecondFormat.None;
+			bool hasTimeZone = IncludeTimeZone != TimeZoneFormat.None;
+
+			if (hasHour && hasMinute && hasSecond)
+			{
+				time = value.ToString(_firstCulture.DateTimeFormat.LongTimePattern, _firstCulture);
+			}
+			else if (hasHour && hasMinute)
+			{
+				time = value.ToString(_firstCulture.DateTimeFormat.ShortTimePattern, _firstCulture);
+			}
+			else if (hasHour)
+			{
+				time = value.ToString("%H", _firstCulture);
+			}
+			else if (!hasHour && !hasMinute && !hasSecond)
+			{
+				time = string.Empty;
+			}
+			else
+			{
+				// Shouldn't really be reachable. But a fallback in place just in case.
+				time = value.ToString(_firstCulture.DateTimeFormat.LongTimePattern, _firstCulture);
+			}
+
+			if (hasTimeZone)
+			{
+				if (time.Length == 0)
+				{
+					time = $"GMT+{TimeZoneInfo.Local.BaseUtcOffset.TotalHours}";
+				}
+				else
+				{
+					time = $"{time} GMT+{TimeZoneInfo.Local.BaseUtcOffset.TotalHours}";
+				}
+			}
+		}
+
+		string finalSystemFormat;
+		if (date.Length > 0 && time.Length > 0)
+		{
+			finalSystemFormat = $"{date} {time}";
+		}
+		else if (date.Length > 0)
+		{
+			finalSystemFormat = date;
+		}
+		else
+		{
+			finalSystemFormat = time;
+		}
+
+		// Best effort implementation.
+		return finalSystemFormat
+			.Replace("gg", "{era.abbreviated}")
+			.Replace("g", "{era.abbreviated}")
+			.Replace("yyyyy", "{year.full(5)}")
+			.Replace("yyyy", "{year.full(4)}")
+			.Replace("yyy", "{year.full(3)}")
+			.Replace("yy", "{year.full(2)}")
+			.Replace("y", "{year.full(1)}")
+			.Replace("MMMM", "{month.full}")
+			.Replace("MMM", "{month.abbreviated}")
+			.Replace("MM", "{month.integer(2)}")
+			.Replace("M", "{month.integer(1)}")
+			.Replace("dddd", "{dayofweek.full}")
+			.Replace("ddd", "{dayofweek.abbreviated}")
+			.Replace("dd", "{day.integer(2)}")
+			.Replace("d", "{day.integer(1)}")
+			.Replace("tt", "{period.abbreviated(2)}")
+			.Replace("t", "{period.abbreviated(1)}")
+			.Replace("hh", "{hour.integer(2)}")
+			.Replace("HH", "{hour.integer(2)}")
+			.Replace("h", "{hour.integer(1)}")
+			.Replace("H", "{hour.integer(1)}")
+			.Replace("mm", "{minute.integer(2)}")
+			.Replace("m", "{minute.integer(1)}")
+			.Replace("ss", "{second.integer(2)}")
+			.Replace("s", "{second.integer(1)}")
+			.Replace("zzz", "{timezone.full}")
+			.Replace("zz", "{timezone.abbreviated(2)}")
+			.Replace("z", "{timezone.abbreviated(1)}");
 	}
 }
