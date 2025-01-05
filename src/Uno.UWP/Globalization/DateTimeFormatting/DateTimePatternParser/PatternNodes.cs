@@ -172,26 +172,40 @@ internal sealed class PatternMonthNode : PatternDateTimeNode
 
 	internal override void Format(StringBuilder builder, DateTimeOffset dateTime, CultureInfo culture)
 	{
-		// TODO
 		if (Kind == MonthKind.Full)
 		{
-
+			builder.Append(dateTime.ToString("MMMM", culture));
 		}
 		else if (Kind == MonthKind.SoloFull)
 		{
-
+			builder.Append(dateTime.ToString("MMMM", culture));
 		}
 		else if (Kind == MonthKind.Abbreviated)
 		{
-
+			builder.Append(dateTime.ToString("MMM", culture));
 		}
 		else if (Kind == MonthKind.SoloAbbreviated)
 		{
-
+			builder.Append(dateTime.ToString("MMM", culture));
 		}
 		else if (Kind == MonthKind.Integer)
 		{
-
+			if (IdealLength.HasValue)
+			{
+				var idealLength = IdealLength.Value;
+				if (idealLength >= 2)
+				{
+					builder.Append(dateTime.ToString("MM", culture));
+				}
+				else
+				{
+					builder.Append(dateTime.ToString("M", culture));
+				}
+			}
+			else
+			{
+				builder.Append(dateTime.ToString("MMMM", culture));
+			}
 		}
 	}
 }
@@ -223,22 +237,21 @@ internal sealed class PatternDayOfWeekNode : PatternDateTimeNode
 
 	internal override void Format(StringBuilder builder, DateTimeOffset dateTime, CultureInfo culture)
 	{
-		// TODO
 		if (Kind == DayOfWeekKind.Full)
 		{
-
+			builder.Append(dateTime.ToString("dddd", culture));
 		}
 		else if (Kind == DayOfWeekKind.SoloFull)
 		{
-
+			builder.Append(dateTime.ToString("dddd", culture));
 		}
 		else if (Kind == DayOfWeekKind.Abbreviated)
 		{
-
+			builder.Append(dateTime.ToString("ddd", culture));
 		}
 		else if (Kind == DayOfWeekKind.SoloAbbreviated)
 		{
-
+			builder.Append(dateTime.ToString("ddd", culture));
 		}
 	}
 }
