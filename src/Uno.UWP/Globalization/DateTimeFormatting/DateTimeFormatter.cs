@@ -461,6 +461,11 @@ public sealed partial class DateTimeFormatter
 
 		void Append(string value)
 		{
+			if (value.Length == 0)
+			{
+				return;
+			}
+
 			if (templateBuilder.Length != 0)
 			{
 				templateBuilder.Append(' ');
