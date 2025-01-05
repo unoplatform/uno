@@ -328,11 +328,11 @@ internal sealed class PatternHourNode : PatternDateTimeNode
 
 		if (IdealLength.HasValue)
 		{
-			builder.Append(dateTime.Hour.ToString(new string('0', IdealLength.Value), culture));
+			builder.Append(hour.ToString(new string('0', IdealLength.Value), culture));
 		}
 		else
 		{
-			builder.Append(dateTime.Hour);
+			builder.Append(hour);
 		}
 	}
 }
