@@ -516,14 +516,21 @@ internal sealed class TemplateParser
 			out longDate);
 	}
 
-	private bool TryParseShortDate([NotNullWhen(true)] out TemplateShortDateNode? date)
+	private bool TryParseShortDate([NotNullWhen(true)] out TemplateShortDateNode? shortDate)
 	{
+		if (IsWordAt(_index, "shortdate"))
+		{
+			_index += "shortdate".Length;
+			shortDate = TemplateShortDateNode.DefaultShortDateInstance;
+			return true;
+		}
+
 		return TryParseThreeComponentsSeparatedByWhitespaceInAnyOrder<TemplateMonthNode, TemplateDayNode, TemplateYearNode, TemplateDateNode, TemplateShortDateNode>(
 			TryParseMonth,
 			TryParseDay,
 			TryParseYear,
 			static (first, second, third) => new TemplateShortDateNode(first, second, third),
-			out date);
+			out shortDate);
 	}
 
 	private bool TryParseYear([NotNullWhen(true)] out TemplateYearNode? year)
