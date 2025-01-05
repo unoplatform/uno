@@ -51,6 +51,13 @@ public sealed partial class DateTimeFormatter
 	{
 		ArgumentNullException.ThrowIfNull(formatTemplate);
 
+		if (languages != null)
+		{
+			Languages = languages.Distinct().ToArray();
+		}
+
+		_firstCulture = new CultureInfo(Languages[0]);
+
 		try
 		{
 			// Template example:
@@ -96,14 +103,6 @@ public sealed partial class DateTimeFormatter
 				throw new AggregateException(ex, ex2);
 			}
 		}
-
-		if (languages != null)
-		{
-			Languages = languages.Distinct().ToArray();
-		}
-
-		_firstCulture = new CultureInfo(Languages[0]);
-
 
 		var calendar = new Calendar(Languages);
 		Calendar = calendar.GetCalendarSystem();
@@ -477,7 +476,6 @@ public sealed partial class DateTimeFormatter
 
 	private string BuildPattern()
 	{
-		CultureInfo _firstCulture = CultureInfo.CurrentCulture;
 		string datePattern;
 		if (IsLongDate)
 		{
