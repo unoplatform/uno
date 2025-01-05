@@ -449,14 +449,14 @@ public sealed partial class DateTimeFormatter
 
 	private string BuildPattern()
 	{
-		string date;
+		string datePattern;
 		if (IsLongDate)
 		{
-			date = value.ToString(_firstCulture.DateTimeFormat.LongDatePattern, _firstCulture);
+			datePattern = _firstCulture.DateTimeFormat.LongDatePattern;
 		}
 		else if (IsShortDate)
 		{
-			date = value.ToString(_firstCulture.DateTimeFormat.ShortDatePattern, _firstCulture);
+			datePattern = _firstCulture.DateTimeFormat.ShortDatePattern;
 		}
 		else
 		{
@@ -472,40 +472,40 @@ public sealed partial class DateTimeFormatter
 
 			if (hasYear && hasMonth && hasDay && hasDayOfWeek)
 			{
-				date = value.ToString(_firstCulture.DateTimeFormat.LongDatePattern, _firstCulture);
+				datePattern = _firstCulture.DateTimeFormat.LongDatePattern;
 			}
 			else if (hasYear && hasMonth && hasDay)
 			{
-				date = value.ToString(_firstCulture.DateTimeFormat.ShortDatePattern, _firstCulture);
+				datePattern = _firstCulture.DateTimeFormat.ShortDatePattern;
 			}
 			else if (hasYear && hasMonth && !hasDayOfWeek)
 			{
-				date = value.ToString(_firstCulture.DateTimeFormat.YearMonthPattern, _firstCulture);
+				datePattern = _firstCulture.DateTimeFormat.YearMonthPattern;
 			}
 			else if (hasYear && !hasMonth && !hasDay && !hasDayOfWeek)
 			{
-				date = value.ToString("yyyy", _firstCulture);
+				datePattern = "yyyy";
 			}
 			else if (hasMonth && hasDay && !hasYear && !hasDayOfWeek)
 			{
-				date = value.ToString(_firstCulture.DateTimeFormat.MonthDayPattern, _firstCulture);
+				datePattern = _firstCulture.DateTimeFormat.MonthDayPattern;
 			}
 			else
 			{
 				// Fallback case.
 				// Add more cases as they arise.
-				date = value.ToString(_firstCulture.DateTimeFormat.LongDatePattern, _firstCulture);
+				datePattern = _firstCulture.DateTimeFormat.LongDatePattern;
 			}
 		}
 
-		string time;
+		string timePattern;
 		if (IsLongTime)
 		{
-			time = value.ToString(_firstCulture.DateTimeFormat.LongTimePattern, _firstCulture);
+			timePattern = _firstCulture.DateTimeFormat.LongTimePattern;
 		}
 		else if (IsShortTime)
 		{
-			time = value.ToString(_firstCulture.DateTimeFormat.ShortTimePattern, _firstCulture);
+			timePattern = _firstCulture.DateTimeFormat.ShortTimePattern;
 		}
 		else
 		{
@@ -518,51 +518,51 @@ public sealed partial class DateTimeFormatter
 
 			if (hasHour && hasMinute && hasSecond)
 			{
-				time = value.ToString(_firstCulture.DateTimeFormat.LongTimePattern, _firstCulture);
+				timePattern = _firstCulture.DateTimeFormat.LongTimePattern;
 			}
 			else if (hasHour && hasMinute)
 			{
-				time = value.ToString(_firstCulture.DateTimeFormat.ShortTimePattern, _firstCulture);
+				timePattern = _firstCulture.DateTimeFormat.ShortTimePattern;
 			}
 			else if (hasHour)
 			{
-				time = value.ToString("%H", _firstCulture);
+				timePattern = "h";
 			}
 			else if (!hasHour && !hasMinute && !hasSecond)
 			{
-				time = string.Empty;
+				timePattern = string.Empty;
 			}
 			else
 			{
 				// Shouldn't really be reachable. But a fallback in place just in case.
-				time = value.ToString(_firstCulture.DateTimeFormat.LongTimePattern, _firstCulture);
+				timePattern = _firstCulture.DateTimeFormat.LongTimePattern;
 			}
 
 			if (hasTimeZone)
 			{
-				if (time.Length == 0)
+				if (timePattern.Length == 0)
 				{
-					time = $"GMT+{TimeZoneInfo.Local.BaseUtcOffset.TotalHours}";
+					timePattern = "zzz";
 				}
 				else
 				{
-					time = $"{time} GMT+{TimeZoneInfo.Local.BaseUtcOffset.TotalHours}";
+					timePattern = $"{timePattern} zzz";
 				}
 			}
 		}
 
 		string finalSystemFormat;
-		if (date.Length > 0 && time.Length > 0)
+		if (datePattern.Length > 0 && timePattern.Length > 0)
 		{
-			finalSystemFormat = $"{date} {time}";
+			finalSystemFormat = $"{datePattern} {timePattern}";
 		}
-		else if (date.Length > 0)
+		else if (datePattern.Length > 0)
 		{
-			finalSystemFormat = date;
+			finalSystemFormat = datePattern;
 		}
 		else
 		{
-			finalSystemFormat = time;
+			finalSystemFormat = timePattern;
 		}
 
 		// Best effort implementation.
