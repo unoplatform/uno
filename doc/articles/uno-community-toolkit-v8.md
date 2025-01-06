@@ -211,17 +211,17 @@ The implementation of those are quite similar to the example of the SettingsCont
 
     ### WinUI / WinAppSDK / UWP
 
-      In XAML:  
+      In XAML:
         ```xmlns:converters="using:CommunityToolkit.WinUI.Converters"```
 
-      In C#:  
+      In C#:
         ```using CommunityToolkit.WinUI.Converters;```
 
       In case you are developing a App that's using C# Markup and you want to use the Converters, you can now switch to [C#-Markup Converters](https://platform.uno/docs/articles/external/uno.extensions/doc/Learn/Markup/Converters.html) Documentation for future Usage Guide, the general Import is done from here on.
 
 1. Xaml Definition
 
-Important Difference to the previous seen SettingsCard Control Example, a Non-UI Converter has to be imported to the Page.Resources Section to StaticResources like this for using it, since there is no single Namespace per Converter like on the Controls:
+Important Difference to the previous seen SettingsCard Control Example, a Non-UI Converter has to be imported to the Page.Ressources Section to StaticRessources like this for using it, since there is no single Namespace per Converter like on the Controls:
 
 ### [Example StringToVisibilityConverter](#tab/string-visible-conv)
 
@@ -229,22 +229,22 @@ StringToVisibilityConverter is a Converter that has to be bound to a String type
 
 ```xml
 <Page.Resources>
-  <converters:StringVisibilityConverter x:Key="YourStringVisibilityConverter"/>
+    <converters:StringVisibilityConverter x:Key="YourStringVisibilityConverter"/>
 </Page.Resources>
 ```
 
 Somewhere in your Page Content:
 
 ```xml
-  <TextBox x:Name="tbName"
-           Text="{Binding Name, Mode=TwoWay}"
-           PlaceholderText="Enter your name:"/>
-  <Button x:Name="StartButton"
-          Content="Start a cool simple Game!"
-          AutomationProperties.AutomationId="StartAGameButton"
-          Command="{Binding GoToStart}"
-          HorizontalAlignment="Center"
-          Visibility="{x:Bind tbName.Text, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}"/>
+<TextBox x:Name="tbName"
+        Text="{Binding Name, Mode=TwoWay}"
+        PlaceholderText="Enter your name:"/>
+<Button x:Name="StartButton"
+        Content="Start a cool simple Game!"
+        AutomationProperties.AutomationId="StartAGameButton"
+        Command="{Binding GoToStart}"
+        HorizontalAlignment="Center"
+        Visibility="{x:Bind tbName.Text, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}"/>
 ```
 
 ### [Example BoolToObjectConverter](#tab/bool-obj-conv)
@@ -252,9 +252,9 @@ Somewhere in your Page Content:
 BoolToObjectConverter is a Converter that has to be bound to a Boolean typed Property and can return any Object you will give to it.
 You only have to tell it what to return on True or False. If you would like to use it for switching color on validation:
 
-```xml
+```
 BoolToObjectConverter x:Key="BoolToColorConverter" TrueValue="{ThemeResource SystemFillColorSuccessBackgroundBrush}"
-                                                   FalseValue="{ThemeResource SystemFillColorCriticalBackgroundBrush}"/>
+                                                    FalseValue="{ThemeResource SystemFillColorCriticalBackgroundBrush}"/>
 ```
 
 > [!NOTE]
@@ -274,10 +274,6 @@ Somewhere in your Page Content:
         Command="{Binding GoToStart}"
         HorizontalAlignment="Center"/>
 ```
-
----
-
-[!include[getting-help](includes/getting-help.md)]
 
 ---
 
