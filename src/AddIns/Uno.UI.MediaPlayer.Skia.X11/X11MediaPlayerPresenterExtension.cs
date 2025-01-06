@@ -18,7 +18,7 @@ namespace Uno.UI.MediaPlayer.Skia.X11;
 public class X11MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 {
 	private readonly MediaPlayerPresenter _presenter;
-	private X11MediaPlayerExtension? _playerExtension;
+	private SharedMediaPlayerExtension? _playerExtension;
 	private readonly X11Window _x11Window;
 
 	public X11MediaPlayerPresenterExtension(MediaPlayerPresenter presenter)
@@ -76,7 +76,7 @@ public class X11MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 
 	public void MediaPlayerChanged()
 	{
-		if (X11MediaPlayerExtension.GetByMediaPlayer(_presenter.MediaPlayer) is { } extension)
+		if (SharedMediaPlayerExtension.GetByMediaPlayer(_presenter.MediaPlayer) is { } extension)
 		{
 			if (_playerExtension is { })
 			{

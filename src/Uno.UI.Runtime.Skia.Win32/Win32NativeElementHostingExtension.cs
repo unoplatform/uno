@@ -72,13 +72,15 @@ public class Win32NativeElementHostingExtension(ContentPresenter presenter) : Co
 			throw new ArgumentException($"content is not a {nameof(Win32NativeWindow)} instance.", nameof(content));
 		}
 
-		// We don't need to remove the WS_EX_LAYERED flag on detaching since it only makes compositing order more restrictive
-		// so if things were working without it, they will continue to work with it.
 		var oldExStyleVal = PInvoke.GetWindowLong((HWND)window.Hwnd, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE);
+		var oldStyleVal = PInvoke.GetWindowLong((HWND)window.Hwnd, WINDOW_LONG_PTR_INDEX.GWL_STYLE);
 		PInvoke.SetWindowLong((HWND)window.Hwnd, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE, oldExStyleVal | (int)WINDOW_EX_STYLE.WS_EX_LAYERED);
+		PInvoke.SetWindowLong((HWND)window.Hwnd, WINDOW_LONG_PTR_INDEX.GWL_STYLE, oldStyleVal & ~(int)WINDOW_STYLE.WS_CAPTION); // removes the title bar and borders
 
-		var res1 = PInvoke.SetParent((HWND)window.Hwnd, Hwnd);
-		if (res1 == HWND.Null)
+		_ = PInvoke.ShowWindow((HWND)window.Hwnd, SHOW_WINDOW_CMD.SW_SHOWNORMAL);
+
+		var oldParent = PInvoke.SetParent((HWND)window.Hwnd, Hwnd);
+		if (oldParent == HWND.Null && Marshal.GetLastWin32Error() != 0)
 		{
 			this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SetParent)} failed: {Win32Helper.GetErrorMessage()}");
 			return;
@@ -178,8 +180,13 @@ public class Win32NativeElementHostingExtension(ContentPresenter presenter) : Co
 			throw new ArgumentException($"content is not a {nameof(Win32NativeWindow)} instance.", nameof(content));
 		}
 
-		_ = PInvoke.SetParent((HWND)window.Hwnd, HWND.Null) != HWND.Null
-			|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SetParent)} failed: {Win32Helper.GetErrorMessage()}");
+		_ = PInvoke.ShowWindow((HWND)window.Hwnd, SHOW_WINDOW_CMD.SW_HIDE);
+
+		var oldParent = PInvoke.SetParent((HWND)window.Hwnd, HWND.Null);
+		if (oldParent == HWND.Null && Marshal.GetLastWin32Error() != 0)
+		{
+			this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SetParent)} failed: {Win32Helper.GetErrorMessage()}");
+		}
 
 		Win32WindowWrapper.XamlRootMap.GetHostForRoot(presenter.XamlRoot!)!.RenderingNegativePathChanged -= OnRenderingNegativePathChanged;
 
