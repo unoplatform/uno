@@ -252,9 +252,9 @@ Somewhere in your Page Content:
 BoolToObjectConverter is a Converter that has to be bound to a Boolean typed Property and can return any Object you will give to it.
 You only have to tell it what to return on True or False. If you would like to use it for switching color on validation:
 
-```
+```xml
 BoolToObjectConverter x:Key="BoolToColorConverter" TrueValue="{ThemeResource SystemFillColorSuccessBackgroundBrush}"
-                                                    FalseValue="{ThemeResource SystemFillColorCriticalBackgroundBrush}"/>
+                                                   FalseValue="{ThemeResource SystemFillColorCriticalBackgroundBrush}"/>
 ```
 
 > [!NOTE]
