@@ -220,7 +220,7 @@ The implementation of those are quite similar to the example of the SettingsCont
 
 1. Xaml Definition
 
-Important Difference to the previous seen SettingsCard Control Example, a Non-UI Converter has to be imported to the Page.Ressources Section to StaticRessources like this for using it, since there is no single Namespace per Converter like on the Controls:
+Important Difference to the previous seen SettingsCard Control Example, a Non-UI Converter has to be imported to the Page.Resources Section to StaticResources like this for using it, since there is no single Namespace per Converter like on the Controls:
 
 ### [Example StringToVisibilityConverter](#tab/string-visible-conv)
 
