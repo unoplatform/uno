@@ -120,6 +120,7 @@ EnableMouseInPointer
 EndPaint
 EnumClipboardFormats
 EnumDisplaySettingsEx
+EnumWindows
 ExtCreateRegion
 FindWindow
 FormatMessage
@@ -140,6 +141,7 @@ GetSaveFileName
 GetWindowLong
 GetWindowRect
 GetWindowText
+GetWindowThreadProcessId
 glGetError
 glGetIntegerv
 glGetString

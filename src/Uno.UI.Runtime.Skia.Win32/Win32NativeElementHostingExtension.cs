@@ -7,10 +7,9 @@ using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
-using Windows.ApplicationModel;
 using Microsoft.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.Win32.Graphics.Gdi;
@@ -22,9 +21,10 @@ namespace Uno.UI.Runtime.Skia.Win32;
 
 public class Win32NativeElementHostingExtension(ContentPresenter presenter) : ContentPresenter.INativeElementHostingExtension
 {
-	private static readonly string SampleVideoLink = Path.Combine(Package.Current.InstalledPath, @"Assets\Videos\Getting_Started_with_Uno_Platform_for_Figma.mp4");
 	private static readonly SKPath _emptyPath = new();
 	private static readonly byte[] _emptyRegionBytes;
+
+	private static HWND _enumProcRet;
 
 	private Rect _lastArrangeRect;
 	private (byte[] bytes, SKPath path) _lastClip = (_emptyRegionBytes, _emptyPath);
@@ -204,32 +204,40 @@ public class Win32NativeElementHostingExtension(ContentPresenter presenter) : Co
 
 	public Size MeasureNativeElement(object content, Size childMeasuredSize, Size availableSize) => availableSize;
 
-	public object CreateSampleComponent(string text)
+	public unsafe object CreateSampleComponent(string text)
 	{
 		var process = new Process
 		{
 			StartInfo = new ProcessStartInfo
 			{
-				FileName = @"C:\Program Files\VideoLAN\VLC\vlc.exe",
-				UseShellExecute = false
+				FileName = "powershell.exe",
+				UseShellExecute = true
 			}
 		};
 
-		string title;
-		title = $"Sample Video {Random.Shared.Next()} {text}"; // used to maintain unique titles
-		process.StartInfo.ArgumentList.Add(SampleVideoLink);
-		process.StartInfo.ArgumentList.Add("--meta-title");
-		process.StartInfo.ArgumentList.Add(title);
-		title += " - VLC media player";
-
 		process.Start();
 
+		_enumProcRet = HWND.Null;
 		HWND hwnd = default;
 		var success = SpinWait.SpinUntil(() =>
 		{
-			hwnd = PInvoke.FindWindow(null, title);
+			PInvoke.EnumWindows(&EnumFunc, process.Id);
+			hwnd = _enumProcRet;
 			return hwnd != HWND.Null;
 		}, TimeSpan.FromSeconds(5));
+
+		[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvStdcall) })]
+		static BOOL EnumFunc(HWND hwnd, LPARAM lParam)
+		{
+			uint processId = default;
+			_ = PInvoke.GetWindowThreadProcessId(hwnd, &processId);
+			if (processId == lParam.Value)
+			{
+				_enumProcRet = hwnd;
+				return false;
+			}
+			return true;
+		}
 
 		if (!success)
 		{
