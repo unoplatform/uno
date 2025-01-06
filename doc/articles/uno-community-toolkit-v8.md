@@ -186,7 +186,7 @@ A complete working sample, along with additional examples, is available on GitHu
 
 ## Using Non-UI Elements from the CommunityToolkit: Converters
 
-The CommunityToolkit is providing some ready-to-use Converters for e.g. x:Bind in Xaml, whithout having to write already existing basic Converters yourself. 
+The CommunityToolkit is providing some ready-to-use Converters for e.g. x:Bind in Xaml, whithout having to write already existing basic Converters yourself.
 [List of CommunityToolkit Converters | Windows Toolkit Documentation](https://learn.microsoft.com/en-us/dotnet/communitytoolkit/windows/converters/)
 
 The implementation of those are quite similar to the example of the SettingsControl above, but there are small adjustments to be done to use them:
@@ -274,10 +274,6 @@ Somewhere in your Page Content:
                     HorizontalAlignment="Center"/>
     ```
     
----
-
-[!include[getting-help](includes/getting-help.md)]
-
 ---
 
 [!include[getting-help](includes/getting-help.md)]
