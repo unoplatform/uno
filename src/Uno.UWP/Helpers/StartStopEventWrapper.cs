@@ -5,7 +5,7 @@ using System;
 namespace Uno.Helpers;
 
 /// <summary>
-/// Start stop wrapper for EventHandler<T> events.
+/// Start stop wrapper for EventHandler`1 events.
 /// </summary>
 /// <typeparam name="TEventArgs">Event args type.</typeparam>
 internal class StartStopEventWrapper<TEventArgs> : StartStopDelegateWrapper<EventHandler<TEventArgs>>

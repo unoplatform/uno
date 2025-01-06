@@ -40,7 +40,7 @@ public sealed partial class Geolocator
 				_location = location;
 
 				BroadcastStatusChanged(PositionStatus.Ready);
-				_owner._positionChangedWrapper.Event?.Invoke(_owner, new PositionChangedEventArgs(location.ToGeoPosition()));
+				_owner._positionChangedWrapper.Invoke(_owner, new PositionChangedEventArgs(location.ToGeoPosition()));
 			}
 		}
 

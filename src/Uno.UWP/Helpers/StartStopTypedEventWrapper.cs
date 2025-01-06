@@ -6,9 +6,10 @@ using Windows.Foundation;
 namespace Uno.Helpers;
 
 /// <summary>
-/// Start stop wrapper for TypedEventHandler<T> events.
+/// Start stop wrapper for TypedEventHandler`2 events.
 /// </summary>
-/// <typeparam name="TEventArgs">Event args type.</typeparam>
+/// <typeparam name="TSender">Sender type.</typeparam>
+/// <typeparam name="TResult">Event args type.</typeparam>
 internal class StartStopTypedEventWrapper<TSender, TResult> : StartStopDelegateWrapper<TypedEventHandler<TSender, TResult>>
 {
 	/// <summary>
