@@ -1,11 +1,9 @@
-using System.Globalization;
+﻿using System.Globalization;
 using System.Linq;
-using Windows.Globalization.DateTimeFormatting;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
+using Windows.Globalization.DateTimeFormatting;
 
 namespace Uno.UI.Tests.Windows_Globalization
 {
