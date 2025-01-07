@@ -7,7 +7,7 @@ namespace Microsoft.UI.Xaml;
 
 internal static partial class FontFamilyHelper
 {
-#if __IOS__ || __MACOS__
+#if __APPLE_UIKIT__ || __MACOS__
 	internal static string RemoveUri(string familyName)
 	{
 		var slashIndex = familyName.LastIndexOf('/');

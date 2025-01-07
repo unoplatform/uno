@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Networking.Connectivity
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false || false
 	public enum NetworkConnectivityLevel
 	{
 		// Skipping already declared field Windows.Networking.Connectivity.NetworkConnectivityLevel.None

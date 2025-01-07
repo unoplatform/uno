@@ -1,4 +1,4 @@
-﻿#if __IOS__ || __MACOS__ || __ANDROID__
+﻿#if __APPLE_UIKIT__ || __MACOS__ || __ANDROID__
 #define HAS_NATIVE_VIEWS
 #endif
 
@@ -11,7 +11,7 @@ using Private.Infrastructure;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml;
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
 #elif __MACOS__
 using AppKit;

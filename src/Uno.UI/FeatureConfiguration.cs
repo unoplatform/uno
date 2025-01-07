@@ -137,7 +137,7 @@ namespace Uno.UI
 			/// More information there: https://github.com/unoplatform/uno/issues/3519
 			/// </remarks>
 			public static bool UseDeferredOnApplyTemplate { get; set; }
-#if __ANDROID__ || __IOS__ || __MACOS__
+#if __ANDROID__ || __APPLE_UIKIT__ || __MACOS__
 			// opt-in for iOS/Android/macOS
 #else
 				= true;
@@ -177,7 +177,7 @@ namespace Uno.UI
 		public static class Font
 		{
 			private static string _symbolsFont =
-#if __WASM__ || __MACOS__ || __IOS__
+#if __WASM__ || __MACOS__ || __APPLE_UIKIT__
 				"Symbols";
 #else
 				"ms-appx:///Assets/Fonts/uno-fluentui-assets.ttf#Symbols";
@@ -210,7 +210,7 @@ namespace Uno.UI
 			/// </summary>
 			public static bool IgnoreTextScaleFactor { get; set; }
 
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 			/// <summary>
 			/// Allows the user to limit the scale factor without having to ignore it.
 			/// </summary>
@@ -253,7 +253,7 @@ namespace Uno.UI
 			/// </summary>
 			public static bool UseLegacyHitTest { get; set; }
 
-#if __IOS__
+#if __APPLE_UIKIT__
 			/// <summary>
 			/// When true, propagate the NeedsLayout on superview even if the element is in its LayoutSubViews() (i.e. Arrange()).
 			/// This is known to cause a layout cycle when a child invalidates itself during arrange (e.g. ItemsRepeater).
@@ -358,7 +358,7 @@ namespace Uno.UI
 			/// </summary>
 			public static double? DefaultCacheLength { get; set; } = 1.0;
 
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 			/// <summary>
 			/// Sets a flag indicating whether <see cref="Microsoft.UI.Xaml.Controls.ListViewBase.ScrollIntoView(object)"/> will be animated smoothly or instant.
 			/// </summary>
@@ -740,7 +740,7 @@ namespace Uno.UI
 
 		public static class DatePicker
 		{
-#if __IOS__
+#if __APPLE_UIKIT__
 			/// <summary>
 			/// Gets or set whether the <see cref="Microsoft.UI.Xaml.Controls.DatePicker" /> rendered matches the Legacy Style or not.
 			/// </summary>
@@ -753,7 +753,7 @@ namespace Uno.UI
 
 		public static class TimePicker
 		{
-#if __IOS__
+#if __APPLE_UIKIT__
 			/// <summary>
 			/// Gets or set whether the TimePicker rendered matches the Legacy Style or not.
 			/// </summary>
@@ -783,7 +783,7 @@ namespace Uno.UI
 
 		public static class CommandBar
 		{
-#if __IOS__
+#if __APPLE_UIKIT__
 			/// <summary>
 			/// Gets or Set whether the AllowNativePresenterContent feature is on or off.
 			/// </summary>

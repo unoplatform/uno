@@ -5,9 +5,6 @@
 namespace Windows.Devices.Sensors;
 public partial class SimpleOrientationSensor
 {
-	private static partial SimpleOrientationSensor? TryCreateInstance()
-	{
-		return null;
-	}
+	private static partial SimpleOrientationSensor? TryCreateInstance() => null;
 }
 #endif

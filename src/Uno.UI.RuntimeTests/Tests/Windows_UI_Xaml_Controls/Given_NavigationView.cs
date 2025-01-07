@@ -12,7 +12,7 @@ using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.ListViewPages;
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
 #elif __MACOS__
 using AppKit;
@@ -73,7 +73,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForLoaded(item2);
 
 			var children =
-#if __ANDROID__ || __IOS__ // ItemsStackPanel is just a Xaml facade on Android/iOS, its Children list isn't populated
+#if __ANDROID__ || __APPLE_UIKIT__ // ItemsStackPanel is just a Xaml facade on Android/iOS, its Children list isn't populated
 				list.GetItemsPanelChildren();
 #else
 				panel.Children;
@@ -187,7 +187,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			nvi1.IsExpanded = true;
 			await WindowHelper.WaitForIdle();
 
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 			var descendant = nv.EnumerateDescendants().SingleOrDefault(d => d is NavigationViewItem { Name: "RuntimeTestNVI" });
 			Assert.AreEqual(nvi2, descendant);
 #else

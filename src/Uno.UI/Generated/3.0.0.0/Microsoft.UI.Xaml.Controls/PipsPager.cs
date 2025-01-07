@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class PipsPager : global::Microsoft.UI.Xaml.Controls.Control
@@ -19,8 +19,8 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property NextButtonStyle
 		// Skipping already declared property MaxVisiblePips
 		// Skipping already declared property TemplateSettings
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Microsoft.UI.Xaml.Controls.PipsPagerWrapMode WrapMode
 		{
 			get
@@ -43,8 +43,8 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property PreviousButtonVisibilityProperty
 		// Skipping already declared property SelectedPageIndexProperty
 		// Skipping already declared property SelectedPipStyleProperty
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty WrapModeProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(WrapMode), typeof(global::Microsoft.UI.Xaml.Controls.PipsPagerWrapMode),

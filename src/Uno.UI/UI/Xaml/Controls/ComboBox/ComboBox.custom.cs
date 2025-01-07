@@ -19,7 +19,7 @@ using Windows.System;
 #if __ANDROID__
 using Android.Views;
 using _View = Android.Views.View;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using UIKit;
 using _View = UIKit.UIView;
 #elif __MACOS__

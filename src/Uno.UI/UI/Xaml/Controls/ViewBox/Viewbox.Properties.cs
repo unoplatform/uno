@@ -4,7 +4,7 @@ using Uno.UI;
 using Microsoft.UI.Xaml.Media;
 
 #if __ANDROID__
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using UIKit;
 #elif __MACOS__
 using AppKit;

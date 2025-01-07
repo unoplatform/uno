@@ -19,13 +19,13 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
-#if __IOS__
+#if __APPLE_UIKIT__
 using _View = UIKit.UIView;
 #else
 using _View = Microsoft.UI.Xaml.FrameworkElement;
 #endif
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
 #elif __MACOS__
 using AppKit;
@@ -41,7 +41,7 @@ namespace Uno.UI.RemoteControl.HotReload
 	{
 		private bool _supportsXamlReader;
 
-#if __IOS__ || __CATALYST__ || __ANDROID__
+#if __APPLE_UIKIT__ || __CATALYST__ || __ANDROID__
 		private bool? _isIssue93860Fixed;
 #endif
 
@@ -70,9 +70,9 @@ namespace Uno.UI.RemoteControl.HotReload
 
 		private bool IsIssue93860Fixed()
 		{
-#if __IOS__ || __CATALYST__ || __ANDROID__
+#if __APPLE_UIKIT__ || __CATALYST__ || __ANDROID__
 
-#if __IOS__ || __CATALYST__
+#if __APPLE_UIKIT__ || __CATALYST__
 			var assembly = typeof(global::Foundation.NSObject).GetTypeInfo().Assembly;
 #elif __ANDROID__
 			var assembly = typeof(global::Android.Views.ViewGroup).GetTypeInfo().Assembly;
@@ -84,7 +84,7 @@ namespace Uno.UI.RemoteControl.HotReload
 
 				if (assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>() is AssemblyInformationalVersionAttribute aiva)
 				{
-#if __IOS__ || __CATALYST__ || __ANDROID__
+#if __APPLE_UIKIT__ || __CATALYST__ || __ANDROID__
 					if (this.Log().IsEnabled(LogLevel.Trace))
 					{
 						this.Log().Trace($"iOS/Catalyst/Android do not support C# based XAML hot reload: https://github.com/unoplatform/uno/issues/15918");

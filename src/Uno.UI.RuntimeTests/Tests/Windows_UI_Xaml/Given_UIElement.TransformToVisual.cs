@@ -21,7 +21,7 @@ using static Private.Infrastructure.TestServices.WindowHelper;
 using Microsoft.UI.Xaml.Shapes;
 using Uno.UI.RuntimeTests.Helpers;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
 #else
 using Uno.UI.Extensions;

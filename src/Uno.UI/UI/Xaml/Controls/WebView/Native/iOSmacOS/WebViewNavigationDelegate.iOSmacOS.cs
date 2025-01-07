@@ -20,7 +20,7 @@ using Windows.Foundation;
 using System.Globalization;
 using Windows.UI.Core;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
 #else
 using AppKit;

@@ -17,7 +17,7 @@ using Uno.UI.Xaml.Core.Scaling;
 
 #if __ANDROID__
 using View = Android.Views.ViewGroup;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using View = UIKit.UIView;
 using UIKit;
 #elif __MACOS__
@@ -164,7 +164,7 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 		//UNO TODO: Properly implement GetAutomationPeerChildren on FrameworkElementAutomationPeer
 		//Temporarily disabled as android, ios, macos doesn't use UIElement
 
-#if !__ANDROID__ && !__IOS__ && !__MACOS__
+#if !__ANDROID__ && !__APPLE_UIKIT__ && !__MACOS__
 		var childCount = element.GetChildren().Count;
 		if (childCount > 0)
 		{

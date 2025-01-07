@@ -19,7 +19,7 @@ namespace Windows.Graphics.Display
 		private static object _windowIdMapLock = new object();
 		private static readonly Dictionary<WindowId, DisplayInformation> _windowIdMap = new();
 
-#if __ANDROID__ || __IOS__ || __MACOS__ || __WASM__
+#if __ANDROID__ || __IOS__ || __TVOS__ || __MACOS__ || __WASM__
 		private float _lastKnownDpi;
 		private DisplayOrientations _lastKnownOrientation;
 #endif

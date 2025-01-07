@@ -128,7 +128,7 @@ public class Given_CalendarView
 		Assert.IsTrue(hasOutOfScope);
 	}
 #endif
-#if __ANDROID__ || __IOS__ || __MACOS__
+#if __ANDROID__ || __APPLE_UIKIT__ || __MACOS__
 	[Ignore("Test fails on these platforms")]
 #endif
 	[TestMethod]

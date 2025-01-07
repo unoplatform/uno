@@ -8,7 +8,7 @@ using UIKit;
 using Microsoft.UI.Xaml;
 
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using CoreGraphics;
 using _View = UIKit.UIView;
 using _Controller = UIKit.UIViewController;

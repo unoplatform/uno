@@ -27,7 +27,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 #if __MACOS__
 [Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
-#if __IOS__
+#if __APPLE_UIKIT__
 [Ignore("Test is unstable on iOS currently")]
 #endif
 [TestClass]

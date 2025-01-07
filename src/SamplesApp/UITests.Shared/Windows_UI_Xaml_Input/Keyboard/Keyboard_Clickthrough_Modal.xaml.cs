@@ -14,7 +14,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
 #endif
 
@@ -32,7 +32,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Input.Keyboard
 
 		private void Button_Click(object sender, RoutedEventArgs e)
 		{
-#if __IOS__
+#if __APPLE_UIKIT__
 			var alert = UIAlertController.Create("This is a title", "This is a message", UIAlertControllerStyle.Alert);
 			alert.AddAction(UIAlertAction.Create("Cancel", UIAlertActionStyle.Cancel, null));
 			alert.AddAction(UIAlertAction.Create("OK", UIAlertActionStyle.Default, null));

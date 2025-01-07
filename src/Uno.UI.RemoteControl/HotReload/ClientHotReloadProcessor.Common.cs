@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
 #elif __MACOS__
 using AppKit;

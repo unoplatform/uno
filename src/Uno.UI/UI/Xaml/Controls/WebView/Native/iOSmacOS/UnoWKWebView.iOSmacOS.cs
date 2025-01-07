@@ -23,7 +23,7 @@ using Uno.UI;
 using MessageUI;
 #endif
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
 #else
 using AppKit;
@@ -88,7 +88,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 		OkString = !string.IsNullOrEmpty(ok) ? ok : "OK";
 		CancelString = !string.IsNullOrEmpty(cancel) ? cancel : "Cancel";
 
-#if __IOS__
+#if __APPLE_UIKIT__
 		if (UIDevice.CurrentDevice.CheckSystemVersion(10, 3))
 		{
 			_errorMap.Add(NSUrlError.FileOutsideSafeArea, CoreWebView2WebErrorStatus.UnexpectedError);
@@ -255,7 +255,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 
 			if (!cancel)
 			{
-#if __IOS__
+#if __APPLE_UIKIT__
 				if (UIKit.UIApplication.SharedApplication.CanOpenUrl(target))
 #else
 				if (target != null && NSWorkspace.SharedWorkspace.UrlForApplication(new NSUrl(target.AbsoluteUri)) != null)
@@ -302,7 +302,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 
 		var controller = webview.FindViewController();
 
-#if __IOS__
+#if __APPLE_UIKIT__
 		var alert = UIKit.UIAlertController.Create(string.Empty, message, UIKit.UIAlertControllerStyle.Alert);
 		alert.AddAction(UIKit.UIAlertAction.Create(OkString, UIKit.UIAlertActionStyle.Default, null));
 		controller?.PresentViewController(alert, true, null);
@@ -331,7 +331,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 		 */
 		var controller = webview.FindViewController();
 
-#if __IOS__
+#if __APPLE_UIKIT__
 		var alert = UIKit.UIAlertController.Create(string.Empty, message, UIKit.UIAlertControllerStyle.Alert);
 		alert.AddAction(UIKit.UIAlertAction.Create(OkString, UIKit.UIAlertActionStyle.Default,
 			okAction => completionHandler(true)));
@@ -363,7 +363,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 			this.Log().Debug($"OnRunJavaScriptTextInputPanel: {prompt}, {defaultText}");
 		}
 
-#if __IOS__
+#if __APPLE_UIKIT__
 		var alert = UIKit.UIAlertController.Create(string.Empty, prompt, UIKit.UIAlertControllerStyle.Alert);
 		UITextField? alertTextField = null;
 
@@ -446,7 +446,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 
 		if (navigationData is Uri uri && uri.Scheme.Equals(Uri.UriSchemeMailto, StringComparison.OrdinalIgnoreCase))
 		{
-#if __IOS__
+#if __APPLE_UIKIT__
 			ParseUriAndLauchMailto(uri);
 #else
 			NSWorkspace.SharedWorkspace.OpenUrl(new NSUrl(uri.ToString()));
@@ -481,7 +481,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 		_isHistoryChangeQueued = false;
 	}
 
-#if __IOS__
+#if __APPLE_UIKIT__
 
 	private static readonly string[] _emptyStringArray = new[] { "" };
 
@@ -782,7 +782,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 	{
 		var uri = request.Url.ToUri();
 
-#if __IOS__
+#if __APPLE_UIKIT__
 		if (!UIKit.UIDevice.CurrentDevice.CheckSystemVersion(9, 0))
 		{
 			if (this.Log().IsEnabled(LogLevel.Warning))
@@ -818,7 +818,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 
 	void INativeWebView.SetScrollingEnabled(bool isScrollingEnabled)
 	{
-#if __IOS__
+#if __APPLE_UIKIT__
 		ScrollView.ScrollEnabled = isScrollingEnabled;
 		ScrollView.Bounces = isScrollingEnabled;
 #else

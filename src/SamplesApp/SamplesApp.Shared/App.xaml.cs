@@ -461,7 +461,7 @@ namespace SamplesApp
 					builder.AddConsole();
 				}
 
-#if __IOS__
+#if __APPLE_UIKIT__
 				builder.AddProvider(new Uno.Extensions.Logging.OSLogLoggerProvider());
 #endif
 
@@ -543,7 +543,7 @@ namespace SamplesApp
 
 		static void ConfigureFeatureFlags()
 		{
-#if __IOS__
+#if __APPLE_UIKIT__
 			Uno.UI.FeatureConfiguration.CommandBar.AllowNativePresenterContent = true;
 			WinRTFeatureConfiguration.Focus.EnableExperimentalKeyboardFocus = true;
 			Uno.UI.FeatureConfiguration.DatePicker.UseLegacyStyle = true;

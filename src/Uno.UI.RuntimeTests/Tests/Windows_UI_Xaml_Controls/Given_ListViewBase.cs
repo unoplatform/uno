@@ -30,7 +30,7 @@ using Uno.UI.RuntimeTests.ListViewPages;
 using Uno.UI;
 #endif
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using Foundation;
 #endif
 
@@ -44,7 +44,7 @@ using MUXControlsTestApp.Utilities;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
-#if __IOS__
+#if __APPLE_UIKIT__
 	[Ignore("Disable all listview tests until crash is resolved https://github.com/unoplatform/uno/issues/17101")]
 #endif
 	public partial class Given_ListViewBase // resources
@@ -166,7 +166,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
-#if __IOS__
+#if __APPLE_UIKIT__
 		[Ignore("Unlike other platforms, MaterializedContainers are removed immediately upon removal, and are not created on insertion until re-measure.")]
 #endif
 		public async Task ContainerIndicesAreUpdated_OnRemoveAndAdd()
@@ -688,7 +688,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __IOS__
+#if __APPLE_UIKIT__
 		[Ignore("The test can't find MultiSelectSquare")]
 #endif
 		public async Task When_Different_Selections_IsMultiSelectCheckBoxEnabled()
@@ -1530,7 +1530,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 		[Ignore("Disabled because of animated scrolling, even when explicitly requested.")]
 #endif
 		public async Task When_SmallExtent_And_Large_List_Scroll_To_End_Full_Size()
@@ -1574,7 +1574,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 		[Ignore("Disabled because of animated scrolling, even when explicitly requested")]
 #endif
 		public async Task When_SmallExtent_And_Large_List_Scroll_To_End_Half_Size()
@@ -1619,7 +1619,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 		[Ignore("Disabled because of animated scrolling, even when explicitly requested.")]
 #endif
 		public async Task When_Large_List_Scroll_To_End_Then_Back_Up_And_First_Item()
@@ -1679,7 +1679,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 		[Ignore("Disabled because of animated scrolling, even when explicitly requested.")]
 #elif __WASM__
 		[Ignore("Flaky in CI.")]
@@ -2082,7 +2082,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 		[Ignore("Disabled because of animated scrolling, even when explicitly requested")]
 #endif
 		public async Task When_SmallExtent_And_Large_List_Scroll_To_End_And_Back_Half_Size()
@@ -2143,7 +2143,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 		[Ignore("Disabled because of animated scrolling, even when explicitly requested")]
 #endif
 		public async Task When_SmallExtent_And_Very_Large_List_Scroll_To_End_And_Back_Half_Size()
@@ -2199,7 +2199,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 		[Ignore("Disabled because of animated scrolling, even when explicitly requested")]
 #endif
 		public async Task When_LargeExtent_And_Very_Large_List_Scroll_To_End_And_Back_Half_Size()
@@ -3858,7 +3858,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			);
 		}
 
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 		[TestMethod]
 		public async Task When_Smooth_Scrolling()
 		{
@@ -3892,7 +3892,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				.Reverse()
 #if __ANDROID__
 				.Select(x => (x as ListViewItem)?.Content as int?)
-#elif __IOS__
+#elif __APPLE_UIKIT__
 				.Select(x => ((x as ListViewBaseInternalContainer)?.Content as ListViewItem)?.Content as int?)
 #endif
 				.ToArray();
@@ -3995,7 +3995,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			var children =
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 				sut is ListView lv
 					? lv.NativePanel.EnumerateChildren()
 					: sut.ItemsPanelRoot.Children;
@@ -4007,7 +4007,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			bool IsVisible(object x) => x is UIElement uie
 				? uie.Visibility == Visibility.Visible
-#if __IOS__
+#if __APPLE_UIKIT__
 				: !(x as UIKit.UIView)?.Hidden ?? false;
 #else
 				: false;
@@ -4015,7 +4015,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 		[Ignore("The behaviour of virtualizing panels is only accurate for managed virtualizing panels.")]
 #endif
 		public async Task When_Item_Removed_From_ItemsSource_Item_Removed_From_Tree()
@@ -4453,7 +4453,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
-#if __IOS__
+#if __APPLE_UIKIT__
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_HeaderDataContext_Cleared_FromNavigation()
@@ -4559,7 +4559,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 #if __MACOS__
 		[Ignore("NotImplemented ListViewBase.ScrollIntoView")]
-#elif __ANDROID__ || __IOS__
+#elif __ANDROID__ || __APPLE_UIKIT__
 		[Ignore("This test is for managed ListViewBase.")]
 #endif
 		public async Task When_ScrollIntoView_No_Virtualization()
@@ -4957,7 +4957,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			protected override DataTemplate SelectTemplateCore(object item)
 			{
 				if (
-#if __IOS__
+#if __APPLE_UIKIT__
 				// On iOS, the template selector may be invoked with a null item. This is arguably also a bug, but not presently under test here.
 				item != null &&
 #endif
@@ -5171,7 +5171,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	{
 		private static ContentControl[] GetPanelVisibleChildren(ListViewBase list)
 		{
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 			return list
 				.GetItemsPanelChildren()
 				.OfType<ContentControl>()
@@ -5192,7 +5192,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				.GetItemsPanelChildren()
 				.OfType<ContentControl>()
 				.ToArray();
-#elif __IOS__
+#elif __APPLE_UIKIT__
 			return list
 				.GetItemsPanelChildren()
 				.OfType<ContentControl>()

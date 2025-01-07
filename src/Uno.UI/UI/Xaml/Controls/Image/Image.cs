@@ -13,7 +13,7 @@ using Windows.UI.Core;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
 #endif
 
@@ -446,7 +446,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
-#if __IOS__ || __MACOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __MACOS__ || __ANDROID__
 			if (Source is SvgImageSource svgImageSource && _svgCanvas is not null)
 			{
 #if __ANDROID__

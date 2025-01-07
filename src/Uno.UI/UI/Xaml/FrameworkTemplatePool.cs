@@ -26,7 +26,7 @@ using Font = Android.Graphics.Typeface;
 using Android.Graphics;
 using DependencyObject = System.Object;
 using Uno.UI.Controls;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using View = UIKit.UIView;
 using ViewGroup = UIKit.UIView;
 using Color = UIKit.UIColor;

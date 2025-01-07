@@ -74,7 +74,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __ANDROID__
 			Assert.Inconclusive(); // Android doesn't support Canvas.ZIndex on any panel
 #endif
-#if __IOS__
+#if __APPLE_UIKIT__
 			Assert.Inconclusive(); // iOS doesn't support Canvas.ZIndex on any panel
 #endif
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))

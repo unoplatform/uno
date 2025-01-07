@@ -83,7 +83,7 @@ public class TimePickerIntegrationTests
 		await DateTimePickerHelper.OpenDateTimePicker(timePicker);
 		await TestServices.WindowHelper.WaitForIdle();
 
-#if !__ANDROID__ && !__IOS__
+#if !__ANDROID__ && !__APPLE_UIKIT__
 		await TestServices.RunOnUIThread(() =>
 		{
 			var timePickerFlyoutPresenter = TreeHelper.GetVisualChildByTypeFromOpenPopups<TimePickerFlyoutPresenter>(timePicker);
@@ -257,7 +257,7 @@ public class TimePickerIntegrationTests
 	}
 
 	[TestMethod]
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 	[Ignore("This is only relevant for managed implementation")]
 #elif __WASM__
 	[Ignore("https://github.com/unoplatform/uno/issues/16167")]
@@ -345,7 +345,7 @@ public class TimePickerIntegrationTests
 	}
 
 	[TestMethod]
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 	[Ignore("This is only relevant for managed implementation")]
 #endif
 	public async Task ValidateMinuteIncrementProperty()

@@ -34,14 +34,14 @@
 		<None Include="**\*.iOSmacOS.cs" Exclude="bin\**\*.iOSmacOS.cs;obj\**\*.iOSmacOS.cs" Condition="!$(IsMacOS) and !$(IsIOSOrCatalyst)" />
 		<Compile Remove="**\*.iOSmacOS.cs" Condition="!$(IsMacOS) and !$(IsIOSOrCatalyst)" />
 
-		<None Include="**\*.Apple.cs" Exclude="bin\**\*.Apple.cs;obj\**\*.Apple.cs" Condition="!$(IsMacOS) and !$(IsAppleUIKit)" />
-		<Compile Remove="**\*.Apple.cs" Condition="!$(IsMacOS) and !$(IsAppleUIKit)" />
+		<None Include="**\*.Apple.cs" Exclude="bin\**\*.Apple.cs;obj\**\*.Apple.cs" Condition="!$(IsApple)" />
+		<Compile Remove="**\*.Apple.cs" Condition="!$(IsApple)" />
 
 		<None Include="**\*.Android.cs" Exclude="bin\**\*.Android.cs;obj\**\*.Android.cs" Condition="!$(IsAndroid)" />
 		<Compile Remove="**\*.Android.cs" Condition="!$(IsAndroid)" />
 
-		<None Include="**\*.Xamarin.cs" Exclude="bin\**\*.Xamarin.cs;obj\**\*.Xamarin.cs" Condition="!$(IsAndroid) and !$(IsIOSOrCatalyst) and !$(IsMacOS)" />
-		<Compile Remove="**\*.Xamarin.cs" Condition="!$(IsAndroid) and !$(IsIOSOrCatalyst) and !$(IsMacOS)" />
+		<None Include="**\*.Xamarin.cs" Exclude="bin\**\*.Xamarin.cs;obj\**\*.Xamarin.cs" Condition="!$(IsAndroid) and !$(IsApple)" />
+		<Compile Remove="**\*.Xamarin.cs" Condition="!$(IsAndroid) and !$(IsApple)" />
 
 		<None Include="**\*.unittests.cs" Exclude="bin\**\*.unittests.cs;obj\**\*.unittests.cs" Condition="!$(_IsUnitTests)" />
 		<Compile Remove="**\*.unittests.cs" Condition="!$(_IsUnitTests)" />
@@ -96,9 +96,17 @@
 		<DefineConstants>$(DefineConstants);XAMARIN;UNO_HAS_UIELEMENT_IMPLICIT_PINNING;HAS_NATIVE_IMPLICIT_POINTER_CAPTURE;HAS_RENDER_TARGET_BITMAP</DefineConstants>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="$(IsTvOS)">
+		<DefineConstants>$(DefineConstants);XAMARIN;UNO_HAS_UIELEMENT_IMPLICIT_PINNING;HAS_NATIVE_IMPLICIT_POINTER_CAPTURE;HAS_RENDER_TARGET_BITMAP</DefineConstants>
+	</PropertyGroup>
+
 	<PropertyGroup Condition="$(IsCatalyst)">
 		<DefineConstants>$(DefineConstants);XAMARIN;UNO_HAS_UIELEMENT_IMPLICIT_PINNING;HAS_NATIVE_IMPLICIT_POINTER_CAPTURE;HAS_RENDER_TARGET_BITMAP</DefineConstants>
 		<SupportedOSPlatformVersion>13.1</SupportedOSPlatformVersion>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="$(IsAppleUIKit)">
+		<DefineConstants>$(DefineConstants);__APPLE_UIKIT__</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(IsMacOS)">

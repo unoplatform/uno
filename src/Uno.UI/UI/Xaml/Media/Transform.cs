@@ -9,7 +9,7 @@ using Uno.Extensions;
 
 #if __ANDROID__
 using _View = Android.Views.View;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using _View = UIKit.UIView;
 #elif __MACOS__
 using _View = AppKit.NSView;
@@ -46,7 +46,7 @@ namespace Microsoft.UI.Xaml.Media
 
 		protected void NotifyChanged()
 		{
-#if __ANDROID__ || __IOS__ || __MACOS__ // On WASM currently we supports only CPU bound animations, so we have to let the transform be updated on each frame
+#if __ANDROID__ || __APPLE_UIKIT__ || __MACOS__ // On WASM currently we supports only CPU bound animations, so we have to let the transform be updated on each frame
 			if (IsAnimating)
 			{
 				// Don't update the internal value if the value is being animated.
@@ -82,7 +82,7 @@ namespace Microsoft.UI.Xaml.Media
 		/// <returns>An affine matrix of the transformation</returns>
 		internal abstract Matrix3x2 ToMatrix(Point absoluteOrigin);
 
-#if __ANDROID__ || __IOS__ || __MACOS__
+#if __ANDROID__ || __APPLE_UIKIT__ || __MACOS__
 		// Currently we support only one view par transform.
 		// But we can declare a Transform as a static resource and use it on multiple views.
 		// Note: This is now used only for animations

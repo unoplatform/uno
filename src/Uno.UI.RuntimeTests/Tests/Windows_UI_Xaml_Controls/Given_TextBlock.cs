@@ -366,7 +366,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __IOS__
+#if __APPLE_UIKIT__
 		[Ignore("Fails")]
 #endif
 		public async Task When_Multiline_Wrapping_Text_Ends_In_Too_Many_Spaces()
@@ -777,7 +777,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(SUT.DesiredSize.Height > 0);
 		}
 
-#if !__IOS__ // Line height is not supported on iOS
+#if !__APPLE_UIKIT__ // Line height is not supported on iOS
 		[TestMethod]
 		public async Task When_Empty_TextBlock_LineHeight_Override()
 		{

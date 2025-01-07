@@ -224,7 +224,7 @@ public partial class PersonPicture : Control
 			templateSettings.ActualImageBrush = null;
 		}
 
-#if __IOS__
+#if __APPLE_UIKIT__
 		if (templateSettings.ActualImageBrush is ImageBrush brush)
 		{
 			brush.ImageOpened += RefreshPhoto;
@@ -239,7 +239,7 @@ public partial class PersonPicture : Control
 		else
 		{
 			if (imageSrc is not null
-#if __IOS__
+#if __APPLE_UIKIT__
 			&& imageSrc.IsOpened
 #endif
 			)
@@ -259,7 +259,7 @@ public partial class PersonPicture : Control
 		UpdateAutomationName();
 	}
 
-#if __IOS__
+#if __APPLE_UIKIT__
 	void RefreshPhoto(object sender, RoutedEventArgs e)
 	{
 		VisualStateManager.GoToState(this, "Photo", false);

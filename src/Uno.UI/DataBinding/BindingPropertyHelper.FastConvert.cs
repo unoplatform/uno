@@ -22,7 +22,7 @@ using System.Diagnostics.CodeAnalysis;
 using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;
 using Android.Graphics;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using View = UIKit.UIView;
 using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;

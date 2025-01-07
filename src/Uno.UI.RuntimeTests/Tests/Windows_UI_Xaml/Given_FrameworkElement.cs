@@ -29,13 +29,13 @@ using Windows.Foundation.Metadata;
 
 
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
 #endif
 
 #if __ANDROID__
 using _View = Android.Views.View;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using _View = UIKit.UIView;
 #elif __MACOS__
 using _View = AppKit.NSView;
@@ -552,7 +552,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 		[Ignore]
 #endif
 #if __MACOS__
@@ -719,7 +719,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 		[Ignore("Layouter doesn't work properly")]
 #endif
 		public async Task When_MinWidth_SmallerThan_AvailableSize()
@@ -884,7 +884,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var resultStr = $"{GetStr(childDecorator)}|{GetStr(childBorder)}|{GetStr(innerChild)}";
 
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 			var layout = parentBorder.ShowLocalVisualTree();
 #else
 			var layout = "";
@@ -1068,7 +1068,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				sut.BaseUri);
 		}
 
-#if __IOS__
+#if __APPLE_UIKIT__
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_HasNativeChildren_Should_Measure_And_Arrange()

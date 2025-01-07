@@ -34,7 +34,7 @@ public partial class RetargetAssets_v0
 
 	private ITaskItem[] GenerateFontPartialManifest(List<string> fontAssets, string iOSAppManifest)
 	{
-		if (TargetPlatform == "ios")
+		if (TargetPlatform == "uikit")
 		{
 			// For compatibility measures, get the fonts from the iOS app manifest
 			// and merge them with the generated ones, so existing apps don't lose

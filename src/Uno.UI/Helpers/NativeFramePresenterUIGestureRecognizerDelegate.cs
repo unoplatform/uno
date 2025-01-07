@@ -1,4 +1,4 @@
-﻿#if __IOS__
+﻿#if __APPLE_UIKIT__
 using System;
 using System.Linq;
 using UIKit;

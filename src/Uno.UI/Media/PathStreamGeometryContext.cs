@@ -7,7 +7,7 @@ using System.Linq;
 using static System.Math;
 using Uno.Extensions;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
 using Path = UIKit.UIBezierPath;
 using ObjCRuntime;
@@ -41,7 +41,7 @@ namespace Uno.Media
 
 		public override void BeginFigure(Point startPoint, bool isFilled)
 		{
-#if __IOS__ || __MACOS__
+#if __APPLE_UIKIT__ || __MACOS__
 			bezierPath.MoveTo(startPoint);
 #elif __ANDROID__
 			bezierPath.MoveTo((float)startPoint.X, (float)startPoint.Y);
@@ -54,7 +54,7 @@ namespace Uno.Media
 
 		public override void LineTo(Point point, bool isStroked, bool isSmoothJoin)
 		{
-#if __IOS__
+#if __APPLE_UIKIT__
 			bezierPath.AddLineTo(point);
 #elif __MACOS__
 			bezierPath.LineTo(point);
@@ -69,7 +69,7 @@ namespace Uno.Media
 
 		public override void BezierTo(Point point1, Point point2, Point point3, bool isStroked, bool isSmoothJoin)
 		{
-#if __IOS__
+#if __APPLE_UIKIT__
 			bezierPath.AddCurveToPoint(point3, point1, point2);
 #elif __MACOS__
 			bezierPath.CurveTo(point3, point1, point2);
@@ -83,7 +83,7 @@ namespace Uno.Media
 
 		public override void QuadraticBezierTo(Point point1, Point point2, bool isStroked, bool isSmoothJoin)
 		{
-#if __IOS__
+#if __APPLE_UIKIT__
 			bezierPath.AddQuadCurveToPoint(point2, point1);
 #elif __MACOS__
 			// Convert a Quadratic Curve to cubic curve to draw it.
@@ -119,7 +119,7 @@ namespace Uno.Media
 			var endAngle = Atan2(endPoint.Y - center.Y, endPoint.X - center.X);
 			var circle = new Rect(center.X - radius, center.Y - radius, radius * 2, radius * 2);
 
-#if __IOS__
+#if __APPLE_UIKIT__
 			bezierPath.AddArc(
 				center,
 				(nfloat)radius,
@@ -243,7 +243,7 @@ namespace Uno.Media
 			{
 				if (closed)
 				{
-#if __IOS__ || __MACOS__
+#if __APPLE_UIKIT__ || __MACOS__
 					bezierPath.ClosePath();
 #elif __ANDROID__
 					bezierPath.Close();

@@ -25,6 +25,15 @@
 		<BundleResource Include="$(iOSProjectFolder)Resources\**" Exclude="$(_SingleProjectiOSExcludes)" Link="%(RecursiveDir)%(FileName)%(Extension)" IsDefaultItem="true" />
 	</ItemGroup>
 
+	<!-- tvOS -->
+	<ItemGroup Condition=" '$(EnableDefaultItems)' == 'true' and '$(SingleProject)' == 'true' and '$(TargetPlatformIdentifier)' == 'tvos' and '$(tvOSProjectFolder)' != '' ">
+		<None Include="$(tvOSProjectFolder)Info.plist" LogicalName="Info.plist" />
+		<ImageAsset Include="$(tvOSProjectFolder)**/*.xcassets/**/*.png;$(tvOSProjectFolder)**/*.xcassets/*/*.jpg;$(tvOSProjectFolder)**/*.xcassets/**/*.pdf;$(tvOSProjectFolder)**/*.xcassets/**/*.json" Exclude="$(_SingleProjecttvOSExcludes)" Link="%(RecursiveDir)%(FileName)%(Extension)" Visible="false" IsDefaultItem="true" />
+		<SceneKitAsset Include="$(tvOSProjectFolder)**/*.scnassets/*" Exclude="$(_SingleProjecttvOSExcludes)" Link="%(RecursiveDir)%(FileName)%(Extension)" IsDefaultItem="true" />
+		<InterfaceDefinition Include="$(tvOSProjectFolder)**/*.storyboard;$(tvOSProjectFolder)**/*.xib" Exclude="$(_SingleProjecttvOSExcludes)" Link="%(RecursiveDir)%(FileName)%(Extension)" IsDefaultItem="true" />
+		<BundleResource Include="$(tvOSProjectFolder)Resources\**" Exclude="$(_SingleProjecttvOSExcludes)" Link="%(RecursiveDir)%(FileName)%(Extension)" IsDefaultItem="true" />
+	</ItemGroup>
+
 	<!-- MacCatalyst -->
 	<ItemGroup Condition=" '$(EnableDefaultItems)' == 'true' and '$(SingleProject)' == 'true' and '$(TargetPlatformIdentifier)' == 'maccatalyst' and '$(MacCatalystProjectFolder)' != '' ">
 		<None Include="$(MacCatalystProjectFolder)Info.plist" LogicalName="Info.plist" />
@@ -65,6 +74,12 @@
 		<IPhoneResourcePrefix Condition=" '$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework)))' == 'ios' ">$(iOSProjectFolder)Resources</IPhoneResourcePrefix>
 		<_SingleProjectiOSExcludes>$(iOSProjectFolder)/**/.*/**</_SingleProjectiOSExcludes>
 
+		<!-- tvOS -->
+		<EnableDefaulttvOSItems>false</EnableDefaulttvOSItems>
+		<tvOSProjectFolder Condition=" '$(tvOSProjectFolder)' == '' ">tvOS\</tvOSProjectFolder>
+		<IPhoneResourcePrefix Condition=" '$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework)))' == 'tvos' ">$(tvOSProjectFolder)Resources</IPhoneResourcePrefix>
+		<_SingleProjecttvOSExcludes>$(tvOSProjectFolder)/**/.*/**</_SingleProjecttvOSExcludes>
+
 		<!-- MacCatalyst -->
 		<EnableDefaultMacCatalystItems>false</EnableDefaultMacCatalystItems>
 		<MacCatalystProjectFolder Condition=" '$(MacCatalystProjectFolder)' == '' ">MacCatalyst\</MacCatalystProjectFolder>
@@ -94,6 +109,7 @@
 	<ItemGroup Condition=" '$(EnableDefaultItems)' == 'true' and '$(SingleProject)' == 'true' ">
 		<Compile Condition=" '$(TargetPlatformIdentifier)' != 'android' and '$(AndroidProjectFolder)' != '' " Remove="$(AndroidProjectFolder)**/*$(DefaultLanguageSourceExtension)" />
 		<Compile Condition=" '$(TargetPlatformIdentifier)' != 'ios' and '$(iOSProjectFolder)' != '' " Remove="$(iOSProjectFolder)**/*$(DefaultLanguageSourceExtension)" />
+		<Compile Condition=" '$(TargetPlatformIdentifier)' != 'tvos' and '$(tvOSProjectFolder)' != '' " Remove="$(tvOSProjectFolder)**/*$(DefaultLanguageSourceExtension)" />
 		<Compile Condition=" '$(TargetPlatformIdentifier)' != 'maccatalyst' and '$(MacCatalystProjectFolder)' != '' " Remove="$(MacCatalystProjectFolder)**/*$(DefaultLanguageSourceExtension)" />
 		<Compile Condition=" '$(TargetPlatformIdentifier)' != 'macos' and '$(MacOSProjectFolder)' != '' " Remove="$(MacOSProjectFolder)**/*$(DefaultLanguageSourceExtension)" />
 		<Compile Condition=" '$(TargetPlatformIdentifier)' != 'windows' and '$(MacOSProjectFolder)' != '' " Remove="$(WindowsProjectFolder)**/*$(DefaultLanguageSourceExtension)" />

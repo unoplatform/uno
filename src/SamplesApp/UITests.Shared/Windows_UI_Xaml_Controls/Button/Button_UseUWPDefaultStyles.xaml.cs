@@ -20,7 +20,7 @@ using _NativeType = Microsoft.UI.Xaml.Controls.Grid;
 #elif __ANDROID__
 using Uno.UI;
 using _NativeType = Microsoft.UI.Xaml.Controls.BindableButtonEx;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using UIKit;
 using Uno.UI;
 using _NativeType = Uno.UI.Views.Controls.BindableUIButton;

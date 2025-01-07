@@ -13,7 +13,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 	{
 #if HAS_UNO
 		[TestMethod]
-#if __IOS__
+#if __APPLE_UIKIT__
 		[Ignore("Currently fails on iOS")]
 #endif
 #if __MACOS__

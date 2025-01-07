@@ -27,7 +27,7 @@ using View = Android.Views.View;
 using ViewGroup = Android.Views.ViewGroup;
 using Font = Android.Graphics.Typeface;
 using Android.Graphics;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using UIKit;
 using View = UIKit.UIView;
 using ViewGroup = UIKit.UIView;
@@ -82,8 +82,8 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		InitializePlatform();
 	}
 
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __NETSTD_REFERENCE__ || __MACOS__
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if __ANDROID__ || __APPLE_UIKIT__ || IS_UNIT_TESTS || __WASM__ || __NETSTD_REFERENCE__ || __MACOS__
+	[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
 #endif
 	public BrushTransition BackgroundTransition { get; set; }
 
@@ -661,7 +661,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			// Only ContentControl has the two properties below.  Other parents would just fail to bind since they don't have these
 			// two content related properties.
 			if (pTemplatedParent != null
-#if ANDROID || __IOS__
+#if ANDROID || __APPLE_UIKIT__
 				&& this is not NativeCommandBarPresenter // Uno specific: NativeCommandBarPresenter breaks if you inherit from the TP
 #endif
 				)

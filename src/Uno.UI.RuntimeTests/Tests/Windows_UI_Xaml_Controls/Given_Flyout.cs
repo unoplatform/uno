@@ -1632,7 +1632,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
-#if __IOS__
+#if __APPLE_UIKIT__
 		[TestMethod]
 		[RequiresFullWindow]
 		public async Task When_Native_DatePickerFlyout_Placement()

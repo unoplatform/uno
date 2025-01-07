@@ -16,7 +16,7 @@ using Microsoft.UI.Xaml.Media;
 using Uno.Disposables;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
 #elif __MACOS__
 using AppKit;
@@ -71,7 +71,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_popup.DisableFocus();
 #endif
 
-#if __IOS__
+#if __APPLE_UIKIT__
 			if (_textBox is { } textbox)
 			{
 				textbox.IsKeepingFocusOnEndEditing = true;

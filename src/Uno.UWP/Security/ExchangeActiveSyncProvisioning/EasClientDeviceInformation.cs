@@ -26,7 +26,7 @@ namespace Windows.Security.ExchangeActiveSyncProvisioning
 		/// <summary>
 		/// Returns the identifier of the local device.
 		/// </summary>
-		[NotImplemented("__ANDROID__", "__IOS__", "__WASM__", "__SKIA__", "__MACOS__")]
+		[NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__MACOS__")]
 		public Guid Id { get; private set; } = Guid.Empty;
 
 		/// <summary>

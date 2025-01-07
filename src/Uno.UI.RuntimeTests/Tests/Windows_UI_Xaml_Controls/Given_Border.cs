@@ -56,7 +56,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[DataRow(true)]
 		[DataRow(false)]
-#if __ANDROID__ || __IOS__ || __MACOS__
+#if __ANDROID__ || __APPLE_UIKIT__ || __MACOS__
 		[Ignore("Layouter doesn't work properly")]
 #endif
 		public async Task Check_Border_Margin(bool useCustomControl)
@@ -484,7 +484,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __ANDROID__ || __IOS__ || __WASM__
+#if __ANDROID__ || __APPLE_UIKIT__ || __WASM__
 		[Ignore("Not supported yet")]
 #endif
 		[DataRow(true)]
@@ -557,7 +557,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __MACOS__
 			Assert.Inconclusive(); // MACOS interpret colors differently
 #endif
-#if __IOS__
+#if __APPLE_UIKIT__
 			Assert.Inconclusive(); // iOS not working currently. https://github.com/unoplatform/uno/issues/6749
 #endif
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))

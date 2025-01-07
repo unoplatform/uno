@@ -1,4 +1,4 @@
-﻿#if !(__ANDROID__ || __IOS__)
+﻿#if !(__ANDROID__ || __IOS__ || __TVOS__)
 #nullable enable
 
 namespace Windows.Devices.Sensors

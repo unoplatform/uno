@@ -6,7 +6,7 @@ using Uno.UI;
 using Windows.System;
 
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
 #elif __MACOS__
 using AppKit;

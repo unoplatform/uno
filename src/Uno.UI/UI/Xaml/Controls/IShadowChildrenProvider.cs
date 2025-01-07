@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using View = UIKit.UIView;
 #elif __ANDROID__
 using View = Android.Views.View;

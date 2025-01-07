@@ -9,13 +9,13 @@ using static System.Math;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 	internal partial class ManagedItemsStackPanelLayout : ManagedVirtualizingPanelLayout
 #else
 	partial class ItemsStackPanelLayout
 #endif
 	{
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 		public override Orientation ScrollOrientation => Orientation;
 #endif
 

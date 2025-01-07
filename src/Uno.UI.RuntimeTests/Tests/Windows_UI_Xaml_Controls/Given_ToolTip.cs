@@ -235,7 +235,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
-#if !__IOS__ // Disabled due to #10791
+#if !__APPLE_UIKIT__ // Disabled due to #10791
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
@@ -330,7 +330,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 #if HAS_UNO && !__MACOS__
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 		[Ignore("Currently fails on Android and iOS")]
 #endif
 		[TestMethod]

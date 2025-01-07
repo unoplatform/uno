@@ -11,7 +11,7 @@ using Uno.Foundation.Logging;
 
 #if __ANDROID__
 using _View = Android.Views.View;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using _View = UIKit.UIView;
 #elif __MACOS__
 using _View = AppKit.NSView;
@@ -101,7 +101,7 @@ namespace Microsoft.UI.Xaml.Media
 
 		private void OnChildAdded(Transform transform)
 		{
-#if __ANDROID__ || __IOS__ || __MACOS__
+#if __ANDROID__ || __APPLE_UIKIT__ || __MACOS__
 			transform.View = View; // Animation support
 #endif
 			transform.Changed += OnChildTransformChanged;
@@ -109,7 +109,7 @@ namespace Microsoft.UI.Xaml.Media
 
 		private void OnChildRemoved(Transform transform)
 		{
-#if __ANDROID__ || __IOS__ || __MACOS__
+#if __ANDROID__ || __APPLE_UIKIT__ || __MACOS__
 			transform.View = null; // Animation support
 #endif
 			transform.Changed -= OnChildTransformChanged;
@@ -141,7 +141,7 @@ namespace Microsoft.UI.Xaml.Media
 		 * All those can be safely removed once animation will not assume that a given Transform
 		 * can be used only for a single element at a time!
 		 */
-#if __IOS__
+#if __APPLE_UIKIT__
 		internal override bool IsAnimating => Children.Any(child => child.IsAnimating);
 #elif __ANDROID__
 		internal override bool IsAnimating
@@ -151,7 +151,7 @@ namespace Microsoft.UI.Xaml.Media
 		}
 #endif
 
-#if __ANDROID__ || __IOS__ || __MACOS__
+#if __ANDROID__ || __APPLE_UIKIT__ || __MACOS__
 		internal override _View View
 		{
 			get => base.View;

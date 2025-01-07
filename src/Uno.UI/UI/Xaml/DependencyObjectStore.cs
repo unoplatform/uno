@@ -25,7 +25,7 @@ using Microsoft.UI.Xaml.Media;
 
 #if __ANDROID__
 using View = Android.Views.View;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using View = UIKit.UIView;
 #endif
 
@@ -2044,7 +2044,7 @@ namespace Microsoft.UI.Xaml
 			if (propertyMetadata.HasPropertyChanged)
 			{
 				eventArgs ??= new DependencyPropertyChangedEventArgs(property, previousValue, newValue
-#if __IOS__ || __MACOS__ || IS_UNIT_TESTS
+#if __APPLE_UIKIT__ || __MACOS__ || IS_UNIT_TESTS
 					, previousPrecedence, newPrecedence, bypassesPropagation
 #endif
 				);
@@ -2060,7 +2060,7 @@ namespace Microsoft.UI.Xaml
 			if (actualInstanceAlias is IDependencyObjectInternal doInternal)
 			{
 				eventArgs ??= new DependencyPropertyChangedEventArgs(property, previousValue, newValue
-#if __IOS__ || __MACOS__ || IS_UNIT_TESTS
+#if __APPLE_UIKIT__ || __MACOS__ || IS_UNIT_TESTS
 					, previousPrecedence, newPrecedence, bypassesPropagation
 #endif
 );
@@ -2071,7 +2071,7 @@ namespace Microsoft.UI.Xaml
 			if (propertyDetails.CanRaisePropertyChanged)
 			{
 				eventArgs ??= new DependencyPropertyChangedEventArgs(property, previousValue, newValue
-#if __IOS__ || __MACOS__ || IS_UNIT_TESTS
+#if __APPLE_UIKIT__ || __MACOS__ || IS_UNIT_TESTS
 					, previousPrecedence, newPrecedence, bypassesPropagation
 #endif
 				);
@@ -2084,7 +2084,7 @@ namespace Microsoft.UI.Xaml
 			{
 				var callback = currentCallbacks[callbackIndex];
 				eventArgs ??= new DependencyPropertyChangedEventArgs(property, previousValue, newValue
-#if __IOS__ || __MACOS__ || IS_UNIT_TESTS
+#if __APPLE_UIKIT__ || __MACOS__ || IS_UNIT_TESTS
 					, previousPrecedence, newPrecedence, bypassesPropagation
 #endif
 				);

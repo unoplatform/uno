@@ -1,6 +1,6 @@
 ﻿#nullable enable
 
-#if __IOS__ || __MACOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __MACOS__ || __ANDROID__
 using System;
 using System.Linq;
 using Windows.Foundation;
@@ -12,7 +12,7 @@ using static System.Double;
 using Windows.Phone.Media.Devices;
 using System.Diagnostics;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using NativePath = CoreGraphics.CGPath;
 using ObjCRuntime;
 using NativeSingle = System.Runtime.InteropServices.NFloat;
@@ -229,7 +229,7 @@ partial class Shape
 			renderOrigin.y -= renderOverflow.y / 2.0;
 		}
 
-#if __IOS__ || __MACOS__
+#if __APPLE_UIKIT__ || __MACOS__
 		// Finally render the shape in a Layer
 		var renderTransform = new CoreGraphics.CGAffineTransform(
 			(nfloat)renderScale.x, 0,
@@ -239,7 +239,7 @@ partial class Shape
 		var renderPath = new CoreGraphics.CGPath(path, renderTransform);
 
 		Render(renderPath, fillRule);
-#if __IOS__
+#if __APPLE_UIKIT__
 		// If the Shape does not have size defined, and natural size of the geometry is lower than the finalSize,
 		// then we don't clip the shape!
 		ClipsToBounds = stretch != Stretch.None

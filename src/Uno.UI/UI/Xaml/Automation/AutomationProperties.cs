@@ -139,7 +139,7 @@ namespace Microsoft.UI.Xaml.Automation
 
 		private static void OnAutomationIdChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
-#if __IOS__
+#if __APPLE_UIKIT__
 			if (FrameworkElementHelper.IsUiAutomationMappingEnabled && dependencyObject is UIKit.UIView view)
 			{
 				view.AccessibilityIdentifier = (string)args.NewValue;

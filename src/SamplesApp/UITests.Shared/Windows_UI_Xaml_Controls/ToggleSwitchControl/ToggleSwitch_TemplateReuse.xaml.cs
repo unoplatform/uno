@@ -41,7 +41,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ToggleSwitchControl
 
 		private void SetPoolingEnabled(bool enabled)
 		{
-#if __ANDROID || __IOS__
+#if __ANDROID || __APPLE_UIKIT__
 			FeatureConfiguration.Page.IsPoolingEnabled = enabled;
 			FrameworkTemplatePool.IsPoolingEnabled = enabled;
 #endif

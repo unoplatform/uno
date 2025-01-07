@@ -7,7 +7,7 @@ using Windows.Foundation;
 
 using Rect = Windows.Foundation.Rect;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using Foundation;
 using UIKit;
 using CoreGraphics;
@@ -89,7 +89,7 @@ namespace Microsoft.UI.Xaml.Media
 
 		#endregion
 
-#if __IOS__ || __MACOS__
+#if __APPLE_UIKIT__ || __MACOS__
 		public static implicit operator UIImage(Geometry g)
 		{
 			return g.ToNativeImage();

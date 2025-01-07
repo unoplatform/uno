@@ -45,7 +45,7 @@
 		<AssignTargetPathsDependsOn>$(AssignTargetPathsDependsOn);AssignLinkMetadata</AssignTargetPathsDependsOn>
 
 		<_UnoUnderlyingPlatform Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">android</_UnoUnderlyingPlatform>
-		<_UnoUnderlyingPlatform Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">ios</_UnoUnderlyingPlatform>
+		<_UnoUnderlyingPlatform Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tvos'">uikit</_UnoUnderlyingPlatform>
 		<_UnoUnderlyingPlatform Condition="'$(UnoRuntimeIdentifier)'=='WebAssembly'">wasm</_UnoUnderlyingPlatform>
 		<_UnoUnderlyingPlatform Condition="'$(_UnoUnderlyingPlatform)'=='' AND '$(UnoRuntimeIdentifier)'=='Skia'">skia</_UnoUnderlyingPlatform>
 </PropertyGroup>
@@ -53,7 +53,7 @@
 	<!--
 	  This task transforms all the Content files and PRIResources into resources files compatible for each platform.
 
-	  Note: For iOS and Android, it must be run early in the build process, but no publicly stable target is available
+	  Note: For Apple UIKit and Android, it must be run early in the build process, but no publicly stable target is available
 	  to inject Uno properly. Failing to add this task early enough makes X.A and X.I miss the generated resource files.
 	-->
 	<Target Name="UnoResourcesGeneration"
@@ -112,7 +112,7 @@
 							ItemName="GeneratedFiles" />
 		</ResourcesGenerationTask_v0>
 		<ItemGroup>
-			<BundleResource Condition="'%(GeneratedFiles.UnoResourceTarget)' =='iOS'" Include="@(GeneratedFiles)" />
+			<BundleResource Condition="'%(GeneratedFiles.UnoResourceTarget)' =='UIKit'" Include="@(GeneratedFiles)" />
 			<_UnoAndroidResources Condition="'%(GeneratedFiles.UnoResourceTarget)' =='Android'" Include="@(GeneratedFiles)" />
 			<LibraryResourceDirectories Condition="'@(_UnoAndroidResources->Count ())' != '0' " Include="$(_ResourceOutputPath)\r">
                 <StampFile>$(_ResourceStampFile)</StampFile>
@@ -178,7 +178,7 @@
 		<ItemGroup>
 			<Content Remove="@(Assets)" />
 		</ItemGroup>
-		<ItemGroup Condition="'$(_UnoUnderlyingPlatform)'=='ios'">
+		<ItemGroup Condition="'$(_UnoUnderlyingPlatform)'=='uikit'">
 			<BundleResource Condition="'%(RetargetedAssets.AssetType)' == 'image'" Include="@(RetargetedAssets)" />
 			<BundleResource Condition="'%(RetargetedAssets.AssetType)' == 'generic'" Include="@(RetargetedAssets)" />
 

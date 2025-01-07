@@ -10,7 +10,7 @@ namespace Microsoft.UI.Xaml
 		internal bool IsInLiveTree => IsActiveInVisualTree;
 #elif __ANDROID__
 		internal bool IsInLiveTree => base.IsAttachedToWindow;
-#elif __IOS__ || __MACOS__
+#elif __APPLE_UIKIT__ || __MACOS__
 		internal bool IsInLiveTree => base.Window != null;
 #elif IS_UNIT_TESTS // There is no visual tree concept in unit tests. This is here just in case it's needed indirectly, e.g. in UIElement.GetTransform
 		internal bool IsInLiveTree => true;

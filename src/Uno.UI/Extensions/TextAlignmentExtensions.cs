@@ -7,7 +7,7 @@ namespace Microsoft.UI.Xaml
 {
 	internal static class TextAlignmentExtensions
 	{
-#if __IOS__
+#if __APPLE_UIKIT__
 
 		internal static UIKit.UITextAlignment ToNativeTextAlignment(this TextAlignment textAlignment)
 		{

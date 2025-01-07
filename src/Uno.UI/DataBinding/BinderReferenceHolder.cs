@@ -10,7 +10,7 @@ using System.Diagnostics;
 using System.ComponentModel;
 using Microsoft.UI.Xaml;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
 using _NativeReference = global::Foundation.NSObject;
 using _NativeView = UIKit.UIView;
@@ -335,7 +335,7 @@ namespace Uno.UI.DataBinding
 		{
 			try
 			{
-#if __IOS__
+#if __APPLE_UIKIT__
 				var uiView = target as UIView;
 
 				if (uiView != null && ObjCRuntime.Runtime.TryGetNSObject(uiView.Handle) != null)

@@ -18,7 +18,7 @@ using Windows.Foundation;
 using Windows.UI;
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
 #endif
 

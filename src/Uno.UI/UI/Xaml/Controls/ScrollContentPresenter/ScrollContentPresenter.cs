@@ -6,7 +6,7 @@ using Windows.System;
 #if __ANDROID__
 using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using UIKit;
 using View = UIKit.UIView;
 using Color = UIKit.UIColor;
@@ -313,7 +313,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return Math.Max(minOffset, Math.Min(offset, maxOffset));
 		}
 
-#elif __IOS__ // Note: No __ANDROID__, the ICustomScrollInfo support is made directly in the NativeScrollContentPresenter                                                                                                                                                                                                                                                                                                                                                            
+#elif __APPLE_UIKIT__ // Note: No __ANDROID__, the ICustomScrollInfo support is made directly in the NativeScrollContentPresenter                                                                                                                                                                                                                                                                                                                                                            
 		protected override Size MeasureOverride(Size size)
 		{
 			var result = base.MeasureOverride(size);

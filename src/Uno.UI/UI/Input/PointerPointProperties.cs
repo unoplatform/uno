@@ -120,14 +120,14 @@ namespace Windows.UI.Input
 		public PointerUpdateKind PointerUpdateKind { get; internal set; }
 
 		// Supported only on MacOS
-		[NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public float XTilt { get; internal set; }
 
 		// Supported only on MacOS
-		[NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public float YTilt { get; internal set; }
 
-		[NotImplemented("__ANDROID__", "__IOS__", "__MACOS__")]
+		[NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "__MACOS__")]
 		public int MouseWheelDelta { get; internal set; }
 
 		/// <inheritdoc />

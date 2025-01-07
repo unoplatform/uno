@@ -334,7 +334,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			writer.AppendLineIndented("using _View = Microsoft.UI.Xaml.UIElement;");
 			writer.AppendLineIndented("#elif __ANDROID__");
 			writer.AppendLineIndented("using _View = Android.Views.View;");
-			writer.AppendLineIndented("#elif __IOS__");
+			writer.AppendLineIndented("#elif __APPLE_UIKIT__ || __IOS__ || __TVOS__");
 			writer.AppendLineIndented("using _View = UIKit.UIView;");
 			writer.AppendLineIndented("#elif __MACOS__");
 			writer.AppendLineIndented("using _View = AppKit.NSView;");

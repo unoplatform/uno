@@ -10,7 +10,7 @@ namespace Windows.System
 {
 	public static partial class Launcher
 	{
-#if __ANDROID__ || __IOS__ || __MACOS__ || __SKIA__
+#if __ANDROID__ || __IOS__ || __TVOS__ || __MACOS__ || __SKIA__
 		private const string MicrosoftUriPrefix = "ms-";
 
 		internal static bool IsSpecialUri(Uri uri) => uri.Scheme.StartsWith(MicrosoftUriPrefix, StringComparison.InvariantCultureIgnoreCase);
@@ -52,7 +52,7 @@ namespace Windows.System
 #endif
 		}
 
-#if __ANDROID__ || __IOS__ || __MACOS__ || __SKIA__
+#if __ANDROID__ || __IOS__ || __TVOS__ || __MACOS__ || __SKIA__
 		public static IAsyncOperation<LaunchQuerySupportStatus> QueryUriSupportAsync(
 			Uri uri,
 			LaunchQuerySupportType launchQuerySupportType)

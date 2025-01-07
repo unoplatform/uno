@@ -21,7 +21,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives
 		{
 			// TODO: Uno specific - avoid stretching tabs vertically.
 			// Can be removed when #1133 is fixed.
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 			ShouldApplyChildStretch = false;
 #endif
 

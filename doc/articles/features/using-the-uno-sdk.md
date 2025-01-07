@@ -146,6 +146,7 @@ By default, the Uno.Sdk specifies a set of OS Platform versions, as follows:
 | iOS | 14.2 |
 | macOS | 10.14 |
 | MacCatalyst | 14.0 |
+| tvOS  | 14.2 |
 | WinUI | 10.0.18362.0 |
 
 You can set this property in a `Choose` MSBuild block in order to alter its value based on the active `TargetFramework`.
@@ -165,6 +166,11 @@ You can set this property in a `Choose` MSBuild block in order to alter its valu
     <When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos'">
       <PropertyGroup>
         <SupportedOSPlatformVersion>10.14</SupportedOSPlatformVersion>
+      </PropertyGroup>
+    </When>
+    <When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tvOS'">
+      <PropertyGroup>
+        <SupportedOSPlatformVersion>14.2</SupportedOSPlatformVersion>
       </PropertyGroup>
     </When>
     <When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">

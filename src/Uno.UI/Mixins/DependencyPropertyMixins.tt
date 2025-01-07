@@ -85,7 +85,7 @@
 				//.Property("ChildTransitions", "TransitionCollection", "null")
 
 		.Namespace("Uno.UI.Controls.Legacy")
-			.Class("ListViewBase", condition: "__IOS__")
+			.Class("ListViewBase", condition: "__APPLE_UIKIT__")
 				.Property("DisplayMemberPath", "string", "string.Empty")
 			.Class("ListView", condition: "__ANDROID__")
 				.Property("DisplayMemberPath", "string", "string.Empty")

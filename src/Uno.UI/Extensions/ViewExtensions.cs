@@ -1,5 +1,5 @@
 ﻿#nullable enable
-#if __IOS__
+#if __APPLE_UIKIT__
 using UIKit;
 using _View = UIKit.UIView;
 #elif __MACOS__
@@ -102,7 +102,7 @@ namespace Uno.UI.Extensions
 				.Append(uiElement.IsMeasureDirtyPathDisabled ? " MEASURE_DIRTY_PATH_DISABLED" : "")
 				.Append(uiElement.IsMeasureDirtyPath ? " MEASURE_DIRTY_PATH" : "")
 				.Append(uiElement.IsMeasureDirty ? " MEASURE_DIRTY" : "")
-#if __WASM__ || __SKIA__ || __IOS__ || __ANDROID__
+#if __WASM__ || __SKIA__ || __APPLE_UIKIT__ || __ANDROID__
 				.Append(!uiElement.IsFirstMeasureDone ? " NEVER_MEASURED" : "")
 #endif
 				.Append(uiElement.IsArrangeDirtyPathDisabled ? " ARRANGE_DIRTY_PATH_DISABLED" : "")

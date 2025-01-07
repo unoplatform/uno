@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 #if __ANDROID__
 using Android.Graphics;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using Foundation;
 using UIKit;
 #elif __MACOS__
@@ -48,7 +48,7 @@ partial class BitmapEncoder
 			{JpegEncoderId, Bitmap.CompressFormat.Jpeg},
 			{PngEncoderId, Bitmap.CompressFormat.Png},
 		};
-#elif __IOS__
+#elif __APPLE_UIKIT__
 	private static readonly Dictionary<Guid, Func<UIImage, NSData>> _encoderMap =
 		new()
 		{

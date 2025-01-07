@@ -22,6 +22,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool _isPasswordRevealed;
 		private readonly bool _isSkiaTextBox = !FeatureConfiguration.TextBox.UseOverlayOnSkia;
 		private static readonly bool _useInvisibleNativeTextView = OperatingSystem.IsBrowser() || DeviceTargetHelper.IsUIKit();
+
 		// On Windows, \u25CF is used as password character.
 		// However, this character can't be retrieved on Android (doesn't exist in any system font) and on some browser/OS combinations.
 		// We use \u2022 instead, which is already the one normally used by Android and all the major browsers.

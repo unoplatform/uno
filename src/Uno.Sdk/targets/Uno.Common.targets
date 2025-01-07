@@ -44,6 +44,9 @@
 		<iOSProjectFolder Condition=" '$(iOSProjectFolder)' == '' ">$(PlatformsProjectFolder)iOS\</iOSProjectFolder>
 		<iOSProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(iOSProjectFolder)'))</iOSProjectFolder>
 		<iOSProjectFolder Condition=" !Exists($(iOSProjectFolder)) ">$([MSBuild]::EnsureTrailingSlash('iOS'))</iOSProjectFolder>
+		<tvOSProjectFolder Condition=" '$(tvOSProjectFolder)' == '' ">$(PlatformsProjectFolder)tvOS\</tvOSProjectFolder>
+		<tvOSProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(tvOSProjectFolder)'))</tvOSProjectFolder>
+		<tvOSProjectFolder Condition=" !Exists($(tvOSProjectFolder)) ">$([MSBuild]::EnsureTrailingSlash('tvOS'))</tvOSProjectFolder>
 		<MacCatalystProjectFolder Condition=" '$(MacCatalystProjectFolder)' == '' ">$(PlatformsProjectFolder)MacCatalyst\</MacCatalystProjectFolder>
 		<MacCatalystProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(MacCatalystProjectFolder)'))</MacCatalystProjectFolder>
 		<MacCatalystProjectFolder Condition=" !Exists('$(MacCatalystProjectFolder)') ">$([MSBuild]::EnsureTrailingSlash('MacCatalyst'))</MacCatalystProjectFolder>
@@ -104,6 +107,8 @@
 			Condition=" $(IsAndroid) != 'true' AND '$(AndroidProjectFolder)'!='' " />
 		<_IgnorePlatformFiles Include="$(iOSProjectFolder)**"
 			Condition=" $(IsIOS) != 'true' AND '$(iOSProjectFolder)'!='' " />
+		<_IgnorePlatformFiles Include="$(tvOSProjectFolder)**"
+			Condition=" $(IsTvOS) != 'true' AND '$(tvOSProjectFolder)'!='' " />
 		<_IgnorePlatformFiles Include="$(MacCatalystProjectFolder)**"
 			Condition=" $(IsMacCatalyst) != 'true' AND '$(MacCatalystProjectFolder)'!='' " />
 		<_IgnorePlatformFiles Include="$(MacOSProjectFolder)**"

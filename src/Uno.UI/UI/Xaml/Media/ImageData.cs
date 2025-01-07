@@ -4,7 +4,7 @@ using System;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Media;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using _UIImage = UIKit.UIImage;
 #elif __MACOS__
 using _UIImage = AppKit.NSImage;
@@ -35,7 +35,7 @@ internal partial struct ImageData
 		Error = exception ?? throw new ArgumentNullException(nameof(exception));
 	}
 
-#if __IOS__ || __MACOS__
+#if __APPLE_UIKIT__ || __MACOS__
 	public static ImageData FromNative(_UIImage uiImage) => new ImageData(uiImage);
 
 	private ImageData(_UIImage uiImage)
@@ -98,7 +98,7 @@ internal partial struct ImageData
 
 	public byte[]? ByteArray { get; } = null;
 
-#if __IOS__ || __MACOS__
+#if __APPLE_UIKIT__ || __MACOS__
 	public _UIImage? NativeImage { get; } = null;
 #elif __SKIA__
 	public SkiaCompositionSurface? CompositionSurface { get; } = null;
@@ -116,7 +116,7 @@ internal partial struct ImageData
 			ImageDataKind.Empty => "Empty",
 			ImageDataKind.Error => $"Error[{Error}]",
 			ImageDataKind.ByteArray => $"Byte array: Length {ByteArray?.Length ?? -1}",
-#if __IOS__ || __MACOS__
+#if __APPLE_UIKIT__ || __MACOS__
 			ImageDataKind.NativeImage => $"Native UIImage: {NativeImage}",
 #endif
 #if __SKIA__

@@ -107,7 +107,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Popups
 
 			await WindowHelper.WaitForIdle();
 
-#if __IOS__ //in iOS we want to force calling in a different thread than UI
+#if __APPLE_UIKIT__ //in iOS we want to force calling in a different thread than UI
 			await Task.Run(() => asyncOperation.Cancel());
 #else
 			asyncOperation.Cancel();

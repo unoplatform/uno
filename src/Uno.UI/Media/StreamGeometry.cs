@@ -6,7 +6,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.Extensions;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 using Foundation;
 using UIKit;
 using CoreGraphics;
@@ -58,7 +58,7 @@ namespace Uno.Media
 		}
 #endif
 
-#if __IOS__ || __MACOS__
+#if __APPLE_UIKIT__ || __MACOS__
 		public override UIImage ToNativeImage()
 		{
 			return (bezierPath == null) ? null : ToNativeImage(bezierPath.Bounds.Size);
@@ -116,7 +116,7 @@ namespace Uno.Media
 
 			UIImage image;
 
-#if __IOS__
+#if __APPLE_UIKIT__
 			UIGraphics.BeginImageContextWithOptions(targetSize, false, 0);
 			using (var context = UIGraphics.GetCurrentContext())
 			{

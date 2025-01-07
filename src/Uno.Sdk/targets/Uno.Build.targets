@@ -81,6 +81,7 @@
 				Include="@(_TargetFrameworksAsGroup)"
 				Condition="
 				'%(_TargetFrameworksAsGroup.PlatformIdentifier)' == 'ios'
+				OR '%(_TargetFrameworksAsGroup.PlatformIdentifier)' == 'tvos'
 				OR '%(_TargetFrameworksAsGroup.PlatformIdentifier)' == 'maccatalyst'
 				" />
 		</ItemGroup>
@@ -137,6 +138,7 @@
 					$([MSBuild]::IsOSPlatform('linux'))
 					AND (
 						$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework))) == 'ios'
+						OR $([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework))) == 'tvos'
 						OR $([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework))) == 'maccatalyst'
 					)" />
 

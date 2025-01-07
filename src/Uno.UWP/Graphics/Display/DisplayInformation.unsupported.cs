@@ -15,7 +15,7 @@ namespace Windows.Graphics.Display
 		public DisplayOrientations NativeOrientation { get; private set; } = DisplayOrientations.None;
 #endif
 
-#if __WASM__ || __IOS__ || __MACOS__ || IS_UNIT_TESTS || __SKIA__ || __NETSTD_REFERENCE__
+#if __WASM__ || __IOS__ || __TVOS__ || __MACOS__ || IS_UNIT_TESTS || __SKIA__ || __NETSTD_REFERENCE__
 		/// <summary>
 		/// Gets the raw dots per inch (DPI) along the x axis of the display monitor.
 		/// </summary>
@@ -23,7 +23,7 @@ namespace Windows.Graphics.Display
 		/// As per <see href="https://docs.microsoft.com/en-us/uwp/api/windows.graphics.display.displayinformation.rawdpix#remarks">Docs</see> 
 		/// defaults to 0 if not set
 		/// </remarks>
-		[NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		[NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public float RawDpiX { get; private set; } = 0;
 
 		/// <summary>
@@ -33,11 +33,11 @@ namespace Windows.Graphics.Display
 		/// As per <see href="https://docs.microsoft.com/en-us/uwp/api/windows.graphics.display.displayinformation.rawdpiy#remarks">Docs</see> 
 		/// defaults to 0 if not set
 		/// </remarks>
-		[NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		[NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public float RawDpiY { get; private set; } = 0;
 #endif
 
-#if __WASM__ || __IOS__ || __MACOS__ || IS_UNIT_TESTS || __NETSTD_REFERENCE__
+#if __WASM__ || __IOS__ || __TVOS__ || __MACOS__ || IS_UNIT_TESTS || __NETSTD_REFERENCE__
 		/// <summary>
 		/// Diagonal size of the display in inches.
 		/// </summary>
@@ -45,7 +45,7 @@ namespace Windows.Graphics.Display
 		/// As per <see href="https://docs.microsoft.com/en-us/uwp/api/windows.graphics.display.displayinformation.diagonalsizeininches#property-value">Docs</see> 
 		/// defaults to null if not set
 		/// </remarks>
-		[global::Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		[global::Uno.NotImplemented("__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public double? DiagonalSizeInInches { get; private set; }
 #endif
 

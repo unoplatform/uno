@@ -11,7 +11,7 @@ using Microsoft.UI.Xaml.Media;
 #if __ANDROID__
 using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using UIKit;
 using View = UIKit.UIView;
 using Color = UIKit.UIColor;

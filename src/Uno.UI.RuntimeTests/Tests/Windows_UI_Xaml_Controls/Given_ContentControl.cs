@@ -13,7 +13,7 @@ using Windows_UI_Xaml_Controls;
 using static Private.Infrastructure.TestServices;
 #if WINAPPSDK
 using Uno.UI.Extensions;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using UIKit;
 #elif __MACOS__
 using AppKit;
@@ -193,7 +193,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			contentControl.Content = null;
 
-#if __IOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 			Assert.AreEqual(0, comboBox.Items.Count);
 			Assert.AreEqual(-1, comboBox.SelectedIndex);
 #else // this is correct

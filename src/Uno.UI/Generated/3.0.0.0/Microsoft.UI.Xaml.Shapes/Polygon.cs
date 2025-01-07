@@ -3,14 +3,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Shapes
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class Polygon : global::Microsoft.UI.Xaml.Shapes.Shape
 	{
 		// Skipping already declared property Points
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Microsoft.UI.Xaml.Media.FillRule FillRule
 		{
 			get
@@ -23,8 +23,8 @@ namespace Microsoft.UI.Xaml.Shapes
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty FillRuleProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(FillRule), typeof(global::Microsoft.UI.Xaml.Media.FillRule),

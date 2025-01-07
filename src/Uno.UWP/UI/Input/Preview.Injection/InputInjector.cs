@@ -45,7 +45,7 @@ public partial class InputInjector
 		_target = target;
 	}
 
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
 	public void InitializeTouchInjection(InjectedInputVisualizationMode visualMode)
 	{
 		UninitializeTouchInjection();
@@ -53,7 +53,7 @@ public partial class InputInjector
 		_touch = (new InjectedInputState(PointerDeviceType.Touch), isAdded: false);
 	}
 
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
 	public void UninitializeTouchInjection()
 	{
 		if (_touch is not null)
@@ -66,7 +66,7 @@ public partial class InputInjector
 		}
 	}
 
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
 	public void InjectTouchInput(IEnumerable<InjectedInputTouchInfo> input)
 	{
 		if (_touch is null)

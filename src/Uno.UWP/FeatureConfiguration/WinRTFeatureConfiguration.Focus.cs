@@ -4,7 +4,7 @@ partial class WinRTFeatureConfiguration
 {
 	public static class Focus
 	{
-#if __IOS__
+#if __IOS__ || __TVOS__
 		/// <summary>
 		/// This value only has effect applies on iOS, keybopard focus is now always enabled on Android.
 		/// </summary>

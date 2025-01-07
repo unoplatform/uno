@@ -15,7 +15,7 @@ using View = Android.Views.View;
 using ViewGroup = Android.Views.ViewGroup;
 using Font = Android.Graphics.Typeface;
 using Android.Graphics;
-#elif __IOS__
+#elif __APPLE_UIKIT__
 using UIKit;
 using View = UIKit.UIView;
 using Color = UIKit.UIColor;
