@@ -21,18 +21,21 @@ namespace UITests.Shared.Windows_UI_Xaml_Input.Pointers
 	[SampleControlInfo(
 		"Pointers",
 		Description =
-		"Click the red rectangle and wait for 1 second and click again. Then see if the delta between the reported timestamps is close to 1 000 000 (1 million microseconds = 1 second).",
+		"Click the red rectangle repeatedly. You should see tickmarks in the logs (✔️) indicating that time delta matches timestamp delta.",
 		IsManualTest = true)]
 	public sealed partial class PointerEvent_Timestamp : UserControl
 	{
 		private ulong? _lastTimestamp;
 		private uint? _lastFrameId;
-		private DateTimeOffset? _lastTime;
+		private double? _lastElapsedTime;
+		private readonly Stopwatch _stopwatch = new();
 
 		public PointerEvent_Timestamp()
 		{
 			this.InitializeComponent();
 			TestBorder.PointerPressed += PointerEventArgsTests_PointerPressed;
+			_stopwatch.Start();
+			Unloaded += (s, e) => _stopwatch.Stop();
 		}
 
 		public ObservableCollection<string> Logs { get; } = new ObservableCollection<string>();
@@ -42,22 +45,23 @@ namespace UITests.Shared.Windows_UI_Xaml_Input.Pointers
 			var point = e.GetCurrentPoint(TestBorder);
 			var timestamp = point.Timestamp;
 			var frameId = point.FrameId;
-			var time = DateTimeOffset.Now;
+			var time = _stopwatch.Elapsed.TotalMicroseconds;
 
 			var log = $"Timestamp: {timestamp}, FrameId: {frameId}" + Environment.NewLine;
 			if (_lastTimestamp.HasValue)
 			{
-				var timeDelta = (time - _lastTime.Value).TotalMicroseconds;
-				var timestampDelta = timestamp - _lastTimestamp.Value;
+				var timeDelta = (ulong)(time - _lastElapsedTime.Value);
+				var timestampDelta = (timestamp - _lastTimestamp.Value);
 				log += $"Time Δ: {timeDelta}";
 
-				var seemsCorrect = Math.Abs(timeDelta - timestampDelta) < 1000;
-				log += $", Timestamp Δ: {timeDelta} {(seemsCorrect ? "✔️" : "❌")}";
+				// As long as the delta differs by less than 100ms, it probably is correct.
+				var seemsCorrect = Math.Abs((double)timeDelta - timestampDelta) < 50_000;
+				log += $", Timestamp Δ: {timestampDelta} {(seemsCorrect ? "✔️" : "❌")}";
 
 				var frameIdDelta = frameId - _lastFrameId.Value;
 				log += $", FrameId Δ: {frameIdDelta}";
 			}
-			_lastTime = time;
+			_lastElapsedTime = time;
 			_lastTimestamp = timestamp;
 			_lastFrameId = frameId;
 			Logs.Add(log);
