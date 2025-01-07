@@ -195,6 +195,7 @@ The implementation of those are quite similar to the example of the SettingsCont
 
    Change this:
 
+
    ```CommunityToolkit.WinUI.Controls.SettingsControls```
 
    to Converters namespace:
@@ -236,7 +237,7 @@ Somewhere in your Page Content:
 
 ```xml
   <TextBox x:Name="tbName"
-           Text="{Binding Name, Mode=TwoWay}" 
+           Text="{Binding Name, Mode=TwoWay}"
            PlaceholderText="Enter your name:"/>
   <Button x:Name="StartButton"
           Content="Start a cool simple Game!"
@@ -263,16 +264,20 @@ BoolToObjectConverter x:Key="BoolToColorConverter" TrueValue="{ThemeResource Sys
 Somewhere in your Page Content:
 
 ```xml
-  <TextBox x:Name="tbName"
-           Text="{Binding Name, Mode=TwoWay}" 
-           PlaceholderText="Enter your name:"
-           BackgroundColor="{x:Bind tbName.Text, Converter={StaticResource BoolToColorConverter},Mode=OneWay}/>
-  <Button x:Name="StartButton"
-          Content="Start a cool simple Game!"
-          AutomationProperties.AutomationId="StartAGameButton"
-          Command="{Binding GoToStart}"
-          HorizontalAlignment="Center"/>
+<TextBox x:Name="tbName"
+            Text="{Binding Name, Mode=TwoWay}"
+            PlaceholderText="Enter your name:"
+            BackgroundColor="{x:Bind tbName.Text, Converter={StaticResource BoolToColorConverter},Mode=OneWay}/>
+<Button x:Name="StartButton"
+        Content="Start a cool simple Game!"
+        AutomationProperties.AutomationId="StartAGameButton"
+        Command="{Binding GoToStart}"
+        HorizontalAlignment="Center"/>
 ```
+
+---
+
+[!include[getting-help](includes/getting-help.md)]
 
 ---
 
