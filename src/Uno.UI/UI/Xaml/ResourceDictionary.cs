@@ -20,9 +20,12 @@ namespace Microsoft.UI.Xaml
 	public partial class ResourceDictionary : DependencyObject, IDependencyObjectParse, IDictionary<object, object>
 	{
 		private readonly SpecializedResourceDictionary _values = new SpecializedResourceDictionary();
-		private readonly List<ResourceDictionary> _mergedDictionaries = new List<ResourceDictionary>();
+		private readonly ObservableCollection<ResourceDictionary> _mergedDictionaries = new();
 		private ResourceDictionary _themeDictionaries;
 		private ManagedWeakReference _sourceDictionary;
+
+		private ResourceDictionary? _parent;
+		private HashSet<object> _notFoundCache = new();
 
 		/// <summary>
 		/// This event is fired when a key that has value of type <see cref="ResourceDictionary"/> is added or changed in the current <see cref="ResourceDictionary" />
@@ -34,8 +37,35 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		private bool _hasUnmaterializedItems;
 
+		void InvalidateNotFoundCache(bool propagate, object resourceKey)
+		{
+			var dict = this;
+
+			while(dict is not null)
+			{
+				dict._notFoundCache.Remove(resourceKey);
+
+				dict = dict._parent;
+			}
+		}
+
 		public ResourceDictionary()
 		{
+			_mergedDictionaries.CollectionChanged += (s, e) {
+
+				if(e.ChangeType == Added) {
+					foreach(var child in e.Added)
+					{
+						child._parent = this;
+
+						foreach(var childRes in child)
+						{
+							_notFoundCache.Remove(childRes.Key);
+						}
+					}
+				}
+				// deleted, replaced, clear
+			}
 		}
 
 		private Uri _source;
@@ -157,6 +187,8 @@ namespace Microsoft.UI.Xaml
 			}
 #endif
 
+			// clear not found cache for key
+
 			return false;
 		}
 
@@ -201,8 +233,13 @@ namespace Microsoft.UI.Xaml
 			=> TryGetValue(new ResourceKey(resourceKey), out value, shouldCheckSystem);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		internal bool TryGetValue(in ResourceKey resourceKey, out object value, bool shouldCheckSystem)
+		internal bool TryGetValue(in ResourceKey resourceKey, out object value, bool shouldCheckSystem, bool useNotFoundCache)
 		{
+			if(!shouldCheckSystem && useNotFoundCache && _notFoundCache.Contains(resourceKey))
+			{
+				return false;
+			}
+
 			if (_values.TryGetValue(resourceKey, out value))
 			{
 				if (value is SpecialValue)
@@ -230,6 +267,11 @@ namespace Microsoft.UI.Xaml
 			if (shouldCheckSystem && !IsSystemDictionary) // We don't fall back on system resources from within a system-defined dictionary, to avoid an infinite recurse
 			{
 				return ResourceResolver.TrySystemResourceRetrieval(resourceKey, out value);
+			}
+
+			if(!shouldCheckSystem && useNotFoundCache)
+			{
+				_notFoundCache.Add(resourceKey);
 			}
 
 			return false;
@@ -279,6 +321,8 @@ namespace Microsoft.UI.Xaml
 					ResourceDictionaryValueChange?.Invoke(this, EventArgs.Empty);
 				}
 			}
+
+			InvalidateNotFoundCache(true, resourceKey);
 		}
 
 		/// <summary>
@@ -354,7 +398,7 @@ namespace Microsoft.UI.Xaml
 
 			for (int i = count - 1; i >= 0; i--)
 			{
-				if (_mergedDictionaries[i].TryGetValue(resourceKey, out value, shouldCheckSystem: false))
+				if (_mergedDictionaries[i].TryGetValue(resourceKey, out value, shouldCheckSystem: false, useNotFoundCache: false))
 				{
 					return true;
 				}
@@ -427,7 +471,7 @@ namespace Microsoft.UI.Xaml
 
 		private bool GetFromTheme(in ResourceKey resourceKey, ResourceDictionary activeThemeDictionary, out object value)
 		{
-			if (activeThemeDictionary != null && activeThemeDictionary.TryGetValue(resourceKey, out value, shouldCheckSystem: false))
+			if (activeThemeDictionary != null && activeThemeDictionary.TryGetValue(resourceKey, out value, shouldCheckSystem: false, useNotFoundCache: false))
 			{
 				return true;
 			}
