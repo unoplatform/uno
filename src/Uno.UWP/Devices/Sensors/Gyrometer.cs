@@ -1,6 +1,7 @@
 #if __IOS__ || __ANDROID__ || __WASM__
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Uno.Helpers;
 using Windows.Foundation;
 
 namespace Windows.Devices.Sensors
@@ -10,18 +11,22 @@ namespace Windows.Devices.Sensors
 	/// </summary>
 	public partial class Gyrometer
 	{
-		private readonly static object _syncLock = new object();
+		private readonly static object _syncLock = new();
 
 		private static Gyrometer _instance;
 		private static bool _initializationAttempted;
 
-		private TypedEventHandler<Gyrometer, GyrometerReadingChangedEventArgs> _readingChanged;
+		private readonly StartStopTypedEventWrapper<Gyrometer, GyrometerReadingChangedEventArgs> _readingChangedWrapper;
 
 		/// <summary>
 		/// Hides the public parameterless constructor
 		/// </summary>
 		private Gyrometer()
 		{
+			_readingChangedWrapper = new StartStopTypedEventWrapper<Gyrometer, GyrometerReadingChangedEventArgs>(
+				() => StartReading(),
+				() => StopReading(),
+				_syncLock);
 		}
 
 		/// <summary>
@@ -50,37 +55,8 @@ namespace Windows.Devices.Sensors
 		/// </summary>
 		public event TypedEventHandler<Gyrometer, GyrometerReadingChangedEventArgs> ReadingChanged
 		{
-			add
-			{
-				lock (_syncLock)
-				{
-					var isFirstSubscriber = _readingChanged == null;
-					_readingChanged += value;
-					if (isFirstSubscriber)
-					{
-						if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-						{
-							this.Log().DebugFormat("Starting Gyrometer reading.");
-						}
-						StartReading();
-					}
-				}
-			}
-			remove
-			{
-				lock (_syncLock)
-				{
-					_readingChanged -= value;
-					if (_readingChanged == null)
-					{
-						if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-						{
-							this.Log().DebugFormat("Stopping Gyrometer reading.");
-						}
-						StopReading();
-					}
-				}
-			}
+			add => _readingChangedWrapper.AddHandler(value);
+			remove => _readingChangedWrapper.RemoveHandler(value);
 		}
 
 		private void OnReadingChanged(GyrometerReading reading)
@@ -90,7 +66,7 @@ namespace Windows.Devices.Sensors
 				this.Log().DebugFormat($"Gyrometer reading received " +
 					$"X:{reading.AngularVelocityX}, Y:{reading.AngularVelocityY}, Z:{reading.AngularVelocityZ}");
 			}
-			_readingChanged?.Invoke(this, new GyrometerReadingChangedEventArgs(reading));
+			_readingChangedWrapper.Invoke(this, new GyrometerReadingChangedEventArgs(reading));
 		}
 	}
 }

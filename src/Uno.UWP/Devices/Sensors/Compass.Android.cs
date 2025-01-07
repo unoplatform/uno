@@ -36,7 +36,7 @@ public partial class Compass
 
 				_reportInterval = value;
 
-				if (_readingChanged != null)
+				if (_readingChangedWrapper.Event != null)
 				{
 					//restart reading to apply interval
 					StopReadingChanged();

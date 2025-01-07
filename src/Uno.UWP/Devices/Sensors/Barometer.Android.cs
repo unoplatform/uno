@@ -30,7 +30,7 @@ namespace Windows.Devices.Sensors
 				{
 					_reportInterval = value;
 
-					if (_readingChanged != null)
+					if (_readingChangedWrapper.Event != null)
 					{
 						//restart reading to apply interval
 						StopReading();
@@ -96,7 +96,7 @@ namespace Windows.Devices.Sensors
 				var barometerReading = new BarometerReading(
 					values[0],
 					SensorHelpers.TimestampToDateTimeOffset(e.Timestamp));
-				_barometer._readingChanged?.Invoke(
+				_barometer._readingChangedWrapper?.Invoke(
 					_barometer,
 					new BarometerReadingChangedEventArgs(barometerReading));
 			}
