@@ -218,15 +218,15 @@ The implementation of those are quite similar to the example of the SettingsCont
 
       In case you are developing a App that's using C# Markup and you want to use the Converters, you can now switch to [C#-Markup Converters](https://platform.uno/docs/articles/external/uno.extensions/doc/Learn/Markup/Converters.html) Documentation for future Usage Guide, the general Import is done from here on.
 
-1. Xaml Definition
-
+  1. Xaml Definition
+     
 Important Difference to the previous seen SettingsCard Control Example, a Non-UI Converter has to be imported to the Page.Ressources Section to StaticRessources like this for using it, since there is no single Namespace per Converter like on the Controls:
 
 ### [Example StringToVisibilityConverter](#tab/string-visible-conv)
 
 StringToVisibilityConverter is a Converter that has to be bound to a String typed Property and will return a Visibility State.
 
-```
+```xml
 <Page.Resources>
   <converters:StringVisibilityConverter x:Key="YourStringVisibilityConverter"/>
 </Page.Resources>
@@ -251,7 +251,7 @@ Somewhere in your Page Content:
 BoolToObjectConverter is a Converter that has to be bound to a Boolean typed Property and can return any Object you will give to it.
 You only have to tell it what to return on True or False. If you would like to use it for switching color on validation:
 
-```
+```xml
 BoolToObjectConverter x:Key="BoolToColorConverter" TrueValue="{ThemeResource SystemFillColorSuccessBackgroundBrush}"
                                                    FalseValue="{ThemeResource SystemFillColorCriticalBackgroundBrush}"/>
 ```
