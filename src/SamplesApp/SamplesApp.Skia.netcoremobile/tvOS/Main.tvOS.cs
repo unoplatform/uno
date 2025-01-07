@@ -2,14 +2,13 @@
 using UIKit;
 using Uno.UI.Runtime.Skia.AppleUIKit;
 
-namespace SamplesApp.iOS;
+namespace SamplesApp.tvOS;
 
 public class Application
 {
-	// This is the main entry point of the application.
-	public static async Task Main(string[] args)
+	public static void Main(string[] args)
 	{
 		var host = new PlatformHost(() => new SamplesApp.App());
-		await host.Run();
+		host.Run();
 	}
 }
