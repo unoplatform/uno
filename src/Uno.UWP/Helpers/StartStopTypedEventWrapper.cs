@@ -1,14 +1,16 @@
 ﻿#nullable enable
 
 using System;
+using Windows.Foundation;
 
 namespace Uno.Helpers;
 
 /// <summary>
-/// Start stop wrapper for EventHandler`1 events.
+/// Start stop wrapper for TypedEventHandler`2 events.
 /// </summary>
-/// <typeparam name="TEventArgs">Event args type.</typeparam>
-internal class StartStopEventWrapper<TEventArgs> : StartStopDelegateWrapper<EventHandler<TEventArgs>>
+/// <typeparam name="TSender">Sender type.</typeparam>
+/// <typeparam name="TResult">Event args type.</typeparam>
+internal class StartStopTypedEventWrapper<TSender, TResult> : StartStopDelegateWrapper<TypedEventHandler<TSender, TResult>>
 {
 	/// <summary>
 	/// Creates a new instance of start-stop event wrapper.
@@ -19,7 +21,7 @@ internal class StartStopEventWrapper<TEventArgs> : StartStopDelegateWrapper<Even
 	/// This will run within a synchronization lock so it should not involve blocking operations.</param>
 	/// <param name="sharedLock">Optional shared object to lock on (when multiple events
 	/// rely on the same native platform operation.</param>
-	public StartStopEventWrapper(Action onFirst, Action onLast, object? sharedLock = null) :
+	public StartStopTypedEventWrapper(Action onFirst, Action onLast, object? sharedLock = null) :
 		base(onFirst, onLast, sharedLock)
 	{
 	}
@@ -29,5 +31,5 @@ internal class StartStopEventWrapper<TEventArgs> : StartStopDelegateWrapper<Even
 	/// </summary>
 	/// <param name="sender">Sender.</param>
 	/// <param name="args">Args.</param>
-	public void Invoke(object sender, TEventArgs args) => Event?.Invoke(sender, args);
+	public void Invoke(TSender sender, TResult args) => Event?.Invoke(sender, args);
 }
