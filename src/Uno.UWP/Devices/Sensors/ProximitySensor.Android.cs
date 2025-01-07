@@ -14,7 +14,7 @@ namespace Windows.Devices.Sensors;
 
 public partial class ProximitySensor
 {
-	private readonly StartStopEventWrapper<TypedEventHandler<ProximitySensor, ProximitySensorReadingChangedEventArgs>> _readingChangedWrapper;
+	private readonly StartStopTypedEventWrapper<ProximitySensor, ProximitySensorReadingChangedEventArgs> _readingChangedWrapper;
 
 	private Sensor? _sensor;
 	private ProximitySensorListener? _listener;
