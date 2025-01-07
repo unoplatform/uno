@@ -13,20 +13,19 @@ namespace Uno.UI.Tests.Foundation
 			var target = 0;
 			var cmd = new DelegateCommand<int>(i => target = i);
 
-			Assert.IsTrue(target == 0);
+			Assert.AreEqual(0, target);
 			cmd.Execute(10);
-			Assert.IsTrue(target == 10);
+			Assert.AreEqual(10, target);
 		}
 
 		[TestMethod]
-		[ExpectedException(typeof(InvalidCastException))]
 		public void When_Parameter_Is_Wrong_Type()
 		{
 			var target = 0;
 			var cmd = new DelegateCommand<int>(i => target = i);
 
-			Assert.IsTrue(target == 0);
-			cmd.Execute("10");
+			Assert.AreEqual(0, target);
+			Assert.ThrowsException<InvalidCastException>(() => cmd.Execute("10"));
 		}
 
 		[TestMethod]
@@ -41,14 +40,13 @@ namespace Uno.UI.Tests.Foundation
 		}
 
 		[TestMethod]
-		[ExpectedException(typeof(InvalidCastException))]
 		public void When_Parameter_Is_Null_And_Invalid()
 		{
 			var target = 0;
 			var cmd = new DelegateCommand<int>(i => target = i);
 
-			Assert.IsTrue(target == 0);
-			cmd.Execute(null);
+			Assert.AreEqual(0, target);
+			Assert.ThrowsException<InvalidCastException>(() => cmd.Execute(null));
 		}
 	}
 }

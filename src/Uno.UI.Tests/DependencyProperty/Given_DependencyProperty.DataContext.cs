@@ -238,7 +238,7 @@ namespace Uno.UI.Tests.BinderTests_DataContext
 			// which is acceptable (but not really expected neither) as the DP is a FrameworkProperty on which we want to propagate the DataContext
 			parent.Children.Remove(SUT);
 
-			Assert.AreEqual(null, SUT.DataContext);
+			Assert.IsNull(SUT.DataContext);
 			Assert.AreEqual(0, parentCtxChanged);
 			Assert.AreEqual(1, SUTCtxChanged);
 			Assert.AreEqual(0, childCtxChanged);
@@ -268,7 +268,7 @@ namespace Uno.UI.Tests.BinderTests_DataContext
 
 			parent.Children.Remove(SUT);
 
-			Assert.AreEqual(null, SUT.DataContext);
+			Assert.IsNull(SUT.DataContext);
 			Assert.AreEqual(0, parentCtxChanged);
 			Assert.AreEqual(1, SUTCtxChanged);
 			Assert.AreEqual(0, childCtxChanged);

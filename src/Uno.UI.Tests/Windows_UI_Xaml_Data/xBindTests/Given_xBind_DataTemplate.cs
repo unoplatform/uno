@@ -118,7 +118,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			Assert.AreEqual("Initial", _MyProperty.Text);
 			Assert.AreEqual("INITIAL", _MyProperty_Function.Text);
 			Assert.AreEqual("Formatted Initial", _MyProperty_Formatted.Text);
-			Assert.IsNull(null, _MyProperty_Function_OneWay.Text);
+			Assert.IsNull(_MyProperty_Function_OneWay.Text);
 			Assert.AreEqual("Formatted ", _MyProperty_Formatted_OneWay.Text);
 
 			Assert.AreEqual(11, data.MyPropertyGetCounter);

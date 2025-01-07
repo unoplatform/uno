@@ -20,7 +20,7 @@ namespace Uno.UI.Tests.PivotTests
 		{
 			var SUT = new When_Popup();
 
-			Assert.IsTrue(SUT.FindName("myPopup")?.GetType() == typeof(Microsoft.UI.Xaml.Controls.Primitives.Popup));
+			Assert.IsInstanceOfType(SUT.FindName("myPopup"), typeof(Microsoft.UI.Xaml.Controls.Primitives.Popup));
 		}
 	}
 }

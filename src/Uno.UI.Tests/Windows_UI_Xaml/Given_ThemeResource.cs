@@ -572,7 +572,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			var tb = (TextBlock)SUT.FindName("MarkTextBlock");
 			Assert.IsNotNull(tb);
-			Assert.AreEqual(Colors.Red, (tb.Foreground as SolidColorBrush)?.Color);
+			Assert.IsInstanceOfType(tb.Foreground, typeof(SolidColorBrush));
+			Assert.AreEqual(Colors.Red, ((SolidColorBrush)tb.Foreground).Color);
 		}
 
 		[TestMethod]
@@ -587,7 +588,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			var tb = (TextBlock)SUT.FindName("MarkTextBlock");
 			Assert.IsNotNull(tb);
-			Assert.AreEqual(Colors.Orange, (tb.Foreground as SolidColorBrush)?.Color);
+			Assert.IsInstanceOfType(tb.Foreground, typeof(SolidColorBrush));
+			Assert.AreEqual(Colors.Orange, ((SolidColorBrush)tb.Foreground).Color);
 		}
 
 		[TestMethod]
