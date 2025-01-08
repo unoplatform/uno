@@ -168,10 +168,7 @@ internal partial class X11XamlRootHost
 							}
 							break;
 						default:
-							if (this.Log().IsEnabled(LogLevel.Error))
-							{
-								this.Log().Error($"XLIB ERROR: received an unexpected {@event.type} event on the root X11 window.");
-							}
+							PrintUnexpectedEventError(@event);
 							break;
 					}
 				}
@@ -228,23 +225,25 @@ internal partial class X11XamlRootHost
 						case XEventName.EnterNotify:
 							_pointerSource?.ProcessEnterEvent(@event.CrossingEvent);
 							break;
-						case XEventName.GenericEvent:
+						case XEventName.GenericEvent when @event.GenericEventCookie.extension == GetXI2Details(x11Window.Window).opcode:
+							var display = TopX11Window.Display;
+							using var lockDisposable = X11Helper.XLock(display);
 							var eventWithData = @event;
 							var cookiePtr = &eventWithData.GenericEventCookie;
-							var getEventDataSucceeded = XLib.XGetEventData(TopX11Window.Display, cookiePtr);
+							var getEventDataSucceeded = XLib.XGetEventData(display, cookiePtr);
 
 							try
 							{
 								if (getEventDataSucceeded && _pointerSource is { } pointerSource)
 								{
-									pointerSource.HandleXI2Event(eventWithData);
+									pointerSource.HandleXI2Event(display, eventWithData);
 								}
 							}
 							finally
 							{
 								if (getEventDataSucceeded)
 								{
-									XLib.XFreeEventData(TopX11Window.Display, cookiePtr);
+									XLib.XFreeEventData(display, cookiePtr);
 								}
 							}
 							break;
@@ -276,19 +275,13 @@ internal partial class X11XamlRootHost
 							}
 							break;
 						default:
-							if (this.Log().IsEnabled(LogLevel.Error))
-							{
-								this.Log().Error($"XLIB ERROR: received an unexpected {@event.type} event on a non-uno window {@event.AnyEvent.window.ToString("X", CultureInfo.InvariantCulture)}");
-							}
+							PrintUnexpectedEventError(@event);
 							break;
 					}
 				}
 				else
 				{
-					if (this.Log().IsEnabled(LogLevel.Error))
-					{
-						this.Log().Error($"XLIB ERROR: received an unexpected {@event.type} event on window {x11Window.Window.ToString("X", CultureInfo.InvariantCulture)}");
-					}
+					PrintUnexpectedEventError(@event);
 				}
 			}
 		}
