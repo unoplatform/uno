@@ -827,7 +827,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
-#if !__MACOS__
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_TextTrimming()
@@ -883,7 +882,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsFalse(sut.IsTextTrimmed, "IsTextTrimmed should not be trimmed.");
 			Assert.AreEqual(0, states.Count, $"IsTextTrimmedChanged should not proc at all. states: {(string.Join(", ", states) is string { Length: > 0 } tmp ? tmp : "(-empty-)")}");
 		}
-#endif
 
 #if HAS_UNO // GetMouse is not available on WinUI
 		#region IsTextSelectionEnabled

@@ -255,9 +255,7 @@ namespace Uno.UI.Xaml.Core
 			//AddRoot(_connectedAnimationRoot));
 			AddRoot(FullWindowMediaRoot);
 
-#if !__MACOS__
 			AddRoot(PopupRoot);
-#endif
 
 			//AddRoot(_printRoot));
 			//AddRoot(_transitionRoot));

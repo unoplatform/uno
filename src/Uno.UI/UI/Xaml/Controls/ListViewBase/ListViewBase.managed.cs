@@ -82,7 +82,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-#if !__MACOS__
 		public void ScrollIntoView(object item) => ScrollIntoView(item, ScrollIntoViewAlignment.Default);
 
 		public void ScrollIntoView(object item, ScrollIntoViewAlignment alignment)
@@ -142,7 +141,6 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 		}
-#endif
 	}
 }
 #endif

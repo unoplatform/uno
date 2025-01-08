@@ -643,7 +643,6 @@ namespace Microsoft.UI.Xaml
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal void ApplyElementCustomTransform(ref Matrix3x2 matrix)
 		{
-#if !__MACOS__ // On macOS the SCP is using RenderTransforms for scrolling and zooming which has already been included.
 			if (this is ScrollViewer sv)
 			{
 				// Scroll offsets are handled at the SCP level using the IsScrollPort
@@ -661,7 +660,6 @@ namespace Microsoft.UI.Xaml
 				matrix.M31 -= (float)ScrollOffsets.X;
 				matrix.M32 -= (float)ScrollOffsets.Y;
 			}
-#endif
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
