@@ -216,7 +216,7 @@
 
 	<PropertyGroup>
 		<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-		<IsTestProject>$(MSBuildProjectName.Contains('Test'))</IsTestProject>
+		<UnoDisableNetAnalyzers Condition="$(MSBuildProjectName.Contains('Test'))">true</UnoDisableNetAnalyzers>
 		<IsSampleProject>$(MSBuildProjectName.Contains('Sample'))</IsSampleProject>
 		<IsSampleProject Condition="'$(IsSampleProject)'=='false'">$(MSBuildProjectName.Contains('UnoIslands'))</IsSampleProject>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
