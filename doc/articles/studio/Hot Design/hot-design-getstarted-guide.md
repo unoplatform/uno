@@ -85,7 +85,7 @@ Located at the top of the interactive canvas, the **Toolbar** streamlines your d
 
 ### Selecting elements
 
-You can select controls on the app's current screen by simply clicking on them. A visual adorner will appear around the selected elements, clearly indicating their boundaries. The type, height, and width of the selected element are displayed below the adorner for easy reference.
+You can select controls on the app's current screen by simply clicking on them. A visual adorner (in this case, a blue border) will appear around the selected elements, clearly indicating their boundaries. The type, height, and width of the selected element are displayed below the adorner for easy reference.
 
 <p align="center">
   <img src="Assets/canvas-select-single-item.png" alt="Selecting a single item on the main canvas" />
@@ -129,17 +129,17 @@ The **Properties** window displays the current values of a control's properties,
 
     ![Background property with autosuggest](Assets/properties-view-autosuggest-property.png)
 
-For advanced options, clicking the **Advanced** button opens a flyout with three settings for each property: **Value**, **Binding**, or **Resource**.
-
-![Three options for property setting and reset button](Assets/properties-view-button-flyout.png)
-
-You can quickly identify the type of value set for a property by the icon displayed on the **Advanced** button. For example:
+To the right of the property value is the **Advanced** button, which provides information on how the current property value is defined. For example:
 
 - ![None](Assets/properties-view-advcd-button-none.png) indicates that nothing is set.
 - ![XAML](Assets/properties-view-advcd-button-xaml.png) indicates a **Literal**/**XAML** value is set.
 - ![Binding](Assets/properties-view-advcd-button-binding.png) indicates a **Binding** is set.
 - ![Resource](Assets/properties-view-advcd-button-resource.png) indicates a **Resource** is set.
 - ![Mixed Responsive](Assets/properties-view-advcd-button-mixed-responsive.png) indicates **Mixed Responsive** values is set using Responsive Extension.
+
+Clicking the **Advanced** button opens a flyout with three settings for each property: **Value**, **Binding**, or **Resource**.
+
+![Three options for property setting and reset button](Assets/properties-view-button-flyout.png)
 
 > [!TIP]
 > To quickly clear a property's value, click the **Reset** button. Cleared properties will behave as though they weren't specified in the original XAML file.
