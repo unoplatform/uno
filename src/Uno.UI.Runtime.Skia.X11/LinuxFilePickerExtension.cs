@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -8,12 +9,12 @@ using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.UI.ViewManagement;
-using Tmds.DBus;
+using Tmds.DBus.Protocol;
 using Uno.Extensions.Storage.Pickers;
 using Uno.Foundation.Logging;
 using Uno.UI.Helpers;
 using Uno.UI.Helpers.WinUI;
-using Uno.WinUI.Runtime.Skia.X11.Dbus;
+using Uno.WinUI.Runtime.Skia.X11.DBus;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
 
@@ -43,133 +44,161 @@ internal class LinuxFilePickerExtension(IFilePicker picker) : IFileOpenPickerExt
 
 	public async Task<IReadOnlyList<string>> PickFilesAsync(CancellationToken token, bool multiple, bool directory)
 	{
-		Connection? connection;
-		ConnectionInfo? info;
+		var sessionsAddressBus = Address.Session;
+		if (sessionsAddressBus is null)
+		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error($"Can not determine DBus session bus address");
+			}
+			return ImmutableList<string>.Empty;
+		}
+
+		if (token.IsCancellationRequested)
+		{
+			return ImmutableList<string>.Empty;
+		}
+
+		using var connection = new Connection(sessionsAddressBus);
+		var connectionTcs = new TaskCompletionSource();
+		// ConnectAsync calls ConfigureAwait(false), so we need this TCS dance to make the continuation continue on the UI thread
+		_ = connection.ConnectAsync().AsTask().ContinueWith(_ => connectionTcs.TrySetResult(), token);
+		var timeoutTask = Task.Delay(1000, token);
+		var finishedTask = await Task.WhenAny(connectionTcs.Task, timeoutTask);
+		if (finishedTask == timeoutTask)
+		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error($"Timed out while trying to connect to DBus");
+			}
+			return ImmutableList<string>.Empty;
+		}
+
 		try
 		{
-			connection = Connection.Session;
-			info = await connection.ConnectAsync();
-		}
-		catch (Exception e)
-		{
-			if (this.Log().IsEnabled(LogLevel.Error))
+			var desktopService = new DesktopService(connection, Service);
+			var chooser = desktopService.CreateFileChooser(ObjectPath);
+
+			if (token.IsCancellationRequested)
 			{
-				this.Log().Error($"Unable to connect to DBus, see https://aka.platform.uno/x11-dbus-troubleshoot for troubleshooting information.", e);
+				return ImmutableList<string>.Empty;
 			}
 
-			return await Task.FromResult((IReadOnlyList<string>)Array.Empty<string>());
-		}
-
-		var fileChooser = connection.CreateProxy<IFileChooser>(Service, ObjectPath);
-
-		if (fileChooser is null)
-		{
-			if (this.Log().IsEnabled(LogLevel.Error))
+			var version = await chooser.GetVersionAsync();
+			if (version != 3)
 			{
-				this.Log().Error($"Unable to find object {ObjectPath} at DBus service {Service}, make sure you have an xdg-desktop-portal implementation installed. For more information, visit https://wiki.archlinux.org/title/XDG_Desktop_Portal#List_of_backends_and_interfaces");
-			}
-
-			return await Task.FromResult((IReadOnlyList<string>)Array.Empty<string>());
-		}
-
-		if (!X11Helper.XamlRootHostFromApplicationView(ApplicationView.GetForCurrentViewSafe(), out var host))
-		{
-			if (this.Log().IsEnabled(LogLevel.Error))
-			{
-				this.Log().Error($"Unable to get the {nameof(X11XamlRootHost)} instance from the application view.");
-			}
-
-			return await Task.FromResult((IReadOnlyList<string>)Array.Empty<string>());
-		}
-
-		var handleToken = "UnoFileChooser" + Random.Shared.Next();
-		try
-		{
-			var requestPath = $"{ResultObjectPathPrefix}/{info.LocalName[1..].Replace(".", "_")}/{handleToken}";
-
-			var result = connection.CreateProxy<IRequest>(Service, requestPath);
-
-			var tcs = new TaskCompletionSource<IReadOnlyList<string>>();
-
-			token.Register(() =>
-			{
-				if (this.Log().IsEnabled(LogLevel.Debug))
+				if (this.Log().IsEnabled(LogLevel.Error))
 				{
-					this.Log().Debug($"File picker cancelled.");
+					this.Log().Error($"File pickers are only implemented for version 3 of the File chooser portal, but version {version} was found");
+				}
+				return ImmutableList<string>.Empty;
+			}
+
+			if (!X11Helper.XamlRootHostFromApplicationView(ApplicationView.GetForCurrentViewSafe(), out var host))
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"Unable to get the {nameof(X11XamlRootHost)} instance from the application view.");
 				}
 
-				tcs.TrySetResult(Array.Empty<string>());
-			});
+				return ImmutableList<string>.Empty;
+			}
+
+			var handleToken = "UnoFileChooser" + Random.Shared.NextInt64();
+			var requestPath = $"{ResultObjectPathPrefix}/{connection.UniqueName![1..].Replace(".", "_")}/{handleToken}";
+
+			if (token.IsCancellationRequested)
+			{
+				return ImmutableList<string>.Empty;
+			}
 
 			// We listen for the signal BEFORE we send the request. The spec API reference
 			// points out the race condition that could occur otherwise.
-			using var _ = await result.WatchResponseAsync(r =>
+			var request = desktopService.CreateRequest(requestPath);
+			var responseTcs = new TaskCompletionSource<(uint Response, Dictionary<string, VariantValue> Results)>();
+			_ = request.WatchResponseAsync((exception, tuple) =>
 			{
-				if (r.Response is Response.Success)
+				if (exception is not null)
 				{
-					tcs.TrySetResult(((IReadOnlyList<string>)r.results["uris"]).Select(s => new Uri(s).AbsolutePath).ToList());
+					responseTcs.SetException(exception);
 				}
 				else
 				{
-					if (this.Log().IsEnabled(LogLevel.Debug))
-					{
-						this.Log().Debug($"File picker received an unsuccessful response {r.Response}.");
-					}
-
-					tcs.TrySetResult(Array.Empty<string>());
+					responseTcs.SetResult(tuple);
 				}
-			}, e =>
-			{
-				if (this.Log().IsEnabled(LogLevel.Error))
-				{
-					this.Log().Error($"File picker failed to receive a response.", e);
-				}
-
-				tcs.TrySetResult(Array.Empty<string>());
 			});
 
-			var title = (multiple, directory) switch
+			if (token.IsCancellationRequested)
 			{
-				(true, true) => ResourceAccessor.GetLocalizedStringResource("FILE_PICKER_TITLE_DIRECTORY_MULTIPLE"),
-				(true, false) => ResourceAccessor.GetLocalizedStringResource("FILE_PICKER_TITLE_FILE_MULTIPLE"),
-				(false, true) => ResourceAccessor.GetLocalizedStringResource("FILE_PICKER_TITLE_DIRECTORY_SINGLE"),
-				(false, false) => ResourceAccessor.GetLocalizedStringResource("FILE_PICKER_TITLE_FILE_SINGLE")
-			};
-			var window = "x11:" + host.RootX11Window.Window.ToString("X", CultureInfo.InvariantCulture);
-			var requestPath2 = await fileChooser.OpenFileAsync(window, title, new Dictionary<string, object>
-			{
-				{ "handle_token", handleToken },
-				{ "accept_label", string.IsNullOrEmpty(picker.CommitButtonTextInternal) ? ResourceAccessor.GetLocalizedStringResource("FILE_PICKER_ACCEPT_LABEL") : picker.CommitButtonTextInternal },
-				{ "multiple", multiple },
-				{ "directory", directory },
-				{ "filters", GetPortalFilters(picker.FileTypeFilterInternal) },
-				{ "current_folder", Encoding.UTF8.GetBytes(PickerHelpers.GetInitialDirectory(picker.SuggestedStartLocationInternal)).Append((byte)'\0') }
-			});
-
-			if (requestPath != requestPath2)
-			{
-				if (this.Log().IsEnabled(LogLevel.Error))
-				{
-					this.Log().Error($"We are waiting at a wrong path {requestPath} instead of {requestPath2}");
-				}
-
-				tcs.TrySetResult(Array.Empty<string>());
+				return ImmutableList<string>.Empty;
 			}
 
-			return await tcs.Task;
+			var actualRequestPath = await chooser.OpenFileAsync(
+				parentWindow: "x11:" + host.RootX11Window.Window.ToString("X", CultureInfo.InvariantCulture),
+				title: (multiple, directory) switch
+				{
+					(true, true) => ResourceAccessor.GetLocalizedStringResource("FILE_PICKER_TITLE_DIRECTORY_MULTIPLE"),
+					(true, false) => ResourceAccessor.GetLocalizedStringResource("FILE_PICKER_TITLE_FILE_MULTIPLE"),
+					(false, true) => ResourceAccessor.GetLocalizedStringResource("FILE_PICKER_TITLE_DIRECTORY_SINGLE"),
+					(false, false) => ResourceAccessor.GetLocalizedStringResource("FILE_PICKER_TITLE_FILE_SINGLE")
+				},
+				options: new Dictionary<string, VariantValue>
+				{
+					{ "handle_token", handleToken },
+					{ "accept_label", string.IsNullOrEmpty(picker.CommitButtonTextInternal) ? ResourceAccessor.GetLocalizedStringResource("FILE_PICKER_ACCEPT_LABEL") : picker.CommitButtonTextInternal },
+					{ "multiple", multiple },
+					{ "directory", directory },
+					{ "filters", GetPortalFilters() },
+					{ "current_folder", new Array<byte>(Encoding.UTF8.GetBytes(PickerHelpers.GetInitialDirectory(picker.SuggestedStartLocationInternal)).Append((byte)'\0')) }
+				});
+
+			if (actualRequestPath != requestPath)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"{nameof(chooser.OpenFileAsync)} returned a path '{actualRequestPath}' that is different from supplied handle_token -based path '{requestPath}'");
+				}
+
+				return ImmutableList<string>.Empty;
+			}
+
+			var (response, results) = await responseTcs.Task;
+
+			if (!Enum.IsDefined(typeof(Response), response))
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"FileChooser returned an invalid response number {response}.");
+				}
+
+				return ImmutableList<string>.Empty;
+			}
+
+
+			if ((Response)response is not Response.Success)
+			{
+				if ((Response)response is not Response.UserCancelled && this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"FileChooser's response indicates an unsuccessful operation {(Response)response}");
+				}
+
+				return ImmutableList<string>.Empty;
+			}
+
+			return results["uris"].GetArray<string>().Select(s => new Uri(s).AbsolutePath).ToImmutableList();
 		}
 		catch (Exception e)
 		{
 			if (this.Log().IsEnabled(LogLevel.Error))
 			{
-				this.Log().Error($"Failed to pick file", e);
+				this.Log().Error($"DBus FileChooser error, see https://aka.platform.uno/x11-dbus-troubleshoot for troubleshooting information.", e);
 			}
 
-			return await Task.FromResult((IReadOnlyList<string>)Array.Empty<string>());
+			return ImmutableList<string>.Empty;
 		}
 	}
 
-	private (string, (uint, string)[])[] GetPortalFilters(IList<string> filters)
+	private Array<Struct<string, Array<Struct<uint, string>>>> GetPortalFilters()
 	{
 		// Except from the API reference
 		// filters (a(sa(us)))
@@ -185,35 +214,33 @@ internal class LinuxFilePickerExtension(IFilePicker picker) : IFileOpenPickerExt
 		// Example: [('Images', [(0, '*.ico'), (1, 'image/png')]), ('Text', [(0, '*.txt')])]
 		//
 		// Note that filters are purely there to aid the user in making a useful selection. The portal may still allow the user to select files that don’t match any filter criteria, and applications must be prepared to handle that.
-		//
-		var list = new List<(uint kind, string pattern)>();
-		foreach (var filter in filters)
+
+		// We don't have a way to map a filter to a category (e.g. image/png -> Images), so we make every filter its own category
+		var list = new Array<Struct<string, Array<Struct<uint, string>>>>();
+		foreach (var pattern in picker.FileTypeFilterInternal.Distinct())
 		{
-			try
+			if (pattern is null)
 			{
-				// will throw if not a valid MIME type
-				list.Add((1, new System.Net.Mime.ContentType(filter).ToString()));
+				continue;
 			}
-			catch (Exception)
+
+			if (pattern == "*")
 			{
-				if (this.Log().IsEnabled(LogLevel.Trace))
+				list.Add(Struct.Create("All Files", new Array<Struct<uint, string>>(new[] { Struct.Create((uint)0, "*.*") })));
+			}
+			else if (pattern.StartsWith('.') && pattern[1..] is var ext && ext.All(char.IsLetterOrDigit))
+			{
+				list.Add(Struct.Create($"{ext.ToUpperInvariant()} Files", new Array<Struct<uint, string>>(new[] { Struct.Create((uint)0, $"*.{ext}") })));
+			}
+			else
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
 				{
-					this.Log().Trace($"Failed to parse portal filer {filter} as a MIME type, falling back to glob.");
-				}
-				// The portal accepts any glob pattern, but to be similar to other platforms, we
-				// assume the filter is of the form `.extension`.
-				if (filter == "*")
-				{
-					list.Add((0, filter));
-				}
-				else
-				{
-					list.Add((0, $"*{filter}"));
+					this.Log().Error($"Skipping invalid file extension filter: '{pattern}'");
 				}
 			}
 		}
 
-		// We don't have a way to map a filter to a category (e.g. image/png -> Images), so we make every filter its own category
-		return list.Select(f => (f.pattern, new[] { f })).ToArray();
+		return list;
 	}
 }
