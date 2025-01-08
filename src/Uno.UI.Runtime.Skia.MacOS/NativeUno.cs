@@ -240,6 +240,10 @@ internal static partial class NativeUno
 	internal static partial void uno_window_exit_full_screen(nint window);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
+	[return: MarshalAs(UnmanagedType.I1)]
+	internal static partial bool uno_window_is_full_screen(nint window);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_window_maximize(nint window);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
