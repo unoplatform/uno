@@ -81,15 +81,15 @@ public class Given_ShapeVisual
 							Source = new BitmapImage(new Uri($"ms-appx:/Assets/When_ShapeVisual_ViewBox_Shape_Combinations/{filename}"))
 						};
 
+						var imageOpened = false;
+						referenceImage.ImageOpened += (s, e) => imageOpened = true;
+
 						await UITestHelper.Load(new StackPanel()
 						{
 							Children = { border, referenceImage },
 							Spacing = 10,
 							Orientation = Orientation.Horizontal
 						});
-
-						var imageOpened = false;
-						referenceImage.ImageOpened += (s, e) => imageOpened = true;
 
 						await TestServices.WindowHelper.WaitFor(() => imageOpened);
 
