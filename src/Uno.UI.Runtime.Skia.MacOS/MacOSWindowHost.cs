@@ -449,7 +449,6 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		var pointerDevice = PointerDevice.For(data.PointerDeviceType);
 		var properties = GetPointerProperties(data).SetUpdateKindFromPrevious(_previousProperties);
 
-		// TODO: Check the macOS unit of time
 		var point = new PointerPoint(data.FrameId, data.Timestamp, pointerDevice, data.Pid, position, position, data.InContact, properties);
 		var args = new PointerEventArgs(point, data.KeyModifiers);
 
