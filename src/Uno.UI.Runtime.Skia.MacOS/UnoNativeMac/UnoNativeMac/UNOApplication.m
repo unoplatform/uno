@@ -29,19 +29,6 @@ uint32 /* Uno.Helpers.Theming.SystemTheme */ uno_get_system_theme(void)
     return [appearanceName isEqualToString:NSAppearanceNameAqua] ? 0 : 1;
 }
 
-NSTimeInterval uno_get_system_uptime(void)
-{
-    if (initialUptime == 0) {
-        initialUptime = NSProcessInfo.processInfo.systemUptime;
-        initialUptimeDate = [NSDate date];
-        return initialUptime;
-    }
-    else {
-        NSTimeInterval elapsedTime = [[NSDate date] timeIntervalSinceDate:initialUptimeDate];
-        return initialUptime + elapsedTime;
-    }
-}
-
 bool uno_app_initialize(bool *metal)
 {
     NSApplication *app = [NSApplication sharedApplication];
