@@ -226,27 +226,29 @@ internal partial class X11XamlRootHost
 							_pointerSource?.ProcessEnterEvent(@event.CrossingEvent);
 							break;
 						case XEventName.GenericEvent when @event.GenericEventCookie.extension == GetXI2Details(x11Window.Window).opcode:
-							var display = TopX11Window.Display;
-							using var lockDisposable = X11Helper.XLock(display);
-							var eventWithData = @event;
-							var cookiePtr = &eventWithData.GenericEventCookie;
-							var getEventDataSucceeded = XLib.XGetEventData(display, cookiePtr);
+							{
+								var display = TopX11Window.Display;
+								using var lockDisposable = X11Helper.XLock(display);
+								var eventWithData = @event;
+								var cookiePtr = &eventWithData.GenericEventCookie;
+								var getEventDataSucceeded = XLib.XGetEventData(display, cookiePtr);
 
-							try
-							{
-								if (getEventDataSucceeded && _pointerSource is { } pointerSource)
+								try
 								{
-									pointerSource.HandleXI2Event(display, eventWithData);
+									if (getEventDataSucceeded && _pointerSource is { } pointerSource)
+									{
+										pointerSource.HandleXI2Event(display, eventWithData);
+									}
 								}
-							}
-							finally
-							{
-								if (getEventDataSucceeded)
+								finally
 								{
-									XLib.XFreeEventData(display, cookiePtr);
+									if (getEventDataSucceeded)
+									{
+										XLib.XFreeEventData(display, cookiePtr);
+									}
 								}
+								break;
 							}
-							break;
 						case XEventName.KeyPress:
 							_keyboardSource?.ProcessKeyboardEvent(@event.KeyEvent, true);
 							break;
