@@ -41,7 +41,7 @@ jobs:
       # ---
       # NOTE: The error says to specify a RuntimeIdentifier *OR* platform other than AnyCPU.
       # We already specify RuntimeIdentifier=win-x64 in the build below. Still, the error pops up.
-      msbuildArguments: /r /t:Publish /m /v:m /p:Configuration=Release /p:Platform=x64 /p:RuntimeIdentifier=win-x64 /p:TargetFramework=net8.0-windows10.0.19041.0 /p:BuildGraphics3DGLForWindows=true /p:GenerateAppxPackageOnBuild=true /detailedsummary /bl:$(build.artifactstagingdirectory)/build-wasdk.binlog
+      msbuildArguments: /r /t:Publish /m /v:m /p:Configuration=Release /p:Platform=x64 /p:RuntimeIdentifier=win-x64 /p:BuildGraphics3DGLForWindows=true /p:GenerateAppxPackageOnBuild=true /detailedsummary /bl:$(build.artifactstagingdirectory)/build-wasdk.binlog
       clean: false
       restoreNugetPackages: false
       logProjectEvents: false
@@ -50,7 +50,7 @@ jobs:
   - task: CopyFiles@2
     condition: always()
     inputs:
-      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Windows/bin/x64/Release/net8.0-windows10.0.19041.0/win-x64/AppPackages
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Windows/bin/x64/Release/net9.0-windows10.0.19041.0/win-x64/AppPackages
       Contents: '**'
       TargetFolder: $(build.artifactstagingdirectory)
       CleanTargetFolder: false
