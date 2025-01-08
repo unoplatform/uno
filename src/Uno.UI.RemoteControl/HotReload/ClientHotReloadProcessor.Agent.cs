@@ -107,7 +107,10 @@ namespace Uno.UI.RemoteControl.HotReload
 
 			var vsEnabled = isForcedMetadata
 				|| (buildingInsideVisualStudio && isSkia)
-				|| (buildingInsideVisualStudio && isWasm);
+				|| (buildingInsideVisualStudio && isWasm)
+				|| (buildingInsideVisualStudio && Debugger.IsAttached && OperatingSystem.IsAndroid())
+				|| (buildingInsideVisualStudio && Debugger.IsAttached && OperatingSystem.IsIOS());
+
 
 			_supportsMetadataUpdates = devServerEnabled || vsEnabled;
 			_serverMetadataUpdatesEnabled = devServerEnabled;
