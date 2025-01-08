@@ -21,9 +21,7 @@ using Uno.UI.Extensions;
 using Uno.UI.Xaml.Controls;
 using Uno.Foundation.Logging;
 
-#if __MACOS__
-using AppKit;
-#elif __APPLE_UIKIT__
+#if __APPLE_UIKIT__
 using UIKit;
 #endif
 #if __APPLE_UIKIT__ || __ANDROID__

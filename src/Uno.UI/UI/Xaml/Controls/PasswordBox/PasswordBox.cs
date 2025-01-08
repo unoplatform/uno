@@ -20,9 +20,6 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool UseIsPasswordEnabledProperty => this.IsDependencyPropertySet(IsPasswordRevealButtonEnabledProperty) && !this.IsDependencyPropertySet(PasswordRevealModeProperty);
 
 		public PasswordBox()
-#if __MACOS__
-			: base(true)
-#endif
 		{
 			DefaultStyleKey = typeof(PasswordBox);
 		}

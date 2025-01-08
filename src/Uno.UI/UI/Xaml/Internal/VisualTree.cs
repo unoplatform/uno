@@ -22,10 +22,6 @@ using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 using UIKit;
 #endif
 
-#if __MACOS__
-using AppKit;
-#endif
-
 namespace Uno.UI.Xaml.Core
 {
 	/// <summary>

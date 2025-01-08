@@ -34,9 +34,6 @@ using AppKit;
 namespace Microsoft.UI.Xaml.Controls;
 
 public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageHandler
-#if __MACOS__
-	, IHasSizeThatFits
-#endif
 {
 	private string? _previousTitle;
 	private CoreWebView2? _coreWebView;
@@ -95,15 +92,6 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 		}
 #endif
 	}
-
-#if __MACOS__
-	public CGSize SizeThatFits(CGSize availableSize)
-	{
-		var height = Math.Min(availableSize.Height, FittingSize.Height);
-		var width = Math.Min(availableSize.Width, FittingSize.Width);
-		return new CGSize(width, height);
-	}
-#endif
 
 	public string DocumentTitle => Title!;
 

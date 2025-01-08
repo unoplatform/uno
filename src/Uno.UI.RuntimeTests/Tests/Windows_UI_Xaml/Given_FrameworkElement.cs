@@ -555,9 +555,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __ANDROID__ || __APPLE_UIKIT__
 		[Ignore]
 #endif
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_InvalidateDuringArrange_Then_GetReArranged()
 		{
 			var sut = new ObservableLayoutingControl();
@@ -716,9 +713,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 #if __ANDROID__ || __APPLE_UIKIT__
 		[Ignore("Layouter doesn't work properly")]
 #endif
@@ -807,9 +801,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow("Center", "Center", 25d, 5d, 100d, 50d, null, null, "46;17;108;66|50;25;100;50|58;38;84;24")]
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282! epic")]
-#endif
 		public async Task TestVariousArrangedPosition(
 			string horizontal,
 			string vertical,
@@ -924,9 +915,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_AreDimensionsConstrained_And_Margin()
 		{
 			const double setHeight = 45d;
@@ -951,9 +939,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_Negative_Margin_NonZero_Size()
 		{
 			var SUT = new Grid { VerticalAlignment = VerticalAlignment.Top, Margin = new Thickness(0, -16, 0, 0), Height = 120 };

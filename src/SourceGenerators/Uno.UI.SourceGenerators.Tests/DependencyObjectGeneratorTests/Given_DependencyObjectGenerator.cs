@@ -167,9 +167,6 @@ public class Given_DependencyObjectGenerator
 	 using Microsoft.UI.Xaml;
 	 using Microsoft.UI.Xaml.Data;
 	 using Uno.Diagnostics.Eventing;
-	 #if __MACOS__
-	 using AppKit;
-	 #endif
 	 partial class OuterClass
 	 {
 	 	[global::Microsoft.UI.Xaml.Data.Bindable]

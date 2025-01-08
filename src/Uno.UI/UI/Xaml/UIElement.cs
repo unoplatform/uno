@@ -287,11 +287,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		public
-#if __MACOS__
-			new
-#endif
-			Shadow Shadow
+		public Shadow Shadow
 		{
 			get => (Shadow)GetValue(ShadowProperty);
 			set => SetValue(ShadowProperty, value);
@@ -819,7 +815,7 @@ namespace Microsoft.UI.Xaml
 
 			var bounds = root.XamlRoot.Bounds;
 
-#if __MACOS__ || __APPLE_UIKIT__ // IsMeasureDirty and IsArrangeDirty are not available on iOS / macOS
+#if __APPLE_UIKIT__ // IsMeasureDirty and IsArrangeDirty are not available on iOS / macOS
 			root.Measure(bounds.Size);
 			root.Arrange(bounds);
 #elif __ANDROID__

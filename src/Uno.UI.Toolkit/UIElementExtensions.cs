@@ -84,12 +84,8 @@ namespace Uno.UI.Toolkit
 					view.SetOutlineSpotShadowColor(shadowColor);
 				}
 			}
-#elif __APPLE_UIKIT__ || __MACOS__
-#if __MACOS__
-			if (element is AppKit.NSView view)
-#else
+#elif __APPLE_UIKIT__
 			if (element is UIKit.UIView view)
-#endif
 			{
 				if (elevation > 0)
 				{
@@ -97,17 +93,9 @@ namespace Uno.UI.Toolkit
 					const float y = 0.92f * 0.5f;
 					const float blur = 0.18f;
 
-#if __MACOS__
-					view.WantsLayer = true;
-					view.Shadow ??= new AppKit.NSShadow();
-#endif
 					view.Layer.MasksToBounds = false;
 					view.Layer.ShadowOpacity = shadowColor.A / 255f;
-#if __MACOS__
-					view.Layer.ShadowColor = AppKit.NSColor.FromRgb(shadowColor.R, shadowColor.G, shadowColor.B).CGColor;
-#else
 					view.Layer.ShadowColor = UIKit.UIColor.FromRGB(shadowColor.R, shadowColor.G, shadowColor.B).CGColor;
-#endif
 					view.Layer.ShadowRadius = (nfloat)(blur * elevation);
 					view.Layer.ShadowOffset = new CoreGraphics.CGSize(x * elevation, y * elevation);
 					view.Layer.ShadowPath = path;

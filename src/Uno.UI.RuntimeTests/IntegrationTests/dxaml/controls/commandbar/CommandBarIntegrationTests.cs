@@ -38,9 +38,6 @@ namespace Windows.UI.Tests.Enterprise
 {
 	[TestClass]
 	[RequiresFullWindow]
-#if __MACOS__
-	[Ignore("Currently fails on macOS, part of #9282! epic")]
-#endif
 	public class CommandBarIntegrationTests : BaseDxamlTestClass
 	{
 		[ClassInitialize]
@@ -581,9 +578,6 @@ namespace Windows.UI.Tests.Enterprise
 
 		[Description("Validates that resizing the AppBar after opening and closing causes its width to properly get updated.")]
 		[TestProperty("Hosting:Mode", "UAP")]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task CanResizeCommandBarAfterOpeningAndClosing()
 		{
 			TestCleanupWrapper cleanup;
@@ -1043,9 +1037,6 @@ namespace Windows.UI.Tests.Enterprise
 		[TestProperty("Hosting:Mode", "UAP")]
 #if __ANDROID__ || __APPLE_UIKIT__
 		[Ignore("Keyboard nav not supported")]
-#endif
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
 		public async Task ValidateArrowKeys()
 		{
@@ -1750,9 +1741,6 @@ namespace Windows.UI.Tests.Enterprise
 #if __ANDROID__
 		[Ignore("CommandBar popup measure glitch with fullscreen")]
 #endif
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task ValidateCommandBarOpensInsideLayoutBounds()
 		{
 			TestCleanupWrapper cleanup;
@@ -2426,9 +2414,6 @@ namespace Windows.UI.Tests.Enterprise
 		[TestProperty("TestPass:ExcludeOn", "WindowsCore")]
 #if __ANDROID__
 		[Ignore("Unstable on android https://github.com/unoplatform/uno/issues/9080")]
-#endif
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
 		public async Task MoveItemsBetweenPrimaryAndSecondaryCommands()
 		{
@@ -4670,9 +4655,6 @@ namespace Windows.UI.Tests.Enterprise
 
 		[TestMethod]
 		[Description("Validates that setting IsChecked on an AppBarToggleButton programatically will still result in the same visual effect")]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task ValidateAppBarToggleButtonIsCheckedProgramatically()
 		{
 			TestCleanupWrapper cleanup;

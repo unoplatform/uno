@@ -74,10 +74,6 @@ partial class BorderLayerRenderer
 			_borderInfoProvider.CornerRadius);
 		if (!newState.Equals(_currentState) || forceUpdate)
 		{
-#if __MACOS__
-			_owner.WantsLayer = true;
-#endif
-
 			_layerDisposable.Disposable = null;
 			_layerDisposable.Disposable = InnerCreateLayer(_owner, _owner.Layer, newState, out var updatedBoundsPath);
 

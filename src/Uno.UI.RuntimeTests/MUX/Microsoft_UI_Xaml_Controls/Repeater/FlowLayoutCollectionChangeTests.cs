@@ -38,9 +38,6 @@ using System.Threading.Tasks;
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
 	[TestClass]
-#if __MACOS__
-	[Ignore("Currently fails on macOS, part of #9282! epic")]
-#endif
 	public class FlowLayoutCollectionChangeTests : MUXApiTestBase
 	{
 		[TestMethod]

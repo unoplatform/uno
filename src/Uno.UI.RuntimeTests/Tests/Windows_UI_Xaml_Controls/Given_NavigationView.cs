@@ -48,9 +48,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	{
 #if HAS_UNO && !HAS_UNO_WINUI
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_NavView()
 		{
 			var SUT = new MyNavigationView() { IsSettingsVisible = false };

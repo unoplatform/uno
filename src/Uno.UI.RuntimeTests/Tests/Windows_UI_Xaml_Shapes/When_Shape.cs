@@ -19,9 +19,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 	public class When_Shape
 	{
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282! epic")]
-#endif
 		public async Task When_Shape_Stretch_None()
 		{
 			var topLevelGrid = new Grid();

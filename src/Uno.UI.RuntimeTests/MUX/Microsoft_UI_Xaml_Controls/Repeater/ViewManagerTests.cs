@@ -602,9 +602,6 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public void ValidateDataContextDoesNotGetOverwritten()
 		{
 			const string c_element1DataContext = "Element1_DataContext";
@@ -641,9 +638,6 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public void ValidateDataContextGetsPropagated()
 		{
 			const string c_element1DataContext = "Element1_DataContext";

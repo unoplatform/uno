@@ -148,9 +148,6 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 #endif
 
 		[TestMethod]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task VerifySmallWidthAndHeightDoNotCrash()
 		{
 			PersonPicture personPicture = null;
@@ -181,9 +178,6 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 			await global::Private.Infrastructure.TestServices.WindowHelper.WaitForIdle();
 		}
 
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		[TestMethod]
 		public async Task VerifyVSMStatesForPhotosAndInitials()
 		{

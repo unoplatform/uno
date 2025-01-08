@@ -312,7 +312,7 @@ namespace Microsoft.UI.Xaml
 
 		public static CGSize Measure(this IFrameworkElement element, _Size availableSize)
 		{
-#if __APPLE_UIKIT__ || __MACOS__
+#if __APPLE_UIKIT__
 			return ((View)element).SizeThatFits(new CoreGraphics.CGSize(availableSize.Width, availableSize.Height));
 #elif __ANDROID__
 			var widthSpec = ViewHelper.SpecFromLogicalSize(availableSize.Width);
@@ -327,34 +327,6 @@ namespace Microsoft.UI.Xaml
 			return default(CGSize);
 #endif
 		}
-
-#if __MACOS__
-		public static CGSize SizeThatFits(this View element, _Size availableSize)
-		{
-			switch (element)
-			{
-				case NSControl nsControl:
-					return nsControl.SizeThatFits(availableSize);
-
-				case FrameworkElement fe:
-					{
-						fe.XamlMeasure(availableSize);
-						var desiredSize = fe.DesiredSize;
-						return new CGSize(desiredSize.Width, desiredSize.Height);
-					}
-
-				case IHasSizeThatFits scp:
-					return scp.SizeThatFits(availableSize);
-
-				case View nsview:
-					return nsview.FittingSize;
-
-				default:
-					throw new NotSupportedException($"Unsupported measure for {element}");
-			}
-		}
-
-#endif
 
 		public static CGSize SizeThatFits(IFrameworkElement e, CGSize size)
 		{

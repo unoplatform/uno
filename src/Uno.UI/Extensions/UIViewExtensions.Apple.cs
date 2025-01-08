@@ -173,13 +173,6 @@ namespace AppKit
 			view.SetNeedsLayout();
 		}
 
-#if __MACOS__
-		public static void SetNeedsLayout(this _View view)
-		{
-			view.NeedsLayout = true;
-		}
-#endif
-
 		/// <summary>
 		/// Invalidates the layout of the selected view. For iOS, calls the SetNeedsLayout method.
 		/// </summary>
@@ -518,11 +511,7 @@ namespace AppKit
 				foreach (var subview in thisView.Subviews.Safe().Reverse())
 				{
 					var subPoint = subview.ConvertPointFromView(point, thisView);
-#if __APPLE_UIKIT__
 					var result = subview.HitTest(subPoint, uievent);
-#elif __MACOS__
-					var result = subview.HitTest(subPoint);
-#endif
 					if (result != null)
 					{
 						return result;
@@ -535,11 +524,7 @@ namespace AppKit
 
 		public static nfloat GetNativeAlpha(this _View view)
 		{
-#if __MACOS__
-			return view.AlphaValue;
-#elif __APPLE_UIKIT__
 			return view.Alpha;
-#endif
 		}
 
 		/// <summary>
@@ -635,9 +620,7 @@ namespace AppKit
 						.Append(innerView.ToString() + namePart)
 						.Append($"-({innerView.Frame.Width}x{innerView.Frame.Height})@({innerView.Frame.X},{innerView.Frame.Y})")
 						.Append($" ds:{desiredSize}")
-#if __APPLE_UIKIT__
-							.Append($" {(innerView.Hidden ? "Hidden" : "Visible")}")
-#endif
+						.Append($" {(innerView.Hidden ? "Hidden" : "Visible")}")
 						.Append(fe != null ? $" HA={fe.HorizontalAlignment},VA={fe.VerticalAlignment}" : "")
 						.Append(fe != null && (!double.IsNaN(fe.Width) || !double.IsNaN(fe.Height)) ? $"FE.Width={fe.Width},FE.Height={fe.Height}" : "")
 						.Append(fe != null && fe.Margin != default ? $" Margin={fe.Margin}" : "")
@@ -680,27 +663,15 @@ namespace AppKit
 
 		public static void SetNeedsDisplay(this _View view)
 		{
-#if __APPLE_UIKIT__
 			view.SetNeedsDisplay();
-#elif __MACOS__
-			view.NeedsDisplay = true;
-#endif
 		}
-
-#if __MACOS__
-		static readonly NativeHandle selSubviewsHandle = Selector.GetHandle("subviews");
-#endif
 
 		[DllImport("/usr/lib/libobjc.dylib", EntryPoint = "objc_msgSendSuper")]
 		private extern static NativeHandle NativeHandle_objc_msgSendSuper(NativeHandle receiver, IntPtr selector);
 
 		private static NativeHandle GetSubviewsHandle(this _View view)
 		{
-#if __APPLE_UIKIT__
 			return NativeHandle_objc_msgSendSuper(view.SuperHandle, Selector.GetHandle("subviews"));
-#elif __MACOS__
-			return NativeHandle_objc_msgSendSuper(view.SuperHandle, selSubviewsHandle);
-#endif
 		}
 
 		[DllImport("/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation")]

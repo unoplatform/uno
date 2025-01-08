@@ -152,23 +152,7 @@ namespace Microsoft.UI.Xaml.Media
 
 		internal static void AddView(_ViewGroup parent, _View child, int index)
 		{
-#if __MACOS__
-			if (index == 0)
-			{
-				if (parent.Subviews.Length == 0)
-				{
-					parent.AddSubview(child);
-				}
-				else
-				{
-					parent.AddSubview(child, NSWindowOrderingMode.Below, null);
-				}
-			}
-			else
-			{
-				parent.AddSubview(child, NSWindowOrderingMode.Above, parent.Subviews[index - 1]);
-			}
-#elif __APPLE_UIKIT__
+#if __APPLE_UIKIT__
 			parent.InsertSubview(child, index);
 #elif __ANDROID__
 			parent.AddView(child, index);

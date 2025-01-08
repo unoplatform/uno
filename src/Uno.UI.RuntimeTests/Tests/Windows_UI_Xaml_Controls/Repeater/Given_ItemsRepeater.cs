@@ -30,9 +30,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 	{
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_NoScrollViewer_Then_ShowMoreThanFirstItem()
 		{
 			var sut = new ItemsRepeater
@@ -79,9 +76,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 #if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 #if __WASM__
 		[Ignore("Currently flaky on WASM, part of #9080 epic")]
 #endif
@@ -127,9 +121,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#elif __ANDROID__ || __SKIA__
+#if __ANDROID__ || __SKIA__
 		[Ignore("Currently fails https://github.com/unoplatform/uno/issues/9080")]
 #endif
 		public async Task When_NestedIRSlowlyChangeViewport_Then_MaterializedNeededItems()
@@ -251,9 +243,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 #if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_UnloadAndReload_Then_StillListenToCollectionChanged()
 		{
 			var sut = default(ItemsRepeater);
@@ -314,9 +303,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#elif __ANDROID__ || __SKIA__
+#if __ANDROID__ || __SKIA__
 		[Ignore("Currently fails https://github.com/unoplatform/uno/issues/9080")]
 #elif __WASM__
 		[Ignore("Flaky on CI https://github.com/unoplatform/uno/issues/9080")]
@@ -344,9 +331,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_AddItemWhileUnloaded_Then_MaterializeItems()
 		{
 			var sut = SUT.Create();
@@ -366,9 +350,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_RemoveItemWhileUnloaded_Then_MaterializeItems()
 		{
 			var sut = SUT.Create();
@@ -388,9 +369,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_EditItemWhileUnloaded_Then_MaterializeItems()
 		{
 			var sut = SUT.Create();
@@ -410,9 +388,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_ClearItemsWhileUnloaded_Then_MaterializeItems()
 		{
 			var sut = SUT.Create();
@@ -433,9 +408,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#elif !__SKIA__
+#if !__SKIA__
 		[Ignore("Fails due to async native scrolling.")]
 #endif
 		public async Task When_ItemSignificantlyTaller_Then_VirtualizeProperly()
@@ -495,9 +468,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#elif !__SKIA__
+#if !__SKIA__
 		[Ignore("Fails due to async native scrolling.")]
 #endif
 		public async Task When_UnloadReload_Then_MaterializeItemsForCurrentViewport()

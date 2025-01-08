@@ -30,22 +30,9 @@ namespace Uno.UI.Extensions
 	{
 		public static bool IsTouchInView(this _Event evt, _View view)
 		{
-#if __MACOS__
-			var screenLocation = _Application.SharedApplication.KeyWindow.ContentView.ConvertPointFromView(evt.LocationInWindow, null);
-
-			var window = _Application.SharedApplication.KeyWindow;
-			var bounds = GetBounds(window, view);
-
-			return screenLocation.X >= bounds.X
-				&& screenLocation.Y >= bounds.Y
-				&& screenLocation.X < bounds.Right
-				&& screenLocation.Y < bounds.Bottom;
-#else
 			return evt?.AllTouches?.AnyObject is _Touch touch && touch.IsTouchInView(view);
-#endif
 		}
 
-#if !__MACOS__
 		internal static bool IsTouchInView(this _Touch touch, _View view)
 		{
 			var window = _Application.SharedApplication.KeyWindow;
@@ -74,7 +61,6 @@ namespace Uno.UI.Extensions
 
 			return null;
 		}
-#endif
 
 		/// <summary>
 		/// Determines the bounds of the provided view, including the <see cref="UIElement.Clip"/>, using the window coordinate system.
@@ -94,11 +80,7 @@ namespace Uno.UI.Extensions
 				}
 				else
 				{
-#if __MACOS__
-					var viewOnScreen = view.ConvertRectToView(view.Bounds, window.ContentView);
-#else
 					var viewOnScreen = view.ConvertRectToView(view.Bounds, window);
-#endif
 					var element = view as FrameworkElement;
 
 					if (element?.Clip != null)

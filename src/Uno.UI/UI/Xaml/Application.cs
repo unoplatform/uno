@@ -548,15 +548,13 @@ namespace Microsoft.UI.Xaml
 		[JSImport("globalThis.eval")]
 		private static partial string Eval(string js);
 
-#if __MACOS__ || __SKIA__
+#if __SKIA__
 		private static string GetCommandLineArgsWithoutExecutable()
 		{
-#if __SKIA__
 			if (!string.IsNullOrEmpty(_argumentsOverride))
 			{
 				return _argumentsOverride;
 			}
-#endif
 
 			if (OperatingSystem.IsBrowser()) // Skia-WASM
 			{

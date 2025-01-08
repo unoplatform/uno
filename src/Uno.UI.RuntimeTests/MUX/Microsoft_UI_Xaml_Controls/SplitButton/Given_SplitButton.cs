@@ -15,9 +15,7 @@ public class Given_SplitButton
 	[TestMethod]
 	[RunsOnUIThread]
 	[Description("Verifies that the TextBlock representing the Chevron glyph uses the correct font")]
-#if __MACOS__
-	[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
+
 	public async Task VerifyFontFamilyForChevron()
 	{
 		var splitButton = new SplitButton();

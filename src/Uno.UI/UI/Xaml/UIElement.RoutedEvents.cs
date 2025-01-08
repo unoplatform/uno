@@ -431,21 +431,13 @@ namespace Microsoft.UI.Xaml
 		}
 #endif
 
-#if __MACOS__
-		public new event KeyEventHandler KeyDown
-#else
 		public event KeyEventHandler KeyDown
-#endif
 		{
 			add => AddHandler(KeyDownEvent, value, false);
 			remove => RemoveHandler(KeyDownEvent, value);
 		}
 
-#if __MACOS__
-		public new event KeyEventHandler KeyUp
-#else
 		public event KeyEventHandler KeyUp
-#endif
 		{
 			add => AddHandler(KeyUpEvent, value, false);
 			remove => RemoveHandler(KeyUpEvent, value);

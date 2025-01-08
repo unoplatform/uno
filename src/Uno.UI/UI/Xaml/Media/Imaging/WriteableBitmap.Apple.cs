@@ -3,11 +3,7 @@
 using CoreGraphics;
 using Uno.UI.Xaml.Media;
 
-#if __MACOS__
-using _NativeImage = AppKit.NSImage;
-#else
 using _NativeImage = UIKit.UIImage;
-#endif
 
 namespace Microsoft.UI.Xaml.Media.Imaging;
 
@@ -51,11 +47,7 @@ partial class WriteableBitmap
 			CGColorRenderingIntent.Default);
 
 		_NativeImage? nativeImage = null;
-#if __MACOS__
-		nativeImage = new _NativeImage(img, new CGSize(PixelWidth, PixelHeight));
-#else
 		nativeImage = _NativeImage.FromImage(img);
-#endif
 		if (nativeImage is not null)
 		{
 			imageData = ImageData.FromNative(nativeImage);
