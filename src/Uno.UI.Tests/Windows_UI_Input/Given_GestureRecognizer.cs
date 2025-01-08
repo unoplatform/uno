@@ -1559,7 +1559,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		[TestMethod]
 		public void Drag_And_Holding_Touch()
 		{
-			var delay = (ulong)Math.Max(GestureRecognizer.DragWithTouchMinDelayMicroseconds, GestureRecognizer.HoldMinDelayTicks);
+			var delay = (ulong)Math.Max(GestureRecognizer.DragWithTouchMinDelayMicroseconds, GestureRecognizer.HoldMinDelayMicroseconds);
 			var sut = new GestureRecognizer { GestureSettings = GestureSettings.Drag | GestureSettings.Hold };
 			var drags = new List<DraggingEventArgs>();
 			var holds = new List<HoldingEventArgs>();
