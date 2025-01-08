@@ -45,7 +45,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				return Environment.CurrentDirectory;
 			}
 
-			_telemetry = new Telemetry(InstrumentationKey, "uno/generation", enabledProvider: isTelemetryOptout, currentDirectoryProvider: getCurrentDirectory);
+			_telemetry = new Telemetry(
+				InstrumentationKey,
+				"uno/generation",
+				enabledProvider: isTelemetryOptout,
+				currentDirectoryProvider: getCurrentDirectory,
+				versionAssembly: GetType().Assembly);
 		}
 
 		private bool IsTelemetryEnabled => _telemetry?.Enabled ?? false;

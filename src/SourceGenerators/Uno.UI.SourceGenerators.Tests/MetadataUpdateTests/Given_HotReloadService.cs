@@ -1,17 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Runtime.Serialization;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.VisualStudio.TestPlatform.Utilities;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Uno.Extensions;
-using Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates;
 using Uno.UI.SourceGenerators.MetadataUpdates;
 
 namespace Uno.UI.SourceGenerators.Tests.MetadataUpdateTests;
@@ -25,9 +14,15 @@ public class Given_HotReloadService
 	{
 		if (scenario != null)
 		{
+			if (scenario.IsCrashingRoslyn)
+			{
+				Assert.Inconclusive("Case is known to crash roslyn.");
+				return;
+			}
+
 			var results = await ApplyScenario(projects, scenario.IsDebug, scenario.IsMono, scenario.UseXamlReaderReload, name);
 
-			for (int i = 0; i < scenario.PassResults.Length; i++)
+			for (var i = 0; i < scenario.PassResults.Length; i++)
 			{
 				var resultValidation = scenario.PassResults[i];
 
@@ -47,7 +42,7 @@ public class Given_HotReloadService
 
 	public record Project(string Name, ProjectReference[]? ProjectReferences);
 	public record ProjectReference(string Name);
-	public record Scenario(bool IsDebug, bool IsMono, bool UseXamlReaderReload, params PassResult[] PassResults)
+	public record Scenario(bool IsDebug, bool IsMono, bool IsCrashingRoslyn, bool UseXamlReaderReload, params PassResult[] PassResults)
 	{
 		public override string ToString()
 			=> $"{(IsDebug ? "Debug" : "Release")},{(IsMono ? "MonoVM" : "NetCore")},XR:{UseXamlReaderReload}";
@@ -62,6 +57,13 @@ public class Given_HotReloadService
 		{
 			var scenarioName = Path.GetFileName(scenarioFolder);
 			var path = Path.Combine(scenarioFolder, "Scenario.json");
+
+#if DEBUG && false
+			if (!path.Contains("When_DataTemplate_xLoad_xBind_Remove"))
+			{
+				continue;
+			}
+#endif
 
 			if (File.Exists(path))
 			{

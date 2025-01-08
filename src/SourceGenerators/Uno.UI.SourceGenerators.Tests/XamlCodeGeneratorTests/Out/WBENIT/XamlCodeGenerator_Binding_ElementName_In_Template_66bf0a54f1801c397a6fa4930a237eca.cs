@@ -65,39 +65,39 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 						)						,
 						// Source 0\Binding_ElementName_In_Template.xaml (Line 11:4)
 					}
-					.Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca_XamlApply((Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237ecaXamlApplyExtensions.XamlApplyHandler0)(c0 => 
+					.Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca_XamlApply((Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237ecaXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 					{
-						__nameScope.RegisterName("topLevel", c0);
-						__that.topLevel = c0;
-						// FieldModifier public
-						global::Uno.UI.FrameworkElementHelper.SetBaseUri(c0, __baseUri_Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca);
-						c0.CreationComplete();
+					__nameScope.RegisterName("topLevel", __p1);
+					__that.topLevel = __p1;
+					// FieldModifier public
+					global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca);
+					__p1.CreationComplete();
 					}
 					))
 					,
 				}
 			}
-			.Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca_XamlApply((Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237ecaXamlApplyExtensions.XamlApplyHandler1)(c1 => 
+			.Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca_XamlApply((Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237ecaXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 			{
-				global::Uno.UI.FrameworkElementHelper.SetBaseUri(c1, __baseUri_Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca);
-				c1.CreationComplete();
+			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca);
+			__p1.CreationComplete();
 			}
 			))
 			;
 			
 			this
-			.GenericApply(((c2) => 
+			.Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca_XamlApply((Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237ecaXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 			{
-				// Source 0\Binding_ElementName_In_Template.xaml (Line 1:2)
-				
-				// WARNING Property c2.base does not exist on {http://schemas.microsoft.com/winfx/2006/xaml/presentation}Page, the namespace is http://www.w3.org/XML/1998/namespace. This error was considered irrelevant by the XamlFileGenerator
+			// Source 0\Binding_ElementName_In_Template.xaml (Line 1:2)
+			
+			// WARNING Property __p1.base does not exist on {http://schemas.microsoft.com/winfx/2006/xaml/presentation}Page, the namespace is http://www.w3.org/XML/1998/namespace. This error was considered irrelevant by the XamlFileGenerator
 			}
 			))
-			.GenericApply(((c3) => 
+			.Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca_XamlApply((Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237ecaXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 			{
-				// Class Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls.Binding_ElementName_In_Template
-				global::Uno.UI.FrameworkElementHelper.SetBaseUri(c3, __baseUri_Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca);
-				c3.CreationComplete();
+			// Class Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls.Binding_ElementName_In_Template
+			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca);
+			__p1.CreationComplete();
 			}
 			))
 			;
@@ -120,51 +120,48 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026")]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111")]
-		private class _Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca_UnoUITestsWindows_UI_Xaml_DataBindingTestsControlsBinding_ElementName_In_TemplateSC0 
+		private class _Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca_UnoUITestsWindows_UI_Xaml_DataBindingTestsControlsBinding_ElementName_In_TemplateSC0
 		{
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 			private const string __baseUri_prefix_Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca = "ms-appx:///TestProject/";
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 			private const string __baseUri_Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca = "ms-appx:///TestProject/";
 			global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
+			global::System.Object __ResourceOwner_1;
+			_View __rootInstance = null;
 			public _View Build(object __ResourceOwner_1)
 			{
-				_View __rootInstance = null;
 				var __that = this;
-				__rootInstance = 
+				this.__ResourceOwner_1 = __ResourceOwner_1;
+				this.__rootInstance = 
 				new global::Microsoft.UI.Xaml.Controls.TextBlock
 				{
 					IsParsing = true,
 					Name = "innerTextBlock",
 					// Source 0\Binding_ElementName_In_Template.xaml (Line 14:7)
 				}
-				.Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca_XamlApply((Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237ecaXamlApplyExtensions.XamlApplyHandler2)(c4 => 
+				.Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca_XamlApply((Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237ecaXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
 				{
-					/* _isTopLevelDictionary:False */
-					__that._component_0 = c4;
-					__nameScope.RegisterName("innerTextBlock", c4);
-					__that.innerTextBlock = c4;
-					c4.SetBinding(
-						global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
-						new Microsoft.UI.Xaml.Data.Binding()
-						{
-							Path = @"Tag",
-							ElementName = _topLevelSubject,
-						}
-					);
-					global::Uno.UI.FrameworkElementHelper.SetBaseUri(c4, __baseUri_Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca);
-					c4.CreationComplete();
+				/* _isTopLevelDictionary:False */
+				__that._component_0 = __p1;
+				__nameScope.RegisterName("innerTextBlock", __p1);
+				__that.innerTextBlock = __p1;
+				__p1.SetBinding(
+					global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
+					new Microsoft.UI.Xaml.Data.Binding()
+					{
+						Path = @"Tag",
+						ElementName = _topLevelSubject,
+					}
+				);
+				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca);
+				__p1.CreationComplete();
 				}
 				))
 				;
-				if (__rootInstance is FrameworkElement __fe) 
+				if (__rootInstance is FrameworkElement __fe)
 				{
-					var owner = this;
-					__fe.Loading += delegate
-					{
-						_component_0.UpdateResourceBindings();
-					}
-					;
+					__fe.Loading += __UpdateBindingsAndResources;
 				}
 				if (__rootInstance is DependencyObject d)
 				{
@@ -177,7 +174,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 				}
 				return __rootInstance;
 			}
-			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder  = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
 			private global::Microsoft.UI.Xaml.Controls.TextBlock _component_0
 			{
 				get
@@ -202,6 +199,11 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 				}
 			}
 			private global::Microsoft.UI.Xaml.Data.ElementNameSubject _topLevelSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: true, name: "topLevel");
+			private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
+			{
+				var owner = this;
+				_component_0.UpdateResourceBindings();
+			}
 		}
 	}
 }
@@ -223,9 +225,16 @@ namespace MyProject
 			handler(instance);
 			return instance;
 		}
-		public delegate void XamlApplyHandler2(global::Microsoft.UI.Xaml.Controls.TextBlock instance);
+		public delegate void XamlApplyHandler2(global::Microsoft.UI.Xaml.Controls.Page instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.TextBlock Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca_XamlApply(this global::Microsoft.UI.Xaml.Controls.TextBlock instance, XamlApplyHandler2 handler)
+		public static global::Microsoft.UI.Xaml.Controls.Page Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca_XamlApply(this global::Microsoft.UI.Xaml.Controls.Page instance, XamlApplyHandler2 handler)
+		{
+			handler(instance);
+			return instance;
+		}
+		public delegate void XamlApplyHandler3(global::Microsoft.UI.Xaml.Controls.TextBlock instance);
+		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+		public static global::Microsoft.UI.Xaml.Controls.TextBlock Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca_XamlApply(this global::Microsoft.UI.Xaml.Controls.TextBlock instance, XamlApplyHandler3 handler)
 		{
 			handler(instance);
 			return instance;

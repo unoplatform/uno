@@ -16,7 +16,8 @@ using Verify = CSharpSourceGeneratorVerifier<DependencyObjectGenerator>;
 [TestClass]
 public class Given_DependencyObjectGenerator
 {
-	private static readonly ReferenceAssemblies _net80 = ReferenceAssemblies.Net.Net80.AddPackages([new PackageIdentity("Uno.Diagnostics.Eventing", "2.1.0")]);
+	private static readonly ReferenceAssemblies _refAsmAndroid = _Dotnet.CurrentAndroid.ReferenceAssemblies.AddPackages([new PackageIdentity("Uno.Diagnostics.Eventing", "2.1.0")]);
+	private static readonly ReferenceAssemblies _refAsm = _Dotnet.Current.ReferenceAssemblies.AddPackages([new PackageIdentity("Uno.Diagnostics.Eventing", "2.1.0")]);
 
 	private const string Configuration =
 #if DEBUG
@@ -30,7 +31,12 @@ public class Given_DependencyObjectGenerator
 
 	private static MetadataReference[] BuildUnoReferences()
 	{
-		string[] availableTargets = [
+		string[] availableTargets = isAndroid
+			? [
+				Path.Combine("Uno.UI.netcoremobile", Configuration, $"{TFMPrevious}-android"),
+				Path.Combine("Uno.UI.netcoremobile", Configuration, $"{TFMCurrent}-android"),
+			]
+			: [
 				// On CI the test assemblies set must be first, as it contains all
 				// dependent assemblies, which the other platforms don't (see DisablePrivateProjectReference).
 				Path.Combine("Uno.UI.Tests", Configuration, TFMPrevious),
@@ -74,10 +80,10 @@ public class Given_DependencyObjectGenerator
 			{
 				Sources = { testCode },
 			},
-			ReferenceAssemblies = _net80,
+			ReferenceAssemblies = _refAsmAndroid,
 		};
 
-		test.TestState.AdditionalReferences.AddRange(BuildUnoReferences());
+		test.TestState.AdditionalReferences.AddRange(BuildUnoReferences(isAndroid: false));
 		test.ExpectedDiagnostics.AddRange(expectedDiagnostics);
 		await test.RunAsync();
 	}
@@ -85,7 +91,8 @@ public class Given_DependencyObjectGenerator
 	[TestMethod]
 	public async Task TestAndroidViewImplementingDependencyObject()
 	{
-		await TestAndroid(/* lang=c#-test */"""
+		var source = """
+			using Android.Content;
 			using Windows.UI.Core;
 			using Microsoft.UI.Dispatching;
 			using Microsoft.UI.Xaml;
@@ -95,7 +102,7 @@ public class Given_DependencyObjectGenerator
 				public C(Android.Views.Context context) : base(context)
 				{
 				}
-
+			
 				public CoreDispatcher Dispatcher { get; }
 				public DispatcherQueue DispatcherQueue { get; }
 				public object GetValue(DependencyProperty dp) => null;
@@ -106,15 +113,12 @@ public class Given_DependencyObjectGenerator
 				public long RegisterPropertyChangedCallback(DependencyProperty dp, DependencyPropertyChangedCallback callback) => 0;
 				public void UnregisterPropertyChangedCallback(DependencyProperty dp, long token) { }
 			}
+			""";
 
-			namespace Android.Views
-			{
-				public class View(Context context) { }
-				public class Context { }
-			}
-			""",
-		// /0/Test0.cs(5,14): error Uno0003: 'Android.Views.View' shouldn't implement 'DependencyObject'. Inherit 'FrameworkElement' instead.
-		DiagnosticResult.CompilerError("Uno0003").WithSpan(5, 14, 5, 15).WithArguments("Android.Views.View"));
+		await TestAndroid(
+			source,
+			// /0/Test0.cs(5,14): error Uno0003: 'Android.Views.View' shouldn't implement 'DependencyObject'. Inherit 'FrameworkElement' instead.
+			DiagnosticResult.CompilerError("Uno0003").WithSpan(6, 14, 6, 15).WithArguments("Android.Views.View"));
 	}
 
 	[TestMethod]
@@ -350,10 +354,10 @@ public class Given_DependencyObjectGenerator
 	 """, Encoding.UTF8)) }
 				}
 			},
-			ReferenceAssemblies = _net80,
+			ReferenceAssemblies = _refAsm,
 		};
 
-		test.TestState.AdditionalReferences.AddRange(BuildUnoReferences());
+		test.TestState.AdditionalReferences.AddRange(BuildUnoReferences(isAndroid: false));
 		await test.RunAsync();
 	}
 }

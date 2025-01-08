@@ -12,14 +12,14 @@ public partial class Gamepad : IGameController
 {
 	private static readonly object _syncLock = new object();
 
-	private static readonly StartStopEventWrapper<EventHandler<Gamepad>> _gamepadAddedWrapper;
-	private static readonly StartStopEventWrapper<EventHandler<Gamepad>> _gamepadRemovedWrapper;
+	private static readonly StartStopEventWrapper<Gamepad> _gamepadAddedWrapper;
+	private static readonly StartStopEventWrapper<Gamepad> _gamepadRemovedWrapper;
 
 	static Gamepad()
 	{
-		_gamepadAddedWrapper = new StartStopEventWrapper<EventHandler<Gamepad>>(
+		_gamepadAddedWrapper = new StartStopEventWrapper<Gamepad>(
 			StartGamepadAdded, EndGamepadAdded, _syncLock);
-		_gamepadRemovedWrapper = new StartStopEventWrapper<EventHandler<Gamepad>>(
+		_gamepadRemovedWrapper = new StartStopEventWrapper<Gamepad>(
 			StartGamepadRemoved, EndGamepadRemoved, _syncLock);
 	}
 

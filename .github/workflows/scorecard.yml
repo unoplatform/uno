@@ -19,6 +19,7 @@ permissions: read-all
 
 jobs:
   analysis:
+    if: github.repository == 'unoplatform/uno'
     name: Scorecard analysis
     runs-on: ubuntu-latest
     permissions:
