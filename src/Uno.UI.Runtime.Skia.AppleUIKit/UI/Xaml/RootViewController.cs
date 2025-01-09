@@ -13,12 +13,12 @@ using Uno.UI.Controls;
 using Uno.UI.Helpers;
 using Uno.UI.Runtime.Skia.AppleUIKit.Hosting;
 using Windows.Devices.Sensors;
-using Windows.Foundation;
 using Windows.Graphics.Display;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
+using Uno.WinUI.Runtime.Skia.AppleUIKit.UI.Xaml;
+
 
 #if __IOS__
-using SkiaSharp.Views.iOS;
 using SkiaCanvas = SkiaSharp.Views.iOS.SKMetalView;
 using SkiaEventArgs = SkiaSharp.Views.iOS.SKPaintMetalSurfaceEventArgs;
 #else
@@ -35,6 +35,7 @@ internal class RootViewController : UINavigationController, IRotationAwareViewCo
 	private XamlRoot? _xamlRoot;
 	private UIView? _textInputLayer;
 	private UIView? _nativeOverlayLayer;
+	private string? _lastSvgClipPath;
 
 	public RootViewController()
 	{
@@ -80,9 +81,12 @@ internal class RootViewController : UINavigationController, IRotationAwareViewCo
 		View!.AddSubview(_textInputLayer);
 		View!.AddSubview(_skCanvasView);
 
-		_nativeOverlayLayer = new UIView();
-		_nativeOverlayLayer.Frame = View!.Bounds;
-		_nativeOverlayLayer.AutoresizingMask = UIViewAutoresizing.All;
+		var nativeOverlayLayer = new NativeOverlayLayer();
+		nativeOverlayLayer.Frame = View!.Bounds;
+		nativeOverlayLayer.AutoresizingMask = UIViewAutoresizing.All;
+		nativeOverlayLayer.SubviewsChanged += NativeOverlayLayer_SubviewsChanged;
+		_nativeOverlayLayer = nativeOverlayLayer;
+
 		View!.AddSubview(_nativeOverlayLayer);
 
 		// TODO Uno: When we support multi-window, this should close popups for the appropriate XamlRoot #13847.
@@ -99,6 +103,8 @@ internal class RootViewController : UINavigationController, IRotationAwareViewCo
 			.ObserveWillResignActive((sender, args) =>
 				VisualTreeHelper.CloseLightDismissPopups(WinUICoreServices.Instance.ContentRootCoordinator!.CoreWindowContentRoot!.XamlRoot));
 	}
+
+	private void NativeOverlayLayer_SubviewsChanged(object? sender, EventArgs e) => _lastSvgClipPath = null; // Ensure the clip path is invalidated for next render.
 
 	internal event Action? VisibleBoundsChanged;
 
@@ -120,7 +126,12 @@ internal class RootViewController : UINavigationController, IRotationAwareViewCo
 				var path = SkiaRenderHelper.RenderRootVisualAndReturnNegativePath(width, height, rootVisual, surface);
 				if (path is { })
 				{
-					ClipBySvgPath(path.ToSvgPathData());
+					var svgPath = path.ToSvgPathData();
+					if (svgPath != _lastSvgClipPath)
+					{
+						_lastSvgClipPath = svgPath;
+						ClipBySvgPath(svgPath);
+					}
 				}
 			}
 		}
@@ -144,7 +155,7 @@ internal class RootViewController : UINavigationController, IRotationAwareViewCo
 
 				for (int index = 0; index < length;)
 				{
-					nfloat x, y;
+					nfloat x, y, x2, y2;
 					char op = svg[index];
 					switch (op)
 					{
@@ -157,6 +168,23 @@ internal class RootViewController : UINavigationController, IRotationAwareViewCo
 							x = (x / scale - vx);
 							y = (y / scale - vy);
 							cgPath.MoveToPoint(x, y);
+							break;
+
+						case 'Q':
+							index++; // skip Z
+							x = ReadNextSvgCoord(svg, ref i, length);
+							index++; // skip separator
+							y = ReadNextSvgCoord(svg, ref i, length);
+							index++; // skip separator
+							x2 = ReadNextSvgCoord(svg, ref i, length);
+							index++; // skip separator
+							y2 = ReadNextSvgCoord(svg, ref i, length);
+							// there might not be a separator (not required before the next op)
+							x = (x / scale - vx);
+							y = (y / scale - vy);
+							x2 = (x2 / scale - vx);
+							y2 = (y2 / scale - vy);
+							cgPath.AddQuadCurveToPoint(default, x, y, x2, y2);
 							break;
 
 						case 'L':
@@ -214,7 +242,7 @@ internal class RootViewController : UINavigationController, IRotationAwareViewCo
 			endPos++;
 		}
 		var reading = svg.Substring(position, endPos - position).Trim();
-		DebugLog.Log(reading);
+
 		var coord = float.Parse(reading, CultureInfo.InvariantCulture);
 
 		position = endPos;
