@@ -17,6 +17,26 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 		public const string BaseXamlNamespace = "Microsoft.UI.Xaml";
 		public const string UnoXamlNamespace = "Microsoft.UI.Xaml";
 
+		public const string UnknownContent = "_UnknownContent";
+
+		public static class Xmlnses
+		{
+			/// <summary>
+			/// <code>xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"</code>
+			/// </summary>
+			public const string Default = PresentationXamlXmlNamespace;
+
+			/// <summary>
+			/// <code>xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"</code>
+			/// </summary>
+			public const string X = XamlXmlNamespace;
+
+			/// <summary>
+			/// <code>xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"</code>
+			/// </summary>
+			public const string MC = "http://schemas.openxmlformats.org/markup-compatibility/2006";
+		}
+
 		public static class Namespaces
 		{
 			public const string Controls = BaseXamlNamespace + ".Controls";
