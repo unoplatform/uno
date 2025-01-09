@@ -75,7 +75,7 @@ namespace Microsoft.UI.Xaml.Input
 
 		public PointerPoint GetCurrentPoint(UIElement relativeTo)
 		{
-			var timestamp = ToTimeStamp(_nativeTouch.Timestamp);
+			var timestamp = ToTimestamp(_nativeTouch.Timestamp);
 			var device = global::Windows.Devices.Input.PointerDevice.For((global::Windows.Devices.Input.PointerDeviceType)Pointer.PointerDeviceType);
 			var rawPosition = (Point)_nativeTouch.GetPreciseLocation(null);
 			var position = relativeTo == null
@@ -111,10 +111,10 @@ namespace Microsoft.UI.Xaml.Input
 
 		#region Misc static helpers
 
-		private static ulong ToTimeStamp(double timestamp)
+		private static ulong ToTimestamp(double nativeTimestamp)
 		{
-			// iOS Timestamp is in seconds from boot time.
-			return (ulong)(timestamp * 1000 * 1000); // Convert to microseconds
+			// iOS Timestamp is in seconds from boot time, convert to microseconds.
+			return (ulong)(nativeTimestamp * 1000 * 1000);
 		}
 
 		private static double? _firstTimestamp;
