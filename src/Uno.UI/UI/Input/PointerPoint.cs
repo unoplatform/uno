@@ -38,13 +38,6 @@ namespace Windows.UI.Input
 			Properties = properties;
 		}
 
-		/// <summary>
-		/// Retrieves the relative timestamp in microseconds.
-		/// </summary>
-		/// <returns>Timestamp in microseconds.</returns>
-		internal static ulong GetRelativeTimestamp() =>
-			(ulong)Stopwatch.GetElapsedTime(Stopwatch.GetTimestamp()).TotalMicroseconds;
-
 #if HAS_UNO_WINUI && IS_UNO_UI_PROJECT
 		public PointerPoint(global::Windows.UI.Input.PointerPoint point)
 		{
