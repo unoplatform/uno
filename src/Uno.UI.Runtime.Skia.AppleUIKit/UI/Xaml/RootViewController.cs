@@ -172,13 +172,13 @@ internal class RootViewController : UINavigationController, IRotationAwareViewCo
 
 						case 'Q':
 							index++; // skip Z
-							x = ReadNextSvgCoord(svg, ref i, length);
+							x = ReadNextSvgCoord(svg, ref index, length);
 							index++; // skip separator
-							y = ReadNextSvgCoord(svg, ref i, length);
+							y = ReadNextSvgCoord(svg, ref index, length);
 							index++; // skip separator
-							x2 = ReadNextSvgCoord(svg, ref i, length);
+							x2 = ReadNextSvgCoord(svg, ref index, length);
 							index++; // skip separator
-							y2 = ReadNextSvgCoord(svg, ref i, length);
+							y2 = ReadNextSvgCoord(svg, ref index, length);
 							// there might not be a separator (not required before the next op)
 							x = (x / scale - vx);
 							y = (y / scale - vy);
