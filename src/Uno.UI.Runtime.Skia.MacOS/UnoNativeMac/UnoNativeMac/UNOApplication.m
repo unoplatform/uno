@@ -7,8 +7,6 @@
 static UNOApplicationDelegate *ad;
 static system_theme_change_fn_ptr system_theme_change;
 static id<MTLDevice> device;
-static NSTimeInterval initialUptime = 0;
-static NSDate *initialUptimeDate = nil;
 
 inline system_theme_change_fn_ptr uno_get_system_theme_change_callback(void)
 {
