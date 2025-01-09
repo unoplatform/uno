@@ -69,7 +69,8 @@ jobs:
       overwriteExistingFiles: true
 
   - pwsh: |
-    dotnet build src/Uno.UI-UnitTests-only.slnf -c Release -bl:$(build.artifactstagingdirectory)\unit-tests-build-$(XAML_FLAVOR_BUILD).binlog
+      dotnet build src/Uno.UI-UnitTests-only.slnf -c Release -bl:$(build.artifactstagingdirectory)\unit-tests-build-$(XAML_FLAVOR_BUILD).binlog
+    displayName: Build unit tests solution filter
 
   - task: PublishBuildArtifacts@1
     condition: always()
@@ -80,4 +81,5 @@ jobs:
       ArtifactType: Container
 
   - pwsh: |
-    dotnet test src/Uno.UI-UnitTests-only.slnf -c Release --no-build
+      dotnet test src/Uno.UI-UnitTests-only.slnf -c Release --no-build
+    displayName: Run unit tests
