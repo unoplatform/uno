@@ -81,5 +81,15 @@ jobs:
       ArtifactType: Container
 
   - pwsh: |
-      dotnet test src/Uno.UI-UnitTests-only.slnf -c Release --no-build
+      dotnet test src/Uno.UI-UnitTests-only.slnf -c Release --no-build -- --report-trx --results-directory $(Build.SourcesDirectory)/artifacts/TestResults
     displayName: Run unit tests
+
+  - task: PublishTestResults@2
+    displayName: Publish TRX Test Results
+    inputs:
+      testResultsFormat: 'VSTest'
+      testResultsFiles: '*.trx'
+      searchFolder: '$(Build.SourcesDirectory)/artifacts/TestResults'
+      testRunTitle: UnitTests-trx
+    continueOnError: true
+    condition: always()
