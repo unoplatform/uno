@@ -10,6 +10,7 @@ using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.Win32;
 using Windows.Win32.Foundation;
+using Windows.Win32.Graphics.GdiPlus;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -28,6 +29,7 @@ namespace Uno.UI.Runtime.Skia.Win32;
 
 public class Win32Host : SkiaHost, ISkiaApplicationHost
 {
+	private UIntPtr _gdiPlusToken;
 	private readonly Func<Application> _appBuilder;
 	private static readonly Win32EventLoop _eventLoop = new(a =>
 	{
@@ -88,6 +90,13 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 			if (hResult.Failed)
 			{
 				typeof(Win32Host).Log().Log(LogLevel.Error, hResult, static hResult => $"{nameof(PInvoke.OleInitialize)} failed: {Win32Helper.GetErrorMessage(hResult)}");
+			}
+
+			GdiplusStartupOutput o = default;
+			var status = PInvoke.GdiplusStartup(ref _gdiPlusToken, new GdiplusStartupInput { GdiplusVersion = 1 }, ref o);
+			if (status != Status.Ok)
+			{
+				typeof(Win32Host).Log().Log(LogLevel.Error, status, static status => $"{nameof(PInvoke.GdiplusStartup)} failed: {status}");
 			}
 		}, NativeDispatcherPriority.Normal);
 	}

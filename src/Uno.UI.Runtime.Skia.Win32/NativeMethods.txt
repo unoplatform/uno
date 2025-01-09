@@ -124,6 +124,14 @@ EnumWindows
 ExtCreateRegion
 FindWindow
 FormatMessage
+GdipAddPathBezier
+GdipAddPathLine
+GdipCreateFromHWND
+GdipClosePathFigure
+GdipCreatePath
+GdipCreateRegionPath
+GdipGetRegionHRgn
+GdiplusStartup
 GetCapture
 GetClientRect
 GetClipboardData

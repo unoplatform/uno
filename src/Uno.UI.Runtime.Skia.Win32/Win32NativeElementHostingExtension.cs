@@ -4,8 +4,6 @@ using Microsoft.UI.Xaml;
 using Uno.Foundation.Logging;
 
 using System;
-using System.Buffers;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -13,6 +11,7 @@ using System.Threading;
 using Microsoft.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.Win32.Graphics.Gdi;
+using Windows.Win32.Graphics.GdiPlus;
 using Windows.Win32.UI.WindowsAndMessaging;
 using Microsoft.UI.Composition;
 using SkiaSharp;
@@ -21,24 +20,10 @@ namespace Uno.UI.Runtime.Skia.Win32;
 
 public class Win32NativeElementHostingExtension(ContentPresenter presenter) : ContentPresenter.INativeElementHostingExtension
 {
-	private static readonly SKPath _emptyPath = new();
-	private static readonly byte[] _emptyRegionBytes;
-
 	private static HWND _enumProcRet;
+	private static readonly SKPath _lastClipPath = new();
 
 	private Rect _lastArrangeRect;
-	private (byte[] bytes, SKPath path) _lastClip = (_emptyRegionBytes, _emptyPath);
-
-	static unsafe Win32NativeElementHostingExtension()
-	{
-		var emptyRegion = PInvoke.CreateRectRgn(0, 0, 0, 0);
-		var neededSize = PInvoke.GetRegionData(emptyRegion, 0);
-		_emptyRegionBytes = new byte[neededSize];
-		fixed (byte* ptr = _emptyRegionBytes)
-		{
-			_ = PInvoke.GetRegionData(emptyRegion, neededSize, (RGNDATA*)ptr);
-		}
-	}
 
 	private HWND Hwnd
 	{
@@ -75,7 +60,7 @@ public class Win32NativeElementHostingExtension(ContentPresenter presenter) : Co
 		var oldExStyleVal = PInvoke.GetWindowLong((HWND)window.Hwnd, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE);
 		var oldStyleVal = PInvoke.GetWindowLong((HWND)window.Hwnd, WINDOW_LONG_PTR_INDEX.GWL_STYLE);
 		PInvoke.SetWindowLong((HWND)window.Hwnd, WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE, oldExStyleVal | (int)WINDOW_EX_STYLE.WS_EX_LAYERED);
-		PInvoke.SetWindowLong((HWND)window.Hwnd, WINDOW_LONG_PTR_INDEX.GWL_STYLE, oldStyleVal & ~(int)WINDOW_STYLE.WS_CAPTION); // removes the title bar and borders
+		PInvoke.SetWindowLong((HWND)window.Hwnd, WINDOW_LONG_PTR_INDEX.GWL_STYLE, (oldStyleVal | (int)WINDOW_STYLE.WS_CLIPSIBLINGS) & ~(int)WINDOW_STYLE.WS_CAPTION); // removes the title bar and borders
 
 		_ = PInvoke.ShowWindow((HWND)window.Hwnd, SHOW_WINDOW_CMD.SW_SHOWNORMAL);
 
@@ -97,80 +82,100 @@ public class Win32NativeElementHostingExtension(ContentPresenter presenter) : Co
 		arrangePath.AddRect(_lastArrangeRect.ToSKRect());
 		path.Op(arrangePath, SKPathOp.Intersect, intersectionPath);
 		intersectionPath.Transform(SKMatrix.CreateTranslation((float)-_lastArrangeRect.X, (float)-_lastArrangeRect.Y));
-		intersectionPath.Simplify();
+		_lastClipPath.Rewind();
+		_lastClipPath.AddPath(intersectionPath);
 
-		if (intersectionPath.IsEmpty)
+		Debug.Assert(intersectionPath.FillType is SKPathFillType.Winding or SKPathFillType.EvenOdd);
+		GpPath* gpPath = null;
+		var status = PInvoke.GdipCreatePath(intersectionPath.FillType is SKPathFillType.Winding ? FillMode.FillModeWinding : FillMode.FillModeAlternate, ref gpPath);
+		if (status != Status.Ok)
 		{
-			if (_lastClip.bytes != _emptyRegionBytes)
-			{
-				ArrayPool<byte>.Shared.Return(_lastClip.bytes);
-			}
-			_lastClip = (_emptyRegionBytes, _emptyPath);
-			CloneAndSetWindowRgn();
+			this.Log().Log(LogLevel.Error, status, static status => $"{nameof(PInvoke.GdipCreatePath)} failed: {status}");
 			return;
 		}
 
-		using var _3 = SkiaHelper.GetTempSKPath(out var xorPath);
-		if (_lastClip.path is { } lastPath && lastPath.Op(intersectionPath, SKPathOp.Xor, xorPath) && xorPath.IsEmpty)
+		var iter = intersectionPath.CreateIterator(forceClose: true);
+		SKPathVerb verb = default;
+		var points = stackalloc SKPoint[4];
+		var pointSpan = new Span<SKPoint>(points, 4);
+		while (verb != SKPathVerb.Done)
 		{
-			CloneAndSetWindowRgn();
+			verb = iter.Next(pointSpan);
+			switch (verb)
+			{
+				case SKPathVerb.Move:
+					break;
+				case SKPathVerb.Line:
+					status = PInvoke.GdipAddPathLine(gpPath, pointSpan[0].X, pointSpan[0].Y, pointSpan[1].X, pointSpan[1].Y);
+					if (status != Status.Ok)
+					{
+						this.Log().Log(LogLevel.Error, status, static status => $"{nameof(PInvoke.GdipAddPathLine)} failed: {status}");
+						return;
+					}
+					break;
+				case SKPathVerb.Quad:
+					// quadratic to cubic bézier
+					var controlPoint1 = pointSpan[0] + new SKPoint((pointSpan[1].X - pointSpan[0].X) * 2 / 3, (pointSpan[1].Y - pointSpan[0].Y) * 2 / 3);
+					var controlPoint2 = pointSpan[2] + new SKPoint((pointSpan[1].X - pointSpan[2].X) * 2 / 3, (pointSpan[1].Y - pointSpan[2].Y) * 2 / 3);
+					status = PInvoke.GdipAddPathBezier(gpPath, pointSpan[0].X, pointSpan[0].Y, controlPoint1.X, controlPoint1.Y, controlPoint2.X, controlPoint2.Y, pointSpan[2].X, pointSpan[2].Y);
+					if (status != Status.Ok)
+					{
+						this.Log().Log(LogLevel.Error, status, static status => $"{nameof(PInvoke.GdipAddPathBezier)} failed: {status}");
+						return;
+					}
+					break;
+				case SKPathVerb.Conic:
+					throw new NotImplementedException();
+				case SKPathVerb.Cubic:
+					status = PInvoke.GdipAddPathBezier(gpPath, pointSpan[0].X, pointSpan[0].Y, pointSpan[1].X, pointSpan[1].Y, pointSpan[2].X, pointSpan[2].Y, pointSpan[3].X, pointSpan[3].Y);
+					if (status != Status.Ok)
+					{
+						this.Log().Log(LogLevel.Error, status, static status => $"{nameof(PInvoke.GdipAddPathBezier)} failed: {status}");
+						return;
+					}
+					break;
+				case SKPathVerb.Close:
+					status = PInvoke.GdipClosePathFigure(gpPath);
+					if (status != Status.Ok)
+					{
+						this.Log().Log(LogLevel.Error, status, static status => $"{nameof(PInvoke.GdipClosePathFigure)} failed: {status}");
+						return;
+					}
+					break;
+				case SKPathVerb.Done:
+					break;
+				default:
+					throw new ArgumentOutOfRangeException();
+			}
+		}
+
+		GpRegion* region = default;
+		status = PInvoke.GdipCreateRegionPath(gpPath, &region);
+		if (status != Status.Ok)
+		{
+			this.Log().Log(LogLevel.Error, status, static status => $"{nameof(PInvoke.GdipCreateRegionPath)} failed: {status}");
 			return;
 		}
 
-		var rects = new List<SKRectI>();
-		var region = new SKRegion(intersectionPath);
-		for (var iter = region.CreateRectIterator(); iter.Next(out var rect);)
+		GpGraphics* graphics = default;
+		status = PInvoke.GdipCreateFromHWND(Hwnd, ref graphics);
+		if (status != Status.Ok)
 		{
-			rects.Add(rect);
+			this.Log().Log(LogLevel.Error, status, static status => $"{nameof(PInvoke.GdipCreateFromHWND)} failed: {status}");
+			return;
 		}
 
-		var bounds = region.Bounds;
-		var bufferSize = Marshal.SizeOf<RGNDATAHEADER>() + rects.Count * Marshal.SizeOf<RECT>();
-		var bytes = ArrayPool<byte>.Shared.Rent(bufferSize);
-		fixed (byte* buffer = bytes)
+		HRGN hrgn = default;
+		status = PInvoke.GdipGetRegionHRgn(region, graphics, &hrgn);
+		if (status != Status.Ok)
 		{
-			var data = (RGNDATA*)buffer;
-			data->rdh = new RGNDATAHEADER
-			{
-				dwSize = (uint)Marshal.SizeOf<RGNDATAHEADER>(),
-				nCount = (uint)rects.Count,
-				iType = PInvoke.RDH_RECTANGLES,
-				nRgnSize = 0,
-				rcBound = new RECT(bounds.Left, bounds.Top, bounds.Right, bounds.Bottom)
-			};
-			var rectSpan = new Span<RECT>(&data->Buffer, rects.Count);
-			for (var i = 0; i < rects.Count; i++)
-			{
-				rectSpan[i] = new RECT(rects[i].Left, rects[i].Top, rects[i].Right, rects[i].Bottom);
-			}
-
-			var hrgn = PInvoke.ExtCreateRegion((XFORM*)null, (uint)bufferSize, data);
-			if (hrgn == HRGN.Null)
-			{
-				this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.ExtCreateRegion)} failed: {Win32Helper.GetErrorMessage()}");
-				return;
-			}
-
-			var pathCopy = new SKPath(); // Careful! new SKPath(intersectionPath) doesn't seem to be properly cloning
-			pathCopy.AddPath(intersectionPath);
-			if (_lastClip.bytes != _emptyRegionBytes)
-			{
-				ArrayPool<byte>.Shared.Return(_lastClip.bytes);
-			}
-			_lastClip = (bytes, pathCopy);
-			CloneAndSetWindowRgn();
+			this.Log().Log(LogLevel.Error, status, static status => $"{nameof(PInvoke.GdipGetRegionHRgn)} failed: {status}");
+			return;
 		}
 
-		void CloneAndSetWindowRgn()
-		{
-			// "After a successful call to SetWindowRgn, the system owns the region specified by the region handle hRgn. The system does not make a copy of the region. Thus, you should not make any further function calls with this region handle. In particular, do not delete this region handle. The system deletes the region handle when it no longer needed."
-			fixed (byte* ptr = _lastClip.bytes)
-			{
-				var cpy = PInvoke.ExtCreateRegion((XFORM*)null, (uint)_lastClip.bytes.Length, (RGNDATA*)ptr);
-				_ = PInvoke.SetWindowRgn((HWND)((Win32NativeWindow)presenter.Content).Hwnd, cpy, true) != 0
-					|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SetWindowRgn)} failed: {Win32Helper.GetErrorMessage()}");
-			}
-		}
+		// "After a successful call to SetWindowRgn, the system owns the region specified by the region handle hRgn. The system does not make a copy of the region. Thus, you should not make any further function calls with this region handle. In particular, do not delete this region handle. The system deletes the region handle when it no longer needed."
+		_ = PInvoke.SetWindowRgn((HWND)((Win32NativeWindow)presenter.Content).Hwnd, new HRGN(hrgn), true) != 0
+			|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SetWindowRgn)} failed: {Win32Helper.GetErrorMessage()}");
 	}
 
 	public void DetachNativeElement(object content)
@@ -189,11 +194,6 @@ public class Win32NativeElementHostingExtension(ContentPresenter presenter) : Co
 		}
 
 		Win32WindowWrapper.XamlRootMap.GetHostForRoot(presenter.XamlRoot!)!.RenderingNegativePathChanged -= OnRenderingNegativePathChanged;
-
-		if (_lastClip.bytes != _emptyRegionBytes)
-		{
-			ArrayPool<byte>.Shared.Return(_lastClip.bytes);
-		}
 	}
 
 	public void ArrangeNativeElement(object content, Rect arrangeRect, Rect clipRect)
@@ -214,7 +214,7 @@ public class Win32NativeElementHostingExtension(ContentPresenter presenter) : Co
 				(int)arrangeRect.Height,
 				SET_WINDOW_POS_FLAGS.SWP_NOZORDER | SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE)
 			|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}");
-		OnRenderingNegativePathChanged(null, _lastClip.path);
+		OnRenderingNegativePathChanged(this, _lastClipPath);
 	}
 
 	public Size MeasureNativeElement(object content, Size childMeasuredSize, Size availableSize) => availableSize;
