@@ -32,6 +32,10 @@ using Private.Infrastructure;
 using Uno.Logging;
 #endif
 
+#if HAS_UNO
+using Uno.UI.Helpers;
+#endif
+
 #if HAS_UNO_WINUI || WINAPPSDK
 using DispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue;
 using DispatcherQueuePriority = Microsoft.UI.Dispatching.DispatcherQueuePriority;
@@ -171,24 +175,43 @@ namespace SamplesApp
 
 			ActivateMainWindow();
 
-#if !WINAPPSDK
-			ApplicationView.GetForCurrentView().Title = "Uno Samples";
-#else
-			MainWindow!.Title = "Uno Samples";
-#endif
-
-#if __SKIA__ && DEBUG
-			AppendRepositoryPathToTitleBar();
-#endif
-
+			SetWindowTitle();
 			HandleLaunchArguments(e);
 
 			Console.WriteLine("Done loading " + sw.Elapsed);
 		}
 
-#if __SKIA__ && DEBUG
-		private void AppendRepositoryPathToTitleBar()
+		private static void SetWindowTitle()
 		{
+			var renderingType =
+#if __SKIA__
+				"Skia";
+#else
+				"Native";
+#endif
+
+			var appTitle = $"Uno Samples ({renderingType})";
+
+#if __SKIA__ && DEBUG
+			var repositoryPath = GetRepositoryPath();
+			appTitle += $" [{repositoryPath}]";
+#endif
+
+#if !WINAPPSDK
+			ApplicationView.GetForCurrentView().Title = appTitle;
+#else
+			MainWindow!.Title = appTitle;
+#endif
+		}
+
+#if __SKIA__ && DEBUG
+		private static string GetRepositoryPath()
+		{
+			if (!DeviceTargetHelper.IsDesktop())
+			{
+				return "";
+			}
+
 			var fullPath = Package.Current.InstalledLocation.Path;
 			var srcSamplesApp = $"{Path.DirectorySeparatorChar}src{Path.DirectorySeparatorChar}SamplesApp";
 			var repositoryPath = fullPath;
@@ -197,7 +220,7 @@ namespace SamplesApp
 				repositoryPath = fullPath.Substring(0, index);
 			}
 
-			ApplicationView.GetForCurrentView().Title += $" ({repositoryPath})";
+			return repositoryPath;
 		}
 #endif
 
