@@ -11,9 +11,11 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Windowing;
 
 [TestClass]
 [RunsOnUIThread]
+#if !__SKIA__ && !WINDOWS
+[Ignore]
+#endif
 public class Given_AppWindow
 {
-#if __SKIA__ || WINDOWS
 	[TestMethod]
 	public async Task When_Resize()
 	{
@@ -173,6 +175,5 @@ public class Given_AppWindow
 
 		return false;
 	}
-#endif
 }
 #endif

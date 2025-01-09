@@ -30,7 +30,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 	public class Given_FrameworkElement_Opacity
 	{
-#if __SKIA__
+#if !__SKIA__
+		[Ignore]
+#endif
 		[TestMethod]
 		public async Task When_Opacity()
 		{
@@ -61,6 +63,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			ImageAssert.HasColorAtChild(si, SUT.ImageOpacity0_5, width / 2, height / 2, "#FFFEF3C2");
 		}
 
+#if !__SKIA__
+		[Ignore]
+#endif
 		[TestMethod]
 		public async Task When_Opacity_Inner()
 		{
@@ -94,6 +99,5 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			height = SUT.ImageInner0_5.ActualHeight;
 			ImageAssert.HasColorAtChild(si, SUT.ImageInner0_5, width / 2, height / 2, "#FFFEF9E1", tolerance: 1);
 		}
-#endif
 	}
 }
