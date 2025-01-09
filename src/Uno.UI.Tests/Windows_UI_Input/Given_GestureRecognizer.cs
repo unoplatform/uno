@@ -20,6 +20,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 	[TestClass]
 	public class Given_GestureRecognizer
 	{
+		private const int MicrosecondsPerMillisecond = 1000;
+
 		private const GestureSettings ManipulationsWithoutInertia = GestureSettings.ManipulationTranslateX
 			| GestureSettings.ManipulationTranslateY
 			| GestureSettings.ManipulationTranslateRailsX
@@ -1002,8 +1004,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			// flick at 2 px/ms
 			sut.ProcessDownEvent(10, 10, ts: 0);
-			sut.ProcessMoveEvent(100, 100, ts: 100 * TimeSpan.TicksPerMillisecond);
-			sut.ProcessUpEvent(102, 102, ts: 101 * TimeSpan.TicksPerMillisecond);
+			sut.ProcessMoveEvent(100, 100, ts: 100 * MicrosecondsPerMillisecond);
+			sut.ProcessUpEvent(102, 102, ts: 101 * MicrosecondsPerMillisecond);
 
 			sut.RunInertiaSync();
 
@@ -1049,8 +1051,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			// flick at 2 px/ms
 			sut.ProcessDownEvent(10, 10, ts: 0);
-			sut.ProcessMoveEvent(100, 100, ts: 100 * TimeSpan.TicksPerMillisecond);
-			sut.ProcessUpEvent(102, 102, ts: 101 * TimeSpan.TicksPerMillisecond);
+			sut.ProcessMoveEvent(100, 100, ts: 100 * MicrosecondsPerMillisecond);
+			sut.ProcessUpEvent(102, 102, ts: 101 * MicrosecondsPerMillisecond);
 
 			sut.RunInertiaSync();
 
@@ -1096,8 +1098,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			// flick at 2 px/ms
 			sut.ProcessDownEvent(10, 10, ts: 0);
-			sut.ProcessMoveEvent(100, 100, ts: 100 * TimeSpan.TicksPerMillisecond);
-			sut.ProcessUpEvent(102, 102, ts: 101 * TimeSpan.TicksPerMillisecond);
+			sut.ProcessMoveEvent(100, 100, ts: 100 * MicrosecondsPerMillisecond);
+			sut.ProcessUpEvent(102, 102, ts: 101 * MicrosecondsPerMillisecond);
 
 			sut.RunInertiaSync();
 
@@ -1143,8 +1145,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			// flick at 2 px/ms
 			sut.ProcessDownEvent(10, 10, ts: 0);
-			sut.ProcessMoveEvent(100, 100, ts: 100 * TimeSpan.TicksPerMillisecond);
-			sut.ProcessUpEvent(98, 98, ts: 101 * TimeSpan.TicksPerMillisecond);
+			sut.ProcessMoveEvent(100, 100, ts: 100 * MicrosecondsPerMillisecond);
+			sut.ProcessUpEvent(98, 98, ts: 101 * MicrosecondsPerMillisecond);
 
 			sut.RunInertiaSync();
 
@@ -1192,8 +1194,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			// Rotate of pi/2 in a quarter of second
 			sut.ProcessDownEvent(50, -25, id: 2, ts: 1); // Angle = 0
-			sut.ProcessMoveEvent(50, -50, id: 2, ts: 100 * TimeSpan.TicksPerMillisecond); // Angle = -Pi/4
-			sut.ProcessUpEvent(25, -50, id: 2, ts: 600 * TimeSpan.TicksPerMillisecond); // Angle = -Pi/2
+			sut.ProcessMoveEvent(50, -50, id: 2, ts: 100 * MicrosecondsPerMillisecond); // Angle = -Pi/4
+			sut.ProcessUpEvent(25, -50, id: 2, ts: 600 * MicrosecondsPerMillisecond); // Angle = -Pi/2
 
 			sut.RunInertiaSync();
 
@@ -1222,8 +1224,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			// Rotate of Pi/4 in a quarter of second
 			sut.ProcessDownEvent(-25, -50, id: 2, ts: 1); // Angle = 0
-			sut.ProcessMoveEvent(-50, -50, id: 2, ts: 100 * TimeSpan.TicksPerMillisecond); // Angle = -Pi/4
-			sut.ProcessUpEvent(-50, -25, id: 2, ts: 600 * TimeSpan.TicksPerMillisecond); // Angle = -Pi/2
+			sut.ProcessMoveEvent(-50, -50, id: 2, ts: 100 * MicrosecondsPerMillisecond); // Angle = -Pi/4
+			sut.ProcessUpEvent(-50, -25, id: 2, ts: 600 * MicrosecondsPerMillisecond); // Angle = -Pi/2
 
 			sut.RunInertiaSync();
 
@@ -1252,8 +1254,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			// Rotate of pi/2 in a quarter of second
 			sut.ProcessDownEvent(-50, 25, id: 2, ts: 1); // Angle = 0
-			sut.ProcessMoveEvent(-50, 50, id: 2, ts: 100 * TimeSpan.TicksPerMillisecond); // Angle = -Pi/4
-			sut.ProcessUpEvent(-25, 50, id: 2, ts: 600 * TimeSpan.TicksPerMillisecond); // Angle = -Pi/2
+			sut.ProcessMoveEvent(-50, 50, id: 2, ts: 100 * MicrosecondsPerMillisecond); // Angle = -Pi/4
+			sut.ProcessUpEvent(-25, 50, id: 2, ts: 600 * MicrosecondsPerMillisecond); // Angle = -Pi/2
 
 			sut.RunInertiaSync();
 
@@ -1282,8 +1284,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			// Rotate of pi/2 in a quarter of second
 			sut.ProcessDownEvent(25, 50, id: 2, ts: 1); // Angle = 0
-			sut.ProcessMoveEvent(50, 50, id: 2, ts: 100 * TimeSpan.TicksPerMillisecond); // Angle = -Pi/4
-			sut.ProcessUpEvent(50, 25, id: 2, ts: 600 * TimeSpan.TicksPerMillisecond); // Angle = -Pi/2
+			sut.ProcessMoveEvent(50, 50, id: 2, ts: 100 * MicrosecondsPerMillisecond); // Angle = -Pi/4
+			sut.ProcessUpEvent(50, 25, id: 2, ts: 600 * MicrosecondsPerMillisecond); // Angle = -Pi/2
 
 			sut.RunInertiaSync();
 
@@ -1312,8 +1314,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			sut.ProcessDownEvent(25, -25, id: 1, ts: 0);
 
 			sut.ProcessDownEvent(25, -50, id: 2, ts: 1); // Angle = 0
-			sut.ProcessMoveEvent(50, -50, id: 2, ts: 100 * TimeSpan.TicksPerMillisecond); // Angle = -Pi/4
-			sut.ProcessUpEvent(50, -25, id: 2, ts: 600 * TimeSpan.TicksPerMillisecond); // Angle = -Pi/2
+			sut.ProcessMoveEvent(50, -50, id: 2, ts: 100 * MicrosecondsPerMillisecond); // Angle = -Pi/4
+			sut.ProcessUpEvent(50, -25, id: 2, ts: 600 * MicrosecondsPerMillisecond); // Angle = -Pi/2
 
 			sut.RunInertiaSync();
 
@@ -1341,8 +1343,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			sut.ProcessDownEvent(-25, -25, id: 1, ts: 0);
 
 			sut.ProcessDownEvent(-50, -25, id: 2, ts: 1); // Angle = 0
-			sut.ProcessMoveEvent(-50, -50, id: 2, ts: 100 * TimeSpan.TicksPerMillisecond); // Angle = -Pi/4
-			sut.ProcessUpEvent(-25, -50, id: 2, ts: 600 * TimeSpan.TicksPerMillisecond); // Angle = -Pi/2
+			sut.ProcessMoveEvent(-50, -50, id: 2, ts: 100 * MicrosecondsPerMillisecond); // Angle = -Pi/4
+			sut.ProcessUpEvent(-25, -50, id: 2, ts: 600 * MicrosecondsPerMillisecond); // Angle = -Pi/2
 
 			sut.RunInertiaSync();
 
@@ -1371,8 +1373,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			sut.ProcessDownEvent(-25, 25, id: 1, ts: 0);
 
 			sut.ProcessDownEvent(-25, 50, id: 2, ts: 1); // Angle = 0
-			sut.ProcessMoveEvent(-50, 50, id: 2, ts: 100 * TimeSpan.TicksPerMillisecond); // Angle = -Pi/4
-			sut.ProcessUpEvent(-50, 25, id: 2, ts: 600 * TimeSpan.TicksPerMillisecond); // Angle = -Pi/2
+			sut.ProcessMoveEvent(-50, 50, id: 2, ts: 100 * MicrosecondsPerMillisecond); // Angle = -Pi/4
+			sut.ProcessUpEvent(-50, 25, id: 2, ts: 600 * MicrosecondsPerMillisecond); // Angle = -Pi/2
 
 			sut.RunInertiaSync();
 
@@ -1401,8 +1403,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			sut.ProcessDownEvent(25, 25, id: 1, ts: 0);
 
 			sut.ProcessDownEvent(50, 25, id: 2, ts: 1); // Angle = 0
-			sut.ProcessMoveEvent(50, 50, id: 2, ts: 100 * TimeSpan.TicksPerMillisecond); // Angle = -Pi/4
-			sut.ProcessUpEvent(25, 50, id: 2, ts: 600 * TimeSpan.TicksPerMillisecond); // Angle = -Pi/2
+			sut.ProcessMoveEvent(50, 50, id: 2, ts: 100 * MicrosecondsPerMillisecond); // Angle = -Pi/4
+			sut.ProcessUpEvent(25, 50, id: 2, ts: 600 * MicrosecondsPerMillisecond); // Angle = -Pi/2
 
 			sut.RunInertiaSync();
 
