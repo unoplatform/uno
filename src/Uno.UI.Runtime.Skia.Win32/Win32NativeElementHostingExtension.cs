@@ -205,7 +205,14 @@ public class Win32NativeElementHostingExtension(ContentPresenter presenter) : Co
 
 		_lastArrangeRect = arrangeRect;
 
-		_ = PInvoke.SetWindowPos((HWND)window.Hwnd, HWND.Null, (int)arrangeRect.X, (int)arrangeRect.Y, (int)arrangeRect.Width, (int)arrangeRect.Height, SET_WINDOW_POS_FLAGS.SWP_NOZORDER)
+		_ = PInvoke.SetWindowPos(
+				(HWND)window.Hwnd,
+				HWND.Null,
+				(int)arrangeRect.X,
+				(int)arrangeRect.Y,
+				(int)arrangeRect.Width,
+				(int)arrangeRect.Height,
+				SET_WINDOW_POS_FLAGS.SWP_NOZORDER | SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE)
 			|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}");
 	}
 
