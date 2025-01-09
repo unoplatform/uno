@@ -214,6 +214,7 @@ public class Win32NativeElementHostingExtension(ContentPresenter presenter) : Co
 				(int)arrangeRect.Height,
 				SET_WINDOW_POS_FLAGS.SWP_NOZORDER | SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE)
 			|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}");
+		OnRenderingNegativePathChanged(null, _lastClip.path);
 	}
 
 	public Size MeasureNativeElement(object content, Size childMeasuredSize, Size availableSize) => availableSize;
