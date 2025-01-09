@@ -332,7 +332,14 @@ namespace Microsoft.UI.Xaml.Controls
 
 			var focusManager = VisualTree.GetFocusManagerForElement(this);
 			if (focusManager?.FocusedElement != this &&
-				GetBindingExpression(TextProperty) is { ParentBinding.UpdateSourceTrigger: UpdateSourceTrigger.Default or UpdateSourceTrigger.LostFocus } bindingExpression)
+				GetBindingExpression(TextProperty) is
+				{
+					ParentBinding:
+					{
+						IsXBind: false, // NOTE: we UpdateSource in OnTextChanged only when the binding is not an x:Bind. WinUI's generated code for x:Bind contains a simple LostFocus subscription and waits for the next LostFocus even when not focused, unlike regular Bindings.
+						UpdateSourceTrigger: UpdateSourceTrigger.Default or UpdateSourceTrigger.LostFocus
+					}
+				} bindingExpression)
 			{
 				bindingExpression.UpdateSource(Text);
 			}
@@ -998,7 +1005,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			UpdateButtonStates();
 
-			if (oldValue == FocusState.Unfocused || newValue == FocusState.Unfocused)
+			if (newValue == FocusState.Unfocused)
 			{
 				_hasTextChangedThisFocusSession = false;
 			}
