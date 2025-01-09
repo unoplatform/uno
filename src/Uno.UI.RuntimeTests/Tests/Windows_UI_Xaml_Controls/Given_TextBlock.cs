@@ -1144,6 +1144,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		public async Task When_IsTextSelectionEnabled_CRLF()
 		{
+			var delayToAvoidDoubleTap = 600;
 			var SUT = new TextBlock
 			{
 				Text = "FirstLine\r\n Second",
@@ -1165,7 +1166,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Release();
 			mouse.Press();
 			mouse.Release();
-			await WindowHelper.WaitForIdle();
+			await Task.Delay(delayToAvoidDoubleTap);
 
 			SUT.CopySelectionToClipboard();
 			await WindowHelper.WaitForIdle();
@@ -1180,7 +1181,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Release();
 			mouse.Press();
 			mouse.Release();
-			await WindowHelper.WaitForIdle();
+			await Task.Delay(delayToAvoidDoubleTap);
 
 			SUT.CopySelectionToClipboard();
 			await WindowHelper.WaitForIdle();
