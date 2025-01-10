@@ -25,6 +25,7 @@ namespace Microsoft.UI.Xaml
 		private readonly static IEventProvider _trace = Tracing.Get(FrameworkElement.TraceProvider.Id);
 
 		private bool m_firedLoadingEvent;
+		private bool m_requiresResourcesUpdate = true;
 
 		private const double SIZE_EPSILON = 0.05d;
 		private readonly Size MaxSize = new Size(double.PositiveInfinity, double.PositiveInfinity);
@@ -282,11 +283,12 @@ namespace Microsoft.UI.Xaml
 			//if (!bInLayoutTransition)
 			{
 				// Templates should be applied here.
-				InvokeApplyTemplate(out _);
+				InvokeApplyTemplate(out var addedVisual);
 
 				// TODO: BEGIN Uno specific
-				if (this is Control thisAsControl)
+				if (m_requiresResourcesUpdate && this is Control thisAsControl)
 				{
+					m_requiresResourcesUpdate = false;
 					// Update bindings to ensure resources defined
 					// in visual parents get applied.
 					this.UpdateResourceBindings();
@@ -991,6 +993,10 @@ namespace Microsoft.UI.Xaml
 		{
 			var core = this.GetContext();
 
+			// ---------- Uno-specific BEGIN ----------
+			m_requiresResourcesUpdate = true;
+			// ---------- Uno-specific END ----------
+
 			//if (@params.IsLive && @params.CheckForResourceOverrides == false)
 			//{
 			//    var resources = GetResourcesNoCreate();
@@ -1066,7 +1072,7 @@ namespace Microsoft.UI.Xaml
 			// of properties that are marked with MetaDataPropertyInfoFlags::IsSparse and MetaDataPropertyInfoFlags::IsVisualTreeProperty
 			// are entered as well.
 			// The property we currently know it has an effect is Resources
-			if (Resources is not null)
+			if (TryGetResources() is not null)
 			{
 				// Using ValuesInternal to avoid Enumerator boxing
 				foreach (var resource in Resources.ValuesInternal)
