@@ -499,7 +499,17 @@ public partial class RemoteControlClient : IRemoteControlClient
 
 		foreach (var processor in _processors)
 		{
-			await processor.Value.Initialize();
+			try
+			{
+				await processor.Value.Initialize();
+			}
+			catch (Exception error)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().LogError($"Failed to initialize processor '{processor}'.", error);
+				}
+			}
 		}
 
 		StartKeepAliveTimer();
