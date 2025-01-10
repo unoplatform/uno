@@ -249,7 +249,6 @@ namespace Microsoft.UI.Xaml
 #if !UNO_REFERENCE_API
 			_layouter = new FrameworkElementLayouter(this, MeasureOverride, ArrangeOverride);
 #endif
-			Resources = new Microsoft.UI.Xaml.ResourceDictionary();
 
 			IFrameworkElementHelper.Initialize(this);
 		}
@@ -260,8 +259,16 @@ namespace Microsoft.UI.Xaml
 #endif
 		Microsoft.UI.Xaml.ResourceDictionary Resources
 		{
-			get; set;
+			get => _resources ??= new ResourceDictionary();
+			set => _resources = value;
 		}
+
+		/// <summary>
+		/// Tries getting the ResourceDictionary without initializing it.
+		/// </summary>
+		/// <returns>A ResourceDictionary instance or null</returns>
+		internal Microsoft.UI.Xaml.ResourceDictionary TryGetResources()
+			=> _resources;
 
 		/// <summary>
 		/// Gets the parent of this FrameworkElement in the object tree.
@@ -956,7 +963,7 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		internal virtual void UpdateThemeBindings(ResourceUpdateReason updateReason)
 		{
-			Resources?.UpdateThemeBindings(updateReason);
+			TryGetResources()?.UpdateThemeBindings(updateReason);
 			(this as IDependencyObjectStoreProvider).Store.UpdateResourceBindings(updateReason);
 
 			if (updateReason == ResourceUpdateReason.ThemeResource)
@@ -972,6 +979,7 @@ namespace Microsoft.UI.Xaml
 		#region AutomationPeer
 #if !__IOS__ && !__ANDROID__ && !__MACOS__ // This code is generated in FrameworkElementMixins
 		private AutomationPeer _automationPeer;
+		private ResourceDictionary _resources;
 
 		protected override AutomationPeer OnCreateAutomationPeer()
 		{
