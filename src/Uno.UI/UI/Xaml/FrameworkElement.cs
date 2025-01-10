@@ -73,6 +73,8 @@ namespace Microsoft.UI.Xaml
 
 		private bool _defaultStyleApplied;
 
+		private ResourceDictionary _resources;
+
 		private static readonly Uri DefaultBaseUri = new Uri("ms-appx://local");
 
 		private string _baseUriFromParser;
@@ -979,7 +981,6 @@ namespace Microsoft.UI.Xaml
 		#region AutomationPeer
 #if !__IOS__ && !__ANDROID__ && !__MACOS__ // This code is generated in FrameworkElementMixins
 		private AutomationPeer _automationPeer;
-		private ResourceDictionary _resources;
 
 		protected override AutomationPeer OnCreateAutomationPeer()
 		{
