@@ -34,7 +34,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public static bool GetIsScrollInertiaEnabled(DependencyObject element) =>
 			(bool)element.GetValue(IsScrollInertiaEnabledProperty);
 
-		public static void SetIsScrollInertiaEnabled(DependencyObject element, bool isScrollInertiaEnabled) => 
+		public static void SetIsScrollInertiaEnabled(DependencyObject element, bool isScrollInertiaEnabled) =>
 			element.SetValue(IsScrollInertiaEnabledProperty, isScrollInertiaEnabled);
 
 		internal Size ScrollBarSize => (_presenter as ScrollContentPresenter)?.ScrollBarSize ?? default;
