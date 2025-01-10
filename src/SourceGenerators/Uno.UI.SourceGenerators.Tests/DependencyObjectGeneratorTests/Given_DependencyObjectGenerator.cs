@@ -29,7 +29,7 @@ public class Given_DependencyObjectGenerator
 	private const string TFMPrevious = "net8.0";
 	private const string TFMCurrent = "net9.0";
 
-	private static MetadataReference[] BuildUnoReferences()
+	private static MetadataReference[] BuildUnoReferences(bool isAndroid = false)
 	{
 		string[] availableTargets = isAndroid
 			? [
