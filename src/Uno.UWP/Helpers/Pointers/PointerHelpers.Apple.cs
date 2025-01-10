@@ -9,14 +9,12 @@ namespace Uno.UI.Xaml.Extensions;
 
 internal static class PointerHelpers
 {
-	private static long? _bootTime;
 	private static double? _firstTimestamp;
 
-	internal static ulong ToTimeStamp(double timestamp)
+	internal static ulong ToTimestamp(double nativeTimestamp)
 	{
-		_bootTime ??= DateTime.UtcNow.Ticks - (long)(TimeSpan.TicksPerSecond * new NSProcessInfo().SystemUptime);
-
-		return (ulong)_bootTime.Value + (ulong)(TimeSpan.TicksPerSecond * timestamp);
+		// iOS Timestamp is in seconds from boot time, convert to microseconds.
+		return (ulong)(nativeTimestamp * 1000 * 1000);
 	}
 
 	internal static uint ToFrameId(double timestamp)
