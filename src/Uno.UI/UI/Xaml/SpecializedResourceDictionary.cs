@@ -31,6 +31,8 @@ namespace Microsoft.UI.Xaml
 			public readonly Type TypeKey;
 			public readonly uint HashCode;
 
+			public bool ShouldFilter { get; init; } = true;
+
 			public static ResourceKey Empty { get; } = new ResourceKey(false);
 
 			public bool IsEmpty => Key == null;
@@ -108,6 +110,20 @@ namespace Microsoft.UI.Xaml
 
 			public static implicit operator ResourceKey(Type key)
 				=> new ResourceKey(key);
+		}
+
+		internal class ResourceKeyComparer : IEqualityComparer<ResourceKey>
+		{
+			public bool Equals(ResourceKey x, ResourceKey y)
+			{
+				return x.Equals(y);
+			}
+			public int GetHashCode(ResourceKey obj)
+			{
+				return (int)obj.HashCode;
+			}
+
+			public static ResourceKeyComparer Default { get; } = new();
 		}
 
 		private int[] _buckets;

@@ -262,7 +262,11 @@ namespace Microsoft.UI.Xaml
 		Microsoft.UI.Xaml.ResourceDictionary Resources
 		{
 			get => _resources ??= new ResourceDictionary();
-			set => _resources = value;
+			set
+			{
+				_resources = value;
+				_resources.InvalidateNotFoundCache(true);
+			}
 		}
 
 		/// <summary>
