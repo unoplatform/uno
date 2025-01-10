@@ -77,14 +77,18 @@ public class Win32NativeElementHostingExtension(ContentPresenter presenter) : Co
 
 	private unsafe void OnRenderingNegativePathChanged(object? sender, SKPath path)
 	{
+		if (path != _lastClipPath)
+		{
+			_lastClipPath.Rewind();
+			_lastClipPath.AddPath(path);
+		}
+
 		using var _1 = SkiaHelper.GetTempSKPath(out var arrangePath);
 		using var _2 = SkiaHelper.GetTempSKPath(out var intersectionPath);
 
 		arrangePath.AddRect(_lastArrangeRect.ToSKRect());
 		path.Op(arrangePath, SKPathOp.Intersect, intersectionPath);
 		intersectionPath.Transform(SKMatrix.CreateTranslation((float)-_lastArrangeRect.X, (float)-_lastArrangeRect.Y));
-		_lastClipPath.Rewind();
-		_lastClipPath.AddPath(intersectionPath);
 
 		Debug.Assert(intersectionPath.FillType is SKPathFillType.Winding or SKPathFillType.EvenOdd);
 		GpPath* gpPath = null;
