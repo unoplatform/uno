@@ -1,4 +1,5 @@
 ﻿using System;
+using CoreGraphics;
 using Foundation;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
@@ -13,6 +14,24 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit.UI.Xaml;
 
 internal class AppleUIKitWindow : UIWindow
 {
+	internal event Action? FrameChanged;
+
+	public override CGRect Frame
+	{
+		get => base.Frame;
+		set
+		{
+			var frameChanged = base.Frame != value;
+
+			base.Frame = value;
+
+			if (frameChanged)
+			{
+				FrameChanged?.Invoke();
+			}
+		}
+	}
+
 #if __MACCATALYST__
 	internal ICoreWindowEvents? OwnerEvents { get; private set; }
 #endif
