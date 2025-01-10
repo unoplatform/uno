@@ -92,12 +92,11 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 			);
 #endif
 
-		// TODO: MZ: Fix this
-		//_nativeWindow.FrameChanged +=
-		//	() => RaiseNativeSizeChanged();
+		_nativeWindow.FrameChanged +=
+			() => RaiseNativeSizeChanged();
 
-		//_mainController.VisibleBoundsChanged +=
-		//	() => RaiseNativeSizeChanged();
+		_mainController.VisibleBoundsChanged +=
+			() => RaiseNativeSizeChanged();
 
 		var statusBar = StatusBar.GetForCurrentView();
 		statusBar.Showing += (o, e) => RaiseNativeSizeChanged();
