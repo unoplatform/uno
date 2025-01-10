@@ -162,9 +162,10 @@ namespace Microsoft.UI.Xaml.Input
 
 		private static ulong ToTimeStamp(long uptimeMillis)
 		{
+			// Timestamp is in microseconds
 			if (FeatureConfiguration.PointerRoutedEventArgs.AllowRelativeTimeStamp)
 			{
-				return (ulong)(TimeSpan.TicksPerMillisecond * uptimeMillis);
+				return (ulong)(uptimeMillis * 1000);
 			}
 			else
 			{
@@ -173,9 +174,7 @@ namespace Microsoft.UI.Xaml.Input
 
 				var sleepTime = Android.OS.SystemClock.ElapsedRealtime() - Android.OS.SystemClock.UptimeMillis();
 				var realUptime = (ulong)(uptimeMillis + sleepTime);
-				var timestamp = TimeSpan.TicksPerMillisecond * (_unixEpochMs + realUptime);
-
-				return timestamp;
+				return realUptime * 1000;
 			}
 		}
 		#endregion

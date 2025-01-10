@@ -307,11 +307,14 @@ internal partial class X11PointerInputSource
 
 		_ = XLib.XTranslateCoordinates(display, data.EventWindow, _host!.TopX11Window.Window, (int)data.event_x, (int)data.event_y, out var dataEventX, out var dataEventY, out _);
 
+		var timeInMicroseconds = (ulong)(data.time * 1000); // Time is given in milliseconds since system boot. See also: https://github.com/unoplatform/uno/issues/14535
+		var deviceType = data.evtype is XiEventType.XI_TouchBegin or XiEventType.XI_TouchEnd or XiEventType.XI_TouchUpdate ? PointerDeviceType.Touch : PointerDeviceType.Mouse;
+		var pointerId = (uint)(data.evtype is XiEventType.XI_TouchBegin or XiEventType.XI_TouchEnd or XiEventType.XI_TouchUpdate ? data.detail : data.sourceid); // for touch, data.detail is the touch ID
 		var point = new PointerPoint(
 			frameId: (uint)data.time, // UNO TODO: How should we set the frame, timestamp may overflow.
-			timestamp: (uint)(data.time * TimeSpan.TicksPerMillisecond), // Time is given in milliseconds since system boot. See also: https://github.com/unoplatform/uno/issues/14535
-			PointerDevice.For(data.evtype is XiEventType.XI_TouchBegin or XiEventType.XI_TouchEnd or XiEventType.XI_TouchUpdate ? PointerDeviceType.Touch : PointerDeviceType.Mouse),
-			(uint)(data.evtype is XiEventType.XI_TouchBegin or XiEventType.XI_TouchEnd or XiEventType.XI_TouchUpdate ? data.detail : data.sourceid), // for touch, data.detail is the touch ID
+			timestamp: timeInMicroseconds,
+			PointerDevice.For(deviceType),
+			pointerId,
 			new Point(dataEventX / scale, dataEventY / scale),
 			new Point(dataEventX / scale, dataEventY / scale),
 			properties.HasPressedButton,
@@ -353,9 +356,10 @@ internal partial class X11PointerInputSource
 					? XamlRoot.GetDisplayInformation(root).RawPixelsPerViewPixel
 					: 1;
 
+		var timestampInMicroseconds = (ulong)(data.time * 1000); // Time is given in milliseconds since system boot. See also: https://github.com/unoplatform/uno/issues/14535
 		var point = new PointerPoint(
 			frameId: (uint)data.time, // UNO TODO: How should we set the frame, timestamp may overflow.
-			timestamp: (ulong)data.time,
+			timestamp: timestampInMicroseconds,
 			PointerDevice.For(PointerDeviceType.Mouse),
 			(uint)data.sourceid,
 			new Point(data.event_x / scale, data.event_y / scale),
