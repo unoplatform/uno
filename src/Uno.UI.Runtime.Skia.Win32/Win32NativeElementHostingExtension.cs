@@ -132,13 +132,20 @@ public class Win32NativeElementHostingExtension(ContentPresenter presenter) : Co
 					}
 					break;
 				case SKPathVerb.Conic:
-					var quads = SKPath.ConvertConicToQuads(pointSpan[0], pointSpan[1], pointSpan[2], iter.ConicWeight(), _conicPoints, 5);
+					// https://api.skia.org/classSkPath.html
+					// "conic weight determines the amount of influence conic control point has on the curve. w less than one represents an elliptical section. w greater than one represents a hyperbolic section. w equal to one represents a parabolic section."
+					// "Two quad curves are sufficient to approximate an elliptical conic with a sweep of up to 90 degrees; in this case, set pow2 to one."
+					var conicWeight = iter.ConicWeight();
+					var quads = SKPath.ConvertConicToQuads(pointSpan[0], pointSpan[1], pointSpan[2], conicWeight, _conicPoints, conicWeight < 1 ? 1 : 5);
 					for (int i = 0; i < quads; i++)
 					{
+						// https://api.skia.org/classSkPath.html
+						// "Every third point in array shares last SkPoint of previous quad and first SkPoint of next quad"
+						// In other words, if you have 2 quads, you will get 5 points: Q0_0 Q0_1 (Q0_2/Q1_0) Q1_1 Q1_2
+						var p0 = _conicPoints[2 * i];
+						var p1 = _conicPoints[2 * i + 1];
+						var p2 = _conicPoints[2 * i + 2];
 						// quadratic to cubic bézier
-						var p0 = _conicPoints[3 * i];
-						var p1 = _conicPoints[3 * i + 1];
-						var p2 = _conicPoints[3 * i + 2];
 						var controlPoint1 = p0 + new SKPoint((p1.X - p0.X) * 2 / 3, (p1.Y - p0.Y) * 2 / 3);
 						var controlPoint2 = p2 + new SKPoint((p1.X - p2.X) * 2 / 3, (p1.Y - p2.Y) * 2 / 3);
 						status = PInvoke.GdipAddPathBezier(gpPath, p0.X, p0.Y, controlPoint1.X, controlPoint1.Y, controlPoint2.X, controlPoint2.Y, p2.X, p2.Y);
