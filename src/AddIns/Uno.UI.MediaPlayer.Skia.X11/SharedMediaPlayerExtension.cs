@@ -24,7 +24,7 @@ namespace Uno.UI.MediaPlayer.Skia;
 
 public class SharedMediaPlayerExtension : IMediaPlayerExtension
 {
-	private static readonly LibVLC _vlc = new LibVLC(":start-paused");
+	private static readonly LibVLC _vlc = new LibVLC("--start-paused");
 
 	private const string MsAppXScheme = "ms-appx";
 	private static readonly ConditionalWeakTable<Windows.Media.Playback.MediaPlayer, SharedMediaPlayerExtension> _mediaPlayerToExtension = new();
@@ -96,6 +96,9 @@ public class SharedMediaPlayerExtension : IMediaPlayerExtension
 				var weakRef = new WeakReference<SharedMediaPlayerExtension>(this);
 				m.ParsedChanged += (_, a) => weakRef.GetTarget()?.OnLoadedMetadata(a.ParsedStatus);
 			}
+
+			// This doesn't start the playback. It just force-loads the media. This is the behaviour only when --start-paused
+			VlcPlayer.Play();
 		}
 	}
 
@@ -320,6 +323,7 @@ public class SharedMediaPlayerExtension : IMediaPlayerExtension
 				Events?.NaturalDurationChanged();
 				Events?.RaiseMediaOpened();
 				IsVideo = VlcPlayer.Media?.Tracks.Any(track => track.TrackType is TrackType.Video);
+				VlcPlayer.Time = 1; // this shows the first frame of the video after loading instead of a black frame
 			});
 		}
 	}
