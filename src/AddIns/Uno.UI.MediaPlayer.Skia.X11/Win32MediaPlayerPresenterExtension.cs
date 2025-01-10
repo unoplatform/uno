@@ -89,6 +89,8 @@ public class Win32MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 			this.Log().Trace("Created media player window.");
 		}
 
+		Win32Host.RegisterWindow(_hwnd);
+
 		var success = PInvoke.RegisterTouchWindow(_hwnd, 0);
 		if (!success && this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
 		{
@@ -112,6 +114,8 @@ public class Win32MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 		{
 			_hwndToExtension.Remove(_hwnd);
 		}
+
+		Win32Host.UnregisterWindow(_hwnd);
 	}
 
 	[UnmanagedCallersOnly(CallConvs = [typeof(CallConvStdcall)])]
