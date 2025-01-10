@@ -5,7 +5,7 @@ uid: Uno.HotDesign.Overview
 # Hot Design™ Overview
 
 > [!IMPORTANT]
-> **Hot Design™** is currently in beta. Sign up to the [waitlist](https://platform.uno/waitlist/) to get early access and be the first to try it out!
+> **Hot Design™** is currently in beta. Sign up to the [wait list](https://platform.uno/waitlist/) to get early access and be the first to try it out!
 
 Welcome to **Hot Design**, a next-generation runtime visual designer for cross-platform .NET applications!
 
