@@ -65,7 +65,7 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 	private async Task ConfigureServer()
 	{
 		var assembly = _rcClient.AppType.Assembly;
-		if (assembly.GetCustomAttributes(typeof(ProjectConfigurationAttribute), false) is ProjectConfigurationAttribute[] configs)
+		if (assembly.GetCustomAttributes(typeof(ProjectConfigurationAttribute), false) is ProjectConfigurationAttribute[]{Length: >0} configs)
 		{
 			_status.ReportServerState(HotReloadState.Initializing);
 
@@ -85,14 +85,23 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 					_status.ReportInvalidRuntime();
 				}
 
-				ConfigureServer message = new(_projectPath, GetMetadataUpdateCapabilities(), _serverMetadataUpdatesEnabled, config.MSBuildProperties);
+				var message = new ConfigureServer(_projectPath, GetMetadataUpdateCapabilities(), _serverMetadataUpdatesEnabled, config.MSBuildProperties);
 
 				await _rcClient.SendMessage(message);
+
+				if (this.Log().IsEnabled(LogLevel.Trace))
+				{
+					this.Log().Trace($"Successfully sent request to configure HR server for project '{_projectPath}'.");
+				}
 			}
-			catch
+			catch (Exception error)
 			{
 				_status.ReportServerState(HotReloadState.Disabled);
-				throw;
+
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().LogError("Unable to configure HR server", error);
+				}
 			}
 		}
 		else
@@ -101,7 +110,7 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 
 			if (this.Log().IsEnabled(LogLevel.Error))
 			{
-				this.Log().LogError("Unable to find ProjectConfigurationAttribute");
+				this.Log().LogError("Unable to configure HR server as ProjectConfigurationAttribute is missing.");
 			}
 		}
 	}
