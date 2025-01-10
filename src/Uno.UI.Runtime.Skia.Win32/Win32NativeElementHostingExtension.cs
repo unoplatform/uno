@@ -22,6 +22,7 @@ public class Win32NativeElementHostingExtension(ContentPresenter presenter) : Co
 {
 	private static HWND _enumProcRet;
 	private static readonly SKPath _lastClipPath = new();
+	private static readonly SKPoint[] _conicPoints = new SKPoint[32 * 3]; // 3 points per quad
 
 	private Rect _lastArrangeRect;
 
@@ -114,18 +115,36 @@ public class Win32NativeElementHostingExtension(ContentPresenter presenter) : Co
 					}
 					break;
 				case SKPathVerb.Quad:
-					// quadratic to cubic bézier
-					var controlPoint1 = pointSpan[0] + new SKPoint((pointSpan[1].X - pointSpan[0].X) * 2 / 3, (pointSpan[1].Y - pointSpan[0].Y) * 2 / 3);
-					var controlPoint2 = pointSpan[2] + new SKPoint((pointSpan[1].X - pointSpan[2].X) * 2 / 3, (pointSpan[1].Y - pointSpan[2].Y) * 2 / 3);
-					status = PInvoke.GdipAddPathBezier(gpPath, pointSpan[0].X, pointSpan[0].Y, controlPoint1.X, controlPoint1.Y, controlPoint2.X, controlPoint2.Y, pointSpan[2].X, pointSpan[2].Y);
-					if (status != Status.Ok)
 					{
-						this.Log().Log(LogLevel.Error, status, static status => $"{nameof(PInvoke.GdipAddPathBezier)} failed: {status}");
-						return;
+						// quadratic to cubic bézier
+						var controlPoint1 = pointSpan[0] + new SKPoint((pointSpan[1].X - pointSpan[0].X) * 2 / 3, (pointSpan[1].Y - pointSpan[0].Y) * 2 / 3);
+						var controlPoint2 = pointSpan[2] + new SKPoint((pointSpan[1].X - pointSpan[2].X) * 2 / 3, (pointSpan[1].Y - pointSpan[2].Y) * 2 / 3);
+						status = PInvoke.GdipAddPathBezier(gpPath, pointSpan[0].X, pointSpan[0].Y, controlPoint1.X, controlPoint1.Y, controlPoint2.X, controlPoint2.Y, pointSpan[2].X, pointSpan[2].Y);
+						if (status != Status.Ok)
+						{
+							this.Log().Log(LogLevel.Error, status, static status => $"{nameof(PInvoke.GdipAddPathBezier)} failed: {status}");
+							return;
+						}
 					}
 					break;
 				case SKPathVerb.Conic:
-					throw new NotImplementedException();
+					var quads = SKPath.ConvertConicToQuads(pointSpan[0], pointSpan[1], pointSpan[2], iter.ConicWeight(), _conicPoints, 5);
+					for (int i = 0; i < quads; i++)
+					{
+						// quadratic to cubic bézier
+						var p0 = _conicPoints[3 * i];
+						var p1 = _conicPoints[3 * i + 1];
+						var p2 = _conicPoints[3 * i + 2];
+						var controlPoint1 = p0 + new SKPoint((p1.X - p0.X) * 2 / 3, (p1.Y - p0.Y) * 2 / 3);
+						var controlPoint2 = p2 + new SKPoint((p1.X - p2.X) * 2 / 3, (p1.Y - p2.Y) * 2 / 3);
+						status = PInvoke.GdipAddPathBezier(gpPath, p0.X, p0.Y, controlPoint1.X, controlPoint1.Y, controlPoint2.X, controlPoint2.Y, p2.X, p2.Y);
+						if (status != Status.Ok)
+						{
+							this.Log().Log(LogLevel.Error, status, static status => $"{nameof(PInvoke.GdipAddPathBezier)} failed: {status}");
+							return;
+						}
+					}
+					break;
 				case SKPathVerb.Cubic:
 					status = PInvoke.GdipAddPathBezier(gpPath, pointSpan[0].X, pointSpan[0].Y, pointSpan[1].X, pointSpan[1].Y, pointSpan[2].X, pointSpan[2].Y, pointSpan[3].X, pointSpan[3].Y);
 					if (status != Status.Ok)
