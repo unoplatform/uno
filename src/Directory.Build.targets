@@ -5,6 +5,7 @@
 		<Product>$(AssemblyName) $(TargetFramework)</Product>
 		<Product Condition="'$(UnoRuntimeIdentifier)' != ''">$(AssemblyName) ($(TargetFramework) $(UnoRuntimeIdentifier))</Product>
 		<CommunityToolkitMvvmVersion>8.2.2</CommunityToolkitMvvmVersion>
+		<TestingPlatformDotNetTestSupport Condition="'$(IsTestingPlatformApplication)' == 'true'">true</TestingPlatformDotNetTestSupport>
 	</PropertyGroup>
 
 	<PropertyGroup>
