@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using System.Diagnostics;
 using System.Linq;
 using Windows.Devices.Input;
 using Windows.Foundation;
@@ -30,8 +31,8 @@ internal class InjectedInputState
 
 	public void StartNewSequence()
 	{
-		Timestamp = (ulong)DateTime.Now.Ticks;
-		FrameId = (uint)(Timestamp / TimeSpan.TicksPerMillisecond);
+		Timestamp = (ulong)Stopwatch.GetElapsedTime(Stopwatch.GetTimestamp()).TotalMicroseconds;
+		FrameId = (uint)(Timestamp / 1000);
 	}
 
 	public void Update(PointerEventArgs args)
