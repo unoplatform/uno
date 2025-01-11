@@ -624,17 +624,20 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			// Uno specific: If the control was unloaded but is loaded again, reattach Layout and DataSource events
 			if (_layoutSubscriptionsRevoker.Disposable is null && Layout is { } layout)
 			{
-				layout.MeasureInvalidated += InvalidateMeasureForLayout;
-				layout.ArrangeInvalidated += InvalidateArrangeForLayout;
-				_layoutSubscriptionsRevoker.Disposable = Disposable.Create(() =>
-				{
-					layout.MeasureInvalidated -= InvalidateMeasureForLayout;
-					layout.ArrangeInvalidated -= InvalidateArrangeForLayout;
-				});
+				_layoutSubscriptionsRevoker.Disposable = null;
+
+				InvalidateMeasure();
+
+				var disposables = new CompositeDisposable();
+				layout.RegisterMeasureInvalidated(InvalidateMeasureForLayout).DisposeWith(disposables);
+				layout.RegisterArrangeInvalidated(InvalidateArrangeForLayout).DisposeWith(disposables);
+				_layoutSubscriptionsRevoker.Disposable = disposables;
 			}
 
 			if (_dataSourceSubscriptionsRevoker.Disposable is null && m_itemsSourceView is not null)
 			{
+				_dataSourceSubscriptionsRevoker.Disposable = null;
+
 				m_itemsSourceView.CollectionChanged += OnItemsSourceViewChanged;
 				_dataSourceSubscriptionsRevoker.Disposable = Disposable.Create(() =>
 				{
@@ -853,14 +856,14 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 			if (newValue != null)
 			{
+				_layoutSubscriptionsRevoker.Disposable = null;
+
 				newValue.InitializeForContext(GetLayoutContext());
-				newValue.MeasureInvalidated += InvalidateMeasureForLayout;
-				newValue.ArrangeInvalidated += InvalidateArrangeForLayout;
-				_layoutSubscriptionsRevoker.Disposable = Disposable.Create(() =>
-				{
-					newValue.MeasureInvalidated -= InvalidateMeasureForLayout;
-					newValue.ArrangeInvalidated -= InvalidateArrangeForLayout;
-				});
+
+				var disposables = new CompositeDisposable();
+				newValue.RegisterMeasureInvalidated(InvalidateMeasureForLayout).DisposeWith(disposables);
+				newValue.RegisterArrangeInvalidated(InvalidateArrangeForLayout).DisposeWith(disposables);
+				_layoutSubscriptionsRevoker.Disposable = disposables;
 			}
 
 			bool isVirtualizingLayout = newValue is VirtualizingLayout;
