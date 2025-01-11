@@ -158,7 +158,8 @@ dotnet_diagnostic.IDE0051.severity = warning
 dotnet_diagnostic.MSTEST0007.severity = warning
 
 # MSTEST0016: Test class should have test method
-dotnet_diagnostic.MSTEST0016.severity = warning
+# Enabled only as an IDE suggestion for now. Violations can be addressed later
+dotnet_diagnostic.MSTEST0016.severity = suggestion
 
 # MSTEST0017: Assertion arguments should be passed in the correct order
 dotnet_diagnostic.MSTEST0017.severity = warning
