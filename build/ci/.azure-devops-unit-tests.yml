@@ -90,6 +90,7 @@ jobs:
       testResultsFormat: 'VSTest'
       testResultsFiles: '*.trx'
       searchFolder: '$(Build.SourcesDirectory)/artifacts/TestResults'
-      testRunTitle: UnitTests-trx
+      testRunTitle: 'Unit Tests $(XAML_FLAVOR_BUILD)'
+      mergeTestResults: true
     continueOnError: true
     condition: always()
