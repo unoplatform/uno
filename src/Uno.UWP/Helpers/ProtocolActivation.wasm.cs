@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Runtime.InteropServices.JavaScript;
-using System.Runtime.Intrinsics.X86;
 using System.Web;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-using static System.Net.WebRequestMethods;
 
 namespace Uno.Helpers
 {
