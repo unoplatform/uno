@@ -228,11 +228,7 @@ namespace Microsoft.UI.Xaml
 			=> TryGetValue(new ResourceKey(resourceKey), out value, shouldCheckSystem);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		internal bool TryGetValue(in ResourceKey resourceKey, out object value, bool shouldCheckSystem) =>
-			TryGetValue(resourceKey, ResourceKey.Empty, out value, shouldCheckSystem);
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private bool TryGetValue(in ResourceKey resourceKey, ResourceKey activeTheme, out object value, bool shouldCheckSystem)
+		internal bool TryGetValue(in ResourceKey resourceKey, out object value, bool shouldCheckSystem)
 		{
 			bool useKeysNotFoundCache = resourceKey.ShouldFilter;
 			var modifiedKey = resourceKey;
@@ -267,12 +263,8 @@ namespace Microsoft.UI.Xaml
 				return true;
 			}
 
-			if (activeTheme.IsEmpty)
-			{
-				activeTheme = Themes.Active;
-			}
-
-			if (GetFromTheme(modifiedKey, activeTheme, out value))
+			if (GetActiveThemeDictionary(Themes.Active) is { } activeThemeDictionary
+				&& activeThemeDictionary.TryGetValue(resourceKey, out value, shouldCheckSystem: false))
 			{
 				return true;
 			}
@@ -489,20 +481,6 @@ namespace Microsoft.UI.Xaml
 
 			return null;
 		}
-
-		private bool GetFromTheme(in ResourceKey resourceKey, in ResourceKey activeTheme, out object value)
-		{
-			var dict = GetActiveThemeDictionary(activeTheme);
-
-			if (dict != null && dict.TryGetValue(resourceKey, out value, shouldCheckSystem: false))
-			{
-				return true;
-			}
-
-			value = null;
-			return false;
-		}
-
 
 		private bool ContainsKeyTheme(in ResourceKey resourceKey, in ResourceKey activeTheme)
 		{
