@@ -207,6 +207,7 @@ The implementation of those are quite similar to the example of the SettingsCont
 
     > [!NOTE]
     > In WCT version 8.x, the namespaces between UWP and WinAppSDK were merged.
+
     ### WinUI / WinAppSDK / UWP
 
       In XAML:
