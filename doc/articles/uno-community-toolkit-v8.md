@@ -151,10 +151,10 @@ When using the Uno Platform solution templates, add the following to your applic
 
     ### WinUI / WinAppSDK / UWP
 
-      In XAML:  
+      In XAML:
         ```xmlns:controls="using:CommunityToolkit.WinUI.Controls"```
 
-      In C#:  
+      In C#:
         ```using CommunityToolkit.WinUI.Controls;```
 
 ## Example with the SettingsCard Control
@@ -183,6 +183,96 @@ You can set the `Header`, `HeaderIcon`, `Description`, and `Content` properties 
 ![settingscard-full-sample](Assets/settingscard-full-sample.gif)
 
 A complete working sample, along with additional examples, is available on GitHub: [Uno Windows Community Toolkit SettingsCard Sample](https://github.com/unoplatform/Uno.Samples/tree/master/UI/WindowsCommunityToolkit/Version-8.x/UnoWCTSettingsCardSample)
+
+## Using Non-UI Elements from the CommunityToolkit: Converters
+
+The CommunityToolkit is providing some ready-to-use Converters for e.g. x:Bind in Xaml, whithout having to write already existing basic Converters yourself.
+[List of CommunityToolkit Converters | Windows Toolkit Documentation](https://learn.microsoft.com/en-us/dotnet/communitytoolkit/windows/converters/)
+
+The implementation of those are quite similar to the example of the SettingsControl above, but there are small adjustments to be done to use them:
+
+1. Import of the Package
+
+   Change this:
+
+   ```CommunityToolkit.WinUI.Controls.SettingsControls```
+
+   to Converters namespace:
+
+   ```CommunityToolkit.WinUI.Converters```
+
+   while the Version will stay the same as above.
+
+1. Add the related needed namespace(s)
+
+    > [!NOTE]
+    > In WCT version 8.x, the namespaces between UWP and WinAppSDK were merged.
+    ### WinUI / WinAppSDK / UWP
+
+      In XAML:
+        ```xmlns:converters="using:CommunityToolkit.WinUI.Converters"```
+
+      In C#:
+        ```using CommunityToolkit.WinUI.Converters;```
+
+      In case you are developing a App that's using C# Markup and you want to use the Converters, you can now switch to [C#-Markup Converters](https://platform.uno/docs/articles/external/uno.extensions/doc/Learn/Markup/Converters.html) Documentation for future Usage Guide, the general Import is done from here on.
+
+1. Xaml Definition
+
+Important Difference to the previous seen SettingsCard Control Example, a Non-UI Converter has to be imported to the Page.Resources Section to StaticResources like this for using it, since there is no single Namespace per Converter like on the Controls:
+
+### [Example StringToVisibilityConverter](#tab/string-visible-conv)
+
+StringToVisibilityConverter is a Converter that has to be bound to a String typed Property and will return a Visibility State.
+
+```xml
+<Page.Resources>
+    <converters:StringVisibilityConverter x:Key="YourStringVisibilityConverter"/>
+</Page.Resources>
+```
+
+Somewhere in your Page Content:
+
+```xml
+<TextBox x:Name="tbName"
+        Text="{Binding Name, Mode=TwoWay}"
+        PlaceholderText="Enter your name:"/>
+<Button x:Name="StartButton"
+        Content="Start a cool simple Game!"
+        AutomationProperties.AutomationId="StartAGameButton"
+        Command="{Binding GoToStart}"
+        HorizontalAlignment="Center"
+        Visibility="{x:Bind tbName.Text, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}"/>
+```
+
+### [Example BoolToObjectConverter](#tab/bool-obj-conv)
+
+BoolToObjectConverter is a Converter that has to be bound to a Boolean typed Property and can return any Object you will give to it.
+You only have to tell it what to return on True or False. If you would like to use it for switching color on validation:
+
+```xml
+<Page.Resources>
+    <converters:BoolToObjectConverter x:Key="BoolToColorConverter" TrueValue="{ThemeResource SystemFillColorSuccessBackgroundBrush}"
+                                                                    FalseValue="{ThemeResource SystemFillColorCriticalBackgroundBrush}"/>
+</Page.Resources>
+```
+
+> [!NOTE]
+> The used ThemeResource Brushes can be found in the WinUI Gallery for example.
+> Feel free to use your own Colors e.g. from ColorPaletteOverrides
+Somewhere in your Page Content:
+
+```xml
+<TextBox x:Name="tbName"
+            Text="{Binding Name, Mode=TwoWay}"
+            PlaceholderText="Enter your name:"
+            BackgroundColor="{x:Bind tbName.Text, Converter={StaticResource BoolToColorConverter},Mode=OneWay}"/>
+<Button x:Name="StartButton"
+        Content="Start a cool simple Game!"
+        AutomationProperties.AutomationId="StartAGameButton"
+        Command="{Binding GoToStart}"
+        HorizontalAlignment="Center"/>
+```
 
 ---
 
