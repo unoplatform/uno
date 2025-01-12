@@ -15,6 +15,7 @@ using System.Runtime.CompilerServices;
 using Microsoft.UI.Xaml.Data;
 using Uno.UI.DataBinding;
 using System.Collections.ObjectModel;
+using System.Runtime.InteropServices;
 
 namespace Microsoft.UI.Xaml
 {
@@ -327,9 +328,16 @@ namespace Microsoft.UI.Xaml
 			}
 			else
 			{
-				_values[resourceKey] = value;
-				if (value is ResourceDictionary)
+				_values.AddOrUpdate(resourceKey, value, out var previousValue);
+
+				if (previousValue is ResourceDictionary previousDictionary)
 				{
+					previousDictionary._parent = null;
+				}
+
+				if (value is ResourceDictionary newDictionary)
+				{
+					newDictionary._parent = this;
 					ResourceDictionaryValueChange?.Invoke(this, EventArgs.Empty);
 				}
 			}
