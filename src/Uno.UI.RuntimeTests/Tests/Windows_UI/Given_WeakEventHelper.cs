@@ -100,6 +100,7 @@ public partial class Given_WeakEventHelper
 	}
 
 	[TestMethod]
+	[RunsOnUIThread]
 	public void When_UIElement_Target_Collected()
 	{
 		WeakEventHelper.WeakEventCollection SUT = new();
