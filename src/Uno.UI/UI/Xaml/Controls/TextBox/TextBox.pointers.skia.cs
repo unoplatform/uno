@@ -104,7 +104,7 @@ public partial class TextBox
 		var currentPosition = down.Position;
 
 		return previousTap.id == currentId
-			&& currentTs - previousTap.ts <= GestureRecognizer.MultiTapMaxDelayTicks
+			&& currentTs - previousTap.ts <= GestureRecognizer.MultiTapMaxDelayMicroseconds
 			&& !GestureRecognizer.IsOutOfTapRange(previousTap.position, currentPosition);
 	}
 
@@ -176,7 +176,7 @@ public partial class TextBox
 
 		_isPressed = false;
 
-		if ((args.GetCurrentPoint(null).Timestamp - _lastPointerDown.point.Timestamp) >= GestureRecognizer.HoldMinDelayTicks)
+		if ((args.GetCurrentPoint(null).Timestamp - _lastPointerDown.point.Timestamp) >= GestureRecognizer.HoldMinDelayMicroseconds)
 		{
 			// Touch holding
 			OpenContextMenu(args.GetCurrentPoint(this).Position);

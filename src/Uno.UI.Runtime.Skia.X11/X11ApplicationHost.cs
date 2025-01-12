@@ -24,7 +24,6 @@ namespace Uno.WinUI.Runtime.Skia.X11;
 public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDisposable
 {
 	[ThreadStatic] private static bool _isDispatcherThread;
-	[ThreadStatic] private static int _renderFrameRate;
 	private readonly EventLoop _eventLoop;
 
 	private readonly Func<Application> _appBuilder;
@@ -76,19 +75,24 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 	{
 		_appBuilder = appBuilder;
 
+		if (RenderFrameRate != default && renderFrameRate != RenderFrameRate)
+		{
+			throw new InvalidOperationException($"X11's render frame rate should only be set once.");
+		}
+		RenderFrameRate = renderFrameRate;
+
 		_eventLoop = new EventLoop();
 		_eventLoop.Schedule(() => { Thread.CurrentThread.Name = "Uno Event Loop"; }, UI.Dispatching.NativeDispatcherPriority.Normal);
 
 		_eventLoop.Schedule(() =>
 		{
 			_isDispatcherThread = true;
-			_renderFrameRate = renderFrameRate;
 		}, UI.Dispatching.NativeDispatcherPriority.Normal);
 		CoreDispatcher.DispatchOverride = _eventLoop.Schedule;
 		CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
 	}
 
-	internal static int RenderFrameRate => _renderFrameRate;
+	internal static int RenderFrameRate { get; private set; }
 
 	[LibraryImport("libc", StringMarshallingCustomType = typeof(AnsiStringMarshaller))]
 	private static partial void setlocale(int type, string s);

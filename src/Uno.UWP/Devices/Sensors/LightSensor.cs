@@ -15,11 +15,11 @@ namespace Windows.Devices.Sensors
 	{
 		private readonly static Lazy<LightSensor?> _instance = new Lazy<LightSensor?>(() => TryCreateInstance());
 
-		private readonly StartStopEventWrapper<TypedEventHandler<LightSensor, LightSensorReadingChangedEventArgs>> _readingChangedWrapper;
+		private readonly StartStopTypedEventWrapper<LightSensor, LightSensorReadingChangedEventArgs> _readingChangedWrapper;
 
 		private LightSensor()
 		{
-			_readingChangedWrapper = new StartStopEventWrapper<TypedEventHandler<LightSensor, LightSensorReadingChangedEventArgs>>(
+			_readingChangedWrapper = new StartStopTypedEventWrapper<LightSensor, LightSensorReadingChangedEventArgs>(
 				StartReading, StopReading);
 		}
 

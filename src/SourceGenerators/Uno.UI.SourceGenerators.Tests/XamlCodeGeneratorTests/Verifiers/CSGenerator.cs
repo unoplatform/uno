@@ -107,7 +107,7 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 				_testFilePath = testFilePath;
 				_testMethodName = testMethodName;
 
-				ReferenceAssemblies = ReferenceAssemblies.Net.Net80;
+				ReferenceAssemblies = _Dotnet.Current.ReferenceAssemblies;
 
 #if WRITE_EXPECTED
 				TestBehaviors |= TestBehaviors.SkipGeneratedSourcesCheck;

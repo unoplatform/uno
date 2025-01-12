@@ -28,6 +28,7 @@ internal partial class BrowserPointerInputSource : IUnoCorePointerInputSource
 	private static readonly Logger _log = typeof(BrowserPointerInputSource).Log();
 	private static readonly Logger? _logTrace = _log.IsTraceEnabled(LogLevel.Trace) ? _log : null;
 
+	// TODO: Verify the boot time unit (ms or ticks)
 	private ulong _bootTime;
 	private bool _isOver;
 	private PointerPoint? _lastPoint;
@@ -93,7 +94,7 @@ internal partial class BrowserPointerInputSource : IUnoCorePointerInputSource
 			var pointerIdentifier = _PointerIdentifierPool.RentManaged(new _PointerIdentifier((PointerDeviceType)deviceType, (uint)pointerId));
 
 			var frameId = ToFrameId(timestamp);
-			var ts = that.ToTimeStamp(timestamp);
+			var ts = that.ToTimestamp(timestamp);
 			var isInContact = buttons != 0;
 			var isInRange = GetIsInRange(@event, hasRelatedTarget, pointerType, isInContact);
 			var keyModifiers = GetKeyModifiers(ctrl, shift);
@@ -320,8 +321,8 @@ internal partial class BrowserPointerInputSource : IUnoCorePointerInputSource
 		// Known limitation: After 49 days, we will overflow the uint and frame IDs will restart at 0.
 		=> (uint)(timestamp % uint.MaxValue);
 
-	private ulong ToTimeStamp(double timestamp)
-		=> _bootTime + (ulong)(timestamp * TimeSpan.TicksPerMillisecond);
+	private ulong ToTimestamp(double timestamp)
+		=> _bootTime + (ulong)(timestamp * 1000);
 
 	private static PointerUpdateKind ToUpdateKind(HtmlPointerButtonUpdate update, PointerPointProperties props)
 		=> update switch

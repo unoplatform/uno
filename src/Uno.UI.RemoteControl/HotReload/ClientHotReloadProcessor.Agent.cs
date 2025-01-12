@@ -79,7 +79,7 @@ namespace Uno.UI.RemoteControl.HotReload
 			//var targetFramework = GetMSBuildProperty("TargetFramework");
 			var buildingInsideVisualStudio = GetMSBuildProperty("BuildingInsideVisualStudio").Equals("true", StringComparison.OrdinalIgnoreCase);
 
-			var isForcedMetadata = _forcedHotReloadMode is HotReloadMode.MetadataUpdates or HotReloadMode.Partial;
+			var isForcedMetadata = _forcedHotReloadMode is HotReloadMode.MetadataUpdates;
 			var isSkia = unoRuntimeIdentifier.Equals("skia", StringComparison.OrdinalIgnoreCase);
 			var isWasm = unoRuntimeIdentifier.Equals("webassembly", StringComparison.OrdinalIgnoreCase);
 
@@ -107,7 +107,10 @@ namespace Uno.UI.RemoteControl.HotReload
 
 			var vsEnabled = isForcedMetadata
 				|| (buildingInsideVisualStudio && isSkia)
-				|| (buildingInsideVisualStudio && isWasm);
+				|| (buildingInsideVisualStudio && isWasm)
+				|| (buildingInsideVisualStudio && Debugger.IsAttached && OperatingSystem.IsAndroid())
+				|| (buildingInsideVisualStudio && Debugger.IsAttached && OperatingSystem.IsIOS());
+
 
 			_supportsMetadataUpdates = devServerEnabled || vsEnabled;
 			_serverMetadataUpdatesEnabled = devServerEnabled;

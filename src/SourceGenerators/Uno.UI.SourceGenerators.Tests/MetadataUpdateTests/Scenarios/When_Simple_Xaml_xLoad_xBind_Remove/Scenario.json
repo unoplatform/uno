@@ -1,0 +1,26 @@
+{
+	"Scenarios": [
+		{
+			"IsDebug": true,
+			"IsMono": false,
+			"IsCrashingRoslyn": true,
+			"PassResults": [
+				{
+					"MetadataUpdates": 1,
+					"Diagnostics": []
+				}
+			]
+		},
+		{
+			"IsDebug": true,
+			"IsMono": true,
+			"IsCrashingRoslyn": true,
+			"PassResults": [
+				{
+					"MetadataUpdates": 1,
+					"Diagnostics": []
+				}
+			]
+		}
+	]
+}

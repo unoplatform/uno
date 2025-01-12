@@ -60,7 +60,7 @@ namespace Microsoft.UI.Xaml.Input
 
 			// NOTE: do not keep a reference to nativeEvent, which will be reused by android's native event bubbling and will be mutated as it
 			// goes up through the visual tree. Instead, get whatever values you need here and keep them in fields.
-			_timestamp = ToTimeStamp(nativeEvent.EventTime);
+			_timestamp = ToTimestamp(nativeEvent.EventTime);
 			_x = nativeEvent.GetX(pointerIndex);
 			_y = nativeEvent.GetY(pointerIndex);
 
@@ -160,11 +160,12 @@ namespace Microsoft.UI.Xaml.Input
 
 		private static readonly ulong _unixEpochMs = (ulong)(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc) - new DateTime()).TotalMilliseconds;
 
-		private static ulong ToTimeStamp(long uptimeMillis)
+		private static ulong ToTimestamp(long uptimeMillis)
 		{
+			// Timestamp is in microseconds
 			if (FeatureConfiguration.PointerRoutedEventArgs.AllowRelativeTimeStamp)
 			{
-				return (ulong)(TimeSpan.TicksPerMillisecond * uptimeMillis);
+				return (ulong)(uptimeMillis * 1000);
 			}
 			else
 			{
@@ -173,9 +174,7 @@ namespace Microsoft.UI.Xaml.Input
 
 				var sleepTime = Android.OS.SystemClock.ElapsedRealtime() - Android.OS.SystemClock.UptimeMillis();
 				var realUptime = (ulong)(uptimeMillis + sleepTime);
-				var timestamp = TimeSpan.TicksPerMillisecond * (_unixEpochMs + realUptime);
-
-				return timestamp;
+				return realUptime * 1000;
 			}
 		}
 		#endregion

@@ -3,22 +3,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Uno.Foundation.Logging;
 using Uno.UI.RemoteControl.HotReload.Messages;
-using Uno.Diagnostics.UI;
-using System.Collections.Immutable;
-using System.Diagnostics;
-using System.Reflection;
-using Uno.UI.Helpers;
 
 namespace Uno.UI.RemoteControl.HotReload;
 
 public partial class ClientHotReloadProcessor : IClientProcessor
 {
 	private string? _projectPath;
-	private string[]? _xamlPaths;
 	private readonly IRemoteControlClient _rcClient;
 	private HotReloadMode? _forcedHotReloadMode;
 
@@ -49,10 +42,6 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 				ProcessUpdateFileResponse(frame.GetContent<UpdateFileResponse>());
 				break;
 
-			case FileReload.Name:
-				await ProcessFileReload(frame.GetContent<FileReload>());
-				break;
-
 			case HotReloadWorkspaceLoadResult.Name:
 				WorkspaceLoadResult(frame.GetContent<HotReloadWorkspaceLoadResult>());
 				break;
@@ -72,23 +61,6 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 
 	partial void ProcessUpdateFileResponse(UpdateFileResponse response);
 
-	private async Task ProcessFileReload(HotReload.Messages.FileReload fileReload)
-	{
-		if ((
-				_forcedHotReloadMode is null
-				&& !_supportsPartialHotReload
-				&& !_serverMetadataUpdatesEnabled
-				&& _supportsXamlReader)
-			|| _forcedHotReloadMode == HotReloadMode.XamlReader)
-		{
-			ReloadFileWithXamlReader(fileReload);
-		}
-		else
-		{
-			await PartialReload(fileReload);
-		}
-	}
-
 	#region Configure hot-reload
 	private async Task ConfigureServer()
 	{
@@ -102,36 +74,18 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 				var config = configs.First();
 
 				_projectPath = config.ProjectPath;
-				_xamlPaths = config.XamlPaths;
-
-				if (this.Log().IsEnabled(LogLevel.Debug))
-				{
-					this.Log().LogDebug($"ProjectConfigurationAttribute={config.ProjectPath}, Paths={_xamlPaths.Length}");
-				}
-
-				if (this.Log().IsEnabled(LogLevel.Trace))
-				{
-					foreach (var path in _xamlPaths)
-					{
-						this.Log().Trace($"\t- {path}");
-					}
-				}
 
 				_msbuildProperties = Messages.ConfigureServer.BuildMSBuildProperties(config.MSBuildProperties);
 
 				ConfigureHotReloadMode();
 				InitializeMetadataUpdater();
-				InitializePartialReload();
-				InitializeXamlReader();
 
-				if (!_supportsMetadataUpdates
-					&& !_supportsPartialHotReload
-					&& !_supportsXamlReader)
+				if (!_supportsMetadataUpdates)
 				{
 					_status.ReportInvalidRuntime();
 				}
 
-				ConfigureServer message = new(_projectPath, _xamlPaths, GetMetadataUpdateCapabilities(), _serverMetadataUpdatesEnabled, config.MSBuildProperties);
+				ConfigureServer message = new(_projectPath, GetMetadataUpdateCapabilities(), _serverMetadataUpdatesEnabled, config.MSBuildProperties);
 
 				await _rcClient.SendMessage(message);
 			}

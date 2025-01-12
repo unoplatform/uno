@@ -63,103 +63,102 @@ namespace TestRepro
 					Name = "innerTextBlock",
 					// Source 0\MainPage.xaml (Line 10:4)
 				}
-				.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(c0 => 
+				.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 				{
-					/* _isTopLevelDictionary:False */
-					__that._component_0 = c0;
-					__nameScope.RegisterName("innerTextBlock", c0);
-					__that.innerTextBlock = c0;
-					// FieldModifier public
-					c0.SetBinding(
-						global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
-						new Microsoft.UI.Xaml.Data.Binding()
-						{
-							Mode = global::Microsoft.UI.Xaml.Data.BindingMode.OneWay,
-						}
-							.BindingApply(___b =>  /*defaultBindModeOneTime InnerText*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, __that, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? (TryGetInstance_xBind_1(___tctx, out var bindResult1) ? (true, bindResult1) : (false, default)) : (false, default), null , new [] {"InnerText"}))
-					);
-					global::Uno.UI.FrameworkElementHelper.SetBaseUri(c0, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-					c0.CreationComplete();
+				/* _isTopLevelDictionary:False */
+				__that._component_0 = __p1;
+				__nameScope.RegisterName("innerTextBlock", __p1);
+				__that.innerTextBlock = __p1;
+				// FieldModifier public
+				__p1.SetBinding(
+					global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
+					new Microsoft.UI.Xaml.Data.Binding()
+					{
+						Mode = global::Microsoft.UI.Xaml.Data.BindingMode.OneWay,
+					}
+						.BindingApply(___b =>  /*defaultBindModeOneTime InnerText*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, __that, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? (TryGetInstance_xBind_1(___tctx, out var bindResult1) ? (true, bindResult1) : (false, default)) : (false, default), null , new [] {"InnerText"}))
+				);
+				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+				__p1.CreationComplete();
 				}
 				))
 				,
 			}
-			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(c1 => 
+			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 			{
-				__nameScope.RegisterName("topLevelContent", c1);
-				__that.topLevelContent = c1;
-				// FieldModifier public
-				// Load false
-				global::Uno.UI.FrameworkElementHelper.SetBaseUri(c1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-				c1.CreationComplete();
+			__nameScope.RegisterName("topLevelContent", __p1);
+			__that.topLevelContent = __p1;
+			// FieldModifier public
+			// Load false
+			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+			__p1.CreationComplete();
 			}
 			))
-			)			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(c2 => 
+			)			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 			{
-				c2.Name = "topLevelContent";
-				_topLevelContentSubject.ElementInstance = c2;
-				__that._component_1 = c2;
-				var _component_1_update_That = (this as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;
-				var _component_1_update_subject_capture = _topLevelContentSubject;
-				void _component_1_update(global::Microsoft.UI.Xaml.ElementStub sender)
+			__p1.Name = "topLevelContent";
+			_topLevelContentSubject.ElementInstance = __p1;
+			__that._component_1 = __p1;
+			var _component_1_update_That = (this as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;
+			void _component_1_update(global::Microsoft.UI.Xaml.ElementStub sender)
+			{
+				if (_component_1_update_That.Target is global::TestRepro.MainPage that)
 				{
-					if (_component_1_update_That.Target is global::TestRepro.MainPage that)
+					if (sender.IsMaterialized)
 					{
-						if (sender.IsMaterialized)
-						{
-							that.Bindings.UpdateResources();
-							that.Bindings.NotifyXLoad("topLevelContent");
-						}
-						else
-						{
-							_topLevelContentSubject.ElementInstance = null;
-							_innerTextBlockSubject.ElementInstance = null;
-							_innerTextBlockSubject.ElementInstance = null;
-						}
+						that.Bindings.UpdateResources();
+						that.Bindings.NotifyXLoad("topLevelContent");
+					}
+					else
+					{
+						that._topLevelContentSubject.ElementInstance = null;
+						that._innerTextBlockSubject.ElementInstance = null;
+						that._innerTextBlockSubject.ElementInstance = null;
 					}
 				}
-				c2.MaterializationChanged += _component_1_update;
-				var owner = this;
-				void _component_1_materializing(object sender)
+			}
+			__p1.MaterializationChanged += _component_1_update;
+			var owner = this;
+			void _component_1_materializing(object sender)
+			{
+				if (_component_1_update_That.Target is global::TestRepro.MainPage that)
 				{
-					if (_component_1_update_That.Target is global::TestRepro.MainPage that)
-					{
-						that._component_0.ApplyXBind();
-						that._component_0.UpdateResourceBindings();
-					}
+					that._component_0.ApplyXBind();
+					that._component_0.UpdateResourceBindings();
 				}
-				c2.Materializing += _component_1_materializing;
+			}
+			__p1.Materializing += _component_1_materializing;
 			}
 			))
 			;
 			
 			this
-			.GenericApply(((c3) => 
+			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
 			{
-				// Source 0\MainPage.xaml (Line 1:2)
-				
-				// WARNING Property c3.base does not exist on {http://schemas.microsoft.com/winfx/2006/xaml/presentation}Page, the namespace is http://www.w3.org/XML/1998/namespace. This error was considered irrelevant by the XamlFileGenerator
+			// Source 0\MainPage.xaml (Line 1:2)
+			
+			// WARNING Property __p1.base does not exist on {http://schemas.microsoft.com/winfx/2006/xaml/presentation}Page, the namespace is http://www.w3.org/XML/1998/namespace. This error was considered irrelevant by the XamlFileGenerator
 			}
 			))
-			.GenericApply(((c4) => 
+			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
 			{
-				// Class TestRepro.MainPage
-				global::Uno.UI.FrameworkElementHelper.SetBaseUri(c4, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
-				c4.CreationComplete();
+			// Class TestRepro.MainPage
+			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+			__p1.CreationComplete();
 			}
 			))
 			;
 			OnInitializeCompleted();
 
 			Bindings = new MainPage_Bindings(this);
-			((global::Microsoft.UI.Xaml.FrameworkElement)this).Loading += (s, e) =>
-			{
-				__that.Bindings.Update();
-				__that.Bindings.UpdateResources();
-			}
-			;
+			((global::Microsoft.UI.Xaml.FrameworkElement)this).Loading += __UpdateBindingsAndResources;
 		}
 		partial void OnInitializeCompleted();
+		private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
+		{
+			this.Bindings.Update();
+			this.Bindings.UpdateResources();
+		}
 		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _innerTextBlockSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
 		public global::Microsoft.UI.Xaml.Controls.TextBlock innerTextBlock
 		{
@@ -184,7 +183,7 @@ namespace TestRepro
 				_topLevelContentSubject.ElementInstance = value;
 			}
 		}
-		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder  = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
 		private global::Microsoft.UI.Xaml.Controls.TextBlock _component_0
 		{
 			get
@@ -196,7 +195,7 @@ namespace TestRepro
 				_component_0_Holder.Instance = value;
 			}
 		}
-		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_1_Holder  = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: false);
+		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_1_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: false);
 		private global::Microsoft.UI.Xaml.ElementStub _component_1
 		{
 			get
@@ -282,6 +281,13 @@ namespace MyProject
 		public delegate void XamlApplyHandler2(global::Microsoft.UI.Xaml.ElementStub instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 		public static global::Microsoft.UI.Xaml.ElementStub MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Microsoft.UI.Xaml.ElementStub instance, XamlApplyHandler2 handler)
+		{
+			handler(instance);
+			return instance;
+		}
+		public delegate void XamlApplyHandler3(global::Microsoft.UI.Xaml.Controls.Page instance);
+		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+		public static global::Microsoft.UI.Xaml.Controls.Page MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Microsoft.UI.Xaml.Controls.Page instance, XamlApplyHandler3 handler)
 		{
 			handler(instance);
 			return instance;
