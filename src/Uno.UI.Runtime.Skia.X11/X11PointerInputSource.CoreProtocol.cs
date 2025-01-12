@@ -123,9 +123,10 @@ internal partial class X11PointerInputSource
 			? root.RasterizationScale
 			: 1;
 
+		var timeInMicroseconds = (ulong)(time * 1000); // Time is given in milliseconds since system boot. See also: https://github.com/unoplatform/uno/issues/14535
 		var point = new PointerPoint(
 			frameId: (uint)time, // UNO TODO: How should set the frame, timestamp may overflow.
-			timestamp: (uint)(time * TimeSpan.TicksPerMillisecond), // Time is given in milliseconds since system boot. See also: https://github.com/unoplatform/uno/issues/14535
+			timestamp: timeInMicroseconds,
 			PointerDevice.For(PointerDeviceType.Mouse),
 			0, // TODO: XInput
 			new Point(_mousePosition.X / scale, _mousePosition.Y / scale),

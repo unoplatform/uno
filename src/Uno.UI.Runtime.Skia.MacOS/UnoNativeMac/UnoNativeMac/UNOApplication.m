@@ -7,7 +7,6 @@
 static UNOApplicationDelegate *ad;
 static system_theme_change_fn_ptr system_theme_change;
 static id<MTLDevice> device;
-static NSTimeInterval uptime = 0;
 
 inline system_theme_change_fn_ptr uno_get_system_theme_change_callback(void)
 {
@@ -26,14 +25,6 @@ uint32 /* Uno.Helpers.Theming.SystemTheme */ uno_get_system_theme(void)
     NSAppearanceName appearanceName = [appearance bestMatchFromAppearancesWithNames:@[NSAppearanceNameAqua,
                                                                                       NSAppearanceNameDarkAqua]];
     return [appearanceName isEqualToString:NSAppearanceNameAqua] ? 0 : 1;
-}
-
-NSTimeInterval uno_get_system_uptime(void)
-{
-    if (uptime == 0) {
-        uptime = NSProcessInfo.processInfo.systemUptime;
-    }
-    return uptime;
 }
 
 bool uno_app_initialize(bool *metal)
