@@ -78,7 +78,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			tbs2.Should().NotBeNull();
 
 #if !__IOS__ && !__ANDROID__
-			// Pivot items are materialized on demand, there should no be any text block in the second item.
+			// Pivot items are materialized on demand, there should not be any text block in the second item.
 			tbs2.Should().HaveCount(0);
 #else
 			// iOS/Android still materializes the content of the second item, even if it's not visible.
