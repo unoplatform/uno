@@ -22,7 +22,6 @@ namespace Uno.WinUI.Runtime.Skia.AppleUIKit.Controls;
 internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleTextBoxView
 {
 	private readonly WeakReference<InvisibleTextBoxViewExtension> _textBoxViewExtension;
-	private SinglelineInvisibleTextBoxDelegate? _delegate;
 	private bool _settingTextFromManaged;
 
 	public SinglelineInvisibleTextBoxView(InvisibleTextBoxViewExtension textBoxView)
@@ -43,7 +42,7 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 		//Set native VerticalAlignment to top-aligned (default is center) to match Windows text placement
 		base.VerticalAlignment = UIControlContentVerticalAlignment.Top;
 
-		Delegate = _delegate = new SinglelineInvisibleTextBoxDelegate(_textBoxViewExtension)
+		Delegate = new SinglelineInvisibleTextBoxDelegate(_textBoxViewExtension)
 		{
 			IsKeyboardHiddenOnEnter = true
 		};

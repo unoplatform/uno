@@ -178,7 +178,8 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 		}
 	}
 
-	private IInvisibleTextBoxView CreateNativeView(TextBox textBox) => new SinglelineInvisibleTextBoxView(this);
+	private IInvisibleTextBoxView CreateNativeView(TextBox textBox) => _owner?.TextBox?.AcceptsReturn != true ?
+		new SinglelineInvisibleTextBoxView(this) : new MultilineInvisibleTextBoxView(this);
 
 	public void AddViewToTextInputLayer(XamlRoot xamlRoot)
 	{
