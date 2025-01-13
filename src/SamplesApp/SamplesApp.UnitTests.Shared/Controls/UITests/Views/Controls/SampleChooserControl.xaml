@@ -252,7 +252,7 @@
 
 				<!-- LIBRARY (Categories)-->
 				<Grid Style="{StaticResource BaseTitleGridContainerStyle}"
-					  Height="80"
+					  Height="84"
 					  Visibility="{Binding CategoryVisibility, Converter={StaticResource TrueToVisible}}">
 
 					<Grid.ColumnDefinitions>
@@ -294,7 +294,7 @@
 							VerticalAlignment="Center"
 							HorizontalAlignment="Center"
 							Text="Uno Samples" />
-						<TextBlock FontSize="11" HorizontalAlignment="Center" FontWeight="Bold" Text="{Binding TargetPlatform}" />
+						<TextBlock FontSize="10" HorizontalAlignment="Center" FontWeight="Bold" Text="{Binding TargetPlatform}" />
 						<TextBlock FontSize="9" HorizontalAlignment="Center" Opacity="0.8" Text="{Binding RepositoryPath}" TextTrimming="CharacterEllipsis" />
 					</StackPanel>
 
