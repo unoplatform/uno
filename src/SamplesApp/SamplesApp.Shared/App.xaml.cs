@@ -40,6 +40,7 @@ using Uno.UI.Helpers;
 using DispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue;
 using DispatcherQueuePriority = Microsoft.UI.Dispatching.DispatcherQueuePriority;
 using LaunchActivatedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.LaunchActivatedEventArgs;
+using SampleControl.Presentation;
 #else
 using DispatcherQueue = Windows.System.DispatcherQueue;
 using DispatcherQueuePriority = Windows.System.DispatcherQueuePriority;
@@ -183,19 +184,7 @@ namespace SamplesApp
 
 		private static void SetWindowTitle()
 		{
-			var renderingType =
-#if __SKIA__
-				"Skia";
-#else
-				"Native";
-#endif
-
-			var appTitle = $"Uno Samples ({renderingType})";
-
-#if __SKIA__ && DEBUG
-			var repositoryPath = GetRepositoryPath();
-			appTitle += $" [{repositoryPath}]";
-#endif
+			var appTitle = SampleChooserViewModel.DefaultAppTitle;
 
 #if !WINAPPSDK
 			ApplicationView.GetForCurrentView().Title = appTitle;
@@ -203,26 +192,6 @@ namespace SamplesApp
 			MainWindow!.Title = appTitle;
 #endif
 		}
-
-#if __SKIA__ && DEBUG
-		private static string GetRepositoryPath()
-		{
-			if (!DeviceTargetHelper.IsDesktop())
-			{
-				return "";
-			}
-
-			var fullPath = Package.Current.InstalledLocation.Path;
-			var srcSamplesApp = $"{Path.DirectorySeparatorChar}src{Path.DirectorySeparatorChar}SamplesApp";
-			var repositoryPath = fullPath;
-			if (fullPath.IndexOf(srcSamplesApp) is int index && index > 0)
-			{
-				repositoryPath = fullPath.Substring(0, index);
-			}
-
-			return repositoryPath;
-		}
-#endif
 
 		[MemberNotNull(nameof(_mainWindow))]
 		private void EnsureMainWindow()
