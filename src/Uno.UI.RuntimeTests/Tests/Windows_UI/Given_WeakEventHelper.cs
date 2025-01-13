@@ -97,6 +97,16 @@ public partial class Given_WeakEventHelper
 		SUT.Invoke(this, null);
 
 		Assert.AreEqual(2, invoked);
+
+		disposable.Dispose();
+		disposable = null;
+
+		GC.Collect(2);
+		GC.WaitForPendingFinalizers();
+
+		SUT.Invoke(this, null);
+
+		Assert.AreEqual(2, invoked);
 	}
 
 	[TestMethod]
@@ -125,6 +135,16 @@ public partial class Given_WeakEventHelper
 		}
 
 		Do();
+
+		GC.Collect(2);
+		GC.WaitForPendingFinalizers();
+
+		SUT.Invoke(this, null);
+
+		Assert.AreEqual(2, invoked);
+
+		disposable.Dispose();
+		disposable = null;
 
 		GC.Collect(2);
 		GC.WaitForPendingFinalizers();
