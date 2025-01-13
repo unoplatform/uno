@@ -33,11 +33,11 @@
 		<PackageReference Include="MSTest.TestFramework" />
 		<PackageReference Include="MSTest.Analyzers" />
 		<PackageReference Include="BenchmarkDotNet" Version="0.11.4-develop" />
-		<PackageReference Include="Uno.Core.Extensions.Logging" Version="4.0.0-dev.7" />
-		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.0-dev.7" />
-		<PackageReference Include="Uno.Core.Extensions.Disposables" Version="4.0.0-dev.7" />
-		<PackageReference Include="Uno.Core.Extensions.Compatibility" Version="4.0.0-dev.7" />
-		<PackageReference Include="Uno.Core.Extensions" Version="4.0.1" />
+		<PackageReference Include="Uno.Core.Extensions.Logging" />
+		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" />
+		<PackageReference Include="Uno.Core.Extensions.Disposables" />
+		<PackageReference Include="Uno.Core.Extensions.Compatibility" />
+		<PackageReference Include="Uno.Core.Extensions" />
 		<PackageReference Include="IdentityModel.OidcClient" Version="6.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
 		<PackageReference Include="CommunityToolkit.WinUI.Lottie" Version="8.0.0-rc" />

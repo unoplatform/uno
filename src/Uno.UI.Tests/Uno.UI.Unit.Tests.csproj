@@ -26,7 +26,7 @@
 		<PackageReference Include="Microsoft.Testing.Extensions.TrxReport" />
 		<PackageReference Include="FluentAssertions" />
 		<PackageReference Include="Moq" Version="4.17.2" />
-		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.0-dev.7" PrivateAssets="all" />
+		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" PrivateAssets="all" />
 
 		<!-- https://github.com/NuGet/Home/issues/7344 -->
 		<PackageReference Include="System.Net.Http" Version="4.3.4" />
