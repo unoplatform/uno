@@ -393,16 +393,10 @@ namespace Uno.UI
 				var dictionary = (source.Target as FrameworkElement)?.TryGetResources()
 					?? source.Target as ResourceDictionary;
 
-				if (dictionary != null)
+				if (dictionary != null
+					&& dictionary.TryGetValue(resourceKey, out value, shouldCheckSystem: false))
 				{
-					if (dictionary.TryGetValue(resourceKey, out value, shouldCheckSystem: false))
-					{
-						return true;
-					}
-				}
-				else
-				{
-
+					return true;
 				}
 			}
 
