@@ -162,29 +162,17 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 	public void Select(int start, int length)
 		=> SelectedTextRange = this.GetTextRange(start: start, end: start + length).GetHandle();
 
-	/// <summary>
-	/// Workaround for https://github.com/unoplatform/uno/issues/9430
-	/// </summary>
-	[DllImport(Constants.ObjectiveCLibrary, EntryPoint = "objc_msgSendSuper")]
-	static internal extern IntPtr IntPtr_objc_msgSendSuper(IntPtr receiver, IntPtr selector);
-
-	[DllImport(Constants.ObjectiveCLibrary, EntryPoint = "objc_msgSendSuper")]
-	static internal extern void void_objc_msgSendSuper(IntPtr receiver, IntPtr selector, IntPtr arg);
-
 	[Export("selectedTextRange")]
 	public new IntPtr SelectedTextRange
 	{
-		get
-		{
-			return IntPtr_objc_msgSendSuper(SuperHandle, Selector.GetHandle("selectedTextRange"));
-		}
+		get => NativeTextSelection.GetSelectedTextRange(SuperHandle);
 		set
 		{
 			var textBoxView = TextBoxViewExtension;
 
 			if (textBoxView != null && SelectedTextRange != value)
 			{
-				void_objc_msgSendSuper(SuperHandle, Selector.GetHandle("setSelectedTextRange:"), value);
+				NativeTextSelection.SetSelectedTextRange(SuperHandle, value);
 				textBoxView.Owner.TextBox?.OnSelectionChanged();
 			}
 		}

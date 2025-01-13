@@ -99,17 +99,14 @@ internal partial class MultilineInvisibleTextBoxView : UITextView, IInvisibleTex
 	[Export("selectedTextRange")]
 	public new IntPtr SelectedTextRange
 	{
-		get
-		{
-			return SinglelineInvisibleTextBoxView.IntPtr_objc_msgSendSuper(SuperHandle, Selector.GetHandle("selectedTextRange"));
-		}
+		get => NativeTextSelection.GetSelectedTextRange(SuperHandle);
 		set
 		{
 			var textBoxView = TextBoxViewExtension;
 
 			if (textBoxView != null && SelectedTextRange != value)
 			{
-				SinglelineInvisibleTextBoxView.void_objc_msgSendSuper(SuperHandle, Selector.GetHandle("setSelectedTextRange:"), value);
+				NativeTextSelection.SetSelectedTextRange(SuperHandle, value);
 				textBoxView.Owner.TextBox?.OnSelectionChanged();
 			}
 		}

@@ -12,7 +12,6 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 {
 	private readonly TextBoxView _owner;
 	private IInvisibleTextBoxView? _textBoxView;
-	private int _selectionChangeSuspended;
 
 	public InvisibleTextBoxViewExtension(TextBoxView view)
 	{
@@ -88,12 +87,6 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 			_textBoxView.SetTextNative(text);
 		}
 	}
-
-	internal void SuspendSelectionChange()
-			=> _selectionChangeSuspended++;
-
-	internal void ResumeSelectionChange()
-		=> _selectionChangeSuspended--;
 
 	public int GetSelectionLength()
 	{
