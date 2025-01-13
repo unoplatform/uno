@@ -65,7 +65,7 @@ public partial class ClientHotReloadProcessor : IClientProcessor
 	private async Task ConfigureServer()
 	{
 		var assembly = _rcClient.AppType.Assembly;
-		if (assembly.GetCustomAttributes(typeof(ProjectConfigurationAttribute), false) is ProjectConfigurationAttribute[]{Length: >0} configs)
+		if (assembly.GetCustomAttributes(typeof(ProjectConfigurationAttribute), false) is ProjectConfigurationAttribute[] { Length: > 0 } configs)
 		{
 			_status.ReportServerState(HotReloadState.Initializing);
 
