@@ -624,8 +624,6 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			// Uno specific: If the control was unloaded but is loaded again, reattach Layout and DataSource events
 			if (_layoutSubscriptionsRevoker.Disposable is null && Layout is { } layout)
 			{
-				_layoutSubscriptionsRevoker.Disposable = null;
-
 				InvalidateMeasure();
 
 				var disposables = new CompositeDisposable();
@@ -636,8 +634,6 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 			if (_dataSourceSubscriptionsRevoker.Disposable is null && m_itemsSourceView is not null)
 			{
-				_dataSourceSubscriptionsRevoker.Disposable = null;
-
 				m_itemsSourceView.CollectionChanged += OnItemsSourceViewChanged;
 				_dataSourceSubscriptionsRevoker.Disposable = Disposable.Create(() =>
 				{
