@@ -51,6 +51,7 @@ namespace SkiaSharpExample
 					{
 						global::Uno.Foundation.Extensibility.ApiExtensibility.Register<global::Windows.Media.Playback.MediaPlayer>(typeof(global::Uno.Media.Playback.IMediaPlayerExtension), o => new global::Uno.UI.MediaPlayer.Skia.X11.SharedMediaPlayerExtension(o));
 						global::Uno.Foundation.Extensibility.ApiExtensibility.Register<global::Microsoft.UI.Xaml.Controls.MediaPlayerPresenter>(typeof(global::Microsoft.UI.Xaml.Controls.IMediaPlayerPresenterExtension), o => new global::Uno.UI.MediaPlayer.Skia.X11.X11MediaPlayerPresenterExtension(o));
+						global::Uno.Foundation.Extensibility.ApiExtensibility.Register<Microsoft.Web.WebView2.Core.CoreWebView2>(typeof(Microsoft.Web.WebView2.Core.INativeWebViewProvider), o => new global::Uno.UI.WebView.Skia.X11.X11NativeWebViewProvider(o));
 					}
 					else if (host is Win32Host)
 					{

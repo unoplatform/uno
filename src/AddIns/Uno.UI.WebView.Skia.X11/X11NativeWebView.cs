@@ -7,22 +7,28 @@ using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.UI.Core;
+using Microsoft.Extensions.Logging;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.Web.WebView2.Core;
 using SharpWebview;
 using SharpWebview.Content;
-using Uno.Foundation.Logging;
+using Uno.Extensions;
+using Uno.Foundation.Extensibility;
+using Uno.Logging;
 using Uno.UI.Runtime.Skia;
 using Uno.UI.Xaml.Controls;
+using Uno.WinUI.Runtime.Skia.X11;
 
-namespace Uno.WinUI.Runtime.Skia.X11;
+[assembly: ApiExtension(typeof(INativeWebViewProvider), typeof(Uno.UI.WebView.Skia.X11.X11NativeWebViewProvider), typeof(CoreWebView2))]
 
-internal class X11NativeWebViewProvider(CoreWebView2 coreWebView2) : INativeWebViewProvider
+namespace Uno.UI.WebView.Skia.X11;
+
+public class X11NativeWebViewProvider(CoreWebView2 coreWebView2) : INativeWebViewProvider
 {
-	public INativeWebView CreateNativeWebView(ContentPresenter contentPresenter) => new X11NativeWebView(coreWebView2, contentPresenter);
+	INativeWebView INativeWebViewProvider.CreateNativeWebView(ContentPresenter contentPresenter) => new X11NativeWebView(coreWebView2, contentPresenter);
 }
 
-internal class X11NativeWebView : INativeWebView
+public class X11NativeWebView : INativeWebView
 {
 	// Webview doesn't naturally support multiple windows and constructing any Webview after the first will block.
 	// On X11, Webview wraps GTK: https://github.com/webview/webview/blob/6e847a6efe88a15edf58c26b8c9ea933ba2569ec/webview.h#L1951-L1957
@@ -35,7 +41,7 @@ internal class X11NativeWebView : INativeWebView
 	private int _jsInvokeCounter;
 	private readonly ConcurrentDictionary<string, TaskCompletionSource<string?>> _jsInvokeTasks = new();
 
-	private Webview _nativeWebview;
+	private readonly Webview _nativeWebview;
 
 	private readonly CoreWebView2 _coreWebView;
 	private readonly ContentPresenter _presenter;
@@ -47,17 +53,21 @@ internal class X11NativeWebView : INativeWebView
 		_presenter = presenter;
 
 		var host = (X11XamlRootHost)X11Manager.XamlRootMap.GetHostForRoot(presenter.XamlRoot!)!;
-		_nativeWebview = null!; // to work around nullability;
+		var tcs = new TaskCompletionSource<Webview>();
 		if (_masterWebview is { })
 		{
-			_masterWebview.Dispatch(() => _nativeWebview = Init());
+			_masterWebview.Dispatch(() =>
+			{
+				tcs.SetResult(Init());
+			});
 		}
 		else
 		{
 			new Thread(() =>
 			{
-				_nativeWebview = _masterWebview = Init();
-				_nativeWebview.Run();
+				var wv = _masterWebview = Init();
+				tcs.SetResult(wv);
+				wv.Run();
 			})
 			{
 				Name = "X11 Master WebView Thread",
@@ -65,7 +75,7 @@ internal class X11NativeWebView : INativeWebView
 			}.Start();
 		}
 
-		SpinWait.SpinUntil(() => _nativeWebview is not null);
+		_nativeWebview = tcs.Task.Result;
 
 		// Unfortunately, there's a split second where the new window spawns and is visible before being attached to the
 		// Uno window. The API doesn't allow us to open a hidden window. We would have to talk to gtk directly.
