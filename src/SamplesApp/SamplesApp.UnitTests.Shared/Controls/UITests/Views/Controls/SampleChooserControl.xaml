@@ -288,12 +288,15 @@
 					</Button>
 
 					<!-- Title -->
-					<TextBlock
-						Grid.Column="2"
-						Style="{StaticResource Typo03}"
-						VerticalAlignment="Center"
-						HorizontalAlignment="Center"
-						Text="Library" />
+					<StackPanel Grid.Column="2">
+						<TextBlock
+							Style="{StaticResource Typo03}"
+							VerticalAlignment="Center"
+							HorizontalAlignment="Center"
+							Text="Uno Samples" />
+						<TextBlock FontSize="10" HorizontalAlignment="Center" FontWeight="Bold" Text="{Binding RenderingType}" />
+						<TextBlock FontSize="9" HorizontalAlignment="Center" Opacity="0.8" Text="{Binding RepositoryPath}" />
+					</StackPanel>
 
 					<Button Style="{StaticResource IconButtonStyle}"
 							Foreground="{ThemeResource AccentFillColorDefaultBrush}"

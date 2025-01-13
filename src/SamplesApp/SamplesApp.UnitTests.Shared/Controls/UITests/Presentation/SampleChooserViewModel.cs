@@ -35,6 +35,7 @@ using Private.Infrastructure;
 using System.Reflection.Metadata;
 using UITests.Shared.Helpers;
 using Uno.UI.Samples.UITests.Helpers;
+using System.Runtime.CompilerServices;
 
 namespace SampleControl.Presentation
 {
@@ -1245,6 +1246,18 @@ namespace SampleControl.Presentation
 				_log.Error(ex.Message);
 			}
 #endif
+		}
+
+		private static string GetRepositoryPath([CallerFilePath] string filePath = null)
+		{
+			var srcSamplesApp = $"{Path.DirectorySeparatorChar}src{Path.DirectorySeparatorChar}SamplesApp";
+			var repositoryPath = filePath;
+			if (repositoryPath.IndexOf(srcSamplesApp) is int index && index > 0)
+			{
+				repositoryPath = repositoryPath.Substring(0, index);
+			}
+
+			return repositoryPath;
 		}
 
 		private async Task RunOnUIThreadAsync(Action action)

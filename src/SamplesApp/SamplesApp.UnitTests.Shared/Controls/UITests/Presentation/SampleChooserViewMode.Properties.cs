@@ -253,6 +253,27 @@ namespace SampleControl.Presentation
 			}
 		}
 
+		public static string DefaultAppTitle
+		{
+			get
+			{
+				var appTitle = $"Uno Samples ({RenderingType})";
+
+				var repositoryPath = RepositoryPath;
+				appTitle += $" [{repositoryPath}]";
+				return appTitle;
+			}
+		}
+
+		public static string RenderingType =>
+#if __SKIA__
+				"Skia";
+#else
+				"Native";
+#endif
+
+		public static string RepositoryPath => GetRepositoryPath();
+
 		public SampleChooserContent CurrentSelectedSample
 		{
 			get => _currentSelectedSample;
