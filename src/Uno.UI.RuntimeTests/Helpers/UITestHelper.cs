@@ -353,7 +353,7 @@ public interface IInjectedPointer
 {
 	void Press(Point position);
 
-	void MoveTo(Point position, uint? steps = null);
+	void MoveTo(Point position, uint? steps = null, uint? stepOffsetInMilliseconds = null);
 
 	void MoveBy(double deltaX = 0, double deltaY = 0);
 
@@ -383,10 +383,10 @@ public static class InjectedPointerExtensions
 	public static void MoveTo(this IInjectedPointer pointer, double x, double y)
 		=> pointer.MoveTo(new(x, y));
 
-	public static void Drag(this IInjectedPointer pointer, Point from, Point to)
+	public static void Drag(this IInjectedPointer pointer, Point from, Point to, uint? steps = null, uint? stepOffsetInMilliseconds = null)
 	{
 		pointer.Press(from);
-		pointer.MoveTo(to);
+		pointer.MoveTo(to, steps, stepOffsetInMilliseconds);
 		pointer.Release();
 	}
 }
@@ -394,6 +394,7 @@ public static class InjectedPointerExtensions
 public partial class Finger : IInjectedPointer, IDisposable
 {
 	private const uint _defaultMoveSteps = 10;
+	private const uint _defaultStepOffsetInMilliseconds = 1;
 
 	private readonly InputInjector _injector;
 	private readonly uint _id;
@@ -417,12 +418,13 @@ public partial class Finger : IInjectedPointer, IDisposable
 		}
 	}
 
-	void IInjectedPointer.MoveTo(Point position, uint? steps) => MoveTo(position, steps ?? _defaultMoveSteps);
-	public void MoveTo(Point position, uint steps = _defaultMoveSteps)
+	void IInjectedPointer.MoveTo(Point position, uint? steps, uint? stepOffsetInMilliseconds) =>
+		MoveTo(position, steps ?? _defaultMoveSteps, stepOffsetInMilliseconds ?? _defaultStepOffsetInMilliseconds);
+	public void MoveTo(Point position, uint steps = _defaultMoveSteps, uint stepOffsetInMilliseconds = _defaultStepOffsetInMilliseconds)
 	{
 		if (_currentPosition is { } current)
 		{
-			Inject(GetMove(current, position, steps));
+			Inject(GetMove(current, position, steps, stepOffsetInMilliseconds));
 			_currentPosition = position;
 		}
 	}
@@ -465,7 +467,7 @@ public partial class Finger : IInjectedPointer, IDisposable
 			}
 		};
 
-	public static IEnumerable<InjectedInputTouchInfo> GetMove(Point fromPosition, Point toPosition, uint steps = _defaultMoveSteps)
+	public static IEnumerable<InjectedInputTouchInfo> GetMove(Point fromPosition, Point toPosition, uint steps = _defaultMoveSteps, uint stepOffsetInMilliseconds = _defaultStepOffsetInMilliseconds)
 	{
 		steps += 1; // We need to send at least the final location, but steps refers to the number of intermediate points
 
@@ -477,7 +479,7 @@ public partial class Finger : IInjectedPointer, IDisposable
 			{
 				PointerInfo = new()
 				{
-					TimeOffsetInMilliseconds = 1,
+					TimeOffsetInMilliseconds = stepOffsetInMilliseconds,
 					PixelLocation = At(fromPosition.X + step * stepX, fromPosition.Y + step * stepY),
 					PointerOptions = InjectedInputPointerOptions.Update
 						| InjectedInputPointerOptions.FirstButton
@@ -620,10 +622,10 @@ public class Mouse : IInjectedPointer, IDisposable
 	}
 
 	public void MoveBy(double deltaX, double deltaY)
-		=> Inject(GetMoveBy(deltaX, deltaY));
+		=> Inject(GetMoveBy(deltaX, deltaY, 1));
 
-	public void MoveTo(Point position, uint? steps = null)
-		=> Inject(GetMoveTo(position.X, position.Y, steps));
+	public void MoveTo(Point position, uint? steps = null, uint? stepOffsetInMilliseconds = null)
+		=> Inject(GetMoveTo(position.X, position.Y, steps, stepOffsetInMilliseconds));
 
 	public void WheelUp() => Wheel(ScrollContentPresenter.ScrollViewerDefaultMouseWheelDelta);
 	public void WheelDown() => Wheel(-ScrollContentPresenter.ScrollViewerDefaultMouseWheelDelta);
@@ -633,7 +635,7 @@ public class Mouse : IInjectedPointer, IDisposable
 	public void Wheel(double delta, bool isHorizontal = false, uint steps = 1)
 		=> Inject(GetWheel(delta, isHorizontal, steps));
 
-	private IEnumerable<InjectedInputMouseInfo> GetMoveTo(double x, double y, uint? steps)
+	private IEnumerable<InjectedInputMouseInfo> GetMoveTo(double x, double y, uint? steps, uint? stepOffsetInMilliseconds = null)
 	{
 		var x0 = Current.X;
 		var y0 = Current.Y;
@@ -641,6 +643,8 @@ public class Mouse : IInjectedPointer, IDisposable
 		var deltaY = y - y0;
 
 		steps ??= (uint)Math.Min(Math.Max(Math.Abs(deltaX), Math.Abs(deltaY)), 512);
+		stepOffsetInMilliseconds ??= 1;
+
 		if (steps is 0)
 		{
 			yield break;
@@ -658,7 +662,7 @@ public class Mouse : IInjectedPointer, IDisposable
 			var newPositionX = (int)Math.Round(x0 + i * stepX);
 			var newPositionY = (int)Math.Round(y0 + i * stepY);
 
-			yield return GetMoveBy(newPositionX - prevPositionX, newPositionY - prevPositionY);
+			yield return GetMoveBy(newPositionX - prevPositionX, newPositionY - prevPositionY, stepOffsetInMilliseconds.Value);
 
 			prevPositionX = newPositionX;
 			prevPositionY = newPositionY;
@@ -694,12 +698,12 @@ public class Mouse : IInjectedPointer, IDisposable
 			MouseOptions = InjectedInputMouseOptions.RightDown,
 		};
 
-	private static InjectedInputMouseInfo GetMoveBy(double deltaX, double deltaY)
+	private static InjectedInputMouseInfo GetMoveBy(double deltaX, double deltaY, uint stepOffsetInMilliseconds)
 		=> new()
 		{
 			DeltaX = (int)deltaX,
 			DeltaY = (int)deltaY,
-			TimeOffsetInMilliseconds = 1,
+			TimeOffsetInMilliseconds = stepOffsetInMilliseconds,
 			MouseOptions = InjectedInputMouseOptions.MoveNoCoalesce,
 		};
 
