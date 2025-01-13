@@ -294,7 +294,7 @@
 							VerticalAlignment="Center"
 							HorizontalAlignment="Center"
 							Text="Uno Samples" />
-						<TextBlock FontSize="10" HorizontalAlignment="Center" FontWeight="Bold" Text="{Binding RenderingType}" />
+						<TextBlock FontSize="11" HorizontalAlignment="Center" FontWeight="Bold" Text="{Binding TargetPlatform}" />
 						<TextBlock FontSize="9" HorizontalAlignment="Center" Opacity="0.8" Text="{Binding RepositoryPath}" />
 					</StackPanel>
 
