@@ -21,6 +21,7 @@ internal partial class MultilineInvisibleTextBoxView : UITextView, IInvisibleTex
 		}
 
 		_textBoxViewExtension = new WeakReference<InvisibleTextBoxViewExtension>(textBoxView);
+		Alpha = 0;
 
 		Initialize();
 	}

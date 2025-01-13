@@ -23,6 +23,7 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 {
 	private readonly WeakReference<InvisibleTextBoxViewExtension> _textBoxViewExtension;
 	private SinglelineInvisibleTextBoxDelegate? _delegate;
+	private bool _settingTextFromManaged;
 
 	public SinglelineInvisibleTextBoxView(InvisibleTextBoxViewExtension textBoxView)
 	{
@@ -32,6 +33,7 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 		}
 
 		_textBoxViewExtension = new WeakReference<InvisibleTextBoxViewExtension>(textBoxView);
+		Alpha = 0;
 
 		Initialize();
 	}
@@ -95,13 +97,29 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 
 	private void OnTextChanged()
 	{
+		if (_settingTextFromManaged)
+		{
+			return;
+		}
+
 		if (_textBoxViewExtension?.GetTarget() is { } textBoxView)
 		{
 			textBoxView.ProcessNativeTextInput(Text);
 		}
 	}
 
-	public void SetTextNative(string text) => Text = text;
+	public void SetTextNative(string text)
+	{
+		try
+		{
+			_settingTextFromManaged = true;
+			Text = text;
+		}
+		finally
+		{
+			_settingTextFromManaged = false;
+		}
+	}
 
 	private void StartEditing()
 	{
