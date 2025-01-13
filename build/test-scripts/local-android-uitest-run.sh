@@ -25,7 +25,7 @@ mkdir -p $BUILD_ARTIFACTSTAGINGDIRECTORY
 # popd
 
 mkdir -p $BUILD_SOURCESDIRECTORY/build/$SAMPLEAPP_ARTIFACT_NAME/android
-cp -f $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.netcoremobile/bin/Release/net7.0-android/uno.platform.unosampleapp-Signed.apk $BUILD_SOURCESDIRECTORY/build/$SAMPLEAPP_ARTIFACT_NAME/android/uno.platform.unosampleapp-Signed.apk
+cp -f $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.netcoremobile/bin/Release/net7.0-android/uno.platform.samplesapp.native-Signed.apk $BUILD_SOURCESDIRECTORY/build/$SAMPLEAPP_ARTIFACT_NAME/android/uno.platform.samplesapp.native-Signed.apk
 
 rm -fR ~/.android/avd/xamarin_android_emulator.avd
 
