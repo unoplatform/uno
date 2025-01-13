@@ -72,6 +72,8 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 		ApiExtensibility.Register<XamlRoot>(typeof(Uno.Graphics.INativeOpenGLWrapper), xamlRoot => new X11NativeOpenGLWrapper(xamlRoot));
 
 		ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), xamlRoot => LinuxSystemThemeHelper.Instance);
+
+		ApiExtensibility.Register<CoreWebView2>(typeof(INativeWebViewProvider), o => new X11NativeWebViewProvider(o));
 	}
 
 	public X11ApplicationHost(Func<Application> appBuilder, int renderFrameRate = 60)

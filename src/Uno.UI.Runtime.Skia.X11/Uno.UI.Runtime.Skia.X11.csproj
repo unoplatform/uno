@@ -32,6 +32,7 @@
 		<PackageReference Include="HarfBuzzSharp.NativeAssets.Linux" />
 		<PackageReference Include="SkiaSharp" />
 		<PackageReference Include="LibVLCSharp" Version="3.7.0" />
+		<PackageReference Include="SharpWebview" Version="0.10.0" />
 	</ItemGroup>
 
 	<ItemGroup>
