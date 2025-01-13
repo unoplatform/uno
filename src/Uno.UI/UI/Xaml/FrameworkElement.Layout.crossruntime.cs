@@ -283,7 +283,7 @@ namespace Microsoft.UI.Xaml
 			//if (!bInLayoutTransition)
 			{
 				// Templates should be applied here.
-				InvokeApplyTemplate(out var addedVisual);
+				InvokeApplyTemplate(out _);
 
 				// TODO: BEGIN Uno specific
 				if (m_requiresResourcesUpdate && this is Control thisAsControl)
