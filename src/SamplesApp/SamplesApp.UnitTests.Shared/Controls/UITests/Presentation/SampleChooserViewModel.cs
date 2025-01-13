@@ -36,6 +36,7 @@ using System.Reflection.Metadata;
 using UITests.Shared.Helpers;
 using Uno.UI.Samples.UITests.Helpers;
 using System.Runtime.CompilerServices;
+using System.ComponentModel.DataAnnotations;
 
 namespace SampleControl.Presentation
 {
@@ -1250,7 +1251,14 @@ namespace SampleControl.Presentation
 
 		private static string GetRepositoryPath([CallerFilePath] string filePath = null)
 		{
-			var srcSamplesApp = $"{Path.DirectorySeparatorChar}src{Path.DirectorySeparatorChar}SamplesApp";
+			// We could be building WSL app on Windows
+			// In which case Path.DirectorySeparatorChar is '/' but filePath is using '\'
+			var separator = Path.DirectorySeparatorChar;
+			if (filePath.IndexOf(separator) == -1)
+			{
+				separator = separator == '/' ? '\\' : '/';
+			}
+			var srcSamplesApp = $"{separator}src{separator}SamplesApp";
 			var repositoryPath = filePath;
 			if (repositoryPath.IndexOf(srcSamplesApp) is int index && index > 0)
 			{

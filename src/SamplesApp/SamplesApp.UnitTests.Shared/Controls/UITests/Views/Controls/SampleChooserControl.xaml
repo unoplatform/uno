@@ -295,7 +295,7 @@
 							HorizontalAlignment="Center"
 							Text="Uno Samples" />
 						<TextBlock FontSize="11" HorizontalAlignment="Center" FontWeight="Bold" Text="{Binding TargetPlatform}" />
-						<TextBlock FontSize="9" HorizontalAlignment="Center" Opacity="0.8" Text="{Binding RepositoryPath}" />
+						<TextBlock FontSize="9" HorizontalAlignment="Center" Opacity="0.8" Text="{Binding RepositoryPath}" TextTrimming="CharacterEllipsis" />
 					</StackPanel>
 
 					<Button Style="{StaticResource IconButtonStyle}"
