@@ -95,7 +95,7 @@ public partial class ProximitySensor
 
 	internal void OnReadingChanged(ProximitySensorReading reading)
 	{
-		_readingChangedWrapper.Event?.Invoke(this, new(reading));
+		_readingChangedWrapper.Invoke(this, new(reading));
 	}
 
 	private sealed class ProximitySensorListener : Java.Lang.Object, ISensorEventListener, IDisposable
