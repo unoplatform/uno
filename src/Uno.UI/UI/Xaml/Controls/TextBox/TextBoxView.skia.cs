@@ -157,6 +157,8 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		internal void UpdateTheme() => _textBoxExtension?.UpdateProperties();
+
 		internal void UpdateFont()
 		{
 			if (TextBox is { } textBox)

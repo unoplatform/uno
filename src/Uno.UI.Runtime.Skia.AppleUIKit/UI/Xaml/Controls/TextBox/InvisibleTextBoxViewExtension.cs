@@ -1,9 +1,7 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using UIKit;
-using Uno.UI.Extensions;
 using Uno.UI.Runtime.Skia.AppleUIKit;
 using Uno.UI.Xaml.Controls.Extensions;
 using Uno.WinUI.Runtime.Skia.AppleUIKit.Controls;
@@ -41,6 +39,7 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 		}
 
 		EnsureTextBoxView(textBox);
+		SetSoftKeyboardTheme();
 		AddViewToTextInputLayer(textBox.XamlRoot);
 
 		_textBoxView.BecomeFirstResponder();
@@ -140,7 +139,31 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 		}
 	}
 
-	public void UpdateProperties() { }
+	public void UpdateProperties()
+	{
+		SetSoftKeyboardTheme();
+	}
+
+	private void SetSoftKeyboardTheme()
+	{
+		if (_owner.TextBox is not { } textBox || _textBoxView is null)
+		{
+			return;
+		}
+
+		if (textBox.ActualTheme == ElementTheme.Default)
+		{
+			_textBoxView.KeyboardAppearance = UIKeyboardAppearance.Default;
+		}
+		else if (textBox.ActualTheme == ElementTheme.Light)
+		{
+			_textBoxView.KeyboardAppearance = UIKeyboardAppearance.Light;
+		}
+		else if (textBox.ActualTheme == ElementTheme.Dark)
+		{
+			_textBoxView.KeyboardAppearance = UIKeyboardAppearance.Dark;
+		}
+	}
 
 	[MemberNotNull(nameof(_textBoxView))]
 	private void EnsureTextBoxView(TextBox textBox)
