@@ -106,15 +106,32 @@ void uno_mediaplayer_set_rate(UNOMediaPlayer *media, float rate)
     }
 }
 
-void uno_mediaplayer_set_source(UNOMediaPlayer *media, const char *uri)
+void uno_mediaplayer_set_source(UNOMediaPlayer *media, NSURL *url)
 {
-    NSString *s = [NSString stringWithUTF8String:uri];
-    NSURL *url = [NSURL URLWithString:s];
     AVPlayerItem* item = [AVPlayerItem playerItemWithURL:url];
 #if DEBUG_MEDIAPLAYER
     NSLog(@"uno_mediaplayer_set_source %p item %p url %@", media, item, url);
 #endif
     [media.player replaceCurrentItemWithPlayerItem: item];
+}
+
+void uno_mediaplayer_set_source_path(UNOMediaPlayer *media, const char *path)
+{
+    NSString *s = [NSString stringWithUTF8String:path];
+    NSURL *url = [NSURL fileURLWithPath:s];
+    if (uno_application_is_bundled()) {
+        // convert [BundlePath] and [ResourcePath] to bundle specific paths
+        s = [s stringByReplacingOccurrencesOfString:@"[BundlePath]" withString:NSBundle.mainBundle.bundlePath];
+        s = [s stringByReplacingOccurrencesOfString:@"[ResourcePath]" withString:NSBundle.mainBundle.resourcePath];
+    }
+    uno_mediaplayer_set_source(media, url);
+}
+
+void uno_mediaplayer_set_source_uri(UNOMediaPlayer *media, const char *uri)
+{
+    NSString *s = [NSString stringWithUTF8String:uri];
+    NSURL *url = [NSURL URLWithString:s];
+    uno_mediaplayer_set_source(media, url);
 }
 
 void uno_mediaplayer_set_stretch(UNOMediaPlayer *media, Stretch stretch)

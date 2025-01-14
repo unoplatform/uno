@@ -59,7 +59,8 @@ double uno_mediaplayer_get_current_time(UNOMediaPlayer *media);
 void uno_mediaplayer_set_current_time(UNOMediaPlayer *media, double seconds);
 float uno_mediaplayer_get_rate(UNOMediaPlayer *media);
 void uno_mediaplayer_set_rate(UNOMediaPlayer *media, float rate);
-void uno_mediaplayer_set_source(UNOMediaPlayer *media, const char *uri);
+void uno_mediaplayer_set_source_path(UNOMediaPlayer *media, const char *path);
+void uno_mediaplayer_set_source_uri(UNOMediaPlayer *media, const char *uri);
 void uno_mediaplayer_set_stretch(UNOMediaPlayer *media, Stretch stretch);
 void uno_mediaplayer_set_volume(UNOMediaPlayer *media, float volume);
 

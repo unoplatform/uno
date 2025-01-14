@@ -451,7 +451,10 @@ internal static partial class NativeUno
 	internal static partial void uno_mediaplayer_set_rate(nint media, float rate);
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
-	internal static partial void uno_mediaplayer_set_source(nint media, string uri);
+	internal static partial void uno_mediaplayer_set_source_path(nint media, string path);
+
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial void uno_mediaplayer_set_source_uri(nint media, string uri);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_mediaplayer_set_stretch(nint media, Stretch stretch);

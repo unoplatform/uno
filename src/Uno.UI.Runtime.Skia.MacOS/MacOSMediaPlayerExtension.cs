@@ -187,7 +187,6 @@ internal class MacOSMediaPlayerExtension : IMediaPlayerExtension
 				return;
 			}
 
-			string source;
 			var uri = _uri;
 			if (!uri.IsAbsoluteUri || uri.Scheme.Length == 0)
 			{
@@ -203,20 +202,20 @@ internal class MacOSMediaPlayerExtension : IMediaPlayerExtension
 					filePath = host + "/" + filePath.TrimStart('/');
 				}
 
-				// TODO location differs for app bundles
-				source = Path.Combine(Windows.ApplicationModel.Package.Current.InstalledPath, filePath.TrimStart('/'));
+				// location differs for app bundles
+				var baseUrl = NativeUno.uno_application_is_bundled() ? "[ResourcePath]" : Windows.ApplicationModel.Package.Current.InstalledPath;
+				NativeUno.uno_mediaplayer_set_source_path(_nativePlayer, Path.Combine(baseUrl, filePath.TrimStart('/')));
 			}
 			else if (uri.IsAppData())
 			{
-				source = AppDataUriEvaluator.ToPath(uri);
+				NativeUno.uno_mediaplayer_set_source_path(_nativePlayer, AppDataUriEvaluator.ToPath(uri));
 			}
 			else
 			{
-				source = _uri.ToString();
+				NativeUno.uno_mediaplayer_set_source_uri(_nativePlayer, _uri.ToString());
 			}
 
 			_player.PlaybackSession.PlaybackState = MediaPlaybackState.Opening;
-			NativeUno.uno_mediaplayer_set_source(_nativePlayer, source);
 		}
 	}
 
