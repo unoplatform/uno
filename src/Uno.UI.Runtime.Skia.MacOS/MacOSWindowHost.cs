@@ -294,6 +294,8 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			if ((key == VirtualKey.Escape) && NativeUno.uno_window_is_full_screen(handle))
 			{
 				window?._winUIWindow?.AppWindow?.SetPresenter(AppWindowPresenterKind.Default);
+				// also notify media player(s) that could be running in (the soon to be not so) full screen
+				MacOSMediaPlayerPresenterExtension.OnEscapingFullScreen();
 			}
 
 			var keyDown = window?.KeyDown;

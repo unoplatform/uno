@@ -57,8 +57,12 @@ internal class MacOSMediaPlayerPresenterExtension : IMediaPlayerPresenterExtensi
 			}
 			_playerExtension = extension;
 			// set native drawing destination
+			// FIXME: on a fullscreen view `SetOwner` is called later ?!? which means we can't get the `nativeWindow` and move the view :(
 			var nativeWindow = (_presenter.XamlRoot?.HostWindow?.NativeWindow as MacOSWindowNative);
-			NativeUno.uno_mediaplayer_set_view(_playerExtension._nativePlayer, _nativeView, nativeWindow is null ? 0 : nativeWindow.Handle);
+			if (nativeWindow is not null)
+			{
+				NativeUno.uno_mediaplayer_set_view(_playerExtension._nativePlayer, _nativeView, nativeWindow.Handle);
+			}
 		}
 	}
 
@@ -70,9 +74,32 @@ internal class MacOSMediaPlayerPresenterExtension : IMediaPlayerPresenterExtensi
 		}
 	}
 
-	public void RequestFullScreen() => NotImplemented();
+	// multiple window could be fullscreen on different screens
+	static HashSet<MediaPlayerPresenter> fullscreen = new();
 
-	public void ExitFullScreen() => NotImplemented();
+	public void RequestFullScreen()
+	{
+		fullscreen.Add(_presenter);
+	}
+
+	public void ExitFullScreen()
+	{
+		fullscreen.Remove(_presenter);
+	}
+
+	// called when `Esc` is used to get out of fullscreen mode
+	internal static void OnEscapingFullScreen()
+	{
+		foreach (var presenter in fullscreen)
+		{
+			presenter.IsFullWindow = false;
+			if (presenter.GetLayoutOwner() is MediaPlayerElement mpe)
+			{
+				mpe.IsFullWindow = false;
+			}
+		}
+		fullscreen.Clear();
+	}
 
 	public void RequestCompactOverlay() => NotImplemented();
 

@@ -186,7 +186,7 @@ namespace Microsoft.UI.Xaml.Controls
 			});
 		}
 
-		private FrameworkElement GetLayoutOwner()
+		internal FrameworkElement GetLayoutOwner()
 		{
 			if (wrOwner?.TryGetTarget(out var owner) == true && owner is not null && !IsFullWindow)
 			{
