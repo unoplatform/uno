@@ -6,6 +6,14 @@ uid: Uno.HotDesign.Overview
 
 > [!IMPORTANT]
 > **Hot Design™** is currently in beta. Sign up to the [wait list](https://platform.uno/waitlist/) to get early access and be the first to try it out!
+>
+> [!IMPORTANT]
+> Currently, **Hot Design** is not supported with C# Markup at this time and is only available with XAML.
+>
+> [!IMPORTANT]
+> At the current stage of the **Hot Design™** beta, **only the Desktop platform is supported**. Other platforms are undergoing stabilization for Hot Design support and will be available in future updates.
+>
+> For now, you can use the **Desktop** platform to create your UI with the runtime visual designer. Once you’re satisfied with your design, you can test the app on other platforms by launching it as you would normally.
 
 Welcome to **Hot Design**, a next-generation runtime visual designer for cross-platform .NET applications!
 
@@ -49,8 +57,8 @@ By simplifying UI development and accelerating your workflow, **Hot Design** hel
 
 ## Next Steps
 
-- **[Get Started Guide](xref:Uno.HotDesign.GetStarted.Guide)**  
+- **[Get Started Guide](xref:Uno.HotDesign.GetStarted.Guide)**
   Getting started with setting up **Hot Design** and exploring the key areas and features of the visual designer it offers.
 
-- **[Counter App Tutorial](xref:Uno.HotDesign.GetStarted.CounterTutorial)**  
+- **[Counter App Tutorial](xref:Uno.HotDesign.GetStarted.CounterTutorial)**
   A hands-on walkthrough for building the [Counter App](xref:Uno.Workshop.Counter) using **Hot Design**, showcasing its features and workflow in action.

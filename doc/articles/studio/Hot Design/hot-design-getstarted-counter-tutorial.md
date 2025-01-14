@@ -18,6 +18,14 @@ This tutorial will guide you through using Hot Design to create a simple counter
 > [!NOTE]
 > This tutorial is based on the [XAML + MVUX variant](xref:Uno.Workshop.Counter.XAML.MVUX) of the Counter app tutorial. It demonstrates how to create a simple cross-platform app using Uno Platform. If you prefer to use MVVM you can still complete this **Hot Design** tutorial by switching the MVUX code, with the MVVM code from the [XAML + MVVM variant](xref:Uno.Workshop.Counter.XAML.MVVM). Explore other tutorial variants [here](xref:Uno.Workshop.Counter).
 >
+> Additionally, as a general note, Hot Design can be used without selecting a specific architectural pattern, such as MVVM or MVUX, making it a versatile tool for various projects. For this particular tutorial, however, we will focus on using MVUX as an example.
+>
+> [!IMPORTANT]
+> **Hot Design™** is currently in beta. Sign up to the [wait list](https://platform.uno/waitlist/) to get early access and be the first to try it out!
+>
+> [!IMPORTANT]
+> Currently, **Hot Design** is not supported with C# Markup at this time and is only available with XAML.
+>
 > [!IMPORTANT]
 > At the current stage of the **Hot Design™** beta, **only the Desktop platform is supported**. Other platforms are undergoing stabilization for Hot Design support and will be available in future updates.
 >
