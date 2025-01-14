@@ -14,6 +14,7 @@ namespace Microsoft.UI.Xaml.Media
 			Source = familyName;
 			Init(familyName);
 
+			// A workaround before font fallback is supported. Issue: https://github.com/unoplatform/uno/issues/10148 
 			if (familyName.Equals("Segoe Fluent Icons,Segoe MDL2 Assets", StringComparison.OrdinalIgnoreCase))
 			{
 				Source = "Segoe MDL2 Assets";
