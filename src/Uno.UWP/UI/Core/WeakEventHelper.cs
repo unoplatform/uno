@@ -71,6 +71,17 @@ namespace Windows.UI.Core
 				_provider = provider ?? new DefaultTrimProvider();
 			}
 
+			public bool IsEmpty
+			{
+				get
+				{
+					lock (_lock)
+					{
+						return _handlers.Count == 0;
+					}
+				}
+			}
+
 			private bool Trim()
 			{
 				lock (_lock)
