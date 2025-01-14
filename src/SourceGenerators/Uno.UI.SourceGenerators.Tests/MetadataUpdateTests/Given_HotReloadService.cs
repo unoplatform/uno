@@ -220,7 +220,7 @@ public class Given_HotReloadService
 			results.Add(await SUT.Update());
 			previousStep = currentStep;
 		}
-		
+
 		return results.ToArray();
 	}
 
