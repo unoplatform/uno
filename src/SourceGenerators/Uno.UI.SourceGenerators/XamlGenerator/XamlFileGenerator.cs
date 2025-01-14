@@ -903,6 +903,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			using (disposable)
 			{
+				if (_isHotReloadEnabled || CurrentScope.Subclasses is { Count: > 0 })
+				{
+					// If _isHotReloadEnabled we generate it anyway so we can remove classes without causing rude edit.
+					writer.AppendLineIndented("[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]");
+					writer.AppendLineIndented($"{(isTopLevel ? "internal" : "private")} partial class SubClasses;");
+				}
+
 				foreach (var kvp in CurrentScope.Subclasses)
 				{
 					var className = kvp.Key;
@@ -911,13 +918,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					using (TrySetDefaultBindMode(contentOwner.Owner, kvp.Value.DefaultBindMode))
 					{
 						using (Scope(ns, className))
+						using (writer.BlockInvariant("partial class SubClasses"))
 						{
-							var classAccessibility = isTopLevel ? "" : "private";
-
 							writer.AppendLineIndented("[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
 							writer.AppendLineIndented("[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage(\"Trimming\", \"IL2026\")]");
 							writer.AppendLineIndented("[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage(\"Trimming\", \"IL2111\")]");
-							using (writer.BlockInvariant($"{classAccessibility} class {className}"))
+							using (writer.BlockInvariant($"public class {className}"))
 							{
 								BuildBaseUri(writer);
 
@@ -6604,7 +6610,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			RegisterChildSubclass(subclassName, contentOwner, returnType);
 
-			var activator = $"new {namespacePrefix}{subclassName}()";
+			var activator = $"new {namespacePrefix}SubClasses.{subclassName}()";
 
 #if USE_NEW_TP_CODEGEN
 			writer.AppendLineIndented($"{activator}.Build(__owner, __settings)");
