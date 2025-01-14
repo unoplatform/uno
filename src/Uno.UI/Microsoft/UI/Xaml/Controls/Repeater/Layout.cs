@@ -4,11 +4,40 @@
 using System;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
+using Windows.UI.Core;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 {
 	public partial class Layout : DependencyObject
 	{
+		// Begin Uno specific:
+		//
+		// We rely on the GC to manage registrations
+		// but in the case of layouts, for ItemView for instance, actual instances
+		// may be placed directly in dictionaries, such as:
+		// https://github.com/unoplatform/uno/blob/c992ed058d1479cce8e6bca58acbf82cc54ce938/src/Uno.UI/Microsoft/UI/Xaml/Controls/ItemsView/ItemsView.xaml#L12-L16
+		// To avoid memory leaks, it's best to use the two register methods.
+
+		private WeakEventHelper.WeakEventCollection _measureInvalidatedHandlers;
+		private WeakEventHelper.WeakEventCollection _arrangeInvalidatedHandlers;
+
+		internal IDisposable RegisterMeasureInvalidated(TypedEventHandler<Layout, object> handler)
+			=> WeakEventHelper.RegisterEvent(
+				_measureInvalidatedHandlers ??= new(),
+				handler,
+				(h, s, e) =>
+					(h as TypedEventHandler<Layout, object>)?.Invoke((Layout)s, e)
+			);
+		internal IDisposable RegisterArrangeInvalidated(TypedEventHandler<Layout, object> handler)
+			=> WeakEventHelper.RegisterEvent(
+				_arrangeInvalidatedHandlers ??= new(),
+				handler,
+				(h, s, e) =>
+					(h as TypedEventHandler<Layout, object>)?.Invoke((Layout)s, e)
+			);
+
+		// End Uno specific: 
+
 		public event TypedEventHandler<Layout, object> MeasureInvalidated;
 		public event TypedEventHandler<Layout, object> ArrangeInvalidated;
 
@@ -103,9 +132,15 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 		}
 
 		protected void InvalidateMeasure()
-			=> MeasureInvalidated?.Invoke(this, null);
+		{
+			_measureInvalidatedHandlers?.Invoke(this, null);
+			MeasureInvalidated?.Invoke(this, null);
+		}
 
 		protected void InvalidateArrange()
-			=> ArrangeInvalidated?.Invoke(this, null);
+		{
+			_arrangeInvalidatedHandlers?.Invoke(this, null);
+			ArrangeInvalidated?.Invoke(this, null);
+		}
 	}
 }

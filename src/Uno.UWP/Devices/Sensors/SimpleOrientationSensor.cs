@@ -1,12 +1,13 @@
 using System;
 using Windows.UI.Core;
 using Windows.Foundation;
+using Uno.Helpers;
 
 namespace Windows.Devices.Sensors
 {
 	public partial class SimpleOrientationSensor
 	{
-		private TypedEventHandler<SimpleOrientationSensor, SimpleOrientationSensorOrientationChangedEventArgs> _orientationChanged;
+		private readonly StartStopTypedEventWrapper<SimpleOrientationSensor, SimpleOrientationSensorOrientationChangedEventArgs> _orientationChangedWrapper;
 
 		#region Static
 		private static SimpleOrientationSensor _instance;
@@ -54,6 +55,11 @@ namespace Windows.Devices.Sensors
 		/// </summary>
 		private SimpleOrientationSensor()
 		{
+			_orientationChangedWrapper = new StartStopTypedEventWrapper<SimpleOrientationSensor, SimpleOrientationSensorOrientationChangedEventArgs>(
+				() => StartListeningOrientationChanged(),
+				() => StopListeningOrientationChanged(),
+				_syncLock);
+
 			Initialize();
 		}
 
@@ -86,29 +92,8 @@ namespace Windows.Devices.Sensors
 #pragma warning disable CS0067 // The event 'SimpleOrientationSensor.OrientationChanged' is never used - Used only in Android and iOS.
 		public event TypedEventHandler<SimpleOrientationSensor, SimpleOrientationSensorOrientationChangedEventArgs> OrientationChanged
 		{
-			add
-			{
-				lock (_syncLock)
-				{
-					var isFirstSubscriber = _orientationChanged is null;
-					_orientationChanged += value;
-					if (isFirstSubscriber)
-					{
-						StartListeningOrientationChanged();
-					}
-				}
-			}
-			remove
-			{
-				lock (_syncLock)
-				{
-					_orientationChanged -= value;
-					if (_orientationChanged is null)
-					{
-						StopListeningOrientationChanged();
-					}
-				}
-			}
+			add => _orientationChangedWrapper.AddHandler(value);
+			remove => _orientationChangedWrapper.RemoveHandler(value);
 		}
 #pragma warning restore CS0067 // The event 'SimpleOrientationSensor.OrientationChanged' is never used
 
@@ -124,7 +109,7 @@ namespace Windows.Devices.Sensors
 					Orientation = orientation,
 					Timestamp = DateTimeOffset.Now,
 				};
-				_orientationChanged?.Invoke(this, args);
+				_orientationChangedWrapper.Invoke(this, args);
 			}
 		}
 

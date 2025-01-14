@@ -1,6 +1,7 @@
 #if __IOS__ || __ANDROID__
 using System;
 using System.Threading.Tasks;
+using Uno.Helpers;
 using Windows.Foundation;
 
 namespace Windows.Devices.Sensors
@@ -11,18 +12,22 @@ namespace Windows.Devices.Sensors
 	/// </summary>
 	public partial class Pedometer
 	{
-		private readonly static object _syncLock = new object();
+		private readonly static object _syncLock = new();
 
 		private static bool _initializationAttempted;
 		private static Task<Pedometer> _instanceTask;
 
-		private TypedEventHandler<Pedometer, PedometerReadingChangedEventArgs> _readingChanged;
+		private readonly StartStopTypedEventWrapper<Pedometer, PedometerReadingChangedEventArgs> _readingChangedWrapper;
 
 		/// <summary>
 		/// Hides the public parameterless constructor
 		/// </summary>
 		private Pedometer()
 		{
+			_readingChangedWrapper = new StartStopTypedEventWrapper<Pedometer, PedometerReadingChangedEventArgs>(
+				() => StartReading(),
+				() => StopReading(),
+				_syncLock);
 		}
 
 		public static IAsyncOperation<Pedometer> GetDefaultAsync() => GetDefaultImplAsync().AsAsyncOperation();
@@ -46,34 +51,13 @@ namespace Windows.Devices.Sensors
 
 		public event TypedEventHandler<Pedometer, PedometerReadingChangedEventArgs> ReadingChanged
 		{
-			add
-			{
-				lock (_syncLock)
-				{
-					var isFirstSubscriber = _readingChanged == null;
-					_readingChanged += value;
-					if (isFirstSubscriber)
-					{
-						StartReading();
-					}
-				}
-			}
-			remove
-			{
-				lock (_syncLock)
-				{
-					_readingChanged -= value;
-					if (_readingChanged == null)
-					{
-						StopReading();
-					}
-				}
-			}
+			add => _readingChangedWrapper.AddHandler(value);
+			remove => _readingChangedWrapper.RemoveHandler(value);
 		}
 
 		private void OnReadingChanged(PedometerReading reading)
 		{
-			_readingChanged?.Invoke(this, new PedometerReadingChangedEventArgs(reading));
+			_readingChangedWrapper.Invoke(this, new PedometerReadingChangedEventArgs(reading));
 		}
 	}
 }
