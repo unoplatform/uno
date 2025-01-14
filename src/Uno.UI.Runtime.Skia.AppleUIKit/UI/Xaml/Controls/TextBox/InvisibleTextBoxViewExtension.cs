@@ -39,6 +39,7 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 		}
 
 		EnsureTextBoxView(textBox);
+		SetSoftKeyboardTheme();
 		AddViewToTextInputLayer(textBox.XamlRoot);
 
 		_textBoxView.BecomeFirstResponder();
@@ -130,7 +131,31 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 		}
 	}
 
-	public void UpdateProperties() { }
+	public void UpdateProperties()
+	{
+		SetSoftKeyboardTheme();
+	}
+
+	private void SetSoftKeyboardTheme()
+	{
+		if (_owner.TextBox is not { } textBox || _textBoxView is null)
+		{
+			return;
+		}
+
+		if (textBox.ActualTheme == ElementTheme.Default)
+		{
+			_textBoxView.KeyboardAppearance = UIKeyboardAppearance.Default;
+		}
+		else if (textBox.ActualTheme == ElementTheme.Light)
+		{
+			_textBoxView.KeyboardAppearance = UIKeyboardAppearance.Light;
+		}
+		else if (textBox.ActualTheme == ElementTheme.Dark)
+		{
+			_textBoxView.KeyboardAppearance = UIKeyboardAppearance.Dark;
+		}
+	}
 
 	[MemberNotNull(nameof(_textBoxView))]
 	private void EnsureTextBoxView(TextBox textBox)
