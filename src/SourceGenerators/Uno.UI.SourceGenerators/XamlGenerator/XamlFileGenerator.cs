@@ -4671,7 +4671,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var thatCurrentResourceOwnerName = resourceOwner switch
 			{
 				not null => resourceOwner,
-				null when CurrentResourceOwner is { } owner => "__that." + owner,
+				null when CurrentResourceOwner is { } owner => owner,
 				_ => "this"
 			};
 

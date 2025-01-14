@@ -75,77 +75,122 @@ internal class HotReloadWorkspace
 		}
 	}
 
-	public void SetSourceFile(string project, string fileName, string content)
+	public void UpdateSourceFile(string projectName, string fileName, string? content)
 	{
-		if (_sourceFiles.TryGetValue(project, out var files))
+		var basePath = Path.Combine(_baseWorkFolder, projectName);
+		var filePath = Path.Combine(basePath, fileName);
+
+		if (_currentSolution is null)
 		{
-			files[fileName] = content;
+			if (content is null)
+			{
+				return;
+			}
+
+			Directory.CreateDirectory(basePath);
+			for (var i = 2; i >= 0; i--)
+			{
+				try
+				{
+					File.WriteAllText(filePath, content, Encoding.UTF8);
+					break;
+				}
+				catch (IOException) when (i is not 0)
+				{
+					Task.Delay(100).Wait();
+				}
+			}
+
+			if (_sourceFiles.TryGetValue(projectName, out var files))
+			{
+				files[fileName] = content;
+			}
+			else
+			{
+				_sourceFiles[projectName] = new()
+				{
+					[fileName] = content
+				};
+			}
 		}
 		else
 		{
-			_sourceFiles[project] = new()
+			var project = _currentSolution.Projects.FirstOrDefault(p => p.Name == projectName);
+			if (project is null)
 			{
-				[fileName] = content
+				throw new InvalidOperationException($"Project {projectName} not found in the current solution");
+			}
+
+			var doc = project.Documents.FirstOrDefault(d => d.FilePath == filePath);
+			_currentSolution = (doc, content) switch
+			{
+				(null, not null) => _currentSolution.AddDocument(
+					DocumentId.CreateNewId(project.Id),
+					fileName,
+					CSharpSyntaxTree.ParseText(content, encoding: Encoding.UTF8).GetText(),
+					filePath: Path.Combine(_baseWorkFolder, projectName, fileName)
+				),
+
+				(not null, not null) => _currentSolution.WithDocumentText(doc.Id, CSharpSyntaxTree.ParseText(content, encoding: Encoding.UTF8).GetText()),
+
+				(not null, null) => _currentSolution.RemoveDocument(doc.Id),
+
+				_ => _currentSolution
 			};
-		}
-		var basePath = Path.Combine(_baseWorkFolder, project);
-		var filePath = Path.Combine(basePath, fileName);
-		Directory.CreateDirectory(basePath);
-		for (var i = 2; i >= 0; i--)
-		{
-			try
-			{
-				File.WriteAllText(filePath, content, Encoding.UTF8);
-				break;
-			}
-			catch (IOException) when (i is not 0)
-			{
-				Task.Delay(100).Wait();
-			}
-		}
-
-		if (_currentSolution is not null)
-		{
-			var documents = _currentSolution
-				.Projects
-				.SelectMany(p => p.Documents)
-				.First(d => d.FilePath == filePath);
-
-			_currentSolution = _currentSolution.WithDocumentText(
-				documents.Id,
-				CSharpSyntaxTree.ParseText(content, encoding: Encoding.UTF8).GetText());
 		}
 	}
 
-	public void SetAdditionalFile(string project, string fileName, string content)
+	public void UpdateAdditionalFile(string projectName, string fileName, string? content)
 	{
-		if (_additionalFiles.TryGetValue(project, out var files))
+		var basePath = Path.Combine(_baseWorkFolder, projectName);
+		var filePath = Path.Combine(basePath, fileName);
+
+		if (_currentSolution is null)
 		{
-			files[fileName] = content;
+			if (content is null)
+			{
+				return;
+			}
+
+			Directory.CreateDirectory(basePath);
+			File.WriteAllText(filePath, content, Encoding.UTF8);
+
+			if (_additionalFiles.TryGetValue(projectName, out var files))
+			{
+				files[fileName] = content;
+			}
+			else
+			{
+				_additionalFiles[projectName] = new()
+				{
+					[fileName] = content
+				};
+			}
 		}
 		else
 		{
-			_additionalFiles[project] = new()
+			var project = _currentSolution.Projects.FirstOrDefault(p => p.Name == projectName);
+			if (project is null)
 			{
-				[fileName] = content
+				throw new InvalidOperationException($"Project {projectName} not found in the current solution");
+			}
+
+			var doc = project.AdditionalDocuments.FirstOrDefault(d => d.FilePath == filePath);
+			_currentSolution = (doc, content) switch
+			{
+				(null, not null) => _currentSolution.AddAdditionalDocument(
+					DocumentId.CreateNewId(project.Id),
+					fileName,
+					CSharpSyntaxTree.ParseText(content, encoding: Encoding.UTF8).GetText(),
+					filePath: Path.Combine(_baseWorkFolder, projectName, fileName)
+				),
+
+				(not null, not null) => _currentSolution.WithAdditionalDocumentText(doc.Id, CSharpSyntaxTree.ParseText(content, encoding: Encoding.UTF8).GetText()),
+
+				(not null, null) => _currentSolution.RemoveAdditionalDocument(doc.Id),
+
+				_ => _currentSolution
 			};
-		}
-
-		var basePath = Path.Combine(_baseWorkFolder, project);
-		Directory.CreateDirectory(basePath);
-		var filePath = Path.Combine(basePath, fileName);
-		File.WriteAllText(filePath, content, Encoding.UTF8);
-
-		if (_currentSolution is not null)
-		{
-			var documents = _currentSolution
-				.Projects
-				.SelectMany(p => p.AdditionalDocuments)
-				.First(d => d.FilePath == filePath);
-
-			_currentSolution = _currentSolution.WithAdditionalDocumentText(
-				documents.Id,
-				CSharpSyntaxTree.ParseText(content, encoding: Encoding.UTF8).GetText());
 		}
 	}
 
@@ -171,8 +216,7 @@ internal class HotReloadWorkspace
 		var frameworkReferences = BuildFrameworkReferences();
 		var references = BuildUnoReferences().Concat(frameworkReferences);
 
-		var generatorReference = new MyGeneratorReference(
-			ImmutableArray.Create<ISourceGenerator>(new XamlGenerator.XamlCodeGenerator()));
+		var generatorReference = new MyGeneratorReference([new XamlGenerator.XamlCodeGenerator()]);
 
 		FillProjectsFromFiles();
 
@@ -193,7 +237,7 @@ internal class HotReloadWorkspace
 								allowUnsafe: true,
 								nullableContextOptions: NullableContextOptions.Enable,
 								assemblyIdentityComparer: DesktopAssemblyIdentityComparer.Default),
-							analyzerReferences: new[] { generatorReference });
+							analyzerReferences: [generatorReference]);
 
 			projectInfo = projectInfo
 				.WithCompilationOutputInfo(
@@ -401,7 +445,7 @@ internal class HotReloadWorkspace
 		};
 
 		var unoUIBase = Path.Combine(
-			Path.GetDirectoryName(typeof(HotReloadWorkspace).Assembly.Location)!,
+			Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!,
 			"..",
 			"..",
 			"..",
