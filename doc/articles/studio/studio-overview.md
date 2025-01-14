@@ -39,8 +39,8 @@ It includes three key tools, each purpose-built to streamline your workflow:
 
 ## What's the difference between Uno.Sdk and Uno Platform Studio?
 
-**Uno.Sdk** is the core SDK that powers the Uno Platform, enabling you to build cross-platform applications using C# and XAML from a single project. **Uno Platform Studio** is a suite of productivity tools that enhance your development experience, including Hot Design™, Hot Reload, and Design-to-Code.  
+**Uno.Sdk** is the core SDK that powers the Uno Platform, enabling you to build cross-platform applications using C# and XAML from a single project. **Uno Platform Studio** is a suite of productivity tools that enhance your development experience, including Hot Design™, Hot Reload, and Design-to-Code.
 
-As the **Uno Platform Studio** is built on top of **Uno.Sdk**, it's only available to applications that have been created, or updated, to use the **Uno.Sdk**. If you haven't updated your project to use the **Uno.Sdk**, you can do so by following the [migration guide](xref:Uno.Development.MigratingFromPreviousReleases).  
+As the **Uno Platform Studio** is built on top of **Uno.Sdk**, it's only available to applications that have been created, or updated, to use the **Uno.Sdk**. If you haven't updated your project to use the **Uno.Sdk**, you can do so by following the [migration guide](xref:Uno.Development.MigratingFromPreviousReleases).
 
 Start your journey with **Uno Platform Studio** today by **[registering an account](https://platform.uno/my-account/)**, and take your app development productivity to the next level!
