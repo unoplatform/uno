@@ -102,7 +102,7 @@ partial class Window
 		global::Windows.Graphics.Display.DisplayInformation.GetOrCreateForWindowId(AppWindow.Id);
 	}
 
-	internal INativeWindowWrapper NativeWindowWrapper => _windowImplementation.NativeWindowWrapper;
+	internal INativeWindowWrapper? NativeWindowWrapper => _windowImplementation.NativeWindowWrapper;
 
 	internal static Window GetFromAppWindow(AppWindow appWindow)
 	{
