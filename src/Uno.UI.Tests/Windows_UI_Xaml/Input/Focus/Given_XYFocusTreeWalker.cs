@@ -214,6 +214,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.Input.Internal
 			scrollviewer.AddChild(candidate);
 
 			var candidateList = FindElements(root, current, scrollviewerB, true, false);
+			// TODO: This assert is flaky
 			Assert.AreEqual(0, candidateList.Count);
 		}
 

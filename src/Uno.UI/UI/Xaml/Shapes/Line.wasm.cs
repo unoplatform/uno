@@ -2,6 +2,7 @@
 using Uno.Extensions;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Wasm;
+using Uno.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Shapes
 {
@@ -13,12 +14,8 @@ namespace Microsoft.UI.Xaml.Shapes
 
 		protected override Size MeasureOverride(Size availableSize)
 		{
-			_mainSvgElement.SetAttribute(
-				("x1", X1.ToStringInvariant()),
-				("x2", X2.ToStringInvariant()),
-				("y1", Y1.ToStringInvariant()),
-				("y2", Y2.ToStringInvariant())
-			);
+			WindowManagerInterop.SetSvgLineAttributes(_mainSvgElement.HtmlId, X1, X2, Y1, Y2);
+
 			return MeasureAbsoluteShape(availableSize, this);
 		}
 

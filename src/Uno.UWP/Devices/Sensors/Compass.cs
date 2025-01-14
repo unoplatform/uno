@@ -1,4 +1,5 @@
 #if __IOS__ || __ANDROID__ || __WASM__
+using Uno.Helpers;
 using Windows.Foundation;
 
 namespace Windows.Devices.Sensors;
@@ -14,13 +15,17 @@ public partial class Compass
 	private static Compass _instance;
 	private static bool _initializationAttempted;
 
-	private TypedEventHandler<Compass, CompassReadingChangedEventArgs> _readingChanged;
+	private readonly StartStopTypedEventWrapper<Compass, CompassReadingChangedEventArgs> _readingChangedWrapper;
 
 	/// <summary>
 	/// Hides the public parameterless constructor
 	/// </summary>
 	private Compass()
 	{
+		_readingChangedWrapper = new StartStopTypedEventWrapper<Compass, CompassReadingChangedEventArgs>(
+			() => StartReadingChanged(),
+			() => StopReadingChanged(),
+			_syncLock);
 	}
 
 	/// <summary>
@@ -49,34 +54,13 @@ public partial class Compass
 	/// </summary>
 	public event TypedEventHandler<Compass, CompassReadingChangedEventArgs> ReadingChanged
 	{
-		add
-		{
-			lock (_syncLock)
-			{
-				var isFirstSubscriber = _readingChanged == null;
-				_readingChanged += value;
-				if (isFirstSubscriber)
-				{
-					StartReadingChanged();
-				}
-			}
-		}
-		remove
-		{
-			lock (_syncLock)
-			{
-				_readingChanged -= value;
-				if (_readingChanged == null)
-				{
-					StopReadingChanged();
-				}
-			}
-		}
+		add => _readingChangedWrapper.AddHandler(value);
+		remove => _readingChangedWrapper.RemoveHandler(value);
 	}
 
 	private void OnReadingChanged(CompassReading reading)
 	{
-		_readingChanged?.Invoke(this, new CompassReadingChangedEventArgs(reading));
+		_readingChangedWrapper.Invoke(this, new CompassReadingChangedEventArgs(reading));
 	}
 }
 #endif

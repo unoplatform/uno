@@ -499,7 +499,17 @@ public partial class RemoteControlClient : IRemoteControlClient
 
 		foreach (var processor in _processors)
 		{
-			await processor.Value.Initialize();
+			try
+			{
+				await processor.Value.Initialize();
+			}
+			catch (Exception error)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().LogError($"Failed to initialize processor '{processor}'.", error);
+				}
+			}
 		}
 
 		StartKeepAliveTimer();
@@ -526,14 +536,23 @@ public partial class RemoteControlClient : IRemoteControlClient
 						this.Log().Trace($"Received frame [{frame.Scope}/{frame.Name}]");
 					}
 
-					bool skipProcessing = false;
-
+					var skipProcessing = false;
 					foreach (var preProcessor in _preprocessors)
 					{
-						if (await preProcessor.SkipProcessingFrame(frame))
+						try
 						{
-							skipProcessing = true;
-							break;
+							if (await preProcessor.SkipProcessingFrame(frame))
+							{
+								skipProcessing = true;
+								break;
+							}
+						}
+						catch (Exception error)
+						{
+							if (this.Log().IsEnabled(LogLevel.Error))
+							{
+								this.Log().LogError($"Error while **PRE**processing frame [{frame.Scope}/{frame.Name}]", error);
+							}
 						}
 					}
 
@@ -554,9 +573,9 @@ public partial class RemoteControlClient : IRemoteControlClient
 				}
 				else
 				{
-					if (this.Log().IsEnabled(LogLevel.Error))
+					if (this.Log().IsEnabled(LogLevel.Trace))
 					{
-						this.Log().LogError($"Unknown Frame scope {frame.Scope}");
+						this.Log().Trace($"Unknown Frame scope {frame.Scope}");
 					}
 				}
 			}

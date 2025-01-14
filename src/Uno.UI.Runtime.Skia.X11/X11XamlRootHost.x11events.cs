@@ -18,8 +18,6 @@ internal partial class X11XamlRootHost
 	private readonly Action<bool> _visibilityCallback;
 	private readonly Action _configureCallback;
 
-	private int _needsConfigureCallback;
-
 	private X11PointerInputSource? _pointerSource;
 	private X11KeyboardInputSource? _keyboardSource;
 	private X11DragDropExtension? _dragDrop;
@@ -87,7 +85,7 @@ internal partial class X11XamlRootHost
 		{
 			var ret = X11Helper.poll(fds, 1, 1000); // timeout every second to see if the window is closed
 
-			if (_closed.Task.IsCompleted)
+			if (Closed.IsCompleted)
 			{
 				SynchronizedShutDown(x11Window);
 				return;
@@ -197,7 +195,7 @@ internal partial class X11XamlRootHost
 							}
 							break;
 						case XEventName.ConfigureNotify:
-							Interlocked.Exchange(ref _needsConfigureCallback, 1);
+							RaiseConfigureCallback();
 							break;
 						case XEventName.FocusIn:
 							QueueAction(this, () => _focusCallback(true));
@@ -209,7 +207,7 @@ internal partial class X11XamlRootHost
 							QueueAction(this, () => _visibilityCallback(@event.VisibilityEvent.state != /* VisibilityFullyObscured */ 2));
 							break;
 						case XEventName.Expose:
-							QueueAction(this, () => ((IXamlRootHost)this).InvalidateRender());
+							((IXamlRootHost)this).InvalidateRender();
 							break;
 						case XEventName.MotionNotify:
 							_pointerSource?.ProcessMotionNotifyEvent(@event.MotionEvent);
