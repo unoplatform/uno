@@ -11,6 +11,7 @@ using Microsoft.UI.Xaml.Media;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Uno.UI.Helpers;
+using Microsoft.UI.Xaml.Input;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -232,5 +233,7 @@ namespace Microsoft.UI.Xaml.Controls
 				TextBox?.UpdateLayout();
 			}
 		}
+
+		internal void UpdateProperties() => _textBoxExtension?.UpdateProperties();
 	}
 }
