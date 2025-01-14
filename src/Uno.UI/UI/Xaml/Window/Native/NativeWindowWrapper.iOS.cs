@@ -12,10 +12,11 @@ using Windows.Graphics;
 using MUXWindow = Microsoft.UI.Xaml.Window;
 using NativeWindow = Uno.UI.Controls.Window;
 using Microsoft.UI.Xaml;
+using static Microsoft.UI.Xaml.Controls.Primitives.LoopingSelectorItem;
 
 namespace Uno.UI.Xaml.Controls;
 
-internal class NativeWindowWrapper : NativeWindowWrapperBase
+internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapper
 {
 	private NativeWindow _nativeWindow;
 
@@ -32,6 +33,8 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		_mainController.NavigationBarHidden = true;
 
 		ObserveOrientationAndSize();
+
+		SubscribeBackgroundNotifications();
 
 #if __MACCATALYST__
 		_nativeWindow.SetOwner(CoreWindow.GetForCurrentThreadSafe());
@@ -56,8 +59,6 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 	internal RootViewController MainController => _mainController;
 
 	internal void OnNativeVisibilityChanged(bool visible) => IsVisible = visible;
-
-	internal void OnNativeActivated(CoreWindowActivationState state) => ActivationState = state;
 
 	internal void OnNativeClosed() => RaiseClosing(); // TODO: Handle closing cancellation when multiwindow is supported #13847
 
@@ -98,7 +99,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		RaiseNativeSizeChanged();
 	}
 
-	internal Size GetWindowSize()
+	public Size GetWindowSize()
 	{
 		var nativeFrame = NativeWindow?.Frame ?? CGRect.Empty;
 
@@ -140,4 +141,39 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		UIApplication.SharedApplication.StatusBarHidden = true;
 		return Disposable.Create(() => UIApplication.SharedApplication.StatusBarHidden = false);
 	}
+
+	private void SubscribeBackgroundNotifications()
+	{
+		if (UIDevice.CurrentDevice.CheckSystemVersion(13, 0))
+		{
+			NSNotificationCenter.DefaultCenter.AddObserver(UIScene.DidEnterBackgroundNotification, OnEnteredBackground);
+			NSNotificationCenter.DefaultCenter.AddObserver(UIScene.WillEnterForegroundNotification, OnLeavingBackground);
+			NSNotificationCenter.DefaultCenter.AddObserver(UIScene.DidActivateNotification, OnActivated);
+			NSNotificationCenter.DefaultCenter.AddObserver(UIScene.WillDeactivateNotification, OnDeactivated);
+		}
+		else
+		{
+			NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.DidEnterBackgroundNotification, OnEnteredBackground);
+			NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.WillEnterForegroundNotification, OnLeavingBackground);
+			NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.DidBecomeActiveNotification, OnActivated);
+			NSNotificationCenter.DefaultCenter.AddObserver(UIApplication.WillResignActiveNotification, OnDeactivated);
+		}
+	}
+
+	private void OnEnteredBackground(NSNotification notification)
+	{
+		OnNativeVisibilityChanged(false);
+
+		Application.Current.RaiseEnteredBackground(() => Application.Current.RaiseSuspending());
+	}
+
+	private void OnLeavingBackground(NSNotification notification)
+	{
+		Application.Current.RaiseResuming();
+		Application.Current.RaiseLeavingBackground(() => OnNativeVisibilityChanged(true));
+	}
+
+	private void OnActivated(NSNotification notification) => ActivationState = CoreWindowActivationState.CodeActivated;
+
+	private void OnDeactivated(NSNotification notification) => ActivationState = CoreWindowActivationState.Deactivated;
 }
