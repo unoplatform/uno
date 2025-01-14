@@ -65,7 +65,7 @@ public class Given_HotReloadService
 			var path = Path.Combine(scenarioFolder, "Scenario.json");
 
 #if DEBUG && false
-			if (!path.Contains("When_Base_Type_Grid_To_Page"))
+			if (!path.Contains("When_DataTemplate_Root_Remove"))
 			{
 				continue;
 			}

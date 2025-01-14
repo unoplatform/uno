@@ -46,6 +46,8 @@ namespace TestNamespace
 			global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(this, "OriginalSourceLocation", "file:///C:/Project/0/MyDictionary.xaml#L1:2");
 		}
 
+		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
+		private partial class SubClasses;
 	}
 }
 namespace MyProject
@@ -116,4 +118,6 @@ namespace MyProject
 }
 namespace MyProject.__Resources
 {
+	[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
+	internal partial class SubClasses;
 }

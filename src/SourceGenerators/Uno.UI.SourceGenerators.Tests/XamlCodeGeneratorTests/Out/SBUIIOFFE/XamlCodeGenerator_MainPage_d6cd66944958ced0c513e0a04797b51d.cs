@@ -104,6 +104,8 @@ namespace TestRepro
 				__p1.CreationComplete();
 			}
 
+		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
+		private partial class SubClasses;
 		private interface IMainPage_Bindings
 		{
 			void Initialize();
