@@ -13,7 +13,7 @@ NSURL* get_best_location(int32_t suggestedStartLocation)
             path = NSDocumentDirectory;
             break;
         case PickerLocationIdComputerFolder:
-            return [NSURL URLWithString:@"file:///"];
+            return [NSURL fileURLWithPath:@"file:///"];
         case PickerLocationIdDesktop:
             path = NSDesktopDirectory;
             break;
@@ -36,7 +36,7 @@ NSURL* get_best_location(int32_t suggestedStartLocation)
 #if DEBUG
             NSLog(@"get_best_location %d -> no extact match, suggesting Home directory", suggestedStartLocation);
 #endif
-            return [NSURL URLWithString:NSHomeDirectory()];
+            return [NSURL fileURLWithPath:NSHomeDirectory()];
         case PickerLocationIdUnspecified:
 #if DEBUG
             NSLog(@"get_best_location %d -> unspecified", suggestedStartLocation);

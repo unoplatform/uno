@@ -109,7 +109,7 @@ void uno_mediaplayer_set_rate(UNOMediaPlayer *media, float rate)
 void uno_mediaplayer_set_source(UNOMediaPlayer *media, const char *uri)
 {
     NSString *s = [NSString stringWithUTF8String:uri];
-    NSURL *url = [NSURL URLWithString:s];
+    NSURL *url = [NSURL fileURLWithPath:s];
     AVPlayerItem* item = [AVPlayerItem playerItemWithURL:url];
 #if DEBUG_MEDIAPLAYER
     NSLog(@"uno_mediaplayer_set_source %p item %p url %@", media, item, url);
