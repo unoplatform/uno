@@ -8,7 +8,7 @@ using UIKit;
 
 namespace Windows.System
 {
-	internal static class VirtualKeyHelper
+	internal static partial class VirtualKeyHelper
 	{
 		public static VirtualKey FromKeyCode(UIKeyboardHidUsage keyCode)
 			=> keyCode switch
@@ -80,7 +80,7 @@ namespace Windows.System
 				UIKeyboardHidUsage.KeyboardReturnOrEnter => VirtualKey.Enter,
 				UIKeyboardHidUsage.KeyboardTab => VirtualKey.Tab,
 				UIKeyboardHidUsage.KeyboardDeleteForward => VirtualKey.Delete,
-				UIKeyboardHidUsage.KeyboardDeleteOrBackspace => VirtualKey.Delete,
+				UIKeyboardHidUsage.KeyboardDeleteOrBackspace => VirtualKey.Back,
 
 				// Modifiers
 				UIKeyboardHidUsage.KeyboardEscape => VirtualKey.Escape,
@@ -130,6 +130,10 @@ namespace Windows.System
 				UIKeyboardHidUsage.KeyboardRightArrow => VirtualKey.Right,
 				UIKeyboardHidUsage.KeyboardDownArrow => VirtualKey.Down,
 				UIKeyboardHidUsage.KeyboardUpArrow => VirtualKey.Up,
+
+				UIKeyboardHidUsage.KeyboardMute => VolumeMute,
+				UIKeyboardHidUsage.KeyboardVolumeUp => VolumeUp,
+				UIKeyboardHidUsage.KeyboardVolumeDown => VolumeDown,
 
 				_ => VirtualKey.None,
 			};

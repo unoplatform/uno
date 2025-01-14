@@ -6,9 +6,9 @@ namespace Uno.WinUI.Runtime.Skia.AppleUIKit.Controls;
 
 //in iOS, we need to use two different controls to be able to accept return (UITextField vs UITextView)
 //we use this interface to abstract properties that we need to modify in TextBox
-public interface IInvisibleTextBoxView : ITextInput
+internal interface IInvisibleTextBoxView : ITextInput
 {
-	string? Text { get; set; }
+	string? Text { get; }
 
 	bool IsCompatible(TextBox textBox);
 

@@ -11,7 +11,7 @@ namespace Uno.WinUI.Runtime.Skia.AppleUIKit.Controls;
 internal partial class MultilineInvisibleTextBoxView : UITextView, IInvisibleTextBoxView
 {
 	private readonly WeakReference<InvisibleTextBoxViewExtension> _textBoxViewExtension;
-	private MultilineInvisibleTextBoxDelegate? _delegate;
+	private bool _settingTextFromManaged;
 
 	public MultilineInvisibleTextBoxView(InvisibleTextBoxViewExtension textBoxView)
 	{
@@ -21,13 +21,14 @@ internal partial class MultilineInvisibleTextBoxView : UITextView, IInvisibleTex
 		}
 
 		_textBoxViewExtension = new WeakReference<InvisibleTextBoxViewExtension>(textBoxView);
+		Alpha = 0;
 
 		Initialize();
 	}
 
 	private void Initialize()
 	{
-		Delegate = _delegate = new MultilineInvisibleTextBoxDelegate(_textBoxViewExtension);
+		Delegate = new MultilineInvisibleTextBoxDelegate(_textBoxViewExtension);
 		BackgroundColor = UIColor.Clear;
 		TextContainer.LineFragmentPadding = 0;
 
@@ -79,10 +80,26 @@ internal partial class MultilineInvisibleTextBoxView : UITextView, IInvisibleTex
 		}
 	}
 
-	public void SetTextNative(string text) => Text = text;
+	public void SetTextNative(string text)
+	{
+		try
+		{
+			_settingTextFromManaged = true;
+			Text = text;
+		}
+		finally
+		{
+			_settingTextFromManaged = false;
+		}
+	}
 
 	internal void OnTextChanged()
 	{
+		if (_settingTextFromManaged)
+		{
+			return;
+		}
+
 		if (_textBoxViewExtension?.GetTarget() is { } textBoxView)
 		{
 			textBoxView.ProcessNativeTextInput(Text);
@@ -98,17 +115,14 @@ internal partial class MultilineInvisibleTextBoxView : UITextView, IInvisibleTex
 	[Export("selectedTextRange")]
 	public new IntPtr SelectedTextRange
 	{
-		get
-		{
-			return SinglelineInvisibleTextBoxView.IntPtr_objc_msgSendSuper(SuperHandle, Selector.GetHandle("selectedTextRange"));
-		}
+		get => NativeTextSelection.GetSelectedTextRange(SuperHandle);
 		set
 		{
 			var textBoxView = TextBoxViewExtension;
 
 			if (textBoxView != null && SelectedTextRange != value)
 			{
-				SinglelineInvisibleTextBoxView.void_objc_msgSendSuper(SuperHandle, Selector.GetHandle("setSelectedTextRange:"), value);
+				NativeTextSelection.SetSelectedTextRange(SuperHandle, value);
 				textBoxView.Owner.TextBox?.OnSelectionChanged();
 			}
 		}

@@ -1,9 +1,7 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using UIKit;
-using Uno.UI.Extensions;
 using Uno.UI.Runtime.Skia.AppleUIKit;
 using Uno.UI.Xaml.Controls.Extensions;
 using Uno.WinUI.Runtime.Skia.AppleUIKit.Controls;
@@ -86,15 +84,7 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 	{
 		if (_textBoxView is not null)
 		{
-			try
-			{
-				//_textBoxView.SuspendSelectionChange();
-				_textBoxView.Text = text;
-			}
-			finally
-			{
-				//_textBoxView.ResumeSelectionChange();
-			}
+			_textBoxView.SetTextNative(text);
 		}
 	}
 
@@ -184,11 +174,12 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 		if (_textBoxView.Text != text)
 		{
-			_textBoxView.Text = text;
+			_textBoxView.SetTextNative(text);
 		}
 	}
 
-	private IInvisibleTextBoxView CreateNativeView(TextBox textBox) => new SinglelineInvisibleTextBoxView(this);
+	private IInvisibleTextBoxView CreateNativeView(TextBox textBox) => _owner?.TextBox?.AcceptsReturn != true ?
+		new SinglelineInvisibleTextBoxView(this) : new MultilineInvisibleTextBoxView(this);
 
 	public void AddViewToTextInputLayer(XamlRoot xamlRoot)
 	{
