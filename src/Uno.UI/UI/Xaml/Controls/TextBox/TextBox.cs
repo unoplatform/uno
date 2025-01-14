@@ -427,10 +427,12 @@ namespace Microsoft.UI.Xaml.Controls
 					_pendingSelection = (start, end - start);
 				}
 			}
-			else if (_isSkiaTextBox)
+			else if (_isSkiaTextBox && !DeviceTargetHelper.IsUIKit())
 			{
 				// WinUI replaces all \n's and and \r\n's by \r. This is annoying because
 				// the _pendingSelection uses indices before this removal.
+				// On UIKit targets we use invisible overlay and replacing newlines would break the sync between
+				// the native input and the managed representation.
 				baseString = RemoveLF(baseString);
 			}
 #else
