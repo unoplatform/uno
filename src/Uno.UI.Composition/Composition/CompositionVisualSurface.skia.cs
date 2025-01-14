@@ -8,6 +8,7 @@ using System.Runtime.Intrinsics.Arm;
 using System.Text;
 using System.Threading.Tasks;
 using SkiaSharp;
+using Uno.Disposables;
 using Uno.UI.Composition;
 using Windows.Graphics.Display;
 
@@ -16,7 +17,8 @@ namespace Microsoft.UI.Composition
 	public partial class CompositionVisualSurface : CompositionObject, ICompositionSurface, ISkiaSurface
 	{
 		private SKSurface? _surface;
-		private float _scale = 1.0f;
+		private float? _scale;
+		private IDisposable _scaleChangedDisposable;
 
 		SKSurface? ISkiaSurface.Surface { get => _surface; }
 
@@ -37,9 +39,15 @@ namespace Microsoft.UI.Composition
 					}
 				};
 
+				float? currentScale = null;
+				if (SourceVisual?.CompositionTarget is ICompositionTarget target)
+				{
+					currentScale = (float)target.RasterizationScale;
+				}
+
 				if (_displayInformation is null)
 				{
-					if (SourceVisual?.CompositionTarget is ICompositionTarget target
+					if (
 						&& target.DisplayInformation is DisplayInformation displayInfo)
 					{
 						_displayInformation = displayInfo;
@@ -72,6 +80,11 @@ namespace Microsoft.UI.Composition
 				SourceVisual.RenderRootVisual(_surface, SourceOffset, null);
 				Compositor.IsSoftwareRenderer = previousCompMode;
 			}
+		}
+
+		private double GetRasterizationScale()
+		{
+			
 		}
 
 		private void DpiChanged(DisplayInformation sender, object args)
@@ -107,20 +120,14 @@ namespace Microsoft.UI.Composition
 			base.Dispose();
 
 			_surface?.Dispose();
-
-			if (_displayInformation is not null)
-			{
-				_displayInformation.DpiChanged -= DpiChanged;
-			}
+			_scaleChangedDisposable?.Dispose();
 		}
 
 		partial void OnSourceVisualChangedPartial(Visual? sourceVisual)
 		{
 			bool needsRecreation = false;
 
-			if (sourceVisual?.CompositionTarget is ICompositionTarget target
-				&& target.DisplayInformation is DisplayInformation displayInfo
-				&& displayInfo != _displayInformation)
+			if (sourceVisual?.CompositionTarget is ICompositionTarget target)
 			{
 				if (_displayInformation is not null)
 				{

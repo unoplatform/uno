@@ -30,6 +30,8 @@ public partial class CompositionTarget : ICompositionTarget
 		}
 	}
 
+	double ICompositionTarget.RasterizationScale => ContentRoot.XamlRoot.RasterizationScale;
+
 	void ICompositionTarget.TryRedirectForManipulation(PointerPoint pointerPoint, InteractionTracker tracker)
 	{
 #if UNO_HAS_MANAGED_POINTERS // TODO: Support more platforms

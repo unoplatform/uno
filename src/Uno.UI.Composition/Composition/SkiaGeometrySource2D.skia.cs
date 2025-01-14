@@ -1,7 +1,7 @@
 ﻿#nullable enable
 
-using SkiaSharp;
 using System;
+using SkiaSharp;
 using Windows.Graphics;
 
 namespace Microsoft.UI.Composition
@@ -38,7 +38,7 @@ namespace Microsoft.UI.Composition
 		public SkiaGeometrySource2D Op(SkiaGeometrySource2D other, SKPathOp op) => new(_geometry.Op(other._geometry, op));
 
 		#endregion
-		
+
 		/// <remarks>
 		/// DO NOT MODIFY THIS SKPath. CREATE A NEW SkiaGeometrySource2D INSTEAD.
 		/// This can lead to nasty invalidation bugs where the SKPath changes without notifying anyone.
