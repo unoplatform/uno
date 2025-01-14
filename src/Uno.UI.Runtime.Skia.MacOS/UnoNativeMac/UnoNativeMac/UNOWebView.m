@@ -160,7 +160,7 @@ void uno_webview_navigate(WKWebView *webview, const char* url, const char *jsonH
 #endif
     }
     
-    NSURL *u = [NSURL fileURLWithPath:s];
+    NSURL *u = [NSURL URLWithString:s];
     NSMutableURLRequest *r = [NSMutableURLRequest requestWithURL:u];
     if (headers) {
         // decode the JSON object into key and value strings

@@ -39,7 +39,7 @@ void uno_clipboard_get_content(struct ClipboardData* data)
 #endif
         // if we have a `public.file-url` then we can return the path to the file, which avoids loading it into the app's memory (until/if needed)
         if (furl) {
-            NSURL *url = [NSURL fileURLWithPath:furl];
+            NSURL *url = [NSURL URLWithString:furl];
             if (url.isFileURL) {
                 data->bitmapPath = strdup(url.fileSystemRepresentation);
                 furl = NULL;

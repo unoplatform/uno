@@ -80,13 +80,13 @@ void uno_application_set_icon(const char *path)
 
 bool uno_application_open_url(const char *url)
 {
-    NSURL *u = [NSURL fileURLWithPath:[NSString stringWithUTF8String:url]];
+    NSURL *u = [NSURL URLWithString:[NSString stringWithUTF8String:url]];
     return [[NSWorkspace sharedWorkspace] openURL:u];
 }
 
 bool uno_application_query_url_support(const char *url)
 {
-    NSURL *u = [NSURL fileURLWithPath:[NSString stringWithUTF8String:url]];
+    NSURL *u = [NSURL URLWithString:[NSString stringWithUTF8String:url]];
     return [[NSWorkspace sharedWorkspace] URLForApplicationToOpenURL:u] != nil;
 }
 
