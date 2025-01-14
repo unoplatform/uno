@@ -137,20 +137,32 @@ public partial class Frame : ContentControl
 
 		try
 		{
-			_isNavigating = true;
-
-			return InnerNavigateUnsafe(entry, mode);
-		}
-		catch (Exception exception)
-		{
-			NavigationFailed?.Invoke(this, new NavigationFailedEventArgs(entry.SourcePageType, exception));
-
-			if (NavigationFailed == null)
+			bool InternalNavigate(PageStackEntry entry, NavigationMode mode)
 			{
-				Application.Current.RaiseRecoverableUnhandledException(new InvalidOperationException("Navigation failed", exception));
+				try
+				{
+					_isNavigating = true;
+
+					return InnerNavigateUnsafe(entry, mode);
+				}
+				catch (Exception exception)
+				{
+					NavigationFailed?.Invoke(this, new NavigationFailedEventArgs(entry.SourcePageType, exception));
+
+					if (NavigationFailed == null)
+					{
+						Application.Current.RaiseRecoverableUnhandledException(new InvalidOperationException("Navigation failed", exception));
+					}
+
+					throw;
+				}
 			}
 
+<<<<<<< HEAD
 			return false;
+=======
+			return InternalNavigate(entry, mode);
+>>>>>>> f6108bb38a (perf(wasm): Split methods containing try/catch/finally blocks)
 		}
 		finally
 		{
