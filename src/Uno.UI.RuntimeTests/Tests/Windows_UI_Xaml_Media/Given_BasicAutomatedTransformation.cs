@@ -10,7 +10,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 {
 	//Web Assembly does not have a helper that take screenshots yet
 	//MacOs interprets colors differently
-#if !__WASM__ && !__MACOS__
+#if __WASM__ || __MACOS__
 	[Ignore]
 #endif
 	[TestClass]
