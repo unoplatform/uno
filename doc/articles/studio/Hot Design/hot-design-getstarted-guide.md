@@ -13,6 +13,17 @@ Use this guide to set up Hot Design and start creating and refining user interfa
 ## Set Up Your Environment for Hot Design
 
 > [!IMPORTANT]
+> **Hot Design™** is currently in beta. Sign up to the [wait list](https://platform.uno/waitlist/) to get early access and be the first to try it out!
+>
+> [!IMPORTANT]
+> Currently, **Hot Design** is not supported with C# Markup at this time and is only available with XAML.
+>
+> [!IMPORTANT]
+> At the current stage of the **Hot Design™** beta, **only the Desktop platform is supported**. Other platforms are undergoing stabilization for Hot Design support and will be available in future updates.
+>
+> For now, you can use the **Desktop** platform to create your UI with the runtime visual designer. Once you’re satisfied with your design, you can test the app on other platforms by launching it as you would normally.
+>
+> [!IMPORTANT]
 > If you're new to developing with Uno Platform, make sure to set up your environment by [following our getting started guide](xref:Uno.GetStarted).
 
 To start using **Hot Design**, ensure you are signed in with your Uno Platform account. Follow [these instructions](xref:Uno.GetStarted.Licensing) to register and sign in.
@@ -24,11 +35,6 @@ Once you're using the **latest stable 5.5 Uno.Sdk version or higher**, you can a
 <p align="center">
   <img src="Assets/enter-hot-design-mode.png" alt="Hot Design flame icon to enter in design mode" />
 </p>
-
-> [!IMPORTANT]
-> At the current stage of the **Hot Design™** beta, **only the Desktop platform is supported**. Other platforms are undergoing stabilization for Hot Design support and will be available in future updates.
->
-> For now, you can use the **Desktop** platform to create your UI with the runtime visual designer. Once you’re satisfied with your design, you can test the app on other platforms by launching it as you would normally.
 
 ## Hot Design Core Tool Windows
 
@@ -85,7 +91,7 @@ Located at the top of the interactive canvas, the **Toolbar** streamlines your d
 
 ### Selecting elements
 
-You can select controls on the app's current screen by simply clicking on them. A visual adorner will appear around the selected elements, clearly indicating their boundaries. The type, height, and width of the selected element are displayed below the adorner for easy reference.
+You can select controls on the app's current screen by simply clicking on them. A visual adorner (in this case, a blue border) will appear around the selected elements, clearly indicating their boundaries. The type, height, and width of the selected element are displayed below the adorner for easy reference.
 
 <p align="center">
   <img src="Assets/canvas-select-single-item.png" alt="Selecting a single item on the main canvas" />
@@ -129,17 +135,17 @@ The **Properties** window displays the current values of a control's properties,
 
     ![Background property with autosuggest](Assets/properties-view-autosuggest-property.png)
 
-For advanced options, clicking the **Advanced** button opens a flyout with three settings for each property: **Value**, **Binding**, or **Resource**.
-
-![Three options for property setting and reset button](Assets/properties-view-button-flyout.png)
-
-You can quickly identify the type of value set for a property by the icon displayed on the **Advanced** button. For example:
+To the right of the property value is the **Advanced** button, which provides information on how the current property value is defined. For example:
 
 - ![None](Assets/properties-view-advcd-button-none.png) indicates that nothing is set.
 - ![XAML](Assets/properties-view-advcd-button-xaml.png) indicates a **Literal**/**XAML** value is set.
 - ![Binding](Assets/properties-view-advcd-button-binding.png) indicates a **Binding** is set.
 - ![Resource](Assets/properties-view-advcd-button-resource.png) indicates a **Resource** is set.
 - ![Mixed Responsive](Assets/properties-view-advcd-button-mixed-responsive.png) indicates **Mixed Responsive** values is set using Responsive Extension.
+
+Clicking the **Advanced** button opens a flyout with three settings for each property: **Value**, **Binding**, or **Resource**.
+
+![Three options for property setting and reset button](Assets/properties-view-button-flyout.png)
 
 > [!TIP]
 > To quickly clear a property's value, click the **Reset** button. Cleared properties will behave as though they weren't specified in the original XAML file.

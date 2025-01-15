@@ -16,7 +16,15 @@ This tutorial will guide you through using Hot Design to create a simple counter
 </p>
 
 > [!NOTE]
-> This tutorial is based on the [XAML + MVUX variant](xref:Uno.Workshop.Counter.XAML.MVUX) of the Counter app tutorial. It demonstrates how to create a simple cross-platform app using Uno Platform. Explore other tutorial variants [here](xref:Uno.Workshop.Counter).
+> This tutorial is based on the [XAML + MVUX variant](xref:Uno.Workshop.Counter.XAML.MVUX) of the Counter app tutorial. It demonstrates how to create a simple cross-platform app using Uno Platform. If you prefer to use MVVM you can still complete this **Hot Design** tutorial by switching the MVUX code, with the MVVM code from the [XAML + MVVM variant](xref:Uno.Workshop.Counter.XAML.MVVM). Explore other tutorial variants [here](xref:Uno.Workshop.Counter).
+>
+> Additionally, as a general note, Hot Design can be used without selecting a specific architectural pattern, such as MVVM or MVUX, making it a versatile tool for various projects. For this particular tutorial, however, we will focus on using MVUX as an example.
+>
+> [!IMPORTANT]
+> **Hot Design™** is currently in beta. Sign up to the [wait list](https://platform.uno/waitlist/) to get early access and be the first to try it out!
+>
+> [!IMPORTANT]
+> Currently, **Hot Design** is not supported with C# Markup at this time and is only available with XAML.
 >
 > [!IMPORTANT]
 > At the current stage of the **Hot Design™** beta, **only the Desktop platform is supported**. Other platforms are undergoing stabilization for Hot Design support and will be available in future updates.
@@ -32,10 +40,10 @@ For existing applications, take this opportunity to update to the [latest **Uno.
 
 To start using **Hot Design**, ensure you are signed in with your Uno Platform account. Follow [these instructions](xref:Uno.GetStarted.Licensing) to register and sign in.
 
-Once you're using the **latest stable 5.5 Uno.Sdk version or higher**, you can access **Hot Design** by clicking the **flame** icon in the diagnostics overlay that appears over your app.
+Once you're using the **latest stable 5.5 Uno.Sdk version or higher**, you can access **Hot Design** by clicking the **flame** button in the diagnostics overlay that appears over your app.
 
 <p align="center">
-  <img src="Assets/enter-hot-design-mode.png" alt="Hot Design flame icon to enter in design mode" />
+  <img src="Assets/enter-hot-design-mode.png" alt="Hot Design flame button to enter in design mode" />
 </p>
 
 ## Creating the Counter Application
@@ -90,7 +98,7 @@ This will create a new folder called **Counter** containing the new application.
 
 ## Assets
 
-First, we need to add the image file to the application. Download this [SVG image](https://aka.platform.uno/counter-tutorial-svg-uno-logo) and add it to the **Assets** folder. Once added, rebuild the application to ensure the image is included in the application package.
+First, we need to add the image file to the application. Download this [SVG image](https://aka.platform.uno/counter-tutorial-svg-uno-logo) (Open this [link](https://aka.platform.uno/counter-tutorial-svg-uno-logo), right-click on the SVG image and select "Save as") and add it to the **Assets** folder. Once added, rebuild the application to ensure the image is included in the application package.
 
 > [!NOTE]
 > If you're working in Visual Studio, select the newly added **logo.svg** file in the **Solution Explorer**, open the **Properties** window, and ensure the **Build Action** property is set to **`UnoImage`**. For other IDEs, no further action is required as the template automatically sets the **Build Action** to **`UnoImage`** for all files in the **Assets** folder.  
@@ -122,13 +130,13 @@ If is not already previously done, to start using **Hot Design**, ensure you are
 
 ## Enter Hot Design Mode
 
-To start editing the UI, enter **Hot Design** by clicking the **flame** icon in the diagnostics overlay that appears over your app (default position is in the top-left corner of the application window).
+To start editing the UI, enter **Hot Design** by clicking the **flame** button in the diagnostics overlay that appears over your app (default position is in the top-left corner of the application window).
 
 > [!NOTE]
-> If you don't see the **Hot Design** flame icon, ensure that you are [signed in with your Uno Platform Account](xref:Uno.GetStarted.Licensing), enrolled in the current beta, and using the [latest stable 5.5 Uno.Sdk version or higher](https://www.nuget.org/packages/Uno.Sdk).
+> If you don't see the **Hot Design** flame button, ensure that you are [signed in with your Uno Platform Account](xref:Uno.GetStarted.Licensing), enrolled in the current beta, and using the [latest stable 5.5 Uno.Sdk version or higher](https://www.nuget.org/packages/Uno.Sdk).
 
 <p align="center">
-  <img src="Assets/enter-hot-design-mode.png" alt="Hot Design flame icon to enter design mode" />
+  <img src="Assets/enter-hot-design-mode.png" alt="Hot Design flame button to enter design mode" />
 </p>
 
 ## Change the Layout
