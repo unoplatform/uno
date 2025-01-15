@@ -11,6 +11,8 @@ namespace Windows.UI.Input.Preview.Injection;
 
 internal class InjectedInputState
 {
+	private static long _initialTimestamp = Stopwatch.GetTimestamp();
+
 	public InjectedInputState(PointerDeviceType type)
 	{
 		Type = type;
@@ -31,7 +33,7 @@ internal class InjectedInputState
 
 	public void StartNewSequence()
 	{
-		Timestamp = (ulong)Stopwatch.GetElapsedTime(Stopwatch.GetTimestamp()).TotalMicroseconds;
+		Timestamp = (ulong)Stopwatch.GetElapsedTime(_initialTimestamp).TotalMicroseconds;
 		FrameId = (uint)(Timestamp / 1000);
 	}
 
