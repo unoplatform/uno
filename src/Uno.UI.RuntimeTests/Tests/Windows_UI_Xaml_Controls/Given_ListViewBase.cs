@@ -903,8 +903,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			async Task AssertSelected()
 			{
 				await WindowHelper.WaitForIdle();
-				selected.ForEach(item => Assert.AreEqual(true, item.IsSelected));
-				items.Except(selected).ForEach(item => Assert.AreEqual(false, item.IsSelected));
+				selected.ForEach(item => Assert.IsTrue(item.IsSelected));
+				items.Except(selected).ForEach(item => Assert.IsFalse(item.IsSelected));
 			}
 		}
 #endif
@@ -964,8 +964,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			async Task AssertSelected()
 			{
 				await WindowHelper.WaitForIdle();
-				selected.ForEach(item => Assert.AreEqual(true, item.IsSelected));
-				items.Except(selected).ForEach(item => Assert.AreEqual(false, item.IsSelected));
+				selected.ForEach(item => Assert.IsTrue(item.IsSelected));
+				items.Except(selected).ForEach(item => Assert.IsFalse(item.IsSelected));
 			}
 		}
 #endif
@@ -1045,8 +1045,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			async Task AssertSelected()
 			{
 				await WindowHelper.WaitForIdle();
-				selected.ForEach(item => Assert.AreEqual(true, item.IsSelected));
-				items.Except(selected).ForEach(item => Assert.AreEqual(false, item.IsSelected));
+				selected.ForEach(item => Assert.IsTrue(item.IsSelected));
+				items.Except(selected).ForEach(item => Assert.IsFalse(item.IsSelected));
 			}
 		}
 #endif
@@ -1123,8 +1123,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			async Task AssertSelected()
 			{
 				await WindowHelper.WaitForIdle();
-				selected.ForEach(item => Assert.AreEqual(true, item.IsSelected));
-				items.Except(selected).ForEach(item => Assert.AreEqual(false, item.IsSelected));
+				selected.ForEach(item => Assert.IsTrue(item.IsSelected));
+				items.Except(selected).ForEach(item => Assert.IsFalse(item.IsSelected));
 			}
 		}
 #endif
@@ -1175,8 +1175,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			async Task AssertSelected()
 			{
 				await WindowHelper.WaitForIdle();
-				selected.ForEach(item => Assert.AreEqual(true, item.IsSelected));
-				items.Except(selected).ForEach(item => Assert.AreEqual(false, item.IsSelected));
+				selected.ForEach(item => Assert.IsTrue(item.IsSelected));
+				items.Except(selected).ForEach(item => Assert.IsFalse(item.IsSelected));
 			}
 		}
 #endif
@@ -1233,8 +1233,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			async Task AssertSelected()
 			{
 				await WindowHelper.WaitForIdle();
-				selected.ForEach(item => Assert.AreEqual(true, item.IsSelected));
-				items.Except(selected).ForEach(item => Assert.AreEqual(false, item.IsSelected));
+				selected.ForEach(item => Assert.IsTrue(item.IsSelected));
+				items.Except(selected).ForEach(item => Assert.IsFalse(item.IsSelected));
 			}
 		}
 #endif

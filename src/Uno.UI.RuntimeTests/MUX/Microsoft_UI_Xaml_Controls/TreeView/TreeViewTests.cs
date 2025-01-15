@@ -262,7 +262,8 @@ namespace MUXControlsTestApp
 			await TestServices.WindowHelper.WaitForIdle();
 		}
 
-		//[TestMethod] Disabled with issue number #1775 (WinUI issue)
+		[TestMethod] // Disabled with issue number #1775 (WinUI issue)
+		[Ignore]
 		public void TreeViewInheritanceTest()
 		{
 			StackPanel stackPanel = new StackPanel();
