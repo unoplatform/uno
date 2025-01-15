@@ -1,23 +1,28 @@
 using System;
-using System.Collections.Concurrent;
-using System.Globalization;
+using System.IO;
 using System.Net.Http;
-using System.Text.Json;
-using System.Text.Json.Nodes;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.UI.Core;
+using Windows.ApplicationModel;
+using GLib;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.Web.WebView2.Core;
-using SharpWebview;
-using SharpWebview.Content;
+using Newtonsoft.Json;
 using Uno.Extensions;
 using Uno.Foundation.Extensibility;
 using Uno.Logging;
 using Uno.UI.Runtime.Skia;
 using Uno.UI.Xaml.Controls;
-using Uno.WinUI.Runtime.Skia.X11;
+using WebKit;
+using Action = System.Action;
+using Application = Gtk.Application;
+using JsonSerializer = System.Text.Json.JsonSerializer;
+using Thread = System.Threading.Thread;
+using Value = JavaScript.Value;
+using Window = Gtk.Window;
 
 [assembly: ApiExtension(typeof(INativeWebViewProvider), typeof(Uno.UI.WebView.Skia.X11.X11NativeWebViewProvider), typeof(CoreWebView2))]
 
@@ -30,256 +35,283 @@ public class X11NativeWebViewProvider(CoreWebView2 coreWebView2) : INativeWebVie
 
 public class X11NativeWebView : INativeWebView
 {
-	// Webview doesn't naturally support multiple windows and constructing any Webview after the first will block.
-	// On X11, Webview wraps GTK: https://github.com/webview/webview/blob/6e847a6efe88a15edf58c26b8c9ea933ba2569ec/webview.h#L1951-L1957
-	// Due to the way GTK works, we need to create the second Webview from GTK's main thread. Run() calls g_main_context_iteration in a loop,
-	// so we should only need to have one Run() function running for all Webviews combined.
-	// To create multiple Webviews, we need a "master" webview that is in charge of the Run() loop. The first webview created is this
-	// master Webview
-	private static Webview? _masterWebview;
-
-	private int _jsInvokeCounter;
-	private readonly ConcurrentDictionary<string, TaskCompletionSource<string?>> _jsInvokeTasks = new();
-
-	private readonly Webview _nativeWebview;
+	private static readonly Exception? _initException;
+	private static readonly bool _usingWebKit2Gtk41;
 
 	private readonly CoreWebView2 _coreWebView;
 	private readonly ContentPresenter _presenter;
+	private readonly Window _window;
+	private readonly WebKit.WebView _webview;
 	private readonly string _title = $"Uno WebView {Random.Shared.Next()}";
+
+	private bool _dontRaiseNextNavigationCompleted;
+
+	[DllImport("libwebkit2gtk-4.1.so", CallingConvention = CallingConvention.Cdecl)]
+	private static extern IntPtr webkit_uri_request_get_http_headers(IntPtr request);
+
+	[DllImport("libsoup-3.0.so", CallingConvention = CallingConvention.Cdecl)]
+	private static extern void soup_message_headers_append(IntPtr hdrs, string name, string value);
+
+	[DllImport("libgdk-3.so", CallingConvention = CallingConvention.Cdecl)]
+	private static extern IntPtr gdk_x11_window_get_xid(IntPtr window);
+
+	static X11NativeWebView()
+	{
+		try
+		{
+			// webkit2gtk-4.1 adds support for exposing libsoup objects, most importantly in webkit_uri_request_get_http_headers.
+			// Gtk# by default loads libwebkit2gtk-4.0 (+ libsoup-2.0), but we want libwebkit2gtk-4.1 (+ libsoup-3.0), so what
+			// we do is that before WebKitGtk# makes its dlopen calls, we load libwebkit2gtk-4.1 and put it where the handle to
+			// libwebkit2gtk-4.0 will be expected to be, so that when WebKitGtk# attempts to dlopen(libwebkit2gtk-4.0), it will
+			// find the handle already there and will just use it instead.
+			if (!NativeLibrary.TryLoad("libwebkit2gtk-4.1.so", typeof(X11NativeWebView).Assembly, DllImportSearchPath.UserDirectories, out var webkitgtk41handle))
+			{
+				if (typeof(X11NativeWebView).Log().IsEnabled(LogLevel.Error))
+				{
+					typeof(X11NativeWebView).Log().Error($"libwebkit2gtk-4.1 was not found. Attempting to call {nameof(ProcessNavigation)} with an {nameof(HttpRequestMessage)} instance will crash the process.");
+				}
+			}
+			else
+			{
+				Assembly assembly = Assembly.Load("WebKitGtkSharp");
+				Type glibraryType = assembly.GetType("GLibrary")!;
+				Type libraryType = assembly.GetType("Library")!;
+				object webkitLibraryEnum = Enum.ToObject(libraryType, 11);
+				FieldInfo field = glibraryType.GetField("_libraries", BindingFlags.NonPublic | BindingFlags.Static)!;
+				object libraries = field.GetValue(null)!;
+				var setItemMethod = libraries.GetType().GetMethod("set_Item")!;
+				setItemMethod.Invoke(libraries, [webkitLibraryEnum, webkitgtk41handle]);
+				_usingWebKit2Gtk41 = true;
+			}
+
+			if (!WebKit.Global.IsSupported)
+			{
+				_initException = new PlatformNotSupportedException("libwebkitgtk-4.0 is not found. Make sure that WebKitGTK 4.0 and GTK 3 are installed.");
+				return;
+			}
+
+			GLib.ExceptionManager.UnhandledException += args =>
+			{
+				if (typeof(X11NativeWebView).Log().IsEnabled(LogLevel.Error))
+				{
+					typeof(X11NativeWebView).Log().Error("GLib exception", args.ExceptionObject as Exception);
+				}
+			};
+
+			new Thread(() =>
+			{
+				Application.Init();
+				Application.Run();
+			})
+			{
+				IsBackground = true,
+				Name = "X11 WebKitGTK thread"
+			}.Start();
+		}
+		catch (TypeInitializationException e)
+		{
+			_initException = e;
+			if (typeof(X11NativeWebView).Log().IsEnabled(LogLevel.Error))
+			{
+				typeof(X11NativeWebView).Log().Error("Unable to initialize Gtk, visit https://aka.platform.uno/gtk-install for more information.", e);
+			}
+		}
+	}
 
 	public X11NativeWebView(CoreWebView2 coreWebView2, ContentPresenter presenter)
 	{
+		if (_initException is { })
+		{
+			throw _initException;
+		}
+
 		_coreWebView = coreWebView2;
 		_presenter = presenter;
 
-		var host = (X11XamlRootHost)X11Manager.XamlRootMap.GetHostForRoot(presenter.XamlRoot!)!;
-		var tcs = new TaskCompletionSource<Webview>();
-		if (_masterWebview is { })
+		// var tcs = new TaskCompletionSource();
+		// LoadChangedHandler? webviewOnLoadChanged = default;
+		// webviewOnLoadChanged = (_, args) =>
+		// {
+		// 	if (args.LoadEvent == LoadEvent.Finished)
+		// 	{
+		// 		tcs.SetResult();
+		// 		_webview!.LoadChanged -= webviewOnLoadChanged;
+		// 	}
+		// };
+		(_window, _webview) = RunOnGtkThread(() =>
 		{
-			_masterWebview.Dispatch(() =>
-			{
-				tcs.SetResult(Init());
-			});
-		}
-		else
-		{
-			new Thread(() =>
-			{
-				var wv = _masterWebview = Init();
-				tcs.SetResult(wv);
-				wv.Run();
-			})
-			{
-				Name = "X11 Master WebView Thread",
-				IsBackground = true // very important, otherwise it will prevent process termination when closing the uno window
-			}.Start();
-		}
-
-		_nativeWebview = tcs.Task.Result;
-
-		// Unfortunately, there's a split second where the new window spawns and is visible before being attached to the
-		// Uno window. The API doesn't allow us to open a hidden window. We would have to talk to gtk directly.
-		_ = Task.Run(() =>
-		{
-			var window = X11NativeElementHostingExtension.FindWindowByTitle(host, _title, TimeSpan.MaxValue);
-			_ = _coreWebView.Owner.Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
-			{
-				_presenter.Content = new X11NativeWindow(window);
-			});
+			var window = new Window(Gtk.WindowType.Toplevel);
+			window.Title = _title;
+			var webview = new WebKit.WebView();
+			webview.Settings.EnableSmoothScrolling = true;
+			webview.Settings.EnableJavascript = true;
+			webview.Settings.AllowFileAccessFromFileUrls = true;
+#if DEBUG
+			webview.Settings.EnableDeveloperExtras = true;
+#endif
+			// webview.LoadChanged += webviewOnLoadChanged;
+			// webview.LoadUri("about:blank"); // this prevents the webview from having garbage frames until the first page is loaded.
+			// webview.GoBack();
+			return (window, webview);
 		});
 
-		_presenter.SizeChanged += (_, args) =>
+		// wait for about:blank navigation to end before subscribing to navigation events
+		// tcs.Task.Wait();
+
+		var xid = RunOnGtkThread(() =>
 		{
-			_nativeWebview.Dispatch(() => _nativeWebview.SetSize((int)args.NewSize.Width, (int)args.NewSize.Height, WebviewHint.None));
-		};
-	}
+			_webview.LoadChanged += WebViewOnLoadChanged;
+			_webview.LoadFailed += WebViewOnLoadFailed;
+			_webview.UserContentManager.RegisterScriptMessageHandler("unoWebView");
+			_webview.UserContentManager.ScriptMessageReceived += UserContentManagerOnScriptMessageReceived;
+			_webview.AddNotification(WebViewNotificationHandler);
+			_window.Add(_webview);
+			_webview.ShowAll();
+			_window.Realize(); // creates the Gdk window (and the X11 window) without showing it
+			return gdk_x11_window_get_xid(_window.Window.Handle);
+		});
 
-	private Webview Init()
-	{
-		// WARNING: The threading for Webview is fragile. If you move the Webview construction outside
-		// of the new thread, it won't work. Be careful about moving anything around.
-#if DEBUG
-		var nativeWebview = new Webview(true);
-#else
-		_nativeWebview = new Webview(false);
-#endif
-		nativeWebview.SetSize(1, 1, WebviewHint.None);
-		nativeWebview.SetTitle(_title);
+		presenter.Content = new X11NativeWindow(xid);
+		if (presenter.IsInLiveTree)
+		{
+			RunOnGtkThread(() => _window.ShowAll());
+		}
 
-		nativeWebview.Bind("onSourceChanged", OnSourceChanged);
-		nativeWebview.Bind("onScriptInvocationDone", OnScriptInvocationDone);
-		nativeWebview.Bind("onDocumentTitleChanged", OnDocumentTitleChanged);
-		nativeWebview.Bind("onDocumentLoaded", OnDocumentLoaded);
-		// from https://learn.microsoft.com/en-us/dotnet/api/microsoft.web.webview2.core.corewebview2.navigationcompleted?view=webview2-dotnet-1.0.2478.35#microsoft-web-webview2-core-corewebview2-navigationcompleted
-		// "NavigationCompleted is raised when the WebView has completely loaded (body.onload has been raised) or loading stopped with error."
-		nativeWebview.InitScript(
-			"""
-			onSourceChanged({ 'url': window.location.href });
-
-			document.addEventListener("DOMContentLoaded", (event) => {
-				onDocumentTitleChanged(document.title);
-
-				new MutationObserver(function(mutations) {
-					onDocumentTitleChanged(document.title);
-				}).observe(document, { attributes: true });
-			});
-
-			document.onload = (event) => { onDocumentLoaded(); };
-			""");
-
-		return nativeWebview;
+		presenter.Loaded += (_, _) => RunOnGtkThread(() => _window.ShowAll());
+		presenter.Unloaded += (_, _) => RunOnGtkThread(() => _window.Hide());
 	}
 
 	~X11NativeWebView()
 	{
-		// don't dispose the master Webview because it's keeping the Run loop alive
-		if (_nativeWebview != _masterWebview)
-		{
-			_nativeWebview.Dispatch(_nativeWebview.Dispose);
-		}
+		RunOnGtkThread(() => _window.Close());
 	}
 
-	public string DocumentTitle { get; private set; } = "";
+	public string DocumentTitle => RunOnGtkThread(() => _webview.Title);
 
-	private void OnSourceChanged(string id, string req)
+	private static T RunOnGtkThread<T>(Func<T> func)
 	{
-		var rootNode = JsonSerializer.Deserialize<JsonNode>(req);
-		var urlNode = rootNode?[0]?["url"];
-		if (urlNode?.GetValue<string>() is { } url)
+		var tcs = new TaskCompletionSource<T>();
+		GLib.Idle.Add(() =>
 		{
-			_ = _coreWebView.Owner.Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
-			{
-				_coreWebView.Source = url;
-			});
-		}
-		else
-		{
-			if (this.Log().IsEnabled(LogLevel.Error))
-			{
-				this.Log().Error($"{nameof(OnSourceChanged)} called with invalid json.");
-			}
-		}
-	}
-
-	private void OnScriptInvocationDone(string _, string req)
-	{
-		var rootNode = JsonSerializer.Deserialize<JsonNode>(req);
-		var objNode = rootNode?[0];
-		var idNode = objNode?["id"];
-		var resultNode = objNode?["result"];
-		if (idNode?.ToString() is { } id && resultNode?.ToString() is { } result)
-		{
-			_jsInvokeTasks.TryRemove(id, out var tcs);
-			tcs?.TrySetResult(result);
-		}
-		else
-		{
-			if (this.Log().IsEnabled(LogLevel.Error))
-			{
-				this.Log().Error($"{nameof(OnSourceChanged)} called with invalid json.");
-			}
-		}
-	}
-
-	private void OnDocumentTitleChanged(string id, string req)
-	{
-		var rootNode = JsonSerializer.Deserialize<JsonNode>(req);
-		var titleNode = rootNode?[0];
-
-		if (titleNode?.ToString() is { } title)
-		{
-			_ = _coreWebView.Owner.Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
-			{
-				DocumentTitle = title;
-				_coreWebView.OnDocumentTitleChanged();
-			});
-		}
-		else
-		{
-			if (this.Log().IsEnabled(LogLevel.Error))
-			{
-				this.Log().Error($"{nameof(OnDocumentTitleChanged)} called with invalid json.");
-			}
-		}
-	}
-
-	// Note: this only works on successful page loads. The Webview API doesn't support intercepting errors
-	// or status codes in general.
-	private void OnDocumentLoaded(string id, string req)
-	{
-		_ = _coreWebView.Owner.Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
-		{
-			_coreWebView.RaiseNavigationCompleted(new Uri(_coreWebView.Source), true, 200, CoreWebView2WebErrorStatus.Unknown);
+			tcs.SetResult(func());
+			return false;
 		});
+		return tcs.Task.Result;
 	}
 
-	public void GoBack() => _nativeWebview.Evaluate("history.back();");
-	public void GoForward() => _nativeWebview.Evaluate("history.forward();");
-	public void Stop() => _nativeWebview.Evaluate("window.stop();");
-	public void Reload() => _nativeWebview.Evaluate("window.location.reload();");
-
-	private void ScheduleNavigationStarting(Uri uri, Action loadAction)
+	private static void RunOnGtkThread(Action func)
 	{
-		_coreWebView.RaiseNavigationStarting(uri, out var cancel);
-
-		if (!cancel)
+		var tcs = new TaskCompletionSource();
+		GLib.Idle.Add(() =>
 		{
-			loadAction.Invoke();
-		}
+			func();
+			tcs.SetResult();
+			return false;
+		});
+		tcs.Task.Wait();
 	}
 
-	private void ScheduleNavigationStarting(string html, Action loadAction)
-	{
-		_coreWebView.RaiseNavigationStarting(html, out var cancel);
-
-		if (!cancel)
-		{
-			loadAction.Invoke();
-		}
-	}
+	public void GoBack() => RunOnGtkThread(() => _webview.GoBack());
+	public void GoForward() => RunOnGtkThread(() => _webview.GoForward());
+	public void Stop() => RunOnGtkThread(() => _webview.StopLoading());
+	public void Reload() => RunOnGtkThread(() => _webview.Reload());
 
 	// Note: Webview doesn't support web Navigation APIs, so we cannot set CoreWebView2.CanGo<Back|Forward>
-	public void ProcessNavigation(Uri uri) => ScheduleNavigationStarting(uri, () =>
+	public void ProcessNavigation(Uri uri)
 	{
-		_nativeWebview.Dispatch(() => _nativeWebview.Navigate(new UrlContent(uri.AbsoluteUri)));
-	});
-	public void ProcessNavigation(string html) => ScheduleNavigationStarting(html, () =>
-	{
-		_nativeWebview.Dispatch(() => _nativeWebview.Navigate(new HtmlContent(html)));
-	});
-	public void ProcessNavigation(HttpRequestMessage httpRequestMessage)
-	{
-		if (this.Log().IsEnabled(LogLevel.Error))
+		if (uri.Scheme.Equals("local", StringComparison.OrdinalIgnoreCase))
 		{
-			this.Log().Error($"{nameof(ProcessNavigation)} is not supported on the X11 target.");
+			var baseUrl = Package.Current.InstalledPath;
+			RunOnGtkThread(() => _webview.LoadUri($"file://{Path.Join(baseUrl, uri.PathAndQuery)}{baseUrl}{uri.PathAndQuery}"));
+		}
+		else if (_coreWebView.HostToFolderMap.TryGetValue(uri.Host.ToLowerInvariant(), out var folderName))
+		{
+			var relativePath = uri.PathAndQuery;
+			var baseUrl = Package.Current.InstalledPath; // TODO: Is this accurate?
+			RunOnGtkThread(() => _webview.LoadUri($"file://{Path.Join(baseUrl, folderName, relativePath)}"));
+		}
+		else
+		{
+			// _webview.LoadUri(uri.AbsoluteUri);
+			ProcessNavigation(new HttpRequestMessage(HttpMethod.Get, uri));
 		}
 	}
+
+	public void ProcessNavigation(string html) => RunOnGtkThread(() => { _webview.LoadHtml(html); });
+
+	public void ProcessNavigation(HttpRequestMessage httpRequestMessage) => RunOnGtkThread(() =>
+	{
+		var url = httpRequestMessage.RequestUri?.ToString();
+		if (url is null)
+		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error($"{nameof(ProcessNavigation)} received an {nameof(HttpRequestMessage)} with a null uri.");
+			}
+			return;
+		}
+
+		var request = new WebKit.URIRequest(url);
+
+		if (_usingWebKit2Gtk41)
+		{
+			var headers = webkit_uri_request_get_http_headers(request.Handle);
+			foreach (var header in httpRequestMessage.Headers)
+			{
+				// a header name can have multiple values
+				foreach (var val in header.Value)
+				{
+					soup_message_headers_append(headers, header.Key, val);
+				}
+			}
+		}
+
+		_webview.LoadRequest(request);
+	});
 
 	public Task<string?> ExecuteScriptAsync(string script, CancellationToken token)
 	{
-		// we add an eval call so that we can get a return value even if `script` is not an expression.
-		return InvokeScriptAsync("eval", new[] { script }, token);
+		var tcs = new TaskCompletionSource<string?>();
+		_webview.RunJavascript(script, null, (wv, res) =>
+		{
+			// INCREDIBLY IMPORTANT NOTES
+			// Read JSValue only once. Each time result.JsValue is read, it increments the ref count
+			// of the native object and you'll get "Unexpected number of toggle-refs.
+			// g_object_add_toggle_ref() must be paired with g_object_remove_toggle_ref()". This also
+			// means that if you're investing something related to the native ref-counting like a
+			// double free, make sure that you don't read JsValue in the Debugger, or even hover over
+			// it, because if you do, the ref count will be incremented and the double free will go away.
+			// Instead, log JavaScript.Value.RefCount using reflection.
+			// Console.WriteLine($"Ref count: {typeof(Value).GetProperty("RefCount", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(jsval)}");
+			try
+			{
+				var result = ((WebKit.WebView)wv).RunJavascriptFinish(res);
+				var jsval = result.JsValue;
+				tcs.SetResult(JsValueToString(jsval));
+				result.Dispose();
+				// There is a WebKitGtkSharp bug that causes a double free if you let both result and result.JSValue finalize
+				// It seems like JSValue gets freed as a part of the owning result, so if you let both of their finalizers run,
+				// you'll get a double free.
+				GC.SuppressFinalize(jsval);
+			}
+			catch (GException e)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"{nameof(ExecuteScriptAsync)} threw an exception", e);
+				}
+				tcs.SetException(e);
+			}
+		});
+		return tcs.Task;
 	}
 
 	public Task<string?> InvokeScriptAsync(string script, string[]? arguments, CancellationToken token)
 	{
-		var tcs = new TaskCompletionSource<string?>();
-		var jsInvokeId = Interlocked.Increment(ref _jsInvokeCounter).ToString(CultureInfo.InvariantCulture);
-
 		// JsonSerializer.Serialize safely escapes quotes and concatenates the arguments (with a comma) to be passed to eval
 		// the [1..^1] part is to remove [ and ].
 		var argumentString = arguments is not null ? JsonSerializer.Serialize(arguments)[1..^1] : "";
-
-		_nativeWebview.Dispatch(() => _nativeWebview.Evaluate($"onScriptInvocationDone({{ id: {jsInvokeId}, result: {script}({argumentString}) }} );"));
-		_jsInvokeTasks.TryAdd(jsInvokeId, tcs);
-
-		token.Register(() =>
-		{
-			_jsInvokeTasks.TryRemove(jsInvokeId, out var tcs_);
-			tcs_?.TrySetCanceled();
-		});
-
-		return tcs.Task;
+		return ExecuteScriptAsync($"{script}({argumentString})", token);
 	}
 
 	public void SetScrollingEnabled(bool isScrollingEnabled)
@@ -288,5 +320,105 @@ public class X11NativeWebView : INativeWebView
 		{
 			this.Log().Error($"{nameof(SetScrollingEnabled)} is not supported on the X11 target.");
 		}
+	}
+
+	private void WebViewOnLoadChanged(object o, LoadChangedArgs args)
+	{
+		switch (args.LoadEvent)
+		{
+			case LoadEvent.Started:
+				{
+					if (Uri.TryCreate(_webview.Uri, UriKind.Absolute, out var uri))
+					{
+						var tcs = new TaskCompletionSource<bool>();
+						_presenter.DispatcherQueue.TryEnqueue(() =>
+						{
+							_coreWebView.RaiseNavigationStarting(uri, out var cancel);
+							tcs.SetResult(cancel);
+						});
+						var cancel = tcs.Task.Result;
+						if (cancel)
+						{
+							_webview.StopLoading();
+						}
+					}
+				}
+				break;
+			case LoadEvent.Redirected:
+				break;
+			case LoadEvent.Committed:
+				break;
+			case LoadEvent.Finished:
+				{
+					var (canGoBack, canGoForward, uriString) = (_webview.CanGoBack(), _webview.CanGoForward(), _webview.Uri);
+					if (_dontRaiseNextNavigationCompleted)
+					{
+						_dontRaiseNextNavigationCompleted = false;
+					}
+					else
+					{
+						_presenter.DispatcherQueue.TryEnqueue(() =>
+						{
+							_coreWebView.SetHistoryProperties(canGoBack, canGoForward);
+							_coreWebView.RaiseHistoryChanged();
+							Uri.TryCreate(uriString, UriKind.Absolute, out var uri);
+							_presenter.DispatcherQueue.TryEnqueue(() =>
+							{
+								_coreWebView.RaiseNavigationCompleted(uri, isSuccess: true, httpStatusCode: 200, errorStatus: CoreWebView2WebErrorStatus.Unknown, shouldSetSource: true);
+							});
+						});
+					}
+				}
+				break;
+		}
+	}
+
+	private void WebViewOnLoadFailed(object o, LoadFailedArgs args)
+	{
+		_dontRaiseNextNavigationCompleted = true;
+		Uri.TryCreate(args.FailingUri, UriKind.Absolute, out var uri);
+		_presenter.DispatcherQueue.TryEnqueue(() =>
+		{
+			_coreWebView.RaiseNavigationCompleted(uri, isSuccess: false, httpStatusCode: 0, errorStatus: CoreWebView2WebErrorStatus.Unknown, shouldSetSource: true);
+		});
+	}
+
+	private void WebViewNotificationHandler(object o, NotifyArgs args)
+	{
+		if (args.Property == "title")
+		{
+			_coreWebView.OnDocumentTitleChanged();
+		}
+	}
+
+	private void UserContentManagerOnScriptMessageReceived(object o, ScriptMessageReceivedArgs args)
+	{
+		var result = args.JsResult;
+		var value = result.JsValue;
+		var str = JsValueToString(value);
+		result.Dispose();
+		GC.SuppressFinalize(value); // see comments in ExecuteScriptAsync
+		_presenter.DispatcherQueue.TryEnqueue(() =>
+		{
+			_coreWebView.RaiseWebMessageReceived(str);
+		});
+	}
+
+	private string JsValueToString(Value value)
+	{
+		// TODO: fix this to make Given_WebView2 green. Some tests are failing over quoting.
+		if (value.IsNull)
+		{
+			return "null";
+		}
+		else if (value.IsUndefined)
+		{
+			return "undefined";
+		}
+		else if (value.IsString)
+		{
+			return value.ToString();
+		}
+		return JsonConvert.SerializeObject(JsonConvert.DeserializeObject(value.ToJson(0)));
 	}
 }
