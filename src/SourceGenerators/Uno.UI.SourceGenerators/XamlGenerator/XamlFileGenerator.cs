@@ -905,6 +905,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				if (_isHotReloadEnabled || CurrentScope.Subclasses is { Count: >= 1 })
 				{
 					// If _isHotReloadEnabled we generate it anyway so we can remove sub-classes without causing rude edit.
+					writer.AppendLineIndented("[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
 					writer.AppendLineIndented("[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]");
 					return writer.BlockInvariant($"{(isTopLevel ? "internal" : "private")} class __{_fileUniqueId}_{string.Join("_", _scopeStack.Select(scope => scope.Name))}");
 				}
