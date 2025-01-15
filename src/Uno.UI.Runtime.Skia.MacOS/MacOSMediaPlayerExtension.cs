@@ -16,6 +16,7 @@ using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.Helpers;
 using Uno.Media.Playback;
+using Uno.UI.Dispatching;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
 
@@ -73,7 +74,11 @@ internal class MacOSMediaPlayerExtension : IMediaPlayerExtension
 			onVideoDimensionChanged: &OnVideoDimensionChanged,
 			onDurationChanged: &OnDurationChanged,
 			onReadyToPlay: &OnReadyToPlay,
-			onBufferingProgressChanged: &OnBufferingProgressChanged
+			onBufferingProgressChanged: &OnBufferingProgressChanged,
+			onMediaOpened: &OnMediaOpened,
+			onMediaEnded: &OnMediaEnded,
+			onMediaFailed: &OnMediaFailed,
+			onMediaStalled: &OnMediaStalled
 			);
 
 		ApiExtensibility.Register(typeof(IMediaPlayerExtension), o => new MacOSMediaPlayerExtension(o));
@@ -420,6 +425,89 @@ internal class MacOSMediaPlayerExtension : IMediaPlayerExtension
 		if (player is not null)
 		{
 			player._player.PlaybackSession.BufferingProgress = progress;
+		}
+	}
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	private static void OnMediaOpened(nint handle)
+	{
+		if (typeof(MacOSMediaPlayerExtension).Log().IsEnabled(LogLevel.Debug))
+		{
+			typeof(MacOSMediaPlayerExtension).Log().Debug("OnMediaOpened");
+		}
+
+		var player = GetMediaPlayer(handle);
+		if (player is not null)
+		{
+			player.Events?.RaiseMediaOpened();
+		}
+	}
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	private static void OnMediaEnded(nint handle)
+	{
+		if (typeof(MacOSMediaPlayerExtension).Log().IsEnabled(LogLevel.Debug))
+		{
+			typeof(MacOSMediaPlayerExtension).Log().Debug("OnMediaEnded");
+		}
+
+		var player = GetMediaPlayer(handle);
+		if (player is not null)
+		{
+			var media_player = player._player;
+			NativeDispatcher.Main.Enqueue(() =>
+			{
+				player.Events?.RaiseMediaEnded();
+				media_player.PlaybackSession.PlaybackState = MediaPlaybackState.None;
+				if (media_player is { IsLoopingEnabled: false, IsLoopingAllEnabled: false })
+				{
+					media_player.NextTrack();
+				}
+				if (media_player is { IsLoopingEnabled: true, IsLoopingAllEnabled: false })
+				{
+					media_player.Stop();
+					media_player.Play();
+				}
+				else // IsLoopingAllEnabled
+				{
+					if (player._playlist is not null && player._playlist.Items.Count > 0)
+					{
+						player._playlistIndex = (player._playlistIndex + 1) % player._playlist.Items.Count;
+						player.Uri = player._playlist.Items[player._playlistIndex]?.Source.Uri;
+						media_player.Play();
+					}
+				}
+			});
+		}
+	}
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	private static void OnMediaFailed(nint handle)
+	{
+		if (typeof(MacOSMediaPlayerExtension).Log().IsEnabled(LogLevel.Debug))
+		{
+			typeof(MacOSMediaPlayerExtension).Log().Debug("OnMediaFailed");
+		}
+
+		var player = GetMediaPlayer(handle);
+		if (player is not null)
+		{
+			player.Events?.RaiseMediaFailed(MediaPlayerError.Unknown, null, null);
+		}
+	}
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	private static void OnMediaStalled(nint handle)
+	{
+		if (typeof(MacOSMediaPlayerExtension).Log().IsEnabled(LogLevel.Debug))
+		{
+			typeof(MacOSMediaPlayerExtension).Log().Debug("OnMediaStalled");
+		}
+
+		var player = GetMediaPlayer(handle);
+		if (player is not null)
+		{
+			player._player.PlaybackSession.PlaybackState = MediaPlaybackState.Buffering;
 		}
 	}
 }

@@ -428,7 +428,11 @@ internal static partial class NativeUno
 		delegate* unmanaged[Cdecl]<IntPtr, double, double, void> onVideoDimensionChanged,
 		delegate* unmanaged[Cdecl]<IntPtr, double, void> onDurationChanged,
 		delegate* unmanaged[Cdecl]<IntPtr, double, void> onReadyToPlay,
-		delegate* unmanaged[Cdecl]<IntPtr, double, void> onBufferingProgressChanged
+		delegate* unmanaged[Cdecl]<IntPtr, double, void> onBufferingProgressChanged,
+		delegate* unmanaged[Cdecl]<IntPtr, void> onMediaOpened,
+		delegate* unmanaged[Cdecl]<IntPtr, void> onMediaEnded,
+		delegate* unmanaged[Cdecl]<IntPtr, void> onMediaFailed,
+		delegate* unmanaged[Cdecl]<IntPtr, void> onMediaStalled
 		);
 
 	[LibraryImport("libUnoNativeMac.dylib")]

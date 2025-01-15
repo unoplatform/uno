@@ -40,7 +40,31 @@ inline uno_mediaplayer_buffering_progress_changed_fn_ptr uno_mediaplayer_get_buf
     return uno_mediaplayer_buffering_progress_changed;
 }
 
-void uno_mediaplayer_set_callbacks(uno_mediaplayer_periodic_position_update_fn_ptr periodic_position_update, uno_mediaplayer_rate_changed_fn_ptr rate_changed, uno_mediaplayer_video_dimension_changed_fn_ptr video_dimension_changed, uno_mediaplayer_duration_changed_fn_ptr duration_changed, uno_mediaplayer_ready_to_play_fn_ptr ready_to_play, uno_mediaplayer_buffering_progress_changed_fn_ptr buffering_progress_changed)
+static uno_mediaplayer_event_fn_ptr uno_mediaplayer_on_media_opened;
+inline uno_mediaplayer_event_fn_ptr uno_mediaplayer_get_on_media_opened(void)
+{
+    return uno_mediaplayer_on_media_opened;
+}
+
+static uno_mediaplayer_event_fn_ptr uno_mediaplayer_on_media_ended;
+inline uno_mediaplayer_event_fn_ptr uno_mediaplayer_get_on_media_ended(void)
+{
+    return uno_mediaplayer_on_media_ended;
+}
+
+static uno_mediaplayer_event_fn_ptr uno_mediaplayer_on_media_failed;
+inline uno_mediaplayer_event_fn_ptr uno_mediaplayer_get_on_media_failed(void)
+{
+    return uno_mediaplayer_on_media_failed;
+}
+
+static uno_mediaplayer_event_fn_ptr uno_mediaplayer_on_media_stalled;
+inline uno_mediaplayer_event_fn_ptr uno_mediaplayer_get_on_media_stalled(void)
+{
+    return uno_mediaplayer_on_media_stalled;
+}
+
+void uno_mediaplayer_set_callbacks(uno_mediaplayer_periodic_position_update_fn_ptr periodic_position_update, uno_mediaplayer_rate_changed_fn_ptr rate_changed, uno_mediaplayer_video_dimension_changed_fn_ptr video_dimension_changed, uno_mediaplayer_duration_changed_fn_ptr duration_changed, uno_mediaplayer_ready_to_play_fn_ptr ready_to_play, uno_mediaplayer_buffering_progress_changed_fn_ptr buffering_progress_changed, uno_mediaplayer_event_fn_ptr media_opened, uno_mediaplayer_event_fn_ptr media_ended, uno_mediaplayer_event_fn_ptr media_failed, uno_mediaplayer_event_fn_ptr media_stalled)
 {
     uno_mediaplayer_periodic_position_update = periodic_position_update;
     uno_mediaplayer_rate_changed = rate_changed;
@@ -48,6 +72,10 @@ void uno_mediaplayer_set_callbacks(uno_mediaplayer_periodic_position_update_fn_p
     uno_mediaplayer_duration_changed = duration_changed;
     uno_mediaplayer_ready_to_play = ready_to_play;
     uno_mediaplayer_buffering_progress_changed = buffering_progress_changed;
+    uno_mediaplayer_on_media_opened = media_opened;
+    uno_mediaplayer_on_media_ended = media_ended;
+    uno_mediaplayer_on_media_failed = media_failed;
+    uno_mediaplayer_on_media_stalled = media_stalled;
 }
 
 
@@ -285,9 +313,9 @@ id timeObserver;
     [self.videoLayer addObserver:self forKeyPath:@"videoRect" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionInitial context:(__bridge void * _Nullable)(self.videoLayer)];
     [self.player addObserver:self forKeyPath:@"rate" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionInitial context:(__bridge void * _Nullable)(self.player)];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playBackDidFailed:) name:AVPlayerItemFailedToPlayToEndTimeNotification object:self.player];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playBackDidStall:) name:AVPlayerItemPlaybackStalledNotification object:self.player];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playBackDidFinish:) name:AVPlayerItemDidPlayToEndTimeNotification object:self.player];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playBackDidFailed:) name:AVPlayerItemFailedToPlayToEndTimeNotification object:self.player.currentItem];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playBackDidStall:) name:AVPlayerItemPlaybackStalledNotification object:self.player.currentItem];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playBackDidFinish:) name:AVPlayerItemDidPlayToEndTimeNotification object:self.player.currentItem];
 
     __weak typeof(self) wself = self;
     timeObserver = [self.player addPeriodicTimeObserverForInterval:CMTimeMake(1, 4) queue:dispatch_get_main_queue() usingBlock:^(CMTime time) {
@@ -358,7 +386,7 @@ id timeObserver;
 #if DEBUG_MEDIAPLAYER
                 NSLog(@"UNOMediaPlayer.observeValueForKeyPath keyPath:%@ -> OnMediaFailed", keyPath);
 #endif
-                // TODO callback managed OnMediaFailed
+                uno_mediaplayer_get_on_media_failed()(self);
                 return;
             }
 
@@ -375,7 +403,7 @@ id timeObserver;
 #if DEBUG_MEDIAPLAYER
                 NSLog(@"UNOMediaPlayer.observeValueForKeyPath keyPath:%@ -> MediaOpened", keyPath);
 #endif
-                // TODO callback managed MediaOpened
+                uno_mediaplayer_get_on_media_opened()(self);
             }
         } else {
             self.isVideo = NO;
@@ -430,21 +458,21 @@ id timeObserver;
 #if DEBUG_MEDIAPLAYER
     NSLog(@"playBackDidFinish");
 #endif
-    // TODO: call OnMediaEnded
+    uno_mediaplayer_get_on_media_ended()(self);
 }
 
 - (void) playBackDidFailed:(NSNotification*)notification {
 #if DEBUG_MEDIAPLAYER
     NSLog(@"playBackDidFailed");
 #endif
-    // TODO: call OnMediaFailed
+    uno_mediaplayer_get_on_media_failed()(self);
 }
 
 - (void) playBackDidStall:(NSNotification*)notification {
 #if DEBUG_MEDIAPLAYER
     NSLog(@"playBackDidStall");
 #endif
-    // TODO: call OnMediaStalled
+    uno_mediaplayer_get_on_media_stalled()(self);
 }
 
 @end
