@@ -99,7 +99,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 		RaiseNativeSizeChanged();
 	}
 
-	public Size GetWindowSize()
+	public override Size GetWindowSize()
 	{
 		var nativeFrame = NativeWindow?.Frame ?? CGRect.Empty;
 
