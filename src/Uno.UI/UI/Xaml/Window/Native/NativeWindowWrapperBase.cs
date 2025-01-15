@@ -18,7 +18,7 @@ using Windows.System;
 
 namespace Uno.UI.Xaml.Controls;
 
-internal abstract class NativeWindowWrapperBase
+internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 {
 	public const int InitialWidth = 1024;
 	public const int InitialHeight = 640;
@@ -273,4 +273,8 @@ internal abstract class NativeWindowWrapperBase
 	public void Destroy() { }
 
 	public void Hide() { }
+
+#if __IOS__ || __MACOS__
+	public abstract Size GetWindowSize();
+#endif
 }
