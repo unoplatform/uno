@@ -67,8 +67,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_StartScreen
 		{
 			var item = JumpListItem.CreateWithArguments("Hello", "test");
 			Assert.AreEqual(string.Empty, item.Description);
-			Assert.AreEqual(null, item.Logo);
-			Assert.AreEqual(false, item.RemovedByUser);
+			Assert.IsNull(item.Logo);
+			Assert.IsFalse(item.RemovedByUser);
 			Assert.AreEqual(JumpListItemKind.Arguments, item.Kind);
 		}
 
@@ -93,7 +93,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_StartScreen
 		{
 			var item = JumpListItem.CreateWithArguments("Hello", "Test");
 			item.Logo = null;
-			Assert.AreEqual(null, item.Logo);
+			Assert.IsNull(item.Logo);
 		}
 
 		[TestMethod]
