@@ -162,8 +162,7 @@ namespace Microsoft.UI.Xaml
 
 		private void OnOwnerElementChanged()
 		{
-			if (this.GetParent() is IFrameworkElement fe
-				&& fe.IsParsing)
+			if (this.GetParent() is IFrameworkElement { IsParsing: true })
 			{
 				_pendingOnOwnerElementChanged = true;
 				return;
@@ -518,8 +517,7 @@ namespace Microsoft.UI.Xaml
 
 		internal void RefreshStateTriggers(bool force = false)
 		{
-			if (this.GetParent() is IFrameworkElement fe
-				&& fe.IsParsing)
+			if (this.GetParent() is IFrameworkElement { IsParsing: true })
 			{
 				return;
 			}
