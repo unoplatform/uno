@@ -104,7 +104,7 @@ namespace TestRepro
 			new global::Uno.UI.Xaml.WeakResourceInitializer(this, __ResourceOwner_1 => 
 			{
 				return 
-					new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, (__owner) => 					new SubClasses._MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPageSC0().Build(__owner)
+					new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, (__owner) => 					new __MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPage.SC0().Build(__owner)
 					)					.GenericApply(__that, __nameScope, (ApplyMethod_6					))
 				;
 			}
@@ -173,13 +173,12 @@ namespace TestRepro
 			}
 
 		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
-		private partial class SubClasses;
-		partial class SubClasses
+		private class __MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPage
 		{
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 			[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026")]
 			[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111")]
-			public class _MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPageSC0
+			public class SC0
 			{
 				[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 				private const string __baseUri_prefix_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
@@ -250,7 +249,7 @@ namespace TestRepro
 					var owner = this;
 					_component_0.UpdateResourceBindings();
 				}
-											private void ApplyMethod_10(global::Microsoft.UI.Xaml.Controls.TextBlock __p1, _MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPageSC0 __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
+											private void ApplyMethod_10(global::Microsoft.UI.Xaml.Controls.TextBlock __p1, SC0 __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
 							{
 								__p1.SetBinding(
 									global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
@@ -263,7 +262,7 @@ namespace TestRepro
 								__p1.CreationComplete();
 							}
 
-											private void ApplyMethod_11(global::Microsoft.UI.Xaml.Controls.Button __p1, _MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPageSC0 __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
+											private void ApplyMethod_11(global::Microsoft.UI.Xaml.Controls.Button __p1, SC0 __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
 							{
 								/* _isTopLevelDictionary:False */
 								__that._component_0 = __p1;
@@ -272,14 +271,16 @@ namespace TestRepro
 								__p1.CreationComplete();
 							}
 
-									private void ApplyMethod_12(global::Microsoft.UI.Xaml.Controls.StackPanel __p1, _MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPageSC0 __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
+									private void ApplyMethod_12(global::Microsoft.UI.Xaml.Controls.StackPanel __p1, SC0 __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
 					{
 						global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d, "file:///C:/Project/0/MainPage.xaml", 14, 8);
 						__p1.CreationComplete();
 					}
 
 				[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
-				private partial class SubClasses;
+				private class __MainPage_d6cd66944958ced0c513e0a04797b51d_MyProject__ResourcesSC0_TestReproMainPage
+				{
+				}
 			}
 		}
 		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder { get; } = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);

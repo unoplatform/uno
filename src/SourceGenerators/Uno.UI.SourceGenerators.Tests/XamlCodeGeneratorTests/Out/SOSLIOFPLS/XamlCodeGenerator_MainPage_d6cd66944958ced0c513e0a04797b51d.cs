@@ -156,7 +156,9 @@ namespace TestRepro
 			}
 
 		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
-		private partial class SubClasses;
+		private class __MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPage
+		{
+		}
 		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder { get; } = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
 		private global::Microsoft.UI.Xaml.Controls.Page _component_0
 		{
