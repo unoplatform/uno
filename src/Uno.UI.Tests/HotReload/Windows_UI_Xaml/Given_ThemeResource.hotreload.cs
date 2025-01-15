@@ -58,7 +58,7 @@ namespace Uno.UI.Tests.HotReload.Windows_UI_Xaml
 		}
 
 		[TestMethod]
-		public async Task When_Theme_Changed()
+		public void When_Theme_Changed()
 		{
 			var app = UnitTestsApp.App.EnsureApplication();
 
@@ -71,26 +71,18 @@ namespace Uno.UI.Tests.HotReload.Windows_UI_Xaml
 
 			Assert.AreEqual("LocalVisualTreeLight", textLightThemeMarkup);
 
-			try
+			using var _ = ThemeHelper.SwapSystemTheme();
+
+			if (control.Parent == null)
 			{
-				if (await ThemeHelper.SwapSystemTheme())
-				{
-					if (control.Parent == null)
-					{
-						app.HostView.Children.Add(control); // On UWP the control may have been removed by another test after the async swap
-					}
-					var textDarkThemeMarkup = control.TemplateFromResourceControl.TextBlock6.Text;
-					Assert.AreEqual("LocalVisualTreeDark", textDarkThemeMarkup); //ThemeResource markup change lookup uses the visual tree (rather than original XAML namescope)
-				}
+				app.HostView.Children.Add(control); // On UWP the control may have been removed by another test after the async swap
 			}
-			finally
-			{
-				await ThemeHelper.SwapSystemTheme();
-			}
+			var textDarkThemeMarkup = control.TemplateFromResourceControl.TextBlock6.Text;
+			Assert.AreEqual("LocalVisualTreeDark", textDarkThemeMarkup); //ThemeResource markup change lookup uses the visual tree (rather than original XAML namescope)
 		}
 
 		[TestMethod]
-		public async Task When_Theme_Changed_Static()
+		public void When_Theme_Changed_Static()
 		{
 			var app = UnitTestsApp.App.EnsureApplication();
 
@@ -103,19 +95,9 @@ namespace Uno.UI.Tests.HotReload.Windows_UI_Xaml
 
 			Assert.AreEqual("ApplicationLevelLight", textLightStaticMarkup);
 
-			try
-			{
-				if (await ThemeHelper.SwapSystemTheme())
-				{
-					var textDarkStaticMarkup = control.TemplateFromResourceControl.TextBlock5.Text;
-					Assert.AreEqual("ApplicationLevelLight", textDarkStaticMarkup); //StaticResource markup doesn't change
-					;
-				}
-			}
-			finally
-			{
-				await ThemeHelper.SwapSystemTheme();
-			}
+			using var _ = ThemeHelper.SwapSystemTheme();
+			var textDarkStaticMarkup = control.TemplateFromResourceControl.TextBlock5.Text;
+			Assert.AreEqual("ApplicationLevelLight", textDarkStaticMarkup); //StaticResource markup doesn't change
 		}
 	}
 }
