@@ -13,6 +13,7 @@ using Windows.Storage.Pickers;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace UITests.Windows_Storage
 {
@@ -96,6 +97,7 @@ namespace UITests.Windows_Storage
 		}
 	}
 
+	[TestClass]
 	public class Pickable_StorageFolder_Tests : Given_StorageFolder_Native_Base
 	{
 		private readonly StorageFolder _rootFolder;
@@ -108,6 +110,7 @@ namespace UITests.Windows_Storage
 		protected override Task<StorageFolder> GetRootFolderAsync() => Task.FromResult(_rootFolder);
 	}
 
+	[TestClass]
 	public class Pickable_StorageFile_Tests : Given_StorageFile_Native_Base
 	{
 		private readonly StorageFolder _rootFolder;
@@ -120,6 +123,7 @@ namespace UITests.Windows_Storage
 		protected override Task<StorageFolder> GetRootFolderAsync() => Task.FromResult(_rootFolder);
 	}
 
+	[TestClass]
 	public class Pickable_FileIO_Tests : Given_FileIO_Native_Base
 	{
 		private readonly StorageFolder _rootFolder;
