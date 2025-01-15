@@ -20,7 +20,7 @@ using Size = Windows.Foundation.Size;
 
 namespace Uno.UI.Xaml.Controls;
 
-internal class NativeWindowWrapper : NativeWindowWrapperBase
+internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapper
 {
 	private static readonly Lazy<NativeWindowWrapper> _instance = new(() => new NativeWindowWrapper());
 
