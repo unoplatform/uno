@@ -73,8 +73,8 @@ internal class RootViewController : UINavigationController, IRotationAwareViewCo
 #if !__TVOS__
 		_skCanvasView.Paused = false;
 		_skCanvasView.EnableSetNeedsDisplay = false;
+		_skCanvasView.FramebufferOnly = false;
 #endif
-		_skCanvasView.BackgroundColor = UIColor.Red;
 		_skCanvasView.Frame = View!.Bounds;
 		_skCanvasView.AutoresizingMask = UIViewAutoresizing.All;
 		_skCanvasView.PaintSurface += OnPaintSurface;
@@ -110,14 +110,12 @@ internal class RootViewController : UINavigationController, IRotationAwareViewCo
 
 	public void SetXamlRoot(XamlRoot xamlRoot) => _xamlRoot = xamlRoot;
 
-	public SKColor BackgroundColor { get; set; } = SKColors.White;
-
 	private void OnPaintSurface(object? sender, SkiaEventArgs e)
 	{
 		if (_xamlRoot?.VisualTree.RootElement is { } rootElement)
 		{
 			var surface = e.Surface;
-			surface.Canvas.Clear(BackgroundColor);
+			surface.Canvas.Clear(SKColors.Transparent);
 			surface.Canvas.SetMatrix(SKMatrix.CreateScale((float)_xamlRoot.RasterizationScale, (float)_xamlRoot.RasterizationScale));
 			if (rootElement.Visual is { } rootVisual)
 			{
