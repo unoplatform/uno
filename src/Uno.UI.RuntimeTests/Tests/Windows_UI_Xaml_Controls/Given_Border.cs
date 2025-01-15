@@ -630,10 +630,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if HAS_UNO
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
-#else
+#endif
 		[TestMethod]
 		[RunsOnUIThread]
-#endif
 		public async Task Nested_Element_Tapped()
 		{
 			var SUT = new Border()
@@ -669,10 +668,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
-#else
+#endif
 		[TestMethod]
 		[RunsOnUIThread]
-#endif
 		public async Task Parent_DoubleTapped_When_Child_Has_Tapped()
 		{
 			var SUT = new Border()
