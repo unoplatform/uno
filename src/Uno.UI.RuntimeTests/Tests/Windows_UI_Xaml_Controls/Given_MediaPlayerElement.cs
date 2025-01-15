@@ -584,11 +584,7 @@ public partial class Given_MediaPlayerElement
 				);
 	}
 
-
-
-
-
-	public void CheckMediaPlayerExtensionAvailability()
+	private void CheckMediaPlayerExtensionAvailability()
 	{
 #if HAS_UNO
 		if (_MediaPlayer.ImplementedByExtensions && !ApiExtensibility.IsRegistered<IMediaPlayerExtension>())
