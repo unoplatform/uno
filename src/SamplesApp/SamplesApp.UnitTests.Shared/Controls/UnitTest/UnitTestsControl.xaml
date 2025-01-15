@@ -10,7 +10,7 @@
 			 d:DesignHeight="300"
 			 d:DesignWidth="400">
 
-	<Grid RowSpacing="8">
+	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="0" x:Name="failedTestDetailsRow" />
@@ -88,12 +88,12 @@
 				</Button>
 			</Grid>
 
-			<StackPanel Orientation="Horizontal">
+			<StackPanel Orientation="Horizontal" Margin="0,8">
 				<TextBlock Text="Status: " />
 				<TextBlock x:Name="runStatus" Text="Not initialized" />
 			</StackPanel>
 
-			<StackPanel Orientation="Horizontal" Spacing="8">
+			<StackPanel Orientation="Horizontal" Spacing="8" Margin="0,0,0,8">
 				<StackPanel.Resources>
 					<Style TargetType="TextBlock">
 						<Setter Property="VerticalAlignment" Value="Center" />
