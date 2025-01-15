@@ -16,7 +16,7 @@ internal class InjectedInputState
 	public InjectedInputState(PointerDeviceType type)
 	{
 		Type = type;
-		StartNewSequence();
+		StartNewSequence(true);
 	}
 
 	public PointerDeviceType Type { get; }
@@ -31,9 +31,17 @@ internal class InjectedInputState
 
 	public PointerPointProperties Properties { get; set; } = new();
 
-	public void StartNewSequence()
+	public void StartNewSequence(bool initial = false)
 	{
-		Timestamp = (ulong)Stopwatch.GetElapsedTime(_initialTimestamp).TotalMicroseconds;
+		if (initial)
+		{
+			Timestamp = (ulong)Stopwatch.GetElapsedTime(_initialTimestamp).TotalMicroseconds;
+		}
+		else
+		{
+			Timestamp = Timestamp + 1000; // Continue from the previous timestamp, but move forward in time by 1ms
+		}
+
 		FrameId = (uint)(Timestamp / 1000);
 	}
 
