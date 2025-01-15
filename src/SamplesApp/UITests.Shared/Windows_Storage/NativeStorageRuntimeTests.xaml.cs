@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
@@ -97,7 +97,7 @@ namespace UITests.Windows_Storage
 		}
 	}
 
-	[TestClass]
+#pragma warning disable MSTEST0030 // Type containing [TestMethod] should be marked with [TestClass] - instantiated explicitly.
 	public class Pickable_StorageFolder_Tests : Given_StorageFolder_Native_Base
 	{
 		private readonly StorageFolder _rootFolder;
@@ -110,7 +110,6 @@ namespace UITests.Windows_Storage
 		protected override Task<StorageFolder> GetRootFolderAsync() => Task.FromResult(_rootFolder);
 	}
 
-	[TestClass]
 	public class Pickable_StorageFile_Tests : Given_StorageFile_Native_Base
 	{
 		private readonly StorageFolder _rootFolder;
@@ -123,7 +122,6 @@ namespace UITests.Windows_Storage
 		protected override Task<StorageFolder> GetRootFolderAsync() => Task.FromResult(_rootFolder);
 	}
 
-	[TestClass]
 	public class Pickable_FileIO_Tests : Given_FileIO_Native_Base
 	{
 		private readonly StorageFolder _rootFolder;
@@ -135,4 +133,5 @@ namespace UITests.Windows_Storage
 
 		protected override Task<StorageFolder> GetRootFolderAsync() => Task.FromResult(_rootFolder);
 	}
+#pragma warning restore MSTEST0030
 }
