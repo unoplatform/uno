@@ -42,7 +42,7 @@ internal interface INativeWindowWrapper : INativeAppWindow
 
 	void ExtendContentIntoTitleBar(bool extend);
 
-#if __IOS__
+#if __IOS__ || __MACOS__
 	Size GetWindowSize();
 #endif
 }
