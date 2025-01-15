@@ -4,6 +4,7 @@
     "projects": [
       "AddIns\\Uno.UI.Lottie\\Uno.UI.Lottie.Skia.csproj",
       "AddIns\\Uno.UI.MediaPlayer.Skia.Gtk\\Uno.UI.MediaPlayer.Skia.Gtk.csproj",
+      "AddIns\\Uno.UI.MediaPlayer.Skia.Win32\\Uno.UI.MediaPlayer.Skia.Win32.csproj",
       "AddIns\\Uno.UI.MediaPlayer.Skia.X11\\Uno.UI.MediaPlayer.Skia.X11.csproj",
       "AddIns\\Uno.UI.MSAL\\Uno.UI.MSAL.Skia.csproj",
       "AddIns\\Uno.UI.MediaPlayer.Skia.Gtk\\Uno.UI.MediaPlayer.Skia.Gtk.csproj",

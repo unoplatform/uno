@@ -15,6 +15,7 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Uno.UI.Svg")]
 [assembly: InternalsVisibleTo("Uno.UI.MediaPlayer.Skia.Gtk")]
 [assembly: InternalsVisibleTo("Uno.UI.MediaPlayer.Skia.X11")]
+[assembly: InternalsVisibleTo("Uno.UI.MediaPlayer.Skia.Win32")]
 [assembly: InternalsVisibleTo("Uno.UI.MediaPlayer.WebAssembly")]
 [assembly: InternalsVisibleTo("Uno.UI.XamlHost")]
 

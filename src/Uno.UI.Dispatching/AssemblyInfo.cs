@@ -23,6 +23,7 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Uno.UI.XamlHost.Skia.Wpf")]
 
 [assembly: InternalsVisibleTo("Uno.UI.MediaPlayer.Skia.X11")]
+[assembly: InternalsVisibleTo("Uno.UI.MediaPlayer.Skia.Win32")]
 
 [assembly: InternalsVisibleTo("SamplesApp")]
 [assembly: InternalsVisibleTo("SamplesApp.Droid")]
