@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 using UIKit;
 using Uno.UI.Runtime.Skia.AppleUIKit;
 using Uno.UI.Xaml.Controls.Extensions;
@@ -133,6 +134,25 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 	public void UpdateProperties()
 	{
+		if (_textBoxView is null || _owner.TextBox is not { } textBox)
+		{
+			return;
+		}
+
+		_textBoxView.AutocapitalizationType = InputScopeHelper.ConvertInputScopeToCapitalization(textBox.InputScope);
+		_textBoxView.KeyboardType = InputScopeHelper.ConvertInputScopeToKeyboardType(textBox.InputScope);
+
+		_textBoxView.SpellCheckingType = textBox.IsSpellCheckEnabled ? UITextSpellCheckingType.Yes : UITextSpellCheckingType.No;
+		_textBoxView.AutocorrectionType = textBox.IsSpellCheckEnabled ? UITextAutocorrectionType.Yes : UITextAutocorrectionType.No;
+
+		_textBoxView.ReturnKeyType = textBox.InputScope == InputScopes.Search ? UIReturnKeyType.Search : UIReturnKeyType.Default;
+
+		if (textBox.IsSpellCheckEnabled)
+		{
+			_textBoxView.AutocapitalizationType = UITextAutocapitalizationType.Sentences;
+		}
+
+		_textBoxView.SecureTextEntry = textBox is PasswordBox;
 		SetSoftKeyboardTheme();
 	}
 
@@ -167,6 +187,7 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 			// We need to create a new TextBoxView.
 			var inputText = GetNativeText() ?? textBox.Text;
 			_textBoxView = CreateNativeView(textBox);
+			UpdateProperties();
 			SetNativeText(inputText ?? string.Empty);
 		}
 	}

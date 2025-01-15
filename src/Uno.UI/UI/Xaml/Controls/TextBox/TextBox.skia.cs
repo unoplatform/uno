@@ -170,6 +170,12 @@ public partial class TextBox
 		TextBoxView?.UpdateFont();
 	}
 
+	partial void OnInputScopeChangedPartial(InputScope newValue) => TextBoxView?.UpdateProperties();
+
+	partial void OnIsSpellCheckEnabledChangedPartial(bool newValue) => TextBoxView?.UpdateProperties();
+
+	partial void OnIsTextPredictionEnabledChangedPartial(bool newValue) => TextBoxView?.UpdateProperties();
+
 	partial void OnMaxLengthChangedPartial(int newValue) => TextBoxView?.UpdateMaxLength();
 
 	partial void OnFlowDirectionChangedPartial()
@@ -187,7 +193,6 @@ public partial class TextBox
 			sv.HorizontalScrollBarVisibility = TextWrapping == TextWrapping.NoWrap ? ScrollBarVisibility.Hidden : ScrollBarVisibility.Disabled;
 		}
 	}
-
 
 	partial void OnTextAlignmentChangedPartial(TextAlignment newValue)
 	{
