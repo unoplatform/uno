@@ -899,24 +899,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_isInChildSubclass = true;
 			TryAnnotateWithGeneratorSource(writer);
 			var ns = $"{_defaultNamespace}.__Resources";
+			using var _ = isTopLevel ? writer.BlockInvariant($"namespace {ns}") : null;
 
-			IDisposable? SubClassesRoot()
+			// If _isHotReloadEnabled we generate it anyway so we can remove sub-classes without causing rude edit.
+			if (!_isHotReloadEnabled && CurrentScope.Subclasses is not { Count: >= 1 })
 			{
-				if (_isHotReloadEnabled || CurrentScope.Subclasses is { Count: >= 1 })
-				{
-					// If _isHotReloadEnabled we generate it anyway so we can remove sub-classes without causing rude edit.
-					writer.AppendLineIndented("[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
-					writer.AppendLineIndented("[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]");
-					return writer.BlockInvariant($"{(isTopLevel ? "internal" : "private")} class __{_fileUniqueId}_{string.Join("_", _scopeStack.Select(scope => scope.Name))}");
-				}
-				else
-				{
-					return null;
-				}
+				return;
 			}
 
-			using (isTopLevel ? writer.BlockInvariant($"namespace {ns}") : null)
-			using (SubClassesRoot())
+			writer.AppendLineIndented("[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
+			writer.AppendLineIndented("[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]");
+			using (writer.BlockInvariant($"{(isTopLevel ? "internal" : "private")} class __{_fileUniqueId}_{string.Join("_", _scopeStack.Select(scope => scope.Name))}"))
 			{
 				foreach (var kvp in CurrentScope.Subclasses)
 				{
