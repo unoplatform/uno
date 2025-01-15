@@ -47,7 +47,9 @@ namespace TestNamespace
 		}
 
 		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
-		private partial class SubClasses;
+		private class __MyDictionary_b7707bcf1e73425b710b6a5d04177088_TestNamespaceTestClass
+		{
+		}
 	}
 }
 namespace MyProject
@@ -119,5 +121,7 @@ namespace MyProject
 namespace MyProject.__Resources
 {
 	[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
-	internal partial class SubClasses;
+	internal class __MyDictionary_b7707bcf1e73425b710b6a5d04177088_MyDictionaryRD
+	{
+	}
 }
