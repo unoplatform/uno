@@ -246,6 +246,65 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				ResourceDictionary.SetActiveTheme(theme);
 			}
 		}
+
+		[TestMethod]
+		public void When_Key_Added_Then_NotFound_Cleared()
+		{
+			var resourceDictionary = new ResourceDictionary();
+
+			Assert.IsFalse(resourceDictionary.TryGetValue("Key1", out var res1, shouldCheckSystem: false));
+			resourceDictionary["Key1"] = "Value1";
+			Assert.IsTrue(resourceDictionary.TryGetValue("Key1", out var res2, shouldCheckSystem: false));
+		}
+
+		[TestMethod]
+		public void When_Merged_Dictionary_Added_Then_NotFound_Cleared()
+		{
+			var resourceDictionary = new ResourceDictionary();
+
+			Assert.IsFalse(resourceDictionary.TryGetValue("Key1", out var res1, shouldCheckSystem: false));
+
+			var m1 = new ResourceDictionary();
+			m1["Key1"] = "Value1";
+
+			resourceDictionary.MergedDictionaries.Add(m1);
+
+			Assert.IsTrue(resourceDictionary.TryGetValue("Key1", out var res2, shouldCheckSystem: false));
+		}
+
+		[TestMethod]
+		public void When_Merged_Dictionary_Key_Added_Then_NotFound_Cleared()
+		{
+			var resourceDictionary = new ResourceDictionary();
+
+			Assert.IsFalse(resourceDictionary.TryGetValue("Key1", out var res1, shouldCheckSystem: false));
+
+			var m1 = new ResourceDictionary();
+			resourceDictionary.MergedDictionaries.Add(m1);
+
+			Assert.IsFalse(resourceDictionary.TryGetValue("Key1", out var res2, shouldCheckSystem: false));
+
+			m1["Key1"] = "Value1";
+
+			Assert.IsTrue(resourceDictionary.TryGetValue("Key1", out var res3, shouldCheckSystem: false));
+		}
+
+		[TestMethod]
+		public void When_Theme_Dictionary_Key_Added_Then_NotFound_Cleared()
+		{
+			var resourceDictionary = new ResourceDictionary();
+
+			Assert.IsFalse(resourceDictionary.TryGetValue("Key1", out var res1, shouldCheckSystem: false));
+
+			var m1 = new ResourceDictionary();
+			resourceDictionary.ThemeDictionaries["Light"] = m1;
+
+			Assert.IsFalse(resourceDictionary.TryGetValue("Key1", out var res2, shouldCheckSystem: false));
+
+			m1["Key1"] = "Value1";
+
+			Assert.IsTrue(resourceDictionary.TryGetValue("Key1", out var res3, shouldCheckSystem: false));
+		}
 #endif
 	}
 }

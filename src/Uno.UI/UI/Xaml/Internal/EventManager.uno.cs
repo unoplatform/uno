@@ -129,15 +129,26 @@ internal sealed partial class EventManager
 				//if (auto layoutStorage = item.m_pElement->GetLayoutStorage())
 				{
 					var args = new SizeChangedEventArgs(item.Element, item.OldSize, item.Element.RenderSize);
-					// AddRef for args is done on the managed side
-					try
+
+					/// <remarks>
+					/// This method runs in a separate method in order to workaround for the following issue:
+					/// https://github.com/dotnet/runtime/issues/111281
+					/// which prevents AOT on WebAssembly when try/catch/finally are found in the same method.
+					/// </remarks>
+					static void RaiseItemSizeChanged(SizeChangedQueueItem item, SizeChangedEventArgs args)
 					{
-						item.Element.RaiseSizeChanged(args);
+						// AddRef for args is done on the managed side
+						try
+						{
+							item.Element.RaiseSizeChanged(args);
+						}
+						catch
+						{
+							// Empty catch to have the same behavior as "IGNOREHR" in WinUI.
+						}
 					}
-					catch
-					{
-						// Empty catch to have the same behavior as "IGNOREHR" in WinUI.
-					}
+
+					RaiseItemSizeChanged(item, args);
 				}
 
 				//TraceIndividualSizeChangedEnd(UINT64(item.m_pElement));

@@ -54,7 +54,7 @@ namespace Windows.Devices.Sensors
 		{
 			//if both delegates are not null,
 			//we have already started reading previously
-			if (_shaken == null || _readingChanged == null)
+			if (_shakenWrapper.Event == null || _readingChangedWrapper.Event == null)
 			{
 				NativeMethods.StartReading();
 			}
@@ -64,7 +64,7 @@ namespace Windows.Devices.Sensors
 		private void DetachDeviceMotion()
 		{
 			//we only stop when both are null
-			if (_shaken == null && _readingChanged == null)
+			if (_shakenWrapper.Event == null && _readingChangedWrapper.Event == null)
 			{
 				NativeMethods.StopReading();
 			}
