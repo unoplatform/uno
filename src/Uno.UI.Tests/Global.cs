@@ -7,7 +7,7 @@ using Microsoft.UI.Xaml;
 namespace Uno.UI.Tests
 {
 	[TestClass]
-	public class Global
+	public static class Global
 	{
 		[AssemblyInitialize]
 		public static void GlobalTestInitialize(TestContext _)
