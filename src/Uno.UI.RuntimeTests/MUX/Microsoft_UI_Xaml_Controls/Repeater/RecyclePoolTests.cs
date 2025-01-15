@@ -32,7 +32,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 	[TestClass]
 	public class RecyclePoolTests : MUXApiTestBase
 	{
-
+		[TestMethod]
 		public void ValidateElementsHaveCorrectKeys()
 		{
 			RunOnUIThread.Execute(() =>

@@ -610,6 +610,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(list.SelectedItems[1], child3);
 		}
 
+		[TestMethod]
 		public async Task NoItemSelectedMultiple()
 		{
 			var child1 = new ListViewItem
