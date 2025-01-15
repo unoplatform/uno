@@ -3844,31 +3844,67 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private void TryValidateContentPresenterBinding(IIndentedStringBuilder writer, XamlObjectDefinition objectDefinition, XamlMemberDefinition member)
 		{
 			TryAnnotateWithGeneratorSource(writer);
-			if (
-				SymbolEqualityComparer.Default.Equals(FindType(objectDefinition.Type), Generation.ContentPresenterSymbol.Value)
-				&& member.Member.Name == "Content"
-			)
+
+			// detect content binding in: <ContentPresenter Content="{Binding}" />
+			if (FindType(objectDefinition.Type)?.Is(Generation.ContentPresenterSymbol.Value) == true &&
+				member.Member.Name == "Content" &&
+				member.Objects.FirstOrDefault(x => x.Type.Name == "Binding") is { } binding)
 			{
-				var binding = member.Objects.FirstOrDefault(o => o.Type.Name == "Binding");
+				// In Uno, ContentPresenter.Content overrides the local value of ContentPresenter.DataContext,
+				// which in turn breaks the binding source for the Content binding. However, there are certain exceptions
+				// where it would be fine.
 
-				if (binding != null)
+				// It can either be TemplatedParent or Self. In either cases, it does not use the inherited
+				// DataContext, which falls outside of the scenario we want to avoid.
+				if (binding.Members.Any(x => x.Member.Name == "RelativeSource"))
 				{
-					var hasRelativeSource = binding.Members
-						.Any(m =>
-							m.Member.Name == "RelativeSource"
-						// It can either be TemplatedParent or Self. In either cases, it does not use the inherited
-						// DataContext, which falls outside of the scenario we want to avoid.
-						);
-
-					if (!hasRelativeSource)
-					{
-						writer.AppendLine();
-						writer.AppendIndented("#error Using a non-template binding expression on Content " +
-							"will likely result in an undefined runtime behavior, as ContentPresenter.Content overrides " +
-							"the local value of ContentPresenter.DataContent. " +
-							"Use ContentControl instead if you really need a normal binding on Content.\n");
-					}
+					return;
 				}
+
+				// {Binding} is fine, because it doesnt alter the data-context.
+				if (binding.Members.Count == 0)
+				{
+					return;
+				}
+
+				// {Binding .} or {Binding Path=.} are fine too, because it doesnt alter the data-context.
+				if ((FindImplicitContentMember(binding, XamlConstants.PositionalParameters) ?? FindImplicitContentMember(binding, "Path")) is { } path &&
+					path.Value?.ToString() == ".")
+				{
+					return;
+				}
+
+				// Not inside any template.
+				var template = FindAncestor(objectDefinition, x => FrameworkTemplateTypes.Contains(x.Type.Name));
+				if (template == null)
+				{
+					return;
+				}
+
+				// If it is within a <ControlTemplate>, regardless if it descends from ContentControl or not.
+				if (template?.Type.Name is "ControlTemplate")
+				{
+					return;
+				}
+
+				// note: <DataTemplate> with ContentPresenter.Content bound to arbitrary path should work.
+				// but is failing to resolve somehow. We will not allow this case to compile:
+				// 	<ContentControl Content="new TestData { Text='lalala' }">
+				//		<ContentControl.ContentTemplate>
+				//			<DataTemplate>
+				//				<ContentPresenter Content="{Binding Text}" />
+				//	ContentControl // DC=TestData, Content=TestData, Content.Binding=[Path=, RelativeSource=]
+				//		ContentPresenter // DC=TestData, Content=TestData, Content.Binding=[Path=Content, RelativeSource=TemplatedParent]
+				//			ContentPresenter // DC=TestData, Content=null, Content.Binding=[Path=Text, RelativeSource=]
+				//												^ the binding didnt produces the expected value
+				//				ImplicitTextBlock // DC=TestData, Text=''
+
+				writer.AppendLine();
+				writer.AppendIndented(
+					"#error Using a non-template binding expression on Content " +
+					"will likely result in an undefined runtime behavior, as ContentPresenter.Content overrides " +
+					"the local value of ContentPresenter.DataContent. " +
+					"Use ContentControl instead if you really need a normal binding on Content.\n");
 			}
 		}
 
@@ -5087,6 +5123,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				if (FindType(objectDefinition.Type) is { } type)
 				{
 					return type;
+				}
+
+				objectDefinition = objectDefinition.Owner;
+			}
+
+			return null;
+		}
+
+		private XamlObjectDefinition? FindAncestor(XamlObjectDefinition? objectDefinition, Func<XamlObjectDefinition, bool> predicate)
+		{
+			while (objectDefinition is not null)
+			{
+				if (predicate(objectDefinition))
+				{
+					return objectDefinition;
 				}
 
 				objectDefinition = objectDefinition.Owner;
