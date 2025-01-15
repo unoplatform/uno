@@ -55,6 +55,7 @@ namespace TestRepro
 			;
 		}
 
+		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
 		private class __MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_TestReproMyResourceDictionary
 		{
@@ -238,6 +239,7 @@ namespace MyProject
 }
 namespace MyProject.__Resources
 {
+	[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 	[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
 	internal class __MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_MyResourceDictionaryRD
 	{

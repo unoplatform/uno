@@ -104,6 +104,7 @@ namespace TestRepro
 				__p1.CreationComplete();
 			}
 
+		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
 		private class __MainPage_d6cd66944958ced0c513e0a04797b51d_TestReproMainPage
 		{
