@@ -655,36 +655,36 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await WindowHelper.WaitForIdle();
 				Assert.AreEqual(0, lv.SelectedIndex);
 				Assert.IsTrue(popup.IsOpen);
-				Assert.AreEqual(keyDownHandled, 1);
-				Assert.AreEqual(keyDownNotHandled, 0);
+				Assert.AreEqual(1, keyDownHandled);
+				Assert.AreEqual(0, keyDownNotHandled);
 
 				await KeyboardHelper.Down();
 				await WindowHelper.WaitForIdle();
 				Assert.AreEqual(1, lv.SelectedIndex);
 				Assert.IsTrue(popup.IsOpen);
-				Assert.AreEqual(keyDownHandled, 2);
-				Assert.AreEqual(keyDownNotHandled, 0);
+				Assert.AreEqual(2, keyDownHandled);
+				Assert.AreEqual(0, keyDownNotHandled);
 
 				await KeyboardHelper.Right();
 				await WindowHelper.WaitForIdle();
 				Assert.AreEqual(1, lv.SelectedIndex);
 				Assert.IsTrue(popup.IsOpen);
-				Assert.AreEqual(keyDownHandled, 2);
-				Assert.AreEqual(keyDownNotHandled, 1);
+				Assert.AreEqual(2, keyDownHandled);
+				Assert.AreEqual(1, keyDownNotHandled);
 
 				await KeyboardHelper.Left();
 				await WindowHelper.WaitForIdle();
 				Assert.AreEqual(1, lv.SelectedIndex);
 				Assert.IsTrue(popup.IsOpen);
-				Assert.AreEqual(keyDownHandled, 3); // actually handled in textbox
-				Assert.AreEqual(keyDownNotHandled, 1);
+				Assert.AreEqual(3, keyDownHandled); // actually handled in textbox
+				Assert.AreEqual(1, keyDownNotHandled);
 
 				await KeyboardHelper.Up();
 				await WindowHelper.WaitForIdle();
 				Assert.AreEqual(0, lv.SelectedIndex);
 				Assert.IsTrue(popup.IsOpen);
-				Assert.AreEqual(keyDownHandled, 4);
-				Assert.AreEqual(keyDownNotHandled, 1);
+				Assert.AreEqual(4, keyDownHandled);
+				Assert.AreEqual(1, keyDownNotHandled);
 			}
 			finally
 			{
@@ -773,12 +773,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await WindowHelper.WaitForIdle();
 				Assert.AreEqual(1, lv.SelectedIndex);
 				Assert.IsTrue(popup.IsOpen);
-				Assert.AreEqual(keyDownHandled, 2);
-				Assert.AreEqual(keyDownNotHandled, 0);
+				Assert.AreEqual(2, keyDownHandled);
+				Assert.AreEqual(0, keyDownNotHandled);
 
 				await KeyboardHelper.Enter();
-				Assert.AreEqual(keyDownHandled, 3);
-				Assert.AreEqual(keyDownNotHandled, 0);
+				Assert.AreEqual(3, keyDownHandled);
+				Assert.AreEqual(0, keyDownNotHandled);
 			}
 			finally
 			{
@@ -869,8 +869,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await WindowHelper.WaitForIdle();
 				Assert.AreEqual(1, lv.SelectedIndex);
 				Assert.IsTrue(popup.IsOpen);
-				Assert.AreEqual(keyDownHandled, 2);
-				Assert.AreEqual(keyDownNotHandled, 0);
+				Assert.AreEqual(2, keyDownHandled);
+				Assert.AreEqual(0, keyDownNotHandled);
 
 				if (escape)
 				{
@@ -880,8 +880,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				{
 					await KeyboardHelper.Enter();
 				}
-				Assert.AreEqual(keyDownHandled, 3);
-				Assert.AreEqual(keyDownNotHandled, 0);
+				Assert.AreEqual(3, keyDownHandled);
+				Assert.AreEqual(0, keyDownNotHandled);
 			}
 			finally
 			{

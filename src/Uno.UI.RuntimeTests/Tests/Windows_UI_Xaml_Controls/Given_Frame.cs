@@ -329,8 +329,8 @@ public class Given_Frame
 				Assert.AreEqual(navigatedCurrentSourcePageType, SUT.SourcePageType);
 			};
 
-			Assert.AreEqual(null, SUT.SourcePageType);
-			Assert.AreEqual(null, SUT.CurrentSourcePageType);
+			Assert.IsNull(SUT.SourcePageType);
+			Assert.IsNull(SUT.CurrentSourcePageType);
 
 			// Navigate from null to SourceTypePage1
 

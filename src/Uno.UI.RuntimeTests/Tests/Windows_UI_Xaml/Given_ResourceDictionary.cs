@@ -235,8 +235,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				var materialized4 = (SolidColorBrush)copy[TestBrush];
 
 				// validation
-				Assert.AreEqual(false, ReferenceEquals(materialized1, materialized2)); // we are expecting these to be different, as the CopyFrom should copy them as WeakResourceInitializer...
-				Assert.AreEqual(false, ReferenceEquals(materialized3, materialized4)); // ^same
+				Assert.IsFalse(ReferenceEquals(materialized1, materialized2)); // we are expecting these to be different, as the CopyFrom should copy them as WeakResourceInitializer...
+				Assert.IsFalse(ReferenceEquals(materialized3, materialized4)); // ^same
 				Assert.AreNotEqual(materialized2Color, materialized4.Color); // check the theme change is actually applied (otherwise it would void the next check)
 				Assert.AreEqual(materialized3.Color, materialized4.Color); // check the theme change is propagated to the source res-dict
 			}

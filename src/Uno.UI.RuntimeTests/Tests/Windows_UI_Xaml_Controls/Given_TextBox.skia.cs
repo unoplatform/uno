@@ -1390,7 +1390,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, key, modifiers));
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(false, handled);
+			Assert.IsFalse(handled);
 			Assert.AreEqual("Hello world", SUT.Text);
 			Assert.AreEqual(1, SUT.SelectionStart);
 			Assert.AreEqual(9, SUT.SelectionLength);

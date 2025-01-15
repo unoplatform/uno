@@ -714,7 +714,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				await WindowHelper.WaitForIdle();
 
-				Assert.AreEqual(SUT.Items.Count, 3);
+				Assert.AreEqual(3, SUT.Items.Count);
 
 				using (c.BatchUpdate())
 				{
@@ -727,7 +727,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// Items are materialized when the popup is opened
 				await WindowHelper.WaitForIdle();
 
-				Assert.AreEqual(SUT.Items.Count, 5);
+				Assert.AreEqual(5, SUT.Items.Count);
 				Assert.IsNotNull(SUT.ContainerFromItem("One"));
 				Assert.IsNotNull(SUT.ContainerFromItem("Four"));
 				Assert.IsNotNull(SUT.ContainerFromItem("Five"));
@@ -818,7 +818,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				WindowHelper.WindowContent = SUT;
 				SUT.DataContext = new { MySource = c, SelectedItem = "Two" };
 
-				Assert.AreEqual(SUT.Items.Count, 12);
+				Assert.AreEqual(12, SUT.Items.Count);
 			}
 			finally
 			{
@@ -864,7 +864,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// Not required on WinUI. Fixing this in Uno requires porting ComboBox.
 				await WindowHelper.WaitForIdle();
 
-				Assert.AreEqual(SUT.Items.Count, 3);
+				Assert.AreEqual(3, SUT.Items.Count);
 
 				using (c.BatchUpdate())
 				{
@@ -1182,7 +1182,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			comboBox.Focus(FocusState.Programmatic);
 
 			Assert.AreEqual(-1, comboBox.SelectedIndex);
-			Assert.AreEqual(false, comboBox.IsDropDownOpen);
+			Assert.IsFalse(comboBox.IsDropDownOpen);
 			await KeyboardHelper.PressKeySequence("$d$_r#$u$_r");
 
 			var expectedSelectedIndex = isTextSearchEnabled ? 2 : -1;
