@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,7 +24,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.VisualStateManager_Lazy_Tests
 			// Any unit test in any class that sets the theme explicitly
 			// should make sure to reset that operation.
 			// It's not this test responsibility to fix what other tests break.
-			Assert.IsNull(Application.Current.IsThemeSetExplicitly);
+			Assert.IsFalse(Application.Current.IsThemeSetExplicitly);
 		}
 
 		[TestMethod]
