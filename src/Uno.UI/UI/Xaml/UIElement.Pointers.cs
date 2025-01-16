@@ -1226,20 +1226,38 @@ namespace Microsoft.UI.Xaml
 			}
 
 			var originalPending = _pendingRaisedEvent;
+
 			try
 			{
-				_pendingRaisedEvent = (this, evt, args);
-
-				return RaiseEvent(evt, args, ctx);
-			}
-			catch (Exception e)
-			{
-				if (this.Log().IsEnabled(LogLevel.Error))
+				/// <remarks>
+				/// This method runs in a separate method in order to workaround for the following issue:
+				/// https://github.com/dotnet/runtime/issues/111281
+				/// which prevents AOT on WebAssembly when try/catch/finally are found in the same method.
+				/// </remarks>
+				bool InnerRaiseEvent(
+					RoutedEvent evt,
+					PointerRoutedEventArgs args,
+					BubblingContext ctx,
+					ref (UIElement sender, RoutedEvent @event, PointerRoutedEventArgs args) pendingRaisedEvent)
 				{
-					this.Log().Error($"Failed to raise '{evt.Name}': {e}");
+					try
+					{
+						_pendingRaisedEvent = (this, evt, args);
+
+						return RaiseEvent(evt, args, ctx);
+					}
+					catch (Exception e)
+					{
+						if (this.Log().IsEnabled(LogLevel.Error))
+						{
+							this.Log().Error($"Failed to raise '{evt.Name}': {e}");
+						}
+
+						return false;
+					}
 				}
 
-				return false;
+				return InnerRaiseEvent(evt, args, ctx, ref _pendingRaisedEvent);
 			}
 			finally
 			{

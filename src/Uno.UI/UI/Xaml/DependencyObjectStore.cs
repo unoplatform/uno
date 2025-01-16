@@ -1632,7 +1632,7 @@ namespace Microsoft.UI.Xaml
 			{
 				if (candidate is FrameworkElement fe)
 				{
-					if (fe.Resources is { IsEmpty: false }) // It's legal (if pointless) on UWP to set Resources to null from user code, so check
+					if (fe.TryGetResources() is { IsEmpty: false }) // It's legal (if pointless) on UWP to set Resources to null from user code, so check
 					{
 						yield return fe.Resources;
 					}

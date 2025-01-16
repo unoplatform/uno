@@ -1411,6 +1411,8 @@ namespace Microsoft.UI.Xaml.Controls
 				var element = m_tpDynamicPrimaryCommands?[(int)changeIndex];
 				if (element is { })
 				{
+					element.SetParent(this);
+
 					element.IsCompact = shouldBeCompact;
 					PropagateDefaultLabelPositionToElement(element);
 				}
@@ -1425,6 +1427,8 @@ namespace Microsoft.UI.Xaml.Controls
 					var element = m_tpDynamicPrimaryCommands?[i];
 					if (element is { })
 					{
+						element.SetParent(null);
+
 						PropagateDefaultLabelPositionToElement(element);
 					}
 				}
@@ -1453,6 +1457,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 				if (element is { })
 				{
+					element.SetParent(this);
+
 					PropagateDefaultLabelPositionToElement(element);
 					SetOverflowStyleAndInputModeOnSecondaryCommand((int)changeIndex, true);
 					PropagateDefaultLabelPositionToElement(element);
@@ -1468,6 +1474,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 					if (element is { })
 					{
+						element.SetParent(null);
+
 						SetOverflowStyleAndInputModeOnSecondaryCommand(i, true);
 						PropagateDefaultLabelPositionToElement(element);
 					}
