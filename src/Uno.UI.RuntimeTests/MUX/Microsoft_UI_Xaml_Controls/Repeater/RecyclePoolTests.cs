@@ -32,6 +32,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 	[TestClass]
 	public class RecyclePoolTests : MUXApiTestBase
 	{
+		[Ignore("https://github.com/unoplatform/uno/issues/9080")]
 		[TestMethod]
 		public void ValidateElementsHaveCorrectKeys()
 		{
