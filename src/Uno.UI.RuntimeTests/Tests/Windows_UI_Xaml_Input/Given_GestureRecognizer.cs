@@ -25,8 +25,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 	{
 		[TestMethod]
 		[RunsOnUIThread]
-#if !HAS_INPUT_INJECTOR
-		[Ignore("InputInjector is not supported on this platform.")]
+#if !HAS_INPUT_INJECTOR || (!HAS_UNO_WINUI && !WINAPPSDK) // Requires pointer injection and WinUI API
+		[Ignore("This test is not supported on this platform.")]
 #endif
 #if !WINAPPSDK
 		[DataRow(PointerDeviceType.Mouse)]
