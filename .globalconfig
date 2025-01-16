@@ -171,7 +171,7 @@ dotnet_diagnostic.MSTEST0023.severity = warning
 dotnet_diagnostic.MSTEST0025.severity = warning
 
 # MSTEST0026: Avoid conditional access in assertions
-dotnet_diagnostic.MSTEST0026.severity = warning
+dotnet_diagnostic.MSTEST0026.severity = suggestion
 
 # MSTEST0029: Public method should be test method
 dotnet_diagnostic.MSTEST0029.severity = warning

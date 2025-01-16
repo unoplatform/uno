@@ -68,7 +68,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 #if __ANDROID__
 				// This is the meat of the test - we verify that the actual color of the TextBlock matches the managed Color, which will only be the
 				// case if it was correctly measured and arranged as requested after the theme changed.
-				Assert.AreEqual(false, iconTextBlock.IsLayoutRequested);
+				Assert.IsFalse(iconTextBlock.IsLayoutRequested);
 				Assert.AreEqual((Android.Graphics.Color)((iconTextBlock.Foreground as SolidColorBrush).Color), iconTextBlock.NativeArrangedColor);
 #endif
 			}
