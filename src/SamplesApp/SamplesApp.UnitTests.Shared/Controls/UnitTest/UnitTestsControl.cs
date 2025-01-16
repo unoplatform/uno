@@ -803,6 +803,21 @@ namespace Uno.UI.Samples.Tests
 								});
 							}
 
+							if (test.Requires100Scaling)
+							{
+								await TestServices.WindowHelper.RootElementDispatcher.RunAsync(() =>
+								{
+									Private.Infrastructure.TestServices.WindowHelper.Set100PercentScaling();
+								});
+								cleanupActions.Add(async () =>
+								{
+									await TestServices.WindowHelper.RootElementDispatcher.RunAsync(() =>
+									{
+										Private.Infrastructure.TestServices.WindowHelper.RestoreOriginalScaling();
+									});
+								});
+							}
+
 							await GeneralInitAsync();
 
 							object returnValue = null;

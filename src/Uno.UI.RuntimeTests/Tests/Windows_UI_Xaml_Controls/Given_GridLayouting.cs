@@ -933,6 +933,7 @@ public partial class Given_GridLayouting
 #elif __ANDROID__
 	[Ignore("Fails on Android in CI, but passes locally.")]
 #endif
+	[Requires100Scaling]
 	public void When_Grid_Has_Two_Variable_Sized_Element_With_ColSpan_and_One_Auto_Columns()
 	{
 		using var _ = new AssertionScope();
@@ -1123,6 +1124,7 @@ public partial class Given_GridLayouting
 #if __APPLE_UIKIT__
 	[Ignore("Fails on iOS.")]
 #endif
+	[Requires100Scaling]
 	public void When_Grid_Has_One_Element_With_ColSpan_and_RowSpan_and_Three_Columns()
 	{
 		using var _ = new AssertionScope();
@@ -1167,6 +1169,7 @@ public partial class Given_GridLayouting
 #if __APPLE_UIKIT__
 	[Ignore("Fails on iOS.")]
 #endif
+	[Requires100Scaling]
 	public void When_Grid_Has_One_Element_With_ColSpan_and_RowSpan_and_Three_Columns_And_Middle()
 	{
 		using var _ = new AssertionScope();

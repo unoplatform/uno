@@ -36,6 +36,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if !__SKIA__
 		[Ignore("TODO: Fix on other platforms")]
 #endif
+		[Requires100Scaling]
 		public async Task When_Parent_Has_BorderThickness()
 		{
 			var image = new Image()
