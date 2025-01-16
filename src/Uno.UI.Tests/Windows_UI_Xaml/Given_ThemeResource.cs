@@ -658,21 +658,21 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			AssertEx.AssertHasColor(tb.Foreground, Colors.Black);
 			Assert.AreEqual(DependencyPropertyValuePrecedences.Animations, tb.GetCurrentHighestValuePrecedence(TextBlock.ForegroundProperty));
 
-			using var _ = SwapSystemTheme();
+			using var _1 = SwapSystemTheme();
 			AssertEx.AssertHasColor(tb.Foreground, Colors.White);
 			Assert.AreEqual(DependencyPropertyValuePrecedences.Animations, tb.GetCurrentHighestValuePrecedence(TextBlock.ForegroundProperty));
 
 
-			using var _ = SwapSystemTheme();
+			_ = SwapSystemTheme();
 			AssertEx.AssertHasColor(tb.Foreground, Colors.Black);
 			Assert.AreEqual(DependencyPropertyValuePrecedences.Animations, tb.GetCurrentHighestValuePrecedence(TextBlock.ForegroundProperty));
 
-			using var _ = SwapSystemTheme();
+			_ = SwapSystemTheme();
 			AssertEx.AssertHasColor(tb.Foreground, Colors.White);
 			Assert.AreEqual(DependencyPropertyValuePrecedences.Animations, tb.GetCurrentHighestValuePrecedence(TextBlock.ForegroundProperty));
 
 
-			using var _ = SwapSystemTheme();
+			_ = SwapSystemTheme();
 			AssertEx.AssertHasColor(tb.Foreground, Colors.Black);
 			Assert.AreEqual(DependencyPropertyValuePrecedences.Animations, tb.GetCurrentHighestValuePrecedence(TextBlock.ForegroundProperty));
 		}
@@ -688,16 +688,16 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			AssertEx.AssertHasColor(ellipse.Stroke, Colors.DarkGreen);
 
-			using var _ = SwapSystemTheme();
+			using var _1 = SwapSystemTheme();
 			AssertEx.AssertHasColor(ellipse.Stroke, Colors.LightGreen);
 
-			using var _ = SwapSystemTheme();
+			_ = SwapSystemTheme();
 			AssertEx.AssertHasColor(ellipse.Stroke, Colors.DarkGreen);
 
-			using var _ = SwapSystemTheme();
+			_ = SwapSystemTheme();
 			AssertEx.AssertHasColor(ellipse.Stroke, Colors.LightGreen);
 
-			using var _ = SwapSystemTheme();
+			_ = SwapSystemTheme();
 			AssertEx.AssertHasColor(ellipse.Stroke, Colors.DarkGreen);
 		}
 

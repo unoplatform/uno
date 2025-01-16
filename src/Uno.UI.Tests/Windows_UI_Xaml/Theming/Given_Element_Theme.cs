@@ -32,7 +32,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 			var border = new Border();
 			Assert.AreEqual(initialTheme, border.ActualTheme);
 
-			using var _ = SwapSystemTheme();
+			using var _ = ThemeHelper.SwapSystemTheme();
 
 			var updatedTheme = Application.Current.RequestedTheme == ApplicationTheme.Dark ?
 				ElementTheme.Dark : ElementTheme.Light;
