@@ -28,8 +28,8 @@ internal record UnitTestMethodInfo
 			HasCustomAttribute<RequiresFullWindowAttribute>(method) ||
 			HasCustomAttribute<RequiresFullWindowAttribute>(method.DeclaringType);
 		Requires100Scaling =
-			HasCustomAttribute<Requires100ScalingAttribute>(method) ||
-			HasCustomAttribute<Requires100ScalingAttribute>(method.DeclaringType);
+			HasCustomAttribute<RequiresScalingAttribute>(method) ||
+			HasCustomAttribute<RequiresScalingAttribute>(method.DeclaringType);
 		PassFiltersAsFirstParameter =
 			HasCustomAttribute<FiltersAttribute>(method) ||
 			HasCustomAttribute<FiltersAttribute>(method.DeclaringType);
