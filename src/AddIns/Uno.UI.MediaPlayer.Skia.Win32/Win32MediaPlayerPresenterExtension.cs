@@ -133,7 +133,7 @@ public class Win32MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 			}
 			else if (!_hwndToExtension.TryGetValue(hwnd, out ext))
 			{
-				throw new Exception($"{nameof(WndProc)} was fired on a {nameof(HWND)} before it was added to, or after it was removed from, {nameof(ext)}.");
+				throw new Exception($"{nameof(WndProc)} was fired on a {nameof(HWND)} before it was added to, or after it was removed from, {nameof(_hwndToExtension)}.");
 			}
 
 			if (ext.TryGetTarget(out var target))
