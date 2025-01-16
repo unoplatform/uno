@@ -170,10 +170,10 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.VisualStateManagerTests
 			group.Transitions.Add(transition);
 
 			VisualStateManager.GoToState(control, "state1", true);
-			Assert.IsTrue(transition.Storyboard.State == Timeline.TimelineState.Active);
+			Assert.AreEqual(Timeline.TimelineState.Active, transition.Storyboard.State);
 
 			VisualStateManager.GoToState(control, "state2", true);
-			Assert.IsTrue(transition.Storyboard.State == Timeline.TimelineState.Stopped);
+			Assert.AreEqual(Timeline.TimelineState.Stopped, transition.Storyboard.State);
 		}
 
 		[TestMethod]
@@ -183,10 +183,10 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.VisualStateManagerTests
 			var animation = group.States[0].Storyboard = AnimateTag(control, "state1", 5);
 
 			VisualStateManager.GoToState(control, "state1", true);
-			Assert.IsTrue(animation.State == Timeline.TimelineState.Active);
+			Assert.AreEqual(Timeline.TimelineState.Active, animation.State);
 
 			VisualStateManager.GoToState(control, "state2", true);
-			Assert.IsTrue(animation.State == Timeline.TimelineState.Stopped);
+			Assert.AreEqual(Timeline.TimelineState.Stopped, animation.State);
 		}
 
 		[TestMethod]

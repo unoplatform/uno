@@ -39,13 +39,15 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.TextBlockTests
 		{
 			var tb = new TextBlock();
 			tb.Foreground = SolidColorBrushHelper.Red;
-			Assert.AreEqual(SolidColorBrushHelper.Red.Color, (tb.Foreground as SolidColorBrush)?.Color);
+			Assert.IsInstanceOfType(tb.Foreground, typeof(SolidColorBrush));
+			Assert.AreEqual(SolidColorBrushHelper.Red.Color, ((SolidColorBrush)tb.Foreground).Color);
 
 			tb.Foreground = null;
-			Assert.AreEqual(null, tb.Foreground);
+			Assert.IsNull(tb.Foreground);
 
 			tb.Foreground = SolidColorBrushHelper.AliceBlue;
-			Assert.AreEqual(SolidColorBrushHelper.AliceBlue.Color, (tb.Foreground as SolidColorBrush)?.Color);
+			Assert.IsInstanceOfType(tb.Foreground, typeof(SolidColorBrush));
+			Assert.AreEqual(SolidColorBrushHelper.AliceBlue.Color, ((SolidColorBrush)tb.Foreground).Color);
 		}
 #endif
 

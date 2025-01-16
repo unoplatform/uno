@@ -67,43 +67,43 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await UITestHelper.Load(cc);
 
 			// The button should be disabled because the outer control is disabled
-			Assert.AreEqual(cc.IsEnabled, false);
-			Assert.AreEqual(SUT.IsEnabled, false);
+			Assert.IsFalse(cc.IsEnabled);
+			Assert.IsFalse(SUT.IsEnabled);
 
 			// Once the outer control is enabled, the button can control its own IsEnabled
 			cc.IsEnabled = true;
-			Assert.AreEqual(cc.IsEnabled, true);
-			Assert.AreEqual(SUT.IsEnabled, true);
+			Assert.IsTrue(cc.IsEnabled);
+			Assert.IsTrue(SUT.IsEnabled);
 
 			// We test once again to test behaviour when the value is set while running
 			// instead of during initialization
 			cc.IsEnabled = false;
-			Assert.AreEqual(cc.IsEnabled, false);
-			Assert.AreEqual(SUT.IsEnabled, false);
+			Assert.IsFalse(cc.IsEnabled);
+			Assert.IsFalse(SUT.IsEnabled);
 
 			// Now let's make sure Button.IsEnabled doesn't
 			// affect the outer ContentControl.IsEnabled
 
 			// cc.IsEnbaled is false
 			SUT.IsEnabled = true;
-			Assert.AreEqual(cc.IsEnabled, false);
-			Assert.AreEqual(SUT.IsEnabled, false);
+			Assert.IsFalse(cc.IsEnabled);
+			Assert.IsFalse(SUT.IsEnabled);
 
 			SUT.IsEnabled = false;
-			Assert.AreEqual(cc.IsEnabled, false);
-			Assert.AreEqual(SUT.IsEnabled, false);
+			Assert.IsFalse(cc.IsEnabled);
+			Assert.IsFalse(SUT.IsEnabled);
 
 			cc.IsEnabled = true;
-			Assert.AreEqual(cc.IsEnabled, true);
-			Assert.AreEqual(SUT.IsEnabled, false);
+			Assert.IsTrue(cc.IsEnabled);
+			Assert.IsFalse(SUT.IsEnabled);
 
 			SUT.IsEnabled = true;
-			Assert.AreEqual(cc.IsEnabled, true);
-			Assert.AreEqual(SUT.IsEnabled, true);
+			Assert.IsTrue(cc.IsEnabled);
+			Assert.IsTrue(SUT.IsEnabled);
 
 			SUT.IsEnabled = false;
-			Assert.AreEqual(cc.IsEnabled, true);
-			Assert.AreEqual(SUT.IsEnabled, false);
+			Assert.IsTrue(cc.IsEnabled);
+			Assert.IsFalse(SUT.IsEnabled);
 		}
 
 		[TestMethod]

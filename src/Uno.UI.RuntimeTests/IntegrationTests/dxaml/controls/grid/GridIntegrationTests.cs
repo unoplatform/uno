@@ -561,8 +561,9 @@ namespace Microsoft.UI.Xaml.Tests.Controls.Grid_Tests
 			});
 		}
 
-#if !__ANDROID__ && !__IOS__
 		[TestMethod]
+#if __ANDROID__ || __IOS__
+		[Ignore]
 #endif
 		public async Task CanZeroWeightedCellsShrinkToZeroSize()
 		{

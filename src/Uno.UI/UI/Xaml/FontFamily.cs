@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Uno.UI;
+using Windows.Networking;
 
 namespace Microsoft.UI.Xaml.Media
 {
@@ -11,8 +12,13 @@ namespace Microsoft.UI.Xaml.Media
 		public FontFamily(string familyName)
 		{
 			Source = familyName;
-
 			Init(familyName);
+
+			// A workaround before font fallback is supported. Issue: https://github.com/unoplatform/uno/issues/10148 
+			if (familyName.Equals("Segoe Fluent Icons,Segoe MDL2 Assets", StringComparison.OrdinalIgnoreCase))
+			{
+				Source = "Segoe MDL2 Assets";
+			}
 
 			// This instance is immutable, we can cache the hash code.
 			_hashCode = familyName.GetHashCode();

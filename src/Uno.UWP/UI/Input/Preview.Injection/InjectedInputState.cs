@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using System.Diagnostics;
 using System.Linq;
 using Windows.Devices.Input;
 using Windows.Foundation;
@@ -10,10 +11,12 @@ namespace Windows.UI.Input.Preview.Injection;
 
 internal class InjectedInputState
 {
+	private static long _initialTimestamp = Stopwatch.GetTimestamp();
+
 	public InjectedInputState(PointerDeviceType type)
 	{
 		Type = type;
-		StartNewSequence();
+		StartNewSequence(true);
 	}
 
 	public PointerDeviceType Type { get; }
@@ -28,10 +31,18 @@ internal class InjectedInputState
 
 	public PointerPointProperties Properties { get; set; } = new();
 
-	public void StartNewSequence()
+	public void StartNewSequence(bool initial = false)
 	{
-		Timestamp = (ulong)DateTime.Now.Ticks;
-		FrameId = (uint)(Timestamp / TimeSpan.TicksPerMillisecond);
+		if (initial)
+		{
+			Timestamp = (ulong)Stopwatch.GetElapsedTime(_initialTimestamp).TotalMicroseconds;
+		}
+		else
+		{
+			Timestamp = Timestamp + 1000; // Continue from the previous timestamp, but move forward in time by 1ms
+		}
+
+		FrameId = (uint)(Timestamp / 1000);
 	}
 
 	public void Update(PointerEventArgs args)
