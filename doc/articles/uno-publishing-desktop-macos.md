@@ -17,7 +17,7 @@ The most basic app bundle can be created with:
 dotnet publish -f net8.0-desktop -p:PackageFormat=app
 ```
 
-However this bundle would depend on the correct version of dotnet, `net8.0` in this case, to be installed on the Mac computer. In practice macOS end-users expect app bundles to be self-contained and not require anything extraneous to execute on their Mac computer.
+However, this bundle would depend on the correct version of dotnet, `net8.0` in this case, to be installed on the Mac computer. In practice macOS end-users expect app bundles to be self-contained and not require anything extraneous to execute on their Mac computer.
 
 You can create such a self-contained app bundle with:
 
@@ -34,16 +34,16 @@ The resulting app bundle, which is a directory, will be located at `bin/Release/
 > [!IMPORTANT]
 > The code signing process requires access to the Internet to retrieve a secure timestamp.
 
-To ensure the integrity of the app bundle Apple requires you to digitally sign your code. The key difference to produce a signed app bundle is to add `-p:CodesignKey={{identity}}` to specify which identity should be used to produce the signature.
+To ensure the integrity of the app bundle Apple requires you to digitally sign your code. The key difference to producing a signed app bundle is to add `-p:CodesignKey={{identity}}` to specify which identity should be used to produce the signature.
 
 ```bash
 dotnet publish -f net8.0-desktop -r osx-arm64 -p:SelfContained=true -p:PackageFormat=app -p:CodesignKey={{identity}}
 ```
 
-You can use the special identity `-` to produce an adhoc signature. This basically tells macOS's [Gatekeeper](https://support.apple.com/en-us/102445) that the file is safe to use **locally**, however, it does not help distribute the app bundle.
+You can use the special identity `-` to produce an ad-hoc signature. This basically tells macOS's [Gatekeeper](https://support.apple.com/en-us/102445) that the file is safe to use **locally**, however, it does not help distribute the app bundle.
 
 > [!NOTE]
-> Beside needed access to the Internet the code signing process slows down the builds. For local testing of your app you do not need to sign the app bundle.
+> Besides needed access to the Internet the code signing process slows down the builds. For local testing of your app, you do not need to sign the app bundle.
 
 #### How to find your identity
 
@@ -53,7 +53,7 @@ If you have not already, you need to create your [developer certificates](https:
 security find-identity -v
 ```
 
-This will show you every **valid** identities available on your Mac.
+This will show you every **valid** identity available on your Mac.
 
 ```text
   1) 8C8D47A2A6F7428971A8AA5C6D8F7A30D344E93C "Apple Development: John Appleby (XXXXXXXXXX)"
@@ -63,7 +63,8 @@ This will show you every **valid** identities available on your Mac.
      4 valid identities found
 ```
 
-To properly sign an app bundle for publishing you need to use the `"Developer ID Application: *"` or its thumbprint (long hex number) entry as the identity. Both
+To properly sign an app bundle for publishing you need to use the `"Developer ID Application: *"` or its thumbprint (long hex number) entry as the identity. 
+Both
 
 ```bash
 dotnet publish -f net8.0-desktop -r {{RID}} -p:SelfContained=true -p:PackageFormat=app -p:CodesignKey="Developer ID Application: John Appleby (XXXXXXXXXX)"
@@ -115,7 +116,7 @@ where
 
 - `{{notarytool-credentials}}` is the name of your credentials inside the key store.
 - `--apple-id` provides the email address used for your [Apple Account](https://developer.apple.com/account).
-- `--team-id` provides your team id, a 10 character code. [How to find it](https://developer.apple.com/help/account/manage-your-team/locate-your-team-id).
+- `--team-id` provides your team ID, a 10-character code. [How to find it](https://developer.apple.com/help/account/manage-your-team/locate-your-team-id).
 - `--password` is an [app specific password](https://support.apple.com/en-us/102654) created specifically for `notarytool`
 
 > [!NOTE]
@@ -177,7 +178,7 @@ where
 
 - `{{notarytool-credentials}}` is the name of your credentials inside the key store.
 - `--apple-id` provides the email address used for your [Apple Account](https://developer.apple.com/account).
-- `--team-id` provides your team id, a 10 character code. [How to find it](https://developer.apple.com/help/account/manage-your-team/locate-your-team-id).
+- `--team-id` provides your team ID, a 10-character code. [How to find it](https://developer.apple.com/help/account/manage-your-team/locate-your-team-id).
 - `--password` is an [app specific password](https://support.apple.com/en-us/102654) created specifically for `notarytool`
 
 > [!NOTE]

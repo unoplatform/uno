@@ -29,7 +29,7 @@ You can create a basic `Info.plist` file yourself, using any text editor. The co
   <key>CFBundleExecutable</key>
   <string></string>
 
-  <!-- If not specified a `icon.icns` file will create from the app icons and referenced here -->
+  <!-- If not specified an `icon.icns` file will be created from the app icons and referenced here -->
   <key>CFBundleIconFile</key>
   <string></string>
 
@@ -102,7 +102,7 @@ dotnet publish -f net8.0-desktop -p:SelfContained=true -p:PackageFormat=app -p:U
 
 ### Trimming
 
-App bundles that are distributed should be self-contained applications that depend only on the OS to execute. However bundling the dotnet runtime, base class libraries and Uno Platform libraries produce a rather large application size.
+App bundles that are distributed should be self-contained applications that depend only on the OS to execute. However bundling the dotnet runtime, base class libraries, and Uno Platform libraries produce a rather large application size.
 
 To reduce the size of the app bundle you can enable dotnet's [trimming](https://learn.microsoft.com/en-us/dotnet/core/deploying/trimming/trimming-options#enable-trimming) when publishing the app, using `-p:PublishTrimmed=true`. The full command from the CLI would be:
 
@@ -111,7 +111,7 @@ dotnet publish -f net8.0-desktop -p:SelfContained=true -p:PackageFormat=app -p:P
 ```
 
 > [!IMPORTANT]
-> Your code and dependencies needs to be [trimmer-aware](https://learn.microsoft.com/en-us/dotnet/core/deploying/trimming/prepare-libraries-for-trimming) and the trimmed app bundle should be carefully tested to ensure the code removed by the trimmer does not affect its functionality.
+> Your code and dependencies need to be [trimmer-aware](https://learn.microsoft.com/en-us/dotnet/core/deploying/trimming/prepare-libraries-for-trimming) and the trimmed app bundle should be carefully tested to ensure the code removed by the trimmer does not affect its functionality.
 
 ### Optional files
 
@@ -139,7 +139,7 @@ dotnet publish -f net8.0-desktop -p:SelfContained=true -p:PackageFormat=app -p:U
 
 #### Including `libmscordaccore.dylib` and `libmscordbi.dylib` debugging support
 
-Extraneous debugging support libraries are included by `dotnet publish`. They are, by default, removed from the app bundle since it unlikely to be used for debugging.
+Extraneous debugging support libraries are included by `dotnet publish`. They are, by default, removed from the app bundle since it's unlikely to be used for debugging.
 
 If you wish to include the extra debugging libraries inside your app bundle add the `-p:UnoMacOSIncludeNativeDebugging=true` on the CLI.
 
@@ -161,7 +161,7 @@ dotnet publish -f net8.0-desktop -p:SelfContained=true -p:PackageFormat=app -p:U
 
 ### Symlink to /Applications
 
-By default the produced disk image will contain a symlink to `/Applications` so users can drag-and-drop the app bundle inside it. If you do not want the symlink to be present inside the disk image you can add `-p:UnoMacOSIncludeSymlinkToApplications=false` on the command line.
+By default, the produced disk image will contain a symlink to `/Applications` so users can drag-and-drop the app bundle inside it. If you do not want the symlink to be present inside the disk image you can add `-p:UnoMacOSIncludeSymlinkToApplications=false` on the command line.
 
 ```bash
 dotnet publish -f net8.0-desktop -p:SelfContained=true -p:PackageFormat=dmg -p:UnoMacOSIncludeSymlinkToApplications=false -p:CodesignKey={{identity}} -p:DiskImageSigningKey={{identity}}
@@ -169,7 +169,7 @@ dotnet publish -f net8.0-desktop -p:SelfContained=true -p:PackageFormat=dmg -p:U
 
 ### Additional Customization
 
-Further disk image customization is possible but can be tricky since it requires modification to the `.DS_Store` binary file inside the disk image (many trials and errors). If more control is required (e.g. icon positioning, background image...) we recommend using 3rd party tools created specifically for this purpose. Some free/open source examples are:
+Further disk image customization is possible but can be tricky since it requires modification to the `.DS_Store` binary file inside the disk image (many trials and errors). If more control is required (e.g. icon positioning, background image...) we recommend using 3rd party tools created specifically for this purpose. Some free/open-source examples are:
 
 - [create-dmg](https://github.com/sindresorhus/create-dmg)
 - [dmgbuild](https://dmgbuild.readthedocs.io/en/latest/)
