@@ -25,7 +25,8 @@ sudo usermod --append --groups lxd $USER # In order for the current user to use 
 > [!NOTE]
 > In the above script, replace `core22` with `core20` if building on Ubuntu 20.04, or `core24` if building on Ubuntu 24.04.
 > [!NOTE]
-> Docker may interfere with Lxd causing network connectivity issues, for solutions see: https://documentation.ubuntu.com/lxd/en/stable-5.0/howto/network_bridge_firewalld/#prevent-connectivity-issues-with-lxd-and-docker
+> Docker may interfere with Lxd causing network connectivity issues, for solutions see: 
+> https://documentation.ubuntu.com/lxd/en/stable-5.0/howto/network_bridge_firewalld/#prevent-connectivity-issues-with-lxd-and-docker
 
 ### Generate a Snap file
 
@@ -65,7 +66,7 @@ You can also publish your app to the [Snap store](https://snapcraft.io/store).
 
 - NativeAOT is not yet supported
 - R2R is not yet supported
-- Single file publish is not yet supported
+- Single file publishing is not yet supported
 
 > [!NOTE]
 > Publishing is a [work in progress](https://github.com/unoplatform/uno/issues/16440)
