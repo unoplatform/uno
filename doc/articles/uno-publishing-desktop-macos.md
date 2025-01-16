@@ -63,7 +63,7 @@ This will show you every **valid** identity available on your Mac.
      4 valid identities found
 ```
 
-To properly sign an app bundle for publishing you need to use the `"Developer ID Application: *"` or its thumbprint (long hex number) entry as the identity. 
+To properly sign an app bundle for publishing you need to use the `"Developer ID Application: *"` or its thumbprint (long hex number) entry as the identity.
 Both
 
 ```bash
