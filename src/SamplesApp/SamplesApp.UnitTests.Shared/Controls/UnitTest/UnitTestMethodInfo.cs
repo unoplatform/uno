@@ -27,9 +27,18 @@ internal record UnitTestMethodInfo
 		RequiresFullWindow =
 			HasCustomAttribute<RequiresFullWindowAttribute>(method) ||
 			HasCustomAttribute<RequiresFullWindowAttribute>(method.DeclaringType);
-		Requires100Scaling =
-			HasCustomAttribute<RequiresScalingAttribute>(method) ||
-			HasCustomAttribute<RequiresScalingAttribute>(method.DeclaringType);
+
+		float? scaling = null;
+		if (method.DeclaringType?.GetCustomAttribute<RequiresScalingAttribute>() is { } attribute)
+		{
+			scaling = attribute.Scaling;
+		}
+
+		if (method.GetCustomAttribute<RequiresScalingAttribute>() is { } methodAttribute)
+		{
+			scaling = methodAttribute.Scaling;
+		}
+
 		PassFiltersAsFirstParameter =
 			HasCustomAttribute<FiltersAttribute>(method) ||
 			HasCustomAttribute<FiltersAttribute>(method.DeclaringType);
