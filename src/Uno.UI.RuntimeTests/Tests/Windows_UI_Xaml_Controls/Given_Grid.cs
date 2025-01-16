@@ -554,7 +554,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-		[Requires100Scaling]
+		[RequiresScaling(1f)]
 		public async Task When_Negative_Margin_Should_Not_Clip()
 		{
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
@@ -616,7 +616,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-		[Requires100Scaling]
+		[RequiresScaling(1f)]
 		public async Task When_RenderTransform_Ensure_Correct_Clipping()
 		{
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))

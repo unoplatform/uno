@@ -765,6 +765,7 @@ public partial class Given_GridLayouting
 #elif __ANDROID__
 	[Ignore("Fails on Android in CI, but passes locally.")]
 #endif
+	[RequiresScaling(1f)]
 	public void When_Grid_Has_Two_Star_Uneven_Colums_And_One_Row()
 	{
 		using var _ = new AssertionScope();
@@ -933,7 +934,7 @@ public partial class Given_GridLayouting
 #elif __ANDROID__
 	[Ignore("Fails on Android in CI, but passes locally.")]
 #endif
-	[Requires100Scaling]
+	[RequiresScaling(1f)]
 	public void When_Grid_Has_Two_Variable_Sized_Element_With_ColSpan_and_One_Auto_Columns()
 	{
 		using var _ = new AssertionScope();
@@ -1016,6 +1017,7 @@ public partial class Given_GridLayouting
 #if __APPLE_UIKIT__
 	[Ignore("Fails on iOS.")]
 #endif
+	[RequiresScaling(1f)]
 	public void When_Grid_Has_One_Element_With_ColSpan_and_Three_Columns()
 	{
 		using var _ = new AssertionScope();
@@ -1124,7 +1126,7 @@ public partial class Given_GridLayouting
 #if __APPLE_UIKIT__
 	[Ignore("Fails on iOS.")]
 #endif
-	[Requires100Scaling]
+	[RequiresScaling(1f)]
 	public void When_Grid_Has_One_Element_With_ColSpan_and_RowSpan_and_Three_Columns()
 	{
 		using var _ = new AssertionScope();
@@ -1169,7 +1171,7 @@ public partial class Given_GridLayouting
 #if __APPLE_UIKIT__
 	[Ignore("Fails on iOS.")]
 #endif
-	[Requires100Scaling]
+	[RequiresScaling(1f)]
 	public void When_Grid_Has_One_Element_With_ColSpan_and_RowSpan_and_Three_Columns_And_Middle()
 	{
 		using var _ = new AssertionScope();
@@ -1213,6 +1215,7 @@ public partial class Given_GridLayouting
 #if __APPLE_UIKIT__
 	[Ignore("Fails on iOS.")]
 #endif
+	[RequiresScaling(1f)]
 	public void When_Grid_Has_One_Element_With_ColSpan_Overflow_and_Three_Columns()
 	{
 		using var _ = new AssertionScope();
@@ -2244,6 +2247,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[RequiresScaling(1f)]
 	public void When_Nine_grid_and_one_auto_cell_and_three_children()
 	{
 		using var _ = new AssertionScope();
@@ -2340,6 +2344,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[RequiresScaling(1f)]
 	public void When_Nine_grid_and_one_auto_cell_and_four_children()
 	{
 		using var _ = new AssertionScope();
@@ -2828,6 +2833,7 @@ public partial class Given_GridLayouting
 	}
 
 	[TestMethod]
+	[RequiresScaling(1f)]
 	public void When_One_Child_Centered_And_Auto_row_And_Star_Column()
 	{
 		var SUT = new Grid() { Name = "test" };
