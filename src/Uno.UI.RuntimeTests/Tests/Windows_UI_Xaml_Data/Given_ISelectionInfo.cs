@@ -36,7 +36,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Data
 
 			lv.SelectedIndex = 3;
 
-			Assert.AreEqual(true, source.IsSelected(3), "source.IsSelected(3) == true");
+			Assert.IsTrue(source.IsSelected(3), "source.IsSelected(3) == true");
 			Assert.AreEqual(1, selectionRanges.Count, "selectionRanges.Count == 1");
 			var expectedRange = new ItemIndexRange(3, 1);
 			Assert.AreEqual(expectedRange.FirstIndex, selectionRanges[0].FirstIndex, "selectionRanges[0] == { 3..3, count = 1 }");
@@ -76,9 +76,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Data
 
 			lv.SelectedIndex = 3;
 
-			Assert.AreEqual(false, source.IsSelected(3), "source.IsSelected(3) == false");
+			Assert.IsFalse(source.IsSelected(3), "source.IsSelected(3) == false");
 			Assert.AreEqual(-1, lv.SelectedIndex, "lv.SelectedIndex == -1");
-			Assert.AreEqual(null, lv.SelectedItem, "lv.SelectedItem == null");
+			Assert.IsNull(lv.SelectedItem, "lv.SelectedItem == null");
 		}
 
 		private class SelectionData

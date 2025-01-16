@@ -504,7 +504,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 					fromEnumeration = kvp;
 				}
 			}
-			Assert.IsNotNull(fromEnumeration);
+
 			Assert.IsInstanceOfType(fromEnumeration.Value, typeof(SolidColorBrush));
 		}
 
@@ -954,9 +954,12 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var SUT = new ThemeResource_Named_ResourceDictionary_Override();
 			SUT.ForceLoaded();
 
-			Assert.AreEqual(Colors.Red, (SUT.border01.Background as SolidColorBrush)?.Color);
-			Assert.AreEqual(Colors.Blue, (SUT.border02.Background as SolidColorBrush)?.Color);
-			Assert.AreEqual(Colors.Green, (SUT.border03.Background as SolidColorBrush)?.Color);
+			Assert.IsInstanceOfType(SUT.border01.Background, typeof(SolidColorBrush));
+			Assert.IsInstanceOfType(SUT.border02.Background, typeof(SolidColorBrush));
+			Assert.IsInstanceOfType(SUT.border03.Background, typeof(SolidColorBrush));
+			Assert.AreEqual(Colors.Red, ((SolidColorBrush)SUT.border01.Background).Color);
+			Assert.AreEqual(Colors.Blue, ((SolidColorBrush)SUT.border02.Background).Color);
+			Assert.AreEqual(Colors.Green, ((SolidColorBrush)SUT.border03.Background).Color);
 		}
 	}
 }

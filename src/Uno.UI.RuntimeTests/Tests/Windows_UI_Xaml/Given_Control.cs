@@ -244,7 +244,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.AreEqual(0, ConstructorCounterControl.ConstructorCount);
 			Assert.AreEqual(0, ConstructorCounterControl.ApplyTemplateCount);
 			Assert.AreEqual(0, control.ApplyTemplateCount);
-			Assert.AreEqual(false, control.ApplyTemplate());
+			Assert.IsFalse(control.ApplyTemplate());
 			Assert.AreEqual(0, ConstructorCounterControl.ConstructorCount);
 			Assert.AreEqual(0, ConstructorCounterControl.ApplyTemplateCount);
 			Assert.AreEqual(0, control.ApplyTemplateCount);
@@ -254,7 +254,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.AreEqual(0, ConstructorCounterControl.ConstructorCount);
 			Assert.AreEqual(0, ConstructorCounterControl.ApplyTemplateCount);
 			Assert.AreEqual(0, control.ApplyTemplateCount);
-			Assert.AreEqual(true, control.ApplyTemplate());
+			Assert.IsTrue(control.ApplyTemplate());
 			Assert.AreEqual(1, ConstructorCounterControl.ConstructorCount);
 			Assert.AreEqual(0, ConstructorCounterControl.ApplyTemplateCount);
 			Assert.AreEqual(1, control.ApplyTemplateCount);
@@ -286,7 +286,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.AreEqual(1, ConstructorCounterControl.ConstructorCount);
 			Assert.AreEqual(0, ConstructorCounterControl.ApplyTemplateCount);
 			Assert.AreEqual(1, control.ApplyTemplateCount);
-			Assert.AreEqual(false, control.ApplyTemplate());
+			Assert.IsFalse(control.ApplyTemplate());
 			Assert.AreEqual(1, ConstructorCounterControl.ConstructorCount);
 			Assert.AreEqual(0, ConstructorCounterControl.ApplyTemplateCount);
 			Assert.AreEqual(1, control.ApplyTemplateCount);

@@ -20,11 +20,6 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Tests.BinderTests_TemplatedParent
 {
-	[TestClass]
-	public partial class Given_DependencyProperty_TemplatedParent
-	{
-	}
-
 	public partial class MyObject : FrameworkElement
 	{
 		public MyObject InnerWithValueInheritsDataContext

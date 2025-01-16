@@ -146,7 +146,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.Input.Internal
 
 			double scoreA = ProximityStrategy.GetScore(direction, a, b, maxDistance, true);
 			double scoreB = ProximityStrategy.GetScore(direction, a, c, maxDistance, true);
-			Assert.IsTrue(scoreA == scoreB);
+			Assert.AreEqual(scoreB, scoreA);
 		}
 	}
 }

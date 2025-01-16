@@ -125,15 +125,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await WindowHelper.WaitForLoaded(control);
 				control.Content = items[0];
 				var text1 = await WindowHelper.WaitForNonNull(() => control.FindFirstChild<TextBlock>(tb => tb.Name == "TextBlockInTemplate"), message: $"Template selector not applied for {control.GetType()}");
-				Assert.AreEqual(text1.Text, "Selectable A", $"Template selector not applied for {control.GetType()}");
+				Assert.AreEqual("Selectable A", text1.Text, $"Template selector not applied for {control.GetType()}");
 
 				control.Content = items[1];
 				var text2 = await WindowHelper.WaitForNonNull(() => control.FindFirstChild<TextBlock>(tb => tb.Name == "TextBlockInTemplate"));
-				Assert.AreEqual(text2.Text, "Selectable B");
+				Assert.AreEqual("Selectable B", text2.Text);
 
 				control.Content = items[2];
 				var text3 = await WindowHelper.WaitForNonNull(() => control.FindFirstChild<TextBlock>(tb => tb.Name == "TextBlockInTemplate"));
-				Assert.AreEqual(text3.Text, "Selectable C");
+				Assert.AreEqual("Selectable C", text3.Text);
 			}
 		}
 

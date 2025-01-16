@@ -65,7 +65,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 				await Task.WhenAny(tcs.Task, Task.Delay(30000));
 
 				Assert.IsTrue(tcs.Task.IsCompleted);
-				Assert.AreEqual(count, 3);
+				Assert.AreEqual(3, count);
 			}
 			finally
 			{

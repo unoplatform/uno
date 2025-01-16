@@ -9,10 +9,10 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Composition;
 
+#if __SKIA__
 [TestClass]
 public class Given_ContainerVisual
 {
-#if __SKIA__
 	[TestMethod]
 	[RunsOnUIThread]
 	public void When_Children_Change()
@@ -40,5 +40,5 @@ public class Given_ContainerVisual
 		Assert.IsFalse(containerVisual.IsChildrenRenderOrderDirty);
 		Assert.AreEqual(1, children.Count());
 	}
-#endif
 }
+#endif

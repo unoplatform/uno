@@ -8,15 +8,15 @@ using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 {
+	//Web Assembly does not have a helper that take screenshots yet
+	//MacOs interprets colors differently
+#if __WASM__ || __MACOS__
+	[Ignore]
+#endif
 	[TestClass]
 	[RunsOnUIThread]
 	public class Basics_AutomatedTransformation
 	{
-
-		//Web Assembly does not have a helper that take screenshots yet
-		//MacOs interprets colors differently
-#if !__WASM__ && !__MACOS__
-
 		private const string White = "#FFFFFF";
 		private const float PixelIncertitude = 2;
 
@@ -219,7 +219,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 
 			ImageAssert.HasColorAt(result, x, y, color, tolerance: 25);
 		}
-#endif
 	}
 }
 

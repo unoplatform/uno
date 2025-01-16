@@ -273,7 +273,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		//TODO Uno specific: This test is adjusted to pass on Android - UpdateLayout needs to be called twice.
-		public async Task ValidateSwitchingItemsSourceRefreshesElements(bool isVirtualLayout)
+		private async Task ValidateSwitchingItemsSourceRefreshesElements(bool isVirtualLayout)
 		{
 			const int numItems = 10;
 			ItemsRepeater repeater = null;
