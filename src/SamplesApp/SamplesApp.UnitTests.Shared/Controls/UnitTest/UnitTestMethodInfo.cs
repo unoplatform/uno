@@ -71,7 +71,7 @@ internal record UnitTestMethodInfo
 
 	public bool RequiresFullWindow { get; }
 
-	public bool Requires100Scaling { get; }
+	public float? RequiresScaling { get; }
 
 	public bool RunsOnUIThread { get; }
 

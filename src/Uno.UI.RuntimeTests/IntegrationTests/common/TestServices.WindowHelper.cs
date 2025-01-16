@@ -449,12 +449,12 @@ namespace Private.Infrastructure
 				return toolTip;
 			}
 
-			public static void Set100PercentScaling()
+			public static void SetTestScaling(float scalingOverride)
 			{
-				WindowHelper.XamlRoot.VisualTree.RootScale.SetTestOverride(1.0f);
+				WindowHelper.XamlRoot.VisualTree.RootScale.SetTestOverride(scalingOverride);
 			}
 
-			public static void RestoreOriginalScaling()
+			public static void UnsetTestScaling()
 			{
 				WindowHelper.XamlRoot.VisualTree.RootScale.SetTestOverride(0.0f);
 			}
