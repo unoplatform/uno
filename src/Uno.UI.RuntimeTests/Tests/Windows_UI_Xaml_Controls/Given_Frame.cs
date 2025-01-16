@@ -60,7 +60,7 @@ public class Given_Frame
 	public Task When_Page_Loaded_Navigates_With_Yield() =>
 		When_Page_Loaded_Navigates_Inner(true);
 
-	public async Task When_Page_Loaded_Navigates_Inner(bool yield)
+	private async Task When_Page_Loaded_Navigates_Inner(bool yield)
 	{
 		var frame = new Frame();
 		TestServices.WindowHelper.WindowContent = frame;
@@ -329,8 +329,8 @@ public class Given_Frame
 				Assert.AreEqual(navigatedCurrentSourcePageType, SUT.SourcePageType);
 			};
 
-			Assert.AreEqual(null, SUT.SourcePageType);
-			Assert.AreEqual(null, SUT.CurrentSourcePageType);
+			Assert.IsNull(SUT.SourcePageType);
+			Assert.IsNull(SUT.CurrentSourcePageType);
 
 			// Navigate from null to SourceTypePage1
 

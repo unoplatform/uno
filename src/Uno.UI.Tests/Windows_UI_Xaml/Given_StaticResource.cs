@@ -474,8 +474,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		public void When_Explicit_And_TargetProperty()
 		{
 			var page = new Test_SetterTarget();
-			Assert.AreEqual(page.myButton.Width, 42.0);
-			Assert.AreEqual(page.myButton.Height, 42.0);
+			Assert.AreEqual(42.0, page.myButton.Width);
+			Assert.AreEqual(42.0, page.myButton.Height);
 		}
 	}
 }

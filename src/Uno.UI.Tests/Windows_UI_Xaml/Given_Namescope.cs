@@ -61,7 +61,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 				InnerBorderFromOuterElementNameContent,
 				nameof(When_NameScope_Inner.InnerElementTopLevel)) as FrameworkElement;
 			Assert.IsNotNull(InnerBorderFromOuterElementNameContent);
-			Assert.AreEqual(InnerElementTopLevelFromInnerBorder.Name, "OuterElementName");
+			Assert.AreEqual("OuterElementName", InnerElementTopLevelFromInnerBorder.Name);
 		}
 
 		[TestMethod]
@@ -110,7 +110,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 				nameof(When_NameScope_Inner.InnerElementTopLevel)) as FrameworkElement;
 			Assert.IsNotNull(InnerBorderFromOuterElementNameContent);
 
-			Assert.AreEqual(InnerElementTopLevelFromInnerBorder.Name, "OuterElementName");
+			Assert.AreEqual("OuterElementName", InnerElementTopLevelFromInnerBorder.Name);
 		}
 	}
 }

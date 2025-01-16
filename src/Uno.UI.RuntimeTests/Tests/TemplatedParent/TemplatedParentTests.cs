@@ -218,7 +218,7 @@ public partial class TemplatedParentTests // tests
 		await ItemsControl_HeaderFooter_NoTP(sut, sut);
 	}
 
-	public async Task ItemsControl_HeaderFooter_NoTP(FrameworkElement setup, ItemsControl sut)
+	private async Task ItemsControl_HeaderFooter_NoTP(FrameworkElement setup, ItemsControl sut)
 	{
 		await UITestHelper.Load(setup, x => x.IsLoaded);
 

@@ -126,7 +126,7 @@ public class Given_DispatcherTimer
 			await TestServices.WindowHelper.WaitFor(() => tickCounter > 0);
 			await Task.Delay(200);
 			// Second tick never happens
-			Assert.AreEqual(tickCounter, 1);
+			Assert.AreEqual(1, tickCounter);
 			// Even then, the timer still appears enabled
 			Assert.IsTrue(dispatcherTimer.IsEnabled);
 		}
