@@ -260,7 +260,7 @@ Skia-based targets provide support for full XAML Hot Reload and C# Hot Reload. T
 - As of VS 2022 17.9 XAML or C# Hot Reload under WSL is not supported
 - VS Code
   - With the debugger: The C# Dev Kit is handling hot reload [when enabled](https://code.visualstudio.com/docs/csharp/debugging#_hot-reload). As of December 20th, 2023, C# Dev Kit hot reload does not handle class libraries. To experience the best hot reload, do not use the debugger.
-  - Without the debugger: The VS Code Uno Platform extension is handling Hot Reload (C# or XAML).
+  - Without the debugger: The VS Code Uno Platform extension is handling Hot Reload (C# and XAML).
   - Adding new C# or XAML files to a project is not yet supported.
 - Rider
   - Hot Reload is only supported without the debugger.
