@@ -889,7 +889,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// So if there's a child in the border, you can click it "through" the thickness of the border, but if there is no child,
 				// the border will be clicked.
 				{ new Point(24, 25), addBorderChild ? "rectangle" : "border" },
-				{ new Point(20, 125), addBorderChild ? "rectangle" : "border" },
+				{ new Point(21, 125), addBorderChild ? "rectangle" : "border" }, // (20, 125) passes on 100 % scaling, but not on 150 % scaling #19246
 				{ new Point(122, 126), addBorderChild ? "rectangle" : "border" },
 				{ new Point(121, 22), addBorderChild ? "rectangle" : "border" },
 				{ new Point(29, 123), addBorderChild ? "rectangle" : "border" },
