@@ -899,9 +899,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_isInChildSubclass = true;
 			TryAnnotateWithGeneratorSource(writer);
 			var ns = $"{_defaultNamespace}.__Resources";
-			var disposable = isTopLevel ? writer.BlockInvariant($"namespace {ns}") : null;
+			using var _ = isTopLevel ? writer.BlockInvariant($"namespace {ns}") : null;
 
-			using (disposable)
+			// If _isHotReloadEnabled we generate it anyway so we can remove sub-classes without causing rude edit.
+			if (!_isHotReloadEnabled && CurrentScope.Subclasses is not { Count: >= 1 })
+			{
+				return;
+			}
+
+			writer.AppendLineIndented("[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
+			writer.AppendLineIndented("[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]");
+			using (writer.BlockInvariant($"{(isTopLevel ? "internal" : "private")} class __{_fileUniqueId}_{string.Join("_", _scopeStack.Select(scope => scope.Name))}"))
 			{
 				foreach (var kvp in CurrentScope.Subclasses)
 				{
@@ -912,12 +920,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						using (Scope(ns, className))
 						{
-							var classAccessibility = isTopLevel ? "" : "private";
-
 							writer.AppendLineIndented("[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
 							writer.AppendLineIndented("[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage(\"Trimming\", \"IL2026\")]");
 							writer.AppendLineIndented("[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage(\"Trimming\", \"IL2111\")]");
-							using (writer.BlockInvariant($"{classAccessibility} class {className}"))
+							using (writer.BlockInvariant($"public class {className}"))
 							{
 								BuildBaseUri(writer);
 
@@ -6595,16 +6601,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private void BuildChildThroughSubclass(IIndentedStringBuilder writer, XamlMemberDefinition contentOwner, string returnType)
 		{
 			TryAnnotateWithGeneratorSource(writer);
+
+			var isTopLevel = _scopeStack.Count == 1 && _scopeStack.Last().Name.EndsWith("RD", StringComparison.Ordinal);
+
 			// To prevent conflicting names whenever we are working with dictionaries, subClass index is a Guid in those cases
-			var subClassPrefix = _scopeStack.Aggregate("", (val, scope) => val + scope.Name);
-
-			var namespacePrefix = _scopeStack.Count == 1 && _scopeStack.Last().Name.EndsWith("RD", StringComparison.Ordinal) ? "__Resources." : "";
-
-			var subclassName = $"_{_fileUniqueId}_{subClassPrefix}SC{(_subclassIndex++).ToString(CultureInfo.InvariantCulture)}";
+			var namespacePrefix = isTopLevel ? "__Resources." : "";
+			var subClassesRoot = $"__{_fileUniqueId}_{string.Join("_", _scopeStack.Select(scope => scope.Name))}";
+			var subclassName = $"SC{(_subclassIndex++).ToString(CultureInfo.InvariantCulture)}";
 
 			RegisterChildSubclass(subclassName, contentOwner, returnType);
 
-			var activator = $"new {namespacePrefix}{subclassName}()";
+			var activator = $"new {namespacePrefix}{subClassesRoot}.{subclassName}()";
 
 #if USE_NEW_TP_CODEGEN
 			writer.AppendLineIndented($"{activator}.Build(__owner, __settings)");
