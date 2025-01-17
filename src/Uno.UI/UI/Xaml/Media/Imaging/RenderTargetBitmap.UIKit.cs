@@ -55,7 +55,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			UIImage uiImage;
 			try
 			{
-				var scale = (float)(DisplayInformation.GetForCurrentView()?.RawPixelsPerViewPixel ?? 1.0);
+				var scale = element.XamlRoot?.VisualTree.RootScale.GetEffectiveRasterizationScale() ?? (float)(DisplayInformation.GetForCurrentView()?.RawPixelsPerViewPixel ?? 1.0);
 				UIGraphics.BeginImageContextWithOptions(size, false, scale);
 				var ctx = UIGraphics.GetCurrentContext();
 				ctx.SetFillColor(Colors.Transparent); // This is only for pixels not used, but the bitmap as the same size of the element. We keep it only for safety!
