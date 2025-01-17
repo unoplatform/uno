@@ -57,7 +57,7 @@ jobs:
   - task: CopyFiles@2
     inputs:
       SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.netcoremobile/bin/Release/net8.0-android/publish
-      Contents: 'uno.platform.samplesapp.native-Signed.apk'
+      Contents: 'uno.platform.unosampleapp-Signed.apk'
       TargetFolder: $(build.artifactstagingdirectory)/android
       CleanTargetFolder: false
       OverWrite: false
