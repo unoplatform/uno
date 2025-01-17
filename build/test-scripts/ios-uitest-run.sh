@@ -185,10 +185,10 @@ then
 	export SIMCTL_CHILD_UITEST_RUNTIME_TEST_GROUP_COUNT=$UITEST_RUNTIME_TEST_GROUP_COUNT
 	export SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE=/tmp/TestResult-`date +"%Y%m%d%H%M%S"`.xml
 
-	xcrun simctl launch "$UITEST_IOSDEVICE_ID" "uno.platform.samplesapp.native"
+	xcrun simctl launch "$UITEST_IOSDEVICE_ID" "uno.platform.samplesdev"
 
 	# get the process id for the app
-	export APP_PID=`xcrun simctl spawn "$UITEST_IOSDEVICE_ID" launchctl list | grep "uno.platform.samplesapp.native" | awk '{print $1}'`
+	export APP_PID=`xcrun simctl spawn "$UITEST_IOSDEVICE_ID" launchctl list | grep "uno.platform.samplesdev" | awk '{print $1}'`
 	echo "App PID: $APP_PID"
 
 	# Set the timeout in seconds 
