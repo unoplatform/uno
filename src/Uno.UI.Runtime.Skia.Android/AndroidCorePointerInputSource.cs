@@ -73,7 +73,7 @@ internal sealed class AndroidCorePointerInputSource : IUnoCorePointerInputSource
 			var nativePointerAction = e.Action;
 			var nativePointerButtons = e.ButtonState;
 			var frameId = (uint)e.EventTime;
-			var ts = (ulong)(TimeSpan.TicksPerMillisecond * frameId);
+			var ts = ToTimestamp(e.EventTime);
 			var isInContact = PointerHelpers.IsInContact(e, pointerType, nativePointerAction, nativePointerButtons);
 			var isInRange = true; // TODO: ?
 			var keyModifiers = e.MetaState.ToVirtualKeyModifiers();
@@ -152,4 +152,11 @@ internal sealed class AndroidCorePointerInputSource : IUnoCorePointerInputSource
 			return false;
 		}
 	}
+
+	private static ulong ToTimestamp(long uptimeMillis)
+	{
+		// Timestamp is in microseconds
+		return (ulong)(uptimeMillis * 1000);
+	}
+
 }
