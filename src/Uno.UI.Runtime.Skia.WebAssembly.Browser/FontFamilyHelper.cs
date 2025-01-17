@@ -25,7 +25,8 @@ public static class FontFamilyHelper
 		FontStyle style)
 	{
 		// size doesn't matter here, we're just preloading the typeface
-		var fontSize = (float)TextBlock.FontSizeProperty.Metadata.DefaultValue;
+		// Default value of the font is of type double and boxed in object
+		var fontSize = (float)(double)TextBlock.FontSizeProperty.Metadata.DefaultValue;
 		return FontDetailsCache.GetFont(family.Source, fontSize, weight, stretch, style)
 			.loadedTask
 			.ContinueWith(t => t is { IsCompletedSuccessfully: true, Result: not null });
