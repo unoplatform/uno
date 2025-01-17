@@ -307,7 +307,7 @@ internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSo
 		=> (uint)(timestamp % uint.MaxValue);
 
 	private ulong ToTimestamp(double timestamp)
-		=> _bootTime + (ulong)(timestamp * TimeSpan.TicksPerMillisecond);
+		=> _bootTime + (ulong)(timestamp * 1000);
 
 	private static PointerUpdateKind ToUpdateKind(HtmlPointerButtonUpdate update, PointerPointProperties props)
 		=> update switch
