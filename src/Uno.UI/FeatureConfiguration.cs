@@ -180,7 +180,7 @@ namespace Uno.UI
 #if __WASM__ || __MACOS__ || __APPLE_UIKIT__
 				"Symbols";
 #else
-				"ms-appx:///Assets/Fonts/uno-fluentui-assets.ttf#Symbols";
+				"ms-appx:///Uno.Fonts.Fluent/Fonts/uno-fluentui-assets.ttf";
 #endif
 
 			/// <summary>
