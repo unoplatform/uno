@@ -20,6 +20,7 @@ using Microsoft.UI.Xaml.Media;
 using SwipeItems = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SwipeItems;
 using SwipeControl = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SwipeControl;
 using SwipeMode = Microsoft/* UWP don't rename */.UI.Xaml.Controls.SwipeMode;
+using Uno.UI.Tests.Helpers;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 {
@@ -1058,13 +1059,12 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 				Assert.AreEqual(ApplicationTheme.Light, app.RequestedTheme);
 				Assert.AreEqual(244, inner.Tag);
 
-				app.SetExplicitRequestedTheme(ApplicationTheme.Dark);
+				using var _ = ThemeHelper.SetExplicitRequestedTheme(ApplicationTheme.Dark);
 				Assert.AreEqual(ApplicationTheme.Dark, app.RequestedTheme);
 				Assert.AreEqual(9, inner.Tag);
 			}
 			finally
 			{
-				app.SetExplicitRequestedTheme(null);
 				app.Resources.MergedDictionaries.Remove(themeDict);
 			}
 

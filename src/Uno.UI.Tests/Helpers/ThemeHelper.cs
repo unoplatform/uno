@@ -10,35 +10,23 @@ namespace Uno.UI.Tests.Helpers
 {
 	internal static class ThemeHelper
 	{
-		internal static
-#if NETFX_CORE
-		async
-#endif
-		Task<bool> SwapSystemTheme()
+		internal static IDisposable SwapSystemTheme()
 		{
 			var currentTheme = Application.Current.RequestedTheme;
 			var targetTheme = currentTheme == ApplicationTheme.Light ?
 				ApplicationTheme.Dark :
 				ApplicationTheme.Light;
-#if NETFX_CORE
-			if (!UnitTestsApp.App.EnableInteractiveTests || targetTheme == ApplicationTheme.Light)
-			{
-				return false;
-			}
-
-			_swapTask = _swapTask ?? GetSwapTask();
-
-			await _swapTask;
-#else
-			Application.Current.SetExplicitRequestedTheme(targetTheme);
-#endif
+			var disposable = ThemeHelper.SetExplicitRequestedTheme(targetTheme);
 			Assert.AreEqual(targetTheme, Application.Current.RequestedTheme);
+			return disposable;
+		}
 
-#if NETFX_CORE
-			return true;
-#else
-			return Task.FromResult(true);
-#endif
+		internal static IDisposable SetExplicitRequestedTheme(ApplicationTheme theme)
+		{
+			var existingTheme = Application.Current.RequestedTheme;
+			var wasSetExplicitly = Application.Current.IsThemeSetExplicitly;
+			Application.Current.SetExplicitRequestedTheme(theme);
+			return new DisposableAction(() => Application.Current.SetExplicitRequestedTheme(wasSetExplicitly ? existingTheme : null));
 		}
 	}
 }
