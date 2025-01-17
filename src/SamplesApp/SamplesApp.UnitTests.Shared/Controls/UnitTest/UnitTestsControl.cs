@@ -817,7 +817,7 @@ namespace Uno.UI.Samples.Tests
 										Private.Infrastructure.TestServices.WindowHelper.UnsetTestScaling();
 									});
 								});
-						}
+							}
 #endif
 
 							await GeneralInitAsync();
