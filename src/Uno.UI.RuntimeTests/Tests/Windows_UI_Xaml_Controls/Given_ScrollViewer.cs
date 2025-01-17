@@ -1533,7 +1533,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var SUT = new ScrollViewer
 			{
 				Height = 300,
-				Content = stackPanel
+				Content = stackPanel,
+				IsScrollInertiaEnabled = false
 			};
 
 			await UITestHelper.Load(SUT);
