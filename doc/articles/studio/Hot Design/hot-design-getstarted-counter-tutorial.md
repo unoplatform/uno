@@ -78,8 +78,17 @@ The template will create a solution with a single cross-platform project, named 
 - Select **Blank** in **Presets** selection
 - Select the **Presentation** tab and choose **MVUX**
 - Click **Create** to complete the wizard
-- Copy the `dotnet new` command and run it from a terminal
-This will create a new folder called **Counter** containing the new application.
+- Copy the `dotnet new` command and run it from a terminal where you want your solution to be located.
+- This will create a new folder called **Counter** containing the new application.
+- Next, open the project using Visual Studio Code. In the terminal type the following:
+
+  ```bash
+  code ./Counter
+  ```
+
+- Visual Studio Code might ask to restore the NuGet packages. Allow it to restore them if asked.
+- Once the solution has been loaded, in the status bar at the bottom left of VS Code, `Counter.sln` is selected by default. Select `Counter.csproj` to load the project instead.
+![Counter.csproj selection in Visual Studio Code](Assets/vscode-csproj-selection.png)
 
 ### [Command Line](#tab/cli)
 
@@ -111,6 +120,10 @@ Before you run the application, switch the target platform to **Desktop** (net8.
 
 - [Visual Studio](xref:Uno.GettingStarted.CreateAnApp.VS2022#debug-the-app)
 - [VS Code](xref:Uno.GettingStarted.CreateAnApp.VSCode#debug-the-app)
+  > [!IMPORTANT]
+  > In the status bar at the bottom left of VS Code, ensure `Counter.csproj` is selected (by default `Counter.sln` is selected).
+  >
+  > ![Counter.csproj selection in Visual Studio Code](Assets/vscode-csproj-selection.png)
 - [Rider](xref:Uno.GettingStarted.CreateAnApp.Rider#debug-the-app)
 
 > [!IMPORTANT]
