@@ -21,7 +21,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		{
 			var automationPeer = new TestAutomationPeer();
 			var result = automationPeer.IsDialog();
-			Assert.AreEqual(false, result);
+			Assert.IsFalse(result);
 		}
 
 		[TestMethod]
@@ -30,7 +30,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		{
 			var automationPeer = new TestAutomationPeer();
 			var result = automationPeer.GetPattern(PatternInterface.Drag);
-			Assert.AreEqual(null, result);
+			Assert.IsNull(result);
 		}
 
 		[TestMethod]
@@ -84,7 +84,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		{
 			var automationPeer = new TestAutomationPeer();
 			var result = automationPeer.GetChildren();
-			Assert.AreEqual(null, result);
+			Assert.IsNull(result);
 		}
 
 		[TestMethod]
@@ -138,7 +138,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		{
 			var automationPeer = new TestAutomationPeer();
 			var result = automationPeer.GetLabeledBy();
-			Assert.AreEqual(null, result);
+			Assert.IsNull(result);
 		}
 
 		[TestMethod]
@@ -174,7 +174,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		{
 			var automationPeer = new TestAutomationPeer();
 			var result = automationPeer.HasKeyboardFocus();
-			Assert.AreEqual(false, result);
+			Assert.IsFalse(result);
 		}
 
 		[TestMethod]
@@ -183,7 +183,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		{
 			var automationPeer = new TestAutomationPeer();
 			var result = automationPeer.IsContentElement();
-			Assert.AreEqual(false, result);
+			Assert.IsFalse(result);
 		}
 
 		[TestMethod]
@@ -192,7 +192,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		{
 			var automationPeer = new TestAutomationPeer();
 			var result = automationPeer.IsControlElement();
-			Assert.AreEqual(false, result);
+			Assert.IsFalse(result);
 		}
 
 		[TestMethod]
@@ -201,7 +201,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		{
 			var automationPeer = new TestAutomationPeer();
 			var result = automationPeer.IsEnabled();
-			Assert.AreEqual(true, result);
+			Assert.IsTrue(result);
 		}
 
 		[TestMethod]
@@ -210,7 +210,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		{
 			var automationPeer = new TestAutomationPeer();
 			var result = automationPeer.IsKeyboardFocusable();
-			Assert.AreEqual(false, result);
+			Assert.IsFalse(result);
 		}
 
 		[TestMethod]
@@ -219,7 +219,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		{
 			var automationPeer = new TestAutomationPeer();
 			var result = automationPeer.IsOffscreen();
-			Assert.AreEqual(false, result);
+			Assert.IsFalse(result);
 		}
 
 		[TestMethod]
@@ -228,7 +228,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		{
 			var automationPeer = new TestAutomationPeer();
 			var result = automationPeer.IsPassword();
-			Assert.AreEqual(false, result);
+			Assert.IsFalse(result);
 		}
 
 		[TestMethod]
@@ -237,7 +237,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		{
 			var automationPeer = new TestAutomationPeer();
 			var result = automationPeer.IsRequiredForForm();
-			Assert.AreEqual(false, result);
+			Assert.IsFalse(result);
 		}
 
 		[TestMethod]
@@ -275,7 +275,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		{
 			var automationPeer = new TestAutomationPeer();
 			var result = automationPeer.Navigate(default);
-			Assert.AreEqual(null, result);
+			Assert.IsNull(result);
 		}
 
 		[TestMethod]
@@ -311,7 +311,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		{
 			var automationPeer = new TestAutomationPeer();
 			var result = automationPeer.GetControlledPeers();
-			Assert.AreEqual(null, result);
+			Assert.IsNull(result);
 		}
 
 		[TestMethod]
@@ -320,7 +320,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		{
 			var automationPeer = new TestAutomationPeer();
 			var result = automationPeer.GetAnnotations();
-			Assert.AreEqual(null, result);
+			Assert.IsNull(result);
 		}
 
 		[TestMethod]
@@ -374,7 +374,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		{
 			var automationPeer = new TestAutomationPeer();
 			var result = automationPeer.IsPeripheral();
-			Assert.AreEqual(false, result);
+			Assert.IsFalse(result);
 		}
 
 		[TestMethod]
@@ -383,7 +383,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		{
 			var automationPeer = new TestAutomationPeer();
 			var result = automationPeer.IsDataValidForForm();
-			Assert.AreEqual(true, result);
+			Assert.IsTrue(result);
 		}
 
 		[TestMethod]

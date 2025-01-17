@@ -89,7 +89,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				.OfType<RepeatButton>()
 				.Count();
 
-			Assert.IsTrue(buttons == 0);
+			Assert.AreEqual(0, buttons);
 		}
 
 		[TestMethod]
@@ -137,7 +137,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				.OfType<ScrollBar>()
 				.Count();
 
-			Assert.IsTrue(bars == 0); // TextBox is actually not using scrollbars!
+			Assert.AreEqual(0, bars); // TextBox is actually not using scrollbars!
 		}
 
 		[TestMethod]
@@ -157,7 +157,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				.OfType<ScrollBar>()
 				.Count();
 
-			Assert.IsTrue(bars == 0); // TextBox is actually not using scrollbars!
+			Assert.AreEqual(0, bars); // TextBox is actually not using scrollbars!
 		}
 #endif
 
@@ -973,8 +973,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			item.BringIntoViewRequested += (s, e) =>
 			{
-				Assert.AreEqual(false, e.AnimationDesired);
-				Assert.AreEqual(false, e.Handled);
+				Assert.IsFalse(e.AnimationDesired);
+				Assert.IsFalse(e.Handled);
 				Assert.IsTrue(double.IsNaN(e.HorizontalAlignmentRatio));
 				Assert.IsTrue(double.IsNaN(e.VerticalAlignmentRatio));
 				Assert.AreEqual(0, e.HorizontalOffset);
@@ -986,8 +986,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			innerScrollViewer.BringIntoViewRequested += (s, e) =>
 			{
-				Assert.AreEqual(false, e.AnimationDesired);
-				Assert.AreEqual(false, e.Handled);
+				Assert.IsFalse(e.AnimationDesired);
+				Assert.IsFalse(e.Handled);
 				Assert.IsTrue(double.IsNaN(e.HorizontalAlignmentRatio));
 				Assert.IsTrue(double.IsNaN(e.VerticalAlignmentRatio));
 				Assert.AreEqual(0, e.HorizontalOffset);
@@ -1001,8 +1001,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			outerScrollViewer.BringIntoViewRequested += (s, e) =>
 			{
-				Assert.AreEqual(false, e.AnimationDesired);
-				Assert.AreEqual(false, e.Handled);
+				Assert.IsFalse(e.AnimationDesired);
+				Assert.IsFalse(e.Handled);
 				Assert.IsTrue(double.IsNaN(e.HorizontalAlignmentRatio));
 				Assert.IsTrue(double.IsNaN(e.VerticalAlignmentRatio));
 				Assert.AreEqual(0, e.HorizontalOffset);
@@ -1533,7 +1533,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var SUT = new ScrollViewer
 			{
 				Height = 300,
-				Content = stackPanel
+				Content = stackPanel,
+				IsScrollInertiaEnabled = false
 			};
 
 			await UITestHelper.Load(SUT);

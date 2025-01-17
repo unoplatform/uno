@@ -34,12 +34,6 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 			global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(MyObject).TypeHandle);
 		}
 
-		public void TestInitialize()
-		{
-
-
-		}
-
 		[TestMethod]
 		public void When_Path_Invalid()
 		{

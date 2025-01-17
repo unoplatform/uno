@@ -194,7 +194,7 @@ namespace Uno.UI.Tests.BinderTests
 			var SUT = new MockDependencyObject();
 			var testProperty = DependencyProperty.Register(nameof(When_SetValue_And_NoDefaultValue_Then_StaticRegistration_NotRaised), typeof(string), typeof(MockDependencyObject), new PropertyMetadata(null, cb));
 
-			Assert.AreEqual(null, SUT.GetValue(testProperty));
+			Assert.IsNull(SUT.GetValue(testProperty));
 		}
 
 		[TestMethod]
@@ -242,7 +242,7 @@ namespace Uno.UI.Tests.BinderTests
 						break;
 					case 2:
 						Assert.AreEqual("test2", e.OldValue);
-						Assert.AreEqual(null, e.NewValue);
+						Assert.IsNull(e.NewValue);
 						break;
 				}
 			};
@@ -256,7 +256,7 @@ namespace Uno.UI.Tests.BinderTests
 			Assert.AreEqual("test2", SUT.GetValue(testProperty));
 
 			SUT.SetValue(testProperty, null);
-			Assert.AreEqual(null, SUT.GetValue(testProperty));
+			Assert.IsNull(SUT.GetValue(testProperty));
 
 			Assert.AreEqual(3, raisedCount);
 		}
@@ -367,7 +367,7 @@ namespace Uno.UI.Tests.BinderTests
 				switch (raisedCount++)
 				{
 					case 0:
-						Assert.AreEqual(null, e.OldValue);
+						Assert.IsNull(e.OldValue);
 						Assert.AreEqual(o1, e.NewValue);
 						break;
 
@@ -397,12 +397,11 @@ namespace Uno.UI.Tests.BinderTests
 		}
 
 		[TestMethod]
-		[ExpectedException(typeof(InvalidOperationException))]
 		public void When_Property_RegisterTwice_then_Fail()
 		{
 			var SUT = new MockDependencyObject();
 			var testProperty = DependencyProperty.Register(nameof(When_Property_RegisterTwice_then_Fail), typeof(string), typeof(MockDependencyObject), new PropertyMetadata("42"));
-			var testProperty2 = DependencyProperty.Register(nameof(When_Property_RegisterTwice_then_Fail), typeof(string), typeof(MockDependencyObject), new PropertyMetadata("42"));
+			Assert.ThrowsException<InvalidOperationException>(() => DependencyProperty.Register(nameof(When_Property_RegisterTwice_then_Fail), typeof(string), typeof(MockDependencyObject), new PropertyMetadata("42")));
 		}
 
 		[TestMethod]
@@ -467,13 +466,11 @@ namespace Uno.UI.Tests.BinderTests
 		}
 
 		[TestMethod]
-		[ExpectedException(typeof(InvalidOperationException))]
 		public void When_Setting_UnsetValue_On_DefaultValue_Then_Fails()
 		{
 			var SUT = new MockDependencyObject();
 			var testProperty = DependencyProperty.Register(nameof(When_Setting_UnsetValue_On_DefaultValue_Then_Fails), typeof(string), typeof(MockDependencyObject), new PropertyMetadata("42"));
-
-			SUT.SetValue(testProperty, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.DefaultValue);
+			Assert.ThrowsException<InvalidOperationException>(() => SUT.SetValue(testProperty, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.DefaultValue));
 		}
 
 		[TestMethod]
@@ -794,7 +791,7 @@ namespace Uno.UI.Tests.BinderTests
 			var actualValue = SUT.GetValue(testProperty);
 			var localValue = SUT.ReadLocalValue(testProperty);
 
-			Assert.AreEqual(null, actualValue);
+			Assert.IsNull(actualValue);
 			Assert.AreEqual(baseValue, localValue);
 		}
 
@@ -920,9 +917,6 @@ namespace Uno.UI.Tests.BinderTests
 			var actualValue = (DateTime)SUT.GetValue(testProperty);
 
 			var later = DateTime.Now.AddMinutes(1);
-
-			Assert.IsNotNull(actualValue);
-			Assert.IsNotNull(defaultValue);
 			Assert.IsTrue(defaultValue < actualValue && actualValue < later);
 		}
 
@@ -1000,7 +994,6 @@ namespace Uno.UI.Tests.BinderTests
 		}
 
 		[TestMethod]
-		[ExpectedException(typeof(ArgumentException))]
 		public void When_SetValue_With_Coercion_Precedence_Then_Fail()
 		{
 			var SUT = new MockDependencyObject();
@@ -1010,8 +1003,7 @@ namespace Uno.UI.Tests.BinderTests
 				typeof(MockDependencyObject),
 				null
 			);
-
-			SUT.SetValue(testProperty, "test", DependencyPropertyValuePrecedences.Coercion);
+			Assert.ThrowsException<ArgumentException>(() => SUT.SetValue(testProperty, "test", DependencyPropertyValuePrecedences.Coercion));
 		}
 
 		[TestMethod]
@@ -1659,32 +1651,32 @@ namespace Uno.UI.Tests.BinderTests
 			void OnSourceChanged(object s, object e)
 			{
 				order++;
-				Assert.AreEqual(true, source.Test);
-				Assert.AreEqual(false, target.Test);
+				Assert.IsTrue(source.Test);
+				Assert.IsFalse(target.Test);
 				Assert.AreEqual(1, order);
 			}
 
 			void OnTargetChanged(object s, object e)
 			{
 				order++;
-				Assert.AreEqual(true, source.Test);
-				Assert.AreEqual(true, target.Test);
+				Assert.IsTrue(source.Test);
+				Assert.IsTrue(target.Test);
 				Assert.AreEqual(2, order);
 			}
 
 			void OnTargetCallback(object s, object e)
 			{
 				order++;
-				Assert.AreEqual(true, source.Test);
-				Assert.AreEqual(true, target.Test);
+				Assert.IsTrue(source.Test);
+				Assert.IsTrue(target.Test);
 				Assert.AreEqual(3, order);
 			}
 
 			void OnSourceCallback(object s, object e)
 			{
 				order++;
-				Assert.AreEqual(true, source.Test);
-				Assert.AreEqual(true, target.Test);
+				Assert.IsTrue(source.Test);
+				Assert.IsTrue(target.Test);
 				Assert.AreEqual(4, order);
 			}
 
@@ -1970,7 +1962,7 @@ namespace Uno.UI.Tests.BinderTests
 
 	}
 
-	public class ChangedCallbackOrderElement : FrameworkElement
+	internal class ChangedCallbackOrderElement : FrameworkElement
 	{
 		public ChangedCallbackOrderElement()
 		{
@@ -2005,7 +1997,7 @@ namespace Uno.UI.Tests.BinderTests
 		}
 	}
 
-	public partial class FastLocalTestObject : DependencyObject
+	internal partial class FastLocalTestObject : DependencyObject
 	{
 		public object MyProperty
 		{

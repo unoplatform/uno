@@ -14,11 +14,11 @@ using Uno.UI.WinRT.Extensions.UI.Popups;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
+#if HAS_UNO_WINUI
 [TestClass]
 [RunsOnUIThread]
 public class Given_Control_Visibility
 {
-#if HAS_UNO_WINUI
 	[TestMethod]
 	[UnoWorkItem("https://github.com/unoplatform/uno/issues/16369")]
 #if !HAS_RENDER_TARGET_BITMAP
@@ -124,5 +124,5 @@ public class Given_Control_Visibility
 			}
 		}
 	}
-#endif
 }
+#endif

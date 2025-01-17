@@ -116,23 +116,23 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var moreButton = (Button)SUT.FindName("MoreButton");
 #if !__ANDROID__ // layout timings are different on android
-			Assert.AreEqual(moreButton.ActualHeight, 48);
+			Assert.AreEqual(48, moreButton.ActualHeight);
 #endif
-			Assert.AreEqual(moreButton.VerticalAlignment, VerticalAlignment.Top);
+			Assert.AreEqual(VerticalAlignment.Top, moreButton.VerticalAlignment);
 
 			SUT.IsOpen = true;
 			await WindowHelper.WaitForIdle();
 #if !__ANDROID__ // layout timings are different on android
-			Assert.AreEqual(moreButton.ActualHeight, 64);
+			Assert.AreEqual(64, moreButton.ActualHeight);
 #endif
-			Assert.AreEqual(moreButton.VerticalAlignment, VerticalAlignment.Stretch);
+			Assert.AreEqual(VerticalAlignment.Stretch, moreButton.VerticalAlignment);
 
 			SUT.IsOpen = false;
 			await Task.Delay(1000); // wait for animations
 #if !__ANDROID__ // layout timings are different on android
-			Assert.AreEqual(moreButton.ActualHeight, 48);
+			Assert.AreEqual(48, moreButton.ActualHeight);
 #endif
-			Assert.AreEqual(moreButton.VerticalAlignment, VerticalAlignment.Top);
+			Assert.AreEqual(VerticalAlignment.Top, moreButton.VerticalAlignment);
 		}
 
 #if __APPLE_UIKIT__

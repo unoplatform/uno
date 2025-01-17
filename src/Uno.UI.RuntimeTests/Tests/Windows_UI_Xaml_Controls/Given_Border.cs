@@ -109,7 +109,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				//Assert.AreEqual(new Vector3((float)expectedOffsetDimension, (float)expectedOffsetDimension, 0), customControl.ActualOffset);
 
 				Assert.AreEqual(expectedSizeInner, customControl.DesiredSize);
-				Assert.AreEqual(null, customControl.Clip);
+				Assert.IsNull(customControl.Clip);
 			}
 
 			// TODO: This assert currently fails.
@@ -119,7 +119,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(new Size(innerDimension, innerDimension), innerBorder.RenderSize);
 			Assert.AreEqual(new Vector2((float)innerDimension, (float)innerDimension), innerBorder.ActualSize);
 			Assert.AreEqual(expectedSizeInner, innerBorder.DesiredSize);
-			Assert.AreEqual(null, innerBorder.Clip);
+			Assert.IsNull(innerBorder.Clip);
 		}
 
 		[TestMethod]
@@ -630,10 +630,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if HAS_UNO
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
-#else
+#endif
 		[TestMethod]
 		[RunsOnUIThread]
-#endif
 		public async Task Nested_Element_Tapped()
 		{
 			var SUT = new Border()
@@ -669,10 +668,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
-#else
+#endif
 		[TestMethod]
 		[RunsOnUIThread]
-#endif
 		public async Task Parent_DoubleTapped_When_Child_Has_Tapped()
 		{
 			var SUT = new Border()

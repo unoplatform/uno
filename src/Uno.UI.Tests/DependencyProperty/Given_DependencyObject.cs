@@ -78,7 +78,7 @@ namespace Uno.UI.Tests
 			Assert.AreEqual(parent, store.Parent);
 
 			store.Parent = null;
-			Assert.AreEqual(null, store.Parent);
+			Assert.IsNull(store.Parent);
 		}
 
 		[TestMethod]
@@ -92,7 +92,7 @@ namespace Uno.UI.Tests
 			Assert.AreEqual(parent, store.Parent);
 
 			store.Parent = null;
-			Assert.AreEqual(null, store.Parent);
+			Assert.IsNull(store.Parent);
 		}
 
 		[TestMethod]

@@ -3,7 +3,6 @@ using System.Diagnostics;
 using Microsoft.UI.Xaml.Input;
 using Windows.Devices.Input;
 using Windows.Foundation;
-using Uno.UI.Xaml;
 using Uno.Disposables;
 
 
@@ -216,6 +215,11 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				e.Mode = ManipulationModes.None;
 				return;
+			}
+
+			if (Scroller?.IsScrollInertiaEnabled is true)
+			{
+				e.Mode |= ManipulationModes.TranslateInertia;
 			}
 
 			if (!CanVerticallyScroll || ExtentHeight <= 0)

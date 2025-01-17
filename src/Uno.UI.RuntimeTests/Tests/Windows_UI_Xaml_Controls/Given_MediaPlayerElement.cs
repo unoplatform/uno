@@ -295,11 +295,11 @@ public partial class Given_MediaPlayerElement
 		var root = (WindowHelper.XamlRoot?.Content as FrameworkElement)!;
 		var tcp = (FrameworkElement)root.FindName("TransportControlsPresenter");
 
-		Assert.AreEqual(tcp.Visibility, Visibility.Collapsed);
+		Assert.AreEqual(Visibility.Collapsed, tcp.Visibility);
 		sut.AreTransportControlsEnabled = true;
-		Assert.AreEqual(tcp.Visibility, Visibility.Visible);
+		Assert.AreEqual(Visibility.Visible, tcp.Visibility);
 		sut.AreTransportControlsEnabled = false;
-		Assert.AreEqual(tcp.Visibility, Visibility.Collapsed);
+		Assert.AreEqual(Visibility.Collapsed, tcp.Visibility);
 	}
 
 #if !HAS_UNO
@@ -584,11 +584,7 @@ public partial class Given_MediaPlayerElement
 				);
 	}
 
-
-
-
-
-	public void CheckMediaPlayerExtensionAvailability()
+	private void CheckMediaPlayerExtensionAvailability()
 	{
 #if HAS_UNO
 		if (_MediaPlayer.ImplementedByExtensions && !ApiExtensibility.IsRegistered<IMediaPlayerExtension>())

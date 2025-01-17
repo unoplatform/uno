@@ -10,7 +10,7 @@
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<EnableAutomaticXamlPageInclusion>false</EnableAutomaticXamlPageInclusion>
-
+		<OutputType>Exe</OutputType>
 		<!-- To be able to get newer versions of Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing.MSTest -->
 		<!-- that are not yet published to NuGet.org -->
 		<!-- The latest on NuGet.org doesn't have the fix from https://github.com/dotnet/roslyn-sdk/pull/988 -->
@@ -43,6 +43,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="MSTest" />
+		<PackageReference Include="Microsoft.Testing.Extensions.TrxReport" />
 		<PackageReference Include="coverlet.collector" Version="6.0.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis" Version="4.12.0-3.final" />
 		<PackageReference Include="Microsoft.CodeAnalysis.Features" Version="4.12.0-3.final" />

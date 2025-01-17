@@ -90,7 +90,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			});
 		}
 
-		// [TestMethod] Issue #1018
+		[TestMethod] // Issue #1018
+		[Ignore]
 		public async Task CanPinFocusedElements()
 		{
 			// Setup a grouped repeater scenario with two groups each containing two items.
@@ -191,7 +192,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			});
 		}
 
-		// [TestMethod] Issue 1018
+		[TestMethod] // Issue 1018
+		[Ignore]
 		public async Task CanReuseElementsDuringUniqueIdReset()
 		{
 			var data = new WinRTCollection(Enumerable.Range(0, 2).Select(i => string.Format("Item #{0}", i)));
@@ -678,7 +680,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			});
 		}
 
-		// [TestMethod] Issue 1018
+		[TestMethod] // Issue 1018
+		[Ignore]
 		public async Task ValidateFocusMoveOnElementCleared()
 		{
 			CustomItemsSource dataSource = null;
@@ -721,7 +724,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				});
 		}
 
-		// [TestMethod] Issue 1018
+		[TestMethod] // Issue 1018
+		[Ignore]
 		public async Task ValidateFocusMoveOnElementClearedWithUniqueIds()
 		{
 			CustomItemsSource dataSource = null;

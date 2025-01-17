@@ -924,7 +924,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.PasteFromClipboard();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(pasteCount, 1);
+			Assert.AreEqual(1, pasteCount);
 		}
 
 		[TestMethod]
@@ -1098,21 +1098,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			using var mouse = injector.GetMouse();
 
 			mouse.MoveTo(clickPosition2);
-			Assert.IsTrue(list.Count == 0);
+			Assert.AreEqual(0, list.Count);
 			mouse.Press(clickPosition2);
 			await WindowHelper.WaitForIdle();
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
-			Assert.IsTrue(list.Count == 1);
+			Assert.AreEqual(1, list.Count);
 			Assert.AreEqual("Second", list[0]);
 
 			mouse.MoveTo(clickPosition1);
-			Assert.IsTrue(list.Count == 1);
+			Assert.AreEqual(1, list.Count);
 			mouse.Press(clickPosition1);
 			await WindowHelper.WaitForIdle();
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
-			Assert.IsTrue(list.Count == 2);
+			Assert.AreEqual(2, list.Count);
 			Assert.AreEqual("First", list[1]);
 
 			FocusManager.GotFocus -= FocusManager_GotFocus;

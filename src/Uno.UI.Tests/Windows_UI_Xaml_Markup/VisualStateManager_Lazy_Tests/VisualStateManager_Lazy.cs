@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,6 +9,7 @@ using Windows.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Tests.Helpers;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.VisualStateManager_Lazy_Tests
 {
@@ -19,7 +20,11 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.VisualStateManager_Lazy_Tests
 		public void Init()
 		{
 			UnitTestsApp.App.EnsureApplication();
-			Application.Current.SetExplicitRequestedTheme(ApplicationTheme.Light);
+
+			// Any unit test in any class that sets the theme explicitly
+			// should make sure to reset that operation.
+			// It's not this test responsibility to fix what other tests break.
+			Assert.IsFalse(Application.Current.IsThemeSetExplicitly);
 		}
 
 		[TestMethod]
@@ -86,7 +91,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.VisualStateManager_Lazy_Tests
 
 			await WaitForIdle();
 
-			await SwapSystemTheme();
+			using var _1 = ThemeHelper.SwapSystemTheme();
 
 			await GoTo("State2");
 
@@ -94,7 +99,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.VisualStateManager_Lazy_Tests
 
 			await GoTo("State1");
 
-			await SwapSystemTheme();
+			_ = ThemeHelper.SwapSystemTheme();
 
 			await GoTo("State2");
 
@@ -109,11 +114,11 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.VisualStateManager_Lazy_Tests
 		}
 
 		[TestMethod]
-		public async Task When_DefaultButton_Not_Set()
+		public void When_DefaultButton_Not_Set()
 		{
 			var app = UnitTestsApp.App.EnsureApplication();
 
-			await SwapSystemTheme();
+			using var _ = ThemeHelper.SwapSystemTheme();
 
 			var SUT = new MyContentDialog
 			{
@@ -162,37 +167,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.VisualStateManager_Lazy_Tests
 #else
 		private static Task WaitForIdle() => Task.CompletedTask;
 #endif
-
-		private static
-#if NETFX_CORE
-		async
-#endif
-		Task<bool> SwapSystemTheme()
-		{
-			var currentTheme = Application.Current.RequestedTheme;
-			var targetTheme = currentTheme == ApplicationTheme.Light ?
-				ApplicationTheme.Dark :
-				ApplicationTheme.Light;
-#if NETFX_CORE
-			if (!UnitTestsApp.App.EnableInteractiveTests || targetTheme == ApplicationTheme.Light)
-			{
-				return false;
-			}
-
-			_swapTask = _swapTask ?? GetSwapTask();
-
-			await _swapTask;
-#else
-			Application.Current.SetExplicitRequestedTheme(targetTheme);
-#endif
-			Assert.AreEqual(targetTheme, Application.Current.RequestedTheme);
-
-#if NETFX_CORE
-			return true;
-#else
-			return Task.FromResult(true);
-#endif
-		}
 	}
 
 	public partial class MyContentDialog : ContentDialog

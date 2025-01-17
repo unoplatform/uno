@@ -43,7 +43,7 @@ namespace Uno.UI.Tests.BinderTests.DependencyPropertyPath
 				}
 			);
 
-			Assert.AreEqual(null, target.OtherControl);
+			Assert.IsNull(target.OtherControl);
 
 			source.OtherControl = attachedSource;
 
