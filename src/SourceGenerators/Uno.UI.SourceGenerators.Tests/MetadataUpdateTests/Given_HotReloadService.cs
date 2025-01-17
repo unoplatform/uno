@@ -15,7 +15,7 @@ public class Given_HotReloadService
 	// Assert.AreEqual failed.
 	// Expected:<0>. Actual:<1>.
 	// Diagnostics: warning CS1701: Assuming assembly reference 'System.ObjectModel, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a' used by 'Uno.UI' matches identity 'System.ObjectModel, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a' of 'System.ObjectModel', you may need to supply runtime policy, expected 	
-	[Ignore("Needs investigation")]
+	[Ignore("Needs investigation - tracked by https://github.com/unoplatform/uno/issues/19255")]
 	public async Task HR(string name, Scenario? scenario, Project[]? projects)
 	{
 		if (scenario != null)
