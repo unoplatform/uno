@@ -52,27 +52,11 @@
 
 	<Target Name="InjectRemoteControlHost"
 			BeforeTargets="BeforeBuild"
-			Condition="exists('$(IntermediateOutputPath)\RemoteControlHost.config') and '$(BuildingInsideVisualStudio)'!='true'">
+			Condition="exists('$(IntermediateOutputPath)\RemoteControlHost.config') and '$(BuildingInsideVisualStudio)'!='true' and '$(Configuration)'=='Debug'">
 
-		<ItemGroup>
-			<WasmShellMonoEnvironment Include="DOTNET_MODIFIABLE_ASSEMBLIES" Value="debug" />
-		</ItemGroup>
-
-		<ReadLinesFromFile File="$(IntermediateOutputPath)\RemoteControlHost.config" >
-			<Output TaskParameter="Lines" ItemName="_RemoteControlHostContent"/>
-		</ReadLinesFromFile>
-
-		<ItemGroup>
-			<FileWrites Include="$(IntermediateOutputPath)\RemoteControlHost.config" />
-		</ItemGroup>
-
-		<CreateProperty
-			Value="@(_RemoteControlHostContent)">
-			<Output
-				TaskParameter="Value"
-				PropertyName="UnoRemoteControlHost" />
-		</CreateProperty>
-
+		<Warning
+			Text="The version of uno's extension installed on your IDE is obsolete, please update to the latest version.
+				  If error persists, try to delete obj folder and rebuild your solution." />
 	</Target>
 
 </Project>
