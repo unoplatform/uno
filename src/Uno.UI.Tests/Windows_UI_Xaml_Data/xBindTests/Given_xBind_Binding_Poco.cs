@@ -18,8 +18,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			var SUT = new Binding_OneWay_PocoObject();
 
 			Assert.AreEqual(3, SUT.myControl.ClassCollection.Count);
-			Assert.AreEqual(null, SUT.myControl.ClassCollection[0].SampleString);
-			Assert.AreEqual(null, SUT.myControl.ClassCollection[1].SampleString);
+			Assert.IsNull(SUT.myControl.ClassCollection[0].SampleString);
+			Assert.IsNull(SUT.myControl.ClassCollection[1].SampleString);
 			Assert.AreEqual("Test03", SUT.myControl.ClassCollection[2].SampleString);
 
 			SUT.ForceLoaded();
@@ -43,8 +43,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			var SUT = new Binding_OneTime_PocoObject_Static();
 
 			Assert.AreEqual(3, SUT.myControl.ClassCollection.Count);
-			Assert.AreEqual(null, SUT.myControl.ClassCollection[0].SampleString);
-			Assert.AreEqual(null, SUT.myControl.ClassCollection[1].SampleString);
+			Assert.IsNull(SUT.myControl.ClassCollection[0].SampleString);
+			Assert.IsNull(SUT.myControl.ClassCollection[1].SampleString);
 			Assert.AreEqual("Test03", SUT.myControl.ClassCollection[2].SampleString);
 
 			SUT.ForceLoaded();

@@ -154,9 +154,9 @@ namespace Uno.UI.Tests.Windows_Globalization
 			Assert.AreEqual(0, sut.SignificantDigits);
 			Assert.AreEqual(1, sut.IntegerDigits);
 			Assert.AreEqual(2, sut.FractionDigits);
-			Assert.AreEqual(false, sut.IsGrouped);
-			Assert.AreEqual(false, sut.IsZeroSigned);
-			Assert.AreEqual(false, sut.IsDecimalPointAlwaysDisplayed);
+			Assert.IsFalse(sut.IsGrouped);
+			Assert.IsFalse(sut.IsZeroSigned);
+			Assert.IsFalse(sut.IsDecimalPointAlwaysDisplayed);
 			Assert.AreEqual("en-US", sut.ResolvedLanguage);
 			Assert.IsNull(sut.NumberRounder);
 			/*
@@ -233,7 +233,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 				isNegative = BitConverter.DoubleToInt64Bits(actual.Value) < 0;
 			}
 
-			Assert.AreEqual(true, isNegative);
+			Assert.IsTrue(isNegative);
 		}
 
 		[DataTestMethod]
@@ -290,7 +290,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			var sut = MakeFormatter();
 
 			var actual = sut.ParseDouble("a12‰");
-			Assert.AreEqual(null, actual);
+			Assert.IsNull(actual);
 		}
 
 		// In UWP PermilleFormatter() ignore PrimaryLanguageOverride

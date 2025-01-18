@@ -18,7 +18,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Composition;
 [TestClass]
 public class Given_RedirectVisual
 {
-#if __SKIA__
 	[TestMethod]
 	[RunsOnUIThread]
 	[Ignore("Disabled because of https://github.com/unoplatform/uno-private/issues/307")]
@@ -65,5 +64,4 @@ public class Given_RedirectVisual
 
 		return (await UITestHelper.ScreenShot(expected), await UITestHelper.ScreenShot(sut));
 	}
-#endif
 }

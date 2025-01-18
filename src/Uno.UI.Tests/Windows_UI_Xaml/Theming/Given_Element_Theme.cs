@@ -2,6 +2,8 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Uno.UI.Tests.Helpers;
+using System;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 {
@@ -30,7 +32,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 			var border = new Border();
 			Assert.AreEqual(initialTheme, border.ActualTheme);
 
-			SwapSystemTheme();
+			using var _ = ThemeHelper.SwapSystemTheme();
 
 			var updatedTheme = Application.Current.RequestedTheme == ApplicationTheme.Dark ?
 				ElementTheme.Dark : ElementTheme.Light;
@@ -41,7 +43,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 		[TestMethod]
 		public void ActualTheme_With_Explicit_RequestedTheme()
 		{
-			Application.Current.SetExplicitRequestedTheme(ApplicationTheme.Dark);
+			using var _ = ThemeHelper.SetExplicitRequestedTheme(ApplicationTheme.Dark);
 
 			var border = new Border();
 			Assert.AreEqual(ElementTheme.Dark, border.ActualTheme);
@@ -56,7 +58,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 		[TestMethod]
 		public void ActualThemeChanged_Called_With_RequestedTheme()
 		{
-			Application.Current.SetExplicitRequestedTheme(ApplicationTheme.Dark);
+			using var _ = ThemeHelper.SetExplicitRequestedTheme(ApplicationTheme.Dark);
 
 			int callCounter = 0;
 			var border = new Border();
@@ -73,17 +75,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 
 			border.RequestedTheme = ElementTheme.Default;
 			Assert.AreEqual(2, callCounter);
-		}
-
-		private static void SwapSystemTheme()
-		{
-			var currentTheme = Application.Current.RequestedTheme;
-			var targetTheme = currentTheme == ApplicationTheme.Light ?
-				ApplicationTheme.Dark :
-				ApplicationTheme.Light;
-			Application.Current.SetExplicitRequestedTheme(targetTheme);
-
-			Assert.AreEqual(targetTheme, Application.Current.RequestedTheme);
 		}
 	}
 }

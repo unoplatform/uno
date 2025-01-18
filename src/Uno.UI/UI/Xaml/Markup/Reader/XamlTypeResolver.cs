@@ -12,6 +12,7 @@ using Uno.Xaml;
 using Windows.UI;
 using Windows.Foundation;
 using System.Diagnostics.CodeAnalysis;
+using System.Xml.Linq;
 
 namespace Microsoft.UI.Xaml.Markup.Reader
 {
@@ -301,44 +302,51 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 
 			return _findType(name);
 		}
+		public Type? FindType(string xmlns, string name)
+		{
+			if (xmlns == XamlConstants.Xmlnses.X)
+			{
+				if (name == "Bind")
+				{
+					return _findType(XamlConstants.Namespaces.Data + ".Binding");
+				}
+				else if (_findType("System." + name) is Type systemType)
+				{
+					return systemType;
+				}
+			}
+
+			var ns = FileDefinition.Namespaces.FirstOrDefault(n => n.Namespace == xmlns);
+			var isKnownNamespace = ns?.Prefix is { Length: > 0 };
+			var fullName = (!isKnownNamespace && xmlns.StartsWith("using:", StringComparison.Ordinal))
+				? xmlns.TrimStart("using:") + "." + name
+				: isKnownNamespace ? ns?.Prefix + ":" + name : name;
+
+			return _findType(fullName);
+		}
 
 		public Type? FindType(XamlType? type)
 		{
 			if (type != null)
 			{
-				var ns = FileDefinition.Namespaces.FirstOrDefault(n => n.Namespace == type.PreferredXamlNamespace);
-				var isKnownNamespace = ns?.Prefix is { Length: > 0 };
-
-				if (type.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace)
-				{
-					if (type.Name == "Bind")
-					{
-						return _findType(XamlConstants.Namespaces.Data + ".Binding");
-					}
-					else if (_findType("System." + type.Name) is Type systemType)
-					{
-						return systemType;
-					}
-				}
-
-				string getFullName()
-				{
-					if (!isKnownNamespace && type.PreferredXamlNamespace.StartsWith("using:", StringComparison.Ordinal))
-					{
-						return type.PreferredXamlNamespace.TrimStart("using:") + "." + type.Name;
-					}
-					else
-					{
-						return isKnownNamespace ? ns?.Prefix + ":" + type.Name : type.Name;
-					}
-				}
-
-				return _findType(getFullName());
+				return FindType(type.PreferredXamlNamespace, type.Name);
 			}
 			else
 			{
 				return null;
 			}
+		}
+
+		public Type? FindTypeByXClass(XamlObjectDefinition? definition)
+		{
+			if (definition is { } &&
+				FindXClass(definition) is { } name &&
+				!name.IsNullOrWhiteSpace())
+			{
+				return _findType(name);
+			}
+
+			return null;
 		}
 
 		[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Types may be removed or not present as part of the normal operations of that method")]
@@ -592,5 +600,10 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 					(itemType ?? typeof(object)).Is(arg0.ParameterType)
 				);
 		}
+
+		private static string? FindXClass(XamlObjectDefinition definition) =>
+			definition.Members
+				.FirstOrDefault(x => x.Member.PreferredXamlNamespace == XamlConstants.Xmlnses.X && x.Member.Name == "Class")
+				?.Value?.ToString();
 	}
 }

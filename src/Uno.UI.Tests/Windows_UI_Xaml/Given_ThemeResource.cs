@@ -28,36 +28,30 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestCleanup]
-		public async Task Cleanup()
+		public void Cleanup()
 		{
 			if (Window.Current?.Content is FrameworkElement root)
 			{
 				root.RequestedTheme = ElementTheme.Default;
 			}
-
-			if (Application.Current.RequestedTheme == ApplicationTheme.Dark)
-			{
-				await SwapSystemTheme();
-			}
 		}
 
 		[TestMethod]
-		public async Task When_Theme_Changed_ApplicationPageBackground()
+		public void When_Theme_Changed_ApplicationPageBackground()
 		{
-
 			var page = new ThemeResource_Themed_Color_Page();
 			var app = UnitTestsApp.App.EnsureApplication();
 			app.HostView.Children.Add(page);
 
 			Assert.AreEqual(Colors.White, (page.Background as SolidColorBrush).Color);
 
-			await SwapSystemTheme();
+			using var _ = SwapSystemTheme();
 
 			Assert.AreEqual(Colors.Black, (page.Background as SolidColorBrush).Color);
 		}
 
 		[TestMethod]
-		public async Task When_Theme_Changed_ResourceKey()
+		public void When_Theme_Changed_ResourceKey()
 		{
 			using (UseFluentResources())
 			{
@@ -72,7 +66,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 				// Dark text
 				Assert.IsTrue(((SolidColorBrush)textBlock.Foreground).Color.R < 100);
 
-				await SwapSystemTheme();
+				using var _ = SwapSystemTheme();
 
 				// Light text
 				Assert.IsTrue(((SolidColorBrush)textBlock.Foreground).Color.R > 200);
@@ -80,7 +74,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
-		public async Task When_Theme_Changed_ImplicitStyle()
+		public void When_Theme_Changed_ImplicitStyle()
 		{
 			using (UseFluentResources())
 			{
@@ -93,7 +87,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 				// Dark text
 				Assert.IsTrue(((SolidColorBrush)button.Foreground).Color.R < 100);
 
-				await SwapSystemTheme();
+				using var _ = SwapSystemTheme();
 
 				// Light text
 				Assert.IsTrue(((SolidColorBrush)button.Foreground).Color.R > 200);
@@ -101,7 +95,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
-		public async Task When_Theme_Changed_LocalValue()
+		public void When_Theme_Changed_LocalValue()
 		{
 			var app = UnitTestsApp.App.EnsureApplication();
 
@@ -113,13 +107,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			Assert.AreEqual(Colors.Pink, (button.Foreground as SolidColorBrush).Color);
 
-			await SwapSystemTheme();
+			using var _ = SwapSystemTheme();
 
 			Assert.AreEqual(Colors.Pink, (button.Foreground as SolidColorBrush).Color);
 		}
 
 		[TestMethod]
-		public async Task When_Theme_Changed_Default_Style_Overridden()
+		public void When_Theme_Changed_Default_Style_Overridden()
 		{
 			var page = new ThemeResource_Themed_Color_Page();
 			var app = UnitTestsApp.App.EnsureApplication();
@@ -129,13 +123,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			Assert.AreEqual(Colors.Peru, (button.Foreground as SolidColorBrush).Color);
 
-			await SwapSystemTheme();
+			using var _ = SwapSystemTheme();
 
 			Assert.AreEqual(Colors.Peru, (button.Foreground as SolidColorBrush).Color);
 		}
 
 		[TestMethod]
-		public async Task When_Themed_Color_Theme_Changed()
+		public void When_Themed_Color_Theme_Changed()
 		{
 			var page = new ThemeResource_Themed_Color_Page();
 			var app = UnitTestsApp.App.EnsureApplication();
@@ -143,7 +137,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			Assert.AreEqual(Colors.LightBlue, (page.TestBorder.Background as SolidColorBrush).Color);
 
-			await SwapSystemTheme();
+			using var _ = SwapSystemTheme();
 
 			Assert.AreEqual(Colors.DarkBlue, (page.TestBorder.Background as SolidColorBrush).Color);
 		}
@@ -191,7 +185,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			await GoTo("NormalMidground");
 
-			await SwapSystemTheme();
+			using var _ = SwapSystemTheme();
 
 			await GoTo("ActiveMidground");
 
@@ -222,7 +216,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			await GoTo("NormalArduousness");
 
-			await SwapSystemTheme();
+			using var _ = SwapSystemTheme();
 
 			await GoTo("HighArduousness");
 
@@ -256,7 +250,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			await WaitForIdle();
 			var lightPilleability = control.InnerMyControl.Pilleability;
 			Assert.AreEqual(29, lightPilleability);
-			await SwapSystemTheme();
+			using var _ = SwapSystemTheme();
 			var darkPilleability = control.InnerMyControl.Pilleability;
 			Assert.AreEqual(47, darkPilleability);
 
@@ -288,7 +282,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			Assert.AreEqual(29, lightPilleability);
 			await GoTo("NormalPilleability");
 			Assert.AreEqual(0, control.InnerMyControl.Pilleability);
-			await SwapSystemTheme();
+			using var _ = SwapSystemTheme();
 			await GoTo("HighPilleability");
 			var darkPilleability = control.InnerMyControl.Pilleability;
 			Assert.AreEqual(47, darkPilleability);
@@ -302,7 +296,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 #if NETFX_CORE
-		private static async Task WaitForIdle() => await Task.Delay(100);
+		private static void WaitForIdle() => await Task.Delay(100);
 #else
 		private static Task WaitForIdle() => Task.CompletedTask;
 #endif
@@ -319,12 +313,12 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
-		public async Task When_System_ThemeResource_Dark()
+		public void When_System_ThemeResource_Dark()
 		{
 			var app = UnitTestsApp.App.EnsureApplication();
 			try
 			{
-				await SwapSystemTheme();
+				using var _ = SwapSystemTheme();
 
 				var control = new Test_Control();
 				app.HostView.Children.Add(control);
@@ -334,7 +328,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			finally
 			{
 				//ensure the light theme is reset
-				await SwapSystemTheme();
+				using var _ = SwapSystemTheme();
 			}
 		}
 
@@ -414,7 +408,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
-		public async Task When_Theme_Changed()
+		public void When_Theme_Changed()
 		{
 			var app = UnitTestsApp.App.EnsureApplication();
 
@@ -427,26 +421,17 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			Assert.AreEqual("LocalVisualTreeLight", textLightThemeMarkup);
 
-			try
+			using var _ = SwapSystemTheme();
+			if (control.Parent == null)
 			{
-				if (await SwapSystemTheme())
-				{
-					if (control.Parent == null)
-					{
-						app.HostView.Children.Add(control); // On UWP the control may have been removed by another test after the async swap
-					}
-					var textDarkThemeMarkup = control.TemplateFromResourceControl.TextBlock6.Text;
-					Assert.AreEqual("LocalVisualTreeDark", textDarkThemeMarkup); //ThemeResource markup change lookup uses the visual tree (rather than original XAML namescope)
-				}
+				app.HostView.Children.Add(control); // On UWP the control may have been removed by another test after the async swap
 			}
-			finally
-			{
-				await SwapSystemTheme();
-			}
+			var textDarkThemeMarkup = control.TemplateFromResourceControl.TextBlock6.Text;
+			Assert.AreEqual("LocalVisualTreeDark", textDarkThemeMarkup); //ThemeResource markup change lookup uses the visual tree (rather than original XAML namescope)
 		}
 
 		[TestMethod]
-		public async Task When_Theme_Changed_Static()
+		public void When_Theme_Changed_Static()
 		{
 			var app = UnitTestsApp.App.EnsureApplication();
 
@@ -459,75 +444,47 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			Assert.AreEqual("ApplicationLevelLight", textLightStaticMarkup);
 
-			try
-			{
-				if (await SwapSystemTheme())
-				{
-					var textDarkStaticMarkup = control.TemplateFromResourceControl.TextBlock5.Text;
-					Assert.AreEqual("ApplicationLevelLight", textDarkStaticMarkup); //StaticResource markup doesn't change
-					;
-				}
-			}
-			finally
-			{
-				await SwapSystemTheme();
-			}
+			using var _ = SwapSystemTheme();
+			var textDarkStaticMarkup = control.TemplateFromResourceControl.TextBlock5.Text;
+			Assert.AreEqual("ApplicationLevelLight", textDarkStaticMarkup); //StaticResource markup doesn't change
 		}
 
 		[TestMethod]
-		public async Task When_Theme_Changed_ContentControl()
+		public void When_Theme_Changed_ContentControl()
 		{
 			var control = new ContentControl() { Content = "Unstyled control" };
 			var app = UnitTestsApp.App.EnsureApplication();
 			app.HostView.Children.Add(control);
 			AssertEx.AssertHasColor(control.Foreground, Colors.Black);
 
-			try
+			using var _ = SwapSystemTheme();
+			if (control.Parent == null)
 			{
-				if (await SwapSystemTheme())
-				{
-					if (control.Parent == null)
-					{
-						app.HostView.Children.Add(control); // On UWP the control may have been removed by another test after the async swap
-					}
+				app.HostView.Children.Add(control); // On UWP the control may have been removed by another test after the async swap
+			}
 
-					AssertEx.AssertHasColor(control.Foreground, Colors.White);
-				}
-			}
-			finally
-			{
-				await SwapSystemTheme();
-			}
+			AssertEx.AssertHasColor(control.Foreground, Colors.White);
 		}
 
 		[TestMethod]
-		public async Task When_Theme_Changed_From_Setter()
+		public void When_Theme_Changed_From_Setter()
 		{
 			var button = new Button() { Content = "Bu'on" };
 			var app = UnitTestsApp.App.EnsureApplication();
 			app.HostView.Children.Add(button);
 			AssertEx.AssertHasColor(button.Foreground, Colors.Black);
 
-			try
+			using var _ = SwapSystemTheme();
+			if (button.Parent == null)
 			{
-				if (await SwapSystemTheme())
-				{
-					if (button.Parent == null)
-					{
-						app.HostView.Children.Add(button); // On UWP the control may have been removed by another test after the async swap
-					}
+				app.HostView.Children.Add(button); // On UWP the control may have been removed by another test after the async swap
+			}
 
-					AssertEx.AssertHasColor(button.Foreground, Colors.White);
-				}
-			}
-			finally
-			{
-				await SwapSystemTheme();
-			}
+			AssertEx.AssertHasColor(button.Foreground, Colors.White);
 		}
 
 		[TestMethod]
-		public async Task When_Theme_Changed_From_Setter_Library()
+		public void When_Theme_Changed_From_Setter_Library()
 		{
 			var page = new Test_Page();
 			var app = UnitTestsApp.App.EnsureApplication();
@@ -540,26 +497,17 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			Assert.AreEqual("ExtLight", textLightFromThemeResource);
 			Assert.AreEqual("ExtLight", textLightFromStaticResource);
 
-			try
+			using var _ = SwapSystemTheme();
+			if (page.Parent == null)
 			{
-				if (await SwapSystemTheme())
-				{
-					if (page.Parent == null)
-					{
-						app.HostView.Children.Add(page); // On UWP the control may have been removed by another test after the async swap
-					}
-
-					var textDarkFromThemeResource = myExtControl.MyTagThemed1;
-					var textDarkFromStaticResource = myExtControl.MyTagThemed2;
-
-					Assert.AreEqual("ExtDark", textDarkFromThemeResource);
-					Assert.AreEqual("ExtLight", textDarkFromStaticResource);
-				}
+				app.HostView.Children.Add(page); // On UWP the control may have been removed by another test after the async swap
 			}
-			finally
-			{
-				await SwapSystemTheme();
-			}
+
+			var textDarkFromThemeResource = myExtControl.MyTagThemed1;
+			var textDarkFromStaticResource = myExtControl.MyTagThemed2;
+
+			Assert.AreEqual("ExtDark", textDarkFromThemeResource);
+			Assert.AreEqual("ExtLight", textDarkFromStaticResource);
 		}
 
 		[TestMethod]
@@ -572,7 +520,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			var tb = (TextBlock)SUT.FindName("MarkTextBlock");
 			Assert.IsNotNull(tb);
-			Assert.AreEqual(Colors.Red, (tb.Foreground as SolidColorBrush)?.Color);
+			Assert.IsInstanceOfType(tb.Foreground, typeof(SolidColorBrush));
+			Assert.AreEqual(Colors.Red, ((SolidColorBrush)tb.Foreground).Color);
 		}
 
 		[TestMethod]
@@ -587,7 +536,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			var tb = (TextBlock)SUT.FindName("MarkTextBlock");
 			Assert.IsNotNull(tb);
-			Assert.AreEqual(Colors.Orange, (tb.Foreground as SolidColorBrush)?.Color);
+			Assert.IsInstanceOfType(tb.Foreground, typeof(SolidColorBrush));
+			Assert.AreEqual(Colors.Orange, ((SolidColorBrush)tb.Foreground).Color);
 		}
 
 		[TestMethod]
@@ -650,7 +600,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 #if NETFX_CORE
 		private static Task _swapTask;
 
-		private static async Task GetSwapTask()
+		private static void GetSwapTask()
 		{
 			await Task.Delay(800);
 			var content = new StackPanel();
@@ -672,7 +622,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
-		public async Task When_Theme_Bound_Overwritten_By_Local()
+		public void When_Theme_Bound_Overwritten_By_Local()
 		{
 			var page = new ThemeResource_When_Theme_Bound_Overwritten_By_Local_Page();
 			var app = UnitTestsApp.App.EnsureApplication();
@@ -682,25 +632,23 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			AssertEx.AssertHasColor(tb.Foreground, Colors.Black);
 
-			await SwapSystemTheme();
+			using var _1 = SwapSystemTheme();
 			AssertEx.AssertHasColor(tb.Foreground, Colors.White);
 
-
-			await SwapSystemTheme();
+			_ = SwapSystemTheme();
 			AssertEx.AssertHasColor(tb.Foreground, Colors.Black);
 
 			tb.Foreground = new SolidColorBrush(Colors.PeachPuff);
 
-			await SwapSystemTheme();
+			_ = SwapSystemTheme();
 			AssertEx.AssertHasColor(tb.Foreground, Colors.PeachPuff);
 
-
-			await SwapSystemTheme();
+			_ = SwapSystemTheme();
 			AssertEx.AssertHasColor(tb.Foreground, Colors.PeachPuff);
 		}
 
 		[TestMethod]
-		public async Task When_VisualState_Setter_Value()
+		public void When_VisualState_Setter_Value()
 		{
 			var page = new ThemeResource_When_VisualState_Setter_Value_Page();
 			var app = UnitTestsApp.App.EnsureApplication();
@@ -710,27 +658,27 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			AssertEx.AssertHasColor(tb.Foreground, Colors.Black);
 			Assert.AreEqual(DependencyPropertyValuePrecedences.Animations, tb.GetCurrentHighestValuePrecedence(TextBlock.ForegroundProperty));
 
-			await SwapSystemTheme();
+			using var _1 = SwapSystemTheme();
 			AssertEx.AssertHasColor(tb.Foreground, Colors.White);
 			Assert.AreEqual(DependencyPropertyValuePrecedences.Animations, tb.GetCurrentHighestValuePrecedence(TextBlock.ForegroundProperty));
 
 
-			await SwapSystemTheme();
+			_ = SwapSystemTheme();
 			AssertEx.AssertHasColor(tb.Foreground, Colors.Black);
 			Assert.AreEqual(DependencyPropertyValuePrecedences.Animations, tb.GetCurrentHighestValuePrecedence(TextBlock.ForegroundProperty));
 
-			await SwapSystemTheme();
+			_ = SwapSystemTheme();
 			AssertEx.AssertHasColor(tb.Foreground, Colors.White);
 			Assert.AreEqual(DependencyPropertyValuePrecedences.Animations, tb.GetCurrentHighestValuePrecedence(TextBlock.ForegroundProperty));
 
 
-			await SwapSystemTheme();
+			_ = SwapSystemTheme();
 			AssertEx.AssertHasColor(tb.Foreground, Colors.Black);
 			Assert.AreEqual(DependencyPropertyValuePrecedences.Animations, tb.GetCurrentHighestValuePrecedence(TextBlock.ForegroundProperty));
 		}
 
 		[TestMethod]
-		public async Task When_VisualState_Setter_Value_Complex_Path()
+		public void When_VisualState_Setter_Value_Complex_Path()
 		{
 			var page = new ThemeResource_When_VisualState_Setter_Value_Complex_Path_Page();
 			var app = UnitTestsApp.App.EnsureApplication();
@@ -740,19 +688,19 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			AssertEx.AssertHasColor(ellipse.Stroke, Colors.DarkGreen);
 
-			await SwapSystemTheme();
+			using var _1 = SwapSystemTheme();
 			AssertEx.AssertHasColor(ellipse.Stroke, Colors.LightGreen);
 
-			await SwapSystemTheme();
+			_ = SwapSystemTheme();
 			AssertEx.AssertHasColor(ellipse.Stroke, Colors.DarkGreen);
 
-			await SwapSystemTheme();
+			_ = SwapSystemTheme();
 			AssertEx.AssertHasColor(ellipse.Stroke, Colors.LightGreen);
 
-			await SwapSystemTheme();
+			_ = SwapSystemTheme();
 			AssertEx.AssertHasColor(ellipse.Stroke, Colors.DarkGreen);
 		}
 
-		internal static Task<bool> SwapSystemTheme() => ThemeHelper.SwapSystemTheme();
+		internal static IDisposable SwapSystemTheme() => ThemeHelper.SwapSystemTheme();
 	}
 }

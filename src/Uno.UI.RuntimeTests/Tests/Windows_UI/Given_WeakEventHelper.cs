@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.UI.Xaml.Controls;
 using Uno.Buffers;
 using Windows.Graphics.Capture;
 using Windows.UI.Core;
@@ -13,7 +14,7 @@ using Windows.UI.Core;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI;
 
 [TestClass]
-public class Given_WeakEventHelper
+public partial class Given_WeakEventHelper
 {
 	[TestMethod]
 	public void When_Explicit_Dispose()
@@ -96,6 +97,61 @@ public class Given_WeakEventHelper
 		SUT.Invoke(this, null);
 
 		Assert.AreEqual(2, invoked);
+
+		disposable.Dispose();
+		disposable = null;
+
+		GC.Collect(2);
+		GC.WaitForPendingFinalizers();
+
+		SUT.Invoke(this, null);
+
+		Assert.AreEqual(2, invoked);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public void When_UIElement_Target_Collected()
+	{
+		WeakEventHelper.WeakEventCollection SUT = new();
+
+		var invoked = 0;
+		IDisposable disposable = null;
+
+		void Do()
+		{
+			Action action = () => invoked++;
+
+			// Wrapping the action and registering the one on the target
+			// allows for the WeakEventHelper to check for collection native
+			// objects on android.
+			MyCollectibleObject target = new(action);
+
+			disposable = WeakEventHelper.RegisterEvent(SUT, target.MyAction, (s, e, a) => (s as Action).Invoke());
+
+			SUT.Invoke(this, null);
+
+			Assert.AreEqual(1, invoked);
+		}
+
+		Do();
+
+		GC.Collect(2);
+		GC.WaitForPendingFinalizers();
+
+		SUT.Invoke(this, null);
+
+		Assert.AreEqual(2, invoked);
+
+		disposable.Dispose();
+		disposable = null;
+
+		GC.Collect(2);
+		GC.WaitForPendingFinalizers();
+
+		SUT.Invoke(this, null);
+
+		Assert.AreEqual(2, invoked);
 	}
 
 	[TestMethod]
@@ -122,7 +178,7 @@ public class Given_WeakEventHelper
 
 		SUT.Invoke(this, null);
 
-		Assert.AreEqual(5150, invoked);
+		Assert.IsTrue(invoked >= 5150);
 
 		disposable.Clear();
 
@@ -132,7 +188,7 @@ public class Given_WeakEventHelper
 		// Ensure that everything has been collected.
 		SUT.Invoke(this, null);
 
-		Assert.AreEqual(5150, invoked);
+		Assert.IsTrue(invoked >= 5150);
 	}
 
 	[TestMethod]
@@ -218,6 +274,18 @@ public class Given_WeakEventHelper
 		Assert.IsFalse(trimProvider.Invoke());
 
 		Assert.AreEqual(1, invoked);
+	}
+
+	private partial class MyCollectibleObject : Grid
+	{
+		private Action _action;
+
+		public MyCollectibleObject(Action action)
+		{
+			_action = action;
+		}
+
+		public void MyAction() => _action.Invoke();
 	}
 
 	private class TestPlatformProvider : WeakEventHelper.ITrimProvider

@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference InfoBarPanel.cpp, tag winui3/release/1.4.2
+// MUX reference InfoBarPanel.cpp, tag winui3/release/1.7-stable
 
 using System;
 using Windows.Foundation;
@@ -48,7 +48,6 @@ public partial class InfoBarPanel : Panel
 			{
 				// Add up the width of all items if they were laid out horizontally
 				var horizontalMargin = GetHorizontalOrientationMargin(child);
-				totalWidth += childDesiredSize.Width + (nItems > 0 ? (float)horizontalMargin.Left : 0) + (float)horizontalMargin.Right;
 				// Ignore left margin of first and right margin of last child
 				totalWidth += childDesiredSize.Width +
 					(nItems > 0 ? (float)horizontalMargin.Left : 0) +

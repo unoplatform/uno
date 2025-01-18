@@ -80,9 +80,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(new Rect(68, 41, 11, 17), pinkBounds);
 		}
 
-#if !__IOS__ // Currently fails on iOS
-		[TestMethod]
+#if __IOS__
+		[Ignore("Currently fails on iOS")]
 #endif
+		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_Fixed_Height_And_Stretch_Uniform()
 		{
