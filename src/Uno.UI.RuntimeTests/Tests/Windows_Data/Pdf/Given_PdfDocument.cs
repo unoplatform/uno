@@ -127,7 +127,7 @@ public class Given_PdfDocument
 		Assert.IsNotNull(stream, "Not valid stream");
 
 #if __ANDROID__
-		await Assert.ThrowsAsync<NotImplementedException>(() => await PdfDocument.LoadFromStreamAsync(stream, PdfDocument_Password_Valid));
+		await Assert.ThrowsAsync<NotImplementedException>(async () => await PdfDocument.LoadFromStreamAsync(stream, PdfDocument_Password_Valid));
 #else
 		var pdfDocument = await PdfDocument.LoadFromStreamAsync(stream, PdfDocument_Password_Valid);
 		await CheckDocumentAsync(pdfDocument, ReferencePageImage_ProtectedUri, hasPassword: true);
@@ -141,9 +141,9 @@ public class Given_PdfDocument
 		Assert.IsNotNull(stream, "Not valid stream");
 
 #if __ANDROID__
-		await Assert.ThrowsAsync<NotImplementedException>(() => await PdfDocument.LoadFromStreamAsync(stream, PdfDocument_Password_Invalid));
+		await Assert.ThrowsAsync<NotImplementedException>(async () => await PdfDocument.LoadFromStreamAsync(stream, PdfDocument_Password_Invalid));
 #elif !HAS_UNO
-		await Assert.ThrowsAsync<Exception>(() => await PdfDocument.LoadFromStreamAsync(stream, PdfDocument_Password_Invalid));
+		await Assert.ThrowsAsync<Exception>(async () => await PdfDocument.LoadFromStreamAsync(stream, PdfDocument_Password_Invalid));
 #else
 		var pdfDocument = await PdfDocument.LoadFromStreamAsync(stream, PdfDocument_Password_Valid);
 		await CheckDocumentAsync(pdfDocument, ReferencePageImage_ProtectedUri, hasPassword: true);
@@ -181,7 +181,7 @@ public class Given_PdfDocument
 		}
 
 #if __ANDROID__
-		await Assert.ThrowsAsync<NotImplementedException>(() => await PdfDocument.LoadFromStreamAsync(stream, PdfDocument_Password_Valid));
+		await Assert.ThrowsAsync<NotImplementedException>(async () => await PdfDocument.LoadFromStreamAsync(stream, PdfDocument_Password_Valid));
 #else
 		var pdfDocument = await PdfDocument.LoadFromFileAsync(file, PdfDocument_Password_Valid);
 		await CheckDocumentAsync(pdfDocument, ReferencePageImage_ProtectedUri, hasPassword: true);
@@ -202,9 +202,9 @@ public class Given_PdfDocument
 		}
 
 #if __ANDROID__
-		await Assert.ThrowsAsync<NotImplementedException>(() => await PdfDocument.LoadFromFileAsync(file, PdfDocument_Password_Invalid));
+		await Assert.ThrowsAsync<NotImplementedException>(async () => await PdfDocument.LoadFromFileAsync(file, PdfDocument_Password_Invalid));
 #elif !HAS_UNO
-		await Assert.ThrowsAsync<Exception>(() => await PdfDocument.LoadFromFileAsync(file, PdfDocument_Password_Invalid));
+		await Assert.ThrowsAsync<Exception>(async () => await PdfDocument.LoadFromFileAsync(file, PdfDocument_Password_Invalid));
 #else
 		var pdfDocument = await PdfDocument.LoadFromFileAsync(file, PdfDocument_Password_Invalid);
 		await CheckDocumentAsync(pdfDocument, ReferencePageImage_ProtectedUri, hasPassword: true);
