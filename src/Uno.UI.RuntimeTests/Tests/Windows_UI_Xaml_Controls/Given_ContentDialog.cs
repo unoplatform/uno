@@ -349,7 +349,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			async void SUT_Closing(object sender, ContentDialogClosingEventArgs args)
 			{
 				// Closing should only be invoked once.
+				// TODO: !!IMPORTANT!! If this assert failed it will be currently **swallowed**.
+				// It's not going to fail the test nor crash the process.
+				// This is NOT a false positive of the analyzer.
+#pragma warning disable MSTEST0040 // Do not assert inside 'async void' contexts
 				Assert.IsFalse(triggered);
+#pragma warning restore MSTEST0040 // Do not assert inside 'async void' contexts
 				triggered = true;
 				var deferral = args.GetDeferral();
 				await WindowHelper.WaitFor(() => hideSecondTime);

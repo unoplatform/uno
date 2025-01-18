@@ -122,8 +122,8 @@ namespace Uno.UI.RuntimeTests.Tests
 		{
 			var path = GetRandomFilePath();
 			var storageFile = await GetFile(path);
-			var stream = storageFile.OpenAsync(FileAccessMode.Read);
-			Assert.Throws<NotSuppotedException>(() => stream.GetOutputStreamAt(0));
+			var stream = await storageFile.OpenAsync(FileAccessMode.Read);
+			Assert.Throws<NotSupportedException>(() => stream.GetOutputStreamAt(0));
 		}
 
 		[TestMethod]
