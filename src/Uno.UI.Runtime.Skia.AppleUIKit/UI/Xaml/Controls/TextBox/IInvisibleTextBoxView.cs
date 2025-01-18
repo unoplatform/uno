@@ -21,20 +21,4 @@ internal interface IInvisibleTextBoxView : ITextInput, IUITextInputTraits
 	void SetTextNative(string text);
 
 	void Select(int start, int length);
-
-#if !NET9_0_OR_GREATER
-	UITextAutocapitalizationType AutocapitalizationType { get; set; }
-
-	UIKeyboardType KeyboardType { get; set; }
-
-	UITextAutocorrectionType AutocorrectionType { get; set; }
-
-	UITextSpellCheckingType SpellCheckingType { get; set; }
-
-	bool SecureTextEntry { get; set; }
-
-	UIReturnKeyType ReturnKeyType { get; set; }
-
-	UIKeyboardAppearance KeyboardAppearance { get; set; }
-#endif
 }
