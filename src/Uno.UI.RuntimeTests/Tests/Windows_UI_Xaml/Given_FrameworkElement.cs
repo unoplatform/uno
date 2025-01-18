@@ -396,7 +396,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow("	Infinity")]
 		[DataRow("-Infinity ")]
 		[DataRow("	Infinity")]
-		[ExpectedException(typeof(ArgumentException))]
 #if !WINAPPSDK
 		[Ignore]
 #endif
@@ -405,10 +404,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			using var _ = new AssertionScope();
 
 			var sut = new ContentControl { Tag = variant };
-
-			sut.SetBinding(
-				FrameworkElement.WidthProperty,
-				new Binding { Source = sut, Path = new PropertyPath("Tag") });
+			var binding = new Binding { Source = sut, Path = new PropertyPath("Tag") };
+			Assert.Throws<ArgumentException>(() => sut.SetBinding(FrameworkElement.WidthProperty, binding));
 		}
 
 		private sealed partial class MyPanel : Panel

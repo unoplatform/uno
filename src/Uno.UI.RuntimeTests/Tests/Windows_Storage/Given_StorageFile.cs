@@ -118,11 +118,12 @@ namespace Uno.UI.RuntimeTests.Tests
 		}
 
 		[TestMethod]
-		[ExpectedException(typeof(NotSupportedException))]
 		public async Task When_Open_Read_AndGetOutputStream()
 		{
 			var path = GetRandomFilePath();
-			var file = (await (await GetFile(path)).OpenAsync(FileAccessMode.Read)).GetOutputStreamAt(0);
+			var storageFile = await GetFile(path);
+			var stream = storageFile.OpenAsync(FileAccessMode.Read);
+			Assert.Throws<NotSuppotedException>(() => stream.GetOutputStreamAt(0));
 		}
 
 		[TestMethod]
