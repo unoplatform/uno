@@ -50,7 +50,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			}
 
 			// Note: RenderTargetBitmap returns images with the current DPI (a 50x50 Border rendered on WinUI will return a 75x75 image)
-			var dpi = DisplayInformation.GetForCurrentView()?.RawPixelsPerViewPixel ?? 1;
+			var dpi = element.XamlRoot?.VisualTree.RootScale.GetEffectiveRasterizationScale() ?? DisplayInformation.GetForCurrentView()?.RawPixelsPerViewPixel ?? 1;
 			var (width, height) = ((int)(renderSize.Width * dpi), (int)(renderSize.Height * dpi));
 			var info = new SKImageInfo(width, height, SKColorType.Bgra8888, SKAlphaType.Premul);
 			using var surface = SKSurface.Create(info);

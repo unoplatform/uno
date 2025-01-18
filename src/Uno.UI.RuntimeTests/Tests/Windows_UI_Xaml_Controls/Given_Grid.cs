@@ -554,6 +554,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[RequiresScaling(1f)]
 #if __ANDROID__ || __APPLE_UIKIT__
 		[Ignore("Fails on Android and iOS.")]
 #endif
@@ -618,6 +619,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[RequiresScaling(1f)]
 #if __ANDROID__ || __APPLE_UIKIT__
 		[Ignore("Fails on Android and iOS.")]
 #endif

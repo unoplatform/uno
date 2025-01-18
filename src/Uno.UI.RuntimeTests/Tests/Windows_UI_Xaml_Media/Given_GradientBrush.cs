@@ -159,6 +159,7 @@ public class Given_GradientBrush
 #if __ANDROID__ || __APPLE_UIKIT__
 	[Ignore("Fails on Android and iOS")]
 #endif
+	[RequiresScaling(1f)]
 	public async Task When_RadialGradientBrush_Circle_With_Non_Equal_Center_And_Origin()
 	{
 		if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap"))

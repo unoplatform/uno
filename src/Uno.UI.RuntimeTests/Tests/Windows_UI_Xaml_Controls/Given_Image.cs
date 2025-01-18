@@ -36,6 +36,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if !__SKIA__
 		[Ignore("TODO: Fix on other platforms")]
 #endif
+		[RequiresScaling(1f)]
 		public async Task When_Parent_Has_BorderThickness()
 		{
 			var image = new Image()
@@ -589,6 +590,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __SKIA__
 		[TestMethod]
 		[RunsOnUIThread]
+		[RequiresScaling(100)]
 		public async Task When_Png_Should_Have_High_Quality()
 		{
 			var image = new Image() { Width = 100, Height = 100 };

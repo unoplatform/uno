@@ -803,6 +803,23 @@ namespace Uno.UI.Samples.Tests
 								});
 							}
 
+#if HAS_UNO // Test scaling override is currently supported only on Uno Platform targets
+							if (test.RequiresScaling is not null)
+							{
+								await TestServices.WindowHelper.RootElementDispatcher.RunAsync(() =>
+								{
+									Private.Infrastructure.TestServices.WindowHelper.SetTestScaling(test.RequiresScaling.Value);
+								});
+								cleanupActions.Add(async () =>
+								{
+									await TestServices.WindowHelper.RootElementDispatcher.RunAsync(() =>
+									{
+										Private.Infrastructure.TestServices.WindowHelper.UnsetTestScaling();
+									});
+								});
+							}
+#endif
+
 							await GeneralInitAsync();
 
 							object returnValue = null;
