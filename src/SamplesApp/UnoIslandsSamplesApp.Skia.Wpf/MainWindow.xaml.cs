@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using Microsoft.UI.Xaml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace UnoIslandsSamplesApp.Skia.Wpf
