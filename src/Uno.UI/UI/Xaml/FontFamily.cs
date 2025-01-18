@@ -15,9 +15,11 @@ namespace Microsoft.UI.Xaml.Media
 			Init(familyName);
 
 			// A workaround before font fallback is supported. Issue: https://github.com/unoplatform/uno/issues/10148 
-			if (familyName.Equals("Segoe Fluent Icons,Segoe MDL2 Assets", StringComparison.OrdinalIgnoreCase))
+			if (familyName.Contains("Segoe Fluent Icons", StringComparison.InvariantCultureIgnoreCase) ||
+				familyName.Contains("Segoe MDL2 Assets", StringComparison.InvariantCultureIgnoreCase) ||
+				familyName.Equals("Symbols", StringComparison.InvariantCultureIgnoreCase))
 			{
-				Source = "Segoe MDL2 Assets";
+				Source = FeatureConfiguration.Font.SymbolsFont;
 			}
 
 			// This instance is immutable, we can cache the hash code.
