@@ -129,7 +129,7 @@ public class Given_PdfDocument
 #if __ANDROID__
 		await Assert.ThrowsAsync<NotImplementedException>(() => await PdfDocument.LoadFromStreamAsync(stream, PdfDocument_Password_Valid));
 #else
-		var pdfDocument = await PdfDocument.LoadFromStreamAsync(stream, PdfDocument_Password_Valid)
+		var pdfDocument = await PdfDocument.LoadFromStreamAsync(stream, PdfDocument_Password_Valid);
 		await CheckDocumentAsync(pdfDocument, ReferencePageImage_ProtectedUri, hasPassword: true);
 #endif
 	}
