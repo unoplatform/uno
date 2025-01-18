@@ -282,13 +282,14 @@ namespace Uno.UI.Samples.Tests
 				stopButton.IsEnabled = _cts != null && !_cts.IsCancellationRequested || !isRunning;
 				RunningStateForUITest = runningState.Text = isRunning ? "Running" : "Finished";
 				runStatus.Text = message;
+				var windowTitle = $"{message} | {SampleChooserViewModel.DefaultAppTitle}";
 #if HAS_UNO_WINUI || WINAPPSDK
 				if (Private.Infrastructure.TestServices.WindowHelper.CurrentTestWindow is Microsoft.UI.Xaml.Window window)
 				{
-					window.Title = message;
+					window.Title = windowTitle;
 				}
 #else
-				_applicationView.Title = message;
+				_applicationView.Title = windowTitle;
 #endif
 			}
 

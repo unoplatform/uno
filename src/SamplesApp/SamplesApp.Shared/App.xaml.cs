@@ -32,10 +32,15 @@ using Private.Infrastructure;
 using Uno.Logging;
 #endif
 
+#if HAS_UNO
+using Uno.UI.Helpers;
+#endif
+
 #if HAS_UNO_WINUI || WINAPPSDK
 using DispatcherQueue = Microsoft.UI.Dispatching.DispatcherQueue;
 using DispatcherQueuePriority = Microsoft.UI.Dispatching.DispatcherQueuePriority;
 using LaunchActivatedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.LaunchActivatedEventArgs;
+using SampleControl.Presentation;
 #else
 using DispatcherQueue = Windows.System.DispatcherQueue;
 using DispatcherQueuePriority = Windows.System.DispatcherQueuePriority;
@@ -171,35 +176,22 @@ namespace SamplesApp
 
 			ActivateMainWindow();
 
-#if !WINAPPSDK
-			ApplicationView.GetForCurrentView().Title = "Uno Samples";
-#else
-			MainWindow!.Title = "Uno Samples";
-#endif
-
-#if __SKIA__ && DEBUG
-			AppendRepositoryPathToTitleBar();
-#endif
-
+			SetWindowTitle();
 			HandleLaunchArguments(e);
 
 			Console.WriteLine("Done loading " + sw.Elapsed);
 		}
 
-#if __SKIA__ && DEBUG
-		private void AppendRepositoryPathToTitleBar()
+		private static void SetWindowTitle()
 		{
-			var fullPath = Package.Current.InstalledLocation.Path;
-			var srcSamplesApp = $"{Path.DirectorySeparatorChar}src{Path.DirectorySeparatorChar}SamplesApp";
-			var repositoryPath = fullPath;
-			if (fullPath.IndexOf(srcSamplesApp) is int index && index > 0)
-			{
-				repositoryPath = fullPath.Substring(0, index);
-			}
+			var appTitle = SampleChooserViewModel.DefaultAppTitle;
 
-			ApplicationView.GetForCurrentView().Title += $" ({repositoryPath})";
-		}
+#if !WINAPPSDK
+			ApplicationView.GetForCurrentView().Title = appTitle;
+#else
+			MainWindow!.Title = appTitle;
 #endif
+		}
 
 		[MemberNotNull(nameof(_mainWindow))]
 		private void EnsureMainWindow()

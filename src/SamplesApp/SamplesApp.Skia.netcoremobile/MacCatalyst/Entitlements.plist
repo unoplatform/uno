@@ -4,7 +4,7 @@
 <dict>
 	<key>keychain-access-groups</key>
 	<array>
-		<string>$(AppIdentifierPrefix)uno.platform.samplesdev</string>
+		<string>$(AppIdentifierPrefix)uno.platform.samplesapp.skia</string>
 	</array>
 </dict>
 </plist>
