@@ -1,4 +1,6 @@
 ﻿#if __IOS__ || __ANDROID__ || __WASM__
+#nullable enable
+
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,10 +14,7 @@ namespace Windows.Devices.Sensors
 	/// </summary>
 	public partial class Accelerometer
 	{
-		private readonly static object _syncLock = new();
-
-		private static Accelerometer _instance;
-		private static bool _initializationAttempted;
+		private readonly static Lazy<Accelerometer?> _instance = new Lazy<Accelerometer?>(() => TryCreateInstance());
 
 		private readonly StartStopTypedEventWrapper<Accelerometer, AccelerometerReadingChangedEventArgs> _readingChangedWrapper;
 		private readonly StartStopTypedEventWrapper<Accelerometer, AccelerometerShakenEventArgs> _shakenWrapper;
@@ -36,34 +35,17 @@ namespace Windows.Devices.Sensors
 		{
 			_readingChangedWrapper = new StartStopTypedEventWrapper<Accelerometer, AccelerometerReadingChangedEventArgs>(
 				() => StartReadingChanged(),
-				() => StopReadingChanged(),
-				_syncLock);
+				() => StopReadingChanged());
 			_shakenWrapper = new StartStopTypedEventWrapper<Accelerometer, AccelerometerShakenEventArgs>(
 				() => StartShaken(),
-				() => StopShaken(),
-				_syncLock);
+				() => StopShaken());
 		}
 
 		/// <summary>
 		/// Returns the default accelerometer.
 		/// </summary>
 		/// <returns>The default accelerometer or null if no integrated accelerometers are found.</returns>
-		public static Accelerometer GetDefault()
-		{
-			if (_initializationAttempted)
-			{
-				return _instance;
-			}
-			lock (_syncLock)
-			{
-				if (!_initializationAttempted)
-				{
-					_instance = TryCreateInstance();
-					_initializationAttempted = true;
-				}
-				return _instance;
-			}
-		}
+		public static Accelerometer? GetDefault() => _instance.Value;
 
 		/// <summary>
 		/// Occurs each time the accelerometer reports a new sensor reading.

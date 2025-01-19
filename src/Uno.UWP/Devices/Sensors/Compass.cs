@@ -1,4 +1,7 @@
 #if __IOS__ || __ANDROID__ || __WASM__
+#nullable enable
+
+using System;
 using Uno.Helpers;
 using Windows.Foundation;
 
@@ -10,10 +13,7 @@ namespace Windows.Devices.Sensors;
 /// </summary>
 public partial class Compass
 {
-	private readonly static object _syncLock = new();
-
-	private static Compass _instance;
-	private static bool _initializationAttempted;
+	private readonly static Lazy<Compass?> _instance = new Lazy<Compass?>(() => TryCreateInstance());
 
 	private readonly StartStopTypedEventWrapper<Compass, CompassReadingChangedEventArgs> _readingChangedWrapper;
 
@@ -24,30 +24,14 @@ public partial class Compass
 	{
 		_readingChangedWrapper = new StartStopTypedEventWrapper<Compass, CompassReadingChangedEventArgs>(
 			() => StartReadingChanged(),
-			() => StopReadingChanged(),
-			_syncLock);
+			() => StopReadingChanged());
 	}
 
 	/// <summary>
 	/// Returns the default compass.
 	/// </summary>
 	/// <returns>The default compass or null if no integrated compasses are found.</returns>
-	public static Compass GetDefault()
-	{
-		if (_initializationAttempted)
-		{
-			return _instance;
-		}
-		lock (_syncLock)
-		{
-			if (!_initializationAttempted)
-			{
-				_instance = TryCreateInstance();
-				_initializationAttempted = true;
-			}
-			return _instance;
-		}
-	}
+	public static Compass? GetDefault() => _instance.Value;
 
 	/// <summary>
 	/// Occurs each time the compass reports a new sensor reading.
