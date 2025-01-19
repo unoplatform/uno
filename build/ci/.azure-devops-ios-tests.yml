@@ -195,6 +195,7 @@ jobs:
       UITEST_AUTOMATED_GROUP: ${{ AutomatedTestGroup.key }}
       UITEST_TEST_TIMEOUT: '20m'
       UITEST_ALLOW_RERUN: 'true'
+      SAMPLESAPP_BUNDLE_ID: 'uno.platform.samplesdev'
       xCodeRoot: ${{ parameters.xCodeRootTest }}
       dependsOn:
         - iOS_Build
@@ -217,6 +218,7 @@ jobs:
       UITEST_RUNTIME_TEST_GROUP: ${{ RuntimeTestGroup.key }}
       UITEST_RUNTIME_TEST_GROUP_COUNT: ${{ parameters.UITEST_RUNTIME_TEST_GROUP_COUNT }}
       UITEST_ALLOW_RERUN: 'false'
+      SAMPLESAPP_BUNDLE_ID: 'uno.platform.samplesdev'
       xCodeRoot: ${{ parameters.xCodeRootTest }}
       dependsOn:
         - iOS_Build
@@ -231,6 +233,7 @@ jobs:
 #     vmImage: ${{ parameters.vmImageTest }}
 #     UITEST_SNAPSHOTS_ONLY: false
 #     UITEST_AUTOMATED_GROUP: Benchmarks
+#     SAMPLESAPP_BUNDLE_ID: 'uno.platform.samplesdev'
 #     xCodeRoot: ${{ parameters.xCodeRootTest }}
 
 - ${{ each snapshotGroup in parameters.SNAPSHOT_GROUPS }}:
@@ -246,6 +249,7 @@ jobs:
       UITEST_SNAPSHOTS_GROUP: ${{ snapshotGroup.key }}
       UITEST_TEST_TIMEOUT: '10m'
       UITEST_ALLOW_RERUN: 'false'
+      SAMPLESAPP_BUNDLE_ID: 'uno.platform.samplesdev'
       xCodeRoot: ${{ parameters.xCodeRootTest }}
       dependsOn:
         - iOS_Build
