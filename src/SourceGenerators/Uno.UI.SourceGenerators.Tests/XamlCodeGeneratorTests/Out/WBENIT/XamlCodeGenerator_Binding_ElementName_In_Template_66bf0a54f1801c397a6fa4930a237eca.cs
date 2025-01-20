@@ -61,7 +61,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 						IsParsing = true,
 						Name = "topLevel",
 						Tag = @"42",
-						ContentTemplate = 						new global::Microsoft.UI.Xaml.DataTemplate(this, (__owner) => 						new _Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca_UnoUITestsWindows_UI_Xaml_DataBindingTestsControlsBinding_ElementName_In_TemplateSC0().Build(__owner)
+						ContentTemplate = 						new global::Microsoft.UI.Xaml.DataTemplate(this, (__owner) => 						new __Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca_UnoUITestsWindows_UI_Xaml_DataBindingTestsControlsBinding_ElementName_In_Template.SC0().Build(__owner)
 						)						,
 						// Source 0\Binding_ElementName_In_Template.xaml (Line 11:4)
 					}
@@ -118,91 +118,96 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 			}
 		}
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026")]
-		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111")]
-		private class _Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca_UnoUITestsWindows_UI_Xaml_DataBindingTestsControlsBinding_ElementName_In_TemplateSC0
+		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
+		private class __Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca_UnoUITestsWindows_UI_Xaml_DataBindingTestsControlsBinding_ElementName_In_Template
 		{
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-			private const string __baseUri_prefix_Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca = "ms-appx:///TestProject/";
-			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-			private const string __baseUri_Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca = "ms-appx:///TestProject/";
-			global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
-			global::System.Object __ResourceOwner_1;
-			_View __rootInstance = null;
-			public _View Build(object __ResourceOwner_1)
+			[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026")]
+			[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111")]
+			public class SC0
 			{
-				var __that = this;
-				this.__ResourceOwner_1 = __ResourceOwner_1;
-				this.__rootInstance = 
-				new global::Microsoft.UI.Xaml.Controls.TextBlock
+				[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+				private const string __baseUri_prefix_Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca = "ms-appx:///TestProject/";
+				[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+				private const string __baseUri_Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca = "ms-appx:///TestProject/";
+				global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
+				global::System.Object __ResourceOwner_1;
+				_View __rootInstance = null;
+				public _View Build(object __ResourceOwner_1)
 				{
-					IsParsing = true,
-					Name = "innerTextBlock",
-					// Source 0\Binding_ElementName_In_Template.xaml (Line 14:7)
-				}
-				.Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca_XamlApply((Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237ecaXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
-				{
-				/* _isTopLevelDictionary:False */
-				__that._component_0 = __p1;
-				__nameScope.RegisterName("innerTextBlock", __p1);
-				__that.innerTextBlock = __p1;
-				__p1.SetBinding(
-					global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
-					new Microsoft.UI.Xaml.Data.Binding()
+					var __that = this;
+					this.__ResourceOwner_1 = __ResourceOwner_1;
+					this.__rootInstance = 
+					new global::Microsoft.UI.Xaml.Controls.TextBlock
 					{
-						Path = @"Tag",
-						ElementName = _topLevelSubject,
+						IsParsing = true,
+						Name = "innerTextBlock",
+						// Source 0\Binding_ElementName_In_Template.xaml (Line 14:7)
 					}
-				);
-				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca);
-				__p1.CreationComplete();
-				}
-				))
-				;
-				if (__rootInstance is FrameworkElement __fe)
-				{
-					__fe.Loading += __UpdateBindingsAndResources;
-				}
-				if (__rootInstance is DependencyObject d)
-				{
-					if (global::Microsoft.UI.Xaml.NameScope.GetNameScope(d) == null)
+					.Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca_XamlApply((Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237ecaXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
 					{
-						global::Microsoft.UI.Xaml.NameScope.SetNameScope(d, __nameScope);
-						__nameScope.Owner = d;
+					/* _isTopLevelDictionary:False */
+					__that._component_0 = __p1;
+					__nameScope.RegisterName("innerTextBlock", __p1);
+					__that.innerTextBlock = __p1;
+					__p1.SetBinding(
+						global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
+						new Microsoft.UI.Xaml.Data.Binding()
+						{
+							Path = @"Tag",
+							ElementName = _topLevelSubject,
+						}
+					);
+					global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_Binding_ElementName_In_Template_66bf0a54f1801c397a6fa4930a237eca);
+					__p1.CreationComplete();
 					}
-					global::Uno.UI.FrameworkElementHelper.AddObjectReference(d, this);
+					))
+					;
+					if (__rootInstance is FrameworkElement __fe)
+					{
+						__fe.Loading += __UpdateBindingsAndResources;
+					}
+					if (__rootInstance is DependencyObject d)
+					{
+						if (global::Microsoft.UI.Xaml.NameScope.GetNameScope(d) == null)
+						{
+							global::Microsoft.UI.Xaml.NameScope.SetNameScope(d, __nameScope);
+							__nameScope.Owner = d;
+						}
+						global::Uno.UI.FrameworkElementHelper.AddObjectReference(d, this);
+					}
+					return __rootInstance;
 				}
-				return __rootInstance;
-			}
-			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-			private global::Microsoft.UI.Xaml.Controls.TextBlock _component_0
-			{
-				get
+				private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+				private global::Microsoft.UI.Xaml.Controls.TextBlock _component_0
 				{
-					return (global::Microsoft.UI.Xaml.Controls.TextBlock)_component_0_Holder.Instance;
+					get
+					{
+						return (global::Microsoft.UI.Xaml.Controls.TextBlock)_component_0_Holder.Instance;
+					}
+					set
+					{
+						_component_0_Holder.Instance = value;
+					}
 				}
-				set
+				private global::Microsoft.UI.Xaml.Data.ElementNameSubject _innerTextBlockSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+				private global::Microsoft.UI.Xaml.Controls.TextBlock innerTextBlock
 				{
-					_component_0_Holder.Instance = value;
+					get
+					{
+						return (global::Microsoft.UI.Xaml.Controls.TextBlock)_innerTextBlockSubject.ElementInstance;
+					}
+					set
+					{
+						_innerTextBlockSubject.ElementInstance = value;
+					}
 				}
-			}
-			private global::Microsoft.UI.Xaml.Data.ElementNameSubject _innerTextBlockSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
-			private global::Microsoft.UI.Xaml.Controls.TextBlock innerTextBlock
-			{
-				get
+				private global::Microsoft.UI.Xaml.Data.ElementNameSubject _topLevelSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: true, name: "topLevel");
+				private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
 				{
-					return (global::Microsoft.UI.Xaml.Controls.TextBlock)_innerTextBlockSubject.ElementInstance;
+					var owner = this;
+					_component_0.UpdateResourceBindings();
 				}
-				set
-				{
-					_innerTextBlockSubject.ElementInstance = value;
-				}
-			}
-			private global::Microsoft.UI.Xaml.Data.ElementNameSubject _topLevelSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: true, name: "topLevel");
-			private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
-			{
-				var owner = this;
-				_component_0.UpdateResourceBindings();
 			}
 		}
 	}

@@ -48,6 +48,11 @@ namespace TestNamespace
 			global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(this, "OriginalSourceLocation", "file:///C:/Project/0/MyDictionary.xaml#L1:2");
 		}
 
+		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
+		private class __MyDictionary_b7707bcf1e73425b710b6a5d04177088_TestNamespaceTestClass
+		{
+		}
 	}
 }
 namespace MyProject
@@ -118,4 +123,9 @@ namespace MyProject
 }
 namespace MyProject.__Resources
 {
+	[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+	[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
+	internal class __MyDictionary_b7707bcf1e73425b710b6a5d04177088_MyDictionaryRD
+	{
+	}
 }
