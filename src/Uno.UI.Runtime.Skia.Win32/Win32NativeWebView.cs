@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -334,7 +335,7 @@ internal class Win32NativeWebView : INativeWebView, ISupportsVirtualHostMapping
 			}
 		}
 
-		var request = _nativeWebView.Environment.CreateWebResourceRequest(httpRequestMessage.RequestUri!.ToString(), httpRequestMessage.Method.Method, httpRequestMessage.Content!.ReadAsStream(), builder.ToString());
+		var request = _nativeWebView.Environment.CreateWebResourceRequest(httpRequestMessage.RequestUri!.ToString(), httpRequestMessage.Method.Method, httpRequestMessage.Content?.ReadAsStream() ?? Stream.Null, builder.ToString());
 		_nativeWebView.NavigateWithWebResourceRequest(request);
 	}
 
