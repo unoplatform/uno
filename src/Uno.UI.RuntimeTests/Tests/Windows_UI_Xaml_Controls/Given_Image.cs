@@ -590,7 +590,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __SKIA__
 		[TestMethod]
 		[RunsOnUIThread]
-		[RequiresScaling(100)]
+		[RequiresScaling(1f)]
 		public async Task When_Png_Should_Have_High_Quality()
 		{
 			var image = new Image() { Width = 100, Height = 100 };
