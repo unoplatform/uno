@@ -62,18 +62,18 @@ public class Given_HotReloadService
 		foreach (var scenarioFolder in Directory.EnumerateDirectories(ScenariosFolder, "*.*", SearchOption.TopDirectoryOnly))
 		{
 			var scenarioName = Path.GetFileName(scenarioFolder);
-			var path = Path.Combine(scenarioFolder, "Scenario.json");
+			var scenarioConfig = Path.Combine(scenarioFolder, "Scenario.json");
 
 #if DEBUG && false
-			if (!path.Contains("When_Base_Type_Grid_To_Page"))
+			if (!scenarioName.Contains("When_DataTemplate_Event_Add"))
 			{
 				continue;
 			}
 #endif
 
-			if (File.Exists(path))
+			if (File.Exists(scenarioConfig))
 			{
-				var scenariosDescriptor = ReadScenarioConfig(path);
+				var scenariosDescriptor = ReadScenarioConfig(scenarioConfig);
 
 				if (scenariosDescriptor is not null)
 				{
