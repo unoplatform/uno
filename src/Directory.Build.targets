@@ -6,9 +6,6 @@
 		<Product Condition="'$(UnoRuntimeIdentifier)' != ''">$(AssemblyName) ($(TargetFramework) $(UnoRuntimeIdentifier))</Product>
 		<CommunityToolkitMvvmVersion>8.2.2</CommunityToolkitMvvmVersion>
 		<TestingPlatformDotNetTestSupport Condition="'$(IsTestingPlatformApplication)' == 'true'">true</TestingPlatformDotNetTestSupport>
-
-		<!-- Dogfooding feed for MSTest -->
-		<RestoreAdditionalProjectSources>$(RestoreAdditionalProjectSources);https://dnceng.pkgs.visualstudio.com/public/_packaging/test-tools/nuget/v3/index.json</RestoreAdditionalProjectSources>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -67,13 +64,12 @@
 	<PropertyGroup>
 		<!-- IMPORTANT!!! KEEP BOTH MSTest and MTP versions in sync -->
 		<!-- For a given MSTest version, go to https://www.nuget.org/packages/MSTest.TestAdapter/3.7.1#dependencies-body-tab -->
-		<!-- (Or, for dogfooding versions, go to https://dnceng.visualstudio.com/public/_artifacts/feed/test-tools/NuGet/MSTest.TestAdapter/overview/3.8.0-preview.25067.5) -->
 		<!-- (replacing the version in the url with the MSTest version in question) -->
 		<!-- And look for MTP version in there, and make sure MicrosoftTestingPlatformVersion is the same -->
 		<!-- Alternatively, migrate to MSTest.Sdk and let it handle the MTP versioning for you -->
 		<!-- In case of MSTest.Sdk, the TrxReport package will not be needed. It will be added automatically -->
-		<MSTestVersion>3.8.0-preview.25067.5</MSTestVersion>
-		<MicrosoftTestingPlatformVersion>1.6.0-preview.25067.5</MicrosoftTestingPlatformVersion>
+		<MSTestVersion>3.7.1</MSTestVersion>
+		<MicrosoftTestingPlatformVersion>1.5.1</MicrosoftTestingPlatformVersion>
 
 		<SkiaSharpVersion>2.88.7</SkiaSharpVersion>
 		<!-- TODO: Uncomment when we're net8.0+ to have SamplesApp serve as a good test for SkiaSharp 3 support -->

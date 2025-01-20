@@ -1,5 +1,4 @@
-﻿using System.Windows;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Windows;
 
 namespace UnoIslandsSamplesApp.Skia.Wpf
 {
