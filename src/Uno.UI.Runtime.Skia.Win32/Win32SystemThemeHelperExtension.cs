@@ -22,26 +22,37 @@ internal class Win32SystemThemeHelperExtension : ISystemThemeHelperExtension
 	{
 		Task.Run(() =>
 		{
-			using var hSubKeyString = new Win32Helper.NativeNulTerminatedUtf16String(SoftwareMicrosoftWindowsCurrentVersionThemesPersonalize);
-			HKEY hSubKey;
-			// We're not closing this handle since this class lasts the whole lifetime of the app.
-			var errorCode = PInvoke.RegOpenKeyEx(HKEY.HKEY_CURRENT_USER, hSubKeyString, 0, REG_SAM_FLAGS.KEY_READ, &hSubKey);
-			if (errorCode != WIN32_ERROR.ERROR_SUCCESS)
+			try
 			{
-				this.Log().Log(LogLevel.Error, errorCode, static errorCode => $"{nameof(PInvoke.RegOpenKeyEx)} failed with error code : {Win32Helper.GetErrorMessage((uint)errorCode)}");
-				return;
-			}
-			while (true)
-			{
-				// RegNotifyChangeKeyValue will block until the theme changes
-				var errorCode2 = PInvoke.RegNotifyChangeKeyValue(hSubKey, false, REG_NOTIFY_FILTER.REG_NOTIFY_CHANGE_LAST_SET, HANDLE.Null, false);
-				if (errorCode2 != WIN32_ERROR.ERROR_SUCCESS)
+				using var hSubKeyString = new Win32Helper.NativeNulTerminatedUtf16String(SoftwareMicrosoftWindowsCurrentVersionThemesPersonalize);
+				HKEY hSubKey;
+				// We're not closing this handle since this class lasts the whole lifetime of the app.
+				var errorCode = PInvoke.RegOpenKeyEx(HKEY.HKEY_CURRENT_USER, hSubKeyString, 0, REG_SAM_FLAGS.KEY_READ, &hSubKey);
+				if (errorCode != WIN32_ERROR.ERROR_SUCCESS)
 				{
-					this.Log().Log(LogLevel.Error, errorCode2, static errorCode => $"{nameof(PInvoke.RegNotifyChangeKeyValue)} failed with error code : {Win32Helper.GetErrorMessage((uint)errorCode)}");
+					this.Log().Log(LogLevel.Error, errorCode, static errorCode => $"{nameof(PInvoke.RegOpenKeyEx)} failed with error code : {Win32Helper.GetErrorMessage((uint)errorCode)}");
 					return;
 				}
+				while (true)
+				{
+					// RegNotifyChangeKeyValue will block until the theme changes
+					var errorCode2 = PInvoke.RegNotifyChangeKeyValue(hSubKey, false, REG_NOTIFY_FILTER.REG_NOTIFY_CHANGE_LAST_SET, HANDLE.Null, false);
+					if (errorCode2 != WIN32_ERROR.ERROR_SUCCESS)
+					{
+						this.Log().Log(LogLevel.Error, errorCode2, static errorCode => $"{nameof(PInvoke.RegNotifyChangeKeyValue)} failed with error code : {Win32Helper.GetErrorMessage((uint)errorCode)}");
+						return;
+					}
 
-				NativeDispatcher.Main.Enqueue(() => SystemThemeChanged?.Invoke(this, EventArgs.Empty));
+					NativeDispatcher.Main.Enqueue(() => SystemThemeChanged?.Invoke(this, EventArgs.Empty));
+				}
+			}
+			catch (Exception e)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"An exception was thrown in {nameof(Win32SystemThemeHelperExtension)}'s notification loop", e);
+				}
+				throw;
 			}
 		});
 	}
