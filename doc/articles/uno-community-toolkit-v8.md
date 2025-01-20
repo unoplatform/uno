@@ -186,22 +186,28 @@ A complete working sample, along with additional examples, is available on GitHu
 
 ## Using Non-UI Elements from the CommunityToolkit: Converters
 
-The CommunityToolkit is providing some ready-to-use Converters for e.g. x:Bind in Xaml, whithout having to write already existing basic Converters yourself.
+The CommunityToolkit provides a collection of ready-to-use converters for various scenarios (e.g., `x:Bind` in XAML). These converters streamline development by offering implementations for commonly used functionality, eliminating the need to manually create basic converters.
 [List of CommunityToolkit Converters | Windows Toolkit Documentation](https://learn.microsoft.com/en-us/dotnet/communitytoolkit/windows/converters/)
 
-The implementation of those are quite similar to the example of the SettingsControl above, but there are small adjustments to be done to use them:
+The implementation of these is similar to the example of the `SettingsControl` above, with some minor adjustments required to use them:
 
-1. Import of the Package
+1. Install the NuGet package reference needed for the converters
 
-   Change this:
-
-   ```CommunityToolkit.WinUI.Controls.SettingsControls```
-
-   to Converters namespace:
-
-   ```CommunityToolkit.WinUI.Converters```
-
-   while the Version will stay the same as above.
+    ### Single Project Template [WinUI / WinAppSDK]
+    1. Edit your project file `PROJECT_NAME.csproj` and add this additional needed reference:
+        ```xml
+        <ItemGroup>
+          <PackageReference Include="CommunityToolkit.WinUI.Converters" />
+          <!-- Add more community toolkit references here -->
+        </ItemGroup>
+        ```
+    1. Edit `Directory.Packages.props` and add the needed reference(s):
+        ```xml
+        <ItemGroup>
+          <PackageVersion Include="CommunityToolkit.WinUI.Converters" Version="8.1.240916" />
+          <!-- Add more community toolkit references here -->
+        </ItemGroup>
+        ```
 
 1. Add the related needed namespace(s)
 
@@ -215,64 +221,50 @@ The implementation of those are quite similar to the example of the SettingsCont
       In C#:
         ```using CommunityToolkit.WinUI.Converters;```
 
-      In case you are developing a App that's using C# Markup and you want to use the Converters, you can now switch to [C#-Markup Converters](https://platform.uno/docs/articles/external/uno.extensions/doc/Learn/Markup/Converters.html) Documentation for future Usage Guide, the general Import is done from here on.
+     If you are developing an app using [C# Markup](xref:Uno.Extensions.Markup.Overview) and want to use the converters, you can refer to the [C# Markup Converters Documentation](xref:Uno.Extensions.Markup.Converters) for a detailed usage guide. The general import process is covered from this point onward.
 
-1. Xaml Definition
+1. XAML Definition
 
-Important Difference to the previous seen SettingsCard Control Example, a Non-UI Converter has to be imported to the Page.Ressources Section to StaticRessources like this for using it, since there is no single Namespace per Converter like on the Controls:
+Unlike the previously seen `SettingsCard` control example, it is standard practice to define a converter in the `Page.Resources` section as a `StaticResource` before using it. This approach ensures that converters, like controls, are properly declared with a namespace and can be easily reused throughout the page.
 
-### [Example StringToVisibilityConverter](#tab/string-visible-conv)
+### [Example: StringToVisibilityConverter](#tab/string-visible-conv)
 
-StringToVisibilityConverter is a Converter that has to be bound to a String typed Property and will return a Visibility State.
+The `StringToVisibilityConverter` is a converter that transforms a string value into a `Visibility` state, returning `Visibility.Visible` for non-empty strings and `Visibility.Collapsed` for null or empty strings.
 
-```xml
-<Page.Resources>
-    <converters:StringVisibilityConverter x:Key="YourStringVisibilityConverter"/>
-</Page.Resources>
-```
+#### Define the Converter in Page Resources
 
-Somewhere in your Page Content:
-
-```xml
-<TextBox x:Name="tbName"
-        Text="{Binding Name, Mode=TwoWay}"
-        PlaceholderText="Enter your name:"/>
-<Button x:Name="StartButton"
-        Content="Start a cool simple Game!"
-        AutomationProperties.AutomationId="StartAGameButton"
-        Command="{Binding GoToStart}"
-        HorizontalAlignment="Center"
-        Visibility="{x:Bind tbName.Text, Converter={StaticResource StringVisibilityConverter}, Mode=OneWay}"/>
-```
-
-### [Example BoolToObjectConverter](#tab/bool-obj-conv)
-
-BoolToObjectConverter is a Converter that has to be bound to a Boolean typed Property and can return any Object you will give to it.
-You only have to tell it what to return on True or False. If you would like to use it for switching color on validation:
+Add the converter to the `Page.Resources` section as a `StaticResource`:
 
 ```xml
 <Page.Resources>
-    <converters:BoolToObjectConverter x:Key="BoolToColorConverter" TrueValue="{ThemeResource SystemFillColorSuccessBackgroundBrush}"
-                                                                    FalseValue="{ThemeResource SystemFillColorCriticalBackgroundBrush}"/>
+    <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
 </Page.Resources>
 ```
 
-> [!NOTE]
-> The used ThemeResource Brushes can be found in the WinUI Gallery for example.
-> Feel free to use your own Colors e.g. from ColorPaletteOverrides
-Somewhere in your Page Content:
+#### Use the Converter in Page Content
+
+Here is an example of how to use the converter in your XAML content:
 
 ```xml
-<TextBox x:Name="tbName"
-            Text="{Binding Name, Mode=TwoWay}"
-            PlaceholderText="Enter your name:"
-            BackgroundColor="{x:Bind tbName.Text, Converter={StaticResource BoolToColorConverter},Mode=OneWay}"/>
-<Button x:Name="StartButton"
-        Content="Start a cool simple Game!"
-        AutomationProperties.AutomationId="StartAGameButton"
-        Command="{Binding GoToStart}"
-        HorizontalAlignment="Center"/>
+<TextBlock Text="This text is visible only if the condition is met."
+           Visibility="{Binding SomeStringProperty, Converter={StaticResource StringToVisibilityConverter}}"/>
 ```
+
+### [Example: BoolToObjectConverter](#tab/bool-obj-conv)
+
+The `BoolToObjectConverter` allows you to convert a boolean value into a specific object by defining `TrueObject` and `FalseObject`. Depending on the boolean value, the converter will return the corresponding object.
+
+For example, you can use it to switch colors dynamically:
+
+```xml
+<Page.Resources>
+    <converters:BoolToObjectConverter x:Key="BoolToColorConverter"
+                                      TrueObject="Green"
+                                      FalseObject="Red"/>
+</Page.Resources>
+
+<TextBlock Text="Status:"
+           Foreground="{Binding IsValid, Converter={StaticResource BoolToColorConverter}}"/>
 
 ---
 
