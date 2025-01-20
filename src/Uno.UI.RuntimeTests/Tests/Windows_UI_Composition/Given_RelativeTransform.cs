@@ -50,6 +50,7 @@ public class Given_RelativeTransform
 	}
 
 	[TestMethod]
+	[RequiresScaling(1f)]
 	public async Task When_ScaleTransform()
 	{
 		var sp = new StackPanel
