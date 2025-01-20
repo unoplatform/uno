@@ -191,52 +191,19 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		switch (msg)
 		{
 			case PInvoke.WM_ACTIVATE:
-				switch ((uint)Win32Helper.LOWORD(wParam))
-				{
-					case PInvoke.WA_ACTIVE:
-						this.Log().Log(LogLevel.Trace, static () => $"WndProc received a {nameof(PInvoke.WM_ACTIVATE)} message with LOWORD(wParam) == {nameof(PInvoke.WA_ACTIVE)}");
-						ActivationState = CoreWindowActivationState.CodeActivated;
-						break;
-					case PInvoke.WA_CLICKACTIVE:
-						this.Log().Log(LogLevel.Trace, static () => $"WndProc received a {nameof(PInvoke.WM_ACTIVATE)} message with LOWORD(wParam) == {nameof(PInvoke.WA_CLICKACTIVE)}");
-						ActivationState = CoreWindowActivationState.PointerActivated;
-						break;
-					case PInvoke.WA_INACTIVE:
-						this.Log().Log(LogLevel.Trace, static () => $"WndProc received a {nameof(PInvoke.WM_ACTIVATE)} message with LOWORD(wParam) == {nameof(PInvoke.WA_INACTIVE)}");
-						ActivationState = CoreWindowActivationState.Deactivated;
-						break;
-					default:
-						this.Log().Log(LogLevel.Error, wParam, static wParam => $"WndProc received a {nameof(PInvoke.WM_ACTIVATE)} message but LOWORD(wParam) is {Win32Helper.LOWORD(wParam)}, not {nameof(PInvoke.WA_ACTIVE)}, {nameof(PInvoke.WA_CLICKACTIVE)} or {nameof(PInvoke.WA_INACTIVE)}.");
-						break;
-				}
+				OnWmActivate(wParam);
 				return new LRESULT(0);
 			case PInvoke.WM_CLOSE:
-				this.Log().Log(LogLevel.Trace, nameof(PInvoke.WM_CLOSE), static messageName => $"WndProc received a {messageName} message.");
-				var closingArgs = RaiseClosing();
-				if (closingArgs.Cancel)
+				if (OnWmClose())
 				{
 					return new LRESULT(0);
 				}
-				// Closing should continue, perform suspension.
-				Application.Current.RaiseSuspending();
 				break;
 			case PInvoke.WM_DESTROY:
-				this.Log().Log(LogLevel.Trace, nameof(PInvoke.WM_DESTROY), static messageName => $"WndProc received a {messageName} message.");
-				_applicationView.PropertyChanged -= OnApplicationViewPropertyChanged;
-				Win32SystemThemeHelperExtension.Instance.SystemThemeChanged -= OnSystemThemeChanged;
-				Win32Host.UnregisterWindow(_hwnd);
-				_renderer.Dispose();
-				_backgroundDisposable?.Dispose();
-				XamlRootMap.Unregister(XamlRoot!);
+				OnWmDestroy();
 				return new LRESULT(0);
 			case PInvoke.WM_DPICHANGED:
-				RECT rect = Unsafe.ReadUnaligned<RECT>(lParam.Value.ToPointer());
-				this.Log().Log(LogLevel.Trace, wParam, rect, static (wParam, rect) => $"WndProc received a {nameof(PInvoke.WM_DPICHANGED)} message with LOWORD(wParam) == {Win32Helper.LOWORD(wParam)} and lParam = RECT {rect.ToRect()}");
-				// the order of the next lines matters or else the canvas might not be resized correctly
-				RasterizationScale = (float)(Win32Helper.LOWORD(wParam)) / PInvoke.USER_DEFAULT_SCREEN_DPI;
-				UpdateDisplayInfo();
-				_ = PInvoke.SetWindowPos(_hwnd, HWND.Null, rect.X, rect.Y, rect.Width, rect.Height, SET_WINDOW_POS_FLAGS.SWP_NOZORDER)
-					|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}");
+				OnWmDpiChanged(wParam, lParam);
 				return new LRESULT(0);
 			case PInvoke.WM_SIZE:
 				this.Log().Log(LogLevel.Trace, static () => $"WndProc received a {nameof(PInvoke.WM_SIZE)} message.");
@@ -285,6 +252,63 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		}
 
 		return PInvoke.DefWindowProc(hwnd, msg, wParam, lParam);
+	}
+
+	private unsafe void OnWmDpiChanged(WPARAM wParam, LPARAM lParam)
+	{
+		RECT rect = Unsafe.ReadUnaligned<RECT>(lParam.Value.ToPointer());
+		this.Log().Log(LogLevel.Trace, wParam, rect, static (wParam, rect) => $"WndProc received a {nameof(PInvoke.WM_DPICHANGED)} message with LOWORD(wParam) == {Win32Helper.LOWORD(wParam)} and lParam = RECT {rect.ToRect()}");
+		// the order of the next lines matters or else the canvas might not be resized correctly
+		RasterizationScale = (float)(Win32Helper.LOWORD(wParam)) / PInvoke.USER_DEFAULT_SCREEN_DPI;
+		UpdateDisplayInfo();
+		_ = PInvoke.SetWindowPos(_hwnd, HWND.Null, rect.X, rect.Y, rect.Width, rect.Height, SET_WINDOW_POS_FLAGS.SWP_NOZORDER)
+			|| this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}");
+	}
+
+	private void OnWmDestroy()
+	{
+		this.Log().Log(LogLevel.Trace, nameof(PInvoke.WM_DESTROY), static messageName => $"WndProc received a {messageName} message.");
+		_applicationView.PropertyChanged -= OnApplicationViewPropertyChanged;
+		Win32SystemThemeHelperExtension.Instance.SystemThemeChanged -= OnSystemThemeChanged;
+		Win32Host.UnregisterWindow(_hwnd);
+		_renderer.Dispose();
+		_backgroundDisposable?.Dispose();
+		XamlRootMap.Unregister(XamlRoot!);
+	}
+
+	private bool OnWmClose()
+	{
+		this.Log().Log(LogLevel.Trace, nameof(PInvoke.WM_CLOSE), static messageName => $"WndProc received a {messageName} message.");
+		var closingArgs = RaiseClosing();
+		if (closingArgs.Cancel)
+		{
+			return true;
+		}
+		// Closing should continue, perform suspension.
+		Application.Current.RaiseSuspending();
+		return false;
+	}
+
+	private void OnWmActivate(WPARAM wParam)
+	{
+		switch ((uint)Win32Helper.LOWORD(wParam))
+		{
+			case PInvoke.WA_ACTIVE:
+				this.Log().Log(LogLevel.Trace, static () => $"WndProc received a {nameof(PInvoke.WM_ACTIVATE)} message with LOWORD(wParam) == {nameof(PInvoke.WA_ACTIVE)}");
+				ActivationState = CoreWindowActivationState.CodeActivated;
+				break;
+			case PInvoke.WA_CLICKACTIVE:
+				this.Log().Log(LogLevel.Trace, static () => $"WndProc received a {nameof(PInvoke.WM_ACTIVATE)} message with LOWORD(wParam) == {nameof(PInvoke.WA_CLICKACTIVE)}");
+				ActivationState = CoreWindowActivationState.PointerActivated;
+				break;
+			case PInvoke.WA_INACTIVE:
+				this.Log().Log(LogLevel.Trace, static () => $"WndProc received a {nameof(PInvoke.WM_ACTIVATE)} message with LOWORD(wParam) == {nameof(PInvoke.WA_INACTIVE)}");
+				ActivationState = CoreWindowActivationState.Deactivated;
+				break;
+			default:
+				this.Log().Log(LogLevel.Error, wParam, static wParam => $"WndProc received a {nameof(PInvoke.WM_ACTIVATE)} message but LOWORD(wParam) is {Win32Helper.LOWORD(wParam)}, not {nameof(PInvoke.WA_ACTIVE)}, {nameof(PInvoke.WA_CLICKACTIVE)} or {nameof(PInvoke.WA_INACTIVE)}.");
+				break;
+		}
 	}
 
 	private void OnWindowSizeOrLocationChanged()
