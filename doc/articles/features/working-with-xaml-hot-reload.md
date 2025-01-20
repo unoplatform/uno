@@ -137,47 +137,34 @@ Hot Reload features are now consistent across platforms and IDEs, but with some 
     <thead>
         <tr>
             <th></th>
-            <th colspan="2">VS Code</th>
-            <th colspan="2">Rider</th>
-        </tr>
-        <tr>
-            <th>Target</th>
-            <th>C#</th>
-            <th>XAML</th>
-            <th>C#</th>
-            <th>XAML</th>
+            <th colspan="1">VS Code</th>
+            <th colspan="1">Rider</th>
         </tr>
     </thead>
     <tbody>
         <tr>
             <td>Desktop macOS</td>
             <td>✅</td><td>✅</td>
-            <td>✅</td><td>✅</td>
         </tr>
         <tr>
             <td>iOS</td>
             <td>✅</td><td>✅</td>
-            <td>✅</td><td>✅</td>
         </tr>
         <tr>
             <td>Android</td>
-            <td>✅</td><td>✅</td>
             <td>✅</td><td>✅</td>
         </tr>
         </tr>
         <tr>
             <td>Catalyst</td>
             <td>✅</td><td>✅</td>
-            <td>✅</td><td>✅</td>
         </tr>
         <tr>
             <td>WinAppSDK</td>
             <td>🔳</td><td>🔳</td>
-            <td>🔳</td><td>🔳</td>
         </tr>
         <tr>
             <td>WebAssembly</td>
-            <td>✅</td><td>✅</td>
             <td>✅</td><td>✅</td>
         </tr>
     </tbody>
@@ -189,46 +176,33 @@ Hot Reload features are now consistent across platforms and IDEs, but with some 
     <thead>
         <tr>
             <th></th>
-            <th colspan="2">VS Code</th>
-            <th colspan="2">Rider</th>
-        </tr>
-        <tr>
-            <th>Target</th>
-            <th>C#</th>
-            <th>XAML</th>
-            <th>C#</th>
-            <th>XAML</th>
+            <th colspan="1">VS Code</th>
+            <th colspan="1">Rider</th>
         </tr>
     </thead>
     <tbody>
         <tr>
             <td>Desktop Linux</td>
             <td>✅</td><td>✅</td>
-            <td>✅</td><td>✅</td>
         </tr>
         <tr>
             <td>Android</td>
-            <td>✅</td><td>✅</td>
             <td>✅</td><td>✅</td>
         </tr>
         <tr>
             <td>WebAssembly</td>
             <td>✅</td><td>✅</td>
-            <td>✅</td><td>✅</td>
         </tr>
         <tr>
             <td>iOS</td>
             <td>✅🛜</td><td>✅🛜</td>
-            <td>🔳</td><td>🔳</td>
         </tr>
         <tr>
             <td>Catalyst</td>
             <td>✅🛜</td><td>✅🛜</td>
-            <td>🔳</td><td>🔳</td>
         </tr>
         <tr>
             <td>WinAppSDK</td>
-            <td>🔳</td><td>🔳</td>
             <td>🔳</td><td>🔳</td>
         </tr>
     </tbody>
