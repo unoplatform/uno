@@ -388,6 +388,13 @@ internal class Win32ClipboardExtension : IClipboardExtension
 		Debug.Assert(stream.CanRead);
 		stream.Seek(0);
 
+		var readStream = stream.AsStreamForRead();
+		if (readStream.ReadByte() != 0x42 || readStream.ReadByte() != 0x4D)
+		{
+			this.Log().Log(LogLevel.Error, static () => "Failed to copy BMP image to clipboard: invalid BMP format.");
+			return;
+		}
+
 		// If the hMem parameter identifies a memory object, the object must have been allocated using the function with the GMEM_MOVEABLE flag
 		var shouldFree = true;
 		using var allocDisposable = Win32Helper.GlobalAlloc(
@@ -399,15 +406,8 @@ internal class Win32ClipboardExtension : IClipboardExtension
 
 		using var lockDisposable = Win32Helper.GlobalLock(handle, out var bmp);
 
-		stream.AsStreamForWrite().Write(new ReadOnlySpan<byte>(bmp, (int)stream.Size));
-		var isBmp = stream.Size > (ulong)sizeof(BITMAPFILEHEADER) && ((BITMAPFILEHEADER*)bmp)->bfType == /* BM */ 0x4d42;
-
-		if (!isBmp)
-		{
-			this.Log().Log(LogLevel.Error, static () => "Failed to copy BMP image to clipboard: invalid BMP format.");
-			_ = PInvoke.GlobalFree(handle) == IntPtr.Zero || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.GlobalFree)} failed: {Win32Helper.GetErrorMessage()}");
-			return;
-		}
+		readStream.Seek(sizeof(BITMAPFILEHEADER), SeekOrigin.Begin);
+		readStream.ReadExactly(new Span<byte>(bmp, (int)stream.Size - sizeof(BITMAPFILEHEADER)));
 
 		var success = PInvoke.SetClipboardData((uint)CLIPBOARD_FORMAT.CF_DIB, new HANDLE(handle)) != HANDLE.Null || this.Log().Log(LogLevel.Error, static () => $"{nameof(PInvoke.SetClipboardData)} failed: {Win32Helper.GetErrorMessage()}");
 		// "If SetClipboardData succeeds, the system owns the object identified by the hMem parameter. The application may not write to or free the data once ownership has been transferred to the system"
