@@ -30,8 +30,8 @@ public class Win32MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 	// This is necessary to be able to direct the very first WndProc call of a window to the correct window wrapper.
 	// That first call is inside CreateWindow, so we don't have a HWND yet. The alternative would be to create a new
 	// window class (and a new WndProc) per window, but that sounds excessive.
-	private static Win32MediaPlayerPresenterExtension? _extForNextCreateWindow;
-	private static readonly Dictionary<HWND, Win32MediaPlayerPresenterExtension> _hwndToExtension = new();
+	private static WeakReference<Win32MediaPlayerPresenterExtension>? _extForNextCreateWindow;
+	private static readonly Dictionary<HWND, WeakReference<Win32MediaPlayerPresenterExtension>> _hwndToExtension = new();
 
 	private readonly MediaPlayerPresenter _presenter;
 	private SharedMediaPlayerExtension? _playerExtension;
@@ -63,7 +63,7 @@ public class Win32MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 
 		using var lpClassName = new Win32Helper.NativeNulTerminatedUtf16String(WindowClassName);
 
-		_extForNextCreateWindow = this;
+		_extForNextCreateWindow = new WeakReference<Win32MediaPlayerPresenterExtension>(this);
 		_hwnd = PInvoke.CreateWindowEx(
 			0,
 			lpClassName,
@@ -104,18 +104,21 @@ public class Win32MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 
 	~Win32MediaPlayerPresenterExtension()
 	{
-		var success = PInvoke.DestroyWindow(_hwnd);
-		if (!success && this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+		_presenter.DispatcherQueue.TryEnqueue(() =>
 		{
-			this.Log().Error($"{nameof(PInvoke.DestroyWindow)} failed: {Win32Helper.GetErrorMessage()}");
-		}
+			var success = PInvoke.DestroyWindow(_hwnd);
+			if (!success && this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+			{
+				this.Log().Error($"{nameof(PInvoke.DestroyWindow)} failed: {Win32Helper.GetErrorMessage()}");
+			}
 
-		lock (_hwndToExtension)
-		{
-			_hwndToExtension.Remove(_hwnd);
-		}
+			lock (_hwndToExtension)
+			{
+				_hwndToExtension.Remove(_hwnd);
+			}
 
-		Win32Host.UnregisterWindow(_hwnd);
+			Win32Host.UnregisterWindow(_hwnd);
+		});
 	}
 
 	[UnmanagedCallersOnly(CallConvs = [typeof(CallConvStdcall)])]
@@ -131,7 +134,12 @@ public class Win32MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 			{
 				throw new Exception($"{nameof(WndProc)} was fired on a {nameof(HWND)} before it was added to, or after it was removed from, {nameof(ext)}.");
 			}
-			return ext.WndProcInner(hwnd, msg, wParam, lParam);
+
+			if (ext.TryGetTarget(out var target))
+			{
+				return target.WndProcInner(hwnd, msg, wParam, lParam);
+			}
+			return PInvoke.DefWindowProc(hwnd, msg, wParam, lParam);
 		}
 	}
 
