@@ -41,7 +41,7 @@ public class AndroidSkiaHost : ISkiaApplicationHost
 			ApiExtensibility.Register(typeof(ISkiaNativeTimePickerProviderExtension), _ => new AndroidSkiaTimePickerProvider());
 			ApiExtensibility.Register<MediaPlayerPresenter>(typeof(IMediaPlayerPresenterExtension), o => new AndroidSkiaMediaPlayerPresenterExtension(o));
 
-			void CreateApp(WinUI.ApplicationInitializationCallbackParams _)
+			void CreateApp(ApplicationInitializationCallbackParams _)
 			{
 				var app = _appBuilder();
 				app.Host = this;
