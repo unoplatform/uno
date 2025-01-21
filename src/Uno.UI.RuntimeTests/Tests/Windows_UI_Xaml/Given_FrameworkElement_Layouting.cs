@@ -146,7 +146,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 #if __WASM__
 		[Ignore("Fails for unknown reason")]
 #endif
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaBrowser)]
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaWasm)]
 		public async Task When_LayoutUpdated_Should_Not_Keep_Elements_Alive()
 		{
 			var wr = GetWeakReference();

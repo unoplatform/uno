@@ -53,7 +53,7 @@ public class SelectorBarTests : MUXApiTestBase
 		});
 	}
 
-	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaBrowser)]
+	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaWasm)]
 	public async Task VerifySelectorBarItems()
 	{
 		//using (PrivateLoggingHelper privateIVLoggingHelper = new PrivateLoggingHelper("ItemsView", "ScrollView"))

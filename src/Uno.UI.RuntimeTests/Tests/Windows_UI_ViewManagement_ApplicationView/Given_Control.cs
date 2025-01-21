@@ -19,7 +19,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_ViewManagement_ApplicationView
 
 		public static string StartupTitle { get; set; }
 
-		[ConditionalTest(IgnoredPlatforms = ~ConditionalTestAttribute.Skia | RuntimeTestPlatform.SkiaBrowser | RuntimeTestPlatform.SkiaIslands)]
+		[ConditionalTest(IgnoredPlatforms = ~ConditionalTestAttribute.Skia | RuntimeTestPlatform.SkiaWasm | RuntimeTestPlatform.SkiaIslands)]
 		public void When_StartupTitle_Is_Defined()
 		{
 			Assert.AreEqual(Windows.ApplicationModel.Package.Current.DisplayName, StartupTitle);
