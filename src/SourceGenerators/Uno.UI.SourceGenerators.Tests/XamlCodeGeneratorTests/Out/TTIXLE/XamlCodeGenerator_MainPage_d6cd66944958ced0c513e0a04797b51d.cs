@@ -168,7 +168,7 @@ namespace TestRepro
 						{
 							Mode = BindingMode.OneTime,
 						}
-							.BindingApply(___b =>  /*defaultBindModeOneTime IsLoaded*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, __that, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? (TryGetInstance_xBind_1(___tctx, out var bindResult1) ? (true, bindResult1) : (false, default)) : (false, default), null ))
+							.BindingApply(__that, (___b, ___t) =>  /*defaultBindModeOneTime IsLoaded*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? (TryGetInstance_xBind_1(___tctx, out var bindResult1) ? (true, bindResult1) : (false, default)) : (false, default), null ))
 					);
 					__that._component_1 = __p1;
 					var _component_1_update_That = (this as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;
