@@ -351,7 +351,6 @@ internal class Win32ClipboardExtension : IClipboardExtension
 		}
 	}
 
-	// Untested
 	private unsafe void TrySetImage(DataPackage content)
 	{
 		if (!content.Contains(StandardDataFormats.Bitmap))
