@@ -90,22 +90,19 @@ Hot Reload features are now consistent across platforms and IDEs, but with some 
         </tr>
         <tr>
             <td>Desktop/WSL</td>
-            <td>✅</td>
-            <td>✅</td>
+            <td>✅</td> <td>✅</td>
             <td>🔳</td><td>✅</td>
             <td>🔳<sup><a href="#hr-footnotes">[2]</a></sup></td><td>🔳<sup><a href="#hr-footnotes">[2]</a></sup></td>
         </tr>
         <tr>
             <td>iOS</td>
-            <td>✅<sup><a href="#hr-footnotes">[4]</a></sup></td>
-            <td>🔳</td>
+            <td>✅<sup><a href="#hr-footnotes">[4]</a></sup></td><td>🚫</td>
             <td>🔳</a></td><td>✅🛜</td>
             <td>🔳</a></td><td>✅🛜</td>
         </tr>
         <tr>
             <td>Android</td>
-             <td>✅<sup><a href="#hr-footnotes">[4]</a></sup></td>
-            <td>🔳</td>
+             <td>✅<sup><a href="#hr-footnotes">[4]</a></sup></td><td>🔳</td>
             <td>🔳</a></td><td>✅🛜</td>
             <td>🔳</a></td><td>✅🛜</td>
         </tr>
@@ -214,7 +211,7 @@ Legend:
 
 - ✅ Supported
 - 🐞 Supported with the debugger
-- ⌛ Upcoming support
+- 🚫  Does not work in this configuration
 - 🛜 Supported through [SSH to a Mac](xref:Uno.GettingStarted.CreateAnApp.VSCode#debug-the-app)
 - 🔳 Not supported by the environment/IDE
 
@@ -261,9 +258,6 @@ WebAssembly is currently providing full Hot Reload support.
 Mobile targets now support both XAML and C# Hot Reload. Debugger-specific variations apply depending on the IDE.
 
 - In Visual Studio:
-  - The "Hot Reload on File Save" feature must be disabled to avoid crashing the app. You can find this feature by clicking on the down arrow next to the red flame button in the Visual Studio toolbar.
-
-    !["Hot Reload on File Save" option disabled](../Assets/features/hotreload/hot-reload-on-file-save.png)
   - The debugger **has** to be attached.
 - In VS Code, and Rider:
   - Hot Reload is not supported when using the debugger.
@@ -273,11 +267,6 @@ Mobile targets now support both XAML and C# Hot Reload. Debugger-specific variat
 
 Mobile targets now support both XAML and C# Hot Reload.
 
-- In Visual Studio:
-  - The "Hot Reload on File Save" feature must be disabled to avoid crashing the app. You can find this feature by clicking on the down arrow next to the red flame button in the Visual Studio toolbar.
-
-    !["Hot Reload on File Save" option disabled](../Assets/features/hotreload/hot-reload-on-file-save.png)
-- The debugger is not supported.
 - XAML `x:Bind` hot reload is limited to simple expressions and events.
 
 ### [**WinAppSDK**](#tab/winappsdk)
