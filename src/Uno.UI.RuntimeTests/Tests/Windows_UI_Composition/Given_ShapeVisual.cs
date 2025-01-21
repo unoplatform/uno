@@ -20,6 +20,7 @@ public class Given_ShapeVisual
 #endif
 	[RequiresFullWindow]
 	[TestMethod]
+	[RequiresScaling(1f)]
 	public async Task When_ShapeVisual_ViewBox_Shape_Combinations()
 	{
 		if (OperatingSystem.IsBrowser())

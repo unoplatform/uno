@@ -1890,7 +1890,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		// Clipboard is currently not available on skia-WASM
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaBrowser)]
+		// Newline handling is different on Skia.UIKit targets due to native input sync #788
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaBrowser | RuntimeTestPlatform.SkiaiOS)]
 		public async Task When_Paste_The_Same_Text()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -1948,7 +1949,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.ActualHeight.Should().BeGreaterThan(height * 1.2);
 		}
 
-		[TestMethod]
+		[ConditionalTest(IgnoredPlatforms = ConditionalTestAttribute.SkiaUIKit)] // Newline handling is different on Skia.UIKit targets due to native input sync #788
 		public async Task When_Multiline_LineFeed()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -2385,7 +2386,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(height, SUT.ActualHeight);
 		}
 
-		[TestMethod]
+		[ConditionalTest(IgnoredPlatforms = ConditionalTestAttribute.SkiaUIKit)] // Newline handling is different on Skia.UIKit targets due to native input sync #788
 		public async Task When_Text_Changed_Events()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
