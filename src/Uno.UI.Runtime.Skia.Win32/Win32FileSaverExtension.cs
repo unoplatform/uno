@@ -10,7 +10,6 @@ using Windows.Win32.Foundation;
 using Windows.Win32.System.Com;
 using Windows.Win32.UI.Shell;
 using Windows.Win32.UI.Shell.Common;
-using Microsoft.UI.Xaml;
 using Uno.Disposables;
 using Uno.Extensions.Storage.Pickers;
 using Uno.Foundation.Logging;
@@ -91,8 +90,12 @@ internal class Win32FileSaverExtension(FileSavePicker picker) : IFileSavePickerE
 			return Task.FromResult<StorageFile?>(null);
 		}
 
-		// TODO: file pickers aren't associated with a specific window, so what do we do here?
-		hResult = iFileSaveDialog.Value->Show((HWND)((Win32NativeWindow)Window.InitialWindow!.NativeWindow!).Hwnd);
+		var hwnd = PInvoke.GetActiveWindow();
+		if (hwnd == IntPtr.Zero)
+		{
+			hwnd = Win32WindowWrapper.GetHwnds().First();
+		}
+		hResult = iFileSaveDialog.Value->Show(hwnd);
 		if (hResult.Failed)
 		{
 			if (hResult != (uint)WIN32_ERROR.ERROR_CANCELLED)

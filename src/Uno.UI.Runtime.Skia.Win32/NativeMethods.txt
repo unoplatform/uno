@@ -134,6 +134,7 @@ GdipCreatePath
 GdipCreateRegionPath
 GdipGetRegionHRgn
 GdiplusStartup
+GetActiveWindow
 GetCapture
 GetClientRect
 GetClipboardData

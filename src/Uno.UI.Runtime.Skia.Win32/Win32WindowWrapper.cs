@@ -109,6 +109,8 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		// TODO: extending into titlebar
 	}
 
+	public static IEnumerable<HWND> GetHwnds() => _hwndToWrapper.Keys;
+
 	private unsafe void OnSystemThemeChanged(object? _, EventArgs __)
 	{
 		BOOL value = Win32SystemThemeHelperExtension.Instance.GetSystemTheme() is SystemTheme.Dark;
