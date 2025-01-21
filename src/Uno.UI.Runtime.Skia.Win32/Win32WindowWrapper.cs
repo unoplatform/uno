@@ -16,6 +16,8 @@ using Windows.Win32.Graphics.Dwm;
 using Windows.Win32.Graphics.Gdi;
 using Windows.Win32.UI.HiDpi;
 using Windows.Win32.UI.WindowsAndMessaging;
+using Microsoft.UI.Windowing;
+using Microsoft.UI.Windowing.Native;
 using Microsoft.UI.Xaml;
 using SkiaSharp;
 using Uno.Disposables;
@@ -105,7 +107,6 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		PointerCursor = new CoreCursor(CoreCursorType.Arrow, 0);
 
 		// TODO: extending into titlebar
-		// TODO: NativeOverlappedPresenter and FullScreenPresenter
 	}
 
 	private unsafe void OnSystemThemeChanged(object? _, EventArgs __)

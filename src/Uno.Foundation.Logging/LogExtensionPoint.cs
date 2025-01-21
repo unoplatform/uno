@@ -31,5 +31,11 @@ namespace Uno.Foundation.Logging
 		/// <returns>A logger for the type of the instance</returns>
 		public static Logger Log<T>(this T instance)
 			=> Container<T>.Logger;
+
+		public static Logger? Log<T>(this T instance, LogLevel level)
+		{
+			var logger = Container<T>.Logger;
+			return logger.IsEnabled(level) ? logger : null;
+		}
 	}
 }

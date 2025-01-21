@@ -18,6 +18,8 @@ HTTOP
 HTTOPLEFT
 HTTOPRIGHT
 HWND_MESSAGE
+HWND_NOTOPMOST
+HWND_TOPMOST
 ICON_BIG
 ICON_SMALL
 IDC_ARROW
@@ -147,6 +149,7 @@ GetPointerType
 GetRegionData
 GetSaveFileName
 GetWindowLong
+GetWindowPlacement
 GetWindowRect
 GetWindowText
 GetWindowThreadProcessId
