@@ -41,9 +41,10 @@ internal class Win32NativeWebView : INativeWebView, ISupportsVirtualHostMapping
 	// This is necessary to be able to direct the very first WndProc call of a window to the correct window wrapper.
 	// That first call is inside CreateWindow, so we don't have a HWND yet. The alternative would be to create a new
 	// window class (and a new WndProc) per window, but that sounds excessive.
-	private static Win32NativeWebView? _webViewForNextCreateWindow;
-	private static readonly Dictionary<HWND, Win32NativeWebView> _hwndToWebView = new();
+	private static WeakReference<Win32NativeWebView>? _webViewForNextCreateWindow;
+	private static readonly Dictionary<HWND, WeakReference<Win32NativeWebView>> _hwndToWebView = new();
 
+	private readonly ContentPresenter _presenter;
 	private readonly HWND _hwnd;
 	private readonly CoreWebView2 _coreWebView;
 	private readonly NativeWebView.CoreWebView2 _nativeWebView;
@@ -74,11 +75,12 @@ internal class Win32NativeWebView : INativeWebView, ISupportsVirtualHostMapping
 
 	public Win32NativeWebView(CoreWebView2 owner, ContentPresenter presenter)
 	{
+		_presenter = presenter;
 		_coreWebView = owner;
 
 		using var lpClassName = new Win32Helper.NativeNulTerminatedUtf16String(WindowClassName);
 
-		_webViewForNextCreateWindow = this;
+		_webViewForNextCreateWindow = new WeakReference<Win32NativeWebView>(this);
 		unsafe
 		{
 			_hwnd = PInvoke.CreateWindowEx(
@@ -140,31 +142,48 @@ internal class Win32NativeWebView : INativeWebView, ISupportsVirtualHostMapping
 #endif
 		_controller.Bounds = new Rectangle(0, 0, 500, 500);
 
-		_nativeWebView.NavigationCompleted += NativeWebView_NavigationCompleted;
-		_nativeWebView.SourceChanged += NativeWebView_SourceChanged;
-		_nativeWebView.WebMessageReceived += NativeWebView_WebMessageReceived;
-		_nativeWebView.NavigationStarting += NativeWebView_NavigationStarting;
-		_nativeWebView.HistoryChanged += CoreWebView2_HistoryChanged;
-		_nativeWebView.DocumentTitleChanged += OnNativeTitleChanged;
+		// This dance with weak refs is necessary because there seems like _nativeWebView when it has a ref back
+		// to this.
+		_nativeWebView.NavigationCompleted += EventHandlerBuilder<NativeWebView.CoreWebView2NavigationCompletedEventArgs>(static (@this, o, a) => @this.NativeWebView_NavigationCompleted(o, a));
+		_nativeWebView.SourceChanged += EventHandlerBuilder<NativeWebView.CoreWebView2SourceChangedEventArgs>(static (@this, o, a) => @this.NativeWebView_SourceChanged(o, a));
+		_nativeWebView.WebMessageReceived += EventHandlerBuilder<NativeWebView.CoreWebView2WebMessageReceivedEventArgs>(static (@this, o, a) => @this.NativeWebView_WebMessageReceived(o, a));
+		_nativeWebView.NavigationStarting += EventHandlerBuilder<NativeWebView.CoreWebView2NavigationStartingEventArgs>(static (@this, o, a) => @this.NativeWebView_NavigationStarting(o, a));
+		_nativeWebView.HistoryChanged += EventHandlerBuilder<object>(static (@this, o, a) => @this.CoreWebView2_HistoryChanged(o, a));
+		_nativeWebView.DocumentTitleChanged += EventHandlerBuilder<object>(static (@this, o, a) => @this.OnNativeTitleChanged(o, a));
 		UpdateDocumentTitle();
 
 		presenter.Content = new Win32NativeWindow(_hwnd);
 	}
 
+	private EventHandler<T> EventHandlerBuilder<T>(Action<Win32NativeWebView, object?, T> handler)
+	{
+		var weakRef = new WeakReference<Win32NativeWebView>(this);
+		return (sender, args) =>
+		{
+			if (weakRef.TryGetTarget(out var target))
+			{
+				handler(target, sender, args);
+			}
+		};
+	}
+
 	~Win32NativeWebView()
 	{
-		var success = PInvoke.DestroyWindow(_hwnd);
-		if (!success && this.Log().IsEnabled(LogLevel.Error))
+		_presenter.DispatcherQueue.TryEnqueue(() =>
 		{
-			this.Log().Error($"{nameof(PInvoke.DestroyWindow)} failed: {Win32Helper.GetErrorMessage()}");
-		}
+			var success = PInvoke.DestroyWindow(_hwnd);
+			if (!success && this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error($"{nameof(PInvoke.DestroyWindow)} failed: {Win32Helper.GetErrorMessage()}");
+			}
 
-		lock (_hwndToWebView)
-		{
-			_hwndToWebView.Remove(_hwnd);
-		}
+			lock (_hwndToWebView)
+			{
+				_hwndToWebView.Remove(_hwnd);
+			}
 
-		Win32Host.UnregisterWindow(_hwnd);
+			Win32Host.UnregisterWindow(_hwnd);
+		});
 	}
 
 	[UnmanagedCallersOnly(CallConvs = [typeof(CallConvStdcall)])]
@@ -174,13 +193,17 @@ internal class Win32NativeWebView : INativeWebView, ISupportsVirtualHostMapping
 		{
 			if (_webViewForNextCreateWindow is { } webView)
 			{
-				_hwndToWebView[hwnd] = _webViewForNextCreateWindow;
+				_hwndToWebView[hwnd] = webView;
 			}
 			else if (!_hwndToWebView.TryGetValue(hwnd, out webView))
 			{
 				throw new Exception($"{nameof(WndProc)} was fired on a {nameof(HWND)} before it was added to, or after it was removed from, {nameof(_hwndToWebView)}.");
 			}
-			return webView.WndProcInner(hwnd, msg, wParam, lParam);
+			if (webView.TryGetTarget(out var target))
+			{
+				return target.WndProcInner(hwnd, msg, wParam, lParam);
+			}
+			return PInvoke.DefWindowProc(hwnd, msg, wParam, lParam);
 		}
 	}
 
