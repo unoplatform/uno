@@ -991,7 +991,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, SUT.SelectionLength);
 		}
 
-		[TestMethod]
+		// Test is failing on iOS https://github.com/unoplatform/uno-private/issues/767
+		[ConditionalTest(IgnoredPlatforms = ConditionalTestAttribute.SkiaUIKit)]
 		public async Task When_Pointer_RightClick_Selection()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();

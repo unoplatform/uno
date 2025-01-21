@@ -72,7 +72,8 @@ public class Given_BackgroundTransition
 #if !__SKIA__
 	[Ignore]
 #endif
-	[TestMethod]
+	// Test is flaky on iOS https://github.com/unoplatform/uno-private/issues/797
+	[ConditionalTest(IgnoredPlatforms = ConditionalTestAttribute.SkiaUIKit)]
 	public async Task When_Animation_With_Brush_Transition()
 	{
 		var SUT = (Button)XamlReader.Load(

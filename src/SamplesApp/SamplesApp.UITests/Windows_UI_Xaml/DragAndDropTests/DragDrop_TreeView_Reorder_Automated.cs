@@ -39,6 +39,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 		[AutoRetry]
 		[ActivePlatforms(Platform.Browser)]
 		[InjectedPointer(PointerDeviceType.Mouse)]
+		[Timeout(75 * 1000)]
 #if !IS_RUNTIME_UI_TESTS
 		[Ignore("Flaky")]
 #endif

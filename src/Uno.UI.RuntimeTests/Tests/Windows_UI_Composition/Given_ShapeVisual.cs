@@ -93,7 +93,7 @@ public class Given_ShapeVisual
 						await TestServices.WindowHelper.WaitFor(() => imageOpened);
 						var screenShot2 = await UITestHelper.ScreenShot(referenceImage);
 						// there can be a very small _bit_ difference when drawing with metal on macOS
-						if (OperatingSystem.IsMacOS())
+						if (OperatingSystem.IsMacOS() || OperatingSystem.IsIOS())
 						{
 							await ImageAssert.AreSimilarAsync(screenShot1, screenShot2);
 						}

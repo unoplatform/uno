@@ -321,12 +321,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
-		[TestMethod]
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.NativeAndroid | RuntimeTestPlatform.SkiaIOS)]
 #if __ANDROID__
 		[Ignore("Popup successfully fits left-aligned on Android - possibly because the status bar offset changes the layouting?")]
-#endif
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
 		public async Task When_Too_Large_For_Any_Fallback()
 		{

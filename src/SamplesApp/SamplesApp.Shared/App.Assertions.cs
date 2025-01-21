@@ -90,16 +90,6 @@ partial class App
 	}
 
 	/// <summary>
-	/// Assert that Application Title is getting its value from manifest
-	/// </summary>
-	public void AssertIssue8356()
-	{
-#if __SKIA__
-		Uno.UI.RuntimeTests.Tests.Windows_UI_ViewManagement_ApplicationView.Given_ApplicationView.StartupTitle = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().Title;
-#endif
-	}
-
-	/// <summary>
 	/// Assert that the native overlay layer for Skia targets is initialized in time for UI to appear.
 	/// </summary>
 	public void AssertIssue8641NativeOverlayInitialized()

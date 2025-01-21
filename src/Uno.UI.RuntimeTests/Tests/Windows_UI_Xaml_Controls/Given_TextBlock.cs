@@ -1143,7 +1143,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[Ignore("Requires authorization to access to the clipboard on WASM.")]
 #endif
 		// Clipboard is currently not available on skia-WASM
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaWasm)]
+		// Flaky on Skia.iOS uno-private#795
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaWasm | RuntimeTestPlatform.SkiaIOS)]
 		public async Task When_IsTextSelectionEnabled_CRLF()
 		{
 			var delayToAvoidDoubleTap = 600;
