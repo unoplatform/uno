@@ -260,6 +260,10 @@ internal class Win32NativeWebView : INativeWebView, ISupportsVirtualHostMapping
 		// So, we should skip setting the source from base64.
 		if (Uri.TryCreate(uriString, UriKind.RelativeOrAbsolute, out var uri))
 		{
+			if (e.WebErrorStatus == NativeWebView.CoreWebView2WebErrorStatus.ConnectionAborted)
+			{
+				_coreWebView.RaiseUnsupportedUriSchemeIdentified(uri, out _);
+			}
 			_coreWebView.RaiseNavigationCompleted(uri, e.IsSuccess, e.HttpStatusCode, (CoreWebView2WebErrorStatus)e.WebErrorStatus, shouldSetSource: false);
 		}
 		else

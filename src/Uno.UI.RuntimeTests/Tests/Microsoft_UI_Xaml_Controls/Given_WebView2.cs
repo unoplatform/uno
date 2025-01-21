@@ -27,8 +27,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 
 #if !HAS_UNO || __ANDROID__ || __IOS__ || __SKIA__
 [RunsOnUIThread]
-// only SkiaMacOS and SkiaX11 right now
-[ConditionalTestClass(IgnoredPlatforms = RuntimeTestPlatforms.SkiaGtk | RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaWpf | RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaIslands)]
+[ConditionalTestClass(IgnoredPlatforms = RuntimeTestPlatforms.SkiaGtk | RuntimeTestPlatforms.SkiaWpf | RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaIslands)]
 public class Given_WebView2
 {
 	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.NativeUIKit | RuntimeTestPlatforms.SkiaUIKit)]
@@ -466,7 +465,7 @@ public class Given_WebView2
 #if !WINAPPSDK && !__ANDROID__
 	[DataRow(true)]
 	[DataRow(false)]
-	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaX11)]
+	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatform.SkiaWin32)]
 	public async Task When_Navigate_Unsupported_Scheme(bool handled)
 	{
 		var border = new Border();
