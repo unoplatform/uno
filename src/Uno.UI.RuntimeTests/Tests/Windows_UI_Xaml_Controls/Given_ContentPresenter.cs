@@ -14,6 +14,8 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using MUXControlsTestApp.Utilities;
 using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.Extensions;
+using System.Text.RegularExpressions;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
@@ -23,7 +25,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 #if __MACOS__
 [Ignore("Currently fails on macOS, part of #9282! epic")]
 #endif
-public class Given_ContentPresenter
+public partial class Given_ContentPresenter // test cases
 {
 	[TestMethod]
 	public async Task When_Padding_Set_In_SizeChanged()
@@ -214,8 +216,110 @@ public class Given_ContentPresenter
 		Assert.AreEqual("42", GetTextBlockText(sut, "nullContentChanged"));
 	}
 
-	static string GetTextBlockText(FrameworkElement sut, string v)
-		=> (sut.FindName(v) as TextBlock)?.Text ?? "";
+	[TestMethod]
+	public async Task When_ContentPresenter_Content()
+	{
+		var setup = new ContentPresenter_ContentBindings();
+
+		await UITestHelper.Load(setup, x => x.IsLoaded);
+
+#if false // WinAppSdk result for reference:
+		StackPanel#SutPanel // DC=TestData
+			ContentPresenter#CP_Content_Binding // DC=TestData, Content=TestData, Content.Binding=[Path=, RelativeSource=]
+				TextBlock // DC=TestData, Text='redacted47.TestData'
+			ContentPresenter#CP_Content_Binding_SomePath // DC=TestData, Content=, Content.Binding=[Path=SomePath, RelativeSource=]
+
+			ContentControl#CC_ContentTemplate_RawCP // DC=TestData, Content=TestData, Content.Binding=[Path=, RelativeSource=]
+				ContentPresenter // DC=TestData, Content=TestData
+					ContentPresenter // DC=TestData, Content=
+			ContentControl#CP_ContentTemplate_CPContentBinding // DC=TestData, Content=TestData, Content.Binding=[Path=, RelativeSource=]
+				ContentPresenter // DC=TestData, Content=TestData
+					ContentPresenter // DC=TestData, Content=TestData, Content.Binding=[Path=, RelativeSource=]
+						TextBlock // DC=TestData, Text='redacted47.TestData'
+			Button#Button_ControlTemplate_CPContentBinding // DC=TestData, Content=TestData, Content.Binding=[Path=, RelativeSource=]
+				ContentPresenter // DC=TestData, Content=TestData, Content.Binding=[Path=, RelativeSource=]
+					TextBlock // DC=TestData, Text='redacted47.TestData'
+
+			ContentControl#CP_ContentTemplate_CPContentBindingPath // DC=TestData, Content=TestData, Content.Binding=[Path=, RelativeSource=]
+				ContentPresenter // DC=TestData, Content=TestData
+					ContentPresenter // DC=String, Content=String, Content.Binding=[Path=Text, RelativeSource=]
+						TextBlock // DC=String, Text='lalala~'
+			Button#Button_ControlTemplate_CPContentBindingPath // DC=TestData, Content=TestData, Content.Binding=[Path=, RelativeSource=]
+				ContentPresenter // DC=String, Content=String, Content.Binding=[Path=Text, RelativeSource=]
+					TextBlock // DC=String, Text='lalala~'
+		^ main distinction should be TextBlock vs ImplicitTextBlock, and the implicit ContentPresenter's content uses binding on uno vs direct assignment.
+#endif
+
+		static IEnumerable<string> Describe(object x)
+		{
+			//if ((x as IDependencyObjectStoreProvider)?.Store is { } dos)
+			//{
+			//	yield return $"TP={PrettyPrint.FormatType(dos.GetTemplatedParent2())}";
+			//}
+			if (x is FrameworkElement fe)
+			{
+				yield return $"DC={PrettyPrint.FormatType(fe.DataContext)}";
+			}
+			if (x is ContentControl cc)
+			{
+				yield return $"Content={PrettyPrint.FormatType(cc.Content)}";
+				if (cc.GetBindingExpression(ContentControl.ContentProperty)?.ParentBinding is { } b)
+				{
+					yield return $"Content.Binding=[Path={b.Path?.Path}, RelativeSource={b.RelativeSource?.Mode}]";
+				}
+			}
+			if (x is ContentPresenter cp)
+			{
+				yield return $"Content={PrettyPrint.FormatType(cp.Content)}";
+				if (cp.GetBindingExpression(ContentPresenter.ContentProperty)?.ParentBinding is { } b)
+				{
+					yield return $"Content.Binding=[Path={b.Path?.Path}, RelativeSource={b.RelativeSource?.Mode}]";
+				}
+			}
+			if (x is TextBlock tb)
+			{
+				yield return $"Text='{tb.Text}'";
+			}
+		}
+		var tree = setup.Content.TreeGraph(Describe);
+		var expectedTree = """
+		0	StackPanel#SutPanel // DC=TestData
+		1		ContentPresenter#CP_Content_Binding // DC=TestData, Content=TestData, Content.Binding=[Path=, RelativeSource=]
+		2			ImplicitTextBlock // DC=TestData, Text='TestData'
+		3		ContentPresenter#CP_Content_Binding_SomePath // DC=TestData, Content=null, Content.Binding=[Path=SomePath, RelativeSource=]
+		4		ContentControl#CC_ContentTemplate_RawCP // DC=TestData, Content=TestData, Content.Binding=[Path=, RelativeSource=]
+		5			ContentPresenter // SKIP_DESC_COMPARE, IGNORE_FOR_MOBILE_CP_BYPASS
+		6				ContentPresenter // DC=TestData, Content=null
+		7		ContentControl#CP_ContentTemplate_CPContentBinding // DC=TestData, Content=TestData, Content.Binding=[Path=, RelativeSource=]
+		8			ContentPresenter // SKIP_DESC_COMPARE, IGNORE_FOR_MOBILE_CP_BYPASS
+		9				ContentPresenter // DC=TestData, Content=TestData, Content.Binding=[Path=, RelativeSource=]
+		10					ImplicitTextBlock // DC=TestData, Text='TestData'
+		11		Button#Button_ControlTemplate_CPContentBinding // DC=TestData, Content=TestData, Content.Binding=[Path=, RelativeSource=]
+		12			ContentPresenter // DC=TestData, Content=TestData, Content.Binding=[Path=, RelativeSource=]
+		13				ImplicitTextBlock // DC=TestData, Text='TestData'
+		14		Button#Button_ControlTemplate_CPContentBindingPath // DC=TestData, Content=TestData, Content.Binding=[Path=, RelativeSource=]
+		15			ContentPresenter // DC=String, Content=String, Content.Binding=[Path=Text, RelativeSource=]
+		16				ImplicitTextBlock // DC=String, Text='lalala~'
+		""";
+#if __ANDROID__ || __IOS__
+		// not sure why this has different data-context, but we mostly care about the Text value here.
+		expectedTree = expectedTree.Replace(
+			"16\t\t\t\tImplicitTextBlock // DC=String, Text='lalala~'",
+			"16\t\t\t\tImplicitTextBlock // DC=TestData, Text='lalala~'");
+#endif
+
+		// fixme:
+		//N+0		ContentControl#CP_ContentTemplate_CPContentBindingPath // DC=TestData, Content=TestData, Content.Binding=[Path=, RelativeSource=]
+		//N+1			ContentPresenter // DC=TestData, Content=TestData
+		//expected:
+		//N+2				ContentPresenter // DC=String, Content=String, Content.Binding=[Path=Text, RelativeSource=]
+		//N+3					ImplicitTextBlock // DC=String, Text='lalala~'
+		//actual:
+		//N+2				ContentPresenter // DC=String, Content='', Content.Binding=[Path=Text, RelativeSource=]
+		//N+3					ImplicitTextBlock // DC=String, Text=''
+
+		TreeAssert.VerifyTree(expectedTree, setup.Content, describe: Describe);
+	}
 
 	public static IEnumerable<object[]> GetAlignments()
 	{
@@ -359,6 +463,11 @@ public class Given_ContentPresenter
 			return new(o);
 		}
 	}
+}
+public partial class Given_ContentPresenter
+{
+	private static string GetTextBlockText(FrameworkElement sut, string v)
+		=> (sut.FindName(v) as TextBlock)?.Text ?? "";
 
 	private async Task AssertCollectedReference(WeakReference reference)
 	{

@@ -98,6 +98,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		internal Lazy<INamedTypeSymbol?> AssemblyMetadataSymbol { get; }
 		internal Lazy<INamedTypeSymbol> ElementStubSymbol { get; }
+		internal Lazy<INamedTypeSymbol> ContentControlSymbol { get; }
 		internal Lazy<INamedTypeSymbol> ContentPresenterSymbol { get; }
 		internal Lazy<INamedTypeSymbol> StringSymbol { get; }
 		internal Lazy<INamedTypeSymbol> ObjectSymbol { get; }
@@ -267,6 +268,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			AssemblyMetadataSymbol = GetOptionalSymbolAsLazy("System.Reflection.AssemblyMetadataAttribute");
 			ElementStubSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.ElementStub);
 			SetterSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.Setter);
+			ContentControlSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.ContentControl);
 			ContentPresenterSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.ContentPresenter);
 			FrameworkElementSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.FrameworkElement);
 			UIElementSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.UIElement);
