@@ -828,7 +828,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			sv.HorizontalOffset.Should().BeGreaterThan(0);
 		}
 
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaBrowser)]
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaWasm)]
 		public async Task When_Scrolling_Updates_After_Backspace()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -875,7 +875,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		// Clipboard is currently not available on skia-WASM
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaBrowser)]
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaWasm)]
 		public async Task When_Scrolling_Updates_After_Pasting_Long_Text()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -1843,7 +1843,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		// Clipboard is currently not available on skia-WASM
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaBrowser)]
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaWasm)]
 		public async Task When_Paste_History_Remains_Intact()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -1891,7 +1891,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		// Clipboard is currently not available on skia-WASM
 		// Newline handling is different on Skia.UIKit targets due to native input sync #788
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaBrowser | RuntimeTestPlatform.SkiaiOS)]
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaWasm | RuntimeTestPlatform.SkiaIOS)]
 		public async Task When_Paste_The_Same_Text()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -2035,7 +2035,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(1, keyDownCount);
 		}
 
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaBrowser)]
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaWasm)]
 		public async Task When_Multiline_NewLine_UpDown()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -2133,7 +2133,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, SUT.SelectionLength);
 		}
 
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaBrowser)]
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaWasm)]
 		public async Task When_Multiline_Wrapping_UpDown()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -2629,7 +2629,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		// Clipboard is currently not available on skia-WASM
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaBrowser)]
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaWasm)]
 		public async Task When_SurrogatePair_Copy()
 		{
 			if (OperatingSystem.IsBrowser())

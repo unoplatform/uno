@@ -5,22 +5,21 @@ namespace Microsoft.VisualStudio.TestTools.UnitTesting;
 [Flags]
 public enum RuntimeTestPlatform
 {
-	SkiaGtk = 1 << 0,
-	SkiaWpf = 1 << 1,
-	SkiaX11 = 1 << 2,
-	SkiaMacOS = 1 << 3,
-	SkiaBrowser = 1 << 4,
-	SkiaIslands = 1 << 5,
-	Wasm = 1 << 6,
-	Android = 1 << 7,
-	iOS = 1 << 8,
-	MacCatalyst = 1 << 9,
-	tvOS = 1 << 10,
-	SkiaWasm = 1 << 11,
-	SkiaAndroid = 1 << 12,
-	SkiaiOS = 1 << 13,
-	SkiatvOS = 1 << 14,
-	SkiaMacCatalyst = 1 << 15,
+	NativeWasm = 1 << 0,
+	NativeAndroid = 1 << 1,
+	NativeIOS = 1 << 2,
+	NativeMacCatalyst = 1 << 3,
+	NativeTvOS = 1 << 4,
+	SkiaGtk = 1 << 5,
+	SkiaWpf = 1 << 6,
+	SkiaX11 = 1 << 7,
+	SkiaMacOS = 1 << 8,
+	SkiaWasm = 1 << 9,
+	SkiaIslands = 1 << 10,
+	SkiaAndroid = 1 << 11,
+	SkiaIOS = 1 << 12,
+	SkiaTvOS = 1 << 13,
+	SkiaMacCatalyst = 1 << 14,
 }
 
 [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = false)]
@@ -28,10 +27,10 @@ public partial class ConditionalTestAttribute : TestMethodAttribute
 {
 	private static readonly RuntimeTestPlatform _currentPlatform;
 
-	public const RuntimeTestPlatform SkiaUIKit = RuntimeTestPlatform.SkiaiOS | RuntimeTestPlatform.SkiatvOS | RuntimeTestPlatform.SkiaMacCatalyst;
+	public const RuntimeTestPlatform SkiaUIKit = RuntimeTestPlatform.SkiaIOS | RuntimeTestPlatform.SkiaTvOS | RuntimeTestPlatform.SkiaMacCatalyst;
 	public const RuntimeTestPlatform SkiaMobile = RuntimeTestPlatform.SkiaAndroid | SkiaUIKit;
 	public const RuntimeTestPlatform SkiaDesktop = RuntimeTestPlatform.SkiaGtk | RuntimeTestPlatform.SkiaWpf | RuntimeTestPlatform.SkiaX11 | RuntimeTestPlatform.SkiaMacOS | RuntimeTestPlatform.SkiaIslands;
-	public const RuntimeTestPlatform Skia = SkiaDesktop | RuntimeTestPlatform.SkiaBrowser | SkiaMobile;
+	public const RuntimeTestPlatform Skia = SkiaDesktop | RuntimeTestPlatform.SkiaWasm | SkiaMobile;
 
 	static ConditionalTestAttribute()
 	{
@@ -64,22 +63,21 @@ public partial class ConditionalTestAttribute : TestMethodAttribute
 	{
 		return singlePlatform switch
 		{
+			RuntimeTestPlatform.NativeWasm => IsNativeWasm(),
+			RuntimeTestPlatform.NativeAndroid => IsNativeAndroid(),
+			RuntimeTestPlatform.NativeIOS => IsNativeIOS(),
+			RuntimeTestPlatform.NativeMacCatalyst => IsNativeMacCatalyst(),
+			RuntimeTestPlatform.NativeTvOS => IsNativetvOS(),
 			RuntimeTestPlatform.SkiaGtk => IsSkiaGtk(),
 			RuntimeTestPlatform.SkiaWpf => IsSkiaWpf(),
 			RuntimeTestPlatform.SkiaX11 => IsSkiaX11(),
 			RuntimeTestPlatform.SkiaMacOS => IsSkiaMacOS(),
-			RuntimeTestPlatform.SkiaBrowser => IsSkiaBrowser(),
 			RuntimeTestPlatform.SkiaIslands => IsSkiaIslands(),
-			RuntimeTestPlatform.Wasm => IsWasmNative(),
-			RuntimeTestPlatform.Android => IsAndroidNative(),
-			RuntimeTestPlatform.iOS => IsIOSNative(),
-			RuntimeTestPlatform.MacCatalyst => IsMacCatalystNative(),
-			RuntimeTestPlatform.tvOS => IsTvOSNative(),
-			RuntimeTestPlatform.SkiaAndroid => IsSkia() && OperatingSystem.IsAndroid(),
-			RuntimeTestPlatform.SkiaiOS => IsSkia() && OperatingSystem.IsIOS(),
-			RuntimeTestPlatform.SkiatvOS => IsSkia() && OperatingSystem.IsTvOS(),
-			RuntimeTestPlatform.SkiaMacCatalyst => IsSkia() && OperatingSystem.IsMacCatalyst(),
 			RuntimeTestPlatform.SkiaWasm => IsSkia() && OperatingSystem.IsBrowser(),
+			RuntimeTestPlatform.SkiaAndroid => IsSkia() && OperatingSystem.IsAndroid(),
+			RuntimeTestPlatform.SkiaIOS => IsSkia() && OperatingSystem.IsIOS(),
+			RuntimeTestPlatform.SkiaTvOS => IsSkia() && OperatingSystem.IsTvOS(),
+			RuntimeTestPlatform.SkiaMacCatalyst => IsSkia() && OperatingSystem.IsMacCatalyst(),
 			_ => throw new ArgumentException(nameof(singlePlatform)),
 		};
 	}
@@ -120,7 +118,7 @@ public partial class ConditionalTestAttribute : TestMethodAttribute
 		=> false;
 #endif
 
-	private static bool IsWasmNative()
+	private static bool IsNativeWasm()
 	{
 #if __WASM__
 		return true;
@@ -129,7 +127,7 @@ public partial class ConditionalTestAttribute : TestMethodAttribute
 #endif
 	}
 
-	private static bool IsAndroidNative()
+	private static bool IsNativeAndroid()
 	{
 #if __ANDROID__
 		return true;
@@ -138,7 +136,7 @@ public partial class ConditionalTestAttribute : TestMethodAttribute
 #endif
 	}
 
-	private static bool IsIOSNative()
+	private static bool IsNativeIOS()
 	{
 #if __IOS__
 		return true;
@@ -147,7 +145,7 @@ public partial class ConditionalTestAttribute : TestMethodAttribute
 #endif
 	}
 
-	private static bool IsTvOSNative()
+	private static bool IsNativetvOS()
 	{
 #if __TVOS__
 		return true;
@@ -156,7 +154,7 @@ public partial class ConditionalTestAttribute : TestMethodAttribute
 #endif
 	}
 
-	private static bool IsMacCatalystNative()
+	private static bool IsNativeMacCatalyst()
 	{
 #if __MACCATALYST__
 		return true;
