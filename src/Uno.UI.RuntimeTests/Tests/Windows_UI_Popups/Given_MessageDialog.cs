@@ -12,10 +12,10 @@ using Microsoft.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
 using System.Linq;
 using Private.Infrastructure;
-using Uno.UI.Helpers;
 
 #if HAS_UNO
 using Uno.UI.WinRT.Extensions.UI.Popups;
+using Uno.UI.Helpers;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Popups
@@ -109,12 +109,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Popups
 
 			await WindowHelper.WaitForIdle();
 
+#if HAS_UNO
 			if (DeviceTargetHelper.IsUIKit())
 			{
 				//in iOS we want to force calling in a different thread than UI
 				await Task.Run(() => asyncOperation.Cancel());
 			}
 			else
+#endif
 			{
 				asyncOperation.Cancel();
 			}
