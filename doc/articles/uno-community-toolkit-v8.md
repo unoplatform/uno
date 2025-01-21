@@ -194,14 +194,18 @@ The implementation of these is similar to the example of the `SettingsControl` a
 1. Install the NuGet package reference needed for the converters
 
     ### Single Project Template [WinUI / WinAppSDK]
+
     1. Edit your project file `PROJECT_NAME.csproj` and add this additional needed reference:
+
         ```xml
         <ItemGroup>
           <PackageReference Include="CommunityToolkit.WinUI.Converters" />
           <!-- Add more community toolkit references here -->
         </ItemGroup>
         ```
-    1. Edit `Directory.Packages.props` and add the needed reference(s):
+
+    1. Edit `Directory.Packages.props` and add this additional needed reference:
+
         ```xml
         <ItemGroup>
           <PackageVersion Include="CommunityToolkit.WinUI.Converters" Version="8.1.240916" />
@@ -213,6 +217,7 @@ The implementation of these is similar to the example of the `SettingsControl` a
 
     > [!NOTE]
     > In WCT version 8.x, the namespaces between UWP and WinAppSDK were merged.
+
     ### WinUI / WinAppSDK / UWP
 
       In XAML:
@@ -225,46 +230,58 @@ The implementation of these is similar to the example of the `SettingsControl` a
 
 1. XAML Definition
 
-Unlike the previously seen `SettingsCard` control example, it is standard practice to define a converter in the `Page.Resources` section as a `StaticResource` before using it. This approach ensures that converters, like controls, are properly declared with a namespace and can be easily reused throughout the page.
+    Unlike the previously seen `SettingsCard` control example, it is standard practice to define a converter in the `Page.Resources` section as a `StaticResource` before using it. This approach ensures that converters, like controls, are properly declared with a namespace and can be easily reused throughout the page.
 
-### [Example: StringToVisibilityConverter](#tab/string-visible-conv)
+    ### [Example: StringToVisibilityConverter](#tab/string-visible-conv)
 
-The `StringToVisibilityConverter` is a converter that transforms a string value into a `Visibility` state, returning `Visibility.Visible` for non-empty strings and `Visibility.Collapsed` for null or empty strings.
+    The `StringToVisibilityConverter` is a converter that transforms a string value into a `Visibility` state, returning `Visibility.Visible` for non-empty strings and `Visibility.Collapsed` for null or empty strings.
 
-#### Define the Converter in Page Resources
+    #### Define the Converter in Page Resources
 
-Add the converter to the `Page.Resources` section as a `StaticResource`:
+    Add the converter to the `Page.Resources` section as a `StaticResource`:
 
-```xml
-<Page.Resources>
-    <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
-</Page.Resources>
-```
+    ```xml
+    <Page.Resources>
+        <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
+    </Page.Resources>
+    ```
 
-#### Use the Converter in Page Content
+    #### Use the Converter in Page Content
 
-Here is an example of how to use the converter in your XAML content:
+    Here is an example of how to use the converter in your XAML content:
 
-```xml
-<TextBlock Text="This text is visible only if the condition is met."
-           Visibility="{Binding SomeStringProperty, Converter={StaticResource StringToVisibilityConverter}}"/>
-```
+    ```xml
+    <TextBlock Text="This text is visible only if the condition is met."
+              Visibility="{Binding SomeStringProperty, Converter={StaticResource StringToVisibilityConverter}}"/>
+    ```
 
-### [Example: BoolToObjectConverter](#tab/bool-obj-conv)
+    ### [Example: BoolToObjectConverter](#tab/bool-obj-conv)
 
-The `BoolToObjectConverter` allows you to convert a boolean value into a specific object by defining `TrueObject` and `FalseObject`. Depending on the boolean value, the converter will return the corresponding object.
+    The `BoolToObjectConverter` allows you to convert a boolean value into a specific object by defining `TrueObject` and `FalseObject`. Depending on the boolean value, the converter will return the corresponding object.
 
-For example, you can use it to switch colors dynamically:
+    #### Define the Converter in Page Resources
 
-```xml
-<Page.Resources>
-    <converters:BoolToObjectConverter x:Key="BoolToColorConverter"
-                                      TrueObject="Green"
-                                      FalseObject="Red"/>
-</Page.Resources>
+    For example, you can use it to switch colors dynamically.
+    Add the converter to the `Page.Resources` section as a `StaticResource`:
 
-<TextBlock Text="Status:"
-           Foreground="{Binding IsValid, Converter={StaticResource BoolToColorConverter}}"/>
+    ```xml
+    <Page.Resources>
+        <converters:BoolToObjectConverter x:Key="BoolToColorConverter"
+                                          TrueObject="Green"
+                                          FalseObject="Red"/>
+    </Page.Resources>
+    ```
+  
+    #### Use the Converter in Page Content
+
+    Here is an example of how to use the converter in your XAML content:
+
+    ```xml
+    <TextBlock Text="Status:"
+              Foreground="{Binding IsValid, Converter={StaticResource BoolToColorConverter}}"/>
+    ```
+
+    In this example, the `TextBlock` background will be green when `IsValid` is `true` and red when `IsValid` is `false`.
 
 ---
 
