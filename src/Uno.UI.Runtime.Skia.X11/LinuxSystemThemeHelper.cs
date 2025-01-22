@@ -102,7 +102,7 @@ internal class LinuxSystemThemeHelper : ISystemThemeHelperExtension
 		{
 			if (this.Log().IsEnabled(LogLevel.Error))
 			{
-				this.Log().Error($"DBus Settings error, see https://aka.platform.uno/x11-dbus-troubleshoot for troubleshooting information.", e);
+				this.Log().Error($"Unable to observe the system theme. (DBus Settings error, see https://aka.platform.uno/x11-dbus-troubleshoot for troubleshooting information)", e);
 			}
 		}
 	}
