@@ -321,7 +321,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.NativeAndroid | RuntimeTestPlatform.SkiaIOS)]
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.SkiaIOS)]
 #if __ANDROID__
 		[Ignore("Popup successfully fits left-aligned on Android - possibly because the status bar offset changes the layouting?")]
 #endif

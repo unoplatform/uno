@@ -19,7 +19,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 		}
 
 #if !__WASM__ // Wasm does not have bg threads yet ...
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaWasm)]
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWasm)]
 		public void When_GetForCurrentThreadFromBackgroundThread()
 		{
 			Assert.IsNull(DispatcherQueue.GetForCurrentThread());

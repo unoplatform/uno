@@ -244,7 +244,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		// Clipboard is currently not available on skia-WASM
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaWasm)]
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWasm)]
 #if __WASM__
 		[Ignore("WASM requires user confirmation to accept reading the clipboard.")]
 #endif
@@ -284,7 +284,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		// Clipboard is currently not available on skia-WASM
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaWasm)]
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWasm)]
 #if !__SKIA__
 		[Ignore("This test specifically tests the skia-rendered TextBox")]
 #endif

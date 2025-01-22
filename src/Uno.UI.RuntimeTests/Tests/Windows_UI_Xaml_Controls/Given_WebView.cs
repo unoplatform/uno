@@ -24,7 +24,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 [TestClass]
 [RunsOnUIThread]
 // only SkiaMacOS right now
-[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaGtk | RuntimeTestPlatform.SkiaWpf | RuntimeTestPlatform.SkiaX11 | RuntimeTestPlatform.SkiaWasm | RuntimeTestPlatform.SkiaIslands)]
+[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaGtk | RuntimeTestPlatforms.SkiaWpf | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaIslands)]
 public class Given_WebView
 {
 	[TestMethod]

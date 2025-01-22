@@ -897,7 +897,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		// Clipboard is currently not available on skia-WASM
-		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaWasm)]
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWasm)]
 #if __MACOS__
 		[Ignore("Paste is not implemented on MacOS")]
 #endif

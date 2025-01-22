@@ -25,7 +25,7 @@ namespace Uno.UI.RuntimeTests.Tests.HotReload;
 
 [TestClass]
 // Hot reload tests are only available on Skia desktop targets
-[ConditionalTest(IgnoredPlatforms = ~ConditionalTestAttribute.SkiaDesktop)]
+[ConditionalTest(IgnoredPlatforms = ~RuntimeTestPlatforms.SkiaDesktop)]
 public partial class Given_HotReloadWorkspace
 {
 	private static Process? _process;
