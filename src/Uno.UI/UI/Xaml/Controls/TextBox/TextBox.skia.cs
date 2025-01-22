@@ -1034,7 +1034,7 @@ public partial class TextBox
 			i += chunk.length;
 		}
 
-		return (i, 0);
+		return _cachedChunks.chunks.Count > 0 ? _cachedChunks.chunks[^1] : (0, 0);
 	}
 
 	private void GenerateChunks()
