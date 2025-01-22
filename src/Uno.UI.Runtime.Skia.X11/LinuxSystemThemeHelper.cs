@@ -72,7 +72,7 @@ internal class LinuxSystemThemeHelper : ISystemThemeHelperExtension
 			{
 				if (this.Log().IsEnabled(LogLevel.Error))
 				{
-					this.Log().Error($"File pickers are only implemented for version 2 of the Settings portal, but version {version} was found");
+					this.Log().Error($"System theme detection is only implemented for version 2 of the Settings portal, but version {version} was found");
 				}
 				return;
 			}
