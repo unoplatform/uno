@@ -10,7 +10,6 @@ using GLib;
 using Microsoft.Extensions.Logging;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.Web.WebView2.Core;
-using Newtonsoft.Json;
 using Uno.Extensions;
 using Uno.Foundation.Extensibility;
 using Uno.Logging;
@@ -74,19 +73,19 @@ public class X11NativeWebView : INativeWebView
 			else
 			{
 				Assembly assembly = Assembly.Load("WebKitGtkSharp");
-				Type glibraryType = assembly.GetType("GLibrary")!;
-				Type libraryType = assembly.GetType("Library")!;
+				Type glibraryType = assembly.GetType("GLibrary") ?? throw new NullReferenceException("Couldn't find GLibrary in WebKitGtkSharp");
+				Type libraryType = assembly.GetType("Library") ?? throw new NullReferenceException("Couldn't find Library in WebKitGtkSharp");
 				object webkitLibraryEnum = Enum.ToObject(libraryType, 11);
-				FieldInfo field = glibraryType.GetField("_libraries", BindingFlags.NonPublic | BindingFlags.Static)!;
-				object libraries = field.GetValue(null)!;
-				var setItemMethod = libraries.GetType().GetMethod("set_Item")!;
+				FieldInfo field = glibraryType.GetField("_libraries", BindingFlags.NonPublic | BindingFlags.Static) ?? throw new NullReferenceException("Couldn't find a field named _libraries in GLibrary");
+				object libraries = field.GetValue(null) ?? throw new NullReferenceException("Couldn't read the static field named _libraries in GLibrary");
+				var setItemMethod = libraries.GetType().GetMethod("set_Item") ?? throw new NullReferenceException("Couldn't find a method named set_Item in _libraries");
 				setItemMethod.Invoke(libraries, [webkitLibraryEnum, webkitgtk41handle]);
 				_usingWebKit2Gtk41 = true;
 			}
 
 			if (!WebKit.Global.IsSupported)
 			{
-				_initException = new PlatformNotSupportedException("libwebkitgtk-4.0 is not found. Make sure that WebKitGTK 4.0 and GTK 3 are installed.");
+				_initException = new PlatformNotSupportedException("libwebkit2gtk-4.0 is not found. Make sure that WebKit2GTK 4.0 and GTK 3 are installed.");
 				return;
 			}
 
@@ -128,16 +127,6 @@ public class X11NativeWebView : INativeWebView
 		_coreWebView = coreWebView2;
 		_presenter = presenter;
 
-		// var tcs = new TaskCompletionSource();
-		// LoadChangedHandler? webviewOnLoadChanged = default;
-		// webviewOnLoadChanged = (_, args) =>
-		// {
-		// 	if (args.LoadEvent == LoadEvent.Finished)
-		// 	{
-		// 		tcs.SetResult();
-		// 		_webview!.LoadChanged -= webviewOnLoadChanged;
-		// 	}
-		// };
 		(_window, _webview) = RunOnGtkThread(() =>
 		{
 			var window = new Window(Gtk.WindowType.Toplevel);
@@ -149,14 +138,8 @@ public class X11NativeWebView : INativeWebView
 #if DEBUG
 			webview.Settings.EnableDeveloperExtras = true;
 #endif
-			// webview.LoadChanged += webviewOnLoadChanged;
-			// webview.LoadUri("about:blank"); // this prevents the webview from having garbage frames until the first page is loaded.
-			// webview.GoBack();
 			return (window, webview);
 		});
-
-		// wait for about:blank navigation to end before subscribing to navigation events
-		// tcs.Task.Wait();
 
 		var xid = RunOnGtkThread(() =>
 		{
@@ -221,7 +204,7 @@ public class X11NativeWebView : INativeWebView
 		if (_coreWebView.HostToFolderMap.TryGetValue(uri.Host.ToLowerInvariant(), out var folderName))
 		{
 			var relativePath = uri.PathAndQuery;
-			var baseUrl = Package.Current.InstalledPath; // TODO: Is this accurate?
+			var baseUrl = Package.Current.InstalledPath;
 			RunOnGtkThread(() => _webview.LoadUri($"file://{Path.Join(baseUrl, folderName, relativePath)}"));
 		}
 		else
@@ -244,7 +227,7 @@ public class X11NativeWebView : INativeWebView
 			return;
 		}
 
-		var request = new WebKit.URIRequest(url);
+		var request = new URIRequest(url);
 
 		if (_usingWebKit2Gtk41)
 		{
@@ -412,6 +395,6 @@ public class X11NativeWebView : INativeWebView
 		{
 			return value.ToString();
 		}
-		return JsonConvert.SerializeObject(JsonConvert.DeserializeObject(value.ToJson(0)));
+		return value.ToJson(0);
 	}
 }
