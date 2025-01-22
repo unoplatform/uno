@@ -72,7 +72,7 @@ Hot Reload features are now consistent across platforms and IDEs, but with some 
             <th colspan="2">Rider</th>
         </tr>
         <tr>
-            <th>🐞</th>
+            <th>🐞 - Debugger</th>
             <th>With</th>
             <th>Without</th>
             <th>With</th>
@@ -103,8 +103,8 @@ Hot Reload features are now consistent across platforms and IDEs, but with some 
         <tr>
             <td>Android</td>
              <td>✅<sup><a href="#hr-footnotes">[3]</a></sup></td><td>🔳</td>
-            <td>🔳</a></td><td>✅🛜</td>
-            <td>🔳</a></td><td>✅🛜</td>
+            <td>🔳</a></td><td>✅</td>
+            <td>🔳</a></td><td>✅</td>
         </tr>
         </tr>
         <tr>
