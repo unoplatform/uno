@@ -3,7 +3,7 @@ using System;
 namespace Microsoft.VisualStudio.TestTools.UnitTesting;
 
 [Flags]
-public enum RuntimeTestPlatform
+public enum RuntimeTestPlatforms
 {
 	NativeWasm = 1 << 0,
 	NativeAndroid = 1 << 1,
@@ -20,29 +20,34 @@ public enum RuntimeTestPlatform
 	SkiaIOS = 1 << 12,
 	SkiaTvOS = 1 << 13,
 	SkiaMacCatalyst = 1 << 14,
+
+	// Combined platforms
+	SkiaUIKit = SkiaIOS | SkiaTvOS | SkiaMacCatalyst,
+	SkiaMobile = SkiaAndroid | SkiaUIKit,
+	SkiaDesktop = SkiaGtk | SkiaWpf | SkiaX11 | SkiaMacOS | SkiaIslands,
+	Skia = SkiaDesktop | SkiaWasm | SkiaMobile,
+	Native = NativeWasm | NativeAndroid | NativeIOS | NativeMacCatalyst | NativeTvOS,
 }
 
 [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = false)]
 public partial class ConditionalTestAttribute : TestMethodAttribute
 {
-	private static readonly RuntimeTestPlatform _currentPlatform;
-
-	public const RuntimeTestPlatform SkiaUIKit = RuntimeTestPlatform.SkiaIOS | RuntimeTestPlatform.SkiaTvOS | RuntimeTestPlatform.SkiaMacCatalyst;
-	public const RuntimeTestPlatform SkiaMobile = RuntimeTestPlatform.SkiaAndroid | SkiaUIKit;
-	public const RuntimeTestPlatform SkiaDesktop = RuntimeTestPlatform.SkiaGtk | RuntimeTestPlatform.SkiaWpf | RuntimeTestPlatform.SkiaX11 | RuntimeTestPlatform.SkiaMacOS | RuntimeTestPlatform.SkiaIslands;
-	public const RuntimeTestPlatform Skia = SkiaDesktop | RuntimeTestPlatform.SkiaWasm | SkiaMobile;
+	private static readonly RuntimeTestPlatforms _currentPlatform;
 
 	static ConditionalTestAttribute()
 	{
-		var values = Enum.GetValues<RuntimeTestPlatform>();
-		var platform = default(RuntimeTestPlatform);
+		var values = Enum.GetValues<RuntimeTestPlatforms>();
+		var platform = default(RuntimeTestPlatforms);
 		var counter = 0;
 		foreach (var value in values)
 		{
 			if (ShouldRun(value))
 			{
 				platform |= value;
-				counter++;
+				if (IsSingleFlag(value))
+				{
+					counter++;
+				}
 			}
 		}
 
@@ -54,30 +59,38 @@ public partial class ConditionalTestAttribute : TestMethodAttribute
 		_currentPlatform = platform;
 	}
 
-	public RuntimeTestPlatform IgnoredPlatforms { get; set; }
+	private static bool IsSingleFlag(RuntimeTestPlatforms value)
+	{
+		var numericValue = Convert.ToInt64(value);
+
+		// Check if exactly one bit is set (i.e., power of two)
+		return numericValue != 0 && (numericValue & (numericValue - 1)) == 0;
+	}
+
+	public RuntimeTestPlatforms IgnoredPlatforms { get; set; }
 
 	public bool ShouldRun()
 		=> !IgnoredPlatforms.HasFlag(_currentPlatform);
 
-	private static bool ShouldRun(RuntimeTestPlatform singlePlatform)
+	private static bool ShouldRun(RuntimeTestPlatforms singlePlatform)
 	{
 		return singlePlatform switch
 		{
-			RuntimeTestPlatform.NativeWasm => IsNativeWasm(),
-			RuntimeTestPlatform.NativeAndroid => IsNativeAndroid(),
-			RuntimeTestPlatform.NativeIOS => IsNativeIOS(),
-			RuntimeTestPlatform.NativeMacCatalyst => IsNativeMacCatalyst(),
-			RuntimeTestPlatform.NativeTvOS => IsNativetvOS(),
-			RuntimeTestPlatform.SkiaGtk => IsSkiaGtk(),
-			RuntimeTestPlatform.SkiaWpf => IsSkiaWpf(),
-			RuntimeTestPlatform.SkiaX11 => IsSkiaX11(),
-			RuntimeTestPlatform.SkiaMacOS => IsSkiaMacOS(),
-			RuntimeTestPlatform.SkiaIslands => IsSkiaIslands(),
-			RuntimeTestPlatform.SkiaWasm => IsSkia() && OperatingSystem.IsBrowser(),
-			RuntimeTestPlatform.SkiaAndroid => IsSkia() && OperatingSystem.IsAndroid(),
-			RuntimeTestPlatform.SkiaIOS => IsSkia() && OperatingSystem.IsIOS(),
-			RuntimeTestPlatform.SkiaTvOS => IsSkia() && OperatingSystem.IsTvOS(),
-			RuntimeTestPlatform.SkiaMacCatalyst => IsSkia() && OperatingSystem.IsMacCatalyst(),
+			RuntimeTestPlatforms.NativeWasm => IsNativeWasm(),
+			RuntimeTestPlatforms.NativeAndroid => IsNativeAndroid(),
+			RuntimeTestPlatforms.NativeIOS => IsNativeIOS(),
+			RuntimeTestPlatforms.NativeMacCatalyst => IsNativeMacCatalyst(),
+			RuntimeTestPlatforms.NativeTvOS => IsNativetvOS(),
+			RuntimeTestPlatforms.SkiaGtk => IsSkia() && IsSkiaGtk(),
+			RuntimeTestPlatforms.SkiaWpf => IsSkia() && IsSkiaWpf(),
+			RuntimeTestPlatforms.SkiaX11 => IsSkia() && IsSkiaX11(),
+			RuntimeTestPlatforms.SkiaMacOS => IsSkia() && IsSkiaMacOS(),
+			RuntimeTestPlatforms.SkiaIslands => IsSkia() && IsSkiaIslands(),
+			RuntimeTestPlatforms.SkiaWasm => IsSkia() && OperatingSystem.IsBrowser(),
+			RuntimeTestPlatforms.SkiaAndroid => IsSkia() && OperatingSystem.IsAndroid(),
+			RuntimeTestPlatforms.SkiaIOS => IsSkia() && OperatingSystem.IsIOS(),
+			RuntimeTestPlatforms.SkiaTvOS => IsSkia() && OperatingSystem.IsTvOS(),
+			RuntimeTestPlatforms.SkiaMacCatalyst => IsSkia() && OperatingSystem.IsMacCatalyst(),
 			_ => throw new ArgumentException(nameof(singlePlatform)),
 		};
 	}
