@@ -172,7 +172,7 @@
 	},
 	{
 	  "group": "UnoFonts",
-	  "version": "2.5.0-dev.9",
+	  "version": "2.6.1",
 	  "packages": [
 		"Uno.Fonts.OpenSans",
 		"Uno.Fonts.Fluent",
