@@ -1,32 +1,39 @@
 using System;
+using System.Linq;
 
 namespace Microsoft.VisualStudio.TestTools.UnitTesting;
 
-[Flags]
 public enum RuntimeTestPlatforms
 {
-	NativeWasm = 1 << 0,
-	NativeAndroid = 1 << 1,
-	NativeIOS = 1 << 2,
-	NativeMacCatalyst = 1 << 3,
-	NativeTvOS = 1 << 4,
-	SkiaGtk = 1 << 5,
-	SkiaWpf = 1 << 6,
-	SkiaX11 = 1 << 7,
-	SkiaMacOS = 1 << 8,
-	SkiaWasm = 1 << 9,
-	SkiaIslands = 1 << 10,
-	SkiaAndroid = 1 << 11,
-	SkiaIOS = 1 << 12,
-	SkiaTvOS = 1 << 13,
-	SkiaMacCatalyst = 1 << 14,
+	Unknown = 0,
+
+	// Native platforms
+	NativeWinUI = 1 << 0,
+	NativeWasm = 1 << 1,
+	NativeAndroid = 1 << 2,
+	NativeIOS = 1 << 3,
+	NativeMacCatalyst = 1 << 4,
+	NativeTvOS = 1 << 5,
+
+	// Skia platforms
+	SkiaGtk = 1 << 6,
+	SkiaWpf = 1 << 7,
+	SkiaWin32 = 1 << 8,
+	SkiaX11 = 1 << 9,
+	SkiaMacOS = 1 << 10,
+	SkiaIslands = 1 << 11,
+	SkiaWasm = 1 << 12,
+	SkiaAndroid = 1 << 13,
+	SkiaIOS = 1 << 14,
+	SkiaMacCatalyst = 1 << 15,
+	SkiaTvOS = 1 << 16,
 
 	// Combined platforms
 	SkiaUIKit = SkiaIOS | SkiaTvOS | SkiaMacCatalyst,
 	SkiaMobile = SkiaAndroid | SkiaUIKit,
 	SkiaDesktop = SkiaGtk | SkiaWpf | SkiaX11 | SkiaMacOS | SkiaIslands,
 	Skia = SkiaDesktop | SkiaWasm | SkiaMobile,
-	Native = NativeWasm | NativeAndroid | NativeIOS | NativeMacCatalyst | NativeTvOS,
+	Native = NativeWasm | NativeAndroid | NativeIOS | NativeMacCatalyst | NativeTvOS | NativeWinUI,
 }
 
 [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = false)]
@@ -37,29 +44,31 @@ public partial class ConditionalTestAttribute : TestMethodAttribute
 	static ConditionalTestAttribute()
 	{
 		var values = Enum.GetValues<RuntimeTestPlatforms>();
-		var platform = default(RuntimeTestPlatforms);
+		var currentPlatform = default(RuntimeTestPlatforms);
 		var counter = 0;
-		foreach (var value in values)
+		foreach (var value in values.Where(HasSingleFlag))
 		{
-			if (ShouldRun(value))
+			if (IsCurrentTarget(value))
 			{
-				platform |= value;
-				if (IsSingleFlag(value))
-				{
-					counter++;
-				}
+				currentPlatform |= value;
+				counter++;
 			}
 		}
 
-		if (counter != 1)
+		if (counter == 0)
 		{
-			throw new InvalidOperationException("One and exactly one platform is expected to be true.");
+			throw new InvalidOperationException("Unrecognized runtime platform.");
 		}
 
-		_currentPlatform = platform;
+		if (counter > 1)
+		{
+			throw new InvalidOperationException($"Multiple runtime platforms detected ({currentPlatform:g})");
+		}
+
+		_currentPlatform = currentPlatform;
 	}
 
-	private static bool IsSingleFlag(RuntimeTestPlatforms value)
+	private static bool HasSingleFlag(RuntimeTestPlatforms value)
 	{
 		var numericValue = Convert.ToInt64(value);
 
@@ -72,10 +81,11 @@ public partial class ConditionalTestAttribute : TestMethodAttribute
 	public bool ShouldRun()
 		=> !IgnoredPlatforms.HasFlag(_currentPlatform);
 
-	private static bool ShouldRun(RuntimeTestPlatforms singlePlatform)
+	private static bool IsCurrentTarget(RuntimeTestPlatforms singlePlatform)
 	{
 		return singlePlatform switch
 		{
+			RuntimeTestPlatforms.NativeWinUI => IsWinUI(),
 			RuntimeTestPlatforms.NativeWasm => IsNativeWasm(),
 			RuntimeTestPlatforms.NativeAndroid => IsNativeAndroid(),
 			RuntimeTestPlatforms.NativeIOS => IsNativeIOS(),
@@ -83,6 +93,7 @@ public partial class ConditionalTestAttribute : TestMethodAttribute
 			RuntimeTestPlatforms.NativeTvOS => IsNativetvOS(),
 			RuntimeTestPlatforms.SkiaGtk => IsSkia() && IsSkiaGtk(),
 			RuntimeTestPlatforms.SkiaWpf => IsSkia() && IsSkiaWpf(),
+			RuntimeTestPlatforms.SkiaWin32 => IsSkia() && IsSkiaWin32(),
 			RuntimeTestPlatforms.SkiaX11 => IsSkia() && IsSkiaX11(),
 			RuntimeTestPlatforms.SkiaMacOS => IsSkia() && IsSkiaMacOS(),
 			RuntimeTestPlatforms.SkiaIslands => IsSkia() && IsSkiaIslands(),
@@ -109,11 +120,21 @@ public partial class ConditionalTestAttribute : TestMethodAttribute
 		false;
 #endif
 
+	private static bool IsWinUI() =>
+#if WINAPPSDK
+		true;
+#else
+		false;
+#endif
+
 	private static bool IsSkiaGtk()
 		=> IsSkiaHostAssembly("Uno.UI.Runtime.Skia.Gtk");
 
 	private static bool IsSkiaWpf()
 		=> IsSkiaHostAssembly("Uno.UI.Runtime.Skia.Wpf");
+
+	private static bool IsSkiaWin32()
+		=> IsSkiaHostAssembly("Uno.UI.Runtime.Skia.Win32");
 
 	private static bool IsSkiaX11()
 		=> IsSkiaHostAssembly("Uno.UI.Runtime.Skia.X11");
