@@ -3,6 +3,8 @@ using System.IO;
 using System.Net.Http;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text.Encodings.Web;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
@@ -393,7 +395,9 @@ public class X11NativeWebView : INativeWebView
 		}
 		else if (value.IsString)
 		{
-			return value.ToString();
+			// We do this to get string quoting to be closer to other platforms
+			// Regex.Unescape negates the double escaping due to Encode + ToJson
+			return Regex.Unescape(System.Text.Json.JsonEncodedText.Encode(value.ToJson(0), JavaScriptEncoder.UnsafeRelaxedJsonEscaping).ToString());
 		}
 		return value.ToJson(0);
 	}
