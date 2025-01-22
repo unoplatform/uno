@@ -135,9 +135,10 @@ internal partial class Win32WindowWrapper : IUnoCorePointerInputSource
 		PointerCaptureLost?.Invoke(this, new PointerEventArgs(point, Win32Helper.GetKeyModifiers()));
 	}
 
-	private void OnPointer(uint msg, WPARAM wParam)
+	internal void OnPointer(uint msg, WPARAM wParam, System.Drawing.Point offset)
 	{
 		var pointerId = ReadCommonWParamInfo(wParam, out var pointerInfo, out var pointerType, out var position, out var rawPosition);
+		position.Offset(offset);
 
 		PointerPointProperties properties;
 		if (msg is PInvoke.WM_POINTERWHEEL or PInvoke.WM_POINTERHWHEEL)

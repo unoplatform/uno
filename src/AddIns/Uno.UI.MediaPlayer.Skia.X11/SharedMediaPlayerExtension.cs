@@ -128,7 +128,10 @@ public class SharedMediaPlayerExtension : IMediaPlayerExtension
 
 	internal Windows.Media.Playback.MediaPlayer Player { get; }
 
-	internal LibVLCSharp.Shared.MediaPlayer VlcPlayer { get; } = new LibVLCSharp.Shared.MediaPlayer(_vlc);
+	// On Win32, EnableMouseInput needs to be false, or else libvlc will capture the pointer and we won't receive
+	// any mouse events. Attempting to do this later below doesn't work for some reason. It needs to be
+	// right after constructing the LibVLCSharp.Shared.MediaPlayer
+	internal LibVLCSharp.Shared.MediaPlayer VlcPlayer { get; } = new LibVLCSharp.Shared.MediaPlayer(_vlc) { EnableMouseInput = false, EnableKeyInput = false };
 
 	public SharedMediaPlayerExtension(Windows.Media.Playback.MediaPlayer player)
 	{

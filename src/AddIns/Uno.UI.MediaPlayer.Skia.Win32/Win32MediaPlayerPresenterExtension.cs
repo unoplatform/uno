@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -146,6 +147,15 @@ public class Win32MediaPlayerPresenterExtension : IMediaPlayerPresenterExtension
 	private LRESULT WndProcInner(HWND hwnd, uint msg, WPARAM wParam, LPARAM lParam)
 	{
 		Debug.Assert(_hwnd == HWND.Null || hwnd == _hwnd); // the null check is for when this method gets called inside CreateWindow before setting _hwnd
+
+		switch (msg)
+		{
+			case PInvoke.WM_POINTERDOWN or PInvoke.WM_POINTERUP or PInvoke.WM_POINTERWHEEL or PInvoke.WM_POINTERHWHEEL
+				or PInvoke.WM_POINTERENTER or PInvoke.WM_POINTERLEAVE or PInvoke.WM_POINTERUPDATE:
+				var point = _presenter.GetAbsoluteBoundsRect().Location;
+				Win32WindowWrapper.XamlRootMap.GetHostForRoot(_presenter.XamlRoot!)!.OnPointer(msg, wParam, new Point(-(int)point.X, -(int)point.Y));
+				return new LRESULT(0);
+		}
 
 		return PInvoke.DefWindowProc(hwnd, msg, wParam, lParam);
 	}

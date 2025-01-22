@@ -245,7 +245,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				break;
 			case PInvoke.WM_POINTERDOWN or PInvoke.WM_POINTERUP or PInvoke.WM_POINTERWHEEL or PInvoke.WM_POINTERHWHEEL
 				or PInvoke.WM_POINTERENTER or PInvoke.WM_POINTERLEAVE or PInvoke.WM_POINTERUPDATE:
-				OnPointer(msg, wParam);
+				OnPointer(msg, wParam, Point.Empty);
 				return new LRESULT(0);
 			case PInvoke.WM_POINTERCAPTURECHANGED:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_POINTERCAPTURECHANGED)} message.");
