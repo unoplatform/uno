@@ -28,7 +28,7 @@ public partial class Compass
 				return;
 			}
 
-			lock (_syncLock)
+			lock (_readingChangedWrapper.SyncLock)
 			{
 				_reportInterval = value;
 

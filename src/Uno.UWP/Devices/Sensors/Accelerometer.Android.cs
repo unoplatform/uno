@@ -27,7 +27,7 @@ namespace Windows.Devices.Sensors
 					return;
 				}
 
-				lock (_syncLock)
+				lock (_readingChangedWrapper.SyncLock)
 				{
 					_reportInterval = value;
 
