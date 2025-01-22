@@ -216,15 +216,9 @@ public class X11NativeWebView : INativeWebView
 	public void Stop() => RunOnGtkThread(() => _webview.StopLoading());
 	public void Reload() => RunOnGtkThread(() => _webview.Reload());
 
-	// Note: Webview doesn't support web Navigation APIs, so we cannot set CoreWebView2.CanGo<Back|Forward>
 	public void ProcessNavigation(Uri uri)
 	{
-		if (uri.Scheme.Equals("local", StringComparison.OrdinalIgnoreCase))
-		{
-			var baseUrl = Package.Current.InstalledPath;
-			RunOnGtkThread(() => _webview.LoadUri($"file://{Path.Join(baseUrl, uri.PathAndQuery)}{baseUrl}{uri.PathAndQuery}"));
-		}
-		else if (_coreWebView.HostToFolderMap.TryGetValue(uri.Host.ToLowerInvariant(), out var folderName))
+		if (_coreWebView.HostToFolderMap.TryGetValue(uri.Host.ToLowerInvariant(), out var folderName))
 		{
 			var relativePath = uri.PathAndQuery;
 			var baseUrl = Package.Current.InstalledPath; // TODO: Is this accurate?
@@ -232,7 +226,6 @@ public class X11NativeWebView : INativeWebView
 		}
 		else
 		{
-			// _webview.LoadUri(uri.AbsoluteUri);
 			ProcessNavigation(new HttpRequestMessage(HttpMethod.Get, uri));
 		}
 	}
