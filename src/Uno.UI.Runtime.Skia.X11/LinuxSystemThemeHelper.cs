@@ -56,7 +56,7 @@ internal class LinuxSystemThemeHelper : ISystemThemeHelperExtension
 			{
 				if (this.Log().IsEnabled(LogLevel.Error))
 				{
-					this.Log().Error($"Can not determine DBus session bus address");
+					this.Log().Error($"Unable to observe the system theme. (Unable to determine the DBus session bus address)");
 				}
 				return;
 			}
