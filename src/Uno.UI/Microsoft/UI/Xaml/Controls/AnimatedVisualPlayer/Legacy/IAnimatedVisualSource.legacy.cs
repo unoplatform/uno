@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if false
+using System;
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Windows.Foundation;
 
@@ -24,3 +25,4 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 		Uri UriSource { get; set; }
 	}
 }
+#endif

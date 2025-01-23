@@ -1,4 +1,4 @@
-﻿#if !__SKIA__
+﻿#if false
 using System;
 using System.Threading.Tasks;
 using Uno;
