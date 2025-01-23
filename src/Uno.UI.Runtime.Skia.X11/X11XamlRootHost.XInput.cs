@@ -142,7 +142,7 @@ internal partial class X11XamlRootHost
 		{
 			if (this.Log().IsEnabled(LogLevel.Error))
 			{
-				this.Log().LogError($"X server supports X Input Extension 2, but libXi.so.6 was not found. Falling back to the core protocol implementation for pointer inputs.");
+				this.Log().LogError($"X server supports X Input Extension 2, but libXi.so.6 was not found. Falling back to the core protocol implementation for pointer inputs. For more information see: https://aka.platform.uno/skia-desktop");
 			}
 			return (_xi2Details = (XIVersion.Unsupported, _xi2Opcode)).Value;
 		}
