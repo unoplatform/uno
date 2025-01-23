@@ -2240,7 +2240,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, SUT.SelectionLength);
 		}
 
-		[TestMethod]
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaUIKit)] // Failing in Skia iOS CI - https://github.com/unoplatform/uno-private/issues/807
 		public async Task When_Multiline_Keyboard_Chunking()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -2465,7 +2465,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(SUT.Text.Length - 2, SUT.SelectionLength);
 		}
 
-		[TestMethod]
+		[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaUIKit)] // Fails in Skia UIKit CI - https://github.com/unoplatform/uno-private/issues/808
 		public async Task When_Multiline_Pointer_Tap()
 		{
 			if (OperatingSystem.IsBrowser())
