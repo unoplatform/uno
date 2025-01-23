@@ -157,9 +157,9 @@ internal partial class X11XamlRootHost
 			_ => throw new ArgumentException("XI2 version is not between 2.0 and 2.4. There should be no 2.5 or above.")
 		};
 
-		if (this.Log().IsEnabled(LogLevel.Information))
+		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
-			this.Log().Info($"Using X Input Extension 2.{version->minor_version}.");
+			this.Log().Debug($"Using X Input Extension 2.{version->minor_version}.");
 		}
 
 		return _xi2Details.Value;
