@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.UI.Composition.Interactions;
 
@@ -8,4 +9,6 @@ internal interface ICompositionTarget
 	void TryRedirectForManipulation(Windows.UI.Input.PointerPoint pointerPoint, InteractionTracker tracker);
 
 	double RasterizationScale { get; }
+
+	event EventHandler RasterizationScaleChanged;
 }
