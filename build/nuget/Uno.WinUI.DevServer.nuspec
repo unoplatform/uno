@@ -159,6 +159,7 @@
 		<file src="..\..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\net8.0\*.pdb" target="tools\rc\processors\net8.0" />
 		<file src="..\..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\net9.0\*.dll" target="tools\rc\processors\net9.0" />
 		<file src="..\..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\net9.0\*.pdb" target="tools\rc\processors\net9.0" />
+		<file src="..\..\src\Uno.UI.RemoteControl.Server.Processors\bin\Release\net9.0\BuildHost-netcore\**" target="tools\rc\processors\net9.0\BuildHost-netcore" />
 
 		<!-- Build targets -->
 		<file src="..\..\src\Uno.UI.RemoteControl\buildTransitive\*" target="buildTransitive" />
