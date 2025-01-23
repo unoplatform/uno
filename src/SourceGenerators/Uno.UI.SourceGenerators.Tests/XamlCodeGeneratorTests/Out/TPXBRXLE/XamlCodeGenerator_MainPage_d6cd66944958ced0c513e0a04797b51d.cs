@@ -223,18 +223,6 @@ namespace TestRepro
 				_LoadElementSubject.ElementInstance = value;
 			}
 		}
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _button1Subject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
-		public global::Microsoft.UI.Xaml.Controls.Button button1
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.Button)_button1Subject.ElementInstance;
-			}
-			set
-			{
-				_button1Subject.ElementInstance = value;
-			}
-		}
 		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _ToggleLoadSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
 		public global::Microsoft.UI.Xaml.Controls.Primitives.ToggleButton ToggleLoad
 		{
@@ -245,6 +233,18 @@ namespace TestRepro
 			set
 			{
 				_ToggleLoadSubject.ElementInstance = value;
+			}
+		}
+		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _button1Subject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		public global::Microsoft.UI.Xaml.Controls.Button button1
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.Controls.Button)_button1Subject.ElementInstance;
+			}
+			set
+			{
+				_button1Subject.ElementInstance = value;
 			}
 		}
 		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);

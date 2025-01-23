@@ -841,7 +841,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var rAccessor = _isHotReloadEnabled ? " { get; set; }" : null; // We use property for HR so we can remove them without causing rude edit.
 
 			TryAnnotateWithGeneratorSource(writer);
-			foreach (var backingFieldDefinition in CurrentScope.BackingFields.Distinct())
+			foreach (var backingFieldDefinition in CurrentScope.BackingFields.Distinct().OrderBy(f => f.Name, StringComparer.Ordinal))
 			{
 				var sanitizedFieldName = SanitizeResourceName(backingFieldDefinition.Name);
 
@@ -866,13 +866,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 			}
 
-			foreach (var xBindEventHandler in CurrentScope.xBindEventsHandlers)
+			foreach (var xBindEventHandler in CurrentScope.xBindEventsHandlers.OrderBy(f => f.Name, StringComparer.Ordinal))
 			{
 				// Create load-time subjects for ElementName references not in local scope
 				writer.AppendLineIndented($"{FormatAccessibility(xBindEventHandler.Accessibility)} {xBindEventHandler.GlobalizedTypeName} {xBindEventHandler.Name}{rAccessor ?? ";"}");
 			}
 
-			foreach (var remainingReference in CurrentScope.ReferencedElementNames)
+			foreach (var remainingReference in CurrentScope.ReferencedElementNames.OrderBy(f => f, StringComparer.Ordinal))
 			{
 				// Create load-time subjects for ElementName references not in local scope
 				writer.AppendLineIndented($"private global::Microsoft.UI.Xaml.Data.ElementNameSubject _{remainingReference}Subject{rAccessor} = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: true, name: \"{remainingReference}\");");
@@ -1134,10 +1134,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void BuildComponentFields(IIndentedStringBuilder writer)
 		{
-			for (var i = 0; i < CurrentScope.Components.Count; i++)
+			foreach (var current in CurrentScope.Components.OrderBy(c => c.MemberName, StringComparer.Ordinal))
 			{
-				var current = CurrentScope.Components[i];
-
 				var componentName = current.MemberName;
 				var typeName = GetType(current.XamlObject.Type).GetFullyQualifiedTypeIncludingGlobal();
 

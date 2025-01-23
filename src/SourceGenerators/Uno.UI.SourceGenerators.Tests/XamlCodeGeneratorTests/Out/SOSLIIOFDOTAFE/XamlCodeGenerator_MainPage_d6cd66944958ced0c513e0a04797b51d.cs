@@ -286,6 +286,18 @@ namespace TestRepro
 				__p1.CreationComplete();
 			}
 
+		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _NarrowStateSubject { get; set; } = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private global::Microsoft.UI.Xaml.VisualState NarrowState
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.VisualState)_NarrowStateSubject.ElementInstance;
+			}
+			set
+			{
+				_NarrowStateSubject.ElementInstance = value;
+			}
+		}
 		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _TheListViewSubject { get; set; } = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
 		private global::Microsoft.UI.Xaml.Controls.ListView TheListView
 		{
@@ -308,18 +320,6 @@ namespace TestRepro
 			set
 			{
 				_WideStateSubject.ElementInstance = value;
-			}
-		}
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _NarrowStateSubject { get; set; } = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
-		private global::Microsoft.UI.Xaml.VisualState NarrowState
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.VisualState)_NarrowStateSubject.ElementInstance;
-			}
-			set
-			{
-				_NarrowStateSubject.ElementInstance = value;
 			}
 		}
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
