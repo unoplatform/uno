@@ -191,35 +191,6 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 					return null;
 				}
 
-				// Lookup for the highest version matching assembly in the current app domain.
-				// There may be an existing one that already matches, even though the
-				// fusion loader did not find an exact match.
-				var loadedAsm = (
-									from asm in AppDomain.CurrentDomain.GetAssemblies()
-									where asm.GetName().Name == assembly.Name
-									orderby asm.GetName().Version descending
-									select asm
-								).ToArray();
-
-				if (loadedAsm.Length > 1)
-				{
-					var duplicates = loadedAsm
-						.Skip(1)
-						.Where(a => a.GetName().Version == loadedAsm[0].GetName().Version)
-						.ToArray();
-
-					if (duplicates.Length != 0)
-					{
-						Console.WriteLine($"Selecting first occurrence of assembly [{name}] which can be found at [{duplicates.Select(d => d.Location).JoinBy("; ")}]");
-					}
-
-					return loadedAsm[0];
-				}
-				else if (loadedAsm.Length == 1)
-				{
-					return loadedAsm[0];
-				}
-
 				Assembly? LoadAssembly(string filePath)
 				{
 					if (File.Exists(filePath))
