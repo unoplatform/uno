@@ -15,7 +15,7 @@ public class Given_HotReloadService
 	// Assert.AreEqual failed.
 	// Expected:<0>. Actual:<1>.
 	// Diagnostics: warning CS1701: Assuming assembly reference 'System.ObjectModel, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a' used by 'Uno.UI' matches identity 'System.ObjectModel, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a' of 'System.ObjectModel', you may need to supply runtime policy, expected 	
-	[Ignore("Needs investigation")]
+	[Ignore("Needs investigation - tracked by https://github.com/unoplatform/uno/issues/19255")]
 	public async Task HR(string name, Scenario? scenario, Project[]? projects)
 	{
 		if (scenario != null)
@@ -67,18 +67,18 @@ public class Given_HotReloadService
 		foreach (var scenarioFolder in Directory.EnumerateDirectories(ScenariosFolder, "*.*", SearchOption.TopDirectoryOnly))
 		{
 			var scenarioName = Path.GetFileName(scenarioFolder);
-			var path = Path.Combine(scenarioFolder, "Scenario.json");
+			var scenarioConfig = Path.Combine(scenarioFolder, "Scenario.json");
 
 #if DEBUG && false
-			if (!path.Contains("When_Base_Type_Grid_To_Page"))
+			if (!scenarioName.Contains("When_DataTemplate_Event_Add"))
 			{
 				continue;
 			}
 #endif
 
-			if (File.Exists(path))
+			if (File.Exists(scenarioConfig))
 			{
-				var scenariosDescriptor = ReadScenarioConfig(path);
+				var scenariosDescriptor = ReadScenarioConfig(scenarioConfig);
 
 				if (scenariosDescriptor is not null)
 				{

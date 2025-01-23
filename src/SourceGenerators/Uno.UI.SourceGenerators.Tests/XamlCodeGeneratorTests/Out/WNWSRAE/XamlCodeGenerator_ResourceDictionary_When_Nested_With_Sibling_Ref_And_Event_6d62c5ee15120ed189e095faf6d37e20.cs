@@ -54,7 +54,7 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 			new global::Uno.UI.Xaml.WeakResourceInitializer(this, __ResourceOwner_1 => 
 			{
 				return 
-					new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, (__owner) => 					new _ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20_UnoUITestsGiven_ResourceDictionaryWhen_Nested_With_Sibling_Ref_And_EventSC0().Build(__owner)
+					new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, (__owner) => 					new __ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20_UnoUITestsGiven_ResourceDictionaryWhen_Nested_With_Sibling_Ref_And_Event.SC0().Build(__owner)
 					)				;
 			}
 			)
@@ -83,123 +83,128 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 		}
 		partial void OnInitializeCompleted();
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026")]
-		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111")]
-		private class _ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20_UnoUITestsGiven_ResourceDictionaryWhen_Nested_With_Sibling_Ref_And_EventSC0
+		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
+		private class __ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20_UnoUITestsGiven_ResourceDictionaryWhen_Nested_With_Sibling_Ref_And_Event
 		{
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-			private const string __baseUri_prefix_ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20 = "ms-appx:///TestProject/";
-			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-			private const string __baseUri_ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20 = "ms-appx:///TestProject/";
-			global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
-			global::System.Object __ResourceOwner_1;
-			_View __rootInstance = null;
-			public _View Build(object __ResourceOwner_1)
+			[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026")]
+			[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111")]
+			public class SC0
 			{
-				var __that = this;
-				this.__ResourceOwner_1 = __ResourceOwner_1;
-				this.__rootInstance = 
-				new global::Microsoft.UI.Xaml.Controls.Border
+				[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+				private const string __baseUri_prefix_ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20 = "ms-appx:///TestProject/";
+				[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+				private const string __baseUri_ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20 = "ms-appx:///TestProject/";
+				global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
+				global::System.Object __ResourceOwner_1;
+				_View __rootInstance = null;
+				public _View Build(object __ResourceOwner_1)
 				{
-					IsParsing = true,
-					Resources = {
-					[
-					"SiblingResource"
-					] = 
-					new global::Microsoft.UI.Xaml.Controls.FontIconSource
+					var __that = this;
+					this.__ResourceOwner_1 = __ResourceOwner_1;
+					this.__rootInstance = 
+					new global::Microsoft.UI.Xaml.Controls.Border
 					{
-						// Source 0\ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event.xaml (Line 14:7)
-					}
-					,
-					[
-					"FailingResource"
-					] = 
-					new global::Uno.UI.Xaml.WeakResourceInitializer(__ResourceOwner_1, __ResourceOwner_2 => 
-					{
-						return 
-							new global::Microsoft.UI.Xaml.Controls.SwipeItems
-							{
-								// Source 0\ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event.xaml (Line 15:7)
-							}
-							.ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20_XamlApply((ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20XamlApplyExtensions.XamlApplyHandler1)(__p1 => 
-							{
-							__p1.Add(
-								new global::Microsoft.UI.Xaml.Controls.SwipeItem
+						IsParsing = true,
+						Resources = {
+						[
+						"SiblingResource"
+						] = 
+						new global::Microsoft.UI.Xaml.Controls.FontIconSource
+						{
+							// Source 0\ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event.xaml (Line 14:7)
+						}
+						,
+						[
+						"FailingResource"
+						] = 
+						new global::Uno.UI.Xaml.WeakResourceInitializer(__ResourceOwner_1, __ResourceOwner_2 => 
+						{
+							return 
+								new global::Microsoft.UI.Xaml.Controls.SwipeItems
 								{
-									// Source 0\ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event.xaml (Line 16:8)
+									// Source 0\ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event.xaml (Line 15:7)
 								}
-								.ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20_XamlApply((ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20XamlApplyExtensions.XamlApplyHandler2)(__p1 => 
+								.ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20_XamlApply((ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20XamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 								{
-								/* _isTopLevelDictionary:False */
-								__that._component_0 = __p1;
-								global::Microsoft.UI.Xaml.NameScope.SetNameScope(__that._component_0, __nameScope);
-								global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.SwipeItem.IconSourceProperty, "SiblingResource", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-								var Invoked_AnEventHandler_That = (__ResourceOwner_2 as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;
-								/* second level */ __p1.Invoked += (AnEventHandler_sender,AnEventHandler_args) => (Invoked_AnEventHandler_That.Target as global::Uno.UI.Tests.Given_ResourceDictionary.When_Nested_With_Sibling_Ref_And_Event)?.AnEventHandler(AnEventHandler_sender,AnEventHandler_args);
+								__p1.Add(
+									new global::Microsoft.UI.Xaml.Controls.SwipeItem
+									{
+										// Source 0\ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event.xaml (Line 16:8)
+									}
+									.ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20_XamlApply((ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20XamlApplyExtensions.XamlApplyHandler2)(__p1 => 
+									{
+									/* _isTopLevelDictionary:False */
+									__that._component_0 = __p1;
+									global::Microsoft.UI.Xaml.NameScope.SetNameScope(__that._component_0, __nameScope);
+									global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.SwipeItem.IconSourceProperty, "SiblingResource", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
+									var Invoked_AnEventHandler_That = (__ResourceOwner_2 as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;
+									/* second level */ __p1.Invoked += (AnEventHandler_sender,AnEventHandler_args) => (Invoked_AnEventHandler_That.Target as global::Uno.UI.Tests.Given_ResourceDictionary.When_Nested_With_Sibling_Ref_And_Event)?.AnEventHandler(AnEventHandler_sender,AnEventHandler_args);
+									}
+									))
+								);
 								}
 								))
-							);
-							}
-							))
-						;
+							;
+						}
+						)
+						,
+						},
+						// Source 0\ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event.xaml (Line 12:5)
 					}
-					)
-					,
-					},
-					// Source 0\ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event.xaml (Line 12:5)
-				}
-				.ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20_XamlApply((ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20XamlApplyExtensions.XamlApplyHandler3)(__p1 => 
-				{
-				/* _isTopLevelDictionary:False */
-				__that._component_1 = __p1;
-				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20);
-				__p1.CreationComplete();
-				}
-				))
-				;
-				if (__rootInstance is FrameworkElement __fe)
-				{
-					__fe.Loading += __UpdateBindingsAndResources;
-				}
-				if (__rootInstance is DependencyObject d)
-				{
-					if (global::Microsoft.UI.Xaml.NameScope.GetNameScope(d) == null)
+					.ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20_XamlApply((ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20XamlApplyExtensions.XamlApplyHandler3)(__p1 => 
 					{
-						global::Microsoft.UI.Xaml.NameScope.SetNameScope(d, __nameScope);
-						__nameScope.Owner = d;
+					/* _isTopLevelDictionary:False */
+					__that._component_1 = __p1;
+					global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_ResourceDictionary_When_Nested_With_Sibling_Ref_And_Event_6d62c5ee15120ed189e095faf6d37e20);
+					__p1.CreationComplete();
 					}
-					global::Uno.UI.FrameworkElementHelper.AddObjectReference(d, this);
+					))
+					;
+					if (__rootInstance is FrameworkElement __fe)
+					{
+						__fe.Loading += __UpdateBindingsAndResources;
+					}
+					if (__rootInstance is DependencyObject d)
+					{
+						if (global::Microsoft.UI.Xaml.NameScope.GetNameScope(d) == null)
+						{
+							global::Microsoft.UI.Xaml.NameScope.SetNameScope(d, __nameScope);
+							__nameScope.Owner = d;
+						}
+						global::Uno.UI.FrameworkElementHelper.AddObjectReference(d, this);
+					}
+					return __rootInstance;
 				}
-				return __rootInstance;
-			}
-			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-			private global::Microsoft.UI.Xaml.Controls.SwipeItem _component_0
-			{
-				get
+				private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_0_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+				private global::Microsoft.UI.Xaml.Controls.SwipeItem _component_0
 				{
-					return (global::Microsoft.UI.Xaml.Controls.SwipeItem)_component_0_Holder.Instance;
+					get
+					{
+						return (global::Microsoft.UI.Xaml.Controls.SwipeItem)_component_0_Holder.Instance;
+					}
+					set
+					{
+						_component_0_Holder.Instance = value;
+					}
 				}
-				set
+				private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_1_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+				private global::Microsoft.UI.Xaml.Controls.Border _component_1
 				{
-					_component_0_Holder.Instance = value;
+					get
+					{
+						return (global::Microsoft.UI.Xaml.Controls.Border)_component_1_Holder.Instance;
+					}
+					set
+					{
+						_component_1_Holder.Instance = value;
+					}
 				}
-			}
-			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_1_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-			private global::Microsoft.UI.Xaml.Controls.Border _component_1
-			{
-				get
+				private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
 				{
-					return (global::Microsoft.UI.Xaml.Controls.Border)_component_1_Holder.Instance;
+					var owner = this;
+					_component_0.UpdateResourceBindings();
 				}
-				set
-				{
-					_component_1_Holder.Instance = value;
-				}
-			}
-			private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
-			{
-				var owner = this;
-				_component_0.UpdateResourceBindings();
 			}
 		}
 	}

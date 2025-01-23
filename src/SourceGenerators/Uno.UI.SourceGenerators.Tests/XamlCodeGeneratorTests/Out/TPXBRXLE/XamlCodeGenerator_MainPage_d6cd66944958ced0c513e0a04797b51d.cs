@@ -96,7 +96,7 @@ namespace TestRepro
 							Mode = global::Microsoft.UI.Xaml.Data.BindingMode.OneWay,
 							Converter = (global::Microsoft.UI.Xaml.Data.IValueConverter)global::Uno.UI.ResourceResolverSingleton.Instance.ResolveResourceStatic("NullableBoolConverter", typeof(global::Microsoft.UI.Xaml.Data.IValueConverter), context: global::MyProject.GlobalStaticResources.__ParseContext_),
 						}
-							.BindingApply(___b =>  /*defaultBindModeOneTime ToggleLoad.IsChecked*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, __that, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? ((true, ___tctx.ToggleLoad.IsChecked)) : (false, default), null , new [] {"ToggleLoad.IsChecked"}))
+							.BindingApply(__that, (___b, ___t) =>  /*defaultBindModeOneTime ToggleLoad.IsChecked*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? ((true, ___tctx.ToggleLoad.IsChecked)) : (false, default), null , new [] {"ToggleLoad.IsChecked"}))
 					);
 					__that._component_1 = __p1;
 					var _component_1_update_That = (this as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;
@@ -150,7 +150,7 @@ namespace TestRepro
 						{
 							Mode = BindingMode.OneTime,
 						}
-							.BindingApply(___b =>  /*defaultBindModeOneTime */ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, __that, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? ((true, ___ctx)) : (false, default), null ))
+							.BindingApply(__that, (___b, ___t) =>  /*defaultBindModeOneTime */ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? ((true, ___ctx)) : (false, default), null ))
 					);
 					global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
 					__p1.CreationComplete();
