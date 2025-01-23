@@ -90,9 +90,9 @@ Hot Reload features are now consistent across platforms and IDEs, but with some 
         </tr>
         <tr>
             <td>Desktop/WSL</td>
-            <td>✅</td> <td>✅</td>
+            <td>⌛<sup><a href="#hr-footnotes">[1]</a></sup></td><td>⌛<sup><a href="#hr-footnotes">[1]</a></sup></td>
             <td>🔳</td><td>✅</td>
-            <td>🔳<sup><a href="#hr-footnotes">[1]</a></sup></td><td>🔳<sup><a href="#hr-footnotes">[1]</a></sup></td>
+            <td>🔳<sup><a href="#hr-footnotes">[2]</a></sup></td><td>🔳<sup><a href="#hr-footnotes">[2]</a></sup></td>
         </tr>
         <tr>
             <td>iOS</td>
@@ -102,20 +102,20 @@ Hot Reload features are now consistent across platforms and IDEs, but with some 
         </tr>
         <tr>
             <td>Android</td>
-             <td>✅<sup><a href="#hr-footnotes">[3]</a></sup></td><td>🔳</td>
+             <td>✅<sup><a href="#hr-footnotes">[4]</a></sup></td><td>🔳</td>
             <td>🔳</a></td><td>✅</td>
             <td>🔳</a></td><td>✅</td>
         </tr>
         </tr>
         <tr>
             <td>WinAppSDK</td>
-            <td>✅<sup><a href="#hr-footnotes">[2]</a></sup></td><td>🔳</td>
+            <td>✅<sup><a href="#hr-footnotes">[3]</a></sup></td><td>🔳</td>
             <td>🔳</td><td>🔳</td>
             <td>🔳</td><td>🔳</td>
         </tr>
         <tr>
             <td>WebAssembly</td>
-            <td>✅<sup><a href="#hr-footnotes">[3]</a></sup></td><td>🔳</td>
+            <td>✅<sup><a href="#hr-footnotes">[4]</a></sup></td><td>🔳</td>
             <td>✅</td><td>✅</td>
             <td>✅</td><td>✅</td>
         </tr>
@@ -219,9 +219,10 @@ Legend:
 
 <a href="hr-footnotes"/>
 
-- [1]: Support is [not available](https://youtrack.jetbrains.com/issue/RIDER-53302/launchSettings.json-WSL2-command-support).
-- [2]: C# Markup Hot Reload is supported when running in Unpackaged mode only
-- [3]: The debugger **has** to be attached.
+- [1]: Support is [pending support](https://github.com/dotnet/sdk/pull/40725) in the .NET SDK.
+- [2]: Support is [not available](https://youtrack.jetbrains.com/issue/RIDER-53302/launchSettings.json-WSL2-command-support).
+- [3]: C# Markup Hot Reload is supported when running in Unpackaged mode only
+- [4]: The debugger **has** to be attached.
 
 ## Supported features per Platform
 
