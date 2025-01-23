@@ -211,7 +211,7 @@ public partial class TextBox
 			var leftEnd = DisplayBlockInlines.GetRectForIndex(leftEndIndex);
 			var rightEnd = DisplayBlockInlines.GetRectForIndex(rightEndIndex);
 
-			var closerEnd = Math.Abs(point.X - leftEnd.Left) < Math.Abs(point.X - rightEnd.Right) ? leftEndIndex : rightEndIndex;
+			var closerEnd = Math.Abs(point.X - leftEnd.Left) < Math.Abs(point.X - rightEnd.Right) ? leftEndIndex : rightEndIndex + 1;
 
 			CaretMode = CaretDisplayMode.CaretWithThumbsOnlyEndShowing;
 			Select(closerEnd, 0);
