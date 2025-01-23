@@ -68,6 +68,8 @@
 // https://github.com/AvaloniaUI/Avalonia/blob/e0127c610c38701c3af34f580273f6efd78285b5/src/Avalonia.X11/XI2Manager.cs
 
 using System;
+using System.Runtime.InteropServices;
+using Uno.Foundation.Logging;
 namespace Uno.WinUI.Runtime.Skia.X11;
 
 // Excerpt from the spec :
@@ -117,13 +119,32 @@ internal partial class X11XamlRootHost
 
 		if (!XLib.XQueryExtension(display, "XInputExtension", out var _xi2Opcode, out _, out _))
 		{
-			_xi2Details = (XIVersion.Unsupported, _xi2Opcode);
+			return (_xi2Details = (XIVersion.Unsupported, _xi2Opcode)).Value;
 		}
 
 		var version = X11Helper.XGetExtensionVersion(display, "XInputExtension");
 		if (version->major_version != 2)
 		{
-			_xi2Details = (XIVersion.Unsupported, _xi2Opcode);
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().LogError($"X server does not support X Input Extension 2. Falling back to the core protocol implementation for pointer inputs.");
+			}
+			return (_xi2Details = (XIVersion.Unsupported, _xi2Opcode)).Value;
+		}
+
+		// Just because XI2 is supported, doesn't mean that libXi is present, so we check explicitly for it.
+		// https://github.com/unoplatform/private/issues/600
+		if (NativeLibrary.TryLoad(XLib.libXInput, out var xiHandle))
+		{
+			NativeLibrary.Free(xiHandle);
+		}
+		else
+		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().LogError($"X server supports X Input Extension 2, but libXi.so.6 was not found. Falling back to the core protocol implementation for pointer inputs.");
+			}
+			return (_xi2Details = (XIVersion.Unsupported, _xi2Opcode)).Value;
 		}
 
 		_xi2Details = version->minor_version switch
@@ -135,6 +156,11 @@ internal partial class X11XamlRootHost
 			4 => (XIVersion.XI2_4, _xi2Opcode),
 			_ => throw new ArgumentException("XI2 version is not between 2.0 and 2.4. There should be no 2.5 or above.")
 		};
+
+		if (this.Log().IsEnabled(LogLevel.Information))
+		{
+			this.Log().Info($"Using X Input Extension 2.{version->minor_version}.");
+		}
 
 		return _xi2Details.Value;
 	}
