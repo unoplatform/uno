@@ -17,6 +17,7 @@ using Uno.UI.Runtime.Skia;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices.Marshalling;
 using Microsoft.UI.Xaml.Controls;
+using Uno.Helpers.Theming;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
 
@@ -68,6 +69,8 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 		ApiExtensibility.Register<DragDropManager>(typeof(Windows.ApplicationModel.DataTransfer.DragDrop.Core.IDragDropExtension), o => new X11DragDropExtension(o));
 
 		ApiExtensibility.Register<XamlRoot>(typeof(Uno.Graphics.INativeOpenGLWrapper), xamlRoot => new X11NativeOpenGLWrapper(xamlRoot));
+
+		ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), xamlRoot => LinuxSystemThemeHelper.Instance);
 	}
 
 	public X11ApplicationHost(Func<Application> appBuilder, int renderFrameRate = 60)
