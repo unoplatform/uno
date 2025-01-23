@@ -61,11 +61,21 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				{
 					await Notify(HotReloadEvent.Initializing);
 
+					var properties = configureServer
+						.MSBuildProperties
+						.ToDictionary();
+
+					properties["UnoIsHotReloadHost"] = "True";
+					if (properties.Remove("RuntimeIdentifier", out var runtimeIdentifier))
+					{
+						properties["UnoHotReloadRuntimeIdentifier"] = runtimeIdentifier;
+					}
+
 					var result = await CompilationWorkspaceProvider.CreateWorkspaceAsync(
 						configureServer.ProjectPath,
 						_reporter,
 						configureServer.MetadataUpdateCapabilities,
-						configureServer.MSBuildProperties.Where(kvp => !kvp.Key.StartsWith("MSBuild", StringComparison.OrdinalIgnoreCase)).ToDictionary(),
+						properties,
 						CancellationToken.None);
 
 					ObserveSolutionPaths(result.Item1);

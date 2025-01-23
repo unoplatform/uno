@@ -72,7 +72,7 @@
 		<CompilerVisibleProperty Include="UnoRemoteControlHost" />
 		<CompilerVisibleProperty Include="UnoRemoteControlProcessorsPath" />
 		<CompilerVisibleProperty Include="UnoRemoteControlConfigCookie" />
-		<CompilerVisibleProperty Include="UnoEnCLogPath" />
+		<CompilerVisibleProperty Include="UnoHotReloadDiagnosticsLogPath" />
 		<CompilerVisibleProperty Include="UnoDisableBindableTypeProvidersGeneration" />
 		<CompilerVisibleProperty Include="ShouldWriteErrorOnInvalidXaml" />
 		<CompilerVisibleProperty Include="IsUiAutomationMappingEnabled" />
