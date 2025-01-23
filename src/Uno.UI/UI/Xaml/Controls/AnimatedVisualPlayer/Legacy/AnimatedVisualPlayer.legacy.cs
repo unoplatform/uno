@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !__SKIA__
+using System;
 using System.Threading.Tasks;
 using Uno;
 using Windows.Foundation;
@@ -139,3 +140,4 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 		protected override Size ArrangeOverride(Size finalSize) => ArrangeFirstChild(finalSize);
 	}
 }
+#endif
