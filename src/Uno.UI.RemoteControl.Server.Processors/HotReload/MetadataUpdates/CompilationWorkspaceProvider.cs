@@ -9,6 +9,7 @@ using System.Reflection;
 using Uno.Extensions;
 using Uno.UI.RemoteControl.Helpers;
 using System.Collections.Generic;
+using System.Runtime.Loader;
 using Microsoft.Extensions.Logging;
 
 namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
@@ -24,30 +25,39 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 			Dictionary<string, string> properties,
 			CancellationToken ct)
 		{
-			if (properties.TryGetValue("UnoEnCLogPath", out var EnCLogPath))
+			if (properties.TryGetValue("UnoHotReloadDiagnosticsLogPath", out var logPath))
 			{
 				// Sets Roslyn's environment variable for troubleshooting HR, see:
 				// https://github.com/dotnet/roslyn/blob/fc6e0c25277ff440ca7ded842ac60278ee6c9695/src/Features/Core/Portable/EditAndContinue/EditAndContinueService.cs#L72
-				Environment.SetEnvironmentVariable("Microsoft_CodeAnalysis_EditAndContinue_LogDir", EnCLogPath);
+				Environment.SetEnvironmentVariable("Microsoft_CodeAnalysis_EditAndContinue_LogDir", logPath);
+
+				Environment.SetEnvironmentVariable("MSBUILDDEBUGENGINE", "1");
+				Environment.SetEnvironmentVariable("MSBUILDDEBUGPATH", logPath);
 			}
 
-			var globalProperties = new Dictionary<string, string> {
-				// Mark this compilation as hot-reload capable, so generators can act accordingly
-				{ "IsHotReloadHost", "True" },
-			};
-
-			foreach (var property in properties)
+			static bool IsValidProperty(string property)
 			{
-				// Don't set the runtime identifier since it propagates to libraries as well
-				// which do not build using the RuntimeIdentifier being set. For instance, a head
-				// building for `iossimulator` will fail if the RuntimeIdentifier is set globally its
-				// dependent projects, causing the HR engine to search for pdb/dlls in
-				// the bin/Debug/net8.0/iossimulator/*.dll path instead of its original path.
-				if (!property.Key.Equals("RuntimeIdentifier", StringComparison.OrdinalIgnoreCase))
+				if (property.Equals("RuntimeIdentifier", StringComparison.OrdinalIgnoreCase))
 				{
-					globalProperties.Add(property.Key, property.Value);
+					// Don't set the runtime identifier since it propagates to libraries as well
+					// which do not build using the RuntimeIdentifier being set. For instance, a head
+					// building for `iossimulator` will fail if the RuntimeIdentifier is set globally its
+					// dependent projects, causing the HR engine to search for pdb/dlls in
+					// the bin/Debug/net8.0/iossimulator/*.dll path instead of its original path.
+
+					return false;
 				}
+
+				if (property.StartsWith("MSBuild", StringComparison.OrdinalIgnoreCase))
+				{
+					// Noticeably, don't set the "MSBuildVersion" (Forbidden, will fail workspace).
+					return false;
+				}
+
+				return true;
 			}
+
+			var globalProperties = properties.Where(property => IsValidProperty(property.Key)).ToDictionary();
 
 			MSBuildWorkspace workspace = null!;
 			for (var i = 3; i > 0; i--)
@@ -158,17 +168,17 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 
 		private static void RegisterAssemblyLoader()
 		{
-			// Force assembly loader to consider siblings, when running in a separate appdomain.
-			ResolveEventHandler localResolve = (s, e) =>
+			// Force assembly loader to consider siblings, when running in a separate appdomain / ALC.
+			Assembly? Load(string name)
 			{
-				if (e.Name == "Mono.Runtime")
+				if (name == "Mono.Runtime")
 				{
 					// Roslyn 2.0 and later checks for the presence of the Mono runtime
 					// through this check.
 					return null;
 				}
 
-				var assembly = new AssemblyName(e.Name);
+				var assembly = new AssemblyName(name);
 				var basePath = Path.GetDirectoryName(new Uri(typeof(CompilationWorkspaceProvider).Assembly.Location).LocalPath) ?? "";
 
 				Console.WriteLine($"Searching for [{assembly}] from [{basePath}]");
@@ -199,7 +209,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 
 					if (duplicates.Length != 0)
 					{
-						Console.WriteLine($"Selecting first occurrence of assembly [{e.Name}] which can be found at [{duplicates.Select(d => d.Location).JoinBy("; ")}]");
+						Console.WriteLine($"Selecting first occurrence of assembly [{name}] which can be found at [{duplicates.Select(d => d.Location).JoinBy("; ")}]");
 					}
 
 					return loadedAsm[0];
@@ -244,8 +254,9 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 					.FirstOrDefault();
 			};
 
-			AppDomain.CurrentDomain.AssemblyResolve += localResolve;
-			AppDomain.CurrentDomain.TypeResolve += localResolve;
+			AppDomain.CurrentDomain.AssemblyResolve += (snd, e) => Load(e.Name);
+			AppDomain.CurrentDomain.TypeResolve += (snd, e) => Load(e.Name);
+			AssemblyLoadContext.Default.Resolving += (snd, e) => Load(e.FullName);
 		}
 
 	}
