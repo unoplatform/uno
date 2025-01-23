@@ -263,7 +263,7 @@ public partial class TextBox
 							var transform = displayBlock.TransformToVisual(null);
 							if (transform.TransformBounds(args.rect).IntersectWith(this.GetAbsoluteBoundsRect()) is not null)
 							{
-								caret.ShowAt(transform.TransformPoint(new Point(left, args.rect.Top)));
+								caret.ShowAt(transform.TransformPoint(new Point(left, args.rect.Top)), XamlRoot);
 								if (args.endCaret)
 								{
 									endThumbCaretVisible = true;
@@ -1440,12 +1440,13 @@ public partial class TextBox
 
 		public void SetStemVisible(bool visible) => _stem.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
 
-		public void ShowAt(Point p)
+		public void ShowAt(Point p, XamlRoot xamlRoot)
 		{
 			_popup ??= new Popup
 			{
 				Child = this,
-				IsLightDismissEnabled = false
+				IsLightDismissEnabled = false,
+				XamlRoot = xamlRoot
 			};
 
 			_popup.HorizontalOffset = p.X;
