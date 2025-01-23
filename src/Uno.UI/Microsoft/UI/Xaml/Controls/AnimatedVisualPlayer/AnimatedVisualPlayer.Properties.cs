@@ -26,7 +26,9 @@ partial class AnimatedVisualPlayer
 			nameof(AnimationOptimization),
 			typeof(PlayerAnimationOptimization),
 			typeof(AnimatedVisualPlayer),
-			new FrameworkPropertyMetadata(PlayerAnimationOptimization.Latency));
+			new FrameworkPropertyMetadata(
+				PlayerAnimationOptimization.Latency,
+				(sender, args) => ((AnimatedVisualPlayer)sender).OnAnimationOptimizationPropertyChanged(args));
 
 	/// <summary>
 	/// Gets or sets a value that indicates whether an animated visual plays immediately when it is loaded.
@@ -45,12 +47,18 @@ partial class AnimatedVisualPlayer
 			nameof(AutoPlay),
 			typeof(bool),
 			typeof(AnimatedVisualPlayer),
-			new FrameworkPropertyMetadata(true));
+			new FrameworkPropertyMetadata(
+				true,
+				(sender, args) => ((AnimatedVisualPlayer)sender).OnAutoPlayPropertyChanged(args)));
 
 	/// <summary>
 	/// Gets optional diagnostics information about the last attempt to load an animated visual.
 	/// </summary>
-	public object Diagnostics => GetValue(DiagnosticsProperty);
+	public object Diagnostics
+	{
+		get => GetValue(DiagnosticsProperty);
+		private set => SetValue(DiagnosticsProperty, value);
+	}
 
 	/// <summary>
 	/// Identifies the Diagnostics dependency property.
@@ -65,7 +73,11 @@ partial class AnimatedVisualPlayer
 	/// <summary>
 	/// Gets the duration of the the currently loaded animated visual, or TimeSpan.Zero if no animated visual is loaded.
 	/// </summary>
-	public TimeSpan Duration => (TimeSpan)GetValue(DurationProperty);
+	public TimeSpan Duration
+	{
+		get => (TimeSpan)GetValue(DurationProperty);
+		private set => SetValue(DurationProperty, value);
+	}
 
 	/// <summary>
 	/// Identifies the Duration dependency property.
@@ -94,12 +106,18 @@ partial class AnimatedVisualPlayer
 			nameof(FallbackContent),
 			typeof(DataTemplate),
 			typeof(AnimatedVisualPlayer),
-			new FrameworkPropertyMetadata(null));
+			new FrameworkPropertyMetadata(
+				null,
+				(sender, args) => ((AnimatedVisualPlayer)sender).OnFallbackContentPropertyChanged(args)));
 
 	/// <summary>
 	/// Gets a value that indicates whether an animated visual is loaded.
 	/// </summary>
-	public bool IsAnimatedVisualLoaded => (bool)GetValue(IsAnimatedVisualLoadedProperty);
+	public bool IsAnimatedVisualLoaded
+	{
+		get => (bool)GetValue(IsAnimatedVisualLoadedProperty);
+		private set => SetValue(IsAnimatedVisualLoadedProperty, value);
+	}
 
 	/// <summary>
 	/// Identifies the IsAnimatedVisualLoaded dependency property.
@@ -139,7 +157,9 @@ partial class AnimatedVisualPlayer
 			nameof(PlaybackRate),
 			typeof(double),
 			typeof(AnimatedVisualPlayer),
-			new FrameworkPropertyMetadata(1.0));
+			new FrameworkPropertyMetadata(
+				1.0,
+				(sender, args) => ((AnimatedVisualPlayer)sender).OnPlaybackRatePropertyChanged(args)));
 
 	/// <summary>
 	/// Gets or sets the provider of the animated visual for the player.
@@ -158,7 +178,9 @@ partial class AnimatedVisualPlayer
 			nameof(Source),
 			typeof(IAnimatedVisualSource),
 			typeof(AnimatedVisualPlayer),
-			new FrameworkPropertyMetadata(null));
+			new FrameworkPropertyMetadata(
+				null,
+				(sender, args) => ((AnimatedVisualPlayer)sender).OnSourcePropertyChanged(args)));
 
 	/// <summary>
 	/// Gets or sets a value that describes how an animated visual should be stretched to fill the destination rectangle.
@@ -177,5 +199,7 @@ partial class AnimatedVisualPlayer
 			nameof(Stretch),
 			typeof(Stretch),
 			typeof(AnimatedVisualPlayer),
-			new FrameworkPropertyMetadata(Stretch.Uniform));
+			new FrameworkPropertyMetadata(
+				Stretch.Uniform,
+				(sender, args) => ((AnimatedVisualPlayer)sender).OnStretchPropertyChanged(args)));
 }

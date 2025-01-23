@@ -9,6 +9,6 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 /// <summary>
 /// An element that displays and controls an IAnimatedVisual.
 /// </summary>
-public partial class AnimatedVisualPlayer
+public partial class AnimatedVisualPlayer : FrameworkElement
 {
 }
