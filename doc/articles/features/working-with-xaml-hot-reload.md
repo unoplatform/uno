@@ -96,7 +96,7 @@ Hot Reload features are now consistent across platforms and IDEs, but with some 
         </tr>
         <tr>
             <td>iOS</td>
-            <td>✅<sup><a href="#hr-footnotes">[2]</a></sup></td><td>🚫</td>
+            <td>✅</a></sup></td><td>🚫</td>
             <td>🔳</a></td><td>✅🛜</td>
             <td>🔳</a></td><td>✅🛜</td>
         </tr>
