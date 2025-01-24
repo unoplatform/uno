@@ -516,79 +516,89 @@ public partial class RemoteControlClient : IRemoteControlClient
 
 		while (await WebSocketHelper.ReadFrame(socket, ct) is HotReload.Messages.Frame frame)
 		{
-			if (frame.Scope == WellKnownScopes.DevServerChannel)
+			try
 			{
-				if (frame.Name == KeepAliveMessage.Name)
+				if (frame.Scope == WellKnownScopes.DevServerChannel)
 				{
-					ProcessPong(frame);
-				}
-				else if (frame.Name == ProcessorsDiscoveryResponse.Name)
-				{
-					ProcessServerProcessorsDiscovered(frame);
-				}
-			}
-			else
-			{
-				if (_processors.TryGetValue(frame.Scope, out var processor))
-				{
-					if (this.Log().IsEnabled(LogLevel.Trace))
+					if (frame.Name == KeepAliveMessage.Name)
 					{
-						this.Log().Trace($"Received frame [{frame.Scope}/{frame.Name}]");
+						ProcessPong(frame);
 					}
-
-					var skipProcessing = false;
-					foreach (var preProcessor in _preprocessors)
+					else if (frame.Name == ProcessorsDiscoveryResponse.Name)
 					{
-						try
-						{
-							if (await preProcessor.SkipProcessingFrame(frame))
-							{
-								skipProcessing = true;
-								break;
-							}
-						}
-						catch (Exception error)
-						{
-							if (this.Log().IsEnabled(LogLevel.Error))
-							{
-								this.Log().LogError($"Error while **PRE**processing frame [{frame.Scope}/{frame.Name}]", error);
-							}
-						}
-					}
-
-					if (!skipProcessing)
-					{
-						try
-						{
-							await processor.ProcessFrame(frame);
-						}
-						catch (Exception e)
-						{
-							if (this.Log().IsEnabled(LogLevel.Error))
-							{
-								this.Log().LogError($"Error while processing frame [{frame.Scope}/{frame.Name}]", e);
-							}
-						}
+						ProcessServerProcessorsDiscovered(frame);
 					}
 				}
 				else
 				{
-					if (this.Log().IsEnabled(LogLevel.Trace))
+					if (_processors.TryGetValue(frame.Scope, out var processor))
 					{
-						this.Log().Trace($"Unknown Frame scope {frame.Scope}");
+						if (this.Log().IsEnabled(LogLevel.Trace))
+						{
+							this.Log().Trace($"Received frame [{frame.Scope}/{frame.Name}]");
+						}
+
+						var skipProcessing = false;
+						foreach (var preProcessor in _preprocessors)
+						{
+							try
+							{
+								if (await preProcessor.SkipProcessingFrame(frame))
+								{
+									skipProcessing = true;
+									break;
+								}
+							}
+							catch (Exception error)
+							{
+								if (this.Log().IsEnabled(LogLevel.Error))
+								{
+									this.Log().LogError($"Error while **PRE**processing frame [{frame.Scope}/{frame.Name}] be pre-processor {preProcessor}", error);
+								}
+							}
+						}
+
+						if (!skipProcessing)
+						{
+							try
+							{
+								await processor.ProcessFrame(frame);
+							}
+							catch (Exception e)
+							{
+								if (this.Log().IsEnabled(LogLevel.Error))
+								{
+									this.Log().LogError($"Error while processing frame [{frame.Scope}/{frame.Name}] by processor {processor}", e);
+								}
+							}
+						}
+					}
+					else
+					{
+						if (this.Log().IsEnabled(LogLevel.Trace))
+						{
+							this.Log().Trace($"Unknown Frame scope {frame.Scope}");
+						}
 					}
 				}
-			}
 
-			try
-			{
-				FrameReceived?.Invoke(this, new ReceivedFrameEventArgs(frame));
+				try
+				{
+					FrameReceived?.Invoke(this, new ReceivedFrameEventArgs(frame));
+				}
+				catch (Exception error)
+				{
+					if (this.Log().IsEnabled(LogLevel.Error))
+					{
+						this.Log().LogError($"Error while notifying frame received {frame.Scope}/{frame.Name}", error);
+					}
+				}
 			}
 			catch (Exception error)
 			{
 				if (this.Log().IsEnabled(LogLevel.Error))
 				{
-					this.Log().LogError($"Error while notifying frame received {frame.Scope}/{frame.Name}", error);
+					this.Log().LogError($"Error while processing frame {frame.Scope}/{frame.Name}", error);
 				}
 			}
 		}
