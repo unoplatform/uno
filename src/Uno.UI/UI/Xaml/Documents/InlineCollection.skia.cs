@@ -512,7 +512,7 @@ namespace Microsoft.UI.Xaml.Documents
 							red: scbColor.R,
 							green: scbColor.G,
 							blue: scbColor.B,
-							alpha: (byte)(scbColor.A * scb.Opacity * session.Filters.Opacity));
+							alpha: (byte)(scbColor.A * scb.Opacity * session.Opacity));
 					}
 
 					// TODO: Consider using a stackalloc for small values of GlyphsLength.

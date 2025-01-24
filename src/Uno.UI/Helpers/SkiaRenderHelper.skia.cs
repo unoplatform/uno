@@ -65,10 +65,8 @@ internal static class SkiaRenderHelper
 		else
 		{
 			SKPath? mainPath = null;
-			rootVisual.Compositor.RenderRootVisual(surface, rootVisual, (session, visual) =>
+			rootVisual.Compositor.RenderRootVisual(surface, rootVisual, (canvas, visual) =>
 			{
-				var canvas = session.Canvas;
-
 				// the entire viewport
 				if (visual == rootVisual)
 				{
