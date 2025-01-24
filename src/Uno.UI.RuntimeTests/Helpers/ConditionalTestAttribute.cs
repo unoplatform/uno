@@ -5,7 +5,7 @@ namespace Microsoft.VisualStudio.TestTools.UnitTesting;
 
 public enum RuntimeTestPlatforms
 {
-	Unknown = 0,
+	None = 0,
 
 	// Native platforms
 	NativeWinUI = 1 << 0,
@@ -40,9 +40,11 @@ public enum RuntimeTestPlatforms
 [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = false)]
 public partial class ConditionalTestAttribute : TestMethodAttribute
 {
-	private static readonly RuntimeTestPlatforms _currentPlatform;
+	private static readonly Lazy<RuntimeTestPlatforms> _currentPlatform = new Lazy<RuntimeTestPlatforms>(() => GetCurrentPlatform());
 
-	static ConditionalTestAttribute()
+	public static RuntimeTestPlatforms CurrentPlatform => _currentPlatform.Value;
+
+	private static RuntimeTestPlatforms GetCurrentPlatform()
 	{
 		var values = Enum.GetValues<RuntimeTestPlatforms>();
 		var currentPlatform = default(RuntimeTestPlatforms);
@@ -66,7 +68,7 @@ public partial class ConditionalTestAttribute : TestMethodAttribute
 			throw new InvalidOperationException($"Multiple runtime platforms detected ({currentPlatform:g})");
 		}
 
-		_currentPlatform = currentPlatform;
+		return currentPlatform;
 	}
 
 	private static bool HasSingleFlag(RuntimeTestPlatforms value)
@@ -80,7 +82,7 @@ public partial class ConditionalTestAttribute : TestMethodAttribute
 	public RuntimeTestPlatforms IgnoredPlatforms { get; set; }
 
 	public bool ShouldRun()
-		=> !IgnoredPlatforms.HasFlag(_currentPlatform);
+		=> !IgnoredPlatforms.HasFlag(_currentPlatform.Value);
 
 	private static bool IsCurrentTarget(RuntimeTestPlatforms singlePlatform)
 	{

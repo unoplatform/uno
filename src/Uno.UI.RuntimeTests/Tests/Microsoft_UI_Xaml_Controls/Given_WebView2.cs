@@ -32,7 +32,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 [ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaGtk | RuntimeTestPlatforms.SkiaWpf | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaIslands)]
 public class Given_WebView2
 {
-	[TestMethod]
+	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.NativeUIKit | RuntimeTestPlatforms.SkiaUIKit)]
 #if __IOS__
 	[Ignore("iOS is disabled https://github.com/unoplatform/uno/issues/9080")]
 #endif
