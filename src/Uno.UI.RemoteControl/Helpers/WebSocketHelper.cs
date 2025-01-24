@@ -4,7 +4,6 @@ using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.IO;
-using Uno.Foundation.Logging;
 using Uno.UI.RemoteControl.HotReload.Messages;
 
 namespace Uno.UI.RemoteControl.Helpers;
@@ -47,11 +46,19 @@ public static class WebSocketHelper
 					}
 					catch (Exception error)
 					{
-						var log = typeof(Frame).Log();
-						if (log.IsEnabled(LogLevel.Error))
+#if __CROSSRUNTIME__ // Client side
+						var log = Uno.Foundation.Logging.LogExtensionPoint.Log(typeof(Frame));
+						if (log.IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
 						{
-							log.Error("Failed to read frame", error);
+							log.LogError("Failed to read frame", error);
 						}
+#else // (dev-)server side
+						var log = Uno.Extensions.LogExtensionPoint.Log(typeof(Frame));
+						if (log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+						{
+							Microsoft.Extensions.Logging.LoggerExtensions.LogError(log, error, "Failed to read frame");
+						}
+#endif
 
 						mem.Position = 0;
 						mem.SetLength(0);
