@@ -295,6 +295,7 @@
 		<XmlPoke XmlInputPath=".\nuget\Uno.WinUI.nuspec" Query="/x:package/x:files/x:file[@target='buildTransitive\net8.0-windows\uno.winui.targets']/@target" Value="buildTransitive\net8.0-windows\$(PackageNamePrefix).targets" Namespaces="$(NugetNamespace)" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
 
 		<!-- remote control -->
+		<Move SourceFiles="..\src\Uno.UI.RemoteControl\buildTransitive\Uno.WinUI.DevServer.props" DestinationFiles="..\src\Uno.UI.RemoteControl\buildTransitive\$(PackageNamePrefix).DevServer.props" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
 		<Move SourceFiles="..\src\Uno.UI.RemoteControl\buildTransitive\Uno.WinUI.DevServer.targets" DestinationFiles="..\src\Uno.UI.RemoteControl\buildTransitive\$(PackageNamePrefix).DevServer.targets" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
 
 		<!-- Lottie move file -->

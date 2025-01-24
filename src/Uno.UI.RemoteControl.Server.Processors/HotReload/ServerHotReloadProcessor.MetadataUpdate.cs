@@ -61,11 +61,28 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				{
 					await Notify(HotReloadEvent.Initializing);
 
+					var properties = configureServer
+						.MSBuildProperties
+						.ToDictionary();
+
+					// Flag the current build as created for hot reload, which allows for running targets or settings
+					// props/items in the context of the hot reload workspace.
+					properties["UnoIsHotReloadHost"] = "True";
+
+					// Set the RuntimeIdentifier as a temporary property so that we do not force the
+					// property as a read-only global property that would be transitively applied to
+					// projects that are not supporting the head's RuntimeIdentifier. (e.g. an android app
+					// which references a netstd2.0 library project)
+					if (properties.Remove("RuntimeIdentifier", out var runtimeIdentifier))
+					{
+						properties["UnoHotReloadRuntimeIdentifier"] = runtimeIdentifier;
+					}
+
 					var result = await CompilationWorkspaceProvider.CreateWorkspaceAsync(
 						configureServer.ProjectPath,
 						_reporter,
 						configureServer.MetadataUpdateCapabilities,
-						configureServer.MSBuildProperties.Where(kvp => !kvp.Key.StartsWith("MSBuild", StringComparison.OrdinalIgnoreCase)).ToDictionary(),
+						properties,
 						CancellationToken.None);
 
 					ObserveSolutionPaths(result.Item1);
