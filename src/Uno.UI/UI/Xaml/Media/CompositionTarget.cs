@@ -10,15 +10,12 @@ namespace Microsoft.UI.Xaml.Media;
 public partial class CompositionTarget : ICompositionTarget
 {
 	private Visual _root;
-	private double _rasterizationScale;
+	private double? _rasterizationScale;
 	private EventHandler _rasterizationScaleChanged;
 
 	internal CompositionTarget(ContentRoot contentRoot)
 	{
 		ContentRoot = contentRoot;
-		var xamlRoot = contentRoot.GetOrCreateXamlRoot();
-		_rasterizationScale = xamlRoot.RasterizationScale;
-		xamlRoot.Changed += XamlRoot_Changed;
 	}
 
 	event EventHandler ICompositionTarget.RasterizationScaleChanged
@@ -39,7 +36,7 @@ public partial class CompositionTarget : ICompositionTarget
 		}
 	}
 
-	double ICompositionTarget.RasterizationScale => _rasterizationScale;
+	double ICompositionTarget.RasterizationScale => _rasterizationScale ?? 1.0;
 
 	public static Compositor GetCompositorForCurrentThread() => Compositor.GetSharedCompositor();
 
@@ -50,12 +47,9 @@ public partial class CompositionTarget : ICompositionTarget
 #endif
 	}
 
-	private void XamlRoot_Changed(XamlRoot sender, XamlRootChangedEventArgs args)
+	internal void OnRasterizationScaleChanged(double rasterizationScale)
 	{
-		if (ContentRoot.XamlRoot.RasterizationScale != _rasterizationScale)
-		{
-			_rasterizationScale = ContentRoot.XamlRoot.RasterizationScale;
-			_rasterizationScaleChanged?.Invoke(this, EventArgs.Empty);
-		}
+		_rasterizationScale = rasterizationScale;
+		_rasterizationScaleChanged?.Invoke(this, EventArgs.Empty);
 	}
 }
