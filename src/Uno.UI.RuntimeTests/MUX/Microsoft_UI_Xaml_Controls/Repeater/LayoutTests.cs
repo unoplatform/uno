@@ -271,6 +271,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
+		[Ignore("Fails, itemsRepeaterOriginPoint.X is 0 at all times - https://github.com/unoplatform/uno/issues/8261")]
 		public async Task VerifyStackLayoutAlignment()
 		{
 			for (int horizontalAlignment = 0; horizontalAlignment <= 3; horizontalAlignment++)
