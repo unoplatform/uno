@@ -44,7 +44,7 @@
 								<!-- The caption is above the pointer -->
 								<TranslateTransform Y="-40" />
 							</StackPanel.RenderTransform>
-							<TextBlock Visibility="{TemplateBinding GlyphVisiblity}" Text="{TemplateBinding Glyph}" Margin="3,0" />
+							<TextBlock x:Name="GlyphTextBlock" Visibility="{TemplateBinding GlyphVisiblity}" Text="{TemplateBinding Glyph}" Margin="3,0" />
 							<TextBlock Visibility="{TemplateBinding CaptionVisiblity}" Text="{TemplateBinding Caption}" Margin="3,0" />
 						</StackPanel>
 					</Grid>

@@ -15,6 +15,8 @@ namespace Microsoft.UI.Xaml
 {
 	internal partial class DragView : Control
 	{
+		private const string UnoFluentUIAssets = "ms-appx:///Uno.Fonts.Fluent/Fonts/uno-fluentui-assets.ttf";
+
 		#region Glyph
 		public static readonly DependencyProperty GlyphProperty = DependencyProperty.Register(
 			"Glyph", typeof(string), typeof(DragView), new FrameworkPropertyMetadata(string.Empty));
@@ -159,20 +161,55 @@ namespace Microsoft.UI.Xaml
 			Visibility = Visibility.Visible;
 		}
 
+		protected override void OnApplyTemplate()
+		{
+			base.OnApplyTemplate();
+
+#if __SKIA__
+			if (OperatingSystem.IsAndroid()) // skia/android
+			{
+				var glyphTextBlock = GetTemplateChild<TextBlock>("GlyphTextBlock");
+				if (glyphTextBlock is not null)
+				{
+					// Android system fonts don't include the necessary glyphs for DragView like 🚫.
+					glyphTextBlock.SetValue(TextBlock.FontFamilyProperty, new FontFamily(UnoFluentUIAssets), DependencyPropertyValuePrecedences.ImplicitStyle);
+				}
+			}
+#endif
+		}
+
 		private static Visibility ToVisibility(bool isVisible)
 			=> isVisible ? Visibility.Visible : Visibility.Collapsed;
 
-		private static string ToGlyph(DataPackageOperation result)
+		private string ToGlyph(DataPackageOperation result)
 		{
 			// If multiple flags set (which should not!), the UWP precedence is Link > Copy > Move
 			// TODO: Real glyph
 			if (result.HasFlag(DataPackageOperation.Link))
 			{
-				return "🔗";
+#if __SKIA__
+				if (OperatingSystem.IsAndroid() && GetTemplateChild<TextBlock>("GlyphTextBlock")?.FontFamily?.Source == UnoFluentUIAssets) // skia/android
+				{
+					return "";
+				}
+				else
+#endif
+				{
+					return "🔗";
+				}
 			}
 			else if (result.HasFlag(DataPackageOperation.Copy))
 			{
-				return "⎘";
+#if __SKIA__
+				if (OperatingSystem.IsAndroid() && GetTemplateChild<TextBlock>("GlyphTextBlock")?.FontFamily?.Source == UnoFluentUIAssets) // skia/android
+				{
+					return "";
+				}
+				else
+#endif
+				{
+					return "⎘";
+				}
 			}
 			else if (result.HasFlag(DataPackageOperation.Move))
 			{
@@ -180,7 +217,16 @@ namespace Microsoft.UI.Xaml
 			}
 			else // None
 			{
-				return "🚫";
+#if __SKIA__
+				if (OperatingSystem.IsAndroid() && GetTemplateChild<TextBlock>("GlyphTextBlock")?.FontFamily?.Source == UnoFluentUIAssets) // skia/android
+				{
+					return "";
+				}
+				else
+#endif
+				{
+					return "🚫";
+				}
 			}
 		}
 
