@@ -91,8 +91,13 @@ public partial class TextBox
 		// this textbox but GetPosition assumes that it is relative to the displayBlock, so we compensate.
 		// var position = e.GetPosition(displayBlock);
 		var position = displayBlock.TransformToVisual(this).Inverse.TransformPoint(e.GetPosition(displayBlock));
+
 		var index = Math.Max(0, displayBlock.Inlines.GetIndexAt(position, true, true));
-		Select(index, 0);
+		if (index < SelectionStart || index >= SelectionStart + SelectionLength)
+		{
+			// Right tapping should move the caret to the current pointer location if outside the selection
+			Select(index, 0);
+		}
 
 		OpenContextMenu(position);
 	}
