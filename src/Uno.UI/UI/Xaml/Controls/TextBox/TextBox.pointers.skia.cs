@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using Windows.Foundation;
+using Windows.System;
 using Microsoft.UI.Xaml.Input;
 using Uno.Extensions;
 using Uno.UI.Helpers.WinUI;
@@ -158,7 +159,15 @@ public partial class TextBox
 			{
 				// single click
 				CaretMode = CaretDisplayMode.ThumblessCaretShowing;
-				Select(index, 0);
+				if ((args.KeyModifiers & VirtualKeyModifiers.Shift) != 0)
+				{
+					var selectionInternalStart = _selection.selectionEndsAtTheStart ? _selection.start + _selection.length : _selection.start;
+					SelectInternal(selectionInternalStart, index - selectionInternalStart);
+				}
+				else
+				{
+					Select(index, 0);
+				}
 				_lastPointerDown = (currentPoint, 0);
 			}
 		}
