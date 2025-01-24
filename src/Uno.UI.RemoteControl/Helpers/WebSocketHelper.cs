@@ -46,17 +46,17 @@ public static class WebSocketHelper
 					}
 					catch (Exception error)
 					{
-#if __CROSSRUNTIME__ // Client side
-						var log = Uno.Foundation.Logging.LogExtensionPoint.Log(typeof(Frame));
-						if (log.IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
-						{
-							log.LogError("Failed to read frame", error);
-						}
-#else // (dev-)server side
+#if IS_DEVSERVER
 						var log = Uno.Extensions.LogExtensionPoint.Log(typeof(Frame));
 						if (log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
 						{
 							Microsoft.Extensions.Logging.LoggerExtensions.LogError(log, error, "Failed to read frame");
+						}
+#else // Client
+						var log = Uno.Foundation.Logging.LogExtensionPoint.Log(typeof(Frame));
+						if (log.IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
+						{
+							log.LogError("Failed to read frame", error);
 						}
 #endif
 
