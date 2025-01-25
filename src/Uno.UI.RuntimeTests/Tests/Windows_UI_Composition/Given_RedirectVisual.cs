@@ -19,8 +19,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Composition;
 public class Given_RedirectVisual
 {
 	[TestMethod]
+#if !HAS_RENDER_TARGET_BITMAP
+	[Ignore("Render target bitmap is not supported on this target")]
+#endif
 	[RunsOnUIThread]
-	[Ignore("Disabled because of https://github.com/unoplatform/uno-private/issues/307")]
 	public async Task When_Source_Changes()
 	{
 		var compositor = Window.Current.Compositor;

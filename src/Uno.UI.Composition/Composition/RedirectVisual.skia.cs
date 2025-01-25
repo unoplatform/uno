@@ -10,7 +10,11 @@ namespace Microsoft.UI.Composition
 		internal override void Paint(in PaintingSession session)
 		{
 			base.Paint(in session);
-			Source?.Paint(session);
+
+			if (Source is not null && session.Canvas is not null)
+			{
+				Source.RenderRootVisual(session.Surface, default, null);
+			}
 		}
 	}
 }
