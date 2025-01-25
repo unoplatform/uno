@@ -45,7 +45,7 @@ namespace Uno.WinUI.Runtime.Skia.X11
 	{
 		private const string libX11 = "libX11.so.6";
 		private const string libX11Randr = "libXrandr.so.2";
-		private const string libXInput = "libXi.so.6";
+		internal const string libXInput = "libXi.so.6";
 
 		[LibraryImport(libX11)]
 		public static partial IntPtr XOpenDisplay(IntPtr display);

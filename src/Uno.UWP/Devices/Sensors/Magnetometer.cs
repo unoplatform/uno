@@ -1,4 +1,6 @@
 ﻿#if __IOS__ || __ANDROID__ || __WASM__
+#nullable enable
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,10 +16,7 @@ namespace Windows.Devices.Sensors
 	/// </summary>
 	public partial class Magnetometer
 	{
-		private readonly static object _syncLock = new();
-
-		private static Magnetometer _instance;
-		private static bool _initializationAttempted;
+		private readonly static Lazy<Magnetometer?> _instance = new Lazy<Magnetometer?>(() => TryCreateInstance());
 
 		private readonly StartStopTypedEventWrapper<Magnetometer, MagnetometerReadingChangedEventArgs> _readingChangedWrapper;
 
@@ -28,30 +27,14 @@ namespace Windows.Devices.Sensors
 		{
 			_readingChangedWrapper = new StartStopTypedEventWrapper<Magnetometer, MagnetometerReadingChangedEventArgs>(
 				() => StartReading(),
-				() => StopReading(),
-				_syncLock);
+				() => StopReading());
 		}
 
 		/// <summary>
 		/// Returns the default magnetometer.
 		/// </summary>
 		/// <returns>The default magnetometer.</returns>
-		public static Magnetometer GetDefault()
-		{
-			if (_initializationAttempted)
-			{
-				return _instance;
-			}
-			lock (_syncLock)
-			{
-				if (!_initializationAttempted)
-				{
-					_instance = TryCreateInstance();
-					_initializationAttempted = true;
-				}
-				return _instance;
-			}
-		}
+		public static Magnetometer? GetDefault() => _instance.Value;
 
 		/// <summary>
 		/// Occurs each time the compass reports a new sensor reading.

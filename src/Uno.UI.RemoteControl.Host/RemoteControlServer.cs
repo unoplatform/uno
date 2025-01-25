@@ -146,46 +146,56 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 
 		while (await WebSocketHelper.ReadFrame(socket, ct) is Frame frame)
 		{
-			if (frame.Scope == "RemoteControlServer")
+			try
 			{
-				if (frame.Name == ProcessorsDiscovery.Name)
+				if (frame.Scope == "RemoteControlServer")
 				{
-					await ProcessDiscoveryFrame(frame);
-					continue;
-				}
-
-				if (frame.Name == KeepAliveMessage.Name)
-				{
-					await ProcessPingFrame(frame);
-					continue;
-				}
-			}
-
-			if (_processors.TryGetValue(frame.Scope, out var processor))
-			{
-				if (this.Log().IsEnabled(LogLevel.Debug))
-				{
-					this.Log().LogDebug("Received Frame [{Scope} / {Name}] to be processed by {processor}", frame.Scope, frame.Name, processor);
-				}
-
-				try
-				{
-					DevServerDiagnostics.Current = DiagnosticsSink.Instance;
-					await processor.ProcessFrame(frame);
-				}
-				catch (Exception e)
-				{
-					if (this.Log().IsEnabled(LogLevel.Error))
+					if (frame.Name == ProcessorsDiscovery.Name)
 					{
-						this.Log().LogError(e, "Failed to process frame [{Scope} / {Name}]", frame.Scope, frame.Name);
+						await ProcessDiscoveryFrame(frame);
+						continue;
+					}
+
+					if (frame.Name == KeepAliveMessage.Name)
+					{
+						await ProcessPingFrame(frame);
+						continue;
+					}
+				}
+
+				if (_processors.TryGetValue(frame.Scope, out var processor))
+				{
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().LogDebug("Received Frame [{Scope} / {Name}] to be processed by {processor}", frame.Scope, frame.Name, processor);
+					}
+
+					try
+					{
+						DevServerDiagnostics.Current = DiagnosticsSink.Instance;
+						await processor.ProcessFrame(frame);
+					}
+					catch (Exception e)
+					{
+						if (this.Log().IsEnabled(LogLevel.Error))
+						{
+							this.Log().LogError(e, "Failed to process frame [{Scope} / {Name}]", frame.Scope, frame.Name);
+						}
+					}
+				}
+				else
+				{
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().LogDebug("Unknown Frame [{Scope} / {Name}]", frame.Scope, frame.Name);
 					}
 				}
 			}
-			else
+			catch (Exception error)
 			{
-				if (this.Log().IsEnabled(LogLevel.Debug))
+				if (this.Log().IsEnabled(LogLevel.Error))
 				{
-					this.Log().LogDebug("Unknown Frame [{Scope} / {Name}]", frame.Scope, frame.Name);
+					this.Log().LogError(error, "Failed to process frame [{Scope} / {Name}]", frame.Scope, frame.Name);
 				}
 			}
 		}

@@ -83,22 +83,22 @@ namespace Windows.Devices.Sensors
 		/// <returns>0 - needed to bind method from WASM</returns>
 		internal static int DispatchReading(float x, float y, float z)
 		{
-			if (_instance == null)
+			if (_instance.Value == null)
 			{
 				throw new InvalidOperationException("Accelerometer:DispatchReading can be called only after Accelerometer is initialized");
 			}
 			var now = DateTimeOffset.UtcNow;
-			if ((now - _instance._lastReading).TotalMilliseconds >= _instance.ReportInterval * 0.8)
+			if ((now - _instance.Value._lastReading).TotalMilliseconds >= _instance.Value.ReportInterval * 0.8)
 			{
-				_instance._lastReading = now;
-				_instance.OnReadingChanged(
+				_instance.Value._lastReading = now;
+				_instance.Value.OnReadingChanged(
 					new AccelerometerReading(
 						x / Gravity * -1,
 						y / Gravity * -1,
 						z / Gravity * -1,
 						now));
 			}
-			_instance._shakeDetector?.OnSensorChanged(x, y, z, DateTimeOffset.UtcNow);
+			_instance.Value._shakeDetector?.OnSensorChanged(x, y, z, DateTimeOffset.UtcNow);
 			return 0;
 		}
 	}

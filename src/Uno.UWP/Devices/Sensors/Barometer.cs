@@ -1,5 +1,7 @@
 #if __ANDROID__ || __IOS__
+#nullable enable
 
+using System;
 using Uno.Helpers;
 using Windows.Foundation;
 
@@ -10,10 +12,7 @@ namespace Windows.Devices.Sensors
 	/// </summary>
 	public partial class Barometer
 	{
-		private static readonly object _syncLock = new();
-
-		private static bool _initializationAttempted;
-		private static Barometer _instance;
+		private readonly static Lazy<Barometer?> _instance = new Lazy<Barometer?>(() => TryCreateInstance());
 
 		private readonly StartStopTypedEventWrapper<Barometer, BarometerReadingChangedEventArgs> _readingChangedWrapper;
 
@@ -24,30 +23,14 @@ namespace Windows.Devices.Sensors
 		{
 			_readingChangedWrapper = new StartStopTypedEventWrapper<Barometer, BarometerReadingChangedEventArgs>(
 				() => StartReading(),
-				() => StopReading(),
-				_syncLock);
+				() => StopReading());
 		}
 
 		/// <summary>
 		/// Returns the default barometer sensor.
 		/// </summary>
 		/// <returns>If no barometer sensor is available, this method will return null.</returns>
-		public static Barometer GetDefault()
-		{
-			if (_initializationAttempted)
-			{
-				return _instance;
-			}
-			lock (_syncLock)
-			{
-				if (!_initializationAttempted)
-				{
-					_instance = TryCreateInstance();
-					_initializationAttempted = true;
-				}
-				return _instance;
-			}
-		}
+		public static Barometer? GetDefault() => _instance.Value;
 
 		/// <summary>
 		/// Occurs each time the barometer reports a new sensor reading.

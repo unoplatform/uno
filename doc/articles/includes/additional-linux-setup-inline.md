@@ -1,19 +1,10 @@
-## [**Ubuntu 18.04**](#tab/ubuntu1804)
-
-- Install the required dependencies:
-
-    ```bash
-    sudo apt update
-    sudo apt-get install mesa-utils libgl1-mesa-glx ttf-mscorefonts-installer dbus libfontconfig1 libxrandr2
-    ```
-
 ## [**Ubuntu 20.04/22.04**](#tab/ubuntu2004)
 
 - Install the required dependencies:
 
     ```bash
     sudo apt update
-    sudo apt install mesa-utils libgl1-mesa-glx ttf-mscorefonts-installer dbus libfontconfig1 libxrandr2
+    sudo apt install mesa-utils libgl1-mesa-glx ttf-mscorefonts-installer dbus libfontconfig1 libxrandr2 libxi-dev
     ```
 
 ## [**ArchLinux 5.8.14 or later / Manjaro**](#tab/archlinux2004)
@@ -27,7 +18,7 @@
 - Install the necessary dependencies
 
     ```bash
-    sudo pacman -S dotnet-targeting-pack dotnet-sdk dotnet-host dotnet-runtime python ninja gn aspnet-runtime dbus libxrandr
+    sudo pacman -S dotnet-targeting-pack dotnet-sdk dotnet-host dotnet-runtime python ninja gn aspnet-runtime dbus libxrandr libxi
     ```
 
 ---
