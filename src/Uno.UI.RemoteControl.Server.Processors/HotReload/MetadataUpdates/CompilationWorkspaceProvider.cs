@@ -167,7 +167,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 			throw new InvalidOperationException("Unable to find dotnet SDK base path");
 		}
 
-		private static void RegisterAssemblyLoader()
+		public static void RegisterAssemblyLoader()
 		{
 			// Force assembly loader to consider siblings, when running in a separate appdomain / ALC.
 			Assembly? Load(string name)
