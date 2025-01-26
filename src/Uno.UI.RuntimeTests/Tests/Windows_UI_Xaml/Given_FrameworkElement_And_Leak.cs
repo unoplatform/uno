@@ -184,27 +184,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow("Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.Button_Command_Leak", 15)]
 		[DataRow("Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.ItemsControl_ItemsSource_Leak", 15)]
 #if !__WASM__ && !__APPLE_UIKIT__ && !WINAPPSDK // Disabled - https://github.com/unoplatform/uno/issues/7860
-		[DataRow("Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.ContentDialog_Leak", 15)]
+		[DataRow("Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.ContentDialog_Leak", 15, LeakTestStyles.All, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeUIKit)]
 #endif
-		[DataRow(typeof(TextBox_Focus_Leak), 15,
-#if __APPLE_UIKIT__
-			LeakTestStyles.None // Disabled - #10344
-#else
-			LeakTestStyles.All
-#endif
-			)]
+		[DataRow(typeof(TextBox_Focus_Leak), 15, LeakTestStyles.All, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeUIKit)] // UIKit Disabled - #10344
 		[DataRow(typeof(PasswordBox_Focus_Leak), 15,
-#if __APPLE_UIKIT__
-			LeakTestStyles.None // Disabled - #10344
-#elif __ANDROID__
+#if __ANDROID__
 			LeakTestStyles.Uwp // Fluent styles disabled - #14340
 #else
 			LeakTestStyles.All
 #endif
-			)]
+			, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeUIKit)] // UIKit Disabled - #10344
 		[DataRow(typeof(MediaPlayerElement), 15)]
-		public async Task When_Add_Remove(object controlTypeRaw, int count, LeakTestStyles leakTestStyles = LeakTestStyles.All)
+		public async Task When_Add_Remove(object controlTypeRaw, int count, LeakTestStyles leakTestStyles = LeakTestStyles.All, RuntimeTestPlatforms ignoredPlatforms = RuntimeTestPlatforms.None)
 		{
+			if (ignoredPlatforms.HasFlag(ConditionalTestAttribute.CurrentPlatform))
+			{
+				Assert.Inconclusive("This test is ignored on this platform.");
+			}
+
 			if (leakTestStyles.HasFlag(LeakTestStyles.Fluent))
 			{
 				await When_Add_Remove_Inner(controlTypeRaw, count);

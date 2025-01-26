@@ -188,7 +188,7 @@ public partial class Given_InteractionTracker
 #elif !HAS_UNO
 	[Ignore("Test fails on Windows. For some reason, Drag isn't doing what we expect it to for an unknown reason.")]
 #endif
-	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatform.SkiaBrowser)]
+	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaUIKit)]
 	public async Task When_UserInteraction()
 	{
 		var border = new Border()

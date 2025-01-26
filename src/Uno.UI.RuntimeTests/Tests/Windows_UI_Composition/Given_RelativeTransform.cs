@@ -14,6 +14,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Composition;
 public class Given_RelativeTransform
 {
 	[TestMethod]
+	[RequiresScaling(1f)]
 	public async Task When_RotateTransform()
 	{
 		var sp = new StackPanel
@@ -50,6 +51,7 @@ public class Given_RelativeTransform
 	}
 
 	[TestMethod]
+	[RequiresScaling(1f)]
 	public async Task When_ScaleTransform()
 	{
 		var sp = new StackPanel

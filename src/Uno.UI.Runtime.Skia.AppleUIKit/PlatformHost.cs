@@ -16,8 +16,6 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit;
 
 public class PlatformHost : ISkiaApplicationHost
 {
-	private static Func<Application>? _appBuilder;
-
 	/// <summary>
 	/// Creates a host for an Uno Skia Android application.
 	/// </summary>
@@ -27,10 +25,14 @@ public class PlatformHost : ISkiaApplicationHost
 	/// </remarks>
 	public PlatformHost(Func<Application> appBuilder)
 	{
-		_appBuilder = appBuilder;
+		CreateAppAction = (ApplicationInitializationCallbackParams _) =>
+		{
+			var app = appBuilder.Invoke();
+			app.Host = this;
+		};
 	}
 
-	internal static Func<Application>? AppBuilder => _appBuilder;
+	internal static ApplicationInitializationCallback? CreateAppAction { get; private set; }
 
 	public void Run()
 	{

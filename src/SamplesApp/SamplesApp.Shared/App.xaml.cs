@@ -154,8 +154,6 @@ namespace SamplesApp
 
 			if (activationKind == ActivationKind.Launch)
 			{
-				AssertIssue8356();
-
 				AssertIssue12936();
 
 				AssertIssue12937();

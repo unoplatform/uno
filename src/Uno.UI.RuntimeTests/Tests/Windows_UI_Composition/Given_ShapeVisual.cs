@@ -19,7 +19,8 @@ public class Given_ShapeVisual
 	[Ignore]
 #endif
 	[RequiresFullWindow]
-	[TestMethod]
+	[RequiresScaling(1f)]
+	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaUIKit)] // Test times out in CI https://github.com/unoplatform/uno-private/issues/805
 	public async Task When_ShapeVisual_ViewBox_Shape_Combinations()
 	{
 		if (OperatingSystem.IsBrowser())
@@ -92,7 +93,7 @@ public class Given_ShapeVisual
 						await TestServices.WindowHelper.WaitFor(() => imageOpened);
 						var screenShot2 = await UITestHelper.ScreenShot(referenceImage);
 						// there can be a very small _bit_ difference when drawing with metal on macOS
-						if (OperatingSystem.IsMacOS())
+						if (OperatingSystem.IsMacOS() || OperatingSystem.IsIOS())
 						{
 							await ImageAssert.AreSimilarAsync(screenShot1, screenShot2);
 						}
