@@ -94,8 +94,7 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 									this.Log().LogTrace("Loading assembly from resolved path: {relPath}", relPath);
 								}
 
-								using var fs = File.Open(relPath, FileMode.Open, FileAccess.Read, FileShare.Read);
-								return context.LoadFromStream(fs);
+								return TryLoadAssemblyFromPath(context, relPath);
 							}
 						}
 					}
@@ -130,6 +129,37 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 
 			return loadContext;
 		}
+	}
+
+	private static Assembly TryLoadAssemblyFromPath(AssemblyLoadContext context, string asmPath)
+	{
+		// Load the assembly using the full path to avoid duplicates related
+		// relative paths pointing to the same file.
+		asmPath = Path.GetFullPath(asmPath);
+
+		// Try loading the assembly multiple times, using a try catch and a loop with a sleep
+		// to avoid issues with the assembly being locked by another process.
+		int tries = 10;
+		do
+		{
+			try
+			{
+				return context.LoadFromAssemblyPath(asmPath);
+			}
+			catch (Exception exc)
+			{
+				if (context.Log().IsEnabled(LogLevel.Trace))
+				{
+					context.Log().LogTrace("Failed to load assembly {asmPath} : {exc}", asmPath, exc);
+				}
+			}
+
+			Thread.Sleep(100);
+		}
+		while (tries-- > 0);
+
+		// Try without exception handling to report the original exception
+		return context.LoadFromAssemblyPath(asmPath);
 	}
 
 	private void RegisterProcessor(IServerProcessor hotReloadProcessor)
@@ -287,8 +317,7 @@ internal class RemoteControlServer : IRemoteControlServer, IDisposable
 				{
 					_resolveAssemblyLocations[msg.AppInstanceId] = msg.BasePath;
 
-					using var fs = File.Open(msg.BasePath, FileMode.Open, FileAccess.Read, FileShare.Read);
-					assemblies.Add((msg.BasePath, assemblyLoadContext.LoadFromStream(fs)));
+					assemblies.Add((msg.BasePath, TryLoadAssemblyFromPath(assemblyLoadContext, msg.BasePath)));
 				}
 				catch (Exception exc)
 				{
