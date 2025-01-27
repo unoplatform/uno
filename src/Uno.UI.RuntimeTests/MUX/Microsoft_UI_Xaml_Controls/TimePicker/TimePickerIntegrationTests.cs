@@ -89,7 +89,7 @@ public class TimePickerIntegrationTests
 			{
 				var timePickerFlyoutPresenter = TreeHelper.GetVisualChildByTypeFromOpenPopups<TimePickerFlyoutPresenter>(timePicker);
 				Assert.IsNotNull(timePickerFlyoutPresenter);
-				Assert.AreEqual(true, timePickerFlyoutPresenter.IsDefaultShadowEnabled);
+				Assert.IsTrue(timePickerFlyoutPresenter.IsDefaultShadowEnabled);
 			});
 		}
 	}
