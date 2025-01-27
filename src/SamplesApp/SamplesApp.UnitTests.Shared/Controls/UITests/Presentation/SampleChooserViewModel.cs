@@ -800,7 +800,8 @@ namespace SampleControl.Presentation
 				SampleContents = SelectedCategory
 					.SamplesContent
 					.Safe()
-					.OrderBy(s => s.IsFavorite)
+					.OrderByDescending(s => s.IsFavorite)
+					.ThenBy(s => s.ControlName)
 					.ToList();
 			}
 		}
@@ -847,6 +848,7 @@ namespace SampleControl.Presentation
 
 			FavoriteSamples = favorites;
 
+			OnSelectedCategoryChanged();
 			UpdateFavorites();
 		}
 

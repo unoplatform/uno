@@ -76,9 +76,9 @@
 				<Setter Property="BorderThickness"
 						Value="0,0,0,1" />
 				<Setter Property="Margin"
-						Value="10,0,0,0" />
+						Value="4,0,4,0" />
 				<Setter Property="Padding"
-						Value="0,10,10,10" />
+						Value="8" />
 				<Setter Property="MinHeight"
 						Value="40" />
 			</Style>
@@ -87,16 +87,15 @@
 			<DataTemplate x:Key="CategoriesTemplate">
 				<Border Style="{StaticResource TemplateContainerStyle}">
 					<u:StarStackPanel Orientation="Horizontal"
-									  Sizes="*,Auto">
+									  Sizes="*,Auto,Auto">
 						<TextBlock Style="{StaticResource Typo03}"
 								   VerticalAlignment="Center"
+								   TextTrimming="CharacterEllipsis"
 								   TextWrapping="NoWrap">
-							<Run Text="{Binding Category}" /> (<Run Text="{Binding Count}" />)
+							<Run Text="{Binding Category}" />
 						</TextBlock>
-
-						<u:PathControl Style="{StaticResource Icon_Chevron}"
-									   VerticalContentAlignment="Center"
-									   HorizontalContentAlignment="Right" />
+						<TextBlock Opacity="0.8" Text="{Binding Count}" Margin="8,0" VerticalAlignment="Center" FontSize="11" />
+						<FontIcon Glyph="&#xE76C;" Opacity="0.8" FontSize="11" VerticalAlignment="Center" HorizontalAlignment="Right" />
 					</u:StarStackPanel>
 				</Border>
 			</DataTemplate>
@@ -108,6 +107,7 @@
 						<TextBlock Text="{Binding ControlName}"
 								   Style="{StaticResource Typo03}"
 								   TextWrapping="NoWrap"
+								   TextTrimming="CharacterEllipsis"
 								   VerticalAlignment="Center" />
 
 						<u:PathControl Style="{StaticResource Icon_Favorite_Full}"
