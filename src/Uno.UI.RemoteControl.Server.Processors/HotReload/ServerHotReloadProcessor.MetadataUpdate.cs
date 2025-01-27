@@ -99,7 +99,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 					if (properties.Remove("RuntimeIdentifier", out var runtimeIdentifier))
 					{
-						if (appendIdToPath && hasOutputPath && outputPath!.EndsWith(runtimeIdentifier, StringComparison.OrdinalIgnoreCase))
+						if (appendIdToPath && hasOutputPath && Path.TrimEndingDirectorySeparator(outputPath ?? "").EndsWith(runtimeIdentifier, StringComparison.OrdinalIgnoreCase))
 						{
 							// Set the RuntimeIdentifier as a temporary property so that we do not force the
 							// property as a read-only global property that would be transitively applied to
