@@ -24,13 +24,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 [TestClass]
 [RunsOnUIThread]
 // only SkiaMacOS right now
-[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaGtk | RuntimeTestPlatforms.SkiaWpf | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaIslands)]
 public class Given_WebView
 {
 	[TestMethod]
 #if __IOS__
 	[Ignore("iOS is disabled https://github.com/unoplatform/uno/issues/9080")]
 #endif
+	[ConditionalTest(IgnoredPlatforms = RuntimeTestPlatforms.SkiaGtk | RuntimeTestPlatforms.SkiaWpf | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaIslands)]
 	public void When_Navigate()
 	{
 		var webView = new WebView();

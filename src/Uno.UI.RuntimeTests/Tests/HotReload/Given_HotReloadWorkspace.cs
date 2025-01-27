@@ -20,12 +20,12 @@ using System.Xml;
 using Windows.Storage.AccessCache;
 using System.Linq;
 using System.Collections.Immutable;
+using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.HotReload;
 
-[TestClass]
 // Hot reload tests are only available on Skia desktop targets
-[ConditionalTest(IgnoredPlatforms = ~RuntimeTestPlatforms.SkiaDesktop)]
+[ConditionalTestClass(IgnoredPlatforms = ~RuntimeTestPlatforms.SkiaDesktop)]
 public partial class Given_HotReloadWorkspace
 {
 	private static Process? _process;
@@ -54,6 +54,7 @@ public partial class Given_HotReloadWorkspace
 	[TestMethod]
 	[Timeout(10 * 60 * 1000)]
 	[Filters]
+	[TestMethod]
 	public async Task When_HotReloadScenario(string filters)
 	{
 		// Remove this class and this method from the filters
