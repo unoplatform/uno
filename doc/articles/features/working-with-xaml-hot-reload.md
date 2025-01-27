@@ -72,7 +72,7 @@ Hot Reload features are now consistent across platforms and IDEs, but with some 
             <th colspan="2">Rider</th>
         </tr>
         <tr>
-            <th>🐞 - Debugger</th>
+            <th>🐞 Debugger</th>
             <th>With</th>
             <th>Without</th>
             <th>With</th>
@@ -83,46 +83,46 @@ Hot Reload features are now consistent across platforms and IDEs, but with some 
     </thead>
     <tbody>
         <tr>
-            <td>Desktop Windows</td>
+            <td>Desktop<br /><small><code>net9.0-desktop</code></code></small></td>
             <td>✅</td><td>✅</td>
             <td>🔳</td><td>✅</td>
             <td>🔳</td><td>✅</td>
         </tr>
         <tr>
-            <td>Desktop/WSL</td>
+            <td>Desktop - WSL<br /><small><code>net9.0-desktop</code></small></td>
             <td>⌛<sup><a href="#hr-footnotes">[1]</a></sup></td><td>⌛<sup><a href="#hr-footnotes">[1]</a></sup></td>
             <td>🔳</td><td>✅</td>
             <td>🔳<sup><a href="#hr-footnotes">[2]</a></sup></td><td>🔳<sup><a href="#hr-footnotes">[2]</a></sup></td>
         </tr>
         <tr>
-            <td>iOS</td>
-            <td>✅</a></sup></td><td>🚫</td>
-            <td>🔳</a></td><td>✅🛜</td>
-            <td>🔳</a></td><td>✅🛜</td>
-        </tr>
-        <tr>
-            <td>Android</td>
-             <td>✅<sup><a href="#hr-footnotes">[4]</a></sup></td><td>🔳</td>
-            <td>🔳</a></td><td>✅</td>
+            <td>iOS<br /><small><code>net9.0-ios</code></small></td>
+            <td>✅</a></sup></td><td>🔳</td>
+            <td>🟥</a></td><td>✅🛜</td>
             <td>🔳</a></td><td>✅</td>
         </tr>
+        <tr>
+            <td>Android<br /><small><code>net9.0-android</code></small></td>
+            <td>✅</td><td>🔳</td>
+            <td>🟥</a></td><td>✅</td>
+            <td>🔳</a></td><td>✅</td>
+        </tr>
         </tr>
         <tr>
-            <td>WinAppSDK</td>
-            <td>✅<sup><a href="#hr-footnotes">[3]</a></sup></td><td>🔳</td>
+            <td>WinAppSDK<br /><small><code>net9.0-windows10.x.x</code></small></td>
+            <td>✅<sup><a href="#hr-footnotes">[3]</a></sup></td><td>✅<sup><a href="#hr-footnotes">[4]</a></sup></td>
             <td>🔳</td><td>🔳</td>
             <td>🔳</td><td>🔳</td>
         </tr>
         <tr>
-            <td>WebAssembly</td>
-            <td>✅<sup><a href="#hr-footnotes">[4]</a></sup></td><td>🔳</td>
+            <td>WebAssembly<br /><small><code>net9.0-browserwasm</code></small></td>
             <td>✅</td><td>✅</td>
-            <td>✅</td><td>✅</td>
+            <td>🔳</td><td>✅</td>
+            <td>🔳</td><td>✅</td>
         </tr>
         <tr>
-            <td>Catalyst</td>
+            <td>Catalyst<br /><small><code>net9.0-maccatalyst</code></small></td>
             <td>🔳</td><td>🔳</td>
-            <td>✅🛜</td><td>✅🛜</td>
+            <td>🔳</td><td>✅🛜</td>
             <td>🔳</td><td>🔳</td>
         </tr>
     </tbody>
@@ -134,35 +134,52 @@ Hot Reload features are now consistent across platforms and IDEs, but with some 
     <thead>
         <tr>
             <th></th>
-            <th colspan="1">VS Code</th>
-            <th colspan="1">Rider</th>
+            <th colspan="2">VS Code</th>
+            <th colspan="2">Rider</th>
+        </tr>
+        <tr>
+            <th>🐞 Debugger</th>
+            <th>With</th>
+            <th>Without</th>
+            <th>With</th>
+            <th>Without</th>
         </tr>
     </thead>
     <tbody>
         <tr>
-            <td>Desktop macOS</td>
-            <td>✅</td><td>✅</td>
+            <td>Desktop<br /><small><code>net9.0-desktop</code></code></small></td>
+            <td>🔳</td><td>✅</td>
+			<td>🔳</td><td>✅</td>
         </tr>
         <tr>
-            <td>iOS</td>
-            <td>✅</td><td>✅</td>
-        </tr>
-        <tr>
-            <td>Android</td>
-            <td>✅</td><td>✅</td>
-        </tr>
-        </tr>
-        <tr>
-            <td>Catalyst</td>
-            <td>✅</td><td>✅</td>
-        </tr>
-        <tr>
-            <td>WinAppSDK</td>
+            <td>Desktop - WSL<br /><small><code>net9.0-desktop</code></small></td>
+            <td>🔳</td><td>🔳</td>
             <td>🔳</td><td>🔳</td>
         </tr>
         <tr>
-            <td>WebAssembly</td>
-            <td>✅</td><td>✅</td>
+            <td>iOS<br /><small><code>net9.0-ios</code></small></td>
+            <td>🟥</td><td>✅</td>
+			<td>🔳</td><td>✅</td>
+        </tr>
+        <tr>
+            <td>Android<br /><small><code>net9.0-android</code></small></td>
+            <td>🟥</td><td>✅</td>
+			<td>🔳</td><td>✅</td>
+        </tr>
+        <tr>
+            <td>WinAppSDK<br /><small><code>net9.0-windows10.x.x</code></small></td>
+            <td>🔳</td><td>🔳</td>
+            <td>🔳</td><td>🔳</td>
+        </tr>
+        <tr>
+            <td>WebAssembly<br /><small><code>net9.0-browserwasm</code></small></td>
+            <td>🔳</td><td>✅</td>
+			<td>🔳</td><td>✅</td>
+        </tr>
+        <tr>
+            <td>Catalyst<br /><small><code>net9.0-maccatalyst</code></small></td>
+            <td>🔳</td><td>✅</td>
+			<td>🔳</td><td>✅</td>
         </tr>
     </tbody>
 </table>
@@ -173,34 +190,52 @@ Hot Reload features are now consistent across platforms and IDEs, but with some 
     <thead>
         <tr>
             <th></th>
-            <th colspan="1">VS Code</th>
-            <th colspan="1">Rider</th>
+            <th colspan="2">VS Code</th>
+            <th colspan="2">Rider</th>
+        </tr>
+        <tr>
+            <th>🐞 Debugger</th>
+            <th>With</th>
+            <th>Without</th>
+            <th>With</th>
+            <th>Without</th>
         </tr>
     </thead>
     <tbody>
         <tr>
-            <td>Desktop Linux</td>
-            <td>✅</td><td>✅</td>
+            <td>Desktop<br /><small><code>net9.0-desktop</code></code></small></td>
+            <td>🔳</td><td>✅</td>
+			<td>🔳</td><td>✅</td>
         </tr>
         <tr>
-            <td>Android</td>
-            <td>✅</td><td>✅</td>
-        </tr>
-        <tr>
-            <td>WebAssembly</td>
-            <td>✅</td><td>✅</td>
-        </tr>
-        <tr>
-            <td>iOS</td>
-            <td>✅🛜</td><td>✅🛜</td>
-        </tr>
-        <tr>
-            <td>Catalyst</td>
-            <td>✅🛜</td><td>✅🛜</td>
-        </tr>
-        <tr>
-            <td>WinAppSDK</td>
+            <td>Desktop - WSL<br /><small><code>net9.0-desktop</code></small></td>
             <td>🔳</td><td>🔳</td>
+            <td>🔳</td><td>🔳</td>
+        </tr>
+        <tr>
+            <td>iOS<br /><small><code>net9.0-ios</code></small></td>
+            <td>🟥</td><td>✅🛜</td>
+			<td>🔳</td><td>🔳</td>
+        </tr>
+        <tr>
+            <td>Android<br /><small><code>net9.0-android</code></small></td>
+            <td>🟥</td><td>✅</td>
+			<td>🔳</td><td>✅</td>
+        </tr>
+        <tr>
+            <td>WinAppSDK<br /><small><code>net9.0-windows10.x.x</code></small></td>
+            <td>🔳</td><td>🔳</td>
+            <td>🔳</td><td>🔳</td>
+        </tr>
+        <tr>
+            <td>WebAssembly<br /><small><code>net9.0-browserwasm</code></small></td>
+            <td>🔳</td><td>✅</td>
+			<td>🔳</td><td>✅</td>
+        </tr>
+        <tr>
+            <td>Catalyst<br /><small><code>net9.0-maccatalyst</code></small></td>
+            <td>🔳</td><td>✅🛜</td>
+			<td>🔳</td><td>🔳</td>
         </tr>
     </tbody>
 </table>
@@ -210,9 +245,9 @@ Hot Reload features are now consistent across platforms and IDEs, but with some 
 Legend:
 
 - ✅ Supported
-- 🐞 Supported with the debugger
-- 🚫  Does not work in this configuration
 - 🛜 Supported through [SSH to a Mac](xref:Uno.GettingStarted.CreateAnApp.VSCode#debug-the-app)
+- ⌛ Upcoming support
+- 🟥 Not supported yet
 - 🔳 Not supported by the environment/IDE
 
 ### Notes
@@ -221,8 +256,8 @@ Legend:
 
 - [1]: Support is [pending support](https://github.com/dotnet/sdk/pull/40725) in the .NET SDK.
 - [2]: Support is [not available](https://youtrack.jetbrains.com/issue/RIDER-53302/launchSettings.json-WSL2-command-support).
-- [3]: C# Markup Hot Reload is supported when running in Unpackaged mode only
-- [4]: The debugger **has** to be attached.
+- [3]: Unpackaged: C# & XAML / Packaged: XAML only
+- [4]: Unpackaged: C# / Packaged: none
 
 ## Supported features per Platform
 
