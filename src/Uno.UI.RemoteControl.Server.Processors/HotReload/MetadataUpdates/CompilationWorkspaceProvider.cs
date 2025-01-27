@@ -11,6 +11,7 @@ using Uno.UI.RemoteControl.Helpers;
 using System.Collections.Generic;
 using System.Runtime.Loader;
 using Microsoft.Extensions.Logging;
+using System.Composition.Hosting;
 
 namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 {
@@ -167,7 +168,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 			throw new InvalidOperationException("Unable to find dotnet SDK base path");
 		}
 
-		private static void RegisterAssemblyLoader()
+		public static void RegisterAssemblyLoader()
 		{
 			// Force assembly loader to consider siblings, when running in a separate appdomain / ALC.
 			Assembly? Load(string name)
@@ -228,7 +229,17 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 
 			AppDomain.CurrentDomain.AssemblyResolve += (snd, e) => Load(e.Name);
 			AppDomain.CurrentDomain.TypeResolve += (snd, e) => Load(e.Name);
-			AssemblyLoadContext.Default.Resolving += (snd, e) => Load(e.FullName);
+
+			// Processors are loaded in a separate ALC in `RemoteControlServer`, which requires
+			// to load the files in same ALC to avoid invalid cross-ALC references.
+			if (AssemblyLoadContext.GetLoadContext(typeof(CompilationWorkspaceProvider).Assembly) is { } alc)
+			{
+				alc.Resolving += (snd, e) => Load(e.FullName);
+			}
+			else
+			{
+				throw new InvalidOperationException($"Unable to determine the ALC for {nameof(CompilationWorkspaceProvider)}");
+			}
 		}
 
 	}
