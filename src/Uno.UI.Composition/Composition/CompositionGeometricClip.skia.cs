@@ -41,17 +41,17 @@ partial class CompositionGeometricClip
 				{
 					using var _ = SkiaHelper.GetTempSKPath(out var transformedPath);
 					path.Transform(TransformMatrix.ToSKMatrix(), transformedPath);
-					canvas.ClipPath(transformedPath, antialias: true);
+					path = transformedPath;
 				}
-				else
-				{
-					canvas.ClipPath(path, antialias: true);
-				}
+
+				return path;
 			}
 			else
 			{
 				throw new InvalidOperationException($"Clipping with source {geometry} is not supported");
 			}
 		}
+
+		return null;
 	}
 }

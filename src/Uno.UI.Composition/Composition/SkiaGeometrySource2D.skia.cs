@@ -27,8 +27,6 @@ namespace Microsoft.UI.Composition
 		public SKRect Bounds => _geometry.Bounds;
 		public SKRect TightBounds => _geometry.TightBounds;
 
-		internal SKPath Geometry => _geometry;
-
 		public void CanvasDrawPath(SKCanvas canvas, SKPaint paint) => canvas.DrawPath(_geometry, paint);
 
 		public void CanvasClipPath(SKCanvas canvas, SKClipOperation operation = SKClipOperation.Intersect, bool antialias = false) => canvas.ClipPath(_geometry, operation, antialias);
