@@ -21,6 +21,7 @@ internal sealed class UnoSKCanvasView : SurfaceView, ISurfaceHolderCallback
 {
 	private const uint DefaultFramebuffer = 0;
 
+	private UIElement? _rootElement;
 	private EGLDisplay? _eglDisplay;
 	private EGLContext? _glContext;
 	private EGLSurface? _eglWindowSurface;
@@ -28,20 +29,18 @@ internal sealed class UnoSKCanvasView : SurfaceView, ISurfaceHolderCallback
 	private int _stencil;
 	private GRBackendRenderTarget? _renderTarget;
 	private SKSurface? _surface;
-	private MUXWindow _window;
 
 	public event EventHandler<SKSurface>? PaintSurface;
 
-	internal UIElement? RootElement => _window.RootElement;
+	internal UIElement? RootElement => _rootElement ??= Microsoft.UI.Xaml.Window.CurrentSafe!.RootElement;
 	internal UnoExploreByTouchHelper ExploreByTouchHelper { get; }
 	internal TextInputPlugin TextInputPlugin { get; }
 
 	internal static UnoSKCanvasView? Instance { get; private set; }
 
-	public UnoSKCanvasView(Context context, MUXWindow window) : base(context)
+	public UnoSKCanvasView(Context context) : base(context)
 	{
 		Instance = this;
-		_window = window;
 		ExploreByTouchHelper = new UnoExploreByTouchHelper(this);
 		TextInputPlugin = new TextInputPlugin(this);
 		ViewCompat.SetAccessibilityDelegate(this, ExploreByTouchHelper);

@@ -250,7 +250,7 @@ namespace Microsoft.UI.Xaml
 
 				_cachedDisplayInformation = DisplayInformation.GetForCurrentView();
 
-				_skCanvasView = new UnoSKCanvasView(this, Microsoft.UI.Xaml.Window.CurrentSafe!);
+				_skCanvasView = new UnoSKCanvasView(this);
 				_skCanvasView.LayoutParameters = new ViewGroup.LayoutParams(
 					ViewGroup.LayoutParams.MatchParent,
 					ViewGroup.LayoutParams.MatchParent);
