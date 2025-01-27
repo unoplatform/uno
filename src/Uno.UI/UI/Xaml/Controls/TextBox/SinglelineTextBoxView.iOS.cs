@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using System;
 using System.Runtime.InteropServices;
 using CoreGraphics;
@@ -112,14 +112,27 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			var result = base.BecomeFirstResponder();
 
-			if (SecureTextEntry)
+			if (SecureTextEntry && !string.IsNullOrEmpty(Text))
 			{
+				UnsubscribeEditingEvents();
+
 				var text = Text;
-				Text = string.Empty;
+				UpdatePasswordText(string.Empty);
 				InsertText(text);
+				UpdatePasswordText(text);
+
+				SubscribeEditingEvents();
 			}
 
 			return result;
+
+			void UpdatePasswordText(string text)
+			{
+				if (TextBox is PasswordBox passwordBox)
+				{
+					passwordBox.Password = text;
+				}
+			}
 		}
 
 		public override CGSize SizeThatFits(CGSize size)
