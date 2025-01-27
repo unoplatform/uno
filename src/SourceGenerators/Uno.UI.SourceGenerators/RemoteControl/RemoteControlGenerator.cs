@@ -45,6 +45,7 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 			"VSIDEResolvedNonMSBuildProjectOutputs",
 			"DevEnvDir",
 			"MSBuildVersion",
+			"UnoHotReloadDiagnosticsLogPath",
 		};
 
 		public void Initialize(GeneratorInitializationContext context)

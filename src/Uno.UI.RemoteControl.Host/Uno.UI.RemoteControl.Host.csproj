@@ -7,6 +7,7 @@
 		<RollForward>minor</RollForward>
 		<Nullable>enable</Nullable>
 		<NoWarn>$(NoWarn);VSTHRD200</NoWarn>
+		<DefineConstants>$(DefineConstants);IS_DEVSERVER</DefineConstants>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override-noplatform.props" />

@@ -37,7 +37,7 @@
 				<dependency id="SkiaSharp.NativeAssets.android" version="2.88.7" />
 
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
-				<dependency id="Newtonsoft.Json" version="13.0.2" />
+				<dependency id="Newtonsoft.Json" version="13.0.3" />
 			</group>
 			<group targetFramework="net8.0-ios17.0">
 				<dependency id="SkiaSharp.Skottie" version="2.88.7" />
@@ -70,7 +70,7 @@
 				<dependency id="SkiaSharp.NativeAssets.android" version="2.88.7" />
 
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
-				<dependency id="Newtonsoft.Json" version="13.0.2" />
+				<dependency id="Newtonsoft.Json" version="13.0.3" />
 			</group>
 			<group targetFramework="net9.0-ios18.0">
 				<dependency id="SkiaSharp.Skottie" version="2.88.7" />

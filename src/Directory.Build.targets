@@ -147,7 +147,7 @@
 		<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies.net48" Version="1.0.3" />
 		<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies.net472" Version="1.0.3" />
 		<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies.net461" Version="1.0.3" />
-		<PackageReference Update="Newtonsoft.Json" Version="13.0.2" />
+		<PackageReference Update="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Update="CommunityToolkit.Mvvm" Version="$(CommunityToolkitMvvmVersion)" />
 		<PackageReference Update="System.CommandLine" Version="2.0.0-beta4.22272.1" />
 		<PackageReference Update="Microsoft.Web.WebView2" Version="1.0.2592.51" />
