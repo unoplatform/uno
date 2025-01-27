@@ -3,12 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Composition
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class Vector2KeyFrameAnimation : global::Microsoft.UI.Composition.KeyFrameAnimation
 	{
-		// Skipping already declared method Microsoft.UI.Composition.Vector2KeyFrameAnimation.InsertKeyFrame(float, System.Numerics.Vector2)
 		// Skipping already declared method Microsoft.UI.Composition.Vector2KeyFrameAnimation.InsertKeyFrame(float, System.Numerics.Vector2, Microsoft.UI.Composition.CompositionEasingFunction)
+		// Skipping already declared method Microsoft.UI.Composition.Vector2KeyFrameAnimation.InsertKeyFrame(float, System.Numerics.Vector2)
 	}
 }

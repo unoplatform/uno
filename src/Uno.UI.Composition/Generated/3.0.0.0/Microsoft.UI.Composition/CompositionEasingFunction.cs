@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Composition
 {
-#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class CompositionEasingFunction : global::Microsoft.UI.Composition.CompositionObject
@@ -16,8 +16,8 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared method Microsoft.UI.Composition.CompositionEasingFunction.CreateBounceEasingFunction(Microsoft.UI.Composition.Compositor, Microsoft.UI.Composition.CompositionEasingFunctionMode, int, float)
 		// Skipping already declared method Microsoft.UI.Composition.CompositionEasingFunction.CreateCircleEasingFunction(Microsoft.UI.Composition.Compositor, Microsoft.UI.Composition.CompositionEasingFunctionMode)
 		// Skipping already declared method Microsoft.UI.Composition.CompositionEasingFunction.CreateElasticEasingFunction(Microsoft.UI.Composition.Compositor, Microsoft.UI.Composition.CompositionEasingFunctionMode, int, float)
-		// Skipping already declared method Microsoft.UI.Composition.CompositionEasingFunction.CreateExpoEasingFunction(Microsoft.UI.Composition.Compositor, Microsoft.UI.Composition.CompositionEasingFunctionMode, float)
-		// Skipping already declared method Microsoft.UI.Composition.CompositionEasingFunction.CreateSineEasingFunction(Microsoft.UI.Composition.Compositor, Microsoft.UI.Composition.CompositionEasingFunctionMode)
+		// Skipping already declared method Microsoft.UI.Composition.CompositionEasingFunction.CreateExponentialEasingFunction(Microsoft.UI.Composition.Compositor, Microsoft.UI.Composition.CompositionEasingFunctionMode, float)
 		// Skipping already declared method Microsoft.UI.Composition.CompositionEasingFunction.CreatePowerEasingFunction(Microsoft.UI.Composition.Compositor, Microsoft.UI.Composition.CompositionEasingFunctionMode, float)
+		// Skipping already declared method Microsoft.UI.Composition.CompositionEasingFunction.CreateSineEasingFunction(Microsoft.UI.Composition.Compositor, Microsoft.UI.Composition.CompositionEasingFunctionMode)
 	}
 }
