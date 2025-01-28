@@ -96,7 +96,7 @@
 		<Compile Condition=" '$(TargetPlatformIdentifier)' != 'ios' and '$(iOSProjectFolder)' != '' " Remove="$(iOSProjectFolder)**/*$(DefaultLanguageSourceExtension)" />
 		<Compile Condition=" '$(TargetPlatformIdentifier)' != 'tvos' and '$(tvOSProjectFolder)' != '' " Remove="$(tvOSProjectFolder)**/*$(DefaultLanguageSourceExtension)" />
 		<Compile Condition=" '$(TargetPlatformIdentifier)' != 'maccatalyst' and '$(MacCatalystProjectFolder)' != '' " Remove="$(MacCatalystProjectFolder)**/*$(DefaultLanguageSourceExtension)" />
-		<Compile Condition=" '$(TargetPlatformIdentifier)' != 'windows' and '$(MacOSProjectFolder)' != '' " Remove="$(WindowsProjectFolder)**/*$(DefaultLanguageSourceExtension)" />
+		<Compile Condition=" '$(TargetPlatformIdentifier)' != 'windows' and '$(WindowsProjectFolder)' != '' " Remove="$(WindowsProjectFolder)**/*$(DefaultLanguageSourceExtension)" />
 
 		<!-- Make files available in the tree -->
 		<None Include="**/*$(DefaultLanguageSourceExtension)" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
