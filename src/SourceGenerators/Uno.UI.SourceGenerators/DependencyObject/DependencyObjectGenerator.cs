@@ -572,15 +572,6 @@ global::Uno.UI.DataBinding.ManagedWeakReference IWeakReferenceProvider.WeakRefer
 									v.RemoveFromSuperview();
 								}}
 							}}
-#elif __MACOS__
-							// avoids the managed array (and items) allocation(s) since we do not need them
-							if (this.GetSubviewsCount() > 0)
-							{{
-								BinderCollector.RequestCollect();
-
-								// avoids multiple native calls to remove subviews
-								Subviews = Array.Empty<NSView>();
-							}}
 #endif
 
 							base.Dispose(disposing);

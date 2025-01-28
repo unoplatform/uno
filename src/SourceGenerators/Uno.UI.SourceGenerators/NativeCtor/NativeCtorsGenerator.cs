@@ -32,7 +32,6 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 			private readonly GeneratorExecutionContext _context;
 			private readonly INamedTypeSymbol? _iosViewSymbol;
 			private readonly INamedTypeSymbol? _objcNativeHandleSymbol;
-			private readonly INamedTypeSymbol? _macosViewSymbol;
 			private readonly INamedTypeSymbol? _androidViewSymbol;
 			private readonly INamedTypeSymbol? _intPtrSymbol;
 			private readonly INamedTypeSymbol? _jniHandleOwnershipSymbol;
@@ -47,7 +46,6 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 
 				_iosViewSymbol = context.Compilation.GetTypeByMetadataName("UIKit.UIView");
 				_objcNativeHandleSymbol = context.Compilation.GetTypeByMetadataName("ObjCRuntime.NativeHandle");
-				_macosViewSymbol = context.Compilation.GetTypeByMetadataName("AppKit.NSView");
 				_androidViewSymbol = context.Compilation.GetTypeByMetadataName("Android.Views.View");
 				_intPtrSymbol = context.Compilation.GetTypeByMetadataName("System.IntPtr");
 				_jniHandleOwnershipSymbol = context.Compilation.GetTypeByMetadataName("Android.Runtime.JniHandleOwnership");
@@ -105,10 +103,9 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 			private void ProcessType(INamedTypeSymbol typeSymbol)
 			{
 				var isiOSView = typeSymbol.Is(_iosViewSymbol);
-				var ismacOSView = typeSymbol.Is(_macosViewSymbol);
 				var isAndroidView = typeSymbol.Is(_androidViewSymbol);
 
-				if (isiOSView || ismacOSView)
+				if (isiOSView)
 				{
 					Func<IMethodSymbol, bool> predicate = m =>
 						!m.Parameters.IsDefaultOrEmpty
