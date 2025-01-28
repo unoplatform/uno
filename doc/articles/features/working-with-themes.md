@@ -67,9 +67,9 @@ public class MainPage : Page
 
     private void OnThemeChanged(ThemeListener sender)
     {
-        bool isDarkMode = sender.CurrentTheme == ApplicationTheme.Dark;
+        var theme = SystemThemeHelper.IsRootInDarkMode(this.XamlRoot) ? ElementTheme.Light : ElementTheme.Dark;
 
-        SystemThemeHelper.SetApplicationTheme(darkMode: isDarkMode);
+        SystemThemeHelper.SetApplicationTheme(this.XamlRoot, theme);
     }
 }
 ```
@@ -94,12 +94,14 @@ public class SettingsPage : Page
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
-        this.DarkModeToggle.IsOn = SystemThemeHelper.IsDarkModeEnabled;
+        this.DarkModeToggle.IsOn = SystemThemeHelper.IsRootInDarkMode(this.XamlRoot);
     }
 
     private void OnDarkModeToggleToggled(object sender, RoutedEventArgs e)
     {
-        SystemThemeHelper.SetApplicationTheme(darkMode: this.DarkModeToggle.IsOn);
+        var theme = DarkModeToggle.IsOn ? ElementTheme.Light : ElementTheme.Dark;
+
+        SystemThemeHelper.SetApplicationTheme(this.XamlRoot, theme);
     }
 }
 ```
