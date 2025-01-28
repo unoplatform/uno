@@ -25,18 +25,20 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	private const int DefaultColorDepth = 32;
 	private const int FallbackColorDepth = 24;
 
+	// Note For KeyPress/KeyRelease: subscribing on the top window prevents key inputs from hitting when the pointer
+	// is outside the window. https://github.com/unoplatform/uno/issues/19310
 	private const IntPtr RootEventsMask =
 		(IntPtr)EventMask.ExposureMask |
 		(IntPtr)EventMask.StructureNotifyMask |
 		(IntPtr)EventMask.VisibilityChangeMask |
+		(IntPtr)EventMask.KeyPressMask |
+		(IntPtr)EventMask.KeyReleaseMask |
 		(IntPtr)EventMask.NoEventMask;
 	private const IntPtr TopEventsMask =
 		(IntPtr)EventMask.ExposureMask |
 		(IntPtr)EventMask.ButtonPressMask |
 		(IntPtr)EventMask.ButtonReleaseMask |
 		(IntPtr)EventMask.PointerMotionMask |
-		(IntPtr)EventMask.KeyPressMask |
-		(IntPtr)EventMask.KeyReleaseMask |
 		(IntPtr)EventMask.EnterWindowMask |
 		(IntPtr)EventMask.LeaveWindowMask |
 		(IntPtr)EventMask.FocusChangeMask |
