@@ -5,15 +5,11 @@ uid: Uno.HotDesign.Overview
 # Hot Design™ Overview
 
 > [!IMPORTANT]
-> **Hot Design™** is currently in beta. Sign up to the [wait list](https://platform.uno/waitlist/) to get early access and be the first to try it out!
+> **Hot Design™** is currently in beta. Sign up to the [waitlist](https://platform.uno/waitlist/) to get early access and be among the first to try it out!
 >
-> [!IMPORTANT]
-> Currently, **Hot Design** is not supported with C# Markup at this time and is only available with XAML.
->
-> [!IMPORTANT]
-> At the current stage of the **Hot Design™** beta, **only the Desktop platform is supported**. Other platforms are undergoing stabilization for Hot Design support and will be available in future updates.
->
-> For now, you can use the **Desktop** platform to create your UI with the runtime visual designer. Once you’re satisfied with your design, you can test the app on other platforms by launching it as you would normally.
+> - Hot Design is now available on all platforms in beta, with the Desktop platform (`-desktop` target framework) currently offering the most stable and reliable experience. Other platforms are still undergoing stabilization.
+> - Hot Design does not support C# Markup and is only available with XAML. Additionally, Hot Design is not supported for the WinAppSDK target framework at this time.
+> - Your input matters! Share your thoughts and help us improve Hot Design. [Find out how to provide feedback here](xref:Uno.Platform.Studio.Feedback).
 
 Welcome to **Hot Design**, a next-generation runtime visual designer for cross-platform .NET applications!
 
