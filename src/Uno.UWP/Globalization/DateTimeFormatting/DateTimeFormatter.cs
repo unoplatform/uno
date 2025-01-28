@@ -517,6 +517,10 @@ public sealed partial class DateTimeFormatter
 			{
 				datePattern = _firstCulture.DateTimeFormat.MonthDayPattern;
 			}
+			else if (hasDay && !hasMonth && !hasYear && !hasDayOfWeek)
+			{
+				datePattern = "d";
+			}
 			else
 			{
 				// Fallback case.
