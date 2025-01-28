@@ -1,4 +1,4 @@
-﻿#if __APPLE_UIKIT__ || __MACOS__ || __SKIA__
+﻿#if __APPLE_UIKIT__ || __SKIA__
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Private.Infrastructure;

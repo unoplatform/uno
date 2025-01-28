@@ -51,7 +51,7 @@ partial class WinRTFeatureConfiguration
 		/// <remarks>Applies to WebAssembly only.</remarks>
 		public static string? IFrameHtmlId { get; set; }
 
-#elif __IOS__ || __TVOS__ || __MACOS__
+#elif __IOS__ || __TVOS__
 		/// <summary>
 		/// (iOS 13+, MacOS 10.15+) If Ephemeral Web Browser Session should be used.
 		/// That means no cookies is preserved between sessions.

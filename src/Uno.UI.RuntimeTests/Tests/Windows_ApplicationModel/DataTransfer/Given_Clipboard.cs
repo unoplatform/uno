@@ -1,4 +1,4 @@
-#if __ANDROID__ || __MACOS__ || __IOS__
+#if __ANDROID__ || __IOS__
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;

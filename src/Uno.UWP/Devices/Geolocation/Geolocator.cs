@@ -1,4 +1,4 @@
-#if __IOS__ || __ANDROID__ || __WASM__ || __MACOS__
+#if __IOS__ || __ANDROID__ || __WASM__
 #pragma warning disable 67
 using System.Collections.Concurrent;
 using Uno.Helpers;

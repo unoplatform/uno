@@ -1,6 +1,6 @@
 ﻿#nullable enable
 
-#if __APPLE_UIKIT__ || __MACOS__ || __ANDROID__
+#if __APPLE_UIKIT__ || __ANDROID__
 using System;
 using System.Linq;
 using Windows.Foundation;
@@ -229,7 +229,7 @@ partial class Shape
 			renderOrigin.y -= renderOverflow.y / 2.0;
 		}
 
-#if __APPLE_UIKIT__ || __MACOS__
+#if __APPLE_UIKIT__
 		// Finally render the shape in a Layer
 		var renderTransform = new CoreGraphics.CGAffineTransform(
 			(nfloat)renderScale.x, 0,

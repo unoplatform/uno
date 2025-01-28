@@ -184,7 +184,7 @@ public class Given_TabView
 		var closeButton1 = (Button)tabviewItem1.GetTemplateChild("CloseButton");
 
 		var buttonLabel1 =
-#if __APPLE_UIKIT__ || __MACOS__
+#if __APPLE_UIKIT__
 		closeButton1.FindFirstChild<ImplicitTextBlock>();
 #else
 		((ContentPresenter)closeButton1.GetTemplateChild("ContentPresenter")).FindFirstChild<ImplicitTextBlock>();

@@ -33,7 +33,7 @@ internal static class SizeExtensions
 		return w / h;
 	}
 
-#if __APPLE_UIKIT__ || __MACOS__
+#if __APPLE_UIKIT__
 	internal static double AspectRatio(this CoreGraphics.CGSize size)
 	{
 		var w = size.Width;

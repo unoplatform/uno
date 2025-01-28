@@ -30,7 +30,7 @@ public class XamlApplication : Application, IXamlMetadataProvider, IXamlMetadata
 	public XmlnsDefinition[] GetXmlnsDefinitions() => throw new NotImplementedException();
 
 	public
-#if __APPLE_UIKIT__ || __MACOS__
+#if __APPLE_UIKIT__
 		new
 #endif
 		void Dispose() => IsDisposed = true;

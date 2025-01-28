@@ -89,7 +89,7 @@ namespace Microsoft.UI.Xaml.Media
 
 		#endregion
 
-#if __APPLE_UIKIT__ || __MACOS__
+#if __APPLE_UIKIT__
 		public static implicit operator UIImage(Geometry g)
 		{
 			return g.ToNativeImage();

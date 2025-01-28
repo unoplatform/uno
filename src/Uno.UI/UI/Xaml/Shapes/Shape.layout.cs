@@ -1,6 +1,6 @@
 ﻿#nullable enable
 
-#if __APPLE_UIKIT__ || __MACOS__ || __SKIA__ || __ANDROID__ || __WASM__
+#if __APPLE_UIKIT__ || __SKIA__ || __ANDROID__ || __WASM__
 using System;
 using System.Linq;
 using Windows.Foundation;

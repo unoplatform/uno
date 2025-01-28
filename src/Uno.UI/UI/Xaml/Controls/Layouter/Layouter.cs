@@ -561,7 +561,7 @@ namespace Microsoft.UI.Xaml.Controls
 			ArrangeChildOverride(view, finalFrame);
 		}
 
-#if __ANDROID__ || __APPLE_UIKIT__ || __MACOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 		private void LogArrange(View view, Rect frame)
 		{
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))

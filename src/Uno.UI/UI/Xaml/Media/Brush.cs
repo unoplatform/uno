@@ -33,7 +33,7 @@ namespace Microsoft.UI.Xaml.Media
 			InitializeBinder();
 		}
 
-#if __ANDROID__ || __APPLE_UIKIT__ || __MACOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 		internal static Color GetFallbackColor(Brush brush)
 		{
 			return brush switch

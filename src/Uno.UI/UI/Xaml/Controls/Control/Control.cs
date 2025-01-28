@@ -290,7 +290,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-#if __ANDROID__ || __APPLE_UIKIT__ || __MACOS__ || IS_UNIT_TESTS
+#if __ANDROID__ || __APPLE_UIKIT__ || IS_UNIT_TESTS
 		private protected override void OnPostLoading()
 		{
 			base.OnPostLoading();

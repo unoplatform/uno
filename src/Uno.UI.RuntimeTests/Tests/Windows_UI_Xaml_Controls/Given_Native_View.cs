@@ -1,4 +1,4 @@
-﻿#if __APPLE_UIKIT__ || __MACOS__ || __ANDROID__
+﻿#if __APPLE_UIKIT__ || __ANDROID__
 #define HAS_NATIVE_VIEWS
 #endif
 

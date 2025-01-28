@@ -83,7 +83,7 @@ public partial class Page : UserControl
 	#region Frame
 
 	public
-#if __APPLE_UIKIT__ || __MACOS__
+#if __APPLE_UIKIT__
 		new
 #endif
 		Frame Frame

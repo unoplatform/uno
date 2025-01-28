@@ -1735,7 +1735,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 
-#if __CROSSRUNTIME__ || __MACOS__
+#if __CROSSRUNTIME__
 		private static bool _warnedAboutZoomedContentAlignment;
 
 		[NotImplemented]

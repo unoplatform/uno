@@ -346,7 +346,7 @@ static partial class ViewExtensions
 
 	// note: methods for retrieving children/ancestors exist with varying signatures.
 	// re-implementing them with unified & more inclusive signature for convenience.
-#if __APPLE_UIKIT__ || __MACOS__
+#if __APPLE_UIKIT__
 	internal static IEnumerable<_View> EnumerateAncestors(this _View? o)
 	{
 		if (o is null) yield break;

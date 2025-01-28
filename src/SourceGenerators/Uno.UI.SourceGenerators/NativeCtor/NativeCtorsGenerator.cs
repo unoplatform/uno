@@ -154,7 +154,7 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 					Action<IIndentedStringBuilder> beforeClassHeaderAction = builder =>
 					{
 						// These will be generated just before `partial class ClassName {`
-						builder.AppendLineIndented("#if __APPLE_UIKIT__ || __IOS__ || __TVOS__ || __MACOS__");
+						builder.AppendLineIndented("#if __APPLE_UIKIT__ || __IOS__ || __TVOS__");
 
 						// When C# hot reload is enabled types get replaced with a new type
 						// that has a different name. We need to register the new type
@@ -209,7 +209,7 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 						builder.Append("#endif");
 						builder.AppendLine();
 
-						builder.Append("#if __APPLE_UIKIT__ || __IOS__ || __TVOS__ || __MACOS__ || __MACCATALYST__");
+						builder.Append("#if __APPLE_UIKIT__ || __IOS__ || __TVOS__ || __MACCATALYST__");
 						builder.AppendLine();
 						builder.AppendLineIndented("/// <summary>");
 						builder.AppendLineIndented("/// Native constructor, do not use explicitly.");

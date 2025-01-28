@@ -97,7 +97,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __APPLE_UIKIT__ || __ANDROID__ || __MACOS__
+#if __APPLE_UIKIT__ || __ANDROID__
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 #endif
 		public void ValidateNonVirtualLayoutWithItemsRepeater()

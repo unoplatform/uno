@@ -78,7 +78,7 @@ namespace Uno.UI.Behaviors
 				var nextControl = GetNextControl(textBox) as View;
 #if __ANDROID__
 				nextControl?.RequestFocus();
-#elif __APPLE_UIKIT__ || __MACOS__
+#elif __APPLE_UIKIT__
 				nextControl?.BecomeFirstResponder();
 #endif
 				e.Handled = true;

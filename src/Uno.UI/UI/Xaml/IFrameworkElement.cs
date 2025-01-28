@@ -135,7 +135,7 @@ namespace Microsoft.UI.Xaml
 		// void SetNeedsLayout ();
 		// void SetSuperviewNeedsLayout ();
 
-#if __APPLE_UIKIT__ || __MACOS__
+#if __APPLE_UIKIT__
 
 		/// <summary>
 		/// The frame applied to this child when last arranged by its parent. This may differ from the current UIView.Frame if a RenderTransform is set.

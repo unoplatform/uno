@@ -169,7 +169,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 #if __ANDROID__
 					this.RemoveView(_layoutRoot);
-#elif __APPLE_UIKIT__ || __MACOS__
+#elif __APPLE_UIKIT__
 					_layoutRoot.RemoveFromSuperview();
 #else
 					_mediaPlayerPresenter?.RequestFullScreen();

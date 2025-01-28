@@ -14,7 +14,7 @@ public class ProgressRingTests
 	[RunsOnUIThread]
 	[DataRow(true)]
 	[DataRow(false)]
-#if !(__WASM__ || __MACOS__ || HAS_SKOTTIE)
+#if !(__WASM__ || HAS_SKOTTIE)
 	[Ignore("Skottie is not supported on net6+ UWP targets")]
 #endif
 	public async Task ProgressRingDefaultHeightShouldBe32(bool useFluent)

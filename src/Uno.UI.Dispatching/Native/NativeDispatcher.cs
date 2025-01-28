@@ -79,7 +79,7 @@ namespace Uno.UI.Dispatching
 			}
 		}
 
-#if __ANDROID__ || __WASM__ || __SKIA__ || __MACOS__ || __APPLE_UIKIT__ || IS_UNIT_TESTS
+#if __ANDROID__ || __WASM__ || __SKIA__ || __APPLE_UIKIT__ || IS_UNIT_TESTS
 		private static void DispatchItems()
 		{
 			// Currently, we have a singleton NativeDispatcher.

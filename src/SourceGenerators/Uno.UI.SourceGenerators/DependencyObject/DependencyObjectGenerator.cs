@@ -528,7 +528,7 @@ global::Uno.UI.DataBinding.ManagedWeakReference IWeakReferenceProvider.WeakRefer
 				if (hasDispose)
 				{
 					builder.AppendMultiLineIndented($@"
-#if __APPLE_UIKIT__ || __IOS__ || __TVOS__ || __MACOS__
+#if __APPLE_UIKIT__ || __IOS__ || __TVOS__
 					private bool _isDisposed;
 
 					[SuppressMessage(

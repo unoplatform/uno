@@ -799,7 +799,7 @@ public partial class Given_GridLayouting
 		var measuredSize = SUT.DesiredSize;
 		SUT.Arrange(new Rect(0, 0, 20, 20));
 
-#if __ANDROID__ || __APPLE_UIKIT__ || __MACOS__ || __WASM__
+#if __ANDROID__ || __APPLE_UIKIT__ || __WASM__
 		c1.SizePassedToArrangeOverride.Should().Be(new Size(40.0 / 3.0, 20));
 		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 40.0 / 3.0, 20));
 
@@ -859,14 +859,14 @@ public partial class Given_GridLayouting
 		var measuredSize = SUT.DesiredSize;
 		SUT.Arrange(new Rect(0, 0, 20, 20));
 
-#if __ANDROID__ || __APPLE_UIKIT__ || __MACOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 		c1.DesiredSize.Should().Be(new Size(16.0 / 3.0, 10));
 #else
 		c1.DesiredSize.Should().Be(new Size(5, 10));
 #endif
 		c2.DesiredSize.Should().Be(new Size(10, 10));
 
-#if __ANDROID__ || __APPLE_UIKIT__ || __MACOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 		c1.SizePassedToArrangeOverride.Should().Be(new Size(16.0 / 3.0, 10));
 		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 16.0 / 3.0, 20));
 
@@ -966,7 +966,7 @@ public partial class Given_GridLayouting
 		SUT.Children.Add(c2);
 
 		SUT.Measure(new Size(30, 30));
-#if __ANDROID__ || __APPLE_UIKIT__ || __MACOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 		SUT.DesiredSize.Should().Be(new Size(52.0 / 3.0, 5));
 #elif __WASM__
 		SUT.DesiredSize.Should().Be(new Size(17.5, 5));
@@ -975,7 +975,7 @@ public partial class Given_GridLayouting
 #endif
 		//SUT.UnclippedDesiredSize.Should().Be(new Size(20, 5));
 
-#if __ANDROID__ || __APPLE_UIKIT__ || __MACOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 		c1.DesiredSize.Should().Be(new Size(52.0 / 3.0, 5));
 #elif __WASM__
 		c1.DesiredSize.Should().Be(new Size(17.5, 5));
@@ -991,7 +991,7 @@ public partial class Given_GridLayouting
 
 		LayoutInformation.GetLayoutSlot(SUT).Should().Be(new Rect(0, 0, 30, 30));
 
-#if __ANDROID__ || __APPLE_UIKIT__ || __MACOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 		c1.SizePassedToArrangeOverride.Should().Be(new Size(17.5, 30));
 		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 17.5, 30));
 
@@ -1041,7 +1041,7 @@ public partial class Given_GridLayouting
 		var measuredSize = SUT.DesiredSize;
 		SUT.Arrange(new Rect(0, 0, 20, 20));
 
-#if __ANDROID__ || __APPLE_UIKIT__ || __MACOS__ || __WASM__
+#if __ANDROID__ || __APPLE_UIKIT__ || __WASM__
 		c1.SizePassedToArrangeOverride.Should().Be(new Size(40.0 / 3.0, 20));
 		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 40.0 / 3.0, 20));
 #else
@@ -1106,7 +1106,7 @@ public partial class Given_GridLayouting
 
 		SUT.Arrange(new Rect(0, 0, 20, 20));
 
-#if __ANDROID__ || __APPLE_UIKIT__ || __MACOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 		c1.SizePassedToArrangeOverride.Should().Be(new Size(6, 10));
 #else
 		c1.SizePassedToArrangeOverride.Should().Be(new Size(10, 10));
@@ -1155,7 +1155,7 @@ public partial class Given_GridLayouting
 		var measuredSize = SUT.DesiredSize;
 		SUT.Arrange(new Rect(0, 0, 20, 20));
 
-#if __ANDROID__ || __APPLE_UIKIT__ || __MACOS__ || __WASM__
+#if __ANDROID__ || __APPLE_UIKIT__ || __WASM__
 		c1.SizePassedToArrangeOverride.Should().Be(new Size(40.0 / 3.0, 40.0 / 3.0));
 		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(0, 0, 40.0 / 3.0, 40.0 / 3.0));
 #else
@@ -1200,7 +1200,7 @@ public partial class Given_GridLayouting
 		SUT.Measure(new Size(20, 20));
 		var measuredSize = SUT.DesiredSize;
 		SUT.Arrange(new Rect(0, 0, 20, 20));
-#if __ANDROID__ || __APPLE_UIKIT__ || __MACOS__ || __WASM__
+#if __ANDROID__ || __APPLE_UIKIT__ || __WASM__
 		c1.SizePassedToArrangeOverride.Should().Be(new Size(40.0 / 3.0, 40.0 / 3.0));
 		LayoutInformation.GetLayoutSlot(c1).Should().Be(new Rect(20.0 / 3.0, 20.0 / 3.0, 40.0 / 3.0, 40.0 / 3.0));
 #else
@@ -1285,7 +1285,7 @@ public partial class Given_GridLayouting
 		child.SizePassedToArrangeOverride.Should().Be(new Size(20, 10));
 		LayoutInformation.GetLayoutSlot(child).Should().Be(new Rect(0, 5, 20, 10));
 
-#if HAS_UNO && !(__ANDROID__ || __APPLE_UIKIT__ || __MACOS__)
+#if HAS_UNO && !(__ANDROID__ || __APPLE_UIKIT__)
 		SUT.IsMeasureDirty.Should().BeFalse();
 		SUT.IsMeasureDirtyOrMeasureDirtyPath.Should().BeFalse();
 #endif
@@ -1597,7 +1597,7 @@ public partial class Given_GridLayouting
 		SUT.Children.Add(c2);
 
 		SUT.Measure(new Size(100, 1000));
-#if __ANDROID__ || __APPLE_UIKIT__ || __MACOS__
+#if __ANDROID__ || __APPLE_UIKIT__
 		SUT.DesiredSize.Should().Be(new Size(31.0 / 3.0, 32.0 / 3.0));
 #else
 		SUT.DesiredSize.Should().Be(new Size(10, 10));

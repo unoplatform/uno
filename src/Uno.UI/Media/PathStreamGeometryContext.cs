@@ -41,7 +41,7 @@ namespace Uno.Media
 
 		public override void BeginFigure(Point startPoint, bool isFilled)
 		{
-#if __APPLE_UIKIT__ || __MACOS__
+#if __APPLE_UIKIT__
 			bezierPath.MoveTo(startPoint);
 #elif __ANDROID__
 			bezierPath.MoveTo((float)startPoint.X, (float)startPoint.Y);
@@ -243,7 +243,7 @@ namespace Uno.Media
 			{
 				if (closed)
 				{
-#if __APPLE_UIKIT__ || __MACOS__
+#if __APPLE_UIKIT__
 					bezierPath.ClosePath();
 #elif __ANDROID__
 					bezierPath.Close();

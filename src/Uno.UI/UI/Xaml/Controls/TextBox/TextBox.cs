@@ -1,4 +1,4 @@
-﻿#if IS_UNIT_TESTS || UNO_REFERENCE_API || __MACOS__
+﻿#if IS_UNIT_TESTS || UNO_REFERENCE_API
 #pragma warning disable CS0067, CS649
 #endif
 
@@ -152,7 +152,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// OnLoaded appears to be executed after both OnApplyTemplate and after the style setters, making sure the values set here are not modified after.
 			if (_contentElement is ScrollViewer scrollViewer)
 			{
-#if __APPLE_UIKIT__ || __MACOS__
+#if __APPLE_UIKIT__
 				// We disable scrolling because the inner ITextBoxView provides its own scrolling
 				scrollViewer.HorizontalScrollMode = ScrollMode.Disabled;
 				scrollViewer.VerticalScrollMode = ScrollMode.Disabled;
@@ -476,7 +476,7 @@ namespace Microsoft.UI.Xaml.Controls
 		#region Description DependencyProperty
 
 		public
-#if __APPLE_UIKIT__ || __MACOS__
+#if __APPLE_UIKIT__
 		new
 #endif
 		object Description
@@ -766,7 +766,7 @@ namespace Microsoft.UI.Xaml.Controls
 		partial void OnFlowDirectionChangedPartial();
 #endif
 
-#if __APPLE_UIKIT__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __APPLE_UIKIT__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[Uno.NotImplemented("__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 #endif
 		public CharacterCasing CharacterCasing
@@ -775,7 +775,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => this.SetValue(CharacterCasingProperty, value);
 		}
 
-#if __APPLE_UIKIT__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __APPLE_UIKIT__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[Uno.NotImplemented("__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 #endif
 		public static DependencyProperty CharacterCasingProperty { get; } =

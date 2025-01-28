@@ -15,7 +15,7 @@ namespace Windows.Graphics.Display
 		public DisplayOrientations NativeOrientation { get; private set; } = DisplayOrientations.None;
 #endif
 
-#if __WASM__ || __IOS__ || __TVOS__ || __MACOS__ || IS_UNIT_TESTS || __SKIA__ || __NETSTD_REFERENCE__
+#if __WASM__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __SKIA__ || __NETSTD_REFERENCE__
 		/// <summary>
 		/// Gets the raw dots per inch (DPI) along the x axis of the display monitor.
 		/// </summary>
@@ -37,7 +37,7 @@ namespace Windows.Graphics.Display
 		public float RawDpiY { get; private set; } = 0;
 #endif
 
-#if __WASM__ || __IOS__ || __TVOS__ || __MACOS__ || IS_UNIT_TESTS || __NETSTD_REFERENCE__
+#if __WASM__ || __IOS__ || __TVOS__ || IS_UNIT_TESTS || __NETSTD_REFERENCE__
 		/// <summary>
 		/// Diagonal size of the display in inches.
 		/// </summary>

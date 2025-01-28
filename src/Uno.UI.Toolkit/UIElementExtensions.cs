@@ -19,11 +19,11 @@ using Uno.Foundation.Logging;
 using Microsoft.UI;
 #endif
 
-#if __APPLE_UIKIT__ || __MACOS__
+#if __APPLE_UIKIT__
 using CoreGraphics;
 #endif
 
-#if __APPLE_UIKIT__ || __MACOS__
+#if __APPLE_UIKIT__
 using ObjCRuntime;
 #endif
 
@@ -66,7 +66,7 @@ namespace Uno.UI.Toolkit
 			}
 		}
 
-#if __APPLE_UIKIT__ || __MACOS__
+#if __APPLE_UIKIT__
 		internal static void SetElevationInternal(this DependencyObject element, double elevation, Color shadowColor, CGPath path = null)
 #elif (WINAPPSDK || WINDOWS_UWP || NETCOREAPP) && !HAS_UNO
 		internal static void SetElevationInternal(this DependencyObject element, double elevation, Color shadowColor, DependencyObject host = null, CornerRadius cornerRadius = default(CornerRadius))

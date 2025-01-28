@@ -1197,7 +1197,7 @@ namespace Microsoft.UI.Xaml
 		public void InvalidateArrange()
 		{
 			InvalidateMeasure();
-#if __APPLE_UIKIT__ || __MACOS__
+#if __APPLE_UIKIT__
 			SetLayoutFlags(LayoutFlag.ArrangeDirty);
 #endif
 		}
