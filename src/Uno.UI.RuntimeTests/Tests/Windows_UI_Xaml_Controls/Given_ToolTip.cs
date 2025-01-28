@@ -323,7 +323,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				toolTip.IsOpen = false;
 			}
 		}
-#if HAS_UNO && !__MACOS__
+#if HAS_UNO
 #if __APPLE_UIKIT__ || __ANDROID__
 		[Ignore("Currently fails on Android and iOS")]
 #endif

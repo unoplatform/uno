@@ -89,12 +89,12 @@ namespace Uno.UI.Samples.UITests.ImageTests.Models
 		}
 
 		private
-#if HAS_UNO && !__WASM__ && !__SKIA__ && !__MACOS__
+#if HAS_UNO && !__WASM__ && !__SKIA__
 			async
 #endif
 			Task<string> GetAndCreateFilePath(CancellationToken ct)
 		{
-#if HAS_UNO && !__WASM__ && !__SKIA__ && !__MACOS__
+#if HAS_UNO && !__WASM__ && !__SKIA__
 			var bitmap = CreateBitmap();
 
 			_log.Warn(bitmap.ToString());

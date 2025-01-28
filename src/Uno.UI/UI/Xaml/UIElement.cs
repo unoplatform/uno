@@ -676,7 +676,7 @@ namespace Microsoft.UI.Xaml
 		}
 #endif
 
-#if !__APPLE_UIKIT__ && !__ANDROID__ && !__MACOS__ // This is the default implementation, but it can be customized per platform
+#if !__APPLE_UIKIT__ && !__ANDROID__ // This is the default implementation, but it can be customized per platform
 		/// <summary>
 		/// Note: Offsets are only an approximation that does not take into consideration possible transformations
 		///	applied by a 'UIView' between this element and its parent UIElement.

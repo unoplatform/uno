@@ -948,7 +948,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <param name="view"></param>
 		/// <remarks>Used in the context of member initialization</remarks>
 		public
-#if !UNO_REFERENCE_API && !__MACOS__ && !IS_UNIT_TESTS
+#if !UNO_REFERENCE_API && !IS_UNIT_TESTS
 			new
 #endif
 			void Add(View view)

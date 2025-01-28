@@ -306,7 +306,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-#if !IS_UNIT_TESTS && !__MACOS__
+#if !IS_UNIT_TESTS
 		/// <summary>
 		/// Occurs when text is pasted into the control.
 		/// </summary>

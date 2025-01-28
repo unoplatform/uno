@@ -979,7 +979,7 @@ namespace Microsoft.UI.Xaml
 		}
 
 		#region AutomationPeer
-#if !__APPLE_UIKIT__ && !__ANDROID__ && !__MACOS__ // This code is generated in FrameworkElementMixins
+#if !__APPLE_UIKIT__ && !__ANDROID__ // This code is generated in FrameworkElementMixins
 		private AutomationPeer _automationPeer;
 
 		protected override AutomationPeer OnCreateAutomationPeer()

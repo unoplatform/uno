@@ -133,7 +133,7 @@ namespace Uno.UI.Toolkit
 			set => SetValue(BackgroundProperty, value);
 		}
 
-#if !__APPLE_UIKIT__ && !__MACOS__
+#if !__APPLE_UIKIT__
 		private protected override void OnCornerRadiusChanged(DependencyPropertyChangedEventArgs args) => OnChanged(this, args);
 #endif
 #endif

@@ -188,7 +188,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 			await renderer.RenderAsync(parent);
 			var snapshot = await RawBitmap.From(renderer, rect);
 
-#if !__APPLE_UIKIT__ && !__MACOS__ // https://github.com/unoplatform/uno/issues/12705
+#if !__APPLE_UIKIT__ // https://github.com/unoplatform/uno/issues/12705
 			ImageAssert.HasColorAt(snapshot, 1, 1, Color.FromArgb(0xFF, 0xFA, 0xB8, 0x63), tolerance: 5);
 #endif
 		}

@@ -75,7 +75,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public event TypedEventHandler<TextBox, TextBoxBeforeTextChangingEventArgs> BeforeTextChanging;
 		public event RoutedEventHandler SelectionChanged;
 
-#if !IS_UNIT_TESTS && !__MACOS__
+#if !IS_UNIT_TESTS
 		/// <summary>
 		/// Occurs when text is pasted into the control.
 		/// </summary>
@@ -1417,7 +1417,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 #endif
 
-#if !IS_UNIT_TESTS && !__MACOS__
+#if !IS_UNIT_TESTS
 				RaisePaste(new TextControlPasteEventArgs());
 #endif
 			});

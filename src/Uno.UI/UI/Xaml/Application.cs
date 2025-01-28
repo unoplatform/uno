@@ -252,7 +252,7 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		public event UnhandledExceptionEventHandler UnhandledException;
 
-#if !__ANDROID__ && !__MACOS__ && !__SKIA__
+#if !__ANDROID__ && !__SKIA__
 		[NotImplemented("__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public void Exit()
 		{

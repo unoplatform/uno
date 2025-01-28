@@ -282,7 +282,7 @@ public partial class Panel : FrameworkElement, IPanel
 	new
 #endif
 	void Add(
-#if !__APPLE_UIKIT__ && !__MACOS__
+#if !__APPLE_UIKIT__
 		UIElement view
 #else
 		__View view

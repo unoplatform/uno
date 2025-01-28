@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Uno.UI.Samples.Helper;
 
-#if !WINAPPSDK && !__ANDROID__ && !__APPLE_UIKIT__ && !UNO_REFERENCE_API && !__MACOS__
+#if !WINAPPSDK && !__ANDROID__ && !__APPLE_UIKIT__ && !UNO_REFERENCE_API
 using System.Windows;
 using System.Windows.Controls;
 #else
@@ -38,7 +38,7 @@ namespace Uno.UI.Samples.Controls
 			double starTotal = 0;
 
 			var children = Children
-#if !WINAPPSDK && !__ANDROID__ && !__APPLE_UIKIT__ && !__MACOS__ // Useless operator (==overhead on UI thread) for Jupiter platform
+#if !WINAPPSDK && !__ANDROID__ && !__APPLE_UIKIT__ // Useless operator (==overhead on UI thread) for Jupiter platform
 				.Cast<UIElement>()
 #endif
 				.OrderBy(GetPriority)
@@ -428,7 +428,7 @@ namespace Uno.UI.Samples.Controls
 
 			panel.InvalidateMeasure();
 
-#if !__ANDROID__ && !__APPLE_UIKIT__ && !__MACOS__
+#if !__ANDROID__ && !__APPLE_UIKIT__
 			panel.InvalidateArrange();
 #endif
 		}
