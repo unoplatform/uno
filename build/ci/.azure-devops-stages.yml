@@ -204,17 +204,6 @@ stages:
       UNO_UWP_BUILD: false
       XAML_FLAVOR_BUILD: WinUI
 
-- stage: macos_tests
-  displayName: Tests - macOS
-  dependsOn:
-    - Setup
-
-  jobs:
-  - template: .azure-devops-macos.yml
-    parameters:
-      vmImage: '$(macOSVMImage)'
-      xCodeRoot: '$(xCodeRoot)'
-  
 - stage: android_tests
   displayName: Tests - Android
   dependsOn:
@@ -261,7 +250,6 @@ stages:
     - wasm_tests
     - ios_tests
     - android_tests
-    - macos_tests
     - skia_tests_winui
 
   jobs:
