@@ -86,6 +86,8 @@
         href: xref:Uno.Workshop.Counter.CSharp.MVUX
       - name: C# Markup + MVVM
         href: xref:Uno.Workshop.Counter.CSharp.MVVM
+      - name: Hot Design
+        href: xref:Uno.HotDesign.GetStarted.CounterTutorial
     - name: Simple Calc
       topicHref: xref:Workshop.SimpleCalc.Overview
       href: external/workshops/simple-calc/toc.yml
@@ -437,6 +439,8 @@
         href: xref:Uno.HotDesign.GetStarted.CounterTutorial
     - name: Design-to-Code
       href: external/figma-docs/toc.yml
+    - name: Feedback
+      href: xref:Uno.Platform.Studio.Feedback
 
 - name: Reference
   items:
