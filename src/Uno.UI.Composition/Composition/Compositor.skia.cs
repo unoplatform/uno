@@ -96,7 +96,7 @@ public partial class Compositor
 		return false;
 	}
 
-	internal void RenderRootVisual(SKSurface surface, ContainerVisual rootVisual, Action<Visual.PaintingSession, Visual>? postRenderAction)
+	internal void RenderRootVisual(SKSurface surface, ContainerVisual rootVisual, Action<SKCanvas, Visual>? postRenderAction)
 	{
 		if (rootVisual is null)
 		{

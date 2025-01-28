@@ -39,7 +39,7 @@ namespace Microsoft.UI.Composition
 			{
 				if (FillBrush is { } fill && _fillGeometryWithTransformations is { } finalFillGeometryWithTransformations)
 				{
-					using var fillPaintDisposable = GetTempFillPaint(session.Filters.OpacityColorFilter, out var fillPaint);
+					using var fillPaintDisposable = GetTempFillPaint(session.OpacityColorFilter, out var fillPaint);
 
 					if (Compositor.TryGetEffectiveBackgroundColor(this, out var colorFromTransition))
 					{
@@ -72,8 +72,8 @@ namespace Microsoft.UI.Composition
 
 				if (StrokeBrush is { } stroke && StrokeThickness > 0)
 				{
-					using var fillPaintDisposable = GetTempFillPaint(session.Filters.OpacityColorFilter, out var fillPaint);
-					using var strokePaintDisposable = GetTempStrokePaint(session.Filters.OpacityColorFilter, out var strokePaint);
+					using var fillPaintDisposable = GetTempFillPaint(session.OpacityColorFilter, out var fillPaint);
+					using var strokePaintDisposable = GetTempStrokePaint(session.OpacityColorFilter, out var strokePaint);
 
 					// Set stroke thickness
 					strokePaint.StrokeWidth = StrokeThickness;
