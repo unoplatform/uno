@@ -6,7 +6,7 @@ uid: Uno.Development.MigratingFromPreviousReleases
 
 ## Uno Platform 5.6
 
-Uno Platform 5.6 contains one breaking change around the use of x:Load to align the behavior to WinUI.
+Uno Platform 5.6 contains one breaking change around using `x:Load` to align the behavior to WinUI.
 
 ### Lazy loading
 
