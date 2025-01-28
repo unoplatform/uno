@@ -15,8 +15,6 @@ namespace Microsoft.UI.Xaml
 {
 	internal partial class DragView : Control
 	{
-		private const string UnoFluentUIAssets = "ms-appx:///Uno.Fonts.Fluent/Fonts/uno-fluentui-assets.ttf";
-
 		#region Glyph
 		public static readonly DependencyProperty GlyphProperty = DependencyProperty.Register(
 			"Glyph", typeof(string), typeof(DragView), new FrameworkPropertyMetadata(string.Empty));
@@ -161,72 +159,28 @@ namespace Microsoft.UI.Xaml
 			Visibility = Visibility.Visible;
 		}
 
-		protected override void OnApplyTemplate()
-		{
-			base.OnApplyTemplate();
-
-#if __SKIA__
-			if (OperatingSystem.IsAndroid()) // skia/android
-			{
-				var glyphTextBlock = GetTemplateChild<TextBlock>("GlyphTextBlock");
-				if (glyphTextBlock is not null)
-				{
-					// Android system fonts don't include the necessary glyphs for DragView like 🚫.
-					glyphTextBlock.SetValue(TextBlock.FontFamilyProperty, new FontFamily(UnoFluentUIAssets), DependencyPropertyValuePrecedences.ImplicitStyle);
-				}
-			}
-#endif
-		}
-
 		private static Visibility ToVisibility(bool isVisible)
 			=> isVisible ? Visibility.Visible : Visibility.Collapsed;
 
-		private string ToGlyph(DataPackageOperation result)
+		private static string ToGlyph(DataPackageOperation result)
 		{
 			// If multiple flags set (which should not!), the UWP precedence is Link > Copy > Move
-			// TODO: Real glyph
+			// These codepoints reference glyphs that are in the uno-fluentui-assets font
 			if (result.HasFlag(DataPackageOperation.Link))
 			{
-#if __SKIA__
-				if (OperatingSystem.IsAndroid() && GetTemplateChild<TextBlock>("GlyphTextBlock")?.FontFamily?.Source == UnoFluentUIAssets) // skia/android
-				{
-					return "";
-				}
-				else
-#endif
-				{
-					return "🔗";
-				}
+				return "";
 			}
 			else if (result.HasFlag(DataPackageOperation.Copy))
 			{
-#if __SKIA__
-				if (OperatingSystem.IsAndroid() && GetTemplateChild<TextBlock>("GlyphTextBlock")?.FontFamily?.Source == UnoFluentUIAssets) // skia/android
-				{
-					return "";
-				}
-				else
-#endif
-				{
-					return "⎘";
-				}
+				return "";
 			}
 			else if (result.HasFlag(DataPackageOperation.Move))
 			{
-				return "🡕";
+				return "";
 			}
 			else // None
 			{
-#if __SKIA__
-				if (OperatingSystem.IsAndroid() && GetTemplateChild<TextBlock>("GlyphTextBlock")?.FontFamily?.Source == UnoFluentUIAssets) // skia/android
-				{
-					return "";
-				}
-				else
-#endif
-				{
-					return "🚫";
-				}
+				return "";
 			}
 		}
 
