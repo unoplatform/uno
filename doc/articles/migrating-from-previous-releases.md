@@ -6,6 +6,8 @@ uid: Uno.Development.MigratingFromPreviousReleases
 
 ## Uno Platform 5.6
 
+Uno Platform 5.6 contains one breaking change around the use of x:Load to align the behavior to WinUI.
+
 ### Lazy loading
 
 To align the behavior with WinUI, lazy loading using `x:Load="False"` and `x:DeferLoadStrategy="lazy"` is no longer affected with changes to the visibility of the lazily-loaded element. Previously, binding the `Visibility` property of the lazily-loaded element and then updating the source of the binding to make the element visible would cause the element to materialize (i.e. load). This is no longer the case. To load the element, add an `x:Name` to the element and call `FindName` with th given name.
