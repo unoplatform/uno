@@ -149,7 +149,7 @@ Hot Reload features are now consistent across platforms and IDEs, but with some 
         <tr>
             <td>Desktop<br /><small><code>net9.0-desktop</code></code></small></td>
             <td>🔳</td><td>✅</td>
-			<td>🔳</td><td>✅</td>
+            <td>🔳</td><td>✅</td>
         </tr>
         <tr>
             <td>Desktop - WSL<br /><small><code>net9.0-desktop</code></small></td>
@@ -159,12 +159,12 @@ Hot Reload features are now consistent across platforms and IDEs, but with some 
         <tr>
             <td>iOS<br /><small><code>net9.0-ios</code></small></td>
             <td>🟥</td><td>✅</td>
-			<td>🔳</td><td>✅</td>
+            <td>🔳</td><td>✅</td>
         </tr>
         <tr>
             <td>Android<br /><small><code>net9.0-android</code></small></td>
             <td>🟥</td><td>✅</td>
-			<td>🔳</td><td>✅</td>
+            <td>🔳</td><td>✅</td>
         </tr>
         <tr>
             <td>WinAppSDK<br /><small><code>net9.0-windows10.x.x</code></small></td>
@@ -174,12 +174,12 @@ Hot Reload features are now consistent across platforms and IDEs, but with some 
         <tr>
             <td>WebAssembly<br /><small><code>net9.0-browserwasm</code></small></td>
             <td>🔳</td><td>✅</td>
-			<td>🔳</td><td>✅</td>
+            <td>🔳</td><td>✅</td>
         </tr>
         <tr>
             <td>Catalyst<br /><small><code>net9.0-maccatalyst</code></small></td>
             <td>🔳</td><td>✅</td>
-			<td>🔳</td><td>✅</td>
+            <td>🔳</td><td>✅</td>
         </tr>
     </tbody>
 </table>
@@ -205,7 +205,7 @@ Hot Reload features are now consistent across platforms and IDEs, but with some 
         <tr>
             <td>Desktop<br /><small><code>net9.0-desktop</code></code></small></td>
             <td>🔳</td><td>✅</td>
-			<td>🔳</td><td>✅</td>
+            <td>🔳</td><td>✅</td>
         </tr>
         <tr>
             <td>Desktop - WSL<br /><small><code>net9.0-desktop</code></small></td>
@@ -215,12 +215,12 @@ Hot Reload features are now consistent across platforms and IDEs, but with some 
         <tr>
             <td>iOS<br /><small><code>net9.0-ios</code></small></td>
             <td>🟥</td><td>✅🛜</td>
-			<td>🔳</td><td>🔳</td>
+            <td>🔳</td><td>🔳</td>
         </tr>
         <tr>
             <td>Android<br /><small><code>net9.0-android</code></small></td>
             <td>🟥</td><td>✅</td>
-			<td>🔳</td><td>✅</td>
+            <td>🔳</td><td>✅</td>
         </tr>
         <tr>
             <td>WinAppSDK<br /><small><code>net9.0-windows10.x.x</code></small></td>
@@ -230,12 +230,12 @@ Hot Reload features are now consistent across platforms and IDEs, but with some 
         <tr>
             <td>WebAssembly<br /><small><code>net9.0-browserwasm</code></small></td>
             <td>🔳</td><td>✅</td>
-			<td>🔳</td><td>✅</td>
+            <td>🔳</td><td>✅</td>
         </tr>
         <tr>
             <td>Catalyst<br /><small><code>net9.0-maccatalyst</code></small></td>
             <td>🔳</td><td>✅🛜</td>
-			<td>🔳</td><td>🔳</td>
+            <td>🔳</td><td>🔳</td>
         </tr>
     </tbody>
 </table>
