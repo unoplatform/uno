@@ -94,7 +94,7 @@ namespace Microsoft.UI.Xaml
 		/// <remarks>
 		/// The code was moved here to override the LogLevel.
 		/// </remarks>
-		[Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		[Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public Duration GeneratedDuration
 		{
 			get

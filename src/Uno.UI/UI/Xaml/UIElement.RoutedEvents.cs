@@ -113,7 +113,7 @@ namespace Microsoft.UI.Xaml
 		public static RoutedEvent PointerCaptureLostEvent { get; } = new RoutedEvent(RoutedEventFlag.PointerCaptureLost);
 
 #if !__CROSSRUNTIME__
-		[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "__MACOS__")]
+		[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__")]
 #endif
 		public static RoutedEvent PointerWheelChangedEvent { get; } = new RoutedEvent(RoutedEventFlag.PointerWheelChanged);
 
@@ -319,7 +319,7 @@ namespace Microsoft.UI.Xaml
 		}
 
 #if !__CROSSRUNTIME__
-		[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "__MACOS__")]
+		[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__")]
 #endif
 		public event PointerEventHandler PointerWheelChanged
 		{

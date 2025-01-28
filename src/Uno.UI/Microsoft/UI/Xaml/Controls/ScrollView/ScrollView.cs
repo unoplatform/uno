@@ -28,7 +28,7 @@ using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 namespace Microsoft.UI.Xaml.Controls;
 
 #if !__SKIA__
-[NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "__WASM__", "__MACOS__")]
+[NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "__WASM__")]
 #endif
 public partial class ScrollView : Control, IScrollView
 {

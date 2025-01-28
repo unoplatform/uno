@@ -152,7 +152,7 @@ namespace Microsoft.UI.Xaml
 
 		#region FlowDirection Dependency Property
 #if !SUPPORTS_RTL
-		[NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "__WASM__", "__MACOS__")]
+		[NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "__WASM__")]
 #endif
 		public FlowDirection FlowDirection
 		{
@@ -161,7 +161,7 @@ namespace Microsoft.UI.Xaml
 		}
 
 #if !SUPPORTS_RTL
-		[NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "__WASM__", "__MACOS__")]
+		[NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "__WASM__")]
 #endif
 		[GeneratedDependencyProperty(DefaultValue = FlowDirection.LeftToRight, Options =
 #if SUPPORTS_RTL

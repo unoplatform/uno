@@ -127,7 +127,7 @@ namespace Windows.UI.Input
 		[NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public float YTilt { get; internal set; }
 
-		[NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "__MACOS__")]
+		[NotImplemented("__ANDROID__", "__APPLE_UIKIT__")]
 		public int MouseWheelDelta { get; internal set; }
 
 		/// <inheritdoc />

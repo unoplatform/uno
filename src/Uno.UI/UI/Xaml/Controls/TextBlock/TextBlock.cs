@@ -522,7 +522,7 @@ namespace Microsoft.UI.Xaml.Controls
 		#region IsTextSelectionEnabled Dependency Property
 
 #if !__WASM__ && !__SKIA__
-		[NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__", "__MACOS__")]
+		[NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 #endif
 		public bool IsTextSelectionEnabled
 		{
@@ -531,7 +531,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 #if !__WASM__ && !__SKIA__
-		[NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__", "__MACOS__")]
+		[NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 #endif
 		public static DependencyProperty IsTextSelectionEnabledProperty { get; } =
 			DependencyProperty.Register(
@@ -751,7 +751,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private TypedEventHandler<TextBlock, IsTextTrimmedChangedEventArgs> _isTextTrimmedChanged;
 
 #if false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__
-		[NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__", "__MACOS__")]
+		[NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 #endif
 		public event TypedEventHandler<TextBlock, IsTextTrimmedChangedEventArgs> IsTextTrimmedChanged
 		{
@@ -775,7 +775,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 #if false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__
-		[NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__", "__MACOS__")]
+		[NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 #endif
 		public static DependencyProperty IsTextTrimmedProperty { get; } = DependencyProperty.Register(
 			nameof(IsTextTrimmed),
@@ -784,7 +784,7 @@ namespace Microsoft.UI.Xaml.Controls
 			new FrameworkPropertyMetadata(false, propertyChangedCallback: (s, e) => ((TextBlock)s).OnIsTextTrimmedChanged()));
 
 #if false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__
-		[NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__", "__MACOS__")]
+		[NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 #endif
 		public bool IsTextTrimmed
 		{
