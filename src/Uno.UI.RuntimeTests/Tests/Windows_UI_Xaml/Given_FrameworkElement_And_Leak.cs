@@ -197,7 +197,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(MediaPlayerElement), 15)]
 		public async Task When_Add_Remove(object controlTypeRaw, int count, LeakTestStyles leakTestStyles = LeakTestStyles.All, RuntimeTestPlatforms ignoredPlatforms = RuntimeTestPlatforms.None)
 		{
-			if (ignoredPlatforms.HasFlag(ConditionalTestHelper.CurrentPlatform))
+			if (ignoredPlatforms.HasFlag(RuntimeTestsPlatformHelper.CurrentPlatform))
 			{
 				Assert.Inconclusive("This test is ignored on this platform.");
 			}

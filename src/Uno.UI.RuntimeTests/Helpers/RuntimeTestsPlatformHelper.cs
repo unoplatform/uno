@@ -3,10 +3,13 @@ using System.Linq;
 
 namespace Microsoft.VisualStudio.TestTools.UnitTesting;
 
-internal static class ConditionalTestHelper
+internal static class RuntimeTestsPlatformHelper
 {
 	private static readonly Lazy<RuntimeTestPlatforms> _currentPlatform = new Lazy<RuntimeTestPlatforms>(GetCurrentPlatform);
 
+	/// <summary>
+	/// Returns the current runtime test platform.
+	/// </summary>
 	public static RuntimeTestPlatforms CurrentPlatform => _currentPlatform.Value;
 
 	private static RuntimeTestPlatforms GetCurrentPlatform()

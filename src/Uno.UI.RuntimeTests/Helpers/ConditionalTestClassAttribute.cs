@@ -8,5 +8,5 @@ public partial class ConditionalTestClassAttribute : TestClassAttribute
 {
 	public RuntimeTestPlatforms IgnoredPlatforms { get; set; }
 
-	public bool ShouldRun() => !IgnoredPlatforms.HasFlag(ConditionalTestHelper.CurrentPlatform);
+	public bool ShouldRun() => !IgnoredPlatforms.HasFlag(RuntimeTestsPlatformHelper.CurrentPlatform);
 }
