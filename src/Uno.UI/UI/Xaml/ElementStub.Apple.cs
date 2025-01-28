@@ -2,13 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-
-#if __APPLE_UIKIT__
 using UIKit;
-#elif __MACOS__
-using AppKit;
-using UIView = AppKit.NSView;
-#endif
 
 namespace Microsoft.UI.Xaml
 {
@@ -18,7 +12,6 @@ namespace Microsoft.UI.Xaml
 		{
 			var newContent = newViewProvider();
 
-#if __APPLE_UIKIT__
 			var currentSuperview = oldView?.Superview;
 
 			if (currentSuperview is not null)
@@ -35,32 +28,6 @@ namespace Microsoft.UI.Xaml
 
 				return newContent;
 			}
-#elif __MACOS__
-			var currentPosition = oldView?.Superview?.Subviews.IndexOf(oldView) ?? -1;
-
-			if (currentPosition != -1)
-			{
-				var currentSuperview = oldView?.Superview;
-				oldView?.RemoveFromSuperview();
-
-				RaiseMaterializing();
-				if (currentSuperview is { })
-				{
-					if (currentSuperview.Subviews.Length > 0)
-					{
-						var position = Math.Max(0, currentPosition - 1);
-						currentSuperview.AddSubview(newContent,
-													NSWindowOrderingMode.Above,
-													currentSuperview.Subviews[position]);
-					}
-					else
-					{
-						currentSuperview.AddSubview(newContent);
-					}
-				}
-				return newContent;
-			}
-#endif
 
 			return null;
 		}

@@ -8,14 +8,8 @@ using System.ComponentModel;
 using Windows.Foundation;
 using Uno.Foundation.Logging;
 using Uno.UI;
-
-#if __APPLE_UIKIT__
 using _View = UIKit.UIView;
 using ObjCRuntime;
-#elif __MACOS__
-using _View = AppKit.NSView;
-using ObjCRuntime;
-#endif
 
 namespace Microsoft.UI.Xaml
 {

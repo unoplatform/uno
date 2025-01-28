@@ -19,10 +19,6 @@ using _ViewGroup = Android.Views.ViewGroup;
 using Microsoft.UI.Xaml.Media;
 using UIKit;
 using _ViewGroup = UIKit.UIView;
-#elif __MACOS__
-using Microsoft.UI.Xaml.Media;
-using AppKit;
-using _ViewGroup = AppKit.NSView;
 #else
 using _ViewGroup = Microsoft.UI.Xaml.UIElement;
 #endif

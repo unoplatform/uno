@@ -28,11 +28,6 @@ using View = UIKit.UIView;
 using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
 using CoreGraphics;
-#elif __MACOS__
-using View = AppKit.NSView;
-using Color = AppKit.NSColor;
-using Font = AppKit.NSFont;
-using CoreGraphics;
 #elif IS_UNIT_TESTS || __WASM__
 using View = Microsoft.UI.Xaml.UIElement;
 #endif

@@ -39,7 +39,7 @@ namespace Microsoft.UI.Xaml.Controls
 				CacheLength = FeatureConfiguration.ListViewBase.DefaultCacheLength.Value;
 			}
 
-#if UNO_REFERENCE_API || __MACOS__
+#if UNO_REFERENCE_API
 			CreateLayoutIfNeeded();
 			_layout.Initialize(this);
 #endif
