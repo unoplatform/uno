@@ -110,8 +110,6 @@ namespace Microsoft.UI.Xaml.Controls
 			this.Enabled = newValue;
 #elif __APPLE_UIKIT__
 			UserInteractionEnabled = (bool)args.NewValue;
-#elif __MACOS__
-			// UserInteractionEnabled = (bool)args.NewValue; // UNO-TODO: Set MacOS native equivalent
 #endif
 
 			IsEnabledChanged?.Invoke(this, args);

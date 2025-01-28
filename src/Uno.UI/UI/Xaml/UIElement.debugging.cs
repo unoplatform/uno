@@ -34,10 +34,6 @@ using DependencyObject = System.Object;
 using View = UIKit.UIView;
 using ViewGroup = UIKit.UIView;
 using UIKit;
-#elif __MACOS__
-using View = AppKit.NSView;
-using ViewGroup = AppKit.NSView;
-using AppKit;
 #else
 using View = Microsoft.UI.Xaml.UIElement;
 using ViewGroup = Microsoft.UI.Xaml.UIElement;

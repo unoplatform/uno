@@ -5,8 +5,6 @@ using Windows.UI.Xaml.Controls.Primitives;
 
 #if __APPLE_UIKIT__
 using UIKit;
-#elif __MACOS__
-using AppKit;
 #endif
 
 namespace Windows.UI.Xaml.Controls

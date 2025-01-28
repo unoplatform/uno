@@ -3,8 +3,6 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 #if __APPLE_UIKIT__
 using UIKit;
-#elif __MACOS__
-using AppKit;
 #endif
 using Uno.UI;
 using Uno.UI.Samples.Controls;

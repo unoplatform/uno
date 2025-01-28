@@ -12,9 +12,6 @@ using _View = Android.Views.View;
 #elif __APPLE_UIKIT__
 using _View = UIKit.UIView;
 using ObjCRuntime;
-#elif __MACOS__
-using _View = AppKit.NSView;
-using ObjCRuntime;
 #elif UNO_REFERENCE_API || IS_UNIT_TESTS
 using _View = Microsoft.UI.Xaml.UIElement;
 #endif

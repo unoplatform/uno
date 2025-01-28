@@ -195,8 +195,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 		[RunsOnUIThread]
 #if !HAS_UNO
 		[Ignore("Custom behavior of uno")]
-#elif __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
 		public async Task When_UnloadAndReload_Then_UnsubscribeAndResubscribeToEffectiveViewportChanged()
 		{

@@ -5,12 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using Windows.Foundation;
 using Uno.Extensions;
-
-#if __APPLE_UIKIT__
 using UIKit;
-#elif __MACOS__
-using AppKit;
-#endif
 
 namespace Microsoft.UI.Xaml.Media
 {

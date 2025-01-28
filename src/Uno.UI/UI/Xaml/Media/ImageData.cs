@@ -6,8 +6,6 @@ using Microsoft.UI.Xaml.Media;
 
 #if __APPLE_UIKIT__
 using _UIImage = UIKit.UIImage;
-#elif __MACOS__
-using _UIImage = AppKit.NSImage;
 #elif __ANDROID__
 using Android.Graphics;
 #endif

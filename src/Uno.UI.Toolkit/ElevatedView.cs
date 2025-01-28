@@ -9,9 +9,6 @@ using Microsoft.UI.Xaml.Media;
 #if __APPLE_UIKIT__
 using CoreGraphics;
 using _View = UIKit.UIView;
-#elif __MACOS__
-using CoreGraphics;
-using _View = AppKit.NSView;
 #elif __ANDROID__
 using Android.Views;
 #elif __WASM__

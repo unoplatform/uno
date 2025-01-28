@@ -190,8 +190,6 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 #if __APPLE_UIKIT__
 			_player?.Add(_renderSurface);
-#elif __MACOS__
-			_player?.AddSubview(_renderSurface);
 #elif __SKIA__ || __ANDROID__
 			_player?.AddChild(_renderSurface);
 #endif

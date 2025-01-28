@@ -37,16 +37,6 @@ using CoreGraphics;
 using _Size = Windows.Foundation.Size;
 using Point = Windows.Foundation.Point;
 using ObjCRuntime;
-#elif __MACOS__
-using AppKit;
-using View = AppKit.NSView;
-using ViewGroup = AppKit.NSView;
-using Color = AppKit.NSColor;
-using Font = AppKit.NSFont;
-using CoreGraphics;
-using _Size = Windows.Foundation.Size;
-using Point = Windows.Foundation.Point;
-using ObjCRuntime;
 #elif __WASM__
 #pragma warning disable CS8981 // The type name 'nint' only contains lower-cased ascii characters. Such names may become reserved for the language
 using nint = System.Int32;
@@ -224,8 +214,6 @@ namespace Microsoft.UI.Xaml
 
 #elif __APPLE_UIKIT__
 					view.SetNeedsLayout();
-#elif __MACOS__
-					view.NeedsLayout = true;
 #endif
 					break;
 

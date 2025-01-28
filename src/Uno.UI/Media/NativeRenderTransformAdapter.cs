@@ -10,8 +10,6 @@ using Microsoft.UI.Xaml.Media;
 using _View = Android.Views.View;
 #elif __APPLE_UIKIT__
 using _View = UIKit.UIView;
-#elif __MACOS__
-using _View = AppKit.NSView;
 #elif UNO_REFERENCE_API
 using _View = Microsoft.UI.Xaml.UIElement;
 #else

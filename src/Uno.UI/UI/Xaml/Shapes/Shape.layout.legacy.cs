@@ -16,16 +16,9 @@ using System.Diagnostics;
 using NativePath = CoreGraphics.CGPath;
 using ObjCRuntime;
 using NativeSingle = System.Runtime.InteropServices.NFloat;
-#elif __MACOS__
-using AppKit;
-using NativePath = CoreGraphics.CGPath;
-using ObjCRuntime;
-using NativeSingle = System.Runtime.InteropServices.NFloat;
-
 #elif __ANDROID__
 using NativePath = Android.Graphics.Path;
 using NativeSingle = System.Double;
-
 #endif
 
 namespace Microsoft.UI.Xaml.Shapes;

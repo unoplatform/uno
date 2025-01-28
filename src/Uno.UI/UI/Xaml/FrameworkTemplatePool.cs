@@ -33,13 +33,6 @@ using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
 using DependencyObject = System.Object;
 using UIKit;
-#elif __MACOS__
-using View = AppKit.NSView;
-using ViewGroup = AppKit.NSView;
-using Color = AppKit.NSColor;
-using Font = AppKit.NSFont;
-using DependencyObject = System.Object;
-using AppKit;
 #elif METRO
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;

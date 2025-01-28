@@ -6,9 +6,6 @@ using Android.Graphics;
 #elif __APPLE_UIKIT__
 using Foundation;
 using UIKit;
-#elif __MACOS__
-using Foundation;
-using AppKit;
 #elif __SKIA__
 using SkiaSharp;
 #endif
@@ -54,15 +51,6 @@ partial class BitmapEncoder
 		{
 			{JpegEncoderId, AsJPEG},
 			{PngEncoderId, AsPNG},
-		};
-#elif __MACOS__
-	private static readonly Dictionary<Guid, Func<NSImage, NSData>> _encoderMap =
-		new()
-		{
-			{JpegEncoderId, AsJPEG},
-			{PngEncoderId, AsPNG},
-			{GifEncoderId, AsGIF},
-			{TiffEncoderId, AsTIFF},
 		};
 #elif __SKIA__
 	private static readonly IDictionary<Guid, SKEncodedImageFormat> _encoderMap =

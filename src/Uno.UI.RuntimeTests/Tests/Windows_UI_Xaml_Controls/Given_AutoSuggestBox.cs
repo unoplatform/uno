@@ -24,8 +24,6 @@ using Windows.Foundation;
 
 #if __APPLE_UIKIT__
 using UIKit;
-#elif __MACOS__
-using AppKit;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls

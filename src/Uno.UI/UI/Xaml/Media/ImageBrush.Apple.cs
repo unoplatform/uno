@@ -10,14 +10,8 @@ using Microsoft.UI.Xaml.Media;
 using Uno.Disposables;
 using Windows.UI.Core;
 using Uno.UI.Xaml.Media;
-
-#if __APPLE_UIKIT__
 using UIKit;
 using _Image = UIKit.UIImage;
-#elif __MACOS__
-using AppKit;
-using _Image = AppKit.NSImage;
-#endif
 
 namespace Microsoft.UI.Xaml.Media
 {

@@ -10,8 +10,6 @@ using _View = Android.Views.View;
 #elif __APPLE_UIKIT__
 using _View = UIKit.UIView;
 using UIKit;
-#elif __MACOS__
-using _View = AppKit.NSView;
 #else
 using _View = Microsoft.UI.Xaml.UIElement;
 #endif

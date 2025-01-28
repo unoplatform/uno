@@ -189,8 +189,6 @@ namespace Microsoft.UI.Xaml.Controls
 					this.AddView(_layoutRoot);
 #elif __APPLE_UIKIT__
 					this.Add(_layoutRoot);
-#elif __MACOS__
-					this.AddSubview(_layoutRoot);
 #elif __SKIA__ || __WASM__
 					this.AddChild(_layoutRoot);
 					_mediaPlayerPresenter?.ExitFullScreen();

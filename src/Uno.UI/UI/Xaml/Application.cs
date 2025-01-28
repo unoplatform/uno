@@ -42,11 +42,6 @@ using Microsoft.UI.Xaml.Controls;
 using View = UIKit.UIView;
 using ViewGroup = UIKit.UIView;
 using UIKit;
-#elif __MACOS__
-using View = AppKit.NSView;
-using ViewGroup = AppKit.NSView;
-using AppKit;
-using Windows.UI.Core;
 #else
 using View = Microsoft.UI.Xaml.UIElement;
 using ViewGroup = Microsoft.UI.Xaml.UIElement;

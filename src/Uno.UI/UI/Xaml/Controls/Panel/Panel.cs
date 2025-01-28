@@ -17,8 +17,6 @@ using Microsoft.UI.Composition;
 
 #if __APPLE_UIKIT__
 using __View = UIKit.UIView;
-#elif __MACOS__
-using __View = AppKit.NSView;
 #endif
 
 namespace Microsoft.UI.Xaml.Controls;

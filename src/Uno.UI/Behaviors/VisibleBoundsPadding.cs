@@ -15,8 +15,6 @@ using Microsoft.UI.Xaml.Controls;
 
 #if __APPLE_UIKIT__
 using UIKit;
-#elif __MACOS__
-using AppKit;
 #endif
 
 #if HAS_UNO // Is building using Uno.UI

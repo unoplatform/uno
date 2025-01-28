@@ -3,9 +3,6 @@
 using Uno.UI.Extensions;
 #elif __APPLE_UIKIT__
 using UIKit;
-#elif __MACOS__
-using AppKit;
-#else
 #endif
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;

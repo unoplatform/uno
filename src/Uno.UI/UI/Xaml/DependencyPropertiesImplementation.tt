@@ -25,9 +25,6 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 #if __APPLE_UIKIT__
 using Color = UIKit.UIColor;
 using View = UIKit.UIView;
-#elif __MACOS__
-using Color = AppKit.NSColor;
-using View = AppKit.NSView;
 #elif __ANDROID__
 using Color = Android.Resource.Color;
 using View = Android.Views.View;

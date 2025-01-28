@@ -19,8 +19,6 @@ using static Private.Infrastructure.TestServices;
 
 #if __APPLE_UIKIT__
 using UIKit;
-#elif __MACOS__
-using AppKit;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;

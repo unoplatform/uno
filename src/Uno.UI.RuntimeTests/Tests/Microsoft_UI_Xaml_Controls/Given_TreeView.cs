@@ -27,8 +27,6 @@ using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
 #if __APPLE_UIKIT__
 using UIKit;
-#elif __MACOS__
-using AppKit;
 #else
 using Uno.UI;
 #endif

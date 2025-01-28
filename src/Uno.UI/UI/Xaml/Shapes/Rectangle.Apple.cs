@@ -4,14 +4,8 @@ using Uno.UI.Extensions;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Media;
 using CoreGraphics;
-
-#if __APPLE_UIKIT__
 using UIKit;
 using _BezierPath = UIKit.UIBezierPath;
-#elif __MACOS__
-using AppKit;
-using _BezierPath = AppKit.NSBezierPath;
-#endif
 
 using ObjCRuntime;
 
@@ -22,9 +16,7 @@ namespace Microsoft.UI.Xaml.Shapes
 	{
 		public Rectangle()
 		{
-#if __APPLE_UIKIT__
 			ClipsToBounds = true;
-#endif
 		}
 
 		/// <inheritdoc />
@@ -36,11 +28,7 @@ namespace Microsoft.UI.Xaml.Shapes
 			if (renderingArea.Width > 0 && renderingArea.Height > 0)
 			{
 				path = Math.Max(RadiusX, RadiusY) > 0
-#if __APPLE_UIKIT__
 					? _BezierPath.FromRoundedRect(renderingArea, UIRectCorner.AllCorners, new CGSize(RadiusX, RadiusY)).CGPath
-#else
-					? _BezierPath.FromRoundedRect(renderingArea, (nfloat)RadiusX, (nfloat)RadiusY).ToCGPath()
-#endif
 					: _BezierPath.FromRect(renderingArea).ToCGPath();
 			}
 			else

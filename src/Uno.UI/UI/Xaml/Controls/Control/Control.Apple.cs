@@ -5,20 +5,11 @@ using Uno.UI;
 using Uno.UI.DataBinding;
 using System.Linq;
 using Microsoft.UI.Xaml.Input;
-
-#if __APPLE_UIKIT__
 using View = UIKit.UIView;
 using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
 using UIKit;
 using CoreGraphics;
-#elif __MACOS__
-using View = AppKit.NSView;
-using Color = AppKit.NSColor;
-using Font = AppKit.NSFont;
-using AppKit;
-using CoreGraphics;
-#endif
 
 
 namespace Microsoft.UI.Xaml.Controls

@@ -16,11 +16,6 @@ using System.Diagnostics;
 using NativePath = CoreGraphics.CGPath;
 using ObjCRuntime;
 using NativeSingle = System.Runtime.InteropServices.NFloat;
-#elif __MACOS__
-using AppKit;
-using NativePath = CoreGraphics.CGPath;
-using ObjCRuntime;
-using NativeSingle = System.Runtime.InteropServices.NFloat;
 #elif __SKIA__
 using NativePath = Microsoft.UI.Composition.SkiaGeometrySource2D;
 using NativeSingle = System.Double;

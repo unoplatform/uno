@@ -7,8 +7,6 @@ using System.Text;
 using View = UIKit.UIView;
 #elif __ANDROID__
 using View = Android.Views.View;
-#elif __MACOS__
-using View = AppKit.NSView;
 #endif
 
 namespace Uno.UI.Controls

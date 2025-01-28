@@ -11,13 +11,6 @@ using Rect = Windows.Foundation.Rect;
 using Foundation;
 using UIKit;
 using CoreGraphics;
-#elif __MACOS__
-using AppKit;
-using CoreGraphics;
-using UIImage = AppKit.NSImage;
-using UIColor = AppKit.NSColor;
-using UIGraphics = AppKit.NSGraphics;
-using Path = AppKit.NSBezierPath;
 #elif __ANDROID__
 using Android.Graphics;
 #endif

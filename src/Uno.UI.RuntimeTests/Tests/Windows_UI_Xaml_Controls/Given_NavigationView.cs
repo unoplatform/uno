@@ -14,8 +14,6 @@ using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.ListViewPages;
 #if __APPLE_UIKIT__
 using UIKit;
-#elif __MACOS__
-using AppKit;
 #else
 using Uno.UI;
 #endif
@@ -82,9 +80,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RequiresFullWindow]
 		[Ignore("Failing on CI due to animations")]
-#if false && __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task MUX_When_MinimalHierarchicalAndSelectItem_Then_RemoveOverState()
 		{
 			var items = Enumerable

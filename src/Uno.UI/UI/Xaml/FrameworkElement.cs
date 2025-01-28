@@ -34,10 +34,6 @@ using View = Android.Views.View;
 #elif __APPLE_UIKIT__
 using View = UIKit.UIView;
 using UIKit;
-#elif __MACOS__
-using AppKit;
-using View = AppKit.NSView;
-using Color = Windows.UI.Color;
 #else
 using Color = System.Drawing.Color;
 using View = Microsoft.UI.Xaml.UIElement;
@@ -1001,27 +997,6 @@ namespace Microsoft.UI.Xaml
 			return null;
 		}
 
-		public AutomationPeer GetAutomationPeer()
-		{
-			if (_automationPeer == null)
-			{
-				_automationPeer = OnCreateAutomationPeer();
-			}
-
-			return _automationPeer;
-		}
-#elif __MACOS__
-		private AutomationPeer _automationPeer;
-
-		protected override AutomationPeer OnCreateAutomationPeer()
-		{
-			return null;
-		}
-
-		public virtual string GetAccessibilityInnerText()
-		{
-			return null;
-		}
 		public AutomationPeer GetAutomationPeer()
 		{
 			if (_automationPeer == null)

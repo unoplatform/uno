@@ -6,7 +6,6 @@ using Uno.Extensions;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
 
-#if __APPLE_UIKIT__
 using UIKit;
 using _View = UIKit.UIView;
 using _Event = UIKit.UIEvent;
@@ -14,15 +13,6 @@ using _Touch = UIKit.UITouch;
 using _Application = UIKit.UIApplication;
 using _Window = UIKit.UIWindow;
 using _ScrollView = UIKit.UIScrollView;
-#elif __MACOS__
-using AppKit;
-using _View = AppKit.NSView;
-using _Event = AppKit.NSEvent;
-using _Touch = AppKit.NSTouch;
-using _Application = AppKit.NSApplication;
-using _Window = AppKit.NSWindow;
-using _ScrollView = AppKit.NSScrollView;
-#endif
 
 namespace Uno.UI.Extensions
 {

@@ -4,14 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Uno.Foundation.Logging;
-
-#if __APPLE_UIKIT__
 using UIKit;
 using _View = UIKit.UIView;
-#elif __MACOS__
-using AppKit;
-using _View = AppKit.NSView;
-#endif
 using Uno.Extensions;
 
 namespace Microsoft.UI.Xaml.Media
@@ -26,12 +20,7 @@ namespace Microsoft.UI.Xaml.Media
 			{
 				var currentSuperview = oldView?.Superview;
 				oldView?.RemoveFromSuperview();
-
-#if __APPLE_UIKIT__
 				currentSuperview?.InsertSubview(newView, currentPosition);
-#elif __MACOS__
-				currentSuperview?.AddSubview(newView, NSWindowOrderingMode.Above, currentSuperview.Subviews[Math.Max(0, currentPosition - 1)]);
-#endif
 			}
 			else
 			{

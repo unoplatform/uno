@@ -1181,9 +1181,6 @@ namespace Microsoft.UI.Xaml
 #elif __APPLE_UIKIT__
 			SetNeedsLayout();
 			SetLayoutFlags(LayoutFlag.MeasureDirty);
-#elif __MACOS__
-			base.NeedsLayout = true;
-			SetLayoutFlags(LayoutFlag.MeasureDirty);
 #endif
 
 			OnInvalidateMeasure();

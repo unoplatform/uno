@@ -33,12 +33,6 @@ using View = UIKit.UIView;
 using ViewGroup = UIKit.UIView;
 using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
-#elif __MACOS__
-using AppKit;
-using View = AppKit.NSView;
-using ViewGroup = AppKit.NSView;
-using Color = AppKit.NSColor;
-using Font = AppKit.NSFont;
 #elif UNO_REFERENCE_API || IS_UNIT_TESTS
 using View = Microsoft.UI.Xaml.UIElement;
 using ViewGroup = Microsoft.UI.Xaml.UIElement;

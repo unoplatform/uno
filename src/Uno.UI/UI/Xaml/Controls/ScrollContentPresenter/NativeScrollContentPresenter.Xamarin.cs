@@ -17,9 +17,6 @@ using View = Android.Views.View;
 using UIKit;
 using View = UIKit.UIView;
 using ObjCRuntime;
-#elif __MACOS__
-using AppKit;
-using View = AppKit.NSView;
 #else
 using View = Microsoft.UI.Xaml.UIElement;
 using ObjCRuntime;

@@ -15,9 +15,6 @@ using static Private.Infrastructure.TestServices;
 using Uno.UI.Extensions;
 #elif __APPLE_UIKIT__
 using UIKit;
-#elif __MACOS__
-using AppKit;
-#else
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
