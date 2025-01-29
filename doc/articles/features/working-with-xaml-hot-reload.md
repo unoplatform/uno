@@ -360,7 +360,7 @@ Here's a summary of what icons and statuses you can expect:
   - Grid Succinct syntax [is not supported](https://github.com/microsoft/microsoft-ui-xaml/issues/7043#issuecomment-1120061686)
 - You can troubleshoot hot reload further from the DevServer client running in the app by:
   - Setting `builder.SetMinimumLevel(LogLevel.Information)` to `LogLevel.Debug` or `Trace`
-  - Setting `builder.AddFilter("Uno.UI.DataBinding.BinderReferenceHolder", LogLevel.Debug )` to `LogLevel.Debug` or `Trace`
+  - Setting `builder.AddFilter("Uno.UI.RemoteControl", LogLevel.Debug )` to `LogLevel.Debug` or `Trace`
 
   The diagnostics messages will appear in the app's debug output.
 - If you're getting `ENC0003: Updating 'attribute' requires restarting the application`, add the following in the `Directory.Build.props` (or in each csproj project heads):
