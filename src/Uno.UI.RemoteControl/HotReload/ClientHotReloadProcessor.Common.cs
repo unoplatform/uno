@@ -72,10 +72,11 @@ namespace Uno.UI.RemoteControl.HotReload
 					}
 				}
 			}
+#if __IOS__ || __ANDROID
 #if __IOS__
 			else if (instance is UIView nativeView)
 #elif __ANDROID__
-			else if (instance is ViewGroup nativeView)
+			else if (instance is global::Android.Views.ViewGroup nativeView)
 #endif
 			{
 				// Enumerate through native instances, such as NativeFramePresenter
@@ -95,6 +96,7 @@ namespace Uno.UI.RemoteControl.HotReload
 					}
 				}
 			}
+#endif
 		}
 
 		private static void SwapViews(FrameworkElement oldView, FrameworkElement newView)
