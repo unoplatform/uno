@@ -81,6 +81,8 @@ public partial class TabViewItem
 	/// </summary>
 	public static DependencyProperty TabViewTemplateSettingsProperty { get; } =
 		DependencyProperty.Register(nameof(TabViewTemplateSettings), typeof(TabViewItemTemplateSettings), typeof(TabViewItem), new FrameworkPropertyMetadata(null));
+	
+	internal bool IsBeingDragged => m_isBeingDragged;
 
 	private static void OnHeaderPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 	{
