@@ -6,6 +6,8 @@
 
 using Uno.Disposables;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Shapes;
+using Uno.UI.Helpers.WinUI;
 
 namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 
@@ -15,7 +17,7 @@ public partial class TabViewItem
 
 	private bool m_hasPointerCapture = false;
 	private bool m_isMiddlePointerButtonPressed = false;
-	private bool m_isDragging = false;
+	private bool m_isBeingDragged = false;
 	private bool m_isPointerOver = false;
 	private bool m_firstTimeSettingToolTip = true;
 
