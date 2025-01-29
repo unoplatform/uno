@@ -23,3 +23,22 @@ jobs:
 
         - template: templates/nuget-publish-public.yml
 
+- job: Tag_Release
+  displayName: 'Set git tag'
+
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+
+  steps:
+  - checkout: self
+    persistCredentials: true
+    fetchDepth: 0
+
+  - template: templates/gitversion.yml
+
+  - script: |
+      git config user.email "info@platform.uno"
+      git config user.name "Uno DevOps"
+      git tag '$(GitVersion.MajorMinorPatch)'
+      git push origin '$(GitVersion.MajorMinorPatch)'
+    displayName: "Tag and push to GitHub"
