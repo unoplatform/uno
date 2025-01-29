@@ -1,4 +1,7 @@
-﻿namespace Microsoft.UI.Xaml.Automation.Provider;
+﻿#nullable enable
+using Microsoft.UI.Xaml.Automation.Peers;
+
+namespace Microsoft.UI.Xaml.Automation.Provider;
 
 /// <summary>
 /// Provides methods and properties that expose basic information about a UI element. 
