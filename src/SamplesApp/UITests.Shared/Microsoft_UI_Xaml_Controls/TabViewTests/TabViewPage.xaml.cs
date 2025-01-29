@@ -24,6 +24,8 @@ using MUXControlsTestApp.Utilities;
 using System.Threading.Tasks;
 using Uno.UI.Samples.Controls;
 using UITests.Microsoft_UI_Xaml_Controls.TabViewTests;
+using Microsoft.UI.Xaml.Shapes;
+using System.Reflection;
 
 namespace MUXControlsTestApp
 {
