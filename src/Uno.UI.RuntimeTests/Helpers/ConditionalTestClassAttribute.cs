@@ -4,7 +4,7 @@ using Uno.UI.RuntimeTests.Helpers;
 namespace Microsoft.VisualStudio.TestTools.UnitTesting;
 
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-public partial class ConditionalTestClassAttribute : TestClassAttribute
+public sealed partial class ConditionalTestClassAttribute : TestClassAttribute
 {
 	public RuntimeTestPlatforms IgnoredPlatforms { get; set; }
 

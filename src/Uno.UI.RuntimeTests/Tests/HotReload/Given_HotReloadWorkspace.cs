@@ -54,7 +54,6 @@ public partial class Given_HotReloadWorkspace
 	[TestMethod]
 	[Timeout(10 * 60 * 1000)]
 	[Filters]
-	[TestMethod]
 	public async Task When_HotReloadScenario(string filters)
 	{
 		// Remove this class and this method from the filters

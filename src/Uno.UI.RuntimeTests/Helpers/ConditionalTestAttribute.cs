@@ -7,7 +7,7 @@ namespace Microsoft.VisualStudio.TestTools.UnitTesting;
 
 
 [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = false)]
-public partial class ConditionalTestAttribute : TestMethodAttribute
+public sealed partial class ConditionalTestAttribute : TestMethodAttribute
 {
 	public RuntimeTestPlatforms IgnoredPlatforms { get; set; }
 
