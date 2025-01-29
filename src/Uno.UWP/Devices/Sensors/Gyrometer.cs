@@ -1,4 +1,7 @@
 #if __IOS__ || __ANDROID__ || __WASM__
+#nullable enable
+
+using System;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.Helpers;
@@ -11,10 +14,7 @@ namespace Windows.Devices.Sensors
 	/// </summary>
 	public partial class Gyrometer
 	{
-		private readonly static object _syncLock = new();
-
-		private static Gyrometer _instance;
-		private static bool _initializationAttempted;
+		private readonly static Lazy<Gyrometer?> _instance = new Lazy<Gyrometer?>(() => TryCreateInstance());
 
 		private readonly StartStopTypedEventWrapper<Gyrometer, GyrometerReadingChangedEventArgs> _readingChangedWrapper;
 
@@ -25,30 +25,14 @@ namespace Windows.Devices.Sensors
 		{
 			_readingChangedWrapper = new StartStopTypedEventWrapper<Gyrometer, GyrometerReadingChangedEventArgs>(
 				() => StartReading(),
-				() => StopReading(),
-				_syncLock);
+				() => StopReading());
 		}
 
 		/// <summary>
 		/// Returns the default gyrometer.
 		/// </summary>
 		/// <returns>Null if no integrated gyrometers are found.</returns>
-		public static Gyrometer GetDefault()
-		{
-			if (_initializationAttempted)
-			{
-				return _instance;
-			}
-			lock (_syncLock)
-			{
-				if (!_initializationAttempted)
-				{
-					_instance = TryCreateInstance();
-					_initializationAttempted = true;
-				}
-				return _instance;
-			}
-		}
+		public static Gyrometer? GetDefault() => _instance.Value;
 
 		/// <summary>
 		/// Occurs each time the gyrometer reports the current sensor reading.

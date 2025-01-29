@@ -223,21 +223,22 @@ internal class HotReloadWorkspace
 		foreach (var projectName in EnumerateProjects())
 		{
 			var projectInfo = ProjectInfo.Create(
-							ProjectId.CreateNewId(),
-							VersionStamp.Default,
-							name: projectName,
-							assemblyName: projectName,
-							language: LanguageNames.CSharp,
-							filePath: Path.Combine(_baseWorkFolder, projectName + ".csproj"),
-							outputFilePath: _baseWorkFolder,
-							metadataReferences: references,
-							compilationOptions: new CSharpCompilationOptions(
-								OutputKind.DynamicallyLinkedLibrary,
-								optimizationLevel: OptimizationLevel.Debug,
-								allowUnsafe: true,
-								nullableContextOptions: NullableContextOptions.Enable,
-								assemblyIdentityComparer: DesktopAssemblyIdentityComparer.Default),
-							analyzerReferences: [generatorReference]);
+				ProjectId.CreateNewId(),
+				VersionStamp.Default,
+				name: projectName,
+				assemblyName: projectName,
+				language: LanguageNames.CSharp,
+				filePath: Path.Combine(_baseWorkFolder, projectName + ".csproj"),
+				outputFilePath: _baseWorkFolder,
+				metadataReferences: references,
+				compilationOptions: new CSharpCompilationOptions(
+						OutputKind.DynamicallyLinkedLibrary,
+						optimizationLevel: OptimizationLevel.Debug,
+						allowUnsafe: true,
+						nullableContextOptions: NullableContextOptions.Enable,
+						assemblyIdentityComparer: DesktopAssemblyIdentityComparer.Default)
+					.WithSpecificDiagnosticOptions([new("CS1701", ReportDiagnostic.Suppress)]), // Assuming assembly reference 'System.ObjectModel, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a' used by 'Uno.UI' matches identity 'System.ObjectModel, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a' of 'System.ObjectModel', you may need to supply runtime policy, expected
+				analyzerReferences: [generatorReference]);
 
 			projectInfo = projectInfo
 				.WithCompilationOutputInfo(

@@ -38,6 +38,8 @@ namespace Microsoft.UI.Composition
 		[NotImplemented]
 		public AnimationDirection Direction { get; set; }
 
+		internal event EventHandler? Stopped;
+
 		internal override object Evaluate()
 		{
 			var (value, shouldStop) = _keyframeEvaluator!.Evaluate();
@@ -48,5 +50,28 @@ namespace Microsoft.UI.Composition
 
 			return value;
 		}
+
+		internal object Evaluate(float progress)
+		{
+			return _keyframeEvaluator!.Evaluate(progress);
+		}
+
+		internal override void Stop()
+		{
+			base.Stop();
+			Stopped?.Invoke(this, EventArgs.Empty);
+		}
+
+		internal void Pause()
+		{
+			_keyframeEvaluator!.Pause();
+		}
+
+		internal void Resume()
+		{
+			_keyframeEvaluator!.Resume();
+		}
+
+		internal float Progress => _keyframeEvaluator!.Progress;
 	}
 }

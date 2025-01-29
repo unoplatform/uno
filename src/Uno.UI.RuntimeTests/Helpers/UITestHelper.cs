@@ -50,6 +50,13 @@ public static class UITestHelper
 	{
 		TestServices.WindowHelper.WindowContent = element;
 
+		await WaitForLoaded(element, isLoaded);
+
+		return element.GetAbsoluteBounds();
+	}
+
+	public static async Task WaitForLoaded<T>(T element, Func<T, bool>? isLoaded = null) where T : FrameworkElement
+	{
 		if (isLoaded is null)
 		{
 			await TestServices.WindowHelper.WaitForLoaded(element);
@@ -59,8 +66,6 @@ public static class UITestHelper
 			await TestServices.WindowHelper.WaitFor(() => isLoaded(element), message: $"Timeout waiting on {element} to be loaded with custom criteria.");
 		}
 		await TestServices.WindowHelper.WaitForIdle();
-
-		return element.GetAbsoluteBounds();
 	}
 
 	public static Task WaitForIdle() => TestServices.WindowHelper.WaitForIdle();

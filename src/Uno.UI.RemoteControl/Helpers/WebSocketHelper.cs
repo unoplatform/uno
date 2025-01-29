@@ -40,7 +40,29 @@ public static class WebSocketHelper
 				{
 					mem.Position = 0;
 
-					return Frame.Read(mem);
+					try
+					{
+						return Frame.Read(mem);
+					}
+					catch (Exception error)
+					{
+#if IS_DEVSERVER
+						var log = Uno.Extensions.LogExtensionPoint.Log(typeof(Frame));
+						if (log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+						{
+							Microsoft.Extensions.Logging.LoggerExtensions.LogError(log, error, "Failed to read frame");
+						}
+#else // Client
+						var log = Uno.Foundation.Logging.LogExtensionPoint.Log(typeof(Frame));
+						if (log.IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
+						{
+							log.LogError("Failed to read frame", error);
+						}
+#endif
+
+						mem.Position = 0;
+						mem.SetLength(0);
+					}
 				}
 			}
 		}

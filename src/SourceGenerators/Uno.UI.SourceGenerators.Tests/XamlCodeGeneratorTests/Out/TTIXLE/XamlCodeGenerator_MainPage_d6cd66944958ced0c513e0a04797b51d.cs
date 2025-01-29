@@ -250,18 +250,6 @@ namespace TestRepro
 			this.Bindings.Update();
 			this.Bindings.UpdateResources();
 		}
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _inner1ButtonSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
-		private global::Microsoft.UI.Xaml.Controls.Button inner1Button
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.Button)_inner1ButtonSubject.ElementInstance;
-			}
-			set
-			{
-				_inner1ButtonSubject.ElementInstance = value;
-			}
-		}
 		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _inner1Subject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
 		private global::Microsoft.UI.Xaml.Controls.StackPanel inner1
 		{
@@ -272,6 +260,18 @@ namespace TestRepro
 			set
 			{
 				_inner1Subject.ElementInstance = value;
+			}
+		}
+		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _inner1ButtonSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private global::Microsoft.UI.Xaml.Controls.Button inner1Button
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.Controls.Button)_inner1ButtonSubject.ElementInstance;
+			}
+			set
+			{
+				_inner1ButtonSubject.ElementInstance = value;
 			}
 		}
 		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _inner2Subject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
@@ -286,18 +286,6 @@ namespace TestRepro
 				_inner2Subject.ElementInstance = value;
 			}
 		}
-		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _inner3ButtonSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
-		private global::Microsoft.UI.Xaml.Controls.Button inner3Button
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.Button)_inner3ButtonSubject.ElementInstance;
-			}
-			set
-			{
-				_inner3ButtonSubject.ElementInstance = value;
-			}
-		}
 		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _inner3Subject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
 		private global::Microsoft.UI.Xaml.Controls.StackPanel inner3
 		{
@@ -308,6 +296,18 @@ namespace TestRepro
 			set
 			{
 				_inner3Subject.ElementInstance = value;
+			}
+		}
+		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _inner3ButtonSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private global::Microsoft.UI.Xaml.Controls.Button inner3Button
+		{
+			get
+			{
+				return (global::Microsoft.UI.Xaml.Controls.Button)_inner3ButtonSubject.ElementInstance;
+			}
+			set
+			{
+				_inner3ButtonSubject.ElementInstance = value;
 			}
 		}
 		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _outerGridSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();

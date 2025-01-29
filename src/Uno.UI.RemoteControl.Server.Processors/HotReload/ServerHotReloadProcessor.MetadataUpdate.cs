@@ -7,6 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -42,7 +43,10 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 			if (_useRoslynHotReload)
 			{
-				CompilationWorkspaceProvider.InitializeRoslyn(Path.GetDirectoryName(configureServer.ProjectPath));
+				// Assembly registrations must be done before the workspace is initialized
+				// Not doing so will cause the roslyn msbuild workspace to fail to load because
+				// of a missing path on assemblies loaded from a memory stream.
+				CompilationWorkspaceProvider.RegisterAssemblyLoader();
 
 				InitializeInner(configureServer);
 
@@ -54,18 +58,62 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			}
 		}
 
-		private void InitializeInner(ConfigureServer configureServer) => _initializeTask = Task.Run(
+		private void InitializeInner(ConfigureServer configureServer)
+		{
+			if (Assembly.Load("Microsoft.CodeAnalysis.Workspaces") is { } wsAsm)
+			{
+				// If this assembly was loaded from a stream, it will not have a location.
+				// This will indicate that the assembly loader from CompilationWorkspaceProvider
+				// has been registered too late.
+				if (string.IsNullOrEmpty(wsAsm.Location))
+				{
+					throw new InvalidOperationException("Microsoft.CodeAnalysis.Workspaces was loaded from a stream and must loaded from a known path");
+				}
+			}
+
+			CompilationWorkspaceProvider.InitializeRoslyn(Path.GetDirectoryName(configureServer.ProjectPath));
+
+			_initializeTask = Task.Run(
 			async () =>
 			{
 				try
 				{
 					await Notify(HotReloadEvent.Initializing);
 
+					var properties = configureServer
+						.MSBuildProperties
+						.ToDictionary();
+
+					// Flag the current build as created for hot reload, which allows for running targets or settings
+					// props/items in the context of the hot reload workspace.
+					properties["UnoIsHotReloadHost"] = "True";
+
+					// If the runtime identifier NOT been used in the output path, this usually indicates that it was not passed as a parameter for the build
+					// in that case we **must** not use it to init the hot-reload workspace (parameters are required to be exactly the same to get valid patches)
+					// Note: This is required to get HR to work on Rider 2024.3 with Android
+					// Note 2: We remove both properties to make sure to use the default behavior
+					var appendIdToPath = properties.Remove("AppendRuntimeIdentifierToOutputPath", out var appendStr)
+						&& bool.TryParse(appendStr, out var append)
+						&& append;
+					var hasOutputPath = properties.Remove("OutputPath", out var outputPath);
+
+					if (properties.Remove("RuntimeIdentifier", out var runtimeIdentifier))
+					{
+						if (appendIdToPath && hasOutputPath && Path.TrimEndingDirectorySeparator(outputPath ?? "").EndsWith(runtimeIdentifier, StringComparison.OrdinalIgnoreCase))
+						{
+							// Set the RuntimeIdentifier as a temporary property so that we do not force the
+							// property as a read-only global property that would be transitively applied to
+							// projects that are not supporting the head's RuntimeIdentifier. (e.g. an android app
+							// which references a netstd2.0 library project)
+							properties["UnoHotReloadRuntimeIdentifier"] = runtimeIdentifier;
+						}
+					}
+
 					var result = await CompilationWorkspaceProvider.CreateWorkspaceAsync(
 						configureServer.ProjectPath,
 						_reporter,
 						configureServer.MetadataUpdateCapabilities,
-						configureServer.MSBuildProperties.Where(kvp => !kvp.Key.StartsWith("MSBuild", StringComparison.OrdinalIgnoreCase)).ToDictionary(),
+						properties,
 						CancellationToken.None);
 
 					ObserveSolutionPaths(result.Item1);
@@ -86,6 +134,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				}
 			},
 			CancellationToken.None);
+		}
 
 		private void ObserveSolutionPaths(Solution solution)
 		{

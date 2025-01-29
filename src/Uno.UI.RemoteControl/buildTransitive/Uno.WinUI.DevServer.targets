@@ -59,4 +59,32 @@
 				  If error persists, try to delete obj folder and rebuild your solution." />
 	</Target>
 
+	<Target
+		Name="_UnoHotReloadConfigAndroidEnv"
+		BeforeTargets="BeforeBuild"
+		Condition="$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework))) == 'android' and '$(Optimize)'!='true'">
+
+		<PropertyGroup>
+			<_UnoHotReloadEnvironmentConfig>$(IntermediateOutputPath)environment.hotreload.conf</_UnoHotReloadEnvironmentConfig>
+		</PropertyGroup>
+
+		<WriteLinesToFile
+			Overwrite="True"
+			File="$(_UnoHotReloadEnvironmentConfig)"
+			Lines="DOTNET_MODIFIABLE_ASSEMBLIES=debug" />
+
+		<ItemGroup>
+			<AndroidEnvironment Include="$(_UnoHotReloadEnvironmentConfig)" />
+			<FileWrites Include="$(_UnoHotReloadEnvironmentConfig)" />
+		</ItemGroup>
+	</Target>
+
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework))) == 'ios' and '$(Optimize)'!='true'">
+		<MlaunchEnvironmentVariables  Include="DOTNET_MODIFIABLE_ASSEMBLIES" Value="debug" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework))) == 'browserwasm' and '$(Optimize)'!='true'">
+		<WasmShellMonoEnvironment Include="DOTNET_MODIFIABLE_ASSEMBLIES" Value="debug" />
+	</ItemGroup>
+
 </Project>

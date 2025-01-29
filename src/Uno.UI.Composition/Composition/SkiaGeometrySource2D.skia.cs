@@ -1,12 +1,12 @@
 ﻿#nullable enable
 
-using SkiaSharp;
 using System;
+using SkiaSharp;
 using Windows.Graphics;
 
 namespace Microsoft.UI.Composition
 {
-	internal class SkiaGeometrySource2D : IGeometrySource2D
+	internal class SkiaGeometrySource2D : IGeometrySource2D, IDisposable
 	{
 		private readonly SKPath _geometry;
 
@@ -27,8 +27,6 @@ namespace Microsoft.UI.Composition
 		public SKRect Bounds => _geometry.Bounds;
 		public SKRect TightBounds => _geometry.TightBounds;
 
-		internal SKPath Geometry => _geometry;
-
 		public void CanvasDrawPath(SKCanvas canvas, SKPaint paint) => canvas.DrawPath(_geometry, paint);
 
 		public void CanvasClipPath(SKCanvas canvas, SKClipOperation operation = SKClipOperation.Intersect, bool antialias = false) => canvas.ClipPath(_geometry, operation, antialias);
@@ -40,5 +38,13 @@ namespace Microsoft.UI.Composition
 		public SkiaGeometrySource2D Op(SkiaGeometrySource2D other, SKPathOp op) => new(_geometry.Op(other._geometry, op));
 
 		#endregion
+
+		/// <remarks>
+		/// DO NOT MODIFY THIS SKPath. CREATE A NEW SkiaGeometrySource2D INSTEAD.
+		/// This can lead to nasty invalidation bugs where the SKPath changes without notifying anyone.
+		/// </remarks>
+		public SKPath Geometry => _geometry;
+
+		public void Dispose() => _geometry.Dispose();
 	}
 }
