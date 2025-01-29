@@ -5,9 +5,11 @@ using System.Reflection.Metadata;
 using Uno.Foundation.Logging;
 using Uno.UI.Helpers;
 
-[assembly: ElementMetadataUpdateHandlerAttribute(typeof(Microsoft.UI.Xaml.Controls.Frame), typeof(Microsoft.UI.Xaml.Controls.FrameElementMetadataUpdateHandler))]
+[assembly: ElementMetadataUpdateHandlerAttribute(typeof(Microsoft.UI.Xaml.Controls.Frame), typeof(Microsoft.UI.Xaml.Controls.Frame.FrameElementMetadataUpdateHandler))]
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls;
+
+partial class Frame
 {
 	internal static partial class FrameElementMetadataUpdateHandler
 	{
@@ -20,36 +22,51 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					typeof(FrameElementMetadataUpdateHandler).Log().LogWarning($"AfterElementReplaced should only be called with Frame instances");
 				}
+
 				return;
 			}
 
-			foreach (var entry in frame.BackStack)
+			if (frame._useWinUIBehavior)
 			{
-				var expectedType = entry.SourcePageType.GetReplacementType();
-				if (entry.Instance is not null &&
-					entry.Instance.GetType() != expectedType)
+				foreach (var type in updatedTypes)
 				{
-					if (typeof(FrameElementMetadataUpdateHandler).Log().IsEnabled(LogLevel.Trace))
-					{
-						typeof(FrameElementMetadataUpdateHandler).Log().Trace($"Backstack entry instance {entry.Instance.GetType().Name} replaced by instance of {expectedType.Name}");
-					}
-					var dc = entry.Instance.DataContext;
-					entry.Instance = Activator.CreateInstance(expectedType) as Page;
-					if (entry.Instance is not null)
-					{
-						entry.Instance.Frame = frame;
-						entry.Instance.DataContext = dc;
-					}
+					// Note: Does not support CNOMUA
+					frame.RemovePageFromCache(type.FullName);
+					frame.RemovePageFromCache(type.AssemblyQualifiedName);
 				}
-
-				if (entry.SourcePageType is not null &&
-					entry.SourcePageType != expectedType)
+			}
+			else // Uno's legacy implementation
+			{
+				foreach (var entry in frame.BackStack)
 				{
-					if (typeof(FrameElementMetadataUpdateHandler).Log().IsEnabled(LogLevel.Trace))
+					var expectedType = entry.SourcePageType.GetReplacementType();
+					if (entry.Instance is not null &&
+						entry.Instance.GetType() != expectedType)
 					{
-						typeof(FrameElementMetadataUpdateHandler).Log().Trace($"Backstack entry SourcePageType changed from {entry.SourcePageType.Name} to {expectedType.Name}");
+						if (typeof(FrameElementMetadataUpdateHandler).Log().IsEnabled(LogLevel.Trace))
+						{
+							typeof(FrameElementMetadataUpdateHandler).Log().Trace($"Backstack entry instance {entry.Instance.GetType().Name} replaced by instance of {expectedType.Name}");
+						}
+
+						var dc = entry.Instance.DataContext;
+						entry.Instance = Activator.CreateInstance(expectedType) as Page;
+						if (entry.Instance is not null)
+						{
+							entry.Instance.Frame = frame;
+							entry.Instance.DataContext = dc;
+						}
 					}
-					entry.SourcePageType = expectedType;
+
+					if (entry.SourcePageType is not null &&
+						entry.SourcePageType != expectedType)
+					{
+						if (typeof(FrameElementMetadataUpdateHandler).Log().IsEnabled(LogLevel.Trace))
+						{
+							typeof(FrameElementMetadataUpdateHandler).Log().Trace($"Backstack entry SourcePageType changed from {entry.SourcePageType.Name} to {expectedType.Name}");
+						}
+
+						entry.SourcePageType = expectedType;
+					}
 				}
 			}
 		}
