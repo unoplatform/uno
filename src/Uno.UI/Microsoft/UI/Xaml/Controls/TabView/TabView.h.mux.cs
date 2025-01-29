@@ -1,7 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference src\controls\dev\TabView\TabView.h, commit d74a0332
+// MUX Reference src\controls\dev\TabView\TabView.h, commit 6909712
 
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using Microsoft.UI.Content;
@@ -26,7 +27,8 @@ public partial class TabView
 {
 	internal string GetTabCloseButtonTooltipText() => m_tabCloseButtonTooltipText;
 
-	private static List<ManagedWeakReference> s_tabViewWithTearOutList;
+	private static List<WeakReference<TabView>> s_tabViewWithTearOutList;
+	private static readonly object _tabViewListLock = new object();
 
 	private static Mutex s_tabWithTearOutListMutex;
 
