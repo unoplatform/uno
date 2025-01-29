@@ -28,6 +28,8 @@ jobs:
           days-before-issue-stale: -1
           days-before-issue-close: -1
 
+          operations-per-run: 100
+
           # Flag older PRs first
           ascending: true
 
