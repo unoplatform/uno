@@ -115,7 +115,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		/// <summary>
 		/// Update the visual states when the Visibility property is changed.
 		/// </summary>
-		private void OnVisibilityChanged()
+		private protected virtual void OnVisibilityChanged()
 		{
 			if (Visibility != Visibility.Visible)
 			{
