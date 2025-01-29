@@ -245,7 +245,7 @@ if ($InstallWindowsSDK)
     if($buildNumber -eq 19041)
     {
         # Workaround for missing SDK
-        $uri = "https://software-static.download.prss.microsoft.com/pr/download/19041.685.201201-2105.vb_release_svc_prod1_WindowsSDK.iso";
+        $uri = "https://go.microsoft.com/fwlink/?linkid=2120735";
     }
     
     if($buildNumber -eq 18362)
