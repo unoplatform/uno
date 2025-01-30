@@ -72,7 +72,7 @@ namespace Uno.UI.RemoteControl.HotReload
 					}
 				}
 			}
-#if __IOS__ || __ANDROID
+#if __IOS__ || __ANDROID__
 #if __IOS__
 			else if (instance is UIView nativeView)
 #elif __ANDROID__
