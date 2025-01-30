@@ -2097,8 +2097,9 @@ _Check_return_ HRESULT CommandBar::NotifyDeferredElementStateChanged(
 		}
 
 
-		public static void FindParentCommandBarForElement(ICommandBarElement element, out CommandBar? parentCmdBar)
+		public static CommandBar? FindParentCommandBarForElement(ICommandBarElement element)
 		{
+			CommandBar? parentCmdBar = null;
 			if (element is DependencyObject elementAsDO &&
 				ItemsControl.ItemsControlFromItemContainer(elementAsDO) is { } ic &&
 				ic.GetTemplatedParent() is CommandBar tp)
@@ -2114,6 +2115,8 @@ _Check_return_ HRESULT CommandBar::NotifyDeferredElementStateChanged(
 					.OfType<CommandBar>()
 					.FirstOrDefault();
 			}
+
+			return parentCmdBar;
 		}
 
 		private void FindMovablePrimaryCommands(double availablePrimaryCommandsWidth, double primaryItemsControlDesiredWidth, out int primaryCommandsCountInTransition)
