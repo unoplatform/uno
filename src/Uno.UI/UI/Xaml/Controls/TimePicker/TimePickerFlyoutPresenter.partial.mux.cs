@@ -754,6 +754,10 @@ partial class TimePickerFlyoutPresenter
 			var minuteOccurence = szPattern.IndexOf("{minute", StringComparison.InvariantCulture);
 			var periodOccurence = szPattern.IndexOf("{period", StringComparison.InvariantCulture);
 
+#if HAS_UNO // Because DateTimeFormatter does not match WinAppSDK, period may be ommitted even if clock identifier is set. #19349
+			periodOccurence = periodOccurence == -1 ? int.MaxValue : periodOccurence;
+#endif
+
 			if (hourOccurence < minuteOccurence)
 			{
 				if (hourOccurence < periodOccurence)
