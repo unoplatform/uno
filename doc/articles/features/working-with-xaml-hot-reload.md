@@ -30,6 +30,11 @@ The Uno Platform **Hot Reload** feature provides a way to modify the XAML and C#
 
 Hot Reload features are now consistent across platforms and IDEs, but with some debugger-specific variations. You can check below the list of currently supported features.
 
+For existing applications, take this opportunity to update to the [latest **Uno.Sdk** version](https://www.nuget.org/packages/Uno.Sdk/latest) to take advantage of all the latest improvements and support. Refer to our [migration guide](xref:Uno.Development.MigratingFromPreviousReleases) for upgrade steps.
+
+> [!IMPORTANT]
+> When upgrading to **Uno.Sdk 5.5 or higher**, the `EnableHotReload()` method in `App.xaml.cs` is deprecated and should be replaced with `UseStudio()`.
+
 ## How to use Hot Reload
 
 ### [**Visual Studio 2022**](#tab/vswin)
@@ -57,9 +62,35 @@ Hot Reload features are now consistent across platforms and IDEs, but with some 
 ---
 
 > [!IMPORTANT]
-> Using [.NET 8](https://dotnet.microsoft.com/download/dotnet/8.0) or later (`net8.0` in the `TargetFrameworks` property) is required for Hot Reload to be available when your solution contains iOS, Android, Mac Catalyst, or WebAssembly project heads. On Windows, [Visual Studio 17.8](https://visualstudio.microsoft.com/vs) or later is required.
+> Using [.NET 9](https://dotnet.microsoft.com/download/dotnet/9.0) or later (`net9.0` in the `TargetFrameworks` property) is required for Hot Reload to be available when your solution contains iOS, Android, Mac Catalyst, or WebAssembly project heads. On Windows, [Visual Studio 17.12](https://visualstudio.microsoft.com/vs) or later is required.
 
 ## Supported features per OS
+
+<!-- Styles applied specifically to the following tables -->
+<style>
+    /* Center all non-first-column content horizontally */
+    table th:not(:first-child),
+    table td:not(:first-child) {
+        text-align: center !important;
+    }
+
+    /* Ensure ALL table cells are vertically centered */
+    table th,
+    table td {
+        vertical-align: middle !important;
+        display: table-cell !important;
+    }
+
+    /* Keep first column text left-aligned */
+    table td:first-child {
+        text-align: left;
+    }
+
+    /* Specifically center the '🐞 Debugger' text in the first column header */
+    table th:first-child {
+        text-align: center !important;
+    }
+</style>
 
 ### [**Windows**](#tab/windows)
 
@@ -314,16 +345,27 @@ Mobile targets now support both XAML and C# Hot Reload.
 ## Hot Reload Indicator
 
 > [!NOTE]
-> The Hot Reload indicator is currently not supported for the WinAppSDK target
+> The **Hot Reload indicator** is currently not supported for the **WinAppSDK** target.
 
 Hot Reload displays a visual indicator to help you further monitor changes while developing. It displays new information every time Hot Reload is triggered. The indicator is enabled by default within the `UseStudio()` method which is located in the root `App.xaml.cs` file. This displays an overlay that hosts the visual indicator. If you wish to disable it, you simply have to provide the following boolean: `UseStudio(showHotReloadIndicator: false)`, removing the overlay from the view.
+
+To start using the **Hot Reload indicator** using the **latest stable 5.5 Uno.Sdk version or higher**, ensure you are signed in with your Uno Platform account. Follow [these instructions](xref:Uno.GetStarted.Licensing) to register and sign in.
+
+<p align="center">
+  <img src="~/articles/Assets/features/hotreload/indicator-not-connected-with-flyout.png" alt="The Hot Reload indicator is not connected. A flyout message states that Hot Reload is available only to registered users and prompts the user to sign in via the Uno Platform Settings button." />
+</p>
+
+For existing applications, take this opportunity to update to the [latest **Uno.Sdk** version](https://www.nuget.org/packages/Uno.Sdk/latest) to take advantage of all the latest improvements and support. Refer to our [migration guide](xref:Uno.Development.MigratingFromPreviousReleases) for upgrade steps.
+
+> [!IMPORTANT]
+> When upgrading to **Uno.Sdk 5.5 or higher**, the `EnableHotReload()` method in `App.xaml.cs` is deprecated and should be replaced with `UseStudio()`.
 
 <p align="center">
   <img src="~/articles/Assets/features/hotreload/indicator.png" alt="A hot reload visual indicator" />
 </p>
 
 > [!TIP]
-> The overlay can be moved by using the anchor on the left hand side.
+> The overlay can be moved by using the anchor on the left-hand side.
 
 The indicator displays the current connection status. Clicking on it will open a flyout containing all events or changes that were applied by Hot Reload. These events display more details about Hot Reload changes, such as its status and impacted files.
 
@@ -333,37 +375,53 @@ The indicator displays the current connection status. Clicking on it will open a
 
 ### Statuses
 
-Here's a summary of what icons and statuses you can expect:
+Here's a summary of the Hot Reload connection statuses and their corresponding icons:
 
-**Connection**:
+#### Connection
 
-![The icon shown on a successful connection](../Assets/features/hotreload/status-connection-success.png) Success
+- ![The icon indicating that the user is not signed in](../Assets/features/hotreload/status-connection-not-signed-in.png) **Not Signed In**  
+  _User needs to sign in to enable Hot Reload._
 
-![The icon shown on a failed connection](../Assets/features/hotreload/status-connection-failed.png) Failed
+- ![The icon indicating an ongoing connection attempt](../Assets/features/hotreload/status-connection-connecting.png) **Connecting**  
+  _Establishing a connection._
 
-![The icon shown on a successful connection, with warnings](../Assets/features/hotreload/status-connection-warning.png) Warning (Usually indicates an issue that can be solved by restarting your IDE)
+- ![The icon indicating a successful connection](../Assets/features/hotreload/status-connection-connected.png) **Connected**  
+  _Connection established._
 
-**Operation**:
+- ![The icon indicating a connection issue](../Assets/features/hotreload/status-connection-warning.png) **Warning**  
+  _Usually indicates an issue that can be resolved by restarting your IDE._
 
-![The icon shown when Hot Reload succeeded](../Assets/features/hotreload/status-success.png) Success
+- ![The icon indicating a failed connection](../Assets/features/hotreload/status-connection-failed.png) **Connection Failed**  
+  _A connection error occurred. Refer to the [troubleshooting documentation](#troubleshooting) for possible solutions._
 
-![The icon shown when Hot Reload failed](../Assets/features/hotreload/status-failed.png) Failed
+- ![The icon indicating the server is unreachable](../Assets/features/hotreload/status-connection-server-unreachable.png) **Server Unreachable**  
+  _Hot Reload could not connect to the server. Check the [troubleshooting documentation](#troubleshooting) for guidance._
 
-![The icon shown when Hot Reload is in progress](../Assets/features/hotreload/status-processing.png) Processing (Hot Reload is processing the changes or initializing)
+#### Operation
+
+- ![The icon shown when Hot Reload succeeds](../Assets/features/hotreload/status-hr-success.png) **Success**  
+  _The Hot Reload changes have been applied successfully._
+
+- ![The icon shown when Hot Reload fails](../Assets/features/hotreload/status-hr-failed.png) **Failed**  
+  _Hot Reload encountered an error and could not apply the changes._
+
+- ![The icon shown when Hot Reload is in progress](../Assets/features/hotreload/status-hr-processing.png) **Processing**  
+  _Hot Reload is applying changes or initializing._
 
 ## Troubleshooting
 
 ### [**Common issues**](#tab/common-issues)
 
+- If the Hot Reload Indicator is red and shows a connection failure, ensure that you have the [latest stable version](https://www.nuget.org/packages/Uno.Sdk/latest) of [Uno.SDK](xref:Uno.Features.Uno.Sdk) and the latest version of your IDE’s extension ([Visual Studio](https://aka.platform.uno/vs-extension-marketplace), [Visual Studio Code](https://aka.platform.uno/vscode-extension-marketplace), or [Rider](https://aka.platform.uno/rider-extension-marketplace)). Additionally, [re-run Uno.Check](xref:UnoCheck.UsingUnoCheck) to update dependencies, then relaunch your IDE, [sign in with your Uno Platform account](xref:Uno.GetStarted.Licensing), and rebuild your application.
 - Observe the application logs, you should see diagnostics messages in the app when a XAML file is reloaded.
 - WinAppSDK on Windows-specific issues
   - Grid Succinct syntax [is not supported](https://github.com/microsoft/microsoft-ui-xaml/issues/7043#issuecomment-1120061686)
-- You can troubleshoot hot reload further from the DevServer client running in the app by:
+- You can troubleshoot Hot Reload further from the DevServer client running in the app by:
   - Setting `builder.SetMinimumLevel(LogLevel.Information)` to `LogLevel.Debug` or `Trace`
-  - Setting `builder.AddFilter("Uno.UI.DataBinding.BinderReferenceHolder", LogLevel.Debug )` to `LogLevel.Debug` or `Trace`
+  - Setting `builder.AddFilter("Uno.UI.RemoteControl", LogLevel.Debug )` to `LogLevel.Debug` or `Trace`
 
   The diagnostics messages will appear in the app's debug output.
-- If you're getting `ENC0003: Updating 'attribute' requires restarting the application`, add the following in the `Directory.Build.props` (or in each csproj project heads):
+- If you're getting `ENC0003: Updating 'attribute' requires restarting the application`, add the following in the `Directory.Build.props` (or in each .csproj project head):
 
   ```xml
   <PropertyGroup>
@@ -374,19 +432,8 @@ Here's a summary of what icons and statuses you can expect:
   
   Also [make sure](https://github.com/dotnet/sdk/issues/36666#issuecomment-2162173453) that you're not referencing `Microsoft.SourceLink.*` packages.
 
-- If you're getting the `Unable to access Dispatcher/DispatcherQueue` error, you'll need to update your app startup to Uno 5 or later:
-  - Add the following lines to the shared library project `csproj` file :
+- If you're getting the `Unable to access Dispatcher/DispatcherQueue` error, you'll need to update your app to Uno.Sdk 5.6 or later, and update your `App.cs` file:
 
-    ```xml
-    <ItemGroup>
-        <PackageReference Include="Uno.WinUI.DevServer" Version="$UnoWinUIVersion$" Condition="'$(Configuration)'=='Debug'" />
-    </ItemGroup>
-    ```
-
-    > [!NOTE]
-    > If your application is using the UWP API set (Uno.UI packages) you'll need to use the `Uno.UI.DevServer` package instead.
-  - Then, in your `App.cs` file, add the following:
-  
     ```csharp
     using Uno.UI;
 
@@ -399,38 +446,68 @@ Here's a summary of what icons and statuses you can expect:
 
 ### [**Visual Studio 2022**](#tab/vswints)
 
-- Make sure that **C# Hot Reload** is not disabled in Visual Studio
-  - Open Tools / Options
-  - Search for **.NET / C++ Hot Reload**
-  - Ensure that all three checkboxes are checked (_**Enable hot reload when debugging**_, _**Enable Hot Reload without debugging**_ and _**Apply Hot Reload on File Save**_)
-The output window in Visual Studio has an output named `Uno Platform` in its drop-down. Diagnostics messages from the VS integration appear there. You will need to have the **MSBuild project build output verbosity** above "minimal" in **Tools > Options > Projects and Solutions > Build And Run** to start having some logs in the `Uno Platform` output. These changes should take effect immediately without requiring a restart of Visual Studio. However, if you seem to not have more additional logs, try restarting Visual Studio. For more information regarding verbosity for build log, see the [related VS documentation](https://learn.microsoft.com/en-us/visualstudio/ide/how-to-view-save-and-configure-build-log-files?view=vs-2022#to-change-the-amount-of-information-included-in-the-build-log).
+- Ensure that **C# Hot Reload** is enabled in Visual Studio by going to **Tools > Options**, searching for **.NET / C++ Hot Reload**, and making sure the following checkboxes are checked:
+  - ✅ **Enable Hot Reload when debugging**
+  - ✅ **Enable Hot Reload without debugging**
+  - ✅ **Apply Hot Reload on File Save**
+- The Output window in Visual Studio includes an output category named `Uno Platform` in its drop-down menu. Diagnostic messages from the Uno Platform VS extension appear there. To enable logging, you need to set **MSBuild project build output verbosity** to **at least "Normal"** (above "Minimal"). These changes should take effect immediately without requiring a Visual Studio restart. However, if you do not see additional logs, try restarting Visual Studio. For more details on build log verbosity, refer to the [official Visual Studio documentation](https://learn.microsoft.com/en-us/visualstudio/ide/how-to-view-save-and-configure-build-log-files?view=vs-2022#to-change-the-amount-of-information-included-in-the-build-log).  
+
+    If you need to share logs when opening an issue on the GitHub [Uno Platform repository](https://github.com/unoplatform/uno), it is recommended to set verbosity to **Diagnostic** to provide the most detailed logs for investigation.
+
+    **Steps to change MSBuild output verbosity:**  
+    1. Open **Tools > Options > Projects and Solutions > Build and Run**, then set **MSBuild output verbosity** to **Diagnostic** or the required level.
+
+       ![MSBuild output verbosity drop-down](../Assets/features/hotreload/vs-msbuild-output-verbosity.png)
+    2. Restart Visual Studio, re-open your solution, and wait a few seconds.
+    3. Go to **View > Output**.
+    4. In the Output window, select `Uno Platform` from the drop-down.
+
+       ![`Uno Platform` output drop-down](../Assets/features/hotreload/vs-uno-platform-logs.png)
 - When a file is reloaded, XAML parsing errors will appear in the application's logs, on the device or in the browser.
 - If there are multiple versions of the Uno.WinUI Package present in the solution, the newest will be used, regardless of the started application
-- For `net8.0-windows10.xx`:
-  - Ensure that the `net8.0-windows10.xxx` target framework **is selected in the top-left dropdown list of the XAML editor**. Selecting any other platform will break hot reload.
-  - [A VS issue for WinUI may be hit](https://developercommunity.visualstudio.com/t/net80-windows10-needs-to-be-first-for-W/10643724). If XAML hot reload does not work, ensure that the `Uno Platform` output window exists, and that it mentions that the extension has successfully loaded. To do so, try closing and reopening the solution, and make sure that the [Visual Studio extension is installed](xref:Uno.GetStarted.vs2022).
-  - [A known VS issue for WinUI](https://github.com/microsoft/microsoft-ui-xaml/issues/5944) breaks hot reload when using "simplified" `RowDefinitions`/`ColumnDefinitions`.
-- If the indicator is red and indicates that connection failed, make sure that you have the latests versions of Uno.SDK and the VS extension, then rebuild your application.
+- For `net9.0-windows10.xx`:
+  - Ensure that the `net9.0-windows10.xxx` target framework **is selected in the top-left dropdown list of the XAML editor**. Selecting any other platform will break Hot Reload.
+  - [A VS issue for WinUI may be hit](https://developercommunity.visualstudio.com/t/net80-windows10-needs-to-be-first-for-W/10643724). If XAML Hot Reload does not work, ensure that the `Uno Platform` output window exists, and that it mentions that the extension has successfully loaded. To do so, try closing and reopening the solution, and make sure that the [Visual Studio extension is installed](xref:Uno.GetStarted.vs2022).
+  - [A known VS issue for WinUI](https://github.com/microsoft/microsoft-ui-xaml/issues/5944) breaks Hot Reload when using "simplified" `RowDefinitions`/`ColumnDefinitions`.
 
 ### [**Visual Studio Code**](#tab/vscodets)
 
-- Hot Reload **is not supported for WebAssembly and Skia Desktop** when using the debugger. Start your app using `Ctrl+F5`.
-- The output window in Code has an output named **Uno Platform - Hot Reload** in its drop-down. Diagnostics messages from the extension appear there.
-- Depending on your machine's performance, the hot reload engine may take a few moments to initialize and take your project modifications into account.
-- Make sure that the selected project in the status bar is:
-  - Not the solution file, but rather the project platform you are debugging.
-  - Aligned with the platform you chose to debug with (`net8.0-desktop` with `Desktop` debug profile, `net8.0-ios`/`android` for `Mobile debug`, etc...)
+- Hot Reload **is not supported** when using the debugger. Start your app using `Ctrl+F5`.
+- The Output window in Visual Studio Code includes an output category named `Uno Platform - Hot Reload` in its drop-down menu. Diagnostic messages from the Uno Platform VS Code extension appear there.
+
+    **Steps to see the `Uno Platform - Hot Reload` output:**  
+    1. In the status bar at the bottom left of VS Code, ensure `NameOfYourProject.csproj` is selected (by default `NameOfYourProject.sln` is selected).
+
+       ![.csproj selection in Visual Studio Code](../Assets/features/hotreload/vscode-csproj-selection.png)
+    2. Wait a few seconds.
+    3. Go to **View > Output**.
+    4. In the Output window, select `Uno Platform - Hot Reload` from the drop-down.
+
+       ![`Uno Platform` output drop-down](../Assets/features/hotreload/vs-code-uno-platform-hr-output.png)
+- Depending on your machine's performance, the Hot Reload engine may take a few moments to initialize and take your project modifications into account.
+- Make sure that the selected project in the status bar (or using the "Uno Platform: Select Active Project" in the command palette) is not the solution file, but rather the project file (i.e. ending by `.csproj`).
+- Align the "Debug profile" (at the top of the "Run and Debug" pane) with the platform you chose to debug within the status bar (or using the "Uno Platform: Select the Target Platform Moniker (TFM)")
+  - "Uno Platform Desktop Debug" profile for `net9.0-desktop`
+  - "Uno Platform Mobile Debug" profile for `net9.0-ios` and `net9.0-android`
+  - "Uno Platform WebAssembly Debug" profile for `net9.0-browserwasm`
 - If Hot Reload does not function properly, you can try using the `Developer: Reload Window` command in the palette (using `Ctrl+Shift+P`)
-- When working on Skia Desktop apps, make sure to start the app without the debugger, and make sure that in the debugger tab, the `Uno Platform Desktop (Debug)` target is selected.
-- The TCP port number used by the app to connect back to the IDE is located in the `obj/Debug/net8.0-XXX/RemoteControl.config` file. If the port number does not match with the one found in the **Uno Platform - Hot Reload** output window, restart Code or use `Developer: Reload Window` in the command palette.
+- The TCP port number used by the app to connect back to the IDE is located in the `<UnoRemoteControlPort>` property of the `[ProjectName].csproj.user` file. If the port number does not match with the one found in the `Uno Platform - Hot Reload` output window, restart Code or use `Developer: Reload Window` in the command palette.
 
 ### [**Rider**](#tab/riderts)
 
 - Hot Reload **is not supported** when using the debugger. Start your app without the debugger.
-- The output window in Rider has an output named **Uno Platform** in its sidebar. Diagnostics messages from the extension appear there.
-- Depending on your machine's performance, the hot reload engine may take a few moments to initialize and take your project modifications into account.
+- The Output window in Rider includes an output category named `Uno Platform` in its sidebar. Diagnostic messages from the Uno Platform Rider plugin appear there.
+
+    **Steps to see the `Hot Reload` output:**  
+    1. In the sidebar at the bottom left of Rider, click on the Uno Platform logo.
+
+       ![Uno Platform output logo](../Assets/features/hotreload/rider-uno-platform-output.png)
+    2. In the Output window, select **LEVEL: Trace** from the drop-down.
+
+       ![Level output drop-down](../Assets/features/hotreload/rider-output-level-trace.png)
+- Depending on your machine's performance, the Hot Reload engine may take a few moments to initialize and take your project modifications into account.
 - If Hot Reload does not function properly, you can try closing and reopening the solution.
-- The TCP port number used by the app to connect back to the IDE is located in the `obj/Debug/net8.0-XXX/RemoteControl.config` file. If the port number does not match with the one found in the **Uno Platform** output window, close and reopen the solution.
+- The TCP port number used by the app to connect back to the IDE is located in the `<UnoRemoteControlPort>` property of the `[ProjectName].csproj.user` file. If the port number does not match the one found in the **Uno Platform** output window, close and reopen the solution.
 
 ---
 
