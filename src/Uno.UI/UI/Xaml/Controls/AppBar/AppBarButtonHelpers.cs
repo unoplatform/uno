@@ -289,7 +289,7 @@ internal static class AppBarButtonHelpers<TButton>
 	internal static void PutKeyboardAcceleratorText(TButton button, string value) =>
 		button.SetValue(button.GetKeyboardAcceleratorTextDependencyProperty(), value);
 
-	private static bool IsKeyboardFocusable(Control button)
+	internal static bool IsKeyboardFocusable(Control button)
 	{
 		// If an AppBarButton is in a CommandBar, then it's keyboard focusable even if it's not a tab stop,
 		// so we want to exclude that from the conditions we check in uielement.cpp.
