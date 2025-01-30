@@ -21,7 +21,6 @@ using _View = UIKit.UIView;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
 #if (!HAS_UNO || __ANDROID__ || __IOS__ || __MACOS__ || __SKIA__) && !WINAPPSDK
-[TestClass]
 [RunsOnUIThread]
 // only SkiaMacOS right now
 [ConditionalTestClass(IgnoredPlatforms = RuntimeTestPlatforms.SkiaGtk | RuntimeTestPlatforms.SkiaWpf | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaIslands)]
