@@ -4,6 +4,7 @@
 
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media.Animation;
+using Uno.Disposables;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Input;
 

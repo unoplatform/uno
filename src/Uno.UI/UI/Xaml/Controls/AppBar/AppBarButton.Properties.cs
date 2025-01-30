@@ -14,31 +14,51 @@ namespace Microsoft.UI.Xaml.Controls
 		#region TemplateSettings
 		public AppBarButtonTemplateSettings TemplateSettings
 		{
-			get { return (AppBarButtonTemplateSettings)this.GetValue(TemplateSettingsProperty); }
-			set { this.SetValue(TemplateSettingsProperty, value); }
+			get => (AppBarButtonTemplateSettings)GetValue(TemplateSettingsProperty);
+			set => SetValue(TemplateSettingsProperty, value);
 		}
 		public static DependencyProperty TemplateSettingsProperty { get; } =
 			DependencyProperty.Register(nameof(TemplateSettings), typeof(AppBarButtonTemplateSettings), typeof(AppBarButton), new FrameworkPropertyMetadata(null));
 		#endregion
 
-		#region Label
+		/// <summary>
+		/// Gets or sets a string that overrides the default key combination string associated with a keyboard accelerator.
+		/// </summary>
+		public string KeyboardAcceleratorTextOverride
+		{
+			get => AppBarButtonHelpers<AppBarButton>.GetKeyboardAcceleratorText(this);
+			set => AppBarButtonHelpers<AppBarButton>.PutKeyboardAcceleratorText(this, value);
+		}
 
+		/// <summary>
+		/// Identifies the AppBarButton.KeyboardAcceleratorTextOverride dependency property.
+		/// </summary>
+		public static DependencyProperty KeyboardAcceleratorTextOverrideProperty { get; } =
+			DependencyProperty.Register(
+				nameof(KeyboardAcceleratorTextOverride),
+				typeof(string),
+				typeof(AppBarButton),
+				new FrameworkPropertyMetadata(default(string)));
+
+		/// <summary>
+		/// Gets or sets the text displayed on the app bar button.
+		/// </summary>
 		public string Label
 		{
 			get => (string)GetValue(LabelProperty);
 			set => SetValue(LabelProperty, value);
 		}
 
+		/// <summary>
+		/// Identifies the Label dependency property.
+		/// </summary>
 		public static DependencyProperty LabelProperty { get; } =
 			DependencyProperty.Register(
-				"Label", typeof(string),
+				nameof(Label),
+				typeof(string),
 				typeof(AppBarButton),
 				new FrameworkPropertyMetadata(default(string))
 			);
-
-		#endregion
-
-		#region Icon
 
 		public IconElement Icon
 		{
@@ -48,20 +68,15 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public static DependencyProperty IconProperty { get; } =
 			DependencyProperty.Register(
-				"Icon",
+				nameof(Icon),
 				typeof(IconElement),
 				typeof(AppBarButton),
-				new FrameworkPropertyMetadata(default(IconElement))
-			);
-
-		#endregion
-
-		#region IsInOverflow
+				new FrameworkPropertyMetadata(default(IconElement)));
 
 		public bool IsInOverflow
 		{
 			get => CommandBar.IsCommandBarElementInOverflow(this);
-			internal set => this.SetValue(IsInOverflowProperty, value);
+			internal set => SetValue(IsInOverflowProperty, value);
 		}
 
 		bool ICommandBarElement3.IsInOverflow
@@ -72,73 +87,57 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public static DependencyProperty IsInOverflowProperty { get; } =
 			DependencyProperty.Register(
-				"IsInOverflow",
+				nameof(IsInOverflow),
 				typeof(bool),
 				typeof(AppBarButton),
 				new FrameworkPropertyMetadata(false));
 
-		#endregion
-
-		#region LabelPosition
-
 		public CommandBarLabelPosition LabelPosition
 		{
-			get => (CommandBarLabelPosition)this.GetValue(LabelPositionProperty);
-			set => this.SetValue(LabelPositionProperty, value);
+			get => (CommandBarLabelPosition)GetValue(LabelPositionProperty);
+			set => SetValue(LabelPositionProperty, value);
 		}
 
 		public static DependencyProperty LabelPositionProperty { get; } =
 			DependencyProperty.Register(
-				"LabelPosition",
+				nameof(LabelPosition),
 				typeof(CommandBarLabelPosition),
 				typeof(AppBarButton),
 				new FrameworkPropertyMetadata(default(CommandBarLabelPosition))
 			);
 
-		#endregion
-
-		#region IsCompat
-
 		public bool IsCompact
 		{
-			get => (bool)this.GetValue(IsCompactProperty);
-			set => this.SetValue(IsCompactProperty, value);
+			get => (bool)GetValue(IsCompactProperty);
+			set => SetValue(IsCompactProperty, value);
 		}
 
 		public static DependencyProperty IsCompactProperty { get; } =
 			DependencyProperty.Register(
-				"IsCompact",
+				nameof(IsCompact),
 				typeof(bool),
 				typeof(AppBarButton),
 				new FrameworkPropertyMetadata(default(bool))
 			);
 
-		#endregion
-
-		#region DynamicOverflowOrder
-
 		public int DynamicOverflowOrder
 		{
-			get => (int)this.GetValue(DynamicOverflowOrderProperty);
-			set => this.SetValue(DynamicOverflowOrderProperty, value);
+			get => (int)GetValue(DynamicOverflowOrderProperty);
+			set => SetValue(DynamicOverflowOrderProperty, value);
 		}
 
 		public static DependencyProperty DynamicOverflowOrderProperty { get; } =
 			DependencyProperty.Register(
-				"DynamicOverflowOrder",
+				nameof(DynamicOverflowOrder),
 				typeof(int),
 				typeof(AppBarButton),
 				new FrameworkPropertyMetadata(default(int))
 			);
 
-		#endregion
-
-		#region UseOverflowStyle
-
 		internal bool UseOverflowStyle
 		{
-			get => (bool)this.GetValue(UseOverflowStyleProperty);
-			set => this.SetValue(UseOverflowStyleProperty, value);
+			get => (bool)GetValue(UseOverflowStyleProperty);
+			set => SetValue(UseOverflowStyleProperty, value);
 		}
 
 		bool ICommandBarOverflowElement.UseOverflowStyle
@@ -152,29 +151,6 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(UseOverflowStyle),
 				typeof(bool),
 				typeof(AppBarButton),
-				new FrameworkPropertyMetadata(default(bool))
-			);
-
-		#endregion
-
-
-		#region KeyboardAcceleratorTextOverride
-
-		public string KeyboardAcceleratorTextOverride
-		{
-			get => GetKeyboardAcceleratorText();
-			set => PutKeyboardAcceleratorText(value);
-		}
-
-		public static DependencyProperty KeyboardAcceleratorTextOverrideProperty { get; } =
-			DependencyProperty.Register(
-				nameof(KeyboardAcceleratorTextOverride),
-				typeof(string),
-				typeof(AppBarButton),
-				new FrameworkPropertyMetadata(default(string))
-			);
-
-		#endregion
-
+				new FrameworkPropertyMetadata(default(bool)));
 	}
 }

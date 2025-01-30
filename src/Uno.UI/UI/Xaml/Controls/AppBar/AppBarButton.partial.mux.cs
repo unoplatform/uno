@@ -1,4 +1,8 @@
-﻿#nullable enable
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference dxaml\xcp\dxaml\lib\AppBarButton_Partial.cpp, tag winui3/release/1.6.4, commit 262a901e09
+
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -17,9 +21,9 @@ using Microsoft.UI.Xaml.Media.Animation;
 using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Input;
-using static Uno.UI.FeatureConfiguration;
 using Uno.UI.Extensions;
 using Popup = Microsoft.UI.Xaml.Controls.Primitives.Popup;
+using Uno.UI.DataBinding;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -44,19 +48,6 @@ partial class AppBarButton : Button, ICommandBarElement, ICommandBarElement2, IC
 		m_ownsToolTip = true;
 
 		DefaultStyleKey = typeof(AppBarButton);
-	}
-
-	private protected override void OnUnloaded()
-	{
-		base.OnUnloaded();
-
-		m_flyoutOpenedHandler.Disposable = null;
-		m_flyoutClosedHandler.Disposable = null;
-
-		m_menuHelper = null;
-
-		_contentChangedHandler.Disposable = null;
-		_iconChangedHandler.Disposable = null;
 	}
 
 	internal void SetOverflowStyleParams(bool hasIcons, bool hasToggleButtons, bool hasKeyboardAcceleratorText)
@@ -94,14 +85,11 @@ partial class AppBarButton : Button, ICommandBarElement, ICommandBarElement2, IC
 		}
 	}
 
-	bool ICommandBarLabeledElement.GetHasBottomLabel()
-	{
-		CommandBarDefaultLabelPosition effectiveLabelPosition = GetEffectiveLabelPosition();
-		var label = Label;
+	bool ICommandBarLabeledElement.GetHasBottomLabel() =>
+		GetHasLabelInPosition(CommandBarDefaultLabelPosition.Bottom);
 
-		return effectiveLabelPosition == CommandBarDefaultLabelPosition.Bottom
-			&& label != null;
-	}
+	bool ICommandBarLabeledElement.GetHasRightLabel() =>
+		GetHasLabelInPosition(CommandBarDefaultLabelPosition.Right);
 
 	protected override void OnPointerEntered(PointerRoutedEventArgs args)
 	{
@@ -115,14 +103,14 @@ partial class AppBarButton : Button, ICommandBarElement, ICommandBarElement2, IC
 			m_menuHelper.OnPointerEntered(args);
 		}
 
-		CloseSubMenusOnPointerEntered(this);
+		AppBarButtonHelpers<AppBarButton>.CloseSubMenusOnPointerEntered(this, this);
 	}
 
 	protected override void OnPointerExited(PointerRoutedEventArgs e)
 	{
 		base.OnPointerExited(e);
-		bool isInOverflow = false;
-		isInOverflow = IsInOverflow;
+
+		bool isInOverflow = IsInOverflow;
 
 		if (isInOverflow && m_menuHelper is { })
 		{
@@ -134,8 +122,7 @@ partial class AppBarButton : Button, ICommandBarElement, ICommandBarElement2, IC
 	{
 		base.OnKeyDown(args);
 
-		bool isInOverflow = false;
-		isInOverflow = IsInOverflow;
+		bool isInOverflow = IsInOverflow;
 
 		if (isInOverflow && m_menuHelper is { })
 		{
@@ -147,8 +134,7 @@ partial class AppBarButton : Button, ICommandBarElement, ICommandBarElement2, IC
 	{
 		base.OnKeyUp(args);
 
-		bool isInOverflow = false;
-		isInOverflow = IsInOverflow;
+		bool isInOverflow = IsInOverflow;
 
 		if (isInOverflow && m_menuHelper is { })
 		{
@@ -175,30 +161,45 @@ partial class AppBarButton : Button, ICommandBarElement, ICommandBarElement2, IC
 
 			if (newFlyout is { })
 			{
-				m_menuHelper = new CascadingMenuHelper();
-				m_menuHelper.Initialize(this);
-
-				newFlyout.Opened += OnFlyoutOpened;
-				m_flyoutOpenedHandler.Disposable = Disposable.Create(() => newFlyout.Opened -= OnFlyoutOpened);
-
-				newFlyout.Closed += OnFlyoutClosed;
-				m_flyoutClosedHandler.Disposable = Disposable.Create(() => newFlyout.Closed -= OnFlyoutClosed);
+				AttachFlyout(newFlyout);
 			}
 		}
 
-		OnPropertyChanged(args);
+		AppBarButtonHelpers<AppBarButton>.OnPropertyChanged(this, args);
 	}
 
-	private void OnFlyoutClosed(object? sender, object e)
+	// Uno specific: To allow re-attaching after Unloaded, the logic was moved to separate method.
+	private void AttachFlyout(FlyoutBase newFlyout)
 	{
-		m_isFlyoutClosing = false;
-		UpdateVisualState();
-	}
+		m_menuHelper = new CascadingMenuHelper();
+		m_menuHelper.Initialize(this);
 
-	private void OnFlyoutOpened(object? sender, object e)
-	{
-		m_isFlyoutClosing = false;
-		UpdateVisualState();
+		ManagedWeakReference wrThis = WeakReferencePool.RentSelfWeakReference(this);
+
+		void FlyoutOpenStateChangedHandler(bool isOpen)
+		{
+			if (!wrThis.IsDisposed && wrThis.Target is AppBarButton appBarButton)
+			{
+				appBarButton.m_isFlyoutClosing = false;
+				appBarButton.UpdateVisualState();
+			}
+		}
+
+		void OpenedHandler(object? sender, object e)
+		{
+			FlyoutOpenStateChangedHandler(true);
+		}
+
+		void ClosedHandler(object? sender, object e)
+		{
+			FlyoutOpenStateChangedHandler(false);
+		}
+
+		newFlyout.Opened += OpenedHandler;
+		m_flyoutOpenedHandler.Disposable = Disposable.Create(() => newFlyout.Opened -= OpenedHandler);
+
+		newFlyout.Closed += ClosedHandler;
+		m_flyoutClosedHandler.Disposable = Disposable.Create(() => newFlyout.Closed -= ClosedHandler);
 	}
 
 	// After template is applied, set the initial view state
@@ -206,11 +207,9 @@ partial class AppBarButton : Button, ICommandBarElement, ICommandBarElement2, IC
 	// IsCompact property
 	protected override void OnApplyTemplate()
 	{
-		OnBeforeApplyTemplate();
+		AppBarButtonHelpers<AppBarButton>.OnBeforeApplyTemplate(this);
 		base.OnApplyTemplate();
-		OnAfterApplyTemplate();
-
-		SetupContentUpdate();
+		AppBarButtonHelpers<AppBarButton>.OnApplyTemplate(this);
 	}
 
 	// Sets the visual state to "Compact" or "FullSize" based on the value
@@ -218,6 +217,8 @@ partial class AppBarButton : Button, ICommandBarElement, ICommandBarElement2, IC
 	private protected override void ChangeVisualState(bool useTransitions)
 	{
 		bool useOverflowStyle = false;
+
+		// var endOnExit = DXamlCore.Current.GetHandle().GetThemeWalkResourceCache().BeginCachingThemeResources(); TODO:Uno: enable in issue #19381
 
 		base.ChangeVisualState(useTransitions);
 		useOverflowStyle = UseOverflowStyle;
@@ -284,43 +285,40 @@ partial class AppBarButton : Button, ICommandBarElement, ICommandBarElement2, IC
 		}
 
 
-		ChangeCommonVisualStates(useTransitions);
+		AppBarButtonHelpers<AppBarButton>.ChangeCommonVisualStates(this, useTransitions);
 	}
 
-	protected override AutomationPeer OnCreateAutomationPeer()
-	{
-		return new AppBarButtonAutomationPeer(this);
-	}
+	protected override AutomationPeer OnCreateAutomationPeer() => new AppBarButtonAutomationPeer(this);
 
-	private void OnClick(object sender, RoutedEventArgs e)
+	private protected override void OnClick()
 	{
-		FlyoutBase spFlyoutBase;
-
 		// Don't execute the logic on CommandBar to close the secondary
 		// commands popup when we have a flyout associated with this button.
-		spFlyoutBase = Flyout;
-		if (spFlyoutBase == null)
+		var spFlyoutBase = Flyout;
+
+		if (spFlyoutBase is null)
 		{
 			CommandBar.OnCommandExecutionStatic(this);
 		}
+
+		base.OnClick();
 	}
 
-	protected override void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
+	private protected override void OnVisibilityChanged()
 	{
-		base.OnVisibilityChanged(oldValue, newValue);
+		base.OnVisibilityChanged();
 		CommandBar.OnCommandBarElementVisibilityChanged(this);
 	}
 
 	private protected override void OnCommandChanged(object oldValue, object newValue)
 	{
 		base.OnCommandChanged(oldValue, newValue);
-		OnCommandChangedHelper(oldValue, newValue);
+		AppBarButtonHelpers<AppBarButton>.OnCommandChanged(this, oldValue, newValue);
 	}
 
 	private protected override void OpenAssociatedFlyout()
 	{
-		bool isInOverflow = false;
-		isInOverflow = IsInOverflow;
+		bool isInOverflow = IsInOverflow;
 
 		// If we call OpenSubMenu, that causes the menu not to have a light-dismiss layer, as it assumes
 		// that its parent will have one.  That's not the case for AppBarButtons that aren't in overflow,
@@ -335,6 +333,18 @@ partial class AppBarButton : Button, ICommandBarElement, ICommandBarElement2, IC
 		}
 	}
 
+	private bool GetHasLabelInPosition(CommandBarDefaultLabelPosition labelPosition)
+	{
+		var effectiveLabelPosition = GetEffectiveLabelPosition();
+
+		if (effectiveLabelPosition != labelPosition)
+		{
+			return false;
+		}
+
+		return Label != null;
+	}
+
 	private CommandBarDefaultLabelPosition GetEffectiveLabelPosition()
 	{
 		var labelPosition = LabelPosition;
@@ -344,6 +354,9 @@ partial class AppBarButton : Button, ICommandBarElement, ICommandBarElement2, IC
 
 	private void UpdateInternalStyles()
 	{
+		// If the template isn't applied yet, we'll early-out,
+		// because we won't have the style to apply from the
+		// template yet.
 		if (!m_isTemplateApplied)
 		{
 			return;
@@ -358,7 +371,7 @@ partial class AppBarButton : Button, ICommandBarElement, ICommandBarElement2, IC
 		// only play auto width animation when the width is not overrided by local/animation setting
 		// and when LabelOnRightStyle is not set. LabelOnRightStyle take high priority than animation.
 		if (shouldHaveLabelOnRightStyleSet
-			&& !this.IsDependencyPropertyLocallySet(WidthProperty))
+			&& !this.HasLocalOrModifierValue(WidthProperty))
 		{
 			// Apply our width adjustments using a storyboard so that we don't stomp over template or user
 			// provided values.  When we stop the storyboard, it will restore the previous values.
@@ -375,7 +388,7 @@ partial class AppBarButton : Button, ICommandBarElement, ICommandBarElement2, IC
 			StopAnimationForWidthAdjustments();
 		}
 
-		UpdateToolTip();
+		AppBarButtonHelpers<AppBarButton>.UpdateToolTip(this);
 	}
 
 	private Storyboard CreateStoryboardForWidthAdjustmentsForLabelOnRightStyle()
@@ -385,7 +398,7 @@ partial class AppBarButton : Button, ICommandBarElement, ICommandBarElement2, IC
 		var objectAnimation = new ObjectAnimationUsingKeyFrames();
 
 		Storyboard.SetTarget(objectAnimation, this);
-		Storyboard.SetTargetProperty(objectAnimation, "Width");
+		Storyboard.SetTargetProperty(objectAnimation, nameof(Width));
 
 		var discreteObjectKeyFrame = new DiscreteObjectKeyFrame();
 
@@ -414,8 +427,7 @@ partial class AppBarButton : Button, ICommandBarElement, ICommandBarElement2, IC
 	{
 		if (m_widthAdjustmentsForLabelOnRightStyleStoryboard is { })
 		{
-			ClockState currentState;
-			currentState = m_widthAdjustmentsForLabelOnRightStyleStoryboard.GetCurrentState();
+			ClockState currentState = m_widthAdjustmentsForLabelOnRightStyleStoryboard.GetCurrentState();
 			if (currentState == ClockState.Active
 				|| currentState == ClockState.Filling)
 			{
@@ -438,33 +450,36 @@ partial class AppBarButton : Button, ICommandBarElement, ICommandBarElement2, IC
 		}
 	}
 
-	ISubMenuOwner ISubMenuOwner.ParentOwner
+	ISubMenuOwner? ISubMenuOwner.ParentOwner
 	{
-		get => null!;
+		get => null;
 		set => throw new NotImplementedException();
 	}
+
+	void ISubMenuOwner.SetSubMenuDirection(bool isSubMenuDirectionUp) { }
 
 	void ISubMenuOwner.PrepareSubMenu()
 	{
 		var flyout = Flyout;
 
-		if (flyout is { })
+		if (flyout is null)
 		{
-			// TODO: Uno specific - avoid using RootVisual on WinUI branch
-			if (XamlRoot is not null)
-			{
-				var rootElement = XamlRoot.VisualTree.RootElement;
-				flyout.OverlayInputPassThroughElement = rootElement;
-			}
+			return;
+		}
 
-			if (flyout is IMenu flyoutAsMenu)
-			{
-				CommandBar.FindParentCommandBarForElement(this, out var parentCommandBar);
+		if (XamlRoot.GetImplementationForElement(flyout) is { } xamlRoot)
+		{
+			var rootVisual = xamlRoot.Content;
+			flyout.OverlayInputPassThroughElement = rootVisual;
+		}
 
-				if (parentCommandBar is { })
-				{
-					flyoutAsMenu.ParentMenu = parentCommandBar;
-				}
+		if (flyout is IMenu flyoutAsMenu)
+		{
+			var parentCommandBar = CommandBar.FindParentCommandBarForElement(this);
+
+			if (parentCommandBar is { })
+			{
+				flyoutAsMenu.ParentMenu = parentCommandBar;
 			}
 		}
 	}
@@ -480,23 +495,32 @@ partial class AppBarButton : Button, ICommandBarElement, ICommandBarElement2, IC
 
 			// We shouldn't be doing anything special to open flyouts for AppBarButtons
 			// that are not in overflow.
-			if (!isInOverflow)
-			{
-				return;
-			}
+			MUX_ASSERT(isInOverflow);
 
 			showOptions.Placement = FlyoutPlacementMode.RightEdgeAlignedTop;
 
+			// In order to avoid the sub-menu from showing on top of the menu, the FlyoutShowOptions.ExclusionRect property is set to the width
+			// of the AppBarButton minus the small overlap on the left & right edges. The exclusion height is set to the height of the button.
 			var itemWidth = ActualWidth;
+			var itemHeight = ActualHeight;
+
+			var overlap = (float)itemWidth - position.X;
+			Rect exclusionRect = new(
+				overlap,
+				0,
+				position.X - overlap,
+				(float)itemHeight);
+
+			showOptions.ExclusionRect = exclusionRect;
 
 			showOptions.Position = position;
 
 			flyout.ShowAt(this, showOptions);
 
-			if (m_menuHelper is { })
-			{
-				m_menuHelper.SetSubMenuPresenter(flyout.GetPresenter());
-			}
+			var flyoutPresenterNoRef = flyout.GetPresenter() as Control;
+
+			MUX_ASSERT(m_menuHelper is not null);
+			m_menuHelper!.SetSubMenuPresenter(flyoutPresenterNoRef);
 		}
 
 		m_lastFlyoutPosition = position;
@@ -603,4 +627,28 @@ partial class AppBarButton : Button, ICommandBarElement, ICommandBarElement2, IC
 	void IAppBarButtonHelpersProvider.StopAnimationForWidthAdjustments() => StopAnimationForWidthAdjustments();
 
 	CommandBarDefaultLabelPosition IAppBarButtonHelpersProvider.GetEffectiveLabelPosition() => GetEffectiveLabelPosition();
+
+#if HAS_UNO // Avoid memory leaks by unsubscribing and re-subscribing to flyout events
+	// TODO Uno: This might not be needed - the flyout is owned by the AppBarButton, so it should be removed along with the button itself - needs leak test validation.
+	private protected override void OnLoaded()
+	{
+		base.OnLoaded();
+
+		if (Flyout is not null)
+		{
+			AttachFlyout(Flyout);
+		}
+	}
+
+	private protected override void OnUnloaded()
+	{
+		base.OnUnloaded();
+
+		// Detach event handlers
+		m_flyoutOpenedHandler.Disposable = null;
+		m_flyoutClosedHandler.Disposable = null;
+
+		m_menuHelper = null;
+	}
+#endif
 }
