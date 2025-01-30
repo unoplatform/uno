@@ -1,8 +1,9 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference AppBarToggleButtonAutomationPeer_Partial.cpp, tag winui3/release/1.4.2
+// MUX reference AppBarToggleButtonAutomationPeer_Partial.cpp, tag winui3/release/1.6.4
 
 using DirectUI;
+using Microsoft.UI.Xaml.Controls;
 using AppBarToggleButton = Microsoft.UI.Xaml.Controls.AppBarToggleButton;
 
 namespace Microsoft.UI.Xaml.Automation.Peers;
@@ -37,8 +38,8 @@ public partial class AppBarToggleButtonAutomationPeer : ToggleButtonAutomationPe
 		return returnValue;
 	}
 
-	protected override string GetLocalizedControlTypeCore()
-		=> DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString("UIA_AP_APPBAR_TOGGLEBUTTON");
+	protected override string GetLocalizedControlTypeCore() =>
+		DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString("UIA_AP_APPBAR_TOGGLEBUTTON");
 
 	protected override string GetAcceleratorKeyCore()
 	{
@@ -54,6 +55,22 @@ public partial class AppBarToggleButtonAutomationPeer : ToggleButtonAutomationPe
 		}
 
 		return returnValue;
+	}
+
+	protected override bool IsKeyboardFocusableCore()
+	{
+		var owner = GetOwningAppBarToggleButton();
+
+		var parentCommandBar = CommandBar.FindParentCommandBarForElement(owner);
+
+		if (parentCommandBar != null)
+		{
+			return AppBarButtonHelpers<AppBarButton>.IsKeyboardFocusable(owner);
+		}
+		else
+		{
+			return base.IsKeyboardFocusableCore();
+		}
 	}
 
 	public new void Toggle()
@@ -91,6 +108,60 @@ public partial class AppBarToggleButtonAutomationPeer : ToggleButtonAutomationPe
 				}
 			}
 		}
+	}
+
+	internal void RaiseToggleStatePropertyChangedEvent(bool pOldValue, bool pNewValue)
+	{
+		var oldValue = AppBarToggleButtonAutomationPeer.ConvertToToggleState(pOldValue);
+		var newValue = AppBarToggleButtonAutomationPeer.ConvertToToggleState(pNewValue);
+
+		if (oldValue != newValue)
+		{
+			RaisePropertyChangedEvent(TogglePatternIdentifiers.ToggleStateProperty, oldValue, newValue);
+		}
+	}
+
+	private static new ToggleState ConvertToToggleState(object value)
+	{
+		var toggleState = ToggleState.Indeterminate;
+
+		if (value is not null)
+		{
+			var boolValue = (bool)value;
+			toggleState = boolValue ? ToggleState.On : ToggleState.Off;
+		}
+
+		return toggleState;
+	}
+
+	protected override int GetPositionInSetCore()
+	{
+		// First retrieve any valid value being directly set on the container, that value will get precedence.
+		var returnValue = base.GetPositionInSetCore();
+
+		// if it still is default value, calculate it ourselves.
+		if (returnValue == -1)
+		{
+			var owner = GetOwningAppBarToggleButton();
+			returnValue = CommandBar.GetPositionInSetStatic(owner);
+		}
+
+		return returnValue;
+	}
+
+	protected override int GetSizeOfSetCore()
+	{
+		// First retrieve any valid value being directly set on the container, that value will get precedence.
+		var returnValue = base.GetSizeOfSetCore();
+
+		// if it still is default value, calculate it ourselves.
+		if (returnValue == -1)
+		{
+			var owner = GetOwningAppBarToggleButton();
+			returnValue = CommandBar.GetSizeOfSetStatic(owner);
+		}
+
+		return returnValue;
 	}
 
 	private AppBarToggleButton GetOwningAppBarToggleButton()
