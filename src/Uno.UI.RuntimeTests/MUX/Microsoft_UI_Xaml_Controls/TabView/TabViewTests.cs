@@ -11,7 +11,6 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Common;
-using Microsoft.UI.Xaml.Controls;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Automation.Peers;
@@ -33,9 +32,9 @@ using Symbol = Microsoft.UI.Xaml.Controls.Symbol;
 
 using SymbolIconSource = Microsoft.UI.Xaml.Controls.SymbolIconSource;
 using Uno.UI.RuntimeTests;
-using System.Threading.Tasks;
 using Uno.UI.Xaml;
-using Private.Infrastructure;
+using System.Collections.ObjectModel;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 {
@@ -74,7 +73,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				Content.UpdateLayout();
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 			await TestServices.WindowHelper.WaitForLoaded(Content as FrameworkElement);
 
 			await RunOnUIThread.ExecuteAsync(() =>
@@ -191,7 +190,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				Content.UpdateLayout();
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
@@ -260,7 +259,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				Content.UpdateLayout();
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
@@ -308,7 +307,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				Content.UpdateLayout();
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
@@ -357,7 +356,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				Content.UpdateLayout();
 			});
 
-			IdleSynchronizer.Wait();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			await RunOnUIThread.ExecuteAsync(() =>
 			{

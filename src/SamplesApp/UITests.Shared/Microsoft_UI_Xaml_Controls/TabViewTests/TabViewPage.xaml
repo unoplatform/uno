@@ -137,6 +137,7 @@
                     x:Name="Tabs"
                     TabWidthMode="Equal"
                     CanDragTabs="True"
+					CanTearOutTabs="True"
                     SelectionChanged="TabViewSelectionChanged"
                     TabCloseRequested="TabViewTabCloseRequested"
                     TabDragStarting="OnTabDragStarting"
