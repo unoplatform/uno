@@ -168,19 +168,19 @@ namespace Microsoft.UI.Xaml
 			// These codepoints reference glyphs that are in the uno-fluentui-assets font
 			if (result.HasFlag(DataPackageOperation.Link))
 			{
-				return "";
+				return "\uE148";
 			}
 			else if (result.HasFlag(DataPackageOperation.Copy))
 			{
-				return "";
+				return "\uE130";
 			}
 			else if (result.HasFlag(DataPackageOperation.Move))
 			{
-				return "";
+				return "\uE143";
 			}
 			else // None
 			{
-				return "";
+				return "\uE194";
 			}
 		}
 
