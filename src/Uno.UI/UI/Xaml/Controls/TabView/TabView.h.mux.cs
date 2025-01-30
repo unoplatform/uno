@@ -27,10 +27,10 @@ public partial class TabView
 {
 	internal string GetTabCloseButtonTooltipText() => m_tabCloseButtonTooltipText;
 
-	private static List<WeakReference<TabView>> s_tabViewWithTearOutList;
+	private static List<WeakReference<TabView>> s_tabViewWithTearOutList = new();
 	private static readonly object _tabViewListLock = new object();
 
-	private static Mutex s_tabWithTearOutListMutex;
+	//private static Mutex s_tabWithTearOutListMutex;
 
 	private bool m_updateTabWidthOnPointerLeave = false;
 	private bool m_pointerInTabstrip = false;
@@ -93,7 +93,7 @@ public partial class TabView
 	private SerialDisposable m_exitedMoveSizeToken = new();
 
 	private bool m_isInTabTearOutLoop;
-	private AppWindow m_tabTearOutNewAppWindow;
+	private AppWindow m_tabTearOutNewAppWindow = null;
 	private object m_dataItemBeingDragged;
 	private TabViewItem m_tabBeingDragged;
 	private TabView m_tabViewContainingTabBeingDragged;
@@ -106,7 +106,7 @@ public partial class TabView
 	private RectInt32 m_nonClientRegion;
 	private bool m_nonClientRegionSet;
 
-	private List<(RectInt32, TabView)> m_tabViewBoundsTuples;
+	private List<(RectInt32, TabView)> m_tabViewBoundsTuples = new();
 
 	private WindowId m_lastAppWindowId;
 	private InputNonClientPointerSource m_inputNonClientPointerSource;
