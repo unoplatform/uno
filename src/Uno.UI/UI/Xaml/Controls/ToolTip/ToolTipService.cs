@@ -4,7 +4,10 @@ using Microsoft.UI.Xaml.Input;
 using Uno.Disposables;
 using Uno.UI;
 using Windows.System;
+
+#if __APPLE_UIKIT__
 using UIKit;
+#endif
 
 namespace Microsoft.UI.Xaml.Controls;
 
