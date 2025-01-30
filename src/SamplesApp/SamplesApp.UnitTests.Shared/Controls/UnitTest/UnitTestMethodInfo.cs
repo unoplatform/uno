@@ -43,7 +43,7 @@ internal record UnitTestMethodInfo
 			?.ExceptionType;
 
 		var ignoredBecauseOfConditionalTestClassAttribute = method.DeclaringType?
-			.GetCustomAttributes<ConditionalTestAttribute>()
+			.GetCustomAttributes<ConditionalTestClassAttribute>()
 			.SingleOrDefault()
 			?.ShouldRun() == false;
 
