@@ -1,35 +1,41 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference dxaml\xcp\dxaml\lib\AppBarToggleButton_Partial.h, tag winui3/release/1.6.4, commit 262a901e09
+﻿#nullable enable
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media.Animation;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Input;
+using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-public partial class AppBarToggleButton
+partial class AppBarButton
 {
-	private void SetInputMode(InputDeviceType inputDeviceTypeUsedToOpenOverflow) =>
+	internal void SetInputMode(InputDeviceType inputDeviceTypeUsedToOpenOverflow)
+	{
 		m_inputDeviceTypeUsedToOpenOverflow = inputDeviceTypeUsedToOpenOverflow;
+	}
+
+	bool ISubMenuOwner.IsSubMenuPositionedAbsolutely => false;
 
 	// LabelOnRightStyle doesn't work in AppBarButton/AppBarToggleButton Reveal Style.
 	// Animate the width to NaN if width is not overridden and right-aligned labels and no LabelOnRightStyle. 
 	private Storyboard m_widthAdjustmentsForLabelOnRightStyleStoryboard;
 
+	private bool m_isWithToggleButtons;
+	private bool m_isWithIcons;
 	private CommandBarDefaultLabelPosition m_defaultLabelPosition;
 	private InputDeviceType m_inputDeviceTypeUsedToOpenOverflow;
 
-	private TextBlock m_tpKeyboardAcceleratorTextLabel;
+	private TextBlock? m_tpKeyboardAcceleratorTextLabel;
 
 	// We won't actually set the label-on-right style unless we've applied the template,
 	// because we won't have the label-on-right style from the template until we do.
 	private bool m_isTemplateApplied;
-
-
-	// We need to adjust our visual state to account for CommandBarElements that use Icons.
-	private bool m_isWithIcons;
 
 	// We need to adjust our visual state to account for CommandBarElements that have keyboard accelerator text.
 	private bool m_isWithKeyboardAcceleratorText;
@@ -41,9 +47,23 @@ public partial class AppBarToggleButton
 	// moves into the overflow section of the app bar or command bar.
 	private bool m_ownsToolTip;
 
+	// Helper to which to delegate cascading menu functionality.
+	private CascadingMenuHelper? m_menuHelper;
+
+	// Helpers to track the current opened state of the flyout.
+	private bool m_isFlyoutClosing;
+	private FlyoutBaseOpenedEventCallback m_flyoutOpenedHandler;
+	private FlyoutBaseClosedEventCallback m_flyoutClosedHandler;
+
+	// Holds the last position that its flyout was opened at.
+	// Used to reposition the flyout on size changed.
+	private Point m_lastFlyoutPosition;
+
+	bool IAppBarButtonHelpersProvider.m_isTemplateApplied { get => m_isTemplateApplied; set => m_isTemplateApplied = value; }
+
 	bool IAppBarButtonHelpersProvider.m_ownsToolTip { get => m_ownsToolTip; set => m_ownsToolTip = value; }
 
-	TextBlock IAppBarButtonHelpersProvider.m_tpKeyboardAcceleratorTextLabel { get => m_tpKeyboardAcceleratorTextLabel; set => m_tpKeyboardAcceleratorTextLabel = value; }
+	TextBlock? IAppBarButtonHelpersProvider.m_tpKeyboardAcceleratorTextLabel { get => m_tpKeyboardAcceleratorTextLabel; set => m_tpKeyboardAcceleratorTextLabel = value; }
 
 	bool IAppBarButtonHelpersProvider.m_isWithKeyboardAcceleratorText { get => m_isWithKeyboardAcceleratorText; set => m_isWithKeyboardAcceleratorText = value; }
 
@@ -55,7 +75,5 @@ public partial class AppBarToggleButton
 
 	string IAppBarButtonHelpersProvider.KeyboardAcceleratorTextOverride { get => KeyboardAcceleratorTextOverride; set => KeyboardAcceleratorTextOverride = value; }
 
-	IAppBarButtonTemplateSettings IAppBarButtonHelpersProvider.TemplateSettings { get => TemplateSettings; set => TemplateSettings = (AppBarToggleButtonTemplateSettings)value; }
-
-	void IAppBarButtonHelpersProvider.GoToState(bool useTransitions, string stateName) => GoToState(useTransitions, stateName);
+	IAppBarButtonTemplateSettings IAppBarButtonHelpersProvider.TemplateSettings { get => TemplateSettings; set => TemplateSettings = (AppBarButtonTemplateSettings)value; }
 }
