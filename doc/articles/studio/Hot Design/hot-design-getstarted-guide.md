@@ -24,7 +24,10 @@ Use this guide to set up Hot Design and start creating and refining user interfa
 
 To start using **Hot Design**, ensure you are signed in with your Uno Platform account. Follow [these instructions](xref:Uno.GetStarted.Licensing) to register and sign in.
 
-For existing applications, take this opportunity to update to the [latest **Uno.Sdk** version](https://www.nuget.org/packages/Uno.Sdk). Refer to our [migration guide](xref:Uno.Development.MigratingFromPreviousReleases) for upgrade steps.  
+For existing applications, take this opportunity to update to the [latest **Uno.Sdk** version](https://www.nuget.org/packages/Uno.Sdk). Refer to our [migration guide](xref:Uno.Development.MigratingFromPreviousReleases) for upgrade steps.
+
+> [!IMPORTANT]
+> When upgrading to **Uno.Sdk 5.5 or higher**, the `EnableHotReload()` method in `App.xaml.cs` is deprecated and should be replaced with `UseStudio()`.
 
 Once you're using the **latest stable 5.5 Uno.Sdk version or higher**, and provided you have been granted Beta access, you can access **Hot Design** by clicking the **flame** icon in the diagnostics overlay that appears over your app.
 

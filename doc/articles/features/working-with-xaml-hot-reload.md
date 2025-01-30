@@ -32,6 +32,9 @@ Hot Reload features are now consistent across platforms and IDEs, but with some 
 
 For existing applications, take this opportunity to update to the [latest **Uno.Sdk** version](https://www.nuget.org/packages/Uno.Sdk/latest) to take advantage of all the latest improvements and support. Refer to our [migration guide](xref:Uno.Development.MigratingFromPreviousReleases) for upgrade steps.
 
+> [!IMPORTANT]
+> When upgrading to **Uno.Sdk 5.5 or higher**, the `EnableHotReload()` method in `App.xaml.cs` is deprecated and should be replaced with `UseStudio()`.
+
 ## How to use Hot Reload
 
 ### [**Visual Studio 2022**](#tab/vswin)
@@ -352,7 +355,10 @@ To start using the **Hot Reload indicator** using the **latest stable 5.5 Uno.Sd
   <img src="~/articles/Assets/features/hotreload/indicator-not-connected-with-flyout.png" alt="The Hot Reload indicator is not connected. A flyout message states that Hot Reload is available only to registered users and prompts the user to sign in via the Uno Platform Settings button." />
 </p>
 
-For existing applications, take this opportunity to update to the [latest **Uno.Sdk** version](https://www.nuget.org/packages/Uno.Sdk/latest) to take advantage of all the latest improvements and support. Refer to our [migration guide](xref:Uno.Development.MigratingFromPreviousReleases) for upgrade steps.  
+For existing applications, take this opportunity to update to the [latest **Uno.Sdk** version](https://www.nuget.org/packages/Uno.Sdk/latest) to take advantage of all the latest improvements and support. Refer to our [migration guide](xref:Uno.Development.MigratingFromPreviousReleases) for upgrade steps.
+
+> [!IMPORTANT]
+> When upgrading to **Uno.Sdk 5.5 or higher**, the `EnableHotReload()` method in `App.xaml.cs` is deprecated and should be replaced with `UseStudio()`.
 
 <p align="center">
   <img src="~/articles/Assets/features/hotreload/indicator.png" alt="A hot reload visual indicator" />
