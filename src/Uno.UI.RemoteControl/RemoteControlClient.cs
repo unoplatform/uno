@@ -157,6 +157,7 @@ public partial class RemoteControlClient : IRemoteControlClient
 	{
 		AppType = appType;
 		_status = new StatusSink(this);
+		var loggedError = false;
 
 		// Environment variables are the first priority as they are used by runtime tests engine to test hot-reload.
 		// They should be considered as the default values and in any case they must take precedence over the assembly-provided values.
@@ -169,7 +170,7 @@ public partial class RemoteControlClient : IRemoteControlClient
 
 		// Get the addresses from the assembly attributes set by the code-gen in debug (i.e. from the IDE)
 		if (_serverAddresses is null or { Length: 0 }
-			&& appType.Assembly.GetCustomAttributes(typeof(ServerEndpointAttribute), false) is ServerEndpointAttribute[] embeddedEndpoints)
+			&& appType.Assembly.GetCustomAttributes(typeof(ServerEndpointAttribute), false) is ServerEndpointAttribute[] { Length: > 0 } embeddedEndpoints)
 		{
 			IEnumerable<(string endpoint, int port)> GetAddresses()
 			{
@@ -177,7 +178,7 @@ public partial class RemoteControlClient : IRemoteControlClient
 				{
 					if (endpoint.Port is 0 && !Uri.TryCreate(endpoint.Endpoint, UriKind.Absolute, out _))
 					{
-						this.Log().LogError($"Failed to get remote control server port from the IDE for endpoint {endpoint.Endpoint}.");
+						this.Log().LogInfo($"Failed to get dev-server port from the IDE for endpoint {endpoint.Endpoint}.");
 					}
 					else
 					{
@@ -187,6 +188,14 @@ public partial class RemoteControlClient : IRemoteControlClient
 			}
 
 			_serverAddresses = GetAddresses().ToArray();
+			if (_serverAddresses is { Length: 0 })
+			{
+				this.Log().LogError(
+					"Some endpoint for uno's dev-server has been configured in your application, but all are invalid (port is missing?). "
+					+ "This can usually be fixed with a **rebuild** of your application. "
+					+ "If not, make sure you have the latest version of the uno's extensions installed in your IDE and restart your IDE.");
+				loggedError = true;
+			}
 		}
 
 		if (_serverAddresses is null or { Length: 0 })
@@ -203,7 +212,12 @@ public partial class RemoteControlClient : IRemoteControlClient
 
 		if (_serverAddresses is null or { Length: 0 })
 		{
-			this.Log().LogError("Failed to get any remote control server endpoint from the IDE.");
+			if (!loggedError)
+			{
+				this.Log().LogError(
+					"Failed to get any valid dev-server endpoint from the IDE."
+					+ "Make sure you have the latest version of the uno's extensions installed in your IDE and restart your IDE.");
+			}
 
 			_connection = Task.FromResult<Connection?>(null);
 			_status.Report(ConnectionState.NoServer);
