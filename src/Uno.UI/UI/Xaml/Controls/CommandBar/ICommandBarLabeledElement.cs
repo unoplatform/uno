@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls;
+
+internal interface ICommandBarLabeledElement
 {
-	internal interface ICommandBarLabeledElement
-	{
-		void SetDefaultLabelPosition(CommandBarDefaultLabelPosition defaultLabelPosition);
+	void SetDefaultLabelPosition(CommandBarDefaultLabelPosition defaultLabelPosition);
 
-		bool GetHasBottomLabel();
+	bool GetHasBottomLabel();
 
-		bool GetHasRightLabel();
-	}
+	bool GetHasRightLabel();
 }
