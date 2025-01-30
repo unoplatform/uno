@@ -39,7 +39,6 @@ if ( ($TestGroup -eq 0) -and ($env:UWPBuildEnabled -eq 'True') )
         @("Mobile", "-f:net8.0-android", ""), # workaround for https://github.com/xamarin/xamarin-android/issues/7473
         @("Mobile", "-f:net8.0-ios", ""),
         @("Mobile", "-f:net8.0-maccatalyst", ""),
-        # @("Mobile", "-f:net8.0-macos", ""), # workaround for https://github.com/xamarin/xamarin-macios/issues/16401
         @("Wasm", "", ""),
         @("Skia.Gtk", "", ""),
         @("Skia.Linux.FrameBuffer", "", "")
@@ -88,7 +87,6 @@ if ( ($TestGroup -eq 0) -and ($env:UWPBuildEnabled -eq 'True') )
         @("Mobile", "-f:net8.0-android", ""),
         @("Mobile", "-f:net8.0-ios", ""),
         @("Mobile", "-f:net8.0-maccatalyst", ""),
-        # @("Mobile", "-f:net8.0-macos", ""),  # workaround for https://github.com/xamarin/xamarin-macios/issues/16401
         @("Wasm", "", ""),
         @("Server", "", ""),
         @("Skia.Gtk", "", ""),

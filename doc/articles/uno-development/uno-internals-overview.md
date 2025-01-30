@@ -62,7 +62,6 @@ For more details on how Uno Platform runs on each platform, see platform-specifi
 * [Android](uno-internals-android.md)
 * [iOS](uno-internals-ios.md)
 * [WebAssembly](uno-internals-wasm.md)
-* [macOS](uno-internals-macos.md)
 
 ## Uno.WinUI build-time tooling
 
