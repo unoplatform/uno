@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference: TabViewItem.cpp, commit 5f52761
+// MUX Reference: TabViewItem.cpp, commit 6909712
 
 using System.Numerics;
 using Microsoft/* UWP don't rename */.UI.Xaml.Automation.Peers;
@@ -14,6 +14,15 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.Core;
+using System;
+using static Microsoft/* UWP don't rename */.UI.Xaml.Controls._Tracing;
+using Uno.Disposables;
+using Microsoft.UI.Xaml.Shapes;
+using System.Globalization;
+using Microsoft.UI.Xaml.Markup;
+using Windows.Foundation;
+using XamlWindow = Microsoft.UI.Xaml.Window;
+using System.Reflection;
 
 
 #if HAS_UNO_WINUI
@@ -33,6 +42,7 @@ public partial class TabViewItem : ListViewItem
 {
 	private const string c_overlayCornerRadiusKey = "OverlayCornerRadius";
 	private const int c_targetRectWidthIncrement = 2;
+	private const double c_tabViewItemMouseDragThresholdMultiplier = 2.0;
 
 	/// <summary>
 	/// Initializes a new instance of the TabViewItem class.
@@ -58,31 +68,28 @@ public partial class TabViewItem : ListViewItem
 	{
 		base.OnApplyTemplate();
 
-		m_selectedBackgroundPathSizeChangedRevoker.Disposable = null;
-		m_closeButtonClickRevoker.Disposable = null;
-		m_tabDragStartingRevoker.Disposable = null;
-		m_tabDragCompletedRevoker.Disposable = null;
+		m_selectedBackgroundPathSizeChangedRevoker.Dispose();
+		m_closeButtonClickRevoker.Dispose();
+		m_tabDragStartingRevoker.Dispose();
+		m_tabDragCompletedRevoker.Dispose();
 
-		if (SharedHelpers.Is19H1OrHigher()) // UIElement.ActualOffset introduced in Win10 1903.
+		m_selectedBackgroundPath = GetTemplateChild<Path>(s_selectedBackgroundPathName);
+
+		if (m_selectedBackgroundPath is { } selectedBackgroundPath)
 		{
-			m_selectedBackgroundPath = GetTemplateChild<Path>("SelectedBackgroundPath");
-
-			if (m_selectedBackgroundPath is { } selectedBackgroundPath)
-			{
-				void OnSizeChanged(object sender, object args) => UpdateSelectedBackgroundPathTranslateTransform();
-				selectedBackgroundPath.SizeChanged += OnSizeChanged;
-				m_selectedBackgroundPathSizeChangedRevoker.Disposable = Disposable.Create(() => selectedBackgroundPath.SizeChanged -= OnSizeChanged);
-			}
+			void OnSizeChanged(object sender, object args) => UpdateSelectedBackgroundPathTranslateTransform();
+			selectedBackgroundPath.SizeChanged += OnSizeChanged;
+			m_selectedBackgroundPathSizeChangedRevoker.Disposable = Disposable.Create(() => selectedBackgroundPath.SizeChanged -= OnSizeChanged);
 		}
 
-		m_headerContentPresenter = GetTemplateChild<ContentPresenter>("ContentPresenter");
+		m_headerContentPresenter = GetTemplateChild<ContentPresenter>(s_contentPresenterName);
 
 		var tabView = SharedHelpers.GetAncestorOfType<TabView>(VisualTreeHelper.GetParent(this));
 		var internalTabView = tabView ?? null;
 
 		Button GetCloseButton(TabView internalTabView)
 		{
-			var closeButton = (Button)GetTemplateChild("CloseButton");
+			var closeButton = GetTemplateChild<Button>(s_closeButtonName);
 			if (closeButton != null)
 			{
 				// Do localization for the close button automation name
@@ -111,30 +118,6 @@ public partial class TabViewItem : ListViewItem
 
 		if (tabView != null)
 		{
-			if (SharedHelpers.IsThemeShadowAvailable())
-			{
-				if (internalTabView != null)
-				{
-					var shadow = new ThemeShadow();
-					if (!SharedHelpers.Is21H1OrHigher())
-					{
-						if (internalTabView.GetShadowReceiver() is { } shadowReceiver)
-						{
-							shadow.Receivers.Add(shadowReceiver);
-						}
-					}
-					m_shadow = shadow;
-
-					double shadowDepth = (double)SharedHelpers.FindInApplicationResources(TabView.c_tabViewShadowDepthName, TabView.c_tabShadowDepth);
-
-					var currentTranslation = Translation;
-					var translation = new Vector3(currentTranslation.X, currentTranslation.Y, (float)shadowDepth);
-					Translation = translation;
-
-					UpdateShadow();
-				}
-			}
-
 			tabView.TabDragStarting += OnTabDragStarting;
 			tabView.TabDragCompleted += OnTabDragCompleted;
 		}
@@ -148,7 +131,6 @@ public partial class TabViewItem : ListViewItem
 	private void UpdateTabGeometry()
 	{
 		var templateSettings = TabViewTemplateSettings;
-
 		var height = ActualHeight;
 		var popupRadius = (CornerRadius)ResourceAccessor.ResourceLookup(this, c_overlayCornerRadiusKey);
 		var leftCorner = popupRadius.TopLeft;
@@ -191,7 +173,6 @@ public partial class TabViewItem : ListViewItem
 	private void OnSizeChanged(object sender, SizeChangedEventArgs args)
 	{
 		m_dispatcherHelper.RunAsync(() => UpdateTabGeometry());
-		UpdateTabGeometry();
 	}
 
 	private void OnIsSelectedPropertyChanged(DependencyObject sender, DependencyProperty args)
@@ -212,9 +193,7 @@ public partial class TabViewItem : ListViewItem
 			SetValue(Canvas.ZIndexProperty, 0);
 		}
 
-		UpdateShadow();
 		UpdateWidthModeVisualState();
-
 		UpdateCloseButton();
 		UpdateForeground();
 	}
@@ -232,25 +211,8 @@ public partial class TabViewItem : ListViewItem
 			// If Foreground is set, then change icon and header foreground to match.
 			VisualStateManager.GoToState(
 				this,
-				ReadLocalValue(ForegroundProperty) == DependencyProperty.UnsetValue ? "ForegroundNotSet" : "ForegroundSet",
+				ReadLocalValue(ForegroundProperty) == DependencyProperty.UnsetValue ? s_foregroundSetStateName : s_foregroundNotSetStateName,
 				false /*useTransitions*/);
-		}
-	}
-
-	private void UpdateShadow()
-	{
-		if (SharedHelpers.IsThemeShadowAvailable())
-		// TODO Uno: Can't access XamlControlsResources from Uno.UI
-		//&& !Microsoft.UI.Xaml.Controls.XamlControlsResources.IsUsingControlsResourcesVersion2)
-		{
-			if (IsSelected && !m_isDragging)
-			{
-				Shadow = (ThemeShadow)m_shadow;
-			}
-			else
-			{
-				Shadow = null;
-			}
 		}
 	}
 
@@ -269,7 +231,7 @@ public partial class TabViewItem : ListViewItem
 				// between the selected TabViewItem and its content.
 				TranslateTransform translateTransform = new();
 
-				translateTransform.Y = roundedSelectedBackgroundPathActualOffsetY - selectedBackgroundPathActualOffset.Y;
+				translateTransform.Y = (double)roundedSelectedBackgroundPathActualOffsetY - selectedBackgroundPathActualOffset.Y;
 
 				selectedBackgroundPath.RenderTransform = translateTransform;
 			}
@@ -283,14 +245,15 @@ public partial class TabViewItem : ListViewItem
 
 	private void OnTabDragStarting(object sender, TabViewTabDragStartingEventArgs args)
 	{
-		m_isDragging = true;
-		UpdateShadow();
+		m_isBeingDragged = true;
 	}
 
 	private void OnTabDragCompleted(object sender, TabViewTabDragCompletedEventArgs args)
 	{
-		m_isDragging = false;
-		UpdateShadow();
+		m_isBeingDragged = false;
+
+		StopCheckingForDrag(m_dragPointerId);
+		UpdateDragDropVisualState(false);
 		UpdateForeground();
 	}
 
@@ -326,7 +289,7 @@ public partial class TabViewItem : ListViewItem
 	{
 		if (!IsClosable)
 		{
-			VisualStateManager.GoToState(this, "CloseButtonCollapsed", false);
+			VisualStateManager.GoToState(this, s_closeButtonCollapsedStateName, false);
 		}
 		else
 		{
@@ -337,18 +300,18 @@ public partial class TabViewItem : ListViewItem
 						// If we only want to show the button on hover, we also show it when we are selected, otherwise hide it
 						if (IsSelected || m_isPointerOver)
 						{
-							VisualStateManager.GoToState(this, "CloseButtonVisible", false);
+							VisualStateManager.GoToState(this, s_closeButtonVisibleStateName, false);
 						}
 						else
 						{
-							VisualStateManager.GoToState(this, "CloseButtonCollapsed", false);
+							VisualStateManager.GoToState(this, s_closeButtonCollapsedStateName, false);
 						}
 						break;
 					}
 				default:
 					{
 						// Default, use "Auto"
-						VisualStateManager.GoToState(this, "CloseButtonVisible", false);
+						VisualStateManager.GoToState(this, s_closeButtonVisibleStateName, false);
 						break;
 					}
 			}
@@ -360,11 +323,23 @@ public partial class TabViewItem : ListViewItem
 		// Handling compact/non compact width mode
 		if (!IsSelected && m_tabViewWidthMode == TabViewWidthMode.Compact)
 		{
-			VisualStateManager.GoToState(this, "Compact", false);
+			VisualStateManager.GoToState(this, s_compactStateName, false);
 		}
 		else
 		{
-			VisualStateManager.GoToState(this, "StandardWidth", false);
+			VisualStateManager.GoToState(this, s_standardWidthStateName, false);
+		}
+	}
+
+	private void UpdateDragDropVisualState(bool isVisible)
+	{
+		if (isVisible)
+		{
+			VisualStateManager.GoToState(this, s_dragDropVisualVisibleStateName, false);
+		}
+		else
+		{
+			VisualStateManager.GoToState(this, s_dragDropVisualNotVisibleStateName, false);
 		}
 	}
 
@@ -451,25 +426,41 @@ public partial class TabViewItem : ListViewItem
 
 	protected override void OnPointerPressed(PointerRoutedEventArgs args)
 	{
-		if (IsSelected && (PointerDeviceType)args.Pointer.PointerDeviceType == PointerDeviceType.Mouse)
+		var pointer = args.Pointer;
+		var pointerDeviceType = pointer.PointerDeviceType;
+		var pointerPoint = args.GetCurrentPoint(this);
+
+		if (pointerDeviceType == PointerDeviceType.Mouse || pointerDeviceType == PointerDeviceType.Pen)
 		{
-			var pointerPoint = args.GetCurrentPoint(this);
 			if (pointerPoint.Properties.IsLeftButtonPressed)
 			{
-				var isCtrlDown = (Windows.UI.Xaml.Window.Current.CoreWindow.GetKeyState(VirtualKey.Control) & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
-				if (isCtrlDown)
+				m_lastPointerPressedPosition = pointerPoint.Position;
+
+				BeginCheckingForDrag(pointer.PointerId);
+
+				bool ctrlDown = (args.KeyModifiers & VirtualKeyModifiers.Control) == VirtualKeyModifiers.Control;
+
+				if (ctrlDown)
 				{
+					IsSelected = true;
+
 					// Return here so the base class will not pick it up, but let it remain unhandled so someone else could handle it.
 					return;
 				}
 			}
+		}
+		else if (pointerDeviceType == PointerDeviceType.Touch)
+		{
+			m_lastPointerPressedPosition = pointerPoint.Position;
+
+			BeginCheckingForDrag(pointer.PointerId);
 		}
 
 		base.OnPointerPressed(args);
 
 		if (args.GetCurrentPoint(null).Properties.PointerUpdateKind == PointerUpdateKind.MiddleButtonPressed)
 		{
-			if (CapturePointer(args.Pointer))
+			if (CapturePointer(pointer))
 			{
 				m_hasPointerCapture = true;
 				m_isMiddlePointerButtonPressed = true;
@@ -477,9 +468,24 @@ public partial class TabViewItem : ListViewItem
 		}
 	}
 
+	protected override void OnPointerMoved(PointerRoutedEventArgs args)
+	{
+		base.OnPointerMoved(args);
+
+		if (ShouldStartDrag(args))
+		{
+			UpdateDragDropVisualState(true);
+		}
+	}
+
 	protected override void OnPointerReleased(PointerRoutedEventArgs args)
 	{
 		base.OnPointerReleased(args);
+
+		var pointer = args.Pointer;
+
+		StopCheckingForDrag(pointer.PointerId);
+		UpdateDragDropVisualState(false);
 
 		if (m_hasPointerCapture)
 		{
@@ -487,7 +493,7 @@ public partial class TabViewItem : ListViewItem
 			{
 				bool wasPressed = m_isMiddlePointerButtonPressed;
 				m_isMiddlePointerButtonPressed = false;
-				ReleasePointerCapture(args.Pointer);
+				ReleasePointerCapture(pointer);
 
 				if (wasPressed)
 				{
@@ -497,6 +503,39 @@ public partial class TabViewItem : ListViewItem
 					}
 				}
 			}
+		}
+	}
+
+	private bool IsOutsideDragRectangle(Point testPoint, Point dragRectangleCenter)
+	{
+		double dx = Math.Abs(testPoint.X - dragRectangleCenter.X);
+		double dy = Math.Abs(testPoint.Y - dragRectangleCenter.Y);
+
+		double maxDx = 4; //4 is default for GetSystemMetrics(SM_CXDRAG);
+		double maxDy = 4; //4 is default for GetSystemMetrics(SM_CYDRAG);
+
+		maxDx *= c_tabViewItemMouseDragThresholdMultiplier;
+		maxDy *= c_tabViewItemMouseDragThresholdMultiplier;
+
+		return (dx > maxDx || dy > maxDy);
+	}
+
+	private bool ShouldStartDrag(PointerRoutedEventArgs args) => m_isCheckingforDrag &&
+			IsOutsideDragRectangle(args.GetCurrentPoint(this).Position, m_lastPointerPressedPosition) &&
+			m_dragPointerId == args.Pointer.PointerId;
+
+	private void BeginCheckingForDrag(uint pointerId)
+	{
+		m_dragPointerId = pointerId;
+		m_isCheckingforDrag = true;
+	}
+
+	private void StopCheckingForDrag(uint pointerId)
+	{
+		if (m_isCheckingforDrag && m_dragPointerId == pointerId)
+		{
+			m_dragPointerId = 0;
+			m_isCheckingforDrag = false;
 		}
 	}
 
@@ -551,11 +590,16 @@ public partial class TabViewItem : ListViewItem
 	{
 		base.OnPointerCanceled(args);
 
+		var pointer = args.Pointer;
+
+		StopCheckingForDrag(pointer.PointerId);
+
 		if (m_hasPointerCapture)
 		{
-			ReleasePointerCapture(args.Pointer);
+			ReleasePointerCapture(pointer);
 			m_isMiddlePointerButtonPressed = false;
 		}
+
 		RestoreLeftAdjacentTabSeparatorVisibility();
 	}
 
@@ -578,8 +622,8 @@ public partial class TabViewItem : ListViewItem
 			// ListView also handles Alt+Arrow  (no Shift) by just doing regular XY focus,
 			// same as how it handles Arrow without any modifier keys, so in that case
 			// we do want to handle things so we get the improved keyboarding experience.
-			var isAltDown = (Windows.UI.Xaml.Window.Current.CoreWindow.GetKeyState(VirtualKey.Menu) & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
-			var isShiftDown = (Windows.UI.Xaml.Window.Current.CoreWindow.GetKeyState(VirtualKey.Shift) & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
+			var isAltDown = (InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Menu) & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
+			var isShiftDown = (InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Shift) & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
 
 			if (!isAltDown || !isShiftDown)
 			{
@@ -609,13 +653,13 @@ public partial class TabViewItem : ListViewItem
 		if (source != null)
 		{
 			templateSettings.IconElement = SharedHelpers.MakeIconElementFrom(source);
-			VisualStateManager.GoToState(this, "Icon", false);
+			VisualStateManager.GoToState(this, s_iconStateName, false);
 		}
 
 		else
 		{
 			templateSettings.IconElement = null;
-			VisualStateManager.GoToState(this, "NoIcon", false);
+			VisualStateManager.GoToState(this, s_noIconStateName, false);
 		}
 	}
 
