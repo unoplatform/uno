@@ -6047,22 +6047,26 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					var contentOwner = xamlObjectDefinition.Members.FirstOrDefault(m => m.Member.Name == "_UnknownContent");
 					var contentLocation = (IXamlLocation)xamlObjectDefinition.Members.FirstOrDefault(m => m.Member.Name == "Key") ?? xamlObjectDefinition;
 
-					if (contentOwner != null)
+					if (contentOwner != null || _isHotReloadEnabled) // If Hot Reload is enabled, we still need to attach the source location, even on empty elements
 					{
 						var resourceOwner = CurrentResourceOwnerName;
 
-#if USE_NEW_TP_CODEGEN
-						writer.Append($"{resourceOwner}, (__owner, __settings) => ");
-#else
-						writer.Append($"{resourceOwner}, (__owner) => ");
-#endif
 
-						// This case is to support the layout switching for the ListViewBaseLayout, which is not
-						// a FrameworkTemplate. This will need to be removed when this custom list view is removed.
-						var returnType = typeName == "ListViewBaseLayoutTemplate" ? "global::Uno.UI.Controls.Legacy.ListViewBaseLayout" : "_View";
-						BuildChildThroughSubclass(writer, contentOwner, returnType);
+						if(contentOwner is { })
+						{
+#if USE_NEW_TP_CODEGEN
+							writer.Append($"{resourceOwner}, (__owner, __settings) => ");
+#else
+							writer.Append($"{resourceOwner}, (__owner) => ");
+#endif
+							// This case is to support the layout switching for the ListViewBaseLayout, which is not
+							// a FrameworkTemplate. This will need to be removed when this custom list view is removed.
+							var returnType = typeName == "ListViewBaseLayoutTemplate" ? "global::Uno.UI.Controls.Legacy.ListViewBaseLayout" : "_View";
+							BuildChildThroughSubclass(writer, contentOwner, returnType);
+						}
 
 						writer.AppendIndented(")");
+
 						if (_isHotReloadEnabled)
 						{
 							using (var applyWriter = CreateApplyBlock(writer, null, out var closureName))
